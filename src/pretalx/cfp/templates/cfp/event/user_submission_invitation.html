@@ -2,23 +2,23 @@
 {% load bootstrap4 %}
 {% load i18n %}
 
-{% block title %}{% trans "Your submission" %} :: {% endblock %}
+{% block title %}{% translate "Your submission" %} :: {% endblock %}
 
 {% block content %}
     <h2>
         <a href="{{ submission.urls.user_base }}">
-            {% trans "Your submission:" %} {{ submission.title }}
+            {% translate "Your submission:" %} {{ submission.title }}
         </a>
     </h2>
     <p>
-        {% trans "Current state of your submission:" %}
+        {% translate "Current state of your submission:" %}
         {% include "cfp/event/fragment_state.html" with state=submission.state %}
     </p>
     <div class="alert alert-info">
-        {% blocktrans trimmed %}
+        {% blocktranslate trimmed %}
             Invite another speaker to your submission here. Instead of letting us send an email,
             (which might get caught by spam filters) you can also give them this link:
-        {% endblocktrans %}
+        {% endblocktranslate %}
         <br>
         {{ submission.urls.accept_invitation.full }}
     </div>
@@ -28,10 +28,10 @@
         <div class="row">
             <div class="col-md-3 ml-auto url-links">
                 <a class="btn btn-block btn-info btn-lg" href="{{ submission.urls.user_base }}">
-                    {% trans "Cancel" %}
+                    {% translate "Cancel" %}
                 </a>
                 <button type="submit" class="btn btn-block btn-success btn-lg">
-                    {% trans "Send" %}
+                    {% translate "Send" %}
                 </button>
             </div>
         </div>

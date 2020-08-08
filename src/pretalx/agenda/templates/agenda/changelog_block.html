@@ -3,7 +3,7 @@
 {% if schedule.comment %}
   <p>{{ schedule.comment|rich_text }}</p>
 {% elif schedule.changes.action == 'create' %}
-  <p>{% trans "We released our first schedule!" %}</p>
+  <p>{% translate "We released our first schedule!" %}</p>
 {% elif not schedule.changes.count %}
   <p>–</p>
 {% endif %}
@@ -16,7 +16,7 @@
                 <li><a href="{{ talk.submission.urls.public }}">
                     {{ quotation_open }}{{ talk.submission.title }}{{ quotation_close }}
                     {% if talks.submission.speakers.exists %}
-                        {% trans "by" %} {{ talk.submission.display_speaker_names }}
+                        {% translate "by" %} {{ talk.submission.display_speaker_names }}
                     {% endif %}
                 </a></li>
                 {% endfor %}
@@ -27,7 +27,7 @@
                 <a href="{{ talk.submission.urls.public }}">
                     {{ quotation_open }}{{ talk.submission.title }}{{ quotation_close }}
                     {% if talk.submission.speakers.exists %}
-                        {% trans "by" %} {{ talk.submission.display_speaker_names }}
+                        {% translate "by" %} {{ talk.submission.display_speaker_names }}
                     {% endif %}
                 </a>.
             {% endfor %}
@@ -42,7 +42,7 @@
                 <li>
                     {{ quotation_open }}{{ talk.submission.title }}{{ quotation_close }}
                     {% if talk.submission.speakers.exists %}
-                        {% trans "by" %} {{ talk.submission.display_speaker_names }}
+                        {% translate "by" %} {{ talk.submission.display_speaker_names }}
                     {% endif %}
                 </li>
                 {% endfor %}
@@ -52,7 +52,7 @@
             {% for talk in schedule.changes.canceled_talks %}
                 {{ quotation_open }}{{ talk.submission.title }}{{ quotation_close }}
                 {% if talk.submission.speakers.exists %}
-                    {% trans "by" %} {{ talk.submission.display_speaker_names }}.
+                    {% translate "by" %} {{ talk.submission.display_speaker_names }}.
                 {% endif %}
             {% endfor %}</p>
         {% endif %}
@@ -66,7 +66,7 @@
                 <li><a href="{{ talk.submission.urls.public }}">
                     {{ quotation_open }}{{ talk.submission.title }}{{ quotation_close }}
                     {% if talk.submission.speakers.exists %}
-                        {% trans "by" %} {{ talk.submission.display_speaker_names }}
+                        {% translate "by" %} {{ talk.submission.display_speaker_names }}
                     {% endif %}
                     </a>
                 {% if talk.old_room == talk.new_room %}
@@ -85,7 +85,7 @@
                 <a href="{{ talk.submission.urls.public }}">
                     {{ quotation_open }}{{ talk.submission.title }}{{ quotation_close }}
                     {% if talk.submission.speakers.exists %}
-                        {% trans "by" %} {{ talk.submission.display_speaker_names }}
+                        {% translate "by" %} {{ talk.submission.display_speaker_names }}
                     {% endif %}
                 </a>
                 {% if talk.old_room == talk.new_room %}

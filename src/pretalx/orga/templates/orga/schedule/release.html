@@ -5,55 +5,55 @@
 {% load static %}
 
 {% block schedule_content %}
-<h2>{% trans "Release new schedule" %}</h2>
+<h2>{% translate "Release new schedule" %}</h2>
 <div class="alert alert-warning"><span></span><span>
-    {% blocktrans  trimmed %}
+    {% blocktranslate  trimmed %}
     There are still warnings about the release of this schedule. Please review them carefully!
-    {% endblocktrans %}
+    {% endblocktranslate %}
 </span></div>
 
 <ul>
     <li>
         {% if request.event.wip_schedule.previous_schedule.version %}
-        {% blocktrans with prev=request.event.wip_schedule.previous_schedule.version since=request.event.wip_schedule.previous_schedule.published|timesince trimmed %}
+        {% blocktranslate with prev=request.event.wip_schedule.previous_schedule.version since=request.event.wip_schedule.previous_schedule.published|timesince trimmed %}
             The previous schedule ({{ prev }}) was released {{ since }} ago.
-        {% endblocktrans %}
+        {% endblocktranslate %}
         {% else %}
-        {% trans "This will be the very first schedule release." %}
+        {% translate "This will be the very first schedule release." %}
         {% endif %}
     <li>
         {% if notifications %}
-            {% blocktrans with notifications=notifications trimmed %}
+            {% blocktranslate with notifications=notifications trimmed %}
             When releasing this new schedule, <strong>{{ notifications }} notifications emails
             </strong> will be generated and placed in the outbox, to tell speakers about their
             talk slots.
-            {% endblocktrans %}
+            {% endblocktranslate %}
         {% else %}
-            {% blocktrans trimmed %}
+            {% blocktranslate trimmed %}
             This schedule release would result in <strong>no notification emails</strong> for
             speakers.
-            {% endblocktrans %}
+            {% endblocktranslate %}
         {% endif %}
     </li>
     {% if warnings.unconfirmed %}
-    <li>{% blocktrans with unconfirmed=warnings.unconfirmed|length trimmed %}
+    <li>{% blocktranslate with unconfirmed=warnings.unconfirmed|length trimmed %}
         {{ unconfirmed }} talks are still <strong>unconfirmed</strong> and will not show up
         on the public schedule.
-    {% endblocktrans %}</li>
+    {% endblocktranslate %}</li>
     {% endif %}
     {% if warnings.unscheduled %}
-    <li>{% blocktrans with unscheduled=warnings.unscheduled|length trimmed %}
+    <li>{% blocktranslate with unscheduled=warnings.unscheduled|length trimmed %}
         {{ unscheduled }} talks have <strong>not yet been scheduled</strong>.
-    {% endblocktrans %}</li>
+    {% endblocktranslate %}</li>
     {% endif %}
     {% if warnings.no_track %}
-    <li>{% blocktrans with no_track=warnings.no_track|length trimmed %}
+    <li>{% blocktranslate with no_track=warnings.no_track|length trimmed %}
         {{ no_track }} talks have <strong>not yet been assigned a track</strong>.
-    {% endblocktrans %}</li>
+    {% endblocktranslate %}</li>
     {% endif %}
 </ul>
 {% if warnings.talk_warnings %}
-<h4>{% trans "Warnings" %}</h4>
+<h4>{% translate "Warnings" %}</h4>
 <ul>
     {% for talk in warnings.talk_warnings %}
     {% for warning in talk.warnings %}
@@ -64,15 +64,15 @@
 
 {% endif %}
 
-<h4>{% trans "Public changelog" %}</h4>
-<p>{% trans "This is how the new schedule version will appear in the public changelog and in the RSS feed." %}</p>
+<h4>{% translate "Public changelog" %}</h4>
+<p>{% translate "This is how the new schedule version will appear in the public changelog and in the RSS feed." %}</p>
 
 <form method="post">
 {% csrf_token %}
   <div id="fake-changelog">
       <h4>
-        {% trans "Version" %}
-        <input id="id_version" class="form-control d-inline-flex w-auto" name="version" maxlength="200" title="" type="text" placeholder="{% trans "Version" %}" value="{{ suggested_version }}" required>
+        {% translate "Version" %}
+        <input id="id_version" class="form-control d-inline-flex w-auto" name="version" maxlength="200" title="" type="text" placeholder="{% translate "Version" %}" value="{{ suggested_version }}" required>
       </h4>
       <div class="flex-next-column">
         {% bootstrap_field form.comment layout='event-inline' %}
@@ -82,11 +82,11 @@
 
 
   <div class="submit-group" id="release">
-      <a href="{{ request.event.orga_urls.schedule }}" class="btn btn-info btn-lg">{% trans "Back" %}</a>
+      <a href="{{ request.event.orga_urls.schedule }}" class="btn btn-info btn-lg">{% translate "Back" %}</a>
       <div class="d-flex align-items-center">
           {% bootstrap_field form.notify_speakers layout='event-inline' %}
           <div class="input-group">
-              <button type="submit" class="btn btn-success btn-lg">{% trans "Release" %}</button>
+              <button type="submit" class="btn btn-success btn-lg">{% translate "Release" %}</button>
           </div>
       </div>
   </div>

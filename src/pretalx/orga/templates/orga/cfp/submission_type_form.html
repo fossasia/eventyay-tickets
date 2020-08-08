@@ -16,9 +16,9 @@
 {% block cfp_content %}
     <h2>
         {% if form.instance.name %}
-        {% trans "Submission Type" %}: {{ form.instance.name }}
+        {% translate "Submission Type" %}: {{ form.instance.name }}
         {% else %}
-        {% trans "New Submission Type" %}
+        {% translate "New Submission Type" %}
         {% endif %}
     </h2>
     <form method="post">

@@ -1,6 +1,6 @@
 {% extends "common/error.html" %}
 {% load i18n %}
 {% load static %}
-{% block error_image %}<img src="{% static "common/img/error_403.svg" %}" class="img" alt="{% trans "Page not found." %}">{% endblock %}
+{% block error_image %}<img src="{% static "common/img/error_403.svg" %}" class="img" alt="{% translate "Page not found." %}">{% endblock %}
 {% block error_message %}{{ phrases.base.not_found }}{% endblock %}
 {% block error_code %}404{% endblock %}

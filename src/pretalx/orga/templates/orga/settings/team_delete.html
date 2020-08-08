@@ -4,16 +4,16 @@
 {% block settings_content %}
 <div>
     <h2>
-        {% trans "Team" %} {{ quotation_open }}{{ team.name }}{{ quotation_close }}
+        {% translate "Team" %} {{ quotation_open }}{{ team.name }}{{ quotation_close }}
     </h2>
 
-    {% trans "Do you really want to go through with this deletion?" %} <em>{{ object.email }}</em>
+    {% translate "Do you really want to go through with this deletion?" %} <em>{{ object.email }}</em>
 <div class="submit-group panel">
     <span></span>
     <span>
     <form class="float-right" method="post">{% csrf_token %}
-        <a class="btn btn-info btn-lg" href={{ team.orga_urls.base }}>{% trans "Back" %}</a>
-        <button class="btn btn-danger btn-lg" type="submit">{% trans "Yes" %}</button>
+        <a class="btn btn-info btn-lg" href={{ team.orga_urls.base }}>{% translate "Back" %}</a>
+        <button class="btn btn-danger btn-lg" type="submit">{% translate "Yes" %}</button>
     </form>
     </span>
 </div>

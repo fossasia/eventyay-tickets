@@ -12,92 +12,92 @@
 
 {% block content %}
 
-<h1>{% trans "Administrator information" %}</h1>
+<h1>{% translate "Administrator information" %}</h1>
 
 {% if settings.DEBUG %}
 <div class="alert alert-danger"><span></span><span>
-    {% blocktrans trimmed %}
+    {% blocktranslate trimmed %}
     You are running pretalx in development mode. Please <strong>STOP</strong>
     and set the DEBUG variable to False if this page is in any way reachable
     from the internet.
-    {% endblocktrans %}
+    {% endblocktranslate %}
     </span>
 </div>
 {% endif %}
 
-<h2>{% trans "Settings" %}</h2>
+<h2>{% translate "Settings" %}</h2>
 
 <div class="alert alert-info">
     {% if settings.CONFIG_FILES %}
-    {% trans "Settings have been loaded from:" %} {{ settings.CONFIG_FILES|join:', ' }}
+    {% translate "Settings have been loaded from:" %} {{ settings.CONFIG_FILES|join:', ' }}
     {% else %}
-    {% trans "No settings files were found, all settings are either set to their default value or have been read from environment variables." %}
+    {% translate "No settings files were found, all settings are either set to their default value or have been read from environment variables." %}
     {% endif %}
 </div>
 <ul>
-    <li>{% trans "Database" %}
+    <li>{% translate "Database" %}
         <ul>
-            <li>{% trans "Driver" %}: <code>{{ settings.DATABASES.default.ENGINE|copyable }}</code></li>
-            <li>{% trans "Name" %}: <code>{{ settings.DATABASES.default.NAME|copyable }}</code></li>
+            <li>{% translate "Driver" %}: <code>{{ settings.DATABASES.default.ENGINE|copyable }}</code></li>
+            <li>{% translate "Name" %}: <code>{{ settings.DATABASES.default.NAME|copyable }}</code></li>
         </ul>
     </li>
-    <li>{% trans "Files" %}
+    <li>{% translate "Files" %}
         <ul>
-            <li>{% trans "Log" %}: <code>{{ settings.LOG_DIR|copyable }}</code></li>
-            <li>{% trans "Static files" %}: <code>{{ settings.STATIC_ROOT|copyable }}</code></li>
-            <li>{% trans "Media files" %}: <code>{{ settings.MEDIA_ROOT|copyable }}</code></li>
+            <li>{% translate "Log" %}: <code>{{ settings.LOG_DIR|copyable }}</code></li>
+            <li>{% translate "Static files" %}: <code>{{ settings.STATIC_ROOT|copyable }}</code></li>
+            <li>{% translate "Media files" %}: <code>{{ settings.MEDIA_ROOT|copyable }}</code></li>
         </ul>
     </li>
-    <li>{% trans "Mails" %}
+    <li>{% translate "Mails" %}
         <ul>
-            <li>{% trans "Host" %}: <code>{{ settings.EMAIL_HOST|copyable }}</code></li>
-            <li>{% trans "Port" %}: <code>{{ settings.EMAIL_PORT|copyable }}</code></li>
-            <li>{% trans "User" %}: <code>{{ settings.EMAIL_HOST_USER|copyable }}</code></li>
-            <li>{% trans "Password" %}: {% if settings.EMAIL_HOST_PASSWORD %}{% trans "An email password has been set." %}{% else %}{% trans "No email password has been set." %}{% endif %}</li>
+            <li>{% translate "Host" %}: <code>{{ settings.EMAIL_HOST|copyable }}</code></li>
+            <li>{% translate "Port" %}: <code>{{ settings.EMAIL_PORT|copyable }}</code></li>
+            <li>{% translate "User" %}: <code>{{ settings.EMAIL_HOST_USER|copyable }}</code></li>
+            <li>{% translate "Password" %}: {% if settings.EMAIL_HOST_PASSWORD %}{% translate "An email password has been set." %}{% else %}{% translate "No email password has been set." %}{% endif %}</li>
         </ul>
     </li>
 </ul>
-<h2>{% trans "System" %}</h2>
+<h2>{% translate "System" %}</h2>
 <ul>
-    <li>{% trans "Executable" %}: <code>{{ executable|copyable }}</code></li>
-    <li>{% trans "Plugins" %}: {% if settings.PLUGINS %}<ul>{% for plugin in settings.PLUGINS %}<li>{{ plugin|copyable }}</li>{% endfor %}</ul>{% else %}–{% endif %}</li>
-    <li>{% if settings.ADMINS %}{% trans "On errors, emails will be sent to:" %}
+    <li>{% translate "Executable" %}: <code>{{ executable|copyable }}</code></li>
+    <li>{% translate "Plugins" %}: {% if settings.PLUGINS %}<ul>{% for plugin in settings.PLUGINS %}<li>{{ plugin|copyable }}</li>{% endfor %}</ul>{% else %}–{% endif %}</li>
+    <li>{% if settings.ADMINS %}{% translate "On errors, emails will be sent to:" %}
             {% for admin in settings.ADMINS %}
             <code>{{ admin.0|copyable }}</code>{% if not forloop.last %},{% endif %}
             {% endfor %}
-        {% else %}{% trans "On errors, no emails will be sent." %}{% endif %}
+        {% else %}{% translate "On errors, no emails will be sent." %}{% endif %}
     </li>
 </ul>
 
 <h3 class="mt-4">redis</h3>
 {% if not settings.HAS_REDIS %}
-    {% trans "No redis server has been configured." %}
+    {% translate "No redis server has been configured." %}
 {% else %}
-    {% trans "Redis is used as cache backend:" %} <code>{{ settings.CACHES.redis.LOCATION|copyable }}</code>
+    {% translate "Redis is used as cache backend:" %} <code>{{ settings.CACHES.redis.LOCATION|copyable }}</code>
 {% endif %}
 
 <h3 class="mt-4">Celery</h3>
 {% if not settings.HAS_CELERY %}
-    {% trans "No celery workers have been configured." %}
+    {% translate "No celery workers have been configured." %}
 {% else %}
     <ul>
-        <li>{% trans "Broker" %}: <code>{{ settings.CELERY_BROKER_URL|copyable }}</code></li>
-        <li>{% trans "Backend" %}: <code>{{ settings.CELERY_RESULT_BACKEND|copyable }}</code></li>
-        <li>{% trans "Current queue length" %}: <strong>{{ queue_length }}</strong></li>
+        <li>{% translate "Broker" %}: <code>{{ settings.CELERY_BROKER_URL|copyable }}</code></li>
+        <li>{% translate "Backend" %}: <code>{{ settings.CELERY_RESULT_BACKEND|copyable }}</code></li>
+        <li>{% translate "Current queue length" %}: <strong>{{ queue_length }}</strong></li>
     </ul>
 {% endif %}
 
-<h2 class="mt-4">{% trans "Links" %}</h2>
+<h2 class="mt-4">{% translate "Links" %}</h2>
 <ul>
-    <li><a target="_blank" rel="noopener" href="https://pretalx.com">{% trans "pretalx website" %}</a></li>
-    <li><a target="_blank" rel="noopener" href="https://docs.pretalx.org">{% trans "pretalx documentation" %}</a>
+    <li><a target="_blank" rel="noopener" href="https://pretalx.com">{% translate "pretalx website" %}</a></li>
+    <li><a target="_blank" rel="noopener" href="https://docs.pretalx.org">{% translate "pretalx documentation" %}</a>
         <ul>
-            <li><a target="_blank" rel="noopener" href="https://docs.pretalx.org/en/latest/administrator/configure.html">{% trans "Configuration reference" %}</a></li>
-            <li><a target="_blank" rel="noopener" href="https://docs.pretalx.org/en/latest/administrator/installation.html">{% trans "Installation guide" %}</a></li>
-            <li><a target="_blank" rel="noopener" href="https://docs.pretalx.org/en/latest/administrator/maintenance.html">{% trans "Upgrade/maintenance guide" %}</a></li>
+            <li><a target="_blank" rel="noopener" href="https://docs.pretalx.org/en/latest/administrator/configure.html">{% translate "Configuration reference" %}</a></li>
+            <li><a target="_blank" rel="noopener" href="https://docs.pretalx.org/en/latest/administrator/installation.html">{% translate "Installation guide" %}</a></li>
+            <li><a target="_blank" rel="noopener" href="https://docs.pretalx.org/en/latest/administrator/maintenance.html">{% translate "Upgrade/maintenance guide" %}</a></li>
         </ul>
     </li>
-    <li><a target="_blank" rel="noopener" href="https://docs.pretalx.org/en/latest/changelog.html">{% trans "Release notes" %}</a></li>
-    <li><a target="_blank" rel="noopener" href="https://pretalx.com/p/news">{% trans "pretalx blog (release announcements, features)" %}</a></li>
+    <li><a target="_blank" rel="noopener" href="https://docs.pretalx.org/en/latest/changelog.html">{% translate "Release notes" %}</a></li>
+    <li><a target="_blank" rel="noopener" href="https://pretalx.com/p/news">{% translate "pretalx blog (release announcements, features)" %}</a></li>
 </ul>
 {% endblock %}

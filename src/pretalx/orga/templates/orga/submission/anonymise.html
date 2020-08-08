@@ -8,11 +8,11 @@
 
 {% block submission_content %}
 <div class="alert alert-info">
-{% blocktrans trimmed %}
+{% blocktranslate trimmed %}
     If a review phase with anonymisation is currently active, all reviewers
     who have no permissions to change this submission will be shown the anonymised
     submission content.
-{% endblocktrans %}
+{% endblocktranslate %}
 </div>
 <form method="post" enctype="multipart/form-data"><fieldset>
     {% bootstrap_form_errors form %}
@@ -21,10 +21,10 @@
     <div id="anonymise">
         <div>
             <div class="plaintext">
-                <h2>{% trans "Original" %}</h2>
+                <h2>{% translate "Original" %}</h2>
             </div>
             <div class="anonymised">
-                <h2>{% trans "Anonymised" %}</h2>
+                <h2>{% translate "Anonymised" %}</h2>
             </div>
         </div>
         {% for field in form %}
@@ -40,12 +40,12 @@
         <span>
             <button type="submit" class="btn btn-success btn-lg" name="action" value="save">
                 <i class="fa fa-check"></i>
-                {% trans "Save" %}
+                {% translate "Save" %}
             </button>
             {% if next_unanonymised %}
             <button type="submit" class="btn btn-info btn-lg" name="action" value="next">
                 <i class="fa fa-arrow-right"></i>
-                {% trans "Save and go to next unanonymised" %}
+                {% translate "Save and go to next unanonymised" %}
             </button>
             {% endif %}
         </span>
@@ -53,7 +53,7 @@
 </fieldset></form>
 
 <div id="anon-menu" class="d-none">
-    <button>{% trans "Replace selection with █" %}</button>
+    <button>{% translate "Replace selection with █" %}</button>
 </div>
 
 {% compress js %}

@@ -11,35 +11,35 @@
     <form method="post" class="d-flex flex-column">
         {% csrf_token %}
 
-        <h2>{% trans "Widget settings" %}</h2>
+        <h2>{% translate "Widget settings" %}</h2>
         <div class="alert alert-info col-md-9 ml-auto">
-            {% blocktrans trimmed %}
+            {% blocktranslate trimmed %}
             You can configure a pretalx schedule widget to show your event schedule
             on your homepage, instead of using this page. If you want to disable the
             schedule on here entirely, please activate the setting below.
-            {% endblocktrans %}
+            {% endblocktranslate %}
         </div>
         {% bootstrap_form form layout='event' %}
         <div class="submit-group panel">
             <span></span>
             <span>
-                <button type="submit" class="btn btn-lg btn-success">{% trans "Save" %}</button>
+                <button type="submit" class="btn btn-lg btn-success">{% translate "Save" %}</button>
             </span>
         </div>
     </form>
 
-    <h2>{% trans "Widget generation" %}</h2>
+    <h2>{% translate "Widget generation" %}</h2>
     <p>
-    {% blocktrans trimmed %}
+    {% blocktranslate trimmed %}
      The pretalx schedule widget is a way to embed your schedule into your event website. This way, your attendees can see your schedule without leaving your website, and you can style the schedule to fit right in with your website.
-    {% endblocktrans %}
+    {% endblocktranslate %}
     </p>
 
     <div id="widget-generation">
        <p>
-       {% blocktrans trimmed %}
+       {% blocktranslate trimmed %}
          Using this form, you can generate code to copy and paste to your website source.
-       {% endblocktrans %}
+       {% endblocktranslate %}
        </p>
         <form>
             {% bootstrap_form extra_form layout='event' %}
@@ -47,23 +47,23 @@
     <div class="submit-group panel">
         <span></span>
         <span>
-            <button id="generate-widget" class="btn btn-info btn-lg">{% trans "Generate widget" %}</button>
+            <button id="generate-widget" class="btn btn-info btn-lg">{% translate "Generate widget" %}</button>
         </span>
     </div>
     </div>
     <div id="generated-widget" class="d-none">
         <p>
-            {% blocktrans trimmed %}
+            {% blocktranslate trimmed %}
             To embed the widget into your website, copy the following code to the <code>&lt;head></code> section of your website:
-            {% endblocktrans %}
+            {% endblocktranslate %}
         </p>
         <pre id="widget-head">
 &lt;link rel="stylesheet" type="text/css" href="{{ request.event.urls.schedule.full }}widget/v1.css">
 &lt;script type="text/javascript" src="{{ request.event.urls.schedule.full }}widget/v1.LOCALE.js">&lt;/script></pre>
         <p>
-            {% blocktrans trimmed %}
+            {% blocktranslate trimmed %}
             Then, copy the following code to the place of your website where you want the widget to show up:
-            {% endblocktrans %}
+            {% endblocktranslate %}
         </p>
         <pre id="widget-body">
 &lt;pretalx-schedule-widget event="{{ request.event.urls.base.full }}" height="HEIGHT">&lt;/pretalx-schedule-widget>
@@ -79,19 +79,19 @@
             <span class="text-success">
                 <i class="fa fa-info-circle"></i>
             </span>
-            {% blocktrans trimmed with link='https://docs.pretalx.org/user/event/widget.html' %}
+            {% blocktranslate trimmed with link='https://docs.pretalx.org/user/event/widget.html' %}
 
             Please look at <a href="{{ link }}">our documentation</a> for more information.
-            {% endblocktrans %}
+            {% endblocktranslate %}
         </p>
     </div>
 
     {% if request.event.is_public and request.event.settings.show_schedule and request.event.current_schedule %}
-    <h2>{% trans "Widget preview" %}</h2>
+    <h2>{% translate "Widget preview" %}</h2>
         <p>
-            {% blocktrans trimmed %}
+            {% blocktranslate trimmed %}
             This is roughly what your widget will look like by default:
-            {% endblocktrans %}
+            {% endblocktranslate %}
         </p>
         <link rel="stylesheet" type="text/css" href="{{ request.event.urls.schedule.full }}widget/v1.css">
          <script type="text/javascript" src="{{ request.event.urls.schedule.full }}widget/v1.{{ request.event.locale }}.js" async></script>

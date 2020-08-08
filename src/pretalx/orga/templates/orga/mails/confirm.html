@@ -2,17 +2,17 @@
 {% load i18n %}
 {% block mail_content %}
     <h2>
-        {% trans "Please confirm:" %}
+        {% translate "Please confirm:" %}
     </h2>
     {{ question }}
     <form method="post">
         {% csrf_token %}
         <div class="submit-group">
             <a href="{{ request.event.orga_urls.outbox }}" class="btn btn-lg btn-danger">
-                {% trans "Back" %}
+                {% translate "Back" %}
             </a>
             <button type="submit" class="btn btn-lg btn-success">
-                {% trans "Yes" %}
+                {% translate "Yes" %}
             </button>
         </div>
     </form>

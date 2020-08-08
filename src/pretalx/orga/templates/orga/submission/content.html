@@ -16,14 +16,14 @@
 {% endcompress %}
 <form method="post" enctype="multipart/form-data"><fieldset>
     {% if not submission %}
-    <legend>{% trans "Create submission" %}</legend>
+    <legend>{% translate "Create submission" %}</legend>
     {% endif %}
 
     {% if submission.access_code %}
     <div class="alert alert-info"><span></span><span>
-        {% blocktrans trimmed %}
+        {% blocktranslate trimmed %}
         This submission was created using an access code:
-        {% endblocktrans %} <a href="{{ submission.access_code.urls.edit }}">{{ submission.access_code.code }}</a>
+        {% endblocktranslate %} <a href="{{ submission.access_code.urls.edit }}">{{ submission.access_code.code }}</a>
     </span></div>
     {% endif %}
         {% bootstrap_form_errors form %}
@@ -36,11 +36,11 @@
         {% if form.instance.median_score != None and can_view_all_reviews %}
         <div class="form-group row">
             <label class="col-md-3 col-form-label">
-                {% trans "Reviews" %}
+                {% translate "Reviews" %}
             </label>
             <div class="col-md-9">
                 <label>
-                    {{ submission.reviews.count }} {% trans "reviews" %}
+                    {{ submission.reviews.count }} {% translate "reviews" %}
                 </label>
             </div>
         </div>
@@ -61,7 +61,7 @@
             <div class="formset form-group row" data-formset data-formset-prefix="{{ formset.prefix }}">
                 {{ formset.management_form }}
                 {% bootstrap_formset_errors formset %}
-                <label class="col-md-3 col-form-label" for="resources">{% trans "Resources" %}</label>
+                <label class="col-md-3 col-form-label" for="resources">{% translate "Resources" %}</label>
                 <div data-formset-body class="col-md-9">
                     {% for form in formset %}
                         <div data-formset-form>
@@ -85,7 +85,7 @@
                         </div>
                     {% empty %}
                     <div class="mt-1">
-                        {% trans "This submission has no file uploads yet." %}
+                        {% translate "This submission has no file uploads yet." %}
                     </div>
                     {% endfor %}
                 </div>
@@ -112,14 +112,14 @@
                 {% if action != 'view' %}
                 <div class="col-md-3 offset-md-9">
                     <button type="button" class="btn btn-info btn-block" data-formset-add>
-                        <i class="fa fa-plus"></i> {% trans "Add another resource" %}</button>
+                        <i class="fa fa-plus"></i> {% translate "Add another resource" %}</button>
                 </div>
                 {% endif %}
             </div>
         {% endif %}
 
         {% if questions_form %}
-            <div><legend>{% trans "Questions" %}</legend></div>
+            <div><legend>{% translate "Questions" %}</legend></div>
             {% bootstrap_form questions_form layout='event' %}
         {% endif %}
 
@@ -130,13 +130,13 @@
                 {% if form.instance.code and can_send_mails %}
                     <a class="btn btn-lg btn-info" href="{{ request.event.orga_urls.compose_mails }}?submission={{ form.instance.code }}">
                         <i class="fa fa-envelope-o"></i>
-                        {% trans "Send mail to speakers" %}
+                        {% translate "Send mail to speakers" %}
                     </a>
                 {% endif %}
                 {% if not form.read_only %}
                 <button type="submit" class="btn btn-success btn-lg">
                     <i class="fa fa-check"></i>
-                    {% trans "Save" %}
+                    {% translate "Save" %}
                 </button>
                 {% endif %}
             </span>

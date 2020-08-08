@@ -31,7 +31,7 @@
           class="nav-link {% if "submissions.content" in url_name %}active{% endif %}"
           href="{{ submission.orga_urls.base }}"
         >
-            {% trans "Content" %}
+            {% translate "Content" %}
         </a>
       </li>
       {% if can_view_speakers %}
@@ -40,7 +40,7 @@
             class="nav-link {% if "submissions.speakers" in url_name %}active{% endif %}"
             href="{{ submission.orga_urls.speakers }}"
           >
-            {% trans "Speakers" %}
+            {% translate "Speakers" %}
           </a>
       </li>
       {% endif %}
@@ -50,7 +50,7 @@
             class="nav-link {% if "submissions.anonymise" in url_name %}active{% endif %}"
             href="{{ submission.orga_urls.anonymise }}"
           >
-            {% trans "Anonymisation" %}
+            {% translate "Anonymisation" %}
           </a>
       </li>
       {% endif %}
@@ -60,7 +60,7 @@
                 class="nav-link {% if "submissions.feedback" in url_name %}active{% endif %}"
                 href="{{ submission.orga_urls.feedback }}"
               >
-                {% trans "Feedback" %}
+                {% translate "Feedback" %}
               </a>
           </li>
       {% endif %}
@@ -70,16 +70,16 @@
             class="nav-link {% if "reviews" in url_name %}active{% endif %}"
             href="{{ submission.orga_urls.reviews }}"
           >
-            {% trans "Reviews" %}
+            {% translate "Reviews" %}
           </a>
       </li>
     {% endif %}
     {% if submission.state == "confirmed" or can_view_speakers %}
         <details class="dropdown ml-auto">
-            <summary class="btn btn-primary">{% trans "Links" %} <i class="fa fa-caret-down"></i></summary>
+            <summary class="btn btn-primary">{% translate "Links" %} <i class="fa fa-caret-down"></i></summary>
             <ul class="dropdown-content dropdown-content-sw">
-                {% if submission.state == "confirmed" %}<li><a href="{{ submission.urls.public.full }}" class="dropdown-item" target=_blank>{% trans "Public link" %}</a></li>{% endif %}
-                {% if can_view_speakers %}<li><a href="{{ submission.urls.review.full }}" class="dropdown-item" target=_blank>{% trans "Secret public link" %}</a></li>{% endif %}
+                {% if submission.state == "confirmed" %}<li><a href="{{ submission.urls.public.full }}" class="dropdown-item" target=_blank>{% translate "Public link" %}</a></li>{% endif %}
+                {% if can_view_speakers %}<li><a href="{{ submission.urls.review.full }}" class="dropdown-item" target=_blank>{% translate "Secret public link" %}</a></li>{% endif %}
             </ul>
         </details>
     {% endif %}

@@ -19,9 +19,9 @@
     {% if not request.event.settings.show_schedule and not request.user.is_anonymous %}
         <div id="event-nonpublic">
             <i class="fa fa-user-secret"></i>
-            {% blocktrans trimmed %}
+            {% blocktranslate trimmed %}
                 This schedule-related page is non-public. Only organisers can see it.
-            {% endblocktrans %}
+            {% endblocktranslate %}
         </div>
     {% endif %}
     {% block agenda_content %}

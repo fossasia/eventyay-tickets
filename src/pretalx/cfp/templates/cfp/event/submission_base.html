@@ -3,7 +3,7 @@
 {% load i18n %}
 {% load static %}
 
-{% block title %}{% trans "Create submission" %} :: {{ request.event.name }}{% endblock %}
+{% block title %}{% translate "Create submission" %} :: {{ request.event.name }}{% endblock %}
 
 {% block content %}
     <script src="{% static "vendored/marked.min.js" %}" defer></script> {# do not compress #}
@@ -25,7 +25,7 @@
         {% endfor %}
         <div class="step step-tbd">
             <div class="step-icon"><span class="fa fa-check"></span></div>
-            <div class="step-label">{% trans "Done!" %}</div>
+            <div class="step-label">{% translate "Done!" %}</div>
         </div>
     </div>
     {% block cfp_form %}
@@ -38,13 +38,13 @@
         <div class="row wizard-row">
             <div class="col-md-3 ml-auto">
                 <button type="submit" class="btn btn-block btn-success btn-lg">
-                    {% trans "Continue" %} &raquo;
+                    {% translate "Continue" %} &raquo;
                 </button>
             </div>
             <div class="col-md-3">
                 {% if prev_url %}
                     <a href="{{ prev_url }}" class="btn btn-block btn-info btn-lg">
-                        &laquo; {% trans "Back" %}
+                        &laquo; {% translate "Back" %}
                     </a>
                 {% endif %}
             </div>

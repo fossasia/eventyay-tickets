@@ -6,15 +6,15 @@
 <div>
     {% if team.pk %}
     <h2>
-        {% trans "Team" %} {{ quotation_open }}{{ team.name }}{{ quotation_close }}: {% trans "Members" %}
+        {% translate "Team" %} {{ quotation_open }}{{ team.name }}{{ quotation_close }}: {% translate "Members" %}
     </h2>
 
     <form method="post">{% csrf_token %}
     <table class="table table-sm table-hover table-responsive-md">
         <thead>
             <tr>
-                <th>{% trans "Name" %}</th>
-                <th>{% trans "Email" %}</th>
+                <th>{% translate "Name" %}</th>
+                <th>{% translate "Email" %}</th>
                 <th></th>
             </tr>
         </thead>
@@ -28,11 +28,11 @@
                     href="{% if request.event %}{{ request.event.orga_urls.team_settings }}{% else %}{{ request.organiser.orga_urls.teams }}{% endif %}{{ team.id }}/reset/{{ member.id }}"
                       class="btn btn-sm btn-warning"
                     >
-                        {% trans "Reset password" %}
+                        {% translate "Reset password" %}
                     </a>
                     <a
                     href="{% if request.event %}{{ request.event.orga_urls.team_settings }}{% else %}{{ request.organiser.orga_urls.teams }}{% endif %}{{ team.id }}/delete/{{ member.id }}"
-                      class="btn btn-sm btn-danger" title="{% trans "Remove team member" %}"
+                      class="btn btn-sm btn-danger" title="{% translate "Remove team member" %}"
                     >
                         <i class="fa fa-trash"></i>
                     </a>
@@ -42,7 +42,7 @@
             {% for member in team.invites.all %}
             <tr>
                 <td>
-                    <em>({% trans "pending Invitation" %})</em>
+                    <em>({% translate "pending Invitation" %})</em>
                 </td>
                 <td>
                     {{ member.email }}
@@ -55,7 +55,7 @@
                     href="{% if request.event %}{{ request.event.orga_urls.team_settings }}{% else %}{{ request.organiser.orga_urls.teams }}{% endif %}{{ member.id }}/resend"
                       class="btn btn-sm btn-outline-warning"
                     >
-                        {% trans "Resend invite" %}
+                        {% translate "Resend invite" %}
                     </a>
                     <a
                       href="{% if request.event %}{{ request.event.orga_urls.team_settings }}{% else %}{{ request.organiser.orga_urls.teams }}{% endif %}{{ member.id }}/uninvite"
@@ -67,7 +67,7 @@
             </tr>
             {% endfor %}
             <tr>
-                <td><strong>{% trans "Add member" %}</strong></td>
+                <td><strong>{% translate "Add member" %}</strong></td>
                 <td>{% csrf_token %}{% bootstrap_field invite_form.email layout='inline' %}</td>
                 <td class="text-right">
                     <button type="submit" name="form" value="invite" class="btn btn-success btn-sm"><i class="fa fa-check"></i></button>
@@ -77,10 +77,10 @@
     </table>
     </form>
     <h3 id="permissions">
-        {% trans "Team" %} {{ quotation_open }}{{ team.name }}{{ quotation_close }}: {% trans "Permissions" %}
+        {% translate "Team" %} {{ quotation_open }}{{ team.name }}{{ quotation_close }}: {% translate "Permissions" %}
     </h3>
     {% else %}
-    <h2>{% trans "New team" %}</h2>
+    <h2>{% translate "New team" %}</h2>
     {% endif %}
 
     <form method="post">

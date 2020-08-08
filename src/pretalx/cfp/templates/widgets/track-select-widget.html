@@ -6,7 +6,7 @@
             {% include "django/forms/widgets/select.html" %}
 
             <div class="input-group-append">
-                <button type="button" class="btn btn-primary" title="{% trans "Track descriptions" %}">
+                <button type="button" class="btn btn-primary" title="{% translate "Track descriptions" %}">
                     <i class="fa fa fa-info-circle"></i>
                 </button>
             </div>
@@ -19,7 +19,7 @@
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">{% trans "Track descriptions" %}</h5>
+                        <h5 class="modal-title">{% translate "Track descriptions" %}</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -30,14 +30,14 @@
                             <p>
                                 {{ track.description }}
                                 {% if not track.description %}
-                                    <em>{% trans "No description provided." %}</em>
+                                    <em>{% translate "No description provided." %}</em>
                                 {% endif %}
                             </p>
                         {% endfor %}
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                            {% trans "Close" %}
+                            {% translate "Close" %}
                         </button>
                     </div>
                 </div>

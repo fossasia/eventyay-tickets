@@ -6,7 +6,7 @@
 {% load rules %}
 {% load static %}
 
-{% block title %}{% trans "Your submission" %} :: {% endblock %}
+{% block title %}{% translate "Your submission" %} :: {% endblock %}
 
 
 {% block content %}
@@ -17,7 +17,7 @@
     {% endcompress %}
     <script src="{% static "vendored/marked.min.js" %}" defer></script> {# do not compress #}
     <script src="{% static "common/js/markdown.js" %}" defer></script>
-    <h2>{% trans "Your submission:" %} {{ submission.title }}</h2>
+    <h2>{% translate "Your submission:" %} {{ submission.title }}</h2>
     {% if submission.public_slots %}
     <h3><small>
         {% for talk in submission.public_slots %}
@@ -26,18 +26,18 @@
     </small></h3>
     {% endif %}
     <p>
-        {% trans "Current state of your submission:" %}
+        {% translate "Current state of your submission:" %}
         {% include "cfp/event/fragment_state.html" with state=submission.state %}
         {% if submission.state == 'accepted' %}
             <a href="{{ submission.urls.confirm }}" class="btn btn-sm btn-success">
-                <i class="fa fa-check"></i>{% trans "Confirm your attendance" %}
+                <i class="fa fa-check"></i>{% translate "Confirm your attendance" %}
             </a>
         {% elif submission.state == 'confirmed' %}
             · <a href="{{ submission.urls.feedback }}">
                 {% if submission.does_accept_feedback %}
-                {% trans "Audience feedback" %}
+                {% translate "Audience feedback" %}
                 {% else %}
-                {% trans "Attendees can leave feedback here after your talk has taken place." %}
+                {% translate "Attendees can leave feedback here after your talk has taken place." %}
                 {% endif %}
             </a>
         {% endif %}
@@ -45,11 +45,11 @@
     <h5>
         <form class="add-speaker" action="{{ submission.urls.invite }}">
             <div class="form-group form-inline">
-                {% blocktrans trimmed count count=submission.speakers.count %}
+                {% blocktranslate trimmed count count=submission.speakers.count %}
                     Speaker:
                     {% plural %}
                     Speakers:
-                {% endblocktrans %}
+                {% endblocktranslate %}
                 {{ submission.display_speaker_names }}{% if can_invite_speakers %},
                 <div class="input-group">
                     <input name="email" class="form-control form-control-sm" placeholder="mail@example.org">
@@ -71,11 +71,11 @@
             <div class="formset" data-formset data-formset-prefix="{{ formset.prefix }}">
                 {{ formset.management_form }}
                 {% bootstrap_formset_errors formset %}
-                <label class="col-md-3 col-form-label">{% trans "Resources" %}</label>
+                <label class="col-md-3 col-form-label">{% translate "Resources" %}</label>
                 <div data-formset-body>
                     {% if can_edit %}
                     <div class="alert alert-info col-md-9 ml-auto">
-                        {% trans "Resources will be publicly visible. Please try to keep your uploads below 16MB." %}
+                        {% translate "Resources will be publicly visible. Please try to keep your uploads below 16MB." %}
                     </div>
                     {% endif %}
                     {% for form in formset %}
@@ -124,7 +124,7 @@
                 {% if action != 'view' %}
                 <div class="d-flex flex-row-reverse">
                     <button type="button" class="btn btn-info" data-formset-add>
-                        <i class="fa fa-plus"></i> {% trans "Add another resource" %}</button>
+                        <i class="fa fa-plus"></i> {% translate "Add another resource" %}</button>
                 </div>
                 {% endif %}
                 {% endif %}
@@ -134,42 +134,42 @@
             <div class="row mt-4">
                 <div class="col-md-3 ml-auto">
                     <button type="submit" class="btn btn-block btn-success btn-lg">
-                        {% trans "Save" %}
+                        {% translate "Save" %}
                     </button>
                 </div>
             </div>
         {% endif %}
     </form>
-    <h3>{% trans "Share submission" %}</h3>
+    <h3>{% translate "Share submission" %}</h3>
     <p>
-        {% blocktrans trimmed %}
+        {% blocktranslate trimmed %}
             If you need a review from a colleague or a friend here's a link that you can send out for viewing your submission:
-        {% endblocktrans %}
+        {% endblocktranslate %}
         <a target="_blank" rel="noopener" href="{{ submission.urls.review.full }}">{{ submission.urls.review.full }}</a>
     </p>
     {% if submission.state == "submitted" or submission.state == "accepted" %}
-        <h3>{% trans "Withdraw submission" %}</h3>
+        <h3>{% translate "Withdraw submission" %}</h3>
         <p>
-            {% blocktrans trimmed %}
+            {% blocktranslate trimmed %}
                 You can withdraw your submission from the selection process here. You cannot undo this - if you are
                 just uncertain if you can or should hold your talk, please contact the organiser instead.
-            {% endblocktrans %}
+            {% endblocktranslate %}
         </p>
         <div class="row">
             <div class="col-md-3 ml-auto">
                 <a href="{{ submission.urls.withdraw }}"
                    class="btn float-right btn-danger btn-block">
-                    {% trans "Withdraw" %}
+                    {% translate "Withdraw" %}
                 </a>
             </div>
         </div>
     {% elif submission.state == "confirmed" %}
-        <h3>{% trans "Cancel submission" %}</h3>
+        <h3>{% translate "Cancel submission" %}</h3>
         <p>
-            {% blocktrans trimmed %}
+            {% blocktranslate trimmed %}
                 As your submission has been accepted already, please contact the event's organising team to cancel
                 it. The best way to reach out would be an answer to your acceptance mail.
-            {% endblocktrans %}
+            {% endblocktranslate %}
         </p>
     {% endif %}
 

@@ -18,20 +18,20 @@
 {% has_perm 'orga.change_speaker' request.user form.instance as can_edit_speaker %}
     <h2>
         {{ form.instance.user.get_display_name }} ({{ submissions.count }}
-        {% blocktrans trimmed count count=submissions.count %}
+        {% blocktranslate trimmed count count=submissions.count %}
         submission
         {% plural %}
         submissions
-        {% endblocktrans %})
+        {% endblocktranslate %})
     </h2>
     <div class="alert alert-info col-md-9 ml-auto">
         <span>
         <h5>
-            {% blocktrans trimmed count count=submissions.count %}
+            {% blocktranslate trimmed count count=submissions.count %}
             Submission
             {% plural %}
             Submissions
-            {% endblocktrans %})
+            {% endblocktranslate %})
         </h5>
         <ul>
             {% for submission in submissions %}
@@ -53,7 +53,7 @@
         {% bootstrap_field form.name layout='event' %}
         {% bootstrap_field form.email layout='event' %}
         <div class="d-flex mb-4">
-            <a href="{{ form.instance.orga_urls.password_reset }}" class="btn btn-info ml-auto">{% trans "Reset password" %}</a>
+            <a href="{{ form.instance.orga_urls.password_reset }}" class="btn btn-info ml-auto">{% translate "Reset password" %}</a>
         </div>
         {% if form.biography %}{% bootstrap_field form.biography layout='event' %}{% endif %}
         {% if form.availabilities %}
@@ -70,24 +70,24 @@
         <span>
             <a class="btn btn-info btn-lg" href="{{ request.event.orga_urls.compose_mails }}?email={{ form.instance.user.email }}">
             <i class="fa fa-envelope"></i>
-            {% trans "Compose mail" %}
+            {% translate "Compose mail" %}
             </a>
         </span>
         <span>
             <button type="submit" class="btn btn-success btn-lg">
                 <i class="fa fa-check"></i>
-                {% trans "Save" %}
+                {% translate "Save" %}
             </button>
         </span>
     </div>
     </form>
 
 
-    <h3>{% trans 'Emails' %}</h3>
+    <h3>{% translate 'Emails' %}</h3>
     {% if mails %}
         {% include 'common/mail_log.html' %}
     {% else %}
-        {% trans "No mails were sent to this speaker yet." %}
+        {% translate "No mails were sent to this speaker yet." %}
     {% endif %}
 
 

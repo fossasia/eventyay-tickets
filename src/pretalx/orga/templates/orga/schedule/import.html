@@ -3,21 +3,21 @@
 {% load i18n %}
 
 {% block content %}
-    <h2>{% trans "Import XML" %}</h2>
+    <h2>{% translate "Import XML" %}</h2>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {% bootstrap_form_errors form %}
         <div class="col-md-9 ml-auto"><p>
-        {% blocktrans trimmed %}
+        {% blocktranslate trimmed %}
         Submit an XML file here to release a new schedule, containing exactly the talks
         specified in the XML file. The format is expected to be the same as the XML
         export provided.
-        {% endblocktrans %}
+        {% endblocktranslate %}
         </p></div>
         {% bootstrap_field form.upload layout='event' %}
         <div class="submit-group"><span></span>
             <div>
-                <button type="submit" class="btn btn-lg btn-success">{% trans "Upload" %}</button>
+                <button type="submit" class="btn btn-lg btn-success">{% translate "Upload" %}</button>
             </div>
         </div>
     </form>

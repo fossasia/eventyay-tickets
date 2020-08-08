@@ -19,9 +19,9 @@
 {% block cfp_content %}
     <h2>
         {% if form.instance.name %}
-        {% trans "Track" %}: {{ form.instance.name }}
+        {% translate "Track" %}: {{ form.instance.name }}
         {% else %}
-        {% trans "New track" %}
+        {% translate "New track" %}
         {% endif %}
     </h2>
     <form method="post">

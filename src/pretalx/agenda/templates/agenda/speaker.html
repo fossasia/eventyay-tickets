@@ -34,7 +34,7 @@
                  {% elif profile.user.avatar %}
                  src="{{ profile.user.avatar.url }}"
                  {% endif %}
-                 alt="{% trans "The speaker's profile picture" %}"
+                 alt="{% translate "The speaker's profile picture" %}"
             >
             {% endif %}
         </div>
@@ -50,7 +50,7 @@
     </section>
     <hr/>
     <section class="speaker-talks">
-        <h4>{% trans "Talks" %}</h4>
+        <h4>{% translate "Talks" %}</h4>
         {% for talk in profile.talks %}
         <a href="{{ talk.urls.public }}"><div class="talk">
             <h5 class="talk-title">

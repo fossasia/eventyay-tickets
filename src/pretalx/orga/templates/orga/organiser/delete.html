@@ -2,20 +2,20 @@
 {% load i18n %}
 {% block content %}
     <h2>
-        {% trans "Do you really want to delete this organiser?" %}
+        {% translate "Do you really want to delete this organiser?" %}
     </h2>
     <strong>
         {{ quotation_open }}{{ request.organiser.name }}{{ quotation_close }}</strong>
-        – {% trans "ALL related data for ALL events, such as submissions, and speaker profiles, and uploads, will also be deleted and cannot be restored." %}<p>
+        – {% translate "ALL related data for ALL events, such as submissions, and speaker profiles, and uploads, will also be deleted and cannot be restored." %}<p>
     <form method="post">
         {% csrf_token %}
         <div class="submit-group">
             <a href="{{ request.organiser.orga_urls.base }}" class="btn btn-lg btn-outline-info">
-                {% trans "Back" %}
+                {% translate "Back" %}
             </a>
             <button type="submit" class="btn btn-lg btn-danger">
                 <i class="fa fa-trash"></i>
-                {% trans "Yes" %}
+                {% translate "Yes" %}
             </button>
         </div>
     </form>

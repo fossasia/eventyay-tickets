@@ -15,9 +15,9 @@
 {% has_perm 'orga.view_reviewer_names' request.user submission as can_view_reviewer_names %}
 {% if request.user in submission.speakers.all %}
     <div class="alert alert-error"><span>
-        {% blocktrans trimmed %}
+        {% blocktranslate trimmed %}
         You're not allowed to review or see reviews for your own submissions.
-        {% endblocktrans %}
+        {% endblocktranslate %}
     </div>
 {% else %}
     {% if not read_only %}
@@ -25,18 +25,18 @@
             <span>
             {{ request.event.settings.review_help_text|rich_text }}
             {% if not form.instance.pk and not can_view_other_reviews and request.event.active_review_phase and request.event.active_review_phase.can_see_other_reviews == 'after_review' %}
-                {% blocktrans trimmed %}
+                {% blocktranslate trimmed %}
                     You will be able to see other reviews once you have given yours.
-                {% endblocktrans %}
+                {% endblocktranslate %}
             {% endif %}
             </span>
         </div>
     {% else %}
         <div class="alert alert-info">
             <span>
-            {% blocktrans trimmed %}
+            {% blocktranslate trimmed %}
                 This submission can't be reviewed at the moment.
-            {% endblocktrans %}
+            {% endblocktranslate %}
             </span>
         </div>
     {% endif %}
@@ -46,7 +46,7 @@
     {% bootstrap_form_errors form %}
     {% bootstrap_form_errors qform %}
     <div class="form-group row">
-        <label class="col-md-3 col-form-label">{% trans "Title" %}</label>
+        <label class="col-md-3 col-form-label">{% translate "Title" %}</label>
         <div class="col-md-9 mt-1">
             {% if can_view_speakers %}
                 {{ submission.title|default:'-' }}
@@ -56,14 +56,14 @@
         </div>
     </div>
     <div class="form-group row">
-        <label class="col-md-3 col-form-label">{% trans "Submission Type" %}</label>
+        <label class="col-md-3 col-form-label">{% translate "Submission Type" %}</label>
         <div class="col-md-9 mt-1">
             {{ submission.submission_type }}
         </div>
     </div>
     {% if submission.track %}
     <div class="form-group row">
-        <label class="col-md-3 col-form-label">{% trans "Track" %}</label>
+        <label class="col-md-3 col-form-label">{% translate "Track" %}</label>
         <div class="col-md-9 mt-1">
             {{ submission.track.name|default:'-' }}
         </div>
@@ -71,7 +71,7 @@
     {% endif %}
     {% if request.event.settings.cfp_request_abstract %}
     <div class="form-group row">
-        <label class="col-md-3 col-form-label">{% trans "Abstract" %}</label>
+        <label class="col-md-3 col-form-label">{% translate "Abstract" %}</label>
         <div class="col-md-9 mt-1">
             {% if can_view_speakers %}
                 {{ submission.abstract|rich_text|default:'-' }}
@@ -83,7 +83,7 @@
     {% endif %}
     {% if request.event.settings.cfp_request_description %}
     <div class="form-group row">
-        <label class="col-md-3 col-form-label">{% trans "Description" %}</label>
+        <label class="col-md-3 col-form-label">{% translate "Description" %}</label>
         <div class="col-md-9 mt-1">
             {% if can_view_speakers %}
                 {{ submission.description|rich_text|default:'-' }}
@@ -95,7 +95,7 @@
     {% endif %}
     {% if request.event.settings.cfp_request_notes %}
     <div class="form-group row">
-        <label class="col-md-3 col-form-label">{% trans "Notes" %}</label>
+        <label class="col-md-3 col-form-label">{% translate "Notes" %}</label>
         <div class="col-md-9 mt-1">
             {% if can_view_speakers %}
                 {{ submission.notes|rich_text|default:'-' }}
@@ -116,12 +116,12 @@
     {% if can_view_speakers %}
         {% for speaker in profiles %}
         <div class="form-group row">
-            <label class="col-md-3 col-form-label">{% trans "Speaker" %}: {{ speaker.user.get_display_name }}</label>
+            <label class="col-md-3 col-form-label">{% translate "Speaker" %}: {{ speaker.user.get_display_name }}</label>
             <div class="col-md-9 mt-1">
                 {% if request.event.settings.cfp_request_biography %}
                 {{ speaker.biography|rich_text|default:'-' }}
                 {% endif %}
-                {% if speaker.submissions.count > 1 %}<br><strong>{% trans "Other submissions" %}:</strong>
+                {% if speaker.submissions.count > 1 %}<br><strong>{% translate "Other submissions" %}:</strong>
                 {% for other_submission in speaker.submissions %}{% if other_submission != submission %}
                 <a href="{{ other_submission.orga_urls.base }}">{% if can_view_speakers %}{{ other_submission.title }}{% else %}{{ other_submission.anonymised.title|default:other_submission.title }}{% endif %}</a>{% if not forloop.last %}, {% endif %}
                 {% endif %}{% endfor %}
@@ -139,11 +139,11 @@
     {% if form.instance.pk %}
     <table class="table review-table table-hover table-responsive-md">
             <tr>
-                <th>{% trans "Score" %}</th>
+                <th>{% translate "Score" %}</th>
                 {% for field in qform %}
                     <th>{{ field.label }}</th>
                 {% endfor %}
-                <th>{% trans "Review" %}</th>
+                <th>{% translate "Review" %}</th>
                 <th></th>
             </tr>
         <tbody>
@@ -171,7 +171,7 @@
                 </td>
                 <td>
                     {% if not read_only %}
-                        <button type="submit" name="review_submit" value="save" class="btn btn-success">{% trans "Save" %}
+                        <button type="submit" name="review_submit" value="save" class="btn btn-success">{% translate "Save" %}
                     {% elif can_view_reviewer_names %}
                         {{ request.user.get_display_name }}
                     {% endif %}
@@ -193,7 +193,7 @@
                         </tr>
                     {% endif %}
                 {% empty %}
-                    <tr><td colspan="100">{% trans "Nobody else has submitted a review yet." %}</td></tr>
+                    <tr><td colspan="100">{% translate "Nobody else has submitted a review yet." %}</td></tr>
                 {% endfor %}
             {% endif %}
         </tbody>
@@ -201,21 +201,21 @@
     {% endif %}
     {% if not read_only %}
         {% if done != total_reviews %}
-            <div class="progress" title="{% trans "Review progress" %}: {{ done }} / {{ total_reviews }}">
-                <div class="progress-bar bg-success" role="progressbar" style="width: {{ percentage }}%" aria-valuenow="{{ done }}" aria-valuemin="0" aria-valuemax="{{ total_reviews }}" title="{% trans "Review progress" %}: {{ done }} / {{ total_reviews }}">
+            <div class="progress" title="{% translate "Review progress" %}: {{ done }} / {{ total_reviews }}">
+                <div class="progress-bar bg-success" role="progressbar" style="width: {{ percentage }}%" aria-valuenow="{{ done }}" aria-valuemin="0" aria-valuemax="{{ total_reviews }}" title="{% translate "Review progress" %}: {{ done }} / {{ total_reviews }}">
                 </div>
             </div>
         {% endif %}
         <div class="submit-group">
             <div>
-                <button type="submit" class="btn btn-lg btn-outline-success" name="review_submit" value="save">{% trans "Save" %}</button>
+                <button type="submit" class="btn btn-lg btn-outline-success" name="review_submit" value="save">{% translate "Save" %}</button>
             </div>
             <div>
-                <button type="submit" class="btn btn-lg btn-info" name="review_submit" value="skip_for_now" data-toggle="tooltip" data-placement="bottom" title="{% trans "Go to random next unreviewed submission, mark this one as skipped" %}">{% trans "Skip for now" %}</button>
+                <button type="submit" class="btn btn-lg btn-info" name="review_submit" value="skip_for_now" data-toggle="tooltip" data-placement="bottom" title="{% translate "Go to random next unreviewed submission, mark this one as skipped" %}">{% translate "Skip for now" %}</button>
                 {% if not request.event.settings.review_score_mandatory and not request.event.settings.review_text_mandatory %}
-                <button type="submit" class="btn btn-lg btn-info" name="review_submit" value="abstain" data-toggle="tooltip" data-placement="bottom" title="{% trans "Go to random next unreviewed submission" %}">{% trans "Abstain" %}</button>
+                <button type="submit" class="btn btn-lg btn-info" name="review_submit" value="abstain" data-toggle="tooltip" data-placement="bottom" title="{% translate "Go to random next unreviewed submission" %}">{% translate "Abstain" %}</button>
                 {% endif %}
-                <button type="submit" class="btn btn-lg btn-success" name="review_submit" value="save_and_next" data-toggle="tooltip" data-placement="bottom" title="{% trans "Go to random next unreviewed submission" %}">{% trans "Save and next" %}</button>
+                <button type="submit" class="btn btn-lg btn-success" name="review_submit" value="save_and_next" data-toggle="tooltip" data-placement="bottom" title="{% translate "Go to random next unreviewed submission" %}">{% translate "Save and next" %}</button>
             </div>
         </div>
     {% endif %}

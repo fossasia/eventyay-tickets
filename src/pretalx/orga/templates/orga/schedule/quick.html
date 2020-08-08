@@ -11,10 +11,10 @@
 {% endblock %}
 
 {% block schedule_content %}
-<h2>{% trans "Schedule talk" %} {{ quotation_close }}{{ form.instance.submission.title }}{{ quotation_open }}</h2>
+<h2>{% translate "Schedule talk" %} {{ quotation_close }}{{ form.instance.submission.title }}{{ quotation_open }}</h2>
 <form method="post">
     {% csrf_token %}
     {% bootstrap_form form layout='event' %}
-    <button id="quick-schedule-submit" type="submit" class="btn btn-success btn-lg offset-md-3"><i class="fa fa-tick"></i> {% trans "Save" %}</button>
+    <button id="quick-schedule-submit" type="submit" class="btn btn-success btn-lg offset-md-3"><i class="fa fa-tick"></i> {% translate "Save" %}</button>
 </form>
 {% endblock %}

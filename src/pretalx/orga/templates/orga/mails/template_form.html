@@ -5,10 +5,10 @@
 {% block mail_content %}
     {% if placeholders %}
     <div class="alert alert-info"><span>
-        {% blocktrans trimmed %}
+        {% blocktranslate trimmed %}
             You have some variables available that will be rendered into the mails
             (in the appropriate language) before sending:
-        {% endblocktrans %}
+        {% endblocktranslate %}
         <ul>
         {% for placeholder in placeholders %}
             <li>{{ placeholder.name }}{% if placeholder.explanation %}: {{ placeholder.explanation }}{% endif %}</li>
@@ -18,7 +18,7 @@
     {% endif %}
     <form method="post">
         {% csrf_token %}
-        <h2>{% trans "Mail Template Editor" %}</h2>
+        <h2>{% translate "Mail Template Editor" %}</h2>
         {% bootstrap_form_errors form %}
         {% bootstrap_form form layout='event' %}
         {% include "orga/submit_row.html" %}

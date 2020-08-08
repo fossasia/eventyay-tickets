@@ -2,19 +2,19 @@
 {% load i18n %}
 {% load rich_text %}
 
-{% block title %}{% trans "Accept invitation?" %}{% endblock %}
+{% block title %}{% translate "Accept invitation?" %}{% endblock %}
 
 {% block content %}
-<h2>{% trans "Accept invitation?" %}</h2>
-<p>{% blocktrans with name=request.user.get_display_name talk=submission.title trimmed %}
+<h2>{% translate "Accept invitation?" %}</h2>
+<p>{% blocktranslate with name=request.user.get_display_name talk=submission.title trimmed %}
     You, {{ name }}, have been invited to be a speaker for the submission
     “{{ talk }}”. Do you accept the invitation?
-{% endblocktrans %}</p>
+{% endblocktranslate %}</p>
 
 {% if submission.abstract %}
 <div class="card submission-abstract">
     <div class="card-header">
-        {% trans "Abstract:" %} {{ submission.title }}
+        {% translate "Abstract:" %} {{ submission.title }}
     </div>
     <div class="card-body">
         <p class="card-text">
@@ -27,10 +27,10 @@
     {% csrf_token %}
     <div class="row url-links">
         <a href="/" class="btn btn-danger btn-lg btn-block">
-            {% trans "No" %}
+            {% translate "No" %}
         </a>
         <button type="submit" class="btn btn-success btn-lg btn-block">
-            {% trans "Accept" %}
+            {% translate "Accept" %}
         </button>
     </div>
 {% endblock %}

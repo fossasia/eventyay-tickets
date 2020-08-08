@@ -17,18 +17,18 @@
 {% if not hide_login %}
     <div class="auth-form-block flex-grow-1">
         {% if not hide_login and not hide_register %}
-        <h4 class="text-center">{% trans "I already have an account" %}</h4>
+        <h4 class="text-center">{% translate "I already have an account" %}</h4>
         {% endif %}
         {% bootstrap_field form.login_email layout="inline" %}
         {% bootstrap_field form.login_password layout="inline" %}
         {% if not no_buttons %}
         <button type="submit" class="btn btn-lg btn-success btn-block">
-            {% trans "Log in" %}
+            {% translate "Log in" %}
         </button>
         {% endif %}
         {% if password_reset_link or request.event %}
         <a class="btn btn-block btn-link" href="{% if password_reset_link %}{{ password_reset_link }}{% else %}{{ request.event.urls.reset }}{% endif %}">
-            {% trans "Reset password" %}
+            {% translate "Reset password" %}
         </a>
         {% endif %}
     </div>
@@ -36,7 +36,7 @@
 {% if not hide_register %}
     <div class="auth-form-block flex-grow-1">
         {% if not hide_login and not hide_register %}
-        <h4 class="text-center">{% trans "I need a new account" %}</h4>
+        <h4 class="text-center">{% translate "I need a new account" %}</h4>
         {% endif %}
         {% bootstrap_field form.register_name layout="inline" %}
         {% bootstrap_field form.register_email layout="inline" %}
@@ -44,7 +44,7 @@
         {% bootstrap_field form.register_password_repeat layout="inline" %}
         {% if not no_buttons %}
         <button type="submit" class="btn btn-lg btn-info btn-block">
-            {% trans "Register" %}
+            {% translate "Register" %}
         </button>
         {% endif %}
     </div>

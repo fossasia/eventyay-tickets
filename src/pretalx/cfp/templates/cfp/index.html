@@ -1,11 +1,11 @@
 {% extends "common/base.html" %}
 {% load i18n %}
 
-{% block title %}{% trans "Events" %}{% endblock %}
+{% block title %}{% translate "Events" %}{% endblock %}
 
 {% block content %}
     {% if current_events or future_events or past_events %}
-    <h1>{% trans "Events" %}</h1>
+    <h1>{% translate "Events" %}</h1>
     {% endif %}
     {% if current_events %}
     <ul>
@@ -17,10 +17,10 @@
         {% endfor %}
     </ul>
     {% else %}
-    <p>{% trans "No events are currently ongoing." %}</p>
+    <p>{% translate "No events are currently ongoing." %}</p>
     {% endif %}
     {% if future_events %}
-    <h2>{% trans "Upcoming events" %}</h2>
+    <h2>{% translate "Upcoming events" %}</h2>
     <ul>
         {% for event in future_events %}
             <li><a href="{{ event.urls.base }}">
@@ -31,7 +31,7 @@
     </ul>
     {% endif %}
     {% if past_events %}
-    <h2>{% trans "Past events" %}</h2>
+    <h2>{% translate "Past events" %}</h2>
     <ul>
         {% for event in past_events %}
             <li><a href="{{ event.urls.base }}">

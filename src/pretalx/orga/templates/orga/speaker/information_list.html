@@ -4,24 +4,24 @@
 {% block content %}
     <h2>
         {{ information.count }}
-        {% blocktrans trimmed count count=information.count %}
+        {% blocktranslate trimmed count count=information.count %}
         Speaker Information Note
         {% plural %}
         Speaker Information Notes
-        {% endblocktrans %}
+        {% endblocktranslate %}
     </h2>
     <div class="alert alert-info">
-        {% blocktrans trimmed %}
+        {% blocktranslate trimmed %}
         Add important messages (e.g. "Please bring an HDMI adapter if required.") or files (e.g. a conference styleguide).<br>
         They are shown to the selected speakers above the list of their submitted talks.
-        {% endblocktrans %}
+        {% endblocktranslate %}
     </div>
     <table class="table table-sm table-hover table-responsive-md">
         <thead>
             <tr>
-                <th>{% trans "Title" %}</th>
-                <th>{% trans "Includes submitted" %}</th>
-                <th>{% trans "Only confirmed" %}</th>
+                <th>{% translate "Title" %}</th>
+                <th>{% translate "Includes submitted" %}</th>
+                <th>{% translate "Only confirmed" %}</th>
                 <th></th>
             </tr>
         </thead>
@@ -47,7 +47,7 @@
     <div class="submit-group"><span></span>
         <a href="{{request.event.orga_urls.new_information }}" class="btn btn-lg btn-success">
             <i class="fa fa-plus"></i>
-            {% trans "Add a new note" %}
+            {% translate "Add a new note" %}
         </a>
     </div>
 {% endblock %}

@@ -16,17 +16,17 @@
 {% block cfp_content %}
     <h2>
         {% if form.instance.pk %}
-        {% trans "Edit access code" %}
+        {% translate "Edit access code" %}
         {% else %}
-        {% trans "New access code" %}
+        {% translate "New access code" %}
         {% endif %}
     </h2>
     {% if form.instance.submissions.exists %}
     <div class="alert alert-info">
         <span>
-        {% blocktrans trimmed %}
+        {% blocktranslate trimmed %}
         This access code has already been used. You can't delete it, but you can disable it by setting an expiration date.
-        {% endblocktrans %}
+        {% endblocktranslate %}
         <ul>
             {% for submission in form.instance.submissions.all %}
             <li><a href="{{ submission.orga_urls.base }}">{{ submission.title }} ({{submission.display_speaker_names}})</a></li>
@@ -43,14 +43,14 @@
             <span>
                 {% if form.instance.pk and not form.instance.submissions.exists %}
                 <a class="btn btn-outline-danger btn-lg" href="{{ form.instance.urls.delete }}">
-                    <i class="fa fa-trash"></i> {% trans "Delete" %}
+                    <i class="fa fa-trash"></i> {% translate "Delete" %}
                 </a>
                 {% endif %}
             </span>
             <span>
                 <button type="submit" class="btn btn-success btn-lg">
                     <i class="fa fa-check"></i>
-                    {% trans "Save" %}
+                    {% translate "Save" %}
                 </button>
             </span>
         </div>

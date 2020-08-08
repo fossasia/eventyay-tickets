@@ -6,11 +6,11 @@
 {% load rules %}
 {% load static %}
 
-{% block title %}{% trans "Your submissions" %} :: {% endblock %}
+{% block title %}{% translate "Your submissions" %} :: {% endblock %}
 
 {% block content %}
     {% if information %}
-    <h2>{% trans "Important Information" %}</h2>
+    <h2>{% translate "Important Information" %}</h2>
     {% for info in information %}
         <h4>{{ info.title }}</h4>
         {{ info.text|rich_text }}
@@ -21,13 +21,13 @@
     {% endfor %}
     {% endif %}
     {% html_signal "pretalx.cfp.signals.html_above_submission_list" sender=request.event request=request %}
-    <h2>{% trans "Your submissions" %}</h2>
+    <h2>{% translate "Your submissions" %}</h2>
     {% if submissions %}
         <table class="table table-sm table-responsive table-responsive-md">
             <thead>
             <tr>
-                <th>{% trans "Title" %}</th>
-                <th>{% trans "State" %}</th>
+                <th>{% translate "Title" %}</th>
+                <th>{% translate "State" %}</th>
                 <th></th>
                 <th></th>
             </tr>
@@ -58,7 +58,7 @@
                                     class="btn btn-sm btn-info"
                                     data-toggle="tooltip" 
                                     data-placement="top" 
-                                    title="{% trans 'Copy code for review' %}"
+                                    title="{% translate 'Copy code for review' %}"
                                     target="_blank" rel="noopener">
                                 <i class="fa fa-link"></i>
                             </button>
@@ -69,13 +69,13 @@
                         {% if submission.state == 'accepted' %}
                             <a href="{{ submission.urls.confirm }}"
                                     class="btn btn-sm btn-success">
-                                <i class="fa fa-check"></i> {% trans "Confirm" %}
+                                <i class="fa fa-check"></i> {% translate "Confirm" %}
                             </a>
                         {% endif %}
                         {% if submission.does_accept_feedback %}
                             <a href="{{ submission.urls.feedback }}"
                                     class="btn btn-sm btn-info">
-                                <i class="fa fa-comments"></i> {% trans "Feedback" %}{% if submission.feedback.count %}  ({{ submission.feedback.count }}){% endif %}
+                                <i class="fa fa-comments"></i> {% translate "Feedback" %}{% if submission.feedback.count %}  ({{ submission.feedback.count }}){% endif %}
                             </a>
                         {% endif %}
                     </td>
@@ -87,25 +87,25 @@
             {% if request.event.cfp.is_open %}
                 <a class="btn btn-success btn-lg"
                    href="{{ request.event.urls.submit }}">
-                    {% trans "Create a new submission" %}
+                    {% translate "Create a new submission" %}
                 </a>
             {% endif %}
         </p>
     {% else %}
         <p class="text-center">
-            {% trans "It seems like you haven't submitted anything to this event yet." %}
+            {% translate "It seems like you haven't submitted anything to this event yet." %}
         </p>
         <p class="text-center">
-            {% trans "If you did, maybe you used a different account? Check your emails!" %}
+            {% translate "If you did, maybe you used a different account? Check your emails!" %}
         </p>
         {% if request.event.cfp.is_open %}
             <p class="text-center">
-                {% trans "If you did not, why not go ahead and create a proposal now? We'd love to hear from you!" %}
+                {% translate "If you did not, why not go ahead and create a proposal now? We'd love to hear from you!" %}
             </p>
             <p class="text-center">
                 <a class="btn btn-success btn-lg btn-block"
                         href="{{ request.event.urls.submit }}">
-                    {% trans "Submit something now!" %}
+                    {% translate "Submit something now!" %}
                 </a>
             </p>
         {% endif %}

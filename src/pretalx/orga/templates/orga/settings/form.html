@@ -21,13 +21,13 @@
 {% endblock %}
 
 {% block settings_content %}
-<h2>{% trans "Settings" %}</h2>
+<h2>{% translate "Settings" %}</h2>
 <div class="flex-container"><div class="flex-content">
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <fieldset>
         <legend id="general">
-            {% trans "General information" %}
+            {% translate "General information" %}
         </legend>
         {% bootstrap_form_errors form %}
         {% bootstrap_form_errors sform %}
@@ -51,7 +51,7 @@
         </fieldset>
         <fieldset>
         <legend id="display">
-            {% trans "Display settings" %}
+            {% translate "Display settings" %}
         </legend>
         {% bootstrap_field form.landing_page_text layout='event' %}
         {% bootstrap_field sform.imprint_url layout='event' %}
@@ -66,12 +66,12 @@
           {% bootstrap_field form.custom_css_text layout='event' %}
         </div>
         <div class="event-logo-field form-group row">
-            <label class="col-md-3 col-form-label" for="id_logo">{% trans "Event logo" %}<br><span class="optional">Optional</span></label>
+            <label class="col-md-3 col-form-label" for="id_logo">{% translate "Event logo" %}<br><span class="optional">Optional</span></label>
             <div class="event-logo-form-fields col-md-9">
                 {% if request.event.logo %}
                 <img class="event-logo-display"
                   src="{{ request.event.logo.url }}"
-                  alt="{% trans "The event's logo" %}"
+                  alt="{% translate "The event's logo" %}"
                 />
                 {% endif %}
                 <br>
@@ -79,12 +79,12 @@
             </div>
         </div>
         <div class="event-logo-field form-group row">
-            <label class="col-md-3 col-form-label" for="id_custom_css">{% trans "Event header image" %}<br><span class="optional">Optional</span></label>
+            <label class="col-md-3 col-form-label" for="id_custom_css">{% translate "Event header image" %}<br><span class="optional">Optional</span></label>
             <div class="event-logo-form-fields col-md-9">
                 {% if request.event.header_image %}
                 <img class="event-logo-display"
                   src="{{ request.event.header_image.url }}"
-                  alt="{% trans "The event's header_image" %}"
+                  alt="{% translate "The event's header_image" %}"
                 />
                 {% endif %}
                 <br>
@@ -100,14 +100,14 @@
                 {% has_perm "person.is_administrator" request.user request.event as can_delete_event %}
                 {% if can_delete_event %}
                 <a class="btn btn-outline-danger btn-lg" href="{{ request.event.orga_urls.delete }}">
-                    {% trans "Delete event" %}
+                    {% translate "Delete event" %}
                 </a>
                 {% endif %}
             </span>
             <span>
                 <button type="submit" class="btn btn-success btn-lg">
                     <i class="fa fa-check"></i>
-                    {% trans "Save" %}
+                    {% translate "Save" %}
                 </button>
             </span>
         </div>

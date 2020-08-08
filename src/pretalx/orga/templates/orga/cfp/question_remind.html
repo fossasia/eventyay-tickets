@@ -4,14 +4,14 @@
 
 {% block cfp_content %}
 <h2>
-    {% trans "Send out reminders" %}
+    {% translate "Send out reminders" %}
 </h2>
 <div>
   <p>
-    {% blocktrans trimmed %}
+    {% blocktranslate trimmed %}
     Here you can limit who will receive reminder emails.
     You will be able to review emails before they are sent out.
-    {% endblocktrans %}
+    {% endblocktranslate %}
   </p>
 </div>
 <form class="form" method="post">
@@ -19,7 +19,7 @@
     {% bootstrap_form filter_form layout='event' %}
   <div class="pt-2 submit-group">
     <div></div>
-      <button class="btn btn-lg btn-success" type="submit">{% trans "Send" %}</button>
+      <button class="btn btn-lg btn-success" type="submit">{% translate "Send" %}</button>
   </div>
 </form>
 {% endblock %}

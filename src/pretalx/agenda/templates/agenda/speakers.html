@@ -21,8 +21,8 @@
             {% endif %}
         </section>
     {% empty %}
-        {% if search %}{% blocktrans trimmed %}
+        {% if search %}{% blocktranslate trimmed %}
             No speaker matches your search.
-        {% endblocktrans %}{% endif %}
+        {% endblocktranslate %}{% endif %}
     {% endfor %}
 {% endblock %}

@@ -2,20 +2,20 @@
 {% load i18n %}
 
 {% block cfp_content %}
-    <h2>{% trans "Submission Types" %}</h2>
+    <h2>{% translate "Submission Types" %}</h2>
     <div class="alert alert-info">
-        {% blocktrans trimmed %}
+        {% blocktranslate trimmed %}
         Different submission types may help to guide speakers into different slot
         lengths (short talks vs long talks) or different presentation formats
         (talk vs workshop vs metal concert).
-        {% endblocktrans %}
+        {% endblocktranslate %}
     </div>
     <table class="table table-sm table-hover table-responsive-md">
         <thead>
             <tr>
-                <th>{% trans "Submission type" %}</th>
-                <th>{% trans "Submissions" %}</th>
-                <th>{% trans "Default duration" %}</th>
+                <th>{% translate "Submission type" %}</th>
+                <th>{% translate "Submissions" %}</th>
+                <th>{% translate "Default duration" %}</th>
                 <th></th>
             </tr>
         </thead>
@@ -24,7 +24,7 @@
                 <tr>
                     <td>
                         {% if type.requires_access_code %}
-                            <i class="fa fa-lock" title="{% trans "Requires access code" %}"></i>
+                            <i class="fa fa-lock" title="{% translate "Requires access code" %}"></i>
                         {% endif %}
                         <a href="{{ type.urls.edit }}">
                             {{ type.name }}
@@ -36,7 +36,7 @@
                     <td>{{ type.default_duration }}</td>
                     <td class="action-column">
                         {% if request.event.cfp.default_type == type %}
-                            <a><i class="fa fa-check"></i> {% trans "Default" %}</a>
+                            <a><i class="fa fa-check"></i> {% translate "Default" %}</a>
                         {% else %}
                             <a href="{{ type.urls.default }}"
                                     class="btn btn-sm btn-info">
@@ -44,7 +44,7 @@
                             </a>
                         {% endif %}
                         <a href="{{ type.urls.prefilled_cfp.full }}"
-                                title="{% trans 'Go to pre-filled CfP form' %}"
+                                title="{% translate 'Go to pre-filled CfP form' %}"
                                 class="btn btn-sm btn-info">
                             <i class="fa fa-link"></i>
                         </a>
@@ -64,7 +64,7 @@
     <div class="submit-group"><span></span>
         <a class="btn btn-info" href="{{ request.event.cfp.urls.new_type }}">
             <i class="fa fa-plus"></i>
-            {% trans "New type" %}
+            {% translate "New type" %}
         </a>
     </div>
 {% endblock %}

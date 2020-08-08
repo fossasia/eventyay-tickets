@@ -17,13 +17,13 @@
         <p>
             <strong>
                 {% if cfp.is_open %}
-                {% blocktrans with deadline=cfp.max_deadline|date:"SHORT_DATETIME_FORMAT" timezone=request.timezone until_string=cfp.max_deadline|timeuntil trimmed %}
+                {% blocktranslate with deadline=cfp.max_deadline|date:"SHORT_DATETIME_FORMAT" timezone=request.timezone until_string=cfp.max_deadline|timeuntil trimmed %}
                     You can enter submissions until {{ deadline }} ({{ timezone }}), {{ until_string }} from now.
-                {% endblocktrans %}
+                {% endblocktranslate %}
                 {% else %}
-                {% blocktrans with deadline=cfp.max_deadline|date:"SHORT_DATETIME_FORMAT" timezone=request.timezone trimmed %}
+                {% blocktranslate with deadline=cfp.max_deadline|date:"SHORT_DATETIME_FORMAT" timezone=request.timezone trimmed %}
                     This Call for Papers closed on {{ deadline }} ({{ timezone }}).
-                {% endblocktrans %}
+                {% endblocktranslate %}
                 {% endif %}
             </strong>
         </p>
@@ -31,24 +31,24 @@
     <div class="row mb-4 url-links">
         {% if can_view_schedule %}
             <a class="btn btn-info btn-lg btn-block" href="{{ request.event.urls.schedule }}">
-                {% trans "View conference schedule" %}
+                {% translate "View conference schedule" %}
             </a>
         {% elif can_view_featured_submissions and has_featured %}
             <a class="btn btn-info btn-lg btn-block" href="{{ request.event.urls.featured }}">
-                {% trans "View schedule preview" %}
+                {% translate "View schedule preview" %}
             </a>
         {% endif %}
         {% if has_submissions or request.user.is_anonymous %}
             <a class="btn btn-info btn-lg btn-block" href="{{ request.event.urls.user_submissions }}">
-                {% trans "Edit or view your submissions" %}
+                {% translate "Edit or view your submissions" %}
             </a>
         {% endif %}
         <a class="btn btn-success btn-lg btn-block {% if not cfp.is_open and not access_code.is_valid %}disabled{% endif %}"
             href="{{ request.event.urls.submit }}{{ submit_qs }}">
         {% if cfp.is_open or access_code.is_valid %}
-            {% trans "Submit a proposal" %}
+            {% translate "Submit a proposal" %}
         {% else %}
-            {% trans "Submissions are closed" %}
+            {% translate "Submissions are closed" %}
         {% endif %}
         </a>
     </div>

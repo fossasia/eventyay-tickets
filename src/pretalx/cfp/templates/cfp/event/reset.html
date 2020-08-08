@@ -2,16 +2,16 @@
 {% load bootstrap4 %}
 {% load i18n %}
 
-{% block title %}{% trans "Password reset" %} :: {% endblock %}
+{% block title %}{% translate "Password reset" %} :: {% endblock %}
 {% block content %}
     <div class="col-md-6 mx-auto">
-        <h2 class="text-center">{% trans "Forgot your password?" %}</h2>
+        <h2 class="text-center">{% translate "Forgot your password?" %}</h2>
         <p></p>
         <form method="post">
             {% csrf_token %}
             {% bootstrap_form_errors form %}
             {% bootstrap_field form.login_email layout='inline' %}
-            <button type="submit" class="btn btn-block btn-success">{% trans "Let me set a new one!" %}</button>
+            <button type="submit" class="btn btn-block btn-success">{% translate "Let me set a new one!" %}</button>
         </form>
     </div>
 {% endblock %}

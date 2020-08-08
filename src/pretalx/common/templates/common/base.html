@@ -63,9 +63,9 @@
     {% if request.event and not request.event.is_public and not is_html_export %}
     <div id="event-nonpublic">
         <i class="fa fa-user-secret"></i>
-        {% blocktrans trimmed %}
+        {% blocktranslate trimmed %}
             This event is currently non-public. Only organisers can see it.
-        {% endblocktrans %}
+        {% endblocktranslate %}
     </div>
     {% endif %}
     <div class="container{% block container_width %}{% endblock %}" id="main-container">
@@ -73,7 +73,7 @@
             <h1>
                 <a href="{% block nav_link %}{% endblock %}">
                     {% if request.event and request.event.logo %}
-                    <img src="{{ request.event.logo.url }}" id="event-logo" alt="{% trans "The event's logo" %}">
+                    <img src="{{ request.event.logo.url }}" id="event-logo" alt="{% translate "The event's logo" %}">
                     {% elif request.event %}
                         {{ request.event.name }}
                     {% endif %}
@@ -98,27 +98,27 @@
                     <ul id="user-dropdown" class="dropdown-content dropdown-content-sw">
                         <li><a href="{% url "cfp:event.user.submissions" event=request.event.slug %}" class="dropdown-item">
                             <i class="fa fa-sticky-note-o mr-2"></i>
-                            {% trans "My submissions" %}
+                            {% translate "My submissions" %}
                         </a></li>
                         <li><a href="{{ request.event.urls.user_mails }}" class="dropdown-item">
                             <i class="fa fa-envelope mr-2"></i>
-                            {% trans "My E-mails" %}
+                            {% translate "My E-mails" %}
                         </a></li>
                         <li><a href="{{ request.event.urls.user }}" class="dropdown-item">
                             <i class="fa fa-address-card-o mr-2"></i>
-                            {% trans "My profile" %}
+                            {% translate "My profile" %}
                         </a></li>
                         {% if can_see_orga_area %}
                         <li class="dropdown-divider"></li>
                         <li><a href="{{ request.event.orga_urls.base }}" class="dropdown-item">
                             <i class="fa fa-gears mr-2"></i>
-                            {% trans "Organiser area" %}
+                            {% translate "Organiser area" %}
                         </a></li>
                         {% endif %}
                         <li class="dropdown-divider"></li>
                         <li><a href="{% url "cfp:event.logout" event=request.event.slug %}" class="dropdown-item">
                             <i class="fa fa-sign-out mr-2"></i>
-                            {% trans "Logout" %}
+                            {% translate "Logout" %}
                         </a></li>
                     </ul>
                 </details>
@@ -145,19 +145,19 @@
             {% if is_html_export %}
             <div id="exporttimestamp" class="text-muted">
                 {% now "Y-m-d H:i T" as timestamp %}
-                {% blocktrans trimmed %}
+                {% blocktranslate trimmed %}
                     This is a static export generated at {{ timestamp }}
-                {% endblocktrans %}
+                {% endblocktranslate %}
             </div>
             {% endif %}
             {% include "common/powered_by.html" %}
             {% if request.event %}
                 &middot;
-                <a href="mailto:{{ request.event.email }}">{% trans "Contact us" %}</a>
+                <a href="mailto:{{ request.event.email }}">{% translate "Contact us" %}</a>
             {% endif %}
             {% if request.event.settings.imprint_url %}
                 &middot;
-                <a href="{{ request.event.settings.imprint_url }}" target="_blank" rel="noopener">{% trans "Imprint" %}</a>
+                <a href="{{ request.event.settings.imprint_url }}" target="_blank" rel="noopener">{% translate "Imprint" %}</a>
             {% endif %}
             {% for footer in footer_links %}
                 &middot;

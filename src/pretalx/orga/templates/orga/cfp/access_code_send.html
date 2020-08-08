@@ -6,13 +6,13 @@
 
 {% block cfp_content %}
     <h2>
-        {% trans "Send access code" %}
+        {% translate "Send access code" %}
     </h2>
     <div class="alert alert-info">
-        {% blocktrans trimmed %}
+        {% blocktranslate trimmed %}
         Access codes can allow access to your CfP beyond its deadline for one or multiple
         submissions. If the code is circulated more widely than you'd like, you can always delete or invalidate it.
-        {% endblocktrans %}
+        {% endblocktranslate %}
     </div>
     <form method="post">
         {% csrf_token %}
@@ -23,7 +23,7 @@
             <span>
                 <button type="submit" class="btn btn-success btn-lg">
                     <i class="fa fa-check"></i>
-                    {% trans "Send" %}
+                    {% translate "Send" %}
                 </button>
             </span>
         </div>

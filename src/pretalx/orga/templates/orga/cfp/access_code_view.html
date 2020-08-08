@@ -9,28 +9,28 @@
 
 
 {% block cfp_content %}
-    <h2>{% trans "Access codes" %}</h2>
+    <h2>{% translate "Access codes" %}</h2>
     <div class="alert alert-info">
-        {% blocktrans trimmed %}
+        {% blocktranslate trimmed %}
         Access codes can be used to allow talk submissions even when the CfP
         is over. You can also use them for hidden tracks or hidden submission
         types, which can only be seen with a matching access code.
-        {% endblocktrans %}
+        {% endblocktranslate %}
     </div>
     <div class="submit-group"><span></span>
         <a class="btn btn-info" href="{{ request.event.cfp.urls.new_access_code }}">
             <i class="fa fa-plus"></i>
-            {% trans "New access code" %}
+            {% translate "New access code" %}
         </a>
     </div>
     {% if access_codes %}
     <table class="table table-sm table-hover table-responsive-md" id="access-codes">
         <thead>
             <tr>
-                <th>{% trans "Code" %}</th>
-                {% if request.event.settings.use_tracks %}<th>{% trans "Track" %}</th>{% endif %}
-                <th>{% trans "Submission Type" %}</th>
-                <th>{% trans "Uses" %}</th>
+                <th>{% translate "Code" %}</th>
+                {% if request.event.settings.use_tracks %}<th>{% translate "Track" %}</th>{% endif %}
+                <th>{% translate "Submission Type" %}</th>
+                <th>{% translate "Uses" %}</th>
                 <th></th>
             </tr>
         </thead>
@@ -55,12 +55,12 @@
                     </td>
                     <td class="action-column">
                         <div data-destination="{{ code.urls.cfp_url.full }}"
-                                title="{% trans 'Copy access code link' %}"
+                                title="{% translate 'Copy access code link' %}"
                                 class="btn btn-sm btn-info copyable-text">
                                 <i class="fa fa-link"></i>
                         </div>
                         <a href="{{ code.urls.send }}"
-                                title="{% trans 'Send access code as email' %}"
+                                title="{% translate 'Send access code as email' %}"
                                 class="btn btn-sm btn-info">
                             <i class="fa fa-envelope"></i>
                         </a>

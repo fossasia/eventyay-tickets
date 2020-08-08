@@ -14,7 +14,7 @@
     <form method="post">
         {% csrf_token %}
         {% bootstrap_form_errors form %}
-        <h2>{% trans "Room" context "Room information" %}</h2>
+        <h2>{% translate "Room" context "Room information" %}</h2>
         {% bootstrap_field form.name layout='event' %}
         {% bootstrap_field form.description layout='event' %}
         {% bootstrap_field form.speaker_info layout='event' %}

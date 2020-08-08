@@ -3,7 +3,7 @@
 
 <div class="avatar-form form-group row">
     <label class="col-md-3 col-form-label">
-        {% trans "Profile picture" %}
+        {% translate "Profile picture" %}
     </label>
     <div class="avatar-form-fields col-md-9">
         <div class="d-flex align-items-start">
@@ -11,7 +11,7 @@
                     class="avatar {% if not user.avatar and not user.get_gravatar %}d-none{% endif %} order-1"
                     data-gravatar="{{ user.gravatar_parameter }}"
                     data-avatar="{% if user.avatar %}{{ user.avatar.url }}{% endif %}"
-                    alt="{% trans "Your avatar" %}"
+                    alt="{% translate "Your avatar" %}"
                     {% if user.avatar %}
                     src="{{ user.avatar.url }}"
                     {% elif user.get_gravatar %}

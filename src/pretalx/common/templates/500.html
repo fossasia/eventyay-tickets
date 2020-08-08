@@ -1,13 +1,13 @@
 {% extends "common/error.html" %}
 {% load i18n %}
 {% load static %}
-{% block error_image %}<img src="{% static "common/img/error_5xx.svg" %}" class="img" alt="{% trans "Internal server error." %}">{% endblock %}
+{% block error_image %}<img src="{% static "common/img/error_5xx.svg" %}" class="img" alt="{% translate "Internal server error." %}">{% endblock %}
 {% block error_message %}
-    <p>{% trans "We have encountered an error." %}<br></p></h2>
+    <p>{% translate "We have encountered an error." %}<br></p></h2>
 <h2><p>
-    {% blocktrans with link='https://github.com/pretalx/pretalx/issues/new?template=bug_report.md&title=Error+on+'|add:request_path trimmed %}
+    {% blocktranslate with link='https://github.com/pretalx/pretalx/issues/new?template=bug_report.md&title=Error+on+'|add:request_path trimmed %}
     Please help us to fix this by submitting <a href="{{ link }}" rel=noopener>a bug report</a>!
-    {% endblocktrans %}
+    {% endblocktranslate %}
     </p>
 {% endblock %}
 {% block error_code %}500{% endblock %}

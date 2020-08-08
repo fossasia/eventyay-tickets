@@ -4,45 +4,45 @@
 {% block schedule_content %}
 <h2>Exports</h2>
 <p>
-{% blocktrans trimmed %}
+{% blocktranslate trimmed %}
 pretalx provides a range of exports. If none of these match what you are looking
 for, you can also provide a custom plugin to export the data – please ask
 your administrator to install the plugin.
-{% endblocktrans %}
+{% endblocktranslate %}
 </p>
 
 <hr>
-<h3>{% trans "HTML Export" %}</h3>
+<h3>{% translate "HTML Export" %}</h3>
 
 <p>
-{% blocktrans trimmed %}
+{% blocktranslate trimmed %}
 The event schedule can be exported to a static HTML dump, so you can upload it
 to a normal file-serving web server like nginx. This is done automatically on
 schedule release, but you can also trigger that action here.
-{% endblocktrans %}
+{% endblocktranslate %}
 </p>
 
 <div class="submit-group"><span></span><span>
     <a href='{{ request.event.orga_urls.schedule_export_download }}' class="btn btn-lg btn-info">
         <i class="fa fa-download"></i>
-        {% trans "Download ZIP" %}
+        {% translate "Download ZIP" %}
     </a>
     <form action="{{ request.event.orga_urls.schedule_export_trigger }}" method="POST" class="d-inline-block">
         {% csrf_token %}
         <button type="submit" class="btn btn-lg btn-success">
             <i class="fa fa-refresh"></i>
-            {% trans "Regenerate Export" %}
+            {% translate "Regenerate Export" %}
         </button>
     </form>
 </span>
 </div>
 
-<h3>{% trans "Data Export" %}</h3>
+<h3>{% translate "Data Export" %}</h3>
 {% if not request.event.current_schedule %}
 <div class="alert alert-warning">
-    {% blocktrans trimmed %}
+    {% blocktranslate trimmed %}
     You haven't released a schedule yet – many of these data exporters only work on a released schedule.
-    {% endblocktrans %}
+    {% endblocktranslate %}
 </div>
 {% endif %}
 <ul>
@@ -69,18 +69,18 @@ schedule release, but you can also trigger that action here.
 </ul>
 
 <hr>
-<h3>{% trans "API" %}</h3>
+<h3>{% translate "API" %}</h3>
 
 <p>
-{% trans "You can also use the API to export or use data." %}
+{% translate "You can also use the API to export or use data." %}
 </p>
 
-<p>{% blocktrans trimmed %}
+<p>{% blocktranslate trimmed %}
     Some of the exports above are only accessible for organisers, or include
     more information when accessed with your organiser account. If you want to
     access the organiser version in automatic integrations, you'll have to
     provide your authentication token just like in the API, like this:
-{% endblocktrans %}</p>
+{% endblocktranslate %}</p>
 
 <pre>
     curl -H "Authorization: Token {{ request.user.auth_token.key }}" {{ request.event.urls.frab_xml.full }}
@@ -89,10 +89,10 @@ schedule release, but you can also trigger that action here.
 <div class="submit-group"><span></span><span>
     <a class="btn btn-lg btn-info" href="https://docs.pretalx.org/en/latest/api/index.html">
         <i class="fa fa-book"></i>
-        {% trans "Documentation" %}
+        {% translate "Documentation" %}
     </a>
     <a class="btn btn-lg btn-success" href="{{ request.event.api_urls.base }}">
-        {% trans "Go to API" %}
+        {% translate "Go to API" %}
     </a>
 </span>
 </div>

@@ -6,11 +6,11 @@
     <h2>
         <span>
             {{ page_obj.paginator.count }}
-            {% blocktrans trimmed count count=page_obj.paginator.count %}
+            {% blocktranslate trimmed count count=page_obj.paginator.count %}
                 pending mail
             {% plural %}
                 pending mails
-            {% endblocktrans %}
+            {% endblocktranslate %}
         </span>
     </h2>
     <div class="submit-group">
@@ -19,10 +19,10 @@
         </span>
         <span>
             <a href="{{ request.event.orga_urls.send_outbox }}">
-                <button class="btn btn-lg btn-success">{% trans "Send all" %}</button>
+                <button class="btn btn-lg btn-success">{% translate "Send all" %}</button>
             </a>
             <a href="{{ request.event.orga_urls.purge_outbox }}">
-                <button class="btn btn-lg btn-danger">{% trans "Discard all" %}</button>
+                <button class="btn btn-lg btn-danger">{% translate "Discard all" %}</button>
             </a>
         </span>
     </div>
@@ -30,14 +30,14 @@
         <thead>
             <tr>
                 <th>
-                    {% trans "Subject" %}
-                    <a href="?{% url_replace request 'sort' 'subject' %}"><i class="fa fa-caret-down" title="{% trans "Sort by subject (a-z)" %}"></i></a>
-                    <a href="?{% url_replace request 'sort' '-subject' %}"><i class="fa fa-caret-up" title="{% trans "Sort by subject (z-a)" %}"></i></a>
+                    {% translate "Subject" %}
+                    <a href="?{% url_replace request 'sort' 'subject' %}"><i class="fa fa-caret-down" title="{% translate "Sort by subject (a-z)" %}"></i></a>
+                    <a href="?{% url_replace request 'sort' '-subject' %}"><i class="fa fa-caret-up" title="{% translate "Sort by subject (z-a)" %}"></i></a>
                 </th>
                 <th>
-                    {% trans "To" %}
-                    <a href="?{% url_replace request 'sort' 'to' %}"><i class="fa fa-caret-down" title="{% trans "Sort by recipient (a-z)" %}"></i></a>
-                    <a href="?{% url_replace request 'sort' '-to' %}"><i class="fa fa-caret-up" title="{% trans "Sort by recipient (z-a)" %}"></i></a>
+                    {% translate "To" %}
+                    <a href="?{% url_replace request 'sort' 'to' %}"><i class="fa fa-caret-down" title="{% translate "Sort by recipient (a-z)" %}"></i></a>
+                    <a href="?{% url_replace request 'sort' '-to' %}"><i class="fa fa-caret-up" title="{% translate "Sort by recipient (z-a)" %}"></i></a>
                 </th>
                 <th></th>
             </tr>
@@ -63,17 +63,17 @@
                 </td>
                 <td class="action-column">
                     <a href="{{ mail.urls.send }}"
-                        title="{% trans "send" %}"
+                        title="{% translate "send" %}"
                         class="btn btn-sm btn-success">
                         <i class="fa fa-mail-forward"></i>
                     </a>
                     <a href="{{ mail.urls.edit }}"
-                        title="{% trans "edit" %}"
+                        title="{% translate "edit" %}"
                         class="btn btn-sm btn-info">
                         <i class="fa fa-edit"></i>
                     </a>
                     <a href="{{ mail.urls.delete }}"
-                        title="{% trans "delete" %}"
+                        title="{% translate "delete" %}"
                         class="btn btn-sm btn-danger">
                         <i class="fa fa-trash"></i>
                     </a>

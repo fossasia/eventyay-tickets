@@ -1,6 +1,6 @@
 {% extends "common/error.html" %}
 {% load i18n %}
 {% load static %}
-{% block error_image %}<img src="{% static "common/img/error_403.svg" %}" class="img" alt="{% trans "Permission denied." %}">{% endblock %}
+{% block error_image %}<img src="{% static "common/img/error_403.svg" %}" class="img" alt="{% translate "Permission denied." %}">{% endblock %}
 {% block error_message %}{{ phrases.base.permission_denied }}{% endblock %}
 {% block error_code %}403{% endblock %}

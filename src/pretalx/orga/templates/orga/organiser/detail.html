@@ -7,7 +7,7 @@
 
 {% block content %}
 <form method="post"><fieldset>
-    <legend>{% trans "Settings" %}</legend>
+    <legend>{% translate "Settings" %}</legend>
     {% csrf_token %}
     {% bootstrap_form form layout='event' %}
     <div class="submit-group panel">
@@ -15,14 +15,14 @@
             {% has_perm "person.is_administrator" request.user request.organiser as can_delete_event %}
             {% if can_delete_event %}
             <a class="btn btn-outline-danger btn-lg" href="{{ request.organiser.orga_urls.delete }}">
-                {% trans "Delete organiser" %}
+                {% translate "Delete organiser" %}
             </a>
             {% endif %}
         </span>
         <span>
             <button type="submit" class="btn btn-success btn-lg">
                 <i class="fa fa-check"></i>
-                {% trans "Save" %}
+                {% translate "Save" %}
             </button>
         </span>
     </div>
@@ -31,14 +31,14 @@
 {% if request.organiser %}
 
 <fieldset>
-    <legend>{% trans "Teams" %}</legend>
+    <legend>{% translate "Teams" %}</legend>
     <table class="table table-hover table-sm table-responsive-md">
         <thead>
             <tr>
-                <th>{% trans "Team" %}</th>
-                <th>{% trans "Members" %}</th>
-                <th>{% trans "All events" %}</th>
-                <th>{% trans "Reviewer" %}</th>
+                <th>{% translate "Team" %}</th>
+                <th>{% translate "Members" %}</th>
+                <th>{% translate "All events" %}</th>
+                <th>{% translate "Reviewer" %}</th>
                 <th></th>
             </tr>
         </thead>
@@ -49,7 +49,7 @@
                     <a href="{{ team.orga_urls.base }}">
                         {{ team.name }}
                         {% if request.user in team.members.all %}
-                        <i class="fa fa-star text-warning" title="{% trans "You are a member of this team" %}"></i>
+                        <i class="fa fa-star text-warning" title="{% translate "You are a member of this team" %}"></i>
                         {% endif %}
                     </a>
                 </td>
@@ -63,12 +63,12 @@
                 <td>
                     <a href="{{ team.orga_urls.base }}"
                         class="btn btn-sm btn-info"
-                        title="{% trans "Edit" %}">
+                        title="{% translate "Edit" %}">
                         <i class="fa fa-edit"></i>
                     </a>
                     <a href="{{ team.orga_urls.delete }}"
                         class="btn btn-sm btn-danger"
-                        title="{% trans "Delete" %}">
+                        title="{% translate "Delete" %}">
                         <i class="fa fa-trash"></i>
                     </a>
                 </td>
@@ -81,7 +81,7 @@
         <span></span>
         <span>
             <a href="{{ request.organiser.orga_urls.new_team }}" class="btn btn-info">
-                <i class="fa fa-plus"></i> {% trans "New team" %}
+                <i class="fa fa-plus"></i> {% translate "New team" %}
             </a>
         </span>
     </div>

@@ -7,7 +7,7 @@
 
 {% block content %}
     <form class="mb-4 m-2">
-        <input type="text" name="q" class="form-control" value="{% if request.GET.q %}{{ request.GET.q }}{% endif %}" placeholder="{% trans "Search" %}">
+        <input type="text" name="q" class="form-control" value="{% if request.GET.q %}{{ request.GET.q }}{% endif %}" placeholder="{% translate "Search" %}">
     </form>
     {% has_perm 'orga.change_organiser_settings' request.user None as can_create_organiser %}
     <div class="dashboard-list event-blocks">
@@ -25,19 +25,19 @@
                 <div class="stats">
                     <div class="submissions">
                         {{ organiser.events.count }}
-                        {% blocktrans trimmed count count=organiser.events.count %}
+                        {% blocktranslate trimmed count count=organiser.events.count %}
                         event
                         {% plural %}
                         events
-                        {% endblocktrans %}
+                        {% endblocktranslate %}
                     </div>
                     <div class="state inactive">
                         {{ organiser.teams.count }}
-                        {% blocktrans trimmed count count=organiser.teams.count %}
+                        {% blocktranslate trimmed count count=organiser.teams.count %}
                         team
                         {% plural %}
                         teams
-                        {% endblocktrans %}
+                        {% endblocktranslate %}
                     </div>
                 </div>
             </a>
@@ -45,7 +45,7 @@
     </div>
 {% if not organisers and not can_create_organiser %}
 <div class="alert alert-info">
-    {% trans "There are no organisers you can edit." %}
+    {% translate "There are no organisers you can edit." %}
 </div>
 {% endif %}
 {% endblock %}

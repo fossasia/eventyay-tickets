@@ -3,12 +3,12 @@
 {% load i18n %}
 {% load static %}
 
-{% block title %}{% trans "User settings" %}{% endblock %}
+{% block title %}{% translate "User settings" %}{% endblock %}
 {% block content %}
     <form method="post">
         {% csrf_token %}
         <fieldset class="m-2">
-        <legend>{% trans "User settings" %}</legend>
+        <legend>{% translate "User settings" %}</legend>
         {% bootstrap_form profile_form layout='event' %}
         {% include "orga/submit_row.html" with submit_name="form" submit_value="profile" %}
         </fieldset>
@@ -16,7 +16,7 @@
     <form method="post" class="password-input-form">
         {% csrf_token %}
         <fieldset class="m-2">
-        <legend>{% trans "Login settings" %}</legend>
+        <legend>{% translate "Login settings" %}</legend>
         {{ login_form.media }}
         {% bootstrap_form login_form layout='event' %}
         {% include "orga/submit_row.html" with submit_name="form" submit_value="login" %}

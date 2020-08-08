@@ -7,11 +7,11 @@
 {% has_perm 'orga.change_settings' request.user request.event as can_change_settings %}
 {% if "congratulations" in request.GET %}
 <div class="alert alert-success congratulations">
-    {% blocktrans trimmed %}
+    {% blocktranslate trimmed %}
     Your event has been created and you're ready to go! Check out the
     event settings, set up your Call for Papers with submission types and questions,
     and you're ready to go!
-    {% endblocktrans %}
+    {% endblocktranslate %}
     </span>
 </div>
 {% endif %}
@@ -50,21 +50,21 @@
 <div class="dashboard-list">
     <a href="{{ request.event.orga_urls.live }}" class="dashboard-block">
         <div class="dashboard-live-text">
-            {% trans "Your event is currently" %}
+            {% translate "Your event is currently" %}
         </div>
         {% if request.event.is_public %}
         <div class="dashboard-live text-success">
             <i class="fa fa-check-circle"></i>
-            {% trans "live" %}
+            {% translate "live" %}
         </div>
         {% else %}
         <div class="dashboard-live text-danger">
             <i class="fa fa-times-circle"></i>
-            {% trans "not live" %}
+            {% translate "not live" %}
         </div>
         {% endif %}
         <div class="dashboard-live-text">
-            {% trans "Click here to change" %}
+            {% translate "Click here to change" %}
         </div>
     </a>
     {% for tile in tiles %}
@@ -79,7 +79,7 @@
 
 {% if history and can_view_speakers %}
 <div class="dashboard-history">
-    <div class="d-flex"><h2>{% trans "History" %}<h2> {% if can_change_settings %}<small><a href="{{ request.event.orga_urls.history }}" class="text-muted ml-2">({% trans "Full history" %})</a></small>{% endif %}</div>
+    <div class="d-flex"><h2>{% translate "History" %}<h2> {% if can_change_settings %}<small><a href="{{ request.event.orga_urls.history }}" class="text-muted ml-2">({% translate "Full history" %})</a></small>{% endif %}</div>
     {% include "common/logs.html" with entries=history hide_title=True %}
 </div>
 {% endif %}

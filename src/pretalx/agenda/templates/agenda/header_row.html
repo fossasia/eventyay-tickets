@@ -2,15 +2,15 @@
 
 <nav id="schedule-nav"{% if with_margin %} class="m-3"{% endif %}>
     <div class="navigation">
-        <a href="{{ request.event.urls.schedule }}" class="btn btn-outline-success {% if "/schedule/" in request.path %} active{% endif %}"><i class="fa fa-calendar"></i> {% trans "Schedule" %}
-        </a><a href="{{ request.event.urls.talks }}" class="btn btn-outline-success {% if "/talk/" in request.path %} active{% endif %}"><i class="fa fa-comments-o"></i> {% trans "Talks" %}
-        </a><a href="{{ request.event.urls.speakers }}" class="btn btn-outline-success {% if "/speaker/" in request.path %} active{% endif %}"><i class="fa fa-group"></i> {% trans "Speakers" %}</a>
+        <a href="{{ request.event.urls.schedule }}" class="btn btn-outline-success {% if "/schedule/" in request.path %} active{% endif %}"><i class="fa fa-calendar"></i> {% translate "Schedule" %}
+        </a><a href="{{ request.event.urls.talks }}" class="btn btn-outline-success {% if "/talk/" in request.path %} active{% endif %}"><i class="fa fa-comments-o"></i> {% translate "Talks" %}
+        </a><a href="{{ request.event.urls.speakers }}" class="btn btn-outline-success {% if "/speaker/" in request.path %} active{% endif %}"><i class="fa fa-group"></i> {% translate "Speakers" %}</a>
     </div>
     <div class="header-right">
         {% if with_extra %}
-            <span>{% trans "Version" %} {{ schedule.version|default:"–" }}</span>
-            <a href="{{ request.event.urls.changelog }}" class="btn btn-outline-info btn-sm" title="{% trans "Changelog" %}"><i class="fa fa-clock-o"></i></a>
-            <a href="{{ request.event.urls.feed }}" class="btn btn-outline-info btn-sm" title="{% trans "Feed" %}"><i class="fa fa-feed"></i></a>
+            <span>{% translate "Version" %} {{ schedule.version|default:"–" }}</span>
+            <a href="{{ request.event.urls.changelog }}" class="btn btn-outline-info btn-sm" title="{% translate "Changelog" %}"><i class="fa fa-clock-o"></i></a>
+            <a href="{{ request.event.urls.feed }}" class="btn btn-outline-info btn-sm" title="{% translate "Feed" %}"><i class="fa fa-feed"></i></a>
             <details class="dropdown">
                 <summary class="btn btn-sm btn-outline-info">
                     <i class="fa fa-code"></i><i class="fa fa-caret-down"></i>
@@ -40,7 +40,7 @@
         {% if not is_html_export %}
         <form class="search">
           <div class="input-group">
-            <input type="text" class="form-control" name="q" placeholder="{% trans "Title or speaker name" %}"{% if search %} value="{{ search }}"{% endif %}>
+            <input type="text" class="form-control" name="q" placeholder="{% translate "Title or speaker name" %}"{% if search %} value="{{ search }}"{% endif %}>
             <div class="input-group-append">
               <button class="btn btn-info" type="submit"><i class="fa fa-search"></i></button>
             </div>

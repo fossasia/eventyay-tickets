@@ -2,25 +2,25 @@
 {% load bootstrap4 %}
 {% load i18n %}
 
-{% block title %}{% trans "Invitation" %} :: {{ invitation.team.name }}{% endblock %}
+{% block title %}{% translate "Invitation" %} :: {{ invitation.team.name }}{% endblock %}
 {% block content %}
 <h2 class="col-sm-6 ml-auto mr-auto">
-    {% blocktrans with organiser=invitation.team.organiser.name name=invitation.team.name trimmed %}
+    {% blocktranslate with organiser=invitation.team.organiser.name name=invitation.team.name trimmed %}
         Invitation to the {{ organiser }} team "{{ name }}"
-    {% endblocktrans %}
+    {% endblocktranslate %}
 </h2>
 
 {% if request.user.is_anonymous %}
     <div class="col-sm-6 ml-auto mr-auto">
         <p>
-        {% blocktrans trimmed with name=invitation.team.name link=request.path %}
+        {% blocktranslate trimmed with name=invitation.team.name link=request.path %}
             You have been invited to join the organiser team {{ name }}.
-        {% endblocktrans %}
+        {% endblocktranslate %}
         </p>
         <p>
-        {% blocktrans trimmed with domain=request.get_host %}
+        {% blocktranslate trimmed with domain=request.get_host %}
         If you already have an account – either as a speaker or an organiser – at <a href="{{ domain }}">{{ domain }}</a>, please log in now. Otherwise, create a new account to join the team!
-        {% endblocktrans %}
+        {% endblocktranslate %}
         </p>
     </div>
     <hr>
@@ -30,18 +30,18 @@
         {% csrf_token %}
         <p></p>
         <p>
-        {% blocktrans trimmed with name=invitation.team.name %}
+        {% blocktranslate trimmed with name=invitation.team.name %}
             You have been invited to join the organiser team {{ name }}.
-        {% endblocktrans %}
-        {% blocktrans trimmed with link=request.path %}
+        {% endblocktranslate %}
+        {% blocktranslate trimmed with link=request.path %}
             To accept the invitation with the account you're currently active, please use the button below. If you want to accept the invitation with a different account, you can <a href="/orga/logout/?next={{ link }}">log out</a> and log in with the other account.
         </p><p>
             If you believe to have received this invitation by mistake, please contact the organiser directly.
-        {% endblocktrans %}
+        {% endblocktranslate %}
         </p>
         <p></p>
         <button type="submit" class="btn btn-block btn-success font-weight-bold">
-            {% trans "Join the team!" %}
+            {% translate "Join the team!" %}
         </button>
     </form>
 {% endif %}

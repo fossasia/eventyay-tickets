@@ -6,14 +6,14 @@
 {% block mail_content %}
     {% if form.instance.sent %}
     <div class="alert alert-info">
-        {% blocktrans trimmed with timestamp=form.instance.sent %}
+        {% blocktranslate trimmed with timestamp=form.instance.sent %}
             This email was sent on {{ timestamp }}.
-        {% endblocktrans %}
+        {% endblocktranslate %}
     </div>
     {% endif %}
     <form method="post">
         {% csrf_token %}
-        <h2>{% trans "Mail Editor" %}</h2>
+        <h2>{% translate "Mail Editor" %}</h2>
         {% bootstrap_form_errors form %}
 
         {% if not form.read_only %}
@@ -105,12 +105,12 @@
             <span></span>
             <span>
                 {% if action == "edit" %}
-                    <button type="submit" class="btn btn-lg btn-success" name="form" value="save">{% trans "Save" %}</button>
-                    <button class="btn btn-lg btn-info" name="form" value="send">{% trans "Save and send" %}</button>
-                    <a class="btn btn-lg btn-danger" href={{ form.instance.urls.delete }}>{% trans "Discard" %}</a>
+                    <button type="submit" class="btn btn-lg btn-success" name="form" value="save">{% translate "Save" %}</button>
+                    <button class="btn btn-lg btn-info" name="form" value="send">{% translate "Save and send" %}</button>
+                    <a class="btn btn-lg btn-danger" href={{ form.instance.urls.delete }}>{% translate "Discard" %}</a>
                 {% elif action == "view" %}
                     {% if form.instance.sent %}
-                        <a class="btn btn-lg btn-success" href={{ form.instance.urls.copy }}>{% trans "Copy to draft" %}</a>
+                        <a class="btn btn-lg btn-success" href={{ form.instance.urls.copy }}>{% translate "Copy to draft" %}</a>
                     {% endif %}
                 {% endif %}
             </span>

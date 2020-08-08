@@ -2,20 +2,20 @@
 {% load i18n %}
 
 {% block cfp_content %}
-    <h2>{% trans "Tracks" %}</h2>
+    <h2>{% translate "Tracks" %}</h2>
     <div class="alert alert-info">
-        {% blocktrans trimmed %}
+        {% blocktranslate trimmed %}
         Tracks are used to sort your talks into categories. You can use the
         CfP settings to determine if speakers can select the track for their talk
         themselves. Track colors are helpful to help attendees navigate your schedule.
-        {% endblocktrans %}
+        {% endblocktranslate %}
     </div>
     <table class="table table-sm table-hover table-responsive-md">
         <thead>
             <tr>
-                <th>{% trans "Track" %}</th>
-                <th>{% trans "Submissions" %}</th>
-                <th>{% trans "Color" %}</th>
+                <th>{% translate "Track" %}</th>
+                <th>{% translate "Submissions" %}</th>
+                <th>{% translate "Color" %}</th>
                 <th></th>
             </tr>
         </thead>
@@ -24,7 +24,7 @@
                 <tr>
                     <td>
                         {% if track.requires_access_code %}
-                            <i class="fa fa-lock" title="{% trans "Requires access code" %}"></i>
+                            <i class="fa fa-lock" title="{% translate "Requires access code" %}"></i>
                         {% endif %}
                         <a href="{{ track.urls.edit }}">
                             {{ track.name }}
@@ -36,7 +36,7 @@
                     <td><div class="color-square" style="background: {{ track.color }}"></div></td>
                     <td class="action-column">
                         <a href="{{ track.urls.prefilled_cfp.full }}"
-                                title="{% trans 'Go to pre-filled CfP form' %}"
+                                title="{% translate 'Go to pre-filled CfP form' %}"
                                 class="btn btn-sm btn-info">
                             <i class="fa fa-link"></i>
                         </a>
@@ -56,7 +56,7 @@
     <div class="submit-group"><span></span>
         <a class="btn btn-info" href="{{ request.event.cfp.urls.new_track }}">
             <i class="fa fa-plus"></i>
-            {% trans "New track" %}
+            {% translate "New track" %}
         </a>
     </div>
 {% endblock %}

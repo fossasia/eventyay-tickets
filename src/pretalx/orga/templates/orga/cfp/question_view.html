@@ -3,22 +3,22 @@
 
 {% block cfp_content %}
     <div class="alert alert-info">
-        {% blocktrans trimmed %}
+        {% blocktranslate trimmed %}
         Questions can help you sort out additional details with speakers, such as
         clothing sizes, special requirements such as dietary needs, or accommodation.
         Questions can be asked either on a per-submission level, or per speaker, as
         you see fit.
-        {% endblocktrans %}
+        {% endblocktranslate %}
     </div>
     <div class="submit-group">
         <span></span>
         <span>
             {% if questions %}
-            <a href="{{ request.event.cfp.urls.remind_questions }}" class="btn btn-info">{% trans "Send out reminders for unanswered questions" %}</a>
+            <a href="{{ request.event.cfp.urls.remind_questions }}" class="btn btn-info">{% translate "Send out reminders for unanswered questions" %}</a>
             {% endif %}
             <a href="{{request.event.cfp.urls.new_question }}" class="btn btn-success">
                 <i class="fa fa-plus"></i>
-                {% trans "Add a new question" %}
+                {% translate "Add a new question" %}
             </a>
         </span>
     </div>
@@ -26,10 +26,10 @@
     <table class="table table-hover table-sm table-responsive-md">
         <thead>
             <tr>
-                <th>{% trans "Question" %}</th>
-                <th>{% trans "Target" %}</th>
-                <th>{% trans "required" %}</th>
-                <th>{% trans "active" %}</th>
+                <th>{% translate "Question" %}</th>
+                <th>{% translate "Target" %}</th>
+                <th>{% translate "required" %}</th>
+                <th>{% translate "active" %}</th>
                 <th></th>
             </tr>
         </thead>
@@ -58,35 +58,35 @@
                         {% if not forloop.last %}
                         <a href="{{ question.urls.down }}"
                            class="btn btn-sm btn-outline-info"
-                           title="{% trans "Move question down" %}">
+                           title="{% translate "Move question down" %}">
                             <i class="fa fa-arrow-down"></i>
                         </a>
                         {% endif %}
                         {% if not forloop.first %}
                         <a href="{{ question.urls.up }}"
                            class="btn btn-sm btn-outline-info"
-                           title="{% trans "Move question up" %}">
+                           title="{% translate "Move question up" %}">
                             <i class="fa fa-arrow-up"></i>
                         </a>
                         {% endif %}
                         <a href="{{ question.urls.edit }}"
                             class="btn btn-sm btn-info"
-                            title="{% trans "Edit" %}">
+                            title="{% translate "Edit" %}">
                             <i class="fa fa-edit"></i>
                         </a>
                         <a href="{{ question.urls.delete }}"
                             class="btn btn-sm btn-danger"
-                            title="{% trans "Delete" %}">
+                            title="{% translate "Delete" %}">
                             <i class="fa fa-trash"></i>
                         </a>
                     </td>
                 </tr>
             {% empty %}
                 <tr>
-                    <td colspan=3 class="w-75">{% trans "You have configured no questions yet." %}</td>
+                    <td colspan=3 class="w-75">{% translate "You have configured no questions yet." %}</td>
                     <td class="text-right"><a href="{{request.event.cfp.urls.new_question }}?type={{ type }}" class="btn btn-small btn-success ml-auto">
                         <i class="fa fa-plus"></i>
-                        {% trans "Add a question now!" %}
+                        {% translate "Add a question now!" %}
                     </a>
                     </td>
                 </tr>

@@ -1,12 +1,12 @@
 {% extends "cfp/event/base.html" %}
 {% load i18n %}
 
-{% block title %}{% trans "Your E-mails" %} :: {% endblock %}
+{% block title %}{% translate "Your E-mails" %} :: {% endblock %}
 
 {% block content %}
-    <h2>{% trans "Your E-mails" %}</h2>
+    <h2>{% translate "Your E-mails" %}</h2>
     <p>
-        {% trans "These are e-mails the organisers sent you, so you should be able to find them in your email inbox, but this page serves as a helper in case your email address was unavailable or the emails got lost in some way." %}
+        {% translate "These are e-mails the organisers sent you, so you should be able to find them in your email inbox, but this page serves as a helper in case your email address was unavailable or the emails got lost in some way." %}
     </p>
 
     {% include "common/mail_log.html" %}

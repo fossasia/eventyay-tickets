@@ -5,7 +5,7 @@
 {% block mail_content %}
     <form method="post">
         {% csrf_token %}
-        <h2>{% trans "Mail Editor" %}</h2>
+        <h2>{% translate "Mail Editor" %}</h2>
         {% bootstrap_form_errors form %}
         {% bootstrap_field form.recipients layout='event' %}
         {% if form.tracks %}{% bootstrap_field form.tracks layout='event' %}{% endif %}
@@ -19,7 +19,7 @@
         {% bootstrap_field form.text layout='event' %}
         <div class="submit-group"><span></span>
             <span>
-                <button type="submit" class="btn btn-lg btn-success">{% trans "Send" %}</button>
+                <button type="submit" class="btn btn-lg btn-success">{% translate "Send" %}</button>
             </span>
         </div>
     </form>

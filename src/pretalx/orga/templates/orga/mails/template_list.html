@@ -6,17 +6,17 @@
     <div class="alert alert-info">
         <div>
         <p>
-        {% blocktrans trimmed %}
+        {% blocktranslate trimmed %}
             You can edit the default templates and your custom templates for emails here.
             If you want to send emails to some or all of your speakers, head over to the
             "Send Emails" tab. Mails queued for sending are in the "Outbox" tab.
-        {% endblocktrans %}
+        {% endblocktranslate %}
         </p>
         <p>
-        {% blocktrans trimmed %}
+        {% blocktranslate trimmed %}
             There are different placeholders available depending on the template type.
             They are explained in detail once you start editing a template.
-        {% endblocktrans %}
+        {% endblocktranslate %}
         </p>
         </div>
     </div>
@@ -24,69 +24,69 @@
     <div><a href="{{ request.event.orga_urls.new_template }}">
         <button class="btn btn-success float-right">
             <i class="fa fa-plus"></i>
-            {% trans "New custom template" %}
+            {% translate "New custom template" %}
         </button>
     </a></div>
 
     <div>
     <div>
         {% csrf_token %}
-        <h3>{% trans "Acknowledge Mail" %}</h3>
+        <h3>{% translate "Acknowledge Mail" %}</h3>
         {% bootstrap_form ack layout='event' %}
         <div class="clearfix"><a href="{{ ack.instance.urls.edit }}">
-            <button class="btn btn-info float-right">{% trans "Edit template" %}</button>
-            <a href="{{ request.event.orga_urls.compose_mails }}?template={{ ack.instance.pk }}" class="btn btn-success float-right">{% trans "Send mails" %}</a>
+            <button class="btn btn-info float-right">{% translate "Edit template" %}</button>
+            <a href="{{ request.event.orga_urls.compose_mails }}?template={{ ack.instance.pk }}" class="btn btn-success float-right">{% translate "Send mails" %}</a>
         </a></div>
     </div>
     <div>
         {% csrf_token %}
-        <h3>{% trans "Accept Mail" %}</h3>
+        <h3>{% translate "Accept Mail" %}</h3>
         {% bootstrap_form accept layout='event' %}
         <div class="clearfix"><a href="{{ accept.instance.urls.edit }}">
-            <button class="btn btn-info float-right">{% trans "Edit template" %}</button>
-            <a href="{{ request.event.orga_urls.compose_mails }}?template={{ accept.instance.pk }}" class="btn btn-success float-right">{% trans "Send mails" %}</a>
+            <button class="btn btn-info float-right">{% translate "Edit template" %}</button>
+            <a href="{{ request.event.orga_urls.compose_mails }}?template={{ accept.instance.pk }}" class="btn btn-success float-right">{% translate "Send mails" %}</a>
         </a></div>
     </div>
     <div>
         {% csrf_token %}
-        <h3>{% trans "Rejection Mail" %}</h3>
+        <h3>{% translate "Rejection Mail" %}</h3>
         {% bootstrap_form reject layout='event' %}
         <div class="clearfix"><a href="{{ reject.instance.urls.edit }}">
-            <button class="btn btn-info float-right">{% trans "Edit template" %}</button>
-            <a href="{{ request.event.orga_urls.compose_mails }}?template={{ reject.instance.pk }}" class="btn btn-success float-right">{% trans "Send mails" %}</a>
+            <button class="btn btn-info float-right">{% translate "Edit template" %}</button>
+            <a href="{{ request.event.orga_urls.compose_mails }}?template={{ reject.instance.pk }}" class="btn btn-success float-right">{% translate "Send mails" %}</a>
         </a></div>
     </div>
     <div>
         {% csrf_token %}
-        <h3>{% trans "New schedule version" %}</h3>
+        <h3>{% translate "New schedule version" %}</h3>
         {% bootstrap_form update layout='event' %}
         <div class="clearfix"><a href="{{ update.instance.urls.edit }}">
-            <button class="btn btn-info float-right">{% trans "Edit template" %}</button>
-            <a href="{{ request.event.orga_urls.compose_mails }}?template={{ update.instance.pk }}" class="btn btn-success float-right">{% trans "Send mails" %}</a>
+            <button class="btn btn-info float-right">{% translate "Edit template" %}</button>
+            <a href="{{ request.event.orga_urls.compose_mails }}?template={{ update.instance.pk }}" class="btn btn-success float-right">{% translate "Send mails" %}</a>
         </a></div>
     </div>
     <div>
         {% csrf_token %}
-        <h3>{% trans "Unanswered questions reminder" %}</h3>
+        <h3>{% translate "Unanswered questions reminder" %}</h3>
         {% bootstrap_form remind layout='event' %}
         <div class="clearfix"><a href="{{ remind.instance.urls.edit }}">
-            <button class="btn btn-info float-right">{% trans "Edit template" %}</button>
-            <a href="{{ request.event.orga_urls.compose_mails }}?template={{ remind.instance.pk }}" class="btn btn-success float-right">{% trans "Send mails" %}</a>
+            <button class="btn btn-info float-right">{% translate "Edit template" %}</button>
+            <a href="{{ request.event.orga_urls.compose_mails }}?template={{ remind.instance.pk }}" class="btn btn-success float-right">{% translate "Send mails" %}</a>
         </a></div>
     </div>
 
     {% for template in other %}
     <div>
         {% csrf_token %}
-        <h3>{% trans "Custom Mail" %}</h3>
+        <h3>{% translate "Custom Mail" %}</h3>
         {% bootstrap_form template layout='event' %}
         <div><a href="{{ template.instance.urls.delete }}">
-            <button class="btn btn-danger">{% trans "Delete template" %}</button>
+            <button class="btn btn-danger">{% translate "Delete template" %}</button>
         </a></div>
         <div class="clearfix"><a href="{{ template.instance.urls.edit }}">
-            <button class="btn btn-info float-right">{% trans "Edit template" %}</button>
+            <button class="btn btn-info float-right">{% translate "Edit template" %}</button>
         </a>
-        <a href="{{ request.event.orga_urls.compose_mails }}?template={{ template.instance.pk }}" class="btn btn-success float-right">{% trans "Send mails" %}</a>
+        <a href="{{ request.event.orga_urls.compose_mails }}?template={{ template.instance.pk }}" class="btn btn-success float-right">{% translate "Send mails" %}</a>
         </div>
     </div>
     {% endfor %}

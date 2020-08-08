@@ -6,10 +6,10 @@
 <form method="post"><fieldset>
     <legend>
         <span>
-            {% trans "New event" %}
-            <span class="text-muted small">{% blocktrans with total=wizard.steps.count current=wizard.steps.step1 trimmed %}
+            {% translate "New event" %}
+            <span class="text-muted small">{% blocktranslate with total=wizard.steps.count current=wizard.steps.step1 trimmed %}
                 Step {{current}} of {{ total }}
-            {% endblocktrans %}</span>
+            {% endblocktranslate %}</span>
         </span>
     </legend>
     {{ wizard.form.media }}
@@ -18,9 +18,9 @@
         {{ wizard.management_form }}
         {% bootstrap_form wizard.form layout='event' %}
     <div class="submit-group wizard-row">
-        <button type="submit" class="btn btn-success btn-lg float-right ml-auto">{% trans "Next step" %}</button>
+        <button type="submit" class="btn btn-success btn-lg float-right ml-auto">{% translate "Next step" %}</button>
         {% if wizard.steps.prev %}
-        <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}" class="btn btn-lg btn-info">{% trans "Previous step" %}</button>
+        <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}" class="btn btn-lg btn-info">{% translate "Previous step" %}</button>
         {% else %}
         <span></span>
         {% endif %}

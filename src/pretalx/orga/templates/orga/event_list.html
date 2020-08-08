@@ -2,14 +2,14 @@
 {% load i18n %}
 {% load rules %}
 
-{% block title %}{% trans "Dashboard" %}{% endblock %}
+{% block title %}{% translate "Dashboard" %}{% endblock %}
 
 {% block content %}
     {% has_perm 'orga.create_events' request.user request.user as can_create_event %}
     <form class="mb-4 m-2">
-        <input type="text" name="q" class="form-control" value="{% if request.GET.q %}{{ request.GET.q }}{% endif %}" placeholder="{% trans "Search" %}">
+        <input type="text" name="q" class="form-control" value="{% if request.GET.q %}{{ request.GET.q }}{% endif %}" placeholder="{% translate "Search" %}">
     </form>
-    <h2>{% trans "Your upcoming events" %}</h2>
+    <h2>{% translate "Your upcoming events" %}</h2>
     <div class="event-blocks dashboard-list">
         {% for event in current_orga_events %}
             <a class="event-block dashboard-block" href="{{ event.orga_urls.base }}">
@@ -21,33 +21,33 @@
                     <div class="submissions">
                         {% if event.submission_count %}
                             {{ event.submission_count }}
-                            {% blocktrans trimmed count count=event.submission_count %}
+                            {% blocktranslate trimmed count count=event.submission_count %}
                             submission
                             {% plural %}
                             submissions
-                            {% endblocktrans %}
+                            {% endblocktranslate %}
                         {% else %}
-                            {% trans "No submissions yet" %}
+                            {% translate "No submissions yet" %}
                         {% endif %}
                     </div>
                     {% if event.is_public %}
                         <div class="state active">
-                            {% if event.is_open %}{% trans "CfP open" %}{% else %}{% trans "Live" %}{% endif %}
+                            {% if event.is_open %}{% translate "CfP open" %}{% else %}{% translate "Live" %}{% endif %}
                         </div>
                     {% else %}
-                        <div class="state inactive">{% trans "Not public" %}</div>
+                        <div class="state inactive">{% translate "Not public" %}</div>
                     {% endif %}
                 </div>
             </a>
         {% endfor %}
         {% if can_create_event %}
             <a class="dashboard-block symbol" href="{% url "orga:event.create" %}">
-                <i class="fa fa-plus-circle" title="{% trans "Create a new event" %}"></i>
+                <i class="fa fa-plus-circle" title="{% translate "Create a new event" %}"></i>
             </a>
         {% endif %}
     </div>
     {% if past_orga_events %}
-    <h2>{% trans "Your most recent events" %}</h2>
+    <h2>{% translate "Your most recent events" %}</h2>
     <div class="event-blocks dashboard-list">
         {% for event in past_orga_events %}
             <a class="event-block dashboard-block" href="{{ event.orga_urls.base }}">
@@ -59,21 +59,21 @@
                     <div class="submissions">
                         {% if event.submission_count %}
                             {{ event.submission_count }}
-                            {% blocktrans trimmed count count=event.submission_count %}
+                            {% blocktranslate trimmed count count=event.submission_count %}
                             submission
                             {% plural %}
                             submissions
-                            {% endblocktrans %}
+                            {% endblocktranslate %}
                         {% else %}
-                            {% trans "No submissions yet" %}
+                            {% translate "No submissions yet" %}
                         {% endif %}
                     </div>
                     {% if event.is_public %}
                         <div class="state active">
-                            {% if event.is_open %}{% trans "CfP open" %}{% else %}{% trans "Live" %}{% endif %}
+                            {% if event.is_open %}{% translate "CfP open" %}{% else %}{% translate "Live" %}{% endif %}
                         </div>
                     {% else %}
-                        <div class="state inactive">{% trans "Not public" %}</div>
+                        <div class="state inactive">{% translate "Not public" %}</div>
                     {% endif %}
                 </div>
             </a>

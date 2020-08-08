@@ -17,8 +17,8 @@
 {% block content %}
 <div id="stats">
     <h2 class="d-flex w-100 justify-content-between align-items-start">
-        {% trans "Submission Statistics" %}
-        <button id="toggle-button" type="button" class="btn btn-toggle" data-toggle="button" aria-pressed="false" autocomplete="off" data-left="{% trans 'Submissions' %}" data-right="{% trans 'Talks' %}">
+        {% translate "Submission Statistics" %}
+        <button id="toggle-button" type="button" class="btn btn-toggle" data-toggle="button" aria-pressed="false" autocomplete="off" data-left="{% translate 'Submissions' %}" data-right="{% translate 'Talks' %}">
             <div class="handle"></div>
         </button>
     </h2>
@@ -27,18 +27,18 @@
 
     {% if submission_timeline_data %}
     <div class="card stats-timeline">
-        <div class="card-header submissions">{% trans "Submissions by submission date" %}</div>
-        <div class="card-header talks d-none">{% trans "Talks by submission date" %}</div>
-        <div id="submission-timeline-data" class="d-none" data-timeline='{{ submission_timeline_data }}' data-label="{% trans "Submissions" %}"></div>
-        <div id="talk-timeline-data" class="d-none" data-timeline='{{ talk_timeline_data }}' data-label="{% trans "Talks" %}"></div>
+        <div class="card-header submissions">{% translate "Submissions by submission date" %}</div>
+        <div class="card-header talks d-none">{% translate "Talks by submission date" %}</div>
+        <div id="submission-timeline-data" class="d-none" data-timeline='{{ submission_timeline_data }}' data-label="{% translate "Submissions" %}"></div>
+        <div id="talk-timeline-data" class="d-none" data-timeline='{{ talk_timeline_data }}' data-label="{% translate "Talks" %}"></div>
         <div id="timeline" class="card-body submissions"></div>
     </div>
     {% endif %}
 
     {% if submission_type_data and show_submission_types %}
     <div class="card">
-        <div class="card-header submissions">{% trans "Submissions by submission type" %}</div>
-        <div class="card-header talks d-none">{% trans "Talks by submission type" %}</div>
+        <div class="card-header submissions">{% translate "Submissions by submission type" %}</div>
+        <div class="card-header talks d-none">{% translate "Talks by submission type" %}</div>
         <div id="submission-type-data" class="d-none" data-states='{{ submission_type_data }}'></div>
         <div id="talk-type-data" class="d-none" data-states='{{ talk_type_data }}'></div>
         <div id="submission-type" class="pie card-body submissions"></div>
@@ -48,8 +48,8 @@
 
     {% if submission_track_data and show_tracks %}
     <div class="card">
-        <div class="card-header submissions">{% trans "Submissions by track" %}</div>
-        <div class="card-header talks d-none">{% trans "Talks by track" %}</div>
+        <div class="card-header submissions">{% translate "Submissions by track" %}</div>
+        <div class="card-header talks d-none">{% translate "Talks by track" %}</div>
         <div id="submission-track-data" class="d-none" data-states='{{ submission_track_data }}'></div>
         <div id="talk-track-data" class="d-none" data-states='{{ talk_track_data }}'></div>
         <div id="submission-track" class="pie card-body submissions"></div>
@@ -59,8 +59,8 @@
 
     {% if submission_state_data %}
     <div class="card">
-        <div class="card-header submissions">{% trans "Submissions by state" %}</div>
-        <div class="card-header talks d-none">{% trans "Talks by state" %}</div>
+        <div class="card-header submissions">{% translate "Submissions by state" %}</div>
+        <div class="card-header talks d-none">{% translate "Talks by state" %}</div>
         <div id="submission-state-data" class="d-none" data-states='{{ submission_state_data }}'></div>
         <div id="talk-state-data" class="d-none" data-states='{{ talk_state_data }}'></div>
         <div id="submission-state" class="pie card-body submissions"></div>

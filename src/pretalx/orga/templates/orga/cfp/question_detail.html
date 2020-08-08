@@ -29,33 +29,33 @@
 <div class="pb-4">
   <form class="form-inline">
     {% bootstrap_form filter_form layout='inline' %}
-    <button class="btn btn-info" type="submit">{% trans "Filter" %}</button>
+    <button class="btn btn-info" type="submit">{% translate "Filter" %}</button>
   </form>
 </div>
 {% endif %}
 
 <p>
 {% if question.active %}
-    {% trans "This question is currently active, it will be asked during submission." %}
-    <a class="btn btn-sm btn-danger" href="{{ question.urls.toggle }}">{% trans "Hide question" %}</a>
+    {% translate "This question is currently active, it will be asked during submission." %}
+    <a class="btn btn-sm btn-danger" href="{{ question.urls.toggle }}">{% translate "Hide question" %}</a>
 {% else %}
-    {% trans "This question is currently inactive, and will not be asked during submission." %}
-    <a class="btn btn-sm btn-success" href="{{ question.urls.toggle }}">{% trans "Activate question" %}</a>
+    {% translate "This question is currently inactive, and will not be asked during submission." %}
+    <a class="btn btn-sm btn-success" href="{{ question.urls.toggle }}">{% translate "Activate question" %}</a>
 {% endif %}
 </p>
 
 {% if not answer_count %}
-    {% trans "Nobody has answered this question at the moment." %}
+    {% translate "Nobody has answered this question at the moment." %}
 {% else %}
   <p>
     {% if missing_answers %}
-        {% blocktrans with count=answer_count|times missing=missing_answers trimmed %}
+        {% blocktranslate with count=answer_count|times missing=missing_answers trimmed %}
             This question has been answered <strong>{{ count }}</strong>, <strong>{{ missing }}</strong> answers are still missing.
-        {% endblocktrans %}
+        {% endblocktranslate %}
     {% else %}
-        {% blocktrans with count=question.answers.count|times trimmed %}
+        {% blocktranslate with count=question.answers.count|times trimmed %}
             This question has been answered <strong>{{ count }}</strong>, and no answers are missing.
-        {% endblocktrans %}
+        {% endblocktranslate %}
     {% endif %}
   </p>
   <div id="question-data" class="d-none"
@@ -69,9 +69,9 @@
     {% endif %}
     <table class="table table-responsive">
       <thead>
-        <th>{% trans "Answer" %}</th>
-        <th>{% trans "Count" %}</th>
-        <th class="text-center">{% trans "%" %}</th>
+        <th>{% translate "Answer" %}</th>
+        <th>{% translate "Count" %}</th>
+        <th class="text-center">{% translate "%" %}</th>
       </thead>
       <tbody>
         {% for answer in grouped_answers %}

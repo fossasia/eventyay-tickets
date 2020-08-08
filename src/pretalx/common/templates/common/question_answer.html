@@ -5,12 +5,12 @@
     {% if answer.answer_file %}
         <a href="{{ answer.answer_file.url }}">{{ answer.answer_file }}</a>
     {% else %}
-        {% trans "No file provided" %}
+        {% translate "No file provided" %}
     {% endif %}
 {% elif answer.question.variant == 'boolean' %}
     {{ answer.boolean_answer|yesno }}
 {% elif answer %}
     {{ answer.answer|rich_text }}
 {% else %}
-    {% trans "Not answered" %}
+    {% translate "Not answered" %}
 {% endif %}

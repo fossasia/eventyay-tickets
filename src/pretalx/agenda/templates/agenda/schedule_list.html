@@ -41,7 +41,7 @@
                                     {% endif %}
 
                                     {% if talk.submission.is_deleted %}
-                                      <span class="pretalx-schedule-talk-title">[{% trans "deleted" %}]</span>
+                                      <span class="pretalx-schedule-talk-title">[{% translate "deleted" %}]</span>
                                     {% else %}
                                         <span class="pretalx-schedule-talk-title">{{ talk.submission.title }}</span>
 
@@ -62,9 +62,9 @@
               {% endfor %}
         {% else %}
             <div class="no-talks">
-                {% blocktrans with current_day=day.start.date|date:'DATE_FORMAT' weekday=day.start.date|date:'l' trimmed %}
+                {% blocktranslate with current_day=day.start.date|date:'DATE_FORMAT' weekday=day.start.date|date:'l' trimmed %}
                   No talks on {{ weekday }}, {{ current_day }}.
-                {% endblocktrans %}
+                {% endblocktranslate %}
             </div>
         {% endif %}
     </div>

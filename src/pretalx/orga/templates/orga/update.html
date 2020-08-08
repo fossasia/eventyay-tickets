@@ -4,34 +4,34 @@
 
 {% block content %}
 
-<h2>{% trans "Update check results" %}</h2>
+<h2>{% translate "Update check results" %}</h2>
 
 {% if not gs.settings.update_check_enabled %}
     <div class="alert alert-warning">
-        {% trans "Update checks are disabled." %}
+        {% translate "Update checks are disabled." %}
     </div>
 {% elif not gs.settings.update_check_last %}
     <div class="alert alert-info">
-        {% trans "No update check has been performed yet since the last update of this installation. Update checks are performed on a daily basis if your cronjob is set up properly." %}
+        {% translate "No update check has been performed yet since the last update of this installation. Update checks are performed on a daily basis if your cronjob is set up properly." %}
     </div>
     <form action="" method="post">
         {% csrf_token %}
         <p class="d-flex">
             <button type="submit" name="trigger" value="1" class="btn btn-outline-info ml-auto">
                 <i class="fa fa-refresh mr-2"></i>
-                {% trans "Check for updates now" %}
+                {% translate "Check for updates now" %}
             </button>
         </p>
     </form>
 {% elif "error" in gs.settings.update_check_result %}
     <div class="alert alert-danger">
-        {% trans "The last update check was not successful." %}
+        {% translate "The last update check was not successful." %}
         {% if gs.settings.update_check_result.error == "http_error" %}
-            {% trans "The pretalx.com server returned an error code." %}
+            {% translate "The pretalx.com server returned an error code." %}
         {% elif gs.settings.update_check_result.error == "unavailable" %}
-            {% trans "The pretalx.com server could not be reached." %}
+            {% translate "The pretalx.com server could not be reached." %}
         {% elif gs.settings.update_check_result.error == "development" %}
-            {% trans "This installation appears to be a development installation." %}
+            {% translate "This installation appears to be a development installation." %}
         {% endif %}
     </div>
     <form action="" method="post">
@@ -39,7 +39,7 @@
         <p class="d-flex">
             <button type="submit" name="trigger" value="1" class="btn btn-outline-info ml-auto">
                 <i class="fa fa-refresh mr-2"></i>
-                {% trans "Check for updates now" %}
+                {% translate "Check for updates now" %}
             </button>
         </p>
     </form>
@@ -47,12 +47,12 @@
     <form action="" method="post">
         {% csrf_token %}
         <p class="d-flex flex-baseline">
-            {% blocktrans trimmed with date=gs.settings.update_check_last|date:"SHORT_DATETIME_FORMAT" %}
+            {% blocktranslate trimmed with date=gs.settings.update_check_last|date:"SHORT_DATETIME_FORMAT" %}
                 Last updated: {{ date }}
-            {% endblocktrans %}
+            {% endblocktranslate %}
             <button type="submit" name="trigger" value="1" class="btn btn-outline-info ml-auto">
                 <i class="fa fa-refresh mr-2"></i>
-                {% trans "Check for updates now" %}
+                {% translate "Check for updates now" %}
             </button>
         </p>
     </form>
@@ -60,9 +60,9 @@
         <table class="table table-condensed">
             <thead>
             <tr>
-                <th>{% trans "Component" %}</th>
-                <th>{% trans "Installed version" %}</th>
-                <th>{% trans "Latest version" %}</th>
+                <th>{% translate "Component" %}</th>
+                <th>{% translate "Installed version" %}</th>
+                <th>{% translate "Latest version" %}</th>
             </tr>
             </thead>
             <tbody>
@@ -78,7 +78,7 @@
     </div>
 {% endif %}
 
-<h2>{% trans "Update check settings" %}</h2>
+<h2>{% translate "Update check settings" %}</h2>
 
 <form action="" method="post" class="form-horizontal">
     {% csrf_token %}
@@ -88,7 +88,7 @@
         <span></span>
         <button type="submit" class="btn btn-success btn-lg">
             <i class="fa fa-check"></i>
-            {% trans "Save" %}
+            {% translate "Save" %}
         </button>
     </div>
 </form>

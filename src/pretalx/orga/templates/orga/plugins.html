@@ -1,9 +1,9 @@
 {% extends "orga/base.html" %}
 {% load i18n %}
 
-{% block title %}{% trans "Plugins" %}{% endblock %}
+{% block title %}{% translate "Plugins" %}{% endblock %}
 {% block content %}
-<h2>{% trans "Plugins" %}</h2>
+<h2>{% translate "Plugins" %}</h2>
 
 <form method="post" class="form-horizontal form-plugins">
 	{% csrf_token %}
@@ -12,21 +12,21 @@
             <div class="card-header">
                 {{ plugin.name }}
                 {% if plugin.module in plugins_active %}
-                    <button class="btn btn-outline-danger btn-block" name="plugin:{{ plugin.module }}" value="disable">{% trans "Disable" %}</button>
+                    <button class="btn btn-outline-danger btn-block" name="plugin:{{ plugin.module }}" value="disable">{% translate "Disable" %}</button>
                 {% else %}
-                    <button class="btn btn-success btn-block" name="plugin:{{ plugin.module }}" value="enable">{% trans "Enable" %}</button>
+                    <button class="btn btn-success btn-block" name="plugin:{{ plugin.module }}" value="enable">{% translate "Enable" %}</button>
                 {% endif %}
             </div>
             <ul class="list-group list-group-flush">
                 <li class="list-group-item">
                     {% if plugin.author %}
-                        <p class="meta">{% blocktrans trimmed with v=plugin.version a=plugin.author %}
+                        <p class="meta">{% blocktranslate trimmed with v=plugin.version a=plugin.author %}
                             Version {{ v }} by <em>{{ a }}</em>
-                        {% endblocktrans %}</p>
+                        {% endblocktranslate %}</p>
                     {% else %}
-                        <p class="meta">{% blocktrans trimmed with v=plugin.version a=plugin.author %}
+                        <p class="meta">{% blocktranslate trimmed with v=plugin.version a=plugin.author %}
                             Version {{ v }}
-                        {% endblocktrans %}</p>
+                        {% endblocktranslate %}</p>
                     {% endif %}
                     {{ plugin.description }}
                 </li>
@@ -36,7 +36,7 @@
 </form>
 {% if not plugins %}
 <div class="alert alert-info">
-    {% trans "This instance does currently not have any plugins installed." %}
+    {% translate "This instance does currently not have any plugins installed." %}
 </div>
 {% endif %}
 {% endblock %}

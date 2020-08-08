@@ -21,7 +21,7 @@
 
     {% if schedule_version %}
         <div class="alert alert-warning schedule-alert">
-            {% trans "You're currently viewing a released schedule version. Released versions cannot be edited directly." %}
+            {% translate "You're currently viewing a released schedule version. Released versions cannot be edited directly." %}
         </div>
     {% endif %}
     <div class="schedule-header">
@@ -30,49 +30,49 @@
                 <form class="form-inline">
                     <div class="input-group">
                         <select name="version" id="version" class="form-control">
-                            <option value="">{% trans "Current draft" %}</option>
+                            <option value="">{% translate "Current draft" %}</option>
                             {% for schedule in request.event.schedules.all %}
                                 {% if schedule.version %}
                                     <option value="{{ schedule.version }}" {% if schedule.version == schedule_version %}selected{% endif %}>{{ schedule.version }}</option>
                                 {% endif %}
                             {% endfor %}
                         </select>
-                        <button type="submit" class="btn btn-info">{% trans "Show" %}</button>
+                        <button type="submit" class="btn btn-info">{% translate "Show" %}</button>
                     </div>
                 </form>
             </div>
         </div>
         {% if not schedule_version %}
-            <a id="schedule-release" href="{{ request.event.orga_urls.release_schedule }}" class="btn btn-success"><i class="fa fa-plus"></i> {% trans "New release" %}</a>
+            <a id="schedule-release" href="{{ request.event.orga_urls.release_schedule }}" class="btn btn-success"><i class="fa fa-plus"></i> {% translate "New release" %}</a>
         {% else %}
             <form method="post" action="{{ request.event.orga_urls.reset_schedule }}?{{ request.GET.urlencode }}">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-info">{% trans "Reset to current version" %}</button>
+                <button type="submit" class="btn btn-info">{% translate "Reset to current version" %}</button>
             </form>
         {% endif %}
         <details class="dropdown">
             <summary class="btn btn-info" id="schedule-actions">
-                {% trans "Actions" %} <i class="fa fa-caret-down"></i>
+                {% translate "Actions" %} <i class="fa fa-caret-down"></i>
             </summary>
 
           <ul class="dropdown-content dropdown-front dropdown-content-sw">
             <li><a class="dropdown-item" href="{{ active_schedule.urls.public }}" target="_blank" rel="noopener">
-                <i class="fa fa-link"></i> {% trans "View in frontend" %}
+                <i class="fa fa-link"></i> {% translate "View in frontend" %}
             </a></li>
             {% if request.event.settings.show_schedule %}
             <li><a class="dropdown-item" href="{{ request.event.orga_urls.toggle_schedule }}">
-                <i class="fa fa-eye"></i> {% trans "Hide schedule" %}
+                <i class="fa fa-eye"></i> {% translate "Hide schedule" %}
             </a></li>
             {% else %}
             <li><a class="dropdown-item" href="{{ request.event.orga_urls.toggle_schedule }}">
-                <i class="fa fa-eye"></i> {% trans "Make schedule public" %}
+                <i class="fa fa-eye"></i> {% translate "Make schedule public" %}
             </a></li>
             {% endif %}
             <li><a href="{{ request.event.orga_urls.submission_cards }}" class="dropdown-item">
-                <i class="fa fa-print"></i> {% trans "Print cards" %}
+                <i class="fa fa-print"></i> {% translate "Print cards" %}
             </a></li>
             <li><a href="resend_mails" class="dropdown-item">
-                <i class="fa fa-envelope"></i> {% trans "Resend speaker notifications" %}
+                <i class="fa fa-envelope"></i> {% translate "Resend speaker notifications" %}
             </a></li>
           </ul>
         </details>
@@ -80,8 +80,8 @@
     {% if not request.event.rooms.count %}
         <div class="alert alert-warning schedule-alert">
             <span>
-            {% trans "You can start planning your schedule once you have configured some rooms for talks to take place in." %}
-            <a href="{{ request.event.orga_urls.new_room }}">{% trans "Configure rooms" %}</a>
+            {% translate "You can start planning your schedule once you have configured some rooms for talks to take place in." %}
+            <a href="{{ request.event.orga_urls.new_room }}">{% translate "Configure rooms" %}</a>
             </span>
         </div>
     {% else %}

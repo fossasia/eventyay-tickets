@@ -7,18 +7,18 @@
 {% block agenda_content %}
 <p>
     {% if talks %}
-    <b>{% trans "Welcome to our list of featured talks!" %}</b><br><br>
-    {% blocktrans trimmed %}
+    <b>{% translate "Welcome to our list of featured talks!" %}</b><br><br>
+    {% blocktranslate trimmed %}
     We prepared a list of exciting talks, so you can get a feel for our
     conference. Please keep in mind that this is not our full schedule.
     We will follow up with the full schedule in time, stay tuned!
-    {% endblocktrans %}
+    {% endblocktranslate %}
     {% else %}
-    {% blocktrans trimmed %}
+    {% blocktranslate trimmed %}
     In the near future you will see a curated list of talks we'd like
     to show off here. Right now we are busy reviewing submissions.<br>
     Check back later!
-    {% endblocktrans %}
+    {% endblocktranslate %}
     {% endif %}
 </p>
 <article id="featured-talks">

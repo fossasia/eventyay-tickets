@@ -5,13 +5,13 @@
 
 {% block content %}
     <h2 class="d-flex w-100 justify-content-between align-items-start">
-        {% trans "Attendee feedback" %}
+        {% translate "Attendee feedback" %}
     </h2>
 
     {% regroup feedback|dictsort:"talk.title" by talk.title as feedbacks_list %}
 
     {% for submission in feedbacks_list %}
-        <h4>{% trans "Feedback for" %} {{ quotation_open }}<a href="{{ submission.list.1.talk.orga_urls.base }}">{{ submission.grouper }}</a>{{ quotation_close }}</h4>
+        <h4>{% translate "Feedback for" %} {{ quotation_open }}<a href="{{ submission.list.1.talk.orga_urls.base }}">{{ submission.grouper }}</a>{{ quotation_close }}</h4>
         
         {% for entry in submission.list %}
         {% has_perm 'submission.view_feedback' request.user entry.talk as can_see_feedback %}
@@ -25,7 +25,7 @@
         {% endfor %}
         <br><br>
     {% empty %}
-        {% trans "There has been no feedback for talks in this event yet." %}
+        {% translate "There has been no feedback for talks in this event yet." %}
     {% endfor %}
     {% include "orga/pagination.html" %}
 {% endblock %}

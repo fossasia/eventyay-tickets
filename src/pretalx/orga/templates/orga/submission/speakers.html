@@ -10,13 +10,13 @@
     {% if can_edit_speakers %}<div class="alert">
         <form method="POST" action="{{ submission.orga_urls.new_speaker }}" class="form flex-row">
             <label>
-                {% trans "Add a speaker – if the email address isn't registered yet, an account will be created for them and an invitation sent." %}:<br>
+                {% translate "Add a speaker – if the email address isn't registered yet, an account will be created for them and an invitation sent." %}:<br>
             </label>
             {% csrf_token %}
             <div class="input-group" id="speaker-typeahead">
-                <input type="text" name="speaker" id="id_speaker" class="form-control" placeholder="{% trans "E-mail address" %}"/>
-                <input type="text" name="name" id="id_speaker_name" class="form-control" placeholder="{% trans "Name" %}" />
-                <button type="submit" class="btn btn-sm btn-success float-right"><i class="fa fa-plus"></i> {% trans "Add speaker" %}</button>
+                <input type="text" name="speaker" id="id_speaker" class="form-control" placeholder="{% translate "E-mail address" %}"/>
+                <input type="text" name="name" id="id_speaker_name" class="form-control" placeholder="{% translate "Name" %}" />
+                <button type="submit" class="btn btn-sm btn-success float-right"><i class="fa fa-plus"></i> {% translate "Add speaker" %}</button>
             </div>
         </form>
     </div>{% endif %}
@@ -30,13 +30,13 @@
         </h3>
         {% if request.event.settings.cfp_request_biography %}
             <p class="card-text">
-                <h5>{% trans "Biography" %}:</h5>
+                <h5>{% translate "Biography" %}:</h5>
                 {{ speaker.biography|rich_text|default:"-" }}
             </p>
         {% endif %}
         <p class="card-text">
         {% if speaker.other_submissions %}
-            <h5>{% trans "Other submissions by this speaker:" %}</h5>
+            <h5>{% translate "Other submissions by this speaker:" %}</h5>
             <ul>
                 {% for submission in speaker.other_submissions %}
                 <li>
@@ -49,11 +49,11 @@
         {% if can_edit_speakers %}
         <a href="{% url "orga:speakers.view" event=request.event.slug pk=speaker.id %}"
             class="btn btn-info">
-            <i class="fa fa-edit"></i> {% trans "Edit" %}
+            <i class="fa fa-edit"></i> {% translate "Edit" %}
         </a>
         <a href="{{ submission.orga_urls.delete_speaker }}?id={{ speaker.id }}"
             class="btn btn-danger">
-            <i class="fa fa-trash"></i> {% trans "Remove" %}
+            <i class="fa fa-trash"></i> {% translate "Remove" %}
         </a>
         {% endif %}
     </div></div>

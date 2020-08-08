@@ -2,17 +2,17 @@
 {% load i18n %}
 {% block content %}
     <h2>
-        {% trans "Do you really want to delete this track?" %} – {{ quotation_open }}{{ object.name }}{{ quotation_close }}
+        {% translate "Do you really want to delete this track?" %} – {{ quotation_open }}{{ object.name }}{{ quotation_close }}
     </h2>
     <form method="post">
         {% csrf_token %}
         <div class="submit-group">
             <a href="{{ request.event.cfp.urls.tracks }}" class="btn btn-lg btn-outline-info">
-                {% trans "Back" %}
+                {% translate "Back" %}
             </a>
             <button type="submit" class="btn btn-lg btn-danger">
                 <i class="fa fa-trash"></i>
-                {% trans "Yes" %}
+                {% translate "Yes" %}
             </button>
         </div>
     </form>

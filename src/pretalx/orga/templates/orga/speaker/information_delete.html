@@ -2,17 +2,17 @@
 {% load i18n %}
 {% block content %}
     <h2>
-        {% trans "Do you really want to delete this information?" %}
+        {% translate "Do you really want to delete this information?" %}
     </h2>
     <strong>{{ quotation_close }}{{ object.title }}{{ quotation_open }}</strong> – {{ object.text }}<p>
     <form method="post">
         {% csrf_token %}
         <div class="submit-group">
             <a href="{{ request.event.orga_urls.information }}" class="btn btn-lg btn-danger">
-                {% trans "Back" %}
+                {% translate "Back" %}
             </a>
             <button type="submit" class="btn btn-lg btn-success">
-                {% trans "Yes" %}
+                {% translate "Yes" %}
             </button>
         </div>
     </form>

@@ -4,10 +4,10 @@
     {% if widget.percentage %}
     <a href="https://translate.pretalx.com/engage/pretalx/{{ widget.value }}/">
         <span class="badge badge-pill badge-{% if widget.percentage >= 90 %}success{% elif widget.percentage >= 80 %}warning{% else %}danger{% endif %}">
-            {% blocktrans trimmed with percentage=widget.percentage %}{{ percentage }} % translated{% endblocktrans %}</span></a> {# We need to avoid trailing whitespace here, sadly #}
+            {% blocktranslate trimmed with percentage=widget.percentage %}{{ percentage }} % translated{% endblocktranslate %}</span></a> {# We need to avoid trailing whitespace here, sadly #}
     {% endif %}
-    <span class="badge badge-pill badge-warning" data-toggle="tooltip" title="{% trans "This translation is not maintained by the pretalx team. We cannot vouch for its correctness and new or recently changed features might not be translated and will show in English instead. You can help translating at github.com/pretalx/pretalx." %}">
-        {% trans "Unofficial translation" %}
+    <span class="badge badge-pill badge-warning" data-toggle="tooltip" title="{% translate "This translation is not maintained by the pretalx team. We cannot vouch for its correctness and new or recently changed features might not be translated and will show in English instead. You can help translating at github.com/pretalx/pretalx." %}">
+        {% translate "Unofficial translation" %}
     </span>
 {% endif %}
 

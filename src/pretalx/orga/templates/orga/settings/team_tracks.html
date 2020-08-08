@@ -5,12 +5,12 @@
 {% block settings_content %}
 <div>
     <h2>
-        {% trans "Team" %} {{ quotation_open }}{{ team.name }}{{ quotation_close }}: {% trans "Tracks" %}
+        {% translate "Team" %} {{ quotation_open }}{{ team.name }}{{ quotation_close }}: {% translate "Tracks" %}
     </h2>
     <div class="alert alert-info">
-    {% blocktrans trimmed %}
+    {% blocktranslate trimmed %}
     Review teams can be restricted to tracks, so that reviewers will only be able to see reviews from that track. Please note that reviewers with additional access rights (e.g. due to being member in another team) will still be able to see all submissions.
-    {% endblocktrans %}
+    {% endblocktranslate %}
     </div>
     {% if form.fields.limit_tracks.queryset.count %}
         <form method="post">
@@ -20,9 +20,9 @@
         </form>
     {% else %}
     <div class="alert alert-danger">
-    {% blocktrans trimmed %}
+    {% blocktranslate trimmed %}
     None of the events this team has access to has any tracks configured at this time.
-    {% endblocktrans %}
+    {% endblocktranslate %}
     </div>
     {% endif %}
 </div>

@@ -6,18 +6,18 @@
 {% block content %}
     <h2>
         {{ page_obj.paginator.count }}
-        {% blocktrans trimmed count count=page_obj.paginator.count %}
+        {% blocktranslate trimmed count count=page_obj.paginator.count %}
         submitter
         {% plural %}
         submitters
-        {% endblocktrans %}
+        {% endblocktranslate %}
     </h2>
 
     <div class="submit-group">
         <form class="search-form">
             {% bootstrap_form search_form %}
             {% bootstrap_form filter_form %}
-            <button class="btn btn-info btn-search" type="submit">{% trans "Search" %}</button>
+            <button class="btn btn-info btn-search" type="submit">{% translate "Search" %}</button>
         </form>
     </div>
     {% has_perm 'orga.mark_speakers_arrived' request.user request.event as can_mark_speaker %}
@@ -25,10 +25,10 @@
     <table class="table table-sm table-hover table-responsive-md">
         <thead>
             <tr>
-                <th>{% trans "Name" %}</th>
-                <th>{% trans "Scheduled Talks" %}</th>
-                <th>{% trans "Accepted Submissions" %}</th>
-                <th>{% trans "Submissions" %}</th>
+                <th>{% translate "Name" %}</th>
+                <th>{% translate "Scheduled Talks" %}</th>
+                <th>{% translate "Accepted Submissions" %}</th>
+                <th>{% translate "Submissions" %}</th>
                 {% if can_mark_speaker or can_see_speaker_status %}<th></th>{% endif %}
             </tr>
         </thead>
@@ -44,16 +44,16 @@
                             {% if can_mark_speaker %}
                             <a class="btn btn-sm btn-{{ profile.has_arrived|yesno:'success,info' }}" href="{{ profile.orga_urls.toggle_arrived }}?from=list">
                                 {% if profile.has_arrived %}
-                                    {% trans "Mark speaker as not arrived" %}
+                                    {% translate "Mark speaker as not arrived" %}
                                 {% else %}
-                                    {% trans "Mark speaker as arrived" %}
+                                    {% translate "Mark speaker as arrived" %}
                                 {% endif %}
                             </a>
                             {% else %}
                                 {% if profile.has_arrived %}
-                                <a><i class="fa fa-check"></i> {% trans "Arrived" %}</a>
+                                <a><i class="fa fa-check"></i> {% translate "Arrived" %}</a>
                                 {% else %}
-                                <a><i class="fa fa-times"></i> {% trans "Not arrived" %}</a>
+                                <a><i class="fa fa-times"></i> {% translate "Not arrived" %}</a>
                                 {% endif %}
                             {% endif %}
                         </td>

@@ -26,9 +26,9 @@
 <body>
     <div id="wrapper"{% if request.event.primary_color %} style="background-color: {{ request.event.primary_color }}"{% endif %}>
     {% if not request.event.logo %}
-        <img src="{% static "common/img/logo_white.svg" %}" class="logo" alt="{% trans "The pretalx logo" %}">
+        <img src="{% static "common/img/logo_white.svg" %}" class="logo" alt="{% translate "The pretalx logo" %}">
     {% else %}
-            <img height="150" width="auto" src="{{ request.event.logo.url }}" id="event-logo" alt="{% trans "The event's logo" %}">
+            <img height="150" width="auto" src="{{ request.event.logo.url }}" id="event-logo" alt="{% translate "The event's logo" %}">
     {% endif %}
     <p>
     {% if messages %}

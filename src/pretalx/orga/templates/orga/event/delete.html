@@ -2,18 +2,18 @@
 {% load i18n %}
 {% block content %}
     <h2>
-        {% trans "Do you really want to delete this event?" %}
+        {% translate "Do you really want to delete this event?" %}
     </h2>
-    <strong>{{ quotation_open }}{{ request.event.name }}{{ quotation_close }}</strong> – {% trans "ALL related data, such as submissions, and speaker profiles, and uploads, will also be deleted and cannot be restored." %}<p>
+    <strong>{{ quotation_open }}{{ request.event.name }}{{ quotation_close }}</strong> – {% translate "ALL related data, such as submissions, and speaker profiles, and uploads, will also be deleted and cannot be restored." %}<p>
     <form method="post">
         {% csrf_token %}
         <div class="submit-group">
             <a href="{{ request.event.orga_urls.base }}" class="btn btn-lg btn-outline-info">
-                {% trans "Back" %}
+                {% translate "Back" %}
             </a>
             <button type="submit" class="btn btn-lg btn-danger">
                 <i class="fa fa-trash"></i>
-                {% trans "Yes" %}
+                {% translate "Yes" %}
             </button>
         </div>
     </form>

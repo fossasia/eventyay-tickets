@@ -31,23 +31,23 @@
             {% if not schedule.version %}
                 {{ phrases.agenda.schedule_editable }}
             {% else %}
-                {% blocktrans trimmed with current_url=schedule.event.urls.schedule %}
+                {% blocktranslate trimmed with current_url=schedule.event.urls.schedule %}
                     You are currently viewing an older schedule version.
-                {% endblocktrans %}
+                {% endblocktranslate %}
             {% endif %}
             {% if request.event.current_schedule %}
-                {% blocktrans trimmed with current_url=schedule.event.urls.schedule %}
+                {% blocktranslate trimmed with current_url=schedule.event.urls.schedule %}
                     You can find the current version <a href="{{ current_url }}">here</a>.
-                {% endblocktrans %}
+                {% endblocktranslate %}
             {% endif %}
         </span></div>
     {% endif %}
     <div id="offline-warning" class="alert alert-danger d-none m-3"><span>
-      {% blocktrans trimmed %}
+      {% blocktranslate trimmed %}
       You're currently viewing an offline version of the schedule, so it may be
       outdated. <strong>Refresh</strong> this page once you have an internet
       connection to see the current schedule.
-      {% endblocktrans %}
+      {% endblocktranslate %}
     </span></div>
 
     {% include "agenda/header_row.html" with with_margin=True with_extra=True %}

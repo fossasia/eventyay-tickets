@@ -8,7 +8,7 @@
 
 {% block stylesheets %}
 {% if timeline_data %}
-    <link rel="alternate" hreflang="en" type="application/rss+xml" title="{% trans "Submission feed" %}" href="{{ request.event.orga_urls.submission_feed }}">
+    <link rel="alternate" hreflang="en" type="application/rss+xml" title="{% translate "Submission feed" %}" href="{{ request.event.orga_urls.submission_feed }}">
 {% endif %}
 {% endblock %}
 
@@ -19,19 +19,19 @@
     <h2 class="d-flex align-items-center">
         <span>
             {{ page_obj.paginator.count }}
-            {% blocktrans trimmed count count=page_obj.paginator.count %}
+            {% blocktranslate trimmed count count=page_obj.paginator.count %}
             submission
             {% plural %}
             submissions
-            {% endblocktrans %}
+            {% endblocktranslate %}
         </span>
         {% if can_create_submission %}
         <p class="ml-auto">
             <a href="{{ request.event.orga_urls.new_submission }}" class="btn btn-info mt-2">
-                <i class="fa fa-plus"></i> {% trans "Add new submission" %}
+                <i class="fa fa-plus"></i> {% translate "Add new submission" %}
             </a>
         </p>
-        <a href="{{ request.event.orga_urls.submission_feed }}" title="{% trans "Submission feed" %}">
+        <a href="{{ request.event.orga_urls.submission_feed }}" title="{% translate "Submission feed" %}">
             <i class="fa fa-feed ml-3 mb-2"></i>
         </a>
         {% endif %}
@@ -43,17 +43,17 @@
             {% if show_submission_types %}{% bootstrap_field filter_form.submission_type %}{% endif %}
             {% bootstrap_field filter_form.state layout='inline' %}
             {% if show_tracks %}{% bootstrap_field filter_form.track %}{% endif %}
-            <button class="btn btn-success" type="submit">{% trans "Search" %}</button>
+            <button class="btn btn-success" type="submit">{% translate "Search" %}</button>
         </form>
         {% if filter_form.is_valid and filter_form.cleaned_data.question %}
             <p class="text-muted ml-2">
                 <span class="fa fa-filter"></span>
-                {% blocktrans trimmed with question=filter_form.cleaned_data.question.question %}
+                {% blocktranslate trimmed with question=filter_form.cleaned_data.question.question %}
                     List filtered by answers to question "{{ question }}".
-                {% endblocktrans %}
+                {% endblocktranslate %}
                 <a href="?{% url_replace request 'question' '' 'answer' '' 'answer__options' '' %}" class="text-muted">
                     <span class="fa fa-times"></span>
-                    {% trans "Remove filter" %}
+                    {% translate "Remove filter" %}
                 </a>
             </p>
         {% endif %}
@@ -66,24 +66,24 @@
                 <th></th>
                 {% endif %}
                 <th>
-                    {% trans "Title" %}
-                    <a href="?{% url_replace request 'sort' 'title' %}"><i class="fa fa-caret-down" title="{% trans "Sort by title (a-z)" %}"></i></a>
-                    <a href="?{% url_replace request 'sort' '-title' %}"><i class="fa fa-caret-up" title="{% trans "Sort by title (z-a)" %}"></i></a>
+                    {% translate "Title" %}
+                    <a href="?{% url_replace request 'sort' 'title' %}"><i class="fa fa-caret-down" title="{% translate "Sort by title (a-z)" %}"></i></a>
+                    <a href="?{% url_replace request 'sort' '-title' %}"><i class="fa fa-caret-up" title="{% translate "Sort by title (z-a)" %}"></i></a>
                 </th>
-                {% if can_view_speakers %}<th>{% trans "Speakers" %}</th>{% endif %}
+                {% if can_view_speakers %}<th>{% translate "Speakers" %}</th>{% endif %}
                 <th>
-                    {% trans "Type" %}
+                    {% translate "Type" %}
                 </th>
                 <th>
-                    {% trans "State" %}
-                    <a href="?{% url_replace request 'sort' 'state' %}"><i class="fa fa-caret-down" title="{% trans "Sort by state (a-z)" %}"></i></a>
-                    <a href="?{% url_replace request 'sort' '-state' %}"><i class="fa fa-caret-up" title="{% trans "Sort by state (z-a)" %}"></i></a>
+                    {% translate "State" %}
+                    <a href="?{% url_replace request 'sort' 'state' %}"><i class="fa fa-caret-down" title="{% translate "Sort by state (a-z)" %}"></i></a>
+                    <a href="?{% url_replace request 'sort' '-state' %}"><i class="fa fa-caret-up" title="{% translate "Sort by state (z-a)" %}"></i></a>
                 </th>
                 {% if can_change_submission %}
                 <th>
-                    {% trans "Featured" %} <i class="fa fa-question-circle" data-toggle="tooltip" title="{% trans "Show this talk on the list of featured talks, once it was accepted" %}"></i>
-                    <a href="?{% url_replace request 'sort' '-is_featured' %}"><i class="fa fa-caret-down" title="{% trans "Sort by featured first" %}"></i></a>
-                    <a href="?{% url_replace request 'sort' 'is_featured' %}"><i class="fa fa-caret-up" title="{% trans "Sort featured last" %}"></i></a>
+                    {% translate "Featured" %} <i class="fa fa-question-circle" data-toggle="tooltip" title="{% translate "Show this talk on the list of featured talks, once it was accepted" %}"></i>
+                    <a href="?{% url_replace request 'sort' '-is_featured' %}"><i class="fa fa-caret-down" title="{% translate "Sort by featured first" %}"></i></a>
+                    <a href="?{% url_replace request 'sort' 'is_featured' %}"><i class="fa fa-caret-up" title="{% translate "Sort featured last" %}"></i></a>
                 </th>
                 <th></th>
                 {% endif %}
@@ -122,7 +122,7 @@
                     </td>
                     {% if can_change_submission %}
                     <td class="submission_featured">
-                        <div class="checkbox mt-1" title="{% trans 'Show this submission in the list of featured talks.' %}">
+                        <div class="checkbox mt-1" title="{% translate 'Show this submission in the list of featured talks.' %}">
                             <input
                                 type="checkbox"
                                 id="featured_{{ submission.code }}"
@@ -138,12 +138,12 @@
                     </td>
                     <td class="action-column">
                         <a href="{{ submission.orga_urls.edit }}"
-                            title="{% trans "edit" %}"
+                            title="{% translate "edit" %}"
                             class="btn btn-sm btn-info">
                             <i class="fa fa-edit"></i>
                         </a>
                         <a href="{{ submission.orga_urls.delete }}?from=list"
-                            title="{% trans "delete" %}"
+                            title="{% translate "delete" %}"
                             class="btn btn-sm btn-danger">
                             <i class="fa fa-trash"></i>
                         </a>

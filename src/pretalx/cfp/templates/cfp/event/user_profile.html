@@ -5,7 +5,7 @@
 {% load i18n %}
 {% load static %}
 
-{% block title %}{% trans "Your Profile" %} :: {% endblock %}
+{% block title %}{% translate "Your Profile" %} :: {% endblock %}
 
 {% block content %}
     {% if profile_form.biography %}
@@ -15,9 +15,9 @@
 
     {% html_signal "pretalx.cfp.signals.html_above_profile_page" sender=request.event request=request %}
 
-    <h2>{% trans "Your Profile" %}</h2>
+    <h2>{% translate "Your Profile" %}</h2>
     <p>
-        {% trans "This data will be displayed publicly if your talk is accepted. It is also visible to reviewers." %}
+        {% translate "This data will be displayed publicly if your talk is accepted. It is also visible to reviewers." %}
     </p>
     <form method="post" enctype="multipart/form-data" class="speaker-profile-form">
         {% csrf_token %}
@@ -39,30 +39,30 @@
         <div class="row">
             <div class="col-md-4 ml-auto">
                 <button type="submit" class="btn btn-block btn-success btn-lg" name="form" value="profile">
-                    {% trans "Save" %}
+                    {% translate "Save" %}
                 </button>
             </div>
         </div>
     </form>
 
     {% if questions_exist %}
-    <h2>{% trans "We have some questions" %}</h2>
+    <h2>{% translate "We have some questions" %}</h2>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {% bootstrap_form questions_form layout='event' %}
         <div class="row">
             <div class="col-md-4 ml-auto">
                 <button type="submit" class="btn btn-block btn-success btn-lg" name="form" value="questions">
-                    {% trans "Save" %}
+                    {% translate "Save" %}
                 </button>
             </div>
         </div>
     </form>
     {% endif %}
 
-    <h2>{% trans "Your Account" %}</h2>
+    <h2>{% translate "Your Account" %}</h2>
     <p>
-        {% trans "You can change your log in data here." %}
+        {% translate "You can change your log in data here." %}
     </p>
     <form method="post" class="form password-input-form">
         {% csrf_token %}
@@ -74,26 +74,26 @@
         <div class="row">
             <div class="col-md-4 ml-auto">
                 <button type="submit" class="btn btn-block btn-success btn-lg" name="form" value="login">
-                    {% trans "Save" %}
+                    {% translate "Save" %}
                 </button>
             </div>
         </div>
     </form>
     {% include "common/user_api_token.html" %}
     <div>&nbsp;</div>
-    <h3>{% trans "Account deletion" %}</h3>
+    <h3>{% translate "Account deletion" %}</h3>
     <form action="{{ request.event.urls.user_delete }}" method="post" class="form">
         {% csrf_token %}
         <div class="alert alert-danger">
-            {% trans "You can delete your account here – all names, emails, and other personal information will be overwritten. <strong>This action is irreversible.</strong>" %}
+            {% translate "You can delete your account here – all names, emails, and other personal information will be overwritten. <strong>This action is irreversible.</strong>" %}
         </div>
         <div class="form-group"{% if not "really" in request.GET %} style="visibility:hidden;"{% endif %}>
                 <input type="checkbox" name="really" id="really">
-                <label class="form-control-label" for="really">{% trans "I really do want to delete my account, losing access to my submissions and talks, and overriding my public and private data." %}</label>
+                <label class="form-control-label" for="really">{% translate "I really do want to delete my account, losing access to my submissions and talks, and overriding my public and private data." %}</label>
             </div>
             <div class="col-md-4 ml-auto">
                 <button type="submit" class="btn btn-block btn-danger btn-lg" name="form" value="">
-                    {% trans "Delete my account" %}
+                    {% translate "Delete my account" %}
                 </button>
             </div>
     </form>

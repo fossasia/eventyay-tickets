@@ -13,22 +13,22 @@
         {% if has_submissions or request.user.is_anonymous %}
             {% if not is_html_export %}
                 <a class="btn btn-info btn-lg btn-block" href="{{ request.event.urls.user_submissions }}">
-                    {% trans "Edit or view your submissions" %}
+                    {% translate "Edit or view your submissions" %}
                 </a>
             {% endif %}
         {% endif %}
         {% if can_view_schedule %}
             <a class="btn btn-success btn-lg btn-block" href="{{ request.event.urls.schedule }}">
-                {% trans "View conference schedule" %}
+                {% translate "View conference schedule" %}
             </a>
         {% elif can_view_featured_submissions and has_featured %}
             <a class="btn btn-info btn-lg btn-block" href="{{ request.event.urls.featured }}">
-                {% trans "View schedule preview" %}
+                {% translate "View schedule preview" %}
             </a>
         {% endif %}
         {% if cfp.is_open and not is_html_export %}
             <a class="btn btn-info btn-lg btn-block" href="{{ request.event.cfp.urls.public }}{{ submit_qs }}">
-                {% trans "Go to CfP" %}
+                {% translate "Go to CfP" %}
             </a>
         {% endif %}
     </div>

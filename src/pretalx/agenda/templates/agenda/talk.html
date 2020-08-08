@@ -88,7 +88,7 @@
             </section>
             {% if submission.active_resources %}
                 <section class="resources">
-                    {% trans "See also:" %}
+                    {% translate "See also:" %}
                     {% if submission.active_resources.count == 1 %}{% with resource=submission.active_resources.first %}
                         <a href="{{ resource.resource.url }}">
                             <i class="fa fa-file-o"></i>
@@ -114,7 +114,7 @@
             {% if submission.image %}
             <div class="image speakers">
                 <a href="{{ submission.image.url }}">
-                    <img src="{{ submission.image.url }}" alt="{% trans "This talk's header image" %}">
+                    <img src="{{ submission.image.url }}" alt="{% translate "This talk's header image" %}">
                 </a>
             </div>
             {% endif %}
@@ -122,9 +122,9 @@
             <div class="speakers">
                 <div class="speaker-header">
                     {% if speakers.1 %}
-                        {% trans "Speakers" %}
+                        {% translate "Speakers" %}
                     {% else %}
-                        {% trans "Speaker" %}
+                        {% translate "Speaker" %}
                     {% endif %}
                 </div>
                 {% for speaker in speakers %}
@@ -158,7 +158,7 @@
             {% endif %}
             {% if request.event.is_multilingual %}
             <div class="speakers">
-                <strong>{% trans "Language" %}:</strong> {{ submission.get_content_locale_display }}
+                <strong>{% translate "Language" %}:</strong> {{ submission.get_content_locale_display }}
             </div>
             {% endif %}
         </aside>

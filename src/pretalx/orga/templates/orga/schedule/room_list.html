@@ -5,18 +5,18 @@
 <div>
     <h2>
         {{ request.event.rooms.count }}
-        {% blocktrans trimmed count count=request.event.rooms.count context "Number of rooms" %}
+        {% blocktranslate trimmed count count=request.event.rooms.count context "Number of rooms" %}
         Room
         {% plural %}
         Rooms
-        {% endblocktrans %}
+        {% endblocktranslate %}
     </h2>
 
     <table class="table table-sm table-hover table-responsive-md">
         <thead>
             <tr>
-                <th>{% trans "Name" %}</th>
-                <th>{% trans "Capacity" %}</th>
+                <th>{% translate "Name" %}</th>
+                <th>{% translate "Capacity" %}</th>
                 <th></th>
             </tr>
         </thead>
@@ -33,14 +33,14 @@
                         {% if not forloop.last %}
                         <a href="{{ room.urls.down }}"
                            class="btn btn-sm btn-outline-info"
-                           title="{% trans "Move room down" %}">
+                           title="{% translate "Move room down" %}">
                             <i class="fa fa-arrow-down"></i>
                         </a>
                         {% endif %}
                         {% if not forloop.first %}
                         <a href="{{ room.urls.up }}"
                            class="btn btn-sm btn-outline-info"
-                           title="{% trans "Move room up" %}">
+                           title="{% translate "Move room up" %}">
                             <i class="fa fa-arrow-up"></i>
                         </a>
                         {% endif %}
@@ -55,7 +55,7 @@
                     </td>
                 </tr>
             {% empty %}
-                <tr><td> {% trans "Please add at least one place in which talks can take place." %} </td></tr>
+                <tr><td> {% translate "Please add at least one place in which talks can take place." %} </td></tr>
             {% endfor %}
         </tbody>
     </table>
@@ -63,7 +63,7 @@
     <div class="submit-group"><span></span>
         <a class="btn btn-lg btn-success" href="{{ request.event.orga_urls.new_room }}">
             <i class="fa fa-plus"></i>
-            {% trans "New room" %}
+            {% translate "New room" %}
         </a>
     </div>
 </div>

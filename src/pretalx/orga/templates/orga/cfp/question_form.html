@@ -11,18 +11,18 @@
     <script defer src="{% static "cfp/js/animateFormset.js" %}"></script>
     {% endcompress %}
     <h2>
-        {% if form.instance.question %}{% trans "Question" %}: {{ form.instance.question }}{% else %}{% trans "New question" %}{% endif %}
+        {% if form.instance.question %}{% translate "Question" %}: {{ form.instance.question }}{% else %}{% translate "New question" %}{% endif %}
     </h2>
     <form method="post">
         {% csrf_token %}
         {% bootstrap_form_errors form %}
         {% if action == "edit" and question.answers.count %}
             <div class="alert alert-warning col-md-9 offset-md-3">
-                {% blocktrans trimmed %}
+                {% blocktranslate trimmed %}
                     This question has already been answered by some speakers – please consider
                     carefully if modifying it would render those answers obsolete. You could also
                     deactivate this question and start a new one instead.
-                {% endblocktrans %}
+                {% endblocktranslate %}
             </div>
         {% endif %}
 
@@ -30,15 +30,15 @@
           {% if question.active %}
             <div class="alert alert-info col-md-9 offset-md-3">
               <span>
-              {% trans "This question is currently active, it will be asked during submission." %}
-              <a class="btn btn-sm btn-outline-danger" href="{{ question.urls.toggle }}">{% trans "Hide question" %}</a>
+              {% translate "This question is currently active, it will be asked during submission." %}
+              <a class="btn btn-sm btn-outline-danger" href="{{ question.urls.toggle }}">{% translate "Hide question" %}</a>
               </span>
             </div>
           {% else %}
             <div class="alert alert-info col-md-9 offset-md-3">
               <span>
-              {% trans "This question is currently inactive, and will not be asked during submission." %}
-              <a class="btn btn-sm btn-success" href="{{ question.urls.toggle }}">{% trans "Activate question" %}</a>
+              {% translate "This question is currently inactive, and will not be asked during submission." %}
+              <a class="btn btn-sm btn-success" href="{{ question.urls.toggle }}">{% translate "Activate question" %}</a>
               </span>
             </div>
           {% endif %}
@@ -49,10 +49,10 @@
         {% bootstrap_field form.question layout='event' %}
         {% bootstrap_field form.help_text layout='event' %}
         <div class="alert alert-info col-md-9 offset-md-3" id="alert-required-boolean">
-            {% blocktrans trimmed %}
+            {% blocktranslate trimmed %}
                 If you mark a Yes/No question as required, it means that the user has to select Yes and No is not
                 accepted. If you want to allow both options, do not make this field required.
-            {% endblocktrans %}
+            {% endblocktranslate %}
         </div>
         {% bootstrap_field form.required layout='event' %}
         {% bootstrap_field form.is_public layout='event' %}
@@ -76,7 +76,7 @@
         {% bootstrap_field form.contains_personal_data layout='event' %}
 
         <fieldset id="answer-options">
-            <legend>{% trans "Answer options" %}</legend>
+            <legend>{% translate "Answer options" %}</legend>
             <div class="formset" data-formset data-formset-prefix="{{ formset.prefix }}">
                 {{ formset.management_form }}
                 {% bootstrap_formset_errors formset %}
@@ -124,7 +124,7 @@
                 {% if action != 'view' %}
                 <p class="col-md-9 ml-auto">
                     <button type="button" class="btn btn-info" data-formset-add>
-                        <i class="fa fa-plus"></i> {% trans "Add a new option" %}</button>
+                        <i class="fa fa-plus"></i> {% translate "Add a new option" %}</button>
                 </p>
                 {% endif %}
             </div>

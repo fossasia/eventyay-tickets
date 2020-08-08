@@ -11,9 +11,9 @@
                 </li>
             {% endif %}
             <li class="page-current page-item disabled"><a class="page-link">
-                {% blocktrans trimmed with page=page_obj.number of=page_obj.paginator.num_pages count=page_obj.paginator.count %}
+                {% blocktranslate trimmed with page=page_obj.number of=page_obj.paginator.num_pages count=page_obj.paginator.count %}
                     Page {{ page }} of {{ of }} ({{ count }} elements)
-                {% endblocktrans %}
+                {% endblocktranslate %}
             </a></li>
             {% if page_obj.has_next %}
                 <li class="page-item">
@@ -25,11 +25,11 @@
         {% else %}
         {% if page_obj.paginator.count > 1 %}
                 <li class="page-current page-item"><a class="page-link">
-                    {% blocktrans trimmed count count=page_obj.paginator.count %}
+                    {% blocktranslate trimmed count count=page_obj.paginator.count %}
                         {{ count }} element
                         {% plural %}
                         {{ count }} elements
-                    {% endblocktrans %}
+                    {% endblocktranslate %}
                 </a></li>
             {% endif %}
         {% endif %}

@@ -4,7 +4,7 @@
 <div class="panel panel-default">
     {% if not hide_title %}
     <div class="panel-heading"><h3>
-        {% trans "History" %}
+        {% translate "History" %}
     </h3></div>
     {% endif %}
 
@@ -21,13 +21,13 @@
                             <br>
                             <i class="fa fa-check-circle fa-fw"
                                     data-toggle="tooltip"
-                                    title="{% trans "This change was performed by a member of the event orga." %}">
+                                    title="{% translate "This change was performed by a member of the event orga." %}">
                             </i>
                         {% else %}
                             <br><i class="fa fa-user fa-fw"></i>
                         {% endif %}
                         {% if log.is_orga_action and hide_orga %}
-                            {% trans "An orga member" %}
+                            {% translate "An orga member" %}
                         {% else %}
                             {{ log.person.get_display_name }}
                         {% endif %}

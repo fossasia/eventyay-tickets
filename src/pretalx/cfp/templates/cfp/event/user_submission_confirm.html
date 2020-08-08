@@ -4,26 +4,26 @@
 {% load i18n %}
 {% load static %}
 
-{% block title %}{% trans "Your submission" %} :: {% endblock %}
+{% block title %}{% translate "Your submission" %} :: {% endblock %}
 
 {% block content %}
 <div class="col-md-10 ml-auto mr-auto">
-    <h2>{% trans "Your submission:" %} {{ submission.title }}</h2>
+    <h2>{% translate "Your submission:" %} {{ submission.title }}</h2>
     <p>
-        {% trans "Current state of your submission:" %}
+        {% translate "Current state of your submission:" %}
         {% include "cfp/event/fragment_state.html" with state=submission.state %}
     </p>
-    {% if submission.submission_type and request.event.submission_types.all|length > 1 %}<p>{% trans "Submission type" %}: {{ submission.submission_type }}</p>{% endif %}
-    {% if submission.track and request.event.tracks.all|length > 1 %}<p>{% trans "Track" %}: {{ submission.track.name }}</p>{% endif %}
-    {% if request.event.locales|length > 1 %}<p>{% trans "Language" %}: {{ submission.get_content_locale_display }}</p>{% endif %}
+    {% if submission.submission_type and request.event.submission_types.all|length > 1 %}<p>{% translate "Submission type" %}: {{ submission.submission_type }}</p>{% endif %}
+    {% if submission.track and request.event.tracks.all|length > 1 %}<p>{% translate "Track" %}: {{ submission.track.name }}</p>{% endif %}
+    {% if request.event.locales|length > 1 %}<p>{% translate "Language" %}: {{ submission.get_content_locale_display }}</p>{% endif %}
     <div class="text">
-    {% blocktrans trimmed %}
+    {% blocktranslate trimmed %}
     Congratulations on your acceptance!
-    {% endblocktrans %}
+    {% endblocktranslate %}
     {% if form.availabilities %}
-        {% blocktrans trimmed %}
+        {% blocktranslate trimmed %}
         Please provide us with your available hours during the event, so that we can schedule your event accordingly:<p>
-        {% endblocktrans %}
+        {% endblocktranslate %}
     {% endif %}
     </div>
     <form method="post">
@@ -38,27 +38,27 @@
             {% bootstrap_field form.availabilities layout='inline' %}
         {% endif %}
         <p></p>
-        {% blocktrans trimmed %}
+        {% blocktranslate trimmed %}
         By confirming your submission, you agree that you are able and willing to participate in this event and
         present the content of this submission.
         The submission data, such as title, abstract, description, and any uploads you provided, can be made
         publicly available once the submission is confirmed.
-        {% endblocktrans %}
+        {% endblocktranslate %}
         <p></p>
         <div class="submit-group"><span>
             <a href="{{ submission.urls.user_base }}"
                class="btn btn-lg btn-info">
-                {% trans "Go back" %}
+                {% translate "Go back" %}
             </a>
             <a href="{{ submission.urls.withdraw }}"
                class="btn btn-lg btn-danger">
-                {% trans "Withdraw" %}
+                {% translate "Withdraw" %}
             </a>
         </span>
         <span>
             <button type="submit"
                class="btn btn-lg btn-success">
-                {% trans "Confirm" %}
+                {% translate "Confirm" %}
             </button>
         </span></div>
     </form>

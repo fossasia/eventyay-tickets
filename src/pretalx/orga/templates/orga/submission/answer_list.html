@@ -15,6 +15,6 @@
         {{ quotation_open }}{% include "common/question_answer.html" with answer=answer %}{{ quotation_close }}
         {% endif %}
     {% empty %}
-        {% trans "No questions have been answered at the moment." %}
+        {% translate "No questions have been answered at the moment." %}
     {% endfor %}
 {% endblock %}
