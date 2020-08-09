@@ -129,8 +129,13 @@ class EventPermissionMiddleware:
             return response
         if event:
             with scope(event=event):
-                return self.get_response(request)
-        return self.get_response(request)
+                response = self.get_response(request)
+        else:
+            response = self.get_response(request)
+
+        if is_exempt and "Access-Control-Allow-Origin" not in response:
+            response["Access-Control-Allow-Origin"] = "*"
+        return response
 
     def _select_locale(self, request):
         supported = (
