@@ -57,14 +57,20 @@ export default new Vuex.Store({
 				sessions.push(session)
 			}
 			return sessions
+		},
+		pretalxScheduleUrl (state) {
+			if (!state.world.pretalx?.domain || !state.world.pretalx?.event) return
+			return state.world.pretalx.domain + state.world.pretalx.event + '/schedule/widget/v1.json'
+		},
+		pretalxApiBaseUrl (state) {
+			if (!state.world.pretalx?.domain || !state.world.pretalx?.event) return
+			return state.world.pretalx.domain + 'api/events/' + state.world.pretalx.event
 		}
 	},
 	mutations: {
 		updateNow (state) {
 			state.now = moment()
-		}
-	},
-	mutations: {
+		},
 		updateRooms (state, rooms) {
 			// preserve object references for media source
 			if (state.rooms) {
@@ -130,9 +136,10 @@ export default new Vuex.Store({
 			}
 			dispatch('chat/updateUser', {id: state.user.id, update})
 		},
-		async fetchSchedule ({state}) {
-			if (!state.world.pretalx?.base_url) return
-			const schedule = await (await fetch(state.world.pretalx.base_url + 'schedule/widget/v1.json')).json()
+		async fetchSchedule ({state, getters}) {
+			// TODO error handling
+			if (!getters.pretalxScheduleUrl) return
+			const schedule = await (await fetch(getters.pretalxScheduleUrl)).json()
 			state.schedule = schedule
 		},
 		async createRoom ({state}, room) {

@@ -1,14 +1,12 @@
 <template lang="pug">
-a.pretalx-schedule-talk(
+router-link.pretalx-schedule-talk(
 	:class="{active: isActive, break: isBreak}"
 	:id="'pretalx-' + talk.code || 'break'"
 	:style="style"
 	:data-time="timeDisplay"
 	:data-start="talk.start"
 	:data-end="talk.end"
-	target="_blank"
-	rel="noopener"
-	:href="talkUrl"
+	:to="{name: 'schedule:talk', params: {talkId: talk.code}}"
 )
 	.pretalx-schedule-talk-content
 		span.fa-stack(v-if="talk.do_not_record")
@@ -35,10 +33,6 @@ export default {
 		...mapState(['world', 'schedule']), // TODO leaky
 		track () {
 			return this.schedule.event.tracks.find(track => track.name === this.talk.track)
-		},
-		talkUrl () {
-			if (this.isBreak) return
-			return this.talk.code ? (this.world.pretalx.base_url + 'talk/' + this.talk.code) : '#'
 		},
 		startMinutes () {
 			return moment(this.talk.start).diff(this.startOfDay, 'minutes')
