@@ -128,7 +128,7 @@ async def test_config_get(world):
                 "room_creator": ["room-creator"],
             },
             "bbb_defaults": {"record": False},
-            "pretalx": {"base_url": "https://pretalx.com/democon/"},
+            "pretalx": {"domain": "https://pretalx.com/", "event": "democon"},
             "title": "Unsere tolle Online-Konferenz",
             "locale": "en",
             "timezone": "Europe/Berlin",

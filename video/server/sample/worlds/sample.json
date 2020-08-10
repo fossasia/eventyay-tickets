@@ -3,7 +3,8 @@
     "id": "sample",
     "title": "Unsere tolle Online-Konferenz",
     "pretalx": {
-      "base_url": "https://pretalx.com/democon/"
+      "domain": "https://pretalx.com/",
+      "event": "democon"
     },
     "bbb_defaults": {
       "record": false

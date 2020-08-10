@@ -1,9 +1,11 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Schedule from 'views/schedule'
+import Home from 'views'
 import Room from 'views/rooms/item'
 import Channel from 'views/channels/item'
-import Home from 'views'
+import Schedule from 'views/schedule'
+import Talk from 'views/schedule/talks/item'
+import Speaker from 'views/schedule/speakers/item'
 
 Vue.use(VueRouter)
 
@@ -11,10 +13,6 @@ const routes = [{
 	path: '/',
 	name: 'home',
 	component: Home,
-}, {
-	path: '/schedule',
-	name: 'schedule',
-	component: Schedule,
 }, {
 	path: '/rooms/:roomId',
 	name: 'room',
@@ -24,6 +22,20 @@ const routes = [{
 	path: '/channels/:channelId',
 	name: 'channel',
 	component: Channel,
+	props: true
+}, {
+	path: '/schedule',
+	name: 'schedule',
+	component: Schedule,
+}, {
+	path: '/schedule/talks/:talkId',
+	name: 'schedule:talk',
+	component: Talk,
+	props: true
+}, {
+	path: '/schedule/speakers/:speakerId',
+	name: 'schedule:speaker',
+	component: Speaker,
 	props: true
 }, {
 	path: '/admin',
