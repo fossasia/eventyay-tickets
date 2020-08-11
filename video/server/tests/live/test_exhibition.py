@@ -170,7 +170,7 @@ async def test_exhibition_contact_cancel(world, exhibition_room):
         await c_staff.send_json_to(["exhibition.get", 123, {"exhibitor": str(e["id"])}])
         response = await c_staff.receive_json_from()
         assert response[0] == "success"
-        assert response[2]["exhibitor"]["staff"][0] == str(
+        assert response[2]["exhibitor"]["staff"][0]["id"] == str(
             c_staff.context["user.config"]["id"]
         )
 
@@ -239,7 +239,7 @@ async def test_exhibition_contact(world, exhibition_room):
         await c_staff.send_json_to(["exhibition.get", 123, {"exhibitor": str(e["id"])}])
         response = await c_staff.receive_json_from()
         assert response[0] == "success"
-        assert response[2]["exhibitor"]["staff"][0] == str(
+        assert response[2]["exhibitor"]["staff"][0]["id"] == str(
             c_staff.context["user.config"]["id"]
         )
 
@@ -332,7 +332,7 @@ async def test_exhibition_contact_not_staff(world, exhibition_room):
         await c_staff.send_json_to(["exhibition.get", 123, {"exhibitor": str(e["id"])}])
         response = await c_staff.receive_json_from()
         assert response[0] == "success"
-        assert response[2]["exhibitor"]["staff"][0] == str(
+        assert response[2]["exhibitor"]["staff"][0]["id"] == str(
             c_staff.context["user.config"]["id"]
         )
 

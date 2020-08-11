@@ -46,9 +46,9 @@ class ExhibitionModule(BaseModule):
             exhibitor_id=exhibitor["id"], user=self.consumer.user
         )
         await self.consumer.send_success({"contact_request": request})
-        for user_id in exhibitor["staff"]:
+        for staff_member in exhibitor["staff"]:
             await self.consumer.channel_layer.group_send(
-                GROUP_USER.format(id=str(user_id)),
+                GROUP_USER.format(id=str(staff_member["id"])),
                 {"type": "exhibition.contact_request", "contact_request": request,},
             )
 

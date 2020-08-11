@@ -34,7 +34,7 @@ The response will contain the fields
 * ``sorting_priority``: (integer)
 * ``links``: (list of objects ``{"url", "display_text"}``)
 * ``social_media_links``: (list of objects ``{"url", "display_text"}``)
-* ``staff``: (list of user IDs)
+* ``staff``: (list of user objects)
 
 Staff
 -----
