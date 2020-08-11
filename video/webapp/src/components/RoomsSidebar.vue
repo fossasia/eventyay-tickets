@@ -186,6 +186,7 @@ export default {
 			margin: -4px 0
 			icon-button-style(color: var(--clr-sidebar-text-primary), style: clear)
 	.stages, .chats, .direct-messages, .admin
+		flex: none
 		display: flex
 		flex-direction: column
 		> *
