@@ -59,10 +59,10 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['fatalConnectionError', 'fatalError', 'connected', 'world', 'user']),
+		...mapState(['fatalConnectionError', 'fatalError', 'connected', 'world', 'rooms', 'user']),
 		room () {
-			if (this.$route.name === 'home') return this.$store.state.rooms?.[0]
-			return this.$store.state.rooms?.find(room => room.id === this.$route.params.roomId)
+			if (this.$route.name === 'home') return this.rooms?.[0]
+			return this.rooms?.find(room => room.id === this.$route.params.roomId)
 		},
 		roomHasMedia () {
 			return this.room?.modules.some(module => mediaModules.includes(module.type))
@@ -77,6 +77,7 @@ export default {
 	},
 	watch: {
 		world: 'worldChange',
+		rooms: 'roomListChange',
 		room: 'roomChange',
 		$route () {
 			this.showSidebar = false
@@ -114,6 +115,7 @@ export default {
 
 			if (!this.$mq.above.m) return // no background rooms for mobile
 			if (oldRoom &&
+				this.rooms.includes(oldRoom) &&
 				!this.backgroundRoom &&
 				oldRoom.modules.some(module => mediaModules.includes(module.type)) &&
 				this.$refs.primaryMediaSource.isPlaying()
@@ -122,6 +124,14 @@ export default {
 			}
 			// returning to room currently playing in background should maximize again
 			if (this.backgroundRoom && newRoom === this.backgroundRoom) {
+				this.backgroundRoom = null
+			}
+		},
+		roomListChange () {
+			if (this.room && !this.rooms.includes(this.room)) {
+				this.$router.push('/').catch(() => {})
+			}
+			if (!this.backgroundRoom && !this.rooms.includes(this.backgroundRoom)) {
 				this.backgroundRoom = null
 			}
 		}
