@@ -69,4 +69,16 @@ export default {
 				background-color: $clr-green-300
 			#btn-cancel
 				background-color: $clr-red-300
+
++below('m')
+	.c-user-contact-request
+		left: calc(50% - 150px)
+		width: 300px
+		.prompt
+			flex-wrap: wrap
+			align-items: center
+			.controls
+				width: 100%
+				justify-content: center
+
 </style>

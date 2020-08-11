@@ -65,7 +65,7 @@ export default {
 			return url.hostname + (url.pathname !== '/' ? url.pathname : '')
 		},
 		async contact () {
-			this.$store.dispatch('contact', {exhibitorId: this.exhibitorId, roomId: this.roomId})
+			this.$store.dispatch('contact', {exhibitorId: this.exhibitorId})
 		},
 	}
 }
