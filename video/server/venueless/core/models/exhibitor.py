@@ -24,6 +24,27 @@ class Exhibitor(models.Model):
         to="World", related_name="exhibitors", on_delete=models.CASCADE,
     )
 
+    def serialize(self):
+        links = list(self.links.values("display_text", "url"))
+        social_media_links = list(self.social_media_links.values("display_text", "url"))
+        staff = list(self.staff.values_list("user__id", flat=True))
+
+        return dict(
+            id=str(self.id),
+            name=self.name,
+            tagline=self.tagline,
+            logo=self.logo,
+            text=self.text,
+            size=self.size,
+            sorting_priority=self.sorting_priority,
+            links=links,
+            social_media_links=social_media_links,
+            staff=staff,
+        )
+
+    def serialize_short(self):
+        return dict(id=str(self.id), name=self.name,)
+
     def save(self, *args, **kwargs):
         r = super().save(*args, **kwargs)
         self.room.touch()
@@ -105,7 +126,7 @@ class ContactRequest(models.Model):
     def serialize(self):
         return dict(
             id=str(self.id),
-            exhibitor_id=str(self.exhibitor.id),
-            user_id=str(self.user.id),
+            exhibitor=self.exhibitor.serialize_short(),
+            user=self.user.serialize_public(),
             state=self.state,
         )

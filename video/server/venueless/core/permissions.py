@@ -15,6 +15,7 @@ class Permission(Enum):
     WORLD_USERS_LIST = "world:users.list"
     WORLD_USERS_MANAGE = "world:users.manage"
     WORLD_CHAT_DIRECT = "world:chat.direct"
+    WORLD_EXHIBITION_CONTACT = "world:exhibition.contact"
     ROOM_ANNOUNCE = "room:announce"
     ROOM_VIEW = "room:view"
     ROOM_UPDATE = "room:update"
@@ -26,7 +27,6 @@ class Permission(Enum):
     ROOM_CHAT_MODERATE = "room:chat.moderate"
     ROOM_BBB_JOIN = "room:bbb.join"
     ROOM_BBB_MODERATE = "room:bbb.moderate"
-    ROOM_EXHIBITION_CONTACT = "room:exhibition.contact"
 
 
 MAX_PERMISSIONS_IF_SILENCED = {

@@ -175,13 +175,7 @@ async def test_exhibition_contact_cancel(world, exhibition_room):
         )
 
         # issue contact request
-        await c1.send_json_to(
-            [
-                "exhibition.contact",
-                123,
-                {"exhibitor": str(e["id"]), "room": str(exhibition_room.pk)},
-            ]
-        )
+        await c1.send_json_to(["exhibition.contact", 123, {"exhibitor": str(e["id"])}])
         response = await c1.receive_json_from()
         assert response[0] == "success"
         request_id = response[2]["contact_request"]["id"]
@@ -191,11 +185,7 @@ async def test_exhibition_contact_cancel(world, exhibition_room):
         assert response[1]["id"] == request_id
 
         await c1.send_json_to(
-            [
-                "exhibition.contact_cancel",
-                123,
-                {"contact_request": request_id, "room": str(exhibition_room.pk)},
-            ]
+            ["exhibition.contact_cancel", 123, {"contact_request": request_id}]
         )
         response = await c1.receive_json_from()
         assert response[0] == "success"
@@ -255,11 +245,7 @@ async def test_exhibition_contact(world, exhibition_room):
 
         # issue contact request
         await c1.send_json_to(
-            [
-                "exhibition.contact",
-                123,
-                {"exhibitor": str(e["id"]), "room": str(exhibition_room.pk)},
-            ]
+            ["exhibition.contact", 123, {"exhibitor": str(e["id"])},]
         )
         response = await c1.receive_json_from()
         assert response[0] == "success"
@@ -352,11 +338,7 @@ async def test_exhibition_contact_not_staff(world, exhibition_room):
 
         # issue contact request
         await c1.send_json_to(
-            [
-                "exhibition.contact",
-                123,
-                {"exhibitor": str(e["id"]), "room": str(exhibition_room.pk)},
-            ]
+            ["exhibition.contact", 123, {"exhibitor": str(e["id"])},]
         )
         response = await c1.receive_json_from()
         assert response[0] == "success"

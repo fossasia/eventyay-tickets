@@ -105,14 +105,16 @@ async def test_auth_with_jwt_token(index, world):
         await c.send_json_to(["authenticate", {"token": token}])
         response = await c.receive_json_from()
         assert response[0] == "authenticated"
-        assert set(response[1]["world.config"]["permissions"]) == {"world:view"}
+        assert set(response[1]["world.config"]["permissions"]) == {
+            "world:view",
+            "world:exhibition.contact",
+        }
         assert set(response[1]["world.config"]["rooms"][0]["permissions"]) == {
             "room:view",
             "room:chat.read",
             "room:chat.join",
             "room:chat.send",
             "room:bbb.join",
-            "room:exhibition.contact",
         }
         assert set(response[1].keys()) == {
             "world.config",
@@ -371,7 +373,7 @@ async def test_auth_with_jwt_token_and_permission_traits(world):
             "room:announce",
             "world:announce",
             "world:chat.direct",
-            "room:exhibition.contact",
+            "world:exhibition.contact",
         }
         assert set(response[1]["world.config"]["rooms"][0]["permissions"]) == {
             "room:view",
@@ -382,7 +384,6 @@ async def test_auth_with_jwt_token_and_permission_traits(world):
             "room:bbb.moderate",
             "room:chat.moderate",
             "room:announce",
-            "room:exhibition.contact",
         }
 
 

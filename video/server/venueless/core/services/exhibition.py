@@ -56,23 +56,7 @@ class ExhibitionService:
         e = get_exhibitor_by_id(self.world_id, exhibitor_id)
         if not e:
             return None
-
-        links = list(e.links.values("display_text", "url"))
-        social_media_links = list(e.social_media_links.values("display_text", "url"))
-        staff = list(e.staff.values_list("user__id", flat=True))
-
-        return dict(
-            id=str(e.id),
-            name=e.name,
-            tagline=e.tagline,
-            logo=e.logo,
-            text=e.text,
-            size=e.size,
-            sorting_priority=e.sorting_priority,
-            links=links,
-            social_media_links=social_media_links,
-            staff=staff,
-        )
+        return e.serialize()
 
     @database_sync_to_async
     def contact(self, exhibitor_id, user):
@@ -110,8 +94,11 @@ class ExhibitionService:
         u = get_user_by_id(self.world_id, user_id)
         if not u:
             return None
-
-        return ExhibitorStaff.objects.create(user=u, exhibitor=e,)
+        try:
+            s = ExhibitorStaff.objects.get(user=u, exhibitor=e,)
+        except ExhibitorStaff.DoesNotExist:
+            s = ExhibitorStaff.objects.create(user=u, exhibitor=e,)
+        return s
 
     @database_sync_to_async
     def get_staff(self, exhibitor_id):

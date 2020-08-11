@@ -51,7 +51,7 @@ Contact request
 
 To request a private chat with one of the staff members of an exhibitor, a client can push a message like this::
 
-    => ["exhibition.contact", 1234, {"exhibitor": id, "room": id}]
+    => ["exhibition.contact", 1234, {"exhibitor": id}]
     <- ["success", 1234, {}]
 
 A contact request (with state "open") will be send to all clients associated as staff::
@@ -65,21 +65,21 @@ A client can accept the contact request with a message like this::
 
 The client which requested the contact will be send a message like::
 
-    <- ["contact_accepted", {id, exhibitor_id, user_id, state}]
+    <- ["contact_accepted", {id, exhibitor, user, state}]
 
 The state will become "answered" and messages send to all staff members::
 
-    <- ["contact_request_close", {id, exhibitor_id, user_id, state}]
+    <- ["contact_request_close", {id, exhibitor, user, state}]
 
 Cancel contact request
 ----------------------
 
 A client can cancel a contact request with a message like this::
 
-    => ["exhibition.contact_cancel", 1234, {"contact_request": id, "room": id}]
+    => ["exhibition.contact_cancel", 1234, {"contact_request": id}]
     <- ["success", 1234, {}]
 
 The state will be set to "missed" and messages send to all staff members::
 
-    <- ["contact_request_close", {id, exhibitor_id, user_id, state}]
+    <- ["contact_request_close", {id, exhibitor, user, state}]
 

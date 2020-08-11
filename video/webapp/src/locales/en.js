@@ -77,5 +77,10 @@ export default {
 	'UserActionPrompt:action.unblock:execute:label': 'unblock',
 	'UserActionPrompt:action.unblock:question': 'Unblock this user?',
 	'UserActionPrompt:action.unblock:confirmation': 'User has been unblocked.',
-	'UserActionPrompt:action.unblock:explanation': 'Unblocking this user will allow them to send direct messages to you again.'
+	'UserActionPrompt:action.unblock:explanation': 'Unblocking this user will allow them to send direct messages to you again.',
+	'ContactRequest:dismiss-button:label': 'dismiss',
+	'ContactRequest:accept-button:label': 'accept',
+	'ContactRequest:request:text': 'Contacting staff members...',
+	'ContactRequest:timeout:text': 'There is currently no staff member available. Please try again at a later time.',
+	'ContactRequest:greeting:text': 'You have requested a private chat with a staff member'
 }
