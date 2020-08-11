@@ -38,13 +38,15 @@ scrollbars.c-exhibitor(y)
 	bunt-progress-circular(v-else, size="huge", :page="true")
 </template>
 <script>
+import { mapState } from 'vuex'
 import api from 'lib/api'
 import MarkdownContent from 'components/MarkdownContent'
 
 export default {
 	components: { MarkdownContent },
 	props: {
-		exhibitorId: String
+		exhibitorId: String,
+		roomId: String
 	},
 	data () {
 		return {
@@ -54,13 +56,16 @@ export default {
 	async created () {
 		this.exhibitor = (await api.call('exhibition.get', {exhibitor: this.exhibitorId})).exhibitor
 	},
+	computed: {
+		...mapState(['user']),
+	},
 	methods: {
 		prettifyUrl (link) {
 			const url = new URL(link)
 			return url.hostname + (url.pathname !== '/' ? url.pathname : '')
 		},
-		contact () {
-			// TODO: issue chat request
+		async contact () {
+			this.$store.dispatch('contact', {exhibitorId: this.exhibitorId, roomId: this.roomId})
 		},
 	}
 }
