@@ -1,7 +1,7 @@
 <template lang="pug">
 .c-exhibition
 	scrollbars.exhibitors(v-if="exhibitors", y)
-		router-link.exhibitor(v-for="exhibitor of exhibitors", :to="{name: 'exhibitor', params: {exhibitorId: exhibitor.id, roomId: room.id}}", :class="'exhibitor-' + exhibitor.size")
+		router-link.exhibitor(v-for="exhibitor of exhibitors", :to="{name: 'exhibitor', params: {exhibitorId: exhibitor.id}}", :class="'exhibitor-' + exhibitor.size")
 			img.logo(:src="exhibitor.logo", :alt="exhibitor.name")
 			.short-text {{ exhibitor.short_text }}
 			.actions

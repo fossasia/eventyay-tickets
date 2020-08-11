@@ -28,12 +28,15 @@ scrollbars.c-exhibitor(y)
 				tr(v-for="link in exhibitor.links")
 					th.name {{ link.display_text }}
 					td: a(:href="link.url", target="_blank") {{ prettifyUrl(link.url) }}
-			.contact
-				bunt-button(@click="contact", :tooltip="$t('Exhibition:contact-button:tooltip')") {{ $t('Exhibition:contact-button:label') }}
-			.staff
-				h3 Unser Standpersonal
-				<div class="user"><div class="c-avatar" style="--avatar-size:28px;"><div class="c-identicon"><svg viewBox="0 0 2.8284271247461903 2.8284271247461903"><g transform="translate(0.125 1.4142135623730951) scale(.9 .9) rotate(-45 0 0)"><g transform="translate(1 0)" class="shape square"><path d="M 0 0 L 0 1 L 1 1 L 1 0z" transform="scale(0.5, 0.5) translate(0.75, 0.2)" style="fill: rgb(0, 188, 212);"></path></g><g transform="translate(0 0)" class="block"><path d="M 0 0 L 1 0 L 0 1" style="fill: rgb(103, 58, 183);"></path><path d="M 0 0 L 1 0 L 0 1" style="fill: rgb(0, 188, 212);"></path><path d="M 0 0 L 0 1 L 1 1 L 1 0z" class="stroke"></path></g><g transform="translate(0 1)" class="block"><path d="M 0 0 L 0 1 L 1 1" style="fill: rgb(0, 188, 212);"></path><path d="M 0 0 L 1 0 L 0 1" style="fill: rgb(103, 58, 183);"></path><path d="M 0 0 L 0 1 L 1 1 L 1 0z" class="stroke"></path></g><g transform="translate(1 1)" class="block"><path d="M 0 0 L 1 0 L 0 1" style="fill: rgb(0, 188, 212);"></path><path d="M 0 0 L 0 1 L 1 1" style="fill: rgb(103, 58, 183);"></path><path d="M 0 0 L 0 1 L 1 1 L 1 0z" class="stroke"></path></g></g></svg></div></div><span class="display-name">Max Muster</span></div>
-				<div class="user"><div class="c-avatar" style="--avatar-size:28px;"><div class="c-identicon"><svg viewBox="0 0 2.8284271247461903 2.8284271247461903"><g transform="translate(0.125 1.4142135623730951) scale(.9 .9) rotate(-45 0 0)"><g transform="translate(1 0)" class="shape square"><path d="M 0 0 L 0 1 L 1 1 L 1 0z" transform="scale(0.5, 0.5) translate(0.75, 0.2)" style="fill: rgb(233, 30, 99);"></path></g><g transform="translate(0 0)" class="block"><path d="M 0 0 L 1 0 L 0 1" style="fill: rgb(255, 87, 34);"></path><path d="M 0 0 L 1 0 L 0 1" style="fill: rgb(233, 30, 99);"></path><path d="M 0 0 L 0 1 L 1 1 L 1 0z" class="stroke"></path></g><g transform="translate(0 1)" class="block"><path d="M 0 0 L 0 1 L 1 1" style="fill: rgb(233, 30, 99);"></path><path d="M 0 0 L 1 0 L 0 1" style="fill: rgb(255, 87, 34);"></path><path d="M 0 0 L 0 1 L 1 1 L 1 0z" class="stroke"></path></g><g transform="translate(1 1)" class="block"><path d="M 0 0 L 1 0 L 0 1" style="fill: rgb(233, 30, 99);"></path><path d="M 0 0 L 0 1 L 1 1" style="fill: rgb(255, 87, 34);"></path><path d="M 0 0 L 0 1 L 1 1 L 1 0z" class="stroke"></path></g></g></svg></div></div><span class="display-name">Maria Müller</span></div>
+			div(v-if="exhibitor.staff.length > 0")
+				.contact
+					bunt-button(@click="contact", :tooltip="$t('Exhibition:contact-button:tooltip')") {{ $t('Exhibition:contact-button:label') }}
+				.staff
+					h3 Unser Standpersonal
+					.user(v-for="user in exhibitor.staff")
+						avatar(:user="user", :size="28")
+						span.display-name {{ user ? user.profile.display_name : '' }}
+
 
 	bunt-progress-circular(v-else, size="huge", :page="true")
 </template>
@@ -41,16 +44,16 @@ scrollbars.c-exhibitor(y)
 import { mapState } from 'vuex'
 import api from 'lib/api'
 import MarkdownContent from 'components/MarkdownContent'
+import Avatar from 'components/Avatar'
 
 export default {
-	components: { MarkdownContent },
+	components: { MarkdownContent, Avatar },
 	props: {
-		exhibitorId: String,
-		roomId: String
+		exhibitorId: String
 	},
 	data () {
 		return {
-			exhibitor: null
+			exhibitor: null,
 		}
 	},
 	async created () {
@@ -154,10 +157,7 @@ export default {
 			.user
 				display: flex
 				align-items: center
-				cursor: pointer
 				padding: 2px 16px 2px 0
-				&:hover
-					background-color: $clr-grey-100
 				.display-name
 					font-weight: 600
 					color: $clr-secondary-text-light
