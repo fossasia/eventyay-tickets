@@ -29,7 +29,13 @@ const RETRY_INTERVAL = 5000
 const HLS_CONFIG = {
 	// never fall behind live edge
 	liveBackBufferLength: 0,
-	liveMaxLatencyDurationCount: 5
+	liveMaxLatencyDurationCount: 5,
+	fragLoadingMaxRetry: Infinity,
+	fragLoadingMaxRetryTimeout: 5000,
+	levelLoadingMaxRetry: Infinity,
+	levelLoadingMaxRetryTimeout: 5000,
+	manifestLoadingMaxRetry: Infinity,
+	manifestLoadingMaxRetryTimeout: 5000
 }
 
 export default {
@@ -94,6 +100,7 @@ export default {
 			}
 			if (Hls.isSupported()) {
 				const player = new Hls(HLS_CONFIG)
+				let started = false
 				player.attachMedia(this.$refs.video)
 				this.player = player
 				const load = () => {
@@ -104,6 +111,7 @@ export default {
 				})
 				player.on(Hls.Events.MANIFEST_PARSED, async (event, data) => {
 					start()
+					started = true
 				})
 
 				player.on(Hls.Events.ERROR, (event, data) => {
@@ -111,8 +119,10 @@ export default {
 					if (data.details === Hls.ErrorDetails.BUFFER_STALLED_ERROR) {
 						this.buffering = true
 					} else if ([Hls.ErrorDetails.MANIFEST_LOAD_ERROR, Hls.ErrorDetails.LEVEL_LOAD_ERROR].includes(data.details)) {
-						this.offline = true
-						setTimeout(load, RETRY_INTERVAL)
+						if (!started) {
+							this.offline = true
+							setTimeout(load, RETRY_INTERVAL)
+						}
 					} else if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
 						this.buffering = true
 						setTimeout(() => player.startLoad(), 250)
