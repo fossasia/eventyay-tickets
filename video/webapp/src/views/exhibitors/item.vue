@@ -36,12 +36,12 @@ scrollbars.c-exhibitor(y)
 					.user(v-for="user in exhibitor.staff")
 						avatar(:user="user", :size="28")
 						span.display-name {{ user ? user.profile.display_name : '' }}
-
+						bunt-icon-button(v-if="hasPermission('world:rooms.create.exhibition')", @click.prevent.stop="removeStaff(user)") close
 
 	bunt-progress-circular(v-else, size="huge", :page="true")
 </template>
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import api from 'lib/api'
 import MarkdownContent from 'components/MarkdownContent'
 import Avatar from 'components/Avatar'
@@ -61,6 +61,7 @@ export default {
 	},
 	computed: {
 		...mapState(['user']),
+		...mapGetters(['hasPermission']),
 	},
 	methods: {
 		prettifyUrl (link) {
@@ -70,6 +71,10 @@ export default {
 		async contact () {
 			this.$store.dispatch('exhibition/contact', {exhibitorId: this.exhibitorId})
 		},
+		async removeStaff (user) {
+			await api.call('exhibition.remove_staff', {user: user.id, exhibitor: this.exhibitor.id})
+			this.exhibitor = (await api.call('exhibition.get', {exhibitor: this.exhibitorId})).exhibitor
+		}
 	}
 }
 </script>
@@ -157,11 +162,19 @@ export default {
 			.user
 				display: flex
 				align-items: center
-				padding: 2px 16px 2px 0
+				padding: 2px 0px 2px 0
+				min-height: 36px
 				.display-name
 					font-weight: 600
 					color: $clr-secondary-text-light
 					margin-left: 8px
+					flex: 1
+				.bunt-icon-button
+					icon-button-style(style: clear)
+				&:not(:hover) .bunt-icon-button
+					display: none
+				&:hover
+					background-color: $clr-grey-100
 		.contact
 			flex: none
 			padding: 8px

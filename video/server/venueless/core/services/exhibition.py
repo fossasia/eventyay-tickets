@@ -18,6 +18,13 @@ def get_request_by_id(world_id, id):
         return
 
 
+def get_staff_by_id(exhibitor_id, user_id):
+    try:
+        return ExhibitorStaff.objects.get(exhibitor__id=exhibitor_id, user__id=user_id)
+    except ExhibitorStaff.DoesNotExist:
+        return
+
+
 class ExhibitionService:
     def __init__(self, world_id):
         self.world_id = world_id
@@ -99,6 +106,13 @@ class ExhibitionService:
         except ExhibitorStaff.DoesNotExist:
             s = ExhibitorStaff.objects.create(user=u, exhibitor=e,)
         return s
+
+    @database_sync_to_async
+    def remove_staff(self, exhibitor_id, user_id):
+        s = get_staff_by_id(exhibitor_id, user_id)
+        if not s:
+            return None
+        return s.delete()
 
     @database_sync_to_async
     def get_staff(self, exhibitor_id):
