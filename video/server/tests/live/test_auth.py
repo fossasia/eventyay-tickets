@@ -107,7 +107,6 @@ async def test_auth_with_jwt_token(index, world):
         assert response[0] == "authenticated"
         assert set(response[1]["world.config"]["permissions"]) == {
             "world:view",
-            "world:exhibition.contact",
         }
         assert set(response[1]["world.config"]["rooms"][0]["permissions"]) == {
             "room:view",

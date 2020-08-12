@@ -24,14 +24,12 @@
   },
   "roles": {
     "attendee": [
-      "world:view",
-      "world:exhibition.contact"
+      "world:view"
     ],
     "viewer": [
       "world:view",
       "room:view",
-      "room:chat.read",
-      "world:exhibition.contact"
+      "room:chat.read"
     ],
     "participant": [
       "world:view",
