@@ -63,7 +63,8 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['userContactRequests', 'staffContactRequests', 'fatalConnectionError', 'fatalError', 'connected', 'world', 'user']),
+		...mapState(['fatalConnectionError', 'fatalError', 'connected', 'world', 'user']),
+		...mapState('exhibition', ['userContactRequests', 'staffContactRequests']),
 		room () {
 			if (this.$route.name === 'home') return this.$store.state.rooms?.[0]
 			return this.$store.state.rooms?.find(room => room.id === this.$route.params.roomId)
