@@ -5,7 +5,7 @@ const SCALE = {
 	xs: 480,
 	s: 768,
 	m: 992,
-	l: 1200,
+	l: 1400,
 	xl: 1800,
 	hd: Infinity
 }

@@ -204,4 +204,12 @@ export default {
 			.mdi
 				font-size: 36px
 				margin: 0 4px
+	+below('m')
+		.content-wrapper
+			flex-direction: column-reverse
+		.content
+			max-width: none
+			padding: 16px 0
+		.sidebar
+			width: auto
 </style>
