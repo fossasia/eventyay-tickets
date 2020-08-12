@@ -14,24 +14,24 @@ export default {
 	props: {
 		request: Object,
 	},
-	data() {
+	data () {
 		return {
 			timer: 30,
 		}
 	},
 	methods: {
-		cancel() {
-			if (this.timer > 0) this.$store.dispatch('cancelContactRequest', this.request)
-			this.$store.dispatch('closeContactRequest', this.request)
+		async cancel () {
+			if (this.timer > 0) await api.call('exhibition.contact_cancel', {contact_request: this.request.id})
+			this.$store.dispatch('exhibition/closeContactRequest', this.request)
 		},
 	},
 	watch: {
 		timer: {
-			handler(value) {
+			async handler (value) {
 				if (value > 0) {
 					setTimeout(() => { this.timer-- }, 1000)
 				} else {
-					this.$store.dispatch('cancelContactRequest', this.request)
+					await api.call('exhibition.contact_cancel', {contact_request: this.request.id})
 				}
 			},
 			immediate: true

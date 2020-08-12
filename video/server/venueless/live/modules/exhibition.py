@@ -101,14 +101,18 @@ class ExhibitionModule(BaseModule):
 
     @event("contact_request")
     async def contact_request(self, body):
-        await self.consumer.send_json(["contact_request", body["contact_request"]])
+        await self.consumer.send_json(
+            ["exhibition.contact_request", body["contact_request"]]
+        )
 
     @event("contact_accepted")
     async def contact_accepted(self, body):
-        await self.consumer.send_json(["contact_accepted", body["contact_request"]])
+        await self.consumer.send_json(
+            ["exhibition.contact_accepted", body["contact_request"]]
+        )
 
     @event("contact_close")
     async def contact_request_cancel(self, body):
         await self.consumer.send_json(
-            ["contact_request_close", body["contact_request"]]
+            ["exhibition.contact_request_close", body["contact_request"]]
         )

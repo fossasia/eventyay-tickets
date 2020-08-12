@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import api from 'lib/api'
 import router from 'router'
 import chat from './chat'
+import exhibition from './exhibition'
 
 Vue.use(Vuex)
 
@@ -20,8 +21,6 @@ export default new Vuex.Store({
 		schedule: null,
 		activeRoom: null,
 		reactions: null,
-		staffContactRequests: [],
-		userContactRequests: [],
 	},
 	getters: {
 		hasPermission (state) {
@@ -112,22 +111,6 @@ export default new Vuex.Store({
 			if (!state.activeRoom) return
 			await api.call('room.react', {room: state.activeRoom.id, reaction})
 		},
-		async contact ({state}, { exhibitorId, roomId }) {
-			state.userContactRequests.push((await api.call('exhibition.contact', {exhibitor: exhibitorId, room: roomId})).contact_request)
-		},
-		async dismissContactRequest ({state}, contactRequest) {
-			state.staffContactRequests = state.staffContactRequests.filter(function( r ) { return r.id !== contactRequest.id })
-		},
-		async acceptContactRequest ({state, dispatch}, contactRequest) {
-			await dispatch('chat/openDirectMessage', {user: contactRequest.user})
-			await api.call('exhibition.contact_accept', {'contact_request': contactRequest.id})
-		},
-		async cancelContactRequest ({state}, contactRequest) {
-			await api.call('exhibition.contact_cancel', {'contact_request': contactRequest.id})
-		},
-		async closeContactRequest ({state}, contactRequest) {
-			state.userContactRequests = state.userContactRequests.filter(function( r ) { return r.id !== contactRequest.id })
-		},
 		'api::room.create' ({state}, room) {
 			state.rooms.push(room)
 			// TODO ordering?
@@ -142,18 +125,10 @@ export default new Vuex.Store({
 			commit('updateRooms', rooms)
 			dispatch('fetchSchedule')
 		},
-		'api::contact_accepted' ({state, dispatch}, contactRequest) {
-			state.userContactRequests = state.userContactRequests.filter(function( r ) { return r.id !== contactRequest.id })
-		},
-		'api::contact_request' ({state}, contactRequest) {
-			state.staffContactRequests.push(contactRequest)
-		},
-		'api::contact_request_close' ({state}, contactRequest) {
-			state.staffContactRequests = state.staffContactRequests.filter(function( r ) { return r.id !== contactRequest.id })
-		}
 		// TODO handle user.updated
 	},
 	modules: {
-		chat
+		chat,
+		exhibition
 	}
 })

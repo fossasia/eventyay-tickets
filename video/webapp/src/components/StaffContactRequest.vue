@@ -6,11 +6,10 @@
 			avatar(:user="request.user", :size="28")
 			span.display-name {{ request.user ? request.user.profile.display_name : '' }}
 		.controls
-			bunt-button#btn-cancel(@click="$store.dispatch('dismissContactRequest', request)") {{ $t('ContactRequest:dismiss-button:label') }}
-			bunt-button#btn-primary(@click="$store.dispatch('acceptContactRequest', request)") {{ $t('ContactRequest:accept-button:label') }}
+			bunt-button#btn-cancel(@click="$store.dispatch('exhibition/dismissContactRequest', request)") {{ $t('ContactRequest:dismiss-button:label') }}
+			bunt-button#btn-primary(@click="$store.dispatch('exhibition/acceptContactRequest', request)") {{ $t('ContactRequest:accept-button:label') }}
 </template>
 <script>
-import api from 'lib/api'
 import Avatar from 'components/Avatar'
 
 export default {
