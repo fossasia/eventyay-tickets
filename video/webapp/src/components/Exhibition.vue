@@ -98,14 +98,21 @@ $logo-height-large = 427px
 			min-height: $logo-height-large
 			margin: 0
 
-	+below('m')
-		.exhibitor-1x3
-			grid-area: span 1 / span 2
+	// below 3 wide grid
+	+below(904px)
 		.exhibitor-3x3
-			grid-area: span 2 / span 3
-	+below('s')
-		.exhibitor-1x3
-			grid-area: span 1 / span 1
-		.exhibitor-3x3
-			grid-area: span 1 / span 1
+			grid-area: span 2 / span 2
+	// disolve grid below 2 wide
+	+below(607px)
+		.exhibitors .scroll-content
+			display: flex
+			justify-content: flex-start
+		.exhibitor
+			flex: none
+			img.logo
+				height: auto
+				min-height: 0
+		.exhibitor-1x1
+			img.logo
+				max-height: $logo-height-medium
 </style>

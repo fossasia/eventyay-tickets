@@ -258,7 +258,7 @@ export default {
 			font-weight: 600
 			font-size: 18px
 			margin-left: 8px
-	+below('m')
+	+below('l')
 		position: fixed
 		left: 0
 		top: 0

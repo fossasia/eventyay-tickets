@@ -86,7 +86,7 @@ export default {
 			margin-bottom: 0
 			display: flex
 			flex-direction: column
-	+below('m')
+	+below('l')
 		width: 100vw
 		> .header
 			flex-direction: column
