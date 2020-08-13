@@ -81,6 +81,6 @@ export default {
 	'ContactRequest:dismiss-button:label': 'dismiss',
 	'ContactRequest:accept-button:label': 'accept',
 	'ContactRequest:request:text': 'Contacting staff members...',
-	'ContactRequest:timeout:text': 'There is currently no staff member available. Please try again at a later time.',
+	'ContactRequest:timeout:text': 'There is currently no staff member available.\nPlease try again at a later time.',
 	'ContactRequest:greeting:text': 'You have requested a private chat with a staff member'
 }

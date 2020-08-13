@@ -25,6 +25,7 @@
 		//- defining keys like this keeps the playing dom element alive for uninterupted transitions
 		media-source(v-if="roomHasMedia", ref="primaryMediaSource", :room="room", :key="room.id")
 		media-source(v-if="backgroundRoom", ref="backgroundMediaSource", :room="backgroundRoom", :background="true", :key="backgroundRoom.id", @close="backgroundRoom = null")
+		notifications(:has-background-media="!!backgroundRoom")
 		transition(name="prompt")
 			profile-prompt(v-if="!user.profile.display_name || showProfilePrompt", @close="showProfilePrompt = false")
 			create-stage-prompt(v-else-if="showStageCreationPrompt", @close="showStageCreationPrompt = false")
@@ -32,8 +33,6 @@
 		.disconnected-warning(v-if="!connected") {{ $t('App:disconnected-warning:text') }}
 	bunt-progress-circular(v-else-if="!fatalError", size="huge")
 	.fatal-error(v-if="fatalError") {{ fatalError.message }}
-	StaffContactRequest(v-for="contactRequest of staffContactRequests", :request="contactRequest")
-	UserContactRequest(v-for="contactRequest of userContactRequests", :request="contactRequest")
 </template>
 <script>
 import { mapState } from 'vuex'
@@ -44,13 +43,12 @@ import ProfilePrompt from 'components/ProfilePrompt'
 import CreateStagePrompt from 'components/CreateStagePrompt'
 import CreateChatPrompt from 'components/CreateChatPrompt'
 import MediaSource from 'components/MediaSource'
-import StaffContactRequest from 'components/StaffContactRequest'
-import UserContactRequest from 'components/UserContactRequest'
+import Notifications from 'components/notifications'
 
 const mediaModules = ['livestream.native', 'call.bigbluebutton']
 
 export default {
-	components: { AppBar, RoomsSidebar, ProfilePrompt, CreateStagePrompt, CreateChatPrompt, MediaSource, StaffContactRequest, UserContactRequest },
+	components: { AppBar, RoomsSidebar, ProfilePrompt, CreateStagePrompt, CreateChatPrompt, MediaSource, Notifications },
 	data () {
 		return {
 			themeVariables,
@@ -64,7 +62,6 @@ export default {
 	},
 	computed: {
 		...mapState(['fatalConnectionError', 'fatalError', 'connected', 'world', 'user']),
-		...mapState('exhibition', ['userContactRequests', 'staffContactRequests']),
 		room () {
 			if (this.$route.name === 'home') return this.$store.state.rooms?.[0]
 			return this.$store.state.rooms?.find(room => room.id === this.$route.params.roomId)

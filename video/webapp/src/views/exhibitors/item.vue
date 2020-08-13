@@ -28,32 +28,38 @@ scrollbars.c-exhibitor(y)
 				tr(v-for="link in exhibitor.links")
 					th.name {{ link.display_text }}
 					td: a(:href="link.url", target="_blank") {{ prettifyUrl(link.url) }}
-			div(v-if="exhibitor.staff.length > 0")
+			template(v-if="exhibitor.staff.length > 0")
 				.contact
-					bunt-button(@click="contact", :tooltip="$t('Exhibition:contact-button:tooltip')") {{ $t('Exhibition:contact-button:label') }}
+					bunt-button(@click="showContactPrompt = true", :tooltip="$t('Exhibition:contact-button:tooltip')") {{ $t('Exhibition:contact-button:label') }}
 				.staff
 					h3 Unser Standpersonal
 					.user(v-for="user in exhibitor.staff")
-						avatar(:user="user", :size="28")
+						avatar(:user="user", :size="36")
 						span.display-name {{ user ? user.profile.display_name : '' }}
 						bunt-icon-button(v-if="hasPermission('world:rooms.create.exhibition')", @click.prevent.stop="removeStaff(user)") close
 
 	bunt-progress-circular(v-else, size="huge", :page="true")
+	transition(name="prompt")
+		contact-exhibitor-prompt(v-if="showContactPrompt", @close="showContactPrompt = false", :exhibitor="exhibitor")
 </template>
 <script>
+// TODO
+// - user action for staff list?
 import { mapState, mapGetters } from 'vuex'
 import api from 'lib/api'
-import MarkdownContent from 'components/MarkdownContent'
 import Avatar from 'components/Avatar'
+import ContactExhibitorPrompt from 'components/ContactExhibitorPrompt'
+import MarkdownContent from 'components/MarkdownContent'
 
 export default {
-	components: { MarkdownContent, Avatar },
+	components: { Avatar, ContactExhibitorPrompt, MarkdownContent },
 	props: {
 		exhibitorId: String
 	},
 	data () {
 		return {
 			exhibitor: null,
+			showContactPrompt: false
 		}
 	},
 	async created () {
@@ -67,9 +73,6 @@ export default {
 		prettifyUrl (link) {
 			const url = new URL(link)
 			return url.hostname + (url.pathname !== '/' ? url.pathname : '')
-		},
-		async contact () {
-			this.$store.dispatch('exhibition/contact', {exhibitorId: this.exhibitorId})
 		},
 		async removeStaff (user) {
 			await api.call('exhibition.remove_staff', {user: user.id, exhibitor: this.exhibitor.id})
@@ -87,16 +90,16 @@ export default {
 		display: flex
 		justify-content: center
 		padding: 8px
-	.content
-		display: flex
-		flex-direction: column
-		width: 100%
-		max-width: 720px
-		padding: 0 16px 0 0
-		img.banner
-			object-fit: contain
+		> .content
+			display: flex
+			flex-direction: column
 			width: 100%
-			margin-top: 16px
+			max-width: 720px
+			padding: 0 16px 0 0
+			img.banner
+				object-fit: contain
+				width: 100%
+				margin-top: 16px
 	.markdown-content img
 		max-width: 100%
 	.sidebar
@@ -155,26 +158,6 @@ export default {
 				white-space: nowrap
 			a:hover
 					text-decoration: underline
-		.staff
-			padding: 8px
-			h3
-				margin: 0
-			.user
-				display: flex
-				align-items: center
-				padding: 2px 0px 2px 0
-				min-height: 36px
-				.display-name
-					font-weight: 600
-					color: $clr-secondary-text-light
-					margin-left: 8px
-					flex: 1
-				.bunt-icon-button
-					icon-button-style(style: clear)
-				&:not(:hover) .bunt-icon-button
-					display: none
-				&:hover
-					background-color: $clr-grey-100
 		.contact
 			flex: none
 			padding: 8px
@@ -183,6 +166,22 @@ export default {
 			border-bottom: border-separator()
 			.bunt-button
 				themed-button-primary()
+		.staff
+			padding: 8px
+			h3
+				margin: 0
+			.user
+				display: flex
+				align-items: center
+				min-height: 48px
+				.display-name
+					margin-left: 8px
+					flex: auto
+					ellipsis()
+				.bunt-icon-button
+					icon-button-style(style: clear)
+				&:not(:hover) .bunt-icon-button
+					display: none
 	.downloads
 		border: border-separator()
 		border-radius: 4px
@@ -207,9 +206,9 @@ export default {
 	+below('m')
 		.content-wrapper
 			flex-direction: column-reverse
-		.content
-			max-width: none
-			padding: 16px 0
+			> .content
+				max-width: none
+				padding: 16px 0
 		.sidebar
 			width: auto
 </style>
