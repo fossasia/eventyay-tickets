@@ -58,6 +58,7 @@ export default new Vuex.Store({
 				state.permissions = serverState['world.config'].permissions
 				commit('chat/setJoinedChannels', serverState['chat.channels'])
 				commit('chat/setReadPointers', serverState['chat.read_pointers'])
+				commit('exhibition/setData', serverState.exhibition)
 				commit('updateRooms', serverState['world.config'].rooms)
 				if (!state.user.profile.display_name) {
 					router.push('/').catch(() => {}) // force new users to welcome page

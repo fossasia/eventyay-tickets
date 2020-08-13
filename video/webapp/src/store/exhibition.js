@@ -3,36 +3,42 @@ import api from 'lib/api'
 export default {
 	namespaced: true,
 	state: {
-		staffContactRequests: [],
-		userContactRequests: [],
+		staffedExhibitions: [],
+		contactRequests: [],
 	},
 	getters: {
+		openContactRequests (state) {
+			return state.contactRequests.filter(cr => cr.state === 'open')
+		}
 	},
 	mutations: {
+		setData (state, data) {
+			state.staffedExhibitions = data.exhibitors
+			state.contactRequests = data.contact_requests
+		}
 	},
 	actions: {
-		async contact ({state}, { exhibitorId, roomId }) {
-			state.userContactRequests.push((await api.call('exhibition.contact', {exhibitor: exhibitorId, room: roomId})).contact_request)
-		},
 		async dismissContactRequest ({state}, contactRequest) {
 			state.staffContactRequests = state.staffContactRequests.filter(function (r) { return r.id !== contactRequest.id })
 		},
 		async acceptContactRequest ({state, dispatch}, contactRequest) {
+			// TODO error handling
+			await dispatch('chat/openDirectMessage', {user: contactRequest.user}, {root: true})
 			await api.call('exhibition.contact_accept', {contact_request: contactRequest.id})
-			await dispatch('chat/openDirectMessage', {user: contactRequest.user})
 			// TODO: send greeting message
 		},
-		async closeContactRequest ({state}, contactRequest) {
-			state.userContactRequests = state.userContactRequests.filter(function (r) { return r.id !== contactRequest.id })
-		},
-		'api::exhibition.contact_accepted' ({state}, contactRequest) {
-			state.userContactRequests = state.userContactRequests.filter(function (r) { return r.id !== contactRequest.id })
-		},
+		// for staff
 		'api::exhibition.contact_request' ({state}, contactRequest) {
-			state.staffContactRequests.push(contactRequest)
+			state.contactRequests.push(contactRequest)
 		},
 		'api::exhibition.contact_request_close' ({state}, contactRequest) {
-			state.staffContactRequests = state.staffContactRequests.filter(function (r) { return r.id !== contactRequest.id })
+			const existingContactRequest = state.contactRequests.find(cb => cb.id === contactRequest.id)
+			if (!existingContactRequest) return
+			existingContactRequest.state = contactRequest.state
+		},
+		// for client
+		'api::exhibition.contact_accepted' ({state}, contactRequest) {
+			console.log('HURRA', contactRequest)
 		}
 	}
 }
