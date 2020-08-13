@@ -35,6 +35,20 @@ class ExhibitionModule(BaseModule):
             return
         await self.consumer.send_success({"exhibitor": exhibitor})
 
+    @command("get_missed_contact_requests")
+    async def get_missed_contact_requests(self, body):
+        staff = await self.service.get_staff(exhibitor_id=body["exhibitor"])
+        if self.consumer.user.id not in staff:
+            await self.consumer.send_error("exhibition.not_staff_member")
+            return
+        requests = await self.service.get_missed_contact_requests(
+            exhibitor_id=body["exhibitor"]
+        )
+        if not requests:
+            await self.consumer.send_error("exhibition.unknown_exhibitor")
+            return
+        await self.consumer.send_success({"requests": requests})
+
     @command("contact")
     @require_world_permission(Permission.WORLD_EXHIBITION_CONTACT)
     async def contact(self, body):

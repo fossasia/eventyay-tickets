@@ -56,7 +56,7 @@ To request a private chat with one of the staff members of an exhibitor, a clien
 
 A contact request (with state "open") will be send to all clients associated as staff::
 
-    <- ["contact_request", {id, exhibitor_id, user_id, state}]
+    <- ["exhibition.contact_request", {id, exhibitor_id, user_id, state}]
 
 A client can accept the contact request with a message like this::
 
@@ -65,11 +65,11 @@ A client can accept the contact request with a message like this::
 
 The client which requested the contact will be send a message like::
 
-    <- ["contact_accepted", {id, exhibitor, user, state}]
+    <- ["exhibition.contact_accepted", {id, exhibitor, user, state}]
 
 The state will become "answered" and messages send to all staff members::
 
-    <- ["contact_request_close", {id, exhibitor, user, state}]
+    <- ["exhibition.contact_request_close", {id, exhibitor, user, state}]
 
 Cancel contact request
 ----------------------
@@ -81,5 +81,13 @@ A client can cancel a contact request with a message like this::
 
 The state will be set to "missed" and messages send to all staff members::
 
-    <- ["contact_request_close", {id, exhibitor, user, state}]
+    <- ["exhibition.contact_request_close", {id, exhibitor, user, state}]
+
+Missed contact request
+----------------------
+
+A client which is associated as a staff member can get all missed contact requests with a message like this::
+
+    => ["exhibition.get_missed_contact_requests", 1234, {"exhibitor": id}]
+    <- ["success", 1234, {"requests": [{id, exhibitor, user, state},...]}]
 

@@ -66,6 +66,20 @@ class ExhibitionService:
         return e.serialize()
 
     @database_sync_to_async
+    def get_missed_contact_requests(self, exhibitor_id):
+        qs = ContactRequest.objects.filter(
+            exhibitor__id=exhibitor_id, state="missed"
+        )  # TODO: .order_by("date")
+        return [
+            dict(
+                id=str(r.id),
+                exhibitor=r.exhibitor.serialize_short(),
+                user=r.user.serialize_public(),
+            )
+            for r in qs
+        ]
+
+    @database_sync_to_async
     def contact(self, exhibitor_id, user):
         e = get_exhibitor_by_id(self.world_id, exhibitor_id)
         if not e:
