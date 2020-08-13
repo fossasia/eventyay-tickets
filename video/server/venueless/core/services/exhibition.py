@@ -134,3 +134,11 @@ class ExhibitionService:
         if not e:
             return None
         return list(e.staff.values_list("user__id", flat=True))
+
+    def get_exhibition_data_for_user(self, user):
+        exhibitors = Exhibitor.objects.filter(world__id=self.world_id, staff__user=user,)
+        contact_requests = ContactRequest.objects.filter(exhibitor__in=exhibitors)
+        return {
+            "exhibitors": [ex.serialize_short() for ex in exhibitors],
+            "contact_requests": [cr.serialize() for cr in contact_requests],
+        }
