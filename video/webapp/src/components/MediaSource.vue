@@ -63,8 +63,10 @@ export default {
 		position: fixed
 		transition: all .3s ease
 		&.size-tiny
-			bottom: calc(var(--vh100) - 48px - 48px - 3px)
+			bottom: calc(var(--vh100) - 48px - 3px)
 			right: 4px + 36px + 4px
+			+below('l')
+				bottom: calc(var(--vh100) - 48px - 48px - 3px)
 		&:not(.size-tiny)
 			bottom: 56px
 			right: var(--chatbar-width)
