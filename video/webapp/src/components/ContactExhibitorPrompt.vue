@@ -33,11 +33,14 @@ export default {
 		this.tickTimer()
 		this.request = (await api.call('exhibition.contact', {exhibitor: this.exhibitor.id})).contact_request
 	},
+	beforeDestroy () {
+		clearTimeout(this.ticker)
+	},
 	methods: {
 		async tickTimer () {
 			if (this.timer > 0) {
 				this.timer--
-				setTimeout(this.tickTimer, 1000)
+				this.ticker = setTimeout(this.tickTimer, 1000)
 			} else {
 				await api.call('exhibition.contact_cancel', {contact_request: this.request.id})
 			}
