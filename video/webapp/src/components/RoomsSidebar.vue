@@ -32,14 +32,17 @@ transition(name="sidebar")
 				router-link.direct-message(v-for="channel of directMessageChannels", :to="{name: 'channel', params: {channelId: channel.id}}", :class="{unread: hasUnreadMessages(channel.id)}")
 					.name {{ channel.user.profile.display_name }}
 					bunt-icon-button(@click.prevent.stop="$store.dispatch('chat/closeDirectMessage', {channel})") close
-			template(v-if="hasPermission('world:users.list') || hasPermission('world:update') || hasPermission('room:update')")
-				.buffer
-				.group-title
-					span {{ $t('RoomsSidebar:admin-headline:text') }}
+			.buffer
+			template(v-if="staffedExhibitions.length > 0")
+				.group-title Your Exihibitions
 				.admin
-					router-link.room(:to="{name: 'admin:users'}", v-if="hasPermission('world:users.list')") {{ $t('RoomsSidebar:admin-users:label') }}
-					router-link.room(:to="{name: 'admin:rooms'}", v-if="hasPermission('room:update')") {{ $t('RoomsSidebar:admin-rooms:label') }}
-					router-link.room(:to="{name: 'admin:config'}", v-if="hasPermission('world:update')") {{ $t('RoomsSidebar:admin-config:label') }}
+					router-link(:to="{name: 'contactRequests'}") Contact Requests
+			template(v-if="hasPermission('world:users.list') || hasPermission('world:update') || hasPermission('room:update')")
+				.group-title {{ $t('RoomsSidebar:admin-headline:text') }}
+				.admin
+					router-link(:to="{name: 'admin:users'}", v-if="hasPermission('world:users.list')") {{ $t('RoomsSidebar:admin-users:label') }}
+					router-link(:to="{name: 'admin:rooms'}", v-if="hasPermission('room:update')") {{ $t('RoomsSidebar:admin-rooms:label') }}
+					router-link(:to="{name: 'admin:config'}", v-if="hasPermission('world:update')") {{ $t('RoomsSidebar:admin-config:label') }}
 		.profile(@click="$emit('editProfile')")
 			avatar(:user="user", :size="36")
 			.display-name {{ user.profile.display_name }}
@@ -65,6 +68,7 @@ export default {
 	computed: {
 		...mapState(['user', 'world', 'rooms']),
 		...mapState('chat', ['joinedChannels']),
+		...mapState('exhibition', ['staffedExhibitions']),
 		...mapGetters('chat', ['hasUnreadMessages']),
 		...mapGetters(['hasPermission']),
 		style () {
