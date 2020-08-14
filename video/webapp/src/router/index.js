@@ -4,6 +4,7 @@ import Schedule from 'views/schedule'
 import Room from 'views/rooms/item'
 import Channel from 'views/channels/item'
 import Exhibitor from 'views/exhibitors/item'
+import ContactRequests from 'views/contact-requests'
 
 Vue.use(VueRouter)
 
@@ -29,6 +30,11 @@ const routes = [{
 	path: '/exhibitors/:exhibitorId',
 	name: 'exhibitor',
 	component: Exhibitor,
+	props: true
+}, {
+	path: '/contact-requests',
+	name: 'contactRequests',
+	component: ContactRequests,
 	props: true
 }, {
 	path: '/admin',

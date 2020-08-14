@@ -21,10 +21,13 @@ export default {
 		async dismissContactRequest ({state}, contactRequest) {
 			state.staffContactRequests = state.staffContactRequests.filter(function (r) { return r.id !== contactRequest.id })
 		},
-		async acceptContactRequest ({state, dispatch}, contactRequest) {
+		async acceptContactRequest ({state, dispatch, rootState}, contactRequest) {
 			// TODO error handling
 			await dispatch('chat/openDirectMessage', {user: contactRequest.user}, {root: true})
 			await api.call('exhibition.contact_accept', {contact_request: contactRequest.id})
+			contactRequest.state = 'answered'
+			contactRequest.answered_by = rootState.user
+			contactRequest.timestamp = new Date().toISOString()
 			// TODO: send greeting message
 		},
 		// for staff
@@ -35,6 +38,8 @@ export default {
 			const existingContactRequest = state.contactRequests.find(cb => cb.id === contactRequest.id)
 			if (!existingContactRequest) return
 			existingContactRequest.state = contactRequest.state
+			existingContactRequest.answered_by = contactRequest.answered_by
+			existingContactRequest.timestamp = contactRequest.timestamp
 		},
 		// for client
 		'api::exhibition.contact_accepted' ({state}, contactRequest) {
