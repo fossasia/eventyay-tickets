@@ -69,7 +69,9 @@ class ExhibitionModule(BaseModule):
 
     @command("contact_accept")
     async def contact_accept(self, body):
-        request = await self.service.accept(contact_request_id=body["contact_request"])
+        request = await self.service.accept(
+            contact_request_id=body["contact_request"], staff=self.consumer.user
+        )
         if not request:
             await self.consumer.send_error("exhibition.unknown_contact_request")
             return

@@ -124,11 +124,23 @@ class ContactRequest(models.Model):
         related_name="exhibitor_contact_requests",
     )
     state = models.CharField(max_length=8, default=States.OPEN, choices=States.choices)
+    answered_by = models.ForeignKey(
+        "User",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="exhibitor_answered_contact_requests",
+    )
+    timestamp = models.DateTimeField(auto_now_add=True, null=True)
 
     def serialize(self):
         return dict(
             id=str(self.id),
             exhibitor=self.exhibitor.serialize_short(),
-            user=self.user.serialize_public(),
+            user=self.user.serialize_public() if self.user else None,
             state=self.state,
+            answered_by=self.answered_by.serialize_public()
+            if self.answered_by
+            else None,
+            timestamp=self.timestamp.isoformat() if self.timestamp else None,
         )

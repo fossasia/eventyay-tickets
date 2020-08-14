@@ -83,14 +83,15 @@ class ExhibitionService:
         return r.serialize()
 
     @database_sync_to_async
-    def accept(self, contact_request_id):
+    def accept(self, contact_request_id, staff):
         r = get_request_by_id(self.world_id, contact_request_id)
         if not r:
             return None
         if r.state == "answered":
             return None
         r.state = "answered"
-        r.save(update_fields=["state"])
+        r.answered_by = staff
+        r.save(update_fields=["state", "answered_by"])
         return r.serialize()
 
     @database_sync_to_async

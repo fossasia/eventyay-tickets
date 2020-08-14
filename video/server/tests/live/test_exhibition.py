@@ -265,6 +265,9 @@ async def test_exhibition_contact(world, exhibition_room):
         assert response[0] == "success"
         response = await c1.receive_json_from()
         assert response[0] == "exhibition.contact_accepted"
+        assert response[1]["answered_by"]["id"] == str(
+            c_staff.context["user.config"]["id"]
+        )
         response = await c_staff.receive_json_from()
         assert response[0] == "exhibition.contact_request_close"
 
