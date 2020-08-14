@@ -21,6 +21,13 @@ class ExhibitionModule(BaseModule):
         super().__init__(*args, **kwargs)
         self.service = ExhibitionService(self.consumer.world.id)
 
+    async def dispatch_disconnect(self, close_code):
+        if self.consumer.user:
+            for request in await self.service.get_requests_from_user(
+                user=self.consumer.user
+            ):
+                await self.contact_cancel({"contact_request": request["id"]})
+
     @command("list")
     @room_action(module_required="exhibition.native")
     async def list(self, body):
