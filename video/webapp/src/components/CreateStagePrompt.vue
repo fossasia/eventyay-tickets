@@ -1,7 +1,6 @@
 <template lang="pug">
 prompt.c-create-stage-prompt(@close="$emit('close')")
 	.content
-		bunt-icon-button#btn-close(@click="$emit('close')") close
 		h1 {{ $t('CreateStagePrompt:headline:text') }}
 		form(@submit.prevent="create")
 			bunt-input(name="name", :label="$t('CreateStagePrompt:name:label')", icon="theater", :placeholder="$t('CreateStagePrompt:name:placeholder')", v-model="name", :validation="$v.name")
