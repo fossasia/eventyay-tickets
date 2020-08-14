@@ -83,11 +83,3 @@ The state will be set to "missed" and messages send to all staff members::
 
     <- ["exhibition.contact_request_close", {id, exhibitor, user, state}]
 
-Missed contact request
-----------------------
-
-A client which is associated as a staff member can get all missed contact requests with a message like this::
-
-    => ["exhibition.get_missed_contact_requests", 1234, {"exhibitor": id}]
-    <- ["success", 1234, {"requests": [{id, exhibitor, user, state},...]}]
-

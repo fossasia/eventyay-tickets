@@ -68,7 +68,7 @@ class AuthModule(BaseModule):
                     "world.config": login_result.world_config,
                     "chat.channels": login_result.chat_channels,
                     "chat.read_pointers": read_pointers,
-                    "exhibition": login_result.exhibition_data
+                    "exhibition": login_result.exhibition_data,
                 },
             ]
         )

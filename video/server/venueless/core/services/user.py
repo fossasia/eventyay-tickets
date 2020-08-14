@@ -130,7 +130,9 @@ def update_user(world_id, id, *, traits=None, public_data=None, serialize=True):
     return user.serialize_public() if serialize else user
 
 
-LoginResult = namedtuple("LoginResult", "user world_config chat_channels exhibition_data")
+LoginResult = namedtuple(
+    "LoginResult", "user world_config chat_channels exhibition_data"
+)
 
 
 def login(*, world=None, token=None, client_id=None,) -> LoginResult:
@@ -153,7 +155,9 @@ def login(*, world=None, token=None, client_id=None,) -> LoginResult:
         chat_channels=ChatService(world).get_channels_for_user(
             user.pk, is_volatile=False
         ),
-        exhibition_data=ExhibitionService(world.id).get_exhibition_data_for_user(user.pk),
+        exhibition_data=ExhibitionService(world.id).get_exhibition_data_for_user(
+            user.pk
+        ),
     )
 
 
