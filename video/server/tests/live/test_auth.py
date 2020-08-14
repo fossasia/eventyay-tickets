@@ -35,6 +35,7 @@ async def test_auth_with_client_id(world):
             "user.config",
             "chat.channels",
             "chat.read_pointers",
+            "exhibition",
         }
 
 
@@ -120,6 +121,7 @@ async def test_auth_with_jwt_token(index, world):
             "user.config",
             "chat.channels",
             "chat.read_pointers",
+            "exhibition",
         }
 
 
@@ -159,6 +161,7 @@ async def test_update_user():
             "user.config",
             "chat.channels",
             "chat.read_pointers",
+            "exhibition",
         }
         user_id = response[1]["user.config"]["id"]
 
@@ -185,6 +188,7 @@ async def test_update_user():
             "user.config",
             "chat.channels",
             "chat.read_pointers",
+            "exhibition",
         }
         assert response[1]["user.config"]["profile"]["display_name"] == "Cool User"
         assert response[1]["user.config"]["id"] == user_id
@@ -228,6 +232,7 @@ async def test_auth_with_jwt_token_update_traits(world):
             "user.config",
             "chat.channels",
             "chat.read_pointers",
+            "exhibition",
         }
         assert (
             await database_sync_to_async(get_user_by_token_id)("sample", "123456")
@@ -241,6 +246,7 @@ async def test_auth_with_jwt_token_update_traits(world):
             "user.config",
             "chat.channels",
             "chat.read_pointers",
+            "exhibition",
         }
         assert (
             await database_sync_to_async(get_user_by_token_id)("sample", "123456")
@@ -271,6 +277,7 @@ async def test_auth_with_jwt_token_twice(world):
             "user.config",
             "chat.channels",
             "chat.read_pointers",
+            "exhibition",
         }
         assert (
             await database_sync_to_async(get_user_by_token_id)("sample", "123456")
@@ -284,6 +291,7 @@ async def test_auth_with_jwt_token_twice(world):
             "user.config",
             "chat.channels",
             "chat.read_pointers",
+            "exhibition",
         }
         assert (
             await database_sync_to_async(get_user_by_token_id)("sample", "123456")
@@ -302,6 +310,7 @@ async def test_fetch_user():
             "user.config",
             "chat.channels",
             "chat.read_pointers",
+            "exhibition",
         }
         user_id = response[1]["user.config"]["id"]
 
@@ -359,6 +368,7 @@ async def test_auth_with_jwt_token_and_permission_traits(world):
             "user.config",
             "chat.channels",
             "chat.read_pointers",
+            "exhibition",
         }
         assert set(response[1]["world.config"]["permissions"]) == {
             "world:view",
