@@ -20,15 +20,11 @@
 		app-bar(v-if="$mq.below['m']", @toggleSidebar="toggleSidebar")
 		transition(name="backdrop")
 			.sidebar-backdrop(v-if="$mq.below['m'] && showSidebar", @pointerup="showSidebar = false")
-		rooms-sidebar(:show="$mq.above['m'] || showSidebar", @editProfile="showProfilePrompt = true", @createRoom="showStageCreationPrompt = true", @createChat="showChatCreationPrompt = true",	@close="showSidebar = false")
+		rooms-sidebar(:show="$mq.above['m'] || showSidebar", @close="showSidebar = false")
 		router-view(:key="$route.fullPath")
 		//- defining keys like this keeps the playing dom element alive for uninterupted transitions
 		media-source(v-if="roomHasMedia", ref="primaryMediaSource", :room="room", :key="room.id")
 		media-source(v-if="backgroundRoom", ref="backgroundMediaSource", :room="backgroundRoom", :background="true", :key="backgroundRoom.id", @close="backgroundRoom = null")
-		transition(name="prompt")
-			profile-prompt(v-if="!user.profile.display_name || showProfilePrompt", @close="showProfilePrompt = false")
-			create-stage-prompt(v-else-if="showStageCreationPrompt", @close="showStageCreationPrompt = false")
-			create-chat-prompt(v-else-if="showChatCreationPrompt", @close="showChatCreationPrompt = false")
 		.disconnected-warning(v-if="!connected") {{ $t('App:disconnected-warning:text') }}
 	bunt-progress-circular(v-else-if="!fatalError", size="huge")
 	.fatal-error(v-if="fatalError") {{ fatalError.message }}
@@ -38,23 +34,17 @@ import { mapState } from 'vuex'
 import { themeVariables } from 'theme'
 import AppBar from 'components/AppBar'
 import RoomsSidebar from 'components/RoomsSidebar'
-import ProfilePrompt from 'components/ProfilePrompt'
-import CreateStagePrompt from 'components/CreateStagePrompt'
-import CreateChatPrompt from 'components/CreateChatPrompt'
 import MediaSource from 'components/MediaSource'
 
 const mediaModules = ['livestream.native', 'call.bigbluebutton']
 
 export default {
-	components: { AppBar, RoomsSidebar, ProfilePrompt, CreateStagePrompt, CreateChatPrompt, MediaSource },
+	components: { AppBar, RoomsSidebar, MediaSource },
 	data () {
 		return {
 			themeVariables,
 			backgroundRoom: null,
 			showSidebar: false,
-			showProfilePrompt: false,
-			showStageCreationPrompt: false,
-			showChatCreationPrompt: false,
 			windowHeight: null
 		}
 	},
