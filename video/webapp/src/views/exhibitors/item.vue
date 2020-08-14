@@ -29,7 +29,7 @@ scrollbars.c-exhibitor(y)
 					th.name {{ link.display_text }}
 					td: a(:href="link.url", target="_blank") {{ prettifyUrl(link.url) }}
 			template(v-if="exhibitor.staff.length > 0")
-				.contact
+				.contact(v-if="hasPermission('world:exhibition.contact')")
 					bunt-button(@click="showContactPrompt = true", :tooltip="$t('Exhibition:contact-button:tooltip')") {{ $t('Exhibition:contact-button:label') }}
 				.staff
 					h3 Unser Standpersonal
