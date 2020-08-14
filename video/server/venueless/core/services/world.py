@@ -61,6 +61,7 @@ def get_room_config(room, permissions):
     room_config = {
         "id": str(room.id),
         "name": room.name,
+        "description": room.description,
         "picture": room.picture.url if room.picture else None,
         "import_id": room.import_id,
         "pretalx_id": room.pretalx_id,
@@ -170,6 +171,7 @@ async def create_room(world, data, creator):
         {
             "world": world,
             "name": data["name"],
+            "description": data["description"],
             "module_config": data.get("modules", []),
         },
         permission_preset=data.get("permission_preset", "public"),
