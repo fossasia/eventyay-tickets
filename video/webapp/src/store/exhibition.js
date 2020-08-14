@@ -42,8 +42,8 @@ export default {
 			existingContactRequest.timestamp = contactRequest.timestamp
 		},
 		// for client
-		'api::exhibition.contact_accepted' ({state}, contactRequest) {
-			console.log('HURRA', contactRequest)
+		async 'api::exhibition.contact_accepted' ({dispatch}, contactRequest) {
+			await dispatch('chat/openDirectMessage', {user: contactRequest.answered_by}, {root: true})
 		}
 	}
 }
