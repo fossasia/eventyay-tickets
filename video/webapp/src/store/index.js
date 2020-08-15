@@ -33,7 +33,7 @@ export default new Vuex.Store({
 			const sessions = []
 			for (const day of state.schedule.schedule) {
 				for (const room of day.rooms) {
-					const vRoom = state.rooms.find(r => r.import_id === state.world.pretalx.room_mapping[room.id])
+					const vRoom = state.rooms.find(r => r.pretalx_id === room.id)
 					for (const talk of room.talks) {
 						sessions.push({
 							id: talk.code,
