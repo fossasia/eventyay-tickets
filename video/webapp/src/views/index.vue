@@ -51,7 +51,7 @@ export default {
 		nextSessions () {
 			if (!this.flatSchedule) return
 			const getSessionState = (session) => {
-				if (session.room.schedule_data) {
+				if (session.room.schedule_data?.session === session.id) {
 					return {
 						isLive: true,
 						timeString: 'live now'

@@ -44,8 +44,7 @@ export default {
 	created () {},
 	mounted () {
 		this.$nextTick(() => {
-			console.log(this.$refs)
-			this.$refs.currentSession[0].scrollIntoView()
+			this.$refs.currentSession?.[0]?.scrollIntoView()
 		})
 	},
 	methods: {
@@ -96,7 +95,7 @@ export default {
 	.sessions
 		display: flex
 		flex-direction: column
-		border: border-separator()
+		border-right: border-separator()
 		width: 420px
 		.session
 			height: 56px
@@ -105,8 +104,8 @@ export default {
 			box-sizing: border-box
 			display: flex
 			cursor: pointer
-			&:not(:last-child)
-				border-bottom: border-separator()
+			&:not(:first-child)
+				border-top: border-separator()
 			&:hover
 				background-color: $clr-grey-100
 			&.current
