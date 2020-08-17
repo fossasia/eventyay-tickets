@@ -30,7 +30,8 @@ export default {
 		startOfDay: Object
 	},
 	computed: {
-		...mapState(['world', 'schedule']), // TODO leaky
+		...mapState(['world']), // TODO leaky
+		...mapState({schedule: 'pretalxEvent'}),
 		track () {
 			return this.schedule.event.tracks.find(track => track.name === this.talk.track)
 		},

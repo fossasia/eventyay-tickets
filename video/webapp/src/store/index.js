@@ -18,6 +18,7 @@ export default new Vuex.Store({
 		rooms: null,
 		permissions: null,
 		schedule: null,
+		pretalxEvent: null,
 		now: moment(),
 		activeRoom: null,
 		reactions: null
@@ -29,22 +30,24 @@ export default new Vuex.Store({
 			}
 		},
 		flatSchedule (state) {
-			if (!state.schedule) return
+			if (!state.schedule || !state.pretalxEvent || !state.pretalxRooms) return
 			const sessions = []
-			for (const day of state.schedule.schedule) {
-				for (const room of day.rooms) {
-					const vRoom = state.rooms.find(r => r.pretalx_id === room.id)
-					for (const talk of room.talks) {
-						sessions.push({
-							id: talk.code,
-							title: talk.title,
-							start: moment(talk.start),
-							end: moment(talk.end),
-							speakers: talk.speakers,
-							room: vRoom
-						})
-					}
-				}
+			const tracksLookup = state.pretalxEvent.event.tracks.reduce((acc, track) => { acc[track.name] = track; return acc }, {})
+			for (const session of state.schedule) {
+				// TODO no id in api response
+				const vRoom = state.pretalxRooms.find(r => r.name.en === session.slot.room.en)
+				const room = state.rooms.find(r => r.pretalx_id === vRoom.id)
+				sessions.push({
+					id: session.code,
+					title: session.title,
+					abstract: session.abstract,
+					description: session.description,
+					start: moment(session.slot.start),
+					end: moment(session.slot.end),
+					speakers: session.speakers,
+					track: tracksLookup[session.track],
+					room: room
+				})
 			}
 			sessions.sort((a, b) => a.start.diff(b.start))
 			return {sessions}
@@ -138,8 +141,18 @@ export default new Vuex.Store({
 		},
 		async fetchSchedule ({state, getters}) {
 			// TODO error handling
-			if (!getters.pretalxScheduleUrl) return
-			const schedule = await (await fetch(getters.pretalxScheduleUrl)).json()
+			if (!getters.pretalxApiBaseUrl) return
+			// unroll pagination
+			const schedule = []
+			let next = `${getters.pretalxApiBaseUrl}/talks/`
+			while (next) {
+				const response = await (await fetch(next)).json()
+				schedule.push(...response.results)
+				next = response.next
+			}
+			state.pretalxEvent = await (await fetch(getters.pretalxScheduleUrl)).json()
+			// TODO paginated
+			state.pretalxRooms = (await (await fetch(`${getters.pretalxApiBaseUrl}/rooms/`)).json()).results
 			state.schedule = schedule
 		},
 		async createRoom ({state}, room) {

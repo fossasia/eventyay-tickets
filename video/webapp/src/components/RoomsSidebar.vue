@@ -7,7 +7,7 @@ transition(name="sidebar")
 		scrollbars(y)
 			.global-links
 				router-link.room(v-if="roomsByType.page.includes(rooms[0])", :to="{name: 'home'}") {{ rooms[0].name }}
-				router-link.room(:to="{name: 'schedule'}", v-if="!!world.pretalx.base_url") {{ $t('RoomsSidebar:schedule:label') }}
+				router-link.room(:to="{name: 'schedule'}", v-if="!!world.pretalx") {{ $t('RoomsSidebar:schedule:label') }}
 				router-link.room(v-for="page of roomsByType.page", v-if="page !== rooms[0]", :to="{name: 'room', params: {roomId: page.id}}") {{ page.name }}
 			.group-title(v-if="roomsByType.stage.length || hasPermission('world:rooms.create.stage')")
 				span {{ $t('RoomsSidebar:stages-headline:text') }}
@@ -19,7 +19,7 @@ transition(name="sidebar")
 						.info
 							.title {{ stage.session.title }}
 							.subtitle
-								.speakers {{ stage.session.speakers.map(s => s.name).join(', ')}}
+								.speakers {{ stage.session.speakers.map(s => s.name).join(', ') }}
 								.room {{ stage.room.name }}
 					.name(v-else) {{ stage.room.name }}
 			.group-title(v-if="roomsByType.videoChat.length || roomsByType.textChat.length || hasPermission('world:rooms.create.chat') || hasPermission('world:rooms.create.bbb')")
@@ -283,6 +283,7 @@ export default {
 					.room
 						display: flex
 						line-height: 24px
+						margin-right: 4px
 						&::before
 							content: '\F050D'
 							font-family: "Material Design Icons"
