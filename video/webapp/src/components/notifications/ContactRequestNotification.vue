@@ -1,6 +1,6 @@
 <template lang="pug">
 .c-contact-request-notification
-	.details Unanswered contact request to #[br] #[span.exhibitor {{ contactRequest.exhibitor.name }}] from:
+	.details {{ $t('ContactRequest:notification:text') }} #[br] #[span.exhibitor {{ contactRequest.exhibitor.name }}]
 	.user
 		avatar(:user="contactRequest.user", :size="36")
 		.display-name {{ contactRequest.user ? contactRequest.user.profile.display_name : '' }}

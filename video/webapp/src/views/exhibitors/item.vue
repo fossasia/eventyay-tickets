@@ -36,7 +36,7 @@ scrollbars.c-exhibitor(y)
 					.user(v-for="user in exhibitor.staff")
 						avatar(:user="user", :size="36")
 						span.display-name {{ user ? user.profile.display_name : '' }}
-						bunt-icon-button(v-if="hasPermission('world:rooms.create.exhibition')", @click.prevent.stop="removeStaff(user)") close
+						bunt-icon-button(v-if="hasPermission('world:rooms.create.exhibition')", @click.prevent.stop="removeStaff(user)") delete
 
 	bunt-progress-circular(v-else, size="huge", :page="true")
 	transition(name="prompt")
