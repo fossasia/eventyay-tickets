@@ -108,7 +108,7 @@ class ChatModule(BaseModule):
         self.service = ChatService(self.consumer.world)
 
     async def _subscribe(self):
-        self.channels_subscribed.add(self.channel_id)
+        self.channels_subscribed.add(self.channel)
         await self.consumer.channel_layer.group_add(
             GROUP_CHAT.format(channel=self.channel_id), self.consumer.channel_name
         )
@@ -132,7 +132,7 @@ class ChatModule(BaseModule):
 
     async def _unsubscribe(self, clean_volatile_membership=True):
         with suppress(KeyError):
-            self.channels_subscribed.remove(self.channel_id)
+            self.channels_subscribed.remove(self.channel)
         if clean_volatile_membership:
             remaining_sockets = await self.service.track_unsubscription(
                 self.channel_id, self.consumer.user.id, self.consumer.socket_id
@@ -467,6 +467,7 @@ class ChatModule(BaseModule):
         return await super().dispatch_command(content)
 
     async def dispatch_disconnect(self, close_code):
-        for channel_id in frozenset(self.channels_subscribed):
-            self.channel_id = channel_id
+        for channel in frozenset(self.channels_subscribed):
+            self.channel = channel
+            self.channel_id = channel.pk
             await self._unsubscribe()
