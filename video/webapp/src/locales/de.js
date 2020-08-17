@@ -51,7 +51,7 @@ export default {
 	'App:fatal-connection-error:connection.replaced:action': 'Fortsetzen (andere Verbindung trennen)',
 	'ContactRequest:dismiss-button:label': 'ablehnen',
 	'ContactRequest:accept-button:label': 'annehmen',
-	'ContactRequest:request:text': 'Kontaktiere Mitarbeiter...',
-	'ContactRequest:timeout:text': 'Momentan ist kein Mitarbeiter verfügbar. Bitte versuchen Sie es später nochmal.',
-	'ContactRequest:greeting:text': 'Sie haben einen privaten Chat mit einem Mitarbeiter angefragt.'
+	'ContactRequest:request:text': 'Kontaktiere Mitarbeiter*innen...',
+	'ContactRequest:timeout:text': 'Momentan sind keine Mitarbeiter*innen verfügbar.\nEin*e Mitarbeiter*in wird sich später bei Dir melden.',
+	'ContactRequest:notification:text': 'Unbeantwortete Kontaktanfrage für:',
 }

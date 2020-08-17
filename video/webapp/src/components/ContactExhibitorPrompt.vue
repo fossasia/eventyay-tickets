@@ -1,5 +1,5 @@
 <template lang="pug">
-prompt.c-contact-exhibitor-prompt(@close="cancel")
+prompt.c-contact-exhibitor-prompt(@close="cancel", :allowCancel="false")
 	.content
 		img.logo(:src="exhibitor.logo")
 		.exhibitor {{ exhibitor.name }}
