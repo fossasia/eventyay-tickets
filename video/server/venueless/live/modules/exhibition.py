@@ -23,7 +23,7 @@ class ExhibitionModule(BaseModule):
 
     async def dispatch_disconnect(self, close_code):
         if self.consumer.user:
-            for request in await self.service.get_requests_from_user(
+            for request in await self.service.get_open_requests_from_user(
                 user=self.consumer.user
             ):
                 await self.contact_cancel({"contact_request": request["id"]})

@@ -123,8 +123,11 @@ class ExhibitionService:
         return list(e.staff.values_list("user__id", flat=True))
 
     @database_sync_to_async
-    def get_requests_from_user(self, user):
-        return [cr.serialize() for cr in user.exhibitor_contact_requests.all()]
+    def get_open_requests_from_user(self, user):
+        return [
+            cr.serialize()
+            for cr in user.exhibitor_contact_requests.filter(state="open")
+        ]
 
     def get_exhibition_data_for_user(self, user):
         exhibitors = Exhibitor.objects.filter(
