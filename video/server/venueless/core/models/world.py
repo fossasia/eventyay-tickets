@@ -83,10 +83,7 @@ class World(VersionedModel):
             secret = jwt_config["secret"]
             audience = jwt_config["audience"]
             issuer = jwt_config["issuer"]
-            with suppress(
-                jwt.exceptions.InvalidSignatureError,
-                jwt.exceptions.ExpiredSignatureError,
-            ):
+            with suppress(jwt.exceptions.InvalidTokenError):
                 return jwt.decode(
                     token,
                     secret,
