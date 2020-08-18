@@ -20,7 +20,7 @@
 				reactions-bar(:expanded="activeStageTool === 'reaction'", @expand="activeStageTool = 'reaction'")
 		markdown-page(v-else-if="modules['page.markdown']", :module="modules['page.markdown']")
 		iframe-page(v-else-if="modules['page.iframe']", :module="modules['page.iframe']")
-		chat(v-if="modules['chat.native']", :module="modules['chat.native']", :mode="room.modules.length === 1 ? 'standalone' : 'compact'", :key="room.id")
+		chat(v-if="modules['chat.native']", :room="room", :module="modules['chat.native']", :mode="room.modules.length === 1 ? 'standalone' : 'compact'", :key="room.id")
 	transition(name="prompt")
 		recordings-prompt(:room="room", v-if="showRecordingsPrompt", @close="showRecordingsPrompt = false")
 </template>

@@ -3,6 +3,8 @@ export default {
 	'BigBlueButton:error:text': 'We could not connect to the video conference server, sorry.',
 	'Chat:join-button:tooltip': 'to start writing, join this channel',
 	'Chat:join-button:label': 'join chat',
+	'Chat:permission-block:room:chat.join': 'Sorry, you can\'t join this channel.',
+	'Chat:permission-block:room:chat.send': 'This channel is readonly.',
 	'ChatMessage:join-message:text': 'joined',
 	'ChatMessage:leave-message:text': 'left',
 	'ChatMessage:message-edit:label': 'edit message',
