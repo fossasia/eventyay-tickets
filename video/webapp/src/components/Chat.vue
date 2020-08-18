@@ -8,7 +8,9 @@
 				template(v-for="message of filteredTimeline")
 					chat-message(:message="message", :mode="mode", :key="message.event_id")
 			.chat-input
-				bunt-button(v-if="!activeJoinedChannel", @click="join", :tooltip="$t('Chat:join-button:tooltip')") {{ $t('Chat:join-button:label') }}
+				.no-permission(v-if="!room.permissions.includes('room:chat.join')") {{ $t('Chat:permission-block:room:chat.join') }}
+				bunt-button(v-else-if="!activeJoinedChannel", @click="join", :tooltip="$t('Chat:join-button:tooltip')") {{ $t('Chat:join-button:label') }}
+				.no-permission(v-if="room.permissions.includes('room:chat.send')") {{ $t('Chat:permission-block:room:chat.send') }}
 				chat-input(v-else, @send="send")
 		scrollbars.user-list(v-if="mode === 'standalone' && showUserlist && $mq.above['m']", y)
 			.user(v-for="user of members", @click="showUserCard($event, user)")
@@ -28,6 +30,10 @@ import ChatUserCard from 'components/ChatUserCard'
 
 export default {
 	props: {
+		room: {
+			type: Object,
+			required: true
+		},
 		module: {
 			type: Object,
 			required: true
