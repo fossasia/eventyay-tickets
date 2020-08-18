@@ -1,7 +1,7 @@
 from collections import namedtuple
 
 from channels.db import database_sync_to_async
-from django.core.paginator import EmptyPage, Paginator
+from django.core.paginator import InvalidPage, Paginator
 from django.db.transaction import atomic
 
 from ..models.auth import User
@@ -236,5 +236,5 @@ def list_users(world_id, page, page_size, search_term) -> list:
     try:
         p = Paginator(qs.order_by("id").values("id", "profile"), page_size).page(page)
         return [dict(id=str(u["id"]), profile=u["profile"],) for u in p.object_list]
-    except EmptyPage:
+    except InvalidPage:
         return []

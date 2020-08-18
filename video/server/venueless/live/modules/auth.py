@@ -200,9 +200,6 @@ class AuthModule(BaseModule):
         list_conf = self.consumer.world.config.get("user_list", {})
         page_size = list_conf.get("page_size", 20)
         search_min_chars = list_conf.get("search_min_chars", 0)
-        if body["page"] < 1:
-            await self.consumer.send_error(code="user.list.search.invalid_page_number")
-            return
         if len(body["search_term"]) < search_min_chars:
             users = []
         else:
