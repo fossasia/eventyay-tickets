@@ -122,6 +122,8 @@ export default {
 						if (!started) {
 							this.offline = true
 							setTimeout(load, RETRY_INTERVAL)
+						} else if (data.response.code === 404) {
+							this.offline = true
 						}
 					} else if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
 						this.buffering = true
@@ -130,6 +132,7 @@ export default {
 				})
 
 				player.on(Hls.Events.FRAG_BUFFERED, () => {
+					this.offline = false
 					this.buffering = false
 				})
 			} else if (video.canPlayType('application/vnd.apple.mpegurl')) {
