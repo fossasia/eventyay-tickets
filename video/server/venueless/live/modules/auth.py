@@ -11,6 +11,7 @@ from venueless.core.services.user import (
     get_blocked_users,
     get_public_user,
     get_public_users,
+    list_users,
     login,
     set_user_banned,
     set_user_free,
@@ -192,6 +193,25 @@ class AuthModule(BaseModule):
                 user=self.consumer.user, permission=Permission.WORLD_USERS_MANAGE
             ),
         )
+        await self.consumer.send_success({"results": users})
+
+    @command("list.search")
+    async def user_list(self, body):
+        list_conf = self.consumer.world.config.get("user_list", {})
+        page_size = list_conf.get("page_size", 20)
+        search_min_chars = list_conf.get("search_min_chars", 0)
+        if body["page"] < 1:
+            await self.consumer.send_error(code="user.list.search.invalid_page_number")
+            return
+        if len(body["search_term"]) < search_min_chars:
+            users = []
+        else:
+            users = await list_users(
+                world_id=self.consumer.world.id,
+                page=body["page"],
+                page_size=page_size,
+                search_term=body["search_term"],
+            )
         await self.consumer.send_success({"results": users})
 
     @command("ban")

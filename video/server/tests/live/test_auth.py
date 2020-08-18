@@ -653,3 +653,83 @@ async def test_block_user(world):
         await c_blocker.send_json_to(["user.unblock", 14, {"id": str(uuid.uuid4())}])
         response = await c_blocker.receive_json_from()
         assert response[0] == "error"
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_list_search_users(world):
+    async with world_communicator() as c, world_communicator() as c_user1, world_communicator() as c_user2:
+        # User 1
+        await c.send_json_to(["authenticate", {"client_id": "4"}])
+        response = await c.receive_json_from()
+        assert response[0] == "authenticated"
+        user_id = response[1]["user.config"]["id"]
+        await c.send_json_to(
+            ["user.update", 14, {"profile": {"display_name": "Foo Fighter"}}]
+        )
+        await c.receive_json_from()
+
+        # User 2
+        await c_user1.send_json_to(["authenticate", {"client_id": "5"}])
+        response = await c_user1.receive_json_from()
+        assert response[0] == "authenticated"
+        user1_id = response[1]["user.config"]["id"]
+        await c_user1.send_json_to(
+            ["user.update", 14, {"profile": {"display_name": "Foo Esidisi"}}]
+        )
+        await c_user1.receive_json_from()
+
+        # User 3
+        await c_user2.send_json_to(["authenticate", {"client_id": "6"}])
+        response = await c_user2.receive_json_from()
+        assert response[0] == "authenticated"
+        user2_id = response[1]["user.config"]["id"]
+        await c_user2.send_json_to(
+            ["user.update", 14, {"profile": {"display_name": "Foo Kars"}}]
+        )
+        await c_user2.receive_json_from()
+
+        # Search
+        await c.send_json_to(["user.list.search", 14, {"page": 0, "search_term": "",}])
+        response = await c.receive_json_from()
+        assert response[0] == "error"
+        assert response[2]["code"] == "user.list.search.invalid_page_number"
+
+        await c.send_json_to(["user.list.search", 14, {"page": 1, "search_term": "",}])
+        response = await c.receive_json_from()
+        assert response[0] == "success"
+        assert response[2]["results"] == []
+
+        await c.send_json_to(
+            ["user.list.search", 14, {"page": 1, "search_term": "Fighter",}]
+        )
+        response = await c.receive_json_from()
+        assert response[0] == "success"
+        assert response[2]["results"] == [
+            {"id": user_id, "profile": {"display_name": "Foo Fighter"}}
+        ]
+
+        world.config["user_list"]["page_size"] = 2
+        await database_sync_to_async(world.save)()
+
+        await c.send_json_to(
+            ["user.list.search", 14, {"page": 1, "search_term": "Foo",}]
+        )
+        response = await c.receive_json_from()
+        assert response[0] == "success"
+        assert response[2]["results"][0]["id"] in [user_id, user1_id, user2_id]
+        assert response[2]["results"][1]["id"] in [user_id, user1_id, user2_id]
+
+        await c.send_json_to(
+            ["user.list.search", 14, {"page": 2, "search_term": "Foo",}]
+        )
+        response = await c.receive_json_from()
+        assert response[0] == "success"
+        assert response[2]["results"][0]["id"] in [user_id, user1_id, user2_id]
+
+        await c.send_json_to(
+            ["user.list.search", 14, {"page": 3, "search_term": "Foo",}]
+        )
+        response = await c.receive_json_from()
+        assert response[0] == "success"
+        assert response[2]["results"] == []

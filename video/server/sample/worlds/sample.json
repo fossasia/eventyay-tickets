@@ -9,6 +9,10 @@
       "record": false
     },
     "connection_limit": 2,
+    "user_list": {
+      "search_min_chars": 3,
+      "page_size": 50
+    },
     "JWT_secrets": [
       {
         "secret": "FaZaa4KeeZoo2ahgoh2uenahd3Uta4Ei",
