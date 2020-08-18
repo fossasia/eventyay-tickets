@@ -443,6 +443,7 @@ class ChatModule(BaseModule):
             raise ConsumerException("chat.denied")
 
         self.channel_id = str(channel.id)
+        self.channel = channel
 
         reply = await self._subscribe()
         if created:
