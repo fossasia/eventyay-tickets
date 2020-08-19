@@ -437,7 +437,7 @@ class ChatModule(BaseModule):
         user_ids.add(self.consumer.user.id)
 
         channel, created, users = await self.service.get_or_create_direct_channel(
-            user_ids=user_ids, initiating=self.consumer.user.id
+            user_ids=user_ids, initiating=str(self.consumer.user.id)
         )
         if not channel:
             raise ConsumerException("chat.denied")
