@@ -1,10 +1,6 @@
 from urllib.parse import urljoin
 
-from rest_framework.serializers import (
-    CharField,
-    ModelSerializer,
-    SerializerMethodField,
-)
+from rest_framework.serializers import CharField, ModelSerializer, SerializerMethodField
 
 from pretalx.api.serializers.question import AnswerSerializer
 from pretalx.api.serializers.room import AvailabilitySerializer
