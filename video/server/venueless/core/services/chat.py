@@ -123,7 +123,7 @@ class ChatService:
         )
 
     @database_sync_to_async
-    def show_chanels_to_hidden_users(self, channel_id):
+    def show_channels_to_hidden_users(self, channel_id):
         u = []
         for m in Membership.objects.filter(
             channel_id=channel_id, hidden=True
@@ -208,7 +208,7 @@ class ChatService:
             raise e  # pragma: no cover
 
     @database_sync_to_async
-    def get_or_create_direct_channel(self, user_ids, initiating):
+    def get_or_create_direct_channel(self, user_ids, initiating: str):
         with transaction.atomic():
             users = list(
                 User.objects.prefetch_related("blocked_users").filter(

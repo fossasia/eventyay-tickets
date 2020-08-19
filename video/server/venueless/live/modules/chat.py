@@ -364,7 +364,7 @@ class ChatModule(BaseModule):
                     f"chat:direct:shownall:{self.channel_id}"
                 )
             if not all_visible:
-                users = await self.service.show_chanels_to_hidden_users(self.channel_id)
+                users = await self.service.show_channels_to_hidden_users(self.channel_id)
                 for user in users:
                     await self._broadcast_channel_list(user=user)
                     async with aioredis() as redis:
@@ -456,6 +456,12 @@ class ChatModule(BaseModule):
                 )
                 await self.consumer.channel_layer.group_send(
                     GROUP_CHAT.format(channel=self.channel_id), event,
+                )
+
+            await self._broadcast_channel_list(user=self.consumer.user)
+            async with aioredis() as redis:
+                await redis.sadd(
+                    f"chat:unread.notify:{self.channel_id}", str(self.consumer.user.id),
                 )
 
         reply["id"] = str(channel.id)
