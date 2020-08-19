@@ -364,7 +364,9 @@ class ChatModule(BaseModule):
                     f"chat:direct:shownall:{self.channel_id}"
                 )
             if not all_visible:
-                users = await self.service.show_channels_to_hidden_users(self.channel_id)
+                users = await self.service.show_channels_to_hidden_users(
+                    self.channel_id
+                )
                 for user in users:
                     await self._broadcast_channel_list(user=user)
                     async with aioredis() as redis:
