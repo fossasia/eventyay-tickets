@@ -692,8 +692,8 @@ async def test_list_search_users(world):
         # Search
         await c.send_json_to(["user.list.search", 14, {"page": 0, "search_term": "",}])
         response = await c.receive_json_from()
-        assert response[0] == "error"
-        assert response[2]["code"] == "user.list.search.invalid_page_number"
+        assert response[0] == "success"
+        assert response[2]["results"] == []
 
         await c.send_json_to(["user.list.search", 14, {"page": 1, "search_term": "",}])
         response = await c.receive_json_from()
