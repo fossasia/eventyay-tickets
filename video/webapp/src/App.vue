@@ -26,6 +26,8 @@
 		media-source(v-if="roomHasMedia", ref="primaryMediaSource", :room="room", :key="room.id")
 		media-source(v-if="backgroundRoom", ref="backgroundMediaSource", :room="backgroundRoom", :background="true", :key="backgroundRoom.id", @close="backgroundRoom = null")
 		.disconnected-warning(v-if="!connected") {{ $t('App:disconnected-warning:text') }}
+		transition(name="prompt")
+			profile-prompt(v-if="!user.profile.display_name")
 	bunt-progress-circular(v-else-if="!fatalError", size="huge")
 	.fatal-error(v-if="fatalError") {{ fatalError.message }}
 </template>
@@ -35,11 +37,12 @@ import { themeVariables } from 'theme'
 import AppBar from 'components/AppBar'
 import RoomsSidebar from 'components/RoomsSidebar'
 import MediaSource from 'components/MediaSource'
+import ProfilePrompt from 'components/ProfilePrompt'
 
 const mediaModules = ['livestream.native', 'call.bigbluebutton']
 
 export default {
-	components: { AppBar, RoomsSidebar, MediaSource },
+	components: { AppBar, RoomsSidebar, MediaSource, ProfilePrompt },
 	data () {
 		return {
 			themeVariables,

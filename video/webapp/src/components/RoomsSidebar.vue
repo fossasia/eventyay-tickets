@@ -49,7 +49,7 @@ transition(name="sidebar")
 			channel-browser(v-if="showChannelBrowser", @close="showChannelBrowser = false", @createChannel="showChannelBrowser = false, showChatCreationPrompt = true")
 			create-stage-prompt(v-else-if="showStageCreationPrompt", @close="showStageCreationPrompt = false")
 			create-chat-prompt(v-else-if="showChatCreationPrompt", @close="showChatCreationPrompt = false")
-			profile-prompt(v-if="!user.profile.display_name || showProfilePrompt", @close="showProfilePrompt = false")
+			profile-prompt(v-else-if="showProfilePrompt", @close="showProfilePrompt = false")
 </template>
 <script>
 import { mapState, mapGetters } from 'vuex'
