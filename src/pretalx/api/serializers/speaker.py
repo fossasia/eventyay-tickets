@@ -1,3 +1,5 @@
+from urllib.parse import urljoin
+
 from rest_framework.serializers import (
     CharField,
     ModelSerializer,
@@ -6,7 +8,7 @@ from rest_framework.serializers import (
 
 from pretalx.api.serializers.question import AnswerSerializer
 from pretalx.api.serializers.room import AvailabilitySerializer
-from pretalx.common.urls import build_absolute_uri
+from pretalx.common.urls import get_base_url
 from pretalx.person.models import SpeakerProfile, User
 from pretalx.schedule.models import Availability
 from pretalx.submission.models import Answer
@@ -40,7 +42,7 @@ class SpeakerSerializer(ModelSerializer):
         if obj.user.get_gravatar:
             return "https://www.gravatar.com/avatar/" + obj.user.gravatar_parameter
         if obj.user.has_local_avatar:
-            return build_absolute_uri(obj.user.avatar.url, obj.event)
+            return urljoin(get_base_url(obj.event), obj.user.avatar.url)
 
     @staticmethod
     def get_submissions(obj):
