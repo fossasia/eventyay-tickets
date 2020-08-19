@@ -91,5 +91,6 @@ export default {
 	'UserActionPrompt:action.unblock:execute:label': 'unblock',
 	'UserActionPrompt:action.unblock:question': 'Unblock this user?',
 	'UserActionPrompt:action.unblock:confirmation': 'User has been unblocked.',
-	'UserActionPrompt:action.unblock:explanation': 'Unblocking this user will allow them to send direct messages to you again.'
+	'UserActionPrompt:action.unblock:explanation': 'Unblocking this user will allow them to send direct messages to you again.',
+	'Schedule:headline:text': 'Schedule'
 }
