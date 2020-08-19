@@ -89,12 +89,15 @@ export default {
 			flex: auto
 			align-self: stretch
 			padding: 4px 8px
+			max-width: 238px
 			.hint
 				color: $clr-secondary-text-light
 				font-size: 10px
 				margin-bottom: 2px
 			.room-name
 				font-weight: 500
+				flex-grow: 0
+				ellipsis()
 		.global-placeholder
 			width: 86px
 			flex: none
