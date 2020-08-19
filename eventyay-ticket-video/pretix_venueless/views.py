@@ -146,4 +146,4 @@ class OrderPositionJoin(EventViewMixin, OrderPositionDetailMixin, View):
         token = jwt.encode(
             payload, self.request.event.settings.venueless_secret, algorithm="HS256"
         ).decode("utf-8")
-        return redirect('{}/#token={}'.format(self.request.event.settings.venueless_url, token).replace("//", "/"))
+        return redirect('{}/#token={}'.format(self.request.event.settings.venueless_url, token).replace("//#", "/#"))
