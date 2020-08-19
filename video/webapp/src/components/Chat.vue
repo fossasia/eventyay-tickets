@@ -10,7 +10,7 @@
 			.chat-input
 				.no-permission(v-if="!room.permissions.includes('room:chat.join')") {{ $t('Chat:permission-block:room:chat.join') }}
 				bunt-button(v-else-if="!activeJoinedChannel", @click="join", :tooltip="$t('Chat:join-button:tooltip')") {{ $t('Chat:join-button:label') }}
-				.no-permission(v-if="!room.permissions.includes('room:chat.send')") {{ $t('Chat:permission-block:room:chat.send') }}
+				.no-permission(v-else-if="!room.permissions.includes('room:chat.send')") {{ $t('Chat:permission-block:room:chat.send') }}
 				chat-input(v-else, @send="send")
 		scrollbars.user-list(v-if="mode === 'standalone' && showUserlist && $mq.above['m']", y)
 			.user(v-for="user of members", @click="showUserCard($event, user)")
