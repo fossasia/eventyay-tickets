@@ -142,7 +142,7 @@ setup(
             "pytest-django",
             "pytest-mock",
             "pytest-rerunfailures",
-            "pytest-tldr",
+            "pytest-sugar",
             "pytest-xdist",
             "pywatchman",
             "responses",
