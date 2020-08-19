@@ -106,14 +106,21 @@ export default {
 			align-items: center
 		.id
 			width: 128px
+			flex-basis: 128px
+			flex-shrink: 0
 			ellipsis()
 		.name
 			flex: auto
+			ellipsis()
 		.state
 			width: 78px
+			flex-basis: 78px
+			flex: none
 		.actions
 			flex: none
 			width: 136px
+			flex-basis: 136px
+			flex-shrink: 0
 			padding: 0 24px 0 0
 			display: flex
 			align-items: center
