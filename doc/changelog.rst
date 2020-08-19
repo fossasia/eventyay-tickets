@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` If a speaker has selected to show their gravatar, it is now also exposed in the API in the avatar field.
 - :feature:`-` When you send out reminders about unanswered questions, you can now target specific questions, or tracks, or submission types.
 - :feature:`-` pretalx now limits file uploads to 10MB.
 - :feature:`979` In the schedule editor, you can now search for talks by speaker name.

@@ -1,12 +1,12 @@
 from rest_framework.serializers import (
     CharField,
-    ImageField,
     ModelSerializer,
     SerializerMethodField,
 )
 
 from pretalx.api.serializers.question import AnswerSerializer
 from pretalx.api.serializers.room import AvailabilitySerializer
+from pretalx.common.urls import build_absolute_uri
 from pretalx.person.models import SpeakerProfile, User
 from pretalx.schedule.models import Availability
 from pretalx.submission.models import Answer
@@ -32,8 +32,15 @@ class SubmitterSerializer(ModelSerializer):
 class SpeakerSerializer(ModelSerializer):
     code = CharField(source="user.code")
     name = CharField(source="user.name")
-    avatar = ImageField(source="user.avatar")
+    avatar = SerializerMethodField()
     submissions = SerializerMethodField()
+
+    @staticmethod
+    def get_avatar(obj):
+        if obj.user.get_gravatar:
+            return "https://www.gravatar.com/avatar/" + obj.user.gravatar_parameter
+        if obj.user.has_local_avatar:
+            return build_absolute_uri(obj.user.avatar.url, obj.event)
 
     @staticmethod
     def get_submissions(obj):
