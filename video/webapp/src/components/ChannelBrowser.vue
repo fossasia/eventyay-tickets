@@ -1,9 +1,10 @@
 <template lang="pug">
 prompt.c-channel-browser(@close="$emit('close')", :scrollable="false")
 	.content
-		h2 Explore rooms
-		p bleep blorp, #[a(href="#", @click="$emit('createChannel')") create a new channel]?
-		bunt-input(icon="search", name="search", placeholder="Search rooms", v-model="search")
+		h2 {{ $t('ChannelBrowser:headline:text') }}
+		p {{ $t('ChannelBrowser:intro:text') }}
+			a(href="#", @click="$emit('createChannel')", v-if="hasPermission('world:rooms.create.chat')")  {{ $t('ChannelBrowser:create:label') }}
+		bunt-input(icon="search", name="search", :placeholder="$t('ChannelBrowser:search:placeholder')", v-model="search")
 		scrollbars.channels(y)
 			router-link.channel(v-for="channel of searchedChannels", :to="{name: 'room', params: {roomId: channel.room.id}}", @click.native="$emit('close')")
 				.channel-info
@@ -11,14 +12,14 @@ prompt.c-channel-browser(@close="$emit('close')", :scrollable="false")
 					.description {{ channel.room.description }}
 				.actions
 					template(v-if="channel.channelJoined")
-						bunt-button#btn-view view
+						bunt-button#btn-view {{ $t('ChannelBrowser:view:label') }}
 					template(v-else)
-						bunt-button#btn-preview preview
-						bunt-button#btn-join(@click="join(channel)") join
-			.no-results(v-if="search && searchedChannels.length === 0") Sorry, could not find any matching channels
+						bunt-button#btn-preview {{ $t('ChannelBrowser:preview:label') }}
+						bunt-button#btn-join(@click="join(channel)") {{ $t('ChannelBrowser:join:label') }}
+			.no-results(v-if="search && searchedChannels.length === 0") {{ $t('ChannelBrowser:search:empty') }}
 </template>
 <script>
-import { mapState } from 'vuex'
+import {mapGetters, mapState} from 'vuex'
 import Prompt from 'components/Prompt'
 import fuzzysearch from 'lib/fuzzysearch'
 
@@ -32,6 +33,7 @@ export default {
 	computed: {
 		...mapState(['rooms']),
 		...mapState('chat', ['joinedChannels']),
+		...mapGetters(['hasPermission']),
 		channels () {
 			return this.rooms
 				.filter(room => room.modules.length === 1 && room.modules[0].type === 'chat.native')
