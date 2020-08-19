@@ -13,7 +13,7 @@ from django.views import View
 from django.views.decorators.clickjacking import xframe_options_exempt
 
 from pretix.base.forms import SettingsForm, SecretKeySettingsField
-from pretix.base.models import Event, Order
+from pretix.base.models import Event, Order, Item
 from pretix.base.reldate import RelativeDateTimeField
 from pretix.control.views.event import EventSettingsFormView, EventSettingsViewMixin
 from pretix.presale.views import EventViewMixin
@@ -45,6 +45,37 @@ class VenuelessSettingsForm(SettingsForm):
         label=_('Allow users to access the live event before their order is paid'),
         required=False,
     )
+    venueless_all_items = forms.BooleanField(
+        label=_('Allow buyers of all admission products'),
+        required=False
+    )
+    venueless_items = forms.ModelMultipleChoiceField(
+        widget=forms.CheckboxSelectMultiple(
+            attrs={
+                'class': 'scrolling-multiple-choice',
+                'data-inverse-dependency': '<[name$=venueless_all_items]'
+            }
+        ),
+        label=_('Limit to products'),
+        required=False,
+        queryset=Item.objects.none(),
+        initial=None
+    )
+
+    def __init__(self, *args, **kwargs):
+        event = kwargs['obj']
+        super().__init__(*args, **kwargs)
+        self.fields['venueless_items'].queryset = event.items.all()
+
+    def clean(self):
+        data = super().clean()
+
+        for k, v in self.fields.items():
+            if isinstance(v, forms.ModelMultipleChoiceField):
+                answstr = [o.pk for o in data[k]]
+                data[k] = answstr
+
+        return data
 
 
 class SettingsView(EventSettingsViewMixin, EventSettingsFormView):
@@ -115,4 +146,4 @@ class OrderPositionJoin(EventViewMixin, OrderPositionDetailMixin, View):
         token = jwt.encode(
             payload, self.request.event.settings.venueless_secret, algorithm="HS256"
         ).decode("utf-8")
-        return redirect('{}/#token={}'.format(self.request.event.settings.venueless_url, token))
+        return redirect('{}/#token={}'.format(self.request.event.settings.venueless_url, token).replace("//", "/"))

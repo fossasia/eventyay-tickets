@@ -6,6 +6,7 @@ from django.utils.timezone import now
 from pretix.base.models import Order, Event
 from pretix.base.reldate import RelativeDateWrapper
 from pretix.base.settings import settings_hierarkey
+from pretix.base.signals import event_copy_data, item_copy_data
 from pretix.control.signals import nav_event_settings
 from pretix.presale.signals import order_info_top, position_info_top
 
@@ -24,13 +25,16 @@ def w_order_info(sender: Event, request, order: Order, **kwargs):
             item__admission=True
         )
     ]
-    if not positions:
-        return
     positions = [
         p for p in positions
-        if not sender.settings.venueless_start or sender.settings.venueless_start.datetime(p.subevent or sender) <=
-           now()
+        if (
+                not sender.settings.venueless_start or sender.settings.venueless_start.datetime(p.subevent or sender) <= now()
+        ) and (
+            sender.settings.venueless_all_items or p.item_id in (p.event.settings.venueless_items or[])
+        )
     ]
+    if not positions:
+        return
 
     template = get_template('pretix_venueless/order_info.html')
     ctx = {
@@ -49,6 +53,9 @@ def w_pos_info(sender: Event, request, order: Order, position, **kwargs):
             or not order.positions.exists()
             or position.canceled
             or not position.item.admission
+            or (
+                not sender.settings.venueless_all_items and position.item_id not in (position.event.settings.venueless_items or [])
+            )
             or not sender.settings.venueless_secret
     ):
         return
@@ -81,5 +88,21 @@ def navbar_info(sender, request, **kwargs):
     }]
 
 
+@receiver(signal=event_copy_data, dispatch_uid="venueless_event_copy_data")
+def event_copy_data_r(sender, other, item_map, **kwargs):
+    sender.settings['venueless_items'] = [
+        item_map[item].pk for item in other.settings.get('venueless_items', default=[]) if item in item_map
+    ]
+
+
+@receiver(signal=item_copy_data, dispatch_uid="venueless_item_copy_data")
+def item_copy_data_r(sender, source, target, **kwargs):
+    items = sender.settings.get('venueless_items') or []
+    items.append(target.pk)
+    sender.settings['venueless_items'] = items
+
+
 settings_hierarkey.add_default('venueless_start', None, RelativeDateWrapper)
 settings_hierarkey.add_default('venueless_allow_pending', 'False', bool)
+settings_hierarkey.add_default('venueless_all_items', 'True', bool)
+settings_hierarkey.add_default('venueless_items', '[]', list)
