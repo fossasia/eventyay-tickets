@@ -1,14 +1,14 @@
 <template lang="pug">
 .c-contact-requests
 	.header
-		h2 Your contact requests
+		h2 {{ $t("ContactRequests:headline:text") }}
 	.contact-requests-list
 		.header
-			.user From user
-			.exhibitor To exhibitor
-			.timestamp At
-			.state State
-			.staff Answered by
+			.user {{ $t("ContactRequests:from:label") }}
+			.exhibitor {{ $t("ContactRequests:to:label") }}
+			.timestamp {{ $t("ContactRequests:at:label") }}
+			.state {{ $t("ContactRequests:state:label") }}
+			.staff {{ $t("ContactRequests:staff:label") }}
 			.actions
 		.tbody(v-scrollbar.y="")
 			.contact-request.table-row(v-for="contactRequest of sortedContactRequests")
@@ -25,7 +25,7 @@
 					span(v-else) –
 				.actions
 					.placeholder.mdi.mdi-dots-horizontal
-					bunt-button.btn-open-dm(@click="$store.dispatch('chat/openDirectMessage', {user: contactRequest.user})") message
+					bunt-button.btn-open-dm(@click="$store.dispatch('chat/openDirectMessage', {user: contactRequest.user})") {{ $t("ContactRequests:message:label") }}
 </template>
 <script>
 import { mapState } from 'vuex'
