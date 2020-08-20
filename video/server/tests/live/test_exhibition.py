@@ -85,14 +85,22 @@ async def test_get(world, exhibition_room):
                 "name": "Messebau Schmidt UG",
                 "tagline": "Handwerk aus Leidenschaft",
                 "logo": "https://via.placeholder.com/150",
+                "banner_list": None,
+                "banner_detail": None,
+                "contact_enabled": True,
                 "text": "# Wir liefern wovon andere nur reden\n\nHallo!\nDas ist ein Markdowntext!",
                 "size": "1x1",
                 "sorting_priority": 0,
                 "links": [
-                    {"display_text": "Website", "url": "http://example.org/"},
+                    {
+                        "display_text": "Website",
+                        "url": "http://example.org/",
+                        "category": "profile",
+                    },
                     {
                         "display_text": "Info Broschüre",
                         "url": "https://de.wikipedia.org/wiki/Messebau",
+                        "category": "profile",
                     },
                 ],
                 "social_media_links": [
@@ -104,6 +112,9 @@ async def test_get(world, exhibition_room):
                 "name": "Tube GmbH",
                 "tagline": "Ihr Partner im Großhandel",
                 "logo": "https://via.placeholder.com/150",
+                "banner_list": None,
+                "banner_detail": None,
+                "contact_enabled": True,
                 "text": "# Gastro und mehr\n\nVon Apfel bis Zebra, wir liefern!",
                 "size": "1x1",
                 "sorting_priority": 1,

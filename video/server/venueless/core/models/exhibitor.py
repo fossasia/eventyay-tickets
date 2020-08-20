@@ -14,6 +14,9 @@ class Exhibitor(models.Model):
     tagline = models.CharField(max_length=250, null=True)
     short_text = models.TextField(max_length=500, null=True)
     logo = models.URLField(null=True, blank=True)
+    banner_list = models.URLField(null=True, blank=True)
+    banner_detail = models.URLField(null=True, blank=True)
+    contact_enabled = models.BooleanField(default=True)
     text = models.TextField(null=True)
     size = models.CharField(max_length=3, default=Sizes.S, choices=Sizes.choices)
     sorting_priority = models.IntegerField(default=0)
@@ -25,7 +28,7 @@ class Exhibitor(models.Model):
     )
 
     def serialize(self):
-        links = list(self.links.values("display_text", "url"))
+        links = list(self.links.values("display_text", "url", "category"))
         social_media_links = list(self.social_media_links.values("display_text", "url"))
         staff = []
         for staff_member in self.staff.order_by("id").all():
@@ -36,6 +39,9 @@ class Exhibitor(models.Model):
             name=self.name,
             tagline=self.tagline,
             logo=self.logo,
+            banner_list=self.banner_list,
+            banner_detail=self.banner_detail,
+            contact_enabled=self.contact_enabled,
             text=self.text,
             size=self.size,
             sorting_priority=self.sorting_priority,
@@ -70,8 +76,15 @@ class ExhibitorSocialMediaLink(models.Model):
 
 
 class ExhibitorLink(models.Model):
+    class Category(models.TextChoices):
+        PROFILE = "profile"
+        DOWNLOAD = "download"
+
     exhibitor = models.ForeignKey(
         to=Exhibitor, db_index=True, related_name="links", on_delete=models.CASCADE,
+    )
+    category = models.CharField(
+        max_length=32, default=Category.PROFILE, choices=Category.choices
     )
     display_text = models.CharField(max_length=300, blank=False)
     url = models.URLField(blank=False)

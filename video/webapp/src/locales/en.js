@@ -58,6 +58,8 @@ export default {
 	'MediaSource:room:hint': 'Currently playing',
 	'Exhibition:contact-button:label': 'contact exhibitor',
 	'Exhibition:contact-button:tooltip': 'request a live chat with the exhibitor',
+	'Exhibitor:staff-headline:text': 'Our team at this event',
+	'Exhibitor:downloads-headline:text': 'Downloads',
 	'Room:recordings:tooltip': 'View recordings',
 	'RecordingsPrompt:headline:text': 'Recordings',
 	'RecordingsPrompt:info:text': 'Please note that recordings start processing and showing up here only a few minutes after the meeting has ended (usually, if the room was empty for a while).',

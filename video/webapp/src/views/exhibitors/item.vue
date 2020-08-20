@@ -2,37 +2,36 @@
 scrollbars.c-exhibitor(y)
 	.content-wrapper(v-if="exhibitor")
 		.content
-			//- TODO banner
-			img.banner(src="/sponsors/venueless-stage.png")
+			img.banner(:src="exhibitor.banner_detail", v-if="exhibitor.banner_detail")
 			markdown-content.text(:markdown="exhibitor.text")
-			.downloads
-				h2 Downloads
-				a.download(href="#")
-					.mdi.mdi-file-pdf-outline
-					.filename Broschüre „Übersicht offene Stellen“
-				a.download(href="#")
-					.mdi.mdi-file-pdf-outline
-					.filename Broschüre „Unsere Produktpalette“
-				a.download(href="#")
-					.mdi.mdi-file-powerpoint-outline
-					.filename Vortragsfolien „Zukunft im Wandel“
+			.downloads(v-if="downloadLinks")
+				h2 {{ $t("Exhibitor:downloads-headline:text") }}
+				a.download(v-for="link in downloadLinks", :href="link.url", target="_blank")
+					.mdi.mdi-file-pdf-outline(v-if="link.url.toLowerCase().endsWith('pdf')")
+					.mdi.mdi-file-excel-outline(v-else-if="link.url.toLowerCase().endsWith('xlsx') || link.url.toLowerCase().endsWith('xls')")
+					.mdi.mdi-file-word-outline(v-else-if="link.url.toLowerCase().endsWith('docx') || link.url.toLowerCase().endsWith('doc')")
+					.mdi.mdi-file-powerpoint-outline(v-else-if="link.url.toLowerCase().endsWith('pptx') || link.url.toLowerCase().endsWith('ppt')")
+					.mdi.mdi-file-image-outline(v-else-if="link.url.toLowerCase().endsWith('jpg') || link.url.toLowerCase().endsWith('jpeg') || link.url.toLowerCase().endsWith('png') || link.url.toLowerCase().endsWith('tiff')")
+					.mdi.mdi-file-video-outline(v-else-if="link.url.toLowerCase().endsWith('mp4') || link.url.toLowerCase().endsWith('mov') || link.url.toLowerCase().endsWith('webm') || link.url.toLowerCase().endsWith('avi')")
+					.mdi.mdi-file-download-outline(v-else)
+					.filename {{ link.display_text }}
 		.sidebar
 			.header
-				img.logo(:src="exhibitor.logo")
+				img.logo(:src="exhibitor.logo", v-if="exhibitor.logo")
 				.heading
 					h2.name {{ exhibitor.name }}
-					h3.tagline {{ exhibitor.tagline }}
-			.social-media-links
+					h3.tagline(v-if="exhibitor.tagline") {{ exhibitor.tagline }}
+			.social-media-links(v-if="exhibitor.social_media_links")
 				a.mdi(v-for="link in exhibitor.social_media_links", :class="`mdi-${link.display_text.toLowerCase()}`", :href="link.url", :title="link.display_text", target="_blank")
-			table.external-links
-				tr(v-for="link in exhibitor.links")
+			table.external-links(v-if="profileLinks")
+				tr(v-for="link in profileLinks")
 					th.name {{ link.display_text }}
 					td: a(:href="link.url", target="_blank") {{ prettifyUrl(link.url) }}
 			template(v-if="exhibitor.staff.length > 0")
-				.contact(v-if="hasPermission('world:exhibition.contact')")
+				.contact(v-if="hasPermission('world:exhibition.contact') && exhibitor.contact_enable")
 					bunt-button(@click="showContactPrompt = true", :tooltip="$t('Exhibition:contact-button:tooltip')") {{ $t('Exhibition:contact-button:label') }}
 				.staff
-					h3 Unser Standpersonal
+					h3 {{ $t("Exhibitor:staff-headline:text") }}
 					.user(v-for="user in exhibitor.staff")
 						avatar(:user="user", :size="36")
 						span.display-name {{ user ? user.profile.display_name : '' }}
@@ -68,6 +67,12 @@ export default {
 	computed: {
 		...mapState(['user']),
 		...mapGetters(['hasPermission']),
+		profileLinks () {
+			return this.exhibitor.links.filter((l) => (l.category === 'profile'))
+		},
+		downloadLinks () {
+			return this.exhibitor.links.filter((l) => (l.category === 'download'))
+		}
 	},
 	methods: {
 		prettifyUrl (link) {
