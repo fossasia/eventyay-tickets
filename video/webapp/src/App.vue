@@ -19,8 +19,8 @@
 	template(v-else-if="world")
 		app-bar(v-if="$mq.below['l']", @toggleSidebar="toggleSidebar")
 		transition(name="backdrop")
-			.sidebar-backdrop(v-if="$mq.below['m'] && showSidebar", @pointerup="showSidebar = false")
-		rooms-sidebar(:show="$mq.above['m'] || showSidebar", @close="showSidebar = false")
+			.sidebar-backdrop(v-if="$mq.below['l'] && showSidebar", @pointerup="showSidebar = false")
+		rooms-sidebar(:show="$mq.above['l'] || showSidebar", @close="showSidebar = false")
 		router-view(:key="$route.fullPath")
 		//- defining keys like this keeps the playing dom element alive for uninterupted transitions
 		media-source(v-if="roomHasMedia", ref="primaryMediaSource", :room="room", :key="room.id")

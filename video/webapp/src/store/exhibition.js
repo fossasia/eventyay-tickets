@@ -1,4 +1,5 @@
 import api from 'lib/api'
+import router from 'router'
 
 export default {
 	namespaced: true,
@@ -23,18 +24,19 @@ export default {
 		},
 		async acceptContactRequest ({state, dispatch, rootState}, contactRequest) {
 			// TODO error handling
-			await dispatch('chat/openDirectMessage', {user: contactRequest.user}, {root: true})
-			await api.call('exhibition.contact_accept', {contact_request: contactRequest.id})
+			const channel = await dispatch('chat/openDirectMessage', {user: contactRequest.user, hide: false}, {root: true})
+			await api.call('exhibition.contact_accept', {contact_request: contactRequest.id, channel: channel.id})
 			contactRequest.state = 'answered'
 			contactRequest.answered_by = rootState.user
 			contactRequest.timestamp = new Date().toISOString()
 			// TODO: send greeting message
 		},
 		// for staff
-		'api::exhibition.contact_request' ({state}, contactRequest) {
-			state.contactRequests.push(contactRequest)
+		'api::exhibition.contact_request' ({state}, data) {
+			state.contactRequests.push(data.contact_request)
 		},
-		'api::exhibition.contact_request_close' ({state}, contactRequest) {
+		'api::exhibition.contact_request_close' ({state}, data) {
+			const contactRequest = data.contact_request
 			const existingContactRequest = state.contactRequests.find(cb => cb.id === contactRequest.id)
 			if (!existingContactRequest) return
 			existingContactRequest.state = contactRequest.state
@@ -42,8 +44,9 @@ export default {
 			existingContactRequest.timestamp = contactRequest.timestamp
 		},
 		// for client
-		async 'api::exhibition.contact_accepted' ({dispatch}, contactRequest) {
-			await dispatch('chat/openDirectMessage', {user: contactRequest.answered_by}, {root: true})
+		async 'api::exhibition.contact_accepted' ({dispatch}, data) {
+			// DM is automatically opening
+			await router.push({name: 'channel', params: {channelId: data.channel}})
 		}
 	}
 }
