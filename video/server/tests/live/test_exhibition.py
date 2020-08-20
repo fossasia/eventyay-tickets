@@ -182,7 +182,7 @@ async def test_exhibition_contact_cancel(world, exhibition_room):
 
         response = await c_staff.receive_json_from()
         assert response[0] == "exhibition.contact_request"
-        assert response[1]["id"] == request_id
+        assert response[1]["contact_request"]["id"] == request_id
 
         await c1.send_json_to(
             ["exhibition.contact_cancel", 123, {"contact_request": request_id}]
@@ -192,7 +192,7 @@ async def test_exhibition_contact_cancel(world, exhibition_room):
 
         response = await c_staff.receive_json_from()
         assert response[0] == "exhibition.contact_request_close"
-        assert response[1]["id"] == request_id
+        assert response[1]["contact_request"]["id"] == request_id
 
 
 @pytest.mark.asyncio
@@ -253,19 +253,22 @@ async def test_exhibition_contact(world, exhibition_room):
         # receive request and answer
         response = await c_staff.receive_json_from()
         assert response[0] == "exhibition.contact_request"
-        contact_request_id = response[1]["id"]
+        contact_request_id = response[1]["contact_request"]["id"]
         await c_staff.send_json_to(
             [
                 "exhibition.contact_accept",
                 123,
-                {"contact_request": str(contact_request_id)},
+                {
+                    "contact_request": str(contact_request_id),
+                    "channel": "can_also_be_fake_here",
+                },
             ]
         )
         response = await c_staff.receive_json_from()
         assert response[0] == "success"
         response = await c1.receive_json_from()
         assert response[0] == "exhibition.contact_accepted"
-        assert response[1]["answered_by"]["id"] == str(
+        assert response[1]["contact_request"]["answered_by"]["id"] == str(
             c_staff.context["user.config"]["id"]
         )
         response = await c_staff.receive_json_from()
@@ -276,7 +279,10 @@ async def test_exhibition_contact(world, exhibition_room):
             [
                 "exhibition.contact_accept",
                 123,
-                {"contact_request": str(contact_request_id)},
+                {
+                    "contact_request": str(contact_request_id),
+                    "channel": "can_also_be_fake_here",
+                },
             ]
         )
         response = await c_staff.receive_json_from()
@@ -349,12 +355,15 @@ async def test_exhibition_contact_not_staff(world, exhibition_room):
         # receive request and answer
         response = await c_staff.receive_json_from()
         assert response[0] == "exhibition.contact_request"
-        contact_request_id = response[1]["id"]
+        contact_request_id = response[1]["contact_request"]["id"]
         await c2.send_json_to(
             [
                 "exhibition.contact_accept",
                 123,
-                {"contact_request": str(contact_request_id)},
+                {
+                    "contact_request": str(contact_request_id),
+                    "channel": "can_also_be_fake_here",
+                },
             ]
         )
         response = await c2.receive_json_from()

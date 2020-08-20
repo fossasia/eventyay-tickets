@@ -431,8 +431,10 @@ class ChatModule(BaseModule):
         user_ids = set(body.get("users", []))
         user_ids.add(self.consumer.user.id)
 
+        hide = body.get("hide", True)
+
         channel, created, users = await self.service.get_or_create_direct_channel(
-            user_ids=user_ids, initiating=str(self.consumer.user.id)
+            user_ids=user_ids, hide=hide, hide_except=str(self.consumer.user.id)
         )
         if not channel:
             raise ConsumerException("chat.denied")
@@ -453,13 +455,19 @@ class ChatModule(BaseModule):
                     GROUP_CHAT.format(channel=self.channel_id), event,
                 )
 
-            await self.service.broadcast_channel_list(
-                user=self.consumer.user, socket_id=self.consumer.socket_id
-            )
-            async with aioredis() as redis:
-                await redis.sadd(
-                    f"chat:unread.notify:{self.channel_id}", str(self.consumer.user.id),
-                )
+                if not hide or user == self.consumer.user:
+                    await self.service.broadcast_channel_list(
+                        user=user, socket_id=self.consumer.socket_id
+                    )
+                    async with aioredis() as redis:
+                        await redis.sadd(
+                            f"chat:unread.notify:{self.channel_id}", str(user.id),
+                        )
+            if not hide:
+                async with aioredis() as redis:
+                    await redis.setex(
+                        f"chat:direct:shownall:{self.channel_id}", 3600 * 24 * 7, "true"
+                    )
 
         reply["id"] = str(channel.id)
         await self.consumer.send_success(reply)

@@ -231,7 +231,9 @@ class ChatService:
             raise e  # pragma: no cover
 
     @database_sync_to_async
-    def get_or_create_direct_channel(self, user_ids, initiating: str):
+    def get_or_create_direct_channel(
+        self, user_ids, hide=True, hide_except: str = None
+    ):
         with transaction.atomic():
             users = list(
                 User.objects.prefetch_related("blocked_users").filter(
@@ -283,7 +285,7 @@ class ChatService:
                         channel=c,
                         user=u,
                         volatile=False,
-                        hidden=str(u.id) != initiating,
+                        hidden=hide and str(u.id) != hide_except,
                     )
 
                 return c, True, users

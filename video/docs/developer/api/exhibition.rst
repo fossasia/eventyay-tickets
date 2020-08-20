@@ -65,11 +65,11 @@ A client can accept the contact request with a message like this::
 
 The client which requested the contact will be send a message like::
 
-    <- ["exhibition.contact_accepted", {id, exhibitor, user, state}]
+    <- ["exhibition.contact_accepted", {"contact_request": {id, exhibitor, user, state}, "channel": "…"}]
 
 The state will become "answered" and messages send to all staff members::
 
-    <- ["exhibition.contact_request_close", {id, exhibitor, user, state}]
+    <- ["exhibition.contact_request_close", {"contact_request": {id, exhibitor, user, state}}]
 
 Cancel contact request
 ----------------------
@@ -81,5 +81,5 @@ A client can cancel a contact request with a message like this::
 
 The state will be set to "missed" and messages send to all staff members::
 
-    <- ["exhibition.contact_request_close", {id, exhibitor, user, state}]
+    <- ["exhibition.contact_request_close", {"contact_request": {id, exhibitor, user, state}}]
 

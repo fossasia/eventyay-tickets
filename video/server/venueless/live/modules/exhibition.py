@@ -76,6 +76,7 @@ class ExhibitionModule(BaseModule):
 
     @command("contact_accept")
     async def contact_accept(self, body):
+        channel = body["channel"]
         request = await self.service.accept(
             contact_request_id=body["contact_request"], staff=self.consumer.user
         )
@@ -89,12 +90,16 @@ class ExhibitionModule(BaseModule):
         await self.consumer.send_success()
         await self.consumer.channel_layer.group_send(
             GROUP_USER.format(id=request["user"]["id"]),
-            {"type": "exhibition.contact_accepted", "contact_request": request,},
+            {
+                "type": "exhibition.contact_accepted",
+                "contact_request": request,
+                "channel": channel,
+            },
         )
         for user_id in staff:
             await self.consumer.channel_layer.group_send(
                 GROUP_USER.format(id=str(user_id)),
-                {"type": "exhibition.contact_close", "contact_request": request,},
+                {"type": "exhibition.contact_close", "contact_request": request},
             )
 
     @command("add_staff")
@@ -121,17 +126,26 @@ class ExhibitionModule(BaseModule):
     @event("contact_request")
     async def contact_request(self, body):
         await self.consumer.send_json(
-            ["exhibition.contact_request", body["contact_request"]]
+            [
+                "exhibition.contact_request",
+                {k: v for k, v in body.items() if k != "type"},
+            ]
         )
 
     @event("contact_accepted")
     async def contact_accepted(self, body):
         await self.consumer.send_json(
-            ["exhibition.contact_accepted", body["contact_request"]]
+            [
+                "exhibition.contact_accepted",
+                {k: v for k, v in body.items() if k != "type"},
+            ]
         )
 
     @event("contact_close")
     async def contact_request_cancel(self, body):
         await self.consumer.send_json(
-            ["exhibition.contact_request_close", body["contact_request"]]
+            [
+                "exhibition.contact_request_close",
+                {k: v for k, v in body.items() if k != "type"},
+            ]
         )
