@@ -6,13 +6,13 @@ flex-table()
 	flex-direction: column
 	overflow: hidden
 	.header, .table-row
-		min-height: 48px
-		line-height: 1
-		padding: 16px 0
+		height: 48px
+		line-height: 48px
 		text-align: left
 		display: flex
 		> *
 			padding: 0 24px
+			ellipsis()
 
 	.header
 		background-color: $clr-grey-50

@@ -36,9 +36,9 @@ transition(name="sidebar")
 					bunt-icon-button(@click.prevent.stop="$store.dispatch('chat/closeDirectMessage', {channel})") close
 			.buffer
 			template(v-if="staffedExhibitions.length > 0")
-				.group-title Your Exihibitions
+				.group-title {{ $t('RoomsSidebar:exhibitions-headline:text') }}
 				.admin
-					router-link(:to="{name: 'contactRequests'}") Contact Requests
+					router-link(:to="{name: 'contactRequests'}")  {{ $t('RoomsSidebar:exhibitions-requests:label') }}
 			template(v-if="hasPermission('world:users.list') || hasPermission('world:update') || hasPermission('room:update')")
 				.group-title {{ $t('RoomsSidebar:admin-headline:text') }}
 				.admin
