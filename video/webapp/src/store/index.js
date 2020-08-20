@@ -116,6 +116,12 @@ export default new Vuex.Store({
 			state.rooms.push(room)
 			// TODO ordering?
 		},
+		'api::room.delete' ({state}, {id}) {
+			const index = state.rooms.findIndex(room => room.id === id)
+			if (index >= 0) {
+				state.rooms.splice(index, 1)
+			}
+		},
 		'api::room.reaction' ({state}, {room, reactions}) {
 			if (state.activeRoom.id !== room) return
 			state.reactions = reactions

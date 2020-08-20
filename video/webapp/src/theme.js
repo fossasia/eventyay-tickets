@@ -1,3 +1,5 @@
+// TODO
+// - icon button hover background on dark bg
 import Color from 'color'
 import kebabCase from 'lodash/kebabCase'
 import config from 'config'
@@ -46,7 +48,8 @@ const CLR_DIVIDERS = {LIGHT: Color('rgba(255, 255, 255, .63)'), DARK: Color('rgb
 
 const DEFAULT_COLORS = {
 	primary: '#673ab7',
-	sidebar: '#180044'
+	sidebar: '#180044',
+	bbb_background: '#333333',
 }
 
 const DEFAULT_LOGO = {

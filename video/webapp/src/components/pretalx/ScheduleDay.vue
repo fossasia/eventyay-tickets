@@ -46,7 +46,10 @@ export default {
 					startOfDay = moment(room.talks[0].start)
 				}
 			}
-			return startOfDay || moment(this.day.start)
+			startOfDay = startOfDay || moment(this.day.start)
+			startOfDay.minute(0)
+			startOfDay.second(0)
+			return startOfDay
 		},
 		endOfDay () {
 			let endOfDay

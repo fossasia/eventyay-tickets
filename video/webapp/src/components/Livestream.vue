@@ -29,7 +29,13 @@ const RETRY_INTERVAL = 5000
 const HLS_CONFIG = {
 	// never fall behind live edge
 	liveBackBufferLength: 0,
-	liveMaxLatencyDurationCount: 5
+	liveMaxLatencyDurationCount: 5,
+	fragLoadingMaxRetry: Infinity,
+	fragLoadingMaxRetryTimeout: 5000,
+	levelLoadingMaxRetry: Infinity,
+	levelLoadingMaxRetryTimeout: 5000,
+	manifestLoadingMaxRetry: Infinity,
+	manifestLoadingMaxRetryTimeout: 5000
 }
 
 export default {
@@ -63,63 +69,80 @@ export default {
 	computed: {
 		...mapState(['streamingRoom'])
 	},
+	watch: {
+		'module.config.hls_url': 'initializePlayer'
+	},
 	mounted () {
-		const video = this.$refs.video
 		document.addEventListener('fullscreenchange', this.onFullscreenchange)
-		const start = async () => {
-			this.offline = false
-			this.buffering = false
-			try {
-				await this.$refs.video.play()
-			} catch (e) {
-				video.muted = true
-				this.automuted = true
-				video.play()
-			}
-			this.onVolumechange()
-		}
-		if (Hls.isSupported()) {
-			const player = new Hls(HLS_CONFIG)
-			player.attachMedia(this.$refs.video)
-			this.player = player
-			const load = () => {
-				player.loadSource(this.module.config.hls_url)
-			}
-			player.on(Hls.Events.MEDIA_ATTACHED, () => {
-				load()
-			})
-			player.on(Hls.Events.MANIFEST_PARSED, async (event, data) => {
-				start()
-			})
-
-			player.on(Hls.Events.ERROR, (event, data) => {
-				console.error(event, data)
-				if (data.details === Hls.ErrorDetails.BUFFER_STALLED_ERROR) {
-					this.buffering = true
-				} else if ([Hls.ErrorDetails.MANIFEST_LOAD_ERROR, Hls.ErrorDetails.LEVEL_LOAD_ERROR].includes(data.details)) {
-					this.offline = true
-					setTimeout(load, RETRY_INTERVAL)
-				} else if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
-					this.buffering = true
-					setTimeout(() => player.startLoad(), 250)
-				}
-			})
-
-			player.on(Hls.Events.FRAG_BUFFERED, () => {
-				this.buffering = false
-			})
-		} else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-			video.src = this.module.config.hls_url
-			video.addEventListener('loadedmetadata', function () {
-				start()
-			})
-		}
+		this.initializePlayer()
 	},
 	beforeDestroy () {
 		this.player?.destroy()
 		document.removeEventListener('fullscreenchange', this.onFullscreenchange)
 	},
 	methods: {
+		initializePlayer () {
+			this.player?.destroy()
+			this.buffering = true
+			const video = this.$refs.video
+			const start = async () => {
+				this.offline = false
+				this.buffering = false
+				try {
+					if (!this.playing) return
+					await video.play()
+				} catch (e) {
+					video.muted = true
+					this.automuted = true
+					video.play()
+				}
+				this.onVolumechange()
+			}
+			if (Hls.isSupported()) {
+				const player = new Hls(HLS_CONFIG)
+				let started = false
+				player.attachMedia(this.$refs.video)
+				this.player = player
+				const load = () => {
+					player.loadSource(this.module.config.hls_url)
+				}
+				player.on(Hls.Events.MEDIA_ATTACHED, () => {
+					load()
+				})
+				player.on(Hls.Events.MANIFEST_PARSED, async (event, data) => {
+					start()
+					started = true
+				})
+
+				player.on(Hls.Events.ERROR, (event, data) => {
+					console.error(event, data)
+					if (data.details === Hls.ErrorDetails.BUFFER_STALLED_ERROR) {
+						this.buffering = true
+					} else if ([Hls.ErrorDetails.MANIFEST_LOAD_ERROR, Hls.ErrorDetails.LEVEL_LOAD_ERROR].includes(data.details)) {
+						if (!started) {
+							this.offline = true
+							setTimeout(load, RETRY_INTERVAL)
+						} else if (data.response.code === 404) {
+							this.initializePlayer()
+						}
+					} else if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
+						this.buffering = true
+						setTimeout(() => player.startLoad(), 250)
+					}
+				})
+
+				player.on(Hls.Events.FRAG_BUFFERED, () => {
+					this.buffering = false
+				})
+			} else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+				video.src = this.module.config.hls_url
+				// TODO probably explodes on re-init
+				// TODO doesn't seem like the buffer ring gets hidden?
+				video.addEventListener('loadedmetadata', function () {
+					start()
+				})
+			}
+		},
 		toggleVideo () {
 			if (this.automuted) {
 				this.toggleVolume()

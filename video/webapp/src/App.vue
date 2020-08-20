@@ -19,18 +19,16 @@
 	template(v-else-if="world")
 		app-bar(v-if="$mq.below['l']", @toggleSidebar="toggleSidebar")
 		transition(name="backdrop")
-			.sidebar-backdrop(v-if="$mq.below['l'] && showSidebar", @pointerup="showSidebar = false")
-		rooms-sidebar(:show="$mq.above['l'] || showSidebar", @editProfile="showProfilePrompt = true", @createRoom="showStageCreationPrompt = true", @createChat="showChatCreationPrompt = true",	@close="showSidebar = false")
+			.sidebar-backdrop(v-if="$mq.below['m'] && showSidebar", @pointerup="showSidebar = false")
+		rooms-sidebar(:show="$mq.above['m'] || showSidebar", @close="showSidebar = false")
 		router-view(:key="$route.fullPath")
 		//- defining keys like this keeps the playing dom element alive for uninterupted transitions
 		media-source(v-if="roomHasMedia", ref="primaryMediaSource", :room="room", :key="room.id")
 		media-source(v-if="backgroundRoom", ref="backgroundMediaSource", :room="backgroundRoom", :background="true", :key="backgroundRoom.id", @close="backgroundRoom = null")
 		notifications(:has-background-media="!!backgroundRoom")
-		transition(name="prompt")
-			profile-prompt(v-if="!user.profile.display_name || showProfilePrompt", @close="showProfilePrompt = false")
-			create-stage-prompt(v-else-if="showStageCreationPrompt", @close="showStageCreationPrompt = false")
-			create-chat-prompt(v-else-if="showChatCreationPrompt", @close="showChatCreationPrompt = false")
 		.disconnected-warning(v-if="!connected") {{ $t('App:disconnected-warning:text') }}
+		transition(name="prompt")
+			profile-prompt(v-if="!user.profile.display_name")
 	bunt-progress-circular(v-else-if="!fatalError", size="huge")
 	.fatal-error(v-if="fatalError") {{ fatalError.message }}
 </template>
@@ -39,32 +37,27 @@ import { mapState } from 'vuex'
 import { themeVariables } from 'theme'
 import AppBar from 'components/AppBar'
 import RoomsSidebar from 'components/RoomsSidebar'
-import ProfilePrompt from 'components/ProfilePrompt'
-import CreateStagePrompt from 'components/CreateStagePrompt'
-import CreateChatPrompt from 'components/CreateChatPrompt'
 import MediaSource from 'components/MediaSource'
 import Notifications from 'components/notifications'
+import ProfilePrompt from 'components/ProfilePrompt'
 
 const mediaModules = ['livestream.native', 'call.bigbluebutton']
 
 export default {
-	components: { AppBar, RoomsSidebar, ProfilePrompt, CreateStagePrompt, CreateChatPrompt, MediaSource, Notifications },
+	components: { AppBar, RoomsSidebar, MediaSource, ProfilePrompt, Notifications },
 	data () {
 		return {
 			themeVariables,
 			backgroundRoom: null,
 			showSidebar: false,
-			showProfilePrompt: false,
-			showStageCreationPrompt: false,
-			showChatCreationPrompt: false,
 			windowHeight: null
 		}
 	},
 	computed: {
-		...mapState(['fatalConnectionError', 'fatalError', 'connected', 'world', 'user']),
+		...mapState(['fatalConnectionError', 'fatalError', 'connected', 'world', 'rooms', 'user']),
 		room () {
-			if (this.$route.name === 'home') return this.$store.state.rooms?.[0]
-			return this.$store.state.rooms?.find(room => room.id === this.$route.params.roomId)
+			if (this.$route.name === 'home') return this.rooms?.[0]
+			return this.rooms?.find(room => room.id === this.$route.params.roomId)
 		},
 		roomHasMedia () {
 			return this.room?.modules.some(module => mediaModules.includes(module.type))
@@ -79,6 +72,7 @@ export default {
 	},
 	watch: {
 		world: 'worldChange',
+		rooms: 'roomListChange',
 		room: 'roomChange',
 		$route () {
 			this.showSidebar = false
@@ -116,6 +110,7 @@ export default {
 
 			if (!this.$mq.above.m) return // no background rooms for mobile
 			if (oldRoom &&
+				this.rooms.includes(oldRoom) &&
 				!this.backgroundRoom &&
 				oldRoom.modules.some(module => mediaModules.includes(module.type)) &&
 				this.$refs.primaryMediaSource.isPlaying()
@@ -124,6 +119,14 @@ export default {
 			}
 			// returning to room currently playing in background should maximize again
 			if (this.backgroundRoom && newRoom === this.backgroundRoom) {
+				this.backgroundRoom = null
+			}
+		},
+		roomListChange () {
+			if (this.room && !this.rooms.includes(this.room)) {
+				this.$router.push('/').catch(() => {})
+			}
+			if (!this.backgroundRoom && !this.rooms.includes(this.backgroundRoom)) {
 				this.backgroundRoom = null
 			}
 		}

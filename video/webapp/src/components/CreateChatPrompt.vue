@@ -1,7 +1,6 @@
 <template lang="pug">
 prompt.c-create-chat-prompt(@close="$emit('close')")
 	.content
-		bunt-icon-button#btn-close(@click="$emit('close')") close
 		h1 {{ $t('CreateChatPrompt:headline:text') }}
 		p {{ $t('CreateChatPrompt:intro:text') }}
 		form(@submit.prevent="create")
@@ -11,7 +10,7 @@ prompt.c-create-chat-prompt(@close="$emit('close')")
 					.label {{ option.label }}
 			bunt-input(name="name", :label="$t('CreateChatPrompt:name:label')", :icon="selectedType.icon", :placeholder="$t('CreateChatPrompt:name:placeholder')", v-model="name")
 			bunt-input-outline-container(:label="$t('CreateChatPrompt:description:label')")
-				textarea(slot-scope="{focus, blur}", @focus="focus", @blur="blur")
+				textarea(v-model="description", slot-scope="{focus, blur}", @focus="focus", @blur="blur")
 			bunt-button(type="submit", :loading="loading") {{ $t('CreateChatPrompt:submit:label') }}
 </template>
 <script>
@@ -23,6 +22,7 @@ export default {
 	data () {
 		return {
 			name: '',
+			description: '',
 			type: 'text',
 			loading: false
 		}
@@ -71,6 +71,7 @@ export default {
 			}
 			const { room } = await this.$store.dispatch('createRoom', {
 				name: this.name,
+				description: this.description,
 				modules
 			})
 			// TODO error handling
