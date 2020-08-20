@@ -45,6 +45,7 @@ class RoomConfigSerializer(serializers.ModelSerializer):
             "description",
             "sorting_priority",
             "pretalx_id",
+            "force_join",
         )
 
 

@@ -10,6 +10,7 @@
 		bunt-input(v-model="config.sorting_priority", label="Sorting priority", name="sorting_priority", :validation="$v.config.sorting_priority")
 		bunt-input(v-model="config.pretalx_id", label="pretalx ID", name="pretalx_id", :validation="$v.config.pretalx_id")
 		upload-url-input(v-model="config.picture", label="Picture", name="picture")
+		bunt-checkbox(v-model="config.force_join", label="Force join on login (use for non-volatile, text-based chats only!!)", name="force_join")
 		table.trait-grants
 			thead
 				tr
@@ -154,6 +155,7 @@ export default {
 				pretalx_id: this.config.pretalx_id,
 				picture: this.config.picture,
 				trait_grants: this.config.trait_grants,
+				force_join: this.config.force_join,
 				module_config: this.config.module_config,
 			})
 			this.saving = false

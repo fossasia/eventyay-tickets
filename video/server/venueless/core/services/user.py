@@ -1,8 +1,10 @@
 from collections import namedtuple
 
 from channels.db import database_sync_to_async
+from channels.layers import get_channel_layer
 from django.db.transaction import atomic
 
+from ...live.channels import GROUP_USER
 from ..models.auth import User
 from ..permissions import Permission
 
@@ -127,6 +129,7 @@ def update_user(world_id, id, *, traits=None, public_data=None, serialize=True):
             save_fields.append("profile")
         if save_fields:
             user.save(update_fields=save_fields)
+
     return user.serialize_public() if serialize else user
 
 
@@ -218,3 +221,15 @@ def unblock_user(world, blocking_user: User, blocked_user_id) -> bool:
     blocking_user.blocked_users.remove(blocked_user)
     blocked_user.touch()
     return True
+
+
+async def user_broadcast(event_type, data, user_id, socket_id):
+    await get_channel_layer().group_send(
+        GROUP_USER.format(id=user_id),
+        {
+            "type": "user.broadcast",
+            "event_type": event_type,
+            "data": data,
+            "socket": socket_id,
+        },
+    )

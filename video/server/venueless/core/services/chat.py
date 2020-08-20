@@ -1,15 +1,26 @@
 from contextlib import suppress
 
 from channels.db import database_sync_to_async
+from channels.layers import get_channel_layer
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError, transaction
-from django.db.models import Count, Max, OuterRef, Prefetch, Q, Subquery
+from django.db.models import (
+    Count,
+    Exists,
+    IntegerField,
+    Max,
+    OuterRef,
+    Prefetch,
+    Q,
+    Subquery,
+)
 from django.utils.timezone import now
 
+from ...live.channels import GROUP_CHAT
 from ..models import BBBCall, Channel, ChatEvent, Membership, User
 from ..utils.redis import aioredis
 from .bbb import choose_server
-from .user import get_public_users
+from .user import get_public_users, user_broadcast
 
 
 @database_sync_to_async
@@ -36,7 +47,17 @@ class ChatService:
     def get_channels_for_user(self, user_id, is_volatile=None, is_hidden=False):
         qs = (
             Membership.objects.filter(channel__world_id=self.world.pk, user_id=user_id,)
-            .annotate(max_id=Max("channel__chat_events__id"))
+            .annotate(
+                max_id=Subquery(
+                    ChatEvent.objects.filter(channel_id=OuterRef("channel_id"),)
+                    .exclude(event_type="channel.member")
+                    .order_by()
+                    .values("channel_id")
+                    .annotate(m=Max("id"))
+                    .values("m"),
+                    output_field=IntegerField(),
+                )
+            )
             .prefetch_related(
                 Prefetch(
                     "channel",
@@ -60,7 +81,7 @@ class ChatService:
         for m in qs:
             r = {
                 "id": str(m.channel_id),
-                "notification_pointer": m.max_id,
+                "notification_pointer": m.max_id or 0,
             }
             if not m.channel.room_id:
                 r["members"] = [
@@ -164,9 +185,11 @@ class ChatService:
         return ce.serialize_public()
 
     @database_sync_to_async
-    def get_highest_id_in_channel(self, channel_id):
+    def get_highest_nonmember_id_in_channel(self, channel_id):
         return (
-            ChatEvent.objects.filter(channel_id=channel_id).aggregate(m=Max("id"))["m"]
+            ChatEvent.objects.exclude(event_type="channel.member")
+            .filter(channel_id=channel_id)
+            .aggregate(m=Max("id"))["m"]
             or 0
         )
 
@@ -275,3 +298,53 @@ class ChatService:
         event.edited = now()
         event.save()
         return event
+
+    @database_sync_to_async
+    def get_channels_to_join_forced(self, user):
+        return list(
+            Channel.objects.annotate(
+                is_member=Exists(
+                    Membership.objects.filter(channel=OuterRef("pk"), user_id=user.pk)
+                )
+            ).filter(
+                world_id=self.world.pk, room__force_join=True,
+            )
+        )
+
+    async def broadcast_channel_list(self, user, socket_id):
+        await user.refresh_from_db_if_outdated()
+        await user_broadcast(
+            "chat.channels",
+            {
+                "channels": await database_sync_to_async(self.get_channels_for_user)(
+                    user, is_volatile=False
+                )
+            },
+            user_id=user.id,
+            socket_id=socket_id,
+        )
+
+    async def enforce_forced_joins(self, user):
+        if not user.profile.get("display_name"):
+            return
+        c_to_join = await self.get_channels_to_join_forced(user)
+        if not c_to_join:
+            return
+
+        for channel in c_to_join:
+            joined = await self.add_channel_user(channel.id, user, volatile=False)
+            if joined:
+                event = await self.create_event(
+                    channel=channel,
+                    event_type="channel.member",
+                    content={"membership": "join", "user": user.serialize_public(),},
+                    sender=user,
+                )
+                await get_channel_layer().group_send(
+                    GROUP_CHAT.format(channel=channel.pk), event,
+                )
+                await self.broadcast_channel_list(user, "dummysocket")
+                async with aioredis() as redis:
+                    await redis.sadd(
+                        f"chat:unread.notify:{channel.id}", str(user.id),
+                    )

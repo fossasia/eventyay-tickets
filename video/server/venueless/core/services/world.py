@@ -66,6 +66,7 @@ def get_room_config(room, permissions):
         "import_id": room.import_id,
         "pretalx_id": room.pretalx_id,
         "permissions": [p for p in permissions if not p.startswith("world:")],
+        "force_join": room.force_join,
         "modules": [],
     }
     for module in room.module_config:
