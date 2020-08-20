@@ -12,13 +12,15 @@ transition(name="sidebar")
 				router-link.room(v-for="page of roomsByType.page", v-if="page !== rooms[0]", :to="{name: 'room', params: {roomId: page.id}}") {{ page.name }}
 			.group-title(v-if="roomsByType.stage.length || hasPermission('world:rooms.create.stage')")
 				span {{ $t('RoomsSidebar:stages-headline:text') }}
-				bunt-icon-button(v-if="hasPermission('world:rooms.create.stage')", @click="$emit('createRoom')") plus
+				bunt-icon-button(v-if="hasPermission('world:rooms.create.stage')", @click="showStageCreationPrompt = true") plus
 			.stages
 				router-link.stage(v-for="stage of roomsByType.stage", :to="stage === rooms[0] ? {name: 'home'} : {name: 'room', params: {roomId: stage.id}}")
 					.name {{ stage.name }}
 			.group-title(v-if="roomsByType.videoChat.length || roomsByType.textChat.length || hasPermission('world:rooms.create.chat') || hasPermission('world:rooms.create.bbb')")
 				span {{ $t('RoomsSidebar:channels-headline:text') }}
-				bunt-icon-button(v-if="hasPermission('world:rooms.create.chat') || hasPermission('world:rooms.create.bbb')", @click="$emit('createChat')") plus
+				.buffer
+				bunt-icon-button(v-if="hasPermission('world:rooms.create.chat') || hasPermission('world:rooms.create.bbb')", @click="showChatCreationPrompt = true") plus
+				bunt-icon-button(@click="showChannelBrowser = true") compass-outline
 			.chats
 				router-link.video-chat(v-for="chat of roomsByType.videoChat", :to="chat === rooms[0] ? {name: 'home'} : {name: 'room', params: {roomId: chat.id}}")
 					.name {{ chat.name }}
@@ -40,29 +42,42 @@ transition(name="sidebar")
 			template(v-if="hasPermission('world:users.list') || hasPermission('world:update') || hasPermission('room:update')")
 				.group-title {{ $t('RoomsSidebar:admin-headline:text') }}
 				.admin
-					router-link(:to="{name: 'admin:users'}", v-if="hasPermission('world:users.list')") {{ $t('RoomsSidebar:admin-users:label') }}
-					router-link(:to="{name: 'admin:rooms'}", v-if="hasPermission('room:update')") {{ $t('RoomsSidebar:admin-rooms:label') }}
-					router-link(:to="{name: 'admin:config'}", v-if="hasPermission('world:update')") {{ $t('RoomsSidebar:admin-config:label') }}
-		.profile(@click="$emit('editProfile')")
+					router-link.room(:to="{name: 'admin:users'}", v-if="hasPermission('world:users.list')") {{ $t('RoomsSidebar:admin-users:label') }}
+					router-link.room(:to="{name: 'admin:rooms'}", v-if="hasPermission('room:update')") {{ $t('RoomsSidebar:admin-rooms:label') }}
+					router-link.room(:to="{name: 'admin:config'}", v-if="hasPermission('world:update')") {{ $t('RoomsSidebar:admin-config:label') }}
+		.profile(@click="showProfilePrompt = true")
 			avatar(:user="user", :size="36")
 			.display-name {{ user.profile.display_name }}
+		transition(name="prompt")
+			channel-browser(v-if="showChannelBrowser", @close="showChannelBrowser = false", @createChannel="showChannelBrowser = false, showChatCreationPrompt = true")
+			create-stage-prompt(v-else-if="showStageCreationPrompt", @close="showStageCreationPrompt = false")
+			create-chat-prompt(v-else-if="showChatCreationPrompt", @close="showChatCreationPrompt = false")
+			profile-prompt(v-else-if="showProfilePrompt", @close="showProfilePrompt = false")
 </template>
 <script>
 import { mapState, mapGetters } from 'vuex'
 import theme from 'theme'
 import Avatar from 'components/Avatar'
+import ChannelBrowser from 'components/ChannelBrowser'
+import CreateStagePrompt from 'components/CreateStagePrompt'
+import CreateChatPrompt from 'components/CreateChatPrompt'
+import ProfilePrompt from 'components/ProfilePrompt'
 
 export default {
 	props: {
 		show: Boolean
 	},
-	components: { Avatar },
+	components: { Avatar, ChannelBrowser, CreateStagePrompt, CreateChatPrompt, ProfilePrompt },
 	data () {
 		return {
 			theme,
 			lastPointer: null,
 			pointerMovementX: 0,
-			snapBack: false
+			snapBack: false,
+			showChannelBrowser: false,
+			showStageCreationPrompt: false,
+			showChatCreationPrompt: false,
+			showProfilePrompt: false
 		}
 	},
 	computed: {
@@ -85,9 +100,10 @@ export default {
 				videoChat: []
 			}
 			for (const room of this.rooms) {
-				if (room.modules.length === 1 & room.modules[0].type === 'chat.native') {
+				if (room.modules.length === 1 && room.modules[0].type === 'chat.native') {
+					if (!this.joinedChannels.some(channel => channel.id === room.modules[0].channel_id)) continue
 					rooms.textChat.push(room)
-				} else if (room.modules.length === 1 & room.modules[0].type === 'call.bigbluebutton') {
+				} else if (room.modules.length === 1 && room.modules[0].type === 'call.bigbluebutton') {
 					rooms.videoChat.push(room)
 				} else if (room.modules.some(module => module.type === 'livestream.native')) {
 					rooms.stage.push(room)
@@ -135,7 +151,6 @@ export default {
 <style lang="stylus">
 .c-rooms-sidebar
 	background-color: var(--clr-sidebar)
-	color: var(--clr-sidebar-text-primary)
 	display: flex
 	flex-direction: column
 	min-height: 0
@@ -158,6 +173,7 @@ export default {
 		flex: auto
 		.scroll-content
 			flex: auto
+			color: var(--clr-sidebar-text-primary)
 		.scrollbar-rail-y
 			.scrollbar-thumb
 				background-color: var(--clr-sidebar-text-secondary)
@@ -190,6 +206,7 @@ export default {
 			margin: -4px 0
 			icon-button-style(color: var(--clr-sidebar-text-primary), style: clear)
 	.stages, .chats, .direct-messages, .admin
+		flex: none
 		display: flex
 		flex-direction: column
 		> *
@@ -252,6 +269,7 @@ export default {
 		padding: 8px
 		align-items: center
 		cursor: pointer
+		color: var(--clr-sidebar-text-primary)
 		&:hover
 			background-color: rgba(255, 255, 255, 0.3)
 		.c-avatar

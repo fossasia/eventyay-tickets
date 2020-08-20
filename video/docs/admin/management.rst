@@ -138,8 +138,8 @@ wait between every message that is sent out::
 Debugging
 ---------
 
-``shell``
-"""""""""
+``shell_plus``
+""""""""""""""
 
-The ``shell`` command opens a shell with the venueless configuration and environment. All database models and some more
-useful modules will be imported automatically.
+The ``shell_plus`` command opens a shell with the venueless configuration and environment. All database models and some
+more useful modules will be imported automatically.

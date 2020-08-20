@@ -5,6 +5,7 @@
 	.theme-form(v-if="config != null")
 		bunt-input(v-model="config.theme.colors.primary", label="Primary color", name="colors_primary", :validation="$v.config.theme.colors.primary")
 		bunt-input(v-model="config.theme.colors.sidebar", label="Sidebar color", name="colors_sidebar", :validation="$v.config.theme.colors.sidebar")
+		bunt-input(v-model="config.theme.colors.bbb_background", label="BBB background color", name="colors_bbb_background", :validation="$v.config.theme.colors.bbb_background")
 		upload-url-input(v-model="config.theme.logo.url", label="Logo", name="logo_url", :validation="$v.config.theme.logo.url")
 		bunt-checkbox(v-model="config.theme.logo.fitToWidth", label="Fit logo to width", name="logo_fit")
 		upload-url-input(v-model="config.theme.streamOfflineImage", label="Stream offline image", name="streamoffline_url", :validation="$v.config.theme.streamOfflineImage")
@@ -58,7 +59,11 @@ export default {
 					sidebar: {
 						required,
 						color
-					}
+					},
+					bbb_background: {
+						required,
+						color
+					},
 				},
 				logo: {
 					url: {

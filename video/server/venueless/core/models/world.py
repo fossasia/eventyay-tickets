@@ -30,6 +30,7 @@ def default_roles():
     moderator = speaker + [
         Permission.ROOM_CHAT_MODERATE,
         Permission.ROOM_ANNOUNCE,
+        Permission.ROOM_BBB_RECORDINGS,
         Permission.WORLD_ANNOUNCE,
     ]
     admin = (
@@ -84,10 +85,7 @@ class World(VersionedModel):
             secret = jwt_config["secret"]
             audience = jwt_config["audience"]
             issuer = jwt_config["issuer"]
-            with suppress(
-                jwt.exceptions.InvalidSignatureError,
-                jwt.exceptions.ExpiredSignatureError,
-            ):
+            with suppress(jwt.exceptions.InvalidTokenError):
                 return jwt.decode(
                     token,
                     secret,

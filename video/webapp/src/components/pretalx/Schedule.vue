@@ -1,7 +1,7 @@
 <template lang="pug">
 .pretalx-schedule(ref="wrapper", :style="style")
 	.header
-		h2 {{ $t('Schedule') }}
+		h2 {{ $t('Schedule:headline:text') }}
 		bunt-tabs(v-if="schedule.schedule.length > 1", :active-tab="activeDay.start")
 			bunt-tab(v-for="day in schedule.schedule", :id="day.start", :header="formatDate(day.start)", @selected="activeDay = day")
 		.pretalx-widget-attribution(v-if="$mq.above.m")

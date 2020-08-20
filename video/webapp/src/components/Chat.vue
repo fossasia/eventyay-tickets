@@ -8,7 +8,9 @@
 				template(v-for="message of filteredTimeline")
 					chat-message(:message="message", :mode="mode", :key="message.event_id")
 			.chat-input
-				bunt-button(v-if="!activeJoinedChannel", @click="join", :tooltip="$t('Chat:join-button:tooltip')") {{ $t('Chat:join-button:label') }}
+				.no-permission(v-if="room && !room.permissions.includes('room:chat.join')") {{ $t('Chat:permission-block:room:chat.join') }}
+				bunt-button(v-else-if="!activeJoinedChannel", @click="join", :tooltip="$t('Chat:join-button:tooltip')") {{ $t('Chat:join-button:label') }}
+				.no-permission(v-else-if="room && !room.permissions.includes('room:chat.send')") {{ $t('Chat:permission-block:room:chat.send') }}
 				chat-input(v-else, @send="send")
 		scrollbars.user-list(v-if="mode === 'standalone' && showUserlist && $mq.above['m']", y)
 			.user(v-for="user of members", @click="showUserCard($event, user)")
@@ -28,6 +30,10 @@ import ChatUserCard from 'components/ChatUserCard'
 
 export default {
 	props: {
+		room: {
+			type: Object,
+			required: true
+		},
 		module: {
 			type: Object,
 			required: true
@@ -54,7 +60,10 @@ export default {
 		...mapState('chat', ['channel', 'members', 'usersLookup', 'timeline', 'fetchingMessages']),
 		...mapGetters('chat', ['activeJoinedChannel']),
 		filteredTimeline () {
-			return this.timeline.filter(message => (this.mode === 'standalone' || message.event_type === 'channel.message') && message.content.type !== 'deleted' && !message.replaces)
+			// We want to hide join/leave event (a) in rooms with force join (b) in stage chats (c) in direct messages
+			const showJoinleave = this.mode === 'standalone' && this.room && !this.room.force_join
+			console.log(showJoinleave)
+			return this.timeline.filter(message => (showJoinleave || message.event_type !== 'channel.member') && message.content.type !== 'deleted' && !message.replaces)
 		}
 	},
 	watch: {

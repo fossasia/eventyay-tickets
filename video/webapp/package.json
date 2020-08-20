@@ -22,7 +22,7 @@
     "emoji-datasource-twitter": "^5.0.1",
     "emoji-mart": "^3.0.0",
     "emoji-regex": "^9.0.0",
-    "hls.js": "^0.13.2",
+    "hls.js": "^0.14.8",
     "jwt-decode": "^2.2.0",
     "lodash": "^4.17.15",
     "markdown-it": "^10.0.0",

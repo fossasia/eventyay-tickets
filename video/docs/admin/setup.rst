@@ -213,6 +213,14 @@ Right now, every world needs its own domain to run on::
 
 That's it! You should now be able to access venueless on the configured domain.
 
+Cronjobs
+--------
+
+If you have multiple BigBlueButton servers, you should add a cronjob that polls the current meeting an user numbers for
+the BBB servers to update the load balancer's cost function::
+
+    * * * * *   docker exec venueless.service venueless bbb_update_cost
+
 Updates
 -------
 

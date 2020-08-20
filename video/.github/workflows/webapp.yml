@@ -2,11 +2,11 @@ name: webapp
 
 on:
   push:
-    branches: [ master ]
+    branches: [ dev, stable, prod ]
     paths:
       - 'webapp/**'
   pull_request:
-    branches: [ master ]
+    branches: [ dev, stable, prod ]
     paths:
       - 'webapp/**'
 

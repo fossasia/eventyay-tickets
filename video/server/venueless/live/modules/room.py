@@ -9,7 +9,7 @@ from django.core.exceptions import ValidationError
 from rest_framework import serializers
 from sentry_sdk import add_breadcrumb, configure_scope
 
-from venueless.core.models import Room
+from venueless.core.models import Channel, Room
 from venueless.core.permissions import Permission
 from venueless.core.services.reactions import store_reaction
 from venueless.core.services.room import end_view, start_view
@@ -45,6 +45,7 @@ class RoomConfigSerializer(serializers.ModelSerializer):
             "description",
             "sorting_priority",
             "pretalx_id",
+            "force_join",
         )
 
 
@@ -186,19 +187,13 @@ class RoomModule(BaseModule):
 
     @event("create", refresh_user=True, refresh_world=True)
     async def push_room_info(self, body):
-        await self.consumer.world.refresh_from_db_if_outdated()
-        await self.consumer.user.refresh_from_db_if_outdated()
-        if not await self.consumer.world.has_permission_async(
-            user=self.consumer.user, permission=Permission.ROOM_VIEW
-        ):
+        conf = await get_room_config_for_user(
+            body["room"], self.consumer.world.id, self.consumer.user
+        )
+        if "room:view" not in conf["permissions"]:
             return
         await self.consumer.send_json(
-            [
-                body["type"],
-                await get_room_config_for_user(
-                    body["room"], self.consumer.world.id, self.consumer.user
-                ),
-            ]
+            [body["type"], conf,]
         )
 
     @command("config.list")
@@ -226,6 +221,10 @@ class RoomModule(BaseModule):
             await database_sync_to_async(self.room.save)(
                 update_fields=list(update_fields)
             )
+            if "chat.native" in set(m["type"] for m in self.room.module_config):
+                await database_sync_to_async(Channel.objects.get_or_create)(
+                    world_id=self.consumer.world.pk, room=self.room
+                )
             await self.consumer.send_success(RoomConfigSerializer(self.room).data)
             await notify_world_change(self.consumer.world.id)
         else:
@@ -241,3 +240,7 @@ class RoomModule(BaseModule):
             f"world.{self.consumer.world.id}",
             {"type": "room.delete", "room": str(self.room.id)},
         )
+
+    @event("delete")
+    async def push_room_delete(self, body):
+        await self.consumer.send_json([body["type"], {"id": body["room"]}])

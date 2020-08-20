@@ -31,6 +31,7 @@ class UploadView(View):
         ".gif",
         ".jpeg",
         ".gif",
+        ".pdf",
     )
     max_size = 10 * 1024 * 1024
 

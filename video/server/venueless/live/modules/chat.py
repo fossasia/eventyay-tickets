@@ -2,7 +2,6 @@ import functools
 import logging
 from contextlib import suppress
 
-from channels.db import database_sync_to_async
 from sentry_sdk import configure_scope
 
 from venueless.core.permissions import Permission
@@ -108,7 +107,7 @@ class ChatModule(BaseModule):
         self.service = ChatService(self.consumer.world)
 
     async def _subscribe(self):
-        self.channels_subscribed.add(self.channel_id)
+        self.channels_subscribed.add(self.channel)
         await self.consumer.channel_layer.group_add(
             GROUP_CHAT.format(channel=self.channel_id), self.consumer.channel_name
         )
@@ -119,7 +118,7 @@ class ChatModule(BaseModule):
         return {
             "state": None,
             "next_event_id": (last_id) + 1,
-            "notification_pointer": await self.service.get_highest_id_in_channel(
+            "notification_pointer": await self.service.get_highest_nonmember_id_in_channel(
                 self.channel_id
             ),
             "members": await self.service.get_channel_users(
@@ -132,7 +131,7 @@ class ChatModule(BaseModule):
 
     async def _unsubscribe(self, clean_volatile_membership=True):
         with suppress(KeyError):
-            self.channels_subscribed.remove(self.channel_id)
+            self.channels_subscribed.remove(self.channel)
         if clean_volatile_membership:
             remaining_sockets = await self.service.track_unsubscription(
                 self.channel_id, self.consumer.user.id, self.consumer.socket_id
@@ -192,7 +191,9 @@ class ChatModule(BaseModule):
             await self.consumer.channel_layer.group_send(
                 GROUP_CHAT.format(channel=self.channel_id), event,
             )
-            await self._broadcast_channel_list()
+            await self.service.broadcast_channel_list(
+                self.consumer.user, self.consumer.socket_id
+            )
             if not volatile_config:
                 async with aioredis() as redis:
                     await redis.sadd(
@@ -215,20 +216,8 @@ class ChatModule(BaseModule):
                 sender=self.consumer.user,
             ),
         )
-        await self._broadcast_channel_list()
-
-    async def _broadcast_channel_list(self, user=None):
-        if not user:
-            user = self.consumer.user
-        user.refresh_from_db_if_outdated()
-        await self.consumer.user_broadcast(
-            "chat.channels",
-            {
-                "channels": await database_sync_to_async(
-                    self.service.get_channels_for_user
-                )(user, is_volatile=False)
-            },
-            user_id=user.id,
+        await self.service.broadcast_channel_list(
+            self.consumer.user, self.consumer.socket_id
         )
 
     @command("leave")
@@ -248,7 +237,9 @@ class ChatModule(BaseModule):
             await self.service.hide_channel_user(self.channel_id, self.consumer.user.id)
             async with aioredis() as redis:
                 await redis.delete(f"chat:direct:shownall:{self.channel_id}")
-            await self._broadcast_channel_list()
+            await self.service.broadcast_channel_list(
+                self.consumer.user, self.consumer.socket_id
+            )
 
         await self.consumer.send_success()
 
@@ -364,9 +355,13 @@ class ChatModule(BaseModule):
                     f"chat:direct:shownall:{self.channel_id}"
                 )
             if not all_visible:
-                users = await self.service.show_chanels_to_hidden_users(self.channel_id)
+                users = await self.service.show_channels_to_hidden_users(
+                    self.channel_id
+                )
                 for user in users:
-                    await self._broadcast_channel_list(user=user)
+                    await self.service.broadcast_channel_list(
+                        user, self.consumer.socket_id
+                    )
                     async with aioredis() as redis:
                         await redis.sadd(
                             f"chat:unread.notify:{self.channel_id}", str(user.id),
@@ -437,12 +432,13 @@ class ChatModule(BaseModule):
         user_ids.add(self.consumer.user.id)
 
         channel, created, users = await self.service.get_or_create_direct_channel(
-            user_ids=user_ids, initiating=self.consumer.user.id
+            user_ids=user_ids, initiating=str(self.consumer.user.id)
         )
         if not channel:
             raise ConsumerException("chat.denied")
 
         self.channel_id = str(channel.id)
+        self.channel = channel
 
         reply = await self._subscribe()
         if created:
@@ -457,6 +453,14 @@ class ChatModule(BaseModule):
                     GROUP_CHAT.format(channel=self.channel_id), event,
                 )
 
+            await self.service.broadcast_channel_list(
+                user=self.consumer.user, socket_id=self.consumer.socket_id
+            )
+            async with aioredis() as redis:
+                await redis.sadd(
+                    f"chat:unread.notify:{self.channel_id}", str(self.consumer.user.id),
+                )
+
         reply["id"] = str(channel.id)
         await self.consumer.send_success(reply)
 
@@ -467,6 +471,7 @@ class ChatModule(BaseModule):
         return await super().dispatch_command(content)
 
     async def dispatch_disconnect(self, close_code):
-        for channel_id in frozenset(self.channels_subscribed):
-            self.channel_id = channel_id
+        for channel in frozenset(self.channels_subscribed):
+            self.channel = channel
+            self.channel_id = channel.pk
             await self._unsubscribe()
