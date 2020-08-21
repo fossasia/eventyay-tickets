@@ -1,16 +1,13 @@
 <template lang="pug">
-.c-grid-schedule
-	bunt-tabs.days(v-if="pretalxEvent.schedule.length > 1", :active-tab="currentDay.toISOString()")
-		bunt-tab(v-for="day in days", :id="day.toISOString()", :header="moment(day).format('dddd DD. MMMM')", @selected="changeDay(day)")
-	scrollbars(ref="scrollbars", y, x)
-		.grid(:style="gridStyle")
-			.timeslice(v-for="slice of timeslices", :ref="slice.name", :class="{datebreak: slice.datebreak}", :data-slice="slice.date.toISOString()", :style="{'grid-area': `${slice.name} / 1 / auto / auto`}") {{ slice.datebreak ? slice.date.format('dddd DD. MMMM') : slice.date.format('LT') }}
-			.now(v-if="nowSlice", ref="now", :style="{'grid-area': `${nowSlice.slice.name} / 1 / auto / auto`, '--offset': nowSlice.offset}")
-				svg(viewBox="0 0 10 10")
-					path(d="M 0 0 L 10 5 L 0 10 z")
-			.room(:style="{'grid-area': `1 / 1 / auto / auto`}")
-			.room(v-for="(room, index) of rooms", :style="{'grid-area': `1 / ${index + 2 } / auto / auto`}") {{ room.name }}
-			session(v-for="session of sessions", :session="session", :style="getSessionStyle(session)")
+.c-grid-schedule(v-scrollbar.x.y="")
+	.grid(:style="gridStyle")
+		.timeslice(v-for="slice of timeslices", :ref="slice.name", :class="{datebreak: slice.datebreak}", :data-slice="slice.date.toISOString()", :style="{'grid-area': `${slice.name} / 1 / auto / auto`}") {{ slice.datebreak ? slice.date.format('dddd DD. MMMM') : slice.date.format('LT') }}
+		.now(v-if="nowSlice", ref="now", :style="{'grid-area': `${nowSlice.slice.name} / 1 / auto / auto`, '--offset': nowSlice.offset}")
+			svg(viewBox="0 0 10 10")
+				path(d="M 0 0 L 10 5 L 0 10 z")
+		.room(:style="{'grid-area': `1 / 1 / auto / auto`}")
+		.room(v-for="(room, index) of rooms", :style="{'grid-area': `1 / ${index + 2 } / auto / auto`}") {{ room.name }}
+		session(v-for="session of sessions", :session="session", :style="getSessionStyle(session)")
 </template>
 <script>
 // TODO
@@ -25,10 +22,13 @@ const getSliceName = function (date) {
 
 export default {
 	components: { Session },
+	props: {
+		currentDay: Object
+	},
 	data () {
 		return {
 			moment,
-			currentDay: moment().startOf('day')
+			scrolledDay: null
 		}
 	},
 	computed: {
@@ -39,9 +39,6 @@ export default {
 		},
 		rooms () {
 			return this.pretalxRooms.map(room => this.$store.state.rooms.find(r => r.pretalx_id === room.id))
-		},
-		days () {
-			return this.pretalxEvent.schedule.map(day => moment(day.start).startOf('day'))
 		},
 		// find this to not tax the grid with 1min rows
 		greatestCommonDurationDivisor () {
@@ -70,7 +67,7 @@ export default {
 				if (!lastSlice) {
 					pushSlice(session.start.clone().startOf('day'), true)
 				} else if (session.start.isAfter(lastSlice.date, 'minutes')) {
-					if (session.start.clone().startOf('day').isSame(lastSlice.date.clone().startOf('day'))) {
+					if (session.start.isSame(lastSlice.date, 'day')) {
 						// pad slices in gaps for same day
 						const mins = session.start.diff(lastSlice.date, 'minutes')
 						for (let i = 1; i <= mins / this.greatestCommonDurationDivisor; i++) {
@@ -119,10 +116,13 @@ export default {
 			return null
 		}
 	},
+	watch: {
+		currentDay: 'changeDay'
+	},
 	async mounted () {
 		await this.$nextTick()
 		this.observer = new IntersectionObserver(this.onIntersect, {
-			root: this.$refs.scrollbars.$refs.content,
+			root: this.$el,
 			rootMargin: '-45% 0px'
 		})
 		for (const [ref, el] of Object.entries(this.$refs)) {
@@ -131,7 +131,7 @@ export default {
 		}
 		// scroll to now
 		if (!this.$refs.now) return
-		this.$refs.scrollbars.scrollTop(this.$refs.now.offsetTop - 90)
+		this.$el.scrollTop = this.$refs.now.offsetTop - 90
 	},
 	methods: {
 		getSessionStyle (session) {
@@ -144,20 +144,21 @@ export default {
 			}
 		},
 		changeDay (day) {
-			if (day.isSame(this.currentDay)) return
-			this.currentDay = day
+			if (this.scrolledDay === day) return
 			const el = this.$refs[getSliceName(day)]?.[0]
 			if (!el) return
 			const offset = el.offsetTop - 52
-			this.$refs.scrollbars.scrollTop(offset)
+			this.$el.scrollTop = offset
 		},
 		onIntersect (results) {
 			const intersection = results[0]
 			const day = moment(intersection.target.dataset.slice).startOf('day')
 			if (intersection.isIntersecting) {
-				this.currentDay = day
+				this.scrolledDay = day
+				this.$emit('changeDay', this.scrolledDay)
 			} else if ((intersection.boundingClientRect.y - intersection.rootBounds.y) > 0) {
-				this.currentDay = day.subtract(1, 'day')
+				this.scrolledDay = day.subtract(1, 'day')
+				this.$emit('changeDay', this.scrolledDay)
 			}
 		}
 	}
@@ -166,19 +167,12 @@ export default {
 <style lang="stylus">
 .c-grid-schedule
 	flex: auto
-	display: flex
-	flex-direction: column
-	.days
-		background-color: $clr-white
-		tabs-style(active-color: var(--clr-primary), indicator-color: var(--clr-primary), background-color: transparent)
-		margin-bottom: 0
-		.bunt-tabs-header-items
-			justify-content: center
 	.grid
 		display: grid
-		grid-template-columns: 240px repeat(var(--total-rooms), 1fr)
+		grid-template-columns: 64px repeat(var(--total-rooms), 1fr)
 		// grid-gap: 8px
 		position: relative
+		min-width: min-content
 		> .room
 			position: sticky
 			top: 0
@@ -191,10 +185,10 @@ export default {
 			z-index: 20
 		.c-linear-schedule-session
 			z-index: 10
-			margin: 8px
 	.timeslice
 		color: $clr-secondary-text-light
 		padding: 8px 0 0 16px
+		white-space: nowrap
 		&::before
 			content: ''
 			display: block
@@ -222,5 +216,6 @@ export default {
 			height: 24px
 			width: 24px
 			fill: $clr-red
-
+	.bunt-scrollbar-rail-wrapper-x, .bunt-scrollbar-rail-wrapper-y
+		z-index: 30
 </style>
