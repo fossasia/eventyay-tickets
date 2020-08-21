@@ -36,7 +36,7 @@ export default {
 	'ChannelBrowser:join:label': 'join',
 	'ChatInput:input:placeholder': 'Send a message',
 	'Livestream:offline-message:text': 'Stream offline',
-	'Livestream:automuted-unmute:text': 'Tap to umute',
+	'Livestream:automuted-unmute:text': 'Tap to unmute',
 	'ProfilePrompt:headline:text': 'Hi there!',
 	'ProfilePrompt:intro:text': 'Please tell us your name. If you interact with other attendees, e.g. through chat, we will show them your name. You do not need to use your real name.',
 	'ProfilePrompt:displayname:label': 'Display name',
