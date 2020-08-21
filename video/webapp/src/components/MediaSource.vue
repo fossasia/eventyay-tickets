@@ -17,6 +17,7 @@ import BigBlueButton from 'components/BigBlueButton'
 import Livestream from 'components/Livestream'
 
 export default {
+	components: { BigBlueButton, Livestream },
 	props: {
 		room: Object,
 		background: {
@@ -24,7 +25,6 @@ export default {
 			default: false
 		}
 	},
-	components: { BigBlueButton, Livestream },
 	data () {
 		return {
 		}

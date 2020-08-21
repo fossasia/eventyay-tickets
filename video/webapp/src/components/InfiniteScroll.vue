@@ -13,12 +13,12 @@ export default {
 			isIntersecting: false
 		}
 	},
+	computed: {},
 	watch: {
 		loading () {
 			if (!this.loading && this.isIntersecting) this.$emit('load')
 		}
 	},
-	computed: {},
 	created () {},
 	mounted () {
 		const scrollParent = this.$el.closest('.bunt-scrollbars')

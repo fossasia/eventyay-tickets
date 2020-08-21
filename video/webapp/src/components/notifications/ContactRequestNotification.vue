@@ -14,10 +14,10 @@
 import Avatar from 'components/Avatar'
 
 export default {
+	components: { Avatar },
 	props: {
 		contactRequest: Object
 	},
-	components: { Avatar },
 	data () {
 		return {
 			showNotification: true,

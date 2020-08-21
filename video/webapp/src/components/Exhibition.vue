@@ -12,10 +12,10 @@
 import api from 'lib/api'
 
 export default {
+	components: {},
 	props: {
 		room: Object
 	},
-	components: {},
 	data () {
 		return {
 			exhibitors: null

@@ -11,10 +11,10 @@ const MAX_PARTICLE_POOL = 70 // TODO derive from width to have consistent densit
 const SERVER_REACTIONS_INTERVAL = 1000
 
 export default {
+	components: {},
 	props: {
 		showReactionBar: Boolean
 	},
-	components: {},
 	data () {
 		return {
 			particlePool: [],

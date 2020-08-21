@@ -13,8 +13,13 @@ import moment from 'lib/timetravelMoment'
 import PretalxScheduleDay from './ScheduleDay'
 
 export default {
-	name: 'pretalx-schedule',
+	name: 'PretalxSchedule',
 	components: { PretalxScheduleDay },
+	filters: {
+		dateDisplay (value) {
+			return moment(value).format('dddd, LL')
+		}
+	},
 	props: {
 		schedule: Object
 	},
@@ -34,11 +39,6 @@ export default {
 			} */
 			return {}
 		},
-	},
-	filters: {
-		dateDisplay (value) {
-			return moment(value).format('dddd, LL')
-		}
 	},
 	created () {
 		// TODO properly set this globally

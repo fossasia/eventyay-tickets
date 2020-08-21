@@ -29,6 +29,7 @@ import ChatInput from 'components/ChatInput'
 import ChatUserCard from 'components/ChatUserCard'
 
 export default {
+	components: { ChatMessage, ChatUserCard, Avatar, InfiniteScroll, ChatInput },
 	props: {
 		room: {
 			type: Object,
@@ -47,7 +48,6 @@ export default {
 			default: true
 		}
 	},
-	components: { ChatMessage, ChatUserCard, Avatar, InfiniteScroll, ChatInput },
 	data () {
 		return {
 			selectedUser: null,

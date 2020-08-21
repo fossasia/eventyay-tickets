@@ -64,10 +64,10 @@ import CreateChatPrompt from 'components/CreateChatPrompt'
 import ProfilePrompt from 'components/ProfilePrompt'
 
 export default {
+	components: { Avatar, ChannelBrowser, CreateStagePrompt, CreateChatPrompt, ProfilePrompt },
 	props: {
 		show: Boolean
 	},
-	components: { Avatar, ChannelBrowser, CreateStagePrompt, CreateChatPrompt, ProfilePrompt },
 	data () {
 		return {
 			theme,

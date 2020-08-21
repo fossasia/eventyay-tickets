@@ -8,10 +8,10 @@
 import { mapGetters } from 'vuex'
 import ContactRequestNotification from './ContactRequestNotification'
 export default {
+	components: { ContactRequestNotification },
 	props: {
 		hasBackgroundMedia: Boolean
 	},
-	components: { ContactRequestNotification },
 	data () {
 		return {
 		}

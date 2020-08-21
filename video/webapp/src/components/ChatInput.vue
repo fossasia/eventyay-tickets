@@ -44,10 +44,10 @@ EmojiBlot.tagName = 'img'
 Quill.register(EmojiBlot)
 
 export default {
+	components: { EmojiPicker },
 	props: {
 		message: Object // initialize with existing message to edit
 	},
-	components: { EmojiPicker },
 	data () {
 		return {
 			showEmojiPicker: false

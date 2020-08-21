@@ -26,7 +26,7 @@ import { mapState } from 'vuex'
 import moment from 'lib/timetravelMoment'
 
 export default {
-	name: 'pretalx-schedule-talk',
+	name: 'PretalxScheduleTalk',
 	props: {
 		talk: Object,
 		startOfDay: Object
