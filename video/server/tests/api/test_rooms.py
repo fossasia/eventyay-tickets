@@ -15,7 +15,7 @@ def test_room_list(client, world):
         "/api/v1/worlds/sample/rooms/", HTTP_AUTHORIZATION=get_token_header(world)
     )
     assert r.status_code == 200
-    assert r.data["count"] == 7
+    assert r.data["count"] == 8
     assert r.data["results"][0] == {
         "id": str(world.rooms.first().id),
         "deleted": False,

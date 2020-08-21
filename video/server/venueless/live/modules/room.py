@@ -45,6 +45,7 @@ class RoomConfigSerializer(serializers.ModelSerializer):
             "description",
             "sorting_priority",
             "pretalx_id",
+            "force_join",
         )
 
 
@@ -165,6 +166,7 @@ class RoomModule(BaseModule):
             Permission.WORLD_ROOMS_CREATE_STAGE,
             Permission.WORLD_ROOMS_CREATE_BBB,
             Permission.WORLD_ROOMS_CREATE_CHAT,
+            Permission.WORLD_ROOMS_CREATE_EXHIBITION,
         ]
     )
     async def create_room(self, body):

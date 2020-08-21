@@ -1,8 +1,11 @@
 from collections import namedtuple
 
 from channels.db import database_sync_to_async
+from channels.layers import get_channel_layer
+from django.core.paginator import InvalidPage, Paginator
 from django.db.transaction import atomic
 
+from ...live.channels import GROUP_USER
 from ..models.auth import User
 from ..permissions import Permission
 
@@ -127,15 +130,19 @@ def update_user(world_id, id, *, traits=None, public_data=None, serialize=True):
             save_fields.append("profile")
         if save_fields:
             user.save(update_fields=save_fields)
+
     return user.serialize_public() if serialize else user
 
 
-LoginResult = namedtuple("LoginResult", "user world_config chat_channels")
+LoginResult = namedtuple(
+    "LoginResult", "user world_config chat_channels exhibition_data"
+)
 
 
 def login(*, world=None, token=None, client_id=None,) -> LoginResult:
     from .chat import ChatService
     from .world import get_world_config_for_user
+    from .exhibition import ExhibitionService
 
     user = get_user(world_id=world.pk, with_client_id=client_id, with_token=token)
 
@@ -151,6 +158,9 @@ def login(*, world=None, token=None, client_id=None,) -> LoginResult:
         world_config=get_world_config_for_user(world, user),
         chat_channels=ChatService(world).get_channels_for_user(
             user.pk, is_volatile=False
+        ),
+        exhibition_data=ExhibitionService(world.id).get_exhibition_data_for_user(
+            user.pk
         ),
     )
 
@@ -218,3 +228,36 @@ def unblock_user(world, blocking_user: User, blocked_user_id) -> bool:
     blocking_user.blocked_users.remove(blocked_user)
     blocked_user.touch()
     return True
+
+
+@database_sync_to_async
+def list_users(world_id, page, page_size, search_term) -> object:
+    qs = User.objects.filter(world_id=world_id)
+    if search_term:
+        qs = qs.filter(profile__display_name__icontains=search_term)
+
+    try:
+        p = Paginator(qs.order_by("id").values("id", "profile"), page_size).page(page)
+        return {
+            "results": [
+                dict(id=str(u["id"]), profile=u["profile"],) for u in p.object_list
+            ],
+            "isLastPage": not p.has_next(),
+        }
+    except InvalidPage:
+        return {
+            "results": [],
+            "isLastPage": True,
+        }
+
+
+async def user_broadcast(event_type, data, user_id, socket_id):
+    await get_channel_layer().group_send(
+        GROUP_USER.format(id=user_id),
+        {
+            "type": "user.broadcast",
+            "event_type": event_type,
+            "data": data,
+            "socket": socket_id,
+        },
+    )

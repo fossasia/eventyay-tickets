@@ -43,7 +43,11 @@ async def test_create_rooms_unique_names(world):
             [
                 "room.create",
                 123,
-                {"name": "New Room!!", "modules": [{"type": "chat.native"}]},
+                {
+                    "name": "New Room!!",
+                    "description": "a description",
+                    "modules": [{"type": "chat.native"}],
+                },
             ]
         )
         response = await c.receive_json_from()
@@ -54,7 +58,11 @@ async def test_create_rooms_unique_names(world):
             [
                 "room.create",
                 123,
-                {"name": "New Room!!", "modules": [{"type": "chat.native"}]},
+                {
+                    "name": "New Room!!",
+                    "description": "a description",
+                    "modules": [{"type": "chat.native"}],
+                },
             ]
         )
         response = await c.receive_json_from()
@@ -77,7 +85,7 @@ async def test_create_rooms(world, can_create_rooms, with_channel):
         await c.receive_json_from()
 
         rooms = await get_rooms(world)
-        assert len(rooms) == 7
+        assert len(rooms) == 8
 
         modules = []
         if with_channel:
@@ -85,7 +93,15 @@ async def test_create_rooms(world, can_create_rooms, with_channel):
         else:
             modules.append({"type": "weird.module"})
         await c.send_json_to(
-            ["room.create", 123, {"name": "New Room!!", "modules": modules}]
+            [
+                "room.create",
+                123,
+                {
+                    "name": "New Room!!",
+                    "description": "a description",
+                    "modules": modules,
+                },
+            ]
         )
         response = await c.receive_json_from()
         if with_channel and can_create_rooms:

@@ -10,10 +10,10 @@ import { mapState } from 'vuex'
 import Chat from 'components/Chat'
 
 export default {
+	components: { Chat },
 	props: {
 		channelId: String
 	},
-	components: { Chat },
 	computed: {
 		...mapState(['user']),
 		...mapState('chat', ['joinedChannels']),

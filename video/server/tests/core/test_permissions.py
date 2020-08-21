@@ -12,7 +12,9 @@ def test_user_explicit_roles(world, chat_room, bbb_room):
     assert not world.has_permission(
         user=user, permission=Permission.WORLD_ROOMS_CREATE_CHAT
     )
-    assert world.get_all_permissions(user)[world] == {"world:view"}
+    assert world.get_all_permissions(user)[world] == {
+        "world:view",
+    }
     assert world.get_all_permissions(user)[chat_room] == {
         "room:bbb.join",
         "room:chat.join",
@@ -21,6 +23,7 @@ def test_user_explicit_roles(world, chat_room, bbb_room):
         "world:chat.direct",
         "room:view",
         "world:view",
+        "world:exhibition.contact",
     }
 
     user.world_grants.create(role="room_creator", world=world)
@@ -57,6 +60,7 @@ def test_user_explicit_roles(world, chat_room, bbb_room):
         "room:delete",
         "room:view",
         "world:view",
+        "world:exhibition.contact",
     }
     assert world.get_all_permissions(user)[bbb_room] == {
         "room:bbb.join",
@@ -66,6 +70,7 @@ def test_user_explicit_roles(world, chat_room, bbb_room):
         "world:chat.direct",
         "room:view",
         "world:view",
+        "world:exhibition.contact",
     }
 
 
@@ -76,7 +81,9 @@ def test_user_implicit_roles(world, chat_room, bbb_room):
     assert not world.has_permission(
         user=user, permission=Permission.WORLD_ROOMS_CREATE_CHAT
     )
-    assert world.get_all_permissions(user)[world] == {"world:view"}
+    assert world.get_all_permissions(user)[world] == {
+        "world:view",
+    }
     assert world.get_all_permissions(user)[chat_room] == {
         "room:bbb.join",
         "room:chat.join",
@@ -85,6 +92,7 @@ def test_user_implicit_roles(world, chat_room, bbb_room):
         "world:chat.direct",
         "room:view",
         "world:view",
+        "world:exhibition.contact",
     }
 
     world.trait_grants["room_creator"] = ["trait123", "trait789"]
@@ -132,6 +140,7 @@ def test_user_implicit_roles(world, chat_room, bbb_room):
         "room:delete",
         "room:view",
         "world:view",
+        "world:exhibition.contact",
     }
     assert world.get_all_permissions(user)[bbb_room] == {
         "room:bbb.join",
@@ -141,6 +150,7 @@ def test_user_implicit_roles(world, chat_room, bbb_room):
         "world:chat.direct",
         "room:view",
         "world:view",
+        "world:exhibition.contact",
     }
 
 

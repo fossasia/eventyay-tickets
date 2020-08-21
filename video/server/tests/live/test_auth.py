@@ -35,6 +35,7 @@ async def test_auth_with_client_id(world):
             "user.config",
             "chat.channels",
             "chat.read_pointers",
+            "exhibition",
         }
 
 
@@ -105,7 +106,9 @@ async def test_auth_with_jwt_token(index, world):
         await c.send_json_to(["authenticate", {"token": token}])
         response = await c.receive_json_from()
         assert response[0] == "authenticated"
-        assert set(response[1]["world.config"]["permissions"]) == {"world:view"}
+        assert set(response[1]["world.config"]["permissions"]) == {
+            "world:view",
+        }
         assert set(response[1]["world.config"]["rooms"][0]["permissions"]) == {
             "room:view",
             "room:chat.read",
@@ -118,6 +121,7 @@ async def test_auth_with_jwt_token(index, world):
             "user.config",
             "chat.channels",
             "chat.read_pointers",
+            "exhibition",
         }
 
 
@@ -157,6 +161,7 @@ async def test_update_user():
             "user.config",
             "chat.channels",
             "chat.read_pointers",
+            "exhibition",
         }
         user_id = response[1]["user.config"]["id"]
 
@@ -183,6 +188,7 @@ async def test_update_user():
             "user.config",
             "chat.channels",
             "chat.read_pointers",
+            "exhibition",
         }
         assert response[1]["user.config"]["profile"]["display_name"] == "Cool User"
         assert response[1]["user.config"]["id"] == user_id
@@ -226,6 +232,7 @@ async def test_auth_with_jwt_token_update_traits(world):
             "user.config",
             "chat.channels",
             "chat.read_pointers",
+            "exhibition",
         }
         assert (
             await database_sync_to_async(get_user_by_token_id)("sample", "123456")
@@ -239,6 +246,7 @@ async def test_auth_with_jwt_token_update_traits(world):
             "user.config",
             "chat.channels",
             "chat.read_pointers",
+            "exhibition",
         }
         assert (
             await database_sync_to_async(get_user_by_token_id)("sample", "123456")
@@ -269,6 +277,7 @@ async def test_auth_with_jwt_token_twice(world):
             "user.config",
             "chat.channels",
             "chat.read_pointers",
+            "exhibition",
         }
         assert (
             await database_sync_to_async(get_user_by_token_id)("sample", "123456")
@@ -282,6 +291,7 @@ async def test_auth_with_jwt_token_twice(world):
             "user.config",
             "chat.channels",
             "chat.read_pointers",
+            "exhibition",
         }
         assert (
             await database_sync_to_async(get_user_by_token_id)("sample", "123456")
@@ -300,6 +310,7 @@ async def test_fetch_user():
             "user.config",
             "chat.channels",
             "chat.read_pointers",
+            "exhibition",
         }
         user_id = response[1]["user.config"]["id"]
 
@@ -357,6 +368,7 @@ async def test_auth_with_jwt_token_and_permission_traits(world):
             "user.config",
             "chat.channels",
             "chat.read_pointers",
+            "exhibition",
         }
         assert set(response[1]["world.config"]["permissions"]) == {
             "world:view",
@@ -371,6 +383,7 @@ async def test_auth_with_jwt_token_and_permission_traits(world):
             "room:announce",
             "world:announce",
             "world:chat.direct",
+            "world:exhibition.contact",
         }
         assert set(response[1]["world.config"]["rooms"][0]["permissions"]) == {
             "room:view",
@@ -413,6 +426,7 @@ async def test_auth_private_rooms_in_world_config(world, bbb_room, chat_room):
         assert set(r["name"] for r in response[1]["world.config"]["rooms"]) == {
             "About",
             "More Info",
+            "Exhibition Hall",
             "Plenum",
             "Stage 2",
             "Not Streaming",
@@ -430,6 +444,7 @@ async def test_auth_private_rooms_in_world_config(world, bbb_room, chat_room):
         assert set(r["name"] for r in response[1]["world.config"]["rooms"]) == {
             "About",
             "More Info",
+            "Exhibition Hall",
             "Plenum",
             "Stage 2",
             "Not Streaming",
@@ -449,6 +464,7 @@ async def test_auth_private_rooms_in_world_config(world, bbb_room, chat_room):
         assert set(r["name"] for r in response[1]["world.config"]["rooms"]) == {
             "About",
             "More Info",
+            "Exhibition Hall",
             "Plenum",
             "Stage 2",
             "Not Streaming",
@@ -639,3 +655,93 @@ async def test_block_user(world):
         await c_blocker.send_json_to(["user.unblock", 14, {"id": str(uuid.uuid4())}])
         response = await c_blocker.receive_json_from()
         assert response[0] == "error"
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_list_search_users(world):
+    async with world_communicator() as c, world_communicator() as c_user1, world_communicator() as c_user2:
+        # User 1
+        await c.send_json_to(["authenticate", {"client_id": "4"}])
+        response = await c.receive_json_from()
+        assert response[0] == "authenticated"
+        user_id = response[1]["user.config"]["id"]
+        await c.send_json_to(
+            ["user.update", 14, {"profile": {"display_name": "Foo Fighter"}}]
+        )
+        await c.receive_json_from()
+
+        # User 2
+        await c_user1.send_json_to(["authenticate", {"client_id": "5"}])
+        response = await c_user1.receive_json_from()
+        assert response[0] == "authenticated"
+        user1_id = response[1]["user.config"]["id"]
+        await c_user1.send_json_to(
+            ["user.update", 14, {"profile": {"display_name": "Foo Esidisi"}}]
+        )
+        await c_user1.receive_json_from()
+
+        # User 3
+        await c_user2.send_json_to(["authenticate", {"client_id": "6"}])
+        response = await c_user2.receive_json_from()
+        assert response[0] == "authenticated"
+        user2_id = response[1]["user.config"]["id"]
+        await c_user2.send_json_to(
+            ["user.update", 14, {"profile": {"display_name": "Foo Kars"}}]
+        )
+        await c_user2.receive_json_from()
+
+        # Search
+        await c.send_json_to(["user.list.search", 14, {"page": 0, "search_term": "",}])
+        response = await c.receive_json_from()
+        assert response[0] == "success"
+        assert response[2] == {
+            "results": [],
+            "isLastPage": True,
+        }
+
+        await c.send_json_to(["user.list.search", 14, {"page": 1, "search_term": "",}])
+        response = await c.receive_json_from()
+        assert response[0] == "success"
+        assert response[2] == {
+            "results": [],
+            "isLastPage": True,
+        }
+
+        await c.send_json_to(
+            ["user.list.search", 14, {"page": 1, "search_term": "Fighter",}]
+        )
+        response = await c.receive_json_from()
+        assert response[0] == "success"
+        assert response[2] == {
+            "results": [{"id": user_id, "profile": {"display_name": "Foo Fighter"}}],
+            "isLastPage": True,
+        }
+
+        world.config["user_list"]["page_size"] = 2
+        await database_sync_to_async(world.save)()
+
+        await c.send_json_to(
+            ["user.list.search", 14, {"page": 1, "search_term": "Foo",}]
+        )
+        response = await c.receive_json_from()
+        assert response[0] == "success"
+        assert response[2]["results"][0]["id"] in [user_id, user1_id, user2_id]
+        assert response[2]["results"][1]["id"] in [user_id, user1_id, user2_id]
+
+        await c.send_json_to(
+            ["user.list.search", 14, {"page": 2, "search_term": "Foo",}]
+        )
+        response = await c.receive_json_from()
+        assert response[0] == "success"
+        assert response[2]["results"][0]["id"] in [user_id, user1_id, user2_id]
+
+        await c.send_json_to(
+            ["user.list.search", 14, {"page": 3, "search_term": "Foo",}]
+        )
+        response = await c.receive_json_from()
+        assert response[0] == "success"
+        assert response[2] == {
+            "results": [],
+            "isLastPage": True,
+        }

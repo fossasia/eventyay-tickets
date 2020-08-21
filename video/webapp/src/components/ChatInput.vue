@@ -44,10 +44,10 @@ EmojiBlot.tagName = 'img'
 Quill.register(EmojiBlot)
 
 export default {
+	components: { EmojiPicker },
 	props: {
 		message: Object // initialize with existing message to edit
 	},
-	components: { EmojiPicker },
 	data () {
 		return {
 			showEmojiPicker: false
@@ -57,7 +57,7 @@ export default {
 	mounted () {
 		this.quill = new Quill(this.$refs.editor, {
 			debug: ENV_DEVELOPMENT ? 'info' : 'warn',
-			placeholder: 'Send a message',
+			placeholder: this.$t('ChatInput:input:placeholder'),
 			formats: ['emoji'],
 			modules: {
 				keyboard: {

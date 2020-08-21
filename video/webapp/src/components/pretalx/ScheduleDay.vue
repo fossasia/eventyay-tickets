@@ -20,7 +20,7 @@ import PretalxScheduleRoom from './ScheduleRoom'
 import {mapState} from 'vuex'
 
 export default {
-	name: 'pretalx-schedule-day',
+	name: 'PretalxScheduleDay',
 	components: { PretalxScheduleRoom },
 	props: {
 		day: Object

@@ -11,10 +11,10 @@ const MAX_PARTICLE_POOL = 70 // TODO derive from width to have consistent densit
 const SERVER_REACTIONS_INTERVAL = 1000
 
 export default {
+	components: {},
 	props: {
 		showReactionBar: Boolean
 	},
-	components: {},
 	data () {
 		return {
 			particlePool: [],
@@ -104,7 +104,7 @@ export default {
 		display: inline-block
 		background-image: url("~emoji-datasource-twitter/img/twitter/sheets-256/64.png")
 		background-size: 5700% 5700%
-	+below('m')
+	+below('l')
 		width: 100vw
 		height: 40vh
 		right: 0

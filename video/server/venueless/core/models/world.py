@@ -19,6 +19,7 @@ def default_roles():
         Permission.ROOM_CHAT_SEND,
         Permission.ROOM_BBB_JOIN,
         Permission.WORLD_CHAT_DIRECT,
+        Permission.WORLD_EXHIBITION_CONTACT,
     ]
     room_creator = [Permission.WORLD_ROOMS_CREATE_CHAT]
     room_owner = participant + [
@@ -41,6 +42,7 @@ def default_roles():
             Permission.ROOM_UPDATE,
             Permission.WORLD_ROOMS_CREATE_BBB,
             Permission.WORLD_ROOMS_CREATE_STAGE,
+            Permission.WORLD_ROOMS_CREATE_EXHIBITION,
             Permission.WORLD_USERS_LIST,
             Permission.WORLD_USERS_MANAGE,
             Permission.WORLD_GRAPHS,
@@ -83,10 +85,7 @@ class World(VersionedModel):
             secret = jwt_config["secret"]
             audience = jwt_config["audience"]
             issuer = jwt_config["issuer"]
-            with suppress(
-                jwt.exceptions.InvalidSignatureError,
-                jwt.exceptions.ExpiredSignatureError,
-            ):
+            with suppress(jwt.exceptions.InvalidTokenError):
                 return jwt.decode(
                     token,
                     secret,

@@ -135,7 +135,6 @@ async def test_join_volatile_based_on_room_config(volatile_chat_room, chat_room,
         assert response[0] == "success"
         response = await c.receive_json_from()
         assert response[0] == "chat.event"
-        event_id = response[1]["event_id"]
 
         assert not await ChatService(world).membership_is_volatile(
             str(chat_room.channel.id), c.context["user.config"]["id"]
@@ -146,7 +145,7 @@ async def test_join_volatile_based_on_room_config(volatile_chat_room, chat_room,
             "chat.channels",
             {
                 "channels": [
-                    {"id": str(chat_room.channel.id), "notification_pointer": event_id}
+                    {"id": str(chat_room.channel.id), "notification_pointer": 0}
                 ]
             },
         ]
@@ -1226,3 +1225,40 @@ async def test_broadcast_read_channels(world, chat_room):
             {"id": channel_id, "notification_pointer": event_id,}
         ]
         assert c3.context["chat.read_pointers"] == {channel_id: event_id}
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_force_join_after_profile_update(world, chat_room):
+    token = get_token(world, [])
+    channel_id = str(chat_room.channel.id)
+
+    chat_room.force_join = True
+    await database_sync_to_async(chat_room.save)()
+
+    async with world_communicator(token=token, named=False) as c:
+        await c.send_json_to(
+            ["user.update", 123, {"profile": {"display_name": "Foo Fighter"}}]
+        )
+        await c.receive_json_from()  # success
+        r = await c.receive_json_from()  # new channel list
+        assert r[0] == "chat.channels"
+        assert channel_id in [c["id"] for c in r[1]["channels"]]
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_force_join_after_login(world, chat_room):
+    token = get_token(world, [])
+    channel_id = str(chat_room.channel.id)
+
+    async with world_communicator(token=token, named=True):
+        pass
+
+    chat_room.force_join = True
+    await database_sync_to_async(chat_room.save)()
+
+    async with world_communicator(token=token, named=False) as c2:
+        r = await c2.receive_json_from()  # new channel list
+        assert r[0] == "chat.channels"
+        assert channel_id in [c["id"] for c in r[1]["channels"]]

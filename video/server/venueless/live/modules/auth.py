@@ -6,17 +6,20 @@ from django.conf import settings
 from sentry_sdk import configure_scope
 
 from venueless.core.permissions import Permission
+from venueless.core.services.chat import ChatService
 from venueless.core.services.user import (
     block_user,
     get_blocked_users,
     get_public_user,
     get_public_users,
+    list_users,
     login,
     set_user_banned,
     set_user_free,
     set_user_silenced,
     unblock_user,
     update_user,
+    user_broadcast,
 )
 from venueless.core.utils.redis import aioredis
 from venueless.live.channels import GROUP_USER, GROUP_WORLD
@@ -68,6 +71,7 @@ class AuthModule(BaseModule):
                     "world.config": login_result.world_config,
                     "chat.channels": login_result.chat_channels,
                     "chat.read_pointers": read_pointers,
+                    "exhibition": login_result.exhibition_data,
                 },
             ]
         )
@@ -80,6 +84,8 @@ class AuthModule(BaseModule):
         await self.consumer.channel_layer.group_add(
             GROUP_WORLD.format(id=self.consumer.world.id), self.consumer.channel_name
         )
+
+        await ChatService(self.consumer.world).enforce_forced_joins(self.consumer.user)
 
     async def _enforce_connection_limit(self):
         connection_limit = self.consumer.world.config.get("connection_limit")
@@ -145,7 +151,11 @@ class AuthModule(BaseModule):
         )
         self.consumer.user = user
         await self.consumer.send_success()
-        await self.consumer.user_broadcast("user.updated", user.serialize_public())
+        await user_broadcast(
+            "user.updated", user.serialize_public(), user.pk, self.consumer.socket_id
+        )
+        await self.consumer.user.refresh_from_db_if_outdated()
+        await ChatService(self.consumer.world).enforce_forced_joins(self.consumer.user)
 
     @command("fetch")
     @require_world_permission(Permission.WORLD_VIEW)
@@ -192,6 +202,25 @@ class AuthModule(BaseModule):
             ),
         )
         await self.consumer.send_success({"results": users})
+
+    @command("list.search")
+    async def user_list(self, body):
+        list_conf = self.consumer.world.config.get("user_list", {})
+        page_size = list_conf.get("page_size", 20)
+        search_min_chars = list_conf.get("search_min_chars", 0)
+        if len(body["search_term"]) < search_min_chars:
+            result = {
+                "results": [],
+                "isLastPage": True,
+            }
+        else:
+            result = await list_users(
+                world_id=self.consumer.world.id,
+                page=body["page"],
+                page_size=page_size,
+                search_term=body["search_term"],
+            )
+        await self.consumer.send_success(result)
 
     @command("ban")
     @require_world_permission(Permission.WORLD_USERS_MANAGE)

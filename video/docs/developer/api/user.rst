@@ -96,6 +96,21 @@ If you have sufficient permissions, you can fetch a list of all users like this:
 
 .. note:: Pagination will be implemented on this endpoint in the future.
 
+Searching users
+---------------
+
+You can search all users to get a 1-based paginated list like this::
+
+    => ["user.list.search", 123, {"search_term": "", "page": 1}]
+    <- ["success", 123, {"results": [{"id": "1234", "profile": {…}}, "5679": {…}], "isLastPage": true}]
+
+The size of the pages can be configured in the world config with ``user_list.page_size``. The default is 20.
+An empty list will be returned if ``search_term`` is shorter than ``user_list.search_min_chars``.
+If ``user_list.search_min_chars`` is set to 0, which is also the default, an empty search term will return a paginated
+list of all users.
+Invalid page numbers return an empty list.
+If there are no more results to be fetched the ``isLastPage`` will be set to true.
+
 Managing users
 --------------
 

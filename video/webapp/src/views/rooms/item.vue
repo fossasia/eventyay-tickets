@@ -15,29 +15,30 @@
 				reactions-bar(:expanded="activeStageTool === 'reaction'", @expand="activeStageTool = 'reaction'")
 		markdown-page(v-else-if="modules['page.markdown']", :module="modules['page.markdown']")
 		iframe-page(v-else-if="modules['page.iframe']", :module="modules['page.iframe']")
-		chat(v-if="modules['chat.native']", :module="modules['chat.native']", :mode="room.modules.length === 1 ? 'standalone' : 'compact'", :key="room.id")
+		exhibition(v-else-if="modules['exhibition.native']", :room="room")
+		chat(v-if="modules['chat.native']", :room="room", :module="modules['chat.native']", :mode="room.modules.length === 1 ? 'standalone' : 'compact'", :key="room.id")
 	transition(name="prompt")
 		recordings-prompt(:room="room", v-if="showRecordingsPrompt", @close="showRecordingsPrompt = false")
 	edit-room-schedule(v-if="showEditSchedule", :room="room", :currentSession="currentSession", @close="showEditSchedule = false")
 </template>
 <script>
 import {mapGetters, mapState} from 'vuex'
-import moment from 'moment'
 import EditRoomSchedule from './EditRoomSchedule'
 import Chat from 'components/Chat'
 import Livestream from 'components/Livestream'
 import MarkdownPage from 'components/MarkdownPage'
 import IframePage from 'components/IframePage'
+import Exhibition from 'components/Exhibition'
 import ReactionsBar from 'components/ReactionsBar'
 import ReactionsOverlay from 'components/ReactionsOverlay'
 import RecordingsPrompt from 'components/RecordingsPrompt'
 
 export default {
-	name: 'room',
+	name: 'Room',
+	components: { EditRoomSchedule, Chat, Exhibition, Livestream, MarkdownPage, IframePage, ReactionsBar, ReactionsOverlay, RecordingsPrompt },
 	props: {
 		roomId: String
 	},
-	components: { EditRoomSchedule, Chat, Livestream, MarkdownPage, IframePage, ReactionsBar, ReactionsOverlay, RecordingsPrompt },
 	data () {
 		return {
 			showRecordingsPrompt: false,

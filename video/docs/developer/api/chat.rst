@@ -79,6 +79,9 @@ there. With this command, you will also be directly subscribed to the channel an
 same keys in the response as with the ``chat.subscribe`` command. All your other clients as well as all
 connected clients of the other users receive a regular channel list update.
 
+You can pass a ``"hide": false`` property if you want the chat window to open up for all members immediately instead of
+with the first message.
+
 You will receive error code ``chat.denied`` if either you do not have the ``world:chat.direct`` permission, or one of
 user IDs you passed does not exist, or any of the users blocked any of the other users.
 

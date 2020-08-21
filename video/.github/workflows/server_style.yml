@@ -1,11 +1,11 @@
 name: Server style
 on:
   push:
-    branches: [ master ]
+    branches: [ dev, stable, prod ]
     paths:
       - 'server/**'
   pull_request:
-    branches: [ master ]
+    branches: [ dev, stable, prod ]
     paths:
       - 'server/**'
 

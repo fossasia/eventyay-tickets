@@ -3,7 +3,15 @@ import json
 import pytest
 from channels.db import database_sync_to_async
 
-from venueless.core.models import BBBServer, Channel, ChatEvent, Room, User, World
+from venueless.core.models import (
+    BBBServer,
+    Channel,
+    ChatEvent,
+    Exhibitor,
+    Room,
+    User,
+    World,
+)
 
 
 @pytest.fixture(autouse=True)
@@ -90,12 +98,20 @@ def stream_room(rooms):
             return room
 
 
+@pytest.fixture
+def exhibition_room(rooms):
+    for room in rooms:  # pragma: no cover
+        if any("exhibition.native" == module["type"] for module in room.module_config):
+            return room
+
+
 @database_sync_to_async
 def _clear_db():
     ChatEvent.objects.all().delete()
     Channel.objects.all().delete()
     User.objects.all().delete()
     Room.objects.all().delete()
+    Exhibitor.objects.all().delete()
     World.objects.all().delete()
 
 

@@ -176,7 +176,7 @@ async def test_config_list(world, stream_room):
         await c1.send_json_to(["room.config.list", 123, {}])
         response = await c1.receive_json_from()
         assert response[0] == "success"
-        assert len(response[2]) == 7
+        assert len(response[2]) == 8
 
 
 @pytest.mark.asyncio
@@ -225,6 +225,7 @@ async def test_config_get(world, stream_room):
             ],
             "picture": None,
             "name": "Plenum",
+            "force_join": False,
             "description": "Hier findet die Eröffnungs- und End-Veranstaltung statt",
             "sorting_priority": 2,
             "pretalx_id": 130,

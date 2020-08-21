@@ -17,6 +17,7 @@ export default {
 	.markdown-content
 		margin: 16px 32px
 
+	// TODO put this somewhere more generic
 	table
 		border-collapse: collapse
 		width: 100%
@@ -29,4 +30,7 @@ export default {
 
 	img
 		max-width: 100%
+
+	a:hover
+			text-decoration: underline
 </style>
