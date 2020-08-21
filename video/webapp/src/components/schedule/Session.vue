@@ -1,5 +1,5 @@
 <template lang="pug">
-.c-linear-schedule-session(:style="style")
+router-link.c-linear-schedule-session(:style="style", :to="{name: 'schedule:talk', params: {talkId: session.id}}")
 	.time-box
 		.start {{ startTime }}
 		.duration {{ durationMinutes }}min
@@ -18,11 +18,6 @@ export default {
 	props: {
 		session: Object
 	},
-	components: {},
-	data () {
-		return {
-		}
-	},
 	computed: {
 		style () {
 			return {
@@ -35,13 +30,7 @@ export default {
 		durationMinutes () {
 			return moment(this.session.end).diff(this.session.start, 'minutes')
 		}
-	},
-	created () {},
-	mounted () {
-		this.$nextTick(() => {
-		})
-	},
-	methods: {}
+	}
 }
 </script>
 <style lang="stylus">
@@ -51,6 +40,7 @@ export default {
 	min-height: 96px
 	margin: 8px
 	overflow: hidden
+	color: $clr-primary-text-light
 	.time-box
 		// width: 60px
 		background-color: var(--track-color)
