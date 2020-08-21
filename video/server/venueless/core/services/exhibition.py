@@ -44,6 +44,7 @@ class ExhibitionService:
                 tagline=e["tagline"],
                 short_text=e["short_text"],
                 logo=e["logo"],
+                banner_list=e["banner_list"],
                 size=e["size"],
                 sorting_priority=e["sorting_priority"],
             )
@@ -52,6 +53,7 @@ class ExhibitionService:
                 "name",
                 "tagline",
                 "short_text",
+                "banner_list",
                 "logo",
                 "size",
                 "sorting_priority",
