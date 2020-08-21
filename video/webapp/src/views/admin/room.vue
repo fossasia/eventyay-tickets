@@ -1,68 +1,85 @@
 <template lang="pug">
-.c-admin-room(v-scrollbar.y="")
-	.header
-		h2 Room configuration
-	bunt-progress-circular(size="huge", v-if="error == null && config == null")
+.c-admin-room
 	.error(v-if="error") We could not fetch the current configuration.
-	.main-form(v-if="config != null")
-		bunt-input(v-model="config.name", label="Name", name="name", :validation="$v.config.name")
-		bunt-input(v-model="config.description", label="Description", name="description")
-		bunt-input(v-model="config.sorting_priority", label="Sorting priority", name="sorting_priority", :validation="$v.config.sorting_priority")
-		bunt-input(v-model="config.pretalx_id", label="pretalx ID", name="pretalx_id", :validation="$v.config.pretalx_id")
-		upload-url-input(v-model="config.picture", label="Picture", name="picture")
-		bunt-checkbox(v-model="config.force_join", label="Force join on login (use for non-volatile, text-based chats only!!)", name="force_join")
-		table.trait-grants
-			thead
-				tr
-					th Role
-					th Required traits
-					th
-			tbody
-				tr(v-for="(val, key, index) in config.trait_grants")
-					td
-						bunt-input(:value="key", label="Role name", @input="set_role_name(key, $event)", name="n", :disabled="index < Object.keys(config.trait_grants).length - 1")
-					td
-						bunt-input(label="Required traits (comma-separated)", @input="set_trait_grants(key, $event)", name="g"
-												:value="val ? val.join(', ') : ''")
-					td.actions
-						bunt-icon-button(@click="remove_role(key)") delete
-			tfoot
-				tr
-					td
-						bunt-button.btn-add-role(@click="add_role") Add role
-					td
-					td
-		h3 Content
-		div.modules
-			div.module(v-for="(val, index) in config.module_config")
-				h4 {{ val.type }}
-					bunt-icon-button(@click="remove_module(val.type)") delete
-				div(v-if="val.type == 'page.markdown'")
-					bunt-input-outline-container(label="Content")
-						textarea(slot-scope="{focus, blur}", @focus="focus", @blur="blur", v-model="val.config.content")
-				div(v-else-if="val.type == 'page.iframe'")
-					bunt-input(v-model="val.config.url", label="URL", name="url")
-				div(v-else-if="val.type == 'livestream.native'")
-					bunt-input(v-model="val.config.hls_url", label="HLS URL", name="url")
-				div(v-else-if="val.type == 'call.bigbluebutton'")
-					bunt-checkbox(v-model="val.config.record", label="Allow recording (needs to be set before first join)", name="record")
-					bunt-checkbox(v-model="val.config.waiting_room", label="Put new users in waiting room first (needs to be set before first join)", name="waiting_room")
-					bunt-input(v-model="val.config.voice_bridge", label="Voice Bridge ID", name="voice_bridge")
-					bunt-input(v-model="val.config.prefer_server", label="Prefer Server with ID", name="prefer_server")
-					upload-url-input(v-model="val.config.presentation", label="Initial presentation", name="presentation")
-				div(v-else-if="val.type == 'chat.native'")
-					bunt-checkbox(v-model="val.config.volatile", label="Users only join temporarily (use for large rooms, e.g. stage chats)", name="volatile")
-			div.add-module
-				bunt-select(v-model="add_module_type", label="Type", name="type", :options="unusedTypes")
-				bunt-button.btn-add-module(@click="add_module") Add new module
-		bunt-button.btn-save(@click="save", :loading="saving") Save
+	template(v-else-if="config")
+		.header
+			bunt-icon-button(@click="$router.push({name: 'admin:rooms'})") arrow_left
+			h2 {{ config.name }} room configuration
+			.actions
+				bunt-button.btn-save(@click="save", :loading="saving") Save
+		.main-form(v-scrollbar.y="")
+			bunt-input(v-model="config.name", label="Name", name="name", :validation="$v.config.name")
+			bunt-input(v-model="config.description", label="Description", name="description")
+			bunt-input(v-model="config.sorting_priority", label="Sorting priority", name="sorting_priority", :validation="$v.config.sorting_priority")
+			bunt-input(v-model="config.pretalx_id", label="pretalx ID", name="pretalx_id", :validation="$v.config.pretalx_id")
+			upload-url-input(v-model="config.picture", label="Picture", name="picture")
+			bunt-checkbox(v-model="config.force_join", label="Force join on login (use for non-volatile, text-based chats only!!)", name="force_join")
+			table.trait-grants
+				thead
+					tr
+						th Role
+						th Required traits
+						th
+				tbody
+					tr(v-for="(val, key, index) in config.trait_grants")
+						td
+							bunt-input(:value="key", label="Role name", @input="set_role_name(key, $event)", name="n", :disabled="index < Object.keys(config.trait_grants).length - 1")
+						td
+							bunt-input(label="Required traits (comma-separated)", @input="set_trait_grants(key, $event)", name="g"
+													:value="val ? val.join(', ') : ''")
+						td.actions
+							bunt-icon-button(@click="remove_role(key)") delete-outline
+				tfoot
+					tr
+						td
+							bunt-button.btn-add-role(@click="add_role") Add role
+						td
+						td
+			h3 Content
+			.modules
+				.module(v-for="(val, index) in config.module_config")
+					h4 {{ val.type }}
+						bunt-icon-button(@click="remove_module(val.type)") delete-outline
+					div(v-if="val.type == 'page.markdown'")
+						bunt-input-outline-container(label="Content")
+							textarea(slot-scope="{focus, blur}", @focus="focus", @blur="blur", v-model="val.config.content")
+					div(v-else-if="val.type == 'page.iframe'")
+						bunt-input(v-model="val.config.url", label="URL", name="url")
+					div(v-else-if="val.type == 'livestream.native'")
+						bunt-input(v-model="val.config.hls_url", label="HLS URL", name="url")
+					div(v-else-if="val.type == 'call.bigbluebutton'")
+						bunt-checkbox(v-model="val.config.record", label="Allow recording (needs to be set before first join)", name="record")
+						bunt-checkbox(v-model="val.config.waiting_room", label="Put new users in waiting room first (needs to be set before first join)", name="waiting_room")
+						bunt-input(v-model="val.config.voice_bridge", label="Voice Bridge ID", name="voice_bridge")
+						bunt-input(v-model="val.config.prefer_server", label="Prefer Server with ID", name="prefer_server")
+						upload-url-input(v-model="val.config.presentation", label="Initial presentation", name="presentation")
+					div(v-else-if="val.type == 'chat.native'")
+						bunt-checkbox(v-model="val.config.volatile", label="Users only join temporarily (use for large rooms, e.g. stage chats)", name="volatile")
+				.add-module
+					bunt-select(v-model="add_module_type", label="Type", name="type", :options="unusedTypes")
+					bunt-button.btn-add-module(@click="add_module") Add new module
+			.danger-zone
+				h5 DANGER ZONE
+				bunt-button.delete-room(icon="delete", @click="showDeletePrompt = true") delete
+				span This action cannot be undone!
+	bunt-progress-circular(v-else, size="huge")
+	transition(name="prompt")
+		prompt.delete-prompt(v-if="showDeletePrompt", @close="showDeletePrompt = false")
+			.content
+				.prompt-header
+					h3 Are you ABSOLUTELY sure?
+				p This action #[b CANNOT] be undone. This will permanently delete the room
+				.room-name {{ config.name }}
+				p Please type in the name of the Project to confirm.
+				bunt-input(name="projectName", label="Room name", v-model="deletingRoomName")
+				bunt-button.delete-room(icon="delete", :disabled="deletingRoomName !== config.name", @click="deleteRoom", :loading="deleting", :error-message="deleteError") delete this room
 </template>
 <script>
 // TODO
 // - search
 import api from 'lib/api'
-import i18n from '../../i18n'
-import UploadUrlInput from '../../components/config/UploadUrlInput'
+import Prompt from 'components/Prompt'
+import UploadUrlInput from 'components/config/UploadUrlInput'
 import { required, integer } from 'vuelidate/lib/validators'
 
 const KNOWN_TYPES = [
@@ -76,7 +93,7 @@ const KNOWN_TYPES = [
 
 export default {
 	name: 'AdminRoom',
-	components: { UploadUrlInput },
+	components: { Prompt, UploadUrlInput },
 	props: {
 		editRoomId: String
 	},
@@ -84,20 +101,21 @@ export default {
 		return {
 			config: null,
 			add_module_type: null,
-
 			saving: false,
-			error: null
+			error: null,
+			showDeletePrompt: false,
+			deletingRoomName: '',
+			deleting: false,
+			deleteError: null
 		}
 	},
 	computed: {
-		locales () {
-			return i18n.availableLocales
-		},
 		unusedTypes () {
 			const usedTypes = this.config.module_config.map((m) => m.type)
 			return KNOWN_TYPES.filter((t) => !usedTypes.includes(t))
 		}
 	},
+	// TODO use message validators
 	validations: {
 		config: {
 			name: {
@@ -110,6 +128,16 @@ export default {
 			pretalx_id: {
 				integer
 			},
+		}
+	},
+	async created () {
+		// We don't use the global world object since it e.g. currently does not contain locale and timezone
+		// TODO: Force reloading if world.updated is received from the server
+		try {
+			this.config = await api.call('room.config.get', {room: this.editRoomId})
+		} catch (error) {
+			this.error = error
+			console.log(error)
 		}
 	},
 	methods: {
@@ -162,25 +190,56 @@ export default {
 			this.saving = false
 			// TODO error handling
 		},
-	},
-	async created () {
-		// We don't use the global world object since it e.g. currently does not contain locale and timezone
-		// TODO: Force reloading if world.updated is received from the server
-		try {
-			this.config = await api.call('room.config.get', {room: this.editRoomId})
-		} catch (error) {
-			this.error = error
-			console.log(error)
+		async deleteRoom () {
+			this.deleting = true
+			this.deleteError = null
+			try {
+				await api.call('room.delete', {room: this.config.id})
+				this.$router.replace({name: 'admin:rooms'})
+			} catch (error) {
+				this.deleteError = this.$t(`error:${error.code}`)
+			}
+			this.deleting = false
 		}
 	}
 }
 </script>
 <style lang="stylus">
 .c-admin-room
-	background white
-	padding 16px
+	display: flex
+	flex-direction: column
+	background: $clr-white
+	min-height: 0
+	.bunt-icon-button
+		icon-button-style(style: clear)
+	.header
+		background-color: $clr-grey-100
+		border-bottom: border-separator()
+		display: flex
+		padding: 8px
+		flex: none
+		.bunt-icon-button
+			margin-right: 8px
+		h2
+			flex: auto
+			font-size: 21px
+			font-weight: 500
+			margin: 1px 16px 0 0
+			ellipsis()
+
+		.actions
+			display: flex
+			flex: none
+			.bunt-button:not(:last-child)
+				margin-right: 16px
+			.btn-save
+				themed-button-primary()
+	.main-form
+		display: flex
+		flex-direction: column
+		> *
+			margin: 0 16px
 	.trait-grants
-		width 100%
 		th
 			text-align left
 			border-bottom 1px solid #ccc
@@ -213,12 +272,40 @@ export default {
 	h2
 		margin-top 0
 		margin-bottom 16px
-	.btn-save
-		margin-top 16px
-		themed-button-primary(size: large)
 	.btn-add-module
 		themed-button-default()
 	.btn-add-role
 		margin 8px 0
 		themed-button-default()
+
+	.danger-zone
+		margin: 50px 8px
+		color: $clr-danger
+		h5
+			border-bottom: 2px solid $clr-danger
+		.delete-room
+			button-style(color: $clr-danger)
+			margin: 0 8px
+
+	.delete-prompt
+		.content
+			display: flex
+			flex-direction: column
+			padding: 16px
+		.question-box-header
+			margin-top: -10px
+			margin-bottom: 15px
+			align-items: center
+			display: flex
+			justify-content: space-between
+		.room-name
+			font-family: monospace
+			font-size: 16px
+			border: border-separator()
+			border-radius: 4px
+			padding: 4px 8px
+			background-color: $clr-grey-100
+			align-self: center
+		.delete-room
+			button-style(color: $clr-danger)
 </style>
