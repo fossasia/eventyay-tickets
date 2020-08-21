@@ -49,6 +49,7 @@ async def test_list_short(world, exhibition_room):
                     "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea tak",
                     "logo": "https://via.placeholder.com/150",
                     "size": "1x1",
+                    "banner_list": None,
                     "sorting_priority": 1,
                 },
                 {
@@ -59,6 +60,7 @@ async def test_list_short(world, exhibition_room):
                     "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea tak",
                     "logo": "https://via.placeholder.com/150",
                     "size": "1x1",
+                    "banner_list": None,
                     "sorting_priority": 0,
                 },
             ]
