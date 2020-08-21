@@ -210,7 +210,7 @@ export default {
 			background-color: $clr-red
 			position: absolute
 			transform: translate(0, calc(var(--offset) * 2px))
-			width: 100%
+			width: calc(100% - 4px)
 		svg
 			transform: translateY(calc(var(--offset) * 2px - 11px))
 			height: 24px
