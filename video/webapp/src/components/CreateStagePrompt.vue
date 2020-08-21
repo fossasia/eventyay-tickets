@@ -5,11 +5,13 @@ prompt.c-create-stage-prompt(@close="$emit('close')")
 		form(@submit.prevent="create")
 			bunt-input(name="name", :label="$t('CreateStagePrompt:name:label')", icon="theater", :placeholder="$t('CreateStagePrompt:name:placeholder')", v-model="name", :validation="$v.name")
 			bunt-input(name="url", :label="$t('CreateStagePrompt:url:label')", icon="link", placeholder="https://example.com/stream.m3u8", v-model="url", :validation="$v.url")
-			bunt-button(type="submit", :loading="loading") {{ $t('CreateStagePrompt:submit:label') }}
+			bunt-input-outline-container(:label="$t('CreateChatPrompt:description:label')")
+				textarea(v-model="description", slot-scope="{focus, blur}", @focus="focus", @blur="blur")
+			bunt-button(type="submit", :loading="loading", :error-message="error") {{ $t('CreateStagePrompt:submit:label') }}
 </template>
 <script>
 import Prompt from 'components/Prompt'
-import { required, url } from 'vuelidate/lib/validators'
+import { required, url } from 'lib/validators'
 
 export default {
 	components: { Prompt },
@@ -17,25 +19,23 @@ export default {
 		return {
 			name: '',
 			url: '',
-			loading: false
+			description: '',
+			loading: false,
+			error: null
 		}
 	},
 	validations: {
 		url: {
-			required, url
+			required: required('HLS URL is required'),
+			url: url('must be a valid url')
 		},
 		name: {
-			required
+			required: required('Name is required')
 		}
-	},
-	computed: {},
-	created () {},
-	mounted () {
-		this.$nextTick(() => {
-		})
 	},
 	methods: {
 		async create () {
+			this.error = null
 			this.$v.$touch()
 			if (this.$v.$invalid) return
 
@@ -53,14 +53,21 @@ export default {
 					hls_url: this.url,
 				}
 			})
-			const { room } = await this.$store.dispatch('createRoom', {
-				name: this.name,
-				modules
-			})
-			// TODO error handling
-			this.loading = false
-			this.$router.push({name: 'room', params: {roomId: room}})
-			this.$emit('close')
+			let room
+			try {
+				({ room } = await this.$store.dispatch('createRoom', {
+					name: this.name,
+					description: this.description,
+					modules
+				}))
+				this.loading = false
+				this.$router.push({name: 'room', params: {roomId: room}})
+				this.$emit('close')
+			} catch (error) {
+				console.log(error)
+				this.loading = false
+				this.error = error.message || error
+			}
 		}
 	}
 }
@@ -81,6 +88,16 @@ export default {
 			display: flex
 			flex-direction: column
 			align-self: stretch
+			.bunt-input-outline-container
+				margin-top: 16px
+				textarea
+					background-color: transparent
+					border: none
+					outline: none
+					resize: vertical
+					min-height: 64px
+					padding: 0 8px
 			.bunt-button
 				themed-button-primary()
+				margin-top: 16px
 </style>
