@@ -231,16 +231,24 @@ def unblock_user(world, blocking_user: User, blocked_user_id) -> bool:
 
 
 @database_sync_to_async
-def list_users(world_id, page, page_size, search_term) -> list:
+def list_users(world_id, page, page_size, search_term) -> object:
     qs = User.objects.filter(world_id=world_id)
     if search_term:
         qs = qs.filter(profile__display_name__icontains=search_term)
 
     try:
         p = Paginator(qs.order_by("id").values("id", "profile"), page_size).page(page)
-        return [dict(id=str(u["id"]), profile=u["profile"],) for u in p.object_list]
+        return {
+            "results": [
+                dict(id=str(u["id"]), profile=u["profile"],) for u in p.object_list
+            ],
+            "isLastPage": not p.has_next(),
+        }
     except InvalidPage:
-        return []
+        return {
+            "results": [],
+            "isLastPage": True,
+        }
 
 
 async def user_broadcast(event_type, data, user_id, socket_id):

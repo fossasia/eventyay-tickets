@@ -695,21 +695,28 @@ async def test_list_search_users(world):
         await c.send_json_to(["user.list.search", 14, {"page": 0, "search_term": "",}])
         response = await c.receive_json_from()
         assert response[0] == "success"
-        assert response[2]["results"] == []
+        assert response[2] == {
+            "results": [],
+            "isLastPage": True,
+        }
 
         await c.send_json_to(["user.list.search", 14, {"page": 1, "search_term": "",}])
         response = await c.receive_json_from()
         assert response[0] == "success"
-        assert response[2]["results"] == []
+        assert response[2] == {
+            "results": [],
+            "isLastPage": True,
+        }
 
         await c.send_json_to(
             ["user.list.search", 14, {"page": 1, "search_term": "Fighter",}]
         )
         response = await c.receive_json_from()
         assert response[0] == "success"
-        assert response[2]["results"] == [
-            {"id": user_id, "profile": {"display_name": "Foo Fighter"}}
-        ]
+        assert response[2] == {
+            "results": [{"id": user_id, "profile": {"display_name": "Foo Fighter"}}],
+            "isLastPage": True,
+        }
 
         world.config["user_list"]["page_size"] = 2
         await database_sync_to_async(world.save)()
@@ -734,4 +741,7 @@ async def test_list_search_users(world):
         )
         response = await c.receive_json_from()
         assert response[0] == "success"
-        assert response[2]["results"] == []
+        assert response[2] == {
+            "results": [],
+            "isLastPage": True,
+        }

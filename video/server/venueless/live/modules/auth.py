@@ -209,15 +209,18 @@ class AuthModule(BaseModule):
         page_size = list_conf.get("page_size", 20)
         search_min_chars = list_conf.get("search_min_chars", 0)
         if len(body["search_term"]) < search_min_chars:
-            users = []
+            result = {
+                "results": [],
+                "isLastPage": True,
+            }
         else:
-            users = await list_users(
+            result = await list_users(
                 world_id=self.consumer.world.id,
                 page=body["page"],
                 page_size=page_size,
                 search_term=body["search_term"],
             )
-        await self.consumer.send_success({"results": users})
+        await self.consumer.send_success(result)
 
     @command("ban")
     @require_world_permission(Permission.WORLD_USERS_MANAGE)
