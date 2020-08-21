@@ -5,6 +5,7 @@
 		slot.content
 </template>
 <script>
+// FIXME when starting mousedown inside and finishing mouseup outside, prompt closes
 import { Scrollbars } from 'buntpapier/src/directives/scrollbar'
 
 export default {
