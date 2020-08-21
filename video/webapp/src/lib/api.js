@@ -54,4 +54,6 @@ api.connect = function ({token, clientId}) {
 	})
 }
 
+window.api = api
+
 export default api

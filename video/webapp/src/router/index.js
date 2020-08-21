@@ -6,7 +6,8 @@ import Channel from 'views/channels/item'
 import Schedule from 'views/schedule'
 import Talk from 'views/schedule/talks/item'
 import Speaker from 'views/schedule/speakers/item'
-
+import Exhibitor from 'views/exhibitors/item'
+import ContactRequests from 'views/contact-requests'
 Vue.use(VueRouter)
 
 const routes = [{
@@ -36,6 +37,16 @@ const routes = [{
 	path: '/schedule/speakers/:speakerId',
 	name: 'schedule:speaker',
 	component: Speaker,
+	props: true
+}, {
+	path: '/exhibitors/:exhibitorId',
+	name: 'exhibitor',
+	component: Exhibitor,
+	props: true
+}, {
+	path: '/contact-requests',
+	name: 'contactRequests',
+	component: ContactRequests,
 	props: true
 }, {
 	path: '/admin',

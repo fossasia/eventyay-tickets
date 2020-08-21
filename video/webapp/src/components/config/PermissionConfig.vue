@@ -37,6 +37,16 @@ export default {
 			return i18n.availableLocales
 		}
 	},
+	async created () {
+		// We don't use the global world object since it e.g. currently does not contain roles etc
+		// TODO: Force reloading if world.updated is received from the server
+		try {
+			this.config = await api.call('world.config.get')
+		} catch (error) {
+			this.error = error
+			console.log(error)
+		}
+	},
 	methods: {
 		toggle_permission (role, perm, toggle) {
 			if (toggle) {
@@ -78,16 +88,6 @@ export default {
 			this.saving = false
 			// TODO error handling
 		},
-	},
-	async created () {
-		// We don't use the global world object since it e.g. currently does not contain roles etc
-		// TODO: Force reloading if world.updated is received from the server
-		try {
-			this.config = await api.call('world.config.get')
-		} catch (error) {
-			this.error = error
-			console.log(error)
-		}
 	}
 }
 </script>

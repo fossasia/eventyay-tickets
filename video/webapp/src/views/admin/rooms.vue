@@ -10,22 +10,9 @@
 			.name Name
 			.actions
 		RecycleScroller.tbody.bunt-scrollbar(v-if="filteredRooms", :items="filteredRooms", :item-size="48", v-slot="{item: room}", v-scrollbar.y="")
-			.room.table-row(:class="{error: room.error, updating: room.updating}")
+			router-link(:to="{name: 'admin:room', params: {editRoomId: room.id}}").room.table-row(:class="{error: room.error, updating: room.updating}")
 				.id(:title="room.id") {{ room.id }}
 				.name {{ room.name }}
-				.actions
-					.placeholder.mdi.mdi-dots-horizontal
-					bunt-button.btn-delete(
-						:loading="room.updating === 'delete'",
-						:error-message="(room.error && room.error.action === 'delete') ? room.error.message : null",
-						tooltipPlacement="left",
-						@click="doAction(room, 'delete')", :key="`${room.id}-delete`")
-						| delete
-					bunt-link-button.btn-edit(
-						tooltipPlacement="left",
-						:to="{name: 'admin:room', params: {editRoomId: room.id}}"
-						)
-						| edit
 		bunt-progress-circular(v-else, size="huge", :page="true")
 </template>
 <script>
@@ -50,35 +37,7 @@ export default {
 		}
 	},
 	async created () {
-		this.load()
-	},
-	methods: {
-		async load () {
-			this.rooms = []
-			this.rooms = (await api.call('room.config.list')).map(room => {
-				return {
-					...room,
-					updating: null,
-					error: null
-				}
-			})
-		},
-		async doAction (room, action, postState) {
-			room.updating = action
-			room.error = null
-			try {
-				await api.call(`room.${action}`, {room: room.id})
-				if (action === 'delete') {
-					this.load()
-				}
-			} catch (error) {
-				room.error = {
-					action,
-					message: this.$t(`error:${error.code}`)
-				}
-			}
-			room.updating = null
-		}
+		this.rooms = await api.call('room.config.list')
 	}
 }
 </script>
@@ -104,16 +63,18 @@ export default {
 		.room
 			display: flex
 			align-items: center
+			color: $clr-primary-text-light
 		.id
 			width: 128px
+			flex: none
 			ellipsis()
 		.name
 			flex: auto
-		.state
-			width: 78px
+			ellipsis()
 		.actions
 			flex: none
-			width: 136px
+			width: 200px
+			flex: none
 			padding: 0 24px 0 0
 			display: flex
 			align-items: center

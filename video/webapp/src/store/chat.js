@@ -165,9 +165,15 @@ export default {
 		async blockUser ({state}, {user}) {
 			await api.call('user.block', {id: user.id})
 		},
-		async openDirectMessage ({state}, {user}) {
-			const channel = await api.call('chat.direct.create', {users: [user.id]})
-			state.joinedChannels.push(channel)
+		async openDirectMessage ({state}, {user, hide}) {
+			let channel = state.joinedChannels.find(channel => channel.members?.some(member => member.id === user.id))
+			if (hide !== false) {
+				hide = true
+			}
+			if (!channel) {
+				channel = await api.call('chat.direct.create', {users: [user.id], hide: hide})
+				state.joinedChannels.push(channel)
+			}
 			if (router.currentRoute.name !== 'channel' || router.currentRoute.params.channelId !== channel.id) {
 				await router.push({name: 'channel', params: {channelId: channel.id}})
 			}

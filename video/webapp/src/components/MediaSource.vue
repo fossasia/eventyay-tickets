@@ -17,6 +17,7 @@ import BigBlueButton from 'components/BigBlueButton'
 import Livestream from 'components/Livestream'
 
 export default {
+	components: { BigBlueButton, Livestream },
 	props: {
 		room: Object,
 		background: {
@@ -24,7 +25,6 @@ export default {
 			default: false
 		}
 	},
-	components: { BigBlueButton, Livestream },
 	data () {
 		return {
 		}
@@ -65,11 +65,16 @@ export default {
 		&.size-tiny
 			bottom: calc(var(--vh100) - 48px - 3px)
 			right: 4px + 36px + 4px
+			+below('l')
+				bottom: calc(var(--vh100) - 48px - 48px - 3px)
 		&:not(.size-tiny)
 			bottom: 56px
 			right: var(--chatbar-width)
 			width: calc(100vw - var(--sidebar-width) - var(--chatbar-width))
 			height: calc(var(--vh100) - 56px * 2)
+			+below('l')
+				height: calc(var(--vh100) - 56px * 2 - 48px)
+				width: calc(100vw - var(--chatbar-width))
 			+below('m')
 				bottom: calc(var(--vh100) - 48px - 56px - 40vh)
 				right: 0
@@ -89,18 +94,23 @@ export default {
 			flex: auto
 			align-self: stretch
 			padding: 4px 8px
+			max-width: 238px
 			.hint
 				color: $clr-secondary-text-light
 				font-size: 10px
 				margin-bottom: 2px
 			.room-name
 				font-weight: 500
+				flex-grow: 0
+				ellipsis()
 		.global-placeholder
 			width: 86px
 			flex: none
 		.bunt-icon-button
 			icon-button-style(style: clear)
 			margin: 0 2px
+		+below('l')
+			top: 51px
 	.background-room-enter-active, .background-room-leave-active
 		transition: transform .3s ease
 	// .background-room-enter-active

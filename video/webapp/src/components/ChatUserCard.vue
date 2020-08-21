@@ -31,10 +31,10 @@ import Avatar from 'components/Avatar'
 import MenuDropdown from 'components/MenuDropdown'
 import UserActionPrompt from 'components/UserActionPrompt'
 export default {
+	components: { Avatar, MenuDropdown, UserActionPrompt },
 	props: {
 		sender: Object,
 	},
-	components: { Avatar, MenuDropdown, UserActionPrompt },
 	data () {
 		return {
 			blockedUsers: null,

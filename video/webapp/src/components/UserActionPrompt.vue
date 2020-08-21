@@ -16,11 +16,11 @@ import Prompt from 'components/Prompt'
 import Avatar from 'components/Avatar'
 
 export default {
+	components: { Prompt, Avatar },
 	props: {
 		user: Object,
 		action: String // block, ban, silence, reactivate
 	},
-	components: { Prompt, Avatar },
 	data () {
 		return {
 			loading: false,

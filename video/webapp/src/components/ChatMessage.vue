@@ -76,11 +76,11 @@ const generateHTML = function (input) {
 }
 
 export default {
+	components: { Avatar, ChatInput, ChatUserCard, MenuDropdown, Prompt },
 	props: {
 		message: Object,
 		mode: String
 	},
-	components: { Avatar, ChatInput, ChatUserCard, MenuDropdown, Prompt },
 	data () {
 		return {
 			selected: false,

@@ -76,6 +76,20 @@ export default {
 			},
 		}
 	},
+	async created () {
+		// TODO: Force reloading if world.updated is received from the server
+		try {
+			this.config = await api.call('world.config.get')
+
+			// Enforce some defaults
+			this.config.theme = {logo: {}, colors: {}, streamOfflineImage: null, textOverwrites: {}, ...this.config.theme}
+			this.config.theme.colors = {...DEFAULT_COLORS, ...this.config.theme.colors}
+			this.config.theme.logo = {...DEFAULT_LOGO, ...this.config.theme.logo}
+		} catch (error) {
+			this.error = error
+			console.log(error)
+		}
+	},
 	methods: {
 		async save () {
 			this.$v.$touch()
@@ -95,20 +109,6 @@ export default {
 
 			location.reload() // Theme config is only activated after reload
 		},
-	},
-	async created () {
-		// TODO: Force reloading if world.updated is received from the server
-		try {
-			this.config = await api.call('world.config.get')
-
-			// Enforce some defaults
-			this.config.theme = {logo: {}, colors: {}, streamOfflineImage: null, textOverwrites: {}, ...this.config.theme}
-			this.config.theme.colors = {...DEFAULT_COLORS, ...this.config.theme.colors}
-			this.config.theme.logo = {...DEFAULT_LOGO, ...this.config.theme.logo}
-		} catch (error) {
-			this.error = error
-			console.log(error)
-		}
 	}
 }
 </script>

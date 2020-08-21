@@ -1,7 +1,7 @@
 <template lang="pug">
 .pretalx-schedule(ref="wrapper", :style="style")
 	.header
-		h2 {{ $t('Schedule') }}
+		h2 {{ $t('Schedule:headline:text') }}
 		bunt-tabs(v-if="schedule.schedule.length > 1", :active-tab="activeDay.start")
 			bunt-tab(v-for="day in schedule.schedule", :id="day.start", :header="formatDate(day.start)", @selected="activeDay = day")
 		.pretalx-widget-attribution(v-if="$mq.above.m")
@@ -13,8 +13,13 @@ import moment from 'lib/timetravelMoment'
 import PretalxScheduleDay from './ScheduleDay'
 
 export default {
-	name: 'pretalx-schedule',
+	name: 'PretalxSchedule',
 	components: { PretalxScheduleDay },
+	filters: {
+		dateDisplay (value) {
+			return moment(value).format('dddd, LL')
+		}
+	},
 	props: {
 		schedule: Object
 	},
@@ -34,11 +39,6 @@ export default {
 			} */
 			return {}
 		},
-	},
-	filters: {
-		dateDisplay (value) {
-			return moment(value).format('dddd, LL')
-		}
 	},
 	created () {
 		// TODO properly set this globally
@@ -86,7 +86,7 @@ export default {
 			margin-bottom: 0
 			display: flex
 			flex-direction: column
-	+below('m')
+	+below('l')
 		width: 100vw
 		> .header
 			flex-direction: column

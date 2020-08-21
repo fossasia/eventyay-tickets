@@ -4,6 +4,8 @@ import moment from 'lib/timetravelMoment'
 import api from 'lib/api'
 import router from 'router'
 import chat from './chat'
+import exhibition from './exhibition'
+
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -21,7 +23,7 @@ export default new Vuex.Store({
 		pretalxEvent: null,
 		now: moment(),
 		activeRoom: null,
-		reactions: null
+		reactions: null,
 	},
 	getters: {
 		hasPermission (state) {
@@ -102,6 +104,7 @@ export default new Vuex.Store({
 				state.permissions = serverState['world.config'].permissions
 				commit('chat/setJoinedChannels', serverState['chat.channels'])
 				commit('chat/setReadPointers', serverState['chat.read_pointers'])
+				commit('exhibition/setData', serverState.exhibition)
 				commit('updateRooms', serverState['world.config'].rooms)
 				if (!state.user.profile.display_name) {
 					router.push('/').catch(() => {}) // force new users to welcome page
@@ -173,10 +176,10 @@ export default new Vuex.Store({
 			state.rooms.push(room)
 			// TODO ordering?
 		},
-		'api::room.delete' ({state}, data) {
-			state.rooms = state.rooms.filter((r) => (r.id !== data.id))
-			if (state.activeRoom.id === data.id) {
-				state.activeRoom = state.rooms[0]
+		'api::room.delete' ({state}, {id}) {
+			const index = state.rooms.findIndex(room => room.id === id)
+			if (index >= 0) {
+				state.rooms.splice(index, 1)
 			}
 		},
 		'api::room.reaction' ({state}, {room, reactions}) {
@@ -197,6 +200,7 @@ export default new Vuex.Store({
 		// TODO handle user.updated
 	},
 	modules: {
-		chat
+		chat,
+		exhibition
 	}
 })

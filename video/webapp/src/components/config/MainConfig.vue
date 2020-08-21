@@ -49,6 +49,16 @@ export default {
 			},
 		}
 	},
+	async created () {
+		// We don't use the global world object since it e.g. currently does not contain locale and timezone
+		// TODO: Force reloading if world.updated is received from the server
+		try {
+			this.config = await api.call('world.config.get')
+		} catch (error) {
+			this.error = error
+			console.log(error)
+		}
+	},
 	methods: {
 		async save () {
 			this.$v.$touch()
@@ -67,16 +77,6 @@ export default {
 			this.saving = false
 			// TODO error handling
 		},
-	},
-	async created () {
-		// We don't use the global world object since it e.g. currently does not contain locale and timezone
-		// TODO: Force reloading if world.updated is received from the server
-		try {
-			this.config = await api.call('world.config.get')
-		} catch (error) {
-			this.error = error
-			console.log(error)
-		}
 	}
 }
 </script>
