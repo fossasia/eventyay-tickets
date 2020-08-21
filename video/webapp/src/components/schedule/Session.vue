@@ -82,6 +82,12 @@ export default {
 				color: var(--track-color)
 			.room
 				color: $clr-secondary-text-light
+	&:hover
+		.info
+			border: 1px solid var(--clr-primary)
+			border-left: none
+			.title
+				color: var(--clr-primary)
 	+below('m')
 		min-width: 0
 </style>
