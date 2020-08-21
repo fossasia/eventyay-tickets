@@ -18,10 +18,10 @@ import api from 'lib/api'
 import Prompt from 'components/Prompt'
 
 export default {
+	components: { Prompt },
 	props: {
 		exhibitor: Object,
 	},
-	components: { Prompt },
 	data () {
 		return {
 			timer: 31,

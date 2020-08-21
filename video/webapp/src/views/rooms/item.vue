@@ -38,11 +38,11 @@ import ReactionsOverlay from 'components/ReactionsOverlay'
 import RecordingsPrompt from 'components/RecordingsPrompt'
 
 export default {
-	name: 'room',
+	name: 'Room',
+	components: { Chat, Exhibition, Livestream, MarkdownPage, IframePage, ReactionsBar, ReactionsOverlay, RecordingsPrompt },
 	props: {
 		roomId: String
 	},
-	components: { Chat, Exhibition, Livestream, MarkdownPage, IframePage, ReactionsBar, ReactionsOverlay, RecordingsPrompt },
 	data () {
 		return {
 			showRecordingsPrompt: false,

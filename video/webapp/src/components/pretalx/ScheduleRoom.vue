@@ -7,7 +7,7 @@
 import PretalxScheduleTalk from './ScheduleTalk'
 
 export default {
-	name: 'pretalx-schedule-room',
+	name: 'PretalxScheduleRoom',
 	components: { PretalxScheduleTalk },
 	props: {
 		room: Object,

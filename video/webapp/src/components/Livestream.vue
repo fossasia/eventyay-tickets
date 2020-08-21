@@ -39,6 +39,7 @@ const HLS_CONFIG = {
 }
 
 export default {
+	components: {},
 	props: {
 		room: {
 			type: Object,
@@ -53,7 +54,6 @@ export default {
 			default: 'normal'
 		}
 	},
-	components: {},
 	data () {
 		return {
 			theme,

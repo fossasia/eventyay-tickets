@@ -28,9 +28,6 @@ export default {
 			error: null,
 		}
 	},
-	methods: {
-		moment: moment
-	},
 	computed: {},
 	async created () {
 		try {
@@ -41,6 +38,9 @@ export default {
 			this.recordings = null
 			console.error(error)
 		}
+	},
+	methods: {
+		moment: moment
 	}
 }
 </script>

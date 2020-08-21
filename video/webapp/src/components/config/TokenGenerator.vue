@@ -41,6 +41,20 @@ export default {
 			required
 		}
 	},
+	async created () {
+		// TODO: Force reloading if world.updated is received from the server
+		try {
+			this.config = await api.call('world.config.get')
+
+			// Enforce some defaults
+			this.config.theme = {logo: {}, colors: {}, streamOfflineImage: null, textOverwrites: {}, ...this.config.theme}
+			this.config.theme.colors = {...DEFAULT_COLORS, ...this.config.theme.colors}
+			this.config.theme.logo = {...DEFAULT_LOGO, ...this.config.theme.logo}
+		} catch (error) {
+			this.error = error
+			console.log(error)
+		}
+	},
 	methods: {
 		set_traits (t) {
 			this.traits = t.split(',').map((i) => i.trim())
@@ -60,20 +74,6 @@ export default {
 			this.result = r.results.map((t) => `${location.protocol}//${location.host}/#token=${t}`).join('\n')
 			// TODO error handling
 		},
-	},
-	async created () {
-		// TODO: Force reloading if world.updated is received from the server
-		try {
-			this.config = await api.call('world.config.get')
-
-			// Enforce some defaults
-			this.config.theme = {logo: {}, colors: {}, streamOfflineImage: null, textOverwrites: {}, ...this.config.theme}
-			this.config.theme.colors = {...DEFAULT_COLORS, ...this.config.theme.colors}
-			this.config.theme.logo = {...DEFAULT_LOGO, ...this.config.theme.logo}
-		} catch (error) {
-			this.error = error
-			console.log(error)
-		}
 	}
 }
 </script>
