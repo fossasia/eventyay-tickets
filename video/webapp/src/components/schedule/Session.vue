@@ -49,7 +49,7 @@ export default {
 	display: flex
 	min-width: 480px
 	min-height: 96px
-	// margin: 8px
+	margin: 8px
 	overflow: hidden
 	.time-box
 		// width: 60px
@@ -92,4 +92,6 @@ export default {
 				color: var(--track-color)
 			.room
 				color: $clr-secondary-text-light
+	+below('m')
+		min-width: 0
 </style>
