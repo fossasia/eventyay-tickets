@@ -167,9 +167,10 @@ export default {
 <style lang="stylus">
 .c-grid-schedule
 	flex: auto
+	background-color: $clr-grey-50
 	.grid
 		display: grid
-		grid-template-columns: 64px repeat(var(--total-rooms), 1fr)
+		grid-template-columns: 80px repeat(var(--total-rooms), 1fr)
 		// grid-gap: 8px
 		position: relative
 		min-width: min-content
