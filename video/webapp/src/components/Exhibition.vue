@@ -2,7 +2,7 @@
 .c-exhibition
 	scrollbars.exhibitors(v-if="exhibitors", y)
 		router-link.exhibitor(v-for="exhibitor of exhibitors", :to="{name: 'exhibitor', params: {exhibitorId: exhibitor.id}}", :class="'exhibitor-' + exhibitor.size")
-			img.logo(:src="exhibitor.logo", :alt="exhibitor.name")
+			img.logo(:src="exhibitor.banner_list ? exhibitor.banner_list : exhibitor.logo", :alt="exhibitor.name")
 			.short-text {{ exhibitor.short_text }}
 			.actions
 				bunt-button more

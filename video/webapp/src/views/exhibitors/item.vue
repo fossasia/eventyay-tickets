@@ -4,7 +4,7 @@ scrollbars.c-exhibitor(y)
 		.content
 			img.banner(:src="exhibitor.banner_detail", v-if="exhibitor.banner_detail")
 			markdown-content.text(:markdown="exhibitor.text")
-			.downloads(v-if="downloadLinks")
+			.downloads(v-if="downloadLinks.length > 0")
 				h2 {{ $t("Exhibitor:downloads-headline:text") }}
 				a.download(v-for="link in downloadLinks", :href="link.url", target="_blank")
 					.mdi.mdi-file-pdf-outline(v-if="link.url.toLowerCase().endsWith('pdf')")
@@ -24,7 +24,7 @@ scrollbars.c-exhibitor(y)
 			.social-media-links(v-if="exhibitor.social_media_links")
 				a.mdi(v-for="link in exhibitor.social_media_links", :class="`mdi-${link.display_text.toLowerCase()}`", :href="link.url", :title="link.display_text", target="_blank")
 			table.external-links(v-if="profileLinks")
-				tr(v-for="link in profileLinks")
+				tr(v-for="link in profileLinks.length > 0")
 					th.name {{ link.display_text }}
 					td: a(:href="link.url", target="_blank") {{ prettifyUrl(link.url) }}
 			template(v-if="exhibitor.staff.length > 0")
