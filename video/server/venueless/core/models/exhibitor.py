@@ -28,8 +28,16 @@ class Exhibitor(models.Model):
     )
 
     def serialize(self):
-        links = list(self.links.values("display_text", "url", "category"))
-        social_media_links = list(self.social_media_links.values("display_text", "url"))
+        links = list(
+            self.links.order_by("display_text").values(
+                "display_text", "url", "category"
+            )
+        )
+        social_media_links = list(
+            self.social_media_links.order_by("display_text").values(
+                "display_text", "url"
+            )
+        )
         staff = []
         for staff_member in self.staff.order_by("id").all():
             staff.append(staff_member.user.serialize_public())
