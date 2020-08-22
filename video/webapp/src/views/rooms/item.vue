@@ -1,6 +1,6 @@
 <template lang="pug">
 .c-room(v-if="room", :class="{'standalone-chat': modules['chat.native'] && room.modules.length === 1}")
-	.room-info(v-if="!modules['page.markdown']")
+	.room-info(v-if="!modules['page.markdown'] && !modules['page.landing']")
 		.room-name {{ room.name }}
 		.room-session(v-if="currentSession") {{ currentSession.title }}
 		bunt-icon-button(@click="showEditSchedule = true") calendar_edit
@@ -13,6 +13,7 @@
 			.stage-tools(v-if="modules['livestream.native']")
 				.stage-tool(v-if="$features.enabled('questions-answers')", :class="{active: activeStageTool === 'qa'}", @click="activeStageTool = 'qa'") Ask a question
 				reactions-bar(:expanded="activeStageTool === 'reaction'", @expand="activeStageTool = 'reaction'")
+		landing-page(v-else-if="modules['page.landing']", :module="modules['page.landing']")
 		markdown-page(v-else-if="modules['page.markdown']", :module="modules['page.markdown']")
 		iframe-page(v-else-if="modules['page.iframe']", :module="modules['page.iframe']")
 		exhibition(v-else-if="modules['exhibition.native']", :room="room")
@@ -26,6 +27,7 @@ import {mapGetters, mapState} from 'vuex'
 import EditRoomSchedule from './EditRoomSchedule'
 import Chat from 'components/Chat'
 import Livestream from 'components/Livestream'
+import LandingPage from 'components/LandingPage'
 import MarkdownPage from 'components/MarkdownPage'
 import IframePage from 'components/IframePage'
 import Exhibition from 'components/Exhibition'
@@ -35,7 +37,7 @@ import RecordingsPrompt from 'components/RecordingsPrompt'
 
 export default {
 	name: 'Room',
-	components: { EditRoomSchedule, Chat, Exhibition, Livestream, MarkdownPage, IframePage, ReactionsBar, ReactionsOverlay, RecordingsPrompt },
+	components: { EditRoomSchedule, Chat, Exhibition, Livestream, LandingPage, MarkdownPage, IframePage, ReactionsBar, ReactionsOverlay, RecordingsPrompt },
 	props: {
 		roomId: String
 	},
