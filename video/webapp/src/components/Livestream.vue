@@ -1,5 +1,5 @@
 <template lang="pug">
-.c-livestream(:class="[`size-${size}`, {playing, buffering, automuted, muted}]")
+.c-livestream(:class="[`size-${size}`, {playing, buffering, seeking, automuted, muted}]", v-resize-observer="onResize")
 	.video-container(ref="videocontainer")
 		video(ref="video", style="width:100%;height:100%", @playing="playingVideo", @pause="pausingVideo", @volumechange="onVolumechange")
 		.controls(@click="toggleVideo")
@@ -7,9 +7,16 @@
 				span.mdi.mdi-volume-off
 				span {{ $t('Livestream:automuted-unmute:text') }}
 			.big-button.mdi.mdi-play(v-if="!playing")
-			bunt-progress-circular(v-if="buffering && !offline", size="huge")
+			bunt-progress-circular(v-if="(buffering || seeking) && !offline", size="huge")
 			.bottom-controls(@click.stop="")
+				.progress-hover(ref="progress", @pointerdown="onProgressPointerdown", @pointermove="onProgressPointermove", @pointerup="onProgressPointerup", @pointercancel="onProgressPointerup", :style="progressStyles.play")
+					.progress
+						.load-progress(v-for="load of progressStyles.load", :style="load")
+						.play-progress
+					.progress-indicator
+					.time(:style="{'--hovered-progress': hoveredProgress}") {{ formatTime(hoveredTime) }}
 				bunt-icon-button(@click="toggleVideo") {{ playing ? 'pause' : 'play' }}
+				.live-indicator(v-if="isLive") live
 				.buffer
 				bunt-icon-button(@click="toggleVolume") {{ muted || volume === 0 ? 'volume_off' : 'volume_high' }}
 				input.volume-slider(type="range", step="any", min="0", max="1", aria-label="Volume", :value="volume", @input="onVolumeSlider", :style="{'--volume': volume}")
@@ -57,23 +64,49 @@ export default {
 	data () {
 		return {
 			theme,
+			isLive: false,
 			playing: true,
 			buffering: true,
+			seeking: false,
 			offline: false,
 			fullscreen: false,
 			volume: 1,
 			muted: false,
-			automuted: false
+			automuted: false,
+			currentTime: 0,
+			duration: 0,
+			bufferedRanges: null,
+			hoveredProgress: null
 		}
 	},
 	computed: {
-		...mapState(['streamingRoom'])
+		...mapState(['streamingRoom']),
+		progressStyles () {
+			return {
+				play: {
+					'--play-progress': this.currentTime / this.duration
+				},
+				load: this.bufferedRanges?.map(range => ({
+					'--load-start': range.start / this.duration,
+					'--load-length': (range.end - range.start) / this.duration
+				}))
+			}
+		},
+		hoveredTime () {
+			return this.hoveredProgress * this.duration
+		},
 	},
 	watch: {
 		'module.config.hls_url': 'initializePlayer'
 	},
 	mounted () {
 		document.addEventListener('fullscreenchange', this.onFullscreenchange)
+		/* loadedmetadata */
+		this.$refs.video.addEventListener('durationchange', this.onDurationchange)
+		this.$refs.video.addEventListener('progress', this.onProgress)
+		this.$refs.video.addEventListener('timeupdate', this.onTimeupdate)
+		this.$refs.video.addEventListener('seeking', this.onSeeking)
+		this.$refs.video.addEventListener('seeked', this.onSeeked)
 		this.initializePlayer()
 	},
 	beforeDestroy () {
@@ -101,7 +134,7 @@ export default {
 			if (Hls.isSupported()) {
 				const player = new Hls(HLS_CONFIG)
 				let started = false
-				player.attachMedia(this.$refs.video)
+				player.attachMedia(video)
 				this.player = player
 				const load = () => {
 					player.loadSource(this.module.config.hls_url)
@@ -112,6 +145,10 @@ export default {
 				player.on(Hls.Events.MANIFEST_PARSED, async (event, data) => {
 					start()
 					started = true
+				})
+
+				player.on(Hls.Events.LEVEL_LOADED, (event, data) => {
+					this.isLive = data.details.live
 				})
 
 				player.on(Hls.Events.ERROR, (event, data) => {
@@ -180,6 +217,27 @@ export default {
 				this.muted = false
 			}
 		},
+		onDurationchange () {
+			this.duration = this.$refs.video.duration
+		},
+		onProgress () {
+			this.bufferedRanges = []
+			for (let i = 0; i < this.$refs.video.buffered.length; i++) {
+				this.bufferedRanges.push({
+					start: this.$refs.video.buffered.start(i),
+					end: this.$refs.video.buffered.end(i)
+				})
+			}
+		},
+		onTimeupdate () {
+			this.currentTime = this.$refs.video.currentTime
+		},
+		onSeeking () {
+			this.seeking = true
+		},
+		onSeeked () {
+			this.seeking = false
+		},
 		onFullscreenchange () {
 			this.fullscreen = !!document.fullscreenElement
 		},
@@ -188,6 +246,43 @@ export default {
 		},
 		pausingVideo () {
 			this.playing = false
+		},
+		onProgressPointerdown (event) {
+			this.$refs.progress.setPointerCapture(event.pointerId)
+			this.mouseSeeking = true
+			this.$refs.video.currentTime = this.hoveredProgress * this.duration
+			// TODO respect video.seekable?
+			// TODO show pos to seek
+		},
+		onProgressPointermove (event) {
+			const el = this.$refs.progress
+			const rect = el.getBoundingClientRect() // TODO probably killing performance
+			this.hoveredProgress = Math.min(Math.max(0, (event.clientX - (rect.x + 16)) / (rect.width - 32)), 1)
+			if (this.mouseSeeking) {
+				this.$refs.video.currentTime = this.hoveredProgress * this.duration
+			}
+		},
+		onProgressPointerup (event) {
+			this.mouseSeeking = false
+			this.$refs.progress.releasePointerCapture(event.pointerId)
+		},
+		onResize (event) {
+			this.totalWidth = event[event.length - 1].contentRect.width
+		},
+		formatTime (s) {
+			let prefix = ''
+			if (this.isLive) {
+				s = Math.abs(s - this.duration)
+				prefix = '-'
+			}
+			const seconds = Math.floor(s % 60)
+			const minutes = Math.floor((s / 60) % 60)
+			const hours = Math.floor(s / 60 / 60)
+			if (hours) {
+				return `${prefix}${hours}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
+			} else {
+				return `${prefix}${minutes}:${String(seconds).padStart(2, '0')}`
+			}
 		}
 	}
 }
@@ -268,6 +363,78 @@ export default {
 			align-items: center
 			padding: 8px 16px
 			box-sizing: border-box
+			color: $clr-primary-text-dark
+			.progress-hover
+				position: absolute
+				bottom: 54px
+				left: 0
+				width: 100%
+				height: 16px
+				cursor: pointer
+				.progress
+					position: absolute
+					bottom: 0
+					left: 16px
+					width: calc(100% - 32px)
+					height: 5px
+					background-color: rgba(255,255,255,.2)
+					overflow: hidden
+					transition: transform .2s ease
+					transform: scaleY(.6)
+					.load-progress
+						position: absolute
+						top: 0
+						left: calc(100% * var(--load-start))
+						width: calc(100% * var(--load-length))
+						height: 100%
+						background-color: rgba(255,255,255,.5)
+					.play-progress
+						position: absolute
+						top: 0
+						left: 0
+						width: calc(100% * var(--play-progress))
+						height: 100%
+						background-color: var(--clr-primary)
+				.progress-indicator
+					position: absolute
+					left: calc((100% - 32px) * var(--play-progress) + 16px - 6.5px)
+					top: 6.5px
+					width: 13px
+					height: 13px
+					border-radius: 50%
+					background-color: var(--clr-primary)
+					transition: transform .2s ease
+					transform: scale(0, 0)
+				.time
+					width: 64px // TODO less lazy
+					text-align: center
+					position: absolute
+					top: -16px
+					left: calc(min(max(0px, (100% - 32px) * var(--hovered-progress) - 16px), 100% - 64px))
+					font-size: 14px
+					font-weight: 500
+					text-shadow: 0 0 4px $clr-primary-text-light
+					opacity: 0
+					transition: opacity .2s ease
+				&:hover
+					.progress, .progress-indicator
+						transform: none
+					.time
+						opacity: 1
+			.live-indicator
+				text-transform: uppercase
+				display: flex
+				align-items: center
+				pointer-events: none
+				margin-left: 4px
+				&::before
+					content: ''
+					display: block
+					height: 6px
+					width: @height
+					border-radius: 50%
+					background-color: $clr-red
+					margin-right: 4px
 			.buffer
 				flex: auto
 			.bunt-icon-button
@@ -302,7 +469,7 @@ export default {
 					thumb()
 	.shaka-controls-button-panel > .material-icons
 		font-size: 24px
-	&:hover, &:not(.playing), &.buffering, &.automuted, &.muted
+	&:hover, &:not(.playing), &.buffering, &.seeking, &.automuted, &.muted
 		.controls
 			opacity: 1
 		.mdi
