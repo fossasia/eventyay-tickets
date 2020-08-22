@@ -147,7 +147,7 @@ export default new Vuex.Store({
 			if (!getters.pretalxApiBaseUrl) return
 			// unroll pagination
 			const schedule = []
-			let next = `${getters.pretalxApiBaseUrl}/talks/`
+			let next = `${getters.pretalxApiBaseUrl}/talks/?limit=100`
 			while (next) {
 				const response = await (await fetch(next)).json()
 				schedule.push(...response.results)

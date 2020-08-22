@@ -9,7 +9,7 @@ router-link.c-linear-schedule-session(:style="style", :to="{name: 'schedule:talk
 		.abstract {{ session.abstract }}
 		.bottom-info
 			.track {{ session.track.name }}
-			.room {{ session.room.name }}
+			.room(v-if="session.room") {{ session.room.name }}
 </template>
 <script>
 import moment from 'lib/timetravelMoment'
