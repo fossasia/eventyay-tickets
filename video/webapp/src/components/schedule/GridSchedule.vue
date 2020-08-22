@@ -7,6 +7,7 @@
 				path(d="M 0 0 L 10 5 L 0 10 z")
 		.room(:style="{'grid-area': `1 / 1 / auto / auto`}")
 		.room(v-for="(room, index) of rooms", :style="{'grid-area': `1 / ${index + 2 } / auto / auto`}") {{ room.name }}
+		.room(v-if="hasSessionsWithoutRoom", :style="{'grid-area': `1 / ${rooms.length + 2} / auto / -1`}") sonstiger Ramsch
 		session(v-for="session of sessions", :session="session", :style="getSessionStyle(session)")
 </template>
 <script>
@@ -36,6 +37,9 @@ export default {
 		...mapGetters(['flatSchedule']),
 		sessions () {
 			return this.flatSchedule?.sessions
+		},
+		hasSessionsWithoutRoom () {
+			return this.sessions.some(s => !s.room)
 		},
 		rooms () {
 			return this.pretalxRooms.map(room => this.$store.state.rooms.find(r => r.pretalx_id === room.id)).filter(r => !!r)
@@ -141,7 +145,7 @@ export default {
 			const roomIndex = this.pretalxRooms.findIndex(r => r.id === session.room?.pretalx_id)
 			return {
 				'grid-row': `${getSliceName(session.start)} / span ${height}`,
-				'grid-column': `${roomIndex + 2}`
+				'grid-column': roomIndex > -1 ? roomIndex + 2 : null
 			}
 		},
 		changeDay (day) {
@@ -171,7 +175,7 @@ export default {
 	background-color: $clr-grey-50
 	.grid
 		display: grid
-		grid-template-columns: 80px repeat(var(--total-rooms), 1fr)
+		grid-template-columns: 80px repeat(var(--total-rooms), 1fr) auto
 		// grid-gap: 8px
 		position: relative
 		min-width: min-content
