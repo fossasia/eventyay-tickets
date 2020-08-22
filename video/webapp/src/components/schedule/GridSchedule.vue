@@ -38,7 +38,7 @@ export default {
 			return this.flatSchedule?.sessions
 		},
 		rooms () {
-			return this.pretalxRooms.map(room => this.$store.state.rooms.find(r => r.pretalx_id === room.id))
+			return this.pretalxRooms.map(room => this.$store.state.rooms.find(r => r.pretalx_id === room.id)).filter(r => !!r)
 		},
 		// find this to not tax the grid with 1min rows
 		greatestCommonDurationDivisor () {
@@ -53,6 +53,7 @@ export default {
 			return Math.ceil(totalMinutes / this.greatestCommonDurationDivisor)
 		},
 		timeslices () {
+			const gcdd = this.greatestCommonDurationDivisor
 			const slices = []
 			for (const session of this.sessions) {
 				const pushSlice = function (date, datebreak) {
@@ -70,19 +71,19 @@ export default {
 					if (session.start.isSame(lastSlice.date, 'day')) {
 						// pad slices in gaps for same day
 						const mins = session.start.diff(lastSlice.date, 'minutes')
-						for (let i = 1; i <= mins / this.greatestCommonDurationDivisor; i++) {
-							pushSlice(lastSlice.date.clone().add(this.greatestCommonDurationDivisor * i, 'minutes'))
+						for (let i = 1; i <= mins / gcdd; i++) {
+							pushSlice(lastSlice.date.clone().add(gcdd * i, 'minutes'))
 						}
 					} else {
 						// add date break
-						pushSlice(lastSlice.date.clone().add(this.greatestCommonDurationDivisor, 'minutes'))
+						pushSlice(lastSlice.date.clone().add(gcdd, 'minutes'))
 						pushSlice(session.start.clone().startOf('day'), true)
 					}
 				}
 
 				const mins = session.end.diff(session.start, 'minutes')
-				for (let i = 0; i < mins / this.greatestCommonDurationDivisor; i++) {
-					const date = session.start.clone().add(this.greatestCommonDurationDivisor * i, 'minutes')
+				for (let i = 0; i < mins / gcdd; i++) {
+					const date = session.start.clone().add(gcdd * i, 'minutes')
 					lastSlice = slices[slices.length - 1]
 					if (lastSlice && !date.isAfter(lastSlice.date, 'minutes')) continue
 					pushSlice(date)
@@ -137,7 +138,7 @@ export default {
 		getSessionStyle (session) {
 			const durationMinutes = session.end.diff(session.start, 'minutes')
 			const height = Math.ceil(durationMinutes / this.greatestCommonDurationDivisor)
-			const roomIndex = this.pretalxRooms.findIndex(r => r.id === session.room.pretalx_id)
+			const roomIndex = this.pretalxRooms.findIndex(r => r.id === session.room?.pretalx_id)
 			return {
 				'grid-row': `${getSliceName(session.start)} / span ${height}`,
 				'grid-column': `${roomIndex + 2}`
