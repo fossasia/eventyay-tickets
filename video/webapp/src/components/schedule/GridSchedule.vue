@@ -1,7 +1,7 @@
 <template lang="pug">
 .c-grid-schedule(v-scrollbar.x.y="")
 	.grid(:style="gridStyle")
-		.timeslice(v-for="slice of timeslices", :ref="slice.name", :class="{datebreak: slice.datebreak}", :data-slice="slice.date.toISOString()", :style="{'grid-area': `${slice.name} / 1 / auto / auto`}") {{ slice.datebreak ? slice.date.format('dddd DD. MMMM') : slice.date.format('LT') }}
+		.timeslice(v-for="slice of visibleTimeslices", :ref="slice.name", :class="{datebreak: slice.datebreak}", :data-slice="slice.date.toISOString()", :style="{'grid-area': `${slice.name} / 1 / auto / auto`}") {{ slice.datebreak ? slice.date.format('dddd DD. MMMM') : slice.date.format('LT') }}
 		.now(v-if="nowSlice", ref="now", :style="{'grid-area': `${nowSlice.slice.name} / 1 / auto / auto`, '--offset': nowSlice.offset}")
 			svg(viewBox="0 0 10 10")
 				path(d="M 0 0 L 10 5 L 0 10 z")
@@ -48,6 +48,7 @@ export default {
 		greatestCommonDurationDivisor () {
 			const gcd = (a, b) => a ? gcd(b % a, a) : b
 			// don't allow some silly divisor like 1 to ruin the layout
+			// TODO correctly place talks starting at odd times
 			return Math.max(this.sessions
 				.map(s => s.end.diff(s.start, 'minutes'))
 				.reduce(gcd), 5)
@@ -95,6 +96,9 @@ export default {
 				}
 			}
 			return slices
+		},
+		visibleTimeslices () {
+			return this.timeslices.filter(slice => slice.date.minute() % 30 === 0)
 		},
 		gridStyle () {
 			let rows = '[header] 52px '
@@ -197,6 +201,7 @@ export default {
 		color: $clr-secondary-text-light
 		padding: 8px 0 0 16px
 		white-space: nowrap
+		min-height: 48px
 		&::before
 			content: ''
 			display: block
