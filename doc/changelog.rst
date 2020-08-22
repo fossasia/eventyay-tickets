@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :support:`-` Email error reporting (sent to instance administrators) now includes a short explanation and a link to the pretalx issue tracker.
 - :feature:`-` If a speaker has selected to show their gravatar, it is now also exposed in the API in the avatar field.
 - :feature:`-` When you send out reminders about unanswered questions, you can now target specific questions, or tracks, or submission types.
 - :feature:`-` pretalx now limits file uploads to 10MB.
