@@ -267,7 +267,7 @@ export default {
 		.stage
 			&.session
 				height: 48px
-				padding: 0 4px 0 16px
+				padding: 0 4px 0 8px
 				display: flex
 				align-items: center
 				&::after
@@ -282,6 +282,7 @@ export default {
 					line-height: 18px
 					padding: 0 4px
 				&.has-image::after
+					right: auto
 					left: 4px
 				&.live::after
 					content: 'live'
