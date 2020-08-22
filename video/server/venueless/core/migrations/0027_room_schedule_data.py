@@ -7,7 +7,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("core", "0021_bbbserver_cost"),
+        ("core", "0026_exhibitorlink_category"),
     ]
 
     operations = [
