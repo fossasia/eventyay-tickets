@@ -264,6 +264,7 @@ class BBBService:
                 "userdata-bbb_show_public_chat_on_login": "false",
                 "userdata-bbb_mirror_own_webcam": "true",
                 "userdata-bbb_skip_check_audio": "true",
+                "userdata-bbb_listen_only_mode": "false",  # in a group call, listen-only does not make sense
             },
             server.url,
             server.secret,
