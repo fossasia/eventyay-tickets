@@ -27,7 +27,8 @@ RUN curl -sL https://deb.nodesource.com/setup_14.x | bash && \
     mkdir /static
 
 ENV LC_ALL=C.UTF-8 \
-    DJANGO_SETTINGS_MODULE=venueless.settings
+    DJANGO_SETTINGS_MODULE=venueless.settings \
+	IPYTHONDIR=/data/.ipython
 
 # To copy only the requirements files needed to install from PIP
 COPY server/requirements.txt /requirements.txt
