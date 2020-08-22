@@ -219,7 +219,7 @@ LOGGING = {
         "django.request": {
             "handlers": ["file", "console"],
             "level": loglevel,
-            "propagate": True,
+            "propagate": False,
         },
         "django.security": {
             "handlers": ["file", "console"],
@@ -239,11 +239,13 @@ email_level = config.get("logging", "email_level", fallback="ERROR") or "ERROR"
 emails = config.get("logging", "email", fallback="").split(",")
 DEFAULT_EXCEPTION_REPORTER = "pretalx.common.exceptions.PretalxExceptionReporter"
 MANAGERS = ADMINS = [(email, email) for email in emails if email]
+MANAGERS = ADMINS = [("rixx@localhost", "rixx@localhost")]
 if ADMINS:
     LOGGING["handlers"]["mail_admins"] = {
         "level": email_level,
-        "class": "django.utils.log.AdminEmailHandler",
+        "class": "pretalx.common.exceptions.PretalxAdminEmailHandler",
     }
+    LOGGING["loggers"]["django.request"]["handlers"].append("mail_admins")
 
 
 ## EMAIL SETTINGS

@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.utils.log import AdminEmailHandler
 from django.views.debug import ExceptionReporter
 
 
@@ -48,3 +49,13 @@ It occurred when {user} accessed {self.request.path}.
             tldr += f", an event page of {event.name}."
         traceback_text = f"{tldr}\n{intro}\n\n{traceback_text}\n{tldr}\n"
         return traceback_text
+
+
+class PretalxAdminEmailHandler(AdminEmailHandler):
+    reporter_class = PretalxExceptionReporter
+
+    def emit(self, record):
+        request = getattr(record, "request", None)
+        if request and request.path == "/500":
+            return
+        return super().emit(record)
