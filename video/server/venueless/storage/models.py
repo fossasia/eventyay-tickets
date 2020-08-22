@@ -31,3 +31,4 @@ class StoredFile(models.Model):
     file = models.FileField(null=True, blank=True, upload_to=storedfile_name)
     public = models.BooleanField(default=False)
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.PROTECT)
+    source_url = models.CharField(max_length=255, null=True, blank=True)
