@@ -47,9 +47,10 @@ export default {
 		// find this to not tax the grid with 1min rows
 		greatestCommonDurationDivisor () {
 			const gcd = (a, b) => a ? gcd(b % a, a) : b
-			return this.sessions
+			// don't allow some silly divisor like 1 to ruin the layout
+			return Math.max(this.sessions
 				.map(s => s.end.diff(s.start, 'minutes'))
-				.reduce(gcd)
+				.reduce(gcd), 5)
 		},
 		totalRows () {
 			const days = this.pretalxEvent.schedule
