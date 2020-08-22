@@ -43,6 +43,11 @@
 					div(v-if="val.type == 'page.markdown'")
 						bunt-input-outline-container(label="Content")
 							textarea(slot-scope="{focus, blur}", @focus="focus", @blur="blur", v-model="val.config.content")
+					div(v-else-if="val.type == 'page.landing'")
+						bunt-input-outline-container(label="Content")
+							textarea(slot-scope="{focus, blur}", @focus="focus", @blur="blur", v-model="val.config.content")
+						upload-url-input(v-model="val.config.header_image", label="Header image", name="headerimage")
+						bunt-input(v-model="val.config.header_background_color", label="Header background color", name="headerbackgroundcolor")
 					div(v-else-if="val.type == 'page.iframe'")
 						bunt-input(v-model="val.config.url", label="URL", name="url")
 					div(v-else-if="val.type == 'livestream.native'")
@@ -85,6 +90,7 @@ import { required, integer } from 'vuelidate/lib/validators'
 const KNOWN_TYPES = [
 	'page.markdown',
 	'page.iframe',
+	'page.landing',
 	'livestream.native',
 	'exhibition.native',
 	'chat.native',

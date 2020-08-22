@@ -1,7 +1,7 @@
 <template lang="pug">
-.c-landing-page(v-scrollbar.y="", :style="{'--header-background': module.config.header.background_color}")
+.c-landing-page(v-scrollbar.y="", :style="{'--header-background': module.config.header_background_color}")
 	.hero
-		img(:src="module.config.header.image")
+		img(:src="module.config.header_image")
 	.content
 		markdown-content(:markdown="module.config.content")
 		.sidebar
