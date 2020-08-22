@@ -274,7 +274,7 @@ export default {
 					content: 'soon'
 					display: block
 					position: absolute
-					left: 4px
+					right: 4px
 					top: 2px
 					color: $clr-primary-text-dark
 					background-color: $clr-blue-grey-500
@@ -282,7 +282,7 @@ export default {
 					line-height: 18px
 					padding: 0 4px
 				&.has-image::after
-					top: 2px
+					left: 4px
 				&.live::after
 					content: 'live'
 					background-color: $clr-danger
@@ -302,9 +302,9 @@ export default {
 					ellipsis()
 					line-height: 24px
 				&:not(.has-image) .title
-					margin-left: 30px
+					margin-right: 40px
 				&:not(.has-image).live .title
-					margin-left: 22px
+					margin-right: 30px
 				.subtitle
 					display: flex
 					justify-content: space-between
