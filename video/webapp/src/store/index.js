@@ -34,7 +34,7 @@ export default new Vuex.Store({
 		flatSchedule (state) {
 			if (!state.schedule || !state.pretalxEvent || !state.pretalxRooms) return
 			const sessions = []
-			const tracksLookup = state.pretalxEvent.event.tracks.reduce((acc, track) => { acc[track.name] = track; return acc }, {})
+			const tracksLookup = state.pretalxEvent.event.tracks.reduce((acc, track) => { acc[typeof track.name === 'string' ? track.name : track.name.en] = track; return acc }, {})
 			for (const session of state.schedule) {
 				// TODO no id in api response
 				const vRoom = state.pretalxRooms.find(r => r.name.en === session.slot.room.en)
@@ -47,7 +47,7 @@ export default new Vuex.Store({
 					start: moment(session.slot.start),
 					end: moment(session.slot.end),
 					speakers: session.speakers,
-					track: tracksLookup[session.track],
+					track: tracksLookup[typeof session.track === 'string' ? session.track : session.track?.en],
 					room: room
 				})
 			}

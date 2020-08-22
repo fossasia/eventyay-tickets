@@ -8,7 +8,7 @@ router-link.c-linear-schedule-session(:style="style", :to="{name: 'schedule:talk
 		.speakers {{ session.speakers.map(s => s.name).join(', ') }}
 		.abstract {{ session.abstract }}
 		.bottom-info
-			.track {{ session.track.name }}
+			.track(v-if="session.track") {{ typeof session.track.name === 'string' ? session.track.name : session.track.name.en}}
 			.room(v-if="session.room") {{ session.room.name }}
 </template>
 <script>
@@ -21,7 +21,7 @@ export default {
 	computed: {
 		style () {
 			return {
-				'--track-color': this.session.track?.color
+				'--track-color': this.session.track?.color || 'var(--clr-primary)'
 			}
 		},
 		startTime () {
