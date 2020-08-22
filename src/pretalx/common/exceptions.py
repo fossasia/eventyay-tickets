@@ -13,10 +13,10 @@ class SubmissionError(Exception):
 class PretalxExceptionReporter(ExceptionReporter):
     def get_traceback_text(self):
         traceback_text = super().get_traceback_text()
-        if settings.DEBUG or not self.is_email or not getattr(self, "exc_type"):
+        if settings.DEBUG or not self.is_email:
             return traceback_text
-        exception = self.exc_type.__name__
-        exception_info = str(self.exc_value)
+        exception = self.exc_type.__name__ if getattr(self, "exc_type") else "Exception"
+        exception_info = str(getattr(self, "exc_value") or "")
         if exception_info:
             exception += f" ({exception_info})"
         location = ""
