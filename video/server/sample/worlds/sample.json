@@ -178,9 +178,13 @@
       },
       "modules": [
         {
-          "type": "page.markdown",
+          "type": "page.landing",
           "config": {
-            "content": "# Unsere tolle Online-Konferenz\n\nHallo!\nDas ist ein Markdowntext!"
+            "header": {
+              "background_color": "#673ab7",
+              "image": "/venueless-logo-full-white.svg"
+            },
+            "content": "# Welcome to this example event!\n\nYou might notice that the dates for the current sessions are not actually your current time and that time does not progress. That's because we froze time – only in this demo of course – with the power of programming!\n\nHave a look around!"
           }
         }
       ]
