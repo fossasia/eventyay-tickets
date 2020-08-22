@@ -50,6 +50,7 @@
 					div(v-else-if="val.type == 'call.bigbluebutton'")
 						bunt-checkbox(v-model="val.config.record", label="Allow recording (needs to be set before first join)", name="record")
 						bunt-checkbox(v-model="val.config.waiting_room", label="Put new users in waiting room first (needs to be set before first join)", name="waiting_room")
+						bunt-checkbox(v-model="val.config.auto_microphone", label="Auto-join users with microphone on (skip dialog asking how to join)", name="auto_microphone")
 						bunt-input(v-model="val.config.voice_bridge", label="Voice Bridge ID", name="voice_bridge")
 						bunt-input(v-model="val.config.prefer_server", label="Prefer Server with ID", name="prefer_server")
 						upload-url-input(v-model="val.config.presentation", label="Initial presentation", name="presentation")
