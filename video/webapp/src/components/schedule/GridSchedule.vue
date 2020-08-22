@@ -157,6 +157,7 @@ export default {
 			this.$el.scrollTop = offset
 		},
 		onIntersect (results) {
+			// when scrolling too fast, intersect doesn't get triggered
 			const intersection = results[0]
 			const day = moment(intersection.target.dataset.slice).startOf('day')
 			if (intersection.isIntersecting) {
