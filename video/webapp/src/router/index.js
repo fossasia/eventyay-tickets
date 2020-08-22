@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from 'views'
 import Room from 'views/rooms/item'
 import Channel from 'views/channels/item'
 import Schedule from 'views/schedule'
@@ -13,7 +12,7 @@ Vue.use(VueRouter)
 const routes = [{
 	path: '/',
 	name: 'home',
-	component: Home,
+	component: Room,
 }, {
 	path: '/rooms/:roomId',
 	name: 'room',

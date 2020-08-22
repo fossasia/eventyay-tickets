@@ -1,12 +1,9 @@
 <template lang="pug">
-.c-home(v-scrollbar.y="")
+.c-landing-page(v-scrollbar.y="", :style="{'--header-background': module.config.header.background_color}")
 	.hero
-		img(src="/venueless-logo-full-white.svg")
+		img(:src="module.config.header.image")
 	.content
-		.description
-			h2 Welcome to this example event!
-			p You might notice that the dates for the current sessions are not actually your current time and that time does not progress. That's because we froze time – only in this demo of course – with the power of programming!
-			p Have a look around!
+		markdown-content(:markdown="module.config.content")
 		.sidebar
 			.header
 				h3 Schedule
@@ -30,9 +27,13 @@
 <script>
 import { mapState, mapGetters } from 'vuex'
 import moment from 'lib/timetravelMoment'
+import MarkdownContent from 'components/MarkdownContent'
 
 export default {
-	components: {},
+	components: { MarkdownContent },
+	props: {
+		module: Object
+	},
 	data () {
 		return {
 			moment,
@@ -78,20 +79,21 @@ export default {
 }
 </script>
 <style lang="stylus">
-.c-home
+.c-landing-page
+	flex: auto
 	background-color: $clr-white
 	.hero
 		height: calc(var(--vh) * 30)
 		display: flex
 		justify-content: center
-		background-color: var(--clr-primary)
+		background-color: var(--header-background)
 		img
 			height: 100%
 			object-fit: contain
 	.content
 		display: flex
 		justify-content: center
-	.description
+	.markdown-content
 		padding: 0 16px
 		max-width: 560px
 	.header
