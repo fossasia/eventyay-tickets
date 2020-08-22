@@ -23,9 +23,14 @@ def test_room_list(client, world):
         "trait_grants": {"viewer": [], "participant": []},
         "module_config": [
             {
-                "type": "page.markdown",
+                "type": "page.landing",
                 "config": {
-                    "content": "# Unsere tolle Online-Konferenz\n\nHallo!\nDas ist ein Markdowntext!"
+                    "header_background_color": "#673ab7",
+                    "header_image": "/venueless-logo-full-white.svg",
+                    "content": "# Welcome to this example event!\n\nYou might notice that the dates for the current "
+                    "sessions are not actually your current time and that time does not progress. That's "
+                    "because we froze time – only in this demo of course – with the power of programming!"
+                    "\n\nHave a look around!",
                 },
             }
         ],
@@ -50,9 +55,14 @@ def test_room_detail(client, world):
         "name": "About",
         "module_config": [
             {
-                "type": "page.markdown",
+                "type": "page.landing",
                 "config": {
-                    "content": "# Unsere tolle Online-Konferenz\n\nHallo!\nDas ist ein Markdowntext!"
+                    "header_background_color": "#673ab7",
+                    "header_image": "/venueless-logo-full-white.svg",
+                    "content": "# Welcome to this example event!\n\nYou might notice that the dates for the current "
+                    "sessions are not actually your current time and that time does not progress. That's "
+                    "because we froze time – only in this demo of course – with the power of programming!"
+                    "\n\nHave a look around!",
                 },
             }
         ],
