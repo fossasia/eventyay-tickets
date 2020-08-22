@@ -62,7 +62,6 @@ export default {
 		filteredTimeline () {
 			// We want to hide join/leave event (a) in rooms with force join (b) in stage chats (c) in direct messages
 			const showJoinleave = this.mode === 'standalone' && this.room && !this.room.force_join
-			console.log(showJoinleave)
 			return this.timeline.filter(message => (showJoinleave || message.event_type !== 'channel.member') && message.content.type !== 'deleted' && !message.replaces)
 		}
 	},
