@@ -9,7 +9,7 @@
 			.big-button.mdi.mdi-play(v-if="!playing")
 			bunt-progress-circular(v-if="(buffering || seeking) && !offline", size="huge")
 			.bottom-controls(@click.stop="")
-				.progress-hover(ref="progress", @pointerdown="onProgressPointerdown", @pointermove="onProgressPointermove", @pointerup="onProgressPointerup", @pointercancel="onProgressPointerup", :style="progressStyles.play")
+				.progress-hover(v-if="seekable", ref="progress", @pointerdown="onProgressPointerdown", @pointermove="onProgressPointermove", @pointerup="onProgressPointerup", @pointercancel="onProgressPointerup", :style="progressStyles.play")
 					.progress
 						.load-progress(v-for="load of progressStyles.load", :style="load")
 						.play-progress
@@ -30,6 +30,7 @@
 // show controls based on mouse move time
 import { mapState } from 'vuex'
 import Hls from 'hls.js'
+import config from 'config'
 import theme from 'theme'
 
 const RETRY_INTERVAL = 5000
@@ -59,12 +60,16 @@ export default {
 		size: {
 			type: String, // 'normal', 'tiny'
 			default: 'normal'
+		},
+		onlyLive: {
+			type: Boolean,
+			default: true
 		}
 	},
 	data () {
 		return {
 			theme,
-			isLive: false,
+			isLive: null,
 			playing: true,
 			buffering: true,
 			seeking: false,
@@ -81,6 +86,9 @@ export default {
 	},
 	computed: {
 		...mapState(['streamingRoom']),
+		seekable () {
+			return this.isLive === false || config.seekableLiveStreams
+		},
 		progressStyles () {
 			return {
 				play: {
@@ -107,6 +115,7 @@ export default {
 		this.$refs.video.addEventListener('timeupdate', this.onTimeupdate)
 		this.$refs.video.addEventListener('seeking', this.onSeeking)
 		this.$refs.video.addEventListener('seeked', this.onSeeked)
+		this.$refs.video.addEventListener('ended', this.onEnded)
 		this.initializePlayer()
 	},
 	beforeDestroy () {
@@ -149,6 +158,10 @@ export default {
 
 				player.on(Hls.Events.LEVEL_LOADED, (event, data) => {
 					this.isLive = data.details.live
+					if (!data.details.live && this.onlyLive) {
+						this.player?.destroy()
+						this.offline = true
+					}
 				})
 
 				player.on(Hls.Events.ERROR, (event, data) => {
@@ -237,6 +250,10 @@ export default {
 		},
 		onSeeked () {
 			this.seeking = false
+		},
+		onEnded () {
+			this.player?.destroy()
+			this.offline = true
 		},
 		onFullscreenchange () {
 			this.fullscreen = !!document.fullscreenElement
