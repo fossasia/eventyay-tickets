@@ -1,4 +1,4 @@
-<<template lang="pug">
+<template lang="pug">
 transition(name="sidebar")
 	.c-rooms-sidebar(v-show="show && !snapBack", :style="style", @pointerdown="onPointerdown", @pointermove="onPointermove", @pointerup="onPointerup", @pointercancel="onPointercancel")
 		router-link(to="/").logo(v-if="$mq.above['m']", :class="{'fit-to-width': theme.logo.fitToWidth}")
@@ -13,9 +13,9 @@ transition(name="sidebar")
 				span {{ $t('RoomsSidebar:stages-headline:text') }}
 				bunt-icon-button(v-if="hasPermission('world:rooms.create.stage')", @click="showStageCreationPrompt = true") plus
 			.stages
-				router-link.stage(v-for="stage, index of roomsByType.stage", :to="stage.room === rooms[0] ? {name: 'home'} : {name: 'room', params: {roomId: stage.room.id}}", :class="{session: stage.session, live: stage.session && stage.room.schedule_data}")
+				router-link.stage(v-for="stage, index of roomsByType.stage", :to="stage.room === rooms[0] ? {name: 'home'} : {name: 'room', params: {roomId: stage.room.id}}", :class="{session: stage.session, live: stage.session && stage.room.schedule_data, 'has-image': stage.image}")
 					template(v-if="stage.session")
-						img.preview(:src="`https://picsum.photos/64?v=${index}`")
+						img.preview(v-if="stage.image", :src="stage.image")
 						.info
 							.title {{ stage.session.title }}
 							.subtitle
@@ -119,9 +119,12 @@ export default {
 					if (!session) {
 						session = this.sessionsScheduledNow?.find(session => session.room === room)
 					}
+					// TODO handle session image and multiple speaker avatars
+					const image = session?.speakers.length === 1 ? session.speakers[0].avatar : null
 					rooms.stage.push({
 						room,
-						session
+						session,
+						image
 					})
 				} else {
 					rooms.page.push(room)
@@ -278,6 +281,8 @@ export default {
 					border-radius: 4px
 					line-height: 18px
 					padding: 0 4px
+				&.has-image::after
+					top: 2px
 				&.live::after
 					content: 'live'
 					background-color: $clr-danger
@@ -296,6 +301,10 @@ export default {
 				.title
 					ellipsis()
 					line-height: 24px
+				&:not(.has-image) .title
+					margin-left: 30px
+				&:not(.has-image).live .title
+					margin-left: 22px
 				.subtitle
 					display: flex
 					justify-content: space-between
