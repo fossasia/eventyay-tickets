@@ -336,7 +336,7 @@ CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TASK_DEFAULT_QUEUE = "default"
 CELERY_TASK_QUEUES = (Queue("default", routing_key="default.#"),)
-CELERY_TASK_ALWAYS_EAGER = os.environ.get('VENUELESS_CELERY_EAGER', '') == 'true'
+CELERY_TASK_ALWAYS_EAGER = os.environ.get("VENUELESS_CELERY_EAGER", "") == "true"
 
 SENTRY_DSN = os.environ.get(
     "VENUELESS_SENTRY_DSN", config.get("sentry", "dsn", fallback="")
