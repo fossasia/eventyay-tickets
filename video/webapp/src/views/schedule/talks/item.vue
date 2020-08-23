@@ -38,8 +38,8 @@ export default {
 	},
 	async created () {
 		// TODO error handling
-		if (!this.$store.getters.pretalxApiBaseUrl) return
-		this.talk = await (await fetch(`${this.$store.getters.pretalxApiBaseUrl}/talks/${this.talkId}/`)).json()
+		if (!this.$store.getters['schedule/pretalxApiBaseUrl']) return
+		this.talk = await (await fetch(`${this.$store.getters['schedule/pretalxApiBaseUrl']}/talks/${this.talkId}/`)).json()
 	},
 	mounted () {
 		this.$nextTick(() => {
