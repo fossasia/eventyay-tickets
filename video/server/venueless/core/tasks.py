@@ -1,4 +1,4 @@
-from venueless.celery import app
+from venueless.celery_app import app
 from venueless.core.models import World
 
 
