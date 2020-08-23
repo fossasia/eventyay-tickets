@@ -47,53 +47,61 @@ export default {
 			// TODO optionally only show venueless rooms
 			return this.schedule.rooms
 		},
-		// find this to not tax the grid with 1min rows
-		greatestCommonDurationDivisor () {
-			const gcd = (a, b) => a ? gcd(b % a, a) : b
-			// don't allow some silly divisor like 1 to ruin the layout
-			// TODO correctly place talks starting at odd times
-			return Math.max(this.sessions
-				.map(s => s.end.diff(s.start, 'minutes'))
-				.reduce(gcd), 5)
-		},
 		timeslices () {
-			const gcdd = this.greatestCommonDurationDivisor
+			const minimumSliceMins = 30
 			const slices = []
-			for (const session of this.sessions) {
-				const pushSlice = function (date, datebreak) {
-					slices.push({
-						date,
-						name: getSliceName(date),
-						datebreak
-					})
+			const slicesLookup = {}
+			const pushSlice = function (date, datebreak) {
+				const name = getSliceName(date)
+				if (slicesLookup[name]) return
+				slices.push({
+					date,
+					name,
+					datebreak
+				})
+				slicesLookup[name] = true
+			}
+			const fillHalfHours = function (start, end) {
+				// fill to the nearest half hour, then each half hour, then fill to end
+				let mins = end.diff(start, 'minutes')
+				const startingMins = start.minute() % minimumSliceMins
+				if (startingMins) {
+					pushSlice(start.clone().add(startingMins, 'minutes'))
+					mins -= startingMins
 				}
-				let lastSlice = slices[slices.length - 1]
+				for (let i = 1; i <= mins / minimumSliceMins; i++) {
+					pushSlice(start.clone().add(startingMins + minimumSliceMins * i, 'minutes'))
+				}
+				const endingMins = end.minute() % minimumSliceMins
+				if (endingMins) {
+					pushSlice(end.clone().subtract(endingMins, 'minutes'))
+				}
+			}
+			for (const session of this.sessions) {
+				const lastSlice = slices[slices.length - 1]
 				// gap to last slice
 				if (!lastSlice) {
 					pushSlice(session.start.clone().startOf('day'), true)
 				} else if (session.start.isAfter(lastSlice.date, 'minutes')) {
 					if (session.start.isSame(lastSlice.date, 'day')) {
 						// pad slices in gaps for same day
-						const mins = session.start.diff(lastSlice.date, 'minutes')
-						for (let i = 1; i <= mins / gcdd; i++) {
-							pushSlice(lastSlice.date.clone().add(gcdd * i, 'minutes'))
-						}
+						fillHalfHours(lastSlice.date, session.start)
 					} else {
 						// add date break
-						pushSlice(lastSlice.date.clone().add(gcdd, 'minutes'))
+						// TODO avoid overlaps
+						pushSlice(lastSlice.date.clone().add(minimumSliceMins, 'minutes'))
 						pushSlice(session.start.clone().startOf('day'), true)
 					}
 				}
 
-				const mins = session.end.diff(session.start, 'minutes')
-				for (let i = 0; i < mins / gcdd; i++) {
-					const date = session.start.clone().add(gcdd * i, 'minutes')
-					lastSlice = slices[slices.length - 1]
-					if (lastSlice && !date.isAfter(lastSlice.date, 'minutes')) continue
-					pushSlice(date)
-				}
+				// add start and end slices for the session itself
+				pushSlice(session.start)
+				pushSlice(session.end)
+				// add half hour slices between a session
+				fillHalfHours(session.start, session.end)
 			}
 			console.log(slices.length)
+			slices.sort((a, b) => a.date.diff(b.date))
 			return slices
 		},
 		visibleTimeslices () {
@@ -101,16 +109,19 @@ export default {
 		},
 		gridStyle () {
 			let rows = '[header] 52px '
-			const rowHeight = this.greatestCommonDurationDivisor * 2 // or '1fr' for equal sizes
-			rows += this.timeslices.map(slice => {
+			rows += this.timeslices.map((slice, index) => {
+				const next = this.timeslices[index + 1]
+				let height = 60
+				if (next) {
+					height = next.date.diff(slice.date, 'minutes') * 2
+				}
 				if (slice.datebreak) {
 					return `[${slice.name}] minmax(48px, auto)`
 				} else {
-					return `[${slice.name}] minmax(${rowHeight}px, auto)`
+					return `[${slice.name}] minmax(${height}px, auto)`
 				}
 			}).join(' ')
 			return {
-				'--row-height': this.greatestCommonDurationDivisor,
 				'--total-rooms': this.schedule.rooms.length,
 				'grid-template-rows': rows
 			}
@@ -149,11 +160,9 @@ export default {
 	},
 	methods: {
 		getSessionStyle (session) {
-			const durationMinutes = session.end.diff(session.start, 'minutes')
-			const height = Math.ceil(durationMinutes / this.greatestCommonDurationDivisor)
 			const roomIndex = this.rooms.indexOf(session.room)
 			return {
-				'grid-row': `${getSliceName(session.start)} / span ${height}`,
+				'grid-row': `${getSliceName(session.start)} / ${getSliceName(session.end)}`,
 				'grid-column': roomIndex > -1 ? roomIndex + 2 : null
 			}
 		},

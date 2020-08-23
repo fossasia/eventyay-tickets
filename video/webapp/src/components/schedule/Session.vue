@@ -75,7 +75,7 @@ export default {
 		.title
 			font-size: 16px
 			font-weight: 500
-			margin-bottom: 2px
+			margin-bottom: 4px
 		.speakers
 			color: $clr-secondary-text-light
 		.abstract
