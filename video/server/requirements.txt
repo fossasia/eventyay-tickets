@@ -1,25 +1,23 @@
 # prod
-Django==3.0.*
+aiofile~=3.0.0
+aiohttp~=3.6.0
 channels==2.4.*
 channels_redis==2.4.*
-djangorestframework==3.11.*
-django-extensions==2.2.5
+Django==3.0.*
 django-cors-headers==3.4.*
-sentry-sdk
-tqdm
-numpy
-matplotlib
-python-dateutil
-requests
-
-orjson
-aiofile
-aiohttp
-lxml
-websockets
-
-pyjwt
+django-extensions==2.2.5
+djangorestframework==3.11.*
+lxml~=4.5.0
+matplotlib~=3.3.0
+numpy~=1.19.0
+orjson~=3.3.0
+pyjwt~=1.7.0
+python-dateutil~=2.8.0
 pytz
+requests~=2.24.0
+sentry-sdk~=0.16.0
+tqdm~=4.48.0
+websockets~=8.0
 
 # deploy
 psycopg2-binary
