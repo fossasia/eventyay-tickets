@@ -80,6 +80,11 @@ export default {
 			color: $clr-secondary-text-light
 		.abstract
 			margin: 8px 0 12px 0
+			// TODO make this take up more space if available?
+			display: -webkit-box
+			-webkit-line-clamp: 5
+			-webkit-box-orient: vertical
+			overflow: hidden
 		.bottom-info
 			flex: auto
 			display: flex
