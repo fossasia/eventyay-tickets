@@ -33,7 +33,7 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['schedule', 'pretalxEvent', 'pretalxRooms', 'now']),
+		...mapState(['schedule', 'pretalxRooms', 'now']),
 		...mapGetters(['flatSchedule']),
 		sessions () {
 			return this.flatSchedule?.sessions
@@ -52,11 +52,6 @@ export default {
 			return Math.max(this.sessions
 				.map(s => s.end.diff(s.start, 'minutes'))
 				.reduce(gcd), 5)
-		},
-		totalRows () {
-			const days = this.pretalxEvent.schedule
-			const totalMinutes = moment(days[days.length - 1].end).diff(days[0].start, 'minutes')
-			return Math.ceil(totalMinutes / this.greatestCommonDurationDivisor)
 		},
 		timeslices () {
 			const gcdd = this.greatestCommonDurationDivisor
@@ -106,7 +101,6 @@ export default {
 			rows += this.timeslices.map(slice => `[${slice.name}] minmax(${rowHeight}px, auto)`).join(' ')
 			return {
 				'--row-height': this.greatestCommonDurationDivisor,
-				'--total-rows': this.totalRows,
 				'--total-rooms': this.pretalxRooms.length,
 				'grid-template-rows': rows
 			}
