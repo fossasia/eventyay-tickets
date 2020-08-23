@@ -1,14 +1,14 @@
 <template lang="pug">
 .c-schedule
 	template(v-if="schedule")
-		bunt-tabs.days(v-if="pretalxEvent.schedule.length > 1", :active-tab="currentDay.toISOString()", ref="tabs", v-scrollbar.x="")
+		bunt-tabs.days(v-if="days && days.length > 1", :active-tab="currentDay.toISOString()", ref="tabs", v-scrollbar.x="")
 			bunt-tab(v-for="day in days", :id="day.toISOString()", :header="moment(day).format('dddd DD. MMMM')", @selected="changeDay(day)")
 		grid-schedule(v-if="$mq.above['m']", :currentDay="currentDay", @changeDay="currentDay = $event")
 		linear-schedule(v-else, :currentDay="currentDay", @changeDay="changeDayByScroll")
 	bunt-progress-circular(v-else, size="huge", :page="true")
 </template>
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import moment from 'lib/timetravelMoment'
 import LinearSchedule from 'components/schedule/LinearSchedule'
 import GridSchedule from 'components/schedule/GridSchedule'
@@ -22,10 +22,8 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['schedule', 'pretalxEvent']),
-		days () {
-			return this.pretalxEvent.schedule.map(day => moment(day.start).startOf('day'))
-		},
+		...mapState('schedule', ['schedule']),
+		...mapGetters('schedule', ['days'])
 	},
 	created () {},
 	mounted () {

@@ -23,11 +23,8 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['now']),
-		...mapGetters(['flatSchedule']),
-		sessions () {
-			return this.flatSchedule?.sessions
-		},
+		...mapState('schedule', ['now']),
+		...mapGetters('schedule', ['sessions']),
 		sessionBuckets () {
 			const buckets = {}
 			for (const session of this.sessions) {

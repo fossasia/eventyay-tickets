@@ -8,7 +8,7 @@
 			svg(viewBox="0 0 10 10")
 				path(d="M 0 0 L 10 5 L 0 10 z")
 		.room(:style="{'grid-area': `1 / 1 / auto / auto`}")
-		.room(v-for="(room, index) of rooms", :style="{'grid-area': `1 / ${index + 2 } / auto / auto`}") {{ room.name }}
+		.room(v-for="(room, index) of rooms", :style="{'grid-area': `1 / ${index + 2 } / auto / auto`}") {{ getLocalizedString(room.name) }}
 		.room(v-if="hasSessionsWithoutRoom", :style="{'grid-area': `1 / ${rooms.length + 2} / auto / -1`}") sonstiger Ramsch
 		session(v-for="session of sessions", :session="session", :style="getSessionStyle(session)")
 </template>
@@ -19,6 +19,7 @@
 import { mapState, mapGetters } from 'vuex'
 import moment from 'lib/timetravelMoment'
 import Session from './Session'
+import { getLocalizedString } from './utils'
 
 const getSliceName = function (date) {
 	return `slice-${date.format('YYYY-MM-DD-HH-mm')}`
@@ -32,20 +33,19 @@ export default {
 	data () {
 		return {
 			moment,
+			getLocalizedString,
 			scrolledDay: null
 		}
 	},
 	computed: {
-		...mapState(['schedule', 'pretalxRooms', 'now']),
-		...mapGetters(['flatSchedule']),
-		sessions () {
-			return this.flatSchedule?.sessions
-		},
+		...mapState('schedule', ['schedule', 'now']),
+		...mapGetters('schedule', ['sessions']),
 		hasSessionsWithoutRoom () {
 			return this.sessions.some(s => !s.room)
 		},
 		rooms () {
-			return this.pretalxRooms.map(room => this.$store.state.rooms.find(r => r.pretalx_id === room.id)).filter(r => !!r)
+			// TODO optionally only show venueless rooms
+			return this.schedule.rooms
 		},
 		// find this to not tax the grid with 1min rows
 		greatestCommonDurationDivisor () {
@@ -93,6 +93,7 @@ export default {
 					pushSlice(date)
 				}
 			}
+			console.log(slices.length)
 			return slices
 		},
 		visibleTimeslices () {
@@ -110,7 +111,7 @@ export default {
 			}).join(' ')
 			return {
 				'--row-height': this.greatestCommonDurationDivisor,
-				'--total-rooms': this.pretalxRooms.length,
+				'--total-rooms': this.schedule.rooms.length,
 				'grid-template-rows': rows
 			}
 		},
@@ -150,7 +151,7 @@ export default {
 		getSessionStyle (session) {
 			const durationMinutes = session.end.diff(session.start, 'minutes')
 			const height = Math.ceil(durationMinutes / this.greatestCommonDurationDivisor)
-			const roomIndex = this.pretalxRooms.findIndex(r => r.id === session.room?.pretalx_id)
+			const roomIndex = this.rooms.indexOf(session.room)
 			return {
 				'grid-row': `${getSliceName(session.start)} / span ${height}`,
 				'grid-column': roomIndex > -1 ? roomIndex + 2 : null

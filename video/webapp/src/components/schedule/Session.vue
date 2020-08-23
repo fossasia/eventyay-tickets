@@ -8,15 +8,22 @@ router-link.c-linear-schedule-session(:style="style", :to="{name: 'schedule:talk
 		.speakers {{ session.speakers.map(s => s.name).join(', ') }}
 		.abstract {{ session.abstract }}
 		.bottom-info
-			.track(v-if="session.track") {{ typeof session.track.name === 'string' ? session.track.name : session.track.name.en}}
-			.room(v-if="session.room") {{ session.room.name }}
+			.track(v-if="session.track") {{ getLocalizedString(session.track.name) }}
+			.room(v-if="session.room") {{ getLocalizedString(session.room.name) }}
 </template>
 <script>
 import moment from 'lib/timetravelMoment'
+import { getLocalizedString } from './utils'
+
 moment.locale('de')
 export default {
 	props: {
 		session: Object
+	},
+	data () {
+		return {
+			getLocalizedString
+		}
 	},
 	computed: {
 		style () {

@@ -47,10 +47,10 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['now']),
-		...mapGetters(['flatSchedule']),
+		...mapState('schedule', ['now']),
+		...mapGetters('schedule', ['sessions']),
 		nextSessions () {
-			if (!this.flatSchedule) return
+			if (!this.sessions) return
 			const getSessionState = (session) => {
 				if (session.room.schedule_data?.session === session.id) {
 					return {
@@ -69,7 +69,7 @@ export default {
 			}
 			// current or next sessions per room
 			const sessions = []
-			for (const session of this.flatSchedule.sessions) {
+			for (const session of this.sessions) {
 				if (!session.room) continue
 				if (session.end.isBefore(this.now) || sessions.reduce((acc, s) => s.session.room === session.room ? ++acc : acc, 0) >= 2) continue
 				sessions.push({session, state: getSessionState(session)})
