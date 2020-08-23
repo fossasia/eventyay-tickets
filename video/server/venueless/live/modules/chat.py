@@ -1,7 +1,9 @@
 import functools
 import logging
+import re
 from contextlib import suppress
 
+import asgiref
 from sentry_sdk import configure_scope
 
 from venueless.core.permissions import Permission
@@ -16,6 +18,7 @@ from venueless.live.decorators import (
 )
 from venueless.live.exceptions import ConsumerException
 from venueless.live.modules.base import BaseModule
+from venueless.storage.tasks import retrieve_preview_information
 
 logger = logging.getLogger(__name__)
 
@@ -336,7 +339,7 @@ class ChatModule(BaseModule):
                 )
                 if body["content"]["type"] != "deleted" or not is_moderator:
                     raise ConsumerException("chat.denied")
-            await self.service.update_event(other_message, new_content=content)
+            await self.service.update_event(other_message.id, new_content=content)
 
         if content.get("type") == "text" and not content.get("body"):
             raise ConsumerException("chat.empty")
@@ -404,6 +407,18 @@ class ChatModule(BaseModule):
 
                 if len(users) < batch_size:
                     break
+
+        if content.get("type") == "text":
+            match = re.search(r"(?P<url>https?://[^\s]+)", content.get("body"))
+            if match:
+                await asgiref.sync.sync_to_async(
+                    retrieve_preview_information.apply_async
+                )(
+                    kwargs={
+                        "world": str(self.consumer.world.id),
+                        "event_id": event["event_id"],
+                    }
+                )
 
     @event("event", refresh_world=True, refresh_user=True)
     async def publish_event(self, body):

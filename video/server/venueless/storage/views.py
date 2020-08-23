@@ -28,7 +28,6 @@ class UploadView(View):
     ext_whitelist = (
         ".png",
         ".jpg",
-        ".gif",
         ".jpeg",
         ".gif",
         ".pdf",

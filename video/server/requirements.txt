@@ -1,7 +1,8 @@
 # prod
 aiofile~=3.0.0
 aiohttp~=3.6.0
-celery==4.4.*
+beautifulsoup4==4.9.*
+celery~=4.4.0
 channels==2.4.*
 channels_redis==2.4.*
 Django==3.0.*
