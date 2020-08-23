@@ -18,7 +18,7 @@ if [ "$1" == "all" ]; then
 fi
 
 if [ "$1" == "celery" ]; then
-    exec celery worker -A venueless.celery_app -l info "$*"
+    exec celery worker -A venueless.celery_app -l info
 fi
 
 if [ "$1" == "webworker" ]; then
