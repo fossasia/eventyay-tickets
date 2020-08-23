@@ -353,3 +353,20 @@ if SENTRY_DSN:
         release=VENUELESS_COMMIT,
         environment=VENUELESS_ENVIRONMENT,
     )
+
+
+HAS_CELERY = bool(os.environ.get("VENUELESS_CELERY_BROKER"))
+if HAS_CELERY:
+    CELERY_BROKER_URL = os.environ.get("VENUELESS_CELERY_BROKER")
+    CELERY_RESULT_BACKEND = os.environ.get("VENUELESS_CELERY_RESULT_BACKEND")
+    CELERY_TASK_ALWAYS_EAGER = False
+else:
+    CELERY_TASK_ALWAYS_EAGER = True
+
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_TASK_DEFAULT_QUEUE = "default"
+CELERY_TASK_QUEUES = (
+    Queue("default", routing_key="default.#"),
+    Queue("longrunning", routing_key="longrunning.#"),
+)
