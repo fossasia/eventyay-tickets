@@ -1,9 +1,8 @@
 import mimetypes
 import uuid
 
-import aiohttp
+import requests
 from bs4 import BeautifulSoup
-from channels.db import database_sync_to_async
 from django.core.files.base import ContentFile
 from django.utils.timezone import now
 
@@ -33,45 +32,37 @@ def find_data(html, key):
         return elements[0].attrs.get("content")
 
 
-@database_sync_to_async
-def create_file(file, **kwargs):
-    sf = StoredFile.objects.create(**kwargs)
-    sf.file.save(kwargs.get("filename"), file)
-    return sf
-
-
-async def store_image(response, content, world_id):  # TODO deduplicate
+def store_image(response, world):  # TODO deduplicate
     content_type, extension = get_extension_from_response(response)
     if not extension:
         return
 
     max_size = 10 * 1024 * 1024
-    if not len(content) < max_size:
+    if not len(response.content) < max_size:
         return
 
     uid = uuid.uuid4()
-    stored_file = await create_file(
-        file=ContentFile(content),
+    filename = f"{uid}{extension}"
+    stored_file = StoredFile.objects.create(
         id=uid,
-        world_id=world_id,
+        world=world,
         date=now(),
-        filename=f"{uid}{extension}",
+        filename=filename,
         type=content_type,
         public=True,
-        source_url=str(response.url)[:254],
+        source_url=response.url[:254],
     )
+    stored_file.file.save(filename, ContentFile(response.content))
     return stored_file.file.url
 
 
-async def retrieve_url(url):
-    async with aiohttp.ClientSession() as session:
-        async with session.get(url, timeout=10) as response:  # TODO: user agent
-            if response.status == 200:
-                return response, await response.read()
-    return None, None
+def retrieve_url(url):
+    response = requests.get(url, timeout=10)  # TODO: user agent
+    if response.status_code == 200:
+        return response
 
 
-async def fetch_preview_data(url, world_id):
+def fetch_preview_data(url, world):
     """
     Fetches data from an external URL, and handles social media tags or their fallbacks,
     if any. If the URL refers to an image or the social tags include a preview image,
@@ -87,16 +78,18 @@ async def fetch_preview_data(url, world_id):
     - video: a video URL, extracted from og:video
     """
 
-    response, content = await retrieve_url(url)
+    response = retrieve_url(url)
     if not response:
         return
     content_type = response.headers.get("Content-Type", "text/html")  # Assume HTML
+
     if "image/" in content_type:
-        image_url = await store_image(response, content, world_id)
+        image_url = store_image(response, world)
         if image_url:  # We don't store huge images
             return {"image": image_url}
+
     elif "text/html" in content_type:
-        text = content.decode()
+        text = response.content.decode()
         header_end = text.find("</head>")
         if not header_end:  # Avoid parsing huge HTML docs for now
             return
@@ -116,14 +109,18 @@ async def fetch_preview_data(url, world_id):
         )
         result["format"] = find_data(html, "twitter:card")
         result["video"] = find_data(html, "og:video")
-        result["image"] = find_data(html, "og:image")
+
         result = {key: value for key, value in result.items() if value}
-        if result:
-            result["url"] = find_data(html, "og:url") or url
-        if "image" in result:
-            response, content = await retrieve_url(result["image"])
+
+        image = find_data(html, "og:image")
+        if image:
+            response = retrieve_url(image)
             if response:
-                image_url = await store_image(response, content, world_id)
+                image_url = store_image(response, world)
                 if image_url:  # We don't store huge images
                     result["image"] = image_url
-        return result
+
+        if result:
+            result["url"] = find_data(html, "og:url") or url
+
+        return result or None
