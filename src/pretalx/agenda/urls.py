@@ -45,12 +45,12 @@ urlpatterns = [
                 ),
                 re_path(r"^schedule/feed.xml$", feed.ScheduleFeed(), name="feed"),
                 re_path(
-                    r"^schedule/widget/v1.(?P<locale>[a-z]{2}).js$",
+                    r"^schedule/widget/v(?P<version>[0-9]+).(?P<locale>[a-z]{2}).js$",
                     widget.widget_script,
                     name="widget.script",
                 ),
                 re_path(
-                    r"^schedule/widget/v1.css$",
+                    r"^schedule/widget/v(?P<version>[0-9]+).css$",
                     widget.widget_style,
                     name="widget.style",
                 ),

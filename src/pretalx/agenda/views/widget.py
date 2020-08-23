@@ -151,7 +151,7 @@ def widget_data_v2(request, event):
 
 @condition(etag_func=widget_js_etag)
 @cache_page(60)
-def widget_script(request, event, locale):
+def widget_script(request, event, locale, version):
     if not request.user.has_perm("agenda.view_widget", request.event):
         raise Http404()
     if locale not in [lc for lc, ll in settings.LANGUAGES]:
@@ -167,7 +167,7 @@ def widget_script(request, event, locale):
 
 @condition(etag_func=widget_css_etag)
 @cache_page(60)
-def widget_style(request, event):
+def widget_style(request, event, version):
     if not request.user.has_perm("agenda.view_widget", request.event):
         raise Http404()
     existing_file = request.event.settings.widget_css
