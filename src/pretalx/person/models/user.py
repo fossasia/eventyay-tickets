@@ -1,6 +1,7 @@
 import json
 import random
 from hashlib import md5
+from urllib.parse import urljoin
 
 import pytz
 from django.conf import settings
@@ -262,6 +263,13 @@ class User(PermissionsMixin, GenerateCode, FileCleanupMixin, AbstractBaseUser):
     @cached_property
     def has_local_avatar(self) -> bool:
         return self.avatar and self.avatar != "False"
+
+    @cached_property
+    def avatar_url(self) -> str:
+        if self.get_gravatar:
+            return "https://www.gravatar.com/avatar/" + self.gravatar_parameter
+        if self.has_local_avatar:
+            return urljoin(settings.SITE_URL, self.avatar.url)
 
     def get_events_with_any_permission(self):
         """Returns a queryset of events for which this user has any type of
