@@ -4,7 +4,7 @@ from contextlib import suppress
 import asgiref
 import channels
 
-from venueless.celery import app
+from venueless.celery_app import app
 from venueless.core.models import ChatEvent
 from venueless.core.services.chat import ChatService
 from venueless.core.tasks import WorldTask
