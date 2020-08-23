@@ -22,7 +22,7 @@ import Session from './Session'
 import { getLocalizedString } from './utils'
 
 const getSliceName = function (date) {
-	return `slice-${date.format('YYYY-MM-DD-HH-mm')}`
+	return `slice-${date.format('MM-DD-HH-mm')}`
 }
 
 export default {
@@ -100,7 +100,6 @@ export default {
 				// add half hour slices between a session
 				fillHalfHours(session.start, session.end)
 			}
-			console.log(slices.length)
 			slices.sort((a, b) => a.date.diff(b.date))
 			return slices
 		},
