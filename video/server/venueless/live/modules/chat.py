@@ -1,11 +1,13 @@
 import functools
 import logging
+import re
 from contextlib import suppress
 
 from sentry_sdk import configure_scope
 
 from venueless.core.permissions import Permission
 from venueless.core.services.chat import ChatService, get_channel
+from venueless.core.services.external import fetch_preview_data
 from venueless.core.utils.redis import aioredis
 from venueless.live.channels import GROUP_CHAT, GROUP_USER
 from venueless.live.decorators import (
@@ -404,6 +406,27 @@ class ChatModule(BaseModule):
 
                 if len(users) < batch_size:
                     break
+
+        if content.get("type") == "text":
+            match = re.search(r"(?P<url>https?://[^\s]+)", content.get("body"))
+            if match:
+                with suppress(Exception):  # If this fails, just move on
+                    preview_card = await fetch_preview_data(
+                        match.group("url"), self.consumer.world.id
+                    )
+                if preview_card:
+                    content["preview_card"] = preview_card
+                    await self.service.update_event(event["event_id"], content)
+                    event = await self.service.create_event(
+                        channel=self.channel,
+                        event_type=event_type,  # TODO correct event_type?
+                        content=content,
+                        replaces=event["event_id"],
+                        sender=self.consumer.user,
+                    )
+                    await self.consumer.channel_layer.group_send(
+                        GROUP_CHAT.format(channel=self.channel_id), event
+                    )
 
     @event("event", refresh_world=True, refresh_user=True)
     async def publish_event(self, body):
