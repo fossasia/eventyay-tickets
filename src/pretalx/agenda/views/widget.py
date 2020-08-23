@@ -7,6 +7,7 @@ from i18nfield.utils import I18nJSONEncoder
 from pretalx.agenda.views.schedule import ScheduleView
 from pretalx.common.tasks import generate_widget_css, generate_widget_js
 from pretalx.common.utils import language
+from pretalx.person.models import SpeakerProfile
 from pretalx.schedule.exporters import ScheduleData
 
 
@@ -16,6 +17,10 @@ def widget_css_etag(request, **kwargs):
 
 def widget_js_etag(request, locale, **kwargs):
     return request.event.settings.get(f"widget_checksum_{locale}")
+
+
+def widget_data_etag(request, **kwargs):
+    return request.event.settings.widget_data_checksum
 
 
 class WidgetData(ScheduleView):
@@ -81,6 +86,61 @@ class WidgetData(ScheduleView):
             )
             response["Access-Control-Allow-Origin"] = "*"
             return response
+
+
+@condition(etag_func=widget_data_etag)
+@cache_page(60)
+def widget_data_v2(request, event):
+    if not request.user.has_perm("agenda.view_widget", request.event):
+        raise Http404()
+    event = request.event
+    talks = (
+        request.event.current_schedule.talks.filter(is_visible=True)
+        .select_related("submission", "room")
+        .prefetch_related("submission__speakers")
+    )
+    response = JsonResponse(
+        {
+            "tracks": [
+                {"id": track.id, "name": track.name, "color": track.color,}
+                for track in event.tracks.all()
+            ],
+            "rooms": [
+                {"id": room.id, "name": room.name,} for room in event.rooms.all()
+            ],
+            "speakers": [
+                {
+                    "code": profile.user.code,
+                    "name": profile.user.name,
+                    "avatar": profile.user.avatar_url,
+                }
+                for profile in SpeakerProfile.objects.filter(
+                    user__submissions__slots__in=talks
+                ).select_related("user")
+            ],
+            "talks": [
+                {
+                    "code": talk.submission.code if talk.submission else None,
+                    "title": talk.submission.title
+                    if talk.submission
+                    else talk.description,
+                    "abstract": talk.submission.abstract if talk.submission else None,
+                    "speakers": talk.submission.speakers.values_list("code", flat=True)
+                    if talk.submission
+                    else None,
+                    "track": talk.submission.track_id if talk.submission else None,
+                    "start": talk.start,
+                    "end": talk.end,
+                    "room": talk.room_id,
+                }
+                for talk in talks.order_by("start")
+            ],
+            "version": request.event.current_schedule.version,
+        },
+        encoder=I18nJSONEncoder,
+    )
+    response["Access-Control-Allow-Origin"] = "*"
+    return response
 
 
 @condition(etag_func=widget_js_etag)

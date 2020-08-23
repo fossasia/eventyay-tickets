@@ -59,6 +59,11 @@ urlpatterns = [
                     widget.WidgetData.as_view(),
                     name="widget.data",
                 ),
+                re_path(
+                    r"^schedule/widget/v2.json$",
+                    widget.widget_data_v2,
+                    name="widget.data.2",
+                ),
                 *get_schedule_urls("^schedule"),
                 *get_schedule_urls("^schedule/v/(?P<version>.+)", "versioned-"),
                 re_path(r"^sneak/$", featured.sneakpeek_redirect, name="oldsneak"),
