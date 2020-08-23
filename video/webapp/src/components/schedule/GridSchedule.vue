@@ -1,7 +1,9 @@
 <template lang="pug">
 .c-grid-schedule(v-scrollbar.x.y="")
 	.grid(:style="gridStyle")
-		.timeslice(v-for="slice of visibleTimeslices", :ref="slice.name", :class="{datebreak: slice.datebreak}", :data-slice="slice.date.toISOString()", :style="{'grid-area': `${slice.name} / 1 / auto / auto`}") {{ slice.datebreak ? slice.date.format('dddd DD. MMMM') : slice.date.format('LT') }}
+		template(v-for="slice of visibleTimeslices")
+			.timeslice(:ref="slice.name", :class="{datebreak: slice.datebreak}", :data-slice="slice.date.toISOString()", :style="getSliceStyle(slice)") {{ slice.datebreak ? slice.date.format('dddd DD. MMMM') : slice.date.format('LT') }}
+			.timeline(:class="{datebreak: slice.datebreak}", :style="getSliceStyle(slice)")
 		.now(v-if="nowSlice", ref="now", :style="{'grid-area': `${nowSlice.slice.name} / 1 / auto / auto`, '--offset': nowSlice.offset}")
 			svg(viewBox="0 0 10 10")
 				path(d="M 0 0 L 10 5 L 0 10 z")
@@ -12,7 +14,8 @@
 </template>
 <script>
 // TODO
-// handle click on already selected day (needs some buntpapier hacking)
+// - handle click on already selected day (needs some buntpapier hacking)
+// - sessions spanning days collide with datebreaks
 import { mapState, mapGetters } from 'vuex'
 import moment from 'lib/timetravelMoment'
 import Session from './Session'
@@ -98,7 +101,13 @@ export default {
 		gridStyle () {
 			let rows = '[header] 52px '
 			const rowHeight = this.greatestCommonDurationDivisor * 2 // or '1fr' for equal sizes
-			rows += this.timeslices.map(slice => `[${slice.name}] minmax(${rowHeight}px, auto)`).join(' ')
+			rows += this.timeslices.map(slice => {
+				if (slice.datebreak) {
+					return `[${slice.name}] minmax(48px, auto)`
+				} else {
+					return `[${slice.name}] minmax(${rowHeight}px, auto)`
+				}
+			}).join(' ')
 			return {
 				'--row-height': this.greatestCommonDurationDivisor,
 				'--total-rooms': this.pretalxRooms.length,
@@ -147,6 +156,16 @@ export default {
 				'grid-column': roomIndex > -1 ? roomIndex + 2 : null
 			}
 		},
+		getSliceStyle (slice) {
+			if (slice.datebreak) {
+				let index = this.timeslices.findIndex(s => s.date.isAfter(slice.date, 'day'))
+				if (index < 0) {
+					index = this.timeslices.length - 1
+				}
+				return {'grid-area': `${slice.name} / 1 / ${this.timeslices[index].name} / auto`}
+			}
+			return {'grid-area': `${slice.name} / 1 / auto / auto`}
+		},
 		changeDay (day) {
 			if (this.scrolledDay === day) return
 			const el = this.$refs[getSliceName(day)]?.[0]
@@ -154,17 +173,12 @@ export default {
 			const offset = el.offsetTop - 52
 			this.$el.scrollTop = offset
 		},
-		onIntersect (results) {
-			// when scrolling too fast, intersect doesn't get triggered
-			const intersection = results[0]
-			const day = moment(intersection.target.dataset.slice).startOf('day')
-			if (intersection.isIntersecting) {
-				this.scrolledDay = day
-				this.$emit('changeDay', this.scrolledDay)
-			} else if ((intersection.boundingClientRect.y - intersection.rootBounds.y) > 0) {
-				this.scrolledDay = day.subtract(1, 'day')
-				this.$emit('changeDay', this.scrolledDay)
-			}
+		onIntersect (entries) {
+			const entry = entries.sort((a, b) => b.time - a.time).find(entry => entry.isIntersecting)
+			if (!entry) return
+			const day = moment(entry.target.dataset.slice).startOf('day')
+			this.scrolledDay = day
+			this.$emit('changeDay', this.scrolledDay)
 		}
 	}
 }
@@ -196,18 +210,22 @@ export default {
 		padding: 8px 0 0 16px
 		white-space: nowrap
 		min-height: 48px
-		&::before
-			content: ''
-			display: block
-			height: 1px
-			background-color: $clr-dividers-light
-			position: absolute
-			transform: translate(-16px, -8px)
-			width: 100%
+		position: sticky
+		left: 0
+		background-color: $clr-grey-50
+		border-top: 1px solid $clr-dividers-light
+		z-index: 20
 		&.datebreak
 			font-weight: 600
-			&::before
-				height: 3px
+			border-top: 3px solid $clr-dividers-light
+	.timeline
+		height: 1px
+		background-color: $clr-dividers-light
+		position: absolute
+		// transform: translate(-16px, -8px)
+		width: 100%
+		&.datebreak
+			height: 3px
 	.now
 		margin-left: 2px
 		&::before
