@@ -16,12 +16,12 @@
 						.title {{ session.title }}
 						.speakers {{ session.speakers.map(s => s.name).join(', ')}}
 					.room {{ session.room.name }}
-			.header
-				h3 Sponsors
-				router-link(:to="{name: 'schedule'}") all sponsors
-			.sponsors
-				.sponsor(v-for="sponsor of sponsors")
-					img(:src="sponsor.logo")
+			//- .header
+			//- 	h3 Sponsors
+			//- 	router-link(:to="{name: 'schedule'}") all sponsors
+			//- .sponsors
+			//- 	.sponsor(v-for="sponsor of sponsors")
+			//- 		img(:src="sponsor.logo")
 
 </template>
 <script>
