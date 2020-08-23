@@ -1,7 +1,7 @@
 import pytest
 
 
-@pytest.mark.parametrize("url", ("v1.en.js", "v1.json", "v1.css",))
+@pytest.mark.parametrize("url", ("v1.en.js", "v1.json", "v1.css", "v2.json"))
 @pytest.mark.parametrize(
     "show_schedule,show_widget_if_not_public,expected",
     ((True, False, 200), (True, True, 200), (False, False, 404), (False, True, 200),),
@@ -22,6 +22,26 @@ def test_widget_pages(
     event.settings.show_widget_if_not_public = show_widget_if_not_public
     response = client.get(event.urls.schedule + "widget/" + url, follow=True)
     assert response.status_code == expected
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("version,queries", (("1", 19), ("2", 20),))
+def test_widget_data(
+    client,
+    event,
+    schedule,
+    slot,
+    other_slot,
+    version,
+    queries,
+    django_assert_max_num_queries,
+):
+    event.settings.show_schedule = True
+    with django_assert_max_num_queries(queries):
+        response = client.get(
+            event.urls.schedule + f"widget/v{version}.json", follow=True
+        )
+    assert response.status_code == 200
 
 
 @pytest.mark.parametrize("locale,expected", (("lo", 404), ("en", 200),))

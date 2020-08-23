@@ -7,7 +7,6 @@ from i18nfield.utils import I18nJSONEncoder
 from pretalx.agenda.views.schedule import ScheduleView
 from pretalx.common.tasks import generate_widget_css, generate_widget_js
 from pretalx.common.utils import language
-from pretalx.person.models import SpeakerProfile
 from pretalx.schedule.exporters import ScheduleData
 
 
@@ -95,30 +94,20 @@ def widget_data_v2(request, event):
         raise Http404()
     event = request.event
     talks = (
-        request.event.current_schedule.talks.filter(is_visible=True)
-        .select_related("submission", "room")
+        event.current_schedule.talks.filter(is_visible=True)
+        .select_related("submission", "room", "submission__track")
         .prefetch_related("submission__speakers")
-    )
-    response = JsonResponse(
-        {
-            "tracks": [
-                {"id": track.id, "name": track.name, "color": track.color,}
-                for track in event.tracks.all()
-            ],
-            "rooms": [
-                {"id": room.id, "name": room.name,} for room in event.rooms.all()
-            ],
-            "speakers": [
-                {
-                    "code": profile.user.code,
-                    "name": profile.user.name,
-                    "avatar": profile.user.avatar_url,
-                }
-                for profile in SpeakerProfile.objects.filter(
-                    user__submissions__slots__in=talks
-                ).select_related("user")
-            ],
-            "talks": [
+    ).order_by("start")
+    rooms = set()
+    tracks = set()
+    speakers = set()
+    result = {"talks": [], "version": event.current_schedule.version}
+    for talk in talks:
+        rooms.add(talk.room)
+        if talk.submission:
+            tracks.add(talk.submission.track)
+            speakers |= set(talk.submission.speakers.all())
+            result["talks"].append(
                 {
                     "code": talk.submission.code if talk.submission else None,
                     "title": talk.submission.title
@@ -133,12 +122,29 @@ def widget_data_v2(request, event):
                     "end": talk.end,
                     "room": talk.room_id,
                 }
-                for talk in talks.order_by("start")
-            ],
-            "version": request.event.current_schedule.version,
-        },
-        encoder=I18nJSONEncoder,
-    )
+            )
+        else:
+            result["talks"].append(
+                {
+                    "title": talk.description,
+                    "start": talk.start,
+                    "end": talk.end,
+                    "room": talk.room_id,
+                }
+            )
+
+    result["tracks"] = [
+        {"id": track.id, "name": track.name, "color": track.color,}
+        for track in tracks
+        if track
+    ]
+    result["rooms"] = [{"id": room.id, "name": room.name,} for room in rooms if room]
+    result["speakers"] = [
+        {"code": user.code, "name": user.name, "avatar": user.avatar_url,}
+        for user in speakers
+    ]
+
+    response = JsonResponse(result, encoder=I18nJSONEncoder)
     response["Access-Control-Allow-Origin"] = "*"
     return response
 
