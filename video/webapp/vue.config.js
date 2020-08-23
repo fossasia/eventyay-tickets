@@ -78,6 +78,10 @@ module.exports = {
 	chainWebpack (config) {
 		config.entryPoints.clear()
 		config.entry('preloader').add('./src/preloader.js')
+		config.plugin('optimize-css').tap(([options]) => {
+			options.cssnanoOptions.preset[1].calc = false
+			return [options]
+		})
 	},
 	css: {
 		loaderOptions: {
