@@ -50,8 +50,8 @@ export default {
 	},
 	computed: {
 		...mapGetters(['hasPermission']),
-		...mapState(['connected', 'world', 'rooms', 'schedule']),
-		...mapGetters(['flatSchedule', 'sessionsScheduledNow']),
+		...mapState(['connected', 'world', 'rooms']),
+		...mapGetters('schedule', ['sessions', 'sessionsScheduledNow']),
 		room () {
 			if (this.roomId === undefined) return this.rooms[0] // '/' is the first room
 			return this.$store.state.rooms.find(room => room.id === this.roomId)
@@ -65,7 +65,7 @@ export default {
 		currentSession () {
 			let session
 			if (this.room.schedule_data) {
-				session = this.flatSchedule?.sessions.find(session => session.id === this.room.schedule_data.session)
+				session = this.sessions?.find(session => session.id === this.room.schedule_data.session)
 			}
 			if (!session) {
 				session = this.sessionsScheduledNow?.find(session => session.room === this.room)

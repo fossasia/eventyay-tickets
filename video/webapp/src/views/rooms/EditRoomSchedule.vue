@@ -35,10 +35,9 @@ export default {
 		}
 	},
 	computed: {
-		...mapGetters(['flatSchedule']),
+		...mapGetters('schedule', ['sessions']),
 		sessions () {
-			console.log(this.flatSchedule?.sessions.filter(session => session.room === this.room))
-			return this.flatSchedule?.sessions.filter(session => session.room === this.room)
+			return this.sessions.filter(session => session.room === this.room)
 		}
 	},
 	created () {},

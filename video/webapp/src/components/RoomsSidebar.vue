@@ -90,8 +90,9 @@ export default {
 		...mapState(['user', 'world', 'rooms']),
 		...mapState('chat', ['joinedChannels']),
 		...mapState('exhibition', ['staffedExhibitions']),
-		...mapGetters(['flatSchedule', 'sessionsScheduledNow', 'hasPermission']),
+		...mapGetters(['hasPermission']),
 		...mapGetters('chat', ['hasUnreadMessages']),
+		...mapGetters('schedule', ['sessions', 'sessionsScheduledNow']),
 		style () {
 			if (this.pointerMovementX === 0) return
 			return {
@@ -114,7 +115,7 @@ export default {
 				} else if (room.modules.some(module => module.type === 'livestream.native')) {
 					let session
 					if (room.schedule_data) {
-						session = this.flatSchedule?.sessions.find(session => session.id === room.schedule_data.session)
+						session = this.sessions?.find(session => session.id === room.schedule_data.session)
 					}
 					if (!session) {
 						session = this.sessionsScheduledNow?.find(session => session.room === room)

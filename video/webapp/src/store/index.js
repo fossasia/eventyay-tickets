@@ -1,10 +1,10 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import moment from 'lib/timetravelMoment'
 import api from 'lib/api'
 import router from 'router'
 import chat from './chat'
 import exhibition from './exhibition'
+import schedule from './schedule'
 
 Vue.use(Vuex)
 
@@ -19,9 +19,6 @@ export default new Vuex.Store({
 		world: null,
 		rooms: null,
 		permissions: null,
-		schedule: null,
-		pretalxEvent: null,
-		now: moment(),
 		activeRoom: null,
 		reactions: null,
 	},
@@ -30,52 +27,9 @@ export default new Vuex.Store({
 			return (permission) => {
 				return !!state.permissions?.includes(permission)
 			}
-		},
-		flatSchedule (state) {
-			if (!state.schedule || !state.pretalxEvent || !state.pretalxRooms) return
-			const sessions = []
-			const tracksLookup = state.pretalxEvent.event.tracks.reduce((acc, track) => { acc[typeof track.name === 'string' ? track.name : track.name.en] = track; return acc }, {})
-			for (const session of state.schedule) {
-				// TODO no id in api response
-				const vRoom = state.pretalxRooms.find(r => r.name.en === session.slot.room.en)
-				const room = state.rooms.find(r => r.pretalx_id === vRoom.id)
-				sessions.push({
-					id: session.code,
-					title: session.title,
-					abstract: session.abstract,
-					description: session.description,
-					start: moment(session.slot.start),
-					end: moment(session.slot.end),
-					speakers: session.speakers,
-					track: tracksLookup[typeof session.track === 'string' ? session.track : session.track?.en],
-					room: room
-				})
-			}
-			sessions.sort((a, b) => a.start.diff(b.start))
-			return {sessions}
-		},
-		sessionsScheduledNow (state, getters) {
-			if (!getters.flatSchedule) return
-			const sessions = []
-			for (const session of getters.flatSchedule.sessions) {
-				if (session.end.isBefore(state.now) || session.start.isAfter(state.now)) continue
-				sessions.push(session)
-			}
-			return sessions
-		},
-		pretalxScheduleUrl (state) {
-			if (!state.world.pretalx?.domain || !state.world.pretalx?.event) return
-			return state.world.pretalx.domain + state.world.pretalx.event + '/schedule/widget/v1.json'
-		},
-		pretalxApiBaseUrl (state) {
-			if (!state.world.pretalx?.domain || !state.world.pretalx?.event) return
-			return state.world.pretalx.domain + 'api/events/' + state.world.pretalx.event
 		}
 	},
 	mutations: {
-		updateNow (state) {
-			state.now = moment()
-		},
 		updateRooms (state, rooms) {
 			// preserve object references for media source
 			if (state.rooms) {
@@ -110,7 +64,7 @@ export default new Vuex.Store({
 					router.push('/').catch(() => {}) // force new users to welcome page
 					// TODO return after profile update?
 				}
-				dispatch('fetchSchedule')
+				dispatch('schedule/fetch', {root: true})
 			})
 			api.on('closed', () => {
 				state.connected = false
@@ -141,22 +95,6 @@ export default new Vuex.Store({
 				Vue.set(state.user, key, value)
 			}
 			dispatch('chat/updateUser', {id: state.user.id, update})
-		},
-		async fetchSchedule ({state, getters}) {
-			// TODO error handling
-			if (!getters.pretalxApiBaseUrl) return
-			// unroll pagination
-			const schedule = []
-			let next = `${getters.pretalxApiBaseUrl}/talks/?limit=100`
-			while (next) {
-				const response = await (await fetch(next)).json()
-				schedule.push(...response.results)
-				next = response.next
-			}
-			state.pretalxEvent = await (await fetch(getters.pretalxScheduleUrl)).json()
-			// TODO paginated
-			state.pretalxRooms = (await (await fetch(`${getters.pretalxApiBaseUrl}/rooms/`)).json()).results
-			state.schedule = schedule
 		},
 		async createRoom ({state}, room) {
 			return await api.call('room.create', room)
@@ -190,7 +128,7 @@ export default new Vuex.Store({
 			state.world = world
 			state.permission = permissions
 			commit('updateRooms', rooms)
-			dispatch('fetchSchedule')
+			dispatch('schedule/fetch', {root: true})
 		},
 		'api::room.schedule' ({state}, {room, schedule_data}) {
 			room = state.rooms.find(r => r.id === room)
@@ -201,6 +139,7 @@ export default new Vuex.Store({
 	},
 	modules: {
 		chat,
-		exhibition
+		exhibition,
+		schedule
 	}
 })
