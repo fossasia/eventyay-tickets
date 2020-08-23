@@ -140,7 +140,7 @@ class ScheduleListSerializer(ModelSerializer):
 
     class Meta:
         model = Schedule
-        fields = ("version",)
+        fields = ("version", "published")
 
 
 class ScheduleSerializer(ModelSerializer):
