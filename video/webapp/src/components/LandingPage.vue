@@ -70,6 +70,7 @@ export default {
 			// current or next sessions per room
 			const sessions = []
 			for (const session of this.flatSchedule.sessions) {
+				if (!session.room) continue
 				if (session.end.isBefore(this.now) || sessions.reduce((acc, s) => s.session.room === session.room ? ++acc : acc, 0) >= 2) continue
 				sessions.push({session, state: getSessionState(session)})
 			}
@@ -95,6 +96,7 @@ export default {
 		justify-content: center
 	.markdown-content
 		padding: 0 16px
+		width: 100%
 		max-width: 560px
 	.header
 		display: flex
