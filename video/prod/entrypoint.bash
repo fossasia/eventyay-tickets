@@ -17,6 +17,10 @@ if [ "$1" == "all" ]; then
     exec sudo -E /usr/bin/supervisord -n -c /etc/supervisord.conf
 fi
 
+if [ "$1" == "celery" ]; then
+    exec celery worker -A venueless.celery_app -l info "$*"
+fi
+
 if [ "$1" == "webworker" ]; then
     mkdir -p /tmp/venueless
     exec gunicorn -k uvicorn.workers.UvicornWorker --bind unix:/tmp/venueless/websocket.sock --max-requests 1200 --max-requests-jitter 200  -w "$NUM_WORKERS" venueless.asgi:application

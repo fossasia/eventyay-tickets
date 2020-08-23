@@ -1,6 +1,7 @@
 # prod
 aiofile~=3.0.0
 aiohttp~=3.6.0
+celery==4.4.*
 channels==2.4.*
 channels_redis==2.4.*
 Django==3.0.*
@@ -14,6 +15,7 @@ orjson~=3.3.0
 pyjwt~=1.7.0
 python-dateutil~=2.8.0
 pytz
+redis
 requests~=2.24.0
 sentry-sdk~=0.16.0
 tqdm~=4.48.0

@@ -4,6 +4,7 @@ import sys
 from urllib.parse import urlparse
 
 from django.utils.crypto import get_random_string
+from kombu import Queue
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.environ.get("VENUELESS_DATA_DIR", os.path.join(BASE_DIR, "data"))
@@ -72,7 +73,6 @@ else:
     EMAIL_USE_TLS = os.environ.get("VENUELESS_MAIL_TLS", "False") == "True"
     EMAIL_USE_SSL = os.environ.get("VENUELESS_MAIL_SSL", "False") == "True"
 
-
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends."
@@ -102,29 +102,22 @@ DATABASES = {
 redis_auth = os.getenv(
     "VENUELESS_REDIS_AUTH", config.get("redis", "auth", fallback=""),
 )
+redis_url = (
+    "redis://"
+    + ((":" + redis_auth + "@") if redis_auth else "")
+    + os.getenv(
+        "VENUELESS_REDIS_HOST", config.get("redis", "host", fallback="127.0.0.1"),
+    )
+    + ":"
+    + os.getenv("VENUELESS_REDIS_PORT", config.get("redis", "port", fallback="6379"),)
+    + "/"
+    + os.getenv("VENUELESS_REDIS_DB", config.get("redis", "db", fallback="0"),)
+)
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [
-                {
-                    "address": "redis://"
-                    + ((":" + redis_auth + "@") if redis_auth else "")
-                    + os.getenv(
-                        "VENUELESS_REDIS_HOST",
-                        config.get("redis", "host", fallback="127.0.0.1"),
-                    )
-                    + ":"
-                    + os.getenv(
-                        "VENUELESS_REDIS_PORT",
-                        config.get("redis", "port", fallback="6379"),
-                    )
-                    + "/"
-                    + os.getenv(
-                        "VENUELESS_REDIS_DB", config.get("redis", "db", fallback="0"),
-                    )
-                }
-            ],
+            "hosts": [{"address": redis_url}],
             "prefix": "venueless:asgi:",
             "capacity": 10000,
         },
@@ -337,17 +330,24 @@ LOGOUT_REDIRECT_URL = "/accounts/login"
 VENUELESS_COMMIT = os.environ.get("VENUELESS_COMMIT_SHA", "unknown")
 VENUELESS_ENVIRONMENT = os.environ.get("VENUELESS_ENVIRONMENT", "unknown")
 
+CELERY_BROKER_URL = redis_url
+CELERY_RESULT_BACKEND = redis_url
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_TASK_DEFAULT_QUEUE = "default"
+CELERY_TASK_QUEUES = (Queue("default", routing_key="default.#"),)
 
 SENTRY_DSN = os.environ.get(
     "VENUELESS_SENTRY_DSN", config.get("sentry", "dsn", fallback="")
 )
 if SENTRY_DSN:
     import sentry_sdk
+    from sentry_sdk.integrations.celery import CeleryIntegration
     from sentry_sdk.integrations.django import DjangoIntegration
 
     sentry_sdk.init(
         dsn=SENTRY_DSN,
-        integrations=[DjangoIntegration()],
+        integrations=[CeleryIntegration(), DjangoIntegration()],
         send_default_pii=False,
         debug=DEBUG,
         release=VENUELESS_COMMIT,

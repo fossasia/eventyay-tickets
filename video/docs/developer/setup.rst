@@ -68,7 +68,7 @@ To automatically check before commits, add a script like the following to ``.git
 	#!/bin/bash
 	source ~/.virtualenvs/venueless/bin/activate
 	cd server
-	for file in $(git diff --cached --name-only | grep -E '\.py$' | grep -Ev "venueless/settings\.py")
+	for file in $(git diff --cached --name-only | grep -E '\.py$' | grep -Ev "venueless/celery_app\.py|venueless/settings\.py")
 	do
 	  echo Scanning $file
 	  git show ":$file" | black -q --check - || { echo "Black failed."; exit 1; } # we only want to lint the staged changes, not any un-staged changes
