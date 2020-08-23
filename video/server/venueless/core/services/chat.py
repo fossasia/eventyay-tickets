@@ -295,11 +295,8 @@ class ChatService:
         return ChatEvent.objects.get(**kwargs)
 
     @database_sync_to_async
-    def update_event(self, event, new_content):
-        event.content = new_content
-        event.edited = now()
-        event.save()
-        return event
+    def update_event(self, event_id, new_content):
+        ChatEvent.objects.filter(id=event_id).update(content=new_content, edited=now())
 
     @database_sync_to_async
     def get_channels_to_join_forced(self, user):
