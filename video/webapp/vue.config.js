@@ -78,6 +78,7 @@ module.exports = {
 	chainWebpack (config) {
 		config.entryPoints.clear()
 		config.entry('preloader').add('./src/preloader.js')
+		if (process.env.NODE_ENV === 'development') return
 		config.plugin('optimize-css').tap(([options]) => {
 			options.cssnanoOptions.preset[1].calc = false
 			return [options]
