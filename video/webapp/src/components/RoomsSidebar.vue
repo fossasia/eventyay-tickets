@@ -1,21 +1,27 @@
 <template lang="pug">
 transition(name="sidebar")
 	.c-rooms-sidebar(v-show="show && !snapBack", :style="style", @pointerdown="onPointerdown", @pointermove="onPointermove", @pointerup="onPointerup", @pointercancel="onPointercancel")
-		//- TODO clickable logo
-		.logo(v-if="$mq.above['m']", :class="{'fit-to-width': theme.logo.fitToWidth}")
+		router-link(to="/").logo(v-if="$mq.above['m']", :class="{'fit-to-width': theme.logo.fitToWidth}")
 			img(:src="theme.logo.url", :alt="world.title")
 		bunt-icon-button#btn-close-sidebar(v-else, @click="$emit('close')") menu
 		scrollbars(y)
 			.global-links
 				router-link.room(v-if="roomsByType.page.includes(rooms[0])", :to="{name: 'home'}") {{ rooms[0].name }}
-				router-link.room(:to="{name: 'schedule'}", v-if="!!world.pretalx.base_url") {{ $t('RoomsSidebar:schedule:label') }}
+				router-link.room(:to="{name: 'schedule'}", v-if="!!world.pretalx && world.pretalx.domain") {{ $t('RoomsSidebar:schedule:label') }}
 				router-link.room(v-for="page of roomsByType.page", v-if="page !== rooms[0]", :to="{name: 'room', params: {roomId: page.id}}") {{ page.name }}
 			.group-title(v-if="roomsByType.stage.length || hasPermission('world:rooms.create.stage')")
 				span {{ $t('RoomsSidebar:stages-headline:text') }}
 				bunt-icon-button(v-if="hasPermission('world:rooms.create.stage')", @click="showStageCreationPrompt = true") plus
 			.stages
-				router-link.stage(v-for="stage of roomsByType.stage", :to="stage === rooms[0] ? {name: 'home'} : {name: 'room', params: {roomId: stage.id}}")
-					.name {{ stage.name }}
+				router-link.stage(v-for="stage, index of roomsByType.stage", :to="stage.room === rooms[0] ? {name: 'home'} : {name: 'room', params: {roomId: stage.room.id}}", :class="{session: stage.session, live: stage.session && stage.room.schedule_data, 'has-image': stage.image}")
+					template(v-if="stage.session")
+						img.preview(v-if="stage.image", :src="stage.image")
+						.info
+							.title {{ stage.session.title }}
+							.subtitle
+								.speakers {{ stage.session.speakers.map(s => s.name).join(', ') }}
+								.room {{ stage.room.name }}
+					.name(v-else) {{ stage.room.name }}
 			.group-title(v-if="roomsByType.videoChat.length || roomsByType.textChat.length || hasPermission('world:rooms.create.chat') || hasPermission('world:rooms.create.bbb')")
 				span {{ $t('RoomsSidebar:channels-headline:text') }}
 				.buffer
@@ -84,8 +90,9 @@ export default {
 		...mapState(['user', 'world', 'rooms']),
 		...mapState('chat', ['joinedChannels']),
 		...mapState('exhibition', ['staffedExhibitions']),
-		...mapGetters('chat', ['hasUnreadMessages']),
 		...mapGetters(['hasPermission']),
+		...mapGetters('chat', ['hasUnreadMessages']),
+		...mapGetters('schedule', ['sessions', 'sessionsScheduledNow']),
 		style () {
 			if (this.pointerMovementX === 0) return
 			return {
@@ -106,7 +113,22 @@ export default {
 				} else if (room.modules.length === 1 && room.modules[0].type === 'call.bigbluebutton') {
 					rooms.videoChat.push(room)
 				} else if (room.modules.some(module => module.type === 'livestream.native')) {
-					rooms.stage.push(room)
+					let session
+					if (this.$features.enabled('schedule-control')) {
+						if (room.schedule_data) {
+							session = this.sessions?.find(session => session.id === room.schedule_data.session)
+						}
+						if (!session) {
+							session = this.sessionsScheduledNow?.find(session => session.room === room)
+						}
+					}
+					// TODO handle session image and multiple speaker avatars
+					const image = session?.speakers.length === 1 ? session.speakers[0].avatar : null
+					rooms.stage.push({
+						room,
+						session,
+						image
+					})
 				} else {
 					rooms.page.push(room)
 				}
@@ -246,8 +268,68 @@ export default {
 			.name
 				ellipsis()
 		.stage
-			&::before
-				content: '\F050D'
+			&.session
+				height: 48px
+				padding: 0 4px 0 8px
+				display: flex
+				align-items: center
+				&::after
+					content: 'soon'
+					display: block
+					position: absolute
+					right: 4px
+					top: 2px
+					color: $clr-primary-text-dark
+					background-color: $clr-blue-grey-500
+					border-radius: 4px
+					line-height: 18px
+					padding: 0 4px
+				&.has-image::after
+					right: auto
+					left: 4px
+				&.live::after
+					content: 'live'
+					background-color: $clr-danger
+				img
+					flex: none
+					height: 36px
+					width: @height
+					border-radius: 50%
+					margin-right: 4px
+				.info
+					flex: auto
+					display: flex
+					flex-direction: column
+					width: calc(100% - 40px)
+					justify-content: center
+				.title
+					ellipsis()
+					line-height: 24px
+				&:not(.has-image) .title
+					margin-right: 40px
+				&:not(.has-image).live .title
+					margin-right: 30px
+				.subtitle
+					display: flex
+					justify-content: space-between
+					line-height: 24px
+					color: $clr-disabled-text-dark
+					.room
+						display: flex
+						line-height: 24px
+						margin-right: 4px
+						&::before
+							content: '\F050D'
+							font-family: "Material Design Icons"
+							font-size: 18px
+							line-height: 24px
+							color: var(--clr-sidebar-text-disabled)
+							margin-right: 4px
+				.speakers
+					ellipsis()
+			&:not(.session)
+				&::before
+					content: '\F050D'
 		.text-chat
 			&::before
 				content: '\F0423'

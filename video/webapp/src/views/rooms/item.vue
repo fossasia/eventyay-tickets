@@ -1,14 +1,9 @@
 <template lang="pug">
 .c-room(v-if="room", :class="{'standalone-chat': modules['chat.native'] && room.modules.length === 1}")
-	.room-info(v-if="!modules['page.markdown']")
-		img(v-if="room.picture", :src="room.picture")
-		.room-info-wrapper
-			.room-info-text
-				h2 {{ room.name }}
-				.description {{ room.description }}
-			.talk-info(v-if="currentTalk")
-				.current-talk Current talk
-				h3 {{ currentTalk.title }}
+	.room-info(v-if="!modules['page.markdown'] && !modules['page.landing']")
+		.room-name {{ room.name }}
+		.room-session(v-if="currentSession") {{ currentSession.title }}
+		bunt-icon-button(v-if="$features.enabled('schedule-control')", @click="showEditSchedule = true") calendar_edit
 		bunt-icon-button(@click="showRecordingsPrompt = true", :tooltip="$t('Room:recordings:tooltip')", tooltipPlacement="left", v-if="modules['call.bigbluebutton'] && hasPermission('room:bbb.recordings')") file-video-outline
 	.main
 		.stage(v-if="modules['livestream.native']")
@@ -18,18 +13,21 @@
 			.stage-tools(v-if="modules['livestream.native']")
 				.stage-tool(v-if="$features.enabled('questions-answers')", :class="{active: activeStageTool === 'qa'}", @click="activeStageTool = 'qa'") Ask a question
 				reactions-bar(:expanded="activeStageTool === 'reaction'", @expand="activeStageTool = 'reaction'")
+		landing-page(v-else-if="modules['page.landing']", :module="modules['page.landing']")
 		markdown-page(v-else-if="modules['page.markdown']", :module="modules['page.markdown']")
 		iframe-page(v-else-if="modules['page.iframe']", :module="modules['page.iframe']")
 		exhibition(v-else-if="modules['exhibition.native']", :room="room")
 		chat(v-if="modules['chat.native']", :room="room", :module="modules['chat.native']", :mode="room.modules.length === 1 ? 'standalone' : 'compact'", :key="room.id")
 	transition(name="prompt")
 		recordings-prompt(:room="room", v-if="showRecordingsPrompt", @close="showRecordingsPrompt = false")
+	edit-room-schedule(v-if="showEditSchedule", :room="room", :currentSession="currentSession", @close="showEditSchedule = false")
 </template>
 <script>
 import {mapGetters, mapState} from 'vuex'
-import moment from 'moment'
+import EditRoomSchedule from './EditRoomSchedule'
 import Chat from 'components/Chat'
 import Livestream from 'components/Livestream'
+import LandingPage from 'components/LandingPage'
 import MarkdownPage from 'components/MarkdownPage'
 import IframePage from 'components/IframePage'
 import Exhibition from 'components/Exhibition'
@@ -39,19 +37,21 @@ import RecordingsPrompt from 'components/RecordingsPrompt'
 
 export default {
 	name: 'Room',
-	components: { Chat, Exhibition, Livestream, MarkdownPage, IframePage, ReactionsBar, ReactionsOverlay, RecordingsPrompt },
+	components: { EditRoomSchedule, Chat, Exhibition, Livestream, LandingPage, MarkdownPage, IframePage, ReactionsBar, ReactionsOverlay, RecordingsPrompt },
 	props: {
 		roomId: String
 	},
 	data () {
 		return {
 			showRecordingsPrompt: false,
+			showEditSchedule: false,
 			activeStageTool: null // reaction, qa
 		}
 	},
 	computed: {
 		...mapGetters(['hasPermission']),
-		...mapState(['connected', 'world', 'rooms', 'schedule']),
+		...mapState(['connected', 'world', 'rooms']),
+		...mapGetters('schedule', ['sessions', 'sessionsScheduledNow']),
 		room () {
 			if (this.roomId === undefined) return this.rooms[0] // '/' is the first room
 			return this.$store.state.rooms.find(room => room.id === this.roomId)
@@ -62,17 +62,16 @@ export default {
 				return acc
 			}, {})
 		},
-		scheduleRoom () {
-			if (!this.schedule || !this.world.pretalx?.base_url) return
-			const scheduleDay = this.schedule.schedule.find(day => moment().isSame(day.start, 'day'))
-			if (!scheduleDay) return
-			const roomId = this.room.pretalx_id
-			if (!roomId) return
-			return scheduleDay.rooms.find(room => room.id === roomId)
-		},
-		currentTalk () {
-			if (!this.scheduleRoom) return
-			return this.scheduleRoom.talks.find(talk => moment().isBetween(talk.start, talk.end))
+		currentSession () {
+			if (!this.$features.enabled('schedule-control')) return
+			let session
+			if (this.room.schedule_data) {
+				session = this.sessions?.find(session => session.id === this.room.schedule_data.session)
+			}
+			if (!session) {
+				session = this.sessionsScheduledNow?.find(session => session.room === this.room)
+			}
+			return session
 		}
 	}
 }
@@ -91,36 +90,24 @@ export default {
 	.room-info
 		flex: none
 		display: flex
-		padding: 8px
+		padding: 0 24px
 		height: 56px
 		box-sizing: border-box
 		border-bottom: border-separator()
-		justify-content: space-between
-		img
-			height: 48px
-		.room-info-wrapper
+		align-items: baseline
+		.room-name
+			font-size: 24px
+			line-height: 56px
+			font-weight: 600
 			display: flex
 			flex-direction: column
-			margin-left: 16px
-		.room-info-text
-			display: flex
-			align-items: center
-			h2
-				margin: 0 8px 0 0
-		.talk-info
-			display: flex
-			align-items: center
-			.current-talk
-				text-transform: uppercase
-				color: $clr-secondary-text-light
-				font-size: 18px
-				font-weight: 300
-				line-height: 20px
-			h3
-				font-size: 20px
-				font-weight: 500
-				line-height: 20px
-				margin: 0 0 0 4px
+		.room-session
+			margin-left: 8px
+			font-size: 18px
+		.bunt-icon-button
+			margin-left: 36px
+			icon-button-style(style: clear)
+			align-self: center
 	.stage
 		display: flex
 		flex-direction: column
