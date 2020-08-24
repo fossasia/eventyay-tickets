@@ -114,11 +114,13 @@ export default {
 					rooms.videoChat.push(room)
 				} else if (room.modules.some(module => module.type === 'livestream.native')) {
 					let session
-					if (room.schedule_data) {
-						session = this.sessions?.find(session => session.id === room.schedule_data.session)
-					}
-					if (!session) {
-						session = this.sessionsScheduledNow?.find(session => session.room === room)
+					if (this.$features.enabled('schedule-control')) {
+						if (room.schedule_data) {
+							session = this.sessions?.find(session => session.id === room.schedule_data.session)
+						}
+						if (!session) {
+							session = this.sessionsScheduledNow?.find(session => session.room === room)
+						}
 					}
 					// TODO handle session image and multiple speaker avatars
 					const image = session?.speakers.length === 1 ? session.speakers[0].avatar : null
