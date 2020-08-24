@@ -4,6 +4,7 @@
 		template(v-for="slice of visibleTimeslices")
 			.timeslice(:ref="slice.name", :class="{datebreak: slice.datebreak}", :data-slice="slice.date.toISOString()", :style="getSliceStyle(slice)") {{ slice.datebreak ? slice.date.format('dddd DD. MMMM') : slice.date.format('LT') }}
 			.timeline(:class="{datebreak: slice.datebreak}", :style="getSliceStyle(slice)")
+		//- .nowline(v-if="nowSlice", :style="{'grid-area': `${nowSlice.slice.name} / 1 / auto / auto`, '--offset': nowSlice.offset}")
 		.now(v-if="nowSlice", ref="now", :style="{'grid-area': `${nowSlice.slice.name} / 1 / auto / auto`, '--offset': nowSlice.offset}")
 			svg(viewBox="0 0 10 10")
 				path(d="M 0 0 L 10 5 L 0 10 z")
@@ -135,9 +136,11 @@ export default {
 				slice = s
 			}
 			if (slice) {
+				const nextSlice = this.timeslices[this.timeslices.indexOf(slice) + 1]
+				if (!nextSlice) return null
 				return {
 					slice,
-					offset: this.now.diff(slice.date, 'minutes')
+					offset: this.now.diff(slice.date, 'minutes') / nextSlice.date.diff(slice.date, 'minutes')
 				}
 			}
 			return null
@@ -252,18 +255,27 @@ export default {
 		width: 100%
 		&.datebreak
 			height: 3px
+	.nowline
+		height: 2px
+		background-color: $clr-red
+		position: absolute
+		transform: translate(0, calc(var(--offset) * 100%))
+		width: 100%
 	.now
 		margin-left: 2px
+		z-index: 20
+		position: relative
 		&::before
 			content: ''
 			display: block
 			height: 2px
 			background-color: $clr-red
 			position: absolute
-			transform: translate(0, calc(var(--offset) * 2px))
-			width: calc(100% - 4px)
+			top: calc(var(--offset) * 100%)
+			width: 100%
 		svg
-			transform: translateY(calc(var(--offset) * 2px - 11px))
+			position: absolute
+			top: calc(var(--offset) * 100% - 11px)
 			height: 24px
 			width: 24px
 			fill: $clr-red
