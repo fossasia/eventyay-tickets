@@ -63,6 +63,7 @@ export default {
 			}, {})
 		},
 		currentSession () {
+			if (!this.$features.enabled('schedule-control')) return
 			let session
 			if (this.room.schedule_data) {
 				session = this.sessions?.find(session => session.id === this.room.schedule_data.session)
