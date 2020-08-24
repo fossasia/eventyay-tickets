@@ -4,11 +4,12 @@ router-link.c-linear-schedule-session(:style="style", :to="{name: 'schedule:talk
 		.start {{ startTime }}
 		.duration {{ durationMinutes }}min
 	.info
-		.title {{ session.title }}
-		.speakers {{ session.speakers.map(s => s.name).join(', ') }}
+		.title {{ getLocalizedString(session.title) }}
+		.speakers(v-if="session.speakers") {{ session.speakers.map(s => s.name).join(', ') }}
 		.abstract {{ session.abstract }}
 		.bottom-info
 			.track(v-if="session.track") {{ getLocalizedString(session.track.name) }}
+			.buffer
 			.room(v-if="session.room") {{ getLocalizedString(session.room.name) }}
 </template>
 <script>
@@ -89,10 +90,13 @@ export default {
 			flex: auto
 			display: flex
 			align-items: flex-end
-			justify-content: space-between
 			.track
+				flex: none
 				color: var(--track-color)
+			.buffer
+				flex: auto
 			.room
+				flex: none
 				color: $clr-secondary-text-light
 	&:hover
 		.info

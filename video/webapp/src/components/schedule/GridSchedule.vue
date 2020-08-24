@@ -10,7 +10,10 @@
 		.room(:style="{'grid-area': `1 / 1 / auto / auto`}")
 		.room(v-for="(room, index) of rooms", :style="{'grid-area': `1 / ${index + 2 } / auto / auto`}") {{ getLocalizedString(room.name) }}
 		.room(v-if="hasSessionsWithoutRoom", :style="{'grid-area': `1 / ${rooms.length + 2} / auto / -1`}") sonstiger Ramsch
-		session(v-for="session of sessions", :session="session", :style="getSessionStyle(session)")
+		template(v-for="session of sessions")
+			session(v-if="session.id", :session="session", :style="getSessionStyle(session)")
+			.break(v-else, :style="getSessionStyle(session)")
+				.title {{ getLocalizedString(session.title) }}
 </template>
 <script>
 // TODO
@@ -215,6 +218,19 @@ export default {
 			z-index: 20
 		.c-linear-schedule-session
 			z-index: 10
+		.break
+			z-index: 10
+			margin: 8px
+			// border: border-separator()
+			border-radius: 4px
+			background-color: $clr-grey-200
+			display: flex
+			justify-content: center
+			align-items: center
+			.title
+				font-size: 20px
+				font-weight: 500
+				color: $clr-secondary-text-light
 	.timeslice
 		color: $clr-secondary-text-light
 		padding: 8px 0 0 16px
