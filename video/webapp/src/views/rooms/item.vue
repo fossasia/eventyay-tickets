@@ -3,7 +3,7 @@
 	.room-info(v-if="!modules['page.markdown'] && !modules['page.landing']")
 		.room-name {{ room.name }}
 		.room-session(v-if="currentSession") {{ currentSession.title }}
-		bunt-icon-button(@click="showEditSchedule = true") calendar_edit
+		bunt-icon-button(v-if="$features.enabled('schedule-control')", @click="showEditSchedule = true") calendar_edit
 		bunt-icon-button(@click="showRecordingsPrompt = true", :tooltip="$t('Room:recordings:tooltip')", tooltipPlacement="left", v-if="modules['call.bigbluebutton'] && hasPermission('room:bbb.recordings')") file-video-outline
 	.main
 		.stage(v-if="modules['livestream.native']")

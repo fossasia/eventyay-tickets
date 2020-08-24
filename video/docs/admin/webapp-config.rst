@@ -45,3 +45,4 @@ Experimental Features
 * event-admin
 * questions-answers
 * chat-moderation
+* schedule-control
