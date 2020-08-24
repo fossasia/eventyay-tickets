@@ -41,7 +41,7 @@ export default {
 					abstract: session.abstract,
 					start: moment(session.start),
 					end: moment(session.end),
-					speakers: session.speakers.map(s => getters.speakersLookup[s]),
+					speakers: session.speakers?.map(s => getters.speakersLookup[s]),
 					track: getters.tracksLookup[session.track],
 					room: getters.roomsLookup[session.room]
 				})

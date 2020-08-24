@@ -27,7 +27,7 @@ export default {
 		...mapGetters('schedule', ['sessions']),
 		sessionBuckets () {
 			const buckets = {}
-			for (const session of this.sessions) {
+			for (const session of this.sessions.filter(s => s.id)) {
 				const key = session.start.toISOString()
 				if (!buckets[key]) {
 					buckets[key] = []
