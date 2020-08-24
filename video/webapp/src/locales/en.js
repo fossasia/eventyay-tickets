@@ -110,5 +110,6 @@ export default {
 	'ContactRequest:request:text': 'Contacting staff members...',
 	'ContactRequest:timeout:text': 'There is currently no staff member available.\nYou will be contacted later.',
 	'ContactRequest:notification:text': 'Unanswered contact request for:',
-	'Schedule:headline:text': 'Schedule'
+	'Schedule:headline:text': 'Schedule',
+	'schedule/talks/item:speakers:header': 'Speaker | Speakers'
 }

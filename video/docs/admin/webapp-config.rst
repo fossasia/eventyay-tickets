@@ -19,6 +19,7 @@ Full configuration
 		},
 		"features": [] // enable experimental features,
 		"locale": "en",
+		"dateLocale": "en-ie",
 		"theme": {
 			"logo": {
 				"url": "/venueless-logo-full-white.svg",
@@ -45,3 +46,4 @@ Experimental Features
 * event-admin
 * questions-answers
 * chat-moderation
+* schedule-control

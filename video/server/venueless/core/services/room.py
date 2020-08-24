@@ -14,3 +14,8 @@ def start_view(room: Room, user: User):
 def end_view(view: RoomView):
     view.end = now()
     view.save()
+
+
+@database_sync_to_async
+def update_room(room: Room):
+    room.save()

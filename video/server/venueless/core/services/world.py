@@ -68,6 +68,7 @@ def get_room_config(room, permissions):
         "permissions": [p for p in permissions if not p.startswith("world:")],
         "force_join": room.force_join,
         "modules": [],
+        "schedule_data": room.schedule_data or None,
     }
     for module in room.module_config:
         module_config = copy.deepcopy(module)

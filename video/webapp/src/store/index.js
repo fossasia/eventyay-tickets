@@ -4,6 +4,7 @@ import api from 'lib/api'
 import router from 'router'
 import chat from './chat'
 import exhibition from './exhibition'
+import schedule from './schedule'
 
 Vue.use(Vuex)
 
@@ -18,7 +19,6 @@ export default new Vuex.Store({
 		world: null,
 		rooms: null,
 		permissions: null,
-		schedule: null,
 		activeRoom: null,
 		reactions: null,
 	},
@@ -64,7 +64,7 @@ export default new Vuex.Store({
 					router.push('/').catch(() => {}) // force new users to welcome page
 					// TODO return after profile update?
 				}
-				dispatch('fetchSchedule')
+				dispatch('schedule/fetch', {root: true})
 			})
 			api.on('closed', () => {
 				state.connected = false
@@ -96,11 +96,6 @@ export default new Vuex.Store({
 			}
 			dispatch('chat/updateUser', {id: state.user.id, update})
 		},
-		async fetchSchedule ({state}) {
-			if (!state.world.pretalx?.base_url) return
-			const schedule = await (await fetch(state.world.pretalx.base_url + 'schedule/widget/v1.json')).json()
-			state.schedule = schedule
-		},
 		async createRoom ({state}, room) {
 			return await api.call('room.create', room)
 		},
@@ -111,6 +106,9 @@ export default new Vuex.Store({
 		async addReaction ({state}, reaction) {
 			if (!state.activeRoom) return
 			await api.call('room.react', {room: state.activeRoom.id, reaction})
+		},
+		async updateRoomSchedule ({state}, {room, schedule_data}) {
+			return await api.call('room.schedule', {room: room.id, schedule_data})
 		},
 		'api::room.create' ({state}, room) {
 			state.rooms.push(room)
@@ -130,12 +128,18 @@ export default new Vuex.Store({
 			state.world = world
 			state.permission = permissions
 			commit('updateRooms', rooms)
-			dispatch('fetchSchedule')
+			dispatch('schedule/fetch', {root: true})
 		},
+		'api::room.schedule' ({state}, {room, schedule_data}) {
+			room = state.rooms.find(r => r.id === room)
+			if (!room) return
+			Vue.set(room, 'schedule_data', schedule_data)
+		}
 		// TODO handle user.updated
 	},
 	modules: {
 		chat,
-		exhibition
+		exhibition,
+		schedule
 	}
 })

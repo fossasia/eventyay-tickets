@@ -23,6 +23,7 @@ class WorldConfigSerializer(serializers.Serializer):
     pretalx = serializers.DictField()
     title = serializers.CharField()
     locale = serializers.CharField()
+    dateLocale = serializers.CharField()
     timezone = serializers.ChoiceField(choices=[(a, a) for a in common_timezones])
     connection_limit = serializers.IntegerField(allow_null=True)
     available_permissions = serializers.SerializerMethodField("_available_permissions")
@@ -49,6 +50,7 @@ class WorldModule(BaseModule):
                 "theme": self.consumer.world.config.get("theme", {}),
                 "title": self.consumer.world.title,
                 "locale": self.consumer.world.locale,
+                "dateLocale": self.consumer.world.config.get("dateLocale", "en-ie"),
                 "roles": self.consumer.world.roles,
                 "bbb_defaults": bbb_defaults,
                 "pretalx": self.consumer.world.config.get("pretalx", {}),
@@ -72,7 +74,13 @@ class WorldModule(BaseModule):
     async def config_patch(self, body):
         s = self._config_serializer(data=body, partial=True)
         if s.is_valid():
-            config_fields = ("theme", "connection_limit", "bbb_defaults", "pretalx")
+            config_fields = (
+                "theme",
+                "dateLocale",
+                "connection_limit",
+                "bbb_defaults",
+                "pretalx",
+            )
             model_fields = ("title", "locale", "timezone", "roles", "trait_grants")
             update_fields = set()
 
@@ -83,6 +91,8 @@ class WorldModule(BaseModule):
 
             for f in config_fields:
                 if f in body:
+                    if f == "pretalx" and not s.validated_data[f].get("domain"):
+                        s.validated_data[f] = {}
                     self.consumer.world.config[f] = s.validated_data[f]
                     update_fields.add("config")
 
