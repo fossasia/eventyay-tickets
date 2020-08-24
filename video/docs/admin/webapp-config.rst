@@ -19,6 +19,7 @@ Full configuration
 		},
 		"features": [] // enable experimental features,
 		"locale": "en",
+		"dateLocale": "en-ie",
 		"theme": {
 			"logo": {
 				"url": "/venueless-logo-full-white.svg",
