@@ -112,7 +112,7 @@ export default {
 				const next = this.timeslices[index + 1]
 				let height = 60
 				if (next) {
-					height = next.date.diff(slice.date, 'minutes') * 2
+					height = Math.min(30, next.date.diff(slice.date, 'minutes'))
 				}
 				if (slice.datebreak) {
 					return `[${slice.name}] minmax(48px, auto)`
@@ -183,6 +183,7 @@ export default {
 			this.$el.scrollTop = offset
 		},
 		onIntersect (entries) {
+			// TODO still gets stuck when scrolling fast above threshold and back
 			const entry = entries.sort((a, b) => b.time - a.time).find(entry => entry.isIntersecting)
 			if (!entry) return
 			const day = moment(entry.target.dataset.slice).startOf('day')
