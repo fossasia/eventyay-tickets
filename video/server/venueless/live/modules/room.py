@@ -263,16 +263,12 @@ class RoomModule(BaseModule):
         )
 
     @event("schedule", refresh_world=True)
-    @room_action()
     async def push_schedule_data(self, body):
-        await self.room.refresh_from_db_if_outdated()
-        if not await self.consumer.world.has_permission_async(
-            user=self.consumer.user, permission=Permission.ROOM_VIEW
-        ):
-            return
         config = await get_room_config_for_user(
             body["room"], self.consumer.world.id, self.consumer.user
         )
+        if "room:view" not in config["permissions"]:
+            return
         await self.consumer.send_json(
             [
                 body["type"],

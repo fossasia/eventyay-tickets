@@ -74,7 +74,13 @@ class WorldModule(BaseModule):
     async def config_patch(self, body):
         s = self._config_serializer(data=body, partial=True)
         if s.is_valid():
-            config_fields = ("theme", "dateLocale", "connection_limit", "bbb_defaults", "pretalx")
+            config_fields = (
+                "theme",
+                "dateLocale",
+                "connection_limit",
+                "bbb_defaults",
+                "pretalx",
+            )
             model_fields = ("title", "locale", "timezone", "roles", "trait_grants")
             update_fields = set()
 

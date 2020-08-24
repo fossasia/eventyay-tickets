@@ -4,15 +4,14 @@ from contextlib import asynccontextmanager
 
 import pytest
 from channels.db import database_sync_to_async
-from channels.testing import WebsocketCommunicator
-from tests.utils import get_token
+from tests.utils import LoggingCommunicator, get_token
 
 from venueless.routing import application
 
 
 @asynccontextmanager
 async def world_communicator(token=None):
-    communicator = WebsocketCommunicator(application, "/ws/world/sample/")
+    communicator = LoggingCommunicator(application, "/ws/world/sample/")
     await communicator.connect()
     if token:
         await communicator.send_json_to(["authenticate", {"token": token}])
