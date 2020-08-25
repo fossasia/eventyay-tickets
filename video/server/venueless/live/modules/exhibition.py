@@ -28,6 +28,12 @@ class ExhibitionModule(BaseModule):
             ):
                 await self.contact_cancel({"contact_request": request["id"]})
 
+    @command("list.all")
+    @require_world_permission(Permission.WORLD_ROOMS_CREATE_EXHIBITION)
+    async def list_all(self, body):
+        exhibitors = await self.service.get_all_exhibitors()
+        await self.consumer.send_success({"exhibitors": exhibitors})
+
     @command("list")
     @room_action(module_required="exhibition.native")
     async def list(self, body):

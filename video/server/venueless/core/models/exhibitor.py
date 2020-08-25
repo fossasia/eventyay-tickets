@@ -56,6 +56,7 @@ class Exhibitor(models.Model):
             links=links,
             social_media_links=social_media_links,
             staff=staff,
+            room_id=str(self.room.id),
         )
 
     def serialize_short(self):

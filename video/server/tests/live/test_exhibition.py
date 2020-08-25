@@ -68,6 +68,28 @@ async def test_list_short(world, exhibition_room):
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
+async def test_list_all(world, exhibition_room):
+    async with world_communicator() as c:
+        await database_sync_to_async(world.world_grants.create)(
+            user=await database_sync_to_async(User.objects.get)(
+                id=c.context["user.config"]["id"]
+            ),
+            world=world,
+            role="admin",
+        )
+        await c.send_json_to(["exhibition.list.all", 123, {}])
+        response = await c.receive_json_from()
+        assert response[0] == "success"
+        for e in response[2]["exhibitors"]:
+            del e["id"]
+            assert e in [
+                {"name": "Tube GmbH",},
+                {"name": "Messebau Schmidt UG",},
+            ]
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
 async def test_get(world, exhibition_room):
     async with world_communicator() as c:
         await c.send_json_to(
@@ -109,6 +131,7 @@ async def test_get(world, exhibition_room):
                     {"display_text": "XING", "url": "https://www.xing.com/"}
                 ],
                 "staff": [],
+                "room_id": str(exhibition_room.pk),
             },
             {
                 "name": "Tube GmbH",
@@ -125,6 +148,7 @@ async def test_get(world, exhibition_room):
                     {"display_text": "linkedin", "url": "https://www.linkedin.com/"}
                 ],
                 "staff": [],
+                "room_id": str(exhibition_room.pk),
             },
         ]
 

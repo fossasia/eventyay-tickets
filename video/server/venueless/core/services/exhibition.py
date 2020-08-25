@@ -30,6 +30,14 @@ class ExhibitionService:
         self.world_id = world_id
 
     @database_sync_to_async
+    def get_all_exhibitors(self):
+        qs = Exhibitor.objects.filter(world__id=self.world_id).order_by("name")
+
+        return [
+            dict(id=str(e["id"]), name=e["name"],) for e in qs.values("id", "name",)
+        ]
+
+    @database_sync_to_async
     def get_exhibitors(self, room_id):
         qs = (
             Exhibitor.objects.filter(world__id=self.world_id)
