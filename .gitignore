@@ -132,6 +132,7 @@ src/tests/**/*.yml
 # Python packaging
 src/LICENSE
 src/README.rst
+override_settings.py
 
 # Screenshots
 screens/
