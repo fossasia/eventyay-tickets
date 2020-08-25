@@ -48,6 +48,15 @@ const routes = [{
 	component: ContactRequests,
 	props: true
 }, {
+	path: '/manage-exhibitors',
+	name: 'exhibitors',
+	component: () => import(/* webpackChunkName: "exhibitors" */ 'views/exhibitor-manager'),
+}, {
+ path: '/manage-exhibitors/:exhibitorId',
+ name: 'exhibitors:exhibitor',
+ component: () => import(/* webpackChunkName: "exhibitors" */ 'views/exhibitor-manager/exhibitor'),
+ props: true
+}, {
 	path: '/admin',
 	name: 'admin',
 	component: () => import(/* webpackChunkName: "admin" */ 'views/admin'),
