@@ -23,8 +23,8 @@ scrollbars.c-exhibitor(y)
 					h3.tagline(v-if="exhibitor.tagline") {{ exhibitor.tagline }}
 			.social-media-links(v-if="exhibitor.social_media_links")
 				a.mdi(v-for="link in exhibitor.social_media_links", :class="`mdi-${link.display_text.toLowerCase()}`", :href="link.url", :title="link.display_text", target="_blank")
-			table.external-links(v-if="profileLinks")
-				tr(v-for="link in profileLinks.length > 0")
+			table.external-links(v-if="profileLinks.length > 0")
+				tr(v-for="link in profileLinks")
 					th.name {{ link.display_text }}
 					td: a(:href="link.url", target="_blank") {{ prettifyUrl(link.url) }}
 			template(v-if="exhibitor.staff.length > 0")
