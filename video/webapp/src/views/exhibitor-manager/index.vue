@@ -1,0 +1,65 @@
+<template lang="pug">
+.c-exhibitors
+	.header
+		h2 {{ $t("Exhibitors:headline:text") }}
+	.exhibitor-list
+		.header
+			.exhibitor-label {{ $t("Exhibitors:exhibitor:label") }}
+			.actions
+		RecycleScroller.tbody.bunt-scrollbar(v-if="exhibitors", :items="exhibitors", :item-size="48", v-slot="{item: exhibitor}", v-scrollbar.y="")
+			router-link.exhibitor(:to="{name: 'exhibitors:exhibitor', params: {exhibitorId: exhibitor.id}}").table-row
+				.name {{ exhibitor.name }}
+		bunt-progress-circular(v-else, size="huge", :page="true")
+</template>
+<script>
+
+export default {
+	components: {},
+	data () {
+		return {
+			exhibitors: []
+		}
+	},
+	computed: {
+	},
+	async created () {
+		this.exhibitors = (await api.call('exhibition.list.all', {})).exhibitors // TODO: get exhibitions based on permission
+	},
+	mounted () {
+		this.$nextTick(() => {
+		})
+	},
+	methods: {}
+}
+</script>
+<style lang="stylus">
+@import '~styles/flex-table'
+
+.c-exhibitors
+	display: flex
+	flex-direction: column
+	background-color: $clr-white
+	min-height: 0
+	.header
+		height: 56px
+		border-bottom: border-separator()
+		padding: 0 16px
+		display: flex
+		align-items: center
+		> *
+			margin: 0
+	.exhibitor-list
+		flex-table()
+		.exhibitor-label
+			padding-left: 0
+		.name
+			flex: auto
+			ellipsis()
+			color: $clr-primary-text-light
+		.exhibitor:not(:hover)
+			.actions .bunt-button
+				display: none
+		.exhibitor:hover
+			.actions .placeholder
+				display: none
+</style>

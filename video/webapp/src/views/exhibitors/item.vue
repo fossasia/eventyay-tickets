@@ -32,11 +32,9 @@ scrollbars.c-exhibitor(y)
 					bunt-button(@click="showContactPrompt = true", :tooltip="$t('Exhibition:contact-button:tooltip')") {{ $t('Exhibition:contact-button:label') }}
 				.staff
 					h3 {{ $t("Exhibitor:staff-headline:text") }}
-					UserSearch(v-if="hasPermission('world:rooms.create.exhibition')", v-on:select="addStaff", :placeholder="'Add staff'")
 					.user(v-for="user in exhibitor.staff")
 						avatar(:user="user", :size="36")
 						span.display-name {{ user ? user.profile.display_name : '' }}
-						bunt-icon-button(v-if="hasPermission('world:rooms.create.exhibition')", @click.prevent.stop="removeStaff(user)") delete
 
 	bunt-progress-circular(v-else, size="huge", :page="true")
 	transition(name="prompt")
@@ -81,14 +79,6 @@ export default {
 			const url = new URL(link)
 			return url.hostname + (url.pathname !== '/' ? url.pathname : '')
 		},
-		async removeStaff (user) {
-			await api.call('exhibition.remove_staff', {user: user.id, exhibitor: this.exhibitor.id})
-			this.exhibitor = (await api.call('exhibition.get', {exhibitor: this.exhibitorId})).exhibitor
-		},
-		async addStaff (user) {
-			await api.call('exhibition.add_staff', {user: user.id, exhibitor: this.exhibitor.id})
-			this.exhibitor = (await api.call('exhibition.get', {exhibitor: this.exhibitorId})).exhibitor
-		}
 	}
 }
 </script>

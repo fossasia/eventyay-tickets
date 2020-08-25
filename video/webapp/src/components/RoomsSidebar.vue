@@ -41,9 +41,10 @@ transition(name="sidebar")
 					.name {{ channel.user.profile.display_name }}
 					bunt-icon-button(@click.prevent.stop="$store.dispatch('chat/closeDirectMessage', {channel})") close
 			.buffer
-			template(v-if="staffedExhibitions.length > 0")
+			template(v-if="staffedExhibitions.length > 0 || hasPermission('world:rooms.create.exhibition')")
 				.group-title {{ $t('RoomsSidebar:exhibitions-headline:text') }}
 				.admin
+					router-link(v-if="hasPermission('world:rooms.create.exhibition')", :to="{name: 'exhibitors'}")  {{ $t('RoomsSidebar:exhibitions-manage:label') }}
 					router-link(:to="{name: 'contactRequests'}")  {{ $t('RoomsSidebar:exhibitions-requests:label') }}
 			template(v-if="hasPermission('world:users.list') || hasPermission('world:update') || hasPermission('room:update')")
 				.group-title {{ $t('RoomsSidebar:admin-headline:text') }}
