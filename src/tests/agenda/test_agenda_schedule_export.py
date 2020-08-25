@@ -17,7 +17,7 @@ from pretalx.event.models import Event
 
 
 @pytest.mark.skipif(
-    "TRAVIS" not in os.environ or "CI" not in os.environ and os.environ["CI"],
+    "CI" not in os.environ or not os.environ["CI"],
     reason="No need to bother with this outside of CI.",
 )
 def test_schedule_xsd_is_up_to_date():

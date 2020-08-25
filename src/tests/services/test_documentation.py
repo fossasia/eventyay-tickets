@@ -23,7 +23,7 @@ def test_documentation_includes_config_options():
     with (doc_dir / "administrator/configure.rst").open() as doc_file:
         doc_text = doc_file.read()
     config = configparser.RawConfigParser()
-    config = config.read(here / "../../pretalx.cfg")
+    config = config.read(here / "../../pretalx.example.cfg")
 
     for category in config:
         for key in category:
