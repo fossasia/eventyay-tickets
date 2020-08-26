@@ -12,7 +12,7 @@
 		.room(v-for="(room, index) of rooms", :style="{'grid-area': `1 / ${index + 2 } / auto / auto`}") {{ getLocalizedString(room.name) }}
 		.room(v-if="hasSessionsWithoutRoom", :style="{'grid-area': `1 / ${rooms.length + 2} / auto / -1`}") sonstiger Ramsch
 		template(v-for="session of sessions")
-			session(v-if="session.id", :session="session", :style="getSessionStyle(session)")
+			session(v-if="session.id", :session="session", :style="getSessionStyle(session)", :showAbstract="false", :showRoom="false")
 			.break(v-else, :style="getSessionStyle(session)")
 				.title {{ getLocalizedString(session.title) }}
 </template>
@@ -68,7 +68,7 @@ export default {
 			const fillHalfHours = function (start, end) {
 				// fill to the nearest half hour, then each half hour, then fill to end
 				let mins = end.diff(start, 'minutes')
-				const startingMins = start.minute() % minimumSliceMins
+				const startingMins = minimumSliceMins - start.minute() % minimumSliceMins
 				if (startingMins) {
 					pushSlice(start.clone().add(startingMins, 'minutes'))
 					mins -= startingMins
@@ -116,7 +116,7 @@ export default {
 				const next = this.timeslices[index + 1]
 				let height = 60
 				if (next) {
-					height = Math.min(30, next.date.diff(slice.date, 'minutes'))
+					height = Math.min(60, next.date.diff(slice.date, 'minutes') * 2)
 				}
 				if (slice.datebreak) {
 					return `[${slice.name}] minmax(48px, auto)`
@@ -238,7 +238,6 @@ export default {
 		color: $clr-secondary-text-light
 		padding: 8px 0 0 16px
 		white-space: nowrap
-		min-height: 48px
 		position: sticky
 		left: 0
 		background-color: $clr-grey-50
