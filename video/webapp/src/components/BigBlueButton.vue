@@ -37,6 +37,7 @@ export default {
 	async created () {
 		try {
 			const {url} = await api.call('bbb.room_url', {room: this.room.id})
+			if (!this.$el || this._isDestroyed) return
 			const iframe = document.createElement('iframe')
 			iframe.src = url
 			iframe.classList.add('bigbluebutton')

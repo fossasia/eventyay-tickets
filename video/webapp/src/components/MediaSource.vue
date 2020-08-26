@@ -47,7 +47,7 @@ export default {
 				return this.$refs.livestream.playing
 			}
 			if (this.module.type === 'call.bigbluebutton') {
-				return !this.$refs.bigbluebutton.error
+				return !!this.$refs.bigbluebutton.iframe
 			}
 			return true
 		}
