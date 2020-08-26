@@ -72,8 +72,14 @@ class AnswerViewSet(viewsets.ModelViewSet):
     search_fields = ("answer",)
 
     def get_queryset(self):
-        return Answer.objects.filter(
-            question__in=get_questions_for_user(self.request.event, self.request.user)
+        return (
+            Answer.objects.filter(
+                question_id__in=get_questions_for_user(
+                    self.request.event, self.request.user
+                ).values_list("id", flat=True)
+            )
+            .prefetch_related("options")
+            .select_related("question", "person", "review", "submission")
         )
 
     def get_serializer_class(self):
