@@ -40,7 +40,7 @@ This endpoint is writable. However, it does not support the full spectrum of que
 
 .. note::
    These limitations are not by design, they are by capacity.
-   If you would like to see these features in pretalx, you can `contribute <contributing>` them or provide `funding <funding>`!
+   If you would like to see these features in pretalx, you can :ref:`contribute <contributing>` them or provide :ref:`funding <funding>`!
 
 Endpoints
 ---------
