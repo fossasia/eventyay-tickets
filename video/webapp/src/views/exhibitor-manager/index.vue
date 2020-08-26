@@ -6,6 +6,7 @@
 		.header
 			.exhibitor-label {{ $t("Exhibitors:exhibitor:label") }}
 			.actions
+					bunt-button.btn-save(@click="$router.push({name: 'exhibitors:exhibitor', params: {exhibitorId: ''}})") {{ $t('Exhibitors:create:label') }}
 		RecycleScroller.tbody.bunt-scrollbar(v-if="exhibitors", :items="exhibitors", :item-size="48", v-slot="{item: exhibitor}", v-scrollbar.y="")
 			router-link.exhibitor(:to="{name: 'exhibitors:exhibitor', params: {exhibitorId: exhibitor.id}}").table-row
 				.name {{ exhibitor.name }}
@@ -36,30 +37,39 @@ export default {
 @import '~styles/flex-table'
 
 .c-exhibitors
-	display: flex
-	flex-direction: column
-	background-color: $clr-white
-	min-height: 0
+	display flex
+	flex-direction column
+	background-color $clr-white
+	min-height 0
 	.header
-		height: 56px
-		border-bottom: border-separator()
-		padding: 0 16px
-		display: flex
-		align-items: center
+		height 56px
+		border-bottom border-separator()
+		padding 0 16px
+		display flex
+		align-items center
 		> *
-			margin: 0
+			margin 0
 	.exhibitor-list
 		flex-table()
+		.header
+			justify-content space-between
+			.actions
+				display flex
+				flex none
+				.bunt-button:not(:last-child)
+					margin-right 16px
+				.btn-save
+					themed-button-primary()
 		.exhibitor-label
-			padding-left: 0
+			padding-left 0
 		.name
-			flex: auto
+			flex auto
 			ellipsis()
-			color: $clr-primary-text-light
+			color $clr-primary-text-light
 		.exhibitor:not(:hover)
 			.actions .bunt-button
-				display: none
+				display none
 		.exhibitor:hover
 			.actions .placeholder
-				display: none
+				display none
 </style>

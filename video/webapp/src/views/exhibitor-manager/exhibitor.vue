@@ -6,7 +6,7 @@
 			bunt-icon-button(@click="$router.push({name: 'exhibitors'})") arrow_left
 			h2 {{ exhibitor.name }}
 			.actions
-				bunt-button.btn-save(@click="save", :loading="saving") Save
+				bunt-button.btn-save(@click="save", :loading="saving") {{ $t('Exhibitors:save:label') }}
 		.main-form(v-scrollbar.y="")
 			bunt-input(v-model="exhibitor.name", :label="$t('Exhibitors:name:label')", name="name", :validation="$v.exhibitor.name")
 			bunt-input(v-model="exhibitor.tagline", :label="$t('Exhibitors:tagline:label')", name="tagline", :validation="$v.exhibitor.tagline")
@@ -128,6 +128,7 @@ export default {
 		}
 	},
 	// TODO use message validators
+	// TODO force uniqueness in links
 	validations: {
 		exhibitor: {
 			name: {
@@ -147,7 +148,27 @@ export default {
 	},
 	async created () {
 		try {
-			this.exhibitor = (await api.call('exhibition.get', {exhibitor: this.exhibitorId})).exhibitor
+			if (this.exhibitorId !== '') {
+				this.exhibitor = (await api.call('exhibition.get', {exhibitor: this.exhibitorId})).exhibitor
+			} else {
+				this.exhibitor = {
+					id: '',
+					name: '',
+					tagline: '',
+					short_text: '',
+					text: '',
+					logo: '',
+					banner_list: '',
+					banner_detail: '',
+					size: '',
+					sorting_priority: 0,
+					room_id: '',
+					social_media_links: [],
+					links: [],
+					staff: [],
+					contact_enabled: true,
+				}
+			}
 		} catch (error) {
 			this.error = error
 			console.log(error)
@@ -195,7 +216,7 @@ export default {
 				id: this.exhibitorId,
 				name: this.exhibitor.name,
 				tagline: this.exhibitor.tagline,
-				short_text: this.exhibitor.shor_text,
+				short_text: this.exhibitor.short_text,
 				text: this.exhibitor.text,
 				logo: this.exhibitor.logo,
 				banner_list: this.exhibitor.banner_list,
@@ -227,10 +248,10 @@ export default {
 </script>
 <style lang="stylus">
 .c-manage-exhibitor
-	display: flex
-	flex-direction: column
-	background: $clr-white
-	min-height: 0
+	display flex
+	flex-direction column
+	background $clr-white
+	min-height 0
 	.bunt-icon-button
 		icon-button-style(style: clear)
 	.header
