@@ -11,7 +11,6 @@ router-link.c-linear-schedule-session(:style="style", :to="{name: 'schedule:talk
 		.abstract(v-if="showAbstract") {{ session.abstract }}
 		.bottom-info
 			.track(v-if="session.track") {{ getLocalizedString(session.track.name) }}
-			.buffer
 			.room(v-if="showRoom && session.room") {{ getLocalizedString(session.room.name) }}
 </template>
 <script>
@@ -102,6 +101,7 @@ export default {
 		border-left: none
 		border-radius: 0 6px 6px 0
 		background-color: $clr-white
+		min-width: 0
 		.title
 			font-size: 16px
 			font-weight: 500
@@ -120,13 +120,15 @@ export default {
 			display: flex
 			align-items: flex-end
 			.track
-				flex: none
+				flex: 1
 				color: var(--track-color)
-			.buffer
-				flex: auto
+				ellipsis()
+				margin-right: 4px
 			.room
-				flex: none
+				flex: 1
+				text-align: right
 				color: $clr-secondary-text-light
+				ellipsis()
 	&:hover
 		.info
 			border: 1px solid var(--clr-primary)
