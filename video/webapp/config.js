@@ -4,7 +4,7 @@ let config
 if (ENV_DEVELOPMENT || !window.venueless) {
 	config = {
 		api: {
-			socket: 'wss://pyconau.venueless.events/ws/world/pyconau/',
+			socket: 'ws://localhost:8375/ws/world/sample/',
 			upload: 'http://localhost:8375/storage/upload/',
 		},
 		timetravelTo: '2020-08-26T06:49:28.975Z'
