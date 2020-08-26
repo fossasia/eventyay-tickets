@@ -34,6 +34,23 @@ class ExhibitionModule(BaseModule):
         exhibitors = await self.service.get_all_exhibitors()
         await self.consumer.send_success({"exhibitors": exhibitors})
 
+    @command("delete")
+    @require_world_permission(Permission.WORLD_ROOMS_CREATE_EXHIBITION)
+    async def delete(self, body):
+        if not await self.service.delete(exhibitor_id=body["exhibitor"]):
+            await self.consumer.send_error("exhibition.unknown_exhibitor")
+        else:
+            await self.consumer.send_success({})
+
+    @command("patch")
+    @require_world_permission(Permission.WORLD_ROOMS_CREATE_EXHIBITION)
+    async def patch(self, body):
+        exhibitor = await self.service.patch(exhibitor=body, world=self.consumer.world)
+        if not exhibitor:
+            await self.consumer.send_error("exhibition.unknown_room")
+        else:
+            await self.consumer.send_success({"exhibitor": exhibitor})
+
     @command("list")
     @room_action(module_required="exhibition.native")
     async def list(self, body):

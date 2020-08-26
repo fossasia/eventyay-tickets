@@ -108,6 +108,9 @@ async def test_get(world, exhibition_room):
             {
                 "name": "Messebau Schmidt UG",
                 "tagline": "Handwerk aus Leidenschaft",
+                "short_text": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod"
+                " tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero "
+                "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea tak",
                 "logo": "https://via.placeholder.com/150",
                 "banner_list": None,
                 "banner_detail": None,
@@ -136,6 +139,9 @@ async def test_get(world, exhibition_room):
             {
                 "name": "Tube GmbH",
                 "tagline": "Ihr Partner im Großhandel",
+                "short_text": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod "
+                "tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero "
+                "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea tak",
                 "logo": "https://via.placeholder.com/150",
                 "banner_list": None,
                 "banner_detail": None,
@@ -406,3 +412,77 @@ async def test_exhibition_contact_not_staff(world, exhibition_room):
         response = await c2.receive_json_from()
         assert response[0] == "error"
         assert response[2]["code"] == "exhibition.not_staff_member"
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_exhibition_delete(world, exhibition_room):
+    async with world_communicator() as c:
+        await database_sync_to_async(world.world_grants.create)(
+            user=await database_sync_to_async(User.objects.get)(
+                id=c.context["user.config"]["id"]
+            ),
+            world=world,
+            role="admin",
+        )
+
+        await c.send_json_to(
+            ["exhibition.list", 123, {"room": str(exhibition_room.pk)}]
+        )
+        response = await c.receive_json_from()
+        assert response[0] == "success"
+        e = response[2]["exhibitors"][0]
+
+        await c.send_json_to(["exhibition.delete", 123, {"exhibitor": str(e["id"])}])
+        response = await c.receive_json_from()
+        assert response[0] == "success"
+
+        await c.send_json_to(["exhibition.delete", 123, {"exhibitor": str(e["id"])}])
+        response = await c.receive_json_from()
+        assert response[0] == "error"
+        assert response[2]["code"] == "exhibition.unknown_exhibitor"
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_exhibition_patch(world, exhibition_room):
+    async with world_communicator() as c:
+        await database_sync_to_async(world.world_grants.create)(
+            user=await database_sync_to_async(User.objects.get)(
+                id=c.context["user.config"]["id"]
+            ),
+            world=world,
+            role="admin",
+        )
+
+        e = {
+            "id": "",
+            "name": "Test Aussteller",
+            "tagline": "Look at me: still talking, when there's science to do",
+            "short_text": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.",
+            "text": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut "
+            "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea "
+            "rebum.",
+            "size": "3x3",
+            "sorting_priority": 4,
+            "logo": "https://via.placeholder.com/150",
+            "banner_list": "https://via.placeholder.com/260x130",
+            "banner_detail": "https://via.placeholder.com/720x360",
+            "contact_enabled": True,
+            "room_id": str(exhibition_room.pk),
+            "social_media_links": [],
+            "links": [],
+            "staff": [],
+        }
+
+        await c.send_json_to(["exhibition.patch", 123, e])
+        response = await c.receive_json_from()
+        assert response[0] == "success"
+        e["id"] = response[2]["exhibitor"]["id"]
+        assert response[2]["exhibitor"] == e
+
+        e["name"] = "Test Aussteller GmbH"
+        await c.send_json_to(["exhibition.patch", 123, e])
+        response = await c.receive_json_from()
+        assert response[0] == "success"
+        assert response[2]["exhibitor"] == e

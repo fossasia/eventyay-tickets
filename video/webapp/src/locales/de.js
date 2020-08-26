@@ -75,6 +75,8 @@ export default {
 	'Exhibitors:link:label': 'Links',
 	'Exhibitors:staff:label': 'Mitarbeiter*innen',
 	'Exhibitors:delete:label': 'Diesen Aussteller löschen',
+	'Exhibitors:create:label': 'Neu anlegen',
+	'Exhibitors:save:label': 'Speichern',
 	'ContactRequests:headline:text': 'Deine Kontaktanfragen',
 	'ContactRequests:from:label': 'Von Benutzer',
 	'ContactRequests:to:label': 'an Aussteller',
