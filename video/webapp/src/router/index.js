@@ -52,10 +52,10 @@ const routes = [{
 	name: 'exhibitors',
 	component: () => import(/* webpackChunkName: "exhibitors" */ 'views/exhibitor-manager'),
 }, {
- path: '/manage-exhibitors/:exhibitorId',
- name: 'exhibitors:exhibitor',
- component: () => import(/* webpackChunkName: "exhibitors" */ 'views/exhibitor-manager/exhibitor'),
- props: true
+	path: '/manage-exhibitors/:exhibitorId',
+	name: 'exhibitors:exhibitor',
+	component: () => import(/* webpackChunkName: "exhibitors" */ 'views/exhibitor-manager/exhibitor'),
+	props: true
 }, {
 	path: '/admin',
 	name: 'admin',

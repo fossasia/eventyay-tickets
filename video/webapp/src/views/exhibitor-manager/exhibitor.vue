@@ -10,14 +10,14 @@
 		.main-form(v-scrollbar.y="")
 			bunt-input(v-model="exhibitor.name", :label="$t('Exhibitors:name:label')", name="name", :validation="$v.exhibitor.name")
 			bunt-input(v-model="exhibitor.tagline", :label="$t('Exhibitors:tagline:label')", name="tagline", :validation="$v.exhibitor.tagline")
-			bunt-input(v-model="exhibitor.short_text", :label="$t('Exhibitors:short-text:label')", name="short_text", :validation="$v.exhibitor.short_text")
+			bunt-input(v-model="exhibitor.short_text", :label="$t('Exhibitors:short-text:label')", name="shortText", :validation="$v.exhibitor.shortText")
 			bunt-input-outline-container(:label="$t('Exhibitors:text:label')")
 				textarea(slot-scope="{focus, blur}", @focus="focus", @blur="blur", v-model="exhibitor.text")
 			upload-url-input(v-model="exhibitor.logo", :label="$t('Exhibitors:logo:label')", name="logo")
-			upload-url-input(v-model="exhibitor.banner_list", :label="$t('Exhibitors:banner-list:label')", name="banner_list")
-			upload-url-input(v-model="exhibitor.banner_detail", :label="$t('Exhibitors:banner-detail:label')", name="banner_detail")
+			upload-url-input(v-model="exhibitor.banner_list", :label="$t('Exhibitors:banner-list:label')", name="bannerList")
+			upload-url-input(v-model="exhibitor.banner_detail", :label="$t('Exhibitors:banner-detail:label')", name="bannerDetail")
 			bunt-select(v-model="exhibitor.size", :label="$t('Exhibitors:size:label')", name="size", :options="sizes")
-			bunt-input(v-model="exhibitor.sorting_priority", label="Sorting priority", name="sorting_priority", :validation="$v.exhibitor.sorting_priority")
+			bunt-input(v-model="exhibitor.sorting_priority", label="Sorting priority", name="sortingPriority", :validation="$v.exhibitor.sortingPriority")
 			bunt-select(v-model="exhibitor.room_id", :label="$t('Exhibitors:room:label')", name="room", :options="rooms", option-label="name")
 				template(slot-scope="{ option }")
 					.label {{ option.name }}
@@ -30,7 +30,7 @@
 				tbody
 					tr(v-for="(link, index) in exhibitor.social_media_links")
 						td
-							bunt-input(:value="link.display_text", :label="$t('Exhibitors:link-text:label')", @input="set_social_media_link_text(index, $event)", name="display_text")
+							bunt-input(:value="link.display_text", :label="$t('Exhibitors:link-text:label')", @input="set_social_media_link_text(index, $event)", name="displayText")
 						td
 							bunt-input(:value="link.url", :label="$t('Exhibitors:link-url:label')", @input="set_social_media_link_url(index, $event)", name="url")
 						td.actions
@@ -51,11 +51,11 @@
 				tbody
 					tr(v-for="(link, index) in exhibitor.links")
 						td
-							bunt-input(:value="link.display_text", :label="$t('Exhibitors:link-text:label')", @input="set_link_text(index, $event)", name="display_text")
+							bunt-input(:value="link.display_text", :label="$t('Exhibitors:link-text:label')", @input="set_link_text(index, $event)", name="displayText")
 						td
 							bunt-input(:value="link.url", :label="$t('Exhibitors:link-url:label')", @input="set_link_url(index, $event)", name="url")
 						td
-							bunt-select(:value="link.category", :label="$t('Exhibitors:link-category:label')", @input="set_link_category(index, $event)", name="category", :options="link_categories")
+							bunt-select(:value="link.category", :label="$t('Exhibitors:link-category:label')", @input="set_link_category(index, $event)", name="category", :options="linkCategories")
 						td.actions
 							bunt-icon-button(@click="remove_link(index)") delete-outline
 				tfoot
@@ -82,8 +82,7 @@
 							UserSearch(v-on:select="add_staff", :placeholder="'Add staff'")
 						td
 						td
-			bunt-checkbox(v-model="exhibitor.contact_enabled", :label="$t('Exhibitors:contact-enabled:label')", name="contact_enabled")
-
+			bunt-checkbox(v-model="exhibitor.contact_enabled", :label="$t('Exhibitors:contact-enabled:label')", name="contactEnabled")
 
 			.danger-zone
 				bunt-button.delete(icon="delete", @click="showDeletePrompt = true") {{ $t('DeletePrompt:button:label') }}
@@ -120,7 +119,7 @@ export default {
 			deleting: false,
 			deleteError: null,
 			sizes: ['S', 'M', 'L'],
-			link_categories: ['profile', 'download']
+			linkCategories: ['profile', 'download']
 		}
 	},
 	computed: {
@@ -138,10 +137,10 @@ export default {
 			tagline: {
 				maxLength: 250
 			},
-			shor_text: {
+			shorText: {
 				maxLength: 500
 			},
-			sorting_priority: {
+			sortingPriority: {
 				integer
 			}
 		}
@@ -161,8 +160,8 @@ export default {
 		add_social_media_link () {
 			this.exhibitor.social_media_links.push({display_text: '', url: ''})
 		},
-		set_social_media_link_text (index, display_text) {
-			this.exhibitor.social_media_links[index].display_text = display_text
+		set_social_media_link_text (index, displayText) {
+			this.exhibitor.social_media_links[index].display_text = displayText
 		},
 		set_social_media_link_url (index, url) {
 			this.exhibitor.social_media_links[index].url = url
@@ -173,8 +172,8 @@ export default {
 		add_link () {
 			this.exhibitor.links.push({display_text: '', url: '', category: ''})
 		},
-		set_link_text (index, display_text) {
-			this.exhibitor.links[index].display_text = display_text
+		set_link_text (index, displayText) {
+			this.exhibitor.links[index].display_text = displayText
 		},
 		set_link_url (index, url) {
 			this.exhibitor.links[index].url = url
