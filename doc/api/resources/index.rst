@@ -11,3 +11,4 @@ Resources and endpoints
    reviews
    rooms
    questions
+   answers

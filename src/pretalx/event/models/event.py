@@ -314,6 +314,7 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
         reviews = "{base}reviews/"
         rooms = "{base}rooms/"
         questions = "{base}questions/"
+        answers = "{base}answers/"
 
     class Meta:
         ordering = ("date_from",)

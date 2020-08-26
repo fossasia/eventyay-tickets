@@ -21,6 +21,7 @@ def test_question_serializer(answer):
             "answer_file",
             "submission",
             "person",
+            "review",
             "options",
         }
         data = QuestionSerializer(answer.question).data

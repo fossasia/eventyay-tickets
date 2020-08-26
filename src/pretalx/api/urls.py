@@ -16,6 +16,7 @@ event_router.register(r"speakers", speaker.SpeakerViewSet)
 event_router.register(r"reviews", review.ReviewViewSet)
 event_router.register(r"rooms", room.RoomViewSet)
 event_router.register(r"questions", question.QuestionViewSet)
+event_router.register(r"answers", question.AnswerViewSet)
 
 app_name = "api"
 urlpatterns = [
