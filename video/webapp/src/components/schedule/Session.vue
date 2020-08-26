@@ -1,7 +1,9 @@
 <template lang="pug">
 router-link.c-linear-schedule-session(:style="style", :to="{name: 'schedule:talk', params: {talkId: session.id}}")
 	.time-box
-		.start {{ startTime }}
+		.start(:class="{'has-ampm': startTime.ampm}")
+			.time {{ startTime.time }}
+			.ampm(v-if="startTime.ampm") {{ startTime.ampm }}
 		.duration {{ durationMinutes }}min
 	.info
 		.title {{ getLocalizedString(session.title) }}
@@ -41,7 +43,17 @@ export default {
 			}
 		},
 		startTime () {
-			return moment(this.session.start).format('LT')
+			// check if 12h or 24h locale
+			if (moment.localeData().longDateFormat('LT').endsWith(' A')) {
+				return {
+					time: this.session.start.format('h:mm'),
+					ampm: this.session.start.format('A')
+				}
+			} else {
+				return {
+					time: moment(this.session.start).format('LT')
+				}
+			}
 		},
 		durationMinutes () {
 			return moment(this.session.end).diff(this.session.start, 'minutes')
@@ -58,7 +70,8 @@ export default {
 	overflow: hidden
 	color: $clr-primary-text-light
 	.time-box
-		// width: 60px
+		width: 69px
+		box-sizing: border-box
 		background-color: var(--track-color)
 		padding: 12px 16px 8px 12px
 		border-radius: 6px 0 0 6px
@@ -70,6 +83,14 @@ export default {
 			font-size: 16px
 			font-weight: 600
 			margin-bottom: 8px
+			display: flex
+			flex-direction: column
+			align-items: flex-end
+			&.has-ampm
+				align-self: stretch
+			.ampm
+				font-weight: 400
+				font-size: 13px
 		.duration
 			color: $clr-secondary-text-dark
 	.info
