@@ -61,9 +61,6 @@ export default {
 			showContactPrompt: false
 		}
 	},
-	async created () {
-		this.exhibitor = (await api.call('exhibition.get', {exhibitor: this.exhibitorId})).exhibitor
-	},
 	computed: {
 		...mapState(['user']),
 		...mapGetters(['hasPermission']),
@@ -73,6 +70,9 @@ export default {
 		downloadLinks () {
 			return this.exhibitor.links.filter((l) => (l.category === 'download'))
 		}
+	},
+	async created () {
+		this.exhibitor = (await api.call('exhibition.get', {exhibitor: this.exhibitorId})).exhibitor
 	},
 	methods: {
 		prettifyUrl (link) {
