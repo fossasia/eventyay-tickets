@@ -10,3 +10,4 @@ Documentation contents
    faq
 
    changelog
+   funding
