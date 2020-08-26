@@ -6,11 +6,11 @@ router-link.c-linear-schedule-session(:style="style", :to="{name: 'schedule:talk
 	.info
 		.title {{ getLocalizedString(session.title) }}
 		.speakers(v-if="session.speakers") {{ session.speakers.map(s => s.name).join(', ') }}
-		.abstract {{ session.abstract }}
+		.abstract(v-if="showAbstract") {{ session.abstract }}
 		.bottom-info
 			.track(v-if="session.track") {{ getLocalizedString(session.track.name) }}
 			.buffer
-			.room(v-if="session.room") {{ getLocalizedString(session.room.name) }}
+			.room(v-if="showRoom && session.room") {{ getLocalizedString(session.room.name) }}
 </template>
 <script>
 import moment from 'lib/timetravelMoment'
@@ -19,7 +19,15 @@ import { getLocalizedString } from './utils'
 moment.locale('de')
 export default {
 	props: {
-		session: Object
+		session: Object,
+		showAbstract: {
+			type: Boolean,
+			default: true
+		},
+		showRoom: {
+			type: Boolean,
+			default: true
+		}
 	},
 	data () {
 		return {
@@ -44,7 +52,7 @@ export default {
 <style lang="stylus">
 .c-linear-schedule-session
 	display: flex
-	min-width: 480px
+	min-width: 360px
 	min-height: 96px
 	margin: 8px
 	overflow: hidden
@@ -83,7 +91,7 @@ export default {
 			margin: 8px 0 12px 0
 			// TODO make this take up more space if available?
 			display: -webkit-box
-			-webkit-line-clamp: 5
+			-webkit-line-clamp: 3
 			-webkit-box-orient: vertical
 			overflow: hidden
 		.bottom-info
