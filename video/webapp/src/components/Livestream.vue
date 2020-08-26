@@ -513,4 +513,10 @@ export default {
 			width: 100%
 			object-fit: contain
 			background: black
+	&.size-tiny .offline
+		background-color: $clr-white
+		.offline-message
+			color: $clr-secondary-text-light
+			font-size: 14px
+			text-align: center
 </style>
