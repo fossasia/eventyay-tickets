@@ -51,6 +51,7 @@ class Exhibitor(models.Model):
             banner_detail=self.banner_detail,
             contact_enabled=self.contact_enabled,
             text=self.text,
+            short_text=self.short_text,
             size=self.size,
             sorting_priority=self.sorting_priority,
             links=links,
