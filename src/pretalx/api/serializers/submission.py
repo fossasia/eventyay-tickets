@@ -63,7 +63,11 @@ class SubmissionSerializer(I18nAwareModelSerializer):
     @cached_property
     def can_view_speakers(self):
         request = self.context.get("request")
-        return request and request.user.has_perm("orga.view_speakers", request.event)
+        return (
+            request
+            and request.user.has_perm("agenda.view_schedule", request.event)
+            or request.user.has_perm("orga.view_speakers", request.event)
+        )
 
     def get_speakers(self, obj):
         has_slots = (
