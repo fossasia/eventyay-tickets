@@ -40,10 +40,16 @@ class MinimalQuestionSerializer(ModelSerializer):
 
 class AnswerWriteSerializer(ModelSerializer):
     submission = SlugRelatedField(
-        queryset=Submission.objects.none(), slug_field="code", required=False
+        queryset=Submission.objects.none(),
+        slug_field="code",
+        required=False,
+        style={"input_type": "text", "base_template": "input.html"},
     )
     person = SlugRelatedField(
-        queryset=User.objects.all(), slug_field="code", required=False
+        queryset=User.objects.all(),
+        slug_field="code",
+        required=False,
+        style={"input_type": "text", "base_template": "input.html"},
     )
     options = AnswerOptionSerializer(many=True, required=False)
 
@@ -55,6 +61,14 @@ class AnswerWriteSerializer(ModelSerializer):
         self.fields["question"].queryset = request.event.questions.all()
         self.fields["submission"].queryset = request.event.submissions.all()
         self.fields["review"].queryset = request.event.reviews.all()
+        self.fields["review"].style = {
+            "input_type": "number",
+            "base_template": "input.html",
+        }
+        self.fields["question"].style = {
+            "input_type": "number",
+            "base_template": "input.html",
+        }
 
     class Meta:
         model = Answer
