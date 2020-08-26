@@ -10,3 +10,4 @@ Resources and endpoints
    speakers
    reviews
    rooms
+   questions

@@ -9,7 +9,7 @@ from pretalx.api.serializers.event import EventSerializer
 def test_event_serializer(event):
     data = EventSerializer(event).data
     assert data == {
-        "name": event.name,
+        "name": str(event.name),
         "slug": event.slug,
         "is_public": event.is_public,
         "date_from": event.date_from.isoformat(),

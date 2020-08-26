@@ -11,15 +11,35 @@ class AnswerOptionSerializer(ModelSerializer):
 
 
 class QuestionSerializer(ModelSerializer):
-    options = AnswerOptionSerializer(many=True)
+    options = AnswerOptionSerializer(many=True, required=False)
 
     class Meta:
         model = Question
-        fields = ("id", "question", "required", "target", "options")
+        fields = (
+            "id",
+            "variant",
+            "question",
+            "required",
+            "target",
+            "options",
+            "help_text",
+            "default_answer",
+            "contains_personal_data",
+            "min_length",
+            "max_length",
+            "is_public",
+            "is_visible_to_reviewers",
+        )
+
+
+class MinimalQuestionSerializer(ModelSerializer):
+    class Meta:
+        model = Question
+        fields = ("id", "question")
 
 
 class AnswerSerializer(ModelSerializer):
-    question = QuestionSerializer(Question.objects.none(), read_only=True)
+    question = MinimalQuestionSerializer(Question.objects.none(), read_only=True)
     submission = SlugRelatedField(queryset=Submission.objects.none(), slug_field="code")
     person = SlugRelatedField(queryset=User.objects.none(), slug_field="code")
     options = AnswerOptionSerializer(many=True)

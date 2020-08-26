@@ -1,5 +1,6 @@
-import pytest
 import json
+
+import pytest
 
 
 @pytest.mark.django_db

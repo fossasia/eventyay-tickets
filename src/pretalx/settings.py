@@ -480,7 +480,7 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.TokenAuthentication",
         "rest_framework.authentication.SessionAuthentication",
     ),
-    'DEFAULT_PERMISSION_CLASSES': ('pretalx.api.permissions.ApiPermission',),
+    "DEFAULT_PERMISSION_CLASSES": ("pretalx.api.permissions.ApiPermission",),
     "DEFAULT_FILTER_BACKENDS": (
         "rest_framework.filters.SearchFilter",
         "django_filters.rest_framework.DjangoFilterBackend",

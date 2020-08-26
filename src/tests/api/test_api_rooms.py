@@ -1,6 +1,8 @@
 import json
+
 import pytest
 from django_scopes import scope
+
 from pretalx.api.serializers.room import RoomOrgaSerializer, RoomSerializer
 
 
