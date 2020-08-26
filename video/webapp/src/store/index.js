@@ -60,6 +60,10 @@ export default new Vuex.Store({
 				commit('chat/setReadPointers', serverState['chat.read_pointers'])
 				commit('exhibition/setData', serverState.exhibition)
 				commit('updateRooms', serverState['world.config'].rooms)
+				// FIXME copypasta from App.vue
+				if (state.activeRoom?.modules.some(module => ['livestream.native', 'call.bigbluebutton'].includes(module.type))) {
+					api.call('room.enter', {room: state.activeRoom.id})
+				}
 				if (!state.user.profile.display_name) {
 					router.push('/').catch(() => {}) // force new users to welcome page
 					// TODO return after profile update?
@@ -68,7 +72,6 @@ export default new Vuex.Store({
 			})
 			api.on('closed', () => {
 				state.connected = false
-				state.activeRoom = null
 				dispatch('chat/disconnected', {root: true})
 			})
 			api.on('error', error => {
@@ -104,7 +107,7 @@ export default new Vuex.Store({
 			state.reactions = null
 		},
 		async addReaction ({state}, reaction) {
-			if (!state.activeRoom) return
+			if (!state.activeRoom || !state.connected) return
 			await api.call('room.react', {room: state.activeRoom.id, reaction})
 		},
 		async updateRoomSchedule ({state}, {room, schedule_data}) {

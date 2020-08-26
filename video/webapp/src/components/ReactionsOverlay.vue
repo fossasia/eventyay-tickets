@@ -27,6 +27,7 @@ export default {
 	},
 	watch: {
 		reactions () {
+			if (!this.reactions) return
 			// put all reactions in a queue and randomize to get rough averages toghether with the particle pool
 			// cap at MAX_PARTICLE_POOL and round up
 			let reactions = []
