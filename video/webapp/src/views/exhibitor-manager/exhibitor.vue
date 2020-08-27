@@ -102,7 +102,7 @@ import Avatar from 'components/Avatar'
 import Prompt from 'components/Prompt'
 import UserSearch from 'components/UserSearch'
 import UploadUrlInput from 'components/config/UploadUrlInput'
-import { required, integer, maxLength } from 'vuelidate/lib/validators'
+import { required, maxLength } from 'buntpapier/src/vuelidate/validators'
 
 export default {
 	components: { Avatar, Prompt, UploadUrlInput, UserSearch },
@@ -139,9 +139,6 @@ export default {
 				},
 				shortText: {
 					maxLength: maxLength(500, this.$t('Exhibitors:validation-short-text:maxLength'))
-				},
-				sortingPriority: {
-					integer: integer(this.$t('Exhibitors:validation-sorting-priority:integer'))
 				}
 			}
 		}
