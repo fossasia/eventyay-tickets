@@ -67,10 +67,10 @@ export default {
 	methods: {
 		async openDM () {
 			// TODO loading indicator
-			await this.$store.dispatch('chat/openDirectMessage', {user: this.sender})
+			await this.$store.dispatch('chat/openDirectMessage', {users: [this.sender]})
 		},
 		async startCall () {
-			const channel = await this.$store.dispatch('chat/openDirectMessage', {user: this.sender})
+			const channel = await this.$store.dispatch('chat/openDirectMessage', {users: [this.sender]})
 			await this.$store.dispatch('chat/startCall', {channel})
 		},
 		async blockUser () {

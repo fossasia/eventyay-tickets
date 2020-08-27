@@ -19,7 +19,7 @@
 				.actions(v-if="user.id !== ownUser.id")
 					//- moderation_state
 					.placeholder.mdi.mdi-dots-horizontal
-					bunt-button.btn-open-dm(@click="$store.dispatch('chat/openDirectMessage', {user})") message
+					bunt-button.btn-open-dm(@click="$store.dispatch('chat/openDirectMessage', {users: [user]})") message
 					bunt-button.btn-reactivate(
 						v-if="user.moderation_state",
 						:loading="user.updating === 'reactivate'",

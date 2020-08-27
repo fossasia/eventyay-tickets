@@ -25,7 +25,7 @@
 					span(v-else) –
 				.actions
 					.placeholder.mdi.mdi-dots-horizontal
-					bunt-button.btn-open-dm(@click="$store.dispatch('chat/openDirectMessage', {user: contactRequest.user})") {{ $t("ContactRequests:message:label") }}
+					bunt-button.btn-open-dm(@click="$store.dispatch('chat/openDirectMessage', {users: [contactRequest.user]})") {{ $t("ContactRequests:message:label") }}
 </template>
 <script>
 import { mapState } from 'vuex'

@@ -32,13 +32,12 @@ transition(name="sidebar")
 					.name {{ chat.name }}
 				router-link.text-chat(v-for="chat of roomsByType.textChat", :to="chat === rooms[0] ? {name: 'home'} : {name: 'room', params: {roomId: chat.id}}", :class="{unread: hasUnreadMessages(chat.modules[0].channel_id)}")
 					.name {{ chat.name }}
-			//- TODO remove v-if when plus button is implemented
-			.group-title(v-if="directMessageChannels.length")
+			.group-title
 				span {{ $t('RoomsSidebar:direct-messages-headline:text') }}
-				//- bunt-icon-button(@click="$emit('createDM')") plus
+				bunt-icon-button(@click="showDMCreationPrompt = true") plus
 			.direct-messages
 				router-link.direct-message(v-for="channel of directMessageChannels", :to="{name: 'channel', params: {channelId: channel.id}}", :class="{unread: hasUnreadMessages(channel.id)}")
-					.name {{ channel.user.profile.display_name }}
+					.name {{ channel.users.map(user => user.profile.display_name).join(', ') }}
 					bunt-icon-button(@click.prevent.stop="$store.dispatch('chat/closeDirectMessage', {channel})") close
 			.buffer
 			template(v-if="staffedExhibitions.length > 0 || hasPermission('world:rooms.create.exhibition')")
@@ -59,6 +58,7 @@ transition(name="sidebar")
 			channel-browser(v-if="showChannelBrowser", @close="showChannelBrowser = false", @createChannel="showChannelBrowser = false, showChatCreationPrompt = true")
 			create-stage-prompt(v-else-if="showStageCreationPrompt", @close="showStageCreationPrompt = false")
 			create-chat-prompt(v-else-if="showChatCreationPrompt", @close="showChatCreationPrompt = false")
+			create-dm-prompt(v-else-if="showDMCreationPrompt", @close="showDMCreationPrompt = false")
 			profile-prompt(v-else-if="showProfilePrompt", @close="showProfilePrompt = false")
 </template>
 <script>
@@ -68,10 +68,11 @@ import Avatar from 'components/Avatar'
 import ChannelBrowser from 'components/ChannelBrowser'
 import CreateStagePrompt from 'components/CreateStagePrompt'
 import CreateChatPrompt from 'components/CreateChatPrompt'
+import CreateDmPrompt from 'components/CreateDmPrompt'
 import ProfilePrompt from 'components/ProfilePrompt'
 
 export default {
-	components: { Avatar, ChannelBrowser, CreateStagePrompt, CreateChatPrompt, ProfilePrompt },
+	components: { Avatar, ChannelBrowser, CreateStagePrompt, CreateChatPrompt, CreateDmPrompt, ProfilePrompt },
 	props: {
 		show: Boolean
 	},
@@ -84,6 +85,7 @@ export default {
 			showChannelBrowser: false,
 			showStageCreationPrompt: false,
 			showChatCreationPrompt: false,
+			showDMCreationPrompt: false,
 			showProfilePrompt: false
 		}
 	},
@@ -137,7 +139,7 @@ export default {
 			return rooms
 		},
 		directMessageChannels () {
-			return this.joinedChannels?.filter(channel => channel.members).map(channel => ({id: channel.id, user: channel.members.find(member => member.id !== this.user.id)}))
+			return this.joinedChannels?.filter(channel => channel.members).map(channel => ({id: channel.id, users: channel.members.filter(member => member.id !== this.user.id)}))
 		}
 	},
 	methods: {

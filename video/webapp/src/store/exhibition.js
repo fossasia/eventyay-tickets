@@ -24,7 +24,7 @@ export default {
 		},
 		async acceptContactRequest ({state, dispatch, rootState}, contactRequest) {
 			// TODO error handling
-			const channel = await dispatch('chat/openDirectMessage', {user: contactRequest.user, hide: false}, {root: true})
+			const channel = await dispatch('chat/openDirectMessage', {users: [contactRequest.user], hide: false}, {root: true})
 			await api.call('exhibition.contact_accept', {contact_request: contactRequest.id, channel: channel.id})
 			contactRequest.state = 'answered'
 			contactRequest.answered_by = rootState.user
