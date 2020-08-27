@@ -21,7 +21,6 @@
 				bunt-button#btn-change(@click="change") change to
 </template>
 <script>
-import { mapGetters } from 'vuex'
 import moment from 'lib/timetravelMoment'
 
 export default {
@@ -35,9 +34,8 @@ export default {
 		}
 	},
 	computed: {
-		...mapGetters('schedule', ['sessions']),
 		sessions () {
-			return this.sessions.filter(session => session.room === this.room)
+			return this.$store.getters['schedule/sessions'].filter(session => session.room === this.room)
 		}
 	},
 	created () {},
