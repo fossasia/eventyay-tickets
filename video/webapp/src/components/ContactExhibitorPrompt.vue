@@ -11,7 +11,7 @@ prompt.c-contact-exhibitor-prompt(@close="cancel", :allowCancel="false")
 				.timer-text {{ timer }}s
 		.timer-explanation(v-else) {{ $t('ContactRequest:timeout:text') }}
 		.actions
-			bunt-button#btn-cancel(@click="cancel") {{ $t('ContactRequest:dismiss-button:label') }}
+			bunt-button#btn-cancel(@click="cancel") {{ $t('ContactExhibitorPrompt:dismiss-button:label') }}
 </template>
 <script>
 import api from 'lib/api'
