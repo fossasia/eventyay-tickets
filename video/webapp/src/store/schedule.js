@@ -18,8 +18,8 @@ export default {
 		},
 		roomsLookup (state, getters, rootState) {
 			if (!state.schedule) return {}
-			return state.schedule.rooms.reduce((acc, r) => {
-				acc[r.id] = rootState.rooms.find(r => r.pretalx_id === r.id) || r
+			return state.schedule.rooms.reduce((acc, room) => {
+				acc[room.id] = rootState.rooms.find(r => r.pretalx_id === room.id) || room
 				return acc
 			}, {})
 		},
