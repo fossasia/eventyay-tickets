@@ -46,10 +46,12 @@ export default {
 			top: 8px
 			right: 8px
 		h1
-			margin: 0
-			text-align: center
+			font-size: 24px
+			margin: 16px 16px 8px 16px
 		p
+			margin: 0 16px 16px 16px
 			max-width: 320px
+			color: $clr-secondary-text-light
 		form
 			display: flex
 			flex-direction: column
