@@ -77,6 +77,8 @@ export default {
 	'Exhibitors:link-url:label': 'url',
 	'Exhibitors:link-category:label': 'category',
 	'Exhibitors:add-link:text': 'Add a link',
+	'Exhibitors:add-staff:text': 'Add staff member',
+	'Exhibitors:add-staff:label': 'add',
 	'Exhibitors:link:label': 'Links',
 	'Exhibitors:staff:label': 'Staff members',
 	'Exhibitors:delete:label': 'Delete this exhibitor',

@@ -38,7 +38,7 @@
 				tfoot
 					tr
 						td
-							bunt-button.btn-add-role(@click="add_social_media_link") {{ $t('Exhibitors:add-link:text') }}
+							bunt-button(@click="add_social_media_link") {{ $t('Exhibitors:add-link:text') }}
 						td
 						td
 			table.links
@@ -61,7 +61,7 @@
 				tfoot
 					tr
 						td
-							bunt-button.btn-add-role(@click="add_link") {{ $t('Exhibitors:add-link:text') }}
+							bunt-button(@click="add_link") {{ $t('Exhibitors:add-link:text') }}
 						td
 						td
 			table.staff
@@ -79,7 +79,7 @@
 				tfoot
 					tr
 						td
-							UserSearch(v-on:select="add_staff", :placeholder="'Add staff'")
+							bunt-button(@click="showStaffPrompt=true") {{ $t('Exhibitors:add-staff:text') }}
 						td
 						td
 			bunt-checkbox(v-model="exhibitor.contact_enabled", :label="$t('Exhibitors:contact-enabled:label')", name="contactEnabled")
@@ -95,17 +95,21 @@
 				.name {{ exhibitor.name }}
 				bunt-input(name="exhibitorName", :label="$t('Exhibitors:name:label')", v-model="deletingExhibitorName")
 				bunt-button.room(icon="delete", :disabled="deletingExhibitorName !== exhibitor.name", @click="deleteExhibitor", :loading="deleting", :error-message="deleteError") {{ $t('Exhibitors:delete:label') }}
+	prompt.add-staff-prompt(v-if="showStaffPrompt", :scrollable="false", @close="showStaffPrompt=false")
+		.content
+			h1 {{ $t('Exhibitors:add-staff:text') }}
+			user-select(:button-label="$t('Exhibitors:add-staff:label')", @selected="add_staff")
 </template>
 <script>
 import api from 'lib/api'
 import Avatar from 'components/Avatar'
 import Prompt from 'components/Prompt'
-import UserSearch from 'components/UserSearch'
+import UserSelect from 'components/UserSelect'
 import UploadUrlInput from 'components/config/UploadUrlInput'
 import { required, maxLength } from 'buntpapier/src/vuelidate/validators'
 
 export default {
-	components: { Avatar, Prompt, UploadUrlInput, UserSearch },
+	components: { Avatar, Prompt, UploadUrlInput, UserSelect },
 	props: {
 		exhibitorId: String
 	},
@@ -115,6 +119,7 @@ export default {
 			saving: false,
 			error: null,
 			showDeletePrompt: false,
+			showStaffPrompt: false,
 			deletingExhibitorName: '',
 			deleting: false,
 			deleteError: null,
@@ -199,8 +204,10 @@ export default {
 		set_link_category (index, category) {
 			this.exhibitor.links[index].category = category
 		},
-		add_staff (user) {
-			this.exhibitor.staff.push(user)
+		add_staff (users) {
+			this.exhibitor.staff = this.exhibitor.staff.concat(users)
+			this.exhibitor.staff = this.exhibitor.staff.filter((user, index) => this.exhibitor.staff.indexOf(user) === index)
+			this.showStaffPrompt = false
 		},
 		remove_staff (user) {
 			this.$delete(this.exhibitor.staff, user)
@@ -336,4 +343,46 @@ export default {
 			align-self center
 		.delete
 			button-style(color: $clr-danger)
+
+	.add-staff-prompt
+		.prompt-wrapper
+			height 80vh
+			width 600px
+		.content
+			display flex
+			flex-direction column
+			position relative
+			box-sizing border-box
+			min-height 0
+			#btn-close
+				icon-button-style(style: clear)
+				position absolute
+				top 8px
+				right 8px
+			h1
+				margin 0
+				text-align center
+			p
+				max-width 320px
+			form
+				display flex
+				flex-direction column
+				align-self stretch
+				.bunt-button
+					themed-button-primary()
+					margin-top 16px
+				.bunt-select
+					select-style(size: compact)
+					ul li
+						display flex
+						.mdi
+							margin-right 8px
+				.bunt-input-outline-container
+					textarea
+						background-color transparent
+						border none
+						outline none
+						resize vertical
+						min-height 64px
+						padding 0 8px
 </style>
