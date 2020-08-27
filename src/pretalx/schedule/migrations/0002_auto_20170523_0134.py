@@ -15,15 +15,21 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AlterField(
-            model_name="talkslot", name="end", field=models.DateTimeField(null=True),
+            model_name="talkslot",
+            name="end",
+            field=models.DateTimeField(null=True),
         ),
         migrations.AlterField(
-            model_name="talkslot", name="start", field=models.DateTimeField(null=True),
+            model_name="talkslot",
+            name="start",
+            field=models.DateTimeField(null=True),
         ),
         migrations.AlterUniqueTogether(
-            name="schedule", unique_together=set([("event", "version")]),
+            name="schedule",
+            unique_together=set([("event", "version")]),
         ),
         migrations.AlterUniqueTogether(
-            name="talkslot", unique_together=set([("submission", "schedule")]),
+            name="talkslot",
+            unique_together=set([("submission", "schedule")]),
         ),
     ]

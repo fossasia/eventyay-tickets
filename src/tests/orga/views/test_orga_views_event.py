@@ -116,7 +116,11 @@ def test_add_custom_css(event, orga_client, path, allowed):
 @pytest.mark.django_db
 @pytest.mark.parametrize(
     "path",
-    ("tests/fixtures/custom.css", "tests/fixtures/malicious.css", "tests/conftest.py",),
+    (
+        "tests/fixtures/custom.css",
+        "tests/fixtures/malicious.css",
+        "tests/conftest.py",
+    ),
 )
 def test_add_custom_css_as_administrator(event, administrator_client, path):
     assert not event.custom_css
@@ -416,7 +420,9 @@ def test_invite_orga_member(orga_client, event):
     assert team.members.count() == 1
     assert team.invites.count() == 0
     response = orga_client.post(
-        team.orga_urls.base, {"email": "other@user.org", "form": "invite"}, follow=True,
+        team.orga_urls.base,
+        {"email": "other@user.org", "form": "invite"},
+        follow=True,
     )
     assert response.status_code == 200
     assert team.members.count() == 1
@@ -428,7 +434,9 @@ def test_invite_orga_member(orga_client, event):
 def test_retract_invitation(orga_client, event):
     team = event.organiser.teams.get(can_change_submissions=True, is_reviewer=False)
     response = orga_client.post(
-        team.orga_urls.base, {"email": "other@user.org", "form": "invite"}, follow=True,
+        team.orga_urls.base,
+        {"email": "other@user.org", "form": "invite"},
+        follow=True,
     )
     assert response.status_code == 200
     assert team.members.count() == 1
@@ -889,7 +897,9 @@ def test_widget_settings(event, orga_client):
     response = orga_client.get(event.orga_urls.widget_settings, follow=True)
     response = orga_client.post(
         event.orga_urls.widget_settings,
-        {"show_widget_if_not_public": "on",},
+        {
+            "show_widget_if_not_public": "on",
+        },
         follow=True,
     )
     assert response.status_code == 200

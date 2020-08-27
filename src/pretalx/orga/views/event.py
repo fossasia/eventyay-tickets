@@ -202,7 +202,8 @@ class EventLive(EventSettingsPermission, TemplateView):
                 ]
                 if exceptions:
                     messages.error(
-                        request, mark_safe("\n".join(rich_text(e) for e in exceptions)),
+                        request,
+                        mark_safe("\n".join(rich_text(e) for e in exceptions)),
                     )
                 else:
                     event.is_public = True

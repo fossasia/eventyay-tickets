@@ -117,7 +117,8 @@ def test_orga_accept_invitation_as_logged_in_user_once(
     count = invitation.team.members.count()
     token = invitation.token
     response = review_client.post(
-        reverse("orga:invitation.view", kwargs={"code": invitation.token}), follow=True,
+        reverse("orga:invitation.view", kwargs={"code": invitation.token}),
+        follow=True,
     )
     assert response.status_code == 200
     assert team.members.count() == count + 1

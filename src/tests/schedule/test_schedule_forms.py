@@ -25,7 +25,10 @@ def availabilitiesform(event):
     event.date_from = dt.date(2017, 1, 1)
     event.date_to = dt.date(2017, 1, 2)
 
-    return AvailabilitiesForm(event=event, instance=None,)
+    return AvailabilitiesForm(
+        event=event,
+        instance=None,
+    )
 
 
 @pytest.mark.django_db
@@ -48,7 +51,11 @@ def test_parse_availabilities_json_fail(availabilitiesform, json, error):
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
-    "json", (('{"availabilities": []}'), ('{"availabilities": [1]}'),)
+    "json",
+    (
+        ('{"availabilities": []}'),
+        ('{"availabilities": [1]}'),
+    ),
 )
 def test_parse_availabilities_json_success(availabilitiesform, json):
     availabilitiesform._parse_availabilities_json(json)
@@ -169,7 +176,11 @@ def test_parse_datetime(availabilitiesform, strdate, expected):
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
-    "json,error", (("{{", "not valid json"), ('{"availabilities": [1]}', "format"),)
+    "json,error",
+    (
+        ("{{", "not valid json"),
+        ('{"availabilities": [1]}', "format"),
+    ),
 )
 def test_clean_availabilities_fail(availabilitiesform, json, error):
     with pytest.raises(ValidationError) as excinfo:
@@ -427,7 +438,10 @@ def test_chained(availabilitiesform, room):
             end=tz.localize(dt.datetime(2017, 1, 3)),
         )
 
-        form = AvailabilitiesForm(event=availabilitiesform.event, instance=room,)
+        form = AvailabilitiesForm(
+            event=availabilitiesform.event,
+            instance=room,
+        )
 
         form.cleaned_data = form.initial
         form.cleaned_data["availabilities"] = form.clean_availabilities()

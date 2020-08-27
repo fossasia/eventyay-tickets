@@ -301,7 +301,10 @@ Please follow this URL to use the code:
 
 I'm looking forward to your submission!
 {name}"""
-        ).format(url=instance.urls.cfp_url.full(), name=user.get_display_name(),)
+        ).format(
+            url=instance.urls.cfp_url.full(),
+            name=user.get_display_name(),
+        )
         initial = kwargs.get("intial", {})
         initial["subject"] = f"[{instance.event.slug}] {subject}"
         initial["text"] = text
@@ -398,7 +401,8 @@ class ReminderFilterForm(QuestionFilterForm):
 
     def get_question_queryset(self):
         return Question.objects.filter(
-            event=self.event, target__in=["speaker", "submission"],
+            event=self.event,
+            target__in=["speaker", "submission"],
         )
 
     def __init__(self, *args, **kwargs):

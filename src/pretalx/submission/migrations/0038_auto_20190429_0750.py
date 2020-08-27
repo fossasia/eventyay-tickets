@@ -11,8 +11,14 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(model_name="submission", name="recording_source",),
-        migrations.RemoveField(model_name="submission", name="recording_url",),
+        migrations.RemoveField(
+            model_name="submission",
+            name="recording_source",
+        ),
+        migrations.RemoveField(
+            model_name="submission",
+            name="recording_url",
+        ),
         migrations.AlterField(
             model_name="track",
             name="color",

@@ -55,7 +55,13 @@ def test_path_with_hash(path, expected, monkeypatch):
 
 
 @pytest.mark.parametrize(
-    "filename,expected", (("ö", "o"), ("å", "a"), ("ø", ""), ("α", ""),)
+    "filename,expected",
+    (
+        ("ö", "o"),
+        ("å", "a"),
+        ("ø", ""),
+        ("α", ""),
+    ),
 )
 def test_safe_filename(filename, expected):
     assert safe_filename(filename) == expected

@@ -49,9 +49,13 @@ def model_for_event(model, lookup="event"):
 class AnswerFilterSet(filters.FilterSet):
     question = filters.NumberFilter(field_name="question_id")
     submission = filters.CharFilter(
-        field_name="submission__code", lookup_expr="iexact",
+        field_name="submission__code",
+        lookup_expr="iexact",
     )
-    person = filters.CharFilter(field_name="person__code", lookup_expr="iexact",)
+    person = filters.CharFilter(
+        field_name="person__code",
+        lookup_expr="iexact",
+    )
     review = filters.NumberFilter(field_name="review_id")
 
     class Meta:

@@ -41,7 +41,9 @@ class Migration(migrations.Migration):
                 ("pw_reset_token", models.CharField(max_length=160, null=True)),
                 ("pw_reset_time", models.DateTimeField(null=True)),
             ],
-            options={"abstract": False,},
+            options={
+                "abstract": False,
+            },
         ),
         migrations.CreateModel(
             name="EventPermission",

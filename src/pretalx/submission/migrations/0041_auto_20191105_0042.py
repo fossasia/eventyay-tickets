@@ -68,7 +68,9 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            options={"unique_together": {("event", "code")},},
+            options={
+                "unique_together": {("event", "code")},
+            },
             bases=(
                 pretalx.common.mixins.models.LogMixin,
                 pretalx.common.mixins.models.GenerateCode,

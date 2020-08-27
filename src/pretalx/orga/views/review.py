@@ -120,7 +120,11 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
                 result.append(value)
             return tuple(result)
 
-        return sorted(queryset, key=get_order_tuple, reverse=reverse,)
+        return sorted(
+            queryset,
+            key=get_order_tuple,
+            reverse=reverse,
+        )
 
     @context
     def can_accept_submissions(self):
@@ -346,14 +350,18 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
         key = f"{self.request.event.slug}_ignored_reviews"
         ignored_submissions = self.request.session.get(key) or []
         next_submission = Review.find_missing_reviews(
-            self.request.event, self.request.user, ignore=ignored_submissions,
+            self.request.event,
+            self.request.user,
+            ignore=ignored_submissions,
         ).first()
         if not next_submission:
             ignored_submissions = (
                 [self.submission.pk] if action == "skip_for_now" else []
             )
             next_submission = Review.find_missing_reviews(
-                self.request.event, self.request.user, ignore=ignored_submissions,
+                self.request.event,
+                self.request.user,
+                ignore=ignored_submissions,
             ).first()
         self.request.session[key] = ignored_submissions
         if next_submission:

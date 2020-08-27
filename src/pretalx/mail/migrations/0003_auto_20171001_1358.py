@@ -49,9 +49,13 @@ class Migration(migrations.Migration):
             field=models.CharField(max_length=200),
         ),
         migrations.AlterField(
-            model_name="queuedmail", name="text", field=models.TextField(),
+            model_name="queuedmail",
+            name="text",
+            field=models.TextField(),
         ),
         migrations.AlterField(
-            model_name="queuedmail", name="to", field=models.CharField(max_length=1000),
+            model_name="queuedmail",
+            name="to",
+            field=models.CharField(max_length=1000),
         ),
     ]

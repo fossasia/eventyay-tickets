@@ -14,7 +14,10 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(model_name="submission", name="accept_feedback",),
+        migrations.RemoveField(
+            model_name="submission",
+            name="accept_feedback",
+        ),
         migrations.AlterField(
             model_name="cfp",
             name="deadline",
@@ -40,7 +43,9 @@ class Migration(migrations.Migration):
             field=i18nfield.fields.I18nTextField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name="feedback", name="review", field=models.TextField(),
+            model_name="feedback",
+            name="review",
+            field=models.TextField(),
         ),
         migrations.AlterField(
             model_name="question",

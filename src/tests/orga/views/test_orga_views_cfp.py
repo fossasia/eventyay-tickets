@@ -513,7 +513,8 @@ def test_can_remind_multiple_questions(
 
 @pytest.mark.django_db
 def test_can_remind_submission_question_broken_filter(
-    orga_client, event,
+    orga_client,
+    event,
 ):
     response = orga_client.post(
         event.cfp.urls.remind_questions, {"role": "hahaha"}, follow=True

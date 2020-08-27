@@ -148,7 +148,10 @@ class InviteMixin:
 
     @cached_property
     def object(self):
-        return get_object_or_404(self.team.invites.all(), pk=self.kwargs["pk"],)
+        return get_object_or_404(
+            self.team.invites.all(),
+            pk=self.kwargs["pk"],
+        )
 
 
 class TeamUninvite(InviteMixin, PermissionRequired, DetailView):

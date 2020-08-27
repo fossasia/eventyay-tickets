@@ -5,7 +5,12 @@ from django_scopes import scope
 @pytest.mark.django_db
 def test_reviewer_can_add_review(review_client, submission):
     response = review_client.post(
-        submission.orga_urls.reviews, follow=True, data={"score": 1, "text": "LGTM",}
+        submission.orga_urls.reviews,
+        follow=True,
+        data={
+            "score": 1,
+            "text": "LGTM",
+        },
     )
     assert response.status_code == 200
     with scope(event=submission.event):
@@ -23,7 +28,11 @@ def test_reviewer_can_add_review_with_redirect(
     response = review_client.post(
         submission.orga_urls.reviews,
         follow=True,
-        data={"score": 1, "text": "LGTM", "show_next": "1",},
+        data={
+            "score": 1,
+            "text": "LGTM",
+            "show_next": "1",
+        },
     )
     assert response.status_code == 200
 
@@ -33,7 +42,11 @@ def test_reviewer_can_add_review_with_redirect_finished(review_client, submissio
     response = review_client.post(
         submission.orga_urls.reviews,
         follow=True,
-        data={"score": 1, "text": "LGTM", "show_next": "1",},
+        data={
+            "score": 1,
+            "text": "LGTM",
+            "show_next": "1",
+        },
     )
     assert response.status_code == 200
 
@@ -41,7 +54,11 @@ def test_reviewer_can_add_review_with_redirect_finished(review_client, submissio
 @pytest.mark.django_db
 def test_reviewer_can_add_review_without_score(review_client, submission):
     response = review_client.post(
-        submission.orga_urls.reviews, follow=True, data={"text": "LGTM",}
+        submission.orga_urls.reviews,
+        follow=True,
+        data={
+            "text": "LGTM",
+        },
     )
     assert response.status_code == 200
     with scope(event=submission.event):
@@ -55,7 +72,12 @@ def test_reviewer_can_add_review_without_score(review_client, submission):
 @pytest.mark.django_db
 def test_reviewer_cannot_use_wrong_score(review_client, submission):
     response = review_client.post(
-        submission.orga_urls.reviews, follow=True, data={"score": 100, "text": "LGTM",}
+        submission.orga_urls.reviews,
+        follow=True,
+        data={
+            "score": 100,
+            "text": "LGTM",
+        },
     )
     assert response.status_code == 200
     with scope(event=submission.event):
@@ -72,7 +94,10 @@ def test_reviewer_can_use_override_score(
     response = review_client.post(
         submission.orga_urls.reviews,
         follow=True,
-        data={"score": score, "text": "LGTM",},
+        data={
+            "score": score,
+            "text": "LGTM",
+        },
     )
     assert response.status_code == 200
     with scope(event=submission.event):
@@ -95,7 +120,12 @@ def test_reviewer_cannot_use_override_score_twice(
             override_vote=True, user=review_user, submission=other_submission
         )
     response = review_client.post(
-        submission.orga_urls.reviews, follow=True, data={"score": -1, "text": "LGTM",}
+        submission.orga_urls.reviews,
+        follow=True,
+        data={
+            "score": -1,
+            "text": "LGTM",
+        },
     )
     assert response.status_code == 200
     with scope(event=submission.event):
@@ -106,7 +136,12 @@ def test_reviewer_cannot_use_override_score_twice(
 def test_reviewer_without_rights_use_override_score(review_client, submission):
     submission.event.settings.set("allow_override_votes", True)
     response = review_client.post(
-        submission.orga_urls.reviews, follow=True, data={"score": -1, "text": "LGTM",}
+        submission.orga_urls.reviews,
+        follow=True,
+        data={
+            "score": -1,
+            "text": "LGTM",
+        },
     )
     assert response.status_code == 200
     with scope(event=submission.event):
@@ -121,7 +156,12 @@ def test_reviewer_cannot_ignore_required_question(
         review_question.required = True
         review_question.save()
     response = review_client.post(
-        submission.orga_urls.reviews, follow=True, data={"score": 1, "text": "LGTM",}
+        submission.orga_urls.reviews,
+        follow=True,
+        data={
+            "score": 1,
+            "text": "LGTM",
+        },
     )
     assert response.status_code == 200
     with scope(event=submission.event):
@@ -136,7 +176,11 @@ def test_reviewer_cannot_review_own_submission(review_user, review_client, submi
         submission.speakers.add(review_user)
         submission.save()
     response = review_client.post(
-        submission.orga_urls.reviews, data={"score": 100, "text": "LGTM",}
+        submission.orga_urls.reviews,
+        data={
+            "score": 100,
+            "text": "LGTM",
+        },
     )
     assert response.status_code == 200
     with scope(event=submission.event):
@@ -150,7 +194,12 @@ def test_reviewer_cannot_review_accepted_submission(
     with scope(event=submission.event):
         submission.accept()
     response = review_client.post(
-        submission.orga_urls.reviews, data={"score": 100, "text": "LGTM",}, follow=True,
+        submission.orga_urls.reviews,
+        data={
+            "score": 100,
+            "text": "LGTM",
+        },
+        follow=True,
     )
     assert response.status_code == 200
     with scope(event=submission.event):
@@ -163,7 +212,12 @@ def test_reviewer_can_edit_review(review_client, review, review_user):
         count = review.submission.reviews.count()
         assert review.user == review_user
     response = review_client.post(
-        review.urls.base, follow=True, data={"score": 0, "text": "My mistake.",}
+        review.urls.base,
+        follow=True,
+        data={
+            "score": 0,
+            "text": "My mistake.",
+        },
     )
     assert response.status_code == 200
     with scope(event=review.event):
@@ -178,7 +232,12 @@ def test_reviewer_cannot_edit_review_after_accept(review_client, review):
     with scope(event=review.event):
         review.submission.accept()
     response = review_client.post(
-        review.urls.base, follow=True, data={"score": 0, "text": "My mistake.",}
+        review.urls.base,
+        follow=True,
+        data={
+            "score": 0,
+            "text": "My mistake.",
+        },
     )
     assert response.status_code == 200
     with scope(event=review.event):
@@ -267,7 +326,12 @@ def test_reviewer_with_track_limit_can_see_dashboard(
 @pytest.mark.django_db
 def test_orga_cannot_add_review(orga_client, submission):
     response = orga_client.post(
-        submission.orga_urls.reviews, follow=True, data={"score": 1, "text": "LGTM",}
+        submission.orga_urls.reviews,
+        follow=True,
+        data={
+            "score": 1,
+            "text": "LGTM",
+        },
     )
     assert response.status_code == 200
     with scope(event=submission.event):
@@ -324,7 +388,10 @@ def test_orga_can_bulk_accept_and_reject_only_failure(orga_client, accepted_subm
         count = accepted_submission.event.queued_mails.count()
     response = orga_client.post(
         accepted_submission.event.orga_urls.reviews,
-        {"foo": "bar", f"s-{accepted_submission.code}": "reject",},
+        {
+            "foo": "bar",
+            f"s-{accepted_submission.code}": "reject",
+        },
     )
     assert response.status_code == 200
     with scope(event=accepted_submission.event):
@@ -339,7 +406,10 @@ def test_orga_can_bulk_accept_and_reject_only_success(orga_client, submission):
         count = submission.event.queued_mails.count()
     response = orga_client.post(
         submission.event.orga_urls.reviews,
-        {"foo": "bar", f"s-{submission.code}": "reject",},
+        {
+            "foo": "bar",
+            f"s-{submission.code}": "reject",
+        },
     )
     assert response.status_code == 200
     with scope(event=submission.event):

@@ -170,7 +170,13 @@ def test_schedule_page_text_table(
 
 @pytest.mark.django_db
 def test_schedule_page_text_table_explicit_header(
-    client, django_assert_num_queries, event, speaker, slot, schedule, other_slot,
+    client,
+    django_assert_num_queries,
+    event,
+    speaker,
+    slot,
+    schedule,
+    other_slot,
 ):
     url = event.urls.schedule
     with django_assert_num_queries(18):
@@ -184,7 +190,10 @@ def test_schedule_page_text_table_explicit_header(
 
 @pytest.mark.parametrize(
     "header,target",
-    (("application/json", "frab_json"), ("application/xml", "frab_xml"),),
+    (
+        ("application/json", "frab_json"),
+        ("application/xml", "frab_xml"),
+    ),
 )
 @pytest.mark.django_db
 def test_schedule_page_redirects(

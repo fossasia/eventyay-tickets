@@ -375,7 +375,8 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
             return
 
         slot_count_current = TalkSlot.objects.filter(
-            submission=self, schedule=self.event.wip_schedule,
+            submission=self,
+            schedule=self.event.wip_schedule,
         ).count()
         diff = slot_count_current - self.slot_count
 
@@ -384,7 +385,8 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
             # We delete unscheduled talks first.
             talks_to_delete = (
                 TalkSlot.objects.filter(
-                    submission=self, schedule=self.event.wip_schedule,
+                    submission=self,
+                    schedule=self.event.wip_schedule,
                 )
                 .order_by("start", "room", "is_visible")[:diff]
                 .values_list("id", flat=True)
@@ -393,7 +395,8 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
         elif diff < 0:
             for __ in repeat(None, abs(diff)):
                 TalkSlot.objects.create(
-                    submission=self, schedule=self.event.wip_schedule,
+                    submission=self,
+                    schedule=self.event.wip_schedule,
                 )
 
     update_talk_slots.alters_data = True
@@ -641,10 +644,8 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
             speaker=_from.get_display_name()
         )
         subject = f"[{self.event.slug}] {subject}"
-        text = (
-            text
-            or _(
-                """Hi!
+        text = text or _(
+            """Hi!
 
 I'd like to invite you to be a speaker in the talk
 
@@ -656,15 +657,19 @@ at {event}. Please follow this link to join:
 
 I'm looking forward to it!
 {speaker}"""
-            ).format(
-                event=self.event.name,
-                title=self.title,
-                url=self.urls.accept_invitation.full(),
-                speaker=_from.get_display_name(),
-            )
+        ).format(
+            event=self.event.name,
+            title=self.title,
+            url=self.urls.accept_invitation.full(),
+            speaker=_from.get_display_name(),
         )
         to = to.split(",") if isinstance(to, str) else to
         for invite in to:
-            QueuedMail(event=self.event, to=invite, subject=subject, text=text,).send()
+            QueuedMail(
+                event=self.event,
+                to=invite,
+                subject=subject,
+                text=text,
+            ).send()
 
     send_invite.alters_data = True

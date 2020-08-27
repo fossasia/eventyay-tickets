@@ -155,7 +155,11 @@ class Schedule(LogMixin, models.Model):
         """Returns all :class:`~pretalx.schedule.models.slot.TalkSlot` objects
         that have been scheduled."""
         return (
-            self.talks.select_related("submission", "submission__event", "room",)
+            self.talks.select_related(
+                "submission",
+                "submission__event",
+                "room",
+            )
             .filter(
                 room__isnull=False,
                 start__isnull=False,

@@ -25,7 +25,13 @@ def event():
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize("locale_array,count", (("de", 1), ("de,en", 2),))
+@pytest.mark.parametrize(
+    "locale_array,count",
+    (
+        ("de", 1),
+        ("de,en", 2),
+    ),
+)
 def test_locales(event, locale_array, count):
     event.locale_array = locale_array
     event.save()

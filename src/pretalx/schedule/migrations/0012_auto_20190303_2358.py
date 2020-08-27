@@ -15,5 +15,8 @@ class Migration(migrations.Migration):
             name="is_visible",
             field=models.BooleanField(default=False),
         ),
-        migrations.AlterUniqueTogether(name="talkslot", unique_together=set(),),
+        migrations.AlterUniqueTogether(
+            name="talkslot",
+            unique_together=set(),
+        ),
     ]

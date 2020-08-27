@@ -85,7 +85,10 @@ def test_submission_serializer_for_organiser(submission, orga_user, resource):
             == submission.created.astimezone(submission.event.tz).isoformat()
         )
         assert data["resources"] == [
-            {"resource": resource.resource.url, "description": resource.description,}
+            {
+                "resource": resource.resource.url,
+                "description": resource.description,
+            }
         ]
 
 
@@ -118,7 +121,10 @@ def test_submission_serializer(submission, resource):
         assert data["submission_type"] == str(submission.submission_type.name)
         assert data["slot"] is None
         assert data["resources"] == [
-            {"resource": resource.resource.url, "description": resource.description,}
+            {
+                "resource": resource.resource.url,
+                "description": resource.description,
+            }
         ]
 
 
@@ -168,7 +174,12 @@ def test_orga_can_see_all_submissions(
 @pytest.mark.django_db
 @pytest.mark.parametrize(
     "is_visible_to_reviewers,is_reviewer,length",
-    ((True, True, 1), (False, True, 0), (True, False, 1), (False, False, 1),),
+    (
+        (True, True, 1),
+        (False, True, 0),
+        (True, False, 1),
+        (False, False, 1),
+    ),
 )
 def test_answer_is_visible_to_reviewers(
     orga_client,
@@ -278,7 +289,10 @@ def test_orga_can_see_all_talks_even_nonpublic(
 
 @pytest.mark.django_db
 def test_reviewer_cannot_see_speakers_and_anonymised_content(
-    orga_client, review_user, submission, event,
+    orga_client,
+    review_user,
+    submission,
+    event,
 ):
     with scope(event=event):
         submission.event.active_review_phase.can_see_speaker_names = False

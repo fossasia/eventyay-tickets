@@ -584,7 +584,8 @@ class CfPFlow:
                                 locales,
                             ),
                             "added_help_text": i18n_string(
-                                getattr(field, "added_help_text", ""), locales,
+                                getattr(field, "added_help_text", ""),
+                                locales,
                             ),
                             "full_help_text": field.help_text,
                             "required": field.required,

@@ -26,10 +26,17 @@ class MailTemplate(LogMixin, models.Model):
     """
 
     event = models.ForeignKey(
-        to="event.Event", on_delete=models.PROTECT, related_name="mail_templates",
+        to="event.Event",
+        on_delete=models.PROTECT,
+        related_name="mail_templates",
     )
-    subject = I18nCharField(max_length=200, verbose_name=_("Subject"),)
-    text = I18nTextField(verbose_name=_("Text"),)
+    subject = I18nCharField(
+        max_length=200,
+        verbose_name=_("Subject"),
+    )
+    text = I18nTextField(
+        verbose_name=_("Text"),
+    )
     reply_to = models.CharField(
         max_length=200,
         blank=True,
@@ -168,7 +175,10 @@ class QueuedMail(LogMixin, models.Model):
         null=True,
         blank=True,
     )
-    to_users = models.ManyToManyField(to="person.User", related_name="mails",)
+    to_users = models.ManyToManyField(
+        to="person.User",
+        related_name="mails",
+    )
     reply_to = models.CharField(
         max_length=1000,
         null=True,
@@ -210,7 +220,8 @@ class QueuedMail(LogMixin, models.Model):
     @classmethod
     def make_html(cls, text, event=None):
         body_md = bleach.linkify(
-            bleach.clean(markdown.markdown(text), tags=ALLOWED_TAGS), parse_email=True,
+            bleach.clean(markdown.markdown(text), tags=ALLOWED_TAGS),
+            parse_email=True,
         )
         html_context = {
             "body": body_md,

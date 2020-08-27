@@ -13,6 +13,8 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RenameField(
-            model_name="event", old_name="color", new_name="primary_color",
+            model_name="event",
+            old_name="color",
+            new_name="primary_color",
         ),
     ]

@@ -185,7 +185,9 @@ The {organiser} team"""
         invitation_subject = _("You have been invited to an organiser team")
 
         mail = QueuedMail.objects.create(
-            to=self.email, subject=str(invitation_subject), text=str(invitation_text),
+            to=self.email,
+            subject=str(invitation_subject),
+            text=str(invitation_text),
         )
         mail.send()
         return mail

@@ -17,7 +17,9 @@ class Migration(migrations.Migration):
             field=i18nfield.fields.I18nTextField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name="feedback", name="review", field=models.TextField(),
+            model_name="feedback",
+            name="review",
+            field=models.TextField(),
         ),
         migrations.AlterField(
             model_name="submission",

@@ -121,7 +121,8 @@ class ReviewPhase(models.Model):
     is_active = models.BooleanField(default=False)
 
     can_review = models.BooleanField(
-        verbose_name=_("Reviewers can write and edit reviews"), default=True,
+        verbose_name=_("Reviewers can write and edit reviews"),
+        default=True,
     )
     can_see_other_reviews = models.CharField(
         verbose_name=_("Reviewers can see other reviews"),
@@ -134,13 +135,16 @@ class ReviewPhase(models.Model):
         default="after_review",
     )
     can_see_speaker_names = models.BooleanField(
-        verbose_name=_("Reviewers can see speaker names"), default=True,
+        verbose_name=_("Reviewers can see speaker names"),
+        default=True,
     )
     can_see_reviewer_names = models.BooleanField(
-        verbose_name=_("Reviewers can see the names of other reviewers"), default=True,
+        verbose_name=_("Reviewers can see the names of other reviewers"),
+        default=True,
     )
     can_change_submission_state = models.BooleanField(
-        verbose_name=_("Reviewers can accept and reject submissions"), default=False,
+        verbose_name=_("Reviewers can accept and reject submissions"),
+        default=False,
     )
     speakers_can_change_submissions = models.BooleanField(
         verbose_name=_("Speakers can modify their submissions before acceptance"),

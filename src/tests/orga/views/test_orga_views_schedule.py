@@ -622,7 +622,10 @@ def test_reviewer_cannot_move_rooms_in_list_down(
 def test_regenerate_speaker_notifications(orga_client, event, slot):
     with scope(event=event):
         queue_count = event.queued_mails.count()
-    response = orga_client.post(event.orga_urls.schedule + "resend_mails", follow=True,)
+    response = orga_client.post(
+        event.orga_urls.schedule + "resend_mails",
+        follow=True,
+    )
     assert response.status_code == 200
     with scope(event=event):
         assert event.queued_mails.count() > queue_count
@@ -632,7 +635,10 @@ def test_regenerate_speaker_notifications(orga_client, event, slot):
 def test_regenerate_speaker_notifications_before_schedule(orga_client, event):
     with scope(event=event):
         queue_count = event.queued_mails.count()
-    response = orga_client.post(event.orga_urls.schedule + "resend_mails", follow=True,)
+    response = orga_client.post(
+        event.orga_urls.schedule + "resend_mails",
+        follow=True,
+    )
     assert response.status_code == 200
     assert (
         "You can only regenerate mails after the first schedule was released."

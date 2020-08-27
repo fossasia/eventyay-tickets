@@ -81,7 +81,13 @@ def test_orga_edit_team_tracks(orga_client, organiser, event, track, other_track
     )
     response = orga_client.get(url, follow=True)
     assert response.status_code == 200
-    response = orga_client.post(url, follow=True, data={"limit_tracks": track.pk,},)
+    response = orga_client.post(
+        url,
+        follow=True,
+        data={
+            "limit_tracks": track.pk,
+        },
+    )
     assert response.status_code == 200
     with scopes_disabled():
         assert team.limit_tracks.all().count() == 1
@@ -103,7 +109,13 @@ def test_orga_edit_team_tracks_limited_by_events(
     )
     response = orga_client.get(url, follow=True)
     assert response.status_code == 200
-    response = orga_client.post(url, follow=True, data={"limit_tracks": track.pk,},)
+    response = orga_client.post(
+        url,
+        follow=True,
+        data={
+            "limit_tracks": track.pk,
+        },
+    )
     assert response.status_code == 200
     with scopes_disabled():
         assert team.limit_tracks.all().count() == 1

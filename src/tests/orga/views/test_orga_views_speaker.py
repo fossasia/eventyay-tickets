@@ -129,7 +129,11 @@ def test_orga_cannot_edit_speaker_without_filling_questions(
         speaker_question.save()
     response = orga_client.post(
         url,
-        data={"name": "BESTSPEAKAR", "biography": "bio", "email": speaker.email,},
+        data={
+            "name": "BESTSPEAKAR",
+            "biography": "bio",
+            "email": speaker.email,
+        },
         follow=True,
     )
     assert response.status_code == 200
@@ -189,7 +193,9 @@ def test_reviewer_cannot_edit_speaker(review_client, speaker, event, submission)
     with scope(event=event):
         url = speaker.event_profile(event).orga_urls.base
     response = review_client.post(
-        url, data={"name": "BESTSPEAKAR", "biography": "I rule!"}, follow=True,
+        url,
+        data={"name": "BESTSPEAKAR", "biography": "I rule!"},
+        follow=True,
     )
     assert response.status_code == 200
     with scope(event=event):

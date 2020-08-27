@@ -76,7 +76,9 @@ class SubmissionSerializer(I18nAwareModelSerializer):
         )
         if has_slots or self.can_view_speakers:
             return SubmitterSerializer(
-                obj.speakers.all(), many=True, context=self.context,
+                obj.speakers.all(),
+                many=True,
+                context=self.context,
             ).data
         return []
 

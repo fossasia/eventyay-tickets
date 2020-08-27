@@ -134,17 +134,28 @@ def widget_data_v2(request, event):
             )
 
     result["tracks"] = [
-        {"id": track.id, "name": track.name, "color": track.color,}
+        {
+            "id": track.id,
+            "name": track.name,
+            "color": track.color,
+        }
         for track in tracks
         if track
     ]
     result["rooms"] = [
-        {"id": room.id, "name": room.name,}
+        {
+            "id": room.id,
+            "name": room.name,
+        }
         for room in event.rooms.all()
         if room in rooms
     ]
     result["speakers"] = [
-        {"code": user.code, "name": user.name, "avatar": user.avatar_url,}
+        {
+            "code": user.code,
+            "name": user.name,
+            "avatar": user.avatar_url,
+        }
         for user in speakers
     ]
 

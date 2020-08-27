@@ -36,7 +36,9 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            options={"ordering": ("-timestamp",),},
+            options={
+                "ordering": ("-timestamp",),
+            },
         ),
         migrations.CreateModel(
             name="GlobalSettings_SettingsStore",

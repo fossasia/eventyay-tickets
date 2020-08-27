@@ -4,7 +4,14 @@ from pretalx.common.mail import TolerantDict
 from pretalx.mail.models import QueuedMail
 
 
-@pytest.mark.parametrize("key,value", (("1", "a"), ("2", "b"), ("3", "3"),))
+@pytest.mark.parametrize(
+    "key,value",
+    (
+        ("1", "a"),
+        ("2", "b"),
+        ("3", "3"),
+    ),
+)
 def test_tolerant_dict(key, value):
     d = TolerantDict({"1": "a", "2": "b"})
     assert d[key] == value

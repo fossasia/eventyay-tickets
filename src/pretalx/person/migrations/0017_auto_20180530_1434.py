@@ -11,7 +11,15 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(model_name="eventpermission", name="event",),
-        migrations.RemoveField(model_name="eventpermission", name="user",),
-        migrations.DeleteModel(name="EventPermission",),
+        migrations.RemoveField(
+            model_name="eventpermission",
+            name="event",
+        ),
+        migrations.RemoveField(
+            model_name="eventpermission",
+            name="user",
+        ),
+        migrations.DeleteModel(
+            name="EventPermission",
+        ),
     ]

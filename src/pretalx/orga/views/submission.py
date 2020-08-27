@@ -720,7 +720,8 @@ class SubmissionStats(PermissionRequired, TemplateView):
         data = Counter(
             log.timestamp.astimezone(self.request.event.tz).date()
             for log in ActivityLog.objects.filter(
-                event=self.request.event, action_type="pretalx.submission.create",
+                event=self.request.event,
+                action_type="pretalx.submission.create",
             )
             if getattr(log.content_object, "state", None)
             in [SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED]

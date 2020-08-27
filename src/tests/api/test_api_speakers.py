@@ -68,7 +68,12 @@ def test_speaker_orga_serializer(slot):
 @pytest.mark.django_db
 @pytest.mark.parametrize(
     "is_visible_to_reviewers,is_reviewer,length",
-    ((True, True, 1), (False, True, 0), (True, False, 1), (False, False, 1),),
+    (
+        (True, True, 1),
+        (False, True, 0),
+        (True, False, 1),
+        (False, False, 1),
+    ),
 )
 def test_speaker_answer_is_visible_to_reviewers(
     orga_client,

@@ -27,8 +27,9 @@ def run_update_check(sender, **kwargs):
     if not gs.settings.update_check_enabled:
         return
 
-    if not gs.settings.update_check_last or now() - gs.settings.update_check_last > dt.timedelta(
-        hours=23
+    if (
+        not gs.settings.update_check_last
+        or now() - gs.settings.update_check_last > dt.timedelta(hours=23)
     ):
         update_check.apply_async()
 
@@ -62,7 +63,8 @@ def update_check():
     }
     try:
         response = requests.post(
-            "https://pretalx.com/.update_check/", json=check_payload,
+            "https://pretalx.com/.update_check/",
+            json=check_payload,
         )
     except requests.RequestException:  # pragma: no cover
         gs.settings.set("update_check_last", now())

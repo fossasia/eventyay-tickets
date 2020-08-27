@@ -13,6 +13,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AlterModelOptions(
-            name="schedule", options={"ordering": ("-published",)},
+            name="schedule",
+            options={"ordering": ("-published",)},
         ),
     ]

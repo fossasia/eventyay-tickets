@@ -25,7 +25,10 @@ def test_cannot_login_with_incorrect_email(client, event, speaker):
 
 @pytest.mark.django_db
 def test_cfp_logout(speaker_client, event, speaker):
-    response = speaker_client.get(event.urls.logout, follow=True,)
+    response = speaker_client.get(
+        event.urls.logout,
+        follow=True,
+    )
     assert response.status_code == 200
     assert speaker.get_display_name() not in response.content.decode()
 
@@ -33,7 +36,11 @@ def test_cfp_logout(speaker_client, event, speaker):
 @pytest.mark.django_db
 def test_can_reset_password_by_email(speaker, client, event):
     response = client.post(
-        event.urls.reset, data={"login_email": speaker.email,}, follow=True,
+        event.urls.reset,
+        data={
+            "login_email": speaker.email,
+        },
+        follow=True,
     )
     assert response.status_code == 200
     speaker.refresh_from_db()
@@ -67,7 +74,11 @@ def test_cannot_use_incorrect_token(speaker, client, event):
 @pytest.mark.django_db
 def test_cannot_reset_password_with_incorrect_input(speaker, client, event):
     response = client.post(
-        event.urls.reset, data={"login_email": speaker.email,}, follow=True,
+        event.urls.reset,
+        data={
+            "login_email": speaker.email,
+        },
+        follow=True,
     )
     assert response.status_code == 200
     speaker.refresh_from_db()
@@ -91,7 +102,11 @@ def test_cannot_reset_password_with_incorrect_input(speaker, client, event):
 @pytest.mark.django_db
 def test_cannot_reset_password_to_insecure_password(speaker, client, event):
     response = client.post(
-        event.urls.reset, data={"login_email": speaker.email,}, follow=True,
+        event.urls.reset,
+        data={
+            "login_email": speaker.email,
+        },
+        follow=True,
     )
     assert response.status_code == 200
     speaker.refresh_from_db()
@@ -116,7 +131,9 @@ def test_cannot_reset_password_to_insecure_password(speaker, client, event):
 def test_cannot_reset_password_without_account(speaker, client, event):
     response = client.post(
         event.urls.reset,
-        data={"login_email": "incorrect" + speaker.email,},
+        data={
+            "login_email": "incorrect" + speaker.email,
+        },
         follow=True,
     )
     assert response.status_code == 200

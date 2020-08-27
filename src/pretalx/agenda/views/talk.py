@@ -82,7 +82,9 @@ class TalkView(PermissionRequired, TemplateView):
     def get_object(self, queryset=None):
         talk = (
             self.request.event.talks.prefetch_related("slots", "answers", "resources")
-            .filter(code__iexact=self.kwargs["slug"],)
+            .filter(
+                code__iexact=self.kwargs["slug"],
+            )
             .first()
         )
         if talk:

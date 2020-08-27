@@ -9,7 +9,10 @@ def get_context_explanation():
                 "Link to confirm a submission after it has been accepted."
             ),
         },
-        {"name": "event_name", "explanation": _("The event's full name."),},
+        {
+            "name": "event_name",
+            "explanation": _("The event's full name."),
+        },
         {
             "name": "submission_title",
             "explanation": _(

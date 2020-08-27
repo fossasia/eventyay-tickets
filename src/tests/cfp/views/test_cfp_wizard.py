@@ -284,7 +284,12 @@ class TestWizard:
             event=event,
         )
         response, current_url = self.perform_question_wizard(
-            client, response, current_url, answer_data, next_step="user", event=event,
+            client,
+            response,
+            current_url,
+            answer_data,
+            next_step="user",
+            event=event,
         )
         response, current_url = self.perform_user_wizard(
             client,
@@ -316,10 +321,18 @@ class TestWizard:
         client.force_login(user)
         response, current_url = self.perform_init_wizard(client, event=event)
         response, current_url = self.perform_info_wizard(
-            client, response, current_url, submission_type=submission_type, event=event,
+            client,
+            response,
+            current_url,
+            submission_type=submission_type,
+            event=event,
         )
         response, current_url = self.perform_question_wizard(
-            client, response, current_url, answer_data, event=event,
+            client,
+            response,
+            current_url,
+            answer_data,
+            event=event,
         )
         response, current_url = self.perform_profile_form(
             client, response, current_url, event=event
@@ -488,7 +501,13 @@ class TestWizard:
 
     @pytest.mark.django_db
     def test_wizard_track_access_code_and_question(
-        self, event, client, access_code, track, other_track, question,
+        self,
+        event,
+        client,
+        access_code,
+        track,
+        other_track,
+        question,
     ):
         with scope(event=event):
             submission_type = SubmissionType.objects.filter(event=event).first().pk
@@ -604,7 +623,11 @@ class TestWizard:
 
     @pytest.mark.django_db
     def test_wizard_existing_user_twice(
-        self, event, client, user, speaker_question,
+        self,
+        event,
+        client,
+        user,
+        speaker_question,
     ):
         with scope(event=event):
             assert event.submissions.count() == 0
@@ -623,7 +646,11 @@ class TestWizard:
                 event=event,
             )
             response, current_url = self.perform_question_wizard(
-                client, response, current_url, answer_data, event=event,
+                client,
+                response,
+                current_url,
+                answer_data,
+                event=event,
             )
             response, current_url = self.perform_profile_form(
                 client, response, current_url, event=event

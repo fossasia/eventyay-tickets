@@ -108,7 +108,10 @@ def test_organizer_can_create_question(event, orga_client):
 def test_organizer_can_edit_question(event, orga_client, question):
     response = orga_client.patch(
         event.api_urls.questions + f"{question.pk}/",
-        {"target": "speaker", "help_text": "hellllp",},
+        {
+            "target": "speaker",
+            "help_text": "hellllp",
+        },
         content_type="application/json",
     )
     assert response.status_code == 200, response.content.decode()
@@ -158,7 +161,10 @@ def test_reviewer_cannot_create_question(event, review_client):
 def test_reviewer_cannot_edit_question(event, review_client, question):
     response = review_client.patch(
         event.api_urls.questions + f"{question.pk}/",
-        {"target": "speaker", "help_text": "hellllp",},
+        {
+            "target": "speaker",
+            "help_text": "hellllp",
+        },
         content_type="application/json",
     )
     assert response.status_code == 403, response.content.decode()

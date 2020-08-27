@@ -161,7 +161,11 @@ def test_withdraw_success(submission, state):
 
 @pytest.mark.parametrize(
     "state",
-    (SubmissionStates.CONFIRMED, SubmissionStates.REJECTED, SubmissionStates.CANCELED,),
+    (
+        SubmissionStates.CONFIRMED,
+        SubmissionStates.REJECTED,
+        SubmissionStates.CANCELED,
+    ),
 )
 @pytest.mark.django_db
 def test_withdraw_fail(submission, state):

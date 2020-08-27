@@ -153,7 +153,10 @@ def test_availability_fail(method, args, expected):
 @pytest.mark.parametrize(
     "avails,expected",
     (
-        ([], [],),
+        (
+            [],
+            [],
+        ),
         (
             [
                 Availability(
@@ -281,7 +284,10 @@ def test_union(avails, expected):
 @pytest.mark.parametrize(
     "availsets,expected",
     (
-        ([], [],),
+        (
+            [],
+            [],
+        ),
         (
             [
                 [

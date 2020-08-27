@@ -88,7 +88,9 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            options={"ordering": ["position"],},
+            options={
+                "ordering": ["position"],
+            },
             bases=(pretalx.common.mixins.LogMixin, models.Model),
         ),
         migrations.CreateModel(

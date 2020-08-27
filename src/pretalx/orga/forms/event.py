@@ -212,7 +212,10 @@ class EventSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
             "The list display will show the talks with their times in a single column, even if you have multiple rooms. "
             "Please note that the schedule widget will always be in the proportional schedule mode."
         ),
-        choices=(("proportional", _("Proportional")), ("list", _("List")),),
+        choices=(
+            ("proportional", _("Proportional")),
+            ("list", _("List")),
+        ),
         required=True,
     )
     show_featured = forms.ChoiceField(

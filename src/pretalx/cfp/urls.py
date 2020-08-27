@@ -48,7 +48,9 @@ urlpatterns = [
                     name="event.user.submissions",
                 ),
                 re_path(
-                    "^me/mails/$", user.MailListView.as_view(), name="event.user.mails",
+                    "^me/mails/$",
+                    user.MailListView.as_view(),
+                    name="event.user.mails",
                 ),
                 re_path(
                     r"^me/submissions/(?P<code>[\w-]+)/",

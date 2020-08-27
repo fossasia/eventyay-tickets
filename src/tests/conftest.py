@@ -810,10 +810,13 @@ def past_slot(other_confirmed_submission, room, schedule, speaker):
 def break_slot(room, schedule):
     with scope(event=schedule.event):
         TalkSlot.objects.create(
-            description="Break", schedule=schedule.event.wip_schedule,
+            description="Break",
+            schedule=schedule.event.wip_schedule,
         )
         slot = TalkSlot.objects.create(
-            description="Break", schedule=schedule, is_visible=True,
+            description="Break",
+            schedule=schedule,
+            is_visible=True,
         )
         slots = TalkSlot.objects.filter(submission__isnull=True)
         slots.update(

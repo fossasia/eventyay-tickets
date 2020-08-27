@@ -330,7 +330,10 @@ def test_orga_can_delete_template(orga_client, event, mail_template):
 
 @pytest.mark.django_db
 def test_orga_can_compose_single_mail(orga_client, event, submission):
-    response = orga_client.get(event.orga_urls.compose_mails, follow=True,)
+    response = orga_client.get(
+        event.orga_urls.compose_mails,
+        follow=True,
+    )
     assert response.status_code == 200
     with scope(event=event):
         assert QueuedMail.objects.filter(sent__isnull=True).count() == 0
@@ -356,7 +359,10 @@ def test_orga_can_compose_mail_for_track(orga_client, event, submission, track):
     with scope(event=event):
         submission.track = track
         submission.save()
-    response = orga_client.get(event.orga_urls.compose_mails, follow=True,)
+    response = orga_client.get(
+        event.orga_urls.compose_mails,
+        follow=True,
+    )
     assert response.status_code == 200
     with scope(event=event):
         assert QueuedMail.objects.filter(sent__isnull=True).count() == 0
@@ -379,7 +385,10 @@ def test_orga_can_compose_mail_for_track(orga_client, event, submission, track):
 
 @pytest.mark.django_db
 def test_orga_can_compose_mail_for_submission_type(orga_client, event, submission):
-    response = orga_client.get(event.orga_urls.compose_mails, follow=True,)
+    response = orga_client.get(
+        event.orga_urls.compose_mails,
+        follow=True,
+    )
     assert response.status_code == 200
     with scope(event=event):
         assert QueuedMail.objects.filter(sent__isnull=True).count() == 0
@@ -407,7 +416,10 @@ def test_orga_can_compose_mail_for_track_and_type_no_doubles(
     with scope(event=event):
         submission.track = track
         submission.save()
-    response = orga_client.get(event.orga_urls.compose_mails, follow=True,)
+    response = orga_client.get(
+        event.orga_urls.compose_mails,
+        follow=True,
+    )
     assert response.status_code == 200
     with scope(event=event):
         assert QueuedMail.objects.filter(sent__isnull=True).count() == 0
@@ -457,7 +469,11 @@ def test_orga_can_compose_single_mail_selected_submissions(
 
 @pytest.mark.django_db
 def test_orga_can_compose_single_mail_to_additional_recipients(
-    orga_client, event, submission, other_submission, orga_user,
+    orga_client,
+    event,
+    submission,
+    other_submission,
+    orga_user,
 ):
     with scope(event=event):
         assert QueuedMail.objects.filter(sent__isnull=True).count() == 0

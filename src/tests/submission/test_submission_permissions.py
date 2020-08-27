@@ -57,7 +57,14 @@ def test_is_speaker_false(event, submission, orga_user):
 )
 @pytest.mark.parametrize(
     "target_state",
-    ("accepted", "rejected", "confirmed", "canceled", "withdrawn", "deleted",),
+    (
+        "accepted",
+        "rejected",
+        "confirmed",
+        "canceled",
+        "withdrawn",
+        "deleted",
+    ),
 )
 def test_can_change_state(current_state, target_state):
     submission = Submission(state=current_state)

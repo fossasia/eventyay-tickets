@@ -7,7 +7,11 @@ from pretalx.person.permissions import person_can_view_information
 @pytest.mark.django_db
 @pytest.mark.parametrize(
     "include_submitters,exclude_unconfirmed,expected",
-    ((True, True, True), (False, True, False), (False, False, False),),
+    (
+        (True, True, True),
+        (False, True, False),
+        (False, False, False),
+    ),
 )
 def test_can_view_information(
     information, submission, include_submitters, exclude_unconfirmed, expected

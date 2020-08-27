@@ -199,7 +199,10 @@ class ScheduleView(ScheduleDataView):
         rooms = list(talks_by_room.keys())
         lines = ["        | " + " | ".join(f"{room:<{col_width-2}}" for room in rooms)]
         tick_times = rrule.rrule(
-            rrule.HOURLY, byminute=(0, 30), dtstart=global_start, until=global_end,
+            rrule.HOURLY,
+            byminute=(0, 30),
+            dtstart=global_start,
+            until=global_end,
         )
 
         for hour in rrule.rrule(

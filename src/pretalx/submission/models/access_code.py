@@ -16,7 +16,9 @@ class SubmitterAccessCode(LogMixin, GenerateCode, models.Model):
         related_name="submitter_access_codes",
     )
     code = models.CharField(
-        verbose_name=_("Access code"), max_length=255, db_index=True,
+        verbose_name=_("Access code"),
+        max_length=255,
+        db_index=True,
     )
     track = models.ForeignKey(
         to="submission.Track",
@@ -89,6 +91,11 @@ class SubmitterAccessCode(LogMixin, GenerateCode, models.Model):
 
         to = to.split(",") if isinstance(to, str) else to
         for invite in to:
-            QueuedMail(event=self.event, to=invite, subject=subject, text=text,).send()
+            QueuedMail(
+                event=self.event,
+                to=invite,
+                subject=subject,
+                text=text,
+            ).send()
 
     send_invite.alters_data = True

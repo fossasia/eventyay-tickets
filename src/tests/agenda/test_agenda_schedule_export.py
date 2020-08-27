@@ -44,7 +44,11 @@ def test_schedule_xsd_is_up_to_date():
 
 @pytest.mark.django_db
 def test_schedule_frab_xml_export(
-    slot, client, django_assert_max_num_queries, schedule_schema, break_slot,
+    slot,
+    client,
+    django_assert_max_num_queries,
+    schedule_schema,
+    break_slot,
 ):
     with django_assert_max_num_queries(30):
         response = client.get(
@@ -576,7 +580,8 @@ def test_empty_speaker_csv_export(orga_client, django_assert_max_num_queries, ev
     with django_assert_max_num_queries(25):
         response = orga_client.get(
             reverse(
-                "agenda:export", kwargs={"event": event.slug, "name": "speakers.csv"},
+                "agenda:export",
+                kwargs={"event": event.slug, "name": "speakers.csv"},
             ),
             follow=True,
         )
@@ -632,12 +637,16 @@ def test_speaker_question_csv_export(
 
 @pytest.mark.django_db
 def test_wrong_export(
-    slot, orga_client,
+    slot,
+    orga_client,
 ):
     response = orga_client.get(
         reverse(
             "agenda:export",
-            kwargs={"event": slot.submission.event.slug, "name": "wrong",},
+            kwargs={
+                "event": slot.submission.event.slug,
+                "name": "wrong",
+            },
         ),
         follow=True,
     )

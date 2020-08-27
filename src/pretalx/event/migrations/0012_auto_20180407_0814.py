@@ -13,7 +13,8 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AlterModelOptions(
-            name="event", options={"ordering": ("date_from",)},
+            name="event",
+            options={"ordering": ("date_from",)},
         ),
         migrations.AlterField(
             model_name="event",

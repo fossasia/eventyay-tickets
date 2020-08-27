@@ -270,7 +270,11 @@ def test_can_change_api_token(speaker, event, speaker_client):
     speaker.regenerate_token()
     old_token = Token.objects.filter(user=speaker).first().key
     response = speaker_client.post(
-        event.urls.user, data={"form": "token",}, follow=True,
+        event.urls.user,
+        data={
+            "form": "token",
+        },
+        follow=True,
     )
     assert response.status_code == 200
     new_token = Token.objects.filter(user=speaker).first().key

@@ -366,7 +366,8 @@ class User(PermissionsMixin, GenerateCode, FileCleanupMixin, AbstractBaseUser):
         if event:
             path = "orga:event.auth.recover" if orga else "cfp:event.recover"
             url = build_absolute_uri(
-                path, kwargs={"token": self.pw_reset_token, "event": event.slug},
+                path,
+                kwargs={"token": self.pw_reset_token, "event": event.slug},
             )
         else:
             url = build_absolute_uri(
@@ -393,7 +394,8 @@ the pretalx robot"""
 
         with override(get_language()):
             mail = QueuedMail.objects.create(
-                subject=_("Password recovery"), text=str(mail_text).format(**context),
+                subject=_("Password recovery"),
+                text=str(mail_text).format(**context),
             )
             mail.to_users.add(self)
             mail.send()

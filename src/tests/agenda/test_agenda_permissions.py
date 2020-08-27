@@ -54,7 +54,13 @@ def test_agenda_permission_is_feedback_ready(
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize("agenda_visible,result", ((True, True), (False, False),))
+@pytest.mark.parametrize(
+    "agenda_visible,result",
+    (
+        (True, True),
+        (False, False),
+    ),
+)
 def test_agenda_permission_is_speaker_viewable(
     agenda_visible, result, speaker, slot, schedule, monkeypatch
 ):

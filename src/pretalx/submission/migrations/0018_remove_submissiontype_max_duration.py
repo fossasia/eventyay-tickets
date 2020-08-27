@@ -10,5 +10,8 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(model_name="submissiontype", name="max_duration",),
+        migrations.RemoveField(
+            model_name="submissiontype",
+            name="max_duration",
+        ),
     ]

@@ -143,7 +143,14 @@ def test_event_dashboard_with_accepted(
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize("start_diff,end_diff", ((0, 0), (-3, -3), (3, 3),))
+@pytest.mark.parametrize(
+    "start_diff,end_diff",
+    (
+        (0, 0),
+        (-3, -3),
+        (3, 3),
+    ),
+)
 def test_event_dashboard_different_times(event, orga_client, start_diff, end_diff):
     with scope(event=event):
         today = now().date()
