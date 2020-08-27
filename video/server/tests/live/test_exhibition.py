@@ -113,6 +113,9 @@ async def test_get(world, exhibition_room):
                 "banner_detail": None,
                 "contact_enabled": True,
                 "text": "# Wir liefern wovon andere nur reden\n\nHallo!\nDas ist ein Markdowntext!",
+                "short_text": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod "
+                              "tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero "
+                              "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea tak",
                 "size": "1x1",
                 "sorting_priority": 0,
                 "links": [
@@ -141,6 +144,9 @@ async def test_get(world, exhibition_room):
                 "banner_detail": None,
                 "contact_enabled": True,
                 "text": "# Gastro und mehr\n\nVon Apfel bis Zebra, wir liefern!",
+                "short_text": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod "
+                              "tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero "
+                              "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea tak",
                 "size": "1x1",
                 "sorting_priority": 1,
                 "links": [],
