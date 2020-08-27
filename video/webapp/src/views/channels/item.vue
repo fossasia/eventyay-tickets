@@ -1,6 +1,6 @@
 <template lang="pug">
 .c-channel
-	.header
+	.ui-page-header
 		h2 {{ otherUsers.map(user => user.profile.display_name).join(', ') }}
 		bunt-icon-button(@click="startCall", tooltip="start video call", tooltipPlacement="left") phone_outline
 	chat(mode="standalone", :module="{channel_id: channelId}", :showUserlist="false")
@@ -39,15 +39,9 @@ export default {
 	flex-direction: column
 	background-color: $clr-white
 	min-height: 0
-	.header
-		flex: none
-		display: flex
+	.ui-page-header
 		padding: 8px 16px
-		height: 56px
-		box-sizing: border-box
-		border-bottom: border-separator()
 		justify-content: space-between
-		align-items: center
 		h2
 			margin: 0
 		.bunt-icon-button

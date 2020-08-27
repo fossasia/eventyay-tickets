@@ -1,5 +1,5 @@
 <template lang="pug">
-#app(:style="[themeVariables, browserhackStyle]")
+#app(:class="{'has-background-room': backgroundRoom}", :style="[themeVariables, browserhackStyle]")
 	.fatal-connection-error(v-if="fatalConnectionError")
 		template(v-if="fatalConnectionError.code === 'world.unknown_world'")
 			.mdi.mdi-help-circle

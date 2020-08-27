@@ -2,7 +2,7 @@
 .c-admin-room
 	.error(v-if="error") We could not fetch the current configuration.
 	template(v-else-if="config")
-		.header
+		.ui-page-header
 			bunt-icon-button(@click="$router.push({name: 'admin:rooms'})") arrow_left
 			h2 {{ config.name }} room configuration
 			.actions
@@ -219,12 +219,8 @@ export default {
 	min-height: 0
 	.bunt-icon-button
 		icon-button-style(style: clear)
-	.header
+	.ui-page-header
 		background-color: $clr-grey-100
-		border-bottom: border-separator()
-		display: flex
-		padding: 8px
-		flex: none
 		.bunt-icon-button
 			margin-right: 8px
 		h2

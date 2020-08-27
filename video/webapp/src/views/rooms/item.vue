@@ -1,6 +1,6 @@
 <template lang="pug">
 .c-room(v-if="room", :class="{'standalone-chat': modules['chat.native'] && room.modules.length === 1}")
-	.room-info(v-if="!modules['page.markdown'] && !modules['page.landing']")
+	.ui-page-header.room-info(v-if="!modules['page.markdown'] && !modules['page.landing']")
 		.room-name {{ room.name }}
 		.room-session(v-if="currentSession") {{ currentSession.title }}
 		bunt-icon-button(v-if="$features.enabled('schedule-control')", @click="showEditSchedule = true") calendar_edit
@@ -88,12 +88,8 @@ export default {
 		display: flex
 		min-height: 0
 	.room-info
-		flex: none
-		display: flex
 		padding: 0 24px
 		height: 56px
-		box-sizing: border-box
-		border-bottom: border-separator()
 		align-items: baseline
 		.room-name
 			font-size: 24px
