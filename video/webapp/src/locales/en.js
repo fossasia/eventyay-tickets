@@ -85,6 +85,8 @@ export default {
 	'Exhibitors:create:label': 'Create new',
 	'Exhibitors:save:label': 'Save',
 	'Exhibitors:validation-name:required': 'Please enter a name.',
+	'Exhibitors:validation-room:required': 'Please select a room.',
+	'Exhibitors:validation-size:required': 'Please select a size.',
 	'Exhibitors:validation-name:maxLength': 'Name cannot be longer than 80 characters.',
 	'Exhibitors:validation-tagline:maxLength': 'Tagline cannot be longer than 250 characters.',
 	'Exhibitors:validation-short-text:maxLength': 'Lead paragraph cannot be longer than 500 characters.',
