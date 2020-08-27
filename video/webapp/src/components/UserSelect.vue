@@ -23,6 +23,8 @@
 // - delete user on backspace when input empty
 // - rewrite with contenteditable?
 // - debounce search
+// - search placeholder
+// - CtA on empty results and "nothing found"
 import api from 'lib/api'
 import Avatar from 'components/Avatar'
 import InfiniteScroll from './InfiniteScroll'
