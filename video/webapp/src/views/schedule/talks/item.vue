@@ -22,10 +22,10 @@ import moment from 'lib/timetravelMoment'
 import MarkdownContent from 'components/MarkdownContent'
 
 export default {
+	components: {MarkdownContent},
 	props: {
 		talkId: String
 	},
-	components: {MarkdownContent},
 	data () {
 		return {
 			talk: null

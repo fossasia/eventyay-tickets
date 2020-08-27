@@ -10,10 +10,10 @@
 import MarkdownContent from 'components/MarkdownContent'
 
 export default {
+	components: { MarkdownContent },
 	props: {
 		speakerId: String
 	},
-	components: { MarkdownContent },
 	data () {
 		return {
 			speaker: null
