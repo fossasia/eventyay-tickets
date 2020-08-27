@@ -110,6 +110,7 @@ export default {
 	'App:fatal-connection-error:auth.denied:text': 'Bitte verwenden Sie den Link, den Sie vom Veranstalter erhalten haben.',
 	'App:fatal-connection-error:connection.replaced:headline': 'Sie haben diese Veranstaltung in einem neuen Tab oder auf einem anderen Gerät geöffnet.',
 	'App:fatal-connection-error:connection.replaced:action': 'Fortsetzen (andere Verbindung trennen)',
+	'ContactExhibitorPrompt:dismiss-button:label': 'abbrechen',
 	'ContactRequest:dismiss-button:label': 'ablehnen',
 	'ContactRequest:accept-button:label': 'annehmen',
 	'ContactRequest:request:text': 'Kontaktiere Mitarbeiter*innen...',
