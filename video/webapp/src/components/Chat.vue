@@ -31,10 +31,7 @@ import ChatUserCard from 'components/ChatUserCard'
 export default {
 	components: { ChatMessage, ChatUserCard, Avatar, InfiniteScroll, ChatInput },
 	props: {
-		room: {
-			type: Object,
-			required: true
-		},
+		room: Object,
 		module: {
 			type: Object,
 			required: true
