@@ -204,6 +204,7 @@ export default {
 			.scrollbar-thumb
 				background-color: var(--clr-sidebar-text-secondary)
 	.global-links
+		flex: none
 		display: flex
 		flex-direction: column
 		> *
