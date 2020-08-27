@@ -17,8 +17,8 @@
 			upload-url-input(v-model="exhibitor.banner_list", :label="$t('Exhibitors:banner-list:label')", name="bannerList")
 			upload-url-input(v-model="exhibitor.banner_detail", :label="$t('Exhibitors:banner-detail:label')", name="bannerDetail")
 			bunt-select(v-model="exhibitor.size", :label="$t('Exhibitors:size:label')", name="size", :options="sizes", :validation="$v.exhibitor.size")
-			bunt-input(v-model="exhibitor.sorting_priority", :label="$t('Exhibitors:sorting-priority:label')", name="sortingPriority", :validation="$v.exhibitor.sortingPriority")
-			bunt-select(v-model="exhibitor.room_id", :label="$t('Exhibitors:room:label')", name="room", :options="rooms", option-label="name", :validation="$v.exhibitor.roomId")
+			bunt-input(v-model="exhibitor.sorting_priority", :label="$t('Exhibitors:sorting-priority:label')", name="sortingPriority", :validation="$v.exhibitor.sorting_priority")
+			bunt-select(v-model="exhibitor.room_id", :label="$t('Exhibitors:room:label')", name="room", :options="rooms", option-label="name", :validation="$v.exhibitor.room_id")
 				template(slot-scope="{ option }")
 					.label {{ option.name }}
 			table.social-media-links
@@ -148,8 +148,11 @@ export default {
 				size: {
 					required: required(this.$t('Exhibitors:validation-size:required'))
 				},
-				roomId: {
+				room_id: {
 					required: required(this.$t('Exhibitors:validation-room:required'))
+				},
+				sorting_priority: {
+					required: required(this.$t('Exhibitors:validation-sorting:required'))
 				}
 			}
 		}

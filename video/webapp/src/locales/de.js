@@ -83,6 +83,7 @@ export default {
 	'Exhibitors:validation-name:required': 'Bitte gib einen Namen ein.',
 	'Exhibitors:validation-room:required': 'Bitte einen Raum auswählen.',
 	'Exhibitors:validation-size:required': 'Bitte eine Größe auswählen.',
+	'Exhibitors:validation-sorting:required': 'Bitte eine Listen-Priorität angeben.',
 	'Exhibitors:validation-name:maxLength': 'Der Name darf nicht länger als 80 Zeichen sein.',
 	'Exhibitors:validation-tagline:maxLength': 'Der Slogan darf nicht länger als 250 Zeichen sein.',
 	'Exhibitors:validation-short-text:maxLength': 'Die Einleitung darf nicht länger als 500 Zeichen sein.',
