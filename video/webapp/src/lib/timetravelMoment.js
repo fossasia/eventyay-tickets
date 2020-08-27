@@ -1,4 +1,3 @@
-/* global ENV_DEVELOPMENT */
 // moment does not let us clone and only locally override `now`
 // we need to get a clean instance to manipulate
 import config from 'config'
