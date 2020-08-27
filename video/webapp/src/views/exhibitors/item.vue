@@ -21,14 +21,14 @@ scrollbars.c-exhibitor(y)
 				.heading
 					h2.name {{ exhibitor.name }}
 					h3.tagline(v-if="exhibitor.tagline") {{ exhibitor.tagline }}
-			.social-media-links(v-if="exhibitor.social_media_links")
+			.social-media-links(v-if="exhibitor.social_media_links.length > 0")
 				a.mdi(v-for="link in exhibitor.social_media_links", :class="`mdi-${link.display_text.toLowerCase()}`", :href="link.url", :title="link.display_text", target="_blank")
 			table.external-links(v-if="profileLinks.length > 0")
 				tr(v-for="link in profileLinks")
 					th.name {{ link.display_text }}
 					td: a(:href="link.url", target="_blank") {{ prettifyUrl(link.url) }}
 			template(v-if="exhibitor.staff.length > 0")
-				.contact(v-if="hasPermission('world:exhibition.contact') && exhibitor.contact_enable")
+				.contact(v-if="hasPermission('world:exhibition.contact') && exhibitor.contact_enabled")
 					bunt-button(@click="showContactPrompt = true", :tooltip="$t('Exhibition:contact-button:tooltip')") {{ $t('Exhibition:contact-button:label') }}
 				.staff
 					h3 {{ $t("Exhibitor:staff-headline:text") }}
