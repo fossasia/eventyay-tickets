@@ -13,6 +13,7 @@
 		bunt-progress-circular(v-else, size="huge", :page="true")
 </template>
 <script>
+import api from 'lib/api'
 
 export default {
 	components: {},
