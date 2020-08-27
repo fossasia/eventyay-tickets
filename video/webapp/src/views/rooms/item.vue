@@ -12,7 +12,8 @@
 			.stage-tool-blocker(v-if="activeStageTool !== null", @click="activeStageTool = null")
 			.stage-tools(v-if="modules['livestream.native']")
 				.stage-tool(v-if="$features.enabled('questions-answers')", :class="{active: activeStageTool === 'qa'}", @click="activeStageTool = 'qa'") Ask a question
-				reactions-bar(:expanded="activeStageTool === 'reaction'", @expand="activeStageTool = 'reaction'")
+				reactions-bar(:expanded="true", @expand="activeStageTool = 'reaction'")
+				//- reactions-bar(:expanded="activeStageTool === 'reaction'", @expand="activeStageTool = 'reaction'")
 		landing-page(v-else-if="modules['page.landing']", :module="modules['page.landing']")
 		markdown-page(v-else-if="modules['page.markdown']", :module="modules['page.markdown']")
 		iframe-page(v-else-if="modules['page.iframe']", :module="modules['page.iframe']")
