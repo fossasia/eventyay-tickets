@@ -85,7 +85,7 @@ export default {
 				stroke: var(--clr-primary)
 				stroke-width: 8.5px
 				stroke-dasharray: $circumference $circumference
-				stroke-dashoffset: "calc(-1 * var(--timer) * %s)" % $circumference
+				stroke-dashoffset: "calc(-1 * var(--timer) * %spx)" % $circumference
 				transform: rotate(-90deg)
 				transform-origin: 50% 50%
 				transition: stroke-dashoffset 1s linear
