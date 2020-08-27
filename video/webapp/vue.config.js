@@ -71,7 +71,7 @@ module.exports = {
 		plugins: [
 			new webpack.DefinePlugin({
 				ENV_DEVELOPMENT: process.env.NODE_ENV === 'development',
-				RELEASE: `'${process.env.RELEASE}'`
+				RELEASE: `'${process.env.VENUELESS_COMMIT_SHA}'`
 			})
 		],
 	},
