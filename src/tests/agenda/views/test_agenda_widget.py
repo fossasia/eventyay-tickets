@@ -25,7 +25,7 @@ def test_widget_pages(
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize("version,queries", (("1", 19), ("2", 20),))
+@pytest.mark.parametrize("version,queries", (("1", 19), ("2", 21),))
 def test_widget_data(
     client,
     event,
