@@ -86,7 +86,7 @@ class AppView(View):
                             ),
                             "upload": reverse("storage:upload"),
                         },
-                        "features": ["chat-moderation"],
+                        "features": world.feature_flags,
                         "locale": world.locale,
                         "dateLocale": world.config.get("dateLocale", "en-ie"),
                         "theme": world.config.get("theme", {}),
