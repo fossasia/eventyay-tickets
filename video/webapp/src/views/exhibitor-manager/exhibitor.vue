@@ -17,7 +17,7 @@
 			upload-url-input(v-model="exhibitor.banner_list", :label="$t('Exhibitors:banner-list:label')", name="bannerList")
 			upload-url-input(v-model="exhibitor.banner_detail", :label="$t('Exhibitors:banner-detail:label')", name="bannerDetail")
 			bunt-select(v-model="exhibitor.size", :label="$t('Exhibitors:size:label')", name="size", :options="sizes")
-			bunt-input(v-model="exhibitor.sorting_priority", label="Sorting priority", name="sortingPriority", :validation="$v.exhibitor.sortingPriority")
+			bunt-input(v-model="exhibitor.sorting_priority", :label="$t('Exhibitors:sorting-priority:label')", name="sortingPriority", :validation="$v.exhibitor.sortingPriority")
 			bunt-select(v-model="exhibitor.room_id", :label="$t('Exhibitors:room:label')", name="room", :options="rooms", option-label="name")
 				template(slot-scope="{ option }")
 					.label {{ option.name }}
@@ -102,7 +102,7 @@ import Avatar from 'components/Avatar'
 import Prompt from 'components/Prompt'
 import UserSearch from 'components/UserSearch'
 import UploadUrlInput from 'components/config/UploadUrlInput'
-import { required, integer } from 'vuelidate/lib/validators'
+import { required, integer, maxLength } from 'vuelidate/lib/validators'
 
 export default {
 	components: { Avatar, Prompt, UploadUrlInput, UserSearch },
@@ -127,22 +127,22 @@ export default {
 			return this.$store.state.rooms.filter(room => room.modules.filter(m => m.type === 'exhibition.native').length > 0)
 		}
 	},
-	// TODO use message validators
-	// TODO force uniqueness in links
-	validations: {
-		exhibitor: {
-			name: {
-				required,
-				maxLength: 80
-			},
-			tagline: {
-				maxLength: 250
-			},
-			shorText: {
-				maxLength: 500
-			},
-			sortingPriority: {
-				integer
+	validations () {
+		return {
+			exhibitor: {
+				name: {
+					required: required(this.$t('Exhibitors:validation-name:required')),
+					maxLength: maxLength(80, this.$t('Exhibitors:validation-name:maxLength'))
+				},
+				tagline: {
+					maxLength: maxLength(250, this.$t('Exhibitors:validation-tagline:maxLength'))
+				},
+				shortText: {
+					maxLength: maxLength(500, this.$t('Exhibitors:validation-short-text:maxLength'))
+				},
+				sortingPriority: {
+					integer: integer(this.$t('Exhibitors:validation-sorting-priority:integer'))
+				}
 			}
 		}
 	},
