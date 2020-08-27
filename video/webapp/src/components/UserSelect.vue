@@ -22,6 +22,7 @@
 // TODO
 // - delete user on backspace when input empty
 // - rewrite with contenteditable?
+// - debounce search
 import api from 'lib/api'
 import Avatar from 'components/Avatar'
 import InfiniteScroll from './InfiniteScroll'
@@ -45,6 +46,7 @@ export default {
 	},
 	watch: {
 		search () {
+			this.loading = false
 			this.results = []
 			this.nextPage = 1
 		}
