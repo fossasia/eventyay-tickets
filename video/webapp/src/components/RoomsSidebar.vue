@@ -32,6 +32,7 @@ transition(name="sidebar")
 					.name {{ chat.name }}
 				router-link.text-chat(v-for="chat of roomsByType.textChat", :to="chat === rooms[0] ? {name: 'home'} : {name: 'room', params: {roomId: chat.id}}", :class="{unread: hasUnreadMessages(chat.modules[0].channel_id)}")
 					.name {{ chat.name }}
+				bunt-button#btn-browse-channels-trailing(@click="showChannelBrowser = true") {{ $t('RoomsSidebar:browse-channels-button:label') }}
 			.group-title
 				span {{ $t('RoomsSidebar:direct-messages-headline:text') }}
 				bunt-icon-button(@click="showDMCreationPrompt = true") plus
@@ -347,6 +348,14 @@ export default {
 				icon-button-style(color: var(--clr-sidebar-text-primary), style: clear)
 			&:not(:hover) .bunt-icon-button
 				display: none
+		#btn-browse-channels-trailing
+			color: var(--clr-sidebar-text-secondary)
+			background-color: transparent
+			font-size: 12px
+			font-weight: 500
+			border-radius: 0
+			&:hover:not(.disabled)
+				background-color: var(--clr-sidebar-hover-bg)
 	.buffer
 		flex: auto
 	.profile
