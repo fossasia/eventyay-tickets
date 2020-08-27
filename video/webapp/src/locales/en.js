@@ -26,6 +26,7 @@ export default {
 	'CreateDMPrompt:headline:text': 'Chat with another person',
 	'CreateDMPrompt:intro:text': 'Something something text',
 	'CreateDMPrompt:user:label': 'User',
+	'CreateDMPrompt:create-button:label': 'chat',
 	'ChannelBrowser:headline:text': 'Explore channels',
 	'ChannelBrowser:intro:text': 'Here, we show you a list of all channels that you can join for this event.',
 	'ChannelBrowser:create:label': 'Alternatively, you can create a new channel.',

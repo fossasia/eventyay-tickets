@@ -22,8 +22,9 @@ export default {
 	},
 	methods: {
 		async create (users) {
-			// TODO error handling
+			// TODO error handling, progress
 			await this.$store.dispatch('chat/openDirectMessage', {users: users})
+			this.$emit('close')
 		}
 	}
 }
