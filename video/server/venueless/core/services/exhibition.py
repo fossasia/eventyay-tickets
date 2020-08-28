@@ -210,6 +210,8 @@ class ExhibitionService:
         r = get_request_by_id(self.world_id, contact_request_id)
         if not r:
             return None
+        if r.state == "answered":
+            return None
         r.state = "missed"
         r.save(update_fields=["state"])
         return r.serialize()
