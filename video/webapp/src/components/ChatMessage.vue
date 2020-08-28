@@ -1,13 +1,13 @@
 <template lang="pug">
-.c-chat-message(:class="[mode, {selected, 'system-message': isSystemMessage}]")
+.c-chat-message(:class="[mode, {selected, 'system-message': isSystemMessage, 'merge-with-previous-message': mergeWithPreviousMessage, 'merge-with-next-message': mergeWithNextMessage}]")
 	.avatar-column
-		avatar(:user="sender", :size="avatarSize", @click.native="showAvatarCard", ref="avatar")
+		avatar(v-if="!mergeWithPreviousMessage", :user="sender", :size="avatarSize", @click.native="showAvatarCard", ref="avatar")
+		.timestamp(v-if="mergeWithPreviousMessage") {{ timestamp }}
 	template(v-if="message.event_type === 'channel.message'")
 		.content-wrapper
-			.message-header(v-if="mode === 'standalone'")
+			.message-header(v-if="!mergeWithPreviousMessage")
 				.display-name(@click="showAvatarCard") {{ senderDisplayName }}
 				.timestamp {{ timestamp }}
-			.display-name(v-else) {{ senderDisplayName }}
 			template(v-if="message.content.type === 'text'")
 				chat-input(v-if="editing", :message="message", @send="editMessage")
 				.content(v-else, v-html="content")
@@ -55,8 +55,8 @@ import ChatUserCard from 'components/ChatUserCard'
 import MenuDropdown from 'components/MenuDropdown'
 import Prompt from 'components/Prompt'
 
-const DATETIME_FORMAT = 'DD.MM. HH:mm'
-const TIME_FORMAT = 'HH:mm'
+const DATETIME_FORMAT = 'DD.MM. LT'
+const TIME_FORMAT = 'LT'
 
 const markdownIt = MarkdownIt('zero', {
 	linkify: true // TODO more tlds
@@ -79,6 +79,8 @@ export default {
 	components: { Avatar, ChatInput, ChatUserCard, MenuDropdown, Prompt },
 	props: {
 		message: Object,
+		previousMessage: Object,
+		nextMessage: Object,
 		mode: String
 	},
 	data () {
@@ -112,7 +114,7 @@ export default {
 		},
 		timestamp () {
 			const timestamp = moment(this.message.timestamp)
-			if (timestamp.isSame(moment(), 'day')) {
+			if (this.previousMessage && timestamp.isSame(this.previousMessage.timestamp, 'day')) {
 				return timestamp.format(TIME_FORMAT)
 			} else {
 				return timestamp.format(DATETIME_FORMAT)
@@ -120,6 +122,12 @@ export default {
 		},
 		content () {
 			return generateHTML(this.message.content?.body)
+		},
+		mergeWithPreviousMessage () {
+			return this.previousMessage && !this.isSystemMessage && this.previousMessage.event_type === 'channel.message' && this.previousMessage.sender === this.message.sender && moment(this.message.timestamp).diff(this.previousMessage.timestamp, 'minutes') < 15
+		},
+		mergeWithNextMessage () {
+			return this.nextMessage && !this.isSystemMessage && this.nextMessage.event_type === 'channel.message' && this.nextMessage.sender === this.message.sender && moment(this.nextMessage.timestamp).diff(this.message.timestamp, 'minutes') < 15
 		}
 	},
 	methods: {
@@ -166,17 +174,27 @@ export default {
 	box-sizing: border-box
 	&:hover, .selected
 		background-color: $clr-grey-100
+	.timestamp
+		font-size: 11px
+		color: $clr-secondary-text-light
 	.avatar-column
 		flex: none
 		width: 28px
 		display: flex
 		justify-content: flex-end
+		// TODO check 12h size
+		.timestamp
+			margin-top: 15.5px // HACK
+			line-height: 0
 	.content-wrapper
 		flex: auto
 		min-width: 0
 		margin-left: 8px
 		padding-top: 6px // ???
 		overflow-wrap: anywhere
+		.message-header
+			display: flex
+			align-items: baseline
 		.content
 			white-space: pre-wrap
 			.emoji
@@ -213,8 +231,11 @@ export default {
 		&:hover
 			text-decoration: underline
 			cursor: pointer
-	&:not(:hover):not(.selected) > .actions
-		visibility: hidden
+	&:not(:hover):not(.selected)
+		& > .actions
+			visibility: hidden
+		.avatar-column .timestamp
+			visibility: hidden
 	> .actions
 		will-change: visibility
 		position: absolute
@@ -258,19 +279,19 @@ export default {
 	&.standalone
 		.avatar-column
 			width: 36px
+			.timestamp
+				margin-top: 13.5px // HACK
 		.content-wrapper
 			padding-top: 4px
 			display: flex
 			flex-direction: column
-		.message-header
-			display: flex
-			align-items: baseline
-			.timestamp
-				font-size: 11px
-				color: $clr-secondary-text-light
 	&.compact
 		min-height: 36px
-		.display-name, .content
+		.message-header
+			display: inline-flex
+			.timestamp
+				margin-right: 4px
+		.content
 			display: inline
 		.actions
 			right: 4px
@@ -282,4 +303,12 @@ export default {
 					font-size: 16px
 					height: 24px
 					line-height: @height
+	&.merge-with-next-message:not(.merge-with-previous-message)
+		padding-bottom: 0
+		min-height: 0
+	&.merge-with-previous-message
+		padding-top: 0
+		min-height: 0
+		.actions
+			top: -2px
 </style>

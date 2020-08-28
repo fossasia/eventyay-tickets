@@ -5,8 +5,8 @@
 			scrollbars.timeline(y, ref="timeline", @scroll="timelineScrolled", v-resize-observer="onResize")
 				infinite-scroll(v-if="syncedScroll", :loading="fetchingMessages", @load="fetchMessages")
 					div
-				template(v-for="message of filteredTimeline")
-					chat-message(:message="message", :mode="mode", :key="message.event_id")
+				template(v-for="(message, index) of filteredTimeline")
+					chat-message(:message="message", :previousMessage="filteredTimeline[index - 1]", :nextMessage="filteredTimeline[index + 1]", :mode="mode", :key="message.event_id")
 			.chat-input
 				.no-permission(v-if="room && !room.permissions.includes('room:chat.join')") {{ $t('Chat:permission-block:room:chat.join') }}
 				bunt-button(v-else-if="!activeJoinedChannel", @click="join", :tooltip="$t('Chat:join-button:tooltip')") {{ $t('Chat:join-button:label') }}
