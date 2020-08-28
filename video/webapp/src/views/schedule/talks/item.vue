@@ -84,6 +84,12 @@ export default {
 			padding: 8px
 		.speaker
 			padding: 8px
+			display: flex
+			flex-direction: column
+
+			img
+				max-width: 100%
+				align-self: center
 			.name
 				display: block
 				margin: 8px 0
