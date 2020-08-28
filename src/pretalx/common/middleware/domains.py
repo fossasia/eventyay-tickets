@@ -89,14 +89,6 @@ class SessionMiddleware(BaseSessionMiddleware):
         super().__init__(*args, **kwargs)
         self.get_response = get_response
 
-    def process_request(self, request):
-        super().process_request(request)
-
-        if not request.session.session_key:
-            # We need to create session even if we do not yet store something there, because we need the session
-            # key for e.g. saving the user's cart
-            request.session.create()
-
     def process_response(self, request, response):
         try:
             accessed = request.session.accessed
