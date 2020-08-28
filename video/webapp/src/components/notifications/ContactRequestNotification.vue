@@ -8,10 +8,11 @@
 	.actions
 		bunt-button#btn-accept(@click="$store.dispatch('exhibition/acceptContactRequest', contactRequest)") {{ $t('ContactRequest:accept-button:label') }}
 	.timer
-		.timer-bar
+		#timer-bar
 </template>
 <script>
 import Avatar from 'components/Avatar'
+import moment from 'moment'
 
 export default {
 	components: { Avatar },
@@ -21,12 +22,15 @@ export default {
 	data () {
 		return {
 			showNotification: true,
+			timer: moment(this.contactRequest.timestamp).diff(moment(), 'seconds')
 		}
 	},
 	computed: {},
-	created () {},
+	created () {
+	},
 	mounted () {
 		this.$nextTick(() => {
+			document.getElementById('timer-bar').style.animationDelay = this.timer + 's'
 		})
 	},
 	methods: {}
@@ -60,10 +64,11 @@ export default {
 	.timer
 		display: block
 		height: 3.5px
-		.timer-bar
+		#timer-bar
 			height: 100%
 			background-color: $clr-primary
-			animation: timerBar 30s linear
+			animation: timerBar linear
+			animation-duration 30s
 			animation-fill-mode: forwards
 		@keyframes timerBar
 			0% { width: 100% }
