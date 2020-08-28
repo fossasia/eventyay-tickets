@@ -263,9 +263,9 @@ class ExhibitionService:
             for cr in user.exhibitor_contact_requests.filter(state="open")
         ]
 
-    def get_exhibition_data_for_user(self, user):
+    def get_exhibition_data_for_user(self, user_id):
         exhibitors = Exhibitor.objects.filter(
-            world__id=self.world_id, staff__user=user,
+            world__id=self.world_id, staff__user__id=user_id,
         )
         contact_requests = ContactRequest.objects.filter(exhibitor__in=exhibitors)
         return {

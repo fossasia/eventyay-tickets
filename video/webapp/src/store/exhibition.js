@@ -31,6 +31,9 @@ export default {
 			contactRequest.timestamp = new Date().toISOString()
 			// TODO: send greeting message
 		},
+		async 'api::exhibition.exhibition_data_update' ({commit, state}, {data}) {
+			commit('setData', data)
+		},
 		// for staff
 		'api::exhibition.contact_request' ({state}, data) {
 			state.contactRequests.push(data.contact_request)
@@ -48,5 +51,6 @@ export default {
 			// DM is automatically opening
 			await router.push({name: 'channel', params: {channelId: data.channel}})
 		}
+
 	}
 }
