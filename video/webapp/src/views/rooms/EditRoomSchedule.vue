@@ -21,8 +21,6 @@
 				bunt-button#btn-change(@click="change") change to
 </template>
 <script>
-import moment from 'lib/timetravelMoment'
-
 export default {
 	props: {
 		room: Object,
@@ -46,7 +44,7 @@ export default {
 	},
 	methods: {
 		formatTime (value) {
-			return moment(value).format('HH:mm')
+			return value.format('HH:mm')
 		},
 		change () {
 			this.$store.dispatch('updateRoomSchedule', {room: this.room, schedule_data: {session: this.selectedSession.id}})
