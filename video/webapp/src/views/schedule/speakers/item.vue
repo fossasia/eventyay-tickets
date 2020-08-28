@@ -44,4 +44,6 @@ export default {
 		flex-direction: column
 		padding: 16px
 		max-width: 720px
+		img
+			object-fit: contain
 </style>
