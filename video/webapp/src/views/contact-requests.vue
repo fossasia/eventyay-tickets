@@ -2,6 +2,7 @@
 .c-contact-requests
 	.header
 		h2 {{ $t("ContactRequests:headline:text") }}
+		bunt-checkbox(v-model="onlyMissed", name="onlyMissed", :label="$t('ContactRequests:button-only-missed:label')")
 	.contact-requests-list
 		.header
 			.user {{ $t("ContactRequests:from:label") }}
@@ -35,13 +36,18 @@ export default {
 	components: { Avatar },
 	data () {
 		return {
-			moment
+			moment,
+			onlyMissed: false
 		}
 	},
 	computed: {
 		...mapState('exhibition', ['contactRequests']),
 		sortedContactRequests () {
-			return this.contactRequests.slice().sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+			let contactRequests = this.contactRequests.slice().sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+			if (this.onlyMissed) {
+				contactRequests = contactRequests.filter(cr => cr.state === 'missed')
+			}
+			return contactRequests
 		}
 	},
 	created () {},
@@ -66,6 +72,7 @@ export default {
 		padding: 0 16px
 		display: flex
 		align-items: center
+		justify-content space-between
 		> *
 			margin: 0
 	.contact-requests-list

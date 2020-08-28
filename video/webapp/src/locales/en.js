@@ -101,6 +101,7 @@ export default {
 	'ContactRequests:state:label': 'state',
 	'ContactRequests:staff:label': 'answered by',
 	'ContactRequests:message:label': 'message',
+	'ContactRequests:button-only-missed:label': 'Only show unanswered requests',
 	'MediaSource:room:hint': 'Currently playing',
 	'Exhibition:contact-button:label': 'contact exhibitor',
 	'Exhibition:contact-button:tooltip': 'request a live chat with the exhibitor',

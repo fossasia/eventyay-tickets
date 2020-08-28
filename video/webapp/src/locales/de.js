@@ -95,6 +95,7 @@ export default {
 	'ContactRequests:state:label': 'Status',
 	'ContactRequests:staff:label': 'Beantwortet von',
 	'ContactRequests:message:label': 'Nachricht',
+	'ContactRequests:button-only-missed:label': 'Nur unbeantwortete Anfragen anzeigen',
 	'MediaSource:room:hint': 'Du hörst gerade',
 	'Exhibition:contact-button:label': 'Aussteller kontaktieren',
 	'Exhibition:contact-button:tooltip': 'Live chat mit den Aussteller starten',
