@@ -123,7 +123,7 @@ def get_create_params_for_room(
         "meta_Source": "venueless",
         "meta_World": room.world_id,
         "meta_Room": str(room.id),
-        "lockSettingsDisablePrivateChat": "true",
+        "lockSettingsDisablePrivateChat": "true" if room.world.config.get("bbb_disable_privatechat", True) else "false",
     }
     if call.voice_bridge:
         create_params["voiceBridge"] = call.voice_bridge
