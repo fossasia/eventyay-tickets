@@ -11,11 +11,13 @@
 			.sessions
 				.session(v-for="{session, state}, index of nextSessions", :class="{live: state.isLive}")
 					img.preview(:src="`https://picsum.photos/64?v=${index}`")
-					.time {{ state.timeString }}
 					.info
-						.title {{ session.title }}
-						.speakers {{ session.speakers.map(s => s.name).join(', ')}}
-					.room {{ session.room.name }}
+						.title-time
+							.title {{ session.title }}
+							.time {{ state.timeString }}
+						.speakers-room
+							.speakers {{ session.speakers.map(s => s.name).join(', ')}}
+							.room {{ getLocalizedString(session.room.name) }}
 			//- .header
 			//- 	h3 Sponsors
 			//- 	router-link(:to="{name: 'schedule'}") all sponsors
@@ -28,6 +30,7 @@
 import { mapState, mapGetters } from 'vuex'
 import moment from 'lib/timetravelMoment'
 import MarkdownContent from 'components/MarkdownContent'
+import { getLocalizedString } from 'components/schedule/utils'
 
 export default {
 	components: { MarkdownContent },
@@ -37,6 +40,7 @@ export default {
 	data () {
 		return {
 			moment,
+			getLocalizedString,
 			sponsors: [{
 				name: 'pretix',
 				logo: '/sponsors/pretix.svg'
@@ -69,6 +73,7 @@ export default {
 			}
 			// current or next sessions per room
 			const sessions = []
+			// TODO filter out sessions with no venueless room?
 			for (const session of this.sessions) {
 				if (!session.room) continue
 				if (session.end.isBefore(this.now) || sessions.reduce((acc, s) => s.session.room === session.room ? ++acc : acc, 0) >= 2) continue
@@ -129,25 +134,41 @@ export default {
 				height: 48px
 				width: 48px
 				margin: 0 8px 0 4px
+			.info
+				flex: auto
+				min-width: 0
+				display: flex
+				flex-direction: column
+				justify-content: space-between
+			.title-time
+				flex: none
+				display: flex
+				align-items: center
+				overflow: hidden
 			.title
+				flex: auto
 				// font-weight: 600
 				// line-height: 32px
 				line-height: 28px
-			.speakers
-				color: $clr-secondary-text-light
+				ellipsis()
 			.time
-				position: absolute
-				top: 8px
-				right: 4px
+				flex: none
 				background-color: $clr-blue-grey-500
 				color: $clr-primary-text-dark
 				padding: 2px 4px
+				margin: 0 4px 4px
 				border-radius: 4px
-			.room
+			.speakers-room
+				display: flex
+				align-items: baseline
+				margin-right: 4px
+			.speakers, .room
+				flex: 1
 				color: $clr-secondary-text-light
-				position: absolute
-				bottom: 8px
-				right: 6px
+				ellipsis()
+			.room
+				margin-left: 4px
+				text-align: right
 			&.live .time
 				background-color: $clr-danger
 	.sponsors
