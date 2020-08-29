@@ -142,7 +142,6 @@ export default {
 			}
 			if (Hls.isSupported()) {
 				const hlsConfig = Object.assign({}, HLS_DEFAULT_CONFIG, config.videoPlayer?.['hls.js'])
-				console.log(hlsConfig)
 				const player = new Hls(hlsConfig)
 				let started = false
 				player.attachMedia(video)
