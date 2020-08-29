@@ -82,7 +82,7 @@ class WorldModule(BaseModule):
                 "connection_limit",
                 "bbb_defaults",
                 "pretalx",
-                "videoPlayer"
+                "videoPlayer",
             )
             model_fields = ("title", "locale", "timezone", "roles", "trait_grants")
             update_fields = set()
