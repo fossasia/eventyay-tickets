@@ -488,25 +488,7 @@ class WidgetSettingsForm(HierarkeyForm):
 
 
 class WidgetGenerationForm(forms.ModelForm):
-    height = forms.CharField(
-        label=_("Widget height"),
-        help_text=_(
-            "Leave empty if you want the widget to expand to its maximum height. If you want the widget to have a limited height and a scroll bar, choose its height here."
-        ),
-        required=False,
-    )
-    compatibility_mode = forms.BooleanField(
-        label=_("Compatibility mode"),
-        help_text=_(
-            "Our regular widget doesn't work in all website builders. If you run into trouble, try using this compatibility mode."
-        ),
-        required=False,
-    )
-
     def __init__(self, *args, **kwargs):
-        initial = kwargs.get("initial", {})
-        initial["height"] = "500px"
-        kwargs["initial"] = initial
         super().__init__(*args, **kwargs)
         self.fields["locale"].label = _("Widget language")
 

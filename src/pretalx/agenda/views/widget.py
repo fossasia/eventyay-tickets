@@ -14,8 +14,8 @@ def widget_css_etag(request, **kwargs):
     return request.event.settings.widget_css_checksum
 
 
-def widget_js_etag(request, locale, **kwargs):
-    return request.event.settings.get(f"widget_checksum_{locale}")
+def widget_js_etag(request, event, locale, version, **kwargs):
+    return request.event.settings.get(f"widget_checksum_{version}_{locale}")
 
 
 def widget_data_etag(request, **kwargs):
@@ -172,11 +172,13 @@ def widget_script(request, event, locale, version):
     if locale not in [lc for lc, ll in settings.LANGUAGES]:
         raise Http404()
 
-    existing_file = request.event.settings.get("widget_file_{}".format(locale))
+    existing_file = request.event.settings.get(f"widget_file_{version}_{locale}")
     if existing_file and not settings.DEBUG:  # pragma: no cover
         return HttpResponse(existing_file.read(), content_type="text/javascript")
 
-    data = generate_widget_js(request.event, locale, save=not settings.DEBUG)
+    data = generate_widget_js(
+        request.event, locale, save=not settings.DEBUG, version=version
+    )
     return HttpResponse(data, content_type="text/javascript")
 
 

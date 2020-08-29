@@ -42,15 +42,18 @@ def generate_widget_css(event, save=True):
     return css
 
 
-def generate_widget_js(event, locale, save=True):
-    code = f"""
-const lang = "{locale}";
-let dataSource = "{event.urls.widget_data_source}";
-"""
+def generate_widget_js(event, locale, save=True, version=2):
+    code = ""
+    if str(version) == "1":
+        widget_file = "agenda/js/widget.1.js"
+    elif save:
+        widget_file = "agenda/js/schedule.min.js"
+    else:
+        widget_file = "agenda/js/schedule.js"
     files = [
         "vendored/vue.js" if settings.DEBUG else "vendored/vue.min.js",
         "vendored/moment-with-locales.js",
-        "agenda/js/widget.js",
+        widget_file,
     ]
     for fname in files:
         f = finders.find(fname)
@@ -59,12 +62,12 @@ let dataSource = "{event.urls.widget_data_source}";
     data = code.encode()
     if save:
         checksum = hashlib.sha1(data).hexdigest()
-        if checksum != event.settings.get(f"widget_checksum_{locale}"):
+        if checksum != event.settings.get(f"widget_checksum_{version}_{locale}"):
             file_name = default_storage.save(
-                f"widget/widget.{locale}.{checksum}.js", ContentFile(data)
+                f"widget/widget.{version}.{locale}.{checksum}.js", ContentFile(data)
             )
-            event.settings.set(f"widget_file_{locale}", "file://" + file_name)
-            event.settings.set(f"widget_checksum_{locale}", checksum)
+            event.settings.set(f"widget_file_{version}_{locale}", "file://" + file_name)
+            event.settings.set(f"widget_checksum_{version}_{locale}", checksum)
     return data
 
 
