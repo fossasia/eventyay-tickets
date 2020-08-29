@@ -21,14 +21,9 @@ from pretalx.event.models import Event
     reason="No need to bother with this outside of CI.",
 )
 def test_schedule_xsd_is_up_to_date():
-    """This test is currently meant to fail.
+    """If this test fails:
 
-    Ever since the frab commit in January 2019
-    <https://github.com/frab/frab/commit/7b34e8c3f1200bae4ec0855133ceb86bc5060c97>,
-    the VOC schedule.xsd would actually fail on frab generated input. Since the pretalx
-    frab export is primarily meant to be compatible with frab, not with the VOC
-    validator, the pretalx xsd now matches the frab output, and pretalx also
-    produces a "generator" element.
+    http -d https://raw.githubusercontent.com/voc/schedule/master/validator/xsd/schedule.xml.xsd >! tests/fixtures/schedule.xsd
     """
     http = urllib3.PoolManager()
     response = http.request(
@@ -245,7 +240,7 @@ def test_schedule_speaker_ical_export(
 
 @pytest.mark.django_db
 def test_feed_view(slot, client, django_assert_num_queries, schedule):
-    with django_assert_num_queries(20):
+    with django_assert_num_queries(13):
         response = client.get(slot.submission.event.urls.feed)
     assert response.status_code == 200
     assert schedule.version in response.content.decode()

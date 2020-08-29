@@ -2,7 +2,6 @@ from urllib.parse import urlparse
 
 import pytest
 from django.conf import settings
-from django.test.utils import override_settings
 
 
 @pytest.fixture(autouse=True)
@@ -84,23 +83,6 @@ def test_event_with_custom_port_on_main_domain(event_on_custom_port, client):
 def test_unknown_event_on_custom_domain(event_on_foobar, client):
     r = client.get("/1234/", HTTP_HOST="foobar")
     assert r.status_code == 404
-
-
-@pytest.mark.django_db
-def test_cookie_domain_on_custom_domain(event_on_foobar, client):
-    r = client.get(f"/{event_on_foobar.slug}/login/", HTTP_HOST="foobar")
-    assert r.status_code == 200
-    assert r.client.cookies["pretalx_csrftoken"]["domain"] == ""
-    assert r.client.cookies["pretalx_session"]["domain"] == ""
-
-
-@pytest.mark.django_db
-def test_cookie_domain_on_main_domain(event, client):
-    with override_settings(SESSION_COOKIE_DOMAIN="example.com"):
-        r = client.get(f"/{event.slug}/login/", HTTP_HOST="example.com")
-        assert r.status_code == 200
-        assert r.client.cookies["pretalx_csrftoken"]["domain"] == "example.com"
-        assert r.client.cookies["pretalx_session"]["domain"] == "example.com"
 
 
 @pytest.mark.django_db
