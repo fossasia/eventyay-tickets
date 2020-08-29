@@ -17,7 +17,6 @@ router-link.c-linear-schedule-session(:style="style", :to="{name: 'schedule:talk
 import moment from 'lib/timetravelMoment'
 import { getLocalizedString } from './utils'
 
-moment.locale('de')
 export default {
 	props: {
 		session: Object,
