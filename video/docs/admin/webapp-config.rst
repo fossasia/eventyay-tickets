@@ -37,6 +37,9 @@ Full configuration
 			"textOverwrites": {
 				"ProfilePrompt:headline:text": "’ello Guv!"
 			}
+		},
+		"videoPlayer": {
+			"hls.js": {} // https://github.com/video-dev/hls.js/blob/master/docs/API.md#fine-tuning
 		}
 	}
 

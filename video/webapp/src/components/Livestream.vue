@@ -34,7 +34,7 @@ import config from 'config'
 import theme from 'theme'
 
 const RETRY_INTERVAL = 5000
-const HLS_CONFIG = {
+const HLS_DEFAULT_CONFIG = {
 	// never fall behind live edge
 	liveBackBufferLength: 0,
 	liveMaxLatencyDurationCount: 5,
@@ -141,7 +141,9 @@ export default {
 				this.onVolumechange()
 			}
 			if (Hls.isSupported()) {
-				const player = new Hls(HLS_CONFIG)
+				const hlsConfig = Object.assign({}, HLS_DEFAULT_CONFIG, config.videoPlayer?.['hls.js'])
+				console.log(hlsConfig)
+				const player = new Hls(hlsConfig)
 				let started = false
 				player.attachMedia(video)
 				this.player = player
