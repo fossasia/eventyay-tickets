@@ -24,6 +24,7 @@ class WorldConfigSerializer(serializers.Serializer):
     title = serializers.CharField()
     locale = serializers.CharField()
     dateLocale = serializers.CharField()
+    videoPlayer = serializers.DictField(allow_null=True)
     timezone = serializers.ChoiceField(choices=[(a, a) for a in common_timezones])
     connection_limit = serializers.IntegerField(allow_null=True)
     available_permissions = serializers.SerializerMethodField("_available_permissions")
@@ -54,6 +55,7 @@ class WorldModule(BaseModule):
                 "roles": self.consumer.world.roles,
                 "bbb_defaults": bbb_defaults,
                 "pretalx": self.consumer.world.config.get("pretalx", {}),
+                "videoPlayer": self.consumer.world.config.get("videoPlayer", {}),
                 "timezone": self.consumer.world.timezone,
                 "trait_grants": self.consumer.world.trait_grants,
                 "connection_limit": self.consumer.world.config.get(
@@ -80,6 +82,7 @@ class WorldModule(BaseModule):
                 "connection_limit",
                 "bbb_defaults",
                 "pretalx",
+                "videoPlayer"
             )
             model_fields = ("title", "locale", "timezone", "roles", "trait_grants")
             update_fields = set()
