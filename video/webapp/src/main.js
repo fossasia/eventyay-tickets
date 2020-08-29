@@ -5,6 +5,7 @@ import Vuelidate from 'vuelidate'
 import VueVirtualScroller from 'vue-virtual-scroller'
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 import { v4 as uuid } from 'uuid'
+import 'lib/timetravelMoment' // init timetravel before anything else to avoid module loading race conditions
 import App from './App.vue'
 import router from 'router'
 import store from 'store'
