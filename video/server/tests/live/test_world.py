@@ -148,7 +148,7 @@ async def test_config_get(world):
             "title": "Unsere tolle Online-Konferenz",
             "locale": "en",
             "dateLocale": "en-ie",
-            "videoPlayer": {},
+            "videoPlayer": None,
             "timezone": "Europe/Berlin",
             "connection_limit": 2,
         }

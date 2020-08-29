@@ -55,7 +55,7 @@ class WorldModule(BaseModule):
                 "roles": self.consumer.world.roles,
                 "bbb_defaults": bbb_defaults,
                 "pretalx": self.consumer.world.config.get("pretalx", {}),
-                "videoPlayer": self.consumer.world.config.get("videoPlayer", {}),
+                "videoPlayer": self.consumer.world.config.get("videoPlayer"),
                 "timezone": self.consumer.world.timezone,
                 "trait_grants": self.consumer.world.trait_grants,
                 "connection_limit": self.consumer.world.config.get(
