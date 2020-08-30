@@ -50,6 +50,11 @@ urlpatterns = [
                     name="widget.script",
                 ),
                 re_path(
+                    r"^schedule/widget/v(?P<version>[0-9]+).js$",
+                    widget.widget_script,
+                    name="widget.script",
+                ),
+                re_path(
                     r"^schedule/widget/v(?P<version>[0-9]+).css$",
                     widget.widget_style,
                     name="widget.style",

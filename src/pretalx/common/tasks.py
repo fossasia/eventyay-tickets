@@ -42,7 +42,7 @@ def generate_widget_css(event, save=True):
     return css
 
 
-def generate_widget_js(event, locale, save=True, version=2):
+def generate_widget_js(event, locale=None, save=True, version=2):
     code = ""
     if str(version) == "1":
         widget_file = "agenda/js/widget.1.js"
@@ -62,12 +62,19 @@ def generate_widget_js(event, locale, save=True, version=2):
     data = code.encode()
     if save:
         checksum = hashlib.sha1(data).hexdigest()
-        if checksum != event.settings.get(f"widget_checksum_{version}_{locale}"):
-            file_name = default_storage.save(
-                f"widget/widget.{version}.{locale}.{checksum}.js", ContentFile(data)
-            )
-            event.settings.set(f"widget_file_{version}_{locale}", "file://" + file_name)
-            event.settings.set(f"widget_checksum_{version}_{locale}", checksum)
+        checksum_setting = f"widget_checksum_{version}"
+        path_setting = f"widget_file_{version}"
+        path = f"widget/widget.{version}"
+        if locale:
+            checksum_setting = f"{checksum_setting}_{locale}"
+            path_setting = f"{path_setting}_{locale}"
+            path = f"{path}.{locale}"
+        path = f"{path}.{checksum}.js"
+
+        if checksum != event.settings.get(checksum_setting):
+            file_name = default_storage.save(path, ContentFile(data))
+            event.settings.set(path_setting, "file://" + file_name)
+            event.settings.set(checksum_setting, checksum)
     return data
 
 

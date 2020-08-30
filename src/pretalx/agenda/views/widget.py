@@ -166,18 +166,23 @@ def widget_data_v2(request, event):
 
 @condition(etag_func=widget_js_etag)
 @cache_page(60)
-def widget_script(request, event, locale, version):
+def widget_script(request, event, locale=None, version=2):
+    """The locale parameter is only relevant to the deprecated v1 version
+    of the widget."""
     if not request.user.has_perm("agenda.view_widget", request.event):
         raise Http404()
-    if locale not in [lc for lc, ll in settings.LANGUAGES]:
+    if locale and locale not in [lc for lc, ll in settings.LANGUAGES]:
         raise Http404()
 
-    existing_file = request.event.settings.get(f"widget_file_{version}_{locale}")
+    fname = f"widget_file_{version}"
+    if locale:
+        fname = "{fname}_{locale}"
+    existing_file = request.event.settings.get(fname)
     if existing_file and not settings.DEBUG:  # pragma: no cover
         return HttpResponse(existing_file.read(), content_type="text/javascript")
 
     data = generate_widget_js(
-        request.event, locale, save=not settings.DEBUG, version=version
+        request.event, locale=locale, save=not settings.DEBUG, version=version
     )
     return HttpResponse(data, content_type="text/javascript")
 
