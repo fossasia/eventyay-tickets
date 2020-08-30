@@ -19,10 +19,10 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import TemplateView
 from django_context_decorator import context
 
-from pretalx.common.console import LR, UD, get_separator
 from pretalx.common.mixins.views import EventPermissionRequired
 from pretalx.common.signals import register_data_exporters
 from pretalx.common.utils import safe_filename
+from pretalx.schedule.ascii import draw_ascii_schedule
 from pretalx.schedule.exporters import ScheduleData
 
 logger = logging.getLogger(__name__)
@@ -212,8 +212,6 @@ class ScheduleView(EventPermissionRequired, ScheduleMixin, TemplateView):
         )
 
     @context
-    def search(self):
-        return self.request.GET.get("q", "").lower()
     def show_talk_list(self):
         return (
             self.request.path.endswith("/talk/")

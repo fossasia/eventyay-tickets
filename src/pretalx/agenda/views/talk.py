@@ -47,10 +47,6 @@ class SpeakerList(EventPermissionRequired, Filterable, ListView):
             ]
         return qs
 
-    @context
-    def search(self):
-        return self.request.GET.get("q")
-
 
 class TalkView(PermissionRequired, TemplateView):
     model = Submission
