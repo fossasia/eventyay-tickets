@@ -120,15 +120,17 @@ class TalkView(PermissionRequired, TemplateView):
             .select_related("room")
         )
         result = []
-        other_submissions = (
-            schedule.slots.exclude(pk=self.submission.pk)
+        other_slots = (
+            schedule.talks.exclude(submission_id=self.submission.pk).filter(
+                is_visible=True
+            )
             if schedule
-            else Submission.objects.none()
+            else TalkSlot.objects.none()
         )
         for speaker in self.submission.speakers.all():
             speaker.talk_profile = speaker.event_profile(event=self.request.event)
-            speaker.other_submissions = other_submissions.filter(
-                speakers__in=[speaker]
+            speaker.other_submissions = self.request.event.submissions.filter(
+                slots__in=other_slots, speakers__in=[speaker]
             ).select_related("event")
             result.append(speaker)
         ctx["speakers"] = result

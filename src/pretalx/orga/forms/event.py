@@ -208,14 +208,9 @@ class EventSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
         required=False,
     )
     schedule_display = forms.ChoiceField(
-        label=_("Schedule display format"),
-        help_text=_(
-            "The proportional schedule display will size each talk so that it is clear when it starts and when it ends. "
-            "The list display will show the talks with their times in a single column, even if you have multiple rooms. "
-            "Please note that the schedule widget will always be in the proportional schedule mode."
-        ),
+        label=_("Schedule display format"),  # TODO show small preview / icons
         choices=(
-            ("proportional", _("Proportional")),
+            ("proportional", _("Grid")),
             ("list", _("List")),
         ),
         required=True,

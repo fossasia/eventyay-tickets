@@ -1,5 +1,4 @@
 import pytest
-
 from django_scopes import scope
 
 
@@ -68,7 +67,7 @@ def test_versioned_widget_data(client, event, schedule, slot):
 
 @pytest.mark.django_db
 def test_bogus_versioned_widget_data(client, event, schedule, slot):
-    response = client.get(event.urls.schedule + f"widget/v2.json?v=nopedinope")
+    response = client.get(event.urls.schedule + "widget/v2.json?v=nopedinope")
     assert response.status_code == 200
 
 
