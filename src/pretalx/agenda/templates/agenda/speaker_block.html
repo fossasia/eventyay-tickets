@@ -1,0 +1,43 @@
+<div class="pretalx-session">
+    <div class="pretalx-session-time-box avatar">
+        <a href="{{ speaker.urls.public }}">
+        <div class="avatar-wrapper">
+        {% if speaker.user.avatar_url %}
+            <img src="{{ speaker.user.avatar.url }}">
+        {% else %}
+            {% include "common/avatar.svg" %}
+        {% endif %}
+        </div>
+        </a>
+    </div>
+    <div class="pretalx-session-info">
+        <div class="title">
+            {% if add_links %}
+            <a href="{{ speaker.urls.public }}">{{ speaker.user.get_display_name }}</a>
+            {% else %}
+            {{ speaker.user.get_display_name }}
+            {% endif %}
+        </div>
+        <div class="abstract">{{ speaker.biography }}</div>
+        {% if not filter_talks %}
+            <ul>
+                {% for talk in speaker.talks %}
+                    <li>{{ talk.title }}</li>
+                {% endfor %}
+            </ul>
+        {% elif sessions %}
+            {{ phrases.agenda.speaker_other_talk }}
+            <ul>
+                {% for talk in sessions %}
+                    <li>
+                        {% if add_links %}
+                        <a href="{{ talk.urls.public }}">{{ talk.title }}</a>
+                        {% else %}
+                        {{ talk.title }}
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+</div>

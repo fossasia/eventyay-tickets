@@ -31,8 +31,9 @@
   flex-direction: row;
 
   .talk-content {
+    padding: 0 18px;
+
     .talk-slots {
-      padding: 0;
       list-style: none;
     }
 
@@ -41,44 +42,6 @@
       margin-bottom: 1rem;
       border: 0;
       font-weight: bold;
-    }
-  }
-
-  .speakers {
-    border: 1px solid lighten($brand-primary, 25%);
-    border-top: 4px solid lighten($brand-primary, 25%);
-    background-color: rgba(255, 255, 255, 0.76);
-    box-sizing: border-box;
-    color: rgba(0, 0, 0, 0.87);
-    display: block;
-    padding: 5px 10px;
-
-    &.image {
-      padding: 10px;
-    }
-
-    img {
-      max-width: 100%;
-    }
-
-    .speaker-header {
-      font-weight: bold;
-    }
-
-    .speaker {
-      margin-top: 8px;
-      padding-top: 8px;
-      margin-bottom: 1rem;
-      border: 0;
-      border-top: 1px solid rgba(0, 0, 0, 0.1);
-
-      .name {
-        font-weight: bold;
-      }
-
-      .info {
-        margin-left: 8px;
-      }
     }
   }
 }

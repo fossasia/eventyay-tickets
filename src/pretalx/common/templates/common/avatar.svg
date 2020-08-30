@@ -1,0 +1,20 @@
+<svg
+   xmlns="http://www.w3.org/2000/svg"
+   viewBox="0 0 100 100">
+   <!--viewBox="0 0 144.43806 149.60895">-->
+  <!--"c 6,-60 -23,-28 -23,-28 c 0,0 -27,-6 -23,28 z"-->
+  <style></style>
+  <g>
+    <path
+       id="body"
+       d="m 2,98 h 96 0 c 0,0 6,-65 -48,-52 c 0,0 -54,-10 -48,52"
+       style="fill:none;stroke:{{ request.event.primary_color|default:'#3aa57c' }};stroke-width:1.6;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:2.1, 2.1;stroke-dashoffset:0;stroke-opacity:0.87" />
+    <ellipse
+       ry="27"
+       rx="27"
+       cy="28"
+       cx="50"
+       id="heady"
+       style="fill:#ffffff;stroke:{{ request.event.primary_color|default:'#3aa57c' }};stroke-width:1.3;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:6.5, 8;stroke-dashoffset:4;stroke-opacity:0.87" />
+  </g>
+</svg>
