@@ -44,6 +44,11 @@
             {% if talk_slots|length == 1 %}
                 {{ talk_slots.0.start.date|date:"c" }}, {{ talk_slots.0.start|date:"H:i" }}–{{ talk_slots.0.end|date:"H:i" }}, {{ talk_slots.0.room.name }}
             {% endif %}
+            {% if request.event.is_multilingual %}
+            <div class="speakers">
+                <strong>{% translate "Language" %}:</strong> {{ submission.get_content_locale_display }}
+            </div>
+            {% endif %}
             {% if submission.do_not_record %}
                 <span class="fa-stack">
                   <i class="fa fa-video-camera fa-stack-1x"></i>
@@ -54,7 +59,7 @@
         </small>
     </h3>
     <div class="talk row">
-        <div class="talk-content col-lg-8 col-md-6 col-xs-12">
+        <div class="talk-content{% if submission.image %} col-lg-8 col-md-6 col-xs-12{% endif %}">
             {% if talk_slots|length > 1 %}
             <ul class="talk-slots">
                 {% for talk in talk_slots %}
@@ -110,6 +115,7 @@
                 </section>
             {% endif %}
         </div>
+        {% if submission.image %}
         <aside class="col-lg-4 col-md-6 col-xs-12">
             {% if submission.image %}
             <div class="image speakers">

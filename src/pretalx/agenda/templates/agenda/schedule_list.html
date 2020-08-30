@@ -1,6 +1,8 @@
 {% load compress %}
 {% load i18n %}
+{% load rich_text %}
 {% load static %}
+
 <div class="pretalx-tabbed"><div class="pretalx-tabbed-content">
     {% if day_count > 1 %}
     <div class="pretalx-tabs">
@@ -15,55 +17,24 @@
     {% endif %}
 {% for day in data %}
   {% if day_count > 1 %}
-  <input name="tabs" id="{{ day.start.date|date:"c" }}" type="radio" {% if day.start == initial_day %}checked{% endif %}>
+  <input name="tabs" id="{{ day.start.date|date:"c" }}" type="radio" {% if day.start.date == initial_day %}checked{% endif %}>
   {% endif %}
-    <div class="pretalx-schedule-day pretalx-tab-content" data-start="{{ day.display_start|date:"c" }}">
+    <div class="pretalx-list-day pretalx-tab-content" data-start="{{ day.display_start|date:"c" }}">
         {% if day.first_start %}
-              {% for talk in day.talks %}
-              <div class="talk-row">
-                  <div class="talk-time">{% ifchanged talk.start %}{{ talk.start|date:"H:i" }}{% endifchanged %}</div>
-                  <div class="talk-content">
-                      {% if not schedule.is_archived and talk.submission and not talk.submission.is_deleted %}
-                        <a href="{{ talk.submission.urls.public }}">
-                      {% endif %}
-                            <div class="pretalx-schedule-talk{% if request.user in talk.submission.speakers.all %} talk-personal{% endif %}{% if talk.is_active %} active{% endif %}{% if search %} {% if search in talk.submission.title.lower or search in talk.submission.display_speaker_names.lower %} search-hit{% else %} search-fail{% endif %}{% endif %}{% if talk.submission.state == 'accepted' %} accepted{% endif %}{% if not talk.submission %} break{% endif %}"
-                                 id="{{ talk.submission.code|default:"break" }}"
-                                 style="{% if request.event.settings.use_tracks and talk.submission.track %}color: {{ talk.submission.track.color }}{% endif %}"
-                                 data-start="{{ talk.start|date:"c" }}"
-                                 data-end="{{ talk.end|date:"c" }}">
-                                <div class="pretalx-schedule-talk-content">
-                                  {% if talk.submission %}
-                                    {% if talk.submission.do_not_record and not talk.submission.is_deleted %}
-                                        <span class="fa-stack">
-                                          <i class="fa fa-video-camera fa-stack-1x"></i>
-                                          <i class="fa fa-ban do-not-record fa-stack-2x" aria-hidden="true" title="{{ phrases.agenda.schedule_do_not_record }}"></i>
-                                        </span>
-                                    {% endif %}
-
-                                    {% if talk.submission.is_deleted %}
-                                      <span class="pretalx-schedule-talk-title">[{% translate "deleted" %}]</span>
-                                    {% else %}
-                                        <span class="pretalx-schedule-talk-title">{{ talk.submission.title }}</span>
-
-                                        {% if talk.submission.speakers %}
-                                          <span class="pretalx-schedule-talk-speakers">({{ talk.submission.display_speaker_names }})</span><br>
-                                        {% endif %}
-                                    {% endif %}
-                                  {% else %}
-                                        <span class="pretalx-schedule-break-title">{{ talk.description }}</span>
-                                  {% endif %}
-                                </div>
-                            </div>
-                      {% if not schedule.is_archived and talk.submission and not talk.submission.is_deleted %}
-                        </a>
-                      {% endif %}
-                  </div>
-              </div>
+              {% for session in day.talks %}
+                <div class="bucket-time">{% ifchanged session.start %}{{ session.start|date:"H:i" }}{% endifchanged %}</div>
+                  {% if not schedule.is_archived and session.submission and not session.submission.is_deleted %}
+                    <a href="{{ session.submission.urls.public }}">
+                  {% endif %}
+                  {% include "agenda/session_block.html" %}
+                  {% if not schedule.is_archived and session.submission and not session.submission.is_deleted %}
+                    </a>
+                  {% endif %}
               {% endfor %}
         {% else %}
-            <div class="no-talks">
+            <div class="no-session">
                 {% blocktranslate with current_day=day.start.date|date:'DATE_FORMAT' weekday=day.start.date|date:'l' trimmed %}
-                  No talks on {{ weekday }}, {{ current_day }}.
+                  No sessions on {{ weekday }}, {{ current_day }}.
                 {% endblocktranslate %}
             </div>
         {% endif %}

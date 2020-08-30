@@ -1,0 +1,54 @@
+{% load i18n %}
+{% load rich_text %}
+
+<div class="pretalx-session{% if request.user in session.submission.speakers.all %} session-highlight{% endif %}{% if session.is_active %} active{% endif %}{% if session.submission.state == 'accepted' %} accepted{% endif %}{% if not session.submission %} break{% endif %}"
+     id="{{ session.submission.code|default:"break" }}"
+     style="--track-color:{% if not session.submission %}#ccc{% elif request.event.settings.use_tracks and session.submission.track %}{{ session.submission.track.color }}{% else %}{{ event.primary_color|default:'#3aa57c' }}{% endif %}"
+>
+    <div class="pretalx-session-time-box">
+      {% if show_date %}
+      <div class="start">
+        {{ session.start|date:"m-d" }}
+      </div>
+      {% endif %}
+      <div class="start">
+        {{ session.start|date:"H:i" }}
+      </div>
+      <div class="duration">
+        {% blocktranslate trimmed with minutes=session.duration %}
+          {{ minutes }}min
+        {% endblocktranslate %}
+      </div>
+    </div>
+    <div class="pretalx-session-info">
+        <div class="title">
+          {% if not session.submission %}
+            {{ session.description }}
+          {% elif session.submission.is_deleted %}
+            <span class="pretalx-session-title">[{% translate "deleted" %}]</span>
+          {% else %}
+            {% if session.submission.do_not_record %}
+                <span class="fa-stack">
+                  <i class="fa fa-video-camera fa-stack-1x"></i>
+                  <i class="fa fa-ban do-not-record fa-stack-2x" aria-hidden="true" title="{{ phrases.agenda.schedule_do_not_record }}"></i>
+                </span>
+            {% endif %}
+            {{ session.submission.title }}
+          {% endif %}
+        </div>
+        {% if session.submission and session.submission.speakers %}
+        <div class="speakers">
+          {{ session.submission.display_speaker_names }}
+        </div>
+        {% endif %}
+        {% if session.submission and session.submission.abstract %}
+        <div class="abstract">
+          {{ session.submission.abstract|rich_text }}
+        </div>
+        {% endif %}
+        <div class="bottom-info">
+          <div class="track">{% if session.submission and session.submission.track %}{{ session.submission.track.name|default:"" }}{% endif %}</div>
+          <div class="room">{% if session.room %}{{ session.room.name|default:"" }}{% endif %}</div>
+        </div>
+    </div>
+</div>

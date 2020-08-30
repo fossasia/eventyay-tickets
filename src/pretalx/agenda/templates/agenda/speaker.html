@@ -51,15 +51,10 @@
     <hr/>
     <section class="speaker-talks">
         <h4>{% translate "Talks" %}</h4>
-        {% for talk in profile.talks %}
-        <a href="{{ talk.urls.public }}"><div class="talk">
-            <h5 class="talk-title">
-                {{ talk.title }}
-            </h5>
-            <div class="talk-abstract">
-                {{ talk.abstract|rich_text }}
-            </div>
-        </div></a>
+        {% for session in talks %}
+        <a href="{{ session.submission.urls.public }}">
+            {% include "agenda/session_block.html" with show_date=True %}
+        </a>
         {% endfor %}
     </section>
 </article>
