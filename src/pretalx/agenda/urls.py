@@ -76,7 +76,7 @@ urlpatterns = [
                     speaker.SpeakerRedirect.as_view(),
                     name="speaker.redirect",
                 ),
-                re_path(r"^talk/$", talk.TalkList.as_view(), name="talks"),
+                re_path(r"^talk/$", schedule.ScheduleView.as_view(), name="talks"),
                 re_path(r"^talk/(?P<slug>\w+)/$", talk.TalkView.as_view(), name="talk"),
                 re_path(
                     r"^talk/(?P<slug>\w+)/feedback/$",

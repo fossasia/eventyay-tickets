@@ -25,27 +25,6 @@ from pretalx.submission.forms import FeedbackForm
 from pretalx.submission.models import QuestionTarget, Submission, SubmissionStates
 
 
-class TalkList(EventPermissionRequired, Filterable, ListView):
-    context_object_name = "talks"
-    model = Submission
-    template_name = "agenda/talks.html"
-    permission_required = "agenda.view_schedule"
-    default_filters = ("speakers__name__icontains", "title__icontains")
-
-    def get_queryset(self):
-        return (
-            self.filter_queryset(self.request.event.talks)
-            .select_related("event")
-            .prefetch_related("speakers")
-            .distinct()
-            .order_by("title")
-        )
-
-    @context
-    def search(self):
-        return self.request.GET.get("q")
-
-
 class SpeakerList(EventPermissionRequired, Filterable, ListView):
     context_object_name = "speakers"
     template_name = "agenda/speakers.html"

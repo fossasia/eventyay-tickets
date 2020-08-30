@@ -215,6 +215,11 @@ class ScheduleView(ScheduleDataView):
     @context
     def search(self):
         return self.request.GET.get("q", "").lower()
+    def show_talk_list(self):
+        return (
+            self.request.path.endswith("/talk/")
+            or self.request.event.settings.schedule_display == "list"
+        )
 
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)
