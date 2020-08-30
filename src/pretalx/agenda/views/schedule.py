@@ -28,26 +28,12 @@ from pretalx.schedule.exporters import ScheduleData
 logger = logging.getLogger(__name__)
 
 
-class ScheduleDataView(EventPermissionRequired, TemplateView):
-    permission_required = "agenda.view_schedule"
-
+class ScheduleMixin:
     @cached_property
     def version(self):
         if "version" in self.kwargs:
             return unquote(self.kwargs["version"])
         return None
-
-    def dispatch(self, request, *args, **kwargs):
-        if "version" in request.GET:
-            kwargs["version"] = request.GET["version"]
-            return HttpResponsePermanentRedirect(
-                reverse(
-                    f"agenda:versioned-{request.resolver_match.url_name}",
-                    args=args,
-                    kwargs=kwargs,
-                )
-            )
-        return super().dispatch(request, *args, **kwargs)
 
     def get_object(self):
         if self.version:
@@ -61,10 +47,25 @@ class ScheduleDataView(EventPermissionRequired, TemplateView):
     def schedule(self):
         return self.get_object()
 
+    def dispatch(self, request, *args, **kwargs):
+        if "version" in request.GET:
+            kwargs["version"] = request.GET["version"]
+            return HttpResponsePermanentRedirect(
+                reverse(
+                    f"agenda:versioned-{request.resolver_match.url_name}",
+                    args=args,
+                    kwargs=kwargs,
+                )
+            )
+        return super().dispatch(request, *args, **kwargs)
+
+
+class ExporterView(EventPermissionRequired, ScheduleMixin, TemplateView):
+    permission_required = "agenda.view_schedule"
+
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)
         schedule = self.schedule
-        event = self.request.event
 
         if not schedule and self.version:
             result["version"] = self.version
@@ -73,13 +74,11 @@ class ScheduleDataView(EventPermissionRequired, TemplateView):
         if not schedule:
             result["error"] = "Schedule not found."
             return result
-        result["schedules"] = event.schedules.filter(
+        result["schedules"] = self.request.event.schedules.filter(
             published__isnull=False
         ).values_list("version")
         return result
 
-
-class ExporterView(ScheduleDataView):
     def get_exporter(self, request):
         url = resolve(request.path_info)
 
@@ -135,7 +134,7 @@ class ExporterView(ScheduleDataView):
         return response
 
 
-class ScheduleView(ScheduleDataView):
+class ScheduleView(EventPermissionRequired, ScheduleMixin, TemplateView):
     template_name = "agenda/schedule.html"
 
     def get_permission_required(self):
@@ -226,17 +225,7 @@ class ScheduleView(ScheduleDataView):
         if "schedule" not in result:
             return result
 
-        data = ScheduleData(
-            event=self.request.event,
-            schedule=self.schedule,
-            with_accepted=self.answer_type == "html"
-            and self.schedule == self.request.event.wip_schedule,
-            with_breaks=True,
-        ).data
-        method = getattr(
-            self, f"get_schedule_data_{self.request.event.settings.schedule_display}"
-        )
-        result.update(**method(data))
+        result.update(**self.get_schedule_data())
         result["day_count"] = len(result["data"])
         today = now().date()
         result["initial_day"] = (
@@ -252,38 +241,13 @@ class ScheduleView(ScheduleDataView):
         )
         return result
 
-    def get_schedule_data_proportional(self, data):
-        timezone = pytz.timezone(self.request.event.timezone)
-        max_rooms = 0
-        for date in data:
-            if date.get("first_start") and date.get("last_end"):
-                start = (
-                    date.get("first_start")
-                    .astimezone(timezone)
-                    .replace(second=0, minute=0)
-                )
-                end = date.get("last_end").astimezone(timezone)
-                height_seconds = (end - start).total_seconds()
-                date["display_start"] = start
-                date["height"] = int(height_seconds / 60 * 2)
-                date["hours"] = []
-                step = start
-                while step < end:
-                    date["hours"].append(step.strftime("%H:%M"))
-                    step += dt.timedelta(hours=1)
-                max_rooms = max(max_rooms, len(date["rooms"]))
-                for room in date["rooms"]:
-                    for talk in room.get("talks", []):
-                        talk.top = int(
-                            (talk.start.astimezone(timezone) - start).total_seconds()
-                            / 60
-                            * 2
-                        )
-                        talk.height = int(talk.duration * 2)
-                        talk.is_active = talk.start <= now() <= talk.real_end
-        return {"data": list(data), "max_rooms": max_rooms}
-
-    def get_schedule_data_list(self, data):
+    def get_schedule_data(self):
+        data = ScheduleData(
+            event=self.request.event,
+            schedule=self.schedule,
+            with_accepted=not self.schedule.version,
+            with_breaks=True,
+        ).data
         for date in data:
             rooms = date.pop("rooms")
             talks = [talk for room in rooms for talk in room.get("talks", [])]

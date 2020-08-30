@@ -1,5 +1,7 @@
 import pytest
 
+from django_scopes import scope
+
 
 @pytest.mark.parametrize("url", ("v1.en.js", "v1.json", "v1.css", "v2.json"))
 @pytest.mark.parametrize(
@@ -52,6 +54,33 @@ def test_widget_data(
         response = client.get(
             event.urls.schedule + f"widget/v{version}.json", follow=True
         )
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_versioned_widget_data(client, event, schedule, slot):
+    with scope(event=event):
+        event.wip_schedule.freeze("new")
+
+    response = client.get(event.urls.schedule + f"widget/v2.json?v={schedule.version}")
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_bogus_versioned_widget_data(client, event, schedule, slot):
+    response = client.get(event.urls.schedule + f"widget/v2.json?v=nopedinope")
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_anon_cannot_access_wip_schedule(client, event, schedule, slot):
+    response = client.get(event.urls.schedule + "widget/v2.json?v=wip")
+    assert response.status_code == 404
+
+
+@pytest.mark.django_db
+def test_orga_can_access_wip_schedule(orga_client, event, schedule, slot):
+    response = orga_client.get(event.urls.schedule + "widget/v2.json?v=wip")
     assert response.status_code == 200
 
 

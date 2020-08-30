@@ -3,7 +3,9 @@
 {% load i18n %}
 {% load static %}
 
-{% block container_width %} {% if max_rooms > 6 %}container-wide{% elif max_rooms > 3 %}container-semi-wide{% else %}container-narrow{% endif %}{% endblock %}
+{% block body_tag %}{% if not request.event.settings.schedule_display or request.event.settings.schedule_display == "proportional" %} class="body-schedule"{% endif %}{% endblock %}
+
+{% block container_width %}{% if not show_talk_list %} main-schedule{% endif %}{% endblock %}
 
 {% block agenda_custom_header %}
 {% compress js %}
@@ -14,18 +16,7 @@
 {% block agenda_content %}
 <span id="offline-vars" data-event="/{{ request.event.urls.schedule }}/"></span>
 
-{% if request.event.settings.use_tracks and request.event.tracks.count > 1 %}
-<div id="legend">
-  <i class="fa fa-dot-circle-o"></i> ?
-  <ul class="tracks">
-    {% for track in request.event.tracks.all %}
-    <li style="color: {{ track.color }}">{{ track.name }}</li>
-    {% endfor %}
-  </ul>
-</div>
-{% endif %}
-
-<div id="fahrplan" class="{{ request.event.settings.schedule_display|default:"proportional" }}">
+<div id="fahrplan" class="{% if show_talk_list %}list{% else %}grid{% endif %}">
     {% if schedule != schedule.event.current_schedule %}
         <div class="alert alert-warning m-3"><span>
             {% if not schedule.version %}
@@ -52,12 +43,28 @@
 
     {% include "agenda/header_row.html" with with_margin=True with_extra=True %}
 
-    {% if request.event.settings.schedule_display == "proportional" or not request.event.settings.schedule_display %}
-      {% include "agenda/schedule_proportional.html" %}
-    {% elif request.event.settings.schedule_display == "list" %}
-      {% include "agenda/schedule_list.html" %}
-    {% endif %}
+  <script type="text/javascript" src="{{ request.event.urls.schedule }}widget/v2.{{ request.event.locale }}.js" async></script>
 
+    <pretalx-schedule
+      event-url="{{ request.event.urls.base }}"
+      version="{{ schedule.version|default:'wip'|urlencode }}"
+      locale="{{ request.LANGUAGE_CODE }}"
+      timezone="{{ request.event.timezone }}"
+      {% if show_talk_list %}format="list"{% endif %}
+      style="--pretalx-clr-primary: {{ request.event.primary_color|default:'#3aa57c' }}"
+    ></pretalx-schedule>
+    <noscript>
+      {% if not show_talk_list %}
+        <div class="alert alert-info">
+          <div></div>
+            {% blocktrans trimmed %}
+            To see our schedule in grid from, please enable JavaScript.
+            {% endblocktrans %}
+          </div>
+        </div>
+      {% endif %}
+      {% include "agenda/schedule_list.html" %}
+    </noscript>
 </div>
 
 {% compress js %}

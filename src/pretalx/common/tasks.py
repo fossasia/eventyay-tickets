@@ -47,9 +47,9 @@ def generate_widget_js(event, locale=None, save=True, version=2):
     if str(version) == "1":
         widget_file = "agenda/js/widget.1.js"
     elif save:
-        widget_file = "agenda/js/schedule.min.js"
+        widget_file = "agenda/js/pretalx-schedule.min.js"
     else:
-        widget_file = "agenda/js/schedule.js"
+        widget_file = "agenda/js/pretalx-schedule.js"
     files = [
         "vendored/vue.js" if settings.DEBUG else "vendored/vue.min.js",
         "vendored/moment-with-locales.js",

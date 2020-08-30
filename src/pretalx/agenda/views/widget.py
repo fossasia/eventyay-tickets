@@ -1,5 +1,10 @@
+import datetime as dt
+
+import pytz
+from urllib.parse import unquote
 from django.conf import settings
 from django.http import Http404, HttpResponse, JsonResponse
+from django.utils.timezone import now
 from django.views.decorators.cache import cache_page
 from django.views.decorators.http import condition
 from i18nfield.utils import I18nJSONEncoder
@@ -28,14 +33,44 @@ class WidgetData(ScheduleView):
             raise Http404()
         return super().dispatch(request, *args, **kwargs)
 
+    def get_schedule_data_proportional(self, data):
+        timezone = pytz.timezone(self.request.event.timezone)
+        max_rooms = 0
+        for date in data:
+            if date.get("first_start") and date.get("last_end"):
+                start = (
+                    date.get("first_start")
+                    .astimezone(timezone)
+                    .replace(second=0, minute=0)
+                )
+                end = date.get("last_end").astimezone(timezone)
+                height_seconds = (end - start).total_seconds()
+                date["display_start"] = start
+                date["height"] = int(height_seconds / 60 * 2)
+                date["hours"] = []
+                step = start
+                while step < end:
+                    date["hours"].append(step.strftime("%H:%M"))
+                    step += dt.timedelta(hours=1)
+                max_rooms = max(max_rooms, len(date["rooms"]))
+                for room in date["rooms"]:
+                    for talk in room.get("talks", []):
+                        talk.top = int(
+                            (talk.start.astimezone(timezone) - start).total_seconds()
+                            / 60
+                            * 2
+                        )
+                        talk.height = int(talk.duration * 2)
+                        talk.is_active = talk.start <= now() <= talk.real_end
+        return {"data": list(data), "max_rooms": max_rooms}
+
     def get(self, request, *args, **kwargs):
         locale = request.GET.get("locale", "en")
         with language(locale):
             data = ScheduleData(
                 event=self.request.event,
                 schedule=self.schedule,
-                with_accepted=self.answer_type == "html"
-                and self.schedule == self.request.event.wip_schedule,
+                with_accepted=False,
                 with_breaks=True,
             ).data
             schedule = self.get_schedule_data_proportional(data)["data"]
@@ -90,11 +125,21 @@ class WidgetData(ScheduleView):
 @condition(etag_func=widget_data_etag)
 @cache_page(60)
 def widget_data_v2(request, event):
-    if not request.user.has_perm("agenda.view_widget", request.event):
-        raise Http404()
     event = request.event
+    if not request.user.has_perm("agenda.view_widget", event):
+        raise Http404()
+
+    version = unquote(request.GET.get("v") or "")
+    schedule = None
+    if version and version == "wip":
+        if not request.user.has_perm("orga.view_schedule", event):
+            raise Http404()
+    elif version:
+        schedule = event.schedules.filter(version__iexact=version).first()
+    schedule = schedule or event.current_schedule
+
     talks = (
-        event.current_schedule.talks.filter(is_visible=True)
+        schedule.talks.filter(is_visible=True)
         .select_related("submission", "room", "submission__track")
         .prefetch_related("submission__speakers")
     ).order_by("start")
