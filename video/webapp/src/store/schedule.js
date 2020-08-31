@@ -10,10 +10,19 @@ export default {
 	getters: {
 		pretalxScheduleUrl (state, getters, rootState) {
 			if (!rootState.world.pretalx?.domain || !rootState.world.pretalx?.event) return
+			if (!rootState.world.pretalx.domain.endsWith('/')) {
+				rootState.world.pretalx.domain += '/'
+			}
+			if (rootState.world.pretalx.event.includes('.json')) {
+				return rootState.world.pretalx.domain + rootState.world.pretalx.event
+			}
 			return rootState.world.pretalx.domain + rootState.world.pretalx.event + '/schedule/widget/v2.json'
 		},
 		pretalxApiBaseUrl (state, getters, rootState) {
 			if (!rootState.world.pretalx?.domain || !rootState.world.pretalx?.event) return
+			if (rootState.world.pretalx.event.includes('.json')) {
+				return
+			}
 			return rootState.world.pretalx.domain + 'api/events/' + rootState.world.pretalx.event
 		},
 		roomsLookup (state, getters, rootState) {
@@ -36,9 +45,10 @@ export default {
 			const sessions = []
 			for (const session of state.schedule.talks) {
 				sessions.push({
-					id: session.code,
+					id: session.code ? session.code.toString() : null,
 					title: session.title,
 					abstract: session.abstract,
+					url: session.url,
 					start: moment(session.start),
 					end: moment(session.end),
 					speakers: session.speakers?.map(s => getters.speakersLookup[s]),
@@ -76,7 +86,7 @@ export default {
 	actions: {
 		async fetch ({state, getters}) {
 			// TODO error handling
-			if (!getters.pretalxApiBaseUrl) return
+			if (!getters.pretalxScheduleUrl) return
 			// const version = await (await fetch(`${getters.pretalxApiBaseUrl}/schedules/`)).json()
 			// console.log(version.results[0].version)
 			state.schedule = await (await fetch(getters.pretalxScheduleUrl)).json()
