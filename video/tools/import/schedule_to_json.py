@@ -14,9 +14,9 @@ def load_sheet(fname):
         sys.exit(-1)
 
     sheets = {
-        "Talks": {"usecols": "A:H,K", "parse_dates": [5, 6],},
+        "Talks": {"usecols": "A:I,K", "parse_dates": [5, 6],},
         "Rooms": {"usecols": "A:C",},
-        "Speakers": {"usecols": "A:B",},
+        "Speakers": {"usecols": "A:C",},
         "Tracks": {"usecols": "A:C",},
     }
     return {
@@ -114,8 +114,9 @@ def main():
             "room": "Room ID",
             "start": "Start",
             "end": "End",
+            "url": "URL",
         },
-        mandatory_fields=["ID", "Title", "Start", "End", "Room ID"],
+        mandatory_fields=["Title", "Start", "End", "Room ID"],
         methods={"start": to_iso, "end": to_iso, "speakers": to_list},
     )
     with open("schedule.json", "w") as fp:
