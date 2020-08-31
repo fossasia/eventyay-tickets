@@ -1,5 +1,5 @@
 <template lang="pug">
-router-link.c-linear-schedule-session(:style="style", :to="{name: 'schedule:talk', params: {talkId: session.id}}")
+a.c-linear-schedule-session(href="#", :style="style", @click.prevent="open")
 	.time-box
 		.start(:class="{'has-ampm': startTime.ampm}")
 			.time {{ startTime.time }}
@@ -16,6 +16,7 @@ router-link.c-linear-schedule-session(:style="style", :to="{name: 'schedule:talk
 <script>
 import moment from 'lib/timetravelMoment'
 import { getLocalizedString } from './utils'
+import router from 'router'
 
 export default {
 	props: {
@@ -55,6 +56,15 @@ export default {
 		},
 		durationMinutes () {
 			return moment(this.session.end).diff(this.session.start, 'minutes')
+		}
+	},
+	methods: {
+		async open () {
+			if (this.session.url) {
+				await window.open(this.session.url, '_blank')
+			} else {
+				await router.push({name: 'schedule:talk', params: {talkId: this.session.id}})
+			}
 		}
 	}
 }
