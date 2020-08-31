@@ -30,7 +30,7 @@ def to_iso(value):
 
 
 def to_list(value):
-    if not value:
+    if not value or not isinstance(value, str):
         return []
     return [part.strip() for part in value.split(",") if part.strip()]
 
@@ -109,7 +109,7 @@ def main():
             "code": "ID",
             "title": "Title",
             "abstract": "Abstract",
-            "speakers": "Speakers",
+            "speakers": "Speaker IDs",
             "track": "Track ID",
             "room": "Room ID",
             "start": "Start",
