@@ -36,7 +36,7 @@ def to_list(value):
 
 
 def truthy(value):
-    if isinstance(value, (list, dict, str, pandas.Timestamp)):
+    if isinstance(value, (list, dict, str, int, pandas.Timestamp)):
         return bool(value)
     if not value or pandas.isnull(value) or math.isnan(value):
         return False
@@ -46,6 +46,10 @@ def truthy(value):
 def serializable(value):
     if isinstance(value, (list, dict, str)):
         return value
+
+    if not truthy(value):
+        return None
+
     if isinstance(value, (int, float)):
         if int(value) == value:
             return int(value)
