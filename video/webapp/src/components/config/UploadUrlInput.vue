@@ -1,6 +1,6 @@
 <template lang="pug">
 .c-upload-url-input
-	bunt-input(v-model="value", :label="label", :name="name", :validation="validation")
+	bunt-input(:value="value", :label="label", :name="name", :validation="validation", @input="update($event)")
 	.file-selector
 		bunt-icon-button(:loading="uploading") upload
 		input(type="file", @change="upload", ref="fileInput")
@@ -22,6 +22,9 @@ export default {
 		}
 	},
 	methods: {
+		update (val) {
+			this.$emit('input', val)
+		},
 		upload () {
 			const data = new FormData()
 			var file = this.$refs.fileInput.files[0]
@@ -39,8 +42,7 @@ export default {
 				headers: headers,
 				body: data
 			}).then(response => response.json()).then(data => {
-				this.value = data.url
-				this.$emit('input', this.value)
+				this.$emit('input', data.url)
 				this.uploading = false
 			}).catch(error => {
 				// TODO: better error handling
