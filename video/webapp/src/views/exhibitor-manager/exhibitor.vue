@@ -123,7 +123,7 @@ export default {
 			deletingExhibitorName: '',
 			deleting: false,
 			deleteError: null,
-			sizes: ['S', 'M', 'L'],
+			sizes: ['1x1', '3x1', '3x3'],
 			linkCategories: ['profile', 'download']
 		}
 	},
