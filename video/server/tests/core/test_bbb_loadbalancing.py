@@ -51,7 +51,10 @@ def test_prefer_server(empty_world):
         active=True, url="https://a.example.com", secret="a", cost=50
     )
     BBBServer.objects.create(
-        active=True, url="https://b.example.com", secret="b", cost=50,
+        active=True,
+        url="https://b.example.com",
+        secret="b",
+        cost=50,
     )
     assert (
         choose_server(empty_world, prefer_server="https://a.example.com").secret == "a"
@@ -73,7 +76,10 @@ def test_never_choose_inactive(empty_world):
         active=True, url="https://a.example.com", secret="a", cost=50
     )
     BBBServer.objects.create(
-        active=False, url="https://b.example.com", secret="b", cost=10,
+        active=False,
+        url="https://b.example.com",
+        secret="b",
+        cost=10,
     )
     assert choose_server(empty_world).secret == "a"
     assert choose_server(empty_world).secret == "a"
@@ -85,7 +91,10 @@ def prefer_cost_round_robin(empty_world):
         active=True, url="https://a.example.com", secret="a", cost=10
     )
     BBBServer.objects.create(
-        active=False, url="https://b.example.com", secret="b", cost=15,
+        active=False,
+        url="https://b.example.com",
+        secret="b",
+        cost=15,
     )
     assert choose_server(empty_world).secret == "a"
     assert choose_server(empty_world).secret == "b"

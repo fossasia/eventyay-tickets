@@ -21,10 +21,14 @@ class Exhibitor(models.Model):
     size = models.CharField(max_length=3, default=Sizes.S, choices=Sizes.choices)
     sorting_priority = models.IntegerField(default=0)
     room = models.ForeignKey(
-        to="Room", related_name="exhibitors", on_delete=models.CASCADE,
+        to="Room",
+        related_name="exhibitors",
+        on_delete=models.CASCADE,
     )
     world = models.ForeignKey(
-        to="World", related_name="exhibitors", on_delete=models.CASCADE,
+        to="World",
+        related_name="exhibitors",
+        on_delete=models.CASCADE,
     )
 
     def serialize(self):
@@ -61,7 +65,10 @@ class Exhibitor(models.Model):
         )
 
     def serialize_short(self):
-        return dict(id=str(self.id), name=self.name,)
+        return dict(
+            id=str(self.id),
+            name=self.name,
+        )
 
     def save(self, *args, **kwargs):
         r = super().save(*args, **kwargs)
@@ -91,7 +98,10 @@ class ExhibitorLink(models.Model):
         DOWNLOAD = "download"
 
     exhibitor = models.ForeignKey(
-        to=Exhibitor, db_index=True, related_name="links", on_delete=models.CASCADE,
+        to=Exhibitor,
+        db_index=True,
+        related_name="links",
+        on_delete=models.CASCADE,
     )
     category = models.CharField(
         max_length=32, default=Category.PROFILE, choices=Category.choices
@@ -102,7 +112,10 @@ class ExhibitorLink(models.Model):
 
 class ExhibitorStaff(models.Model):
     exhibitor = models.ForeignKey(
-        to=Exhibitor, db_index=True, related_name="staff", on_delete=models.CASCADE,
+        to=Exhibitor,
+        db_index=True,
+        related_name="staff",
+        on_delete=models.CASCADE,
     )
     user = models.ForeignKey(
         "User",

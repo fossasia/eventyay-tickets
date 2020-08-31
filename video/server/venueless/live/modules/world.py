@@ -39,7 +39,8 @@ class WorldModule(BaseModule):
     @event("update", refresh_world=True, refresh_user=True)
     async def push_world_update(self, body):
         world_config = await database_sync_to_async(get_world_config_for_user)(
-            self.consumer.world, self.consumer.user,
+            self.consumer.world,
+            self.consumer.user,
         )
         await self.consumer.send_json(["world.updated", world_config])
 

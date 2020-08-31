@@ -83,8 +83,12 @@ async def test_list_all(world, exhibition_room):
         for e in response[2]["exhibitors"]:
             del e["id"]
             assert e in [
-                {"name": "Tube GmbH",},
-                {"name": "Messebau Schmidt UG",},
+                {
+                    "name": "Tube GmbH",
+                },
+                {
+                    "name": "Messebau Schmidt UG",
+                },
             ]
 
 
@@ -117,8 +121,8 @@ async def test_get(world, exhibition_room):
                 "contact_enabled": True,
                 "text": "# Wir liefern wovon andere nur reden\n\nHallo!\nDas ist ein Markdowntext!",
                 "short_text": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod "
-                              "tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero "
-                              "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea tak",
+                "tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero "
+                "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea tak",
                 "size": "1x1",
                 "sorting_priority": 0,
                 "links": [
@@ -151,8 +155,8 @@ async def test_get(world, exhibition_room):
                 "contact_enabled": True,
                 "text": "# Gastro und mehr\n\nVon Apfel bis Zebra, wir liefern!",
                 "short_text": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod "
-                              "tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero "
-                              "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea tak",
+                "tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero "
+                "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea tak",
                 "size": "1x1",
                 "sorting_priority": 1,
                 "links": [],
@@ -294,7 +298,11 @@ async def test_exhibition_contact(world, exhibition_room):
 
         # issue contact request
         await c1.send_json_to(
-            ["exhibition.contact", 123, {"exhibitor": str(e["id"])},]
+            [
+                "exhibition.contact",
+                123,
+                {"exhibitor": str(e["id"])},
+            ]
         )
         response = await c1.receive_json_from()
         assert response[0] == "success"
@@ -396,7 +404,11 @@ async def test_exhibition_contact_not_staff(world, exhibition_room):
 
         # issue contact request
         await c1.send_json_to(
-            ["exhibition.contact", 123, {"exhibitor": str(e["id"])},]
+            [
+                "exhibition.contact",
+                123,
+                {"exhibitor": str(e["id"])},
+            ]
         )
         response = await c1.receive_json_from()
         assert response[0] == "success"

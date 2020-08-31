@@ -65,10 +65,17 @@ class RoomQuerySet(models.QuerySet):
                         f"trait_grants__{role}__contained_by": user.traits,
                     }
                 )
-                & ~Q(**{f"trait_grants__{role}": None,})
+                & ~Q(
+                    **{
+                        f"trait_grants__{role}": None,
+                    }
+                )
             )
 
-        return qs.filter(requirements, world=world,)
+        return qs.filter(
+            requirements,
+            world=world,
+        )
 
 
 class Room(VersionedModel):

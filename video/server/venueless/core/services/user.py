@@ -64,7 +64,11 @@ def get_public_users(world_id, *, ids=None, include_admin_info=False):
 
 
 def get_user(
-    world_id=None, *, with_id=None, with_token=None, with_client_id=None,
+    world_id=None,
+    *,
+    with_id=None,
+    with_token=None,
+    with_client_id=None,
 ):
     if with_id:
         user = get_user_by_id(world_id, with_id)
@@ -139,7 +143,12 @@ LoginResult = namedtuple(
 )
 
 
-def login(*, world=None, token=None, client_id=None,) -> LoginResult:
+def login(
+    *,
+    world=None,
+    token=None,
+    client_id=None,
+) -> LoginResult:
     from .chat import ChatService
     from .world import get_world_config_for_user
     from .exhibition import ExhibitionService
@@ -240,7 +249,11 @@ def list_users(world_id, page, page_size, search_term) -> object:
         p = Paginator(qs.order_by("id").values("id", "profile"), page_size).page(page)
         return {
             "results": [
-                dict(id=str(u["id"]), profile=u["profile"],) for u in p.object_list
+                dict(
+                    id=str(u["id"]),
+                    profile=u["profile"],
+                )
+                for u in p.object_list
             ],
             "isLastPage": not p.has_next(),
         }

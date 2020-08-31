@@ -192,7 +192,8 @@ class ChatModule(BaseModule):
                 sender=self.consumer.user,
             )
             await self.consumer.channel_layer.group_send(
-                GROUP_CHAT.format(channel=self.channel_id), event,
+                GROUP_CHAT.format(channel=self.channel_id),
+                event,
             )
             await self.service.broadcast_channel_list(
                 self.consumer.user, self.consumer.socket_id
@@ -287,7 +288,10 @@ class ChatModule(BaseModule):
         await self.consumer.send_success()
         await self.consumer.channel_layer.group_send(
             GROUP_USER.format(id=self.consumer.user.id),
-            {"type": "chat.read_pointers", "socket": self.consumer.socket_id,},
+            {
+                "type": "chat.read_pointers",
+                "socket": self.consumer.socket_id,
+            },
         )
 
     @event("read_pointers")
@@ -324,7 +328,8 @@ class ChatModule(BaseModule):
 
         if body.get("replaces"):
             other_message = await self.service.get_event(
-                pk=body["replaces"], channel_id=self.channel_id,
+                pk=body["replaces"],
+                channel_id=self.channel_id,
             )
             if self.consumer.user.id != other_message.sender_id:
                 # Users may only edit messages by other users if they are mods,
@@ -367,7 +372,8 @@ class ChatModule(BaseModule):
                     )
                     async with aioredis() as redis:
                         await redis.sadd(
-                            f"chat:unread.notify:{self.channel_id}", str(user.id),
+                            f"chat:unread.notify:{self.channel_id}",
+                            str(user.id),
                         )
             async with aioredis() as redis:
                 await redis.setex(
@@ -463,11 +469,15 @@ class ChatModule(BaseModule):
                 event = await self.service.create_event(
                     channel=channel,
                     event_type="channel.member",
-                    content={"membership": "join", "user": user.serialize_public(),},
+                    content={
+                        "membership": "join",
+                        "user": user.serialize_public(),
+                    },
                     sender=user,
                 )
                 await self.consumer.channel_layer.group_send(
-                    GROUP_CHAT.format(channel=self.channel_id), event,
+                    GROUP_CHAT.format(channel=self.channel_id),
+                    event,
                 )
 
                 if not hide or user == self.consumer.user:
@@ -476,7 +486,8 @@ class ChatModule(BaseModule):
                     )
                     async with aioredis() as redis:
                         await redis.sadd(
-                            f"chat:unread.notify:{self.channel_id}", str(user.id),
+                            f"chat:unread.notify:{self.channel_id}",
+                            str(user.id),
                         )
             if not hide:
                 async with aioredis() as redis:

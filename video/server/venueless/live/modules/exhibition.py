@@ -107,7 +107,10 @@ class ExhibitionModule(BaseModule):
         for staff_member in exhibitor["staff"]:
             await self.consumer.channel_layer.group_send(
                 GROUP_USER.format(id=str(staff_member["id"])),
-                {"type": "exhibition.contact_request", "contact_request": request,},
+                {
+                    "type": "exhibition.contact_request",
+                    "contact_request": request,
+                },
             )
 
     @command("contact_cancel")
@@ -122,7 +125,10 @@ class ExhibitionModule(BaseModule):
         for user_id in staff:
             await self.consumer.channel_layer.group_send(
                 GROUP_USER.format(id=str(user_id)),
-                {"type": "exhibition.contact_close", "contact_request": request,},
+                {
+                    "type": "exhibition.contact_close",
+                    "contact_request": request,
+                },
             )
 
     @command("contact_accept")

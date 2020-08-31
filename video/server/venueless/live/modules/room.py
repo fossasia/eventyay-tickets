@@ -182,7 +182,10 @@ class RoomModule(BaseModule):
     @event("reaction")
     async def push_reaction(self, body):
         await self.consumer.send_json(
-            [body["type"], {k: v for k, v in body.items() if k != "type"},]
+            [
+                body["type"],
+                {k: v for k, v in body.items() if k != "type"},
+            ]
         )
 
     @event("create", refresh_user=True, refresh_world=True)
@@ -193,7 +196,10 @@ class RoomModule(BaseModule):
         if "room:view" not in conf["permissions"]:
             return
         await self.consumer.send_json(
-            [body["type"], conf,]
+            [
+                body["type"],
+                conf,
+            ]
         )
 
     @command("config.list")

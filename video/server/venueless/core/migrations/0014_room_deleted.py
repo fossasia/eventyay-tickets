@@ -11,6 +11,8 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AddField(
-            model_name="room", name="deleted", field=models.BooleanField(default=False),
+            model_name="room",
+            name="deleted",
+            field=models.BooleanField(default=False),
         ),
     ]

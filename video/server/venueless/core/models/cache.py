@@ -106,7 +106,9 @@ class VersionedModel(models.Model):
     async def _set_cache_version(self):
         async with aioredis() as redis:
             await redis.eval(
-                SETIFHIGHER, [f"{self._cachekey}:version"], [self.version],
+                SETIFHIGHER,
+                [f"{self._cachekey}:version"],
+                [self.version],
             )
 
         cache = caches["process"]
@@ -115,5 +117,6 @@ class VersionedModel(models.Model):
     async def _set_cache_deleted(self):
         async with aioredis() as redis:
             await redis.set(
-                f"{self._cachekey}:version", "deleted",
+                f"{self._cachekey}:version",
+                "deleted",
             )

@@ -6,7 +6,9 @@ from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
 from .live import routing as live
 
 application = ProtocolTypeRouter(
-    {"websocket": AllowedHostsOriginValidator(URLRouter(live.websocket_urlpatterns)),}
+    {
+        "websocket": AllowedHostsOriginValidator(URLRouter(live.websocket_urlpatterns)),
+    }
 )
 
 

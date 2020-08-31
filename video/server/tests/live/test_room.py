@@ -102,7 +102,10 @@ async def test_reactions_room_debounce(world, stream_room):
         ]
         assert any(
             r
-            == ["room.reaction", {"reactions": {"+1": 1}, "room": str(stream_room.pk)},]
+            == [
+                "room.reaction",
+                {"reactions": {"+1": 1}, "room": str(stream_room.pk)},
+            ]
             for r in responses
         )
         assert any(r == ["success", 123, {}] for r in responses)

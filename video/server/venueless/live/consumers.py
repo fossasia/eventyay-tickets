@@ -114,8 +114,10 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
             await self.send_error("protocol.unknown_command")
 
     async def dispatch(self, message):
-        if self.conn_time and time.time() - self.conn_time > self.channel_layer.group_expiry * random.uniform(
-            0.9, 1
+        if (
+            self.conn_time
+            and time.time() - self.conn_time
+            > self.channel_layer.group_expiry * random.uniform(0.9, 1)
         ):
             # Django channels forgets which groups we're in after `group_expiry`, usually a day, so we do a force
             # reconnect every day. That's good for memory usage on both ends as well, probably :) We randomize the

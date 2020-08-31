@@ -39,5 +39,6 @@ def retrieve_preview_information(world=None, event_id=None):
         )
         channel_layer = channels.layers.get_channel_layer()
         asgiref.sync.async_to_sync(channel_layer.group_send)(
-            GROUP_CHAT.format(channel=event.channel_id), event_data,
+            GROUP_CHAT.format(channel=event.channel_id),
+            event_data,
         )
