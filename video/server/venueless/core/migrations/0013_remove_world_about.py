@@ -24,5 +24,8 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RunPython(migrate_about),
-        migrations.RemoveField(model_name="world", name="about",),
+        migrations.RemoveField(
+            model_name="world",
+            name="about",
+        ),
     ]

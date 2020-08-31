@@ -185,7 +185,8 @@ class AuthModule(BaseModule):
     async def dispatch_disconnect(self, close_code):
         if self.consumer.user:
             await self.consumer.channel_layer.group_discard(
-                GROUP_USER.format(id=self.consumer.user.id), self.consumer.channel_name,
+                GROUP_USER.format(id=self.consumer.user.id),
+                self.consumer.channel_name,
             )
             await self.consumer.channel_layer.group_discard(
                 GROUP_WORLD.format(id=self.consumer.world.id),
@@ -228,12 +229,16 @@ class AuthModule(BaseModule):
         if body.get("id") == str(self.consumer.user.id):
             await self.consumer.send_error(code="user.ban.self")
             return
-        ok = await set_user_banned(self.consumer.world, body.get("id"),)
+        ok = await set_user_banned(
+            self.consumer.world,
+            body.get("id"),
+        )
         if ok:
             await self.consumer.send_success({})
             # Force user browser to reload instead of drop to kick out of e.g. BBB sessions
             await self.consumer.channel_layer.group_send(
-                GROUP_USER.format(id=body.get("id")), {"type": "connection.reload"},
+                GROUP_USER.format(id=body.get("id")),
+                {"type": "connection.reload"},
             )
         else:
             await self.consumer.send_error(code="user.not_found")
@@ -244,12 +249,16 @@ class AuthModule(BaseModule):
         if body.get("id") == str(self.consumer.user.id):
             await self.consumer.send_error(code="user.silence.self")
             return
-        ok = await set_user_silenced(self.consumer.world, body.get("id"),)
+        ok = await set_user_silenced(
+            self.consumer.world,
+            body.get("id"),
+        )
         if ok:
             await self.consumer.send_success({})
             # Force user browser to reload instead of drop to kick out of e.g. BBB sessions
             await self.consumer.channel_layer.group_send(
-                GROUP_USER.format(id=body.get("id")), {"type": "connection.reload"},
+                GROUP_USER.format(id=body.get("id")),
+                {"type": "connection.reload"},
             )
         else:
             await self.consumer.send_error(code="user.not_found")
@@ -260,7 +269,10 @@ class AuthModule(BaseModule):
         if body.get("id") == str(self.consumer.user.id):
             await self.consumer.send_error(code="user.reactivate.self")
             return
-        ok = await set_user_free(self.consumer.world, body.get("id"),)
+        ok = await set_user_free(
+            self.consumer.world,
+            body.get("id"),
+        )
         if ok:
             await self.consumer.send_success({})
         else:
@@ -271,7 +283,11 @@ class AuthModule(BaseModule):
         if body.get("id") == str(self.consumer.user.id):
             await self.consumer.send_error(code="user.block.self")
             return
-        ok = await block_user(self.consumer.world, self.consumer.user, body.get("id"),)
+        ok = await block_user(
+            self.consumer.world,
+            self.consumer.user,
+            body.get("id"),
+        )
         if ok:
             await self.consumer.send_success({})
         else:
@@ -283,7 +299,9 @@ class AuthModule(BaseModule):
             await self.consumer.send_error(code="user.unblock.self")
             return
         ok = await unblock_user(
-            self.consumer.world, self.consumer.user, body.get("id"),
+            self.consumer.world,
+            self.consumer.user,
+            body.get("id"),
         )
         if ok:
             await self.consumer.send_success({})
@@ -292,5 +310,7 @@ class AuthModule(BaseModule):
 
     @command("list.blocked")
     async def list_blocked(self, body):
-        users = await get_blocked_users(self.consumer.user,)
+        users = await get_blocked_users(
+            self.consumer.user,
+        )
         await self.consumer.send_success({"users": users})

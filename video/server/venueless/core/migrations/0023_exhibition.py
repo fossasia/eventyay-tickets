@@ -133,6 +133,8 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            options={"unique_together": {("user", "exhibitor")},},
+            options={
+                "unique_together": {("user", "exhibitor")},
+            },
         ),
     ]

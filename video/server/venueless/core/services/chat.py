@@ -46,10 +46,15 @@ class ChatService:
 
     def get_channels_for_user(self, user_id, is_volatile=None, is_hidden=False):
         qs = (
-            Membership.objects.filter(channel__world_id=self.world.pk, user_id=user_id,)
+            Membership.objects.filter(
+                channel__world_id=self.world.pk,
+                user_id=user_id,
+            )
             .annotate(
                 max_id=Subquery(
-                    ChatEvent.objects.filter(channel_id=OuterRef("channel_id"),)
+                    ChatEvent.objects.filter(
+                        channel_id=OuterRef("channel_id"),
+                    )
                     .exclude(event_type="channel.member")
                     .order_by()
                     .values("channel_id")
@@ -126,7 +131,9 @@ class ChatService:
         with suppress(User.DoesNotExist):
             with transaction.atomic():
                 m, created = Membership.objects.get_or_create(
-                    channel_id=channel_id, user=user, defaults={"volatile": volatile},
+                    channel_id=channel_id,
+                    user=user,
+                    defaults={"volatile": volatile},
                 )
                 if not created and m.volatile and not volatile:
                     m.volatile = False
@@ -135,7 +142,10 @@ class ChatService:
 
     @database_sync_to_async
     def remove_channel_user(self, channel_id, uid):
-        Membership.objects.filter(channel_id=channel_id, user_id=uid,).delete()
+        Membership.objects.filter(
+            channel_id=channel_id,
+            user_id=uid,
+        ).delete()
 
     @database_sync_to_async
     def hide_channel_user(self, channel_id, uid):
@@ -159,9 +169,9 @@ class ChatService:
         events = ChatEvent.objects
         if skip_membership:
             events = events.exclude(event_type="channel.member")
-        events = events.filter(id__lt=before_id, channel=channel,).order_by("-id")[
-            : min(count, 1000)
-        ]
+        events = events.filter(id__lt=before_id, channel=channel,).order_by(
+            "-id"
+        )[: min(count, 1000)]
         return [e.serialize_public() for e in reversed(list(events))]
 
     @database_sync_to_async
@@ -262,7 +272,9 @@ class ChatService:
                             .values("c")
                         ),
                         mcount_mismatch=Subquery(
-                            Membership.objects.filter(channel=OuterRef("pk"),)
+                            Membership.objects.filter(
+                                channel=OuterRef("pk"),
+                            )
                             .exclude(user_id__in=user_ids)
                             .order_by()
                             .values("channel")
@@ -306,7 +318,8 @@ class ChatService:
                     Membership.objects.filter(channel=OuterRef("pk"), user_id=user.pk)
                 )
             ).filter(
-                world_id=self.world.pk, room__force_join=True,
+                world_id=self.world.pk,
+                room__force_join=True,
             )
         )
 
@@ -336,14 +349,19 @@ class ChatService:
                 event = await self.create_event(
                     channel=channel,
                     event_type="channel.member",
-                    content={"membership": "join", "user": user.serialize_public(),},
+                    content={
+                        "membership": "join",
+                        "user": user.serialize_public(),
+                    },
                     sender=user,
                 )
                 await get_channel_layer().group_send(
-                    GROUP_CHAT.format(channel=channel.pk), event,
+                    GROUP_CHAT.format(channel=channel.pk),
+                    event,
                 )
                 await self.broadcast_channel_list(user, "dummysocket")
                 async with aioredis() as redis:
                     await redis.sadd(
-                        f"chat:unread.notify:{channel.id}", str(user.id),
+                        f"chat:unread.notify:{channel.id}",
+                        str(user.id),
                     )

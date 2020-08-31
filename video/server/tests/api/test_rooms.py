@@ -107,7 +107,9 @@ def test_room_update(client, world):
     assert r.status_code == 403
     r = client.patch(
         "/api/v1/worlds/sample/rooms/{}/".format(str(rid)),
-        data={"name": "Forum",},
+        data={
+            "name": "Forum",
+        },
         format="json",
         HTTP_AUTHORIZATION=get_token_header(world, ["admin", "api", "foobartrait"]),
     )
@@ -122,7 +124,10 @@ def test_room_create(client, world):
 
     r = client.post(
         "/api/v1/worlds/sample/rooms/",
-        data={"name": "Forum", "sorting_priority": 100,},
+        data={
+            "name": "Forum",
+            "sorting_priority": 100,
+        },
         format="json",
         HTTP_AUTHORIZATION=get_token_header(world),
     )
@@ -180,7 +185,8 @@ async def world_communicator(client_id=None, named=True):
 async def test_push_world_update(client, action, world):
     async with world_communicator() as c:
         r = await sync_to_async(client.get)(
-            "/api/v1/worlds/sample/rooms/", HTTP_AUTHORIZATION=get_token_header(world),
+            "/api/v1/worlds/sample/rooms/",
+            HTTP_AUTHORIZATION=get_token_header(world),
         )
         rid = r.data["results"][0]["id"]
         await sync_to_async(client.patch)(

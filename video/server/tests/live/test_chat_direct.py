@@ -125,7 +125,11 @@ async def test_invalid_user(world):
     await database_sync_to_async(world.save)()
     async with world_communicator(client_id="a") as c1:
         await c1.send_json_to(
-            ["chat.direct.create", 123, {"users": ["foobar"]},]
+            [
+                "chat.direct.create",
+                123,
+                {"users": ["foobar"]},
+            ]
         )
         response = await c1.receive_json_from()
         assert "error" == response[0]
@@ -285,13 +289,21 @@ async def test_subscribe_member_only(world):
         channel = await _setup_dms(c1, c2)
 
         await c1.send_json_to(
-            ["chat.subscribe", 123, {"channel": channel},]
+            [
+                "chat.subscribe",
+                123,
+                {"channel": channel},
+            ]
         )
         response = await c1.receive_json_from()
         assert "success" == response[0]
 
         await c3.send_json_to(
-            ["chat.subscribe", 123, {"channel": channel},]
+            [
+                "chat.subscribe",
+                123,
+                {"channel": channel},
+            ]
         )
         response = await c3.receive_json_from()
         assert "error" == response[0]
@@ -350,7 +362,11 @@ async def test_fetch_member_only(world):
             [
                 "chat.fetch",
                 123,
-                {"channel": channel, "count": 20, "before_id": sys.maxsize,},
+                {
+                    "channel": channel,
+                    "count": 20,
+                    "before_id": sys.maxsize,
+                },
             ]
         )
         response = await c1.receive_json_from()
@@ -360,7 +376,11 @@ async def test_fetch_member_only(world):
             [
                 "chat.fetch",
                 123,
-                {"channel": channel, "count": 20, "before_id": sys.maxsize,},
+                {
+                    "channel": channel,
+                    "count": 20,
+                    "before_id": sys.maxsize,
+                },
             ]
         )
         response = await c3.receive_json_from()
@@ -578,7 +598,13 @@ This conference was already in existence and may currently be in progress.
             call_id = response[1]["content"]["body"]["id"]
 
             await c1.send_json_to(
-                ["bbb.call_url", 123, {"call": call_id,},]
+                [
+                    "bbb.call_url",
+                    123,
+                    {
+                        "call": call_id,
+                    },
+                ]
             )
             response = await c1.receive_json_from()
             assert "success" == response[0]
@@ -615,7 +641,13 @@ async def test_send_call_require_invite(world):
         call_id = response[1]["content"]["body"]["id"]
 
         await c3.send_json_to(
-            ["bbb.call_url", 123, {"call": call_id,},]
+            [
+                "bbb.call_url",
+                123,
+                {
+                    "call": call_id,
+                },
+            ]
         )
         response = await c3.receive_json_from()
         assert "error" == response[0]
@@ -679,7 +711,11 @@ async def test_hide_and_reappear(world):
         await c2b.receive_json_from()  # notification pointer
 
         await c2.send_json_to(
-            ["chat.leave", 123, {"channel": channel},]
+            [
+                "chat.leave",
+                123,
+                {"channel": channel},
+            ]
         )
         response = await c2.receive_json_from()
         assert "success" == response[0]

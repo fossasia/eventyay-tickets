@@ -39,7 +39,9 @@ def get_or_create_social_media_link(link, exhibitor):
         display_text=link["display_text"],
         url=link["url"],
         defaults=dict(
-            exhibitor=exhibitor, display_text=link["display_text"], url=link["url"],
+            exhibitor=exhibitor,
+            display_text=link["display_text"],
+            url=link["url"],
         ),
     )
     return obj
@@ -65,7 +67,10 @@ def get_or_create_staff(user, exhibitor):
     obj, _ = ExhibitorStaff.objects.get_or_create(
         exhibitor=exhibitor,
         user__id=user.id,
-        defaults=dict(exhibitor=exhibitor, user=user,),
+        defaults=dict(
+            exhibitor=exhibitor,
+            user=user,
+        ),
     )
     return obj
 
@@ -86,7 +91,14 @@ class ExhibitionService:
         qs = Exhibitor.objects.filter(world__id=self.world_id).order_by("name")
 
         return [
-            dict(id=str(e["id"]), name=e["name"],) for e in qs.values("id", "name",)
+            dict(
+                id=str(e["id"]),
+                name=e["name"],
+            )
+            for e in qs.values(
+                "id",
+                "name",
+            )
         ]
 
     @database_sync_to_async
@@ -202,7 +214,10 @@ class ExhibitionService:
         e = get_exhibitor_by_id(self.world_id, exhibitor_id)
         if not e:
             return None
-        request = ContactRequest.objects.create(exhibitor=e, user=user,)
+        request = ContactRequest.objects.create(
+            exhibitor=e,
+            user=user,
+        )
         return request.serialize()
 
     @database_sync_to_async
@@ -237,9 +252,15 @@ class ExhibitionService:
         if not u:
             return None
         try:
-            s = ExhibitorStaff.objects.get(user=u, exhibitor=e,)
+            s = ExhibitorStaff.objects.get(
+                user=u,
+                exhibitor=e,
+            )
         except ExhibitorStaff.DoesNotExist:
-            s = ExhibitorStaff.objects.create(user=u, exhibitor=e,)
+            s = ExhibitorStaff.objects.create(
+                user=u,
+                exhibitor=e,
+            )
         return s
 
     @database_sync_to_async
@@ -265,7 +286,8 @@ class ExhibitionService:
 
     def get_exhibition_data_for_user(self, user_id):
         exhibitors = Exhibitor.objects.filter(
-            world__id=self.world_id, staff__user__id=user_id,
+            world__id=self.world_id,
+            staff__user__id=user_id,
         )
         contact_requests = ContactRequest.objects.filter(exhibitor__in=exhibitors)
         return {

@@ -177,7 +177,10 @@ async def test_update_user():
         response = await c2.receive_json_from()
         assert response == [
             "user.updated",
-            {"profile": {"display_name": "Cool User"}, "id": user_id,},
+            {
+                "profile": {"display_name": "Cool User"},
+                "id": user_id,
+            },
         ]
 
         await c3.send_json_to(["authenticate", {"client_id": "4"}])
@@ -236,7 +239,10 @@ async def test_auth_with_jwt_token_update_traits(world):
         }
         assert (
             await database_sync_to_async(get_user_by_token_id)("sample", "123456")
-        ).traits == ["chat.read", "foo.bar",]
+        ).traits == [
+            "chat.read",
+            "foo.bar",
+        ]
 
         await c2.send_json_to(["authenticate", {"token": token2}])
         response = await c2.receive_json_from()
@@ -281,7 +287,10 @@ async def test_auth_with_jwt_token_twice(world):
         }
         assert (
             await database_sync_to_async(get_user_by_token_id)("sample", "123456")
-        ).traits == ["chat.read", "foo.bar",]
+        ).traits == [
+            "chat.read",
+            "foo.bar",
+        ]
 
         await c2.send_json_to(["authenticate", {"token": token}])
         response = await c2.receive_json_from()
@@ -295,7 +304,10 @@ async def test_auth_with_jwt_token_twice(world):
         }
         assert (
             await database_sync_to_async(get_user_by_token_id)("sample", "123456")
-        ).traits == ["chat.read", "foo.bar",]
+        ).traits == [
+            "chat.read",
+            "foo.bar",
+        ]
 
 
 @pytest.mark.asyncio
@@ -328,7 +340,10 @@ async def test_fetch_user():
         assert response == [
             "success",
             14,
-            {"id": user_id, "profile": {"display_name": "Cool User"},},
+            {
+                "id": user_id,
+                "profile": {"display_name": "Cool User"},
+            },
         ]
 
         await c2.send_json_to(["user.fetch", 14, {"ids": [user_id, str(uuid.uuid4())]}])
@@ -692,15 +707,16 @@ async def test_list_search_users(world):
         await c_user2.receive_json_from()
 
         # Search
-        await c.send_json_to(["user.list.search", 14, {"page": 0, "search_term": "",}])
-        response = await c.receive_json_from()
-        assert response[0] == "success"
-        assert response[2] == {
-            "results": [],
-            "isLastPage": True,
-        }
-
-        await c.send_json_to(["user.list.search", 14, {"page": 1, "search_term": "",}])
+        await c.send_json_to(
+            [
+                "user.list.search",
+                14,
+                {
+                    "page": 0,
+                    "search_term": "",
+                },
+            ]
+        )
         response = await c.receive_json_from()
         assert response[0] == "success"
         assert response[2] == {
@@ -709,7 +725,31 @@ async def test_list_search_users(world):
         }
 
         await c.send_json_to(
-            ["user.list.search", 14, {"page": 1, "search_term": "Fighter",}]
+            [
+                "user.list.search",
+                14,
+                {
+                    "page": 1,
+                    "search_term": "",
+                },
+            ]
+        )
+        response = await c.receive_json_from()
+        assert response[0] == "success"
+        assert response[2] == {
+            "results": [],
+            "isLastPage": True,
+        }
+
+        await c.send_json_to(
+            [
+                "user.list.search",
+                14,
+                {
+                    "page": 1,
+                    "search_term": "Fighter",
+                },
+            ]
         )
         response = await c.receive_json_from()
         assert response[0] == "success"
@@ -722,7 +762,14 @@ async def test_list_search_users(world):
         await database_sync_to_async(world.save)()
 
         await c.send_json_to(
-            ["user.list.search", 14, {"page": 1, "search_term": "Foo",}]
+            [
+                "user.list.search",
+                14,
+                {
+                    "page": 1,
+                    "search_term": "Foo",
+                },
+            ]
         )
         response = await c.receive_json_from()
         assert response[0] == "success"
@@ -730,14 +777,28 @@ async def test_list_search_users(world):
         assert response[2]["results"][1]["id"] in [user_id, user1_id, user2_id]
 
         await c.send_json_to(
-            ["user.list.search", 14, {"page": 2, "search_term": "Foo",}]
+            [
+                "user.list.search",
+                14,
+                {
+                    "page": 2,
+                    "search_term": "Foo",
+                },
+            ]
         )
         response = await c.receive_json_from()
         assert response[0] == "success"
         assert response[2]["results"][0]["id"] in [user_id, user1_id, user2_id]
 
         await c.send_json_to(
-            ["user.list.search", 14, {"page": 3, "search_term": "Foo",}]
+            [
+                "user.list.search",
+                14,
+                {
+                    "page": 3,
+                    "search_term": "Foo",
+                },
+            ]
         )
         response = await c.receive_json_from()
         assert response[0] == "success"

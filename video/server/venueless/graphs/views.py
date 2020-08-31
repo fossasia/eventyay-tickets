@@ -141,7 +141,10 @@ class RoomAttendanceGraphView(GraphView):
         ax.grid(True)
 
         reactions = (
-            self.room.reactions.filter(datetime__gte=begin, datetime__lte=end,)
+            self.room.reactions.filter(
+                datetime__gte=begin,
+                datetime__lte=end,
+            )
             .annotate(min=TruncMinute("datetime"))
             .order_by()
             .values("datetime", "reaction")

@@ -187,7 +187,8 @@ async def test_join_convert_volatile_to_persistent(volatile_chat_room, world):
 @pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_join_convert_volatile_to_persistent_require_moderator(
-    volatile_chat_room, world,
+    volatile_chat_room,
+    world,
 ):
     async with world_communicator() as c:
         await c.send_json_to(
@@ -477,7 +478,11 @@ async def test_private_room_protection(chat_room):
             [
                 "chat.fetch",
                 123,
-                {"channel": str(chat_room.channel.id), "count": 20, "before_id": 0,},
+                {
+                    "channel": str(chat_room.channel.id),
+                    "count": 20,
+                    "before_id": 0,
+                },
             ]
         )
         response = await c1.receive_json_from()
@@ -1136,7 +1141,14 @@ async def test_unread_channels(world, chat_room):
 
         # c2 confirms they read the message
         await c2.send_json_to(
-            ["chat.mark_read", 123, {"channel": channel_id, "id": event_id,},]
+            [
+                "chat.mark_read",
+                123,
+                {
+                    "channel": channel_id,
+                    "id": event_id,
+                },
+            ]
         )
         await c2.receive_json_from()  # success
 
@@ -1208,7 +1220,14 @@ async def test_broadcast_read_channels(world, chat_room):
 
         # c2 confirms they read the message
         await c2.send_json_to(
-            ["chat.mark_read", 123, {"channel": channel_id, "id": event_id,},]
+            [
+                "chat.mark_read",
+                123,
+                {
+                    "channel": channel_id,
+                    "id": event_id,
+                },
+            ]
         )
         await c2.receive_json_from()  # success
 
@@ -1222,7 +1241,10 @@ async def test_broadcast_read_channels(world, chat_room):
 
     async with world_communicator(token=token) as c3:
         assert c3.context["chat.channels"] == [
-            {"id": channel_id, "notification_pointer": event_id,}
+            {
+                "id": channel_id,
+                "notification_pointer": event_id,
+            }
         ]
         assert c3.context["chat.read_pointers"] == {channel_id: event_id}
 

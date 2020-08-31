@@ -205,6 +205,8 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            options={"unique_together": {("user", "channel")},},
+            options={
+                "unique_together": {("user", "channel")},
+            },
         ),
     ]

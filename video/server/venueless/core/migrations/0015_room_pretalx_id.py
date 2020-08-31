@@ -11,6 +11,8 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AddField(
-            model_name="room", name="pretalx_id", field=models.IntegerField(default=0),
+            model_name="room",
+            name="pretalx_id",
+            field=models.IntegerField(default=0),
         ),
     ]

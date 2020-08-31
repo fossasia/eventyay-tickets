@@ -11,7 +11,9 @@ class Channel(models.Model):
         to="Room", related_name="channel", on_delete=models.CASCADE, null=True
     )
     world = models.ForeignKey(
-        to="World", related_name="channels", on_delete=models.CASCADE,
+        to="World",
+        related_name="channels",
+        on_delete=models.CASCADE,
     )
 
     def save(self, *args, **kwargs):
@@ -32,7 +34,10 @@ class ChatEvent(models.Model):
         primary_key=True
     )  # Not using auto-increment since it doesn't give a 100% guarantee on monotony
     channel = models.ForeignKey(
-        to=Channel, db_index=True, related_name="chat_events", on_delete=models.CASCADE,
+        to=Channel,
+        db_index=True,
+        related_name="chat_events",
+        on_delete=models.CASCADE,
     )
     timestamp = models.DateTimeField(auto_now_add=True)
     edited = models.DateTimeField(null=True)

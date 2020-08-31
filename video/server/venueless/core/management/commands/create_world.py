@@ -29,7 +29,11 @@ class Command(BaseCommand):
         secret = get_random_string(length=64)
         w.config = {
             "JWT_secrets": [
-                {"issuer": "any", "audience": "venueless", "secret": secret,}
+                {
+                    "issuer": "any",
+                    "audience": "venueless",
+                    "secret": secret,
+                }
             ]
         }
         w.trait_grants["admin"] = ["admin"]

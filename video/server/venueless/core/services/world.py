@@ -54,7 +54,12 @@ def get_permissions_for_traits(rules, traits, prefixes):
 
 
 async def notify_world_change(world_id):
-    await get_channel_layer().group_send(f"world.{world_id}", {"type": "world.update",})
+    await get_channel_layer().group_send(
+        f"world.{world_id}",
+        {
+            "type": "world.update",
+        },
+    )
 
 
 def get_room_config(room, permissions):

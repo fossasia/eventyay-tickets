@@ -17,10 +17,17 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AlterModelOptions(
-            name="room", options={"ordering": ("sorting_priority", "name")},
+            name="room",
+            options={"ordering": ("sorting_priority", "name")},
         ),
-        migrations.RemoveField(model_name="room", name="permission_config",),
-        migrations.RemoveField(model_name="world", name="permission_config",),
+        migrations.RemoveField(
+            model_name="room",
+            name="permission_config",
+        ),
+        migrations.RemoveField(
+            model_name="world",
+            name="permission_config",
+        ),
         migrations.AddField(
             model_name="room",
             name="trait_grants",

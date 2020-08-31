@@ -100,18 +100,26 @@ DATABASES = {
 }
 
 redis_auth = os.getenv(
-    "VENUELESS_REDIS_AUTH", config.get("redis", "auth", fallback=""),
+    "VENUELESS_REDIS_AUTH",
+    config.get("redis", "auth", fallback=""),
 )
 redis_url = (
     "redis://"
     + ((":" + redis_auth + "@") if redis_auth else "")
     + os.getenv(
-        "VENUELESS_REDIS_HOST", config.get("redis", "host", fallback="127.0.0.1"),
+        "VENUELESS_REDIS_HOST",
+        config.get("redis", "host", fallback="127.0.0.1"),
     )
     + ":"
-    + os.getenv("VENUELESS_REDIS_PORT", config.get("redis", "port", fallback="6379"),)
+    + os.getenv(
+        "VENUELESS_REDIS_PORT",
+        config.get("redis", "port", fallback="6379"),
+    )
     + "/"
-    + os.getenv("VENUELESS_REDIS_DB", config.get("redis", "db", fallback="0"),)
+    + os.getenv(
+        "VENUELESS_REDIS_DB",
+        config.get("redis", "db", fallback="0"),
+    )
 )
 CHANNEL_LAYERS = {
     "default": {
@@ -298,7 +306,9 @@ LOGGING = {
 }
 
 REST_FRAMEWORK = {
-    "DEFAULT_PERMISSION_CLASSES": ["venueless.api.auth.NoPermission",],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "venueless.api.auth.NoPermission",
+    ],
     "UNAUTHENTICATED_USER": "venueless.api.auth.AnonymousUser",
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.NamespaceVersioning",

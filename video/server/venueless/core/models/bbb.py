@@ -31,8 +31,13 @@ class BBBCall(models.Model):
         to="Room", related_name="bbb_call", on_delete=models.CASCADE, null=True
     )
     world = models.ForeignKey(
-        to="World", related_name="bbb_calls", on_delete=models.CASCADE,
+        to="World",
+        related_name="bbb_calls",
+        on_delete=models.CASCADE,
     )
-    invited_members = models.ManyToManyField(to="User", related_name="bbb_invites",)
+    invited_members = models.ManyToManyField(
+        to="User",
+        related_name="bbb_invites",
+    )
     guest_policy = models.CharField(default="ALWAYS_ACCEPT", max_length=50)
     voice_bridge = models.CharField(null=True, blank=True, max_length=5)

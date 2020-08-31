@@ -39,7 +39,8 @@ class BBBModule(BaseModule):
         if not self.consumer.user.profile.get("display_name"):
             raise ConsumerException("bbb.join.missing_profile")
         url = await service.get_join_url_for_call_id(
-            body.get("call"), self.consumer.user,
+            body.get("call"),
+            self.consumer.user,
         )
         if not url:
             raise ConsumerException("bbb.failed")
@@ -52,5 +53,7 @@ class BBBModule(BaseModule):
     )
     async def recordings(self, body):
         service = BBBService(self.consumer.world)
-        recordings = await service.get_recordings_for_room(self.room,)
+        recordings = await service.get_recordings_for_room(
+            self.room,
+        )
         await self.consumer.send_success({"results": recordings})
