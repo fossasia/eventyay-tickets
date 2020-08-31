@@ -10,10 +10,10 @@
 import MarkdownContent from 'components/MarkdownContent'
 
 export default {
+	components: { MarkdownContent },
 	props: {
 		speakerId: String
 	},
-	components: { MarkdownContent },
 	data () {
 		return {
 			speaker: null
@@ -44,4 +44,6 @@ export default {
 		flex-direction: column
 		padding: 16px
 		max-width: 720px
+		img
+			object-fit: contain
 </style>

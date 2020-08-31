@@ -1,0 +1,3 @@
+pandas~=1.1.0
+python-dateutil
+xlrd~=1.2.0

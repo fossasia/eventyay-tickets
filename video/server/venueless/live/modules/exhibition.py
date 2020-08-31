@@ -1,5 +1,7 @@
 import logging
 
+from channels.db import database_sync_to_async
+
 from venueless.core.permissions import Permission
 from venueless.core.services.exhibition import ExhibitionService
 from venueless.live.channels import GROUP_USER
@@ -33,6 +35,49 @@ class ExhibitionModule(BaseModule):
     async def list_all(self, body):
         exhibitors = await self.service.get_all_exhibitors()
         await self.consumer.send_success({"exhibitors": exhibitors})
+
+    @command("delete")
+    @require_world_permission(Permission.WORLD_ROOMS_CREATE_EXHIBITION)
+    async def delete(self, body):
+        staff = await self.service.get_staff(exhibitor_id=body["exhibitor"])
+        if not await self.service.delete(exhibitor_id=body["exhibitor"]):
+            await self.consumer.send_error("exhibition.unknown_exhibitor")
+        else:
+            for user_id in staff:
+                data = await database_sync_to_async(
+                    self.service.get_exhibition_data_for_user
+                )(user_id)
+                await self.consumer.channel_layer.group_send(
+                    GROUP_USER.format(id=str(user_id)),
+                    {"type": "exhibition.exhibition_data_update", "data": data},
+                )
+            await self.consumer.send_success({})
+
+    @command("patch")
+    @require_world_permission(Permission.WORLD_ROOMS_CREATE_EXHIBITION)
+    async def patch(self, body):
+        staff = []
+        if body["id"] != "":
+            staff += await self.service.get_staff(exhibitor_id=body["id"])
+        exhibitor = await self.service.patch(exhibitor=body, world=self.consumer.world)
+
+        for user in exhibitor["staff"]:
+            if user["id"] not in staff:
+                staff.append(user["id"])
+
+        for user_id in staff:
+            data = await database_sync_to_async(
+                self.service.get_exhibition_data_for_user
+            )(user_id)
+            await self.consumer.channel_layer.group_send(
+                GROUP_USER.format(id=str(user_id)),
+                {"type": "exhibition.exhibition_data_update", "data": data},
+            )
+
+        if not exhibitor:
+            await self.consumer.send_error("exhibition.unknown_room")
+        else:
+            await self.consumer.send_success({"exhibitor": exhibitor})
 
     @command("list")
     @room_action(module_required="exhibition.native")
@@ -152,6 +197,15 @@ class ExhibitionModule(BaseModule):
         await self.consumer.send_json(
             [
                 "exhibition.contact_request_close",
+                {k: v for k, v in body.items() if k != "type"},
+            ]
+        )
+
+    @event("exhibition_data_update")
+    async def exhibition_data_update(self, body):
+        await self.consumer.send_json(
+            [
+                "exhibition.exhibition_data_update",
                 {k: v for k, v in body.items() if k != "type"},
             ]
         )

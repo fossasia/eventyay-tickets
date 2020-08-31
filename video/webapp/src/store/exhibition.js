@@ -24,12 +24,15 @@ export default {
 		},
 		async acceptContactRequest ({state, dispatch, rootState}, contactRequest) {
 			// TODO error handling
-			const channel = await dispatch('chat/openDirectMessage', {user: contactRequest.user, hide: false}, {root: true})
+			const channel = await dispatch('chat/openDirectMessage', {users: [contactRequest.user], hide: false}, {root: true})
 			await api.call('exhibition.contact_accept', {contact_request: contactRequest.id, channel: channel.id})
 			contactRequest.state = 'answered'
 			contactRequest.answered_by = rootState.user
 			contactRequest.timestamp = new Date().toISOString()
 			// TODO: send greeting message
+		},
+		async 'api::exhibition.exhibition_data_update' ({commit, state}, {data}) {
+			commit('setData', data)
 		},
 		// for staff
 		'api::exhibition.contact_request' ({state}, data) {
@@ -48,5 +51,6 @@ export default {
 			// DM is automatically opening
 			await router.push({name: 'channel', params: {channelId: data.channel}})
 		}
+
 	}
 }

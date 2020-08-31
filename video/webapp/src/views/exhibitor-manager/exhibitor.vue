@@ -6,7 +6,7 @@
 			bunt-icon-button(@click="$router.push({name: 'exhibitors'})") arrow_left
 			h2 {{ exhibitor.name }}
 			.actions
-				bunt-button.btn-save(@click="save", :loading="saving") Save
+				bunt-button.btn-save(@click="save", :loading="saving") {{ $t('Exhibitors:save:label') }}
 		.main-form(v-scrollbar.y="")
 			bunt-input(v-model="exhibitor.name", :label="$t('Exhibitors:name:label')", name="name", :validation="$v.exhibitor.name")
 			bunt-input(v-model="exhibitor.tagline", :label="$t('Exhibitors:tagline:label')", name="tagline", :validation="$v.exhibitor.tagline")
@@ -16,9 +16,9 @@
 			upload-url-input(v-model="exhibitor.logo", :label="$t('Exhibitors:logo:label')", name="logo")
 			upload-url-input(v-model="exhibitor.banner_list", :label="$t('Exhibitors:banner-list:label')", name="bannerList")
 			upload-url-input(v-model="exhibitor.banner_detail", :label="$t('Exhibitors:banner-detail:label')", name="bannerDetail")
-			bunt-select(v-model="exhibitor.size", :label="$t('Exhibitors:size:label')", name="size", :options="sizes")
-			bunt-input(v-model="exhibitor.sorting_priority", label="Sorting priority", name="sortingPriority", :validation="$v.exhibitor.sortingPriority")
-			bunt-select(v-model="exhibitor.room_id", :label="$t('Exhibitors:room:label')", name="room", :options="rooms", option-label="name")
+			bunt-select(v-model="exhibitor.size", :label="$t('Exhibitors:size:label')", name="size", :options="sizes", :validation="$v.exhibitor.size")
+			bunt-input(v-model="exhibitor.sorting_priority", :label="$t('Exhibitors:sorting-priority:label')", name="sortingPriority", :validation="$v.exhibitor.sorting_priority")
+			bunt-select(v-model="exhibitor.room_id", :label="$t('Exhibitors:room:label')", name="room", :options="rooms", option-label="name", :validation="$v.exhibitor.room_id")
 				template(slot-scope="{ option }")
 					.label {{ option.name }}
 			table.social-media-links
@@ -38,7 +38,7 @@
 				tfoot
 					tr
 						td
-							bunt-button.btn-add-role(@click="add_social_media_link") {{ $t('Exhibitors:add-link:text') }}
+							bunt-button(@click="add_social_media_link") {{ $t('Exhibitors:add-link:text') }}
 						td
 						td
 			table.links
@@ -61,7 +61,7 @@
 				tfoot
 					tr
 						td
-							bunt-button.btn-add-role(@click="add_link") {{ $t('Exhibitors:add-link:text') }}
+							bunt-button(@click="add_link") {{ $t('Exhibitors:add-link:text') }}
 						td
 						td
 			table.staff
@@ -79,7 +79,7 @@
 				tfoot
 					tr
 						td
-							UserSearch(v-on:select="add_staff", :placeholder="'Add staff'")
+							bunt-button(@click="showStaffPrompt=true") {{ $t('Exhibitors:add-staff:text') }}
 						td
 						td
 			bunt-checkbox(v-model="exhibitor.contact_enabled", :label="$t('Exhibitors:contact-enabled:label')", name="contactEnabled")
@@ -95,17 +95,21 @@
 				.name {{ exhibitor.name }}
 				bunt-input(name="exhibitorName", :label="$t('Exhibitors:name:label')", v-model="deletingExhibitorName")
 				bunt-button.room(icon="delete", :disabled="deletingExhibitorName !== exhibitor.name", @click="deleteExhibitor", :loading="deleting", :error-message="deleteError") {{ $t('Exhibitors:delete:label') }}
+	prompt.add-staff-prompt(v-if="showStaffPrompt", :scrollable="false", @close="showStaffPrompt=false")
+		.content
+			h1 {{ $t('Exhibitors:add-staff:text') }}
+			user-select(:button-label="$t('Exhibitors:add-staff:label')", @selected="add_staff")
 </template>
 <script>
 import api from 'lib/api'
 import Avatar from 'components/Avatar'
 import Prompt from 'components/Prompt'
-import UserSearch from 'components/UserSearch'
+import UserSelect from 'components/UserSelect'
 import UploadUrlInput from 'components/config/UploadUrlInput'
-import { required, integer } from 'vuelidate/lib/validators'
+import { required, maxLength } from 'buntpapier/src/vuelidate/validators'
 
 export default {
-	components: { Avatar, Prompt, UploadUrlInput, UserSearch },
+	components: { Avatar, Prompt, UploadUrlInput, UserSelect },
 	props: {
 		exhibitorId: String
 	},
@@ -115,6 +119,7 @@ export default {
 			saving: false,
 			error: null,
 			showDeletePrompt: false,
+			showStaffPrompt: false,
 			deletingExhibitorName: '',
 			deleting: false,
 			deleteError: null,
@@ -127,27 +132,54 @@ export default {
 			return this.$store.state.rooms.filter(room => room.modules.filter(m => m.type === 'exhibition.native').length > 0)
 		}
 	},
-	// TODO use message validators
-	validations: {
-		exhibitor: {
-			name: {
-				required,
-				maxLength: 80
-			},
-			tagline: {
-				maxLength: 250
-			},
-			shorText: {
-				maxLength: 500
-			},
-			sortingPriority: {
-				integer
+	validations () {
+		return {
+			exhibitor: {
+				name: {
+					required: required(this.$t('Exhibitors:validation-name:required')),
+					maxLength: maxLength(80, this.$t('Exhibitors:validation-name:maxLength'))
+				},
+				tagline: {
+					maxLength: maxLength(250, this.$t('Exhibitors:validation-tagline:maxLength'))
+				},
+				shortText: {
+					maxLength: maxLength(500, this.$t('Exhibitors:validation-short-text:maxLength'))
+				},
+				size: {
+					required: required(this.$t('Exhibitors:validation-size:required'))
+				},
+				room_id: {
+					required: required(this.$t('Exhibitors:validation-room:required'))
+				},
+				sorting_priority: {
+					required: required(this.$t('Exhibitors:validation-sorting:required'))
+				}
 			}
 		}
 	},
 	async created () {
 		try {
-			this.exhibitor = (await api.call('exhibition.get', {exhibitor: this.exhibitorId})).exhibitor
+			if (this.exhibitorId !== '') {
+				this.exhibitor = (await api.call('exhibition.get', {exhibitor: this.exhibitorId})).exhibitor
+			} else {
+				this.exhibitor = {
+					id: '',
+					name: '',
+					tagline: '',
+					short_text: '',
+					text: '',
+					logo: '',
+					banner_list: '',
+					banner_detail: '',
+					size: '',
+					sorting_priority: 0,
+					room_id: '',
+					social_media_links: [],
+					links: [],
+					staff: [],
+					contact_enabled: true,
+				}
+			}
 		} catch (error) {
 			this.error = error
 			console.log(error)
@@ -181,8 +213,10 @@ export default {
 		set_link_category (index, category) {
 			this.exhibitor.links[index].category = category
 		},
-		add_staff (user) {
-			this.exhibitor.staff.push(user)
+		add_staff (users) {
+			this.exhibitor.staff = this.exhibitor.staff.concat(users)
+			this.exhibitor.staff = this.exhibitor.staff.filter((user, index) => this.exhibitor.staff.indexOf(user) === index)
+			this.showStaffPrompt = false
 		},
 		remove_staff (user) {
 			this.$delete(this.exhibitor.staff, user)
@@ -195,7 +229,7 @@ export default {
 				id: this.exhibitorId,
 				name: this.exhibitor.name,
 				tagline: this.exhibitor.tagline,
-				short_text: this.exhibitor.shor_text,
+				short_text: this.exhibitor.short_text,
 				text: this.exhibitor.text,
 				logo: this.exhibitor.logo,
 				banner_list: this.exhibitor.banner_list,
@@ -227,10 +261,10 @@ export default {
 </script>
 <style lang="stylus">
 .c-manage-exhibitor
-	display: flex
-	flex-direction: column
-	background: $clr-white
-	min-height: 0
+	display flex
+	flex-direction column
+	background $clr-white
+	min-height 0
 	.bunt-icon-button
 		icon-button-style(style: clear)
 	.header
@@ -318,4 +352,46 @@ export default {
 			align-self center
 		.delete
 			button-style(color: $clr-danger)
+
+	.add-staff-prompt
+		.prompt-wrapper
+			height 80vh
+			width 600px
+		.content
+			display flex
+			flex-direction column
+			position relative
+			box-sizing border-box
+			min-height 0
+			#btn-close
+				icon-button-style(style: clear)
+				position absolute
+				top 8px
+				right 8px
+			h1
+				margin 0
+				text-align center
+			p
+				max-width 320px
+			form
+				display flex
+				flex-direction column
+				align-self stretch
+				.bunt-button
+					themed-button-primary()
+					margin-top 16px
+				.bunt-select
+					select-style(size: compact)
+					ul li
+						display flex
+						.mdi
+							margin-right 8px
+				.bunt-input-outline-container
+					textarea
+						background-color transparent
+						border none
+						outline none
+						resize vertical
+						min-height 64px
+						padding 0 8px
 </style>

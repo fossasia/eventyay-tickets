@@ -68,6 +68,10 @@ def default_grants():
     }
 
 
+def default_feature_flags():
+    return ["chat-moderation"]
+
+
 class World(VersionedModel):
     id = models.CharField(primary_key=True, max_length=50)
     title = models.CharField(max_length=300)
@@ -79,6 +83,7 @@ class World(VersionedModel):
     domain = models.CharField(max_length=250, unique=True, null=True, blank=True)
     locale = models.CharField(max_length=100, default="en")
     timezone = models.CharField(max_length=120, default="Europe/Berlin")
+    feature_flags = JSONField(blank=True, default=default_feature_flags)
 
     def decode_token(self, token):
         for jwt_config in self.config["JWT_secrets"]:

@@ -1,6 +1,6 @@
 <template lang="pug">
 .c-room(v-if="room", :class="{'standalone-chat': modules['chat.native'] && room.modules.length === 1}")
-	.room-info(v-if="!modules['page.markdown'] && !modules['page.landing']")
+	.ui-page-header.room-info(v-if="!modules['page.markdown'] && !modules['page.landing']")
 		.room-name {{ room.name }}
 		.room-session(v-if="currentSession") {{ currentSession.title }}
 		bunt-icon-button(v-if="$features.enabled('schedule-control')", @click="showEditSchedule = true") calendar_edit
@@ -12,7 +12,8 @@
 			.stage-tool-blocker(v-if="activeStageTool !== null", @click="activeStageTool = null")
 			.stage-tools(v-if="modules['livestream.native']")
 				.stage-tool(v-if="$features.enabled('questions-answers')", :class="{active: activeStageTool === 'qa'}", @click="activeStageTool = 'qa'") Ask a question
-				reactions-bar(:expanded="activeStageTool === 'reaction'", @expand="activeStageTool = 'reaction'")
+				reactions-bar(:expanded="true", @expand="activeStageTool = 'reaction'")
+				//- reactions-bar(:expanded="activeStageTool === 'reaction'", @expand="activeStageTool = 'reaction'")
 		landing-page(v-else-if="modules['page.landing']", :module="modules['page.landing']")
 		markdown-page(v-else-if="modules['page.markdown']", :module="modules['page.markdown']")
 		iframe-page(v-else-if="modules['page.iframe']", :module="modules['page.iframe']")
@@ -88,12 +89,8 @@ export default {
 		display: flex
 		min-height: 0
 	.room-info
-		flex: none
-		display: flex
 		padding: 0 24px
 		height: 56px
-		box-sizing: border-box
-		border-bottom: border-separator()
 		align-items: baseline
 		.room-name
 			font-size: 24px

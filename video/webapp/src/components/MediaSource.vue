@@ -44,10 +44,10 @@ export default {
 	methods: {
 		isPlaying () {
 			if (this.module.type === 'livestream.native') {
-				return this.$refs.livestream.playing
+				return this.$refs.livestream.playing && !this.$refs.livestream.offline
 			}
 			if (this.module.type === 'call.bigbluebutton') {
-				return !this.$refs.bigbluebutton.error
+				return !!this.$refs.bigbluebutton.iframe
 			}
 			return true
 		}

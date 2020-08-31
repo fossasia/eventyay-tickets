@@ -20,6 +20,7 @@ Full configuration
 		"features": [] // enable experimental features,
 		"locale": "en",
 		"dateLocale": "en-ie",
+		"timetravelTo": "2020-08-26T06:49:28.975Z", // forces local time to always be this (for schedule demo purposes ONLY)
 		"theme": {
 			"logo": {
 				"url": "/venueless-logo-full-white.svg",
@@ -36,6 +37,9 @@ Full configuration
 			"textOverwrites": {
 				"ProfilePrompt:headline:text": "’ello Guv!"
 			}
+		},
+		"videoPlayer": {
+			"hls.js": {} // https://github.com/video-dev/hls.js/blob/master/docs/API.md#fine-tuning
 		}
 	}
 

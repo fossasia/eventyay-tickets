@@ -11,7 +11,7 @@ prompt.c-contact-exhibitor-prompt(@close="cancel", :allowCancel="false")
 				.timer-text {{ timer }}s
 		.timer-explanation(v-else) {{ $t('ContactRequest:timeout:text') }}
 		.actions
-			bunt-button#btn-cancel(@click="cancel") {{ $t('ContactRequest:dismiss-button:label') }}
+			bunt-button#btn-cancel(@click="cancel") {{ $t('ContactExhibitorPrompt:dismiss-button:label') }}
 </template>
 <script>
 import api from 'lib/api'
@@ -85,7 +85,7 @@ export default {
 				stroke: var(--clr-primary)
 				stroke-width: 8.5px
 				stroke-dasharray: $circumference $circumference
-				stroke-dashoffset: "calc(-1 * var(--timer) * %s)" % $circumference
+				stroke-dashoffset: "calc(-1 * var(--timer) * %spx)" % $circumference
 				transform: rotate(-90deg)
 				transform-origin: 50% 50%
 				transition: stroke-dashoffset 1s linear

@@ -71,7 +71,7 @@ module.exports = {
 		plugins: [
 			new webpack.DefinePlugin({
 				ENV_DEVELOPMENT: process.env.NODE_ENV === 'development',
-				RELEASE: `'${process.env.RELEASE}'`
+				RELEASE: `'${process.env.VENUELESS_COMMIT_SHA}'`
 			})
 		],
 	},
@@ -79,7 +79,6 @@ module.exports = {
 		config.entryPoints.clear()
 		config.entry('preloader').add('./src/preloader.js')
 		if (config.plugins.has('optimize-css')) {
-			console.log('WAS')
 			config.plugin('optimize-css').tap(([options]) => {
 				options.cssnanoOptions.preset[1].calc = false
 				return [options]
