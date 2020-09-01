@@ -44,7 +44,11 @@ class Exhibitor(models.Model):
         )
         staff = []
         for staff_member in self.staff.order_by("id").all():
-            staff.append(staff_member.user.serialize_public())
+            staff.append(
+                staff_member.user.serialize_public(
+                    trait_badges_map=self.world.config.get("trait_badges_map")
+                )
+            )
 
         return dict(
             id=str(self.id),

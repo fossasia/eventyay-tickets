@@ -7,6 +7,8 @@
 		.content-wrapper
 			.message-header(v-if="!mergeWithPreviousMessage")
 				.display-name(@click="showAvatarCard") {{ senderDisplayName }}
+					|
+					.user-badge(v-for="b in sender.badges") {{ b }}
 				.timestamp {{ timestamp }}
 			template(v-if="message.content.type === 'text'")
 				chat-input(v-if="editing", :message="message", @send="editMessage")
@@ -107,7 +109,7 @@ export default {
 			return 28
 		},
 		sender () {
-			return this.usersLookup[this.message.sender] || {id: this.message.sender}
+			return this.usersLookup[this.message.sender] || {id: this.message.sender, badges: {}}
 		},
 		senderDisplayName () {
 			return this.sender.profile?.display_name ?? this.message.sender

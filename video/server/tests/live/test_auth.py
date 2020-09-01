@@ -179,6 +179,7 @@ async def test_update_user():
             "user.updated",
             {
                 "profile": {"display_name": "Cool User"},
+                "badges": [],
                 "id": user_id,
             },
         ]
@@ -343,6 +344,7 @@ async def test_fetch_user():
             {
                 "id": user_id,
                 "profile": {"display_name": "Cool User"},
+                "badges": [],
             },
         ]
 
@@ -351,7 +353,13 @@ async def test_fetch_user():
         assert response == [
             "success",
             14,
-            {user_id: {"id": user_id, "profile": {"display_name": "Cool User"}}},
+            {
+                user_id: {
+                    "id": user_id,
+                    "badges": [],
+                    "profile": {"display_name": "Cool User"},
+                }
+            },
         ]
 
         await c2.send_json_to(["user.fetch", 14, {"id": str(uuid.uuid4())}])
@@ -515,6 +523,7 @@ async def test_list_users(world):
                         "id": user_id,
                         "profile": {},
                         "moderation_state": "",
+                        "badges": [],
                         "token_id": None,
                     }
                 ]
@@ -763,7 +772,13 @@ async def test_list_search_users(world):
         response = await c.receive_json_from()
         assert response[0] == "success"
         assert response[2] == {
-            "results": [{"id": user_id, "profile": {"display_name": "Foo Fighter"}}],
+            "results": [
+                {
+                    "id": user_id,
+                    "badges": [],
+                    "profile": {"display_name": "Foo Fighter"},
+                }
+            ],
             "isLastPage": True,
         }
 
@@ -815,3 +830,31 @@ async def test_list_search_users(world):
             "results": [],
             "isLastPage": True,
         }
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_badges(world):
+    config = world.config["JWT_secrets"][0]
+    iat = datetime.datetime.utcnow()
+    exp = iat + datetime.timedelta(days=999)
+    payload = {
+        "iss": config["issuer"],
+        "aud": config["audience"],
+        "exp": exp,
+        "iat": iat,
+        "uid": "123456",
+        "traits": ["moderator", "speaker"],
+    }
+    world.config["trait_badges_map"] = {"moderator": "Crew"}
+    await database_sync_to_async(world.save)()
+    token = jwt.encode(payload, config["secret"], algorithm="HS256").decode("utf-8")
+    async with world_communicator() as c:
+        await c.send_json_to(["authenticate", {"token": token}])
+        response = await c.receive_json_from()
+        assert response[0] == "authenticated"
+        id = response[1]["user.config"]["id"]
+
+        await c.send_json_to(["user.fetch", 14, {"id": id}])
+        response = await c.receive_json_from()
+        assert response[2]["badges"] == ["Crew"]

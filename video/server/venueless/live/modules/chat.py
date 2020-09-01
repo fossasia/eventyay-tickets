@@ -187,7 +187,11 @@ class ChatModule(BaseModule):
                 event_type="channel.member",
                 content={
                     "membership": "join",
-                    "user": self.consumer.user.serialize_public(),
+                    "user": self.consumer.user.serialize_public(
+                        trait_badges_map=self.consumer.world.config.get(
+                            "trait_badges_map"
+                        )
+                    ),
                 },
                 sender=self.consumer.user,
             )
@@ -215,7 +219,11 @@ class ChatModule(BaseModule):
                 event_type="channel.member",
                 content={
                     "membership": "leave",
-                    "user": self.consumer.user.serialize_public(),
+                    "user": self.consumer.user.serialize_public(
+                        trait_badges_map=self.consumer.world.config.get(
+                            "trait_badges_map"
+                        )
+                    ),
                 },
                 sender=self.consumer.user,
             ),
@@ -471,7 +479,11 @@ class ChatModule(BaseModule):
                     event_type="channel.member",
                     content={
                         "membership": "join",
-                        "user": user.serialize_public(),
+                        "user": user.serialize_public(
+                            trait_badges_map=self.consumer.world.config.get(
+                                "trait_badges_map"
+                            )
+                        ),
                     },
                     sender=user,
                 )

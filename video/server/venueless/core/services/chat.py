@@ -90,7 +90,10 @@ class ChatService:
             }
             if not m.channel.room_id:
                 r["members"] = [
-                    m.user.serialize_public() for m in m.channel.direct_members
+                    m.user.serialize_public(
+                        trait_badges_map=self.world.config.get("trait_badges_map")
+                    )
+                    for m in m.channel.direct_members
                 ]
             res.append(r)
         return res
@@ -104,6 +107,7 @@ class ChatService:
             ),
             world_id=self.world.pk,
             include_admin_info=include_admin_info,
+            trait_badges_map=self.world.config.get("trait_badges_map"),
         )
         return users
 
@@ -351,7 +355,9 @@ class ChatService:
                     event_type="channel.member",
                     content={
                         "membership": "join",
-                        "user": user.serialize_public(),
+                        "user": user.serialize_public(
+                            trait_badges_map=self.world.config.get("trait_badges_map")
+                        ),
                     },
                     sender=user,
                 )
