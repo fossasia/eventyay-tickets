@@ -8,6 +8,7 @@ import orjson
 from channels.exceptions import StopConsumer
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from django.conf import settings
+from django.db import OperationalError
 from sentry_sdk import capture_exception, configure_scope
 from websockets import ConnectionClosed
 
@@ -53,7 +54,14 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
         )
         await register_connection()
 
-        self.world = await get_world(self.scope["url_route"]["kwargs"]["world"])
+        try:
+            self.world = await get_world(self.scope["url_route"]["kwargs"]["world"])
+        except OperationalError:
+            # We use connection pooling, so if the database server went away since the last connection
+            # terminated, Django won't know and we'll get an OperationalError. We just silently re-try
+            # once, since Django will then use a new connection.
+            self.world = await get_world(self.scope["url_route"]["kwargs"]["world"])
+
         if self.world is None:
             await self.send_error("world.unknown_world", close=True)
             return

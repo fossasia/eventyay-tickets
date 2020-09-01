@@ -4,6 +4,7 @@ import re
 
 from asgiref.sync import async_to_sync
 from django.conf import settings
+from django.db import OperationalError
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
@@ -67,7 +68,13 @@ class AppView(View):
     """
 
     def get(self, request, *args, **kwargs):
-        world = get_object_or_404(World, domain=request.headers["Host"])
+        try:
+            world = get_object_or_404(World, domain=request.headers["Host"])
+        except OperationalError:
+            # We use connection pooling, so if the database server went away since the last connection
+            # terminated, Django won't know and we'll get an OperationalError. We just silently re-try
+            # once, since Django will then use a new connection.
+            world = get_object_or_404(World, domain=request.headers["Host"])
         source = sh.source
         source = re.sub(
             "<title>[^<]*</title>",
