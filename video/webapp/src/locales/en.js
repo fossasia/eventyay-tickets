@@ -39,7 +39,7 @@ export default {
 	'Livestream:offline-message:text': 'Stream offline',
 	'Livestream:automuted-unmute:text': 'Tap to unmute',
 	'ProfilePrompt:headline:text': 'Hi there!',
-	'ProfilePrompt:intro:text': 'Please tell us your name. We will show it to other attendees when you interact with them. You do\'nt need to use your real name.',
+	'ProfilePrompt:intro:text': 'Before you join others in this event, please tell us how you want to appear to other attendees.',
 	'ProfilePrompt:displayname:label': 'Display name',
 	'ProfilePrompt:gravatar-hint:text': 'or connect to your',
 	'ProfilePrompt:gravatar-change:label': 'Change gravatar',
