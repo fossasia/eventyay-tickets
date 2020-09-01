@@ -33,7 +33,7 @@ transition(name="sidebar")
 				router-link.text-chat(v-for="chat of roomsByType.textChat", :to="chat === rooms[0] ? {name: 'home'} : {name: 'room', params: {roomId: chat.id}}", :class="{unread: hasUnreadMessages(chat.modules[0].channel_id)}")
 					.name {{ chat.name }}
 				bunt-button#btn-browse-channels-trailing(@click="showChannelBrowser = true") {{ $t('RoomsSidebar:browse-channels-button:label') }}
-			.group-title
+			.group-title(v-if="directMessageChannels || hasPermission('world:chat.direct')")
 				span {{ $t('RoomsSidebar:direct-messages-headline:text') }}
 				bunt-icon-button(@click="showDMCreationPrompt = true") plus
 			.direct-messages
