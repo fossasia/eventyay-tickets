@@ -38,6 +38,7 @@ class User(VersionedModel):
         }
         if include_admin_info:
             d["moderation_state"] = self.moderation_state
+            d["token_id"] = self.token_id
         return d
 
     @property
