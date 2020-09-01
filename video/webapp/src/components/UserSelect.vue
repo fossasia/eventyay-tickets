@@ -5,18 +5,18 @@
 			.search-field(slot-scope="{focus, blur}")
 				.selected-user(v-for="user of selectedUsers")
 					avatar(:user="user", :size="20")
-					.display-name {{ user.profile.display_name }}
-						|
-						.user-badge(v-for="b in user.badges") {{ b }}
+					.display-name
+						| {{ user.profile.display_name }}
+						.ui-badge(v-for="badge in sender.badges") {{ badge }}
 					bunt-icon-button(@click="removeUser(user)") close
 				input(ref="input", name="search", v-model="search", @focus="focus", @blur="blur")
 		bunt-button(@click="submit") {{ buttonLabel }}
 	scrollbars.search-results(y)
 		.user(v-for="user of results", :class="{selected: isSelected(user)}", @click="addUser(user)")
 			avatar(:user="user", :size="36")
-			.display-name {{ user.profile.display_name }}
-				|
-				.user-badge(v-for="b in user.badges") {{ b }}
+			.display-name
+				| {{ user.profile.display_name }}
+				.ui-badge(v-for="badge in sender.badges") {{ badge }}
 		infinite-scroll(v-if="nextPage", :loading="loading", @load="loadPage")
 </template>
 <script>
