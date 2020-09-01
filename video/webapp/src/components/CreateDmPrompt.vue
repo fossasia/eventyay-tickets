@@ -50,7 +50,6 @@ export default {
 			margin: 16px 16px 8px 16px
 		p
 			margin: 0 16px 16px 16px
-			max-width: 320px
 			color: $clr-secondary-text-light
 		form
 			display: flex
