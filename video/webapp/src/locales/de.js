@@ -52,6 +52,8 @@ export default {
 	'RoomsSidebar:admin-headline:text': 'Administration',
 	'RoomsSidebar:stages-headline:text': 'Bühnen',
 	'RoomsSidebar:channels-headline:text': 'Kanäle',
+	'RoomsSidebar:browse-channels-button:label': 'Alle Kanäle ansehen',
+	'RoomsSidebar:direct-messages-headline:text': 'Direktnachrichten',
 	'RoomsSidebar:admin-users:label': 'Benutzer',
 	'RoomsSidebar:admin-config:label': 'Konfiguration',
 	'RoomsSidebar:admin-rooms:label': 'Räume',
