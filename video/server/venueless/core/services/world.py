@@ -306,3 +306,13 @@ def save_world(world, update_fields, old_data, by_user):
         },
     )
     return new
+
+
+@database_sync_to_async
+def get_audit_log(world):
+    return [
+        a.serialize_public()
+        for a in AuditLog.objects.filter(
+            world_id=world.id,
+        ).prefetch_related("user")
+    ]

@@ -6,6 +6,7 @@ from venueless.core.permissions import Permission
 from venueless.core.services.world import (
     _config_serializer,
     generate_tokens,
+    get_audit_log,
     get_world_config_for_user,
     notify_world_change,
     save_world,
@@ -84,5 +85,13 @@ class WorldModule(BaseModule):
             body["traits"],
             body["days"],
             by_user=self.consumer.user,
+        )
+        await self.consumer.send_success({"results": result})
+
+    @command("auditlog.list")
+    @require_world_permission(Permission.WORLD_UPDATE)  # TODO: stricter permission?
+    async def auditlog_get(self, body):
+        result = await get_audit_log(
+            self.consumer.world,
         )
         await self.consumer.send_success({"results": result})
