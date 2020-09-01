@@ -5,7 +5,7 @@
 			img.logo(:src="exhibitor.banner_list ? exhibitor.banner_list : exhibitor.logo", :alt="exhibitor.name")
 			.short-text {{ exhibitor.short_text }}
 			.actions
-				bunt-button more
+				bunt-button {{ $t('Exhibition:more:label') }}
 	bunt-progress-circular(v-else, size="huge", :page="true")
 </template>
 <script>
