@@ -6,9 +6,9 @@
 	template(v-if="message.event_type === 'channel.message'")
 		.content-wrapper
 			.message-header(v-if="!mergeWithPreviousMessage")
-				.display-name(@click="showAvatarCard") {{ senderDisplayName }}
-					|
-					.user-badge(v-for="b in sender.badges") {{ b }}
+				.display-name(@click="showAvatarCard")
+					| {{ senderDisplayName }}
+					.ui-badge(v-for="badge in sender.badges") {{ badge }}
 				.timestamp {{ timestamp }}
 			template(v-if="message.content.type === 'text'")
 				chat-input(v-if="editing", :message="message", @send="editMessage")

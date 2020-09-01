@@ -15,9 +15,9 @@
 		scrollbars.user-list(v-if="mode === 'standalone' && showUserlist && $mq.above['m']", y)
 			.user(v-for="user of members", @click="showUserCard($event, user)")
 				avatar(:user="user", :size="28")
-				span.display-name {{ user.profile.display_name }}
-					|
-					.user-badge(v-for="b in user.badges") {{ b }}
+				span.display-name
+					| {{ user.profile.display_name }}
+					span.ui-badge(v-for="badge in sender.badges") {{ badge }}
 		chat-user-card(v-if="selectedUser", ref="avatarCard", :sender="selectedUser", @close="selectedUser = null")
 	bunt-progress-circular(v-else, size="huge", :page="true")
 </template>
