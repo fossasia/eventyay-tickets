@@ -1,5 +1,5 @@
 <template lang="pug">
-a.c-linear-schedule-session(:href="linkHref", :style="style", @click="linkClick($event)")
+a.c-linear-schedule-session(:href="linkHref", :style="style", @click="linkClick($event)", target="_blank")
 	.time-box
 		.start(:class="{'has-ampm': startTime.ampm}")
 			.time {{ startTime.time }}
