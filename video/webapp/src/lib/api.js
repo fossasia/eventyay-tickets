@@ -54,6 +54,21 @@ api.connect = function ({token, clientId}) {
 	})
 }
 
+api.uploadFile = function (file, filename) {
+	const data = new FormData()
+	data.append('file', file, filename)
+	const request = new XMLHttpRequest()
+	request.open('POST', config.api.upload)
+	request.setRequestHeader('Accept', 'application/json')
+	if (api._config.token) {
+		request.setRequestHeader('Authorization', `Bearer ${api._config.token}`)
+	} else if (api._config.clientId) {
+		request.setRequestHeader('Authorization', `Client ${api._config.clientId}`)
+	}
+	request.send(data)
+	return request
+}
+
 window.api = api
 
 export default api

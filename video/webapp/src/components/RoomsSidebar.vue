@@ -359,7 +359,7 @@ export default {
 				background-color: var(--clr-sidebar-hover-bg)
 	.buffer
 		flex: auto
-	.profile
+	> .profile
 		display: flex
 		padding: 8px
 		align-items: center
