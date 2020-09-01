@@ -330,7 +330,7 @@ def unblock_user(world, blocking_user: User, blocked_user_id) -> bool:
 
 @database_sync_to_async
 def list_users(world_id, page, page_size, search_term, trait_badges_map=None) -> object:
-    qs = User.objects.filter(world_id=world_id)
+    qs = User.objects.filter(world_id=world_id, show_publicly=True)
     if search_term:
         qs = qs.filter(profile__display_name__icontains=search_term)
 

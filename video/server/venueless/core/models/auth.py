@@ -20,6 +20,7 @@ class User(VersionedModel):
     moderation_state = models.CharField(
         max_length=8, default=ModerationState.NONE, choices=ModerationState.choices
     )
+    show_publicly = models.BooleanField(default=True)
     profile = JSONField()
     traits = ArrayField(models.CharField(max_length=200), blank=True)
     blocked_users = models.ManyToManyField(
