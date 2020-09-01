@@ -1,5 +1,5 @@
 <template lang="pug">
-a.c-linear-schedule-session(href="#", :style="style", @click.prevent="open")
+a.c-linear-schedule-session(:href="linkHref", :style="style", @click="linkClick($event)")
 	.time-box
 		.start(:class="{'has-ampm': startTime.ampm}")
 			.time {{ startTime.time }}
@@ -56,13 +56,19 @@ export default {
 		},
 		durationMinutes () {
 			return moment(this.session.end).diff(this.session.start, 'minutes')
+		},
+		linkHref () {
+			if (this.session.url) {
+				return this.session.url
+			} else {
+				return router.resolve({name: 'schedule:talk', params: {talkId: this.session.id}}).href
+			}
 		}
 	},
 	methods: {
-		async open () {
-			if (this.session.url) {
-				await window.open(this.session.url, '_blank')
-			} else {
+		async linkClick (event) {
+			if (!this.session.url) {
+				event.preventDefault()
 				await router.push({name: 'schedule:talk', params: {talkId: this.session.id}})
 			}
 		}
