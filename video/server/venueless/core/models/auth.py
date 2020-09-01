@@ -29,12 +29,23 @@ class User(VersionedModel):
     class Meta:
         unique_together = (("token_id", "world"), ("client_id", "world"))
 
-    def serialize_public(self, include_admin_info=False):
+    def serialize_public(self, include_admin_info=False, trait_badges_map=None):
         # Important: If this is updated, venueless.core.services.user.get_public_users also needs to be updated!
         # For performance reasons, it does not use this method directly.
         d = {
             "id": str(self.id),
             "profile": self.profile,
+            "badges": sorted(
+                list(
+                    {
+                        badge
+                        for trait, badge in trait_badges_map.items()
+                        if trait in self.traits
+                    }
+                )
+            )
+            if trait_badges_map
+            else [],
         }
         if include_admin_info:
             d["moderation_state"] = self.moderation_state

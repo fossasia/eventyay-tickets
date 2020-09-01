@@ -67,7 +67,11 @@ class AuthModule(BaseModule):
             [
                 "authenticated",
                 {
-                    "user.config": self.consumer.user.serialize_public(),
+                    "user.config": self.consumer.user.serialize_public(
+                        trait_badges_map=self.consumer.world.config.get(
+                            "trait_badges_map"
+                        )
+                    ),
                     "world.config": login_result.world_config,
                     "chat.channels": login_result.chat_channels,
                     "chat.read_pointers": read_pointers,
@@ -152,7 +156,12 @@ class AuthModule(BaseModule):
         self.consumer.user = user
         await self.consumer.send_success()
         await user_broadcast(
-            "user.updated", user.serialize_public(), user.pk, self.consumer.socket_id
+            "user.updated",
+            user.serialize_public(
+                trait_badges_map=self.consumer.world.config.get("trait_badges_map")
+            ),
+            user.pk,
+            self.consumer.socket_id,
         )
         await self.consumer.user.refresh_from_db_if_outdated()
         await ChatService(self.consumer.world).enforce_forced_joins(self.consumer.user)
@@ -167,6 +176,7 @@ class AuthModule(BaseModule):
                 include_admin_info=await self.consumer.world.has_permission_async(
                     user=self.consumer.user, permission=Permission.WORLD_USERS_MANAGE
                 ),
+                trait_badges_map=self.consumer.world.config.get("trait_badges_map"),
             )
             await self.consumer.send_success({u["id"]: u for u in users})
         else:
@@ -176,6 +186,7 @@ class AuthModule(BaseModule):
                 include_admin_info=await self.consumer.world.has_permission_async(
                     user=self.consumer.user, permission=Permission.WORLD_USERS_MANAGE
                 ),
+                trait_badges_map=self.consumer.world.config.get("trait_badges_map"),
             )
             if user:
                 await self.consumer.send_success(user)
@@ -201,6 +212,7 @@ class AuthModule(BaseModule):
             include_admin_info=await self.consumer.world.has_permission_async(
                 user=self.consumer.user, permission=Permission.WORLD_USERS_MANAGE
             ),
+            trait_badges_map=self.consumer.world.config.get("trait_badges_map"),
         )
         await self.consumer.send_success({"results": users})
 
@@ -220,6 +232,7 @@ class AuthModule(BaseModule):
                 page=body["page"],
                 page_size=page_size,
                 search_term=body["search_term"],
+                trait_badges_map=self.consumer.world.config.get("trait_badges_map"),
             )
         await self.consumer.send_success(result)
 
@@ -312,5 +325,6 @@ class AuthModule(BaseModule):
     async def list_blocked(self, body):
         users = await get_blocked_users(
             self.consumer.user,
+            self.consumer.world,
         )
         await self.consumer.send_success({"users": users})

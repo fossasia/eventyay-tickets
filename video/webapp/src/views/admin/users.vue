@@ -17,6 +17,8 @@
 				.id(:title="user.id") {{ user.id }}
 				.tokenid(:title="user.token_id") {{ user.token_id }}
 				.name {{ user.profile.display_name }}
+					|
+					.user-badge(v-for="b in user.badges") {{ b }}
 				.state {{ user.moderation_state }}
 				.actions(v-if="user.id !== ownUser.id")
 					//- moderation_state

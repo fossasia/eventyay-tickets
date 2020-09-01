@@ -6,6 +6,8 @@ prompt.c-user-action-prompt(@close="$emit('close')", :class="[`action-${action}`
 		.user
 			avatar(:user="user", :size="128")
 			.display-name {{ user.profile.display_name }}
+				|
+				.user-badge(v-for="b in user.badges") {{ b }}
 		.explanation {{ $t(`UserActionPrompt:action.${actionLabel}:explanation`) }}
 		.actions
 			bunt-button.btn-cancel(v-if="!success", @click="$emit('close')") {{ $t(`Prompt:cancel:label`) }}

@@ -32,15 +32,19 @@ def get_user_by_client_id(world_id, client_id):
 
 
 @database_sync_to_async
-def get_public_user(world_id, id, include_admin_info=False):
+def get_public_user(world_id, id, include_admin_info=False, trait_badges_map=None):
     user = get_user_by_id(world_id, id)
     if not user:
         return None
-    return user.serialize_public(include_admin_info=include_admin_info)
+    return user.serialize_public(
+        include_admin_info=include_admin_info, trait_badges_map=trait_badges_map
+    )
 
 
 @database_sync_to_async
-def get_public_users(world_id, *, ids=None, include_admin_info=False):
+def get_public_users(
+    world_id, *, ids=None, include_admin_info=False, trait_badges_map=None
+):
     # This method is called a lot, especially when lots of people join at once (event start, server reboot, …)
     # For performance reasons, we therefore do not initialize model instances and use serialize_public()
     if ids is not None:
@@ -53,13 +57,24 @@ def get_public_users(world_id, *, ids=None, include_admin_info=False):
         dict(
             id=str(u["id"]),
             profile=u["profile"],
+            badges=sorted(
+                list(
+                    {
+                        badge
+                        for trait, badge in trait_badges_map.items()
+                        if trait in u["traits"]
+                    }
+                )
+            )
+            if trait_badges_map
+            else [],
             **(
                 {"moderation_state": u["moderation_state"], "token_id": u["token_id"]}
                 if include_admin_info
                 else {}
             ),
         )
-        for u in qs.values("id", "profile", "moderation_state", "token_id")
+        for u in qs.values("id", "profile", "moderation_state", "token_id", "traits")
     ]
 
 
@@ -120,7 +135,11 @@ def create_user(world_id, *, token_id=None, client_id=None, traits=None, profile
 @atomic
 def update_user(world_id, id, *, traits=None, public_data=None, serialize=True):
     # TODO: Exception handling
-    user = User.objects.select_for_update().get(id=id, world_id=world_id)
+    user = (
+        User.objects.select_related("world")
+        .select_for_update()
+        .get(id=id, world_id=world_id)
+    )
 
     if traits is not None:
         user.traits = traits
@@ -135,7 +154,13 @@ def update_user(world_id, id, *, traits=None, public_data=None, serialize=True):
         if save_fields:
             user.save(update_fields=save_fields)
 
-    return user.serialize_public() if serialize else user
+    return (
+        user.serialize_public(
+            trait_badges_map=user.world.config.get("trait_badges_map")
+        )
+        if serialize
+        else user
+    )
 
 
 LoginResult = namedtuple(
@@ -176,8 +201,11 @@ def login(
 
 @database_sync_to_async
 @atomic
-def get_blocked_users(user) -> bool:
-    return [u.serialize_public() for u in user.blocked_users.all()]
+def get_blocked_users(user, world) -> bool:
+    return [
+        u.serialize_public(trait_badges_map=world.config.get("trait_badges_map"))
+        for u in user.blocked_users.all()
+    ]
 
 
 @database_sync_to_async
@@ -240,18 +268,31 @@ def unblock_user(world, blocking_user: User, blocked_user_id) -> bool:
 
 
 @database_sync_to_async
-def list_users(world_id, page, page_size, search_term) -> object:
+def list_users(world_id, page, page_size, search_term, trait_badges_map=None) -> object:
     qs = User.objects.filter(world_id=world_id)
     if search_term:
         qs = qs.filter(profile__display_name__icontains=search_term)
 
     try:
-        p = Paginator(qs.order_by("id").values("id", "profile"), page_size).page(page)
+        p = Paginator(
+            qs.order_by("id").values("id", "profile", "traits"), page_size
+        ).page(page)
         return {
             "results": [
                 dict(
                     id=str(u["id"]),
                     profile=u["profile"],
+                    badges=sorted(
+                        list(
+                            {
+                                badge
+                                for trait, badge in trait_badges_map.items()
+                                if trait in u["traits"]
+                            }
+                        )
+                    )
+                    if trait_badges_map
+                    else [],
                 )
                 for u in p.object_list
             ],

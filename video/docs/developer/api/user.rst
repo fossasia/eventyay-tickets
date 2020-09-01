@@ -49,8 +49,10 @@ User objects currently contain the following properties:
 
 * ``id``
 * ``profile``
+* ``badges`` list of user-visible badges to show for this user (i.e. "orga team member")
 * ``moderation_state`` (``""``, ``"silenced"``, or ``"banned"``). Only set on *other* users' profiles if you're allowed
   to perform silencing and banning.
+* ``token_id`` (external ID) Only set on users' profiles if you have admin permissions.
 
 Change user info
 ----------------
