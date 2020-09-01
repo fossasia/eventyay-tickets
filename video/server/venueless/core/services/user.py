@@ -54,12 +54,12 @@ def get_public_users(world_id, *, ids=None, include_admin_info=False):
             id=str(u["id"]),
             profile=u["profile"],
             **(
-                {"moderation_state": u["moderation_state"]}
+                {"moderation_state": u["moderation_state"], "token_id": u["token_id"]}
                 if include_admin_info
                 else {}
             ),
         )
-        for u in qs.values("id", "profile", "moderation_state")
+        for u in qs.values("id", "profile", "moderation_state", "token_id")
     ]
 
 
