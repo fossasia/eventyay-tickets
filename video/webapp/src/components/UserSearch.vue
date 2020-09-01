@@ -6,6 +6,8 @@
 			li.list__item(v-for="(user, index) in list", @click="select(index)", :class="{'selected': index == selectedIndex}")
 				avatar(:user="user", :size="26")
 				span.display-name {{ user ? user.profile.display_name : '' }}
+					|
+					.user-badge(v-for="b in user.badges") {{ b }}
 			li(v-if="!lastPage")
 				bunt-progress-circular(v-if="loading", size="small")
 				bunt-button#btn-more(v-else, @click="page++") Load more
