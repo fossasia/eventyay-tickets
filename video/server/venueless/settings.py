@@ -95,7 +95,7 @@ DATABASES = {
         "PORT": os.getenv(
             "VENUELESS_DB_PORT", config.get("database", "port", fallback="")
         ),
-        "CONN_MAX_AGE": 0,
+        "CONN_MAX_AGE": 60,
     }
 }
 
