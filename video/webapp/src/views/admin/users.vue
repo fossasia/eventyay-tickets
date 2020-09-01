@@ -7,6 +7,7 @@
 		.header
 			.avatar
 			.id ID
+			.tokenid External ID
 			.name Name
 			.state State
 			.actions
@@ -14,6 +15,7 @@
 			.user.table-row(:class="{error: user.error, updating: user.updating}")
 				avatar.avatar(:user="user", :size="32")
 				.id(:title="user.id") {{ user.id }}
+				.tokenid(:title="user.token_id") {{ user.token_id }}
 				.name {{ user.profile.display_name }}
 				.state {{ user.moderation_state }}
 				.actions(v-if="user.id !== ownUser.id")
@@ -67,7 +69,7 @@ export default {
 		filteredUsers () {
 			if (!this.users) return
 			if (!this.search) return this.users
-			return this.users.filter(user => user.id === this.search.trim() || fuzzysearch(this.search.toLowerCase(), user.profile?.display_name?.toLowerCase()))
+			return this.users.filter(user => user.id.startsWith(this.search.trim()) || (user.token_id && user.token_id.startsWith(this.search.trim())) || fuzzysearch(this.search.toLowerCase(), user.profile?.display_name?.toLowerCase()))
 		}
 	},
 	async created () {
@@ -123,6 +125,9 @@ export default {
 			width: 32px
 			padding-right: 0
 		.id
+			width: 128px
+			ellipsis()
+		.tokenid
 			width: 128px
 			ellipsis()
 		.name

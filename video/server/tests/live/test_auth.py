@@ -509,7 +509,16 @@ async def test_list_users(world):
         assert response == [
             "success",
             14,
-            {"results": [{"id": user_id, "profile": {}, "moderation_state": ""}]},
+            {
+                "results": [
+                    {
+                        "id": user_id,
+                        "profile": {},
+                        "moderation_state": "",
+                        "token_id": None,
+                    }
+                ]
+            },
         ]
 
 
