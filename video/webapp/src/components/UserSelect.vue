@@ -6,6 +6,8 @@
 				.selected-user(v-for="user of selectedUsers")
 					avatar(:user="user", :size="20")
 					.display-name {{ user.profile.display_name }}
+						|
+						.user-badge(v-for="b in user.badges") {{ b }}
 					bunt-icon-button(@click="removeUser(user)") close
 				input(ref="input", name="search", v-model="search", @focus="focus", @blur="blur")
 		bunt-button(@click="submit") {{ buttonLabel }}
@@ -13,6 +15,8 @@
 		.user(v-for="user of results", :class="{selected: isSelected(user)}", @click="addUser(user)")
 			avatar(:user="user", :size="36")
 			.display-name {{ user.profile.display_name }}
+				|
+				.user-badge(v-for="b in user.badges") {{ b }}
 		infinite-scroll(v-if="nextPage", :loading="loading", @load="loadPage")
 </template>
 <script>
