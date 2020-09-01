@@ -5,9 +5,9 @@ prompt.c-user-action-prompt(@close="$emit('close')", :class="[`action-${action}`
 		h2(v-else) {{ $t(`UserActionPrompt:action.${actionLabel}:question`) }}
 		.user
 			avatar(:user="user", :size="128")
-			.display-name {{ user.profile.display_name }}
-				|
-				.user-badge(v-for="b in user.badges") {{ b }}
+			.display-name
+				| {{ user.profile.display_name }}
+				.ui-badge(v-for="badge in sender.badges") {{ badge }}
 		.explanation {{ $t(`UserActionPrompt:action.${actionLabel}:explanation`) }}
 		.actions
 			bunt-button.btn-cancel(v-if="!success", @click="$emit('close')") {{ $t(`Prompt:cancel:label`) }}
