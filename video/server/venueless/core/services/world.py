@@ -1,14 +1,38 @@
 import copy
+import datetime
+import uuid
 from contextlib import suppress
 
+import jwt
 from channels.db import database_sync_to_async
 from channels.layers import get_channel_layer
 from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.db.models import Max
+from pytz import common_timezones
+from rest_framework import serializers
 
-from venueless.core.models import Channel, Room, World
+from venueless.core.models import AuditLog, Channel, Room, World
+from venueless.core.models.room import RoomConfigSerializer
 from venueless.core.permissions import Permission
+
+
+class WorldConfigSerializer(serializers.Serializer):
+    theme = serializers.DictField()
+    roles = serializers.DictField()
+    trait_grants = serializers.DictField()
+    bbb_defaults = serializers.DictField()
+    pretalx = serializers.DictField()
+    title = serializers.CharField()
+    locale = serializers.CharField()
+    dateLocale = serializers.CharField()
+    videoPlayer = serializers.DictField(allow_null=True)
+    timezone = serializers.ChoiceField(choices=[(a, a) for a in common_timezones])
+    connection_limit = serializers.IntegerField(allow_null=True)
+    available_permissions = serializers.SerializerMethodField("_available_permissions")
+
+    def _available_permissions(self, *args):
+        return [d.value for d in Permission]
 
 
 @database_sync_to_async
@@ -135,6 +159,16 @@ def _create_room(data, with_channel=False, permission_preset="public", creator=N
     channel = None
     if with_channel:
         channel = Channel.objects.create(world_id=room.world_id, room=room)
+
+    AuditLog.objects.create(
+        world_id=room.world_id,
+        user=creator,
+        type="world.room.added",
+        data={
+            "object": str(room.id),
+            "new": RoomConfigSerializer(room).data,
+        },
+    )
     return room, channel
 
 
@@ -190,6 +224,7 @@ async def create_room(world, data, creator):
     await get_channel_layer().group_send(
         f"world.{world.id}", {"type": "room.create", "room": str(room.id)}
     )
+
     return {"room": str(room.id), "channel": str(channel.id) if channel else None}
 
 
@@ -197,3 +232,77 @@ async def get_room_config_for_user(room: str, world_id: str, user):
     room = await get_room(id=room, world_id=world_id)
     permissions = await database_sync_to_async(room.world.get_all_permissions)(user)
     return get_room_config(room, permissions[room] | permissions[room.world])
+
+
+@database_sync_to_async
+def generate_tokens(world, number, traits, days, by_user):
+    jwt_config = world.config["JWT_secrets"][0]
+    secret = jwt_config["secret"]
+    audience = jwt_config["audience"]
+    issuer = jwt_config["issuer"]
+    iat = datetime.datetime.utcnow()
+    exp = iat + datetime.timedelta(days=days)
+    result = []
+    for i in range(number):
+        payload = {
+            "iss": issuer,
+            "aud": audience,
+            "exp": exp,
+            "iat": iat,
+            "uid": str(uuid.uuid4()),
+            "traits": traits,
+        }
+        token = jwt.encode(payload, secret, algorithm="HS256").decode("utf-8")
+        result.append(token)
+
+    AuditLog.objects.create(
+        world_id=world.id,
+        user=by_user,
+        type="world.tokens.generate",
+        data={
+            "number": number,
+            "days": days,
+            "traits": traits,
+        },
+    )
+    return result
+
+
+def _config_serializer(world, *args, **kwargs):
+    bbb_defaults = world.config.get("bbb_defaults", {})
+    bbb_defaults.pop("secret", None)  # Protect secret legacy contents
+    return WorldConfigSerializer(
+        instance={
+            "theme": world.config.get("theme", {}),
+            "title": world.title,
+            "locale": world.locale,
+            "dateLocale": world.config.get("dateLocale", "en-ie"),
+            "roles": world.roles,
+            "bbb_defaults": bbb_defaults,
+            "pretalx": world.config.get("pretalx", {}),
+            "videoPlayer": world.config.get("videoPlayer"),
+            "timezone": world.timezone,
+            "trait_grants": world.trait_grants,
+            "connection_limit": world.config.get("connection_limit", 0),
+        },
+        *args,
+        **kwargs,
+    )
+
+
+@database_sync_to_async
+@transaction.atomic
+def save_world(world, update_fields, old_data, by_user):
+    world.save(update_fields=update_fields)
+    new = _config_serializer(world).data
+
+    AuditLog.objects.create(
+        world_id=world.id,
+        user=by_user,
+        type="world.room.updated",
+        data={
+            "old": old_data,
+            "new": new,
+        },
+    )
+    return new

@@ -40,7 +40,9 @@ class ExhibitionModule(BaseModule):
     @require_world_permission(Permission.WORLD_ROOMS_CREATE_EXHIBITION)
     async def delete(self, body):
         staff = await self.service.get_staff(exhibitor_id=body["exhibitor"])
-        if not await self.service.delete(exhibitor_id=body["exhibitor"]):
+        if not await self.service.delete(
+            exhibitor_id=body["exhibitor"], by_user=self.consumer.user
+        ):
             await self.consumer.send_error("exhibition.unknown_exhibitor")
         else:
             for user_id in staff:
@@ -59,7 +61,9 @@ class ExhibitionModule(BaseModule):
         staff = []
         if body["id"] != "":
             staff += await self.service.get_staff(exhibitor_id=body["id"])
-        exhibitor = await self.service.patch(exhibitor=body, world=self.consumer.world)
+        exhibitor = await self.service.patch(
+            exhibitor=body, world=self.consumer.world, by_user=self.consumer.user
+        )
 
         for user in exhibitor["staff"]:
             if user["id"] not in staff:
@@ -163,7 +167,9 @@ class ExhibitionModule(BaseModule):
     @require_world_permission(Permission.WORLD_ROOMS_CREATE_EXHIBITION)
     async def add_staff(self, body):
         staff = await self.service.add_staff(
-            exhibitor_id=body["exhibitor"], user_id=body["user"]
+            exhibitor_id=body["exhibitor"],
+            user_id=body["user"],
+            by_user=self.consumer.user,
         )
         if not staff:
             await self.consumer.send_error("exhibition.unknown_user_or_exhibitor")
@@ -174,7 +180,9 @@ class ExhibitionModule(BaseModule):
     @require_world_permission(Permission.WORLD_ROOMS_CREATE_EXHIBITION)
     async def remove_staff(self, body):
         if not await self.service.remove_staff(
-            exhibitor_id=body["exhibitor"], user_id=body["user"]
+            exhibitor_id=body["exhibitor"],
+            user_id=body["user"],
+            by_user=self.consumer.user,
         ):
             await self.consumer.send_error("exhibition.unknown_user_or_exhibitor")
             return

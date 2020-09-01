@@ -6,6 +6,7 @@ from django.core.paginator import InvalidPage, Paginator
 from django.db.transaction import atomic
 
 from ...live.channels import GROUP_USER
+from ..models import AuditLog
 from ..models.auth import User
 from ..permissions import Permission
 
@@ -142,15 +143,34 @@ def update_user(world_id, id, *, traits=None, public_data=None, serialize=True):
     )
 
     if traits is not None:
-        user.traits = traits
+        if user.traits != traits:
+            AuditLog.objects.create(
+                world_id=world_id,
+                user=user,
+                type="auth.user.traits.changed",
+                data={"object": str(user.pk), "old": user.traits, "new": traits},
+            )
+            user.traits = traits
         user.save(update_fields=["traits"])
 
     if public_data is not None:
         save_fields = []
         if "profile" in public_data and public_data["profile"] != user.profile:
+            AuditLog.objects.create(
+                world_id=world_id,
+                user=user,
+                type="auth.user.profile.changed",
+                data={
+                    "object": str(user.pk),
+                    "old": user.profile,
+                    "new": public_data["profile"],
+                },
+            )
+
             # TODO: Anything we want to validate here?
             user.profile = public_data.get("profile")
             save_fields.append("profile")
+
         if save_fields:
             user.save(update_fields=save_fields)
 
@@ -210,18 +230,27 @@ def get_blocked_users(user, world) -> bool:
 
 @database_sync_to_async
 @atomic
-def set_user_banned(world, user_id) -> bool:
+def set_user_banned(world, user_id, by_user) -> bool:
     user = get_user_by_id(world_id=world.pk, user_id=user_id)
     if not user:
         return False
     user.moderation_state = User.ModerationState.BANNED
     user.save(update_fields=["moderation_state"])
+
+    AuditLog.objects.create(
+        world=world,
+        user=by_user,
+        type="auth.user.banned",
+        data={
+            "object": user_id,
+        },
+    )
     return True
 
 
 @database_sync_to_async
 @atomic
-def set_user_silenced(world, user_id) -> bool:
+def set_user_silenced(world, user_id, by_user) -> bool:
     user = get_user_by_id(world_id=world.pk, user_id=user_id)
     if not user:
         return False
@@ -229,17 +258,33 @@ def set_user_silenced(world, user_id) -> bool:
         return True
     user.moderation_state = User.ModerationState.SILENCED
     user.save(update_fields=["moderation_state"])
+    AuditLog.objects.create(
+        world=world,
+        user=by_user,
+        type="auth.user.silenced",
+        data={
+            "object": user_id,
+        },
+    )
     return True
 
 
 @database_sync_to_async
 @atomic
-def set_user_free(world, user_id) -> bool:
+def set_user_free(world, user_id, by_user) -> bool:
     user = get_user_by_id(world_id=world.pk, user_id=user_id)
     if not user:
         return False
     user.moderation_state = User.ModerationState.NONE
     user.save(update_fields=["moderation_state"])
+    AuditLog.objects.create(
+        world=world,
+        user=by_user,
+        type="auth.user.reactivated",
+        data={
+            "object": user_id,
+        },
+    )
     return True
 
 
@@ -252,6 +297,14 @@ def block_user(world, blocking_user: User, blocked_user_id) -> bool:
 
     blocking_user.blocked_users.add(blocked_user)
     blocked_user.touch()
+    AuditLog.objects.create(
+        world=world,
+        user=blocking_user,
+        type="auth.user.blocked",
+        data={
+            "object": blocked_user_id,
+        },
+    )
     return True
 
 
@@ -264,6 +317,14 @@ def unblock_user(world, blocking_user: User, blocked_user_id) -> bool:
 
     blocking_user.blocked_users.remove(blocked_user)
     blocked_user.touch()
+    AuditLog.objects.create(
+        world=world,
+        user=blocking_user,
+        type="auth.user.unblocked",
+        data={
+            "object": blocked_user_id,
+        },
+    )
     return True
 
 

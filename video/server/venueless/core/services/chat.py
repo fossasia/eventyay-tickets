@@ -17,7 +17,7 @@ from django.db.models import (
 from django.utils.timezone import now
 
 from ...live.channels import GROUP_CHAT
-from ..models import BBBCall, Channel, ChatEvent, Membership, User
+from ..models import AuditLog, BBBCall, Channel, ChatEvent, Membership, User
 from ..utils.redis import aioredis
 from .bbb import choose_server
 from .user import get_public_users, user_broadcast
@@ -311,8 +311,24 @@ class ChatService:
         return ChatEvent.objects.get(**kwargs)
 
     @database_sync_to_async
-    def update_event(self, event_id, new_content):
-        ChatEvent.objects.filter(id=event_id).update(content=new_content, edited=now())
+    @transaction.atomic
+    def update_event(self, event, new_content, by_user):
+        old = event.serialize_public()
+        event.content = new_content
+        event.edited = now()
+        event.save(update_fields=["content", "edited"])
+        new = event.serialize_public()
+        AuditLog.objects.create(
+            world=self.world,
+            user=by_user,
+            type="chat.event.updated",
+            data={
+                "object": event.pk,
+                "by_same_user": by_user.id == str(event.sender_id),
+                "old": old,
+                "new": new,
+            },
+        )
 
     @database_sync_to_async
     def get_channels_to_join_forced(self, user):

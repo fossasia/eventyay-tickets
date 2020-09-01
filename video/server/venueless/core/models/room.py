@@ -3,6 +3,7 @@ import uuid
 from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.db.models import Exists, OuterRef, Q
+from rest_framework import serializers
 
 from venueless.core.models.cache import VersionedModel
 from venueless.core.permissions import Permission
@@ -115,3 +116,20 @@ class RoomView(models.Model):
     start = models.DateTimeField(auto_now_add=True)
     end = models.DateTimeField(null=True)
     user = models.ForeignKey(to="user", related_name="views", on_delete=models.CASCADE)
+
+
+class RoomConfigSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Room
+        fields = (
+            "id",
+            "trait_grants",
+            "module_config",
+            "picture",
+            "name",
+            "description",
+            "sorting_priority",
+            "pretalx_id",
+            "force_join",
+            "schedule_data",
+        )

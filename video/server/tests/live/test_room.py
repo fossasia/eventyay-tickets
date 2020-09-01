@@ -231,6 +231,7 @@ async def test_config_get(world, stream_room):
             "description": "Hier findet die Eröffnungs- und End-Veranstaltung statt",
             "sorting_priority": 2,
             "pretalx_id": 130,
+            "schedule_data": None,
         }
 
 

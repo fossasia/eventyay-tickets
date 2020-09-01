@@ -2,6 +2,7 @@ from channels.db import database_sync_to_async
 from django.db.transaction import atomic
 
 from venueless.core.models import (
+    AuditLog,
     ContactRequest,
     Exhibitor,
     ExhibitorLink,
@@ -140,74 +141,95 @@ class ExhibitionService:
         return e.serialize()
 
     @database_sync_to_async
-    def delete(self, exhibitor_id):
+    @atomic
+    def delete(self, exhibitor_id, by_user):
         e = get_exhibitor_by_id(self.world_id, exhibitor_id)
         if not e:
             return None
+        AuditLog.objects.create(
+            world_id=self.world_id,
+            user=by_user,
+            type="exhibition.exhibitor.deleted",
+            data={
+                "object": exhibitor_id,
+                "old": e.serialize(),
+            },
+        )
         return e.delete()
 
     @database_sync_to_async
     @atomic
-    def patch(self, exhibitor, world):
+    def patch(self, exhibitor, world, by_user):
         room = get_room_by_id(self.world_id, exhibitor["room_id"])
         if not room:
             return None
 
         if exhibitor["id"] == "":
-            e = Exhibitor.objects.create(
-                name=exhibitor["name"],
-                tagline=exhibitor["tagline"],
-                short_text=exhibitor["short_text"],
-                text=exhibitor["text"],
-                size=exhibitor["size"],
-                sorting_priority=exhibitor["sorting_priority"],
-                logo=exhibitor["logo"],
-                banner_list=exhibitor["banner_list"],
-                banner_detail=exhibitor["banner_detail"],
-                contact_enabled=exhibitor["contact_enabled"],
+            e = Exhibitor(
                 room=room,
                 world=world,
             )
+            old = {}
         else:
             e = get_exhibitor_by_id(self.world_id, exhibitor["id"])
             if not e:
                 return None
-            e.name = exhibitor["name"]
-            e.tagline = exhibitor["tagline"]
-            e.short_text = exhibitor["short_text"]
-            e.text = exhibitor["text"]
-            e.size = exhibitor["size"]
-            e.sorting_priority = exhibitor["sorting_priority"]
-            e.logo = exhibitor["logo"]
-            e.banner_list = exhibitor["banner_list"]
-            e.banner_detail = exhibitor["banner_detail"]
-            e.contact_enabled = exhibitor["contact_enabled"]
-            e.room = room
-            e.save()
+            old = e.serialize()
 
-        social_media_links = []
-        for link in exhibitor["social_media_links"]:
-            social_media_links.append(get_or_create_social_media_link(link, e))
-        for link in e.social_media_links.all():
-            if link not in social_media_links:
-                link.delete()
+        for k in (
+            "name",
+            "tagline",
+            "short_text",
+            "text",
+            "size",
+            "sorting_priority",
+            "logo",
+            "banner_list",
+            "banner_detail",
+            "contact_enabled",
+        ):
+            if k in exhibitor:
+                setattr(e, k, exhibitor[k])
+        e.save()
 
-        links = []
-        for link in exhibitor["links"]:
-            links.append(get_or_create_link(link, e))
-        for link in e.links.all():
-            if link not in links:
-                link.delete()
+        if "social_media_links" in exhibitor:
+            social_media_links = []
+            for link in exhibitor["social_media_links"]:
+                social_media_links.append(get_or_create_social_media_link(link, e))
+            for link in e.social_media_links.all():
+                if link not in social_media_links:
+                    link.delete()
 
-        staff = []
-        for user in exhibitor["staff"]:
-            user = get_user_by_id(self.world_id, user["id"])
-            staff.append(get_or_create_staff(user, e))
-        for staff_member in e.staff.all():
-            if staff_member not in staff:
-                staff_member.delete()
+        if "links" in exhibitor:
+            links = []
+            for link in exhibitor["links"]:
+                links.append(get_or_create_link(link, e))
+            for link in e.links.all():
+                if link not in links:
+                    link.delete()
 
-        return e.serialize()
+        if "staff" in exhibitor:
+            staff = []
+            for user in exhibitor["staff"]:
+                user = get_user_by_id(self.world_id, user["id"])
+                staff.append(get_or_create_staff(user, e))
+            for staff_member in e.staff.all():
+                if staff_member not in staff:
+                    staff_member.delete()
+
+        new = e.serialize()
+        AuditLog.objects.create(
+            world_id=self.world_id,
+            user=by_user,
+            type="exhibition.exhibitor.updated",
+            data={
+                "object": str(e.id),
+                "old": old,
+                "new": new,
+            },
+        )
+
+        return new
 
     @database_sync_to_async
     def contact(self, exhibitor_id, user):
@@ -244,7 +266,8 @@ class ExhibitionService:
         return r.serialize()
 
     @database_sync_to_async
-    def add_staff(self, exhibitor_id, user_id):
+    @atomic
+    def add_staff(self, exhibitor_id, user_id, by_user):
         e = get_exhibitor_by_id(self.world_id, exhibitor_id)
         if not e:
             return None
@@ -261,13 +284,32 @@ class ExhibitionService:
                 user=u,
                 exhibitor=e,
             )
+        AuditLog.objects.create(
+            world_id=self.world_id,
+            user=by_user,
+            type="exhibition.exhibitor.staff.added",
+            data={
+                "object": exhibitor_id,
+                "staff": user_id,
+            },
+        )
         return s
 
     @database_sync_to_async
-    def remove_staff(self, exhibitor_id, user_id):
+    @atomic
+    def remove_staff(self, exhibitor_id, user_id, by_user):
         s = get_staff_by_id(exhibitor_id, user_id)
         if not s:
             return None
+        AuditLog.objects.create(
+            world_id=self.world_id,
+            user=by_user,
+            type="exhibition.exhibitor.staff.removed",
+            data={
+                "object": exhibitor_id,
+                "staff": user_id,
+            },
+        )
         return s.delete()
 
     @database_sync_to_async
