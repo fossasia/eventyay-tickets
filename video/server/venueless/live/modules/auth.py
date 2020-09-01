@@ -243,8 +243,7 @@ class AuthModule(BaseModule):
             await self.consumer.send_error(code="user.ban.self")
             return
         ok = await set_user_banned(
-            self.consumer.world,
-            body.get("id"),
+            self.consumer.world, body.get("id"), by_user=self.consumer.user
         )
         if ok:
             await self.consumer.send_success({})
@@ -263,8 +262,7 @@ class AuthModule(BaseModule):
             await self.consumer.send_error(code="user.silence.self")
             return
         ok = await set_user_silenced(
-            self.consumer.world,
-            body.get("id"),
+            self.consumer.world, body.get("id"), by_user=self.consumer.user
         )
         if ok:
             await self.consumer.send_success({})
@@ -285,6 +283,7 @@ class AuthModule(BaseModule):
         ok = await set_user_free(
             self.consumer.world,
             body.get("id"),
+            by_user=self.consumer.user,
         )
         if ok:
             await self.consumer.send_success({})

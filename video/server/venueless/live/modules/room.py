@@ -6,13 +6,12 @@ from channels.db import database_sync_to_async
 from channels.layers import get_channel_layer
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from rest_framework import serializers
 from sentry_sdk import add_breadcrumb, configure_scope
 
-from venueless.core.models import Channel, Room
+from venueless.core.models.room import RoomConfigSerializer
 from venueless.core.permissions import Permission
 from venueless.core.services.reactions import store_reaction
-from venueless.core.services.room import end_view, start_view, update_room
+from venueless.core.services.room import delete_room, end_view, save_room, start_view
 from venueless.core.services.world import (
     create_room,
     get_room_config_for_user,
@@ -31,22 +30,6 @@ from venueless.live.exceptions import ConsumerException
 from venueless.live.modules.base import BaseModule
 
 logger = logging.getLogger(__name__)
-
-
-class RoomConfigSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Room
-        fields = (
-            "id",
-            "trait_grants",
-            "module_config",
-            "picture",
-            "name",
-            "description",
-            "sorting_priority",
-            "pretalx_id",
-            "force_join",
-        )
 
 
 class RoomModule(BaseModule):
@@ -216,6 +199,7 @@ class RoomModule(BaseModule):
     @command("config.patch")
     @room_action(permission_required=Permission.ROOM_UPDATE)
     async def config_patch(self, body):
+        old = RoomConfigSerializer(self.room).data
         s = RoomConfigSerializer(self.room, data=body, partial=True)
         if s.is_valid():
             update_fields = set()
@@ -224,14 +208,14 @@ class RoomModule(BaseModule):
                     setattr(self.room, f, s.validated_data[f])
                     update_fields.add(f)
 
-            await database_sync_to_async(self.room.save)(
-                update_fields=list(update_fields)
+            new = await save_room(
+                self.consumer.world,
+                self.room,
+                list(update_fields),
+                old_data=old,
+                by_user=self.consumer.user,
             )
-            if "chat.native" in set(m["type"] for m in self.room.module_config):
-                await database_sync_to_async(Channel.objects.get_or_create)(
-                    world_id=self.consumer.world.pk, room=self.room
-                )
-            await self.consumer.send_success(RoomConfigSerializer(self.room).data)
+            await self.consumer.send_success(new)
             await notify_world_change(self.consumer.world.id)
         else:
             await self.consumer.send_error(code="config.invalid")
@@ -240,7 +224,7 @@ class RoomModule(BaseModule):
     @room_action(permission_required=Permission.ROOM_DELETE)
     async def delete(self, body):
         self.room.deleted = True
-        await database_sync_to_async(self.room.save)(update_fields=["deleted"])
+        await delete_room(self.consumer.world, self.room, by_user=self.consumer.user)
         await self.consumer.send_success()
         await get_channel_layer().group_send(
             f"world.{self.consumer.world.id}",
@@ -254,6 +238,7 @@ class RoomModule(BaseModule):
     @command("schedule")
     @room_action(permission_required=Permission.ROOM_ANNOUNCE)
     async def change_schedule_data(self, body):
+        old = RoomConfigSerializer(self.room).data
         data = body.get("schedule_data")
         if data and not all(key in ["title", "session"] for key in data.keys()):
             raise ConsumerException(
@@ -262,7 +247,13 @@ class RoomModule(BaseModule):
 
         await self.consumer.send_success({})
         self.room.schedule_data = data
-        await update_room(self.room)
+        await save_room(
+            self.consumer.world,
+            self.room,
+            ["schedule_data"],
+            by_user=self.consumer.user,
+            old_data=old,
+        )
         await self.consumer.channel_layer.group_send(
             GROUP_ROOM.format(id=self.room.pk),
             {"type": "room.schedule", "schedule_data": data, "room": str(self.room.pk)},

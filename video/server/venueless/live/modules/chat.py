@@ -352,7 +352,9 @@ class ChatModule(BaseModule):
                 )
                 if body["content"]["type"] != "deleted" or not is_moderator:
                     raise ConsumerException("chat.denied")
-            await self.service.update_event(other_message.id, new_content=content)
+            await self.service.update_event(
+                other_message, new_content=content, by_user=self.consumer.user
+            )
 
         if content.get("type") == "text" and not content.get("body"):
             raise ConsumerException("chat.empty")
