@@ -1,11 +1,13 @@
 from urllib.parse import urlparse
 
 import vobject
+from csp.decorators import csp_update
 from django.conf import settings
 from django.contrib import messages
 from django.db.models import Q
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, render
+from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import DetailView, FormView, TemplateView
@@ -20,6 +22,7 @@ from pretalx.submission.forms import FeedbackForm
 from pretalx.submission.models import QuestionTarget, Submission, SubmissionStates
 
 
+@method_decorator(csp_update(IMG_SRC="https://www.gravatar.com"), name="dispatch")
 class TalkView(PermissionRequired, TemplateView):
     model = Submission
     slug_field = "code"
