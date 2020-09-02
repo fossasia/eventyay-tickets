@@ -34,6 +34,7 @@ import config from 'config'
 import theme from 'theme'
 
 const RETRY_INTERVAL = 5000
+// TODO look at capLevelToPlayerSize
 const HLS_DEFAULT_CONFIG = {
 	// never fall behind live edge
 	liveBackBufferLength: 0,
@@ -223,6 +224,7 @@ export default {
 			this.volume = event.target.value
 		},
 		onVolumechange () {
+			if (!this.$refs.video) return
 			if (this.$refs.video.muted) {
 				this.volume = 0
 				this.muted = true
@@ -232,9 +234,11 @@ export default {
 			}
 		},
 		onDurationchange () {
+			if (!this.$refs.video) return
 			this.duration = this.$refs.video.duration
 		},
 		onProgress () {
+			if (!this.$refs.video) return
 			this.bufferedRanges = []
 			for (let i = 0; i < this.$refs.video.buffered.length; i++) {
 				this.bufferedRanges.push({
@@ -244,6 +248,7 @@ export default {
 			}
 		},
 		onTimeupdate () {
+			if (!this.$refs.video) return
 			this.currentTime = this.$refs.video.currentTime
 		},
 		onSeeking () {
