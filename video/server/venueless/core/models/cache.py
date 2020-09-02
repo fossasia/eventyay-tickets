@@ -38,8 +38,8 @@ class VersionedModel(models.Model):
         return r
 
     def delete(self, *args, **kwargs):
-        transaction.on_commit(async_to_sync(self._set_cache_deleted))
         r = super().delete(*args, **kwargs)
+        transaction.on_commit(async_to_sync(self._set_cache_deleted))
         return r
 
     def touch(self):
