@@ -3,7 +3,7 @@
         <a href="{{ speaker.urls.public }}">
         <div class="avatar-wrapper">
         {% if speaker.user.avatar_url %}
-            <img src="{{ speaker.user.avatar.url }}">
+            <img src="{{ speaker.user.avatar_url }}">
         {% else %}
             {% include "common/avatar.svg" %}
         {% endif %}
