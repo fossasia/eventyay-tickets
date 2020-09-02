@@ -299,7 +299,7 @@ def save_world(world, update_fields, old_data, by_user):
     AuditLog.objects.create(
         world_id=world.id,
         user=by_user,
-        type="world.room.updated",
+        type="world.updated",
         data={
             "old": old_data,
             "new": new,
