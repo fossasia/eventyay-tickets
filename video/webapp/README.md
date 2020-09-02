@@ -127,8 +127,19 @@ nav.toolbar
 			font-weight: 400
 ```
 
+#### CSS guide
+- Use only px, % and viewport units.
+- Prefer `flex: none` and `flex: auto` before other `flex`, `flex-shrink`, `flex-grow`, `flex-basis` properties.
 
-##### How to Find Color Variables
+
+#### How to name classes
+- Use `.c-` or `.v-` prefix for root component / view.
+- Use `.ui-` prefix (or invent a new one) for shared utility classes.
+- For complex utilities, use stylus mixins.
+- Prefer semantic naming (`.user` instead of `.flex-item`).
+
+
+#### How to Find Color Variables
 Colors are prefixed with `$clr-`.
 Find existing colors from:
 - https://github.com/rashfael/buntpapier/blob/master/buntpapier/variables.styl
