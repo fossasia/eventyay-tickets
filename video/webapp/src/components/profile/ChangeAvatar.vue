@@ -9,6 +9,7 @@
 		identicon(v-else, :id="value.identicon", @click.native="changeIdenticon")
 </template>
 <script>
+// TODO repeating this step makes the avatar smaller
 import { v4 as uuid } from 'uuid'
 import { Cropper, CircleStencil } from 'vue-advanced-cropper'
 import api from 'lib/api'
