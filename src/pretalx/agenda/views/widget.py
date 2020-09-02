@@ -134,21 +134,28 @@ def widget_data_v2(request, event):
     if version and version == "wip":
         if not request.user.has_perm("orga.view_schedule", event):
             raise Http404()
+        schedule = request.event.wip_schedule
     elif version:
         schedule = event.schedules.filter(version__iexact=version).first()
+
     schedule = schedule or event.current_schedule
 
+    if schedule.version:
+        talks = schedule.talks.filter(is_visible=True)
+    else:
+        talks = schedule.talks.filter(submission__state="confirmed")
+
     talks = (
-        schedule.talks.filter(is_visible=True)
-        .select_related("submission", "room", "submission__track")
-        .prefetch_related("submission__speakers")
+        talks.select_related(
+            "submission", "room", "submission__track"
+        ).prefetch_related("submission__speakers")
     ).order_by("start")
     rooms = set()
     tracks = set()
     speakers = set()
     result = {
         "talks": [],
-        "version": event.current_schedule.version,
+        "version": schedule.version,
         "timezone": event.timezone,
     }
     for talk in talks:

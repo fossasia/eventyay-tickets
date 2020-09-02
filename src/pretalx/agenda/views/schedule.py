@@ -40,7 +40,9 @@ class ScheduleMixin:
             return self.request.event.schedules.filter(
                 version__iexact=self.version
             ).first()
-        return self.request.event.current_schedule  # May be None
+        if not self.request.event.current_schedule:
+            raise Http404()
+        return self.request.event.current_schedule
 
     @context
     @cached_property

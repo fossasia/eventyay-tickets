@@ -74,4 +74,7 @@ rules.add_perm(
 rules.add_perm("agenda.view_slot", is_submission_visible | can_change_submissions)
 rules.add_perm("agenda.view_speaker", is_speaker_viewable | can_change_submissions)
 rules.add_perm("agenda.give_feedback", is_feedback_ready)
-rules.add_perm("agenda.view_widget", is_agenda_visible | is_widget_always_visible)
+rules.add_perm(
+    "agenda.view_widget",
+    is_agenda_visible | is_widget_always_visible | can_change_submissions,
+)
