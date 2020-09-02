@@ -28,7 +28,7 @@
 		notifications(:has-background-media="!!backgroundRoom")
 		.disconnected-warning(v-if="!connected") {{ $t('App:disconnected-warning:text') }}
 		transition(name="prompt")
-			greeting-prompt(v-if="true || !user.profile.display_name")
+			greeting-prompt(v-if="!user.profile.greeted")
 	bunt-progress-circular(v-else-if="!fatalError", size="huge")
 	.fatal-error(v-if="fatalError") {{ fatalError.message }}
 </template>

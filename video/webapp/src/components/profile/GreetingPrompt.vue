@@ -20,7 +20,7 @@ prompt.c-profile-greeting-prompt(:allowCancel="false")
 		.actions
 			bunt-button#btn-back(v-if="previousStep", @click="activeStep = previousStep") back
 			bunt-button#btn-continue(v-if="nextStep", :class="{invalid: $v.$invalid && $v.$dirty}", :disabled="$v.$invalid && $v.$dirty", :loading="processingStep", :key="activeStep", @click="toNextStep") continue
-			bunt-button#btn-finish(v-else) finish
+			bunt-button#btn-finish(v-else, @click="update") finish
 </template>
 <script>
 import { mapState } from 'vuex'
@@ -43,6 +43,7 @@ export default {
 		}
 	},
 	validations: {
+		// TODO only validate current step fields
 		profile: {
 			display_name: {
 				required: required('Display name cannot be empty')
@@ -68,12 +69,13 @@ export default {
 	created () {
 		this.activeStep = this.steps[0]
 		this.profile = Object.assign({
+			greeted: true,
 			display_name: '',
 			avatar: {
 				identicon: this.user.id
 			},
 			fields: {}
-		}) //, this.user.profile)
+		}, this.user.profile)
 	},
 	mounted () {
 		this.$nextTick(() => {
@@ -96,16 +98,8 @@ export default {
 		async update () {
 			this.$v.$touch()
 			if (this.$v.$invalid) return
-			const profile = {
-				display_name: this.displayName,
-			}
-			if (this.gravatarHash) {
-				profile.gravatar_hash = this.gravatarHash
-			} else if (this.identicon) {
-				profile.identicon = this.identicon
-			}
 			this.loading = true
-			await this.$store.dispatch('updateUser', {profile})
+			await this.$store.dispatch('updateUser', {profile: this.profile})
 			// TODO error handling
 			this.$emit('close')
 		}
