@@ -483,6 +483,15 @@ class WidgetSettingsForm(HierarkeyForm):
 
 
 class WidgetGenerationForm(forms.ModelForm):
+    schedule_display = forms.ChoiceField(
+        label=_("Schedule display format"),
+        choices=(
+            ("grid", _("Grid")),
+            ("list", _("List")),
+        ),
+        required=True,
+    )
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["locale"].label = _("Widget language")
