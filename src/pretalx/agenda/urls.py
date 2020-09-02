@@ -75,7 +75,7 @@ urlpatterns = [
                 re_path(
                     r"^featured/$", featured.FeaturedView.as_view(), name="featured"
                 ),
-                re_path(r"^speaker/$", talk.SpeakerList.as_view(), name="speakers"),
+                re_path(r"^speaker/$", speaker.SpeakerList.as_view(), name="speakers"),
                 re_path(
                     r"^speaker/by-id/(?P<pk>\d+)/$",
                     speaker.SpeakerRedirect.as_view(),

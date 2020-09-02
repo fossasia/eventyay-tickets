@@ -8,13 +8,41 @@ from django.http import Http404, HttpResponse
 from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
-from django.views.generic import DetailView, TemplateView
+from django.views.generic import DetailView, ListView, TemplateView
 from django_context_decorator import context
 
-from pretalx.common.mixins.views import PermissionRequired
+from pretalx.common.mixins.views import (
+    EventPermissionRequired,
+    Filterable,
+    PermissionRequired,
+)
 from pretalx.common.utils import safe_filename
 from pretalx.person.models import SpeakerProfile, User
 from pretalx.submission.models import QuestionTarget
+
+
+@method_decorator(csp_update(IMG_SRC="https://www.gravatar.com"), name="dispatch")
+class SpeakerList(EventPermissionRequired, Filterable, ListView):
+    context_object_name = "speakers"
+    template_name = "agenda/speakers.html"
+    permission_required = "agenda.view_schedule"
+    default_filters = ("user__name__icontains",)
+
+    def get_queryset(self):
+        qs = (
+            SpeakerProfile.objects.filter(
+                user__in=self.request.event.speakers, event=self.request.event
+            )
+            .select_related("user", "event")
+            .order_by("user__name")
+        )
+        qs = self.filter_queryset(qs)
+        all_talks = list(self.request.event.talks.all().prefetch_related("speakers"))
+        for profile in qs:
+            profile.talks = [
+                talk for talk in all_talks if profile.user in talk.speakers.all()
+            ]
+        return qs
 
 
 @method_decorator(csp_update(IMG_SRC="https://www.gravatar.com"), name="dispatch")

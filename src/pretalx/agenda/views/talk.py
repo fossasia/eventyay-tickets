@@ -8,44 +8,16 @@ from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
-from django.views.generic import DetailView, FormView, ListView, TemplateView
+from django.views.generic import DetailView, FormView, TemplateView
 from django_context_decorator import context
 
 from pretalx.agenda.signals import register_recording_provider
 from pretalx.cfp.views.event import EventPageMixin
-from pretalx.common.mixins.views import (
-    EventPermissionRequired,
-    Filterable,
-    PermissionRequired,
-)
+from pretalx.common.mixins.views import PermissionRequired
 from pretalx.common.phrases import phrases
-from pretalx.person.models.profile import SpeakerProfile
 from pretalx.schedule.models import Schedule, TalkSlot
 from pretalx.submission.forms import FeedbackForm
 from pretalx.submission.models import QuestionTarget, Submission, SubmissionStates
-
-
-class SpeakerList(EventPermissionRequired, Filterable, ListView):
-    context_object_name = "speakers"
-    template_name = "agenda/speakers.html"
-    permission_required = "agenda.view_schedule"
-    default_filters = ("user__name__icontains",)
-
-    def get_queryset(self):
-        qs = (
-            SpeakerProfile.objects.filter(
-                user__in=self.request.event.speakers, event=self.request.event
-            )
-            .select_related("user", "event")
-            .order_by("user__name")
-        )
-        qs = self.filter_queryset(qs)
-        all_talks = list(self.request.event.talks.all().prefetch_related("speakers"))
-        for profile in qs:
-            profile.talks = [
-                talk for talk in all_talks if profile.user in talk.speakers.all()
-            ]
-        return qs
 
 
 class TalkView(PermissionRequired, TemplateView):
