@@ -43,22 +43,16 @@ def generate_widget_css(event, save=True):
 
 
 def generate_widget_js(event, locale=None, save=True, version=2):
-    code = ""
+    # todo remove caching and loading
     if str(version) == "1":
         widget_file = "agenda/js/widget.1.js"
     elif save:
         widget_file = "agenda/js/pretalx-schedule.min.js"
     else:
         widget_file = "agenda/js/pretalx-schedule.js"
-    files = [
-        "vendored/vue.js" if settings.DEBUG else "vendored/vue.min.js",
-        "vendored/moment-with-locales.js",
-        widget_file,
-    ]
-    for fname in files:
-        f = finders.find(fname)
-        with open(f, "r", encoding="utf-8") as fp:
-            code += fp.read()
+    f = finders.find(widget_file)
+    with open(f, "r", encoding="utf-8") as fp:
+        code = fp.read()
     data = code.encode()
     if save:
         checksum = hashlib.sha1(data).hexdigest()
