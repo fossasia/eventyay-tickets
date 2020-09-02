@@ -7,7 +7,7 @@
 					avatar(:user="user", :size="20")
 					.display-name
 						| {{ user.profile.display_name }}
-						.ui-badge(v-for="badge in sender.badges") {{ badge }}
+						.ui-badge(v-for="badge in user.badges") {{ badge }}
 					bunt-icon-button(@click="removeUser(user)") close
 				input(ref="input", name="search", v-model="search", @focus="focus", @blur="blur")
 		bunt-button(@click="submit") {{ buttonLabel }}
@@ -16,7 +16,7 @@
 			avatar(:user="user", :size="36")
 			.display-name
 				| {{ user.profile.display_name }}
-				.ui-badge(v-for="badge in sender.badges") {{ badge }}
+				.ui-badge(v-for="badge in user.badges") {{ badge }}
 		infinite-scroll(v-if="nextPage", :loading="loading", @load="loadPage")
 </template>
 <script>
