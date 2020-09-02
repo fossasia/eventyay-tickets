@@ -18,7 +18,7 @@
 				.tokenid(:title="user.token_id") {{ user.token_id }}
 				.name
 					| {{ user.profile.display_name }}
-					.ui-badge(v-for="badge in sender.badges") {{ badge }}
+					.ui-badge(v-for="badge in user.badges") {{ badge }}
 				.state {{ user.moderation_state }}
 				.actions(v-if="user.id !== ownUser.id")
 					//- moderation_state
