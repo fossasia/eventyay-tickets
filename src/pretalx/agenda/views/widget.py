@@ -146,7 +146,11 @@ def widget_data_v2(request, event):
     rooms = set()
     tracks = set()
     speakers = set()
-    result = {"talks": [], "version": event.current_schedule.version, "timezone": event.timezone}
+    result = {
+        "talks": [],
+        "version": event.current_schedule.version,
+        "timezone": event.timezone,
+    }
     for talk in talks:
         rooms.add(talk.room)
         if talk.submission:
