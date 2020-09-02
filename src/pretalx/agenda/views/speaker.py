@@ -34,6 +34,13 @@ class SpeakerView(PermissionRequired, TemplateView):
             .first()
         )
 
+    @context
+    @cached_property
+    def talks(self):
+        return self.request.event.current_schedule.talks.filter(
+            submission__speakers__code=self.kwargs["code"]
+        )
+
     def get_permission_object(self):
         return self.profile
 

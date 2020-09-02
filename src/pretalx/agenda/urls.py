@@ -50,6 +50,11 @@ urlpatterns = [
                     name="widget.script",
                 ),
                 re_path(
+                    r"^schedule/widget/v(?P<version>[0-9]+).js$",
+                    widget.widget_script,
+                    name="widget.script",
+                ),
+                re_path(
                     r"^schedule/widget/v(?P<version>[0-9]+).css$",
                     widget.widget_style,
                     name="widget.style",
@@ -76,7 +81,7 @@ urlpatterns = [
                     speaker.SpeakerRedirect.as_view(),
                     name="speaker.redirect",
                 ),
-                re_path(r"^talk/$", talk.TalkList.as_view(), name="talks"),
+                re_path(r"^talk/$", schedule.ScheduleView.as_view(), name="talks"),
                 re_path(r"^talk/(?P<slug>\w+)/$", talk.TalkView.as_view(), name="talk"),
                 re_path(
                     r"^talk/(?P<slug>\w+)/feedback/$",

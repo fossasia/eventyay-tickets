@@ -3,7 +3,7 @@ body {
 }
 
 #top-bg {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
@@ -36,6 +36,7 @@ header {
   justify-content: space-between;
   align-items: flex-end;
   word-break: break-word;
+  z-index: 1000;
 }
 
 #header-row {
@@ -93,9 +94,10 @@ header {
 }
 
 footer {
-  padding: 20px;
+  padding: 20px 0;
   text-align: center;
   font-size: 11px;
+  max-width: 100vw;
 
   img {
     max-height: 50px;

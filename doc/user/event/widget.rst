@@ -15,12 +15,11 @@ You will obtain two code snippets that look *roughly* like the following. The
 first should be embedded into the ``<head>`` part of your website, if possible.
 If this is inconvenient, you can put it in the ``<body>`` part as well::
 
-    <link rel="stylesheet" type="text/css" href="https://pretalx.com/democon/schedule/widget/v1.css">
-    <script type="text/javascript" src="https://pretalx.com/democon/schedule/widget/v1.en.js"></script>
+    <script type="text/javascript" src="https://pretalx.com/democon/schedule/widget/v2.en.js"></script>
 
 The second snippet should be embedded at the position where the widget should show up::
 
-    <pretalx-schedule-widget event="https://pretalx.com/democon/" height="500px"></pretalx-widget>
+    <pretalx-schedule event-url="https://pretalx.com/democon/" locale="en" style="--pretalx-clr-primary: #3aa57c"></pretalx-schedule>
     <noscript>
        <div class="pretalx-widget">
             <div class="pretalx-widget-info-message">
@@ -29,13 +28,6 @@ The second snippet should be embedded at the position where the widget should sh
             </div>
         </div>
     </noscript>
-
-.. note::
-
-    Some website builders like have trouble with our custom HTML tag. In that
-    case, you can use ``<div class="pretalx-schedule-widget-compat" …></div>``
-    instead of ``<pretalx-schedule-widget …></pretalx-schedule-widget>``.
-
 
 .. note::
 
@@ -50,10 +42,9 @@ Your embedded widget could look like the following:
 
 .. raw:: html
 
-    <link rel="stylesheet" type="text/css" href="https://pretalx.com/democon/schedule/widget/v1.css">
-    <script type="text/javascript" src="https://pretalx.com/democon/schedule/widget/v1.en.js" async></script>
+    <script type="text/javascript" src="https://pretalx.com/democon/schedule/widget/v2.en.js" async></script>
 
-    <pretalx-schedule-widget event="https://pretalx.com/democon/" height="500px"></pretalx-schedule-widget>
+    <pretalx-schedule event="https://pretalx.com/democon/" locale="en" style="--pretalx-clr-primary: #3aa57c"></pretalx-schedule>
     <noscript>
        <div class="pretalx-widget">
             <div class="pretalx-widget-info-message">
@@ -62,12 +53,3 @@ Your embedded widget could look like the following:
             </div>
         </div>
     </noscript>
-
-
-Styling
--------
-
-If you want, you can customise the appearance of the widget to fit your website with CSS. If you inspect the rendered
-HTML of the widget with your browser's developer tools, you will see that nearly every element has a custom class
-and all classes are prefixed with ``pretalx-schedule``. You can override the styles as much as you want to and if
-you want to go all custom, you don't even need to use the stylesheet provided by us at all.

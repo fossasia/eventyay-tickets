@@ -10,14 +10,14 @@ from django_scopes import scope
 @pytest.mark.django_db
 def test_can_see_talk_list(client, django_assert_num_queries, event, slot, other_slot):
     with django_assert_num_queries(11):
-        response = client.get(event.urls.talks, follow=True)
+        response = client.get(event.urls.talks, follow=True, HTTP_ACCEPT="text/html")
     assert response.status_code == 200
     assert slot.submission.title in response.content.decode()
 
 
 @pytest.mark.django_db
 def test_can_see_talk(client, django_assert_num_queries, event, slot, other_slot):
-    with django_assert_num_queries(24):
+    with django_assert_num_queries(23):
         response = client.get(slot.submission.urls.public, follow=True)
     with scope(event=event):
         assert event.schedules.count() == 2
@@ -59,7 +59,7 @@ def test_orga_can_see_new_talk(
     orga_client, django_assert_num_queries, event, unreleased_slot
 ):
     slot = unreleased_slot
-    with django_assert_num_queries(31):
+    with django_assert_num_queries(30):
         response = orga_client.get(slot.submission.urls.public, follow=True)
     assert response.status_code == 200
     content = response.content.decode()
@@ -90,7 +90,7 @@ def test_can_see_talk_edit_btn(
     orga_client, django_assert_num_queries, orga_user, event, slot
 ):
     slot.submission.speakers.add(orga_user)
-    with django_assert_num_queries(33):
+    with django_assert_num_queries(31):
         response = orga_client.get(slot.submission.urls.public, follow=True)
     assert response.status_code == 200
     content = response.content.decode()
@@ -102,7 +102,7 @@ def test_can_see_talk_edit_btn(
 def test_can_see_talk_do_not_record(client, django_assert_num_queries, event, slot):
     slot.submission.do_not_record = True
     slot.submission.save()
-    with django_assert_num_queries(23):
+    with django_assert_num_queries(22):
         response = client.get(slot.submission.urls.public, follow=True)
     assert response.status_code == 200
     content = response.content.decode()
@@ -117,7 +117,7 @@ def test_can_see_talk_does_accept_feedback(
     slot.start = now() - dt.timedelta(days=1)
     slot.end = slot.start + dt.timedelta(hours=1)
     slot.save()
-    with django_assert_num_queries(24):
+    with django_assert_num_queries(23):
         response = client.get(slot.submission.urls.public, follow=True)
     assert response.status_code == 200
     content = response.content.decode()
@@ -169,7 +169,7 @@ def test_event_talk_visiblity_accepted(
 def test_event_talk_visiblity_confirmed(
     client, django_assert_num_queries, event, slot, confirmed_submission
 ):
-    with django_assert_num_queries(22):
+    with django_assert_num_queries(21):
         response = client.get(confirmed_submission.urls.public, follow=True)
     assert response.status_code == 200
 
@@ -204,7 +204,7 @@ def test_talk_speaker_other_submissions(
 ):
     with scope(event=event):
         other_submission.speakers.add(speaker)
-    with django_assert_num_queries(27):
+    with django_assert_num_queries(23):
         response = client.get(other_submission.urls.public, follow=True)
 
     assert response.status_code == 200
@@ -237,13 +237,13 @@ def test_talk_speaker_other_submissions_only_if_visible(
 ):
     with scope(event=event):
         other_submission.speakers.add(speaker)
-    with django_assert_num_queries(27):
-        response = client.get(other_submission.urls.public, follow=True)
-    with scope(event=event):
         slot.submission.accept(force=True)
         slot.is_visible = False
         slot.save()
         slot.submission.save()
+
+    with django_assert_num_queries(23):
+        response = client.get(other_submission.urls.public, follow=True)
 
     assert response.status_code == 200
     assert response.context["speakers"]

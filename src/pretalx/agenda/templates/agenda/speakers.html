@@ -6,23 +6,15 @@
 {% block agenda_content %}
     {% include "agenda/header_row.html" %}
 <p></p>
+<section style="--track-color: {{ request.event.primary_color|default:'#3aa57c' }}" class="pretalx-list-day">
     {% for speaker in speakers %}
-        <section>
-            <h3 class="talk-title">
-                <a href="{{ speaker.urls.public }}"> {{ speaker.user.get_display_name }}</a>
-            </h3>
-            <p>
-            {% for talk in speaker.talks %}
-                <a href="{{ talk.urls.public }}">{{ quotation_open }}{{ talk.title }}{{ quotation_close }}</a>
-                {% if not forloop.last %} | {% endif %}
-            {% endfor %}
-            {% if not forloop.last %}
-            <hr>
-            {% endif %}
-        </section>
+        <a href="{{ speaker.urls.public }}">
+            {% include "agenda/speaker_block.html" with speaker=speaker %}
+        </a>
     {% empty %}
         {% if search %}{% blocktranslate trimmed %}
             No speaker matches your search.
         {% endblocktranslate %}{% endif %}
     {% endfor %}
+</section>
 {% endblock %}

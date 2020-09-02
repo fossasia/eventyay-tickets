@@ -25,27 +25,6 @@ from pretalx.submission.forms import FeedbackForm
 from pretalx.submission.models import QuestionTarget, Submission, SubmissionStates
 
 
-class TalkList(EventPermissionRequired, Filterable, ListView):
-    context_object_name = "talks"
-    model = Submission
-    template_name = "agenda/talks.html"
-    permission_required = "agenda.view_schedule"
-    default_filters = ("speakers__name__icontains", "title__icontains")
-
-    def get_queryset(self):
-        return (
-            self.filter_queryset(self.request.event.talks)
-            .select_related("event")
-            .prefetch_related("speakers")
-            .distinct()
-            .order_by("title")
-        )
-
-    @context
-    def search(self):
-        return self.request.GET.get("q")
-
-
 class SpeakerList(EventPermissionRequired, Filterable, ListView):
     context_object_name = "speakers"
     template_name = "agenda/speakers.html"
@@ -67,10 +46,6 @@ class SpeakerList(EventPermissionRequired, Filterable, ListView):
                 talk for talk in all_talks if profile.user in talk.speakers.all()
             ]
         return qs
-
-    @context
-    def search(self):
-        return self.request.GET.get("q")
 
 
 class TalkView(PermissionRequired, TemplateView):
@@ -145,15 +120,17 @@ class TalkView(PermissionRequired, TemplateView):
             .select_related("room")
         )
         result = []
-        other_submissions = (
-            schedule.slots.exclude(pk=self.submission.pk)
+        other_slots = (
+            schedule.talks.exclude(submission_id=self.submission.pk).filter(
+                is_visible=True
+            )
             if schedule
-            else Submission.objects.none()
+            else TalkSlot.objects.none()
         )
         for speaker in self.submission.speakers.all():
             speaker.talk_profile = speaker.event_profile(event=self.request.event)
-            speaker.other_submissions = other_submissions.filter(
-                speakers__in=[speaker]
+            speaker.other_submissions = self.request.event.submissions.filter(
+                slots__in=other_slots, speakers__in=[speaker]
             ).select_related("event")
             result.append(speaker)
         ctx["speakers"] = result
