@@ -17,9 +17,9 @@
 				avatar(:user="user", :size="28")
 				span.display-name
 					| {{ user.profile.display_name }}
-					span.ui-badge(v-for="badge in sender.badges") {{ badge }}
+					span.ui-badge(v-for="badge in user.badges") {{ badge }}
 		chat-user-card(v-if="selectedUser", ref="avatarCard", :sender="selectedUser", @close="selectedUser = null")
-	bunt-progress-circular(v-else, size="huge", :page="true")
+	bunt-progress-circular(v-else, size="huge", :pagbadgese="true")
 </template>
 <script>
 import { mapState, mapGetters } from 'vuex'
