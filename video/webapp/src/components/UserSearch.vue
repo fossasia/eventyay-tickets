@@ -7,7 +7,7 @@
 				avatar(:user="user", :size="26")
 				span.display-name
 					| {{ user ? user.profile.display_name : '' }}
-					span.ui-badge(v-for="badge in sender.badges") {{ badge }}
+					span.ui-badge(v-for="badge in user.badges") {{ badge }}
 			li(v-if="!lastPage")
 				bunt-progress-circular(v-if="loading", size="small")
 				bunt-button#btn-more(v-else, @click="page++") Load more
