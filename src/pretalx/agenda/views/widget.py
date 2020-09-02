@@ -101,7 +101,7 @@ def widget_data_v2(request, event):
     rooms = set()
     tracks = set()
     speakers = set()
-    result = {"talks": [], "version": event.current_schedule.version}
+    result = {"talks": [], "version": event.current_schedule.version, "timezone": event.timezone}
     for talk in talks:
         rooms.add(talk.room)
         if talk.submission:
@@ -118,8 +118,8 @@ def widget_data_v2(request, event):
                     if talk.submission
                     else None,
                     "track": talk.submission.track_id if talk.submission else None,
-                    "start": talk.start,
-                    "end": talk.end,
+                    "start": talk.start.astimezone(event.tz),
+                    "end": talk.end.astimezone(event.tz),
                     "room": talk.room_id,
                 }
             )
