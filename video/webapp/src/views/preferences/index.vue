@@ -1,20 +1,20 @@
 <template lang="pug">
 .v-preferences
-	h1 Your profile
+	h1 {{ $t('preferences/index:heading') }}
 	.inputs
 		.avatar-wrapper
 			avatar(:user="{profile}", :size="128")
-			bunt-button#btn-change-avatar(@click="showChangeAvatar = true") change avatar
+			bunt-button#btn-change-avatar(@click="showChangeAvatar = true") {{ $t('preferences/index:btn-change-avatar:label') }}
 		bunt-input.display-name(name="displayName", :label="$t('profile/GreetingPrompt:displayname:label')", v-model.trim="profile.display_name", :validation="$v.profile.display_name")
 		change-additional-fields(v-model="profile.fields")
-		bunt-button#btn-save(:disabled="$v.$invalid && $v.$dirty", :loading="saving", @click="save") save
+		bunt-button#btn-save(:disabled="$v.$invalid && $v.$dirty", :loading="saving", @click="save") {{ $t('preferences/index:btn-save:label') }}
 	transition(name="prompt")
 		prompt.change-avatar-prompt(v-if="showChangeAvatar", @close="showChangeAvatar = false")
 			.content
 				change-avatar(ref="avatar", v-model="profile.avatar")
 				.actions
-					bunt-button#btn-cancel(@click="showChangeAvatar = false") cancel
-					bunt-button#btn-upload(:loading="savingAvatar", @click="uploadAvatar") save
+					bunt-button#btn-cancel(@click="showChangeAvatar = false") {{ $t('Prompt:cancel:label') }}
+					bunt-button#btn-upload(:loading="savingAvatar", @click="uploadAvatar") {{ $t('preferences/index:btn-upload-save:label') }}
 </template>
 <script>
 import { mapState } from 'vuex'
