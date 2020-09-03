@@ -23,7 +23,6 @@ export default {
 	},
 	methods: {
 		async connectGravatar () {
-			// TODO load image and upload
 			this.searchingGravatar = true
 			this.gravatarError = null
 			const hash = getHash(this.email)
