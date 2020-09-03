@@ -58,7 +58,7 @@ export default {
 		},
 		availableFields () {
 			if (!this.sender.profile?.fields) return
-			return this.world?.user_profile?.additional_fields
+			return this.world?.profile_fields
 				.map(field => ({label: field.label, value: this.sender.profile.fields[field.label]}))
 				.filter(field => !!field.value)
 		},
