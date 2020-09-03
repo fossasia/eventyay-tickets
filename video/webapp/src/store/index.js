@@ -54,7 +54,7 @@ export default new Vuex.Store({
 			api.on('joined', (serverState) => {
 				state.connected = true
 				state.user = serverState['user.config']
-				state.user.profile = {}
+				// state.user.profile = {}
 				state.world = serverState['world.config'].world
 				state.permissions = serverState['world.config'].permissions
 				commit('chat/setJoinedChannels', serverState['chat.channels'])

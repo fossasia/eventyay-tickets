@@ -115,9 +115,6 @@ export default {
 </script>
 <style lang="stylus">
 .c-profile-greeting-prompt
-	.prompt-wrapper
-		// height: 400px
-		width: 480px
 	.content
 		flex: auto
 		display: flex
@@ -149,4 +146,7 @@ export default {
 			themed-button-primary()
 			&.invalid
 				button-style(color: $clr-danger)
+		+below('m')
+			p
+				width: auto
 </style>
