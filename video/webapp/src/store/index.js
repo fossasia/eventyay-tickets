@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import api from 'lib/api'
-import router from 'router'
 import chat from './chat'
 import exhibition from './exhibition'
 import schedule from './schedule'
