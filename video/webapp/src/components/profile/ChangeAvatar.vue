@@ -3,7 +3,7 @@
 	.inputs
 		bunt-button.btn-randomize(@click="changeIdenticon") {{ $t('profile/ChangeAvatar:button-randomize:label') }}
 		span or
-		upload-button.btn-upload(@change="fileSelected", accept="image/png, image/jpg") {{ $t('profile/ChangeAvatar:button-upload:label') }}
+		upload-button.btn-upload(@change="fileSelected", accept="image/png, image/jpg, .png, .jpg, .jpeg") {{ $t('profile/ChangeAvatar:button-upload:label') }}
 	.image-wrapper
 		cropper(v-if="avatarImage", ref="cropper", classname="cropper", stencil-component="circle-stencil", :src="avatarImage", :stencil-props="{aspectRatio: '1/1'}", :restrictions="pixelsRestrictions")
 		identicon(v-else, :id="identicon || value.identicon", @click.native="changeIdenticon")
