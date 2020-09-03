@@ -6,6 +6,10 @@
 		.name
 			| {{ sender.profile ? sender.profile.display_name : (sender.id ? sender.id : '(unknown user)') }}
 			.ui-badge(v-for="badge in sender.badges") {{ badge }}
+		.fields(v-if="availableFields")
+			.field(v-for="field of availableFields")
+				.label {{ field.label }}
+				.value {{ field.value }}
 		.state {{ userStates.join(', ') }}
 		.actions(v-if="sender.id !== user.id && sender.id")
 			bunt-button.btn-dm(v-if="hasPermission('world:chat.direct')", @click="openDM") message
@@ -46,11 +50,17 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['user']),
+		...mapState(['user', 'world']),
 		...mapGetters(['hasPermission']),
 		isBlocked () {
 			if (!this.blockedUsers) return
 			return this.blockedUsers.some(user => user.id === this.sender.id)
+		},
+		availableFields () {
+			if (!this.sender.profile?.fields) return
+			return this.world?.user_profile?.additional_fields
+				.map(field => ({label: field.label, value: this.sender.profile.fields[field.label]}))
+				.filter(field => !!field.value)
 		},
 		userStates () {
 			const states = []
@@ -89,11 +99,28 @@ export default {
 		z-index: 5000
 		display: flex
 		flex-direction: column
+		align-items: center
 		padding: 8px
+		min-width: 196px
 		.name
 			font-size: 24px
 			font-weight: 600
 			margin-top: 8px
+		.fields
+			display: flex
+			flex-direction: column
+			align-self: stretch
+			margin: 0 8px
+			.field
+				display: flex
+				flex-direction: column
+				margin: 4px
+				.label
+					color: $clr-secondary-text-light
+					font-weight: 500
+					font-size: 12px
+				.value
+					margin: 2px 0 0 8px
 		.state
 			height: 16px
 		.actions
