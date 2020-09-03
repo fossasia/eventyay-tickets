@@ -1,5 +1,5 @@
 <template lang="pug">
-.c-livestream(:class="[`size-${size}`, {playing, buffering, seeking, automuted, muted}]", v-resize-observer="onResize")
+.c-livestream(:class="[`size-${size}`, {playing, buffering, seeking, automuted, muted, 'choosing-level': showLevelChooser}]", v-resize-observer="onResize")
 	.video-container(ref="videocontainer")
 		video(ref="video", style="width:100%;height:100%", @playing="playingVideo", @pause="pausingVideo", @volumechange="onVolumechange")
 		.controls(@click="toggleVideo")
@@ -18,9 +18,13 @@
 				bunt-icon-button(@click="toggleVideo") {{ playing ? 'pause' : 'play' }}
 				.live-indicator(v-if="isLive") live
 				.buffer
+				bunt-icon-button(@click="showLevelChooser = !showLevelChooser") {{ levelIcon }}
 				bunt-icon-button(@click="toggleVolume") {{ muted || volume === 0 ? 'volume_off' : 'volume_high' }}
 				input.volume-slider(type="range", step="any", min="0", max="1", aria-label="Volume", :value="volume", @input="onVolumeSlider", :style="{'--volume': volume}")
 				bunt-icon-button(@click="toggleFullscreen") {{ fullscreen ? 'fullscreen-exit' : 'fullscreen' }}
+			.level-chooser(v-if="showLevelChooser", @click.stop="")
+				.level(@click="chooseLevel(null)", :class="{chosen: !manualLevel}") Auto
+				.level(v-for="level of levels", :class="{chosen: level === manualLevel, auto: level === autoLevel}", @click="chooseLevel(level)") {{ level.height + 'p' }}
 	.offline(v-if="offline")
 		img.offline-image(v-if="theme.streamOfflineImage", :src="theme.streamOfflineImage")
 		.offline-message(v-else) {{ $t('Livestream:offline-message:text') }}
@@ -82,7 +86,12 @@ export default {
 			currentTime: 0,
 			duration: 0,
 			bufferedRanges: null,
-			hoveredProgress: null
+			hoveredProgress: null,
+			// Quality levels
+			levels: null,
+			autoLevel: null,
+			manualLevel: null,
+			showLevelChooser: false
 		}
 	},
 	computed: {
@@ -104,6 +113,12 @@ export default {
 		hoveredTime () {
 			return this.hoveredProgress * this.duration
 		},
+		levelIcon () {
+			const level = this.manualLevel || this.autoLevel
+			if (!level || level.height < 480) return 'quality-low'
+			if (level.height < 720) return 'quality-medium'
+			return 'quality-high'
+		}
 	},
 	watch: {
 		'module.config.hls_url': 'initializePlayer'
@@ -154,6 +169,9 @@ export default {
 					load()
 				})
 				player.on(Hls.Events.MANIFEST_PARSED, async (event, data) => {
+					if (data.levels[0].height) {
+						this.levels = data.levels.map((level, index) => ({...level, index})).sort((a, b) => b.height - a.height)
+					}
 					start()
 					started = true
 				})
@@ -164,6 +182,10 @@ export default {
 						this.player?.destroy()
 						this.offline = true
 					}
+				})
+
+				player.on(Hls.Events.LEVEL_SWITCHED, (event, data) => {
+					this.autoLevel = this.levels.find(level => level.index === data.level)
 				})
 
 				player.on(Hls.Events.ERROR, (event, data) => {
@@ -208,12 +230,10 @@ export default {
 				this.$refs.video.pause()
 			}
 		},
-		toggleFullscreen () {
-			if (document.fullscreenElement) {
-				document.exitFullscreen()
-			} else {
-				this.$refs.videocontainer.requestFullscreen()
-			}
+		chooseLevel (level) {
+			this.manualLevel = level
+			this.player.loadLevel = level?.index ?? -1
+			this.showLevelChooser = false
 		},
 		toggleVolume () {
 			this.automuted = false
@@ -222,6 +242,13 @@ export default {
 		onVolumeSlider (event) {
 			this.$refs.video.volume = event.target.value
 			this.volume = event.target.value
+		},
+		toggleFullscreen () {
+			if (document.fullscreenElement) {
+				document.exitFullscreen()
+			} else {
+				this.$refs.videocontainer.requestFullscreen()
+			}
 		},
 		onVolumechange () {
 			if (!this.$refs.video) return
@@ -490,6 +517,37 @@ export default {
 					thumb()
 				&::-moz-range-thumb
 					thumb()
+		.level-chooser
+			position: absolute
+			bottom: 52px
+			right: 200px
+			display: flex
+			flex-direction: column
+			width: 92px
+			background-color: $clr-secondary-text-light
+			.level
+				position: relative
+				cursor: pointer
+				flex: none
+				height: 32px
+				line-height: @height
+				padding: 0 16px
+				color: $clr-primary-text-dark
+				text-align: right
+				&.chosen
+					&::after
+						content: ''
+						position: absolute
+						background-color: $clr-primary-text-dark
+						left: 10px
+						top: 13px
+						height: 6px
+						width: @height
+						border-radius: 50%
+				&.auto
+					text-decoration: underline
+				&:hover
+					background-color: rgba(255,255,255,.2)
 	.shaka-controls-button-panel > .material-icons
 		font-size: 24px
 	&:hover, &:not(.playing), &.buffering, &.seeking, &.automuted, &.muted, &.choosing-level
