@@ -30,6 +30,7 @@ class WorldConfigSerializer(serializers.Serializer):
     timezone = serializers.ChoiceField(choices=[(a, a) for a in common_timezones])
     connection_limit = serializers.IntegerField(allow_null=True)
     available_permissions = serializers.SerializerMethodField("_available_permissions")
+    profile_fields = serializers.JSONField()
 
     def _available_permissions(self, *args):
         return [d.value for d in Permission]
@@ -116,6 +117,7 @@ def get_world_config_for_user(world, user):
             "id": str(world.id),
             "title": world.title,
             "pretalx": world.config.get("pretalx", {}),
+            "profile_fields": world.config.get("profile_fields", []),
         },
         "permissions": list(permissions[world]),
         "rooms": [],
@@ -284,6 +286,7 @@ def _config_serializer(world, *args, **kwargs):
             "timezone": world.timezone,
             "trait_grants": world.trait_grants,
             "connection_limit": world.config.get("connection_limit", 0),
+            "profile_fields": world.config.get("profile_fields", []),
         },
         *args,
         **kwargs,

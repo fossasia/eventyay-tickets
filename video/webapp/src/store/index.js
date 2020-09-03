@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import api from 'lib/api'
-import router from 'router'
 import chat from './chat'
 import exhibition from './exhibition'
 import schedule from './schedule'
@@ -54,6 +53,7 @@ export default new Vuex.Store({
 			api.on('joined', (serverState) => {
 				state.connected = true
 				state.user = serverState['user.config']
+				// state.user.profile = {}
 				state.world = serverState['world.config'].world
 				state.permissions = serverState['world.config'].permissions
 				commit('chat/setJoinedChannels', serverState['chat.channels'])
@@ -64,10 +64,11 @@ export default new Vuex.Store({
 				if (state.activeRoom?.modules.some(module => ['livestream.native', 'call.bigbluebutton'].includes(module.type))) {
 					api.call('room.enter', {room: state.activeRoom.id})
 				}
-				if (!state.user.profile.display_name) {
-					router.push('/').catch(() => {}) // force new users to welcome page
-					// TODO return after profile update?
-				}
+				// TODO ?
+				// if (!state.user.profile.display_name) {
+				// 	router.push('/').catch(() => {}) // force new users to welcome page
+				// 	// TODO return after profile update?
+				// }
 				dispatch('schedule/fetch', {root: true})
 			})
 			api.on('closed', () => {

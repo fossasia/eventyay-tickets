@@ -1,6 +1,6 @@
 <template lang="pug">
-.c-prompt(@click="allowCancel && $emit('close')")
-	.prompt-wrapper(ref="wrapper", @click.stop="")
+.c-prompt(@pointerdown="onPointerdown")
+	.prompt-wrapper(ref="wrapper", @pointerdown.stop="")
 		bunt-icon-button#btn-close(v-if="allowCancel", @click="$emit('close')") close
 		slot.content
 </template>
@@ -20,12 +20,6 @@ export default {
 			default: true
 		}
 	},
-	data () {
-		return {
-		}
-	},
-	computed: {},
-	created () {},
 	mounted () {
 		this.$nextTick(() => {
 			if (!this.scrollable) return
@@ -34,7 +28,19 @@ export default {
 			})
 		})
 	},
-	methods: {}
+	methods: {
+		onPointerdown (event) {
+			if (!this.allowCancel) return
+			event.stopPropagation()
+			this.$el.addEventListener('pointerup', this.onPointerup)
+		},
+		onPointerup (event) {
+			this.$el.removeEventListener('pointerup', this.onPointerup)
+			if (event.target !== this.$el) return
+			console.log(event)
+			this.$emit('close')
+		}
+	}
 }
 </script>
 <style lang="stylus">
@@ -56,6 +62,9 @@ export default {
 		width: 480px
 		max-height: 80vh
 		position: relative
+		+below('m')
+			width: 100vw
+			max-height: none
 		#btn-close
 			icon-button-style(style: clear)
 			position: absolute

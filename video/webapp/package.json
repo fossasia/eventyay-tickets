@@ -36,6 +36,7 @@
     "sanitize-html": "^1.27.3",
     "uuid": "^8.3.0",
     "vue": "^2.6.12",
+    "vue-advanced-cropper": "^0.16.10",
     "vue-i18n": "^8.21.0",
     "vue-router": "^3.4.3",
     "vue-virtual-scroller": "^1.0.10",

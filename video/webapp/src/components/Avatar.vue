@@ -1,6 +1,6 @@
 <template lang="pug">
 .c-avatar(:style="{'--avatar-size': size + 'px'}")
-	img.gravatar-avatar(v-if="gravatarAvatarUrl", :src="gravatarAvatarUrl")
+	img(v-if="imageUrl", :src="imageUrl")
 	identicon(v-else, :id="identicon")
 </template>
 <script>
@@ -18,8 +18,11 @@ export default {
 			if (!this.user.profile?.gravatar_hash) return
 			return getAvatarUrl(this.user.profile.gravatar_hash, this.size)
 		},
+		imageUrl () {
+			return this.user.profile?.avatar?.url ?? this.gravatarAvatarUrl
+		},
 		identicon () {
-			return this.user.profile?.identicon ?? this.user.id
+			return this.user.profile?.avatar?.identicon ?? this.user.profile?.identicon ?? this.user.id
 		}
 	},
 	created () {},
@@ -33,9 +36,9 @@ export default {
 <style lang="stylus">
 .c-avatar
 	display: flex
-	.gravatar-avatar, .c-identicon
+	img, .c-identicon
 		width: var(--avatar-size)
 		height: var(--avatar-size)
-	.gravatar-avatar
+	img
 		border-radius: 50%
 </style>

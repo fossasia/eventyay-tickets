@@ -7,6 +7,7 @@ import Talk from 'views/schedule/talks/item'
 import Speaker from 'views/schedule/speakers/item'
 import Exhibitor from 'views/exhibitors/item'
 import ContactRequests from 'views/contact-requests'
+import Preferences from 'views/preferences'
 Vue.use(VueRouter)
 
 const routes = [{
@@ -48,6 +49,10 @@ const routes = [{
 	component: ContactRequests,
 	props: true
 }, {
+	path: '/preferences',
+	name: 'preferences',
+	component: Preferences,
+}, {
 	path: '/manage-exhibitors',
 	name: 'exhibitors',
 	component: () => import(/* webpackChunkName: "exhibitors" */ 'views/exhibitor-manager'),
@@ -64,6 +69,11 @@ const routes = [{
 	path: '/admin/users',
 	name: 'admin:users',
 	component: () => import(/* webpackChunkName: "admin" */ 'views/admin/users'),
+}, {
+	path: '/admin/users/:userId',
+	name: 'admin:user',
+	component: () => import(/* webpackChunkName: "admin" */ 'views/admin/user'),
+	props: true
 }, {
 	path: '/admin/rooms',
 	name: 'admin:rooms',

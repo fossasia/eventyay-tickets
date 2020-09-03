@@ -14,6 +14,23 @@
       "search_min_chars": 3,
       "page_size": 50
     },
+    "profile_fields": [
+      {
+        "label": "Organization",
+        "type": "text",
+        "choices": ""
+      },
+      {
+        "label": "Bio",
+        "type": "textarea",
+        "choices": ""
+      },
+      {
+        "label": "Hashtags",
+        "type": "select",
+        "choices": "Frontend, Backend, Disruptor, Tech, Social"
+      }
+    ],
     "JWT_secrets": [
       {
         "secret": "FaZaa4KeeZoo2ahgoh2uenahd3Uta4Ei",
