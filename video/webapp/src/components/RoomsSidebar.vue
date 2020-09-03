@@ -30,7 +30,6 @@ transition(name="sidebar")
 			.chats
 				router-link.video-chat(v-for="chat of roomsByType.videoChat", :to="chat === rooms[0] ? {name: 'home'} : {name: 'room', params: {roomId: chat.id}}")
 					.name {{ chat.name }}
-					bunt-icon-button(@click.prevent.stop="$store.dispatch('chat/leaveChannel', {channelId: chat.modules[0].channel_id})") close
 				router-link.text-chat(v-for="chat of roomsByType.textChat", :to="chat === rooms[0] ? {name: 'home'} : {name: 'room', params: {roomId: chat.id}}", :class="{unread: hasUnreadMessages(chat.modules[0].channel_id)}")
 					.name {{ chat.name }}
 					bunt-icon-button(@click.prevent.stop="$store.dispatch('chat/leaveChannel', {channelId: chat.modules[0].channel_id})") close
