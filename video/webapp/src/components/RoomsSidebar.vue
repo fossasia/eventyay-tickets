@@ -30,8 +30,10 @@ transition(name="sidebar")
 			.chats
 				router-link.video-chat(v-for="chat of roomsByType.videoChat", :to="chat === rooms[0] ? {name: 'home'} : {name: 'room', params: {roomId: chat.id}}")
 					.name {{ chat.name }}
+					bunt-icon-button(@click.prevent.stop="$store.dispatch('chat/leaveChannel', {channelId: chat.modules[0].channel_id})") close
 				router-link.text-chat(v-for="chat of roomsByType.textChat", :to="chat === rooms[0] ? {name: 'home'} : {name: 'room', params: {roomId: chat.id}}", :class="{unread: hasUnreadMessages(chat.modules[0].channel_id)}")
 					.name {{ chat.name }}
+					bunt-icon-button(@click.prevent.stop="$store.dispatch('chat/leaveChannel', {channelId: chat.modules[0].channel_id})") close
 				bunt-button#btn-browse-channels-trailing(@click="showChannelBrowser = true") {{ $t('RoomsSidebar:browse-channels-button:label') }}
 			.group-title(v-if="directMessageChannels || hasPermission('world:chat.direct')")
 				span {{ $t('RoomsSidebar:direct-messages-headline:text') }}
@@ -39,7 +41,7 @@ transition(name="sidebar")
 			.direct-messages
 				router-link.direct-message(v-for="channel of directMessageChannels", :to="{name: 'channel', params: {channelId: channel.id}}", :class="{unread: hasUnreadMessages(channel.id)}")
 					.name {{ channel.users.map(user => user.profile.display_name).join(', ') }}
-					bunt-icon-button(@click.prevent.stop="$store.dispatch('chat/closeDirectMessage', {channel})") close
+					bunt-icon-button(@click.prevent.stop="$store.dispatch('chat/leaveChannel', {channelId: channel.id})") close
 			.buffer
 			template(v-if="staffedExhibitions.length > 0 || hasPermission('world:rooms.create.exhibition')")
 				.group-title {{ $t('RoomsSidebar:exhibitions-headline:text') }}
@@ -341,12 +343,13 @@ export default {
 		.video-chat
 			&::before
 				content: '\F05A0'
-		.direct-message
+		.direct-message, .text-chat, .video-chat
 			padding-right: 8px
 			display: flex
-			justify-content: space-between
+			align-items: flex-start
 			.bunt-icon-button
 				icon-button-style(color: var(--clr-sidebar-text-primary), style: clear)
+				margin-left: auto
 			&:not(:hover) .bunt-icon-button
 				display: none
 		#btn-browse-channels-trailing
