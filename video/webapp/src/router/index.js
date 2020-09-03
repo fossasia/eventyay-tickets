@@ -70,6 +70,11 @@ const routes = [{
 	name: 'admin:users',
 	component: () => import(/* webpackChunkName: "admin" */ 'views/admin/users'),
 }, {
+	path: '/admin/users/:userId',
+	name: 'admin:user',
+	component: () => import(/* webpackChunkName: "admin" */ 'views/admin/user'),
+	props: true
+}, {
 	path: '/admin/rooms',
 	name: 'admin:rooms',
 	component: () => import(/* webpackChunkName: "admin" */ 'views/admin/rooms'),
