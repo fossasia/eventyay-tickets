@@ -103,7 +103,7 @@ export default {
 			// TODO non-room urls
 			let title = this.world.title
 			if (this.room) {
-				title += `| ${this.room.name}`
+				title += ` | ${this.room.name}`
 			}
 			document.title = title
 			this.$store.dispatch('changeRoom', newRoom)
