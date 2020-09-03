@@ -7,6 +7,7 @@ import Talk from 'views/schedule/talks/item'
 import Speaker from 'views/schedule/speakers/item'
 import Exhibitor from 'views/exhibitors/item'
 import ContactRequests from 'views/contact-requests'
+import Preferences from 'views/preferences'
 Vue.use(VueRouter)
 
 const routes = [{
@@ -47,6 +48,10 @@ const routes = [{
 	name: 'contactRequests',
 	component: ContactRequests,
 	props: true
+}, {
+	path: '/preferences',
+	name: 'preferences',
+	component: Preferences,
 }, {
 	path: '/manage-exhibitors',
 	name: 'exhibitors',

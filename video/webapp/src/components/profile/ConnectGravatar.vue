@@ -1,9 +1,14 @@
 <template lang="pug">
 form.c-connect-gravatar(@submit.prevent="connectGravatar")
-	bunt-input(name="gravatar", :label="$t('ProfilePrompt:gravatar-email:label')", :hint="$t('ProfilePrompt:gravatar-email:hint')", v-model="email")
-	bunt-button#btn-connect-gravatar(@click="connectGravatar", :loading="searchingGravatar", :error="gravatarError") {{ $t('ProfilePrompt:gravatar-connect:label') }}
+	h1 {{ $t('profile/ConnectGravatar:headline') }}
+	p {{ $t('profile/ConnectGravatar:text') }}
+	bunt-input(name="gravatar", :label="$t('profile/ConnectGravatar:gravatar-email:label')", v-model="email")
+	.actions
+		bunt-button#btn-cancel(@click="$emit('close')") cancel
+		bunt-button#btn-connect-gravatar(@click="connectGravatar", :loading="searchingGravatar", :error="gravatarError") {{ $t('profile/ConnectGravatar:gravatar-connect:label') }}
 </template>
 <script>
+import api from 'lib/api'
 import { getHash, getProfile, getAvatarUrl } from 'lib/gravatar'
 
 export default {
@@ -13,23 +18,16 @@ export default {
 			email: '',
 			searchingGravatar: false,
 			connectedGravatar: false,
-			gravatarError: null,
-			gravatarAvatarUrl: null,
-			gravatarHash: null,
+			gravatarError: null
 		}
-	},
-	computed: {},
-	created () {},
-	mounted () {
-		this.$nextTick(() => {
-		})
 	},
 	methods: {
 		async connectGravatar () {
 			// TODO load image and upload
 			this.searchingGravatar = true
+			this.gravatarError = null
 			const hash = getHash(this.email)
-			const avatarUrl = getAvatarUrl(hash, 128)
+			let avatarUrl = getAvatarUrl(hash, 128)
 			try {
 				// gravatar docs say profile only works on primary email, which I think is a lie, but let's check for an image separately anyways
 				const avatarResponse = await fetch(avatarUrl)
@@ -40,15 +38,18 @@ export default {
 					return
 				}
 				const profile = await getProfile(hash)
+				const output = {}
 				if (profile?.entry?.length > 0) {
-					this.gravatarHash = profile.entry[0].hash
-					this.gravatarAvatarUrl = getAvatarUrl(this.gravatarHash, 128)
-					this.displayName = profile.entry[0].displayName
-				} else {
-					this.gravatarHash = getHash(this.email)
-					this.gravatarAvatarUrl = avatarUrl
+					avatarUrl = getAvatarUrl(profile.entry[0].hash, 128)
+					output.display_name = profile.entry[0].displayName
 				}
-				this.connectedGravatar = true
+				const imageBlob = await (await fetch(avatarUrl)).blob()
+				const request = api.uploadFile(imageBlob, 'avatar.png')
+				request.addEventListener('load', (event) => {
+					const response = JSON.parse(request.responseText)
+					output.avatar = {url: response.url}
+					this.$emit('change', output)
+				})
 			} catch (e) {
 				this.gravatarError = e
 			}
@@ -58,4 +59,16 @@ export default {
 }
 </script>
 <style lang="stylus">
+.c-connect-gravatar
+	display: flex
+	flex-direction: column
+	align-items: center
+	margin: 16px 0 32px 0
+	.bunt-input
+		width: 286px
+	#btn-cancel
+		themed-button-secondary()
+	#btn-connect-gravatar
+		themed-button-primary()
+		margin: 16px 0 0 4px
 </style>

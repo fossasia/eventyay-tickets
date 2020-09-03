@@ -2,11 +2,11 @@
 .c-change-avatar
 	.inputs
 		bunt-button.btn-randomize(@click="changeIdenticon") randomize
-		p or
+		span or
 		upload-button.btn-upload(@change="fileSelected", accept="image/png, image/jpg") upload
 	.image-wrapper
-		cropper(v-if="avatarImage", ref="cropper", classname="cropper", stencil-component="circle-stencil", :src="avatarImage", :stencil-props="{aspectRatio: '1/1'}")
-		identicon(v-else, :id="value.identicon", @click.native="changeIdenticon")
+		cropper(v-if="avatarImage", ref="cropper", classname="cropper", stencil-component="circle-stencil", :src="avatarImage", :stencil-props="{aspectRatio: '1/1'}", :restrictions="pixelsRestrictions")
+		identicon(v-else, :id="identicon || value.identicon", @click.native="changeIdenticon")
 </template>
 <script>
 // TODO repeating this step makes the avatar smaller
@@ -25,6 +25,7 @@ export default {
 	},
 	data () {
 		return {
+			identicon: null,
 			avatarImage: null,
 		}
 	},
@@ -36,7 +37,7 @@ export default {
 	methods: {
 		changeIdenticon () {
 			this.avatarImage = null
-			this.$emit('input', {identicon: uuid()})
+			this.identicon = uuid()
 		},
 		fileSelected () {
 			// TODO block reupload while running?
@@ -49,11 +50,22 @@ export default {
 				this.avatarImage = event.target.result
 			}
 		},
+		pixelsRestrictions ({minWidth, minHeight, maxWidth, maxHeight, imageWidth, imageHeight}) {
+			return {
+				minWidth: Math.max(128, minWidth),
+				minHeight: Math.max(128, minHeight),
+				maxWidth: maxWidth,
+				maxHeight: maxHeight,
+			}
+		},
 		update () {
 			return new Promise((resolve, reject) => {
-				if (!this.$refs.cropper) return resolve()
-				const { canvas } = this.$refs.cropper.getResult()
-				if (!canvas) return resolve()
+				const { canvas } = this.$refs.cropper?.getResult() || {}
+				console.log(canvas)
+				if (!canvas) {
+					this.$emit('input', {identicon: this.identicon})
+					return resolve()
+				}
 				const resizeCanvas = document.createElement('canvas')
 				resizeCanvas.width = MAX_AVATAR_SIZE
 				resizeCanvas.height = MAX_AVATAR_SIZE
@@ -75,6 +87,9 @@ export default {
 </script>
 <style lang="stylus">
 .c-change-avatar
+	display: flex
+	flex-direction: column
+	align-items: center
 	.c-identicon
 		cursor: pointer
 		height: 128px
@@ -85,7 +100,7 @@ export default {
 		justify-content: center
 		align-items: center
 		margin-bottom: 16px
-		p
+		> span
 			margin: 0 28px 0 16px
 	.btn-randomize
 		themed-button-secondary()
