@@ -58,7 +58,7 @@ class ChatEvent(models.Model):
         return {
             "event_id": self.id,
             "channel": str(self.channel_id),
-            "sender": str(self.sender_id),
+            "sender": str(self.sender_id) if self.sender_id else None,
             "type": "chat.event",
             "timestamp": self.timestamp.isoformat(),
             "event_type": self.event_type,
