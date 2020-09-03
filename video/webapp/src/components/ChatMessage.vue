@@ -9,7 +9,7 @@
 				.display-name(@click="showAvatarCard")
 					| {{ senderDisplayName }}
 					.ui-badge(v-for="badge in sender.badges") {{ badge }}
-				.timestamp {{ timestamp }}
+				.timestamp {{ shortTimestamp }}
 			template(v-if="message.content.type === 'text'")
 				chat-input(v-if="editing", :message="message", @send="editMessage")
 				.content(v-else, v-html="content")
@@ -121,6 +121,11 @@ export default {
 			} else {
 				return timestamp.format(DATETIME_FORMAT)
 			}
+		},
+		shortTimestamp () {
+			// The timestamp below avatars can only accommodate exactly this length
+			// We don't format to HH or hh to make sure the number is the same as in timestamp above
+			return timestamp.format(TIME_FORMAT).split(' ')[0]
 		},
 		content () {
 			return generateHTML(this.message.content?.body)
