@@ -284,6 +284,7 @@ export default {
 		.c-avatar
 			margin-right: 4px
 	&.standalone
+		padding-left: 16px
 		.avatar-column
 			width: 36px
 			.timestamp
@@ -292,6 +293,8 @@ export default {
 			padding-top: 4px
 			display: flex
 			flex-direction: column
+			.message-header
+				padding-bottom: 4px
 	&.compact
 		min-height: 36px
 		.message-header

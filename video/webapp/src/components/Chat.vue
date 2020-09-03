@@ -157,7 +157,6 @@ export default {
 			margin-top: auto
 	.chat-input
 		flex: none
-		border-top: border-separator()
 		min-height: 56px
 		padding: 8px 0
 		box-sizing: border-box
