@@ -21,7 +21,7 @@
 </template>
 <script>
 // USAGE
-// user-select(button-label="create", @selected="doSomethingWithUserArray")
+// user-select(button-label="create", @selected="doSomethingWithUserArray", :exclude=['optional', 'idlist'])
 
 // TODO
 // - delete user on backspace when input empty
@@ -39,7 +39,12 @@ export default {
 		buttonLabel: {
 			type: String,
 			required: true
-		}
+		},
+		exclude: {
+			type: Array,
+			required: false,
+			default: () => []
+		},
 	},
 	data () {
 		return {
@@ -63,7 +68,7 @@ export default {
 			const search = this.search
 			const newPage = (await api.call('user.list.search', {search_term: this.search, page: this.nextPage}))
 			if (search !== this.search) return
-			this.results.push(...newPage.results)
+			this.results.push(...newPage.results.filter(e => !this.exclude.includes(e.id)))
 			if (newPage.isLastPage) {
 				this.nextPage = null
 			} else {

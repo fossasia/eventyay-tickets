@@ -3,10 +3,10 @@ prompt.c-create-dm-prompt(:scrollable="false", @close="$emit('close')")
 	.content
 		h1 {{ $t('CreateDMPrompt:headline:text') }}
 		p {{ $t('CreateDMPrompt:intro:text') }}
-		user-select(:button-label="$t('CreateDMPrompt:create-button:label')", @selected="create")
+		user-select(:button-label="$t('CreateDMPrompt:create-button:label')", @selected="create", :exclude="[this.user.id]")
 </template>
 <script>
-import {mapGetters} from 'vuex'
+import {mapGetters, mapState} from 'vuex'
 import Prompt from 'components/Prompt'
 import UserSelect from 'components/UserSelect'
 
@@ -18,7 +18,8 @@ export default {
 		}
 	},
 	computed: {
-		...mapGetters(['hasPermission'])
+		...mapGetters(['hasPermission']),
+		...mapState(['user'])
 	},
 	methods: {
 		async create (users) {
