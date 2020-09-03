@@ -195,7 +195,7 @@ export default {
 			left: 0
 			height: var(--vh100)
 			width: 100vw
-			z-index: 999
+			z-index: 900
 			background-color: $clr-secondary-text-light
 			&.backdrop-enter-active, &.backdrop-leave-active
 				transition: opacity .2s

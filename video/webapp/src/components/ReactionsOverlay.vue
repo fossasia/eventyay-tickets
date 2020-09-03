@@ -96,7 +96,7 @@ export default {
 	height: calc(var(--vh100) - 112px)
 	pointer-events: none
 	overflow: hidden
-	z-index: 4500
+	z-index: 50
 	.reaction
 		position: absolute
 		bottom: -32px

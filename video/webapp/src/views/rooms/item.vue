@@ -144,7 +144,7 @@ export default {
 		left: 0
 		width: 100vw
 		height: var(--vh100)
-		z-index: 4999
+		z-index: 800
 	&.standalone-chat
 		.main
 			flex: auto

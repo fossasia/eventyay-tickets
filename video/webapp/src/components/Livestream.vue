@@ -352,7 +352,7 @@ export default {
 		position: absolute
 		top: 4px
 		right: 4px
-		z-index: 100
+		z-index: 10
 		cursor: pointer
 		font-size: 18px
 		opacity: 0
@@ -392,7 +392,7 @@ export default {
 			top: 50%
 			left: 50%
 			transform: translate(-50%, -50%)
-			z-index: 500
+			z-index: 50
 			pointer-events: none
 		.big-button
 			cursor: pointer
@@ -569,7 +569,7 @@ export default {
 		justify-content: center
 		align-items: center
 		background-color: $clr-blue-grey-200
-		z-index: 100
+		z-index: 60
 		.offline-message
 			font-size: 36px
 		.offline-image
