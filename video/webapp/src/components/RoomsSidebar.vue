@@ -34,9 +34,9 @@ transition(name="sidebar")
 					.name {{ chat.name }}
 					bunt-icon-button(@click.prevent.stop="$store.dispatch('chat/leaveChannel', {channelId: chat.modules[0].channel_id})") close
 				bunt-button#btn-browse-channels-trailing(@click="showChannelBrowser = true") {{ $t('RoomsSidebar:browse-channels-button:label') }}
-			.group-title(v-if="directMessageChannels || hasPermission('world:chat.direct')")
+			.group-title(v-if="directMessageChannels.length || hasPermission('world:chat.direct')")
 				span {{ $t('RoomsSidebar:direct-messages-headline:text') }}
-				bunt-icon-button(@click="showDMCreationPrompt = true") plus
+				bunt-icon-button(v-if="hasPermission('world:chat.direct')", @click="showDMCreationPrompt = true") plus
 			.direct-messages
 				router-link.direct-message(v-for="channel of directMessageChannels", :to="{name: 'channel', params: {channelId: channel.id}}", :class="{unread: hasUnreadMessages(channel.id)}")
 					.name {{ channel.users.map(user => user.profile.display_name).join(', ') }}
