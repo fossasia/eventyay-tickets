@@ -2,14 +2,14 @@
 .c-chat-message(:class="[mode, {selected, 'system-message': isSystemMessage, 'merge-with-previous-message': mergeWithPreviousMessage, 'merge-with-next-message': mergeWithNextMessage}]")
 	.avatar-column
 		avatar(v-if="!mergeWithPreviousMessage", :user="sender", :size="avatarSize", @click.native="showAvatarCard", ref="avatar")
-		.timestamp(v-if="mergeWithPreviousMessage") {{ timestamp }}
+		.timestamp(v-if="mergeWithPreviousMessage") {{ shortTimestamp }}
 	template(v-if="message.event_type === 'channel.message'")
 		.content-wrapper
 			.message-header(v-if="!mergeWithPreviousMessage")
 				.display-name(@click="showAvatarCard")
 					| {{ senderDisplayName }}
 					.ui-badge(v-for="badge in sender.badges") {{ badge }}
-				.timestamp {{ shortTimestamp }}
+				.timestamp {{ timestamp }}
 			template(v-if="message.content.type === 'text'")
 				chat-input(v-if="editing", :message="message", @send="editMessage")
 				.content(v-else, v-html="content")
@@ -125,7 +125,7 @@ export default {
 		shortTimestamp () {
 			// The timestamp below avatars can only accommodate exactly this length
 			// We don't format to HH or hh to make sure the number is the same as in timestamp above
-			return this.timestamp.format(TIME_FORMAT).split(' ')[0]
+			return moment(this.message.timestamp).format(TIME_FORMAT).split(' ')[0]
 		},
 		content () {
 			return generateHTML(this.message.content?.body)
