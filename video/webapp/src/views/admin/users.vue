@@ -12,7 +12,7 @@
 			.state State
 			.actions
 		RecycleScroller.tbody.bunt-scrollbar(v-if="filteredUsers", :items="filteredUsers", :item-size="48", v-slot="{item: user}", v-scrollbar.y="")
-			.user.table-row(:class="{error: user.error, updating: user.updating}")
+			router-link(:to="{name: 'admin:user', params: {userId: user.id}}", :class="{error: user.error, updating: user.updating}").user.table-row
 				avatar.avatar(:user="user", :size="32")
 				.id(:title="user.id") {{ user.id }}
 				.tokenid(:title="user.token_id") {{ user.token_id }}
@@ -20,8 +20,7 @@
 					| {{ user.profile.display_name }}
 					.ui-badge(v-for="badge in user.badges") {{ badge }}
 				.state {{ user.moderation_state }}
-				.actions(v-if="user.id !== ownUser.id")
-					//- moderation_state
+				.actions(v-if="user.id !== ownUser.id", @click.prevent.stop="")
 					.placeholder.mdi.mdi-dots-horizontal
 					bunt-button.btn-open-dm(@click="$store.dispatch('chat/openDirectMessage', {users: [user]})") message
 					bunt-button.btn-reactivate(
@@ -123,7 +122,9 @@ export default {
 		.user
 			display: flex
 			align-items: center
+			color: $clr-primary-text-light
 		.avatar
+			display: flex
 			width: 32px
 			padding-right: 0
 		.id

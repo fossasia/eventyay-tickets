@@ -21,7 +21,11 @@ export default {
 	components: { Prompt, Avatar },
 	props: {
 		user: Object,
-		action: String // block, ban, silence, reactivate
+		action: String, // block, ban, silence, reactivate
+		closeDelay: {
+			type: Number,
+			default: 2500
+		}
 	},
 	data () {
 		return {
@@ -55,7 +59,7 @@ export default {
 					await this.$store.dispatch('chat/moderateUser', {action: this.action, user: this.user})
 				}
 				this.success = successLabels[this.action]
-				setTimeout(() => this.$emit('close'), 2500)
+				setTimeout(() => this.$emit('close'), this.closeDelay)
 			} catch (error) {
 				console.log(error)
 				this.error = this.$t(`error:${error.code}`)

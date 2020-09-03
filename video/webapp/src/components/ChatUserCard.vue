@@ -84,10 +84,6 @@ export default {
 		async startCall () {
 			const channel = await this.$store.dispatch('chat/openDirectMessage', {users: [this.sender]})
 			await this.$store.dispatch('chat/startCall', {channel})
-		},
-		async blockUser () {
-			this.$store.dispatch('chat/blockUser', {user: this.sender})
-			this.$emit('close')
 		}
 	}
 }
