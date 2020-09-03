@@ -13,7 +13,7 @@
 				.no-permission(v-else-if="room && !room.permissions.includes('room:chat.send')") {{ $t('Chat:permission-block:room:chat.send') }}
 				chat-input(v-else, @send="send")
 		scrollbars.user-list(v-if="mode === 'standalone' && showUserlist && $mq.above['m']", y)
-			.user(v-for="user of members", @click="showUserCard($event, user)")
+			.user(v-for="user of userList", @click="showUserCard($event, user)")
 				avatar(:user="user", :size="28")
 				span.display-name
 					| {{ user.profile.display_name }}
@@ -62,6 +62,17 @@ export default {
 			// We want to hide join/leave event (a) in rooms with force join (b) in stage chats (c) in direct messages
 			const showJoinleave = this.mode === 'standalone' && this.room && !this.room.force_join
 			return this.timeline.filter(message => (showJoinleave || message.event_type !== 'channel.member') && message.content.type !== 'deleted' && !message.replaces)
+		},
+		userList () {
+			return this.members.slice().sort((a, b) => {
+				if (a.badges?.length || b.badges?.length) {
+					return (b.badges?.length || 0) - (a.badges?.length || 0)
+				}
+				const aName = a.profile?.display_name || ''
+				const bName = b.profile?.display_name || ''
+				if (aName.toUpperCase() < bName.toUpperCase()) return -1
+				return 1
+			})
 		}
 	},
 	watch: {
