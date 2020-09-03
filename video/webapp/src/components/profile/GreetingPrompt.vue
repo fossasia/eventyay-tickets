@@ -18,9 +18,9 @@ prompt.c-profile-greeting-prompt(:allowCancel="false")
 			p {{ $t('profile/GreetingPrompt:step-fields:text') }}
 			change-additional-fields(v-model="profile.fields")
 		.actions(v-if="!showConnectGravatar")
-			bunt-button#btn-back(v-if="previousStep", @click="activeStep = previousStep") back
-			bunt-button#btn-continue(v-if="nextStep", :class="{invalid: $v.$invalid && $v.$dirty}", :disabled="$v.$invalid && $v.$dirty", :loading="processingStep", :key="activeStep", @click="toNextStep") continue
-			bunt-button#btn-finish(v-else, :loading="saving", @click="update") finish
+			bunt-button#btn-back(v-if="previousStep", @click="activeStep = previousStep") {{ $t('profile/GreetingPrompt:button-back:label') }}
+			bunt-button#btn-continue(v-if="nextStep", :class="{invalid: $v.$invalid && $v.$dirty}", :disabled="$v.$invalid && $v.$dirty", :loading="processingStep", :key="activeStep", @click="toNextStep") {{ $t('profile/GreetingPrompt:button-continue:label') }}
+			bunt-button#btn-finish(v-else, :loading="saving", @click="update") {{ $t('profile/GreetingPrompt:button-finish:label') }}
 </template>
 <script>
 import { mapState } from 'vuex'

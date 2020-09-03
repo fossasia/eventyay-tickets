@@ -4,7 +4,7 @@ form.c-connect-gravatar(@submit.prevent="connectGravatar")
 	p {{ $t('profile/ConnectGravatar:text') }}
 	bunt-input(name="gravatar", :label="$t('profile/ConnectGravatar:gravatar-email:label')", v-model="email")
 	.actions
-		bunt-button#btn-cancel(@click="$emit('close')") cancel
+		bunt-button#btn-cancel(@click="$emit('close')") {{ $t('Prompt:cancel:label') }}
 		bunt-button#btn-connect-gravatar(@click="connectGravatar", :loading="searchingGravatar", :error="gravatarError") {{ $t('profile/ConnectGravatar:gravatar-connect:label') }}
 </template>
 <script>
@@ -70,5 +70,5 @@ export default {
 		themed-button-secondary()
 	#btn-connect-gravatar
 		themed-button-primary()
-		margin: 16px 0 0 4px
+		margin: 0 0 0 4px
 </style>

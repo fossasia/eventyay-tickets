@@ -1,9 +1,9 @@
 <template lang="pug">
-.c-change-avatar
+.c-change-avatar(v-if="value")
 	.inputs
-		bunt-button.btn-randomize(@click="changeIdenticon") randomize
+		bunt-button.btn-randomize(@click="changeIdenticon") {{ $t('profile/ChangeAvatar:button-randomize:label') }}
 		span or
-		upload-button.btn-upload(@change="fileSelected", accept="image/png, image/jpg") upload
+		upload-button.btn-upload(@change="fileSelected", accept="image/png, image/jpg") {{ $t('profile/ChangeAvatar:button-upload:label') }}
 	.image-wrapper
 		cropper(v-if="avatarImage", ref="cropper", classname="cropper", stencil-component="circle-stencil", :src="avatarImage", :stencil-props="{aspectRatio: '1/1'}", :restrictions="pixelsRestrictions")
 		identicon(v-else, :id="identicon || value.identicon", @click.native="changeIdenticon")
@@ -31,7 +31,9 @@ export default {
 		}
 	},
 	created () {
-		if (this.value.url) {
+		if (!this.value) {
+			this.$emit('input', {})
+		} else if (this.value.url) {
 			this.avatarImage = this.value.url
 		}
 	},
