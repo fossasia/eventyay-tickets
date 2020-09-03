@@ -169,12 +169,12 @@ export default {
 		left: 0
 		width: 100vw
 		height: var(--vh100)
-		z-index: 4999
+		z-index: 800
 	.c-emoji-picker
 		position: absolute
 		bottom: 36px
 		left: 0
-		z-index: 5000
+		z-index: 801
 	#btn-send
 		position: absolute
 		right: 4px

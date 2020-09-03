@@ -1,6 +1,6 @@
 <template lang="pug">
 .c-menu-dropdown
-	.g-background-blocker(v-if="blockBackground && value", @click="$emit('input', false)")
+	.ui-background-blocker(v-if="blockBackground && value", @click="$emit('input', false)")
 	slot(name="button", :toggle="toggle")
 	.menu(v-if="value", ref="menu")
 		slot(name="menu")
@@ -43,7 +43,7 @@ export default {
 .c-menu-dropdown
 	.menu
 		card()
-		z-index: 5000
+		z-index: 850
 		display: flex
 		flex-direction: column
 		min-width: 240px
