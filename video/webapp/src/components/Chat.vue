@@ -171,6 +171,7 @@ export default {
 			.scroll-content
 				padding: 16px 0
 			.user
+				flex: none
 				display: flex
 				align-items: center
 				cursor: pointer
