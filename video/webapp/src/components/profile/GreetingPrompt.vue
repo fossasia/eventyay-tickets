@@ -1,26 +1,26 @@
 <template lang="pug">
 prompt.c-profile-greeting-prompt(:allowCancel="false")
 	.content
-		connect-gravatar(v-if="showConnectGravatar", @change="setGravatar")
-		.step-display-name(v-if="activeStep === 'displayName'")
-			h1 Salutations!
-			p Sorry, can't let you without seeing some ID first.
+		connect-gravatar(v-if="showConnectGravatar", @change="setGravatar", @close="showConnectGravatar = false")
+		.step-display-name(v-else-if="activeStep === 'displayName'")
+			h1 {{ $t('profile/GreetingPrompt:step-display-name:heading') }}
+			p {{ $t('profile/GreetingPrompt:step-display-name:text') }}
 			//- link here not strictly good UX
-			a.gravatar-connected-hint(v-if="connectedGravatar", href="#", @click="connectedGravatar = false; showConnectGravatar = true") {{ $t('ProfilePrompt:gravatar-change:label') }}
-			p.gravatar-hint(v-else-if="!showConnectGravatar") {{ $t('ProfilePrompt:gravatar-hint:text') }} #[a(href="#", @click="showConnectGravatar = true") gravatar].
-			bunt-input.display-name(name="displayName", :label="$t('ProfilePrompt:displayname:label')", v-model.trim="profile.display_name", :validation="$v.profile.display_name")
+			a.gravatar-connected-hint(v-if="connectedGravatar", href="#", @click="connectedGravatar = false; showConnectGravatar = true") {{ $t('profile/GreetingPrompt:gravatar-change:label') }}
+			p.gravatar-hint(v-else-if="!showConnectGravatar") {{ $t('profile/GreetingPrompt:gravatar-hint:text') }} #[a(href="#", @click="showConnectGravatar = true") gravatar].
+			bunt-input.display-name(name="displayName", :label="$t('profile/GreetingPrompt:displayname:label')", v-model.trim="profile.display_name", :validation="$v.profile.display_name")
 		.step-avatar(v-else-if="activeStep === 'avatar'")
-			h1 Next, add some color!
-			p bla bla stuff?
+			h1 {{ $t('profile/GreetingPrompt:step-avatar:heading') }}
+			p {{ $t('profile/GreetingPrompt:step-avatar:text') }}
 			change-avatar(ref="step", v-model="profile.avatar")
 		.step-additional-fields(v-else-if="activeStep === 'additionalFields'")
-			h1 Finally, fields!
-			p Some nosy people want to know more about you
+			h1 {{ $t('profile/GreetingPrompt:step-fields:heading') }}
+			p {{ $t('profile/GreetingPrompt:step-fields:text') }}
 			change-additional-fields(v-model="profile.fields")
-		.actions
+		.actions(v-if="!showConnectGravatar")
 			bunt-button#btn-back(v-if="previousStep", @click="activeStep = previousStep") back
 			bunt-button#btn-continue(v-if="nextStep", :class="{invalid: $v.$invalid && $v.$dirty}", :disabled="$v.$invalid && $v.$dirty", :loading="processingStep", :key="activeStep", @click="toNextStep") continue
-			bunt-button#btn-finish(v-else, @click="update") finish
+			bunt-button#btn-finish(v-else, :loading="saving", @click="update") finish
 </template>
 <script>
 import { mapState } from 'vuex'
@@ -42,17 +42,18 @@ export default {
 			saving: false,
 		}
 	},
-	validations: {
-		// TODO only validate current step fields
-		profile: {
-			display_name: {
-				required: required('Display name cannot be empty')
+	validations () {
+		if (this.activeStep !== 'displayName') return {}
+		return {
+			profile: {
+				display_name: {
+					required: required('Display name cannot be empty')
+				}
 			}
 		}
 	},
 	computed: {
-		...mapState(['user']),
-		...mapState(['world']),
+		...mapState(['user', 'world']),
 		steps () {
 			const steps = [
 				'displayName',
@@ -95,12 +96,16 @@ export default {
 			this.activeStep = this.nextStep
 		},
 		setGravatar (gravatar) {
-
+			Object.assign(this.profile, gravatar)
+			this.showConnectGravatar = false
 		},
 		async update () {
 			this.$v.$touch()
 			if (this.$v.$invalid) return
-			this.loading = true
+			this.saving = true
+			if (this.$refs.step?.update) {
+				await this.$refs.step.update()
+			}
 			await this.$store.dispatch('updateUser', {profile: this.profile})
 			// TODO error handling
 			this.$emit('close')
@@ -120,6 +125,17 @@ export default {
 		align-items: center
 		position: relative
 		padding: 16px
+		h1
+			margin: 8px 0
+		p
+			margin: 0 0 8px 0
+			width: 360px
+		.step-display-name, .step-avatar, .step-additional-fields
+			display: flex
+			flex-direction: column
+			align-items: center
+		.display-name
+			max-width: 280px
 
 		.actions
 			margin-top: 32px
