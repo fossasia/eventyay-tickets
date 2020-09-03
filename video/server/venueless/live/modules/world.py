@@ -46,6 +46,7 @@ class WorldModule(BaseModule):
                 "bbb_defaults",
                 "pretalx",
                 "videoPlayer",
+                "profile_fields",
             )
             model_fields = ("title", "locale", "timezone", "roles", "trait_grants")
             update_fields = set()
