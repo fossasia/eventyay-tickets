@@ -4,10 +4,10 @@
 	.user-card(v-if="!userAction", ref="card", @mousedown="showMoreActions=false")
 		avatar(:user="sender", :size="128")
 		.name
-			| {{ sender.profile ? sender.profile.display_name : sender }}
+			| {{ sender.profile ? sender.profile.display_name : (sender.id ? sender.id : '(unknown user)') }}
 			.ui-badge(v-for="badge in sender.badges") {{ badge }}
 		.state {{ userStates.join(', ') }}
-		.actions(v-if="sender.id !== user.id")
+		.actions(v-if="sender.id !== user.id && sender.id")
 			bunt-button.btn-dm(v-if="hasPermission('world:chat.direct')", @click="openDM") message
 			bunt-button.btn-call(v-if="hasPermission('world:chat.direct')", @click="startCall") call
 			menu-dropdown(v-if="$features.enabled('chat-moderation') && (hasPermission('room:chat.moderate') || sender === user.id)", v-model="showMoreActions", :blockBackground="false", @mousedown.native.stop="")
