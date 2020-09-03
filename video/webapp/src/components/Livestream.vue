@@ -185,6 +185,7 @@ export default {
 				})
 
 				player.on(Hls.Events.LEVEL_SWITCHED, (event, data) => {
+					if (!this.levels) return
 					this.autoLevel = this.levels.find(level => level.index === data.level)
 				})
 
