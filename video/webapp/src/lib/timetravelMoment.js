@@ -4,8 +4,11 @@ import config from 'config'
 delete require.cache[require.resolve('moment')]
 const moment = require('moment')
 moment.locale(config.dateLocale || 'en-ie') // use ireland for 24h clock
-delete require.cache[require.resolve('moment')]
 
+for (const key of Object.keys(require.cache)) {
+	if (!key.includes('node_modules/moment')) continue
+	delete require.cache[key]
+}
 // conf the global moment instance here
 const mainMoment = require('moment')
 mainMoment.locale(config.dateLocale || 'en-ie') // use ireland for 24h clock
