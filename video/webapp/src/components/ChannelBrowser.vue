@@ -15,7 +15,7 @@ prompt.c-channel-browser(@close="$emit('close')", :scrollable="false")
 						bunt-button#btn-view {{ $t('ChannelBrowser:view:label') }}
 					template(v-else)
 						bunt-button#btn-preview {{ $t('ChannelBrowser:preview:label') }}
-						bunt-button#btn-join(@click="join(channel)") {{ $t('ChannelBrowser:join:label') }}
+						bunt-button#btn-join(@click="$store.dispatch('chat/join', channel.room)") {{ $t('ChannelBrowser:join:label') }}
 			.no-results(v-if="search && searchedChannels.length === 0") {{ $t('ChannelBrowser:search:empty') }}
 </template>
 <script>

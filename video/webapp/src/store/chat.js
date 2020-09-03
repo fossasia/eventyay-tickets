@@ -68,9 +68,10 @@ export default {
 			if (api.socketState !== 'open') return
 			await api.call('chat.unsubscribe', {channel})
 		},
-		async join ({state}) {
-			const response = await api.call('chat.join', {channel: state.channel})
-			state.joinedChannels.push({id: state.channel, notification_pointer: response.notification_pointer})
+		async join ({state}, channel) {
+			channel = channel?.modules[0]?.channel_id
+			const response = await api.call('chat.join', {channel: channel || state.channel})
+			state.joinedChannels.push({id: channel || state.channel, notification_pointer: response.notification_pointer})
 		},
 		async fetchMessages ({state, dispatch}) {
 			if (!state.beforeCursor || state.fetchingMessages) return
