@@ -1,6 +1,6 @@
 <template lang="pug">
 .c-chat-user-card
-	.g-background-blocker(v-if="!userAction", @click="$emit('close')")
+	.ui-background-blocker(v-if="!userAction", @click="$emit('close')")
 	.user-card(v-if="!userAction", ref="card", @mousedown="showMoreActions=false")
 		avatar(:user="sender", :size="128")
 		.name
@@ -86,7 +86,7 @@ export default {
 .c-chat-user-card
 	.user-card
 		card()
-		z-index: 5000
+		z-index: 801
 		display: flex
 		flex-direction: column
 		padding: 8px
