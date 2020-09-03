@@ -112,7 +112,7 @@ export default {
 			return this.usersLookup[this.message.sender] || {id: this.message.sender, badges: {}}
 		},
 		senderDisplayName () {
-			return this.sender.profile?.display_name ?? this.message.sender
+			return this.sender.profile?.display_name ?? this.message.sender ?? '(unknown user)'
 		},
 		timestamp () {
 			const timestamp = moment(this.message.timestamp)
