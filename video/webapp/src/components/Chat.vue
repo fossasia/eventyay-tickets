@@ -65,12 +65,14 @@ export default {
 		},
 		sortedMembers () {
 			return this.members.slice().sort((a, b) => {
-				if (a.badges?.length || b.badges?.length) {
-					return (b.badges?.length || 0) - (a.badges?.length || 0)
+				const aBadges = a.badges?.length || 0
+				const bBadges = b.badges?.length || 0
+				if (!!aBadges === !!bBadges) {
+					const aName = a.profile?.display_name || ''
+					const bName = b.profile?.display_name || ''
+					return aName.localeCompare(bName)
 				}
-				const aName = a.profile?.display_name || ''
-				const bName = b.profile?.display_name || ''
-				return aName.localeCompare(bName)
+				return bBadges - aBadges
 			})
 		}
 	},
