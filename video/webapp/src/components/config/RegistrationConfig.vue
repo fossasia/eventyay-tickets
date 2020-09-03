@@ -20,11 +20,11 @@
 						td
 							bunt-input(v-if="field.type === 'select'", v-model="field.choices", label="Choices (comma seperated)", name="choices")
 						td.actions
-							bunt-icon-button(@click="remove_field(index)") delete-outline
+							bunt-icon-button(@click="removeField(index)") delete-outline
 				tfoot
 					tr
 						td
-							bunt-button(@click="add_field") Add field
+							bunt-button(@click="addField") Add field
 						td
 						td
 						td
@@ -32,13 +32,10 @@
 </template>
 <script>
 import api from 'lib/api'
-import { required } from 'vuelidate/lib/validators'
 
 export default {
 	data () {
 		return {
-			// We do not use the global config object since we cannot rely on it being up to date (theme is only updated
-			// during application load).
 			config: null,
 
 			saving: false,
@@ -56,10 +53,10 @@ export default {
 	},
 	validations: {},
 	methods: {
-		add_field () {
+		addField () {
 			this.config.profile_fields.push({label: '', type: 'text', choices: ''})
 		},
-		remove_field (field) {
+		removeField (field) {
 			this.$delete(this.config.profile_fields, field)
 		},
 		async save () {
