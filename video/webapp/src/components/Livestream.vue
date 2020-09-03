@@ -492,15 +492,15 @@ export default {
 					thumb()
 	.shaka-controls-button-panel > .material-icons
 		font-size: 24px
-	&:hover, &:not(.playing), &.buffering, &.seeking, &.automuted, &.muted
-		.controls
-			opacity: 1
-		.mdi
+	&:hover, &:not(.playing), &.buffering, &.seeking, &.automuted, &.muted, &.choosing-level
+		.controls, .mdi
 			opacity: 1
 	&.size-tiny
 		height: 48px
 		width: 86px // TODO total guesstimate
 		pointer-events: none
+		.controls, .mdi
+			opacity: 0
 	.offline
 		position: absolute
 		left: 0
