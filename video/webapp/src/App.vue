@@ -28,7 +28,7 @@
 		notifications(:has-background-media="!!backgroundRoom")
 		.disconnected-warning(v-if="!connected") {{ $t('App:disconnected-warning:text') }}
 		transition(name="prompt")
-			profile-prompt(v-if="!user.profile.display_name")
+			greeting-prompt(v-if="!user.profile.greeted")
 	bunt-progress-circular(v-else-if="!fatalError", size="huge")
 	.fatal-error(v-if="fatalError") {{ fatalError.message }}
 </template>
@@ -39,12 +39,12 @@ import AppBar from 'components/AppBar'
 import RoomsSidebar from 'components/RoomsSidebar'
 import MediaSource from 'components/MediaSource'
 import Notifications from 'components/notifications'
-import ProfilePrompt from 'components/ProfilePrompt'
+import GreetingPrompt from 'components/profile/GreetingPrompt'
 
 const mediaModules = ['livestream.native', 'call.bigbluebutton']
 
 export default {
-	components: { AppBar, RoomsSidebar, MediaSource, ProfilePrompt, Notifications },
+	components: { AppBar, RoomsSidebar, MediaSource, GreetingPrompt, Notifications },
 	data () {
 		return {
 			themeVariables,

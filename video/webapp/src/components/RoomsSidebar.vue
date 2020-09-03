@@ -53,15 +53,15 @@ transition(name="sidebar")
 					router-link.room(:to="{name: 'admin:users'}", v-if="hasPermission('world:users.list')") {{ $t('RoomsSidebar:admin-users:label') }}
 					router-link.room(:to="{name: 'admin:rooms'}", v-if="hasPermission('room:update')") {{ $t('RoomsSidebar:admin-rooms:label') }}
 					router-link.room(:to="{name: 'admin:config'}", v-if="hasPermission('world:update')") {{ $t('RoomsSidebar:admin-config:label') }}
-		.profile(@click="showProfilePrompt = true")
+		router-link.profile(:to="{name: 'preferences'}")
 			avatar(:user="user", :size="36")
 			.display-name {{ user.profile.display_name }}
+			.mdi.mdi-cog
 		transition(name="prompt")
 			channel-browser(v-if="showChannelBrowser", @close="showChannelBrowser = false", @createChannel="showChannelBrowser = false, showChatCreationPrompt = true")
 			create-stage-prompt(v-else-if="showStageCreationPrompt", @close="showStageCreationPrompt = false")
 			create-chat-prompt(v-else-if="showChatCreationPrompt", @close="showChatCreationPrompt = false")
 			create-dm-prompt(v-else-if="showDMCreationPrompt", @close="showDMCreationPrompt = false")
-			profile-prompt(v-else-if="showProfilePrompt", @close="showProfilePrompt = false")
 </template>
 <script>
 import { mapState, mapGetters } from 'vuex'
@@ -71,10 +71,9 @@ import ChannelBrowser from 'components/ChannelBrowser'
 import CreateStagePrompt from 'components/CreateStagePrompt'
 import CreateChatPrompt from 'components/CreateChatPrompt'
 import CreateDmPrompt from 'components/CreateDmPrompt'
-import ProfilePrompt from 'components/ProfilePrompt'
 
 export default {
-	components: { Avatar, ChannelBrowser, CreateStagePrompt, CreateChatPrompt, CreateDmPrompt, ProfilePrompt },
+	components: { Avatar, ChannelBrowser, CreateStagePrompt, CreateChatPrompt, CreateDmPrompt },
 	props: {
 		show: Boolean
 	},
@@ -87,8 +86,7 @@ export default {
 			showChannelBrowser: false,
 			showStageCreationPrompt: false,
 			showChatCreationPrompt: false,
-			showDMCreationPrompt: false,
-			showProfilePrompt: false
+			showDMCreationPrompt: false
 		}
 	},
 	computed: {
@@ -361,7 +359,7 @@ export default {
 				background-color: var(--clr-sidebar-hover-bg)
 	.buffer
 		flex: auto
-	.profile
+	> .profile
 		display: flex
 		padding: 8px
 		align-items: center
@@ -374,9 +372,13 @@ export default {
 			border-radius: 50%
 			padding: 4px
 		.display-name
+			flex: auto
 			font-weight: 600
 			font-size: 18px
 			margin-left: 8px
+		.mdi
+			font-size: 24px
+			line-height: 1
 	+below('l')
 		position: fixed
 		left: 0
