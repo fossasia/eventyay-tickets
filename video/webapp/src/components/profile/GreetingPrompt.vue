@@ -59,7 +59,7 @@ export default {
 				'displayName',
 				'avatar'
 			]
-			if (this.world?.user_profile?.additional_fields) steps.push('additionalFields')
+			if (this.world?.profile_fields) steps.push('additionalFields')
 			return steps
 		},
 		previousStep () {

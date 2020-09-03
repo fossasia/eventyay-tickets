@@ -1,10 +1,10 @@
 <template lang="pug">
 .c-additional-fields
-	span(v-for="field of fields")
+	template(v-for="field of fields")
 		bunt-input(v-if="field.type === 'text'", :name="field.label", :label="field.label", v-model="value[field.label]")
 		bunt-input-outline-container(v-if="field.type === 'textarea'", :label="field.label", :name="field.label")
 			textarea(slot-scope="{focus, blur}", @focus="focus", @blur="blur", v-model="value[field.label]")
-		bunt-select(v-if="field.type === 'select'", v-model="value[field.label]", :label="field.label", name="field.label", :options="field.choices")
+		bunt-select(v-if="field.type === 'select'", v-model="value[field.label]", :label="field.label", name="field.label", :options="field.choices.split(', ')")
 </template>
 <script>
 import { mapState } from 'vuex'
@@ -16,7 +16,7 @@ export default {
 	computed: {
 		...mapState(['world']),
 		fields () {
-			return this.world?.user_profile?.additional_fields
+			return this.world?.profile_fields
 		}
 	}
 }
