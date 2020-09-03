@@ -116,6 +116,7 @@ def get_world_config_for_user(world, user):
             "id": str(world.id),
             "title": world.title,
             "pretalx": world.config.get("pretalx", {}),
+            "user_profile": world.config.get("user_profile", {}),
         },
         "permissions": list(permissions[world]),
         "rooms": [],
