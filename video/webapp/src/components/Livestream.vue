@@ -30,8 +30,10 @@
 		.offline-message(v-else) {{ $t('Livestream:offline-message:text') }}
 </template>
 <script>
-// TODOS
-// show controls based on mouse move time
+// TODO
+// - show controls based on mouse move time
+// - backdrop controls with black for contrast on white
+// - add blocking backdrop on level chooser
 import { mapState } from 'vuex'
 import Hls from 'hls.js'
 import config from 'config'
