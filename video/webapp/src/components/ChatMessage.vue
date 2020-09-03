@@ -125,7 +125,7 @@ export default {
 		shortTimestamp () {
 			// The timestamp below avatars can only accommodate exactly this length
 			// We don't format to HH or hh to make sure the number is the same as in timestamp above
-			return timestamp.format(TIME_FORMAT).split(' ')[0]
+			return this.timestamp.format(TIME_FORMAT).split(' ')[0]
 		},
 		content () {
 			return generateHTML(this.message.content?.body)
