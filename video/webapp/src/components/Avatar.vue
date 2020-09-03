@@ -22,7 +22,7 @@ export default {
 			return this.user.profile?.avatar?.url ?? this.gravatarAvatarUrl
 		},
 		identicon () {
-			return this.user.profile?.avatar?.identicon ?? this.user.id
+			return this.user.profile?.avatar?.identicon ?? this.user.profile?.identicon ?? this.user.id
 		}
 	},
 	created () {},
