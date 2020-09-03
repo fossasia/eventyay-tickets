@@ -131,6 +131,15 @@ nav.toolbar
 - Use only px, % and viewport units.
 - Prefer `flex: none` and `flex: auto` before other `flex`, `flex-shrink`, `flex-grow`, `flex-basis` properties.
 
+#### z-index ranges
+
+0-100: page content
+100: top navbar (mobile)
+101-799: FREE
+800-899: blocking popovers (emoji picker, chat user card)
+900-999: expanded rooms sidebar (mobile)
+1000+:  / full page overlays / prompts
+
 
 #### How to name classes
 - Use `.c-` or `.v-` prefix for root component / view.

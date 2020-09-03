@@ -2,7 +2,7 @@
 .c-chat-message(:class="[mode, {selected, 'system-message': isSystemMessage, 'merge-with-previous-message': mergeWithPreviousMessage, 'merge-with-next-message': mergeWithNextMessage}]")
 	.avatar-column
 		avatar(v-if="!mergeWithPreviousMessage", :user="sender", :size="avatarSize", @click.native="showAvatarCard", ref="avatar")
-		.timestamp(v-if="mergeWithPreviousMessage") {{ timestamp }}
+		.timestamp(v-if="mergeWithPreviousMessage") {{ shortTimestamp }}
 	template(v-if="message.event_type === 'channel.message'")
 		.content-wrapper
 			.message-header(v-if="!mergeWithPreviousMessage")
@@ -121,6 +121,11 @@ export default {
 			} else {
 				return timestamp.format(DATETIME_FORMAT)
 			}
+		},
+		shortTimestamp () {
+			// The timestamp below avatars can only accommodate exactly this length
+			// We don't format to HH or hh to make sure the number is the same as in timestamp above
+			return moment(this.message.timestamp).format(TIME_FORMAT).split(' ')[0]
 		},
 		content () {
 			return generateHTML(this.message.content?.body)

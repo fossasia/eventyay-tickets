@@ -383,7 +383,7 @@ export default {
 		position: fixed
 		left: 0
 		top: 0
-		z-index: 1000
+		z-index: 901
 		width: var(--sidebar-width)
 		height: var(--vh100)
 		touch-action: pan-y
