@@ -151,6 +151,23 @@ async def test_config_get(world):
             "videoPlayer": None,
             "timezone": "Europe/Berlin",
             "connection_limit": 2,
+            "profile_fields": [
+              {
+                "label": "Organization",
+                "type": "text",
+                "choices": ""
+              },
+              {
+                "label": "Bio",
+                "type": "textarea",
+                "choices": ""
+              },
+              {
+                "label": "Hashtags",
+                "type": "select",
+                "choices": "Frontend, Backend, Disruptor, Tech, Social"
+              }
+            ]
         }
 
 
