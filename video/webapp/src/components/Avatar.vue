@@ -5,6 +5,7 @@
 </template>
 <script>
 import Identicon from 'components/Identicon'
+import { getAvatarUrl } from 'lib/gravatar'
 
 export default {
 	components: { Identicon },
@@ -13,8 +14,12 @@ export default {
 		size: Number
 	},
 	computed: {
+		gravatarAvatarUrl () {
+			if (!this.user.profile?.gravatar_hash) return
+			return getAvatarUrl(this.user.profile.gravatar_hash, this.size)
+		},
 		imageUrl () {
-			return this.user.profile?.avatar?.url
+			return this.user.profile?.avatar?.url ?? this.gravatarAvatarUrl
 		},
 		identicon () {
 			return this.user.profile?.avatar?.identicon ?? this.user.id
