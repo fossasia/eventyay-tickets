@@ -27,6 +27,7 @@ export default {
 		return {
 			identicon: null,
 			avatarImage: null,
+			changedImage: false
 		}
 	},
 	created () {
@@ -42,6 +43,7 @@ export default {
 		fileSelected () {
 			// TODO block reupload while running?
 			if (!event.target.files.length === 1) return
+			this.changedImage = true
 			const avatarFile = event.target.files[0]
 			const reader = new FileReader()
 			reader.readAsDataURL(avatarFile)
@@ -61,11 +63,11 @@ export default {
 		update () {
 			return new Promise((resolve, reject) => {
 				const { canvas } = this.$refs.cropper?.getResult() || {}
-				console.log(canvas)
 				if (!canvas) {
 					this.$emit('input', {identicon: this.identicon})
 					return resolve()
 				}
+				if (!this.changedImage) return resolve()
 				const resizeCanvas = document.createElement('canvas')
 				resizeCanvas.width = MAX_AVATAR_SIZE
 				resizeCanvas.height = MAX_AVATAR_SIZE
