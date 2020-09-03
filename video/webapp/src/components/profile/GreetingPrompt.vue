@@ -52,12 +52,14 @@ export default {
 	},
 	computed: {
 		...mapState(['user']),
+		...mapState(['world']),
 		steps () {
-			return [
+			const steps = [
 				'displayName',
-				'avatar',
-				'additionalFields'
+				'avatar'
 			]
+			if (this.world?.user_profile?.additional_fields) steps.push('additionalFields')
+			return steps
 		},
 		previousStep () {
 			return this.steps[this.steps.indexOf(this.activeStep) - 1]
