@@ -6,7 +6,7 @@ prompt.c-profile-greeting-prompt(:allowCancel="false")
 			h1 {{ $t('profile/GreetingPrompt:step-display-name:heading') }}
 			p {{ $t('profile/GreetingPrompt:step-display-name:text') }}
 			//- link here not strictly good UX
-			a.gravatar-connected-hint(v-if="connectedGravatar", href="#", @click="connectedGravatar = false; showConnectGravatar = true") {{ $t('profile/GreetingPrompt:gravatar-change:label') }}
+			a.gravatar-connected-hint(v-if="profile.gravatar_hash", href="#", @click="connectedGravatar = false; showConnectGravatar = true") {{ $t('profile/GreetingPrompt:gravatar-change:label') }}
 			p.gravatar-hint(v-else-if="!showConnectGravatar") {{ $t('profile/GreetingPrompt:gravatar-hint:text') }} #[a(href="#", @click="showConnectGravatar = true") gravatar].
 			bunt-input.display-name(name="displayName", :label="$t('profile/GreetingPrompt:displayname:label')", v-model.trim="profile.display_name", :validation="$v.profile.display_name")
 		.step-avatar(v-else-if="activeStep === 'avatar'")
@@ -24,11 +24,13 @@ prompt.c-profile-greeting-prompt(:allowCancel="false")
 </template>
 <script>
 import { mapState } from 'vuex'
+import { required } from 'buntpapier/src/vuelidate/validators'
+import api from 'lib/api'
+import { getAvatarUrl } from 'lib/gravatar'
 import Prompt from 'components/Prompt'
 import ChangeAvatar from './ChangeAvatar'
 import ChangeAdditionalFields from './ChangeAdditionalFields'
 import ConnectGravatar from './ConnectGravatar'
-import { required } from 'buntpapier/src/vuelidate/validators'
 
 export default {
 	components: { Prompt, ChangeAvatar, ChangeAdditionalFields, ConnectGravatar },
@@ -36,7 +38,6 @@ export default {
 		return {
 			activeStep: null,
 			showConnectGravatar: false,
-			connectedGravatar: false,
 			profile: null,
 			processingStep: false,
 			saving: false,
@@ -59,7 +60,7 @@ export default {
 				'displayName',
 				'avatar'
 			]
-			if (this.world?.profile_fields) steps.push('additionalFields')
+			if (this.world?.profile_fields?.length) steps.push('additionalFields')
 			return steps
 		},
 		previousStep () {
@@ -69,7 +70,7 @@ export default {
 			return this.steps[this.steps.indexOf(this.activeStep) + 1]
 		}
 	},
-	created () {
+	async created () {
 		this.activeStep = this.steps[0]
 		this.profile = Object.assign({
 			greeted: true,
@@ -79,6 +80,17 @@ export default {
 			},
 			fields: {}
 		}, this.user.profile)
+		// TODO delete this after pycon au
+		if (this.profile.gravatar_hash) {
+			const avatarUrl = getAvatarUrl(this.profile.gravatar_hash, 128)
+			const imageBlob = await (await fetch(avatarUrl)).blob()
+			const request = api.uploadFile(imageBlob, 'avatar.png')
+			request.addEventListener('load', (event) => {
+				const response = JSON.parse(request.responseText)
+				this.profile.avatar = {url: response.url}
+			})
+			delete this.profile.gravatar_hash
+		}
 	},
 	mounted () {
 		this.$nextTick(() => {
@@ -133,7 +145,7 @@ export default {
 			align-items: center
 		.display-name
 			max-width: 280px
-
+			margin-top: 16px
 		.actions
 			margin-top: 32px
 			align-self: stretch
