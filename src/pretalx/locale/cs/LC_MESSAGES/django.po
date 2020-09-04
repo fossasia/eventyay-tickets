@@ -517,7 +517,7 @@ msgid ""
 "You can enter submissions until %(deadline)s (%(timezone)s), "
 "%(until_string)s from now."
 msgstr ""
-"Můžete přidávat přízpěvky do %(deadline) (%(timezone)), %(until_string) od "
+"Můžete přidávat přízpěvky do %(deadline)s (%(timezone)s), %(until_string)s od "
 "teď."
 
 #: pretalx/cfp/templates/cfp/event/cfp.html:24
