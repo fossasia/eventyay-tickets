@@ -1,10 +1,10 @@
 <template lang="pug">
 .c-additional-fields
 	template(v-for="field of fields")
-		bunt-input(v-if="field.type === 'text'", :name="field.label", :label="field.label", v-model="value[field.label]")
+		bunt-input(v-if="field.type === 'text'", :name="field.label", :label="field.label", v-model="value[field.id]")
 		bunt-input-outline-container(v-if="field.type === 'textarea'", :label="field.label", :name="field.label")
-			textarea(slot-scope="{focus, blur}", @focus="focus", @blur="blur", v-model="value[field.label]")
-		bunt-select(v-if="field.type === 'select'", v-model="value[field.label]", :label="field.label", name="field.label", :options="field.choices.split(', ')")
+			textarea(slot-scope="{focus, blur}", @focus="focus", @blur="blur", v-model="value[field.id]")
+		bunt-select(v-if="field.type === 'select'", v-model="value[field.id]", :label="field.label", name="field.label", :options="field.choices.split(', ')")
 </template>
 <script>
 import { mapState } from 'vuex'
