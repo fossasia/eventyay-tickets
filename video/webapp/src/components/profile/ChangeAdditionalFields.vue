@@ -24,6 +24,7 @@ export default {
 <style lang="stylus">
 .c-additional-fields
 	.bunt-input-outline-container
+		margin-bottom 16px
 		textarea
 			background-color transparent
 			border none
