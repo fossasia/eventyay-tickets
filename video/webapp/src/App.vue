@@ -41,7 +41,7 @@ import MediaSource from 'components/MediaSource'
 import Notifications from 'components/notifications'
 import GreetingPrompt from 'components/profile/GreetingPrompt'
 
-const mediaModules = ['livestream.native', 'call.bigbluebutton']
+const mediaModules = ['livestream.native', 'call.bigbluebutton', 'livestream.youtube']
 
 export default {
 	components: { AppBar, RoomsSidebar, MediaSource, GreetingPrompt, Notifications },

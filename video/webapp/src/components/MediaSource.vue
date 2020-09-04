@@ -8,6 +8,7 @@
 			.global-placeholder
 			bunt-icon-button(@click="$emit('close')") close
 	livestream(v-if="module.type === 'livestream.native'", ref="livestream", :room="room", :module="module", :size="background ? 'tiny' : 'normal'", :key="room.id")
+	you-tube(v-if="module.type === 'livestream.youtube'", ref="youtube", :room="room", :module="module", :size="background ? 'tiny' : 'normal'", :key="room.id")
 	big-blue-button(v-else-if="module.type === 'call.bigbluebutton'", ref="bigbluebutton", :room="room", :module="module", :background="background", :key="room.id")
 </template>
 <script>
@@ -15,9 +16,10 @@
 import api from 'lib/api'
 import BigBlueButton from 'components/BigBlueButton'
 import Livestream from 'components/Livestream'
+import YouTube from 'components/YouTube'
 
 export default {
-	components: { BigBlueButton, Livestream },
+	components: { BigBlueButton, Livestream, YouTube },
 	props: {
 		room: Object,
 		background: {
@@ -31,7 +33,7 @@ export default {
 	},
 	computed: {
 		module () {
-			return this.room.modules.find(module => ['livestream.native', 'call.bigbluebutton'].includes(module.type))
+			return this.room.modules.find(module => ['livestream.native', 'livestream.youtube', 'call.bigbluebutton'].includes(module.type))
 		},
 	},
 	created () {
@@ -46,6 +48,9 @@ export default {
 			if (this.module.type === 'livestream.native') {
 				return this.$refs.livestream.playing && !this.$refs.livestream.offline
 			}
+			if (this.module.type === 'livestream.youtube') {
+				return true
+			}
 			if (this.module.type === 'call.bigbluebutton') {
 				return !!this.$refs.bigbluebutton.iframe
 			}
@@ -59,7 +64,7 @@ export default {
 	position: absolute
 	width: 0
 	height: 0
-	.c-livestream
+	.c-livestream, .c-youtube
 		position: fixed
 		transition: all .3s ease
 		&.size-tiny
