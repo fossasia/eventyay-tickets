@@ -1,5 +1,5 @@
 <template lang="pug">
-.v-preferences
+.v-preferences(v-scrollbar.y="")
 	h1 {{ $t('preferences/index:heading') }}
 	.inputs
 		.avatar-wrapper
