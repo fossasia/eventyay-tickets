@@ -6,7 +6,7 @@
 				.hint {{ $t('MediaSource:room:hint') }}
 				.room-name {{ room.name }}
 			.global-placeholder
-			bunt-icon-button(@click.prevent="$emit('close')") close
+			bunt-icon-button(@click.prevent.stop="$emit('close')") close
 	livestream(v-if="module.type === 'livestream.native'", ref="livestream", :room="room", :module="module", :size="background ? 'tiny' : 'normal'", :key="room.id")
 	you-tube(v-if="module.type === 'livestream.youtube'", ref="youtube", :room="room", :module="module", :size="background ? 'tiny' : 'normal'", :key="room.id")
 	big-blue-button(v-else-if="module.type === 'call.bigbluebutton'", ref="bigbluebutton", :room="room", :module="module", :background="background", :key="room.id")
