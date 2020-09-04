@@ -12,12 +12,17 @@
 				bunt-button(v-else-if="!activeJoinedChannel", @click="join", :tooltip="$t('Chat:join-button:tooltip')") {{ $t('Chat:join-button:label') }}
 				.no-permission(v-else-if="room && !room.permissions.includes('room:chat.send')") {{ $t('Chat:permission-block:room:chat.send') }}
 				chat-input(v-else, @send="send")
-		scrollbars.user-list(v-if="mode === 'standalone' && showUserlist && $mq.above['m']", y)
-			.user(v-for="user of sortedMembers", @click="showUserCard($event, user)")
-				avatar(:user="user", :size="28")
-				span.display-name
-					| {{ user.profile.display_name }}
-					span.ui-badge(v-for="badge in user.badges") {{ badge }}
+		.user-list(v-if="mode === 'standalone' && showUserlist && $mq.above['m']")
+			.user-list-info(v-if="sortedMembers.length > 2")
+				span Channel members
+				.user-count
+					| {{ sortedMembers.length }}
+			scrollbars(y)
+				.user(v-for="user of sortedMembers", @click="showUserCard($event, user)")
+					avatar(:user="user", :size="28")
+					span.display-name
+						| {{ user.profile.display_name }}
+						span.ui-badge(v-for="badge in user.badges") {{ badge }}
 		chat-user-card(v-if="selectedUser", ref="avatarCard", :sender="selectedUser", @close="selectedUser = null")
 	bunt-progress-circular(v-else, size="huge", :page="true")
 </template>
@@ -176,11 +181,15 @@ export default {
 			grid-area: input
 		.user-list
 			flex: none
+			display: flex
+			flex-direction: column
 			width: 240px
 			grid-area: sidebar
 			border-left: border-separator()
-			.scroll-content
-				padding: 16px 0
+			.c-scrollbars
+				flex: auto
+				.scroll-content
+					padding: 16px 0
 			.user
 				flex: none
 				display: flex
@@ -190,7 +199,15 @@ export default {
 				&:hover
 					background-color: $clr-grey-100
 				.display-name
+					margin-left: 8px
+			.user-list-info
+				flex: none
+				display: flex
+				justify-content: space-between
+				padding: 16px
+				background-color: $clr-grey-100
+				text-align: right
+				.user-count
 					font-weight: 600
 					color: $clr-secondary-text-light
-					margin-left: 8px
 </style>
