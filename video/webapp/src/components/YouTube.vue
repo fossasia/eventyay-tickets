@@ -25,7 +25,7 @@ export default {
 	},
 	computed: {
 		url () {
-			return `http://www.youtube.com/embed/${this.module.config.ytid}?autoplay=1&rel=0&showinfo=0`
+			return `https://www.youtube-nocookie.com/embed/${this.module.config.ytid}?autoplay=1&rel=0&showinfo=0`
 		}
 	},
 }
