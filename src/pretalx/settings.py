@@ -367,6 +367,13 @@ LANGUAGES_INFORMATION = {
         "official": False,
         "percentage": 81,
     },
+    "ja-JP": {
+        "name": _("Japanese"),
+        "natural_name": "Japanese",
+        "official": False,
+        "percentage": 100,
+        "public_code": "jp",
+    },
 }
 for code, language in LANGUAGES_INFORMATION.items():
     language["code"] = code

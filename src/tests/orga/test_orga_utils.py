@@ -11,6 +11,7 @@ from pretalx.orga.utils.i18n import get_moment_locale
         ("hy-am", "hy-am"),
         ("de-DE", "de"),
         ("de_DE", "de"),
+        ("ja_JP", "ja"),
         ("delol_DE", settings.LANGUAGE_CODE),
     ),
 )

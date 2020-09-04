@@ -454,7 +454,8 @@ input[lang=jo], textarea[lang=jo] {
   background-image: url(static("vendored/flags/jo.png"));
 }
 
-input[lang=jp], textarea[lang=jp] {
+input[lang=jp], textarea[lang=jp], .checkbox > input[lang=jp] + label,
+input[lang=ja-jp], textarea[lang=ja-jp], .checkbox > input[lang=ja-jp] + label {
   background-image: url(static("vendored/flags/jp.png"));
 }
 
