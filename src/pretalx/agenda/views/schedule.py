@@ -40,8 +40,6 @@ class ScheduleMixin:
             return self.request.event.schedules.filter(
                 version__iexact=self.version
             ).first()
-        if not self.request.event.current_schedule:
-            raise Http404()
         return self.request.event.current_schedule
 
     @context
@@ -204,7 +202,10 @@ class ScheduleView(EventPermissionRequired, ScheduleMixin, TemplateView):
     def get_object(self):
         if self.version == "wip":
             return self.request.event.wip_schedule
-        return super().get_object()
+        schedule = super().get_object()
+        if not schedule:
+            raise Http404()
+        return schedule
 
     @context
     def exporters(self):
