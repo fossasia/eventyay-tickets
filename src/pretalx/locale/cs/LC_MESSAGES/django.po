@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-07-30 14:22+0000\n"
-"PO-Revision-Date: 2020-07-29 22:38+0000\n"
-"Last-Translator: bohacpetr <bohyn.cz@gmail.com>\n"
+"PO-Revision-Date: 2020-08-20 04:24+0000\n"
+"Last-Translator: Greenscreener <honzikcernoh@gmail.com>\n"
 "Language-Team: none\n"
 "Language: cs\n"
 "MIME-Version: 1.0\n"
@@ -296,7 +296,7 @@ msgstr "Žádní přednášející"
 
 #: pretalx/agenda/views/schedule.py:427
 msgid "Our schedule is not live yet."
-msgstr ""
+msgstr "Náš program ještě nebyl zveřejněn."
 
 #: pretalx/agenda/views/talk.py:166
 #, python-brace-format
@@ -316,6 +316,8 @@ msgid ""
 "We're glad that you want to contribute to our event with your submission. "
 "Let's get started, this won't take long."
 msgstr ""
+"Jsme rádi, že se chcete svým příspěvkem podílet na naší události. Dáme se do "
+"toho, zabere to jen chvilku."
 
 #: pretalx/cfp/flow.py:353 pretalx/orga/templates/orga/base.html:241
 #: pretalx/orga/templates/orga/submission/content.html:122
@@ -329,7 +331,7 @@ msgstr "Řekněte nám více!"
 #: pretalx/cfp/flow.py:362
 msgid ""
 "Before we can save your submission, we have some more questions for you."
-msgstr ""
+msgstr "Než si uložíme Vaši přihlášku, máme pro Vás pár otázek."
 
 #: pretalx/cfp/flow.py:408
 msgid "Account"
@@ -337,7 +339,7 @@ msgstr "Účet"
 
 #: pretalx/cfp/flow.py:413
 msgid "That's it about your submission! We now just need a way to contact you."
-msgstr ""
+msgstr "Tolik k přihlášce. Teď potřebujeme způsob, jak Vás kontaktovat."
 
 #: pretalx/cfp/flow.py:419
 msgid ""
@@ -345,6 +347,9 @@ msgid ""
 "gives us a way to contact you, it also gives you the possibility to edit "
 "your submission or to view its current state."
 msgstr ""
+"Pro předložení návrhu potřebujete účet na této stránce. Díky tomu vás nejen "
+"budeme moci kontaktovat, ale také budete mít možnost váš návrh upravit nebo "
+"si prohlédnout jeho aktuální stav."
 
 #: pretalx/cfp/flow.py:434
 msgid ""
@@ -353,10 +358,8 @@ msgid ""
 msgstr "Při přihlašování došlo k chybě. Pro pomoc kontaktujte administrátora."
 
 #: pretalx/cfp/flow.py:451
-#, fuzzy
-#| msgid "Your Profile"
 msgid "Profile"
-msgstr "Váš profil"
+msgstr "Profil"
 
 #: pretalx/cfp/flow.py:455
 msgid "Tell us something about yourself!"
@@ -518,13 +521,15 @@ msgstr ""
 
 #: pretalx/cfp/phrases.py:50
 msgid "Your talk has been submitted successfully!"
-msgstr ""
+msgstr "Vaše přednáška byla úspěšně přidána. "
 
 #: pretalx/cfp/phrases.py:52
 msgid ""
 "We are experiencing difficulties when sending mails, but your talk was "
 "submitted successfully!"
 msgstr ""
+"Máme potíže s rozesíláním e-mailů, ale vaše přednáška byla úspěšně "
+"zaznamenána!"
 
 #: pretalx/cfp/templates/cfp/event/cfp.html:20
 #, python-format
@@ -532,6 +537,8 @@ msgid ""
 "You can enter submissions until %(deadline)s (%(timezone)s), "
 "%(until_string)s from now."
 msgstr ""
+"Můžete přidávat přízpěvky do %(deadline) (%(timezone)), %(until_string) od "
+"teď."
 
 #: pretalx/cfp/templates/cfp/event/cfp.html:24
 #, python-format
@@ -541,64 +548,64 @@ msgstr ""
 #: pretalx/cfp/templates/cfp/event/cfp.html:34
 #: pretalx/cfp/templates/cfp/event/index.html:22
 msgid "View conference schedule"
-msgstr ""
+msgstr "Zobrazit program konference"
 
 #: pretalx/cfp/templates/cfp/event/cfp.html:38
 #: pretalx/cfp/templates/cfp/event/index.html:26
 msgid "View schedule preview"
-msgstr ""
+msgstr "Zobrazit náhled programu"
 
 #: pretalx/cfp/templates/cfp/event/cfp.html:43
 #: pretalx/cfp/templates/cfp/event/index.html:16
 msgid "Edit or view your submissions"
-msgstr ""
+msgstr "Zobrazit nebo upravit příspěvky"
 
 #: pretalx/cfp/templates/cfp/event/cfp.html:49
 msgid "Submit a proposal"
-msgstr ""
+msgstr "Přidat návrh"
 
 #: pretalx/cfp/templates/cfp/event/cfp.html:51
 msgid "Submissions are closed"
-msgstr ""
+msgstr "Příspěvky byly uzavřeny"
 
 #: pretalx/cfp/templates/cfp/event/fragment_state.html:3
 #: pretalx/submission/models/submission.py:50
 msgid "submitted"
-msgstr ""
+msgstr "přidáno"
 
 #: pretalx/cfp/templates/cfp/event/fragment_state.html:5
 msgid "not accepted"
-msgstr ""
+msgstr "zamítnuto"
 
 #: pretalx/cfp/templates/cfp/event/fragment_state.html:7
 #: pretalx/submission/models/submission.py:51
 msgid "accepted"
-msgstr ""
+msgstr "přijato"
 
 #: pretalx/cfp/templates/cfp/event/fragment_state.html:9
 #: pretalx/submission/models/submission.py:52
 msgid "confirmed"
-msgstr ""
+msgstr "potvrzeno"
 
 #: pretalx/cfp/templates/cfp/event/fragment_state.html:11
 #: pretalx/submission/models/submission.py:54
 msgid "canceled"
-msgstr ""
+msgstr "zrušeno"
 
 #: pretalx/cfp/templates/cfp/event/fragment_state.html:13
 #: pretalx/submission/models/submission.py:55
 msgid "withdrawn"
-msgstr ""
+msgstr "staženo"
 
 #: pretalx/cfp/templates/cfp/event/index.html:31
 #: pretalx/orga/views/dashboard.py:96
 msgid "Go to CfP"
-msgstr ""
+msgstr "Jít na CfP"
 
 #: pretalx/cfp/templates/cfp/event/invitation.html:5
 #: pretalx/cfp/templates/cfp/event/invitation.html:8
 msgid "Accept invitation?"
-msgstr ""
+msgstr "Přijmout pozvánku?"
 
 #: pretalx/cfp/templates/cfp/event/invitation.html:9
 #, python-format
