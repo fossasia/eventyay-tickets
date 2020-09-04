@@ -237,6 +237,10 @@ class BBBService:
                 "userdata-bbb_listen_only_mode": "false"
                 if config.get("auto_microphone", False)
                 else "true",
+                # For some reason, bbb_auto_swap_layout does what you expect from bbb_hide_presentation
+                "userdata-bbb_auto_swap_layout": "true"
+                if config.get("hide_presentation", False)
+                else "false",
             },
             server.url,
             server.secret,
@@ -270,6 +274,7 @@ class BBBService:
                 "userdata-bbb_mirror_own_webcam": "true",
                 "userdata-bbb_skip_check_audio": "true",
                 "userdata-bbb_listen_only_mode": "false",  # in a group call, listen-only does not make sense
+                "userdata-bbb_auto_swap_layout": "true",  # in a group call, you'd usually not have a presentation
             },
             server.url,
             server.secret,
