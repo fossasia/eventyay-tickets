@@ -49,6 +49,7 @@ header {
   display: flex;
   flex-direction: row;
   align-content: space-between;
+  z-index: 1000;
 
   a {
     font-size: 16px;
