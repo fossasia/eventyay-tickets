@@ -143,7 +143,9 @@ def widget_data_v2(request, event):
     if schedule.version:
         talks = schedule.talks.filter(is_visible=True)
     else:
-        talks = schedule.talks.filter(submission__state="confirmed")
+        talks = schedule.talks.filter(
+            submission__state="confirmed", start__isnull=False, room__isnull=False
+        )
 
     talks = (
         talks.select_related(
