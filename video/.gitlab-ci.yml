@@ -16,6 +16,7 @@ py_style:
 
 py_test:
   stage: build
+  retry: 3
   services:
     - redis:latest
     - postgres:11
