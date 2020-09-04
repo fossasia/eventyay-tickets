@@ -38,7 +38,6 @@ export default {
 	data () {
 		return {
 			config: null,
-
 			saving: false,
 			error: null
 		}
@@ -55,7 +54,7 @@ export default {
 	validations: {},
 	methods: {
 		addField () {
-			this.config.profile_fields.push({label: '', type: 'text', choices: ''})
+			this.config.profile_fields.push({id: uuid(), label: '', type: 'text'})
 		},
 		removeField (field) {
 			this.$delete(this.config.profile_fields, field)
