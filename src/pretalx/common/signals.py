@@ -147,14 +147,14 @@ idempotent, meaning it should not make a difference if this is sent out more oft
 than expected.
 """
 
-register_data_exporters = EventPluginSignal(providing_args=[])
+register_data_exporters = EventPluginSignal()
 """
 This signal is sent out to get all known data exporters. Receivers should return a
 subclass of pretalx.common.exporter.BaseExporter
 
 As with all event plugin signals, the ``sender`` keyword argument will contain the event.
 """
-activitylog_display = EventPluginSignal(providing_args=["activitylog"])
+activitylog_display = EventPluginSignal()
 """
 To display an instance of the ``ActivityLog`` model to a human user,
 ``pretalx.common.signals.activitylog_display`` will be sent out with a ``activitylog``

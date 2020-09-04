@@ -154,8 +154,8 @@ class ScheduleView(EventPermissionRequired, ScheduleMixin, TemplateView):
         \033[1m{request.event.name}\033[0m
 
         Get different formats:
-           curl {request.event.urls.schedule.full()}\?format=table (default)
-           curl {request.event.urls.schedule.full()}\?format=list
+           curl {request.event.urls.schedule.full()}\\?format=table (default)
+           curl {request.event.urls.schedule.full()}\\?format=list
 
         """
         )

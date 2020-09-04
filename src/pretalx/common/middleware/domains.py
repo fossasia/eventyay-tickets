@@ -86,7 +86,7 @@ class SessionMiddleware(BaseSessionMiddleware):
     """
 
     def __init__(self, get_response, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__(*args, get_response=get_response, **kwargs)
         self.get_response = get_response
 
     def process_response(self, request, response):
@@ -144,7 +144,7 @@ class CsrfViewMiddleware(BaseCsrfMiddleware):
     """
 
     def __init__(self, get_response, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__(*args, get_response=get_response, **kwargs)
         self.get_response = get_response
 
     def process_response(self, request, response):

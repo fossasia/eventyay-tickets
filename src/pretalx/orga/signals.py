@@ -2,7 +2,7 @@ from django.dispatch import Signal
 
 from pretalx.common.signals import EventPluginSignal
 
-nav_event = EventPluginSignal(providing_args=["request"])
+nav_event = EventPluginSignal()
 """
 This signal allows you to add additional views to the admin panel
 navigation. You will get the request as a keyword argument ``request``.
@@ -18,7 +18,7 @@ in pretalx.
 
 As with all plugin signals, the ``sender`` keyword argument will contain the event.
 """
-nav_global = Signal(providing_args=["request"])
+nav_global = Signal()
 """
 This signal allows you to add additional views to the navigation bar when no event is
 selected. You will get the request as a keyword argument ``request``.
@@ -34,7 +34,7 @@ in pretalx.
 This is no ``EventPluginSignal``, so you do not get the event in the ``sender`` argument
 and you may get the signal regardless of whether your plugin is active.
 """
-activate_event = EventPluginSignal(providing_args=["request"])
+activate_event = EventPluginSignal()
 """
 This signal is sent out before an event goes live. It allows any installed
 plugin to raise an Exception to prevent the event from going live. The
@@ -44,7 +44,7 @@ Receivers are not expected to return a response.
 
 As with all plugin signals, the ``sender`` keyword argument will contain the event.
 """
-nav_event_settings = EventPluginSignal(providing_args=["request"])
+nav_event_settings = EventPluginSignal()
 """
 This signal is sent out to collect additional settings sub-pages of an event.
 Receivers are expected to return a list of dictionaries. The dictionaries
@@ -55,9 +55,7 @@ as active.
 As with all plugin signals, the ``sender`` keyword argument will contain the event.
 A second keyword argument ``request`` will contain the request object.
 """
-event_copy_data = EventPluginSignal(
-    providing_args=["other", "question_map", "track_map", "submission_type_map"]
-)
+event_copy_data = EventPluginSignal()
 """
 This signal is sent out when a new event is created as a clone of an existing event, i.e.
 the settings from the older event are copied to the newer one. You can listen to this
