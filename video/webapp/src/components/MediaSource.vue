@@ -1,7 +1,7 @@
 <template lang="pug">
 .c-media-source
 	transition(name="background-room")
-		.background-room(v-if="background")
+		router-link.background-room(v-if="background", :to="{name: 'room', params: {roomId: room.id}}")
 			.description
 				.hint {{ $t('MediaSource:room:hint') }}
 				.room-name {{ room.name }}
@@ -100,6 +100,7 @@ export default {
 				font-size: 10px
 				margin-bottom: 2px
 			.room-name
+				color: var(--clr-text-primary)
 				font-weight: 500
 				flex-grow: 0
 				ellipsis()
