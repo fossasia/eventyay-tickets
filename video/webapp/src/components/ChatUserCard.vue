@@ -98,6 +98,7 @@ export default {
 		align-items: center
 		padding: 8px
 		min-width: 196px
+		max-width: 380px
 		.name
 			font-size: 24px
 			font-weight: 600
