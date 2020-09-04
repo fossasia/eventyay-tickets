@@ -417,6 +417,7 @@ export default {
 			padding: 8px 16px
 			box-sizing: border-box
 			color: $clr-primary-text-dark
+			background: linear-gradient(0deg, rgba(0, 0, 0, 0.8) 0px, rgba(0, 0, 0, 0.35) 60%, rgba(0, 0, 0, 0))
 			.progress-hover
 				position: absolute
 				bottom: 54px
