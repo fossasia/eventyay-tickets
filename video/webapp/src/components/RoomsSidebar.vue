@@ -115,7 +115,7 @@ export default {
 					rooms.textChat.push(room)
 				} else if (room.modules.length === 1 && room.modules[0].type === 'call.bigbluebutton') {
 					rooms.videoChat.push(room)
-				} else if (room.modules.some(module => module.type === 'livestream.native')) {
+				} else if (room.modules.some(module => module.type === 'livestream.native' || module.type === 'livestream.youtube')) {
 					let session
 					if (this.$features.enabled('schedule-control')) {
 						if (room.schedule_data) {

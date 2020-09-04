@@ -51,6 +51,8 @@
 						bunt-input(v-model="val.config.url", label="URL", name="url")
 					div(v-else-if="val.type == 'livestream.native'")
 						bunt-input(v-model="val.config.hls_url", label="HLS URL", name="url")
+					div(v-else-if="val.type == 'livestream.youtube'")
+						bunt-input(v-model="val.config.ytid", label="YouTube Video ID", name="ytid")
 					div(v-else-if="val.type == 'call.bigbluebutton'")
 						bunt-checkbox(v-model="val.config.record", label="Allow recording (needs to be set before first join)", name="record")
 						bunt-checkbox(v-model="val.config.hide_presentation", label="Hide presentation when users join", name="hide_presentation")
@@ -93,6 +95,7 @@ const KNOWN_TYPES = [
 	'page.iframe',
 	'page.landing',
 	'livestream.native',
+	'livestream.youtube',
 	'exhibition.native',
 	'chat.native',
 	'call.bigbluebutton'
