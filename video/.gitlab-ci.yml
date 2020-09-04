@@ -62,7 +62,9 @@ deploy:
   stage: deploy
   script:
     - ssh -o UserKnownHostsFile=/keys/known_hosts -i /keys/id_rsa deployer@venueless-web1.rami.io $CI_COMMIT_REF_NAME pull
+    - ssh -o UserKnownHostsFile=/keys/known_hosts -i /keys/id_rsa deployer@venueless-web2.rami.io $CI_COMMIT_REF_NAME pull
     - ssh -o UserKnownHostsFile=/keys/known_hosts -i /keys/id_rsa  deployer@venueless-web1.rami.io $CI_COMMIT_REF_NAME upgrade
+    - ssh -o UserKnownHostsFile=/keys/known_hosts -i /keys/id_rsa  deployer@venueless-web2.rami.io $CI_COMMIT_REF_NAME upgrade
   only:
     - prod
     - master
