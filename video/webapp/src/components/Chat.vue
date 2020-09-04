@@ -13,15 +13,16 @@
 				.no-permission(v-else-if="room && !room.permissions.includes('room:chat.send')") {{ $t('Chat:permission-block:room:chat.send') }}
 				chat-input(v-else, @send="send")
 		.user-list(v-if="mode === 'standalone' && showUserlist && $mq.above['m']")
+			.user-list-info(v-if="sortedMembers.length > 2")
+				span Channel members
+				.user-count
+					| {{ sortedMembers.length }}
 			scrollbars(y)
 				.user(v-for="user of sortedMembers", @click="showUserCard($event, user)")
 					avatar(:user="user", :size="28")
 					span.display-name
 						| {{ user.profile.display_name }}
 						span.ui-badge(v-for="badge in user.badges") {{ badge }}
-			.user-list-info(v-if="sortedMembers.length > 2")
-				.mdi.mdi-account-group
-				template {{ sortedMembers.length }}
 		chat-user-card(v-if="selectedUser", ref="avatarCard", :sender="selectedUser", @close="selectedUser = null")
 	bunt-progress-circular(v-else, size="huge", :page="true")
 </template>
@@ -183,11 +184,10 @@ export default {
 			display: flex
 			flex-direction: column
 			width: 240px
-			height: 100%
 			grid-area: sidebar
 			border-left: border-separator()
 			.c-scrollbars
-				flex-grow: 1
+				flex: auto
 				.scroll-content
 					padding: 16px 0
 			.user
@@ -199,17 +199,15 @@ export default {
 				&:hover
 					background-color: $clr-grey-100
 				.display-name
-					font-weight: 600
-					color: $clr-secondary-text-light
 					margin-left: 8px
 			.user-list-info
+				flex: none
 				display: flex
-				justify-content: flex-end
-				font-weight: 600
-				color: $clr-secondary-text-light
+				justify-content: space-between
 				padding: 16px
-				border-top: border-separator()
+				background-color: $clr-grey-100
 				text-align: right
-				.mdi
-					margin-right: 4px
+				.user-count
+					font-weight: 600
+					color: $clr-secondary-text-light
 </style>
