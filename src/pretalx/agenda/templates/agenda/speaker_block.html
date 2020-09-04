@@ -1,3 +1,5 @@
+{% load rich_text %}
+
 <div class="pretalx-session">
     <div class="pretalx-session-time-box avatar">
         {% if add_links %}
@@ -22,7 +24,7 @@
             {{ speaker.user.get_display_name }}
             {% endif %}
         </div>
-        <div class="abstract">{{ speaker.biography|default:'' }}</div>
+        <div class="abstract">{{ speaker.biography|default:''|rich_text }}</div>
         {% if not filter_talks %}
             <ul>
                 {% for talk in speaker.talks %}
