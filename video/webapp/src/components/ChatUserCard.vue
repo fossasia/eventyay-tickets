@@ -14,7 +14,7 @@
 		.actions(v-if="sender.id !== user.id && sender.id")
 			bunt-button.btn-dm(v-if="hasPermission('world:chat.direct')", @click="openDM") message
 			bunt-button.btn-call(v-if="hasPermission('world:chat.direct')", @click="startCall") call
-			menu-dropdown(v-if="$features.enabled('chat-moderation') && (hasPermission('room:chat.moderate') || sender === user.id)", v-model="showMoreActions", :blockBackground="false", @mousedown.native.stop="")
+			menu-dropdown(v-model="showMoreActions", :blockBackground="false", @mousedown.native.stop="")
 				template(v-slot:button="{toggle}")
 					bunt-icon-button(@click="toggle") dots-vertical
 				template(v-slot:menu)
@@ -123,6 +123,8 @@ export default {
 		.actions
 			margin-top: 16px
 			display: flex
+			align-self: stretch
+			justify-content: flex-end
 			.bunt-button
 				button-style(style: clear)
 			.bunt-icon-button
