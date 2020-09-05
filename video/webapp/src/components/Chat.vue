@@ -150,6 +150,7 @@ export default {
 		flex: auto
 		display: flex
 		flex-direction: column
+		min-width: 0
 	.timeline
 		flex: 1
 	.timeline .scroll-content

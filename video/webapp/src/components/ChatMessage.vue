@@ -198,7 +198,7 @@ export default {
 		min-width: 0
 		margin-left: 8px
 		padding-top: 6px // ???
-		overflow-wrap: anywhere
+		overflow-wrap: break-word
 		.message-header
 			display: flex
 			align-items: baseline
