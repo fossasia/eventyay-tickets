@@ -25,7 +25,7 @@
 				th Moderation state:
 				td {{ user.moderation_state }}
 			template(v-if="user.profile.fields")
-				tr(v-for="(key, value) of user.profile.fields")
+				tr(v-for="(value, key) of user.profile.fields")
 					th {{ key }}:
 					td {{ value }}
 	bunt-progress-circular(v-else, size="huge")
