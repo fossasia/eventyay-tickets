@@ -270,8 +270,8 @@ class ChatModule(BaseModule):
     async def fetch(self, body):
         count = body["count"]
         before_id = body["before_id"]
-        volatile_config = self.channel.room and self.module_config.get(
-            "volatile", False
+        volatile_config = self.channel.room and (
+            self.module_config.get("volatile", False) or self.channel.room.force_join
         )
         events = await self.service.get_events(
             self.channel_id,
