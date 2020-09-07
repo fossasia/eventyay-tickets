@@ -10,7 +10,7 @@
 
 
 {% block content %}
-{% has_perm 'cfp.add_speakers' request.user submission  as can_invite_speakers %}
+    {% has_perm 'cfp.add_speakers' request.user submission  as can_invite_speakers %}
     {% compress js %}
     <script defer src="{% static "js/jquery.formset.js" %}"></script>
     <script defer src="{% static "cfp/js/animateFormset.js" %}"></script>
@@ -19,11 +19,13 @@
     <script src="{% static "common/js/markdown.js" %}" defer></script>
     <h2>{% translate "Your submission:" %} {{ submission.title }}</h2>
     {% if submission.public_slots %}
-    <h3><small>
-        {% for talk in submission.public_slots %}
-        {{ talk.start.date|date:"c" }}, {{ talk.start|date:"H:i" }}–{{ talk.end|date:"H:i" }}, {{ talk.room.name }} {% if not forloop.last %}·{% endif %}
-        {% endfor %}
-    </small></h3>
+        <h3>
+            <small>
+                {% for talk in submission.public_slots %}
+                    {{ talk.start.date|date:"c" }}, {{ talk.start|date:"H:i" }}–{{ talk.end|date:"H:i" }}, {{ talk.room.name }} {% if not forloop.last %}·{% endif %}
+                {% endfor %}
+            </small>
+        </h3>
     {% endif %}
     <p>
         {% translate "Current state of your submission:" %}
@@ -35,9 +37,9 @@
         {% elif submission.state == 'confirmed' %}
             · <a href="{{ submission.urls.feedback }}">
                 {% if submission.does_accept_feedback %}
-                {% translate "Audience feedback" %}
+                    {% translate "Audience feedback" %}
                 {% else %}
-                {% translate "Attendees can leave feedback here after your talk has taken place." %}
+                    {% translate "Attendees can leave feedback here after your talk has taken place." %}
                 {% endif %}
             </a>
         {% endif %}

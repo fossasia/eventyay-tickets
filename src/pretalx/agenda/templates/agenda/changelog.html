@@ -2,18 +2,19 @@
 {% load i18n %}
 
 {% block agenda_content %}
-<article>
-{% for schedule in request.event.schedules.all %}{% if schedule.version %}
-<section>
-    <h4>
-        <a href="{% url "agenda:versioned-schedule" event=request.event.slug version=schedule.version %}">
-            {% translate "Version" %} {{ schedule.version }}
-            <small class="text-muted">{{ schedule.published|date }}</small>
-        </a>
-    </h4>
-    {% include "agenda/changelog_block.html" with schedule=schedule %}
-</section>
-{% endif %}
-{% endfor %}
-</article>
+    <article>
+        {% for schedule in request.event.schedules.all %}
+            {% if schedule.version %}
+                <section>
+                    <h4>
+                        <a href="{% url "agenda:versioned-schedule" event=request.event.slug version=schedule.version %}">
+                            {% translate "Version" %} {{ schedule.version }}
+                            <small class="text-muted">{{ schedule.published|date }}</small>
+                        </a>
+                    </h4>
+                    {% include "agenda/changelog_block.html" with schedule=schedule %}
+                </section>
+            {% endif %}
+        {% endfor %}
+    </article>
 {% endblock %}

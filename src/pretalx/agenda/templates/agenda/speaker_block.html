@@ -6,22 +6,22 @@
         <a href="{{ speaker.urls.public }}">
         {% endif %}
         <div class="avatar-wrapper">
-        {% if speaker.user.avatar_url %}
-            <img src="{{ speaker.user.avatar_url }}">
-        {% else %}
-            {% include "common/avatar.svg" %}
-        {% endif %}
+            {% if speaker.user.avatar_url %}
+                <img src="{{ speaker.user.avatar_url }}">
+            {% else %}
+                {% include "common/avatar.svg" %}
+            {% endif %}
         </div>
         {% if add_links %}
-        </a>
+            </a>
         {% endif %}
     </div>
     <div class="pretalx-session-info">
         <div class="title">
             {% if add_links %}
-            <a href="{{ speaker.urls.public }}">{{ speaker.user.get_display_name }}</a>
+                <a href="{{ speaker.urls.public }}">{{ speaker.user.get_display_name }}</a>
             {% else %}
-            {{ speaker.user.get_display_name }}
+                {{ speaker.user.get_display_name }}
             {% endif %}
         </div>
         <div class="abstract">{{ speaker.biography|default:''|rich_text }}</div>

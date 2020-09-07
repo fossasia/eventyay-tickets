@@ -14,14 +14,14 @@
 
     <div id="submission-steps" class="stages">
         {% for stp in cfp_flow %}
-        <a {% if stp.resolved_url %}href="{{ stp.resolved_url }}"{% endif %} class="step step-{% if stp.is_before %}done{% elif stp.identifier == step.identifier %}current{% else %}tbd{% endif %}">
-            <div class="step-icon">
-                <span class="fa {% if stp.is_before %}fa-check{% elif stp.icon %}fa-{{ stp.icon }}{% else %}fa-pencil{% endif %}"></span>
-            </div>
-            <div class="step-label">
-                {{ stp.label }}
-            </div>
-        </a>
+            <a {% if stp.resolved_url %}href="{{ stp.resolved_url }}"{% endif %} class="step step-{% if stp.is_before %}done{% elif stp.identifier == step.identifier %}current{% else %}tbd{% endif %}">
+                <div class="step-icon">
+                    <span class="fa {% if stp.is_before %}fa-check{% elif stp.icon %}fa-{{ stp.icon }}{% else %}fa-pencil{% endif %}"></span>
+                </div>
+                <div class="step-label">
+                    {{ stp.label }}
+                </div>
+            </a>
         {% endfor %}
         <div class="step step-tbd">
             <div class="step-icon"><span class="fa fa-check"></span></div>
@@ -29,26 +29,26 @@
         </div>
     </div>
     {% block cfp_form %}
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ wizard.management_form }}
-        {% block inner %}
-        {% endblock %}
-        {% block buttons %}
-        <div class="row wizard-row">
-            <div class="col-md-3 ml-auto">
-                <button type="submit" class="btn btn-block btn-success btn-lg">
-                    {% translate "Continue" %} &raquo;
-                </button>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ wizard.management_form }}
+            {% block inner %}
+            {% endblock %}
+            {% block buttons %}
+            <div class="row wizard-row">
+                <div class="col-md-3 ml-auto">
+                    <button type="submit" class="btn btn-block btn-success btn-lg">
+                        {% translate "Continue" %} &raquo;
+                    </button>
+                </div>
+                <div class="col-md-3">
+                    {% if prev_url %}
+                        <a href="{{ prev_url }}" class="btn btn-block btn-info btn-lg">
+                            &laquo; {% translate "Back" %}
+                        </a>
+                    {% endif %}
+                </div>
             </div>
-            <div class="col-md-3">
-                {% if prev_url %}
-                    <a href="{{ prev_url }}" class="btn btn-block btn-info btn-lg">
-                        &laquo; {% translate "Back" %}
-                    </a>
-                {% endif %}
-            </div>
-        </div>
         {% endblock %}
     </form>
     {% endblock %}

@@ -1,15 +1,20 @@
 {% extends "common/error.html" %}
 {% load i18n %}
 {% load static %}
+
 {% block error_image %}<img src="{% static "common/img/error_5xx.svg" %}" class="img" alt="{% translate "Bad request." %}">{% endblock %}
+
 {% block error_message %}
-    <p>{% translate "Bad request." %}<br></p></h2>
-<h3><p class="ml-auto mr-auto text-center">
-    {% blocktranslate trimmed %}
-    It looks as if the communication between you and pretalx went wrong in
-    some way.<br>Please return to the last page and try again!
-    {% endblocktranslate %}
-    </p>
-</h3><h2>
+        <p>{% translate "Bad request." %}<br></p>
+    </h2>
+    <h3>
+        <p class="ml-auto mr-auto text-center">
+            {% blocktranslate trimmed %}
+            It looks as if the communication between you and pretalx went wrong in
+            some way.<br>Please return to the last page and try again!
+            {% endblocktranslate %}
+        </p>
+    </h3>
+    <h2>
 {% endblock %}
 {% block error_code %}400{% endblock %}

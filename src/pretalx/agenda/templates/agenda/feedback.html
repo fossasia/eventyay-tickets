@@ -12,21 +12,21 @@
         </small>
     </h3>
     <div class="talk feedback-list">
-    {% for opinion in feedback %}
-        <div class="speakers feedback-box">
-            {% if opinion.speaker and talk.speakers.count > 1 %}
-                <div><em>
-                {{ phrases.agenda.feedback_personal }}
-                </em></div>
-            {% endif %}
-            <i class="fa fa-quote-left quote" aria-hidden="true"></i>
-            <div class="feedback-text">
-                {{ opinion.review|rich_text }}
+        {% for opinion in feedback %}
+            <div class="speakers feedback-box">
+                {% if opinion.speaker and talk.speakers.count > 1 %}
+                    <div>
+                        <em>{{ phrases.agenda.feedback_personal }}</em>
+                    </div>
+                {% endif %}
+                <i class="fa fa-quote-left quote" aria-hidden="true"></i>
+                <div class="feedback-text">
+                    {{ opinion.review|rich_text }}
+                </div>
+                <i class="fa fa-quote-right quote float-right" aria-hidden="true"></i>
             </div>
-            <i class="fa fa-quote-right quote float-right" aria-hidden="true"></i>
-        </div>
-    {% empty %}
-        {{ phrases.agenda.feedback_empty }}
-    {% endfor %}
+        {% empty %}
+            {{ phrases.agenda.feedback_empty }}
+        {% endfor %}
     </div>
 {% endblock %}

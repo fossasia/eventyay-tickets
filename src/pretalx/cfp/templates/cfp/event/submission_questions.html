@@ -15,7 +15,7 @@
         {{ text|rich_text }}
     </p>
     {% if form.submission_fields %}
-    <h4>{% translate "… about your submission:" %}</h4>
+        <h4>{% translate "… about your submission:" %}</h4>
         {% for field in form.submission_fields %}
             {% bootstrap_field field layout='event' %}
         {% endfor %}

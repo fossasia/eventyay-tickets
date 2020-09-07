@@ -9,8 +9,8 @@
 
 {% block content %}
     {% if profile_form.biography %}
-    <script src="{% static "vendored/marked.min.js" %}" defer></script> {# do not compress #}
-       <script src="{% static "common/js/markdown.js" %}" defer></script>
+        <script src="{% static "vendored/marked.min.js" %}" defer></script> {# do not compress #}
+        <script src="{% static "common/js/markdown.js" %}" defer></script>
     {% endif %}
 
     {% html_signal "pretalx.cfp.signals.html_above_profile_page" sender=request.event request=request %}
@@ -46,18 +46,18 @@
     </form>
 
     {% if questions_exist %}
-    <h2>{% translate "We have some questions" %}</h2>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {% bootstrap_form questions_form layout='event' %}
-        <div class="row">
-            <div class="col-md-4 ml-auto">
-                <button type="submit" class="btn btn-block btn-success btn-lg" name="form" value="questions">
-                    {% translate "Save" %}
-                </button>
+        <h2>{% translate "We have some questions" %}</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% bootstrap_form questions_form layout='event' %}
+            <div class="row">
+                <div class="col-md-4 ml-auto">
+                    <button type="submit" class="btn btn-block btn-success btn-lg" name="form" value="questions">
+                        {% translate "Save" %}
+                    </button>
+                </div>
             </div>
-        </div>
-    </form>
+        </form>
     {% endif %}
 
     <h2>{% translate "Your Account" %}</h2>
@@ -88,14 +88,14 @@
             {% translate "You can delete your account here – all names, emails, and other personal information will be overwritten. <strong>This action is irreversible.</strong>" %}
         </div>
         <div class="form-group"{% if not "really" in request.GET %} style="visibility:hidden;"{% endif %}>
-                <input type="checkbox" name="really" id="really">
-                <label class="form-control-label" for="really">{% translate "I really do want to delete my account, losing access to my submissions and talks, and overriding my public and private data." %}</label>
-            </div>
-            <div class="col-md-4 ml-auto">
-                <button type="submit" class="btn btn-block btn-danger btn-lg" name="form" value="">
-                    {% translate "Delete my account" %}
-                </button>
-            </div>
+            <input type="checkbox" name="really" id="really">
+            <label class="form-control-label" for="really">{% translate "I really do want to delete my account, losing access to my submissions and talks, and overriding my public and private data." %}</label>
+        </div>
+        <div class="col-md-4 ml-auto">
+            <button type="submit" class="btn btn-block btn-danger btn-lg" name="form" value="">
+                {% translate "Delete my account" %}
+            </button>
+        </div>
     </form>
     {% compress js %}
         <script defer src="{% static "cfp/js/profile.js" %}"></script>

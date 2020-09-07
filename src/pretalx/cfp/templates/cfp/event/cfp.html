@@ -4,53 +4,54 @@
 {% load rich_text %}
 {% load rules %}
 
-{% block content %}{% with cfp=request.event.cfp %}
-{% has_perm 'agenda.view_schedule' request.user request.event as can_view_schedule %}
-{% has_perm 'agenda.view_featured_submissions' request.user request.event as can_view_featured_submissions %}
-{% has_perm 'orga.edit_cfp' request.user request.event as can_edit_cfp %}
-    <div class="d-flex">
-        <h1>{{ cfp.headline|default:"" }}</h1>
-        {% if can_edit_cfp %}{% orga_edit_link request.event.cfp.urls.text %}{% endif %}
-    </div>
-    {{ cfp.text|rich_text }}
-    {% if request.event.settings.cfp_show_deadline and request.event.cfp.max_deadline %}
-        <p>
-            <strong>
-                {% if cfp.is_open %}
-                {% blocktranslate with deadline=cfp.max_deadline|date:"SHORT_DATETIME_FORMAT" timezone=request.timezone until_string=cfp.max_deadline|timeuntil trimmed %}
-                    You can enter submissions until {{ deadline }} ({{ timezone }}), {{ until_string }} from now.
-                {% endblocktranslate %}
-                {% else %}
-                {% blocktranslate with deadline=cfp.max_deadline|date:"SHORT_DATETIME_FORMAT" timezone=request.timezone trimmed %}
-                    This Call for Papers closed on {{ deadline }} ({{ timezone }}).
-                {% endblocktranslate %}
-                {% endif %}
-            </strong>
-        </p>
-    {% endif %}
-    <div class="row mb-4 url-links">
-        {% if can_view_schedule %}
-            <a class="btn btn-info btn-lg btn-block" href="{{ request.event.urls.schedule }}">
-                {% translate "View conference schedule" %}
-            </a>
-        {% elif can_view_featured_submissions and has_featured %}
-            <a class="btn btn-info btn-lg btn-block" href="{{ request.event.urls.featured }}">
-                {% translate "View schedule preview" %}
-            </a>
+{% block content %}
+    {% with cfp=request.event.cfp %}
+        {% has_perm 'agenda.view_schedule' request.user request.event as can_view_schedule %}
+        {% has_perm 'agenda.view_featured_submissions' request.user request.event as can_view_featured_submissions %}
+        {% has_perm 'orga.edit_cfp' request.user request.event as can_edit_cfp %}
+        <div class="d-flex">
+            <h1>{{ cfp.headline|default:"" }}</h1>
+            {% if can_edit_cfp %}{% orga_edit_link request.event.cfp.urls.text %}{% endif %}
+        </div>
+        {{ cfp.text|rich_text }}
+        {% if request.event.settings.cfp_show_deadline and request.event.cfp.max_deadline %}
+            <p>
+                <strong>
+                    {% if cfp.is_open %}
+                    {% blocktranslate with deadline=cfp.max_deadline|date:"SHORT_DATETIME_FORMAT" timezone=request.timezone until_string=cfp.max_deadline|timeuntil trimmed %}
+                        You can enter submissions until {{ deadline }} ({{ timezone }}), {{ until_string }} from now.
+                    {% endblocktranslate %}
+                    {% else %}
+                    {% blocktranslate with deadline=cfp.max_deadline|date:"SHORT_DATETIME_FORMAT" timezone=request.timezone trimmed %}
+                        This Call for Papers closed on {{ deadline }} ({{ timezone }}).
+                    {% endblocktranslate %}
+                    {% endif %}
+                </strong>
+            </p>
         {% endif %}
-        {% if has_submissions or request.user.is_anonymous %}
-            <a class="btn btn-info btn-lg btn-block" href="{{ request.event.urls.user_submissions }}">
-                {% translate "Edit or view your submissions" %}
+        <div class="row mb-4 url-links">
+            {% if can_view_schedule %}
+                <a class="btn btn-info btn-lg btn-block" href="{{ request.event.urls.schedule }}">
+                    {% translate "View conference schedule" %}
+                </a>
+            {% elif can_view_featured_submissions and has_featured %}
+                <a class="btn btn-info btn-lg btn-block" href="{{ request.event.urls.featured }}">
+                    {% translate "View schedule preview" %}
+                </a>
+            {% endif %}
+            {% if has_submissions or request.user.is_anonymous %}
+                <a class="btn btn-info btn-lg btn-block" href="{{ request.event.urls.user_submissions }}">
+                    {% translate "Edit or view your submissions" %}
+                </a>
+            {% endif %}
+            <a class="btn btn-success btn-lg btn-block {% if not cfp.is_open and not access_code.is_valid %}disabled{% endif %}"
+                href="{{ request.event.urls.submit }}{{ submit_qs }}">
+            {% if cfp.is_open or access_code.is_valid %}
+                {% translate "Submit a proposal" %}
+            {% else %}
+                {% translate "Submissions are closed" %}
+            {% endif %}
             </a>
-        {% endif %}
-        <a class="btn btn-success btn-lg btn-block {% if not cfp.is_open and not access_code.is_valid %}disabled{% endif %}"
-            href="{{ request.event.urls.submit }}{{ submit_qs }}">
-        {% if cfp.is_open or access_code.is_valid %}
-            {% translate "Submit a proposal" %}
-        {% else %}
-            {% translate "Submissions are closed" %}
-        {% endif %}
-        </a>
-    </div>
-{% endwith %}
+        </div>
+    {% endwith %}
 {% endblock %}

@@ -10,52 +10,53 @@
 {% endblock %}
 
 {% block agenda_content %}
-<article>
-<div class="d-flex mb-2">
-    <h3 class="heading-with-buttons">
-        {{ profile.user.get_display_name }}
-        <div class="buttons ml-auto">
-            <a class="btn btn-outline-primary" href="{{ profile.urls.talks_ical }}">
-                <i class="fa fa-calendar"></i> .ical
-            </a>
+    <article>
+        <div class="d-flex mb-2">
+            <h3 class="heading-with-buttons">
+                {{ profile.user.get_display_name }}
+                <div class="buttons ml-auto">
+                    <a class="btn btn-outline-primary" href="{{ profile.urls.talks_ical }}">
+                        <i class="fa fa-calendar"></i> .ical
+                    </a>
+                </div>
+            </h3>
         </div>
-    </h3>
-</div>
-<div class="speaker-container">
-    <section class="speaker-info">
-        <div class="speaker-bio">
-            {{ profile.biography|rich_text }}
-        </div>
-        <div class="speaker-avatar">
-            {% if profile.user.get_gravatar or profile.user.avatar %}
-            <img width="100%"
-                 {% if profile.user.get_gravatar %}
-                 src="https://www.gravatar.com/avatar/{{ profile.user.gravatar_parameter }}?s=200"
-                 {% elif profile.user.avatar %}
-                 src="{{ profile.user.avatar.url }}"
-                 {% endif %}
-                 alt="{% translate "The speaker's profile picture" %}"
-            >
+        <div class="speaker-container">
+            <section class="speaker-info">
+                <div class="speaker-bio">
+                    {{ profile.biography|rich_text }}
+                </div>
+                <div class="speaker-avatar">
+                    {% if profile.user.get_gravatar or profile.user.avatar %}
+                    <img width="100%"
+                         {% if profile.user.get_gravatar %}
+                         src="https://www.gravatar.com/avatar/{{ profile.user.gravatar_parameter }}?s=200"
+                         {% elif profile.user.avatar %}
+                         src="{{ profile.user.avatar.url }}"
+                         {% endif %}
+                         alt="{% translate "The speaker's profile picture" %}"
+                    >
+                    {% endif %}
+                </div>
+            </section>
+            {% if answers %}
+                <hr />
+                <section class="answers">
+                    {% for answer in answers %}
+                        <span class="question"><strong>{{ answer.question.question }}</strong></span>
+                        <span class="answer">– {% include "common/question_answer.html" with answer=answer %}</span>
+                    {% endfor %}
+                </section>
             {% endif %}
+            <hr/>
+            <section class="speaker-talks">
+                <h4>{% translate "Talks" %}</h4>
+                {% for session in talks %}
+                <a href="{{ session.submission.urls.public }}">
+                    {% include "agenda/session_block.html" with show_date=True %}
+                </a>
+                {% endfor %}
+            </section>
         </div>
-    </section>
-    {% if answers %}
-    <hr />
-    <section class="answers">
-    {% for answer in answers %}
-        <span class="question"><strong>{{ answer.question.question }}</strong></span>
-        <span class="answer">– {% include "common/question_answer.html" with answer=answer %}</span>
-    {% endfor %}
-    {% endif %}
-    </section>
-    <hr/>
-    <section class="speaker-talks">
-        <h4>{% translate "Talks" %}</h4>
-        {% for session in talks %}
-        <a href="{{ session.submission.urls.public }}">
-            {% include "agenda/session_block.html" with show_date=True %}
-        </a>
-        {% endfor %}
-    </section>
-</article>
+    </article>
 {% endblock %}

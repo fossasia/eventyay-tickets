@@ -4,30 +4,30 @@
 {% block title %}{% translate "Your submission" %} :: {% endblock %}
 
 {% block content %}
-<h2>{% translate "Your submission:" %} {{ submission.title }}</h2>
-<p>
-    {% translate "Current state of your submission:" %}
-    {% include "cfp/event/fragment_state.html" with state=submission.state %}
-</p>
-<form method="post">
-    {% csrf_token %}
-    <h3>{% translate "Withdraw submission" %}</h3>
-    <div class="alert alert-danger">
-        {% blocktranslate trimmed %}
-            Do you really want to withdraw your submission?
-        {% endblocktranslate %}
-    </div>
+    <h2>{% translate "Your submission:" %} {{ submission.title }}</h2>
     <p>
-        <button type="submit"
-           class="btn float-right btn-danger">
-            {% translate "Withdraw" %}
-        </button>
-        <a href="{{ submission.urls.user_base }}"
-           class="btn float-right btn-info">
-            {% translate "Go back" %}
-        </a>
-        {% translate "You will not be able to revert this action." %}
-        <div class="clearfix"></div>
+        {% translate "Current state of your submission:" %}
+        {% include "cfp/event/fragment_state.html" with state=submission.state %}
     </p>
-</form>
+    <form method="post">
+        {% csrf_token %}
+        <h3>{% translate "Withdraw submission" %}</h3>
+        <div class="alert alert-danger">
+            {% blocktranslate trimmed %}
+                Do you really want to withdraw your submission?
+            {% endblocktranslate %}
+        </div>
+        <p>
+            <button type="submit"
+               class="btn float-right btn-danger">
+                {% translate "Withdraw" %}
+            </button>
+            <a href="{{ submission.urls.user_base }}"
+               class="btn float-right btn-info">
+                {% translate "Go back" %}
+            </a>
+            {% translate "You will not be able to revert this action." %}
+            <div class="clearfix"></div>
+        </p>
+    </form>
 {% endblock %}

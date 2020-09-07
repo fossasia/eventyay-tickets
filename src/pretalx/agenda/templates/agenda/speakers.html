@@ -5,16 +5,18 @@
 
 {% block agenda_content %}
     {% include "agenda/header_row.html" %}
-<p></p>
-<section style="--track-color: {{ request.event.primary_color|default:'#3aa57c' }}" class="pretalx-list-day">
-    {% for speaker in speakers %}
-        <a href="{{ speaker.urls.public }}">
-            {% include "agenda/speaker_block.html" with speaker=speaker %}
-        </a>
-    {% empty %}
-        {% if search %}{% blocktranslate trimmed %}
-            No speaker matches your search.
-        {% endblocktranslate %}{% endif %}
-    {% endfor %}
-</section>
+    <p></p>
+    <section style="--track-color: {{ request.event.primary_color|default:'#3aa57c' }}" class="pretalx-list-day">
+        {% for speaker in speakers %}
+            <a href="{{ speaker.urls.public }}">
+                {% include "agenda/speaker_block.html" with speaker=speaker %}
+            </a>
+        {% empty %}
+            {% if search %}
+                {% blocktranslate trimmed %}
+                    No speaker matches your search.
+                {% endblocktranslate %}
+            {% endif %}
+        {% endfor %}
+    </section>
 {% endblock %}

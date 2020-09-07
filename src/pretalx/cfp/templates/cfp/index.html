@@ -5,40 +5,40 @@
 
 {% block content %}
     {% if current_events or future_events or past_events %}
-    <h1>{% translate "Events" %}</h1>
+        <h1>{% translate "Events" %}</h1>
     {% endif %}
     {% if current_events %}
-    <ul>
-        {% for event in current_events %}
-            <li><a href="{{ event.urls.base }}">
-                {{ event.name }}
-                ({{ event.get_date_range_display }})
-            </a></li>
-        {% endfor %}
-    </ul>
+        <ul>
+            {% for event in current_events %}
+                <li><a href="{{ event.urls.base }}">
+                    {{ event.name }}
+                    ({{ event.get_date_range_display }})
+                </a></li>
+            {% endfor %}
+        </ul>
     {% else %}
-    <p>{% translate "No events are currently ongoing." %}</p>
+        <p>{% translate "No events are currently ongoing." %}</p>
     {% endif %}
     {% if future_events %}
-    <h2>{% translate "Upcoming events" %}</h2>
-    <ul>
-        {% for event in future_events %}
-            <li><a href="{{ event.urls.base }}">
-                {{ event.name }}
-                ({{ event.get_date_range_display }})
-            </a></li>
-        {% endfor %}
-    </ul>
+        <h2>{% translate "Upcoming events" %}</h2>
+        <ul>
+            {% for event in future_events %}
+                <li><a href="{{ event.urls.base }}">
+                    {{ event.name }}
+                    ({{ event.get_date_range_display }})
+                </a></li>
+            {% endfor %}
+        </ul>
     {% endif %}
     {% if past_events %}
-    <h2>{% translate "Past events" %}</h2>
-    <ul>
-        {% for event in past_events %}
-            <li><a href="{{ event.urls.base }}">
-                {{ event.name }}
-                ({{ event.get_date_range_display }})
-            </a></li>
-        {% endfor %}
-    </ul>
+        <h2>{% translate "Past events" %}</h2>
+        <ul>
+            {% for event in past_events %}
+                <li><a href="{{ event.urls.base }}">
+                    {{ event.name }}
+                    ({{ event.get_date_range_display }})
+                </a></li>
+            {% endfor %}
+        </ul>
     {% endif %}
 {% endblock %}

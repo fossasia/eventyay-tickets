@@ -1,14 +1,15 @@
 {% load i18n %}
+
 <p>
-{% if obj.changes.action == 'update' %}
-    {% blocktranslate trimmed with event_name=obj.event.name %}
-    A new {{ event_name }} schedule has been released!
-    {% endblocktranslate %}
-{% else %}
-    {% blocktranslate trimmed with event_name=obj.event.name %}
-    The first {{ event_name }} schedule has been released!
-    {% endblocktranslate %}
-{% endif %}
+    {% if obj.changes.action == 'update' %}
+        {% blocktranslate trimmed with event_name=obj.event.name %}
+        A new {{ event_name }} schedule has been released!
+        {% endblocktranslate %}
+    {% else %}
+        {% blocktranslate trimmed with event_name=obj.event.name %}
+        The first {{ event_name }} schedule has been released!
+        {% endblocktranslate %}
+    {% endif %}
 </p>
 
 {% include "agenda/changelog_block.html" with schedule=obj %}

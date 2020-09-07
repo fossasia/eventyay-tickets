@@ -5,32 +5,33 @@
 {% block title %}{% translate "Accept invitation?" %}{% endblock %}
 
 {% block content %}
-<h2>{% translate "Accept invitation?" %}</h2>
-<p>{% blocktranslate with name=request.user.get_display_name talk=submission.title trimmed %}
-    You, {{ name }}, have been invited to be a speaker for the submission
-    “{{ talk }}”. Do you accept the invitation?
-{% endblocktranslate %}</p>
+    <h2>{% translate "Accept invitation?" %}</h2>
+    <p>{% blocktranslate with name=request.user.get_display_name talk=submission.title trimmed %}
+        You, {{ name }}, have been invited to be a speaker for the submission
+        “{{ talk }}”. Do you accept the invitation?
+    {% endblocktranslate %}</p>
 
-{% if submission.abstract %}
-<div class="card submission-abstract">
-    <div class="card-header">
-        {% translate "Abstract:" %} {{ submission.title }}
+    {% if submission.abstract %}
+    <div class="card submission-abstract">
+        <div class="card-header">
+            {% translate "Abstract:" %} {{ submission.title }}
+        </div>
+        <div class="card-body">
+            <p class="card-text">
+                {{ submission.abstract|rich_text }}
+            </p>
+        </div>
     </div>
-    <div class="card-body">
-        <p class="card-text">
-            {{ submission.abstract|rich_text }}
-        </p>
-    </div>
-</div>
-{% endif %}
-<form method="post" class="form">
-    {% csrf_token %}
-    <div class="row url-links">
-        <a href="/" class="btn btn-danger btn-lg btn-block">
-            {% translate "No" %}
-        </a>
-        <button type="submit" class="btn btn-success btn-lg btn-block">
-            {% translate "Accept" %}
-        </button>
-    </div>
+    {% endif %}
+    <form method="post" class="form">
+        {% csrf_token %}
+        <div class="row url-links">
+            <a href="/" class="btn btn-danger btn-lg btn-block">
+                {% translate "No" %}
+            </a>
+            <button type="submit" class="btn btn-success btn-lg btn-block">
+                {% translate "Accept" %}
+            </button>
+        </div>
+    </form>
 {% endblock %}

@@ -13,27 +13,29 @@
         </a>
     </h3>
     <div class="talk row col-lg-12">
-        <div class="talk-content"><div class="description">
-            {{ phrases.agenda.feedback_explanation }}
-            {{ phrases.agenda.feedback_success }}
-        {% if not talk.does_accept_feedback or not can_give_feedback %}
-            {{ phrases.agenda.feedback_not_now }}
-        {% else %}
-            <form method="post">
-                {% bootstrap_form_errors form %}
-                {% csrf_token %}
-                {% if speakers|length > 1 %}
-                    {% bootstrap_field form.speaker layout='inline' %}
-                {% endif %}
-                <div class="markdown-column">
-                {% bootstrap_field form.review layout='inline' %}
-                </div>
+        <div class="talk-content">
+            <div class="description">
+                {{ phrases.agenda.feedback_explanation }}
+                {{ phrases.agenda.feedback_success }}
+            {% if not talk.does_accept_feedback or not can_give_feedback %}
+                {{ phrases.agenda.feedback_not_now }}
+            {% else %}
+                <form method="post">
+                    {% bootstrap_form_errors form %}
+                    {% csrf_token %}
+                    {% if speakers|length > 1 %}
+                        {% bootstrap_field form.speaker layout='inline' %}
+                    {% endif %}
+                    <div class="markdown-column">
+                    {% bootstrap_field form.review layout='inline' %}
+                    </div>
 
-                <button type="submit" class="btn btn-success float-right">
-                    {{ phrases.agenda.feedback_send }}
-                </button>
-            </form>
-        {% endif %}
-        </div></div>
+                    <button type="submit" class="btn btn-success float-right">
+                        {{ phrases.agenda.feedback_send }}
+                    </button>
+                </form>
+            {% endif %}
+            </div>
+        </div>
     </div>
 {% endblock %}
