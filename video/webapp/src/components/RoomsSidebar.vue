@@ -191,6 +191,9 @@ export default {
 			object-fit: contain
 		&.fit-to-width
 			height: auto
+			margin: 0
+			img
+				height: auto
 	#btn-close-sidebar
 		margin: 8px
 		icon-button-style(color: var(--clr-sidebar-text-primary), style: clear)
