@@ -152,9 +152,18 @@ async def test_config_get(world):
             "timezone": "Europe/Berlin",
             "connection_limit": 2,
             "profile_fields": [
-                {"label": "Organization", "type": "text", "choices": ""},
-                {"label": "Bio", "type": "textarea", "choices": ""},
                 {
+                    "id": "dd8fdb7a-4d83-4000-b2fe-e38ca50f92fe",
+                    "label": "Organization",
+                    "type": "text",
+                },
+                {
+                    "id": "8228cc22-b63d-472a-bf66-f7b2fde8b504",
+                    "label": "Bio",
+                    "type": "textarea",
+                },
+                {
+                    "id": "4326602d-5ae5-43e7-92a2-95d4d81b55d1",
                     "label": "Hashtags",
                     "type": "select",
                     "choices": "Frontend, Backend, Disruptor, Tech, Social",
