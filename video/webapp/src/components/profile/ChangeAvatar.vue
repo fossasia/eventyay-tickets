@@ -6,7 +6,7 @@
 		upload-button.btn-upload(@change="fileSelected", accept="image/png, image/jpg, .png, .jpg, .jpeg") {{ $t('profile/ChangeAvatar:button-upload:label') }}
 	.image-wrapper
 		cropper(v-if="avatarImage", ref="cropper", classname="cropper", stencil-component="circle-stencil", :src="avatarImage", :stencil-props="{aspectRatio: '1/1'}", :restrictions="pixelsRestrictions")
-		identicon(v-else, :id="identicon || value.identicon", @click.native="changeIdenticon")
+		identicon(v-else, :id="identicon", @click.native="changeIdenticon")
 </template>
 <script>
 import { v4 as uuid } from 'uuid'
@@ -32,8 +32,11 @@ export default {
 	created () {
 		if (!this.value) {
 			this.$emit('input', {})
+			this.identicon = uuid()
 		} else if (this.value.url) {
 			this.avatarImage = this.value.url
+		} else if (this.value.identicon) {
+			this.identicon = this.value.identicon
 		}
 	},
 	methods: {
