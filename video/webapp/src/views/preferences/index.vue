@@ -47,10 +47,11 @@ export default {
 	},
 	created () {
 		this.profile = Object.assign({}, this.user.profile)
-	},
-	mounted () {
-		this.$nextTick(() => {
-		})
+		if (!this.profile.avatar || (!this.profile.avatar.url && !this.profile.avatar.identicon)) {
+			this.profile.avatar = {
+				identicon: this.user.id
+			}
+		}
 	},
 	methods: {
 		async uploadAvatar () {
