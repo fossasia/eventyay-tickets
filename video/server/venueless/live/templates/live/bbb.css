@@ -4,6 +4,7 @@
     --btn-primary-color: {{ world.config.theme.colors.bbb_background|default:"#333333" }};
     --color-primary: {{ world.config.theme.colors.primary|default:"#673ab7" }};
     --list-item-focus-border: {{ world.config.theme.colors.primary|default:"#673ab7" }};
+    --toast-info-color: {{ world.config.theme.colors.bbb_background|default:"#333333" }};
 }
 
 .overlay--1aTlbi, body {
