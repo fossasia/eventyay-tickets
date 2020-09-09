@@ -14,7 +14,7 @@
 				tbody
 					tr(v-for="(field, index) in config.profile_fields")
 						td
-							bunt-input(v-model="field.label", label="Name", name="name")
+							bunt-input(v-model="field.label", label="Label", name="label")
 						td
 							bunt-select(v-model="field.type", label="Type", name="type", :options="['text', 'textarea', 'select']")
 						td
@@ -32,12 +32,12 @@
 </template>
 <script>
 import api from 'lib/api'
+import { v4 as uuid } from 'uuid'
 
 export default {
 	data () {
 		return {
 			config: null,
-
 			saving: false,
 			error: null
 		}
@@ -54,7 +54,7 @@ export default {
 	validations: {},
 	methods: {
 		addField () {
-			this.config.profile_fields.push({label: '', type: 'text', choices: ''})
+			this.config.profile_fields.push({id: uuid(), label: '', type: 'text'})
 		},
 		removeField (field) {
 			this.$delete(this.config.profile_fields, field)
