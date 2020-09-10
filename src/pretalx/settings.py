@@ -255,7 +255,6 @@ email_level = config.get("logging", "email_level", fallback="ERROR") or "ERROR"
 emails = config.get("logging", "email", fallback="").split(",")
 DEFAULT_EXCEPTION_REPORTER = "pretalx.common.exceptions.PretalxExceptionReporter"
 MANAGERS = ADMINS = [(email, email) for email in emails if email]
-MANAGERS = ADMINS = [("rixx@localhost", "rixx@localhost")]
 if ADMINS:
     LOGGING["handlers"]["mail_admins"] = {
         "level": email_level,
