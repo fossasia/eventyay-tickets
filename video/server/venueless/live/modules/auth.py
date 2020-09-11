@@ -221,6 +221,8 @@ class AuthModule(BaseModule):
         list_conf = self.consumer.world.config.get("user_list", {})
         page_size = list_conf.get("page_size", 20)
         search_min_chars = list_conf.get("search_min_chars", 0)
+        profile_fields = self.consumer.world.config.get("profile_fields", {})
+        search_fields = [field["id"] for field in profile_fields]
         if len(body["search_term"]) < search_min_chars:
             result = {
                 "results": [],
@@ -232,6 +234,7 @@ class AuthModule(BaseModule):
                 page=body["page"],
                 page_size=page_size,
                 search_term=body["search_term"],
+                search_fields=search_fields,
                 trait_badges_map=self.consumer.world.config.get("trait_badges_map"),
             )
         await self.consumer.send_success(result)

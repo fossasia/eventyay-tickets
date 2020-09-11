@@ -18,18 +18,21 @@
       {
         "id": "dd8fdb7a-4d83-4000-b2fe-e38ca50f92fe",
         "label": "Organization",
-        "type": "text"
+        "type": "text",
+        "searchable": true
       },
       {
         "id": "8228cc22-b63d-472a-bf66-f7b2fde8b504",
         "label": "Bio",
-        "type": "textarea"
+        "type": "textarea",
+        "searchable": true
       },
       {
         "id": "4326602d-5ae5-43e7-92a2-95d4d81b55d1",
         "label": "Hashtags",
         "type": "select",
-        "choices": "Frontend, Backend, Disruptor, Tech, Social"
+        "choices": "Frontend, Backend, Disruptor, Tech, Social",
+        "searchable": true
       }
     ],
     "JWT_secrets": [

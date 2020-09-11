@@ -59,7 +59,7 @@ export default {
 		availableFields () {
 			if (!this.sender.profile?.fields) return
 			return this.world?.profile_fields
-				.map(field => ({label: field.label, value: this.sender.profile.fields[field.label]}))
+				.map(field => ({label: field.label, value: this.sender.profile.fields[field.id]}))
 				.filter(field => !!field.value)
 		},
 		userStates () {

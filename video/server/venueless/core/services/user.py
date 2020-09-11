@@ -1,8 +1,11 @@
+import operator
 from collections import namedtuple
+from functools import reduce
 
 from channels.db import database_sync_to_async
 from channels.layers import get_channel_layer
 from django.core.paginator import InvalidPage, Paginator
+from django.db.models import Q
 from django.db.transaction import atomic
 
 from ...live.channels import GROUP_USER
@@ -329,10 +332,17 @@ def unblock_user(world, blocking_user: User, blocked_user_id) -> bool:
 
 
 @database_sync_to_async
-def list_users(world_id, page, page_size, search_term, trait_badges_map=None) -> object:
+def list_users(
+    world_id, page, page_size, search_term, search_fields=[], trait_badges_map=None
+) -> object:
     qs = User.objects.filter(world_id=world_id, show_publicly=True)
     if search_term:
-        qs = qs.filter(profile__display_name__icontains=search_term)
+        conditions = [(Q(profile__display_name__icontains=search_term))]
+        for field in search_fields:
+            conditions.append(
+                Q(**{"profile__fields__" + field + "__icontains": search_term})
+            )
+        qs = qs.filter(reduce(operator.or_, conditions))
 
     try:
         p = Paginator(
