@@ -18,6 +18,7 @@
     position: sticky;
     left: 0;
     box-sizing: border-box;
+    z-index: 1000;
     & > * {
       padding: 0 16px;
     }
@@ -49,7 +50,7 @@ header {
   display: flex;
   flex-direction: row;
   align-content: space-between;
-  z-index: 1000;
+  z-index: 900;
 
   a {
     font-size: 16px;
