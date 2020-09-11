@@ -10,6 +10,7 @@
 						th Name
 						th Type
 						th
+						th Include in search queries
 						th
 				tbody
 					tr(v-for="(field, index) in config.profile_fields")
@@ -19,12 +20,15 @@
 							bunt-select(v-model="field.type", label="Type", name="type", :options="['text', 'textarea', 'select']")
 						td
 							bunt-input(v-if="field.type === 'select'", v-model="field.choices", label="Choices (comma seperated)", name="choices")
+						td
+							bunt-checkbox(v-model="field.searchable", name="searchable")
 						td.actions
 							bunt-icon-button(@click="removeField(index)") delete-outline
 				tfoot
 					tr
 						td
 							bunt-button(@click="addField") Add field
+						td
 						td
 						td
 						td
@@ -54,7 +58,7 @@ export default {
 	validations: {},
 	methods: {
 		addField () {
-			this.config.profile_fields.push({id: uuid(), label: '', type: 'text'})
+			this.config.profile_fields.push({id: uuid(), label: '', type: 'text', searchable: false})
 		},
 		removeField (field) {
 			this.$delete(this.config.profile_fields, field)
