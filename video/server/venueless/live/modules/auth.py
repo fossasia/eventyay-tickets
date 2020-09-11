@@ -222,7 +222,10 @@ class AuthModule(BaseModule):
         page_size = list_conf.get("page_size", 20)
         search_min_chars = list_conf.get("search_min_chars", 0)
         profile_fields = self.consumer.world.config.get("profile_fields", {})
-        search_fields = [field["id"] for field in profile_fields]
+        search_fields = [
+            field["id"]
+            for field in filter(lambda f: f.get("searchable", False), profile_fields)
+        ]
         if len(body["search_term"]) < search_min_chars:
             result = {
                 "results": [],
