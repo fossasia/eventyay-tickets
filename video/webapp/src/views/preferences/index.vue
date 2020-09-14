@@ -11,10 +11,10 @@
 	transition(name="prompt")
 		prompt.change-avatar-prompt(v-if="showChangeAvatar", @close="showChangeAvatar = false")
 			.content
-				change-avatar(ref="avatar", v-model="profile.avatar")
+				change-avatar(ref="avatar", v-model="profile.avatar", @blockSave="blockSave = $event")
 				.actions
 					bunt-button#btn-cancel(@click="showChangeAvatar = false") {{ $t('Prompt:cancel:label') }}
-					bunt-button#btn-upload(:loading="savingAvatar", @click="uploadAvatar") {{ $t('preferences/index:btn-upload-save:label') }}
+					bunt-button#btn-upload(:loading="savingAvatar", :disabled="blockSave", @click="uploadAvatar") {{ $t('preferences/index:btn-upload-save:label') }}
 </template>
 <script>
 import { mapState } from 'vuex'
@@ -32,6 +32,7 @@ export default {
 			profile: null,
 			showChangeAvatar: false,
 			savingAvatar: false,
+			blockSave: false,
 			saving: false
 		}
 	},
