@@ -59,12 +59,12 @@ jobs:
           sudo apt update
           sudo apt install gettext mysql-client
       - name: Install Python dependencies
-        run: pip3 install -Ue "src[dev]" --no-use-pep517
+        run: pip3 install -Ue "src[dev]"
       - name: Install MySQL dependencies
-        run: pip3 install -Ue "src[mysql]" --no-use-pep517
+        run: pip3 install -Ue "src[mysql]"
         if: matrix.database == 'mysql'
       - name: Install Postgres dependencies
-        run: pip3 install -Ue "src[postgres]" --no-use-pep517
+        run: pip3 install -Ue "src[postgres]"
         if: matrix.database == 'postgres'
       - name: Run checks
         run: python manage.py check --deploy

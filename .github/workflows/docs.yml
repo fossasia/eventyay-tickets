@@ -31,7 +31,7 @@ jobs:
           sudo apt update
           sudo apt install enchant hunspell aspell-en
       - name: Install Dependencies
-        run: pip3 install --no-use-pep517 -Ur doc/requirements.txt
+        run: pip3 install -Ur doc/requirements.txt
       - name: Spellcheck docs
         run: make spelling
         working-directory: ./doc

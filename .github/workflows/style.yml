@@ -31,7 +31,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
       - name: Install Dependencies
-        run: pip3 install --no-use-pep517 -Ue "src[dev]"
+        run: pip3 install -Ue "src[dev]"
       - name: Run isort
         run: isort -c .
         working-directory: ./src
