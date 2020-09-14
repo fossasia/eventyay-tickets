@@ -48,10 +48,9 @@ import api from 'lib/api'
 import Avatar from 'components/Avatar'
 import ContactExhibitorPrompt from 'components/ContactExhibitorPrompt'
 import MarkdownContent from 'components/MarkdownContent'
-import UserSearch from 'components/UserSearch'
 
 export default {
-	components: { Avatar, ContactExhibitorPrompt, MarkdownContent, UserSearch },
+	components: { Avatar, ContactExhibitorPrompt, MarkdownContent },
 	props: {
 		exhibitorId: String
 	},

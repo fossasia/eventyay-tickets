@@ -94,6 +94,7 @@ const KNOWN_TYPES = [
 	'page.markdown',
 	'page.iframe',
 	'page.landing',
+	'page.userlist',
 	'livestream.native',
 	'livestream.youtube',
 	'exhibition.native',

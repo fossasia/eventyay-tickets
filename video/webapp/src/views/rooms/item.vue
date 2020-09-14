@@ -1,6 +1,6 @@
 <template lang="pug">
 .c-room(v-if="room", :class="{'standalone-chat': modules['chat.native'] && room.modules.length === 1}")
-	.ui-page-header.room-info(v-if="!modules['page.markdown'] && !modules['page.landing']")
+	.ui-page-header.room-info(v-if="!modules['page.markdown'] && !modules['page.landing'] && !modules['page.userlist']")
 		.room-name {{ room.name }}
 		.room-session(v-if="currentSession") {{ currentSession.title }}
 		bunt-icon-button(v-if="$features.enabled('schedule-control')", @click="showEditSchedule = true") calendar_edit
@@ -16,6 +16,7 @@
 				//- reactions-bar(:expanded="activeStageTool === 'reaction'", @expand="activeStageTool = 'reaction'")
 		landing-page(v-else-if="modules['page.landing']", :module="modules['page.landing']")
 		markdown-page(v-else-if="modules['page.markdown']", :module="modules['page.markdown']")
+		UserListPage(v-else-if="modules['page.userlist']", :module="modules['page.userlist']")
 		iframe-page(v-else-if="modules['page.iframe']", :module="modules['page.iframe']")
 		exhibition(v-else-if="modules['exhibition.native']", :room="room")
 		chat(v-if="modules['chat.native']", :room="room", :module="modules['chat.native']", :mode="room.modules.length === 1 ? 'standalone' : 'compact'", :key="room.id")
@@ -35,10 +36,11 @@ import Exhibition from 'components/Exhibition'
 import ReactionsBar from 'components/ReactionsBar'
 import ReactionsOverlay from 'components/ReactionsOverlay'
 import RecordingsPrompt from 'components/RecordingsPrompt'
+import UserListPage from 'components/UserListPage'
 
 export default {
 	name: 'Room',
-	components: { EditRoomSchedule, Chat, Exhibition, Livestream, LandingPage, MarkdownPage, IframePage, ReactionsBar, ReactionsOverlay, RecordingsPrompt },
+	components: { EditRoomSchedule, Chat, Exhibition, Livestream, LandingPage, MarkdownPage, IframePage, ReactionsBar, ReactionsOverlay, RecordingsPrompt, UserListPage },
 	props: {
 		roomId: String
 	},

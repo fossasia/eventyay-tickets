@@ -1,8 +1,8 @@
 <template lang="pug">
 .c-user-search
-	.combobox
-		input.combobox__input.bunt-input(type="search", name="search", :placeholder="placeholder", autocomplete="off", v-model="search", @focus="showDropdown=true", @keyup.enter.prevent="select(selectedIndex)", @keydown.down.prevent="selectNext()", @keydown.up.prevent="selectPrev()", @keyup.8="handleBackspace()", @keydown.esc.prevent="showDropdown=false")
-		ul.list(v-if="showDropdown", v-scrollbar.y="")
+	.combobox(@keyup.enter.prevent="select(selectedIndex)", @keydown.down.prevent="selectNext()", @keydown.up.prevent="selectPrev()")
+		bunt-input(type="search", name="search", :placeholder="placeholder", v-model="search")
+		ul.list(v-scrollbar.y="")
 			li.list__item(v-for="(user, index) in list", @click="select(index)", :class="{'selected': index == selectedIndex}")
 				avatar(:user="user", :size="26")
 				span.display-name
@@ -27,7 +27,6 @@ export default {
 			loading: false,
 			page: 1,
 			list: [],
-			showDropdown: false,
 			selectedIndex: 0,
 			user: null,
 			lastPage: false
@@ -57,25 +56,17 @@ export default {
 			this.list = (await api.call('user.list.search', {search_term: this.search, page: this.page})).results
 			this.loading = false
 		},
-		handleBackspace: function () {
-			this.showDropdown = true
-		},
 		select: function (index) {
-			this.showDropdown = false
 			this.user = this.list[index]
-			this.search = this.user ? this.user.profile.display_name : ''
-			this.$emit('select', this.user)
+			this.selectedIndex = index
+			this.$emit('selected', this.user)
 		},
 		selectNext: function () {
-			if (this.showDropdown) {
-				if (this.selectedIndex < this.list.length - 1) {
-					if (this.selectedIndex === this.list.length - 2) { this.page++ }
-					this.selectedIndex++
-				} else {
-					this.selectedIndex = 0
-				}
+			if (this.selectedIndex < this.list.length - 1) {
+				if (this.selectedIndex === this.list.length - 2) { this.page++ }
+				this.selectedIndex++
 			} else {
-				this.showDropdown = true
+				this.selectedIndex = 0
 			}
 		},
 		selectPrev: function () {
@@ -90,37 +81,40 @@ export default {
 </script>
 <style lang="stylus">
 .c-user-search
-	position: relative
-	display: flex
-	flex-direction: column
-	min-height: 0
-	background-color: $clr-white
-	.combobox__input
-		select-style()
-		font-size: 16px
-		padding: 4px
-		height: 36px
-		width: 100%
+	position relative
+	display flex
+	flex-direction column
+	min-height 0
+	background-color $clr-white
+	.combobox
+		height 100%
+		.bunt-input
+			font-family $font-stack
+			font-size 16px
+			font-weight 400
+			margin-left -4px
+			height 32px
+			padding 6px 8px 6px 12px
 	.list
-		card()
-		position: absolute
-		width: 100%
-		margin: 0
-		padding: 0
-		max-height: 300px
+		width 100%
+		margin 0
+		padding 0
+		min-height 0
+		height calc(100% - 44px)
 		.list__item
-			margin: 0
-			list-style-type: none
-			display: flex
-			cursor: pointer
+			margin 0
+			list-style-type none
+			display flex
+			cursor pointer
+			padding 2px 16px
 			.display-name
-				margin: auto 8px
-				flex: auto
+				margin auto 8px
+				flex auto
 				ellipsis()
 		#btn-more
-			width: 100%
+			width 100%
 		.list__item:hover
-			background-color: $clr-grey-50
+			background-color $clr-grey-50
 		.selected
-			background-color: $clr-grey-100
+			background-color $clr-grey-100
 </style>
