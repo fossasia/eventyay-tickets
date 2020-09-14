@@ -12,20 +12,20 @@
 				.value {{ field.value }}
 		.state {{ userStates.join(', ') }}
 		.actions(v-if="sender.id !== user.id && sender.id")
-			bunt-button.btn-dm(v-if="hasPermission('world:chat.direct')", @click="openDM") message
-			bunt-button.btn-call(v-if="hasPermission('world:chat.direct')", @click="startCall") call
+			bunt-button.btn-dm(v-if="hasPermission('world:chat.direct')", @click="openDM") {{ $t('UserAction:action.dm:label') }}
+			bunt-button.btn-call(v-if="hasPermission('world:chat.direct')", @click="startCall") {{ $t('UserAction:action.call:label') }}
 			menu-dropdown(v-model="showMoreActions", :blockBackground="false", @mousedown.native.stop="")
 				template(v-slot:button="{toggle}")
 					bunt-icon-button(@click="toggle") dots-vertical
 				template(v-slot:menu)
-					.unblock(v-if="isBlocked", @click="userAction = 'unblock'") unblock
-					.block(v-else, @click="userAction = 'block'") block
+					.unblock(v-if="isBlocked", @click="userAction = 'unblock'") {{ $t('UserAction:action.unblock:label') }}
+					.block(v-else, @click="userAction = 'block'") {{ $t('UserAction:action.block:label') }}
 					template(v-if="$features.enabled('chat-moderation') && hasPermission('room:chat.moderate') && sender.id !== user.id")
-						.divider Moderator Actions
+						.divider {{ $t('UserAction:moderataor.actions.devider:text') }}
 						.reactivate(v-if="sender.moderation_state", @click="userAction = 'reactivate'")
-							| {{ sender.moderation_state === 'banned' ? 'unban' : 'unsilence'}}
-						.ban(v-if="sender.moderation_state !== 'banned'", @click="userAction = 'ban'") ban
-						.silence(v-if="!sender.moderation_state", @click="userAction = 'silence'") silence
+							| {{ sender.moderation_state === 'banned' ? $t('UserAction:action.unban:label') : $t('UserAction:action.unsilence:label') }}
+						.ban(v-if="sender.moderation_state !== 'banned'", @click="userAction = 'ban'") {{ $t('UserAction:action.ban:label') }}
+						.silence(v-if="!sender.moderation_state", @click="userAction = 'silence'") {{ $t('UserAction:action.silence:label') }}
 	user-action-prompt(v-if="userAction", :action="userAction", :user="sender", @close="$emit('close')")
 </template>
 <script>

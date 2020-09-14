@@ -14,17 +14,17 @@
 					.value {{ field.value }}
 			.actions(v-if="selectedUser.id !== user.id && selectedUser.id")
 				.action-row
-					bunt-button.btn-dm(v-if="hasPermission('world:chat.direct')", @click="openDM") message
-					bunt-button.btn-call(v-if="hasPermission('world:chat.direct')", @click="startCall") call
-					bunt-button.unblock(v-if="isBlocked", @click="userAction = 'unblock'") unblock
-					bunt-button.block(v-else, @click="userAction = 'block'") block
+					bunt-button.btn-dm(v-if="hasPermission('world:chat.direct')", @click="openDM") {{ $t('UserAction:action.dm:label') }}
+					bunt-button.btn-call(v-if="hasPermission('world:chat.direct')", @click="startCall") {{ $t('UserAction:action.call:label') }}
+					bunt-button.unblock(v-if="isBlocked", @click="userAction = 'unblock'") {{ $t('UserAction:action.unblock:label') }}
+					bunt-button.block(v-else, @click="userAction = 'block'") {{ $t('UserAction:action.block:label') }}
 				template(v-if="$features.enabled('chat-moderation') && hasPermission('room:chat.moderate') && selectedUser.id !== user.id")
-					.devider Moderator Actions
+					.devider {{ $t('UserAction:moderataor.actions.devider:text') }}
 					.action-row
 						bunt-button.reactivate(v-if="selectedUser.moderation_state", @click="userAction = 'reactivate'")
-							| {{ selectedUser.moderation_state === 'banned' ? 'unban' : 'unsilence'}}
-						bunt-button.ban(v-if="selectedUser.moderation_state !== 'banned'", @click="userAction = 'ban'") ban
-						bunt-button.silence(v-if="!selectedUser.moderation_state", @click="userAction = 'silence'") silence
+							| {{ selectedUser.moderation_state === 'banned' ? $t('UserAction:action.unban:label') : $t('UserAction:action.unsilence:label') }}
+						bunt-button.ban(v-if="selectedUser.moderation_state !== 'banned'", @click="userAction = 'ban'") {{ $t('UserAction:action.ban:label') }}
+						bunt-button.silence(v-if="!selectedUser.moderation_state", @click="userAction = 'silence'") {{ $t('UserAction:action.silence:label') }}
 	UserSearch(placeholder="Search", @selected="selectUser").user-list
 	user-action-prompt(v-if="userAction", :action="userAction", :user="selectedUser", @close="updateProfile")
 </template>
@@ -115,6 +115,10 @@ export default {
 		border-left border-separator()
 		min-height 0
 		height 100%
+		+below('s')
+			width 100%
+			grid-area unset
+			border-left none
 	.profile
 		flex auto
 		display flex
