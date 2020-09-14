@@ -1,6 +1,10 @@
 <template lang="pug">
 .c-userlist
-	.profile
+	.profile(v-if="showProfile")
+		template(v-if="$mq.below['s']")
+			.ui-page-header
+				bunt-icon-button(@click="toggleView=!toggleView") arrow_left
+				h2 {{ $t('UserSearch:placeholder:text') }}
 		bunt-progress-circular(size="huge", v-if="loading")
 		template(v-else-if="selectedUser")
 			avatar(:user="selectedUser", :size="128")
@@ -25,7 +29,7 @@
 							| {{ selectedUser.moderation_state === 'banned' ? $t('UserAction:action.unban:label') : $t('UserAction:action.unsilence:label') }}
 						bunt-button.ban(v-if="selectedUser.moderation_state !== 'banned'", @click="userAction = 'ban'") {{ $t('UserAction:action.ban:label') }}
 						bunt-button.silence(v-if="!selectedUser.moderation_state", @click="userAction = 'silence'") {{ $t('UserAction:action.silence:label') }}
-	UserSearch(:placeholder="$t('UserSearch:placeholder:text')", @selected="selectUser").user-list
+	UserSearch(v-if="showList", :placeholder="$t('UserSearch:placeholder:text')", @selected="selectUser").user-list
 	user-action-prompt(v-if="userAction", :action="userAction", :user="selectedUser", @close="updateProfile")
 </template>
 <script>
@@ -46,6 +50,7 @@ export default {
 	},
 	data () {
 		return {
+			toggleView: false,
 			loading: false,
 			blockedUsers: null,
 			selectedUser: null,
@@ -56,6 +61,14 @@ export default {
 	computed: {
 		...mapState(['user', 'world']),
 		...mapGetters(['hasPermission']),
+		showProfile () {
+			if (!this.$mq.below.s) return true
+			return this.toggleView
+		},
+		showList () {
+			if (!this.$mq.below.s) return true
+			return !this.toggleView
+		},
 		isBlocked () {
 			if (!this.blockedUsers) return
 			return this.blockedUsers.some(user => user.id === this.selectedUser.id)
@@ -90,6 +103,7 @@ export default {
 		},
 		selectUser: function (user) {
 			this.selectedUser = user
+			this.toggleView = !this.toggleView
 		},
 		async openDM () {
 			await this.$store.dispatch('chat/openDirectMessage', {users: [this.selectedUser]})
@@ -106,6 +120,11 @@ export default {
 	flex auto
 	background-color $clr-white
 	display flex
+	flex-direction row
+	+below('s')
+		flex-direction column
+	.ui-page-header
+		padding 0
 	.user-list
 		flex none
 		display flex
