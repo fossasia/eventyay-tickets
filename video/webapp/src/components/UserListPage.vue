@@ -1,7 +1,8 @@
 <template lang="pug">
 .c-userlist
 	.profile
-		template(v-if="selectedUser")
+		bunt-progress-circular(size="huge", v-if="loading")
+		template(v-else-if="selectedUser")
 			avatar(:user="selectedUser", :size="128")
 			h1.display-name
 				| {{ selectedUser.profile ? selectedUser.profile.display_name : (selectedUser.id ? selectedUser.id : '(unknown user)') }}
@@ -45,6 +46,7 @@ export default {
 	},
 	data () {
 		return {
+			loading: false,
 			blockedUsers: null,
 			selectedUser: null,
 			userAction: null,
@@ -80,9 +82,11 @@ export default {
 	},
 	methods: {
 		async updateProfile () {
+			this.loading = true
 			this.userAction = null
 			this.blockedUsers = (await api.call('user.list.blocked')).users
 			this.selectedUser = await api.call('user.fetch', {id: this.selectedUser.id})
+			this.loading = false
 		},
 		selectUser: function (user) {
 			this.selectedUser = user
