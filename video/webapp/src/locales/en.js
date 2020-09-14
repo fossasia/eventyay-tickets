@@ -133,6 +133,7 @@ export default {
 	'App:fatal-connection-error:connection.replaced:headline': 'You opened this event on a new device or tab.',
 	'App:fatal-connection-error:connection.replaced:action': 'Continue (disconnect other device)',
 	'Prompt:cancel:label': 'cancel',
+	'UserSearch:placeholder:text': 'search users',
 	'UserAction:moderataor.actions.devider:text': 'Moderator Actions',
 	'UserAction:action.block:label': 'block',
 	'UserAction:action.unblock:label': 'unblock',

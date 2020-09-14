@@ -25,7 +25,7 @@
 							| {{ selectedUser.moderation_state === 'banned' ? $t('UserAction:action.unban:label') : $t('UserAction:action.unsilence:label') }}
 						bunt-button.ban(v-if="selectedUser.moderation_state !== 'banned'", @click="userAction = 'ban'") {{ $t('UserAction:action.ban:label') }}
 						bunt-button.silence(v-if="!selectedUser.moderation_state", @click="userAction = 'silence'") {{ $t('UserAction:action.silence:label') }}
-	UserSearch(placeholder="Search", @selected="selectUser").user-list
+	UserSearch(:placeholder="$t('UserSearch:placeholder:text')", @selected="selectUser").user-list
 	user-action-prompt(v-if="userAction", :action="userAction", :user="selectedUser", @close="updateProfile")
 </template>
 <script>
