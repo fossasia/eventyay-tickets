@@ -16,7 +16,7 @@ from pretalx.common.forms.fields import (
     SizeFileField,
 )
 from pretalx.common.forms.widgets import MarkdownWidget
-from pretalx.common.mixins.forms import PublicContent, ReadOnlyFlag
+from pretalx.common.mixins.forms import PublicContent, ReadOnlyFlag, RequestRequire
 from pretalx.common.phrases import phrases
 from pretalx.person.models import SpeakerInformation, SpeakerProfile, User
 from pretalx.schedule.forms import AvailabilitiesFormMixin
@@ -117,7 +117,12 @@ class UserForm(CfPFormMixin, forms.Form):
 
 
 class SpeakerProfileForm(
-    CfPFormMixin, AvailabilitiesFormMixin, ReadOnlyFlag, PublicContent, forms.ModelForm
+    CfPFormMixin,
+    AvailabilitiesFormMixin,
+    ReadOnlyFlag,
+    PublicContent,
+    RequestRequire,
+    forms.ModelForm,
 ):
     USER_FIELDS = ["name", "email", "avatar", "get_gravatar"]
     FIRST_TIME_EXCLUDE = ["email"]
@@ -135,15 +140,6 @@ class SpeakerProfileForm(
         read_only = kwargs.get("read_only", False)
         initial = kwargs.get("initial", dict())
         initial["name"] = name
-        for field in ("availabilities", "biography"):
-            if self.event and not getattr(
-                self.event.settings, f"cfp_request_{field}", True
-            ):
-                self.fields.pop(field)
-            else:
-                self.fields[field].required = getattr(
-                    self.event.settings, f"cfp_require_{field}", False
-                )
         if not self.event.settings.cfp_request_avatar:
             self.fields.pop("avatar", None)
             self.fields.pop("get_gravatar", None)
@@ -211,6 +207,7 @@ class SpeakerProfileForm(
             "avatar": ExtensionFileField,
             "biography": MarkdownWidget,
         }
+        request_require = {"biography", "availabilities"}
 
 
 class OrgaProfileForm(forms.ModelForm):

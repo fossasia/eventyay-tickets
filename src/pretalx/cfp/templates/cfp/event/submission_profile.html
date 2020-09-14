@@ -16,7 +16,6 @@
     <p>
         {{ text|rich_text }}
     </p>
-
     {% bootstrap_form_errors form %}
     {% if form.avatar or form.get_gravatar %}
         {% include "common/avatar.html" with user=user form=form %}
