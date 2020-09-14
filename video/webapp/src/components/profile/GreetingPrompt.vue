@@ -12,15 +12,15 @@ prompt.c-profile-greeting-prompt(:allowCancel="false")
 		.step-avatar(v-else-if="activeStep === 'avatar'")
 			h1 {{ $t('profile/GreetingPrompt:step-avatar:heading') }}
 			p {{ $t('profile/GreetingPrompt:step-avatar:text') }}
-			change-avatar(ref="step", v-model="profile.avatar")
+			change-avatar(ref="step", v-model="profile.avatar", @blockSave="blockSave = $event")
 		.step-additional-fields(v-else-if="activeStep === 'additionalFields'")
 			h1 {{ $t('profile/GreetingPrompt:step-fields:heading') }}
 			p {{ $t('profile/GreetingPrompt:step-fields:text') }}
 			change-additional-fields(v-model="profile.fields")
 		.actions(v-if="!showConnectGravatar")
 			bunt-button#btn-back(v-if="previousStep", @click="activeStep = previousStep") {{ $t('profile/GreetingPrompt:button-back:label') }}
-			bunt-button#btn-continue(v-if="nextStep", :class="{invalid: $v.$invalid && $v.$dirty}", :disabled="$v.$invalid && $v.$dirty", :loading="processingStep", :key="activeStep", @click="toNextStep") {{ $t('profile/GreetingPrompt:button-continue:label') }}
-			bunt-button#btn-finish(v-else, :loading="saving", @click="update") {{ $t('profile/GreetingPrompt:button-finish:label') }}
+			bunt-button#btn-continue(v-if="nextStep", :class="{invalid: $v.$invalid && $v.$dirty}", :disabled="blockSave || $v.$invalid && $v.$dirty", :loading="processingStep", :key="activeStep", @click="toNextStep") {{ $t('profile/GreetingPrompt:button-continue:label') }}
+			bunt-button#btn-finish(v-else, :loading="saving", :disabled="blockSave", @click="update") {{ $t('profile/GreetingPrompt:button-finish:label') }}
 </template>
 <script>
 import { mapState } from 'vuex'
@@ -40,6 +40,7 @@ export default {
 			showConnectGravatar: false,
 			profile: null,
 			processingStep: false,
+			blockSave: false,
 			saving: false,
 		}
 	},

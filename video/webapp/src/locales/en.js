@@ -56,6 +56,7 @@ export default {
 	'profile/ConnectGravatar:gravatar-connect:label': 'Connect',
 	'profile/ChangeAvatar:button-randomize:label': 'randomize',
 	'profile/ChangeAvatar:button-upload:label': 'upload',
+	'profile/ChangeAvatar:error:image-too-small': 'Image must be at least 128px by 128px large.',
 	'preferences/index:heading': 'Your profile',
 	'preferences/index:btn-change-avatar:label': 'change avatar',
 	'preferences/index:btn-save:label': 'save',

@@ -5,7 +5,10 @@
 		span or
 		upload-button.btn-upload(@change="fileSelected", accept="image/png, image/jpg, .png, .jpg, .jpeg") {{ $t('profile/ChangeAvatar:button-upload:label') }}
 	.image-wrapper
-		cropper(v-if="avatarImage", ref="cropper", classname="cropper", stencil-component="circle-stencil", :src="avatarImage", :stencil-props="{aspectRatio: '1/1'}", :restrictions="pixelsRestrictions")
+		.file-error(v-if="fileError")
+			.mdi.mdi-alert-octagon
+			.message {{ fileError }}
+		cropper(v-else-if="avatarImage", ref="cropper", classname="cropper", stencil-component="circle-stencil", :src="avatarImage", :stencil-props="{aspectRatio: '1/1'}", :restrictions="pixelsRestrictions")
 		identicon(v-else, :id="identicon", @click.native="changeIdenticon")
 </template>
 <script>
@@ -26,6 +29,7 @@ export default {
 		return {
 			identicon: null,
 			avatarImage: null,
+			fileError: null,
 			changedImage: false
 		}
 	},
@@ -41,19 +45,34 @@ export default {
 	},
 	methods: {
 		changeIdenticon () {
+			this.fileError = null
 			this.avatarImage = null
 			this.identicon = uuid()
+			this.$emit('blockSave', false)
 		},
-		fileSelected () {
+		fileSelected (event) {
 			// TODO block reupload while running?
+			this.fileError = null
+			this.avatarImage = null
+			this.$emit('blockSave', false)
 			if (!event.target.files.length === 1) return
-			this.changedImage = true
 			const avatarFile = event.target.files[0]
 			const reader = new FileReader()
 			reader.readAsDataURL(avatarFile)
+			event.target.value = ''
 			reader.onload = event => {
 				if (event.target.readyState !== FileReader.DONE) return
-				this.avatarImage = event.target.result
+				const img = new Image()
+				img.onload = () => {
+					if (img.width < 128 || img.height < 128) {
+						this.fileError = this.$t('profile/ChangeAvatar:error:image-too-small')
+						this.$emit('blockSave', true)
+					} else {
+						this.changedImage = true
+						this.avatarImage = event.target.result
+					}
+				}
+				img.src = event.target.result
 			}
 		},
 		pixelsRestrictions ({minWidth, minHeight, maxWidth, maxHeight, imageWidth, imageHeight}) {
@@ -118,6 +137,16 @@ export default {
 		flex-direction: column
 		align-items: center
 		justify-content: center
+	.file-error
+		width: 320px
+		height: 320px
+		display: flex
+		flex-direction: column
+		color: $clr-danger
+		align-items: center
+		justify-content: center
+		.mdi
+			font-size: 64px
 	.cropper
 		width: 320px
 		height: 320px
