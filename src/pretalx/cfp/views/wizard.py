@@ -62,7 +62,9 @@ class SubmitWizard(EventPageMixin, View):
             raise Http404()
         handler = getattr(step, request.method.lower(), self.http_method_not_allowed)
         result = handler(request)
-        if request.method == "GET" or step.get_next_applicable(request):
+        if request.method == "GET" or (
+            step.get_next_applicable(request) or not step.is_completed(request)
+        ):
             return result
         return self.done(request)
 
