@@ -137,6 +137,7 @@ export default {
 	'ContactRequest:request:text': 'Kontaktiere Mitarbeiter*innen...',
 	'ContactRequest:timeout:text': 'Momentan sind keine Mitarbeiter*innen verfügbar.\nEin*e Mitarbeiter*in wird sich später bei Dir melden.',
 	'ContactRequest:notification:text': 'Unbeantwortete Kontaktanfrage für:',
+	'UserSearch:placeholder:text': 'Teilnehmer*innen durchsuchen',
 	'UserAction:moderataor.actions.devider:text': 'Moderator Aktionen',
 	'UserAction:action.block:label': 'blockieren',
 	'UserAction:action.unblock:label': 'entblocken',
