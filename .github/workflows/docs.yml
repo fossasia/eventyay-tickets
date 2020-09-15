@@ -55,7 +55,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
       - name: Install Dependencies
-        run: pip3 install --no-use-pep517 -Ur doc/requirements.txt
+        run: pip3 install -Ur doc/requirements.txt
       - name: Linkcheck docs
         run: make linkcheck
         working-directory: ./doc

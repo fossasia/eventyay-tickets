@@ -51,7 +51,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
       - name: Install Dependencies
-        run: pip3 install --no-use-pep517 -Ue "src[dev]"
+        run: pip3 install -Ue "src[dev]"
       - name: Run flake8
         run: flake8 .
         working-directory: ./src
@@ -71,7 +71,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
       - name: Install Dependencies
-        run: pip3 install --no-use-pep517 -Ue "src[dev]"
+        run: pip3 install -Ue "src[dev]"
       - name: Run black
         run: black --check .
         working-directory: ./src
@@ -91,7 +91,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
       - name: Install Dependencies
-        run: pip3 install --no-use-pep517 -Ue "src[dev]"
+        run: pip3 install -Ue "src[dev]"
       - name: Run docformatter
         run: docformatter --check -r .
         working-directory: ./src
@@ -111,7 +111,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
       - name: Install Dependencies
-        run: pip3 install --no-use-pep517 twine -Ue "src[dev]"
+        run: pip3 install twine -Ue "src[dev]"
       - name: Run check-manifest
         run: check-manifest .
         working-directory: ./src
