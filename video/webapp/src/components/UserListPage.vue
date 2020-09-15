@@ -1,21 +1,21 @@
 <template lang="pug">
 .c-userlist
 	.profile(v-if="showProfile")
-		template(v-if="$mq.below['s']")
-			.ui-page-header
-				bunt-icon-button(@click="toggleView=!toggleView") arrow_left
-				h2 {{ $t('UserSearch:placeholder:text') }}
 		bunt-progress-circular(size="huge", v-if="loading")
 		template(v-else-if="selectedUser")
-			avatar(:user="selectedUser", :size="128")
-			h1.display-name
-				| {{ selectedUser.profile ? selectedUser.profile.display_name : (selectedUser.id ? selectedUser.id : '(unknown user)') }}
-				.ui-badge(v-for="badge in selectedUser.badges") {{ badge }}
-			.state {{ userStates.join(', ') }}
-			.fields(v-if="availableFields")
-				.field(v-for="field of availableFields")
-					.label {{ field.label }}
-					.value {{ field.value }}
+			scrollbars.content(y)
+				.ui-page-header(v-if="$mq.below['s']")
+					bunt-icon-button(@click="toggleView=!toggleView") arrow_left
+					h2 {{ $t('UserSearch:placeholder:text') }}
+				avatar(:user="selectedUser", :size="128")
+				h1.display-name
+					| {{ selectedUser.profile ? selectedUser.profile.display_name : (selectedUser.id ? selectedUser.id : '(unknown user)') }}
+					.ui-badge(v-for="badge in selectedUser.badges") {{ badge }}
+				.state {{ userStates.join(', ') }}
+				.fields(v-if="availableFields")
+					.field(v-for="field of availableFields")
+						.label {{ field.label }}
+						.value {{ field.value }}
 			.actions(v-if="selectedUser.id !== user.id && selectedUser.id")
 				.action-row
 					bunt-button.btn-dm(v-if="hasPermission('world:chat.direct')", @click="openDM") {{ $t('UserAction:action.dm:label') }}
@@ -55,7 +55,8 @@ export default {
 			blockedUsers: null,
 			selectedUser: null,
 			userAction: null,
-			moderationError: null
+			moderationError: null,
+			exhibitors: []
 		}
 	},
 	computed: {
@@ -101,9 +102,12 @@ export default {
 			this.selectedUser = await api.call('user.fetch', {id: this.selectedUser.id})
 			this.loading = false
 		},
-		selectUser: function (user) {
-			this.selectedUser = user
+		async selectUser (user) {
+			this.loading = true
 			this.toggleView = !this.toggleView
+			this.selectedUser = user
+			// this.exhibitors = (await api.call('exhibition.get.staffed_by_user', {user_id: user.id})).exhibitors
+			this.loading = false
 		},
 		async openDM () {
 			await this.$store.dispatch('chat/openDirectMessage', {users: [this.selectedUser]})
@@ -142,47 +146,52 @@ export default {
 		flex auto
 		display flex
 		flex-direction column
-		min-width 0
-		padding: 16px 32px
-		h1
-			margin: 0
-			.display-name
-				margin auto 8px
-				flex auto
-				ellipsis()
-		.fields
+		min-height 0
+		max-height 100%
+		.content
 			display flex
-			flex-direction column
-			align-self stretch
-			margin 0 8px
-			.field
+			padding 16px 0px 0px 32px
+			h1
+				margin 0
+				.display-name
+					margin auto 8px
+					flex auto
+					ellipsis()
+			.fields
 				display flex
 				flex-direction column
-				margin 4px
-				.label
-					color $clr-secondary-text-light
-					font-weight 500
-					font-size 12px
-				.value
-					margin 2px 0 0 8px
-		.state
-			height 16px
-			margin-bottom 8px
+				align-self stretch
+				margin 0 8px
+				.field
+					display flex
+					flex-direction column
+					margin 4px
+					.label
+						color $clr-secondary-text-light
+						font-weight 500
+						font-size 12px
+					.value
+						margin 2px 0 0 8px
+			.state
+				height 16px
+				margin-bottom 8px
 		.actions
 			margin-top auto
-		.action-row
-			margin 8px 0px 8px 0px
-			display flex
-			align-self stretch
-			justify-content flex-start
-			.bunt-button
-				button-style(style: clear)
-			.bunt-icon-button
-				icon-button-style(style: clear)
-		.devider
-			color $clr-secondary-text-light
-			font-weight 500
-			font-size 12px
-			margin 0px 8px
+			border-top border-separator()
+			padding-left 32px
+			.action-row
+				margin 8px 0px 8px 0px
+				display flex
+				align-self stretch
+				justify-content flex-start
+				.bunt-button
+					button-style(style: clear)
+				.bunt-icon-button
+					icon-button-style(style: clear)
+			.devider
+				color $clr-secondary-text-light
+				font-weight 500
+				font-size 12px
+				margin 0px 8px
 
 </style>
