@@ -138,6 +138,7 @@ export default {
 	'ContactRequest:timeout:text': 'Momentan sind keine Mitarbeiter*innen verfügbar.\nEin*e Mitarbeiter*in wird sich später bei Dir melden.',
 	'ContactRequest:notification:text': 'Unbeantwortete Kontaktanfrage für:',
 	'UserSearch:placeholder:text': 'Teilnehmer*innen durchsuchen',
+	'UserListPage:staffed-exhibitions:text': 'Von diesem/dieser Benutzer*in betreute Ausstellungen ',
 	'UserAction:moderataor.actions.devider:text': 'Moderator Aktionen',
 	'UserAction:action.block:label': 'blockieren',
 	'UserAction:action.unblock:label': 'entblocken',
