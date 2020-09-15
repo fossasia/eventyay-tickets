@@ -232,7 +232,7 @@ class BBBService:
                 + self.world.domain
                 + reverse("live:css.bbb"),
                 "userdata-bbb_show_public_chat_on_login": "false",
-                "userdata-bbb_mirror_own_webcam": "true",
+                # "userdata-bbb_mirror_own_webcam": "true",  unfortunately mirrors for everyone, which breaks things
                 "userdata-bbb_skip_check_audio": "true",
                 "userdata-bbb_listen_only_mode": "false"
                 if config.get("auto_microphone", False)
@@ -271,7 +271,7 @@ class BBBService:
                 + self.world.domain
                 + reverse("live:css.bbb"),
                 "userdata-bbb_show_public_chat_on_login": "false",
-                "userdata-bbb_mirror_own_webcam": "true",
+                # "userdata-bbb_mirror_own_webcam": "true",  unfortunately mirrors for everyone, which breaks things
                 "userdata-bbb_skip_check_audio": "true",
                 "userdata-bbb_listen_only_mode": "false",  # in a group call, listen-only does not make sense
                 "userdata-bbb_auto_swap_layout": "true",  # in a group call, you'd usually not have a presentation
