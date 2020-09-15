@@ -181,6 +181,48 @@ async def test_get_invalid_id(world, exhibition_room):
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
+async def test_staffed_by_user(world, exhibition_room):
+    async with world_communicator() as c:
+        await c.send_json_to(
+            ["exhibition.list", 123, {"room": str(exhibition_room.pk)}]
+        )
+        response = await c.receive_json_from()
+        e_id = response[2]["exhibitors"].pop()["id"]
+
+        await database_sync_to_async(world.world_grants.create)(
+            user=await database_sync_to_async(User.objects.get)(
+                id=c.context["user.config"]["id"]
+            ),
+            world=world,
+            role="admin",
+        )
+        await c.send_json_to(
+            [
+                "exhibition.add_staff",
+                123,
+                {
+                    "exhibitor": str(e_id),
+                    "user": str(c.context["user.config"]["id"]),
+                },
+            ]
+        )
+        response = await c.receive_json_from()
+        assert response[0] == "success"
+
+        await c.send_json_to(
+            [
+                "exhibition.get.staffed_by_user",
+                123,
+                {"user_id": str(c.context["user.config"]["id"])},
+            ]
+        )
+        response = await c.receive_json_from()
+        assert response[0] == "success"
+        assert response[2]["exhibitors"][0]["id"] == e_id
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
 async def test_exhibition_contact_cancel(world, exhibition_room):
     async with world_communicator() as c_staff, world_communicator() as c1:
         await database_sync_to_async(world.world_grants.create)(
