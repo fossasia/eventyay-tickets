@@ -9,7 +9,7 @@
 						| {{ user.profile.display_name }}
 						.ui-badge(v-for="badge in user.badges") {{ badge }}
 					bunt-icon-button(@click="removeUser(user)") close
-				input(ref="input", name="search", v-model="search", @focus="focus", @blur="blur")
+				input(ref="input", name="search", v-model="search", @focus="focus", @blur="blur", autofocus)
 		bunt-button(@click="submit") {{ buttonLabel }}
 	scrollbars.search-results(y)
 		.user(v-for="user of results", :class="{selected: isSelected(user)}", @click="addUser(user)")
