@@ -20,9 +20,9 @@
               <xs:element type="xs:date"    name="start" minOccurs="0"/>
               <xs:element type="xs:date"    name="end" minOccurs="0"/>
               <xs:element type="xs:integer" name="days" minOccurs="0"/>
-              <xs:element type="timezone"   name="timezone" minOccurs="0"/>
               <xs:element type="duration"   name="timeslot_duration" minOccurs="0"/>
               <xs:element type="httpURI"    name="base_url" minOccurs="0"/>
+              <xs:element type="xs:string"  name="time_zone_name" minOccurs="0" maxOccurs="1"/>
             </xs:all>
           </xs:complexType>
         </xs:element>
@@ -99,12 +99,6 @@
   <xs:simpleType name="duration">
     <xs:restriction base="xs:string">
       <xs:pattern value="([0-9]{1,2}:[0-9]{2})|([0-9]{1,2}:[0-9]{2}:[0-9]{1,2})"/>
-    </xs:restriction>
-  </xs:simpleType>
-
-  <xs:simpleType name="timezone">
-    <xs:restriction base="xs:string">
-      <xs:pattern value="(Z|\+[0-9]{1,2}:[0-9]{2}|-[0-9]{1,2}:[0-9]{2})"/>
     </xs:restriction>
   </xs:simpleType>
 

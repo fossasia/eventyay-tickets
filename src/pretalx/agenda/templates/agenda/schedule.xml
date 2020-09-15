@@ -11,6 +11,7 @@
         <days>{{ event.duration }}</days>
         <timeslot_duration>00:05</timeslot_duration>
         <base_url>{{ metadata.base_url }}</base_url>
+        <time_zone_name>{{ event.timezone }}</time_zone_name>
     </conference>
     {% for day in data %}<day index='{{ day.index }}' date='{{ day.start.date|date:"c" }}' start='{{ day.start|date:"c" }}' end='{{ day.end|date:"c" }}'>
         {% for room in day.rooms %}<room name='{{ room.name|xmlescape }}'>
