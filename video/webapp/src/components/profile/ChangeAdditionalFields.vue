@@ -26,6 +26,8 @@ export default {
 	.bunt-input-outline-container
 		margin-bottom 16px
 		textarea
+			font-family $font-stack
+			font-size 16px
 			background-color transparent
 			border none
 			outline none
