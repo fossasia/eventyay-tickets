@@ -3,10 +3,10 @@
 	.profile(v-if="showProfile")
 		bunt-progress-circular(size="huge", v-if="loading")
 		template(v-else-if="selectedUser")
+			.ui-page-header(v-if="$mq.below['s']")
+				bunt-icon-button(@click="toggleView=!toggleView") arrow_left
+				h2 {{ $t('UserSearch:placeholder:text') }}
 			scrollbars.content(y)
-				.ui-page-header(v-if="$mq.below['s']")
-					bunt-icon-button(@click="toggleView=!toggleView") arrow_left
-					h2 {{ $t('UserSearch:placeholder:text') }}
 				avatar(:user="selectedUser", :size="128")
 				h1.display-name
 					| {{ selectedUser.profile ? selectedUser.profile.display_name : (selectedUser.id ? selectedUser.id : '(unknown user)') }}
@@ -16,6 +16,15 @@
 					.field(v-for="field of availableFields")
 						.label {{ field.label }}
 						.value {{ field.value }}
+				.exhibitions(v-if="exhibitors.length > 0")
+					h3 {{ $t('UserListPage:staffed-exhibitions:text') }}
+					.exhibitors
+						router-link.exhibitor(v-for="exhibitor of exhibitors", :to="{name: 'exhibitor', params: {exhibitorId: exhibitor.id}}")
+							img.logo(:src="exhibitor.banner_list ? exhibitor.banner_list : exhibitor.logo", :alt="exhibitor.name")
+							.name {{ exhibitor.name }}
+							.tagline {{ exhibitor.tagline }}
+							.actions
+								bunt-button {{ $t('Exhibition:more:label') }}
 			.actions(v-if="selectedUser.id !== user.id && selectedUser.id")
 				.action-row
 					bunt-button.btn-dm(v-if="hasPermission('world:chat.direct')", @click="openDM") {{ $t('UserAction:action.dm:label') }}
@@ -106,7 +115,7 @@ export default {
 			this.loading = true
 			this.toggleView = !this.toggleView
 			this.selectedUser = user
-			// this.exhibitors = (await api.call('exhibition.get.staffed_by_user', {user_id: user.id})).exhibitors
+			this.exhibitors = (await api.call('exhibition.get.staffed_by_user', {user_id: user.id})).exhibitors
 			this.loading = false
 		},
 		async openDM () {
@@ -120,6 +129,9 @@ export default {
 }
 </script>
 <style lang="stylus">
+$grid-size = 280px
+$logo-height-medium = 160px
+
 .c-userlist
 	flex auto
 	background-color $clr-white
@@ -175,6 +187,39 @@ export default {
 			.state
 				height 16px
 				margin-bottom 8px
+			.exhibitors
+				flex auto
+				display grid
+				grid-template-columns repeat(auto-fill, $grid-size)
+				grid-auto-rows $grid-size
+				gap 16px
+				padding 16px
+				justify-content center
+				.exhibitor
+					grid-area: span 1 / span 2
+					background-color $clr-white
+					border border-separator()
+					border-radius 4px
+					display flex
+					flex-direction column
+					padding 8px
+					margin 16px
+					cursor pointer
+					&:hover
+						border 1px solid var(--clr-primary)
+					img.logo
+						height: $logo-height-medium
+						min-height: $logo-height-medium
+						margin: 0
+						object-fit contain
+						max-width 100%
+					.actions
+						flex auto
+						display flex
+						justify-content flex-end
+						align-items flex-end
+						.bunt-button
+							themed-button-secondary()
 		.actions
 			margin-top auto
 			border-top border-separator()

@@ -326,6 +326,14 @@ class ExhibitionService:
             for cr in user.exhibitor_contact_requests.filter(state="open")
         ]
 
+    @database_sync_to_async
+    def get_exhibitions_staffed_by_user(self, user_id):
+        exhibitors = Exhibitor.objects.filter(
+            world__id=self.world_id,
+            staff__user__id=user_id,
+        )
+        return [ex.serialize() for ex in exhibitors]
+
     def get_exhibition_data_for_user(self, user_id):
         exhibitors = Exhibitor.objects.filter(
             world__id=self.world_id,

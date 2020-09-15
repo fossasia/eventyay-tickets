@@ -97,6 +97,13 @@ class ExhibitionModule(BaseModule):
             return
         await self.consumer.send_success({"exhibitor": exhibitor})
 
+    @command("get.staffed_by_user")
+    async def staffed_by_user(self, body):
+        exhibitors = await self.service.get_exhibitions_staffed_by_user(
+            user_id=body["user_id"]
+        )
+        await self.consumer.send_success({"exhibitors": exhibitors})
+
     @command("contact")
     @require_world_permission(Permission.WORLD_EXHIBITION_CONTACT)
     async def contact(self, body):
