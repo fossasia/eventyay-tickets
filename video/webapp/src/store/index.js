@@ -100,6 +100,12 @@ export default new Vuex.Store({
 			}
 			dispatch('chat/updateUser', {id: state.user.id, update})
 		},
+		async adminUpdateUser ({dispatch}, update) {
+			await api.call('user.admin.update', update)
+			const userId = update.id
+			delete update.id
+			dispatch('chat/updateUser', {id: userId, update})
+		},
 		async createRoom ({state}, room) {
 			return await api.call('room.create', room)
 		},
