@@ -166,6 +166,25 @@ class AuthModule(BaseModule):
         await self.consumer.user.refresh_from_db_if_outdated()
         await ChatService(self.consumer.world).enforce_forced_joins(self.consumer.user)
 
+    @command("admin.update")
+    @require_world_permission(Permission.WORLD_USERS_MANAGE)
+    async def admin_update(self, body):
+        user = await database_sync_to_async(update_user)(
+            self.consumer.world.id,
+            body.pop("id"),
+            public_data=body,
+            serialize=False,
+        )
+        await user_broadcast(
+            "user.updated",
+            user.serialize_public(
+                trait_badges_map=self.consumer.world.config.get("trait_badges_map")
+            ),
+            user.pk,
+            self.consumer.socket_id,
+        )
+        await self.consumer.send_success()
+
     @command("fetch")
     @require_world_permission(Permission.WORLD_VIEW)
     async def fetch(self, body):
