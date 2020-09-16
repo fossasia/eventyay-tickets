@@ -2,7 +2,9 @@
 scrollbars.c-exhibitor(y)
 	.content-wrapper(v-if="exhibitor")
 		.content
-			img.banner(:src="exhibitor.banner_detail", v-if="exhibitor.banner_detail")
+			img.banner(:src="exhibitor.banner_detail", v-if="exhibitor.banner_detail && !bannerIsVideo")
+			.iframe-banner(v-else-if="exhibitor.banner_detail && bannerIsVideo")
+				iframe(:src="bannerVideoSource", allowfullscreen, allow="fullscreen")
 			markdown-content.text(:markdown="exhibitor.text")
 			.downloads(v-if="downloadLinks.length > 0")
 				h2 {{ $t("Exhibitor:downloads-headline:text") }}
@@ -63,6 +65,16 @@ export default {
 	computed: {
 		...mapState(['user']),
 		...mapGetters(['hasPermission']),
+		bannerIsVideo () {
+			return this.exhibitor.banner_detail && this.exhibitor.banner_detail.match('^https?://(www.)?youtube.com/watch\\?v=(.*)$').length
+		},
+		bannerVideoSource () {
+			const ytMatch = this.exhibitor.banner_detail.match('^https?://(www.)?youtube.com/watch\\?v=(.*)$')
+			if (ytMatch) {
+				return 'https://www.youtube-nocookie.com/embed/' + ytMatch[2]
+			}
+			return this.exhibitor.banner_detail
+		},
 		profileLinks () {
 			return this.exhibitor.links.filter((l) => (l.category === 'profile'))
 		},
@@ -96,6 +108,19 @@ export default {
 			width: 100%
 			max-width: 720px
 			padding: 0 16px 0 0
+			.iframe-banner
+				padding-top: 56.25%
+				position: relative
+				height: 0
+				overflow: hidden
+				margin-top: 16px
+				iframe
+					position: absolute
+					top: 0
+					left: 0
+					width: 100%
+					height: 100%
+					border: 0
 			img.banner
 				object-fit: contain
 				width: 100%
