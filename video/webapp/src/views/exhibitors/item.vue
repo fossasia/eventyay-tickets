@@ -66,7 +66,7 @@ export default {
 		...mapState(['user']),
 		...mapGetters(['hasPermission']),
 		bannerIsVideo () {
-			return this.exhibitor.banner_detail && this.exhibitor.banner_detail.match('^https?://(www.)?youtube.com/watch\\?v=(.*)$').length
+			return this.exhibitor.banner_detail && this.exhibitor.banner_detail.match('^https?://(www.)?youtube.com/watch\\?v=(.*)$')
 		},
 		bannerVideoSource () {
 			const ytMatch = this.exhibitor.banner_detail.match('^https?://(www.)?youtube.com/watch\\?v=(.*)$')
