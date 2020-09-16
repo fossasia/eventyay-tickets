@@ -13,7 +13,7 @@
 				bunt-button.btn-silence(v-if="!user.moderation_state", @click="userAction = 'silence'") silence
 				bunt-button#btn-save(v-if="edit", :disabled="$v.$invalid && $v.$dirty", :loading="saving", @click="save") {{ $t('preferences/index:btn-save:label') }}
 				bunt-button#btn-edit(v-else, @click="edit=true") edit
-		.user-info(v-scrollbar.y="")
+		scrollbars.user-info(y)
 			.avatar-wrapper
 				avatar(:user="user", :size="128")
 				bunt-button#btn-change-avatar(@click="showChangeAvatar = true", v-if="edit") {{ $t('preferences/index:btn-change-avatar:label') }}
