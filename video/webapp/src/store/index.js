@@ -144,8 +144,13 @@ export default new Vuex.Store({
 			room = state.rooms.find(r => r.id === room)
 			if (!room) return
 			Vue.set(room, 'schedule_data', schedule_data)
+		},
+		'api::user.updated' ({state, dispatch}, update) {
+			for (const [key, value] of Object.entries(update)) {
+				Vue.set(state.user, key, value)
+			}
+			dispatch('chat/updateUser', {id: state.user.id, update})
 		}
-		// TODO handle user.updated
 	},
 	modules: {
 		chat,
