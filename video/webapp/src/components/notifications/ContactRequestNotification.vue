@@ -1,12 +1,12 @@
 <template lang="pug">
 .c-contact-request-notification(v-if="showNotification")
-	bunt-icon-button#btn-close(@click="showNotification=false") close
+	bunt-icon-button#btn-close(@click="close") close
 	.details {{ $t('ContactRequest:notification:text') }} #[br] #[span.exhibitor {{ contactRequest.exhibitor.name }}]
 	.user
 		avatar(:user="contactRequest.user", :size="36")
 		.display-name {{ contactRequest.user ? contactRequest.user.profile.display_name : '' }}
 	.actions
-		bunt-button#btn-accept(@click="$store.dispatch('exhibition/acceptContactRequest', contactRequest)") {{ $t('ContactRequest:accept-button:label') }}
+		bunt-button#btn-accept(@click="accept") {{ $t('ContactRequest:accept-button:label') }}
 	.timer
 		#timer-bar
 </template>
@@ -22,18 +22,44 @@ export default {
 	data () {
 		return {
 			showNotification: true,
-			timer: moment(this.contactRequest.timestamp).diff(moment(), 'seconds')
+			timer: moment(this.contactRequest.timestamp).diff(moment(), 'seconds'),
+			desktopNotification: Object
 		}
 	},
 	computed: {},
 	created () {
+		if (window.Notification.permission === 'default') {
+			window.Notification.requestPermission(_ => { this.handleDesktopNotification() })
+		} else {
+			this.handleDesktopNotification()
+		}
 	},
 	mounted () {
 		this.$nextTick(() => {
 			document.getElementById('timer-bar').style.animationDelay = this.timer + 's'
 		})
 	},
-	methods: {}
+	destroyed () {
+		this.desktopNotification.close()
+	},
+	methods: {
+		close () {
+			this.showNotification = false
+			this.desktopNotification.close()
+		},
+		accept () {
+			this.$store.dispatch('exhibition/acceptContactRequest', this.contactRequest)
+		},
+		handleDesktopNotification () {
+			if (window.Notification.permission === 'granted') {
+				const title = (this.contactRequest.user ? this.contactRequest.user.profile.display_name : '')
+				const text = this.$t('ContactRequest:notification:text') + ' ' + this.contactRequest.exhibitor.name
+				this.desktopNotification = new Notification(title, {body: text})
+				this.desktopNotification.onclose = () => { this.close() }
+				this.desktopNotification.onclick = () => { this.accept() }
+			}
+		}
+	}
 }
 </script>
 <style lang="stylus">
