@@ -61,6 +61,7 @@ export default {
 	'preferences/index:btn-change-avatar:label': 'change avatar',
 	'preferences/index:btn-save:label': 'save',
 	'preferences/index:btn-upload-save:label': 'save',
+	'preferences/index:btn-perm:label': 'Enable desktop notifications',
 	'RoomsSidebar:schedule:label': 'Schedule',
 	'RoomsSidebar:admin-headline:text': 'Administration',
 	'RoomsSidebar:stages-headline:text': 'Stages',

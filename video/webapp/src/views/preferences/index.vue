@@ -7,6 +7,7 @@
 			bunt-button#btn-change-avatar(@click="showChangeAvatar = true") {{ $t('preferences/index:btn-change-avatar:label') }}
 		bunt-input.display-name(name="displayName", :label="$t('profile/GreetingPrompt:displayname:label')", v-model.trim="profile.display_name", :validation="$v.profile.display_name")
 		change-additional-fields(v-model="profile.fields")
+		bunt-button#btn-perm(v-if="desktopNotificationPermission", @click="grantDesktopNotificationPermission") {{ $t('preferences/index:btn-perm:label') }}
 		bunt-button#btn-save(:disabled="$v.$invalid && $v.$dirty", :loading="saving", @click="save") {{ $t('preferences/index:btn-save:label') }}
 	transition(name="prompt")
 		prompt.change-avatar-prompt(v-if="showChangeAvatar", @close="showChangeAvatar = false")
@@ -33,7 +34,8 @@ export default {
 			showChangeAvatar: false,
 			savingAvatar: false,
 			blockSave: false,
-			saving: false
+			saving: false,
+			desktopNotificationPermissionState: ''
 		}
 	},
 	validations: {
@@ -45,6 +47,9 @@ export default {
 	},
 	computed: {
 		...mapState(['user', 'world']),
+		desktopNotificationPermission () {
+			return this.desktopNotificationPermissionState === 'default'
+		},
 	},
 	created () {
 		this.profile = Object.assign({}, this.user.profile)
@@ -53,8 +58,12 @@ export default {
 				identicon: this.user.id
 			}
 		}
+		this.desktopNotificationPermissionState = window.Notification.permission
 	},
 	methods: {
+		grantDesktopNotificationPermission () {
+			window.Notification.requestPermission(p => { this.desktopNotificationPermissionState = p })
+		},
 		async uploadAvatar () {
 			this.savingAvatar = true
 			await this.$refs.avatar.update()
@@ -90,6 +99,10 @@ export default {
 		width: 320px
 	#btn-save
 		themed-button-primary()
+	#btn-perm
+		themed-button-primary()
+		width 100%
+		margin-bottom: 16px
 
 	.change-avatar-prompt
 		.content

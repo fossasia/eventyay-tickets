@@ -60,6 +60,7 @@ export default {
 	'preferences/index:btn-change-avatar:label': 'Bild ändern',
 	'preferences/index:btn-save:label': 'speichern',
 	'preferences/index:btn-upload-save:label': 'speichern',
+	'preferences/index:btn-perm:label': 'Desktop Notifications zulassen',
 	'RoomsSidebar:schedule:label': 'Zeitplan',
 	'RoomsSidebar:admin-headline:text': 'Administration',
 	'RoomsSidebar:stages-headline:text': 'Bühnen',
