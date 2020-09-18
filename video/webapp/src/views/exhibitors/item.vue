@@ -103,8 +103,6 @@ export default {
 		justify-content: center
 		padding: 8px
 		> .content
-			display: flex
-			flex-direction: column
 			width: 100%
 			max-width: 720px
 			padding: 0 16px 0 0
