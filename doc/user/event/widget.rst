@@ -44,7 +44,7 @@ Your embedded widget could look like the following:
 
     <script type="text/javascript" src="https://pretalx.com/democon/schedule/widget/v2.en.js" async></script>
 
-    <pretalx-schedule event="https://pretalx.com/democon/" locale="en" style="--pretalx-clr-primary: #3aa57c"></pretalx-schedule>
+    <pretalx-schedule event-url="https://pretalx.com/democon/" locale="en" style="--pretalx-clr-primary: #3aa57c"></pretalx-schedule>
     <noscript>
        <div class="pretalx-widget">
             <div class="pretalx-widget-info-message">
