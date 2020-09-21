@@ -12,7 +12,7 @@
 										@input="toggle_trait_grants(key, $event)")
 			bunt-input(label="Required traits (comma-separated)", @input="set_trait_grants(key, $event)",
 									:disabled="typeof config.trait_grants[key] === 'undefined'", name="g"
-									:value="config.trait_grants[key] ? config.trait_grants[key].join(', ') : ''")
+									:value="config.trait_grants[key] ? config.trait_grants[key].map(i => (Array.isArray(i) ? i.join('|') : i)).join(', ') : ''")
 		bunt-button.btn-add-role(@click="add_role") Add new role
 		bunt-button.btn-save(@click="save", :loading="saving") Save
 
@@ -57,7 +57,9 @@ export default {
 		},
 		set_trait_grants (role, traits) {
 			if (typeof this.config.trait_grants[role] !== 'undefined') {
-				this.$set(this.config.trait_grants, role, traits.split(',').map((i) => i.trim()))
+				this.$set(this.config.trait_grants, role, traits.split(',').map(
+					(i) => i.trim().split('|').filter((j) => j.length > 0)
+				).filter((i) => i.length > 0))
 			}
 		},
 		add_role () {
