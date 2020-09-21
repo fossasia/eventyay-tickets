@@ -23,16 +23,12 @@ export default {
 		return {
 			showNotification: true,
 			timer: moment(this.contactRequest.timestamp).diff(moment(), 'seconds'),
-			desktopNotification: Object
+			desktopNotification: null
 		}
 	},
 	computed: {},
 	created () {
-		if (window.Notification.permission === 'default') {
-			window.Notification.requestPermission(_ => { this.handleDesktopNotification() })
-		} else {
-			this.handleDesktopNotification()
-		}
+		this.handleDesktopNotification()
 	},
 	mounted () {
 		this.$nextTick(() => {
@@ -40,18 +36,18 @@ export default {
 		})
 	},
 	destroyed () {
-		this.desktopNotification.close()
+		this.desktopNotification?.close()
 	},
 	methods: {
 		close () {
 			this.showNotification = false
-			this.desktopNotification.close()
+			this.desktopNotification?.close()
 		},
 		accept () {
 			this.$store.dispatch('exhibition/acceptContactRequest', this.contactRequest)
 		},
 		handleDesktopNotification () {
-			if (window.Notification.permission === 'granted') {
+			if (localStorage.desktopNotificationPermission === 'granted') {
 				const title = (this.contactRequest.user ? this.contactRequest.user.profile.display_name : '')
 				const text = this.$t('ContactRequest:notification:text') + ' ' + this.contactRequest.exhibitor.name
 				this.desktopNotification = new Notification(title, {body: text})

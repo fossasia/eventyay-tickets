@@ -7,7 +7,8 @@
 			bunt-button#btn-change-avatar(@click="showChangeAvatar = true") {{ $t('preferences/index:btn-change-avatar:label') }}
 		bunt-input.display-name(name="displayName", :label="$t('profile/GreetingPrompt:displayname:label')", v-model.trim="profile.display_name", :validation="$v.profile.display_name")
 		change-additional-fields(v-model="profile.fields")
-		bunt-button#btn-perm(v-if="desktopNotificationPermission", @click="grantDesktopNotificationPermission") {{ $t('preferences/index:btn-perm:label') }}
+		bunt-button#btn-enable-perm(v-if="!desktopNotificationPermission", @click="enableDesktopNotifications") {{ $t('preferences/index:btn-enable-perm:label') }}
+		bunt-button#btn-disable-perm(v-else, @click="disableDesktopNotifications") {{ $t('preferences/index:btn-disable-perm:label') }}
 		bunt-button#btn-save(:disabled="$v.$invalid && $v.$dirty", :loading="saving", @click="save") {{ $t('preferences/index:btn-save:label') }}
 	transition(name="prompt")
 		prompt.change-avatar-prompt(v-if="showChangeAvatar", @close="showChangeAvatar = false")
@@ -48,7 +49,7 @@ export default {
 	computed: {
 		...mapState(['user', 'world']),
 		desktopNotificationPermission () {
-			return this.desktopNotificationPermissionState === 'default'
+			return this.desktopNotificationPermissionState === 'granted'
 		},
 	},
 	created () {
@@ -58,11 +59,24 @@ export default {
 				identicon: this.user.id
 			}
 		}
-		this.desktopNotificationPermissionState = window.Notification.permission
+		if (window.Notification.permission === 'default') {
+			this.desktopNotificationPermissionState = window.Notification.permission
+		} else {
+			this.desktopNotificationPermissionState = localStorage.desktopNotificationPermission
+		}
 	},
 	methods: {
-		grantDesktopNotificationPermission () {
-			window.Notification.requestPermission(p => { this.desktopNotificationPermissionState = p })
+		async enableDesktopNotifications () {
+			if (window.Notification.permission === 'default') {
+				localStorage.desktopNotificationPermission = await window.Notification.requestPermission()
+			} else {
+				localStorage.desktopNotificationPermission = 'granted'
+			}
+			this.desktopNotificationPermissionState = localStorage.desktopNotificationPermission
+		},
+		disableDesktopNotifications () {
+			localStorage.desktopNotificationPermission = 'denied'
+			this.desktopNotificationPermissionState = localStorage.desktopNotificationPermission
 		},
 		async uploadAvatar () {
 			this.savingAvatar = true
@@ -99,10 +113,16 @@ export default {
 		width: 320px
 	#btn-save
 		themed-button-primary()
-	#btn-perm
-		themed-button-primary()
-		width 100%
+	#btn-enable-perm
+		themed-button-clear()
+		width: 100%
 		margin-bottom: 16px
+		background-color: $clr-green-300
+	#btn-disable-perm
+		themed-button-clear()
+		width: 100%
+		margin-bottom: 16px
+		background-color: $clr-red-300
 
 	.change-avatar-prompt
 		.content
