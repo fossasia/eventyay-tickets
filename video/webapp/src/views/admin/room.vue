@@ -25,7 +25,7 @@
 							bunt-input(:value="key", label="Role name", @input="set_role_name(key, $event)", name="n", :disabled="index < Object.keys(config.trait_grants).length - 1")
 						td
 							bunt-input(label="Required traits (comma-separated)", @input="set_trait_grants(key, $event)", name="g"
-													:value="val ? val.join(', ') : ''")
+												:value="val ? val.map(i => (Array.isArray(i) ? i.join('|') : i)).join(', ') : ''")
 						td.actions
 							bunt-icon-button(@click="remove_role(key)") delete-outline
 				tfoot
@@ -154,7 +154,9 @@ export default {
 	methods: {
 		set_trait_grants (role, traits) {
 			if (typeof this.config.trait_grants[role] !== 'undefined') {
-				this.$set(this.config.trait_grants, role, traits.split(',').map((i) => i.trim()).filter((i) => i.length > 0))
+				this.$set(this.config.trait_grants, role, traits.split(',').map(
+					(i) => i.trim().split('|').filter((j) => j.length > 0)
+				).filter((i) => i.length > 0))
 			}
 		},
 		remove_role (role) {

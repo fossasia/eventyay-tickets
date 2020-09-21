@@ -96,3 +96,8 @@ the configuration would look like this::
       "participant": ["pretix-product-1234", "pretix-product-5678"]
     }
 
+It's also possible to have "OR"-type grants::
+
+    "trait_grants": {
+      "participant": ["pretix-event-foo", ["pretix-product-1234", "pretix-product-5678"]]
+    }

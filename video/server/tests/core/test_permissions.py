@@ -155,6 +155,45 @@ def test_user_implicit_roles(world, chat_room, bbb_room):
 
 
 @pytest.mark.django_db
+def test_user_implicit_roles_or_support(world, chat_room, bbb_room):
+    user = User.objects.create(world=world, profile={}, traits=["trait123", "trait456"])
+    assert user.get_role_grants() == set()
+    assert not world.has_permission(
+        user=user, permission=Permission.WORLD_ROOMS_CREATE_CHAT
+    )
+    assert world.get_all_permissions(user)[world] == {
+        "world:view",
+    }
+    assert world.get_all_permissions(user)[chat_room] == {
+        "room:bbb.join",
+        "room:chat.join",
+        "room:chat.read",
+        "room:chat.send",
+        "world:chat.direct",
+        "room:view",
+        "world:view",
+        "world:exhibition.contact",
+    }
+
+    world.trait_grants["room_creator"] = [["trait000", "trait789"]]
+    world.save()
+    assert not world.has_permission(
+        user=user, permission=Permission.WORLD_ROOMS_CREATE_CHAT
+    )
+
+    world.trait_grants["room_creator"] = [["trait123", "trait789"]]
+    world.save()
+    assert world.has_permission(
+        user=user, permission=Permission.WORLD_ROOMS_CREATE_CHAT
+    )
+    assert not world.has_permission(user=user, permission=Permission.WORLD_UPDATE)
+    assert world.get_all_permissions(user)[world] == {
+        "world:view",
+        "world:rooms.create.chat",
+    }
+
+
+@pytest.mark.django_db
 @pytest.mark.asyncio
 async def test_check_async(world, chat_room, bbb_room):
     user = await database_sync_to_async(User.objects.create)(

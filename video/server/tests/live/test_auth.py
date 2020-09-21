@@ -423,7 +423,9 @@ async def test_auth_with_jwt_token_and_permission_traits(world):
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
-async def test_auth_private_rooms_in_world_config(world, bbb_room, chat_room):
+async def test_auth_private_rooms_in_world_config(
+    world, bbb_room, chat_room, stream_room
+):
     config = world.config["JWT_secrets"][0]
     iat = datetime.datetime.utcnow()
     exp = iat + datetime.timedelta(days=999)
@@ -456,9 +458,13 @@ async def test_auth_private_rooms_in_world_config(world, bbb_room, chat_room):
         }
 
     chat_room.trait_grants = {
-        "participant": ["blablabla"],
+        "participant": [["unknowen", "blablabla"]],
     }
     await database_sync_to_async(chat_room.save)()
+    stream_room.trait_grants = {
+        "participant": ["blablabla"],
+    }
+    await database_sync_to_async(stream_room.save)()
 
     async with world_communicator() as c:
         await c.send_json_to(["authenticate", {"token": token}])

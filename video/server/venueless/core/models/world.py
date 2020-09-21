@@ -104,7 +104,8 @@ class World(VersionedModel):
     ):
         for role, required_traits in self.trait_grants.items():
             if isinstance(required_traits, list) and all(
-                r in traits for r in required_traits
+                any(x in traits for x in (r if isinstance(r, list) else [r]))
+                for r in required_traits
             ):
                 if any(p.value in self.roles.get(role, []) for p in permissions):
                     return True
@@ -112,7 +113,8 @@ class World(VersionedModel):
         if room:
             for role, required_traits in room.trait_grants.items():
                 if isinstance(required_traits, list) and all(
-                    r in traits for r in required_traits
+                    any(x in traits for x in (r if isinstance(r, list) else [r]))
+                    for r in required_traits
                 ):
                     if any(p.value in self.roles.get(role, []) for p in permissions):
                         return True
@@ -179,7 +181,8 @@ class World(VersionedModel):
 
         for role, required_traits in self.trait_grants.items():
             if isinstance(required_traits, list) and all(
-                r in user.traits for r in required_traits
+                any(x in user.traits for x in (r if isinstance(r, list) else [r]))
+                for r in required_traits
             ):
                 result[self].update(self.roles.get(role, []))
 
@@ -189,7 +192,8 @@ class World(VersionedModel):
         for room in self.rooms.all():
             for role, required_traits in room.trait_grants.items():
                 if isinstance(required_traits, list) and all(
-                    r in user.traits for r in required_traits
+                    any(x in user.traits for x in (r if isinstance(r, list) else [r]))
+                    for r in required_traits
                 ):
                     result[room].update(self.roles.get(role, []))
 

@@ -3,6 +3,7 @@ import uuid
 from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.db.models import Exists, OuterRef, Q
+from django.db.models.expressions import RawSQL
 from rest_framework import serializers
 
 from venueless.core.models.cache import VersionedModel
@@ -57,26 +58,66 @@ class RoomQuerySet(models.QuerySet):
             qs = self
             requirements = Q()
 
-        # Implicit role grants
-        for role in roles:
-            requirements |= Q(
-                Q(
+        # Implicit role grants, i.e. grants given by trait_grants values on the room itself
+        # We calculate this entirely in SQL for performance reasons. This is a little more complicated
+        # since trait_grants can contain AND and OR restrictions.
+        # For example, if we know from above the "moderator" role would grant the required permission, we need to
+        # check the trait_grants["moderator"] value of the room, which always is an array. All values inside the
+        # array are connected as AND restrictions. However, the value may either be strings (user must have that trait)
+        # or arrays (user must have one of the traits -- OR). We therefore need to do In-SQL type checks.
+        # In case it is an empty array, everyone is permitted. When our user has traits, this is automatically ensured
+        # by the ALL() statement, but when traits=[] we need to do a special case check since "IN ()" is not valid SQL
+        for i, role in enumerate(roles):
+            if traits:
+                qs = qs.annotate(
                     **{
-                        "trait_grants__has_key": role,
-                        f"trait_grants__{role}__contained_by": user.traits,
+                        f"has_role_{i}": RawSQL(
+                            f"""(
+                            trait_grants ? %s AND
+                            trait_grants->%s IS NOT NULL AND
+                            TRUE = ALL(
+                                SELECT (
+                                    CASE jsonb_typeof(d{i}.elem)
+                                        WHEN 'array' THEN EXISTS(SELECT 1 FROM jsonb_array_elements(d{i}.elem) e{i}(elem) WHERE e{i}.elem#>>'{"{}"}' IN %s )
+                                        ELSE d{i}.elem#>>'{"{}"}' IN %s
+                                    END
+                                ) FROM jsonb_array_elements( trait_grants->%s ) AS d{i}(elem)
+                            )
+                        )""",
+                            (
+                                role,  # ? check
+                                role,  # IS NOT NULL check
+                                tuple(traits),  # IN check
+                                tuple(traits),  # IN check
+                                role,  # jsonb_array_elements
+                            ),
+                        )
                     }
                 )
-                & ~Q(
+            else:
+                qs = qs.annotate(
                     **{
-                        f"trait_grants__{role}": None,
+                        f"has_role_{i}": RawSQL(
+                            """(
+                                trait_grants ? %s AND
+                                trait_grants->%s IS NOT NULL AND
+                                jsonb_array_length(trait_grants->%s) = 0
+                            )""",
+                            (
+                                role,  # ? check
+                                role,  # IS NOT NULL check
+                                role,  # jsonb_array_length
+                            ),
+                        )
                     }
                 )
-            )
+            requirements |= Q(**{f"has_role_{i}": True})
 
-        return qs.filter(
+        qs = qs.filter(
             requirements,
             world=world,
         )
+        return qs
 
 
 class Room(VersionedModel):
