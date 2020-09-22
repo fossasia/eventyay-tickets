@@ -340,9 +340,17 @@ def unblock_user(world, blocking_user: User, blocked_user_id) -> bool:
 
 @database_sync_to_async
 def list_users(
-    world_id, page, page_size, search_term, search_fields=[], trait_badges_map=None
+    world_id,
+    page,
+    page_size,
+    search_term,
+    search_fields=[],
+    trait_badges_map=None,
+    include_banned=True,
 ) -> object:
     qs = User.objects.filter(world_id=world_id, show_publicly=True)
+    if not include_banned:
+        qs = qs.exclude(moderation_state=User.ModerationState.BANNED)
     if search_term:
         conditions = [(Q(profile__display_name__icontains=search_term))]
         for field in search_fields:

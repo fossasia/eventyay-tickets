@@ -234,6 +234,9 @@ class AuthModule(BaseModule):
             include_admin_info=await self.consumer.world.has_permission_async(
                 user=self.consumer.user, permission=Permission.WORLD_USERS_MANAGE
             ),
+            include_banned=await self.consumer.world.has_permission_async(
+                user=self.consumer.user, permission=Permission.WORLD_USERS_MANAGE
+            ),
             trait_badges_map=self.consumer.world.config.get("trait_badges_map"),
         )
         await self.consumer.send_success({"results": users})
@@ -260,6 +263,9 @@ class AuthModule(BaseModule):
                 page_size=page_size,
                 search_term=body["search_term"],
                 search_fields=search_fields,
+                include_banned=await self.consumer.world.has_permission_async(
+                    user=self.consumer.user, permission=Permission.WORLD_USERS_MANAGE
+                ),
                 trait_badges_map=self.consumer.world.config.get("trait_badges_map"),
             )
         await self.consumer.send_success(result)
