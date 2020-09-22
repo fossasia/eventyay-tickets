@@ -953,7 +953,7 @@ async def test_last_disconnect_is_leave_in_volatile_channel(world, volatile_chat
                 assert (
                     len(
                         await ChatService(world).get_channel_users(
-                            str(volatile_chat_room.channel.id)
+                            volatile_chat_room.channel
                         )
                     )
                     == 2
@@ -961,17 +961,13 @@ async def test_last_disconnect_is_leave_in_volatile_channel(world, volatile_chat
             assert (
                 len(
                     await ChatService(world).get_channel_users(
-                        str(volatile_chat_room.channel.id)
+                        volatile_chat_room.channel
                     )
                 )
                 == 2
             )
         assert (
-            len(
-                await ChatService(world).get_channel_users(
-                    str(volatile_chat_room.channel.id)
-                )
-            )
+            len(await ChatService(world).get_channel_users(volatile_chat_room.channel))
             == 1
         )
 
@@ -980,12 +976,7 @@ async def test_last_disconnect_is_leave_in_volatile_channel(world, volatile_chat
         assert response[1]["content"]["membership"] == "leave"
 
     assert (
-        len(
-            await ChatService(world).get_channel_users(
-                str(volatile_chat_room.channel.id)
-            )
-        )
-        == 0
+        len(await ChatService(world).get_channel_users(volatile_chat_room.channel)) == 0
     )
 
 

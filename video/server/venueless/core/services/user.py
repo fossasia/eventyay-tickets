@@ -47,7 +47,12 @@ def get_public_user(world_id, id, include_admin_info=False, trait_badges_map=Non
 
 @database_sync_to_async
 def get_public_users(
-    world_id, *, ids=None, include_admin_info=False, trait_badges_map=None
+    world_id,
+    *,
+    ids=None,
+    include_admin_info=False,
+    trait_badges_map=None,
+    include_banned=True,
 ):
     # This method is called a lot, especially when lots of people join at once (event start, server reboot, …)
     # For performance reasons, we therefore do not initialize model instances and use serialize_public()
@@ -57,6 +62,8 @@ def get_public_users(
         qs = User.objects.filter(world_id=world_id).order_by(
             "profile__display_name", "id"
         )
+    if not include_banned:
+        qs = qs.exclude(moderation_state=User.ModerationState.BANNED)
     return [
         dict(
             id=str(u["id"]),

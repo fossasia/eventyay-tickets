@@ -125,7 +125,7 @@ class ChatModule(BaseModule):
                 self.channel_id
             ),
             "members": await self.service.get_channel_users(
-                self.channel_id,
+                self.channel,
                 include_admin_info=await self.consumer.world.has_permission_async(
                     user=self.consumer.user, permission=Permission.WORLD_USERS_MANAGE
                 ),

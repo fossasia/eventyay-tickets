@@ -102,11 +102,12 @@ class ChatService:
         users = await get_public_users(
             # We're doing an ORM query in an async method, but it's okay, since it is not going to be evaluated but
             # lazily passed to get_public_users which will use it as a subquery :)
-            ids=Membership.objects.filter(channel_id=channel).values_list(
+            ids=Membership.objects.filter(channel_id=channel.pk).values_list(
                 "user_id", flat=True
             ),
             world_id=self.world.pk,
             include_admin_info=include_admin_info,
+            include_banned=channel.room_id is None,
             trait_badges_map=self.world.config.get("trait_badges_map"),
         )
         return users
