@@ -5,6 +5,7 @@
 import Vue from 'vue'
 import api from 'lib/api'
 import router from 'router'
+import i18n from 'i18n'
 
 export default {
 	namespaced: true,
@@ -16,7 +17,8 @@ export default {
 		usersLookup: {},
 		timeline: [],
 		beforeCursor: null,
-		fetchingMessages: false
+		fetchingMessages: false,
+		directMessageDesktopNotifications: []
 	},
 	getters: {
 		activeJoinedChannel (state) {
@@ -26,6 +28,16 @@ export default {
 			return function (channel) {
 				const joinedChannel = state.joinedChannels?.find(c => c.id === channel)
 				return joinedChannel && (!state.readPointers[channel] || joinedChannel.notification_pointer > state.readPointers[channel])
+			}
+		},
+		isDirectMessageChannel (state, getters, rootState) {
+			return function (channel) {
+				return channel.members && channel.members.some(member => member.id !== rootState.user.id)
+			}
+		},
+		directMessageChannelName (state, getters, rootState) {
+			return function (channel) {
+				return channel.members.filter(user => user.id !== rootState.user.id).map(user => user.profile.display_name).join(', ')
 			}
 		}
 	},
@@ -107,6 +119,7 @@ export default {
 				id: pointer
 			})
 			Vue.set(state.readPointers, state.channel, pointer)
+			state.directMessageDesktopNotifications[state.channel]?.close()
 		},
 		async fetchUsers ({state}, ids) {
 			const users = await api.call('user.fetch', {ids})
@@ -244,13 +257,27 @@ export default {
 		'api::chat.read_pointers' ({state}, readPointers) {
 			for (const [channel, pointer] of Object.entries(readPointers)) {
 				Vue.set(state.readPointers, channel, pointer)
+				state.directMessageDesktopNotifications[state.channel]?.close()
 			}
 		},
-		'api::chat.notification_pointers' ({state}, notificationPointers) {
+		'api::chat.notification_pointers' ({state, getters}, notificationPointers) {
 			for (const [channelId, pointer] of Object.entries(notificationPointers)) {
 				const channel = state.joinedChannels.find(c => c.id === channelId)
 				if (!channel) continue
 				channel.notification_pointer = pointer
+				if (getters.isDirectMessageChannel(channel) && (state.channel !== channel.id) && !state.directMessageDesktopNotifications.some(n => n.channel.id === channel.id) && localStorage.desktopNotificationPermission === 'granted') {
+					const title = getters.directMessageChannelName(channel)
+					const text = i18n.t('DirectMessage:notification-unread:text')
+					const notification = new Notification(title, {body: text})
+					notification.onclose = () => {
+						Vue.delete(state.directMessageDesktopNotifications, channel.id)
+					}
+					notification.onclick = () => {
+						notification.close()
+						router.push({name: 'channel', params: {channelId: channel.id}})
+					}
+					Vue.set(state.directMessageDesktopNotifications, channel.id, notification)
+				}
 			}
 		}
 	}

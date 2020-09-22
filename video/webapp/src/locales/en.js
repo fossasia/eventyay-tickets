@@ -180,5 +180,6 @@ export default {
 	'schedule/talks/item:speakers:header': 'Speaker | Speakers',
 	'DeletePrompt:button:label': 'delete',
 	'DeletePrompt:button:warning': 'This action cannot be undone!',
-	'DeletePrompt:confirm:text': 'This action cannot be undone. Please type in the name to confirm.'
+	'DeletePrompt:confirm:text': 'This action cannot be undone. Please type in the name to confirm.',
+	'DirectMessage:notification-unread:text': 'New messages'
 }
