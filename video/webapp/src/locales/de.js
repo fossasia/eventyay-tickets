@@ -178,5 +178,6 @@ export default {
 	'schedule/talks/item:speakers:header': 'Vortragende*r | Vortragende',
 	'DeletePrompt:button:label': 'löschen',
 	'DeletePrompt:button:warning': 'Diese Aktion kann nicht rückgängig gemacht werden!',
-	'DeletePrompt:confirm:text': 'Diese Aktion kann nicht rückgängig gemacht werden. Bitte gib den Namen ein um fortzufahren.'
+	'DeletePrompt:confirm:text': 'Diese Aktion kann nicht rückgängig gemacht werden. Bitte gib den Namen ein um fortzufahren.',
+	'DirectMessage:notification-unread:text': 'Neue Nachrichten'
 }
