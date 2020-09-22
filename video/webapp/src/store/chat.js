@@ -200,6 +200,7 @@ export default {
 			}
 			const index = state.joinedChannels.findIndex(c => c.id === channelId)
 			if (index > -1) state.joinedChannels.splice(index, 1)
+			state.directMessageDesktopNotifications[channelId]?.close()
 		},
 		async startCall ({state, dispatch}, {channel}) {
 			const {event} = await api.call('chat.send', {
