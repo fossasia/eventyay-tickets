@@ -126,6 +126,7 @@
       "world:rooms.create.bbb",
       "world:rooms.create.exhibition",
       "world:announce",
+      "world:connections.unlimited",
       "world:graphs",
       "world:update",
       "world:users.list",

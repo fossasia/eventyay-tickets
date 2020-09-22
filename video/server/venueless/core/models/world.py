@@ -46,6 +46,7 @@ def default_roles():
             Permission.WORLD_USERS_LIST,
             Permission.WORLD_USERS_MANAGE,
             Permission.WORLD_GRAPHS,
+            Permission.WORLD_CONNECTIONS_UNLIMITED,
         ]
     )
     apiuser = admin + [Permission.WORLD_API, Permission.WORLD_SECRETS]

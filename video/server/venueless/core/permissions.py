@@ -16,6 +16,7 @@ class Permission(Enum):
     WORLD_USERS_MANAGE = "world:users.manage"
     WORLD_CHAT_DIRECT = "world:chat.direct"
     WORLD_EXHIBITION_CONTACT = "world:exhibition.contact"
+    WORLD_CONNECTIONS_UNLIMITED = "world:connections.unlimited"
     ROOM_ANNOUNCE = "room:announce"
     ROOM_VIEW = "room:view"
     ROOM_UPDATE = "room:update"

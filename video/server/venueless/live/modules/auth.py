@@ -80,7 +80,10 @@ class AuthModule(BaseModule):
             ]
         )
 
-        await self._enforce_connection_limit()
+        if not await self.consumer.world.has_permission_async(
+            user=self.consumer.user, permission=Permission.WORLD_CONNECTIONS_UNLIMITED
+        ):
+            await self._enforce_connection_limit()
 
         await self.consumer.channel_layer.group_add(
             GROUP_USER.format(id=self.consumer.user.id), self.consumer.channel_name
