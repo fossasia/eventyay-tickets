@@ -62,6 +62,8 @@ export default {
 	'preferences/index:btn-upload-save:label': 'speichern',
 	'preferences/index:btn-enable-perm:label': 'Desktop Notifications aktivieren',
 	'preferences/index:btn-disable-perm:label': 'Desktop Notifications deaktivieren',
+	'preferences/index:btn-enable-sound:label': 'Desktop Notifications Ton aktivieren',
+	'preferences/index:btn-disable-sound:label': 'Desktop Notifications Ton deaktivieren',
 	'RoomsSidebar:schedule:label': 'Zeitplan',
 	'RoomsSidebar:admin-headline:text': 'Administration',
 	'RoomsSidebar:stages-headline:text': 'Bühnen',

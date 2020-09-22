@@ -63,6 +63,8 @@ export default {
 	'preferences/index:btn-upload-save:label': 'save',
 	'preferences/index:btn-enable-perm:label': 'Enable desktop notifications',
 	'preferences/index:btn-disable-perm:label': 'Disable desktop notifications',
+	'preferences/index:btn-enable-sound:label': 'Unmute desktop notification sound',
+	'preferences/index:btn-disable-sound:label': 'Mute desktop notification sound',
 	'RoomsSidebar:schedule:label': 'Schedule',
 	'RoomsSidebar:admin-headline:text': 'Administration',
 	'RoomsSidebar:stages-headline:text': 'Stages',
