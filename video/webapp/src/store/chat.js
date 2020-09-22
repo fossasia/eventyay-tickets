@@ -269,7 +269,9 @@ export default {
 				if (getters.isDirectMessageChannel(channel) && (state.channel !== channel.id) && !state.directMessageDesktopNotifications.some(n => n.channel.id === channel.id) && localStorage.desktopNotificationPermission === 'granted') {
 					const title = getters.directMessageChannelName(channel)
 					const text = i18n.t('DirectMessage:notification-unread:text')
+					const audio = new Audio('/notify.wav')
 					const notification = new Notification(title, {body: text})
+					if (localStorage.playDesktopNotificationSound === 'true') audio.play()
 					notification.onclose = () => {
 						Vue.delete(state.directMessageDesktopNotifications, channel.id)
 					}

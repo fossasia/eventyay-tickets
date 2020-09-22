@@ -50,7 +50,9 @@ export default {
 			if (localStorage.desktopNotificationPermission === 'granted') {
 				const title = (this.contactRequest.user ? this.contactRequest.user.profile.display_name : '')
 				const text = this.$t('ContactRequest:notification:text') + ' ' + this.contactRequest.exhibitor.name
+				const audio = new Audio('/notify.wav')
 				this.desktopNotification = new Notification(title, {body: text})
+				if (localStorage.playDesktopNotificationSound === 'true') audio.play()
 				this.desktopNotification.onclose = () => { this.close() }
 				this.desktopNotification.onclick = () => { this.accept() }
 			}

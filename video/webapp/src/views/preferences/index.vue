@@ -9,6 +9,8 @@
 		change-additional-fields(v-model="profile.fields")
 		bunt-button#btn-enable-perm(v-if="!desktopNotificationPermission", @click="enableDesktopNotifications") {{ $t('preferences/index:btn-enable-perm:label') }}
 		bunt-button#btn-disable-perm(v-else, @click="disableDesktopNotifications") {{ $t('preferences/index:btn-disable-perm:label') }}
+		bunt-button#btn-enable-sound(v-if="!desktopNotificationSound", @click="toggleDesktopNotificationSound") {{ $t('preferences/index:btn-enable-sound:label') }}
+		bunt-button#btn-disable-sound(v-else, @click="toggleDesktopNotificationSound") {{ $t('preferences/index:btn-disable-sound:label') }}
 		bunt-button#btn-save(:disabled="$v.$invalid && $v.$dirty", :loading="saving", @click="save") {{ $t('preferences/index:btn-save:label') }}
 	transition(name="prompt")
 		prompt.change-avatar-prompt(v-if="showChangeAvatar", @close="showChangeAvatar = false")
@@ -36,7 +38,8 @@ export default {
 			savingAvatar: false,
 			blockSave: false,
 			saving: false,
-			desktopNotificationPermissionState: ''
+			desktopNotificationPermissionState: '',
+			desktopNotificationSound: false
 		}
 	},
 	validations: {
@@ -50,7 +53,7 @@ export default {
 		...mapState(['user', 'world']),
 		desktopNotificationPermission () {
 			return this.desktopNotificationPermissionState === 'granted'
-		},
+		}
 	},
 	created () {
 		this.profile = Object.assign({}, this.user.profile)
@@ -64,6 +67,7 @@ export default {
 		} else {
 			this.desktopNotificationPermissionState = localStorage.desktopNotificationPermission
 		}
+		this.desktopNotificationSound = localStorage.playDesktopNotificationSound
 	},
 	methods: {
 		async enableDesktopNotifications () {
@@ -77,6 +81,10 @@ export default {
 		disableDesktopNotifications () {
 			localStorage.desktopNotificationPermission = 'denied'
 			this.desktopNotificationPermissionState = localStorage.desktopNotificationPermission
+		},
+		toggleDesktopNotificationSound () {
+			localStorage.playDesktopNotificationSound = !this.desktopNotificationSound
+			this.desktopNotificationSound = !this.desktopNotificationSound
 		},
 		async uploadAvatar () {
 			this.savingAvatar = true
@@ -119,6 +127,16 @@ export default {
 		margin-bottom: 16px
 		background-color: $clr-green-300
 	#btn-disable-perm
+		themed-button-clear()
+		width: 100%
+		margin-bottom: 16px
+		background-color: $clr-red-300
+	#btn-enable-sound
+		themed-button-clear()
+		width: 100%
+		margin-bottom: 16px
+		background-color: $clr-green-300
+	#btn-disable-sound
 		themed-button-clear()
 		width: 100%
 		margin-bottom: 16px
