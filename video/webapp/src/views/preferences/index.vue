@@ -67,7 +67,9 @@ export default {
 		} else {
 			this.desktopNotificationPermissionState = localStorage.desktopNotificationPermission
 		}
-		this.desktopNotificationSound = localStorage.playDesktopNotificationSound
+		this.desktopNotificationSound = (localStorage.playDesktopNotificationSound === 'true')
+		console.log(this.desktopNotificationSound)
+		console.log(localStorage.playDesktopNotificationSound)
 	},
 	methods: {
 		async enableDesktopNotifications () {
@@ -83,7 +85,7 @@ export default {
 			this.desktopNotificationPermissionState = localStorage.desktopNotificationPermission
 		},
 		toggleDesktopNotificationSound () {
-			localStorage.playDesktopNotificationSound = !this.desktopNotificationSound
+			localStorage.playDesktopNotificationSound = (!this.desktopNotificationSound).toString()
 			this.desktopNotificationSound = !this.desktopNotificationSound
 		},
 		async uploadAvatar () {
