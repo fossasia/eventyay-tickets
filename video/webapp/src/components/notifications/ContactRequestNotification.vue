@@ -50,7 +50,7 @@ export default {
 		handleDesktopNotification () {
 			const title = (this.contactRequest.user ? this.contactRequest.user.profile.display_name : '')
 			const text = this.$t('ContactRequest:notification:text') + ' ' + this.contactRequest.exhibitor.name
-			this.desktopNotification = notification(title, text, () => {this.close()}, () => {this.accept()})
+			this.desktopNotification = notification(title, text, () => { this.close() }, () => { this.accept() })
 		}
 	}
 }
