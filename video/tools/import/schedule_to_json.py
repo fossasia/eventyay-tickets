@@ -87,7 +87,7 @@ def main():
 
     data = load_sheet(fname)
 
-    result = {"version": data["Talks"].iat[4, 8]}
+    result = {"version": data["Talks"].iat[4, 9]}
     result["rooms"] = transform_data(
         data["Rooms"],
         field_mapping={"id": "ID", "name": "Name"},
