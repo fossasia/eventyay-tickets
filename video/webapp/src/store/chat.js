@@ -4,6 +4,7 @@
 
 import Vue from 'vue'
 import api from 'lib/api'
+import notification from 'lib/notification'
 import router from 'router'
 import i18n from 'i18n'
 
@@ -266,20 +267,18 @@ export default {
 				const channel = state.joinedChannels.find(c => c.id === channelId)
 				if (!channel) continue
 				channel.notification_pointer = pointer
-				if (getters.isDirectMessageChannel(channel) && (state.channel !== channel.id) && !state.directMessageDesktopNotifications.some(n => n.channel.id === channel.id) && localStorage.desktopNotificationPermission === 'granted') {
+				if (getters.isDirectMessageChannel(channel) && (state.channel !== channel.id) && !state.directMessageDesktopNotifications.some(n => n.channel.id === channel.id)) {
 					const title = getters.directMessageChannelName(channel)
 					const text = i18n.t('DirectMessage:notification-unread:text')
-					const audio = new Audio('/notify.wav')
-					const notification = new Notification(title, {body: text})
-					if (localStorage.playDesktopNotificationSound === 'true') audio.play()
-					notification.onclose = () => {
+					const close = () => {
 						Vue.delete(state.directMessageDesktopNotifications, channel.id)
 					}
-					notification.onclick = () => {
-						notification.close()
+					const click = () => {
+						DMNotification.close()
 						router.push({name: 'channel', params: {channelId: channel.id}})
 					}
-					Vue.set(state.directMessageDesktopNotifications, channel.id, notification)
+					const DMNotification = notification(title, text, close, click)
+					Vue.set(state.directMessageDesktopNotifications, channel.id, DMNotification)
 				}
 			}
 		}
