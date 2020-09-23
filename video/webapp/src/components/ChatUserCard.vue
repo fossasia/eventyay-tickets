@@ -100,7 +100,7 @@ export default {
 		min-width: 196px
 		max-width: 380px
 		min-height: 0
-		max-height: 100%
+		max-height: 400px
 		.name
 			font-size: 24px
 			font-weight: 600
