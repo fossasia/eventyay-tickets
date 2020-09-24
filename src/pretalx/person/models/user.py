@@ -330,23 +330,6 @@ class User(PermissionsMixin, GenerateCode, FileCleanupMixin, AbstractBaseUser):
             return set()
         return set().union(*[team.permission_set for team in teams])
 
-    def remaining_override_votes(self, event) -> int:
-        """Returns the amount of override votes a user may still give in
-        reviews in the given event.
-
-        :type event: :class:`~pretalx.event.models.event.Event`
-        """
-        allowed = max(
-            event.teams.filter(members__in=[self], is_reviewer=True).values_list(
-                "review_override_votes", flat=True
-            )
-            or [0]
-        )
-        overridden = self.reviews.filter(
-            submission__event=event, override_vote__isnull=False
-        ).count()
-        return max(allowed - overridden, 0)
-
     def regenerate_token(self) -> Token:
         """Generates a new API access token, deleting the old one."""
         self.log_action(action="pretalx.user.token.reset")

@@ -20,7 +20,6 @@ class AnonymousReviewSerializer(ModelSerializer):
             "submission",
             "text",
             "score",
-            "override_vote",
             "created",
             "updated",
         ]

@@ -83,10 +83,6 @@ document.addEventListener("DOMContentLoaded", function() {
   document.querySelectorAll(".checkbox-multi-select").forEach(element => {
     update_multi_select_caption(element)
   })
-  $("#id_is_reviewer").change(ev => {
-    update_review_override_votes()
-  })
-  update_review_override_votes()
 })
 
 function restore_scroll_position() {
@@ -98,14 +94,6 @@ function restore_scroll_position() {
     }
 }
 
-function update_review_override_votes() {
-  const review = document.querySelector("#id_is_reviewer")
-  if (review) {
-    setVisibility("label[for=id_review_override_votes]", review.checked)
-    setVisibility("#id_review_override_votes", review.checked)
-    setVisibility("#id_review_override_votes + small", review.checked)
-  }
-}
 function update_multi_select_caption(element) {
   var checkboxes = element.querySelectorAll(".checkbox")
   checkboxes = Array.from(checkboxes).filter(element => {

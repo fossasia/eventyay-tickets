@@ -1,6 +1,5 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
-from django.utils.translation import ngettext_lazy
 
 from pretalx.common.forms.widgets import MarkdownWidget
 from pretalx.common.mixins.forms import ReadOnlyFlag
@@ -11,18 +10,7 @@ from pretalx.submission.models import Review
 class ReviewForm(ReadOnlyFlag, forms.ModelForm):
     def __init__(self, event, user, *args, instance=None, categories=None, **kwargs):
         self.event = event
-        remaining_votes = user.remaining_override_votes(event)
-        self.may_override = event.settings.allow_override_votes and remaining_votes
-        self.may_override = self.may_override or (
-            instance and instance.override_vote is not None
-        )
-        self.min_value = int(event.settings.review_min_score)
-        self.max_value = int(event.settings.review_max_score)
-        if instance:
-            if instance.override_vote is True:
-                instance.score = self.max_value + 1
-            elif instance.override_vote is False:
-                instance.score = self.min_value - 1
+        self.categories = categories
 
         super().__init__(*args, instance=instance, **kwargs)
         self.scores = {

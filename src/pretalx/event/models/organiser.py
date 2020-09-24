@@ -108,13 +108,6 @@ class Team(LogMixin, models.Model):
         default=False, verbose_name=_("Can work with and change submissions")
     )
     is_reviewer = models.BooleanField(default=False, verbose_name=_("Is a reviewer"))
-    review_override_votes = models.PositiveIntegerField(
-        default=0,
-        verbose_name=_("Override votes"),
-        help_text=_(
-            "Each member of this team will have this amount of override votes per event to indicate an absolute positive or negative opinion of a submission."
-        ),
-    )
 
     def __str__(self) -> str:
         """Help with debugging."""

@@ -17,7 +17,6 @@ def test_review_serializer(review):
             "user",
             "text",
             "score",
-            "override_vote",
             "created",
             "updated",
         }

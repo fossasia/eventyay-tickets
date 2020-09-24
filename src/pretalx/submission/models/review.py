@@ -53,11 +53,9 @@ class Review(models.Model):
     They can, but don't have to, include a score and a text.
 
     :param text: The review itself. May be empty.
-    :param score: The upper and lower bounds of this value are defined in an
-        event's settings.
-    :param override_vote: If this field is ``True`` or ``False``, it indicates
-        that the reviewer has spent one of their override votes to emphasise
-        their opinion of the review. It is ``None`` otherwise.
+    :param score: This score is calculated from all the related ``scores``
+        and their weights. Do not set it directly, use the ``update_score``
+        method instead.
     """
 
     submission = models.ForeignKey(

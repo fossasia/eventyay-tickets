@@ -425,52 +425,6 @@ class ReviewSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
         widget=I18nTextarea,
         required=False,
     )
-    allow_override_votes = forms.BooleanField(
-        label=_("Allow override votes"),
-        help_text=_(
-            'Review teams can be assigned a fixed amount of "override votes": Positive or negative vetos each reviewer can assign.'
-        ),
-        required=False,
-    )
-    review_min_score = forms.IntegerField(
-        label=_("Minimum score"), help_text=_("The minimum score reviewers can assign")
-    )
-    review_max_score = forms.IntegerField(
-        label=_("Maximum score"), help_text=_("The maximum score reviewers can assign")
-    )
-
-    def __init__(self, obj, *args, **kwargs):
-        super().__init__(*args, obj=obj, **kwargs)
-        if getattr(obj, "slug"):
-            additional = _(
-                'You can configure override votes <a href="{link}">in the team settings</a>.'
-            ).format(link=obj.organiser.orga_urls.teams)
-            self.fields["allow_override_votes"].help_text += f" {additional}"
-        minimum = int(obj.settings.review_min_score)
-        maximum = int(obj.settings.review_max_score)
-        self.score_label_fields = []
-        for number in range(abs(maximum - minimum + 1)):
-            index = minimum + number
-            self.fields[f"review_score_name_{index}"] = forms.CharField(
-                label=_("Score label ({})").format(index),
-                help_text=_(
-                    'Human readable explanation of what a score of "{}" actually means, e.g. "great!".'
-                ).format(index),
-                required=False,
-            )
-
-    def clean(self):
-        data = self.cleaned_data
-        minimum = int(data.get("review_min_score"))
-        maximum = int(data.get("review_max_score"))
-        if minimum >= maximum:
-            self.add_error(
-                "review_min_score",
-                forms.ValidationError(
-                    _("Please assign a minimum score smaller than the maximum score!")
-                ),
-            )
-        return data
 
 
 class WidgetSettingsForm(HierarkeyForm):

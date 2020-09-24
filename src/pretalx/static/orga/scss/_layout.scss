@@ -368,10 +368,6 @@ footer {
   margin: auto;
 }
 
-.override {
-  padding-left: 4px;
-}
-
 .history-sidebar {
   max-height: 90vh;
   overflow-y: scroll;
@@ -769,7 +765,7 @@ h2 .submission-state-dropdown {
   border: 2px solid $gray-light;
   margin-right: 2px;
 }
-.phase-option-row .row {
+.phase-option-row .row, .score-row .row {
   margin-bottom: 8px;
 }
 #stats {

@@ -19,7 +19,6 @@ submission                            string                     The unique code
 user                                  object                     The ``name`` and ``email`` of the reviewing user.
 text                                  string                     The review's text
 score                                 number                     The review's score
-override_vote                         boolean                    ``true`` if the review is a positive override vote, ``false`` if the review is a negative override vote, ``null`` otherwise
 created                               datetime                   The review's creation timestamp
 updated                               datetime                   The review's last change timestamp
 answers                               list                       The question answers given by the reviewer.
@@ -63,7 +62,6 @@ Endpoints
             "user": {"name": "Jane", "email": "jane.doe@gmail.com"},
             "text": "This is a good submission",
             "score": 10,
-            "override_vote": null,
             "created": "2019-05-04T23:40:00",
             "updated": "2019-05-04T23:40:00";
             "answers": [
@@ -110,7 +108,6 @@ Endpoints
          "user": {"name": "Jane", "email": "jane.doe@gmail.com"},
          "text": "This is a good submission",
          "score": 10,
-         "override_vote": null,
          "created": "2019-05-04T23:40:00",
          "updated": "2019-05-04T23:40:00";
          "answers": [
