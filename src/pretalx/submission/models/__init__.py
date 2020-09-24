@@ -3,7 +3,7 @@ from .cfp import CfP
 from .feedback import Feedback
 from .question import Answer, AnswerOption, Question, QuestionTarget, QuestionVariant
 from .resource import Resource
-from .review import Review, ReviewPhase
+from .review import Review, ReviewPhase, ReviewScore, ReviewScoreCategory
 from .submission import Submission, SubmissionStates
 from .track import Track
 from .type import SubmissionType
@@ -19,6 +19,8 @@ __all__ = [
     "Resource",
     "Review",
     "ReviewPhase",
+    "ReviewScore",
+    "ReviewScoreCategory",
     "Submission",
     "SubmissionStates",
     "SubmissionType",

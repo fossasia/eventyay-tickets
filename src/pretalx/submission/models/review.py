@@ -2,8 +2,47 @@ from django.db import models
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from django_scopes import ScopedManager
+from i18nfield.fields import I18nCharField
 
 from pretalx.common.urls import EventUrls
+
+
+class ReviewScoreCategory(models.Model):
+    event = models.ForeignKey(
+        to="event.Event", related_name="score_categories", on_delete=models.CASCADE
+    )
+    name = I18nCharField()
+    weight = models.DecimalField(max_digits=4, decimal_places=1, default=1)
+    required = models.BooleanField(default=False)
+    active = models.BooleanField(default=True)
+
+    objects = ScopedManager(event="event")
+
+    @classmethod
+    def recalculate_scores(cls, event):
+        for review in event.reviews.all():
+            review.save(update_score=True)
+
+
+class ReviewScore(models.Model):
+    category = models.ForeignKey(
+        to=ReviewScoreCategory, related_name="scores", on_delete=models.CASCADE
+    )
+    value = models.DecimalField(max_digits=3, decimal_places=1)
+    label = models.CharField(null=True, blank=True, max_length=100)
+
+    objects = ScopedManager(event="category__event")
+
+    def __str__(self):
+        value = self.value
+        if int(value) == value:
+            value = int(value)
+        if self.label:
+            return f"{self.label} ({value})"
+        return str(value)
+
+    class Meta:
+        ordering = ("value",)
 
 
 class Review(models.Model):
@@ -28,8 +67,10 @@ class Review(models.Model):
         to="person.User", related_name="reviews", on_delete=models.CASCADE
     )
     text = models.TextField(verbose_name=_("What do you think?"), null=True, blank=True)
-    score = models.IntegerField(verbose_name=_("Score"), null=True, blank=True)
-    override_vote = models.BooleanField(default=None, null=True, blank=True)
+    score = models.DecimalField(
+        max_digits=10, decimal_places=2, verbose_name=_("Score"), null=True, blank=True
+    )
+    scores = models.ManyToManyField(to=ReviewScore, related_name="reviews")
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
@@ -78,6 +119,10 @@ class Review(models.Model):
         # review_count values to 1.
         return queryset.order_by("review_count")
 
+    @classmethod
+    def calculate_score(cls, scores):
+        return sum(score.value * score.category.weight for score in scores)
+
     @cached_property
     def event(self):
         return self.submission.event
@@ -85,15 +130,19 @@ class Review(models.Model):
     @cached_property
     def display_score(self) -> str:
         """Helper method to get a display string of the review's score."""
-        if self.override_vote is True:
-            return _("Positive override")
-        if self.override_vote is False:
-            return _("Negative override (Veto)")
         if self.score is None:
             return "×"
-        return self.submission.event.settings.get(
-            f"review_score_name_{self.score}"
-        ) or str(self.score)
+        if int(self.score) == self.score:
+            return int(self.score)
+        return str(self.score)
+
+    def update_score(self):
+        self.score = self.calculate_score(self.scores.all().select_related("category"))
+
+    def save(self, *args, update_score=True, **kwargs):
+        if update_score:
+            self.update_score()
+        return super().save(*args, **kwargs)
 
     class urls(EventUrls):
         base = "{self.submission.orga_urls.reviews}"
