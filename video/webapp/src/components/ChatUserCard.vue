@@ -1,7 +1,7 @@
 <template lang="pug">
 .c-chat-user-card
 	.ui-background-blocker(v-if="!userAction", @click="$emit('close')")
-	.user-card(v-scrollbar.y="", v-if="!userAction", ref="card", @mousedown="showMoreActions=false")
+	.user-card(v-if="!userAction", v-scrollbar.y="", ref="card", @mousedown="showMoreActions=false")
 		avatar(:user="sender", :size="128")
 		.name
 			| {{ sender.profile ? sender.profile.display_name : (sender.id ? sender.id : '(unknown user)') }}
