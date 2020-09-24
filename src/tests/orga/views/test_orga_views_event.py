@@ -542,137 +542,86 @@ def test_administrator_can_delete_event(event, administrator_client, submission)
 
 @pytest.mark.django_db
 def test_edit_review_settings(orga_client, event):
-    assert event.settings.review_min_score == 0
-    assert event.settings.review_max_score == 1
-    assert event.settings.review_score_names is None
     with scope(event=event):
         assert event.review_phases.count() == 2
         active_phase = event.active_review_phase
     response = orga_client.post(
         event.orga_urls.review_settings,
         {
-            "review_min_score": "0",
-            "review_max_score": "2",
-            "review_score_name_0": "OK",
-            "review_score_name_1": "Want",
-            "review_score_name_2": "Super",
-            "form-TOTAL_FORMS": 2,
-            "form-INITIAL_FORMS": 2,
-            "form-MIN_NUM_FORMS": 0,
-            "form-MAX_NUM_FORMS": 1000,
-            "form-0-name": active_phase.name + "xxx",
-            "form-0-id": active_phase.id,
-            "form-0-start": "",
-            "form-0-end": "",
-            "form-0-can_see_other_reviews": "after_review",
-            "form-1-name": active_phase.name + "xxxy",
-            "form-1-id": active_phase.id + 1,
-            "form-1-start": "",
-            "form-1-end": "",
-            "form-1-can_see_other_reviews": "after_review",
+            "phase-TOTAL_FORMS": 2,
+            "phase-INITIAL_FORMS": 2,
+            "phase-MIN_NUM_FORMS": 0,
+            "phase-MAX_NUM_FORMS": 1000,
+            "phase-0-name": active_phase.name + "xxx",
+            "phase-0-id": active_phase.id,
+            "phase-0-start": "",
+            "phase-0-end": "",
+            "phase-0-can_see_other_reviews": "after_review",
+            "phase-1-name": active_phase.name + "xxxy",
+            "phase-1-id": active_phase.id + 1,
+            "phase-1-start": "",
+            "phase-1-end": "",
+            "phase-1-can_see_other_reviews": "after_review",
         },
         follow=True,
     )
     assert response.status_code == 200
     event = Event.objects.get(slug=event.slug)
     assert response.status_code == 200
-    assert event.settings.review_min_score == 0
-    assert event.settings.review_max_score == 2
-
-
-@pytest.mark.django_db
-def test_edit_review_settings_unchanged(orga_client, event):
-    assert event.settings.review_min_score == 0
-    assert event.settings.review_max_score == 1
-    assert event.settings.review_score_names is None
-    with scope(event=event):
-        count = event.logged_actions().count()
-    response = orga_client.post(
-        event.orga_urls.review_settings,
-        {
-            "review_min_score": "0",
-            "review_max_score": "1",
-            "form-TOTAL_FORMS": 0,
-            "form-INITIAL_FORMS": 0,
-            "form-MIN_NUM_FORMS": 0,
-            "form-MAX_NUM_FORMS": 1000,
-        },
-        follow=True,
-    )
-    assert response.status_code == 200
-    with scope(event=event):
-        assert count == event.logged_actions().count()
 
 
 @pytest.mark.django_db
 def test_edit_review_settings_invalid(orga_client, event):
-    assert event.settings.review_min_score == 0
-    assert event.settings.review_max_score == 1
     assert event.settings.review_score_names is None
     with scope(event=event):
         active_phase = event.active_review_phase
     response = orga_client.post(
         event.orga_urls.review_settings,
         {
-            "review_min_score": "2",
-            "review_max_score": "2",
-            "review_score_name_0": "OK",
-            "review_score_name_1": "Want",
-            "review_score_name_2": "Super",
-            "form-TOTAL_FORMS": 2,
-            "form-INITIAL_FORMS": 2,
-            "form-MIN_NUM_FORMS": 0,
-            "form-MAX_NUM_FORMS": 1000,
-            "form-0-name": active_phase.name + "xxx",
-            "form-0-id": active_phase.id,
-            "form-0-start": "",
-            "form-0-end": "",
-            "form-0-can_see_other_reviews": "after_review",
-            "form-1-name": active_phase.name + "xxxy",
-            "form-1-id": active_phase.id + 1,
-            "form-1-start": "",
-            "form-1-end": "",
-            "form-1-can_see_other_reviews": "after_review",
+            "phase-TOTAL_FORMS": 2,
+            "phase-INITIAL_FORMS": 2,
+            "phase-MIN_NUM_FORMS": 0,
+            "phase-MAX_NUM_FORMS": 1000,
+            "phase-0-name": active_phase.name + "xxx",
+            "phase-0-id": active_phase.id,
+            "phase-0-start": "",
+            "phase-0-end": "",
+            "phase-0-can_see_other_reviews": "after_review",
+            "phase-1-name": active_phase.name + "xxxy",
+            "phase-1-id": active_phase.id + 1,
+            "phase-1-start": "",
+            "phase-1-end": "",
+            "phase-1-can_see_other_reviews": "after_review",
         },
         follow=True,
     )
     assert response.status_code == 200
     event = Event.objects.get(slug=event.slug)
     assert response.status_code == 200
-    assert event.settings.review_min_score == 0
-    assert event.settings.review_max_score == 1
 
 
 @pytest.mark.django_db
 def test_edit_review_settings_invalid_formset(orga_client, event):
-    assert event.settings.review_min_score == 0
-    assert event.settings.review_max_score == 1
-    assert event.settings.review_score_names is None
     with scope(event=event):
         assert event.review_phases.count() == 2
         active_phase = event.active_review_phase
     response = orga_client.post(
         event.orga_urls.review_settings,
         {
-            "review_min_score": "0",
-            "review_max_score": "2",
-            "review_score_name_0": "OK",
-            "review_score_name_1": "Want",
-            "review_score_name_2": "Super",
-            "form-TOTAL_FORMS": 2,
-            "form-INITIAL_FORMS": 2,
-            "form-MIN_NUM_FORMS": 0,
-            "form-MAX_NUM_FORMS": 1000,
-            "form-0-name": active_phase.name + "xxx",
-            "form-0-id": active_phase.id,
-            "form-0-start": "lalala",
-            "form-0-end": "",
-            "form-0-can_see_other_reviews": "after_review",
-            "form-1-name": active_phase.name + "xxxy",
-            "form-1-id": active_phase.id + 1,
-            "form-1-start": "",
-            "form-1-end": "",
-            "form-1-can_see_other_reviews": "after_review",
+            "phase-TOTAL_FORMS": 2,
+            "phase-INITIAL_FORMS": 2,
+            "phase-MIN_NUM_FORMS": 0,
+            "phase-MAX_NUM_FORMS": 1000,
+            "phase-0-name": active_phase.name + "xxx",
+            "phase-0-id": active_phase.id,
+            "phase-0-start": "lalala",
+            "phase-0-end": "",
+            "phase-0-can_see_other_reviews": "after_review",
+            "phase-1-name": active_phase.name + "xxxy",
+            "phase-1-id": active_phase.id + 1,
+            "phase-1-start": "",
+            "phase-1-end": "",
+            "phase-1-can_see_other_reviews": "after_review",
         },
         follow=True,
     )
@@ -684,38 +633,30 @@ def test_edit_review_settings_invalid_formset(orga_client, event):
 
 @pytest.mark.django_db
 def test_edit_review_settings_new_review_phase(orga_client, event):
-    assert event.settings.review_min_score == 0
-    assert event.settings.review_max_score == 1
-    assert event.settings.review_score_names is None
     with scope(event=event):
         assert event.review_phases.count() == 2
         active_phase = event.active_review_phase
     response = orga_client.post(
         event.orga_urls.review_settings,
         {
-            "review_min_score": "0",
-            "review_max_score": "2",
-            "review_score_name_0": "OK",
-            "review_score_name_1": "Want",
-            "review_score_name_2": "Super",
-            "form-TOTAL_FORMS": 3,
-            "form-INITIAL_FORMS": 2,
-            "form-MIN_NUM_FORMS": 0,
-            "form-MAX_NUM_FORMS": 1000,
-            "form-0-name": active_phase.name + "xxx",
-            "form-0-id": active_phase.id,
-            "form-0-start": "",
-            "form-0-end": "",
-            "form-0-can_see_other_reviews": "after_review",
-            "form-1-name": active_phase.name + "xxxy",
-            "form-1-id": active_phase.id + 1,
-            "form-1-start": "",
-            "form-1-end": "",
-            "form-1-can_see_other_reviews": "after_review",
-            "form-2-name": "New Review Phase",
-            "form-2-start": "",
-            "form-2-end": "",
-            "form-2-can_see_other_reviews": "always",
+            "phase-TOTAL_FORMS": 3,
+            "phase-INITIAL_FORMS": 2,
+            "phase-MIN_NUM_FORMS": 0,
+            "phase-MAX_NUM_FORMS": 1000,
+            "phase-0-name": active_phase.name + "xxx",
+            "phase-0-id": active_phase.id,
+            "phase-0-start": "",
+            "phase-0-end": "",
+            "phase-0-can_see_other_reviews": "after_review",
+            "phase-1-name": active_phase.name + "xxxy",
+            "phase-1-id": active_phase.id + 1,
+            "phase-1-start": "",
+            "phase-1-end": "",
+            "phase-1-can_see_other_reviews": "after_review",
+            "phase-2-name": "New Review Phase",
+            "phase-2-start": "",
+            "phase-2-end": "",
+            "phase-2-can_see_other_reviews": "always",
         },
         follow=True,
     )
@@ -727,38 +668,30 @@ def test_edit_review_settings_new_review_phase(orga_client, event):
 
 @pytest.mark.django_db
 def test_edit_review_settings_new_review_phase_wrong_dates(orga_client, event):
-    assert event.settings.review_min_score == 0
-    assert event.settings.review_max_score == 1
-    assert event.settings.review_score_names is None
     with scope(event=event):
         assert event.review_phases.count() == 2
         active_phase = event.active_review_phase
     response = orga_client.post(
         event.orga_urls.review_settings,
         {
-            "review_min_score": "0",
-            "review_max_score": "2",
-            "review_score_name_0": "OK",
-            "review_score_name_1": "Want",
-            "review_score_name_2": "Super",
-            "form-TOTAL_FORMS": 3,
-            "form-INITIAL_FORMS": 2,
-            "form-MIN_NUM_FORMS": 0,
-            "form-MAX_NUM_FORMS": 1000,
-            "form-0-name": active_phase.name + "xxx",
-            "form-0-id": active_phase.id,
-            "form-0-start": "",
-            "form-0-end": "",
-            "form-0-can_see_other_reviews": "after_review",
-            "form-1-name": active_phase.name + "xxxy",
-            "form-1-id": active_phase.id + 1,
-            "form-1-start": "",
-            "form-1-end": "",
-            "form-1-can_see_other_reviews": "after_review",
-            "form-2-name": "New Review Phase",
-            "form-2-start": now().strftime("%Y-%m-%d"),
-            "form-2-end": (now() - dt.timedelta(days=7)).strftime("%Y-%m-%d"),
-            "form-2-can_see_other_reviews": "always",
+            "phase-TOTAL_FORMS": 3,
+            "phase-INITIAL_FORMS": 2,
+            "phase-MIN_NUM_FORMS": 0,
+            "phase-MAX_NUM_FORMS": 1000,
+            "phase-0-name": active_phase.name + "xxx",
+            "phase-0-id": active_phase.id,
+            "phase-0-start": "",
+            "phase-0-end": "",
+            "phase-0-can_see_other_reviews": "after_review",
+            "phase-1-name": active_phase.name + "xxxy",
+            "phase-1-id": active_phase.id + 1,
+            "phase-1-start": "",
+            "phase-1-end": "",
+            "phase-1-can_see_other_reviews": "after_review",
+            "phase-2-name": "New Review Phase",
+            "phase-2-start": now().strftime("%Y-%m-%d"),
+            "phase-2-end": (now() - dt.timedelta(days=7)).strftime("%Y-%m-%d"),
+            "phase-2-can_see_other_reviews": "always",
         },
         follow=True,
     )

@@ -2,79 +2,23 @@ import pytest
 from django_scopes import scope
 
 from pretalx.orga.templatetags.orga_edit_link import orga_edit_link
-from pretalx.orga.templatetags.review_score import (
-    _review_score_number,
-    _review_score_override,
-    review_score,
-)
-
-
-@pytest.fixture
-def event_with_score_context(event):
-    event.settings.set("review_score_name_0", "meh.")
-    event.settings.set("review_score_name_1", "okay")
-    event.settings.set("review_score_name_2", "good")
-    event.settings.set("review_score_name_3", "great")
-    event.settings.set("review_min_score", 0)
-    event.settings.set("review_max_score", 3)
-
-    class request:
-        pass
-
-    r = request()
-    r.event = event
-    return {"request": r}
+from pretalx.orga.templatetags.review_score import _review_score_number, review_score
 
 
 @pytest.mark.parametrize(
     "score,expected",
     (
-        (3, '<span data-toggle="tooltip" title="&#x27;great&#x27;">3/3</span>'),
-        (2, '<span data-toggle="tooltip" title="&#x27;good&#x27;">2/3</span>'),
-        (1, '<span data-toggle="tooltip" title="&#x27;okay&#x27;">1/3</span>'),
-        (0, '<span data-toggle="tooltip" title="&#x27;meh.&#x27;">0/3</span>'),
-        (
-            1.5,
-            '<span data-toggle="tooltip" title="Between &#x27;okay&#x27; and &#x27;good&#x27;.">1.5/3</span>',
-        ),
+        (3, "3"),
+        (0, "0"),
+        (3.0, "3"),
+        (1.5, "1.5"),
         (None, "×"),
     ),
 )
 @pytest.mark.django_db()
-def test_templatetag_review_score(score, expected, event_with_score_context):
-    with scope(event=event_with_score_context):
-        assert _review_score_number(event_with_score_context, score) == expected
-
-
-@pytest.mark.parametrize(
-    "positive,negative,expected",
-    (
-        (1, 0, '<i class="fa fa-arrow-circle-up override text-success"></i>'),
-        (0, 1, '<i class="fa fa-arrow-circle-down override text-danger"></i>'),
-        (2, 0, '<i class="fa fa-arrow-circle-up override text-success"></i> 2'),
-        (0, 2, '<i class="fa fa-arrow-circle-down override text-danger"></i> 2'),
-        (
-            1,
-            1,
-            '<i class="fa fa-arrow-circle-up override text-success"></i> 1<i class="fa fa-arrow-circle-down override text-danger"></i> 1',
-        ),
-    ),
-)
-@pytest.mark.django_db()
-def test_templatetag_review_score_override(positive, negative, expected):
-    assert _review_score_override(positive, negative) == expected
-
-
-@pytest.mark.django_db
-def test_template_tag_review_score_override(review):
-    with scope(event=review.submission.event):
-        review.override_vote = True
-        review.submission.current_score = 0
-        review.save()
-        assert (
-            '<i class="fa fa-arrow-circle-up override text-success"></i>'
-            == review_score(None, review.submission)
-        )
+def test_templatetag_review_score(score, expected, event):
+    with scope(event=event):
+        assert _review_score_number(event, score) == expected
 
 
 @pytest.mark.django_db

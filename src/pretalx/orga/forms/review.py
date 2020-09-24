@@ -13,10 +13,14 @@ class ReviewForm(ReadOnlyFlag, forms.ModelForm):
         self.categories = categories
 
         super().__init__(*args, instance=instance, **kwargs)
-        self.scores = {
-            score.category: score.id
-            for score in self.instance.scores.all().select_related("category")
-        }
+        self.scores = (
+            {
+                score.category: score.id
+                for score in self.instance.scores.all().select_related("category")
+            }
+            if self.instance.id
+            else {}
+        )
         for category in categories:
             self.fields[f"score_{category.id}"] = self.build_score_field(
                 category,

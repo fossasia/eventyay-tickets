@@ -62,7 +62,6 @@ def test_orga_edit_team(orga_client, organiser, event):
             "form": "team",
             "limit_events": event.pk,
             "name": "Fancy New Name",
-            "review_override_votes": 10,
         },
     )
     assert response.status_code == 200
@@ -143,7 +142,6 @@ def test_orga_create_team(orga_client, organiser, event, is_administrator, orga_
             "limit_events": event.pk,
             "name": "Fancy New Name",
             "organiser": organiser.pk,
-            "review_override_votes": 0,
         },
     )
     assert response.status_code == 200

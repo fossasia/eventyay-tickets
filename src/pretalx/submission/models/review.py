@@ -131,14 +131,14 @@ class Review(models.Model):
         if self.score is None:
             return "×"
         if int(self.score) == self.score:
-            return int(self.score)
+            return str(int(self.score))
         return str(self.score)
 
     def update_score(self):
         self.score = self.calculate_score(self.scores.all().select_related("category"))
 
     def save(self, *args, update_score=True, **kwargs):
-        if update_score:
+        if self.id and update_score:
             self.update_score()
         return super().save(*args, **kwargs)
 
