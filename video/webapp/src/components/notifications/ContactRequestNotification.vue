@@ -9,6 +9,10 @@
 		bunt-button#btn-accept(@click="accept") {{ $t('ContactRequest:accept-button:label') }}
 	.timer
 		#timer-bar
+	.render-avatar
+		avatar#avatar(:user="contactRequest.user", :size="36")
+		img#avatar-img(height=36, width=36)
+		canvas#avatar-canvas(height=192, width=192)
 </template>
 <script>
 import Avatar from 'components/Avatar'
@@ -28,13 +32,12 @@ export default {
 		}
 	},
 	computed: {},
-	created () {
-		this.handleDesktopNotification()
-	},
+	created () {},
 	mounted () {
 		this.$nextTick(() => {
 			document.getElementById('timer-bar').style.animationDelay = this.timer + 's'
 		})
+		this.handleDesktopNotification()
 	},
 	destroyed () {
 		this.desktopNotification?.close()
@@ -50,7 +53,22 @@ export default {
 		handleDesktopNotification () {
 			const title = (this.contactRequest.user ? this.contactRequest.user.profile.display_name : '')
 			const text = this.$t('ContactRequest:notification:text') + ' ' + this.contactRequest.exhibitor.name
-			this.desktopNotification = notification(title, text, () => { this.close() }, () => { this.accept() })
+			const img = this.getAvatar()
+			this.desktopNotification = notification(title, text, () => { this.close() }, () => { this.accept() }, img)
+		},
+		getAvatar () {
+			let img = document.querySelector('#avatar img')
+			if (img) return img.src
+
+			img = document.querySelector('#avatar-img')
+			const svg = document.querySelector('#avatar .c-identicon svg')
+			const xml = new XMLSerializer().serializeToString(svg)
+			const svg64 = btoa(xml)
+			const image64 = 'data:image/svg+xml;base64,' + svg64
+			img.src = image64
+			const canvas = document.querySelector('#avatar-canvas')
+			canvas.getContext('2d').drawImage(img, 0, 0)
+			return canvas.toDataURL()
 		}
 	}
 }
@@ -92,4 +110,6 @@ export default {
 		@keyframes timerBar
 			0% { width: 100% }
 			100% { width: 0 }
+	.render-avatar
+		display: none
 </style>
