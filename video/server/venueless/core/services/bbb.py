@@ -295,11 +295,14 @@ class BBBService:
         tz = pytz.timezone(self.world.timezone)
         recordings = []
         for rec in root.xpath("recordings/recording"):
-            url = None
+            url_presentation = url_screenshare = None
             for f in rec.xpath("playback/format"):
-                if f.xpath("type")[0].text != "presentation":
+                if f.xpath("type")[0].text == "presentation":
+                    url_presentation = f.xpath("url")[0].text
+                if f.xpath("type")[0].text == "screenshare":
+                    url_screenshare = f.xpath("url")[0].text
+                if not url_presentation and not url_screenshare:
                     continue
-                url = f.xpath("url")[0].text
             recordings.append(
                 {
                     "start": (
@@ -318,7 +321,8 @@ class BBBService:
                     .isoformat(),
                     "participants": rec.xpath("participants")[0].text,
                     "state": rec.xpath("state")[0].text,
-                    "url": url,
+                    "url": url_presentation,
+                    "url_screenshare": url_screenshare,
                 }
             )
         return recordings
