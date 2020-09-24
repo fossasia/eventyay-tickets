@@ -3,11 +3,11 @@
 	svg(:viewBox="`0 0 ${2*Math.sqrt(2)} ${2*Math.sqrt(2)}`")
 		g(:transform="`translate(0.125 ${Math.sqrt(2)}) scale(.9 .9) rotate(-45 0 0)`")
 			g.shape(transform="translate(1 0)", :class="shape.class")
-				circle(v-if="shape.class === 'circle'", cx=".65", cy=".35", r=".325" :style="{fill: shape.color}")
-				path(v-else, :d="shape.path", :style="{fill: shape.color}", :transform="shape.transform")
+				circle(v-if="shape.class === 'circle'", cx=".65", cy=".35", r=".325", :style="shape.style")
+				path(v-else, :d="shape.path", :style="shape.style", :transform="shape.transform")
 			g.block(v-for="block of blocks", :transform="`translate(${block.pos.x} ${block.pos.y})`")
-				path(v-for="path of block.paths", :d="path.d", :style="{fill: path.color}")
-				path.stroke(d="M 0 0 L 0 1 L 1 1 L 1 0z")
+				path(v-for="path of block.paths", :d="path.d", :style="{fill: path.color, 'mix-blend-mode': 'multiply'}")
+				path.stroke(d="M 0 0 L 0 1 L 1 1 L 1 0z", style="fill: none; stroke: black; stroke-width: 0.125; stroke-lineend: round; stroke-linejoin: round; mix-blend-mode: multiply;")
 </template>
 <script>
 // ported from https://github.com/Schlipak/IdentiHeart
@@ -41,19 +41,20 @@ export default {
 		shape () {
 			const createPath = (offset) => {
 				const mod = Math.abs(this.hash + 1) % 4
+				const color = [this.primaryColor, this.accentColor][Math.abs(this.hash % 2)]
+				const commonStyle = {fill: color, stroke: 'black', 'stroke-width': 0.125, 'stroke-lineend': 'round', 'stroke-linejoin': 'round', 'mix-blend-mode': 'multiply'}
 				switch (mod) {
 					case 1:
-						return {class: 'circle'}
+						return {class: 'circle', style: {'stroke-width': 0.11, ...commonStyle}}
 					case 2:
-						return {class: 'triangle', path: 'M 0 0 L 0 1 L 1 1z', transform: 'scale(0.7, 0.7) translate(0.6, -0.15)'}
+						return {class: 'triangle', path: 'M 0 0 L 0 1 L 1 1z', transform: 'scale(0.7, 0.7) translate(0.6, -0.15)', style: {'stroke-width': 0.15, ...commonStyle}}
 					case 3:
-						return {class: 'oval', path: 'M 0 1 Q .2 .2 1 0 Q .8 .8 0 1z', transform: 'scale(0.7, 0.7) translate(0.3, 0.1)'}
+						return {class: 'oval', path: 'M 0 1 Q .2 .2 1 0 Q .8 .8 0 1z', transform: 'scale(0.7, 0.7) translate(0.3, 0.1)', style: {...commonStyle}}
 					default:
-						return {class: 'square', path: 'M 0 0 L 0 1 L 1 1 L 1 0z', transform: 'scale(0.5, 0.5) translate(0.75, 0.2)'}
+						return {class: 'square', path: 'M 0 0 L 0 1 L 1 1 L 1 0z', transform: 'scale(0.5, 0.5) translate(0.75, 0.2)', style: {'stroke-width': 0.2, ...commonStyle}}
 				}
 			}
 			return {
-				color: [this.primaryColor, this.accentColor][Math.abs(this.hash % 2)],
 				...createPath()
 			}
 		},
@@ -99,25 +100,4 @@ export default {
 <style lang="stylus">
 .c-identicon
 	user-select: none
-	.block, .shape
-		path
-			mix-blend-mode: multiply
-		.stroke
-			fill: none
-			stroke: black
-			stroke-width: 0.125
-			stroke-lineend: round
-			stroke-linejoin: round
-	.shape
-		circle, path
-			stroke: black
-			stroke-width: 0.125
-			stroke-lineend: round
-			stroke-linejoin: round
-		circle
-			stroke-width: 0.11
-		&.square path
-			stroke-width: 0.2
-		&.triangle path
-			stroke-width: 0.15
 </style>
