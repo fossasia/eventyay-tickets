@@ -147,7 +147,9 @@ export default {
 			return rooms
 		},
 		directMessageChannels () {
-			return this.joinedChannels?.filter(channel => channel.members).map(channel => ({id: channel.id, users: channel.members.filter(member => member.id !== this.user.id)})).sort((a, b) => this.directMessageChannelName(a).localeCompare(this.directMessageChannelName(b)))
+			const DMChannels = this.joinedChannels?.filter(channel => channel.members).map(channel => ({id: channel.id, users: channel.members.filter(member => member.id !== this.user.id)})).sort((a, b) => this.directMessageChannelName(a).localeCompare(this.directMessageChannelName(b)))
+			const unreadChannels = DMChannels.filter(channel => this.hasUnreadMessages(channel.id))
+			return unreadChannels.concat(DMChannels.filter(channel => !this.hasUnreadMessages(channel.id)))
 		}
 	},
 	methods: {
