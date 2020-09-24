@@ -39,7 +39,7 @@ transition(name="sidebar")
 				bunt-icon-button(v-if="hasPermission('world:chat.direct')", @click="showDMCreationPrompt = true") plus
 			.direct-messages
 				router-link.direct-message(v-for="channel of directMessageChannels", :to="{name: 'channel', params: {channelId: channel.id}}", :class="{unread: hasUnreadMessages(channel.id)}")
-					.name {{ channel.users.map(user => user.profile.display_name).join(', ') }}
+					.name {{ directMessageChannelName(channel) }}
 					bunt-icon-button(@click.prevent.stop="$store.dispatch('chat/leaveChannel', {channelId: channel.id})") close
 			.buffer
 			template(v-if="staffedExhibitions.length > 0 || hasPermission('world:rooms.create.exhibition')")
@@ -147,10 +147,13 @@ export default {
 			return rooms
 		},
 		directMessageChannels () {
-			return this.joinedChannels?.filter(channel => channel.members).map(channel => ({id: channel.id, users: channel.members.filter(member => member.id !== this.user.id)}))
+			return this.joinedChannels?.filter(channel => channel.members).map(channel => ({id: channel.id, users: channel.members.filter(member => member.id !== this.user.id)})).sort((a, b) => this.directMessageChannelName(a).localeCompare(this.directMessageChannelName(b)))
 		}
 	},
 	methods: {
+		directMessageChannelName (c) {
+			return c.users.map(user => user.profile.display_name).join(', ')
+		},
 		onPointerdown (event) {
 			if (this.$mq.above.m) return
 			this.lastPointer = event.pointerId
