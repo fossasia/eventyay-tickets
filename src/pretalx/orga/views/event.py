@@ -49,12 +49,13 @@ from pretalx.event.forms import (
     EventWizardDisplayForm,
     EventWizardInitialForm,
     EventWizardTimelineForm,
-    ReviewPhaseForm,
 )
 from pretalx.event.models import Event, Team, TeamInvite
 from pretalx.orga.forms import EventForm, EventSettingsForm
 from pretalx.orga.forms.event import (
     MailSettingsForm,
+    ReviewPhaseForm,
+    ReviewScoreCategoryForm,
     ReviewSettingsForm,
     WidgetGenerationForm,
     WidgetSettingsForm,
@@ -62,7 +63,7 @@ from pretalx.orga.forms.event import (
 from pretalx.orga.signals import activate_event
 from pretalx.person.forms import LoginInfoForm, OrgaProfileForm, UserForm
 from pretalx.person.models import User
-from pretalx.submission.models import ReviewPhase
+from pretalx.submission.models import ReviewPhase, ReviewScoreCategory
 
 
 class EventSettingsPermission(EventPermissionRequired):
@@ -258,15 +259,16 @@ class EventReviewSettings(EventSettingsPermission, ActionFromUrl, FormView):
 
     @transaction.atomic
     def form_valid(self, form):
-        formset = self.save_formset()
-        if not formset:
+        phases = self.save_phases()
+        scores = self.save_scores()
+        if not phases or not scores:
             return self.get(self.request, *self.args, **self.kwargs)
         form.save()
         return super().form_valid(form)
 
     @context
     @cached_property
-    def formset(self):
+    def phases_formset(self):
         formset_class = inlineformset_factory(
             Event,
             ReviewPhase,
@@ -279,12 +281,13 @@ class EventReviewSettings(EventSettingsPermission, ActionFromUrl, FormView):
             self.request.POST if self.request.method == "POST" else None,
             queryset=ReviewPhase.objects.filter(event=self.request.event),
             event=self.request.event,
+            prefix="phase",
         )
 
-    def save_formset(self):
-        if not self.formset.is_valid():
+    def save_phases(self):
+        if not self.phases_formset.is_valid():
             return False
-        for form in self.formset.initial_forms:
+        for form in self.phases_formset.initial_forms:
             # Deleting is handled elsewhere, so we skip it here
             if form.has_changed():
                 form.instance.event = self.request.event
@@ -292,12 +295,55 @@ class EventReviewSettings(EventSettingsPermission, ActionFromUrl, FormView):
 
         extra_forms = [
             form
-            for form in self.formset.extra_forms
-            if form.has_changed and not self.formset._should_delete_form(form)
+            for form in self.phases_formset.extra_forms
+            if form.has_changed and not self.phases_formset._should_delete_form(form)
         ]
         for form in extra_forms:
             form.instance.event = self.request.event
             form.save()
+        return True
+
+    @context
+    @cached_property
+    def scores_formset(self):
+        formset_class = inlineformset_factory(
+            Event,
+            ReviewScoreCategory,
+            form=ReviewScoreCategoryForm,
+            formset=I18nFormSet,
+            can_delete=True,
+            extra=0,
+        )
+        return formset_class(
+            self.request.POST if self.request.method == "POST" else None,
+            queryset=ReviewScoreCategory.objects.filter(event=self.request.event),
+            event=self.request.event,
+            prefix="scores",
+        )
+
+    def save_scores(self):
+        if not self.scores_formset.is_valid():
+            return False
+        weights_changed = False
+        for form in self.scores_formset.initial_forms:
+            # Deleting is handled elsewhere, so we skip it here
+            if form.has_changed():
+                if "weight" in form.changed_data:
+                    weights_changed = True
+                form.instance.event = self.request.event
+                form.save()
+
+        extra_forms = [
+            form
+            for form in self.scores_formset.extra_forms
+            if form.has_changed and not self.scores_formset._should_delete_form(form)
+        ]
+        for form in extra_forms:
+            form.instance.event = self.request.event
+            form.save()
+
+        if weights_changed:
+            ReviewScoreCategory.recalculate_scores(self.request.event)
         return True
 
 

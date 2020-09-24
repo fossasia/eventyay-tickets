@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.db import transaction
-from django.db.models import Count, Exists, OuterRef, Q, Subquery
+from django.db.models import Count, OuterRef, Q, Subquery
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
@@ -65,18 +65,12 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
             review_count=Count("reviews")
         )
 
-        overridden_reviews = Review.objects.filter(
-            override_vote__isnull=False, submission_id=OuterRef("pk")
-        )
         user_reviews = Review.objects.filter(
             user=self.request.user, submission_id=OuterRef("pk")
         ).values("score")
-        if not self.can_see_all_reviews:
-            overridden_reviews = overridden_reviews.filter(user=self.request.user)
 
         queryset = (
-            queryset.annotate(has_override=Exists(overridden_reviews))
-            .annotate(user_score=Subquery(user_reviews))
+            queryset.annotate(user_score=Subquery(user_reviews))
             .select_related("track", "submission_type")
             .prefetch_related("speakers", "reviews", "reviews__user")
         )
@@ -266,10 +260,27 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
         ]
 
     @context
+    @cached_property
+    def score_categories(self):
+        return list(self.request.event.score_categories.filter(active=True))
+
+    def get_scores_for_review(self, review):
+        scores = []
+        review_scores = {score.category: score for score in review.scores.all()}
+        for category in self.score_categories:
+            score = review_scores.get(category)
+            if score:
+                scores.append(str(score))
+            else:
+                scores.append("×")
+        return scores
+
+    @context
     def reviews(self):
         return [
             {
                 "score": review.display_score,
+                "scores": self.get_scores_for_review(review),
                 "text": review.text,
                 "user": review.user.get_display_name(),
                 "answers": [
@@ -279,7 +290,7 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
             }
             for review in self.submission.reviews.exclude(
                 pk=(self.object.pk if self.object else None)
-            )
+            ).prefetch_related("scores", "scores__category")
         ]
 
     @context
@@ -313,6 +324,7 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
         kwargs["event"] = self.request.event
         kwargs["user"] = self.request.user
         kwargs["read_only"] = self.read_only
+        kwargs["categories"] = self.score_categories
         return kwargs
 
     def form_valid(self, form):

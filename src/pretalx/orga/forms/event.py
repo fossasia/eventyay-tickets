@@ -18,6 +18,7 @@ from pretalx.common.mixins.forms import ReadOnlyFlag
 from pretalx.common.phrases import phrases
 from pretalx.event.models.event import Event, Event_SettingsStore
 from pretalx.orga.forms.widgets import HeaderSelect, MultipleLanguagesWidget
+from pretalx.submission.models import ReviewPhase, ReviewScore, ReviewScoreCategory
 
 ENCRYPTED_PASSWORD_PLACEHOLDER = "*******"
 
@@ -499,3 +500,109 @@ class WidgetGenerationForm(forms.ModelForm):
     class Meta:
         model = Event
         fields = ["locale"]
+
+
+class ReviewPhaseForm(I18nModelForm):
+    def __init__(self, *args, event=None, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def clean(self):
+        data = super().clean()
+        if data.get("start") and data.get("end") and data["start"] > data["end"]:
+            self.add_error(
+                "end",
+                forms.ValidationError(
+                    _("The end of a phase has to be after its start.")
+                ),
+            )
+        return data
+
+    class Meta:
+        model = ReviewPhase
+        fields = [
+            "name",
+            "start",
+            "end",
+            "can_review",
+            "can_see_speaker_names",
+            "can_see_reviewer_names",
+            "can_change_submission_state",
+            "can_see_other_reviews",
+            "speakers_can_change_submissions",
+        ]
+        widgets = {
+            "start": forms.DateInput(attrs={"class": "datetimepickerfield"}),
+            "end": forms.DateInput(attrs={"class": "datetimepickerfield"}),
+        }
+
+
+class ReviewScoreCategoryForm(I18nModelForm):
+    new_scores = forms.CharField(required=False, initial="")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        ids = self.data.get(self.prefix + "-new_scores")
+        self.new_label_ids = ids.strip(",").split(",") if ids else []
+        for label_id in self.new_label_ids:
+            self.fields[f"value_{label_id}"] = ReviewScore._meta.get_field(
+                "value"
+            ).formfield()
+            self.fields[f"label_{label_id}"] = ReviewScore._meta.get_field(
+                "label"
+            ).formfield()
+
+        self.label_fields = []
+        if self.instance.id:
+            scores = self.instance.scores.all()
+            for score in scores:
+                self.label_fields.append(
+                    {
+                        "score": score,
+                        "label_field": score._meta.get_field("label").formfield(
+                            initial=score.label
+                        ),
+                        "value_field": score._meta.get_field("value").formfield(
+                            initial=score.value, required=False
+                        ),
+                    }
+                )
+        for score in self.label_fields:
+            score_id = score["score"].id
+            self.fields[f"value_{score_id}"] = score["value_field"]
+            self.fields[f"label_{score_id}"] = score["label_field"]
+
+    def get_label_fields(self):
+        for score in self.label_fields:
+            score_id = score["score"].id
+            yield (self[f"value_{score_id}"], self[f"label_{score_id}"])
+
+    def save(self, *args, **kwargs):
+        instance = super().save(*args, **kwargs)
+        for score in self.label_fields:
+            score_id = score["score"].id
+            if any(f"_{score_id}" in changed for changed in self.changed_data):
+                value = self.cleaned_data.get(f"value_{score_id}")
+                label = self.cleaned_data.get(f"label_{score_id}")
+                if value is None or value == "":
+                    score["score"].delete()
+                else:
+                    score["score"].value = value
+                    score["score"].label = label
+                    score["score"].save()
+        for score in self.new_label_ids:
+            value = self.cleaned_data.get(f"value_{score}")
+            label = self.cleaned_data.get(f"label_{score}")
+            if value and label:
+                ReviewScore.objects.create(
+                    category=self.instance, value=value, label=label
+                )
+        return instance
+
+    class Meta:
+        model = ReviewScoreCategory
+        fields = (
+            "name",
+            "weight",
+            "required",
+            "active",
+        )

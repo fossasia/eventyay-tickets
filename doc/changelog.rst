@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` Reviewers can now be asked to rate a proposal in several categories, with a total score calculated automatically.
 - :support:`-` Pretalx has a new schedule, with a new widget. The old widget is deprecated and will be removed in the next release. Please migrate all of your widgets to the new widget code. You can generate it in your event's settings. Administrators: remember to check your access logs before upgrading to v2.1 to warn users about failing widgets.
 - :feature:`-` There are two new API endpoints, ``/questions/`` and ``/answers/``, that incientally are our first writable API endpoints. The API docs have been updated.
 - :support:`-` Email error reporting (sent to instance administrators) now includes a short explanation and a link to the pretalx issue tracker.
