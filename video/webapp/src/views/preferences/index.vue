@@ -7,10 +7,8 @@
 			bunt-button#btn-change-avatar(@click="showChangeAvatar = true") {{ $t('preferences/index:btn-change-avatar:label') }}
 		bunt-input.display-name(name="displayName", :label="$t('profile/GreetingPrompt:displayname:label')", v-model.trim="profile.display_name", :validation="$v.profile.display_name")
 		change-additional-fields(v-model="profile.fields")
-		bunt-button#btn-enable-perm(v-if="!desktopNotificationPermission", @click="enableDesktopNotifications") {{ $t('preferences/index:btn-enable-perm:label') }}
-		bunt-button#btn-disable-perm(v-else, @click="disableDesktopNotifications") {{ $t('preferences/index:btn-disable-perm:label') }}
-		bunt-button#btn-enable-sound(v-if="!desktopNotificationSound", @click="toggleDesktopNotificationSound") {{ $t('preferences/index:btn-enable-sound:label') }}
-		bunt-button#btn-disable-sound(v-else, @click="toggleDesktopNotificationSound") {{ $t('preferences/index:btn-disable-sound:label') }}
+		bunt-switch(v-model="desktopNotificationPermission", :label="$t('preferences/index:btn-notification-permission:label')", name="desktopNotificationPermission")
+		bunt-switch(v-model="desktopNotificationSound", :label="$t('preferences/index:btn-notification-sound:label')", name="desktopNotificationSound")
 		bunt-button#btn-save(:disabled="$v.$invalid && $v.$dirty", :loading="saving", @click="save") {{ $t('preferences/index:btn-save:label') }}
 	transition(name="prompt")
 		prompt.change-avatar-prompt(v-if="showChangeAvatar", @close="showChangeAvatar = false")
@@ -38,7 +36,7 @@ export default {
 			savingAvatar: false,
 			blockSave: false,
 			saving: false,
-			desktopNotificationPermissionState: '',
+			desktopNotificationPermission: false,
 			desktopNotificationSound: false
 		}
 	},
@@ -51,9 +49,6 @@ export default {
 	},
 	computed: {
 		...mapState(['user', 'world']),
-		desktopNotificationPermission () {
-			return this.desktopNotificationPermissionState === 'granted'
-		}
 	},
 	created () {
 		this.profile = Object.assign({}, this.user.profile)
@@ -62,30 +57,10 @@ export default {
 				identicon: this.user.id
 			}
 		}
-		if (window.Notification.permission === 'default') {
-			this.desktopNotificationPermissionState = window.Notification.permission
-		} else {
-			this.desktopNotificationPermissionState = localStorage.desktopNotificationPermission
-		}
 		this.desktopNotificationSound = (localStorage.playDesktopNotificationSound === 'true')
+		this.desktopNotificationPermission = (localStorage.desktopNotificationPermission === 'true')
 	},
 	methods: {
-		async enableDesktopNotifications () {
-			if (window.Notification.permission === 'default') {
-				localStorage.desktopNotificationPermission = await window.Notification.requestPermission()
-			} else {
-				localStorage.desktopNotificationPermission = 'granted'
-			}
-			this.desktopNotificationPermissionState = localStorage.desktopNotificationPermission
-		},
-		disableDesktopNotifications () {
-			localStorage.desktopNotificationPermission = 'denied'
-			this.desktopNotificationPermissionState = localStorage.desktopNotificationPermission
-		},
-		toggleDesktopNotificationSound () {
-			localStorage.playDesktopNotificationSound = (!this.desktopNotificationSound).toString()
-			this.desktopNotificationSound = !this.desktopNotificationSound
-		},
 		async uploadAvatar () {
 			this.savingAvatar = true
 			await this.$refs.avatar.update()
@@ -97,6 +72,11 @@ export default {
 			this.$v.$touch()
 			if (this.$v.$invalid) return
 			this.saving = true
+			localStorage.playDesktopNotificationSound = this.desktopNotificationSound.toString()
+			localStorage.desktopNotificationPermission = this.desktopNotificationPermission.toString()
+			if (window.Notification.permission === 'default') {
+				localStorage.desktopNotificationPermission = ((await window.Notification.requestPermission()) === 'granted').toString()
+			}
 			await this.$store.dispatch('updateUser', {profile: this.profile})
 			this.saving = false
 		}
@@ -121,26 +101,6 @@ export default {
 		width: 320px
 	#btn-save
 		themed-button-primary()
-	#btn-enable-perm
-		themed-button-clear()
-		width: 100%
-		margin-bottom: 16px
-		background-color: $clr-green-300
-	#btn-disable-perm
-		themed-button-clear()
-		width: 100%
-		margin-bottom: 16px
-		background-color: $clr-red-300
-	#btn-enable-sound
-		themed-button-clear()
-		width: 100%
-		margin-bottom: 16px
-		background-color: $clr-green-300
-	#btn-disable-sound
-		themed-button-clear()
-		width: 100%
-		margin-bottom: 16px
-		background-color: $clr-red-300
 
 	.change-avatar-prompt
 		.content
