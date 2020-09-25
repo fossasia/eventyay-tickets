@@ -138,6 +138,7 @@ export default {
 	'Prompt:cancel:label': 'cancel',
 	'UserSearch:placeholder:text': 'search users',
 	'UserListPage:staffed-exhibitions:text': 'Exhibitors staffed by this user',
+	'UserListPage:placeholder:text': 'Here you can check out the profile of other users.\nFeel free to nose around a bit.',
 	'UserAction:moderataor.actions.devider:text': 'Moderator Actions',
 	'UserAction:action.block:label': 'block',
 	'UserAction:action.unblock:label': 'unblock',
