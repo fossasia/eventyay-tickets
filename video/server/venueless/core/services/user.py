@@ -365,7 +365,8 @@ def list_users(
 
     try:
         p = Paginator(
-            qs.order_by("id").values("id", "profile", "traits"), page_size
+            qs.order_by("profile__display_name").values("id", "profile", "traits"),
+            page_size,
         ).page(page)
         return {
             "results": [
