@@ -13,9 +13,9 @@
 			bunt-input(v-model="exhibitor.short_text", :label="$t('Exhibitors:short-text:label')", name="shortText", :validation="$v.exhibitor.shortText")
 			bunt-input-outline-container(:label="$t('Exhibitors:text:label')")
 				textarea(slot-scope="{focus, blur}", @focus="focus", @blur="blur", v-model="exhibitor.text")
-			upload-url-input(v-model="exhibitor.logo", :label="$t('Exhibitors:logo:label')", name="logo")
-			upload-url-input(v-model="exhibitor.banner_list", :label="$t('Exhibitors:banner-list:label')", name="bannerList")
-			upload-url-input(v-model="exhibitor.banner_detail", :label="$t('Exhibitors:banner-detail:label')", name="bannerDetail")
+			upload-url-input(v-model="exhibitor.logo", :label="$t('Exhibitors:logo:label')", name="logo", :validation="$v.exhibitor.logo")
+			upload-url-input(v-model="exhibitor.banner_list", :label="$t('Exhibitors:banner-list:label')", name="bannerList", :validation="$v.exhibitor.banner_list")
+			upload-url-input(v-model="exhibitor.banner_detail", :label="$t('Exhibitors:banner-detail:label')", name="bannerDetail", :validation="$v.exhibitor.banner_detail")
 			bunt-select(v-model="exhibitor.size", :label="$t('Exhibitors:size:label')", name="size", :options="sizes", :validation="$v.exhibitor.size")
 			bunt-input(v-model="exhibitor.sorting_priority", :label="$t('Exhibitors:sorting-priority:label')", name="sortingPriority", :validation="$v.exhibitor.sorting_priority")
 			bunt-select(v-model="exhibitor.room_id", :label="$t('Exhibitors:room:label')", name="room", :options="rooms", option-label="name", :validation="$v.exhibitor.room_id")
@@ -30,9 +30,9 @@
 				tbody
 					tr(v-for="(link, index) in exhibitor.social_media_links")
 						td
-							bunt-input(:value="link.display_text", :label="$t('Exhibitors:link-text:label')", @input="set_social_media_link_text(index, $event)", name="displayText")
+							bunt-input(:value="link.display_text", :label="$t('Exhibitors:link-text:label')", @input="set_social_media_link_text(index, $event)", name="displayText", :validation="$v.exhibitor.social_media_links.$each[index].display_text")
 						td
-							bunt-input(:value="link.url", :label="$t('Exhibitors:link-url:label')", @input="set_social_media_link_url(index, $event)", name="url")
+							bunt-input(:value="link.url", :label="$t('Exhibitors:link-url:label')", @input="set_social_media_link_url(index, $event)", name="url", :validation="$v.exhibitor.social_media_links.$each[index].url")
 						td.actions
 							bunt-icon-button(@click="remove_social_media_link(index)") delete-outline
 				tfoot
@@ -51,11 +51,11 @@
 				tbody
 					tr(v-for="(link, index) in exhibitor.links")
 						td
-							bunt-input(:value="link.display_text", :label="$t('Exhibitors:link-text:label')", @input="set_link_text(index, $event)", name="displayText")
+							bunt-input(:value="link.display_text", :label="$t('Exhibitors:link-text:label')", @input="set_link_text(index, $event)", name="displayText", :validation="$v.exhibitor.links.$each[index].display_text")
 						td
-							bunt-input(:value="link.url", :label="$t('Exhibitors:link-url:label')", @input="set_link_url(index, $event)", name="url")
+							bunt-input(:value="link.url", :label="$t('Exhibitors:link-url:label')", @input="set_link_url(index, $event)", name="url", :validation="$v.exhibitor.links.$each[index].url")
 						td
-							bunt-select(:value="link.category", :label="$t('Exhibitors:link-category:label')", @input="set_link_category(index, $event)", name="category", :options="linkCategories")
+							bunt-select(:value="link.category", :label="$t('Exhibitors:link-category:label')", @input="set_link_category(index, $event)", name="category", :options="linkCategories", :validation="$v.exhibitor.links.$each[index].category")
 						td.actions
 							bunt-icon-button(@click="remove_link(index)") delete-outline
 				tfoot
@@ -140,6 +140,15 @@ export default {
 					required: required(this.$t('Exhibitors:validation-name:required')),
 					maxLength: maxLength(80, this.$t('Exhibitors:validation-name:maxLength'))
 				},
+				logo: {
+					maxLength: maxLength(200, this.$t('Exhibitors:validation-url:maxLength'))
+				},
+				banner_list: {
+					maxLength: maxLength(200, this.$t('Exhibitors:validation-url:maxLength'))
+				},
+				banner_detail: {
+					maxLength: maxLength(200, this.$t('Exhibitors:validation-url:maxLength'))
+				},
 				tagline: {
 					maxLength: maxLength(250, this.$t('Exhibitors:validation-tagline:maxLength'))
 				},
@@ -154,6 +163,33 @@ export default {
 				},
 				sorting_priority: {
 					required: required(this.$t('Exhibitors:validation-sorting:required'))
+				},
+				social_media_links: {
+					$each: {
+						display_text: {
+							required: required(this.$t('Exhibitors:validation-links-display-text:required')),
+							maxLength: maxLength(300, this.$t('Exhibitors:validation-links-display-text:maxLength'))
+						},
+						url: {
+							required: required(this.$t('Exhibitors:validation-links-url:required')),
+							maxLength: maxLength(200, this.$t('Exhibitors:validation-url:maxLength'))
+						}
+					}
+				},
+				links: {
+					$each: {
+						display_text: {
+							required: required(this.$t('Exhibitors:validation-links-display-text:required')),
+							maxLength: maxLength(300, this.$t('Exhibitors:validation-links-display-text:maxLength'))
+						},
+						url: {
+							required: required(this.$t('Exhibitors:validation-links-url:required')),
+							maxLength: maxLength(200, this.$t('Exhibitors:validation-url:maxLength'))
+						},
+						category: {
+							required: required(this.$t('Exhibitors:validation-links-category:required'))
+						}
+					}
 				}
 			}
 		}
