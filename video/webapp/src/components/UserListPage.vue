@@ -145,13 +145,15 @@ $logo-height-medium = 160px
 		flex none
 		display flex
 		flex-direction column
-		width 380px
+		width 30%
+		max-width 500px
 		border-right border-separator()
 		min-height 0
 		height 100%
 		+below('s')
 			width 100%
 			border-left none
+			max-width none
 	.profile
 		flex auto
 		display flex
