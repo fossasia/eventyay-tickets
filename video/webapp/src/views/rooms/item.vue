@@ -1,6 +1,6 @@
 <template lang="pug">
 .c-room(v-if="room", :class="{'standalone-chat': modules['chat.native'] && room.modules.length === 1}")
-	.ui-page-header.room-info(v-if="!modules['page.markdown'] && !modules['page.landing'] && !modules['page.userlist']")
+	.ui-page-header.room-info(v-if="!modules['page.markdown'] && !modules['page.landing']")
 		.room-name {{ room.name }}
 		.room-session(v-if="currentSession") {{ currentSession.title }}
 		bunt-icon-button(v-if="$features.enabled('schedule-control')", @click="showEditSchedule = true") calendar_edit
