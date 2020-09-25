@@ -348,7 +348,11 @@ def list_users(
     trait_badges_map=None,
     include_banned=True,
 ) -> object:
-    qs = User.objects.filter(world_id=world_id, show_publicly=True)
+    qs = (
+        User.objects.filter(world_id=world_id, show_publicly=True)
+        .exclude(profile__display_name__isnull=True)
+        .exclude(profile__display_name__exact="")
+    )
     if not include_banned:
         qs = qs.exclude(moderation_state=User.ModerationState.BANNED)
     if search_term:
