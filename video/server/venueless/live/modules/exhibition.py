@@ -79,7 +79,7 @@ class ExhibitionModule(BaseModule):
             )
 
         if not exhibitor:
-            await self.consumer.send_error("exhibition.unknown_room")
+            await self.consumer.send_error("exhibition.unknown_exhibitor")
         else:
             await self.consumer.send_success({"exhibitor": exhibitor})
 
