@@ -22,8 +22,7 @@
 					.exhibitors
 						router-link.exhibitor(v-for="exhibitor of exhibitors", :to="{name: 'exhibitor', params: {exhibitorId: exhibitor.id}}")
 							img.logo(:src="exhibitor.banner_list ? exhibitor.banner_list : exhibitor.logo", :alt="exhibitor.name")
-							.name {{ exhibitor.name }}
-							.tagline {{ exhibitor.tagline }}
+							.short-text {{ exhibitor.short_text }}
 							.actions
 								bunt-button {{ $t('Exhibition:more:label') }}
 			.actions(v-if="selectedUser.id !== user.id && selectedUser.id")
@@ -132,7 +131,7 @@ export default {
 </script>
 <style lang="stylus">
 $grid-size = 280px
-$logo-height-medium = 160px
+$logo-height = 130px
 
 .c-userlist
 	flex auto
@@ -202,28 +201,35 @@ $logo-height-medium = 160px
 				padding 16px
 				justify-content center
 				.exhibitor
-					grid-area: span 1 / span 2
+					grid-area span 1 / span 2
 					background-color $clr-white
 					border border-separator()
 					border-radius 4px
 					display flex
 					flex-direction column
 					padding 8px
-					margin 16px
 					cursor pointer
 					&:hover
 						border 1px solid var(--clr-primary)
 					img.logo
-						height: $logo-height-medium
-						min-height: $logo-height-medium
-						margin: 0
 						object-fit contain
 						max-width 100%
+						height $logo-height
+						min-height $logo-height
+						margin 0 1px
+					.short-text
+						margin-top 12px
+						color $clr-primary-text-light
+						display -webkit-box
+						-webkit-line-clamp 5
+						-webkit-box-orient vertical
+						overflow hidden
 					.actions
 						flex auto
 						display flex
 						justify-content flex-end
 						align-items flex-end
+						border-top none
 						.bunt-button
 							themed-button-secondary()
 		.actions
