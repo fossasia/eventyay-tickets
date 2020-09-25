@@ -1,5 +1,6 @@
 <template lang="pug">
 .c-userlist
+	UserSearch.user-list(v-if="showList", :placeholder="$t('UserSearch:placeholder:text')", @selected="selectUser")
 	.profile(v-if="showProfile")
 		bunt-progress-circular(size="huge", v-if="loading")
 		template(v-else-if="selectedUser")
@@ -38,7 +39,6 @@
 							| {{ selectedUser.moderation_state === 'banned' ? $t('UserAction:action.unban:label') : $t('UserAction:action.unsilence:label') }}
 						bunt-button.ban(v-if="selectedUser.moderation_state !== 'banned'", @click="userAction = 'ban'") {{ $t('UserAction:action.ban:label') }}
 						bunt-button.silence(v-if="!selectedUser.moderation_state", @click="userAction = 'silence'") {{ $t('UserAction:action.silence:label') }}
-	UserSearch(v-if="showList", :placeholder="$t('UserSearch:placeholder:text')", @selected="selectUser").user-list
 	user-action-prompt(v-if="userAction", :action="userAction", :user="selectedUser", @close="updateProfile")
 </template>
 <script>
@@ -145,14 +145,12 @@ $logo-height-medium = 160px
 		flex none
 		display flex
 		flex-direction column
-		width 240px
-		grid-area sidebar
-		border-left border-separator()
+		width 380px
+		border-right border-separator()
 		min-height 0
 		height 100%
 		+below('s')
 			width 100%
-			grid-area unset
 			border-left none
 	.profile
 		flex auto
