@@ -9,15 +9,15 @@
 					| {{ user ? user.profile.display_name : '' }}
 					span.ui-badge(v-for="badge in user.badges") {{ badge }}
 			li(v-if="!lastPage")
-				bunt-progress-circular(v-if="loading", size="small")
-				bunt-button#btn-more(v-else, @click="page++") Load more
+				infinite-scroll(:loading="loading", @load="page++")
 </template>
 <script>
 import api from 'lib/api'
 import Avatar from 'components/Avatar'
+import InfiniteScroll from './InfiniteScroll'
 
 export default {
-	components: { Avatar },
+	components: { Avatar, InfiniteScroll },
 	props: {
 		placeholder: String
 	},
