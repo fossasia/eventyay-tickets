@@ -4,7 +4,7 @@
 		bunt-input(type="search", name="search", :placeholder="placeholder", v-model="search")
 		ul.list(v-scrollbar.y="")
 			li.list__item(v-for="(user, index) in list", @click="select(index)", :class="{'selected': index == selectedIndex}")
-				avatar(:user="user", :size="26")
+				avatar(:user="user", :size="48")
 				span.display-name
 					| {{ user ? user.profile.display_name : '' }}
 					span.ui-badge(v-for="badge in user.badges") {{ badge }}
@@ -106,8 +106,9 @@ export default {
 			list-style-type none
 			display flex
 			cursor pointer
-			padding 2px 16px
+			padding 8px 16px
 			.display-name
+				font-size medium
 				margin auto 8px
 				flex auto
 				ellipsis()
