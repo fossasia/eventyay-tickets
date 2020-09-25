@@ -102,6 +102,7 @@
 </template>
 <script>
 import api from 'lib/api'
+import router from 'router'
 import Avatar from 'components/Avatar'
 import Prompt from 'components/Prompt'
 import UserSelect from 'components/UserSelect'
@@ -225,7 +226,7 @@ export default {
 			this.$v.$touch()
 			if (this.$v.$invalid) return
 			this.saving = true
-			await api.call('exhibition.patch', {
+			const exhibitor = (await api.call('exhibition.patch', {
 				id: this.exhibitorId,
 				name: this.exhibitor.name,
 				tagline: this.exhibitor.tagline,
@@ -241,7 +242,8 @@ export default {
 				links: this.exhibitor.links,
 				staff: this.exhibitor.staff,
 				contact_enabled: this.exhibitor.contact_enabled,
-			})
+			})).exhibitor
+			if (this.exhibitorId === '') await router.push({name: 'exhibitors:exhibitor', params: {exhibitorId: exhibitor.id}})
 			this.saving = false
 			// TODO error handling
 		},
