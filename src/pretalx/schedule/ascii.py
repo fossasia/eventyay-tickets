@@ -26,7 +26,7 @@ def draw_schedule_list(data):
                         talk.room.name,
                     )
                     if talk.submission
-                    else "{} in {}".format(talk.description, talk.room.name)
+                    else "{} in {}\n".format(talk.description, talk.room.name)
                 )
                 for talk in talk_list
             )
