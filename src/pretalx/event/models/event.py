@@ -346,6 +346,15 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
         ]
 
     @cached_property
+    def plugin_locales(self) -> list:
+        from pretalx.common.signals import register_locales
+
+        result = []
+        for receiver, locales in register_locales.send():
+            result += locales
+        return result
+
+    @cached_property
     def cache(self):
         """Returns an :py:class:`ObjectRelatedCache` object.
 

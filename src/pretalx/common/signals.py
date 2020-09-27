@@ -165,3 +165,9 @@ to the user. The receivers are expected to return plain (lazy) text.
 
 As with all event plugin signals, the ``sender`` keyword argument will contain the event.
 """
+register_locales = django.dispatch.Signal()
+"""
+To provide additional languages via plugins, you will have to provide some settings in
+the pretalx settings file, and return a list of the registered locales as response
+to this plugin signal.
+"""

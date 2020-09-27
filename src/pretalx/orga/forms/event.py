@@ -26,7 +26,7 @@ ENCRYPTED_PASSWORD_PLACEHOLDER = "*******"
 class EventForm(ReadOnlyFlag, I18nModelForm):
     locales = forms.MultipleChoiceField(
         label=_("Active languages"),
-        choices=settings.LANGUAGES,
+        choices=[],
         widget=MultipleLanguagesWidget,
         help_text=_(
             "Users will be able to use pretalx in these languages, and you will be able to provide all texts in these"
@@ -79,6 +79,12 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
         self.fields["date_to"].help_text = _(
             "Any talks you have scheduled already will be moved if you change the event dates. You will have to release a new schedule version to notify all speakers."
         )
+        self.fields["locales"].choices = [
+            choice
+            for choice in settings.LANGUAGES
+            if settings.LANGUAGES_INFORMATION[choice[0]].get("visible", True)
+            or choice[0] in self.instance.plugin_locales
+        ]
 
     def clean_custom_css(self):
         if self.cleaned_data.get("custom_css") or self.files.get("custom_css"):

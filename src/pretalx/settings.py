@@ -374,6 +374,23 @@ LANGUAGES_INFORMATION = {
         "public_code": "jp",
     },
 }
+
+for section in config.sections():
+    # Plugins can add languages, which will not be visible
+    # without the providing plugin being activated
+    if section.startswith("language:"):
+        language_code = section[len("language:") :]
+        LANGUAGES_INFORMATION[language_code] = {
+            "name": config.get(section, "name"),
+            "public_code": config.get(section, "public_code", fallback=None)
+            or language_code,
+            "natural_name": config.get(section, "name"),
+            "visible": False,
+            "official": False,
+            "percentage": None,
+        }
+
+
 for code, language in LANGUAGES_INFORMATION.items():
     language["code"] = code
 
