@@ -30,7 +30,7 @@
 				tbody
 					tr(v-for="(link, index) in exhibitor.social_media_links")
 						td
-							bunt-input(:value="link.display_text", :label="$t('Exhibitors:link-text:label')", @input="set_social_media_link_text(index, $event)", name="displayText", :validation="$v.exhibitor.social_media_links.$each[index].display_text")
+							bunt-select(v-model="link.display_text", :label="$t('Exhibitors:social-link-text:label')", name="displayText", :options="supportedNetworks", :validation="$v.exhibitor.social_media_links.$each[index].display_text")
 						td
 							bunt-input(:value="link.url", :label="$t('Exhibitors:link-url:label')", @input="set_social_media_link_url(index, $event)", name="url", :validation="$v.exhibitor.social_media_links.$each[index].url")
 						td.actions
@@ -131,6 +131,13 @@ export default {
 	computed: {
 		rooms: function () {
 			return this.$store.state.rooms.filter(room => room.modules.filter(m => m.type === 'exhibition.native').length > 0)
+		},
+		supportedNetworks () {
+			return [
+				'Facebook',
+				'LinkedIn',
+				'Xing'
+			]
 		}
 	},
 	validations () {
@@ -167,8 +174,7 @@ export default {
 				social_media_links: {
 					$each: {
 						display_text: {
-							required: required(this.$t('Exhibitors:validation-links-display-text:required')),
-							maxLength: maxLength(300, this.$t('Exhibitors:validation-links-display-text:maxLength'))
+							required: required(this.$t('Exhibitors:validation-social-links-display-text:required'))
 						},
 						url: {
 							required: required(this.$t('Exhibitors:validation-links-url:required')),
