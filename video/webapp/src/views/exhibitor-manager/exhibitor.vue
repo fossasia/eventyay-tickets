@@ -152,7 +152,12 @@ export default {
 			return [
 				'Facebook',
 				'LinkedIn',
-				'Xing'
+				'Xing',
+				'Twitter',
+				'Mastodon',
+				'Reddit',
+				'Instagram',
+				'Discord'
 			]
 		},
 		downloadLinks () {
