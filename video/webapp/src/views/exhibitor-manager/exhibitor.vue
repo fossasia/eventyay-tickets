@@ -21,7 +21,7 @@
 			bunt-select(v-model="exhibitor.room_id", :label="$t('Exhibitors:room:label')", name="room", :options="rooms", option-label="name", :validation="$v.exhibitor.room_id")
 				template(slot-scope="{ option }")
 					.label {{ option.name }}
-			table.social-media-links
+			table.links
 				thead
 					tr
 						th {{ $t('Exhibitors:social-media-link:label') }}
@@ -44,24 +44,41 @@
 			table.links
 				thead
 					tr
-						th {{ $t('Exhibitors:link:label') }}
-						th
+						th {{ $t('Exhibitors:profile-link:label') }}
 						th
 						th
 				tbody
-					tr(v-for="(link, index) in exhibitor.links")
+					tr(v-for="(link, index) in profileLinks")
 						td
-							bunt-input(:value="link.display_text", :label="$t('Exhibitors:link-text:label')", @input="set_link_text(index, $event)", name="displayText", :validation="$v.exhibitor.links.$each[index].display_text")
+							bunt-input(:value="link.display_text", :label="$t('Exhibitors:link-text:label')", @input="set_link_text(index, link.category, $event)", name="displayText", :validation="$v.exhibitor.links.$each[index].display_text")
 						td
-							bunt-input(:value="link.url", :label="$t('Exhibitors:link-url:label')", @input="set_link_url(index, $event)", name="url", :validation="$v.exhibitor.links.$each[index].url")
-						td
-							bunt-select(:value="link.category", :label="$t('Exhibitors:link-category:label')", @input="set_link_category(index, $event)", name="category", :options="linkCategories", :validation="$v.exhibitor.links.$each[index].category")
+							bunt-input(:value="link.url", :label="$t('Exhibitors:link-url:label')", @input="set_link_url(index, link.category, $event)", name="url", :validation="$v.exhibitor.links.$each[index].url")
 						td.actions
-							bunt-icon-button(@click="remove_link(index)") delete-outline
+							bunt-icon-button(@click="remove_link(index, link.category)") delete-outline
 				tfoot
 					tr
 						td
-							bunt-button(@click="add_link") {{ $t('Exhibitors:add-link:text') }}
+							bunt-button(@click="add_link('profile')") {{ $t('Exhibitors:add-link:text') }}
+						td
+						td
+			table.links
+				thead
+					tr
+						th {{ $t('Exhibitors:download-link:label') }}
+						th
+						th
+				tbody
+					tr(v-for="(link, index) in downloadLinks")
+						td
+							bunt-input(:value="link.display_text", :label="$t('Exhibitors:link-text:label')", @input="set_link_text(index, link.category, $event)", name="displayText", :validation="$v.exhibitor.links.$each[index].display_text")
+						td
+							bunt-input(:value="link.url", :label="$t('Exhibitors:link-url:label')", @input="set_link_url(index, link.category, $event)", name="url", :validation="$v.exhibitor.links.$each[index].url")
+						td.actions
+							bunt-icon-button(@click="remove_link(index, link.category)") delete-outline
+				tfoot
+					tr
+						td
+							bunt-button(@click="add_link('download')") {{ $t('Exhibitors:add-link:text') }}
 						td
 						td
 			table.staff
@@ -124,8 +141,7 @@ export default {
 			deletingExhibitorName: '',
 			deleting: false,
 			deleteError: null,
-			sizes: ['1x1', '3x1', '3x3'],
-			linkCategories: ['profile', 'download']
+			sizes: ['1x1', '3x1', '3x3']
 		}
 	},
 	computed: {
@@ -138,6 +154,12 @@ export default {
 				'LinkedIn',
 				'Xing'
 			]
+		},
+		downloadLinks () {
+			return this.exhibitor.links.filter(l => l.category === 'download')
+		},
+		profileLinks () {
+			return this.exhibitor.links.filter(l => l.category === 'profile')
 		}
 	},
 	validations () {
@@ -241,20 +263,18 @@ export default {
 		set_social_media_link_url (index, url) {
 			this.exhibitor.social_media_links[index].url = url
 		},
-		remove_link (link) {
-			this.$delete(this.exhibitor.links, link)
+		remove_link (index, category) {
+			const _index = this.exhibitor.links.findIndex(l => l === this.exhibitor.links.filter(l => l.category === category)[index])
+			this.$delete(this.exhibitor.links, _index)
 		},
-		add_link () {
-			this.exhibitor.links.push({display_text: '', url: '', category: ''})
+		add_link (category) {
+			this.exhibitor.links.push({display_text: '', url: '', category: category})
 		},
-		set_link_text (index, displayText) {
-			this.exhibitor.links[index].display_text = displayText
+		set_link_text (index, category, displayText) {
+			this.exhibitor.links.filter(l => l.category === category)[index].display_text = displayText
 		},
-		set_link_url (index, url) {
-			this.exhibitor.links[index].url = url
-		},
-		set_link_category (index, category) {
-			this.exhibitor.links[index].category = category
+		set_link_url (index, category, url) {
+			this.exhibitor.links.filter(l => l.category === category)[index].url = url
 		},
 		add_staff (users) {
 			this.exhibitor.staff = this.exhibitor.staff.concat(users)
@@ -348,7 +368,8 @@ export default {
 	h2
 		margin-top 0
 		margin-bottom 16px
-	.social-media-links, .links, .staff
+	.links, .staff
+		margin-bottom 30px
 		th
 			text-align left
 			border-bottom 1px solid #ccc
