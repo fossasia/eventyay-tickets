@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-09-04 10:11+0000\n"
-"PO-Revision-Date: 2020-08-28 15:56+0900\n"
-"Last-Translator: Hal Seki <hal@code4japan.org>\n"
+"PO-Revision-Date: 2020-09-28 02:42+0000\n"
+"Last-Translator: Satoshi IIDA <nyampire@gmail.com>\n"
 "Language-Team: \n"
-"Language: de_DE\n"
+"Language: ja_JP\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Poedit 2.4.1\n"
+"X-Generator: Weblate 4.1\n"
 
 #: tests/screenshots/conftest.py:26
 msgid "Jane Doe"
@@ -32,7 +32,7 @@ msgstr "John Doe"
 
 #: pretalx/agenda/phrases.py:8
 msgid "Thank you for your feedback!"
-msgstr "感想をありがとうございます!"
+msgstr "感想ありがとうございます！"
 
 #: pretalx/agenda/phrases.py:9
 msgid "Thanks, we (and our speakers) appreciate your feedback!"
@@ -60,9 +60,7 @@ msgstr "残念ながら、講演をキャンセルする必要がありました
 msgid ""
 "We had to move some talks, so if you were planning on seeing them, check "
 "their new dates or locations:"
-msgstr ""
-"いくつかの講演を移動しなければならなかったので、それらを見ようと思っていた人"
-"は、新しい日程や場所をチェックしてみてください: "
+msgstr "いくつかの講演を移動する必要がありました。移動された講演を見ようと思っていた人は、新しい日程や場所をチェックしてみてください:"
 
 #: pretalx/agenda/phrases.py:18
 msgid "We have moved a talk around: "
@@ -77,14 +75,12 @@ msgstr "感想"
 
 #: pretalx/agenda/phrases.py:22
 msgid "This review is for you personally, not for all speakers in this talk."
-msgstr ""
-"このレビューはあなた向けのは個人的なものであり、この講演のすべてのスピーカー"
-"に対してのものではありません。"
+msgstr "このレビューはあなた向けの個人的なものであり、この講演のすべてのスピーカーに対してのものではありません。"
 
 #: pretalx/agenda/phrases.py:24
 #: pretalx/orga/templates/orga/submission/feedback_list.html:13
 msgid "There has been no feedback for this talk yet."
-msgstr "この話の感想はまだありません。"
+msgstr "この講演に関する感想はまだありません。"
 
 #: pretalx/agenda/phrases.py:26
 msgid "Send feedback"
