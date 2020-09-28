@@ -56,7 +56,11 @@ export default {
 					room: getters.roomsLookup[session.room]
 				})
 			}
-			sessions.sort((a, b) => a.start.diff(b.start))
+			sessions.sort((a, b) => (
+				// First sort by date, then by order of rooms
+				a.start.diff(b.start) ||
+				(state.schedule.rooms.findIndex((r) => r.id === a.room.id) - state.schedule.rooms.findIndex((r) => r.id === b.room.id))
+			))
 			return sessions
 		},
 		days (state, getters) {
