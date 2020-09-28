@@ -25,7 +25,7 @@ websockets~=8.0
 # deploy
 psycopg2-binary
 gunicorn
-uvicorn
+uvicorn[standard]
 
 # dev
 black
