@@ -64,7 +64,7 @@ export default {
 		position: relative
 		+below('m')
 			width: 100vw
-			max-height: none
+			max-height: 95vh
 		#btn-close
 			icon-button-style(style: clear)
 			position: absolute
