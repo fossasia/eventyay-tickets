@@ -76,10 +76,10 @@ export default {
 			return this.exhibitor.banner_detail
 		},
 		profileLinks () {
-			return this.exhibitor.links.filter((l) => (l.category === 'profile'))
+			return this.exhibitor.links.filter((l) => (l.category === 'profile')).sort((a, b) => a.sorting_priority - b.sorting_priority)
 		},
 		downloadLinks () {
-			return this.exhibitor.links.filter((l) => (l.category === 'download'))
+			return this.exhibitor.links.filter((l) => (l.category === 'download')).sort((a, b) => a.sorting_priority - b.sorting_priority)
 		}
 	},
 	async created () {
