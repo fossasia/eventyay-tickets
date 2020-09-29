@@ -126,7 +126,7 @@ class EventWizardInitialForm(forms.Form):
 
 class EventWizardBasicsForm(I18nModelForm):
     def __init__(self, *args, user=None, locales=None, organiser=None, **kwargs):
-        self.locales = locales
+        self.locales = locales or []
         super().__init__(*args, **kwargs, locales=locales)
         self.fields["locale"].choices = [
             (a, b) for a, b in settings.LANGUAGES if a in locales
