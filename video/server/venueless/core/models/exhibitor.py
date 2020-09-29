@@ -34,7 +34,7 @@ class Exhibitor(models.Model):
     def serialize(self):
         links = list(
             self.links.order_by("display_text").values(
-                "display_text", "url", "category"
+                "display_text", "url", "category", "sorting_priority"
             )
         )
         social_media_links = list(
@@ -112,6 +112,7 @@ class ExhibitorLink(models.Model):
     )
     display_text = models.CharField(max_length=300, blank=False)
     url = models.URLField(blank=False)
+    sorting_priority = models.IntegerField(default=0)
 
 
 class ExhibitorStaff(models.Model):

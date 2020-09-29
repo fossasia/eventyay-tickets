@@ -48,11 +48,11 @@
 						th
 						th
 				tbody
-					tr(v-for="(link, index) in profileLinks")
+					tr(v-for="(link, index) in exhibitor.profileLinks")
 						td
-							bunt-input(:value="link.display_text", :label="$t('Exhibitors:link-text:label')", @input="set_link_text(index, link.category, $event)", name="displayText", :validation="$v.exhibitor.links.$each[index].display_text")
+							bunt-input(:value="link.display_text", @input="set_link_text(index, link.category, $event)", :label="$t('Exhibitors:link-text:label')", name="displayText", :validation="$v.exhibitor.profileLinks.$each[index].display_text")
 						td
-							bunt-input(:value="link.url", :label="$t('Exhibitors:link-url:label')", @input="set_link_url(index, link.category, $event)", name="url", :validation="$v.exhibitor.links.$each[index].url")
+							bunt-input(:value="link.url", @input="set_link_url(index, link.category, $event)", :label="$t('Exhibitors:link-url:label')", name="url", :validation="$v.exhibitor.profileLinks.$each[index].url")
 						td.actions
 							bunt-icon-button(@click="remove_link(index, link.category)") delete-outline
 				tfoot
@@ -68,15 +68,14 @@
 						th
 						th
 				tbody
-					tr(v-for="(link, index) in downloadLinks")
+					tr(v-for="(link, index) in exhibitor.downloadLinks")
 						td
-							bunt-input(:value="link.display_text", :label="$t('Exhibitors:link-text:label')", @input="set_link_text(index, link.category, $event)", name="displayText", :validation="$v.exhibitor.links.$each[index].display_text")
+							bunt-input(v-model="link.display_text", :label="$t('Exhibitors:link-text:label')", name="displayText", :validation="$v.exhibitor.downloadLinks.$each[index].display_text")
 						td
-							bunt-input(:value="link.url", :label="$t('Exhibitors:link-url:label')", @input="set_link_url(index, link.category, $event)", name="url", :validation="$v.exhibitor.links.$each[index].url")
+							bunt-input(v-model="link.url", :label="$t('Exhibitors:link-url:label')", name="url", :validation="$v.exhibitor.downloadLinks.$each[index].url")
 						td.actions
 							bunt-icon-button(@click="remove_link(index, link.category)") delete-outline
 				tfoot
-					tr
 						td
 							bunt-button(@click="add_link('download')") {{ $t('Exhibitors:add-link:text') }}
 						td
@@ -145,7 +144,7 @@ export default {
 		}
 	},
 	computed: {
-		rooms: function () {
+		rooms () {
 			return this.$store.state.rooms.filter(room => room.modules.filter(m => m.type === 'exhibition.native').length > 0)
 		},
 		supportedNetworks () {
@@ -159,12 +158,6 @@ export default {
 				'Instagram',
 				'Discord'
 			]
-		},
-		downloadLinks () {
-			return this.exhibitor.links.filter(l => l.category === 'download')
-		},
-		profileLinks () {
-			return this.exhibitor.links.filter(l => l.category === 'profile')
 		}
 	},
 	validations () {
@@ -209,7 +202,7 @@ export default {
 						}
 					}
 				},
-				links: {
+				profileLinks: {
 					$each: {
 						display_text: {
 							required: required(this.$t('Exhibitors:validation-links-display-text:required')),
@@ -218,9 +211,18 @@ export default {
 						url: {
 							required: required(this.$t('Exhibitors:validation-links-url:required')),
 							maxLength: maxLength(200, this.$t('Exhibitors:validation-url:maxLength'))
+						}
+					}
+				},
+				downloadLinks: {
+					$each: {
+						display_text: {
+							required: required(this.$t('Exhibitors:validation-links-display-text:required')),
+							maxLength: maxLength(300, this.$t('Exhibitors:validation-links-display-text:maxLength'))
 						},
-						category: {
-							required: required(this.$t('Exhibitors:validation-links-category:required'))
+						url: {
+							required: required(this.$t('Exhibitors:validation-links-url:required')),
+							maxLength: maxLength(200, this.$t('Exhibitors:validation-url:maxLength'))
 						}
 					}
 				}
@@ -231,6 +233,8 @@ export default {
 		try {
 			if (this.exhibitorId !== '') {
 				this.exhibitor = (await api.call('exhibition.get', {exhibitor: this.exhibitorId})).exhibitor
+				this.$set(this.exhibitor, 'downloadLinks', this.exhibitor.links.filter(l => l.category === 'download').sort((a, b) => b.sorting_priority - a.sorting_priority))
+				this.$set(this.exhibitor, 'profileLinks', this.exhibitor.links.filter(l => l.category === 'profile').sort((a, b) => b.sorting_priority - a.sorting_priority))
 			} else {
 				this.exhibitor = {
 					id: '',
@@ -269,17 +273,35 @@ export default {
 			this.exhibitor.social_media_links[index].url = url
 		},
 		remove_link (index, category) {
-			const _index = this.exhibitor.links.findIndex(l => l === this.exhibitor.links.filter(l => l.category === category)[index])
-			this.$delete(this.exhibitor.links, _index)
+			if (category === 'profile') {
+				this.$delete(this.exhibitor.profileLinks, index)
+			} else if (category === 'download') {
+				this.$delete(this.exhibitor.downloadLinks, index)
+			}
 		},
 		add_link (category) {
-			this.exhibitor.links.push({display_text: '', url: '', category: category})
+			if (category === 'profile') {
+				this.exhibitor.profileLinks.push({display_text: '', url: '', category: category, sorting_priority: 0})
+			} else if (category === 'download') {
+				this.exhibitor.downloadLinks.push({display_text: '', url: '', category: category, sorting_priority: 0})
+			}
+		},
+		up_link (index, category) {
+			return
 		},
 		set_link_text (index, category, displayText) {
-			this.exhibitor.links.filter(l => l.category === category)[index].display_text = displayText
+			if (category === 'profile') {
+				this.exhibitor.profileLinks[index].display_text = displayText
+			} else if (category === 'download') {
+				this.exhibitor.downloadLinks[index].display_text = displayText
+			}
 		},
 		set_link_url (index, category, url) {
-			this.exhibitor.links.filter(l => l.category === category)[index].url = url
+			if (category === 'profile') {
+				this.exhibitor.profileLinks[index].url = url
+			} else if (category === 'download') {
+				this.exhibitor.downloadLinks[index].url = url
+			}
 		},
 		add_staff (users) {
 			this.exhibitor.staff = this.exhibitor.staff.concat(users)
@@ -290,6 +312,7 @@ export default {
 			this.$delete(this.exhibitor.staff, user)
 		},
 		async save () {
+			// TODO: join links and set sorting priority to index
 			this.$v.$touch()
 			if (this.$v.$invalid) return
 			this.saving = true
