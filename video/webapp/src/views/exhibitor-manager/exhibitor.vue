@@ -258,6 +258,8 @@ export default {
 					staff: [],
 					contact_enabled: true,
 				}
+				this.$set(this.exhibitor, 'downloadLinks', [])
+				this.$set(this.exhibitor, 'profileLinks', [])
 			}
 		} catch (error) {
 			this.error = error
