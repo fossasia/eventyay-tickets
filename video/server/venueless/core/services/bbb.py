@@ -114,6 +114,8 @@ def get_create_params_for_room(
             guest_policy=guest_policy,
         )
 
+    m = [m for m in room.module_config if m["type"] == "call.bigbluebutton"][0]
+    config = m["config"]
     create_params = {
         "name": room.name,
         "meetingID": call.meeting_id,
@@ -123,9 +125,18 @@ def get_create_params_for_room(
         "meta_Source": "venueless",
         "meta_World": room.world_id,
         "meta_Room": str(room.id),
-        "lockSettingsDisablePrivateChat": "true"
-        if room.world.config.get("bbb_disable_privatechat", True)
-        else "false",
+        "muteOnStart": ("true" if config.get("bbb_mute_on_start", False) else "false"),
+        "lockSettingsDisablePrivateChat": (
+            "true"
+            if room.world.config.get("bbb_disable_privatechat", True)
+            else "false"
+        ),
+        "lockSettingsDisableCam": (
+            "true" if config.get("bbb_disable_cam", False) else "false"
+        ),
+        "lockSettingsDisablePublicChat": (
+            "true" if config.get("bbb_disable_chat", False) else "false"
+        ),
     }
     if call.voice_bridge:
         create_params["voiceBridge"] = call.voice_bridge
@@ -234,13 +245,19 @@ class BBBService:
                 "userdata-bbb_show_public_chat_on_login": "false",
                 # "userdata-bbb_mirror_own_webcam": "true",  unfortunately mirrors for everyone, which breaks things
                 "userdata-bbb_skip_check_audio": "true",
-                "userdata-bbb_listen_only_mode": "false"
-                if config.get("auto_microphone", False)
-                else "true",
+                "userdata-bbb_listen_only_mode": (
+                    "false" if config.get("auto_microphone", False) else "true"
+                ),
+                "userdata-bbb_auto_share_webcam": (
+                    "true" if config.get("auto_camera", False) else "false"
+                ),
+                "userdata-bbb_skip_video_preview": (
+                    "true" if config.get("auto_camera", False) else "false"
+                ),
                 # For some reason, bbb_auto_swap_layout does what you expect from bbb_hide_presentation
-                "userdata-bbb_auto_swap_layout": "true"
-                if config.get("hide_presentation", False)
-                else "false",
+                "userdata-bbb_auto_swap_layout": (
+                    "true" if config.get("hide_presentation", False) else "false"
+                ),
             },
             server.url,
             server.secret,
@@ -272,6 +289,7 @@ class BBBService:
                 + reverse("live:css.bbb"),
                 "userdata-bbb_show_public_chat_on_login": "false",
                 # "userdata-bbb_mirror_own_webcam": "true",  unfortunately mirrors for everyone, which breaks things
+                "userdata-bbb_auto_share_webcam": "true",
                 "userdata-bbb_skip_check_audio": "true",
                 "userdata-bbb_listen_only_mode": "false",  # in a group call, listen-only does not make sense
                 "userdata-bbb_auto_swap_layout": "true",  # in a group call, you'd usually not have a presentation

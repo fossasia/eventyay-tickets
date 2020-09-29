@@ -10,7 +10,17 @@
 		bunt-input(v-model="config.connection_limit", label="Connection limit", name="connection_limit", hint="Set to 0 to allow unlimited connections per user", :validation="$v.config.connection_limit")
 		bunt-input(v-model="config.pretalx.domain", label="pretalx domain", name="pretalx_domain", :validation="$v.config.pretalx.domain")
 		bunt-input(v-model="config.pretalx.event", label="pretalx event slug", name="pretalx_event", :validation="$v.config.pretalx.event")
-		bunt-checkbox(v-model="config.bbb_defaults.record", label="Allow recording in newly-created BBB rooms", name="bbb_defaults_record")
+		h3 Settings for newly-created BBB rooms
+		bunt-checkbox(v-model="config.bbb_defaults.record", label="Allow recording", name="record")
+		bunt-checkbox(v-model="config.bbb_defaults.hide_presentation", label="Hide presentation when users join", name="hide_presentation")
+		bunt-checkbox(v-model="config.bbb_defaults.waiting_room", label="Put new users in waiting room first (needs to be set before first join)", name="waiting_room")
+		bunt-checkbox(v-model="config.bbb_defaults.auto_microphone", label="Auto-join users with microphone on (skip dialog asking how to join)", name="auto_microphone")
+		bunt-checkbox(v-model="config.bbb_defaults.auto_camera", label="Auto-join users with camera on", name="auto_camera")
+		bunt-checkbox(v-model="config.bbb_defaults.bbb_mute_on_start", label="Auto-mute users" name="bbb_mute_on_start")
+		bunt-checkbox(v-model="config.bbb_defaults.bbb_disable_cam", label="Disable camera for non-moderators", name="bbb_disable_cam")
+		bunt-checkbox(v-model="config.bbb_defaults.bbb_disable_mic", label="Disable microphones for non-moderators", name="bbb_disable_mic")
+		bunt-checkbox(v-model="config.bbb_defaults.bbb_disable_chat", label="Disable public chat for non-moderators", name="bbb_disable_chat")
+		h3 Settings for stages
 		bunt-input-outline-container(label="hls.js config", :class="{error: $v.hlsConfig.$invalid}")
 			textarea(slot-scope="{focus, blur}", @focus="focus", @blur="blur", v-model="hlsConfig")
 		.json-error-message {{ $v.hlsConfig.$params.isJson.message }}
