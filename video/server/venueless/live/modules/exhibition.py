@@ -21,7 +21,7 @@ class ExhibitionModule(BaseModule):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.service = ExhibitionService(self.consumer.world.id)
+        self.service = ExhibitionService(self.consumer.world)
 
     async def dispatch_disconnect(self, close_code):
         if self.consumer.user:
@@ -91,7 +91,9 @@ class ExhibitionModule(BaseModule):
 
     @command("get")
     async def get(self, body):
-        exhibitor = await self.service.get_exhibitor(exhibitor_id=body["exhibitor"])
+        exhibitor = await self.service.get_exhibitor(
+            exhibitor_id=body["exhibitor"], track_view_for_user=self.consumer.user
+        )
         if not exhibitor:
             await self.consumer.send_error("exhibition.unknown_exhibitor")
             return

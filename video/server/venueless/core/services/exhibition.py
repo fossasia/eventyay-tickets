@@ -10,6 +10,7 @@ from venueless.core.models import (
     ExhibitorStaff,
     Room,
 )
+from venueless.core.models.exhibitor import ExhibitorView
 from venueless.core.services.user import get_user_by_id
 
 
@@ -86,12 +87,12 @@ def get_room_by_id(world_id, id):
 
 
 class ExhibitionService:
-    def __init__(self, world_id):
-        self.world_id = world_id
+    def __init__(self, world):
+        self.world = world
 
     @database_sync_to_async
     def get_all_exhibitors(self):
-        qs = Exhibitor.objects.filter(world__id=self.world_id).order_by("name")
+        qs = Exhibitor.objects.filter(world__id=self.world.pk).order_by("name")
 
         return [
             dict(
@@ -107,7 +108,7 @@ class ExhibitionService:
     @database_sync_to_async
     def get_exhibitors(self, room_id):
         qs = (
-            Exhibitor.objects.filter(world__id=self.world_id)
+            Exhibitor.objects.filter(world__id=self.world.pk)
             .filter(room__id=room_id)
             .order_by("sorting_priority", "name")
         )
@@ -136,20 +137,23 @@ class ExhibitionService:
         ]
 
     @database_sync_to_async
-    def get_exhibitor(self, exhibitor_id):
-        e = get_exhibitor_by_id(self.world_id, exhibitor_id)
+    def get_exhibitor(self, exhibitor_id, track_view_for_user=None):
+        e = get_exhibitor_by_id(self.world.pk, exhibitor_id)
         if not e:
             return None
+
+        if track_view_for_user and self.world.config.get("track_exhibitor_views", True):
+            ExhibitorView.objects.create(exhibitor=e, user=track_view_for_user)
         return e.serialize()
 
     @database_sync_to_async
     @atomic
     def delete(self, exhibitor_id, by_user):
-        e = get_exhibitor_by_id(self.world_id, exhibitor_id)
+        e = get_exhibitor_by_id(self.world.pk, exhibitor_id)
         if not e:
             return None
         AuditLog.objects.create(
-            world_id=self.world_id,
+            world_id=self.world.pk,
             user=by_user,
             type="exhibition.exhibitor.deleted",
             data={
@@ -162,7 +166,7 @@ class ExhibitionService:
     @database_sync_to_async
     @atomic
     def patch(self, exhibitor, world, by_user):
-        room = get_room_by_id(self.world_id, exhibitor["room_id"])
+        room = get_room_by_id(self.world.pk, exhibitor["room_id"])
         if not room:
             return None
 
@@ -173,7 +177,7 @@ class ExhibitionService:
             )
             old = {}
         else:
-            e = get_exhibitor_by_id(self.world_id, exhibitor["id"])
+            e = get_exhibitor_by_id(self.world.pk, exhibitor["id"])
             if not e:
                 return None
             old = e.serialize()
@@ -213,7 +217,7 @@ class ExhibitionService:
         if "staff" in exhibitor:
             staff = []
             for user in exhibitor["staff"]:
-                user = get_user_by_id(self.world_id, user["id"])
+                user = get_user_by_id(self.world.pk, user["id"])
                 staff.append(get_or_create_staff(user, e))
             for staff_member in e.staff.all():
                 if staff_member not in staff:
@@ -221,7 +225,7 @@ class ExhibitionService:
 
         new = e.serialize()
         AuditLog.objects.create(
-            world_id=self.world_id,
+            world_id=self.world.pk,
             user=by_user,
             type="exhibition.exhibitor.updated",
             data={
@@ -235,7 +239,7 @@ class ExhibitionService:
 
     @database_sync_to_async
     def contact(self, exhibitor_id, user):
-        e = get_exhibitor_by_id(self.world_id, exhibitor_id)
+        e = get_exhibitor_by_id(self.world.pk, exhibitor_id)
         if not e:
             return None
         request = ContactRequest.objects.create(
@@ -246,7 +250,7 @@ class ExhibitionService:
 
     @database_sync_to_async
     def missed(self, contact_request_id):
-        r = get_request_by_id(self.world_id, contact_request_id)
+        r = get_request_by_id(self.world.pk, contact_request_id)
         if not r:
             return None
         if r.state == "answered":
@@ -257,7 +261,7 @@ class ExhibitionService:
 
     @database_sync_to_async
     def accept(self, contact_request_id, staff):
-        r = get_request_by_id(self.world_id, contact_request_id)
+        r = get_request_by_id(self.world.pk, contact_request_id)
         if not r:
             return None
         if r.state == "answered":
@@ -270,10 +274,10 @@ class ExhibitionService:
     @database_sync_to_async
     @atomic
     def add_staff(self, exhibitor_id, user_id, by_user):
-        e = get_exhibitor_by_id(self.world_id, exhibitor_id)
+        e = get_exhibitor_by_id(self.world.pk, exhibitor_id)
         if not e:
             return None
-        u = get_user_by_id(self.world_id, user_id)
+        u = get_user_by_id(self.world.pk, user_id)
         if not u:
             return None
         try:
@@ -287,7 +291,7 @@ class ExhibitionService:
                 exhibitor=e,
             )
         AuditLog.objects.create(
-            world_id=self.world_id,
+            world_id=self.world.pk,
             user=by_user,
             type="exhibition.exhibitor.staff.added",
             data={
@@ -304,7 +308,7 @@ class ExhibitionService:
         if not s:
             return None
         AuditLog.objects.create(
-            world_id=self.world_id,
+            world_id=self.world.pk,
             user=by_user,
             type="exhibition.exhibitor.staff.removed",
             data={
@@ -316,7 +320,7 @@ class ExhibitionService:
 
     @database_sync_to_async
     def get_staff(self, exhibitor_id):
-        e = get_exhibitor_by_id(self.world_id, exhibitor_id)
+        e = get_exhibitor_by_id(self.world.pk, exhibitor_id)
         if not e:
             return None
         return list(e.staff.values_list("user__id", flat=True))
@@ -331,14 +335,14 @@ class ExhibitionService:
     @database_sync_to_async
     def get_exhibitions_staffed_by_user(self, user_id):
         exhibitors = Exhibitor.objects.filter(
-            world__id=self.world_id,
+            world__id=self.world.pk,
             staff__user__id=user_id,
         )
         return [ex.serialize() for ex in exhibitors]
 
     def get_exhibition_data_for_user(self, user_id):
         exhibitors = Exhibitor.objects.filter(
-            world__id=self.world_id,
+            world__id=self.world.pk,
             staff__user__id=user_id,
         )
         contact_requests = ContactRequest.objects.filter(exhibitor__in=exhibitors)

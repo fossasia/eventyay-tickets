@@ -223,9 +223,7 @@ def login(
         chat_channels=ChatService(world).get_channels_for_user(
             user.pk, is_volatile=False
         ),
-        exhibition_data=ExhibitionService(world.id).get_exhibition_data_for_user(
-            user.pk
-        ),
+        exhibition_data=ExhibitionService(world).get_exhibition_data_for_user(user.pk),
     )
 
 

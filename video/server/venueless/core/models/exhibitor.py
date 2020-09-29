@@ -185,3 +185,13 @@ class ContactRequest(models.Model):
             else None,
             timestamp=self.timestamp.isoformat() if self.timestamp else None,
         )
+
+
+class ExhibitorView(models.Model):
+    exhibitor = models.ForeignKey(
+        to="Exhibitor", related_name="views", on_delete=models.CASCADE
+    )
+    datetime = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(
+        to="user", related_name="exhibitor_views", on_delete=models.CASCADE
+    )
