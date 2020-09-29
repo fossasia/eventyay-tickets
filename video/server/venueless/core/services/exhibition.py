@@ -54,11 +54,13 @@ def get_or_create_link(link, exhibitor):
         display_text=link["display_text"],
         url=link["url"],
         category=link["category"],
+        sorting_priority=link["sorting_priority"],
         defaults=dict(
             exhibitor=exhibitor,
             display_text=link["display_text"],
             url=link["url"],
             category=link["category"],
+            sorting_priority=link["sorting_priority"],
         ),
     )
     return obj

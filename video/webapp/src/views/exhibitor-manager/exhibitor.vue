@@ -55,6 +55,9 @@
 							bunt-input(:value="link.url", @input="set_link_url(index, link.category, $event)", :label="$t('Exhibitors:link-url:label')", name="url", :validation="$v.exhibitor.profileLinks.$each[index].url")
 						td.actions
 							bunt-icon-button(@click="remove_link(index, link.category)") delete-outline
+							bunt-icon-button(@click="up_link(index, link.category)") arrow-up-bold-outline
+							bunt-icon-button(@click="down_link(index, link.category)") arrow-down-bold-outline
+				tfoot
 				tfoot
 					tr
 						td
@@ -75,6 +78,8 @@
 							bunt-input(v-model="link.url", :label="$t('Exhibitors:link-url:label')", name="url", :validation="$v.exhibitor.downloadLinks.$each[index].url")
 						td.actions
 							bunt-icon-button(@click="remove_link(index, link.category)") delete-outline
+							bunt-icon-button(@click="up_link(index, link.category)") arrow-up-bold-outline
+							bunt-icon-button(@click="down_link(index, link.category)") arrow-down-bold-outline
 				tfoot
 						td
 							bunt-button(@click="add_link('download')") {{ $t('Exhibitors:add-link:text') }}
@@ -233,8 +238,8 @@ export default {
 		try {
 			if (this.exhibitorId !== '') {
 				this.exhibitor = (await api.call('exhibition.get', {exhibitor: this.exhibitorId})).exhibitor
-				this.$set(this.exhibitor, 'downloadLinks', this.exhibitor.links.filter(l => l.category === 'download').sort((a, b) => b.sorting_priority - a.sorting_priority))
-				this.$set(this.exhibitor, 'profileLinks', this.exhibitor.links.filter(l => l.category === 'profile').sort((a, b) => b.sorting_priority - a.sorting_priority))
+				this.$set(this.exhibitor, 'downloadLinks', this.exhibitor.links.filter(l => l.category === 'download').sort((a, b) => a.sorting_priority - b.sorting_priority))
+				this.$set(this.exhibitor, 'profileLinks', this.exhibitor.links.filter(l => l.category === 'profile').sort((a, b) => a.sorting_priority - b.sorting_priority))
 			} else {
 				this.exhibitor = {
 					id: '',
@@ -287,7 +292,29 @@ export default {
 			}
 		},
 		up_link (index, category) {
-			return
+			if (index === 0) return
+			if (category === 'profile') {
+				const l = this.exhibitor.profileLinks[index - 1]
+				this.$set(this.exhibitor.profileLinks, index - 1, this.exhibitor.profileLinks[index])
+				this.$set(this.exhibitor.profileLinks, index, l)
+			} else if (category === 'download') {
+				const l = this.exhibitor.downloadLinks[index - 1]
+				this.$set(this.exhibitor.downloadLinks, index - 1, this.exhibitor.downloadLinks[index])
+				this.$set(this.exhibitor.downloadLinks, index, l)
+			}
+		},
+		down_link (index, category) {
+			if (category === 'profile') {
+				if (index === this.exhibitor.profileLinks.length - 1) return
+				const l = this.exhibitor.profileLinks[index + 1]
+				this.$set(this.exhibitor.profileLinks, index + 1, this.exhibitor.profileLinks[index])
+				this.$set(this.exhibitor.profileLinks, index, l)
+			} else if (category === 'download') {
+				if (index === this.exhibitor.downloadLinks.length - 1) return
+				const l = this.exhibitor.downloadLinks[index + 1]
+				this.$set(this.exhibitor.downloadLinks, index + 1, this.exhibitor.downloadLinks[index])
+				this.$set(this.exhibitor.downloadLinks, index, l)
+			}
 		},
 		set_link_text (index, category, displayText) {
 			if (category === 'profile') {
@@ -312,10 +339,14 @@ export default {
 			this.$delete(this.exhibitor.staff, user)
 		},
 		async save () {
-			// TODO: join links and set sorting priority to index
 			this.$v.$touch()
 			if (this.$v.$invalid) return
 			this.saving = true
+
+			this.exhibitor.profileLinks.forEach((l, i) => l.sorting_priority = i)
+			this.exhibitor.downloadLinks.forEach((l, i) => l.sorting_priority = i)
+			this.exhibitor.links = [...this.exhibitor.downloadLinks, ...this.exhibitor.profileLinks]
+
 			const exhibitor = (await api.call('exhibition.patch', {
 				id: this.exhibitorId,
 				name: this.exhibitor.name,
