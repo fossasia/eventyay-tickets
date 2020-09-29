@@ -96,7 +96,7 @@ class SubmitWizard(EventPageMixin, View):
             if request.event.settings.mail_on_new_submission:
                 MailTemplate(
                     event=request.event,
-                    subject=_("New submission!").format(event=request.event.slug),
+                    subject=str(_("New proposal: {title}")).format(title=request.submission.title),
                     text=request.event.settings.mail_text_new_submission,
                 ).to_mail(
                     user=request.event.email,
