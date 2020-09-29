@@ -31,6 +31,8 @@ class WorldConfigSerializer(serializers.Serializer):
     connection_limit = serializers.IntegerField(allow_null=True)
     available_permissions = serializers.SerializerMethodField("_available_permissions")
     profile_fields = serializers.JSONField()
+    track_exhibitor_views = serializers.BooleanField()
+    track_room_views = serializers.BooleanField()
 
     def _available_permissions(self, *args):
         return [d.value for d in Permission]
@@ -282,6 +284,8 @@ def _config_serializer(world, *args, **kwargs):
             "dateLocale": world.config.get("dateLocale", "en-ie"),
             "roles": world.roles,
             "bbb_defaults": bbb_defaults,
+            "track_exhibitor_views": world.config.get("track_exhibitor_views", True),
+            "track_room_views": world.config.get("track_room_views", True),
             "pretalx": world.config.get("pretalx", {}),
             "videoPlayer": world.config.get("videoPlayer"),
             "timezone": world.timezone,

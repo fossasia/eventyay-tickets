@@ -47,6 +47,8 @@ class WorldModule(BaseModule):
                 "pretalx",
                 "videoPlayer",
                 "profile_fields",
+                "track_room_views",
+                "track_exhibitor_views",
             )
             model_fields = ("title", "locale", "timezone", "roles", "trait_grants")
             update_fields = set()
