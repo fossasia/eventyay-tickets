@@ -62,6 +62,7 @@ export default {
 	'preferences/index:btn-upload-save:label': 'speichern',
 	'preferences/index:btn-notification-permission:label': 'Desktop Notifications',
 	'preferences/index:btn-notification-sound:label': 'Desktop Notifications Ton',
+	'preferences/index:permission-denied:text': 'Desktop Notifications sind für diese Seite blockiert. Bitte ändere die Einstellung in deinem Browser.',
 	'RoomsSidebar:schedule:label': 'Zeitplan',
 	'RoomsSidebar:admin-headline:text': 'Administration',
 	'RoomsSidebar:stages-headline:text': 'Bühnen',

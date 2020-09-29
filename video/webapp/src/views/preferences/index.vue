@@ -7,8 +7,9 @@
 			bunt-button#btn-change-avatar(@click="showChangeAvatar = true") {{ $t('preferences/index:btn-change-avatar:label') }}
 		bunt-input.display-name(name="displayName", :label="$t('profile/GreetingPrompt:displayname:label')", v-model.trim="profile.display_name", :validation="$v.profile.display_name")
 		change-additional-fields(v-model="profile.fields")
-		bunt-switch(v-model="desktopNotificationPermission", :label="$t('preferences/index:btn-notification-permission:label')", name="desktopNotificationPermission")
-		bunt-switch(v-model="desktopNotificationSound", :label="$t('preferences/index:btn-notification-sound:label')", name="desktopNotificationSound")
+		bunt-checkbox(v-model="desktopNotificationPermission", :label="$t('preferences/index:btn-notification-permission:label')", name="desktopNotificationPermission")
+		.permission-info(v-if="showPermissionDenied") {{ $t('preferences/index:permission-denied:text') }}
+		bunt-checkbox(v-model="desktopNotificationSound", :label="$t('preferences/index:btn-notification-sound:label')", name="desktopNotificationSound")
 		bunt-button#btn-save(:disabled="$v.$invalid && $v.$dirty", :loading="saving", @click="save") {{ $t('preferences/index:btn-save:label') }}
 	transition(name="prompt")
 		prompt.change-avatar-prompt(v-if="showChangeAvatar", @close="showChangeAvatar = false")
@@ -37,7 +38,8 @@ export default {
 			blockSave: false,
 			saving: false,
 			desktopNotificationPermission: false,
-			desktopNotificationSound: false
+			desktopNotificationSound: false,
+			showPermissionDenied: false
 		}
 	},
 	validations: {
@@ -72,11 +74,15 @@ export default {
 			this.$v.$touch()
 			if (this.$v.$invalid) return
 			this.saving = true
-			localStorage.playDesktopNotificationSound = this.desktopNotificationSound.toString()
-			localStorage.desktopNotificationPermission = this.desktopNotificationPermission.toString()
-			if (window.Notification.permission === 'default') {
+			if ((window.Notification.permission === 'default') && this.desktopNotificationPermission) {
 				localStorage.desktopNotificationPermission = ((await window.Notification.requestPermission()) === 'granted').toString()
 			}
+			if ((window.Notification.permission === 'denied') && this.desktopNotificationPermission) {
+				this.desktopNotificationPermission = false
+				this.showPermissionDenied = true
+			}
+			localStorage.playDesktopNotificationSound = this.desktopNotificationSound.toString()
+			localStorage.desktopNotificationPermission = this.desktopNotificationPermission.toString()
 			await this.$store.dispatch('updateUser', {profile: this.profile})
 			this.saving = false
 		}
@@ -99,6 +105,11 @@ export default {
 			margin-left: 16px
 	.inputs
 		width: 320px
+		.permission-info
+			font-size 13px
+			line-height 18px
+			padding 6px 0px 6px 16px
+			color: $clr-red
 	#btn-save
 		themed-button-primary()
 
