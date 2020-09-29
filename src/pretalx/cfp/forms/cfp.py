@@ -1,3 +1,6 @@
+from pretalx.common.templatetags.rich_text import rich_text
+
+
 class CfPFormMixin:
     """All forms used in the CfP step process should use this mixin.
 
@@ -13,7 +16,7 @@ class CfPFormMixin:
         field_data = self.field_configuration.get(field_name) or {}
         field.original_help_text = field_data.get("help_text") or ""
         if field.original_help_text:
-            field.help_text = (
+            field.help_text = rich_text(
                 str(field.original_help_text)
                 + " "
                 + str(getattr(field, "added_help_text", ""))
