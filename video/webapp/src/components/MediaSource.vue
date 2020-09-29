@@ -1,5 +1,5 @@
 <template lang="pug">
-.c-media-source
+.c-media-source(:class="{'in-background': background}")
 	transition(name="background-room")
 		router-link.background-room(v-if="background", :to="{name: 'room', params: {roomId: room.id}}")
 			.description
@@ -64,6 +64,8 @@ export default {
 	position: absolute
 	width: 0
 	height: 0
+	&.in-background
+		z-index: 101
 	.c-livestream, .c-youtube
 		position: fixed
 		transition: all .3s ease
