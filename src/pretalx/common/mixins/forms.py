@@ -31,6 +31,9 @@ class PublicContent:
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        event = getattr(self, "event", None)
+        if event and not event.settings.show_schedule:
+            return
         for field_name in self.Meta.public_fields:
             field = self.fields.get(field_name)
             if field:
@@ -86,7 +89,7 @@ class QuestionFieldsMixin:
 
         original_help_text = question.help_text
         help_text = rich_text(question.help_text)
-        if question.is_public:
+        if question.is_public and self.event.settings.show_schedule:
             help_text += " " + str(phrases.base.public_content)
         count_chars = self.event.settings.cfp_count_length_in == "chars"
         if question.variant == QuestionVariant.BOOLEAN:
