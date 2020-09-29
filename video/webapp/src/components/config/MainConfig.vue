@@ -10,6 +10,8 @@
 		bunt-input(v-model="config.connection_limit", label="Connection limit", name="connection_limit", hint="Set to 0 to allow unlimited connections per user", :validation="$v.config.connection_limit")
 		bunt-input(v-model="config.pretalx.domain", label="pretalx domain", name="pretalx_domain", :validation="$v.config.pretalx.domain")
 		bunt-input(v-model="config.pretalx.event", label="pretalx event slug", name="pretalx_event", :validation="$v.config.pretalx.event")
+		bunt-checkbox(v-model="config.track_room_views", label="Track room views", name="track_room_views")
+		bunt-checkbox(v-model="config.track_exhibitor_views", label="Track exhibitor views", name="track_exhibitor_views")
 		h3 Settings for newly-created BBB rooms
 		bunt-checkbox(v-model="config.bbb_defaults.record", label="Allow recording", name="record")
 		bunt-checkbox(v-model="config.bbb_defaults.hide_presentation", label="Hide presentation when users join", name="hide_presentation")
@@ -92,6 +94,8 @@ export default {
 				timezone: this.config.timezone,
 				connection_limit: this.config.connection_limit,
 				bbb_defaults: this.config.bbb_defaults,
+				track_exhibitor_views: this.config.track_exhibitor_views,
+				track_room_views: this.config.track_room_views,
 				pretalx: this.config.pretalx,
 			}
 			if (this.hlsConfig) {
