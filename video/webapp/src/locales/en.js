@@ -63,6 +63,7 @@ export default {
 	'preferences/index:btn-upload-save:label': 'save',
 	'preferences/index:btn-notification-permission:label': 'Desktop notifications',
 	'preferences/index:btn-notification-sound:label': 'Desktop notification sound',
+	'preferences/index:permission-denied:text': 'Desktop notifications are blocked for this site. Please change the setting in your browser.',
 	'RoomsSidebar:schedule:label': 'Schedule',
 	'RoomsSidebar:admin-headline:text': 'Administration',
 	'RoomsSidebar:stages-headline:text': 'Stages',
