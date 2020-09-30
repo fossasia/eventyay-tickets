@@ -132,6 +132,8 @@ async def test_config_get(world):
         del response[2]["available_permissions"]  # let this test break less often
         assert response[2] == {
             "theme": {},
+            "track_exhibitor_views": True,
+            "track_room_views": True,
             "trait_grants": {
                 "admin": ["admin"],
                 "viewer": ["global-viewer"],
