@@ -28,7 +28,9 @@ class StoredFile(models.Model):
     date = models.DateTimeField(null=True, blank=True)
     filename = models.CharField(max_length=255)
     type = models.CharField(max_length=255)
-    file = models.FileField(null=True, blank=True, upload_to=storedfile_name, max_length=999)
+    file = models.FileField(
+        null=True, blank=True, upload_to=storedfile_name, max_length=999
+    )
     public = models.BooleanField(default=False)
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.PROTECT)
     source_url = models.CharField(max_length=255, null=True, blank=True)
