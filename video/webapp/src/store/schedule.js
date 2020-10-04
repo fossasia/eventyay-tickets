@@ -19,10 +19,7 @@ export default {
 			return rootState.world.pretalx.domain + rootState.world.pretalx.event + '/schedule/widget/v2.json'
 		},
 		pretalxApiBaseUrl (state, getters, rootState) {
-			if (!rootState.world.pretalx?.domain || !rootState.world.pretalx?.event) return
-			if (rootState.world.pretalx.event.includes('.json')) {
-				return
-			}
+			if (!rootState.world.pretalx?.domain || !rootState.world.pretalx?.event || rootState.world.pretalx.event.includes('.json')) return
 			return rootState.world.pretalx.domain + 'api/events/' + rootState.world.pretalx.event
 		},
 		roomsLookup (state, getters, rootState) {

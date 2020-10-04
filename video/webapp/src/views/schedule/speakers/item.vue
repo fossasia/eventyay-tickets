@@ -21,7 +21,6 @@ export default {
 	},
 	computed: {},
 	async created () {
-		console.log(this.speakerId)
 		// TODO error handling
 		if (!this.$store.getters['schedule/pretalxApiBaseUrl']) return
 		this.speaker = await (await fetch(`${this.$store.getters['schedule/pretalxApiBaseUrl']}/speakers/${this.speakerId}/`)).json()
