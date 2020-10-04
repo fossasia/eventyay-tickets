@@ -4,7 +4,7 @@
 		.talk
 			h1 {{ talk.title }}
 			//- TODO choose locale
-			.info {{ datetime }} {{ talk.slot.room.en }}
+			.info {{ datetime }} {{ roomName }}
 			section.abstract {{ talk.abstract }}
 			p {{ talk.description }}
 		.speakers
@@ -12,12 +12,15 @@
 			.speakers-list
 				.speaker(v-for="speaker of talk.speakers")
 					img.avatar(v-if="speaker.avatar", :src="speaker.avatar")
-					router-link.name(:to="{name: 'schedule:speaker', params: {speakerId: speaker.code}}") {{ speaker.name }}
+					router-link.name(v-if="pretalxApiBaseUrl", :to="{name: 'schedule:speaker', params: {speakerId: speaker.code}}") {{ speaker.name }}
+					.name(v-else) {{ speaker.name }}
 					markdown-content.biography(:markdown="speaker.biography")
 					//- TODO other talks by this speaker
 	bunt-progress-circular(v-else, size="huge", :page="true")
 </template>
 <script>
+import { mapGetters } from 'vuex'
+import { getLocalizedString } from 'components/schedule/utils'
 import moment from 'lib/timetravelMoment'
 import MarkdownContent from 'components/MarkdownContent'
 
@@ -32,14 +35,27 @@ export default {
 		}
 	},
 	computed: {
+		...mapGetters('schedule', ['pretalxApiBaseUrl', 'sessions']),
 		datetime () {
-			return moment(this.talk.slot.start).format('L LT') + ' - ' + moment(this.talk.slot.end).format('LT')
+			return moment(this.talk.slot?.start || this.talk.start).format('L LT') + ' - ' + moment(this.talk.slot?.end || this.talk.end).format('LT')
+		},
+		roomName () {
+			return getLocalizedString(this.talk.slot?.room || this.talk.room.name)
+		}
+	},
+	watch: {
+		sessions: {
+			handler () {
+				if (!this.sessions) return
+				this.talk = this.sessions.find(session => session.id === this.talkId)
+			},
+			immediate: true
 		}
 	},
 	async created () {
 		// TODO error handling
-		if (!this.$store.getters['schedule/pretalxApiBaseUrl']) return
-		this.talk = await (await fetch(`${this.$store.getters['schedule/pretalxApiBaseUrl']}/talks/${this.talkId}/`)).json()
+		if (!this.pretalxApiBaseUrl) return
+		this.talk = await (await fetch(`${this.pretalxApiBaseUrl}/talks/${this.talkId}/`)).json()
 	},
 	mounted () {
 		this.$nextTick(() => {
