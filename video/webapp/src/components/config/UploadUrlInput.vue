@@ -1,8 +1,9 @@
 <template lang="pug">
 .c-upload-url-input
 	bunt-input(:value="value", :label="label", :name="name", :validation="validation", @input="update($event)")
-	.file-selector
-		bunt-icon-button(:loading="uploading") upload
+	bunt-progress-circular(v-if="uploading", size="small")
+	.file-selector(v-else)
+		bunt-icon-button upload
 		input(type="file", @change="upload", ref="fileInput")
 
 </template>
@@ -42,7 +43,12 @@ export default {
 				headers: headers,
 				body: data
 			}).then(response => response.json()).then(data => {
-				this.$emit('input', data.url)
+				if (data.error) {
+					alert(`Upload error: ${data.error}`) // Proper user-friendly messages
+					this.$emit('input', '')
+				} else {
+					this.$emit('input', data.url)
+				}
 				this.uploading = false
 			}).catch(error => {
 				// TODO: better error handling
@@ -58,7 +64,8 @@ export default {
 	.c-upload-url-input
 		display: flex
 		align-items: center
-
+		.bunt-progress-circular.small
+			margin: 0 6px
 		.bunt-input
 			flex-grow: 1
 
