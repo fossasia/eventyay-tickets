@@ -75,7 +75,7 @@
 						td
 							bunt-input(v-model="link.display_text", :label="$t('Exhibitors:link-text:label')", name="displayText", :validation="$v.exhibitor.downloadLinks.$each[index].display_text")
 						td
-							bunt-input(v-model="link.url", :label="$t('Exhibitors:link-url:label')", name="url", :validation="$v.exhibitor.downloadLinks.$each[index].url")
+							upload-url-input(v-model="link.url", :label="$t('Exhibitors:link-url:label')", name="url", :validation="$v.exhibitor.downloadLinks.$each[index].url")
 						td.actions
 							bunt-icon-button(@click="remove_link(index, link.category)") delete-outline
 							bunt-icon-button(@click="up_link(index, link.category)") arrow-up-bold-outline
