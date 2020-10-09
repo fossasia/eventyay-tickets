@@ -9,7 +9,7 @@ from publicsuffixlist import PublicSuffixList
 register = template.Library()
 
 ALLOWED_TAGS = [
-    "a",
+    "a",  # Keep in first position for link_cleaner
     "abbr",
     "acronym",
     "b",
@@ -75,6 +75,20 @@ CLEANER = bleach.Cleaner(
         )
     ],
 )
+NO_LINKS_CLEANER = bleach.Cleaner(
+    tags=ALLOWED_TAGS[1:],
+    attributes=ALLOWED_ATTRIBUTES,
+    protocols=ALLOWED_PROTOCOLS,
+    filters=[
+        partial(
+            bleach.linkifier.LinkifyFilter,
+            url_re=TLD_REGEX,
+            parse_email=True,
+            skip_tags=["pre", "code"],
+            callbacks=bleach.linkifier.DEFAULT_CALLBACKS,
+        )
+    ],
+)
 
 md = markdown.Markdown(
     extensions=[
@@ -85,10 +99,20 @@ md = markdown.Markdown(
 )
 
 
-@register.filter
-def rich_text(text: str):
+def _rich_text(text: str, cleaner):
     """Process markdown and cleans HTML in a text input."""
     if not text:
         return ""
-    body_md = CLEANER.clean(md.reset().convert(str(text)))
+    body_md = cleaner.clean(md.reset().convert(str(text)))
     return mark_safe(body_md)
+
+
+@register.filter
+def rich_text(text: str):
+    return _rich_text(text, cleaner=CLEANER)
+
+
+@register.filter
+def rich_text_without_links(text: str):
+    """Process markdown and cleans HTML in a text input, but without links."""
+    return _rich_text(text, cleaner=NO_LINKS_CLEANER)

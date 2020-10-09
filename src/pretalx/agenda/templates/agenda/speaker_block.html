@@ -24,7 +24,7 @@
                 {{ speaker.user.get_display_name }}
             {% endif %}
         </div>
-        <div class="abstract">{{ speaker.biography|default:''|rich_text }}</div>
+        <div class="abstract">{{ speaker.biography|default:''|rich_text_without_links }}</div>
         {% if not filter_talks %}
             <ul>
                 {% for talk in speaker.talks %}
