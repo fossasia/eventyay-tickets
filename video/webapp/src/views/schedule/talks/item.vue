@@ -6,7 +6,7 @@
 			//- TODO choose locale
 			.info {{ datetime }} {{ roomName }}
 			section.abstract {{ talk.abstract }}
-			p {{ talk.description }}
+			markdown-content.biography(:markdown="talk.description")
 		.speakers
 			.header {{ $tc('schedule/talks/item:speakers:header', talk.speakers.length)}}
 			.speakers-list
