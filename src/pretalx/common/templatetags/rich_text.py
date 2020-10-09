@@ -1,3 +1,4 @@
+from copy import copy
 from functools import partial
 
 import bleach
@@ -76,18 +77,9 @@ CLEANER = bleach.Cleaner(
     ],
 )
 NO_LINKS_CLEANER = bleach.Cleaner(
-    tags=ALLOWED_TAGS[1:],
+    tags=copy(ALLOWED_TAGS)[1:],
     attributes=ALLOWED_ATTRIBUTES,
     protocols=ALLOWED_PROTOCOLS,
-    filters=[
-        partial(
-            bleach.linkifier.LinkifyFilter,
-            url_re=TLD_REGEX,
-            parse_email=True,
-            skip_tags=["pre", "code"],
-            callbacks=bleach.linkifier.DEFAULT_CALLBACKS,
-        )
-    ],
 )
 
 md = markdown.Markdown(
