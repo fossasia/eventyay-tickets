@@ -80,6 +80,7 @@ NO_LINKS_CLEANER = bleach.Cleaner(
     tags=copy(ALLOWED_TAGS)[1:],
     attributes=ALLOWED_ATTRIBUTES,
     protocols=ALLOWED_PROTOCOLS,
+    strip=True,
 )
 
 md = markdown.Markdown(
