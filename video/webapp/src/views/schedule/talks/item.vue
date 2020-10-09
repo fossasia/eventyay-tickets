@@ -5,9 +5,9 @@
 			h1 {{ talk.title }}
 			//- TODO choose locale
 			.info {{ datetime }} {{ roomName }}
-			section.abstract {{ talk.abstract }}
+			markdown-content.abstract(:markdown="talk.abstract")
 			markdown-content.biography(:markdown="talk.description")
-		.speakers
+		.speakers(v-if="talk.speakers.length > 0")
 			.header {{ $tc('schedule/talks/item:speakers:header', talk.speakers.length)}}
 			.speakers-list
 				.speaker(v-for="speaker of talk.speakers")
