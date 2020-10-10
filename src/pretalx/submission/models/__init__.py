@@ -5,6 +5,7 @@ from .question import Answer, AnswerOption, Question, QuestionTarget, QuestionVa
 from .resource import Resource
 from .review import Review, ReviewPhase, ReviewScore, ReviewScoreCategory
 from .submission import Submission, SubmissionStates
+from .tag import Tag
 from .track import Track
 from .type import SubmissionType
 
@@ -25,5 +26,6 @@ __all__ = [
     "SubmissionStates",
     "SubmissionType",
     "SubmitterAccessCode",
+    "Tag",
     "Track",
 ]

@@ -133,6 +133,11 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
         null=True,
         blank=True,
     )
+    tags = models.ManyToManyField(
+        to="submission.Tag",
+        related_name="submissions",
+        verbose_name=_("Tags"),
+    )
     state = models.CharField(
         max_length=SubmissionStates.get_max_length(),
         choices=SubmissionStates.get_choices(),
