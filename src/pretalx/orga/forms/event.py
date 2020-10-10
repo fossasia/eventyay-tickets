@@ -552,7 +552,7 @@ class ReviewScoreCategoryForm(I18nModelForm):
         for score in self.new_label_ids:
             value = self.cleaned_data.get(f"value_{score}")
             label = self.cleaned_data.get(f"label_{score}")
-            if value and label:
+            if (value is not None) and label:
                 ReviewScore.objects.create(
                     category=self.instance, value=value, label=label
                 )
