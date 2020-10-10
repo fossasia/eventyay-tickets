@@ -19,7 +19,7 @@ from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from django.utils.translation import override
-from django.views.generic import ListView, TemplateView, UpdateView, View
+from django.views.generic import DetailView, ListView, TemplateView, UpdateView, View
 
 from pretalx.common.exceptions import SubmissionError
 from pretalx.common.mixins.views import (
@@ -36,13 +36,19 @@ from pretalx.mail.models import QueuedMail
 from pretalx.orga.forms import AnonymiseForm, SubmissionForm
 from pretalx.person.forms import OrgaSpeakerForm
 from pretalx.person.models import SpeakerProfile, User
-from pretalx.submission.forms import QuestionsForm, ResourceForm, SubmissionFilterForm
+from pretalx.submission.forms import (
+    QuestionsForm,
+    ResourceForm,
+    SubmissionFilterForm,
+    TagForm,
+)
 from pretalx.submission.models import (
     Answer,
     Feedback,
     Resource,
     Submission,
     SubmissionStates,
+    Tag,
 )
 
 
@@ -811,3 +817,61 @@ class AllFeedbacksList(EventPermissionRequired, ListView):
             .filter(talk__event=self.request.event)
         )
         return qs
+
+
+class TagList(EventPermissionRequired, ListView):
+    template_name = "orga/submission/tag_list.html"
+    context_object_name = "tags"
+    permission_required = "orga.view_submissions"
+
+    def get_queryset(self):
+        return self.request.event.tags.all()
+
+
+class TagDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
+    model = Tag
+    form_class = TagForm
+    template_name = "orga/submission/tag_form.html"
+    permission_required = "orga.view_submissions"
+    write_permission_required = "orga.edit_tags"
+
+    def get_success_url(self) -> str:
+        return self.request.event.orga_urls.tags
+
+    def get_object(self):
+        return self.request.event.tags.filter(pk=self.kwargs.get("pk")).first()
+
+    def get_permission_object(self):
+        return self.get_object() or self.request.event
+
+    def get_form_kwargs(self):
+        result = super().get_form_kwargs()
+        result["event"] = self.request.event
+        return result
+
+    def form_valid(self, form):
+        form.instance.event = self.request.event
+        result = super().form_valid(form)
+        messages.success(self.request, _("The tag has been saved."))
+        if form.has_changed():
+            action = "pretalx.tag." + ("update" if self.object else "create")
+            form.instance.log_action(action, person=self.request.user, orga=True)
+        return result
+
+
+class TagDelete(PermissionRequired, DetailView):
+    permission_required = "orga.edit_tags"
+    template_name = "orga/submission/tag_delete.html"
+
+    def get_object(self):
+        return get_object_or_404(self.request.event.tags, pk=self.kwargs.get("pk"))
+
+    def post(self, request, *args, **kwargs):
+        tag = self.get_object()
+
+        tag.delete()
+        request.event.log_action(
+            "pretalx.tag.delete", person=self.request.user, orga=True
+        )
+        messages.success(request, _("The tag has been deleted."))
+        return redirect(self.request.event.orga_urls.tags)

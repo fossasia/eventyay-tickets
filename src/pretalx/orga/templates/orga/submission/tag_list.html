@@ -1,0 +1,48 @@
+{% extends "orga/cfp/base.html" %}
+{% load i18n %}
+
+{% block cfp_content %}
+    <h2>{% translate "Tags" %}</h2>
+    <table class="table table-sm table-hover table-responsive-md">
+        <thead>
+            <tr>
+                <th>{% translate "Tag" %}</th>
+                <th>{% translate "Submissions" %}</th>
+                <th>{% translate "Color" %}</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for tag in tags %}
+                <tr>
+                    <td>
+                        <a href="{{ tag.urls.edit }}">
+                            {{ tag.tag }}
+                        </a>
+                    </td>
+                    <td class="pl-4">
+                        {{ tag.submissions.all.count }}
+                    </td>
+                    <td><div class="color-square" style="background: {{ tag.color }}"></div></td>
+                    <td class="action-column">
+                        <a href="{{ tag.urls.edit }}"
+                                class="btn btn-sm btn-info">
+                            <i class="fa fa-edit"></i>
+                        </a>
+                        <a href="{{ tag.urls.delete }}"
+                                class="btn btn-sm btn-danger">
+                            <i class="fa fa-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="submit-group"><span></span>
+        <a class="btn btn-info" href="{{ request.event.orga_urls.new_tag }}">
+            <i class="fa fa-plus"></i>
+            {% translate "New tag" %}
+        </a>
+    </div>
+{% endblock %}
+

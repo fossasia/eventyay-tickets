@@ -1,0 +1,19 @@
+{% extends "orga/cfp/base.html" %}
+{% load i18n %}
+{% block content %}
+    <h2>
+        {% translate "Do you really want to delete this tag?" %} – {{ quotation_open }}{{ object.tag }}{{ quotation_close }}
+    </h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="submit-group">
+            <a href="{{ request.event.orga_urls.tags }}" class="btn btn-lg btn-outline-info">
+                {% translate "Back" %}
+            </a>
+            <button type="submit" class="btn btn-lg btn-danger">
+                <i class="fa fa-trash"></i>
+                {% translate "Yes" %}
+            </button>
+        </div>
+    </form>
+{% endblock %}

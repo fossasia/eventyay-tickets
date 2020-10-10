@@ -270,6 +270,9 @@
                         <a href="{{ request.event.orga_urls.submissions }}" class="nav-link nav-link-second-level{% if "submissions." in url_name and "submissions.statistics" not in url_name  and "submissions.feedback" not in url_name %} active{% endif %}">
                             <span>{% translate "Submissions" %}</span>
                         </a>
+                        <a href="{{ request.event.orga_urls.tags }}" class="nav-link nav-link-second-level{% if "tags" in url_name %} active{% endif %}">
+                            <span>{% translate "Tags" %}</span>
+                        </a>
                         <a href="{{ request.event.orga_urls.stats }}" class="nav-link nav-link-second-level{% if "submissions.statistics" in url_name %} active{% endif %}">
                             <span>{% translate "Statistics" %}</span>
                         </a>

@@ -351,6 +351,26 @@ urlpatterns = [
                     name="submissions.feedback",
                 ),
                 re_path(
+                    "^submissions/tags/$",
+                    submission.TagList.as_view(),
+                    name="tags.view",
+                ),
+                re_path(
+                    "^submissions/tags/new$",
+                    submission.TagDetail.as_view(),
+                    name="tag.create",
+                ),
+                re_path(
+                    "^submissions/tags/(?P<pk>[0-9]+)/$",
+                    submission.TagDetail.as_view(),
+                    name="tag.view",
+                ),
+                re_path(
+                    "^submissions/tags/(?P<pk>[0-9]+)/delete$",
+                    submission.TagDelete.as_view(),
+                    name="tag.delete",
+                ),
+                re_path(
                     r"^submissions/(?P<code>[\w-]+)/",
                     include(
                         [
