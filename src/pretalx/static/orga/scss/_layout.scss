@@ -698,12 +698,19 @@ h2 .submission-state-dropdown {
   }
 }
 #id_locales.checkbox,
-#id_initial-locales.checkbox {
+#id_initial-locales.checkbox,
+#id_tags {
   padding: 0;
   label {
     display: inline-block !important;
     margin-bottom: 8px;
   }
+}
+.tag-widget-wrapper label {
+  border: 2px solid;
+  border-color: var(--tag-color);
+  padding: 0 8px;
+  border-radius: 14px;
 }
 .colorpicker-element .colorpicker-input-addon {
   display: flex;

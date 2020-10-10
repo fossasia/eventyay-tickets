@@ -37,3 +37,30 @@ class MultipleLanguagesWidget(CheckboxSelectMultiple):
         opt["official"] = bool(language.get("official"))
         opt["percentage"] = language["percentage"]
         return opt
+
+
+class TagWidget(CheckboxSelectMultiple):
+    option_template_name = "orga/widgets/tag_widget.html"
+
+    def sort(self):
+        self.choices = sorted(
+            self.choices,
+            key=lambda l: l[0],
+        )
+
+    def options(self, name, value, attrs=None):
+        self.sort()
+        return super().options(name, value, attrs)
+
+    def optgroups(self, name, value, attrs=None):
+        self.sort()
+        return super().optgroups(name, value, attrs)
+
+    def create_option(
+        self, name, value, label, selected, index, subindex=None, attrs=None
+    ):
+        opt = super().create_option(
+            name, value, label, selected, index, subindex, attrs
+        )
+        opt["tag_color"] = value.instance.color
+        return opt

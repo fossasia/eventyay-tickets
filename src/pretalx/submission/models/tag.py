@@ -34,4 +34,4 @@ class Tag(LogMixin, models.Model):
         delete = "{base}delete"
 
     def __str__(self) -> str:
-        return str(self.name)
+        return str(self.tag)

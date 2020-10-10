@@ -2,9 +2,10 @@ import json
 
 from django import forms
 from django.utils.translation import gettext as _
-from django_scopes.forms import SafeModelChoiceField
+from django_scopes.forms import SafeModelChoiceField, SafeModelMultipleChoiceField
 
 from pretalx.common.mixins.forms import ReadOnlyFlag, RequestRequire
+from pretalx.orga.forms.widgets import TagWidget
 from pretalx.submission.models import Submission, SubmissionType
 
 
@@ -26,6 +27,10 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
             self.fields["submission_type"].queryset = SubmissionType.objects.filter(
                 event=event
             )
+        if not self.event.tags.all().exists():
+            self.fields.pop("tags")
+        else:
+            self.fields["tags"].queryset = self.event.tags.all()
 
         if not self.instance.pk:
             self.fields["speaker"] = forms.EmailField(
@@ -63,6 +68,7 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
             "title",
             "submission_type",
             "track",
+            "tags",
             "abstract",
             "description",
             "notes",
@@ -74,8 +80,12 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
             "image",
             "is_featured",
         ]
+        widgets = {
+            "tags": TagWidget,
+        }
         field_classes = {
             "submission_type": SafeModelChoiceField,
+            "tags": SafeModelMultipleChoiceField,
             "track": SafeModelChoiceField,
         }
         request_require = {
