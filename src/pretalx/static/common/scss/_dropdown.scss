@@ -1,6 +1,10 @@
 details.dropdown {
   position: relative;
 
+  &.fix-height {
+    height: max-content;
+  }
+
   summary {
     list-style: none;
     &::before, &::marker {

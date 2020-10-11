@@ -291,16 +291,18 @@ footer {
   background-color: $white !important;
 }
 
+.search-submit-group {
+  padding-bottom: 0;
+}
 .search-form {
   display: flex;
   flex-wrap: wrap;
-  margin-bottom: 1rem;
   align-content: center;
 
-  .form-group {
-    min-width: 300px;
+  & > .form-group {
+    width: 300px;
     display: flex;
-    margin: 8px;
+    margin-right: 16px;
 
     [type="text"] {
       height: 2.25rem;
@@ -309,12 +311,14 @@ footer {
     label {
       display: none;
     }
+    .form-control.is-valid {
+      background-image: none;
+    }
   }
 
   .btn {
     align-self: flex-start;
-    margin-top: 8px;
-    margin-left: 8px;
+    margin-right: 16px;
   }
 }
 .resource-option-row,

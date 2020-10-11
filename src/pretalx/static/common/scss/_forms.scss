@@ -164,11 +164,18 @@ table .radio .form-check {
     display: none;
     position: absolute;
     margin-top: calc(2.25rem - 2px);
+    padding: 16px;
+    padding-bottom: 4px;
     background-color: $white;
     border: 1px solid #ced4da;
+    border-bottom-left-radius: 0.25rem;
+    border-bottom-right-radius: 0.25rem;
     color: #495057;
     width: 300px;
     z-index: 100;
+    .form-group {
+      margin-bottom: 0;
+    }
   }
   &:hover {
     .multi-select-options {

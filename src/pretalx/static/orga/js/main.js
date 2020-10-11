@@ -94,13 +94,20 @@ function restore_scroll_position() {
     }
 }
 
+function simplifyText(text) {
+  const start = text.indexOf("(")
+  if (start == -1) return text
+  return text.substr(0, start).trim()
+}
+
 function update_multi_select_caption(element) {
-  var checkboxes = element.querySelectorAll(".checkbox")
+  var checkboxes = element.querySelectorAll(".form-check")
+
   checkboxes = Array.from(checkboxes).filter(element => {
     return element.querySelector("input[type=checkbox]").checked
   })
   const text = checkboxes
-    .map(box => box.querySelector("label").innerHTML)
+    .map(box => simplifyText(box.querySelector("label").innerHTML))
     .join(", ")
   const title = element.querySelector(".multi-select-title")
   if (text) {
