@@ -45,6 +45,7 @@
     {% csrf_token %}
     {% bootstrap_form_errors form %}
     {% bootstrap_form_errors qform %}
+    {% if tags_form %}{% bootstrap_form_errors tags_form %}{% endif %}
     <div class="form-group row">
         <label class="col-md-3 col-form-label">{% translate "Title" %}</label>
         <div class="col-md-9 mt-1">
@@ -142,6 +143,9 @@
             {% if not forloop.last %}+{% endif %}
         {% endfor %}= <span id="update_score" class="ml-1"> {{ form.instance.score }}</span>
     </div>
+    {% endif %}
+    {% if not read_only %}
+        {% if tags_form %}{% bootstrap_form tags_form layout='event' %}{% endif %}
     {% endif %}
     {% if not form.instance.pk and not read_only %}
         {% for score_field in form.get_score_fields %}

@@ -1,10 +1,34 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
+from django_scopes.forms import SafeModelMultipleChoiceField
 
 from pretalx.common.forms.widgets import MarkdownWidget
 from pretalx.common.mixins.forms import ReadOnlyFlag
 from pretalx.common.phrases import phrases
-from pretalx.submission.models import Review
+from pretalx.orga.forms.widgets import TagWidget
+from pretalx.submission.models import Review, Submission
+
+
+class TagsForm(ReadOnlyFlag, forms.ModelForm):
+    def __init__(self, event, **kwargs):
+        self.event = event
+        super().__init__(**kwargs)
+        if not self.event.tags.all().exists():
+            self.fields.pop("tags")
+        else:
+            self.fields["tags"].queryset = self.event.tags.all()
+
+    class Meta:
+        model = Submission
+        fields = [
+            "tags",
+        ]
+        widgets = {
+            "tags": TagWidget,
+        }
+        field_classes = {
+            "tags": SafeModelMultipleChoiceField,
+        }
 
 
 class ReviewForm(ReadOnlyFlag, forms.ModelForm):

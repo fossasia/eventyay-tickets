@@ -13,7 +13,7 @@ from pretalx.common.mixins.views import (
     PermissionRequired,
 )
 from pretalx.common.views import CreateOrUpdateView
-from pretalx.orga.forms import ReviewForm
+from pretalx.orga.forms.review import ReviewForm, TagsForm
 from pretalx.submission.forms import QuestionsForm, SubmissionFilterForm
 from pretalx.submission.models import Review, Submission, SubmissionStates
 
@@ -28,7 +28,7 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
         "speakers__name__icontains",
         "title__icontains",
     )
-    filter_fields = ("submission_type", "state", "track")
+    filter_fields = ("submission_type", "state", "track", "tags")
 
     def get_filter_form(self):
         return SubmissionFilterForm(
@@ -306,6 +306,18 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
             readonly=self.read_only,
         )
 
+    @context
+    @cached_property
+    def tags_form(self):
+        if not self.request.event.tags.all().exists():
+            return
+        return TagsForm(
+            event=self.request.event,
+            instance=self.submission,
+            data=(self.request.POST if self.request.method == "POST" else None),
+            read_only=self.read_only,
+        )
+
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)
         result["done"] = self.request.user.reviews.filter(
@@ -331,11 +343,16 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
         if not self.qform.is_valid():
             messages.error(self.request, _("There have been errors with your input."))
             return redirect(self.get_success_url())
+        if self.tags_form and not self.tags_form.is_valid():
+            messages.error(self.request, _("There have been errors with your input."))
+            return redirect(self.get_success_url())
         form.instance.submission = self.submission
         form.instance.user = self.request.user
         form.save()
         self.qform.review = form.instance
         self.qform.save()
+        if self.tags_form:
+            self.tags_form.save()
         return super().form_valid(form)
 
     def post(self, request, *args, **kwargs):

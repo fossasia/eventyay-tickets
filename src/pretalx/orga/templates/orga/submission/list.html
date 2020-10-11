@@ -43,6 +43,7 @@
             {% if show_submission_types %}{% bootstrap_field filter_form.submission_type %}{% endif %}
             {% bootstrap_field filter_form.state layout='inline' %}
             {% if show_tracks %}{% bootstrap_field filter_form.track %}{% endif %}
+            {% if filter_form.tags %}{% bootstrap_field filter_form.tags %}{% endif %}
             <button class="btn btn-success" type="submit">{% translate "Search" %}</button>
         </form>
         {% if filter_form.is_valid and filter_form.cleaned_data.question %}

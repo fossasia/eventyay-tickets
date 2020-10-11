@@ -45,7 +45,7 @@ class TagWidget(CheckboxSelectMultiple):
     def sort(self):
         self.choices = sorted(
             self.choices,
-            key=lambda l: l[0],
+            key=lambda l: l[0].instance.tag,
         )
 
     def options(self, name, value, attrs=None):

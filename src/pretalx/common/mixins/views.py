@@ -25,6 +25,7 @@ SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
 
 class ActionFromUrl:
     write_permission_required = None
+    create_permission_required = None
 
     @cached_property
     def object(self):
@@ -36,15 +37,19 @@ class ActionFromUrl:
             return self.get_permission_object()
         return self.object
 
+    def _check_permission(self, permission_name):
+        return self.request.user.has_perm(permission_name, self.permission_object)
+
     @context
     @cached_property
     def action(self):
-        can_write = self.request.user.has_perm(
-            self.write_permission_required, self.permission_object
-        )
-        if not any(_id in self.kwargs for _id in ["pk", "code"]) and can_write:
-            return "create"
-        elif can_write:
+        if not any(_id in self.kwargs for _id in ["pk", "code"]):
+            if self._check_permission(
+                self.create_permission_required or self.write_permission_required
+            ):
+                return "create"
+            return "view"
+        if self._check_permission(self.write_permission_required):
             return "edit"
         return "view"
 

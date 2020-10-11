@@ -108,6 +108,24 @@ def can_view_reviewer_names(user, obj):
     )
 
 
+@rules.predicate
+def can_add_tags(user, obj):
+    event = obj.event
+    return (
+        event.active_review_phase
+        and event.active_review_phase.can_tag_submissions == "create_tags"
+    )
+
+
+@rules.predicate
+def can_change_tags(user, obj):
+    event = obj.event
+    return (
+        event.active_review_phase
+        and event.active_review_phase.can_tag_submissions == "use_tags"
+    )
+
+
 rules.add_perm("orga.view_orga_area", can_change_submissions | is_reviewer)
 rules.add_perm("orga.change_settings", can_change_event_settings)
 rules.add_perm("orga.change_organiser_settings", can_change_organiser_settings)
@@ -125,6 +143,13 @@ rules.add_perm("orga.view_tracks", can_change_submissions)
 rules.add_perm("orga.view_track", can_change_submissions)
 rules.add_perm("orga.edit_track", can_change_event_settings)
 rules.add_perm("orga.remove_track", can_change_event_settings)
+rules.add_perm("orga.add_tags", can_change_submissions | (is_reviewer & can_add_tags))
+rules.add_perm(
+    "orga.edit_tags", can_change_submissions | (is_reviewer & can_change_tags)
+)
+rules.add_perm(
+    "orga.remove_tags", can_change_submissions | (is_reviewer & can_change_tags)
+)
 rules.add_perm("orga.view_access_codes", can_change_submissions)
 rules.add_perm("orga.view_access_code", can_change_submissions)
 rules.add_perm("orga.edit_access_code", can_change_event_settings)

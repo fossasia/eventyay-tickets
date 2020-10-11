@@ -193,6 +193,16 @@ class ReviewPhase(models.Model):
         verbose_name=_("Reviewers can accept and reject submissions"),
         default=False,
     )
+    can_tag_submissions = models.CharField(
+        verbose_name=_("Reviewers can tag submissions"),
+        max_length=12,
+        choices=(
+            ("never", _("Never")),
+            ("use_tags", _("Add and remove existing tags")),
+            ("create_tags", _("Add, remove and create tags")),
+        ),
+        default="never",
+    )
     speakers_can_change_submissions = models.BooleanField(
         verbose_name=_("Speakers can modify their submissions before acceptance"),
         help_text=_(

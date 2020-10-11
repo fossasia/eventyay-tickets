@@ -201,6 +201,7 @@ class SubmissionFilterForm(forms.Form):
         required=False, widget=CheckboxMultiDropdown
     )
     track = forms.MultipleChoiceField(required=False, widget=CheckboxMultiDropdown)
+    tags = forms.MultipleChoiceField(required=False, widget=CheckboxMultiDropdown)
     question = SafeModelChoiceField(queryset=Question.objects.none(), required=False)
 
     def __init__(self, event, *args, **kwargs):
@@ -226,6 +227,10 @@ class SubmissionFilterForm(forms.Form):
             d["track"]: d["track__count"]
             for d in qs.order_by("track").values("track").annotate(Count("track"))
         }
+        tag_count = event.tags.prefetch_related("submissions").annotate(
+            submission_count=Count("submissions")
+        )
+        tag_count = {tag.tag: tag.submission_count for tag in tag_count}
         self.fields["submission_type"].choices = [
             (sub_type.pk, f"{str(sub_type)} ({type_count.get(sub_type.pk, 0)})")
             for sub_type in event.submission_types.all()
@@ -250,3 +255,11 @@ class SubmissionFilterForm(forms.Form):
         ]
         self.fields["track"].widget.attrs["title"] = _("Tracks")
         self.fields["question"].queryset = event.questions.all()
+        self.fields["tags"].widget.attrs["title"] = _("Tags")
+        if not self.event.tags.all().exists():
+            self.fields.pop("tags")
+        else:
+            self.fields["tags"].choices = [
+                (tag.pk, f"{tag.tag} ({tag_count.get(tag.tag, 0)})")
+                for tag in self.event.tags.all()
+            ]

@@ -446,7 +446,7 @@ class SubmissionList(EventPermissionRequired, Sortable, Filterable, ListView):
     model = Submission
     context_object_name = "submissions"
     template_name = "orga/submission/list.html"
-    filter_fields = ("submission_type", "state", "track")
+    filter_fields = ("submission_type", "state", "track", "tags")
     filter_form_class = SubmissionFilterForm
     sortable_fields = ("code", "title", "state", "is_featured")
     permission_required = "orga.view_submissions"
@@ -860,7 +860,7 @@ class TagDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
 
 
 class TagDelete(PermissionRequired, DetailView):
-    permission_required = "orga.edit_tags"
+    permission_required = "orga.remove_tags"
     template_name = "orga/submission/tag_delete.html"
 
     def get_object(self):
