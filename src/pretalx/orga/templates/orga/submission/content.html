@@ -119,7 +119,7 @@
             </div>
         {% endif %}
 
-        {% if questions_form %}
+        {% if questions_form and questions_form.fields %}
             <div><legend>{% translate "Questions" %}</legend></div>
             {% bootstrap_form questions_form layout='event' %}
         {% endif %}
