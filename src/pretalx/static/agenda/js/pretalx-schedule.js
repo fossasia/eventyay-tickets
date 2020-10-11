@@ -11533,12 +11533,12 @@ var addStylesShadow = __webpack_require__("35d6");
 // EXTERNAL MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
 var componentNormalizer = __webpack_require__("2877");
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"52e7aa12-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/App.vue?vue&type=template&id=7c35c8a2&lang=pug&shadow
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"52e7aa12-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/App.vue?vue&type=template&id=6806f784&lang=pug&shadow
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"pretalx-schedule",style:({'--scrollparent-width': _vm.scrollParentWidth + 'px', '--container-width': _vm.containerWidth + 'px'})},[(_vm.schedule && _vm.sessions)?[_c('div',{staticClass:"settings"},[(_vm.favs.length)?_c('bunt-button',{staticClass:"fav-toggle",class:_vm.onlyFavs ? ['active'] : [],on:{"click":function($event){_vm.onlyFavs = !_vm.onlyFavs}}},[_c('svg',{attrs:{"id":"star","viewBox":"0 0 24 24"}},[_c('polygon',{style:({fill: '#FFA000', stroke: '#FFA000'}),attrs:{"points":"14.43,10 12,2 9.57,10 2,10 8.18,14.41 5.83,22 12,17.31 18.18,22 15.83,14.41 22,10"}})]),[_vm._v(_vm._s(_vm.favs.length))]],2):_vm._e(),(!_vm.inEventTimezone)?_c('bunt-select',{attrs:{"name":"timezone","options":[{id: _vm.schedule.timezone, label: _vm.schedule.timezone}, {id: _vm.userTimezone, label: _vm.userTimezone}]},model:{value:(_vm.currentTimezone),callback:function ($$v) {_vm.currentTimezone=$$v},expression:"currentTimezone"}}):_vm._e()],1),(_vm.days && _vm.days.length > 1)?_c('bunt-tabs',{ref:"tabs",staticClass:"days",class:_vm.showGrid? ['grid-tabs'] : ['list-tabs'],attrs:{"active-tab":_vm.currentDay && _vm.currentDay.format()}},_vm._l((_vm.days),function(day){return _c('bunt-tab',{attrs:{"id":day.format(),"header":day.format('dddd DD. MMMM')},on:{"selected":function($event){return _vm.changeDay(day)}}})}),1):_vm._e(),(_vm.showGrid)?_c('grid-schedule',{attrs:{"sessions":_vm.sessions,"rooms":_vm.schedule.rooms,"currentDay":_vm.currentDay,"now":_vm.now,"scrollParent":_vm.scrollParent,"offsetTop":_vm.offsetTop,"favs":_vm.favs},on:{"changeDay":function($event){_vm.currentDay = $event},"fav":function($event){return _vm.fav($event)},"unfav":function($event){return _vm.unfav($event)}}}):_c('linear-schedule',{attrs:{"sessions":_vm.sessions,"currentDay":_vm.currentDay,"now":_vm.now,"scrollParent":_vm.scrollParent,"offsetTop":_vm.offsetTop,"favs":_vm.favs},on:{"changeDay":function($event){_vm.currentDay = $event},"fav":function($event){return _vm.fav($event)},"unfav":function($event){return _vm.unfav($event)}}})]:_c('bunt-progress-circular',{attrs:{"size":"huge","page":true}})],2)}
 var staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/App.vue?vue&type=template&id=7c35c8a2&lang=pug&shadow
+// CONCATENATED MODULE: ./src/App.vue?vue&type=template&id=6806f784&lang=pug&shadow
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.string.replace.js
 var es_string_replace = __webpack_require__("5319");
@@ -14919,7 +14919,7 @@ vue_runtime_esm["a" /* default */].use(buntpapier_src);
       this.onWindowResize();
     }
 
-    this.favs = this.loadFavs();
+    this.favs = this.pruneFavs(this.loadFavs(), this.schedule);
     this.currentDay = moment_timezone_default()().tz(this.currentTimezone).startOf('day');
 
     if (!this.days.includes(this.currentDay)) {
@@ -14980,6 +14980,12 @@ vue_runtime_esm["a" /* default */].use(buntpapier_src);
       }
 
       return [];
+    },
+
+    pruneFavs(favs, schedule) {
+      const talks = schedule.talks || [];
+      const talkIds = talks.map(e => e.code);
+      return favs.filter(e => talkIds.includes(e));
     },
 
     saveFavs() {
