@@ -269,7 +269,11 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
     @context
     @cached_property
     def score_categories(self):
-        return list(self.request.event.score_categories.filter(active=True))
+        track = self.submission.track
+        track_filter = Q(limit_tracks__isnull=True)
+        if track:
+            track_filter |= Q(limit_tracks__in=[track])
+        return self.request.event.score_categories.filter(track_filter, active=True)
 
     def get_scores_for_review(self, review):
         scores = []

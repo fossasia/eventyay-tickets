@@ -15,6 +15,14 @@ class ReviewScoreCategory(models.Model):
     weight = models.DecimalField(max_digits=4, decimal_places=1, default=1)
     required = models.BooleanField(default=False)
     active = models.BooleanField(default=True)
+    limit_tracks = models.ManyToManyField(
+        to="submission.Track",
+        verbose_name=_("Limit to tracks"),
+        blank=True,
+        help_text=_(
+            "Leave empty to use this category for all tracks."
+        ),
+    )
 
     objects = ScopedManager(event="event")
 
@@ -137,7 +145,16 @@ class Review(models.Model):
         return str(self.score)
 
     def update_score(self):
-        self.score = self.calculate_score(self.scores.all().select_related("category"))
+        track = self.submission.track
+        track_filter = models.Q(category__limit_tracks__isnull=True)
+        if track:
+            track_filter |= models.Q(category__limit_tracks__in=[track])
+        scores = (
+            self.scores.all()
+            .select_related("category")
+            .filter(track_filter, category__active=True)
+        )
+        self.score = self.calculate_score(scores)
 
     def save(self, *args, update_score=True, **kwargs):
         if self.id and update_score:

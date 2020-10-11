@@ -318,6 +318,14 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
 
     update_duration.alters_data = True
 
+    def update_review_scores(self):
+        """Apply the submission's calculated review scores.
+
+        Should be called whenever the tracks of a submission change.
+        """
+        for review in self.reviews.all():
+            review.save(update_score=True)
+
     def _set_state(self, new_state, force=False, person=None):
         """Check if the new state is valid for this Submission (based on
         SubmissionStates.valid_next_states).

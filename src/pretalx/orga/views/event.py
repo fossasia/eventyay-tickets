@@ -32,7 +32,7 @@ from formtools.wizard.views import SessionWizardView
 from pytz import timezone
 from rest_framework.authtoken.models import Token
 
-from pretalx.common.forms import I18nFormSet
+from pretalx.common.forms import I18nEventFormSet, I18nFormSet
 from pretalx.common.mixins.views import (
     ActionFromUrl,
     EventPermissionRequired,
@@ -310,7 +310,7 @@ class EventReviewSettings(EventSettingsPermission, ActionFromUrl, FormView):
             Event,
             ReviewScoreCategory,
             form=ReviewScoreCategoryForm,
-            formset=I18nFormSet,
+            formset=I18nEventFormSet,
             can_delete=True,
             extra=0,
         )

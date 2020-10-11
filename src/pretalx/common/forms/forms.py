@@ -14,3 +14,17 @@ class I18nFormSet(i18nfield.forms.I18nModelFormSet):
         event = kwargs.pop("event", None)
         kwargs["locales"] = getattr(event, "locales", [])
         super().__init__(*args, **kwargs)
+
+
+class I18nEventFormSet(i18nfield.forms.I18nModelFormSet):
+    """Compatibility shim for django-i18nfield."""
+
+    def __init__(self, *args, **kwargs):
+        self.event = kwargs.pop("event", None)
+        kwargs["locales"] = getattr(self.event, "locales", [])
+        super().__init__(*args, **kwargs)
+
+    def _construct_form(self, i, **kwargs):
+        kwargs["locales"] = self.locales
+        kwargs["event"] = self.event
+        return super()._construct_form(i, **kwargs)
