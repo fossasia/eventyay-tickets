@@ -28,7 +28,7 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
                 event=event
             )
         if not self.event.tags.all().exists():
-            self.fields.pop("tags")
+            self.fields.pop("tags", None)
         else:
             self.fields["tags"].queryset = self.event.tags.all()
 
