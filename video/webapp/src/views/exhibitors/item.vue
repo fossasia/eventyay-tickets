@@ -14,7 +14,7 @@ scrollbars.c-exhibitor(y)
 					.mdi.mdi-file-word-outline(v-else-if="link.url.toLowerCase().endsWith('docx') || link.url.toLowerCase().endsWith('doc')")
 					.mdi.mdi-file-powerpoint-outline(v-else-if="link.url.toLowerCase().endsWith('pptx') || link.url.toLowerCase().endsWith('ppt')")
 					.mdi.mdi-file-image-outline(v-else-if="link.url.toLowerCase().endsWith('jpg') || link.url.toLowerCase().endsWith('jpeg') || link.url.toLowerCase().endsWith('png') || link.url.toLowerCase().endsWith('tiff')")
-					.mdi.mdi-file-video-outline(v-else-if="link.url.toLowerCase().endsWith('mp4') || link.url.toLowerCase().endsWith('mov') || link.url.toLowerCase().endsWith('webm') || link.url.toLowerCase().endsWith('avi') || link.url.indexOf('//youtube.com') > 0 || link.url.indexOf('//youtu.be') > 0 || link.url.indexOf('//vimeo.com')")
+					.mdi.mdi-file-video-outline(v-else-if="link.url.toLowerCase().endsWith('mp4') || link.url.toLowerCase().endsWith('mov') || link.url.toLowerCase().endsWith('webm') || link.url.toLowerCase().endsWith('avi') || link.url.includes('//youtube.com') || link.url.includes('//youtu.be') || link.url.includes('//vimeo.com')")
 					.mdi.mdi-file-download-outline(v-else)
 					.filename {{ link.display_text }}
 		.sidebar
