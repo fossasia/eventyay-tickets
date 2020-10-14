@@ -107,18 +107,24 @@ export default {
 			}
 			document.title = title
 			this.$store.dispatch('changeRoom', newRoom)
-
+			const isBBB = module => module.type === 'call.bigbluebutton'
 			if (!this.$mq.above.m) return // no background rooms for mobile
 			if (oldRoom &&
 				this.rooms.includes(oldRoom) &&
 				!this.backgroundRoom &&
 				oldRoom.modules.some(module => mediaModules.includes(module.type)) &&
-				this.$refs.primaryMediaSource.isPlaying()
+				this.$refs.primaryMediaSource.isPlaying() &&
+				// don't background bbb room when switching to new bbb room
+				!(newRoom?.modules.some(isBBB) && oldRoom?.modules.some(isBBB))
 			) {
 				this.backgroundRoom = oldRoom
 			}
 			// returning to room currently playing in background should maximize again
-			if (this.backgroundRoom && newRoom === this.backgroundRoom) {
+			if (this.backgroundRoom && (
+				newRoom === this.backgroundRoom ||
+				// close background bbb room if entering new bbb room
+				(newRoom?.modules.some(isBBB) && this.backgroundRoom.modules.some(isBBB))
+			)) {
 				this.backgroundRoom = null
 			}
 		},
