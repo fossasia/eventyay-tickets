@@ -489,7 +489,7 @@ var app = new Vue({
     api
       .fetchTalks()
       .then(result => {
-        this.talks = result.results
+        this.talks = result.results.sort((a, b) => (a.title < b.title) ? -1 : 1)
         this.timezone = result.timezone
         this.start = moment.tz(result.start, this.timezone)
         this.end = moment.tz(result.end, this.timezone)
