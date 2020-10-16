@@ -95,7 +95,7 @@ export default {
 				resizeCanvas.width = MAX_AVATAR_SIZE
 				resizeCanvas.height = MAX_AVATAR_SIZE
 
-				var ctx = resizeCanvas.getContext('2d')
+				const ctx = resizeCanvas.getContext('2d')
 				ctx.drawImage(canvas, 0, 0, canvas.width, canvas.height, 0, 0, MAX_AVATAR_SIZE, MAX_AVATAR_SIZE)
 				resizeCanvas.toBlob(blob => {
 					const request = api.uploadFile(blob, 'avatar.png')
