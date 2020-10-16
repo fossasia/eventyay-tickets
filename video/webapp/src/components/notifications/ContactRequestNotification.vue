@@ -9,15 +9,12 @@
 		bunt-button#btn-accept(@click="accept") {{ $t('ContactRequest:accept-button:label') }}
 	.timer
 		#timer-bar
-	.render-avatar
-		avatar#avatar(:user="contactRequest.user", :size="36")
-		img#avatar-img(height=36, width=36)
-		canvas#avatar-canvas(height=192, width=192)
 </template>
 <script>
 import Avatar from 'components/Avatar'
 import moment from 'moment'
 import notification from 'lib/notification'
+import { getIdenticonSvgUrl } from 'lib/identicon'
 
 export default {
 	components: { Avatar },
@@ -57,18 +54,19 @@ export default {
 			this.desktopNotification = notification(title, text, () => { this.close() }, () => { this.accept() }, img)
 		},
 		getAvatar () {
-			let img = document.querySelector('#avatar img')
-			if (img) return img.src
-
-			img = document.querySelector('#avatar-img')
-			const svg = document.querySelector('#avatar .c-identicon svg')
-			const xml = new XMLSerializer().serializeToString(svg)
-			const svg64 = btoa(xml)
-			const image64 = 'data:image/svg+xml;base64,' + svg64
-			img.src = image64
-			const canvas = document.querySelector('#avatar-canvas')
-			canvas.getContext('2d').drawImage(img, 0, 0)
-			return canvas.toDataURL()
+			if (this.contactRequest.user.profile?.avatar?.url) {
+				return this.contactRequest.user.profile?.avatar?.url
+			} else {
+				const canvas = document.createElement('canvas')
+				canvas.height = 192
+				canvas.width = 192
+				const img = document.createElement('img')
+				img.src = getIdenticonSvgUrl(this.contactRequest.user.profile?.avatar?.identicon ?? this.contactRequest.user.profile?.identicon ?? this.contactRequest.user.id)
+				const ctx = canvas.getContext('2d')
+				// TODO use onload?
+				ctx.drawImage(img, 0, 0, 192, 192)
+				return canvas.toDataURL()
+			}
 		}
 	}
 }
@@ -110,6 +108,4 @@ export default {
 		@keyframes timerBar
 			0% { width: 100% }
 			100% { width: 0 }
-	.render-avatar
-		display: none
 </style>
