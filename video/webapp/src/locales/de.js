@@ -152,7 +152,7 @@ export default {
 	'UserSearch:placeholder:text': 'Teilnehmer*innen durchsuchen',
 	'UserListPage:staffed-exhibitions:text': 'Von diesem/dieser Benutzer*in betreute Ausstellungen ',
 	'UserListPage:placeholder:text': 'Hier kannst Du dir die Profile anderer Teilnehmer*innen ansehen.\nSchau dich ruhig etwas um.',
-	'UserAction:moderataor.actions.devider:text': 'Moderator Aktionen',
+	'UserAction:moderator-actions:title': 'Moderatoraktionen',
 	'UserAction:action.block:label': 'blockieren',
 	'UserAction:action.unblock:label': 'entblocken',
 	'UserAction:action.ban:label': 'sperren',

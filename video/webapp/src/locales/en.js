@@ -148,7 +148,7 @@ export default {
 	'UserSearch:placeholder:text': 'search users',
 	'UserListPage:staffed-exhibitions:text': 'This person represents',
 	'UserListPage:placeholder:text': 'Click on a person on the left to view more details or get in touch with them!',
-	'UserAction:moderataor.actions.devider:text': 'Moderator Actions',
+	'UserAction:moderator-actions:title': 'Moderator Actions',
 	'UserAction:action.block:label': 'block',
 	'UserAction:action.unblock:label': 'unblock',
 	'UserAction:action.ban:label': 'ban',

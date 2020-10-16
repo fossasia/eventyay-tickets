@@ -26,20 +26,20 @@ transition(name="sidebar")
 				span {{ $t('RoomsSidebar:channels-headline:text') }}
 				.buffer
 				bunt-icon-button(v-if="hasPermission('world:rooms.create.chat') || hasPermission('world:rooms.create.bbb')", @click="showChatCreationPrompt = true") plus
-				bunt-icon-button(v-if="showChannelBrowserButton", @click="showChannelBrowser = true") compass-outline
+				bunt-icon-button(v-if="roomsByType.textChat.length", @click="showChannelBrowser = true") compass-outline
 			.chats
 				router-link.video-chat(v-for="chat of roomsByType.videoChat", :to="chat === rooms[0] ? {name: 'home'} : {name: 'room', params: {roomId: chat.id}}")
 					.name {{ chat.name }}
 				router-link.text-chat(v-for="chat of roomsByType.textChat", :to="chat === rooms[0] ? {name: 'home'} : {name: 'room', params: {roomId: chat.id}}", :class="{unread: hasUnreadMessages(chat.modules[0].channel_id)}")
 					.name {{ chat.name }}
 					bunt-icon-button(@click.prevent.stop="$store.dispatch('chat/leaveChannel', {channelId: chat.modules[0].channel_id})") close
-				bunt-button#btn-browse-channels-trailing(v-if="showChannelBrowserButton", @click="showChannelBrowser = true") {{ $t('RoomsSidebar:browse-channels-button:label') }}
+				bunt-button#btn-browse-channels-trailing(v-if="roomsByType.textChat.length", @click="showChannelBrowser = true") {{ $t('RoomsSidebar:browse-channels-button:label') }}
 			.group-title(v-if="directMessageChannels.length || hasPermission('world:chat.direct')")
 				span {{ $t('RoomsSidebar:direct-messages-headline:text') }}
 				bunt-icon-button(v-if="hasPermission('world:chat.direct')", @click="showDMCreationPrompt = true") plus
 			.direct-messages
 				router-link.direct-message(v-for="channel of directMessageChannels", :to="{name: 'channel', params: {channelId: channel.id}}", :class="{unread: hasUnreadMessages(channel.id)}")
-					.name {{ directMessageChannelName(channel) }}
+					.name {{ getDMChannelName(channel) }}
 					bunt-icon-button(@click.prevent.stop="$store.dispatch('chat/leaveChannel', {channelId: channel.id})") close
 			.buffer
 			template(v-if="staffedExhibitions.length > 0 || hasPermission('world:rooms.create.exhibition')")
@@ -102,14 +102,6 @@ export default {
 				transform: `translateX(${this.pointerMovementX}px)`
 			}
 		},
-		showChannelBrowserButton () {
-			for (const room of this.rooms) {
-				if (room.modules.length === 1 && room.modules[0].type === 'chat.native') {
-					return true
-				}
-			}
-			return false
-		},
 		roomsByType () {
 			const rooms = {
 				page: [],
@@ -147,14 +139,18 @@ export default {
 			return rooms
 		},
 		directMessageChannels () {
-			const DMChannels = this.joinedChannels?.filter(channel => channel.members).map(channel => ({id: channel.id, users: channel.members.filter(member => member.id !== this.user.id)})).sort((a, b) => this.directMessageChannelName(a).localeCompare(this.directMessageChannelName(b)))
-			const unreadChannels = DMChannels.filter(channel => this.hasUnreadMessages(channel.id))
-			return unreadChannels.concat(DMChannels.filter(channel => !this.hasUnreadMessages(channel.id)))
+			return this.joinedChannels
+				?.filter(channel => channel.members)
+				.map(channel => ({
+					id: channel.id,
+					users: channel.members.filter(member => member.id !== this.user.id)
+				}))
+				.sort((a, b) => (this.hasUnreadMessages(b.id) - this.hasUnreadMessages(a.id)) || this.getDMChannelName(a).localeCompare(this.getDMChannelName(b)))
 		}
 	},
 	methods: {
-		directMessageChannelName (c) {
-			return c.users.map(user => user.profile.display_name).join(', ')
+		getDMChannelName (channel) {
+			return channel.users.map(user => user.profile.display_name).join(', ')
 		},
 		onPointerdown (event) {
 			if (this.$mq.above.m) return
