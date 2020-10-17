@@ -13,7 +13,7 @@ Core
 ----
 
 .. automodule:: pretalx.common.signals
-   :members: periodic_task
+   :members: periodic_task, register_locales
 
 .. automodule:: pretalx.submission.signals
    :members: submission_state_change

@@ -4,11 +4,14 @@ from django_scopes import scope
 
 @pytest.mark.django_db
 def test_reviewer_can_add_review(review_client, submission):
+    with scope(event=submission.event):
+        category = submission.event.score_categories.first()
+        score = category.scores.filter(value=1).first()
     response = review_client.post(
         submission.orga_urls.reviews,
         follow=True,
         data={
-            "score": 1,
+            f"score_{category.id}": score.id,
             "text": "LGTM",
         },
     )
@@ -25,11 +28,14 @@ def test_reviewer_can_add_review(review_client, submission):
 def test_reviewer_can_add_review_with_redirect(
     review_client, submission, other_submission
 ):
+    with scope(event=submission.event):
+        category = submission.event.score_categories.first()
+        score = category.scores.filter(value=1).first()
     response = review_client.post(
         submission.orga_urls.reviews,
         follow=True,
         data={
-            "score": 1,
+            f"score_{category.id}": score.id,
             "text": "LGTM",
             "show_next": "1",
         },
@@ -39,11 +45,14 @@ def test_reviewer_can_add_review_with_redirect(
 
 @pytest.mark.django_db
 def test_reviewer_can_add_review_with_redirect_finished(review_client, submission):
+    with scope(event=submission.event):
+        category = submission.event.score_categories.first()
+        score = category.scores.filter(value=1).first()
     response = review_client.post(
         submission.orga_urls.reviews,
         follow=True,
         data={
-            "score": 1,
+            f"score_{category.id}": score.id,
             "text": "LGTM",
             "show_next": "1",
         },
@@ -53,10 +62,13 @@ def test_reviewer_can_add_review_with_redirect_finished(review_client, submissio
 
 @pytest.mark.django_db
 def test_reviewer_can_add_review_without_score(review_client, submission):
+    with scope(event=submission.event):
+        category = submission.event.score_categories.first()
     response = review_client.post(
         submission.orga_urls.reviews,
         follow=True,
         data={
+            f"score_{category.id}": "",
             "text": "LGTM",
         },
     )
@@ -71,11 +83,13 @@ def test_reviewer_can_add_review_without_score(review_client, submission):
 
 @pytest.mark.django_db
 def test_reviewer_cannot_use_wrong_score(review_client, submission):
+    with scope(event=submission.event):
+        category = submission.event.score_categories.first()
     response = review_client.post(
         submission.orga_urls.reviews,
         follow=True,
         data={
-            "score": 100,
+            f"score_{category.id}": "100",
             "text": "LGTM",
         },
     )
@@ -89,13 +103,15 @@ def test_reviewer_cannot_ignore_required_question(
     review_client, submission, review_question
 ):
     with scope(event=submission.event):
+        category = submission.event.score_categories.first()
+        score = category.scores.filter(value=1).first()
         review_question.required = True
         review_question.save()
     response = review_client.post(
         submission.orga_urls.reviews,
         follow=True,
         data={
-            "score": 1,
+            f"score_{category.id}": score.id,
             "text": "LGTM",
         },
     )
@@ -109,16 +125,19 @@ def test_reviewer_cannot_ignore_required_question(
 @pytest.mark.django_db
 def test_reviewer_cannot_review_own_submission(review_user, review_client, submission):
     with scope(event=submission.event):
+        category = submission.event.score_categories.first()
+        score = category.scores.filter(value=1).first()
         submission.speakers.add(review_user)
         submission.save()
+        assert submission.reviews.count() == 0
     response = review_client.post(
         submission.orga_urls.reviews,
         data={
-            "score": 100,
+            f"score_{category.id}": score.id,
             "text": "LGTM",
         },
     )
-    assert response.status_code == 200
+    assert response.status_code == 200, response.content.decode()
     with scope(event=submission.event):
         assert submission.reviews.count() == 0
 
@@ -128,11 +147,13 @@ def test_reviewer_cannot_review_accepted_submission(
     review_user, review_client, submission
 ):
     with scope(event=submission.event):
+        category = submission.event.score_categories.first()
+        score = category.scores.filter(value=1).first()
         submission.accept()
     response = review_client.post(
         submission.orga_urls.reviews,
         data={
-            "score": 100,
+            f"score_{category.id}": score.id,
             "text": "LGTM",
         },
         follow=True,
@@ -145,13 +166,16 @@ def test_reviewer_cannot_review_accepted_submission(
 @pytest.mark.django_db
 def test_reviewer_can_edit_review(review_client, review, review_user):
     with scope(event=review.event):
+        category = review.event.score_categories.first()
+        score = category.scores.filter(value=2).first()
         count = review.submission.reviews.count()
+        assert review.score != score.value
         assert review.user == review_user
     response = review_client.post(
         review.urls.base,
         follow=True,
         data={
-            "score": 0,
+            f"score_{category.id}": score.id,
             "text": "My mistake.",
         },
     )
@@ -159,19 +183,22 @@ def test_reviewer_can_edit_review(review_client, review, review_user):
     with scope(event=review.event):
         review.refresh_from_db()
         assert review.submission.reviews.count() == count
-    assert review.score == 0
+    assert review.score == score.value
     assert review.text == "My mistake."
 
 
 @pytest.mark.django_db
 def test_reviewer_cannot_edit_review_after_accept(review_client, review):
     with scope(event=review.event):
+        category = review.event.score_categories.first()
+        score = category.scores.filter(value=2).first()
         review.submission.accept()
+        assert review.score != score.value
     response = review_client.post(
         review.urls.base,
         follow=True,
         data={
-            "score": 0,
+            f"score_{category.id}": score.id,
             "text": "My mistake.",
         },
     )
@@ -179,12 +206,16 @@ def test_reviewer_cannot_edit_review_after_accept(review_client, review):
     with scope(event=review.event):
         review.refresh_from_db()
         assert review.submission.reviews.count() == 1
-    assert review.score != 0
+    assert review.score != score.value
     assert review.text != "My mistake."
 
 
 @pytest.mark.django_db
 def test_cannot_see_other_review_before_own(other_review_client, review):
+    with scope(event=review.event):
+        category = review.event.score_categories.first()
+        score = category.scores.filter(value=1).first()
+
     response = other_review_client.get(review.urls.base, follow=True)
     assert response.status_code == 200
     assert review.text not in response.content.decode()
@@ -192,7 +223,11 @@ def test_cannot_see_other_review_before_own(other_review_client, review):
     response = other_review_client.post(
         review.urls.base,
         follow=True,
-        data={"score": 0, "text": "My mistake.", "review_submit": "save"},
+        data={
+            f"score_{category.id}": score.id,
+            "text": "My mistake.",
+            "review_submit": "save",
+        },
     )
     assert response.status_code == 200
     with scope(event=review.event):
@@ -236,7 +271,7 @@ def test_reviewer_can_see_dashboard(
     django_assert_max_num_queries,
     other_submission,
 ):
-    with django_assert_max_num_queries(50):
+    with django_assert_max_num_queries(53):
         response = review_client.get(
             submission.event.orga_urls.reviews + "?sort=" + sort
         )
@@ -254,18 +289,21 @@ def test_reviewer_with_track_limit_can_see_dashboard(
     other_submission,
 ):
     review_user.teams.first().limit_tracks.add(track)
-    with django_assert_max_num_queries(50):
+    with django_assert_max_num_queries(54):
         response = review_client.get(submission.event.orga_urls.reviews)
     assert response.status_code == 200
 
 
 @pytest.mark.django_db
 def test_orga_cannot_add_review(orga_client, submission):
+    with scope(event=submission.event):
+        category = submission.event.score_categories.first()
+        score = category.scores.filter(value=1).first()
     response = orga_client.post(
         submission.orga_urls.reviews,
         follow=True,
         data={
-            "score": 1,
+            f"score_{category.id}": score.id,
             "text": "LGTM",
         },
     )

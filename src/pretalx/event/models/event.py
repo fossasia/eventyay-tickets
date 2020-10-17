@@ -513,6 +513,28 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
                 can_see_other_reviews="always",
                 can_change_submission_state=True,
             )
+        if not self.score_categories.all().exists():
+            from pretalx.submission.models import ReviewScore, ReviewScoreCategory
+
+            category = ReviewScoreCategory.objects.create(
+                event=self,
+                name=str(_("Score")),
+            )
+            ReviewScore.objects.create(
+                category=category,
+                value=0,
+                label=str(_("No")),
+            )
+            ReviewScore.objects.create(
+                category=category,
+                value=1,
+                label=str(_("Maybe")),
+            )
+            ReviewScore.objects.create(
+                category=category,
+                value=2,
+                label=str(_("Yes")),
+            )
         self.save()
 
     build_initial_data.alters_data = True

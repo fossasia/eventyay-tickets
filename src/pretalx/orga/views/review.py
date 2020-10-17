@@ -55,7 +55,7 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
             Q(all_events=True)
             | Q(Q(all_events=False) & Q(limit_events__in=[self.request.event])),
             limit_tracks__isnull=False,
-        ).prefetch_related("limit_tracks")
+        ).prefetch_related("limit_tracks", "limit_tracks__event")
         if limit_tracks:
             tracks = set()
             for team in limit_tracks:
@@ -121,6 +121,7 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
         )
 
     @context
+    @cached_property
     def can_accept_submissions(self):
         return self.request.event.submissions.filter(
             state=SubmissionStates.SUBMITTED
@@ -134,16 +135,19 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
         return self.request.user.has_perm("orga.view_all_reviews", self.request.event)
 
     @context
+    @cached_property
     def submissions_reviewed(self):
         return Review.objects.filter(
             user=self.request.user, submission__event=self.request.event
         ).values_list("submission_id", flat=True)
 
     @context
+    @cached_property
     def show_submission_types(self):
         return self.request.event.submission_types.all().count() > 1
 
     @context
+    @cached_property
     def show_tracks(self):
         return (
             self.request.event.settings.use_tracks
@@ -217,7 +221,8 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
     @cached_property
     def submission(self):
         return get_object_or_404(
-            self.request.event.submissions, code__iexact=self.kwargs["code"]
+            self.request.event.submissions.prefetch_related("speakers"),
+            code__iexact=self.kwargs["code"],
         )
 
     @cached_property
@@ -244,6 +249,8 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
     @context
     @cached_property
     def read_only(self):
+        if self.request.user in self.submission.speakers.all():
+            return True
         if self.object and self.object.pk:
             return not self.request.user.has_perm(
                 "submission.edit_review", self.get_object()

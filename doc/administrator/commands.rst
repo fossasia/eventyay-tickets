@@ -151,3 +151,12 @@ currently running), and ``over``. ``schedule`` is the default value.
 The ``--slug`` flag allows you to specify the slug of the event to be created.
 It defaults to ``democon``. Please only use alphanumerical characters and ``-``
 in the slug, otherwise you won't be able to see the event in the web interface.
+
+Development commands
+--------------------
+
+``python -m pretalx makemessages``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This command regenerates translation files. It should only be used during
+pretalx development.

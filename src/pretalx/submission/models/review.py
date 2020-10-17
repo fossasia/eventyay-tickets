@@ -119,6 +119,8 @@ class Review(models.Model):
 
     @classmethod
     def calculate_score(cls, scores):
+        if not scores:
+            return None
         return sum(score.value * score.category.weight for score in scores)
 
     @cached_property
