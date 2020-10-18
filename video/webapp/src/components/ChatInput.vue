@@ -7,6 +7,7 @@ bunt-input-outline-container.c-chat-input
 			path(d="M8 7a2 2 0 1 0-.001 3.999A2 2 0 0 0 8 7M16 7a2 2 0 1 0-.001 3.999A2 2 0 0 0 16 7M15.232 15c-.693 1.195-1.87 2-3.349 2-1.477 0-2.655-.805-3.347-2H15m3-2H6a6 6 0 1 0 12 0")
 	.emoji-picker-blocker(v-if="showEmojiPicker", @click="showEmojiPicker = false")
 	emoji-picker(v-if="showEmojiPicker", @selected="addEmoji")
+	upload-button#btn-image.btn-image(@change="sendImage", accept="image/png, image/jpg, .png, .jpg, .jpeg", icon="image")
 	bunt-icon-button#btn-send(@click="send") send
 </template>
 <script>
@@ -15,9 +16,11 @@ bunt-input-outline-container.c-chat-input
 // - parse ascii emoticons ;)
 // - parse colol emoji :+1:
 // - add scrollbar when overflowing parent
+import api from 'lib/api'
 import Quill from 'quill'
 import 'quill/dist/quill.core.css'
 import EmojiPicker from 'components/EmojiPicker'
+import UploadButton from 'components/UploadButton'
 import { getEmojiPosition, nativeToOps, toNative } from 'lib/emoji'
 
 const Delta = Quill.import('delta')
@@ -44,7 +47,7 @@ EmojiBlot.tagName = 'img'
 Quill.register(EmojiBlot)
 
 export default {
-	components: { EmojiPicker },
+	components: { EmojiPicker, UploadButton },
 	props: {
 		message: Object // initialize with existing message to edit
 	},
@@ -103,6 +106,16 @@ export default {
 			this.$emit('send', text)
 			this.quill.setContents([{insert: '\n'}])
 		},
+		sendImage (event) {
+			if (event.target.files.length !== 1) return
+			const imageFile = event.target.files[0]
+
+			const request = api.uploadFile(imageFile, 'chat.jpg')
+			request.addEventListener('load', (event) => {
+				const response = JSON.parse(request.responseText)
+				this.$emit('sendImage', response.url)
+			})
+		},
 		addEmoji (emoji) {
 			// TODO skin color
 			this.showEmojiPicker = false
@@ -121,7 +134,7 @@ export default {
 	min-height: 36px
 	box-sizing: border-box
 	&.bunt-input-outline-container
-		padding: 8px 32px 6px 36px
+		padding: 8px 60px 6px 36px
 	.ql-editor
 		font-size: 16px
 		padding: 0
@@ -178,6 +191,17 @@ export default {
 	#btn-send
 		position: absolute
 		right: 4px
+		top: 4px
+		icon-button-style(color: $clr-secondary-text-light)
+		height: 28px
+		width: 28px
+		.bunt-icon
+			font-size: 18px
+			height: 24px
+			line-height: @height
+	#btn-image
+		position: absolute
+		right: 32px
 		top: 4px
 		icon-button-style(color: $clr-secondary-text-light)
 		height: 28px
