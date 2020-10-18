@@ -329,6 +329,7 @@ class ChatModule(BaseModule):
             raise ConsumerException("chat.unsupported_event_type")
         if not (
             content.get("type") == "text"
+            or content.get("type") == "image"
             or (content.get("type") == "deleted" and "replaces" in body)
             or (content.get("type") == "call" and not self.channel.room)
         ):
@@ -357,6 +358,9 @@ class ChatModule(BaseModule):
             )
 
         if content.get("type") == "text" and not content.get("body"):
+            raise ConsumerException("chat.empty")
+
+        if content.get("type") == "image" and not content.get("src"):
             raise ConsumerException("chat.empty")
 
         if await self.consumer.user.is_blocked_in_channel_async(self.channel):
