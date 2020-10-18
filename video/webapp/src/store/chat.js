@@ -138,6 +138,16 @@ export default {
 				}
 			})
 		},
+		sendImage ({state}, {src}) {
+			api.call('chat.send', {
+				channel: state.channel,
+				event_type: 'channel.message',
+				content: {
+					type: 'image',
+					src: src
+				}
+			})
+		},
 		deleteMessage ({state}, message) {
 			api.call('chat.send', {
 				channel: state.channel,
