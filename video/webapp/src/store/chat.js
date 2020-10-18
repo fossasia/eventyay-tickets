@@ -138,13 +138,14 @@ export default {
 				}
 			})
 		},
-		sendImage ({state}, {src}) {
+		sendFiles ({state}, files, message) {
 			api.call('chat.send', {
 				channel: state.channel,
 				event_type: 'channel.message',
 				content: {
-					type: 'image',
-					src: src
+					type: 'files',
+					files: files,
+					body: message
 				}
 			})
 		},

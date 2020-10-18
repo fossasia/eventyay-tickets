@@ -6,7 +6,7 @@
 			.bunt-button-text
 				slot
 		ripple-ink
-	input#file-chooser(type="file", @change="$emit('change', $event)", :accept="accept")
+	input#file-chooser(type="file", @change="$emit('change', $event)", :accept="accept" :multiple="multiple")
 </template>
 <script>
 import RippleInk from 'buntpapier/src/mixins/ripple-ink'
@@ -18,6 +18,7 @@ export default {
 	],
 	props: {
 		accept: String,
+		multiple: Boolean,
 		tooltip: String,
 		icon: String,
 		tooltipPlacement: {

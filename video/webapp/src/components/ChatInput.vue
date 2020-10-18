@@ -7,7 +7,7 @@ bunt-input-outline-container.c-chat-input
 			path(d="M8 7a2 2 0 1 0-.001 3.999A2 2 0 0 0 8 7M16 7a2 2 0 1 0-.001 3.999A2 2 0 0 0 16 7M15.232 15c-.693 1.195-1.87 2-3.349 2-1.477 0-2.655-.805-3.347-2H15m3-2H6a6 6 0 1 0 12 0")
 	.emoji-picker-blocker(v-if="showEmojiPicker", @click="showEmojiPicker = false")
 	emoji-picker(v-if="showEmojiPicker", @selected="addEmoji")
-	upload-button#btn-image.btn-image(@change="sendImage", accept="image/png, image/jpg, .png, .jpg, .jpeg", icon="image")
+	upload-button#btn-image.btn-image(@change="sendFiles", accept="image/png, image/jpg, .png, .jpg, .jpeg", icon="image", multiple=true)
 	bunt-icon-button#btn-send(@click="send") send
 </template>
 <script>
@@ -106,15 +106,20 @@ export default {
 			this.$emit('send', text)
 			this.quill.setContents([{insert: '\n'}])
 		},
-		sendImage (event) {
-			if (event.target.files.length !== 1) return
-			const imageFile = event.target.files[0]
+		async sendFiles (event) {
+			const files = Array.from(event.target.files)
+			if (files.length === 0) return
 
-			const request = api.uploadFile(imageFile, 'chat.jpg')
-			request.addEventListener('load', (event) => {
-				const response = JSON.parse(request.responseText)
-				this.$emit('sendImage', response.url)
+			const requests = files.map(f => {
+				return api.uploadFilePromise(f, 'chat.jpg')
 			})
+			const fileInfo = (await Promise.all(requests)).map((response, i) => {
+				return {
+					url: response.url,
+					mimeType: files[i].type
+				}
+			})
+			this.$emit('sendFiles', fileInfo)
 		},
 		addEmoji (emoji) {
 			// TODO skin color

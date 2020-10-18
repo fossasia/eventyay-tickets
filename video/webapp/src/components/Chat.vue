@@ -11,7 +11,7 @@
 				.no-permission(v-if="room && !room.permissions.includes('room:chat.join')") {{ $t('Chat:permission-block:room:chat.join') }}
 				bunt-button(v-else-if="!activeJoinedChannel", @click="join", :tooltip="$t('Chat:join-button:tooltip')") {{ $t('Chat:join-button:label') }}
 				.no-permission(v-else-if="room && !room.permissions.includes('room:chat.send')") {{ $t('Chat:permission-block:room:chat.send') }}
-				chat-input(v-else, @send="send", @sendImage="sendImage")
+				chat-input(v-else, @send="send", @sendFiles="sendFiles")
 		.user-list(v-if="mode === 'standalone' && showUserlist && $mq.above['m']")
 			.user-list-info(v-if="sortedMembers.length > 2")
 				span Channel members
@@ -124,8 +124,8 @@ export default {
 		send (message) {
 			this.$store.dispatch('chat/sendMessage', {text: message})
 		},
-		sendImage (url) {
-			this.$store.dispatch('chat/sendImage', {src: url})
+		sendFiles (files, message) {
+			this.$store.dispatch('chat/sendFiles', files, message)
 		},
 		async showUserCard (event, user) {
 			this.selectedUser = user
