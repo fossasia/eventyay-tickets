@@ -13,9 +13,11 @@
 			template(v-if="message.content.type === 'text'")
 				chat-input(v-if="editing", :message="message", @send="editMessage")
 				.content(v-else, v-html="content")
-			template(v-if="message.content.type === 'image'")
+			template(v-if="message.content.type === 'files'")
 				.content
-					img.chat-image(:src="message.content.src")
+					.file-message-part(v-for="file in message.content.files")
+						img.chat-image(:src="file.url")
+					span(v-if="message.content.body", v-html="content")
 			.call(v-else-if="message.content.type === 'call'")
 				.prompt(v-if="message.sender === user.id") You started a video call
 				.prompt(v-else) {{ senderDisplayName }} invited you to a video call
@@ -25,7 +27,7 @@
 				template(v-slot:button="{toggle}")
 					bunt-icon-button(@click="toggle") dots-vertical
 				template(v-slot:menu)
-					.edit-message(v-if="message.sender === user.id && message.content.type !== 'image'", @click="startEditingMessage") {{ $t('ChatMessage:message-edit:label') }}
+					.edit-message(v-if="message.sender === user.id", @click="startEditingMessage") {{ $t('ChatMessage:message-edit:label') }}
 					.delete-message(@click="selected = false, showDeletePrompt = true") {{ $t('ChatMessage:message-delete:label') }}
 	template(v-else-if="message.event_type === 'channel.member'")
 		.system-content {{ sender.profile ? sender.profile.display_name : message.sender }} {{ message.content.membership === 'join' ? $t('ChatMessage:join-message:text') : $t('ChatMessage:leave-message:text') }}
