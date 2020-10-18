@@ -171,7 +171,7 @@ inside the ``content`` property:
 Currently, the following types are defined:
 
 * ``text``: A plain text message. ``body`` is a string with the message.
-* ``image``: An image containing an image. ``src`` is the URL of the image.
+* ``image``: A message containing an image. ``src`` is the URL of the image.
 * ``deleted``: Any message that was removed by the user or a moderator.
 * ``call``: A audio/video call that can be joined. ``body`` is a dictionary that should be empty when you send such a
   message. If you receive such a message, there will be an ``id`` property with the call ID which you can use to fetch
