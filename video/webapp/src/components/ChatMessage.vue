@@ -16,7 +16,10 @@
 			template(v-if="message.content.type === 'files'")
 				.content
 					.file-message-part(v-for="file in message.content.files")
-						img.chat-image(:src="file.url")
+						img.chat-image(:src="file.url" v-if="file.mimeType.startsWith('image/')")
+						a.chat-file(v-else :href="file.url")
+							i.bunt-icon.mdi.mdi-file
+							| {{ file.name }}
 					span(v-if="message.content.body", v-html="content")
 			.call(v-else-if="message.content.type === 'call'")
 				.prompt(v-if="message.sender === user.id") You started a video call
