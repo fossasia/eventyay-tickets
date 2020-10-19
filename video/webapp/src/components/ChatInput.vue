@@ -8,8 +8,8 @@ bunt-input-outline-container.c-chat-input
 	.emoji-picker-blocker(v-if="showEmojiPicker", @click="showEmojiPicker = false")
 	emoji-picker(v-if="showEmojiPicker", @selected="addEmoji")
 	upload-button#btn-file(@change="attachFiles", accept="image/png, image/jpg, application/pdf, .png, .jpg, .jpeg, .pdf", icon="paperclip", multiple=true)
-	.files-preview
-		.file-message-part(v-for="file in files")
+	.files-preview(v-if="files !== null")
+		template(v-for="file in files")
 			img.chat-image(:src="file.url" v-if="file.mimeType.startsWith('image/')")
 			a.chat-file(v-else :href="file.url")
 				i.bunt-icon.mdi.mdi-file
@@ -230,9 +230,34 @@ export default {
 	.files-preview
 		position:absolute
 		top: 0;
+		left: 28px
+		right: 8px
+		border-radius 4px 4px 0 0
+		box-sizing: border-box
 		transform: translateY(-100%)
-		background #d9d9d9
+		background white
+		border: 1px solid $clr-grey-400
+		border-bottom: none
+		padding: 8px
 		.chat-image
-			max-width: 50%
-			max-height: 100px
+			display: inline-block
+			width: 60px
+			height: 60px
+			object-fit: cover
+			box-sizing: border-box
+			border-radius 2px
+			border: 1px solid $clr-grey-400
+			margin: 0 4px
+		.chat-file
+			display: inline-block
+			height: 60px
+			max-width: 100px
+			border-radius 2px
+			border: 1px solid $clr-grey-400
+			text-overflow: ellipsis
+			overflow: hidden
+			white-space: nowrap
+			padding: 12px 8px
+			box-sizing: border-box
+			margin: 0 4px
 </style>
