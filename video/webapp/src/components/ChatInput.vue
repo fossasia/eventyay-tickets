@@ -17,6 +17,7 @@ bunt-input-outline-container.c-chat-input
 				a.chat-file(v-else :href="file.url" target="_blank")
 					i.bunt-icon.mdi.mdi-file
 					| {{ file.name }}
+		bunt-progress-circular(size="small" v-if="uploading")
 		bunt-icon-button#btn-remove-attachment(@click="files = null") close-circle
 	bunt-icon-button#btn-send(@click="send") send
 </template>
@@ -64,7 +65,8 @@ export default {
 	data () {
 		return {
 			showEmojiPicker: false,
-			files: null
+			files: null,
+			uploading: false
 		}
 	},
 	computed: {},
@@ -126,6 +128,8 @@ export default {
 			const files = Array.from(event.target.files)
 			if (files.length === 0) return
 
+			this.files = []
+			this.uploading = true
 			const requests = files.map(f => {
 				return api.uploadFilePromise(f, f.name)
 			})
@@ -140,6 +144,7 @@ export default {
 					}
 				}
 			})
+			this.uploading = false
 		},
 		addEmoji (emoji) {
 			// TODO skin color
