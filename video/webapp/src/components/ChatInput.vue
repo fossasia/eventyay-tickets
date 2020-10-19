@@ -11,7 +11,7 @@ bunt-input-outline-container.c-chat-input
 	.files-preview(v-if="files !== null")
 		template(v-for="file in files")
 			img.chat-image(:src="file.url" v-if="file.mimeType.startsWith('image/')")
-			a.chat-file(v-else :href="file.url")
+			a.chat-file(v-else :href="file.url" target="_blank")
 				i.bunt-icon.mdi.mdi-file
 				| {{ file.name }}
 	bunt-icon-button#btn-send(@click="send") send
