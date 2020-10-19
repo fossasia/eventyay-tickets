@@ -7,7 +7,13 @@ bunt-input-outline-container.c-chat-input
 			path(d="M8 7a2 2 0 1 0-.001 3.999A2 2 0 0 0 8 7M16 7a2 2 0 1 0-.001 3.999A2 2 0 0 0 16 7M15.232 15c-.693 1.195-1.87 2-3.349 2-1.477 0-2.655-.805-3.347-2H15m3-2H6a6 6 0 1 0 12 0")
 	.emoji-picker-blocker(v-if="showEmojiPicker", @click="showEmojiPicker = false")
 	emoji-picker(v-if="showEmojiPicker", @selected="addEmoji")
-	upload-button#btn-file(@change="sendFiles", accept="image/png, image/jpg, application/pdf, .png, .jpg, .jpeg, .pdf", icon="paperclip", multiple=true)
+	upload-button#btn-file(@change="attachFiles", accept="image/png, image/jpg, application/pdf, .png, .jpg, .jpeg, .pdf", icon="paperclip", multiple=true)
+	.files-preview
+		.file-message-part(v-for="file in files")
+			img.chat-image(:src="file.url" v-if="file.mimeType.startsWith('image/')")
+			a.chat-file(v-else :href="file.url")
+				i.bunt-icon.mdi.mdi-file
+				| {{ file.name }}
 	bunt-icon-button#btn-send(@click="send") send
 </template>
 <script>
@@ -53,7 +59,8 @@ export default {
 	},
 	data () {
 		return {
-			showEmojiPicker: false
+			showEmojiPicker: false,
+			files: null
 		}
 	},
 	computed: {},
@@ -103,24 +110,28 @@ export default {
 				}
 			}
 			text = text.trim()
-			this.$emit('send', text)
+			if (this.files !== null) {
+				this.$emit('sendFiles', this.files, text)
+				this.files = null
+			} else {
+				this.$emit('send', text)
+			}
 			this.quill.setContents([{insert: '\n'}])
 		},
-		async sendFiles (event) {
+		async attachFiles (event) {
 			const files = Array.from(event.target.files)
 			if (files.length === 0) return
 
 			const requests = files.map(f => {
 				return api.uploadFilePromise(f, f.name)
 			})
-			const fileInfo = (await Promise.all(requests)).map((response, i) => {
+			this.files = (await Promise.all(requests)).map((response, i) => {
 				return {
 					url: response.url,
 					mimeType: files[i].type,
 					name: files[i].name
 				}
 			})
-			this.$emit('sendFiles', fileInfo)
 		},
 		addEmoji (emoji) {
 			// TODO skin color
@@ -216,4 +227,12 @@ export default {
 			font-size: 18px
 			height: 24px
 			line-height: @height
+	.files-preview
+		position:absolute
+		top: 0;
+		transform: translateY(-100%)
+		background #d9d9d9
+		.chat-image
+			max-width: 50%
+			max-height: 100px
 </style>
