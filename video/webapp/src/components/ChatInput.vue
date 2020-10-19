@@ -14,6 +14,7 @@ bunt-input-outline-container.c-chat-input
 			a.chat-file(v-else :href="file.url" target="_blank")
 				i.bunt-icon.mdi.mdi-file
 				| {{ file.name }}
+		bunt-icon-button#btn-remove-attachment(@click="files = null") close-circle
 	bunt-icon-button#btn-send(@click="send") send
 </template>
 <script>
@@ -227,6 +228,13 @@ export default {
 			font-size: 18px
 			height: 24px
 			line-height: @height
+	#btn-remove-attachment
+		position: absolute
+		right: -14px
+		top: -14px
+		icon-button-style(color: $clr-secondary-text-light)
+		height: 28px
+		width: 28px
 	.files-preview
 		position:absolute
 		top: 0;
