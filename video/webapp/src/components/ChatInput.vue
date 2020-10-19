@@ -10,10 +10,13 @@ bunt-input-outline-container.c-chat-input
 	upload-button#btn-file(@change="attachFiles", accept="image/png, image/jpg, application/pdf, .png, .jpg, .jpeg, .pdf", icon="paperclip", multiple=true)
 	.files-preview(v-if="files !== null")
 		template(v-for="file in files")
-			img.chat-image(:src="file.url" v-if="file.mimeType.startsWith('image/')")
-			a.chat-file(v-else :href="file.url" target="_blank")
-				i.bunt-icon.mdi.mdi-file
-				| {{ file.name }}
+			.chat-file(v-if="file === null")
+				i.bunt-icon.mdi.mdi-alert-circle.upload-error
+			template(v-else)
+				img.chat-image(:src="file.url" v-if="file.mimeType.startsWith('image/')")
+				a.chat-file(v-else :href="file.url" target="_blank")
+					i.bunt-icon.mdi.mdi-file
+					| {{ file.name }}
 		bunt-icon-button#btn-remove-attachment(@click="files = null") close-circle
 	bunt-icon-button#btn-send(@click="send") send
 </template>
@@ -112,7 +115,7 @@ export default {
 			}
 			text = text.trim()
 			if (this.files !== null) {
-				this.$emit('sendFiles', this.files, text)
+				this.$emit('sendFiles', this.files.filter(it => it != null), text)
 				this.files = null
 			} else {
 				this.$emit('send', text)
@@ -127,10 +130,14 @@ export default {
 				return api.uploadFilePromise(f, f.name)
 			})
 			this.files = (await Promise.all(requests)).map((response, i) => {
-				return {
-					url: response.url,
-					mimeType: files[i].type,
-					name: files[i].name
+				if (response.error) {
+					return null
+				} else {
+					return {
+						url: response.url,
+						mimeType: files[i].type,
+						name: files[i].name
+					}
 				}
 			})
 		},
@@ -259,7 +266,9 @@ export default {
 		.chat-file
 			display: inline-block
 			height: 60px
+			min-width 60px
 			max-width: 100px
+			text-align: center
 			border-radius 2px
 			border: 1px solid $clr-grey-400
 			text-overflow: ellipsis
@@ -268,4 +277,6 @@ export default {
 			padding: 12px 8px
 			box-sizing: border-box
 			margin: 0 4px
+			.upload-error
+				color: $clr-danger
 </style>
