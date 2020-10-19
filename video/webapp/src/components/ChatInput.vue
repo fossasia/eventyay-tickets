@@ -8,18 +8,22 @@ bunt-input-outline-container.c-chat-input
 	.emoji-picker-blocker(v-if="showEmojiPicker", @click="showEmojiPicker = false")
 	emoji-picker(v-if="showEmojiPicker", @selected="addEmoji")
 	upload-button#btn-file(@change="attachFiles", accept="image/png, image/jpg, application/pdf, .png, .jpg, .jpeg, .pdf", icon="paperclip", multiple=true)
-	.files-preview(v-if="files !== null || uploading")
+	bunt-icon-button#btn-send(@click="send") send
+	.files-preview(v-if="files.length > 0 || uploading")
 		template(v-for="file in files")
 			.chat-file(v-if="file === null")
 				i.bunt-icon.mdi.mdi-alert-circle.upload-error
+				bunt-icon-button#btn-remove-attachment(@click="files.pop(file)") close-circle
 			template(v-else)
-				img.chat-image(:src="file.url" v-if="file.mimeType.startsWith('image/')")
-				a.chat-file(v-else :href="file.url" target="_blank")
-					i.bunt-icon.mdi.mdi-file
-					| {{ file.name }}
+				.chat-image(v-if="file.mimeType.startsWith('image/')")
+					img(:src="file.url")
+					bunt-icon-button#btn-remove-attachment(@click="files.pop(file)") close-circle
+				.chat-file(v-else)
+					a.chat-file-content(:href="file.url" target="_blank")
+						i.bunt-icon.mdi.mdi-file
+						| {{ file.name }}
+					bunt-icon-button#btn-remove-attachment(@click="files.pop(file)") close-circle
 		bunt-progress-circular(size="small" v-if="uploading")
-		bunt-icon-button#btn-remove-attachment(@click="files = null") close-circle
-	bunt-icon-button#btn-send(@click="send") send
 </template>
 <script>
 /* global ENV_DEVELOPMENT */
@@ -65,7 +69,7 @@ export default {
 	data () {
 		return {
 			showEmojiPicker: false,
-			files: null,
+			files: [],
 			uploading: false
 		}
 	},
@@ -116,9 +120,9 @@ export default {
 				}
 			}
 			text = text.trim()
-			if (this.files !== null) {
+			if (this.files.length > 0) {
 				this.$emit('sendFiles', this.files.filter(it => it != null), text)
-				this.files = null
+				this.files = []
 			} else {
 				this.$emit('send', text)
 			}
@@ -143,11 +147,7 @@ export default {
 					}
 				}
 			})
-			if (this.files === null) {
-				this.files = fileInfos
-			} else {
-				Array.prototype.push.apply(this.files, fileInfos)
-			}
+			Array.prototype.push.apply(this.files, fileInfos)
 			this.uploading = false
 		},
 		addEmoji (emoji) {
@@ -251,28 +251,30 @@ export default {
 		icon-button-style(color: $clr-secondary-text-light)
 		height: 28px
 		width: 28px
+		background: white
 	.files-preview
-		position:absolute
-		top: 0;
-		margin-left: 28px
-		right: 8px
-		border-radius 4px 4px 0 0
+		position: relative
+		width: 100%
 		box-sizing: border-box
-		transform: translateY(-100%)
 		background white
-		border: 1px solid $clr-grey-400
-		border-bottom: none
-		padding: 8px
+		margin-top: 16px
 		.chat-image
+			position: relative
 			display: inline-block
 			width: 60px
 			height: 60px
-			object-fit: cover
 			box-sizing: border-box
 			border-radius 2px
 			border: 1px solid $clr-grey-400
-			margin: 0 4px
+			margin-right: 12px
+			margin-bottom: 12px
+			vertical-align: top
+			img
+				object-fit: cover
+				width: 100%
+				height: 100%
 		.chat-file
+			position: relative
 			display: inline-block
 			height: 60px
 			min-width 60px
@@ -280,12 +282,16 @@ export default {
 			text-align: center
 			border-radius 2px
 			border: 1px solid $clr-grey-400
-			text-overflow: ellipsis
-			overflow: hidden
-			white-space: nowrap
 			padding: 12px 8px
 			box-sizing: border-box
-			margin: 0 4px
+			margin-right: 12px
+			margin-bottom: 12px
+			vertical-align: top
 			.upload-error
 				color: $clr-danger
+			.chat-file-content
+				display: block
+				text-overflow: ellipsis
+				overflow: hidden
+				white-space: nowrap
 </style>
