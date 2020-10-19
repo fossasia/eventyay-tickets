@@ -125,7 +125,7 @@ export default {
 			this.$store.dispatch('chat/sendMessage', {text: message})
 		},
 		sendFiles (files, message) {
-			this.$store.dispatch('chat/sendFiles', files, message)
+			this.$store.dispatch('chat/sendFiles', {files: files, message: message})
 		},
 		async showUserCard (event, user) {
 			this.selectedUser = user

@@ -138,7 +138,7 @@ export default {
 				}
 			})
 		},
-		sendFiles ({state}, files, message) {
+		sendFiles ({state}, {files, message}) {
 			api.call('chat.send', {
 				channel: state.channel,
 				event_type: 'channel.message',
