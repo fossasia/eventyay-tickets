@@ -8,7 +8,7 @@ bunt-input-outline-container.c-chat-input
 	.emoji-picker-blocker(v-if="showEmojiPicker", @click="showEmojiPicker = false")
 	emoji-picker(v-if="showEmojiPicker", @selected="addEmoji")
 	upload-button#btn-file(@change="attachFiles", accept="image/png, image/jpg, application/pdf, .png, .jpg, .jpeg, .pdf", icon="paperclip", multiple=true)
-	.files-preview(v-if="files !== null")
+	.files-preview(v-if="files !== null || uploading")
 		template(v-for="file in files")
 			.chat-file(v-if="file === null")
 				i.bunt-icon.mdi.mdi-alert-circle.upload-error
@@ -128,12 +128,11 @@ export default {
 			const files = Array.from(event.target.files)
 			if (files.length === 0) return
 
-			this.files = []
 			this.uploading = true
 			const requests = files.map(f => {
 				return api.uploadFilePromise(f, f.name)
 			})
-			this.files = (await Promise.all(requests)).map((response, i) => {
+			var fileInfos = (await Promise.all(requests)).map((response, i) => {
 				if (response.error) {
 					return null
 				} else {
@@ -144,6 +143,11 @@ export default {
 					}
 				}
 			})
+			if (this.files === null) {
+				this.files = fileInfos
+			} else {
+				Array.prototype.push.apply(this.files, fileInfos)
+			}
 			this.uploading = false
 		},
 		addEmoji (emoji) {
