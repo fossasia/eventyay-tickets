@@ -16,8 +16,9 @@
 			template(v-if="message.content.type === 'files'")
 				.content
 					.file-message-part(v-for="file in message.content.files")
-						img.chat-image(:src="file.url" v-if="file.mimeType.startsWith('image/')")
-						a.chat-file(v-else :href="file.url")
+						a(:href="file.url" v-if="file.mimeType.startsWith('image/')" target="_blank")
+							img.chat-image(:src="file.url")
+						a.chat-file(v-else :href="file.url" target="_blank")
 							i.bunt-icon.mdi.mdi-file
 							| {{ file.name }}
 					span(v-if="message.content.body", v-html="content")
