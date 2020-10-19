@@ -250,7 +250,7 @@ export default {
 	.files-preview
 		position:absolute
 		top: 0;
-		left: 28px
+		margin-left: 28px
 		right: 8px
 		border-radius 4px 4px 0 0
 		box-sizing: border-box
