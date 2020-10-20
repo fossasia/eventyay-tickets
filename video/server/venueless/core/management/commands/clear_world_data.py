@@ -1,11 +1,6 @@
-import datetime
-import uuid
-
-import jwt
 from django.core.management.base import BaseCommand
-from django.utils.crypto import get_random_string
 
-from venueless.core.models import Channel, ChatEvent, Membership, World
+from venueless.core.models import ChatEvent, Membership, World
 from venueless.core.models.exhibitor import (
     ContactRequest,
     ExhibitorStaff,
@@ -35,7 +30,7 @@ class Command(BaseCommand):
         Reaction.objects.filter(room__world=w).delete()
         RoomView.objects.filter(room__world=w).delete()
 
-        for f in StoredFile.objects.filter():
+        for f in StoredFile.objects.filter(world=w):
             if f.file:
                 f.file.delete(False)
             f.delete()
