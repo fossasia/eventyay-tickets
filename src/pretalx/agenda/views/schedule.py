@@ -246,7 +246,7 @@ class ScheduleView(EventPermissionRequired, ScheduleMixin, TemplateView):
         data = ScheduleData(
             event=self.request.event,
             schedule=self.schedule,
-            with_accepted=not self.schedule.version,
+            with_accepted=self.schedule and not self.schedule.version,
             with_breaks=True,
         ).data
         for date in data:
