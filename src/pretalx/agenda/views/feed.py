@@ -37,9 +37,8 @@ class ScheduleFeed(Feed):
         return f"New {item.event.name} schedule released ({item.version})"
 
     def item_link(self, item):
-        url = item.event.urls.schedule.full()
-        version = {"version": item.version}
-        return f"{url}={urlencode(version)}"
+        url = item.event.urls.changelog.full()
+        return f"{url}#{item.version}"
 
     def item_pubdate(self, item):
         return item.published
