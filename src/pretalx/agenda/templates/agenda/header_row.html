@@ -13,7 +13,6 @@
     </div>
     <div class="header-right">
         {% if with_extra %}
-            <a href="{{ request.event.urls.feed }}" class="btn btn-outline-info btn-sm" title="{% translate "Feed" %}"><i class="fa fa-feed"></i></a>
             <span>{% translate "Version" %} <a href="{{ request.event.urls.changelog }}">{{ schedule.version|default:"–" }}</a></span>
             <details class="dropdown">
                 <summary class="btn btn-sm btn-outline-info">
