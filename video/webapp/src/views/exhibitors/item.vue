@@ -34,10 +34,10 @@ scrollbars.c-exhibitor(y)
 					bunt-button(@click="showContactPrompt = true", :tooltip="$t('Exhibition:contact-button:tooltip')") {{ $t('Exhibition:contact-button:label') }}
 				.staff
 					h3 {{ $t("Exhibitor:staff-headline:text") }}
-					.user(v-for="user in exhibitor.staff")
+					.user(v-for="user in exhibitor.staff", @click="showUserCard($event, user)")
 						avatar(:user="user", :size="36")
 						span.display-name {{ user ? user.profile.display_name : '' }}
-
+	chat-user-card(v-if="selectedUser", ref="avatarCard", :sender="selectedUser", @close="selectedUser = null")
 	bunt-progress-circular(v-else, size="huge", :page="true")
 	transition(name="prompt")
 		contact-exhibitor-prompt(v-if="showContactPrompt", @close="showContactPrompt = false", :exhibitor="exhibitor")
@@ -49,16 +49,19 @@ import { mapState, mapGetters } from 'vuex'
 import api from 'lib/api'
 import Avatar from 'components/Avatar'
 import ContactExhibitorPrompt from 'components/ContactExhibitorPrompt'
+import ChatUserCard from 'components/ChatUserCard'
 import MarkdownContent from 'components/MarkdownContent'
+import {createPopper} from "@popperjs/core";
 
 export default {
-	components: { Avatar, ContactExhibitorPrompt, MarkdownContent },
+	components: { Avatar, ChatUserCard, ContactExhibitorPrompt, MarkdownContent },
 	props: {
 		exhibitorId: String
 	},
 	data () {
 		return {
 			exhibitor: null,
+			selectedUser: null,
 			showContactPrompt: false
 		}
 	},
@@ -97,6 +100,20 @@ export default {
 			const url = new URL(link)
 			return url.hostname + (url.pathname !== '/' ? url.pathname : '')
 		},
+		async showUserCard (event, user) {
+			this.selectedUser = user
+			await this.$nextTick()
+			const target = event.target.closest('.user')
+			createPopper(target, this.$refs.avatarCard.$refs.card, {
+				placement: 'left-start',
+				modifiers: [{
+					name: 'flip',
+					options: {
+						flipVariations: false
+					}
+				}]
+			})
+		}
 	}
 }
 </script>
@@ -206,6 +223,7 @@ export default {
 				display: flex
 				align-items: center
 				min-height: 48px
+				cursor: pointer
 				.display-name
 					margin-left: 8px
 					flex: auto
