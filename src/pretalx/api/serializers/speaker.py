@@ -32,7 +32,7 @@ class SpeakerSerializer(ModelSerializer):
 
     @staticmethod
     def get_avatar(obj):
-        return obj.user.avatar_url
+        return obj.user.get_avatar_url(event=obj.event)
 
     @staticmethod
     def get_submissions(obj):

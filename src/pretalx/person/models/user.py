@@ -269,7 +269,15 @@ class User(PermissionsMixin, GenerateCode, FileCleanupMixin, AbstractBaseUser):
         if self.get_gravatar:
             return "https://www.gravatar.com/avatar/" + self.gravatar_parameter
         if self.has_local_avatar:
-            return urljoin(settings.SITE_URL, self.avatar.url)
+            return self.avatar.url
+
+    def get_avatar_url(self, event=None):
+        """ Returns the full avatar URL, where user.avatar_url returns the absolute URL. """
+        if not self.avatar_url or "gravatar" in self.avatar_url:
+            return self.avatar_url
+        if event and event.settings.custom_domain:
+            return urljoin(event.settings.custom_domain, self.avatar_url)
+        return urljoin(settings.SITE_URL, self.avatar_url)
 
     def get_events_with_any_permission(self):
         """Returns a queryset of events for which this user has any type of

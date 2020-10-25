@@ -212,7 +212,7 @@ def widget_data_v2(request, event):
         {
             "code": user.code,
             "name": user.name,
-            "avatar": user.avatar_url,
+            "avatar": user.get_avatar_url(),
         }
         for user in speakers
     ]
