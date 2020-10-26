@@ -61,7 +61,6 @@
 						bunt-checkbox(v-model="val.config.auto_camera", label="Auto-join users with camera on", name="auto_camera")
 						bunt-checkbox(v-model="val.config.bbb_mute_on_start", label="Auto-mute users" name="bbb_mute_on_start")
 						bunt-checkbox(v-model="val.config.bbb_disable_cam", label="Disable camera for non-moderators", name="bbb_disable_cam")
-						bunt-checkbox(v-model="val.config.bbb_disable_mic", label="Disable microphones for non-moderators", name="bbb_disable_mic")
 						bunt-checkbox(v-model="val.config.bbb_disable_chat", label="Disable public chat for non-moderators", name="bbb_disable_chat")
 						bunt-input(v-model="val.config.voice_bridge", label="Voice Bridge ID", name="voice_bridge")
 						bunt-input(v-model="val.config.prefer_server", label="Prefer Server with ID", name="prefer_server")
