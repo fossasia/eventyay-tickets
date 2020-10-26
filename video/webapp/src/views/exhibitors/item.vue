@@ -37,8 +37,8 @@ scrollbars.c-exhibitor(y)
 					.user(v-for="user in exhibitor.staff", @click="showUserCard($event, user)")
 						avatar(:user="user", :size="36")
 						span.display-name {{ user ? user.profile.display_name : '' }}
-	chat-user-card(v-if="selectedUser", ref="avatarCard", :sender="selectedUser", @close="selectedUser = null")
 	bunt-progress-circular(v-else, size="huge", :page="true")
+	chat-user-card(v-if="selectedUser", ref="avatarCard", :sender="selectedUser", @close="selectedUser = null")
 	transition(name="prompt")
 		contact-exhibitor-prompt(v-if="showContactPrompt", @close="showContactPrompt = false", :exhibitor="exhibitor")
 </template>
