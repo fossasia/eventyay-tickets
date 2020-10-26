@@ -68,6 +68,7 @@ class ReviewForm(ReadOnlyFlag, forms.ModelForm):
             widget=forms.RadioSelect,
             disabled=read_only,
             initial=initial,
+            label=category.name,
         )
 
     def get_score_fields(self):
