@@ -161,6 +161,7 @@ export default {
 				'Mastodon',
 				'Reddit',
 				'Instagram',
+				'YouTube',
 				'Discord'
 			]
 		}
