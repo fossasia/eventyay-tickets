@@ -1,5 +1,3 @@
-from urllib.parse import urlencode
-
 from django.contrib.syndication.views import Feed
 from django.http import Http404
 from django.utils import feedgenerator
