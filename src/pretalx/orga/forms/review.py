@@ -17,6 +17,7 @@ class TagsForm(ReadOnlyFlag, forms.ModelForm):
             self.fields.pop("tags")
         else:
             self.fields["tags"].queryset = self.event.tags.all()
+            self.fields["tags"].required = False
 
     class Meta:
         model = Submission

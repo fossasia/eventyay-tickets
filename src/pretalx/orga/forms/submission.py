@@ -31,6 +31,7 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
             self.fields.pop("tags", None)
         else:
             self.fields["tags"].queryset = self.event.tags.all()
+            self.fields["tags"].required = False
 
         if not self.instance.pk:
             self.fields["speaker"] = forms.EmailField(
