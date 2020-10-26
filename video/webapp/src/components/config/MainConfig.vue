@@ -20,7 +20,6 @@
 		bunt-checkbox(v-model="config.bbb_defaults.auto_camera", label="Auto-join users with camera on", name="auto_camera")
 		bunt-checkbox(v-model="config.bbb_defaults.bbb_mute_on_start", label="Auto-mute users" name="bbb_mute_on_start")
 		bunt-checkbox(v-model="config.bbb_defaults.bbb_disable_cam", label="Disable camera for non-moderators", name="bbb_disable_cam")
-		bunt-checkbox(v-model="config.bbb_defaults.bbb_disable_mic", label="Disable microphones for non-moderators", name="bbb_disable_mic")
 		bunt-checkbox(v-model="config.bbb_defaults.bbb_disable_chat", label="Disable public chat for non-moderators", name="bbb_disable_chat")
 		h3 Settings for stages
 		bunt-input-outline-container(label="hls.js config", :class="{error: $v.hlsConfig.$invalid}")
