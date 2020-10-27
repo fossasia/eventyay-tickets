@@ -13,10 +13,12 @@ lxml~=4.5.0
 matplotlib~=3.3.0
 numpy~=1.19.0
 orjson~=3.3.0
+pdfrw==0.4
 pyjwt~=1.7.0
 python-dateutil~=2.8.0
 pytz
 redis
+reportlab==3.5.*
 requests~=2.24.0
 sentry-sdk~=0.16.0
 tqdm~=4.48.0
