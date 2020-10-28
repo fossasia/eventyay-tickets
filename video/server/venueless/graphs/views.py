@@ -379,7 +379,7 @@ class ReportView(GraphView):
         s += self.global_sums()
         s += self.story_for_exhibitors()
 
-        for room in self.world.rooms.all():
+        for room in self.world.rooms.filter(deleted=False):
             types = [m["type"] for m in room.module_config]
             if any(
                 t.startswith("livestream.")
