@@ -580,20 +580,24 @@ class ReportView(GraphView):
                 str(
                     ChatEvent.objects.filter(
                         channel__world=self.world,
-                        event_type="channel.message", channel__room__isnull=False
+                        event_type="channel.message",
+                        channel__room__isnull=False,
                     ).count()
                 ),
             ],
             [
                 _("Number of direct message channels"),
-                str(Channel.objects.filter(world=self.world, room__isnull=True).count()),
+                str(
+                    Channel.objects.filter(world=self.world, room__isnull=True).count()
+                ),
             ],
             [
                 _("Number of chat messages in direct messages"),
                 str(
                     ChatEvent.objects.filter(
                         channel__world=self.world,
-                        event_type="channel.message", channel__room__isnull=True
+                        event_type="channel.message",
+                        channel__room__isnull=True,
                     ).count()
                 ),
             ],
