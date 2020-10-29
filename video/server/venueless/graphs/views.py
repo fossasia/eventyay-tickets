@@ -449,7 +449,7 @@ class ReportView(GraphView):
                 _("Number of chat messages"),
                 str(
                     ChatEvent.objects.filter(
-                        event_type="channel.message", channel__room__isnull=False
+                        event_type="channel.message", channel__room=room
                     ).count()
                 ),
             ],
@@ -457,7 +457,7 @@ class ReportView(GraphView):
                 _("Number of users who sent chat messages"),
                 str(
                     ChatEvent.objects.filter(
-                        event_type="channel.message", channel__room__isnull=False
+                        event_type="channel.message", channel__room=room
                     )
                     .values("sender")
                     .distinct()
@@ -575,18 +575,20 @@ class ReportView(GraphView):
                 _("Number of chat messages in streams and chat channels"),
                 str(
                     ChatEvent.objects.filter(
+                        channel__world=self.world,
                         event_type="channel.message", channel__room__isnull=False
                     ).count()
                 ),
             ],
             [
                 _("Number of direct message channels"),
-                str(Channel.objects.filter(room__isnull=True).count()),
+                str(Channel.objects.filter(world=self.world, room__isnull=True).count()),
             ],
             [
                 _("Number of chat messages in direct messages"),
                 str(
                     ChatEvent.objects.filter(
+                        channel__world=self.world,
                         event_type="channel.message", channel__room__isnull=True
                     ).count()
                 ),
