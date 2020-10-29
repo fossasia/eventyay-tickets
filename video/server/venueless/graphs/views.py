@@ -416,10 +416,14 @@ class ReportView(GraphView):
             ("FONTSIZE", (0, 0), (-1, -1), 10),
         ]
 
-        unique_users = RoomView.objects.filter(room=room).values("user")
+        rvqs = RoomView.objects.exclude(
+            Q(end__lt=self.date_begin) | Q(start__gt=self.date_end)
+        )
+
+        unique_users = rvqs.objects.filter(room=room).values("user")
         users_with_duration = User.objects.filter(id__in=unique_users,).annotate(
             total_duration=Subquery(
-                RoomView.objects.filter(
+                rvqs.objects.filter(
                     user=OuterRef("pk"),
                     room=room,
                 )
