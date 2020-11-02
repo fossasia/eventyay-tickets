@@ -103,6 +103,12 @@ def get_create_params_for_room(
         if not call.server.active:
             call.server = choose_server(world=room.world, room=room)
             call.save(update_fields=["server"])
+        if call.guest_policy != guest_policy:
+            call.guest_policy = guest_policy
+            call.save(update_fields=["guest_policy"])
+        if call.voice_bridge != voice_bridge:
+            call.voice_bridge = voice_bridge
+            call.save(update_fields=["voice_bridge"])
     except BBBCall.DoesNotExist:
         call = BBBCall.objects.create(
             room=room,
