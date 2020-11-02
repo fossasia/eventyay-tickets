@@ -387,7 +387,7 @@ export default {
 </script>
 <style lang="stylus">
 .c-manage-exhibitor
-	display flex
+	display block
 	flex-direction column
 	background $clr-white
 	min-height 0
