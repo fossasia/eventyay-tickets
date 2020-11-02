@@ -387,7 +387,7 @@ export default {
 </script>
 <style lang="stylus">
 .c-manage-exhibitor
-	display block
+	display flex
 	flex-direction column
 	background $clr-white
 	min-height 0
@@ -415,7 +415,7 @@ export default {
 			.btn-save
 				themed-button-primary()
 	.main-form
-		display flex
+		display block
 		flex-direction column
 		> *
 			margin 0 16px
