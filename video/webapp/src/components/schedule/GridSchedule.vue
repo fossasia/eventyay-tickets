@@ -10,7 +10,7 @@
 				path(d="M 0 0 L 10 5 L 0 10 z")
 		.room(:style="{'grid-area': `1 / 1 / auto / auto`}")
 		.room(v-for="(room, index) of rooms", :style="{'grid-area': `1 / ${index + 2 } / auto / auto`}") {{ getLocalizedString(room.name) }}
-		.room(v-if="hasSessionsWithoutRoom", :style="{'grid-area': `1 / ${rooms.length + 2} / auto / -1`}") 
+		.room(v-if="hasSessionsWithoutRoom", :style="{'grid-area': `1 / ${rooms.length + 2} / auto / -1`}")
 		template(v-for="session of sessions")
 			session(v-if="session.id", :session="session", :style="getSessionStyle(session)", :showAbstract="false", :showRoom="false")
 			.break(v-else, :style="getSessionStyle(session)")
