@@ -128,7 +128,11 @@ import Avatar from 'components/Avatar'
 import Prompt from 'components/Prompt'
 import UserSelect from 'components/UserSelect'
 import UploadUrlInput from 'components/config/UploadUrlInput'
-import { required, maxLength } from 'buntpapier/src/vuelidate/validators'
+import { required, maxLength, url } from 'buntpapier/src/vuelidate/validators'
+import { helpers } from 'vuelidate/lib/validators'
+import { withParams } from 'vuelidate/lib/validators/common'
+
+const absrelurl = (message) => withParams({message: message}, value => helpers.regex('absrelurl', /^(https?:\/\/|mailto:|\/)[^ ]+$/)(value))
 
 export default {
 	components: { Avatar, Prompt, UploadUrlInput, UserSelect },
@@ -204,7 +208,8 @@ export default {
 						},
 						url: {
 							required: required(this.$t('Exhibitors:validation-links-url:required')),
-							maxLength: maxLength(200, this.$t('Exhibitors:validation-url:maxLength'))
+							maxLength: maxLength(200, this.$t('Exhibitors:validation-url:maxLength')),
+							absrelurl: absrelurl(this.$t('Exhibitors:validation-links-url:required'))
 						}
 					}
 				},
@@ -216,7 +221,8 @@ export default {
 						},
 						url: {
 							required: required(this.$t('Exhibitors:validation-links-url:required')),
-							maxLength: maxLength(200, this.$t('Exhibitors:validation-url:maxLength'))
+							maxLength: maxLength(200, this.$t('Exhibitors:validation-url:maxLength')),
+							absrelurl: absrelurl(this.$t('Exhibitors:validation-links-url:required'))
 						}
 					}
 				},
@@ -228,7 +234,8 @@ export default {
 						},
 						url: {
 							required: required(this.$t('Exhibitors:validation-links-url:required')),
-							maxLength: maxLength(200, this.$t('Exhibitors:validation-url:maxLength'))
+							maxLength: maxLength(200, this.$t('Exhibitors:validation-url:maxLength')),
+							absrelurl: absrelurl(this.$t('Exhibitors:validation-links-url:required'))
 						}
 					}
 				}
