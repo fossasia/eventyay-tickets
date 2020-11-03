@@ -97,8 +97,12 @@ export default {
 	},
 	methods: {
 		prettifyUrl (link) {
-			const url = new URL(link)
-			return url.hostname + (url.pathname !== '/' ? url.pathname : '')
+			try {
+				const url = new URL(link)
+				return url.hostname + (url.pathname !== '/' ? url.pathname : '')
+			} catch (e) {
+				return link
+			}
 		},
 		async showUserCard (event, user) {
 			this.selectedUser = user
