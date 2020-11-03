@@ -51,7 +51,7 @@ import Avatar from 'components/Avatar'
 import ContactExhibitorPrompt from 'components/ContactExhibitorPrompt'
 import ChatUserCard from 'components/ChatUserCard'
 import MarkdownContent from 'components/MarkdownContent'
-import {createPopper} from "@popperjs/core";
+import { createPopper } from '@popperjs/core'
 
 export default {
 	components: { Avatar, ChatUserCard, ContactExhibitorPrompt, MarkdownContent },
