@@ -205,10 +205,10 @@ export default {
 				overflow: hidden
 				white-space: nowrap
 				text-overflow: ellipsis
-				max-width: 0
-				width: 100%
+				max-width: 200px
 			.name
-				white-space: nowrap
+				white-space: normal
+				max-width: 200px
 			a:hover
 					text-decoration: underline
 		.contact
