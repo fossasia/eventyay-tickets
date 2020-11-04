@@ -9,6 +9,7 @@
 					tr
 						th Name
 						th Type
+						th ID
 						th
 						th Include in search queries
 						th
@@ -19,6 +20,8 @@
 						td
 							bunt-select(v-model="field.type", label="Type", name="type", :options="['text', 'textarea', 'select']")
 						td
+							bunt-input(v-model="field.id", label="ID", name="id")
+						td
 							bunt-input(v-if="field.type === 'select'", v-model="field.choices", label="Choices (comma seperated)", name="choices")
 						td
 							bunt-checkbox(v-model="field.searchable", name="searchable")
@@ -28,6 +31,7 @@
 					tr
 						td
 							bunt-button(@click="addField") Add field
+						td
 						td
 						td
 						td
