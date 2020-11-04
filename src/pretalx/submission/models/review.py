@@ -19,9 +19,7 @@ class ReviewScoreCategory(models.Model):
         to="submission.Track",
         verbose_name=_("Limit to tracks"),
         blank=True,
-        help_text=_(
-            "Leave empty to use this category for all tracks."
-        ),
+        help_text=_("Leave empty to use this category for all tracks."),
     )
 
     objects = ScopedManager(event="event")
