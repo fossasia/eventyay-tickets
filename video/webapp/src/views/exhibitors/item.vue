@@ -29,6 +29,8 @@ scrollbars.c-exhibitor(y)
 				tr(v-for="link in profileLinks")
 					th.name {{ link.display_text }}
 					td: a(:href="link.url", target="_blank") {{ prettifyUrl(link.url) }}
+			.join-room(v-if="exhibitor.highlighted_room_id")
+				bunt-button(@click="joinRoom") {{ $t('Exhibition:room-button:label') }}
 			template(v-if="exhibitor.staff.length > 0")
 				.contact(v-if="hasPermission('world:exhibition.contact') && exhibitor.contact_enabled")
 					bunt-button(@click="showContactPrompt = true", :tooltip="$t('Exhibition:contact-button:tooltip')") {{ $t('Exhibition:contact-button:label') }}
@@ -103,6 +105,9 @@ export default {
 			} catch (e) {
 				return link
 			}
+		},
+		joinRoom () {
+			this.$router.push({name: 'room', params: {roomId: this.exhibitor.highlighted_room_id}})
 		},
 		async showUserCard (event, user) {
 			this.selectedUser = user
@@ -211,7 +216,7 @@ export default {
 				white-space: nowrap
 			a:hover
 					text-decoration: underline
-		.contact
+		.contact, .join-room
 			flex: none
 			padding: 8px
 			display: flex
