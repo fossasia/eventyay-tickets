@@ -140,11 +140,6 @@ class SpeakerProfileForm(
         read_only = kwargs.get("read_only", False)
         initial = kwargs.get("initial", dict())
         initial["name"] = name
-        if not self.event.settings.cfp_request_avatar:
-            self.fields.pop("avatar", None)
-            self.fields.pop("get_gravatar", None)
-        elif "avatar" in self.fields:
-            self.fields["avatar"].extensions = IMAGE_EXTENSIONS
 
         if self.user:
             initial.update(
@@ -155,6 +150,12 @@ class SpeakerProfileForm(
                 initial=initial.get(field), disabled=read_only
             )
             self._update_cfp_help_text(field)
+
+        if not self.event.settings.cfp_request_avatar:
+            self.fields.pop("avatar", None)
+            self.fields.pop("get_gravatar", None)
+        elif "avatar" in self.fields:
+            self.fields["avatar"].extensions = IMAGE_EXTENSIONS
 
     @cached_property
     def user_fields(self):
