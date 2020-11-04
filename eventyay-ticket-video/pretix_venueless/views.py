@@ -13,7 +13,7 @@ from django.views import View
 from django.views.decorators.clickjacking import xframe_options_exempt
 
 from pretix.base.forms import SettingsForm, SecretKeySettingsField
-from pretix.base.models import Event, Order, Item
+from pretix.base.models import Event, Order, Item, Question
 from pretix.base.reldate import RelativeDateTimeField
 from pretix.control.views.event import EventSettingsFormView, EventSettingsViewMixin
 from pretix.presale.views import EventViewMixin
@@ -61,11 +61,23 @@ class VenuelessSettingsForm(SettingsForm):
         queryset=Item.objects.none(),
         initial=None
     )
+    venueless_questions = forms.ModelMultipleChoiceField(
+        widget=forms.CheckboxSelectMultiple(
+            attrs={
+                'class': 'scrolling-multiple-choice',
+            }
+        ),
+        label=_('Transmit answers to questions'),
+        required=False,
+        queryset=Question.objects.none(),
+        initial=None
+    )
 
     def __init__(self, *args, **kwargs):
         event = kwargs['obj']
         super().__init__(*args, **kwargs)
         self.fields['venueless_items'].queryset = event.items.all()
+        self.fields['venueless_questions'].queryset = event.questions.all()
 
     def clean(self):
         data = super().clean()
@@ -112,11 +124,17 @@ class OrderPositionJoin(EventViewMixin, OrderPositionDetailMixin, View):
 
         iat = datetime.datetime.utcnow()
         exp = iat + datetime.timedelta(days=30)
-        profile = None
+        profile = {
+            'fields': {}
+        }
         if self.position.attendee_name:
-            profile = {
-                "display_name": self.position.attendee_name
-            }
+            profile['display_name'] = self.position.attendee_name
+        if self.position.company:
+            profile['fields']['company'] = self.position.company
+
+        for a in self.position.answers.filter(question_id__in=request.event.settings.venueless_questions).select_related('question'):
+            profile['fields'][a.question.identifier] = a.answer
+
         payload = {
             "iss": request.event.settings.venueless_issuer,
             "aud": request.event.settings.venueless_audience,

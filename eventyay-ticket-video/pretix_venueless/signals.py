@@ -89,9 +89,12 @@ def navbar_info(sender, request, **kwargs):
 
 
 @receiver(signal=event_copy_data, dispatch_uid="venueless_event_copy_data")
-def event_copy_data_r(sender, other, item_map, **kwargs):
+def event_copy_data_r(sender, other, item_map, question_map, **kwargs):
     sender.settings['venueless_items'] = [
         item_map[item].pk for item in other.settings.get('venueless_items', default=[]) if item in item_map
+    ]
+    sender.settings['venueless_questions'] = [
+        question_map[q].pk for q in other.settings.get('venueless_questions', default=[]) if q in question_map
     ]
 
 
@@ -106,3 +109,4 @@ settings_hierarkey.add_default('venueless_start', None, RelativeDateWrapper)
 settings_hierarkey.add_default('venueless_allow_pending', 'False', bool)
 settings_hierarkey.add_default('venueless_all_items', 'True', bool)
 settings_hierarkey.add_default('venueless_items', '[]', list)
+settings_hierarkey.add_default('venueless_questions', '[]', list)
