@@ -16,7 +16,7 @@ def load_sheet(fname):
     sheets = {
         "Talks": {"usecols": "A:I,K", "parse_dates": [5, 6],},
         "Rooms": {"usecols": "A:C",},
-        "Speakers": {"usecols": "A:C",},
+        "Speakers": {"usecols": "A:D",},
         "Tracks": {"usecols": "A:C",},
     }
     return {
@@ -30,9 +30,10 @@ def to_iso(value):
 
 
 def to_list(value):
-    if not value or not isinstance(value, str):
+    if not value or str(value) == "nan":
         return []
-    return [part.strip() for part in value.split(",") if part.strip()]
+    value = str(value)
+    return [part.strip() for part in value.replace(";", ",").split(",") if part.strip()]
 
 
 def truthy(value):
@@ -100,8 +101,9 @@ def main():
     )
     result["speakers"] = transform_data(
         data["Speakers"],
-        field_mapping={"code": "ID", "name": "Name", "avatar": "Avatar"},
+        field_mapping={"code": "ID", "name": "Name", "avatar": "Avatar", "biography": "Biography"},
         mandatory_fields=["ID", "Name"],
+        methods={"code": str}
     )
     result["talks"] = transform_data(
         data["Talks"],
