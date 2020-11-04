@@ -119,6 +119,7 @@ export default {
 			if (this.$refs.step?.update) {
 				await this.$refs.step.update()
 			}
+			this.profile.greeted = true  // override even if explicitly set to false by server
 			await this.$store.dispatch('updateUser', {profile: this.profile})
 			// TODO error handling
 			this.$emit('close')
