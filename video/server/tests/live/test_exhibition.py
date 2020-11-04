@@ -125,6 +125,7 @@ async def test_get(world, exhibition_room):
                 "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea tak",
                 "size": "1x1",
                 "sorting_priority": 0,
+                "highlighted_room_id": None,
                 "links": [
                     {
                         "display_text": "Website",
@@ -159,6 +160,7 @@ async def test_get(world, exhibition_room):
                 "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea tak",
                 "size": "1x1",
                 "sorting_priority": 1,
+                "highlighted_room_id": None,
                 "links": [],
                 "social_media_links": [
                     {"display_text": "linkedin", "url": "https://www.linkedin.com/"}
@@ -530,6 +532,7 @@ async def test_exhibition_patch(world, exhibition_room):
             "banner_detail": "https://via.placeholder.com/720x360",
             "contact_enabled": True,
             "room_id": str(exhibition_room.pk),
+            "highlighted_room_id": None,
             "social_media_links": [],
             "links": [],
             "staff": [],

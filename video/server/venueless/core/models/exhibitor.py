@@ -30,6 +30,13 @@ class Exhibitor(models.Model):
         related_name="exhibitors",
         on_delete=models.CASCADE,
     )
+    highlighted_room = models.ForeignKey(
+        to="Room",
+        related_name="highlighted_by_exhibitors",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+    )
 
     def serialize(self):
         links = list(
@@ -65,7 +72,10 @@ class Exhibitor(models.Model):
             links=links,
             social_media_links=social_media_links,
             staff=staff,
-            room_id=str(self.room.id),
+            room_id=str(self.room_id),
+            highlighted_room_id=str(self.highlighted_room_id)
+            if self.highlighted_room_id
+            else None,
         )
 
     def serialize_short(self):

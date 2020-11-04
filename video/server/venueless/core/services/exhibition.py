@@ -182,6 +182,13 @@ class ExhibitionService:
                 return None
             old = e.serialize()
 
+        if exhibitor.get("highlighted_room_id"):
+            e.highlighted_room = get_room_by_id(
+                self.world.pk, exhibitor["highlighted_room_id"]
+            )
+        else:
+            e.highlighted_room = None
+
         for k in (
             "name",
             "tagline",
