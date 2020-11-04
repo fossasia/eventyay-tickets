@@ -129,7 +129,7 @@ import Avatar from 'components/Avatar'
 import Prompt from 'components/Prompt'
 import UserSelect from 'components/UserSelect'
 import UploadUrlInput from 'components/config/UploadUrlInput'
-import { required, maxLength, url } from 'buntpapier/src/vuelidate/validators'
+import { required, maxLength } from 'buntpapier/src/vuelidate/validators'
 import { helpers } from 'vuelidate/lib/validators'
 import { withParams } from 'vuelidate/lib/validators/common'
 
