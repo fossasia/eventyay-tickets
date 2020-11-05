@@ -118,7 +118,9 @@ def get_user(
         return user
 
     traits = with_token.get("traits") if with_token else None
-    if not world.has_permission_implicit(traits=traits or [], permissions=[Permission.WORLD_VIEW]):
+    if not world.has_permission_implicit(
+        traits=traits or [], permissions=[Permission.WORLD_VIEW]
+    ):
         # There is no chance this user gets in, we want to do an early out to prevent empty
         # user profiles from being created
         return

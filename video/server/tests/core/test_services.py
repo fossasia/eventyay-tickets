@@ -24,4 +24,4 @@ def test_update_user_empty(world):
 
 @pytest.mark.django_db
 def test_get_user_by_id_without_error():
-    assert get_user(World.objects.get(pk='sample'), with_id=1) is None
+    assert get_user(World.objects.get(pk="sample"), with_id=1) is None
