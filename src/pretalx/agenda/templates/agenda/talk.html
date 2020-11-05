@@ -42,7 +42,7 @@
         </div>
         <small>
             {% if talk_slots|length == 1 %}
-                {{ talk_slots.0.start.date|date:"c" }}, {{ talk_slots.0.start|date:"H:i" }}–{{ talk_slots.0.end|date:"H:i" }}, {{ talk_slots.0.room.name }}
+                {{ talk_slots.0.start|date:"Y-m-d" }}, {{ talk_slots.0.start|date:"H:i" }}–{{ talk_slots.0.end|date:"H:i" }}, {{ talk_slots.0.room.name }}
             {% endif %}
             {% if request.event.is_multilingual %}
             <div class="speakers">
@@ -64,7 +64,7 @@
             <ul class="talk-slots">
                 {% for talk in talk_slots %}
                 <li class="talk-slot">
-                    {{ talk.start.date|date:"c" }}, {{ talk.start|date:"H:i" }}–{{ talk.end|date:"H:i" }}, {{ talk.room.name }}
+                    {{ talk.start|date:"Y-m-d" }}, {{ talk.start|date:"H:i" }}–{{ talk.end|date:"H:i" }}, {{ talk.room.name }}
                 </li>
                 {% endfor %}
             </ul>
