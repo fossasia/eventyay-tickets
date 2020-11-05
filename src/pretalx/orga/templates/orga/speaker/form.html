@@ -49,7 +49,9 @@
         {% csrf_token %}
         {% bootstrap_form_errors form %}
 
-        {% include "common/avatar.html" with user=form.instance.user form=form %}
+        {% if form.avatar %}
+            {% include "common/avatar.html" with user=form.instance.user form=form %}
+        {% endif %}
         {% bootstrap_field form.name layout='event' %}
         {% bootstrap_field form.email layout='event' %}
         <div class="d-flex mb-4">
