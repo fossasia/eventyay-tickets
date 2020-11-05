@@ -49,6 +49,7 @@ async def test_no_anonymous_access(world):
         response = await c.receive_json_from()
         assert response[0] == "error"
         assert response[1] == {"code": "auth.denied"}
+        assert (await database_sync_to_async(User.objects.count)()) == 0
 
 
 @pytest.mark.asyncio

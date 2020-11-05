@@ -90,22 +90,22 @@ def get_public_users(
 
 
 def get_user(
-    world_id=None,
+    world=None,
     *,
     with_id=None,
     with_token=None,
     with_client_id=None,
 ):
     if with_id:
-        user = get_user_by_id(world_id, with_id)
+        user = get_user_by_id(world.id, with_id)
         return user
 
     token_id = None
     if with_token:
         token_id = with_token["uid"]
-        user = get_user_by_token_id(world_id, token_id)
+        user = get_user_by_token_id(world.id, token_id)
     elif with_client_id:
-        user = get_user_by_client_id(world_id, with_client_id)
+        user = get_user_by_client_id(world.id, with_client_id)
     else:
         raise Exception(
             "get_user was called without valid with_token, with_id or with_client_id"
@@ -114,21 +114,27 @@ def get_user(
     if user:
         if with_token and (user.traits != with_token.get("traits")):
             traits = with_token["traits"]
-            update_user(world_id, id=user.id, traits=traits)
+            update_user(world.id, id=user.id, traits=traits)
         return user
+
+    traits = with_token.get("traits") if with_token else None
+    if not world.has_permission_implicit(traits=traits or [], permissions=[Permission.WORLD_VIEW]):
+        # There is no chance this user gets in, we want to do an early out to prevent empty
+        # user profiles from being created
+        return
 
     if token_id:
         user = create_user(
-            world_id=world_id,
+            world_id=world.id,
             token_id=token_id,
             profile=with_token.get("profile") if with_token else None,
-            traits=with_token.get("traits") if with_token else None,
+            traits=traits,
         )
     else:
         user = create_user(
-            world_id=world_id,
+            world_id=world.id,
             client_id=with_client_id,
-            traits=with_token.get("traits") if with_token else None,
+            traits=traits,
         )
     return user
 
@@ -208,7 +214,7 @@ def login(
     from .world import get_world_config_for_user
     from .exhibition import ExhibitionService
 
-    user = get_user(world_id=world.pk, with_client_id=client_id, with_token=token)
+    user = get_user(world=world, with_client_id=client_id, with_token=token)
 
     if (
         not user
