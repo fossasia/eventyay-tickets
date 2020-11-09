@@ -449,26 +449,29 @@ class ReportView(GraphView):
                 _("Median time spent in room"),
                 str(median_value(users_with_duration, "total_duration") or 0),
             ],
-            [
-                _("Number of chat messages"),
-                str(
-                    ChatEvent.objects.filter(
-                        event_type="channel.message", channel__room=room
-                    ).count()
-                ),
-            ],
-            [
-                _("Number of users who sent chat messages"),
-                str(
-                    ChatEvent.objects.filter(
-                        event_type="channel.message", channel__room=room
-                    )
-                    .values("sender")
-                    .distinct()
-                    .count()
-                ),
-            ],
         ]
+        if Channel.objects.filter(room=room).exists():
+            tdata += [
+                [
+                    _("Number of chat messages"),
+                    str(
+                        ChatEvent.objects.filter(
+                            event_type="channel.message", channel__room=room
+                        ).count()
+                    ),
+                ],
+                [
+                    _("Number of users who sent chat messages"),
+                    str(
+                        ChatEvent.objects.filter(
+                            event_type="channel.message", channel__room=room
+                        )
+                        .values("sender")
+                        .distinct()
+                        .count()
+                    ),
+                ],
+            ]
 
         w = self.pagesize[0] - 30 * mm
         colwidths = [0.8 * w, 0.2 * w]
@@ -598,6 +601,16 @@ class ReportView(GraphView):
                         channel__world=self.world,
                         event_type="channel.message",
                         channel__room__isnull=True,
+                    ).count()
+                ),
+            ],
+            [
+                _("Number of 1:1 call attempts"),
+                str(
+                    ChatEvent.objects.filter(
+                        event_type="channel.message",
+                        channel__room__isnull=True,
+                        content__type="call",
                     ).count()
                 ),
             ],
