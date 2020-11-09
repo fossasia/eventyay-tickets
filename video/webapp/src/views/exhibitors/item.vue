@@ -72,18 +72,18 @@ export default {
 		...mapGetters(['hasPermission']),
 		bannerIsVideo () {
 			return this.exhibitor.banner_detail && (
-				this.exhibitor.banner_detail.match('^https?://(www.)?youtube.com/watch\\?v=(.*)$') ||
-				this.exhibitor.banner_detail.match('^https?://(www.)?vimeo.com/(.*)$')
+				this.exhibitor.banner_detail.match('^https?://(www.)?(youtube.com/watch\\?v=|youtu.be/)([^&?]*)([&?].*)?$') ||
+				this.exhibitor.banner_detail.match('^https?://(www.)?(vimeo.com)/(.*)$')
 			)
 		},
 		bannerVideoSource () {
-			const ytMatch = this.exhibitor.banner_detail.match('^https?://(www.)?youtube.com/watch\\?v=(.*)$')
-			const vimeoMatch = this.exhibitor.banner_detail.match('^https?://(www.)?vimeo.com/(.*)$')
+			const ytMatch = this.exhibitor.banner_detail.match('^https?://(www.)?(youtube.com/watch\\?v=|youtu.be/)([^&?]*)([&?].*)?$')
+			const vimeoMatch = this.exhibitor.banner_detail.match('^https?://(www.)?(vimeo.com)/(.*)$')
 			if (ytMatch) {
-				return 'https://www.youtube-nocookie.com/embed/' + ytMatch[2]
+				return 'https://www.youtube-nocookie.com/embed/' + ytMatch[3]
 			}
 			if (vimeoMatch) {
-				return 'https://player.vimeo.com/video/' + vimeoMatch[2]
+				return 'https://player.vimeo.com/video/' + vimeoMatch[3]
 			}
 			return this.exhibitor.banner_detail
 		},
