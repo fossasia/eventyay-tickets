@@ -71,7 +71,7 @@ export default {
 			})
 			this.saving = false
 
-			this.result = r.results.map((t) => `${location.protocol}//${location.host}/#token=${t}`).join('\n')
+			this.result = r.results.map((t) => `${location.protocol}//${location.host}/login/${t}`).join('\n')
 			// TODO error handling
 		},
 	}
