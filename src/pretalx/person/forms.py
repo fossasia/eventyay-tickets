@@ -192,6 +192,8 @@ class SpeakerProfileForm(
             value = self.cleaned_data.get(user_attribute)
             if value is False and user_attribute == "avatar":
                 self.user.avatar = None
+            elif value is None and user_attribute == "get_gravatar":
+                self.user.get_gravatar = False
             else:
                 setattr(self.user, user_attribute, value)
                 self.user.save(update_fields=[user_attribute])
