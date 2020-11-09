@@ -3,6 +3,7 @@ import uuid
 from channels.db import database_sync_to_async
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
+from django.utils.crypto import get_random_string
 
 from venueless.core.models.cache import VersionedModel
 
@@ -158,3 +159,18 @@ class WorldGrant(models.Model):
         r = super().delete(*args, **kwargs)
         self.user.touch()
         return r
+
+
+def generate_short_token():
+    return get_random_string(length=24)
+
+
+class ShortToken(models.Model):
+    world = models.ForeignKey(
+        "World", related_name="short_tokens", on_delete=models.CASCADE
+    )
+    expires = models.DateTimeField()
+    short_token = models.CharField(
+        db_index=True, unique=True, default=generate_short_token, max_length=150
+    )
+    long_token = models.TextField()

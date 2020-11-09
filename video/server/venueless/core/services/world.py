@@ -13,6 +13,7 @@ from pytz import common_timezones
 from rest_framework import serializers
 
 from venueless.core.models import AuditLog, Channel, Room, World
+from venueless.core.models.auth import ShortToken
 from venueless.core.models.room import RoomConfigSerializer
 from venueless.core.permissions import Permission
 
@@ -248,6 +249,7 @@ def generate_tokens(world, number, traits, days, by_user):
     iat = datetime.datetime.utcnow()
     exp = iat + datetime.timedelta(days=days)
     result = []
+    bulk_create = []
     for i in range(number):
         payload = {
             "iss": issuer,
@@ -258,7 +260,10 @@ def generate_tokens(world, number, traits, days, by_user):
             "traits": traits,
         }
         token = jwt.encode(payload, secret, algorithm="HS256").decode("utf-8")
-        result.append(token)
+        st = ShortToken(world=world, long_token=token, expires=exp)
+        result.append(st.short_token)
+        bulk_create.append(st)
+    ShortToken.objects.bulk_create(bulk_create)
 
     AuditLog.objects.create(
         world_id=world.id,

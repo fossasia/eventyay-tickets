@@ -6,7 +6,7 @@ from asgiref.sync import async_to_sync
 from django.conf import settings
 from django.db import OperationalError
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
@@ -15,6 +15,7 @@ from django.views.decorators.cache import cache_page
 from django.views.generic import TemplateView
 
 from venueless.core.models import World
+from venueless.core.models.auth import ShortToken
 from venueless.core.utils.redis import aioredis
 
 
@@ -145,3 +146,13 @@ class BBBCSSView(TemplateView):
         ctx = super().get_context_data()
         ctx["world"] = get_object_or_404(World, domain=self.request.headers["Host"])
         return ctx
+
+
+class ShortTokenView(View):
+    def get(self, request, token):
+        world = get_object_or_404(World, domain=self.request.headers["Host"])
+        try:
+            st = ShortToken.objects.get(short_token=token, world=world)
+            return redirect(f"/#token={st.long_token}")
+        except ShortToken.DoesNotExist:
+            return redirect("/")

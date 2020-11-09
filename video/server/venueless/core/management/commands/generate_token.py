@@ -5,6 +5,7 @@ import jwt
 from django.core.management.base import BaseCommand
 
 from venueless.core.models import World
+from venueless.core.models.auth import ShortToken
 
 
 class Command(BaseCommand):
@@ -33,4 +34,5 @@ class Command(BaseCommand):
             "traits": options["trait"],
         }
         token = jwt.encode(payload, secret, algorithm="HS256").decode("utf-8")
-        self.stdout.write(f"https://{world.domain}/#token={token}\n")
+        st = ShortToken.objects.create(world=world, long_token=token, expires=exp)
+        self.stdout.write(f"https://{world.domain}/login/{st.short_token}\n")
