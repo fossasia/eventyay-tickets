@@ -193,9 +193,7 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
     )
     is_featured = models.BooleanField(
         default=False,
-        verbose_name=_(
-            "Show this talk on list of featured talks, once it was accepted."
-        ),
+        verbose_name=_("Show this talk in public list of featured talks."),
     )
     do_not_record = models.BooleanField(
         default=False, verbose_name=_("Don't record this talk.")
