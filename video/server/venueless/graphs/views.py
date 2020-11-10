@@ -608,6 +608,7 @@ class ReportView(GraphView):
                 _("Number of 1:1 call attempts"),
                 str(
                     ChatEvent.objects.filter(
+                        channel__world=self.world,
                         event_type="channel.message",
                         channel__room__isnull=True,
                         content__type="call",
