@@ -115,6 +115,36 @@ class OutboxSend(EventPermissionRequired, TemplateView):
         return redirect(self.request.event.orga_urls.outbox)
 
 
+class MailDelete(PermissionRequired, TemplateView):
+    permission_required = "orga.purge_mails"
+    template_name = "orga/mails/confirm.html"
+
+    def get_permission_object(self):
+        return self.request.event
+
+    @context
+    def question(self):
+        return _("Do you really want to delete this mail?")
+
+    def post(self, request, *args, **kwargs):
+        try:
+            mail = self.request.event.queued_mails.get(
+                sent__isnull=True, pk=self.kwargs.get("pk")
+            )
+        except QueuedMail.DoesNotExist:
+            messages.error(
+                request,
+                _(
+                    "This mail either does not exist or cannot be discarded because it was sent already."
+                ),
+            )
+            return redirect(self.request.event.orga_urls.outbox)
+        mail.log_action("pretalx.mail.delete", person=self.request.user, orga=True)
+        mail.delete()
+        messages.success(request, _("The mail has been deleted."))
+        return redirect(request.event.orga_urls.outbox)
+
+
 class OutboxPurge(PermissionRequired, TemplateView):
     permission_required = "orga.purge_mails"
     template_name = "orga/mails/confirm.html"
@@ -127,26 +157,6 @@ class OutboxPurge(PermissionRequired, TemplateView):
         return _("Do you really want to purge {count} mails?").format(
             count=self.queryset.count()
         )
-
-    def dispatch(self, request, *args, **kwargs):
-        if "pk" in self.kwargs:
-            try:
-                mail = self.request.event.queued_mails.get(
-                    sent__isnull=True, pk=self.kwargs.get("pk")
-                )
-            except QueuedMail.DoesNotExist:
-                messages.error(
-                    request,
-                    _(
-                        "This mail either does not exist or cannot be discarded because it was sent already."
-                    ),
-                )
-                return redirect(self.request.event.orga_urls.outbox)
-            mail.log_action("pretalx.mail.delete", person=self.request.user, orga=True)
-            mail.delete()
-            messages.success(request, _("The mail has been deleted."))
-            return redirect(request.event.orga_urls.outbox)
-        return super().dispatch(request, *args, **kwargs)
 
     @cached_property
     def queryset(self):

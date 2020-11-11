@@ -286,7 +286,7 @@ urlpatterns = [
                             ),
                             path(
                                 "delete",
-                                mails.OutboxPurge.as_view(),
+                                mails.MailDelete.as_view(),
                                 name="mails.outbox.mail.delete",
                             ),
                             path(
