@@ -29,18 +29,19 @@ Take-off and landing
 --------------------
 
 1. Bump version in ``src/pretalx/__init__.py``.
-2. Add the release to the :ref:`changelog`.
-3. Make a commit with the message ``Release vx.y.z``
-4. Tag the commit: ``git tag -u F0DAD3990F9C816CFD30F8F329C085265D94C052 vx.y.z -m 'Release vx.y.z'``
-5. Remove old build artefacts: ``rm -rf dist/ build/ pretalx.egg-info``
-6. Build a new release: ``python setup.py sdist``
-7. Sign the release: ``gpg --default-key F0DAD3990F9C816CFD30F8F329C085265D94C052 --detach-sign -a dist/pretalx-x.y.z.tar.gz``
-8. Upload the release: ``twine upload dist/pretalx-x.y.z.tar.gz dist/pretalx-x.y.z.tar.gz.asc``
-9. Push the release: ``git push && git push --tags``
-10. Install/update the package somewhere.
-11. Add the release on `GitHub <https://github.com/pretalx/pretalx/releases>`_ (upload the archive you uploaded to PyPI, and add a link to the correct section of the :ref:`changelog`)
-12. Push the blog post.
-13. Upgrade `the docker repository <https://github.com/pretalx/pretalx-docker>`_
-14. Switch to master branch
-15. Copy release note to changelog and increment version number.
-16. Update version numbers in update checker and deploy.
+2. Update the supported version in ``SECURITY.md`` if the release is not just a patch release.
+3. Add the release to the :ref:`changelog`.
+4. Make a commit with the message ``Release vx.y.z``
+5. Tag the commit: ``git tag -u F0DAD3990F9C816CFD30F8F329C085265D94C052 vx.y.z -m 'Release vx.y.z'``
+6. Remove old build artefacts: ``rm -rf dist/ build/ pretalx.egg-info``
+7. Build a new release: ``python setup.py sdist``
+8. Sign the release: ``gpg --default-key F0DAD3990F9C816CFD30F8F329C085265D94C052 --detach-sign -a dist/pretalx-x.y.z.tar.gz``
+9. Upload the release: ``twine upload dist/pretalx-x.y.z.tar.gz dist/pretalx-x.y.z.tar.gz.asc``
+10. Push the release: ``git push && git push --tags``
+11. Install/update the package somewhere.
+12. Add the release on `GitHub <https://github.com/pretalx/pretalx/releases>`_ (upload the archive you uploaded to PyPI, and add a link to the correct section of the :ref:`changelog`)
+13. Push the blog post.
+14. Upgrade `the docker repository <https://github.com/pretalx/pretalx-docker>`_
+15. Switch to master branch
+16. Copy release note to changelog and increment version number.
+17. Update version numbers in update checker and deploy.
