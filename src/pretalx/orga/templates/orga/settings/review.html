@@ -88,7 +88,7 @@
                         {% bootstrap_field form.required layout="event" form_group_class="" %}
                         {% bootstrap_field form.active layout="event" form_group_class="" %}
 
-                        {% bootstrap_field form.limit_tracks layout="event" form_group_class="" %}
+                        {% if form.limit_tracks %}{% bootstrap_field form.limit_tracks layout="event" form_group_class="" %}{% endif %}
 
                         {% for label_pair in form.get_label_fields %}
                             <div class="row">
