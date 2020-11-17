@@ -511,7 +511,7 @@ class ReviewScoreCategoryForm(I18nModelForm):
         ids = self.data.get(self.prefix + "-new_scores")
         self.new_label_ids = ids.strip(",").split(",") if ids else []
         for label_id in self.new_label_ids:
-            self._add_score_fields(id=label_id)
+            self._add_score_fields(label_id=label_id)
 
         self.label_fields = []
         if self.instance.id:
