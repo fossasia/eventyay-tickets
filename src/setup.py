@@ -103,7 +103,7 @@ setup(
         "django-context-decorator",
         "django-countries~=6.1.0",  # https://github.com/SmileyChris/django-countries/blob/master/CHANGES.rst
         "django-csp~=3.7.0",  # https://github.com/mozilla/django-csp/blob/master/CHANGES
-        "django-filter~=2.3.0",  # https://github.com/carltongibson/django-filter/blob/master/CHANGES.rst
+        "django-filter~=2.4.0",  # https://github.com/carltongibson/django-filter/blob/master/CHANGES.rst
         "django-formset-js-improved==0.5.0.2",  # no changelog, https://github.com/pretix/django-formset-js
         "django-formtools~=2.2.0",  # http://django-formtools.readthedocs.io/en/latest/changelog.html
         "django-hierarkey~=1.0.0",  # no changelog, https://github.com/raphaelm/django-hierarkey
@@ -113,13 +113,13 @@ setup(
         "djangorestframework~=3.11.1",  # http://www.django-rest-framework.org/community/release-notes/
         "inlinestyler~=0.2.0",  # https://github.com/dlanger/inlinestyler/blob/master/CHANGELOG
         "libsass~=0.20.0",  # https://sass.github.io/libsass-python/changes.html
-        "Markdown~=3.2.0",  # https://python-markdown.github.io/change_log/
+        "Markdown~=3.3.0",  # https://python-markdown.github.io/change_log/
         "publicsuffixlist~=0.7.0",
         "python-dateutil~=2.8.0",  # https://dateutil.readthedocs.io/en/stable/changelog.html
         "pytz",
         "qrcode~=6.1",  # https://github.com/lincolnloop/python-qrcode/blob/master/CHANGES.rst
         "reportlab~=3.5.0",  # https://www.reportlab.com/documentation/relnotes/
-        "requests~=2.24.0",  # https://2.python-requests.org/en/master/community/updates/#release-and-version-history
+        "requests~=2.25.0",  # https://2.python-requests.org/en/master/community/updates/#release-and-version-history
         "rules~=2.2.0",  # https://github.com/dfunckt/django-rules/blob/master/CHANGELOG.md
         "urlman~=1.3.0",  # https://github.com/andrewgodwin/urlman/blob/master/CHANGELOG
         "vobject~=0.9.0",  # 2017-06, http://eventable.github.io/vobject/ look for "release"
