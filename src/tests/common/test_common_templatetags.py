@@ -46,11 +46,14 @@ def test_common_templatetag_xmlescape(input_, output):
     "text,richer_text",
     (
         ("foo.notatld", "foo.notatld"),
-        ("foo.com", '<a href="http://foo.com" rel="nofollow">foo.com</a>'),
-        ("foo@bar.com", '<a href="mailto:foo@bar.com">foo@bar.com</a>'),
+        (
+            "foo.com",
+            '<a href="http://foo.com" rel="nofollow" target="_blank">foo.com</a>',
+        ),
+        ("foo@bar.com", '<a href="mailto:foo@bar.com" target="_blank">foo@bar.com</a>'),
         (
             "chaos.social",
-            '<a href="http://chaos.social" rel="nofollow">chaos.social</a>',
+            '<a href="http://chaos.social" rel="nofollow" target="_blank">chaos.social</a>',
         ),
     ),
 )
