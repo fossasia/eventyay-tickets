@@ -15,7 +15,6 @@ const updateTotal = () => {
 }
 
 const addNewScores = (ev) => {
-  event.target
   const parentElement = event.target.closest(".score-group")
   const scoresList = parentElement.querySelector("input[type=text][id\$=new_scores]")
   const formID = parentElement.querySelector("input[type=number]").id.split("-")[1]
@@ -52,8 +51,13 @@ const addListener = () => {
   })
 }
 
+const clearOldNewScores = () => {
+  document.querySelectorAll("input[type=text][id\$=new_scores]").forEach(input => input.value = "")
+}
+
 document.querySelector("#score-formset #score-add").addEventListener("click", () => {
   window.setTimeout(addListener, 100)
 })
 addListener()
 updateTotal()
+clearOldNewScores()
