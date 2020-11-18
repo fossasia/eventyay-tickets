@@ -36,6 +36,7 @@
 // - add blocking backdrop on level chooser
 import { mapState } from 'vuex'
 import Hls from 'hls.js'
+import mux from 'mux-embed'
 import config from 'config'
 import theme from 'theme'
 
@@ -217,6 +218,23 @@ export default {
 				// TODO doesn't seem like the buffer ring gets hidden?
 				video.addEventListener('loadedmetadata', function () {
 					start()
+				})
+			}
+			if (config.mux?.env_key) {
+				// TODO late load the module
+				mux.monitor(video, {
+					debug: false,
+					hlsjs: this.player,
+					Hls,
+					data: {
+						env_key: config.mux.env_key,
+						// Metadata
+						player_name: 'Livestream Module',
+						player_init_time: Date.now(),
+						video_id: this.module.config.hls_url,
+						video_title: this.room.name,
+						video_stream_type: 'live'
+					}
 				})
 			}
 		},
