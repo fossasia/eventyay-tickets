@@ -24,6 +24,10 @@ class ReviewScoreCategory(models.Model):
 
     objects = ScopedManager(event="event")
 
+    class urls(EventUrls):
+        base = "{self.event.orga_urls.review_settings}category/{self.pk}/"
+        delete = "{base}delete"
+
     @classmethod
     def recalculate_scores(cls, event):
         for review in event.reviews.all():

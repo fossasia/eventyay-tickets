@@ -347,6 +347,21 @@ class EventReviewSettings(EventSettingsPermission, ActionFromUrl, FormView):
         return True
 
 
+class ScoreCategoryDelete(PermissionRequired, View):
+    permission_required = "orga.change_settings"
+
+    def get_object(self):
+        return get_object_or_404(
+            ReviewScoreCategory, event=self.request.event, pk=self.kwargs.get("pk")
+        )
+
+    def dispatch(self, request, *args, **kwargs):
+        super().dispatch(request, *args, **kwargs)
+        category = self.get_object()
+        category.delete()
+        return redirect(self.request.event.orga_urls.review_settings)
+
+
 def phase_move(request, pk, up=True):
     try:
         phase = request.event.review_phases.get(pk=pk)

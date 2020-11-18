@@ -60,18 +60,8 @@
                         <span class="mr-2 ml-2">{% translate "Review Score category" %}</span>
                         {% bootstrap_field form.name form_group_class="" layout="inline" %}
                         {% if action != 'view' %}
-                        <a href="{{ form.instance.urls.down }}"
-                           class="btn btn-outline-info mr-2 keep-scroll-position ml-auto"
-                           title="{% translate "Move score category down" %}">
-                            <i class="fa fa-arrow-down"></i>
-                        </a>
-                        <a href="{{ form.instance.urls.up }}"
-                           class="btn btn-outline-info mr-2 keep-scroll-position"
-                           title="{% translate "Move score category up" %}">
-                            <i class="fa fa-arrow-up"></i>
-                        </a>
                         <a href="{{ form.instance.urls.delete }}"
-                           class="btn btn-danger"
+                           class="btn btn-danger ml-auto"
                            title="{% translate "Delete score category" %}">
                             <i class="fa fa-trash"></i>
                         </a>

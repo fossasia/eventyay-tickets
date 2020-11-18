@@ -551,6 +551,11 @@ urlpatterns = [
                     name="settings.review.phasedelete",
                 ),
                 re_path(
+                    "^settings/review/category/(?P<pk>[0-9]+)/delete$",
+                    event.ScoreCategoryDelete.as_view(),
+                    name="settings.review.categorydelete",
+                ),
+                re_path(
                     "^schedule/$", schedule.ScheduleView.as_view(), name="schedule.main"
                 ),
                 re_path(
