@@ -8,7 +8,7 @@
             {% translate "Feedback for" %} {{ quotation_open }}{{ talk.title }}{{ quotation_close }}
         </a>
         <small>
-            {{ talk.slot.start.date|date:"c" }}, {{ talk.slot.start|date:"H:i" }}–{{ talk.slot.end|date:"H:i" }}, {{ talk.slot.room.name }}
+            {{ talk.slot.start|date:"Y-m-d" }}, {{ talk.slot.start|date:"H:i" }}–{{ talk.slot.end|date:"H:i" }}, {{ talk.slot.room.name }}
         </small>
     </h3>
     <div class="talk feedback-list">

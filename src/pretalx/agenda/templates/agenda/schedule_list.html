@@ -8,8 +8,8 @@
     <div class="pretalx-tabs">
     {% for day in data %}
         <div class="pretalx-tab">
-          <label class="pretalx-tab-label" for="{{ day.start.date|date:"c" }}">
-              {{ day.start.date|date:"l" }}, {{ day.start.date|date:"DATE_FORMAT" }}
+          <label class="pretalx-tab-label" for="{{ day.start|date:"Y-m-d" }}">
+              {{ day.start|date:"l" }}, {{ day.start|date:"DATE_FORMAT" }}
           </label>
         </div>
     {% endfor %}
@@ -17,7 +17,7 @@
     {% endif %}
 {% for day in data %}
   {% if day_count > 1 %}
-  <input name="tabs" id="{{ day.start.date|date:"c" }}" type="radio" {% if day.start.date == initial_day %}checked{% endif %}>
+  <input name="tabs" id="{{ day.start|date:"Y-m-d" }}" type="radio" {% if day.start.date == initial_day %}checked{% endif %}>
   {% endif %}
     <div class="pretalx-list-day pretalx-tab-content" data-start="{{ day.display_start|date:"c" }}">
         {% if day.first_start %}
@@ -33,7 +33,7 @@
               {% endfor %}
         {% else %}
             <div class="no-session">
-                {% blocktranslate with current_day=day.start.date|date:'DATE_FORMAT' weekday=day.start.date|date:'l' trimmed %}
+                {% blocktranslate with current_day=day.start|date:'DATE_FORMAT' weekday=day.start|date:'l' trimmed %}
                   No sessions on {{ weekday }}, {{ current_day }}.
                 {% endblocktranslate %}
             </div>

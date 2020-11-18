@@ -22,7 +22,7 @@
         <h3>
             <small>
                 {% for talk in submission.public_slots %}
-                    {{ talk.start.date|date:"c" }}, {{ talk.start|date:"H:i" }}–{{ talk.end|date:"H:i" }}, {{ talk.room.name }} {% if not forloop.last %}·{% endif %}
+                    {{ talk.start|date:"Y-m-d" }}, {{ talk.start|date:"H:i" }}–{{ talk.end|date:"H:i" }}, {{ talk.room.name }} {% if not forloop.last %}·{% endif %}
                 {% endfor %}
             </small>
         </h3>

@@ -47,7 +47,7 @@
                             {% if submission.public_slots %}
                                 <a href="{{ submission.urls.public }}">
                                 {% for talk in submission.public_slots %}
-                                {{ talk.start.date|date:"c" }}, {{ talk.start|date:"H:i" }}–{{ talk.end|date:"H:i" }}, {{ talk.room.name }} {% if not forloop.last %}<br>{% endif %}
+                                {{ talk.start|date:"Y-m-d" }}, {{ talk.start|date:"H:i" }}–{{ talk.end|date:"H:i" }}, {{ talk.room.name }} {% if not forloop.last %}<br>{% endif %}
                                 {% endfor %}
                                 </a>
                             {% endif %}
