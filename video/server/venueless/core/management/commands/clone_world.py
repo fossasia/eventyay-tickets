@@ -35,15 +35,13 @@ class Command(BaseCommand):
 
         if options["new_secrets"]:
             secret = get_random_string(length=64)
-            new.config = {
-                "JWT_secrets": [
-                    {
-                        "issuer": "any",
-                        "audience": "venueless",
-                        "secret": secret,
-                    }
-                ]
-            }
+            new.config['JWT_secrets'] = [
+                {
+                    "issuer": "any",
+                    "audience": "venueless",
+                    "secret": secret,
+                }
+            ]
 
         new.save()
         for r in old.rooms.all():
