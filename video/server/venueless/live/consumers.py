@@ -41,6 +41,7 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
         self.channel_cache = {}
         self.components = {}
         self.conn_time = 0
+        self.last_conn_ping = 0
 
     async def connect(self):
         self.content = []
@@ -98,7 +99,7 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
 
         if content[0] == "ping":
             await self.send_json(["pong", content[1]])
-            await ping_connection()
+            self.last_conn_ping = await ping_connection(self.last_conn_ping)
             return
 
         if not self.user:
