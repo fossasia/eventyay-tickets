@@ -36,7 +36,7 @@ on the right:
 | .. code-block:: md                       |                                      |
 |                                          | Look at https://pretalx.com.         |
 |     Look at https://pretalx.com.         |                                      |
-|     Look at [this](https://pretalx.com.) | Look at this_.                       |
+|     Look at [this](https://pretalx.com). | Look at this.                        |
 +------------------------------------------+--------------------------------------+
 | .. code-block:: md                       |                                      |
 |                                          |                                      |
