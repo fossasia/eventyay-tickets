@@ -22,6 +22,11 @@ file looks like this:
 .. literalinclude:: ../../src/pretalx.example.cfg
    :language: ini
 
+The configuration format is the INI file format as understood by `Python`_.
+It's worth mentioning that you can use any of 'yes'/'no', 'on'/'off',
+'true'/'false' and '1'/'0' to set boolean settings. You can add add comments by
+starting a line with ';' or '#'.
+
 The filesystem section
 ----------------------
 
@@ -148,14 +153,14 @@ The database section
 ``password``
 ~~~~~~~~~~~~
 
-- The database password, if applicable.
+- The database password, if applicable. If you use PostgreSQL, consider using its peer authentication and not setting a password.
 - **Environment variable:** ``PRETALX_DB_PASS``
 - **Default:** ``''``
 
 ``host``
 ~~~~~~~~
 
-- The database host, or the socket location, as needed..
+- The database host, or the socket location, as needed. You can set this variable to a socket path for MySQL. For local PostgreSQL authentication, you can leave this variable empty.
 - **Environment variable:** ``PRETALX_DB_HOST``
 - **Default:** ``''``
 
@@ -303,3 +308,6 @@ The locale section
 - The system's default time zone as a ``pytz`` name.
 - **Environment variable:** ``PRETALX_TIME_ZONE``
 - **Default:** ``'UTC'``
+
+
+.. _Python: https://docs.python.org/3/library/configparser.html
