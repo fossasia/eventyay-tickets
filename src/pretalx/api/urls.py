@@ -1,5 +1,5 @@
 from django.conf.urls import include
-from django.urls import re_path
+from django.urls import path
 from rest_framework import routers
 from rest_framework.authtoken.views import obtain_auth_token
 
@@ -20,8 +20,8 @@ event_router.register(r"answers", question.AnswerViewSet)
 
 app_name = "api"
 urlpatterns = [
-    re_path(r"^", include(default_router.urls)),
-    re_path(r"^me$", user.MeView.as_view(), name="user.me"),
-    re_path(r"^auth/", obtain_auth_token),
-    re_path(r"^events/(?P<event>[^/]+)/", include(event_router.urls)),
+    path("", include(default_router.urls)),
+    path("me", user.MeView.as_view(), name="user.me"),
+    path("auth/", obtain_auth_token),
+    path("events/<event>/", include(event_router.urls)),
 ]

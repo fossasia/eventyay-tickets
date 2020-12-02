@@ -230,7 +230,7 @@ class EventSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
             ("pre_schedule", _("Until the first schedule is released")),
             ("always", _("Always")),
         ),
-        help_text=_("Should the talks marked as featured shown publicly?"),
+        help_text=_("Should the talks marked as featured be shown publicly?"),
         required=True,
     )
     export_html_on_schedule_release = forms.BooleanField(

@@ -1,8 +1,7 @@
 from django.conf.urls import include
-from django.urls import re_path
+from django.urls import path
 from django.views.generic.base import RedirectView
 
-from pretalx.event.models.event import SLUG_CHARS
 from pretalx.orga.views import cards
 
 from .views import (
@@ -23,623 +22,682 @@ from .views import (
 
 app_name = "orga"
 urlpatterns = [
-    re_path("^login/$", auth.LoginView.as_view(), name="login"),
-    re_path("^logout/$", auth.logout_view, name="logout"),
-    re_path("^reset/$", auth.ResetView.as_view(), name="auth.reset"),
-    re_path(r"^reset/(?P<token>\w+)$", auth.RecoverView.as_view(), name="auth.recover"),
-    re_path("^$", RedirectView.as_view(url="event", permanent=False)),
-    re_path("^admin/$", admin.AdminDashboard.as_view(), name="admin.dashboard"),
-    re_path("^admin/update/$", admin.UpdateCheckView.as_view(), name="admin.update"),
-    re_path("^me$", event.UserSettings.as_view(), name="user.view"),
-    re_path("^me/subuser$", person.SubuserView.as_view(), name="user.subuser"),
-    re_path(
-        r"^invitation/(?P<code>\w+)$",
+    path("login/", auth.LoginView.as_view(), name="login"),
+    path("logout/", auth.logout_view, name="logout"),
+    path("reset/", auth.ResetView.as_view(), name="auth.reset"),
+    path("reset/<token>", auth.RecoverView.as_view(), name="auth.recover"),
+    path("", RedirectView.as_view(url="event", permanent=False)),
+    path("admin/", admin.AdminDashboard.as_view(), name="admin.dashboard"),
+    path("admin/update/", admin.UpdateCheckView.as_view(), name="admin.update"),
+    path("me", event.UserSettings.as_view(), name="user.view"),
+    path("me/subuser", person.SubuserView.as_view(), name="user.subuser"),
+    path(
+        "invitation/<code>",
         event.InvitationView.as_view(),
         name="invitation.view",
     ),
-    re_path(
-        "^organiser/$",
+    path(
+        "organiser/",
         dashboard.DashboardOrganiserListView.as_view(),
         name="organiser.list",
     ),
-    re_path(
-        "^organiser/new$", organiser.OrganiserDetail.as_view(), name="organiser.create"
-    ),
-    re_path(
-        f"^organiser/(?P<organiser>[{SLUG_CHARS}]+)/",
+    path("organiser/new", organiser.OrganiserDetail.as_view(), name="organiser.create"),
+    path(
+        "organiser/<slug:organiser>/",
         include(
             [
-                re_path(
-                    "^$", organiser.OrganiserDetail.as_view(), name="organiser.view"
-                ),
-                re_path(
-                    "^delete$",
+                path("", organiser.OrganiserDetail.as_view(), name="organiser.view"),
+                path(
+                    "delete",
                     organiser.OrganiserDelete.as_view(),
                     name="organiser.delete",
                 ),
-                re_path(
-                    "^teams/$", organiser.TeamDetail.as_view(), name="organiser.teams"
-                ),
-                re_path(
-                    "^teams/new$",
+                path("teams/", organiser.TeamDetail.as_view(), name="organiser.teams"),
+                path(
+                    "teams/new",
                     organiser.TeamDetail.as_view(),
                     name="organiser.teams.create",
                 ),
-                re_path(
-                    "^teams/(?P<pk>[0-9]+)/$",
-                    organiser.TeamDetail.as_view(),
-                    name="organiser.teams.view",
-                ),
-                re_path(
-                    "^teams/(?P<pk>[0-9]+)/delete$",
-                    organiser.TeamDelete.as_view(),
-                    name="organiser.teams.delete",
-                ),
-                re_path(
-                    "^teams/(?P<pk>[0-9]+)/tracks$",
-                    organiser.TeamTracks.as_view(),
-                    name="organiser.teams.tracks",
-                ),
-                re_path(
-                    "^teams/(?P<pk>[0-9]+)/delete/(?P<user_pk>[0-9]+)$",
-                    organiser.TeamDelete.as_view(),
-                    name="organiser.teams.delete_member",
-                ),
-                re_path(
-                    "^teams/(?P<pk>[0-9]+)/reset/(?P<user_pk>[0-9]+)$",
-                    organiser.TeamResetPassword.as_view(),
-                    name="organiser.team.password_reset",
-                ),
-                re_path(
-                    "^teams/(?P<pk>[0-9]+)/uninvite$",
-                    organiser.TeamUninvite.as_view(),
-                    name="organiser.teams.uninvite",
-                ),
-                re_path(
-                    "^teams/(?P<pk>[0-9]+)/resend$",
-                    organiser.TeamResend.as_view(),
-                    name="organiser.teams.resend",
-                ),
-            ]
-        ),
-    ),
-    re_path("^event/new/$", event.EventWizard.as_view(), name="event.create"),
-    re_path("^event/typeahead/$", event.event_list, name="event.typeahead"),
-    re_path("^event/$", dashboard.DashboardEventListView.as_view(), name="event.list"),
-    re_path(
-        f"^event/(?P<event>[{SLUG_CHARS}]+)/",
-        include(
-            [
-                re_path(
-                    "^$", dashboard.EventDashboardView.as_view(), name="event.dashboard"
-                ),
-                re_path("^login/$", auth.LoginView.as_view(), name="event.login"),
-                re_path("^reset/$", auth.ResetView.as_view(), name="event.auth.reset"),
-                re_path(
-                    r"^reset/(?P<token>\w+)$",
-                    auth.RecoverView.as_view(),
-                    name="event.auth.recover",
-                ),
-                re_path("^delete$", event.EventDelete.as_view(), name="event.delete"),
-                re_path("^live$", event.EventLive.as_view(), name="event.live"),
-                re_path(
-                    "^history/$", event.EventHistory.as_view(), name="event.history"
-                ),
-                re_path(
-                    "^api/users$", person.UserList.as_view(), name="event.user_list"
-                ),
-                re_path(
-                    "^cfp/$",
-                    RedirectView.as_view(pattern_name="orga:cfp.text.view"),
-                    name="cfp",
-                ),
-                re_path("^cfp/flow/$", cfp.CfPFlowEditor.as_view(), name="cfp.flow"),
-                re_path(
-                    "^cfp/questions/$",
-                    cfp.CfPQuestionList.as_view(),
-                    name="cfp.questions.view",
-                ),
-                re_path(
-                    "^cfp/questions/new$",
-                    cfp.CfPQuestionDetail.as_view(),
-                    name="cfp.questions.create",
-                ),
-                re_path(
-                    "^cfp/questions/remind$",
-                    cfp.CfPQuestionRemind.as_view(),
-                    name="cfp.questions.remind",
-                ),
-                re_path(
-                    "^cfp/questions/(?P<pk>[0-9]+)/$",
-                    cfp.CfPQuestionDetail.as_view(),
-                    name="cfp.question.view",
-                ),
-                re_path(
-                    "^cfp/questions/(?P<pk>[0-9]+)/up$",
-                    cfp.question_move_up,
-                    name="cfp.questions.up",
-                ),
-                re_path(
-                    "^cfp/questions/(?P<pk>[0-9]+)/down$",
-                    cfp.question_move_down,
-                    name="cfp.questions.down",
-                ),
-                re_path(
-                    "^cfp/questions/(?P<pk>[0-9]+)/delete$",
-                    cfp.CfPQuestionDelete.as_view(),
-                    name="cfp.question.delete",
-                ),
-                re_path(
-                    "^cfp/questions/(?P<pk>[0-9]+)/edit$",
-                    cfp.CfPQuestionDetail.as_view(),
-                    name="cfp.question.edit",
-                ),
-                re_path(
-                    "^cfp/questions/(?P<pk>[0-9]+)/toggle$",
-                    cfp.CfPQuestionToggle.as_view(),
-                    name="cfp.question.toggle",
-                ),
-                re_path(
-                    "^cfp/text$", cfp.CfPTextDetail.as_view(), name="cfp.text.view"
-                ),
-                re_path(
-                    "^cfp/types/$",
-                    cfp.SubmissionTypeList.as_view(),
-                    name="cfp.types.view",
-                ),
-                re_path(
-                    "^cfp/types/new$",
-                    cfp.SubmissionTypeDetail.as_view(),
-                    name="cfp.types.create",
-                ),
-                re_path(
-                    "^cfp/types/(?P<pk>[0-9]+)/$",
-                    cfp.SubmissionTypeDetail.as_view(),
-                    name="cfp.type.view",
-                ),
-                re_path(
-                    "^cfp/types/(?P<pk>[0-9]+)/delete$",
-                    cfp.SubmissionTypeDelete.as_view(),
-                    name="cfp.type.delete",
-                ),
-                re_path(
-                    "^cfp/types/(?P<pk>[0-9]+)/default$",
-                    cfp.SubmissionTypeDefault.as_view(),
-                    name="cfp.type.default",
-                ),
-                re_path(
-                    "^cfp/tracks/$", cfp.TrackList.as_view(), name="cfp.tracks.view"
-                ),
-                re_path(
-                    "^cfp/tracks/new$",
-                    cfp.TrackDetail.as_view(),
-                    name="cfp.track.create",
-                ),
-                re_path(
-                    "^cfp/tracks/(?P<pk>[0-9]+)/$",
-                    cfp.TrackDetail.as_view(),
-                    name="cfp.track.view",
-                ),
-                re_path(
-                    "^cfp/tracks/(?P<pk>[0-9]+)/delete$",
-                    cfp.TrackDelete.as_view(),
-                    name="cfp.track.delete",
-                ),
-                re_path(
-                    "^cfp/access-codes/$",
-                    cfp.AccessCodeList.as_view(),
-                    name="cfp.access_code.view",
-                ),
-                re_path(
-                    "^cfp/access-codes/new$",
-                    cfp.AccessCodeDetail.as_view(),
-                    name="cfp.access_code.create",
-                ),
-                re_path(
-                    "^cfp/access-codes/(?P<code>[A-z0-9]+)/$",
-                    cfp.AccessCodeDetail.as_view(),
-                    name="cfp.access_code.view",
-                ),
-                re_path(
-                    "^cfp/access-codes/(?P<code>[A-z0-9]+)/send$",
-                    cfp.AccessCodeSend.as_view(),
-                    name="cfp.access_code.send",
-                ),
-                re_path(
-                    "^cfp/access-codes/(?P<code>[A-z0-9]+)/delete$",
-                    cfp.AccessCodeDelete.as_view(),
-                    name="cfp.access_code.delete",
-                ),
-                re_path(
-                    "^mails/",
+                path(
+                    "teams/<int:pk>/",
                     include(
                         [
-                            re_path(
-                                "^(?P<pk>[0-9]+)/$",
-                                mails.MailDetail.as_view(),
-                                name="mails.outbox.mail.view",
+                            path(
+                                "",
+                                organiser.TeamDetail.as_view(),
+                                name="organiser.teams.view",
                             ),
-                            re_path(
-                                "^(?P<pk>[0-9]+)/copy$",
-                                mails.MailCopy.as_view(),
-                                name="mails.outbox.mail.copy",
+                            path(
+                                "delete",
+                                organiser.TeamDelete.as_view(),
+                                name="organiser.teams.delete",
                             ),
-                            re_path(
-                                "^(?P<pk>[0-9]+)/delete$",
-                                mails.OutboxPurge.as_view(),
-                                name="mails.outbox.mail.delete",
+                            path(
+                                "tracks",
+                                organiser.TeamTracks.as_view(),
+                                name="organiser.teams.tracks",
                             ),
-                            re_path(
-                                "^(?P<pk>[0-9]+)/send$",
-                                mails.OutboxSend.as_view(),
-                                name="mails.outbox.mail.send",
+                            path(
+                                "delete/<int:user_pk>",
+                                organiser.TeamDelete.as_view(),
+                                name="organiser.teams.delete_member",
                             ),
-                            re_path(
-                                "^templates/$",
-                                mails.TemplateList.as_view(),
-                                name="mails.templates.list",
+                            path(
+                                "reset/<int:user_pk>",
+                                organiser.TeamResetPassword.as_view(),
+                                name="organiser.team.password_reset",
                             ),
-                            re_path(
-                                "^templates/new$",
-                                mails.TemplateDetail.as_view(),
-                                name="mails.templates.create",
+                            path(
+                                "uninvite",
+                                organiser.TeamUninvite.as_view(),
+                                name="organiser.teams.uninvite",
                             ),
-                            re_path(
-                                "^templates/(?P<pk>[0-9]+)/$",
-                                mails.TemplateDetail.as_view(),
-                                name="mails.templates.view",
-                            ),
-                            re_path(
-                                "^templates/(?P<pk>[0-9]+)/delete$",
-                                mails.TemplateDelete.as_view(),
-                                name="mails.templates.delete",
-                            ),
-                            re_path(
-                                "^compose$",
-                                mails.ComposeMail.as_view(),
-                                name="mails.compose",
-                            ),
-                            re_path(
-                                "^sent$", mails.SentMail.as_view(), name="mails.sent"
-                            ),
-                            re_path(
-                                "^outbox/$",
-                                mails.OutboxList.as_view(),
-                                name="mails.outbox.list",
-                            ),
-                            re_path(
-                                "^outbox/send$",
-                                mails.OutboxSend.as_view(),
-                                name="mails.outbox.send",
-                            ),
-                            re_path(
-                                "^outbox/purge$",
-                                mails.OutboxPurge.as_view(),
-                                name="mails.outbox.purge",
+                            path(
+                                "resend",
+                                organiser.TeamResend.as_view(),
+                                name="organiser.teams.resend",
                             ),
                         ]
                     ),
                 ),
-                re_path(
-                    "^submissions/$",
+            ]
+        ),
+    ),
+    path("event/new/", event.EventWizard.as_view(), name="event.create"),
+    path("event/typeahead/", event.event_list, name="event.typeahead"),
+    path("event/", dashboard.DashboardEventListView.as_view(), name="event.list"),
+    path(
+        "event/<slug:event>/",
+        include(
+            [
+                path(
+                    "", dashboard.EventDashboardView.as_view(), name="event.dashboard"
+                ),
+                path("login/", auth.LoginView.as_view(), name="event.login"),
+                path("reset/", auth.ResetView.as_view(), name="event.auth.reset"),
+                path(
+                    "reset/<token>",
+                    auth.RecoverView.as_view(),
+                    name="event.auth.recover",
+                ),
+                path("delete", event.EventDelete.as_view(), name="event.delete"),
+                path("live", event.EventLive.as_view(), name="event.live"),
+                path("history/", event.EventHistory.as_view(), name="event.history"),
+                path("api/users", person.UserList.as_view(), name="event.user_list"),
+                path(
+                    "cfp/",
+                    RedirectView.as_view(pattern_name="orga:cfp.text.view"),
+                    name="cfp",
+                ),
+                path("cfp/flow/", cfp.CfPFlowEditor.as_view(), name="cfp.flow"),
+                path(
+                    "cfp/questions/",
+                    cfp.CfPQuestionList.as_view(),
+                    name="cfp.questions.view",
+                ),
+                path(
+                    "cfp/questions/new",
+                    cfp.CfPQuestionDetail.as_view(),
+                    name="cfp.questions.create",
+                ),
+                path(
+                    "cfp/questions/remind",
+                    cfp.CfPQuestionRemind.as_view(),
+                    name="cfp.questions.remind",
+                ),
+                path(
+                    "cfp/questions/<int:pk>/",
+                    include(
+                        [
+                            path(
+                                "",
+                                cfp.CfPQuestionDetail.as_view(),
+                                name="cfp.question.view",
+                            ),
+                            path(
+                                "up",
+                                cfp.question_move_up,
+                                name="cfp.questions.up",
+                            ),
+                            path(
+                                "down",
+                                cfp.question_move_down,
+                                name="cfp.questions.down",
+                            ),
+                            path(
+                                "delete",
+                                cfp.CfPQuestionDelete.as_view(),
+                                name="cfp.question.delete",
+                            ),
+                            path(
+                                "edit",
+                                cfp.CfPQuestionDetail.as_view(),
+                                name="cfp.question.edit",
+                            ),
+                            path(
+                                "toggle",
+                                cfp.CfPQuestionToggle.as_view(),
+                                name="cfp.question.toggle",
+                            ),
+                        ]
+                    ),
+                ),
+                path("cfp/text", cfp.CfPTextDetail.as_view(), name="cfp.text.view"),
+                path(
+                    "cfp/types/",
+                    cfp.SubmissionTypeList.as_view(),
+                    name="cfp.types.view",
+                ),
+                path(
+                    "cfp/types/new",
+                    cfp.SubmissionTypeDetail.as_view(),
+                    name="cfp.types.create",
+                ),
+                path(
+                    "cfp/types/<int:pk>/",
+                    include(
+                        [
+                            path(
+                                "",
+                                cfp.SubmissionTypeDetail.as_view(),
+                                name="cfp.type.view",
+                            ),
+                            path(
+                                "delete",
+                                cfp.SubmissionTypeDelete.as_view(),
+                                name="cfp.type.delete",
+                            ),
+                            path(
+                                "default",
+                                cfp.SubmissionTypeDefault.as_view(),
+                                name="cfp.type.default",
+                            ),
+                        ]
+                    ),
+                ),
+                path("cfp/tracks/", cfp.TrackList.as_view(), name="cfp.tracks.view"),
+                path(
+                    "cfp/tracks/new",
+                    cfp.TrackDetail.as_view(),
+                    name="cfp.track.create",
+                ),
+                path(
+                    "cfp/tracks/<int:pk>/",
+                    include(
+                        [
+                            path(
+                                "",
+                                cfp.TrackDetail.as_view(),
+                                name="cfp.track.view",
+                            ),
+                            path(
+                                "delete",
+                                cfp.TrackDelete.as_view(),
+                                name="cfp.track.delete",
+                            ),
+                        ]
+                    ),
+                ),
+                path(
+                    "cfp/access-codes/",
+                    cfp.AccessCodeList.as_view(),
+                    name="cfp.access_code.view",
+                ),
+                path(
+                    "cfp/access-codes/new",
+                    cfp.AccessCodeDetail.as_view(),
+                    name="cfp.access_code.create",
+                ),
+                path(
+                    "cfp/access-codes/<slug:code>/",
+                    include(
+                        [
+                            path(
+                                "",
+                                cfp.AccessCodeDetail.as_view(),
+                                name="cfp.access_code.view",
+                            ),
+                            path(
+                                "send",
+                                cfp.AccessCodeSend.as_view(),
+                                name="cfp.access_code.send",
+                            ),
+                            path(
+                                "delete",
+                                cfp.AccessCodeDelete.as_view(),
+                                name="cfp.access_code.delete",
+                            ),
+                        ]
+                    ),
+                ),
+                path(
+                    "mails/<int:pk>/",
+                    include(
+                        [
+                            path(
+                                "",
+                                mails.MailDetail.as_view(),
+                                name="mails.outbox.mail.view",
+                            ),
+                            path(
+                                "copy",
+                                mails.MailCopy.as_view(),
+                                name="mails.outbox.mail.copy",
+                            ),
+                            path(
+                                "delete",
+                                mails.OutboxPurge.as_view(),
+                                name="mails.outbox.mail.delete",
+                            ),
+                            path(
+                                "send",
+                                mails.OutboxSend.as_view(),
+                                name="mails.outbox.mail.send",
+                            ),
+                        ]
+                    ),
+                ),
+                path(
+                    "mails/templates/",
+                    mails.TemplateList.as_view(),
+                    name="mails.templates.list",
+                ),
+                path(
+                    "mails/templates/new",
+                    mails.TemplateDetail.as_view(),
+                    name="mails.templates.create",
+                ),
+                path(
+                    "mails/templates/<int:pk>/",
+                    include(
+                        [
+                            path(
+                                "",
+                                mails.TemplateDetail.as_view(),
+                                name="mails.templates.view",
+                            ),
+                            path(
+                                "delete",
+                                mails.TemplateDelete.as_view(),
+                                name="mails.templates.delete",
+                            ),
+                        ]
+                    ),
+                ),
+                path(
+                    "mails/compose",
+                    mails.ComposeMail.as_view(),
+                    name="mails.compose",
+                ),
+                path("mails/sent", mails.SentMail.as_view(), name="mails.sent"),
+                path(
+                    "mails/outbox/",
+                    mails.OutboxList.as_view(),
+                    name="mails.outbox.list",
+                ),
+                path(
+                    "mails/outbox/send",
+                    mails.OutboxSend.as_view(),
+                    name="mails.outbox.send",
+                ),
+                path(
+                    "mails/outbox/purge",
+                    mails.OutboxPurge.as_view(),
+                    name="mails.outbox.purge",
+                ),
+                path(
+                    "submissions/",
                     submission.SubmissionList.as_view(),
                     name="submissions.list",
                 ),
-                re_path(
-                    "^submissions/new$",
+                path(
+                    "submissions/new",
                     submission.SubmissionContent.as_view(),
                     name="submissions.create",
                 ),
-                re_path(
-                    "^submissions/cards/$",
+                path(
+                    "submissions/cards/",
                     cards.SubmissionCards.as_view(),
                     name="submissions.cards",
                 ),
-                re_path(
-                    "^submissions/feed/$",
+                path(
+                    "submissions/feed/",
                     submission.SubmissionFeed(),
                     name="submissions.feed",
                 ),
-                re_path(
-                    "^submissions/statistics/$",
+                path(
+                    "submissions/statistics/",
                     submission.SubmissionStats.as_view(),
                     name="submissions.statistics",
                 ),
-                re_path(
-                    "^submissions/feedback/$",
+                path(
+                    "submissions/feedback/",
                     submission.AllFeedbacksList.as_view(),
                     name="submissions.feedback",
                 ),
-                re_path(
-                    "^submissions/tags/$",
+                path(
+                    "submissions/tags/",
                     submission.TagList.as_view(),
                     name="tags.view",
                 ),
-                re_path(
-                    "^submissions/tags/new$",
+                path(
+                    "submissions/tags/new",
                     submission.TagDetail.as_view(),
                     name="tag.create",
                 ),
-                re_path(
-                    "^submissions/tags/(?P<pk>[0-9]+)/$",
-                    submission.TagDetail.as_view(),
-                    name="tag.view",
-                ),
-                re_path(
-                    "^submissions/tags/(?P<pk>[0-9]+)/delete$",
-                    submission.TagDelete.as_view(),
-                    name="tag.delete",
-                ),
-                re_path(
-                    r"^submissions/(?P<code>[\w-]+)/",
+                path(
+                    "submissions/tags/<int:pk>/",
                     include(
                         [
-                            re_path(
-                                "^$",
+                            path(
+                                "",
+                                submission.TagDetail.as_view(),
+                                name="tag.view",
+                            ),
+                            path(
+                                "delete",
+                                submission.TagDelete.as_view(),
+                                name="tag.delete",
+                            ),
+                        ]
+                    ),
+                ),
+                path(
+                    "submissions/<code>/",
+                    include(
+                        [
+                            path(
+                                "",
                                 submission.SubmissionContent.as_view(),
                                 name="submissions.content.view",
                             ),
-                            re_path(
-                                "^submit$",
+                            path(
+                                "submit",
                                 submission.SubmissionStateChange.as_view(),
                                 name="submissions.submit",
                             ),
-                            re_path(
-                                "^accept$",
+                            path(
+                                "accept",
                                 submission.SubmissionStateChange.as_view(),
                                 name="submissions.accept",
                             ),
-                            re_path(
-                                "^reject$",
+                            path(
+                                "reject",
                                 submission.SubmissionStateChange.as_view(),
                                 name="submissions.reject",
                             ),
-                            re_path(
-                                "^confirm",
+                            path(
+                                "confirm",
                                 submission.SubmissionStateChange.as_view(),
                                 name="submissions.confirm",
                             ),
-                            re_path(
-                                "^withdraw$",
+                            path(
+                                "withdraw",
                                 submission.SubmissionStateChange.as_view(),
                                 name="submissions.withdraw",
                             ),
-                            re_path(
-                                "^delete",
+                            path(
+                                "delete",
                                 submission.SubmissionStateChange.as_view(),
                                 name="submissions.delete",
                             ),
-                            re_path(
-                                "^cancel",
+                            path(
+                                "cancel",
                                 submission.SubmissionStateChange.as_view(),
                                 name="submissions.cancel",
                             ),
-                            re_path(
-                                "^speakers/$",
+                            path(
+                                "speakers/",
                                 submission.SubmissionSpeakers.as_view(),
                                 name="submissions.speakers.view",
                             ),
-                            re_path(
-                                "^speakers/add$",
+                            path(
+                                "speakers/add",
                                 submission.SubmissionSpeakersAdd.as_view(),
                                 name="submissions.speakers.add",
                             ),
-                            re_path(
-                                "^speakers/delete$",
+                            path(
+                                "speakers/delete",
                                 submission.SubmissionSpeakersDelete.as_view(),
                                 name="submissions.speakers.delete",
                             ),
-                            re_path(
-                                "^reviews/$",
+                            path(
+                                "reviews/",
                                 review.ReviewSubmission.as_view(),
                                 name="submissions.reviews",
                             ),
-                            re_path(
-                                "^reviews/delete$",
+                            path(
+                                "reviews/delete",
                                 review.ReviewSubmissionDelete.as_view(),
                                 name="submissions.reviews.submission.delete",
                             ),
-                            re_path(
-                                "^feedback/$",
+                            path(
+                                "feedback/",
                                 submission.FeedbackList.as_view(),
                                 name="submissions.feedback.list",
                             ),
-                            re_path(
-                                "^toggle_featured$",
+                            path(
+                                "toggle_featured",
                                 submission.ToggleFeatured.as_view(),
                                 name="submissions.toggle_featured",
                             ),
-                            re_path(
-                                "^anonymise/$",
+                            path(
+                                "anonymise/",
                                 submission.Anonymise.as_view(),
                                 name="submissions.anonymise",
                             ),
                         ]
                     ),
                 ),
-                re_path(
-                    "^speakers/$", speaker.SpeakerList.as_view(), name="speakers.list"
+                path("speakers/", speaker.SpeakerList.as_view(), name="speakers.list"),
+                path(
+                    "speakers/<int:pk>/",
+                    include(
+                        [
+                            path(
+                                "",
+                                speaker.SpeakerDetail.as_view(),
+                                name="speakers.view",
+                            ),
+                            path(
+                                "reset",
+                                speaker.SpeakerPasswordReset.as_view(),
+                                name="speakers.reset",
+                            ),
+                            path(
+                                "toggle-arrived",
+                                speaker.SpeakerToggleArrived.as_view(),
+                                name="speakers.arrived",
+                            ),
+                        ]
+                    ),
                 ),
-                re_path(
-                    "^speakers/(?P<pk>[0-9]+)/$",
-                    speaker.SpeakerDetail.as_view(),
-                    name="speakers.view",
-                ),
-                re_path(
-                    "^speakers/(?P<pk>[0-9]+)/reset$",
-                    speaker.SpeakerPasswordReset.as_view(),
-                    name="speakers.reset",
-                ),
-                re_path(
-                    "^speakers/(?P<pk>[0-9]+)/toggle-arrived$",
-                    speaker.SpeakerToggleArrived.as_view(),
-                    name="speakers.arrived",
-                ),
-                re_path(
-                    "^info/$",
+                path(
+                    "info/",
                     speaker.InformationList.as_view(),
                     name="speakers.information.list",
                 ),
-                re_path(
-                    "^info/new$",
+                path(
+                    "info/new",
                     speaker.InformationDetail.as_view(),
                     name="speakers.information.create",
                 ),
-                re_path(
-                    "^info/(?P<pk>[0-9]+)/$",
-                    speaker.InformationDetail.as_view(),
-                    name="speakers.information.view",
+                path(
+                    "info/<int:pk>/",
+                    include(
+                        [
+                            path(
+                                "",
+                                speaker.InformationDetail.as_view(),
+                                name="speakers.information.view",
+                            ),
+                            path(
+                                "delete",
+                                speaker.InformationDelete.as_view(),
+                                name="speakers.information.delete",
+                            ),
+                        ]
+                    ),
                 ),
-                re_path(
-                    "^info/(?P<pk>[0-9]+)/delete$",
-                    speaker.InformationDelete.as_view(),
-                    name="speakers.information.delete",
-                ),
-                re_path(
-                    "^reviews/$",
+                path(
+                    "reviews/",
                     review.ReviewDashboard.as_view(),
                     name="reviews.dashboard",
                 ),
-                re_path(
-                    "^reviews/regenerate/$",
+                path(
+                    "reviews/regenerate/",
                     review.RegenerateDecisionMails.as_view(),
                     name="reviews.regenerate",
                 ),
-                re_path(
-                    "^settings/$",
+                path(
+                    "settings/",
                     event.EventDetail.as_view(),
                     name="settings.event.view",
                 ),
-                re_path(
-                    "^settings/mail$",
+                path(
+                    "settings/mail",
                     event.EventMailSettings.as_view(),
                     name="settings.mail.view",
                 ),
-                re_path(
-                    "^settings/plugins$",
+                path(
+                    "settings/plugins",
                     plugins.EventPluginsView.as_view(),
                     name="settings.plugins.select",
                 ),
-                re_path(
-                    "^settings/widget$",
+                path(
+                    "settings/widget",
                     event.WidgetSettings.as_view(),
                     name="settings.widget",
                 ),
-                re_path(
-                    "^settings/review/$",
+                path(
+                    "settings/review/",
                     event.EventReviewSettings.as_view(),
                     name="settings.review",
                 ),
-                re_path(
-                    "^settings/review/phase/(?P<pk>[0-9]+)/up$",
-                    event.phase_move_up,
-                    name="settings.review.phase.up",
+                path(
+                    "settings/review/phase/<int:pk>/",
+                    include(
+                        [
+                            path(
+                                "up",
+                                event.phase_move_up,
+                                name="settings.review.phase.up",
+                            ),
+                            path(
+                                "down",
+                                event.phase_move_down,
+                                name="settings.review.phase.down",
+                            ),
+                            path(
+                                "delete",
+                                event.PhaseDelete.as_view(),
+                                name="settings.review.phasedelete",
+                            ),
+                            path(
+                                "activate",
+                                event.PhaseActivate.as_view(),
+                                name="settings.review.phasedelete",
+                            ),
+                        ]
+                    ),
                 ),
-                re_path(
-                    "^settings/review/phase/(?P<pk>[0-9]+)/down$",
-                    event.phase_move_down,
-                    name="settings.review.phase.down",
-                ),
-                re_path(
-                    "^settings/review/phase/(?P<pk>[0-9]+)/delete$",
-                    event.PhaseDelete.as_view(),
-                    name="settings.review.phasedelete",
-                ),
-                re_path(
-                    "^settings/review/phase/(?P<pk>[0-9]+)/activate$",
-                    event.PhaseActivate.as_view(),
-                    name="settings.review.phasedelete",
-                ),
-                re_path(
-                    "^settings/review/category/(?P<pk>[0-9]+)/delete$",
+                path(
+                    "settings/review/category/<int:pk>/delete",
                     event.ScoreCategoryDelete.as_view(),
                     name="settings.review.categorydelete",
                 ),
-                re_path(
-                    "^schedule/$", schedule.ScheduleView.as_view(), name="schedule.main"
+                path(
+                    "schedule/", schedule.ScheduleView.as_view(), name="schedule.main"
                 ),
-                re_path(
-                    "^schedule/export/$",
+                path(
+                    "schedule/export/",
                     schedule.ScheduleExportView.as_view(),
                     name="schedule.export",
                 ),
-                re_path(
-                    "^schedule/export/trigger$",
+                path(
+                    "schedule/export/trigger",
                     schedule.ScheduleExportTriggerView.as_view(),
                     name="schedule.export.trigger",
                 ),
-                re_path(
-                    "^schedule/export/download$",
+                path(
+                    "schedule/export/download",
                     schedule.ScheduleExportDownloadView.as_view(),
                     name="schedule.export.download",
                 ),
-                re_path(
-                    "^schedule/release$",
+                path(
+                    "schedule/release",
                     schedule.ScheduleReleaseView.as_view(),
                     name="schedule.release",
                 ),
-                re_path(
-                    r"^schedule/quick/(?P<code>\w+)/$",
+                path(
+                    "schedule/quick/<code>/",
                     schedule.QuickScheduleView.as_view(),
                     name="schedule.quick",
                 ),
-                re_path(
-                    "^schedule/reset$",
+                path(
+                    "schedule/reset",
                     schedule.ScheduleResetView.as_view(),
                     name="schedule.reset",
                 ),
-                re_path(
-                    "^schedule/toggle$",
+                path(
+                    "schedule/toggle",
                     schedule.ScheduleToggleView.as_view(),
                     name="schedule.toggle",
                 ),
-                re_path(
-                    "^schedule/resend_mails$",
+                path(
+                    "schedule/resend_mails",
                     schedule.ScheduleResendMailsView.as_view(),
                     name="schedule.resend_mails",
                 ),
-                re_path(
-                    "^schedule/rooms/$",
+                path(
+                    "schedule/rooms/",
                     schedule.RoomList.as_view(),
                     name="schedule.rooms.list",
                 ),
-                re_path(
-                    "^schedule/rooms/new$",
+                path(
+                    "schedule/rooms/new",
                     schedule.RoomDetail.as_view(),
                     name="schedule.rooms.create",
                 ),
-                re_path(
-                    "^schedule/rooms/(?P<pk>[0-9]+)/$",
-                    schedule.RoomDetail.as_view(),
-                    name="schedule.rooms.view",
+                path(
+                    "schedule/rooms/<int:pk>/",
+                    include(
+                        [
+                            path(
+                                "",
+                                schedule.RoomDetail.as_view(),
+                                name="schedule.rooms.view",
+                            ),
+                            path(
+                                "delete",
+                                schedule.RoomDelete.as_view(),
+                                name="schedule.rooms.delete",
+                            ),
+                            path(
+                                "up",
+                                schedule.room_move_up,
+                                name="schedule.rooms.up",
+                            ),
+                            path(
+                                "down",
+                                schedule.room_move_down,
+                                name="schedule.rooms.down",
+                            ),
+                        ]
+                    ),
                 ),
-                re_path(
-                    "^schedule/rooms/(?P<pk>[0-9]+)/delete$",
-                    schedule.RoomDelete.as_view(),
-                    name="schedule.rooms.delete",
-                ),
-                re_path(
-                    "^schedule/rooms/(?P<pk>[0-9]+)/up$",
-                    schedule.room_move_up,
-                    name="schedule.rooms.up",
-                ),
-                re_path(
-                    "^schedule/rooms/(?P<pk>[0-9]+)/down$",
-                    schedule.room_move_down,
-                    name="schedule.rooms.down",
-                ),
-                re_path(
-                    "^schedule/api/talks/$",
+                path(
+                    "schedule/api/talks/",
                     schedule.TalkList.as_view(),
                     name="schedule.api.talks",
                 ),
-                re_path(
-                    "^schedule/api/talks/(?P<pk>[0-9]+)/$",
+                path(
+                    "schedule/api/talks/<int:pk>/",
                     schedule.TalkUpdate.as_view(),
                     name="schedule.api.update",
                 ),
-                re_path(
-                    "^schedule/api/availabilities/(?P<talkid>[0-9]+)/(?P<roomid>[0-9]+)/$",
+                path(
+                    "schedule/api/availabilities/<int:talkid>/<int:roomid>/",
                     schedule.RoomTalkAvailabilities.as_view(),
                     name="schedule.api.availabilities",
                 ),
