@@ -18,6 +18,22 @@ To clear questions after or before a logical session, single questions can be de
 }
 ```
 
+Room Config
+-----------
+
+To enable questions for a room, add the questions module to the room modules.
+
+```
+{
+		"name": "Room with questions",
+		"modules": [{
+			type: 'questions',
+			config: {}
+		}],
+		…
+}
+```
+
 ## `question.create`
 
 ## `question.update`
