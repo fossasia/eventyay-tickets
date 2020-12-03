@@ -118,7 +118,7 @@ class MailTemplate(LogMixin, models.Model):
                 text = str(self.text).format(**context)
                 if submission and full_submission_content:
                     text += "\n\n\n***********\n\n" + str(
-                        _("Full submission content:\n\n")
+                        _("Full proposal content:\n\n")
                     )
                     text += submission.get_content_for_mail()
             except KeyError as e:

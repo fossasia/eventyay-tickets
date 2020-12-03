@@ -6,7 +6,7 @@ def get_context_explanation():
         {
             "name": "confirmation_link",
             "explanation": _(
-                "Link to confirm a submission after it has been accepted."
+                "Link to confirm a proposal after it has been accepted."
             ),
         },
         {
@@ -16,22 +16,22 @@ def get_context_explanation():
         {
             "name": "submission_title",
             "explanation": _(
-                "The title of the submission in question. Only usable in default templates."
+                "The title of the proposal in question. Only usable in default templates."
             ),
         },
         {
             "name": "submission_url",
             "explanation": _(
-                "The link to a submission. Only usable in default templates."
+                "The link to a proposal. Only usable in default templates."
             ),
         },
         {
             "name": "speakers",
-            "explanation": _("The name(s) of all speakers in this submission."),
+            "explanation": _("The name(s) of all speakers in this proposal."),
         },
         {
             "name": "track_name",
-            "explanation": _("The track the submission falls under"),
+            "explanation": _("The track the proposal belongs to"),
         },
     ]
 

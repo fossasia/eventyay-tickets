@@ -72,13 +72,13 @@ def create_user_as_orga(email, submission=None, name=None):
         invitation_text = _(
             """Hi!
 
-You have been set as the speaker of a submission to the Call for Participation
+You have been set as the speaker of a proposal to the Call for Participation
 of {event}, titled “{title}”. An account has been created for you – please follow
 this link to set your account password.
 
 {invitation_link}
 
-Afterwards, you can edit your user profile and see the state of your submission.
+Afterwards, you can edit your user profile and see the state of your proposal.
 
 The {event} orga crew"""
         ).format(
@@ -90,7 +90,7 @@ The {event} orga crew"""
             event=submission.event,
             reply_to=submission.event.email,
             subject=str(
-                _("You have been added to a submission for {event}").format(
+                _("You have been added to a proposal for {event}").format(
                     event=submission.event.name
                 )
             ),
@@ -159,7 +159,7 @@ class SubmissionStateChange(SubmissionViewMixin, TemplateView):
             messages.info(
                 request,
                 _(
-                    "Somebody else was faster than you: this submission was already in the state you wanted to change it to."
+                    "Somebody else was faster than you: this proposal was already in the state you wanted to change it to."
                 ),
             )
         else:
@@ -200,11 +200,11 @@ class SubmissionSpeakersAdd(SubmissionViewMixin, View):
                     "pretalx.submission.speakers.add", person=request.user, orga=True
                 )
                 messages.success(
-                    request, _("The speaker has been added to the submission.")
+                    request, _("The speaker has been added to the proposal.")
                 )
             else:
                 messages.warning(
-                    request, _("The speaker was already part of the submission.")
+                    request, _("The speaker was already part of the proposal.")
                 )
             if not speaker.profiles.filter(event=request.event).exists():
                 SpeakerProfile.objects.create(user=speaker, event=request.event)
@@ -225,10 +225,10 @@ class SubmissionSpeakersDelete(SubmissionViewMixin, View):
                 "pretalx.submission.speakers.remove", person=request.user, orga=True
             )
             messages.success(
-                request, _("The speaker has been removed from the submission.")
+                request, _("The speaker has been removed from the proposal.")
             )
         else:
-            messages.warning(request, _("The speaker was not part of this submission."))
+            messages.warning(request, _("The speaker was not part of this proposal."))
         return redirect(submission.orga_urls.speakers)
 
 
@@ -403,7 +403,7 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
                 messages.success(
                     self.request,
                     _(
-                        "The submission has been created; the speaker already had an account on this system."
+                        "The proposal has been created; the speaker already had an account on this system."
                     ),
                 )
             except User.DoesNotExist:
@@ -415,7 +415,7 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
                 messages.success(
                     self.request,
                     _(
-                        "The submission has been created and the speaker has been invited to add an account!"
+                        "The proposal has been created and the speaker has been invited to add an account!"
                     ),
                 )
 
@@ -424,7 +424,7 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
             formset_result = self.save_formset(form.instance)
             if not formset_result:
                 return self.get(self.request, *self.args, **self.kwargs)
-            messages.success(self.request, _("The submission has been updated!"))
+            messages.success(self.request, _("The proposal has been updated!"))
         if form.has_changed():
             action = "pretalx.submission." + ("create" if created else "update")
             form.instance.log_action(action, person=self.request.user, orga=True)
@@ -541,7 +541,7 @@ class Anonymise(SubmissionViewMixin, UpdateView):
         if self.object.is_anonymised:
             message = _("The anonymisation has been updated.")
         else:
-            message = _("This submission is now marked as anonymised.")
+            message = _("This proposal is now marked as anonymised.")
         form.save()
         messages.success(self.request, message)
         if self.request.POST.get("action", "save") == "next" and self.next_unanonymised:
@@ -558,7 +558,7 @@ class SubmissionFeed(PermissionRequired, Feed):
         return request.event
 
     def title(self, obj):
-        return _("{name} submission feed").format(name=obj.name)
+        return _("{name} proposal feed").format(name=obj.name)
 
     def link(self, obj):
         return obj.orga_urls.submissions.full()
@@ -576,7 +576,7 @@ class SubmissionFeed(PermissionRequired, Feed):
         return obj.submissions.order_by("-pk")
 
     def item_title(self, item):
-        return _("New {event} submission: {title}").format(
+        return _("New {event} proposal: {title}").format(
             event=item.event.name, title=item.title
         )
 

@@ -38,13 +38,13 @@ class SubmissionType(LogMixin, models.Model):
         blank=True,
         verbose_name=_("deadline"),
         help_text=_(
-            "If you want a different deadline than the global deadline for this submission type, enter it here."
+            "If you want a different deadline than the global deadline for this session type, enter it here."
         ),
     )
     requires_access_code = models.BooleanField(
         verbose_name=_("Requires access code"),
         help_text=_(
-            "This submission type will only be shown to submitters with a matching access code."
+            "This session type will only be shown to submitters with a matching access code."
         ),
         default=False,
     )

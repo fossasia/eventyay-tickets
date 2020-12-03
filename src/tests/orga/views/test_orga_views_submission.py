@@ -333,7 +333,7 @@ def test_orga_can_remove_wrong_speaker(orga_client, submission, other_speaker):
     submission.refresh_from_db()
     assert response.status_code == 200
     assert submission.speakers.count() == 1
-    assert "not part of this submission" in response.content.decode()
+    assert "not part of this proposal" in response.content.decode()
 
 
 @pytest.mark.django_db

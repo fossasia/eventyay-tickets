@@ -8,7 +8,7 @@
 
 {% block stylesheets %}
 {% if timeline_data %}
-    <link rel="alternate" hreflang="en" type="application/rss+xml" title="{% translate "Submission feed" %}" href="{{ request.event.orga_urls.submission_feed }}">
+    <link rel="alternate" hreflang="en" type="application/rss+xml" title="{% translate "Proposal feed" %}" href="{{ request.event.orga_urls.submission_feed }}">
 {% endif %}
 {% endblock %}
 
@@ -20,18 +20,18 @@
         <span>
             {{ page_obj.paginator.count }}
             {% blocktranslate trimmed count count=page_obj.paginator.count %}
-            submission
+            proposal
             {% plural %}
-            submissions
+            proposals
             {% endblocktranslate %}
         </span>
         {% if can_create_submission %}
         <p class="ml-auto">
             <a href="{{ request.event.orga_urls.new_submission }}" class="btn btn-info mt-2">
-                <i class="fa fa-plus"></i> {% translate "Add new submission" %}
+                <i class="fa fa-plus"></i> {% translate "Add new proposal" %}
             </a>
         </p>
-        <a href="{{ request.event.orga_urls.submission_feed }}" title="{% translate "Submission feed" %}">
+        <a href="{{ request.event.orga_urls.submission_feed }}" title="{% translate "Proposal feed" %}">
             <i class="fa fa-feed ml-3 mb-2"></i>
         </a>
         {% endif %}
@@ -82,7 +82,7 @@
                 </th>
                 {% if can_change_submission %}
                 <th>
-                    {% translate "Featured" %} <i class="fa fa-question-circle" data-toggle="tooltip" title="{% translate "Show this talk on the list of featured talks, once it was accepted" %}"></i>
+                    {% translate "Featured" %} <i class="fa fa-question-circle" data-toggle="tooltip" title="{% translate "Show this session on the list of featured sessions, once it was accepted" %}"></i>
                     <a href="?{% url_replace request 'sort' '-is_featured' %}"><i class="fa fa-caret-down" title="{% translate "Sort by featured first" %}"></i></a>
                     <a href="?{% url_replace request 'sort' 'is_featured' %}"><i class="fa fa-caret-up" title="{% translate "Sort featured last" %}"></i></a>
                 </th>
@@ -123,7 +123,7 @@
                     </td>
                     {% if can_change_submission %}
                     <td class="submission_featured">
-                        <div class="checkbox mt-1" title="{% translate 'Show this submission in the list of featured talks.' %}">
+                        <div class="checkbox mt-1" title="{% translate 'Show this proposal in the list of featured sessions.' %}">
                             <input
                                 type="checkbox"
                                 id="featured_{{ submission.code }}"

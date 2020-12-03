@@ -184,7 +184,7 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
             result["tiles"].append(
                 {
                     "large": count,
-                    "small": ngettext_lazy("submission", "submissions", count),
+                    "small": ngettext_lazy("proposal", "proposals", count),
                     "url": event.orga_urls.submissions,
                 }
             )
@@ -201,7 +201,7 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
                 result["tiles"].append(
                     {
                         "large": talk_count,
-                        "small": ngettext_lazy("talk", "talks", talk_count),
+                        "small": ngettext_lazy("session", "sessions", talk_count),
                         "url": event.orga_urls.submissions
                         + f"?state={SubmissionStates.ACCEPTED}&state={SubmissionStates.CONFIRMED}",
                     }
@@ -214,7 +214,7 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
                         {
                             "large": accepted_count,
                             "small": ngettext_lazy(
-                                "unconfirmed talk", "unconfirmed talks", accepted_count
+                                "unconfirmed session", "unconfirmed sessions", accepted_count
                             ),
                             "url": event.orga_urls.submissions
                             + f"?state={SubmissionStates.ACCEPTED}",

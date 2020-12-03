@@ -10,7 +10,7 @@
 {% if schedule.changes.count %}
     {% if schedule.changes.new_talks|length > 0 %}
         {% if schedule.changes.new_talks|length > 1 %}
-            <p>{% translate "We have new talks!" %}</p>
+            <p>{% translate "We have new sessions!" %}</p>
             <ul>
                 {% for talk in schedule.changes.new_talks %}
                 <li><a href="{{ talk.submission.urls.public }}">
@@ -22,7 +22,7 @@
                 {% endfor %}
             </ul>
         {% else %}
-        <p>{% translate "We have a new talk: " %}
+        <p>{% translate "We have a new session: " %}
             {% for talk in schedule.changes.new_talks %}
                 <a href="{{ talk.submission.urls.public }}">
                     {{ quotation_open }}{{ talk.submission.title }}{{ quotation_close }}
@@ -36,7 +36,7 @@
 
     {% if schedule.changes.canceled_talks|length > 0 %}
         {% if schedule.changes.canceled_talks|length > 1 %}
-            <p>{% translate "Sadly, we had to cancel talks:" %}</p>
+            <p>{% translate "Sadly, we had to cancel sessions:" %}</p>
             <ul>
                 {% for talk in schedule.changes.canceled_talks %}
                 <li>
@@ -48,7 +48,7 @@
                 {% endfor %}
             </ul>
         {% else %}
-            <p>{% translate "We sadly had to cancel a talk: " %}
+            <p>{% translate "We sadly had to cancel a session: " %}
             {% for talk in schedule.changes.canceled_talks %}
                 {{ quotation_open }}{{ talk.submission.title }}{{ quotation_close }}
                 {% if talk.submission.speakers.exists %}
@@ -60,7 +60,7 @@
 
     {% if schedule.changes.moved_talks|length > 0 %}
         {% if schedule.changes.moved_talks|length > 1 %}
-            <p>{% translate "We had to move some talks, so if you were planning on seeing them, check their new dates or locations:" %}</p>
+            <p>{% translate "We had to move some sessions, so if you were planning on seeing them, check their new dates or locations:" %}</p>
             <ul>
                 {% for talk in schedule.changes.moved_talks %}
                 <li><a href="{{ talk.submission.urls.public }}">
@@ -80,7 +80,7 @@
                 {% endfor %}
             </ul>
         {% else %}
-            <p>{% translate "We have moved a talk around: " %}
+            <p>{% translate "We have moved a session around: " %}
             {% for talk in schedule.changes.moved_talks %}
                 <a href="{{ talk.submission.urls.public }}">
                     {{ quotation_open }}{{ talk.submission.title }}{{ quotation_close }}

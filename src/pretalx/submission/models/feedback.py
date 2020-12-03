@@ -20,7 +20,7 @@ class Feedback(LogMixin, models.Model):
         to="submission.Submission",
         related_name="feedback",
         on_delete=models.PROTECT,
-        verbose_name=_("Talk"),
+        verbose_name=_("Session"),
     )
     speaker = models.ForeignKey(
         to="person.User",

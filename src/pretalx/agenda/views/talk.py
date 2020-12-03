@@ -117,7 +117,7 @@ class TalkView(PermissionRequired, TemplateView):
         return (
             self.submission.description
             or self.submission.abstract
-            or _("The talk “{title}” at {event}").format(
+            or _("The session “{title}” at {event}").format(
                 title=self.submission.title, event=self.request.event.name
             )
         )

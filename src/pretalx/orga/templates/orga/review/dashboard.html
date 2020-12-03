@@ -21,14 +21,14 @@
         <a href="{{ next_submission.orga_urls.reviews }}">
         {{ missing_reviews }}
         {% blocktranslate trimmed count count=missing_reviews %}
-        submission is waiting for your review.
+        proposal is waiting for your review.
         {% plural %}
-        submissions are waiting for your review.
+        proposals are waiting for your review.
         {% endblocktranslate %}
         {% translate "Click here to get started!" %}
         </a>
     {% elif can_review %}
-        {% translate "You've got no submissions left to review!" %}
+        {% translate "You've got no proposals left to review!" %}
     {% else %}
         {% translate "Reviews are currently closed." %}
     {% endif %}
@@ -123,7 +123,7 @@
             <td class="text-center">
                 {{ submission.reviews.all|length|default:'-' }}
                 {% if submission.pk in submissions_reviewed %}
-                    <i class="fa fa-check text-success" title="{% translate "You have reviewed this submission" %}"></i>
+                    <i class="fa fa-check text-success" title="{% translate "You have reviewed this proposal" %}"></i>
                 {% endif %}
             </td>
             <td>
@@ -156,7 +156,7 @@
         </tr>
     {% empty %}
         <tr>
-            <td>{% translate "You don't seem to have any submissions yet." %}</td>
+            <td>{% translate "You don't seem to have any proposals yet." %}</td>
         </tr>
     {% endfor %}
     </tbody>

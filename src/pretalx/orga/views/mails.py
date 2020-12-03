@@ -398,7 +398,7 @@ class TemplateDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
                 result.append(
                     {
                         "name": "url",
-                        "explanation": _("The link to the user's list of submissions"),
+                        "explanation": _("The link to the user's list of proposals"),
                     }
                 )
                 result.append(

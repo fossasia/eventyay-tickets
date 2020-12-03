@@ -2,7 +2,7 @@
 {% load i18n %}
 
 {% block submission_content %}
-    {% translate "Do you really want to change the state of this submission?" %}
+    {% translate "Do you really want to change the state of this proposal?" %}
     {% include "cfp/event/fragment_state.html" with state=submission.state %}
     <i class="fa fa-arrow-right"></i>
     {% include "cfp/event/fragment_state.html" with state=target %}

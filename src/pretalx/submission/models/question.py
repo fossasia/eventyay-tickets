@@ -55,7 +55,7 @@ class QuestionTarget(Choices):
     REVIEWER = "reviewer"
 
     valid_choices = [
-        (SUBMISSION, _("per submission")),
+        (SUBMISSION, _("per proposal")),
         (SPEAKER, _("per speaker")),
         (REVIEWER, _("for reviewers")),
     ]
@@ -93,7 +93,7 @@ class Question(LogMixin, models.Model):
         choices=QuestionTarget.get_choices(),
         default=QuestionTarget.SUBMISSION,
         verbose_name=_("question type"),
-        help_text=_("Do you require an answer from every speaker or for every talk?"),
+        help_text=_("Do you require an answer from every speaker or for every session?"),
     )
     tracks = models.ManyToManyField(
         to="submission.Track",
@@ -108,9 +108,9 @@ class Question(LogMixin, models.Model):
         to="submission.SubmissionType",
         related_name="questions",
         help_text=_(
-            "You can limit this question to some submission types. Leave this field empty to apply to all submission types."
+            "You can limit this question to some session types. Leave this field empty to apply to all session types."
         ),
-        verbose_name=_("Submission Types"),
+        verbose_name=_("Session Types"),
         blank=True,
     )
     question = I18nCharField(max_length=800, verbose_name=_("question"))
@@ -160,7 +160,7 @@ class Question(LogMixin, models.Model):
         default=False,
         verbose_name=_("Publish answers"),
         help_text=_(
-            "Answers will be shown on talk or speaker pages as appropriate. Please note that you cannot make a question public after the first answers have been given, to allow speakers explicit consent before publishing information."
+            "Answers will be shown on session or speaker pages as appropriate. Please note that you cannot make a question public after the first answers have been given, to allow speakers explicit consent before publishing information."
         ),
     )
     is_visible_to_reviewers = models.BooleanField(

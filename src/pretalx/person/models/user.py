@@ -85,7 +85,7 @@ class User(PermissionsMixin, GenerateCode, FileCleanupMixin, AbstractBaseUser):
         unique=True,
         verbose_name=_("E-Mail"),
         help_text=_(
-            "Your email address will be used for password resets and notification about your event/submissions."
+            "Your email address will be used for password resets and notification about your event/proposals."
         ),
     )
     is_active = models.BooleanField(

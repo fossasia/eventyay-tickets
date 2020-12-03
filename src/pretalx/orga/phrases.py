@@ -17,7 +17,7 @@ class OrgaPhrases(Phrases, app="orga"):
             "Remember to provide your speakers with all information they need ahead of time."
         ),
         _(
-            "Even the busiest event organisers should make time to see at least one talk ;)"
+            "Even the busiest event organisers should make time to see at least one session ;)"
         ),
     ]
     schedule_example_version = [
@@ -33,11 +33,11 @@ class OrgaPhrases(Phrases, app="orga"):
         _("Chocolate chip cookies"),
     ]
     example_review = [
-        _("I think this talk is well-suited to this conference, because ..."),
-        _("I think this talk might fit the conference better, if ..."),
-        _("I think this talk sounds like a perfect fit for Day 2, since ..."),
-        _("I think this talk might be improved by adding ..."),
-        _("I have heard a similar talk by this speaker, and I think ..."),
-        _("In my opinion, this talk will appeal to ..."),
-        _("While I think the talk is a great fit, it might be improved by ..."),
+        _("I think this session is well-suited to this conference, because ..."),
+        _("I think this session might fit the conference better, if ..."),
+        _("I think this session sounds like a perfect fit for Day 2, since ..."),
+        _("I think this session might be improved by adding ..."),
+        _("I have heard a similar session by this speaker, and I think ..."),
+        _("In my opinion, this session will appeal to ..."),
+        _("While I think the session is a great fit, it might be improved by ..."),
     ]

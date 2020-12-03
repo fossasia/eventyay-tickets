@@ -14,4 +14,4 @@ class AgendaPhrases(Phrases, app="agenda"):
         _("Send review"),
     ]
 
-    schedule_do_not_record = _("This talk will not be recorded.")
+    schedule_do_not_record = _("This session will not be recorded.")

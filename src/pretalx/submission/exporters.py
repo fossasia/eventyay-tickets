@@ -54,7 +54,7 @@ class SubmissionQuestionData(CSVExporterMixin, BaseExporter):
 
     @property
     def verbose_name(self):
-        return _("Answered submission questions")
+        return _("Answered session questions")
 
     @property
     def filename(self):

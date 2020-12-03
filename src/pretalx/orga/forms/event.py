@@ -78,7 +78,7 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
         self.fields["primary_color"].widget.attrs["class"] = "colorpickerfield"
         self.fields["slug"].disabled = True
         self.fields["date_to"].help_text = _(
-            "Any talks you have scheduled already will be moved if you change the event dates. You will have to release a new schedule version to notify all speakers."
+            "Any sessions you have scheduled already will be moved if you change the event dates. You will have to release a new schedule version to notify all speakers."
         )
         self.fields["locales"].choices = [
             choice
@@ -224,13 +224,13 @@ class EventSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
         required=True,
     )
     show_featured = forms.ChoiceField(
-        label=_("Show featured talks"),
+        label=_("Show featured sessions"),
         choices=(
             ("never", _("Never")),
             ("pre_schedule", _("Until the first schedule is released")),
             ("always", _("Always")),
         ),
-        help_text=_("Should the talks marked as featured be shown publicly?"),
+        help_text=_("Should the sessions marked as featured be shown publicly?"),
         required=True,
     )
     export_html_on_schedule_release = forms.BooleanField(

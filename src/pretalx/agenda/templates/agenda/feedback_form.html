@@ -23,7 +23,7 @@
                 {% endblocktranslate %}
                 {{ phrases.agenda.feedback_success }}
             {% if not talk.does_accept_feedback or not can_give_feedback %}
-                {% translate "You can't give feedback for this talk at this time." %}
+                {% translate "You can't give feedback for this session at this time." %}
             {% else %}
                 <form method="post">
                     {% bootstrap_form_errors form %}

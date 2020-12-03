@@ -2,7 +2,7 @@
 {% load i18n %}
 {% block content %}
     <h2>
-        {% translate "Do you really want to delete this submission type?" %} – {{ quotation_open }}{{ object.name }}{{ quotation_close }}
+        {% translate "Do you really want to delete this session type?" %} – {{ quotation_open }}{{ object.name }}{{ quotation_close }}
     </h2>
     <form method="post">
         {% csrf_token %}

@@ -172,7 +172,7 @@ class TalkSlot(LogMixin, models.Model):
                             "id": speaker.pk,
                         },
                         "message": _(
-                            "A speaker is giving another talk at the scheduled time."
+                            "A speaker is holding another session at the scheduled time."
                         ),
                     }
                 )

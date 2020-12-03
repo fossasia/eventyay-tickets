@@ -17,15 +17,15 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
     additional_speaker = forms.EmailField(
         label=_("Additional Speaker"),
         help_text=_(
-            "If you have a co-speaker, please add their email address here, and we will invite them to create an account. If you have more than one co-speaker, you can add more speakers after finishing the submission process."
+            "If you have a co-speaker, please add their email address here, and we will invite them to create an account. If you have more than one co-speaker, you can add more speakers after finishing the proposal process."
         ),
         required=False,
     )
     image = ExtensionFileField(
         required=False,
         extensions=IMAGE_EXTENSIONS,
-        label=_("Talk image"),
-        help_text=_("Use this if you want an illustration to go with your submission."),
+        label=_("Session image"),
+        help_text=_("Use this if you want an illustration to go with your proposal."),
     )
 
     def __init__(self, event, **kwargs):
@@ -47,7 +47,7 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
 
         super().__init__(initial=initial, **kwargs)
 
-        self.fields["title"].label = _("Submission title")
+        self.fields["title"].label = _("Proposal title")
         if "abstract" in self.fields:
             self.fields["abstract"].widget.attrs["rows"] = 2
         if instance and instance.pk:
@@ -149,7 +149,7 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
             self.fields["slot_count"].disabled = True
             self.fields["slot_count"].help_text += " " + str(
                 _(
-                    "Please contact the organisers if you want to change how often you're presenting this submission."
+                    "Please contact the organisers if you want to change how often you're presenting this proposal."
                 )
             )
 
@@ -235,7 +235,7 @@ class SubmissionFilterForm(forms.Form):
             (sub_type.pk, f"{str(sub_type)} ({type_count.get(sub_type.pk, 0)})")
             for sub_type in event.submission_types.all()
         ]
-        self.fields["submission_type"].widget.attrs["title"] = _("Submission types")
+        self.fields["submission_type"].widget.attrs["title"] = _("Session types")
         if usable_states:
             usable_states = [
                 choice
@@ -248,7 +248,7 @@ class SubmissionFilterForm(forms.Form):
             (choice[0], f"{choice[1].capitalize()} ({state_count.get(choice[0], 0)})")
             for choice in usable_states
         ]
-        self.fields["state"].widget.attrs["title"] = _("Submission states")
+        self.fields["state"].widget.attrs["title"] = _("Proposal states")
         self.fields["track"].choices = [
             (track.pk, f"{track.name} ({track_count.get(track.pk, 0)})")
             for track in event.tracks.all()

@@ -4,7 +4,7 @@
     <h2>
         {% translate "Do you really want to delete this event?" %}
     </h2>
-    <strong>{{ quotation_open }}{{ request.event.name }}{{ quotation_close }}</strong> – {% translate "ALL related data, such as submissions, and speaker profiles, and uploads, will also be deleted and cannot be restored." %}<p>
+    <strong>{{ quotation_open }}{{ request.event.name }}{{ quotation_close }}</strong> – {% translate "ALL related data, such as proposals, and speaker profiles, and uploads, will also be deleted and cannot be restored." %}<p>
     <form method="post">
         {% csrf_token %}
         <div class="submit-group">

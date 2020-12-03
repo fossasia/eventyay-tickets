@@ -105,7 +105,7 @@ class Team(LogMixin, models.Model):
         default=False, verbose_name=_("Can change event settings")
     )
     can_change_submissions = models.BooleanField(
-        default=False, verbose_name=_("Can work with and change submissions")
+        default=False, verbose_name=_("Can work with and change proposals")
     )
     is_reviewer = models.BooleanField(default=False, verbose_name=_("Is a reviewer"))
 

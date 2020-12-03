@@ -16,13 +16,13 @@
 {% endcompress %}
 <form method="post" enctype="multipart/form-data"><fieldset>
     {% if not submission %}
-    <legend>{% translate "Create submission" %}</legend>
+    <legend>{% translate "Create proposal" %}</legend>
     {% endif %}
 
     {% if submission.access_code %}
     <div class="alert alert-info"><span></span><span>
         {% blocktranslate trimmed %}
-        This submission was created using an access code:
+        This proposal was created using an access code:
         {% endblocktranslate %} <a href="{{ submission.access_code.urls.edit }}">{{ submission.access_code.code }}</a>
     </span></div>
     {% endif %}
@@ -86,7 +86,7 @@
                         </div>
                     {% empty %}
                     <div class="mt-1">
-                        {% translate "This submission has no file uploads yet." %}
+                        {% translate "This proposal has no file uploads yet." %}
                     </div>
                     {% endfor %}
                 </div>

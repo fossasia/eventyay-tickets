@@ -22,7 +22,7 @@ class SpeakerInformation(LogMixin, FileCleanupMixin, models.Model):
     )
     include_submitters = models.BooleanField(
         verbose_name=_("Include all submitters"),
-        help_text=_("Show to every submitter regardless of their submissions' status"),
+        help_text=_("Show to every submitter regardless of their proposals' status"),
         default=False,
     )
     exclude_unconfirmed = models.BooleanField(

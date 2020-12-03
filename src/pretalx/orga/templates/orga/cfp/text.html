@@ -19,7 +19,7 @@
     <span>
     {% translate "A good Call for Participation will engage potential speakers. Remember to include:" %}<br>
     <ul>
-        <li>{% translate "The formats (talks, workshops, panels) and their durations" %}</li>
+        <li>{% translate "The formats (sessions, workshops, panels) and their durations" %}</li>
         <li>{% translate "Topics you are looking for" %}</li>
         <li>{% translate "How open you are to alternative topics" %}</li>
         <li>{% translate "The people coming to your conference: interests, experience level …" %}</li>
@@ -47,10 +47,10 @@
             </fieldset>
 
             <fieldset>
-            <legend id="information">{% translate "Submission information" %}</legend>
+            <legend id="information">{% translate "Proposal information" %}</legend>
             <div class="offset-md-3 alert alert-info"><span>
-                {% translate "Select which information should be requested and/or required during CfP submission." %}
-                <a href="{{ request.event.cfp.urls.submit }}">{% translate "Click here to view the submission form." %}</a>
+                {% translate "Select which information should be requested and/or required during CfP proposal." %}
+                <a href="{{ request.event.cfp.urls.submit }}">{% translate "Click here to view the proposal form." %}</a>
             </span></div>
             <div class="table-responsive-md"><table class="table offset-md-3 table-sm table-hover" id="cfp-option-table">
                 <thead>
@@ -129,7 +129,7 @@
                         <td></td>
                     </tr>
                     <tr>
-                        <th>{% translate "Talk image" %}</th>
+                        <th>{% translate "Session image" %}</th>
                         <td class="request">{% bootstrap_field sform.cfp_request_image use_label=False layout='event-inline' %}</td>
                         <td class="require">{% bootstrap_field sform.cfp_require_image use_label=False layout='event-inline' %}</td>
                         <td></td>

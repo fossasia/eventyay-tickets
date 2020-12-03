@@ -6,7 +6,7 @@
 {% load rules %}
 {% load static %}
 
-{% block title %}{% translate "Your submissions" %} :: {% endblock %}
+{% block title %}{% translate "Your proposals" %} :: {% endblock %}
 
 {% block content %}
     {% if information %}
@@ -21,7 +21,7 @@
         {% endfor %}
     {% endif %}
     {% html_signal "pretalx.cfp.signals.html_above_submission_list" sender=request.event request=request %}
-    <h2>{% translate "Your submissions" %}</h2>
+    <h2>{% translate "Your proposals" %}</h2>
     {% if submissions %}
         <table class="table table-sm table-responsive table-responsive-md">
             <thead>
@@ -87,7 +87,7 @@
             {% if request.event.cfp.is_open %}
                 <a class="btn btn-success btn-lg"
                    href="{{ request.event.urls.submit }}">
-                    {% translate "Create a new submission" %}
+                    {% translate "Create a new proposal" %}
                 </a>
             {% endif %}
         </p>

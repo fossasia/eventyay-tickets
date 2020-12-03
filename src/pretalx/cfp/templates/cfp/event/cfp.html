@@ -19,7 +19,7 @@
                 <strong>
                     {% if cfp.is_open %}
                     {% blocktranslate with deadline=cfp.max_deadline|date:"SHORT_DATETIME_FORMAT" timezone=request.timezone until_string=cfp.max_deadline|timeuntil trimmed %}
-                        You can enter submissions until {{ deadline }} ({{ timezone }}), {{ until_string }} from now.
+                        You can enter proposals until {{ deadline }} ({{ timezone }}), {{ until_string }} from now.
                     {% endblocktranslate %}
                     {% else %}
                     {% blocktranslate with deadline=cfp.max_deadline|date:"SHORT_DATETIME_FORMAT" timezone=request.timezone trimmed %}
@@ -41,7 +41,7 @@
             {% endif %}
             {% if has_submissions or request.user.is_anonymous %}
                 <a class="btn btn-info btn-lg btn-block" href="{{ request.event.urls.user_submissions }}">
-                    {% translate "Edit or view your submissions" %}
+                    {% translate "Edit or view your proposals" %}
                 </a>
             {% endif %}
             <a class="btn btn-success btn-lg btn-block {% if not cfp.is_open and not access_code.is_valid %}disabled{% endif %}"
@@ -49,7 +49,7 @@
             {% if cfp.is_open or access_code.is_valid %}
                 {% translate "Submit a proposal" %}
             {% else %}
-                {% translate "Submissions are closed" %}
+                {% translate "Proposals are closed" %}
             {% endif %}
             </a>
         </div>

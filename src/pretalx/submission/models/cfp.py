@@ -33,14 +33,14 @@ class CfP(LogMixin, models.Model):
         to="submission.SubmissionType",
         on_delete=models.PROTECT,
         related_name="+",
-        verbose_name=_("Default submission type"),
+        verbose_name=_("Default session type"),
     )
     deadline = models.DateTimeField(
         null=True,
         blank=True,
         verbose_name=_("deadline"),
         help_text=_(
-            "Please put in the last date you want to accept submissions from users."
+            "Please put in the last date you want to accept proposals from users."
         ),
     )
 

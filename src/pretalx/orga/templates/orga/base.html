@@ -246,7 +246,7 @@
                         </a>
                         {% endif %}
                         <a href="{{ request.event.cfp.urls.types }}" class="nav-link nav-link-second-level{% if "cfp.type" in url_name %} active{% endif %}">
-                            <span>{% translate "Submission types" %}</span>
+                            <span>{% translate "Session types" %}</span>
                         </a>
                         <a href="{{ request.event.cfp.urls.access_codes }}" class="nav-link nav-link-second-level{% if "cfp.access_code" in url_name %} active{% endif %}">
                             <span>{% translate "Access codes" %}</span>
@@ -260,7 +260,7 @@
                     <span class="has-children">
                         <a class="nav-link nav-link-inner" href="{{ request.event.orga_urls.submissions }}">
                             <i class="fa fa-sticky-note-o"></i>
-                            <span class="sidebar-text">{% translate "Submissions" %}</span>
+                            <span class="sidebar-text">{% translate "Proposals" %}</span>
                         </a>
                         <a class="arrow nav-link" data-toggle="collapse" href="#collapseSubmissions" aria-controls="collapseSubmissions">
                             <i class="fa fa-angle-down"></i>
@@ -268,7 +268,7 @@
                     </span>
                     <div class="collapse in{% if "submissions." in url_name|slice:":13" %} show{% endif %}" aria-expand="true" id="collapseSubmissions">
                         <a href="{{ request.event.orga_urls.submissions }}" class="nav-link nav-link-second-level{% if "submissions." in url_name and "submissions.statistics" not in url_name  and "submissions.feedback" not in url_name %} active{% endif %}">
-                            <span>{% translate "Submissions" %}</span>
+                            <span>{% translate "Proposals" %}</span>
                         </a>
                         <a href="{{ request.event.orga_urls.tags }}" class="nav-link nav-link-second-level{% if "tags" in url_name %} active{% endif %}">
                             <span>{% translate "Tags" %}</span>

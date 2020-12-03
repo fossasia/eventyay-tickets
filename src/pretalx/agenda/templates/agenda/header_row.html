@@ -6,7 +6,7 @@
             <i class="fa fa-calendar"></i> {% translate "Schedule" %}
         {% if request.event.settings.schedule_display != "list" %}
         </a><a href="{{ request.event.urls.talks }}" class="btn btn-outline-success {% if "/talk/" in request.path %} active{% endif %}">
-            <i class="fa fa-comments-o"></i> {% translate "Talks" %}
+            <i class="fa fa-comments-o"></i> {% translate "Sessions" %}
         {% endif %}
         </a><a href="{{ request.event.urls.speakers }}" class="btn btn-outline-success {% if "/speaker/" in request.path %} active{% endif %}">
             <i class="fa fa-group"></i> {% translate "Speakers" %}</a>

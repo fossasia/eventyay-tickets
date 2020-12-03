@@ -7,7 +7,7 @@
 {% block content %}
     <h2>{% translate "Accept invitation?" %}</h2>
     <p>{% blocktranslate with name=request.user.get_display_name talk=submission.title trimmed %}
-        You, {{ name }}, have been invited to be a speaker for the submission
+        You, {{ name }}, have been invited to be a speaker for the session
         “{{ talk }}”. Do you accept the invitation?
     {% endblocktranslate %}</p>
 

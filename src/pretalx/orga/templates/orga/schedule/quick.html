@@ -11,7 +11,7 @@
 {% endblock %}
 
 {% block schedule_content %}
-<h2>{% translate "Schedule talk" %} {{ quotation_close }}{{ form.instance.submission.title }}{{ quotation_open }}</h2>
+<h2>{% translate "Schedule session" %} {{ quotation_close }}{{ form.instance.submission.title }}{{ quotation_open }}</h2>
 <form method="post">
     {% csrf_token %}
     {% bootstrap_form form layout='event' %}

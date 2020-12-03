@@ -91,12 +91,12 @@ class WriteMailForm(forms.ModelForm):
             (
                 "submitted",
                 _(
-                    "Everyone with submission(s) that have not been accepted/rejected yet"
+                    "Everyone with proposal(s) that have not been accepted/rejected yet"
                 ),
             ),
             (
                 "accepted",
-                _("All accepted speakers (who have not confirmed their talk yet)"),
+                _("All accepted speakers (who have not confirmed their session yet)"),
             ),
             ("confirmed", _("All confirmed speakers")),
             ("rejected", _("All rejected speakers")),
@@ -107,10 +107,10 @@ class WriteMailForm(forms.ModelForm):
         required=False,
     )
     tracks = forms.MultipleChoiceField(
-        label=_("All submissions in these tracks"), required=False
+        label=_("All proposals in these tracks"), required=False
     )
     submission_types = forms.MultipleChoiceField(
-        label=_("All submissions of these types"), required=False
+        label=_("All proposals of these types"), required=False
     )
     submissions = forms.MultipleChoiceField(required=False)
     additional_recipients = forms.CharField(

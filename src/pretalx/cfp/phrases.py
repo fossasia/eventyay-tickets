@@ -20,20 +20,20 @@ class CfPPhrases(Phrases, app="cfp"):
         "for English in pretalx, but if you encounter issues or errors, please contact us!"
     )
 
-    submission_withdrawn = _("Your submission has been withdrawn.")
+    submission_withdrawn = _("Your proposal has been withdrawn.")
     submission_not_withdrawn = _(
-        "Your submission can't be withdrawn at this time – please contact us if you need to withdraw your submission!"
+        "Your proposal can't be withdrawn at this time – please contact us if you need to withdraw your proposal!"
     )
     submission_confirmed = _(
-        "Your submission has been confirmed – we're looking forward to seeing you!"
+        "Your session has been confirmed – we're looking forward to seeing you!"
     )
     submission_was_confirmed = _(
-        "This submission has already been confirmed – we're looking forward to seeing you!"
+        "This proposal has already been confirmed – we're looking forward to seeing you!"
     )
     submission_not_confirmed = _(
-        "This submission cannot be confirmed at this time – please contact us if you think this is an error."
+        "This proposal cannot be confirmed at this time – please contact us if you think this is an error."
     )
-    submission_uneditable = _("This submission cannot be edited anymore.")
+    submission_uneditable = _("This proposal cannot be edited anymore.")
 
     account_deleted = _("Your account has now been deleted.")
     account_delete_confirm = _("Are you really sure? Please tick the box")
@@ -41,13 +41,13 @@ class CfPPhrases(Phrases, app="cfp"):
     invite_invalid_email = _("Please provide a valid email address.")
     invite_sent = _("The invitation was sent!")
     invite_accepted = _(
-        "You are now part of this submission! Please fill in your profile below."
+        "You are now part of this proposal! Please fill in your profile below."
     )
 
     submissions_closed = _(
-        "This event currently does not accept new submissions, sorry!"
+        "This event currently does not accept new proposals, sorry!"
     )
-    submission_success = _("Your talk has been submitted successfully!")
+    submission_success = _("Your session has been submitted successfully!")
     submission_email_fail = _(
-        "We are experiencing difficulties when sending mails, but your talk was submitted successfully!"
+        "We are experiencing difficulties when sending mails, but your session was submitted successfully!"
     )

@@ -16,7 +16,7 @@
 {% if request.user in submission.speakers.all %}
     <div class="alert alert-error"><span>
         {% blocktranslate trimmed %}
-        You're not allowed to review or see reviews for your own submissions.
+        You're not allowed to review or see reviews for your own proposals.
         {% endblocktranslate %}</span>
     </div>
 {% else %}
@@ -35,7 +35,7 @@
         <div class="alert alert-info">
             <span>
             {% blocktranslate trimmed %}
-                This submission can't be reviewed at the moment.
+                This proposal can't be reviewed at the moment.
             {% endblocktranslate %}
             </span>
         </div>
@@ -57,7 +57,7 @@
         </div>
     </div>
     <div class="form-group row">
-        <label class="col-md-3 col-form-label">{% translate "Submission Type" %}</label>
+        <label class="col-md-3 col-form-label">{% translate "Session Type" %}</label>
         <div class="col-md-9 mt-1">
             {{ submission.submission_type }}
         </div>
@@ -122,7 +122,7 @@
                 {% if request.event.settings.cfp_request_biography %}
                 {{ speaker.biography|rich_text|default:'-' }}
                 {% endif %}
-                {% if speaker.submissions.count > 1 %}<br><strong>{% translate "Other submissions" %}:</strong>
+                {% if speaker.submissions.count > 1 %}<br><strong>{% translate "Other proposals" %}:</strong>
                 {% for other_submission in speaker.submissions %}{% if other_submission != submission %}
                 <a href="{{ other_submission.orga_urls.base }}">{% if can_view_speakers %}{{ other_submission.title }}{% else %}{{ other_submission.anonymised.title|default:other_submission.title }}{% endif %}</a>{% if not forloop.last %}, {% endif %}
                 {% endif %}{% endfor %}
@@ -236,11 +236,11 @@
                 <button type="submit" class="btn btn-lg btn-outline-success" name="review_submit" value="save">{% translate "Save" %}</button>
             </div>
             <div>
-                <button type="submit" class="btn btn-lg btn-info" name="review_submit" value="skip_for_now" data-toggle="tooltip" data-placement="bottom" title="{% translate "Go to random next unreviewed submission, mark this one as skipped" %}">{% translate "Skip for now" %}</button>
+                <button type="submit" class="btn btn-lg btn-info" name="review_submit" value="skip_for_now" data-toggle="tooltip" data-placement="bottom" title="{% translate "Go to random next unreviewed proposal, mark this one as skipped" %}">{% translate "Skip for now" %}</button>
                 {% if not request.event.settings.review_score_mandatory and not request.event.settings.review_text_mandatory %}
-                <button type="submit" class="btn btn-lg btn-info" name="review_submit" value="abstain" data-toggle="tooltip" data-placement="bottom" title="{% translate "Go to random next unreviewed submission" %}">{% translate "Abstain" %}</button>
+                <button type="submit" class="btn btn-lg btn-info" name="review_submit" value="abstain" data-toggle="tooltip" data-placement="bottom" title="{% translate "Go to random next unreviewed proposal" %}">{% translate "Abstain" %}</button>
                 {% endif %}
-                <button type="submit" class="btn btn-lg btn-success" name="review_submit" value="save_and_next" data-toggle="tooltip" data-placement="bottom" title="{% translate "Go to random next unreviewed submission" %}">{% translate "Save and next" %}</button>
+                <button type="submit" class="btn btn-lg btn-success" name="review_submit" value="save_and_next" data-toggle="tooltip" data-placement="bottom" title="{% translate "Go to random next unreviewed proposal" %}">{% translate "Save and next" %}</button>
             </div>
         </div>
     {% endif %}

@@ -444,7 +444,7 @@ class SubmissionTypeDefault(PermissionRequired, View):
         submission_type.log_action(
             "pretalx.submission_type.make_default", person=self.request.user, orga=True
         )
-        messages.success(request, _("The Submission Type has been made default."))
+        messages.success(request, _("The Session Type has been made default."))
         return redirect(self.request.event.cfp.urls.types)
 
 
@@ -464,14 +464,14 @@ class SubmissionTypeDelete(PermissionRequired, DetailView):
             messages.error(
                 request,
                 _(
-                    "You cannot delete the only submission type. Try creating another one first!"
+                    "You cannot delete the only session type. Try creating another one first!"
                 ),
             )
         elif request.event.cfp.default_type == submission_type:
             messages.error(
                 request,
                 _(
-                    "You cannot delete the default submission type. Make another type default first!"
+                    "You cannot delete the default session type. Make another type default first!"
                 ),
             )
         else:
@@ -482,12 +482,12 @@ class SubmissionTypeDelete(PermissionRequired, DetailView):
                     person=self.request.user,
                     orga=True,
                 )
-                messages.success(request, _("The Submission Type has been deleted."))
+                messages.success(request, _("The Session Type has been deleted."))
             except ProtectedError:  # TODO: show which/how many submissions are concerned
                 messages.error(
                     request,
                     _(
-                        "This Submission Type is in use in a submission and cannot be deleted."
+                        "This Session Type is in use in a proposal and cannot be deleted."
                     ),
                 )
         return redirect(self.request.event.cfp.urls.types)
@@ -552,7 +552,7 @@ class TrackDelete(PermissionRequired, DetailView):
         except ProtectedError:  # TODO: show which/how many submissions are concerned
             messages.error(
                 request,
-                _("This track is in use in a submission and cannot be deleted."),
+                _("This track is in use in a proposal and cannot be deleted."),
             )
         return redirect(self.request.event.cfp.urls.tracks)
 
@@ -658,7 +658,7 @@ class AccessCodeDelete(PermissionRequired, DetailView):
             messages.error(
                 request,
                 _(
-                    "This access code has been used for a submission and cannot be deleted. To disable it, you can set its validity date to the past."
+                    "This access code has been used for a proposal and cannot be deleted. To disable it, you can set its validity date to the past."
                 ),
             )
         return redirect(self.request.event.cfp.urls.access_codes)

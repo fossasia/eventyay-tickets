@@ -123,7 +123,7 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
         to="submission.SubmissionType",
         related_name="submissions",
         on_delete=models.PROTECT,
-        verbose_name=_("Submission type"),
+        verbose_name=_("Session type"),
     )
     track = models.ForeignKey(
         to="submission.Track",
@@ -142,7 +142,7 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
         max_length=SubmissionStates.get_max_length(),
         choices=SubmissionStates.get_choices(),
         default=SubmissionStates.SUBMITTED,
-        verbose_name=_("Submission state"),
+        verbose_name=_("Proposal state"),
     )
     abstract = models.TextField(
         null=True,
@@ -177,13 +177,13 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
         blank=True,
         verbose_name=_("Duration"),
         help_text=_(
-            "The duration in minutes. Leave empty for default duration for this submission type."
+            "The duration in minutes. Leave empty for default duration for this session type."
         ),
     )
     slot_count = models.PositiveIntegerField(
         default=1,
         verbose_name=_("Slot Count"),
-        help_text=_("How many times this talk will be held."),
+        help_text=_("How many times this session will take place."),
     )
     content_locale = models.CharField(
         max_length=32,
@@ -193,17 +193,17 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
     )
     is_featured = models.BooleanField(
         default=False,
-        verbose_name=_("Show this talk in public list of featured talks."),
+        verbose_name=_("Show this session in public list of featured sessions."),
     )
     do_not_record = models.BooleanField(
-        default=False, verbose_name=_("Don't record this talk.")
+        default=False, verbose_name=_("Don't record this session.")
     )
     image = models.ImageField(
         null=True,
         blank=True,
         upload_to=submission_image_path,
-        verbose_name=_("Talk image"),
-        help_text=_("Use this if you want an illustration to go with your submission."),
+        verbose_name=_("Session image"),
+        help_text=_("Use this if you want an illustration to go with your proposal."),
     )
     invitation_token = models.CharField(max_length=32, default=generate_invite_code)
     access_code = models.ForeignKey(
@@ -362,7 +362,7 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
             )
             raise SubmissionError(
                 _(
-                    "Submission must be {src_states} not {state} to be {new_state}."
+                    "Proposal must be {src_states} not {state} to be {new_state}."
                 ).format(
                     src_states=source_states, state=self.state, new_state=new_state
                 )
@@ -651,14 +651,14 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
         if not _from and (not subject or not text):
             raise Exception("Please enter a sender for this invitation.")
 
-        subject = subject or _("{speaker} invites you to join their talk!").format(
+        subject = subject or _("{speaker} invites you to join their session!").format(
             speaker=_from.get_display_name()
         )
         subject = f"[{self.event.slug}] {subject}"
         text = text or _(
             """Hi!
 
-I'd like to invite you to be a speaker in the talk
+I'd like to invite you to be a speaker in the session
 
   “{title}”
 

@@ -50,7 +50,7 @@
             {% endif %}
             <hr/>
             <section class="speaker-talks">
-                <h4>{% translate "Talks" %}</h4>
+                <h4>{% translate "Sessions" %}</h4>
                 {% for session in talks %}
                 <a href="{{ session.submission.urls.public }}">
                     {% include "agenda/session_block.html" with show_date=True %}

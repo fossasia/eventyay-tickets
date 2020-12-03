@@ -103,5 +103,5 @@ def test_slot_warning_when_speaker_overbooked(
         assert slot.warnings[0]["type"] == "speaker"
         assert (
             slot.warnings[0]["message"]
-            == "A speaker is giving another talk at the scheduled time."
+            == "A speaker is holding another session at the scheduled time."
         )

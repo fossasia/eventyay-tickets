@@ -34,9 +34,9 @@ class SubmitterAccessCode(LogMixin, GenerateCode, models.Model):
     submission_type = models.ForeignKey(
         to="submission.SubmissionType",
         on_delete=models.CASCADE,
-        verbose_name=_("Submission Type"),
+        verbose_name=_("Session Type"),
         help_text=_(
-            "You can restrict the access code to a single submission type, or leave it open for all submission types."
+            "You can restrict the access code to a single session type, or leave it open for all session types."
         ),
         related_name="submitter_access_codes",
         null=True,

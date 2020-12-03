@@ -19,18 +19,18 @@
     <h2>
         {{ form.instance.user.get_display_name }} ({{ submissions.count }}
         {% blocktranslate trimmed count count=submissions.count %}
-        submission
+        proposal
         {% plural %}
-        submissions
+        proposals
         {% endblocktranslate %})
     </h2>
     <div class="alert alert-info col-md-9 ml-auto">
         <span>
         <h5>
             {% blocktranslate trimmed count count=submissions.count %}
-            Submission
+            Proposal
             {% plural %}
-            Submissions
+            Proposals
             {% endblocktranslate %})
         </h5>
         <ul>

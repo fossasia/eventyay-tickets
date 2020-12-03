@@ -51,34 +51,34 @@ LOG_NAMES = {
     "pretalx.question.option.update": _("A question option was modified."),
     "pretalx.room.create": _("A new room was added."),
     "pretalx.schedule.release": _("A new schedule version was released."),
-    "pretalx.submission.accept": _("The submission was accepted."),
-    "pretalx.submission.cancel": _("The submission was cancelled."),
-    "pretalx.submission.confirm": _("The submission was confirmed."),
-    "pretalx.submission.confirmation": _("The submission was confirmed."),  # Legacy
-    "pretalx.submission.create": _("The submission was added."),
-    "pretalx.submission.deleted": _("The submission was deleted."),
-    "pretalx.submission.reject": _("The submission was rejected."),
-    "pretalx.submission.resource.create": _("A submission resource was added."),
-    "pretalx.submission.resource.delete": _("A submission resource was deleted."),
-    "pretalx.submission.resource.update": _("A submission resource was modified."),
-    "pretalx.submission.speakers.add": _("A speaker was added to the submission."),
-    "pretalx.submission.speakers.invite": _("A speaker was invited to the submission."),
+    "pretalx.submission.accept": _("The proposal was accepted."),
+    "pretalx.submission.cancel": _("The proposal was cancelled."),
+    "pretalx.submission.confirm": _("The proposal was confirmed."),
+    "pretalx.submission.confirmation": _("The proposal was confirmed."),  # Legacy
+    "pretalx.submission.create": _("The proposal was added."),
+    "pretalx.submission.deleted": _("The proposal was deleted."),
+    "pretalx.submission.reject": _("The proposal was rejected."),
+    "pretalx.submission.resource.create": _("A proposal resource was added."),
+    "pretalx.submission.resource.delete": _("A proposal resource was deleted."),
+    "pretalx.submission.resource.update": _("A proposal resource was modified."),
+    "pretalx.submission.speakers.add": _("A speaker was added to the proposal."),
+    "pretalx.submission.speakers.invite": _("A speaker was invited to the proposal."),
     "pretalx.submission.speakers.remove": _(
-        "A speaker was removed from the submission."
+        "A speaker was removed from the proposal."
     ),
-    "pretalx.submission.unconfirm": _("The submission was unconfirmed."),
-    "pretalx.submission.update": _("The submission was modified."),
-    "pretalx.submission.withdraw": _("The submission was withdrawn."),
+    "pretalx.submission.unconfirm": _("The proposal was unconfirmed."),
+    "pretalx.submission.update": _("The proposal was modified."),
+    "pretalx.submission.withdraw": _("The proposal was withdrawn."),
     "pretalx.submission.answer.update": _(
-        "A submission answer was modified."
+        "A proposal answer was modified."
     ),  # Legacy
-    "pretalx.submission.answerupdate": _("A submission answer was modified."),  # Legacy
-    "pretalx.submission.answer.create": _("A submission answer was added."),  # Legacy
-    "pretalx.submission.answercreate": _("A submission answer was added."),  # Legacy
-    "pretalx.submission_type.create": _("A submission type was added."),
-    "pretalx.submission_type.delete": _("A submission type was deleted."),
-    "pretalx.submission_type.make_default": _("The submission type was made default."),
-    "pretalx.submission_type.update": _("A submission type was modified."),
+    "pretalx.submission.answerupdate": _("A proposal answer was modified."),  # Legacy
+    "pretalx.submission.answer.create": _("A proposal answer was added."),  # Legacy
+    "pretalx.submission.answercreate": _("A proposal answer was added."),  # Legacy
+    "pretalx.submission_type.create": _("A session type was added."),
+    "pretalx.submission_type.delete": _("A session type was deleted."),
+    "pretalx.submission_type.make_default": _("The session type was made default."),
+    "pretalx.submission_type.update": _("A session type was modified."),
     "pretalx.access_code.create": _("An access code was added."),
     "pretalx.access_code.send": _("An access code was sent."),
     "pretalx.access_code.update": _("An access code was modified."),

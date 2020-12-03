@@ -26,7 +26,7 @@
             {% blocktranslate with notifications=notifications trimmed %}
             When releasing this new schedule, <strong>{{ notifications }} notifications emails
             </strong> will be generated and placed in the outbox, to tell speakers about their
-            talk slots.
+            session slots.
             {% endblocktranslate %}
         {% else %}
             {% blocktranslate trimmed %}
@@ -37,18 +37,18 @@
     </li>
     {% if warnings.unconfirmed %}
     <li>{% blocktranslate with unconfirmed=warnings.unconfirmed|length trimmed %}
-        {{ unconfirmed }} talks are still <strong>unconfirmed</strong> and will not show up
+        {{ unconfirmed }} sessions are still <strong>unconfirmed</strong> and will not show up
         on the public schedule.
     {% endblocktranslate %}</li>
     {% endif %}
     {% if warnings.unscheduled %}
     <li>{% blocktranslate with unscheduled=warnings.unscheduled|length trimmed %}
-        {{ unscheduled }} talks have <strong>not yet been scheduled</strong>.
+        {{ unscheduled }} sessions have <strong>not yet been scheduled</strong>.
     {% endblocktranslate %}</li>
     {% endif %}
     {% if warnings.no_track %}
     <li>{% blocktranslate with no_track=warnings.no_track|length trimmed %}
-        {{ no_track }} talks have <strong>not yet been assigned a track</strong>.
+        {{ no_track }} sessions have <strong>not yet been assigned a track</strong>.
     {% endblocktranslate %}</li>
     {% endif %}
 </ul>

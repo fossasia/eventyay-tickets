@@ -198,7 +198,7 @@ class ReviewPhase(models.Model):
         choices=(
             ("always", _("Always")),
             ("never", _("Never")),
-            ("after_review", _("After reviewing the submission")),
+            ("after_review", _("After reviewing the proposal")),
         ),
         default="after_review",
     )
@@ -211,11 +211,11 @@ class ReviewPhase(models.Model):
         default=True,
     )
     can_change_submission_state = models.BooleanField(
-        verbose_name=_("Reviewers can accept and reject submissions"),
+        verbose_name=_("Reviewers can accept and reject proposals"),
         default=False,
     )
     can_tag_submissions = models.CharField(
-        verbose_name=_("Reviewers can tag submissions"),
+        verbose_name=_("Reviewers can tag proposals"),
         max_length=12,
         choices=(
             ("never", _("Never")),
@@ -225,9 +225,9 @@ class ReviewPhase(models.Model):
         default="never",
     )
     speakers_can_change_submissions = models.BooleanField(
-        verbose_name=_("Speakers can modify their submissions before acceptance"),
+        verbose_name=_("Speakers can modify their proposals before acceptance"),
         help_text=_(
-            "By default, modification of submissions is locked after the CfP ends, and is re-enabled once the submission was accepted."
+            "By default, modification of proposals is locked after the CfP ends, and is re-enabled once the proposal was accepted."
         ),
         default=False,
     )

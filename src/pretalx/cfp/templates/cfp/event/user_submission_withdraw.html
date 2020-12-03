@@ -1,20 +1,20 @@
 {% extends "cfp/event/base.html" %}
 {% load i18n %}
 
-{% block title %}{% translate "Your submission" %} :: {% endblock %}
+{% block title %}{% translate "Your proposal" %} :: {% endblock %}
 
 {% block content %}
-    <h2>{% translate "Your submission:" %} {{ submission.title }}</h2>
+    <h2>{% translate "Your proposal:" %} {{ submission.title }}</h2>
     <p>
-        {% translate "Current state of your submission:" %}
+        {% translate "Current state of your proposal:" %}
         {% include "cfp/event/fragment_state.html" with state=submission.state %}
     </p>
     <form method="post">
         {% csrf_token %}
-        <h3>{% translate "Withdraw submission" %}</h3>
+        <h3>{% translate "Withdraw proposal" %}</h3>
         <div class="alert alert-danger">
             {% blocktranslate trimmed %}
-                Do you really want to withdraw your submission?
+                Do you really want to withdraw your proposal?
             {% endblocktranslate %}
         </div>
         <p>

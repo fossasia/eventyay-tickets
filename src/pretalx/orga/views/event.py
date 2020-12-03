@@ -165,7 +165,7 @@ class EventLive(EventSettingsPermission, TemplateView):
             suggestions.append(
                 {
                     "text": _(
-                        "You want submitters to choose the tracks for their submissions, but you do not offer tracks for selection. Add at least one track!"
+                        "You want submitters to choose the tracks for their proposals, but you do not offer tracks for selection. Add at least one track!"
                     ),
                     "url": self.request.event.cfp.urls.tracks,
                 }
@@ -173,7 +173,7 @@ class EventLive(EventSettingsPermission, TemplateView):
         if not self.request.event.submission_types.count() > 1:
             suggestions.append(
                 {
-                    "text": _("You have configured only one submission type so far."),
+                    "text": _("You have configured only one session type so far."),
                     "url": self.request.event.cfp.urls.types,
                 }
             )

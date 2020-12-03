@@ -21,12 +21,12 @@ class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
     use_tracks = forms.BooleanField(
         label=_("Use tracks"),
         required=False,
-        help_text=_("Do you organise your talks by tracks?"),
+        help_text=_("Do you organise your sessions by tracks?"),
     )
     present_multiple_times = forms.BooleanField(
         label=_("Slot Count"),
         required=False,
-        help_text=_("Can talks be held multiple times?"),
+        help_text=_("Can sessions be held multiple times?"),
     )
     cfp_show_deadline = forms.BooleanField(
         label=_("Display deadline publicly"),
@@ -78,9 +78,9 @@ class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
         widget=forms.RadioSelect(),
     )
     mail_on_new_submission = forms.BooleanField(
-        label=_("Send mail on new submission"),
+        label=_("Send mail on new proposal"),
         help_text=_(
-            "If this setting is checked, you will receive an email to the organiser address for every received submission."
+            "If this setting is checked, you will receive an email to the organiser address for every received proposal."
         ),
         required=False,
     )
@@ -173,7 +173,7 @@ class SubmissionTypeForm(ReadOnlyFlag, I18nModelForm):
             qs = qs.exclude(pk=self.instance.pk)
         if any(str(s.name) == str(name) for s in qs):
             raise forms.ValidationError(
-                _("You already have a submission type by this name!")
+                _("You already have a session type by this name!")
             )
         return name
 
@@ -299,7 +299,7 @@ Please follow this URL to use the code:
 
   {url}
 
-I'm looking forward to your submission!
+I'm looking forward to your proposal!
 {name}"""
         ).format(
             url=instance.urls.cfp_url.full(),

@@ -191,19 +191,19 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
         if total["accept"] or total["reject"]:
             msg = str(
                 _(
-                    "Success! {accepted} submissions were accepted, {rejected} submissions were rejected."
+                    "Success! {accepted} proposals were accepted, {rejected} proposals were rejected."
                 )
             ).format(accepted=total["accept"], rejected=total["reject"])
             if total["error"]:
                 msg += " " + str(
-                    _("We were unable to change the state of {count} submissions.")
+                    _("We were unable to change the state of {count} proposals.")
                 ).format(count=total["error"])
             messages.success(request, msg)
         else:
             messages.error(
                 request,
                 str(
-                    _("We were unable to change the state of all {count} submissions.")
+                    _("We were unable to change the state of all {count} proposals.")
                 ).format(count=total["error"]),
             )
         return super().get(request, *args, **kwargs)
@@ -407,7 +407,7 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
         if next_submission:
             return next_submission.orga_urls.reviews
         messages.success(
-            self.request, _("Nice, you have no submissions left to review!")
+            self.request, _("Nice, you have no proposals left to review!")
         )
         return self.request.event.orga_urls.reviews
 

@@ -383,7 +383,7 @@ class QuickScheduleView(PermissionRequired, UpdateView):
 
     def form_valid(self, form):
         form.save()
-        messages.success(self.request, _("The talk has been scheduled."))
+        messages.success(self.request, _("The session has been scheduled."))
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -434,7 +434,7 @@ class RoomDelete(EventPermissionRequired, View):
             messages.error(
                 request,
                 _(
-                    "There is or was a talk scheduled in this room. It cannot be deleted."
+                    "There is or was a session scheduled in this room. It cannot be deleted."
                 ),
             )
 

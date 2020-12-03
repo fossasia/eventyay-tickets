@@ -165,7 +165,7 @@ class EventWizardTimelineForm(forms.ModelForm):
     deadline = forms.DateTimeField(
         required=False,
         help_text=_(
-            "The default deadline for your Call for Papers. You can assign additional deadlines to individual submission types, which will take precedence over this deadline."
+            "The default deadline for your Call for Papers. You can assign additional deadlines to individual session types, which will take precedence over this deadline."
         ),
     )
 

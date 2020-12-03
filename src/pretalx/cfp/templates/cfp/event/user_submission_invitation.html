@@ -2,21 +2,21 @@
 {% load bootstrap4 %}
 {% load i18n %}
 
-{% block title %}{% translate "Your submission" %} :: {% endblock %}
+{% block title %}{% translate "Your proposal" %} :: {% endblock %}
 
 {% block content %}
     <h2>
         <a href="{{ submission.urls.user_base }}">
-            {% translate "Your submission:" %} {{ submission.title }}
+            {% translate "Your proposal:" %} {{ submission.title }}
         </a>
     </h2>
     <p>
-        {% translate "Current state of your submission:" %}
+        {% translate "Current state of your proposal:" %}
         {% include "cfp/event/fragment_state.html" with state=submission.state %}
     </p>
     <div class="alert alert-info">
         {% blocktranslate trimmed %}
-            Invite another speaker to your submission here. Instead of letting us send an email,
+            Invite another speaker to your proposal here. Instead of letting us send an email,
             (which might get caught by spam filters) you can also give them this link:
         {% endblocktranslate %}
         <br>

@@ -293,7 +293,7 @@ class InfoStep(GenericFlowStep, FormFlowStep):
     @property
     def _text(self):
         return _(
-            "We're glad that you want to contribute to our event with your submission. Let's get started, this won't take long."
+            "We're glad that you want to contribute to our event with your proposal. Let's get started, this won't take long."
         )
 
     def get_form_kwargs(self):
@@ -359,7 +359,7 @@ class QuestionsStep(GenericFlowStep, FormFlowStep):
     @property
     def _text(self):
         return _(
-            "Before we can save your submission, we have some more questions for you."
+            "Before we can save your proposal, we have some more questions for you."
         )
 
     def is_applicable(self, request):
@@ -410,13 +410,13 @@ class UserStep(GenericFlowStep, FormFlowStep):
     @property
     def _title(self):
         return _(
-            "That's it about your submission! We now just need a way to contact you."
+            "That's it about your proposal! We now just need a way to contact you."
         )
 
     @property
     def _text(self):
         return _(
-            "To create your submission, you need an account on this page. This not only gives us a way to contact you, it also gives you the possibility to edit your submission or to view its current state."
+            "To create your proposal, you need an account on this page. This not only gives us a way to contact you, it also gives you the possibility to edit your proposal or to view its current state."
         )
 
     def is_applicable(self, request):
@@ -457,7 +457,7 @@ class ProfileStep(GenericFlowStep, FormFlowStep):
     @property
     def _text(self):
         return _(
-            "This information will be publicly displayed next to your talk - you can always edit for as long as submissions are still open."
+            "This information will be publicly displayed next to your session - you can always edit for as long as proposals are still open."
         )
 
     def get_form_kwargs(self):

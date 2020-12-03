@@ -56,9 +56,9 @@ STAGES = {
         "method": _is_cfp_open,
         "icon": "bullhorn",
         "links": [
-            {"title": _("Monitor submissions"), "url": ["orga_urls", "submissions"]},
+            {"title": _("Monitor proposals"), "url": ["orga_urls", "submissions"]},
             {
-                "title": _("Submit talks for your speakers"),
+                "title": _("Submit sessions for your speakers"),
                 "url": ["orga_urls", "new_submission"],
             },
             {"title": _("Invite reviewers"), "url": ["organiser", "orga_urls", "base"]},
@@ -71,7 +71,7 @@ STAGES = {
         "links": [
             {"title": _("Let reviewers do their work")},
             {
-                "title": _("Accept or reject submissions"),
+                "title": _("Accept or reject proposals"),
                 "url": ["orga_urls", "submissions"],
             },
             {"title": _("Build your first schedule"), "url": ["orga_urls", "schedule"]},
@@ -107,7 +107,7 @@ STAGES = {
         "icon": "pause",
         "links": [
             {"title": _("Monitor incoming feedback")},
-            {"title": _("Embed talk recordings if available")},
+            {"title": _("Embed session recordings if available")},
             {"title": _("Release next event date?")},
         ],
     },

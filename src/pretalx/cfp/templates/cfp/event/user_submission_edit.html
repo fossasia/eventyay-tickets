@@ -6,7 +6,7 @@
 {% load rules %}
 {% load static %}
 
-{% block title %}{% translate "Your submission" %} :: {% endblock %}
+{% block title %}{% translate "Your proposal" %} :: {% endblock %}
 
 
 {% block content %}
@@ -17,7 +17,7 @@
     {% endcompress %}
     <script src="{% static "vendored/marked.min.js" %}" defer></script> {# do not compress #}
     <script src="{% static "common/js/markdown.js" %}" defer></script>
-    <h2>{% translate "Your submission:" %} {{ submission.title }}</h2>
+    <h2>{% translate "Your proposal:" %} {{ submission.title }}</h2>
     {% if submission.public_slots %}
         <h3>
             <small>
@@ -28,7 +28,7 @@
         </h3>
     {% endif %}
     <p>
-        {% translate "Current state of your submission:" %}
+        {% translate "Current state of your proposal:" %}
         {% include "cfp/event/fragment_state.html" with state=submission.state %}
         {% if submission.state == 'accepted' %}
             <a href="{{ submission.urls.confirm }}" class="btn btn-sm btn-success">
@@ -39,7 +39,7 @@
                 {% if submission.does_accept_feedback %}
                     {% translate "Audience feedback" %}
                 {% else %}
-                    {% translate "Attendees can leave feedback here after your talk has taken place." %}
+                    {% translate "Attendees can leave feedback here after your session has taken place." %}
                 {% endif %}
             </a>
         {% endif %}
@@ -142,19 +142,19 @@
             </div>
         {% endif %}
     </form>
-    <h3>{% translate "Share submission" %}</h3>
+    <h3>{% translate "Share proposal" %}</h3>
     <p>
         {% blocktranslate trimmed %}
-            If you need a review from a colleague or a friend here's a link that you can send out for viewing your submission:
+            If you need a review from a colleague or a friend here's a link that you can send out for viewing your proposal:
         {% endblocktranslate %}
         <a target="_blank" rel="noopener" href="{{ submission.urls.review.full }}">{{ submission.urls.review.full }}</a>
     </p>
     {% if submission.state == "submitted" or submission.state == "accepted" %}
-        <h3>{% translate "Withdraw submission" %}</h3>
+        <h3>{% translate "Withdraw proposal" %}</h3>
         <p>
             {% blocktranslate trimmed %}
-                You can withdraw your submission from the selection process here. You cannot undo this - if you are
-                just uncertain if you can or should hold your talk, please contact the organiser instead.
+                You can withdraw your proposal from the selection process here. You cannot undo this - if you are
+                just uncertain if you can or should hold your session, please contact the organiser instead.
             {% endblocktranslate %}
         </p>
         <div class="row">
@@ -166,10 +166,10 @@
             </div>
         </div>
     {% elif submission.state == "confirmed" %}
-        <h3>{% translate "Cancel submission" %}</h3>
+        <h3>{% translate "Cancel proposal" %}</h3>
         <p>
             {% blocktranslate trimmed %}
-                As your submission has been accepted already, please contact the event's organising team to cancel
+                As your proposal has been accepted already, please contact the event's organising team to cancel
                 it. The best way to reach out would be an answer to your acceptance mail.
             {% endblocktranslate %}
         </p>

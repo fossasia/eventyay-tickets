@@ -98,7 +98,7 @@ hierarkey.add_default(
     "review_help_text",
     LazyI18nString.from_gettext(
         gettext_noop(
-            "Please give a fair review on why you'd like to see this submission at the conference, or why you think it would not be a good fit."
+            "Please give a fair review on why you'd like to see this proposal at the conference, or why you think it would not be a good fit."
         )
     ),
     LazyI18nString,
@@ -123,7 +123,7 @@ hierarkey.add_default(
         gettext_noop(
             """Hi,
 
-you have received a new submission for your event {event_name}:
+you have received a new proposal for your event {event_name}:
 “{submission_title}” by {speakers}.
 You can see details at
 
@@ -150,7 +150,7 @@ we hope you're happy with pretalx as your event's CfP system.
 These links may be helpful in the coming days and weeks:
 
 - Your event's dashboard: {event_dashboard}
-- A list of submissions: {event_submissions}
+- A list of proposals: {event_submissions}
 - Your schedule editor: {event_schedule}
 
 If there is anything you're missing, come tell us about it
@@ -168,12 +168,12 @@ hierarkey.add_default(
             """Hi,
 
 just writing you to let you know that your Call for Participation is now
-closed. You'll find a list of all your {submission_count} submissions here:
+closed. You'll find a list of all your {submission_count} proposals here:
 {event_submissions}
 
 You can add reviewers here: {event_team}
-You can review submissions here: {event_review}
-And create your schedule here, once you have accepted submissions: {event_schedule}
+You can review proposals here: {event_review}
+And create your schedule here, once you have accepted proposals: {event_schedule}
 """
         )
     ),
@@ -188,8 +188,8 @@ hierarkey.add_default(
 congratulations, your event is over! Hopefully it went well. Here are some
 statistics you might find interesting:
 
-- You had {submission_count} talk submissions,
-- Of which you selected {talk_count} talks.
+- You had {submission_count} proposals,
+- Of which you selected {talk_count} sessions.
 - The reviewers wrote {review_count} reviews.
 - You released {schedule_count} schedules in total.
 - Over the course of the event, you sent {mail_count} mails.
