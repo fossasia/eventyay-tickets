@@ -17,13 +17,13 @@ def export_schedule_html(*, event_id: int, make_zip=True):
             Event.objects.prefetch_related("submissions").filter(pk=event_id).first()
         )
     if not event:
-        LOGGER.error(f"In export_schedule_html: Could not find Event ID {event_id}")
+        LOGGER.error(f"Could not find Event ID {event_id} for export.")
         return
 
     with scope(event=event):
         if not event.current_schedule:
             LOGGER.error(
-                f"In export_schedule_html: Event {event.slug} has no schedule."
+                f"Event {event.slug} could not be exported: it has no schedule."
             )
             return
 

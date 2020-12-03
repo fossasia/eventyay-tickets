@@ -7,9 +7,10 @@ from .views import featured, feed, schedule, speaker, talk, widget
 
 
 def get_schedule_urls(regex_prefix, name_prefix=""):
-    """given a prefix (e.g. /schedule) generate matching schedule-URLs (e.g.
+    """Given a prefix (e.g. /schedule), generate matching schedule-URLs.
 
-    /schedule.json, /schedule/feed.xml, ...)
+    This is useful to generate the same export URLs for main and versioned
+    schedule URLs.
     """
 
     regex_prefix = regex_prefix.rstrip("/")

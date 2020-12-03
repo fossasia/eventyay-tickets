@@ -1,9 +1,6 @@
-"""WSGI config for pretalx project.
+"""WSGI config for pretalx.
 
-It exposes the WSGI callable as a module-level variable named ``application``.
-
-For more information on this file, see
-https://docs.djangoproject.com/en/dev/howto/deployment/wsgi/
+Use with gunicorn or uwsgi.
 """
 
 import os

@@ -1,3 +1,4 @@
+{% load i18n %}
 {% load rich_text %}
 
 <div class="pretalx-session">
@@ -32,7 +33,7 @@
                 {% endfor %}
             </ul>
         {% elif sessions %}
-            {{ phrases.agenda.speaker_other_talk }}
+            {% translate "This speaker also appears in:" %}
             <ul>
                 {% for talk in sessions %}
                     <li>

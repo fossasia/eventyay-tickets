@@ -18,7 +18,7 @@
     {% if schedule != schedule.event.current_schedule %}
         <div class="alert alert-warning m-3"><span>
             {% if not schedule.version %}
-                {{ phrases.agenda.schedule_editable }}
+              {% translate "You are currently viewing the editable schedule version, which is unreleased and may change at any time." %}
             {% else %}
                 {% blocktranslate trimmed with current_url=schedule.event.urls.schedule %}
                     You are currently viewing an older schedule version.
