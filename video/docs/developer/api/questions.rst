@@ -28,7 +28,10 @@ To enable questions for a room, add the questions module to the room modules.
 		"name": "Room with questions",
 		"modules": [{
 			type: 'questions',
-			config: {}
+			config: {
+				active: true,  // false by default
+				requires_moderation: false  // true by default
+			}
 		}],
 		…
 }

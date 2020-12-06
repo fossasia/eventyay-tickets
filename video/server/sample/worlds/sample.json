@@ -65,6 +65,9 @@
       "room:bbb.join",
       "room:chat.send",
       "room:chat.join",
+      "room:questions.read",
+      "room:questions.ask",
+      "room:questions.vote",
       "world:exhibition.contact"
     ],
     "room_creator": [
@@ -106,6 +109,10 @@
       "room:chat.moderate",
       "room:announce",
       "world:exhibition.contact",
+      "room:questions.read",
+      "room:questions.ask",
+      "room:questions.vote",
+      "room:questions.moderate",
       "world:announce"
     ],
     "admin": [
@@ -243,6 +250,9 @@
           "config": {
             "hls_url": "https://s1.live.pretix.eu/hls/sample.m3u8"
           }
+        },
+        {
+          "type": "questions"
         },
         {
           "type": "chat.native",
