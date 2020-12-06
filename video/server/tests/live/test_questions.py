@@ -108,6 +108,7 @@ async def test_ask_question(questions_room, world):
             response = await c.receive_json_from()
             assert response == [
                 "error",
+                123,
                 {'code': 'protocol.denied', 'message': 'Permission denied.'}
             ]
 

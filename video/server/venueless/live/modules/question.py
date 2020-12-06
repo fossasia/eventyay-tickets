@@ -74,7 +74,7 @@ class QuestionModule(BaseModule):
             if requires_moderation
             else GROUP_ROOM_QUESTION_READ
         )
-        self.consumer.channel_layer.group_send(
+        await self.consumer.channel_layer.group_send(
             group.format(id=self.room.pk),
             {
                 "type": "question.question",
@@ -104,7 +104,7 @@ class QuestionModule(BaseModule):
             if old_question["state"] != Question.States.VISIBLE and new_question["state"] != Question.States.VISIBLE
             else GROUP_ROOM_QUESTION_READ
         )
-        self.consumer.channel_layer.group_send(
+        await self.consumer.channel_layer.group_send(
             group.format(id=self.room.pk),
             {
                 "type": "question.question",
