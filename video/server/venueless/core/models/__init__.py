@@ -9,6 +9,7 @@ from .exhibitor import (
     ExhibitorSocialMediaLink,
     ExhibitorStaff,
 )
+from .question import Question, QuestionVote
 from .room import Room
 from .world import World
 
@@ -20,6 +21,8 @@ __all__ = [
     "ChatEvent",
     "Channel",
     "Membership",
+    "Question",
+    "QuestionVote",
     "Room",
     "World",
     "Exhibitor",
