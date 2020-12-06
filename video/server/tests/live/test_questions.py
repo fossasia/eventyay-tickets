@@ -3,12 +3,9 @@ import uuid
 from contextlib import asynccontextmanager
 
 import pytest
-from channels.db import database_sync_to_async
 from channels.testing import WebsocketCommunicator
 from tests.utils import get_token
 
-from venueless.core.services.chat import ChatService
-from venueless.core.utils.redis import aioredis
 from venueless.routing import application
 
 
@@ -65,7 +62,9 @@ async def test_ask_question_when_not_active(inactive_questions_room):
 @pytest.mark.django_db
 async def test_ask_question(questions_room, world):
     async with world_communicator(room=questions_room) as c:
-        async with world_communicator(room=questions_room, token=get_token(world, ["moderator"])) as c_mod:
+        async with world_communicator(
+            room=questions_room, token=get_token(world, ["moderator"])
+        ) as c_mod:
             await c.send_json_to(
                 [
                     "question.ask",
@@ -101,7 +100,7 @@ async def test_ask_question(questions_room, world):
                     {
                         "id": question_id,
                         "room": str(questions_room.id),
-                        "content": "Where is your favourite colour?",
+                        "content": "When is your favourite colour?",
                     },
                 ]
             )
@@ -109,10 +108,12 @@ async def test_ask_question(questions_room, world):
             assert response == [
                 "error",
                 123,
-                {'code': 'protocol.denied', 'message': 'Permission denied.'}
+                {"code": "protocol.denied", "message": "Permission denied."},
             ]
 
             response = await c_mod.receive_json_from()
+            response[1]["question"]["id"] = -1
+            response[1]["question"]["timestamp"] = -1
             assert response == [
                 "question.question",
                 {
@@ -133,15 +134,29 @@ async def test_ask_question(questions_room, world):
                     {
                         "id": question_id,
                         "room": str(questions_room.id),
-                        "content": "Where is your favourite colour?",
+                        "content": "When is your favourite colour?",
                     },
                 ]
             )
-            response = await c.receive_json_from()
+            response = await c_mod.receive_json_from()
+            response[2]["question"]["id"] = -1
+            response[2]["question"]["timestamp"] = -1
             assert response == [
                 "success",
-                {}
+                123,
+                {
+                    "question": {
+                        "answered": False,
+                        "content": "When is your favourite colour?",
+                        "id": -1,
+                        "room_id": str(questions_room.id),
+                        "state": "mod_queue",
+                        "timestamp": -1,
+                    }
+                },
             ]
+            with pytest.raises(asyncio.TimeoutError):
+                await c.receive_json_from()
 
 
 @pytest.mark.asyncio
@@ -178,8 +193,8 @@ async def test_ask_question_unmoderated_room(unmoderated_questions_room):
         ]
 
         response = await c.receive_json_from()
-        response[2]["id"] = -1
-        response[2]["timestamp"] = -1
+        response[1]["question"]["id"] = -1
+        response[1]["question"]["timestamp"] = -1
         assert response == [
             "question.question",
             {

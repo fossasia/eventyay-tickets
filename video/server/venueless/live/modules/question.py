@@ -1,27 +1,13 @@
-import asyncio
 import logging
-import time
 from functools import cached_property
 
-from channels.db import database_sync_to_async
-from channels.layers import get_channel_layer
-from django.conf import settings
-from django.core.exceptions import ValidationError
-from sentry_sdk import add_breadcrumb, configure_scope
-
 from venueless.core.models.question import Question
-from venueless.core.models.room import RoomConfigSerializer
 from venueless.core.permissions import Permission
-from venueless.core.services.question import create_question, get_question, update_question
-from venueless.core.services.reactions import store_reaction
-from venueless.core.services.room import delete_room, end_view, save_room, start_view
-from venueless.core.services.world import (
-    create_room,
-    get_room_config_for_user,
-    get_rooms,
-    notify_world_change,
+from venueless.core.services.question import (
+    create_question,
+    get_question,
+    update_question,
 )
-from venueless.core.utils.redis import aioredis
 from venueless.live.channels import (
     GROUP_ROOM_QUESTION_MODERATE,
     GROUP_ROOM_QUESTION_READ,
@@ -29,10 +15,8 @@ from venueless.live.channels import (
 from venueless.live.decorators import (
     command,
     event,
-    require_world_permission,
     room_action,
 )
-from venueless.live.exceptions import ConsumerException
 from venueless.live.modules.base import BaseModule
 
 logger = logging.getLogger(__name__)
@@ -91,9 +75,9 @@ class QuestionModule(BaseModule):
             return
 
         old_question = await get_question(body.get("id"), self.room)
+        body["room"] = self.room
         new_question = await update_question(
             moderator=self.consumer.user,
-            room=self.room,
             **body,
         )
 
@@ -101,7 +85,8 @@ class QuestionModule(BaseModule):
 
         group = (
             GROUP_ROOM_QUESTION_MODERATE
-            if old_question["state"] != Question.States.VISIBLE and new_question["state"] != Question.States.VISIBLE
+            if old_question["state"] != Question.States.VISIBLE
+            and new_question["state"] != Question.States.VISIBLE
             else GROUP_ROOM_QUESTION_READ
         )
         await self.consumer.channel_layer.group_send(
@@ -109,6 +94,12 @@ class QuestionModule(BaseModule):
             {
                 "type": "question.question",
                 "room": str(self.room.pk),
-                "question": question,
+                "question": new_question,
             },
+        )
+
+    @event("question")
+    async def push_question(self, body):
+        await self.consumer.send_json(
+            ["question.question", {"question": body.get("question")}]
         )

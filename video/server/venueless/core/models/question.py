@@ -1,9 +1,7 @@
 import uuid
 from functools import cached_property
 
-from django.contrib.postgres.fields import JSONField
 from django.db import models
-from rest_framework import serializers
 
 
 class Question(models.Model):

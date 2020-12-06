@@ -16,7 +16,9 @@ def get_question(pk, room):
 
 
 @database_sync_to_async
-def update_question(moderator, room, **kwargs):
-    question = Question.objects.get(pk=kwargs["id"], room=room)
-    question.update(moderator=moderator, **kwargs)
+def update_question(**kwargs):
+    question = Question.objects.get(pk=kwargs["id"], room=kwargs["room"])
+    for key, value in kwargs.items():
+        setattr(question, key, value)
+    question.save()
     return question.serialize_public()
