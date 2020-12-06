@@ -61,6 +61,13 @@ To update a question (only permitted for moderators), send a message like this::
     => ["question.ask", 1234, {"room": "room_0", "content": "What is your favourite colour?"}]
     <- ["success", 1234, {"question": {…}}]
 
+## ``question.list``
+
+Given a room ID, return all the questions that are visible to the user::
+
+    => ["question.list", 1234, {"room": "room_0"}]
+    <- ["success", 1234, [{"id": }, ...]
+
 ## ``question.vote``
 up or none
 

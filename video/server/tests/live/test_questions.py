@@ -95,6 +95,19 @@ async def test_ask_question(questions_room, world):
             ]
             await c.send_json_to(
                 [
+                    "question.list",
+                    123,
+                    {
+                        "room": str(questions_room.id),
+                    },
+                ]
+            )
+            response = await c.receive_json_from()
+            assert response[0] == "success"
+            assert len(response[2]) == 1
+            assert response[2][0]["id"] == question_id
+            await c.send_json_to(
+                [
                     "question.update",
                     123,
                     {
@@ -127,6 +140,19 @@ async def test_ask_question(questions_room, world):
                     }
                 },
             ]
+            await c_mod.send_json_to(
+                [
+                    "question.list",
+                    123,
+                    {
+                        "room": str(questions_room.id),
+                    },
+                ]
+            )
+            response = await c_mod.receive_json_from()
+            assert response[0] == "success"
+            assert len(response[2]) == 1
+            assert response[2][0]["id"] == question_id
             await c_mod.send_json_to(
                 [
                     "question.update",

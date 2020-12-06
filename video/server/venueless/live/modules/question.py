@@ -6,17 +6,14 @@ from venueless.core.permissions import Permission
 from venueless.core.services.question import (
     create_question,
     get_question,
+    get_questions,
     update_question,
 )
 from venueless.live.channels import (
     GROUP_ROOM_QUESTION_MODERATE,
     GROUP_ROOM_QUESTION_READ,
 )
-from venueless.live.decorators import (
-    command,
-    event,
-    room_action,
-)
+from venueless.live.decorators import command, event, room_action
 from venueless.live.modules.base import BaseModule
 
 logger = logging.getLogger(__name__)
@@ -97,6 +94,28 @@ class QuestionModule(BaseModule):
                 "question": new_question,
             },
         )
+
+    @command("list")
+    @room_action(permission_required=Permission.ROOM_QUESTION_READ)
+    async def list_questions(self, body):
+        questions = []
+        if await self.consumer.world.has_permission_async(
+            user=self.consumer.user,
+            room=self.room,
+            permission=Permission.ROOM_QUESTION_MODERATE,
+        ):
+            questions = await get_questions(room=self.room.id)
+        elif await self.consumer.world.has_permission_async(
+            user=self.consumer.user,
+            room=self.room,
+            permission=Permission.ROOM_QUESTION_READ,
+        ):
+            questions = await get_questions(
+                room=self.room.id,
+                state=Question.States.VISIBLE,
+                add_by_user=self.consumer.user,
+            )
+        await self.consumer.send_success(questions)
 
     @event("question")
     async def push_question(self, body):
