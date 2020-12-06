@@ -92,6 +92,13 @@ def chat_room(rooms):
 
 
 @pytest.fixture
+def questions_room(rooms):
+    for room in rooms:  # pragma: no cover
+        if any("questions" == module["type"] for module in room.module_config):
+            return room
+
+
+@pytest.fixture
 def stream_room(rooms):
     for room in rooms:  # pragma: no cover
         if any("livestream.native" == module["type"] for module in room.module_config):
