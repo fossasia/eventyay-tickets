@@ -18,6 +18,16 @@ To clear questions after or before a logical session, single questions can be de
 }
 ```
 
+Permissions
+-----------
+
+There are four permissions involved with the questions API:
+
+- `room:questions.read` to be able to see questions at all
+- `room:questions.ask` to be able to ask questions
+- `room:questions.vote` to be able to vote on questions
+- `room:questions.moderate` to be able to update or delete questions, and to activate and deactivate the questions module
+
 Room Config
 -----------
 
@@ -46,11 +56,7 @@ up or none
 
 ## `question.delete`
 
-## `question.lock`
-
 TODOs
 -----
 
-- permissions
-- module config (somehow signal that questions are enabled in a room)
-- keep deleted questions for archival and replay, or wait until unified event stream is implemented?
+- add moderator command `questions.activate` that updates the module config
