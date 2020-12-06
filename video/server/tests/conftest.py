@@ -94,7 +94,31 @@ def chat_room(rooms):
 @pytest.fixture
 def questions_room(rooms):
     for room in rooms:  # pragma: no cover
-        if any("questions" == module["type"] for module in room.module_config):
+        if any(
+            "question" == module["type"] and module["config"]["active"]
+            for module in room.module_config
+        ):
+            return room
+
+
+@pytest.fixture
+def inactive_questions_room(rooms):
+    for room in rooms:  # pragma: no cover
+        if any(
+            "question" == module["type"] and not module["config"].get("active")
+            for module in room.module_config
+        ):
+            return room
+
+
+@pytest.fixture
+def unmoderated_questions_room(rooms):
+    for room in rooms:  # pragma: no cover
+        if any(
+            "question" == module["type"]
+            and not module["config"].get("requires_moderation", True)
+            for module in room.module_config
+        ):
             return room
 
 

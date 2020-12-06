@@ -3,6 +3,7 @@ from functools import cached_property
 
 from django.contrib.postgres.fields import JSONField
 from django.db import models
+from rest_framework import serializers
 
 
 class Question(models.Model):
@@ -53,3 +54,16 @@ class QuestionVote(models.Model):
         on_delete=models.CASCADE,
         related_name="question_votes",
     )
+
+
+class QuestionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Question
+        fields = (
+            "id",
+            "content",
+            "state",
+            "answered",
+            "timestamp",
+            "room_id",
+        )

@@ -29,10 +29,10 @@ class Permission(Enum):
     ROOM_BBB_JOIN = "room:bbb.join"
     ROOM_BBB_MODERATE = "room:bbb.moderate"
     ROOM_BBB_RECORDINGS = "room:bbb.recordings"
-    ROOM_QUESTIONS_READ = "room:questions.read"
-    ROOM_QUESTIONS_ASK = "room:questions.ask"
-    ROOM_QUESTIONS_VOTE = "room:questions.vote"
-    ROOM_QUESTIONS_MODERATE = "room:questions.moderate"
+    ROOM_QUESTION_READ = "room:question.read"
+    ROOM_QUESTION_ASK = "room:question.ask"
+    ROOM_QUESTION_VOTE = "room:question.vote"
+    ROOM_QUESTION_MODERATE = "room:question.moderate"
 
 
 MAX_PERMISSIONS_IF_SILENCED = {

@@ -65,9 +65,9 @@
       "room:bbb.join",
       "room:chat.send",
       "room:chat.join",
-      "room:questions.read",
-      "room:questions.ask",
-      "room:questions.vote",
+      "room:question.read",
+      "room:question.ask",
+      "room:question.vote",
       "world:exhibition.contact"
     ],
     "room_creator": [
@@ -109,10 +109,10 @@
       "room:chat.moderate",
       "room:announce",
       "world:exhibition.contact",
-      "room:questions.read",
-      "room:questions.ask",
-      "room:questions.vote",
-      "room:questions.moderate",
+      "room:question.read",
+      "room:question.ask",
+      "room:question.vote",
+      "room:question.moderate",
       "world:announce"
     ],
     "admin": [
@@ -252,7 +252,10 @@
           }
         },
         {
-          "type": "questions"
+          "type": "question",
+          "config": {
+            "active": true
+          }
         },
         {
           "type": "chat.native",
@@ -278,6 +281,13 @@
           "config": {
             "record": false
           }
+        },
+        {
+          "type": "question",
+          "config": {
+            "active": true,
+            "requires_moderation": false
+          }
         }
       ]
     },
@@ -295,6 +305,12 @@
           "type": "livestream.native",
           "config": {
             "hls_url": "https://s1.live.pretix.eu/hls/sample.m3u8"
+          }
+        },
+        {
+          "type": "question",
+          "config": {
+            "active": false
           }
         },
         {

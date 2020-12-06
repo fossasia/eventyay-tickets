@@ -21,10 +21,10 @@ Permissions
 
 There are four permissions involved with the questions API:
 
-- ``room:questions.read`` to be able to see questions at all
-- ``room:questions.ask`` to be able to ask questions
-- ``room:questions.vote`` to be able to vote on questions
-- ``room:questions.moderate`` to be able to update or delete questions, and to activate and deactivate the questions module
+- ``room:question.read`` to be able to see questions at all
+- ``room:question.ask`` to be able to ask questions
+- ``room:question.vote`` to be able to vote on questions
+- ``room:question.moderate`` to be able to update or delete questions, and to activate and deactivate the questions module
 
 Room Config
 -----------
@@ -34,7 +34,7 @@ To enable questions for a room, add the questions module to the room modules::
     {
         "name": "Room with questions",
         "modules": [{
-            type: 'questions',
+            type: 'question',
             config: {
                 active: true,  // false by default
                 requires_moderation: false  // true by default

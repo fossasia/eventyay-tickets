@@ -19,7 +19,11 @@ from venueless.core.services.world import (
     notify_world_change,
 )
 from venueless.core.utils.redis import aioredis
-from venueless.live.channels import GROUP_ROOM
+from venueless.live.channels import (
+    GROUP_ROOM,
+    GROUP_ROOM_QUESTION_MODERATE,
+    GROUP_ROOM_QUESTION_READ,
+)
 from venueless.live.decorators import (
     command,
     event,
@@ -45,6 +49,26 @@ class RoomModule(BaseModule):
         await self.consumer.channel_layer.group_add(
             GROUP_ROOM.format(id=self.room.pk), self.consumer.channel_name
         )
+        if await self.consumer.world.has_permission_async(
+            user=self.consumer.user,
+            room=self.room,
+            permission=Permission.ROOM_QUESTION_READ,
+        ):
+            await self.consumer.channel_layer.group_add(
+                GROUP_ROOM_QUESTION_READ.format(id=self.room.pk),
+                self.consumer.channel_name,
+            )
+
+        if await self.consumer.world.has_permission_async(
+            user=self.consumer.user,
+            room=self.room,
+            permission=Permission.ROOM_QUESTION_MODERATE,
+        ):
+            await self.consumer.channel_layer.group_add(
+                GROUP_ROOM_QUESTION_MODERATE.format(id=self.room.pk),
+                self.consumer.channel_name,
+            )
+
         if self.consumer.world.config.get("track_room_views", True):
             self.current_views[self.room] = await start_view(
                 self.room, self.consumer.user
@@ -62,6 +86,13 @@ class RoomModule(BaseModule):
     async def _leave_room(self, room):
         await self.consumer.channel_layer.group_discard(
             GROUP_ROOM.format(id=room.pk), self.consumer.channel_name
+        )
+        await self.consumer.channel_layer.group_discard(
+            GROUP_ROOM_QUESTION_MODERATE.format(id=self.room.pk),
+            self.consumer.channel_name,
+        )
+        await self.consumer.channel_layer.group_discard(
+            GROUP_ROOM_QUESTION_READ.format(id=self.room.pk), self.consumer.channel_name
         )
         if room in self.current_views:
             await end_view(self.current_views[room])
