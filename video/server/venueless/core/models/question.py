@@ -44,6 +44,16 @@ class Question(models.Model):
     def score(self):
         return self.votes.all().count()
 
+    def serialize_public(self):
+        return {
+            "id": str(self.id),
+            "content": self.content,
+            "state": self.state,
+            "answered": self.answered,
+            "timestamp": self.timestamp.isoformat(),
+            "room_id": str(self.room_id),
+        }
+
 
 class QuestionVote(models.Model):
     question = models.ForeignKey(
@@ -54,16 +64,3 @@ class QuestionVote(models.Model):
         on_delete=models.CASCADE,
         related_name="question_votes",
     )
-
-
-class QuestionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Question
-        fields = (
-            "id",
-            "content",
-            "state",
-            "answered",
-            "timestamp",
-            "room_id",
-        )
