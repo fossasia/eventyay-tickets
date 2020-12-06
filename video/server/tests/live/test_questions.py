@@ -63,35 +63,84 @@ async def test_ask_question_when_not_active(inactive_questions_room):
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
-async def test_ask_question(questions_room):
+async def test_ask_question(questions_room, world):
     async with world_communicator(room=questions_room) as c:
-        await c.send_json_to(
-            [
-                "question.ask",
+        async with world_communicator(room=questions_room, token=get_token(world, ["moderator"])) as c_mod:
+            await c.send_json_to(
+                [
+                    "question.ask",
+                    123,
+                    {
+                        "room": str(questions_room.id),
+                        "content": "What is your favourite colour?",
+                    },
+                ]
+            )
+            response = await c.receive_json_from()
+            question_id = response[2]["question"]["id"]
+            response[2]["question"]["id"] = -1
+            response[2]["question"]["timestamp"] = -1
+            assert response == [
+                "success",
                 123,
                 {
-                    "room": str(questions_room.id),
-                    "content": "What is your favourite colour?",
+                    "question": {
+                        "answered": False,
+                        "content": "What is your favourite colour?",
+                        "id": -1,
+                        "room_id": str(questions_room.id),
+                        "state": "mod_queue",
+                        "timestamp": -1,
+                    }
                 },
             ]
-        )
-        response = await c.receive_json_from()
-        response[2]["question"]["id"] = -1
-        response[2]["question"]["timestamp"] = -1
-        assert response == [
-            "success",
-            123,
-            {
-                "question": {
-                    "answered": False,
-                    "content": "What is your favourite colour?",
-                    "id": -1,
-                    "room_id": str(questions_room.id),
-                    "state": "mod_queue",
-                    "timestamp": -1,
-                }
-            },
-        ]
+            await c.send_json_to(
+                [
+                    "question.update",
+                    123,
+                    {
+                        "id": question_id,
+                        "room": str(questions_room.id),
+                        "content": "Where is your favourite colour?",
+                    },
+                ]
+            )
+            response = await c.receive_json_from()
+            assert response == [
+                "error",
+                {'code': 'protocol.denied', 'message': 'Permission denied.'}
+            ]
+
+            response = await c_mod.receive_json_from()
+            assert response == [
+                "question.question",
+                {
+                    "question": {
+                        "answered": False,
+                        "content": "What is your favourite colour?",
+                        "id": -1,
+                        "room_id": str(questions_room.id),
+                        "state": "mod_queue",
+                        "timestamp": -1,
+                    }
+                },
+            ]
+            await c_mod.send_json_to(
+                [
+                    "question.update",
+                    123,
+                    {
+                        "id": question_id,
+                        "room": str(questions_room.id),
+                        "content": "Where is your favourite colour?",
+                    },
+                ]
+            )
+            response = await c.receive_json_from()
+            assert response == [
+                "success",
+                {}
+            ]
 
 
 @pytest.mark.asyncio

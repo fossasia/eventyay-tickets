@@ -50,7 +50,16 @@ To ask a question, send a message like this::
     => ["question.ask", 1234, {"room": "room_0", "content": "What is your favourite colour?"}]
     <- ["success", 1234, {"question": {…}}]
 
+On creates and on updates, all people in the room who have the required access rights will receive a message like this::
+
+    <- ["question.question", {"room": 123, "question": {…}}]
+
 ## ``question.update``
+
+To update a question (only permitted for moderators), send a message like this::
+
+    => ["question.ask", 1234, {"room": "room_0", "content": "What is your favourite colour?"}]
+    <- ["success", 1234, {"question": {…}}]
 
 ## ``question.vote``
 up or none
