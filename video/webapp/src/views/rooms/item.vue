@@ -19,12 +19,19 @@
 		UserListPage(v-else-if="modules['page.userlist']", :module="modules['page.userlist']")
 		iframe-page(v-else-if="modules['page.iframe']", :module="modules['page.iframe']")
 		exhibition(v-else-if="modules['exhibition.native']", :room="room")
-		chat(v-if="modules['chat.native']", :room="room", :module="modules['chat.native']", :mode="room.modules.length === 1 ? 'standalone' : 'compact'", :key="room.id")
+		.room-sidebar(v-if="modules['chat'] || modules['question']")
+			bunt-tabs(v-if="modules['question']", :active-tab="activeSidebarTab")
+				bunt-tab(id="chat", :header="$t('Room:sidebar:tabs-header:chat')", @selected="activeSidebarTab = 'chat'")
+				bunt-tab(id="questions", :header="$t('Room:sidebar:tabs-header:questions')", @selected="activeSidebarTab = 'questions'")
+			chat(v-show="modules['chat.native'] && activeSidebarTab === 'chat'", :room="room", :module="modules['chat.native']", :mode="room.modules.length === 1 ? 'standalone' : 'compact'", :key="room.id")
+			questions(v-show="modules['question'] && activeSidebarTab === 'questions'")
 	transition(name="prompt")
 		recordings-prompt(:room="room", v-if="showRecordingsPrompt", @close="showRecordingsPrompt = false")
 	edit-room-schedule(v-if="showEditSchedule", :room="room", :currentSession="currentSession", @close="showEditSchedule = false")
 </template>
 <script>
+// TODO
+// - questions without chat
 import {mapGetters, mapState} from 'vuex'
 import EditRoomSchedule from './EditRoomSchedule'
 import Chat from 'components/Chat'
@@ -37,10 +44,11 @@ import ReactionsBar from 'components/ReactionsBar'
 import ReactionsOverlay from 'components/ReactionsOverlay'
 import RecordingsPrompt from 'components/RecordingsPrompt'
 import UserListPage from 'components/UserListPage'
+import Questions from 'components/Questions'
 
 export default {
 	name: 'Room',
-	components: { EditRoomSchedule, Chat, Exhibition, Livestream, LandingPage, MarkdownPage, IframePage, ReactionsBar, ReactionsOverlay, RecordingsPrompt, UserListPage },
+	components: { EditRoomSchedule, Chat, Exhibition, Livestream, LandingPage, MarkdownPage, IframePage, ReactionsBar, ReactionsOverlay, RecordingsPrompt, UserListPage, Questions },
 	props: {
 		roomId: String
 	},
@@ -48,6 +56,7 @@ export default {
 		return {
 			showRecordingsPrompt: false,
 			showEditSchedule: false,
+			activeSidebarTab: 'chat', // chat, questions
 			activeStageTool: null // reaction, qa
 		}
 	},
@@ -114,6 +123,19 @@ export default {
 		flex: auto
 	.livestream-placeholder
 		flex: auto
+	.room-sidebar
+		display: flex
+		flex-direction: column
+		min-height: 0
+		width: var(--chatbar-width)
+		flex: none
+		border-left: border-separator()
+		> .bunt-tabs
+			tabs-style(active-color: var(--clr-primary), indicator-color: var(--clr-primary), background-color: transparent)
+			margin: 0
+			border-bottom: border-separator()
+			.bunt-tabs-header-items
+				justify-content: center
 	.stage-tools
 		flex: none
 		display: flex
@@ -152,9 +174,7 @@ export default {
 			flex: auto
 	&:not(.standalone-chat)
 		.c-chat
-			border-left: border-separator()
-			flex: none
-			width: var(--chatbar-width)
+			min-height: 0
 	+below('m')
 		.main
 			flex-direction: column

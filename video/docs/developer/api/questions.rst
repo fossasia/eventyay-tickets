@@ -11,7 +11,7 @@ To clear questions after or before a logical session, single questions can be de
 	user: Number,
 	timestamp: Datetime,
 	content: String,
-	state/visible_to: String, // 'to_be_moderated', 'visible', 'archived'
+	state: String, // 'mod_queue', 'visible', 'archived'
 	answered: Boolean,
 	votes: Number
     }
@@ -52,13 +52,13 @@ To ask a question, send a message like this::
 
 On creates and on updates, all people in the room who have the required access rights will receive a message like this::
 
-    <- ["question.question", {"room": 123, "question": {…}}]
+    <- ["question.created_or_updated", {"room": 123, "question": {…}}]
 
 ## ``question.update``
 
 To update a question (only permitted for moderators), send a message like this::
 
-    => ["question.ask", 1234, {"room": "room_0", "content": "What is your favourite colour?"}]
+    => ["question.update", 1234, {"room": 123, "id": "UUID", "state": "visible"}]
     <- ["success", 1234, {"question": {…}}]
 
 ## ``question.list``

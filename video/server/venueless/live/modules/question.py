@@ -58,7 +58,7 @@ class QuestionModule(BaseModule):
         await self.consumer.channel_layer.group_send(
             group.format(id=self.room.pk),
             {
-                "type": "question.question",
+                "type": "question.created_or_updated",
                 "room": str(self.room.pk),
                 "question": question,
             },
@@ -89,7 +89,7 @@ class QuestionModule(BaseModule):
         await self.consumer.channel_layer.group_send(
             group.format(id=self.room.pk),
             {
-                "type": "question.question",
+                "type": "question.created_or_updated",
                 "room": str(self.room.pk),
                 "question": new_question,
             },
@@ -117,8 +117,8 @@ class QuestionModule(BaseModule):
             )
         await self.consumer.send_success(questions)
 
-    @event("question")
+    @event("created_or_updated")
     async def push_question(self, body):
         await self.consumer.send_json(
-            ["question.question", {"question": body.get("question")}]
+            ["question.created_or_updated", {"question": body.get("question")}]
         )

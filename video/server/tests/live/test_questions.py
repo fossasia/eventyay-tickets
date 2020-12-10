@@ -128,7 +128,7 @@ async def test_ask_question(questions_room, world):
             response[1]["question"]["id"] = -1
             response[1]["question"]["timestamp"] = -1
             assert response == [
-                "question.question",
+                "question.created_or_updated",
                 {
                     "question": {
                         "answered": False,
@@ -222,7 +222,7 @@ async def test_ask_question_unmoderated_room(unmoderated_questions_room):
         response[1]["question"]["id"] = -1
         response[1]["question"]["timestamp"] = -1
         assert response == [
-            "question.question",
+            "question.created_or_updated",
             {
                 "question": {
                     "answered": False,

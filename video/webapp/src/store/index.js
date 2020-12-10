@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import api from 'lib/api'
 import chat from './chat'
+import question from './question'
 import exhibition from './exhibition'
 import schedule from './schedule'
 
@@ -109,9 +110,10 @@ export default new Vuex.Store({
 		async createRoom ({state}, room) {
 			return await api.call('room.create', room)
 		},
-		changeRoom ({state}, room) {
+		changeRoom ({state, dispatch}, room) {
 			state.activeRoom = room
 			state.reactions = null
+			dispatch('question/changeRoom', room)
 		},
 		async addReaction ({state}, reaction) {
 			if (!state.activeRoom || !state.connected) return
@@ -154,6 +156,7 @@ export default new Vuex.Store({
 	},
 	modules: {
 		chat,
+		question,
 		exhibition,
 		schedule
 	}

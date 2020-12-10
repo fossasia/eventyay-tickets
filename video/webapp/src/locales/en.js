@@ -135,6 +135,8 @@ export default {
 	'Exhibitor:staff-headline:text': 'Our team at this event',
 	'Exhibitor:downloads-headline:text': 'Downloads',
 	'Room:recordings:tooltip': 'View recordings',
+	'Room:sidebar:tabs-header:chat': 'Chat',
+	'Room:sidebar:tabs-header:questions': 'Questions',
 	'RecordingsPrompt:headline:text': 'Recordings',
 	'RecordingsPrompt:info:text': 'Please note that recordings start processing and showing up here only a few minutes after the meeting has ended (usually, if the room was empty for a while).',
 	'RecordingsPrompt:error:text': 'Failed to load recordings from the sever.',
@@ -194,5 +196,11 @@ export default {
 	'DeletePrompt:button:label': 'delete',
 	'DeletePrompt:button:warning': 'This action cannot be undone!',
 	'DeletePrompt:confirm:text': 'This action cannot be undone. Please type in the name to confirm.',
-	'DirectMessage:notification-unread:text': 'New messages'
+	'DirectMessage:notification-unread:text': 'New messages',
+	'Questions:ask-question-button:label': 'Ask a Question',
+	'Questions:asking-form:label': 'Ask your question',
+	'Questions:asking-form:submit': 'Submit your question',
+	'Questions:empty-placeholder': 'No questions yet, why not ask one?',
+	'Questions:asking-form:mod-approve-question:label': 'approve',
+	'Questions:asking-form:mod-delete-question:label': 'delete',
 }
