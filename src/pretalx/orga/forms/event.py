@@ -185,6 +185,7 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
             "logo",
             "header_image",
             "landing_page_text",
+            "featured_sessions_text",
         ]
         widgets = {
             "date_from": forms.DateInput(attrs={"class": "datepickerfield"}),

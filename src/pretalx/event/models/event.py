@@ -231,6 +231,16 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
         null=True,
         blank=True,
     )
+    featured_sessions_text = I18nTextField(
+        verbose_name=_("Featured sessions text"),
+        help_text=_(
+            "This text will be shown at the top of the featured sessions page instead of the default text."
+        )
+        + " "
+        + phrases.base.use_markdown,
+        null=True,
+        blank=True,
+    )
     plugins = models.TextField(null=True, blank=True, verbose_name=_("Plugins"))
 
     template_names = [

@@ -6,19 +6,23 @@
 
 {% block agenda_content %}
     <p>
-        {% if talks %}
-            <b>{% translate "Welcome to our list of featured sessions!" %}</b><br><br>
-            {% blocktranslate trimmed %}
-            We prepared a list of exciting sessions, so you can get a feel for our
-            conference. Please keep in mind that this is not our full schedule.
-            We will follow up with the full schedule in time, stay tuned!
-            {% endblocktranslate %}
+        {% if request.event.featured_sessions_text %}
+            {{ request.event.featured_sessions_text|rich_text }}
         {% else %}
-            {% blocktranslate trimmed %}
-            In the near future you will see a curated list of sessions we'd like
-            to show off here. Right now we are busy reviewing proposals.<br>
-            Check back later!
-            {% endblocktranslate %}
+            {% if talks %}
+                <b>{% translate "Welcome to our list of featured sessions!" %}</b><br><br>
+                {% blocktranslate trimmed %}
+                We prepared a list of exciting sessions, so you can get a feel for our
+                conference. Please keep in mind that this is not our full schedule.
+                We will follow up with the full schedule in time, stay tuned!
+                {% endblocktranslate %}
+            {% else %}
+                {% blocktranslate trimmed %}
+                In the near future you will see a curated list of sessions we'd like
+                to show off here. Right now we are busy reviewing proposals.<br>
+                Check back later!
+                {% endblocktranslate %}
+            {% endif %}
         {% endif %}
     </p>
     <article id="featured-talks">
