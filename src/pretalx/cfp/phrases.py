@@ -44,9 +44,7 @@ class CfPPhrases(Phrases, app="cfp"):
         "You are now part of this proposal! Please fill in your profile below."
     )
 
-    submissions_closed = _(
-        "This event currently does not accept new proposals, sorry!"
-    )
+    submissions_closed = _("This event currently does not accept new proposals, sorry!")
     submission_success = _("Your session has been submitted successfully!")
     submission_email_fail = _(
         "We are experiencing difficulties when sending mails, but your session was submitted successfully!"

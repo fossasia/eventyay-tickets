@@ -90,9 +90,7 @@ class WriteMailForm(forms.ModelForm):
         choices=(
             (
                 "submitted",
-                _(
-                    "Everyone with proposal(s) that have not been accepted/rejected yet"
-                ),
+                _("Everyone with proposal(s) that have not been accepted/rejected yet"),
             ),
             (
                 "accepted",

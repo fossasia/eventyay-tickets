@@ -406,9 +406,7 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
         self.request.session[key] = ignored_submissions
         if next_submission:
             return next_submission.orga_urls.reviews
-        messages.success(
-            self.request, _("Nice, you have no proposals left to review!")
-        )
+        messages.success(self.request, _("Nice, you have no proposals left to review!"))
         return self.request.event.orga_urls.reviews
 
 

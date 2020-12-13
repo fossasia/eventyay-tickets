@@ -214,7 +214,9 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
                         {
                             "large": accepted_count,
                             "small": ngettext_lazy(
-                                "unconfirmed session", "unconfirmed sessions", accepted_count
+                                "unconfirmed session",
+                                "unconfirmed sessions",
+                                accepted_count,
                             ),
                             "url": event.orga_urls.submissions
                             + f"?state={SubmissionStates.ACCEPTED}",

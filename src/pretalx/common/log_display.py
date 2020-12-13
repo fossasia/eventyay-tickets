@@ -63,15 +63,11 @@ LOG_NAMES = {
     "pretalx.submission.resource.update": _("A proposal resource was modified."),
     "pretalx.submission.speakers.add": _("A speaker was added to the proposal."),
     "pretalx.submission.speakers.invite": _("A speaker was invited to the proposal."),
-    "pretalx.submission.speakers.remove": _(
-        "A speaker was removed from the proposal."
-    ),
+    "pretalx.submission.speakers.remove": _("A speaker was removed from the proposal."),
     "pretalx.submission.unconfirm": _("The proposal was unconfirmed."),
     "pretalx.submission.update": _("The proposal was modified."),
     "pretalx.submission.withdraw": _("The proposal was withdrawn."),
-    "pretalx.submission.answer.update": _(
-        "A proposal answer was modified."
-    ),  # Legacy
+    "pretalx.submission.answer.update": _("A proposal answer was modified."),  # Legacy
     "pretalx.submission.answerupdate": _("A proposal answer was modified."),  # Legacy
     "pretalx.submission.answer.create": _("A proposal answer was added."),  # Legacy
     "pretalx.submission.answercreate": _("A proposal answer was added."),  # Legacy

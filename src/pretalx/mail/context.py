@@ -5,9 +5,7 @@ def get_context_explanation():
     return [
         {
             "name": "confirmation_link",
-            "explanation": _(
-                "Link to confirm a proposal after it has been accepted."
-            ),
+            "explanation": _("Link to confirm a proposal after it has been accepted."),
         },
         {
             "name": "event_name",

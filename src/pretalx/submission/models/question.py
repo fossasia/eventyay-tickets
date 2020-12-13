@@ -93,7 +93,9 @@ class Question(LogMixin, models.Model):
         choices=QuestionTarget.get_choices(),
         default=QuestionTarget.SUBMISSION,
         verbose_name=_("question type"),
-        help_text=_("Do you require an answer from every speaker or for every session?"),
+        help_text=_(
+            "Do you require an answer from every speaker or for every session?"
+        ),
     )
     tracks = models.ManyToManyField(
         to="submission.Track",

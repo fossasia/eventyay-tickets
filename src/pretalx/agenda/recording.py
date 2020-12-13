@@ -2,6 +2,7 @@ class BaseRecordingProvider:
     """RecordingProviders should subclass this class.
 
     Register your procider with pretalx.agenda.signals.register_recording_provider."""
+
     def __init__(self, event):
         self.event = event
         super().__init__()
