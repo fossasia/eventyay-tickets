@@ -23,17 +23,23 @@ export default {
 	data () {
 		return {
 			question: '',
-			showAskingForm: false
+			showAskingForm: false,
+			hasLoaded: false
 		}
 	},
 	computed: {
 		...mapState('question', ['questions']),
 		...mapGetters(['hasPermission'])
 	},
-	created () {},
-	mounted () {
-		this.$nextTick(() => {
-		})
+	watch: {
+		questions () {
+			// HACK suppress firing event on `question.list`
+			if (this.hasLoaded) {
+				this.$emit('change')
+			} else {
+				this.hasLoaded = true
+			}
+		}
 	},
 	methods: {
 		async submitQuestion () {
