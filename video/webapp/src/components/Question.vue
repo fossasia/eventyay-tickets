@@ -1,8 +1,8 @@
 <template lang="pug">
 .c-question(:class="{queued: hasPermission('room:question.moderate') && question.state === 'mod_queue'}")
-	.votes
+	.votes(@click="vote")
 		.mdi.mdi-menu-up.upvote
-		.vote-count 0
+		.vote-count {{ question.score }}
 		| Votes
 	.content {{ question.content }}
 	menu-dropdown(v-if="hasPermission('room:question.moderate')", v-model="modding")
@@ -35,6 +35,9 @@ export default {
 		})
 	},
 	methods: {
+		async vote () {
+			this.$store.dispatch('question/vote', this.question)
+		},
 		async approveQuestion () {
 			await this.$store.dispatch('question/approveQuestion', this.question)
 			this.modding = false
@@ -57,10 +60,12 @@ export default {
 		display: flex
 		flex-direction: column
 		align-items: center
-		margin: 8px
+		padding: 8px
 		color: $clr-secondary-text-light
 		text-transform: uppercase
 		font-size: 12px
+		cursor: pointer
+		user-select: none
 		.mdi
 			font-size: 38px
 			line-height: 8px
