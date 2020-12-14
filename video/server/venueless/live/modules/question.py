@@ -166,11 +166,7 @@ class QuestionModule(BaseModule):
             questions = await get_questions(
                 room=self.room.id, for_user=self.consumer.user
             )
-        elif await self.consumer.world.has_permission_async(
-            user=self.consumer.user,
-            room=self.room,
-            permission=Permission.ROOM_QUESTION_READ,
-        ):
+        else:
             questions = await get_questions(
                 room=self.room.id,
                 state=Question.States.VISIBLE,
