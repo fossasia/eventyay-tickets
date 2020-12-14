@@ -103,7 +103,8 @@ const KNOWN_TYPES = [
 	'livestream.youtube',
 	'exhibition.native',
 	'chat.native',
-	'call.bigbluebutton'
+	'call.bigbluebutton',
+	'question'
 ]
 
 export default {
