@@ -52,7 +52,7 @@ To ask a question, send a message like this::
 
 On creates and on updates, all people in the room who have the required access rights will receive a message like this::
 
-    <- ["question.created_or_updated", {"room": 123, "question": {…}}]
+    <- ["question.created_or_updated", {"question": {…}}]
 
 ## ``question.update``
 
@@ -76,6 +76,12 @@ Given a room ID and a question ID, users can add their ``vote: true`` or remove 
     <- ["success", 1234, [{"id": }, ...]
 
 ## ``question.delete``
+
+Only moderators may delete questions. Delete notifications are broadcasted like this::
+
+    => ["question.delete", 1234, {"room": "room_0", "id": 12}]
+    <- ["success", 1234, [{"id": }, ...]
+    <= ["question.deleted", {"room": "room_0", "id": 12}]
 
 TODOs
 -----

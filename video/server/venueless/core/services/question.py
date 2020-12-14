@@ -36,6 +36,12 @@ def update_question(**kwargs):
 
 
 @database_sync_to_async
+def delete_question(**kwargs):
+    Question.objects.all().filter(pk=kwargs["id"], room=kwargs["room"]).delete()
+    return True
+
+
+@database_sync_to_async
 def vote_on_question(pk, room, user, vote):
     if vote is True:  # upvote
         QuestionVote.objects.update_or_create(question_id=pk, sender_id=user.id)

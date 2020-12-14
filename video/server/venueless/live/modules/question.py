@@ -5,6 +5,7 @@ from venueless.core.models.question import Question
 from venueless.core.permissions import Permission
 from venueless.core.services.question import (
     create_question,
+    delete_question,
     get_question,
     get_questions,
     update_question,
@@ -96,6 +97,29 @@ class QuestionModule(BaseModule):
             },
         )
 
+    @command("delete")
+    @room_action(permission_required=Permission.ROOM_QUESTION_MODERATE)
+    async def delete_question(self, body):
+        if not self.module_config.get("active", False):
+            await self.consumer.send_error("question.inactive")
+            return
+        old_question = await get_question(body.get("id"), self.room)
+        await delete_question(**body)
+        await self.consumer.send_success({"question": old_question["id"]})
+        group = (
+            GROUP_ROOM_QUESTION_MODERATE
+            if old_question["state"] != Question.States.VISIBLE
+            else GROUP_ROOM_QUESTION_READ
+        )
+        await self.consumer.channel_layer.group_send(
+            group.format(id=self.room.pk),
+            {
+                "type": "question.deleted",
+                "room": str(self.room.pk),
+                "question": old_question["id"],
+            },
+        )
+
     @command("vote")
     @room_action(permission_required=Permission.ROOM_QUESTION_VOTE)
     async def vote(self, body):
@@ -156,4 +180,13 @@ class QuestionModule(BaseModule):
     async def push_question(self, body):
         await self.consumer.send_json(
             ["question.created_or_updated", {"question": body.get("question")}]
+        )
+
+    @event("deleted")
+    async def push_delete(self, body):
+        await self.consumer.send_json(
+            [
+                "question.deleted",
+                {"question": body.get("question"), "room": body.get("room")},
+            ]
         )

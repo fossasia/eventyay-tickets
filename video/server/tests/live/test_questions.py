@@ -1,4 +1,3 @@
-import asyncio
 import uuid
 from contextlib import asynccontextmanager
 
@@ -185,8 +184,92 @@ async def test_ask_question(questions_room, world):
                     }
                 },
             ]
-            with pytest.raises(asyncio.TimeoutError):
-                await c.receive_json_from()
+            await c_mod.receive_json_from()  # Update broadcast
+            # Regular users do not get an update.
+            # We test this implicitly by running the full test instead of the following code,
+            # because getting a timeout once ruins the consumer, apparently. The following holds true, though:
+            # import asyncio
+            # with pytest.raises(asyncio.TimeoutError):
+            #     await c.receive_json_from()
+
+            # Mods can make questions public
+
+            await c_mod.send_json_to(
+                [
+                    "question.update",
+                    123,
+                    {
+                        "id": question_id,
+                        "room": str(questions_room.id),
+                        "state": "visible",
+                    },
+                ]
+            )
+            response = await c_mod.receive_json_from()
+            response[2]["question"]["id"] = -1
+            response[2]["question"]["timestamp"] = -1
+            assert response == [
+                "success",
+                123,
+                {
+                    "question": {
+                        "answered": False,
+                        "content": "When is your favourite colour?",
+                        "id": -1,
+                        "room_id": str(questions_room.id),
+                        "state": "visible",
+                        "score": 0,
+                        "timestamp": -1,
+                    }
+                },
+            ]
+            await c_mod.receive_json_from()  # Update broadcast
+            response = await c.receive_json_from()  # All users get update broadcast
+            response[1]["question"]["timestamp"] = -1
+            assert response == [
+                "question.created_or_updated",
+                {
+                    "question": {
+                        "answered": False,
+                        "content": "When is your favourite colour?",
+                        "id": question_id,
+                        "room_id": str(questions_room.id),
+                        "state": "visible",
+                        "score": 0,
+                        "timestamp": -1,
+                    }
+                },
+            ]
+
+            # Finally: Moderators can delete questions
+            await c_mod.send_json_to(
+                [
+                    "question.delete",
+                    123,
+                    {
+                        "id": question_id,
+                        "room": str(questions_room.id),
+                    },
+                ]
+            )
+            response = await c_mod.receive_json_from()
+            assert response == [
+                "success",
+                123,
+                {
+                    "question": question_id,
+                },
+            ]
+            await c_mod.receive_json_from()  # Delete broadcast
+
+            response = await c.receive_json_from()  # Delete broadcast
+            assert response == [
+                "question.deleted",
+                {
+                    "question": question_id,
+                    "room": str(questions_room.id),
+                },
+            ]
 
 
 @pytest.mark.asyncio
