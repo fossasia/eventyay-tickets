@@ -20,6 +20,10 @@ export default {
 		submitQuestion ({state, rootState}, question) {
 			return api.call('question.ask', {room: rootState.activeRoom.id, content: question})
 		},
+		vote ({state, rootState}, question) {
+			console.log('VOTE')
+			return api.call('question.vote', {room: rootState.activeRoom.id, id: question.id, vote: true})
+		},
 		approveQuestion ({state, rootState}, question) {
 			return api.call('question.update', {room: rootState.activeRoom.id, id: question.id, state: 'visible'})
 			// update handled in create_or_update
