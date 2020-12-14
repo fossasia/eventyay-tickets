@@ -107,6 +107,7 @@ async def test_ask_question(questions_room, world):
             assert response[0] == "success"
             assert len(response[2]) == 1
             assert response[2][0]["id"] == question_id
+            assert response[2][0]["voted"] is False
             await c.send_json_to(
                 [
                     "question.update",
@@ -155,6 +156,7 @@ async def test_ask_question(questions_room, world):
             assert response[0] == "success"
             assert len(response[2]) == 1
             assert response[2][0]["id"] == question_id
+            assert response[2][0]["voted"] is False
             await c_mod.send_json_to(
                 [
                     "question.update",
@@ -358,6 +360,21 @@ async def test_ask_question_unmoderated_room(unmoderated_questions_room):
                 }
             },
         ]
+        # Question is listed as voted
+        await c.send_json_to(
+            [
+                "question.list",
+                123,
+                {
+                    "room": str(questions_room.id),
+                },
+            ]
+        )
+        response = await c.receive_json_from()
+        assert response[0] == "success"
+        assert len(response[2]) == 1
+        assert response[2][0]["id"] == question_id
+        assert response[2][0]["voted"] is True
 
         # Unvote the question
 

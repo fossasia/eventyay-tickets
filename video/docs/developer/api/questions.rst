@@ -7,13 +7,14 @@ To clear questions after or before a logical session, single questions can be de
 
     {
 	id: uuid,
-	room_id: ,
-	user: Number,
+	room_id: uuid,
+	sender: uuid,
 	timestamp: Datetime,
 	content: String,
 	state: String, // 'mod_queue', 'visible', 'archived'
 	answered: Boolean,
-	score: Number
+	score: Number,
+        voted: Boolean // has the current user voted on the question? Available on list actions.
     }
 
 Permissions
@@ -69,6 +70,9 @@ Given a room ID, return all the questions that are visible to the user::
 
     => ["question.list", 1234, {"room": "room_0"}]
     <- ["success", 1234, [{"id": }, ...]
+
+Note that the question object has an added ``voted`` boolean attribute denoting
+if the current user has voted for this question.
 
 ## ``question.vote``
 

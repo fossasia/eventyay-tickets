@@ -163,7 +163,9 @@ class QuestionModule(BaseModule):
             room=self.room,
             permission=Permission.ROOM_QUESTION_MODERATE,
         ):
-            questions = await get_questions(room=self.room.id)
+            questions = await get_questions(
+                room=self.room.id, for_user=self.consumer.user
+            )
         elif await self.consumer.world.has_permission_async(
             user=self.consumer.user,
             room=self.room,
@@ -173,6 +175,7 @@ class QuestionModule(BaseModule):
                 room=self.room.id,
                 state=Question.States.VISIBLE,
                 add_by_user=self.consumer.user,
+                for_user=self.consumer.user,
             )
         await self.consumer.send_success(questions)
 
@@ -187,6 +190,6 @@ class QuestionModule(BaseModule):
         await self.consumer.send_json(
             [
                 "question.deleted",
-                {"question": body.get("question"), "id": body.get("id")},
+                {"room": body.get("room"), "id": body.get("id")},
             ]
         )

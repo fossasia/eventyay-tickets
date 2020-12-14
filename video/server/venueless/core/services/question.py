@@ -1,5 +1,5 @@
 from channels.db import database_sync_to_async
-from django.db.models import Q
+from django.db.models import Exists, OuterRef, Q
 
 from venueless.core.models.question import Question, QuestionVote
 
@@ -17,13 +17,20 @@ def get_question(pk, room):
 
 
 @database_sync_to_async
-def get_questions(room, add_by_user=None, **kwargs):
+def get_questions(room, add_by_user=None, for_user=None, **kwargs):
     questions = Question.objects.filter(room=room)
     if add_by_user:
         questions = questions.filter(Q(**kwargs) | Q(sender=add_by_user))
     elif kwargs:
         questions = questions.filter(**kwargs)
-    return [question.serialize_public() for question in questions]
+    if for_user:
+        subquery = QuestionVote.objects.filter(
+            question_id=OuterRef("pk"), sender=for_user
+        )
+        questions = questions.annotate(_voted=Exists(subquery))
+    return [
+        question.serialize_public(voted_state=bool(for_user)) for question in questions
+    ]
 
 
 @database_sync_to_async

@@ -54,8 +54,8 @@ class Question(models.Model):
             return aggregated_score
         return self.votes.all().count()
 
-    def serialize_public(self):
-        return {
+    def serialize_public(self, voted_state=False):
+        data = {
             "id": str(self.id),
             "content": self.content,
             "state": self.state,
@@ -64,6 +64,9 @@ class Question(models.Model):
             "room_id": str(self.room_id),
             "score": self.score or 0,
         }
+        if voted_state:
+            data["voted"] = getattr(self, "_voted", False)
+        return data
 
 
 class QuestionVote(models.Model):
