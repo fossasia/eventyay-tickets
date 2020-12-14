@@ -162,11 +162,11 @@ export default {
 				&::after
 					content: ''
 					position: absolute
-					top: -3px
-					right: -9px
+					top: -2px
+					right: -8px
 					display: block
-					height: 6px
-					width: 6px
+					height: 5px
+					width: 5px
 					border-radius: 50%
 					background-color: $clr-danger
 	.stage-tools
