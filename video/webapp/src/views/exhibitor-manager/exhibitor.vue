@@ -155,7 +155,7 @@ export default {
 	},
 	computed: {
 		all_rooms_or_none () {
-			let r = [{name: '', id: ''}]
+			const r = [{name: '', id: ''}]
 			r.push(...this.$store.state.rooms)
 			return r
 		},
