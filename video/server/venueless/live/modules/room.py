@@ -87,6 +87,13 @@ class RoomModule(BaseModule):
         await self.consumer.channel_layer.group_discard(
             GROUP_ROOM.format(id=room.pk), self.consumer.channel_name
         )
+        await self.consumer.channel_layer.group_discard(
+            GROUP_ROOM_QUESTION_MODERATE.format(id=room.pk),
+            self.consumer.channel_name,
+        )
+        await self.consumer.channel_layer.group_discard(
+            GROUP_ROOM_QUESTION_READ.format(id=room.pk), self.consumer.channel_name
+        )
         if room in self.current_views:
             await end_view(self.current_views[room])
             del self.current_views[room]
@@ -96,13 +103,6 @@ class RoomModule(BaseModule):
     async def leave_room(self, body):
         await self._leave_room(self.room)
         await self.consumer.send_success({})
-        await self.consumer.channel_layer.group_discard(
-            GROUP_ROOM_QUESTION_MODERATE.format(id=self.room.pk),
-            self.consumer.channel_name,
-        )
-        await self.consumer.channel_layer.group_discard(
-            GROUP_ROOM_QUESTION_READ.format(id=self.room.pk), self.consumer.channel_name
-        )
 
     async def dispatch_disconnect(self, close_code):
         for room in list(self.current_views.keys()):
