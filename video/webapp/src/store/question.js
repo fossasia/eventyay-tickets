@@ -25,8 +25,10 @@ export default {
 			// update handled in create_or_update
 			// TODO error handling
 		},
-		deleteQuestion ({state}, question) {
-
+		deleteQuestion ({state, rootState}, question) {
+			return api.call('question.delete', {room: rootState.activeRoom.id, id: question.id})
+			// update handled in api::question.deleted
+			// TODO error handling
 		},
 		'api::question.created_or_updated' ({state}, {question}) {
 			const existingQuestion = state.questions.find(q => q.id === question.id)
@@ -35,6 +37,12 @@ export default {
 				Object.assign(existingQuestion, question)
 			} else {
 				state.questions.push(question)
+			}
+		},
+		'api::question.deleted' ({state}, {id}) {
+			const questionIndex = state.questions.findIndex(q => q.id === id)
+			if (questionIndex > -1) {
+				state.questions.splice(questionIndex, 1)
 			}
 		}
 	}

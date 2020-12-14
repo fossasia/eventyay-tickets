@@ -32,6 +32,7 @@
 <script>
 // TODO
 // - questions without chat
+// - tab activity
 import {mapGetters, mapState} from 'vuex'
 import EditRoomSchedule from './EditRoomSchedule'
 import Chat from 'components/Chat'
