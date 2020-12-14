@@ -89,6 +89,8 @@ async def test_ask_question(questions_room, world):
                         "id": -1,
                         "room_id": str(questions_room.id),
                         "state": "mod_queue",
+                        "score": 0,
+                        "score": 0,
                         "timestamp": -1,
                     }
                 },
@@ -136,6 +138,7 @@ async def test_ask_question(questions_room, world):
                         "id": -1,
                         "room_id": str(questions_room.id),
                         "state": "mod_queue",
+                        "score": 0,
                         "timestamp": -1,
                     }
                 },
@@ -177,6 +180,7 @@ async def test_ask_question(questions_room, world):
                         "id": -1,
                         "room_id": str(questions_room.id),
                         "state": "mod_queue",
+                        "score": 0,
                         "timestamp": -1,
                     }
                 },
@@ -201,6 +205,7 @@ async def test_ask_question_unmoderated_room(unmoderated_questions_room):
             ]
         )
         response = await c.receive_json_from()
+        question_id = response[2]["question"]["id"]
         response[2]["question"]["id"] = -1
         response[2]["question"]["timestamp"] = -1
         assert response == [
@@ -213,6 +218,7 @@ async def test_ask_question_unmoderated_room(unmoderated_questions_room):
                     "id": -1,
                     "room_id": str(questions_room.id),
                     "state": "visible",
+                    "score": 0,
                     "timestamp": -1,
                 }
             },
@@ -230,6 +236,76 @@ async def test_ask_question_unmoderated_room(unmoderated_questions_room):
                     "id": -1,
                     "room_id": str(questions_room.id),
                     "state": "visible",
+                    "score": 0,
+                    "timestamp": -1,
+                }
+            },
+        ]
+
+        # Vote for the question
+        await c.send_json_to(
+            [
+                "question.vote",
+                123,
+                {
+                    "room": str(questions_room.id),
+                    "id": question_id,
+                    "vote": True,
+                },
+            ]
+        )
+        response = await c.receive_json_from()
+        assert response[0] == "success", response
+        assert response[2]["question"]["score"] == 1, response
+
+        response = await c.receive_json_from()
+        response[1]["question"]["id"] = -1
+        response[1]["question"]["timestamp"] = -1
+        assert response == [
+            "question.created_or_updated",
+            {
+                "question": {
+                    "answered": False,
+                    "content": "What is your favourite colour?",
+                    "id": -1,
+                    "room_id": str(questions_room.id),
+                    "state": "visible",
+                    "score": 1,
+                    "timestamp": -1,
+                }
+            },
+        ]
+
+        # Unvote the question
+
+        await c.send_json_to(
+            [
+                "question.vote",
+                123,
+                {
+                    "room": str(questions_room.id),
+                    "id": question_id,
+                    "vote": False,
+                },
+            ]
+        )
+        response = await c.receive_json_from()
+        assert response[0] == "success", response
+        assert response[2]["question"]["score"] == 0, response
+
+        response = await c.receive_json_from()
+        response[1]["question"]["id"] = -1
+        response[1]["question"]["timestamp"] = -1
+        assert response == [
+            "question.created_or_updated",
+            {
+                "question": {
+                    "answered": False,
+                    "content": "What is your favourite colour?",
+                    "id": -1,
+                    "room_id": str(questions_room.id),
+                    "state": "visible",
+                    "score": 0,
                     "timestamp": -1,
                 }
             },

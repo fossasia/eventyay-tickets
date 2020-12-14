@@ -4,6 +4,11 @@ from functools import cached_property
 from django.db import models
 
 
+class QuestionManager(models.Manager):
+    def with_score(self):
+        return self.get_queryset().annotate(_score=models.Count("votes"))
+
+
 class Question(models.Model):
     class States(models.TextChoices):
         VISIBLE = "visible"
@@ -38,8 +43,15 @@ class Question(models.Model):
         related_name="moderated_questions",
     )
 
+    objects = QuestionManager()
+
     @cached_property
     def score(self):
+        # When the question is retrieved with the with_score manager method,
+        # we can just use the available score. We'll count manually otherwise.
+        aggregated_score = getattr(self, "_score", None)
+        if aggregated_score is not None:
+            return aggregated_score
         return self.votes.all().count()
 
     def serialize_public(self):
@@ -50,6 +62,7 @@ class Question(models.Model):
             "answered": self.answered,
             "timestamp": self.timestamp.isoformat(),
             "room_id": str(self.room_id),
+            "score": self.score or 0,
         }
 
 

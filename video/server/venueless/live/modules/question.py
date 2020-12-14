@@ -8,6 +8,7 @@ from venueless.core.services.question import (
     get_question,
     get_questions,
     update_question,
+    vote_on_question,
 )
 from venueless.live.channels import (
     GROUP_ROOM_QUESTION_MODERATE,
@@ -92,6 +93,40 @@ class QuestionModule(BaseModule):
                 "type": "question.created_or_updated",
                 "room": str(self.room.pk),
                 "question": new_question,
+            },
+        )
+
+    @command("vote")
+    @room_action(permission_required=Permission.ROOM_QUESTION_VOTE)
+    async def vote(self, body):
+        if not self.module_config.get("active", False):
+            await self.consumer.send_error("question.inactive")
+            return
+
+        try:
+            question = await vote_on_question(
+                room=body.get("room"),
+                pk=body.get("id"),
+                user=self.consumer.user,
+                vote=body.get("vote", True),
+            )
+        except Exception as e:
+            await self.consumer.send_error("question.vote", message=str(e))
+            return
+
+        await self.consumer.send_success({"question": question})
+
+        group = (
+            GROUP_ROOM_QUESTION_MODERATE
+            if question["state"] != Question.States.VISIBLE
+            else GROUP_ROOM_QUESTION_READ
+        )
+        await self.consumer.channel_layer.group_send(
+            group.format(id=self.room.pk),
+            {
+                "type": "question.created_or_updated",
+                "room": str(self.room.pk),
+                "question": question,
             },
         )
 

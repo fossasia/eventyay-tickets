@@ -1,7 +1,7 @@
 from channels.db import database_sync_to_async
 from django.db.models import Q
 
-from venueless.core.models.question import Question
+from venueless.core.models.question import Question, QuestionVote
 
 
 @database_sync_to_async
@@ -12,7 +12,7 @@ def create_question(**kwargs):
 
 @database_sync_to_async
 def get_question(pk, room):
-    question = Question.objects.get(pk=pk, room=room)
+    question = Question.objects.with_score().get(pk=pk, room=room)
     return question.serialize_public()
 
 
@@ -32,4 +32,15 @@ def update_question(**kwargs):
     for key, value in kwargs.items():
         setattr(question, key, value)
     question.save()
+    return question.serialize_public()
+
+
+@database_sync_to_async
+def vote_on_question(pk, room, user, vote):
+    if vote is True:  # upvote
+        QuestionVote.objects.update_or_create(question_id=pk, sender_id=user.id)
+    else:
+        QuestionVote.objects.filter(question_id=pk, sender_id=user.id).delete()
+
+    question = Question.objects.with_score().get(pk=pk, room=room)
     return question.serialize_public()

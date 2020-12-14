@@ -13,7 +13,7 @@ To clear questions after or before a logical session, single questions can be de
 	content: String,
 	state: String, // 'mod_queue', 'visible', 'archived'
 	answered: Boolean,
-	votes: Number
+	score: Number
     }
 
 Permissions
@@ -69,7 +69,11 @@ Given a room ID, return all the questions that are visible to the user::
     <- ["success", 1234, [{"id": }, ...]
 
 ## ``question.vote``
-up or none
+
+Given a room ID and a question ID, users can add their ``vote: true`` or remove it with ``vote: false``::
+
+    => ["question.vote", 1234, {"room": "room_0", "id": 12, "vote": true}]
+    <- ["success", 1234, [{"id": }, ...]
 
 ## ``question.delete``
 
