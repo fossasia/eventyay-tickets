@@ -39,8 +39,9 @@ export default {
 			await this.$store.dispatch('question/approveQuestion', this.question)
 			this.modding = false
 		},
-		deleteQuestion () {
-
+		async deleteQuestion () {
+			await this.$store.dispatch('question/deleteQuestion', this.question)
+			this.modding = false
 		}
 	}
 }

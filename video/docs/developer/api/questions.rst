@@ -49,10 +49,11 @@ To ask a question, send a message like this::
 
     => ["question.ask", 1234, {"room": "room_0", "content": "What is your favourite colour?"}]
     <- ["success", 1234, {"question": {…}}]
+    <= ["question.created_or_updated", {"question": {…}}]
 
 On creates and on updates, all people in the room who have the required access rights will receive a message like this::
 
-    <- ["question.created_or_updated", {"question": {…}}]
+    <= ["question.created_or_updated", {"question": {…}}]
 
 ## ``question.update``
 
@@ -60,6 +61,7 @@ To update a question (only permitted for moderators), send a message like this::
 
     => ["question.update", 1234, {"room": 123, "id": "UUID", "state": "visible"}]
     <- ["success", 1234, {"question": {…}}]
+    <= ["question.created_or_updated", {"question": {…}}]
 
 ## ``question.list``
 
