@@ -1,5 +1,4 @@
 import logging
-from functools import cached_property
 
 from venueless.core.models.question import Question
 from venueless.core.permissions import Permission
