@@ -266,7 +266,7 @@ async def test_ask_question(questions_room, world):
             assert response == [
                 "question.deleted",
                 {
-                    "question": question_id,
+                    "id": question_id,
                     "room": str(questions_room.id),
                 },
             ]

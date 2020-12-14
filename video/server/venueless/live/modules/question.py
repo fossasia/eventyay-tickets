@@ -116,7 +116,7 @@ class QuestionModule(BaseModule):
             {
                 "type": "question.deleted",
                 "room": str(self.room.pk),
-                "question": old_question["id"],
+                "id": old_question["id"],
             },
         )
 
@@ -187,6 +187,6 @@ class QuestionModule(BaseModule):
         await self.consumer.send_json(
             [
                 "question.deleted",
-                {"question": body.get("question"), "room": body.get("room")},
+                {"question": body.get("question"), "id": body.get("id")},
             ]
         )
