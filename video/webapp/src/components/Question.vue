@@ -1,5 +1,5 @@
 <template lang="pug">
-.c-question(:class="{queued: hasPermission('room:question.moderate') && question.state === 'mod_queue'}")
+.c-question(:class="{queued: hasPermission('room:question.moderate') && question.state === 'mod_queue', 'has-voted': question.voted}")
 	.votes(@click="vote")
 		.mdi.mdi-menu-up.upvote
 		.vote-count {{ question.score }}
@@ -91,4 +91,9 @@ export default {
 			font-size: 12px
 			color: $clr-deep-orange
 			font-weight: 600
+	&.has-voted
+		.votes
+			color: $clr-green-700
+			.vote-count
+				color: $clr-green-800
 </style>

@@ -20,9 +20,9 @@ export default {
 		submitQuestion ({state, rootState}, question) {
 			return api.call('question.ask', {room: rootState.activeRoom.id, content: question})
 		},
-		vote ({state, rootState}, question) {
-			console.log('VOTE')
-			return api.call('question.vote', {room: rootState.activeRoom.id, id: question.id, vote: true})
+		async vote ({state, rootState}, question) {
+			await api.call('question.vote', {room: rootState.activeRoom.id, id: question.id, vote: !question.voted})
+			question.voted = !question.voted
 		},
 		approveQuestion ({state, rootState}, question) {
 			return api.call('question.update', {room: rootState.activeRoom.id, id: question.id, state: 'visible'})
