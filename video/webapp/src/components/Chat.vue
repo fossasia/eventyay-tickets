@@ -94,6 +94,7 @@ export default {
 			// restore scrollPosition after load
 			this.refreshScrollbar()
 			this.syncedScroll = true
+			this.$emit('change')
 		}
 	},
 	created () {

@@ -19,12 +19,12 @@
 		UserListPage(v-else-if="modules['page.userlist']", :module="modules['page.userlist']")
 		iframe-page(v-else-if="modules['page.iframe']", :module="modules['page.iframe']")
 		exhibition(v-else-if="modules['exhibition.native']", :room="room")
-		.room-sidebar(v-if="modules['chat'] || modules['question']")
+		.room-sidebar(v-if="modules['chat'] || modules['question']", :class="unreadTabsClasses")
 			bunt-tabs(v-if="modules['question']", :active-tab="activeSidebarTab")
 				bunt-tab(id="chat", :header="$t('Room:sidebar:tabs-header:chat')", @selected="activeSidebarTab = 'chat'")
 				bunt-tab(id="questions", :header="$t('Room:sidebar:tabs-header:questions')", @selected="activeSidebarTab = 'questions'")
-			chat(v-show="modules['chat.native'] && activeSidebarTab === 'chat'", :room="room", :module="modules['chat.native']", :mode="room.modules.length === 1 ? 'standalone' : 'compact'", :key="room.id")
-			questions(v-show="modules['question'] && activeSidebarTab === 'questions'")
+			chat(v-show="modules['chat.native'] && activeSidebarTab === 'chat'", :room="room", :module="modules['chat.native']", :mode="room.modules.length === 1 ? 'standalone' : 'compact'", :key="room.id", @change="changedTabContent('chat')")
+			questions(v-show="modules['question'] && activeSidebarTab === 'questions'", @change="changedTabContent('questions')")
 	transition(name="prompt")
 		recordings-prompt(:room="room", v-if="showRecordingsPrompt", @close="showRecordingsPrompt = false")
 	edit-room-schedule(v-if="showEditSchedule", :room="room", :currentSession="currentSession", @close="showEditSchedule = false")
@@ -58,6 +58,11 @@ export default {
 			showRecordingsPrompt: false,
 			showEditSchedule: false,
 			activeSidebarTab: 'chat', // chat, questions
+			unreadTabs: {
+				chat: false,
+				questions: false,
+				polls: false
+			},
 			activeStageTool: null // reaction, qa
 		}
 	},
@@ -85,6 +90,20 @@ export default {
 				session = this.sessionsScheduledNow?.find(session => session.room === this.room)
 			}
 			return session
+		},
+		unreadTabsClasses () {
+			return Object.entries(this.unreadTabs).filter(([tab, value]) => value).map(([tab]) => `tab-${tab}-unread`)
+		}
+	},
+	watch: {
+		activeSidebarTab (tab) {
+			this.unreadTabs[tab] = false
+		}
+	},
+	methods: {
+		changedTabContent (tab) {
+			if (tab === this.activeSidebarTab) return
+			this.unreadTabs[tab] = true
 		}
 	}
 }
@@ -137,6 +156,19 @@ export default {
 			border-bottom: border-separator()
 			.bunt-tabs-header-items
 				justify-content: center
+		for tab in chat questions polls
+			&.tab-{tab}-unread [aria-controls=\"{tab}\"] .bunt-tab-header-item-text
+				position: relative
+				&::after
+					content: ''
+					position: absolute
+					top: -3px
+					right: -9px
+					display: block
+					height: 6px
+					width: 6px
+					border-radius: 50%
+					background-color: $clr-danger
 	.stage-tools
 		flex: none
 		display: flex
