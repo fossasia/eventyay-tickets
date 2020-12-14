@@ -24,18 +24,10 @@ logger = logging.getLogger(__name__)
 class QuestionModule(BaseModule):
     prefix = "question"
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    @cached_property
-    def module_config(self):
-        module = [m for m in self.room.module_config if m.get("type", "") == "question"]
-        if module:
-            return module[0].get("config", {})
-        return {}
-
     @command("ask")
-    @room_action(permission_required=Permission.ROOM_QUESTION_ASK)
+    @room_action(
+        permission_required=Permission.ROOM_QUESTION_ASK, module_required="question"
+    )
     async def ask_question(self, body):
         if not self.module_config.get("active", False):
             await self.consumer.send_error("question.inactive")
@@ -67,7 +59,10 @@ class QuestionModule(BaseModule):
         )
 
     @command("update")
-    @room_action(permission_required=Permission.ROOM_QUESTION_MODERATE)
+    @room_action(
+        permission_required=Permission.ROOM_QUESTION_MODERATE,
+        module_required="question",
+    )
     async def update_question(self, body):
         if not self.module_config.get("active", False):
             await self.consumer.send_error("question.inactive")
@@ -98,7 +93,10 @@ class QuestionModule(BaseModule):
         )
 
     @command("delete")
-    @room_action(permission_required=Permission.ROOM_QUESTION_MODERATE)
+    @room_action(
+        permission_required=Permission.ROOM_QUESTION_MODERATE,
+        module_required="question",
+    )
     async def delete_question(self, body):
         if not self.module_config.get("active", False):
             await self.consumer.send_error("question.inactive")
@@ -121,7 +119,9 @@ class QuestionModule(BaseModule):
         )
 
     @command("vote")
-    @room_action(permission_required=Permission.ROOM_QUESTION_VOTE)
+    @room_action(
+        permission_required=Permission.ROOM_QUESTION_VOTE, module_required="question"
+    )
     async def vote(self, body):
         if not self.module_config.get("active", False):
             await self.consumer.send_error("question.inactive")
