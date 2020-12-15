@@ -1,7 +1,7 @@
 <template lang="pug">
 .c-upload-button
-	label(for="file-chooser")(:class="_buttonClass", v-tooltip="tooltipOptions || {text: _tooltip, placement: tooltipPlacement, fixed: tooltipFixed}")
-		i.bunt-icon.mdi(v-if="iconClass()", :class="iconClass()")
+	label(for="file-chooser", :class="buttonClass", v-tooltip="tooltipOptions || {text: _tooltip, placement: tooltipPlacement, fixed: tooltipFixed}")
+		i.bunt-icon.mdi(v-if="iconClass", :class="iconClass")
 		.bunt-button-content
 			.bunt-button-text
 				slot
@@ -39,11 +39,9 @@ export default {
 		_tooltip () {
 			return this.errorMessage ? this.errorMessage : this.tooltip
 		},
-		_buttonClass () {
+		buttonClass () {
 			return this.icon ? 'bunt-icon-button' : 'bunt-button'
-		}
-	},
-	methods: {
+		},
 		iconClass () {
 			if (!this.icon) return
 			return iconHelper.getClass(this.icon)

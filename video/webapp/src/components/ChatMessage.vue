@@ -10,18 +10,17 @@
 					| {{ senderDisplayName }}
 					.ui-badge(v-for="badge in sender.badges") {{ badge }}
 				.timestamp {{ timestamp }}
-			template(v-if="message.content.type === 'text'")
+			template(v-if="['text', 'files'].includes(message.content.type)")
 				chat-input(v-if="editing", :message="message", @send="editMessage")
-				.content(v-else, v-html="content")
-			template(v-if="message.content.type === 'files'")
-				.content
-					.file-message-part(v-for="file in message.content.files")
-						a(:href="file.url" v-if="file.mimeType.startsWith('image/')" target="_blank")
+				.content(v-else-if="message.content.type === 'text'", v-html="content")
+				.content(v-else)
+					span(v-if="message.content.body", v-html="content")
+					.files(v-for="file in message.content.files")
+						a(v-if="file.mimeType.startsWith('image/')", :href="file.url", target="_blank")
 							img.chat-image(:src="file.url")
-						a.chat-file(v-else :href="file.url" target="_blank")
+						a.chat-file(v-else, :href="file.url", target="_blank")
 							i.bunt-icon.mdi.mdi-file
 							| {{ file.name }}
-					span(v-if="message.content.body", v-html="content")
 			.call(v-else-if="message.content.type === 'call'")
 				.prompt(v-if="message.sender === user.id") You started a video call
 				.prompt(v-else) {{ senderDisplayName }} invited you to a video call
@@ -151,9 +150,9 @@ export default {
 			this.selected = false
 			this.editing = true
 		},
-		editMessage (newBody) {
+		editMessage (content) {
 			this.editing = false
-			this.$store.dispatch('chat/editMessage', {message: this.message, newBody})
+			this.$store.dispatch('chat/editMessage', {message: this.message, content})
 		},
 		deleteMessage () {
 			this.$store.dispatch('chat/deleteMessage', this.message)
@@ -221,6 +220,8 @@ export default {
 				display: inline-block
 				background-image: url("~emoji-datasource-twitter/img/twitter/sheets-256/64.png")
 				background-size: 5700% 5700%
+			.files
+				margin-top: 8px
 			.chat-image
 				max-width: calc(100% - 32px)
 				max-height: 300px

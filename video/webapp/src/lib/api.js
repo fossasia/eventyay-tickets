@@ -69,6 +69,7 @@ api.uploadFile = function (file, filename) {
 	return request
 }
 
+// TODO unify, rename, progress support
 api.uploadFilePromise = function (file, filename) {
 	const data = new FormData()
 	data.append('file', file, filename)

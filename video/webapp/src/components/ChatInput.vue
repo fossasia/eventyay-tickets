@@ -13,16 +13,16 @@ bunt-input-outline-container.c-chat-input
 		template(v-for="file in files")
 			.chat-file(v-if="file === null")
 				i.bunt-icon.mdi.mdi-alert-circle.upload-error
-				bunt-icon-button#btn-remove-attachment(@click="files.pop(file)") close-circle
+				bunt-icon-button#btn-remove-attachment(@click="removeFile(file)") close-circle
 			template(v-else)
 				.chat-image(v-if="file.mimeType.startsWith('image/')")
 					img(:src="file.url")
-					bunt-icon-button#btn-remove-attachment(@click="files.pop(file)") close-circle
+					bunt-icon-button#btn-remove-attachment(@click="removeFile(file)") close-circle
 				.chat-file(v-else)
 					a.chat-file-content(:href="file.url" target="_blank")
 						i.bunt-icon.mdi.mdi-file
 						| {{ file.name }}
-					bunt-icon-button#btn-remove-attachment(@click="files.pop(file)") close-circle
+					bunt-icon-button#btn-remove-attachment(@click="removeFile(file)") close-circle
 		bunt-progress-circular(size="small" v-if="uploading")
 </template>
 <script>
@@ -92,6 +92,9 @@ export default {
 		})
 		if (this.message) {
 			this.quill.setContents(nativeToOps(this.message.content?.body))
+			if (this.message.content?.files?.length > 0) {
+				this.files = this.message.content.files
+			}
 		}
 		document.addEventListener('selectionchange', this.onSelectionchange)
 	},
@@ -121,10 +124,17 @@ export default {
 			}
 			text = text.trim()
 			if (this.files.length > 0) {
-				this.$emit('sendFiles', this.files.filter(it => it != null), text)
+				this.$emit('send', {
+					type: 'files',
+					files: this.files.filter(file => file),
+					body: text
+				})
 				this.files = []
 			} else {
-				this.$emit('send', text)
+				this.$emit('send', {
+					type: 'text',
+					body: text
+				})
 			}
 			this.quill.setContents([{insert: '\n'}])
 		},
@@ -133,11 +143,11 @@ export default {
 			if (files.length === 0) return
 
 			this.uploading = true
-			const requests = files.map(f => {
-				return api.uploadFilePromise(f, f.name)
-			})
-			var fileInfos = (await Promise.all(requests)).map((response, i) => {
+			// TODO upload files sequentially
+			const requests = files.map(file => api.uploadFilePromise(file, file.name))
+			const fileInfos = (await Promise.all(requests)).map((response, i) => {
 				if (response.error) {
+					// TODO actually handle and display error
 					return null
 				} else {
 					return {
@@ -147,7 +157,7 @@ export default {
 					}
 				}
 			})
-			Array.prototype.push.apply(this.files, fileInfos)
+			this.files.push(...fileInfos)
 			this.uploading = false
 		},
 		addEmoji (emoji) {
@@ -156,6 +166,12 @@ export default {
 			const selection = this.quill.getSelection(true)
 			this.quill.updateContents(new Delta().retain(selection.index).delete(selection.length).insert({emoji: emoji.id}), 'user')
 			this.quill.setSelection(selection.index + 1, 0)
+		},
+		removeFile (file) {
+			const index = this.files.indexOf(file)
+			if (index > -1) {
+				this.files.splice(index, 1)
+			}
 		}
 	}
 }
@@ -222,28 +238,22 @@ export default {
 		bottom: 36px
 		left: 0
 		z-index: 801
+	#btn-send, #btn-file .bunt-icon-button
+		icon-button-style(color: $clr-secondary-text-light)
+		height: 28px
+		width: 28px
+		.bunt-icon
+			font-size: 18px
+			height: 24px
+			line-height: @height
 	#btn-send
 		position: absolute
 		right: 4px
 		top: 4px
-		icon-button-style(color: $clr-secondary-text-light)
-		height: 28px
-		width: 28px
-		.bunt-icon
-			font-size: 18px
-			height: 24px
-			line-height: @height
 	#btn-file
 		position: absolute
 		right: 32px
 		top: 4px
-		icon-button-style(color: $clr-secondary-text-light)
-		height: 28px
-		width: 28px
-		.bunt-icon
-			font-size: 18px
-			height: 24px
-			line-height: @height
 	#btn-remove-attachment
 		position: absolute
 		right: -14px
@@ -253,45 +263,28 @@ export default {
 		width: 28px
 		background: white
 	.files-preview
-		position: relative
-		width: 100%
-		box-sizing: border-box
-		background white
-		margin-top: 16px
-		.chat-image
+		display: flex
+		flex-wrap: wrap
+		padding-top: 16px
+		.chat-image, .chat-file
 			position: relative
-			display: inline-block
-			width: 60px
 			height: 60px
-			box-sizing: border-box
-			border-radius 2px
-			border: 1px solid $clr-grey-400
-			margin-right: 12px
-			margin-bottom: 12px
-			vertical-align: top
+			border-radius: 2px
+			border: border-separator()
+			margin: 0 12px 12px 0
+		.chat-image
+			width: 60px
 			img
 				object-fit: cover
 				width: 100%
 				height: 100%
 		.chat-file
-			position: relative
-			display: inline-block
-			height: 60px
-			min-width 60px
+			min-width: 60px
 			max-width: 100px
 			text-align: center
-			border-radius 2px
-			border: 1px solid $clr-grey-400
-			padding: 12px 8px
-			box-sizing: border-box
-			margin-right: 12px
-			margin-bottom: 12px
-			vertical-align: top
 			.upload-error
 				color: $clr-danger
 			.chat-file-content
-				display: block
-				text-overflow: ellipsis
-				overflow: hidden
-				white-space: nowrap
+				ellipsis()
+				line-height: 60px
 </style>
