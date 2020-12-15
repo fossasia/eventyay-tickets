@@ -129,6 +129,9 @@ export default {
 			if (this.$features.enabled('questions-answers')) {
 				knownTypes.push('question')
 			}
+			if (this.$features.enabled('roulette')) {
+				knownTypes.push('networking.roulette')
+			}
 
 			return knownTypes.filter((t) => !usedTypes.includes(t))
 		}
