@@ -69,6 +69,22 @@ api.uploadFile = function (file, filename) {
 	return request
 }
 
+// TODO unify, rename, progress support
+api.uploadFilePromise = function (file, filename) {
+	const data = new FormData()
+	data.append('file', file, filename)
+	const authHeader = api._config.token ? `Bearer ${api._config.token}`
+		: (api._config.clientId ? `Client ${api._config.clientId}` : null)
+	return fetch(config.api.upload, {
+		method: 'POST',
+		body: data,
+		headers: {
+			Accept: 'application/json',
+			Authorization: authHeader
+		}
+	}).then(response => response.json())
+}
+
 window.api = api
 
 export default api
