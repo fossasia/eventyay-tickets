@@ -94,19 +94,6 @@ import Prompt from 'components/Prompt'
 import UploadUrlInput from 'components/config/UploadUrlInput'
 import { required, integer } from 'vuelidate/lib/validators'
 
-const KNOWN_TYPES = [
-	'page.markdown',
-	'page.iframe',
-	'page.landing',
-	'page.userlist',
-	'livestream.native',
-	'livestream.youtube',
-	'exhibition.native',
-	'chat.native',
-	'call.bigbluebutton',
-	'question'
-]
-
 export default {
 	name: 'AdminRoom',
 	components: { Prompt, UploadUrlInput },
@@ -128,7 +115,22 @@ export default {
 	computed: {
 		unusedTypes () {
 			const usedTypes = this.config.module_config.map((m) => m.type)
-			return KNOWN_TYPES.filter((t) => !usedTypes.includes(t))
+			const knownTypes = [
+				'page.markdown',
+				'page.iframe',
+				'page.landing',
+				'page.userlist',
+				'livestream.native',
+				'livestream.youtube',
+				'exhibition.native',
+				'chat.native',
+				'call.bigbluebutton',
+			]
+			if (this.$features.enabled('questions-answers')) {
+				knownTypes.push('question')
+			}
+
+			return knownTypes.filter((t) => !usedTypes.includes(t))
 		}
 	},
 	// TODO use message validators
