@@ -15,6 +15,10 @@ export default {
 			type: String,
 			default: 'bottom'
 		},
+		strategy: {
+			type: String,
+			default: 'absolute'
+		},
 		blockBackground: {
 			type: Boolean,
 			default: true
@@ -30,7 +34,8 @@ export default {
 			await this.$nextTick()
 			const button = event.target.closest('.bunt-icon-button, .bunt-button') || event.target
 			createPopper(button, this.$refs.menu, {
-				placement: this.placement
+				placement: this.placement,
+				strategy: this.strategy
 			})
 		},
 		close () {
