@@ -13,6 +13,15 @@
 			template(v-if="message.content.type === 'text'")
 				chat-input(v-if="editing", :message="message", @send="editMessage")
 				.content(v-else, v-html="content")
+			template(v-if="message.content.type === 'files'")
+				.content
+					.file-message-part(v-for="file in message.content.files")
+						a(:href="file.url" v-if="file.mimeType.startsWith('image/')" target="_blank")
+							img.chat-image(:src="file.url")
+						a.chat-file(v-else :href="file.url" target="_blank")
+							i.bunt-icon.mdi.mdi-file
+							| {{ file.name }}
+					span(v-if="message.content.body", v-html="content")
 			.call(v-else-if="message.content.type === 'call'")
 				.prompt(v-if="message.sender === user.id") You started a video call
 				.prompt(v-else) {{ senderDisplayName }} invited you to a video call
@@ -212,6 +221,9 @@ export default {
 				display: inline-block
 				background-image: url("~emoji-datasource-twitter/img/twitter/sheets-256/64.png")
 				background-size: 5700% 5700%
+			.chat-image
+				max-width: calc(100% - 32px)
+				max-height: 300px
 		.call
 			border: border-separator()
 			border-radius: 6px

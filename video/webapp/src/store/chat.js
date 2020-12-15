@@ -138,6 +138,17 @@ export default {
 				}
 			})
 		},
+		sendFiles ({state}, {files, message}) {
+			api.call('chat.send', {
+				channel: state.channel,
+				event_type: 'channel.message',
+				content: {
+					type: 'files',
+					files: files,
+					body: message
+				}
+			})
+		},
 		deleteMessage ({state}, message) {
 			api.call('chat.send', {
 				channel: state.channel,
