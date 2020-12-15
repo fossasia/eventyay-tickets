@@ -1,14 +1,16 @@
 <template lang="pug">
 .c-upload-button
-	label(for="file-chooser").bunt-button(v-tooltip="tooltipOptions || {text: _tooltip, placement: tooltipPlacement, fixed: tooltipFixed}")
+	label(for="file-chooser", :class="buttonClass", v-tooltip="tooltipOptions || {text: _tooltip, placement: tooltipPlacement, fixed: tooltipFixed}")
+		i.bunt-icon.mdi(v-if="iconClass", :class="iconClass")
 		.bunt-button-content
 			.bunt-button-text
 				slot
 		ripple-ink
-	input#file-chooser(type="file", @change="$emit('change', $event)", :accept="accept")
+	input#file-chooser(type="file", @change="$emit('change', $event)", :accept="accept" :multiple="multiple")
 </template>
 <script>
 import RippleInk from 'buntpapier/src/mixins/ripple-ink'
+import iconHelper from 'buntpapier/src/helpers/icon'
 
 export default {
 	mixins: [
@@ -16,7 +18,9 @@ export default {
 	],
 	props: {
 		accept: String,
+		multiple: Boolean,
 		tooltip: String,
+		icon: String,
 		tooltipPlacement: {
 			type: String,
 			default: 'bottom'
@@ -34,13 +38,27 @@ export default {
 	computed: {
 		_tooltip () {
 			return this.errorMessage ? this.errorMessage : this.tooltip
+		},
+		buttonClass () {
+			return this.icon ? 'bunt-icon-button' : 'bunt-button'
+		},
+		iconClass () {
+			if (!this.icon) return
+			return iconHelper.getClass(this.icon)
 		}
-	},
-	methods: {}
+	}
 }
 </script>
 <style lang="stylus">
 .c-upload-button
 	#file-chooser
 		display: none
+	.bunt-icon-button
+		pointer-events: auto
+		position: relative
+		top: 0
+		left: 0
+		transform: none
+		height: 100%
+		width: 100%
 </style>

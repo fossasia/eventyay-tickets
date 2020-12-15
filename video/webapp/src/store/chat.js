@@ -128,14 +128,11 @@ export default {
 				Vue.set(state.usersLookup, user.id, user)
 			}
 		},
-		sendMessage ({state}, {text}) {
+		sendMessage ({state}, {content}) {
 			api.call('chat.send', {
 				channel: state.channel,
 				event_type: 'channel.message',
-				content: {
-					type: 'text',
-					body: text
-				}
+				content
 			})
 		},
 		deleteMessage ({state}, message) {
@@ -148,15 +145,12 @@ export default {
 				}
 			})
 		},
-		editMessage ({state}, {message, newBody}) {
+		editMessage ({state}, {message, content}) {
 			api.call('chat.send', {
 				channel: state.channel,
 				event_type: 'channel.message',
 				replaces: message.event_id,
-				content: {
-					type: 'text',
-					body: newBody
-				}
+				content
 			})
 		},
 		updateUser ({state}, {id, update}) {

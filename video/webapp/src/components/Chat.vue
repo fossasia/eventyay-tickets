@@ -122,8 +122,8 @@ export default {
 		join () {
 			this.$store.dispatch('chat/join')
 		},
-		send (message) {
-			this.$store.dispatch('chat/sendMessage', {text: message})
+		send (content) {
+			this.$store.dispatch('chat/sendMessage', {content})
 		},
 		async showUserCard (event, user) {
 			this.selectedUser = user
