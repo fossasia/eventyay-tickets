@@ -27,6 +27,7 @@ from .modules.chat import ChatModule
 from .modules.exhibition import ExhibitionModule
 from .modules.question import QuestionModule
 from .modules.room import RoomModule
+from .modules.roulette import RouletteModule
 from .modules.world import WorldModule
 
 logger = logging.getLogger(__name__)
@@ -78,6 +79,7 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
             "exhibition": ExhibitionModule(self),
             "question": QuestionModule(self),
             "room": RoomModule(self),
+            "roulette": RouletteModule(self),
             "user": AuthModule(self),
             "world": WorldModule(self),
         }

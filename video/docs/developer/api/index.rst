@@ -20,3 +20,4 @@ without warning.
    chat
    bbb
    uploads
+   roulette

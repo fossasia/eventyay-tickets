@@ -9,6 +9,7 @@ from .exhibitor import (
     ExhibitorSocialMediaLink,
     ExhibitorStaff,
 )
+from .janus import JanusServer
 from .question import Question, QuestionVote
 from .room import Room
 from .world import World
@@ -20,6 +21,7 @@ __all__ = [
     "BBBServer",
     "ChatEvent",
     "Channel",
+    "JanusServer",
     "Membership",
     "Question",
     "QuestionVote",

@@ -14,6 +14,7 @@
 				.stage-tool(v-if="$features.enabled('questions-answers')", :class="{active: activeStageTool === 'qa'}", @click="activeStageTool = 'qa'") Ask a question
 				reactions-bar(:expanded="true", @expand="activeStageTool = 'reaction'")
 				//- reactions-bar(:expanded="activeStageTool === 'reaction'", @expand="activeStageTool = 'reaction'")
+		roulette(v-else-if="modules['networking.roulette'] && $features.enabled('roulette')", :module="modules['networking.roulette']", :room="room")
 		landing-page(v-else-if="modules['page.landing']", :module="modules['page.landing']")
 		markdown-page(v-else-if="modules['page.markdown']", :module="modules['page.markdown']")
 		UserListPage(v-else-if="modules['page.userlist']", :module="modules['page.userlist']")
@@ -44,12 +45,13 @@ import Exhibition from 'components/Exhibition'
 import ReactionsBar from 'components/ReactionsBar'
 import ReactionsOverlay from 'components/ReactionsOverlay'
 import RecordingsPrompt from 'components/RecordingsPrompt'
+import Roulette from 'components/Roulette'
 import UserListPage from 'components/UserListPage'
 import Questions from 'components/Questions'
 
 export default {
 	name: 'Room',
-	components: { EditRoomSchedule, Chat, Exhibition, Livestream, LandingPage, MarkdownPage, IframePage, ReactionsBar, ReactionsOverlay, RecordingsPrompt, UserListPage, Questions },
+	components: { EditRoomSchedule, Chat, Exhibition, Livestream, LandingPage, MarkdownPage, IframePage, ReactionsBar, ReactionsOverlay, RecordingsPrompt, UserListPage, Roulette, Questions },
 	props: {
 		roomId: String
 	},

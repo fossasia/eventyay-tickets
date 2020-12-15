@@ -33,6 +33,7 @@ class Permission(Enum):
     ROOM_QUESTION_ASK = "room:question.ask"
     ROOM_QUESTION_VOTE = "room:question.vote"
     ROOM_QUESTION_MODERATE = "room:question.moderate"
+    ROOM_ROULETTE_JOIN = "room:roulette.join"
 
 
 MAX_PERMISSIONS_IF_SILENCED = {

@@ -17,6 +17,7 @@ def default_roles():
     participant = viewer + [
         Permission.ROOM_CHAT_JOIN,
         Permission.ROOM_CHAT_SEND,
+        Permission.ROOM_ROULETTE_JOIN,
         Permission.ROOM_BBB_JOIN,
         Permission.WORLD_CHAT_DIRECT,
         Permission.WORLD_EXHIBITION_CONTACT,

@@ -66,12 +66,21 @@ module.exports = {
 			}, {
 				test: /\.modernizrrc$/,
 				loader: 'modernizr-loader',
+			}, {
+				test: require.resolve('janus-gateway'),
+				loader: 'exports-loader',
+				options: {
+					exports: 'Janus',
+				},
 			}]
 		},
 		plugins: [
 			new webpack.DefinePlugin({
 				ENV_DEVELOPMENT: process.env.NODE_ENV === 'development',
 				RELEASE: `'${process.env.VENUELESS_COMMIT_SHA}'`
+			}),
+			new webpack.ProvidePlugin({
+				adapter: 'webrtc-adapter'
 			})
 		],
 	},
