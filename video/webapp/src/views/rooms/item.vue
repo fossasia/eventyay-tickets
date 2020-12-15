@@ -20,7 +20,7 @@
 		UserListPage(v-else-if="modules['page.userlist']", :module="modules['page.userlist']")
 		iframe-page(v-else-if="modules['page.iframe']", :module="modules['page.iframe']")
 		exhibition(v-else-if="modules['exhibition.native']", :room="room")
-		.room-sidebar(v-if="modules['chat'] || modules['question']", :class="unreadTabsClasses")
+		.room-sidebar(v-if="modules['chat.native'] || modules['question']", :class="unreadTabsClasses")
 			bunt-tabs(v-if="modules['question']", :active-tab="activeSidebarTab")
 				bunt-tab(id="chat", :header="$t('Room:sidebar:tabs-header:chat')", @selected="activeSidebarTab = 'chat'")
 				bunt-tab(id="questions", :header="$t('Room:sidebar:tabs-header:questions')", @selected="activeSidebarTab = 'questions'")
