@@ -98,6 +98,6 @@ class RouletteModule(BaseModule):
             janus_room_info["creating_user"] = str(self.consumer.user.pk)
             await redis.rpush(listkey, json.dumps(janus_room_info))
         else:  # existing room, store pairing
-            self._store_pairing(janus_room_info["creating_user"])
+            await self._store_pairing(janus_room_info["creating_user"])
 
         await self.consumer.send_success(janus_room_info)
