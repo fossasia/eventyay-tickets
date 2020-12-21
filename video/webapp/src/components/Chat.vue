@@ -147,6 +147,7 @@ export default {
 	flex: auto
 	background-color: $clr-white
 	display: flex
+	min-width: 0
 	.main-chat
 		flex: auto
 		display: flex
@@ -177,6 +178,7 @@ export default {
 		justify-content: flex-end
 	&.standalone
 		min-height: 0
+		min-width: 0
 		.timeline
 			grid-area: timeline
 		.chat-input
