@@ -25,6 +25,11 @@
 				.prompt(v-if="message.sender === user.id") You started a video call
 				.prompt(v-else) {{ senderDisplayName }} invited you to a video call
 				bunt-button(@click="$store.dispatch('chat/joinCall', message.content.body.id)") Join
+			a.preview-card(v-if="message.content.preview_card", href="message.content.preview_card.url", target="_blank")
+				.url {{ message.content.preview_card.url }}
+				img(v-if="message.content.preview_card.image", :src="message.content.preview_card.image")
+				.title {{ message.content.preview_card.title }}
+				.description {{ message.content.preview_card.description }}
 		.actions
 			menu-dropdown(v-if="$features.enabled('chat-moderation') && (hasPermission('room:chat.moderate') || message.sender === user.id)", v-model="selected")
 				template(v-slot:button="{toggle}")
@@ -237,6 +242,34 @@ export default {
 				themed-button-primary()
 				margin-top: 16px
 				align-self: flex-end
+		.preview-card
+			border: border-separator()
+			border-radius: 4px
+			max-width: 520px
+			align-self: flex-start
+			margin: 8px 0 4px 0
+			padding: 8px
+			color: $clr-primary-text-light
+			background-color: $clr-white
+			&:hover
+				color: var(--clr-primary)
+				background-color: $clr-grey-100
+				.url
+					color: var(--clr-primary)
+			.url
+				color: $clr-disabled-text-light
+				font-weight: 500
+				font-size: 12px
+			img
+				max-width: 100%
+				object-fit: contain
+				max-height: 400px
+			.title
+				font-size: 16px
+				font-weight: 500
+				margin: 4px 0
+			.description
+				white-space: pre-wrap
 	.c-chat-input
 		background-color: $clr-white
 	.system-content

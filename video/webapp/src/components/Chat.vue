@@ -147,7 +147,6 @@ export default {
 	flex: auto
 	background-color: $clr-white
 	display: flex
-	min-width: 0
 	.main-chat
 		flex: auto
 		display: flex
