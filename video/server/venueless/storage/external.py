@@ -109,6 +109,7 @@ def fetch_preview_data(url, world):
         )
         result["format"] = find_data(html, "twitter:card")
         result["video"] = find_data(html, "og:video")
+        result["site_name"] = find_data(html, "og:site-name")
 
         result = {key: value for key, value in result.items() if value}
 
