@@ -118,6 +118,7 @@ export default {
 	flex-direction: column
 	background-color: $clr-white
 	min-height: 0
+	min-width: 0
 	.main
 		flex: auto
 		display: flex
