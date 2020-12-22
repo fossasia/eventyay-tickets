@@ -91,6 +91,7 @@ async def test_join_leave(chat_room):
                 "sender": c.context["user.config"]["id"],
                 "edited": None,
                 "replaces": None,
+                "reactions": {},
                 "content": {
                     "membership": "join",
                     "user": {
@@ -310,6 +311,7 @@ async def test_subscribe_join_leave(chat_room):
                 "event_type": "channel.member",
                 "edited": None,
                 "replaces": None,
+                "reactions": {},
                 "content": {
                     "membership": "join",
                     "user": {
@@ -565,6 +567,22 @@ async def test_fetch_messages_after_join(chat_room):
         )
         response = await c1.receive_json_from()
         assert response[0] == "success"
+        event_id = response[2]["event"]["event_id"]
+
+        await c1.send_json_to(
+            [
+                "chat.react",
+                123,
+                {
+                    "channel": str(chat_room.channel.id),
+                    "event": event_id,
+                    "reaction": "😈",
+                },
+            ]
+        )
+        response = await c1.receive_json_from()
+        assert response[0] == "success"
+        assert response[2]["reactions"]
 
         async with world_communicator() as c2:
             await c2.send_json_to(
@@ -596,6 +614,7 @@ async def test_fetch_messages_after_join(chat_room):
                 "type": "chat.event",
                 "edited": None,
                 "replaces": None,
+                "reactions": {},
                 "content": {
                     "user": {
                         "id": c1.context["user.config"]["id"],
@@ -614,6 +633,7 @@ async def test_fetch_messages_after_join(chat_room):
                 "event_type": "channel.message",
                 "edited": None,
                 "replaces": None,
+                "reactions": {"😈": [c1.context["user.config"]["id"]]},
                 "content": {"type": "text", "body": "Hello world"},
                 "sender": c1.context["user.config"]["id"],
             }
@@ -686,6 +706,7 @@ async def test_send_message_to_other_client(chat_room):
                 "sender": c1.context["user.config"]["id"],
                 "edited": None,
                 "replaces": None,
+                "reactions": {},
                 "event_id": 0,
             },
         ]
@@ -702,6 +723,7 @@ async def test_send_message_to_other_client(chat_room):
                 "sender": c1.context["user.config"]["id"],
                 "edited": None,
                 "replaces": None,
+                "reactions": {},
                 "event_id": 0,
             },
         ]
@@ -781,6 +803,7 @@ async def test_no_messages_after_leave(chat_room):
                 "event_id": 0,
                 "edited": None,
                 "replaces": None,
+                "reactions": {},
             },
         ]
 
@@ -853,6 +876,7 @@ async def test_no_message_after_unsubscribe(chat_room):
                 "event_id": 0,
                 "edited": None,
                 "replaces": None,
+                "reactions": {},
             },
         ]
 

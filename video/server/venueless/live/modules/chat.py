@@ -4,6 +4,7 @@ import re
 from contextlib import suppress
 
 import asgiref
+import emoji
 from sentry_sdk import configure_scope
 
 from venueless.core.permissions import Permission
@@ -440,6 +441,35 @@ class ChatModule(BaseModule):
                     }
                 )
 
+    @command("react")
+    @channel_action(
+        room_permission_required=Permission.ROOM_CHAT_SEND,
+        room_module_required="chat.native",
+        require_membership=True,
+    )
+    async def react(self, body):
+        reaction = body["reaction"]
+        if reaction not in emoji.UNICODE_EMOJI:
+            raise ConsumerException("emoji.sadpanda")
+
+        event = await self.service.get_event(
+            pk=body["event"],
+            channel_id=self.channel_id,
+        )
+        if body.get("delete", False):
+            event = await self.service.remove_reaction(
+                event=event, reaction=reaction, user=self.consumer.user
+            )
+        else:
+            event = await self.service.add_reaction(
+                event=event, reaction=reaction, user=self.consumer.user
+            )
+        event["type"] = "chat.reaction"
+        await self.consumer.send_success(event)
+        await self.consumer.channel_layer.group_send(
+            GROUP_CHAT.format(channel=self.channel_id), event
+        )
+
     @event("event", refresh_world=True, refresh_user=True)
     async def publish_event(self, body):
         channel = self.consumer.channel_cache.get(body["channel"])
@@ -457,7 +487,7 @@ class ChatModule(BaseModule):
         ):
             return
         await self.consumer.send_json(
-            ["chat.event", {k: v for k, v in body.items() if k != "type"}]
+            [body["type"], {k: v for k, v in body.items() if k != "type"}]
         )
 
     @command("direct.create")

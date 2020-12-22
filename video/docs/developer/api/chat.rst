@@ -123,6 +123,12 @@ You can edit a user's own message by sending an update like this::
 As with message sending, you'll get both the success and the broadcast. The broadcast looks the same as a new message,
 only that it includes the ``"replaces"`` key.
 
+To react to an existing event, this exchange occurs (the ``delete`` key is optional)::
+
+    => ["chat.react", 1234, {"channel": "room_0", "event": 12345678, "reaction": "😈", "delete": False}}]
+    <- ["success", 1234, {"event": "chat.reaction", ...}}]
+    <= ["chat.reaction", {"channel": "room_0", "event": 123456, ...}]
+
 If you're trying to send a direct message to a user who blocked you, or to a channel you have no permission sending to,
 or to edit/delete a message you may not modify, you will receive an error with code ``chat.denied``. If your body is
 invalid, you will receive one of the following error codes:

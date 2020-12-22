@@ -1,4 +1,5 @@
 import uuid
+from collections import defaultdict
 
 from django.contrib.postgres.fields import JSONField
 from django.db import models
@@ -55,6 +56,9 @@ class ChatEvent(models.Model):
     content = JSONField()
 
     def serialize_public(self):
+        reactions = defaultdict(list)
+        for reaction in self.reactions.all():
+            reactions[reaction.reaction].append(str(reaction.sender_id))
         return {
             "event_id": self.id,
             "channel": str(self.channel_id),
@@ -65,7 +69,22 @@ class ChatEvent(models.Model):
             "content": self.content,
             "edited": self.edited.isoformat() if self.edited else None,
             "replaces": self.replaces_id,
+            "reactions": reactions,
         }
+
+
+class ChatEventReaction(models.Model):
+    reaction = models.CharField(max_length=4)
+    sender = models.ForeignKey(
+        "User",
+        on_delete=models.CASCADE,
+        related_name="chat_reactions",
+    )
+    chat_event = models.ForeignKey(
+        ChatEvent,
+        on_delete=models.CASCADE,
+        related_name="reactions",
+    )
 
 
 class Membership(models.Model):
