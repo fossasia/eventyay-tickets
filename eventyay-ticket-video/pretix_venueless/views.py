@@ -172,7 +172,7 @@ class OrderPositionJoin(EventViewMixin, OrderPositionDetailMixin, View):
             name=gettext('Venueless'),
             defaults={
                 'all_products': True,
-                'include_pending': self.request.event.settings.webinar_allow_pending,
+                'include_pending': self.request.event.settings.venueless_allow_pending,
             }
         )[0]
         try:
