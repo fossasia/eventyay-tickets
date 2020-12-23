@@ -27,7 +27,7 @@ class BaseModule(metaclass=BaseModuleMeta):
         self.consumer = consumer
 
     async def dispatch_event(self, content):
-        event_type = content["type"].split(".", 1)[1]
+        event_type = content["type"].split(".")[1]
         if event_type in self._events:
             await self._events[event_type](self, content)
         else:  # pragma: no cover

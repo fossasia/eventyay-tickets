@@ -568,6 +568,10 @@ async def test_fetch_messages_after_join(chat_room):
         response = await c1.receive_json_from()
         assert response[0] == "success"
         event_id = response[2]["event"]["event_id"]
+        response = await c1.receive_json_from()
+        assert response[0] == "chat.event"
+        response = await c1.receive_json_from()
+        assert response[0] == "chat.notification_pointers"
 
         await c1.send_json_to(
             [
@@ -583,6 +587,9 @@ async def test_fetch_messages_after_join(chat_room):
         response = await c1.receive_json_from()
         assert response[0] == "success"
         assert response[2]["reactions"]
+
+        response = await c1.receive_json_from()  # Reaction broadcast
+        assert response[0] == "chat.event.reaction"
 
         async with world_communicator() as c2:
             await c2.send_json_to(

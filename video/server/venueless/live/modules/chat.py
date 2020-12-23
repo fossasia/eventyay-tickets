@@ -464,7 +464,7 @@ class ChatModule(BaseModule):
             event = await self.service.add_reaction(
                 event=event, reaction=reaction, user=self.consumer.user
             )
-        event["type"] = "chat.reaction"
+        event["type"] = "chat.event.reaction"
         await self.consumer.send_success(event)
         await self.consumer.channel_layer.group_send(
             GROUP_CHAT.format(channel=self.channel_id), event
