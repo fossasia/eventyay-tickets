@@ -288,6 +288,7 @@ export default {
 				margin-top: 16px
 				align-self: flex-end
 		.preview-card
+			display: block
 			border: border-separator()
 			border-radius: 4px
 			max-width: 520px
