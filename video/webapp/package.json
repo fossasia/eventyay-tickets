@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@mdi/font": "^5.5.55",
-    "@popperjs/core": "^2.4.4",
+    "@popperjs/core": "^2.6.0",
     "buntpapier": "^1.8.6",
     "color": "^3.1.2",
     "color-blend": "^3.0.0",
