@@ -211,6 +211,22 @@ export default {
 			const {url} = await api.call('bbb.call_url', {call: callId})
 			window.open(url, '_blank')
 		},
+		addReaction ({state}, {message, reaction}) {
+			// TODO skip if already reacted
+			return api.call('chat.react', {
+				channel: state.channel,
+				event: message.event_id,
+				reaction
+			})
+		},
+		removeReaction ({state}, {message, reaction}) {
+			return api.call('chat.react', {
+				channel: state.channel,
+				event: message.event_id,
+				reaction,
+				delete: true
+			})
+		},
 		// INCOMING
 		'api::chat.event' ({state, dispatch}, event) {
 			if (event.channel !== state.channel) return
@@ -274,6 +290,13 @@ export default {
 					const DMNotification = notification(title, text, close, click)
 					Vue.set(state.directMessageDesktopNotifications, channel.id, DMNotification)
 				}
+			}
+		},
+		'api::chat.event.reaction' ({state}, event) {
+			if (event.channel !== state.channel) return
+			const original = state.timeline.find(msg => msg.event_id === event.event_id)
+			if (original) {
+				original.reactions = event.reactions
 			}
 		}
 	}

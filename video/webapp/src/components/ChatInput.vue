@@ -1,12 +1,7 @@
 <template lang="pug">
 bunt-input-outline-container.c-chat-input
 	.editor(ref="editor")
-	.btn-emoji-picker(@click="toggleEmojiPicker")
-		svg(xmlns="http://www.w3.org/2000/svg", viewBox="0 0 24 24")
-			path(d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0m0 22C6.486 22 2 17.514 2 12S6.486 2 12 2s10 4.486 10 10-4.486 10-10 10")
-			path(d="M8 7a2 2 0 1 0-.001 3.999A2 2 0 0 0 8 7M16 7a2 2 0 1 0-.001 3.999A2 2 0 0 0 16 7M15.232 15c-.693 1.195-1.87 2-3.349 2-1.477 0-2.655-.805-3.347-2H15m3-2H6a6 6 0 1 0 12 0")
-	.emoji-picker-blocker(v-if="showEmojiPicker", @click="showEmojiPicker = false")
-	emoji-picker(v-if="showEmojiPicker", @selected="addEmoji")
+	emoji-picker-button(@selected="addEmoji")
 	upload-button#btn-file(@change="attachFiles", accept="image/png, image/jpg, application/pdf, .png, .jpg, .jpeg, .pdf", icon="paperclip", multiple=true)
 	bunt-icon-button#btn-send(@click="send") send
 	.files-preview(v-if="files.length > 0 || uploading")
@@ -29,12 +24,12 @@ bunt-input-outline-container.c-chat-input
 /* global ENV_DEVELOPMENT */
 // TODO
 // - parse ascii emoticons ;)
-// - parse colol emoji :+1:
+// - parse colon emoji :+1:
 // - add scrollbar when overflowing parent
 import api from 'lib/api'
 import Quill from 'quill'
 import 'quill/dist/quill.core.css'
-import EmojiPicker from 'components/EmojiPicker'
+import EmojiPickerButton from 'components/EmojiPickerButton'
 import UploadButton from 'components/UploadButton'
 import { getEmojiPosition, nativeToOps, toNative } from 'lib/emoji'
 
@@ -62,7 +57,7 @@ EmojiBlot.tagName = 'img'
 Quill.register(EmojiBlot)
 
 export default {
-	components: { EmojiPicker, UploadButton },
+	components: { EmojiPickerButton, UploadButton },
 	props: {
 		message: Object // initialize with existing message to edit
 	},
@@ -102,9 +97,6 @@ export default {
 		document.removeEventListener('selectionchange', this.onSelectionchange)
 	},
 	methods: {
-		toggleEmojiPicker () {
-			this.showEmojiPicker = !this.showEmojiPicker
-		},
 		onSelectionchange () {
 			const selection = window.getSelection()
 			const range = selection.getRangeAt(0)
@@ -162,7 +154,6 @@ export default {
 		},
 		addEmoji (emoji) {
 			// TODO skin color
-			this.showEmojiPicker = false
 			const selection = this.quill.getSelection(true)
 			this.quill.updateContents(new Delta().retain(selection.index).delete(selection.length).insert({emoji: emoji.id}), 'user')
 			this.quill.setSelection(selection.index + 1, 0)
@@ -212,32 +203,16 @@ export default {
 		padding: 0
 		input
 			padding-left: 32px
-	.btn-emoji-picker
-		height: 28px
-		width: 28px
-		box-sizing: border-box
-		padding: 4px
+	.c-emoji-picker-button .btn-emoji-picker
 		position: absolute
 		left: 4px
 		top: 4px
-		&:hover
-			border-radius: 50%
-			background-color: $clr-grey-100
+		height: 28px
+		width: @height
+		padding: 4px
 		svg
 			path
 				fill: $clr-secondary-text-light
-	.emoji-picker-blocker
-		position: fixed
-		top: 0
-		left: 0
-		width: 100vw
-		height: var(--vh100)
-		z-index: 800
-	.c-emoji-picker
-		position: absolute
-		bottom: 36px
-		left: 0
-		z-index: 801
 	#btn-send, #btn-file .bunt-icon-button
 		icon-button-style(color: $clr-secondary-text-light)
 		height: 28px

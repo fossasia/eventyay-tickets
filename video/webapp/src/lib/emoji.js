@@ -1,6 +1,6 @@
 import data from 'emoji-mart/data/twitter.json'
 import EmojiRegex from 'emoji-regex'
-import { getEmojiDataFromNative } from 'emoji-mart'
+import { getEmojiDataFromNative as _getEmojiDataFromNative } from 'emoji-mart'
 import { unifiedToNative } from 'emoji-mart/dist-es/utils'
 import { uncompress } from 'emoji-mart/dist-es/utils/data.js'
 
@@ -26,13 +26,21 @@ export function getEmojiPosition (emoji) {
 
 export function nativeToOps (string) {
 	return string.split(splitEmojiRegex).map(match => {
-		const emoji = getEmojiDataFromNative(match, 'twitter', data)
+		const emoji = _getEmojiDataFromNative(match, 'twitter', data)
 		if (emoji) {
 			return {insert: {emoji: emoji.id}}
 		} else {
 			return {insert: match}
 		}
 	})
+}
+
+export function getEmojiDataFromNative (native) {
+	return data.emojis[_getEmojiDataFromNative(native, 'twitter', data).id]
+}
+
+export function nativeToStyle (unicodeEmoji) {
+	return {'background-position': getEmojiPosition(data.emojis[_getEmojiDataFromNative(unicodeEmoji, 'twitter', data).id])}
 }
 
 export function toNative (emojiId) {
@@ -95,7 +103,7 @@ export function markdownEmoji (md) {
 		}
 	})
 	md.renderer.rules.emoji = (tokens, idx) => {
-		const emoji = data.emojis[getEmojiDataFromNative(tokens[idx].content, 'twitter', data).id]
+		const emoji = data.emojis[_getEmojiDataFromNative(tokens[idx].content, 'twitter', data).id]
 		return `<span class="emoji" style="background-position: ${getEmojiPosition(emoji)}"></span>`
 	}
 }
