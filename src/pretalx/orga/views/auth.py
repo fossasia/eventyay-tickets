@@ -24,7 +24,6 @@ class LoginView(GenericLoginView):
 
     @property
     def success_url(self):
-        messages.success(self.request, phrases.orga.logged_in)
         if self.event:
             return self.event.orga_urls.base
         return reverse("orga:event.list")

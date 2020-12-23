@@ -51,7 +51,7 @@ class BasePhrases(Phrases, app="base"):
         _("There was an error sending the mail. Please try again later.")
     ]
     error_saving_changes = [
-        _("Huh. We had trouble saving your input – Please see below for details. 🠯")
+        _("We had trouble saving your input – Please see below for details. 🠯")
     ]
     error_permissions_action = [_("You do not have permission to perform this action.")]
 
@@ -73,7 +73,7 @@ class BasePhrases(Phrases, app="base"):
     enter_email = _("Email address")
     password_repeat = _("New password (again)")
     passwords_differ = _(
-        "You entered two different passwords. Please input the same one twice!"
+        "You entered two different passwords. Please enter the same one twice!"
     )
     password_too_weak = [
         _("Your password is too weak or too common, please choose another one."),
