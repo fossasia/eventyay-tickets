@@ -6,6 +6,7 @@
 		slot(name="menu")
 </template>
 <script>
+// TODO destroy popper?
 import { createPopper } from '@popperjs/core'
 
 export default {
@@ -18,6 +19,10 @@ export default {
 		strategy: {
 			type: String,
 			default: 'absolute'
+		},
+		offset: {
+			type: Array,
+			default: () => ([0, 0])
 		},
 		blockBackground: {
 			type: Boolean,
@@ -35,7 +40,15 @@ export default {
 			const button = event.target.closest('.bunt-icon-button, .bunt-button') || event.target
 			createPopper(button, this.$refs.menu, {
 				placement: this.placement,
-				strategy: this.strategy
+				strategy: this.strategy,
+				modifiers: [
+					{
+						name: 'offset',
+						options: {
+							offset: this.offset,
+						},
+					},
+				]
 			})
 		},
 		close () {
