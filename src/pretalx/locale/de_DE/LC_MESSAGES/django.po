@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-12-03 03:59+0000\n"
-"PO-Revision-Date: 2020-08-05 00:09+0200\n"
-"Last-Translator: Tobias Kunze <r@rixx.de>\n"
+"PO-Revision-Date: 2020-12-23 23:22+0000\n"
+"Last-Translator: Astrid Emde <astrid.emde@wheregroup.com>\n"
 "Language-Team: \n"
 "Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Poedit 2.3.1\n"
+"X-Generator: Weblate 4.1\n"
 
 #: tests/screenshots/conftest.py:26
 msgid "Jane Doe"
@@ -227,9 +227,9 @@ msgid "No sessions on %(weekday)s, %(current_day)s."
 msgstr "Keine Vorträge an %(weekday)s, %(current_day)s."
 
 #: pretalx/agenda/templates/agenda/session_block.html:17
-#, python-format
+#, fuzzy, python-format
 msgid "%(minutes)smin"
-msgstr ""
+msgstr "%(minutes)smin"
 
 #: pretalx/agenda/templates/agenda/session_block.html:27
 #: pretalx/cfp/templates/cfp/event/fragment_state.html:15
@@ -951,7 +951,7 @@ msgid ""
 "undo this - if you are just uncertain if you can or should hold your "
 "session, please contact the organiser instead."
 msgstr ""
-"Du kannst hier klicken, um deine Einreichung zurückzuziehen. Das kann nicht "
+"Du kannst hier klicken, um deine Einreichung zurückzuziehen. Dies kann nicht "
 "rückgängig gemacht werden - wenn du dir nur unsicher bist, ob du deine "
 "Veranstaltung abhalten kannst oder sollst, kontaktiere bitte lieber die "
 "Veranstalter."
@@ -1111,7 +1111,7 @@ msgstr ""
 #: pretalx/cfp/views/wizard.py:99
 #, python-brace-format
 msgid "New proposal: {title}"
-msgstr ""
+msgstr "Neue Einreichung: {title}"
 
 #: pretalx/common/context_processors.py:37
 msgid "“"
@@ -1134,7 +1134,7 @@ msgstr "Du darfst \"{key}\" nicht in deinem CSS verwenden."
 #: pretalx/common/forms/fields.py:77
 #, python-brace-format
 msgid "Please do not upload files larger than {size}!"
-msgstr ""
+msgstr "Bitte keine Dateien größer als {size} hochladen!"
 
 #: pretalx/common/forms/fields.py:100
 #, python-brace-format
@@ -2301,7 +2301,7 @@ msgstr "Wertung"
 
 #: pretalx/event/models/event.py:531
 msgid "Maybe"
-msgstr ""
+msgstr "Vielleicht"
 
 #: pretalx/event/models/event.py:536
 #: pretalx/orga/templates/orga/cfp/access_code_delete.html:15
@@ -2928,7 +2928,7 @@ msgstr "Empfänger"
 
 #: pretalx/orga/forms/cfp.py:398
 msgid "If you select no question, all questions will be used."
-msgstr ""
+msgstr "Wenn Du keine Frage auswählst, werden alle Fragen verwendet."
 
 #: pretalx/orga/forms/event.py:29
 msgid "Active languages"
@@ -3031,7 +3031,7 @@ msgstr "Programmformat"
 
 #: pretalx/orga/forms/event.py:221 pretalx/orga/forms/event.py:451
 msgid "Grid"
-msgstr ""
+msgstr "Raster"
 
 #: pretalx/orga/forms/event.py:222 pretalx/orga/forms/event.py:452
 msgid "List"
@@ -3938,6 +3938,8 @@ msgid ""
 "Here you can limit who will receive reminder emails. You will be able to "
 "review emails before they are sent out."
 msgstr ""
+"Hier kann eingeschränkt werden, wer Erinnerungs-Mails erhalten soll. Diese E-"
+"Mails können noch vor dem Versenden geprüft werden."
 
 #: pretalx/orga/templates/orga/cfp/question_view.html:6
 msgid ""
@@ -4532,6 +4534,8 @@ msgid ""
 "There are different placeholders available depending on the template type. "
 "They are explained in detail once you start editing a template."
 msgstr ""
+"Abhängig von der Vorlage gibt es verschiedene Platzhalter. Diese werden "
+"detailliert beschrieben, sobald eine Vorlage bearbeitet wird."
 
 #: pretalx/orga/templates/orga/mails/template_list.html:27
 msgid "New custom template"
@@ -4572,10 +4576,8 @@ msgid "New schedule version"
 msgstr "Neue Programmversion"
 
 #: pretalx/orga/templates/orga/mails/template_list.html:70
-#, fuzzy
-#| msgid "Answered speaker questions"
 msgid "Unanswered questions reminder"
-msgstr "Beantwortete Fragen an Einreichende"
+msgstr "Unbeantwortete Fragen Erinnerung"
 
 #: pretalx/orga/templates/orga/mails/template_list.html:81
 msgid "Custom Mail"
@@ -4684,9 +4686,6 @@ msgid "This instance does currently not have any plugins installed."
 msgstr "Hier sind derzeit keine Plugins installiert."
 
 #: pretalx/orga/templates/orga/review/dashboard.html:23
-#, fuzzy
-#| msgid "proposal is waiting for your review."
-#| msgid_plural "submissions are waiting for your review."
 msgid "proposal is waiting for your review."
 msgid_plural "proposals are waiting for your review."
 msgstr[0] "Einreichung wartet auf dein Review."
@@ -5120,10 +5119,8 @@ msgstr ""
 "%(quotation_close)s-Knopf angeboten."
 
 #: pretalx/orga/templates/orga/settings/review.html:39
-#, fuzzy
-#| msgid "Review score"
 msgid "Review scoring"
-msgstr "Punkte"
+msgstr "Review Punkte"
 
 #: pretalx/orga/templates/orga/settings/review.html:42
 msgid ""
@@ -5137,13 +5134,13 @@ msgstr ""
 #, fuzzy
 #| msgid "Review score"
 msgid "Review Score category"
-msgstr "Punkte"
+msgstr "Review Punkte-Kategorie"
 
 #: pretalx/orga/templates/orga/settings/review.html:65
 #, fuzzy
 #| msgid "Delete organiser"
 msgid "Delete score category"
-msgstr "Veranstalter löschen"
+msgstr "Punkte-Kategorie löschen"
 
 #: pretalx/orga/templates/orga/settings/review.html:87
 #: pretalx/orga/templates/orga/settings/review.html:101
@@ -5682,10 +5679,8 @@ msgid "Sessions by state"
 msgstr "Vorträge nach Status"
 
 #: pretalx/orga/templates/orga/submission/tag_delete.html:5
-#, fuzzy
-#| msgid "Do you really want to delete this track?"
 msgid "Do you really want to delete this tag?"
-msgstr "Möchtest du diesen Track wirklich löschen?"
+msgstr "Möchtest du diesen Tag wirklich löschen?"
 
 #: pretalx/orga/templates/orga/submission/tag_form.html:22
 #: pretalx/orga/templates/orga/submission/tag_list.html:9
@@ -5935,22 +5930,16 @@ msgid "current schedule"
 msgstr "Aktuelles Programm"
 
 #: pretalx/orga/views/dashboard.py:204
-#, fuzzy
-#| msgid "session"
-#| msgid_plural "talks"
 msgid "session"
 msgid_plural "sessions"
-msgstr[0] "Vortrag"
-msgstr[1] "Vorträge"
+msgstr[0] "Session"
+msgstr[1] "Sessions"
 
 #: pretalx/orga/views/dashboard.py:217
-#, fuzzy
-#| msgid "unconfirmed session"
-#| msgid_plural "unconfirmed talks"
 msgid "unconfirmed session"
 msgid_plural "unconfirmed sessions"
-msgstr[0] "nicht bestätigter Vortrag"
-msgstr[1] "nicht bestätigte Vorträge"
+msgstr[0] "nicht bestätigte Session"
+msgstr[1] "nicht bestätigte Sessions"
 
 #: pretalx/orga/views/dashboard.py:228
 msgid "speaker"
@@ -6155,10 +6144,8 @@ msgid "The link to the user's list of proposals"
 msgstr "Die Namen aller Vortragenden dieser Einreichung."
 
 #: pretalx/orga/views/mails.py:408
-#, fuzzy
-#| msgid "No questions have been answered at the moment."
 msgid "The list of questions that the user has not answered, as bullet points"
-msgstr "Bislang scheint keine Frage beantwortet worden zu sein."
+msgstr "Liste der Fragen, die noch nicht beantwortet wurden."
 
 #: pretalx/orga/views/organiser.py:73
 msgid "The invitation has been sent."
@@ -6747,7 +6734,7 @@ msgstr "Chinesisch (Taiwan)"
 
 #: pretalx/settings.py:370
 msgid "Japanese"
-msgstr ""
+msgstr "Japanisch"
 
 #: pretalx/submission/exporters.py:17
 msgid "Answered speaker questions"
@@ -6799,10 +6786,8 @@ msgid "Proposal states"
 msgstr "Einreichungsstatus"
 
 #: pretalx/submission/forms/tag.py:21
-#, fuzzy
-#| msgid "You already have a track by this name!"
 msgid "You already have a tag by this name!"
-msgstr "Ihr habt schon einen Track dieses Namens!"
+msgstr "Ein Tag mit diesem Namen liegt bereits vor!"
 
 #: pretalx/submission/models/access_code.py:19
 msgid "Access code"
@@ -7029,10 +7014,8 @@ msgid "description"
 msgstr "Beschreibung"
 
 #: pretalx/submission/models/review.py:22
-#, fuzzy
-#| msgid "Leave empty to use the default address: {}"
 msgid "Leave empty to use this category for all tracks."
-msgstr "Leer lassen, um die Standardadresse zu verwenden: {}"
+msgstr "Leer lassen, um die Standard-Kategorie zu verwenden: {}"
 
 #: pretalx/submission/models/review.py:77
 msgid "What do you think?"
@@ -7078,11 +7061,11 @@ msgstr "Reviewer können Einreichungen annehmen und ablehnen"
 
 #: pretalx/submission/models/review.py:222
 msgid "Add and remove existing tags"
-msgstr ""
+msgstr "Hinzufügen und entfernen von Tags"
 
 #: pretalx/submission/models/review.py:223
 msgid "Add, remove and create tags"
-msgstr ""
+msgstr "Hinzufügen, entfernen, erzeugen von Tags"
 
 #: pretalx/submission/models/review.py:228
 msgid "Speakers can modify their proposals before acceptance"
@@ -7137,10 +7120,8 @@ msgid "How many times this session will take place."
 msgstr "Wie oft der Vortrag gehalten wird."
 
 #: pretalx/submission/models/submission.py:196
-#, fuzzy
-#| msgid "Show this submission in the list of featured talks."
 msgid "Show this session in public list of featured sessions."
-msgstr "Zeige diese Einreichung in der Liste der Highlights."
+msgstr "Zeige diese Einreichung in der öffentlichen Liste der Highlights."
 
 #: pretalx/submission/models/submission.py:199
 msgid "Don't record this session."
