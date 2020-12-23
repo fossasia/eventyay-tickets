@@ -664,19 +664,9 @@ h2 .submission-state-dropdown {
     margin-bottom: 4px;
     display: flex;
     align-content: center;
-    .form-check {
-      width: 100%;
-    }
     input {
       margin-left: auto;
       margin-right: auto;
-    }
-    .form-check-label {
-      position: relative;
-      margin-top: -7px;
-      &::after {
-        top: 0;
-      }
     }
   }
   small {
@@ -699,6 +689,9 @@ h2 .submission-state-dropdown {
   tr td {
     padding-top: 16px;
     line-height: 2.5;
+  }
+  tr th:first-child {
+    max-width: 200px
   }
 }
 #id_locales.checkbox,
@@ -1018,5 +1011,10 @@ main .progress {
       right: 70%;
       bottom: -12px;
     }
+  }
+}
+.hide-label {
+  label {
+    display: none;
   }
 }

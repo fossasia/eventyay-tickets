@@ -56,8 +56,7 @@
                 <thead>
                     <tr>
                         <th></th>
-                        <th>{% translate "Request" %}</th>
-                        <th>{% translate "Require" %}</th>
+                        <th></th>
                         <th>{% translate "Minimum length" %}</th>
                         <th>{% translate "Maximum length" %}</th>
                     </tr>
@@ -66,79 +65,66 @@
                     <tr>
                         <th>{% translate "Title" %}</th>
                         <td></td>
-                        <td></td>
                         <td>{% bootstrap_field sform.cfp_title_min_length use_label=False layout='inline' %}</td>
                         <td>{% bootstrap_field sform.cfp_title_max_length use_label=False layout='inline' %}</td>
                     </tr>
                     <tr>
                         <th>{% translate "Abstract" %}</th>
-                        <td class="request">{% bootstrap_field sform.cfp_request_abstract use_label=False layout='event-inline' %}</td>
-                        <td class="require">{% bootstrap_field sform.cfp_require_abstract use_label=False layout='event-inline' %}</td>
+                        <td class="hide-label">{% bootstrap_field sform.cfp_ask_abstract layout='event-inline' %}</td>
                         <td>{% bootstrap_field sform.cfp_abstract_min_length use_label=False layout='inline' %}</td>
                         <td>{% bootstrap_field sform.cfp_abstract_max_length use_label=False layout='inline' %}</td>
                     </tr>
                     <tr>
                         <th>{% translate "Description" %}</th>
-                        <td class="request">{% bootstrap_field sform.cfp_request_description use_label=False layout='event-inline' %}</td>
-                        <td class="require">{% bootstrap_field sform.cfp_require_description use_label=False layout='event-inline' %}</td>
+                        <td class="hide-label">{% bootstrap_field sform.cfp_ask_description layout='event-inline' %}</td>
                         <td>{% bootstrap_field sform.cfp_description_min_length use_label=False layout='inline' %}</td>
                         <td>{% bootstrap_field sform.cfp_description_max_length use_label=False layout='inline' %}</td>
                     </tr>
-                    {% if request.event.settings.use_tracks %}
-                    <tr>
+                    <tr{% if request.event.settings.use_tracks %}class="d-none"{% endif %}>
                         <th>{% translate "Track" %}</th>
-                        <td class="request">{% bootstrap_field sform.cfp_request_track use_label=False layout='event-inline' %}</td>
-                        <td class="require">{% bootstrap_field sform.cfp_require_track use_label=False layout='event-inline' %}</td>
+                        <td class="hide-label">{% bootstrap_field sform.cfp_ask_track layout='event-inline' %}</td>
                         <td></td>
                         <td></td>
                     </tr>
-                    {% endif %}
                     <tr>
                         <th>{% translate "Biography" %}</th>
-                        <td class="request">{% bootstrap_field sform.cfp_request_biography use_label=False layout='event-inline' %}</td>
-                        <td class="require">{% bootstrap_field sform.cfp_require_biography use_label=False layout='event-inline' %}</td>
+                        <td class="hide-label">{% bootstrap_field sform.cfp_ask_biography layout='event-inline' %}</td>
                         <td>{% bootstrap_field sform.cfp_biography_min_length use_label=False layout='inline' %}</td>
                         <td>{% bootstrap_field sform.cfp_biography_max_length use_label=False layout='inline' %}</td>
                     </tr>
                     <tr>
                         <th>{% translate "Profile picture" %}</th>
-                        <td class="request">{% bootstrap_field sform.cfp_request_avatar use_label=False layout='event-inline' %}</td>
-                        <td class="require">{% bootstrap_field sform.cfp_require_avatar use_label=False layout='event-inline' %}</td>
+                        <td class="hide-label">{% bootstrap_field sform.cfp_ask_avatar layout='event-inline' %}</td>
                         <td></td>
                         <td></td>
                     </tr>
                     <tr>
                         <th>{% translate "Availability" %}</th>
-                        <td class="request">{% bootstrap_field sform.cfp_request_availabilities use_label=False layout='event-inline' %}</td>
-                        <td class="require">{% bootstrap_field sform.cfp_require_availabilities use_label=False layout='event-inline' %}</td>
+                        <td class="hide-label">{% bootstrap_field sform.cfp_ask_availabilities layout='event-inline' %}</td>
                         <td></td>
                         <td></td>
                     </tr>
                     <tr>
                         <th>{% translate "Notes" %}</th>
-                        <td class="request">{% bootstrap_field sform.cfp_request_notes use_label=False layout='event-inline' %}</td>
-                        <td class="require">{% bootstrap_field sform.cfp_require_notes use_label=False layout='event-inline' %}</td>
+                        <td class="hide-label">{% bootstrap_field sform.cfp_ask_notes layout='event-inline' %}</td>
                         <td></td>
                         <td></td>
                     </tr>
                     <tr>
                         <th>{% translate "Recording opt-out" %}</th>
-                        <td>{% bootstrap_field sform.cfp_request_do_not_record use_label=False layout='event-inline' %}</td>
-                        <td></td>
+                        <td class="hide-label">{% bootstrap_field sform.cfp_ask_do_not_record layout='event-inline' %}</td>
                         <td></td>
                         <td></td>
                     </tr>
                     <tr>
                         <th>{% translate "Session image" %}</th>
-                        <td class="request">{% bootstrap_field sform.cfp_request_image use_label=False layout='event-inline' %}</td>
-                        <td class="require">{% bootstrap_field sform.cfp_require_image use_label=False layout='event-inline' %}</td>
+                        <td class="hide-label">{% bootstrap_field sform.cfp_ask_image layout='event-inline' %}</td>
                         <td></td>
                         <td></td>
                     </tr>
                     <tr>
                         <th>{% translate "Duration" %}</th>
-                        <td class="request">{% bootstrap_field sform.cfp_request_duration use_label=False layout='event-inline' %}</td>
-                        <td class="require">{% bootstrap_field sform.cfp_require_duration use_label=False layout='event-inline' %}</td>
+                        <td class="hide-label">{% bootstrap_field sform.cfp_ask_duration layout='event-inline' %}</td>
                         <td></td>
                         <td></td>
                     </tr>

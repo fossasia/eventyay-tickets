@@ -33,25 +33,6 @@ class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
         required=False,
         help_text=_("Show the time and date the CfP ends to potential speakers."),
     )
-    cfp_request_abstract = forms.BooleanField(label="", required=False)
-    cfp_request_description = forms.BooleanField(label="", required=False)
-    cfp_request_notes = forms.BooleanField(label="", required=False)
-    cfp_request_biography = forms.BooleanField(label="", required=False)
-    cfp_request_avatar = forms.BooleanField(label="", required=False)
-    cfp_request_availabilities = forms.BooleanField(label="", required=False)
-    cfp_request_do_not_record = forms.BooleanField(label="", required=False)
-    cfp_request_image = forms.BooleanField(label="", required=False)
-    cfp_request_track = forms.BooleanField(label="", required=False)
-    cfp_request_duration = forms.BooleanField(label="", required=False)
-    cfp_require_abstract = forms.BooleanField(label="", required=False)
-    cfp_require_description = forms.BooleanField(label="", required=False)
-    cfp_require_notes = forms.BooleanField(label="", required=False)
-    cfp_require_biography = forms.BooleanField(label="", required=False)
-    cfp_require_avatar = forms.BooleanField(label="", required=False)
-    cfp_require_availabilities = forms.BooleanField(label="", required=False)
-    cfp_require_image = forms.BooleanField(label="", required=False)
-    cfp_require_track = forms.BooleanField(label="", required=False)
-    cfp_require_duration = forms.BooleanField(label="", required=False)
     cfp_title_min_length = forms.IntegerField(label="", required=False, min_value=0)
     cfp_abstract_min_length = forms.IntegerField(
         label=_("Minimum length"), required=False, min_value=0
@@ -97,6 +78,46 @@ class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
         for field in ["abstract", "description", "biography"]:
             self.fields[f"cfp_{field}_min_length"].widget.attrs["placeholder"] = ""
             self.fields[f"cfp_{field}_max_length"].widget.attrs["placeholder"] = ""
+        self.request_require_fields = [
+            "abstract",
+            "description",
+            "notes",
+            "biography",
+            "avatar",
+            "availabilities",
+            "do_not_record",
+            "image",
+            "track",
+            "duration",
+        ]
+        for attribute in self.request_require_fields:
+            field_name = f"cfp_ask_{attribute}"
+            self.fields[field_name] = forms.ChoiceField(
+                required=True,
+                initial="required"
+                if obj.settings.get(f"cfp_require_{attribute}")
+                else (
+                    "optional"
+                    if obj.settings.get(f"cfp_request_{attribute}")
+                    else "do_not_ask"
+                ),
+                choices=[
+                    ("do_not_ask", _("Do not ask")),
+                    ("optional", _("Ask, but do not require input")),
+                    ("required", _("Ask and require input")),
+                ],
+            )
+
+    def save(self, *args, **kwargs):
+        for attribute in self.request_require_fields:
+            key = f"cfp_ask_{attribute}"
+            data = self.cleaned_data.pop(key)
+            self.fields.pop(
+                key
+            )  # Hierarkey falls over when fields are not in cleaned_data
+            self._s.set(f"cfp_request_{attribute}", data != "do_not_ask")
+            self._s.set(f"cfp_require_{attribute}", data == "required")
+        super().save(*args, **kwargs)
 
 
 class CfPForm(ReadOnlyFlag, I18nModelForm):
