@@ -267,7 +267,7 @@ class ChatService:
 
     @database_sync_to_async
     def add_reaction(self, event, reaction, user):
-        ChatEventReaction.objects.create(
+        ChatEventReaction.objects.update_or_create(
             chat_event=event, reaction=reaction, sender=user
         )
         return self._get_event(pk=event.pk).serialize_public()
