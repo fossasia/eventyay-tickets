@@ -35,7 +35,7 @@ setup(
     author_email='michel@rami.io',
     license='Apache',
 
-    install_requires=['PyJWT'],
+    install_requires=['PyJWT==2.0.*'],
     packages=find_packages(exclude=['tests', 'tests.*']),
     include_package_data=True,
     cmdclass=cmdclass,

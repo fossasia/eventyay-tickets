@@ -164,7 +164,7 @@ class OrderPositionJoin(EventViewMixin, OrderPositionDetailMixin, View):
         }
         token = jwt.encode(
             payload, self.request.event.settings.venueless_secret, algorithm="HS256"
-        ).decode("utf-8")
+        )
 
         cl = CheckinList.objects.get_or_create(
             event=self.request.event,
