@@ -74,7 +74,7 @@ class ChatEvent(models.Model):
 
 
 class ChatEventReaction(models.Model):
-    reaction = models.CharField(max_length=4)
+    reaction = models.TextField()
     sender = models.ForeignKey(
         "User",
         on_delete=models.CASCADE,

@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("reaction", models.CharField(max_length=4)),
+                ("reaction", models.TextField()),
                 (
                     "chat_event",
                     models.ForeignKey(
