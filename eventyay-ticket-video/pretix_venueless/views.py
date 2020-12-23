@@ -180,4 +180,8 @@ class OrderPositionJoin(EventViewMixin, OrderPositionDetailMixin, View):
         except:
             pass
 
-        return redirect('{}/#token={}'.format(self.request.event.settings.venueless_url, token).replace("//#", "/#"))
+        baseurl = self.request.event.settings.venueless_url
+        if '{token}' in baseurl:
+            # Hidden feature to support other kinds of installations
+            return redirect(baseurl.format(token=token))
+        return redirect('{}/#token={}'.format(baseurl, token).replace("//#", "/#"))
