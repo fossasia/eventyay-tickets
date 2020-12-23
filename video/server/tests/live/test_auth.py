@@ -629,7 +629,7 @@ async def test_silence_user(world, volatile_chat_room):
             ]
         )
         response = await c_user.receive_json_from()
-        assert response[0] == "success"
+        assert response[0] == "success", response
         await c_user.receive_json_from()
 
         await c_admin.send_json_to(["user.silence", 14, {"id": user_id}])

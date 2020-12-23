@@ -17,7 +17,15 @@ from django.db.models import (
 from django.utils.timezone import now
 
 from ...live.channels import GROUP_CHAT
-from ..models import AuditLog, BBBCall, Channel, ChatEvent, Membership, User
+from ..models import (
+    AuditLog,
+    BBBCall,
+    Channel,
+    ChatEvent,
+    ChatEventReaction,
+    Membership,
+    User,
+)
 from ..utils.redis import aioredis
 from .bbb import choose_server
 from .user import get_public_users, user_broadcast
@@ -174,9 +182,14 @@ class ChatService:
         events = ChatEvent.objects
         if skip_membership:
             events = events.exclude(event_type="channel.member")
-        events = events.filter(id__lt=before_id, channel=channel,).order_by(
-            "-id"
-        )[: min(count, 1000)]
+        events = (
+            events.filter(
+                id__lt=before_id,
+                channel=channel,
+            )
+            .prefetch_related("reactions")
+            .order_by("-id")[: min(count, 1000)]
+        )
         return [e.serialize_public() for e in reversed(list(events))]
 
     @database_sync_to_async
@@ -246,6 +259,20 @@ class ChatService:
             raise e  # pragma: no cover
 
     @database_sync_to_async
+    def remove_reaction(self, event, reaction, user):
+        ChatEventReaction.objects.filter(
+            chat_event=event, reaction=reaction, sender=user
+        ).delete()
+        return self._get_event(pk=event.pk).serialize_public()
+
+    @database_sync_to_async
+    def add_reaction(self, event, reaction, user):
+        ChatEventReaction.objects.update_or_create(
+            chat_event=event, reaction=reaction, sender=user
+        )
+        return self._get_event(pk=event.pk).serialize_public()
+
+    @database_sync_to_async
     def get_or_create_direct_channel(
         self, user_ids, hide=True, hide_except: str = None
     ):
@@ -307,9 +334,12 @@ class ChatService:
 
                 return c, True, users
 
+    def _get_event(self, **kwargs):
+        return ChatEvent.objects.prefetch_related("reactions").get(**kwargs)
+
     @database_sync_to_async
     def get_event(self, **kwargs):
-        return ChatEvent.objects.get(**kwargs)
+        return self._get_event(**kwargs)
 
     @database_sync_to_async
     @transaction.atomic

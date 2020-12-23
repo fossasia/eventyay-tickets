@@ -30,8 +30,22 @@
 				img(v-if="message.content.preview_card.image", :src="message.content.preview_card.image")
 				.title {{ message.content.preview_card.title }}
 				.description {{ message.content.preview_card.description }}
+			.reactions(v-if="Object.keys(message.reactions).length > 0")
+				.reaction(v-for="users, emoji of message.reactions", :class="{'reacted-by-me': users.includes(user.id)}", @click="toggleReaction(emoji, users)", @pointerenter="initReactionTooltip($event, {emoji, users})", @pointerleave="reactionTooltip = null")
+					span.emoji(:style="nativeEmojiToStyle(emoji)")
+					.count {{ users.length }}
+				emoji-picker-button(@selected="addReaction", strategy="fixed", placement="top-start", :offset="[0, 3]", icon-style="plus")
+				.reaction-tooltip(v-if="reactionTooltip", ref="reactionTooltip")
+					.arrow(data-popper-arrow="")
+					.emoji-wrapper
+						.emoji(:style="nativeEmojiToStyle(reactionTooltip.emoji)")
+					.description
+						span.users {{ reactionTooltip.usersString }}
+						|  reacted with
+						span.emoji-text  {{ getEmojiDataFromNative(reactionTooltip.emoji).short_names[0] }}
 		.actions
-			menu-dropdown(v-if="$features.enabled('chat-moderation') && (hasPermission('room:chat.moderate') || message.sender === user.id)", v-model="selected")
+			emoji-picker-button(@selected="addReaction", strategy="fixed", placement="bottom-end", :offset="[36, 3]", icon-style="plus")
+			menu-dropdown(v-if="$features.enabled('chat-moderation') && (hasPermission('room:chat.moderate') || message.sender === user.id)", v-model="selected", placement="bottom-end", :offset="[0, 3]")
 				template(v-slot:button="{toggle}")
 					bunt-icon-button(@click="toggle") dots-vertical
 				template(v-slot:menu)
@@ -62,11 +76,12 @@
 import moment from 'moment'
 import MarkdownIt from 'markdown-it'
 import { mapState, mapGetters } from 'vuex'
-import { markdownEmoji } from 'lib/emoji'
+import { markdownEmoji, nativeToStyle as nativeEmojiToStyle, getEmojiDataFromNative } from 'lib/emoji'
 import { createPopper } from '@popperjs/core'
 import Avatar from 'components/Avatar'
 import ChatInput from 'components/ChatInput'
 import ChatUserCard from 'components/ChatUserCard'
+import EmojiPickerButton from 'components/EmojiPickerButton'
 import MenuDropdown from 'components/MenuDropdown'
 import Prompt from 'components/Prompt'
 
@@ -91,7 +106,7 @@ const generateHTML = function (input) {
 }
 
 export default {
-	components: { Avatar, ChatInput, ChatUserCard, MenuDropdown, Prompt },
+	components: { Avatar, ChatInput, ChatUserCard, EmojiPickerButton, MenuDropdown, Prompt },
 	props: {
 		message: Object,
 		previousMessage: Object,
@@ -103,7 +118,10 @@ export default {
 			selected: false,
 			showingAvatarCard: false,
 			editing: false,
-			showDeletePrompt: false
+			showDeletePrompt: false,
+			reactionTooltip: null,
+			getEmojiDataFromNative,
+			nativeEmojiToStyle
 		}
 	},
 	computed: {
@@ -151,6 +169,32 @@ export default {
 		}
 	},
 	methods: {
+		addReaction (emoji) {
+			this.$store.dispatch('chat/addReaction', {message: this.message, reaction: emoji.native})
+		},
+		toggleReaction (emoji, users) {
+			if (users.includes(this.user.id)) {
+				this.$store.dispatch('chat/removeReaction', {message: this.message, reaction: emoji})
+			} else {
+				this.$store.dispatch('chat/addReaction', {message: this.message, reaction: emoji})
+			}
+		},
+		async initReactionTooltip (event, {emoji, users}) {
+			this.reactionTooltip = {
+				emoji,
+				// TODO 'and you'
+				usersString: users.map(u => this.usersLookup[u].profile?.display_name || '???').join(', ')
+			}
+			await this.$nextTick()
+			createPopper(event.target, this.$refs.reactionTooltip, {
+				placement: 'top',
+				strategy: 'fixed',
+				modifiers: [
+					{name: 'offset', options: {offset: [0, 8]}},
+					{name: 'arrow', options: {padding: 4}}
+				],
+			})
+		},
 		startEditingMessage () {
 			this.selected = false
 			this.editing = true
@@ -217,6 +261,12 @@ export default {
 			align-items: baseline
 		.content
 			white-space: pre-wrap
+			.files
+				margin-top: 8px
+			.chat-image
+				max-width: calc(100% - 32px)
+				max-height: 300px
+		.content, .reactions
 			.emoji
 				vertical-align: bottom
 				line-height: 20px
@@ -225,11 +275,6 @@ export default {
 				display: inline-block
 				background-image: url("~emoji-datasource-twitter/img/twitter/sheets-256/64.png")
 				background-size: 5700% 5700%
-			.files
-				margin-top: 8px
-			.chat-image
-				max-width: calc(100% - 32px)
-				max-height: 300px
 		.call
 			border: border-separator()
 			border-radius: 6px
@@ -270,6 +315,72 @@ export default {
 				margin: 4px 0
 			.description
 				white-space: pre-wrap
+	.reactions
+		display: flex
+		flex-wrap: wrap
+		.reaction, .btn-emoji-picker
+			display: flex
+			align-items: center
+			border: 1px solid rgba(25,25,25,.04)
+			background-color: rgba(29,29,29,.04)
+			border-radius: 16px
+			padding: 4px
+			margin-right: 4px
+			cursor: pointer
+			&:hover
+				border: border-separator()
+				background-color: $clr-white
+			&.reacted-by-me
+				border: 1px solid var(--clr-primary)
+				background-color: var(--clr-primary-alpha-18)
+			.emoji
+				height: 16px
+				width: @height
+				line-height: @height
+			.count
+				font-size: 12px
+				margin: 0 4px 0 8px
+		.btn-emoji-picker
+			height: 18px
+			width: @height
+			padding: 2px 6px 4px 8px
+			box-sizing: content-box
+		.reaction-tooltip
+			background-color: $clr-blue-grey-900
+			color: $clr-primary-text-dark
+			padding: 12px 8px 8px
+			border-radius: 4px
+			display: flex
+			flex-direction: column
+			align-items: center
+			max-width: 180px
+			z-index: 820
+			.emoji-wrapper
+				background-color: $clr-white
+				padding: 4px
+				border-radius: 4px
+				margin-bottom: 8px
+				.emoji
+					height: 36px
+					width: @height
+					line-height: @height
+			.description
+				text-align: center
+			.users
+				font-weight: 600
+			.emoji-text
+				font-style: italic
+			.arrow
+				background-color: $clr-blue-grey-900
+				height: 6px
+				width: 12px
+			&[data-popper-placement^='top'] > .arrow
+				bottom: -6px
+				clip-path: polygon(0 0, calc(50%) 100%, calc(50%) 100%, 100% 0)
+			&[data-popper-placement^='bottom'] > .arrow
+				top: -6px
+				clip-path: polygon(0 100%, calc(50%) 0, calc(50%) 0, 100% 100%)
+
 	.c-chat-input
 		background-color: $clr-white
 	.system-content
@@ -290,11 +401,15 @@ export default {
 		.avatar-column .timestamp
 			visibility: hidden
 	> .actions
-		will-change: visibility
+		// HACK popper.js seems to die with this https://github.com/popperjs/popper-core/issues/1035
+		// will-change: visibility
 		position: absolute
 		right: 4px
-		top: 6px
+		top: -16px
 		display: flex
+		background-color: $clr-white
+		border: border-separator()
+		border-radius: 4px
 		.bunt-icon-button
 			icon-button-style(style: clear)
 	.c-menu-dropdown .menu
@@ -365,6 +480,4 @@ export default {
 	&.merge-with-previous-message
 		padding-top: 0
 		min-height: 0
-		.actions
-			top: -2px
 </style>

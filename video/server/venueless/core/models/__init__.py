@@ -1,7 +1,7 @@
 from .audit import AuditLog
 from .auth import User
 from .bbb import BBBCall, BBBServer
-from .chat import Channel, ChatEvent, Membership
+from .chat import Channel, ChatEvent, ChatEventReaction, Membership
 from .exhibitor import (
     ContactRequest,
     Exhibitor,
@@ -20,6 +20,7 @@ __all__ = [
     "BBBCall",
     "BBBServer",
     "ChatEvent",
+    "ChatEventReaction",
     "Channel",
     "JanusServer",
     "Membership",
