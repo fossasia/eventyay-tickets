@@ -94,12 +94,12 @@
             <th>{% translate "State" %}</th>
             <th><span class="action-row d-flex justify-space-around">
                 {% if can_accept_submissions %}
-                <div class="radio form-radio accept">
-                    <input type="radio" id="a-all" name="s-all" value="accept" class="radio">
+                <div class="radio form-check accept">
+                    <input type="radio" id="a-all" name="s-all" value="accept">
                     <label for="a-all" title="{% translate "Accept all" %}"></label>
                 </div>
-                <div class="radio form-radio reject">
-                    <input type="radio" id="r-all" name="s-all" value="reject" class="radio">
+                <div class="radio form-check reject">
+                    <input type="radio" id="r-all" name="s-all" value="reject">
                     <label for="r-all" title="{% translate "Reject all" %}"></label>
                 </div>
                 <div class="unmark-radio always-active" id="u-all" title="{% translate "Unset accept/reject vote for all" %}"><i class="fa fa-ban"></i></div>
@@ -142,12 +142,12 @@
             </td>
             <td class="action-row d-flex justify-space-around">
                 {% if submission.state == 'submitted' and can_accept_submissions %}
-                <div class="radio form-radio accept">
-                    <input type="radio" id="a-{{ submission.code }}" name="s-{{ submission.code }}" value="accept" class="radio">
+                <div class="radio form-check accept">
+                    <input type="radio" id="a-{{ submission.code }}" name="s-{{ submission.code }}" value="accept">
                     <label for="a-{{ submission.code }}" title="{% translate "Accept" %}"></label>
                 </div>
-                <div class="radio form-radio reject">
-                    <input type="radio" id="r-{{ submission.code }}" name="s-{{ submission.code }}" value="reject" class="radio">
+                <div class="radio form-check reject">
+                    <input type="radio" id="r-{{ submission.code }}" name="s-{{ submission.code }}" value="reject">
                     <label for="r-{{ submission.code }}" title="{% translate "Reject" %}"></label>
                 </div>
                 <div class="unmark-radio" title="{% translate "Unset accept/reject vote" %}"><i class="fa fa-ban"></i></div>

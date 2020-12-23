@@ -892,7 +892,7 @@ h2 .submission-state-dropdown {
   thead tr {
     .unmark-radio {
       opacity: 0;
-      margin-top: -4px;
+      margin-top: 1px;
       color: $gray-500;
       font-size: 16px;
     }
@@ -927,6 +927,11 @@ h2 .submission-state-dropdown {
     }
     &:first-child td {
       border-top: none;
+    }
+    .form-check {
+      width: 40px;
+      padding: 4px;
+      padding-top: 0;
     }
   }
 }
