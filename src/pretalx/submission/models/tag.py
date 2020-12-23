@@ -26,7 +26,13 @@ class Tag(LogMixin, models.Model):
             RegexValidator(r"#([0-9A-Fa-f]{3}){1,2}"),
         ],
     )
-    public = models.BooleanField(default=False, verbose_name=_("Show tag publicly"))
+    public = models.BooleanField(
+        default=False,
+        verbose_name=_("Show tag publicly"),
+        help_text=_(
+            "Tags are currently only in use for organisers and reviewers. They will be visible publicly in a future release of pretalx."
+        ),
+    )
     objects = ScopedManager(event="event")
 
     class urls(EventUrls):

@@ -378,12 +378,12 @@ urlpatterns = [
                 path(
                     "submissions/tags/",
                     submission.TagList.as_view(),
-                    name="tags.view",
+                    name="submissions.tags.view",
                 ),
                 path(
                     "submissions/tags/new",
                     submission.TagDetail.as_view(),
-                    name="tag.create",
+                    name="submissions.tag.create",
                 ),
                 path(
                     "submissions/tags/<int:pk>/",
@@ -392,12 +392,12 @@ urlpatterns = [
                             path(
                                 "",
                                 submission.TagDetail.as_view(),
-                                name="tag.view",
+                                name="submissions.tag.view",
                             ),
                             path(
                                 "delete",
                                 submission.TagDelete.as_view(),
-                                name="tag.delete",
+                                name="submissions.tag.delete",
                             ),
                         ]
                     ),

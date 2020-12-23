@@ -267,10 +267,10 @@
                         </a>
                     </span>
                     <div class="collapse in{% if "submissions." in url_name|slice:":13" %} show{% endif %}" aria-expand="true" id="collapseSubmissions">
-                        <a href="{{ request.event.orga_urls.submissions }}" class="nav-link nav-link-second-level{% if "submissions." in url_name and "submissions.statistics" not in url_name  and "submissions.feedback" not in url_name %} active{% endif %}">
+                        <a href="{{ request.event.orga_urls.submissions }}" class="nav-link nav-link-second-level{% if "submissions." in url_name and "submissions.statistics" not in url_name  and "submissions.feedback" not in url_name and "submissions.tag" not in url_name %} active{% endif %}">
                             <span>{% translate "Proposals" %}</span>
                         </a>
-                        <a href="{{ request.event.orga_urls.tags }}" class="nav-link nav-link-second-level{% if "tags" in url_name %} active{% endif %}">
+                        <a href="{{ request.event.orga_urls.tags }}" class="nav-link nav-link-second-level{% if "submissions.tag" in url_name %} active{% endif %}">
                             <span>{% translate "Tags" %}</span>
                         </a>
                         <a href="{{ request.event.orga_urls.stats }}" class="nav-link nav-link-second-level{% if "submissions.statistics" in url_name %} active{% endif %}">
