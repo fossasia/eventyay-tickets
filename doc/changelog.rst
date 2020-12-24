@@ -4,6 +4,7 @@ Release Notes
 =============
 
 - :release:`2.0.0 <2020-12-24>`
+- :release:`1.1.3 <2020-12-24>`
 - :feature:`-` Reviewers can now tag reviews while reviewing, and later filter for those tags.
 - :support:`-` The essentially unused override score feature has been removed.
 - :feature:`-` Reviewers can now be asked to rate a proposal in several categories, with a total score calculated automatically.
