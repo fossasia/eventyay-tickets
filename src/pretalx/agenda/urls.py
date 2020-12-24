@@ -9,8 +9,8 @@ from .views import featured, feed, schedule, speaker, talk, widget
 def get_schedule_urls(regex_prefix, name_prefix=""):
     """Given a prefix (e.g. /schedule), generate matching schedule-URLs.
 
-    This is useful to generate the same export URLs for main and versioned
-    schedule URLs.
+    This is useful to generate the same export URLs for main and
+    versioned schedule URLs.
     """
 
     regex_prefix = regex_prefix.rstrip("/")
