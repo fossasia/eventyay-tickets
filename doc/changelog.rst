@@ -3,6 +3,8 @@
 Release Notes
 =============
 
+- :release:`2.0.0 <2020-12-24>`
+- :feature:`-` Reviewers can now tag reviews while reviewing, and later filter for those tags.
 - :support:`-` The essentially unused override score feature has been removed.
 - :feature:`-` Reviewers can now be asked to rate a proposal in several categories, with a total score calculated automatically.
 - :support:`-` Pretalx has a new schedule, with a new widget. The old widget is deprecated and will be removed in the next release. Please migrate all of your widgets to the new widget code. You can generate it in your event's settings. Administrators: remember to check your access logs before upgrading to v2.1 to warn users about failing widgets.
@@ -15,6 +17,7 @@ Release Notes
 - :feature:`-` pretalx now shows the complete history of logged changes to organisers.
 - :support:`-` pretalx will no longer make alarmist noises about missing migrations.
 - :feature:`882` You can now filter the submission list by specific question answers.
+- :feature:`-` In addition to anonymising proposals, you can now also anonymise reviewers towards other reviewers.
 - :feature:`-` Questions that are visible to reviewers now also show up on the review page, to avoid having to switch to the full submission view in the review process.
 - :bug:`928` Reviewers had access to question answers that were not explicitly visible to reviewers by way of the API.
 - :bug:`923` In some settings combinations, reviewers were unable to change or even see their own reviews after submitting them.
@@ -28,6 +31,7 @@ Release Notes
 - :feature:`-` Redirects to an event domain now include CORS headers to permit access from any client, to make pretalx integration in other websites easier.
 - :feature:`-` If you go to a login page while you are logged in (e.g. because it was still open in another tab), you are now redirected instead of being prompted to log in.
 - :feature:`-` Exporters can now supply the CORS header they want to send. All exporters provided by pretalx directly now allow access from all origins by default.
+- :feature:`-` Questions can now be limited by submission type.
 - :feature:`772` Organisers can now leave a public comment when they release a new schedule. It will be visible in the changelog and the schedule RSS feed.
 - :feature:`830` Administrators can now configure static and media files to be under different URLs than ``static`` and ``media``.
 - :bug:`-` Using custom mail servers worked, but testing the connection in the settings page showed an error (incorrectly).
