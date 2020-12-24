@@ -1,4 +1,4 @@
-git+https://github.com/rotki/releases.git@941e9b7
+rotki-releases
 semantic-version==2.6.0  # https://github.com/bitprophet/releases/issues/84
 sphinx~=3.3.0  # Weird __qualname__ lookups break with URLman on 3.4.0, https://github.com/andrewgodwin/urlman/issues/11
 sphinx-autobuild
