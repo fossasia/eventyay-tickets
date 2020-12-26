@@ -12,7 +12,12 @@
 {% compress js %}
     <script defer src="{% static "js/jquery.formset.js" %}"></script>
     <script defer src="{% static "cfp/js/animateFormset.js" %}"></script>
+    <script defer src="{% static "vendored/moment-with-locales.js" %}"></script>
+    <script defer src="{% static "vendored/moment-timezone-with-data-2012-2022.js" %}"></script>
+    <script defer src="{% static "vendored/datetimepicker/bootstrap-datetimepicker.js" %}"></script>
+    <script defer src="{% static "orga/js/datetimepicker.js" %}"></script>
     <script defer src="{% static "orga/js/speakers.js" %}"></script>
+    <script defer src="{% static "orga/js/submission_form.js" %}"></script>
 {% endcompress %}
 <form method="post" enctype="multipart/form-data"><fieldset>
     {% if not submission %}
@@ -32,6 +37,12 @@
         {% if action == "create" %}
             {% bootstrap_field form.speaker layout='event' %}
             {% bootstrap_field form.speaker_name layout='event' %}
+            {% bootstrap_field form.state layout='event' %}
+            <div id="show-if-state" class="d-none">
+            {% bootstrap_field form.room layout='event' %}
+            {% bootstrap_field form.start layout='event' %}
+            {% bootstrap_field form.end layout='event' %}
+            </div>
         {% endif %}
         {% if form.instance.median_score != None and can_view_all_reviews %}
         <div class="form-group row">

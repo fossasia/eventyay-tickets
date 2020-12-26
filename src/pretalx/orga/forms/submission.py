@@ -6,7 +6,7 @@ from django_scopes.forms import SafeModelChoiceField, SafeModelMultipleChoiceFie
 
 from pretalx.common.mixins.forms import ReadOnlyFlag, RequestRequire
 from pretalx.orga.forms.widgets import TagWidget
-from pretalx.submission.models import Submission, SubmissionType
+from pretalx.submission.models import Submission, SubmissionStates, SubmissionType
 
 
 class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
@@ -33,17 +33,53 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
             self.fields["tags"].queryset = self.event.tags.all()
             self.fields["tags"].required = False
 
+        self.is_creating = False
         if not self.instance.pk:
+            self.is_creating = True
             self.fields["speaker"] = forms.EmailField(
                 label=_("Speaker email"),
                 help_text=_(
                     "The email address of the speaker holding the session. They will be invited to create an account."
                 ),
+                required=False,
             )
             self.fields["speaker_name"] = forms.CharField(
                 label=_("Speaker name"),
                 help_text=_(
                     "The name of the speaker that should be displayed publicly."
+                ),
+                required=False,
+            )
+            self.fields["state"] = forms.ChoiceField(
+                label=_("Proposal state"),
+                choices=SubmissionStates.get_choices(),
+                initial=SubmissionStates.SUBMITTED,
+            )
+            self.fields["room"] = forms.ModelChoiceField(
+                required=False, queryset=event.rooms.all(), label=_("Room")
+            )
+            self.fields["start"] = forms.DateTimeField(
+                required=False,
+                label=_("Start"),
+                widget=forms.DateInput(
+                    attrs={
+                        "class": "datetimepickerfield",
+                        "data-date-start-date": event.date_from.isoformat(),
+                        "data-date-end-date": event.date_to.isoformat(),
+                        "data-date-before": "#id_end",
+                    }
+                ),
+            )
+            self.fields["end"] = forms.DateTimeField(
+                required=False,
+                label=_("End"),
+                widget=forms.DateInput(
+                    attrs={
+                        "class": "datetimepickerfield",
+                        "data-date-start-date": event.date_from.isoformat(),
+                        "data-date-end-date": event.date_to.isoformat(),
+                        "data-date-after": "#id_start",
+                    }
                 ),
             )
         if "abstract" in self.fields:
@@ -57,12 +93,27 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
 
     def save(self, *args, **kwargs):
         instance = super().save(*args, **kwargs)
-        if instance.pk and "duration" in self.changed_data:
-            instance.update_duration()
-        if instance.pk and "track" in self.changed_data:
-            instance.update_review_scores()
-        if "slot_count" in self.changed_data and "slot_count" in self.initial:
-            instance.update_talk_slots()
+        if self.is_creating:
+            instance._set_state(self.cleaned_data["state"], force=True)
+            if instance.state in [
+                SubmissionStates.ACCEPTED,
+                SubmissionStates.CONFIRMED,
+            ]:
+                if self.cleaned_data.get("room") and self.cleaned_data.get("start"):
+                    slot = instance.slots.filter(
+                        schedule=instance.event.wip_schedule
+                    ).first()
+                    slot.room = self.cleaned_data.get("room")
+                    slot.start = self.cleaned_data.get("start")
+                    slot.end = self.cleaned_data.get("end")
+                    slot.save()
+        else:
+            if instance.pk and "duration" in self.changed_data:
+                instance.update_duration()
+            if instance.pk and "track" in self.changed_data:
+                instance.update_review_scores()
+            if "slot_count" in self.changed_data and "slot_count" in self.initial:
+                instance.update_talk_slots()
         return instance
 
     class Meta:

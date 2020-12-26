@@ -398,28 +398,29 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
 
         if created:
             email = form.cleaned_data["speaker"]
-            try:
-                speaker = User.objects.get(email__iexact=email)  # TODO: send email!
-                messages.success(
-                    self.request,
-                    _(
-                        "The proposal has been created; the speaker already had an account on this system."
-                    ),
-                )
-            except User.DoesNotExist:
-                speaker = create_user_as_orga(
-                    email=email,
-                    name=form.cleaned_data["speaker_name"],
-                    submission=form.instance,
-                )
-                messages.success(
-                    self.request,
-                    _(
-                        "The proposal has been created and the speaker has been invited to add an account!"
-                    ),
-                )
+            if email:
+                try:
+                    speaker = User.objects.get(email__iexact=email)  # TODO: send email!
+                    messages.success(
+                        self.request,
+                        _(
+                            "The proposal has been created; the speaker already had an account on this system."
+                        ),
+                    )
+                except User.DoesNotExist:
+                    speaker = create_user_as_orga(
+                        email=email,
+                        name=form.cleaned_data["speaker_name"],
+                        submission=form.instance,
+                    )
+                    messages.success(
+                        self.request,
+                        _(
+                            "The proposal has been created and the speaker has been invited to add an account!"
+                        ),
+                    )
 
-            form.instance.speakers.add(speaker)
+                form.instance.speakers.add(speaker)
         else:
             formset_result = self.save_formset(form.instance)
             if not formset_result:

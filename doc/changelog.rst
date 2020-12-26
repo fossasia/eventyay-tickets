@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`738` When organisers create a proposal or session in the backend, they can now schedule it directly on the creation page, instead of having to set the proposal to "accepted" and then move it in the interactive schedule editor.
 - :release:`2.0.0 <2020-12-24>`
 - :feature:`-` Reviewers can now tag reviews while reviewing, and later filter for those tags.
 - :support:`-` The essentially unused override score feature has been removed.

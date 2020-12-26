@@ -1,3 +1,9 @@
+const setDates = (picker) => {
+  const minDate = $(picker).attr("data-date-start-date")
+  const maxDate = $(picker).attr("data-date-end-date")
+  if (minDate) $(picker).data("DateTimePicker").minDate(minDate)
+  if (maxDate) $(picker).data("DateTimePicker").maxDate(maxDate)
+}
 $(function() {
   "use strict"
 
@@ -19,6 +25,7 @@ $(function() {
         close: "fa fa-times",
       },
     })
+    setDates(this)
   })
 
   $(".datepickerfield").each(function() {
@@ -40,28 +47,66 @@ $(function() {
       },
     }
     $(this).datetimepicker(opts)
+    setDates(this)
   })
 
-  $(".datetimepicker[data-date-after], .datepickerfield[data-date-after]").each(
+  $(".datetimepickerfield[data-date-after], .datepickerfield[data-date-after], .datetimepickerfield[data-date-before], .datepicker[data-date-after]").each(
     function() {
-      var later_field = $(this),
-        earlier_field = $($(this).attr("data-date-after")),
-        update = function() {
-          var earlier = earlier_field.data("DateTimePicker").date(),
-            later = later_field.data("DateTimePicker").date()
-          if (earlier === null) {
-            earlier = false
-          } else if (
-            later !== null &&
-            later.isBefore(earlier) &&
-            !later.isSame(earlier)
-          ) {
-            later_field.data("DateTimePicker").date(earlier.add(1, "h"))
-          }
-          later_field.data("DateTimePicker").minDate(earlier)
+      const field = $(this)
+      let relatedDateAfter = $(this).attr("data-date-after")
+      let relatedDateBefore = $(this).attr("data-date-before")
+      const dateAfter = $(this).attr("data-date-start-date")
+      const dateBefore = $(this).attr("data-date-end-date")
+
+      const updateStart = () => {
+        const current = field.data("DateTimePicker").date()
+        let earlier = relatedDateAfter.data("DateTimePicker").date()
+
+        if (earlier === null) {
+          earlier = dateAfter
         }
-      update()
-      earlier_field.on("dp.change", update)
+        if (dateAfter && earlier) {
+          earlier = (moment(earlier).isBefore(moment(dateAfter)) ? dateAfter : earlier)
+        }
+        if (
+          current !== null &&
+          current.isBefore(earlier) &&
+          !current.isSame(earlier)
+        ) {
+          field.data("DateTimePicker").date(earlier.add(1, "h"))
+        }
+        field.data("DateTimePicker").minDate(earlier)
+      }
+      const updateEnd = () => {
+        const current = field.data("DateTimePicker").date()
+        let later = relatedDateBefore.data("DateTimePicker").date()
+
+        if (later === null) {
+          later = dateBefore
+        }
+        if (dateBefore && later) {
+          later = (moment(later).isAfter(moment(dateBefore)) ? dateBefore : later)
+        }
+        if (
+          current !== null &&
+          current.isAfter(later) &&
+          !current.isSame(later)
+        ) {
+          field.data("DateTimePicker").date(later.subtract(1, "h"))
+        }
+        field.data("DateTimePicker").maxDate(later)
+      }
+
+      if (relatedDateAfter) {
+        relatedDateAfter = $(relatedDateAfter)
+        updateStart()
+        relatedDateAfter.on("dp.change", updateStart)
+      }
+      if (relatedDateBefore) {
+        relatedDateBefore = $(relatedDateBefore)
+        updateEnd()
+        relatedDateBefore.on("dp.change", updateEnd)
+      }
     }
   )
 })
