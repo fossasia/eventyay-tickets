@@ -178,4 +178,15 @@ export default {
 			padding: 16px
 			img
 				width: 90%
+	+below('s')
+		.hero
+			height: auto
+	+below('m')
+		.content
+			flex-direction: column
+			align-items: center
+			padding: 0 8px
+			.sidebar
+				width: 100%
+				max-width: 560px
 </style>
