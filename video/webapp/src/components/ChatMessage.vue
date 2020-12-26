@@ -346,6 +346,9 @@ export default {
 			width: @height
 			padding: 2px 6px 4px 8px
 			box-sizing: content-box
+			svg
+				width: 18px
+				height: 18px
 		.reaction-tooltip
 			background-color: $clr-blue-grey-900
 			color: $clr-primary-text-dark
