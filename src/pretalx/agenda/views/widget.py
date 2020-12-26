@@ -139,6 +139,8 @@ def widget_data_v2(request, event):
         schedule = event.schedules.filter(version__iexact=version).first()
 
     schedule = schedule or event.current_schedule
+    if not schedule:
+        raise Http404()
 
     if schedule.version:
         talks = schedule.talks.filter(is_visible=True)
