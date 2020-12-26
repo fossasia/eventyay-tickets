@@ -13,6 +13,7 @@ export default {
 	actions: {
 		async changeRoom ({state}, room) {
 			state.questions = null
+			if (!room) return
 			if (room.modules.some(module => module.type === 'question')) {
 				state.questions = await api.call('question.list', {room: room.id})
 			}
