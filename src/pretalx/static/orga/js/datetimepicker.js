@@ -60,9 +60,11 @@ $(function() {
 
       const updateStart = () => {
         const current = field.data("DateTimePicker").date()
-        let earlier = relatedDateAfter.data("DateTimePicker").date()
+        let earlier = relatedDateAfter.val()
 
-        if (earlier === null) {
+        if (earlier) {
+          earlier = moment(earlier)
+        } else {
           earlier = dateAfter
         }
         if (dateAfter && earlier) {
@@ -79,9 +81,11 @@ $(function() {
       }
       const updateEnd = () => {
         const current = field.data("DateTimePicker").date()
-        let later = relatedDateBefore.data("DateTimePicker").date()
+        let later = relatedDateBefore.val()
 
-        if (later === null) {
+        if (later) {
+          later = moment(later)
+        } else {
           later = dateBefore
         }
         if (dateBefore && later) {
