@@ -66,7 +66,9 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
                     attrs={
                         "class": "datetimepickerfield",
                         "data-date-start-date": event.date_from.isoformat(),
-                        "data-date-end-date": (event.date_to + dt.timedelta(days=1)).isoformat(),
+                        "data-date-end-date": (
+                            event.date_to + dt.timedelta(days=1)
+                        ).isoformat(),
                         "data-date-before": "#id_end",
                     }
                 ),
@@ -78,7 +80,9 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
                     attrs={
                         "class": "datetimepickerfield",
                         "data-date-start-date": event.date_from.isoformat(),
-                        "data-date-end-date": (event.date_to + dt.timedelta(days=1)).isoformat(),
+                        "data-date-end-date": (
+                            event.date_to + dt.timedelta(days=1)
+                        ).isoformat(),
                         "data-date-after": "#id_start",
                     }
                 ),
