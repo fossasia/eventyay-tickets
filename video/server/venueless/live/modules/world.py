@@ -1,5 +1,7 @@
 import logging
 
+from asgiref.sync import sync_to_async
+from celery.result import AsyncResult
 from channels.db import database_sync_to_async
 
 from venueless.core.permissions import Permission
@@ -11,6 +13,7 @@ from venueless.core.services.world import (
     notify_world_change,
     save_world,
 )
+from venueless.graphs.tasks import generate_report
 from venueless.live.decorators import command, event, require_world_permission
 from venueless.live.modules.base import BaseModule
 
@@ -98,3 +101,29 @@ class WorldModule(BaseModule):
             self.consumer.world,
         )
         await self.consumer.send_success({"results": result})
+
+    @command("report.generate")
+    @require_world_permission(Permission.WORLD_GRAPHS)
+    async def report_generate(self, body):
+        result = await sync_to_async(generate_report.apply_async)(
+            kwargs={"world": str(self.consumer.world.id), "input": body}
+        )
+        await self.consumer.send_success({"resultid": str(result.id)})
+
+    @sync_to_async
+    def _get_task_result(self, taskid):
+        r = AsyncResult(taskid)
+        if not r.ready():
+            return False, None
+        if not r.successful():
+            r.maybe_throw()
+        return True, r.result
+
+    @command("report.status")
+    @require_world_permission(Permission.WORLD_GRAPHS)
+    async def report_status(self, body):
+        ready, result = await self._get_task_result(body.get("resultid"))
+        if not ready:
+            await self.consumer.send_success({"ready": ready})
+        else:
+            await self.consumer.send_success({"ready": ready, "result": result})

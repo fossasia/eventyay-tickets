@@ -9,10 +9,12 @@
 			permission-config(v-scrollbar.y="")
 		bunt-tab(id="tokengen", header="Token generator")
 			token-generator(v-scrollbar.y="")
-		bunt-tab(id="auditlog", header="Audit log")
-			audit-log(v-scrollbar.y="")
 		bunt-tab(id="registration", header="Registration")
 			registration-config(v-scrollbar.y="")
+		bunt-tab(id="auditlog", header="Audit log")
+			audit-log(v-scrollbar.y="")
+		bunt-tab(id="reports", header="Reports")
+			reports(v-scrollbar.y="")
 </template>
 <script>
 import ThemeConfig from 'components/config/ThemeConfig'
@@ -21,10 +23,11 @@ import PermissionConfig from 'components/config/PermissionConfig'
 import TokenGenerator from 'components/config/TokenGenerator'
 import AuditLog from 'components/config/AuditLog'
 import RegistrationConfig from 'components/config/RegistrationConfig'
+import Reports from 'components/config/Reports'
 
 export default {
 	name: 'AdminConfig',
-	components: { ThemeConfig, MainConfig, PermissionConfig, TokenGenerator, AuditLog, RegistrationConfig },
+	components: { ThemeConfig, MainConfig, PermissionConfig, TokenGenerator, AuditLog, RegistrationConfig, Reports },
 }
 </script>
 <style lang="stylus">

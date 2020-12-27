@@ -63,12 +63,17 @@ class PdfImage(Flowable):
 
 def median_value(queryset, term):
     count = queryset.count()
-    values = queryset.values_list(term, flat=True).order_by(term)
+    values = [
+        v for v in queryset.values_list(term, flat=True).order_by(term) if v is not None
+    ]
+    count = len(values)
+    if not count:
+        return timedelta(seconds=0)
     if count % 2 == 1:
         return values[int(round(count / 2))]
     else:
-        llim = max(0, count / 2 - 1)
-        ulim = max(0, count / 2 + 1)
+        llim = max(0, int(count / 2 - 1))
+        ulim = max(0, int(count / 2 + 1))
         return (
             sum(
                 values[llim:ulim],
