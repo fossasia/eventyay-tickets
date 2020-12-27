@@ -21,10 +21,14 @@ def retrieve_preview_information(world=None, event_id=None):
     match = re.search(r"(?P<url>https?://[^\s]+)", event.content.get("body"))
     if not match:  # Message has changed in the meantime?
         return
+    url = match.group("url")
+
+    if url.endswith(")"):  # This is common enough to special-case it, I think
+        url = url[:-1]
 
     preview_card = None
     with suppress(Exception):  # If this fails, just move on
-        preview_card = fetch_preview_data(match.group("url"), world)
+        preview_card = fetch_preview_data(url, world)
 
     if preview_card:
         event.content["preview_card"] = preview_card
