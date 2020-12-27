@@ -221,6 +221,10 @@ the BBB servers to update the load balancer's cost function::
 
     * * * * *   docker exec venueless.service venueless bbb_update_cost
 
+Also, the following cronjob performs various cleanup tasks:
+
+    */10 * * * *   docker exec venueless.service venueless cleanup
+
 Updates
 -------
 

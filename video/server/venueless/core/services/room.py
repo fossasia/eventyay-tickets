@@ -8,6 +8,20 @@ from venueless.core.models.room import Room, RoomConfigSerializer, RoomView
 
 @database_sync_to_async
 def start_view(room: Room, user: User):
+    # The majority of RoomViews that go "abandoned" (i.e. ``end`` is never set) are likely caused by server
+    # crashes or restarts, in which case ``end`` can't be set. However, after a server crash, the client
+    # either reconnects automatically or the user will attempt a reconnect themselves through a page reload,
+    # so the most likely end of the previous session is "just before this", and the best assumption is to set
+    # the end to "now".
+    #
+    # Obviously, this is wrong whenever a user has multiple sessions open, e.g. if the same user has the room
+    # open in browser A and then opens the same room in browser B, this will set the ``end`` for the session
+    # in browser A, even though it's already running. It doesn't matter, though! First, for all our statistics
+    # we only count unique users and the result "this user was present at the time" is still correct. Second,
+    # the way ``end_view`` is implemented, the session from browser A will still be corrected with the accurate
+    # time as soon as browser A leaves.
+    RoomView.objects.filter(room=room, user=user, end__isnull=True).update(end=now())
+
     return RoomView.objects.create(room=room, user=user)
 
 
