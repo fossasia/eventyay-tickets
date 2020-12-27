@@ -227,11 +227,11 @@ export default {
 			line-height: 36px
 			padding: 0 24px
 			color: var(--clr-sidebar-text-secondary)
-			&:hover
-				background-color: rgba(255, 255, 255, .3)
-				color: var(--clr-sidebar-text-primary)
 			&.router-link-exact-active
-				background-color: rgba(255, 255, 255, .4)
+				background-color: var(--clr-sidebar-active-bg)
+				color: var(--clr-sidebar-text-primary)
+			&:hover
+				background-color: var(--clr-sidebar-hover-bg)
 				color: var(--clr-sidebar-text-primary)
 	.group-title
 		flex: none
@@ -258,11 +258,11 @@ export default {
 			color: var(--clr-sidebar-text-secondary)
 			display: flex
 			position: relative
-			&:hover
-				background-color: rgba(255, 255, 255, .3)
-				color: var(--clr-sidebar-text-primary)
 			&.router-link-exact-active
-				background-color: rgba(255, 255, 255, .4)
+				background-color: var(--clr-sidebar-active-bg)
+				color: var(--clr-sidebar-text-primary)
+			&:hover
+				background-color: var(--clr-sidebar-hover-bg)
 				color: var(--clr-sidebar-text-primary)
 			&.router-link-active::before
 				color: var(--clr-sidebar-text-secondary)
