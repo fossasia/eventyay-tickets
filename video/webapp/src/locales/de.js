@@ -75,6 +75,8 @@ export default {
 	'RoomsSidebar:exhibitions-headline:text': 'Ausstellungen',
 	'RoomsSidebar:exhibitions-requests:label': 'Kontaktanfragen',
 	'RoomsSidebar:exhibitions-manage:label': 'Verwalten',
+	'RoomsSidebar:users-tooltip:many': 'In diesem Raum sind einige Personen',
+	'RoomsSidebar:users-tooltip:few': 'In diesem Raum sind wenige Personen',
 	'Exhibition:more:label': 'mehr',
 	'Exhibitors:headline:text': 'Deine Ausstellungen',
 	'Exhibitors:exhibitor:label': 'Aussteller',
