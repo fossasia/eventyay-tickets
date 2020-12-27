@@ -76,6 +76,8 @@ export default {
 	'RoomsSidebar:exhibitions-headline:text': 'Exhibitions',
 	'RoomsSidebar:exhibitions-requests:label': 'Contact requests',
 	'RoomsSidebar:exhibitions-manage:label': 'Manage',
+	'RoomsSidebar:users-tooltip:many': 'Many users are currently inside this room',
+	'RoomsSidebar:users-tooltip:few': 'Some people are currently inside this room',
 	'AVDevicePrompt:headline:label': 'Device configuration',
 	'AVDevicePrompt:apply:label': 'Apply',
 	'AVDevicePrompt:default:label': 'System default',
