@@ -48,7 +48,7 @@ const CLR_DIVIDERS = {LIGHT: Color('rgba(255, 255, 255, .63)'), DARK: Color('rgb
 
 const DEFAULT_COLORS = {
 	primary: '#673ab7',
-	sidebar: '#180044',
+	sidebar: '#f9f9f9',//'#180044',
 	bbb_background: '#333333',
 }
 
@@ -92,9 +92,9 @@ colors.inputSecondaryFgAlpha = colors.primary.alpha(0.08)
 colors.sidebarTextPrimary = firstReadable([CLR_PRIMARY_TEXT.LIGHT, CLR_PRIMARY_TEXT.DARK], colors.sidebar)
 colors.sidebarTextSecondary = firstReadable([CLR_SECONDARY_TEXT.LIGHT, CLR_SECONDARY_TEXT_FALLBACK.LIGHT, CLR_SECONDARY_TEXT.DARK, CLR_SECONDARY_TEXT_FALLBACK.DARK], colors.sidebar)
 colors.sidebarTextDisabled = firstReadable([CLR_DISABLED_TEXT.LIGHT, CLR_DISABLED_TEXT.DARK], colors.sidebar)
-colors.sidebarActiveBg = firstReadable(['rgba(0, 0, 0, 0.4)', 'rgba(255, 255, 255, 0.4)'], colors.sidebar)
+colors.sidebarActiveBg = firstReadable(['rgba(0, 0, 0, 0.08)', 'rgba(255, 255, 255, 0.4)'], colors.sidebar)
 colors.sidebarActiveFg = firstReadable([CLR_PRIMARY_TEXT.LIGHT, CLR_PRIMARY_TEXT.DARK], colors.sidebar)
-colors.sidebarHoverBg = firstReadable(['rgba(0, 0, 0, 0.3)', 'rgba(255, 255, 255, 0.3)'], colors.sidebar)
+colors.sidebarHoverBg = firstReadable(['rgba(0, 0, 0, 0.12)', 'rgba(255, 255, 255, 0.3)'], colors.sidebar)
 colors.sidebarHoverFg = firstReadable([CLR_PRIMARY_TEXT.LIGHT, CLR_PRIMARY_TEXT.DARK], colors.sidebar)
 
 // TODO warn if contrast if failing
