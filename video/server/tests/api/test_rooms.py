@@ -181,19 +181,20 @@ async def world_communicator(client_id=None, named=True):
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
-@pytest.mark.parametrize("action", ("join", "subscribe"))
-async def test_push_world_update(client, action, world):
+async def test_push_world_update(client, world):
     async with world_communicator() as c:
         r = await sync_to_async(client.get)(
             "/api/v1/worlds/sample/rooms/",
             HTTP_AUTHORIZATION=get_token_header(world),
         )
+        assert r.status_code == 200
         rid = r.data["results"][0]["id"]
-        await sync_to_async(client.patch)(
+        r = await sync_to_async(client.patch)(
             "/api/v1/worlds/sample/rooms/{}/".format(str(rid)),
             format="json",
             data={"name": "Forum"},
             HTTP_AUTHORIZATION=get_token_header(world),
         )
+        assert r.status_code == 200
         w = await c.receive_json_from()
         assert w[0] == "world.updated"

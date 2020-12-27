@@ -8,7 +8,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from sentry_sdk import add_breadcrumb, configure_scope
 
-from venueless.core.models.room import RoomConfigSerializer
+from venueless.core.models.room import RoomConfigSerializer, approximate_view_number
 from venueless.core.permissions import Permission
 from venueless.core.services.reactions import store_reaction
 from venueless.core.services.room import delete_room, end_view, save_room, start_view
@@ -23,6 +23,7 @@ from venueless.live.channels import (
     GROUP_ROOM,
     GROUP_ROOM_QUESTION_MODERATE,
     GROUP_ROOM_QUESTION_READ,
+    GROUP_WORLD,
 )
 from venueless.live.decorators import (
     command,
@@ -69,11 +70,14 @@ class RoomModule(BaseModule):
                 self.consumer.channel_name,
             )
 
+        await self.consumer.send_success({})
+
         if self.consumer.world.config.get("track_room_views", True):
-            self.current_views[self.room] = await start_view(
+            self.current_views[self.room], actual_view_count = await start_view(
                 self.room, self.consumer.user
             )
-        await self.consumer.send_success({})
+            await self._update_view_count(self.room, actual_view_count)
+
         if settings.SENTRY_DSN:
             add_breadcrumb(
                 category="room",
@@ -95,8 +99,27 @@ class RoomModule(BaseModule):
             GROUP_ROOM_QUESTION_READ.format(id=room.pk), self.consumer.channel_name
         )
         if room in self.current_views:
-            await end_view(self.current_views[room])
+            actual_view_count = await end_view(self.current_views[room])
             del self.current_views[room]
+            await self._update_view_count(room, actual_view_count)
+
+    async def _update_view_count(self, room, actual_view_count):
+        async with aioredis() as redis:
+            next_value = approximate_view_number(actual_view_count)
+            prev_value = await redis.getset(
+                f"room:approxcount:known:{room.pk}", next_value
+            )
+            if prev_value:
+                prev_value = prev_value.decode()
+            if prev_value != next_value:
+                await self.consumer.channel_layer.group_send(
+                    GROUP_WORLD.format(id=self.consumer.world.pk),
+                    {
+                        "type": "world.user_count_change",
+                        "room": str(room.pk),
+                        "users": next_value,
+                    },
+                )
 
     @command("leave")
     @room_action()

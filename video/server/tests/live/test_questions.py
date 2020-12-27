@@ -9,7 +9,7 @@ from venueless.routing import application
 
 
 @asynccontextmanager
-async def world_communicator(client_id=None, token=None, room=None):
+async def world_communicator(client_id=None, token=None, room=None, first=True):
     communicator = WebsocketCommunicator(application, "/ws/world/sample/")
     await communicator.connect()
     if token:
@@ -26,6 +26,8 @@ async def world_communicator(client_id=None, token=None, room=None):
     await communicator.send_json_to(["room.enter", 123, {"room": str(room.pk)}])
     response = await communicator.receive_json_from()
     assert response[0] == "success"
+    if first:
+        await communicator.receive_json_from()  # world.user_count_change
     try:
         yield communicator
     finally:
@@ -62,7 +64,7 @@ async def test_ask_question_when_not_active(inactive_questions_room):
 async def test_ask_question(questions_room, world):
     async with world_communicator(room=questions_room) as c:
         async with world_communicator(
-            room=questions_room, token=get_token(world, ["moderator"])
+            room=questions_room, token=get_token(world, ["moderator"]), first=False
         ) as c_mod:
             await c.send_json_to(
                 [

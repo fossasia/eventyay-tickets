@@ -8,13 +8,17 @@ from channels.db import database_sync_to_async
 from channels.layers import get_channel_layer
 from django.core.exceptions import ValidationError
 from django.db import transaction
-from django.db.models import Max
+from django.db.models import Count, Max, OuterRef, Subquery
 from pytz import common_timezones
 from rest_framework import serializers
 
 from venueless.core.models import AuditLog, Channel, Room, World
 from venueless.core.models.auth import ShortToken
-from venueless.core.models.room import RoomConfigSerializer
+from venueless.core.models.room import (
+    RoomConfigSerializer,
+    RoomView,
+    approximate_view_number,
+)
 from venueless.core.permissions import Permission
 
 
@@ -50,7 +54,22 @@ async def get_world(world_id):
 
 
 def get_rooms(world, user):
-    qs = world.rooms.filter(deleted=False).prefetch_related("channel")
+    qs = (
+        world.rooms.filter(deleted=False)
+        .prefetch_related("channel")
+        .annotate(
+            current_roomviews=Subquery(
+                RoomView.objects.filter(room_id=OuterRef("pk"), end__isnull=True)
+                .values("room_id")
+                .order_by()
+                .annotate(
+                    # Count('user_id', distinct=True) would be more accurate, but might be slow, and we don't need accurate
+                    c=Count("user_id")
+                )
+                .values("c")
+            )
+        )
+    )
     if user:
         qs = qs.with_permission(world=world, user=user)
     return list(qs)
@@ -103,6 +122,10 @@ def get_room_config(room, permissions):
         "modules": [],
         "schedule_data": room.schedule_data or None,
     }
+
+    if hasattr(room, "current_roomviews"):
+        room_config["users"] = approximate_view_number(room.current_roomviews)
+
     for module in room.module_config:
         module_config = copy.deepcopy(module)
         if module["type"] == "call.bigbluebutton":

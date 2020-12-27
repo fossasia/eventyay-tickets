@@ -45,6 +45,10 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
         self.conn_time = 0
         self.last_conn_ping = 0
 
+        # known_room_id_cache: contain IDs of rooms we know this user is allowed to see. updated after login and with
+        # world update. used to quickly filter events.
+        self.known_room_id_cache = set()
+
     async def connect(self):
         self.content = []
         self.conn_time = time.time()

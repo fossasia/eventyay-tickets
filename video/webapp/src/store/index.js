@@ -142,6 +142,11 @@ export default new Vuex.Store({
 			commit('updateRooms', rooms)
 			dispatch('schedule/fetch', {root: true})
 		},
+		'api::world.user_count_change' ({state, commit, dispatch}, {room, users}) {
+			room = state.rooms.find(r => r.id === room)
+			room.users = users
+			commit('updateRooms', state.rooms)
+		},
 		'api::room.schedule' ({state}, {room, schedule_data}) {
 			room = state.rooms.find(r => r.id === room)
 			if (!room) return

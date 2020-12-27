@@ -79,6 +79,9 @@ class AuthModule(BaseModule):
                 },
             ]
         )
+        self.consumer.known_room_id_cache = {
+            r["id"] for r in login_result.world_config["rooms"]
+        }
 
         if not await self.consumer.world.has_permission_async(
             user=self.consumer.user, permission=Permission.WORLD_CONNECTIONS_UNLIMITED

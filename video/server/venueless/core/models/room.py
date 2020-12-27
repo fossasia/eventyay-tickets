@@ -174,3 +174,12 @@ class RoomConfigSerializer(serializers.ModelSerializer):
             "force_join",
             "schedule_data",
         )
+
+
+def approximate_view_number(actual_number):
+    if actual_number is None or actual_number < 1:
+        return "none"
+    elif actual_number > 10:
+        return "many"
+    else:
+        return "few"

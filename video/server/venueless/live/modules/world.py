@@ -29,7 +29,23 @@ class WorldModule(BaseModule):
             self.consumer.world,
             self.consumer.user,
         )
+        self.consumer.known_room_id_cache = {r["id"] for r in world_config["rooms"]}
         await self.consumer.send_json(["world.updated", world_config])
+
+    @event("user_count_change")
+    async def push_user_count_change(self, body):
+        if body["room"] not in self.consumer.known_room_id_cache:
+            # no permission to see this room, ignore
+            return
+        await self.consumer.send_json(
+            [
+                "world.user_count_change",
+                {
+                    "room": body["room"],
+                    "users": body["users"],
+                },
+            ]
+        )
 
     @command("config.get")
     @require_world_permission(Permission.WORLD_UPDATE)

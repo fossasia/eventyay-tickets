@@ -21,14 +21,17 @@ def start_view(room: Room, user: User):
     # the way ``end_view`` is implemented, the session from browser A will still be corrected with the accurate
     # time as soon as browser A leaves.
     RoomView.objects.filter(room=room, user=user, end__isnull=True).update(end=now())
-
-    return RoomView.objects.create(room=room, user=user)
+    r = RoomView.objects.create(room=room, user=user)
+    c = RoomView.objects.filter(room=room, end__isnull=True).count()
+    return r, c
 
 
 @database_sync_to_async
 def end_view(view: RoomView):
     view.end = now()
     view.save()
+    c = RoomView.objects.filter(room_id=view.room_id, end__isnull=True).count()
+    return c
 
 
 @database_sync_to_async
