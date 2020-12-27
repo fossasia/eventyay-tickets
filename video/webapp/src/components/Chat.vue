@@ -2,7 +2,7 @@
 .c-chat(:class="[mode]")
 	template(v-if="channel")
 		.main-chat
-			scrollbars.timeline(y, ref="timeline", @scroll="timelineScrolled", v-resize-observer="onResize")
+			scrollbars.timeline(y, ref="timeline", @scroll="timelineScrolled", v-resize-observer="onResize", @resize="onResize")
 				infinite-scroll(v-if="syncedScroll", :loading="fetchingMessages", @load="fetchMessages")
 					div
 				template(v-for="(message, index) of filteredTimeline")
