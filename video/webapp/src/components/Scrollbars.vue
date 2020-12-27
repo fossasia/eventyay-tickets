@@ -114,6 +114,7 @@ export default {
 		onResize () {
 			this.computeDimensions()
 			this.computeThumbPositions()
+			this.$emit('resize')
 		},
 		onPointerdown (dimension, $event) {
 			const el = this.$refs[`thumb-${dimension}`][0]

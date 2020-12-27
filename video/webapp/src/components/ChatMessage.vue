@@ -174,6 +174,9 @@ export default {
 		},
 		toggleReaction (emoji, users) {
 			if (users.includes(this.user.id)) {
+				if (users.length === 1) {
+					this.reactionTooltip = null
+				}
 				this.$store.dispatch('chat/removeReaction', {message: this.message, reaction: emoji})
 			} else {
 				this.$store.dispatch('chat/addReaction', {message: this.message, reaction: emoji})
