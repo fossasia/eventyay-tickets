@@ -110,4 +110,12 @@ export default {
 				display: block
 				margin: 8px 0
 				font-weight: 600
+	+below('m')
+		.talk-wrapper
+			display: block
+		.speakers
+			width: auto
+		.talk
+			max-width: 100%
+			margin: 16px
 </style>
