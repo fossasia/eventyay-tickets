@@ -48,7 +48,7 @@ const CLR_DIVIDERS = {LIGHT: Color('rgba(255, 255, 255, .63)'), DARK: Color('rgb
 
 const DEFAULT_COLORS = {
 	primary: '#673ab7',
-	sidebar: '#f9f9f9',//'#180044',
+	sidebar: '#180044',
 	bbb_background: '#333333',
 }
 
