@@ -30,6 +30,7 @@ transition(name="sidebar")
 			.chats
 				router-link.video-chat(v-for="chat of roomsByType.videoChat", :to="chat === rooms[0] ? {name: 'home'} : {name: 'room', params: {roomId: chat.id}}")
 					.name {{ chat.name }}
+					i.bunt-icon.activity-icon.mdi(v-if="chat.users === 'many' || chat.users === 'few'", :class="{'mdi-account-group': (chat.users === 'many'), 'mdi-account-multiple': (chat.users === 'few')}")
 				router-link.text-chat(v-for="chat of roomsByType.textChat", :to="chat === rooms[0] ? {name: 'home'} : {name: 'room', params: {roomId: chat.id}}", :class="{unread: hasUnreadMessages(chat.modules[0].channel_id)}")
 					.name {{ chat.name }}
 					bunt-icon-button(@click.prevent.stop="$store.dispatch('chat/leaveChannel', {channelId: chat.modules[0].channel_id})") close
@@ -359,6 +360,10 @@ export default {
 			padding-right: 8px
 			display: flex
 			align-items: flex-start
+			.activity-icon
+				margin-left: auto
+				margin-right: 4px
+				opacity: 0.5
 			.bunt-icon-button
 				icon-button-style(color: var(--clr-sidebar-text-primary), style: clear)
 				margin-left: auto
