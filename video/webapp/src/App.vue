@@ -170,6 +170,7 @@ export default {
 		font-weight: 600
 		font-size: 20px
 		border-radius: 0 0 4px 4px
+		z-index: 2000
 	.fatal-connection-error
 		position: fixed
 		top: 0
