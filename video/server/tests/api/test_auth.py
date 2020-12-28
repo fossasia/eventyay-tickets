@@ -55,9 +55,7 @@ def test_invalid_token(client, world):
         "uid": 123456,
         "traits": ["chat.read", "foo.bar"],
     }
-    token = jwt.encode(payload, config["secret"] + "aaaa", algorithm="HS256").decode(
-        "utf-8"
-    )
+    token = jwt.encode(payload, config["secret"] + "aaaa", algorithm="HS256")
     r = client.get("/api/v1/worlds/sample/rooms/", HTTP_AUTHORIZATION="Bearer " + token)
     assert r.status_code == 403
     assert r.data["detail"] == "Invalid token."
@@ -76,7 +74,7 @@ def test_expired_token(client, world):
         "uid": 123456,
         "traits": ["chat.read", "foo.bar"],
     }
-    token = jwt.encode(payload, config["secret"], algorithm="HS256").decode("utf-8")
+    token = jwt.encode(payload, config["secret"], algorithm="HS256")
     r = client.get("/api/v1/worlds/sample/rooms/", HTTP_AUTHORIZATION="Bearer " + token)
     assert r.status_code == 403
     assert r.data["detail"] == "Invalid token."
@@ -95,7 +93,7 @@ def test_no_admin_token(client, world):
         "uid": 123456,
         "traits": ["chat.read", "foo.bar"],
     }
-    token = jwt.encode(payload, config["secret"], algorithm="HS256").decode("utf-8")
+    token = jwt.encode(payload, config["secret"], algorithm="HS256")
     r = client.get("/api/v1/worlds/sample/rooms/", HTTP_AUTHORIZATION="Bearer " + token)
     assert r.status_code == 403
     assert r.data["detail"] == "You do not have permission to perform this action."
@@ -114,6 +112,6 @@ def test_admin_token(client, world):
         "uid": 123456,
         "traits": ["admin", "api", "chat.read", "foo.bar"],
     }
-    token = jwt.encode(payload, config["secret"], algorithm="HS256").decode("utf-8")
+    token = jwt.encode(payload, config["secret"], algorithm="HS256")
     r = client.get("/api/v1/worlds/sample/rooms/", HTTP_AUTHORIZATION="Bearer " + token)
     assert r.status_code == 200

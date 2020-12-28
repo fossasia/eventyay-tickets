@@ -1,4 +1,5 @@
 import datetime
+
 import jwt
 
 secret = "FaZaa4KeeZoo2ahgoh2uenahd3Uta4Ei"
@@ -15,16 +16,16 @@ def create_token(user_id, traits):
         "exp": exp,
         "iat": iat,
         "uid": user_id,
-        "traits": traits
+        "traits": traits,
     }
-    token = jwt.encode(
-        payload, secret, algorithm="HS256"
-    ).decode("utf-8")
+    token = jwt.encode(payload, secret, algorithm="HS256")
     return token
 
 
 def decode_token(token):
-    return jwt.decode(token, secret, algorithm="HS256", audience=audience, issuer=issuer)
+    return jwt.decode(
+        token, secret, algorithm="HS256", audience=audience, issuer=issuer
+    )
 
 
 print("creating token")

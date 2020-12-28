@@ -36,9 +36,7 @@ def test_invalid_token(client, world):
         "uid": 123456,
         "traits": ["chat.read", "foo.bar"],
     }
-    token = jwt.encode(payload, config["secret"] + "aaaa", algorithm="HS256").decode(
-        "utf-8"
-    )
+    token = jwt.encode(payload, config["secret"] + "aaaa", algorithm="HS256")
     r = client.post(
         "/storage/upload/", HTTP_AUTHORIZATION="Bearer " + token, HTTP_HOST="localhost"
     )
@@ -58,7 +56,7 @@ def test_expired_token(client, world):
         "uid": 123456,
         "traits": ["chat.read", "foo.bar"],
     }
-    token = jwt.encode(payload, config["secret"], algorithm="HS256").decode("utf-8")
+    token = jwt.encode(payload, config["secret"], algorithm="HS256")
     r = client.post(
         "/storage/upload/", HTTP_AUTHORIZATION="Bearer " + token, HTTP_HOST="localhost"
     )
@@ -81,7 +79,7 @@ def test_no_permission(client, world):
     world.trait_grants = {"attendee": []}
     world.save()
     world.rooms.all().delete()
-    token = jwt.encode(payload, config["secret"], algorithm="HS256").decode("utf-8")
+    token = jwt.encode(payload, config["secret"], algorithm="HS256")
     r = client.post(
         "/storage/upload/", HTTP_AUTHORIZATION="Bearer " + token, HTTP_HOST="localhost"
     )
@@ -110,7 +108,7 @@ def test_admin_token(client, world):
         "uid": 123456,
         "traits": ["admin", "api", "chat.read", "foo.bar"],
     }
-    token = jwt.encode(payload, config["secret"], algorithm="HS256").decode("utf-8")
+    token = jwt.encode(payload, config["secret"], algorithm="HS256")
     r = client.post(
         "/storage/upload/", HTTP_AUTHORIZATION="Bearer " + token, HTTP_HOST="localhost"
     )

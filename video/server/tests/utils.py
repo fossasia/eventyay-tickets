@@ -19,7 +19,7 @@ def get_token(world, traits):
         "uid": random.randint(9999, 99999),
         "traits": traits,
     }
-    return jwt.encode(payload, config["secret"], algorithm="HS256").decode("utf-8")
+    return jwt.encode(payload, config["secret"], algorithm="HS256")
 
 
 def get_token_header(world, traits=["admin", "api"]):
