@@ -50,6 +50,7 @@ export default {
 			showDevicePrompt: false,
 			server: null,
 			token: null,
+			iceServers: [],
 			roomId: null,
 			loading: false,
 			janus: null,
@@ -111,10 +112,11 @@ export default {
 			this.loading = true
 			this.joinError = null
 			try {
-				const {server, roomId, token} = await api.call('roulette.start', {room: this.room.id})
+				const {server, roomId, token, iceServers} = await api.call('roulette.start', {room: this.room.id})
 				this.server = server
 				this.roomId = roomId
 				this.token = token
+				this.iceServers = iceServers
 				this.initJanus()
 			} catch (e) {
 				this.joinError = e.message
@@ -163,6 +165,9 @@ export default {
 						// TODO
 					},
 					iceState: function (state) {
+						if (state === 'failed') {
+							alert('WebRTC connection failed')
+						}
 						Janus.log('ICE state changed to ' + state)
 					},
 					mediaState: function (medium, on) {
@@ -492,6 +497,7 @@ export default {
 		connectToServer () {
 			this.janus = new Janus({
 				server: this.server,
+				iceServers: this.iceServers,
 				success: this.attachToRoom,
 				error (error) {
 					Janus.error(error)

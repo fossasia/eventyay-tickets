@@ -12,6 +12,7 @@ from .exhibitor import (
 from .janus import JanusServer
 from .question import Question, QuestionVote
 from .room import Room
+from .turn import TurnServer
 from .world import World
 
 __all__ = [
@@ -33,4 +34,5 @@ __all__ = [
     "ExhibitorLink",
     "ExhibitorSocialMediaLink",
     "ContactRequest",
+    "TurnServer",
 ]
