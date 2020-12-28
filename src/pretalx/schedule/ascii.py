@@ -155,7 +155,10 @@ def draw_dt_line(
             start1, start2, end1, end2, run1, run2, fill_char=fill_char
         )
         if run2:
-            line_parts.append(next(cards_by_id[run2.pk]))
+            try:
+                line_parts.append(next(cards_by_id[run2.pk]))
+            except StopIteration:
+                line_parts.append(fill_char * col_width)
         elif start2 or end2:
             line_parts.append(LR * col_width)
         else:
