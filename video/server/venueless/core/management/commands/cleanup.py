@@ -23,3 +23,6 @@ class Command(BaseCommand):
         RoomView.objects.filter(
             end__isnull=True, start__lt=now() - timedelta(hours=6)
         ).update(end=F("start") + timedelta(hours=1))
+        RoomView.objects.filter(
+            end__isnull=False, room__world__config__track_room_views=False
+        ).delete()

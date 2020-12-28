@@ -72,11 +72,12 @@ class RoomModule(BaseModule):
 
         await self.consumer.send_success({})
 
-        if self.consumer.world.config.get("track_room_views", True):
-            self.current_views[self.room], actual_view_count = await start_view(
-                self.room, self.consumer.user
-            )
-            await self._update_view_count(self.room, actual_view_count)
+        self.current_views[self.room], actual_view_count = await start_view(
+            self.room,
+            self.consumer.user,
+            delete=not self.consumer.world.config.get("track_room_views", True),
+        )
+        await self._update_view_count(self.room, actual_view_count)
 
         if settings.SENTRY_DSN:
             add_breadcrumb(
@@ -99,7 +100,10 @@ class RoomModule(BaseModule):
             GROUP_ROOM_QUESTION_READ.format(id=room.pk), self.consumer.channel_name
         )
         if room in self.current_views:
-            actual_view_count = await end_view(self.current_views[room])
+            actual_view_count = await end_view(
+                self.current_views[room],
+                delete=not self.consumer.world.config.get("track_room_views", True),
+            )
             del self.current_views[room]
             await self._update_view_count(room, actual_view_count)
 
