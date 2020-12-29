@@ -39,6 +39,7 @@ import AVDevicePrompt from 'components/AVDevicePrompt'
 import {createPopper} from '@popperjs/core'
 
 const calculateLayout = (containerWidth, containerHeight, videoCount, aspectRatio) => {
+	const videoPadding = 8
 	let bestLayout = {
 		area: 0,
 		cols: 0,
@@ -50,15 +51,15 @@ const calculateLayout = (containerWidth, containerHeight, videoCount, aspectRati
 	// brute-force search layout where video occupy the largest area of the container
 	for (let cols = 1; cols <= videoCount; cols++) {
 		const rows = Math.ceil(videoCount / cols)
-		const hScale = containerWidth / (cols * aspectRatio)
-		const vScale = containerHeight / rows
+		const hScale = (containerWidth - cols * 2 * videoPadding) / (cols * aspectRatio)
+		const vScale = (containerHeight - cols * 2 * videoPadding) / rows
 		let width
 		let height
 		if (hScale <= vScale) {
-			width = Math.floor(containerWidth / cols)
+			width = Math.floor((containerWidth - cols * 2 * videoPadding) / cols)
 			height = Math.floor(width / aspectRatio)
 		} else {
-			height = Math.floor(containerHeight / rows)
+			height = Math.floor((containerHeight - cols * 2 * videoPadding) / rows)
 			width = Math.floor(height * aspectRatio)
 		}
 		const area = width * height
@@ -609,8 +610,8 @@ export default {
 		overflow: hidden
 
 	.users .feed
-		width: calc(var(--video-width) - 16px)
-		height: calc(var(--video-height) - 16px)
+		width: var(--video-width)
+		height: var(--video-height)
 		padding: 8px
 		position: relative
 
@@ -667,7 +668,7 @@ export default {
 			video
 				max-height: 100%
 				max-width: 100%
-				object-fit: cover
+				object-fit: contain
 				width: 100%
 
 	.users .feed.me
