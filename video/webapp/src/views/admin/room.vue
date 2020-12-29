@@ -129,6 +129,9 @@ export default {
 				'chat.native',
 				'call.bigbluebutton',
 			]
+			if (this.$features.enabled('janus')) {
+				knownTypes.push('call.janus')
+			}
 			if (this.$features.enabled('questions-answers')) {
 				knownTypes.push('question')
 			}
