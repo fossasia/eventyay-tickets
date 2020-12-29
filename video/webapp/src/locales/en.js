@@ -1,6 +1,7 @@
 export default {
 	'App:disconnected-warning:text': 'Connection lost! Trying to reconnect…',
 	'BigBlueButton:error:text': 'We could not connect to the video conference server, sorry.',
+	'JanusCall:error:text': 'We could not connect to the video conference server, sorry.',
 	'Chat:join-button:tooltip': 'to start writing, join this channel',
 	'Chat:join-button:label': 'join chat',
 	'Chat:permission-block:room:chat.join': 'Sorry, you can\'t join this channel.',
