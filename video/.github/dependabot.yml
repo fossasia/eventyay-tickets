@@ -6,6 +6,7 @@ updates:
   #   schedule:
   #     interval: daily
   #   open-pull-requests-limit: 10
+  #   dependency-type: production  # don't update dev dependencies – do we want that?
   #   ignore:
   #   - dependency-name: "@babel*"
   #   - dependency-name: "@vue*"
