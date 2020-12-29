@@ -25,6 +25,7 @@ from .modules.auth import AuthModule
 from .modules.bbb import BBBModule
 from .modules.chat import ChatModule
 from .modules.exhibition import ExhibitionModule
+from .modules.januscall import JanusCallModule
 from .modules.question import QuestionModule
 from .modules.room import RoomModule
 from .modules.roulette import RouletteModule
@@ -80,6 +81,7 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
         self.components = {
             "chat": ChatModule(self),
             "bbb": BBBModule(self),
+            "januscall": JanusCallModule(self),
             "exhibition": ExhibitionModule(self),
             "question": QuestionModule(self),
             "room": RoomModule(self),

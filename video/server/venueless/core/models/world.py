@@ -19,6 +19,7 @@ def default_roles():
         Permission.ROOM_CHAT_SEND,
         Permission.ROOM_ROULETTE_JOIN,
         Permission.ROOM_BBB_JOIN,
+        Permission.ROOM_JANUSCALL_JOIN,
         Permission.WORLD_CHAT_DIRECT,
         Permission.WORLD_EXHIBITION_CONTACT,
     ]
@@ -27,7 +28,10 @@ def default_roles():
         Permission.ROOM_INVITE,
         Permission.ROOM_DELETE,
     ]
-    speaker = participant + [Permission.ROOM_BBB_MODERATE]
+    speaker = participant + [
+        Permission.ROOM_BBB_MODERATE,
+        Permission.ROOM_JANUSCALL_MODERATE,
+    ]
     moderator = speaker + [
         Permission.ROOM_CHAT_MODERATE,
         Permission.ROOM_ANNOUNCE,

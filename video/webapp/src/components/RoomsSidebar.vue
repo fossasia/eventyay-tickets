@@ -30,7 +30,7 @@ transition(name="sidebar")
 			.chats
 				router-link.video-chat(v-for="chat of roomsByType.videoChat", :to="chat === rooms[0] ? {name: 'home'} : {name: 'room', params: {roomId: chat.id}}")
 					.name {{ chat.name }}
-					i.bunt-icon.activity-icon.mdi(v-if="chat.users === 'many' || chat.users === 'few'", :class="{'mdi-account-group': (chat.users === 'many'), 'mdi-account-multiple': (chat.users === 'few')}", v-tooltip="{text: $t('RoomsSidebar:users-tooltip:' + chat.users), placement: 'left', fixed: left}")
+					i.bunt-icon.activity-icon.mdi(v-if="chat.users === 'many' || chat.users === 'few'", :class="{'mdi-account-group': (chat.users === 'many'), 'mdi-account-multiple': (chat.users === 'few')}", v-tooltip="{text: $t('RoomsSidebar:users-tooltip:' + chat.users), placement: 'left'}")
 				router-link.text-chat(v-for="chat of roomsByType.textChat", :to="chat === rooms[0] ? {name: 'home'} : {name: 'room', params: {roomId: chat.id}}", :class="{unread: hasUnreadMessages(chat.modules[0].channel_id)}")
 					.name {{ chat.name }}
 					bunt-icon-button(@click.prevent.stop="$store.dispatch('chat/leaveChannel', {channelId: chat.modules[0].channel_id})") close
@@ -114,7 +114,7 @@ export default {
 				if (room.modules.length === 1 && room.modules[0].type === 'chat.native') {
 					if (!this.joinedChannels.some(channel => channel.id === room.modules[0].channel_id)) continue
 					rooms.textChat.push(room)
-				} else if (room.modules.length === 1 && room.modules[0].type === 'call.bigbluebutton') {
+				} else if (room.modules.some(module => module.type === 'call.bigbluebutton' || module.type === 'call.janus')) {
 					rooms.videoChat.push(room)
 				} else if (room.modules.some(module => module.type === 'livestream.native' || module.type === 'livestream.youtube')) {
 					let session

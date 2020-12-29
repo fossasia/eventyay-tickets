@@ -5,6 +5,7 @@ from django.conf import settings
 from sentry_sdk import capture_exception
 
 from venueless.core.permissions import Permission
+from venueless.core.services import turn
 from venueless.core.services.janus import JanusError, choose_server, create_room
 from venueless.core.utils.redis import aioredis
 from venueless.live.decorators import command, room_action
@@ -30,6 +31,12 @@ class RouletteModule(BaseModule):
         async with aioredis() as redis:
             redis.setex(f"roulette:pairing:{ids}", 3600 * 24 * 2, "paired")
         return ids
+
+    @database_sync_to_async
+    def _servers(self):
+        return choose_server(self.consumer.world), turn.choose_server(
+            self.consumer.world
+        )
 
     @command("start")
     @room_action(
@@ -78,16 +85,14 @@ class RouletteModule(BaseModule):
         # can we fully solve this without some locking that would be bad for scalability?
 
         if not janus_room_info:  # no room found, create a new one
-            server = await database_sync_to_async(choose_server)(
-                world=self.consumer.world
-            )
-            if not server:
+            janus_server, turn_server = await self._servers()
+            if not janus_server:
                 await self.consumer.send_error(
                     "roulette.no_server", "No server available"
                 )
                 return
             try:
-                janus_room_info = await create_room(server)
+                janus_room_info = await create_room(janus_server)
             except JanusError as e:
                 if settings.SENTRY_DSN:
                     capture_exception(e)
@@ -98,6 +103,13 @@ class RouletteModule(BaseModule):
             janus_room_info["creating_user"] = str(self.consumer.user.pk)
             await redis.rpush(listkey, json.dumps(janus_room_info))
         else:  # existing room, store pairing
+            turn_server = await database_sync_to_async(turn.choose_server)(
+                self.consumer.world
+            )
             await self._store_pairing(janus_room_info["creating_user"])
 
+        if turn_server:
+            janus_room_info["iceServers"] = turn_server.get_ice_servers()
+        else:
+            janus_room_info["iceServers"] = []
         await self.consumer.send_success(janus_room_info)

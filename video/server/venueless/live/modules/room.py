@@ -116,6 +116,7 @@ class RoomModule(BaseModule):
             if prev_value:
                 prev_value = prev_value.decode()
             if prev_value != next_value:
+                await redis.expire(f"room:approxcount:known:{room.pk}", 900)
                 await self.consumer.channel_layer.group_send(
                     GROUP_WORLD.format(id=self.consumer.world.pk),
                     {

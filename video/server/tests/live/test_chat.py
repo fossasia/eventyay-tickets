@@ -5,8 +5,8 @@ from contextlib import asynccontextmanager
 import pytest
 from channels.db import database_sync_to_async
 from channels.testing import WebsocketCommunicator
-from tests.utils import get_token
 
+from tests.utils import get_token
 from venueless.core.services.chat import ChatService
 from venueless.core.utils.redis import aioredis
 from venueless.routing import application

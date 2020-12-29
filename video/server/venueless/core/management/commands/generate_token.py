@@ -33,6 +33,6 @@ class Command(BaseCommand):
             "uid": str(uuid.uuid4()),
             "traits": options["trait"],
         }
-        token = jwt.encode(payload, secret, algorithm="HS256").decode("utf-8")
+        token = jwt.encode(payload, secret, algorithm="HS256")
         st = ShortToken.objects.create(world=world, long_token=token, expires=exp)
         self.stdout.write(f"https://{world.domain}/login/{st.short_token}\n")

@@ -282,7 +282,7 @@ def generate_tokens(world, number, traits, days, by_user):
             "uid": str(uuid.uuid4()),
             "traits": traits,
         }
-        token = jwt.encode(payload, secret, algorithm="HS256").decode("utf-8")
+        token = jwt.encode(payload, secret, algorithm="HS256")
         st = ShortToken(world=world, long_token=token, expires=exp)
         result.append(st.short_token)
         bulk_create.append(st)

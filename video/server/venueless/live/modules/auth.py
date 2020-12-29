@@ -132,20 +132,22 @@ class AuthModule(BaseModule):
         ) = cl._map_channel_keys_to_connection(channels_to_drop, message)
 
         for connection_index, channel_redis_keys in connection_to_channel_keys.items():
-            group_send_lua = (
-                """ for i=1,#KEYS do
-                            redis.call('LPUSH', KEYS[i], ARGV[i])
-                            redis.call('EXPIRE', KEYS[i], %d)
-                        end
-                        """
-                % cl.expiry
-            )
+            group_send_lua = """
+                local current_time = ARGV[#ARGV - 1]
+                local expiry = ARGV[#ARGV]
+                for i=1,#KEYS do
+                    redis.call('ZADD', KEYS[i], current_time, ARGV[i])
+                    redis.call('EXPIRE', KEYS[i], expiry)
+                end
+                """
 
             args = [
                 channel_keys_to_message[channel_key]
                 for channel_key in channel_redis_keys
             ]
+            args += [int(time.time()), cl.expiry]
             async with cl.connection(connection_index) as connection:
+                print(group_send_lua, channel_redis_keys, args)
                 await connection.eval(
                     group_send_lua, keys=channel_redis_keys, args=args
                 )

@@ -1,6 +1,7 @@
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.security.websocket import AllowedHostsOriginValidator
 from django.conf import settings
+from django.core.asgi import get_asgi_application
 from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
 
 from .live import routing as live
@@ -8,6 +9,7 @@ from .live import routing as live
 application = ProtocolTypeRouter(
     {
         "websocket": AllowedHostsOriginValidator(URLRouter(live.websocket_urlpatterns)),
+        "http": get_asgi_application(),
     }
 )
 

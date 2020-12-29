@@ -86,7 +86,7 @@
 				p This action #[b CANNOT] be undone. This will permanently delete the room
 				.room-name {{ config.name }}
 				p Please type in the name of the Project to confirm.
-				bunt-input(name="projectName", label="Room name", v-model="deletingRoomName")
+				bunt-input(name="projectName", label="Room name", v-model="deletingRoomName", @keypress.enter="deleteRoom")
 				bunt-button.delete-room(icon="delete", :disabled="deletingRoomName !== config.name", @click="deleteRoom", :loading="deleting", :error-message="deleteError") delete this room
 </template>
 <script>
@@ -129,6 +129,9 @@ export default {
 				'chat.native',
 				'call.bigbluebutton',
 			]
+			if (this.$features.enabled('janus')) {
+				knownTypes.push('call.janus')
+			}
 			if (this.$features.enabled('questions-answers')) {
 				knownTypes.push('question')
 			}
@@ -217,6 +220,7 @@ export default {
 			// TODO error handling
 		},
 		async deleteRoom () {
+			if (this.deletingRoomName !== this.config.name) return
 			this.deleting = true
 			this.deleteError = null
 			try {
