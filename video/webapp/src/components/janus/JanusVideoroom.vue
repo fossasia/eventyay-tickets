@@ -615,7 +615,7 @@ export default {
 		.controls
 			display: flex
 			align-items: center
-			padding: 0 15px
+			padding: 0 8px 0 16px
 			min-height: 48px
 			position: absolute
 			top: 20px
