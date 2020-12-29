@@ -1,0 +1,17 @@
+version: 2
+updates:
+  # Configuration for npm
+  # - package-ecosystem: npm
+  #   directory: "/webapp"
+  #   schedule:
+  #     interval: daily
+  #   open-pull-requests-limit: 10
+  #   ignore:
+  #   - dependency-name: "@babel*"
+  #   - dependency-name: "@vue*"
+  #   - dependency-name: "@eslint*"
+  - package-ecosystem: pip
+    directory: "/server"
+    schedule:
+      interval: daily
+    open-pull-requests-limit: 10
