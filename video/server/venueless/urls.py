@@ -7,7 +7,8 @@ from django.views.static import serve
 
 from .api.urls import urlpatterns as api_patterns
 from .graphs import urls as graphs
-from .live import urls as live, views
+from .live import urls as live
+from .live import views
 from .storage import urls as storage
 
 

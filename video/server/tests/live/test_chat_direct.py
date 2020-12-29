@@ -5,8 +5,8 @@ from contextlib import asynccontextmanager
 import pytest
 from aioresponses import aioresponses
 from channels.db import database_sync_to_async
-from tests.utils import LoggingCommunicator
 
+from tests.utils import LoggingCommunicator
 from venueless.core.models import User
 from venueless.routing import application
 

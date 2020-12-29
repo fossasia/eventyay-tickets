@@ -213,8 +213,8 @@ def login(
     client_id=None,
 ) -> LoginResult:
     from .chat import ChatService
-    from .world import get_world_config_for_user
     from .exhibition import ExhibitionService
+    from .world import get_world_config_for_user
 
     user = get_user(world=world, with_client_id=client_id, with_token=token)
 
