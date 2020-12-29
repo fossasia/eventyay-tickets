@@ -12,6 +12,8 @@
 					avatar(:user="user", :size="36")
 					span.display-name {{ user.profile.display_name }}
 				bunt-icon-button(@click="requestFullscreen($refs.ourVideo)") fullscreen
+			.mute-indicator(v-if="knownMuteState")
+				.bunt-icon.mdi.mdi-microphone-off
 		.peer.feed(v-for="(f, idx) in feeds", :key="f.rfid", :style="{width: layout.width, height: layout.height}")
 			.video-container
 				video(ref="peerVideo", autoplay, playsinline)
@@ -611,6 +613,20 @@ export default {
 		height: calc(var(--video-height) - 16px)
 		padding: 8px
 		position: relative
+
+		.mute-indicator
+			position: absolute
+			right: 16px
+			bottom: 16px
+			background: black
+			opacity: 0.5
+			width: 32px
+			height: 32px
+			border-radius: 16px
+			text-align: center
+			.bunt-icon
+				color: white
+				line-height: 32px
 
 		.controls
 			display: flex
