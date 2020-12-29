@@ -24,6 +24,7 @@
 				bunt-icon-button(@click="requestFullscreen($refs.peerVideo[idx])") fullscreen
 	.controlbar.controls(:class="knownMuteState ? 'always' : ''")
 		bunt-icon-button(@click="toggleMute") {{ knownMuteState ? 'microphone-off' : 'microphone' }}
+		bunt-icon-button(@click="toggleScreenShare", :disabled="screenShareLoading") {{ screenShare ? 'monitor-off': 'monitor' }}
 		bunt-icon-button(@click="showDevicePrompt = true") cog
 	chat-user-card(v-if="selectedUser", ref="avatarCard", :sender="selectedUser", @close="selectedUser = null")
 	transition(name="prompt")
@@ -101,7 +102,8 @@ export default {
 			showDevicePrompt: false,
 			loading: false,
 			janus: null,
-			pluginHandle: null,
+			mainPluginHandle: null,
+			screensharePluginHandle: null,
 			ourId: null,
 			ourPrivateId: null,
 			ourVideoVisible: true,
@@ -111,6 +113,8 @@ export default {
 			selectedUser: null,
 			videoInput: null,
 			audioInput: null,
+			screenShare: false,
+			screenShareLoading: false,
 			layout: {
 				area: 0,
 				cols: 0,
@@ -187,17 +191,155 @@ export default {
 				}]
 			})
 		},
+		toggleScreenShare () {
+			if (this.screenShare) {
+				if (this.screensharePluginHandle) {
+					this.screensharePluginHandle.send({message: {request: 'unpublish'}})
+				}
+				this.screenShare = false
+			} else {
+				this.screenShareLoading = true
+				const comp = this
+				this.janus.attach(
+					{
+						plugin: 'janus.plugin.videoroom',
+						opaqueId: this.user.id,
+						success: function (pluginHandle) {
+							comp.screensharePluginHandle = pluginHandle
+							Janus.log(
+								'Plugin attached! (' + comp.screensharePluginHandle.getPlugin() + ', id=' + comp.mainPluginHandle.getId() + ')')
+
+							const register = {
+								request: 'join',
+								room: comp.roomId,
+								ptype: 'publisher',
+								token: comp.token,
+								display: comp.user.id, // we abuse janus' display name field for the venueless user id
+							}
+							comp.screensharePluginHandle.send({message: register})
+						},
+						error: function (error) {
+							Janus.error('  -- Error attaching plugin...', error)
+							alert('Error attaching plugin... ' + error)
+						},
+						consentDialog: function (on) {
+							Janus.debug('Consent dialog should be ' + (on ? 'on' : 'off') + ' now')
+							// TODO
+						},
+						iceState: function (state) {
+							Janus.log('ICE state changed to ' + state)
+							// if state "failed", show user, unless we're currently leaving the room
+						},
+						mediaState: function (medium, on) {
+							Janus.log('Janus ' + (on ? 'started' : 'stopped') + ' receiving our ' + medium)
+						},
+						webrtcState: function (on) {
+							Janus.log('Janus says our WebRTC PeerConnection is ' + (on ? 'up' : 'down') + ' now')
+							// todo: indicate to user
+							if (!on) {
+								comp.screenShareLoading = false
+								comp.screenShare = false
+							}
+						},
+						onmessage: function (msg, jsep) {
+							Janus.debug(' ::: Got a message (publisher) :::', msg)
+							var event = msg.videoroom
+							Janus.debug('Event: ' + event)
+							if (event) {
+								if (event === 'joined') {
+									// Publisher/manager created, negotiate WebRTC and attach to existing feeds, if any
+									Janus.log('Successfully joined room ' + msg.room + ' with ID ' + comp.ourId)
+									comp.publishOwnScreenshareFeed(true)
+								} else if (event === 'destroyed') {
+									// The room has been destroyed
+									Janus.warn('The room has been destroyed!')
+									comp.screenShareLoading = false
+									comp.screenShare = false
+								} else if (event === 'event') {
+									if (msg.unpublished) {
+									// One of the publishers has unpublished?
+										const unpublished = msg.unpublished
+										Janus.log('Publisher left: ' + unpublished)
+										if (unpublished === 'ok') {
+											// That's us
+											comp.screenShareLoading = false
+											comp.screenShare = false
+											comp.screensharePluginHandle.hangup()
+											return
+										}
+									} else if (msg.error) {
+										if (msg.error_code === 426) {
+										// This is a "no such room" error: give a more meaningful description
+										// todo
+											alert('Room does not exist')
+										} else {
+											alert(msg.error) // todo
+										}
+										comp.screenShareLoading = false
+										comp.screenShare = false
+									}
+								}
+							}
+							if (jsep) {
+								Janus.debug('Handling SDP as well...', jsep)
+								comp.screensharePluginHandle.handleRemoteJsep({jsep: jsep})
+								// Check if any of the media we wanted to publish has
+								// been rejected (e.g., wrong or unsupported codec)
+								var audio = msg.audio_codec
+								if (comp.ourStream && comp.ourStream.getAudioTracks() && comp.ourStream.getAudioTracks().length > 0 &&
+									!audio) {
+									// Audio has been rejected
+									console.warning('Our audio stream has been rejected, viewers won\'t hear us')
+								}
+								var video = msg.video_codec
+								if (comp.ourStream && comp.ourStream.getVideoTracks() && comp.ourStream.getVideoTracks().length > 0 &&
+									!video) {
+									// Video has been rejected
+									console.warning('Our video stream has been rejected, viewers won\'t see us')
+									comp.ourVideoVisible = false
+									// todo: Hide the webcam video
+								}
+							}
+						},
+						onlocalstream: function (stream) {
+							Janus.debug(' ::: Got a local stream :::', stream)
+							this.ourStream = stream
+							// todo: show local stream
+							// Janus.attachMediaStream($('#myvideo').get(0), stream)
+							// $('#myvideo').get(0).muted = 'muted'
+							if (comp.screensharePluginHandle.webrtcStuff.pc.iceConnectionState !== 'completed' &&
+								comp.screensharePluginHandle.webrtcStuff.pc.iceConnectionState !== 'connected') {
+								// todo show that we are still publishing…
+							}
+							const videoTracks = stream.getVideoTracks()
+							if (!videoTracks || videoTracks.length === 0) {
+								// todo: no video found
+							} else {
+								//Janus.attachMediaStream(comp.$refs.ourVideo, stream)
+								//comp.$refs.ourVideo.muted = 'muted'
+							}
+						},
+						onremotestream: function (stream) {
+							// The publisher stream is sendonly, we don't expect anything here
+						},
+						oncleanup: function () {
+							Janus.log(' ::: Got a cleanup notification: we are unpublished now :::')
+							this.ourStream = null
+						},
+					})
+			}
+		},
 		toggleMute () {
-			if (this.pluginHandle == null) {
+			if (this.mainPluginHandle == null) {
 				return
 			}
-			this.knownMuteState = this.pluginHandle.isAudioMuted()
+			this.knownMuteState = this.mainPluginHandle.isAudioMuted()
 			if (this.knownMuteState) {
-				this.pluginHandle.unmuteAudio()
+				this.mainPluginHandle.unmuteAudio()
 			} else {
-				this.pluginHandle.muteAudio()
+				this.mainPluginHandle.muteAudio()
 			}
-			this.knownMuteState = this.pluginHandle.isAudioMuted()
+			this.knownMuteState = this.mainPluginHandle.isAudioMuted()
 		},
 		attachToRoom () {
 			// Roughly based on https://janus.conf.meetecho.com/videoroomtest.js
@@ -207,9 +349,9 @@ export default {
 					plugin: 'janus.plugin.videoroom',
 					opaqueId: this.user.id,
 					success: function (pluginHandle) {
-						comp.pluginHandle = pluginHandle
+						comp.mainPluginHandle = pluginHandle
 						Janus.log(
-							'Plugin attached! (' + comp.pluginHandle.getPlugin() + ', id=' + comp.pluginHandle.getId() + ')')
+							'Plugin attached! (' + comp.mainPluginHandle.getPlugin() + ', id=' + comp.mainPluginHandle.getId() + ')')
 
 						const register = {
 							request: 'join',
@@ -218,7 +360,7 @@ export default {
 							token: comp.token,
 							display: comp.user.id, // we abuse janus' display name field for the venueless user id
 						}
-						comp.pluginHandle.send({message: register})
+						comp.mainPluginHandle.send({message: register})
 					},
 					error: function (error) {
 						Janus.error('  -- Error attaching plugin...', error)
@@ -300,7 +442,7 @@ export default {
 									Janus.log('Publisher left: ' + unpublished)
 									if (unpublished === 'ok') {
 										// That's us
-										comp.pluginHandle.hangup()
+										comp.mainPluginHandle.hangup()
 										return
 									}
 									const remoteFeed = comp.feeds.find((rf) => rf.rfid === unpublished)
@@ -323,7 +465,7 @@ export default {
 						}
 						if (jsep) {
 							Janus.debug('Handling SDP as well...', jsep)
-							comp.pluginHandle.handleRemoteJsep({jsep: jsep})
+							comp.mainPluginHandle.handleRemoteJsep({jsep: jsep})
 							// Check if any of the media we wanted to publish has
 							// been rejected (e.g., wrong or unsupported codec)
 							var audio = msg.audio_codec
@@ -348,8 +490,8 @@ export default {
 						// todo: show local stream
 						// Janus.attachMediaStream($('#myvideo').get(0), stream)
 						// $('#myvideo').get(0).muted = 'muted'
-						if (comp.pluginHandle.webrtcStuff.pc.iceConnectionState !== 'completed' &&
-							comp.pluginHandle.webrtcStuff.pc.iceConnectionState !== 'connected') {
+						if (comp.mainPluginHandle.webrtcStuff.pc.iceConnectionState !== 'completed' &&
+							comp.mainPluginHandle.webrtcStuff.pc.iceConnectionState !== 'connected') {
 							// todo show that we are still publishing…
 						}
 						const videoTracks = stream.getVideoTracks()
@@ -361,7 +503,7 @@ export default {
 							comp.ourVideoVisible = true
 							Janus.attachMediaStream(comp.$refs.ourVideo, stream)
 							comp.$refs.ourVideo.muted = 'muted'
-							comp.knownMuteState = comp.pluginHandle.isAudioMuted()
+							comp.knownMuteState = comp.mainPluginHandle.isAudioMuted()
 						}
 					},
 					onremotestream: function (stream) {
@@ -384,14 +526,16 @@ export default {
 				this.audioInput = localStorage.audioInput
 			}
 			if (localStorage.videoInput) {
-				media.video = {deviceId: localStorage.videoInput}
+				media.video = {deviceId: localStorage.videoInput, width: 1280, height: 720}
+			} else {
+				media.video = 'hires'
 			}
 			if (localStorage.videoInput !== this.videoInput) {
 				media.replaceVideo = true
 				this.videoInput = localStorage.videoInput
 			}
 
-			this.pluginHandle.createOffer(
+			this.mainPluginHandle.createOffer(
 				{
 					media: media,
 					// If you want to test simulcasting (Chrome and Firefox only), set to true
@@ -410,7 +554,7 @@ export default {
 						// so the browser supports it), and (2) the codec is in the list of
 						// allowed codecs in a room. With respect to the point (2) above,
 						// refer to the text in janus.plugin.videoroom.jcfg for more details
-						comp.pluginHandle.send({message: publish, jsep: jsep})
+						comp.mainPluginHandle.send({message: publish, jsep: jsep})
 					},
 					error: function (error) {
 						Janus.error('WebRTC error:', error)
@@ -419,6 +563,29 @@ export default {
 						} else {
 							alert('WebRTC error... ' + error.message)
 						}
+					},
+				})
+		},
+		publishOwnScreenshareFeed () {
+			const comp = this
+			// TODO: framerate? default of 3 is pretty low
+			// TODO: currently, the "local" screenshare stream isn't handled specially, but also shown as a remote feed. This
+			// should probably be changed, since this causes an echo when a tab is shared with audio
+			const media = {audioRecv: false, videoRecv: false, audioSend: false, videoSend: true, video: 'screen', captureDesktopAudio: true}
+
+			this.screensharePluginHandle.createOffer(
+				{
+					media: media,
+					success: function (jsep) {
+						Janus.debug('Got publisher SDP!', jsep)
+						var publish = {request: 'configure', audio: true, video: true}
+						comp.screensharePluginHandle.send({message: publish, jsep: jsep})
+						comp.screenShareLoading = false
+						comp.screenShare = true
+					},
+					error: function (error) {
+						Janus.error('WebRTC error:', error)
+						alert('WebRTC error... ' + error.message)
 					},
 				})
 		},
@@ -668,6 +835,7 @@ export default {
 			video
 				max-height: 100%
 				max-width: 100%
+				height: 100%
 				object-fit: contain
 				width: 100%
 
