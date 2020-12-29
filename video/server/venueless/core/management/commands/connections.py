@@ -156,7 +156,7 @@ class Command(BaseCommand):
             ) in connection_to_channel_keys.items():
                 async with cl.connection(connection_index) as connection:
                     for key, message in channel_redis_keys:
-                        await connection.lpush(key, message)
+                        await connection.zadd(key, int(time.time()), message)
                         await connection.expire(key, cl.expiry)
                         time.sleep(float(interval) / 1000.0)
                         pbar.update(1)

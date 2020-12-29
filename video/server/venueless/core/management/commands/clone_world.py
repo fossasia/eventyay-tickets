@@ -71,7 +71,5 @@ class Command(BaseCommand):
             "uid": str(uuid.uuid4()),
             "traits": ["admin"],
         }
-        token = jwt.encode(payload, jwt_config["secret"], algorithm="HS256").decode(
-            "utf-8"
-        )
+        token = jwt.encode(payload, jwt_config["secret"], algorithm="HS256")
         print(f"https://{new.domain}/#token={token}")

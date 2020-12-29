@@ -102,7 +102,7 @@ async def test_auth_with_jwt_token(index, world):
         "uid": 123456,
         "traits": ["chat.read", "foo.bar"],
     }
-    token = jwt.encode(payload, config["secret"], algorithm="HS256").decode("utf-8")
+    token = jwt.encode(payload, config["secret"], algorithm="HS256")
     async with world_communicator() as c:
         await c.send_json_to(["authenticate", {"token": token}])
         response = await c.receive_json_from()
@@ -144,9 +144,7 @@ async def test_auth_with_invalid_jwt_token(world):
         "uid": 123456,
         "traits": ["chat.read", "foo.bar"],
     }
-    token = jwt.encode(payload, config["secret"] + "aaaa", algorithm="HS256").decode(
-        "utf-8"
-    )
+    token = jwt.encode(payload, config["secret"] + "aaaa", algorithm="HS256")
     async with world_communicator() as c:
         await c.send_json_to(["authenticate", {"token": token}])
         response = await c.receive_json_from()
@@ -229,9 +227,9 @@ async def test_auth_with_jwt_token_update_traits(world):
         "uid": 123456,
         "traits": ["chat.read", "foo.bar"],
     }
-    token = jwt.encode(payload, config["secret"], algorithm="HS256").decode("utf-8")
+    token = jwt.encode(payload, config["secret"], algorithm="HS256")
     payload["traits"] = ["chat.read"]
-    token2 = jwt.encode(payload, config["secret"], algorithm="HS256").decode("utf-8")
+    token2 = jwt.encode(payload, config["secret"], algorithm="HS256")
     async with world_communicator() as c, world_communicator() as c2:
         await c.send_json_to(["authenticate", {"token": token}])
         response = await c.receive_json_from()
@@ -279,7 +277,7 @@ async def test_auth_with_jwt_token_twice(world):
         "uid": 123456,
         "traits": ["chat.read", "foo.bar"],
     }
-    token = jwt.encode(payload, config["secret"], algorithm="HS256").decode("utf-8")
+    token = jwt.encode(payload, config["secret"], algorithm="HS256")
     async with world_communicator() as c, world_communicator() as c2:
         await c.send_json_to(["authenticate", {"token": token}])
         response = await c.receive_json_from()
@@ -386,7 +384,7 @@ async def test_auth_with_jwt_token_and_permission_traits(world):
         "uid": 123456,
         "traits": ["moderator", "speaker"],
     }
-    token = jwt.encode(payload, config["secret"], algorithm="HS256").decode("utf-8")
+    token = jwt.encode(payload, config["secret"], algorithm="HS256")
     async with world_communicator() as c:
         await c.send_json_to(["authenticate", {"token": token}])
         response = await c.receive_json_from()
@@ -452,7 +450,7 @@ async def test_auth_private_rooms_in_world_config(
         "uid": 123456,
         "traits": ["blablabla"],
     }
-    token = jwt.encode(payload, config["secret"], algorithm="HS256").decode("utf-8")
+    token = jwt.encode(payload, config["secret"], algorithm="HS256")
 
     bbb_room.trait_grants = {}
     await database_sync_to_async(bbb_room.save)()
@@ -869,7 +867,7 @@ async def test_badges(world):
     }
     world.config["trait_badges_map"] = {"moderator": "Crew"}
     await database_sync_to_async(world.save)()
-    token = jwt.encode(payload, config["secret"], algorithm="HS256").decode("utf-8")
+    token = jwt.encode(payload, config["secret"], algorithm="HS256")
     async with world_communicator() as c:
         await c.send_json_to(["authenticate", {"token": token}])
         response = await c.receive_json_from()

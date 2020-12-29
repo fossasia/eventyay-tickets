@@ -1,29 +1,29 @@
 # prod
-aiofile~=3.0.0
+aiofile~=3.3.0
 aiohttp~=3.7.0
 beautifulsoup4==4.9.*
-celery~=4.4.0
-channels==2.4.*
-channels_redis==2.4.*
-Django==3.0.*
-django-cors-headers==3.4.*
-django-extensions==2.2.5
-djangorestframework==3.11.*
+celery~=5.0.0
+channels>=3.0.3,<3.1.0
+channels_redis==3.2.*
+Django==3.1.*
+django-cors-headers==3.6.*
+django-extensions==3.1.*
+djangorestframework==3.12.*
 emoji~=0.6.0
-lxml~=4.5.0
+lxml~=4.6.0
 matplotlib~=3.3.0
 numpy~=1.19.0
-orjson~=3.3.0
+orjson~=3.4.0
 pdfrw==0.4
-pyjwt~=1.7.0
+pyjwt==2.0.*
 python-dateutil~=2.8.0
 pytz
 redis
 reportlab==3.5.*
-requests~=2.24.0
-sentry-sdk~=0.16.0
-tqdm~=4.48.0
-websockets~=8.0
+requests~=2.25.0
+sentry-sdk~=0.19.0
+tqdm~=4.55.0
+websockets~=8.1
 
 # deploy
 psycopg2-binary
