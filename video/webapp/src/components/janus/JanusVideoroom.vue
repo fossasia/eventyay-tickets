@@ -2,7 +2,7 @@
 .c-janusvideoroom(v-resize-observer="onResize")
 	.users(v-show="roomId != null", ref="container", :style="gridStyle")
 		.me.feed
-			.video-container(v-show="ourVideoVisible")
+			.video-container(v-show="ourVideoVisible", :style="{boxShadow: `0 0 0px 4px ${primcol.alpha(soundLevels.ourVideo * 20)}`}")
 				video(ref="ourVideo", autoplay, playsinline, muted="muted")
 			.video-waiting(v-if="!ourVideoVisible")
 				bunt-progress-circular(size="large", :page="true")
@@ -15,7 +15,7 @@
 			.mute-indicator(v-if="knownMuteState")
 				.bunt-icon.mdi.mdi-microphone-off
 		.peer.feed(v-for="(f, idx) in feeds", :key="f.rfid", :style="{width: layout.width, height: layout.height}")
-			.video-container
+			.video-container(v-show="ourVideoVisible", :style="{boxShadow: `0 0 0px 4px ${primcol.alpha(soundLevels[f.rfid] * 20)}`}")
 				video(ref="peerVideo", autoplay, playsinline)
 			.controls
 				.user(v-if="f.venueless_user !== null", @click="showUserCard($event, f.venueless_user)")
@@ -38,6 +38,9 @@ import ChatUserCard from 'components/ChatUserCard'
 import Avatar from 'components/Avatar'
 import AVDevicePrompt from 'components/AVDevicePrompt'
 import {createPopper} from '@popperjs/core'
+import SoundMeter from 'lib/webrtc/soundmeter'
+import Color from 'color'
+import {colors} from 'theme'
 
 const calculateLayout = (containerWidth, containerHeight, videoCount, aspectRatio) => {
 	const videoPadding = 8
@@ -99,6 +102,7 @@ export default {
 	},
 	data () {
 		return {
+			primcol: Color(colors.primary),
 			showDevicePrompt: false,
 			loading: false,
 			janus: null,
@@ -110,6 +114,9 @@ export default {
 			knownMuteState: false,
 			joinError: null,
 			feeds: [],
+			soundMeters: {},
+			soundLevels: {},
+			soundMeterInterval: null,
 			selectedUser: null,
 			videoInput: null,
 			audioInput: null,
@@ -143,6 +150,7 @@ export default {
 		if (this.janus) {
 			this.janus.destroy()
 		}
+		window.clearTimeout(this.soundMeterInterval)
 	},
 	mounted () {
 		if (this.janus) {
@@ -154,13 +162,18 @@ export default {
 		}
 		this.loading = true
 		this.initJanus()
+		this.soundMeterInterval = window.setInterval(() => {
+			for (const idx in this.soundMeters) {
+				this.$set(this.soundLevels, idx, this.soundMeters[idx].slow.toFixed(2))
+			}
+		}, 200)
 	},
 	methods: {
 		onResize () {
 			const bbox = this.$refs.container.getBoundingClientRect()
 			this.layout = calculateLayout(
-				bbox.width,
-				bbox.height,
+				bbox.width - 16 * 2,
+				bbox.height - 16 * 2,
 				this.feeds.length + 1,
 				16 / 9
 			)
@@ -504,6 +517,12 @@ export default {
 							Janus.attachMediaStream(comp.$refs.ourVideo, stream)
 							comp.$refs.ourVideo.muted = 'muted'
 							comp.knownMuteState = comp.mainPluginHandle.isAudioMuted()
+
+							window.AudioContext = window.AudioContext || window.webkitAudioContext
+							const actx = new AudioContext()
+							const soundmeter = new SoundMeter(actx)
+							soundmeter.connectToSource(stream)
+							comp.soundMeters.ourVideo = soundmeter
 						}
 					},
 					onremotestream: function (stream) {
@@ -711,12 +730,17 @@ export default {
 							comp.$refs.peerVideo[rfindex].setSinkId(localStorage.audioOutput)
 						}
 					}
-					var videoTracks = stream.getVideoTracks()
+					const videoTracks = stream.getVideoTracks()
 					if (!videoTracks || videoTracks.length === 0) {
 						// todo: indicate that no remote video
 					} else {
 						// todo: show remote video only now?
 					}
+					window.AudioContext = window.AudioContext || window.webkitAudioContext
+					const actx = new AudioContext()
+					const soundmeter = new SoundMeter(actx)
+					soundmeter.connectToSource(stream)
+					comp.$set(comp.soundMeters, remoteFeed.rfid, soundmeter)
 				},
 				oncleanup: function () {
 					Janus.log(' ::: Got a cleanup notification (remote feed ' + id + ') :::')
@@ -766,7 +790,7 @@ export default {
 		card()
 
 	.users
-		margin: 16px
+		padding: 16px
 		display: flex
 		justify-content: center
 		align-content: center

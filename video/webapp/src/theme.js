@@ -105,4 +105,4 @@ for (const [key, value] of Object.entries(colors)) {
 }
 
 export default themeConfig
-export { themeVariables, DEFAULT_COLORS, DEFAULT_LOGO }
+export { themeVariables, colors, DEFAULT_COLORS, DEFAULT_LOGO }
