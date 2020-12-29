@@ -1,5 +1,5 @@
 <template lang="pug">
-.c-janusvideoroom(:class="{background}", v-resize-observer="onResize")
+.c-janusvideoroom(v-resize-observer="onResize")
 	.users(v-show="roomId != null", ref="container", :style="gridStyle")
 		.me.feed
 			.video-container(v-show="ourVideoVisible")
@@ -7,16 +7,20 @@
 			.video-waiting(v-if="!ourVideoVisible")
 				bunt-progress-circular(size="large", :page="true")
 				p {{ $t('Roulette:waiting-own:label') }}
-			.user(@click="showUserCard($event, user)")
-				avatar(:user="user", :size="36")
-				span.display-name {{ user.profile.display_name }}
+			.controls
+				.user(@click="showUserCard($event, user)")
+					avatar(:user="user", :size="36")
+					span.display-name {{ user.profile.display_name }}
+				bunt-icon-button(@click="requestFullscreen($refs.ourVideo)") fullscreen
 		.peer.feed(v-for="(f, idx) in feeds", :key="f.rfid", :style="{width: layout.width, height: layout.height}")
 			.video-container
 				video(ref="peerVideo", autoplay, playsinline)
-			.user(v-if="f.venueless_user !== null", @click="showUserCard($event, f.venueless_user)")
-				avatar(:user="f.venueless_user", :size="36")
-				span.display-name {{ f.venueless_user.profile.display_name }}
-	.controls(:class="knownMuteState ? 'always' : ''")
+			.controls
+				.user(v-if="f.venueless_user !== null", @click="showUserCard($event, f.venueless_user)")
+					avatar(:user="f.venueless_user", :size="36")
+					span.display-name {{ f.venueless_user.profile.display_name }}
+				bunt-icon-button(@click="requestFullscreen($refs.peerVideo[idx])") fullscreen
+	.controlbar.controls(:class="knownMuteState ? 'always' : ''")
 		bunt-icon-button(@click="toggleMute") {{ knownMuteState ? 'microphone-off' : 'microphone' }}
 		bunt-icon-button(@click="showDevicePrompt = true") cog
 	chat-user-card(v-if="selectedUser", ref="avatarCard", :sender="selectedUser", @close="selectedUser = null")
@@ -128,7 +132,7 @@ export default {
 			this.onResize()
 		}
 	},
-	destroyed () {
+	beforeDestroy () {
 		if (this.janus) {
 			this.janus.destroy()
 		}
@@ -153,6 +157,9 @@ export default {
 				this.feeds.length + 1,
 				16 / 9
 			)
+		},
+		requestFullscreen (el) {
+			el.parentElement.requestFullscreen()
 		},
 		closeDevicePrompt () {
 			this.showDevicePrompt = false
@@ -582,7 +589,7 @@ export default {
 	flex-direction: column
 	position: relative
 
-	.controls
+	.controlbar
 		width: auto
 		margin: auto
 		flex-shrink: 0
@@ -597,6 +604,7 @@ export default {
 		height: auto
 		max-height: 100%
 		flex: auto 1 1
+		overflow: hidden
 
 	.users .feed
 		width: calc(var(--video-width) - 16px)
@@ -604,7 +612,7 @@ export default {
 		padding: 8px
 		position: relative
 
-		.user
+		.controls
 			display: flex
 			align-items: center
 			padding: 0 15px
@@ -616,13 +624,19 @@ export default {
 			opacity: 0
 			transition: opacity .5s
 			card()
-			cursor: pointer
-			.display-name
-				margin-left: 8px
-				flex: auto
-				ellipsis()
 
-		&:hover .user
+			.user
+				display: flex
+				cursor: pointer
+				align-items: center
+				height: 100%
+				margin-right: 16px
+				.display-name
+					margin-left: 8px
+					flex: auto
+					ellipsis()
+
+		&:hover .controls
 			transition: opacity .5s
 			opacity: 1
 
@@ -653,6 +667,6 @@ export default {
 				height: var(--video-height)
 				.video-container
 					border-radius: 0
-		.controls
+		.controlbar, .controls
 			display: none
 </style>
