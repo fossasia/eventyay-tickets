@@ -6,11 +6,11 @@
 		bunt-icon-button(v-if="$features.enabled('schedule-control')", @click="showEditSchedule = true") calendar_edit
 		bunt-icon-button(@click="showRecordingsPrompt = true", :tooltip="$t('Room:recordings:tooltip')", tooltipPlacement="left", v-if="modules['call.bigbluebutton'] && hasPermission('room:bbb.recordings')") file-video-outline
 	.main
-		.stage(v-if="modules['livestream.native'] || modules['livestream.youtube']")
+		.stage(v-if="modules['livestream.native'] || modules['livestream.youtube'] || modules['call.janus']")
 			.livestream-placeholder
-			reactions-overlay(v-if="modules['livestream.native'] || modules['livestream.youtube']")
+			reactions-overlay(v-if="modules['livestream.native'] || modules['livestream.youtube'] || modules['call.janus']")
 			.stage-tool-blocker(v-if="activeStageTool !== null", @click="activeStageTool = null")
-			.stage-tools(v-if="modules['livestream.native'] || modules['livestream.youtube']")
+			.stage-tools(v-if="modules['livestream.native'] || modules['livestream.youtube'] || modules['call.janus']")
 				.stage-tool(v-if="$features.enabled('questions-answers')", :class="{active: activeStageTool === 'qa'}", @click="activeStageTool = 'qa'") Ask a question
 				reactions-bar(:expanded="true", @expand="activeStageTool = 'reaction'")
 				//- reactions-bar(:expanded="activeStageTool === 'reaction'", @expand="activeStageTool = 'reaction'")

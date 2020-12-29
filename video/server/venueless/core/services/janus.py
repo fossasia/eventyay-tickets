@@ -34,6 +34,58 @@ def choose_server(world):
         return server
 
 
+async def room_exists(server, roomid):
+    # todo: handle connection errors to janus, encapsulate room creation into service
+    async with websockets.connect(
+        server.url, subprotocols=["janus-protocol"]
+    ) as websocket:
+        await websocket.send(
+            json.dumps({"janus": "create", "transaction": get_random_string()})
+        )
+        resp = json.loads(await websocket.recv())
+        session_id = resp["data"]["id"]
+
+        await websocket.send(
+            json.dumps(
+                {
+                    "janus": "attach",
+                    "plugin": "janus.plugin.videoroom",
+                    "transaction": get_random_string(),
+                    "session_id": session_id,
+                }
+            )
+        )
+        resp = json.loads(await websocket.recv())
+        if resp["janus"] != "success":
+            raise JanusError(repr(resp))
+
+        handle_id = resp["data"]["id"]
+
+        await websocket.send(
+            json.dumps(
+                {
+                    # Docs: https://janus.conf.meetecho.com/docs/videoroom.html
+                    "janus": "message",
+                    "body": {
+                        "request": "exists",
+                        "room": roomid,
+                    },
+                    "transaction": get_random_string(),
+                    "session_id": session_id,
+                    "handle_id": handle_id,
+                }
+            )
+        )
+        resp = json.loads(await websocket.recv())
+
+        if resp["janus"] != "success":
+            raise JanusError(repr(resp))
+        if "error" in resp["plugindata"]["data"]:
+            raise JanusPluginError(resp["plugindata"]["data"]["error"])
+
+        return resp["plugindata"]["data"]["exists"]
+
+
 async def create_room(server):
     token = get_random_string(16)
     # todo: handle connection errors to janus, encapsulate room creation into service
@@ -73,6 +125,7 @@ async def create_room(server):
                         "permanent": False,
                         # todo: set "secret": "…",
                         "is_private": True,
+                        "publishers": 100,  # todo
                         "allowed": [token],
                     },
                     "transaction": get_random_string(),

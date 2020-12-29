@@ -26,6 +26,8 @@ class Permission(Enum):
     ROOM_CHAT_SEND = "room:chat.send"
     ROOM_INVITE = "room:invite"
     ROOM_CHAT_MODERATE = "room:chat.moderate"
+    ROOM_JANUSCALL_JOIN = "room:januscall.join"
+    ROOM_JANUSCALL_MODERATE = "room:januscall.moderate"
     ROOM_BBB_JOIN = "room:bbb.join"
     ROOM_BBB_MODERATE = "room:bbb.moderate"
     ROOM_BBB_RECORDINGS = "room:bbb.recordings"

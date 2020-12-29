@@ -109,24 +109,7 @@ class RouletteModule(BaseModule):
             await self._store_pairing(janus_room_info["creating_user"])
 
         if turn_server:
-            username, credential = turn_server.generate_credentials()
-            janus_room_info["iceServers"] = [
-                {
-                    "urls": f"stun:{turn_server.hostname}",
-                    "username": username,
-                    "credential": credential,
-                },
-                {
-                    "urls": f"turns:{turn_server.hostname}:443?transport=tcp",
-                    "username": username,
-                    "credential": credential,
-                },
-                {
-                    "urls": f"turn:{turn_server.hostname}:443?transport=tcp",
-                    "username": username,
-                    "credential": credential,
-                },
-            ]
+            janus_room_info["iceServers"] = turn_server.get_ice_servers()
         else:
-            janus_room_info["ice_servers"] = []
+            janus_room_info["iceServers"] = []
         await self.consumer.send_success(janus_room_info)

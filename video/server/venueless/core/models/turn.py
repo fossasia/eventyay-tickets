@@ -26,3 +26,23 @@ class TurnServer(models.Model):
         ).digest()
         password = base64.b64encode(hmacv).decode()
         return username, password
+
+    def get_ice_servers(self):
+        username, credential = self.generate_credentials()
+        return [
+            {
+                "urls": f"stun:{self.hostname}",
+                "username": username,
+                "credential": credential,
+            },
+            {
+                "urls": f"turns:{self.hostname}:443?transport=tcp",
+                "username": username,
+                "credential": credential,
+            },
+            {
+                "urls": f"turn:{self.hostname}:443?transport=tcp",
+                "username": username,
+                "credential": credential,
+            },
+        ]
