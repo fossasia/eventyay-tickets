@@ -780,6 +780,10 @@ export default {
 				})
 		},
 		initSoundMeter (stream, refname) {
+			const atracks = stream.getAudioTracks()
+			if (!atracks || atracks.length === 0) {
+				return
+			}
 			window.AudioContext = window.AudioContext || window.webkitAudioContext
 			const actx = new AudioContext()
 			const soundmeter = new SoundMeter(actx)
