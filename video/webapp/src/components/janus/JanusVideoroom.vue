@@ -11,7 +11,7 @@
 	.users(v-show="connectionState == 'connected'", ref="container", :style="gridStyle", v-resize-observer="onResize")
 
 		.me.feed
-			.video-container(:style="{boxShadow: `0 0 0px 4px ${primaryColor.alpha(soundLevels.ourVideo * 20)}`}")
+			.video-container(:style="{boxShadow: size != 'tiny' ? `0 0 0px 4px ${primaryColor.alpha(soundLevels.ourVideo * 20)}` : 'none'}")
 				video(v-show="publishingWithVideo && publishingState !== 'unpublished'", ref="ourVideo", autoplay, playsinline, muted="muted")
 			.publishing-state(v-if="publishingState !== 'published'")
 				bunt-progress-circular(v-if="publishingState == 'publishing'", size="huge", :page="true")
@@ -27,7 +27,7 @@
 				.bunt-icon.mdi.mdi-microphone-off
 
 		.peer.feed(v-for="(f, idx) in feeds", :key="f.rfid", :style="{width: layout.width, height: layout.height}")
-			.video-container(v-show="f.rfattached", :style="{boxShadow: `0 0 0px 4px ${primaryColor.alpha(soundLevels[f.rfid] * 20)}`}")
+			.video-container(v-show="f.rfattached", :style="{boxShadow: size != 'tiny' ? `0 0 0px 4px ${primaryColor.alpha(soundLevels[f.rfid] * 20)}` : 'none'}")
 				video(ref="peerVideo", autoplay, playsinline)
 			.subscribing-state(v-if="!f.rfattached")
 				bunt-progress-circular(size="huge", :page="true")
@@ -59,8 +59,7 @@ import SoundMeter from 'lib/webrtc/soundmeter'
 import Color from 'color'
 import {colors} from 'theme'
 
-const calculateLayout = (containerWidth, containerHeight, videoCount, aspectRatio) => {
-	const videoPadding = 8
+const calculateLayout = (containerWidth, containerHeight, videoCount, aspectRatio, videoPadding) => {
 	let bestLayout = {
 		area: 0,
 		cols: 0,
@@ -115,6 +114,10 @@ export default {
 		iceServers: {
 			type: Array,
 			required: true
+		},
+		size: {
+			type: String, // 'normal', 'tiny'
+			default: 'normal'
 		},
 	},
 	data () {
@@ -216,10 +219,11 @@ export default {
 		onResize () {
 			const bbox = this.$refs.container.getBoundingClientRect()
 			this.layout = calculateLayout(
-				bbox.width - 16 * 2,
-				bbox.height - 16 * 2,
+				this.size === 'tiny' ? bbox.width : bbox.width - 16 * 2,
+				this.size === 'tiny' ? bbox.height : bbox.height - 16 * 2,
 				this.feeds.length + 1,
-				16 / 9
+				16 / 9,
+				this.size === 'tiny' ? 0 : 8,
 			)
 		},
 		requestFullscreen (el) {
@@ -561,20 +565,22 @@ export default {
 				onremotestream: function (stream) {
 					Janus.debug('Remote feed #' + remoteFeed.rfid + ', stream:', stream)
 					const rfindex = comp.feeds.findIndex((rf) => rf.rfid === remoteFeed.rfid)
-					Janus.attachMediaStream(comp.$refs.peerVideo[rfindex], stream)
-					if (localStorage.audioOutput) {
-						if (comp.$refs.peerVideo[rfindex].setSinkId) { // chrome only for now
-							comp.$refs.peerVideo[rfindex].setSinkId(localStorage.audioOutput)
+					comp.$nextTick(() => {
+						Janus.attachMediaStream(comp.$refs.peerVideo[rfindex], stream)
+						if (localStorage.audioOutput) {
+							if (comp.$refs.peerVideo[rfindex].setSinkId) { // chrome only for now
+								comp.$refs.peerVideo[rfindex].setSinkId(localStorage.audioOutput)
+							}
 						}
-					}
-					remoteFeed.rfattached = true
-					const videoTracks = stream.getVideoTracks()
-					if (!videoTracks || videoTracks.length === 0) {
-						// todo: indicate that no remote video
-					} else {
-						// todo: show remote video only now?
-					}
-					comp.initSoundMeter(stream, remoteFeed.rfid)
+						remoteFeed.rfattached = true
+						const videoTracks = stream.getVideoTracks()
+						if (!videoTracks || videoTracks.length === 0) {
+							// todo: indicate that no remote video
+						} else {
+							// todo: show remote video only now?
+						}
+						comp.initSoundMeter(stream, remoteFeed.rfid)
+					})
 				},
 			})
 		},
@@ -914,6 +920,7 @@ export default {
 
 	.size-tiny &
 		.users
+			padding: 0
 			margin: 0
 			.feed
 				padding: 0
