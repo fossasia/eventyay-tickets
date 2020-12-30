@@ -595,7 +595,6 @@ export default {
 							remoteFeed.hasVideo = false
 						} else {
 							remoteFeed.hasVideo = true
-							// todo: show remote video only now?
 						}
 						comp.initSoundMeter(stream, remoteFeed.rfid)
 					})
