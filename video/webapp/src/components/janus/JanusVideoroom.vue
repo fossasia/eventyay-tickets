@@ -24,7 +24,7 @@
 					span.display-name {{ user.profile.display_name }}
 				bunt-icon-button(@click="requestFullscreen($refs.ourVideo)") fullscreen
 			.novideo-indicator(v-if="publishingState == 'published' && !publishingWithVideo")
-				.bunt-icon.mdi.mdi-video-off
+				avatar(:user="user", :size="96")
 			.mute-indicator(v-if="knownMuteState")
 				.bunt-icon.mdi.mdi-microphone-off
 
@@ -33,6 +33,8 @@
 				video(ref="peerVideo", autoplay, playsinline)
 			.subscribing-state(v-if="!f.rfattached")
 				bunt-progress-circular(size="huge", :page="true")
+			.novideo-indicator(v-if="f.rfattached && !f.hasVideo && f.venueless_user !== null")
+				avatar(:user="f.venueless_user", :size="96")
 			.controls
 				.user(v-if="f.venueless_user !== null", @click="showUserCard($event, f.venueless_user)")
 					avatar(:user="f.venueless_user", :size="36")
@@ -523,6 +525,7 @@ export default {
 						if (event === 'attached') {
 							// Subscriber created and attached
 							remoteFeed.rfattached = false
+							remoteFeed.hasVideo = false
 							remoteFeed.rfid = msg.id
 							remoteFeed.venueless_user_id = msg.display
 							remoteFeed.venueless_user = null
@@ -589,8 +592,9 @@ export default {
 						remoteFeed.rfattached = true
 						const videoTracks = stream.getVideoTracks()
 						if (!videoTracks || videoTracks.length === 0) {
-							// todo: indicate that no remote video
+							remoteFeed.hasVideo = false
 						} else {
+							remoteFeed.hasVideo = true
 							// todo: show remote video only now?
 						}
 						comp.initSoundMeter(stream, remoteFeed.rfid)
@@ -859,14 +863,12 @@ export default {
 			left: 50%
 			top: 50%
 			transform: translate(-50%, -50%)
+			background: white
+			padding: 12px
+			border-radius: 50%
 			text-align: center
-			opacity: 0.5
 			height: 96px
-			.bunt-icon
-				color: white
-				font-size: 96px
-				line-height: 96px
-				width: 96px
+			width: 96px
 
 		.mute-indicator
 			position: absolute
