@@ -958,6 +958,6 @@ export default {
 				height: var(--video-height)
 				.video-container
 					border-radius: 0
-		.controlbar, .controls
+		.controlbar, .controls, .mute-indicator, .novideo-indicator
 			display: none
 </style>
