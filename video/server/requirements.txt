@@ -33,7 +33,7 @@ uvicorn[standard]==0.12.*  # pinned due to https://github.com/getsentry/sentry-p
 
 # dev
 black
-isort==4.*
+isort==5.*
 flake8
 pytest
 pytest-django
