@@ -189,9 +189,9 @@ export default {
 			this.onResize()
 		}
 	},
-	beforeDestroy () {
+	destroyed () {
 		if (this.janus) {
-			this.janus.destroy()
+			this.cleanup()
 		}
 		if (this.connectionRetryTimeout) {
 			window.clearTimeout(this.connectionRetryTimeout)
@@ -202,11 +202,7 @@ export default {
 	},
 	mounted () {
 		if (this.janus) {
-			this.janus.destroy()
-			this.janus = null
-			this.server = null
-			this.roomId = null
-			this.feeds = []
+			this.cleanup()
 		}
 		this.initJanus()
 		this.soundMeterInterval = window.setInterval(() => {
@@ -216,6 +212,22 @@ export default {
 		}, 200)
 	},
 	methods: {
+		cleanup () {
+			this.janus.destroy({cleanupHandles: true})
+			this.connectionState = 'disconnected'
+			this.publishingState = 'unpublished'
+			this.screensharingState = 'unpublished'
+			this.retryInterval = 1000
+			this.connectionError = null
+			this.screensharingError = null
+			this.feeds = []
+			this.ourStream = null
+			this.ourScreenShareStream = null
+			for (const idx in this.soundMeters) {
+				this.soundMeters[idx].context.close()
+			}
+			this.soundMeters = {}
+		},
 		onResize () {
 			const bbox = this.$refs.container.getBoundingClientRect()
 			this.layout = calculateLayout(
@@ -608,7 +620,7 @@ export default {
 					error: function (error) {
 						comp.connectionState = 'failed'
 						comp.connectionError = error
-						comp.janus.destroy()
+						comp.cleanup()
 						window.setTimeout(comp.onJanusInitialized, comp.retryInterval)
 						comp.retryInterval = comp.retryInterval * 2
 					},
@@ -621,7 +633,7 @@ export default {
 							// todo correct?
 							comp.connectionState = 'failed'
 							comp.connectionError = `ICE connection ${state}`
-							comp.janus.destroy()
+							comp.cleanup()
 							window.setTimeout(comp.onJanusInitialized, comp.retryInterval)
 							comp.retryInterval = comp.retryInterval * 2
 						}
@@ -666,7 +678,7 @@ export default {
 							} else if (event === 'destroyed') {
 								comp.connectionState = 'failed'
 								comp.connectionError = 'Room destroyed'
-								comp.janus.destroy()
+								comp.cleanup()
 							} else if (event === 'event') {
 								// Any new feed to attach to?
 								if (msg.publishers) {
@@ -705,11 +717,11 @@ export default {
 									if (msg.error_code === 426) {
 										comp.connectionState = 'failed'
 										comp.connectionError = 'Room does not exist'
-										comp.janus.destroy()
+										comp.cleanup()
 									} else {
 										comp.connectionState = 'failed'
 										comp.connectionError = `Server error: ${msg.error}`
-										comp.janus.destroy()
+										comp.cleanup()
 									}
 								}
 							}
@@ -734,7 +746,7 @@ export default {
 						}
 					},
 					onlocalstream: function (stream) {
-						this.ourStream = stream
+						comp.ourStream = stream
 						if (comp.mainPluginHandle.webrtcStuff.pc.iceConnectionState !== 'completed' &&
 							comp.mainPluginHandle.webrtcStuff.pc.iceConnectionState !== 'connected') {
 							comp.publishingState = 'publishing'
@@ -778,7 +790,7 @@ export default {
 				error (error) {
 					comp.connectionState = 'failed'
 					comp.connectionError = error.message
-					comp.janus.destroy()
+					comp.cleanup()
 					window.setTimeout(comp.onJanusInitialized, comp.retryInterval)
 					comp.retryInterval = comp.retryInterval * 2
 				},
