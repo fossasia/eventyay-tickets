@@ -23,6 +23,8 @@
 					avatar(:user="user", :size="36")
 					span.display-name {{ user.profile.display_name }}
 				bunt-icon-button(@click="requestFullscreen($refs.ourVideo)") fullscreen
+			.novideo-indicator(v-if="publishingState == 'published' && !publishingWithVideo")
+				.bunt-icon.mdi.mdi-video-off
 			.mute-indicator(v-if="knownMuteState")
 				.bunt-icon.mdi.mdi-microphone-off
 
@@ -851,6 +853,20 @@ export default {
 		height: var(--video-height)
 		padding: 8px
 		position: relative
+
+		.novideo-indicator
+			position: absolute
+			left: 50%
+			top: 50%
+			transform: translate(-50%, -50%)
+			text-align: center
+			opacity: 0.5
+			height: 96px
+			.bunt-icon
+				color: white
+				font-size: 96px
+				line-height: 96px
+				width: 96px
 
 		.mute-indicator
 			position: absolute
