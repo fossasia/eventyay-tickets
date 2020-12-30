@@ -38,6 +38,7 @@
 				bunt-icon-button(@click="requestFullscreen($refs.peerVideo[idx])") fullscreen
 
 	.controlbar.controls(v-show="connectionState == 'connected'", :class="knownMuteState ? 'always' : ''")
+		bunt-icon-button(@click="toggleVideo") {{ !videoRequested ? 'video-off' : 'video' }}
 		bunt-icon-button(@click="toggleMute") {{ knownMuteState ? 'microphone-off' : 'microphone' }}
 		bunt-icon-button(@click="toggleScreenShare", :disabled="screensharingState === 'publishing' || screensharingState === 'unpublishing'") {{ screensharingState === 'published' ? 'monitor-off': 'monitor' }}
 		bunt-icon-button(@click="showDevicePrompt = true") cog
@@ -137,7 +138,6 @@ export default {
 
 			// Video controls state
 			videoRequested: true, // user *wants* to send video
-			audioRequested: true, // user *wants* to send audio
 
 			// Janus video call state
 			feeds: [],
@@ -146,7 +146,6 @@ export default {
 			ourStream: null,
 			ourScreenShareStream: null,
 			knownMuteState: false,
-			publishingWithAudio: false, // we are *trying* to send audio
 			publishingWithVideo: false, // we are *trying* to send video
 			videoReceived: false, // janus *has* received our video
 			audioReceived: true, // janus *has* received our audio
@@ -256,6 +255,10 @@ export default {
 				this.screensharingState = 'unpublishing'
 				this.screensharePluginHandle.send({message: {request: 'unpublish'}})
 			} else if (this.screensharingState === 'unpublished') {
+				if (this.screensharePluginHandle !== null) {
+					this.publishOwnScreenshareFeed()
+					return
+				}
 				const comp = this
 				this.janus.attach(
 					{
@@ -357,6 +360,10 @@ export default {
 					})
 			}
 		},
+		toggleVideo () {
+			this.videoRequested = !this.videoRequested
+			this.publishOwnFeed()
+		},
 		toggleMute () {
 			if (this.mainPluginHandle == null) {
 				return
@@ -374,7 +381,7 @@ export default {
 			const media = {
 				audioRecv: false,
 				videoRecv: false,
-				audioSend: this.audioRequested,
+				audioSend: true,
 				videoSend: this.videoRequested,
 			}
 
@@ -394,21 +401,14 @@ export default {
 				media.removeVideo = true
 			}
 
-			if (this.audioRequested) {
-				if (localStorage.audioInput) {
-					media.audio = {deviceId: localStorage.audioInput}
-				}
-				if (this.publishingState !== 'unpublished' && !this.publishingWithAudio) {
-					media.addAudio = true
-				} else if (localStorage.audioInput !== this.audioInput) {
-					media.replaceAudio = true
-					this.audioInput = localStorage.audioInput
-				}
-			} else if (this.publishingWithVideo) {
-				media.removeVideo = true
+			if (localStorage.audioInput) {
+				media.audio = {deviceId: localStorage.audioInput}
+			}
+			if (localStorage.audioInput !== this.audioInput) {
+				media.replaceAudio = true
+				this.audioInput = localStorage.audioInput
 			}
 
-			this.publishingWithAudio = this.audioRequested
 			this.publishingWithVideo = this.videoRequested
 			this.publishingState = 'publishing'
 
@@ -419,12 +419,17 @@ export default {
 					simulcast: false,
 					simulcast2: false,
 					success: function (jsep) {
-						const publish = {request: 'configure', audio: this.publishingWithAudio, video: true}
+						const publish = {request: 'configure', audio: true, video: this.publishingWithVideo}
 						comp.mainPluginHandle.send({message: publish, jsep: jsep})
 					},
 					error: function (error) {
-						comp.publishingState = 'failed'
-						comp.publishingError = `${error}`
+						if (comp.publishingWithVideo) {
+							comp.videoRequested = false
+							comp.publishOwnFeed()
+						} else {
+							comp.publishingState = 'failed'
+							comp.publishingError = error.message
+						}
 					},
 				})
 		},
@@ -562,12 +567,12 @@ export default {
 							comp.$refs.peerVideo[rfindex].setSinkId(localStorage.audioOutput)
 						}
 					}
+					remoteFeed.rfattached = true
 					const videoTracks = stream.getVideoTracks()
 					if (!videoTracks || videoTracks.length === 0) {
 						// todo: indicate that no remote video
 					} else {
 						// todo: show remote video only now?
-						remoteFeed.rfattached = true
 					}
 					comp.initSoundMeter(stream, remoteFeed.rfid)
 				},
@@ -595,11 +600,11 @@ export default {
 						comp.mainPluginHandle.send({message: register})
 					},
 					error: function (error) {
-						this.connectionState = 'failed'
-						this.connectionError = error
-						this.janus.destroy()
-						window.setTimeout(this.onJanusInitialized, this.retryInterval)
-						this.retryInterval = this.retryInterval * 2
+						comp.connectionState = 'failed'
+						comp.connectionError = error
+						comp.janus.destroy()
+						window.setTimeout(comp.onJanusInitialized, comp.retryInterval)
+						comp.retryInterval = comp.retryInterval * 2
 					},
 					consentDialog: function (on) {
 						comp.waitingForConsent = on
@@ -608,11 +613,11 @@ export default {
 						Janus.log('ICE state changed to ' + state)
 						if (state === 'failed') {
 							// todo correct?
-							this.connectionState = 'failed'
-							this.connectionError = `ICE connection ${state}`
-							this.janus.destroy()
-							window.setTimeout(this.onJanusInitialized, this.retryInterval)
-							this.retryInterval = this.retryInterval * 2
+							comp.connectionState = 'failed'
+							comp.connectionError = `ICE connection ${state}`
+							comp.janus.destroy()
+							window.setTimeout(comp.onJanusInitialized, comp.retryInterval)
+							comp.retryInterval = comp.retryInterval * 2
 						}
 					},
 					mediaState: function (medium, on) {
@@ -623,7 +628,7 @@ export default {
 						if (medium === 'audio') {
 							comp.audioReceived = on
 						}
-						if ((comp.videoReceived || !comp.publishingWithVideo) && (comp.audioReceived || !comp.publishingWithAudio)) {
+						if ((comp.videoReceived || !comp.publishingWithVideo) && comp.audioReceived) {
 							comp.publishingState = 'published'
 							comp.publishingError = null
 						}
@@ -712,12 +717,12 @@ export default {
 							if (comp.ourStream && comp.ourStream.getAudioTracks() && comp.ourStream.getAudioTracks().length > 0 &&
 								!audio) {
 								// todo: log, show error to user?
-								comp.publishingWithAudio = false
 							}
 							var video = msg.video_codec
 							if (comp.ourStream && comp.ourStream.getVideoTracks() && comp.ourStream.getVideoTracks().length > 0 &&
 								!video) {
 								// todo: log, show error to user?
+								comp.videoRequested = false
 								comp.publishingWithVideo = false
 							}
 						}
@@ -727,9 +732,15 @@ export default {
 						if (comp.mainPluginHandle.webrtcStuff.pc.iceConnectionState !== 'completed' &&
 							comp.mainPluginHandle.webrtcStuff.pc.iceConnectionState !== 'connected') {
 							comp.publishingState = 'publishing'
+						} else {
+							if ((comp.videoReceived || !comp.publishingWithVideo) && comp.audioReceived) {
+								comp.publishingState = 'published'
+								comp.publishingError = null
+							}
 						}
 						const videoTracks = stream.getVideoTracks()
 						if (!videoTracks || videoTracks.length === 0) {
+							comp.videoRequested = false
 							comp.publishingWithVideo = false
 						} else {
 							Janus.attachMediaStream(comp.$refs.ourVideo, stream)
