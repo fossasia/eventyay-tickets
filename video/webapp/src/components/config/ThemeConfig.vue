@@ -21,6 +21,7 @@
 		bunt-button.btn-save(@click="save", :loading="saving") Save
 </template>
 <script>
+/* global ENV_DEVELOPMENT */
 import api from 'lib/api'
 import { DEFAULT_COLORS, DEFAULT_LOGO } from '../../theme'
 import i18n from '../../i18n'
@@ -29,7 +30,8 @@ import { required, helpers, url } from 'vuelidate/lib/validators'
 
 const color = helpers.regex('color', /^#([a-zA-Z0-9]{3}|[a-zA-Z0-9]{6})$/)
 const relative = helpers.regex('relative', /^\/.*$/)
-const urlOrRelative = (value) => (!helpers.req(value) || url(value) || relative(value))
+const devurl = helpers.regex('devurl', /^http:\/\/localhost.*$/) // vuelidate does not allow localhost
+const urlOrRelative = (value) => (!helpers.req(value) || url(value) || relative(value) || (ENV_DEVELOPMENT && devurl(value)))
 
 export default {
 	components: { UploadUrlInput },
@@ -71,7 +73,7 @@ export default {
 					}
 				},
 				streamOfflineImage: {
-					url
+					urlOrRelative
 				}
 			},
 		}
