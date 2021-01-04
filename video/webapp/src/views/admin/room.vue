@@ -51,6 +51,7 @@
 						bunt-input(v-model="val.config.url", label="URL", name="url")
 					div(v-else-if="val.type == 'livestream.native'")
 						bunt-input(v-model="val.config.hls_url", label="HLS URL", name="url")
+						upload-url-input(v-model="val.config.streamOfflineImage", label="Stream offline image", name="streamOfflineImage")
 					div(v-else-if="val.type == 'livestream.youtube'")
 						bunt-input(v-model="val.config.ytid", label="YouTube Video ID", name="ytid")
 					div(v-else-if="val.type == 'question'")
