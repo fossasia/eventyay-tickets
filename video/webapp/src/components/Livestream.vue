@@ -26,7 +26,7 @@
 				.level(@click="chooseLevel(null)", :class="{chosen: !manualLevel}") Auto
 				.level(v-for="level of levels", :class="{chosen: level === manualLevel, auto: level === autoLevel}", @click="chooseLevel(level)") {{ level.height + 'p' }}
 	.offline(v-if="offline")
-		img.offline-image(v-if="theme.streamOfflineImage", :src="theme.streamOfflineImage")
+		img.offline-image(v-if="module.config.streamOfflineImage || theme.streamOfflineImage", :src="module.config.streamOfflineImage || theme.streamOfflineImage")
 		.offline-message(v-else) {{ $t('Livestream:offline-message:text') }}
 </template>
 <script>
