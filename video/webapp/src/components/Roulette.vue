@@ -7,9 +7,8 @@
 
 </template>
 <script>
-import {mapState} from 'vuex'
 import api from 'lib/api'
-import JanusVideoroom from 'components/janus/JanusVideoroom';
+import JanusVideoroom from 'components/janus/JanusVideoroom'
 
 export default {
 	components: {JanusVideoroom},

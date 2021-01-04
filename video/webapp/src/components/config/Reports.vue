@@ -52,6 +52,9 @@ export default {
 			required,
 		},
 	},
+	destroyed () {
+		window.clearTimeout(this.timeout)
+	},
 	methods: {
 		async generate () {
 			this.$v.$touch()
@@ -88,9 +91,6 @@ export default {
 				this.running = false
 			}
 		}
-	},
-	destroyed () {
-		window.clearTimeout(this.timeout)
 	}
 }
 </script>
