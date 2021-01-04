@@ -230,9 +230,16 @@ async def create_room(world, data, creator):
             )
         m = [m for m in data.get("modules", []) if m["type"] == "livestream.native"][0]
         m["config"] = {"hls_url": m.get("config", {}).get("hls_url", "")}
+    elif types == set():
+        if not await world.has_permission_async(
+            user=creator, permission=Permission.ROOM_UPDATE
+        ):
+            raise ValidationError(
+                "This user is not allowed to create a room of this type.", code="denied"
+            )
     else:
         raise ValidationError(
-            f"The dynamic creation of rooms with the modules {types} is cuarrently not allowed.",
+            f"The dynamic creation of rooms with the modules {types} is currently not allowed.",
             code="invalid",
         )
 
