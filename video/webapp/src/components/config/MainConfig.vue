@@ -5,7 +5,7 @@
 	.main-form(v-if="config != null")
 		bunt-input(v-model="config.title", label="Title", name="title", :validation="$v.config.title")
 		bunt-select(v-model="config.locale", label="Language", name="locale", :options="locales")
-		bunt-input(v-model="config.dateLocale", label="Date locale", name="dateLocale")
+		bunt-select(v-model="config.dateLocale", label="Date locale", name="dateLocale", :options="momentLocales")
 		bunt-input(v-model="config.timezone", label="Time zone", name="timezone", :validation="$v.config.timezone")
 		bunt-input(v-model="config.connection_limit", label="Connection limit", name="connection_limit", hint="Set to 0 to allow unlimited connections per user", :validation="$v.config.connection_limit")
 		bunt-input(v-model="config.pretalx.domain", label="pretalx domain", name="pretalx_domain", :validation="$v.config.pretalx.domain")
@@ -33,6 +33,19 @@ import i18n from '../../i18n'
 import { required, integer, url } from 'vuelidate/lib/validators'
 import { isJson } from 'lib/validators'
 
+const momentLocaleSet = [
+	// do not use moment.locales() since moment lazy-loads locales and will only return "en" and the active locale
+	'af', 'ar', 'ar-dz', 'ar-kw', 'ar-ly', 'ar-ma', 'ar-sa', 'ar-tn', 'az', 'be', 'bg', 'bm', 'bn', 'bo', 'br', 'bs',
+	'ca', 'cs', 'cv', 'cy', 'da', 'de', 'de-at', 'de-ch', 'dv', 'el', 'en-au', 'en-ca', 'en-gb', 'en-ie', 'en-il',
+	'en-in', 'en-nz', 'en-sg', 'eo', 'es', 'es-do', 'es-us', 'et', 'eu', 'fa', 'fi', 'fil', 'fo', 'fr', 'fr-ca', 'fr-ch',
+	'fy', 'ga', 'gd', 'gl', 'gom-deva', 'gom-latn', 'gu', 'he', 'hi', 'hr', 'hu', 'hy-am', 'id', 'is', 'it', 'it-ch',
+	'ja', 'jv', 'ka', 'kk', 'km', 'kn', 'ko', 'ku', 'ky', 'lb', 'lo', 'lt', 'lv', 'me', 'mi', 'mk', 'ml',
+	'mn', 'mr', 'ms', 'ms-my', 'mt', 'my', 'nb', 'ne', 'nl', 'nl-be', 'nn', 'oc-lnc', 'pa-in', 'pl', 'pt', 'pt-br',
+	'ro', 'ru', 'sd', 'se', 'si', 'sk', 'sl', 'sq', 'sr', 'sr-cyrl', 'ss', 'sv', 'sw', 'ta', 'te', 'tet',
+	'tg', 'th', 'tk', 'tl-ph', 'tlh', 'tr', 'tzl', 'tzm', 'tzm-latn', 'ug-cn', 'uk', 'ur', 'uz', 'uz-latn', 'vi',
+	'x-pseudo', 'yo', 'zh-cn', 'zh-hk', 'zh-mo', 'zh-tw',
+]
+
 export default {
 	data () {
 		return {
@@ -45,6 +58,9 @@ export default {
 	computed: {
 		locales () {
 			return i18n.availableLocales
+		},
+		momentLocales () {
+			return momentLocaleSet
 		}
 	},
 	validations: {
