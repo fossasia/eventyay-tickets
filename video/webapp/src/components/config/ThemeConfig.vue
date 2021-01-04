@@ -27,7 +27,7 @@ import i18n from '../../i18n'
 import UploadUrlInput from './UploadUrlInput'
 import { required, helpers, url } from 'vuelidate/lib/validators'
 
-const color = helpers.regex('color', /^#[a-zA-Z0-9]{3,6}$/)
+const color = helpers.regex('color', /^#([a-zA-Z0-9]{3}|[a-zA-Z0-9]{6})$/)
 const relative = helpers.regex('relative', /^\/.*$/)
 const urlOrRelative = (value) => (!helpers.req(value) || url(value) || relative(value))
 
