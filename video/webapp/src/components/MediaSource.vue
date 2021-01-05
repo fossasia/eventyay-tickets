@@ -71,7 +71,7 @@ export default {
 	height: 0
 	&.in-background
 		z-index: 101
-	.c-livestream, .c-youtube, .c-januscall
+	.c-livestream, .c-youtube, .c-januscall, .c-bigbluebutton
 		position: fixed
 		transition: all .3s ease
 		&.size-tiny
@@ -80,12 +80,12 @@ export default {
 			+below('l')
 				bottom: calc(var(--vh100) - 48px - 48px - 3px)
 		&:not(.size-tiny)
-			bottom: 56px
+			bottom: calc(56px * var(--has-stagetools))
 			right: var(--chatbar-width)
 			width: calc(100vw - var(--sidebar-width) - var(--chatbar-width))
-			height: calc(var(--vh100) - 56px * 2)
+			height: calc(var(--vh100) - 56px * (1 + var(--has-stagetools)))
 			+below('l')
-				height: calc(var(--vh100) - 56px * 2 - 48px)
+				height: calc(var(--vh100) - 56px * (1 + var(--has-stagetools)) - 48px)
 				width: calc(100vw - var(--chatbar-width))
 			+below('m')
 				bottom: calc(var(--vh100) - 48px - 56px - 40vh)

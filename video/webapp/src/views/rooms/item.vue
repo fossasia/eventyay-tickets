@@ -7,13 +7,14 @@
 		bunt-icon-button(@click="showRecordingsPrompt = true", :tooltip="$t('Room:recordings:tooltip')", tooltipPlacement="left", v-if="modules['call.bigbluebutton'] && hasPermission('room:bbb.recordings')") file-video-outline
 	.main
 		.stage(v-if="modules['livestream.native'] || modules['livestream.youtube'] || modules['call.janus']")
-			.livestream-placeholder
+			.mediasource-placeholder
 			reactions-overlay(v-if="modules['livestream.native'] || modules['livestream.youtube'] || modules['call.janus']")
 			.stage-tool-blocker(v-if="activeStageTool !== null", @click="activeStageTool = null")
 			.stage-tools(v-if="modules['livestream.native'] || modules['livestream.youtube'] || modules['call.janus']")
 				.stage-tool(v-if="$features.enabled('questions-answers')", :class="{active: activeStageTool === 'qa'}", @click="activeStageTool = 'qa'") Ask a question
 				reactions-bar(:expanded="true", @expand="activeStageTool = 'reaction'")
 				//- reactions-bar(:expanded="activeStageTool === 'reaction'", @expand="activeStageTool = 'reaction'")
+		.mediasource-placeholder(v-else-if="modules['call.bigbluebutton']")
 		roulette(v-else-if="modules['networking.roulette'] && $features.enabled('roulette')", :module="modules['networking.roulette']", :room="room")
 		landing-page(v-else-if="modules['page.landing']", :module="modules['page.landing']")
 		markdown-page(v-else-if="modules['page.markdown']", :module="modules['page.markdown']")
@@ -152,7 +153,7 @@ export default {
 		flex-direction: column
 		min-height: 0
 		flex: auto
-	.livestream-placeholder
+	.mediasource-placeholder
 		flex: auto
 	.room-sidebar
 		display: flex
@@ -224,7 +225,7 @@ export default {
 			flex-direction: column
 		.stage
 			flex: none
-		.livestream-placeholder
+		.mediasource-placeholder
 			height: 40vh
 			flex: none
 		&:not(.standalone-chat)

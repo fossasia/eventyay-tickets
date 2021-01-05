@@ -1,5 +1,5 @@
 <template lang="pug">
-#app(:class="{'has-background-room': backgroundRoom}", :style="[themeVariables, browserhackStyle]")
+#app(:class="{'has-background-room': backgroundRoom}", :style="[themeVariables, browserhackStyle, mediaConstraintsStyle]")
 	.fatal-connection-error(v-if="fatalConnectionError")
 		template(v-if="fatalConnectionError.code === 'world.unknown_world'")
 			.mdi.mdi-help-circle
@@ -42,6 +42,8 @@ import Notifications from 'components/notifications'
 import GreetingPrompt from 'components/profile/GreetingPrompt'
 
 const mediaModules = ['livestream.native', 'call.bigbluebutton', 'call.janus', 'livestream.youtube']
+const stageToolModules = ['livestream.native', 'call.janus', 'livestream.youtube']
+const chatbarModules = ['chat.native', 'question']
 
 export default {
 	components: { AppBar, RoomsSidebar, MediaSource, GreetingPrompt, Notifications },
@@ -63,6 +65,15 @@ export default {
 			return this.room?.modules.some(module => mediaModules.includes(module.type))
 		},
 		// safari cleverly includes the address bar cleverly in 100vh
+		mediaConstraintsStyle () {
+			const hasStageTools = this.room?.modules.some(module => stageToolModules.includes(module.type))
+			const hasChatbar = this.room?.modules.length > 1 && this.room?.modules.some(module => chatbarModules.includes(module.type))
+
+			return {
+				'--chatbar-width': hasChatbar ? '380px' : '0px',
+				'--has-stagetools': hasStageTools ? '1' : '0',
+			}
+		},
 		browserhackStyle () {
 			return {
 				'--vh100': this.windowHeight + 'px',
@@ -145,9 +156,8 @@ export default {
 	grid-template-columns: var(--sidebar-width) auto
 	grid-template-rows: auto
 	grid-template-areas: "rooms-sidebar main"
-
 	--sidebar-width: 280px
-	--chatbar-width: 380px
+
 	.c-app-bar
 		grid-area: app-bar
 	.c-rooms-sidebar
