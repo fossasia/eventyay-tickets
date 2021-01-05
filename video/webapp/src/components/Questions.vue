@@ -62,6 +62,7 @@ export default {
 		align-self: center
 	.empty-placeholder
 		margin-top: 16px
+		padding: 0 16px
 		color: $clr-secondary-text-light
 		align-self: center
 	.asking-form
