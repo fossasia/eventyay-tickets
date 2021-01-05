@@ -6,14 +6,15 @@
 			bunt-input.search(name="search", placeholder="Search rooms", icon="search", v-model="search")
 	.rooms-list
 		.header
-			.avatar
 			.id ID
+			.prio Priority
 			.name Name
 			.actions
 				bunt-button.btn-save(@click="showCreateRoomPrompt = true") Create new
 		RecycleScroller.tbody.bunt-scrollbar(v-if="filteredRooms", :items="filteredRooms", :item-size="48", v-slot="{item: room}", v-scrollbar.y="")
 			router-link(:to="{name: 'admin:room', params: {editRoomId: room.id}}").room.table-row(:class="{error: room.error, updating: room.updating}")
 				.id(:title="room.id") {{ room.id }}
+				.prio {{ room.sorting_priority }}
 				.name {{ room.name }}
 		bunt-progress-circular(v-else, size="huge", :page="true")
 	transition(name="prompt")
@@ -82,6 +83,11 @@ export default {
 		.id
 			width: 128px
 			flex: none
+			ellipsis()
+		.prio
+			width: 64px
+			flex: none
+			text-align: right
 			ellipsis()
 		.name
 			flex: auto
