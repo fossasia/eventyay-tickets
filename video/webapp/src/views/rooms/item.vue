@@ -225,6 +225,9 @@ export default {
 			flex-direction: column
 		.stage
 			flex: none
+		.room-sidebar
+			width: 100%
+			flex: auto
 		.mediasource-placeholder
 			height: 40vh
 			flex: none
