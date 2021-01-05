@@ -76,8 +76,8 @@ export default {
 iframe.bigbluebutton
 	position: fixed
 	bottom: 0
-	right: 0
-	width: calc(100vw - var(--sidebar-width))
+	right: var(--chatbar-width)
+	width: calc(100vw - var(--sidebar-width) - var(--chatbar-width))
 	height: calc(var(--vh100) - 56px)
 	border: none
 	transition: all .3s ease
@@ -88,6 +88,11 @@ iframe.bigbluebutton
 		bottom: calc(var(--vh100) - 48px - 3px)
 		right: 4px + 36px + 4px
 	+below('l')
-		width: 100vw
 		height: calc(var(--vh100) - 56px - 48px)
+		width: calc(100vw - var(--chatbar-width))
+	+below('m')
+		bottom: calc(var(--vh100) - 48px - 56px - 40vh)
+		right: 0
+		width: 100vw
+		height: 40vh
 </style>
