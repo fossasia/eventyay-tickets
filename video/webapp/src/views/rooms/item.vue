@@ -22,7 +22,7 @@
 		exhibition(v-else-if="modules['exhibition.native']", :room="room")
 		chat(v-if="room.modules.length === 1 && modules['chat.native']", :room="room", :module="modules['chat.native']", mode="standalone", :key="room.id")
 		.room-sidebar(v-else-if="modules['chat.native'] || modules['question']", :class="unreadTabsClasses")
-			bunt-tabs(v-if="modules['question']", :active-tab="activeSidebarTab")
+			bunt-tabs(v-if="modules['question'] && modules['chat.native']", :active-tab="activeSidebarTab")
 				bunt-tab(id="chat", :header="$t('Room:sidebar:tabs-header:chat')", @selected="activeSidebarTab = 'chat'")
 				bunt-tab(id="questions", :header="$t('Room:sidebar:tabs-header:questions')", @selected="activeSidebarTab = 'questions'")
 			chat(v-show="modules['chat.native'] && activeSidebarTab === 'chat'", :room="room", :module="modules['chat.native']", mode="compact", :key="room.id", @change="changedTabContent('chat')")
@@ -101,6 +101,13 @@ export default {
 	watch: {
 		activeSidebarTab (tab) {
 			this.unreadTabs[tab] = false
+		}
+	},
+	mounted () {
+		if (this.modules['chat.native']) {
+			this.activeSidebarTab = 'chat'
+		} else if (this.modules.question) {
+			this.activeSidebarTab = 'questions'
 		}
 	},
 	methods: {
