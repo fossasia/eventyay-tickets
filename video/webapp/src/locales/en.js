@@ -46,6 +46,7 @@ export default {
 	'ChatInput:input:placeholder': 'Send a message',
 	'Livestream:offline-message:text': 'Stream offline',
 	'Livestream:automuted-unmute:text': 'Tap to unmute',
+	'Livestream:captions-off:text': 'Off',
 	'profile/GreetingPrompt:step-display-name:heading': 'Hi there!',
 	'profile/GreetingPrompt:step-display-name:text': 'Before you join others in this event, please set up your profile name and picture.',
 	'profile/GreetingPrompt:gravatar-hint:text': 'Or, save time by connecting to your',
