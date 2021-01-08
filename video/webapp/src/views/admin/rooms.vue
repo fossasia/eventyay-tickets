@@ -2,15 +2,14 @@
 .c-admin-rooms
 	.header
 		h2 Rooms
-		.search
-			bunt-input.search(name="search", placeholder="Search rooms", icon="search", v-model="search")
+		bunt-input.search(name="search", placeholder="Search rooms", icon="search", v-model="search")
 	.rooms-list
 		.header
 			.id ID
 			.prio Priority
 			.name Name
 			.actions
-				bunt-button.btn-save(@click="showCreateRoomPrompt = true") Create new
+				bunt-button.btn-create(@click="showCreateRoomPrompt = true") Create new
 		RecycleScroller.tbody.bunt-scrollbar(v-if="filteredRooms", :items="filteredRooms", :item-size="48", v-slot="{item: room}", v-scrollbar.y="")
 			router-link(:to="{name: 'admin:room', params: {editRoomId: room.id}}").room.table-row(:class="{error: room.error, updating: room.updating}")
 				.id(:title="room.id") {{ room.id }}
@@ -58,14 +57,14 @@ export default {
 	min-height: 0
 	background-color: $clr-white
 	.header
-		justify-content space-between
+		justify-content: space-between
 		background-color: $clr-grey-50
 		.actions
 			display flex
 			flex none
 			.bunt-button:not(:last-child)
 				margin-right 16px
-			.btn-save
+			.btn-create
 				themed-button-primary()
 	h2
 		margin: 16px

@@ -6,7 +6,7 @@
 		.header
 			.exhibitor-label {{ $t("Exhibitors:exhibitor:label") }}
 			.actions
-					bunt-button.btn-save(@click="$router.push({name: 'exhibitors:exhibitor', params: {exhibitorId: ''}})") {{ $t('Exhibitors:create:label') }}
+					bunt-button.btn-create(@click="$router.push({name: 'exhibitors:exhibitor', params: {exhibitorId: ''}})") {{ $t('Exhibitors:create:label') }}
 		RecycleScroller.tbody.bunt-scrollbar(v-if="exhibitors", :items="exhibitors", :item-size="48", v-slot="{item: exhibitor}", v-scrollbar.y="")
 			router-link.exhibitor(:to="{name: 'exhibitors:exhibitor', params: {exhibitorId: exhibitor.id}}").table-row
 				.name {{ exhibitor.name }}
@@ -59,7 +59,7 @@ export default {
 				flex none
 				.bunt-button:not(:last-child)
 					margin-right 16px
-				.btn-save
+				.btn-create
 					themed-button-primary()
 		.exhibitor-label
 			padding-left 0
