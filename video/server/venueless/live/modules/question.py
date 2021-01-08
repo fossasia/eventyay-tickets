@@ -7,6 +7,7 @@ from venueless.core.services.question import (
     delete_question,
     get_question,
     get_questions,
+    pin_question,
     update_question,
     vote_on_question,
 )
@@ -174,6 +175,26 @@ class QuestionModule(BaseModule):
             )
         await self.consumer.send_success(questions)
 
+    @command("pin")
+    @room_action(permission_required=Permission.ROOM_QUESTION_MODERATE)
+    async def pin_question(self, body):
+        question = await get_question(body.get("id"), self.room)
+        await pin_question(pk=question["id"], room=self.room)
+        await self.consumer.send_success({"id": str(question["id"])})
+        group = (
+            GROUP_ROOM_QUESTION_MODERATE
+            if question["state"] != Question.States.VISIBLE
+            else GROUP_ROOM_QUESTION_READ
+        )
+        await self.consumer.channel_layer.group_send(
+            group.format(id=self.room.pk),
+            {
+                "type": "question.pinned",
+                "room": str(self.room.pk),
+                "id": question["id"],
+            },
+        )
+
     @event("created_or_updated")
     async def push_question(self, body):
         await self.consumer.send_json(
@@ -185,6 +206,15 @@ class QuestionModule(BaseModule):
         await self.consumer.send_json(
             [
                 "question.deleted",
+                {"room": body.get("room"), "id": body.get("id")},
+            ]
+        )
+
+    @event("pinned")
+    async def push_pin(self, body):
+        await self.consumer.send_json(
+            [
+                "question.pinned",
                 {"room": body.get("room"), "id": body.get("id")},
             ]
         )

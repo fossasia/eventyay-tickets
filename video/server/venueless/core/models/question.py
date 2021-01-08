@@ -22,6 +22,7 @@ class Question(models.Model):
     )
     answered = models.BooleanField(default=False)
     timestamp = models.DateTimeField(auto_now_add=True)
+    is_pinned = models.BooleanField(default=False)
 
     room = models.ForeignKey(
         to="Room",
@@ -63,6 +64,7 @@ class Question(models.Model):
             "timestamp": self.timestamp.isoformat(),
             "room_id": str(self.room_id),
             "score": self.score or 0,
+            "is_pinned": self.is_pinned,
         }
         if voted_state:
             data["voted"] = getattr(self, "_voted", False)

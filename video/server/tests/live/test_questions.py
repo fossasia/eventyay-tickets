@@ -91,8 +91,8 @@ async def test_ask_question(questions_room, world):
                         "room_id": str(questions_room.id),
                         "state": "mod_queue",
                         "score": 0,
-                        "score": 0,
                         "timestamp": -1,
+                        "is_pinned": False,
                     }
                 },
             ]
@@ -136,6 +136,7 @@ async def test_ask_question(questions_room, world):
                 {
                     "question": {
                         "answered": False,
+                        "is_pinned": False,
                         "content": "What is your favourite colour?",
                         "id": -1,
                         "room_id": str(questions_room.id),
@@ -179,6 +180,7 @@ async def test_ask_question(questions_room, world):
                 {
                     "question": {
                         "answered": False,
+                        "is_pinned": False,
                         "content": "When is your favourite colour?",
                         "id": -1,
                         "room_id": str(questions_room.id),
@@ -218,6 +220,7 @@ async def test_ask_question(questions_room, world):
                 {
                     "question": {
                         "answered": False,
+                        "is_pinned": False,
                         "content": "When is your favourite colour?",
                         "id": -1,
                         "room_id": str(questions_room.id),
@@ -235,6 +238,7 @@ async def test_ask_question(questions_room, world):
                 {
                     "question": {
                         "answered": False,
+                        "is_pinned": False,
                         "content": "When is your favourite colour?",
                         "id": question_id,
                         "room_id": str(questions_room.id),
@@ -242,6 +246,35 @@ async def test_ask_question(questions_room, world):
                         "score": 0,
                         "timestamp": -1,
                     }
+                },
+            ]
+            # Next: Moderators can pin questions
+            await c_mod.send_json_to(
+                [
+                    "question.pin",
+                    123,
+                    {
+                        "id": question_id,
+                        "room": str(questions_room.id),
+                    },
+                ]
+            )
+            response = await c_mod.receive_json_from()
+            assert response == [
+                "success",
+                123,
+                {
+                    "id": question_id,
+                },
+            ]
+            await c_mod.receive_json_from()  # Delete broadcast
+
+            response = await c.receive_json_from()  # Delete broadcast
+            assert response == [
+                "question.pinned",
+                {
+                    "id": question_id,
+                    "room": str(questions_room.id),
                 },
             ]
 
@@ -301,6 +334,7 @@ async def test_ask_question_unmoderated_room(unmoderated_questions_room):
             {
                 "question": {
                     "answered": False,
+                    "is_pinned": False,
                     "content": "What is your favourite colour?",
                     "id": -1,
                     "room_id": str(questions_room.id),
@@ -319,6 +353,7 @@ async def test_ask_question_unmoderated_room(unmoderated_questions_room):
             {
                 "question": {
                     "answered": False,
+                    "is_pinned": False,
                     "content": "What is your favourite colour?",
                     "id": -1,
                     "room_id": str(questions_room.id),
@@ -353,6 +388,7 @@ async def test_ask_question_unmoderated_room(unmoderated_questions_room):
             {
                 "question": {
                     "answered": False,
+                    "is_pinned": False,
                     "content": "What is your favourite colour?",
                     "id": -1,
                     "room_id": str(questions_room.id),
@@ -403,6 +439,7 @@ async def test_ask_question_unmoderated_room(unmoderated_questions_room):
             {
                 "question": {
                     "answered": False,
+                    "is_pinned": False,
                     "content": "What is your favourite colour?",
                     "id": -1,
                     "room_id": str(questions_room.id),

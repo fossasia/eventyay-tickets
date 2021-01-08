@@ -17,6 +17,12 @@ def get_question(pk, room):
 
 
 @database_sync_to_async
+def pin_question(pk, room):
+    room.questions.all().update(is_pinned=False)
+    room.questions.filter(pk=pk).update(is_pinned=True)
+
+
+@database_sync_to_async
 def get_questions(room, add_by_user=None, for_user=None, **kwargs):
     questions = Question.objects.filter(room=room)
     if add_by_user:

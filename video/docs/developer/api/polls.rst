@@ -1,9 +1,8 @@
-Questions
+Polls
 =========
 
-Users can ask questions in a room, which need to be approved by a moderator and then can be read and upvoted by other users. Questions can be marked as answered.
-Asking questions can be locked per room to only allow questions at a certain time.
-To clear questions after or before a logical session, single questions can be deleted ("delete all" to be implemented by the client).
+Users can ask polls in a room, and other users can cast votes. Polls can be
+marked as "over", and don't permit any votes past that point.
 
     {
 	id: uuid,
@@ -13,8 +12,7 @@ To clear questions after or before a logical session, single questions can be de
 	content: String,
 	state: String, // 'mod_queue', 'visible', 'archived'
 	answered: Boolean,
-	score: Number,
-        voted: Boolean // has the current user voted on the question? Available on list actions.
+	score: Number
     }
 
 Permissions
@@ -50,11 +48,10 @@ To ask a question, send a message like this::
 
     => ["question.ask", 1234, {"room": "room_0", "content": "What is your favourite colour?"}]
     <- ["success", 1234, {"question": {…}}]
-    <= ["question.created_or_updated", {"question": {…}}]
 
 On creates and on updates, all people in the room who have the required access rights will receive a message like this::
 
-    <= ["question.created_or_updated", {"question": {…}}]
+    <- ["question.created_or_updated", {"question": {…}}]
 
 ## ``question.update``
 
@@ -62,7 +59,6 @@ To update a question (only permitted for moderators), send a message like this::
 
     => ["question.update", 1234, {"room": 123, "id": "UUID", "state": "visible"}]
     <- ["success", 1234, {"question": {…}}]
-    <= ["question.created_or_updated", {"question": {…}}]
 
 ## ``question.list``
 
@@ -70,9 +66,6 @@ Given a room ID, return all the questions that are visible to the user::
 
     => ["question.list", 1234, {"room": "room_0"}]
     <- ["success", 1234, [{"id": }, ...]
-
-Note that the question object has an added ``voted`` boolean attribute denoting
-if the current user has voted for this question.
 
 ## ``question.vote``
 
@@ -88,14 +81,6 @@ Only moderators may delete questions. Delete notifications are broadcasted like 
     => ["question.delete", 1234, {"room": "room_0", "id": 12}]
     <- ["success", 1234, [{"id": }, ...]
     <= ["question.deleted", {"room": "room_0", "id": 12}]
-
-## ``question.pin``
-
-Only moderators may pin questions, like this::
-
-    => ["question.pin", 1234, {"room": "room_0", "id": 12}]
-    <- ["success", 1234, [{"id": }, ...]
-    <= ["question.pinned", {"room": "room_0", "id": 12}]
 
 TODOs
 -----
