@@ -44,6 +44,22 @@ Full configuration
 	}
 
 
+Presentation Mode
+-----------------
+
+To enter presentation mode, append `/presentation` to a room url.
+This shows ONLY the content of the currently pinned question (and updates if anything changes).
+
+You can style presenation mode via custom css:
+
+.. code-block:: css
+	// add a background
+	#presentation-mode {
+		background: url('YOUR_URL_HERE')
+		background-size: cover
+		color: A_COLOR_THAT_MATCHES_YOUR_BACKGROUND
+	}
+
 Experimental Features
 ---------------------
 

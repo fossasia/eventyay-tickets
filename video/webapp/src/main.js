@@ -6,7 +6,6 @@ import VueVirtualScroller from 'vue-virtual-scroller'
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 import { v4 as uuid } from 'uuid'
 import 'lib/timetravelMoment' // init timetravel before anything else to avoid module loading race conditions
-import App from './App.vue'
 import router from 'router'
 import store from 'store'
 import Scrollbars from 'components/Scrollbars'
@@ -33,7 +32,7 @@ window.vapp = new Vue({
 	router,
 	store,
 	i18n,
-	render: h => h(App)
+	render: h => h('router-view')
 }).$mount('#app')
 
 const token = new URLSearchParams(router.currentRoute.hash.substr(1)).get('token')

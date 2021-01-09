@@ -6,6 +6,9 @@ export default {
 		questions: null
 	},
 	getters: {
+		pinnedQuestion (state) {
+			return state.questions?.find(q => q.is_pinned)
+		}
 	},
 	mutations: {
 
