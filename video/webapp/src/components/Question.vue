@@ -1,5 +1,5 @@
 <template lang="pug">
-.c-question(:class="{queued: hasPermission('room:question.moderate') && question.state === 'mod_queue', 'has-voted': question.voted}")
+.c-question(:class="{queued: hasPermission('room:question.moderate') && question.state === 'mod_queue', 'has-voted': question.voted, pinned: question.is_pinned}")
 	.votes(@click="vote")
 		.mdi.mdi-menu-up.upvote
 		.vote-count {{ question.score }}
@@ -9,7 +9,8 @@
 		template(v-slot:button="{toggle}")
 			bunt-icon-button(@click="toggle") dots-vertical
 		template(v-slot:menu)
-			.approve-question(@click="approveQuestion") {{ $t('Questions:asking-form:mod-approve-question:label') }}
+			.approve-question(v-if="question.state === 'mod_queue'", @click="approveQuestion") {{ $t('Questions:asking-form:mod-approve-question:label') }}
+			.approve-question(v-if="question.state === 'visible'", @click="pinQuestion") {{ $t('Questions:asking-form:mod-pin-question:label') }}
 			.delete-question(@click="deleteQuestion") {{ $t('Questions:asking-form:mod-delete-question:label') }}
 </template>
 <script>
@@ -40,6 +41,10 @@ export default {
 		},
 		async approveQuestion () {
 			await this.$store.dispatch('question/approveQuestion', this.question)
+			this.modding = false
+		},
+		async pinQuestion () {
+			await this.$store.dispatch('question/pinQuestion', this.question)
 			this.modding = false
 		},
 		async deleteQuestion () {
@@ -96,4 +101,8 @@ export default {
 			color: $clr-green-700
 			.vote-count
 				color: $clr-green-800
+	&.pinned
+		border: 4px solid var(--clr-primary)
+		border-bottom: none
+		border-top: none
 </style>

@@ -11,7 +11,7 @@
 		//- v-else ?
 	.questions(v-if="questions", :class="{'can-vote': hasPermission('room:question.vote')}", v-scrollbar.y="")
 		.empty-placeholder(v-if="questions.length === 0") {{ $t('Questions:empty-placeholder') }}
-		question(v-for="question of questions", :question="question")
+		question(v-for="question of sortedQuestions", :question="question")
 		//- TODO sort by state?
 </template>
 <script>
@@ -29,7 +29,12 @@ export default {
 	},
 	computed: {
 		...mapState('question', ['questions']),
-		...mapGetters(['hasPermission'])
+		...mapGetters(['hasPermission']),
+		sortedQuestions () {
+			const questions = this.questions.slice()
+			questions.sort((a, b) => b.is_pinned - a.is_pinned)
+			return questions
+		}
 	},
 	watch: {
 		questions () {
