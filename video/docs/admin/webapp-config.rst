@@ -56,9 +56,9 @@ You can style presenation mode via custom css:
 
 	// add a background
 	#presentation-mode {
-		background: url('YOUR_URL_HERE')
-		background-size: cover
-		color: A_COLOR_THAT_MATCHES_YOUR_BACKGROUND
+		background: url('YOUR_URL_HERE');
+		background-size: cover;
+		color: A_COLOR_THAT_MATCHES_YOUR_BACKGROUND;
 	}
 
 Experimental Features
