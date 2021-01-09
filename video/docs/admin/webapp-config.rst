@@ -53,6 +53,7 @@ This shows ONLY the content of the currently pinned question (and updates if any
 You can style presenation mode via custom css:
 
 .. code-block:: css
+
 	// add a background
 	#presentation-mode {
 		background: url('YOUR_URL_HERE')
