@@ -219,4 +219,5 @@ export default {
 	'Questions:empty-placeholder': 'No questions yet, why not ask one?',
 	'Questions:asking-form:mod-approve-question:label': 'approve',
 	'Questions:asking-form:mod-delete-question:label': 'delete',
+	'Questions:asking-form:mod-pin-question:label': 'pin'
 }

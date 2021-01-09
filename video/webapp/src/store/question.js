@@ -35,6 +35,9 @@ export default {
 			// update handled in api::question.deleted
 			// TODO error handling
 		},
+		pinQuestion ({state, rootState}, question) {
+			return api.call('question.pin', {room: rootState.activeRoom.id, id: question.id})
+		},
 		'api::question.created_or_updated' ({state}, {question}) {
 			const existingQuestion = state.questions.find(q => q.id === question.id)
 			if (existingQuestion) {
@@ -48,6 +51,12 @@ export default {
 			const questionIndex = state.questions.findIndex(q => q.id === id)
 			if (questionIndex > -1) {
 				state.questions.splice(questionIndex, 1)
+			}
+		},
+		'api::question.pinned' ({state}, {id}) {
+			for (const question of state.questions) {
+				// unpin all other questions
+				question.is_pinned = question.id === id
 			}
 		}
 	}
