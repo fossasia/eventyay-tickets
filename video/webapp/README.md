@@ -140,6 +140,7 @@ nav.toolbar
 800-899: blocking popovers (emoji picker, chat user card)
 900-999: expanded rooms sidebar (mobile)
 1000+:  / full page overlays / prompts
+2000: blocker for native UI
 
 
 #### How to name classes

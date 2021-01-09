@@ -7,9 +7,9 @@
 			bunt-button#btn-change-avatar(@click="showChangeAvatar = true") {{ $t('preferences/index:btn-change-avatar:label') }}
 		bunt-input.display-name(name="displayName", :label="$t('profile/GreetingPrompt:displayname:label')", v-model.trim="profile.display_name", :validation="$v.profile.display_name")
 		change-additional-fields(v-model="profile.fields")
-		bunt-checkbox(v-model="desktopNotificationPermission", :label="$t('preferences/index:btn-notification-permission:label')", name="desktopNotificationPermission")
-		.permission-info(v-if="showPermissionDenied") {{ $t('preferences/index:permission-denied:text') }}
-		bunt-checkbox(v-model="desktopNotificationSound", :label="$t('preferences/index:btn-notification-sound:label')", name="desktopNotificationSound")
+		h2 {{ $t('preferences/index:notifications:header') }}
+		p {{ $t('preferences/index:notifications:description') }}
+		bunt-button#btn-enable-desktop-notifications(v-if="notificationPermission === 'default'", icon="bell", @click="$store.dispatch('notifications/askForPermission')") enable desktop notifications
 		bunt-button#btn-save(:disabled="$v.$invalid && $v.$dirty", :loading="saving", @click="save") {{ $t('preferences/index:btn-save:label') }}
 	transition(name="prompt")
 		prompt.change-avatar-prompt(v-if="showChangeAvatar", @close="showChangeAvatar = false")
@@ -20,7 +20,7 @@
 					bunt-button#btn-upload(:loading="savingAvatar", :disabled="blockSave", @click="uploadAvatar") {{ $t('preferences/index:btn-upload-save:label') }}
 </template>
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import Avatar from 'components/Avatar'
 import Prompt from 'components/Prompt'
 import ChangeAvatar from 'components/profile/ChangeAvatar'
@@ -36,10 +36,7 @@ export default {
 			showChangeAvatar: false,
 			savingAvatar: false,
 			blockSave: false,
-			saving: false,
-			desktopNotificationPermission: false,
-			desktopNotificationSound: false,
-			showPermissionDenied: false
+			saving: false
 		}
 	},
 	validations: {
@@ -51,6 +48,9 @@ export default {
 	},
 	computed: {
 		...mapState(['user', 'world']),
+		...mapState('notifications', {
+			notificationPermission: 'permission'
+		})
 	},
 	created () {
 		this.profile = Object.assign({}, this.user.profile)
@@ -59,8 +59,6 @@ export default {
 				identicon: this.user.id
 			}
 		}
-		this.desktopNotificationSound = (localStorage.playDesktopNotificationSound === 'true')
-		this.desktopNotificationPermission = (localStorage.desktopNotificationPermission === 'true')
 	},
 	methods: {
 		async uploadAvatar () {
@@ -74,15 +72,6 @@ export default {
 			this.$v.$touch()
 			if (this.$v.$invalid) return
 			this.saving = true
-			if ((window.Notification.permission === 'default') && this.desktopNotificationPermission) {
-				localStorage.desktopNotificationPermission = ((await window.Notification.requestPermission()) === 'granted').toString()
-			}
-			if ((window.Notification.permission === 'denied') && this.desktopNotificationPermission) {
-				this.desktopNotificationPermission = false
-				this.showPermissionDenied = true
-			}
-			localStorage.playDesktopNotificationSound = this.desktopNotificationSound.toString()
-			localStorage.desktopNotificationPermission = this.desktopNotificationPermission.toString()
 			await this.$store.dispatch('updateUser', {profile: this.profile})
 			this.saving = false
 		}
@@ -97,6 +86,10 @@ export default {
 	padding: 16px 32px
 	h1
 		margin: 0
+	h2
+		font-size: 20px
+		font-weight: 500
+		border-bottom: border-separator()
 	.avatar-wrapper
 		display: flex
 		align-items: center
@@ -110,7 +103,10 @@ export default {
 			line-height 18px
 			padding 6px 0px 6px 16px
 			color: $clr-red
+	#btn-enable-desktop-notifications
+		themed-button-secondary()
 	#btn-save
+		margin-top: 32px
 		themed-button-primary()
 
 	.change-avatar-prompt

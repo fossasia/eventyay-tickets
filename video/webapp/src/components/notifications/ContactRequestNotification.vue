@@ -1,5 +1,5 @@
 <template lang="pug">
-.c-contact-request-notification(v-if="showNotification")
+.c-contact-request-notification.ui-notification(v-if="showNotification")
 	bunt-icon-button#btn-close(@click="close") close
 	.details {{ $t('ContactRequest:notification:text') }} #[br] #[span.exhibitor {{ contactRequest.exhibitor.name }}]
 	.user
@@ -73,15 +73,6 @@ export default {
 </script>
 <style lang="stylus">
 .c-contact-request-notification
-	card()
-	display: flex
-	flex-direction: column
-	margin: 4px 0
-	padding: 8px
-	#btn-close
-		icon-button-style(style: clear)
-		position: absolute
-		right: 8px
 	span.exhibitor
 		font-weight: 500
 	.user
