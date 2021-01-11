@@ -13,6 +13,7 @@ To clear questions after or before a logical session, single questions can be de
 	content: String,
 	state: String, // 'mod_queue', 'visible', 'archived'
 	answered: Boolean,
+    is_pinned: Boolean,
 	score: Number,
         voted: Boolean // has the current user voted on the question? Available on list actions.
     }
