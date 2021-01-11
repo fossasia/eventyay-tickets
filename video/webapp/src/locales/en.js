@@ -213,6 +213,7 @@ export default {
 	'DeletePrompt:button:warning': 'This action cannot be undone!',
 	'DeletePrompt:confirm:text': 'This action cannot be undone. Please type in the name to confirm.',
 	'DirectMessage:notification-unread:text': 'New messages',
+	'Questions:deactivated-placeholder': 'Questions are currently disabled.',
 	'Questions:ask-question-button:label': 'Ask a Question',
 	'Questions:asking-form:label': 'Ask your question',
 	'Questions:asking-form:submit': 'Submit your question',
