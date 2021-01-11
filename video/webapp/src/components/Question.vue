@@ -1,5 +1,5 @@
 <template lang="pug">
-.c-question(:class="{queued: hasPermission('room:question.moderate') && question.state === 'mod_queue', 'has-voted': question.voted, pinned: question.is_pinned}")
+.c-question(:class="{queued: hasPermission('room:question.moderate') && question.state === 'mod_queue', 'has-voted': question.voted, pinned: question.is_pinned, archived: question.state === 'archived'}")
 	.votes(@click="vote")
 		.mdi.mdi-menu-up.upvote
 		.vote-count {{ question.score }}
@@ -9,9 +9,11 @@
 		template(v-slot:button="{toggle}")
 			bunt-icon-button(@click="toggle") dots-vertical
 		template(v-slot:menu)
-			.approve-question(v-if="question.state === 'mod_queue'", @click="approveQuestion") {{ $t('Questions:asking-form:mod-approve-question:label') }}
-			.approve-question(v-if="question.state === 'visible'", @click="pinQuestion") {{ $t('Questions:asking-form:mod-pin-question:label') }}
-			.delete-question(@click="deleteQuestion") {{ $t('Questions:asking-form:mod-delete-question:label') }}
+			.approve-question(v-if="question.state === 'mod_queue'", @click="approveQuestion") {{ $t('Question:moderation-menu:approve-question:label') }}
+			.approve-question(v-if="question.state === 'visible'", @click="pinQuestion") {{ $t('Question:moderation-menu:pin-question:label') }}
+			.archive-question(v-if="question.state !== 'archived'", @click="archiveQuestion") {{ $t('Question:moderation-menu:archive-question:label') }}
+			.unarchive-question(v-if="question.state === 'archived'", @click="unarchiveQuestion") {{ $t('Question:moderation-menu:unarchive-question:label') }}
+			.delete-question(@click="deleteQuestion") {{ $t('Question:moderation-menu:delete-question:label') }}
 </template>
 <script>
 import { mapGetters } from 'vuex'
@@ -45,6 +47,14 @@ export default {
 		},
 		async pinQuestion () {
 			await this.$store.dispatch('question/pinQuestion', this.question)
+			this.modding = false
+		},
+		async archiveQuestion () {
+			await this.$store.dispatch('question/archiveQuestion', this.question)
+			this.modding = false
+		},
+		async unarchiveQuestion () {
+			await this.$store.dispatch('question/unarchiveQuestion', this.question)
 			this.modding = false
 		},
 		async deleteQuestion () {
@@ -105,4 +115,25 @@ export default {
 		border: 4px solid var(--clr-primary)
 		border-bottom: none
 		border-top: none
+	&.archived
+		background-color: $clr-grey-200
+		color: $clr-disabled-text-light
+		.votes, .vote-count
+			color: $clr-disabled-text-light
+		&::after
+			content: 'archived'
+			display: block
+			position: absolute
+			right: 8px
+			top: 8px
+			font-size: 12px
+			color: $clr-secondary-text-light
+			font-weight: 600
+	.c-menu-dropdown .menu
+		color: $clr-primary-text-light
+		.delete-question
+			color: $clr-danger
+			&:hover
+				background-color: $clr-danger
+				color: $clr-primary-text-dark
 </style>

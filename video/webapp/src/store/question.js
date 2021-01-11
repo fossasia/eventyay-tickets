@@ -33,6 +33,22 @@ export default {
 			// update handled in create_or_update
 			// TODO error handling
 		},
+		archiveQuestion ({state, rootState}, question) {
+			return api.call('question.update', {room: rootState.activeRoom.id, id: question.id, state: 'archived', is_pinned: false})
+			// update handled in create_or_update
+			// TODO error handling
+		},
+		unarchiveQuestion ({state, rootState}, question) {
+			return api.call('question.update', {room: rootState.activeRoom.id, id: question.id, state: 'visible'})
+			// update handled in create_or_update
+			// TODO error handling
+		},
+		archiveAll ({state, rootState}) {
+			// just send all updates in parallel
+			for (const question of state.questions) {
+				api.call('question.update', {room: rootState.activeRoom.id, id: question.id, state: 'archived', is_pinned: false})
+			}
+		},
 		deleteQuestion ({state, rootState}, question) {
 			return api.call('question.delete', {room: rootState.activeRoom.id, id: question.id})
 			// update handled in api::question.deleted

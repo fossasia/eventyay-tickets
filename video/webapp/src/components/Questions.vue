@@ -12,6 +12,8 @@
 	.questions(v-if="questions", :class="{'can-vote': hasPermission('room:question.vote')}", v-scrollbar.y="")
 		.empty-placeholder(v-if="questions.length === 0") {{ $t('Questions:empty-placeholder') }}
 		question(v-for="question of sortedQuestions", :question="question")
+	.moderator-actions(v-if="hasPermission('room:question.moderate')")
+		bunt-button.btn-archive-all(@click="$store.dispatch('question/archiveAll')") {{ $t('Questions:moderator-actions:archive-all:label') }}
 		//- TODO sort by state?
 </template>
 <script>
@@ -32,7 +34,8 @@ export default {
 		...mapGetters(['hasPermission']),
 		sortedQuestions () {
 			const questions = this.questions.slice()
-			questions.sort((a, b) => b.is_pinned - a.is_pinned)
+			const weight = q => q.is_pinned + (q.state !== 'archived') // assume archived cannot be pinned
+			questions.sort((a, b) => weight(b) - weight(a) || new Date(b.timestamp) - new Date(a.timestamp))
 			return questions
 		}
 	},
@@ -60,6 +63,7 @@ export default {
 	display: flex
 	flex-direction: column
 	min-height: 0
+	flex: auto
 	#btn-ask-question
 		themed-button-primary()
 		margin: 16px 0
@@ -94,5 +98,13 @@ export default {
 		#btn-submit-question
 			themed-button-primary()
 	.questions
-		//
+		flex: auto
+	.moderator-actions
+		flex: none
+		border-top: border-separator()
+		display: flex
+		height: 56px
+		justify-content: flex-end
+		align-items: center
+		padding: 0 8px
 </style>

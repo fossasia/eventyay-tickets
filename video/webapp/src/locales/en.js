@@ -217,7 +217,10 @@ export default {
 	'Questions:asking-form:label': 'Ask your question',
 	'Questions:asking-form:submit': 'Submit your question',
 	'Questions:empty-placeholder': 'No questions yet, why not ask one?',
-	'Questions:asking-form:mod-approve-question:label': 'approve',
-	'Questions:asking-form:mod-delete-question:label': 'delete',
-	'Questions:asking-form:mod-pin-question:label': 'pin'
+	'Questions:moderator-actions:archive-all:label': 'Archive All',
+	'Question:moderation-menu:approve-question:label': 'approve',
+	'Question:moderation-menu:delete-question:label': 'delete',
+	'Question:moderation-menu:pin-question:label': 'pin',
+	'Question:moderation-menu:archive-question:label': 'archive',
+	'Question:moderation-menu:unarchive-question:label': 'unarchive'
 }
