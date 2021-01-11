@@ -27,7 +27,7 @@
 				bunt-tab(id="chat", :header="$t('Room:sidebar:tabs-header:chat')", @selected="activeSidebarTab = 'chat'")
 				bunt-tab(id="questions", :header="$t('Room:sidebar:tabs-header:questions')", @selected="activeSidebarTab = 'questions'")
 			chat(v-show="modules['chat.native'] && activeSidebarTab === 'chat'", :room="room", :module="modules['chat.native']", mode="compact", :key="room.id", @change="changedTabContent('chat')")
-			questions(v-show="modules['question'] && activeSidebarTab === 'questions'", @change="changedTabContent('questions')")
+			questions(v-show="modules['question'] && activeSidebarTab === 'questions'", :module="modules['question']", @change="changedTabContent('questions')")
 	transition(name="prompt")
 		recordings-prompt(:room="room", v-if="showRecordingsPrompt", @close="showRecordingsPrompt = false")
 	edit-room-schedule(v-if="showEditSchedule", :room="room", :currentSession="currentSession", @close="showEditSchedule = false")

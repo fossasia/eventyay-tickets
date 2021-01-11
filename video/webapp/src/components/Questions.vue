@@ -1,20 +1,22 @@
 <template lang="pug">
 .c-questions
-	.asking-form(v-if="showAskingForm")
-		bunt-input-outline-container(:label="$t('Questions:asking-form:label')")
-			textarea(v-model="question", slot-scope="{focus, blur}", @focus="focus", @blur="blur")
-		.actions
-			bunt-button#btn-cancel(@click="showAskingForm = false") {{ $t('Prompt:cancel:label') }}
-			bunt-button#btn-submit-question(@click="submitQuestion") {{ $t('Questions:asking-form:submit') }}
+	.deactivated(v-if="!module.config.active")
+		| {{ $t('Questions:deactivated-placeholder') }}
 	template(v-else)
-		bunt-button#btn-ask-question(v-if="hasPermission('room:question.ask')", @click="question = ''; showAskingForm = true") {{ $t('Questions:ask-question-button:label') }}
-		//- v-else ?
-	.questions(v-if="questions", :class="{'can-vote': hasPermission('room:question.vote')}", v-scrollbar.y="")
+		.asking-form(v-if="showAskingForm")
+			bunt-input-outline-container(:label="$t('Questions:asking-form:label')")
+				textarea(v-model="question", slot-scope="{focus, blur}", @focus="focus", @blur="blur")
+			.actions
+				bunt-button#btn-cancel(@click="showAskingForm = false") {{ $t('Prompt:cancel:label') }}
+				bunt-button#btn-submit-question(@click="submitQuestion") {{ $t('Questions:asking-form:submit') }}
+		template(v-else)
+			bunt-button#btn-ask-question(v-if="hasPermission('room:question.ask')", @click="question = ''; showAskingForm = true") {{ $t('Questions:ask-question-button:label') }}
+			//- v-else ?
+	.questions(v-if="questions && (module.config.active || hasPermission('room:question.moderate'))", :class="{'can-vote': hasPermission('room:question.vote')}", v-scrollbar.y="")
 		.empty-placeholder(v-if="questions.length === 0") {{ $t('Questions:empty-placeholder') }}
 		question(v-for="question of sortedQuestions", :question="question")
 	.moderator-actions(v-if="hasPermission('room:question.moderate')")
 		bunt-button.btn-archive-all(@click="$store.dispatch('question/archiveAll')") {{ $t('Questions:moderator-actions:archive-all:label') }}
-		//- TODO sort by state?
 </template>
 <script>
 import { mapState, mapGetters } from 'vuex'
@@ -22,6 +24,12 @@ import Question from './Question'
 
 export default {
 	components: { Question },
+	props: {
+		module: {
+			type: Object,
+			required: true
+		}
+	},
 	data () {
 		return {
 			question: '',
@@ -64,6 +72,10 @@ export default {
 	flex-direction: column
 	min-height: 0
 	flex: auto
+	.deactivated
+		text-align: center
+		margin: 32px 0
+		color: $clr-secondary-text-light
 	#btn-ask-question
 		themed-button-primary()
 		margin: 16px 0
