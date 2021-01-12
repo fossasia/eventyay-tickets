@@ -42,7 +42,7 @@ export default {
 		...mapGetters(['hasPermission']),
 		sortedQuestions () {
 			const questions = this.questions.slice()
-			const weight = q => q.is_pinned + (q.state !== 'archived') // assume archived cannot be pinned
+			const weight = q => q.is_pinned + (q.state !== 'archived') + (q.state === 'mod_queue') // assume archived and mod_queue cannot be pinned
 			questions.sort((a, b) => weight(b) - weight(a) || new Date(b.timestamp) - new Date(a.timestamp))
 			return questions
 		}
