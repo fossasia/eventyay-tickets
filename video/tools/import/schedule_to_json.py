@@ -8,10 +8,14 @@ from pathlib import Path
 import pandas
 
 
+def exit(message):
+    print(message)
+    sys.exit(-1)
+
+
 def load_sheet(fname):
     if not Path(fname).exists():
-        print("Could not find the file you want to import, aborting!")
-        sys.exit(-1)
+        exit("Could not find the file you want to import, aborting!")
 
     sheets = {
         "Talks": {"usecols": "A:I,K", "parse_dates": [5, 6],},
@@ -62,15 +66,20 @@ def serializable(value):
     return value
 
 
-def transform_data(data, field_mapping, mandatory_fields, methods=None):
+def transform_data(data, table_name, field_mapping, mandatory_fields, methods=None):
+    data = data[table_name]
     result = []
     transformers = defaultdict(lambda: serializable)
     if methods:
         transformers.update(**methods)
 
     for _, row in data.iterrows():
-        if not all(truthy(row.get(key)) for key in mandatory_fields):
-            continue
+        truthy_fields = {key: truthy(row.get(key)) for key in mandatory_fields}
+        if not any(truthy_fields.values()):
+            continue  # empty row, probably
+        if not all(truthy_fields.values()):
+            missing = [key for key, value in truthy_fields.items() if not value]
+            exit(f"Missing key(s) in {table_name}, row {_}: {missing}")
         result.append(
             {
                 field: transformers[field](row.get(excel))
@@ -90,23 +99,27 @@ def main():
 
     result = {"version": data["Talks"].iat[4, 9]}
     result["rooms"] = transform_data(
-        data["Rooms"],
+        data,
+        "Rooms",
         field_mapping={"id": "ID", "name": "Name"},
         mandatory_fields=["ID", "Name"],
     )
     result["tracks"] = transform_data(
-        data["Tracks"],
+        data,
+        "Tracks",
         field_mapping={"id": "ID", "name": "Name", "color": "Colour"},
         mandatory_fields=["ID", "Name"],
     )
     result["speakers"] = transform_data(
-        data["Speakers"],
+        data,
+        "Speakers",
         field_mapping={"code": "ID", "name": "Name", "avatar": "Avatar", "biography": "Biography"},
         mandatory_fields=["ID", "Name"],
         methods={"code": str}
     )
     result["talks"] = transform_data(
-        data["Talks"],
+        data,
+        "Talks",
         field_mapping={
             "code": "ID",
             "title": "Title",
