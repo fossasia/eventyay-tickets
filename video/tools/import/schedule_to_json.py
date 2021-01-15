@@ -139,7 +139,7 @@ def main():
 
     data = load_sheet(fname)
 
-    result = {"version": data["Talks"].iat[4, 9]}
+    result = {"version": dt.datetime.now().isoformat()}
     result["rooms"] = transform_data(
         data,
         "Rooms",
