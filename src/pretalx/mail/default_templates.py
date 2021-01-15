@@ -81,6 +81,6 @@ You can answer them at {url}.
 
 Please do not hesitate to contact us if you have any questions in turn!
 
-The {event_name} orga"""
+The {event_name} organisers"""
     )
 )
