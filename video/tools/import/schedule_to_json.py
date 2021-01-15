@@ -18,10 +18,19 @@ def load_sheet(fname):
         exit("Could not find the file you want to import, aborting!")
 
     sheets = {
-        "Talks": {"usecols": "A:I,K", "parse_dates": [5, 6],},
-        "Rooms": {"usecols": "A:C",},
-        "Speakers": {"usecols": "A:D",},
-        "Tracks": {"usecols": "A:C",},
+        "Talks": {
+            "usecols": "A:I,K",
+            "parse_dates": [5, 6],
+        },
+        "Rooms": {
+            "usecols": "A:C",
+        },
+        "Speakers": {
+            "usecols": "A:D",
+        },
+        "Tracks": {
+            "usecols": "A:C",
+        },
     }
     return {
         title: pandas.read_excel(fname, sheet_name=title, header=0, **config)
@@ -113,9 +122,14 @@ def main():
     result["speakers"] = transform_data(
         data,
         "Speakers",
-        field_mapping={"code": "ID", "name": "Name", "avatar": "Avatar", "biography": "Biography"},
+        field_mapping={
+            "code": "ID",
+            "name": "Name",
+            "avatar": "Avatar",
+            "biography": "Biography",
+        },
         mandatory_fields=["ID", "Name"],
-        methods={"code": str}
+        methods={"code": str},
     )
     result["talks"] = transform_data(
         data,
