@@ -68,3 +68,4 @@ Experimental Features
 * chat-moderation
 * schedule-control
 * roulette
+* muxdata

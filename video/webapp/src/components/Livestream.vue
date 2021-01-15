@@ -220,14 +220,14 @@ export default {
 					start()
 				})
 			}
-			if (config.mux?.env_key) {
+			if (this.$features.enabled('muxdata') && (this.module.config.mux_env_key || config.mux?.env_key)) {
 				// TODO late load the module
 				mux.monitor(video, {
 					debug: false,
 					hlsjs: this.player,
 					Hls,
 					data: {
-						env_key: config.mux.env_key,
+						env_key: this.module.config.mux_env_key || config.mux.env_key,
 						// Metadata
 						player_name: 'Livestream Module',
 						player_init_time: Date.now(),

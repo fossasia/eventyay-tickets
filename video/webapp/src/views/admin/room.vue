@@ -52,6 +52,7 @@
 					div(v-else-if="val.type == 'livestream.native'")
 						bunt-input(v-model="val.config.hls_url", label="HLS URL", name="url")
 						upload-url-input(v-model="val.config.streamOfflineImage", label="Stream offline image", name="streamOfflineImage")
+						bunt-input(v-if="$features.enabled('muxdata')", v-model="val.config.mux_env_key", label="MUX data environment key", name="muxenvkey")
 					div(v-else-if="val.type == 'livestream.youtube'")
 						bunt-input(v-model="val.config.ytid", label="YouTube Video ID", name="ytid")
 					div(v-else-if="val.type == 'question'")
