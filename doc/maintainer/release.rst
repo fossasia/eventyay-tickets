@@ -24,6 +24,7 @@ System checks
 4. Have you written (and not pushed) a blog post? It should contain at least major features and all contributors involved in the release. ``git shortlog -ns vx.y.z..master``.
 5. Have you communicated your intentions and release time line to the team?
 6. Is your virtualenv active?
+7. Run ``check-manifest`` **locally**.
 
 Take-off and landing
 --------------------

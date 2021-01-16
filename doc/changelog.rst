@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`1046` pretalx shipped an incorrect override settings file that broke email sending.
 - :bug:`-` pretalx would sometimes throw an error when you tried to create a proposal as an organiser without giving the speaker a name.
 - :feature:`-` The pretalx schedule now always shows the event timezone (and allows users to switch to their local timezone, if it's different).
 - :feature:`738` When organisers create a proposal or session in the backend, they can now schedule it directly on the creation page, instead of having to set the proposal to "accepted" and then move it in the interactive schedule editor.
