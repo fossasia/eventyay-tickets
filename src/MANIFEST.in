@@ -1,7 +1,7 @@
 include LICENSE
 include README.rst
 include pretalx.example.cfg
-exclude pretalx/global_settings.py
+exclude pretalx/override_settings.py
 recursive-include pretalx/static *
 recursive-include pretalx/static.dist *
 recursive-include pretalx/locale *
