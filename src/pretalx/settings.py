@@ -494,6 +494,11 @@ with suppress(ImportError):
     if DEBUG:
         INSTALLED_APPS.append("debug_toolbar.apps.DebugToolbarConfig")
         MIDDLEWARE.append("debug_toolbar.middleware.DebugToolbarMiddleware")
+        DEBUG_TOOLBAR_PATCH_SETTINGS = False
+        DEBUG_TOOLBAR_CONFIG = {
+            "JQUERY_URL": "",
+            "DISABLE_PANELS": debug_toolbar.settings.PANELS_DEFAULTS,
+        }
 BOOTSTRAP4 = {
     "field_renderers": {
         "default": "bootstrap4.renderers.FieldRenderer",
@@ -502,8 +507,6 @@ BOOTSTRAP4 = {
         "event-inline": "pretalx.common.forms.renderers.EventInlineFieldRenderer",
     }
 }
-DEBUG_TOOLBAR_PATCH_SETTINGS = False
-DEBUG_TOOLBAR_CONFIG = {"JQUERY_URL": ""}
 COMPRESS_ENABLED = COMPRESS_OFFLINE = not DEBUG
 COMPRESS_PRECOMPILERS = (("text/x-scss", "django_libsass.SassCompiler"),)
 COMPRESS_CSS_FILTERS = (
