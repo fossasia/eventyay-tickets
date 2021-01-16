@@ -51,11 +51,12 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
                 ),
                 required=False,
             )
-            self.fields["state"] = forms.ChoiceField(
-                label=_("Proposal state"),
-                choices=SubmissionStates.get_choices(),
-                initial=SubmissionStates.SUBMITTED,
-            )
+            if not anonymise:
+                self.fields["state"] = forms.ChoiceField(
+                    label=_("Proposal state"),
+                    choices=SubmissionStates.get_choices(),
+                    initial=SubmissionStates.SUBMITTED,
+                )
             self.fields["room"] = forms.ModelChoiceField(
                 required=False, queryset=event.rooms.all(), label=_("Room")
             )

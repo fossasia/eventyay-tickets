@@ -357,6 +357,7 @@ def test_orga_can_create_submission(orga_client, event, known_speaker, orga_user
             "speaker_name": "Foo Speaker",
             "title": "title",
             "submission_type": type_pk,
+            "state": "submitted",
         },
         follow=True,
     )
