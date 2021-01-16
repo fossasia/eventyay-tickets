@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :release:`2.1.1 <2021-01-16>`
 - :release:`2.1.0 <2021-01-16>`
 - :bug:`1046` pretalx shipped an incorrect override settings file that broke email sending.
 - :bug:`-` pretalx would sometimes throw an error when you tried to create a proposal as an organiser without giving the speaker a name.
