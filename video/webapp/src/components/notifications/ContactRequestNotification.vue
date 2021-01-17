@@ -7,8 +7,7 @@
 		.display-name {{ contactRequest.user ? contactRequest.user.profile.display_name : '' }}
 	.actions
 		bunt-button#btn-accept(@click="accept") {{ $t('ContactRequest:accept-button:label') }}
-	.timer
-		#timer-bar
+	.timer(:style="{'--late-start-gap': lateStartGap + 's'}")
 </template>
 <script>
 import Avatar from 'components/Avatar'
@@ -24,16 +23,13 @@ export default {
 	data () {
 		return {
 			showNotification: true,
-			timer: moment(this.contactRequest.timestamp).diff(moment(), 'seconds'),
+			lateStartGap: moment(this.contactRequest.timestamp).diff(moment(), 'seconds'),
 			desktopNotification: null
 		}
 	},
 	computed: {},
 	created () {},
 	mounted () {
-		this.$nextTick(() => {
-			document.getElementById('timer-bar').style.animationDelay = this.timer + 's'
-		})
 		this.handleDesktopNotification()
 	},
 	destroyed () {
@@ -90,12 +86,15 @@ export default {
 	.timer
 		display: block
 		height: 3.5px
-		#timer-bar
+		&::before
+			content: ''
+			display: block
 			height: 100%
-			background-color: $clr-primary
+			background-color: var(--clr-primary)
 			animation: timerBar linear
 			animation-duration 30s
 			animation-fill-mode: forwards
+			animation-delay: var(--late-start-gap)
 		@keyframes timerBar
 			0% { width: 100% }
 			100% { width: 0 }
