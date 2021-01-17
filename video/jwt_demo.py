@@ -24,7 +24,7 @@ def create_token(user_id, traits):
 
 def decode_token(token):
     return jwt.decode(
-        token, secret, algorithm="HS256", audience=audience, issuer=issuer
+        token, secret, algorithms=["HS256"], audience=audience, issuer=issuer
     )
 
 
