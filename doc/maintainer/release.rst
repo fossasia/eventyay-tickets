@@ -43,7 +43,7 @@ Take-off and landing
 12. Install/update the package somewhere.
 13. Add the release on `GitHub <https://github.com/pretalx/pretalx/releases>`_ (upload the archive you uploaded to PyPI, and add a link to the correct section of the :ref:`changelog`)
 14. Push the blog post.
-15. Upgrade `the docker repository <https://github.com/pretalx/pretalx-docker>`_
+15. Upgrade `the docker repository <https://github.com/pretalx/pretalx-docker>`_ to the current commit **and tag the commit as vx.y.z**.
 16. Switch to master branch
 17. Copy release note to changelog and increment version number.
 18. Update version numbers in update checker and deploy.
