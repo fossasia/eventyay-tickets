@@ -1,5 +1,5 @@
 <template lang="pug">
-.c-livestream(:class="[`size-${size}`, {playing, buffering, seeking, automuted, muted, 'choosing-level': showLevelChooser}]", v-resize-observer="onResize")
+.c-livestream(:class="[`size-${size}`, {playing, buffering, seeking, automuted, muted, 'choosing-level': showLevelChooser, 'choosing-captions': showCaptionsChooser}]", v-resize-observer="onResize")
 	.video-container(ref="videocontainer")
 		video(ref="video", style="width:100%;height:100%", @playing="playingVideo", @pause="pausingVideo", @volumechange="onVolumechange")
 		.controls(@click="toggleVideo")
@@ -18,10 +18,14 @@
 				bunt-icon-button(@click="toggleVideo") {{ playing ? 'pause' : 'play' }}
 				.live-indicator(v-if="isLive") live
 				.buffer
+				bunt-icon-button(v-if="textTracks.length > 0", @click="showCaptionsChooser = !showCaptionsChooser") {{ textTracks.some(t => t.mode === 'showing') ? 'closed-caption' : 'closed-caption-outline' }}
 				bunt-icon-button(@click="showLevelChooser = !showLevelChooser") {{ levelIcon }}
 				bunt-icon-button(@click="toggleVolume") {{ muted || volume === 0 ? 'volume_off' : 'volume_high' }}
 				input.volume-slider(type="range", step="any", min="0", max="1", aria-label="Volume", :value="volume", @input="onVolumeSlider", :style="{'--volume': volume}")
 				bunt-icon-button(@click="toggleFullscreen") {{ fullscreen ? 'fullscreen-exit' : 'fullscreen' }}
+			.caption-chooser(v-if="showCaptionsChooser", @click.stop="")
+				.level(@click="chooseTextTrack(null)", :class="{chosen: !textTracks.some(t => t.mode === 'showing')}") {{ $t('Livestream:captions-off:text') }}
+				.level(v-for="track of textTracks", :class="{chosen: track.mode === 'showing'}", @click="chooseTextTrack(track)") {{ track.label }}
 			.level-chooser(v-if="showLevelChooser", @click.stop="")
 				.level(@click="chooseLevel(null)", :class="{chosen: !manualLevel}") Auto
 				.level(v-for="level of levels", :class="{chosen: level === manualLevel, auto: level === autoLevel}", @click="chooseLevel(level)") {{ level.height + 'p' }}
@@ -94,7 +98,10 @@ export default {
 			levels: null,
 			autoLevel: null,
 			manualLevel: null,
-			showLevelChooser: false
+			showLevelChooser: false,
+			// Captions
+			textTracks: [],
+			showCaptionsChooser: false,
 		}
 	},
 	computed: {
@@ -135,11 +142,17 @@ export default {
 		this.$refs.video.addEventListener('seeking', this.onSeeking)
 		this.$refs.video.addEventListener('seeked', this.onSeeked)
 		this.$refs.video.addEventListener('ended', this.onEnded)
+		this.$refs.video.textTracks.addEventListener('addtrack', this.onTextTracksChanged)
+		this.$refs.video.textTracks.addEventListener('change', this.onTextTracksChanged)
+		this.$refs.video.textTracks.addEventListener('removetrack', this.onTextTracksChanged)
 		this.initializePlayer()
 	},
 	beforeDestroy () {
 		this.player?.destroy()
 		document.removeEventListener('fullscreenchange', this.onFullscreenchange)
+		this.$refs.video.textTracks.removeEventListener('addtrack', this.onTextTracksChanged)
+		this.$refs.video.textTracks.removeEventListener('change', this.onTextTracksChanged)
+		this.$refs.video.textTracks.removeEventListener('removetrack', this.onTextTracksChanged)
 	},
 	methods: {
 		initializePlayer () {
@@ -256,6 +269,17 @@ export default {
 			this.player.loadLevel = level?.index ?? -1
 			this.showLevelChooser = false
 		},
+		chooseTextTrack (track) {
+			this.$refs.video.textTracks.forEach((t) => {
+				if (track !== null && t.label === track.label) {
+					t.mode = 'showing'
+				} else {
+					t.mode = 'hidden'
+				}
+			})
+			this.onTextTracksChanged()
+			this.showCaptionsChooser = false
+		},
 		toggleVolume () {
 			this.automuted = false
 			this.$refs.video.muted = !this.muted
@@ -270,6 +294,19 @@ export default {
 			} else {
 				this.$refs.videocontainer.requestFullscreen()
 			}
+		},
+		onTextTracksChanged () {
+			const newList = []
+			this.$refs.video.textTracks.forEach((t) => {
+				if (t.kind === 'captions') {
+					newList.push({
+						label: t.label,
+						language: t.language,
+						mode: t.mode
+					})
+				}
+			})
+			this.textTracks = newList
 		},
 		onVolumechange () {
 			if (!this.$refs.video) return
@@ -539,7 +576,7 @@ export default {
 					thumb()
 				&::-moz-range-thumb
 					thumb()
-		.level-chooser
+		.level-chooser, .caption-chooser
 			position: absolute
 			bottom: 52px
 			right: 200px
@@ -547,7 +584,7 @@ export default {
 			flex-direction: column
 			width: 92px
 			background-color: $clr-secondary-text-light
-			.level
+			.level, .track
 				position: relative
 				cursor: pointer
 				flex: none
@@ -572,7 +609,7 @@ export default {
 					background-color: rgba(255,255,255,.2)
 	.shaka-controls-button-panel > .material-icons
 		font-size: 24px
-	&:hover, &:not(.playing), &.buffering, &.seeking, &.automuted, &.muted, &.choosing-level
+	&:hover, &:not(.playing), &.buffering, &.seeking, &.automuted, &.muted, &.choosing-level, &.choosing-captions
 		.controls, .mdi
 			opacity: 1
 	&.size-tiny
