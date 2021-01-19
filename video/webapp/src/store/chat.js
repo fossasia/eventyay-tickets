@@ -279,6 +279,7 @@ export default {
 					dispatch('notifications/createDesktopNotification', {
 						title: getters.directMessageChannelName(channel),
 						body: i18n.t('DirectMessage:notification-unread:text'),
+						tag: getters.directMessageChannelName(channel),
 						avatar: channel.members.filter(user => user.id !== rootState.user.id)[0]?.profile?.avatar,
 						// TODO onClose?
 						onClick: () => router.push({name: 'channel', params: {channelId: channel.id}})
