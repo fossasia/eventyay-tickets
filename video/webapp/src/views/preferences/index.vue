@@ -1,5 +1,5 @@
 <template lang="pug">
-.v-preferences(v-scrollbar.y="")
+scrollbars.v-preferences(y)
 	h1 {{ $t('preferences/index:heading') }}
 	.inputs
 		.avatar-wrapper
@@ -9,7 +9,10 @@
 		change-additional-fields(v-model="profile.fields")
 		h2 {{ $t('preferences/index:notifications:header') }}
 		p {{ $t('preferences/index:notifications:description') }}
-		bunt-button#btn-enable-desktop-notifications(v-if="notificationPermission === 'default'", icon="bell", @click="$store.dispatch('notifications/askForPermission')") enable desktop notifications
+		bunt-button#btn-enable-desktop-notifications(v-if="notificationPermission === 'default'", icon="bell", @click="$store.dispatch('notifications/askForPermission')") {{ $t('preferences/index:btn-enable-desktop-notifications:label') }}
+		template(v-else)
+			bunt-switch(name="notificationSettings.notify", :label="$t('preferences/index:switch-enable-desktop-notifications:label')", v-model="notificationSettings.notify")
+			bunt-switch(name="notificationSettings.playSounds", :label="$t('preferences/index:switch-enable-desktop-notification-sound:label')", v-model="notificationSettings.playSounds")
 		bunt-button#btn-save(:disabled="$v.$invalid && $v.$dirty", :loading="saving", @click="save") {{ $t('preferences/index:btn-save:label') }}
 	transition(name="prompt")
 		prompt.change-avatar-prompt(v-if="showChangeAvatar", @close="showChangeAvatar = false")
@@ -20,7 +23,8 @@
 					bunt-button#btn-upload(:loading="savingAvatar", :disabled="blockSave", @click="uploadAvatar") {{ $t('preferences/index:btn-upload-save:label') }}
 </template>
 <script>
-import { mapState, mapGetters } from 'vuex'
+import { mapState } from 'vuex'
+import cloneDeep from 'lodash/cloneDeep'
 import Avatar from 'components/Avatar'
 import Prompt from 'components/Prompt'
 import ChangeAvatar from 'components/profile/ChangeAvatar'
@@ -33,6 +37,7 @@ export default {
 	data () {
 		return {
 			profile: null,
+			notificationSettings: cloneDeep(this.$store.state.notifications.settings),
 			showChangeAvatar: false,
 			savingAvatar: false,
 			blockSave: false,
@@ -73,6 +78,7 @@ export default {
 			if (this.$v.$invalid) return
 			this.saving = true
 			await this.$store.dispatch('updateUser', {profile: this.profile})
+			this.$store.dispatch('notifications/updateSettings', this.notificationSettings)
 			this.saving = false
 		}
 	}
@@ -83,7 +89,8 @@ export default {
 	background-color: $clr-white
 	display: flex
 	flex-direction: column
-	padding: 16px 32px
+	.scroll-content
+		padding: 16px 32px
 	h1
 		margin: 0
 	h2
