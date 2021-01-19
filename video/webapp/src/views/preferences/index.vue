@@ -10,6 +10,7 @@ scrollbars.v-preferences(y)
 		h2 {{ $t('preferences/index:notifications:header') }}
 		p {{ $t('preferences/index:notifications:description') }}
 		bunt-button#btn-enable-desktop-notifications(v-if="notificationPermission === 'default'", icon="bell", @click="$store.dispatch('notifications/askForPermission')") {{ $t('preferences/index:btn-enable-desktop-notifications:label') }}
+		.notification-permission-denied(v-else-if="notificationPermission === 'denied'") {{ $t('preferences/index:notification-permission-denied-warning') }}
 		template(v-else)
 			bunt-switch(name="notificationSettings.notify", :label="$t('preferences/index:switch-enable-desktop-notifications:label')", v-model="notificationSettings.notify")
 			bunt-switch(name="notificationSettings.playSounds", :label="$t('preferences/index:switch-enable-desktop-notification-sound:label')", v-model="notificationSettings.playSounds")
@@ -112,6 +113,12 @@ export default {
 			color: $clr-red
 	#btn-enable-desktop-notifications
 		themed-button-secondary()
+	.notification-permission-denied
+		background-color: $clr-red-a700
+		color: $clr-primary-text-dark
+		border-radius: 4px
+		padding: 16px
+		font-weight: 500
 	#btn-save
 		margin-top: 32px
 		themed-button-primary()

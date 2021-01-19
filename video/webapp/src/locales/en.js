@@ -73,7 +73,7 @@ export default {
 	'preferences/index:btn-enable-desktop-notifications:label': 'Enable desktop notifications',
 	'preferences/index:switch-enable-desktop-notifications:label': 'Enable desktop notifications',
 	'preferences/index:switch-enable-desktop-notification-sound:label': 'Play notification sound',
-	// 'preferences/index:permission-denied:text': 'Desktop notifications are blocked for this site. Please change the setting in your browser.',
+	'preferences/index:notification-permission-denied-warning': 'Desktop notifications are blocked for this site. Please change the setting in your browser.',
 	'preferences/index:btn-save:label': 'save',
 	'RoomsSidebar:schedule:label': 'Schedule',
 	'RoomsSidebar:admin-headline:text': 'Administration',

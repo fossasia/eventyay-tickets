@@ -39,6 +39,7 @@ export default {
 	display: flex
 	flex-direction: column
 	width: 320px
+	z-index: 600
 	&.has-background-media
 		top: 3px + 480px
 	.ui-notification
