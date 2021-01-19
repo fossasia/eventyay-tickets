@@ -67,11 +67,14 @@ export default {
 	'profile/ChangeAvatar:error:image-too-small': 'Image must be at least 128px by 128px large.',
 	'preferences/index:heading': 'Your profile',
 	'preferences/index:btn-change-avatar:label': 'change avatar',
-	'preferences/index:btn-save:label': 'save',
 	'preferences/index:btn-upload-save:label': 'save',
-	'preferences/index:btn-notification-permission:label': 'Desktop notifications',
-	'preferences/index:btn-notification-sound:label': 'Desktop notification sound',
-	'preferences/index:permission-denied:text': 'Desktop notifications are blocked for this site. Please change the setting in your browser.',
+	'preferences/index:notifications:header': 'Desktop Notifications',
+	'preferences/index:notifications:description': 'Get desktop notifications for direct messages, contact requests and more while venueless is running in the background.',
+	'preferences/index:btn-enable-desktop-notifications:label': 'Enable desktop notifications',
+	'preferences/index:switch-enable-desktop-notifications:label': 'Enable desktop notifications',
+	'preferences/index:switch-enable-desktop-notification-sound:label': 'Play notification sound',
+	// 'preferences/index:permission-denied:text': 'Desktop notifications are blocked for this site. Please change the setting in your browser.',
+	'preferences/index:btn-save:label': 'save',
 	'RoomsSidebar:schedule:label': 'Schedule',
 	'RoomsSidebar:admin-headline:text': 'Administration',
 	'RoomsSidebar:stages-headline:text': 'Stages',
@@ -223,5 +226,6 @@ export default {
 	'Question:moderation-menu:delete-question:label': 'delete',
 	'Question:moderation-menu:pin-question:label': 'pin',
 	'Question:moderation-menu:archive-question:label': 'archive',
-	'Question:moderation-menu:unarchive-question:label': 'unarchive'
+	'Question:moderation-menu:unarchive-question:label': 'unarchive',
+	'notifications/ContactRequestNotification:prompt': 'Do you want to get desktop notifications for direct messages, contact requests and more while venueless is running in the background?'
 }

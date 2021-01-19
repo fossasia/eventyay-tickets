@@ -71,6 +71,7 @@ const colors = Object.keys(DEFAULT_COLORS).reduce((acc, key) => (acc[key] = Colo
 colors.primaryDarken15 = colors.primary.darken(0.15)
 colors.primaryDarken20 = colors.primary.darken(0.20)
 colors.primaryAlpha60 = colors.primary.alpha(0.6)
+colors.primaryAlpha50 = colors.primary.alpha(0.5)
 colors.primaryAlpha18 = colors.primary.alpha(0.18)
 // TODO hack alpha via rgba(var(--three-numbers), .X)
 

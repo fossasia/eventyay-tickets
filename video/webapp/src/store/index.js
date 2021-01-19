@@ -5,6 +5,7 @@ import chat from './chat'
 import question from './question'
 import exhibition from './exhibition'
 import schedule from './schedule'
+import notifications from './notifications'
 
 Vue.use(Vuex)
 
@@ -163,6 +164,7 @@ export default new Vuex.Store({
 		chat,
 		question,
 		exhibition,
-		schedule
+		schedule,
+		notifications
 	}
 })

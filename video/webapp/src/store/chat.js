@@ -4,7 +4,6 @@
 
 import Vue from 'vue'
 import api from 'lib/api'
-import notification from 'lib/notification'
 import router from 'router'
 import i18n from 'i18n'
 
@@ -18,8 +17,7 @@ export default {
 		usersLookup: {},
 		timeline: [],
 		beforeCursor: null,
-		fetchingMessages: false,
-		directMessageDesktopNotifications: []
+		fetchingMessages: false
 	},
 	getters: {
 		activeJoinedChannel (state) {
@@ -120,7 +118,6 @@ export default {
 				id: pointer
 			})
 			Vue.set(state.readPointers, state.channel, pointer)
-			state.directMessageDesktopNotifications[state.channel]?.close()
 		},
 		async fetchUsers ({state}, ids) {
 			const users = await api.call('user.fetch', {ids})
@@ -195,7 +192,6 @@ export default {
 			}
 			const index = state.joinedChannels.findIndex(c => c.id === channelId)
 			if (index > -1) state.joinedChannels.splice(index, 1)
-			state.directMessageDesktopNotifications[channelId]?.close()
 		},
 		async startCall ({state, dispatch}, {channel}) {
 			const {event} = await api.call('chat.send', {
@@ -269,26 +265,24 @@ export default {
 		'api::chat.read_pointers' ({state}, readPointers) {
 			for (const [channel, pointer] of Object.entries(readPointers)) {
 				Vue.set(state.readPointers, channel, pointer)
-				state.directMessageDesktopNotifications[state.channel]?.close()
+				// TODO passively close desktop notifications
 			}
 		},
-		'api::chat.notification_pointers' ({state, getters}, notificationPointers) {
+		'api::chat.notification_pointers' ({state, rootState, getters, dispatch}, notificationPointers) {
 			for (const [channelId, pointer] of Object.entries(notificationPointers)) {
 				const channel = state.joinedChannels.find(c => c.id === channelId)
 				if (!channel) continue
 				channel.notification_pointer = pointer
-				if (getters.isDirectMessageChannel(channel) && (state.channel !== channel.id) && !state.directMessageDesktopNotifications.some(n => n.channel.id === channel.id)) {
-					const title = getters.directMessageChannelName(channel)
-					const text = i18n.t('DirectMessage:notification-unread:text')
-					const close = () => {
-						Vue.delete(state.directMessageDesktopNotifications, channel.id)
-					}
-					const click = () => {
-						DMNotification.close()
-						router.push({name: 'channel', params: {channelId: channel.id}})
-					}
-					const DMNotification = notification(title, text, close, click)
-					Vue.set(state.directMessageDesktopNotifications, channel.id, DMNotification)
+				// TODO show desktop notification when window in focus but route is somewhere else?
+				// TODO show actual message
+				if (getters.isDirectMessageChannel(channel)) {
+					dispatch('notifications/createDesktopNotification', {
+						title: getters.directMessageChannelName(channel),
+						body: i18n.t('DirectMessage:notification-unread:text'),
+						avatar: channel.members.filter(user => user.id !== rootState.user.id)[0]?.profile?.avatar,
+						// TODO onClose?
+						onClick: () => router.push({name: 'channel', params: {channelId: channel.id}})
+					}, {root: true})
 				}
 			}
 		},
