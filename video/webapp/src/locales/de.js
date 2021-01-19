@@ -39,6 +39,7 @@ export default {
 	'Livestream:offline-message:text': 'Der Stream ist offline',
 	'Livestream:automuted-unmute:text': 'Klicken um Ton zu aktivieren',
 	'Livestream:captions-off:text': 'Aus',
+	'Livestream:default-source:text': 'Standard',
 	'profile/GreetingPrompt:step-display-name:heading': 'Hallo!',
 	'profile/GreetingPrompt:step-display-name:text': 'Bitte sage uns, wie du heißt. Wir zeigen deinen Namen anderen Teilnehmern, wenn du mit ihnen interagierst, zum Beispiel im Chat. Du musst nicht deinen echten Namen verwenden. Danach kannst du optional noch ein Profilbild auswählen.',
 	'profile/GreetingPrompt:gravatar-hint:text': 'Wenn du möchtest, unterstützen wir auch',
