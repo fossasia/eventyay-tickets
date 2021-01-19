@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`-` The statistics page didn't work for events with just a single submission type.
 - :release:`2.1.1 <2021-01-16>`
 - :release:`2.1.0 <2021-01-16>`
 - :bug:`1046` pretalx shipped an incorrect override settings file that broke email sending.

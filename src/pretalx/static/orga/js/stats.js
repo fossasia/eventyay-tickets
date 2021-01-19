@@ -171,7 +171,8 @@ const drawPieChart = (data, scope, type) => {
 
 }
 
-let chartTypes = ["state", "type"]
+let chartTypes = ["state"]
+if (Object.keys(dataMapping.types).length > 1) chartTypes.push("type")
 if (dataMapping.track) chartTypes.push("track")
 let submissionChartData = chartTypes.reduce(
   (result, item, index, array) => {
@@ -197,8 +198,8 @@ for (const [key, data] of Object.entries(submissionChartData)) {
 }
 
 
-const button = document.querySelector("#toggle-button")
-button.addEventListener("click", event => {
+const toggleButton = document.querySelector("#toggle-button")
+toggleButton.addEventListener("click", event => {
   charts.forEach(chart => chart.destroy())
   charts = []
   if (event.target.getAttribute("aria-pressed") === "true") {
