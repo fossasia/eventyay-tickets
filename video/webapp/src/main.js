@@ -55,7 +55,7 @@ store.dispatch('connect')
 
 // TODO properly time between minutes
 setInterval(() => store.commit('schedule/updateNow'), 30000)
-
+setInterval(() => store.dispatch('notifications/pollExternals'), 1000)
 window.__venueless__release = RELEASE
 
 window.addEventListener('beforeinstallprompt', function (event) {

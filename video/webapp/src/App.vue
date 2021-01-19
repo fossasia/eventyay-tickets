@@ -29,6 +29,7 @@
 		.disconnected-warning(v-if="!connected") {{ $t('App:disconnected-warning:text') }}
 		transition(name="prompt")
 			greeting-prompt(v-if="!user.profile.greeted")
+		.native-permission-blocker(v-if="askingPermission")
 	bunt-progress-circular(v-else-if="!fatalError", size="huge")
 	.fatal-error(v-if="fatalError") {{ fatalError.message }}
 </template>
@@ -57,6 +58,7 @@ export default {
 	},
 	computed: {
 		...mapState(['fatalConnectionError', 'fatalError', 'connected', 'world', 'rooms', 'user']),
+		...mapState('notifications', ['askingPermission']),
 		room () {
 			if (this.$route.name === 'home') return this.rooms?.[0]
 			return this.rooms?.find(room => room.id === this.$route.params.roomId)
@@ -92,13 +94,18 @@ export default {
 	mounted () {
 		this.windowHeight = window.innerHeight
 		window.addEventListener('resize', this.onResize)
+		window.addEventListener('focus', this.onFocus, true)
 	},
 	destroyed () {
 		window.removeEventListener('resize', this.onResize)
+		window.removeEventListener('focus', this.onFocus)
 	},
 	methods: {
 		onResize () {
 			this.windowHeight = window.innerHeight
+		},
+		onFocus () {
+			this.$store.dispatch('notifications/clearDesktopNotifications')
 		},
 		toggleSidebar () {
 			this.showSidebar = !this.showSidebar
@@ -201,6 +208,14 @@ export default {
 			font-family: monospace
 		.bunt-button
 			themed-button-primary('large')
+	.native-permission-blocker
+		position: fixed
+		top: 0
+		left: 0
+		width: 100vw
+		height: var(--vh100)
+		z-index: 2000
+		background-color: $clr-secondary-text-light
 	+below('l')
 		grid-template-columns: auto
 		grid-template-rows: 48px auto
