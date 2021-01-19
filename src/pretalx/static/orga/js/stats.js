@@ -172,7 +172,7 @@ const drawPieChart = (data, scope, type) => {
 }
 
 let chartTypes = ["state"]
-if (Object.keys(dataMapping.types).length > 1) chartTypes.push("type")
+if (dataMapping.type && (Object.keys(dataMapping.type).length > 1)) chartTypes.push("type")
 if (dataMapping.track) chartTypes.push("track")
 let submissionChartData = chartTypes.reduce(
   (result, item, index, array) => {
