@@ -34,7 +34,7 @@
 	.fatal-error(v-if="fatalError") {{ fatalError.message }}
 </template>
 <script>
-import { mapState, mapGetters } from 'vuex'
+import { mapState } from 'vuex'
 import { themeVariables } from 'theme'
 import AppBar from 'components/AppBar'
 import RoomsSidebar from 'components/RoomsSidebar'

@@ -1,5 +1,5 @@
 <template lang="pug">
-.c-contact-request-notification.ui-notification(v-if="showNotification")
+.c-contact-request-notification.ui-notification
 	bunt-icon-button#btn-close(@click="close") close
 	.details {{ $t('ContactRequest:notification:text') }} #[br] #[span.exhibitor {{ contactRequest.exhibitor.name }}]
 	.user
@@ -12,8 +12,6 @@
 <script>
 import Avatar from 'components/Avatar'
 import moment from 'moment'
-import notification from 'lib/notification'
-import { getIdenticonSvgUrl } from 'lib/identicon'
 
 export default {
 	components: { Avatar },
@@ -22,47 +20,15 @@ export default {
 	},
 	data () {
 		return {
-			showNotification: true,
-			lateStartGap: moment(this.contactRequest.timestamp).diff(moment(), 'seconds'),
-			desktopNotification: null
+			lateStartGap: moment(this.contactRequest.timestamp).diff(moment(), 'seconds')
 		}
-	},
-	computed: {},
-	created () {},
-	mounted () {
-		this.handleDesktopNotification()
-	},
-	destroyed () {
-		this.desktopNotification?.close()
 	},
 	methods: {
 		close () {
-			this.showNotification = false
-			this.desktopNotification?.close()
+			this.$store.dispatch('exhibition/dismissContactRequest', this.contactRequest)
 		},
 		accept () {
 			this.$store.dispatch('exhibition/acceptContactRequest', this.contactRequest)
-		},
-		handleDesktopNotification () {
-			const title = (this.contactRequest.user ? this.contactRequest.user.profile.display_name : '')
-			const text = this.$t('ContactRequest:notification:text') + ' ' + this.contactRequest.exhibitor.name
-			const img = this.getAvatar()
-			this.desktopNotification = notification(title, text, () => { this.close() }, () => { this.accept() }, img)
-		},
-		getAvatar () {
-			if (this.contactRequest.user.profile?.avatar?.url) {
-				return this.contactRequest.user.profile?.avatar?.url
-			} else {
-				const canvas = document.createElement('canvas')
-				canvas.height = 192
-				canvas.width = 192
-				const img = document.createElement('img')
-				img.src = getIdenticonSvgUrl(this.contactRequest.user.profile?.avatar?.identicon ?? this.contactRequest.user.profile?.identicon ?? this.contactRequest.user.id)
-				const ctx = canvas.getContext('2d')
-				// TODO use onload?
-				ctx.drawImage(img, 0, 0, 192, 192)
-				return canvas.toDataURL()
-			}
 		}
 	}
 }
