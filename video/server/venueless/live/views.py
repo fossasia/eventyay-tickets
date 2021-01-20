@@ -98,6 +98,7 @@ class AppView(View):
                         "locale": world.locale,
                         "dateLocale": world.config.get("dateLocale", "en-ie"),
                         "theme": world.config.get("theme", {}),
+                        "videoPlayer": world.config.get("videoPlayer", {}),
                         "mux": world.config.get("mux", {}),
                     }
                 )
