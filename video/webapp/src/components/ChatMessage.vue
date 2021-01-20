@@ -1,5 +1,5 @@
 <template lang="pug">
-.c-chat-message(:class="[mode, {selected, 'system-message': isSystemMessage, 'merge-with-previous-message': mergeWithPreviousMessage, 'merge-with-next-message': mergeWithNextMessage}]")
+.c-chat-message(:class="[mode, {selected, readonly, 'system-message': isSystemMessage, 'merge-with-previous-message': mergeWithPreviousMessage, 'merge-with-next-message': mergeWithNextMessage}]")
 	.avatar-column
 		avatar(v-if="!mergeWithPreviousMessage", :user="sender", :size="avatarSize", @click.native="showAvatarCard", ref="avatar")
 		.timestamp(v-if="mergeWithPreviousMessage") {{ shortTimestamp }}
@@ -43,13 +43,13 @@
 						span.users {{ reactionTooltip.usersString }}
 						|  reacted with
 						span.emoji-text  {{ getEmojiDataFromNative(reactionTooltip.emoji).short_names[0] }}
-		.actions
+		.actions(v-if="!readonly")
 			emoji-picker-button(@selected="addReaction", strategy="fixed", placement="bottom-end", :offset="[36, 3]", icon-style="plus")
 			menu-dropdown(v-if="$features.enabled('chat-moderation') && (hasPermission('room:chat.moderate') || message.sender === user.id)", v-model="selected", placement="bottom-end", :offset="[0, 3]")
 				template(v-slot:button="{toggle}")
 					bunt-icon-button(@click="toggle") dots-vertical
 				template(v-slot:menu)
-					.edit-message(v-if="message.sender === user.id", @click="startEditingMessage") {{ $t('ChatMessage:message-edit:label') }}
+					.edit-message(v-if="message.sender === user.id && message.content.type !== 'call'", @click="startEditingMessage") {{ $t('ChatMessage:message-edit:label') }}
 					.delete-message(@click="selected = false, showDeletePrompt = true") {{ $t('ChatMessage:message-delete:label') }}
 	template(v-else-if="message.event_type === 'channel.member'")
 		.system-content {{ sender.profile ? sender.profile.display_name : message.sender }} {{ message.content.membership === 'join' ? $t('ChatMessage:join-message:text') : $t('ChatMessage:leave-message:text') }}
@@ -57,14 +57,8 @@
 	prompt.delete-message-prompt(v-if="showDeletePrompt", @close="showDeletePrompt = false")
 		.prompt-content
 			h2 Delete this message?
-			.message
-				.avatar-column
-					avatar(:user="sender", :size="avatarSize")
-				.content-wrapper
-					.message-header
-						.display-name {{ senderDisplayName }}
-						.timestamp {{ timestamp }}
-					.content(v-html="content")
+			.message-to-delete-wrapper
+				chat-message(:message="message", mode="standalone", :readonly="true")
 			.actions
 				bunt-button#btn-cancel(@click="showDeletePrompt = false") cancel
 				bunt-button#btn-delete-message(@click="deleteMessage") {{ $t('ChatMessage:message-delete:label') }}
@@ -106,12 +100,17 @@ const generateHTML = function (input) {
 }
 
 export default {
+	name: 'ChatMessage',
 	components: { Avatar, ChatInput, ChatUserCard, EmojiPickerButton, MenuDropdown, Prompt },
 	props: {
 		message: Object,
 		previousMessage: Object,
 		nextMessage: Object,
-		mode: String
+		mode: String,
+		readonly: {
+			type: Boolean,
+			default: false
+		}
 	},
 	data () {
 		return {
@@ -241,6 +240,8 @@ export default {
 	box-sizing: border-box
 	&:hover, .selected
 		background-color: $clr-grey-100
+	&.readonly
+		pointer-events: none
 	.timestamp
 		font-size: 11px
 		color: $clr-secondary-text-light
@@ -434,10 +435,10 @@ export default {
 			padding: 16px
 			display: flex
 			flex-direction: column
-		.message
+		.message-to-delete-wrapper
 			border: border-separator()
+			border-radius: 4px
 			padding: 8px
-			display: flex
 		.actions
 			display: flex
 			align-self: flex-end
