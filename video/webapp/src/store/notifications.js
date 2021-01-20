@@ -8,10 +8,12 @@ const loadSettings = function () {
 	} catch (e) {}
 }
 
+const notificationsSupported = typeof Notification !== 'undefined' // false on mobile safari
+
 export default {
 	namespaced: true,
 	state: {
-		permission: Notification.permission,
+		permission: notificationsSupported && Notification.permission,
 		permissionPromptDismissed: !!localStorage.notificationPermissionPromptDismissed,
 		askingPermission: false,
 		settings: loadSettings() || {
@@ -22,7 +24,7 @@ export default {
 	},
 	getters: {
 		showNotificationPermissionPrompt (state) {
-			return !state.permissionPromptDismissed && state.permission === 'default'
+			return notificationsSupported && !state.permissionPromptDismissed && state.permission === 'default'
 		},
 		shouldNotify (state) {
 			return state.permission === 'granted' && !!state.settings.notify
@@ -34,7 +36,7 @@ export default {
 		// sets state from browser permission and localStorage
 		// TODO prevent switching of settings at app load
 		pollExternals ({state, dispatch}) {
-			state.permission = Notification.permission
+			state.permission = notificationsSupported && Notification.permission
 			state.permissionPromptDismissed = !!localStorage.notificationPermissionPromptDismissed
 			const settings = loadSettings()
 			if (settings) {
@@ -42,6 +44,7 @@ export default {
 			}
 		},
 		async askForPermission ({state, dispatch}) {
+			if (!notificationsSupported) return
 			state.askingPermission = true
 			let permission
 			// safari only has callback
