@@ -136,7 +136,9 @@ nav.toolbar
 0-100: page content
 100: top navbar (mobile)
 101: background media source
-102-799: FREE
+102-599: FREE
+600: in-app notifications
+699-799: FREE
 800-899: blocking popovers (emoji picker, chat user card)
 900-999: expanded rooms sidebar (mobile)
 1000+:  / full page overlays / prompts
