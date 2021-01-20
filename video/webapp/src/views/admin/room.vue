@@ -53,6 +53,11 @@
 						bunt-input(v-model="val.config.hls_url", label="HLS URL", name="url")
 						upload-url-input(v-model="val.config.streamOfflineImage", label="Stream offline image", name="streamOfflineImage")
 						bunt-input(v-if="$features.enabled('muxdata')", v-model="val.config.mux_env_key", label="MUX data environment key", name="muxenvkey")
+						.alternative(v-for="(a, i) in (val.config.alternatives || [])")
+							bunt-input(v-model="a.label", label="Label", name="label")
+							bunt-input(v-model="a.hls_url", label="HLS URL", name="hls_url")
+							bunt-icon-button(@click="val.config.alternatives.splice(i, 1)") delete-outline
+						bunt-button(@click="$set(val.config, 'alternatives', val.config.alternatives || []); val.config.alternatives.push({label: '', hls_url: ''})") Add alternative stream
 					div(v-else-if="val.type == 'livestream.youtube'")
 						bunt-input(v-model="val.config.ytid", label="YouTube Video ID", name="ytid")
 					div(v-else-if="val.type == 'question'")
@@ -289,6 +294,12 @@ export default {
 				resize: vertical
 				min-height: 250px
 				padding: 0 8px
+		.alternative
+			display: flex
+			flex-direction: row
+			align-items: center
+			.bunt-input
+				flex-grow: 1
 	.add-module
 		display flex
 		flex-direction row

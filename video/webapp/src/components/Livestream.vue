@@ -1,33 +1,41 @@
 <template lang="pug">
-.c-livestream(:class="[`size-${size}`, {playing, buffering, seeking, automuted, muted, 'choosing-level': showLevelChooser}]", v-resize-observer="onResize")
+.c-livestream(:class="[`size-${size}`, {playing, buffering, seeking, automuted, muted, 'is-offline': offline, 'choosing-level': showLevelChooser, 'choosing-captions': showCaptionsChooser, 'choosing-source': showSourceChooser}]", v-resize-observer="onResize")
 	.video-container(ref="videocontainer")
 		video(ref="video", style="width:100%;height:100%", @playing="playingVideo", @pause="pausingVideo", @volumechange="onVolumechange")
-		.controls(@click="toggleVideo")
-			.automuted-unmute(v-if="automuted")
+		.offline(v-if="offline")
+			img.offline-image(v-if="module.config.streamOfflineImage || theme.streamOfflineImage", :src="module.config.streamOfflineImage || theme.streamOfflineImage")
+			.offline-message(v-else) {{ $t('Livestream:offline-message:text') }}
+		.controls(v-if="!offline || module.config.alternatives", @click="toggleVideo")
+			.automuted-unmute(v-if="!offline && automuted")
 				span.mdi.mdi-volume-off
 				span {{ $t('Livestream:automuted-unmute:text') }}
-			.big-button.mdi.mdi-play(v-if="!playing")
+			.big-button.mdi.mdi-play(v-if="!offline && !playing")
 			bunt-progress-circular(v-if="(buffering || seeking) && !offline", size="huge")
 			.bottom-controls(@click.stop="")
-				.progress-hover(v-if="seekable", ref="progress", @pointerdown="onProgressPointerdown", @pointermove="onProgressPointermove", @pointerup="onProgressPointerup", @pointercancel="onProgressPointerup", :style="progressStyles.play")
+				.progress-hover(v-if="!offline && seekable", ref="progress", @pointerdown="onProgressPointerdown", @pointermove="onProgressPointermove", @pointerup="onProgressPointerup", @pointercancel="onProgressPointerup", :style="progressStyles.play")
 					.progress
 						.load-progress(v-for="load of progressStyles.load", :style="load")
 						.play-progress
 					.progress-indicator
 					.time(:style="{'--hovered-progress': hoveredProgress}") {{ formatTime(hoveredTime) }}
-				bunt-icon-button(@click="toggleVideo") {{ playing ? 'pause' : 'play' }}
-				.live-indicator(v-if="isLive") live
+				bunt-icon-button(v-if="!offline", @click="toggleVideo") {{ playing ? 'pause' : 'play' }}
+				.live-indicator(v-if="!offline && isLive") live
 				.buffer
-				bunt-icon-button(@click="showLevelChooser = !showLevelChooser") {{ levelIcon }}
-				bunt-icon-button(@click="toggleVolume") {{ muted || volume === 0 ? 'volume_off' : 'volume_high' }}
-				input.volume-slider(type="range", step="any", min="0", max="1", aria-label="Volume", :value="volume", @input="onVolumeSlider", :style="{'--volume': volume}")
-				bunt-icon-button(@click="toggleFullscreen") {{ fullscreen ? 'fullscreen-exit' : 'fullscreen' }}
+				bunt-icon-button(v-if="module.config.alternatives", @click="showSourceChooser = !showSourceChooser") movie
+				bunt-icon-button(v-if="!offline && textTracks.length > 0", @click="showCaptionsChooser = !showCaptionsChooser") {{ textTracks.some(t => t.mode === 'showing') ? 'closed-caption' : 'closed-caption-outline' }}
+				bunt-icon-button(v-if="!offline", @click="showLevelChooser = !showLevelChooser") {{ levelIcon }}
+				bunt-icon-button(v-if="!offline", @click="toggleVolume") {{ muted || volume === 0 ? 'volume_off' : 'volume_high' }}
+				input.volume-slider(v-if="!offline", type="range", step="any", min="0", max="1", aria-label="Volume", :value="volume", @input="onVolumeSlider", :style="{'--volume': volume}")
+				bunt-icon-button(v-if="!offline", @click="toggleFullscreen") {{ fullscreen ? 'fullscreen-exit' : 'fullscreen' }}
+			.source-chooser(v-if="showSourceChooser", @click.stop="")
+				.source(@click="chooseSource(null)", :class="{chosen: !chosenAlternative}") {{ $t('Livestream:default-source:text') }}
+				.source(v-for="a in module.config.alternatives", :class="{chosen: a.label === chosenAlternative}", @click="chooseSource(a)") {{ a.label }}
+			.caption-chooser(v-if="showCaptionsChooser", @click.stop="")
+				.track(@click="chooseTextTrack(null)", :class="{chosen: !textTracks.some(t => t.mode === 'showing')}") {{ $t('Livestream:captions-off:text') }}
+				.track(v-for="track of textTracks", :class="{chosen: track.mode === 'showing'}", @click="chooseTextTrack(track)") {{ track.label }}
 			.level-chooser(v-if="showLevelChooser", @click.stop="")
 				.level(@click="chooseLevel(null)", :class="{chosen: !manualLevel}") Auto
 				.level(v-for="level of levels", :class="{chosen: level === manualLevel, auto: level === autoLevel}", @click="chooseLevel(level)") {{ level.height + 'p' }}
-	.offline(v-if="offline")
-		img.offline-image(v-if="module.config.streamOfflineImage || theme.streamOfflineImage", :src="module.config.streamOfflineImage || theme.streamOfflineImage")
-		.offline-message(v-else) {{ $t('Livestream:offline-message:text') }}
 </template>
 <script>
 // TODO
@@ -94,7 +102,13 @@ export default {
 			levels: null,
 			autoLevel: null,
 			manualLevel: null,
-			showLevelChooser: false
+			showLevelChooser: false,
+			// Captions
+			textTracks: [],
+			showCaptionsChooser: false,
+			// Alternative sources
+			showSourceChooser: false,
+			chosenAlternative: null
 		}
 	},
 	computed: {
@@ -121,10 +135,24 @@ export default {
 			if (!level || level.height < 480) return 'quality-low'
 			if (level.height < 720) return 'quality-medium'
 			return 'quality-high'
-		}
+		},
+		hlsUrl () {
+			if (this.chosenAlternative) {
+				const alternative = (this.module.config.alternatives || []).find((a) => a.label === this.chosenAlternative)
+				if (alternative) {
+					return alternative.hls_url
+				}
+			}
+			return this.module.config.hls_url
+		},
 	},
 	watch: {
-		'module.config.hls_url': 'initializePlayer'
+		hlsUrl: 'initializePlayer',
+	},
+	created () {
+		if (localStorage[`livestream.native.alternative:${this.room.id}`]) {
+			this.chosenAlternative = localStorage[`livestream.native.alternative:${this.room.id}`]
+		}
 	},
 	mounted () {
 		document.addEventListener('fullscreenchange', this.onFullscreenchange)
@@ -135,11 +163,17 @@ export default {
 		this.$refs.video.addEventListener('seeking', this.onSeeking)
 		this.$refs.video.addEventListener('seeked', this.onSeeked)
 		this.$refs.video.addEventListener('ended', this.onEnded)
+		this.$refs.video.textTracks.addEventListener('addtrack', this.onTextTracksChanged)
+		this.$refs.video.textTracks.addEventListener('change', this.onTextTracksChanged)
+		this.$refs.video.textTracks.addEventListener('removetrack', this.onTextTracksChanged)
 		this.initializePlayer()
 	},
 	beforeDestroy () {
 		this.player?.destroy()
 		document.removeEventListener('fullscreenchange', this.onFullscreenchange)
+		this.$refs.video.textTracks.removeEventListener('addtrack', this.onTextTracksChanged)
+		this.$refs.video.textTracks.removeEventListener('change', this.onTextTracksChanged)
+		this.$refs.video.textTracks.removeEventListener('removetrack', this.onTextTracksChanged)
 	},
 	methods: {
 		initializePlayer () {
@@ -166,7 +200,7 @@ export default {
 				player.attachMedia(video)
 				this.player = player
 				const load = () => {
-					player.loadSource(this.module.config.hls_url)
+					player.loadSource(this.hlsUrl)
 				}
 				player.on(Hls.Events.MEDIA_ATTACHED, () => {
 					load()
@@ -213,7 +247,7 @@ export default {
 					this.buffering = false
 				})
 			} else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-				video.src = this.module.config.hls_url
+				video.src = this.hlsUrl
 				// TODO probably explodes on re-init
 				// TODO doesn't seem like the buffer ring gets hidden?
 				video.addEventListener('loadedmetadata', function () {
@@ -231,7 +265,7 @@ export default {
 						// Metadata
 						player_name: 'Livestream Module',
 						player_init_time: Date.now(),
-						video_id: this.module.config.hls_url,
+						video_id: this.hlsUrl,
 						video_title: this.room.name,
 						video_stream_type: 'live'
 					}
@@ -239,6 +273,7 @@ export default {
 			}
 		},
 		toggleVideo () {
+			if (this.offline) return
 			if (this.automuted) {
 				this.toggleVolume()
 				if (!this.$refs.video.paused) return
@@ -256,6 +291,26 @@ export default {
 			this.player.loadLevel = level?.index ?? -1
 			this.showLevelChooser = false
 		},
+		chooseSource (source) {
+			this.chosenAlternative = source?.label
+			if (source) {
+				localStorage[`livestream.native.alternative:${this.room.id}`] = source?.label
+			} else {
+				localStorage.removeItem(`livestream.native.alternative:${this.room.id}`)
+			}
+			this.showSourceChooser = false
+		},
+		chooseTextTrack (track) {
+			this.$refs.video.textTracks.forEach((t) => {
+				if (track !== null && t.label === track.label) {
+					t.mode = 'showing'
+				} else {
+					t.mode = 'hidden'
+				}
+			})
+			this.onTextTracksChanged()
+			this.showCaptionsChooser = false
+		},
 		toggleVolume () {
 			this.automuted = false
 			this.$refs.video.muted = !this.muted
@@ -270,6 +325,19 @@ export default {
 			} else {
 				this.$refs.videocontainer.requestFullscreen()
 			}
+		},
+		onTextTracksChanged () {
+			const newList = []
+			this.$refs.video.textTracks.forEach((t) => {
+				if (t.kind === 'captions') {
+					newList.push({
+						label: t.label,
+						language: t.language,
+						mode: t.mode
+					})
+				}
+			})
+			this.textTracks = newList
 		},
 		onVolumechange () {
 			if (!this.$refs.video) return
@@ -539,7 +607,7 @@ export default {
 					thumb()
 				&::-moz-range-thumb
 					thumb()
-		.level-chooser
+		.level-chooser, .caption-chooser, .source-chooser
 			position: absolute
 			bottom: 52px
 			right: 200px
@@ -547,7 +615,15 @@ export default {
 			flex-direction: column
 			width: 92px
 			background-color: $clr-secondary-text-light
-			.level
+			&.caption-chooser
+				right: 242px
+			&.source-chooser
+				right: 242px
+				text-align: right
+				width: auto
+				.source
+					padding-left: 32px
+			.level, .track, .source
 				position: relative
 				cursor: pointer
 				flex: none
@@ -572,9 +648,11 @@ export default {
 					background-color: rgba(255,255,255,.2)
 	.shaka-controls-button-panel > .material-icons
 		font-size: 24px
-	&:hover, &:not(.playing), &.buffering, &.seeking, &.automuted, &.muted, &.choosing-level
+	&:hover, &:not(.playing), &.buffering, &.seeking, &.automuted, &.muted, &.choosing-level, &.choosing-captions, &.choosing-source
 		.controls, .mdi
 			opacity: 1
+	&.is-offline .controls .source-chooser
+		right: 16px
 	&.size-tiny
 		height: 48px
 		width: 86px // TODO total guesstimate
@@ -591,7 +669,6 @@ export default {
 		justify-content: center
 		align-items: center
 		background-color: $clr-blue-grey-200
-		z-index: 60
 		.offline-message
 			font-size: 36px
 		.offline-image
