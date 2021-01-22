@@ -36,19 +36,21 @@ class AvailabilitiesFormMixin(forms.Form):
         else:
             availabilities = []
 
-        return json.dumps(
-            {
-                "availabilities": [a for a in availabilities if is_valid(a)],
-                "event": {
-                    "timezone": event.timezone,
-                    "date_from": str(event.date_from),
-                    "date_to": str(event.date_to),
-                },
-            }
-        )
+        result = {
+            "availabilities": [a for a in availabilities if is_valid(a)],
+            "event": {
+                "timezone": event.timezone,
+                "date_from": str(event.date_from),
+                "date_to": str(event.date_to),
+            },
+        }
+        if self.resolution:
+            result["resolution"] = self.resolution
+        return json.dumps(result)
 
     def __init__(self, *args, event=None, **kwargs):
         self.event = event
+        self.resolution = kwargs.pop("resolution", None)
         initial = kwargs.pop("initial", dict())
         initial["availabilities"] = self._serialize(self.event, kwargs["instance"])
         if not isinstance(self, forms.BaseModelForm):
@@ -180,6 +182,7 @@ class AvailabilitiesFormMixin(forms.Form):
 class RoomForm(AvailabilitiesFormMixin, ReadOnlyFlag, I18nModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.resolution = "00:15:00"
         self.fields["name"].widget.attrs["placeholder"] = _("Room I")
         self.fields["description"].widget.attrs["placeholder"] = _(
             "Description, e.g.: Our main meeting place, Room I, enter from the right."
