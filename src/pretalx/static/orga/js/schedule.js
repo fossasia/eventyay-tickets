@@ -456,7 +456,7 @@ var app = new Vue({
         <div id='unassigned-talks' v-if="showUnassigned">
           <div class="input-group">
             <div class="input-group-prepend input-group-text"><i class="fa fa-search"></i></div>
-            <input type="text" class="form-control" placeholder="Search..." v-model="search">
+            <input type="text" class="form-control" placeholder="title track:foo type:baz" v-model="search">
           </div>
           <div id="unassigned-container" ref="unassigned">
               <talk v-for="talk in filteredTalks" v-if="!talk.room" :talk="talk" :key="talk.id"></talk>
@@ -512,10 +512,30 @@ var app = new Vue({
     },
     filteredTalks() {
       if (!this.talks) return []
-      const search = this.search.toLowerCase()
+      const searchTerms = this.search
+          .split(" ")
+          .filter(d => d.length)
+          .map(d => d.toLowerCase().trim())
+
+      if (!searchTerms.length) return this.talks
+
       return this.talks.filter(talk => {
         const speakers = talk.speakers || []
-        return talk.title.toLowerCase().includes(search) || speakers.some(speaker => speaker.name.toLowerCase().includes(search))
+        const title = talk.title.toLowerCase()
+        const submissionType = talk.submission_type.toLowerCase()
+        const track = talk.track ? talk.track.name.toLowerCase() : ""
+        return searchTerms.some(term => {
+          if (track && term.startsWith("track:")) {
+            if (track.includes(term.substring(6))) return true
+          } else if (term.startsWith("type:")) {
+            if (submissionType.includes(term.substring(5))) return true
+          } else {
+            if (title.includes(term) || speakers.some(speaker => speaker.name.toLowerCase().includes(term))) {
+              return true
+            }
+          }
+          return false
+        })
       })
     },
     eventSlug() {

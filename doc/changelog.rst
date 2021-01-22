@@ -3,6 +3,8 @@
 Release Notes
 =============
 
+- :feature:`735` You can now filter talks by track and type in the schedule editor.
+- :feature:`-` Room availabilities are now more fine-grained, you can set them on a 15-minute basis instead of 30-minutes as before.
 - :bug:`-` The statistics page didn't work for events with just a single submission type.
 - :release:`2.1.1 <2021-01-16>`
 - :release:`2.1.0 <2021-01-16>`
