@@ -15,7 +15,7 @@ class WebSocketClient extends EventEmitter {
 	constructor (url, config) {
 		super()
 		const defaultConfig = {
-			pingInterval: 5000,
+			pingInterval: 10000,
 			joinTimeout: 60000,
 			reconnectDelay: 1000,
 			token: null,
@@ -37,7 +37,7 @@ class WebSocketClient extends EventEmitter {
 
 	call (name, data, opts) {
 		const options = {
-			timeout: 5000
+			timeout: 15000
 		}
 		Object.assign(options, opts)
 		const { id, promise } = this._createRequest()
