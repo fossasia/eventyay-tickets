@@ -91,8 +91,8 @@ iframe.bigbluebutton
 		height: calc(var(--vh100) - 56px - 48px)
 		width: calc(100vw - var(--chatbar-width))
 	+below('m')
-		bottom: calc(var(--vh100) - 48px - 56px - 40vh)
+		bottom: calc(var(--vh100) - 48px - 56px - var(--mobile-media-height))
 		right: 0
 		width: 100vw
-		height: 40vh
+		height: var(--mobile-media-height)
 </style>

@@ -73,6 +73,7 @@ export default {
 
 			return {
 				'--chatbar-width': hasChatbar ? '380px' : '0px',
+				'--mobile-media-height': hasChatbar ? '40vh' : (hasStageTools ? 'calc(100vh - 48px - 2 * 56px)' : 'calc(100vh - 48px - 56px)'),
 				'--has-stagetools': hasStageTools ? '1' : '0',
 			}
 		},

@@ -229,7 +229,7 @@ export default {
 			width: 100%
 			flex: auto
 		.mediasource-placeholder
-			height: 40vh
+			height: var(--mobile-media-height)
 			flex: none
 		&:not(.standalone-chat)
 			.c-chat
