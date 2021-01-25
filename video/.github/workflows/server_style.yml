@@ -62,8 +62,8 @@ jobs:
         with:
           python-version: 3.8
       - name: Install Python dependencies
-        run: pip3 install -U pip wheel setuptools && pip3 install -U "isort==4.*"
+        run: pip3 install -U pip wheel setuptools && pip3 install -U "isort==5.*"
         working-directory: ./server
       - name: Run checks
-        run: isort -rc -c venueless tests
+        run: isort -c venueless tests
         working-directory: ./server
