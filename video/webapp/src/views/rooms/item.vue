@@ -18,6 +18,7 @@
 		roulette(v-else-if="modules['networking.roulette'] && $features.enabled('roulette')", :module="modules['networking.roulette']", :room="room")
 		landing-page(v-else-if="modules['page.landing']", :module="modules['page.landing']")
 		markdown-page(v-else-if="modules['page.markdown']", :module="modules['page.markdown']")
+		static-page(v-else-if="modules['page.static']", :module="modules['page.static']")
 		UserListPage(v-else-if="modules['page.userlist']", :module="modules['page.userlist']")
 		iframe-page(v-else-if="modules['page.iframe']", :module="modules['page.iframe']")
 		exhibition(v-else-if="modules['exhibition.native']", :room="room")
@@ -42,6 +43,7 @@ import Chat from 'components/Chat'
 import Livestream from 'components/Livestream'
 import LandingPage from 'components/LandingPage'
 import MarkdownPage from 'components/MarkdownPage'
+import StaticPage from 'components/StaticPage'
 import IframePage from 'components/IframePage'
 import Exhibition from 'components/Exhibition'
 import ReactionsBar from 'components/ReactionsBar'
@@ -53,7 +55,7 @@ import Questions from 'components/Questions'
 
 export default {
 	name: 'Room',
-	components: { EditRoomSchedule, Chat, Exhibition, Livestream, LandingPage, MarkdownPage, IframePage, ReactionsBar, ReactionsOverlay, RecordingsPrompt, UserListPage, Roulette, Questions },
+	components: { EditRoomSchedule, Chat, Exhibition, Livestream, LandingPage, MarkdownPage, StaticPage, IframePage, ReactionsBar, ReactionsOverlay, RecordingsPrompt, UserListPage, Roulette, Questions },
 	props: {
 		roomId: String
 	},

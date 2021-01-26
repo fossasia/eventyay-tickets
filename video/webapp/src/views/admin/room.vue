@@ -39,6 +39,8 @@
 				.module(v-for="(val, index) in config.module_config")
 					h4 {{ val.type }}
 						bunt-icon-button(@click="remove_module(val.type)") delete-outline
+					div(v-if="val.type == 'page.static'")
+						rich-text-editor(v-model="val.config.content")
 					div(v-if="val.type == 'page.markdown'")
 						bunt-input-outline-container(label="Content")
 							textarea(slot-scope="{focus, blur}", @focus="focus", @blur="blur", v-model="val.config.content")
@@ -102,11 +104,12 @@
 import api from 'lib/api'
 import Prompt from 'components/Prompt'
 import UploadUrlInput from 'components/config/UploadUrlInput'
+import RichTextEditor from 'components/RichTextEditor'
 import { required, integer } from 'vuelidate/lib/validators'
 
 export default {
 	name: 'AdminRoom',
-	components: { Prompt, UploadUrlInput },
+	components: { Prompt, RichTextEditor, UploadUrlInput },
 	props: {
 		editRoomId: String
 	},
@@ -126,7 +129,8 @@ export default {
 		unusedTypes () {
 			const usedTypes = this.config.module_config.map((m) => m.type)
 			const knownTypes = [
-				'page.markdown',
+				// 'page.markdown', - deprecated, new rooms should use page.static
+				'page.static',
 				'page.iframe',
 				'page.landing',
 				'page.userlist',
