@@ -5,7 +5,8 @@ scrollbars.c-exhibitor(y)
 			img.banner(:src="exhibitor.banner_detail", v-if="exhibitor.banner_detail && !bannerIsVideo")
 			.iframe-banner(v-else-if="exhibitor.banner_detail && bannerIsVideo")
 				iframe(:src="bannerVideoSource", allowfullscreen, allow="fullscreen")
-			markdown-content.text(:markdown="exhibitor.text")
+			markdown-content.text(v-if="exhibitor.text_legacy", :markdown="exhibitor.text_legacy")
+			rich-text-content.text(v-else, :content="exhibitor.text_content")
 			.downloads(v-if="downloadLinks.length > 0")
 				h2 {{ $t("Exhibitor:downloads-headline:text") }}
 				a.download(v-for="link in downloadLinks", :href="link.url", target="_blank")
@@ -53,10 +54,11 @@ import Avatar from 'components/Avatar'
 import ContactExhibitorPrompt from 'components/ContactExhibitorPrompt'
 import ChatUserCard from 'components/ChatUserCard'
 import MarkdownContent from 'components/MarkdownContent'
+import RichTextContent from 'components/RichTextContent'
 import { createPopper } from '@popperjs/core'
 
 export default {
-	components: { Avatar, ChatUserCard, ContactExhibitorPrompt, MarkdownContent },
+	components: { Avatar, ChatUserCard, ContactExhibitorPrompt, MarkdownContent, RichTextContent },
 	props: {
 		exhibitorId: String
 	},

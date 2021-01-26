@@ -52,7 +52,8 @@ def import_config(data):
         exhibitor.tagline = exhibitor_config.pop("tagline")
         exhibitor.short_text = exhibitor_config.pop("short_text")
         exhibitor.logo = exhibitor_config.pop("logo")
-        exhibitor.text = exhibitor_config.pop("text")
+        exhibitor.text_legacy = exhibitor_config.pop("text")
+        exhibitor.text_content = exhibitor_config.pop("text_content", [])
         exhibitor.size = exhibitor_config.pop("size")
         exhibitor.sorting_priority = i
         exhibitor.save()

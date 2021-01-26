@@ -11,8 +11,9 @@
 			bunt-input(v-model="exhibitor.name", :label="$t('Exhibitors:name:label')", name="name", :validation="$v.exhibitor.name")
 			bunt-input(v-model="exhibitor.tagline", :label="$t('Exhibitors:tagline:label')", name="tagline", :validation="$v.exhibitor.tagline")
 			bunt-input(v-model="exhibitor.short_text", :label="$t('Exhibitors:short-text:label')", name="shortText", :validation="$v.exhibitor.shortText")
-			bunt-input-outline-container(:label="$t('Exhibitors:text:label')")
-				textarea(slot-scope="{focus, blur}", @focus="focus", @blur="blur", v-model="exhibitor.text")
+			bunt-input-outline-container(v-if="exhibitor.text_legacy", :label="$t('Exhibitors:text:label')")
+				textarea(slot-scope="{focus, blur}", @focus="focus", @blur="blur", v-model="exhibitor.text_legacy")
+			rich-text-editor(v-else, v-model="exhibitor.text_content")
 			upload-url-input(v-model="exhibitor.logo", :label="$t('Exhibitors:logo:label')", name="logo", :validation="$v.exhibitor.logo")
 			upload-url-input(v-model="exhibitor.banner_list", :label="$t('Exhibitors:banner-list:label')", name="bannerList", :validation="$v.exhibitor.banner_list")
 			upload-url-input(v-model="exhibitor.banner_detail", :label="$t('Exhibitors:banner-detail:label')", name="bannerDetail", :validation="$v.exhibitor.banner_detail")
@@ -132,11 +133,12 @@ import UploadUrlInput from 'components/config/UploadUrlInput'
 import { required, maxLength } from 'buntpapier/src/vuelidate/validators'
 import { helpers } from 'vuelidate/lib/validators'
 import { withParams } from 'vuelidate/lib/validators/common'
+import RichTextEditor from 'components/RichTextEditor'
 
 const absrelurl = (message) => withParams({message: message}, value => helpers.regex('absrelurl', /^(https?:\/\/|mailto:|\/)[^ ]+$/)(value))
 
 export default {
-	components: { Avatar, Prompt, UploadUrlInput, UserSelect },
+	components: { Avatar, Prompt, UploadUrlInput, UserSelect, RichTextEditor },
 	props: {
 		exhibitorId: String
 	},
@@ -370,7 +372,8 @@ export default {
 				name: this.exhibitor.name,
 				tagline: this.exhibitor.tagline,
 				short_text: this.exhibitor.short_text,
-				text: this.exhibitor.text,
+				text_legacy: this.exhibitor.text_legacy || null,
+				text_content: this.exhibitor.text_content,
 				logo: this.exhibitor.logo,
 				banner_list: this.exhibitor.banner_list,
 				banner_detail: this.exhibitor.banner_detail,

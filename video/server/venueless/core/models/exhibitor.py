@@ -3,6 +3,10 @@ import uuid
 from django.db import models
 
 
+def default_text():
+    return []
+
+
 class Exhibitor(models.Model):
     class Sizes(models.TextChoices):
         S = "1x1"
@@ -17,7 +21,8 @@ class Exhibitor(models.Model):
     banner_list = models.URLField(null=True, blank=True)
     banner_detail = models.URLField(null=True, blank=True)
     contact_enabled = models.BooleanField(default=True)
-    text = models.TextField(null=True)
+    text_legacy = models.TextField(null=True)
+    text_content = models.JSONField(default=default_text)
     size = models.CharField(max_length=3, default=Sizes.S, choices=Sizes.choices)
     sorting_priority = models.IntegerField(default=0)
     room = models.ForeignKey(
@@ -65,7 +70,8 @@ class Exhibitor(models.Model):
             banner_list=self.banner_list,
             banner_detail=self.banner_detail,
             contact_enabled=self.contact_enabled,
-            text=self.text,
+            text_legacy=self.text_legacy,
+            text_content=self.text_content,
             short_text=self.short_text,
             size=self.size,
             sorting_priority=self.sorting_priority,

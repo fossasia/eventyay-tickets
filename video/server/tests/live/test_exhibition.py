@@ -119,7 +119,8 @@ async def test_get(world, exhibition_room):
                 "banner_list": None,
                 "banner_detail": None,
                 "contact_enabled": True,
-                "text": "# Wir liefern wovon andere nur reden\n\nHallo!\nDas ist ein Markdowntext!",
+                "text_legacy": "# Wir liefern wovon andere nur reden\n\nHallo!\nDas ist ein Markdowntext!",
+                "text_content": [],
                 "short_text": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod "
                 "tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero "
                 "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea tak",
@@ -154,7 +155,8 @@ async def test_get(world, exhibition_room):
                 "banner_list": None,
                 "banner_detail": None,
                 "contact_enabled": True,
-                "text": "# Gastro und mehr\n\nVon Apfel bis Zebra, wir liefern!",
+                "text_legacy": "# Gastro und mehr\n\nVon Apfel bis Zebra, wir liefern!",
+                "text_content": [],
                 "short_text": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod "
                 "tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero "
                 "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea tak",
@@ -522,9 +524,10 @@ async def test_exhibition_patch(world, exhibition_room):
             "name": "Test Aussteller",
             "tagline": "Look at me: still talking, when there's science to do",
             "short_text": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.",
-            "text": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut "
+            "text_legacy": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut "
             "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea "
             "rebum.",
+            "text_content": [],
             "size": "3x3",
             "sorting_priority": 4,
             "logo": "https://via.placeholder.com/150",
