@@ -71,7 +71,7 @@ export default {
 	'preferences/index:btn-change-avatar:label': 'change avatar',
 	'preferences/index:btn-upload-save:label': 'save',
 	'preferences/index:notifications:header': 'Desktop Notifications',
-	'preferences/index:notifications:description': 'Get desktop notifications for direct messages, contact requests and more while venueless is running in the background.',
+	'preferences/index:notifications:description': 'Get desktop notifications for direct messages, contact requests and more while the event is running in the background.',
 	'preferences/index:btn-enable-desktop-notifications:label': 'Enable desktop notifications',
 	'preferences/index:switch-enable-desktop-notifications:label': 'Enable desktop notifications',
 	'preferences/index:switch-enable-desktop-notification-sound:label': 'Play notification sound',
@@ -249,5 +249,5 @@ export default {
 	'Question:moderation-menu:pin-question:label': 'pin',
 	'Question:moderation-menu:archive-question:label': 'archive',
 	'Question:moderation-menu:unarchive-question:label': 'unarchive',
-	'notifications/ContactRequestNotification:prompt': 'Do you want to get desktop notifications for direct messages, contact requests and more while venueless is running in the background?'
+	'notifications/ContactRequestNotification:prompt': 'Do you want to get desktop notifications for direct messages, contact requests and more while the event is running in the background?'
 }

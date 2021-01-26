@@ -215,4 +215,16 @@ export default {
 	'RichTextEditor:link:tooltip': 'Link',
 	'RichTextEditor:image:tooltip': 'Bild',
 	'RichTextEditor:clean:tooltip': 'Formatierung entfernen',
+	'Questions:deactivated-placeholder': 'Fragen sind derzeit deaktiviert.',
+	'Questions:ask-question-button:label': 'Frage stellen',
+	'Questions:asking-form:label': 'Stelle deine Frage',
+	'Questions:asking-form:submit': 'Frage abschicken',
+	'Questions:empty-placeholder': 'Bisher keine Fragen, möchtest du eine stellen?',
+	'Questions:moderator-actions:archive-all:label': 'Alle archivieren',
+	'Question:moderation-menu:approve-question:label': 'freischalten',
+	'Question:moderation-menu:delete-question:label': 'löschen',
+	'Question:moderation-menu:pin-question:label': 'anpinnen',
+	'Question:moderation-menu:archive-question:label': 'archivieren',
+	'Question:moderation-menu:unarchive-question:label': 'wiederherstellen',
+	'notifications/ContactRequestNotification:prompt': 'Möchtest du Desktop-Benachrichtigungen für Direktnachrichten, Kontaktanfragen und weitere Ereignisse bekommen, während die Veranstaltung im hintergrund läuft?'
 }
