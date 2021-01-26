@@ -12,11 +12,9 @@
 import api from 'lib/api'
 import { DEFAULT_COLORS, DEFAULT_LOGO } from '../../theme'
 import i18n from '../../i18n'
-import UploadUrlInput from './UploadUrlInput'
 import { required, integer } from 'vuelidate/lib/validators'
 
 export default {
-	components: { UploadUrlInput },
 	data () {
 		return {
 			traits: [],

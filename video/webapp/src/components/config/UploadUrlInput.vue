@@ -8,7 +8,6 @@
 
 </template>
 <script>
-import config from 'config'
 import api from 'lib/api'
 
 export default {
@@ -28,7 +27,6 @@ export default {
 			this.$emit('input', val)
 		},
 		upload () {
-			const data = new FormData()
 			var file = this.$refs.fileInput.files[0]
 
 			api.uploadFilePromise(file, file.name).then(data => {
