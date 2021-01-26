@@ -522,7 +522,7 @@ var app = new Vue({
       return this.talks.filter(talk => {
         const speakers = talk.speakers || []
         const title = talk.title.toLowerCase()
-        const submissionType = talk.submission_type.toLowerCase()
+        const submissionType = talk.submission_type ? talk.submission_type.toLowerCase() : ""
         const track = talk.track ? talk.track.name.toLowerCase() : ""
         return searchTerms.some(term => {
           if (track && term.startsWith("track:")) {
