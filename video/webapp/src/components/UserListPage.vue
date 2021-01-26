@@ -32,7 +32,7 @@
 					bunt-button.unblock(v-if="isBlocked", @click="userAction = 'unblock'") {{ $t('UserAction:action.unblock:label') }}
 					bunt-button.block(v-else, @click="userAction = 'block'") {{ $t('UserAction:action.block:label') }}
 				template(v-if="$features.enabled('chat-moderation') && hasPermission('room:chat.moderate') && selectedUser.id !== user.id")
-					.devider {{ $t('UserAction:moderataor.actions.devider:text') }}
+					.devider {{ $t('UserAction:moderator-actions:title') }}
 					.action-row
 						bunt-button.reactivate(v-if="selectedUser.moderation_state", @click="userAction = 'reactivate'")
 							| {{ selectedUser.moderation_state === 'banned' ? $t('UserAction:action.unban:label') : $t('UserAction:action.unsilence:label') }}

@@ -1,11 +1,11 @@
 <template lang="pug">
 .c-notification-permission-notification.ui-notification
 	bunt-icon-button#btn-close(@click="$store.dispatch('notifications/dismissPermissionPrompt')") close
-	h1 Desktop Notifications
-	p {{ $t('notifications/ContactRequestNotification:prompt') }}
+	h1 {{ $t('notifications/NotificationPermissionNotification:title') }}
+	p {{ $t('notifications/NotificationPermissionNotification:prompt') }}
 	.actions
-		bunt-button#btn-enable-desktop-notifications(@click="$store.dispatch('notifications/askForPermission')") enable notifications
-		bunt-button#btn-dismiss(@click="$store.dispatch('notifications/dismissPermissionPrompt')") not now
+		bunt-button#btn-enable-desktop-notifications(@click="$store.dispatch('notifications/askForPermission')") {{ $t('notifications/NotificationPermissionNotification:accept:label') }}
+		bunt-button#btn-dismiss(@click="$store.dispatch('notifications/dismissPermissionPrompt')") {{ $t('notifications/NotificationPermissionNotification:decline:label') }}
 </template>
 <script>
 export default {
@@ -32,6 +32,7 @@ export default {
 	.actions
 		display: flex
 		justify-content: space-between
+		flex-wrap: wrap
 	#btn-enable-desktop-notifications
 		themed-button-primary()
 	#btn-dismiss
