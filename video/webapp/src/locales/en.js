@@ -128,6 +128,7 @@ export default {
 	'notifications/NotificationPermissionNotification:accept:label': 'Enable notifications',
 	'notifications/NotificationPermissionNotification:decline:label': 'Not now',
 	'notifications/NotificationPermissionNotification:prompt': 'Do you want to get desktop notifications for direct messages, contact requests and more while the event is running in the background?',
+	'notifications/NotificationPermissionNotification:title': 'Desktop Notifications',
 	'preferences/index:btn-change-avatar:label': 'change avatar',
 	'preferences/index:btn-enable-desktop-notifications:label': 'Enable desktop notifications',
 	'preferences/index:btn-save:label': 'save',
