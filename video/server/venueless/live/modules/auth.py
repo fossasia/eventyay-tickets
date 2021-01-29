@@ -255,6 +255,7 @@ class AuthModule(BaseModule):
         search_fields = [
             field["id"]
             for field in filter(lambda f: f.get("searchable", False), profile_fields)
+            if "id" in field
         ]
         if len(body["search_term"]) < search_min_chars:
             result = {

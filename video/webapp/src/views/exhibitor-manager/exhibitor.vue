@@ -8,7 +8,7 @@
 			.actions
 				bunt-button.btn-save(@click="save", :loading="saving") {{ $t('Exhibitors:save:label') }}
 		.main-form(v-scrollbar.y="")
-			bunt-input(v-model="exhibitor.name", :label="$t('Exhibitors:name:label')", name="name", :validation="$v.exhibitor.name")
+			bunt-input(v-model="exhibitor.name", :disabled="!hasPermission('world:rooms.create.exhibition')", :label="$t('Exhibitors:name:label')", name="name", :validation="$v.exhibitor.name")
 			bunt-input(v-model="exhibitor.tagline", :label="$t('Exhibitors:tagline:label')", name="tagline", :validation="$v.exhibitor.tagline")
 			bunt-input(v-model="exhibitor.short_text", :label="$t('Exhibitors:short-text:label')", name="shortText", :validation="$v.exhibitor.shortText")
 			bunt-input-outline-container(v-if="exhibitor.text_legacy", :label="$t('Exhibitors:text:label')")
@@ -17,9 +17,9 @@
 			upload-url-input(v-model="exhibitor.logo", :label="$t('Exhibitors:logo:label')", name="logo", :validation="$v.exhibitor.logo")
 			upload-url-input(v-model="exhibitor.banner_list", :label="$t('Exhibitors:banner-list:label')", name="bannerList", :validation="$v.exhibitor.banner_list")
 			upload-url-input(v-model="exhibitor.banner_detail", :label="$t('Exhibitors:banner-detail:label')", name="bannerDetail", :validation="$v.exhibitor.banner_detail")
-			bunt-select(v-model="exhibitor.size", :label="$t('Exhibitors:size:label')", name="size", :options="sizes", :validation="$v.exhibitor.size")
-			bunt-input(v-model="exhibitor.sorting_priority", :label="$t('Exhibitors:sorting-priority:label')", name="sortingPriority", :validation="$v.exhibitor.sorting_priority")
-			bunt-select(v-model="exhibitor.room_id", :label="$t('Exhibitors:room:label')", name="room", :options="rooms", option-label="name", :validation="$v.exhibitor.room_id")
+			bunt-select(v-model="exhibitor.size", :disabled="!hasPermission('world:rooms.create.exhibition')", :label="$t('Exhibitors:size:label')", name="size", :options="sizes", :validation="$v.exhibitor.size")
+			bunt-input(v-model="exhibitor.sorting_priority", :disabled="!hasPermission('world:rooms.create.exhibition')", :label="$t('Exhibitors:sorting-priority:label')", name="sortingPriority", :validation="$v.exhibitor.sorting_priority")
+			bunt-select(v-model="exhibitor.room_id", :disabled="!hasPermission('world:rooms.create.exhibition')", :label="$t('Exhibitors:room:label')", name="room", :options="rooms", option-label="name", :validation="$v.exhibitor.room_id")
 			bunt-select(v-model="exhibitor.highlighted_room_id", :label="$t('Exhibitors:highlighted-room:label')", name="highlighted_room", :options="all_rooms_or_none", option-label="name", :validation="$v.exhibitor.highlighted_room_id")
 				template(slot-scope="{ option }")
 					.label {{ option.name }}
@@ -98,8 +98,8 @@
 							avatar(:user="user", :size="36")
 							span.display-name {{ user ? user.profile.display_name : '' }}
 						td.actions
-							bunt-icon-button(@click="remove_staff(index)") delete-outline
-				tfoot
+							bunt-icon-button(v-if="hasPermission('world:rooms.create.exhibition')", @click="remove_staff(index)") delete-outline
+				tfoot(v-if="hasPermission('world:rooms.create.exhibition')")
 					tr
 						td
 							bunt-button(@click="showStaffPrompt=true") {{ $t('Exhibitors:add-staff:text') }}
@@ -107,7 +107,7 @@
 						td
 			bunt-checkbox(v-model="exhibitor.contact_enabled", :label="$t('Exhibitors:contact-enabled:label')", name="contactEnabled")
 
-			.danger-zone
+			.danger-zone(v-if="hasPermission('world:rooms.create.exhibition')")
 				bunt-button.delete(icon="delete", @click="showDeletePrompt = true") {{ $t('DeletePrompt:button:label') }}
 				span {{ $t('DeletePrompt:button:warning') }}
 	bunt-progress-circular(v-else, size="huge")
@@ -134,6 +134,7 @@ import { required, maxLength } from 'buntpapier/src/vuelidate/validators'
 import { helpers } from 'vuelidate/lib/validators'
 import { withParams } from 'vuelidate/lib/validators/common'
 import RichTextEditor from 'components/RichTextEditor'
+import {mapGetters} from 'vuex'
 
 const absrelurl = (message) => withParams({message: message}, value => helpers.regex('absrelurl', /^(https?:\/\/|mailto:|\/)[^ ]+$/)(value))
 
@@ -156,6 +157,7 @@ export default {
 		}
 	},
 	computed: {
+		...mapGetters(['hasPermission']),
 		all_rooms_or_none () {
 			const r = [{name: '', id: ''}]
 			r.push(...this.$store.state.rooms)

@@ -31,9 +31,15 @@ class ExhibitionModule(BaseModule):
                 await self.contact_cancel({"contact_request": request["id"]})
 
     @command("list.all")
-    @require_world_permission(Permission.WORLD_ROOMS_CREATE_EXHIBITION)
     async def list_all(self, body):
-        exhibitors = await self.service.get_all_exhibitors()
+        if not await self.consumer.world.has_permission_async(
+            user=self.consumer.user, permission=Permission.WORLD_ROOMS_CREATE_EXHIBITION
+        ):
+            exhibitors = await self.service.get_all_exhibitors(
+                staff_includes_user=self.consumer.user
+            )
+        else:
+            exhibitors = await self.service.get_all_exhibitors()
         await self.consumer.send_success({"exhibitors": exhibitors})
 
     @command("delete")
@@ -56,13 +62,26 @@ class ExhibitionModule(BaseModule):
             await self.consumer.send_success({})
 
     @command("patch")
-    @require_world_permission(Permission.WORLD_ROOMS_CREATE_EXHIBITION)
     async def patch(self, body):
         staff = []
         if body["id"] != "":
             staff += await self.service.get_staff(exhibitor_id=body["id"])
+
+        if await self.consumer.world.has_permission_async(
+            user=self.consumer.user, permission=Permission.WORLD_ROOMS_CREATE_EXHIBITION
+        ):
+            exclude_fields = set()
+        elif self.consumer.user.id in staff:
+            exclude_fields = {"staff", "size", "name", "sorting_priority", "room_id"}
+        else:
+            await self.consumer.send_error("exhibition.not_staff_member")
+            return
+
         exhibitor = await self.service.patch(
-            exhibitor=body, world=self.consumer.world, by_user=self.consumer.user
+            exhibitor=body,
+            world=self.consumer.world,
+            by_user=self.consumer.user,
+            exclude_fields=exclude_fields,
         )
 
         for user in exhibitor["staff"]:

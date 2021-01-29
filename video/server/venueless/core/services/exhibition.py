@@ -91,8 +91,13 @@ class ExhibitionService:
         self.world = world
 
     @database_sync_to_async
-    def get_all_exhibitors(self):
+    def get_all_exhibitors(self, staff_includes_user=None):
         qs = Exhibitor.objects.filter(world__id=self.world.pk).order_by("name")
+
+        if staff_includes_user:
+            qs = qs.filter(
+                staff__user=staff_includes_user,
+            )
 
         return [
             dict(
@@ -165,14 +170,9 @@ class ExhibitionService:
 
     @database_sync_to_async
     @atomic
-    def patch(self, exhibitor, world, by_user):
-        room = get_room_by_id(self.world.pk, exhibitor["room_id"])
-        if not room:
-            return None
-
+    def patch(self, exhibitor, world, by_user, exclude_fields=tuple()):
         if exhibitor["id"] == "":
             e = Exhibitor(
-                room=room,
                 world=world,
             )
             old = {}
@@ -182,12 +182,19 @@ class ExhibitionService:
                 return None
             old = e.serialize()
 
-        if exhibitor.get("highlighted_room_id"):
-            e.highlighted_room = get_room_by_id(
-                self.world.pk, exhibitor["highlighted_room_id"]
-            )
-        else:
-            e.highlighted_room = None
+        room = get_room_by_id(self.world.pk, exhibitor.get("room_id", e.room_id))
+        if not room:
+            return None
+        elif "room" not in exclude_fields:
+            e.room = room
+
+        if "highlighted_room_id" not in exclude_fields:
+            if exhibitor.get("highlighted_room_id"):
+                e.highlighted_room = get_room_by_id(
+                    self.world.pk, exhibitor["highlighted_room_id"]
+                )
+            else:
+                e.highlighted_room = None
 
         for k in (
             "name",
@@ -202,11 +209,14 @@ class ExhibitionService:
             "banner_detail",
             "contact_enabled",
         ):
-            if k in exhibitor:
+            if k in exhibitor and k not in exclude_fields:
                 setattr(e, k, exhibitor[k])
         e.save()
 
-        if "social_media_links" in exhibitor:
+        if (
+            "social_media_links" in exhibitor
+            and "social_media_links" not in exclude_fields
+        ):
             social_media_links = []
             for link in exhibitor["social_media_links"]:
                 social_media_links.append(get_or_create_social_media_link(link, e))
@@ -214,7 +224,7 @@ class ExhibitionService:
                 if link not in social_media_links:
                     link.delete()
 
-        if "links" in exhibitor:
+        if "links" in exhibitor and "links" not in exclude_fields:
             links = []
             for link in exhibitor["links"]:
                 links.append(get_or_create_link(link, e))
@@ -222,7 +232,7 @@ class ExhibitionService:
                 if link not in links:
                     link.delete()
 
-        if "staff" in exhibitor:
+        if "staff" in exhibitor and "staff" not in exclude_fields:
             staff = []
             for user in exhibitor["staff"]:
                 user = get_user_by_id(self.world.pk, user["id"])

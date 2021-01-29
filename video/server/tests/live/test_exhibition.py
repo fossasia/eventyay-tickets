@@ -5,7 +5,7 @@ import pytest
 from channels.db import database_sync_to_async
 from channels.testing import WebsocketCommunicator
 
-from venueless.core.models import User
+from venueless.core.models import Exhibitor, ExhibitorStaff, User
 from venueless.routing import application
 
 
@@ -552,3 +552,39 @@ async def test_exhibition_patch(world, exhibition_room):
         response = await c.receive_json_from()
         assert response[0] == "success"
         assert response[2]["exhibitor"] == e
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_exhibition_patch_as_staff(world, exhibition_room):
+    async with world_communicator() as c:
+        user = await database_sync_to_async(User.objects.get)(
+            id=c.context["user.config"]["id"]
+        )
+        exhibitor = await database_sync_to_async(Exhibitor.objects.get)(
+            name="Tube GmbH"
+        )
+        await database_sync_to_async(ExhibitorStaff.objects.create)(
+            exhibitor=exhibitor,
+            user=user,
+        )
+
+        e = {
+            "id": str(exhibitor.id),
+            "name": "Name will be kept",
+            "room": "invalid",
+            "size": "3x3",
+            "sorting_priority": -30,
+            "logo": "https://example.org",
+            "staff": [],
+        }
+
+        await c.send_json_to(["exhibition.patch", 123, e])
+        response = await c.receive_json_from()
+        assert response[0] == "success"
+        assert response[2]["exhibitor"]["name"] == "Tube GmbH"
+        assert response[2]["exhibitor"]["room_id"] == str(exhibition_room.id)
+        assert response[2]["exhibitor"]["size"] == "1x1"
+        assert response[2]["exhibitor"]["sorting_priority"] != -30
+        assert response[2]["exhibitor"]["logo"] == "https://example.org"
+        assert len(response[2]["exhibitor"]["staff"]) >= 1
