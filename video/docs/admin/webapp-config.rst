@@ -64,7 +64,6 @@ You can style presenation mode via custom css:
 Experimental Features
 ---------------------
 
-* questions-answers
 * schedule-control
 * roulette
 * muxdata

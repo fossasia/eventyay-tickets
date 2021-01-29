@@ -143,9 +143,7 @@ export default {
 			if (this.$features.enabled('janus')) {
 				knownTypes.push('call.janus')
 			}
-			if (this.$features.enabled('questions-answers')) {
-				knownTypes.push('question')
-			}
+			knownTypes.push('question')
 			if (this.$features.enabled('roulette')) {
 				knownTypes.push('networking.roulette')
 			}
