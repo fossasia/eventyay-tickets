@@ -6,7 +6,7 @@
 		.header
 			.exhibitor-label {{ $t("Exhibitors:exhibitor:label") }}
 			.actions
-					bunt-button.btn-create(@click="$router.push({name: 'exhibitors:exhibitor', params: {exhibitorId: ''}})") {{ $t('Exhibitors:create:label') }}
+					bunt-button.btn-create(v-if="hasPermission('world:rooms.create.exhibition')", @click="$router.push({name: 'exhibitors:exhibitor', params: {exhibitorId: ''}})") {{ $t('Exhibitors:create:label') }}
 		RecycleScroller.tbody.bunt-scrollbar(v-if="exhibitors", :items="exhibitors", :item-size="48", v-slot="{item: exhibitor}", v-scrollbar.y="")
 			router-link.exhibitor(:to="{name: 'exhibitors:exhibitor', params: {exhibitorId: exhibitor.id}}").table-row
 				.name {{ exhibitor.name }}
@@ -14,6 +14,7 @@
 </template>
 <script>
 import api from 'lib/api'
+import {mapGetters} from 'vuex'
 
 export default {
 	components: {},
@@ -23,6 +24,7 @@ export default {
 		}
 	},
 	computed: {
+		...mapGetters(['hasPermission']),
 	},
 	async created () {
 		this.exhibitors = (await api.call('exhibition.list.all', {})).exhibitors // TODO: get exhibitions based on permission
