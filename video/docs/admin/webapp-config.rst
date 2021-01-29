@@ -65,7 +65,6 @@ Experimental Features
 ---------------------
 
 * questions-answers
-* chat-moderation
 * schedule-control
 * roulette
 * muxdata
