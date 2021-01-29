@@ -20,7 +20,7 @@
 				template(v-slot:menu)
 					.unblock(v-if="isBlocked", @click="userAction = 'unblock'") {{ $t('UserAction:action.unblock:label') }}
 					.block(v-else, @click="userAction = 'block'") {{ $t('UserAction:action.block:label') }}
-					template(v-if="$features.enabled('chat-moderation') && hasPermission('room:chat.moderate') && sender.id !== user.id")
+					template(v-if="hasPermission('room:chat.moderate') && sender.id !== user.id")
 						.divider {{ $t('UserAction:moderator-actions:title') }}
 						.reactivate(v-if="sender.moderation_state", @click="userAction = 'reactivate'")
 							| {{ sender.moderation_state === 'banned' ? $t('UserAction:action.unban:label') : $t('UserAction:action.unsilence:label') }}
