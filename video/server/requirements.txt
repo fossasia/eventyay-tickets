@@ -2,6 +2,7 @@
 aiofile==3.3.*
 aiohttp==3.7.*
 aioredis-lock
+amqp==5.0.3  # transitive dependency, but recent version broken: https://github.com/celery/py-amqp/issues/351
 beautifulsoup4==4.9.*
 celery==5.0.*
 channels>=3.0.3,<3.1.0
