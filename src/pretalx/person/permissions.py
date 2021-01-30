@@ -30,12 +30,12 @@ def is_administrator(user, obj):
 @rules.predicate
 def person_can_view_information(user, obj):
     event = obj.event
-    submissions = event.submissions.filter(speakers__in=[user])
-    if obj.include_submitters:
-        return submissions.exists()
-    if obj.exclude_unconfirmed:
-        return submissions.filter(state=SubmissionStates.CONFIRMED).exists()
-    return submissions.filter(
+    qs = event.submissions.filter(speakers__in=[user])
+    if obj.target_group == "submitters":
+        return qs.exists()
+    if obj.target_group == "confirmed":
+        return qs.filter(state=SubmissionStates.CONFIRMED).exists()
+    return qs.filter(
         state__in=[SubmissionStates.CONFIRMED, SubmissionStates.ACCEPTED]
     ).exists()
 
