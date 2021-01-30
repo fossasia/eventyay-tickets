@@ -5,6 +5,7 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone, translation
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
+from django_scopes.forms import SafeModelMultipleChoiceField
 from i18nfield.forms import I18nModelForm
 
 from pretalx.cfp.forms.cfp import CfPFormMixin
@@ -281,6 +282,11 @@ class SpeakerInformationForm(I18nModelForm):
     def __init__(self, *args, event=None, **kwargs):
         self.event = event
         super().__init__(*args, **kwargs)
+        self.fields["limit_types"].queryset = event.submission_types.all()
+        if not event.settings.use_tracks:
+            self.fields.pop("limit_tracks")
+        else:
+            self.fields["limit_tracks"].queryset = event.tracks.all()
 
     def save(self, *args, **kwargs):
         self.instance.event = self.event
@@ -292,9 +298,19 @@ class SpeakerInformationForm(I18nModelForm):
             "title",
             "text",
             "target_group",
+            "limit_types",
+            "limit_tracks",
             "resource",
         )
-        field_classes = {"resource": SizeFileField}
+        field_classes = {
+            "limit_tracks": SafeModelMultipleChoiceField,
+            "limit_types": SafeModelMultipleChoiceField,
+            "resource": SizeFileField,
+        }
+        widgets = {
+            "limit_tracks": forms.CheckboxSelectMultiple,
+            "limit_types": forms.CheckboxSelectMultiple,
+        }
 
 
 class SpeakerFilterForm(forms.Form):

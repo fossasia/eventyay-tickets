@@ -31,6 +31,12 @@ def is_administrator(user, obj):
 def person_can_view_information(user, obj):
     event = obj.event
     qs = event.submissions.filter(speakers__in=[user])
+    tracks = obj.limit_tracks.all()
+    types = obj.limit_types.all()
+    if tracks:
+        qs = qs.filter(track__in=tracks)
+    if types:
+        qs = qs.filter(submission_type__in=types)
     if obj.target_group == "submitters":
         return qs.exists()
     if obj.target_group == "confirmed":
