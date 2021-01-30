@@ -20,8 +20,7 @@
         <thead>
             <tr>
                 <th>{% translate "Title" %}</th>
-                <th>{% translate "Includes submitted" %}</th>
-                <th>{% translate "Only confirmed" %}</th>
+                <th>{% translate "Target group" %}</th>
                 <th></th>
             </tr>
         </thead>
@@ -34,8 +33,7 @@
                             <a href="{{ info.resource.url }}"><i class="fa fa-paperclip"></i></a>
                         {% endif %}
                     </td>
-                    <td>{{ info.include_submitters|yesno }}</td>
-                    <td>{{ info.exclude_unconfirmed|yesno }}</td>
+                    <td>{{ info.target_group }}</td>
                     <td class="action-column">
                         <a href="{{ info.orga_urls.edit }}" class="btn btn-sm btn-info"><i class="fa fa-edit"></i></a>
                         <a href="{{ info.orga_urls.delete }}" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></a>

@@ -254,12 +254,8 @@ class InformationDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs.pop("read_only", None)
+        kwargs["event"] = self.request.event
         return kwargs
-
-    def form_valid(self, form):
-        if not getattr(form.instance, "event", None):
-            form.instance.event = self.request.event
-        return super().form_valid(form)
 
     def get_success_url(self):
         return self.request.event.orga_urls.information

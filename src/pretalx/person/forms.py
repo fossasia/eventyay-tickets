@@ -278,29 +278,20 @@ class LoginInfoForm(forms.ModelForm):
 
 
 class SpeakerInformationForm(I18nModelForm):
-    def clean(self):
-        result = super().clean()
-        if (
-            self.cleaned_data["include_submitters"]
-            and self.cleaned_data["exclude_unconfirmed"]
-        ):
-            self.add_error(
-                "exclude_unconfirmed",
-                ValidationError(
-                    _(
-                        "Either target all submitters or only confirmed speakers, these options are exclusive!"
-                    )
-                ),
-            )
-        return result
+    def __init__(self, *args, event=None, **kwargs):
+        self.event = event
+        super().__init__(*args, **kwargs)
+
+    def save(self, *args, **kwargs):
+        self.instance.event = self.event
+        return super().save(*args, **kwargs)
 
     class Meta:
         model = SpeakerInformation
         fields = (
             "title",
             "text",
-            "include_submitters",
-            "exclude_unconfirmed",
+            "target_group",
             "resource",
         )
         field_classes = {"resource": SizeFileField}

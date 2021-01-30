@@ -212,30 +212,12 @@ def test_orga_can_create_speaker_information(orga_client, event):
         data={
             "title_0": "Test Information",
             "text_0": "Very Important!!!",
-            "include_submitters": "on",
+            "target_group": "submitters",
         },
         follow=True,
     )
     with scope(event=event):
         assert event.information.all().count() == 1
-
-
-@pytest.mark.django_db
-def test_orga_cant_create_illogical_speaker_information(orga_client, event):
-    with scope(event=event):
-        assert event.information.all().count() == 0
-    orga_client.post(
-        event.orga_urls.new_information,
-        data={
-            "title_0": "Test Information",
-            "text_0": "Very Important!!!",
-            "include_submitters": "on",
-            "exclude_unconfirmed": "on",
-        },
-        follow=True,
-    )
-    with scope(event=event):
-        assert event.information.all().count() == 0
 
 
 @pytest.mark.django_db
@@ -245,7 +227,7 @@ def test_orga_can_edit_speaker_information(orga_client, event, information):
         data={
             "title_0": "Banana banana",
             "text_0": "Very Important!!!",
-            "include_submitters": "on",
+            "target_group": "submitted",
         },
         follow=True,
     )
@@ -261,8 +243,7 @@ def test_reviewer_cant_edit_speaker_information(review_client, event, informatio
         data={
             "title_0": "Banana banana",
             "text_0": "Very Important!!!",
-            "include_submitters": "on",
-            "exclude_unconfirmed": "on",
+            "target_group": "confirmed",
         },
         follow=True,
     )
