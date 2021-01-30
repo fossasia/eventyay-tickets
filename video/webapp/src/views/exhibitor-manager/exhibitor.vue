@@ -124,17 +124,17 @@
 			user-select(:button-label="$t('Exhibitors:add-staff:label')", @selected="add_staff")
 </template>
 <script>
+import { mapGetters } from 'vuex'
+import { required, maxLength } from 'buntpapier/src/vuelidate/validators'
+import { helpers } from 'vuelidate/lib/validators'
+import { withParams } from 'vuelidate/lib/validators/common'
 import api from 'lib/api'
 import router from 'router'
 import Avatar from 'components/Avatar'
 import Prompt from 'components/Prompt'
 import UserSelect from 'components/UserSelect'
 import UploadUrlInput from 'components/config/UploadUrlInput'
-import { required, maxLength } from 'buntpapier/src/vuelidate/validators'
-import { helpers } from 'vuelidate/lib/validators'
-import { withParams } from 'vuelidate/lib/validators/common'
 import RichTextEditor from 'components/RichTextEditor'
-import {mapGetters} from 'vuex'
 
 const absrelurl = (message) => withParams({message: message}, value => helpers.regex('absrelurl', /^(https?:\/\/|mailto:|\/)[^ ]+$/)(value))
 

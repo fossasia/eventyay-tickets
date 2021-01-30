@@ -13,8 +13,8 @@
 		bunt-progress-circular(v-else, size="huge", :page="true")
 </template>
 <script>
+import { mapGetters } from 'vuex'
 import api from 'lib/api'
-import {mapGetters} from 'vuex'
 
 export default {
 	components: {},
