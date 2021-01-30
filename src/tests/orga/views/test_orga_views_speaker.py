@@ -227,7 +227,7 @@ def test_orga_can_edit_speaker_information(orga_client, event, information):
         data={
             "title_0": "Banana banana",
             "text_0": "Very Important!!!",
-            "target_group": "submitted",
+            "target_group": "submitters",
         },
         follow=True,
     )
