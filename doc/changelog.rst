@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` Speaker information will now be copied when cloning an event.
 - :feature:`-` Speaker information can now be created for specific tracks or proposal types.
 - :feature:`-` You can now use the ``--silent`` flag with the ``regenerate_css`` command to reduce build verbosity.
 - :feature:`735` You can now filter talks by track and type in the schedule editor.

@@ -593,16 +593,35 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
             question_map[question.pk] = question
             options = question.options.all()
             tracks = question.tracks.all().values_list("pk", flat=True)
+            types = question.submission_types.all().values_list("pk", flat=True)
             question.pk = None
             question.event = self
             question.save()
             question.tracks.set([])
+            question.submission_types.set([])
             for option in options:
                 option.pk = None
                 option.question = question
                 option.save()
             for track in tracks:
                 question.tracks.add(track_map.get(track))
+            for stype in types:
+                question.submission_types.add(submission_type_map.get(stype))
+
+        information_map = {}
+        for information in other_event.information.all():
+            information[information.pk] = information
+            tracks = information.limit_tracks.all().values_list("pk", flat=True)
+            types = information.limit_types.all().values_list("pk", flat=True)
+            information.pk = None
+            information.event = self
+            information.save()
+            information.tracks.set([])
+            information.submission_types.set([])
+            for track in tracks:
+                information.limit_tracks.add(track_map.get(track))
+            for stype in types:
+                question.limit_types.add(submission_type_map.get(stype))
 
         for s in other_event.settings._objects.all():
             if s.value.startswith("file://") or s.key in protected_settings:
@@ -617,6 +636,7 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
             question_map=question_map,
             track_map=track_map,
             submission_type_map=submission_type_map,
+            speaker_information_map=information_map,
         )
         self.build_initial_data()  # make sure we get a functioning event
 

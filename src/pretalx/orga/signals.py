@@ -66,7 +66,7 @@ but you might need to modify that data.
 
 The ``sender`` keyword argument will contain the event of the **new** event. The ``other``
 keyword argument will contain the event slug to **copy from**. The keyword arguments
-``submission_type_map``, ``question_map``, and ``track_map`` contain
+``submission_type_map``, ``question_map``, ``track_map`` and ``speaker_information_map`` contain
 mappings from object IDs in the original event to objects in the new event of the respective
 types.
 """
