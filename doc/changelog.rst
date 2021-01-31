@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`1049` The tag creation page is now hidden for users who don't have permission to create tags.
 - :feature:`-` Speaker information will now be copied when cloning an event.
 - :feature:`-` Speaker information can now be created for specific tracks or proposal types.
 - :feature:`-` You can now use the ``--silent`` flag with the ``regenerate_css`` command to reduce build verbosity.

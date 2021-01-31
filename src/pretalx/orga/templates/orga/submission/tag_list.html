@@ -1,5 +1,6 @@
 {% extends "orga/cfp/base.html" %}
 {% load i18n %}
+{% load rules %}
 
 {% block cfp_content %}
     <h2>{% translate "Tags" %}</h2>
@@ -38,11 +39,13 @@
             {% endfor %}
         </tbody>
     </table>
+    {% has_perm 'orga.add_tags' request.user request.event as can_edit_tags %}
+    {% if can_edit_tags %}
     <div class="submit-group"><span></span>
         <a class="btn btn-info" href="{{ request.event.orga_urls.new_tag }}">
             <i class="fa fa-plus"></i>
             {% translate "New tag" %}
         </a>
     </div>
+    {% endif %}
 {% endblock %}
-
