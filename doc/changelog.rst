@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`1048` Added a password reset link to the page where you accept invitations to organiser teams.
 - :bug:`1049` The tag creation page is now hidden for users who don't have permission to create tags.
 - :feature:`-` Speaker information will now be copied when cloning an event.
 - :feature:`-` Speaker information can now be created for specific tracks or proposal types.
