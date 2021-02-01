@@ -1,4 +1,32 @@
 /*
+ * RANGE SLIDER CODE
+ */
+const slider = document.querySelector("#review-count")
+
+if (slider) {
+
+  const max = parseInt(slider.dataset.max)
+  let params = new URLSearchParams(window.location.search).get("review-count") || ","
+  params = params.split(",")
+
+  const minInitial = params ? params[0] : 0
+  const maxInitial = params ? params[1] : max
+
+  const reviewSlider = new rSlider({
+          target: '#review-count',
+          values: Array(max + 1).fill().map((element, index) => index),
+          range: true,
+          tooltip: false,
+          scale: true,
+          labels: true,
+          width: "270px",
+          set: [parseInt(minInitial), parseInt(maxInitial)]
+      });
+}
+
+/*
+ * REVIEW SELECTION CODE
+ *
  * When a radio button is selected (or has been selected from the start):
  * add the active class to its unmark-radio element
  * Count both classes of radio buttons and update counters

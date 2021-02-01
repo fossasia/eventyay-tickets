@@ -316,8 +316,12 @@ footer {
     }
   }
 
-  .btn {
+  .btn, details {
     align-self: flex-start;
+    margin-top: auto;
+    margin-bottom: 16px;
+  }
+  .btn {
     margin-right: 16px;
   }
 }
@@ -868,6 +872,27 @@ h2 .submission-state-dropdown {
 }
 #release #id_version {
   height: auto;
+}
+#review-filter-form {
+  #range-wrapper {
+    margin-right: 48px;
+    padding-left: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    label {
+      color: #495057;
+      font-size: 1rem;
+    }
+    .rs-container {
+      font-family: inherit;
+      color: #495057;
+      .rs-selected {
+        background-color: $brand-primary;
+      }
+    }
+  }
+
 }
 .review-table.table {
   thead th {

@@ -1,6 +1,8 @@
+from contextlib import suppress
+
 from django.contrib import messages
 from django.db import transaction
-from django.db.models import Count, OuterRef, Q, Subquery
+from django.db.models import Count, Max, OuterRef, Q, Subquery
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
@@ -42,6 +44,21 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
             ],
         )
 
+    def filter_range(self, queryset):
+        review_count = self.request.GET.get("review-count") or ","
+        if "," not in review_count:
+            return queryset
+        min_reviews, max_reviews = review_count.split(",", maxsplit=1)
+        if min_reviews:
+            with suppress(Exception):
+                min_reviews = int(min_reviews)
+                queryset = queryset.filter(review_count__gte=min_reviews)
+        if max_reviews:
+            with suppress(Exception):
+                max_reviews = int(max_reviews)
+                queryset = queryset.filter(review_count__lte=max_reviews)
+        return queryset
+
     def get_queryset(self):
         queryset = self.request.event.submissions.filter(
             state__in=[
@@ -64,6 +81,7 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
         queryset = self.filter_queryset(queryset).annotate(
             review_count=Count("reviews")
         )
+        queryset = self.filter_range(queryset)
 
         user_reviews = Review.objects.filter(
             user=self.request.user, submission_id=OuterRef("pk")
@@ -133,6 +151,15 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
     @cached_property
     def can_see_all_reviews(self):
         return self.request.user.has_perm("orga.view_all_reviews", self.request.event)
+
+    @context
+    def max_review_count(self):
+        return (
+            self.request.event.submissions.all()
+            .annotate(review_count=Count("reviews"))
+            .aggregate(Max("review_count"))
+            .get("review_count__max")
+        )
 
     @context
     @cached_property

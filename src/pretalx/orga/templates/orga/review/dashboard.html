@@ -9,8 +9,10 @@
 
 {% block scripts %}
 {% compress js %}
+    <script src="{% static 'vendored/rslider/rSlider.min.js' %}" defer></script>
     <script src="{% static 'orga/js/review.js' %}" defer></script>
 {% endcompress %}
+    <link rel="stylesheet" type="text/css" href="{% static "vendored/rslider/rSlider.min.css" %}" />
 {% endblock %}
 
 {% block content %}
@@ -35,12 +37,18 @@
 </div>
 
 <div class="submit-group search-submit-group">
-    <form class="search-form">
+    <form class="search-form" id="review-filter-form">
         {% bootstrap_form search_form %}
         {% if show_submission_types %}{% bootstrap_field filter_form.submission_type %}{% endif %}
         {% bootstrap_field filter_form.state layout='inline' %}
         {% if show_tracks %}{% bootstrap_field filter_form.track %}{% endif %}
         {% if filter_form.tags %}{% bootstrap_field filter_form.tags %}{% endif %}
+        {% if max_review_count and max_review_count > 1 %}
+        <div id="range-wrapper">
+            <label for="review-count">{% trans "Number of reviews" %}</label>
+            <input type="text" id="review-count" name="review-count" data-max="{{ max_review_count }}"/>
+        </div>
+        {% endif %}
         <button class="btn btn-success" type="submit">{% translate "Search" %}</button>
         <details class="dropdown ml-auto fix-height">
             <summary class="btn btn-info">
