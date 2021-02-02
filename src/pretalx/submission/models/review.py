@@ -47,7 +47,7 @@ class ReviewScore(models.Model):
         value = self.value
         if int(value) == value:
             value = int(value)
-        if self.label:
+        if self.label and self.label != str(value):
             return f"{self.label} ({value})"
         return str(value)
 
