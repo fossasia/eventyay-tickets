@@ -409,6 +409,9 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
                     submission=self,
                     schedule=self.event.wip_schedule,
                 )
+        TalkSlot.objects.filter(
+            submission=self, schedule=self.event.wip_schedule
+        ).update(is_visible=self.state == SubmissionStates.CONFIRMED)
 
     update_talk_slots.alters_data = True
 

@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`-` A bug led to the first schedule release of every event being empty, sometimes, since all talks were treated as unconfirmed.
 - :bug:`-` Improved review interface so that long or complex scores don't break the interface when *editing* an existing review.
 - :feature:`-` In the review dashboard, you can now filter the list of proposals by how many reviews they have.
 - :feature:`1048` Added a password reset link to the page where you accept invitations to organiser teams.
