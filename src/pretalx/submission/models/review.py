@@ -147,14 +147,10 @@ class Review(models.Model):
         return str(self.score)
 
     def update_score(self):
-        track = self.submission.track
-        track_filter = models.Q(category__limit_tracks__isnull=True)
-        if track:
-            track_filter |= models.Q(category__limit_tracks__in=[track])
         scores = (
             self.scores.all()
             .select_related("category")
-            .filter(track_filter, category__active=True)
+            .filter(category__in=self.submission.score_categories)
         )
         self.score = self.calculate_score(scores)
 

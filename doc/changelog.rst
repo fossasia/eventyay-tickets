@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`-` Improved review interface so that long or complex scores don't break the interface when *editing* an existing review.
 - :feature:`-` In the review dashboard, you can now filter the list of proposals by how many reviews they have.
 - :feature:`1048` Added a password reset link to the page where you accept invitations to organiser teams.
 - :bug:`1049` The tag creation page is now hidden for users who don't have permission to create tags.

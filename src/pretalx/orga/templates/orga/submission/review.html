@@ -8,6 +8,7 @@
 
 {% block submission_content %}
 <script src="{% static "vendored/marked.min.js" %}" defer></script> {# do not compress #}
+<script src="{% static "orga/js/reviewSubmission.js" %}" defer></script>
 <script src="{% static "common/js/markdown.js" %}" defer></script>
 
 {% has_perm 'orga.view_speakers' request.user request.event as can_view_speakers %}
@@ -127,9 +128,9 @@
                 {{ speaker.biography|rich_text|default:'-' }}
                 {% endif %}
                 {% if speaker.submissions.count > 1 %}<br><strong>{% translate "Other proposals" %}:</strong>
-                {% for other_submission in speaker.submissions %}{% if other_submission != submission %}
-                <a href="{{ other_submission.orga_urls.base }}">{% if can_view_speakers %}{{ other_submission.title }}{% else %}{{ other_submission.anonymised.title|default:other_submission.title }}{% endif %}</a>{% if not forloop.last %}, {% endif %}
-                {% endif %}{% endfor %}
+                    {% for other_submission in speaker.submissions %}{% if other_submission != submission %}
+                        <a href="{{ other_submission.orga_urls.base }}">{% if can_view_speakers %}{{ other_submission.title }}{% else %}{{ other_submission.anonymised.title|default:other_submission.title }}{% endif %}</a>{% if not forloop.last %}, {% endif %}
+                    {% endif %}{% endfor %}
                 {% endif %}
             </div>
         </div>
@@ -149,16 +150,20 @@
     </div>
     {% endif %}
     {% if not read_only %}
+
         {% if tags_form %}{% bootstrap_form tags_form layout='event' %}{% endif %}
+
+        <div id="own-review" {% if form.instance.pk %}class="d-none"{% endif %}>
+            {% for score_field in form.get_score_fields %}
+                {% bootstrap_field score_field layout="event" %}
+            {% endfor %}
+            {% bootstrap_form qform layout='event' %}
+            {% bootstrap_field form.text layout='event' %}
+        </div>
+
     {% endif %}
-    {% if not form.instance.pk and not read_only %}
-        {% for score_field in form.get_score_fields %}
-            {% bootstrap_field score_field layout="event" %}
-        {% endfor %}
-        {% bootstrap_form qform layout='event' %}
-        {% bootstrap_field form.text layout='event' %}
-    {% endif %}
-    {% if form.instance.pk %}
+
+    {% if can_view_other_reviews or form.instance.pk %}
     <table class="table review-table table-hover table-responsive-md">
             <tr>
                 <th>{% translate "Score" %}</th>
@@ -174,53 +179,12 @@
                 <th></th>
             </tr>
         <tbody>
-            {% if form.instance.pk %}
-            <tr>
-                {% csrf_token %}
-                <td>
-                    <div id="update_score">{{ form.instance.score }}</div>
-                </td>
-                {% for score_field in form.get_score_fields %}
-                    <td>
-                        {% bootstrap_field score_field layout="inline" %}
-                    </td>
-                {% endfor %}
-                {% for field in qform %}
-                    <td>
-                        {% bootstrap_field field layout="inline" %}
-                    </td>
-                {% endfor %}
-                <td class="markdown-table">
-                    {% if not read_only %}
-                        {% bootstrap_field form.text layout="inline" %}
-                    {% else %}
-                        {{ form.instance.text|rich_text }}
-                    {% endif %}
-                </td>
-                <td>
-                    {% if not read_only %}
-                        <button type="submit" name="review_submit" value="save" class="btn btn-success">{% translate "Save" %}
-                    {% elif can_view_reviewer_names %}
-                        {{ request.user.get_display_name }}
-                    {% endif %}
-                </td>
-            </tr>
+            {% if form.instance.pk and review_display %}
+            {% include "orga/submission/review_fragment.html" with review=review_display read_only=read_only show_reviewer_name=False %}
             {% endif %}
             {% if can_view_other_reviews %}
                 {% for review in reviews %}
-                    {% if review != form.instance %}
-                        <tr>
-                            <td>{{ review.score }}</td>
-                            {% if score_categories|length > 1 %}{% for score in review.scores %}<td>{{ score }}{% endfor %}{% endif %}
-                            {% for answer in review.answers %}
-                                <td>
-                                    {{ answer.answer }}
-                                </td>
-                            {% endfor %}
-                            <td>{{ review.text|rich_text }}</td>
-                            <td>{% if can_view_reviewer_names %}{{ review.user }}{% endif %}</td>
-                        </tr>
-                    {% endif %}
+                    {% include "orga/submission/review_fragment.html" with review=review read_only=True show_reviewer_name=can_view_reviewer_names %}
                 {% empty %}
                     <tr><td colspan="100">{% translate "Nobody else has submitted a review yet." %}</td></tr>
                 {% endfor %}

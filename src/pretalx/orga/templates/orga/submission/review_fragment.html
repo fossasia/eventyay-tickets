@@ -1,0 +1,29 @@
+{% load i18n %}
+{% load rich_text %}
+<tr>
+    <td>
+        {{ review.score }}
+    </td>
+    {% if score_categories|length > 1 %}
+        {% for score in review.scores %}
+            <td>
+                {{ score }}
+            </td>
+        {% endfor %}
+    {% endif %}
+    {% for answer in review.answers %}
+        <td>
+            {{ answer.answer }}
+        </td>
+    {% endfor %}
+    <td>
+        {{ review.text|rich_text }}
+    </td>
+    <td>
+        {% if show_reviewer_name %}
+            {{ review.user }}
+        {% elif not read_only %}
+            <div class="btn btn-success" id="edit-review">{% translate "Edit" %}</div>
+        {% endif %}
+    </td>
+</tr>

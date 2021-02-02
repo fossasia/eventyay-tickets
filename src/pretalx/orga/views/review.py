@@ -254,11 +254,28 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
 
     @cached_property
     def object(self):
-        return (
+        review = (
             self.submission.reviews.exclude(user__in=self.submission.speakers.all())
             .filter(user=self.request.user)
             .first()
         )
+        return review
+
+    @context
+    @cached_property
+    def review_display(self):
+        if self.object:
+            review = self.object
+            return {
+                "score": review.display_score,
+                "scores": self.get_scores_for_review(review),
+                "text": review.text,
+                "user": review.user.get_display_name(),
+                "answers": [
+                    review.answers.filter(question=question).first()
+                    for question in self.qform.queryset
+                ],
+            }
 
     @context
     @cached_property
@@ -296,11 +313,7 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
     @context
     @cached_property
     def score_categories(self):
-        track = self.submission.track
-        track_filter = Q(limit_tracks__isnull=True)
-        if track:
-            track_filter |= Q(limit_tracks__in=[track])
-        return self.request.event.score_categories.filter(track_filter, active=True)
+        return self.submission.score_categories
 
     def get_scores_for_review(self, review):
         scores = []
