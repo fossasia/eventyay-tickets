@@ -22,14 +22,18 @@
 {% else %}
     {% if not read_only %}
         <div class="alert alert-info">
-            <span>
-            {{ request.event.settings.review_help_text|rich_text }}
-            {% if not form.instance.pk and not can_view_other_reviews and request.event.active_review_phase and request.event.active_review_phase.can_see_other_reviews == 'after_review' %}
-                {% blocktranslate trimmed %}
-                    You will be able to see other reviews once you have given yours.
-                {% endblocktranslate %}
-            {% endif %}
-            </span>
+            <div>
+                <p>
+                    {{ request.event.settings.review_help_text|rich_text }}
+                </p>
+                {% if not form.instance.pk and not can_view_other_reviews and request.event.active_review_phase and request.event.active_review_phase.can_see_other_reviews == 'after_review' %}
+                    <p>
+                        {% blocktranslate trimmed %}
+                            You will be able to see other reviews once you have given yours.
+                        {% endblocktranslate %}
+                    </p>
+                {% endif %}
+            </div>
         </div>
     {% else %}
         <div class="alert alert-info">
