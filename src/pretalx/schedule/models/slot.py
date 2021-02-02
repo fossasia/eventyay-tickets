@@ -105,7 +105,8 @@ class TalkSlot(LogMixin, models.Model):
         from pretalx.schedule.models import Availability
 
         return Availability(
-            start=self.start, end=self.real_end, event=self.submission.event
+            start=self.start,
+            end=self.real_end,
         )
 
     def copy_to_schedule(self, new_schedule, save=True):

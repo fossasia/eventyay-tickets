@@ -36,18 +36,18 @@
         {% endif %}
     </li>
     {% if warnings.unconfirmed %}
-    <li>{% blocktranslate with unconfirmed=warnings.unconfirmed|length trimmed %}
+    <li>{% blocktranslate with unconfirmed=warnings.unconfirmed trimmed %}
         {{ unconfirmed }} sessions are still <strong>unconfirmed</strong> and will not show up
         on the public schedule.
     {% endblocktranslate %}</li>
     {% endif %}
     {% if warnings.unscheduled %}
-    <li>{% blocktranslate with unscheduled=warnings.unscheduled|length trimmed %}
+    <li>{% blocktranslate with unscheduled=warnings.unscheduled trimmed %}
         {{ unscheduled }} sessions have <strong>not yet been scheduled</strong>.
     {% endblocktranslate %}</li>
     {% endif %}
     {% if warnings.no_track %}
-    <li>{% blocktranslate with no_track=warnings.no_track|length trimmed %}
+    <li>{% blocktranslate with no_track=warnings.no_track trimmed %}
         {{ no_track }} sessions have <strong>not yet been assigned a track</strong>.
     {% endblocktranslate %}</li>
     {% endif %}

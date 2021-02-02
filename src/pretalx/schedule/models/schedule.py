@@ -1,4 +1,4 @@
-from collections import defaultdict
+from collections import defaultdict, namedtuple
 from contextlib import suppress
 from urllib.parse import quote
 
@@ -258,16 +258,18 @@ class Schedule(LogMixin, models.Model):
             result["action"] = "create"
             return result
 
-        old_slots = self.previous_schedule.scheduled_talks
-        new_slots = self.scheduled_talks
+        old_slots = list(self.previous_schedule.scheduled_talks)
+        new_slots = list(self.scheduled_talks)
+
+        Slot = namedtuple("Slot", ["submission", "room", "start"])
         old_slot_set = set(
-            old_slots.values_list("submission", "room", "start", named=True)
+            Slot(slot.submission, slot.room, slot.start) for slot in old_slots
         )
         new_slot_set = set(
-            new_slots.values_list("submission", "room", "start", named=True)
+            Slot(slot.submission, slot.room, slot.start) for slot in new_slots
         )
-        old_submissions = set(old_slots.values_list("submission__id", flat=True))
-        new_submissions = set(new_slots.values_list("submission__id", flat=True))
+        old_submissions = set(slot.submission_id for slot in old_slots)
+        new_submissions = set(slot.submission_id for slot in new_slots)
         handled_submissions = set()
 
         moved_or_missing = old_slot_set - new_slot_set - {None}
@@ -343,10 +345,11 @@ class Schedule(LogMixin, models.Model):
                 )
         for speaker in talk.submission.speakers.all():
             if speaker_availabilities:
-                profile = speaker.event_profile(event=talk.submission.event)
-                if profile.availabilities.exists() and not any(
+                profile = speaker.event_profile(event=self.event)
+                profile_availabilities = list(profile.availabilities.all())
+                if profile_availabilities and not any(
                     speaker_availability.contains(availability)
-                    for speaker_availability in profile.availabilities.all()
+                    for speaker_availability in profile_availabilities
                 ):
                     warnings.append(
                         {
@@ -432,12 +435,16 @@ class Schedule(LogMixin, models.Model):
                     talks.filter(start__isnull=False)
                 ).items()
             ],
-            "unscheduled": talks.filter(start__isnull=True),
-            "unconfirmed": talks.exclude(submission__state=SubmissionStates.CONFIRMED),
+            "unscheduled": talks.filter(start__isnull=True).count(),
+            "unconfirmed": talks.exclude(
+                submission__state=SubmissionStates.CONFIRMED
+            ).count(),
             "no_track": [],
         }
         if self.event.settings.use_tracks:
-            warnings["no_track"] = talks.filter(submission__track_id__isnull=True)
+            warnings["no_track"] = talks.filter(
+                submission__track_id__isnull=True
+            ).count()
         return warnings
 
     @cached_property
