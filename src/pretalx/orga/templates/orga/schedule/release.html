@@ -57,7 +57,7 @@
 <ul>
     {% for talk in warnings.talk_warnings %}
     {% for warning in talk.warnings %}
-    <li><a href="{{ talk.submission.orga_urls.base }}">{{ quotation_open }}{{ talk.submission.title }}{{ quotation_close }}</a>: {{ warning.message }}</li>
+    <li><a href="{{ talk.talk.submission.orga_urls.base }}">{{ quotation_open }}{{ talk.talk.submission.title }}{{ quotation_close }}</a>: {{ warning.message }}</li>
     {% endfor %}
     {% endfor %}
 </ul>

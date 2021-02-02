@@ -311,6 +311,105 @@ class Schedule(LogMixin, models.Model):
         )
         return result
 
+    def get_talk_warnings(
+        self, talk, speaker_availabilities=True, room_avails=None
+    ) -> list:
+        """A list of warnings that apply to this slot.
+
+        Warnings are dictionaries with a ``type`` (``room`` or
+        ``speaker``, for now) and a ``message`` fit for public display.
+        This property only shows availability based warnings.
+        """
+        from pretalx.schedule.models import TalkSlot
+
+        if not talk.start:
+            return []
+        warnings = []
+        availability = talk.as_availability
+        if talk.room:
+            if room_avails is None:
+                room_avails = talk.room.availabilities.all()
+            if not any(
+                room_availability.contains(availability)
+                for room_availability in room_avails
+            ):
+                warnings.append(
+                    {
+                        "type": "room",
+                        "message": _(
+                            "The room is not available at the scheduled time."
+                        ),
+                    }
+                )
+        for speaker in talk.submission.speakers.all():
+            if speaker_availabilities:
+                profile = speaker.event_profile(event=talk.submission.event)
+                if profile.availabilities.exists() and not any(
+                    speaker_availability.contains(availability)
+                    for speaker_availability in profile.availabilities.all()
+                ):
+                    warnings.append(
+                        {
+                            "type": "speaker",
+                            "speaker": {
+                                "name": speaker.get_display_name(),
+                                "id": speaker.pk,
+                            },
+                            "message": _(
+                                "A speaker is not available at the scheduled time."
+                            ),
+                        }
+                    )
+            overlaps = (
+                TalkSlot.objects.filter(
+                    schedule=self, submission__speakers__in=[speaker]
+                )
+                .filter(
+                    models.Q(start__lt=talk.start, end__gt=talk.start)
+                    | models.Q(start__lt=talk.end, end__gt=talk.end)
+                    | models.Q(start__gt=talk.start, end__lt=talk.end)
+                )
+                .exists()
+            )
+            if overlaps:
+                warnings.append(
+                    {
+                        "type": "speaker",
+                        "speaker": {
+                            "name": speaker.get_display_name(),
+                            "id": speaker.pk,
+                        },
+                        "message": _(
+                            "A speaker is holding another session at the scheduled time."
+                        ),
+                    }
+                )
+
+        return warnings
+
+    def get_all_talk_warnings(self, talks=None):
+        talks = talks or self.talks.filter(submission__isnull=False).select_related(
+            "submission", "room"
+        ).prefetch_related("submission__speakers")
+        result = {}
+        speaker_availabilities = self.event.settings.cfp_request_availabilities
+        room_avails = defaultdict(
+            list,
+            {
+                room.pk: room.availabilities.all()
+                for room in self.event.rooms.all().prefetch_related("availabilities")
+            },
+        )
+        for talk in talks:
+            talk_warnings = self.get_talk_warnings(
+                talk=talk,
+                speaker_availabilities=speaker_availabilities,
+                room_avails=room_avails.get(talk.room_id) if talk.room_id else None,
+            )
+            if talk_warnings:
+                result[talk] = talk_warnings
+        return result
+
     @cached_property
     def warnings(self) -> dict:
         """A dictionary of warnings to be acknowledged before a release.
@@ -321,21 +420,24 @@ class Schedule(LogMixin, models.Model):
         visible due to their unconfirmed status, and ``no_track`` are
         submissions without a track in a conference that uses tracks.
         """
+        talks = (
+            self.talks.filter(submission__isnull=False)
+            .select_related("submission", "room")
+            .prefetch_related("submission__speakers")
+        )
         warnings = {
-            "talk_warnings": [],
-            "unscheduled": [],
-            "unconfirmed": [],
+            "talk_warnings": [
+                {"talk": key, "warnings": value}
+                for key, value in self.get_all_talk_warnings(
+                    talks.filter(start__isnull=False)
+                ).items()
+            ],
+            "unscheduled": talks.filter(start__isnull=True),
+            "unconfirmed": talks.exclude(submission__state=SubmissionStates.CONFIRMED),
             "no_track": [],
         }
-        for talk in self.talks.filter(submission__isnull=False):
-            if not talk.start:
-                warnings["unscheduled"].append(talk)
-            elif talk.warnings:
-                warnings["talk_warnings"].append(talk)
-            if talk.submission.state != SubmissionStates.CONFIRMED:
-                warnings["unconfirmed"].append(talk)
-            if talk.submission.event.settings.use_tracks and not talk.submission.track:
-                warnings["no_track"].append(talk)
+        if self.event.settings.use_tracks:
+            warnings["no_track"] = talks.filter(submission__track_id__isnull=True)
         return warnings
 
     @cached_property

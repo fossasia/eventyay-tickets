@@ -220,7 +220,7 @@ def serialize_break(slot):
     }
 
 
-def serialize_slot(slot):
+def serialize_slot(slot, warnings=None):
     base_data = serialize_break(slot)
     if slot.submission:
         submission_data = {
@@ -248,7 +248,7 @@ def serialize_slot(slot):
             "start": slot.start.isoformat() if slot.start else None,
             "end": slot.end.isoformat() if slot.end else None,
             "url": slot.submission.orga_urls.base,
-            "warnings": slot.warnings,
+            "warnings": warnings or [],
         }
         return {**base_data, **submission_data}
     return base_data
@@ -271,8 +271,9 @@ class TalkList(EventPermissionRequired, View):
         else:
             schedule = request.event.wip_schedule
 
+        warnings = schedule.get_all_talk_warnings()
         result["results"] = [
-            serialize_slot(slot)
+            serialize_slot(slot, warnings=warnings.get(slot))
             for slot in (
                 schedule.talks.all()
                 .select_related(
@@ -354,7 +355,12 @@ class TalkUpdate(PermissionRequired, View):
             talk.room = None
             talk.save(update_fields=["start", "end", "room"])
 
-        return JsonResponse(serialize_slot(talk))
+        speaker_availabilities = self.request.event.settings.cfp_request_availabilities
+        warnings = talk.schedule.get_talk_warnings(
+            talk, speaker_availabilities=speaker_availabilities
+        )
+
+        return JsonResponse(serialize_slot(talk, warnings=warnings))
 
     def delete(self, request, event, pk):
         talk = self.get_object()
