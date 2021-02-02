@@ -488,16 +488,18 @@ with suppress(ImportError):
     import django_extensions  # noqa
 
     INSTALLED_APPS.append("django_extensions")
-with suppress(ImportError):
-    import debug_toolbar  # noqa
 
-    if DEBUG:
-        INSTALLED_APPS.append("debug_toolbar.apps.DebugToolbarConfig")
+if DEBUG:
+    with suppress(ImportError):
+        from debug_toolbar import settings as toolbar_settings  # noqa
+
+        INTERNAL_IPS = ["127.0.0.1", "0.0.0.0", "::1"]
+        INSTALLED_APPS.append("debug_toolbar")
         MIDDLEWARE.append("debug_toolbar.middleware.DebugToolbarMiddleware")
         DEBUG_TOOLBAR_PATCH_SETTINGS = False
         DEBUG_TOOLBAR_CONFIG = {
             "JQUERY_URL": "",
-            "DISABLE_PANELS": debug_toolbar.settings.PANELS_DEFAULTS,
+            "DISABLE_PANELS": toolbar_settings.PANELS_DEFAULTS,
         }
 BOOTSTRAP4 = {
     "field_renderers": {
