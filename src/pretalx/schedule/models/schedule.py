@@ -326,7 +326,7 @@ class Schedule(LogMixin, models.Model):
         """
         from pretalx.schedule.models import TalkSlot
 
-        if not talk.start:
+        if not talk.start or not talk.submission:
             return []
         warnings = []
         availability = talk.as_availability
