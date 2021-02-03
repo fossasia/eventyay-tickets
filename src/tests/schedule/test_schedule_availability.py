@@ -510,8 +510,7 @@ def test_intersection(availsets, expected):
         assert act1 == act2 == exp
 
 
-@pytest.mark.django_db
-def test_availability_equality(event):
+def test_availability_equality():
     avail = Availability(
         start=dt.datetime(2017, 1, 1, 5), end=dt.datetime(2017, 1, 1, 7)
     )
@@ -521,12 +520,6 @@ def test_availability_equality(event):
     assert "None" in str(avail)
 
     assert avail == avail2
-
-    avail.event = event
-    assert hash(avail) != hash(avail2)
-
-    avail2.event = event
-    assert hash(avail) == hash(avail2)
 
 
 @pytest.mark.parametrize(
