@@ -102,6 +102,10 @@ class OutboxSend(EventPermissionRequired, TemplateView):
     @cached_property
     def queryset(self):
         qs = self.request.event.queued_mails.filter(sent__isnull=True)
+        pks = self.request.GET.get("pks") or ""
+        if pks:
+            pks = pks.split(",")
+            qs = qs.filter(pk__in=pks)
         return qs
 
     def post(self, request, *args, **kwargs):

@@ -18,6 +18,11 @@
             {% include "common/search_form.html" %}
         </span>
         <span>
+            {% if is_paginated and page_obj.paginator.num_pages > 1 %}
+            <a href="{{ request.event.orga_urls.send_outbox }}?pks={% for mail in mails %}{{ mail.pk }}{% if not forloop.last %},{% endif %}{% endfor %}">
+                <button class="btn btn-lg btn-outline-success">{% translate "Send all on this page" %}</button>
+            </a>
+            {% endif %}
             <a href="{{ request.event.orga_urls.send_outbox }}">
                 <button class="btn btn-lg btn-success">{% translate "Send all" %}</button>
             </a>
