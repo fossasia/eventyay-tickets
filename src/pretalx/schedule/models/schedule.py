@@ -271,6 +271,12 @@ class Schedule(LogMixin, models.Model):
         old_submissions = set(slot.submission_id for slot in old_slots)
         new_submissions = set(slot.submission_id for slot in new_slots)
         handled_submissions = set()
+        new_by_submission = defaultdict(list)
+        old_by_submission = defaultdict(list)
+        for slot in new_slot_set:
+            new_by_submission[slot.submission].append(slot)
+        for slot in old_slot_set:
+            old_by_submission[slot.submission].append(slot)
 
         moved_or_missing = old_slot_set - new_slot_set - {None}
         moved_or_new = new_slot_set - old_slot_set - {None}
@@ -279,9 +285,7 @@ class Schedule(LogMixin, models.Model):
             if entry.submission in handled_submissions or not entry.submission:
                 continue
             if entry.submission not in new_submissions:
-                result["canceled_talks"] += list(
-                    old_slots.filter(submission__pk=entry.submission)
-                )
+                result["canceled_talks"] += old_by_submission.get[entry.submission]
             else:
                 new, canceled, moved = self._handle_submission_move(
                     entry.submission, old_slots, new_slots
@@ -294,9 +298,7 @@ class Schedule(LogMixin, models.Model):
             if entry.submission in handled_submissions:
                 continue
             if entry.submission not in old_submissions:
-                result["new_talks"] += list(
-                    new_slots.filter(submission__pk=entry.submission)
-                )
+                result["new_talks"] += new_by_submission[entry.submission]
             else:
                 new, canceled, moved = self._handle_submission_move(
                     entry.submission, old_slots, new_slots
