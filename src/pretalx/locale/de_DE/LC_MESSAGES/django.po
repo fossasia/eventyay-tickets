@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-02-03 16:40+0000\n"
-"PO-Revision-Date: 2020-12-24 00:53+0100\n"
+"PO-Revision-Date: 2021-02-03 17:44+0100\n"
 "Last-Translator: Astrid Emde <astrid.emde@wheregroup.com>\n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -2667,20 +2667,7 @@ msgid "We have some questions about your proposal"
 msgstr "Wir haben ein paar Fragen zu deiner Einreichung"
 
 #: pretalx/mail/default_templates.py:73
-#, fuzzy, python-brace-format
-#| msgid ""
-#| "Hi!\n"
-#| "\n"
-#| "We have some open questions about yourself and your proposal that we'd\n"
-#| "like to ask you to answer:\n"
-#| "\n"
-#| "{questions}\n"
-#| "\n"
-#| "You can answer them at {url}.\n"
-#| "\n"
-#| "Please do not hesitate to contact us if you have any questions in turn!\n"
-#| "\n"
-#| "The {event_name} orga"
+#, python-brace-format
 msgid ""
 "Hi!\n"
 "\n"
@@ -3378,19 +3365,16 @@ msgid "Proposal state"
 msgstr "Einreichungsstatus"
 
 #: pretalx/orga/forms/submission.py:61
-#, fuzzy
-#| msgctxt "Room information"
-#| msgid "Room"
 msgid "Room"
 msgstr "Raum"
 
 #: pretalx/orga/forms/submission.py:65
 msgid "Start"
-msgstr ""
+msgstr "Beginn"
 
 #: pretalx/orga/forms/submission.py:79
 msgid "End"
-msgstr ""
+msgstr "Ende"
 
 #: pretalx/orga/phrases.py:16
 msgid "I think this session is well-suited to this conference, because ..."
@@ -4425,10 +4409,8 @@ msgstr[0] "Ausgehende E-Mail"
 msgstr[1] "Ausgehende E-Mails"
 
 #: pretalx/orga/templates/orga/mails/outbox_list.html:23
-#, fuzzy
-#| msgid "Send mail to speakers"
 msgid "Send all on this page"
-msgstr "E-Mail an Vortragende"
+msgstr "Alle auf dieser Seite abschicken"
 
 #: pretalx/orga/templates/orga/mails/outbox_list.html:27
 msgid "Send all"
@@ -4687,10 +4669,8 @@ msgid "Reviews are currently closed."
 msgstr "Derzeit können keine Reviews erstellt werden."
 
 #: pretalx/orga/templates/orga/review/dashboard.html:48
-#, fuzzy
-#| msgid "total reviews"
 msgid "Number of reviews"
-msgstr "Reviews insgesamt"
+msgstr "Anzahl von Reviews"
 
 #: pretalx/orga/templates/orga/review/dashboard.html:55
 #: pretalx/orga/templates/orga/schedule/index.html:55
@@ -5375,10 +5355,8 @@ msgstr ""
 "Einreichungen gezeigt."
 
 #: pretalx/orga/templates/orga/speaker/information_list.html:23
-#, fuzzy
-#| msgid "Target"
 msgid "Target group"
-msgstr "Ziel"
+msgstr "Zielgruppe"
 
 #: pretalx/orga/templates/orga/speaker/information_list.html:48
 msgid "Add a new note"
@@ -6460,41 +6438,29 @@ msgid "Non-accepted submitters"
 msgstr "Nicht angenommene Einreichende"
 
 #: pretalx/person/models/information.py:25
-#, fuzzy
-#| msgid "submitter"
-#| msgid_plural "submitters"
 msgid "All submitters"
-msgstr "Einreichende"
+msgstr "Alle Einreichende"
 
 #: pretalx/person/models/information.py:26
-#, fuzzy
-#| msgid "All rejected speakers"
 msgid "All accepted speakers"
-msgstr "Alle abgelehnten Vortragenden"
+msgstr "Alle angenommenen Vortragende"
 
 #: pretalx/person/models/information.py:27
-#, fuzzy
-#| msgid "All confirmed speakers"
 msgid "Only confirmed speakers"
-msgstr "Alle zugesagten Vortragenden"
+msgstr "Nur zugesagte Vortragende"
 
 #: pretalx/person/models/information.py:36
-#, fuzzy
-#| msgid "Leave empty to use this category for all tracks."
 msgid "Leave empty to show this information to all tracks."
-msgstr "Leer lassen, um die Standard-Kategorie zu verwenden: {}"
+msgstr "Leer lassen, um diese Informationen für alle Tracks zu zeigen."
 
 #: pretalx/person/models/information.py:40
-#, fuzzy
-#| msgid "No proposals yet"
 msgid "Limit to proposal types"
-msgstr "Keine Einreichungen bisher"
+msgstr "Auf Einreichungstypen beschränken"
 
 #: pretalx/person/models/information.py:42
-#, fuzzy
-#| msgid "Leave empty to use this category for all tracks."
 msgid "Leave empty to show this information for all proposal types."
-msgstr "Leer lassen, um die Standard-Kategorie zu verwenden: {}"
+msgstr ""
+"Leer lassen, um diese Informationen für alle Einreichungstypen zu zeigen."
 
 #: pretalx/person/models/information.py:47
 #: pretalx/submission/models/resource.py:23
