@@ -34,7 +34,7 @@
 
     {% include "agenda/header_row.html" with with_margin=True with_extra=True %}
 
-  <script type="text/javascript" src="{{ request.event.urls.schedule }}widget/v2.{{ request.event.locale }}.js" async></script>
+  <script type="text/javascript" src="{{ request.event.urls.schedule }}widget/v2.{{ request.event.locale|slice:":2" }}.js" async></script>
 
     <pretalx-schedule
       event-url="{{ request.event.urls.base }}"
