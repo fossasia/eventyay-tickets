@@ -285,7 +285,7 @@ class Schedule(LogMixin, models.Model):
             if entry.submission in handled_submissions or not entry.submission:
                 continue
             if entry.submission not in new_submissions:
-                result["canceled_talks"] += old_by_submission.get[entry.submission]
+                result["canceled_talks"] += old_by_submission[entry.submission]
             else:
                 new, canceled, moved = self._handle_submission_move(
                     entry.submission, old_slots, new_slots
