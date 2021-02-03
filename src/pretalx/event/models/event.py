@@ -616,8 +616,8 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
             information.pk = None
             information.event = self
             information.save()
-            information.tracks.set([])
-            information.submission_types.set([])
+            information.limit_tracks.set([])
+            information.limit_types.set([])
             for track in tracks:
                 information.limit_tracks.add(track_map.get(track))
             for stype in types:
