@@ -610,7 +610,7 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
 
         information_map = {}
         for information in other_event.information.all():
-            information[information.pk] = information
+            information_map[information.pk] = information
             tracks = information.limit_tracks.all().values_list("pk", flat=True)
             types = information.limit_types.all().values_list("pk", flat=True)
             information.pk = None
