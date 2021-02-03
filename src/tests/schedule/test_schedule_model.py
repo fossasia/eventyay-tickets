@@ -1,4 +1,5 @@
 import datetime as dt
+from collections import namedtuple
 
 import pytest
 from django.core import mail as djmail
@@ -194,10 +195,13 @@ def test_schedule_changes(event, slot, room, accepted_submission):
         slot.save()
         assert QueuedMail.objects.filter(sent__isnull=True).count() == 0
         schedule, _ = event.wip_schedule.freeze("test")
+        Slot = namedtuple("Slot", ["submission", "room", "start"])
         assert schedule.changes == {
             "count": 1,
             "action": "update",
-            "new_talks": [current_slot],
+            "new_talks": [
+                Slot(current_slot.submission, current_slot.room, current_slot.start)
+            ],
             "canceled_talks": [],
             "moved_talks": [],
         }

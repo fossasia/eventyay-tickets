@@ -54,20 +54,22 @@ def test_slot_warnings_without_room(slot):
         slot.room = None
         slot.save()
         assert slot.start
-        assert not slot.warnings
+        assert not slot.schedule.get_talk_warnings(slot)
 
 
 @pytest.mark.django_db
 def test_slot_warnings_when_room_unavailable(slot):
     with scope(event=slot.event):
-        assert len(slot.warnings) == 1
-        assert slot.warnings[0]["type"] == "room"
+        warnings = slot.schedule.get_talk_warnings(slot)
+        assert len(warnings) == 1
+        assert warnings[0]["type"] == "room"
 
 
 @pytest.mark.django_db
 def test_slot_no_warnings_when_room_available(slot, room_availability):
     with scope(event=slot.event):
-        assert not slot.warnings
+        warnings = slot.schedule.get_talk_warnings(slot)
+        assert not warnings
 
 
 @pytest.mark.django_db
@@ -78,10 +80,11 @@ def test_slot_warning_when_speaker_unavailable(slot, availability, room_availabi
         availability.person = slot.submission.speakers.first().event_profile(slot.event)
         availability.pk = None
         availability.save()
-        assert len(slot.warnings) == 1
-        assert slot.warnings[0]["type"] == "speaker"
+        warnings = slot.schedule.get_talk_warnings(slot)
+        assert len(warnings) == 1
+        assert warnings[0]["type"] == "speaker"
         assert (
-            slot.warnings[0]["message"]
+            warnings[0]["message"]
             == "A speaker is not available at the scheduled time."
         )
 
@@ -99,9 +102,10 @@ def test_slot_warning_when_speaker_overbooked(
         other_slot.submission.speakers.add(availability.person.user)
         other_slot.save()
         other_slot.submission.save()
-        assert len(slot.warnings) == 1
-        assert slot.warnings[0]["type"] == "speaker"
+        warnings = slot.schedule.get_talk_warnings(slot)
+        assert len(warnings) == 1
+        assert warnings[0]["type"] == "speaker"
         assert (
-            slot.warnings[0]["message"]
+            warnings[0]["message"]
             == "A speaker is holding another session at the scheduled time."
         )

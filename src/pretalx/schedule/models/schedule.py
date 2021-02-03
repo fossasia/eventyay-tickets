@@ -195,12 +195,16 @@ class Schedule(LogMixin, models.Model):
             queryset = queryset.filter(published__lt=self.published)
         return queryset.order_by("-published").first()
 
-    def _handle_submission_move(self, submission_pk, old_slots, new_slots):
+    def _handle_submission_move(self, submission, old_slots, new_slots):
         new = []
         canceled = []
         moved = []
-        all_old_slots = list(old_slots.filter(submission__pk=submission_pk))
-        all_new_slots = list(new_slots.filter(submission__pk=submission_pk))
+        all_old_slots = [
+            slot for slot in old_slots if slot.submission_id == submission.pk
+        ]
+        all_new_slots = [
+            slot for slot in new_slots if slot.submission_id == submission.pk
+        ]
         old_slots = [
             slot
             for slot in all_old_slots
@@ -268,8 +272,8 @@ class Schedule(LogMixin, models.Model):
         new_slot_set = set(
             Slot(slot.submission, slot.room, slot.start) for slot in new_slots
         )
-        old_submissions = set(slot.submission_id for slot in old_slots)
-        new_submissions = set(slot.submission_id for slot in new_slots)
+        old_submissions = set(slot.submission for slot in old_slots)
+        new_submissions = set(slot.submission for slot in new_slots)
         handled_submissions = set()
         new_by_submission = defaultdict(list)
         old_by_submission = defaultdict(list)
