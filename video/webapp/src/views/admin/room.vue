@@ -55,6 +55,7 @@
 						bunt-input(v-model="val.config.hls_url", label="HLS URL", name="url")
 						upload-url-input(v-model="val.config.streamOfflineImage", label="Stream offline image", name="streamOfflineImage")
 						bunt-input(v-if="$features.enabled('muxdata')", v-model="val.config.mux_env_key", label="MUX data environment key", name="muxenvkey")
+						bunt-input(v-model="val.config.subtitle_url", label="URL for external subtitles", name="subtitle_url")
 						.alternative(v-for="(a, i) in (val.config.alternatives || [])")
 							bunt-input(v-model="a.label", label="Label", name="label")
 							bunt-input(v-model="a.hls_url", label="HLS URL", name="hls_url")
