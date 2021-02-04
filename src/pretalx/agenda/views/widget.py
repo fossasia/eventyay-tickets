@@ -124,12 +124,12 @@ class WidgetData(ScheduleView):
 
 @condition(etag_func=widget_data_etag)
 @cache_page(60)
-def widget_data_v2(request, event):
+def widget_data_v2(request, event, version=None):
     event = request.event
     if not request.user.has_perm("agenda.view_widget", event):
         raise Http404()
 
-    version = unquote(request.GET.get("v") or "")
+    version = version or unquote(request.GET.get("v") or "")
     schedule = None
     if version and version == "wip":
         if not request.user.has_perm("orga.view_schedule", event):

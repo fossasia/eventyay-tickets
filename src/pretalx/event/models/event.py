@@ -270,7 +270,7 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
         frab_json = "{export}schedule.json"
         frab_xcal = "{export}schedule.xcal"
         ical = "{export}schedule.ics"
-        widget_data_source = "{schedule}widget/v1.json"
+        widget_data = "{schedule}widget/v2.json"
 
     class orga_urls(EventUrls):
         create = "/orga/event/new"

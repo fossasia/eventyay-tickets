@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`-` The HTML export did not work with the new schedule page.
 - :feature:`-` In addition to sending either all emails or a single email, organisers can now also send only the currently selected emails. This is particularly helpful with an email provider (*cough* google) who starts rejecting emails when bulk-sending, halfway through your sending process.
 - :bug:`-` A bug led to the first schedule release of every event being empty, sometimes, since all talks were treated as unconfirmed.
 - :bug:`-` Improved review interface so that long or complex scores don't break the interface when *editing* an existing review.
