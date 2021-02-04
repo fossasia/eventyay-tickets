@@ -70,7 +70,8 @@ def default_roles():
 
 def default_grants():
     return {
-        "viewer": [],
+        "attendee": ["attendee"],
+        "admin": ["admin"],
     }
 
 

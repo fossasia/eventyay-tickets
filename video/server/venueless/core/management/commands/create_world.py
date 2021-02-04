@@ -36,7 +36,6 @@ class Command(BaseCommand):
                 }
             ]
         }
-        w.trait_grants["admin"] = ["admin"]
         w.save()
 
         print("World created.")
