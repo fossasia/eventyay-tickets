@@ -23,6 +23,7 @@
 				.buffer
 				bunt-icon-button(v-if="module.config.alternatives", @click="showSourceChooser = !showSourceChooser") movie
 				bunt-icon-button(v-if="!offline && textTracks.length > 0", @click="showCaptionsChooser = !showCaptionsChooser") {{ textTracks.some(t => t.mode === 'showing') ? 'closed-caption' : 'closed-caption-outline' }}
+				bunt-icon-button(v-else-if="!offline && module.config.subtitle_url", @click="openExternalSubtitles") closed-caption-outline
 				bunt-icon-button(v-if="!offline", @click="showLevelChooser = !showLevelChooser") {{ levelIcon }}
 				bunt-icon-button(v-if="!offline", @click="toggleVolume") {{ muted || volume === 0 ? 'volume_off' : 'volume_high' }}
 				input.volume-slider(v-if="!offline", type="range", step="any", min="0", max="1", aria-label="Volume", :value="volume", @input="onVolumeSlider", :style="{'--volume': volume}")
@@ -325,6 +326,9 @@ export default {
 			} else {
 				this.$refs.videocontainer.requestFullscreen()
 			}
+		},
+		openExternalSubtitles () {
+			window.open(this.module.config.subtitle_url, 'subtitles', 'width=600,height=400,toolbar=no,menubar=no,location=yes,status=yes,resizable=yes,scrollbars=yes')
 		},
 		onTextTracksChanged () {
 			const newList = []
