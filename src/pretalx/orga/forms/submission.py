@@ -5,6 +5,7 @@ from django import forms
 from django.utils.translation import gettext as _
 from django_scopes.forms import SafeModelChoiceField, SafeModelMultipleChoiceField
 
+from pretalx.common.forms.fields import ImageField
 from pretalx.common.mixins.forms import ReadOnlyFlag, RequestRequire
 from pretalx.orga.forms.widgets import TagWidget
 from pretalx.submission.models import Submission, SubmissionStates, SubmissionType
@@ -147,6 +148,7 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
             "submission_type": SafeModelChoiceField,
             "tags": SafeModelMultipleChoiceField,
             "track": SafeModelChoiceField,
+            "image": ImageField,
         }
         request_require = {
             "title",

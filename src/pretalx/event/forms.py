@@ -7,7 +7,7 @@ from django_scopes import scopes_disabled
 from django_scopes.forms import SafeModelMultipleChoiceField
 from i18nfield.forms import I18nModelForm
 
-from pretalx.common.forms.fields import IMAGE_EXTENSIONS, ExtensionFileField
+from pretalx.common.forms.fields import ImageField
 from pretalx.common.mixins.forms import ReadOnlyFlag
 from pretalx.event.models import Event, Organiser, Team, TeamInvite
 from pretalx.orga.forms.widgets import HeaderSelect, MultipleLanguagesWidget
@@ -193,9 +193,8 @@ class EventWizardDisplayForm(forms.Form):
         ),
         required=False,
     )
-    logo = ExtensionFileField(
+    logo = ImageField(
         required=False,
-        extensions=IMAGE_EXTENSIONS,
         label=_("Logo"),
         help_text=_(
             "If you provide a logo image, we will by default not show your event's name and date in the page header. "

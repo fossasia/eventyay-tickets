@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` pretalx now removes EXIF metadata from all uploaded images.
 - :feature:`-` The event activation signal can now return a string to be shown as success message.
 - :bug:`-` The HTML export did not work with the new schedule page.
 - :feature:`-` In addition to sending either all emails or a single email, organisers can now also send only the currently selected emails. This is particularly helpful with an email provider (*cough* google) who starts rejecting emails when bulk-sending, halfway through your sending process.

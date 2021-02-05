@@ -14,7 +14,7 @@ from i18nfield.fields import I18nFormField, I18nTextarea
 from i18nfield.forms import I18nFormMixin, I18nModelForm
 
 from pretalx.common.css import validate_css
-from pretalx.common.forms.fields import IMAGE_EXTENSIONS, ExtensionFileField
+from pretalx.common.forms.fields import ImageField
 from pretalx.common.mixins.forms import ReadOnlyFlag
 from pretalx.common.phrases import phrases
 from pretalx.event.models.event import Event, Event_SettingsStore
@@ -35,9 +35,8 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
             " default language instead."
         ),
     )
-    logo = ExtensionFileField(
+    logo = ImageField(
         required=False,
-        extensions=IMAGE_EXTENSIONS,
         label=_("Header image"),
         help_text=_(
             "If you provide a header image, it will be displayed instead of your event's color and/or header pattern "
@@ -45,9 +44,8 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
             "continue to be displayed, and not stretched."
         ),
     )
-    header_image = ExtensionFileField(
+    header_image = ImageField(
         required=False,
-        extensions=IMAGE_EXTENSIONS,
         label=_("Header image"),
         help_text=_(
             "If you provide a logo image, we will by default not show your event's name and date in the page header. "

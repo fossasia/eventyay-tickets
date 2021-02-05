@@ -6,7 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from django_scopes.forms import SafeModelChoiceField
 
 from pretalx.cfp.forms.cfp import CfPFormMixin
-from pretalx.common.forms.fields import IMAGE_EXTENSIONS, ExtensionFileField
+from pretalx.common.forms.fields import ImageField
 from pretalx.common.forms.widgets import CheckboxMultiDropdown, MarkdownWidget
 from pretalx.common.mixins.forms import PublicContent, RequestRequire
 from pretalx.submission.forms.track_select_widget import TrackSelectWidget
@@ -21,9 +21,8 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
         ),
         required=False,
     )
-    image = ExtensionFileField(
+    image = ImageField(
         required=False,
-        extensions=IMAGE_EXTENSIONS,
         label=_("Session image"),
         help_text=_("Use this if you want an illustration to go with your proposal."),
     )

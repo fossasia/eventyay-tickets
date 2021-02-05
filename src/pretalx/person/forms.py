@@ -10,8 +10,7 @@ from i18nfield.forms import I18nModelForm
 
 from pretalx.cfp.forms.cfp import CfPFormMixin
 from pretalx.common.forms.fields import (
-    IMAGE_EXTENSIONS,
-    ExtensionFileField,
+    ImageField,
     PasswordConfirmationField,
     PasswordField,
     SizeFileField,
@@ -155,8 +154,6 @@ class SpeakerProfileForm(
         if not self.event.settings.cfp_request_avatar:
             self.fields.pop("avatar", None)
             self.fields.pop("get_gravatar", None)
-        elif "avatar" in self.fields:
-            self.fields["avatar"].extensions = IMAGE_EXTENSIONS
 
     @cached_property
     def user_fields(self):
@@ -208,7 +205,7 @@ class SpeakerProfileForm(
         fields = ("biography",)
         public_fields = ["name", "biography", "avatar"]
         widgets = {
-            "avatar": ExtensionFileField,
+            "avatar": ImageField,
             "biography": MarkdownWidget,
         }
         request_require = {"biography", "availabilities"}
