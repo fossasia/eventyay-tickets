@@ -73,7 +73,7 @@ class SizeFileInput:
         return f"{num:.1f}YiB"  # Future proof 11/10
 
     def validate(self, value):
-        value = super().valiadate(value)
+        value = super().validate(value)
         if (
             self.max_size
             and isinstance(value, UploadedFile)
@@ -130,13 +130,12 @@ class ImageField(ExtensionFileInput, SizeFileInput, FileField):
         super().__init__(*args, extensions=IMAGE_EXTENSIONS, **kwargs)
 
     def to_python(self, data):
-        """
-        Check that the file-upload field data contains a valid image (GIF, JPG,
-        PNG, etc. -- whatever Pillow supports).
+        """Check that the file-upload field data contains a valid image (GIF,
+        JPG, PNG, etc. -- whatever Pillow supports).
 
-        Vendored from django.forms.fields.ImageField to add EXIF data removal.
-        Can't use super() because we need to patch in the .png.fp object for
-        some unholy (and possibly buggy) reason.
+        Vendored from django.forms.fields.ImageField to add EXIF data
+        removal. Can't use super() because we need to patch in the
+        .png.fp object for some unholy (and possibly buggy) reason.
         """
         f = super().to_python(data)
         if f is None:
@@ -167,8 +166,10 @@ class ImageField(ExtensionFileInput, SizeFileInput, FileField):
         except Exception as exc:
             # Pillow doesn't recognize it as an image.
             raise ValidationError(
-                self.error_messages["invalid_image"],
-                code="invalid_image",
+                _(
+                    "Upload a valid image. The file you uploaded was either not an "
+                    "image or a corrupted image."
+                )
             ) from exc
         if hasattr(f, "seek") and callable(f.seek):
             f.seek(0)
