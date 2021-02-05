@@ -355,10 +355,8 @@ class TalkUpdate(PermissionRequired, View):
             talk.room = None
             talk.save(update_fields=["start", "end", "room"])
 
-        speaker_availabilities = self.request.event.settings.cfp_request_availabilities
-        warnings = talk.schedule.get_talk_warnings(
-            talk, speaker_availabilities=speaker_availabilities
-        )
+        with_speakers = self.request.event.settings.cfp_request_availabilities
+        warnings = talk.schedule.get_talk_warnings(talk, with_speakers=with_speakers)
 
         return JsonResponse(serialize_slot(talk, warnings=warnings))
 

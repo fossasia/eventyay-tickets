@@ -473,7 +473,8 @@ class SubmissionList(EventPermissionRequired, Sortable, Filterable, ListView):
     def get_queryset(self):
         qs = (
             Submission.all_objects.filter(event=self.request.event)
-            .select_related("submission_type")
+            .select_related("submission_type", "event", "track")
+            .prefetch_related("speakers")
             .order_by("-id")
             .all()
         )

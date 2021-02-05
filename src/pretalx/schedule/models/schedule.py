@@ -19,7 +19,7 @@ from pretalx.common.mixins import LogMixin
 from pretalx.common.phrases import phrases
 from pretalx.common.urls import EventUrls
 from pretalx.mail.context import template_context_from_event
-from pretalx.person.models import User
+from pretalx.person.models import SpeakerProfile, User
 from pretalx.submission.models import SubmissionStates
 
 
@@ -321,7 +321,11 @@ class Schedule(LogMixin, models.Model):
         return result
 
     def get_talk_warnings(
-        self, talk, speaker_availabilities=True, room_avails=None
+        self,
+        talk,
+        with_speakers=True,
+        room_avails=None,
+        speaker_avails=None,
     ) -> list:
         """A list of warnings that apply to this slot.
 
@@ -351,9 +355,12 @@ class Schedule(LogMixin, models.Model):
                     }
                 )
         for speaker in talk.submission.speakers.all():
-            if speaker_availabilities:
+            if with_speakers:
                 profile = speaker.event_profile(event=self.event)
-                profile_availabilities = list(profile.availabilities.all())
+                if speaker_avails is not None:
+                    profile_availabilities = speaker_avails.get(profile.pk)
+                else:
+                    profile_availabilities = list(profile.availabilities.all())
                 if profile_availabilities and not any(
                     speaker_availability.contains(availability)
                     for speaker_availability in profile_availabilities
@@ -402,7 +409,7 @@ class Schedule(LogMixin, models.Model):
             "submission", "room"
         ).prefetch_related("submission__speakers")
         result = {}
-        speaker_availabilities = self.event.settings.cfp_request_availabilities
+        with_speakers = self.event.settings.cfp_request_availabilities
         room_avails = defaultdict(
             list,
             {
@@ -410,11 +417,23 @@ class Schedule(LogMixin, models.Model):
                 for room in self.event.rooms.all().prefetch_related("availabilities")
             },
         )
+        speaker_avails = None
+        if with_speakers:
+            speaker_avails = defaultdict(
+                list,
+                {
+                    profile.pk: profile.availabilities.all()
+                    for profile in SpeakerProfile.objects.filter(
+                        event=self.event
+                    ).prefetch_related("availabilities")
+                },
+            )
         for talk in talks:
             talk_warnings = self.get_talk_warnings(
                 talk=talk,
-                speaker_availabilities=speaker_availabilities,
+                with_speakers=with_speakers,
                 room_avails=room_avails.get(talk.room_id) if talk.room_id else None,
+                speaker_avails=speaker_avails,
             )
             if talk_warnings:
                 result[talk] = talk_warnings

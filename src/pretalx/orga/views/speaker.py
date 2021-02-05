@@ -45,7 +45,7 @@ class SpeakerList(EventPermissionRequired, Sortable, Filterable, ListView):
     def get_queryset(self):
         qs = SpeakerProfile.objects.filter(
             event=self.request.event, user__in=self.request.event.submitters
-        )
+        ).select_related("event", "user")
 
         qs = self.filter_queryset(qs)
         if "role" in self.request.GET:
@@ -109,10 +109,12 @@ class SpeakerDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         )
 
     @context
+    @cached_property
     def submissions(self, **kwargs):
         return self.request.event.submissions.filter(speakers__in=[self.object])
 
     @context
+    @cached_property
     def mails(self):
         return self.object.mails.filter(
             sent__isnull=False, event=self.request.event
@@ -121,7 +123,7 @@ class SpeakerDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     @context
     @cached_property
     def questions_form(self):
-        speaker = self.get_object()
+        speaker = self.object
         return QuestionsForm(
             self.request.POST if self.request.method == "POST" else None,
             files=self.request.FILES if self.request.method == "POST" else None,
@@ -141,12 +143,12 @@ class SpeakerDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     @transaction.atomic()
     def form_valid(self, form):
         result = super().form_valid(form)
-        self.questions_form.speaker = self.get_object()
+        self.questions_form.speaker = self.object
         if not self.questions_form.is_valid():
             return self.get(self.request, *self.args, **self.kwargs)
         self.questions_form.save()
         if form.has_changed():
-            self.get_object().event_profile(self.request.event).log_action(
+            self.object.event_profile(self.request.event).log_action(
                 "pretalx.user.profile.update", person=self.request.user, orga=True
             )
         if form.has_changed() or self.questions_form.has_changed():
