@@ -210,7 +210,10 @@ class ExhibitionService:
             "contact_enabled",
         ):
             if k in exhibitor and k not in exclude_fields:
-                setattr(e, k, exhibitor[k])
+                v = exhibitor[k]
+                if isinstance(v, str):
+                    v = v.strip()
+                setattr(e, k, v)
         e.save()
 
         if (
