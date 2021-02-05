@@ -145,6 +145,6 @@ class UploadView(View):
         image = Image.open(file)
         image_without_exif = Image.new(image.mode, image.size)
         image_without_exif.putdata(image.getdata())
-        image_without_exif.save(o)
+        image_without_exif.save(o, quality=95)  # Pillow's default JPEG quality is 75
         o.seek(0)
         return Image.MIME.get(image.format), File(o, name=data.name)
