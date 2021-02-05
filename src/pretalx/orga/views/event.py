@@ -216,6 +216,9 @@ class EventLive(EventSettingsPermission, TemplateView):
                         data={},
                     )
                     messages.success(request, _("This event is now public."))
+                    for response in responses:
+                        if isinstance(response[1], str):
+                            messages.success(request, response[1])
         else:  # action == 'deactivate'
             if not event.is_public:
                 messages.success(request, _("This event was already hidden."))
