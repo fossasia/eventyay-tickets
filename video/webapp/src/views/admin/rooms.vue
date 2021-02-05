@@ -11,7 +11,7 @@
 			.actions
 				bunt-button.btn-create(@click="showCreateRoomPrompt = true") Create new
 		RecycleScroller.tbody.bunt-scrollbar(v-if="filteredRooms", :items="filteredRooms", :item-size="48", v-slot="{item: room}", v-scrollbar.y="")
-			router-link(:to="{name: 'admin:room', params: {editRoomId: room.id}}").room.table-row(:class="{error: room.error, updating: room.updating}")
+			router-link.room.table-row(:to="{name: 'admin:room', params: {editRoomId: room.id}}", :class="{error: room.error, updating: room.updating}")
 				.id(:title="room.id") {{ room.id }}
 				.prio {{ room.sorting_priority }}
 				.name {{ room.name }}
