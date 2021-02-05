@@ -91,7 +91,8 @@ class AppView(View):
                         "api": {
                             "socket": "{}://{}/ws/world/{}/".format(
                                 settings.WEBSOCKET_PROTOCOL,
-                                request.headers["Host"], world.pk
+                                request.headers["Host"],
+                                world.pk,
                             ),
                             "upload": reverse("storage:upload"),
                         },
