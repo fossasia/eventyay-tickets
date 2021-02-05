@@ -65,6 +65,8 @@ class SpeakerView(PermissionRequired, TemplateView):
     @context
     @cached_property
     def talks(self):
+        if not self.request.event.current_schedule:
+            return []
         return self.request.event.current_schedule.talks.filter(
             submission__speakers__code=self.kwargs["code"]
         )
