@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` pretalx will resize uploaded images down to 1920x1080 (by default).
 - :feature:`-` pretalx now removes EXIF metadata from all uploaded images.
 - :feature:`-` The event activation signal can now return a string to be shown as success message.
 - :bug:`-` The HTML export did not work with the new schedule page.

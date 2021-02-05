@@ -146,7 +146,11 @@ class SpeakerProfileForm(
                 {field: getattr(self.user, field) for field in self.user_fields}
             )
         for field in self.user_fields:
-            self.fields[field] = User._meta.get_field(field).formfield(
+            field_class = (
+                self.Meta.field_classes.get(field)
+                or User._meta.get_field(field).formfield
+            )
+            self.fields[field] = field_class(
                 initial=initial.get(field), disabled=read_only
             )
             self._update_cfp_help_text(field)
@@ -204,8 +208,10 @@ class SpeakerProfileForm(
         model = SpeakerProfile
         fields = ("biography",)
         public_fields = ["name", "biography", "avatar"]
-        widgets = {
+        field_classes = {
             "avatar": ImageField,
+        }
+        widgets = {
             "biography": MarkdownWidget,
         }
         request_require = {"biography", "availabilities"}

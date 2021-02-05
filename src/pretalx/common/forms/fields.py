@@ -121,6 +121,12 @@ class ImageField(ExtensionFileInput, SizeFileInput, FileField):
     widget = ImageInput
 
     def __init__(self, *args, **kwargs):
+        self.max_width = (
+            kwargs.pop("max_width", None) or settings.IMAGE_DEFAULT_MAX_WIDTH
+        )
+        self.max_height = (
+            kwargs.pop("max_height", None) or settings.IMAGE_DEFAULT_MAX_HEIGHT
+        )
         super().__init__(*args, extensions=IMAGE_EXTENSIONS, **kwargs)
 
     def to_python(self, data):
@@ -175,6 +181,8 @@ class ImageField(ExtensionFileInput, SizeFileInput, FileField):
         image_data = image.getdata()
         image_without_exif = Image.new(image.mode, image.size)
         image_without_exif.putdata(image_data)
+        if self.max_height and self.max_width:
+            image_without_exif.thumbnail((self.max_width, self.max_height))
         image_without_exif.save(stream)
         stream.seek(0)
         return File(stream, name=data.name)
