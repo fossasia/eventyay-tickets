@@ -174,7 +174,9 @@ class ImageField(ExtensionFileInput, SizeFileInput, FileField):
             f.seek(0)
 
         stream = BytesIO()
-        stream.name = data.name
+
+        extension = ".png" if image.mode == "RGBA" else ".jpg"
+        stream.name = Path(data.name).stem + extension
         image.fp = file
         if hasattr(image, "png"):  # Yeah, idk what's up with this
             image.png.fp = file
@@ -183,6 +185,8 @@ class ImageField(ExtensionFileInput, SizeFileInput, FileField):
         image_without_exif.putdata(image_data)
         if self.max_height and self.max_width:
             image_without_exif.thumbnail((self.max_width, self.max_height))
-        image_without_exif.save(stream)
+        image_without_exif.save(
+            stream, quality="web_high" if extension == ".jpg" else 95
+        )
         stream.seek(0)
         return File(stream, name=data.name)
