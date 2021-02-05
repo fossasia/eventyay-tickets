@@ -150,6 +150,10 @@ MEDIA_URL = os.getenv(
     "VENUELESS_MEDIA_URL", config.get("urls", "media", fallback="/media/")
 )
 
+WEBSOCKET_PROTOCOL = os.getenv(
+    "VENUELESS_WEBSOCKET_PROTOCOL", config.get("websocket", "protocol", fallback="wss")
+)
+
 nanocdn = os.getenv("VENUELESS_NANOCDN", config.get("urls", "nanocdn", fallback=""))
 if nanocdn:
     NANOCDN_URL = nanocdn

@@ -89,7 +89,8 @@ class AppView(View):
                 json.dumps(
                     {
                         "api": {
-                            "socket": "wss://{}/ws/world/{}/".format(
+                            "socket": "{}://{}/ws/world/{}/".format(
+                                settings.WEBSOCKET_PROTOCOL,
                                 request.headers["Host"], world.pk
                             ),
                             "upload": reverse("storage:upload"),
