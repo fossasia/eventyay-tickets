@@ -505,7 +505,6 @@ async def test_send_if_blocked_by_user(world):
         assert "success" == response[0]
 
         await c1.receive_json_from()  # chat event
-        await c1.receive_json_from()  # new notification pointer
         await c2.receive_json_from()  # channel list
         await c2.receive_json_from()  # new notification pointer
 
@@ -591,7 +590,6 @@ This conference was already in existence and may currently be in progress.
             assert "success" == response[0]
 
             response = await c1.receive_json_from()  # chat event
-            await c1.receive_json_from()  # new notification pointer
             await c2.receive_json_from()  # new notification pointer
 
             assert response[0] == "chat.event"
@@ -634,7 +632,6 @@ async def test_send_call_require_invite(world):
         assert "success" == response[0]
 
         response = await c1.receive_json_from()  # chat event
-        await c1.receive_json_from()  # new notification pointer
         await c2.receive_json_from()  # new notification pointer
 
         assert response[0] == "chat.event"
@@ -701,7 +698,6 @@ async def test_hide_and_reappear(world):
         response = await c1.receive_json_from()
         assert "success" == response[0]
         await c1.receive_json_from()  # message
-        await c1.receive_json_from()  # notification pointer
 
         cl = await c2.receive_json_from()  # channel list
         assert channel in [c["id"] for c in cl[1]["channels"]]
@@ -768,7 +764,6 @@ async def test_send_if_silenced(world):
         assert "success" == response[0]
 
         await c1.receive_json_from()  # chat event
-        await c1.receive_json_from()  # new notification pointer
         await c2.receive_json_from()  # channel list
         await c2.receive_json_from()  # new notification pointer
 

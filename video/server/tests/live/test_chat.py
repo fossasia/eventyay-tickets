@@ -570,8 +570,6 @@ async def test_fetch_messages_after_join(chat_room):
         event_id = response[2]["event"]["event_id"]
         response = await c1.receive_json_from()
         assert response[0] == "chat.event"
-        response = await c1.receive_json_from()
-        assert response[0] == "chat.notification_pointers"
 
         await c1.send_json_to(
             [
@@ -1060,7 +1058,6 @@ async def test_edit_messages(world, chat_room, editor, editee, message_type, suc
         response = await editee.receive_json_from()  # success
         await editee.receive_json_from()  # receives message
         await not_editee.receive_json_from()  # receives message
-        await editee.receive_json_from()  # notification pointer
         await not_editee.receive_json_from()  # notification pointer
 
         event_id = response[2]["event"]["event_id"]
@@ -1140,11 +1137,6 @@ async def test_unread_channels(world, chat_room):
         )
         await c1.receive_json_from()  # success
         await c1.receive_json_from()  # receives message
-
-        # c1 gets a notification pointer (useless, but currently the case)
-        response = await c1.receive_json_from()  # receives notification pointer
-        assert response[0] == "chat.notification_pointers"
-        assert channel_id in response[1]
 
         # c2 gets a notification pointer
         response = await c2.receive_json_from()  # receives notification pointer
@@ -1237,16 +1229,6 @@ async def test_broadcast_read_channels(world, chat_room):
         await c1.receive_json_from()  # success
         response = await c1.receive_json_from()  # receives message
         event_id = response[1]["event_id"]
-
-        # c1 gets a notification pointer (useless, but currently the case)
-        response = await c1.receive_json_from()  # receives notification pointer
-        assert response[0] == "chat.notification_pointers"
-        assert channel_id in response[1]
-
-        # c2 gets a notification pointer
-        response = await c2.receive_json_from()  # receives notification pointer
-        assert response[0] == "chat.notification_pointers"
-        assert channel_id in response[1]
 
         # c2 confirms they read the message
         await c2.send_json_to(
