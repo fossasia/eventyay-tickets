@@ -1,7 +1,7 @@
 <template lang="pug">
 .c-januscall(:class="[`size-${size}`]")
 	.error(v-if="error") {{ $t('JanusCall:error:text') }}
-	janus-videoroom(v-if="server", :server="server", :token="token", :iceServers="iceServers", :roomId="roomId", :size="size")
+	janus-videoroom(v-if="server", :server="server", :token="token", :iceServers="iceServers", :roomId="roomId", :size="size", @hangup="roomId = null; $router.push('/')")
 </template>
 <script>
 import api from 'lib/api'

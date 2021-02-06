@@ -46,6 +46,7 @@
 		bunt-icon-button(@click="toggleMute") {{ knownMuteState ? 'microphone-off' : 'microphone' }}
 		bunt-icon-button(@click="toggleScreenShare", :disabled="screensharingState === 'publishing' || screensharingState === 'unpublishing'") {{ screensharingState === 'published' ? 'monitor-off': 'monitor' }}
 		bunt-icon-button(@click="showDevicePrompt = true") cog
+		bunt-icon-button(@click="cleanup(); $emit('hangup')") phone-hangup
 
 	chat-user-card(v-if="selectedUser", ref="avatarCard", :sender="selectedUser", @close="selectedUser = null")
 	transition(name="prompt")
