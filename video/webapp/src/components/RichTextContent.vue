@@ -7,7 +7,7 @@ import router from 'router'
 
 export default {
 	props: {
-		content: Array,
+		content: Object,
 	},
 	computed: {
 		renderedContent () {

@@ -54,7 +54,7 @@ export default {
 				return true
 			}
 			if (this.module.type === 'call.janus') {
-				return true
+				return this.$refs.janus.roomId
 			}
 			if (this.module.type === 'call.bigbluebutton') {
 				return !!this.$refs.bigbluebutton.iframe
