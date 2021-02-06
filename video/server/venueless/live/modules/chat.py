@@ -418,6 +418,8 @@ class ChatModule(BaseModule):
                 users = await redis.spop(f"chat:unread.notify:{self.channel_id}", 100)
 
                 for user in users:
+                    if user.decode() == str(self.consumer.user.id):
+                        continue
                     await self.consumer.channel_layer.group_send(
                         GROUP_USER.format(id=user.decode()),
                         {
