@@ -42,11 +42,11 @@
 				bunt-icon-button(@click="requestFullscreen($refs.peerVideo[idx])") fullscreen
 
 	.controlbar.controls(v-show="connectionState == 'connected'", :class="knownMuteState ? 'always' : ''")
-		bunt-icon-button(@click="toggleVideo") {{ !videoRequested ? 'video-off' : 'video' }}
-		bunt-icon-button(@click="toggleMute") {{ knownMuteState ? 'microphone-off' : 'microphone' }}
-		bunt-icon-button(@click="toggleScreenShare", :disabled="screensharingState === 'publishing' || screensharingState === 'unpublishing'") {{ screensharingState === 'published' ? 'monitor-off': 'monitor' }}
-		bunt-icon-button(@click="showDevicePrompt = true") cog
-		bunt-icon-button.hangup(@click="cleanup(); $emit('hangup')") phone-hangup
+		bunt-icon-button(@click="toggleVideo", :tooltip="videoRequested ? $t('JanusVideoroom:tool-video:off') : $t('JanusVideoroom:tool-video:on')") {{ !videoRequested ? 'video-off' : 'video' }}
+		bunt-icon-button(@click="toggleMute", :tooltip="knownMuteState ? $t('JanusVideoroom:tool-mute:off') : $t('JanusVideoroom:tool-mute:on')") {{ knownMuteState ? 'microphone-off' : 'microphone' }}
+		bunt-icon-button(@click="toggleScreenShare", :disabled="screensharingState === 'publishing' || screensharingState === 'unpublishing'", :tooltip="screensharingState == 'published' ? $t('JanusVideoroom:tool-screenshare:off') : $t('JanusVideoroom:tool-screenshare:on')") {{ screensharingState === 'published' ? 'monitor-off': 'monitor' }}
+		bunt-icon-button(@click="showDevicePrompt = true", :tooltip="$t('JanusVideoroom:tool-settings:tooltip')") cog
+		bunt-icon-button.hangup(@click="cleanup(); $emit('hangup')", :tooltip="$t('JanusVideoroom:tool-hangup:tooltip')") phone-hangup
 
 	chat-user-card(v-if="selectedUser", ref="avatarCard", :sender="selectedUser", @close="selectedUser = null")
 	transition(name="prompt")
