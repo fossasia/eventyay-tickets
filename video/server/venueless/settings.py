@@ -34,20 +34,24 @@ else:
         encoding="utf-8",
     )
 
-SECRET_FILE = os.path.join(DATA_DIR, ".secret")
-if os.path.exists(SECRET_FILE):
-    with open(SECRET_FILE, "r") as f:
-        SECRET_KEY = f.read().strip()
-else:
-    chars = "abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)"
-    SECRET_KEY = get_random_string(50, chars)
-    with open(SECRET_FILE, "w") as f:
-        os.chmod(SECRET_FILE, 0o600)
-        try:
-            os.chown(SECRET_FILE, os.getuid(), os.getgid())
-        except AttributeError:
-            pass  # os.chown is not available on Windows
-        f.write(SECRET_KEY)
+SECRET_KEY = os.environ.get(
+    "VENUELESS_DJANGO_SECRET", config.get("django", "secret", fallback="")
+)
+if not SECRET_KEY:
+    SECRET_FILE = os.path.join(DATA_DIR, ".secret")
+    if os.path.exists(SECRET_FILE):
+        with open(SECRET_FILE, "r") as f:
+            SECRET_KEY = f.read().strip()
+    else:
+        chars = "abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)"
+        SECRET_KEY = get_random_string(50, chars)
+        with open(SECRET_FILE, "w") as f:
+            os.chmod(SECRET_FILE, 0o600)
+            try:
+                os.chown(SECRET_FILE, os.getuid(), os.getgid())
+            except AttributeError:
+                pass  # os.chown is not available on Windows
+            f.write(SECRET_KEY)
 
 debug_default = "runserver" in sys.argv
 DEBUG = os.environ.get("VENUELESS_DEBUG", str(debug_default)) == "True"
