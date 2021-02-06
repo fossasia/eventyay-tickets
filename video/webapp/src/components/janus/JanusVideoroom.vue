@@ -836,6 +836,12 @@ export default {
 		margin: auto
 		flex-shrink: 0
 		card()
+		.bunt-icon-button
+			line-height: 42px
+			height: 42px
+			width: 42px
+		.bunt-icon-button .bunt-icon
+			font-size: 26px
 		.hangup
 			color: $clr-danger
 
