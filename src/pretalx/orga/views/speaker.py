@@ -148,7 +148,7 @@ class SpeakerDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
             return self.get(self.request, *self.args, **self.kwargs)
         self.questions_form.save()
         if form.has_changed():
-            self.object.event_profile(self.request.event).log_action(
+            form.instance.log_action(
                 "pretalx.user.profile.update", person=self.request.user, orga=True
             )
         if form.has_changed() or self.questions_form.has_changed():
