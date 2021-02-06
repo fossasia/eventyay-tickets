@@ -7,6 +7,7 @@ prompt.c-av-device-prompt(@close="$emit('close')")
 			video(ref="video", playsinline, autoplay, muted="muted")
 		bunt-select(v-if="audioInputs.length > 0", v-model="audioInput", :options="audioInputs", option-label="label", option-value="value", icon="microphone", name="audioInput")
 		bunt-select(v-if="audioOutputs.length > 0", v-model="audioOutput", :options="audioOutputs", option-label="label", option-value="value", icon="volume-high", name="audioOutput")
+		bunt-checkbox(v-model="videoOutput", name="videoOutput") {{ $t(`AVDevicePrompt:videoout:label`) }}
 		bunt-button.btn-action(@click="save") {{ $t(`AVDevicePrompt:apply:label`) }}
 
 </template>
@@ -21,6 +22,7 @@ export default {
 			videoInput: localStorage.videoInput || '',
 			audioInput: localStorage.audioInput || '',
 			audioOutput: localStorage.audioOutput || '',
+			videoOutput: localStorage.videoOutput !== 'false',
 			videoInputs: [],
 			audioInputs: [],
 			audioOutputs: [],
@@ -103,6 +105,7 @@ export default {
 			localStorage.videoInput = this.videoInput || ''
 			localStorage.audioInput = this.audioInput || ''
 			localStorage.audioOutput = this.audioOutput || ''
+			localStorage.videoOutput = this.videoOutput
 			this.$emit('close')
 		},
 	},
