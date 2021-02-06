@@ -786,11 +786,16 @@ export default {
 			if (!atracks || atracks.length === 0) {
 				return
 			}
-			window.AudioContext = window.AudioContext || window.webkitAudioContext
-			const actx = new AudioContext()
-			const soundmeter = new SoundMeter(actx)
-			soundmeter.connectToSource(stream)
-			this.$set(this.soundMeters, refname, soundmeter)
+			try {
+				window.AudioContext = window.AudioContext || window.webkitAudioContext
+				const actx = new AudioContext()
+				const soundmeter = new SoundMeter(actx)
+				soundmeter.connectToSource(stream)
+				this.$set(this.soundMeters, refname, soundmeter)
+			} catch (e) {
+				console.error('Could not init sound meter', e)
+				// do not fail visibly, it is a nice-to-have feature
+			}
 		},
 		onJanusInitialized () {
 			this.connectionState = 'connecting'
