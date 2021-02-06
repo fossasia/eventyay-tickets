@@ -11,14 +11,16 @@ SETIFHIGHER = """local c = tonumber(redis.call('get', KEYS[1]));
 if c then
     if tonumber(ARGV[1]) > c then
         redis.call('set', KEYS[1], ARGV[1]);
+        redis.call('expire', KEYS[1], 604800);
         return tonumber(ARGV[1])
     else
         return tonumber(c)
     end
 else
     redis.call('set', KEYS[1], ARGV[1]);
+    redis.call('expire', KEYS[1], 604800);
     return tonumber(ARGV[1])
-end"""
+end"""  # 604800 seconds = 7 days
 
 logger = logging.getLogger(__name__)
 

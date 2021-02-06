@@ -7,16 +7,18 @@ from venueless.core.utils.redis import aioredis
 
 async def register_connection():
     async with aioredis() as redis:
-        await redis.hincrby(
+        tr = redis.multi_exec()
+        tr.hincrby(
             "connections",
             f"{settings.VENUELESS_COMMIT}.{settings.VENUELESS_ENVIRONMENT}",
             1,
         )
-        await redis.setex(
+        tr.setex(
             f"connections:{settings.VENUELESS_COMMIT}.{settings.VENUELESS_ENVIRONMENT}",
             60,
             "exists",
         )
+        await tr.execute()
 
 
 async def unregister_connection():

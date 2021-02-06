@@ -288,12 +288,12 @@ class ChatModule(BaseModule):
         if not body.get("id"):
             raise ConsumerException("chat.invalid_body")
         async with aioredis() as redis:
-            await redis.hset(
+            tr = redis.multi_exec()
+            tr.hset(
                 f"chat:read:{self.consumer.user.id}", self.channel_id, body.get("id")
             )
-            await redis.sadd(
-                f"chat:unread.notify:{self.channel_id}", str(self.consumer.user.id)
-            )
+            tr.sadd(f"chat:unread.notify:{self.channel_id}", str(self.consumer.user.id))
+            await tr.execute()
         await self.consumer.send_success()
         await self.consumer.channel_layer.group_send(
             GROUP_USER.format(id=self.consumer.user.id),
