@@ -7,6 +7,9 @@ installation guide, you can run the following as your pretalx user::
 
   python -m pretalx <command> [<flags>] [<options>]
 
+You can add the ``--no-pretalx-information`` flag to any of these commands
+to suppress the printing of the pretalx debug startup header.
+
 Database commands
 -----------------
 

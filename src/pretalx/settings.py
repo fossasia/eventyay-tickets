@@ -1,4 +1,5 @@
 import os
+import sys
 from contextlib import suppress
 from urllib.parse import urlparse
 from pathlib import Path
@@ -560,11 +561,14 @@ if DEBUG:
 with suppress(ImportError):
     from .override_settings import *  # noqa
 
-log_initial(
-    debug=DEBUG,
-    config_files=CONFIG_FILES,
-    db_name=db_name,
-    db_backend=db_backend,
-    LOG_DIR=LOG_DIR,
-    plugins=PLUGINS,
-)
+if "--no-pretalx-information" in sys.argv:
+    sys.argv.remove("--no-pretalx-information")
+else:
+    log_initial(
+        debug=DEBUG,
+        config_files=CONFIG_FILES,
+        db_name=db_name,
+        db_backend=db_backend,
+        LOG_DIR=LOG_DIR,
+        plugins=PLUGINS,
+    )
