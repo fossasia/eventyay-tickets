@@ -1,3 +1,4 @@
+import hashlib
 import json
 import logging
 import random
@@ -86,8 +87,9 @@ async def room_exists(server, roomid):
         return resp["plugindata"]["data"]["exists"]
 
 
-async def create_room(server):
+async def create_room(server, bitrate=200_000):
     token = get_random_string(16)
+    seed = get_random_string(16)
     # todo: handle connection errors to janus, encapsulate room creation into service
     async with websockets.connect(
         server.url, subprotocols=["janus-protocol"]
@@ -123,10 +125,16 @@ async def create_room(server):
                         "request": "create",
                         "admin_key": server.room_create_key,
                         "permanent": False,
-                        # todo: set "secret": "…",
+                        "secret": hashlib.sha256(
+                            f"{server.room_create_key}:secret:{seed}".encode()
+                        ).hexdigest(),
                         "is_private": True,
+                        "require_pvtid": True,
+                        "lock_record": True,
+                        "notify_joining": True,
                         "publishers": 100,  # todo
                         "allowed": [token],
+                        "bitrate": bitrate,
                     },
                     "transaction": get_random_string(),
                     "session_id": session_id,
@@ -147,4 +155,5 @@ async def create_room(server):
         "server": server.url,
         "roomId": room_id,
         "token": token,
+        "seed": seed,
     }
