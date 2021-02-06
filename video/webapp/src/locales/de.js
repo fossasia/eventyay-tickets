@@ -9,6 +9,7 @@ export default {
 	'AVDevicePrompt:apply:label': 'Anwenden',
 	'AVDevicePrompt:default:label': 'System-Standard',
 	'AVDevicePrompt:headline:label': 'Gerätekonfiguration',
+	'AVDevicePrompt:videoout:label': 'Video von anderen Benutzern empfangen (erfordert Neustart der Verbindung)',
 	'BigBlueButton:error:text': 'Wir konnten den Videokonferenzserver nicht erreichen, tut uns leid.',
 	'ChannelBrowser:create:label': 'Alternativ kannst du einen neuen Kanal erstellen.',
 	'ChannelBrowser:headline:text': 'Weitere Kanäle',

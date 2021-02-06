@@ -9,6 +9,7 @@ export default {
 	'AVDevicePrompt:apply:label': 'Apply',
 	'AVDevicePrompt:default:label': 'System default',
 	'AVDevicePrompt:headline:label': 'Device configuration',
+	'AVDevicePrompt:videoout:label': 'Show video from other users (reconnect required)',
 	'BigBlueButton:error:text': 'We could not connect to the video conference server, sorry.',
 	'ChannelBrowser:create:label': 'Alternatively, you can create a new channel.',
 	'ChannelBrowser:headline:text': 'Browse channels',

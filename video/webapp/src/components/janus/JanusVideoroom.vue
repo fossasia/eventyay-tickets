@@ -159,6 +159,7 @@ export default {
 			audioReceived: true, // janus *has* received our audio
 			videoInput: null, // video input currently requested from janus
 			audioInput: null, // audio input currently requested from janus
+			videoOutput: localStorage.videoOutput !== 'false',
 			waitingForConsent: false,
 
 			// Sound metering
@@ -248,6 +249,12 @@ export default {
 		},
 		closeDevicePrompt () {
 			this.showDevicePrompt = false
+			if (this.videoOutput !== (localStorage.videoOutput !== 'false')) {
+				// it's probably possible to do this without a full reconnect, but it's probably hard
+				this.cleanup()
+				this.videoOutput = (localStorage.videoOutput !== 'false')
+				this.onJanusInitialized()
+			}
 			this.publishOwnFeed()
 			if (typeof this.$refs.peerVideo !== 'undefined') {
 				for (let i = 0; i < this.$refs.peerVideo.length; i++) {
@@ -498,8 +505,8 @@ export default {
 					}
 					// In case you don't want to receive audio, video or data, even if the
 					// publisher is sending them, set the 'offer_audio', 'offer_video' or
-					// 'offer_data' properties to false (they're true by default), e.g.:
-					// 		subscribe["offer_video"] = false
+					// 'offer_data' properties to false (they're true by default), e.g
+					subscribe.offer_video = comp.videoOutput
 					// For example, if the publisher is VP8 and this is Safari, let's avoid video
 					if (Janus.webRTCAdapter.browserDetails.browser === 'safari' &&
 						(video === 'vp9' || (video === 'vp8' && !Janus.safariVp8))) {
