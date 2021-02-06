@@ -26,6 +26,7 @@ from ..models import (
     Membership,
     User,
 )
+from ..permissions import Permission
 from ..utils.redis import aioredis
 from .bbb import choose_server
 from .user import get_public_users, user_broadcast
@@ -369,12 +370,17 @@ class ChatService:
         return list(
             Channel.objects.annotate(
                 is_member=Exists(
-                    Membership.objects.filter(channel=OuterRef("pk"), user_id=user.pk)
-                )
-            ).filter(
+                    Membership.objects.filter(
+                        channel=OuterRef("pk"), user_id=user.pk, volatile=False
+                    )
+                ),
+            )
+            .filter(
+                is_member=False,
                 world_id=self.world.pk,
                 room__force_join=True,
             )
+            .select_related("room")
         )
 
     async def broadcast_channel_list(self, user, socket_id):
@@ -398,6 +404,13 @@ class ChatService:
             return
 
         for channel in c_to_join:
+            if not await self.world.has_permission_async(
+                user=user,
+                room=channel.room,
+                permission=Permission.ROOM_CHAT_JOIN,
+            ):
+                continue
+
             joined = await self.add_channel_user(channel.id, user, volatile=False)
             if joined:
                 event = await self.create_event(
