@@ -6,8 +6,12 @@
 			bunt-icon-button(@click="$router.push({name: 'exhibitors'})") arrow_left
 			h2 {{ exhibitor.name }}
 			.actions
+				.button-group
+					bunt-button(:class="{enabled: !showPreview}", @click="showPreview = false") edit
+					bunt-button(:class="{enabled: showPreview}", @click="showPreview = true") preview
 				bunt-button.btn-save(@click="save", :loading="saving") {{ $t('Exhibitors:save:label') }}
-		.main-form(v-scrollbar.y="")
+		exhibitor-preview(v-show="showPreview", :exhibitor="exhibitor")
+		.main-form(v-show="!showPreview", v-scrollbar.y="")
 			bunt-input(v-model="exhibitor.name", :disabled="!hasPermission('world:rooms.create.exhibition')", :label="$t('Exhibitors:name:label')", name="name", :validation="$v.exhibitor.name")
 			bunt-input(v-model="exhibitor.tagline", :label="$t('Exhibitors:tagline:label')", name="tagline", :validation="$v.exhibitor.tagline")
 			bunt-input(v-model="exhibitor.short_text", :label="$t('Exhibitors:short-text:label')", name="shortText", :validation="$v.exhibitor.shortText")
@@ -135,11 +139,12 @@ import Prompt from 'components/Prompt'
 import UserSelect from 'components/UserSelect'
 import UploadUrlInput from 'components/config/UploadUrlInput'
 import RichTextEditor from 'components/RichTextEditor'
+import ExhibitorPreview from 'views/exhibitors/item'
 
 const absrelurl = (message) => withParams({message: message}, value => helpers.regex('absrelurl', /^(https?:\/\/|mailto:|\/)[^ ]+$/)(value))
 
 export default {
-	components: { Avatar, Prompt, UploadUrlInput, UserSelect, RichTextEditor },
+	components: { Avatar, ExhibitorPreview, Prompt, UploadUrlInput, UserSelect, RichTextEditor },
 	props: {
 		exhibitorId: String
 	},
@@ -153,7 +158,8 @@ export default {
 			deletingExhibitorName: '',
 			deleting: false,
 			deleteError: null,
-			sizes: ['1x1', '3x1', '3x3']
+			sizes: ['1x1', '3x1', '3x3'],
+			showPreview: false
 		}
 	},
 	computed: {
@@ -431,8 +437,18 @@ export default {
 		.actions
 			display: flex
 			flex: none
-			.bunt-button:not(:last-child)
-				margin-right: 16px
+			.button-group
+				margin-right: 32px
+				> .bunt-button
+					&.enabled
+						themed-button-primary()
+					&:not(.enabled)
+						themed-button-secondary()
+						border: 2px solid var(--clr-primary)
+					&:first-child
+						border-radius: 4px 0 0 4px
+					&:last-child
+						border-radius: 0 4px 4px 0
 			.btn-save
 				themed-button-primary()
 	.main-form
