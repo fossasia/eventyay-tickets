@@ -408,138 +408,138 @@ export default {
 </script>
 <style lang="stylus">
 .c-manage-exhibitor
-	display flex
-	flex-direction column
-	background $clr-white
-	min-height 0
+	display: flex
+	flex-direction: column
+	background: $clr-white
+	min-height: 0
 	.bunt-icon-button
 		icon-button-style(style: clear)
 	.header
-		background-color $clr-grey-100
-		border-bottom border-separator()
-		display flex
-		padding 8px
-		flex none
+		background-color: $clr-grey-100
+		border-bottom: border-separator()
+		display: flex
+		padding: 8px
+		flex: none
 		.bunt-icon-button
-			margin-right 8px
+			margin-right: 8px
 		h2
-			flex auto
-			font-size 21px
-			font-weight 500
-			margin 1px 16px 0 0
+			flex: auto
+			font-size: 21px
+			font-weight: 500
+			margin: 1px 16px 0 0
 			ellipsis()
 		.actions
-			display flex
-			flex none
+			display: flex
+			flex: none
 			.bunt-button:not(:last-child)
-				margin-right 16px
+				margin-right: 16px
 			.btn-save
 				themed-button-primary()
 	.main-form
-		display block
-		flex-direction column
+		display: block
+		flex-direction: column
 		> *
-			margin 0 16px
+			margin: 0 16px
 		.bunt-input-outline-container
 			textarea
-				background-color transparent
-				border none
-				outline none
-				resize vertical
-				min-height 250px
-				padding 0 8px
+				background-color: transparent
+				border: none
+				outline: none
+				resize: vertical
+				min-height: 250px
+				padding: 0 8px
 	h2
-		margin-top 0
-		margin-bottom 16px
+		margin-top: 0
+		margin-bottom: 16px
 	.links, .staff
-		margin-bottom 30px
+		margin-bottom: 30px
 		th
-			text-align left
-			border-bottom 1px solid #ccc
-			padding 10px
+			text-align: left
+			border-bottom: 1px solid #ccc
+			padding: 10px
 		td
-			vertical-align center
+			vertical-align: center
 		td.actions
-			text-align right
+			text-align: right
 		td.user
-			display flex
-			align-items center
-			min-height 48px
+			display: flex
+			align-items: center
+			min-height: 48px
 			.display-name
-				margin-left 8px
-				flex auto
+				margin-left: 8px
+				flex: auto
 				ellipsis()
 
 	.danger-zone
-		margin 50px 8px
-		color $clr-danger
-		border-top 2px solid $clr-danger
-		padding 8px
+		margin: 50px 8px
+		color: $clr-danger
+		border-top: 2px solid $clr-danger
+		padding: 8px
 		.delete
 			button-style(color: $clr-danger)
-			margin 0 8px
+			margin: 0 8px
 
 	.delete-prompt
 		.content
-			display flex
-			flex-direction column
-			padding 16px
+			display: flex
+			flex-direction: column
+			padding: 16px
 		.question-box-header
-			margin-top -10px
-			margin-bottom 15px
-			align-items center
-			display flex
-			justify-content space-between
+			margin-top: -10px
+			margin-bottom: 15px
+			align-items: center
+			display: flex
+			justify-content: space-between
 		.name
-			font-family monospace
-			font-size 16px
-			border border-separator()
-			border-radius 4px
-			padding 4px 8px
-			background-color $clr-grey-100
-			align-self center
+			font-family: monospace
+			font-size: 16px
+			border: border-separator()
+			border-radius: 4px
+			padding: 4px 8px
+			background-color: $clr-grey-100
+			align-self: center
 		.delete
 			button-style(color: $clr-danger)
 
 	.add-staff-prompt
 		.prompt-wrapper
-			height 80vh
-			width 600px
+			height: 80vh
+			width: 600px
 		.content
-			display flex
-			flex-direction column
-			position relative
-			box-sizing border-box
-			min-height 0
+			display: flex
+			flex-direction: column
+			position: relative
+			box-sizing: border-box
+			min-height: 0
 			#btn-close
 				icon-button-style(style: clear)
-				position absolute
-				top 8px
-				right 8px
+				position: absolute
+				top: 8px
+				right: 8px
 			h1
-				margin 0
-				text-align center
+				margin: 0
+				text-align: center
 			p
-				max-width 320px
+				max-width: 320px
 			form
-				display flex
-				flex-direction column
-				align-self stretch
+				display: flex
+				flex-direction: column
+				align-self: stretch
 				.bunt-button
 					themed-button-primary()
-					margin-top 16px
+					margin-top: 16px
 				.bunt-select
 					select-style(size: compact)
 					ul li
-						display flex
+						display: flex
 						.mdi
-							margin-right 8px
+							margin-right: 8px
 				.bunt-input-outline-container
 					textarea
-						background-color transparent
-						border none
-						outline none
-						resize vertical
-						min-height 64px
-						padding 0 8px
+						background-color: transparent
+						border: none
+						outline: none
+						resize: vertical
+						min-height: 64px
+						padding: 0 8px
 </style>
