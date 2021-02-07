@@ -60,11 +60,11 @@ import { createPopper } from '@popperjs/core'
 export default {
 	components: { Avatar, ChatUserCard, ContactExhibitorPrompt, MarkdownContent, RichTextContent },
 	props: {
-		exhibitorId: String
+		exhibitorId: String,
+		exhibitor: Object
 	},
 	data () {
 		return {
-			exhibitor: null,
 			selectedUser: null,
 			showContactPrompt: false
 		}
@@ -97,6 +97,7 @@ export default {
 		}
 	},
 	async created () {
+		if (this.exhibitor) return
 		this.exhibitor = (await api.call('exhibition.get', {exhibitor: this.exhibitorId})).exhibitor
 	},
 	methods: {
