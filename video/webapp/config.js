@@ -6,6 +6,7 @@ if (ENV_DEVELOPMENT || !window.venueless) {
 		api: {
 			socket: 'ws://localhost:8375/ws/world/sample/',
 			upload: 'http://localhost:8375/storage/upload/',
+			feedback: 'http://localhost:8375/_feedback/',
 		},
 		timetravelTo: '2020-08-26T06:49:28.975Z'
 	}
