@@ -46,11 +46,13 @@
 		bunt-icon-button(@click="toggleMute", :tooltip="knownMuteState ? $t('JanusVideoroom:tool-mute:off') : $t('JanusVideoroom:tool-mute:on')") {{ knownMuteState ? 'microphone-off' : 'microphone' }}
 		bunt-icon-button(@click="toggleScreenShare", :disabled="screensharingState === 'publishing' || screensharingState === 'unpublishing'", :tooltip="screensharingState == 'published' ? $t('JanusVideoroom:tool-screenshare:off') : $t('JanusVideoroom:tool-screenshare:on')") {{ screensharingState === 'published' ? 'monitor-off': 'monitor' }}
 		bunt-icon-button(@click="showDevicePrompt = true", :tooltip="$t('JanusVideoroom:tool-settings:tooltip')") cog
+		bunt-icon-button(@click="showFeedbackPrompt = true", :tooltip="$t('JanusVideoroom:tool-bug:tooltip')") message-alert-outline
 		bunt-icon-button.hangup(@click="cleanup(); $emit('hangup')", :tooltip="$t('JanusVideoroom:tool-hangup:tooltip')") phone-hangup
 
 	chat-user-card(v-if="selectedUser", ref="avatarCard", :sender="selectedUser", @close="selectedUser = null")
 	transition(name="prompt")
 		a-v-device-prompt(v-if="showDevicePrompt", @close="closeDevicePrompt")
+		feedback-prompt(v-if="showFeedbackPrompt", module="janus", :collectTrace="collectTrace", @close="showFeedbackPrompt = false")
 </template>
 <script>
 import {Janus} from 'janus-gateway'
@@ -59,6 +61,7 @@ import api from 'lib/api'
 import ChatUserCard from 'components/ChatUserCard'
 import Avatar from 'components/Avatar'
 import AVDevicePrompt from 'components/AVDevicePrompt'
+import FeedbackPrompt from 'components/FeedbackPrompt'
 import {createPopper} from '@popperjs/core'
 import SoundMeter from 'lib/webrtc/soundmeter'
 import Color from 'color'
@@ -104,8 +107,15 @@ const calculateLayout = (containerWidth, containerHeight, videoCount, aspectRati
 const MIN_BITRATE = 64 * 1000
 const MAX_BITRATE = 200 * 1000
 
+const LOG_ENTRIES = []
+
+const log = (source, level, message) => {
+	LOG_ENTRIES.push([source, (new Date()).toISOString(), level, JSON.stringify(message)])
+	console.log(`[${level}][${source}]`, message)
+}
+
 export default {
-	components: {Avatar, AVDevicePrompt, ChatUserCard},
+	components: {Avatar, AVDevicePrompt, ChatUserCard, FeedbackPrompt},
 	props: {
 		server: {
 			type: String,
@@ -181,6 +191,7 @@ export default {
 
 			// Layout utilities
 			primaryColor: Color(colors.primary),
+			showFeedbackPrompt: false,
 			showDevicePrompt: false,
 			selectedUser: null,
 			layout: {
@@ -219,6 +230,7 @@ export default {
 		}
 	},
 	mounted () {
+		LOG_ENTRIES.splice(0, LOG_ENTRIES.length)
 		if (this.janus) {
 			this.cleanup()
 		}
@@ -234,6 +246,11 @@ export default {
 		}, 200)
 	},
 	methods: {
+		collectTrace () {
+			// Yes, passing a function to a component is an antipattern in Vue, but I'm worried about the performance
+			// penalty on Vue computing reactivity on our log which might get large.
+			return LOG_ENTRIES
+		},
 		cleanup () {
 			this.janus.destroy({cleanupHandles: true})
 			this.connectionState = 'disconnected'
@@ -309,7 +326,7 @@ export default {
 						opaqueId: this.user.id,
 						success: (pluginHandle) => {
 							this.screensharePluginHandle = pluginHandle
-							Janus.log(
+							log('venueless', 'info',
 								'Plugin attached! (' + this.screensharePluginHandle.getPlugin() + ', id=' + this.mainPluginHandle.getId() + ')')
 
 							const register = {
@@ -322,29 +339,29 @@ export default {
 							this.screensharePluginHandle.send({message: register})
 						},
 						error: (error) => {
-							Janus.error('  -- Error attaching plugin...', error)
+							log('venueless', 'error', '  -- Error attaching plugin...', error)
 							alert('Screen sharing failed (error: ' + error.message + ')')
 						},
 						consentDialog: (on) => {
 							this.waitingForConsent = on
 						},
 						iceState: (state) => {
-							Janus.log('ICE state changed to ' + state)
+							log('venueless', 'info', 'ICE state changed to ' + state)
 							// if state "failed", show user, unless we're currently leaving the room
 						},
 						mediaState: (medium, on) => {
-							Janus.log('Janus ' + (on ? 'started' : 'stopped') + ' receiving our ' + medium)
+							log('venueless', 'info', 'Janus ' + (on ? 'started' : 'stopped') + ' receiving our ' + medium)
 							if (medium === 'video' && on) {
 								this.screensharingState = 'published'
 							}
 						},
 						webrtcState: (on) => {
-							Janus.log('Janus says our WebRTC PeerConnection is ' + (on ? 'up' : 'down') + ' now')
+							log('venueless', 'info', 'Janus says our WebRTC PeerConnection is ' + (on ? 'up' : 'down') + ' now')
 						},
 						onmessage: (msg, jsep) => {
-							Janus.debug(' ::: Got a message (publisher) :::', msg)
+							log('venueless', 'debug', ' ::: Got a message (publisher) :::', msg)
 							var event = msg.videoroom
-							Janus.debug('Event: ' + event)
+							log('venueless', 'debug', 'Event: ' + event)
 							if (event) {
 								if (event === 'joined') {
 									this.publishOwnScreenshareFeed(true)
@@ -355,7 +372,7 @@ export default {
 									if (msg.unpublished) {
 									// One of the publishers has unpublished?
 										const unpublished = msg.unpublished
-										Janus.log('Publisher left: ' + unpublished)
+										log('venueless', 'info', 'Publisher left: ' + unpublished)
 										if (unpublished === 'ok') {
 											this.screensharingState = 'unpublished'
 											this.screensharingError = null
@@ -374,13 +391,13 @@ export default {
 								}
 							}
 							if (jsep) {
-								Janus.debug('Handling SDP as well...', jsep)
+								log('venueless', 'debug', 'Handling SDP as well...', jsep)
 								this.screensharePluginHandle.handleRemoteJsep({jsep: jsep})
 								var audio = msg.audio_codec
 								if (this.ourScreenShareStream && this.ourScreenShareStream.getAudioTracks() && this.ourScreenShareStream.getAudioTracks().length > 0 &&
 									!audio) {
 									// Audio has been rejected
-									console.warning('Our audio stream has been rejected, viewers won\'t hear our screenshare')
+									log('venueless', 'warning', 'Our audio stream has been rejected, viewers won\'t hear our screenshare')
 								}
 								var video = msg.video_codec
 								if (this.ourScreenShareStream && this.ourScreenShareStream.getVideoTracks() && this.ourScreenShareStream.getVideoTracks().length > 0 &&
@@ -391,15 +408,15 @@ export default {
 							}
 						},
 						onlocalstream: (stream) => {
-							Janus.debug(' ::: Got a local stream :::', stream)
+							log('venueless', 'debug', ' ::: Got a local stream :::', stream)
 							this.ourScreenShareStream = stream
 							// todo: show local stream instead of remote Stream
 						},
 						slowLink: (uplink) => {
-							console.log('slowlink on screenshare')
+							log('venueless', 'info', 'slowlink on screenshare')
 						},
 						oncleanup: () => {
-							Janus.log(' ::: Got a cleanup notification: we are unpublished now :::')
+							log('venueless', 'info', ' ::: Got a cleanup notification: we are unpublished now :::')
 							this.ourScreenShareStream = null
 							this.screensharingState = 'unpublished'
 						},
@@ -490,12 +507,12 @@ export default {
 				{
 					media: media,
 					success: (jsep) => {
-						Janus.debug('Got publisher SDP!', jsep)
+						log('venueless', 'debug', 'Got publisher SDP!', jsep)
 						var publish = {request: 'configure', audio: true, video: true}
 						this.screensharePluginHandle.send({message: publish, jsep: jsep})
 					},
 					error: (error) => {
-						Janus.error('WebRTC error:', error)
+						log('venueless', 'error', 'WebRTC error:', error)
 						alert('Screen sharing failed (error: ' + error.message + ')')
 						this.screensharingState = 'failed'
 					},
@@ -510,7 +527,7 @@ export default {
 				success: (pluginHandle) => {
 					remoteFeed = pluginHandle
 					remoteFeed.simulcastStarted = false
-					Janus.log('Plugin attached! (' + remoteFeed.getPlugin() + ', id=' + remoteFeed.getId() + ')')
+					log('venueless', 'info', 'Plugin attached! (' + remoteFeed.getPlugin() + ', id=' + remoteFeed.getId() + ')')
 					// We wait for the plugin to send us an offer
 					var subscribe = {
 						request: 'join',
@@ -528,22 +545,22 @@ export default {
 						(video === 'vp9' || (video === 'vp8' && !Janus.safariVp8))) {
 						if (video)
 							video = video.toUpperCase()
-						console.log('Publisher is using ' + video + ', but Safari doesn\'t support it: disabling video')
+						log('venueless', 'info', 'Publisher is using ' + video + ', but Safari doesn\'t support it: disabling video')
 						subscribe.offer_video = false
 					}
 					remoteFeed.videoCodec = video
 					remoteFeed.send({message: subscribe})
 				},
 				error: (error) => {
-					Janus.error('  -- Error attaching plugin...', error)
+					log('venueless', 'error', '  -- Error attaching plugin...', error)
 					alert('Error attaching plugin... ' + error)
 				},
 				onmessage: (msg, jsep) => {
-					Janus.debug(' ::: Got a message (subscriber) :::', msg)
+					log('venueless', 'debug', ' ::: Got a message (subscriber) :::', msg)
 					var event = msg.videoroom
-					Janus.debug('Event: ' + event)
+					log('venueless', 'debug', 'Event: ' + event)
 					if (msg.error) {
-						console.error('Error when subscribing: ' + msg.error)
+						log('venueless', 'error', 'Error when subscribing: ' + msg.error)
 						// todo: show something?
 					} else if (event) {
 						if (event === 'attached') {
@@ -575,7 +592,7 @@ export default {
 						}
 					}
 					if (jsep) {
-						Janus.debug('Handling SDP as well...', jsep)
+						log('venueless', 'debug', 'Handling SDP as well...', jsep)
 						// Answer and attach
 						remoteFeed.createAnswer({
 							jsep: jsep,
@@ -583,32 +600,32 @@ export default {
 							// (obviously only works if the publisher offered them in the first place)
 							media: {audioSend: false, videoSend: false},	// We want recvonly audio/video
 							success: (jsep) => {
-								Janus.debug('Got SDP!', jsep)
+								log('venueless', 'debug', 'Got SDP!', jsep)
 								var body = {request: 'start', room: this.roomId}
 								remoteFeed.send({message: body, jsep: jsep})
 							},
 							error: (error) => {
-								Janus.error('WebRTC error:', error)
+								log('venueless', 'error', 'WebRTC error:', error)
 								alert('WebRTC error... ' + error.message)
 							},
 						})
 					}
 				},
 				iceState: (state) => {
-					Janus.log(
+					log('venueless', 'info',
 						'ICE state of this WebRTC PeerConnection (feed #' + remoteFeed.rfid + ') changed to ' + state)
 				},
 				webrtcState: (on) => {
-					Janus.log(
+					log('venueless', 'info',
 						'Janus says this WebRTC PeerConnection (feed #' + remoteFeed.rfid + ') is ' + (on ? 'up' : 'down') +
 						' now')
 				},
 				slowLink: (uplink) => {
-					console.log('slowLink on subscriber')
+					log('venueless', 'info', 'slowLink on subscriber')
 					this.downstreamSlowLinkCount++
 				},
 				onremotestream: (stream) => {
-					Janus.debug('Remote feed #' + remoteFeed.rfid + ', stream:', stream)
+					log('venueless', 'debug', 'Remote feed #' + remoteFeed.rfid + ', stream:', stream)
 					const rfindex = this.feeds.findIndex((rf) => rf.rfid === remoteFeed.rfid)
 					this.$nextTick(() => {
 						Janus.attachMediaStream(this.$refs.peerVideo[rfindex], stream)
@@ -637,8 +654,7 @@ export default {
 					opaqueId: this.user.id,
 					success: (pluginHandle) => {
 						this.mainPluginHandle = pluginHandle
-						Janus.log(
-							'Plugin attached! (' + this.mainPluginHandle.getPlugin() + ', id=' + this.mainPluginHandle.getId() + ')')
+						log('venueless', 'info', 'Plugin attached! (' + this.mainPluginHandle.getPlugin() + ', id=' + this.mainPluginHandle.getId() + ')')
 
 						const register = {
 							request: 'join',
@@ -660,7 +676,7 @@ export default {
 						this.waitingForConsent = on
 					},
 					iceState: (state) => {
-						Janus.log('ICE state changed to ' + state)
+						log('venueless', 'info', 'ICE state changed to ' + state)
 						if (state === 'failed') {
 							// todo correct?
 							this.connectionState = 'failed'
@@ -671,7 +687,7 @@ export default {
 						}
 					},
 					mediaState: (medium, on) => {
-						Janus.log('Janus ' + (on ? 'started' : 'stopped') + ' receiving our ' + medium)
+						log('venueless', 'info', 'Janus ' + (on ? 'started' : 'stopped') + ' receiving our ' + medium)
 						if (medium === 'video') {
 							this.videoReceived = on
 						}
@@ -684,13 +700,13 @@ export default {
 						}
 					},
 					webrtcState: (on) => {
-						Janus.log('Janus says our WebRTC PeerConnection is ' + (on ? 'up' : 'down') + ' now')
+						log('venueless', 'info', 'Janus says our WebRTC PeerConnection is ' + (on ? 'up' : 'down') + ' now')
 					},
 					onmessage: (msg, jsep) => {
 						const event = msg.videoroom
 						if (event) {
 							if (event === 'joined') {
-								Janus.log('Successfully joined room ' + msg.room + ' with ID ' + this.ourId)
+								log('venueless', 'info', 'Successfully joined room ' + msg.room + ' with ID ' + this.ourId)
 
 								// Publisher/manager created, negotiate WebRTC and attach to existing feeds, if any
 								this.ourId = msg.id
@@ -723,7 +739,7 @@ export default {
 									const leaving = msg.leaving
 									const remoteFeed = this.feeds.find((rf) => rf.rfid === leaving)
 									if (remoteFeed != null) {
-										Janus.debug(
+										log('venueless', 'debug',
 											'Feed ' + remoteFeed.rfid + ' (' + remoteFeed.rfdisplay + ') has left the room, detaching')
 										this.feeds = this.feeds.filter((rf) => rf.rfid !== remoteFeed.rfid)
 										remoteFeed.detach()
@@ -740,8 +756,7 @@ export default {
 									}
 									const remoteFeed = this.feeds.find((rf) => rf.rfid === unpublished)
 									if (remoteFeed != null) {
-										Janus.debug(
-											'Feed ' + remoteFeed.rfid + ' (' + remoteFeed.rfdisplay + ') has left the room, detaching')
+										log('venueless', 'debug', 'Feed ' + remoteFeed.rfid + ' (' + remoteFeed.rfdisplay + ') has left the room, detaching')
 										this.feeds = this.feeds.filter((rf) => rf.rfid !== remoteFeed.rfid)
 										remoteFeed.detach()
 									}
@@ -759,7 +774,7 @@ export default {
 							}
 						}
 						if (jsep) {
-							Janus.debug('Handling SDP as well...', jsep)
+							log('venueless', 'debug', 'Handling SDP as well...', jsep)
 							this.mainPluginHandle.handleRemoteJsep({jsep: jsep})
 							// Check if any of the media we wanted to publish has
 							// been rejected (e.g., wrong or unsupported codec)
@@ -779,21 +794,21 @@ export default {
 					},
 					slowLink: (uplink) => {
 						this.upstreamSlowLinkCount++
-						if (this.upstreamSlowLinkCount > 3) {
+						if (this.upstreamSlowLinkCount > 2) {
 							const newUpstreamBitrate = Math.max(this.upstreamBitrate / 2, MIN_BITRATE)
 							if (newUpstreamBitrate !== this.upstreamBitrate) {
 								this.upstreamBitrate = newUpstreamBitrate
-								console.log('Received slowLink on outgoing video, reducing bitrate to ' + this.upstreamBitrate)
+								log('venueless', 'info', 'Received slowLink on outgoing video, reducing bitrate to ' + this.upstreamBitrate)
 								const publish = {request: 'configure', audio: true, video: this.publishingWithVideo, bitrate: this.upstreamBitrate}
 								this.mainPluginHandle.send({message: publish})
 								this.upstreamSlowLinkCount = 0
 							} else {
-								if (this.upstreamSlowLinkCount > 30) {
-									console.log('Received slowLink on outgoing video, bitrate already at minimum, turning video off')
+								if (this.upstreamSlowLinkCount > 5) {
+									log('venueless', 'info', 'Received slowLink on outgoing video, bitrate already at minimum, turning video off')
 									this.videoRequested = false
 									this.publishOwnFeed()
 								} else {
-									console.log('Received slowLink on outgoing video, bitrate already at minimum')
+									log('venueless', 'info', 'Received slowLink on outgoing video, bitrate already at minimum')
 								}
 							}
 						}
@@ -824,7 +839,7 @@ export default {
 						this.initSoundMeter(stream, 'ourVideo')
 					},
 					oncleanup: () => {
-						Janus.log(' ::: Got a cleanup notification: we are unpublished now :::')
+						log('venueless', 'info', ' ::: Got a cleanup notification: we are unpublished now :::')
 						this.publishingState = 'unpublished'
 					},
 				})
@@ -841,12 +856,18 @@ export default {
 				soundmeter.connectToSource(stream)
 				this.$set(this.soundMeters, refname, soundmeter)
 			} catch (e) {
-				console.error('Could not init sound meter', e)
+				log('venueless', 'error', 'Could not init sound meter: ' + e)
 				// do not fail visibly, it is a nice-to-have feature
 			}
 		},
 		onJanusInitialized () {
 			this.connectionState = 'connecting'
+			Janus.trace = (t) => log('janus', 'trace', t)
+			Janus.debug = (t) => log('janus', 'debug', t)
+			Janus.vdebug = (t) => log('janus', 'vdebug', t)
+			Janus.log = (t) => log('janus', 'log', t)
+			Janus.warn = (t) => log('janus', 'warn', t)
+			Janus.error = (t) => log('janus', 'error', t)
 			this.janus = new Janus({
 				server: this.server,
 				iceServers: this.iceServers,

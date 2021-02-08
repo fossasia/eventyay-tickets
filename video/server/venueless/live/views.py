@@ -12,9 +12,10 @@ from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
 from django.views import View
 from django.views.decorators.cache import cache_page
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
 
-from venueless.core.models import World
+from venueless.core.models import Feedback, World
 from venueless.core.models.auth import ShortToken
 from venueless.core.utils.redis import aioredis
 
@@ -95,6 +96,7 @@ class AppView(View):
                                 world.pk,
                             ),
                             "upload": reverse("storage:upload"),
+                            "feedback": reverse("live:feedback"),
                         },
                         "features": world.feature_flags,
                         "locale": world.locale,
@@ -160,3 +162,23 @@ class ShortTokenView(View):
             return redirect(f"/#token={st.long_token}")
         except ShortToken.DoesNotExist:
             return redirect("/")
+
+
+class FeedbackView(View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    @cached_property
+    def world(self):
+        return get_object_or_404(World, domain=self.request.headers["Host"])
+
+    def post(self, request, *args, **kwargs):
+        data = json.loads(request.body)
+        Feedback.objects.create(
+            world=self.world,
+            module=data.get("module"),
+            message=data.get("message"),
+            trace=data.get("trace"),
+        )
+        return JsonResponse({}, status=201)
