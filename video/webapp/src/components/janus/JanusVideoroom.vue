@@ -18,13 +18,13 @@
 				div.publishing-error(v-else-if="publishingState == 'failed'")
 					p {{ $t('JanusVideoroom:publishing-error:text') }}
 					p {{ publishingError }}
+			.novideo-indicator(v-if="publishingState == 'published' && !publishingWithVideo")
+				avatar(:user="user", :size="96")
 			.controls
 				.user(@click="showUserCard($event, user)")
 					avatar(:user="user", :size="36")
 					span.display-name {{ user.profile.display_name }}
-				bunt-icon-button(@click="requestFullscreen($refs.ourVideo)") fullscreen
-			.novideo-indicator(v-if="publishingState == 'published' && !publishingWithVideo")
-				avatar(:user="user", :size="96")
+				bunt-icon-button(v-if="publishingWithVideo", @click="requestFullscreen($refs.ourVideo)") fullscreen
 			.mute-indicator(v-if="knownMuteState")
 				.bunt-icon.mdi.mdi-microphone-off
 
@@ -39,7 +39,7 @@
 				.user(v-if="f.venueless_user !== null", @click="showUserCard($event, f.venueless_user)")
 					avatar(:user="f.venueless_user", :size="36")
 					span.display-name {{ f.venueless_user.profile.display_name }}
-				bunt-icon-button(@click="requestFullscreen($refs.peerVideo[idx])") fullscreen
+				bunt-icon-button(v-if="f.rfattached && f.hasVideo", @click="requestFullscreen($refs.peerVideo[idx])") fullscreen
 
 	.controlbar.controls(v-show="connectionState == 'connected'", :class="knownMuteState ? 'always' : ''")
 		bunt-icon-button(@click="toggleVideo", :tooltip="videoRequested ? $t('JanusVideoroom:tool-video:off') : $t('JanusVideoroom:tool-video:on')") {{ !videoRequested ? 'video-off' : 'video' }}
