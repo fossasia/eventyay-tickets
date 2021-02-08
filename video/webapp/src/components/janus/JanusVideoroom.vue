@@ -101,6 +101,9 @@ const calculateLayout = (containerWidth, containerHeight, videoCount, aspectRati
 	return bestLayout
 }
 
+const MIN_BITRATE = 64 * 1000
+const MAX_BITRATE = 200 * 1000
+
 export default {
 	components: {Avatar, AVDevicePrompt, ChatUserCard},
 	props: {
@@ -166,6 +169,11 @@ export default {
 			videoOutput: localStorage.videoOutput !== 'false',
 			waitingForConsent: false,
 
+			// Bandwidth control
+			upstreamBitrate: MAX_BITRATE,
+			upstreamSlowLinkCount: 0,
+			downstreamSlowLinkCount: 0,
+
 			// Sound metering
 			soundMeters: {},
 			soundLevels: {},
@@ -215,6 +223,10 @@ export default {
 			this.cleanup()
 		}
 		this.initJanus()
+		this.slowLinkInterval = window.setInterval(() => {
+			this.downstreamSlowLinkCount = Math.max(this.downstreamSlowLinkCount - 1, 0)
+			this.upstreamSlowLinkCount = Math.max(this.upstreamSlowLinkCount - 1, 0)
+		}, 10000)
 		this.soundMeterInterval = window.setInterval(() => {
 			for (const idx in this.soundMeters) {
 				this.$set(this.soundLevels, idx, this.soundMeters[idx].slow.toFixed(2))
@@ -383,6 +395,9 @@ export default {
 							this.ourScreenShareStream = stream
 							// todo: show local stream instead of remote Stream
 						},
+						slowLink: (uplink) => {
+							console.log('slowlink on screenshare')
+						},
 						oncleanup: () => {
 							Janus.log(' ::: Got a cleanup notification: we are unpublished now :::')
 							this.ourScreenShareStream = null
@@ -450,7 +465,7 @@ export default {
 					simulcast: false,
 					simulcast2: false,
 					success: (jsep) => {
-						const publish = {request: 'configure', audio: true, video: this.publishingWithVideo}
+						const publish = {request: 'configure', audio: true, video: this.publishingWithVideo, bitrate: this.upstreamBitrate}
 						this.mainPluginHandle.send({message: publish, jsep: jsep})
 					},
 					error: (error) => {
@@ -587,6 +602,10 @@ export default {
 					Janus.log(
 						'Janus says this WebRTC PeerConnection (feed #' + remoteFeed.rfid + ') is ' + (on ? 'up' : 'down') +
 						' now')
+				},
+				slowLink: (uplink) => {
+					console.log('slowLink on subscriber')
+					this.downstreamSlowLinkCount++
 				},
 				onremotestream: (stream) => {
 					Janus.debug('Remote feed #' + remoteFeed.rfid + ', stream:', stream)
@@ -755,6 +774,27 @@ export default {
 								// todo: log, show error to user?
 								this.videoRequested = false
 								this.publishingWithVideo = false
+							}
+						}
+					},
+					slowLink: (uplink) => {
+						this.upstreamSlowLinkCount++
+						if (this.upstreamSlowLinkCount > 3) {
+							const newUpstreamBitrate = Math.max(this.upstreamBitrate / 2, MIN_BITRATE)
+							if (newUpstreamBitrate !== this.upstreamBitrate) {
+								this.upstreamBitrate = newUpstreamBitrate
+								console.log('Received slowLink on outgoing video, reducing bitrate to ' + this.upstreamBitrate)
+								const publish = {request: 'configure', audio: true, video: this.publishingWithVideo, bitrate: this.upstreamBitrate}
+								this.mainPluginHandle.send({message: publish})
+								this.upstreamSlowLinkCount = 0
+							} else {
+								if (this.upstreamSlowLinkCount > 30) {
+									console.log('Received slowLink on outgoing video, bitrate already at minimum, turning video off')
+									this.videoRequested = false
+									this.publishOwnFeed()
+								} else {
+									console.log('Received slowLink on outgoing video, bitrate already at minimum')
+								}
 							}
 						}
 					},
