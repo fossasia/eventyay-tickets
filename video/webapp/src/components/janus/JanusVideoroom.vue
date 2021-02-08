@@ -41,6 +41,8 @@
 					span.display-name {{ f.venueless_user.profile.display_name }}
 				bunt-icon-button(v-if="f.rfattached && f.hasVideo", @click="requestFullscreen($refs.peerVideo[idx])") fullscreen
 
+		.slow-banner(v-if="downstreamSlowLinkCount > 5 && (videoRequested || videoOutput)", @click="disableVideo") {{ $t('JanusVideoroom:slow:text') }}
+
 	.controlbar.controls(v-show="connectionState == 'connected'", :class="knownMuteState ? 'always' : ''")
 		bunt-icon-button(@click="toggleVideo", :tooltip="videoRequested ? $t('JanusVideoroom:tool-video:off') : $t('JanusVideoroom:tool-video:on')") {{ !videoRequested ? 'video-off' : 'video' }}
 		bunt-icon-button(@click="toggleMute", :tooltip="knownMuteState ? $t('JanusVideoroom:tool-mute:off') : $t('JanusVideoroom:tool-mute:on')") {{ knownMuteState ? 'microphone-off' : 'microphone' }}
@@ -428,6 +430,17 @@ export default {
 			localStorage.videoRequested = this.videoRequested
 			this.publishOwnFeed()
 		},
+		disableVideo () {
+			this.videoRequested = false
+			localStorage.videoRequested = false
+			if (this.videoOutput) {
+				this.videoOutput = false
+				this.cleanup()
+				this.onJanusInitialized()
+			} else {
+				this.publishOwnFeed()
+			}
+		},
 		toggleMute () {
 			if (this.mainPluginHandle == null) {
 				return
@@ -467,7 +480,7 @@ export default {
 			if (localStorage.audioInput) {
 				media.audio = {deviceId: localStorage.audioInput}
 			}
-			if (localStorage.audioInput !== this.audioInput) {
+			 if (localStorage.audioInput !== this.audioInput) {
 				media.replaceAudio = true
 				this.audioInput = localStorage.audioInput
 			}
@@ -938,6 +951,19 @@ export default {
 		max-height: 100%
 		flex: auto 1 1
 		overflow: hidden
+		position: relative
+
+	.slow-banner
+		box-sizing: border-box
+		background: #666
+		color: white
+		cursor: pointer
+		padding: 8px
+		position: absolute
+		left: 0
+		top: 0
+		text-align: center
+		width: 100%
 
 	.users .feed
 		width: var(--video-width)

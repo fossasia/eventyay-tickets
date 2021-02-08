@@ -126,6 +126,7 @@ export default {
 	'JanusVideoroom:connection-error:text': 'The connection has failed.',
 	'JanusVideoroom:disconnected:text': 'You have been disconnected.',
 	'JanusVideoroom:publishing-error:text': 'Sending your signal has failed.',
+	'JanusVideoroom:slow:text': 'It appears your connection is slow. Click here if you want to reconnect without video.',
 	'JanusVideoroom:tool-bug:tooltip': 'Report an issue',
 	'JanusVideoroom:tool-hangup:tooltip': 'Leave video call',
 	'JanusVideoroom:tool-mute:off': 'Unmute microphone',
