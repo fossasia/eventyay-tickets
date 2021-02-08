@@ -77,6 +77,5 @@ export default {
 			pointer-events: none
 	&.expanded
 		.actions
-			z-index: 801
 			transform: translateX(calc(64px - 100% - 16px))
 </style>
