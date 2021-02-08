@@ -120,6 +120,10 @@ export default {
 			type: Array,
 			required: true
 		},
+		automute: {
+			type: Boolean,
+			default: false
+		},
 		size: {
 			type: String, // 'normal', 'tiny'
 			default: 'normal'
@@ -764,6 +768,9 @@ export default {
 								this.publishingState = 'published'
 								this.publishingError = null
 							}
+						}
+						if (this.automute) {
+							this.mainPluginHandle.muteAudio()
 						}
 						const videoTracks = stream.getVideoTracks()
 						if (!videoTracks || videoTracks.length === 0) {
