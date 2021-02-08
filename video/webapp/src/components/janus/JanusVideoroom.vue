@@ -902,13 +902,17 @@ export default {
 			bottom: 16px
 			background: black
 			opacity: 0.5
-			width: 32px
-			height: 32px
-			border-radius: 16px
+			width: 48px
+			height: 48px
+			max-width: 100%
+			max-height: 100%
+			border-radius: 50%
 			text-align: center
 			.bunt-icon
+				width: 100%
 				color: white
-				line-height: 32px
+				line-height: 48px
+				font-size: 32px
 
 		.publishing-state, .subscribing-state
 			position: absolute
