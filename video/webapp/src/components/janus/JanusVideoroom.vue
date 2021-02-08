@@ -145,7 +145,7 @@ export default {
 			screensharePluginHandle: null,
 
 			// Video controls state
-			videoRequested: true, // user *wants* to send video
+			videoRequested: localStorage.videoRequested !== 'false', // user *wants* to send video
 
 			// Janus video call state
 			feeds: [],
@@ -389,6 +389,7 @@ export default {
 		},
 		toggleVideo () {
 			this.videoRequested = !this.videoRequested
+			localStorage.videoRequested = this.videoRequested
 			this.publishOwnFeed()
 		},
 		toggleMute () {
