@@ -78,7 +78,7 @@ export default {
 				&::before
 					content: ''
 					display: inline-block
-					background-color: #ccc
+					background-color: $clr-grey-400
 					width: 8px
 					height: 8px
 					border-radius: 50px
