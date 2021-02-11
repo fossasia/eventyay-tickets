@@ -480,7 +480,7 @@ export default {
 			if (localStorage.audioInput) {
 				media.audio = {deviceId: localStorage.audioInput}
 			}
-			 if (localStorage.audioInput !== this.audioInput) {
+			if (localStorage.audioInput !== this.audioInput) {
 				media.replaceAudio = true
 				this.audioInput = localStorage.audioInput
 			}
