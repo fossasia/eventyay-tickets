@@ -242,6 +242,8 @@ export default {
 	'UserAction:action.unblock:label': 'unblock',
 	'UserAction:action.unsilence:label': 'unsilence',
 	'UserAction:moderator-actions:title': 'Moderator Actions',
+	'UserAction:state.offline:tooltip': 'offline',
+	'UserAction:state.online:tooltip': 'online',
 	'UserActionPrompt:action.ban:confirmation': 'User has been banned.',
 	'UserActionPrompt:action.ban:execute:label': 'ban',
 	'UserActionPrompt:action.ban:explanation': 'Banning a user will completely prevent this user from entering the event.',

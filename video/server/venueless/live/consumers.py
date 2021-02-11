@@ -109,7 +109,7 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
 
         if content[0] == "ping":
             await self.send_json(["pong", content[1]])
-            self.last_conn_ping = await ping_connection(self.last_conn_ping)
+            self.last_conn_ping = await ping_connection(self.last_conn_ping, self.user)
             return
 
         if not self.user:

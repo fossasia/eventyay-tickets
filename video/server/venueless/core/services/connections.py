@@ -30,16 +30,52 @@ async def unregister_connection():
         )
 
 
-async def ping_connection(last_ping):
+async def register_user_connection(user_id, socket_id):
+    async with aioredis() as redis:
+        tr = redis.multi_exec()
+        tr.sadd(
+            f"connections.user:{user_id}",
+            socket_id,
+        )
+        tr.expire(
+            f"connections.user:{user_id}",
+            90,
+        )
+        await tr.execute()
+
+
+async def unregister_user_connection(user_id, socket_id):
+    async with aioredis() as redis:
+        await redis.srem(
+            f"connections.user:{user_id}",
+            socket_id,
+        )
+
+
+async def get_user_connection_count(user_id):
+    async with aioredis() as redis:
+        return await redis.scard(
+            f"connections.user:{user_id}",
+        )
+
+
+async def ping_connection(last_ping, user=None):
     n = time.time()
     if n - last_ping < 50:
         return last_ping
     async with aioredis() as redis:
-        await redis.setex(
+        tr = redis.multi_exec()
+        if user:
+            tr.expire(
+                f"connections.user:{user.id}",
+                90,
+            )
+        tr.setex(
             f"connections:{settings.VENUELESS_COMMIT}.{settings.VENUELESS_ENVIRONMENT}",
             60,
             "exists",
         )
+        await tr.execute()
     return n
 
 

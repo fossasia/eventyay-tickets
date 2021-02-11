@@ -877,3 +877,21 @@ async def test_badges(world):
         await c.send_json_to(["user.fetch", 14, {"id": id}])
         response = await c.receive_json_from()
         assert response[2]["badges"] == ["Crew"]
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_online_status(world):
+    async with world_communicator() as c_admin:
+        token = get_token(world, ["admin"])
+        await c_admin.send_json_to(["authenticate", {"token": token}])
+        await c_admin.receive_json_from()
+        async with world_communicator() as c_user:
+            await c_user.send_json_to(["authenticate", {"client_id": "4"}])
+            response = await c_user.receive_json_from()
+            user_id = response[1]["user.config"]["id"]
+
+            await c_admin.send_json_to(["user.online_status", 123, {"ids": [user_id]}])
+            assert (await c_admin.receive_json_from())[2] == {user_id: True}
+        await c_admin.send_json_to(["user.online_status", 123, {"ids": [user_id]}])
+        assert (await c_admin.receive_json_from())[2] == {user_id: False}

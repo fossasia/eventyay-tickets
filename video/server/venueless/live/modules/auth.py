@@ -7,6 +7,11 @@ from sentry_sdk import configure_scope
 
 from venueless.core.permissions import Permission
 from venueless.core.services.chat import ChatService
+from venueless.core.services.connections import (
+    get_user_connection_count,
+    register_user_connection,
+    unregister_user_connection,
+)
 from venueless.core.services.user import (
     block_user,
     get_blocked_users,
@@ -63,6 +68,7 @@ class AuthModule(BaseModule):
             redis_read = await redis.hgetall(f"chat:read:{self.consumer.user.id}")
             read_pointers = {k.decode(): int(v.decode()) for k, v in redis_read.items()}
 
+        await register_user_connection(self.consumer.user.id, self.consumer.socket_id)
         await self.consumer.send_json(
             [
                 "authenticated",
@@ -230,6 +236,9 @@ class AuthModule(BaseModule):
                 GROUP_WORLD.format(id=self.consumer.world.id),
                 self.consumer.channel_name,
             )
+            await unregister_user_connection(
+                self.consumer.user.id, self.consumer.socket_id
+            )
 
     @command("list")
     @require_world_permission(Permission.WORLD_USERS_LIST)
@@ -367,3 +376,9 @@ class AuthModule(BaseModule):
             self.consumer.world,
         )
         await self.consumer.send_success({"users": users})
+
+    @command("online_status")
+    @require_world_permission(Permission.WORLD_VIEW)
+    async def online_state(self, body):
+        resp = {i: (await get_user_connection_count(i)) > 0 for i in body.get("ids")}
+        await self.consumer.send_success(resp)
