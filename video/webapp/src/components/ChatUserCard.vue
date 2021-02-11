@@ -4,6 +4,7 @@
 	.user-card(v-if="!userAction", v-scrollbar.y="", ref="card", @mousedown="showMoreActions=false")
 		avatar(:user="sender", :size="128")
 		.name
+			.online-status(:class="onlineStatus ? 'online' : (onlineStatus === false ? 'offline' : 'unknown')", v-tooltip="onlineStatus ? $t('UserAction:state.online:tooltip') : (onlineStatus === false ? $t('UserAction:state.offline:tooltip') : '')")
 			| {{ sender.profile ? sender.profile.display_name : (sender.id ? sender.id : '(unknown user)') }}
 			.ui-badge(v-for="badge in sender.badges") {{ badge }}
 		.fields(v-if="availableFields")
@@ -46,7 +47,8 @@ export default {
 			blockedUsers: null,
 			showMoreActions: false,
 			userAction: null,
-			moderationError: null
+			moderationError: null,
+			onlineStatus: null
 		}
 	},
 	computed: {
@@ -74,6 +76,7 @@ export default {
 		}
 	},
 	async created () {
+		this.onlineStatus = (await api.call('user.online_status', {ids: [this.sender.id]}))[this.sender.id]
 		this.blockedUsers = (await api.call('user.list.blocked')).users
 	},
 	methods: {
@@ -122,6 +125,19 @@ export default {
 					margin: 2px 0 0 8px
 		.state
 			height: 16px
+		.online-status
+			display: inline-block
+			margin-right: 8px
+			&::before
+				content: ''
+				display: inline-block
+				background-color: #ccc
+				width: 8px
+				height: 8px
+				border-radius: 50px
+				vertical-align: middle
+			&.online::before
+				background-color: $clr-success
 		.actions
 			margin-top: 16px
 			display: flex

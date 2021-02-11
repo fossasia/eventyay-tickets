@@ -241,6 +241,8 @@ export default {
 	'UserAction:action.unblock:label': 'entblocken',
 	'UserAction:action.unsilence:label': 'stummschaltung aufheben',
 	'UserAction:moderator-actions:title': 'Moderatoraktionen',
+	'UserAction:state.offline:tooltip': 'offline',
+	'UserAction:state.online:tooltip': 'online',
 	'UserActionPrompt:action.ban:confirmation': 'Benutzer wurde gesperrt.',
 	'UserActionPrompt:action.ban:execute:label': 'sperren',
 	'UserActionPrompt:action.ban:explanation': 'Gesperrte Benutzer können nicht mehr an der Veranstaltung teilnehmen.',
