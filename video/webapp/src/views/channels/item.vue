@@ -1,5 +1,5 @@
 <template lang="pug">
-.c-channel
+.c-channel(:class="{'has-call': hasCall}")
 	.ui-page-header
 		h2
 			span.user(v-for="(u, key) in otherUsers")
@@ -7,7 +7,9 @@
 				.online-status(:class="onlineStatus[u.id] ? 'online' : (onlineStatus[u.id] === false ? 'offline' : 'unknown')", v-tooltip="onlineStatus[u.id] ? $t('UserAction:state.online:tooltip') : (onlineStatus[u.id] === false ? $t('UserAction:state.offline:tooltip') : '')")
 				span {{ u.profile.display_name }}
 		bunt-icon-button(@click="startCall", tooltip="start video call", tooltipPlacement="left") phone_outline
-	chat(mode="standalone", :module="{channel_id: channelId}", :showUserlist="false")
+	.main
+		.channel-call(v-if="hasCall")
+		chat(:mode="hasCall ? 'compact' : 'standalone'", :module="{channel_id: channelId}", :showUserlist="false")
 </template>
 <script>
 import { mapState } from 'vuex'
@@ -27,7 +29,10 @@ export default {
 	},
 	computed: {
 		...mapState(['user']),
-		...mapState('chat', ['joinedChannels']),
+		...mapState('chat', ['joinedChannels', 'call']),
+		hasCall () {
+			return this.call.channel === this.channelId
+		},
 		channel () {
 			return this.joinedChannels?.find(channel => channel.id === this.channelId)
 		},
@@ -82,4 +87,25 @@ export default {
 					background-color: $clr-success
 		.bunt-icon-button
 			icon-button-style(style: clear)
+	.main
+		flex: auto
+		display: flex
+		min-height: 0
+		.channel-call
+			min-height: 0
+			flex: auto 1 1
+	&.has-call .c-chat
+		flex: 380px 0 0
+
+	+below('m')
+		&.has-call
+			.main
+				flex-direction: column
+			.c-chat
+				flex: auto
+				width: 100vw
+				min-height: 0
+			.channel-call
+				height: var(--mobile-media-height)
+				flex: var(--mobile-media-height) 0 0
 </style>

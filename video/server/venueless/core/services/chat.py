@@ -199,12 +199,17 @@ class ChatService:
     @database_sync_to_async
     def _store_event(self, channel, id, event_type, content, sender, replaces=None):
         if content.get("type") == "call":
-            call = BBBCall.objects.create(
-                world_id=self.world.pk, server=choose_server(self.world)
-            )
-            call.invited_members.add(*[m.user for m in channel.members.all()])
-            content.setdefault("body", {})
-            content["body"]["id"] = str(call.id)
+            if "janus" in self.world.feature_flags:
+                content.setdefault("body", {})
+                content["body"]["type"] = "janus"
+            else:
+                call = BBBCall.objects.create(
+                    world_id=self.world.pk, server=choose_server(self.world)
+                )
+                call.invited_members.add(*[m.user for m in channel.members.all()])
+                content.setdefault("body", {})
+                content["body"]["id"] = str(call.id)
+                content["body"]["type"] = "bbb"
 
         ce = ChatEvent.objects.create(
             id=id,

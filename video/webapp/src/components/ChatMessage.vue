@@ -24,7 +24,7 @@
 			.call(v-else-if="message.content.type === 'call'")
 				.prompt(v-if="message.sender === user.id") You started a video call
 				.prompt(v-else) {{ senderDisplayName }} invited you to a video call
-				bunt-button(@click="$store.dispatch('chat/joinCall', message.content.body.id)") Join
+				bunt-button(@click="$store.dispatch('chat/joinCall', message.content.body)") Join
 			a.preview-card(v-if="message.content.preview_card", :href="message.content.preview_card.url", target="_blank")
 				.url {{ message.content.preview_card.url }}
 				img(v-if="message.content.preview_card.image", :src="message.content.preview_card.image")

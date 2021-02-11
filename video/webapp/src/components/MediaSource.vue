@@ -1,29 +1,33 @@
 <template lang="pug">
 .c-media-source(:class="{'in-background': background}")
 	transition(name="background-room")
-		router-link.background-room(v-if="background", :to="{name: 'room', params: {roomId: room.id}}")
+		router-link.background-room(v-if="background", :to="room ? {name: 'room', params: {roomId: room.id}}: {name: 'channel', params: {channelId: call.channel}}")
 			.description
 				.hint {{ $t('MediaSource:room:hint') }}
-				.room-name {{ room.name }}
+				.room-name(v-if="room") {{ room.name }}
+				.room-name(v-else="call") {{ $t('MediaSource:call:label') }}
 			.global-placeholder
 			bunt-icon-button(@click.prevent.stop="$emit('close')") close
-	livestream(v-if="module.type === 'livestream.native'", ref="livestream", :room="room", :module="module", :size="background ? 'tiny' : 'normal'", :key="`livestream-${room.id}`")
-	you-tube(v-if="module.type === 'livestream.youtube'", ref="youtube", :room="room", :module="module", :size="background ? 'tiny' : 'normal'", :key="`youtube-${room.id}`")
-	big-blue-button(v-else-if="module.type === 'call.bigbluebutton'", ref="bigbluebutton", :room="room", :module="module", :background="background", :key="`bbb-${room.id}`")
-	janus-call(v-else-if="module.type === 'call.janus'", ref="janus", :room="room", :module="module", :background="background", :size="background ? 'tiny' : 'normal'", :key="`janus-${room.id}`")
+	livestream(v-if="room && module.type === 'livestream.native'", ref="livestream", :room="room", :module="module", :size="background ? 'tiny' : 'normal'", :key="`livestream-${room.id}`")
+	you-tube(v-else-if="room && module.type === 'livestream.youtube'", ref="youtube", :room="room", :module="module", :size="background ? 'tiny' : 'normal'", :key="`youtube-${room.id}`")
+	big-blue-button(v-else-if="room && module.type === 'call.bigbluebutton'", ref="bigbluebutton", :room="room", :module="module", :background="background", :key="`bbb-${room.id}`")
+	janus-call(v-else-if="room && module.type === 'call.janus'", ref="janus", :room="room", :module="module", :background="background", :size="background ? 'tiny' : 'normal'", :key="`janus-${room.id}`")
+	janus-channel-call(v-else-if="call", ref="janus", :call="call", :background="background", :size="background ? 'tiny' : 'normal'", :key="`call-${call.id}`", @close="$emit('close')")
 </template>
 <script>
 // TODO functional component?
 import api from 'lib/api'
 import BigBlueButton from 'components/BigBlueButton'
 import JanusCall from 'components/JanusCall'
+import JanusChannelCall from 'components/JanusChannelCall'
 import Livestream from 'components/Livestream'
 import YouTube from 'components/YouTube'
 
 export default {
-	components: { BigBlueButton, Livestream, YouTube, JanusCall },
+	components: { BigBlueButton, Livestream, YouTube, JanusCall, JanusChannelCall },
 	props: {
 		room: Object,
+		call: Object,
 		background: {
 			type: Boolean,
 			default: false
@@ -39,14 +43,17 @@ export default {
 		},
 	},
 	created () {
-		api.call('room.enter', {room: this.room.id})
+		if (this.room) api.call('room.enter', {room: this.room.id})
 	},
 	beforeDestroy () {
 		if (api.socketState !== 'open') return
-		api.call('room.leave', {room: this.room.id})
+		if (this.room) api.call('room.leave', {room: this.room.id})
 	},
 	methods: {
 		isPlaying () {
+			if (this.call) {
+				return this.$refs.janus.roomId
+			}
 			if (this.module.type === 'livestream.native') {
 				return this.$refs.livestream.playing && !this.$refs.livestream.offline
 			}
@@ -71,7 +78,7 @@ export default {
 	height: 0
 	&.in-background
 		z-index: 101
-	.c-livestream, .c-youtube, .c-januscall, .c-bigbluebutton
+	.c-livestream, .c-youtube, .c-januscall, .c-bigbluebutton, .c-januschannelcall
 		position: fixed
 		transition: all .3s ease
 		&.size-tiny
