@@ -10,7 +10,7 @@ import i18n from 'i18n'
 export default {
 	namespaced: true,
 	state: {
-		call: {},
+		call: null,
 		joinedChannels: null,
 		readPointers: null,
 		channel: null,
@@ -218,7 +218,7 @@ export default {
 			}
 		},
 		async leaveCall ({state}) {
-			state.call = {}
+			state.call = null
 		},
 		addReaction ({state}, {message, reaction}) {
 			// TODO skip if already reacted

@@ -31,7 +31,7 @@ export default {
 		...mapState(['user']),
 		...mapState('chat', ['joinedChannels', 'call']),
 		hasCall () {
-			return this.call.channel === this.channelId
+			return this.call && this.call.channel === this.channelId
 		},
 		channel () {
 			return this.joinedChannels?.find(channel => channel.id === this.channelId)

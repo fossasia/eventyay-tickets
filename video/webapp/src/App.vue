@@ -24,7 +24,7 @@
 		router-view(:key="$route.fullPath")
 		//- defining keys like this keeps the playing dom element alive for uninterupted transitions
 		media-source(v-if="roomHasMedia", ref="primaryMediaSource", :room="room", :key="room.id")
-		media-source(v-if="call.id", ref="channelCallSource", :call="call", :background="call.channel !== $route.params.channelId", :key="call.id", @close="$store.dispatch('chat/leaveCall')")
+		media-source(v-if="call", ref="channelCallSource", :call="call", :background="call.channel !== $route.params.channelId", :key="call.id", @close="$store.dispatch('chat/leaveCall')")
 		media-source(v-else-if="backgroundRoom", ref="backgroundMediaSource", :room="backgroundRoom", :background="true", :key="backgroundRoom.id", @close="backgroundRoom = null")
 		notifications(:has-background-media="!!backgroundRoom")
 		.disconnected-warning(v-if="!connected") {{ $t('App:disconnected-warning:text') }}
@@ -73,7 +73,7 @@ export default {
 			const hasStageTools = this.room?.modules.some(module => stageToolModules.includes(module.type))
 			const hasChatbar = (
 				(this.room?.modules.length > 1 && this.room?.modules.some(module => chatbarModules.includes(module.type))) ||
-				(this.call.id && this.call.channel === this.$route.params.channelId)
+				(this.call && this.call.channel === this.$route.params.channelId)
 			)
 
 			return {
@@ -125,7 +125,7 @@ export default {
 			document.title = this.world.title
 		},
 		callChange () {
-			if (this.call.id) {
+			if (this.call) {
 				// When a DM call starts, all other background media stops
 				this.backgroundRoom = null
 			}
@@ -142,7 +142,7 @@ export default {
 			this.$store.dispatch('changeRoom', newRoom)
 			const isBBB = module => module.type === 'call.bigbluebutton'
 			if (!this.$mq.above.m) return // no background rooms for mobile
-			if (this.call.id) return // When a DM call is running, we never want background media
+			if (this.call) return // When a DM call is running, we never want background media
 			if (oldRoom &&
 				this.rooms.includes(oldRoom) &&
 				!this.backgroundRoom &&
