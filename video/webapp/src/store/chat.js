@@ -10,6 +10,7 @@ import i18n from 'i18n'
 export default {
 	namespaced: true,
 	state: {
+		call: {},
 		joinedChannels: null,
 		readPointers: null,
 		channel: null,
@@ -201,11 +202,23 @@ export default {
 					type: 'call'
 				}
 			})
-			dispatch('joinCall', event.content.body.id)
+			dispatch('joinCall', event.content.body)
 		},
-		async joinCall ({state}, callId) {
-			const {url} = await api.call('bbb.call_url', {call: callId})
-			window.open(url, '_blank')
+		async joinCall ({state}, body) {
+			if (body.type === 'janus') {
+				state.call = {
+					type: 'janus',
+					id: state.channel,
+					parameters: await api.call('januscall.channel_url', {channel: state.channel}),
+					channel: state.channel
+				}
+			} else {
+				const {url} = await api.call('bbb.call_url', {call: body.id})
+				window.open(url, '_blank')
+			}
+		},
+		async leaveCall ({state}) {
+			state.call = {}
 		},
 		addReaction ({state}, {message, reaction}) {
 			// TODO skip if already reacted

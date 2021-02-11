@@ -40,6 +40,7 @@ transition(name="sidebar")
 				bunt-icon-button(v-if="hasPermission('world:chat.direct')", @click="showDMCreationPrompt = true") plus
 			.direct-messages
 				router-link.direct-message(v-for="channel of directMessageChannels", :to="{name: 'channel', params: {channelId: channel.id}}", :class="{unread: hasUnreadMessages(channel.id)}")
+					i.bunt-icon.mdi(v-if="call && call.channel === channel.id").mdi-phone
 					.name {{ getDMChannelName(channel) }}
 					bunt-icon-button(@click.prevent.stop="$store.dispatch('chat/leaveChannel', {channelId: channel.id})") close
 			.buffer
@@ -92,7 +93,7 @@ export default {
 	},
 	computed: {
 		...mapState(['user', 'world', 'rooms']),
-		...mapState('chat', ['joinedChannels']),
+		...mapState('chat', ['joinedChannels', 'call']),
 		...mapState('exhibition', ['staffedExhibitions']),
 		...mapGetters(['hasPermission']),
 		...mapGetters('chat', ['hasUnreadMessages']),

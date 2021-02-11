@@ -24,7 +24,8 @@
 		router-view(:key="$route.fullPath")
 		//- defining keys like this keeps the playing dom element alive for uninterupted transitions
 		media-source(v-if="roomHasMedia", ref="primaryMediaSource", :room="room", :key="room.id")
-		media-source(v-if="backgroundRoom", ref="backgroundMediaSource", :room="backgroundRoom", :background="true", :key="backgroundRoom.id", @close="backgroundRoom = null")
+		media-source(v-if="call.id", ref="channelCallSource", :call="call", :background="call.channel !== $route.params.channelId", :key="call.id", @close="$store.dispatch('chat/leaveCall')")
+		media-source(v-else-if="backgroundRoom", ref="backgroundMediaSource", :room="backgroundRoom", :background="true", :key="backgroundRoom.id", @close="backgroundRoom = null")
 		notifications(:has-background-media="!!backgroundRoom")
 		.disconnected-warning(v-if="!connected") {{ $t('App:disconnected-warning:text') }}
 		transition(name="prompt")
@@ -59,6 +60,7 @@ export default {
 	computed: {
 		...mapState(['fatalConnectionError', 'fatalError', 'connected', 'world', 'rooms', 'user']),
 		...mapState('notifications', ['askingPermission']),
+		...mapState('chat', ['call']),
 		room () {
 			if (this.$route.name === 'home') return this.rooms?.[0]
 			return this.rooms?.find(room => room.id === this.$route.params.roomId)
@@ -69,7 +71,10 @@ export default {
 		// safari cleverly includes the address bar cleverly in 100vh
 		mediaConstraintsStyle () {
 			const hasStageTools = this.room?.modules.some(module => stageToolModules.includes(module.type))
-			const hasChatbar = this.room?.modules.length > 1 && this.room?.modules.some(module => chatbarModules.includes(module.type))
+			const hasChatbar = (
+				(this.room?.modules.length > 1 && this.room?.modules.some(module => chatbarModules.includes(module.type))) ||
+				(this.call.id && this.call.channel === this.$route.params.channelId)
+			)
 
 			return {
 				'--chatbar-width': hasChatbar ? '380px' : '0px',
@@ -88,6 +93,7 @@ export default {
 		world: 'worldChange',
 		rooms: 'roomListChange',
 		room: 'roomChange',
+		call: 'callChange',
 		$route () {
 			this.showSidebar = false
 		}
@@ -118,6 +124,12 @@ export default {
 			// initial connect
 			document.title = this.world.title
 		},
+		callChange () {
+			if (this.call.id) {
+				// When a DM call starts, all other background media stops
+				this.backgroundRoom = null
+			}
+		},
 		roomChange (newRoom, oldRoom) {
 			// HACK find out why this is triggered often
 			if (newRoom === oldRoom) return
@@ -130,6 +142,7 @@ export default {
 			this.$store.dispatch('changeRoom', newRoom)
 			const isBBB = module => module.type === 'call.bigbluebutton'
 			if (!this.$mq.above.m) return // no background rooms for mobile
+			if (this.call.id) return // When a DM call is running, we never want background media
 			if (oldRoom &&
 				this.rooms.includes(oldRoom) &&
 				!this.backgroundRoom &&

@@ -140,6 +140,7 @@ export default {
 	'Livestream:captions-off:text': 'Off',
 	'Livestream:default-source:text': 'Default',
 	'Livestream:offline-message:text': 'Stream offline',
+	'MediaSource:call:label': 'Private call',
 	'MediaSource:room:hint': 'Currently playing',
 	'notifications/NotificationPermissionNotification:accept:label': 'Enable notifications',
 	'notifications/NotificationPermissionNotification:decline:label': 'Not now',
