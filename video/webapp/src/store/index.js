@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import api from 'lib/api'
 import chat from './chat'
 import question from './question'
+import roulette from './roulette'
 import exhibition from './exhibition'
 import schedule from './schedule'
 import notifications from './notifications'
@@ -165,6 +166,7 @@ export default new Vuex.Store({
 		question,
 		exhibition,
 		schedule,
+		roulette,
 		notifications
 	}
 })
