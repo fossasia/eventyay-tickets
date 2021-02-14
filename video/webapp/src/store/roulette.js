@@ -76,7 +76,7 @@ export default {
 			commit('setJanusParameters', {callId: null, server: null, token: null, iceServers: null, roomId: null})
 			commit('setCallId', null)
 			if (callId) {
-				await api.call('roulette.hangup', {call: callId})
+				await api.call('roulette.hangup', {call_id: callId})
 			}
 		},
 		'api::roulette.hangup' ({state, commit}, payload) {
