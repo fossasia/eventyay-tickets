@@ -30,7 +30,16 @@ export default {
 		}
 	},
 	computed: {
+		...mapState(['connected']),
 		...mapState('roulette', ['callId', 'server', 'iceServers', 'token', 'roomId', 'loading', 'error']),
+	},
+	watch: {
+		connected (value) {
+			if (value) {
+				// resubscribe
+				this.$store.dispatch('roulette/reconnect')
+			}
+		}
 	},
 	destroyed () {
 		this.stopRequesting()

@@ -13,11 +13,10 @@ from venueless.live.modules.base import BaseModule
 class RouletteModule(BaseModule):
     prefix = "roulette"
 
-    # TODO: calls currently to not survive a reconnect or server restart
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.used = False
-        self.calls = []
+        self.calls = set()
 
     @command("start")
     @room_action(
@@ -59,7 +58,7 @@ class RouletteModule(BaseModule):
                     },
                 },
             )
-            self.calls.append(str(room_id))
+            self.calls.add(str(room_id))
             await self.consumer.channel_layer.group_add(
                 GROUP_ROULETTE_CALL.format(id=str(room_id)),
                 self.consumer.channel_name,
@@ -74,6 +73,18 @@ class RouletteModule(BaseModule):
     )
     async def stop(self, body):
         await roulette_cleanup(self.consumer.socket_id)
+        await self.consumer.send_success({})
+
+    @command("reconnect")
+    async def reconnect(self, body):
+        call_id = body.get("call_id")
+        if not await is_member_of_roulette_call(call_id, self.consumer.user):
+            raise ConsumerException("roulette.denied")
+        await self.consumer.channel_layer.group_add(
+            GROUP_ROULETTE_CALL.format(id=call_id),
+            self.consumer.channel_name,
+        )
+        self.calls.add(call_id)
         await self.consumer.send_success({})
 
     @command("hangup")
@@ -100,7 +111,7 @@ class RouletteModule(BaseModule):
         if body.get("socket_id") == self.consumer.socket_id:
             call_id = body.get("data", {}).get("call_id")
             await self.consumer.send_json(["roulette.match_found", body.get("data")])
-            self.calls.append(call_id)
+            self.calls.add(call_id)
             await self.consumer.channel_layer.group_add(
                 GROUP_ROULETTE_CALL.format(id=call_id),
                 self.consumer.channel_name,

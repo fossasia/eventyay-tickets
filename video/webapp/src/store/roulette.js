@@ -71,6 +71,11 @@ export default {
 				commit('setLoading', false)
 			}
 		},
+		async reconnect ({state, commit}) {
+			if (state.callId) {
+				await api.call('roulette.reconnect', {call_id: state.callId})
+			}
+		},
 		async stopCall ({state, commit}) {
 			const callId = state.callId
 			commit('setJanusParameters', {callId: null, server: null, token: null, iceServers: null, roomId: null})
