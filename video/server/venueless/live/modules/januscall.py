@@ -14,6 +14,7 @@ from venueless.core.services.janus import (
     create_room,
     room_exists,
 )
+from venueless.core.services.roulette import is_member_of_roulette_call
 from venueless.core.utils.redis import aioredis
 from venueless.live.decorators import command, room_action
 from venueless.live.exceptions import ConsumerException
@@ -49,6 +50,15 @@ class JanusCallModule(BaseModule):
             raise ConsumerException("janus.denied")
         await self.consumer.send_success(
             await self._get_or_create_janus_room(f"channel:{channel_id}")
+        )
+
+    @command("roulette_url")
+    async def roulette_url(self, body):
+        call_id = body.get("call_id")
+        if not await is_member_of_roulette_call(call_id, self.consumer.user):
+            raise ConsumerException("janus.denied")
+        await self.consumer.send_success(
+            await self._get_or_create_janus_room(f"roulette:{call_id}")
         )
 
     async def _get_or_create_janus_room(self, redis_key):

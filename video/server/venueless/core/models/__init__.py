@@ -13,6 +13,7 @@ from .feedback import Feedback
 from .janus import JanusServer
 from .question import Question, QuestionVote
 from .room import Room
+from .roulette import RoulettePairing, RouletteRequest
 from .turn import TurnServer
 from .world import World
 
@@ -30,6 +31,8 @@ __all__ = [
     "Question",
     "QuestionVote",
     "Room",
+    "RoulettePairing",
+    "RouletteRequest",
     "World",
     "Exhibitor",
     "ExhibitorStaff",
