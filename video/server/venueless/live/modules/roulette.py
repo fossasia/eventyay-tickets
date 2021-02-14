@@ -78,7 +78,7 @@ class RouletteModule(BaseModule):
 
     @command("hangup")
     async def hangup(self, body):
-        call_id = body.get("call")
+        call_id = body.get("call_id")
         if not await is_member_of_roulette_call(call_id, self.consumer.user):
             raise ConsumerException("roulette.denied")
         await self.consumer.channel_layer.group_discard(
