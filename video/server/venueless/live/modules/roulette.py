@@ -118,3 +118,8 @@ class RouletteModule(BaseModule):
                 GROUP_ROULETTE_CALL.format(id=call_id),
                 self.consumer.channel_name,
             )
+            if close_code in (1000, 1001):
+                await self.consumer.channel_layer.group_send(
+                    GROUP_ROULETTE_CALL.format(id=call_id),
+                    {"type": "roulette.hangup"},
+                )
