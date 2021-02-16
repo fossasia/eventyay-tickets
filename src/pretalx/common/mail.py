@@ -63,13 +63,18 @@ def mail_send_task(
     if event:
         event = Event.objects.get(pk=event)
         backend = event.get_mail_backend()
-        sender = event.settings.get("mail_from")
-        if not reply_to and event.settings.get("mail_reply_to"):
-            reply_to = [
-                formataddr((str(event.name), event.settings.get("mail_reply_to")))
-            ]
-        if not sender or sender == "noreply@example.org":
-            reply_to = reply_to or [formataddr((str(event.name), event.email))]
+
+        sender = settings.MAIL_FROM
+        if event.settings.smtp_use_custom:
+            sender = event.settings.mail_from or sender
+
+        reply_to = reply_to or event.settings.mail_reply_to
+        if not reply_to and sender == settings.MAIL_FROM:
+            reply_to = event.email
+
+        if isinstance(reply_to, str):
+            reply_to = [formataddr((str(event.name), reply_to))]
+
         sender = formataddr((str(event.name), sender or settings.MAIL_FROM))
     else:
         sender = formataddr(("pretalx", settings.MAIL_FROM))

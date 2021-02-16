@@ -307,11 +307,6 @@ class EventSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
 
 
 class MailSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
-    mail_from = forms.EmailField(
-        label=_("Sender address"),
-        help_text=_("Sender address for outgoing emails."),
-        required=False,
-    )
     mail_reply_to = forms.EmailField(
         label=_("Contact address"),
         help_text=_(
@@ -339,6 +334,11 @@ class MailSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
         help_text=_(
             "All mail related to your event will be sent over the SMTP server specified by you."
         ),
+        required=False,
+    )
+    mail_from = forms.EmailField(
+        label=_("Sender address"),
+        help_text=_("Sender address for outgoing emails."),
         required=False,
     )
     smtp_host = forms.CharField(label=_("Hostname"), required=False)

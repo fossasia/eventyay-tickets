@@ -1,6 +1,14 @@
 {% extends "orga/settings/base.html" %}
 {% load bootstrap4 %}
+{% load compress %}
 {% load i18n %}
+{% load static %}
+
+{% block scripts %}
+    {% compress js %}
+        <script defer src="{% static "orga/js/mailSettings.js" %}"></script>
+    {% endcompress %}
+{% endblock %}
 
 {% block settings_content %}
     <form method="post">
