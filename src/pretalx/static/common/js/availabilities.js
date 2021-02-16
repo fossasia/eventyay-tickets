@@ -41,6 +41,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
       return e
     })
+    let localeData = document.querySelector("#calendar-locale")
+    const locale = localeData ? localeData.dataset.locale : "en"
     editor.fullCalendar({
       views: {
         agendaVariableDays: {
@@ -69,6 +71,7 @@ document.addEventListener("DOMContentLoaded", function() {
       slotLabelFormat: "H:mm",
       scrollTime: "09:00:00",
       selectable: editable,
+      locale: locale,
       selectHelper: true,
       select: function(start, end) {
         var wasInDeleteMode = false

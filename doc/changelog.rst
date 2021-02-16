@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` The availability widget now shows day names in your locale instead of always using English.
 - :feature:`-` To prevent emails getting recorded as spam, the custom sender address is now only used when you are using a custom email server. You can still set the reply-to address.
 - :feature:`-` If you run pretalx with ``--no-pretalx-information``, it will not print the pretalx information header.
 - :feature:`-` pretalx will resize uploaded images down to 1920x1080 (by default).
