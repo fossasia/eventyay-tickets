@@ -179,7 +179,7 @@ def widget_data_v2(request, event, version=None):
                     else None,
                     "track": talk.submission.track_id if talk.submission else None,
                     "start": talk.start.astimezone(event.tz),
-                    "end": talk.end.astimezone(event.tz),
+                    "end": talk.real_end.astimezone(event.tz),
                     "room": talk.room_id,
                 }
             )
@@ -188,7 +188,7 @@ def widget_data_v2(request, event, version=None):
                 {
                     "title": talk.description,
                     "start": talk.start,
-                    "end": talk.end,
+                    "end": talk.real_end,
                     "room": talk.room_id,
                 }
             )
