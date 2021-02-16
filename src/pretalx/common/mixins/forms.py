@@ -52,7 +52,7 @@ class RequestRequire:
             request = self.event.settings.get(f"cfp_request_{key}")
             require = self.event.settings.get(f"cfp_require_{key}")
             if not request and not require:
-                self.fields.pop(key)
+                self.fields.pop(key, None)
             else:
                 field = self.fields[key]
                 field.required = require
