@@ -28,7 +28,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         event = options.get("event")
-        silent = 0 if options.get("silent") else 1
+        silent = 1 if options.get("silent") else 0
         if event:
             try:
                 event = Event.objects.get(slug__iexact=event)
