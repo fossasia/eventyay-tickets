@@ -383,8 +383,8 @@ class Schedule(LogMixin, models.Model):
                 )
                 .filter(
                     models.Q(start__lt=talk.start, end__gt=talk.start)
-                    | models.Q(start__lt=talk.end, end__gt=talk.end)
-                    | models.Q(start__gt=talk.start, end__lt=talk.end)
+                    | models.Q(start__lt=talk.real_end, end__gt=talk.real_end)
+                    | models.Q(start__gt=talk.start, end__lt=talk.real_end)
                 )
                 .exists()
             )
