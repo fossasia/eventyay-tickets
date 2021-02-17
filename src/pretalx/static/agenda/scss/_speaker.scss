@@ -43,6 +43,14 @@
       border: 0;
       font-weight: bold;
     }
+    .talk-image {
+      float: right;
+      max-width: 380px;
+      padding: 24px;
+      img {
+        max-width: 100%;
+      }
+    }
   }
 }
 
