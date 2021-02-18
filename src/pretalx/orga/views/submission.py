@@ -836,6 +836,7 @@ class TagDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     template_name = "orga/submission/tag_form.html"
     permission_required = "orga.view_submissions"
     write_permission_required = "orga.edit_tags"
+    create_permission_required = "orga.add_tags"
 
     def get_success_url(self) -> str:
         return self.request.event.orga_urls.tags
