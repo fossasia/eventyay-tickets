@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`1047` The review statistics timeline chart now includes the total submitted proposals to the given date, in addition to the proposals submitted on the given date.
 - :bug:`1049` Reviewers without further permissions could not create tags, even when they had the necessary permissions.
 - :feature:`1036` The talk feedback page is now available once a talk has started, not once it is over.
 - :bug:`1023` If you used links to pre-fill parts of the CfP form, you sometimes couldn't get part the first page.

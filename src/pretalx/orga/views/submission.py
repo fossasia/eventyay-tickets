@@ -650,8 +650,8 @@ class SubmissionStats(PermissionRequired, TemplateView):
             )
         return json.dumps({"deadlines": deadlines})
 
-    @context
-    def submission_timeline_data(self):
+    @cached_property
+    def raw_submission_timeline_data(self):
         data = Counter(
             log.timestamp.astimezone(self.request.event.tz).date()
             for log in ActivityLog.objects.filter(
@@ -666,12 +666,27 @@ class SubmissionStats(PermissionRequired, TemplateView):
                 count=(max(dates) - min(dates)).days + 1,
                 dtstart=min(dates),
             )
-            return json.dumps(
+            return sorted(
                 [
                     {"x": date.isoformat(), "y": data.get(date.date(), 0)}
                     for date in date_range
-                ]
+                ],
+                key=lambda x: x["x"],
             )
+
+    @context
+    def submission_timeline_data(self):
+        if self.raw_submission_timeline_data:
+            return json.dumps(self.raw_submission_timeline_data)
+        return ""
+
+    @context
+    def total_submission_timeline_data(self):
+        if self.raw_submission_timeline_data:
+            result = [{"x": 0, "y": 0}]
+            for point in self.raw_submission_timeline_data:
+                result.append({"x": point["x"], "y": result[-1]["y"] + point["y"]})
+            return json.dumps(result[1:])
         return ""
 
     @context
@@ -726,7 +741,7 @@ class SubmissionStats(PermissionRequired, TemplateView):
     @context
     def talk_timeline_data(self):
         data = Counter(
-            log.timestamp.astimezone(self.request.event.tz).date()
+            log.timestamp.astimezone(self.request.event.tz).date().isoformat()
             for log in ActivityLog.objects.filter(
                 event=self.request.event,
                 action_type="pretalx.submission.create",
@@ -734,17 +749,11 @@ class SubmissionStats(PermissionRequired, TemplateView):
             if getattr(log.content_object, "state", None)
             in [SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED]
         )
-        dates = data.keys()
-        if len(dates) > 1:
-            date_range = rrule.rrule(
-                rrule.DAILY,
-                count=(max(dates) - min(dates)).days + 1,
-                dtstart=min(dates),
-            )
+        if len(data.keys()) > 1:
             return json.dumps(
                 [
-                    {"x": date.isoformat(), "y": data.get(date.date(), 0)}
-                    for date in date_range
+                    {"x": point["x"], "y": data.get(point["x"][:10], 0)}
+                    for point in self.raw_submission_timeline_data
                 ]
             )
         return ""

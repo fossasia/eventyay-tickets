@@ -3,7 +3,11 @@ const dataMapping = JSON.parse(globalData.dataset.mapping)
 let searchUrl = globalData.dataset.url
 
 const drawTimeline = () => {
-  const dataElements = [document.getElementById("submission-timeline-data"), document.getElementById("talk-timeline-data")].filter(element => element.dataset.timeline)
+  const dataElements = [
+    document.getElementById("submission-timeline-data"),
+    document.getElementById("talk-timeline-data"),
+    document.getElementById("total-submission-timeline-data"),
+  ].filter(element => element.dataset.timeline)
   const element = document.getElementById("timeline")
   const deadlines = JSON.parse(globalData.dataset.annotations).deadlines.map(element => {
     return {
@@ -53,7 +57,10 @@ const drawTimeline = () => {
         }
       }
     },
-    colors: ["#3aa57c", "#4697c9"],
+    colors: ["#3aa57c", "#4697c9", "#cccccc"],
+    fill: {
+      type: ["gradient", "gradient", "gradient"],
+    },
     dataLabels: {
       enabled: false
     },
