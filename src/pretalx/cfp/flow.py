@@ -180,7 +180,7 @@ class FormFlowStep(TemplateFlowStep):
     def get_form(self, from_storage=False):
         if self.request.method == "GET" or from_storage:
             return self.form_class(
-                data=self.get_form_initial() or None,
+                data=None,
                 initial=self.get_form_initial(),
                 files=self.get_files(),
                 **self.get_form_kwargs(),

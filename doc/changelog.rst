@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`1023` If you used links to pre-fill parts of the CfP form, you sometimes couldn't get part the first page.
 - :bug:`-` The display of large talk images was off, extending them too far to the right.
 - :feature:`-` The availability widget now shows day names in your locale instead of always using English.
 - :feature:`-` To prevent emails getting recorded as spam, the custom sender address is now only used when you are using a custom email server. You can still set the reply-to address.
