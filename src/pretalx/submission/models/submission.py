@@ -557,8 +557,7 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
     def does_accept_feedback(self):
         slot = self.slot
         if slot and slot.start:
-            end = slot.end or slot.start + slot.submission.get_duration()
-            return end < now()
+            return start < now()
         return False
 
     @cached_property

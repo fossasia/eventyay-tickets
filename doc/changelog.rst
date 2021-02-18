@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`1036` The talk feedback page is now available once a talk has started, not once it is over.
 - :bug:`1023` If you used links to pre-fill parts of the CfP form, you sometimes couldn't get part the first page.
 - :bug:`-` The display of large talk images was off, extending them too far to the right.
 - :feature:`-` The availability widget now shows day names in your locale instead of always using English.
