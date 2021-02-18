@@ -3,6 +3,7 @@ from urllib.parse import unquote
 
 import pytz
 from django.conf import settings
+from django.db.models import Q
 from django.http import Http404, HttpResponse, JsonResponse
 from django.utils.timezone import now
 from django.views.decorators.cache import cache_page
@@ -146,7 +147,9 @@ def widget_data_v2(request, event, version=None):
         talks = schedule.talks.filter(is_visible=True)
     else:
         talks = schedule.talks.filter(
-            submission__state="confirmed", start__isnull=False, room__isnull=False
+            Q(submission__state="confirmed") | Q(submission__isnull=True),
+            start__isnull=False,
+            room__isnull=False,
         )
 
     talks = (
