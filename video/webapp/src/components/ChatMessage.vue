@@ -185,7 +185,7 @@ export default {
 			this.reactionTooltip = {
 				emoji,
 				// TODO 'and you'
-				usersString: users.map(u => this.usersLookup[u].profile?.display_name || '???').join(', ')
+				usersString: users.map(u => this.usersLookup[u]?.profile?.display_name || '???').join(', ')
 			}
 			await this.$nextTick()
 			createPopper(event.target, this.$refs.reactionTooltip, {
