@@ -133,7 +133,6 @@ export default {
 				// 'page.markdown', - deprecated, new rooms should use page.static
 				'page.static',
 				'page.iframe',
-				'page.landing',
 				'page.userlist',
 				'livestream.native',
 				'livestream.youtube',
@@ -141,6 +140,9 @@ export default {
 				'chat.native',
 				'call.bigbluebutton',
 			]
+			if (this.$features.enabled('page.landing')) {
+				knownTypes.push('page.landing')
+			}
 			if (this.$features.enabled('janus')) {
 				knownTypes.push('call.janus')
 			}
