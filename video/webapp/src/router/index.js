@@ -85,12 +85,16 @@ const routes = [{
 		props: true
 	}, {
 		path: '/admin/rooms',
-		name: 'admin:rooms',
-		component: () => import(/* webpackChunkName: "admin" */ 'views/admin/rooms'),
+		name: 'admin:rooms:index',
+		component: () => import(/* webpackChunkName: "admin" */ 'views/admin/rooms/index'),
 	}, {
-		path: '/admin/rooms/:editRoomId',
-		name: 'admin:room',
-		component: () => import(/* webpackChunkName: "admin" */ 'views/admin/room'),
+		path: '/admin/rooms/new',
+		name: 'admin:rooms:new',
+		component: () => import(/* webpackChunkName: "admin" */ 'views/admin/rooms/new'),
+	}, {
+		path: '/admin/rooms/:roomId',
+		name: 'admin:rooms:item',
+		component: () => import(/* webpackChunkName: "admin" */ 'views/admin/rooms/item'),
 		props: true
 	}, {
 		path: '/admin/config',

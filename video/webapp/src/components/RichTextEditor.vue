@@ -42,7 +42,7 @@ const Delta = Quill.import('delta')
 
 export default {
 	props: {
-		value: Array,
+		value: Object,
 	},
 	data () {
 		return {

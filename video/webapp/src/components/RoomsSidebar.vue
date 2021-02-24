@@ -53,7 +53,7 @@ transition(name="sidebar")
 				.group-title {{ $t('RoomsSidebar:admin-headline:text') }}
 				.admin
 					router-link.room(:to="{name: 'admin:users'}", v-if="hasPermission('world:users.list')") {{ $t('RoomsSidebar:admin-users:label') }}
-					router-link.room(:to="{name: 'admin:rooms'}", v-if="hasPermission('room:update')") {{ $t('RoomsSidebar:admin-rooms:label') }}
+					router-link.room(:to="{name: 'admin:rooms:index'}", v-if="hasPermission('room:update')") {{ $t('RoomsSidebar:admin-rooms:label') }}
 					router-link.room(:to="{name: 'admin:config'}", v-if="hasPermission('world:update')") {{ $t('RoomsSidebar:admin-config:label') }}
 		router-link.profile(:to="{name: 'preferences'}")
 			avatar(:user="user", :size="36")
