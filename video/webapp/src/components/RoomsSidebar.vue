@@ -224,6 +224,7 @@ export default {
 		display: flex
 		flex-direction: column
 		> *
+			ellipsis()
 			flex: none
 			height: 36px
 			line-height: 36px

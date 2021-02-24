@@ -116,6 +116,10 @@ class AppView(View):
                 ),
             )
 
+        source = re.sub(
+            '<html[^>]*>', '<html lang="{}">'.format(world.locale), source
+        )
+
         return HttpResponse(source, content_type="text/html")
 
 

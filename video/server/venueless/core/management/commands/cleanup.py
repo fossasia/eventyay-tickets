@@ -5,6 +5,7 @@ from django.core.management.base import BaseCommand
 from django.db.models import F
 from django.utils.timezone import now
 
+from venueless.core.models import RouletteRequest
 from venueless.core.models.room import RoomView
 
 logger = logging.getLogger(__name__)
@@ -26,3 +27,4 @@ class Command(BaseCommand):
         RoomView.objects.filter(
             end__isnull=False, room__world__config__track_room_views=False
         ).delete()
+        RouletteRequest.objects.filter(expiry__lte=now() - timedelta(hours=1)).delete()
