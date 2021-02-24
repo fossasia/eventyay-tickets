@@ -1,39 +1,32 @@
 <template lang="pug">
 .c-admin-rooms
 	.header
-		h2 Rooms
+		.actions
+			h2 Rooms
+			bunt-link-button.btn-create(:to="{name: 'admin:rooms:new'}") Create a new room
 		bunt-input.search(name="search", placeholder="Search rooms", icon="search", v-model="search")
 	.rooms-list
 		.header
 			.id ID
 			.prio Priority
 			.name Name
-			.actions
-				bunt-button.btn-create(@click="showCreateRoomPrompt = true") Create new
 		RecycleScroller.tbody.bunt-scrollbar(v-if="filteredRooms", :items="filteredRooms", :item-size="48", v-slot="{item: room}", v-scrollbar.y="")
-			router-link.room.table-row(:to="{name: 'admin:room', params: {editRoomId: room.id}}", :class="{error: room.error, updating: room.updating}")
+			router-link.room.table-row(:to="{name: 'admin:rooms:item', params: {roomId: room.id}}", :class="{error: room.error, updating: room.updating}")
 				.id(:title="room.id") {{ room.id }}
 				.prio {{ room.sorting_priority }}
 				.name {{ room.name }}
 		bunt-progress-circular(v-else, size="huge", :page="true")
-	transition(name="prompt")
-		create-room-prompt(v-if="showCreateRoomPrompt", @close="showCreateRoomPrompt = false")
 </template>
 <script>
-// TODO
-// - search
 import api from 'lib/api'
 import fuzzysearch from 'lib/fuzzysearch'
-import CreateRoomPrompt from 'components/config/CreateRoomPrompt'
 
 export default {
 	name: 'AdminRooms',
-	components: {CreateRoomPrompt},
 	data () {
 		return {
 			rooms: null,
-			search: '',
-			showCreateRoomPrompt: false,
+			search: ''
 		}
 	},
 	computed: {
@@ -60,10 +53,11 @@ export default {
 		justify-content: space-between
 		background-color: $clr-grey-50
 		.actions
-			display flex
-			flex none
+			display: flex
+			flex: none
+			align-items: center
 			.bunt-button:not(:last-child)
-				margin-right 16px
+				margin-right: 16px
 			.btn-create
 				themed-button-primary()
 	h2
@@ -73,6 +67,7 @@ export default {
 		padding: 0
 		margin: 8px
 		flex: none
+		background-color: $clr-white
 	.rooms-list
 		flex-table()
 		.room
@@ -91,25 +86,4 @@ export default {
 		.name
 			flex: auto
 			ellipsis()
-		.actions
-			flex: none
-			width: 200px
-			flex: none
-			padding: 0 24px 0 0
-			display: flex
-			align-items: center
-			justify-content: flex-end
-			.placeholder
-				flex: none
-				color: $clr-secondary-text-light
-			.btn-edit
-				button-style(style: clear, color: $clr-primary, text-color: $clr-primary)
-			.btn-delete
-				button-style(style: clear, color: $clr-danger, text-color: $clr-danger)
-		.room:not(:hover):not(.error):not(.updating)
-			.actions .bunt-button, .actions .bunt-link-button
-				display: none
-		.room:hover, .room.error, .room.updating
-			.actions .placeholder
-				display: none
 </style>
