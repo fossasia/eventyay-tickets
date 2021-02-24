@@ -1,14 +1,17 @@
 <template lang="pug">
 .c-roulette
-	.room
-		janus-videoroom(v-if="server", :server="server", :token="token", :iceServers="iceServers", :roomId="roomId", :key="`janus-videoroom-${roomId}`")
+	.call(v-if="server")
+		janus-videoroom(:server="server", :token="token", :iceServers="iceServers", :roomId="roomId", size="normal", :automute="false", :key="`janus-videoroom-${roomId}`", @hangup="stopCall")
+	.status(v-else-if="loading && !callId") {{ $t('Roulette:waiting:text') }}
+	.status(v-else-if="loading && callId") {{ $t('Roulette:connecting:text') }}
+	.status(v-else) {{ $t('Roulette:instructions:text') }}
 	.next
-		bunt-button.btn-next(@click="startNewCall", :error-message="joinError", :loading="loading") {{ $t('Roulette:btn-start:label') }}
+		bunt-button.btn-next(@click="findNewCall", :error-message="error", :loading="loading") {{ $t('Roulette:btn-start:label') }}
 
 </template>
 <script>
-import api from 'lib/api'
 import JanusVideoroom from 'components/janus/JanusVideoroom'
+import {mapActions, mapMutations, mapState} from 'vuex'
 
 export default {
 	components: {JanusVideoroom},
@@ -24,48 +27,58 @@ export default {
 	},
 	data () {
 		return {
-			server: null,
-			token: null,
-			iceServers: [],
-			roomId: null,
-			loading: false,
-			joinError: null,
 		}
 	},
-	methods: {
-		async startNewCall () {
-			this.janus = null
-			this.server = null
-			this.roomId = null
-			this.feeds = []
-			this.loading = true
-			this.joinError = null
-			try {
-				const {server, roomId, token, iceServers} = await api.call('roulette.start', {room: this.room.id})
-				this.roomId = roomId
-				this.token = token
-				this.iceServers = iceServers
-				this.server = server
-				this.loading = false
-			} catch (e) {
-				this.joinError = e.message
-				this.loading = false
+	computed: {
+		...mapState(['connected']),
+		...mapState('roulette', ['callId', 'server', 'iceServers', 'token', 'roomId', 'loading', 'error']),
+	},
+	watch: {
+		connected (value) {
+			if (value) {
+				// resubscribe
+				this.$store.dispatch('roulette/reconnect')
 			}
+		}
+	},
+	destroyed () {
+		this.stopRequesting()
+		this.stopCall()
+	},
+	methods: {
+		...mapMutations('roulette', ['setLoading']),
+		...mapActions('roulette', ['startCall', 'stopCall', 'startRequesting', 'stopRequesting']),
+
+		findNewCall () {
+			this.stopCall()
+			this.startRequesting({room: this.room})
 		},
 	},
 }
 </script>
 <style lang="stylus">
-	.c-roulette
-		flex: auto
-		height: auto // 100% breaks safari
-		display: flex
-		flex-direction: column
+.c-roulette
+	flex: 100% 0 0
+	max-height: 100%
+	height: auto // 100% breaks safari
+	display: flex
+	flex-direction: column
+	align-items: center
+	justify-content: center
+	.call
+		width: 100%
+		flex: auto 1 1
 		position: relative
-	.room
-		flex-basis: 100%
-		flex-grow: 1
-		flex-shrink: 1
+		.c-janusvideoroom
+			position: absolute
+			left: 0
+			top: 0
+			width: 100%
+			height: 100%
+	.status
+		text-align: center
+		padding: 16px
+		font-size: 24px
 	.next
 		padding: 16px
 		flex-shrink: 1
