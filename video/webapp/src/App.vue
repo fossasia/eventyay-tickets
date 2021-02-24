@@ -62,6 +62,7 @@ export default {
 		...mapState('notifications', ['askingPermission']),
 		...mapState('chat', ['call']),
 		room () {
+			if (this.$route.name.startsWith('admin')) return
 			if (this.$route.name === 'home') return this.rooms?.[0]
 			return this.rooms?.find(room => room.id === this.$route.params.roomId)
 		},
