@@ -102,7 +102,8 @@ Endpoints
               }
              ],
              "notes": "Please make sure you give me red M&Ms",
-             "internal_notes": "Absolutely no M&Ms, but cool proposal otherwise!"
+             "internal_notes": "Absolutely no M&Ms, but cool proposal otherwise!",
+             "tags": ["science"]
           }
         ]
       }
@@ -162,7 +163,8 @@ Endpoints
           }
          ],
          "notes": "Please make sure you give me red M&Ms",
-         "internal_notes": "Absolutely no M&Ms, but cool proposal otherwise!"
+         "internal_notes": "Absolutely no M&Ms, but cool proposal otherwise!",
+         "tags": ["science"]
       }
 
    :param event: The ``slug`` field of the event to fetch
