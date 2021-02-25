@@ -38,12 +38,13 @@ def test_submission_slot_serializer(slot):
 
 
 @pytest.mark.django_db
-def test_submission_serializer_for_organiser(submission, orga_user, resource):
+def test_submission_serializer_for_organiser(submission, orga_user, resource, tag):
     class Request:
         user = orga_user
         event = submission.event
 
     with scope(event=submission.event):
+        submission.tags.add(tag)
         data = SubmissionOrgaSerializer(
             submission, context={"event": submission.event, "request": Request()}
         ).data
@@ -68,6 +69,7 @@ def test_submission_serializer_for_organiser(submission, orga_user, resource):
             "internal_notes",
             "created",
             "resources",
+            "tags",
         }
         assert isinstance(data["speakers"], list)
         assert data["speakers"][0] == {
@@ -78,6 +80,7 @@ def test_submission_serializer_for_organiser(submission, orga_user, resource):
             .biography,
             "avatar": None,
         }
+        assert data["tags"] == [tag.tag]
         assert data["submission_type"] == str(submission.submission_type.name)
         assert data["slot"] is None
         assert (

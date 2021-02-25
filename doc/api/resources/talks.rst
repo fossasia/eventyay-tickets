@@ -31,7 +31,14 @@ slot_count                            number                     How often this 
 answers                               list                       The question answers given by the speakers. Available if the requesting user has organiser permissions.
 notes                                 string                     Notes the speaker left for the organisers. Available if the requesting user has organiser permissions.
 internal_notes                        string                     Notes the organisers left on the submission. Available if the requesting user has organiser permissions.
+tags                                  list                       The tags attached to the current submission, as a list of strings. Available if the requesting user has organiser or reviewer permissions.
 ===================================== ========================== =======================================================
+
+.. versionadded:: 1.1.0
+   The ``resources`` field for file uploads was added in pretalx v1.1.0.
+
+.. versionadded:: 2.2.0
+   The ``tags`` field was added in pretalx v2.2.0.
 
 Endpoints
 ---------

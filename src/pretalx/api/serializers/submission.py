@@ -12,7 +12,7 @@ from rest_framework.serializers import (
 from pretalx.api.serializers.question import AnswerSerializer
 from pretalx.api.serializers.speaker import SubmitterSerializer
 from pretalx.schedule.models import Schedule, TalkSlot
-from pretalx.submission.models import Resource, Submission, SubmissionStates
+from pretalx.submission.models import Resource, Submission, SubmissionStates, Tag
 
 
 class FileField(Field):
@@ -115,10 +115,14 @@ class SubmissionSerializer(I18nAwareModelSerializer):
 
 class SubmissionOrgaSerializer(SubmissionSerializer):
     answers = AnswerSerializer(many=True)
+    tags = SerializerMethodField()
     created = SerializerMethodField()
 
     def get_created(self, obj):
         return obj.created.astimezone(obj.event.tz).isoformat()
+
+    def get_tags(self, obj):
+        return list(obj.tags.all().values_list("tag", flat=True))
 
     class Meta(SubmissionSerializer.Meta):
         fields = SubmissionSerializer.Meta.fields + [
@@ -126,6 +130,7 @@ class SubmissionOrgaSerializer(SubmissionSerializer):
             "answers",
             "notes",
             "internal_notes",
+            "tags",
         ]
 
 

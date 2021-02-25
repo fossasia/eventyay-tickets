@@ -22,6 +22,7 @@ from pretalx.submission.models import (
     Submission,
     SubmissionType,
     SubmitterAccessCode,
+    Tag,
     Track,
 )
 
@@ -911,3 +912,8 @@ def other_track(event):
 def access_code(event):
     with scope(event=event):
         return SubmitterAccessCode.objects.create(event=event)
+
+
+@pytest.fixture
+def tag(event):
+    return Tag.objects.create(tag="testtag", event=event)
