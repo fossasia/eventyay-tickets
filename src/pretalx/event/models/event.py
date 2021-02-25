@@ -329,6 +329,7 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
         rooms = "{base}rooms/"
         questions = "{base}questions/"
         answers = "{base}answers/"
+        tags = "{base}tags/"
 
     class Meta:
         ordering = ("date_from",)

@@ -12,3 +12,4 @@ Resources and endpoints
    rooms
    questions
    answers
+   tags

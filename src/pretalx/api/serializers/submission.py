@@ -113,6 +113,12 @@ class SubmissionSerializer(I18nAwareModelSerializer):
         ]
 
 
+class TagSerializer(I18nAwareModelSerializer):
+    class Meta:
+        model = Tag
+        fields = ["tag", "description", "color"]
+
+
 class SubmissionOrgaSerializer(SubmissionSerializer):
     answers = AnswerSerializer(many=True)
     tags = SerializerMethodField()

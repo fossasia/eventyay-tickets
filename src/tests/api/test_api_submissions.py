@@ -6,6 +6,7 @@ from django_scopes import scope
 from pretalx.api.serializers.submission import (
     SubmissionOrgaSerializer,
     SubmissionSerializer,
+    TagSerializer,
 )
 
 
@@ -35,6 +36,17 @@ def test_submission_slot_serializer(slot):
         }
         assert set(data["slot"].keys()) == {"start", "end", "room"}
         assert data["slot"]["room"] == slot.room.name
+
+
+@pytest.mark.django_db
+def test_tag_serializer(tag):
+    with scope(event=tag.event):
+        data = TagSerializer(tag, context={"event": tag.event}).data
+        assert set(data.keys()) == {
+            "tag",
+            "description",
+            "color",
+        }
 
 
 @pytest.mark.django_db
@@ -319,3 +331,31 @@ def test_reviewer_cannot_see_speakers_and_anonymised_content(
     assert content["speakers"] == []
     assert content["description"] == "CENSORED!"
     assert content["abstract"] == submission.abstract
+
+
+@pytest.mark.django_db
+def test_cannot_see_tags(client, tag):
+    response = client.get(tag.event.api_urls.tags, follow=True)
+    content = json.loads(response.content.decode())
+
+    assert response.status_code == 200
+    assert content["count"] == 0
+
+
+@pytest.mark.django_db
+def test_orga_can_see_tags(orga_client, tag):
+    response = orga_client.get(tag.event.api_urls.tags, follow=True)
+    content = json.loads(response.content.decode())
+
+    assert response.status_code == 200
+    assert content["count"] == 1
+    assert content["results"][0]["tag"] == tag.tag
+
+
+@pytest.mark.django_db
+def test_orga_can_see_single_tag(orga_client, tag):
+    response = orga_client.get(tag.event.api_urls.tags + f"{tag.tag}/", follow=True)
+    content = json.loads(response.content.decode())
+
+    assert response.status_code == 200
+    assert content["tag"] == tag.tag

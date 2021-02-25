@@ -6,9 +6,10 @@ from pretalx.api.serializers.submission import (
     SubmissionOrgaSerializer,
     SubmissionReviewerSerializer,
     SubmissionSerializer,
+    TagSerializer,
 )
 from pretalx.schedule.models import Schedule
-from pretalx.submission.models import Submission
+from pretalx.submission.models import Submission, Tag
 
 
 class SubmissionViewSet(viewsets.ReadOnlyModelViewSet):
@@ -94,3 +95,14 @@ class ScheduleViewSet(viewsets.ReadOnlyModelViewSet):
         if is_public:
             return self.request.event.schedules.filter(pk=current_schedule)
         return qs
+
+
+class TagViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = TagSerializer
+    queryset = Tag.objects.none()
+    lookup_field = "tag__iexact"
+
+    def get_queryset(self):
+        if self.request.user.has_perm("orga.view_submissions", self.request.event):
+            return self.request.event.tags.all()
+        return Tag.objects.none()
