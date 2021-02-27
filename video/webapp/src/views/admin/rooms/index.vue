@@ -18,6 +18,7 @@
 		bunt-progress-circular(v-else, size="huge", :page="true")
 </template>
 <script>
+// TODO show inferred type
 import api from 'lib/api'
 import fuzzysearch from 'lib/fuzzysearch'
 

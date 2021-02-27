@@ -13,9 +13,11 @@
 	upload-url-input(name="presentation", v-model="module.config.presentation", label="Initial presentation")
 </template>
 <script>
+import UploadUrlInput from 'components/UploadUrlInput'
 import mixin from './mixin'
 
 export default {
+	components: { UploadUrlInput },
 	mixins: [mixin],
 	computed: {
 		module () {
