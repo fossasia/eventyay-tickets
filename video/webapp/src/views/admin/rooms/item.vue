@@ -4,7 +4,7 @@
 	template(v-else-if="config")
 		.ui-page-header
 			bunt-icon-button(@click="$router.push({name: 'admin:rooms:index'})") arrow_left
-			h2 {{ config.name }} room configuration
+			h1 {{ inferredType.name }} : {{ config.name }}
 			.actions
 				bunt-button.btn-delete-room(@click="showDeletePrompt = true") delete
 		edit-form(:config="config", @configChange="config = $event")
@@ -23,6 +23,7 @@
 <script>
 import api from 'lib/api'
 import Prompt from 'components/Prompt'
+import { inferType } from './room-types'
 import EditForm from './EditForm'
 
 export default {
@@ -39,6 +40,11 @@ export default {
 			deletingRoomName: '',
 			deleting: false,
 			deleteError: null
+		}
+	},
+	computed: {
+		inferredType () {
+			return inferType(this.config)
 		}
 	},
 	async created () {
@@ -77,13 +83,12 @@ export default {
 		background-color: $clr-grey-100
 		.bunt-icon-button
 			margin-right: 8px
-		h2
+		h1
 			flex: auto
-			font-size: 21px
+			font-size: 24px
 			font-weight: 500
 			margin: 1px 16px 0 0
 			ellipsis()
-
 		.actions
 			display: flex
 			flex: none
