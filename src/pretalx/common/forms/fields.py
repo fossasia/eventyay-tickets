@@ -176,7 +176,12 @@ class ImageField(ExtensionFileInput, SizeFileInput, FileField):
 
         stream = BytesIO()
 
-        extension = ".png" if image.mode == "RGBA" else ".jpg"
+        extension = ".jpg"
+        if image.mode == "RGBA":
+            extension = ".png"
+        elif image.mode != "RGB":
+            image = image.convert('RGB')
+
         stream.name = Path(data.name).stem + extension
         image.fp = file
         if hasattr(image, "png"):  # Yeah, idk what's up with this
