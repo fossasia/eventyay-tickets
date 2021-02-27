@@ -23,7 +23,7 @@
 		bunt-checkbox(v-model="modules['question'].config.requires_moderation", label="Questions require moderation", name="requires_moderation")
 </template>
 <script>
-import UploadUrlInput from 'components/config/UploadUrlInput'
+import UploadUrlInput from 'components/UploadUrlInput'
 import mixin from './mixin'
 
 const STREAM_SOURCE_OPTIONS = [

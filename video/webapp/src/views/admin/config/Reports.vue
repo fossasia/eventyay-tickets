@@ -9,7 +9,7 @@
 </template>
 <script>
 import api from 'lib/api'
-import i18n from '../../i18n'
+import i18n from 'i18n'
 import moment from 'lib/timetravelMoment'
 import {helpers, required} from 'vuelidate/lib/validators'
 
