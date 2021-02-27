@@ -39,13 +39,13 @@ const ROOM_TYPES = [{
 	startingModule: 'networking.roulette',
 	behindFeatureFlag: 'roulette'
 }, {
-	id: 'page.static',
+	id: 'page-static',
 	icon: 'text-box-outline',
 	name: 'Page',
 	description: 'static stuff',
 	startingModule: 'page.static'
 }, {
-	id: 'page.iframe',
+	id: 'page-iframe',
 	icon: 'text-box-outline',
 	name: 'IFrame',
 	description: 'arbitrary interwebs',
@@ -60,3 +60,16 @@ const ROOM_TYPES = [{
 }]
 
 export default ROOM_TYPES.filter(type => !type.behindFeatureFlag || features.enabled(type.behindFeatureFlag))
+
+export function inferType (config) {
+	const modules = config.module_config.reduce((acc, module) => {
+		acc[module.type] = module
+		return acc
+	}, {})
+	const find = id => ROOM_TYPES.find(type => type.id === id)
+	if (modules['livestream.native'] || modules['livestream.youtube']) return find('stage')
+	if (modules['page.static']) return find('page-static')
+	if (modules['page.iframe']) return find('page-iframe')
+	if (modules['call.bigbluebutton']) return find('channel-video')
+	if (modules['chat.native']) return find('channel-text')
+}

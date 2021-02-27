@@ -7,9 +7,9 @@
 					bunt-input(name="name", v-model="config.name", label="Name", :validation="$v.config.name")
 					bunt-input(name="description", v-model="config.description", label="Description")
 					bunt-input(name="sorting_priority", v-model="config.sorting_priority", label="Sorting priority", :validation="$v.config.sorting_priority")
-					bunt-input(v-if="inferredType === 'stage'", name="pretalx_id", v-model="config.pretalx_id", label="pretalx ID", :validation="$v.config.pretalx_id")
-					bunt-checkbox(v-if="['channel-text', 'channel-video'].includes(inferredType)", name="force_join", v-model="config.force_join", label="Force join on login (use for non-volatile, text-based chats only!!)")
-				component.stage-settings(v-if="typeComponents[inferredType]", :is="typeComponents[inferredType]", :config="config", :modules="modules")
+					bunt-input(v-if="inferredType.id === 'stage'", name="pretalx_id", v-model="config.pretalx_id", label="pretalx ID", :validation="$v.config.pretalx_id")
+					bunt-checkbox(v-if="['channel-text', 'channel-video'].includes(inferredType.id)", name="force_join", v-model="config.force_join", label="Force join on login (use for non-volatile, text-based chats only!!)")
+				component.stage-settings(v-if="typeComponents[inferredType.id]", :is="typeComponents[inferredType.id]", :config="config", :modules="modules")
 		bunt-tab.raw-config(id="advanced", header="Raw Config")
 			bunt-input-outline-container(label="Raw config")
 				textarea(v-model="rawConfig", slot-scope="{focus, blur}", @focus="focus", @blur="blur")
@@ -22,6 +22,7 @@
 import api from 'lib/api'
 import Prompt from 'components/Prompt'
 import { required, integer } from 'lib/validators'
+import { inferType } from './room-types'
 import Stage from './types-edit/stage'
 import PageStatic from './types-edit/page-static'
 import PageIframe from './types-edit/page-iframe'
@@ -73,12 +74,7 @@ export default {
 			}, {})
 		},
 		inferredType () {
-			if (this.modules['livestream.native'] || this.modules['livestream.youtube']) return 'stage'
-			if (this.modules['page.static']) return 'page-static'
-			if (this.modules['page.iframe']) return 'page-iframe'
-			if (this.modules['call.bigbluebutton']) return 'channel-video'
-			if (this.modules['chat.native']) return 'channel-text'
-			return null
+			return inferType(this.config)
 		},
 		rawConfig: {
 			get () {
@@ -186,6 +182,8 @@ export default {
 		flex-direction: column
 		min-height: 0
 		margin: 0
+		.bunt-tabs-header
+			border-bottom: border-separator()
 	.bunt-tabs-body
 		flex: auto
 		min-height: 0

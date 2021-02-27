@@ -1,8 +1,9 @@
 <template lang="pug">
 .c-admin-rooms-new
 	.ui-page-header
+		bunt-icon-button(@click="type ? type = null : $router.push({name: 'admin:rooms:index'})") arrow_left
 		h1 New room
-			template(v-if="chosenType") – {{ chosenType.name }}
+			template(v-if="chosenType")  : {{ chosenType.name }}
 	.choose-type(v-if="!type")
 		h2 Choose a room type
 		p Bla bla room types
@@ -17,11 +18,6 @@
 <script>
 import ROOM_TYPES from './room-types'
 import EditForm from './EditForm'
-
-// TODO
-// page.landing
-//
-// generic room
 
 export default {
 	components: { EditForm },
@@ -48,12 +44,7 @@ export default {
 			force_join: false,
 			module_config: [{type: this.chosenType.startingModule, config: {}}],
 		}
-	},
-	mounted () {
-		this.$nextTick(() => {
-		})
-	},
-	methods: {}
+	}
 }
 </script>
 <style lang="stylus">
@@ -62,8 +53,15 @@ export default {
 	display: flex
 	flex-direction: column
 	min-height: 0
+	.bunt-icon-button
+		icon-button-style(style: clear)
+	.ui-page-header
+		background-color: $clr-grey-100
+		.bunt-icon-button
+			margin-right: 8px
 	h1
-		font-size: 28px
+		font-size: 24px
+		font-weight: 500
 	.choose-type
 		display: flex
 		flex-direction: column
