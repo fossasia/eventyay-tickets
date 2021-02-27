@@ -180,7 +180,7 @@ class ImageField(ExtensionFileInput, SizeFileInput, FileField):
         if image.mode == "RGBA":
             extension = ".png"
         elif image.mode != "RGB":
-            image = image.convert('RGB')
+            image = image.convert("RGB")
 
         stream.name = Path(data.name).stem + extension
         image.fp = file
