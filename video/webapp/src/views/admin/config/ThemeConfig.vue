@@ -9,23 +9,23 @@
 		upload-url-input(v-model="config.theme.logo.url", label="Logo", name="logo_url", :validation="$v.config.theme.logo.url")
 		bunt-checkbox(v-model="config.theme.logo.fitToWidth", label="Fit logo to width", name="logo_fit")
 		upload-url-input(v-model="config.theme.streamOfflineImage", label="Stream offline image", name="streamoffline_url", :validation="$v.config.theme.streamOfflineImage")
-		table.text-overwrites
-			thead
-				tr
-					th Original
-					th Custom translation
-			tbody
-				tr(v-for="(val, key) in strings")
-					td <small>{{ key }}</small><br>{{ val }}
-					bunt-input(v-model="config.theme.textOverwrites[key]", :name="key")
+		.text-overwrites
+			.header
+				div Original
+				div Custom translation
+			tr.overwrite(v-for="(val, key) in strings")
+				.source
+					.key {{ key }}
+					.value {{ val }}
+				bunt-input(v-model="config.theme.textOverwrites[key]", :name="key")
 		bunt-button.btn-save(@click="save", :loading="saving") Save
 </template>
 <script>
 /* global ENV_DEVELOPMENT */
 import api from 'lib/api'
-import { DEFAULT_COLORS, DEFAULT_LOGO } from '../../theme'
-import i18n from '../../i18n'
-import UploadUrlInput from './UploadUrlInput'
+import { DEFAULT_COLORS, DEFAULT_LOGO } from 'theme'
+import i18n from 'i18n'
+import UploadUrlInput from 'components/UploadUrlInput'
 import { required, helpers, url } from 'vuelidate/lib/validators'
 
 const color = helpers.regex('color', /^#([a-zA-Z0-9]{3}|[a-zA-Z0-9]{6})$/)
@@ -117,13 +117,38 @@ export default {
 <style lang="stylus">
 .c-themeconfig
 	.text-overwrites
-		th
+		display: flex
+		flex-direction: column
+		> *
+			display: flex
+			align-items: center
+			height: 52px
+			> *
+				width: 50%
+		.header
 			text-align: left
-			border-bottom: 1px solid #ccc
+			border-bottom: border-separator()
 			padding: 10px
-		td
-			vertical-align center
-			width: 50%
+			font-weight: 600
+			font-size: 18px
+			position: sticky
+			top: 0
+			background-color: $clr-white
+			z-index: 1
+		.overwrite
+			&:hover
+				background-color: $clr-grey-100
+			.source
+				display: flex
+				flex-direction: column
+				justify-content: space-around
+				.key
+					color: $clr-secondary-text-light
+					font-size: 12px
+					font-style: italic
+			.bunt-input
+				input-style(size: compact)
+				padding-top: 0
 	.btn-save
 		margin-top: 16px
 		themed-button-primary(size: large)

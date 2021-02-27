@@ -29,7 +29,7 @@
 </template>
 <script>
 import api from 'lib/api'
-import i18n from '../../i18n'
+import i18n from 'i18n'
 import { required, integer, url } from 'vuelidate/lib/validators'
 import { isJson } from 'lib/validators'
 
@@ -129,6 +129,7 @@ export default {
 </script>
 <style lang="stylus">
 .c-mainconfig
+	max-width: 640px
 	.btn-save
 		margin-top: 16px
 		themed-button-primary(size: large)

@@ -10,8 +10,8 @@
 </template>
 <script>
 import api from 'lib/api'
-import { DEFAULT_COLORS, DEFAULT_LOGO } from '../../theme'
-import i18n from '../../i18n'
+import { DEFAULT_COLORS, DEFAULT_LOGO } from 'theme'
+import i18n from 'i18n'
 import { required, integer } from 'vuelidate/lib/validators'
 
 export default {

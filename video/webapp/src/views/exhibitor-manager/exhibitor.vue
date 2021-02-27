@@ -137,7 +137,7 @@ import router from 'router'
 import Avatar from 'components/Avatar'
 import Prompt from 'components/Prompt'
 import UserSelect from 'components/UserSelect'
-import UploadUrlInput from 'components/config/UploadUrlInput'
+import UploadUrlInput from 'components/UploadUrlInput'
 import RichTextEditor from 'components/RichTextEditor'
 import ExhibitorPreview from 'views/exhibitors/item'
 
