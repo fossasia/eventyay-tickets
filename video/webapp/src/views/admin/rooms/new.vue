@@ -15,45 +15,8 @@
 	edit-form(v-else, :config="config", @configChange="config = $event", :creating="true")
 </template>
 <script>
+import ROOM_TYPES from './room-types'
 import EditForm from './EditForm'
-
-const ROOM_TYPES = [{
-	id: 'stage',
-	icon: 'theater',
-	name: 'Stage',
-	description: 'livestream und so',
-	startingModule: 'livestream.native'
-}, {
-	id: 'channel-text',
-	icon: 'pound',
-	name: 'Text Channel',
-	description: 'livestream und so',
-	startingModule: 'chat.native'
-}, {
-	id: 'channel-video',
-	icon: 'webcam',
-	name: 'Video Channel',
-	description: 'livestream und so',
-	startingModule: 'call.bigbluebutton'
-}, {
-	id: 'exhibition',
-	icon: 'domain',
-	name: 'Exhibition',
-	description: 'Shilling Stands',
-	startingModule: 'exhibition.native'
-}, {
-	id: 'page.static',
-	icon: 'text-box-outline',
-	name: 'Page',
-	description: 'static stuff',
-	startingModule: 'page.static'
-}, {
-	id: 'page.iframe',
-	icon: 'text-box-outline',
-	name: 'IFrame',
-	description: 'arbitrary interwebs',
-	startingModule: 'page.iframe'
-}]
 
 // TODO
 // page.landing
@@ -72,7 +35,7 @@ export default {
 	computed: {
 		chosenType () {
 			return ROOM_TYPES.find(t => t.id === this.type)
-		}
+		},
 	},
 	created () {
 		this.type = this.$route.query.type
