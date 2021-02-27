@@ -80,9 +80,8 @@ export default {
 		this.config = {
 			name: '',
 			description: '',
-			sorting_priority: 0,
+			sorting_priority: '',
 			pretalx_id: '',
-			trait_grants: [],
 			force_join: false,
 			module_config: [{type: this.chosenType.startingModule, config: {}}],
 		}

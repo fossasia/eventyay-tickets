@@ -42,7 +42,6 @@ const parseJSONConfig = function (value) {
 export default {
 	components: { Prompt },
 	props: {
-		roomId: String,
 		config: {
 			type: Object,
 			required: true
@@ -118,19 +117,22 @@ export default {
 			return errorMessages
 		}
 	},
-	validations: {
-		config: {
+	validations () {
+		const config = {
 			name: {
 				required: required('name is required')
 			},
 			sorting_priority: {
-				required: required('sorting priority is required'),
 				integer: integer('sorting priority must be a number')
 			},
 			pretalx_id: {
 				integer: integer('pretalx id must be a number')
 			},
 		}
+
+		if (!this.creating) config.sorting_priority.required = required('sorting priority is required')
+
+		return { config }
 	},
 	methods: {
 		async save () {
@@ -139,27 +141,28 @@ export default {
 			if (this.$v.$invalid) return
 			this.saving = true
 			try {
-				let room
+				let roomId = this.config.id
 				if (this.creating) {
-					({ room } = await this.$store.dispatch('createRoom', {
+					({ room: roomId } = await this.$store.dispatch('createRoom', {
 						name: this.config.name,
 						description: this.config.description,
 						modules: []
 					}))
 				}
 				await api.call('room.config.patch', {
-					room: this.roomId || room,
+					room: roomId,
 					name: this.config.name,
 					description: this.config.description,
-					sorting_priority: this.config.sorting_priority,
-					pretalx_id: this.config.pretalx_id,
+					sorting_priority: this.config.sorting_priority === '' ? undefined : this.config.sorting_priority,
+					pretalx_id: this.config.pretalx_id || 0, // TODO weird default
 					picture: this.config.picture,
-					trait_grants: this.config.trait_grants,
 					force_join: this.config.force_join,
 					module_config: this.config.module_config,
 				})
 				this.saving = false
-				this.$router.push({name: 'admin:rooms:item', params: {roomId: room}})
+				if (this.creating) {
+					this.$router.push({name: 'admin:rooms:item', params: {roomId}})
+				}
 			} catch (error) {
 				console.error(error)
 				this.saving = false
