@@ -79,7 +79,11 @@ class WorldModule(BaseModule):
 
             for f in config_fields:
                 if f in body:
-                    if f == "pretalx" and not s.validated_data[f].get("domain"):
+                    if (
+                        f == "pretalx"
+                        and not s.validated_data[f].get("url")
+                        and not s.validated_data[f].get("domain")
+                    ):
                         s.validated_data[f] = {}
                     self.consumer.world.config[f] = s.validated_data[f]
                     update_fields.add("config")

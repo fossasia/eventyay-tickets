@@ -7,7 +7,7 @@ transition(name="sidebar")
 		scrollbars(y)
 			.global-links
 				router-link.room(v-if="roomsByType.page.includes(rooms[0])", :to="{name: 'home'}") {{ rooms[0].name }}
-				router-link.room(:to="{name: 'schedule'}", v-if="!!world.pretalx && world.pretalx.domain") {{ $t('RoomsSidebar:schedule:label') }}
+				router-link.room(:to="{name: 'schedule'}", v-if="!!world.pretalx && (world.pretalx.url || world.pretalx.domain)") {{ $t('RoomsSidebar:schedule:label') }}
 				router-link.room(v-for="page of roomsByType.page", v-if="page !== rooms[0]", :to="{name: 'room', params: {roomId: page.id}}") {{ page.name }}
 			.group-title(v-if="roomsByType.stage.length || hasPermission('world:rooms.create.stage')")
 				span {{ $t('RoomsSidebar:stages-headline:text') }}

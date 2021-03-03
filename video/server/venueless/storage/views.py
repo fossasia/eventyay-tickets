@@ -3,6 +3,7 @@ from io import BytesIO
 
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.core.files import File
+from django.core.files.base import ContentFile
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
@@ -12,38 +13,18 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from PIL import Image
 from rest_framework.authentication import get_authorization_header
+from xlrd import XLRDError
 
 from venueless.core.models import World
 from venueless.core.permissions import Permission
 from venueless.core.services.user import login
 from venueless.storage.models import StoredFile
+from venueless.storage.schedule_to_json import convert
 
 logger = logging.getLogger(__name__)
 
-PERMISSIONS_TO_UPLOAD = {
-    Permission.WORLD_UPDATE,
-    Permission.ROOM_UPDATE,
-    Permission.ROOM_CHAT_SEND,
-}
 
-
-class UploadView(View):
-    ext_whitelist = (
-        ".png",
-        ".jpg",
-        ".jpeg",
-        ".gif",
-        ".pdf",
-        ".svg",
-    )
-    pillow_formats = (
-        ".png",
-        ".jpg",
-        ".jpeg",
-        ".gif",
-    )
-    max_size = 10 * 1024 * 1024
-
+class UploadMixin:
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
@@ -71,14 +52,35 @@ class UploadView(View):
         if not res:
             raise PermissionDenied()
 
-        if any(
-            p.value in res.world_config["permissions"] for p in PERMISSIONS_TO_UPLOAD
-        ):
+        if any(p.value in res.world_config["permissions"] for p in self.permissions):
             return res.user
         for room in res.world_config["rooms"]:
-            if any(p.value in room["permissions"] for p in PERMISSIONS_TO_UPLOAD):
+            if any(p.value in room["permissions"] for p in self.permissions):
                 return res.user
         raise PermissionDenied()
+
+
+class UploadView(UploadMixin, View):
+    permissions = {
+        Permission.WORLD_UPDATE,
+        Permission.ROOM_UPDATE,
+        Permission.ROOM_CHAT_SEND,
+    }
+    ext_whitelist = (
+        ".png",
+        ".jpg",
+        ".jpeg",
+        ".gif",
+        ".pdf",
+        ".svg",
+    )
+    pillow_formats = (
+        ".png",
+        ".jpg",
+        ".jpeg",
+        ".gif",
+    )
+    max_size = 10 * 1024 * 1024
 
     def post(self, request, *args, **kwargs):
         if not self.user:
@@ -148,3 +150,42 @@ class UploadView(View):
         image_without_exif.save(o, quality=95)  # Pillow's default JPEG quality is 75
         o.seek(0)
         return Image.MIME.get(image.format), File(o, name=data.name)
+
+
+class ScheduleImportView(UploadMixin, View):
+    permissions = {Permission.WORLD_UPDATE}
+    ext_whitelist = (".xlsx",)
+    max_size = 2 * 1024 * 1024
+
+    def post(self, request, *args, **kwargs):
+        if not self.user:
+            return  # triggers error already
+
+        if "file" not in request.FILES:
+            return JsonResponse({"error": "file.missing"}, status=400)
+
+        if request.FILES["file"].size > self.max_size:
+            return JsonResponse({"error": "file.size"}, status=400)
+
+        if not any(
+            request.FILES["file"].name.lower().endswith(e) for e in self.ext_whitelist
+        ):
+            return JsonResponse({"error": "file.type"}, status=400)
+
+        try:
+            jsondata = convert(request.FILES["file"])
+        except ValidationError as e:
+            return JsonResponse({"error": ", ".join(e)}, status=400)
+        except XLRDError as e:
+            return JsonResponse({"error": str(e)}, status=400)
+
+        sf = StoredFile.objects.create(
+            world=self.world,
+            date=now(),
+            filename=f'schedule_{now().strftime("%Y-%m-%d-%H-%M-%S")}.json',
+            type="application/json",
+            file=ContentFile(jsondata, "schedule.json"),
+            public=True,
+            user=self.user,
+        )
+        return JsonResponse({"url": sf.file.url}, status=201)
