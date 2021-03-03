@@ -29,6 +29,9 @@ tqdm==4.58.*
 websockets==8.*
 xlrd~=1.2.0
 
+# temporary
+Twisted==20.3.0  # see https://github.com/django/daphne/pull/359 and https://github.com/django/channels/issues/1639
+
 # deploy
 psycopg2-binary
 gunicorn
