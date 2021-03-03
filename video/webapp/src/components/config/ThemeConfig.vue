@@ -9,15 +9,17 @@
 		upload-url-input(v-model="config.theme.logo.url", label="Logo", name="logo_url", :validation="$v.config.theme.logo.url")
 		bunt-checkbox(v-model="config.theme.logo.fitToWidth", label="Fit logo to width", name="logo_fit")
 		upload-url-input(v-model="config.theme.streamOfflineImage", label="Stream offline image", name="streamoffline_url", :validation="$v.config.theme.streamOfflineImage")
-		table.text-overwrites
-			thead
-				tr
-					th Original
-					th Custom translation
-			tbody
-				tr(v-for="(val, key) in strings")
-					td <small>{{ key }}</small><br>{{ val }}
-					bunt-input(v-model="config.theme.textOverwrites[key]", :name="key")
+		details
+			summary Customize texts
+			table.text-overwrites
+				thead
+					tr
+						th Original
+						th Custom translation
+				tbody
+					tr(v-for="(val, key) in strings")
+						td <small>{{ key }}</small><br>{{ val }}
+						bunt-input(v-model="config.theme.textOverwrites[key]", :name="key")
 		bunt-button.btn-save(@click="save", :loading="saving") Save
 </template>
 <script>
