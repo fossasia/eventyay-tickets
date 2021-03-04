@@ -1,3 +1,4 @@
+import re
 from collections import defaultdict
 from datetime import timedelta
 from io import BytesIO
@@ -149,7 +150,7 @@ def generate_room_views(world, input=None):
             or t.startswith("call.")
             for t in types
         ):
-            ws = wb.create_sheet(room.name)
+            ws = wb.create_sheet(re.sub("[^a-zA-Z0-9 ]", "", room.name))
             ws.freeze_panes = "A2"
             ws.column_dimensions["A"].width = 15
             ws.column_dimensions["B"].width = 15
