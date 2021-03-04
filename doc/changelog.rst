@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`-` Sessions without speakers were displayed weirdly in the "featured sessions" page.
 - :feature:`-` Tags are now exposed in the API.
 - :feature:`1047` The review statistics timeline chart now includes the total submitted proposals to the given date, in addition to the proposals submitted on the given date.
 - :bug:`1049` Reviewers without further permissions could not create tags, even when they had the necessary permissions.

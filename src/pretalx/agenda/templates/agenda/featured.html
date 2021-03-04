@@ -31,7 +31,7 @@
                 <h3 class="talk-title">
                     <div>{{ quotation_open }}{{ talk.title }}{{ quotation_close }}</div>
                     <small>
-                        {{ talk.display_speaker_names }};
+                        {% if talk.display_speaker_names %}{{ talk.display_speaker_names }};{% endif %}
                         <i>{{ talk.submission_type.name }}</i>
                     </small>
                 </h3>
