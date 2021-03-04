@@ -1,10 +1,19 @@
 <template lang="pug">
 .c-reports
-	bunt-input(v-model="day_start", label="First day", name="day_start", :validation="$v.day_start")
-	bunt-input(v-model="day_end", label="Last day", name="day_end", :validation="$v.day_end")
-	bunt-input(v-model="time_start", label="Start of day", name="time_start", :validation="$v.time_start")
-	bunt-input(v-model="time_end", label="End of day", name="time_end", :validation="$v.time_end")
-	bunt-button.btn-generate(@click="generate", :loading="running", :error="error") Generate (may take a while)
+	h3 Summary report
+	div.flex-row
+		div
+			bunt-input(v-model="day_start", label="First day", name="day_start", :validation="$v.day_start")
+		div
+			bunt-input(v-model="day_end", label="Last day", name="day_end", :validation="$v.day_end")
+	div.flex-row
+		div
+			bunt-input(v-model="time_start", label="Start of day", name="time_start", :validation="$v.time_start")
+		div
+			bunt-input(v-model="time_end", label="End of day", name="time_end", :validation="$v.time_end")
+	bunt-button.btn-generate(@click="generateSummary", :loading="task == 'summary' && running", :error="task == 'summary' && error") Generate (may take a while)
+	h3 Attendee list
+	bunt-button.btn-generate(@click="generateAttendeeList", :loading="task == 'attendee_list' && running", :error="task == 'attendee_list' && error") Generate (may take a while)
 
 </template>
 <script>
@@ -27,6 +36,7 @@ export default {
 			running: false,
 			error: false,
 			timeout: null,
+			task: null,
 		}
 	},
 	computed: {
@@ -56,14 +66,29 @@ export default {
 		window.clearTimeout(this.timeout)
 	},
 	methods: {
-		async generate () {
+		async generateAttendeeList () {
+			this.running = true
+			this.error = false
+			this.task = 'attendee_list'
+			try {
+				const r = await api.call('world.report.generate.attendee_list', {
+				})
+				this.resultid = r.resultid
+				this.timeout = window.setTimeout(this.check, 2000)
+			} catch {
+				this.error = true
+				this.running = false
+			}
+		},
+		async generateSummary () {
 			this.$v.$touch()
 			if (this.$v.$invalid) return
 
 			this.running = true
 			this.error = false
+			this.task = 'summary'
 			try {
-				const r = await api.call('world.report.generate', {
+				const r = await api.call('world.report.generate.summary', {
 					begin: this.day_start + 'T' + this.time_start,
 					end: this.day_end + 'T' + this.time_end,
 				})
@@ -96,6 +121,14 @@ export default {
 </script>
 <style lang="stylus">
 	.c-reports
+		.flex-row
+			display: flex
+			gap: 20px
+			margin: 0 -10px
+			&> div
+				flex: auto 1 1
+				margin: 0 10px
+
 		.btn-generate
 			margin-bottom: 32px
 			themed-button-primary(size:large)
