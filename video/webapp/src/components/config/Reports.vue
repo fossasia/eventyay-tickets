@@ -14,6 +14,9 @@
 	bunt-button.btn-generate(@click="generateSummary", :loading="task == 'summary' && running", :error="task == 'summary' && error") Generate (may take a while)
 	h3 Attendee list
 	bunt-button.btn-generate(@click="generateAttendeeList", :loading="task == 'attendee_list' && running", :error="task == 'attendee_list' && error") Generate (may take a while)
+	h3 Chat history
+	bunt-select(v-model="channel", label="Room", name="channel", :options="channels", option-label="name")
+	bunt-button.btn-generate(@click="generateChatHistory", :loading="task == 'chat' && running", :error="task == 'chat' && error") Generate (may take a while)
 
 </template>
 <script>
@@ -32,6 +35,7 @@ export default {
 			day_end: moment().format('YYYY-MM-DD'),
 			time_start: '07:00',
 			time_end: '19:00',
+			channel: null,
 			resultid: null,
 			running: false,
 			error: false,
@@ -43,6 +47,16 @@ export default {
 		strings () {
 			return i18n.messages[i18n.locale]
 		},
+		channels () {
+			const r = []
+			r.push(...this.$store.state.rooms.filter((room) => room.modules.filter(m => m.type === 'chat.native').length).map((room) => {
+				return {
+					id: room.modules.find(m => m.type === 'chat.native').channel_id,
+					name: room.name
+				}
+			}))
+			return r
+		}
 	},
 	validations: {
 		day_start: {
@@ -72,6 +86,23 @@ export default {
 			this.task = 'attendee_list'
 			try {
 				const r = await api.call('world.report.generate.attendee_list', {
+				})
+				this.resultid = r.resultid
+				this.timeout = window.setTimeout(this.check, 2000)
+			} catch {
+				this.error = true
+				this.running = false
+			}
+		},
+		async generateChatHistory () {
+			if (!this.channel) return
+
+			this.running = true
+			this.error = false
+			this.task = 'chat'
+			try {
+				const r = await api.call('world.report.generate.chat_history', {
+					channel: this.channel
 				})
 				this.resultid = r.resultid
 				this.timeout = window.setTimeout(this.check, 2000)

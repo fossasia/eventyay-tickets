@@ -13,7 +13,11 @@ from venueless.core.services.world import (
     notify_world_change,
     save_world,
 )
-from venueless.graphs.tasks import generate_attendee_list, generate_report
+from venueless.graphs.tasks import (
+    generate_attendee_list,
+    generate_chat_history,
+    generate_report,
+)
 from venueless.live.decorators import command, event, require_world_permission
 from venueless.live.modules.base import BaseModule
 
@@ -126,6 +130,16 @@ class WorldModule(BaseModule):
     @require_world_permission(Permission.WORLD_GRAPHS)
     async def report_generate(self, body):
         result = await sync_to_async(generate_report.apply_async)(
+            kwargs={"world": str(self.consumer.world.id), "input": body}
+        )
+        await self.consumer.send_success({"resultid": str(result.id)})
+
+    @command("report.generate.chat_history")
+    @require_world_permission(
+        Permission.WORLD_UPDATE
+    )  # to be safe, "graphs" suggests only statistical data
+    async def chat_history_generate(self, body):
+        result = await sync_to_async(generate_chat_history.apply_async)(
             kwargs={"world": str(self.consumer.world.id), "input": body}
         )
         await self.consumer.send_success({"resultid": str(result.id)})
