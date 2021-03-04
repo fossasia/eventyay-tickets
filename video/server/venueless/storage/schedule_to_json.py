@@ -79,7 +79,7 @@ def transform_data(data, table_name, field_mapping, mandatory_fields, methods=No
     for _, row in data.iterrows():
         truthy_fields = {key: truthy(row.get(key)) for key in mandatory_fields}
         if not any(truthy_fields.values()):
-            continue  # empty row, probably
+            continue  # empty row, probably. Should be fixed as of Pandas 1.2.2, but better safe than sorry.
         if not all(truthy_fields.values()):
             missing = [key for key, value in truthy_fields.items() if not value]
             raise ValidationError(
