@@ -1,9 +1,12 @@
+from collections import defaultdict
 from datetime import timedelta
 from io import BytesIO
 
+import dateutil
 import pytz
 from django.core.files.base import ContentFile
-from django.utils.timezone import now
+from django.db.models import Q
+from django.utils.timezone import is_naive, make_aware, now
 from openpyxl import Workbook
 from openpyxl.utils import get_column_letter
 
@@ -107,6 +110,86 @@ def generate_chat_history(world, input=None):
                 msg,
             ]
         )
+
+    wb.save(io)
+    io.seek(0)
+
+    sf = StoredFile.objects.create(
+        world=world,
+        date=now(),
+        filename="report.xlsx",
+        expires=now() + timedelta(hours=2),
+        type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        public=True,
+        user=None,
+    )
+    sf.file.save("report.xlsx", ContentFile(io.read()))
+    return sf.file.url
+
+
+@app.task(base=WorldTask)
+def generate_room_views(world, input=None):
+    wb = Workbook(write_only=True)
+    io = BytesIO()
+    tz = pytz.timezone(world.timezone)
+    begin = dateutil.parser.parse(input.get("begin"))
+    if is_naive(begin):
+        make_aware(begin, tz)
+    begin = begin.astimezone(tz)
+    end = dateutil.parser.parse(input.get("end"))
+    if is_naive(end):
+        make_aware(end, tz)
+    end = end.astimezone(tz)
+
+    for room in world.rooms.filter(deleted=False):
+        types = [m["type"] for m in room.module_config]
+        if any(
+            t.startswith("livestream.")
+            or t.startswith("chat.")
+            or t.startswith("call.")
+            for t in types
+        ):
+            ws = wb.create_sheet(room.name)
+            ws.freeze_panes = "A2"
+            ws.column_dimensions["A"].width = 15
+            ws.column_dimensions["B"].width = 15
+            ws.column_dimensions["C"].width = 20
+            ws.append(["Date", "Time", "Viewership (approx. unique users)"])
+
+            day = begin
+            while day.date() <= end.date():
+                gds = day.replace(hour=begin.hour, minute=0, second=0)
+                gde = day.replace(hour=end.hour, minute=end.minute, second=0)
+
+                views = (
+                    room.views.filter(
+                        Q(Q(end__isnull=True) | Q(end__gte=gds)) & Q(start__lte=gde)
+                    )
+                    .order_by()
+                    .values("user", "start", "end")
+                )
+
+                adds = defaultdict(set)
+                for v in views:
+                    bucket = v["start"].replace(
+                        second=0, microsecond=0, minute=v["start"].minute // 5 * 5
+                    )
+                    while bucket < end and (not v["end"] or bucket < v["end"]):
+                        adds[bucket].add(v["user"])
+                        bucket += timedelta(minutes=5)
+
+                t = gds.replace(second=0, microsecond=0, minute=gds.minute // 5 * 5)
+                while t <= gde:
+                    ws.append(
+                        [
+                            t.astimezone(tz).date(),
+                            t.astimezone(tz).time(),
+                            len(adds[t]) if t in adds else "",
+                        ]
+                    )
+                    t += timedelta(minutes=5)
+
+                day += timedelta(days=1)
 
     wb.save(io)
     io.seek(0)

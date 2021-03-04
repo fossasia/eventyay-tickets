@@ -17,6 +17,7 @@ from venueless.graphs.tasks import (
     generate_attendee_list,
     generate_chat_history,
     generate_report,
+    generate_room_views,
 )
 from venueless.live.decorators import command, event, require_world_permission
 from venueless.live.modules.base import BaseModule
@@ -125,6 +126,14 @@ class WorldModule(BaseModule):
             self.consumer.world,
         )
         await self.consumer.send_success({"results": result})
+
+    @command("report.generate.roomviews")
+    @require_world_permission(Permission.WORLD_GRAPHS)
+    async def roomviews_generate(self, body):
+        result = await sync_to_async(generate_room_views.apply_async)(
+            kwargs={"world": str(self.consumer.world.id), "input": body}
+        )
+        await self.consumer.send_success({"resultid": str(result.id)})
 
     @command("report.generate.summary")
     @require_world_permission(Permission.WORLD_GRAPHS)
