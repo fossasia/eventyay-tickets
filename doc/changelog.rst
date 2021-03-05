@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`-` When you created a session as organiser, you could choose a content language that was not supposed to be available in the active event.
 - :bug:`-` Sessions without speakers were displayed weirdly in the "featured sessions" page.
 - :feature:`-` Tags are now exposed in the API.
 - :feature:`1047` The review statistics timeline chart now includes the total submitted proposals to the given date, in addition to the proposals submitted on the given date.
