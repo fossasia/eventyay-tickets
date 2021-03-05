@@ -98,14 +98,15 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
             self.fields.pop("track", None)
         elif "track" in self.fields:
             self.fields["track"].queryset = event.tracks.all()
-        if len(event.locales) == 1:
-            self.fields["content_locale"].initial = event.locales[0]
-            self.fields["content_locale"].widget = forms.HiddenInput()
-        else:
-            locale_names = dict(settings.LANGUAGES)
-            self.fields["content_locale"].choices = [
-                (a, locale_names[a]) for a in event.locales
-            ]
+        if "content_locale" in self.fields:
+            if len(event.locales) == 1:
+                self.fields["content_locale"].initial = event.locales[0]
+                self.fields["content_locale"].widget = forms.HiddenInput()
+            else:
+                locale_names = dict(settings.LANGUAGES)
+                self.fields["content_locale"].choices = [
+                    (a, locale_names[a]) for a in event.locales
+                ]
 
     def save(self, *args, **kwargs):
         instance = super().save(*args, **kwargs)
