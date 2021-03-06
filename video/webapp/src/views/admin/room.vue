@@ -69,6 +69,7 @@
 					div(v-else-if="val.type == 'call.zoom'")
 						bunt-input(v-model="val.config.meeting_number", label="Meeting ID", name="meeting_number")
 						bunt-input(v-model="val.config.password", label="Password", name="password")
+						bunt-checkbox(v-model="val.config.disable_chat", label="Disable chat", name="zoom_disable_chat")
 					div(v-else-if="val.type == 'call.bigbluebutton'")
 						bunt-checkbox(v-model="val.config.record", label="Allow recording (needs to be set before first join)", name="record")
 						bunt-checkbox(v-model="val.config.hide_presentation", label="Hide presentation when users join", name="hide_presentation")
