@@ -13,7 +13,7 @@
 			.stage-tools(v-if="modules['livestream.native'] || modules['livestream.youtube'] || modules['call.janus']")
 				reactions-bar(:expanded="true", @expand="activeStageTool = 'reaction'")
 				//- reactions-bar(:expanded="activeStageTool === 'reaction'", @expand="activeStageTool = 'reaction'")
-		.mediasource-placeholder(v-else-if="modules['call.bigbluebutton']")
+		.mediasource-placeholder(v-else-if="modules['call.bigbluebutton'] || modules['call.zoom']")
 		roulette(v-else-if="modules['networking.roulette'] && $features.enabled('roulette')", :module="modules['networking.roulette']", :room="room")
 		landing-page(v-else-if="modules['page.landing']", :module="modules['page.landing']")
 		markdown-page(v-else-if="modules['page.markdown']", :module="modules['page.markdown']")

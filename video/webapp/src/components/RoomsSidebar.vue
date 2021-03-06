@@ -115,7 +115,7 @@ export default {
 				if (room.modules.length === 1 && room.modules[0].type === 'chat.native') {
 					if (!this.joinedChannels.some(channel => channel.id === room.modules[0].channel_id)) continue
 					rooms.textChat.push(room)
-				} else if (room.modules.some(module => module.type === 'call.bigbluebutton' || module.type === 'call.janus')) {
+				} else if (room.modules.some(module => module.type === 'call.bigbluebutton' || module.type === 'call.janus' || module.type === 'call.zoom')) {
 					rooms.videoChat.push(room)
 				} else if (room.modules.some(module => module.type === 'livestream.native' || module.type === 'livestream.youtube')) {
 					let session
