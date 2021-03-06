@@ -1,6 +1,6 @@
 export default {
 	'App:disconnected-warning:text': 'Connection lost! Trying to reconnect…',
-	'App:error-code:10006': 'Connection failed. We\'ll retry, but if this error occurs repeatedly, the connection might be blocked by a firewall in your network or by a VPN on your device.',
+	'App:error-code:1006': 'Connection failed. We\'ll retry, but if this error occurs repeatedly, the connection might be blocked by a firewall in your network or by a VPN on your device.',
 	'App:error-code:text': 'Error code',
 	'App:fatal-connection-error:auth.denied:headline': 'This event requires a valid token.',
 	'App:fatal-connection-error:auth.denied:text': 'Please use the link provided by your event organizer.',

@@ -33,7 +33,7 @@
 		.native-permission-blocker(v-if="askingPermission")
 	.connecting(v-else-if="!fatalError")
 		bunt-progress-circular(size="huge")
-		.details(v-if="socketCloseCode == 1006") {{ $t('App:error-code:10006') }}
+		.details(v-if="socketCloseCode == 1006") {{ $t('App:error-code:1006') }}
 		.details(v-if="socketCloseCode") {{ $t('App:error-code:text') }}: {{ socketCloseCode }}
 	.fatal-error(v-if="fatalError") {{ fatalError.message }}
 </template>

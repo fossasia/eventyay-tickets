@@ -1,6 +1,6 @@
 export default {
 	'App:disconnected-warning:text': 'Verbindung verloren. Verbinde erneut…',
-	'App:error-code:10006': 'Verbindung fehlgeschlagen. Es erfolgt ein neuer Versuch, aber wenn dieser Fehler wiederholt auftritt, wird möglicherweise die Verbindung von einer Firewall in deinem Netzwerk oder einem VPN auf deinem Gerät blockiert.',
+	'App:error-code:1006': 'Verbindung fehlgeschlagen. Es erfolgt ein neuer Versuch, aber wenn dieser Fehler wiederholt auftritt, wird möglicherweise die Verbindung von einer Firewall in deinem Netzwerk oder einem VPN auf deinem Gerät blockiert.',
 	'App:error-code:text': 'Fehlercode',
 	'App:fatal-connection-error:auth.denied:headline': 'Diese Veranstaltung erfordert eine Authentifizierung.',
 	'App:fatal-connection-error:auth.denied:text': 'Bitte verwenden Sie den Link, den Sie vom Veranstalter erhalten haben.',
