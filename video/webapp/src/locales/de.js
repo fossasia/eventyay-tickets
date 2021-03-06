@@ -274,4 +274,5 @@ export default {
 	'UserListPage:placeholder:text': 'Hier kannst Du dir die Profile anderer Teilnehmer*innen ansehen.\nSchau dich ruhig etwas um.',
 	'UserListPage:staffed-exhibitions:text': 'Von diesem/dieser Benutzer*in betreute Ausstellungen ',
 	'UserSearch:placeholder:text': 'Teilnehmer*innen durchsuchen',
+	'Zoom:error:text': 'Wir konnten den Videokonferenzserver nicht erreichen, tut uns leid.',
 }
