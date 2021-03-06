@@ -1,0 +1,56 @@
+<html>
+<head>
+    <!-- import #zmmtg-root css -->
+    <link type="text/css" rel="stylesheet" href="https://source.zoom.us/1.9.0/css/bootstrap.css"/>
+    <link type="text/css" rel="stylesheet" href="https://source.zoom.us/1.9.0/css/react-select.css"/>
+</head>
+<body>
+<!-- import ZoomMtg dependencies -->
+<script src="https://source.zoom.us/1.9.0/lib/vendor/react.min.js"></script>
+<script src="https://source.zoom.us/1.9.0/lib/vendor/react-dom.min.js"></script>
+<script src="https://source.zoom.us/1.9.0/lib/vendor/redux.min.js"></script>
+<script src="https://source.zoom.us/1.9.0/lib/vendor/redux-thunk.min.js"></script>
+<script src="https://source.zoom.us/1.9.0/lib/vendor/lodash.min.js"></script>
+
+<!-- import ZoomMtg -->
+<script src="https://source.zoom.us/zoom-meeting-1.9.0.min.js"></script>
+
+<script>
+	ZoomMtg.setZoomJSLib('https://source.zoom.us/1.9.0/lib', '/av');
+	ZoomMtg.preLoadWasm();
+	ZoomMtg.prepareJssdk();
+    {% if langurl %}
+		ZoomMtg.i18n.load('{{ langurl }}', '{{ lang }}');
+    {% else %}
+		ZoomMtg.i18n.load('{{ lang }}');
+    {% endif %}
+	ZoomMtg.init({
+		debug: {% if debug %}true{% else %}false{% endif %},
+		leaveUrl: '/zoom/ended/',
+        isSupportAV: true,
+        isSupportChat: {% if support_chat %}true{% else %}false{% endif %},
+        showMeetingHeader: false,
+        disableInvite: true,
+        disableCallOut: true,
+        inviteUrlFormat: 'hide',
+        meetingInfo: ['topic', 'host', 'telPwd', 'participant', 'dc', 'enctype', 'report'],
+		success: function() {
+			ZoomMtg.join({
+				signature: '{{ signature }}',
+				apiKey: '{{ api_key }}',
+				meetingNumber: '{{ meeting_number }}',
+				userName: '{{ user_name }}',
+                userEmail: '{{ user_email }}',
+				passWord: '{{ password }}',
+				error: function(res) {
+					console.log(res);
+				},
+			});
+		},
+		error: function(res) {
+			console.log(res);
+		},
+	});
+</script>
+</body>
+</html>

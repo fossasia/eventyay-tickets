@@ -163,6 +163,11 @@ if nanocdn:
     NANOCDN_URL = nanocdn
     DEFAULT_FILE_STORAGE = "venueless.platforms.storage.nanocdn.NanoCDNStorage"
 
+ZOOM_KEY = os.getenv("VENUELESS_ZOOM_KEY", config.get("zoom", "key", fallback=""))
+ZOOM_SECRET = os.getenv(
+    "VENUELESS_ZOOM_SECRET", config.get("zoom", "secret", fallback="")
+)
+
 CACHES = {
     "default": {"BACKEND": "django.core.cache.backends.dummy.DummyCache"},
     "process": {
@@ -182,6 +187,7 @@ INSTALLED_APPS = [
     "venueless.live.LiveConfig",
     "venueless.graphs.GraphsConfig",
     "venueless.storage.StorageConfig",
+    "venueless.zoom.ZoomConfig",
 ]
 
 try:
@@ -197,7 +203,7 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "venueless.middleware.XFrameOptionsMiddleware",
 ]
 
 ROOT_URLCONF = "venueless.urls"
@@ -208,7 +214,7 @@ if DEBUG:
         r"^http://localhost:\d+$",
     ]
 
-X_FRAME_OPTIONS = "DENY"
+X_FRAME_OPTIONS = "DENY"  # ignored by our own middleware
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 CSP_DEFAULT_SRC = ("'self'", "'unsafe-eval'")

@@ -30,6 +30,7 @@ from .modules.question import QuestionModule
 from .modules.room import RoomModule
 from .modules.roulette import RouletteModule
 from .modules.world import WorldModule
+from .modules.zoom import ZoomModule
 
 logger = logging.getLogger(__name__)
 
@@ -81,6 +82,7 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
         self.components = {
             "chat": ChatModule(self),
             "bbb": BBBModule(self),
+            "zoom": ZoomModule(self),
             "januscall": JanusCallModule(self),
             "exhibition": ExhibitionModule(self),
             "question": QuestionModule(self),
