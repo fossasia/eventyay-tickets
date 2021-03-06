@@ -273,4 +273,5 @@ export default {
 	'UserListPage:placeholder:text': 'Click on a person on the left to view more details or get in touch with them!',
 	'UserListPage:staffed-exhibitions:text': 'This person represents',
 	'UserSearch:placeholder:text': 'search users',
+	'Zoom:error:text': 'We could not connect to the video conference server, sorry.',
 }

@@ -43,7 +43,7 @@ import MediaSource from 'components/MediaSource'
 import Notifications from 'components/notifications'
 import GreetingPrompt from 'components/profile/GreetingPrompt'
 
-const mediaModules = ['livestream.native', 'call.bigbluebutton', 'call.janus', 'livestream.youtube']
+const mediaModules = ['livestream.native', 'call.bigbluebutton', 'call.janus', 'call.zoom', 'livestream.youtube']
 const stageToolModules = ['livestream.native', 'call.janus', 'livestream.youtube']
 const chatbarModules = ['chat.native', 'question']
 
@@ -140,7 +140,7 @@ export default {
 			}
 			document.title = title
 			this.$store.dispatch('changeRoom', newRoom)
-			const isBBB = module => module.type === 'call.bigbluebutton'
+			const isExclusive = module => module.type === 'call.bigbluebutton' || module.type === 'call.zoom'
 			if (!this.$mq.above.m) return // no background rooms for mobile
 			if (this.call) return // When a DM call is running, we never want background media
 			if (oldRoom &&
@@ -149,7 +149,7 @@ export default {
 				oldRoom.modules.some(module => mediaModules.includes(module.type)) &&
 				this.$refs.primaryMediaSource.isPlaying() &&
 				// don't background bbb room when switching to new bbb room
-				!(newRoom?.modules.some(isBBB) && oldRoom?.modules.some(isBBB))
+				!(newRoom?.modules.some(isExclusive) && oldRoom?.modules.some(isExclusive))
 			) {
 				this.backgroundRoom = oldRoom
 			}
@@ -157,7 +157,7 @@ export default {
 			if (this.backgroundRoom && (
 				newRoom === this.backgroundRoom ||
 				// close background bbb room if entering new bbb room
-				(newRoom?.modules.some(isBBB) && this.backgroundRoom.modules.some(isBBB))
+				(newRoom?.modules.some(isExclusive) && this.backgroundRoom.modules.some(isExclusive))
 			)) {
 				this.backgroundRoom = null
 			}
