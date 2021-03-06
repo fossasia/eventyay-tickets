@@ -1,3 +1,5 @@
+import re
+
 from django.core import signing
 from django.urls import reverse
 
@@ -24,7 +26,9 @@ class ZoomModule(BaseModule):
 
         data = signing.dumps(
             {
-                "mn": int(self.module_config.get("meeting_number")),
+                "mn": int(
+                    re.sub("[^0-9]", "", self.module_config.get("meeting_number"))
+                ),
                 "pw": self.module_config.get("password"),
                 "un": self.consumer.user.profile.get("display_name"),
                 "ho": bool(
