@@ -15,6 +15,7 @@ export default new Vuex.Store({
 		token: null,
 		clientId: null,
 		connected: false,
+		socketCloseCode: null,
 		fatalConnectionError: null,
 		fatalError: null,
 		user: null,
@@ -55,6 +56,7 @@ export default new Vuex.Store({
 			api.connect({token: state.token, clientId: state.clientId})
 			api.on('joined', (serverState) => {
 				state.connected = true
+				state.socketCloseCode = null
 				state.user = serverState['user.config']
 				// state.user.profile = {}
 				state.world = serverState['world.config'].world
@@ -74,8 +76,9 @@ export default new Vuex.Store({
 				// }
 				dispatch('schedule/fetch', {root: true})
 			})
-			api.on('closed', () => {
+			api.on('closed', (code) => {
 				state.connected = false
+				state.socketCloseCode = code
 				dispatch('chat/disconnected', {root: true})
 			})
 			api.on('error', error => {

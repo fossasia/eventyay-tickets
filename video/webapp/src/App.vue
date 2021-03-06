@@ -31,7 +31,10 @@
 		transition(name="prompt")
 			greeting-prompt(v-if="!user.profile.greeted")
 		.native-permission-blocker(v-if="askingPermission")
-	bunt-progress-circular(v-else-if="!fatalError", size="huge")
+	.connecting(v-else-if="!fatalError")
+		bunt-progress-circular(size="huge")
+		.details(v-if="socketCloseCode == 1006") {{ $t('App:error-code:10006') }}
+		.details(v-if="socketCloseCode") {{ $t('App:error-code:text') }}: {{ socketCloseCode }}
 	.fatal-error(v-if="fatalError") {{ fatalError.message }}
 </template>
 <script>
@@ -58,7 +61,7 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['fatalConnectionError', 'fatalError', 'connected', 'world', 'rooms', 'user']),
+		...mapState(['fatalConnectionError', 'fatalError', 'connected', 'socketCloseCode', 'world', 'rooms', 'user']),
 		...mapState('notifications', ['askingPermission']),
 		...mapState('chat', ['call']),
 		room () {
@@ -204,6 +207,17 @@ export default {
 		font-size: 20px
 		border-radius: 0 0 4px 4px
 		z-index: 2000
+	.connecting
+		display: flex
+		height: 100vh
+		flex-direction: column
+		justify-content: center
+		align-items: center
+		.details
+			text-align: center
+			max-width: 400px
+			margin-top: 30px
+			color: var(--clr-text-secondary)
 	.fatal-connection-error
 		position: fixed
 		top: 0
