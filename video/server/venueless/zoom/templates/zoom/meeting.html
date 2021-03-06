@@ -19,11 +19,16 @@
 	ZoomMtg.setZoomJSLib('https://source.zoom.us/1.9.0/lib', '/av');
 	ZoomMtg.preLoadWasm();
 	ZoomMtg.prepareJssdk();
-    ZoomMtg.i18n.load('{{ lang }}');
+    {% if langurl %}
+		ZoomMtg.i18n.load('{{ langurl }}', '{{ lang }}');
+    {% else %}
+		ZoomMtg.i18n.load('{{ lang }}');
+    {% endif %}
 	ZoomMtg.init({
 		debug: {% if debug %}true{% else %}false{% endif %},
 		leaveUrl: '/zoom/ended/',
         isSupportAV: true,
+        isSupportChat: {% if support_chat %}true{% else %}false{% endif %},
         showMeetingHeader: false,
         disableInvite: true,
         disableCallOut: true,

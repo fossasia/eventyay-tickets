@@ -39,6 +39,7 @@ class ZoomModule(BaseModule):
                     )
                 ),
                 "ui": str(self.consumer.user.pk),
+                "dc": self.module_config.get("disable_chat", False),
             }
         )
         url = f'//{self.consumer.world.domain}{reverse("zoom:meeting")}?data={data}'
