@@ -1,69 +1,58 @@
 <template lang="pug">
 .c-admin-config
-	bunt-tabs
-		bunt-tab(id="main", header="Main", v-scrollbar.y="")
-			main-config
-		bunt-tab(id="theme", header="Theme", v-scrollbar.y="")
-			theme-config
-		bunt-tab(id="permissions", header="Permissions", v-scrollbar.y="")
-			permission-config
-		bunt-tab(id="tokengen", header="Token generator", v-scrollbar.y="")
-			token-generator
-		bunt-tab(id="registration", header="Registration", v-scrollbar.y="")
-			registration-config
-		bunt-tab(id="auditlog", header="Audit log", v-scrollbar.y="")
-			audit-log
-		bunt-tab(id="reports", header="Reports", v-scrollbar.y="")
-			reports(v-scrollbar.y="")
+	nav.admin-nav
+		h1 Configuration
+		router-link(:to="{name: 'admin:config'}") Event
+		router-link(:to="{name: 'admin:config:theme'}") Theme
+		router-link(:to="{name: 'admin:config:permissions'}") Permissions
+		router-link(:to="{name: 'admin:config:token-generator'}") Token Generator
+		router-link(:to="{name: 'admin:config:registration'}") Registration
+		router-link(:to="{name: 'admin:config:audit-log'}") Audit Log
+		router-link(:to="{name: 'admin:config:reports'}") Reports
+	router-view
 </template>
 <script>
-import ThemeConfig from './ThemeConfig'
-import MainConfig from './MainConfig'
-import PermissionConfig from './PermissionConfig'
-import TokenGenerator from './TokenGenerator'
-import AuditLog from './AuditLog'
-import RegistrationConfig from './RegistrationConfig'
-import Reports from './Reports'
 
 export default {
-	name: 'AdminConfig',
-	components: { ThemeConfig, MainConfig, PermissionConfig, TokenGenerator, AuditLog, RegistrationConfig, Reports },
+	name: 'AdminConfig'
 }
 </script>
 <style lang="stylus">
 .c-admin-config
 	background white
 	display: flex
-	flex-direction: column
 	min-height: 0
-
-	h2
-		margin: 16px
-
-	.bunt-tabs
-		tabs-style(active-color: var(--clr-primary), indicator-color: var(--clr-primary), background-color: transparent)
-		margin: 0
-		flex: auto
-		display: flex
-		min-height: 0
-		flex-direction: column
-	.bunt-tabs-header
-		border-bottom: border-separator()
-
-	.bunt-tabs-body
-		flex: auto
-		min-height: 0
+	.admin-nav
 		display: flex
 		flex-direction: column
+		background-color: $clr-grey-50
+		border-right: border-separator()
+		width: 218px
+		> *:not(h1)
+			flex: none
+			height: 36px
+			line-height: 36px
+			padding: 0 24px
+			color: $clr-primary-text-light
+			&.router-link-exact-active
+				background-color: $clr-grey-200
+			&:hover
+				background-color: $clr-grey-300
+		h1
+			font-size: 28px
+			font-weight: 500
+			margin: 0 0 0 24px
+			height: 56px
+			line-height: 56px
 
-	.bunt-tab
-		flex: auto
-		min-height: 0
-		display: flex
-		flex-direction: column
-		> :not(.bunt-scrollbar-rail-wrapper-y)
-			padding: 16px
-			display: flex
+	.ui-page-header
+		background-color: $clr-grey-50
+		.bunt-icon-button
+			margin-right: 8px
+		h1
 			flex: auto
-			flex-direction: column
+			font-size: 24px
+			font-weight: 500
+			margin: 1px 16px 0 0
+			ellipsis()
 </style>

@@ -7,6 +7,33 @@
 	box-sizing: border-box
 	border-bottom: border-separator()
 
+.ui-form-actions
+	flex: none
+	display: flex
+	align-items: center
+	padding: 8px
+	height: 56px
+	box-sizing: border-box
+	border-top: border-separator()
+	background-color: $clr-grey-50
+	.btn-save
+		themed-button-primary()
+	.errors
+		color: $clr-danger
+		font-weight: 600
+		margin-left: 16px
+
+.ui-form-body
+	flex: auto
+	display: flex
+	flex-direction: column
+	max-width: 640px
+	padding: 16px
+
+	h2
+		font-size: 24px
+		margin: 16px 0 4px 0
+
 #app.has-background-room
 	.ui-page-header
 		padding-right: 8px + 280px + 4px

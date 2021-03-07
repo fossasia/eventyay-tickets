@@ -1,6 +1,6 @@
 <template lang="pug">
 .c-stage-settings
-	h3 Stream
+	h2 Stream
 	bunt-select(name="stream-source", v-model="streamSource", :options="STREAM_SOURCE_OPTIONS", label="Stream source")
 	template(v-if="modules['livestream.native']")
 		bunt-input(name="url", v-model="modules['livestream.native'].config.hls_url", label="HLS URL")

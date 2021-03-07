@@ -209,6 +209,7 @@ $thumb-width-hovered = 12px
 	position: relative
 	box-sizing: border-box
 	min-height: 0
+	flex: auto
 	.scroll-content
 		display: flex
 		flex-direction: column
