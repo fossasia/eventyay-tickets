@@ -117,20 +117,26 @@ export default {
 			display: flex
 			flex-direction: column
 			padding: 16px
+			justify-items: center
 
 			h2
 				margin: 0
 				text-align: center
 			.video-wrapper
-				padding-bottom: 56.25% /* 16:9 */
-				height: 0
+				background: black
+				width: 320px
+				max-width: 90vw
+				margin: auto
+				height: 180px
 				position: relative
+				overflow: hidden
+				border-radius: 5px
 			video
-				width: 100%
+				max-height: 100%
+				max-width: 100%
 				height: 100%
-				position: absolute
-				left: 0
-				top: 0
+				object-fit: contain
+				width: 100%
 			.btn-action
 				themed-button-primary(size: large)
 </style>
