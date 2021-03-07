@@ -43,6 +43,8 @@
 
 		.slow-banner(v-if="downstreamSlowLinkCount > 5 && (videoRequested || videoOutput)", @click="disableVideo") {{ $t('JanusVideoroom:slow:text') }}
 
+	.info-message(v-if="!videoOutput") {{ $t('JanusVideoroom:video-output:off') }}
+
 	.controlbar.controls(v-show="connectionState == 'connected'", :class="knownMuteState ? 'always' : ''")
 		bunt-icon-button(@click="toggleVideo", :tooltip="videoRequested ? $t('JanusVideoroom:tool-video:off') : $t('JanusVideoroom:tool-video:on')") {{ !videoRequested ? 'video-off' : 'video' }}
 		bunt-icon-button(@click="toggleMute", :tooltip="knownMuteState ? $t('JanusVideoroom:tool-mute:off') : $t('JanusVideoroom:tool-mute:on')") {{ knownMuteState ? 'microphone-off' : 'microphone' }}
@@ -963,6 +965,10 @@ export default {
 		overflow: hidden
 		position: relative
 
+	.info-message
+		color: var(--clr-text-secondary)
+		text-align: center
+		padding: 10px
 	.slow-banner
 		box-sizing: border-box
 		background: #666
