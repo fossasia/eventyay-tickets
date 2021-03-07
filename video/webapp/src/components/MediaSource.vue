@@ -11,6 +11,7 @@
 	livestream(v-if="room && module.type === 'livestream.native'", ref="livestream", :room="room", :module="module", :size="background ? 'tiny' : 'normal'", :key="`livestream-${room.id}`")
 	you-tube(v-else-if="room && module.type === 'livestream.youtube'", ref="youtube", :room="room", :module="module", :size="background ? 'tiny' : 'normal'", :key="`youtube-${room.id}`")
 	big-blue-button(v-else-if="room && module.type === 'call.bigbluebutton'", ref="bigbluebutton", :room="room", :module="module", :background="background", :key="`bbb-${room.id}`")
+	zoom(v-else-if="room && module.type === 'call.zoom'", ref="zoom", :room="room", :module="module", :background="background", :key="`zoom-${room.id}`")
 	janus-call(v-else-if="room && module.type === 'call.janus'", ref="janus", :room="room", :module="module", :background="background", :size="background ? 'tiny' : 'normal'", :key="`janus-${room.id}`")
 	janus-channel-call(v-else-if="call", ref="janus", :call="call", :background="background", :size="background ? 'tiny' : 'normal'", :key="`call-${call.id}`", @close="$emit('close')")
 </template>
@@ -18,13 +19,14 @@
 // TODO functional component?
 import api from 'lib/api'
 import BigBlueButton from 'components/BigBlueButton'
+import Zoom from 'components/Zoom'
 import JanusCall from 'components/JanusCall'
 import JanusChannelCall from 'components/JanusChannelCall'
 import Livestream from 'components/Livestream'
 import YouTube from 'components/YouTube'
 
 export default {
-	components: { BigBlueButton, Livestream, YouTube, JanusCall, JanusChannelCall },
+	components: { BigBlueButton, Zoom, Livestream, YouTube, JanusCall, JanusChannelCall },
 	props: {
 		room: Object,
 		call: Object,
@@ -39,7 +41,7 @@ export default {
 	},
 	computed: {
 		module () {
-			return this.room.modules.find(module => ['livestream.native', 'livestream.youtube', 'call.bigbluebutton', 'call.janus'].includes(module.type))
+			return this.room.modules.find(module => ['livestream.native', 'livestream.youtube', 'call.bigbluebutton', 'call.janus', 'call.zoom'].includes(module.type))
 		},
 	},
 	created () {
@@ -66,6 +68,9 @@ export default {
 			if (this.module.type === 'call.bigbluebutton') {
 				return !!this.$refs.bigbluebutton.iframe
 			}
+			if (this.module.type === 'call.zoom') {
+				return !!this.$refs.zoom.iframe
+			}
 			return true
 		}
 	}
@@ -78,7 +83,7 @@ export default {
 	height: 0
 	&.in-background
 		z-index: 101
-	.c-livestream, .c-youtube, .c-januscall, .c-bigbluebutton, .c-januschannelcall
+	.c-livestream, .c-youtube, .c-januscall, .c-bigbluebutton, .c-zoom, .c-januschannelcall
 		position: fixed
 		transition: all .3s ease
 		&.size-tiny

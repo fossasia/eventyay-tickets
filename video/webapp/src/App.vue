@@ -31,7 +31,10 @@
 		transition(name="prompt")
 			greeting-prompt(v-if="!user.profile.greeted")
 		.native-permission-blocker(v-if="askingPermission")
-	bunt-progress-circular(v-else-if="!fatalError", size="huge")
+	.connecting(v-else-if="!fatalError")
+		bunt-progress-circular(size="huge")
+		.details(v-if="socketCloseCode == 1006") {{ $t('App:error-code:1006') }}
+		.details(v-if="socketCloseCode") {{ $t('App:error-code:text') }}: {{ socketCloseCode }}
 	.fatal-error(v-if="fatalError") {{ fatalError.message }}
 </template>
 <script>
@@ -43,7 +46,7 @@ import MediaSource from 'components/MediaSource'
 import Notifications from 'components/notifications'
 import GreetingPrompt from 'components/profile/GreetingPrompt'
 
-const mediaModules = ['livestream.native', 'call.bigbluebutton', 'call.janus', 'livestream.youtube']
+const mediaModules = ['livestream.native', 'call.bigbluebutton', 'call.janus', 'call.zoom', 'livestream.youtube']
 const stageToolModules = ['livestream.native', 'call.janus', 'livestream.youtube']
 const chatbarModules = ['chat.native', 'question']
 
@@ -58,7 +61,7 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['fatalConnectionError', 'fatalError', 'connected', 'world', 'rooms', 'user']),
+		...mapState(['fatalConnectionError', 'fatalError', 'connected', 'socketCloseCode', 'world', 'rooms', 'user']),
 		...mapState('notifications', ['askingPermission']),
 		...mapState('chat', ['call']),
 		room () {
@@ -141,7 +144,7 @@ export default {
 			}
 			document.title = title
 			this.$store.dispatch('changeRoom', newRoom)
-			const isBBB = module => module.type === 'call.bigbluebutton'
+			const isExclusive = module => module.type === 'call.bigbluebutton' || module.type === 'call.zoom'
 			if (!this.$mq.above.m) return // no background rooms for mobile
 			if (this.call) return // When a DM call is running, we never want background media
 			if (oldRoom &&
@@ -150,7 +153,7 @@ export default {
 				oldRoom.modules.some(module => mediaModules.includes(module.type)) &&
 				this.$refs.primaryMediaSource.isPlaying() &&
 				// don't background bbb room when switching to new bbb room
-				!(newRoom?.modules.some(isBBB) && oldRoom?.modules.some(isBBB))
+				!(newRoom?.modules.some(isExclusive) && oldRoom?.modules.some(isExclusive))
 			) {
 				this.backgroundRoom = oldRoom
 			}
@@ -158,7 +161,7 @@ export default {
 			if (this.backgroundRoom && (
 				newRoom === this.backgroundRoom ||
 				// close background bbb room if entering new bbb room
-				(newRoom?.modules.some(isBBB) && this.backgroundRoom.modules.some(isBBB))
+				(newRoom?.modules.some(isExclusive) && this.backgroundRoom.modules.some(isExclusive))
 			)) {
 				this.backgroundRoom = null
 			}
@@ -205,6 +208,18 @@ export default {
 		font-size: 20px
 		border-radius: 0 0 4px 4px
 		z-index: 2000
+	.connecting
+		display: flex
+		height: 100vh
+		width: 100vw
+		flex-direction: column
+		justify-content: center
+		align-items: center
+		.details
+			text-align: center
+			max-width: 400px
+			margin-top: 30px
+			color: var(--clr-text-secondary)
 	.fatal-connection-error
 		position: fixed
 		top: 0

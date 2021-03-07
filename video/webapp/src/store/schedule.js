@@ -9,17 +9,17 @@ export default {
 	},
 	getters: {
 		pretalxScheduleUrl (state, getters, rootState) {
+			if (rootState.world.pretalx?.url) {
+				return rootState.world.pretalx.url
+			}
 			if (!rootState.world.pretalx?.domain || !rootState.world.pretalx?.event) return
 			if (!rootState.world.pretalx.domain.endsWith('/')) {
 				rootState.world.pretalx.domain += '/'
 			}
-			if (rootState.world.pretalx.event.includes('.json')) {
-				return rootState.world.pretalx.domain + rootState.world.pretalx.event
-			}
 			return rootState.world.pretalx.domain + rootState.world.pretalx.event + '/schedule/widget/v2.json'
 		},
 		pretalxApiBaseUrl (state, getters, rootState) {
-			if (!rootState.world.pretalx?.domain || !rootState.world.pretalx?.event || rootState.world.pretalx.event.includes('.json')) return
+			if (!rootState.world.pretalx?.domain || !rootState.world.pretalx?.event) return
 			return rootState.world.pretalx.domain + 'api/events/' + rootState.world.pretalx.event
 		},
 		roomsLookup (state, getters, rootState) {

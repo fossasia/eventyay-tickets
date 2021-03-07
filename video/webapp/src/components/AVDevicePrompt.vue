@@ -2,7 +2,7 @@
 prompt.c-av-device-prompt(@close="$emit('close')")
 	.content
 		h2 {{ $t('AVDevicePrompt:headline:label') }}
-		bunt-select(v-if="videoInputs.length > 0", v-model="videoInput", @change="refreshVideo", :options="videoInputs", option-label="label", option-value="value", icon="camera", name="videoInput")
+		bunt-select(v-if="videoInputs.length > 0", v-model="videoInput", @input="refreshVideo", :options="videoInputs", option-label="label", option-value="value", icon="camera", name="videoInput")
 		.video-wrapper
 			video(ref="video", playsinline, autoplay, muted="muted")
 		bunt-select(v-if="audioInputs.length > 0", v-model="audioInput", :options="audioInputs", option-label="label", option-value="value", icon="microphone", name="audioInput")

@@ -1,14 +1,14 @@
 <template lang="pug">
 .c-januscall(:class="[`size-${size}`]")
 	.error(v-if="error") {{ $t('JanusCall:error:text') }}
-	janus-videoroom(v-if="server", :server="server", :token="token", :iceServers="iceServers", :roomId="roomId", :size="size", :automute="true", @hangup="roomId = null; $router.push('/')")
+	janus-conference(v-if="server", :server="server", :token="token", :iceServers="iceServers", :sessionId="sessionId", :roomId="roomId", :size="size", :automute="true", @hangup="roomId = null; $router.push('/')")
 </template>
 <script>
 import api from 'lib/api'
-import JanusVideoroom from 'components/janus/JanusVideoroom'
+import JanusConference from 'components/janus/JanusConference'
 
 export default {
-	components: {JanusVideoroom},
+	components: {JanusConference},
 	props: {
 		room: {
 			type: Object,
@@ -30,6 +30,7 @@ export default {
 			token: null,
 			iceServers: [],
 			roomId: null,
+			sessionId: null,
 			loading: false,
 			error: null
 		}
@@ -40,11 +41,12 @@ export default {
 		this.loading = true
 		this.error = null
 		try {
-			const {server, roomId, token, iceServers} = await api.call('januscall.room_url', {room: this.room.id})
+			const {server, roomId, token, sessionId, iceServers} = await api.call('januscall.room_url', {room: this.room.id})
 			if (!this.$el || this._isDestroyed) return
 			this.roomId = roomId
 			this.token = token
 			this.iceServers = iceServers
+			this.sessionId = sessionId
 			this.server = server
 		} catch (error) {
 			// TODO handle bbb.join.missing_profile

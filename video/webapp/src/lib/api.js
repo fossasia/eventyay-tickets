@@ -54,11 +54,12 @@ api.connect = function ({token, clientId}) {
 	})
 }
 
-api.uploadFile = function (file, filename) {
+api.uploadFile = function (file, filename, url) {
+	url = url || config.api.upload
 	const data = new FormData()
 	data.append('file', file, filename)
 	const request = new XMLHttpRequest()
-	request.open('POST', config.api.upload)
+	request.open('POST', url)
 	request.setRequestHeader('Accept', 'application/json')
 	if (api._config.token) {
 		request.setRequestHeader('Authorization', `Bearer ${api._config.token}`)
@@ -70,12 +71,13 @@ api.uploadFile = function (file, filename) {
 }
 
 // TODO unify, rename, progress support
-api.uploadFilePromise = function (file, filename) {
+api.uploadFilePromise = function (file, filename, url) {
+	url = url || config.api.upload
 	const data = new FormData()
 	data.append('file', file, filename)
 	const authHeader = api._config.token ? `Bearer ${api._config.token}`
 		: (api._config.clientId ? `Client ${api._config.clientId}` : null)
-	return fetch(config.api.upload, {
+	return fetch(url, {
 		method: 'POST',
 		body: data,
 		headers: {

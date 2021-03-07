@@ -7,7 +7,7 @@ transition(name="sidebar")
 		scrollbars(y)
 			.global-links
 				router-link.room(v-if="roomsByType.page.includes(rooms[0])", :to="{name: 'home'}") {{ rooms[0].name }}
-				router-link.room(:to="{name: 'schedule'}", v-if="!!world.pretalx && world.pretalx.domain") {{ $t('RoomsSidebar:schedule:label') }}
+				router-link.room(:to="{name: 'schedule'}", v-if="!!world.pretalx && (world.pretalx.url || world.pretalx.domain)") {{ $t('RoomsSidebar:schedule:label') }}
 				router-link.room(v-for="page of roomsByType.page", v-if="page !== rooms[0]", :to="{name: 'room', params: {roomId: page.id}}") {{ page.name }}
 			.group-title(v-if="roomsByType.stage.length || hasPermission('world:rooms.create.stage')")
 				span {{ $t('RoomsSidebar:stages-headline:text') }}
@@ -115,7 +115,7 @@ export default {
 				if (room.modules.length === 1 && room.modules[0].type === 'chat.native') {
 					if (!this.joinedChannels.some(channel => channel.id === room.modules[0].channel_id)) continue
 					rooms.textChat.push(room)
-				} else if (room.modules.some(module => module.type === 'call.bigbluebutton' || module.type === 'call.janus')) {
+				} else if (room.modules.some(module => module.type === 'call.bigbluebutton' || module.type === 'call.janus' || module.type === 'call.zoom')) {
 					rooms.videoChat.push(room)
 				} else if (room.modules.some(module => module.type === 'livestream.native' || module.type === 'livestream.youtube')) {
 					let session
