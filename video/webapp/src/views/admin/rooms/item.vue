@@ -7,7 +7,7 @@
 			h1 {{ inferredType.name }} : {{ config.name }}
 			.actions
 				bunt-button.btn-delete-room(@click="showDeletePrompt = true") delete
-		edit-form(:config="config", @configChange="config = $event")
+		edit-form(:config="config")
 	bunt-progress-circular(v-else, size="huge")
 	transition(name="prompt")
 		prompt.delete-prompt(v-if="showDeletePrompt", @close="showDeletePrompt = false")

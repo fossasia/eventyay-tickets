@@ -13,7 +13,7 @@
 				.text
 					.name {{ type.name }}
 					.description {{ type.description }}
-	edit-form(v-else, :config="config", @configChange="config = $event", :creating="true")
+	edit-form(v-else, :config="config", :creating="true")
 </template>
 <script>
 import ROOM_TYPES from './room-types'
