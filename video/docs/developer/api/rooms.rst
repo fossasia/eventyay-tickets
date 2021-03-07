@@ -65,6 +65,11 @@ Or for all rooms::
     => ["room.config.list", 123, {}]
     <- ["success", 123, [{…}, …]]
 
+Reorder rooms::
+
+    => ["room.config.reorder", 123, [$id, $id2, $id3…]]
+    <- ["success", 123, [{…}, …]]
+
 Schedule changes
 ----------------
 
