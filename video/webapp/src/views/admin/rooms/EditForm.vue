@@ -1,7 +1,7 @@
 <template lang="pug">
 .c-room-edit-form
 	.scroll-wrapper(v-scrollbar.y="")
-		.form-wrapper
+		.ui-form-body
 			.generic-settings
 				bunt-input(name="name", v-model="config.name", label="Name", :validation="$v.config.name")
 				bunt-input(name="description", v-model="config.description", label="Description")
@@ -9,14 +9,15 @@
 				bunt-input(v-if="inferredType.id === 'stage'", name="pretalx_id", v-model="config.pretalx_id", label="pretalx ID", :validation="$v.config.pretalx_id")
 				bunt-checkbox(v-if="['channel-text', 'channel-video'].includes(inferredType.id)", name="force_join", v-model="config.force_join", label="Force join on login (use for non-volatile, text-based chats only!!)")
 			component.stage-settings(v-if="typeComponents[inferredType.id]", :is="typeComponents[inferredType.id]", :config="config", :modules="modules")
-	.form-actions
+	.ui-form-actions
 		bunt-button.btn-save(@click="save", :loading="saving", :error-message="error") {{ creating ? 'create' : 'save' }}
-		.errors {{ errors.join(', ') }}
+		.errors {{ validationErrors.join(', ') }}
 </template>
 <script>
 import api from 'lib/api'
 import Prompt from 'components/Prompt'
 import { required, integer } from 'lib/validators'
+import ValidationErrorsMixin from 'components/mixins/validation-errors'
 import { inferType } from './room-types'
 import Stage from './types-edit/stage'
 import PageStatic from './types-edit/page-static'
@@ -25,6 +26,7 @@ import ChannelVideo from './types-edit/channel-video'
 
 export default {
 	components: { Prompt },
+	mixins: [ValidationErrorsMixin],
 	props: {
 		config: {
 			type: Object,
@@ -56,26 +58,6 @@ export default {
 		},
 		inferredType () {
 			return inferType(this.config)
-		},
-		errors () {
-			const errorMessages = []
-			const extractErrors = ($v) => {
-				const params = Object.values($v.$params)
-				for (const param of params) {
-					if (param?.message) errorMessages.push(param.message)
-				}
-			}
-			const traverse = ($v) => {
-				if (!$v.$error) return
-				const values = Object.entries($v).filter(([key]) => !key.startsWith('$'))
-				extractErrors($v)
-				for (const [, value] of values) {
-					if (typeof value === 'object') traverse(value)
-				}
-			}
-
-			traverse(this.$v)
-			return errorMessages
 		}
 	},
 	validations () {
@@ -143,25 +125,4 @@ export default {
 		flex: auto
 		display: flex
 		flex-direction: column
-	.form-wrapper
-		flex: auto
-		display: flex
-		flex-direction: column
-		max-width: 640px
-		padding: 16px
-	.form-actions
-		flex: none
-		display: flex
-		align-items: center
-		padding: 8px
-		height: 56px
-		box-sizing: border-box
-		border-top: border-separator()
-		background-color: $clr-grey-50
-		.btn-save
-			themed-button-primary()
-		.errors
-			color: $clr-danger
-			font-weight: 600
-			margin-left: 16px
 </style>

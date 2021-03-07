@@ -22,7 +22,7 @@ const routes = [{
 	children: [{
 		path: '/',
 		name: 'home',
-		component: Room,
+		component: Room
 	}, {
 		path: '/rooms/:roomId',
 		name: 'room',
@@ -36,7 +36,7 @@ const routes = [{
 	}, {
 		path: '/schedule',
 		name: 'schedule',
-		component: Schedule,
+		component: Schedule
 	}, {
 		path: '/schedule/talks/:talkId',
 		name: 'schedule:talk',
@@ -60,11 +60,11 @@ const routes = [{
 	}, {
 		path: '/preferences',
 		name: 'preferences',
-		component: Preferences,
+		component: Preferences
 	}, {
 		path: '/manage-exhibitors',
 		name: 'exhibitors',
-		component: () => import(/* webpackChunkName: "exhibitors" */ 'views/exhibitor-manager'),
+		component: () => import(/* webpackChunkName: "exhibitors" */ 'views/exhibitor-manager')
 	}, {
 		path: '/manage-exhibitors/:exhibitorId',
 		name: 'exhibitors:exhibitor',
@@ -73,11 +73,11 @@ const routes = [{
 	}, {
 		path: '/admin',
 		name: 'admin',
-		component: () => import(/* webpackChunkName: "admin" */ 'views/admin'),
+		component: () => import(/* webpackChunkName: "admin" */ 'views/admin')
 	}, {
 		path: '/admin/users',
 		name: 'admin:users',
-		component: () => import(/* webpackChunkName: "admin" */ 'views/admin/users'),
+		component: () => import(/* webpackChunkName: "admin" */ 'views/admin/users')
 	}, {
 		path: '/admin/users/:userId',
 		name: 'admin:user',
@@ -86,11 +86,11 @@ const routes = [{
 	}, {
 		path: '/admin/rooms',
 		name: 'admin:rooms:index',
-		component: () => import(/* webpackChunkName: "admin" */ 'views/admin/rooms/index'),
+		component: () => import(/* webpackChunkName: "admin" */ 'views/admin/rooms/index')
 	}, {
 		path: '/admin/rooms/new',
 		name: 'admin:rooms:new',
-		component: () => import(/* webpackChunkName: "admin" */ 'views/admin/rooms/new'),
+		component: () => import(/* webpackChunkName: "admin" */ 'views/admin/rooms/new')
 	}, {
 		path: '/admin/rooms/:roomId',
 		name: 'admin:rooms:item',
@@ -98,8 +98,36 @@ const routes = [{
 		props: true
 	}, {
 		path: '/admin/config',
-		name: 'admin:config',
 		component: () => import(/* webpackChunkName: "admin" */ 'views/admin/config'),
+		children: [{
+			path: '',
+			name: 'admin:config',
+			component: () => import(/* webpackChunkName: "admin" */ 'views/admin/config/main')
+		}, {
+			path: 'theme',
+			name: 'admin:config:theme',
+			component: () => import(/* webpackChunkName: "admin" */ 'views/admin/config/theme')
+		}, {
+			path: 'permissions',
+			name: 'admin:config:permissions',
+			component: () => import(/* webpackChunkName: "admin" */ 'views/admin/config/permissions')
+		}, {
+			path: 'token-generator',
+			name: 'admin:config:token-generator',
+			component: () => import(/* webpackChunkName: "admin" */ 'views/admin/config/token-generator')
+		}, {
+			path: 'registration',
+			name: 'admin:config:registration',
+			component: () => import(/* webpackChunkName: "admin" */ 'views/admin/config/registration')
+		}, {
+			path: 'audit-log',
+			name: 'admin:config:audit-log',
+			component: () => import(/* webpackChunkName: "admin" */ 'views/admin/config/audit-log')
+		}, {
+			path: 'reports',
+			name: 'admin:config:reports',
+			component: () => import(/* webpackChunkName: "admin" */ 'views/admin/config/reports')
+		}]
 	}]
 }]
 
