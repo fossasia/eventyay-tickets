@@ -11,7 +11,13 @@ from sentry_sdk import add_breadcrumb, configure_scope
 from venueless.core.models.room import RoomConfigSerializer, approximate_view_number
 from venueless.core.permissions import Permission
 from venueless.core.services.reactions import store_reaction
-from venueless.core.services.room import delete_room, end_view, save_room, start_view
+from venueless.core.services.room import (
+    delete_room,
+    end_view,
+    save_room,
+    start_view,
+    reorder_rooms,
+)
 from venueless.core.services.world import (
     create_room,
     get_room_config_for_user,
@@ -279,6 +285,14 @@ class RoomModule(BaseModule):
             await notify_world_change(self.consumer.world.id)
         else:
             await self.consumer.send_error(code="config.invalid")
+
+    @command("config.reorder")
+    @require_world_permission(Permission.ROOM_UPDATE)
+    async def config_reorder(self, body):
+        await reorder_rooms(self.consumer.world, body, self.consumer.user)
+        rooms = await database_sync_to_async(get_rooms)(self.consumer.world, user=None)
+        await self.consumer.send_success(RoomConfigSerializer(rooms, many=True).data)
+        await notify_world_change(self.consumer.world.id)
 
     @command("delete")
     @room_action(permission_required=Permission.ROOM_DELETE)
