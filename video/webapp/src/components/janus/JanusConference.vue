@@ -457,7 +457,6 @@ export default {
 		},
 		disableAllVideo () {
 			this.videoRequested = false
-			localStorage.videoRequested = false
 			localStorage.videoOutput = false
 
 			for (const h of this.feeds) {
