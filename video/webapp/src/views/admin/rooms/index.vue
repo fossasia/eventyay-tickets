@@ -7,23 +7,22 @@
 		bunt-input.search(name="search", placeholder="Search rooms", icon="search", v-model="search")
 	.rooms-list
 		.header
-			.id ID
-			.prio Priority
+			.drag
 			.name Name
-		RecycleScroller.tbody.bunt-scrollbar(v-if="filteredRooms", :items="filteredRooms", :item-size="48", v-slot="{item: room}", v-scrollbar.y="")
-			router-link.room.table-row(:to="{name: 'admin:rooms:item', params: {roomId: room.id}}", :class="{error: room.error, updating: room.updating}")
-				.id(:title="room.id") {{ room.id }}
-				.prio {{ room.sorting_priority }}
-				.name {{ room.name }}
+		SlickList.tbody(v-if="filteredRooms", v-model="rooms", lockAxis="y", :useDragHandle="true", v-scrollbar.y="", @input="onListSort")
+			RoomListItem(v-for="(room, index) of rooms" :index="index", :key="index", :room="room")
 		bunt-progress-circular(v-else, size="huge", :page="true")
 </template>
 <script>
 // TODO show inferred type
 import api from 'lib/api'
 import fuzzysearch from 'lib/fuzzysearch'
+import { SlickList } from 'vue-slicksort'
+import RoomListItem from './RoomListItem'
 
 export default {
 	name: 'AdminRooms',
+	components: { SlickList, RoomListItem },
 	data () {
 		return {
 			rooms: null,
@@ -39,6 +38,12 @@ export default {
 	},
 	async created () {
 		this.rooms = await api.call('room.config.list')
+	},
+	methods: {
+		async onListSort () {
+			this.rooms = await api.call('room.config.reorder', this.rooms.map(room => room.id))
+			// TODO error handling
+		}
 	}
 }
 </script>
@@ -75,15 +80,8 @@ export default {
 			display: flex
 			align-items: center
 			color: $clr-primary-text-light
-		.id
-			width: 128px
-			flex: none
-			ellipsis()
-		.prio
-			width: 64px
-			flex: none
-			text-align: right
-			ellipsis()
+		.drag
+			width: 24px
 		.name
 			flex: auto
 			ellipsis()
