@@ -35,7 +35,7 @@ def choose_server(world):
         return server
 
 
-async def room_exists(server, roomid):
+async def videoroom_exists(server, roomid):
     # todo: handle connection errors to janus, encapsulate room creation into service
     async with websockets.connect(
         server.url, subprotocols=["janus-protocol"]
@@ -87,7 +87,7 @@ async def room_exists(server, roomid):
         return resp["plugindata"]["data"]["exists"]
 
 
-async def create_room(server, bitrate=200_000):
+async def create_videoroom(server, room_id, audiobridge=False, bitrate=200_000):
     token = get_random_string(16)
     seed = get_random_string(16)
     # todo: handle connection errors to janus, encapsulate room creation into service
@@ -123,6 +123,7 @@ async def create_room(server, bitrate=200_000):
                     "janus": "message",
                     "body": {
                         "request": "create",
+                        "room": room_id,
                         "admin_key": server.room_create_key,
                         "permanent": False,
                         "secret": hashlib.sha256(
@@ -151,9 +152,61 @@ async def create_room(server, bitrate=200_000):
 
         room_id = resp["plugindata"]["data"]["room"]
 
+        if audiobridge:
+            await websocket.send(
+                json.dumps(
+                    {
+                        "janus": "attach",
+                        "plugin": "janus.plugin.audiobridge",
+                        "transaction": get_random_string(),
+                        "session_id": session_id,
+                    }
+                )
+            )
+            resp = json.loads(await websocket.recv())
+            if resp["janus"] != "success":
+                raise JanusError(repr(resp))
+
+            handle_id = resp["data"]["id"]
+
+            await websocket.send(
+                json.dumps(
+                    {
+                        # Docs: https://janus.conf.meetecho.com/docs/audiobridge.html
+                        "janus": "message",
+                        "body": {
+                            "request": "create",
+                            "room": room_id,
+                            "admin_key": server.room_create_key,
+                            "permanent": False,
+                            "secret": hashlib.sha256(
+                                f"{server.room_create_key}:secret:{seed}".encode()
+                            ).hexdigest(),
+                            "audiolevel_ext": True,
+                            "audiolevel_event": True,
+                            "audio_active_packets": 50,
+                            "audio_level_average": 50,
+                            "is_private": True,
+                            "allowed": [token],
+                            "record": False,
+                        },
+                        "transaction": get_random_string(),
+                        "session_id": session_id,
+                        "handle_id": handle_id,
+                    }
+                )
+            )
+            resp = json.loads(await websocket.recv())
+
+            if resp["janus"] != "success":
+                raise JanusError(repr(resp))
+            if "error" in resp["plugindata"]["data"]:
+                raise JanusPluginError(resp["plugindata"]["data"]["error"])
+
     return {
         "server": server.url,
         "roomId": room_id,
         "token": token,
         "seed": seed,
+        "audiobridge": audiobridge,
     }

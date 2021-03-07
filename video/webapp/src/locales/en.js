@@ -125,6 +125,7 @@ export default {
 	'FeedbackPrompt:privacy:text': 'In addition to your message, we\'ll store technical information about your call, such as connection times, error logs, browser version, etc. We will not store any conversation contents.',
 	'FeedbackPrompt:submit:label': 'Submit',
 	'JanusCall:error:text': 'We could not connect to the video conference server, sorry.',
+	'JanusConference:slow:text': 'It appears your connection is slow. Click here if you want to disable video.',
 	'JanusVideoroom:connection-error:text': 'The connection has failed.',
 	'JanusVideoroom:disconnected:text': 'You have been disconnected.',
 	'JanusVideoroom:publishing-error:text': 'Sending your signal has failed.',

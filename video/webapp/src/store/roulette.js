@@ -10,6 +10,7 @@ export default {
 		token: null,
 		iceServers: [],
 		roomId: null,
+		sessionId: null,
 		error: null,
 		requestTimer: null,
 	},
@@ -33,6 +34,7 @@ export default {
 			state.token = data.token
 			state.iceServers = data.iceServers
 			state.roomId = data.roomId
+			state.sessionId = data.sessionId
 		},
 	},
 	actions: {
@@ -78,7 +80,7 @@ export default {
 		},
 		async stopCall ({state, commit}) {
 			const callId = state.callId
-			commit('setJanusParameters', {callId: null, server: null, token: null, iceServers: null, roomId: null})
+			commit('setJanusParameters', {callId: null, server: null, token: null, iceServers: null, roomId: null, sessionId: null})
 			commit('setCallId', null)
 			if (callId) {
 				await api.call('roulette.hangup', {call_id: callId})
@@ -86,7 +88,7 @@ export default {
 		},
 		'api::roulette.hangup' ({state, commit}, payload) {
 			commit('setCallId', null)
-			commit('setJanusParameters', {callId: null, server: null, token: null, iceServers: null, roomId: null})
+			commit('setJanusParameters', {callId: null, server: null, token: null, iceServers: null, roomId: null, sessionId: null})
 		},
 		'api::roulette.match_found' ({state, dispatch}, payload) {
 			if (state.requestTimer) {
