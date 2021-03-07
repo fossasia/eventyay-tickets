@@ -31,6 +31,8 @@ class Permission(Enum):
     ROOM_BBB_JOIN = "room:bbb.join"
     ROOM_BBB_MODERATE = "room:bbb.moderate"
     ROOM_BBB_RECORDINGS = "room:bbb.recordings"
+    ROOM_ZOOM_JOIN = "room:zoom.join"
+    ROOM_ZOOM_HOST = "room:zoom.host"
     ROOM_QUESTION_READ = "room:question.read"
     ROOM_QUESTION_ASK = "room:question.ask"
     ROOM_QUESTION_VOTE = "room:question.vote"

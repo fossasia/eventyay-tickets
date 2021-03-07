@@ -3,13 +3,26 @@
 	bunt-progress-circular(size="huge", v-if="error == null && config == null")
 	.error(v-if="error") We could not fetch the current configuration.
 	.main-form(v-if="config != null")
+		h3 System details
 		bunt-input(v-model="config.title", label="Title", name="title", :validation="$v.config.title")
 		bunt-select(v-model="config.locale", label="Language", name="locale", :options="locales")
 		bunt-select(v-model="config.dateLocale", label="Date locale", name="dateLocale", :options="momentLocales")
 		bunt-input(v-model="config.timezone", label="Time zone", name="timezone", :validation="$v.config.timezone")
 		bunt-input(v-model="config.connection_limit", label="Connection limit", name="connection_limit", hint="Set to 0 to allow unlimited connections per user", :validation="$v.config.connection_limit")
-		bunt-input(v-model="config.pretalx.domain", label="pretalx domain", name="pretalx_domain", :validation="$v.config.pretalx.domain")
-		bunt-input(v-model="config.pretalx.event", label="pretalx event slug", name="pretalx_event", :validation="$v.config.pretalx.event")
+		h3 Schedule
+		p(v-if="config.pretalx.url") Schedule is loaded from a file
+			| {{ ' ' }}
+			a(:href="config.pretalx.url", target="_blank") (view file)
+			bunt-icon-button(@click="clearSchedule", tooltip="Remove schedule") delete
+		p(v-else-if="config.pretalx.domain") Schedule is loaded from pretalx event
+			a(:href="config.pretalx.domain + config.pretalx.event", target="_blank")
+				strong {{ " " + config.pretalx.event + " " }}
+			| on
+			strong {{ " " + config.pretalx.domain + " " }}
+			bunt-icon-button(@click="clearSchedule", tooltip="Remove schedule") delete
+		p(v-else) No schedule loaded
+		bunt-button.btn-schedule(@click="showSchedulePrompt = true") Load schedule
+		h3 Tracking and statistics
 		bunt-checkbox(v-model="config.track_room_views", label="Track room views", name="track_room_views")
 		bunt-checkbox(v-model="config.track_exhibitor_views", label="Track exhibitor views", name="track_exhibitor_views")
 		h3 Settings for newly-created BBB rooms
@@ -26,12 +39,15 @@
 			textarea(slot-scope="{focus, blur}", @focus="focus", @blur="blur", v-model="hlsConfig")
 		.json-error-message {{ $v.hlsConfig.$params.isJson.message }}
 		bunt-button.btn-save(@click="save", :loading="saving") Save
+	transition(name="prompt")
+		schedule-prompt(v-if="showSchedulePrompt", :currentConfig="config.pretalx", @save="config.pretalx = $event; showSchedulePrompt = false", @close="showSchedulePrompt = false")
 </template>
 <script>
 import api from 'lib/api'
 import i18n from 'i18n'
-import { required, integer, url } from 'vuelidate/lib/validators'
+import { required, integer } from 'vuelidate/lib/validators'
 import { isJson } from 'lib/validators'
+import SchedulePrompt from 'components/config/SchedulePrompt'
 
 const momentLocaleSet = [
 	// do not use moment.locales() since moment lazy-loads locales and will only return "en" and the active locale
@@ -47,11 +63,15 @@ const momentLocaleSet = [
 ]
 
 export default {
+	components: {
+		SchedulePrompt
+	},
 	data () {
 		return {
 			config: null,
 			hlsConfig: '',
 			saving: false,
+			showSchedulePrompt: false,
 			error: null
 		}
 	},
@@ -75,11 +95,6 @@ export default {
 				required,
 				integer
 			},
-			pretalx: {
-				domain: {
-					url
-				}
-			},
 		},
 		hlsConfig: {
 			isJson: isJson()
@@ -97,6 +112,9 @@ export default {
 		}
 	},
 	methods: {
+		clearSchedule () {
+			this.config.pretalx = {}
+		},
 		async save () {
 			this.$v.$touch()
 			if (this.$v.$invalid) return
@@ -133,6 +151,8 @@ export default {
 	.btn-save
 		margin-top: 16px
 		themed-button-primary(size: large)
+	.btn-schedule
+		themed-button-secondary()
 	.bunt-input-outline-container
 		margin-top: 16px
 		&.error

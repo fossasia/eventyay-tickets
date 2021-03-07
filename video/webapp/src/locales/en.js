@@ -1,5 +1,7 @@
 export default {
 	'App:disconnected-warning:text': 'Connection lost! Trying to reconnect…',
+	'App:error-code:1006': 'Connection failed. We\'ll retry, but if this error occurs repeatedly, the connection might be blocked by a firewall in your network or by a VPN on your device.',
+	'App:error-code:text': 'Error code',
 	'App:fatal-connection-error:auth.denied:headline': 'This event requires a valid token.',
 	'App:fatal-connection-error:auth.denied:text': 'Please use the link provided by your event organizer.',
 	'App:fatal-connection-error:connection.replaced:action': 'Continue (disconnect other device)',
@@ -123,6 +125,7 @@ export default {
 	'FeedbackPrompt:privacy:text': 'In addition to your message, we\'ll store technical information about your call, such as connection times, error logs, browser version, etc. We will not store any conversation contents.',
 	'FeedbackPrompt:submit:label': 'Submit',
 	'JanusCall:error:text': 'We could not connect to the video conference server, sorry.',
+	'JanusConference:slow:text': 'It appears your connection is slow. Click here if you want to disable video.',
 	'JanusVideoroom:connection-error:text': 'The connection has failed.',
 	'JanusVideoroom:disconnected:text': 'You have been disconnected.',
 	'JanusVideoroom:publishing-error:text': 'Sending your signal has failed.',
@@ -273,4 +276,5 @@ export default {
 	'UserListPage:placeholder:text': 'Click on a person on the left to view more details or get in touch with them!',
 	'UserListPage:staffed-exhibitions:text': 'This person represents',
 	'UserSearch:placeholder:text': 'search users',
+	'Zoom:error:text': 'We could not connect to the video conference server, sorry.',
 }

@@ -260,6 +260,26 @@ async def test_config_patch(world, stream_room):
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
+async def test_config_reorder(world, chat_room, stream_room):
+    async with world_communicator(token=get_token(world, ["admin"])) as c1:
+        await c1.send_json_to(
+            ["room.config.reorder", 123, [str(chat_room.pk), str(stream_room.pk)]]
+        )
+        response = await c1.receive_json_from()
+        assert response[0] == "success"
+        assert response[2][0]["name"] == "Chat"
+        assert response[2][1]["name"] == "Plenum"
+        await c1.send_json_to(
+            ["room.config.reorder", 123, [str(stream_room.pk), str(chat_room.pk)]]
+        )
+        response = await c1.receive_json_from()
+        assert response[0] == "success"
+        assert response[2][0]["name"] == "Plenum"
+        assert response[2][1]["name"] == "Chat"
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
 async def test_config_delete(world, stream_room):
     async with world_communicator(token=get_token(world, ["admin"])) as c1:
         await c1.send_json_to(["room.delete", 123, {"room": str(stream_room.pk)}])

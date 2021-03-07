@@ -22,3 +22,5 @@ atlassian-ide-plugin.xml
 data/media
 static.dist/
 node_modules
+docker-compose.override.yml
+

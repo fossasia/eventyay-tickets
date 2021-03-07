@@ -77,7 +77,7 @@ class WebSocketClient extends EventEmitter {
 
 		this._socket.addEventListener('close', (event) => {
 			this.socketState = 'closed'
-			this.emit('closed')
+			this.emit('closed', event.code)
 			if (!this._normalClose) {
 				setTimeout(() => {
 					this.emit('reconnecting')

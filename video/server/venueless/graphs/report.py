@@ -73,6 +73,7 @@ class ReportGenerator:
             sf = StoredFile.objects.create(
                 world=self.world,
                 date=now(),
+                expires=now() + timedelta(hours=2),
                 filename="report.pdf",
                 type="application/pdf",
                 public=True,

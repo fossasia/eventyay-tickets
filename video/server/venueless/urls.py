@@ -10,6 +10,7 @@ from .graphs import urls as graphs
 from .live import urls as live
 from .live import views
 from .storage import urls as storage
+from .zoom import urls as zoom
 
 
 def static(prefix, view=serve, **kwargs):
@@ -31,6 +32,7 @@ urlpatterns = (
         re_path(r"^healthcheck/", views.HealthcheckView.as_view()),
         re_path(r"^manifest.json", views.ManifestView.as_view()),
         re_path(r"graphs/", include(graphs)),
+        re_path(r"zoom/", include((zoom, "zoom"), namespace="zoom")),
         re_path(r"storage/", include((storage, "storage"), namespace="storage")),
         re_path(r"", include((live, "live"), namespace="live")),
     ]

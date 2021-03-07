@@ -3,7 +3,6 @@
 	bunt-progress-circular(size="huge", v-if="error == null && config == null")
 	.error(v-if="error") We could not fetch the current configuration.
 	.additional-fields-form(v-if="config != null")
-		h2 User profile fields
 		table.additional-fields
 				thead
 					tr

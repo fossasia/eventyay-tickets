@@ -1,24 +1,14 @@
-#!/usr/bin/env python3
 import datetime as dt
 import json
 import math
-import sys
 from collections import defaultdict
-from pathlib import Path
 
 import pandas
 from dateutil.parser import parse
+from django.core.exceptions import ValidationError
 
 
-def exit(message):
-    print(message)
-    sys.exit(-1)
-
-
-def load_sheet(fname):
-    if not Path(fname).exists():
-        exit("Could not find the file you want to import, aborting!")
-
+def load_sheet(io):
     sheets = {
         "Talks": {
             "usecols": "A:I,K",
@@ -35,7 +25,7 @@ def load_sheet(fname):
         },
     }
     return {
-        title: pandas.read_excel(fname, sheet_name=title, header=0, **config)
+        title: pandas.read_excel(io, sheet_name=title, header=0, **config)
         for title, config in sheets.items()
     }
 
@@ -89,16 +79,18 @@ def transform_data(data, table_name, field_mapping, mandatory_fields, methods=No
     for _, row in data.iterrows():
         truthy_fields = {key: truthy(row.get(key)) for key in mandatory_fields}
         if not any(truthy_fields.values()):
-            continue  # empty row, probably
+            continue  # empty row, probably. Should be fixed as of Pandas 1.2.2, but better safe than sorry.
         if not all(truthy_fields.values()):
             missing = [key for key, value in truthy_fields.items() if not value]
-            exit(f"Missing key(s) in sheet {table_name}, row {_ + 1}: {missing}")
+            raise ValidationError(
+                f"Missing key(s) in sheet {table_name}, row {_ + 1}: {missing}"
+            )
         row_result = {}
         for field, excel in field_mapping.items():
             try:
                 row_result[field] = transformers[field](row.get(excel))
             except Exception as e:
-                exit(
+                raise ValidationError(
                     f"Error in sheet {table_name}, row {_ + 1} when importing column {excel}: {e}"
                 )
         result.append(row_result)
@@ -111,33 +103,36 @@ def validate_data(data):
     speaker_ids = [speaker["code"] for speaker in data["speakers"]]
     for talk in data["talks"]:
         if not talk["start"]:
-            exit(f"Talk {talk['code']} ({talk['title']}) has no valid start datetime.")
+            raise ValidationError(
+                f"Talk {talk['code']} ({talk['title']}) has no valid start datetime."
+            )
         if not talk["end"]:
-            exit(f"Talk {talk['code']} ({talk['title']}) has no valid start datetime.")
+            raise ValidationError(
+                f"Talk {talk['code']} ({talk['title']}) has no valid start datetime."
+            )
         start = parse(talk["start"])
         end = parse(talk["end"])
         if start > end:
-            exit(
+            raise ValidationError(
                 f"Talk {talk['code']} ({talk['title']}) has a start that is later than its end."
             )
         if talk["track"] and not talk["track"] in track_ids:
-            exit(f"Talk {talk['code']} ({talk['title']}) has an invalid track ID.")
+            raise ValidationError(
+                f"Talk {talk['code']} ({talk['title']}) has an invalid track ID."
+            )
         if not talk["room"] in room_ids:
-            exit(f"Talk {talk['code']} ({talk['title']}) has an invalid room ID.")
+            raise ValidationError(
+                f"Talk {talk['code']} ({talk['title']}) has an invalid room ID."
+            )
         for speaker in talk.get("speakers", []):
             if speaker not in speaker_ids:
-                exit(
+                raise ValidationError(
                     f"Talk {talk['code']} ({talk['title']}) has an unknown speaker ID: {speaker}."
                 )
 
 
-def main():
-    fname = sys.argv[-1]
-    if fname == "schedule_to_json.py":
-        print("Please call this script with the xlsx file you want to import!")
-        return
-
-    data = load_sheet(fname)
+def convert(io):
+    data = load_sheet(io)
 
     result = {"version": dt.datetime.now().isoformat()}
     result["rooms"] = transform_data(
@@ -182,9 +177,4 @@ def main():
         methods={"start": to_iso, "end": to_iso, "speakers": to_list},
     )
     validate_data(result)
-    with open("schedule.json", "w") as fp:
-        json.dump(result, fp, indent=4)
-
-
-if __name__ == "__main__":
-    main()
+    return json.dumps(result, indent=4)

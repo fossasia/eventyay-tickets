@@ -96,6 +96,7 @@ class AppView(View):
                                 world.pk,
                             ),
                             "upload": reverse("storage:upload"),
+                            "scheduleImport": reverse("storage:schedule_import"),
                             "feedback": reverse("live:feedback"),
                         },
                         "features": world.feature_flags,
@@ -116,9 +117,7 @@ class AppView(View):
                 ),
             )
 
-        source = re.sub(
-            '<html[^>]*>', '<html lang="{}">'.format(world.locale), source
-        )
+        source = re.sub("<html[^>]*>", '<html lang="{}">'.format(world.locale), source)
 
         return HttpResponse(source, content_type="text/html")
 

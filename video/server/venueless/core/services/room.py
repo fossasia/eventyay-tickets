@@ -1,3 +1,5 @@
+import sys
+
 from channels.db import database_sync_to_async
 from django.db.transaction import atomic
 from django.utils.timezone import now
@@ -78,5 +80,37 @@ def delete_room(world, room, by_user):
         data={
             "object": str(room.id),
             "old": old,
+        },
+    )
+
+
+@database_sync_to_async
+@atomic
+def reorder_rooms(world, id_list, by_user):
+    def key(r):
+        try:
+            return id_list.index(str(r.id)), r.sorting_priority, r.name
+        except:
+            return sys.maxsize, r.sorting_priority, r.name
+
+    all_rooms = list(
+        world.rooms.filter(deleted=False).only("id", "name", "sorting_priority")
+    )
+    all_rooms.sort(key=key)
+    to_update = []
+
+    for i, r in enumerate(all_rooms):
+        if i + 1 != r.sorting_priority:
+            r.sorting_priority = i + 1
+            to_update.append(r)
+
+    Room.objects.bulk_update(to_update, fields=["sorting_priority"])
+
+    AuditLog.objects.create(
+        world_id=world.id,
+        user=by_user,
+        type="world.room.reorder",
+        data={
+            "id_list": id_list,
         },
     )

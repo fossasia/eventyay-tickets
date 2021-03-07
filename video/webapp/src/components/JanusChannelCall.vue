@@ -1,6 +1,6 @@
 <template lang="pug">
 .c-januschannelcall(:class="[`size-${size}`]")
-	janus-videoroom(v-if="server", :server="server", :token="token", :iceServers="iceServers", :roomId="roomId", :size="size", @hangup="$emit('close')")
+	janus-videoroom(v-if="server", :server="server", :token="token", :iceServers="iceServers", :sessionId="sessionId", :roomId="roomId", :size="size", @hangup="$emit('close')")
 </template>
 <script>
 import JanusVideoroom from 'components/janus/JanusVideoroom'
@@ -24,6 +24,7 @@ export default {
 			token: null,
 			iceServers: [],
 			roomId: null,
+			sessionId: null,
 		}
 	},
 	computed: {
@@ -33,6 +34,7 @@ export default {
 		this.token = this.call.parameters.token
 		this.iceServers = this.call.parameters.iceServers
 		this.roomId = this.call.parameters.roomId
+		this.sessionId = this.call.parameters.sessionId
 	},
 	methods: {
 	},
