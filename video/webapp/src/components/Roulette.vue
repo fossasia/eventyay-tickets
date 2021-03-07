@@ -1,7 +1,7 @@
 <template lang="pug">
 .c-roulette
 	.call(v-if="server")
-		janus-videoroom(:server="server", :token="token", :iceServers="iceServers", :roomId="roomId", size="normal", :automute="false", :key="`janus-videoroom-${roomId}`", @hangup="stopCall")
+		janus-videoroom(:server="server", :token="token", :iceServers="iceServers", :sessionId="sessionId", :roomId="roomId", size="normal", :automute="false", :key="`janus-videoroom-${roomId}`", @hangup="stopCall")
 	.status(v-else-if="loading && !callId") {{ $t('Roulette:waiting:text') }}
 	.status(v-else-if="loading && callId") {{ $t('Roulette:connecting:text') }}
 	.status(v-else) {{ $t('Roulette:instructions:text') }}
@@ -31,7 +31,7 @@ export default {
 	},
 	computed: {
 		...mapState(['connected']),
-		...mapState('roulette', ['callId', 'server', 'iceServers', 'token', 'roomId', 'loading', 'error']),
+		...mapState('roulette', ['callId', 'server', 'iceServers', 'token', 'roomId', 'sessionId', 'loading', 'error']),
 	},
 	watch: {
 		connected (value) {
