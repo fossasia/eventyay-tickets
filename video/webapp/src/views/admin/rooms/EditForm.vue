@@ -1,19 +1,14 @@
 <template lang="pug">
 .c-room-edit-form
-	bunt-tabs
-		bunt-tab(id="main", header="Content", v-scrollbar.y="")
-			.form-wrapper
-				.generic-settings
-					bunt-input(name="name", v-model="config.name", label="Name", :validation="$v.config.name")
-					bunt-input(name="description", v-model="config.description", label="Description")
-					bunt-input(name="sorting_priority", v-model="config.sorting_priority", label="Sorting priority", :validation="$v.config.sorting_priority")
-					bunt-input(v-if="inferredType.id === 'stage'", name="pretalx_id", v-model="config.pretalx_id", label="pretalx ID", :validation="$v.config.pretalx_id")
-					bunt-checkbox(v-if="['channel-text', 'channel-video'].includes(inferredType.id)", name="force_join", v-model="config.force_join", label="Force join on login (use for non-volatile, text-based chats only!!)")
-				component.stage-settings(v-if="typeComponents[inferredType.id]", :is="typeComponents[inferredType.id]", :config="config", :modules="modules")
-		bunt-tab.raw-config(id="advanced", header="Raw Config")
-			bunt-input-outline-container(label="Raw config")
-				textarea(v-model="rawConfig", slot-scope="{focus, blur}", @focus="focus", @blur="blur")
-			.raw-config-error {{ rawConfigError }}
+	.scroll-wrapper(v-scrollbar.y="")
+		.form-wrapper
+			.generic-settings
+				bunt-input(name="name", v-model="config.name", label="Name", :validation="$v.config.name")
+				bunt-input(name="description", v-model="config.description", label="Description")
+				bunt-input(name="sorting_priority", v-model="config.sorting_priority", label="Sorting priority", :validation="$v.config.sorting_priority")
+				bunt-input(v-if="inferredType.id === 'stage'", name="pretalx_id", v-model="config.pretalx_id", label="pretalx ID", :validation="$v.config.pretalx_id")
+				bunt-checkbox(v-if="['channel-text', 'channel-video'].includes(inferredType.id)", name="force_join", v-model="config.force_join", label="Force join on login (use for non-volatile, text-based chats only!!)")
+			component.stage-settings(v-if="typeComponents[inferredType.id]", :is="typeComponents[inferredType.id]", :config="config", :modules="modules")
 	.form-actions
 		bunt-button.btn-save(@click="save", :loading="saving", :error-message="error") {{ creating ? 'create' : 'save' }}
 		.errors {{ errors.join(', ') }}
@@ -27,18 +22,6 @@ import Stage from './types-edit/stage'
 import PageStatic from './types-edit/page-static'
 import PageIframe from './types-edit/page-iframe'
 import ChannelVideo from './types-edit/channel-video'
-
-const parseJSONConfig = function (value) {
-	try {
-		const config = JSON.parse(value)
-		if (!config && typeof config !== 'object') {
-			return {error: 'Must be an object'}
-		}
-		return {config}
-	} catch (error) {
-		return {error: error.message}
-	}
-}
 
 export default {
 	components: { Prompt },
@@ -60,8 +43,6 @@ export default {
 				'page-iframe': PageIframe,
 				'channel-video': ChannelVideo
 			},
-			b_rawConfig: null,
-			rawConfigError: null,
 			saving: false,
 			error: null
 		}
@@ -75,22 +56,6 @@ export default {
 		},
 		inferredType () {
 			return inferType(this.config)
-		},
-		rawConfig: {
-			get () {
-				return this.b_rawConfig || JSON.stringify(this.config, null, 2)
-			},
-			set (value) {
-				const {config, error} = parseJSONConfig(value)
-				if (error) {
-					this.b_rawConfig = value
-					this.rawConfigError = error
-				} else {
-					this.b_rawConfig = null
-					this.rawConfigError = null
-					this.$emit('configChange', config)
-				}
-			}
 		},
 		errors () {
 			const errorMessages = []
@@ -174,45 +139,16 @@ export default {
 	min-height: 0
 	display: flex
 	flex-direction: column
-	.bunt-tabs
-		flex: auto
-		tabs-style(active-color: var(--clr-primary), indicator-color: var(--clr-primary), background-color: transparent)
+	.scroll-wrapper
 		flex: auto
 		display: flex
 		flex-direction: column
-		min-height: 0
-		margin: 0
-		.bunt-tabs-header
-			border-bottom: border-separator()
-	.bunt-tabs-body
+	.form-wrapper
 		flex: auto
-		min-height: 0
 		display: flex
 		flex-direction: column
-		.form-wrapper
-			max-width: 640px
-			padding: 16px
-		.bunt-tab
-			flex: auto
-			display: flex
-			flex-direction: column
-			min-height: 0
-	.raw-config
-		.bunt-input-outline-container
-			margin: 8px
-			flex: auto
-			textarea
-				height: 100%
-				background-color: transparent
-				border: none
-				outline: none
-				resize: none
-				min-height: 64px
-				padding: 0 8px
-		.raw-config-error
-			color: $clr-danger
-			font-weight: 600
-			margin: 16px
+		max-width: 640px
+		padding: 16px
 	.form-actions
 		flex: none
 		display: flex
