@@ -1,6 +1,6 @@
 # prod
 aiofile==3.5.*
-aiohttp==3.7.*
+aiohttp==3.7.4  # 3.7.4.post0 breaks aioresponses which does not support "post" version numbers (wtf)
 aioredis-lock
 beautifulsoup4==4.9.*
 celery==5.0.*
