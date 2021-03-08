@@ -229,4 +229,5 @@ export default {
 			height: 100%
 			object-fit: contain
 			width: 100%
+			transform: rotateY(180deg)
 </style>
