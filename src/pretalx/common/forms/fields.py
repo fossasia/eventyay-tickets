@@ -144,7 +144,8 @@ class ImageField(ExtensionFileInput, SizeFileInput, FileField):
         # We need to get a file object for Pillow. We might have a path or we might
         # have to read the data into memory.
         if hasattr(data, "temporary_file_path"):
-            file = data.temporary_file_path()
+            with open(data.temporary_file_path(), "rb") as temp_fp:
+                file = BytesIO(temp_fp.read())
         else:
             if hasattr(data, "read"):
                 file = BytesIO(data.read())
