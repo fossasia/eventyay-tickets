@@ -33,9 +33,9 @@ class SubmissionViewSet(viewsets.ReadOnlyModelViewSet):
             ):
                 return Submission.objects.none()
             return self.request.event.submissions.filter(
-                slots__in=self.request.event.current_schedule.talks.filter(
+                pk__in=self.request.event.current_schedule.talks.filter(
                     is_visible=True
-                )
+                ).values_list("submission_id", flat=True)
             )
         return self.request.event.submissions.all()
 
