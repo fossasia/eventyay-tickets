@@ -32,7 +32,8 @@ class SpeakerViewSet(viewsets.ReadOnlyModelViewSet):
             and self.request.event.settings.show_schedule
         ):
             return SpeakerProfile.objects.filter(
-                user__submissions__slots__in=self.request.event.current_schedule.talks.all()
+                event=self.request.event,
+                user__submissions__slots__in=self.request.event.current_schedule.talks.all(),
             ).distinct()
         return SpeakerProfile.objects.none()
 
