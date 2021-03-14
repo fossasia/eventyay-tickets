@@ -53,7 +53,7 @@ export default {
 		...mapState(['connected']),
 		...mapState('roulette', ['callId', 'server', 'iceServers', 'token', 'roomId', 'sessionId', 'loading', 'error']),
 
-		soundBarWidth() {
+		soundBarWidth () {
 			return Math.min(1, this.soundLevel * 10) * 100
 		}
 	},
@@ -127,7 +127,6 @@ export default {
 							this.soundLevel = parseFloat(this.soundMeter.slow.toFixed(2))
 						}, 200)
 					} catch (e) {
-						log('venueless', 'error', 'Could not init sound meter: ' + e)
 						// do not fail visibly, it is a nice-to-have feature
 					}
 				}
