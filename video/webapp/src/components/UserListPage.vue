@@ -93,7 +93,7 @@ export default {
 		userStates () {
 			const states = []
 			if (this.isBlocked) {
-				states.push('blocked')
+				states.push(this.$t('User:state:blocked'))
 			}
 			if (this.selectedUser.moderation_state) {
 				states.push(this.selectedUser.moderation_state)
