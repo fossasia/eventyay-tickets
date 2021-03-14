@@ -122,6 +122,7 @@ export default {
 	'Exhibitors:validation-sorting:required': 'Please enter a sorting priority.',
 	'Exhibitors:validation-tagline:maxLength': 'Tagline cannot be longer than 250 characters.',
 	'Exhibitors:validation-url:maxLength': 'URLs cannot be longer than 200 characters.',
+	'Exhibitors:validation-url:valid': 'Please enter a valid URL.',
 	'FeedbackPrompt:headline:text': 'Send feedback',
 	'FeedbackPrompt:intro:text': 'Having trouble? Had a great time? Let us know!',
 	'FeedbackPrompt:message:label': 'Message',

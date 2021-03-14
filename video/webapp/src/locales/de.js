@@ -122,6 +122,7 @@ export default {
 	'Exhibitors:validation-sorting:required': 'Bitte eine Listen-Priorität angeben.',
 	'Exhibitors:validation-tagline:maxLength': 'Der Slogan darf nicht länger als 250 Zeichen sein.',
 	'Exhibitors:validation-url:maxLength': 'URLs dürfen nicht länger als 200 Zeichen sein.',
+	'Exhibitors:validation-url:valid': 'Bitte eine gültige URL eingeben.',
 	'FeedbackPrompt:headline:text': 'Feedback senden',
 	'FeedbackPrompt:intro:text': 'Verbindungsprobleme? Oder alles großartig? Wir würden gerne davon hören!',
 	'FeedbackPrompt:message:label': 'Nachricht',
