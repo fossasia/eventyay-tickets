@@ -3,11 +3,12 @@
 	.combobox(@keyup.enter.prevent="select(selectedIndex)", @keydown.down.prevent="selectNext()", @keydown.up.prevent="selectPrev()")
 		bunt-input(type="search", name="search", :placeholder="placeholder", v-model="search")
 		ul.list(v-scrollbar.y="")
-			li.list__item(v-for="(user, index) in list", @click="select(index)", :class="{'selected': index == selectedIndex}")
+			li.list__item(v-for="(user, index) in list", @click="select(index)", :class="{'selected': index == selectedIndex, 'inactive': user.inactive}")
 				avatar(:user="user", :size="48")
 				span.display-name
 					| {{ user ? user.profile.display_name : '' }}
 					span.ui-badge(v-for="badge in user.badges") {{ badge }}
+					span.inactive-label(v-if="user.inactive") {{ $t('User:state:inactive') }}
 			li(v-if="!lastPage")
 				infinite-scroll(:loading="loading", @load="page++")
 </template>
@@ -95,6 +96,12 @@ export default {
 			margin-left -4px
 			height 32px
 			padding 6px 8px 6px 12px
+	.inactive
+		opacity: 0.7
+	.inactive-label
+		color: $clr-secondary-text-light
+		font-size: 12px
+		display: block
 	.list
 		width 100%
 		margin 0

@@ -183,6 +183,7 @@ async def test_update_user():
             {
                 "profile": {"display_name": "Cool User"},
                 "badges": [],
+                "inactive": False,
                 "id": user_id,
             },
         ]
@@ -348,6 +349,7 @@ async def test_fetch_user():
                 "id": user_id,
                 "profile": {"display_name": "Cool User"},
                 "badges": [],
+                "inactive": False,
             },
         ]
 
@@ -360,6 +362,7 @@ async def test_fetch_user():
                 user_id: {
                     "id": user_id,
                     "badges": [],
+                    "inactive": False,
                     "profile": {"display_name": "Cool User"},
                 }
             },
@@ -542,6 +545,7 @@ async def test_list_users(world):
                         "id": user_id,
                         "profile": {},
                         "moderation_state": "",
+                        "inactive": False,
                         "badges": [],
                         "token_id": None,
                     }
@@ -795,6 +799,7 @@ async def test_list_search_users(world):
                 {
                     "id": user_id,
                     "badges": [],
+                    "inactive": False,
                     "profile": {"display_name": "Foo Fighter"},
                 }
             ],
