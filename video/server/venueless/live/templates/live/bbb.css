@@ -22,3 +22,7 @@
 .speaking--Z2tUpzD {
     overflow-x: hidden !important;
 }
+
+.panel--1n3JpJ { /* fix invite view  */
+    overflow: auto !important;
+}
