@@ -243,6 +243,8 @@ export default {
 	'Roulette:waiting:text': 'Waiting for a person to talk to …',
 	'Schedule:headline:text': 'Schedule',
 	'schedule/talks/item:speakers:header': 'Speaker | Speakers',
+	'User:state:blocked': 'blocked',
+	'User:state:inactive': 'inactive',
 	'UserAction:action.ban:label': 'ban',
 	'UserAction:action.block:label': 'block',
 	'UserAction:action.call:label': 'call',
