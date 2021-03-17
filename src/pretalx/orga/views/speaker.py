@@ -123,7 +123,7 @@ class SpeakerDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     @context
     @cached_property
     def questions_form(self):
-        speaker = self.object
+        speaker = self.get_object()
         return QuestionsForm(
             self.request.POST if self.request.method == "POST" else None,
             files=self.request.FILES if self.request.method == "POST" else None,
@@ -143,7 +143,6 @@ class SpeakerDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     @transaction.atomic()
     def form_valid(self, form):
         result = super().form_valid(form)
-        self.questions_form.speaker = self.object
         if not self.questions_form.is_valid():
             return self.get(self.request, *self.args, **self.kwargs)
         self.questions_form.save()
