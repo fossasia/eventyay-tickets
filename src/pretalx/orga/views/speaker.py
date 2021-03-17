@@ -1,6 +1,7 @@
 from csp.decorators import csp_update
 from django.contrib import messages
 from django.db import transaction
+from django.db.models import Exists, OuterRef
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.decorators import method_decorator
@@ -25,6 +26,7 @@ from pretalx.person.forms import (
 )
 from pretalx.person.models import SpeakerInformation, SpeakerProfile, User
 from pretalx.submission.forms import QuestionsForm
+from pretalx.submission.models import Answer
 from pretalx.submission.models.submission import Submission, SubmissionStates
 
 
@@ -40,7 +42,7 @@ class SpeakerList(EventPermissionRequired, Sortable, Filterable, ListView):
 
     @context
     def filter_form(self):
-        return SpeakerFilterForm(self.request.GET)
+        return SpeakerFilterForm(self.request.event, self.request.GET)
 
     def get_queryset(self):
         qs = SpeakerProfile.objects.filter(
@@ -68,6 +70,23 @@ class SpeakerList(EventPermissionRequired, Sortable, Filterable, ListView):
                     )
                 )
 
+        question = self.request.GET.get("question")
+        answer = self.request.GET.get("answer")
+        option = self.request.GET.get("answer__options")
+        if question and (answer or option):
+            if option:
+                answers = Answer.objects.filter(
+                    person_id=OuterRef("user_id"),
+                    question_id=question,
+                    options__pk=option,
+                )
+            else:
+                answers = Answer.objects.filter(
+                    person_id=OuterRef("user_id"),
+                    question_id=question,
+                    answer__exact=answer,
+                )
+            qs = qs.annotate(has_answer=Exists(answers)).filter(has_answer=True)
         qs = qs.order_by("id").distinct()
         qs = self.sort_queryset(qs)
         return qs

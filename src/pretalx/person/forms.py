@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone, translation
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
-from django_scopes.forms import SafeModelMultipleChoiceField
+from django_scopes.forms import SafeModelChoiceField, SafeModelMultipleChoiceField
 from i18nfield.forms import I18nModelForm
 
 from pretalx.cfp.forms.cfp import CfPFormMixin
@@ -20,6 +20,7 @@ from pretalx.common.mixins.forms import PublicContent, ReadOnlyFlag, RequestRequ
 from pretalx.common.phrases import phrases
 from pretalx.person.models import SpeakerInformation, SpeakerProfile, User
 from pretalx.schedule.forms import AvailabilitiesFormMixin
+from pretalx.submission.models import Question
 
 
 class UserForm(CfPFormMixin, forms.Form):
@@ -327,3 +328,8 @@ class SpeakerFilterForm(forms.Form):
         ),
         required=False,
     )
+    question = SafeModelChoiceField(queryset=Question.objects.none(), required=False)
+
+    def __init__(self, event, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["question"].queryset = event.questions.all()

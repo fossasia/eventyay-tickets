@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` You can now search speakers by specific given answers, as you could already search proposals and sessions.
 - :bug:`-` The API would return errors in some edge cases when used by unauthenticated users.
 - :bug:`-` When you created a session as organiser, you could choose a content language that was not supposed to be available in the active event.
 - :bug:`-` Sessions without speakers were displayed weirdly in the "featured sessions" page.

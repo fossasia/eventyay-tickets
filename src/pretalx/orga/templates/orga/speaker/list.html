@@ -2,6 +2,7 @@
 {% load bootstrap4 %}
 {% load i18n %}
 {% load rules %}
+{% load url_replace %}
 
 {% block content %}
     <h2>
@@ -20,6 +21,18 @@
             <button class="btn btn-info btn-search" type="submit">{% translate "Search" %}</button>
         </form>
     </div>
+    {% if filter_form.is_valid and filter_form.cleaned_data.question %}
+        <p class="text-muted ml-2">
+            <span class="fa fa-filter"></span>
+            {% blocktranslate trimmed with question=filter_form.cleaned_data.question.question %}
+                List filtered by answers to question "{{ question }}".
+            {% endblocktranslate %}
+            <a href="?{% url_replace request 'question' '' 'answer' '' 'answer__options' '' %}" class="text-muted">
+                <span class="fa fa-times"></span>
+                {% translate "Remove filter" %}
+            </a>
+        </p>
+    {% endif %}
     {% has_perm 'orga.mark_speakers_arrived' request.user request.event as can_mark_speaker %}
     {% has_perm 'orga.see_speakers_arrival' request.user request.event as can_see_speaker_status %}
     <table class="table table-sm table-hover table-responsive-md">
