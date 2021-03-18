@@ -571,6 +571,7 @@ class ReviewScoreCategoryForm(I18nModelForm):
         model = ReviewScoreCategory
         fields = (
             "name",
+            "is_independent",
             "weight",
             "required",
             "active",

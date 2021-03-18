@@ -21,6 +21,13 @@ class ReviewScoreCategory(models.Model):
         blank=True,
         help_text=_("Leave empty to use this category for all tracks."),
     )
+    is_independent = models.BooleanField(
+        default=False,
+        verbose_name=_("Independent score"),
+        help_text=_(
+            "Independent scores are not part of the total score. Instead they are shown in a separate column in the review dashboard."
+        ),
+    )
 
     objects = ScopedManager(event="event")
 
@@ -32,6 +39,11 @@ class ReviewScoreCategory(models.Model):
     def recalculate_scores(cls, event):
         for review in event.reviews.all():
             review.save(update_score=True)
+
+    def save(self, *args, **kwargs):
+        if self.is_independent:
+            self.weight = 0
+        return super().save(*args, **kwargs)
 
 
 class ReviewScore(models.Model):
