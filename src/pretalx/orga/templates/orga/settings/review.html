@@ -74,6 +74,7 @@
                     </div>
                     <div class="score-row ml-auto score-input{% if action == 'view' %} disabled{% endif %}">
                         {% bootstrap_form_errors form %}
+                        {% bootstrap_field form.is_independent layout="event" form_group_class="" %}
                         {% bootstrap_field form.weight layout="event" form_group_class="" %}
                         {% bootstrap_field form.required layout="event" form_group_class="" %}
                         {% bootstrap_field form.active layout="event" form_group_class="" %}
@@ -128,6 +129,7 @@
                         {% bootstrap_field scores_formset.empty_form.DELETE form_group_class="" layout="event" %}
                     </div>
                     <div class="score-row ml-auto score-input">
+                        {% bootstrap_field scores_formset.empty_form.is_independent layout="event" form_group_class="" %}
                         {% bootstrap_field scores_formset.empty_form.weight layout="event" form_group_class="" %}
                         {% bootstrap_field scores_formset.empty_form.required layout="event" form_group_class="" %}
                         {% bootstrap_field scores_formset.empty_form.active layout="event" form_group_class="" %}

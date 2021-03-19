@@ -67,6 +67,7 @@
 <table class="table review-table table-hover table-responsive-md">
     <colgroup>
         {% if can_see_all_reviews %}<col class="nowrap">{% endif %}
+        {% for category in independent_categories %}<col class="nowrap">{% endfor %}
         {% if can_review or submissions_reviewed %}<col class="nowrap">{% endif %}
         <col class="nowrap">
         <col class="w-75">
@@ -84,6 +85,9 @@
                     <a href="?{% url_replace request 'sort' '-score' %}"><i class="fa fa-caret-up" title="{% translate "Sort by score (lowest first)" %}"></i></a>
                 </th>
             {% endif %}
+            {% for category in independent_categories %}
+            <th> {{ category.name }}</th>
+            {% endfor %}
             {% if can_review or submissions_reviewed %}
             <th>
                 {% translate "Your Score" %}
@@ -122,6 +126,11 @@
                 <td class="text-center">
                     {% review_score submission %}
                 </td>
+            {% endif %}
+            {% if independent_categories %}
+                {% for score in submission.independent_scores %}
+                <td> {% if score is None %}-{% else %}{{ score }}{% endif %}</td>
+                {% endfor %}
             {% endif %}
             {% if can_review or submissions_reviewed %}
             <td class="text-center">

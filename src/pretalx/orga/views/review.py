@@ -1,3 +1,5 @@
+import statistics
+from collections import defaultdict
 from contextlib import suppress
 
 from django.contrib import messages
@@ -90,12 +92,26 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
         queryset = (
             queryset.annotate(user_score=Subquery(user_reviews))
             .select_related("track", "submission_type")
-            .prefetch_related("speakers", "reviews", "reviews__user")
+            .prefetch_related("speakers", "reviews", "reviews__user", "reviews__scores")
         )
 
         for submission in queryset:
             if self.can_see_all_reviews:
                 submission.current_score = submission.median_score
+                if self.independent_categories:  # Assemble medians on the fly. Yay.
+                    independent_ids = [cat.pk for cat in self.independent_categories]
+                    mapping = defaultdict(list)
+                    for review in submission.reviews.all():
+                        for score in review.scores.all():
+                            if score.category_id in independent_ids:
+                                mapping[score.category_id].append(score.value)
+                    mapping = {
+                        key: statistics.median(value) for key, value in mapping.items()
+                    }
+                    result = []
+                    for category in self.independent_categories:
+                        result.append(mapping.get(category.pk))
+                    submission.independent_scores = result
             else:
                 reviews = [
                     review
@@ -104,7 +120,14 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
                 ]
                 submission.current_score = None
                 if reviews:
-                    submission.current_score = reviews[0].score
+                    review = reviews[0]
+                    submission.current_score = review.score
+                    if self.independent_categories:
+                        mapping = {s.category_id: s.value for s in review.scores}
+                        result = []
+                        for category in self.independent_categories:
+                            result.append(mapping.get(category.pk))
+                        submission.independent_scores = result
 
         return self.sort_queryset(queryset)
 
@@ -172,6 +195,13 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
     @cached_property
     def show_submission_types(self):
         return self.request.event.submission_types.all().count() > 1
+
+    @context
+    @cached_property
+    def independent_categories(self):
+        return self.request.event.score_categories.all().filter(
+            is_independent=True, active=True
+        )
 
     @context
     @cached_property
