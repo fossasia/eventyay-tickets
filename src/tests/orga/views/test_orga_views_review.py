@@ -271,7 +271,7 @@ def test_reviewer_can_see_dashboard(
     django_assert_max_num_queries,
     other_submission,
 ):
-    with django_assert_max_num_queries(53):
+    with django_assert_max_num_queries(54):
         response = review_client.get(
             submission.event.orga_urls.reviews + "?sort=" + sort
         )
