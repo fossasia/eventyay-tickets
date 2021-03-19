@@ -8,6 +8,7 @@ import pytz
 from django.core.files.base import ContentFile
 from django.db.models import Q
 from django.utils.timezone import is_naive, make_aware, now
+from django.utils.translation import override
 from openpyxl import Workbook
 from openpyxl.utils import get_column_letter
 
@@ -20,8 +21,9 @@ from venueless.storage.models import StoredFile
 
 @app.task(base=WorldTask)
 def generate_report(world, input=None):
-    cf = ReportGenerator(world).build(input)
-    return cf.file.url
+    with override(world.locale):
+        cf = ReportGenerator(world).build(input)
+        return cf.file.url
 
 
 @app.task(base=WorldTask)
