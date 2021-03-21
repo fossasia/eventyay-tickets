@@ -68,9 +68,7 @@ const momentLocaleSet = [
 ]
 
 export default {
-	components: {
-		SchedulePrompt
-	},
+	components: { SchedulePrompt },
 	mixins: [ValidationErrorsMixin],
 	data () {
 		return {

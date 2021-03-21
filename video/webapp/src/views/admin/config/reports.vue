@@ -1,24 +1,26 @@
 <template lang="pug">
 .c-reports
-	h3 Summary report
-	div.flex-row
-		div
-			bunt-input(v-model="day_start", label="First day", name="day_start", :validation="$v.day_start")
-		div
-			bunt-input(v-model="day_end", label="Last day", name="day_end", :validation="$v.day_end")
-	div.flex-row
-		div
-			bunt-input(v-model="time_start", label="Start of day", name="time_start", :validation="$v.time_start")
-		div
-			bunt-input(v-model="time_end", label="End of day", name="time_end", :validation="$v.time_end")
-	bunt-button.btn-generate(@click="generateSummary", :loading="task == 'summary' && running", :error="task == 'summary' && error") Generate PDF (may take a while)
-	bunt-button.btn-secondary(@click="generateRoomviews", :loading="task == 'roomviews' && running", :error="task == 'roomviews' && error") Room activity (XLSX)
-	h3 Attendee list
-	bunt-button.btn-generate(@click="generateAttendeeList", :loading="task == 'attendee_list' && running", :error="task == 'attendee_list' && error") Generate XLSX (may take a while)
-	h3 Chat history
-	bunt-select(v-model="channel", label="Room", name="channel", :options="channels", option-label="name")
-	bunt-button.btn-generate(@click="generateChatHistory", :loading="task == 'chat' && running", :error="task == 'chat' && error") Generate XLSX (may take a while)
-
+	.ui-page-header
+		h1 Generate Reports
+	scrollbars(y).ui-form-body
+		h3 Summary report
+		div.flex-row
+			div
+				bunt-input(v-model="day_start", label="First day", name="day_start", :validation="$v.day_start")
+			div
+				bunt-input(v-model="day_end", label="Last day", name="day_end", :validation="$v.day_end")
+		div.flex-row
+			div
+				bunt-input(v-model="time_start", label="Start of day", name="time_start", :validation="$v.time_start")
+			div
+				bunt-input(v-model="time_end", label="End of day", name="time_end", :validation="$v.time_end")
+		bunt-button.btn-generate(@click="generateSummary", :loading="task == 'summary' && running", :error="task == 'summary' && error") Generate PDF (may take a while)
+		bunt-button.btn-secondary(@click="generateRoomviews", :loading="task == 'roomviews' && running", :error="task == 'roomviews' && error") Room activity (XLSX)
+		h3 Attendee list
+		bunt-button.btn-generate(@click="generateAttendeeList", :loading="task == 'attendee_list' && running", :error="task == 'attendee_list' && error") Generate XLSX (may take a while)
+		h3 Chat history
+		bunt-select(v-model="channel", label="Room", name="channel", :options="channels", option-label="name")
+		bunt-button.btn-generate(@click="generateChatHistory", :loading="task == 'chat' && running", :error="task == 'chat' && error") Generate XLSX (may take a while)
 </template>
 <script>
 import api from 'lib/api'
@@ -171,28 +173,31 @@ export default {
 }
 </script>
 <style lang="stylus">
-	.c-reports
-		.flex-row
-			display: flex
-			gap: 20px
-			margin: 0 -10px
-			&> div
-				flex: auto 1 1
-				margin: 0 10px
+.c-reports
+	flex: auto
+	display: flex
+	flex-direction: column
+	.flex-row
+		display: flex
+		gap: 20px
+		margin: 0 -10px
+		&> div
+			flex: auto 1 1
+			margin: 0 10px
 
-		.btn-generate
-			margin-bottom: 32px
-			themed-button-primary(size:large)
-		.btn-secondary
-			margin-bottom: 32px
-			themed-button-secondary(size:large)
+	.btn-generate
+		margin-bottom: 32px
+		themed-button-primary()
+	.btn-secondary
+		margin-bottom: 32px
+		themed-button-secondary()
 
-		.bunt-input-outline-container
-			textarea
-				background-color: transparent
-				border: none
-				outline: none
-				resize: vertical
-				min-height: 250px
-				padding: 0 8px
+	.bunt-input-outline-container
+		textarea
+			background-color: transparent
+			border: none
+			outline: none
+			resize: vertical
+			min-height: 250px
+			padding: 0 8px
 </style>

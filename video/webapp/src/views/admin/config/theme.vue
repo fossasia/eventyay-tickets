@@ -1,40 +1,42 @@
 <template lang="pug">
 .c-themeconfig
-	bunt-progress-circular(size="huge", v-if="error == null && config == null")
-	.error(v-if="error") We could not fetch the current configuration.
-	.theme-form(v-if="config != null")
-		bunt-input(v-model="config.theme.colors.primary", label="Primary color", name="colors_primary", :validation="$v.config.theme.colors.primary")
-		bunt-input(v-model="config.theme.colors.sidebar", label="Sidebar color", name="colors_sidebar", :validation="$v.config.theme.colors.sidebar")
-		bunt-input(v-model="config.theme.colors.bbb_background", label="BBB background color", name="colors_bbb_background", :validation="$v.config.theme.colors.bbb_background")
-		upload-url-input(v-model="config.theme.logo.url", label="Logo", name="logo_url", :validation="$v.config.theme.logo.url")
-		bunt-checkbox(v-model="config.theme.logo.fitToWidth", label="Fit logo to width", name="logo_fit")
-		upload-url-input(v-model="config.theme.streamOfflineImage", label="Stream offline image", name="streamoffline_url", :validation="$v.config.theme.streamOfflineImage")
-		.text-overwrites
-			.header
-				div Original
-				div Custom translation
-			tr.overwrite(v-for="(val, key) in strings")
-				.source
-					.key {{ key }}
-					.value {{ val }}
-				bunt-input(v-model="config.theme.textOverwrites[key]", :name="key")
-		bunt-button.btn-save(@click="save", :loading="saving") Save
+	.ui-page-header
+		h1 Theme Config
+	scrollbars(y)
+		bunt-progress-circular(size="huge", v-if="!error && !config")
+		.error(v-if="error") We could not fetch the current configuration.
+		template(v-if="config")
+			.ui-form-body
+				bunt-input(v-model="config.theme.colors.primary", label="Primary color", name="colors_primary", :validation="$v.config.theme.colors.primary")
+				bunt-input(v-model="config.theme.colors.sidebar", label="Sidebar color", name="colors_sidebar", :validation="$v.config.theme.colors.sidebar")
+				bunt-input(v-model="config.theme.colors.bbb_background", label="BBB background color", name="colors_bbb_background", :validation="$v.config.theme.colors.bbb_background")
+				upload-url-input(v-model="config.theme.logo.url", label="Logo", name="logo_url", :validation="$v.config.theme.logo.url")
+				bunt-checkbox(v-model="config.theme.logo.fitToWidth", label="Fit logo to width", name="logo_fit")
+				upload-url-input(v-model="config.theme.streamOfflineImage", label="Stream offline image", name="streamoffline_url", :validation="$v.config.theme.streamOfflineImage")
+			.text-overwrites
+				.header
+					div Original
+					div Custom translation
+				tr.overwrite(v-for="(val, key) in strings")
+					.source
+						.key {{ key }}
+						.value {{ val }}
+					bunt-input(v-model="config.theme.textOverwrites[key]", :name="key")
+	.ui-form-actions
+		bunt-button.btn-save(@click="save", :loading="saving", :error-message="error") Save
+		.errors {{ validationErrors.join(', ') }}
 </template>
 <script>
-/* global ENV_DEVELOPMENT */
 import api from 'lib/api'
 import { DEFAULT_COLORS, DEFAULT_LOGO } from 'theme'
 import i18n from 'i18n'
 import UploadUrlInput from 'components/UploadUrlInput'
-import { required, helpers, url } from 'vuelidate/lib/validators'
-
-const color = helpers.regex('color', /^#([a-zA-Z0-9]{3}|[a-zA-Z0-9]{6})$/)
-const relative = helpers.regex('relative', /^\/.*$/)
-const devurl = helpers.regex('devurl', /^http:\/\/localhost.*$/) // vuelidate does not allow localhost
-const urlOrRelative = (value) => (!helpers.req(value) || url(value) || relative(value) || (ENV_DEVELOPMENT && devurl(value)))
+import ValidationErrorsMixin from 'components/mixins/validation-errors'
+import { required, color, url } from 'lib/validators'
 
 export default {
 	components: { UploadUrlInput },
+	mixins: [ValidationErrorsMixin],
 	data () {
 		return {
 			// We do not use the global config object since we cannot rely on it being up to date (theme is only updated
@@ -55,25 +57,25 @@ export default {
 			theme: {
 				colors: {
 					primary: {
-						required,
-						color
+						required: required('primary color is required'),
+						color: color('color must be in 3 or 6 digit hex format')
 					},
 					sidebar: {
-						required,
-						color
+						required: required('sidebar color is required'),
+						color: color('color must be in 3 or 6 digit hex format')
 					},
 					bbb_background: {
-						required,
-						color
+						required: required('BBB background color is required'),
+						color: color('color must be in 3 or 6 digit hex format')
 					},
 				},
 				logo: {
 					url: {
-						urlOrRelative
+						url: url('must be a valid url')
 					}
 				},
 				streamOfflineImage: {
-					urlOrRelative
+					url: url('must be a valid url')
 				}
 			},
 		}
@@ -116,6 +118,9 @@ export default {
 </script>
 <style lang="stylus">
 .c-themeconfig
+	flex: auto
+	display: flex
+	flex-direction: column
 	.text-overwrites
 		display: flex
 		flex-direction: column
@@ -142,6 +147,7 @@ export default {
 				display: flex
 				flex-direction: column
 				justify-content: space-around
+				padding-left: 8px
 				.key
 					color: $clr-secondary-text-light
 					font-size: 12px
@@ -149,7 +155,5 @@ export default {
 			.bunt-input
 				input-style(size: compact)
 				padding-top: 0
-	.btn-save
-		margin-top: 16px
-		themed-button-primary(size: large)
+				margin-right: 8px
 </style>
