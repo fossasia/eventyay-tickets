@@ -1,43 +1,25 @@
 <template lang="pug">
 .c-permissionconfig
-	bunt-progress-circular(size="huge", v-if="error == null && config == null")
-	.error(v-if="error") We could not fetch the current configuration.
-	div(v-if="config != null")
-		h3 Roles
-		div.role(v-for="(val, key, index) of config.roles")
-			.role-head
-				bunt-icon-button.chevron(@click.prevent="toggleRole(key)") {{ expandedRoles.includes(key) ? 'chevron-down' : 'chevron-right' }}
-				h4(@click.prevent="toggleRole(key)") {{ key }}
-				bunt-icon-button(@click.prevent="deleteRole(key)") delete
-			.role-config-permissions(v-if="expandedRoles.includes(key)")
-				bunt-checkbox(v-for="p of config.available_permissions", :label="p", :value="val.includes(p)", name="p",
-											@input="togglePermission(key, p, $event)")
-		div.role
-			div.role-head
-				bunt-input(label="role name", v-model="newRoleName", name="newRoleName")
-				bunt-button.btn-add-role(@click="addRole", :disabled="!newRoleName || newRoleName in config.roles") Add new role
-		h3 Roles assigned to traits globally (valid for ALL rooms)
-		table.trait-grants
-			thead
-				tr
-					th Role
-					th Required traits
-					th
-			tbody
-				tr(v-for="(val, key, index) of config.trait_grants")
-					td: bunt-input(:value="key", label="Role name", @input="setTraitGrantRoleName(config, key, $event)", name="n", :disabled="index < Object.keys(config.trait_grants).length - 1")
-					td: bunt-input(label="Required traits (comma-separated)", @input="setTraitGrants(config, key, $event)", name="g"
-											:value="val ? val.map(i => (Array.isArray(i) ? i.join('|') : i)).join(', ') : ''")
-					td.actions
-						bunt-icon-button(@click="removeTraitGrant(config, key)") delete-outline
-			tfoot
-				tr
-					td: bunt-button.btn-add-role(@click="addTraitGrant(config)") Add role
-					td
-					td
-		h3 Roles assigned to traits PER ROOM
-		.room-traits(v-for="room of rooms")
-			h4 {{ room.name }}
+	.ui-page-header
+		h1 Theme Config
+	scrollbars(y)
+		bunt-progress-circular(size="huge", v-if="!error && !config")
+		.error(v-if="error") We could not fetch the current configuration.
+		.permission-config(v-if="config")
+			h3 Roles
+			div.role(v-for="(val, key, index) of config.roles")
+				.role-head
+					bunt-icon-button.chevron(@click.prevent="toggleRole(key)") {{ expandedRoles.includes(key) ? 'chevron-down' : 'chevron-right' }}
+					h4(@click.prevent="toggleRole(key)") {{ key }}
+					bunt-icon-button(@click.prevent="deleteRole(key)") delete
+				.role-config-permissions(v-if="expandedRoles.includes(key)")
+					bunt-checkbox(v-for="p of config.available_permissions", :label="p", :value="val.includes(p)", name="p",
+												@input="togglePermission(key, p, $event)")
+			div.role
+				div.role-head
+					bunt-input(label="role name", v-model="newRoleName", name="newRoleName")
+					bunt-button.btn-add-role(@click="addRole", :disabled="!newRoleName || newRoleName in config.roles") Add new role
+			h3 Roles assigned to traits globally (valid for ALL rooms)
 			table.trait-grants
 				thead
 					tr
@@ -45,17 +27,39 @@
 						th Required traits
 						th
 				tbody
-					tr(v-for="(val, key, index) of room.trait_grants")
-						td: bunt-input(:value="key", label="Role name", @input="setTraitGrantRoleName(room, key, $event)", name="n", :disabled="index < Object.keys(room.trait_grants).length - 1")
-						td: bunt-input(label="Required traits (comma-separated)", @input="setTraitGrants(room, key, $event)", name="g"
+					tr(v-for="(val, key, index) of config.trait_grants")
+						td: bunt-input(:value="key", label="Role name", @input="setTraitGrantRoleName(config, key, $event)", name="n", :disabled="index < Object.keys(config.trait_grants).length - 1")
+						td: bunt-input(label="Required traits (comma-separated)", @input="setTraitGrants(config, key, $event)", name="g"
 												:value="val ? val.map(i => (Array.isArray(i) ? i.join('|') : i)).join(', ') : ''")
-						td.actions: bunt-icon-button(@click="removeTraitGrant(room, key)") delete-outline
+						td.actions
+							bunt-icon-button(@click="removeTraitGrant(config, key)") delete-outline
 				tfoot
 					tr
-						td: bunt-button.btn-add-role(@click="addTraitGrant(room)") Add role
+						td: bunt-button.btn-add-role(@click="addTraitGrant(config)") Add role
 						td
 						td
-		bunt-button.btn-save(@click="save", :loading="saving") Save
+			h3 Roles assigned to traits PER ROOM
+			.room-traits(v-for="room of rooms")
+				h4 {{ room.name }}
+				table.trait-grants
+					thead
+						tr
+							th Role
+							th Required traits
+							th
+					tbody
+						tr(v-for="(val, key, index) of room.trait_grants")
+							td: bunt-input(:value="key", label="Role name", @input="setTraitGrantRoleName(room, key, $event)", name="n", :disabled="index < Object.keys(room.trait_grants).length - 1")
+							td: bunt-input(label="Required traits (comma-separated)", @input="setTraitGrants(room, key, $event)", name="g"
+													:value="val ? val.map(i => (Array.isArray(i) ? i.join('|') : i)).join(', ') : ''")
+							td.actions: bunt-icon-button(@click="removeTraitGrant(room, key)") delete-outline
+					tfoot
+						tr
+							td: bunt-button.btn-add-role(@click="addTraitGrant(room)") Add role
+							td
+							td
+	.ui-form-actions
+		bunt-button.btn-save(@click="save", :loading="saving", :error-message="error") Save
 </template>
 <script>
 import api from 'lib/api'
@@ -153,6 +157,13 @@ export default {
 </script>
 <style lang="stylus">
 .c-permissionconfig
+	flex: auto
+	display: flex
+	flex-direction: column
+	.permission-config
+		padding: 16px
+		display: flex
+		flex-direction: column
 	.role
 		border: 1px solid #cccccc
 		border-radius: 4px
@@ -175,10 +186,6 @@ export default {
 			width: 25%
 	.trait-grants
 		width: 100%
-	.btn-save
-		margin-top: 16px
-		margin-left: 16px
-		themed-button-primary(size: large)
 	.btn-add-role
 		themed-button-secondary()
 </style>

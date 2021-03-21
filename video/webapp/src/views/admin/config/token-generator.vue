@@ -1,12 +1,15 @@
 <template lang="pug">
 .c-tokengenerator
-	bunt-input(v-model="number", label="Number", name="number", :validation="$v.number")
-	bunt-input(v-model="days", label="Days", name="days", :validation="$v.days")
-	bunt-input(label="Traits (comma-separated)", @input="set_traits($event)", name="t"
-							:value="traits ? traits.join(', ') : ''")
-	bunt-button.btn-generate(@click="save", :loading="saving") Generate
-	bunt-input-outline-container(label="Result")
-		textarea(slot-scope="{focus, blur}", @focus="focus", @blur="blur", v-model="result")
+	.ui-page-header
+		h1 Token Generator
+	scrollbars(y).ui-form-body
+		bunt-input(v-model="number", label="Number", name="number", :validation="$v.number")
+		bunt-input(v-model="days", label="Days", name="days", :validation="$v.days")
+		bunt-input(label="Traits (comma-separated)", @input="set_traits($event)", name="t"
+								:value="traits ? traits.join(', ') : ''")
+		bunt-button.btn-generate(@click="save", :loading="saving") Generate
+		bunt-input-outline-container(label="Result")
+			textarea(slot-scope="{focus, blur}", @focus="focus", @blur="blur", v-model="result")
 </template>
 <script>
 import api from 'lib/api'
@@ -77,6 +80,9 @@ export default {
 </script>
 <style lang="stylus">
 .c-tokengenerator
+	flex: auto
+	display: flex
+	flex-direction: column
 	.btn-generate
 		margin-bottom: 32px
 		themed-button-primary(size: large)

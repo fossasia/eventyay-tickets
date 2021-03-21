@@ -1,41 +1,45 @@
 <template lang="pug">
 .c-registrationconfig
-	bunt-progress-circular(size="huge", v-if="error == null && config == null")
-	.error(v-if="error") We could not fetch the current configuration.
-	.additional-fields-form(v-if="config != null")
-		table.additional-fields
-				thead
-					tr
-						th Name
-						th Type
-						th ID
-						th
-						th Include in search queries
-						th
-				tbody
-					tr(v-for="(field, index) in config.profile_fields")
-						td
-							bunt-input(v-model="field.label", label="Label", name="label")
-						td
-							bunt-select(v-model="field.type", label="Type", name="type", :options="['text', 'textarea', 'select']")
-						td
-							bunt-input(v-model="field.id", label="ID", name="id")
-						td
-							bunt-input(v-if="field.type === 'select'", v-model="field.choices", label="Choices (comma seperated)", name="choices")
-						td
-							bunt-checkbox(v-model="field.searchable", name="searchable")
-						td.actions
-							bunt-icon-button(@click="removeField(index)") delete-outline
-				tfoot
-					tr
-						td
-							bunt-button(@click="addField") Add field
-						td
-						td
-						td
-						td
-						td
-		bunt-button.btn-save(@click="save", :loading="saving") Save
+	.ui-page-header
+		h1 Additional User Profile Fields
+	scrollbars(y)
+		bunt-progress-circular(size="huge", v-if="!error && !config")
+		.error(v-if="error") We could not fetch the current configuration.
+		.additional-fields-form(v-if="config")
+			table.additional-fields
+					thead
+						tr
+							th Name
+							th Type
+							th ID
+							th
+							th Include in search queries
+							th
+					tbody
+						tr(v-for="(field, index) in config.profile_fields")
+							td
+								bunt-input(v-model="field.label", label="Label", name="label")
+							td
+								bunt-select(v-model="field.type", label="Type", name="type", :options="['text', 'textarea', 'select']")
+							td
+								bunt-input(v-model="field.id", label="ID", name="id")
+							td
+								bunt-input(v-if="field.type === 'select'", v-model="field.choices", label="Choices (comma seperated)", name="choices")
+							td
+								bunt-checkbox(v-model="field.searchable", name="searchable")
+							td.actions
+								bunt-icon-button(@click="removeField(index)") delete-outline
+					tfoot
+						tr
+							td
+								bunt-button(@click="addField") Add field
+							td
+							td
+							td
+							td
+							td
+	.ui-form-actions
+		bunt-button.btn-save(@click="save", :loading="saving", :error-message="error") Save
 </template>
 <script>
 import api from 'lib/api'
@@ -58,7 +62,6 @@ export default {
 			console.log(error)
 		}
 	},
-	validations: {},
 	methods: {
 		addField () {
 			this.config.profile_fields.push({id: uuid(), label: '', type: 'text', searchable: false})
@@ -80,6 +83,9 @@ export default {
 </script>
 <style lang="stylus">
 .c-registrationconfig
+	flex: auto
+	display: flex
+	flex-direction: column
 	h2
 		margin: 16px
 	.additional-fields-form

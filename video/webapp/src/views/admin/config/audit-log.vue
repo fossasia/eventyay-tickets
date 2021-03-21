@@ -1,5 +1,7 @@
 <template lang="pug">
 .c-auditlog
+	.ui-page-header
+		h1 Audit Log
 	bunt-input.search(name="search", placeholder="Search log", icon="search", v-model="search")
 	.auditlog-list
 		.header
@@ -59,6 +61,7 @@ export default {
 @import '~styles/flex-table'
 
 .c-auditlog
+	flex: auto
 	display: flex
 	flex-direction: column
 	min-height: 0

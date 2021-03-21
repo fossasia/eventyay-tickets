@@ -229,6 +229,7 @@ $thumb-width-hovered = 12px
 		position: absolute
 		user-select: none
 		overflow: hidden
+		z-index: 99
 
 	.scrollbar-thumb
 		position: absolute

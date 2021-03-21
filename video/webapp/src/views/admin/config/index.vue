@@ -5,8 +5,8 @@
 		router-link(:to="{name: 'admin:config'}") Event
 		router-link(:to="{name: 'admin:config:theme'}") Theme
 		router-link(:to="{name: 'admin:config:permissions'}") Permissions
+		router-link(:to="{name: 'admin:config:registration'}") User Profile
 		router-link(:to="{name: 'admin:config:token-generator'}") Token Generator
-		router-link(:to="{name: 'admin:config:registration'}") Registration
 		router-link(:to="{name: 'admin:config:audit-log'}") Audit Log
 		router-link(:to="{name: 'admin:config:reports'}") Reports
 	router-view
