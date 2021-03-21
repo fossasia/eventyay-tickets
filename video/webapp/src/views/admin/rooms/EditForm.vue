@@ -7,7 +7,7 @@
 				bunt-input(name="description", v-model="config.description", label="Description")
 				bunt-input(name="sorting_priority", v-model="config.sorting_priority", label="Sorting priority", :validation="$v.config.sorting_priority")
 				bunt-input(v-if="inferredType.id === 'stage'", name="pretalx_id", v-model="config.pretalx_id", label="pretalx ID", :validation="$v.config.pretalx_id")
-				bunt-checkbox(v-if="['channel-text', 'channel-video'].includes(inferredType.id)", name="force_join", v-model="config.force_join", label="Force join on login (use for non-volatile, text-based chats only!!)")
+				bunt-checkbox(v-if="['channel-text', 'channel-bbb', , 'channel-janus'].includes(inferredType.id)", name="force_join", v-model="config.force_join", label="Force join on login (use for non-volatile, text-based chats only!!)")
 			component.stage-settings(v-if="typeComponents[inferredType.id]", :is="typeComponents[inferredType.id]", :config="config", :modules="modules")
 	.ui-form-actions
 		bunt-button.btn-save(@click="save", :loading="saving", :error-message="error") {{ creating ? 'create' : 'save' }}
@@ -22,7 +22,8 @@ import { inferType } from './room-types'
 import Stage from './types-edit/stage'
 import PageStatic from './types-edit/page-static'
 import PageIframe from './types-edit/page-iframe'
-import ChannelVideo from './types-edit/channel-video'
+import ChannelBBB from './types-edit/channel-bbb'
+import ChannelZoom from './types-edit/channel-zoom'
 
 export default {
 	components: { Prompt },
@@ -43,7 +44,8 @@ export default {
 				stage: Stage,
 				'page-static': PageStatic,
 				'page-iframe': PageIframe,
-				'channel-video': ChannelVideo
+				'channel-bbb': ChannelBBB,
+				'channel-zoom': ChannelZoom
 			},
 			saving: false,
 			error: null
