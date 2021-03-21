@@ -1,9 +1,9 @@
+/* globals ENV_DEVELOPMENT */
 import { withParams, req } from 'vuelidate/lib/validators/common'
 import { helpers, url as _url, integer as _integer } from 'vuelidate/lib/validators'
 
 const required = message => withParams({message}, req)
 const integer = message => withParams({message}, _integer)
-
 
 const color = message => withParams({message}, helpers.regex('color', /^#([a-zA-Z0-9]{3}|[a-zA-Z0-9]{6})$/))
 
