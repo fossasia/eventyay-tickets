@@ -9,14 +9,15 @@
 						| {{ user.profile.display_name }}
 						.ui-badge(v-for="badge in user.badges") {{ badge }}
 					bunt-icon-button(@click="removeUser(user)") close
-				input(ref="input", name="search", v-model="search", @focus="focus", @blur="blur", autofocus)
+				input(ref="input", name="search", v-model="search", @focus="focus", @blur="blur", autofocus, autocomplete="off")
 		bunt-button(@click="submit") {{ buttonLabel }}
 	scrollbars.search-results(y)
-		.user(v-for="user of results", :class="{selected: isSelected(user)}", @click="addUser(user)")
+		.user(v-for="user of results", :class="{selected: isSelected(user), inactive: user.inactive}", @click="addUser(user)")
 			avatar(:user="user", :size="36")
 			.display-name
 				| {{ user.profile.display_name }}
 				.ui-badge(v-for="badge in user.badges") {{ badge }}
+				span.inactive-label(v-if="user.inactive") {{ $t('User:state:inactive') }}
 		infinite-scroll(v-if="nextPage", :loading="loading", @load="loadPage")
 </template>
 <script>
@@ -172,6 +173,12 @@ export default {
 				flex: auto
 				margin-left: 8px
 				ellipsis()
+			&.inactive
+				opacity: 0.7
+				.inactive-label
+					color: $clr-secondary-text-light
+					font-size: 12px
+					display: block
 			&.selected
 				.c-avatar
 					border: 4px solid $clr-success

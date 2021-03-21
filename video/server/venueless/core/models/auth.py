@@ -1,9 +1,11 @@
 import uuid
+from datetime import timedelta
 
 from channels.db import database_sync_to_async
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
 from django.utils.crypto import get_random_string
+from django.utils.timezone import now
 
 from venueless.core.models.cache import VersionedModel
 
@@ -27,6 +29,7 @@ class User(VersionedModel):
     blocked_users = models.ManyToManyField(
         "self", related_name="blocked_by", symmetrical=False
     )
+    last_login = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         unique_together = (("token_id", "world"), ("client_id", "world"))
@@ -49,6 +52,9 @@ class User(VersionedModel):
             if trait_badges_map
             else [],
         }
+        d["inactive"] = self.last_login is None or self.last_login < now() - timedelta(
+            hours=36
+        )
         if include_admin_info:
             d["moderation_state"] = self.moderation_state
             d["token_id"] = self.token_id

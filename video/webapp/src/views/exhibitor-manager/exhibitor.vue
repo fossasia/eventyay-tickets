@@ -194,13 +194,16 @@ export default {
 					maxLength: maxLength(80, this.$t('Exhibitors:validation-name:maxLength'))
 				},
 				logo: {
-					maxLength: maxLength(200, this.$t('Exhibitors:validation-url:maxLength'))
+					maxLength: maxLength(200, this.$t('Exhibitors:validation-url:maxLength')),
+					absrelurl: absrelurl(this.$t('Exhibitors:validation-url:valid'))
 				},
 				banner_list: {
-					maxLength: maxLength(200, this.$t('Exhibitors:validation-url:maxLength'))
+					maxLength: maxLength(200, this.$t('Exhibitors:validation-url:maxLength')),
+					absrelurl: absrelurl(this.$t('Exhibitors:validation-url:valid'))
 				},
 				banner_detail: {
-					maxLength: maxLength(200, this.$t('Exhibitors:validation-url:maxLength'))
+					maxLength: maxLength(200, this.$t('Exhibitors:validation-url:maxLength')),
+					absrelurl: absrelurl(this.$t('Exhibitors:validation-url:valid'))
 				},
 				tagline: {
 					maxLength: maxLength(250, this.$t('Exhibitors:validation-tagline:maxLength'))

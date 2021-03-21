@@ -1,5 +1,6 @@
 import operator
 from collections import namedtuple
+from datetime import timedelta
 from functools import reduce
 
 from channels.db import database_sync_to_async
@@ -7,6 +8,7 @@ from channels.layers import get_channel_layer
 from django.core.paginator import InvalidPage, Paginator
 from django.db.models import Q
 from django.db.transaction import atomic
+from django.utils.timezone import now
 
 from ...live.channels import GROUP_USER
 from ..models import AuditLog
@@ -68,6 +70,9 @@ def get_public_users(
         dict(
             id=str(u["id"]),
             profile=u["profile"],
+            inactive=(
+                u["last_login"] is None or u["last_login"] < now() - timedelta(hours=36)
+            ),
             badges=sorted(
                 list(
                     {
@@ -85,7 +90,9 @@ def get_public_users(
                 else {}
             ),
         )
-        for u in qs.values("id", "profile", "moderation_state", "token_id", "traits")
+        for u in qs.values(
+            "id", "profile", "moderation_state", "token_id", "traits", "last_login"
+        )
     ]
 
 
@@ -224,6 +231,9 @@ def login(
         or not world.has_permission(user=user, permission=Permission.WORLD_VIEW)
     ):
         return
+
+    user.last_login = now()
+    user.save(update_fields=["last_login"])
 
     return LoginResult(
         user=user,
@@ -371,28 +381,38 @@ def list_users(
 
     try:
         p = Paginator(
-            qs.order_by("profile__display_name").values("id", "profile", "traits"),
+            qs.order_by("profile__display_name").values(
+                "id", "profile", "traits", "last_login"
+            ),
             page_size,
         ).page(page)
         return {
-            "results": [
-                dict(
-                    id=str(u["id"]),
-                    profile=u["profile"],
-                    badges=sorted(
-                        list(
-                            {
-                                badge
-                                for trait, badge in trait_badges_map.items()
-                                if trait in u["traits"]
-                            }
+            "results": sorted(
+                [
+                    dict(
+                        id=str(u["id"]),
+                        profile=u["profile"],
+                        inactive=u["last_login"] is None
+                        or u["last_login"] < now() - timedelta(hours=36),
+                        badges=sorted(
+                            list(
+                                {
+                                    badge
+                                    for trait, badge in trait_badges_map.items()
+                                    if trait in u["traits"]
+                                }
+                            )
                         )
+                        if trait_badges_map
+                        else [],
                     )
-                    if trait_badges_map
-                    else [],
-                )
-                for u in p.object_list
-            ],
+                    for u in p.object_list
+                ],
+                key=lambda u: (
+                    u["profile"]["display_name"].lower(),
+                    int(u["inactive"] or 0),
+                ),
+            ),
             "isLastPage": not p.has_next(),
         }
     except InvalidPage:
