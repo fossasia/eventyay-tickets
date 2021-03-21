@@ -36,6 +36,7 @@ from reportlab.platypus import (
 )
 
 from venueless.core.models import Channel, ChatEvent, Room, User
+from venueless.core.models.exhibitor import ContactRequest, ExhibitorView
 from venueless.core.models.room import RoomView
 from venueless.graphs.utils import PdfImage, median_value
 from venueless.graphs.views import build_room_view_fig
@@ -276,7 +277,10 @@ class ReportGenerator:
                     _("Number of chat messages"),
                     str(
                         ChatEvent.objects.filter(
-                            event_type="channel.message", channel__room=room
+                            timestamp__gte=self.date_begin,
+                            timestamp__lte=self.date_end,
+                            event_type="channel.message",
+                            channel__room=room,
                         ).count()
                     ),
                 ],
@@ -284,7 +288,10 @@ class ReportGenerator:
                     _("Number of users who sent chat messages"),
                     str(
                         ChatEvent.objects.filter(
-                            event_type="channel.message", channel__room=room
+                            timestamp__gte=self.date_begin,
+                            timestamp__lte=self.date_end,
+                            event_type="channel.message",
+                            channel__room=room,
                         )
                         .values("sender")
                         .distinct()
@@ -347,9 +354,39 @@ class ReportGenerator:
         ]
 
         qs = self.world.exhibitors.annotate(
-            c_views=Count("views__id", distinct=True),
-            c_unique_viewers=Count("views__user", distinct=True),
-            c_contact_requests=Count("contact_requests__id", distinct=True),
+            c_views=Subquery(
+                ExhibitorView.objects.filter(
+                    exhibitor=OuterRef("pk"),
+                    datetime__gte=self.date_begin,
+                    datetime__lte=self.date_end,
+                )
+                .order_by()
+                .values("exhibitor")
+                .annotate(c=Count("*"))
+                .values("c")
+            ),
+            c_unique_viewers=Subquery(
+                ExhibitorView.objects.filter(
+                    exhibitor=OuterRef("pk"),
+                    datetime__gte=self.date_begin,
+                    datetime__lte=self.date_end,
+                )
+                .order_by()
+                .values("exhibitor")
+                .annotate(c=Count("user", distinct=True))
+                .values("c")
+            ),
+            c_contact_requests=Subquery(
+                ContactRequest.objects.filter(
+                    exhibitor=OuterRef("pk"),
+                    timestamp__gte=self.date_begin,
+                    timestamp__lte=self.date_end,
+                )
+                .order_by()
+                .values("exhibitor")
+                .annotate(c=Count("*"))
+                .values("c")
+            ),
         )
         for e in qs:
             tdata.append(
@@ -389,49 +426,65 @@ class ReportGenerator:
         ]
 
         tdata = [
-            [_("Total number of users"), str(self.world.user_set.count())],
             [
-                _("Users with authenticated access"),
+                _("Report timeframe start"),
+                date_format(self.date_begin, "SHORT_DATETIME_FORMAT"),
+            ],
+            [
+                _("Report timeframe end"),
+                date_format(self.date_end, "SHORT_DATETIME_FORMAT"),
+            ],
+            [_("Number of users (total)"), str(self.world.user_set.count())],
+            [
+                _("Users with authenticated access (total)"),
                 str(self.world.user_set.filter(token_id__isnull=False).count()),
             ],
             [
-                _("Exhibitors"),
+                _("Exhibitors (total)"),
                 str(self.world.exhibitors.count()),
             ],
             [
-                _("Number of chat messages in streams and chat channels"),
+                _(
+                    "Number of chat messages in streams and chat channels (in timeframe)"
+                ),
                 str(
                     ChatEvent.objects.filter(
                         channel__world=self.world,
                         event_type="channel.message",
                         channel__room__isnull=False,
+                        timestamp__gte=self.date_begin,
+                        timestamp__lte=self.date_end,
                     ).count()
                 ),
             ],
             [
-                _("Number of direct message channels"),
+                _("Number of direct message channels (total)"),
                 str(
                     Channel.objects.filter(world=self.world, room__isnull=True).count()
                 ),
             ],
             [
-                _("Number of chat messages in direct messages"),
+                _("Number of chat messages in direct messages (in timeframe)"),
                 str(
                     ChatEvent.objects.filter(
                         channel__world=self.world,
                         event_type="channel.message",
                         channel__room__isnull=True,
+                        timestamp__gte=self.date_begin,
+                        timestamp__lte=self.date_end,
                     ).count()
                 ),
             ],
             [
-                _("Number of 1:1 call attempts"),
+                _("Number of 1:1 call attempts (in timeframe)"),
                 str(
                     ChatEvent.objects.filter(
                         channel__world=self.world,
                         event_type="channel.message",
                         channel__room__isnull=True,
                         content__type="call",
+                        timestamp__gte=self.date_begin,
+                        timestamp__lte=self.date_end,
                     ).count()
                 ),
             ],
