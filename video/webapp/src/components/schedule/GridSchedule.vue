@@ -165,7 +165,7 @@ export default {
 	},
 	methods: {
 		getSessionStyle (session) {
-			const roomIndex = this.rooms.indexOf(session.room)
+			const roomIndex = this.rooms.findIndex(r => session.room === r || session.room?.pretalx_id === r.id)
 			return {
 				'grid-row': `${getSliceName(session.start)} / ${getSliceName(session.end)}`,
 				'grid-column': roomIndex > -1 ? roomIndex + 2 : null
