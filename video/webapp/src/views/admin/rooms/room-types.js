@@ -13,7 +13,7 @@ const ROOM_TYPES = [{
 	description: 'livestream und so',
 	startingModule: 'chat.native'
 }, {
-	id: 'channel-video',
+	id: 'channel-bbb',
 	icon: 'webcam',
 	name: 'Video Channel',
 	description: 'livestream und so',
@@ -25,6 +25,13 @@ const ROOM_TYPES = [{
 	description: 'livestream und so',
 	startingModule: 'call.janus',
 	behindFeatureFlag: 'janus'
+}, {
+	id: 'channel-zoom',
+	icon: 'webcam',
+	name: 'Zoom Video Channel',
+	description: 'zoomzoom',
+	startingModule: 'call.zoom',
+	behindFeatureFlag: 'zoom'
 }, {
 	id: 'exhibition',
 	icon: 'domain',
@@ -70,6 +77,7 @@ export function inferType (config) {
 	if (modules['livestream.native'] || modules['livestream.youtube']) return find('stage')
 	if (modules['page.static']) return find('page-static')
 	if (modules['page.iframe']) return find('page-iframe')
-	if (modules['call.bigbluebutton']) return find('channel-video')
+	if (modules['call.bigbluebutton']) return find('channel-bbb')
+	if (modules['call.zoom']) return find('channel-zoom')
 	if (modules['chat.native']) return find('channel-text')
 }

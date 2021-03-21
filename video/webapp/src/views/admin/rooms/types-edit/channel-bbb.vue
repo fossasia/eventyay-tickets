@@ -1,5 +1,5 @@
 <template lang="pug">
-.c-channel-video-settings
+.c-channel-bbb-settings
 	bunt-checkbox(name="record", v-model="module.config.record", label="Allow recording (needs to be set before first join)")
 	bunt-checkbox(name="hide-presentation", v-model="module.config.hide_presentation", label="Hide presentation when users join")
 	bunt-checkbox(name="waiting-room", v-model="module.config.waiting_room", label="Put new users in waiting room first (needs to be set before first join)")
