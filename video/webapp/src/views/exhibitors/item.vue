@@ -61,10 +61,11 @@ export default {
 	components: { Avatar, ChatUserCard, ContactExhibitorPrompt, MarkdownContent, RichTextContent },
 	props: {
 		exhibitorId: String,
+		exhibitorProp: Object,
 	},
 	data () {
 		return {
-			exhibitor: null,
+			exhibitorApi: null,
 			selectedUser: null,
 			showContactPrompt: false
 		}
@@ -72,6 +73,10 @@ export default {
 	computed: {
 		...mapState(['user']),
 		...mapGetters(['hasPermission']),
+
+		exhibitor () {
+			return this.exhibitorProp ? this.exhibitorProp : this.exhibitorApi
+		},
 		bannerIsVideo () {
 			return this.exhibitor.banner_detail && (
 				this.exhibitor.banner_detail.match('^https?://(www.)?(youtube.com/watch\\?v=|youtu.be/)([^&?]*)([&?].*)?$') ||
@@ -98,7 +103,7 @@ export default {
 	},
 	async created () {
 		if (this.exhibitor) return
-		this.exhibitor = (await api.call('exhibition.get', {exhibitor: this.exhibitorId})).exhibitor
+		this.exhibitorApi = (await api.call('exhibition.get', {exhibitor: this.exhibitorId})).exhibitor
 	},
 	methods: {
 		prettifyUrl (link) {

@@ -10,7 +10,7 @@
 					bunt-button(:class="{enabled: !showPreview}", @click="showPreview = false") edit
 					bunt-button(:class="{enabled: showPreview}", @click="showPreview = true") preview
 				bunt-button.btn-save(@click="save", :loading="saving") {{ $t('Exhibitors:save:label') }}
-		exhibitor-preview(v-show="showPreview", :exhibitor="exhibitor")
+		exhibitor-preview(v-show="showPreview", :exhibitorProp="exhibitor")
 		.main-form(v-show="!showPreview", v-scrollbar.y="")
 			bunt-input(v-model="exhibitor.name", :disabled="!hasPermission('world:rooms.create.exhibition')", :label="$t('Exhibitors:name:label')", name="name", :validation="$v.exhibitor.name")
 			bunt-input(v-model="exhibitor.tagline", :label="$t('Exhibitors:tagline:label')", name="tagline", :validation="$v.exhibitor.tagline")
