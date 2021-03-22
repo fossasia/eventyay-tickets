@@ -23,6 +23,7 @@ export default {
 	display: flex
 	min-height: 0
 	.admin-nav
+		flex: none
 		display: flex
 		flex-direction: column
 		background-color: $clr-grey-50
