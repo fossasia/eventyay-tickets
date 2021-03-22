@@ -61,10 +61,10 @@ export default {
 	components: { Avatar, ChatUserCard, ContactExhibitorPrompt, MarkdownContent, RichTextContent },
 	props: {
 		exhibitorId: String,
-		exhibitor: Object
 	},
 	data () {
 		return {
+			exhibitor: null,
 			selectedUser: null,
 			showContactPrompt: false
 		}
