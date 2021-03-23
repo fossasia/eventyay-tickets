@@ -29,6 +29,11 @@ def get_url(operation, params, base_url, secret):
     )
 
 
+def escape_name(name):
+    # Some things break BBB apparently…
+    return name.replace(':', '')
+
+
 def choose_server(world, room=None, prefer_server=None):
     servers = BBBServer.objects.filter(active=True).order_by("cost")
     if not room:
@@ -236,7 +241,7 @@ class BBBService:
             "join",
             {
                 "meetingID": create_params["meetingID"],
-                "fullName": user.profile.get("display_name", ""),
+                "fullName": escape_name(user.profile.get("display_name", "")),
                 "userID": str(user.pk),
                 "password": create_params["moderatorPW"]
                 if moderator
@@ -286,7 +291,7 @@ class BBBService:
             "join",
             {
                 "meetingID": create_params["meetingID"],
-                "fullName": user.profile.get("display_name", ""),
+                "fullName": escape_name(user.profile.get("display_name", "")),
                 "userID": str(user.pk),
                 "password": create_params["moderatorPW"],
                 "joinViaHtml5": "true",
