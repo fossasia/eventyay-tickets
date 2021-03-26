@@ -4,10 +4,10 @@ Installation guide
 ==================
 
 This guide describes the installation of a small-scale installation of venueless using docker. By small-scale, we mean
-that everything is being run on one host and you don't expect many thousands of participants for your events.
+that everything is being run on one host, and you don't expect many thousands of participants for your events.
 It is absolutely possible to run venueless without docker if you have some experience working with Django and JavaScript
 projects, but we currently do not provide any documentation or support for it. At this time, venueless is a young,
-fast-moving project and we do not have the capacity to keep multiple different setup guides up to date.
+fast-moving project, and we do not have the capacity to keep multiple different setup guides up to date.
 
 .. warning:: venueless is still a work in progress and anything about deploying it might change. While we tried to
              give a good tutorial here, installing venueless will **require solid Linux experience** to get it right, and
@@ -62,7 +62,7 @@ your ``psql`` shell::
     # sudo -u postgres createuser -P venueless
     # sudo -u postgres createdb -O venueless venueless
 
-Make sure that your database listens on the network. If PostgreSQL on the same same host as docker, but not inside a
+Make sure that your database listens on the network. If PostgreSQL runs on the same host as docker, but not inside a
 docker container, we recommend that you just listen on the Docker interface by changing the following line in
 ``/etc/postgresql/<version>/main/postgresql.conf``::
 
@@ -167,6 +167,7 @@ The following snippet is an example on how to configure a nginx proxy for venuel
         listen 80 default_server;
         listen [::]:80 ipv6only=on default_server;
         server_name venueless.mydomain.com;
+        return 301 https://$host$request_uri;
     }
     server {
         listen 443 default_server;
@@ -216,12 +217,12 @@ That's it! You should now be able to access venueless on the configured domain.
 Cronjobs
 --------
 
-If you have multiple BigBlueButton servers, you should add a cronjob that polls the current meeting an user numbers for
+If you have multiple BigBlueButton servers, you should add a cronjob that polls the current meeting and user numbers for
 the BBB servers to update the load balancer's cost function::
 
     * * * * *   docker exec venueless.service venueless bbb_update_cost
 
-Also, the following cronjob performs various cleanup tasks:
+Also, the following cronjob performs various cleanup tasks::
 
     */10 * * * *   docker exec venueless.service venueless cleanup
 
