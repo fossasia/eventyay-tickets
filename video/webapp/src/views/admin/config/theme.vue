@@ -7,12 +7,12 @@
 		.error(v-if="error") We could not fetch the current configuration.
 		template(v-if="config")
 			.ui-form-body
-				bunt-input(v-model="config.theme.colors.primary", label="Primary color", name="colors_primary", :validation="$v.config.theme.colors.primary")
-				bunt-input(v-model="config.theme.colors.sidebar", label="Sidebar color", name="colors_sidebar", :validation="$v.config.theme.colors.sidebar")
-				bunt-input(v-model="config.theme.colors.bbb_background", label="BBB background color", name="colors_bbb_background", :validation="$v.config.theme.colors.bbb_background")
-				upload-url-input(v-model="config.theme.logo.url", label="Logo", name="logo_url", :validation="$v.config.theme.logo.url")
-				bunt-checkbox(v-model="config.theme.logo.fitToWidth", label="Fit logo to width", name="logo_fit")
-				upload-url-input(v-model="config.theme.streamOfflineImage", label="Stream offline image", name="streamoffline_url", :validation="$v.config.theme.streamOfflineImage")
+				color-picker(name="colors_primary", v-model="config.theme.colors.primary", label="Primary color", :validation="$v.config.theme.colors.primary")
+				color-picker(name="colors_sidebar", v-model="config.theme.colors.sidebar", label="Sidebar color", :validation="$v.config.theme.colors.sidebar")
+				color-picker(name="colors_bbb_background", v-model="config.theme.colors.bbb_background", label="BBB background color", :validation="$v.config.theme.colors.bbb_background")
+				upload-url-input(name="logo_url", v-model="config.theme.logo.url", label="Logo", :validation="$v.config.theme.logo.url")
+				bunt-checkbox(name="logo_fit", v-model="config.theme.logo.fitToWidth", label="Fit logo to width")
+				upload-url-input(name="streamoffline_url", v-model="config.theme.streamOfflineImage", label="Stream offline image", :validation="$v.config.theme.streamOfflineImage")
 			.text-overwrites
 				.header
 					div Original
@@ -30,12 +30,13 @@
 import api from 'lib/api'
 import { DEFAULT_COLORS, DEFAULT_LOGO } from 'theme'
 import i18n from 'i18n'
+import ColorPicker from 'components/ColorPicker'
 import UploadUrlInput from 'components/UploadUrlInput'
 import ValidationErrorsMixin from 'components/mixins/validation-errors'
 import { required, color, url } from 'lib/validators'
 
 export default {
-	components: { UploadUrlInput },
+	components: { ColorPicker, UploadUrlInput },
 	mixins: [ValidationErrorsMixin],
 	data () {
 		return {
