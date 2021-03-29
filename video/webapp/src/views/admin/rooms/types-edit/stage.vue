@@ -15,16 +15,12 @@
 		bunt-button(@click="$set(modules['livestream.native'].config, 'alternatives', modules['livestream.native'].config.alternatives || []); modules['livestream.native'].config.alternatives.push({label: '', hls_url: ''})") Add alternative stream
 	template(v-else-if="modules['livestream.youtube']")
 		bunt-input(name="ytid", v-model="modules['livestream.youtube'].config.ytid", label="YouTube Video ID")
-	h2 Sidebar features
-	bunt-switch(name="enable-chat", v-model="hasChat", label="Enable Chat")
-	bunt-switch(name="enable-qa", v-model="hasQuestions", label="Enable Q&A")
-	template(v-if="hasQuestions")
-		bunt-checkbox(v-model="modules['question'].config.active", label="Active", name="active")
-		bunt-checkbox(v-model="modules['question'].config.requires_moderation", label="Questions require moderation", name="requires_moderation")
+	sidebar-addons(v-bind="$props")
 </template>
 <script>
 import UploadUrlInput from 'components/UploadUrlInput'
 import mixin from './mixin'
+import SidebarAddons from './SidebarAddons'
 
 const STREAM_SOURCE_OPTIONS = [
 	{ id: 'hls', label: 'HLS' },
@@ -32,7 +28,7 @@ const STREAM_SOURCE_OPTIONS = [
 ]
 
 export default {
-	components: { UploadUrlInput },
+	components: { UploadUrlInput, SidebarAddons },
 	mixins: [mixin],
 	data () {
 		return {
@@ -55,33 +51,6 @@ export default {
 				this.addModule(mod.insert)
 				this.removeModule(mod.remove)
 			},
-		},
-		hasChat: {
-			get () {
-				return !!this.modules['chat.native']
-			},
-			set (value) {
-				if (value) {
-					this.addModule('chat.native', {volatile: true})
-				} else {
-					this.removeModule('chat.native')
-				}
-			}
-		},
-		hasQuestions: {
-			get () {
-				return !!this.modules.question
-			},
-			set (value) {
-				if (value) {
-					this.addModule('question', {
-						active: true,
-						requires_moderation: false
-					})
-				} else {
-					this.removeModule('question')
-				}
-			}
 		}
 	},
 	created () {

@@ -11,25 +11,21 @@
 	bunt-input(name="voice-bridge", v-model="module.config.voice_bridge", label="Voice Bridge ID")
 	bunt-input(name="prefer-server", v-model="module.config.prefer_server", label="Prefer Server with ID")
 	upload-url-input(name="presentation", v-model="module.config.presentation", label="Initial presentation")
+	sidebar-addons(v-bind="$props")
 </template>
 <script>
 import UploadUrlInput from 'components/UploadUrlInput'
 import mixin from './mixin'
+import SidebarAddons from './SidebarAddons'
 
 export default {
-	components: { UploadUrlInput },
+	components: { UploadUrlInput, SidebarAddons },
 	mixins: [mixin],
 	computed: {
 		module () {
 			return this.modules['call.bigbluebutton']
 		}
-	},
-	created () {},
-	mounted () {
-		this.$nextTick(() => {
-		})
-	},
-	methods: {}
+	}
 }
 </script>
 <style lang="stylus">

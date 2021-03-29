@@ -8,18 +8,7 @@ import mixin from './mixin'
 
 export default {
 	components: { RichTextEditor },
-	mixins: [mixin],
-	data () {
-		return {
-		}
-	},
-	computed: {},
-	created () {},
-	mounted () {
-		this.$nextTick(() => {
-		})
-	},
-	methods: {}
+	mixins: [mixin]
 }
 </script>
 <style lang="stylus">
