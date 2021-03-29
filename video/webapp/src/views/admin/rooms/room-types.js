@@ -78,6 +78,7 @@ export function inferType (config) {
 	if (modules['page.static']) return find('page-static')
 	if (modules['page.iframe']) return find('page-iframe')
 	if (modules['call.bigbluebutton']) return find('channel-bbb')
+	if (modules['call.janus']) return find('channel-janus')
 	if (modules['call.zoom']) return find('channel-zoom')
 	if (modules['chat.native']) return find('channel-text')
 }

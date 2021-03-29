@@ -24,6 +24,7 @@ import Stage from './types-edit/stage'
 import PageStatic from './types-edit/page-static'
 import PageIframe from './types-edit/page-iframe'
 import ChannelBBB from './types-edit/channel-bbb'
+import ChannelJanus from './types-edit/channel-janus'
 import ChannelZoom from './types-edit/channel-zoom'
 
 export default {
@@ -46,6 +47,7 @@ export default {
 				'page-static': PageStatic,
 				'page-iframe': PageIframe,
 				'channel-bbb': ChannelBBB,
+				'channel-janus': ChannelJanus,
 				'channel-zoom': ChannelZoom
 			},
 			saving: false,
