@@ -333,7 +333,7 @@ class Schedule(LogMixin, models.Model):
         ``speaker``, for now) and a ``message`` fit for public display.
         This property only shows availability based warnings.
         """
-        from pretalx.schedule.models import TalkSlot
+        from pretalx.schedule.models import Availability, TalkSlot
 
         if not talk.start or not talk.submission:
             return []
@@ -344,7 +344,7 @@ class Schedule(LogMixin, models.Model):
                 room_avails = talk.room.availabilities.all()
             if not any(
                 room_availability.contains(availability)
-                for room_availability in room_avails
+                for room_availability in Availability.union(room_avails)
             ):
                 warnings.append(
                     {
@@ -363,7 +363,7 @@ class Schedule(LogMixin, models.Model):
                     profile_availabilities = list(profile.availabilities.all())
                 if profile_availabilities and not any(
                     speaker_availability.contains(availability)
-                    for speaker_availability in profile_availabilities
+                    for speaker_availability in Availability.union(profile_availabilities)
                 ):
                     warnings.append(
                         {
