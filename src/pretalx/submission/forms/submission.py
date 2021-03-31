@@ -81,7 +81,7 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
                     pk=access_code.track.pk
                 )
             if len(self.fields["track"].queryset) == 1:
-                self.fields["track"].initial = self.fields["track"].queryset.first()
+                self.initial["track"] = self.fields["track"].queryset.first().pk
                 self.fields["track"].widget = forms.HiddenInput()
 
     def _set_submission_types(self, instance=None):
@@ -121,14 +121,12 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
             pk__in=pks
         )
         if len(pks) == 1:
-            self.fields["submission_type"].initial = self.event.submission_types.get(
-                pk=pks.pop()
-            )
+            self.initial["submission_type"] = self.fields["submission_type"].queryset.first().pk
             self.fields["submission_type"].widget = forms.HiddenInput()
 
     def _set_locales(self):
         if len(self.event.locales) == 1:
-            self.fields["content_locale"].initial = self.event.locales[0]
+            self.initial["content_locale"] = self.event.locales[0]
             self.fields["content_locale"].widget = forms.HiddenInput()
         else:
             locale_names = dict(settings.LANGUAGES)

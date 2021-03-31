@@ -3,6 +3,8 @@
 Release Notes
 =============
 
+- :bug:`-` When your default submission type had a deadline prior to the event-wide deadline, the CfP form wouldn't accept new proposals past the earlier deadline.
+- :bug:`1087` pretalx would sometimes show unnecessary warnings in the talk editor when talks were scheduled across day breaks.
 - :feature:`-` You can mark review score categories as independent. They won't be part of the total calculation, and instead show up as their own column in the review dashboard.
 - :feature:`-` You can now search speakers by specific given answers, as you could already search proposals and sessions.
 - :bug:`-` The API would return errors in some edge cases when used by unauthenticated users.
