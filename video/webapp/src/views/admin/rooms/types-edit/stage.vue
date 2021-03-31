@@ -13,8 +13,8 @@
 			bunt-input(name="hls_url", v-model="a.hls_url", label="HLS URL")
 			bunt-icon-button(@click="modules['livestream.native'].config.alternatives.splice(i, 1)") delete-outline
 		bunt-button(@click="$set(modules['livestream.native'].config, 'alternatives', modules['livestream.native'].config.alternatives || []); modules['livestream.native'].config.alternatives.push({label: '', hls_url: ''})") Add alternative stream
-	template(v-else-if="modules['livestream.youtube']")
-		bunt-input(name="ytid", v-model="modules['livestream.youtube'].config.ytid", label="YouTube Video ID")
+	bunt-input(v-else-if="modules['livestream.youtube']", name="ytid", v-model="modules['livestream.youtube'].config.ytid", label="YouTube Video ID")
+	bunt-input(v-else-if="modules['livestream.ifame']", name="iframe-player", v-model="modules['livestream.iframe'].config.url", label="Iframe player url", hint="iframe player should be autoplaying and support resizing to small sizes for background playing")
 	sidebar-addons(v-bind="$props")
 </template>
 <script>
@@ -24,7 +24,8 @@ import SidebarAddons from './SidebarAddons'
 
 const STREAM_SOURCE_OPTIONS = [
 	{ id: 'hls', label: 'HLS' },
-	{ id: 'youtube', label: 'YouTube' }
+	{ id: 'youtube', label: 'YouTube' },
+	{ id: 'iframe', label: 'Iframe player' }
 ]
 
 export default {
@@ -45,7 +46,8 @@ export default {
 				this.b_streamSource = value
 				const modMap = {
 					hls: {insert: 'livestream.native', remove: 'livestream.youtube'},
-					youtube: {insert: 'livestream.youtube', remove: 'livestream.native'}
+					youtube: {insert: 'livestream.youtube', remove: 'livestream.native'},
+					iframe: {insert: 'livestream.iframe', remove: 'livestream.iframe'},
 				}
 				const mod = modMap[value]
 				this.addModule(mod.insert)
@@ -58,6 +60,8 @@ export default {
 			this.b_streamSource = 'hls'
 		} else if (this.modules['livestream.youtube']) {
 			this.b_streamSource = 'youtube'
+		} else if (this.modules['livestream.iframe']) {
+			this.b_streamSource = 'iframe'
 		}
 	}
 }

@@ -74,7 +74,7 @@ export function inferType (config) {
 		return acc
 	}, {})
 	const find = id => ROOM_TYPES.find(type => type.id === id)
-	if (modules['livestream.native'] || modules['livestream.youtube']) return find('stage')
+	if (modules['livestream.native'] || modules['livestream.youtube'] || modules['livestream.iframe']) return find('stage')
 	if (modules['page.static']) return find('page-static')
 	if (modules['page.iframe']) return find('page-iframe')
 	if (modules['call.bigbluebutton']) return find('channel-bbb')
