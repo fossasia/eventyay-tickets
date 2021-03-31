@@ -18,15 +18,19 @@
 	sidebar-addons(v-bind="$props")
 </template>
 <script>
+import features from 'features'
 import UploadUrlInput from 'components/UploadUrlInput'
 import mixin from './mixin'
 import SidebarAddons from './SidebarAddons'
 
 const STREAM_SOURCE_OPTIONS = [
 	{ id: 'hls', label: 'HLS' },
-	{ id: 'youtube', label: 'YouTube' },
-	{ id: 'iframe', label: 'Iframe player' }
+	{ id: 'youtube', label: 'YouTube' }
 ]
+
+if (features.enabled('iframe-player')) {
+	STREAM_SOURCE_OPTIONS.push({ id: 'iframe', label: 'Iframe player' })
+}
 
 export default {
 	components: { UploadUrlInput, SidebarAddons },
