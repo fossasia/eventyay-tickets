@@ -9,7 +9,8 @@
 			.global-placeholder
 			bunt-icon-button(@click.prevent.stop="$emit('close')") close
 	livestream(v-if="room && module.type === 'livestream.native'", ref="livestream", :room="room", :module="module", :size="background ? 'tiny' : 'normal'", :key="`livestream-${room.id}`")
-	you-tube(v-else-if="room && module.type === 'livestream.youtube'", ref="youtube", :room="room", :module="module", :size="background ? 'tiny' : 'normal'", :key="`youtube-${room.id}`")
+	you-tube(v-else-if="room && module.type === 'livestream.youtube'", :room="room", :module="module", :size="background ? 'tiny' : 'normal'", :key="`youtube-${room.id}`")
+	iframe-player(v-else-if="room && module.type === 'livestream.iframe'", :room="room", :module="module", :size="background ? 'tiny' : 'normal'", :key="`iframe-player-${room.id}`")
 	big-blue-button(v-else-if="room && module.type === 'call.bigbluebutton'", ref="bigbluebutton", :room="room", :module="module", :background="background", :key="`bbb-${room.id}`")
 	zoom(v-else-if="room && module.type === 'call.zoom'", ref="zoom", :room="room", :module="module", :background="background", :key="`zoom-${room.id}`")
 	janus-call(v-else-if="room && module.type === 'call.janus'", ref="janus", :room="room", :module="module", :background="background", :size="background ? 'tiny' : 'normal'", :key="`janus-${room.id}`")
@@ -23,10 +24,11 @@ import Zoom from 'components/Zoom'
 import JanusCall from 'components/JanusCall'
 import JanusChannelCall from 'components/JanusChannelCall'
 import Livestream from 'components/Livestream'
+import IframePlayer from 'components/IframePlayer'
 import YouTube from 'components/YouTube'
 
 export default {
-	components: { BigBlueButton, Zoom, Livestream, YouTube, JanusCall, JanusChannelCall },
+	components: { BigBlueButton, Zoom, Livestream, IframePlayer, YouTube, JanusCall, JanusChannelCall },
 	props: {
 		room: Object,
 		call: Object,
@@ -59,9 +61,6 @@ export default {
 			if (this.module.type === 'livestream.native') {
 				return this.$refs.livestream.playing && !this.$refs.livestream.offline
 			}
-			if (this.module.type === 'livestream.youtube') {
-				return true
-			}
 			if (this.module.type === 'call.janus') {
 				return this.$refs.janus.roomId
 			}
@@ -83,7 +82,7 @@ export default {
 	height: 0
 	&.in-background
 		z-index: 101
-	.c-livestream, .c-youtube, .c-januscall, .c-bigbluebutton, .c-zoom, .c-januschannelcall
+	.c-livestream, .c-iframe-player, .c-youtube, .c-januscall, .c-bigbluebutton, .c-zoom, .c-januschannelcall
 		position: fixed
 		transition: all .3s ease
 		&.size-tiny

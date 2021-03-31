@@ -1,6 +1,6 @@
 <template lang="pug">
-.c-youtube(:class="[`size-${size}`]")
-	iframe(:src="url", allow="autoplay; fullscreen", allowfullscreen)
+.c-iframe-player(:class="[`size-${size}`]")
+	iframe(:src="module.config.url", allow="autoplay; fullscreen", allowfullscreen)
 </template>
 <script>
 export default {
@@ -17,16 +17,11 @@ export default {
 			type: String, // 'normal', 'tiny'
 			default: 'normal'
 		},
-	},
-	computed: {
-		url () {
-			return `https://www.youtube-nocookie.com/embed/${this.module.config.ytid}?autoplay=1&rel=0&showinfo=0`
-		}
 	}
 }
 </script>
 <style lang="stylus">
-.c-youtube
+.c-iframe-player
 	flex: auto
 	display: flex
 	flex-direction: column
