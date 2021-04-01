@@ -32,14 +32,12 @@ def default_roles():
     speaker = participant + [
         Permission.ROOM_BBB_MODERATE,
         Permission.ROOM_JANUSCALL_MODERATE,
-        Permission.ROOM_ZOOM_HOST,
     ]
     moderator = speaker + [
         Permission.ROOM_CHAT_MODERATE,
         Permission.ROOM_ANNOUNCE,
         Permission.ROOM_BBB_RECORDINGS,
         Permission.WORLD_ANNOUNCE,
-        Permission.ROOM_ZOOM_HOST,
     ]
     admin = (
         moderator

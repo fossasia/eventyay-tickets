@@ -31,13 +31,7 @@ class ZoomModule(BaseModule):
                 ),
                 "pw": self.module_config.get("password"),
                 "un": self.consumer.user.profile.get("display_name"),
-                "ho": bool(
-                    await self.consumer.world.has_permission_async(
-                        user=self.consumer.user,
-                        permission=Permission.ROOM_ZOOM_HOST,
-                        room=self.room,
-                    )
-                ),
+                "ho": bool(False),
                 "ui": str(self.consumer.user.pk),
                 "dc": self.module_config.get("disable_chat", False),
             }
