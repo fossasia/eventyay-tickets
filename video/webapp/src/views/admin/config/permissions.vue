@@ -15,10 +15,12 @@
 			.permission-config
 				.info
 					h3 Roles assigned to traits #[i per room]
-					p Users receive the following roles if they have the required traits in their token/ticket. #[b Per room roles] only apply for the corresponding room.
-				.room-traits(v-for="room of rooms")
+					p Users receive the following roles if they have the required traits in their token/ticket. #[b Per room roles] only apply for the corresponding room and they are applied #[b in addition to global roles].
+				.searchbox
+					bunt-input.search(name="search", placeholder="Search rooms", icon="search", v-model="search")
+				.room-traits(v-for="room of filteredRooms")
 					h4 {{ room.name }}
-					trait-grants(:trait-grants="room.trait_grants", :config="config", @click.stop="")
+					trait-grants(:trait-grants="room.trait_grants", :config="config", @click.stop="", @changed="roomChanged(room)")
 		bunt-tab(header="Roles", v-scrollbar.y="")
 			.permission-config
 				.info-wrapper
@@ -33,7 +35,7 @@
 						bunt-icon-button(@click.stop="deleteRole(key)") delete-outline
 					.role-config-permissions(v-if="expandedRoles.includes(key)", @click.stop="")
 						bunt-checkbox(v-for="p of config.available_permissions", :label="p", :value="val.includes(p)", name="p", @input="togglePermission(key, p, $event)")
-				.role
+				.role-add
 					.role-head
 						bunt-input(label="role name", v-model="newRoleName", name="newRoleName")
 						bunt-button.btn-add-role(@click="addRole", :disabled="!newRoleName || newRoleName in config.roles") Add new role
@@ -42,6 +44,7 @@
 </template>
 <script>
 import api from 'lib/api'
+import fuzzysearch from 'lib/fuzzysearch'
 import TraitGrants from './trait-grants'
 
 export default {
@@ -51,7 +54,9 @@ export default {
 			config: null,
 			expandedRoles: [],
 			newRoleName: '',
+			search: '',
 			rooms: null,
+			changedRoomIds: [],
 			saving: false,
 			error: null
 		}
@@ -67,7 +72,19 @@ export default {
 			console.log(error)
 		}
 	},
+	computed: {
+		filteredRooms () {
+			if (!this.rooms) return
+			if (!this.search) return this.rooms
+			return this.rooms.filter(room => room.id === this.search.trim() || fuzzysearch(this.search.toLowerCase(), room.name.toLowerCase()))
+		}
+	},
 	methods: {
+		roomChanged (room) {
+			if (!this.changedRoomIds.includes(room.id)) {
+				this.changedRoomIds.push(room.id)
+			}
+		},
 		toggleRole (role) {
 			if (this.expandedRoles.includes(role)) {
 				this.expandedRoles = this.expandedRoles.filter((r) => r !== role)
@@ -94,14 +111,12 @@ export default {
 		},
 
 		async save () {
-			// TODO validate connection limit is a number
 			this.saving = true
 			await api.call('world.config.patch', {
 				roles: this.config.roles,
 				trait_grants: this.config.trait_grants,
 			})
-			// TODO only patch changed rooms
-			for (const room of this.rooms) {
+			for (const room of this.rooms.filter((r) => this.changedRoomIds.includes(r.id))) {
 				await api.call('room.config.patch', {
 					room: room.id,
 					trait_grants: room.trait_grants
@@ -132,8 +147,10 @@ export default {
 		display: flex
 		flex-direction: column
 		min-height: 0
+	.searchbox
+		padding: 0 8px 16px 8px
 	.info
-		padding: 16px
+		padding: 16px 16px 0 16px
 		p
 			max-width: 960px
 	.room-traits
@@ -157,6 +174,8 @@ export default {
 				left: -6px
 			h4, .bunt-input
 				flex: auto 1 1
+	.role-add
+		padding: 0 8px
 	.role-config-permissions
 		margin: 8px 16px
 		display: grid
