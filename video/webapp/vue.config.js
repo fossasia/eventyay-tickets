@@ -80,7 +80,7 @@ module.exports = {
 				RELEASE: `'${process.env.VENUELESS_COMMIT_SHA}'`
 			}),
 			new webpack.ProvidePlugin({
-				adapter: 'webrtc-adapter'
+				adapter: ['webrtc-adapter', 'default']
 			})
 		],
 	},
