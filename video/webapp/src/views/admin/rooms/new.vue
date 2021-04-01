@@ -6,7 +6,6 @@
 			template(v-if="chosenType")  : {{ chosenType.name }}
 	.choose-type(v-if="!type")
 		h2 Choose a room type
-		p Bla bla room types
 		.types
 			router-link.type(v-for="type of ROOM_TYPES", :to="{name: 'admin:rooms:new', query: {type: type.id}}")
 				.icon.mdi(:class="[`mdi-${type.icon}`]")
@@ -74,7 +73,7 @@ export default {
 		max-width: 480px
 		.type
 			display: flex
-			height: 52px
+			min-height: 52px
 			flex: none
 			cursor: pointer
 			padding: 0 16px 0 8px
@@ -93,6 +92,7 @@ export default {
 			.text
 				display: flex
 				flex-direction: column
+				padding: 5px 0
 			.name
 				line-height: 24px
 			.description

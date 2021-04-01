@@ -4,64 +4,64 @@ const ROOM_TYPES = [{
 	id: 'stage',
 	icon: 'theater',
 	name: 'Stage',
-	description: 'livestream und so',
+	description: 'A stage allows you to present a live stream to your audience, optionally combined with chat and Q&A features.',
 	startingModule: 'livestream.native'
-}, {
-	id: 'channel-text',
-	icon: 'pound',
-	name: 'Text Channel',
-	description: 'livestream und so',
-	startingModule: 'chat.native'
 }, {
 	id: 'channel-bbb',
 	icon: 'webcam',
 	name: 'Video Channel',
-	description: 'livestream und so',
+	description: 'A video channel allows you to connect with attendees in real time and host workshops or panels. The video channels are powered by BigBlueButton and support 25-80 people, depending on usage.',
 	startingModule: 'call.bigbluebutton'
 }, {
 	id: 'channel-janus',
 	icon: 'webcam',
-	name: 'Janus Video Channel',
-	description: 'livestream und so',
+	name: 'Video Channel (beta)',
+	description: 'A video channel allows you to connect with attendees in real time and host workshops or panels. The video channels are powered by Janus.',
 	startingModule: 'call.janus',
 	behindFeatureFlag: 'janus'
 }, {
 	id: 'channel-zoom',
 	icon: 'webcam',
-	name: 'Zoom Video Channel',
-	description: 'zoomzoom',
+	name: 'Video Channel (Zoom)',
+	description: 'This room type allows you to embed a zoom meeting or webinar directly into venueless.',
 	startingModule: 'call.zoom',
 	behindFeatureFlag: 'zoom'
+}, {
+	id: 'channel-text',
+	icon: 'pound',
+	name: 'Text Channel',
+	description: 'This type of channel allows you to enable pure-text communication between your attendees.',
+	startingModule: 'chat.native'
 }, {
 	id: 'exhibition',
 	icon: 'domain',
 	name: 'Exhibition',
-	description: 'Shilling Stands',
+	description: 'Using an exhibition room, sponsors or exhibitors can present themselves to your audience.',
 	startingModule: 'exhibition.native'
 }, {
 	id: 'channel-roulette',
 	icon: 'webcam',
-	name: 'Chat Roulette',
-	description: 'meet randos',
+	name: 'Random video calls',
+	description: 'Connect your attendees for short video calls in random combinations.',
 	startingModule: 'networking.roulette',
 	behindFeatureFlag: 'roulette'
 }, {
 	id: 'page-static',
 	icon: 'text-box-outline',
 	name: 'Page',
-	description: 'static stuff',
+	description: 'A page contains static content for your attendees.',
 	startingModule: 'page.static'
 }, {
 	id: 'page-iframe',
 	icon: 'text-box-outline',
 	name: 'IFrame',
-	description: 'arbitrary interwebs',
+	description: 'Using IFrames, you can embed arbitrary web pages and web applications into venueless.',
 	startingModule: 'page.iframe'
 }, {
 	id: 'page-landing',
 	icon: 'text-box-outline',
 	name: 'Landing Page',
-	description: 'LAAAND',
+	description: 'The landing place module combines the most important content into one place for your attendees to see after they join.',
 	startingModule: 'page.landing',
 	behindFeatureFlag: 'page.landing'
 }]
