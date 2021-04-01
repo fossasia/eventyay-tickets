@@ -8,7 +8,7 @@
 				bunt-input(name="sorting_priority", v-model="config.sorting_priority", label="Sorting priority", :validation="$v.config.sorting_priority")
 				template(v-if="inferredType")
 					bunt-input(v-if="inferredType.id === 'stage'", name="pretalx_id", v-model="config.pretalx_id", label="pretalx ID", :validation="$v.config.pretalx_id")
-					bunt-checkbox(v-if="['channel-text', 'channel-bbb', , 'channel-janus'].includes(inferredType.id)", name="force_join", v-model="config.force_join", label="Force join on login (use for non-volatile, text-based chats only!!)")
+					bunt-checkbox(v-if="['channel-text'].includes(inferredType.id)", name="force_join", v-model="config.force_join", label="Force join on login (use for non-volatile, text-based chats only!!)")
 			component.stage-settings(v-if="inferredType && typeComponents[inferredType.id]", :is="typeComponents[inferredType.id]", :config="config", :modules="modules")
 	.ui-form-actions
 		bunt-button.btn-save(@click="save", :loading="saving", :error-message="error") {{ creating ? 'create' : 'save' }}
