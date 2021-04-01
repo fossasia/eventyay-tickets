@@ -37,13 +37,9 @@ export default {
 			default: false
 		}
 	},
-	data () {
-		return {
-		}
-	},
 	computed: {
 		module () {
-			return this.room.modules.find(module => ['livestream.native', 'livestream.youtube', 'call.bigbluebutton', 'call.janus', 'call.zoom'].includes(module.type))
+			return this.room.modules.find(module => ['livestream.native', 'livestream.youtube', 'livestream.iframe', 'call.bigbluebutton', 'call.janus', 'call.zoom'].includes(module.type))
 		},
 	},
 	created () {
