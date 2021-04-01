@@ -45,13 +45,16 @@ export default {
 					(i) => i.trim().split('|').filter((j) => j.length > 0)
 				).filter((i) => i.length > 0))
 			}
+			this.$emit('changed')
 		},
 		removeTraitGrant (role) {
 			this.$delete(this.traitGrants, role)
+			this.$emit('changed')
 		},
 		addTraitGrant () {
 			this.$set(this.traitGrants, this.newRole, [])
 			this.newRole = null
+			this.$emit('changed')
 		}
 	}
 }
