@@ -6,7 +6,7 @@
 		.actions
 	.trait-grant(v-for="(val, key) of traitGrants")
 		.role {{ key }}
-		bunt-input.traits(name="trait-grant", :value="getTraitGrants(val)", @input="setTraitGrants(key, $event)")
+		bunt-input.traits(name="trait-grant", :value="getTraitGrants(val)", @input="setTraitGrants(key, $event)", placeholder="(everyone)")
 		.actions
 			bunt-icon-button(@click="removeTraitGrant(key)") delete-outline
 	.add-role
