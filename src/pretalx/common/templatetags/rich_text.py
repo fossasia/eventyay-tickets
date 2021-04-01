@@ -95,6 +95,9 @@ md = markdown.Markdown(
         "markdown.extensions.nl2br",
         "markdown.extensions.sane_lists",
         "markdown.extensions.tables",
+        "markdown.extensions.fenced_code",
+        "markdown.extensions.codehilite",
+        "markdown.extensions.md_in_html",
     ],
 )
 
