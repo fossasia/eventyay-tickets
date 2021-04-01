@@ -36,26 +36,43 @@ export default {
 		}
 	},
 	computed: {
-	},
-	async created () {
-		this.loading = true
-		this.error = null
-		try {
-			const {server, roomId, token, sessionId, iceServers} = await api.call('januscall.room_url', {room: this.room.id})
-			if (!this.$el || this._isDestroyed) return
-			this.roomId = roomId
-			this.token = token
-			this.iceServers = iceServers
-			this.sessionId = sessionId
-			this.server = server
-		} catch (error) {
-			// TODO handle bbb.join.missing_profile
-			this.error = error
-			this.loading = false
-			console.log(error)
+		displayName () {
+			return this.$store.state.user.profile.display_name
 		}
 	},
+	watch: {
+		displayName () {
+			if (this.error) {
+				this.load()
+			}
+		},
+	},
+	destroyed () {
+		this.iframe?.remove()
+	},
+	created () {
+		this.load()
+	},
 	methods: {
+		async load () {
+			this.loading = true
+			this.error = null
+			try {
+				const {server, roomId, token, sessionId, iceServers} = await api.call('januscall.room_url',
+					{room: this.room.id})
+				if (!this.$el || this._isDestroyed) return
+				this.roomId = roomId
+				this.token = token
+				this.iceServers = iceServers
+				this.sessionId = sessionId
+				this.server = server
+			} catch (error) {
+				// TODO handle bbb.join.missing_profile
+				this.error = error
+				this.loading = false
+				console.log(error)
+			}
+		},
 	},
 }
 </script>

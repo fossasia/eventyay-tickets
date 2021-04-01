@@ -21,7 +21,17 @@ export default {
 			error: null
 		}
 	},
+	computed: {
+		displayName () {
+			return this.$store.state.user.profile.display_name
+		}
+	},
 	watch: {
+		displayName () {
+			if (this.error) {
+				this.load()
+			}
+		},
 		background () {
 			if (!this.iframe) return
 			if (this.background) {
@@ -34,24 +44,30 @@ export default {
 	destroyed () {
 		this.iframe?.remove()
 	},
-	async created () {
-		try {
-			const {url} = await api.call('zoom.room_url', {room: this.room.id})
-			if (!this.$el || this._isDestroyed) return
-			const iframe = document.createElement('iframe')
-			iframe.src = url
-			iframe.classList.add('zoom')
-			iframe.allow = 'camera; autoplay; microphone; fullscreen; display-capture'
-			iframe.allowfullscreen = true
-			iframe.allowusermedia = true
-			iframe.setAttribute('allowfullscreen', '') // iframe.allowfullscreen is not enough in firefox
-			const app = document.querySelector('#app')
-			app.appendChild(iframe)
-			this.iframe = iframe
-		} catch (error) {
-			// TODO handle zoom.join.missing_profile
-			this.error = error
-			console.log(error)
+	created () {
+		this.load()
+	},
+	methods: {
+		async load () {
+			this.error = null
+			try {
+				const {url} = await api.call('zoom.room_url', {room: this.room.id})
+				if (!this.$el || this._isDestroyed) return
+				const iframe = document.createElement('iframe')
+				iframe.src = url
+				iframe.classList.add('zoom')
+				iframe.allow = 'camera; autoplay; microphone; fullscreen; display-capture'
+				iframe.allowfullscreen = true
+				iframe.allowusermedia = true
+				iframe.setAttribute('allowfullscreen', '') // iframe.allowfullscreen is not enough in firefox
+				const app = document.querySelector('#app')
+				app.appendChild(iframe)
+				this.iframe = iframe
+			} catch (error) {
+				// TODO handle zoom.join.missing_profile
+				this.error = error
+				console.log(error)
+			}
 		}
 	}
 }
