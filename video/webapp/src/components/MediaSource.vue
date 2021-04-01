@@ -10,7 +10,7 @@
 			bunt-icon-button(@click.prevent.stop="$emit('close')") close
 	livestream(v-if="room && module.type === 'livestream.native'", ref="livestream", :room="room", :module="module", :size="background ? 'tiny' : 'normal'", :key="`livestream-${room.id}`")
 	you-tube(v-else-if="room && module.type === 'livestream.youtube'", :room="room", :module="module", :size="background ? 'tiny' : 'normal'", :key="`youtube-${room.id}`")
-	iframe-player(v-else-if="room && module.type === 'livestream.iframe'", :room="room", :module="module", :size="background ? 'tiny' : 'normal'", :key="`iframe-player-${room.id}`")
+	iframe-player(v-else-if="room && module.type === 'livestream.iframe'", :room="room", :module="module", :background="background", :key="`iframe-player-${room.id}`")
 	big-blue-button(v-else-if="room && module.type === 'call.bigbluebutton'", ref="bigbluebutton", :room="room", :module="module", :background="background", :key="`bbb-${room.id}`")
 	zoom(v-else-if="room && module.type === 'call.zoom'", ref="zoom", :room="room", :module="module", :background="background", :key="`zoom-${room.id}`")
 	janus-call(v-else-if="room && module.type === 'call.janus'", ref="janus", :room="room", :module="module", :background="background", :size="background ? 'tiny' : 'normal'", :key="`janus-${room.id}`")
