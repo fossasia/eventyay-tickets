@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`1092` You can now get a list of proposals or speakers that are still missing the answer to a given question.
 - :bug:`-` The display of external videos in pretalx was broken due to a security header being set too strictly.
 - :feature:`-` pretalx has better rendering for multi-line code blocks (``\`\`\```) in markdown elements and supports code highlighting.
 - :bug:`-` When your default submission type had a deadline prior to the event-wide deadline, the CfP form wouldn't accept new proposals past the earlier deadline.

@@ -71,6 +71,7 @@ class SpeakerList(EventPermissionRequired, Sortable, Filterable, ListView):
                 )
 
         question = self.request.GET.get("question")
+        unanswered = self.request.GET.get("unanswered")
         answer = self.request.GET.get("answer")
         option = self.request.GET.get("answer__options")
         if question and (answer or option):
@@ -87,6 +88,11 @@ class SpeakerList(EventPermissionRequired, Sortable, Filterable, ListView):
                     answer__exact=answer,
                 )
             qs = qs.annotate(has_answer=Exists(answers)).filter(has_answer=True)
+        elif question and unanswered:
+            answers = Answer.objects.filter(
+                question_id=question, person_id=OuterRef("user_id")
+            )
+            qs = qs.annotate(has_answer=Exists(answers)).filter(has_answer=False)
         qs = qs.order_by("id").distinct()
         qs = self.sort_queryset(qs)
         return qs

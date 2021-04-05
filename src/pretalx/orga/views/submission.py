@@ -480,6 +480,7 @@ class SubmissionList(EventPermissionRequired, Sortable, Filterable, ListView):
         )
         qs = self.filter_queryset(qs)
         question = self.request.GET.get("question")
+        unanswered = self.request.GET.get("unanswered")
         answer = self.request.GET.get("answer")
         option = self.request.GET.get("answer__options")
         if question and (answer or option):
@@ -489,13 +490,18 @@ class SubmissionList(EventPermissionRequired, Sortable, Filterable, ListView):
                     question_id=question,
                     options__pk=option,
                 )
-            else:
+            elif answer:
                 answers = Answer.objects.filter(
                     submission_id=OuterRef("pk"),
                     question_id=question,
                     answer__exact=answer,
                 )
             qs = qs.annotate(has_answer=Exists(answers)).filter(has_answer=True)
+        elif question and unanswered:
+            answers = Answer.objects.filter(
+                question_id=question, submission_id=OuterRef("pk")
+            )
+            qs = qs.annotate(has_answer=Exists(answers)).filter(has_answer=False)
         if "state" not in self.request.GET:
             qs = qs.exclude(state="deleted")
         qs = self.sort_queryset(qs)

@@ -127,6 +127,29 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
 
     @context
     @cached_property
+    def base_search_url(self):
+        if self.question.target == "reviewer":
+            return
+        role = self.request.GET.get("role") or ""
+        track = self.request.GET.get("track") or ""
+        submission_type = self.request.GET.get("submission_type") or ""
+        if self.question.target == "submission":
+            url = self.request.event.orga_urls.submissions + "?"
+            if role == "accepted":
+                url = f"{url}state=accepted&state=confirmed&"
+            elif role == "confirmed":
+                url = f"{url}state=confirmed&"
+            if track:
+                url = f"{url}track={track}&"
+            if submission_type:
+                url = f"{url}submission_type={submission_type}&"
+        else:
+            url = self.request.event.orga_urls.speakers + "?"
+        url = f"{url}&question={self.question.id}&"
+        return url
+
+    @context
+    @cached_property
     def formset(self):
         formset_class = inlineformset_factory(
             Question,

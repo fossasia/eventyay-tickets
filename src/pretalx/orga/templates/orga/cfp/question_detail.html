@@ -49,8 +49,8 @@
 {% else %}
   <p>
     {% if missing_answers %}
-        {% blocktranslate with count=answer_count|times missing=missing_answers trimmed %}
-            This question has been answered <strong>{{ count }}</strong>, <strong>{{ missing }}</strong> answers are still missing.
+        {% blocktranslate with count=answer_count|times missing=missing_answers href=base_search_url %}
+        This question has been answered <strong>{{ count }}</strong>, <strong>{{ missing }}</strong> answers <a href="{{ base_search_url }}unanswered=1">are still missing</a>.
         {% endblocktranslate %}
     {% else %}
         {% blocktranslate with count=question.answers.count|times trimmed %}
@@ -60,7 +60,7 @@
   </p>
   <div id="question-data" class="d-none"
         data-states='{{ grouped_answers_json }}'
-        data-url="{{ request.event.orga_urls.submissions }}?{% if request.GET.role == 'accepted' %}state=accepted&state=confirmed&{% elif request.GET.role == 'confirmed' %}state=confirmed&{% endif %}{% if request.GET.track %}track={{ request.GET.track }}&{% endif %}{% if request.GET.submission_type %}submission_type={{ request.GET.submission_type }}&{% endif %}question={{ question.id }}&"
+        data-url="{{ base_search_url }}{% if answer.answer %}answer={{ answer.answer|urlencode }}{% else %}answer__options={{ answer.options|urlencode }}{% endif %}"
   >
   </div>
   <div id="question-stats" class="d-flex mt-4 pt-4">
@@ -78,7 +78,7 @@
           <tr>
             <td>
               {% if question.target != "reviewer" %}
-              <a href="{% if question.target == "submission" %}{{ request.event.orga_urls.submissions }}?{% if request.GET.role == 'accepted' %}state=accepted&state=confirmed&{% elif request.GET.role == 'confirmed' %}state=confirmed&{% endif %}{% if request.GET.track %}track={{ request.GET.track }}&{% endif %}{% if request.GET.submission_type %}submission_type={{ request.GET.submission_type }}&{% endif %}{% else %}{{ request.event.orga_urls.speakers }}?{% endif %}question={{ question.id }}&{% if answer.answer %}answer={{ answer.answer|urlencode }}{% else %}answer__options={{ answer.options|urlencode }}{% endif %}">
+              <a href="{{ base_search_url }}{% if answer.answer %}answer={{ answer.answer|urlencode }}{% else %}answer__options={{ answer.options|urlencode }}{% endif %}">
               {% endif %}
                 {% if answer.answer %}{{ answer.answer|truncatechars:140 }}{% else %}{{ answer.options__answer|truncatechars:140 }}{% endif %}
               {% if question.target != "reviewer" %}
