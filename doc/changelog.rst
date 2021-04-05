@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`1093` pretalx sometimes over-reported the number of emails generated when bulk-sending emails.
 - :feature:`1092` You can now get a list of proposals or speakers that are still missing the answer to a given question.
 - :bug:`-` The display of external videos in pretalx was broken due to a security header being set too strictly.
 - :feature:`-` pretalx has better rendering for multi-line code blocks (``\`\`\```) in markdown elements and supports code highlighting.
