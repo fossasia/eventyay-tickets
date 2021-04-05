@@ -363,7 +363,9 @@ class Schedule(LogMixin, models.Model):
                     profile_availabilities = list(profile.availabilities.all())
                 if profile_availabilities and not any(
                     speaker_availability.contains(availability)
-                    for speaker_availability in Availability.union(profile_availabilities)
+                    for speaker_availability in Availability.union(
+                        profile_availabilities
+                    )
                 ):
                     warnings.append(
                         {

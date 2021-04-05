@@ -121,7 +121,9 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
             pk__in=pks
         )
         if len(pks) == 1:
-            self.initial["submission_type"] = self.fields["submission_type"].queryset.first().pk
+            self.initial["submission_type"] = (
+                self.fields["submission_type"].queryset.first().pk
+            )
             self.fields["submission_type"].widget = forms.HiddenInput()
 
     def _set_locales(self):
