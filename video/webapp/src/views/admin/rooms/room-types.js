@@ -64,6 +64,12 @@ const ROOM_TYPES = [{
 	description: 'The landing place module combines the most important content into one place for your attendees to see after they join.',
 	startingModule: 'page.landing',
 	behindFeatureFlag: 'page.landing'
+}, {
+	id: 'page-userlist',
+	icon: 'text-box-outline',
+	name: 'User List',
+	description: '',
+	startingModule: 'page.userlist'
 }]
 
 export default ROOM_TYPES.filter(type => !type.behindFeatureFlag || features.enabled(type.behindFeatureFlag))
@@ -81,4 +87,5 @@ export function inferType (config) {
 	if (modules['call.janus']) return find('channel-janus')
 	if (modules['call.zoom']) return find('channel-zoom')
 	if (modules['chat.native']) return find('channel-text')
+	if (modules['page.userlist']) return find('page-userlist')
 }
