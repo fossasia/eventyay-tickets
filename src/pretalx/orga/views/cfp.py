@@ -128,7 +128,7 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     @context
     @cached_property
     def base_search_url(self):
-        if self.question.target == "reviewer":
+        if not self.question or self.question.target == "reviewer":
             return
         role = self.request.GET.get("role") or ""
         track = self.request.GET.get("track") or ""
