@@ -1,7 +1,7 @@
 <template lang="pug">
 .c-admin-rooms-new
 	.ui-page-header
-		bunt-icon-button(@click="type ? $router.push({name: 'admin:rooms:new'}) : $router.push({name: 'admin:rooms:index'})") arrow_left
+		bunt-icon-button(@click="type ? $router.replace({name: 'admin:rooms:new'}) : $router.replace({name: 'admin:rooms:index'})") arrow_left
 		h1 New room
 			template(v-if="chosenType")  : {{ chosenType.name }}
 	.choose-type(v-if="!type")
