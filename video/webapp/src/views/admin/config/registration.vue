@@ -70,9 +70,6 @@ export default {
 			this.$delete(this.config.profile_fields, field)
 		},
 		async save () {
-			this.$v.$touch()
-			if (this.$v.$invalid) return
-
 			this.saving = true
 			await api.call('world.config.patch', {profile_fields: this.config.profile_fields})
 			this.saving = false
