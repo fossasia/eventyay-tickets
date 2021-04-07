@@ -260,7 +260,7 @@ export default {
 	'UserActionPrompt:action.ban:question': 'Diesen Benutzer sperren?',
 	'UserActionPrompt:action.block:confirmation': 'Benutzer wurde blockiert.',
 	'UserActionPrompt:action.block:execute:label': 'blockieren',
-	'UserActionPrompt:action.block:explanation': 'Ein blockierter Benutzer kann dir keine Direktnachrichten mehr schicken und keine Direktnachrichten mehr von dir entfannen.',
+	'UserActionPrompt:action.block:explanation': 'Ein blockierter Benutzer kann dir keine Direktnachrichten mehr schicken und keine Direktnachrichten mehr von dir erhalten.',
 	'UserActionPrompt:action.block:question': 'Diesen Benutzer blockieren?',
 	'UserActionPrompt:action.silence:confirmation': 'Benutzer wurde stummgeschaltet.',
 	'UserActionPrompt:action.silence:execute:label': 'stummschalten',
