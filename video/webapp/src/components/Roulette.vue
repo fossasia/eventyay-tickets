@@ -151,7 +151,7 @@ export default {
 </script>
 <style lang="stylus">
 .c-roulette
-	flex: 100% 0 0
+	flex: 100% 1 1
 	max-height: 100%
 	height: auto // 100% breaks safari
 	display: flex
