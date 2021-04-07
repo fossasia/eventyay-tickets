@@ -141,6 +141,7 @@ export default {
 	'JanusVideoroom:tool-settings:tooltip': 'Video/audio settings',
 	'JanusVideoroom:tool-screenshare:off': 'Stop sharing your screen',
 	'JanusVideoroom:tool-screenshare:on': 'Share your screen',
+	'JanusVideoroom:tool-screenshare:start': 'Select screen',
 	'JanusVideoroom:tool-video:off': 'Turn video off',
 	'JanusVideoroom:tool-video:on': 'Turn video on',
 	'JanusVideoroom:video-output:off': 'You disabled receiving videos of other participants in the video/audio settings.',

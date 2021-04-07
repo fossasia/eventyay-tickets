@@ -57,6 +57,11 @@
 	transition(name="prompt")
 		a-v-device-prompt(v-if="showDevicePrompt", @close="closeDevicePrompt")
 		feedback-prompt(v-if="showFeedbackPrompt", module="janus", :collectTrace="collectTrace", @close="showFeedbackPrompt = false")
+		prompt.screenshare-prompt(v-if="showScreensharePrompt", @close="showScreensharePrompt=false")
+			.content
+				h1 {{ $t('JanusVideoroom:tool-screenshare:on') }}
+				form(@submit.prevent="publishOwnScreenshareFeed")
+					bunt-button(type="submit") {{ $t('JanusVideoroom:tool-screenshare:start') }}
 </template>
 <script>
 import {Janus} from 'janus-gateway'
@@ -66,6 +71,7 @@ import ChatUserCard from 'components/ChatUserCard'
 import Avatar from 'components/Avatar'
 import AVDevicePrompt from 'components/AVDevicePrompt'
 import FeedbackPrompt from 'components/FeedbackPrompt'
+import Prompt from 'components/Prompt'
 import {createPopper} from '@popperjs/core'
 import SoundMeter from 'lib/webrtc/soundmeter'
 import Color from 'color'
@@ -120,7 +126,7 @@ const log = (source, level, message) => {
 }
 
 export default {
-	components: {Avatar, AVDevicePrompt, ChatUserCard, FeedbackPrompt},
+	components: {Avatar, AVDevicePrompt, ChatUserCard, FeedbackPrompt, Prompt},
 	props: {
 		server: {
 			type: String,
@@ -200,6 +206,7 @@ export default {
 
 			// Layout utilities
 			primaryColor: Color(colors.primary),
+			showScreensharePrompt: false,
 			showFeedbackPrompt: false,
 			showDevicePrompt: false,
 			selectedUser: null,
@@ -374,7 +381,12 @@ export default {
 							log('venueless', 'debug', 'Event: ' + event)
 							if (event) {
 								if (event === 'joined') {
-									this.publishOwnScreenshareFeed(true)
+									if (Janus.webRTCAdapter.browserDetails.browser === 'safari') {
+										// In Safari, screenshare must be directly triggered by a user gesture
+										this.showScreensharePrompt = true
+									} else {
+										this.publishOwnScreenshareFeed()
+									}
 								} else if (event === 'destroyed') {
 									this.screensharingState = 'failed'
 									this.screensharingError = 'The room has been destroyed.'
@@ -523,6 +535,7 @@ export default {
 			// should probably be changed, since this causes an echo when a tab is shared with audio
 			const media = {audioRecv: false, videoRecv: false, audioSend: false, videoSend: true, video: 'screen', captureDesktopAudio: true}
 
+			this.showScreensharePrompt = false
 			this.screensharingState = 'publishing'
 			this.screensharePluginHandle.createOffer(
 				{
@@ -1093,4 +1106,15 @@ export default {
 					border-radius: 0
 		.controlbar, .controls, .mute-indicator, .novideo-indicator
 			display: none
+
+	.screenshare-prompt
+		.content
+			display: flex
+			flex-direction: column
+			padding: 32px
+			position: relative
+			text-align: center
+			.bunt-button
+				themed-button-primary()
+				margin-top: 16px
 </style>
