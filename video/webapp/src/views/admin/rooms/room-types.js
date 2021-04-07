@@ -79,13 +79,17 @@ export function inferType (config) {
 		acc[module.type] = module
 		return acc
 	}, {})
-	const find = id => ROOM_TYPES.find(type => type.id === id)
-	if (modules['livestream.native'] || modules['livestream.youtube']) return find('stage')
-	if (modules['page.static']) return find('page-static')
-	if (modules['page.iframe']) return find('page-iframe')
-	if (modules['call.bigbluebutton']) return find('channel-bbb')
-	if (modules['call.janus']) return find('channel-janus')
-	if (modules['call.zoom']) return find('channel-zoom')
-	if (modules['chat.native']) return find('channel-text')
-	if (modules['page.userlist']) return find('page-userlist')
+	const findById = id => ROOM_TYPES.find(type => type.id === id)
+	const findByModule = module => ROOM_TYPES.find(type => type.startingModule === module)
+
+	// infer media rooms by primary content
+	if (modules['livestream.native'] || modules['livestream.youtube']) return findById('stage')
+	if (modules['call.bigbluebutton']) return findById('channel-bbb')
+	if (modules['call.janus']) return findById('channel-janus')
+	if (modules['call.zoom']) return findById('channel-zoom')
+
+	// non-media rooms should only have one module
+	if (config.module_config.length === 1) {
+		return findByModule(config.module_config[0].type)
+	}
 }
