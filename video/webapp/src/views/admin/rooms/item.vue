@@ -4,7 +4,7 @@
 	template(v-else-if="config")
 		.ui-page-header
 			bunt-icon-button(@click="$router.push({name: 'admin:rooms:index'})") arrow_left
-			h1 {{ inferredType.name }} : {{ config.name }}
+			h1 {{ inferredType ? inferredType.name : 'Mystery Room' }} : {{ config.name }}
 			.actions
 				bunt-button.btn-delete-room(@click="showDeletePrompt = true") delete
 		edit-form(:config="config")
