@@ -671,7 +671,7 @@ def test_infoform_set_submission_type(event, other_event):
         f = InfoForm(event)
         assert len(event.submission_types.all()) == 1
         assert len(f.fields["submission_type"].queryset) == 1
-        assert f.fields["submission_type"].initial == event.submission_types.all()[0]
+        assert f.initial["submission_type"] == event.submission_types.all()[0].pk
         assert isinstance(f.fields["submission_type"].widget, forms.HiddenInput)
 
 
