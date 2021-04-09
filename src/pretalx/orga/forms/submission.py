@@ -24,6 +24,8 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
                 initial[key] = (
                     previous_data.get(key) or getattr(instance, key, None) or ""
                 )
+                if hasattr(initial[key], "all"):  # Tags, for the moment
+                    initial[key] = initial[key].all()
             kwargs["initial"] = initial
         super().__init__(**kwargs)
         if "submission_type" in self.fields:
@@ -100,7 +102,7 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
             self.fields["track"].queryset = event.tracks.all()
         if "content_locale" in self.fields:
             if len(event.locales) == 1:
-                self.fields["content_locale"].initial = event.locales[0]
+                self.initial["content_locale"] = event.locales[0]
                 self.fields["content_locale"].widget = forms.HiddenInput()
             else:
                 locale_names = dict(settings.LANGUAGES)

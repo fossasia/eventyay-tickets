@@ -137,8 +137,9 @@
         {% endfor %}
     {% endif %}
 
+    {% if False %}{# todo find better way to display score #}
     {% if score_categories|length > 1 %}
-    <div class="alert alert-info">
+    <div class="alert alert-info col-md-9 offset-md-3">
         {% for cat in score_categories %}
             {% if cat.weight != 1 %}
                 ({{ cat.weight }} × {{ cat.name }})
@@ -148,6 +149,7 @@
             {% if not forloop.last %}+{% endif %}
         {% endfor %}= <span id="update_score" class="ml-1"> {{ form.instance.score }}</span>
     </div>
+    {% endif %}
     {% endif %}
     {% if not read_only %}
 
