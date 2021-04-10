@@ -401,6 +401,7 @@ export default {
 		.mdi
 			font-size: 24px
 			line-height: 1
+#app:not(.override-sidebar-collapse) .c-rooms-sidebar
 	+below('l')
 		position: fixed
 		left: 0
