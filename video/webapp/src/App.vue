@@ -1,5 +1,5 @@
 <template lang="pug">
-#app(:class="{'has-background-room': backgroundRoom}", :style="[themeVariables, browserhackStyle, mediaConstraintsStyle]")
+#app(:class="{'has-background-room': backgroundRoom, 'override-sidebar-collapse': overrideSidebarCollapse}", :style="[themeVariables, browserhackStyle, mediaConstraintsStyle]")
 	.fatal-connection-error(v-if="fatalConnectionError")
 		template(v-if="fatalConnectionError.code === 'world.unknown_world'")
 			.mdi.mdi-help-circle
@@ -19,8 +19,8 @@
 	template(v-else-if="world")
 		app-bar(v-if="$mq.below['l']", @toggleSidebar="toggleSidebar")
 		transition(name="backdrop")
-			.sidebar-backdrop(v-if="$mq.below['l'] && showSidebar", @pointerup="showSidebar = false")
-		rooms-sidebar(:show="$mq.above['l'] || showSidebar", @close="showSidebar = false")
+			.sidebar-backdrop(v-if="$mq.below['l'] && showSidebar && !overrideSidebarCollapse", @pointerup="showSidebar = false")
+		rooms-sidebar(:show="$mq.above['l'] || showSidebar || overrideSidebarCollapse", @close="showSidebar = false")
 		router-view(:key="$route.fullPath")
 		//- defining keys like this keeps the playing dom element alive for uninterupted transitions
 		media-source(v-if="roomHasMedia && user.profile.greeted", ref="primaryMediaSource", :room="room", :key="room.id")
@@ -71,6 +71,13 @@ export default {
 		},
 		roomHasMedia () {
 			return this.room?.modules.some(module => mediaModules.includes(module.type))
+		},
+		// force open sidebar on medium screens on home page (with no media) so certain people can find the menu
+		overrideSidebarCollapse () {
+			return this.$mq.below.l &&
+				this.$mq.above.m &&
+				this.$route.name === 'home' &&
+				!this.roomHasMedia
 		},
 		// safari cleverly includes the address bar cleverly in 100vh
 		mediaConstraintsStyle () {
@@ -248,26 +255,31 @@ export default {
 		height: var(--vh100)
 		z-index: 2000
 		background-color: $clr-secondary-text-light
-	+below('l')
-		grid-template-columns: auto
-		grid-template-rows: 48px auto
-		grid-template-areas: "app-bar" "main"
 
-		.sidebar-backdrop
-			position: fixed
-			top: 0
-			left: 0
-			height: var(--vh100)
-			width: 100vw
-			z-index: 900
-			background-color: $clr-secondary-text-light
-			&.backdrop-enter-active, &.backdrop-leave-active
-				transition: opacity .2s
-			&.backdrop-enter, &.backdrop-leave-to
-				opacity: 0
-		.fatal-connection-error
-			.mdi
-				font-size: 128px
-			h1
-				font-size: 24px
+	+below('l')
+		&.override-sidebar-collapse
+			grid-template-rows: 48px auto
+			grid-template-areas: "app-bar app-bar" "rooms-sidebar main"
+		&:not(.override-sidebar-collapse)
+			grid-template-columns: auto
+			grid-template-rows: 48px auto
+			grid-template-areas: "app-bar" "main"
+
+			.sidebar-backdrop
+				position: fixed
+				top: 0
+				left: 0
+				height: var(--vh100)
+				width: 100vw
+				z-index: 900
+				background-color: $clr-secondary-text-light
+				&.backdrop-enter-active, &.backdrop-leave-active
+					transition: opacity .2s
+				&.backdrop-enter, &.backdrop-leave-to
+					opacity: 0
+			.fatal-connection-error
+				.mdi
+					font-size: 128px
+				h1
+					font-size: 24px
 </style>

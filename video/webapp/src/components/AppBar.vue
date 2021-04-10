@@ -40,4 +40,8 @@ export default {
 			height: 100%
 			max-width: 100%
 			object-fit: contain
+#app.override-sidebar-collapse .c-app-bar
+	border-bottom: none // TODO find a better solution, but having a border between app-bar and rooms-sidebar looks ugly
+	.bunt-icon-button
+		visibility: hidden
 </style>
