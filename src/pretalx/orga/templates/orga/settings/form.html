@@ -76,7 +76,7 @@
                 />
                 {% endif %}
                 <br>
-                {% bootstrap_field form.logo layout='inline' %}
+                {% bootstrap_field form.logo %}
             </div>
         </div>
         <div class="event-logo-field form-group row">
@@ -89,7 +89,7 @@
                 />
                 {% endif %}
                 <br>
-                {% bootstrap_field form.header_image layout='inline' %}
+                {% bootstrap_field form.header_image %}
             </div>
         </div>
         <div {% if request.event.primary_color %}style="--color: {{ request.event.primary_color }}"{% endif %} class="colorpicker-update">
