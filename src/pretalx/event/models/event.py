@@ -164,8 +164,7 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
         verbose_name=_("Logo"),
         help_text=_(
             "If you provide a logo image, your event's name will not be shown in the event header. "
-            "The logo will be displayed left-aligned, and be allowed to grow up to the width of the"
-            "event content, if it is larger than that."
+            "The logo will be scaled down to a height of 150px."
         ),
     )
     header_image = models.FileField(
