@@ -2,10 +2,13 @@ import datetime as dt
 import json
 import math
 from collections import defaultdict
+from functools import partial
 
 import pandas
+import pytz
 from dateutil.parser import parse
 from django.core.exceptions import ValidationError
+from django.utils.timezone import make_aware
 
 
 def load_sheet(io):
@@ -30,9 +33,11 @@ def load_sheet(io):
     }
 
 
-def to_iso(value):
+def to_iso(value, timezone=None):
     if not isinstance(value, dt.datetime):
         raise Exception("Not a valid date and time.")
+    if timezone:
+        value = make_aware(value, pytz.timezone(timezone))
     return value.isoformat()
 
 
@@ -131,7 +136,7 @@ def validate_data(data):
                 )
 
 
-def convert(io):
+def convert(io, timezone=None):
     data = load_sheet(io)
 
     result = {"version": dt.datetime.now().isoformat()}
@@ -159,6 +164,7 @@ def convert(io):
         mandatory_fields=["ID", "Name"],
         methods={"code": str},
     )
+    to_event_iso = partial(to_iso, timezone=timezone)
     result["talks"] = transform_data(
         data,
         "Talks",
@@ -174,7 +180,7 @@ def convert(io):
             "url": "URL",
         },
         mandatory_fields=["Title", "Start", "End", "Room ID"],
-        methods={"start": to_iso, "end": to_iso, "speakers": to_list},
+        methods={"start": to_event_iso, "end": to_event_iso, "speakers": to_list},
     )
     validate_data(result)
     return json.dumps(result, indent=4)

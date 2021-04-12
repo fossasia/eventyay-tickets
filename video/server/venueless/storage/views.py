@@ -173,7 +173,7 @@ class ScheduleImportView(UploadMixin, View):
             return JsonResponse({"error": "file.type"}, status=400)
 
         try:
-            jsondata = convert(request.FILES["file"])
+            jsondata = convert(request.FILES["file"], timezone=self.world.timezone)
         except ValidationError as e:
             return JsonResponse({"error": ", ".join(e)}, status=400)
         except XLRDError as e:
