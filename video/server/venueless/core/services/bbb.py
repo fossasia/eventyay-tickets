@@ -31,7 +31,7 @@ def get_url(operation, params, base_url, secret):
 
 def escape_name(name):
     # Some things break BBB apparently…
-    return name.replace(':', '')
+    return name.replace(":", "")
 
 
 def choose_server(world, room=None, prefer_server=None):
