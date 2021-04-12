@@ -128,6 +128,8 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
                         for category in self.independent_categories:
                             result.append(mapping.get(category.pk))
                         submission.independent_scores = result
+                elif self.independent_categories:
+                    submission.independent_scores = [None for _ in range(len(self.independent_categories))]
 
         return self.sort_queryset(queryset)
 

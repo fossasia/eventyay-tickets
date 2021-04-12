@@ -84,16 +84,23 @@
                     <a href="?{% url_replace request 'sort' 'score' %}"><i class="fa fa-caret-down" title="{% translate "Sort by score (highest first)" %}"></i></a>
                     <a href="?{% url_replace request 'sort' '-score' %}"><i class="fa fa-caret-up" title="{% translate "Sort by score (lowest first)" %}"></i></a>
                 </th>
+                {% if independent_categories %}
+                    {% for category in independent_categories %}
+                    <th> {{ category.name }}</th>
+                    {% endfor %}
+                {% endif %}
             {% endif %}
-            {% for category in independent_categories %}
-            <th> {{ category.name }}</th>
-            {% endfor %}
             {% if can_review or submissions_reviewed %}
             <th>
                 {% translate "Your Score" %}
                 <a href="?{% url_replace request 'sort' 'my_score' %}"><i class="fa fa-caret-down" title="{% translate "Sort by score (highest first)" %}"></i></a>
                 <a href="?{% url_replace request 'sort' '-my_score' %}"><i class="fa fa-caret-up" title="{% translate "Sort by score (lowest first)" %}"></i></a>
             </th>
+                {% if independent_categories and not can_see_all_reviews %}
+                    {% for category in independent_categories %}
+                    <th> {{ category.name }}</th>
+                    {% endfor %}
+                {% endif %}
             {% endif %}
             <th>
                 {% translate "Reviews" %}
@@ -126,16 +133,21 @@
                 <td class="text-center">
                     {% review_score submission %}
                 </td>
-            {% endif %}
-            {% if independent_categories %}
-                {% for score in submission.independent_scores %}
-                <td> {% if score is None %}-{% else %}{{ score }}{% endif %}</td>
-                {% endfor %}
+                {% if independent_categories %}
+                    {% for score in submission.independent_scores %}
+                    <td> {% if score is None %}-{% else %}{{ score }}{% endif %}</td>
+                    {% endfor %}
+                {% endif %}
             {% endif %}
             {% if can_review or submissions_reviewed %}
             <td class="text-center">
                     {% review_score submission True %}
             </td>
+                {% if not can_see_all_reviews and independent_categories %}
+                    {% for score in submission.independent_scores %}
+                    <td> {% if score is None %}-{% else %}{{ score }}{% endif %}</td>
+                    {% endfor %}
+                {% endif %}
             {% endif %}
             <td class="text-center">
                 {{ submission.reviews.all|length|default:'-' }}
