@@ -35,23 +35,6 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
             " default language instead."
         ),
     )
-    logo = ImageField(
-        required=False,
-        label="",
-        help_text=_(
-            "If you provide a logo image, we will by default not show your event's name and date in the page header. "
-            "We will show your logo in its full size if possible, scaled down to the full header width."
-        ),
-    )
-    header_image = ImageField(
-        required=False,
-        label="",
-        help_text=_(
-            "If you provide a header image, it will be displayed instead of your event's color and/or header pattern "
-            "on top of all event pages. It will be center-aligned, so when the window shrinks, the center parts will "
-            "continue to be displayed, and not stretched."
-        ),
-    )
     custom_css_text = forms.CharField(
         required=False,
         widget=forms.Textarea(),
@@ -185,6 +168,10 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
             "landing_page_text",
             "featured_sessions_text",
         ]
+        field_classes = {
+            "logo": ImageField,
+            "header_image": ImageField,
+        }
         widgets = {
             "date_from": forms.DateInput(attrs={"class": "datepickerfield"}),
             "date_to": forms.DateInput(

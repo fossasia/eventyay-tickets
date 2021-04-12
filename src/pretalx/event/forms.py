@@ -193,14 +193,6 @@ class EventWizardDisplayForm(forms.Form):
         ),
         required=False,
     )
-    logo = ImageField(
-        required=False,
-        label=_("Logo"),
-        help_text=_(
-            "If you provide a logo image, we will by default not show your event's name and date in the page header. "
-            "We will show your logo in its full size if possible, scaled down to the full header width otherwise."
-        ),
-    )
     display_header_pattern = forms.ChoiceField(
         label=_("Frontpage header pattern"),
         help_text=_(
@@ -220,6 +212,10 @@ class EventWizardDisplayForm(forms.Form):
 
     def __init__(self, *args, user=None, locales=None, organiser=None, **kwargs):
         super().__init__(*args, **kwargs)
+        logo = Event._meta.get_field("logo")
+        self.fields["logo"] = ImageField(
+            required=False, label=logo.verbose_name, help_text=logo.help_text
+        )
         self.fields["primary_color"].widget.attrs["class"] = "colorpickerfield"
 
 
