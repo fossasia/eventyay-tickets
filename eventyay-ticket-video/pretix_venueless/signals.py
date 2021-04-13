@@ -22,7 +22,7 @@ def w_order_info(sender: Event, request, order: Order, **kwargs):
 
     positions = [
         p for p in order.positions.filter(
-            item__admission=True
+            item__admission=True, addon_to__isnull=True
         )
     ]
     positions = [
