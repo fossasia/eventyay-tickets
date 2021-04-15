@@ -16,8 +16,8 @@ matplotlib==3.3.*
 numpy==1.20.*
 orjson==3.5.*
 openpyxl~=3.0.6
+Pillow==8.2.*
 pandas~=1.2.4
-Pillow==8.1.*
 pdfrw==0.4
 pyjwt==2.0.*
 python-dateutil==2.8.*
