@@ -77,8 +77,11 @@ class SignupView(AdminBase, FormView):
         return self.request.user.is_superuser
 
     def form_valid(self, form):
-        user = form.save()
-        messages.success(self.request, _("The user has been created successfully, they can now log in."))
+        form.save()
+        messages.success(
+            self.request,
+            _("The user has been created successfully, they can now log in."),
+        )
         return redirect("/control/")
 
 
