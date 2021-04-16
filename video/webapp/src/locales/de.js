@@ -215,6 +215,7 @@ export default {
 	'RichTextEditor:h3:tooltip': 'Überschrift (Ebene 3)',
 	'RichTextEditor:h4:tooltip': 'Überschrift (Ebene 4)',
 	'RichTextEditor:image:tooltip': 'Bild',
+	'RichTextEditor:video:tooltip': 'Video',
 	'RichTextEditor:italic:tooltip': 'Kursiv',
 	'RichTextEditor:link:tooltip': 'Link',
 	'RichTextEditor:list-bullet:tooltip': 'Aufzählung',

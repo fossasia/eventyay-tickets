@@ -23,6 +23,7 @@ bunt-input-outline-container.c-rich-text-editor(ref="outline")
 		.buttongroup
 			bunt-icon-button.ql-link(v-tooltip="$t('RichTextEditor:link:tooltip')") link-variant
 			bunt-icon-button.ql-image(v-tooltip="$t('RichTextEditor:image:tooltip')") image
+			bunt-icon-button.ql-video(v-tooltip="$t('RichTextEditor:video:tooltip')") filmstrip-box
 		.buttongroup
 			bunt-icon-button.ql-clean(v-tooltip="$t('RichTextEditor:clean:tooltip')") format-clear
 	.editor.rich-text-content(ref="editor")

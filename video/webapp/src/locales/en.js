@@ -215,6 +215,7 @@ export default {
 	'RichTextEditor:h3:tooltip': 'Header (level 3)',
 	'RichTextEditor:h4:tooltip': 'Header (level 4)',
 	'RichTextEditor:image:tooltip': 'Image',
+	'RichTextEditor:video:tooltip': 'Video',
 	'RichTextEditor:italic:tooltip': 'Italic',
 	'RichTextEditor:link:tooltip': 'Link',
 	'RichTextEditor:list-bullet:tooltip': 'Bullet list',
