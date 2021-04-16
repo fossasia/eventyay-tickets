@@ -86,6 +86,8 @@ FEATURE_FLAGS = [
     "roulette",
     "muxdata",
     "page.landing",
+    "zoom",
+    "janus",
 ]
 
 
