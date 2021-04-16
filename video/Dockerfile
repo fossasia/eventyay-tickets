@@ -56,6 +56,8 @@ RUN cd /venueless/webapp && \
     chown -R venueless:venueless /venueless /data
 
 COPY server /venueless/server
+WORKDIR /venueless/server
+RUN python manage.py collectstatic
 
 ARG COMMIT=""
 LABEL commit=${COMMIT}
