@@ -4,7 +4,7 @@ import json
 
 import jwt
 from django.contrib import messages
-from django.contrib.auth import login, update_session_auth_hash
+from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.db import transaction
@@ -78,7 +78,7 @@ class SignupView(AdminBase, FormView):
 
     def form_valid(self, form):
         user = form.save()
-        login(self.request, user)
+        messages.success(self.request, _("The user has been created successfully, they can now log in."))
         return redirect("/control/")
 
 
