@@ -179,6 +179,10 @@ CACHES = {
 
 INSTALLED_APPS = [
     "django.contrib.contenttypes",
+    "django.contrib.auth",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
     "channels",
     "corsheaders",
     "rest_framework",
@@ -188,6 +192,7 @@ INSTALLED_APPS = [
     "venueless.graphs.GraphsConfig",
     "venueless.storage.StorageConfig",
     "venueless.zoom.ZoomConfig",
+    "venueless.control.ControlConfig",
 ]
 
 try:
@@ -202,6 +207,9 @@ MIDDLEWARE = [
     "django.middleware.locale.LocaleMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.middleware.common.CommonMiddleware",
+    "venueless.control.middleware.SessionMiddleware",  # Conditional for /control
+    "venueless.control.middleware.AuthenticationMiddleware",  # Conditional for /control
+    "venueless.control.middleware.MessageMiddleware",  # Conditional for /control
     "django.middleware.csrf.CsrfViewMiddleware",
     "venueless.middleware.XFrameOptionsMiddleware",
 ]
@@ -218,6 +226,8 @@ X_FRAME_OPTIONS = "DENY"  # ignored by our own middleware
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 CSP_DEFAULT_SRC = ("'self'", "'unsafe-eval'")
+
+MESSAGE_STORAGE = "django.contrib.messages.storage.session.SessionStorage"
 
 template_loaders = (
     "django.template.loaders.filesystem.Loader",
@@ -347,9 +357,9 @@ STATICI18N_ROOT = os.path.join(BASE_DIR, "venueless/static")
 
 STATICFILES_STORAGE = "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"
 
-LOGIN_REDIRECT_URL = "/"
-LOGIN_URL = "/accounts/login"
-LOGOUT_REDIRECT_URL = "/accounts/login"
+
+LOGIN_URL = LOGOUT_REDIRECT_URL = "control:login"
+LOGIN_REDIRECT_URL = "/control/"
 
 VENUELESS_COMMIT = os.environ.get("VENUELESS_COMMIT_SHA", "unknown")
 VENUELESS_ENVIRONMENT = os.environ.get("VENUELESS_ENVIRONMENT", "unknown")

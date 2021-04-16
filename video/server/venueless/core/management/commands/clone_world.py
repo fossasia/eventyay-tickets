@@ -3,9 +3,8 @@ import uuid
 
 import jwt
 from django.core.management.base import BaseCommand
-from django.utils.crypto import get_random_string
 
-from venueless.core.models import Channel, World
+from venueless.core.models import World
 
 
 class Command(BaseCommand):
@@ -17,44 +16,23 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         old = World.objects.get(id=options["world_id"])
-        new = World.objects.get(id=options["world_id"])
-        new.pk = None
+        new = World()
 
         while True:
             v = input("Enter the internal ID for the new world (alphanumeric): ")
             if v.strip() and v.strip().isalnum():
                 if World.objects.filter(id=v.strip()).exists():
                     print("This world already exists.")
-                new.id = v
-                break
+                else:
+                    new.id = v
+                    break
 
         new.title = input("Enter the title for the new world: ")
         new.domain = input(
             "Enter the domain of the new world (e.g. myevent.example.org): "
         )
 
-        if options["new_secrets"]:
-            secret = get_random_string(length=64)
-            new.config["JWT_secrets"] = [
-                {
-                    "issuer": "any",
-                    "audience": "venueless",
-                    "secret": secret,
-                }
-            ]
-
-        new.save()
-        for r in old.rooms.all():
-            try:
-                has_channel = r.channel
-            except:
-                has_channel = False
-            r.pk = None
-            r.world = new
-            r.save()
-            if has_channel:
-                Channel.objects.create(room=r, world=new)
-
+        new.clone_from(old, new_secrets=options["new_secrets"])
         print("World cloned.")
 
         print("Default API key secrets:", new.config["JWT_secrets"])

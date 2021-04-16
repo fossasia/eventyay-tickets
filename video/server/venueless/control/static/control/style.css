@@ -1,0 +1,179 @@
+body {
+	padding: 0;
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	font-family: Arial, sans-serif;
+}
+
+/** UTILS **/
+.text-right {
+	text-align: right;
+}
+
+/** LAYOUT **/
+header {
+	height: 40px;
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	border-bottom: 4px solid #0058de;
+}
+
+header a {
+	padding: 0 16px;
+	color: #fe008e;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+#main-container {
+	display: flex;
+	height: calc(100vh - 40px - 4px);
+}
+
+#main-container > nav {
+	height: 100%;
+	overflow-y: auto;
+	overflow-x: hidden;
+	width: 240px;
+	flex: 240px 0 0;
+	border-right: 4px solid #0058de;
+	display: flex;
+	flex-direction: column;
+}
+
+#main-container > nav a {
+	text-decoration: none;
+	font-weight: 600;
+	padding: 16px 0 16px 32px;
+	color: black;
+	border-bottom: 1px #0058de solid;
+	overflow: hidden;
+}
+
+#main-container > nav a:hover {
+	background-color: rgba(0, 88, 222, 0.48);
+	color: white;
+}
+
+#main-container > nav a.active,
+#main-container > nav a.active:hover {
+	color: #fe008e;
+}
+
+main {
+	padding: 16px;
+	flex: auto 1 1;
+}
+
+/** TABLES **/
+table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+table tr:hover {
+	background: #eee;
+}
+
+table th, table td {
+	border-bottom: 1px solid #ddd;
+	padding: 12px;
+	text-align: left;
+}
+table th {
+	border-bottom: 3px solid #ddd;
+}
+
+/** FORMS **/
+
+label {
+	display: block;
+	font-weight: bold;
+	padding-bottom: 4px;
+}
+
+input[type=text], input[type=email], input[type=password], input[type=number], select, textarea {
+	display: block;
+	padding: 8px;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	width: 100%;
+	max-width: 400px;
+}
+
+input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, input[type=number]:focus, select:focus, textarea:focus {
+	border-color: #0058de;
+	outline: none;
+}
+
+.helptext {
+	display: block;
+	padding-top: 8px;
+	color: #666;
+}
+
+button, a.btn, input[type=submit] {
+	border: 2px solid #0058de;
+	border-radius: 4px;
+	padding: 8px 32px;
+	cursor: pointer;
+	color: #0058de;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+button:hover, a.btn:hover, button:active, a.btn:active, input[type=submit]:hover, input[type=submit]:active {
+	background: #0058de;
+	color: white;
+}
+
+.errorlist {
+	border: 4px solid #fe008e;
+	border-radius: 4px;
+	padding: 8px;
+	color: #fe008e;
+	list-style: none;
+}
+
+form ul {
+	list-style: none;
+	padding-left: 0;
+}
+
+/** LINKS **/
+a, a:visited {
+	color: #0058de;
+	text-decoration: none;
+}
+a:hover, a:active, a:focus {
+	text-decoration: underline;
+}
+
+/** MESSAGES **/
+.messages {
+	list-style: none;
+	padding: 0;
+}
+.messages .error, .messages.warning {
+	border: 4px solid #fe008e;
+	border-radius: 4px;
+	padding: 8px;
+	color: #fe008e;
+}
+.messages .success, .messages .info {
+	border: 4px solid #0058de;
+	border-radius: 4px;
+	padding: 10px;
+	color: #0058de;
+}
+
+
+/** OTHER STUFF **/
+pre {
+	background: #333;
+	color: #ddd;
+	padding: 8px;
+	border-radius: 4px;
+}

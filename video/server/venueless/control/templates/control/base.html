@@ -1,0 +1,50 @@
+{% load i18n %}
+{% load static %}
+<html>
+    <head>
+        <title>{% block title %}{% endblock %} :: venueless</title>
+        <link rel="stylesheet" href="{% static 'control/style.css' %}">
+    </head>
+    <body>
+        <header>
+            {% if request.user.is_authenticated %}
+                <a href="{% url 'control:auth.profile' %}">Profile</a> ·
+                <a href="{% url 'control:logout' %}">Logout</a>
+            {% else %}
+                <a href="{% url 'control:login' %}">Login</a>
+            {% endif %}
+        </header>
+        <div id="main-container">
+            <nav>
+                {% if request.user.is_authenticated and request.user.is_staff %}
+                <a href="{% url "control:index" %}"{% if request.path == "/control/" %} class="active" {% endif %}>
+                    {% trans "Dashboard" %}
+                </a>
+                <a href="{% url "control:world.list" %}"{% if request.path == "/control/worlds/" %} class="active"{% endif %}>
+                    {% trans "Worlds" %}
+                </a>
+                    {% if request.user.is_superuser %}
+                    <a href="{% url "control:user.list" %}"{% if request.path == "/control/users/" %} class="active"{% endif %}>
+                        {% trans "Users" %}
+                    </a>
+                    {% endif %}
+                {% endif %}
+            </nav>
+            <main>
+
+                {% if messages %}
+                    <ul class="messages">
+                        {% for message in messages %}
+                        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+
+            {% block content %}
+
+            {% endblock %}
+
+            </main>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,41 @@
+{% extends "control/base.html" %}
+{% load i18n %}
+
+{% block title %}{% translate "Login" %}{% endblock %}
+
+{% block content %}
+    <section class="welcome">
+    <h1>Login</h1>
+    {% if request.user.is_authenticated %}
+
+    {% else %}
+        <form method="post" action="{% url 'control:login' %}">
+            {% csrf_token %}
+
+            {{ form.as_p }}
+
+            <input type="submit" value="login">
+            <input type="hidden" name="next" value="{{ next }}">
+        </form>
+        <p><a href="{% url 'control:password_reset' %}">Forgot password?</a></p>
+    {% endif %}
+</section>
+
+{% if form.errors %}
+<p>Your username or password are incorrect, please try again.</p>
+{% endif %}
+
+{% if next %}
+    {% if user.is_authenticated %}
+    <h1>404</h1>
+    <p>hm… something went wrong.</p>
+    {% else %}
+    <p>Please log in to see this content.</p>
+    {% endif %}
+{% endif %}
+
+
+
+
+
+{% endblock %}

@@ -8,11 +8,12 @@ from .exhibitor import (
     ExhibitorLink,
     ExhibitorSocialMediaLink,
     ExhibitorStaff,
+    ExhibitorView,
 )
 from .feedback import Feedback
 from .janus import JanusServer
 from .question import Question, QuestionVote
-from .room import Room
+from .room import Reaction, Room, RoomView
 from .roulette import RoulettePairing, RouletteRequest
 from .turn import TurnServer
 from .world import World
@@ -30,6 +31,8 @@ __all__ = [
     "Membership",
     "Question",
     "QuestionVote",
+    "Reaction",
+    "RoomView",
     "Room",
     "RoulettePairing",
     "RouletteRequest",
@@ -38,6 +41,7 @@ __all__ = [
     "ExhibitorStaff",
     "ExhibitorLink",
     "ExhibitorSocialMediaLink",
+    "ExhibitorView",
     "ContactRequest",
     "TurnServer",
 ]

@@ -1,0 +1,71 @@
+{% extends "control/base.html" %}
+{% load i18n %}
+
+{% block content %}
+
+<p>
+    <a href="{% url "control:world.create" %}" class="btn">
+    {% trans "Add new world" %}
+    </a>
+</p>
+<table>
+    <thead>
+    <tr>
+        <th>{% trans "ID" %}</th>
+        <th>{% trans "Name" %}</th>
+        <th>{% trans "URL" %}</th>
+        <th class="text-right">{% trans "Users" %}</th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for world in worlds %}
+    <tr>
+        <td>
+            <b>{{ world.pk }}</b>
+        </td>
+        <td>
+            {{ world.title }}
+        </td>
+        <td>
+            {% if world.domain %}
+            <a href="https://{{ world.domain }}" target="_blank">
+                {{ world.domain }}
+            </a>
+            {% endif %}
+        </td>
+        <td class="text-right">
+            {{ world.user_count }}
+        </td>
+        <td class="text-right">
+            {% if world.user_count %}
+            <a href="{% url 'control:world.clear' pk=world.pk %}">
+                {% trans "Delete data" %}
+            </a>
+            {% endif %}
+        </td>
+        <td class="text-right">
+            {% if world.domain and world.admin_token %}
+                <a href="{% url 'control:world.admin' pk=world.pk %}">
+                    {% trans "Admin access" %}
+                </a>
+            {% endif %}
+        </td>
+        <td class="text-right">
+            <a href="{% url 'control:world.create' %}?copy_from={{ world.pk|urlencode }}">
+                {% trans "Clone" %}
+            </a>
+        </td>
+        <td class="text-right">
+            <a href="{% url 'control:world.update' pk=world.pk %}">
+                {% trans "Edit" %}
+            </a>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

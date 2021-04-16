@@ -6,6 +6,7 @@ from django.urls import include, re_path
 from django.views.static import serve
 
 from .api.urls import urlpatterns as api_patterns
+from .control import urls as control
 from .graphs import urls as graphs
 from .live import urls as live
 from .live import views
@@ -34,6 +35,7 @@ urlpatterns = (
         re_path(r"graphs/", include(graphs)),
         re_path(r"zoom/", include((zoom, "zoom"), namespace="zoom")),
         re_path(r"storage/", include((storage, "storage"), namespace="storage")),
+        re_path("control/", include((control, "control"), namespace="control")),
         re_path(r"", include((live, "live"), namespace="live")),
     ]
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
