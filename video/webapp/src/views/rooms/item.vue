@@ -22,7 +22,7 @@
 		iframe-page(v-else-if="modules['page.iframe']", :module="modules['page.iframe']")
 		exhibition(v-else-if="modules['exhibition.native']", :room="room")
 		chat(v-if="room.modules.length === 1 && modules['chat.native']", :room="room", :module="modules['chat.native']", mode="standalone", :key="room.id")
-		.room-sidebar(v-else-if="modules['chat.native'] || modules['question']", :class="unreadTabsClasses")
+		.room-sidebar(v-else-if="modules['chat.native'] || modules['question']", :class="unreadTabsClasses", role="complementary")
 			bunt-tabs(v-if="modules['question'] && modules['chat.native']", :active-tab="activeSidebarTab")
 				bunt-tab(id="chat", :header="$t('Room:sidebar:tabs-header:chat')", @selected="activeSidebarTab = 'chat'")
 				bunt-tab(id="questions", :header="$t('Room:sidebar:tabs-header:questions')", @selected="activeSidebarTab = 'questions'")

@@ -1,6 +1,6 @@
 <template lang="pug">
 transition(name="sidebar")
-	.c-rooms-sidebar(v-show="show && !snapBack", :style="style", @pointerdown="onPointerdown", @pointermove="onPointermove", @pointerup="onPointerup", @pointercancel="onPointercancel")
+	.c-rooms-sidebar(v-show="show && !snapBack", :style="style", role="navigation", @pointerdown="onPointerdown", @pointermove="onPointermove", @pointerup="onPointerup", @pointercancel="onPointercancel")
 		router-link.logo(to="/", v-if="$mq.above['m']", :class="{'fit-to-width': theme.logo.fitToWidth}")
 			img(:src="theme.logo.url", :alt="world.title")
 		bunt-icon-button#btn-close-sidebar(v-else, @click="$emit('close')") menu
