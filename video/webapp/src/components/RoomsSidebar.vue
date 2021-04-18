@@ -5,14 +5,14 @@ transition(name="sidebar")
 			img(:src="theme.logo.url", :alt="world.title")
 		bunt-icon-button#btn-close-sidebar(v-else, @click="$emit('close')") menu
 		scrollbars(y)
-			.global-links
+			.global-links(role="group", aria-label="pages")
 				router-link.room(v-if="roomsByType.page.includes(rooms[0])", :to="{name: 'home'}") {{ rooms[0].name }}
 				router-link.room(:to="{name: 'schedule'}", v-if="!!world.pretalx && (world.pretalx.url || world.pretalx.domain)") {{ $t('RoomsSidebar:schedule:label') }}
 				router-link.room(v-for="page of roomsByType.page", v-if="page !== rooms[0]", :to="{name: 'room', params: {roomId: page.id}}") {{ page.name }}
-			.group-title(v-if="roomsByType.stage.length || hasPermission('world:rooms.create.stage')")
+			.group-title#stages-title(v-if="roomsByType.stage.length || hasPermission('world:rooms.create.stage')")
 				span {{ $t('RoomsSidebar:stages-headline:text') }}
 				bunt-icon-button(v-if="hasPermission('world:rooms.create.stage')", @click="showStageCreationPrompt = true") plus
-			.stages
+			.stages(role="group", aria-describedby="stages-title")
 				router-link.stage(v-for="stage, index of roomsByType.stage", :to="stage.room === rooms[0] ? {name: 'home'} : {name: 'room', params: {roomId: stage.room.id}}", :class="{session: stage.session, live: stage.session && stage.room.schedule_data, 'has-image': stage.image}")
 					template(v-if="stage.session")
 						img.preview(v-if="stage.image", :src="stage.image")
@@ -21,28 +21,31 @@ transition(name="sidebar")
 							.subtitle
 								.speakers {{ stage.session.speakers.map(s => s.name).join(', ') }}
 								.room {{ stage.room.name }}
-					.name(v-else) {{ stage.room.name }}
-			.group-title(v-if="roomsByType.videoChat.length || roomsByType.textChat.length || hasPermission('world:rooms.create.chat') || hasPermission('world:rooms.create.bbb')")
+					template(v-else)
+						.room-icon(aria-hidden="true")
+						.name {{ stage.room.name }}
+			.group-title#chats-title(v-if="roomsByType.videoChat.length || roomsByType.textChat.length || hasPermission('world:rooms.create.chat') || hasPermission('world:rooms.create.bbb')")
 				span {{ $t('RoomsSidebar:channels-headline:text') }}
 				.buffer
-				bunt-icon-button(v-if="hasPermission('world:rooms.create.chat') || hasPermission('world:rooms.create.bbb')", @click="showChatCreationPrompt = true") plus
-				bunt-icon-button(v-if="worldHasTextChannels", @click="showChannelBrowser = true") compass-outline
-			.chats
+				bunt-icon-button(v-if="hasPermission('world:rooms.create.chat') || hasPermission('world:rooms.create.bbb')", tooltip="Create Channel", @click="showChatCreationPrompt = true") plus
+				bunt-icon-button(v-if="worldHasTextChannels", tooltip="Browse all channels", @click="showChannelBrowser = true") compass-outline
+			.chats(role="group", aria-describedby="chats-title")
 				router-link.video-chat(v-for="chat of roomsByType.videoChat", :to="chat === rooms[0] ? {name: 'home'} : {name: 'room', params: {roomId: chat.id}}")
+					.room-icon(aria-hidden="true")
 					.name {{ chat.name }}
-					i.bunt-icon.activity-icon.mdi(v-if="chat.users === 'many' || chat.users === 'few'", :class="{'mdi-account-group': (chat.users === 'many'), 'mdi-account-multiple': (chat.users === 'few')}", v-tooltip="{text: $t('RoomsSidebar:users-tooltip:' + chat.users), placement: 'left'}")
+					i.bunt-icon.activity-icon.mdi(v-if="chat.users === 'many' || chat.users === 'few'", :class="{'mdi-account-group': (chat.users === 'many'), 'mdi-account-multiple': (chat.users === 'few')}", v-tooltip="{text: $t('RoomsSidebar:users-tooltip:' + chat.users), placement: 'left'}", :aria-label="$t('RoomsSidebar:users-tooltip:' + chat.users)")
 				router-link.text-chat(v-for="chat of roomsByType.textChat", :to="chat === rooms[0] ? {name: 'home'} : {name: 'room', params: {roomId: chat.id}}", :class="{unread: hasUnreadMessages(chat.modules[0].channel_id)}")
 					.name {{ chat.name }}
 					bunt-icon-button(@click.prevent.stop="$store.dispatch('chat/leaveChannel', {channelId: chat.modules[0].channel_id})") close
 				bunt-button#btn-browse-channels-trailing(v-if="worldHasTextChannels", @click="showChannelBrowser = true") {{ $t('RoomsSidebar:browse-channels-button:label') }}
-			.group-title(v-if="directMessageChannels.length || hasPermission('world:chat.direct')")
+			.group-title#dm-title(v-if="directMessageChannels.length || hasPermission('world:chat.direct')")
 				span {{ $t('RoomsSidebar:direct-messages-headline:text') }}
-				bunt-icon-button(v-if="hasPermission('world:chat.direct')", @click="showDMCreationPrompt = true") plus
-			.direct-messages
+				bunt-icon-button(v-if="hasPermission('world:chat.direct')", tooltip="open a direct message", @click="showDMCreationPrompt = true") plus
+			.direct-messages(role="group", aria-describedby="dm-title")
 				router-link.direct-message(v-for="channel of directMessageChannels", :to="{name: 'channel', params: {channelId: channel.id}}", :class="{unread: hasUnreadMessages(channel.id)}")
-					i.bunt-icon.mdi(v-if="call && call.channel === channel.id").mdi-phone
+					i.bunt-icon.mdi(v-if="call && call.channel === channel.id", aria-hidden="true").mdi-phone
 					.name {{ getDMChannelName(channel) }}
-					bunt-icon-button(@click.prevent.stop="$store.dispatch('chat/leaveChannel', {channelId: channel.id})") close
+					bunt-icon-button(tooltip="remove", @click.prevent.stop="$store.dispatch('chat/leaveChannel', {channelId: channel.id})") close
 			.buffer
 			template(v-if="staffedExhibitions.length > 0 || hasPermission('world:rooms.create.exhibition')")
 				.group-title {{ $t('RoomsSidebar:exhibitions-headline:text') }}
@@ -267,9 +270,9 @@ export default {
 			&:hover
 				background-color: var(--clr-sidebar-hover-bg)
 				color: var(--clr-sidebar-text-primary)
-			&.router-link-active::before
+			&.router-link-active .room-icon::before
 				color: var(--clr-sidebar-text-secondary)
-			&::before
+			.room-icon::before
 				font-family: "Material Design Icons"
 				font-size: 18px
 				line-height: 34px
@@ -350,13 +353,13 @@ export default {
 				.speakers
 					ellipsis()
 			&:not(.session)
-				&::before
+				.room-icon::before
 					content: '\F050D'
 		.text-chat
-			&::before
+			.room-icon::before
 				content: '\F0423'
 		.video-chat
-			&::before
+			.room-icon::before
 				content: '\F05A0'
 		.direct-message, .text-chat, .video-chat
 			padding-right: 8px
