@@ -28,7 +28,7 @@ def load_sheet(io):
         },
     }
     return {
-        title: pandas.read_excel(io, sheet_name=title, header=0, **config)
+        title: pandas.read_excel(io, sheet_name=title, header=0, engine="xlrd", **config)
         for title, config in sheets.items()
     }
 
