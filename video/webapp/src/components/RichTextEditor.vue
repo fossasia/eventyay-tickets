@@ -36,6 +36,7 @@ bunt-input-outline-container.c-rich-text-editor(ref="outline")
 import Quill from 'quill'
 import 'quill/dist/quill.core.css'
 import BuntTheme from 'lib/quill/BuntTheme'
+import VideoResponsive from 'lib/quill/VideoResponsive'
 import Emitter from 'quill/core/emitter'
 import api from 'lib/api'
 

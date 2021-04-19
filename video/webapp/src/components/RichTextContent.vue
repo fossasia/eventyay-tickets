@@ -4,6 +4,7 @@
 <script>
 import Quill from 'quill'
 import router from 'router'
+import VideoResponsive from 'lib/quill/VideoResponsive'
 
 export default {
 	props: {
@@ -11,8 +12,10 @@ export default {
 	},
 	computed: {
 		renderedContent () {
-			const tempCont = document.createElement('div');
-			(new Quill(tempCont)).setContents(this.content)
+			const tempCont = document.createElement('div')
+			Quill.register(VideoResponsive)
+			const quill = new Quill(tempCont)
+			quill.setContents(this.content)
 			return tempCont.getElementsByClassName('ql-editor')[0].innerHTML
 		},
 	},
