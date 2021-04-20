@@ -209,7 +209,11 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
     # Override send and receive methods to use orjson and less function calls
 
     async def send_json(self, content, close=False):
-        await super().send(text_data=orjson.dumps(content).decode(), close=close)
+        try:
+            await super().send(text_data=orjson.dumps(content).decode(), close=close)
+        except RuntimeError:
+            # socket has been closed in the meantime
+            pass
 
     @classmethod
     async def decode_json(cls, text_data):
