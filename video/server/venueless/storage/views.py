@@ -141,7 +141,8 @@ class UploadView(UploadMixin, View):
             # Pillow doesn't recognize it as an image.
             raise ValidationError("invalid image")
 
-        file.seek(0)
+        if hasattr(file, 'seek'):
+            file.seek(0)
         o = BytesIO()
         o.name = data.name
         image = Image.open(file)
