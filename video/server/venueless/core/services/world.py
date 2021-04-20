@@ -219,7 +219,7 @@ async def create_room(world, data, creator):
                 "This user is not allowed to create a room of this type.", code="denied"
             )
         m = [m for m in data.get("modules", []) if m["type"] == "call.bigbluebutton"][0]
-        m["config"] = world.config.get("bbb_defaults")
+        m["config"] = world.config.get("bbb_defaults", {})
         m["config"].pop("secret", None)  # legacy
     elif "livestream.native" in types:
         if not await world.has_permission_async(
