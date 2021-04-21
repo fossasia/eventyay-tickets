@@ -27,6 +27,7 @@ from matplotlib.figure import Figure
 from reportlab.lib import colors
 from reportlab.lib.units import mm
 from reportlab.platypus import (
+    Image,
     KeepTogether,
     PageBreak,
     PageTemplate,
@@ -44,8 +45,9 @@ from venueless.storage.models import StoredFile
 
 
 class ReportGenerator:
-    def __init__(self, world):
+    def __init__(self, world, pdf_graphs=True):
         self.world = world
+        self.pdf_graphs = pdf_graphs
 
     def build(self, input):
         self.input = input
@@ -317,8 +319,6 @@ class ReportGenerator:
                 hour=self.date_end.hour, minute=self.date_end.minute, second=0
             )
             build_room_view_fig(fig, room, gds, gde, self.tz)
-            imgdata = io.BytesIO()
-            fig.savefig(imgdata, format="PDF")
             s.append(
                 KeepTogether(
                     [
@@ -326,7 +326,7 @@ class ReportGenerator:
                             date_format(day, "SHORT_DATE_FORMAT"),
                             self.stylesheet["Heading3"],
                         ),
-                        PdfImage(imgdata),
+                        self._graph(fig),
                     ]
                 )
             )
@@ -507,8 +507,6 @@ class ReportGenerator:
                 hour=self.date_end.hour, minute=self.date_end.minute, second=0
             )
             build_room_view_fig(fig, self.world, gds, gde, self.tz)
-            imgdata = io.BytesIO()
-            fig.savefig(imgdata, format="PDF")
             s.append(
                 KeepTogether(
                     [
@@ -521,10 +519,24 @@ class ReportGenerator:
                             "Does not count people only watching static pages or pure-text channels.",
                             self.stylesheet["Normal"],
                         ),
-                        PdfImage(imgdata),
+                        self._graph(fig),
                     ]
                 )
             )
             day += timedelta(days=1)
 
         return s
+
+    def _graph(self, fig):
+        if self.pdf_graphs:
+            imgdata = io.BytesIO()
+            fig.savefig(imgdata, format="PDF")
+            return PdfImage(imgdata)
+        else:
+            imgdata = io.BytesIO()
+            fig.savefig(imgdata, dpi=600, format="PNG")
+            imgdata.seek(0)
+            w = self.pagesize[0] - 30 * mm
+            return Image(
+                imgdata, width=w, height=fig.get_figheight() / fig.get_figwidth() * w
+            )

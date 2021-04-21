@@ -22,7 +22,12 @@ from venueless.storage.models import StoredFile
 @app.task(base=WorldTask)
 def generate_report(world, input=None):
     with override(world.locale):
-        cf = ReportGenerator(world).build(input)
+        try:
+            cf = ReportGenerator(world, pdf_graphs=True).build(input)
+        except:
+            # We first try to embed graphs directly into the PDF for best quality. Sometimes that fails,
+            # then we fall back to PNG rendering of graphs
+            cf = ReportGenerator(world, pdf_graphs=False).build(input)
         return cf.file.url
 
 
