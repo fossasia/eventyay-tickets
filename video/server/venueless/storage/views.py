@@ -156,6 +156,8 @@ class UploadView(UploadMixin, View):
             o.seek(0)
             return Image.MIME.get(image.format), File(o, name=data.name)
         else:
+            if hasattr(data, "seek"):
+                data.seek(0)
             return Image.MIME.get(image.format), data
 
 
