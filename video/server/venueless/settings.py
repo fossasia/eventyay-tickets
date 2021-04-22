@@ -186,6 +186,7 @@ INSTALLED_APPS = [
     "channels",
     "corsheaders",
     "rest_framework",
+    "djangoformsetjs",
     "venueless.core.CoreConfig",
     "venueless.api.ApiConfig",
     "venueless.live.LiveConfig",

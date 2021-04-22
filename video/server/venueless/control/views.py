@@ -8,7 +8,7 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.db import transaction
-from django.db.models import Count, F, OuterRef, Subquery
+from django.db.models import Count, F, Max, OuterRef, Subquery
 from django.shortcuts import redirect
 from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
@@ -24,7 +24,8 @@ from django.views.generic import (
 
 from venueless.core.models import RoomView, World
 
-from .forms import ProfileForm, SignupForm, UserForm, WorldForm
+from ..core.models.world import PlannedUsage
+from .forms import PlannedUsageFormSet, ProfileForm, SignupForm, UserForm, WorldForm
 from .models import LogEntry
 from .tasks import clear_world_data
 
@@ -114,16 +115,30 @@ class IndexView(AdminBase, TemplateView):
 
 class WorldList(AdminBase, ListView):
     template_name = "control/world_list.html"
-    queryset = World.objects.annotate(
-        user_count=Count("user"),
-        current_view_count=Subquery(
-            RoomView.objects.filter(room__world=OuterRef("pk"), end__isnull=True)
-            .order_by()
-            .values("room__world")
-            .annotate(c=Count("*"))
-            .values("c")
-        ),
-    ).order_by(F("current_view_count").desc(nulls_last=True))
+    queryset = (
+        World.objects.annotate(
+            user_count=Count("user"),
+            current_view_count=Subquery(
+                RoomView.objects.filter(room__world=OuterRef("pk"), end__isnull=True)
+                .order_by()
+                .values("room__world")
+                .annotate(c=Count("*"))
+                .values("c")
+            ),
+            last_usage=Subquery(
+                PlannedUsage.objects.filter(world=OuterRef("pk"))
+                .order_by()
+                .values("world")
+                .annotate(end=Max("end"))
+                .values("end")
+            ),
+        )
+        .prefetch_related("planned_usages")
+        .order_by(
+            F("current_view_count").desc(nulls_last=True),
+            F("last_usage").desc(nulls_last=True),
+        )
+    )
     context_object_name = "worlds"
 
     def get_context_data(self, *args, **kwargs):
@@ -166,7 +181,21 @@ class WorldAdminToken(AdminBase, DetailView):
         return redirect(f"https://{world.domain}/#token={token}")
 
 
-class WorldCreate(AdminBase, CreateView):
+class FormsetMixin:
+    @cached_property
+    def formset(self):
+        return PlannedUsageFormSet(
+            data=self.request.POST if self.request.method == "POST" else None,
+            instance=self.object,
+        )
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx["formset"] = self.formset
+        return ctx
+
+
+class WorldCreate(FormsetMixin, AdminBase, CreateView):
     template_name = "control/world_create.html"
     form_class = WorldForm
     success_url = "/control/worlds/"
@@ -203,7 +232,16 @@ class WorldCreate(AdminBase, CreateView):
         if self.copy_from:
             form.instance.clone_from(self.copy_from, new_secrets=True)
 
-        form.save()
+        self.object = form.save()
+
+        for f in self.formset.extra_forms:
+            if not f.has_changed():
+                continue
+            if self.formset._should_delete_form(f):
+                continue
+            f.instance.world = self.object
+            f.save()
+
         LogEntry.objects.create(
             content_object=form.instance,
             user=self.request.user,
@@ -221,8 +259,16 @@ class WorldCreate(AdminBase, CreateView):
         ctx["copy_from"] = self.copy_from
         return ctx
 
+    def post(self, request, *args, **kwargs):
+        self.object = None
+        form = self.get_form()
+        if form.is_valid() and self.formset.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
 
-class WorldUpdate(AdminBase, UpdateView):
+
+class WorldUpdate(FormsetMixin, AdminBase, UpdateView):
     template_name = "control/world_update.html"
     form_class = WorldForm
     queryset = World.objects.all()
@@ -234,6 +280,7 @@ class WorldUpdate(AdminBase, UpdateView):
         return ctx
 
     def form_valid(self, form):
+        self.formset.save()
         LogEntry.objects.create(
             content_object=self.get_object(),
             user=self.request.user,
@@ -242,6 +289,14 @@ class WorldUpdate(AdminBase, UpdateView):
         )
         messages.success(self.request, _("Ok!"))
         return super().form_valid(form)
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.get_form()
+        if form.is_valid() and self.formset.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
 
 
 class WorldClear(AdminBase, DetailView):

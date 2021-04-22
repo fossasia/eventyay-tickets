@@ -391,3 +391,16 @@ class World(VersionedModel):
                     clone_stored_files(inst=link, attrs=["url"])
                     link.exhibitor = ex
                     link.save()
+
+
+class PlannedUsage(models.Model):
+    world = models.ForeignKey(
+        World, on_delete=models.CASCADE, related_name="planned_usages"
+    )
+    start = models.DateField()
+    end = models.DateField()
+    attendees = models.PositiveIntegerField()
+    notes = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ("start",)

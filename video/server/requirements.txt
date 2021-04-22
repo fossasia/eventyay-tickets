@@ -9,6 +9,7 @@ channels_redis==3.2.*
 Django==3.1.*
 django-cors-headers==3.7.*
 django-extensions==3.1.*
+django-formset-js-improved
 djangorestframework==3.12.*
 emoji==1.2.*
 lxml==4.6.*

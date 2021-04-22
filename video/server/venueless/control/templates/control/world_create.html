@@ -1,11 +1,85 @@
 {% extends "control/base.html" %}
 {% load i18n %}
+{% load formset_tags %}
 
 {% block content %}
 <h1>{% trans "Create world" %}</h1>
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
+
+    <div id="formset" data-formset-prefix="{{ formset.prefix }}">
+        {{ formset.management_form }}
+
+        <table>
+            <tbody data-formset-body>
+
+            {% for form in formset %}
+            <tr data-formset-form>
+                <td>
+                    <div class="hidden">{{ form.DELETE }}</div>
+                    {{ form.start }}
+                </td>
+                <td>
+                    {{ form.end }}
+                </td>
+                <td>
+                    {{ form.attendees }}
+                </td>
+                <td>
+                    {{ form.notes }}
+                </td>
+                <td>
+                    <label>
+                        {{ form.DELETE }} Delete
+                    </label>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- The empty form template. By wrapping this in a <script> tag, the
+        __prefix__ placeholder can easily be replaced in both attributes and
+        any scripts -->
+        <script type="form-template" data-formset-empty-form>
+            {% escapescript %}
+            <tr data-formset-form>
+                <td>
+                    {{ formset.empty_form.start }}
+                </td>
+                <td>
+                    {{ formset.empty_form.end }}
+                </td>
+                <td>
+                    {{ formset.empty_form.attendees }}
+                </td>
+                <td>
+                    {{ formset.empty_form.notes }}
+                </td>
+                <td>
+                    <label>
+                        {{ formset.empty_form.DELETE }} Delete
+                    </label>
+                </td>
+            </tr>
+            {% endescapescript %}
+        </script>
+
+        <!-- This button will add a new form when clicked -->
+        <button type="button" data-formset-add>Add planning</button>
+
+        <script>jQuery(function($) {
+					$('#formset').formset({
+						animateForms: false,
+						reorderMode: 'dom',
+					});
+				});</script>
+
+    </div>
+
+    <p>&nbsp;</p>
+
     <button type="submit">
         {% if copy_from %}
             {% blocktrans with n=copy_from.pk %}Clone "{{ n }}"{% endblocktrans %}

@@ -12,7 +12,7 @@
     <thead>
     <tr>
         <th>{% trans "ID" %}</th>
-        <th>{% trans "Name" %}</th>
+        <th>{% trans "Name" %} / {% trans "Usage" %}</th>
         <th>{% trans "URL" %}</th>
         <th class="text-right">{% trans "Users" %}</th>
         <th class="text-right">{% trans "Current room views" %}</th>
@@ -30,6 +30,10 @@
         </td>
         <td>
             {{ world.title }}
+            {% for u in world.planned_usages.all %}
+                <br>
+                <small class="text-muted">{{ u.start|date:"SHORT_DATE_FORMAT" }} – {{ u.end|date:"SHORT_DATE_FORMAT" }} ({{ u.attendees }}ppl)</small>
+            {% endfor %}
         </td>
         <td>
             {% if world.domain %}

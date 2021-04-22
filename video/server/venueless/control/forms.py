@@ -1,8 +1,9 @@
 from django import forms
 from django.contrib.auth import get_user_model
+from django.forms import inlineformset_factory
 
 from venueless.core.models import World
-from venueless.core.models.world import FEATURE_FLAGS
+from venueless.core.models.world import FEATURE_FLAGS, PlannedUsage
 
 User = get_user_model()
 
@@ -93,3 +94,26 @@ class UserForm(forms.ModelForm):
             "is_active",
             "is_superuser",
         )
+
+
+class DateInput(forms.DateInput):
+    input_type = "date"
+
+
+class PlannedUsageForm(forms.ModelForm):
+    class Meta:
+        model = PlannedUsage
+        fields = ("start", "end", "attendees", "notes")
+        widgets = {
+            "notes": forms.Textarea(attrs={"rows": "1", "placeholder": "Notes"}),
+            "attendees": forms.NumberInput(
+                attrs={"placeholder": "Number of attendees"}
+            ),
+            "start": DateInput(attrs={"placeholder": "Start date"}, format="%Y-%m-%d"),
+            "end": DateInput(attrs={"placeholder": "End date"}, format="%Y-%m-%d"),
+        }
+
+
+PlannedUsageFormSet = inlineformset_factory(
+    World, PlannedUsage, PlannedUsageForm, can_delete=True, extra=0
+)
