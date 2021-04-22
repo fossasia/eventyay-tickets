@@ -3,6 +3,7 @@ from urllib.parse import urlsplit
 
 from django.conf import settings
 from django.urls import include, re_path
+from django.views.generic import RedirectView
 from django.views.static import serve
 
 from .api.urls import urlpatterns as api_patterns
@@ -35,6 +36,7 @@ urlpatterns = (
         re_path(r"graphs/", include(graphs)),
         re_path(r"zoom/", include((zoom, "zoom"), namespace="zoom")),
         re_path(r"storage/", include((storage, "storage"), namespace="storage")),
+        re_path("control$", RedirectView.as_view(url="/control/")),
         re_path("control/", include((control, "control"), namespace="control")),
         re_path(r"", include((live, "live"), namespace="live")),
     ]
