@@ -144,7 +144,7 @@ class UploadView(UploadMixin, View):
         if hasattr(file, "seek"):
             file.seek(0)
 
-        if image.format == 'JPEG':
+        if image.format == "JPEG":
             o = BytesIO()
             o.name = data.name
 
@@ -152,7 +152,9 @@ class UploadView(UploadMixin, View):
             logger.error(image.mode)
             image_without_exif = Image.new(image.mode, image.size)
             image_without_exif.putdata(image.getdata())
-            image_without_exif.save(o, format='JPEG', quality=95)  # Pillow's default JPEG quality is 75
+            image_without_exif.save(
+                o, format="JPEG", quality=95
+            )  # Pillow's default JPEG quality is 75
             o.seek(0)
             return Image.MIME.get(image.format), File(o, name=data.name)
         else:
