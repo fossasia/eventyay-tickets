@@ -15,6 +15,7 @@
         <th>{% trans "Name" %}</th>
         <th>{% trans "URL" %}</th>
         <th class="text-right">{% trans "Users" %}</th>
+        <th class="text-right">{% trans "Current room views" %}</th>
         <th></th>
         <th></th>
         <th></th>
@@ -23,7 +24,7 @@
     </thead>
     <tbody>
     {% for world in worlds %}
-    <tr>
+    <tr class="{% if world.current_view_count %}active{% elif not world.user_count and not world.domain %}deleted{% endif %}">
         <td>
             <b>{{ world.pk }}</b>
         </td>
@@ -39,6 +40,9 @@
         </td>
         <td class="text-right">
             {{ world.user_count }}
+        </td>
+        <td class="text-right">
+            {{ world.current_view_count|default_if_none:0 }}
         </td>
         <td class="text-right">
             {% if world.user_count %}

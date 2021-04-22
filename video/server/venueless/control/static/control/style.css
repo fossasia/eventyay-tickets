@@ -73,6 +73,14 @@ table {
 	border-collapse: collapse;
 }
 
+table tr.active {
+	background: rgba(254, 0, 142, 0.1);
+}
+
+table tr.deleted {
+	color: #888;
+}
+
 table tr:hover {
 	background: #eee;
 }

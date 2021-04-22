@@ -8,7 +8,7 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.db import transaction
-from django.db.models import Count
+from django.db.models import Count, F, OuterRef, Subquery
 from django.shortcuts import redirect
 from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
@@ -22,7 +22,7 @@ from django.views.generic import (
     UpdateView,
 )
 
-from venueless.core.models import World
+from venueless.core.models import RoomView, World
 
 from .forms import ProfileForm, SignupForm, UserForm, WorldForm
 from .models import LogEntry
@@ -114,7 +114,16 @@ class IndexView(AdminBase, TemplateView):
 
 class WorldList(AdminBase, ListView):
     template_name = "control/world_list.html"
-    queryset = World.objects.annotate(user_count=Count("user")).all()
+    queryset = World.objects.annotate(
+        user_count=Count("user"),
+        current_view_count=Subquery(
+            RoomView.objects.filter(room__world=OuterRef("pk"), end__isnull=True)
+            .order_by()
+            .values("room__world")
+            .annotate(c=Count("*"))
+            .values("c")
+        ),
+    ).order_by(F("current_view_count").desc(nulls_last=True))
     context_object_name = "worlds"
 
     def get_context_data(self, *args, **kwargs):
