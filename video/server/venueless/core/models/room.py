@@ -155,7 +155,9 @@ class Reaction(models.Model):
 class RoomView(models.Model):
     room = models.ForeignKey(to="Room", related_name="views", on_delete=models.CASCADE)
     start = models.DateTimeField(auto_now_add=True)
-    end = models.DateTimeField(null=True)
+    end = models.DateTimeField(
+        null=True, db_index=True
+    )  # index required for control/ dashboard
     user = models.ForeignKey(to="user", related_name="views", on_delete=models.CASCADE)
 
 
