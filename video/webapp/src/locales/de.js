@@ -222,6 +222,7 @@ export default {
 	'RichTextEditor:list-ordered:tooltip': 'Nummerierte Liste',
 	'RichTextEditor:strike:tooltip': 'Durchgestrichen',
 	'RichTextEditor:underline:tooltip': 'Unterstrichen',
+	'RichTextEditor:full-width:tooltip': 'Auf volle Seitenbreite ausdehnen',
 	'RoomsSidebar:admin-config:label': 'Konfiguration',
 	'RoomsSidebar:admin-headline:text': 'Administration',
 	'RoomsSidebar:admin-rooms:label': 'Räume',
