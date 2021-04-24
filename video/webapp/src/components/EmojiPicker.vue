@@ -32,4 +32,7 @@ export default {
 }
 </script>
 <style lang="stylus">
+.c-emoji-picker
+	.emoji-mart-emoji span
+		image-rendering: -webkit-optimize-contrast
 </style>
