@@ -56,9 +56,6 @@ export default {
 		max-width: 100%
 
 	.ql-video-wrapper
-		width: 100%
-		margin: auto
-
 		.ql-video-inner
 			height: 0
 			width: 100%
