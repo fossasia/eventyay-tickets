@@ -5,6 +5,7 @@
 import Quill from 'quill'
 import router from 'router'
 import VideoResponsive from 'lib/quill/VideoResponsive'
+import fullWidthFormat from 'lib/quill/fullWidthFormat'
 
 export default {
 	props: {
@@ -14,6 +15,7 @@ export default {
 		renderedContent () {
 			const tempCont = document.createElement('div')
 			Quill.register(VideoResponsive)
+			Quill.register(fullWidthFormat)
 			const quill = new Quill(tempCont)
 			quill.setContents(this.content)
 			return tempCont.getElementsByClassName('ql-editor')[0].innerHTML
@@ -38,3 +40,50 @@ export default {
 	},
 }
 </script>
+<style lang="styl">
+.rich-text-content
+	table
+		border-collapse: collapse
+		width: 100%
+
+	table td, table th
+		border: 1px solid #ccc
+		border-collapse: collapse
+		padding: 10px
+		text-align: left
+
+	img
+		max-width: 100%
+
+	.ql-video-wrapper
+		width: 100%
+		margin: auto
+
+		.ql-video-inner
+			height: 0
+			width: 100%
+			padding-top: 56.25%
+			position: relative
+
+			iframe, object, embed
+				position: absolute
+				top: 0
+				left: 0
+				width: 100%
+				height: 100%
+
+	a:hover
+		text-decoration: underline
+
+	li
+		line-height: 1.6
+
+	.ql-syntax
+		font-size: 1.2em
+
+	.ql-align-center
+		text-align: center
+
+	.ql-align-right
+		text-align: right
+</style>
