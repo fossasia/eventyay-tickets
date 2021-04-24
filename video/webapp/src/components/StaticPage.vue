@@ -26,6 +26,8 @@ export default {
 		> *
 			max-width: 960px
 			margin: 0 auto
+			+below('m')
+				margin: 0 16px
 		img
 			display: block
 			margin: 0 auto
