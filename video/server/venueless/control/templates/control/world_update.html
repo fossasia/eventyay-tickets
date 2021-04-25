@@ -11,6 +11,14 @@
     <div id="formset" data-formset-prefix="{{ formset.prefix }}">
         {{ formset.management_form }}
 
+        {% if formset.errors %}
+        {% for error in formset.errors %}
+        <div class="alert alert-danger">
+            <strong>{{ error|escape }}</strong>
+        </div>
+        {% endfor %}
+        {% endif %}
+
         <table>
             <tbody data-formset-body>
 
@@ -18,7 +26,23 @@
             <tr data-formset-form>
                 <td>
                     <div class="hidden">{{ form.DELETE }}</div>
+                    <div class="hidden">{{ form.id }}</div>
                     {{ form.start }}
+
+                    {% if form.errors %}
+                    {% for field in form %}
+                    {% for error in field.errors %}
+                    <div class="alert alert-danger">
+                        <strong>{{ error|escape }}</strong>
+                    </div>
+                    {% endfor %}
+                    {% endfor %}
+                    {% for error in form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        <strong>{{ error|escape }}</strong>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
                 </td>
                 <td>
                     {{ form.end }}
