@@ -222,6 +222,7 @@ export default {
 	'RichTextEditor:list-ordered:tooltip': 'Numbered list',
 	'RichTextEditor:strike:tooltip': 'Strike',
 	'RichTextEditor:underline:tooltip': 'Underline',
+	'RichTextEditor:full-width:tooltip': 'Expand to full page width',
 	'Room:recordings:tooltip': 'View recordings',
 	'Room:sidebar:tabs-header:chat': 'Chat',
 	'Room:sidebar:tabs-header:questions': 'Questions',

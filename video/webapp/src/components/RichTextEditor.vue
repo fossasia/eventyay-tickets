@@ -20,6 +20,7 @@ bunt-input-outline-container.c-rich-text-editor(ref="outline")
 			bunt-icon-button.ql-align(value="", v-tooltip="$t('RichTextEditor:align-left:tooltip')") format-align-left
 			bunt-icon-button.ql-align(value="center", v-tooltip="$t('RichTextEditor:align-center:tooltip')") format-align-center
 			bunt-icon-button.ql-align(value="right", v-tooltip="$t('RichTextEditor:align-right:tooltip')") format-align-right
+			bunt-icon-button.ql-full-width(v-tooltip="$t('RichTextEditor:full-width:tooltip')") arrow-expand-horizontal
 		.buttongroup
 			bunt-icon-button.ql-link(v-tooltip="$t('RichTextEditor:link:tooltip')") link-variant
 			bunt-icon-button.ql-image(v-tooltip="$t('RichTextEditor:image:tooltip')") image
@@ -36,6 +37,8 @@ bunt-input-outline-container.c-rich-text-editor(ref="outline")
 import Quill from 'quill'
 import 'quill/dist/quill.core.css'
 import BuntTheme from 'lib/quill/BuntTheme'
+import VideoResponsive from 'lib/quill/VideoResponsive'
+import fullWidthFormat from 'lib/quill/fullWidthFormat'
 import Emitter from 'quill/core/emitter'
 import api from 'lib/api'
 
@@ -54,6 +57,8 @@ export default {
 	computed: {},
 	mounted () {
 		Quill.register('themes/bunt', BuntTheme, false)
+		Quill.register(VideoResponsive)
+		Quill.register(fullWidthFormat)
 		this.quill = new Quill(this.$refs.editor, {
 			debug: ENV_DEVELOPMENT ? 'info' : 'warn',
 			theme: 'bunt',
@@ -222,6 +227,16 @@ export default {
 
 	.ql-editor
 		typography()
+
+		> *, p, h1, h2, h3, h4, h5, h6
+			max-width: 960px
+			margin: 0 auto
+		img
+			margin: 0 auto
+			display: block
+		.ql-full-width-true
+			margin: 0
+			max-width: none
 
 		ol li::before, ul li::before
 			content: ""
