@@ -228,9 +228,15 @@ export default {
 	.ql-editor
 		typography()
 
-		> *, p, h1, h2, h3, h4, h5, h6, blockquote, ul, ol, pre
+		> *, p, h1, h2, h3, h4, h5, h6, blockquote, li, pre
 			max-width: 960px
 			margin: 0 auto
+		ul, ol
+			margin: 0
+			padding: 0
+			max-width: none
+			li
+				list-style-position: inside
 		img
 			margin: 0 auto
 			display: block
