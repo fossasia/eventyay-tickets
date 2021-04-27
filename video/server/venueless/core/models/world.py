@@ -17,7 +17,11 @@ from venueless.core.utils.json import CustomJSONEncoder
 
 
 def default_roles():
-    attendee = [Permission.WORLD_VIEW]
+    attendee = [
+        Permission.WORLD_VIEW,
+        Permission.WORLD_EXHIBITION_CONTACT,
+        Permission.WORLD_CHAT_DIRECT,
+    ]
     viewer = attendee + [Permission.ROOM_VIEW, Permission.ROOM_CHAT_READ]
     participant = viewer + [
         Permission.ROOM_CHAT_JOIN,
@@ -26,8 +30,6 @@ def default_roles():
         Permission.ROOM_BBB_JOIN,
         Permission.ROOM_JANUSCALL_JOIN,
         Permission.ROOM_ZOOM_JOIN,
-        Permission.WORLD_CHAT_DIRECT,
-        Permission.WORLD_EXHIBITION_CONTACT,
     ]
     room_creator = [Permission.WORLD_ROOMS_CREATE_CHAT]
     room_owner = participant + [
