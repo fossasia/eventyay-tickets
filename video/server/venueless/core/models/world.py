@@ -127,6 +127,9 @@ class World(VersionedModel):
     timezone = models.CharField(max_length=120, default="Europe/Berlin")
     feature_flags = JSONField(blank=True, default=default_feature_flags)
 
+    def __str__(self):
+        return f"{self.id} ({self.title})"
+
     def decode_token(self, token):
         for jwt_config in self.config["JWT_secrets"]:
             secret = jwt_config["secret"]

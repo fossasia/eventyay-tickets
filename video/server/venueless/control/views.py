@@ -24,14 +24,16 @@ from django.views.generic import (
     UpdateView,
 )
 
-from venueless.core.models import BBBServer, RoomView, World
+from venueless.core.models import BBBServer, JanusServer, RoomView, TurnServer, World
 
 from ..core.models.world import PlannedUsage
 from .forms import (
     BBBServerForm,
+    JanusServerForm,
     PlannedUsageFormSet,
     ProfileForm,
     SignupForm,
+    TurnServerForm,
     UserForm,
     WorldForm,
 )
@@ -327,7 +329,7 @@ class WorldClear(AdminBase, DetailView):
 
 class BBBServerList(AdminBase, ListView):
     template_name = "control/bbb_list.html"
-    queryset = BBBServer.objects.select_related("world_exclusive")
+    queryset = BBBServer.objects.select_related("world_exclusive").order_by("url")
     context_object_name = "servers"
 
 
@@ -381,6 +383,134 @@ class BBBServerDelete(AdminBase, DeleteView):
             content_object=self.object,
             user=self.request.user,
             action_type="bbbserver.deleted",
+            data={},
+        )
+        success_url = self.get_success_url()
+        self.object.delete()
+        messages.success(self.request, _("Ok!"))
+        return HttpResponseRedirect(success_url)
+
+
+class JanusServerList(AdminBase, ListView):
+    template_name = "control/janus_list.html"
+    queryset = JanusServer.objects.select_related("world_exclusive").order_by("url")
+    context_object_name = "servers"
+
+
+class JanusServerCreate(AdminBase, CreateView):
+    template_name = "control/janus_form.html"
+    form_class = JanusServerForm
+    success_url = "/control/janus/"
+
+    @transaction.atomic()
+    def form_valid(self, form):
+        self.object = form.save()
+
+        LogEntry.objects.create(
+            content_object=form.instance,
+            user=self.request.user,
+            action_type="janusserver.created",
+            data={k: str(v) for k, v in form.cleaned_data.items()},
+        )
+        messages.success(self.request, _("Ok!"))
+        return super().form_valid(form)
+
+
+class JanusServerUpdate(AdminBase, UpdateView):
+    template_name = "control/janus_form.html"
+    form_class = JanusServerForm
+    queryset = JanusServer.objects.all()
+    success_url = "/control/janus/"
+
+    def form_valid(self, form):
+        self.object = form.save()
+
+        LogEntry.objects.create(
+            content_object=form.instance,
+            user=self.request.user,
+            action_type="janusserver.updated",
+            data={k: str(v) for k, v in form.cleaned_data.items()},
+        )
+        messages.success(self.request, _("Ok!"))
+        return super().form_valid(form)
+
+
+class JanusServerDelete(AdminBase, DeleteView):
+    template_name = "control/janus_delete.html"
+    queryset = JanusServer.objects.all()
+    success_url = "/control/janus/"
+    context_object_name = "server"
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        LogEntry.objects.create(
+            content_object=self.object,
+            user=self.request.user,
+            action_type="janusserver.deleted",
+            data={},
+        )
+        success_url = self.get_success_url()
+        self.object.delete()
+        messages.success(self.request, _("Ok!"))
+        return HttpResponseRedirect(success_url)
+
+
+class TurnServerList(AdminBase, ListView):
+    template_name = "control/turn_list.html"
+    queryset = TurnServer.objects.select_related("world_exclusive").order_by("hostname")
+    context_object_name = "servers"
+
+
+class TurnServerCreate(AdminBase, CreateView):
+    template_name = "control/turn_form.html"
+    form_class = TurnServerForm
+    success_url = "/control/turns/"
+
+    @transaction.atomic()
+    def form_valid(self, form):
+        self.object = form.save()
+
+        LogEntry.objects.create(
+            content_object=form.instance,
+            user=self.request.user,
+            action_type="turnserver.created",
+            data={k: str(v) for k, v in form.cleaned_data.items()},
+        )
+        messages.success(self.request, _("Ok!"))
+        return super().form_valid(form)
+
+
+class TurnServerUpdate(AdminBase, UpdateView):
+    template_name = "control/turn_form.html"
+    form_class = TurnServerForm
+    queryset = TurnServer.objects.all()
+    success_url = "/control/turns/"
+
+    def form_valid(self, form):
+        self.object = form.save()
+
+        LogEntry.objects.create(
+            content_object=form.instance,
+            user=self.request.user,
+            action_type="turnserver.updated",
+            data={k: str(v) for k, v in form.cleaned_data.items()},
+        )
+        messages.success(self.request, _("Ok!"))
+        return super().form_valid(form)
+
+
+class TurnServerDelete(AdminBase, DeleteView):
+    template_name = "control/turn_delete.html"
+    queryset = TurnServer.objects.all()
+    success_url = "/control/turns/"
+    context_object_name = "server"
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        LogEntry.objects.create(
+            content_object=self.object,
+            user=self.request.user,
+            action_type="turnserver.deleted",
             data={},
         )
         success_url = self.get_success_url()

@@ -25,6 +25,26 @@ urlpatterns = [
         name="bbbserver.delete",
     ),
     path("bbbs/<uuid:pk>/", views.BBBServerUpdate.as_view(), name="bbbserver.update"),
+    path("janus/", views.JanusServerList.as_view(), name="janusserver.list"),
+    path("janus/new/", views.JanusServerCreate.as_view(), name="janusserver.create"),
+    path(
+        "janus/<uuid:pk>/delete",
+        views.JanusServerDelete.as_view(),
+        name="janusserver.delete",
+    ),
+    path(
+        "janus/<uuid:pk>/", views.JanusServerUpdate.as_view(), name="janusserver.update"
+    ),
+    path("turns/", views.TurnServerList.as_view(), name="turnserver.list"),
+    path("turns/new/", views.TurnServerCreate.as_view(), name="turnserver.create"),
+    path(
+        "turns/<uuid:pk>/delete",
+        views.TurnServerDelete.as_view(),
+        name="turnserver.delete",
+    ),
+    path(
+        "turns/<uuid:pk>/", views.TurnServerUpdate.as_view(), name="turnserver.update"
+    ),
     path("worlds/", views.WorldList.as_view(), name="world.list"),
     path("worlds/new/", views.WorldCreate.as_view(), name="world.create"),
     path("worlds/<slug:pk>/admin", views.WorldAdminToken.as_view(), name="world.admin"),

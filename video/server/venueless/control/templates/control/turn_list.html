@@ -1,0 +1,51 @@
+{% extends "control/base.html" %}
+{% load i18n %}
+
+{% block content %}
+
+<p>
+    <a href="{% url "control:turnserver.create" %}" class="btn">
+    {% trans "Add new server" %}
+    </a>
+</p>
+<table>
+    <thead>
+    <tr>
+        <th>{% trans "ID" %}</th>
+        <th>{% trans "Host name" %}</th>
+        <th>{% trans "World" %}</th>
+        <th></th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for s in servers %}
+    <tr class="{% if not s.active %}deleted{% endif %}">
+        <td>
+            <b>{{ s.pk }}</b>
+        </td>
+        <td>
+            {{ s.hostname }}
+        </td>
+        <td>
+            {% if s.world_exclusive %}
+                {{ s.world_exclusive }}
+            {% else %}
+                {% trans "All" %}
+            {% endif %}
+        </td>
+        <td class="text-right">
+            <a href="{% url 'control:turnserver.delete' pk=s.pk %}">
+                {% trans "Delete" %}
+            </a>
+        </td>
+        <td class="text-right">
+            <a href="{% url 'control:turnserver.update' pk=s.pk %}">
+                {% trans "Edit" %}
+            </a>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

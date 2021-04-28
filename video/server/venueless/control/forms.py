@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.forms import inlineformset_factory
 
-from venueless.core.models import BBBServer, World
+from venueless.core.models import BBBServer, JanusServer, TurnServer, World
 from venueless.core.models.world import FEATURE_FLAGS, PlannedUsage
 
 User = get_user_model()
@@ -166,8 +166,33 @@ class BBBServerForm(HasSecretsMixin, forms.ModelForm):
         model = BBBServer
         fields = (
             "url",
+            "active",
             "world_exclusive",
             "rooms_only",
             "secret",
         )
         field_classes = {"secret": SecretKeyField}
+
+
+class JanusServerForm(HasSecretsMixin, forms.ModelForm):
+    class Meta:
+        model = JanusServer
+        fields = (
+            "url",
+            "active",
+            "room_create_key",
+            "world_exclusive",
+        )
+        field_classes = {"room_create_key": SecretKeyField}
+
+
+class TurnServerForm(HasSecretsMixin, forms.ModelForm):
+    class Meta:
+        model = TurnServer
+        fields = (
+            "active",
+            "hostname",
+            "auth_secret",
+            "world_exclusive",
+        )
+        field_classes = {"auth_secret": SecretKeyField}

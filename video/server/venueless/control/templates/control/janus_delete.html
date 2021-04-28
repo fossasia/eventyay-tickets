@@ -1,0 +1,10 @@
+{% extends "control/base.html" %}
+{% load i18n %}
+
+{% block content %}
+<h1>{% trans "Delete Janus server" %}</h1>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">{% blocktrans id=server.url %}Delete {{ id }}{% endblocktrans %}</button>
+</form>
+{% endblock %}

@@ -28,6 +28,12 @@
                 <a href="{% url "control:bbbserver.list" %}"{% if request.path == "/control/bbbs/" %} class="active"{% endif %}>
                     {% trans "BBB servers" %}
                 </a>
+                <a href="{% url "control:turnserver.list" %}"{% if request.path == "/control/turns/" %} class="active"{% endif %}>
+                   {% trans "TURN servers" %}
+                </a>
+                <a href="{% url "control:janusserver.list" %}"{% if request.path == "/control/janus/" %} class="active"{% endif %}>
+                    {% trans "Janus servers" %}
+                </a>
                     {% if request.user.is_superuser %}
                     <a href="{% url "control:user.list" %}"{% if request.path == "/control/users/" %} class="active"{% endif %}>
                         {% trans "Users" %}
