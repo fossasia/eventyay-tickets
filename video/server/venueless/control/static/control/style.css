@@ -105,7 +105,7 @@ label {
 	padding-bottom: 4px;
 }
 
-input[type=text], input[type=date], input[type=email], input[type=password], input[type=number], select, textarea {
+input[type=text], input[type=date], input[type=email], input[type=password], input[type=number], input[type=url], select, textarea {
 	display: block;
 	padding: 8px;
 	border: 1px solid #ddd;
@@ -114,7 +114,7 @@ input[type=text], input[type=date], input[type=email], input[type=password], inp
 	max-width: 400px;
 }
 
-input[type=text]:focus, input[type=date]:focus, input[type=email]:focus, input[type=password]:focus, input[type=number]:focus, select:focus, textarea:focus {
+input[type=text]:focus, input[type=url]:focus, input[type=date]:focus, input[type=email]:focus, input[type=password]:focus, input[type=number]:focus, select:focus, textarea:focus {
 	border-color: #0058de;
 	outline: none;
 }

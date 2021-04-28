@@ -17,6 +17,14 @@ urlpatterns = [
     # auth/reset/done/ [name='password_reset_complete']
     path("users/", views.UserList.as_view(), name="user.list"),
     path("users/<int:pk>/", views.UserUpdate.as_view(), name="user.update"),
+    path("bbbs/", views.BBBServerList.as_view(), name="bbbserver.list"),
+    path("bbbs/new/", views.BBBServerCreate.as_view(), name="bbbserver.create"),
+    path(
+        "bbbs/<uuid:pk>/delete",
+        views.BBBServerDelete.as_view(),
+        name="bbbserver.delete",
+    ),
+    path("bbbs/<uuid:pk>/", views.BBBServerUpdate.as_view(), name="bbbserver.update"),
     path("worlds/", views.WorldList.as_view(), name="world.list"),
     path("worlds/new/", views.WorldCreate.as_view(), name="world.create"),
     path("worlds/<slug:pk>/admin", views.WorldAdminToken.as_view(), name="world.admin"),

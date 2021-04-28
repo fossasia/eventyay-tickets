@@ -2,10 +2,52 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.forms import inlineformset_factory
 
-from venueless.core.models import World
+from venueless.core.models import BBBServer, World
 from venueless.core.models.world import FEATURE_FLAGS, PlannedUsage
 
 User = get_user_model()
+SECRET_REDACTED = "*****"
+
+
+class SecretKeyWidget(forms.TextInput):
+    def __init__(self, attrs=None):
+        if attrs is None:
+            attrs = {}
+        attrs.update(
+            {
+                "autocomplete": "new-password"  # see https://bugs.chromium.org/p/chromium/issues/detail?id=370363#c7
+            }
+        )
+        super().__init__(attrs)
+
+    def get_context(self, name, value, attrs):
+        if value:
+            value = value[:3] + SECRET_REDACTED
+        return super().get_context(name, value, attrs)
+
+
+class SecretKeyField(forms.CharField):
+    widget = SecretKeyWidget
+
+    def has_changed(self, initial, data):
+        if data.endswith(SECRET_REDACTED):
+            return False
+        return super().has_changed(initial, data)
+
+    def run_validators(self, value):
+        if value.endswith(SECRET_REDACTED):
+            return
+        return super().run_validators(value)
+
+
+class HasSecretsMixin:
+    def save(self):
+        for k, v in self.cleaned_data.items():
+            if isinstance(self.fields.get(k), SecretKeyField) and self.cleaned_data.get(
+                k
+            ).endswith(SECRET_REDACTED):
+                self.cleaned_data[k] = self.initial[k]
+        return super().save()
 
 
 class PasswordMixin:
@@ -117,3 +159,15 @@ class PlannedUsageForm(forms.ModelForm):
 PlannedUsageFormSet = inlineformset_factory(
     World, PlannedUsage, PlannedUsageForm, can_delete=True, extra=0
 )
+
+
+class BBBServerForm(HasSecretsMixin, forms.ModelForm):
+    class Meta:
+        model = BBBServer
+        fields = (
+            "url",
+            "world_exclusive",
+            "rooms_only",
+            "secret",
+        )
+        field_classes = {"secret": SecretKeyField}

@@ -25,6 +25,9 @@
                 <a href="{% url "control:world.list" %}"{% if request.path == "/control/worlds/" %} class="active"{% endif %}>
                     {% trans "Worlds" %}
                 </a>
+                <a href="{% url "control:bbbserver.list" %}"{% if request.path == "/control/bbbs/" %} class="active"{% endif %}>
+                    {% trans "BBB servers" %}
+                </a>
                     {% if request.user.is_superuser %}
                     <a href="{% url "control:user.list" %}"{% if request.path == "/control/users/" %} class="active"{% endif %}>
                         {% trans "Users" %}

@@ -9,12 +9,14 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.db import transaction
 from django.db.models import Count, F, Max, OuterRef, Subquery
+from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import (
     CreateView,
+    DeleteView,
     DetailView,
     FormView,
     ListView,
@@ -22,10 +24,17 @@ from django.views.generic import (
     UpdateView,
 )
 
-from venueless.core.models import RoomView, World
+from venueless.core.models import BBBServer, RoomView, World
 
 from ..core.models.world import PlannedUsage
-from .forms import PlannedUsageFormSet, ProfileForm, SignupForm, UserForm, WorldForm
+from .forms import (
+    BBBServerForm,
+    PlannedUsageFormSet,
+    ProfileForm,
+    SignupForm,
+    UserForm,
+    WorldForm,
+)
 from .models import LogEntry
 from .tasks import clear_world_data
 
@@ -314,3 +323,67 @@ class WorldClear(AdminBase, DetailView):
         clear_world_data.apply_async(kwargs={"world": self.get_object().pk})
         messages.success(request, _("The data will soon be deleted."))
         return redirect(self.success_url)
+
+
+class BBBServerList(AdminBase, ListView):
+    template_name = "control/bbb_list.html"
+    queryset = BBBServer.objects.select_related("world_exclusive")
+    context_object_name = "servers"
+
+
+class BBBServerCreate(AdminBase, CreateView):
+    template_name = "control/bbb_form.html"
+    form_class = BBBServerForm
+    success_url = "/control/bbbs/"
+
+    @transaction.atomic()
+    def form_valid(self, form):
+        self.object = form.save()
+
+        LogEntry.objects.create(
+            content_object=form.instance,
+            user=self.request.user,
+            action_type="bbbserver.created",
+            data={k: str(v) for k, v in form.cleaned_data.items()},
+        )
+        messages.success(self.request, _("Ok!"))
+        return super().form_valid(form)
+
+
+class BBBServerUpdate(AdminBase, UpdateView):
+    template_name = "control/bbb_form.html"
+    form_class = BBBServerForm
+    queryset = BBBServer.objects.all()
+    success_url = "/control/bbbs/"
+
+    def form_valid(self, form):
+        self.object = form.save()
+
+        LogEntry.objects.create(
+            content_object=form.instance,
+            user=self.request.user,
+            action_type="bbbserver.updated",
+            data={k: str(v) for k, v in form.cleaned_data.items()},
+        )
+        messages.success(self.request, _("Ok!"))
+        return super().form_valid(form)
+
+
+class BBBServerDelete(AdminBase, DeleteView):
+    template_name = "control/bbb_delete.html"
+    queryset = BBBServer.objects.all()
+    success_url = "/control/bbbs/"
+    context_object_name = "server"
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        LogEntry.objects.create(
+            content_object=self.object,
+            user=self.request.user,
+            action_type="bbbserver.deleted",
+            data={},
+        )
+        success_url = self.get_success_url()
+        self.object.delete()
+        messages.success(self.request, _("Ok!"))
+        return HttpResponseRedirect(success_url)
