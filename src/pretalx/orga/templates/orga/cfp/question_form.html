@@ -7,11 +7,17 @@
 
 {% block cfp_content %}
     {% compress js %}
-    <script defer src="{% static "js/jquery.formset.js" %}"></script>
-    <script defer src="{% static "cfp/js/animateFormset.js" %}"></script>
+        <script defer src="{% static "js/jquery.formset.js" %}"></script>
+        <script defer src="{% static "cfp/js/animateFormset.js" %}"></script>
+        <script defer src="{% static "vendored/moment-with-locales.js" %}"></script>
+        <script defer src="{% static "vendored/moment-timezone-with-data-2012-2022.js" %}"></script>
+        <script defer src="{% static "vendored/datetimepicker/bootstrap-datetimepicker.js" %}"></script>
+        <script defer src="{% static "orga/js/datetimepicker.js" %}"></script>
+        <script defer src="{% static "orga/js/questionRequiredField.js" %}"></script>
     {% endcompress %}
     <h2>
-        {% if form.instance.question %}{% translate "Question" %}: {{ form.instance.question }}{% else %}{% translate "New question" %}{% endif %}
+        {% if form.instance.question %}{% translate "Question" %}: {{ form.instance.question }}{% else %}
+            {% translate "New question" %}{% endif %}
     </h2>
     <form method="post">
         {% csrf_token %}
@@ -27,21 +33,23 @@
         {% endif %}
 
         {% if action != 'create' %}
-          {% if question.active %}
-            <div class="alert alert-info col-md-9 offset-md-3">
+            {% if question.active %}
+                <div class="alert alert-info col-md-9 offset-md-3">
               <span>
               {% translate "This question is currently active, it will be asked during submission." %}
-              <a class="btn btn-sm btn-outline-danger" href="{{ question.urls.toggle }}">{% translate "Hide question" %}</a>
+              <a class="btn btn-sm btn-outline-danger"
+                 href="{{ question.urls.toggle }}">{% translate "Hide question" %}</a>
               </span>
-            </div>
-          {% else %}
-            <div class="alert alert-info col-md-9 offset-md-3">
+                </div>
+            {% else %}
+                <div class="alert alert-info col-md-9 offset-md-3">
               <span>
               {% translate "This question is currently inactive, and will not be asked during submission." %}
-              <a class="btn btn-sm btn-success" href="{{ question.urls.toggle }}">{% translate "Activate question" %}</a>
+              <a class="btn btn-sm btn-success"
+                 href="{{ question.urls.toggle }}">{% translate "Activate question" %}</a>
               </span>
-            </div>
-          {% endif %}
+                </div>
+            {% endif %}
         {% endif %}
 
         {% bootstrap_field form.target layout='event' %}
@@ -54,18 +62,19 @@
                 accepted. If you want to allow both options, do not make this field required.
             {% endblocktranslate %}
         </div>
-        {% bootstrap_field form.required layout='event' %}
+        {% bootstrap_field form.question_required layout='event' %}
+        {% bootstrap_field form.deadline layout='event' %}
         {% bootstrap_field form.is_public layout='event' %}
         <span id="is-visible-to-reviewers">
         {% bootstrap_field form.is_visible_to_reviewers layout='event' %}
         </span>
         {% if form.tracks %}
-        <span class="limit-submission">
+            <span class="limit-submission">
             {% bootstrap_field form.tracks layout='event' %}
         </span>
         {% endif %}
         {% if form.submission_types %}
-        <span class="limit-submission">
+            <span class="limit-submission">
             {% bootstrap_field form.submission_types layout='event' %}
         </span>
         {% endif %}
@@ -93,10 +102,10 @@
                                     {% bootstrap_field form.answer layout='inline' form_group_class="" %}
                                 </div>
                                 {% if action != 'view' %}
-                                <div class="question-option-delete">
-                                    <button type="button" class="btn btn-danger" data-formset-delete-button>
-                                        <i class="fa fa-trash"></i></button>
-                                </div>
+                                    <div class="question-option-delete">
+                                        <button type="button" class="btn btn-danger" data-formset-delete-button>
+                                            <i class="fa fa-trash"></i></button>
+                                    </div>
                                 {% endif %}
                             </div>
                         </div>
@@ -122,10 +131,10 @@
                     {% endescapescript %}
                 </script>
                 {% if action != 'view' %}
-                <p class="col-md-9 ml-auto">
-                    <button type="button" class="btn btn-info" data-formset-add>
-                        <i class="fa fa-plus"></i> {% translate "Add a new option" %}</button>
-                </p>
+                    <p class="col-md-9 ml-auto">
+                        <button type="button" class="btn btn-info" data-formset-add>
+                            <i class="fa fa-plus"></i> {% translate "Add a new option" %}</button>
+                    </p>
                 {% endif %}
             </div>
         </fieldset>

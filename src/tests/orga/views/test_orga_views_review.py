@@ -105,7 +105,7 @@ def test_reviewer_cannot_ignore_required_question(
     with scope(event=submission.event):
         category = submission.event.score_categories.first()
         score = category.scores.filter(value=1).first()
-        review_question.required = True
+        review_question.question_required = "require"
         review_question.save()
     response = review_client.post(
         submission.orga_urls.reviews,

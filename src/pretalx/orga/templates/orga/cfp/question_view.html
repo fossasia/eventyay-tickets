@@ -1,5 +1,6 @@
 {% extends "orga/cfp/base.html" %}
 {% load i18n %}
+{% load tz %}
 
 {% block cfp_content %}
     <div class="alert alert-info">
@@ -28,7 +29,8 @@
             <tr>
                 <th>{% translate "Question" %}</th>
                 <th>{% translate "Target" %}</th>
-                <th>{% translate "required" %}</th>
+                <th>{% translate "required" %}*</th>
+                <th>{% translate "deadline" %}**</th>
                 <th>{% translate "active" %}</th>
                 <th></th>
             </tr>
@@ -46,12 +48,19 @@
                     </td>
                     <td>
                         <i class="fa fa-{{ question.required|yesno:'check-circle text-success,times-circle text-danger' }}">
-
                         </i>
                     </td>
                     <td>
+                        {% if question.question_required == "require after" or question.freeze_after%}
+                            <i class="fa fa-clock-o">
+                            </i>
+                        {% else %}
+                            <i class="fa fa-minus">
+                            </i>
+                        {% endif %}
+                    </td>
+                    <td>
                         <i class="fa fa-{{ question.active|yesno:'check-circle text-success,times-circle text-danger' }}">
-
                         </i>
                     </td>
                     <td class="action-column">
@@ -81,6 +90,7 @@
                         </a>
                     </td>
                 </tr>
+
             {% empty %}
                 <tr>
                     <td colspan=3 class="w-75">{% translate "You have configured no questions yet." %}</td>
@@ -93,4 +103,7 @@
             {% endfor %}
         </tbody>
     </table>
+    <small>* required column shows if the question is currently required.</small><br>
+    <small>** deadline column shows if the question's behaviour is based on deadline.</small>
+
 {% endblock %}

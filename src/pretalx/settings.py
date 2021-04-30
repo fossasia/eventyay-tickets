@@ -1,8 +1,8 @@
 import os
 import sys
 from contextlib import suppress
-from urllib.parse import urlparse
 from pathlib import Path
+from urllib.parse import urlparse
 
 from django.contrib.messages import constants as messages
 from django.utils.crypto import get_random_string
@@ -12,7 +12,6 @@ from pkg_resources import iter_entry_points
 from pretalx import __version__
 from pretalx.common.settings.config import build_config
 from pretalx.common.settings.utils import log_initial
-
 
 config, CONFIG_FILES = build_config()
 CONFIG = config

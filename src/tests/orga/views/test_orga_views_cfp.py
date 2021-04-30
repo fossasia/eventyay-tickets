@@ -360,6 +360,7 @@ def test_can_add_simple_question(orga_client, event):
             "variant": "string",
             "active": True,
             "help_text_0": "Answer if you want to reach the other side!",
+            "question_required": "none",
         },
         follow=True,
     )
@@ -398,6 +399,7 @@ def test_can_add_choice_question(orga_client, event):
             "form-1-answer_0": "European",
             "form-2-id": "",
             "form-2-answer_0": "",
+            "question_required": "none",
         },
         follow=True,
     )
@@ -438,6 +440,7 @@ def test_can_edit_choice_question(orga_client, event, choice_question):
             "form-2-DELETE": "on",
             "form-3-id": "",
             "form-3-answer_0": "",
+            "question_required": "none",
         },
         follow=True,
     )

@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from django_scopes import ScopedManager
@@ -61,6 +62,20 @@ class QuestionTarget(Choices):
     ]
 
 
+class QuestionRequired(Choices):
+    NONE = "none"
+    REQUIRE = "require"
+    REQUIRE_AFTER = "require after"
+    FREEZE_AFTER = "freeze after"
+
+    valid_choices = [
+        (NONE, _("always optional")),
+        (REQUIRE, _("always required")),
+        (REQUIRE_AFTER, _("require after deadline")),
+        (FREEZE_AFTER, _("freeze after deadline")),
+    ]
+
+
 class Question(LogMixin, models.Model):
     """Questions can be asked per.
 
@@ -75,8 +90,16 @@ class Question(LogMixin, models.Model):
         ``QuestionVariant`` class.
     :param target: Can be any of 'submission', 'speaker', or 'reviewer'.
         Defined in the ``QuestionTarget`` class.
-    :param required: If this is ``True``, the answer must be given at
-        submission time. On boolean questions: must check box.
+    :param deadline: Datetime field. This field is required for 'require after' and 'freeze after' options of
+        question_required field and optional for the other ones. For 'require after' it shows that the answer will
+        be optional before the deadline and mandatory after that deadline. For 'freeze after' it shows that the
+        answer will be allowed before the deadline and frozen after that deadline
+    :param question_required: Can be any of 'none', 'require ', 'require after', or 'freeze after'.
+        Defined in the ``QuestionRequired`` class.
+        For 'always required' answering this question will always be required.
+        For 'always optional' means that it will never be mandatory.
+        For 'require after' the answer will be optional before the deadline and mandatory after the deadline.
+        For 'freeze after' the answer will be allowed before the deadline and frozen after the deadline.
     :param position: Position in the question order in this event.
     """
 
@@ -97,6 +120,31 @@ class Question(LogMixin, models.Model):
             "Do you require an answer from every speaker or for every session?"
         ),
     )
+
+    deadline = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name=_("deadline"),
+        help_text=_(
+            "Set a deadline to make this question required or to freeze changes after the given date."
+        ),
+    )
+
+    question_required = models.CharField(
+        max_length=QuestionRequired.get_max_length(),
+        choices=QuestionRequired.get_choices(),
+        default=QuestionRequired.NONE,
+        verbose_name=_("question required"),
+        help_text=_(
+            "By choosing 'always required' answering this question will always be required, "
+            "while 'always optional' means that it will never be mandatory. "
+            "On the other hand, for 'require after' and 'freeze after' options "
+            "you will have to define a deadline. With 'require after', the answer will be optional"
+            " before the deadline and mandatory after the deadline. With 'freeze after' the answer will be allowed "
+            "before the deadline and frozen after the deadline"
+        ),
+    )
+
     tracks = models.ManyToManyField(
         to="submission.Track",
         related_name="questions",
@@ -128,7 +176,6 @@ class Question(LogMixin, models.Model):
     default_answer = models.TextField(
         null=True, blank=True, verbose_name=_("default answer")
     )
-    required = models.BooleanField(default=False, verbose_name=_("required"))
     position = models.IntegerField(default=0, verbose_name=_("position"))
     active = models.BooleanField(
         default=True,
@@ -174,6 +221,34 @@ class Question(LogMixin, models.Model):
     )
     objects = ScopedManager(event="event", _manager_class=QuestionManager)
     all_objects = ScopedManager(event="event", _manager_class=AllQuestionManager)
+
+    @property
+    def required(self):
+
+        now = timezone.now()
+        if self.question_required == QuestionRequired.REQUIRE:
+            require_question = True
+        elif self.question_required == QuestionRequired.REQUIRE_AFTER:
+            if self.deadline > now:
+                require_question = False
+            else:
+                require_question = True
+        else:
+            require_question = False
+        # Question should become optional in order to be frozen
+        if self.freeze_after and (self.freeze_after <= now):
+            require_question = False
+
+        return require_question
+
+    @property
+    def disabled(self):
+        now = timezone.now()
+        disable_question = False
+        # If deadline of freeze after has passed, disable question
+        if self.freeze_after and (self.freeze_after <= now):
+            disable_question = True
+        return disable_question
 
     class urls(EventUrls):
         base = "{self.event.cfp.urls.questions}{self.pk}/"

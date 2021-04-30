@@ -1,3 +1,5 @@
+import datetime as dt
+
 from django import forms
 from django.db.models import Count, Q
 from django.utils.translation import gettext_lazy as _
@@ -153,22 +155,47 @@ class QuestionForm(ReadOnlyFlag, I18nModelForm):
         ):
             self.fields["is_public"].disabled = True
 
+    def clean(self):
+        deadline = self.cleaned_data["deadline"]
+        question_required = self.cleaned_data["question_required"]
+        if (not deadline) and (
+            question_required == "require after" or question_required == "freeze after"
+        ):
+            raise forms.ValidationError(
+                _(
+                    "If you select 'freeze after deadline' or 'require after deadline' choice you "
+                    + "should select the date and time deadline."
+                )
+            )
+        if deadline and (question_required == "none" or question_required == "require"):
+            raise forms.ValidationError(
+                _(
+                    "If you select 'always optional' or 'always required' in Question required "
+                    "you shouldn't select the date and time deadline."
+                )
+            )
+
     class Meta:
         model = Question
         fields = [
             "target",
             "question",
             "help_text",
+            "question_required",
+            "deadline",
             "variant",
             "is_public",
             "is_visible_to_reviewers",
-            "required",
             "tracks",
             "submission_types",
             "contains_personal_data",
             "min_length",
             "max_length",
         ]
+        widgets = {
+            "deadline": forms.DateTimeInput(attrs={"class": "datetimepickerfield"}),
+            "question_required": forms.RadioSelect(),
+        }
         field_classes = {
             "variant": SafeModelChoiceField,
             "tracks": SafeModelMultipleChoiceField,
@@ -421,9 +448,12 @@ class ReminderFilterForm(QuestionFilterForm):
     )
 
     def get_question_queryset(self):
+        # We want to exclude questions with "freeze after", the deadlines of which have passed
         return Question.objects.filter(
             event=self.event,
             target__in=["speaker", "submission"],
+        ).exclude(
+            Q(question_required="freeze after") & Q(deadline__lt=dt.datetime.now())
         )
 
     def __init__(self, *args, **kwargs):
