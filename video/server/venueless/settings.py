@@ -172,7 +172,7 @@ STATSD_HOST = os.getenv(
     "VENUELESS_STATSD_HOST", config.get("statsd", "host", fallback="")
 )
 STATSD_PORT = os.getenv(
-    "VENUELESS_STATSD_PORT", config.get("statsd", "host", fallback="9125")
+    "VENUELESS_STATSD_PORT", config.get("statsd", "port", fallback="9125")
 )
 STATSD_PREFIX = "venueless"
 
