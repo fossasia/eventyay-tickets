@@ -27,6 +27,7 @@ from venueless.core.services.user import (
     user_broadcast,
 )
 from venueless.core.utils.redis import aioredis
+from venueless.core.utils.statsd import statsd
 from venueless.live.channels import GROUP_USER, GROUP_WORLD
 from venueless.live.decorators import command, require_world_permission
 from venueless.live.modules.base import BaseModule
@@ -44,18 +45,30 @@ class AuthModule(BaseModule):
         if not body or "token" not in body:
             client_id = body.get("client_id")
             if not client_id:
+                async with statsd() as s:
+                    s.increment(
+                        f"authentication.failed,reason=missing_token,world={self.consumer.world.pk}"
+                    )
                 await self.consumer.send_error(code="auth.missing_id_or_token")
                 return
             kwargs["client_id"] = client_id
         else:
             token = self.consumer.world.decode_token(body["token"])
             if not token:
+                async with statsd() as s:
+                    s.increment(
+                        f"authentication.failed,reason=invalid_token,world={self.consumer.world.pk}"
+                    )
                 await self.consumer.send_error(code="auth.invalid_token")
                 return
             kwargs["token"] = token
 
         login_result = await database_sync_to_async(login)(**kwargs)
         if not login_result:
+            async with statsd() as s:
+                s.increment(
+                    f"authentication.failed,reason=denied,world={self.consumer.world.pk}"
+                )
             await self.consumer.send_error(code="auth.denied")
             return
 
@@ -102,6 +115,9 @@ class AuthModule(BaseModule):
         )
 
         await ChatService(self.consumer.world).enforce_forced_joins(self.consumer.user)
+
+        async with statsd() as s:
+            s.increment(f"authentication.completed,world={self.consumer.world.pk}")
 
     async def _enforce_connection_limit(self):
         connection_limit = self.consumer.world.config.get("connection_limit")

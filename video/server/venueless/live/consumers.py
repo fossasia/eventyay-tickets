@@ -21,6 +21,7 @@ from venueless.core.services.world import get_world
 from venueless.live.channels import GROUP_VERSION
 from venueless.live.exceptions import ConsumerException
 
+from ..core.utils.statsd import statsd
 from .modules.auth import AuthModule
 from .modules.bbb import BBBModule
 from .modules.chat import ChatModule
@@ -54,6 +55,7 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
     async def connect(self):
         self.content = []
         self.conn_time = time.time()
+        world_id = self.scope["url_route"]["kwargs"]["world"]
         await self.accept()
         await self.channel_layer.group_add(
             GROUP_VERSION.format(
@@ -64,12 +66,12 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
         await register_connection()
 
         try:
-            self.world = await get_world(self.scope["url_route"]["kwargs"]["world"])
+            self.world = await get_world(world_id)
         except OperationalError:
             # We use connection pooling, so if the database server went away since the last connection
             # terminated, Django won't know and we'll get an OperationalError. We just silently re-try
             # once, since Django will then use a new connection.
-            self.world = await get_world(self.scope["url_route"]["kwargs"]["world"])
+            self.world = await get_world(world_id)
 
         if self.world is None:
             await self.send_error("world.unknown_world", close=True)
@@ -78,6 +80,9 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
         if settings.SENTRY_DSN:
             with configure_scope() as scope:
                 scope.set_extra("world", self.world.id)
+
+        async with statsd() as s:
+            s.increment(f"connection.established,world={world_id}")
 
         self.components = {
             "chat": ChatModule(self),
@@ -122,6 +127,9 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
                 await self.send_error("protocol.unauthenticated")
             return
 
+        async with statsd() as s:
+            s.increment(f"command.received,command={content[0]},world={self.world.pk}")
+
         namespace = content[0].split(".")[0]
         component = self.components.get(namespace)
         if component:
@@ -146,6 +154,11 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
             return await self.close()
 
         try:
+            async with statsd() as s:
+                s.increment(
+                    f"event.received,type={message['type']},world={self.world.pk if self.world else 'None'}"
+                )
+
             if message["type"] == "connection.drop":
                 return await self.close()
             elif message["type"] == "connection.reload":
@@ -187,6 +200,10 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
             await self.send_error(code="server.fatal", message="Fatal Server Error")
             await asyncio.sleep(0.5)
             await self.close()
+            async with statsd() as s:
+                s.increment(
+                    f"error.fatal,world={self.world.pk if self.world else 'None'}"
+                )
 
     def build_response(self, status, data):
         if data is None:

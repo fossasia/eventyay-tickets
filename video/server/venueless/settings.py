@@ -168,6 +168,14 @@ ZOOM_SECRET = os.getenv(
     "VENUELESS_ZOOM_SECRET", config.get("zoom", "secret", fallback="")
 )
 
+STATSD_HOST = os.getenv(
+    "VENUELESS_STATSD_HOST", config.get("statsd", "host", fallback="")
+)
+STATSD_PORT = os.getenv(
+    "VENUELESS_STATSD_PORT", config.get("statsd", "host", fallback="9125")
+)
+STATSD_PREFIX = "venueless"
+
 CACHES = {
     "default": {"BACKEND": "django.core.cache.backends.dummy.DummyCache"},
     "process": {
