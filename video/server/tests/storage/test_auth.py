@@ -64,6 +64,7 @@ def test_expired_token(client, world):
 
 
 @pytest.mark.django_db
+@pytest.mark.skip
 def test_no_permission(client, world):
     config = world.config["JWT_secrets"][0]
     iat = datetime.datetime.utcnow()
