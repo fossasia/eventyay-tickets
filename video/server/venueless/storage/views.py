@@ -62,6 +62,7 @@ class UploadMixin:
 
 class UploadView(UploadMixin, View):
     permissions = {
+        Permission.WORLD_VIEW,
         Permission.WORLD_UPDATE,
         Permission.ROOM_UPDATE,
         Permission.ROOM_CHAT_SEND,
