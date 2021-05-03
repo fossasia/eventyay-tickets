@@ -26,3 +26,7 @@
 .panel--1n3JpJ { /* fix invite view  */
     overflow: auto !important;
 }
+
+button span:first-child {
+    box-shadow: none !important;
+}
