@@ -47,6 +47,7 @@ class HasSecretsMixin:
                 k
             ).endswith(SECRET_REDACTED):
                 self.cleaned_data[k] = self.initial[k]
+                setattr(self.instance, k, self.initial[k])
         return super().save()
 
 
