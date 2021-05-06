@@ -23,11 +23,15 @@ class SpeakerQuestionData(CSVExporterMixin, BaseExporter):
     def get_data(self, **kwargs):
         field_names = ["code", "name", "email", "question", "answer"]
         data = []
-        qs = Answer.objects.filter(
-            question__target="speaker",
-            question__event=self.event,
-            question__active=True,
-        ).select_related("question", "person").order_by("person__name")
+        qs = (
+            Answer.objects.filter(
+                question__target="speaker",
+                question__event=self.event,
+                question__active=True,
+            )
+            .select_related("question", "person")
+            .order_by("person__name")
+        )
         for answer in qs:
             data.append(
                 {
