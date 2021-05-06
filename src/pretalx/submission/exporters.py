@@ -27,7 +27,7 @@ class SpeakerQuestionData(CSVExporterMixin, BaseExporter):
             question__target="speaker",
             question__event=self.event,
             question__active=True,
-        ).order_by("person__name")
+        ).select_related("question", "person").order_by("person__name")
         for answer in qs:
             data.append(
                 {
