@@ -1,5 +1,5 @@
 <template lang="pug">
-.c-media-source(:class="{'in-background': background}")
+.c-media-source(:class="{'in-background': background, 'in-room-manager': inRoomManager}")
 	transition(name="background-room")
 		router-link.background-room(v-if="background", :to="room ? {name: 'room', params: {roomId: room.id}}: {name: 'channel', params: {channelId: call.channel}}")
 			.description
@@ -43,6 +43,9 @@ export default {
 		module () {
 			return this.room.modules.find(module => ['livestream.native', 'livestream.youtube', 'call.bigbluebutton', 'call.janus', 'call.zoom'].includes(module.type))
 		},
+		inRoomManager () {
+			return this.$route.name === 'room:manage'
+		}
 	},
 	created () {
 		if (this.room) api.call('room.enter', {room: this.room.id})
@@ -142,4 +145,10 @@ export default {
 	// 	transition-delay: .1s
 	.background-room-enter, .background-room-leave-to
 		transform: translate(calc(-1 * var(--chatbar-width)), 52px)
+	&.in-room-manager
+		.c-livestream, .c-youtube
+			bottom: calc(var(--vh100) - 56px - 360px)
+			right: calc(var(--chatbar-width) * 3 + 3px)
+			width: calc(100vw - var(--sidebar-width) - var(--chatbar-width) * 3 - 3px)
+			height: 360px
 </style>

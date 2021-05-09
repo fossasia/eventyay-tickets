@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import App from 'App'
 import PresentationMode from 'PresentationMode'
 import Room from 'views/rooms/item'
+import RoomManager from 'views/rooms/manage'
 import Channel from 'views/channels/item'
 import Schedule from 'views/schedule'
 import Talk from 'views/schedule/talks/item'
@@ -27,7 +28,12 @@ const routes = [{
 		path: '/rooms/:roomId',
 		name: 'room',
 		component: Room,
-		props: true
+		props: true,
+	}, {
+		path: '/rooms/:roomId/manage',
+		name: 'room:manage',
+		component: RoomManager,
+		props: true,
 	}, {
 		path: '/channels/:channelId',
 		name: 'channel',

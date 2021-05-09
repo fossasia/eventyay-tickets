@@ -8,6 +8,7 @@ import { v4 as uuid } from 'uuid'
 import 'lib/timetravelMoment' // init timetravel before anything else to avoid module loading race conditions
 import router from 'router'
 import store from 'store'
+import LinkIconButton from 'components/link-icon-button'
 import Scrollbars from 'components/Scrollbars'
 import MediaQueries from 'components/mixins/media-queries'
 import 'styles/global.styl'
@@ -23,6 +24,7 @@ Vue.use(Buntpapier)
 Vue.use(Vuelidate)
 Vue.use(VueVirtualScroller)
 Vue.component('scrollbars', Scrollbars)
+Vue.component('link-icon-button', LinkIconButton)
 Vue.use(MediaQueries)
 // auth.
 // history.replaceState('', document.title, location.pathname + location.search)
