@@ -4,8 +4,8 @@ export default {
 	namespaced: true,
 	state: {
 		schedule: null,
-		now: moment(),
-
+		errorLoading: null,
+		now: moment()
 	},
 	getters: {
 		pretalxScheduleUrl (state, getters, rootState) {
@@ -90,7 +90,11 @@ export default {
 			if (!getters.pretalxScheduleUrl) return
 			// const version = await (await fetch(`${getters.pretalxApiBaseUrl}/schedules/`)).json()
 			// console.log(version.results[0].version)
-			state.schedule = await (await fetch(getters.pretalxScheduleUrl)).json()
+			try {
+				state.schedule = await (await fetch(getters.pretalxScheduleUrl)).json()
+			} catch (error) {
+				state.errorLoading = error
+			}
 		},
 	}
 }

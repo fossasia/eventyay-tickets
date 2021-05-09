@@ -243,6 +243,7 @@ export default {
 	'Roulette:waiting:text': 'Warte auf eine Gesprächspartner:in…',
 	'Schedule:headline:text': 'Zeitplan',
 	'schedule/talks/item:speakers:header': 'Vortragende*r | Vortragende',
+	'schedule/index:scheduleLoadingError': 'Zeitplan konnte nicht geladen werden.',
 	'User:state:blocked': 'blockiert',
 	'User:state:inactive': 'nicht aktiv',
 	'UserAction:action.ban:label': 'sperren',

@@ -5,6 +5,9 @@
 			bunt-tab(v-for="day in days", :id="day.toISOString()", :header="moment(day).format('dddd DD. MMMM')", @selected="changeDay(day)")
 		grid-schedule(v-if="$mq.above['m']", :currentDay="currentDay", @changeDay="currentDay = $event")
 		linear-schedule(v-else, :currentDay="currentDay", @changeDay="changeDayByScroll")
+	.error(v-else-if="errorLoading")
+		.mdi.mdi-alert-octagon
+		h1 {{ $t('schedule/index:scheduleLoadingError') }}
 	bunt-progress-circular(v-else, size="huge", :page="true")
 </template>
 <script>
@@ -22,7 +25,7 @@ export default {
 		}
 	},
 	computed: {
-		...mapState('schedule', ['schedule']),
+		...mapState('schedule', ['schedule', 'errorLoading']),
 		...mapGetters('schedule', ['days'])
 	},
 	created () {},
@@ -68,4 +71,16 @@ export default {
 		.bunt-scrollbar-rail-wrapper-x
 			+below('m')
 				display: none
+	.error
+		flex: auto
+		display: flex
+		flex-direction: column
+		justify-content: center
+		align-items: center
+		.mdi
+			font-size: 10vw
+			color: $clr-danger
+		h1
+			font-size: 3vw
+			text-align: center
 </style>

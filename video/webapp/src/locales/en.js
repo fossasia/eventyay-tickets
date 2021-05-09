@@ -246,6 +246,7 @@ export default {
 	'Roulette:waiting:text': 'Waiting for a person to talk to …',
 	'Schedule:headline:text': 'Schedule',
 	'schedule/talks/item:speakers:header': 'Speaker | Speakers',
+	'schedule/index:scheduleLoadingError': 'Could not load schedule.',
 	'User:state:blocked': 'blocked',
 	'User:state:inactive': 'inactive',
 	'UserAction:action.ban:label': 'ban',
