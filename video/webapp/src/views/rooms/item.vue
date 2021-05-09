@@ -39,7 +39,6 @@
 import {mapGetters, mapState} from 'vuex'
 import EditRoomSchedule from './EditRoomSchedule'
 import Chat from 'components/Chat'
-import Livestream from 'components/Livestream'
 import LandingPage from 'components/LandingPage'
 import MarkdownPage from 'components/MarkdownPage'
 import StaticPage from 'components/StaticPage'
@@ -54,7 +53,7 @@ import Questions from 'components/Questions'
 
 export default {
 	name: 'Room',
-	components: { EditRoomSchedule, Chat, Exhibition, Livestream, LandingPage, MarkdownPage, StaticPage, IframePage, ReactionsBar, ReactionsOverlay, RecordingsPrompt, UserListPage, Roulette, Questions },
+	components: { EditRoomSchedule, Chat, Exhibition, LandingPage, MarkdownPage, StaticPage, IframePage, ReactionsBar, ReactionsOverlay, RecordingsPrompt, UserListPage, Roulette, Questions },
 	props: {
 		roomId: String
 	},
@@ -73,11 +72,11 @@ export default {
 	},
 	computed: {
 		...mapGetters(['hasPermission']),
-		...mapState(['connected', 'world', 'rooms']),
+		...mapState(['rooms']),
 		...mapGetters('schedule', ['sessions', 'sessionsScheduledNow']),
 		room () {
 			if (this.roomId === undefined) return this.rooms[0] // '/' is the first room
-			return this.$store.state.rooms.find(room => room.id === this.roomId)
+			return this.rooms.find(room => room.id === this.roomId)
 		},
 		modules () {
 			return this.room?.modules.reduce((acc, module) => {
