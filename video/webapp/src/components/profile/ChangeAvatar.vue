@@ -2,7 +2,7 @@
 .c-change-avatar(v-if="value")
 	.inputs
 		bunt-button.btn-randomize(@click="changeIdenticon") {{ $t('profile/ChangeAvatar:button-randomize:label') }}
-		span or
+		span {{ $t('profile/ChangeAvatar:or') }}
 		upload-button.btn-upload(@change="fileSelected", accept="image/png, image/jpg, .png, .jpg, .jpeg") {{ $t('profile/ChangeAvatar:button-upload:label') }}
 	.image-wrapper
 		.file-error(v-if="fileError")
