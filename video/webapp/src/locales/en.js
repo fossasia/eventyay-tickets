@@ -166,6 +166,7 @@ export default {
 	'preferences/index:switch-enable-desktop-notifications:label': 'Enable desktop notifications',
 	'preferences/index:switch-enable-desktop-notification-sound:label': 'Play notification sound',
 	'profile/ChangeAvatar:button-randomize:label': 'randomize',
+	'profile/ChangeAvatar:or': 'or',
 	'profile/ChangeAvatar:button-upload:label': 'upload',
 	'profile/ChangeAvatar:error:image-too-small': 'Image must be at least 128px by 128px large.',
 	'profile/ConnectGravatar:gravatar-connect:label': 'Connect',
