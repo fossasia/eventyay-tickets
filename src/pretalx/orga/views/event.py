@@ -64,6 +64,7 @@ from pretalx.orga.signals import activate_event
 from pretalx.person.forms import LoginInfoForm, OrgaProfileForm, UserForm
 from pretalx.person.models import User
 from pretalx.submission.models import ReviewPhase, ReviewScoreCategory
+from pretalx.submission.tasks import recalculate_all_review_scores
 
 
 class EventSettingsPermission(EventPermissionRequired):
@@ -267,6 +268,8 @@ class EventReviewSettings(EventSettingsPermission, ActionFromUrl, FormView):
         if not phases or not scores:
             return self.get(self.request, *self.args, **self.kwargs)
         form.save()
+        if self.scores_formset.has_changed():
+            recalculate_all_review_scores.apply_async(kwargs={"event_id": self.request.event.pk})
         return super().form_valid(form)
 
     @context
