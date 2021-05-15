@@ -28,6 +28,10 @@ def get_context_explanation():
             "explanation": _("The name(s) of all speakers in this proposal."),
         },
         {
+            "name": "submission_type",
+            "explanation": _("The proposal type. Only usable in default templates."),
+        },
+        {
             "name": "track_name",
             "explanation": _("The track the proposal belongs to"),
         },
@@ -50,6 +54,7 @@ def template_context_from_submission(submission):
             "submission_url": submission.urls.user_base.full(),
             "speakers": submission.display_speaker_names,
             "orga_url": submission.orga_urls.base.full(),
+            "submission_type": str(submission.submission_type.name),
             "track_name": str(submission.track.name) if submission.track else None,
         }
     )
