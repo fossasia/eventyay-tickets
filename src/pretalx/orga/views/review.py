@@ -54,11 +54,13 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
         if min_reviews:
             with suppress(Exception):
                 min_reviews = int(min_reviews)
-                queryset = queryset.filter(review_count__gte=min_reviews)
+                if min_reviews > 0:
+                    queryset = queryset.filter(review_count__gte=min_reviews)
         if max_reviews:
             with suppress(Exception):
                 max_reviews = int(max_reviews)
-                queryset = queryset.filter(review_count__lte=max_reviews)
+                if max_reviews < self.max_review_count:
+                    queryset = queryset.filter(review_count__lte=max_reviews)
         return queryset
 
     def get_queryset(self):
@@ -180,6 +182,7 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
         return self.request.user.has_perm("orga.view_all_reviews", self.request.event)
 
     @context
+    @cached_property
     def max_review_count(self):
         return (
             self.request.event.submissions.all()
