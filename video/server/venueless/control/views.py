@@ -26,11 +26,11 @@ from django.views.generic import (
 
 from venueless.core.models import (
     BBBServer,
+    Feedback,
     JanusServer,
     RoomView,
     TurnServer,
     World,
-    Feedback,
 )
 
 from ..core.models.world import PlannedUsage
