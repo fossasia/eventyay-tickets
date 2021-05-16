@@ -11,7 +11,7 @@
 	.users(v-show="connectionState == 'connected'", ref="container", :style="gridStyle", v-resize-observer="onResize")
 
 		.me.feed
-			.video-container(:style="{boxShadow: size != 'tiny' ? `0 0 0px 4px ${primaryColor.alpha(soundLevels.ourVideo * 20)}` : 'none'}")
+			.video-container(:style="{boxShadow: size != 'tiny' ? `0 0 0px 4px ${primaryColor.alpha(soundLevels.ourVideo * 20)}` : 'none'}", id="janus_ourVideo")
 				video(v-show="publishingWithVideo && publishingState !== 'unpublished'", ref="ourVideo", autoplay, playsinline, muted="muted")
 			.publishing-state(v-if="publishingState !== 'published'")
 				bunt-progress-circular(v-if="publishingState == 'publishing'", size="huge", :page="true")
@@ -24,12 +24,12 @@
 				.user(@click="showUserCard($event, user)")
 					avatar(:user="user", :size="36")
 					span.display-name {{ user.profile.display_name }}
-				bunt-icon-button(v-if="publishingWithVideo", @click="requestFullscreen($refs.ourVideo)") fullscreen
+				bunt-icon-button(v-if="publishingWithVideo", @click="requestFullscreen('#janus_ourVideo')") fullscreen
 			.mute-indicator(v-if="knownMuteState")
 				.bunt-icon.mdi.mdi-microphone-off
 
 		.peer.feed(v-for="(f, idx) in feeds", :key="f.rfid", :style="{width: layout.width, height: layout.height}")
-			.video-container(v-show="f.rfattached", :style="{boxShadow: size != 'tiny' ? `0 0 0px 4px ${primaryColor.alpha(soundLevels[f.rfid] * 20)}` : 'none'}")
+			.video-container(v-show="f.rfattached", :style="{boxShadow: size != 'tiny' ? `0 0 0px 4px ${primaryColor.alpha(soundLevels[f.rfid] * 20)}` : 'none'}", :id="'janus_' + f.rfid")
 				video(ref="peerVideo", autoplay, playsinline)
 			.subscribing-state(v-if="!f.rfattached")
 				bunt-progress-circular(size="huge", :page="true")
@@ -39,7 +39,7 @@
 				.user(v-if="f.venueless_user !== null", @click="showUserCard($event, f.venueless_user)")
 					avatar(:user="f.venueless_user", :size="36")
 					span.display-name {{ f.venueless_user.profile.display_name }}
-				bunt-icon-button(v-if="f.rfattached && f.hasVideo", @click="requestFullscreen($refs.peerVideo[idx])") fullscreen
+				bunt-icon-button(v-if="f.rfattached && f.hasVideo", @click="requestFullscreen('#janus_' + f.rfid)") fullscreen
 
 		.slow-banner(v-if="downstreamSlowLinkCount > 5 && (videoRequested || videoOutput)", @click="disableVideo") {{ $t('JanusVideoroom:slow:text') }}
 
@@ -295,7 +295,7 @@ export default {
 			)
 		},
 		requestFullscreen (el) {
-			el.parentElement.requestFullscreen()
+			document.querySelector(el).requestFullscreen()
 		},
 		closeDevicePrompt () {
 			this.showDevicePrompt = false
