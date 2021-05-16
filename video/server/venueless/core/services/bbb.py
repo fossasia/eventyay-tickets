@@ -61,7 +61,7 @@ def choose_server(world, room=None, prefer_server=None):
             # the cost function). However, if the cron job does not run (or does not run soon enough), this little
             # UPDATE statement will make sure we have a round-robin-like distribution among the servers by increasing
             # the cost value temporarily with every added meeting.
-            BBBServer.objects.filter(pk=server.pk).update(cost=F("cost") + Value("10"))
+            BBBServer.objects.filter(pk=server.pk).update(cost=F("cost") + Value(10))
         return server
 
 
