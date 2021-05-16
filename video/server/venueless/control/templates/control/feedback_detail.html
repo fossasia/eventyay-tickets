@@ -1,0 +1,32 @@
+{% extends "control/base.html" %}
+{% load i18n %}
+
+{% block content %}
+
+<label>{% trans "Metadata" %}</label>
+<pre>{{ feedback.timestamp }} / {{ feedback.module }} / {{ feedback.world }}</pre>
+<hr>
+<label>{% trans "Message" %}</label>
+<pre>{{ feedback.message }}</pre>
+<hr>
+<label>{% trans "User Agent" %}</label>
+<pre>{{ trace.userAgent }}</pre>
+<hr>
+<label>{% trans "Trace" %}</label>
+<table>
+    <tr>
+        <th>{% trans "Tag" %}</th>
+        <th>{% trans "Timestamp" %}</th>
+        <th>{% trans "Level" %}</th>
+        <th>{% trans "Message" %}</th>
+    </tr>
+    {% for t in trace.trace %}
+    <tr>
+        <td>{{t.0}}</td>
+        <td>{{t.1}}</td>
+        <td>{{t.2}}</td>
+        <td class="break-all"><code>{{t.3}}</code></td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

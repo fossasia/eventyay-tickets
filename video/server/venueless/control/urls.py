@@ -50,5 +50,7 @@ urlpatterns = [
     path("worlds/<slug:pk>/admin", views.WorldAdminToken.as_view(), name="world.admin"),
     path("worlds/<slug:pk>/clear", views.WorldClear.as_view(), name="world.clear"),
     path("worlds/<slug:pk>/", views.WorldUpdate.as_view(), name="world.update"),
+    path("feedback/", views.FeedbackList.as_view(), name="feedback.list"),
+    path("feedback/<uuid:pk>/", views.FeedbackDetail.as_view(), name="feedback.detail"),
     path("", views.IndexView.as_view(), name="index"),
 ]

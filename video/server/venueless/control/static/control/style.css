@@ -68,6 +68,7 @@ header a {
 main {
 	padding: 16px;
 	flex: auto 1 1;
+	width: calc(100% - 240px - 32px);
 }
 
 /** TABLES **/
@@ -92,6 +93,9 @@ table th, table td {
 	border-bottom: 1px solid #ddd;
 	padding: 12px;
 	text-align: left;
+}
+.break-all {
+	word-break: break-all;
 }
 table th {
 	border-bottom: 3px solid #ddd;
@@ -187,6 +191,9 @@ pre {
 	color: #ddd;
 	padding: 8px;
 	border-radius: 4px;
+	width: 100%;
+	overflow-x: auto;
+	box-sizing: border-box;
 }
 .text-muted {
 	color: #888;
