@@ -433,6 +433,9 @@ export default {
 						onlocalstream: (stream) => {
 							log('venueless', 'debug', ' ::: Got a local stream :::', stream)
 							this.ourScreenShareStream = stream
+							stream.getVideoTracks()[0].onended = () => {
+								this.toggleScreenShare()
+							}
 							// todo: show local stream instead of remote Stream
 						},
 						slowLink: (uplink) => {
