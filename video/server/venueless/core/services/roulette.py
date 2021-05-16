@@ -1,7 +1,6 @@
 from datetime import timedelta
 
 from channels.db import database_sync_to_async
-from django.conf import settings
 from django.db import DatabaseError, transaction
 from django.db.models import Exists, OuterRef, Q
 from django.utils.timezone import now
@@ -10,8 +9,14 @@ from venueless.core.models import RoulettePairing, RouletteRequest, User
 
 
 @database_sync_to_async
-def roulette_request(user, room, socket_id):
-    INTERVAL_REMATCH = timedelta(seconds=30) if settings.DEBUG else timedelta(hours=24)
+def roulette_request(user, room, socket_id, module_config):
+    try:
+        INTERVAL_REMATCH = timedelta(
+            minutes=int(module_config.get("rematch_interval", 24 * 60))
+        )
+    except:
+        INTERVAL_REMATCH = timedelta(minutes=24 * 60)
+
     with transaction.atomic():
         # Lock previous request, if it exists
         try:
