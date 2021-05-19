@@ -8,7 +8,7 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.utils.timezone import now
-from django.utils.translation import ugettext_lazy as _, gettext
+from django.utils.translation import gettext_lazy as _, gettext
 from django.views import View
 from django.views.decorators.clickjacking import xframe_options_exempt
 
