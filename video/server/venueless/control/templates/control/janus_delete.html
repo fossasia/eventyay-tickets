@@ -5,6 +5,6 @@
 <h1>{% trans "Delete Janus server" %}</h1>
 <form method="post">
     {% csrf_token %}
-    <button type="submit">{% blocktrans id=server.url %}Delete {{ id }}{% endblocktrans %}</button>
+    <button type="submit">{% blocktrans with id=server.url %}Delete {{ id }}{% endblocktrans %}</button>
 </form>
 {% endblock %}

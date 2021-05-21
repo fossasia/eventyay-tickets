@@ -45,7 +45,7 @@ class HasSecretsMixin:
         for k, v in self.cleaned_data.items():
             if isinstance(self.fields.get(k), SecretKeyField) and self.cleaned_data.get(
                 k
-            ).endswith(SECRET_REDACTED):
+            ).endswith(SECRET_REDACTED) and k in self.initial:
                 self.cleaned_data[k] = self.initial[k]
                 setattr(self.instance, k, self.initial[k])
         return super().save()
