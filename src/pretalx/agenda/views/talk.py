@@ -150,6 +150,10 @@ class TalkReviewView(TalkView):
             ],
         )
 
+    @context
+    def hide_visibility_warning(self):
+        return True
+
 
 class SingleICalView(EventPageMixin, DetailView):
     model = Submission
