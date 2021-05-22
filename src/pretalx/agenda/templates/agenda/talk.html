@@ -122,8 +122,10 @@
             {% endif %}
         </div>
     </div>
-    {% for speaker in speakers %}
-        {% include "agenda/speaker_block.html" with speaker=speaker.talk_profile sessions=speaker.other_submissions add_links=True filter_talks=True %}
-    {% endfor %}
+    {% if not hide_speaker_links %}
+        {% for speaker in speakers %}
+            {% include "agenda/speaker_block.html" with speaker=speaker.talk_profile sessions=speaker.other_submissions add_links=True filter_talks=True %}
+        {% endfor %}
+    {% endif %}
 </article>
 {% endblock %}
