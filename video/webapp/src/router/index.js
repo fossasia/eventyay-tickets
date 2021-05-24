@@ -1,7 +1,9 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import App from 'App'
-import PresentationMode from 'PresentationMode'
+import PresentationMode from 'views/rooms/presentation'
+import PresentationModeChat from 'views/rooms/presentation/chat'
+import PresentationModeQuestion from 'views/rooms/presentation/question'
 import Room from 'views/rooms/item'
 import RoomManager from 'views/rooms/manage'
 import Channel from 'views/channels/item'
@@ -17,6 +19,15 @@ const routes = [{
 	path: '/rooms/:roomId/presentation',
 	name: 'presentation-mode',
 	component: PresentationMode,
+	children: [{
+		path: 'chat',
+		name: 'presentation-mode:chat',
+		component: PresentationModeChat
+	}, {
+		path: 'question',
+		name: 'presentation-mode:question',
+		component: PresentationModeQuestion
+	}]
 }, {
 	path: '/',
 	component: App,
@@ -28,12 +39,12 @@ const routes = [{
 		path: '/rooms/:roomId',
 		name: 'room',
 		component: Room,
-		props: true,
+		props: true
 	}, {
 		path: '/rooms/:roomId/manage',
 		name: 'room:manage',
 		component: RoomManager,
-		props: true,
+		props: true
 	}, {
 		path: '/channels/:channelId',
 		name: 'channel',
