@@ -8,12 +8,12 @@
 		.polls
 			.header
 				h3 Polls
-				bunt-icon-button(@click="showUrlPopup('polls')") presentation
+				bunt-icon-button(@click="showUrlPopup('poll')") presentation
 			p Coming Soon
 		.questions
 			.header
 				h3 Questions
-				bunt-icon-button(@click="showUrlPopup('questions')") presentation
+				bunt-icon-button(@click="showUrlPopup('question')") presentation
 			questions(v-if="modules['question']", :module="modules['question']")
 		.chat
 			.header
@@ -76,7 +76,8 @@ export default {
 			})
 		},
 		getPresentationUrl (type) {
-			return window.location.origin + this.$router.resolve({name: 'presentation-mode', params: {type}}).href + '#token=' + this.token
+			console.log(type)
+			return window.location.origin + this.$router.resolve({name: `presentation-mode:${type}`}).href + '#token=' + this.token
 		},
 		copyUrl () {
 			this.$refs.urlInput.$refs.input.select()
