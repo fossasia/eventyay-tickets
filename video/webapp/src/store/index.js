@@ -66,7 +66,7 @@ export default new Vuex.Store({
 				commit('exhibition/setData', serverState.exhibition)
 				commit('updateRooms', serverState['world.config'].rooms)
 				// FIXME copypasta from App.vue
-				if (state.activeRoom?.modules.some(module => ['livestream.native', 'call.bigbluebutton', 'call.zoom', 'call.janus', 'livestream.youtube'].includes(module.type))) {
+				if (state.activeRoom?.modules.some(module => ['livestream.native', 'livestream.youtube', 'livestream.iframe', 'call.bigbluebutton', 'call.zoom', 'call.janus'].includes(module.type))) {
 					api.call('room.enter', {room: state.activeRoom.id})
 				}
 				// TODO ?

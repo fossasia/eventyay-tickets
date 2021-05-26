@@ -18,16 +18,11 @@ export default {
 			default: 'normal'
 		},
 	},
-	data () {
-		return {
-			error: null
-		}
-	},
 	computed: {
 		url () {
 			return `https://www.youtube-nocookie.com/embed/${this.module.config.ytid}?autoplay=1&rel=0&showinfo=0`
 		}
-	},
+	}
 }
 </script>
 <style lang="stylus">
