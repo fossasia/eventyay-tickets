@@ -83,7 +83,7 @@ export function inferType (config) {
 	const findByModule = module => ROOM_TYPES.find(type => type.startingModule === module)
 
 	// infer media rooms by primary content
-	if (modules['livestream.native'] || modules['livestream.youtube']) return findById('stage')
+	if (modules['livestream.native'] || modules['livestream.youtube'] || modules['livestream.iframe']) return findById('stage')
 	if (modules['call.bigbluebutton']) return findById('channel-bbb')
 	if (modules['call.janus']) return findById('channel-janus')
 	if (modules['call.zoom']) return findById('channel-zoom')
