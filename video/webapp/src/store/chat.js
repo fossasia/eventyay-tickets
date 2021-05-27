@@ -14,6 +14,7 @@ export default {
 		joinedChannels: null,
 		readPointers: null,
 		channel: null,
+		config: null,
 		members: [],
 		usersLookup: {},
 		timeline: [],
@@ -64,6 +65,7 @@ export default {
 			state.usersLookup = members.reduce((acc, member) => { acc[member.id] = member; return acc }, {})
 			state.timeline = []
 			state.beforeCursor = beforeCursor
+			state.config = config
 			if (getters.activeJoinedChannel) {
 				getters.activeJoinedChannel.notification_pointer = notificationPointer
 			}
@@ -113,6 +115,7 @@ export default {
 		},
 		async markChannelRead ({state}) {
 			if (state.timeline.length === 0) return
+			if (state.config?.volatile) return
 			const pointer = state.timeline[state.timeline.length - 1].event_id
 			await api.call('chat.mark_read', {
 				channel: state.channel,
