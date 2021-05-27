@@ -85,6 +85,7 @@ def default_grants():
 
 FEATURE_FLAGS = [
     "schedule-control",
+    "iframe-player",
     "roulette",
     "muxdata",
     "page.landing",
