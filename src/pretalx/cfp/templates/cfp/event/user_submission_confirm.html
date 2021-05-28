@@ -36,6 +36,7 @@
         {% endcompress %}
         {% include "common/availabilities.html" %}
         {% bootstrap_field form.availabilities layout='inline' %}
+        <small class="form-text text-muted">{{ form.availabilities.help_text }}</small>
         {% endif %}
         <p></p>
         {% blocktranslate trimmed %}
