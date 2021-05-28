@@ -497,15 +497,19 @@ class RegenerateDecisionMails(EventPermissionRequired, TemplateView):
     permission_required = "orga.change_submissions"
 
     def get_queryset(self):
-        return self.request.event.submissions.filter(
-            state__in=[SubmissionStates.ACCEPTED, SubmissionStates.REJECTED],
-            speakers__isnull=False,
+        return (
+            self.request.event.submissions.filter(
+                state__in=[SubmissionStates.ACCEPTED, SubmissionStates.REJECTED],
+                speakers__isnull=False,
+            )
+            .prefetch_related("speakers")
+            .distinct()
         )
 
     @context
     @cached_property
     def count(self):
-        return self.get_queryset().count()
+        return sum(len(proposal.speakers.all()) for proposal in self.get_queryset())
 
     def post(self, request, **kwargs):
         for submission in self.get_queryset():

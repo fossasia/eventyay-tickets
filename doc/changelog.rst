@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`1111` pretalx would send multiple emails for proposals with multiple speakers.
 - :bug:`-` Not all existing review scores were recalculated when review score weights were changed during a review phase.
 - :feature:`1082` Event header images are now scaled down to a height of 150px.
 - :bug:`1093` pretalx sometimes over-reported the number of emails generated when bulk-sending emails.
