@@ -81,12 +81,12 @@ export default {
 	.c-livestream, .c-iframe-player, .c-youtube, .c-januscall, .c-bigbluebutton, .c-zoom, .c-januschannelcall
 		position: fixed
 		transition: all .3s ease
-		&.size-tiny
+		&.size-tiny, &.background
 			bottom: calc(var(--vh100) - 48px - 3px)
 			right: 4px + 36px + 4px
 			+below('l')
 				bottom: calc(var(--vh100) - 48px - 48px - 3px)
-		&:not(.size-tiny)
+		&:not(.size-tiny):not(.background)
 			bottom: calc(56px * var(--has-stagetools))
 			right: var(--chatbar-width)
 			width: calc(100vw - var(--sidebar-width) - var(--chatbar-width))
