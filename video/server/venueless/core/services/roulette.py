@@ -82,7 +82,7 @@ def roulette_request(user, room, socket_id, module_config):
             if own:
                 own.delete()
             waiting[0].delete()
-            return waiting[0], str(pairing.pk)
+            return waiting[0], str(pairing.pk), -1
         else:
             # There isn't someone waiting, let's wait
             if own:
@@ -95,7 +95,15 @@ def roulette_request(user, room, socket_id, module_config):
                     socket_id=socket_id,
                     expiry=now() + timedelta(seconds=30),
                 )
-            return own, None
+            recent_pairs = (
+                RoulettePairing.objects.filter(
+                    room=room,
+                    timestamp__gte=now() - timedelta(minutes=5),
+                )
+                .exclude(Q(user1=user) | Q(user2=user))
+                .count()
+            )
+            return own, None, recent_pairs
 
 
 @database_sync_to_async

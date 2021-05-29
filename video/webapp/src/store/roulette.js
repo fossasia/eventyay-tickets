@@ -5,6 +5,7 @@ export default {
 	state: {
 		room: null,
 		loading: false,
+		recentPairs: null,
 		callId: null,
 		server: null,
 		token: null,
@@ -48,6 +49,7 @@ export default {
 			const result = await api.call('roulette.start', {room: state.room.id})
 			if (result.status === 'wait' && !state.callId) {
 				state.requestTimer = window.setTimeout(() => dispatch('request'), 15000)
+				state.recentPairs = state.recent_pairs
 			} else if (result.status === 'match') {
 				dispatch('startCall', {callId: result.call_id})
 			}

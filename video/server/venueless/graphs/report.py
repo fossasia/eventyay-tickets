@@ -225,7 +225,10 @@ class ReportGenerator:
     def story_for_room(self, room: Room):
         s = [
             PageBreak(),
-            Paragraph(room.name + (" (deleted)" if room.deleted else ""), self.stylesheet["Heading2"]),
+            Paragraph(
+                room.name + (" (deleted)" if room.deleted else ""),
+                self.stylesheet["Heading2"],
+            ),
             # todo: average time spent per user
         ]
 
