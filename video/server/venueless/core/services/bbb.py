@@ -234,6 +234,11 @@ class BBBService:
         if req is False:
             return
 
+        if user.profile.get("avatar", {}).get("url"):
+            avatar = {"avatarURL": user.profile.get("avatar", {}).get("url")}
+        else:
+            avatar = {}
+
         scheme = (
             "http://" if settings.DEBUG else "https://"
         )  # TODO: better determinator?
@@ -247,6 +252,7 @@ class BBBService:
                 if moderator
                 else create_params["attendeePW"],
                 "joinViaHtml5": "true",
+                **avatar,
                 "guest": "true"
                 if not moderator and config.get("waiting_room", False)
                 else "false",
@@ -284,6 +290,11 @@ class BBBService:
         if await self._get(create_url) is False:
             return
 
+        if user.profile.get("avatar", {}).get("url"):
+            avatar = {"avatarURL": user.profile.get("avatar", {}).get("url")}
+        else:
+            avatar = {}
+
         scheme = (
             "http://" if settings.DEBUG else "https://"
         )  # TODO: better determinator?
@@ -292,6 +303,7 @@ class BBBService:
             {
                 "meetingID": create_params["meetingID"],
                 "fullName": escape_name(user.profile.get("display_name", "")),
+                **avatar,
                 "userID": str(user.pk),
                 "password": create_params["moderatorPW"],
                 "joinViaHtml5": "true",
