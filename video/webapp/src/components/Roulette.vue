@@ -2,7 +2,9 @@
 .c-roulette
 	.call(v-if="server")
 		janus-videoroom(:server="server", :token="token", :iceServers="iceServers", :sessionId="sessionId", :roomId="roomId", size="normal", :automute="false", :key="`janus-videoroom-${roomId}`", @hangup="stopCall")
-	.status(v-else-if="loading && !callId") {{ $t('Roulette:waiting:text') }}
+	.status(v-else-if="loading && !callId")
+		div {{ $t('Roulette:waiting:text') }}
+		.detail {{ $t('Roulette:waiting-' + (recentPairs > 10 ? 'many' : (recentPairs > 0 ? 'few' : 'empty')) + ':text') }}
 	.status(v-else-if="loading && callId") {{ $t('Roulette:connecting:text') }}
 	.welcome(v-else)
 		.status {{ $t('Roulette:instructions:text') }}
@@ -51,7 +53,7 @@ export default {
 	},
 	computed: {
 		...mapState(['connected']),
-		...mapState('roulette', ['callId', 'server', 'iceServers', 'token', 'roomId', 'sessionId', 'loading', 'error']),
+		...mapState('roulette', ['callId', 'server', 'iceServers', 'token', 'roomId', 'sessionId', 'loading', 'error', 'recentPairs']),
 
 		soundBarWidth () {
 			return Math.min(1, this.soundLevel * 10) * 100
@@ -172,6 +174,9 @@ export default {
 		text-align: center
 		padding: 16px
 		font-size: 24px
+		.detail
+			padding-top: 16px
+			font-size: 18px
 	.error
 		text-align: center
 		padding: 16px
