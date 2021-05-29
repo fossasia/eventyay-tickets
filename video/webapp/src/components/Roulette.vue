@@ -7,7 +7,7 @@
 		.detail {{ $t('Roulette:waiting-' + (recentPairs > 10 ? 'many' : (recentPairs > 0 ? 'few' : 'empty')) + ':text') }}
 	.status(v-else-if="loading && callId") {{ $t('Roulette:connecting:text') }}
 	.welcome(v-else)
-		.status {{ $t('Roulette:instructions:text') }}
+		.status {{ hasPreviousCall ? $t('Roulette:instructions-repeated:text') : $t('Roulette:instructions:text') }}
 		.preview-video-wrapper
 			video(ref="video", playsinline, autoplay, muted="muted")
 			bunt-icon-button(@click="showDevicePrompt = true") cog
@@ -49,6 +49,7 @@ export default {
 			soundMeter: null,
 			soundMeterInterval: null,
 			previewStream: null,
+			hasPreviousCall: false,
 		}
 	},
 	computed: {
@@ -104,6 +105,7 @@ export default {
 			}
 			this.stopCall()
 			this.startRequesting({room: this.room})
+			this.hasPreviousCall = true
 		},
 		startVideo () {
 			const constraints = {
