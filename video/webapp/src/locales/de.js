@@ -241,6 +241,7 @@ export default {
 	'Roulette:connecting:text': 'Wir haben jemanden gefunden! Verbinde …',
 	'Roulette:btn-start:label': 'Neues Gespräch starten',
 	'Roulette:instructions:text': 'Klicke auf den Button weiter unten um ein Gespräch mit einer zufälligen anderen Person auf der Veranstaltung zu starten!',
+	'Roulette:instructions-repeated:text': 'Dein Gespräch ist beendet. Klicke auf den Button weiter unten um ein neues Gespräch zu starten!',
 	'Roulette:waiting:text': 'Warte auf eine Gesprächspartner:in…',
 	'Roulette:waiting-empty:text': 'Es sind gerade nicht viele andere Teilnehmer:innen in diesem Bereich. Warte gerne einen Moment, ob andere dazustoßen, ansonsten probiere es später erneut.',
 	'Roulette:waiting-few:text': 'Es sind gerade ein paar Teilnehmer:innen hier, wir sollten demnächst eine Gesprächspartner:in für dich finden.',

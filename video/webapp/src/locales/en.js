@@ -244,6 +244,7 @@ export default {
 	'Roulette:connecting:text': 'We found someone! Connecting …',
 	'Roulette:btn-start:label': 'Start a new call',
 	'Roulette:instructions:text': 'Click the button below to start a video call with a random other person at the event!',
+	'Roulette:instructions-repeated:text': 'Your call has ended. Click the button below to start a new one!',
 	'Roulette:waiting:text': 'Waiting for a person to talk to …',
 	'Roulette:waiting-empty:text': 'There aren\'t lots of other people around currently. Feel free to wait for a bit, but if you don\'t get connected, just try again later.',
 	'Roulette:waiting-few:text': 'There are some other people around currently, we should find someone for you to talk to in a bit.',
