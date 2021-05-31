@@ -571,8 +571,8 @@ class CfPFlow:
                 {
                     "icon": step.icon,
                     "icon_label": step.label,
-                    "title": step_config.get("title", step.title),
-                    "text": step_config.get("text", step.text),
+                    "title": i18n_string(step_config.get("title", step.title), locales),
+                    "text": i18n_string(step_config.get("text", step.text), locales),
                     "identifier": step.identifier,
                     "fields": [
                         {

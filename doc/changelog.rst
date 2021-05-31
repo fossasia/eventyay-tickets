@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`-` In the CfP editor, when a step description was only given in a language that wasn't currently active, you couldn't change it any longer.
 - :bug:`1111` pretalx would send multiple emails for proposals with multiple speakers.
 - :bug:`-` Not all existing review scores were recalculated when review score weights were changed during a review phase.
 - :feature:`1082` Event header images are now scaled down to a height of 150px.

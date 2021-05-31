@@ -242,7 +242,7 @@ Vue.component("step", {
           </span>
         </div>
         <h2 class="edit-container">
-          <span v-if="!editingTitle" :class="[editable ? 'editable' : '']" @click.stop="editTitle">{{ step.title[currentLanguage] }}</span>
+          <span v-if="!editingTitle" :class="[editable ? 'editable' : '']" @click.stop="editTitle">{{ step.title[currentLanguage] || '…' }}</span>
           <span v-else>
           <div class="col-md-9"><div class="i18n-form-group" @click.stop="">
             <input type="text" class="form-control" :title="locale" :lang="locale" v-model="step.title[locale]" v-for="locale in locales">
@@ -250,7 +250,7 @@ Vue.component("step", {
           </span>
         </h2>
         <div class="edit-container">
-          <span v-if="!editingText" :class="[editable ? 'editable' : '']" @click.stop="editText" v-html="marked(step.text[currentLanguage])"></span>
+          <span v-if="!editingText" :class="[editable ? 'editable' : '']" @click.stop="editText" v-html="marked(step.text[currentLanguage] || '…')"></span>
           <span v-else @click.stop="">
             <div class="col-md-9"><div class="i18n-form-group">
               <textarea type="text" class="form-control" :title="locale" :lang="locale" v-model="step.text[locale]" v-for="locale in locales"></textarea>
