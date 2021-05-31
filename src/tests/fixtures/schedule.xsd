@@ -15,7 +15,7 @@
           <xs:complexType>
             <xs:all>
               <xs:element type="xs:string"  name="title"/>
-              <xs:element type="xs:string"  name="acronym"/>
+              <xs:element type="acronym"  name="acronym"/>
 
               <xs:element type="xs:date"    name="start" minOccurs="0"/>
               <xs:element type="xs:date"    name="end" minOccurs="0"/>
@@ -79,7 +79,7 @@
       <xs:element type="start" name="start"/>
       <xs:element type="duration" name="duration"/>
       <xs:element type="xs:string" name="abstract"/>
-      <xs:element type="xs:string" name="slug"/>
+      <xs:element type="slug" name="slug"/>
       <xs:element type="xs:string" name="track"/>
 
       <xs:element type="xs:string" name="logo" minOccurs="0"/>
@@ -117,6 +117,18 @@
   <xs:simpleType name="uuid">
     <xs:restriction base="xs:string">
       <xs:pattern value="[0-9a-fA-F]{8}(-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="acronym">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[a-z0-9_-]+"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="slug">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[a-z0-9]+-[0-9]+-[a-z0-9-_]+"/>
     </xs:restriction>
   </xs:simpleType>
 
