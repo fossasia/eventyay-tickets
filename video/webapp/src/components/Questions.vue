@@ -15,8 +15,6 @@
 	.questions(v-if="questions && (module.config.active || hasPermission('room:question.moderate'))", :class="{'can-vote': hasPermission('room:question.vote')}", v-scrollbar.y="")
 		.empty-placeholder(v-if="questions.length === 0") {{ $t('Questions:empty-placeholder') }}
 		question(v-for="question of sortedQuestions", :question="question")
-	.moderator-actions(v-if="hasPermission('room:question.moderate')")
-		bunt-button.btn-archive-all(@click="$store.dispatch('question/archiveAll')") {{ $t('Questions:moderator-actions:archive-all:label') }}
 </template>
 <script>
 import { mapState, mapGetters } from 'vuex'
@@ -111,12 +109,4 @@ export default {
 			themed-button-primary()
 	.questions
 		flex: auto
-	.moderator-actions
-		flex: none
-		border-top: border-separator()
-		display: flex
-		height: 56px
-		justify-content: flex-end
-		align-items: center
-		padding: 0 8px
 </style>
