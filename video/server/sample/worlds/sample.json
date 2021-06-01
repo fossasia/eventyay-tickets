@@ -269,6 +269,12 @@
           }
         },
         {
+          "type": "poll",
+          "config": {
+            "active": true
+          }
+        },
+        {
           "type": "chat.native",
           "config": {
             "volatile": true
@@ -299,6 +305,13 @@
             "active": true,
             "requires_moderation": false
           }
+        },
+        {
+          "type": "poll",
+          "config": {
+            "active": true,
+            "requires_moderation": false
+          }
         }
       ]
     },
@@ -320,6 +333,12 @@
         },
         {
           "type": "question",
+          "config": {
+            "active": false
+          }
+        },
+        {
+          "type": "poll",
           "config": {
             "active": false
           }
