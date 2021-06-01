@@ -16,10 +16,15 @@ class Poll(models.Model):
         CLOSED = "closed"
         ARCHIVED = "archived"
 
+    class Types(models.TextChoices):
+        CHOICE = "choice"
+        MULTI_CHOICE = "multi"
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     content = models.TextField()
-    state = models.CharField(
-        default=States.DRAFT, choices=States.choices, max_length=10
+    state = models.CharField(default=States.DRAFT, choices=States.choices, max_length=8)
+    poll_type = models.CharField(
+        default=Types.CHOICE, choices=Types.choices, max_length=6
     )
     timestamp = models.DateTimeField(auto_now_add=True)
     is_pinned = models.BooleanField(default=False)
@@ -54,16 +59,28 @@ class Poll(models.Model):
             "room_id": str(self.room_id),
             "results": self.score or None,
             "is_pinned": self.is_pinned,
+            "options": [
+                {
+                    "id": str(option.id),
+                    "content": option.content,
+                    "order": option.order,
+                }
+                for option in self.options.all()
+            ],
         }
         if answer_state:
             data["answer"] = getattr(self, "_answer", False)
         return data
 
 
-class PollOption(models.Model):  # TODO/discuss: we can do without this model, too
+class PollOption(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     poll = models.ForeignKey(Poll, on_delete=models.CASCADE, related_name="options")
+    order = models.IntegerField(default=1)
     content = models.TextField()
+
+    class Meta:
+        ordering = ["order"]
 
 
 class PollVote(models.Model):
@@ -75,3 +92,6 @@ class PollVote(models.Model):
         on_delete=models.CASCADE,
         related_name="poll_votes",
     )
+
+    class Meta:
+        unique_together = (("option", "sender"),)
