@@ -1,39 +1,51 @@
 Polls
-=========
+=====
 
-Users can ask polls in a room, and other users can cast votes. Polls can be
-marked as "over", and don't permit any votes past that point.
+Moderators can create polls, which are visible while they are "open" or
+"closed" and only visible to moderators while they are in "draft" or "archived"
+state.
+
+Posting polls can be locked per room to only allow polls at a certain time.  To
+clear polls after or before a logical session, single polls can be deleted or
+archived ("delete all" to be implemented by the client)::
 
     {
 	id: uuid,
 	room_id: uuid,
-	sender: uuid,
 	timestamp: Datetime,
 	content: String,
-	state: String, // 'mod_queue', 'visible', 'archived'
-	answered: Boolean,
-	score: Number
+	state: String, // 'open', 'closed', 'draft', 'archived'
+        poll_type: String, // 'choice', 'multi'
+        results: Object,
+        is_pinned: Boolean,
+        options: [
+            {
+                id: uuid,
+                content: String,
+                order: Integer,
+            }
+        ]
+        answered: List // answers the current user has posted, available on list actions
     }
 
 Permissions
 -----------
 
-There are four permissions involved with the questions API:
+There are three permissions involved with the polls API:
 
-- ``room:question.read`` to be able to see questions at all
-- ``room:question.ask`` to be able to ask questions
-- ``room:question.vote`` to be able to vote on questions
-- ``room:question.moderate`` to be able to update or delete questions, and to activate and deactivate the questions module
+- ``room:poll.read`` to be able to see polls at all
+- ``room:poll.vote`` to be able to vote on polls
+- ``room:poll.manage`` to be able to update or delete polls, and to activate and deactivate the polls module
 
 Room Config
 -----------
 
-To enable questions for a room, add the questions module to the room modules::
+To enable polls for a room, add the polls module to the room modules::
 
     {
-        "name": "Room with questions",
+        "name": "Room with polls",
         "modules": [{
-            type: 'question',
+            type: 'poll',
             config: {
                 active: true,  // false by default
                 requires_moderation: false  // true by default
@@ -42,47 +54,59 @@ To enable questions for a room, add the questions module to the room modules::
         …
     }
 
-## ``question.ask``
+## ``poll.create``
 
-To ask a question, send a message like this::
+To create a poll, send a message like this::
 
-    => ["question.ask", 1234, {"room": "room_0", "content": "What is your favourite colour?"}]
-    <- ["success", 1234, {"question": {…}}]
+    => ["poll.create", 1234, {"room": "room_0", "content": "What is your favourite colour?", options=[{"content": "Yes", "order": 1}, {"content": "No", "order": 2}]}]
+    <- ["success", 1234, {"poll": {…}}]
+    <= ["poll.created_or_updated", {"poll": {…}}]
 
 On creates and on updates, all people in the room who have the required access rights will receive a message like this::
 
-    <- ["question.created_or_updated", {"question": {…}}]
+    <= ["poll.created_or_updated", {"poll": {…}}]
 
-## ``question.update``
+## ``poll.update``
 
-To update a question (only permitted for moderators), send a message like this::
+To update a poll (only permitted for moderators), send a message like this::
 
-    => ["question.update", 1234, {"room": 123, "id": "UUID", "state": "visible"}]
-    <- ["success", 1234, {"question": {…}}]
+    => ["poll.update", 1234, {"room": 123, "id": "UUID", "state": "visible"}]
+    <- ["success", 1234, {"poll": {…}}]
+    <= ["poll.created_or_updated", {"poll": {…}}]
 
-## ``question.list``
+To change the options, adjust the ``"options"``. To update an option, remember
+to include its ID, to remove it, drop it from the options list, and to add a
+new option, add it to the list without an ID.
 
-Given a room ID, return all the questions that are visible to the user::
+## ``poll.list``
 
-    => ["question.list", 1234, {"room": "room_0"}]
+Given a room ID, return all the polls that are visible to the user::
+
+    => ["poll.list", 1234, {"room": "room_0"}]
     <- ["success", 1234, [{"id": }, ...]
 
-## ``question.vote``
+Note that the poll object has an added ``answers``  # TODO wtf is in there?
+boolean attribute denoting how the user has answered this poll.
 
-Given a room ID and a question ID, users can add their ``vote: true`` or remove it with ``vote: false``::
+## ``poll.vote``
 
-    => ["question.vote", 1234, {"room": "room_0", "id": 12, "vote": true}]
+Given a room ID and a poll ID, users can select one or multiple options as a list of IDs::
+
+    => ["poll.vote", 1234, {"room": "room_0", "id": 12, "options": ["ed1", "ed2"]}]
     <- ["success", 1234, [{"id": }, ...]
 
-## ``question.delete``
+## ``poll.delete``
 
-Only moderators may delete questions. Delete notifications are broadcasted like this::
+Only moderators may delete polls. Delete notifications are broadcasted like this::
 
-    => ["question.delete", 1234, {"room": "room_0", "id": 12}]
+    => ["poll.delete", 1234, {"room": "room_0", "id": 12}]
     <- ["success", 1234, [{"id": }, ...]
-    <= ["question.deleted", {"room": "room_0", "id": 12}]
+    <= ["poll.deleted", {"room": "room_0", "id": 12}]
 
-TODOs
------
+## ``poll.pin``
 
-- add moderator command ``question.activate`` that updates the module config
+Only moderators may pin polls, like this::
+
+    => ["poll.pin", 1234, {"room": "room_0", "id": 12}]
+    <- ["success", 1234, [{"id": }, ...]
+    <= ["poll.pinned", {"room": "room_0", "id": 12}]
