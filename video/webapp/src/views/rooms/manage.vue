@@ -13,7 +13,13 @@
 		.questions
 			.header
 				h3 Questions
-				bunt-icon-button(@click="showUrlPopup('question')") presentation
+				.actions
+					bunt-icon-button(@click="showUrlPopup('question')") presentation
+					menu-dropdown(v-if="hasPermission('room:question.moderate')", v-model="showQuestionsMenu", strategy="fixed")
+						template(v-slot:button="{toggle}")
+							bunt-icon-button(@click="toggle") dots-vertical
+						template(v-slot:menu)
+							.archive-all(@click="$store.dispatch('question/archiveAll')") {{ $t('Questions:moderator-actions:archive-all:label') }}
 			questions(v-if="modules['question']", :module="modules['question']")
 		.chat
 			.header
@@ -35,23 +41,26 @@
 import {mapGetters, mapState} from 'vuex'
 import { createPopper } from '@popperjs/core'
 import Chat from 'components/Chat'
+import MenuDropdown from 'components/MenuDropdown'
 import Prompt from 'components/Prompt'
 import Questions from 'components/Questions'
 
 export default {
 	name: 'RoomManager',
-	components: { Chat, Prompt, Questions },
+	components: { Chat, MenuDropdown, Prompt, Questions },
 	props: {
 		roomId: String
 	},
 	data () {
 		return {
 			showPresentationUrlFor: null,
-			copiedUrl: false
+			copiedUrl: false,
+			showQuestionsMenu: false
 		}
 	},
 	computed: {
 		...mapState(['world', 'rooms', 'token']),
+		...mapGetters(['hasPermission']),
 		...mapGetters('schedule', ['sessions', 'sessionsScheduledNow']),
 		room () {
 			if (this.roomId === undefined) return this.rooms[0] // '/' is the first room
@@ -133,6 +142,9 @@ export default {
 			height: 56px
 			border-bottom: border-separator()
 			padding: 0 16px
+			.actions
+				display: flex
+				gap: 8px
 			.bunt-icon-button
 				icon-button-style(style: clear)
 		.c-chat
