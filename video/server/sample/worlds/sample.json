@@ -69,6 +69,8 @@
       "room:question.read",
       "room:question.ask",
       "room:question.vote",
+      "room:poll.read",
+      "room:poll.vote",
       "world:exhibition.contact"
     ],
     "room_creator": [
@@ -117,6 +119,9 @@
       "room:question.ask",
       "room:question.vote",
       "room:question.moderate",
+      "room:poll.manage",
+      "room:poll.read",
+      "room:poll.vote",
       "world:announce"
     ],
     "admin": [
