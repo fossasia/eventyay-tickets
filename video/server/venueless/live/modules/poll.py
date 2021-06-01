@@ -1,6 +1,6 @@
 import logging
 
-from venueless.core.models.polls import Poll
+from venueless.core.models.poll import Poll
 from venueless.core.permissions import Permission
 from venueless.core.services.poll import (
     create_poll,
@@ -11,10 +11,7 @@ from venueless.core.services.poll import (
     update_poll,
     vote_on_poll,
 )
-from venueless.live.channels import (
-    GROUP_ROOM_POLL_MODERATE,
-    GROUP_ROOM_POLL_READ,
-)
+from venueless.live.channels import GROUP_ROOM_POLL_MANAGE, GROUP_ROOM_POLL_READ
 from venueless.live.decorators import command, event, room_action
 from venueless.live.modules.base import BaseModule
 
@@ -23,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 def get_group_for_state(state):
     return (
-        GROUP_ROOM_POLL_MODERATE
+        GROUP_ROOM_POLL_MANAGE
         if state in (Poll.States.DRAFT, Poll.States.ARCHIVED)
         else GROUP_ROOM_POLL_READ
     )
