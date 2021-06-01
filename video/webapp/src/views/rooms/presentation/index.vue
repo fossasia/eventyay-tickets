@@ -1,5 +1,5 @@
 <template lang="pug">
-#presentation-mode(:style="[style, themeVariables]")
+#presentation-mode(:class="{fullscreen}", :style="[style, themeVariables]")
 	.fatal-indicator.mdi.mdi-alert-octagon(v-if="fatalError || fatalConnectionError", :title="errorMessage")
 	.content(v-else-if="world")
 		router-view(:room="room")
@@ -15,11 +15,11 @@ const SLIDE_HEIGHT = 700
 
 export default {
 	props: {
-		roomId: String,
-		type: String
+		roomId: String
 	},
 	data () {
 		return {
+			fullscreen: false,
 			themeVariables,
 			scale: 1
 		}
@@ -44,6 +44,9 @@ export default {
 			api.call('room.enter', {room: this.room.id})
 		}
 	},
+	created () {
+		this.fullscreen = this.$route.query.fullscreen ?? !this.$route.name.endsWith('chat')
+	},
 	mounted () {
 		window.addEventListener('resize', this.computeScale)
 		this.computeScale()
@@ -53,6 +56,7 @@ export default {
 	},
 	methods: {
 		computeScale () {
+			if (!this.fullscreen) return
 			const width = document.body.offsetWidth
 			const height = document.body.offsetHeight
 			this.scale = Math.min(width / SLIDE_WIDTH, height / SLIDE_HEIGHT)
@@ -65,9 +69,7 @@ export default {
 	height: 100%
 	display: flex
 	flex-direction: column
-	justify-content: center
-	align-items: center
-	font-size: 14px // somehow obs has no default font size, so setting size via percentage breaks everything
+	font-size: 16px // somehow obs has no default font size, so setting size via percentage breaks everything
 	> .bunt-progress-circular, > .fatal-indicator
 		position: fixed
 		top: 100%
@@ -80,10 +82,16 @@ export default {
 	> .content
 		display: flex
 		flex-direction: column
+		transform: scale(var(--scale)) translateZ(0)
+		height: 100vh
+	&.fullscreen
 		justify-content: center
 		align-items: center
-		width: 960px
-		height: 700px
-		flex: none
-		transform: scale(var(--scale)) translateZ(0)
+		> .content
+
+			justify-content: center
+			align-items: center
+			width: 960px
+			height: 700px
+			flex: none
 </style>
