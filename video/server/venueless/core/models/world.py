@@ -269,6 +269,7 @@ class World(VersionedModel):
             Feedback,
             Membership,
             Question,
+            Poll,
             Reaction,
             RoomView,
         )
@@ -286,6 +287,7 @@ class World(VersionedModel):
         Reaction.objects.filter(room__world=self).delete()
         RoomView.objects.filter(room__world=self).delete()
         Question.objects.filter(room__world=self).delete()
+        Poll.objects.filter(room__world=self).delete()
         Feedback.objects.filter(world=self).delete()
 
         for f in StoredFile.objects.filter(world=self):
