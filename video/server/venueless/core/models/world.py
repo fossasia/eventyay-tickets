@@ -26,6 +26,9 @@ def default_roles():
     participant = viewer + [
         Permission.ROOM_CHAT_JOIN,
         Permission.ROOM_CHAT_SEND,
+        Permission.ROOM_QUESTION_READ,
+        Permission.ROOM_QUESTION_ASK,
+        Permission.ROOM_QUESTION_VOTE,
         Permission.ROOM_ROULETTE_JOIN,
         Permission.ROOM_BBB_JOIN,
         Permission.ROOM_JANUSCALL_JOIN,
@@ -44,6 +47,7 @@ def default_roles():
         Permission.ROOM_CHAT_MODERATE,
         Permission.ROOM_ANNOUNCE,
         Permission.ROOM_BBB_RECORDINGS,
+        Permission.ROOM_QUESTION_MODERATE,
         Permission.WORLD_ANNOUNCE,
     ]
     admin = (
