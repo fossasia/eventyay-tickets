@@ -38,8 +38,21 @@ class Poll(models.Model):
 
     objects = PollManager()
 
+    def save(self, *args, **kwargs):
+        if (
+            self.state in (self.States.CLOSED, self.States.ARCHIVED)
+            and not self.cached_results
+        ):
+            self.cached_results = self.get_results()
+        return super().save(*args, **kwargs)
+
+    def get_results(self):
+        return  # TODO
+
     @cached_property
     def results(self):
+        if self.cached_results:
+            return self.cached_results
         # When the poll is retrieved with the with_results manager method,
         # we can just use the available score. We'll count manually otherwise.
         results = getattr(self, "_results", None)
@@ -47,17 +60,13 @@ class Poll(models.Model):
             return results
         return self.get_results()
 
-    def get_results(self):
-        return  # TODO
-
-    def serialize_public(self, answer_state=False):
+    def serialize_public(self, answer_state=False, with_results=False):
         data = {
             "id": str(self.id),
             "content": self.content,
             "state": self.state,
             "timestamp": self.timestamp.isoformat(),
             "room_id": str(self.room_id),
-            "results": self.score or None,
             "is_pinned": self.is_pinned,
             "options": [
                 {
@@ -68,6 +77,11 @@ class Poll(models.Model):
                 for option in self.options.all()
             ],
         }
+        if with_results or self.state != self.States.OPEN:
+            # If the poll is closed, everybody may see the results
+            # If it is in draft/archived states, the only people who can see it at all,
+            # can also see the results.
+            data["results"] = self.results
         if answer_state:
             data["answers"] = getattr(self, "_answers", False)
         return data

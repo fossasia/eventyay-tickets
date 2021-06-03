@@ -26,6 +26,15 @@ def pin_poll(pk, room):
 
 
 @database_sync_to_async
+def get_voted_polls(room, user):
+    return (
+        Poll.objects.filter(room=room, options__votes__sender=user)
+        .distinct()
+        .values_list("id", flat=True)
+    )
+
+
+@database_sync_to_async
 def get_polls(room, moderator=False, for_user=None, **kwargs):
     polls = Poll.objects.filter(room=room)
     if not moderator:
@@ -39,7 +48,10 @@ def get_polls(room, moderator=False, for_user=None, **kwargs):
         # )
         # polls = polls.annotate(_answer=Exists(subquery))
         pass
-    return [poll.serialize_public(voted_state=bool(for_user)) for poll in polls]
+    return [
+        poll.serialize_public(voted_state=bool(for_user), with_results=moderator)
+        for poll in polls
+    ]
 
 
 @database_sync_to_async
@@ -62,7 +74,7 @@ def update_poll(**kwargs):
                 option.save()
             else:
                 PollOption.objects.create(poll=poll, **option_kwargs)
-    return poll.refresh_from_db().serialize_public()
+    return poll.refresh_from_db().serialize_public(with_results=True)
 
 
 @database_sync_to_async
@@ -79,4 +91,6 @@ def vote_on_poll(pk, room, user, options):
     PollVote.objects.bulk_create(
         [PollVote(sender=user, option_id=option) for option in validated_options]
     )
-    return Poll.objects.with_with_results().get(pk=pk).serialize_public()
+    return (
+        Poll.objects.with_with_results().get(pk=pk).serialize_public(with_results=True)
+    )

@@ -11,7 +11,11 @@ from venueless.core.services.poll import (
     update_poll,
     vote_on_poll,
 )
-from venueless.live.channels import GROUP_ROOM_POLL_MANAGE, GROUP_ROOM_POLL_READ
+from venueless.live.channels import (
+    GROUP_ROOM_POLL_MANAGE,
+    GROUP_ROOM_POLL_READ,
+    GROUP_ROOM_POLL_RESULTS,
+)
 from venueless.live.decorators import command, event, room_action
 from venueless.live.modules.base import BaseModule
 
@@ -125,11 +129,23 @@ class PollModule(BaseModule):
             return
 
         await self.consumer.send_success({"poll": poll})
-        # TODO: add this user to the group of users who can see updates to this poll
+
+        poll_results = GROUP_ROOM_POLL_RESULTS.format(id=self.room.pk, poll=poll["id"])
+        await self.consumer.channel_layer.group_add(
+            poll_results, self.consumer.channel_name
+        )
 
         group = get_group_for_state(poll["state"])
         await self.consumer.channel_layer.group_send(
             group.format(id=self.room.pk),
+            {
+                "type": "poll.created_or_updated",
+                "room": str(self.room.pk),
+                "poll": poll,
+            },
+        )
+        await self.consumer.channel_layer.group_send(
+            poll_results.format(id=self.room.pk, poll=poll["id"]),
             {
                 "type": "poll.created_or_updated",
                 "room": str(self.room.pk),

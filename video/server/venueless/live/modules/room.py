@@ -10,6 +10,7 @@ from sentry_sdk import add_breadcrumb, configure_scope
 
 from venueless.core.models.room import RoomConfigSerializer, approximate_view_number
 from venueless.core.permissions import Permission
+from venueless.core.services.poll import get_polls, get_voted_polls
 from venueless.core.services.reactions import store_reaction
 from venueless.core.services.room import (
     delete_room,
@@ -29,6 +30,7 @@ from venueless.live.channels import (
     GROUP_ROOM,
     GROUP_ROOM_POLL_MANAGE,
     GROUP_ROOM_POLL_READ,
+    GROUP_ROOM_POLL_RESULTS,
     GROUP_ROOM_QUESTION_MODERATE,
     GROUP_ROOM_QUESTION_READ,
     GROUP_WORLD,
@@ -75,6 +77,18 @@ class RoomModule(BaseModule):
                     self.consumer.channel_name,
                 )
 
+        if await self.consumer.world.has_permission_async(
+            user=self.consumer.user,
+            room=self.room,
+            permission=Permission.ROOM_POLL_VOTE,
+        ):
+            # For polls, we have to add users to all groups they have already voted for
+            voted_polls = await get_voted_polls(self.room, self.user)
+            for poll in voted_polls:
+                await self.consumer.channel_layer.group_add(
+                    GROUP_ROOM_POLL_RESULTS.format(id=self.room.pk, poll=poll),
+                    self.consumer.channel_name,
+                )
         await self.consumer.send_success({})
 
         self.current_views[self.room], actual_view_count = await start_view(
@@ -104,6 +118,11 @@ class RoomModule(BaseModule):
         for group_name in group_names:
             await self.consumer.channel_layer.group_discard(
                 group_name.format(id=room.pk), self.consumer.channel_name
+            )
+        for poll in await get_polls(self.room):
+            await self.consumer.channel_layer.group_discard(
+                GROUP_ROOM_POLL_RESULTS.format(id=room.pk, poll=poll["id"]),
+                self.consumer.channel_name,
             )
         if room in self.current_views:
             actual_view_count = await end_view(
