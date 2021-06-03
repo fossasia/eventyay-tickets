@@ -83,7 +83,7 @@ class RoomModule(BaseModule):
             permission=Permission.ROOM_POLL_VOTE,
         ):
             # For polls, we have to add users to all groups they have already voted for
-            voted_polls = await get_voted_polls(self.room, self.user)
+            voted_polls = await get_voted_polls(self.room, self.consumer.user)
             for poll in voted_polls:
                 await self.consumer.channel_layer.group_add(
                     GROUP_ROOM_POLL_RESULTS.format(id=self.room.pk, poll=poll),
@@ -119,7 +119,7 @@ class RoomModule(BaseModule):
             await self.consumer.channel_layer.group_discard(
                 group_name.format(id=room.pk), self.consumer.channel_name
             )
-        for poll in await get_polls(self.room):
+        for poll in await get_polls(room):
             await self.consumer.channel_layer.group_discard(
                 GROUP_ROOM_POLL_RESULTS.format(id=room.pk, poll=poll["id"]),
                 self.consumer.channel_name,

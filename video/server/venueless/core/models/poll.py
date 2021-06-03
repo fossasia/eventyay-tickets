@@ -5,7 +5,7 @@ from django.db import models
 
 
 class PollManager(models.Manager):
-    def with_score(self):
+    def with_results(self):
         return self.get_queryset()  # TODO .annotate(_answers=models.Count("votes"))
 
 
@@ -83,7 +83,7 @@ class Poll(models.Model):
             # can also see the results.
             data["results"] = self.results
         if answer_state:
-            data["answers"] = getattr(self, "_answers", False)
+            data["answers"] = getattr(self, "_answers", None)
         return data
 
 

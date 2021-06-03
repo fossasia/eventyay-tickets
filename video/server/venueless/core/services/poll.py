@@ -7,10 +7,11 @@ from venueless.core.models.poll import Poll, PollOption, PollVote
 @database_sync_to_async
 def create_poll(options, **kwargs):
     options = options or []
-    new = Poll.objects.create(**kwargs)
+    new = Poll.objects.create(**{key: value for key, value in kwargs.items() if value})
     for option in options:
         PollOption.objects.create(poll=new, **option)
-    return new.refresh_from_db().serialize_public()
+    new.refresh_from_db()
+    return new.serialize_public()
 
 
 @database_sync_to_async
@@ -27,7 +28,7 @@ def pin_poll(pk, room):
 
 @database_sync_to_async
 def get_voted_polls(room, user):
-    return (
+    return list(
         Poll.objects.filter(room=room, options__votes__sender=user)
         .distinct()
         .values_list("id", flat=True)
@@ -49,7 +50,7 @@ def get_polls(room, moderator=False, for_user=None, **kwargs):
         # polls = polls.annotate(_answer=Exists(subquery))
         pass
     return [
-        poll.serialize_public(voted_state=bool(for_user), with_results=moderator)
+        poll.serialize_public(answer_state=bool(for_user), with_results=moderator)
         for poll in polls
     ]
 
@@ -74,7 +75,8 @@ def update_poll(**kwargs):
                 option.save()
             else:
                 PollOption.objects.create(poll=poll, **option_kwargs)
-    return poll.refresh_from_db().serialize_public(with_results=True)
+    poll.refresh_from_db()
+    return poll.serialize_public(with_results=True)
 
 
 @database_sync_to_async
@@ -86,11 +88,9 @@ def delete_poll(**kwargs):
 @database_sync_to_async
 def vote_on_poll(pk, room, user, options):
     poll = Poll.objects.get(pk=pk, room=room)
-    PollVote.objects.delete(sender=user, option__poll=poll)
+    PollVote.objects.filter(sender=user, option__poll=poll).delete()
     validated_options = PollOption.objects.filter(poll=poll, id__in=options)
     PollVote.objects.bulk_create(
-        [PollVote(sender=user, option_id=option) for option in validated_options]
+        [PollVote(sender=user, option=option) for option in validated_options]
     )
-    return (
-        Poll.objects.with_with_results().get(pk=pk).serialize_public(with_results=True)
-    )
+    return Poll.objects.with_results().get(pk=pk).serialize_public(with_results=True)

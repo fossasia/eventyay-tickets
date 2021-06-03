@@ -22,16 +22,15 @@ from venueless.live.modules.base import BaseModule
 logger = logging.getLogger(__name__)
 
 
-def get_group_for_state(state):
-    return (
-        GROUP_ROOM_POLL_MANAGE
-        if state in (Poll.States.DRAFT, Poll.States.ARCHIVED)
-        else GROUP_ROOM_POLL_READ
-    )
-
-
 class PollModule(BaseModule):
     prefix = "poll"
+
+    def get_group_for_state(self, state):
+        return (
+            GROUP_ROOM_POLL_MANAGE
+            if state in (Poll.States.DRAFT, Poll.States.ARCHIVED)
+            else GROUP_ROOM_POLL_READ
+        ).format(id=self.room.pk)
 
     @command("create")
     @room_action(
@@ -43,7 +42,6 @@ class PollModule(BaseModule):
             return
 
         poll = await create_poll(
-            sender=self.consumer.user,
             room=self.room,
             content=body.get("content"),
             options=body.get("options"),
@@ -52,7 +50,7 @@ class PollModule(BaseModule):
         )
 
         await self.consumer.send_success({"poll": poll})
-        group = get_group_for_state(poll["state"])
+        group = self.get_group_for_state(poll["state"])
         await self.consumer.channel_layer.group_send(
             group.format(id=self.room.pk),
             {
@@ -78,7 +76,7 @@ class PollModule(BaseModule):
 
         await self.consumer.send_success({"poll": new_poll})
 
-        group = get_group_for_state(new_poll["state"])
+        group = self.get_group_for_state(new_poll["state"])
         await self.consumer.channel_layer.group_send(
             group.format(id=self.room.pk),
             {
@@ -98,9 +96,9 @@ class PollModule(BaseModule):
             await self.consumer.send_error("poll.inactive")
             return
         old_poll = await get_poll(body.get("id"), self.room)
-        await delete_poll(id=old_poll.id, room=self.room)
+        await delete_poll(id=old_poll["id"], room=self.room)
         await self.consumer.send_success({"poll": old_poll["id"]})
-        group = get_group_for_state(old_poll["state"])
+        group = self.get_group_for_state(old_poll["state"])
         await self.consumer.channel_layer.group_send(
             group.format(id=self.room.pk),
             {
@@ -135,9 +133,8 @@ class PollModule(BaseModule):
             poll_results, self.consumer.channel_name
         )
 
-        group = get_group_for_state(poll["state"])
         await self.consumer.channel_layer.group_send(
-            group.format(id=self.room.pk),
+            GROUP_ROOM_POLL_MANAGE.format(id=self.room.pk),
             {
                 "type": "poll.created_or_updated",
                 "room": str(self.room.pk),
@@ -154,8 +151,12 @@ class PollModule(BaseModule):
         )
 
     @command("list")
-    @room_action(permission_required=Permission.ROOM_POLL_READ)
+    @room_action(permission_required=Permission.ROOM_POLL_READ, module_required="poll")
     async def list_polls(self, body):
+        if not self.module_config.get("active", False):
+            await self.consumer.send_error("poll.inactive")
+            return
+
         polls = []
         is_moderator = await self.consumer.world.has_permission_async(
             user=self.consumer.user,
@@ -175,7 +176,7 @@ class PollModule(BaseModule):
         poll = await get_poll(body.get("id"), self.room)
         await pin_poll(pk=poll["id"], room=self.room)
         await self.consumer.send_success({"id": str(poll["id"])})
-        group = get_group_for_state(poll["state"])
+        group = self.get_group_for_state(poll["state"])
         await self.consumer.channel_layer.group_send(
             group.format(id=self.room.pk),
             {

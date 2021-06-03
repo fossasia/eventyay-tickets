@@ -233,6 +233,7 @@ async def test_config_get(world, stream_room):
                     "config": {"hls_url": "https://s1.live.pretix.eu/hls/sample.m3u8"},
                 },
                 {"type": "question", "config": {"active": True}},
+                {"type": "poll", "config": {"active": True}},
                 {"type": "chat.native", "config": {"volatile": True}},
             ],
             "picture": None,
