@@ -119,9 +119,9 @@ export default {
 				if (room.modules.length === 1 && room.modules[0].type === 'chat.native') {
 					if (!this.joinedChannels.some(channel => channel.id === room.modules[0].channel_id)) continue
 					rooms.textChat.push(room)
-				} else if (room.modules.some(module => module.type === 'call.bigbluebutton' || module.type === 'call.janus' || module.type === 'call.zoom')) {
+				} else if (room.modules.some(module => ['call.bigbluebutton', 'call.janus', 'call.zoom'].includes(module.type))) {
 					rooms.videoChat.push(room)
-				} else if (room.modules.some(module => module.type === 'livestream.native' || module.type === 'livestream.youtube')) {
+				} else if (room.modules.some(module => ['livestream.native', 'livestream.youtube', 'livestream.iframe'].includes(module.type))) {
 					let session
 					if (this.$features.enabled('schedule-control')) {
 						if (room.schedule_data) {

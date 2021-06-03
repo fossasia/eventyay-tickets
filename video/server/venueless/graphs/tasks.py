@@ -149,7 +149,7 @@ def generate_room_views(world, input=None):
         make_aware(end, tz)
     end = end.astimezone(tz)
 
-    for room in world.rooms.filter(deleted=False):
+    for room in world.rooms.all():
         types = [m["type"] for m in room.module_config]
         if any(
             t.startswith("livestream.")
@@ -157,7 +157,10 @@ def generate_room_views(world, input=None):
             or t.startswith("call.")
             for t in types
         ):
-            ws = wb.create_sheet(re.sub("[^a-zA-Z0-9 ]", "", room.name))
+            name = re.sub("[^a-zA-Z0-9 ]", "", room.name)
+            if room.deleted:
+                name += " (deleted)"
+            ws = wb.create_sheet(name)
             ws.freeze_panes = "A2"
             ws.column_dimensions["A"].width = 15
             ws.column_dimensions["B"].width = 15

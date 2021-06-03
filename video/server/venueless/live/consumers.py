@@ -27,6 +27,7 @@ from .modules.bbb import BBBModule
 from .modules.chat import ChatModule
 from .modules.exhibition import ExhibitionModule
 from .modules.januscall import JanusCallModule
+from .modules.poll import PollModule
 from .modules.question import QuestionModule
 from .modules.room import RoomModule
 from .modules.roulette import RouletteModule
@@ -91,6 +92,7 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
             "januscall": JanusCallModule(self),
             "exhibition": ExhibitionModule(self),
             "question": QuestionModule(self),
+            "poll": PollModule(self),
             "room": RoomModule(self),
             "roulette": RouletteModule(self),
             "user": AuthModule(self),

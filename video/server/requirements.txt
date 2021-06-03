@@ -6,7 +6,7 @@ beautifulsoup4==4.9.*
 celery==5.0.*
 channels>=3.0.3,<3.1.0
 channels_redis==3.2.*
-Django==3.1.*
+Django==3.2.*
 django-cors-headers==3.7.*
 django-extensions==3.1.*
 django-formset-js-improved
@@ -20,13 +20,13 @@ openpyxl~=3.0.7
 Pillow==8.2.*
 pandas~=1.2.4
 pdfrw==0.4
-pyjwt==2.0.*
+pyjwt==2.1.*
 python-dateutil==2.8.*
 pytz
 redis
 reportlab==3.5.*
 requests==2.25.*
-sentry-sdk==0.19.*
+sentry-sdk==1.1.*
 tqdm==4.60.*
 websockets==8.*
 xlrd~=1.2.0

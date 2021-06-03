@@ -43,9 +43,11 @@ class SecretKeyField(forms.CharField):
 class HasSecretsMixin:
     def save(self):
         for k, v in self.cleaned_data.items():
-            if isinstance(self.fields.get(k), SecretKeyField) and self.cleaned_data.get(
-                k
-            ).endswith(SECRET_REDACTED):
+            if (
+                isinstance(self.fields.get(k), SecretKeyField)
+                and self.cleaned_data.get(k).endswith(SECRET_REDACTED)
+                and k in self.initial
+            ):
                 self.cleaned_data[k] = self.initial[k]
                 setattr(self.instance, k, self.initial[k])
         return super().save()

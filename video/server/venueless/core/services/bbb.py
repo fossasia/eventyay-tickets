@@ -61,7 +61,7 @@ def choose_server(world, room=None, prefer_server=None):
             # the cost function). However, if the cron job does not run (or does not run soon enough), this little
             # UPDATE statement will make sure we have a round-robin-like distribution among the servers by increasing
             # the cost value temporarily with every added meeting.
-            BBBServer.objects.filter(pk=server.pk).update(cost=F("cost") + Value("10"))
+            BBBServer.objects.filter(pk=server.pk).update(cost=F("cost") + Value(10))
         return server
 
 
@@ -234,6 +234,11 @@ class BBBService:
         if req is False:
             return
 
+        if user.profile.get("avatar", {}).get("url"):
+            avatar = {"avatarURL": user.profile.get("avatar", {}).get("url")}
+        else:
+            avatar = {}
+
         scheme = (
             "http://" if settings.DEBUG else "https://"
         )  # TODO: better determinator?
@@ -247,6 +252,7 @@ class BBBService:
                 if moderator
                 else create_params["attendeePW"],
                 "joinViaHtml5": "true",
+                **avatar,
                 "guest": "true"
                 if not moderator and config.get("waiting_room", False)
                 else "false",
@@ -284,6 +290,11 @@ class BBBService:
         if await self._get(create_url) is False:
             return
 
+        if user.profile.get("avatar", {}).get("url"):
+            avatar = {"avatarURL": user.profile.get("avatar", {}).get("url")}
+        else:
+            avatar = {}
+
         scheme = (
             "http://" if settings.DEBUG else "https://"
         )  # TODO: better determinator?
@@ -292,6 +303,7 @@ class BBBService:
             {
                 "meetingID": create_params["meetingID"],
                 "fullName": escape_name(user.profile.get("display_name", "")),
+                **avatar,
                 "userID": str(user.pk),
                 "password": create_params["moderatorPW"],
                 "joinViaHtml5": "true",

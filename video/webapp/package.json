@@ -23,7 +23,7 @@
     "emoji-mart": "^3.0.0",
     "emoji-regex": "^9.0.0",
     "hls.js": "^0.14.9",
-    "janus-gateway": "git+https://github.com/meetecho/janus-gateway.git",
+    "janus-gateway": "git+https://github.com/meetecho/janus-gateway.git#7b010cd265991132158541ea80afcaa14bf4eb42",
     "jwt-decode": "^2.2.0",
     "lodash": "^4.17.20",
     "markdown-it": "^11.0.0",

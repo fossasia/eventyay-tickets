@@ -7,11 +7,11 @@
 		link-icon-button(:to="{name: 'room:manage'}") movie-open-cog-outline
 		bunt-icon-button(@click="showRecordingsPrompt = true", :tooltip="$t('Room:recordings:tooltip')", tooltipPlacement="left", v-if="modules['call.bigbluebutton'] && hasPermission('room:bbb.recordings')") file-video-outline
 	.main
-		.stage(v-if="modules['livestream.native'] || modules['livestream.youtube'] || modules['call.janus']")
+		.stage(v-if="modules['livestream.native'] || modules['livestream.youtube'] || modules['livestream.iframe'] || modules['call.janus']")
 			.mediasource-placeholder
-			reactions-overlay(v-if="modules['livestream.native'] || modules['livestream.youtube'] || modules['call.janus']")
+			reactions-overlay(v-if="modules['livestream.native'] || modules['livestream.youtube'] || modules['livestream.iframe'] || modules['call.janus']")
 			.stage-tool-blocker(v-if="activeStageTool !== null", @click="activeStageTool = null")
-			.stage-tools(v-if="modules['livestream.native'] || modules['livestream.youtube'] || modules['call.janus']")
+			.stage-tools(v-if="modules['livestream.native'] || modules['livestream.youtube'] || modules['livestream.iframe'] || modules['call.janus']")
 				reactions-bar(:expanded="true", @expand="activeStageTool = 'reaction'")
 				//- reactions-bar(:expanded="activeStageTool === 'reaction'", @expand="activeStageTool = 'reaction'")
 		.mediasource-placeholder(v-else-if="modules['call.bigbluebutton'] || modules['call.zoom']")

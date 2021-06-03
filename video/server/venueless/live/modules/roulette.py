@@ -28,8 +28,8 @@ class RouletteModule(BaseModule):
             raise ConsumerException("roulette.start.missing_profile")
 
         self.used = True
-        request, room_id = await roulette_request(
-            self.consumer.user, self.room, self.consumer.socket_id
+        request, room_id, recent_pairs = await roulette_request(
+            self.consumer.user, self.room, self.consumer.socket_id, self.module_config
         )
         if room_id:
             await self.consumer.send_success(
@@ -64,7 +64,9 @@ class RouletteModule(BaseModule):
                 self.consumer.channel_name,
             )
         else:
-            await self.consumer.send_success({"status": "wait"})
+            await self.consumer.send_success(
+                {"status": "wait", "recent_pairs": recent_pairs}
+            )
 
     @command("stop")
     @room_action(

@@ -24,7 +24,14 @@ from django.views.generic import (
     UpdateView,
 )
 
-from venueless.core.models import BBBServer, JanusServer, RoomView, TurnServer, World
+from venueless.core.models import (
+    BBBServer,
+    Feedback,
+    JanusServer,
+    RoomView,
+    TurnServer,
+    World,
+)
 
 from ..core.models.world import PlannedUsage
 from .forms import (
@@ -517,3 +524,21 @@ class TurnServerDelete(AdminBase, DeleteView):
         self.object.delete()
         messages.success(self.request, _("Ok!"))
         return HttpResponseRedirect(success_url)
+
+
+class FeedbackList(AdminBase, ListView):
+    template_name = "control/feedback_list.html"
+    queryset = Feedback.objects.order_by("-timestamp")
+    context_object_name = "feedbacks"
+    paginate_by = 25
+
+
+class FeedbackDetail(AdminBase, DetailView):
+    template_name = "control/feedback_detail.html"
+    queryset = Feedback.objects.all()
+    context_object_name = "feedback"
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx["trace"] = json.loads(self.object.trace)
+        return ctx

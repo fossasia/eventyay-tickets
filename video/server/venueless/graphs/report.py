@@ -203,7 +203,7 @@ class ReportGenerator:
         s += self.global_sums()
         s += self.story_for_exhibitors()
 
-        for room in self.world.rooms.filter(deleted=False):
+        for room in self.world.rooms.all():
             types = [m["type"] for m in room.module_config]
             if any(
                 t.startswith("livestream.")
@@ -225,7 +225,10 @@ class ReportGenerator:
     def story_for_room(self, room: Room):
         s = [
             PageBreak(),
-            Paragraph(room.name, self.stylesheet["Heading2"]),
+            Paragraph(
+                room.name + (" (deleted)" if room.deleted else ""),
+                self.stylesheet["Heading2"],
+            ),
             # todo: average time spent per user
         ]
 

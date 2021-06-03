@@ -34,6 +34,9 @@
                 <a href="{% url "control:janusserver.list" %}"{% if request.path == "/control/janus/" %} class="active"{% endif %}>
                     {% trans "Janus servers" %}
                 </a>
+                <a href="{% url "control:feedback.list" %}"{% if request.path == "/control/feedback/" %} class="active"{% endif %}>
+                    {% trans "Feedback" %}
+                </a>
                     {% if request.user.is_superuser %}
                     <a href="{% url "control:user.list" %}"{% if request.path == "/control/users/" %} class="active"{% endif %}>
                         {% trans "Users" %}
