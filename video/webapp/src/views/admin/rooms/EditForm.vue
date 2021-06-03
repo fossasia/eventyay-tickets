@@ -26,6 +26,7 @@ import PageIframe from './types-edit/page-iframe'
 import ChannelBBB from './types-edit/channel-bbb'
 import ChannelJanus from './types-edit/channel-janus'
 import ChannelZoom from './types-edit/channel-zoom'
+import ChannelRoulette from './types-edit/channel-roulette'
 
 export default {
 	components: { Prompt },
@@ -47,6 +48,7 @@ export default {
 				'page-static': PageStatic,
 				'page-iframe': PageIframe,
 				'channel-bbb': ChannelBBB,
+				'channel-roulette': ChannelRoulette,
 				'channel-janus': ChannelJanus,
 				'channel-zoom': ChannelZoom
 			},

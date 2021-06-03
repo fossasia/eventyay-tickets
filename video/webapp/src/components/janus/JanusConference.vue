@@ -22,7 +22,7 @@
 
 	.users(v-show="connectionState === 'connected'", ref="container", :style="gridStyle", v-resize-observer="onResize")
 		.me.feed(v-show="videoPublishingState !== 'unpublished'")
-			.video-container(:style="{boxShadow: size != 'tiny' ? `0 0 0px 4px ${primaryColor.alpha(!knownMuteState && talkingParticipants.includes(ourAudioId) ? 255 : 0)}` : 'none'}")
+			.video-container(:style="{boxShadow: size != 'tiny' ? `0 0 0px 4px ${primaryColor.alpha(!knownMuteState && talkingParticipants.includes(ourAudioId) ? 255 : 0)}` : 'none'}", id="janus_ourVideo")
 				video(v-show="publishingWithVideo && videoPublishingState !== 'unpublished'", ref="ourVideo", autoplay, playsinline, muted="muted")
 			.publishing-state(v-if="videoPublishingState !== 'published'")
 				bunt-progress-circular(v-if="videoPublishingState == 'publishing'", size="huge", :page="true")
@@ -33,12 +33,12 @@
 				.user(@click="showUserCard($event, user)")
 					avatar(:user="user", :size="36")
 					span.display-name {{ user.profile.display_name }}
-				bunt-icon-button(v-if="publishingWithVideo", @click="requestFullscreen($refs.ourVideo)") fullscreen
+				bunt-icon-button(v-if="publishingWithVideo", @click="requestFullscreen('#janus_ourVideo')") fullscreen
 			.mute-indicator(v-if="knownMuteState")
 				.bunt-icon.mdi.mdi-microphone-off
 
 		.peer.feed(v-for="(f, idx) in sortedFeeds", :key="f.rfid", :style="{width: layout.width, height: layout.height}")
-			.video-container(:style="{boxShadow: size != 'tiny' ? `0 0 0px 4px ${primaryColor.alpha(f.participant && !f.participant.muted && talkingParticipants.includes(f.rfid) ? 255 : 0)}` : 'none'}")
+			.video-container(:style="{boxShadow: size != 'tiny' ? `0 0 0px 4px ${primaryColor.alpha(f.participant && !f.participant.muted && talkingParticipants.includes(f.rfid) ? 255 : 0)}` : 'none'}", :id="'janus_' + f.rfid")
 				video(v-show="f.rfattached", ref="peerVideo", autoplay, playsinline)
 			.subscribing-state(v-if="!f.rfattached")
 				bunt-progress-circular(size="huge", :page="true")
@@ -46,7 +46,7 @@
 				.user(v-if="f.venueless_user !== null", @click="showUserCard($event, f.venueless_user)")
 					avatar(:user="f.venueless_user", :size="36")
 					span.display-name {{ f.venueless_user.profile.display_name }}
-				bunt-icon-button(v-if="f.rfattached", @click="requestFullscreen($refs.peerVideo[idx])") fullscreen
+				bunt-icon-button(v-if="f.rfattached", @click="requestFullscreen('#janus_' + f.rfid)") fullscreen
 			.mute-indicator(v-if="f.participant && f.participant.muted")
 				.bunt-icon.mdi.mdi-microphone-off
 
@@ -85,6 +85,7 @@ import {createPopper} from '@popperjs/core'
 import Color from 'color'
 import {colors} from 'theme'
 import { v4 as uuid } from 'uuid'
+import adapter from 'webrtc-adapter'
 
 const calculateLayout = (containerWidth, containerHeight, videoCount, aspectRatio, videoPadding) => {
 	let bestLayout = {
@@ -309,7 +310,7 @@ export default {
 			)
 		},
 		requestFullscreen (el) {
-			el.parentElement.requestFullscreen()
+			document.querySelector(el).requestFullscreen()
 		},
 		closeDevicePrompt () {
 			this.showDevicePrompt = false
@@ -452,6 +453,9 @@ export default {
 						onlocalstream: (stream) => {
 							log('venueless', 'debug', ' ::: Got a local stream :::', stream)
 							this.ourScreenShareStream = stream
+							stream.getVideoTracks()[0].onended = () => {
+								this.toggleScreenShare()
+							}
 							// todo: show local stream instead of remote Stream
 						},
 						slowLink: (uplink) => {
@@ -1121,6 +1125,9 @@ export default {
 			Janus.init({
 				debug: 'all', // todo: conditional
 				callback: this.onJanusInitialized,
+				dependencies: Janus.useDefaultDependencies({
+					adapter,
+				})
 			})
 		},
 		async fetchUser (feed) {
