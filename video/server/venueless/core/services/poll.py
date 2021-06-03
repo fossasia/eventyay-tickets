@@ -1,5 +1,5 @@
 from channels.db import database_sync_to_async
-from django.db.models import Exists, OuterRef, Q
+from django.db.models import Q
 
 from venueless.core.models.poll import Poll, PollOption, PollVote
 
@@ -16,7 +16,7 @@ def create_poll(options, **kwargs):
 
 @database_sync_to_async
 def get_poll(pk, room):
-    poll = Poll.objects.with_results().get(pk=pk, room=room)
+    poll = Poll.objects.get(pk=pk, room=room)
     return poll.serialize_public()
 
 
@@ -37,20 +37,22 @@ def get_voted_polls(room, user):
 
 @database_sync_to_async
 def get_polls(room, moderator=False, for_user=None, **kwargs):
-    polls = Poll.objects.filter(room=room)
+    polls = Poll.objects.with_results().filter(room=room)
     if not moderator:
         polls = polls.filter(Q(state=Poll.States.OPEN) | Q(state=Poll.States.CLOSED))
     if kwargs:
         polls = polls.filter(**kwargs)
     if for_user:
-        # TODO
-        # subquery = QuestionVote.objects.filter(
-        #    question_id=OuterRef("pk"), sender=for_user
-        # )
-        # polls = polls.annotate(_answer=Exists(subquery))
-        pass
+        answers = (
+            PollOption.objects.filter(votes__sender=for_user)
+            .distinct()
+            .values_list("id", flat=True)
+        )
     return [
-        poll.serialize_public(answer_state=bool(for_user), with_results=moderator)
+        poll.serialize_public(
+            answers=answers.filter(poll=poll) if for_user else None,
+            force_results=moderator,
+        )
         for poll in polls
     ]
 
@@ -76,7 +78,7 @@ def update_poll(**kwargs):
             else:
                 PollOption.objects.create(poll=poll, **option_kwargs)
     poll.refresh_from_db()
-    return poll.serialize_public(with_results=True)
+    return poll.serialize_public(force_results=True)
 
 
 @database_sync_to_async
@@ -89,8 +91,12 @@ def delete_poll(**kwargs):
 def vote_on_poll(pk, room, user, options):
     poll = Poll.objects.get(pk=pk, room=room)
     PollVote.objects.filter(sender=user, option__poll=poll).delete()
-    validated_options = PollOption.objects.filter(poll=poll, id__in=options)
+    validated_options = PollOption.objects.filter(
+        poll=poll, id__in=options
+    ).values_list("id", flat=True)
     PollVote.objects.bulk_create(
-        [PollVote(sender=user, option=option) for option in validated_options]
+        [PollVote(sender=user, option_id=option) for option in validated_options]
     )
-    return Poll.objects.with_results().get(pk=pk).serialize_public(with_results=True)
+    return Poll.objects.get(pk=pk).serialize_public(
+        force_results=True, answers=None
+    )  # Do not send answers, as this object will be sent to everybody with access

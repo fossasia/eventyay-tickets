@@ -16,7 +16,8 @@ archived ("delete all" to be implemented by the client)::
 	content: String,
 	state: String, // 'open', 'closed', 'draft', 'archived'
         poll_type: String, // 'choice', 'multi'
-        results: Object,
+        results: Object,  // only included for mods, for closed polls, or polls the user has voted on
+        answers: Array,  // ONLY INCLUDED ON "poll.list"
         is_pinned: Boolean,
         options: [
             {

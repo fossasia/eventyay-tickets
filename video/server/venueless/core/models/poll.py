@@ -6,7 +6,18 @@ from django.db import models
 
 class PollManager(models.Manager):
     def with_results(self):
-        return self.get_queryset()  # TODO .annotate(_answers=models.Count("votes"))
+        return (
+            super()
+            .get_queryset()
+            .prefetch_related(
+                models.Prefetch(
+                    "options",
+                    queryset=PollOption.objects.all()
+                    .order_by("order")
+                    .annotate(_votes=models.Count("votes")),
+                )
+            )
+        )
 
 
 class Poll(models.Model):
@@ -47,7 +58,16 @@ class Poll(models.Model):
         return super().save(*args, **kwargs)
 
     def get_results(self):
-        return  # TODO
+        options = self.options.all()
+        if not options:
+            return []
+        if hasattr(options[0], "_votes"):  # Comes via .with_results()
+            return {str(option.pk): option._votes for option in options}
+        else:
+            return {
+                str(option.pk): option._votes
+                for option in self.options.all().annotate(_votes=models.Count("votes"))
+            }
 
     @cached_property
     def results(self):
@@ -60,7 +80,11 @@ class Poll(models.Model):
             return results
         return self.get_results()
 
-    def serialize_public(self, answer_state=False, with_results=False):
+    def serialize_public(self, answers=None, force_results=False):
+        """
+        Results are always returned when force_results is given.
+        Otherwise, results are returned for closed polls or when answers are present.
+        """
         data = {
             "id": str(self.id),
             "content": self.content,
@@ -77,13 +101,13 @@ class Poll(models.Model):
                 for option in self.options.all()
             ],
         }
-        if with_results or self.state != self.States.OPEN:
+        if force_results or self.state != self.States.OPEN or answers:
             # If the poll is closed, everybody may see the results
             # If it is in draft/archived states, the only people who can see it at all,
             # can also see the results.
             data["results"] = self.results
-        if answer_state:
-            data["answers"] = getattr(self, "_answers", None)
+        if answers:
+            data["answers"] = list(str(a) for a in answers)
         return data
 
 
