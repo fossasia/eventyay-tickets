@@ -29,6 +29,8 @@ def default_roles():
         Permission.ROOM_QUESTION_READ,
         Permission.ROOM_QUESTION_ASK,
         Permission.ROOM_QUESTION_VOTE,
+        Permission.ROOM_POLL_READ,
+        Permission.ROOM_POLL_VOTE,
         Permission.ROOM_ROULETTE_JOIN,
         Permission.ROOM_BBB_JOIN,
         Permission.ROOM_JANUSCALL_JOIN,
@@ -48,6 +50,7 @@ def default_roles():
         Permission.ROOM_ANNOUNCE,
         Permission.ROOM_BBB_RECORDINGS,
         Permission.ROOM_QUESTION_MODERATE,
+        Permission.ROOM_POLL_MANAGE,
         Permission.WORLD_ANNOUNCE,
     ]
     admin = (
