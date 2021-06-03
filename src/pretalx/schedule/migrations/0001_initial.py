@@ -48,7 +48,7 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            bases=(pretalx.common.mixins.LogMixin, models.Model),
+            bases=(pretalx.common.mixins.models.LogMixin, models.Model),
         ),
         migrations.CreateModel(
             name="Room",
@@ -77,7 +77,7 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            bases=(pretalx.common.mixins.LogMixin, models.Model),
+            bases=(pretalx.common.mixins.models.LogMixin, models.Model),
         ),
         migrations.CreateModel(
             name="Schedule",
@@ -98,7 +98,7 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            bases=(pretalx.common.mixins.LogMixin, models.Model),
+            bases=(pretalx.common.mixins.models.LogMixin, models.Model),
         ),
         migrations.CreateModel(
             name="TalkSlot",
@@ -136,6 +136,6 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            bases=(pretalx.common.mixins.LogMixin, models.Model),
+            bases=(pretalx.common.mixins.models.LogMixin, models.Model),
         ),
     ]

@@ -5,7 +5,7 @@ from django.db import models
 from django.utils.functional import cached_property
 from django_scopes import ScopedManager
 
-from pretalx.common.mixins import LogMixin
+from pretalx.common.mixins.models import LogMixin
 
 zerotime = dt.time(0, 0)
 

@@ -4,7 +4,6 @@ from django.dispatch import receiver
 from django.utils.timezone import now
 from django_scopes import scope, scopes_disabled
 
-from pretalx.agenda.management.commands.export_schedule_html import get_export_zip_path
 from pretalx.agenda.tasks import export_schedule_html
 from pretalx.celery_app import app
 from pretalx.common.signals import periodic_task
@@ -57,6 +56,10 @@ def task_periodic_event_services(event_slug):
 
 @app.task()
 def task_periodic_schedule_export(event_slug):
+    from pretalx.agenda.management.commands.export_schedule_html import (
+        get_export_zip_path,
+    )
+
     with scopes_disabled():
         event = (
             Event.objects.filter(slug=event_slug)

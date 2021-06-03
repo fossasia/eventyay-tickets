@@ -82,7 +82,7 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            bases=(pretalx.common.mixins.LogMixin, models.Model),
+            bases=(pretalx.common.mixins.models.LogMixin, models.Model),
         ),
         migrations.CreateModel(
             name="SpeakerProfile",
@@ -113,6 +113,6 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            bases=(pretalx.common.mixins.LogMixin, models.Model),
+            bases=(pretalx.common.mixins.models.LogMixin, models.Model),
         ),
     ]

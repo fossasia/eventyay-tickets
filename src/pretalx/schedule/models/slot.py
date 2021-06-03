@@ -11,7 +11,7 @@ from django.utils.functional import cached_property
 from django_scopes import ScopedManager
 from i18nfield.fields import I18nCharField
 
-from pretalx.common.mixins import LogMixin
+from pretalx.common.mixins.models import LogMixin
 from pretalx.common.urls import get_base_url
 
 INSTANCE_IDENTIFIER = None

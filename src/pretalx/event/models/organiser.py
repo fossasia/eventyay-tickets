@@ -8,7 +8,7 @@ from django.utils.translation import gettext_lazy as _
 from django_scopes import scope, scopes_disabled
 from i18nfield.fields import I18nCharField
 
-from pretalx.common.mixins import LogMixin
+from pretalx.common.mixins.models import LogMixin
 from pretalx.common.urls import EventUrls, build_absolute_uri
 from pretalx.person.models import User
 

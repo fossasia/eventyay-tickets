@@ -5,7 +5,6 @@ from smtplib import SMTPResponseException, SMTPSenderRefused
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives, get_connection
 from django.core.mail.backends.smtp import EmailBackend
-from inlinestyler.utils import inline_css
 
 from pretalx.celery_app import app
 from pretalx.common.exceptions import SendMailException
@@ -91,6 +90,8 @@ def mail_send_task(
         reply_to=reply_to,
     )
     if html is not None:
+        from inlinestyler.utils import inline_css
+
         email.attach_alternative(inline_css(html), "text/html")
 
     try:

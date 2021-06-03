@@ -5,9 +5,6 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django_scopes import ScopedManager
 
-from pretalx.mail.models import MailTemplate, QueuedMail
-from pretalx.submission.models import Answer, AnswerOption, CfP, Question, Submission
-
 
 class ActivityLog(models.Model):
     """This model logs actions within an event.
@@ -66,6 +63,8 @@ class ActivityLog(models.Model):
 
     def get_public_url(self) -> str:
         """Returns a public URL to the object in question (if any)."""
+        from pretalx.submission.models import CfP, Submission
+
         if isinstance(self.content_object, Submission):
             return self.content_object.urls.public
         if isinstance(self.content_object, CfP):
@@ -75,6 +74,15 @@ class ActivityLog(models.Model):
     def get_orga_url(self) -> str:
         """Returns an organiser backend URL to the object in question (if
         any)."""
+        from pretalx.mail.models import MailTemplate, QueuedMail
+        from pretalx.submission.models import (
+            Answer,
+            AnswerOption,
+            CfP,
+            Question,
+            Submission,
+        )
+
         if isinstance(self.content_object, Submission):
             return self.content_object.orga_urls.base
         if isinstance(self.content_object, Question):

@@ -30,7 +30,7 @@ class Migration(migrations.Migration):
                 ),
                 ("answer", models.TextField()),
             ],
-            bases=(pretalx.common.mixins.LogMixin, models.Model),
+            bases=(pretalx.common.mixins.models.LogMixin, models.Model),
         ),
         migrations.CreateModel(
             name="AnswerOption",
@@ -43,7 +43,7 @@ class Migration(migrations.Migration):
                 ),
                 ("answer", i18nfield.fields.I18nCharField(max_length=200)),
             ],
-            bases=(pretalx.common.mixins.LogMixin, models.Model),
+            bases=(pretalx.common.mixins.models.LogMixin, models.Model),
         ),
         migrations.CreateModel(
             name="CfP",
@@ -63,7 +63,7 @@ class Migration(migrations.Migration):
                 ("text", i18nfield.fields.I18nTextField(blank=True, null=True)),
                 ("deadline", models.DateTimeField(blank=True, null=True)),
             ],
-            bases=(pretalx.common.mixins.LogMixin, models.Model),
+            bases=(pretalx.common.mixins.models.LogMixin, models.Model),
         ),
         migrations.CreateModel(
             name="Question",
@@ -91,7 +91,7 @@ class Migration(migrations.Migration):
             options={
                 "ordering": ["position"],
             },
-            bases=(pretalx.common.mixins.LogMixin, models.Model),
+            bases=(pretalx.common.mixins.models.LogMixin, models.Model),
         ),
         migrations.CreateModel(
             name="Submission",
@@ -128,7 +128,7 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            bases=(pretalx.common.mixins.LogMixin, models.Model),
+            bases=(pretalx.common.mixins.models.LogMixin, models.Model),
         ),
         migrations.CreateModel(
             name="SubmissionType",
@@ -151,7 +151,7 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            bases=(pretalx.common.mixins.LogMixin, models.Model),
+            bases=(pretalx.common.mixins.models.LogMixin, models.Model),
         ),
         migrations.CreateModel(
             name="Track",
@@ -173,7 +173,7 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            bases=(pretalx.common.mixins.LogMixin, models.Model),
+            bases=(pretalx.common.mixins.models.LogMixin, models.Model),
         ),
         migrations.AddField(
             model_name="submission",

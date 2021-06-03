@@ -11,7 +11,7 @@ from django_scopes import ScopedManager
 from i18nfield.fields import I18nCharField, I18nTextField
 
 from pretalx.common.exceptions import SendMailException
-from pretalx.common.mixins import LogMixin
+from pretalx.common.mixins.models import LogMixin
 from pretalx.common.templatetags.rich_text import ALLOWED_TAGS
 from pretalx.common.urls import EventUrls
 

@@ -38,7 +38,7 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            bases=(pretalx.common.mixins.LogMixin, models.Model),
+            bases=(pretalx.common.mixins.models.LogMixin, models.Model),
         ),
         migrations.AddField(
             model_name="submission",

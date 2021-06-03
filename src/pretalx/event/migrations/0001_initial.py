@@ -52,7 +52,7 @@ class Migration(migrations.Migration):
                 ("locale_array", models.TextField(default="en")),
                 ("locale", models.CharField(default="en", max_length=32)),
             ],
-            bases=(pretalx.common.mixins.LogMixin, models.Model),
+            bases=(pretalx.common.mixins.models.LogMixin, models.Model),
         ),
         migrations.CreateModel(
             name="Event_SettingsStore",
