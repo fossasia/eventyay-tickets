@@ -141,9 +141,10 @@ export default {
 	.background-room-enter, .background-room-leave-to
 		transform: translate(calc(-1 * var(--chatbar-width)), 52px)
 	&.in-room-manager
-		.c-livestream, .c-youtube
-			bottom: calc(var(--vh100) - 56px - 360px)
-			right: calc(var(--chatbar-width) * 3 + 3px)
-			width: calc(100vw - var(--sidebar-width) - var(--chatbar-width) * 3 - 3px)
-			height: 360px
+		.c-livestream, .c-iframe-player, .c-youtube
+			&:not(.size-tiny):not(.background)
+				bottom: calc(var(--vh100) - 56px - 360px)
+				right: calc(var(--chatbar-width) * 3 + 3px)
+				width: calc(100vw - var(--sidebar-width) - var(--chatbar-width) * 3 - 3px)
+				height: 360px
 </style>
