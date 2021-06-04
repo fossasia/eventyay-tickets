@@ -10,9 +10,6 @@ export default {
 			return state.questions?.find(q => q.is_pinned)
 		}
 	},
-	mutations: {
-
-	},
 	actions: {
 		async changeRoom ({state}, room) {
 			state.questions = null

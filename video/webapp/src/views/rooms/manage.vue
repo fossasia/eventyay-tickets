@@ -9,7 +9,8 @@
 			.header
 				h3 Polls
 				bunt-icon-button(@click="showUrlPopup('poll')") presentation
-			p Coming Soon
+			bunt-button#btn-create-poll(@click="pollQuestion = ''; pollOptions = []; showCreatePollPrompt = true") Create A Poll
+			polls(v-if="modules['poll']", :module="modules['poll']")
 		.questions
 			.header
 				h3 Questions
@@ -36,26 +37,45 @@
 			.hint This url contains your personal token.
 				br
 				| Don't make this url publicly accessible!
+	transition(name="prompt")
+		// TODO less hacks
+		prompt.create-poll-prompt(v-if="showCreatePollPrompt")
+			.content
+				h1 Create a Poll
+				bunt-input(name="poll-question", label="Question", v-model="pollQuestion")
+				bunt-input(v-for="(option, index) of pollOptions", :name="`poll-option-${index}`", :label="`Option ${index + 1}`", v-model="option.content")
+				bunt-button(@click="pollOptions.push({content: ''})") Add Option
+				bunt-button#btn-create-poll(@click="$store.dispatch('poll/createPoll', {content: pollQuestion, options: pollOptions}) ; showCreatePollPrompt = false") Create Poll
 </template>
 <script>
+// TODO
+// - handle video better (pause, completely cancel? preserve bandwidth?)
+
 import {mapGetters, mapState} from 'vuex'
 import { createPopper } from '@popperjs/core'
 import Chat from 'components/Chat'
 import MenuDropdown from 'components/MenuDropdown'
+import Polls from 'components/Polls'
 import Prompt from 'components/Prompt'
 import Questions from 'components/Questions'
 
 export default {
 	name: 'RoomManager',
-	components: { Chat, MenuDropdown, Prompt, Questions },
+	components: { Chat, MenuDropdown, Polls, Prompt, Questions },
 	props: {
 		roomId: String
+	},
+	provide: {
+		isManaging: true
 	},
 	data () {
 		return {
 			showPresentationUrlFor: null,
 			copiedUrl: false,
-			showQuestionsMenu: false
+			showQuestionsMenu: false,
+			showCreatePollPrompt: false,
+			pollQuestion: '',
+			pollOptions: []
 		}
 	},
 	computed: {
@@ -149,8 +169,12 @@ export default {
 				icon-button-style(style: clear)
 		.c-chat
 			min-height: 0
-	.polls p
-		text-align: center
+	.polls
+		#btn-create-poll
+			themed-button-primary()
+			margin: 16px 0
+			padding: 0 32px
+			align-self: center
 
 	.url-popup
 		card()
@@ -183,4 +207,11 @@ export default {
 		.copy-success
 			font-size: 24px
 			font-weight: 500
+	.create-poll-prompt .content
+		display: flex
+		flex-direction: column
+		align-items: center
+		#btn-create-poll
+			themed-button-primary()
+			margin: 16px
 </style>
