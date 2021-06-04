@@ -6,6 +6,7 @@
 	template(v-if="hasQuestions")
 		bunt-checkbox(v-model="modules['question'].config.active", label="Active", name="active")
 		bunt-checkbox(v-model="modules['question'].config.requires_moderation", label="Questions require moderation", name="requires_moderation")
+	bunt-switch(name="enable-polls", v-model="hasPolls", label="Enable Polls")
 </template>
 <script>
 import mixin from './mixin'
@@ -41,6 +42,20 @@ export default {
 					})
 				} else {
 					this.removeModule('question')
+				}
+			}
+		},
+		hasPolls: {
+			get () {
+				return !!this.modules.poll
+			},
+			set (value) {
+				if (value) {
+					this.addModule('poll', {
+						active: true
+					})
+				} else {
+					this.removeModule('poll')
 				}
 			}
 		}

@@ -27,8 +27,10 @@
 			bunt-tabs(v-if="modules['question'] && modules['chat.native']", :active-tab="activeSidebarTab")
 				bunt-tab(id="chat", :header="$t('Room:sidebar:tabs-header:chat')", @selected="activeSidebarTab = 'chat'")
 				bunt-tab(id="questions", :header="$t('Room:sidebar:tabs-header:questions')", @selected="activeSidebarTab = 'questions'")
+				bunt-tab(id="polls", :header="$t('Room:sidebar:tabs-header:polls')", @selected="activeSidebarTab = 'polls'")
 			chat(v-if="modules['chat.native']", v-show="activeSidebarTab === 'chat'", :room="room", :module="modules['chat.native']", mode="compact", :key="room.id", @change="changedTabContent('chat')")
 			questions(v-if="modules['question']", v-show="activeSidebarTab === 'questions'", :module="modules['question']", @change="changedTabContent('questions')")
+			polls(v-if="modules['poll']", v-show="activeSidebarTab === 'polls'", :module="modules['poll']", @change="changedTabContent('polls')")
 	transition(name="prompt")
 		recordings-prompt(:room="room", v-if="showRecordingsPrompt", @close="showRecordingsPrompt = false")
 	edit-room-schedule(v-if="showEditSchedule", :room="room", :currentSession="currentSession", @close="showEditSchedule = false")
@@ -50,11 +52,12 @@ import ReactionsOverlay from 'components/ReactionsOverlay'
 import RecordingsPrompt from 'components/RecordingsPrompt'
 import Roulette from 'components/Roulette'
 import UserListPage from 'components/UserListPage'
+import Polls from 'components/Polls'
 import Questions from 'components/Questions'
 
 export default {
 	name: 'Room',
-	components: { EditRoomSchedule, Chat, Exhibition, LandingPage, MarkdownPage, StaticPage, IframePage, ReactionsBar, ReactionsOverlay, RecordingsPrompt, UserListPage, Roulette, Questions },
+	components: { EditRoomSchedule, Chat, Exhibition, LandingPage, MarkdownPage, StaticPage, IframePage, ReactionsBar, ReactionsOverlay, RecordingsPrompt, UserListPage, Roulette, Polls, Questions },
 	props: {
 		roomId: String
 	},
@@ -62,7 +65,7 @@ export default {
 		return {
 			showRecordingsPrompt: false,
 			showEditSchedule: false,
-			activeSidebarTab: 'chat', // chat, questions
+			activeSidebarTab: 'chat', // chat, questions, polls
 			unreadTabs: {
 				chat: false,
 				questions: false,
@@ -110,6 +113,8 @@ export default {
 			this.activeSidebarTab = 'chat'
 		} else if (this.modules.question) {
 			this.activeSidebarTab = 'questions'
+		} else if (this.modules.poll) {
+			this.activeSidebarTab = 'polls'
 		}
 	},
 	methods: {
