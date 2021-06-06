@@ -29,6 +29,8 @@ def default_roles():
         Permission.ROOM_QUESTION_READ,
         Permission.ROOM_QUESTION_ASK,
         Permission.ROOM_QUESTION_VOTE,
+        Permission.ROOM_POLL_READ,
+        Permission.ROOM_POLL_VOTE,
         Permission.ROOM_ROULETTE_JOIN,
         Permission.ROOM_BBB_JOIN,
         Permission.ROOM_JANUSCALL_JOIN,
@@ -48,6 +50,7 @@ def default_roles():
         Permission.ROOM_ANNOUNCE,
         Permission.ROOM_BBB_RECORDINGS,
         Permission.ROOM_QUESTION_MODERATE,
+        Permission.ROOM_POLL_MANAGE,
         Permission.WORLD_ANNOUNCE,
     ]
     admin = (
@@ -268,6 +271,7 @@ class World(VersionedModel):
             ExhibitorView,
             Feedback,
             Membership,
+            Poll,
             Question,
             Reaction,
             RoomView,
@@ -286,6 +290,7 @@ class World(VersionedModel):
         Reaction.objects.filter(room__world=self).delete()
         RoomView.objects.filter(room__world=self).delete()
         Question.objects.filter(room__world=self).delete()
+        Poll.objects.filter(room__world=self).delete()
         Feedback.objects.filter(world=self).delete()
 
         for f in StoredFile.objects.filter(world=self):

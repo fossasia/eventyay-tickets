@@ -28,6 +28,8 @@ def test_user_explicit_roles(world, chat_room, bbb_room):
         "room:question.read",
         "room:question.vote",
         "room:question.ask",
+        "room:poll.read",
+        "room:poll.vote",
     }
 
     user.world_grants.create(role="room_creator", world=world)
@@ -69,6 +71,8 @@ def test_user_explicit_roles(world, chat_room, bbb_room):
         "room:question.vote",
         "room:question.read",
         "room:question.ask",
+        "room:poll.read",
+        "room:poll.vote",
     }
     assert world.get_all_permissions(user)[bbb_room] == {
         "room:bbb.join",
@@ -83,6 +87,8 @@ def test_user_explicit_roles(world, chat_room, bbb_room):
         "room:question.vote",
         "room:question.read",
         "room:question.ask",
+        "room:poll.read",
+        "room:poll.vote",
     }
 
 
@@ -109,6 +115,8 @@ def test_user_implicit_roles(world, chat_room, bbb_room):
         "room:question.vote",
         "room:question.read",
         "room:question.ask",
+        "room:poll.read",
+        "room:poll.vote",
     }
 
     world.trait_grants["room_creator"] = ["trait123", "trait789"]
@@ -161,6 +169,8 @@ def test_user_implicit_roles(world, chat_room, bbb_room):
         "room:question.vote",
         "room:question.read",
         "room:question.ask",
+        "room:poll.read",
+        "room:poll.vote",
     }
     assert world.get_all_permissions(user)[bbb_room] == {
         "room:bbb.join",
@@ -175,6 +185,8 @@ def test_user_implicit_roles(world, chat_room, bbb_room):
         "room:question.vote",
         "room:question.read",
         "room:question.ask",
+        "room:poll.read",
+        "room:poll.vote",
     }
 
 
@@ -201,6 +213,8 @@ def test_user_implicit_roles_or_support(world, chat_room, bbb_room):
         "room:question.vote",
         "room:question.read",
         "room:question.ask",
+        "room:poll.read",
+        "room:poll.vote",
     }
 
     world.trait_grants["room_creator"] = [["trait000", "trait789"]]

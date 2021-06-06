@@ -10,6 +10,7 @@ from sentry_sdk import add_breadcrumb, configure_scope
 
 from venueless.core.models.room import RoomConfigSerializer, approximate_view_number
 from venueless.core.permissions import Permission
+from venueless.core.services.poll import get_polls, get_voted_polls
 from venueless.core.services.reactions import store_reaction
 from venueless.core.services.room import (
     delete_room,
@@ -27,6 +28,9 @@ from venueless.core.services.world import (
 from venueless.core.utils.redis import aioredis
 from venueless.live.channels import (
     GROUP_ROOM,
+    GROUP_ROOM_POLL_MANAGE,
+    GROUP_ROOM_POLL_READ,
+    GROUP_ROOM_POLL_RESULTS,
     GROUP_ROOM_QUESTION_MODERATE,
     GROUP_ROOM_QUESTION_READ,
     GROUP_WORLD,
@@ -56,26 +60,35 @@ class RoomModule(BaseModule):
         await self.consumer.channel_layer.group_add(
             GROUP_ROOM.format(id=self.room.pk), self.consumer.channel_name
         )
-        if await self.consumer.world.has_permission_async(
-            user=self.consumer.user,
-            room=self.room,
-            permission=Permission.ROOM_QUESTION_READ,
-        ):
-            await self.consumer.channel_layer.group_add(
-                GROUP_ROOM_QUESTION_READ.format(id=self.room.pk),
-                self.consumer.channel_name,
-            )
+        permissions = {
+            Permission.ROOM_QUESTION_READ: GROUP_ROOM_QUESTION_READ,
+            Permission.ROOM_QUESTION_MODERATE: GROUP_ROOM_QUESTION_MODERATE,
+            Permission.ROOM_POLL_READ: GROUP_ROOM_POLL_READ,
+            Permission.ROOM_POLL_MANAGE: GROUP_ROOM_POLL_MANAGE,
+        }
+        for permission, group_name in permissions.items():
+            if await self.consumer.world.has_permission_async(
+                user=self.consumer.user,
+                room=self.room,
+                permission=permission,
+            ):
+                await self.consumer.channel_layer.group_add(
+                    group_name.format(id=self.room.pk),
+                    self.consumer.channel_name,
+                )
 
         if await self.consumer.world.has_permission_async(
             user=self.consumer.user,
             room=self.room,
-            permission=Permission.ROOM_QUESTION_MODERATE,
+            permission=Permission.ROOM_POLL_VOTE,
         ):
-            await self.consumer.channel_layer.group_add(
-                GROUP_ROOM_QUESTION_MODERATE.format(id=self.room.pk),
-                self.consumer.channel_name,
-            )
-
+            # For polls, we have to add users to all groups they have already voted for
+            voted_polls = await get_voted_polls(self.room, self.consumer.user)
+            for poll in voted_polls:
+                await self.consumer.channel_layer.group_add(
+                    GROUP_ROOM_POLL_RESULTS.format(id=self.room.pk, poll=poll),
+                    self.consumer.channel_name,
+                )
         await self.consumer.send_success({})
 
         self.current_views[self.room], actual_view_count = await start_view(
@@ -95,16 +108,22 @@ class RoomModule(BaseModule):
                 scope.set_extra("last_room", str(self.room.pk))
 
     async def _leave_room(self, room):
-        await self.consumer.channel_layer.group_discard(
-            GROUP_ROOM.format(id=room.pk), self.consumer.channel_name
-        )
-        await self.consumer.channel_layer.group_discard(
-            GROUP_ROOM_QUESTION_MODERATE.format(id=room.pk),
-            self.consumer.channel_name,
-        )
-        await self.consumer.channel_layer.group_discard(
-            GROUP_ROOM_QUESTION_READ.format(id=room.pk), self.consumer.channel_name
-        )
+        group_names = [
+            GROUP_ROOM,
+            GROUP_ROOM_QUESTION_MODERATE,
+            GROUP_ROOM_QUESTION_READ,
+            GROUP_ROOM_POLL_MANAGE,
+            GROUP_ROOM_POLL_READ,
+        ]
+        for group_name in group_names:
+            await self.consumer.channel_layer.group_discard(
+                group_name.format(id=room.pk), self.consumer.channel_name
+            )
+        for poll in await get_polls(room):
+            await self.consumer.channel_layer.group_discard(
+                GROUP_ROOM_POLL_RESULTS.format(id=room.pk, poll=poll["id"]),
+                self.consumer.channel_name,
+            )
         if room in self.current_views:
             actual_view_count = await end_view(
                 self.current_views[room],

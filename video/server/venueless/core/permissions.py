@@ -37,6 +37,9 @@ class Permission(Enum):
     ROOM_QUESTION_VOTE = "room:question.vote"
     ROOM_QUESTION_MODERATE = "room:question.moderate"
     ROOM_ROULETTE_JOIN = "room:roulette.join"
+    ROOM_POLL_READ = "room:poll.read"
+    ROOM_POLL_VOTE = "room:poll.vote"
+    ROOM_POLL_MANAGE = "room:poll.manage"
 
 
 MAX_PERMISSIONS_IF_SILENCED = {
