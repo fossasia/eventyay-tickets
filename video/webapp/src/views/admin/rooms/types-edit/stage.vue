@@ -11,7 +11,7 @@
 		.alternative(v-for="(a, i) in (modules['livestream.native'].config.alternatives || [])")
 			bunt-input(name="label", v-model="a.label", label="Label")
 			bunt-input(name="hls_url", v-model="a.hls_url", label="HLS URL")
-			bunt-icon-button(@click="modules['livestream.native'].config.alternatives.splice(i, 1)") delete-outline
+			bunt-icon-button(@click="deleteAlternativeStream(i)") delete-outline
 		bunt-button(@click="$set(modules['livestream.native'].config, 'alternatives', modules['livestream.native'].config.alternatives || []); modules['livestream.native'].config.alternatives.push({label: '', hls_url: ''})") Add alternative stream
 	bunt-input(v-else-if="modules['livestream.youtube']", name="ytid", v-model="modules['livestream.youtube'].config.ytid", label="YouTube Video ID")
 	bunt-input(v-else-if="modules['livestream.iframe']", name="iframe-player", v-model="modules['livestream.iframe'].config.url", label="Iframe player url", hint="iframe player should be autoplaying and support resizing to small sizes for background playing")
@@ -60,6 +60,14 @@ export default {
 			this.b_streamSource = 'youtube'
 		} else if (this.modules['livestream.iframe']) {
 			this.b_streamSource = 'iframe'
+		}
+	},
+	methods: {
+		deleteAlternativeStream (index) {
+			this.modules['livestream.native'].config.alternatives.splice(index, 1)
+			if (this.modules['livestream.native'].config.alternatives.length === 0) {
+				this.modules['livestream.native'].config.alternatives = undefined
+			}
 		}
 	}
 }
