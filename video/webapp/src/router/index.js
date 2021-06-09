@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import App from 'App'
 import PresentationMode from 'views/rooms/presentation'
 import PresentationModeChat from 'views/rooms/presentation/chat'
+import PresentationModePoll from 'views/rooms/presentation/poll'
 import PresentationModeQuestion from 'views/rooms/presentation/question'
 import Room from 'views/rooms/item'
 import RoomManager from 'views/rooms/manage'
@@ -23,6 +24,10 @@ const routes = [{
 		path: 'chat',
 		name: 'presentation-mode:chat',
 		component: PresentationModeChat
+	}, {
+		path: 'poll',
+		name: 'presentation-mode:poll',
+		component: PresentationModePoll
 	}, {
 		path: 'question',
 		name: 'presentation-mode:question',
