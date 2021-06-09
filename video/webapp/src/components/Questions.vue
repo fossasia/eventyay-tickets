@@ -9,7 +9,7 @@
 			.actions
 				bunt-button#btn-cancel(@click="showAskingForm = false") {{ $t('Prompt:cancel:label') }}
 				bunt-button#btn-submit-question(@click="submitQuestion") {{ $t('Questions:asking-form:submit') }}
-		template(v-else)
+		template(v-else-if="!isManaging")
 			bunt-button#btn-ask-question(v-if="hasPermission('room:question.ask')", @click="question = ''; showAskingForm = true") {{ $t('Questions:ask-question-button:label') }}
 			//- v-else ?
 	.questions(v-if="questions && (module.config.active || hasPermission('room:question.moderate'))", :class="{'can-vote': hasPermission('room:question.vote')}", v-scrollbar.y="")
@@ -26,6 +26,11 @@ export default {
 		module: {
 			type: Object,
 			required: true
+		}
+	},
+	inject: {
+		isManaging: {
+			default: false
 		}
 	},
 	data () {
