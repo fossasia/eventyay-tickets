@@ -34,7 +34,7 @@ export default {
 			// TODO error handling
 		},
 		closePoll ({state, rootState}, poll) {
-			return api.call('poll.update', {room: rootState.activeRoom.id, id: poll.id, state: 'close'})
+			return api.call('poll.update', {room: rootState.activeRoom.id, id: poll.id, state: 'closed'})
 			// update handled in create_or_update
 			// TODO error handling
 		},

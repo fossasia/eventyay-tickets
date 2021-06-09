@@ -14,7 +14,7 @@
 			.open-poll(v-if="['draft', 'closed'].includes(poll.state)", @click="doAction('open')") {{ $t('Poll:moderation-menu:open-poll:label') }}
 			.close-poll(v-if="poll.state === 'open'", @click="doAction('close')") {{ $t('Poll:moderation-menu:close-poll:label') }}
 			.redraft-poll(v-if="poll.state === 'open'", @click="doAction('redraft')") {{ $t('Poll:moderation-menu:redraft-poll:label') }}
-			.pin-poll(v-if="poll.state === 'open'", @click="doAction('pin')") {{ $t('Poll:moderation-menu:pin-poll:label') }}
+			.pin-poll(v-if="poll.state === 'open' && !poll.is_pinned", @click="doAction('pin')") {{ $t('Poll:moderation-menu:pin-poll:label') }}
 			.archive-poll(v-if="poll.state !== 'archived'", @click="doAction('archive')") {{ $t('Poll:moderation-menu:archive-poll:label') }}
 			.unarchive-poll(v-if="poll.state === 'archived'", @click="doAction('unarchive')") {{ $t('Poll:moderation-menu:unarchive-poll:label') }}
 			.delete-poll(@click="doAction('delete')") {{ $t('Poll:moderation-menu:delete-poll:label') }}
@@ -83,6 +83,24 @@ export default {
 			top: 8px
 			font-size: 12px
 			color: $clr-deep-orange
+			font-weight: 600
+	&.pinned
+		border: 4px solid var(--clr-primary)
+		border-bottom: none
+		border-top: none
+	&.archived
+		background-color: $clr-grey-200
+		color: $clr-disabled-text-light
+		.votes, .vote-count
+			color: $clr-disabled-text-light
+		&::after
+			content: 'archived'
+			display: block
+			position: absolute
+			right: 8px
+			top: 8px
+			font-size: 12px
+			color: $clr-secondary-text-light
 			font-weight: 600
 	.question
 		font-size: 16px
