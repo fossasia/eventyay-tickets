@@ -74,6 +74,8 @@ class UploadView(UploadMixin, View):
         ".gif",
         ".pdf",
         ".svg",
+        ".mp4",
+        ".webm",
     )
     pillow_formats = (
         ".png",
