@@ -13,6 +13,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
+from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import (
     CreateView,
@@ -137,7 +138,11 @@ class WorldList(AdminBase, ListView):
         World.objects.annotate(
             user_count=Count("user"),
             current_view_count=Subquery(
-                RoomView.objects.filter(room__world=OuterRef("pk"), end__isnull=True)
+                RoomView.objects.filter(
+                    room__world=OuterRef("pk"),
+                    start__gt=now() - datetime.timedelta(hours=24),
+                    end__isnull=True,
+                )
                 .order_by()
                 .values("room__world")
                 .annotate(c=Count("*"))
