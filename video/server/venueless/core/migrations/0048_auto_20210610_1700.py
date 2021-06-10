@@ -8,7 +8,7 @@ class Migration(migrations.Migration):
     atomic = False
 
     dependencies = [
-        ("core", "0046_alter_janusserver_url"),
+        ("core", "0047_poll_polloption_pollvote"),
     ]
 
     operations = [
