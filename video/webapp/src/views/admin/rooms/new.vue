@@ -4,7 +4,7 @@
 		bunt-icon-button(@click="type ? $router.replace({name: 'admin:rooms:new'}) : $router.replace({name: 'admin:rooms:index'})") arrow_left
 		h1 New room
 			template(v-if="chosenType")  : {{ chosenType.name }}
-	.choose-type(v-if="!type")
+	.choose-type(v-if="!type", v-scrollbar.y="")
 		h2 Choose a room type
 		.types
 			router-link.type(v-for="type of ROOM_TYPES", :to="{name: 'admin:rooms:new', query: {type: type.id}}")
@@ -64,7 +64,10 @@ export default {
 	.choose-type
 		display: flex
 		flex-direction: column
-		padding: 16px
+		> *
+			margin: 16px
+		h2
+			margin: 16px 16px 0px
 	.types
 		display: flex
 		flex-direction: column
