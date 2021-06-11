@@ -119,7 +119,6 @@ export default {
 		cursor: pointer
 		height: 128px
 		width: 128px
-		margin: 96px 0
 	.inputs
 		display: flex
 		justify-content: center
@@ -137,6 +136,11 @@ export default {
 		flex-direction: column
 		align-items: center
 		justify-content: center
+		height: calc(80vh - 230px) // HACK approx. shrinking to avoid top down constraints
+		max-height: 320px
+		min-height: 160px
+		+below('m')
+			height: calc(95vh - 230px)
 	.file-error
 		width: 320px
 		height: 320px
