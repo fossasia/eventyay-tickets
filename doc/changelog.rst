@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` With the ``anon`` query parameter, you can request anonymised proposal data from the API, even when you have permission to see the full data.
 - :bug:`-` In the CfP editor, when a step description was only given in a language that wasn't currently active, you couldn't change it any longer.
 - :bug:`1111` pretalx would send multiple emails for proposals with multiple speakers.
 - :bug:`-` Not all existing review scores were recalculated when review score weights were changed during a review phase.

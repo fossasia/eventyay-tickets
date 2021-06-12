@@ -51,14 +51,12 @@ def test_tag_serializer(tag):
 
 @pytest.mark.django_db
 def test_submission_serializer_for_organiser(submission, orga_user, resource, tag):
-    class Request:
-        user = orga_user
-        event = submission.event
-
     with scope(event=submission.event):
         submission.tags.add(tag)
         data = SubmissionOrgaSerializer(
-            submission, context={"event": submission.event, "request": Request()}
+            submission,
+            event=submission.event,
+            can_view_speakers=True,
         ).data
         assert set(data.keys()) == {
             "code",

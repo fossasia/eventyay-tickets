@@ -5,7 +5,9 @@ Resource description
 --------------------
 
 The submission resource may contain the following fields. Some fields are only
-accessible if users have the correct permissions:
+accessible if users have the correct permissions, or will be changed depending
+on permissions. In particular, reviewers will receive the anonymised submission
+data, if anonymisation is enabled and has been performed by the organisers.
 
 .. rst-class:: rest-resource-table
 
@@ -111,6 +113,7 @@ Endpoints
    :param event: The ``slug`` field of the event to fetch
    :query page: The page number in case of a multi-page result set, default is 1
    :query q: Search through submissions by title and speaker name
+   :query anon: Send the ``anon`` parameter with any value to receive anonymised data even when you have permissions to see the full data set.
    :query submission_type: Filter submissions by submission type
    :query state: Filter submission by state
 
@@ -169,6 +172,7 @@ Endpoints
 
    :param event: The ``slug`` field of the event to fetch
    :param code: The ``code`` field of the submission to fetch
+   :query anon: Send the ``anon`` parameter with any value to receive anonymised data even when you have permissions to see the full data set.
    :statuscode 200: no error
    :statuscode 401: Authentication failure
    :statuscode 403: The requested event does not exist **or** you have no permission to view it.

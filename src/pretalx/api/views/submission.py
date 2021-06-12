@@ -46,6 +46,19 @@ class SubmissionViewSet(viewsets.ReadOnlyModelViewSet):
             return SubmissionReviewerSerializer
         return SubmissionSerializer
 
+    def get_serializer(self, *args, **kwargs):
+        can_view_speakers = self.request.user.has_perm(
+            "agenda.view_schedule", self.request.event
+        ) or self.request.user.has_perm("orga.view_speakers", self.request.event)
+        if self.request.query_params.get("anon"):
+            can_view_speakers = False
+        return super().get_serializer(
+            *args,
+            can_view_speakers=can_view_speakers,
+            event=self.request.event,
+            **kwargs
+        )
+
 
 class ScheduleViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = ScheduleSerializer

@@ -1,6 +1,5 @@
 from functools import partial
 
-from django.utils.functional import cached_property
 from i18nfield.rest_framework import I18nAwareModelSerializer
 from rest_framework.serializers import (
     Field,
@@ -60,14 +59,6 @@ class SubmissionSerializer(I18nAwareModelSerializer):
     def get_duration(obj):
         return obj.get_duration()
 
-    @cached_property
-    def can_view_speakers(self):
-        request = self.context.get("request")
-        return request and (
-            request.user.has_perm("agenda.view_schedule", request.event)
-            or request.user.has_perm("orga.view_speakers", request.event)
-        )
-
     def get_speakers(self, obj):
         has_slots = (
             obj.slots.filter(is_visible=True)
@@ -78,6 +69,7 @@ class SubmissionSerializer(I18nAwareModelSerializer):
                 obj.speakers.all(),
                 many=True,
                 context=self.context,
+                event=self.event,
             ).data
         return []
 
@@ -87,6 +79,8 @@ class SubmissionSerializer(I18nAwareModelSerializer):
         return obj.anonymised.get(attribute) or getattr(obj, attribute, None)
 
     def __init__(self, *args, **kwargs):
+        self.can_view_speakers = kwargs.pop("can_view_speakers", False)
+        self.event = kwargs.pop("event", None)
         super().__init__(*args, **kwargs)
         for field in ("title", "abstract", "description"):
             setattr(self, f"get_{field}", partial(self.get_attribute, attribute=field))
