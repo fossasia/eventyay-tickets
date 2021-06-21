@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer
-from urlman import UrlManField
+from urlman.serializers import UrlManField
 
 from pretalx.event.models import Event
 
