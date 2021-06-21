@@ -16,7 +16,7 @@
 {% endblock %}
 
 {% block content %}
-{% if not request.event.settings.show_schedule and not request.user.is_anonymous and not hide_visibility_warning %}
+    {% if not request.event.settings.show_schedule and not request.user.is_anonymous and not hide_visibility_warning %}
         <div id="event-nonpublic">
             <i class="fa fa-user-secret"></i>
             {% blocktranslate trimmed %}
