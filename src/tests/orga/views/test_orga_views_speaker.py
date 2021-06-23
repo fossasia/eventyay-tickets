@@ -1,6 +1,8 @@
 import pytest
 from django_scopes import scope, scopes_disabled
+
 from pretalx.submission.models.question import QuestionRequired
+
 
 @pytest.mark.django_db
 @pytest.mark.parametrize("query", ("", "?role=true", "?role=false", "?role=foobar"))
@@ -122,7 +124,6 @@ def test_orga_can_edit_speaker_unchanged(orga_client, speaker, event, submission
 @pytest.mark.django_db
 def test_orga_cannot_edit_speaker_without_filling_questions(
     orga_client, speaker, event, submission, speaker_question
-
 ):
 
     with scope(event=event):

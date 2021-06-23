@@ -252,7 +252,7 @@ def speaker_boolean_question(event):
             question="Do you like green?",
             variant=QuestionVariant.BOOLEAN,
             target="speaker",
-            question_required=QuestionRequired.REQUIRE,
+            question_required=QuestionRequired.NONE,
             position=5,
         )
 

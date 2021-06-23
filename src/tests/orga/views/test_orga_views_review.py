@@ -1,6 +1,8 @@
 import pytest
 from django_scopes import scope
+
 from pretalx.submission.models.question import QuestionRequired
+
 
 @pytest.mark.django_db
 def test_reviewer_can_add_review(review_client, submission):

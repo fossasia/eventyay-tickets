@@ -1,5 +1,4 @@
 import datetime as dt
-from pretalx.submission.models.question import QuestionRequired
 
 import pytest
 from django.core import mail as djmail
@@ -9,6 +8,7 @@ from pytz import UTC
 from pretalx.event.models import Event
 from pretalx.mail.models import QueuedMail
 from pretalx.submission.models import Question
+from pretalx.submission.models.question import QuestionRequired
 
 
 @pytest.mark.django_db

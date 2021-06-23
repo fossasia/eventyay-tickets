@@ -1,6 +1,6 @@
-from django.utils import timezone
 from django import forms
 from django.db.models import Count, Q
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django_scopes.forms import SafeModelChoiceField, SafeModelMultipleChoiceField
 from hierarkey.forms import HierarkeyForm
@@ -165,7 +165,10 @@ class QuestionForm(ReadOnlyFlag, I18nModelForm):
                     + "should select the date and time deadline."
                 )
             )
-        if deadline and (question_required == QuestionRequired.NONE or question_required == QuestionRequired.REQUIRE):
+        if deadline and (
+            question_required == QuestionRequired.NONE
+            or question_required == QuestionRequired.REQUIRE
+        ):
             raise forms.ValidationError(
                 _(
                     "If you select 'always optional' or 'always required' in Question required "
@@ -452,8 +455,9 @@ class ReminderFilterForm(QuestionFilterForm):
         return Question.objects.filter(
             event=self.event,
             target__in=["speaker", "submission"],
-
-        ).exclude(Q(freeze_after__lt=timezone.now())) # cannot use directly property 'disabled'
+        ).exclude(
+            Q(freeze_after__lt=timezone.now())
+        )  # cannot use directly property 'disabled'
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

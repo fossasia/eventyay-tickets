@@ -1,11 +1,9 @@
-import datetime as dt
 from decimal import Decimal
 from functools import partial
 
 import pytz
 from django import forms
 from django.core.files.uploadedfile import UploadedFile
-from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from pretalx.common.forms.fields import SizeFileField

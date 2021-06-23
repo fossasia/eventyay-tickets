@@ -24,7 +24,11 @@ variant                               string                     The kind of que
 target                                string                     The question scope. Can be ``speaker`` (each speaker is asked once), ``submission`` (speakers are asked per submission), or ``reviewer`` (the question is used in the review process).
 question                              multi-lingual string       The question
 help_text                             multi-lingual string       Additional text shown to help with the question. Can be Markdown.
-required                              boolean                    Are speakers required to answer the question to proceed?
+question_required                     string					 Are speakers or reviewers required to answer the question to proceed? Can be any of ``none``, ``require``, ``require after`` (it should be followed by a non null deadline). 
+deadline                              datetime                   The deadline after which speakers are required to answer the question.
+required                              boolean					 Is the question required to be answered at the moment (based on question_required and deadline)?
+disabled                              boolean					 Is the question read-only at the moment (based on freeze_after)?
+freeze_after                          datetime                   Should the question become disabled after a specific date and time?
 options                               list                       A list of objects with an ``id`` and an ``option`` attribute, for choice questions
 default_answer                        string                     The answer suggested to speakers
 contains_personal_data                boolean                    If an answer contains personal data, it is deleted when a speaker deletes their account.
@@ -78,7 +82,11 @@ Endpoints
                 "id": 1,
                 "variant": "number",
                 "question": "How much do you like green, on a scale from 1-10?",
+                "question_required": "none",
+                "deadline": null,
                 "required": false,
+                "disabled": false,
+                "freeze_after": "2021-06-22T12:44:42Z",
                 "target": "submission",
                 "options": [],
                 "help_text": null,
@@ -126,7 +134,11 @@ Endpoints
           "id": 1,
           "variant": "number",
           "question": "How much do you like green, on a scale from 1-10?",
+          "question_required": "none",
+          "deadline": null,
           "required": false,
+          "disabled": true,
+          "freeze_after": "2021-06-22T12:44:42Z",
           "target": "submission",
           "options": [],
           "help_text": null,
