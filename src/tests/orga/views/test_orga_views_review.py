@@ -1,6 +1,6 @@
 import pytest
 from django_scopes import scope
-
+from pretalx.submission.models.question import QuestionRequired
 
 @pytest.mark.django_db
 def test_reviewer_can_add_review(review_client, submission):
@@ -105,7 +105,7 @@ def test_reviewer_cannot_ignore_required_question(
     with scope(event=submission.event):
         category = submission.event.score_categories.first()
         score = category.scores.filter(value=1).first()
-        review_question.question_required = "require"
+        review_question.question_required = QuestionRequired.REQUIRE
         review_question.save()
     response = review_client.post(
         submission.orga_urls.reviews,

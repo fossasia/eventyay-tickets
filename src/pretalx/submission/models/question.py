@@ -66,13 +66,11 @@ class QuestionRequired(Choices):
     NONE = "none"
     REQUIRE = "require"
     REQUIRE_AFTER = "require after"
-    FREEZE_AFTER = "freeze after"
 
     valid_choices = [
         (NONE, _("always optional")),
         (REQUIRE, _("always required")),
         (REQUIRE_AFTER, _("require after deadline")),
-        (FREEZE_AFTER, _("freeze after deadline")),
     ]
 
 
@@ -99,6 +97,7 @@ class Question(LogMixin, models.Model):
         For 'always required' answering this question will always be required.
         For 'always optional' means that it will never be mandatory.
         For 'require after' the answer will be optional before the deadline and mandatory after the deadline.
+    :param freeze_after: Can be a datetime field or null.
         For 'freeze after' the answer will be allowed before the deadline and frozen after the deadline.
     :param position: Position in the question order in this event.
     """
@@ -120,16 +119,20 @@ class Question(LogMixin, models.Model):
             "Do you require an answer from every speaker or for every session?"
         ),
     )
-
     deadline = models.DateTimeField(
         null=True,
         blank=True,
         verbose_name=_("deadline"),
         help_text=_(
-            "Set a deadline to make this question required or to freeze changes after the given date."
+            "Set a deadline to make this question required after the given date."
         ),
     )
-
+    freeze_after = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name=_("freeze after"),
+        help_text=_("Set a deadline to freeze changes after the given date."),
+    )
     question_required = models.CharField(
         max_length=QuestionRequired.get_max_length(),
         choices=QuestionRequired.get_choices(),
@@ -138,13 +141,11 @@ class Question(LogMixin, models.Model):
         help_text=_(
             "By choosing 'always required' answering this question will always be required, "
             "while 'always optional' means that it will never be mandatory. "
-            "On the other hand, for 'require after' and 'freeze after' options "
+            "On the other hand, for 'require after' option "
             "you will have to define a deadline. With 'require after', the answer will be optional"
-            " before the deadline and mandatory after the deadline. With 'freeze after' the answer will be allowed "
-            "before the deadline and frozen after the deadline"
+            " before the deadline and mandatory after the deadline."
         ),
     )
-
     tracks = models.ManyToManyField(
         to="submission.Track",
         related_name="questions",

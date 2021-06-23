@@ -7,6 +7,7 @@ from django_scopes import scope
 
 from pretalx.common.models.log import ActivityLog
 from pretalx.submission.models import Submission, SubmissionStates
+from pretalx.submission.models.question import QuestionRequired
 
 
 @pytest.mark.django_db
@@ -497,7 +498,7 @@ def test_orga_can_edit_submission_wrong_answer(
 ):
     event.settings.present_multiple_times = True
     with scope(event=event):
-        question.question_required = "require"
+        question.question_required = QuestionRequired.REQUIRE
         question.save
         assert event.submissions.count() == 1
         assert accepted_submission.slots.count() == 1

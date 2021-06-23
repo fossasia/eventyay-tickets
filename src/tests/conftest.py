@@ -25,6 +25,7 @@ from pretalx.submission.models import (
     Tag,
     Track,
 )
+from pretalx.submission.models.question import QuestionRequired
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -189,7 +190,7 @@ def question(event):
             question="How much do you like green, on a scale from 1-10?",
             variant=QuestionVariant.NUMBER,
             target="submission",
-            question_required="none",
+            question_required=QuestionRequired.NONE,
             contains_personal_data=False,
             position=1,
         )
@@ -203,7 +204,7 @@ def inactive_question(event):
             question="So, on a scale from 1–100, how much do you like red?",
             variant=QuestionVariant.NUMBER,
             target="submission",
-            question_required="none",
+            question_required=QuestionRequired.NONE,
             active=False,
             position=2,
         )
@@ -225,7 +226,7 @@ def speaker_question(event):
             question="What is your favourite color?",
             variant=QuestionVariant.STRING,
             target="speaker",
-            question_required="none",
+            question_required=QuestionRequired.NONE,
             position=3,
         )
 
@@ -238,7 +239,7 @@ def review_question(event):
             question="What is your favourite color?",
             variant=QuestionVariant.STRING,
             target="reviewer",
-            question_required="require",
+            question_required=QuestionRequired.REQUIRE,
             position=4,
         )
 
@@ -251,7 +252,7 @@ def speaker_boolean_question(event):
             question="Do you like green?",
             variant=QuestionVariant.BOOLEAN,
             target="speaker",
-            question_required="none",
+            question_required=QuestionRequired.REQUIRE,
             position=5,
         )
 
@@ -264,7 +265,7 @@ def boolean_question(event):
             question="Do you like green?",
             variant=QuestionVariant.BOOLEAN,
             target="submission",
-            question_required="none",
+            question_required=QuestionRequired.NONE,
             position=6,
         )
 
@@ -277,7 +278,7 @@ def file_question(event):
             question="Please submit your paper.",
             variant=QuestionVariant.FILE,
             target="submission",
-            question_required="none",
+            question_required=QuestionRequired.NONE,
             position=7,
         )
 
@@ -290,7 +291,7 @@ def speaker_file_question(event):
             question="Please submit your CV.",
             variant=QuestionVariant.FILE,
             target="speaker",
-            question_required="none",
+            question_required=QuestionRequired.NONE,
             position=8,
         )
 
@@ -303,7 +304,7 @@ def choice_question(event):
             question="How much do you like green?",
             variant=QuestionVariant.CHOICES,
             target="speaker",
-            question_required="none",
+            question_required=QuestionRequired.NONE,
             position=9,
         )
         for answer in ["very", "incredibly", "omggreen"]:
@@ -330,7 +331,7 @@ def multiple_choice_question(event):
             question="Which colors other than green do you like?",
             variant=QuestionVariant.MULTIPLE,
             target="speaker",
-            question_required="none",
+            question_required=QuestionRequired.NONE,
             position=10,
         )
         for answer in ["yellow", "blue", "black"]:
@@ -346,7 +347,7 @@ def speaker_text_question(event):
             question="Please elaborat on your like/dislike of green.",
             variant=QuestionVariant.TEXT,
             target="speaker",
-            question_required="none",
+            question_required=QuestionRequired.NONE,
             position=11,
         )
 

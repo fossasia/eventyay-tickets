@@ -90,11 +90,7 @@ class QuestionFieldsMixin:
     def get_field(self, *, question, initial, initial_object, readonly):
         from pretalx.submission.models import QuestionVariant
 
-        disable_question = False
-        now = timezone.now()
-        if question.freeze_after and (question.freeze_after <= now):
-            disable_question = True
-
+        disable_question = question.disabled
         if readonly:
             disable_question = True
 
@@ -202,7 +198,6 @@ class QuestionFieldsMixin:
             return field
         if question.variant == QuestionVariant.CHOICES:
             choices = question.options.all()
-            now = dt.datetime.now()
             field = forms.ModelChoiceField(
                 queryset=choices,
                 label=question.question,

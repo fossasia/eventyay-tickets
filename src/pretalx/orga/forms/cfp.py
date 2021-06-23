@@ -1,5 +1,4 @@
-import datetime as dt
-
+from django.utils import timezone
 from django import forms
 from django.db.models import Count, Q
 from django.utils.translation import gettext_lazy as _
@@ -17,6 +16,7 @@ from pretalx.submission.models import (
     SubmitterAccessCode,
     Track,
 )
+from pretalx.submission.models.question import QuestionRequired
 
 
 class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
@@ -158,16 +158,14 @@ class QuestionForm(ReadOnlyFlag, I18nModelForm):
     def clean(self):
         deadline = self.cleaned_data["deadline"]
         question_required = self.cleaned_data["question_required"]
-        if (not deadline) and (
-            question_required == "require after" or question_required == "freeze after"
-        ):
+        if (not deadline) and (question_required == QuestionRequired.REQUIRE_AFTER):
             raise forms.ValidationError(
                 _(
-                    "If you select 'freeze after deadline' or 'require after deadline' choice you "
+                    "If you select 'require after deadline' choice, you "
                     + "should select the date and time deadline."
                 )
             )
-        if deadline and (question_required == "none" or question_required == "require"):
+        if deadline and (question_required == QuestionRequired.NONE or question_required == QuestionRequired.REQUIRE):
             raise forms.ValidationError(
                 _(
                     "If you select 'always optional' or 'always required' in Question required "
@@ -183,6 +181,7 @@ class QuestionForm(ReadOnlyFlag, I18nModelForm):
             "help_text",
             "question_required",
             "deadline",
+            "freeze_after",
             "variant",
             "is_public",
             "is_visible_to_reviewers",
@@ -195,6 +194,7 @@ class QuestionForm(ReadOnlyFlag, I18nModelForm):
         widgets = {
             "deadline": forms.DateTimeInput(attrs={"class": "datetimepickerfield"}),
             "question_required": forms.RadioSelect(),
+            "freeze_after": forms.DateTimeInput(attrs={"class": "datetimepickerfield"}),
         }
         field_classes = {
             "variant": SafeModelChoiceField,
@@ -452,9 +452,8 @@ class ReminderFilterForm(QuestionFilterForm):
         return Question.objects.filter(
             event=self.event,
             target__in=["speaker", "submission"],
-        ).exclude(
-            Q(question_required="freeze after") & Q(deadline__lt=dt.datetime.now())
-        )
+
+        ).exclude(Q(freeze_after__lt=timezone.now())) # cannot use directly property 'disabled'
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
