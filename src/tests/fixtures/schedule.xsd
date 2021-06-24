@@ -122,13 +122,13 @@
 
   <xs:simpleType name="acronym">
     <xs:restriction base="xs:string">
-      <xs:pattern value="[a-z0-9_-]+"/>
+      <xs:pattern value="[a-z0-9_-]{4,}"/>
     </xs:restriction>
   </xs:simpleType>
   
   <xs:simpleType name="slug">
     <xs:restriction base="xs:string">
-      <xs:pattern value="[a-z0-9]+-[0-9]+-[a-z0-9-_]+"/>
+      <xs:pattern value="[a-z0-9]{4,}-[0-9]{1,6}-[a-z0-9\-_]{4,}"/>
     </xs:restriction>
   </xs:simpleType>
 
