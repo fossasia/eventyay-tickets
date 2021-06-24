@@ -128,7 +128,7 @@ def test_orga_cannot_edit_speaker_without_filling_questions(
 
     with scope(event=event):
         url = speaker.event_profile(event).orga_urls.base
-        speaker_question.question_required = QuestionRequired.REQUIRE
+        speaker_question.question_required = QuestionRequired.REQUIRED
         speaker_question.save()
     response = orga_client.post(
         url,

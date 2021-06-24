@@ -24,11 +24,11 @@ variant                               string                     The kind of que
 target                                string                     The question scope. Can be ``speaker`` (each speaker is asked once), ``submission`` (speakers are asked per submission), or ``reviewer`` (the question is used in the review process).
 question                              multi-lingual string       The question
 help_text                             multi-lingual string       Additional text shown to help with the question. Can be Markdown.
-question_required                     string					 Are speakers or reviewers required to answer the question to proceed? Can be any of ``none``, ``require``, ``require after`` (it should be followed by a non null deadline). 
+question_required                     string					 Can be any of ``optional``, ``required``, ``after_deadline``, in which case the deadline field will be filled. 
 deadline                              datetime                   The deadline after which speakers are required to answer the question.
-required                              boolean					 Is the question required to be answered at the moment (based on question_required and deadline)?
-disabled                              boolean					 Is the question read-only at the moment (based on freeze_after)?
-freeze_after                          datetime                   Should the question become disabled after a specific date and time?
+required                              boolean					 Is the question required to be answered at the moment (based on ``question_required`` and the deadline)?
+read_only                              boolean					 Is the question read-only at the moment (based on ``freeze_after``)?
+freeze_after                          datetime                   Filled if the question cannot be modified after the given date.
 options                               list                       A list of objects with an ``id`` and an ``option`` attribute, for choice questions
 default_answer                        string                     The answer suggested to speakers
 contains_personal_data                boolean                    If an answer contains personal data, it is deleted when a speaker deletes their account.
@@ -37,6 +37,9 @@ max_length                            number                     Maximum answer 
 is_public                             boolean                    Is the answer shown publicly on the talk/speaker page?
 is_visible_to_reviewers               boolean                    Can reviewers see the answers to this question?
 ===================================== ========================== =======================================================
+
+.. versionadded:: 2.2.0
+   The ``question_required``, ``deadline``, ``read_only`` and ``freeze_after`` fields were added in 2.2.0.
 
 Permissions and limitations
 ---------------------------
@@ -85,7 +88,7 @@ Endpoints
                 "question_required": "none",
                 "deadline": null,
                 "required": false,
-                "disabled": false,
+                "read_only": false,
                 "freeze_after": "2021-06-22T12:44:42Z",
                 "target": "submission",
                 "options": [],
@@ -137,7 +140,7 @@ Endpoints
           "question_required": "none",
           "deadline": null,
           "required": false,
-          "disabled": true,
+          "read_only": true,
           "freeze_after": "2021-06-22T12:44:42Z",
           "target": "submission",
           "options": [],

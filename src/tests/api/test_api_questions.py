@@ -33,7 +33,7 @@ def test_question_serializer(answer):
         "deadline",
         "freeze_after",
         "required",
-        "disabled",
+        "read_only",
         "target",
         "options",
         "help_text",

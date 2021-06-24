@@ -16,8 +16,7 @@
         <script defer src="{% static "orga/js/questionRequiredField.js" %}"></script>
     {% endcompress %}
     <h2>
-        {% if form.instance.question %}{% translate "Question" %}: {{ form.instance.question }}{% else %}
-            {% translate "New question" %}{% endif %}
+        {% if form.instance.question %}{% translate "Question" %}: {{ form.instance.question }}{% else %}{% translate "New question" %}{% endif %}
     </h2>
     <form method="post">
         {% csrf_token %}

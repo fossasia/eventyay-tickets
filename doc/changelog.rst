@@ -3,6 +3,8 @@
 Release Notes
 =============
 
+- :feature:`1069` You can freeze a question after a certain date, prohibiting users from changing their answers after the deadline.
+- :feature:`1069` You can now attach deadlines to questions, making them optional before the deadline and mandatory afterwards.
 - :feature:`-` With the ``anon`` query parameter, you can request anonymised proposal data from the API, even when you have permission to see the full data.
 - :bug:`-` In the CfP editor, when a step description was only given in a language that wasn't currently active, you couldn't change it any longer.
 - :bug:`1111` pretalx would send multiple emails for proposals with multiple speakers.

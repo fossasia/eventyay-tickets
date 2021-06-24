@@ -498,7 +498,7 @@ def test_orga_can_edit_submission_wrong_answer(
 ):
     event.settings.present_multiple_times = True
     with scope(event=event):
-        question.question_required = QuestionRequired.REQUIRE
+        question.question_required = QuestionRequired.REQUIRED
         question.save
         assert event.submissions.count() == 1
         assert accepted_submission.slots.count() == 1

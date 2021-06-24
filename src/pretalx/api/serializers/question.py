@@ -22,7 +22,7 @@ class QuestionSerializer(ModelSerializer):
             "question_required",
             "deadline",
             "required",
-            "disabled",
+            "read_only",
             "freeze_after",
             "target",
             "options",

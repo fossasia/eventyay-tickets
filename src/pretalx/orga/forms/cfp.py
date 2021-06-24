@@ -158,23 +158,17 @@ class QuestionForm(ReadOnlyFlag, I18nModelForm):
     def clean(self):
         deadline = self.cleaned_data["deadline"]
         question_required = self.cleaned_data["question_required"]
-        if (not deadline) and (question_required == QuestionRequired.REQUIRE_AFTER):
+        if (not deadline) and (question_required == QuestionRequired.AFTER_DEADLINE):
             raise forms.ValidationError(
                 _(
-                    "If you select 'require after deadline' choice, you "
-                    + "should select the date and time deadline."
+                    "Please select a deadline after which the question should become mandatory."
                 )
             )
-        if deadline and (
-            question_required == QuestionRequired.NONE
-            or question_required == QuestionRequired.REQUIRE
+        if (
+            question_required == QuestionRequired.OPTIONAL
+            or question_required == QuestionRequired.REQUIRED
         ):
-            raise forms.ValidationError(
-                _(
-                    "If you select 'always optional' or 'always required' in Question required "
-                    "you shouldn't select the date and time deadline."
-                )
-            )
+            self.cleaned_data["deadline"] = None
 
     class Meta:
         model = Question
@@ -455,9 +449,7 @@ class ReminderFilterForm(QuestionFilterForm):
         return Question.objects.filter(
             event=self.event,
             target__in=["speaker", "submission"],
-        ).exclude(
-            Q(freeze_after__lt=timezone.now())
-        )  # cannot use directly property 'disabled'
+        ).exclude(freeze_after__lt=timezone.now())
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

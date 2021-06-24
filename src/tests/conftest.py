@@ -190,7 +190,7 @@ def question(event):
             question="How much do you like green, on a scale from 1-10?",
             variant=QuestionVariant.NUMBER,
             target="submission",
-            question_required=QuestionRequired.NONE,
+            question_required=QuestionRequired.OPTIONAL,
             contains_personal_data=False,
             position=1,
         )
@@ -204,7 +204,7 @@ def inactive_question(event):
             question="So, on a scale from 1–100, how much do you like red?",
             variant=QuestionVariant.NUMBER,
             target="submission",
-            question_required=QuestionRequired.NONE,
+            question_required=QuestionRequired.OPTIONAL,
             active=False,
             position=2,
         )
@@ -226,7 +226,7 @@ def speaker_question(event):
             question="What is your favourite color?",
             variant=QuestionVariant.STRING,
             target="speaker",
-            question_required=QuestionRequired.NONE,
+            question_required=QuestionRequired.OPTIONAL,
             position=3,
         )
 
@@ -239,7 +239,7 @@ def review_question(event):
             question="What is your favourite color?",
             variant=QuestionVariant.STRING,
             target="reviewer",
-            question_required=QuestionRequired.REQUIRE,
+            question_required=QuestionRequired.REQUIRED,
             position=4,
         )
 
@@ -252,7 +252,7 @@ def speaker_boolean_question(event):
             question="Do you like green?",
             variant=QuestionVariant.BOOLEAN,
             target="speaker",
-            question_required=QuestionRequired.NONE,
+            question_required=QuestionRequired.OPTIONAL,
             position=5,
         )
 
@@ -265,7 +265,7 @@ def boolean_question(event):
             question="Do you like green?",
             variant=QuestionVariant.BOOLEAN,
             target="submission",
-            question_required=QuestionRequired.NONE,
+            question_required=QuestionRequired.OPTIONAL,
             position=6,
         )
 
@@ -278,7 +278,7 @@ def file_question(event):
             question="Please submit your paper.",
             variant=QuestionVariant.FILE,
             target="submission",
-            question_required=QuestionRequired.NONE,
+            question_required=QuestionRequired.OPTIONAL,
             position=7,
         )
 
@@ -291,7 +291,7 @@ def speaker_file_question(event):
             question="Please submit your CV.",
             variant=QuestionVariant.FILE,
             target="speaker",
-            question_required=QuestionRequired.NONE,
+            question_required=QuestionRequired.OPTIONAL,
             position=8,
         )
 
@@ -304,7 +304,7 @@ def choice_question(event):
             question="How much do you like green?",
             variant=QuestionVariant.CHOICES,
             target="speaker",
-            question_required=QuestionRequired.NONE,
+            question_required=QuestionRequired.OPTIONAL,
             position=9,
         )
         for answer in ["very", "incredibly", "omggreen"]:
@@ -331,7 +331,7 @@ def multiple_choice_question(event):
             question="Which colors other than green do you like?",
             variant=QuestionVariant.MULTIPLE,
             target="speaker",
-            question_required=QuestionRequired.NONE,
+            question_required=QuestionRequired.OPTIONAL,
             position=10,
         )
         for answer in ["yellow", "blue", "black"]:
@@ -347,7 +347,7 @@ def speaker_text_question(event):
             question="Please elaborat on your like/dislike of green.",
             variant=QuestionVariant.TEXT,
             target="speaker",
-            question_required=QuestionRequired.NONE,
+            question_required=QuestionRequired.OPTIONAL,
             position=11,
         )
 

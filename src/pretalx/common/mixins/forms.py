@@ -1,7 +1,6 @@
 from decimal import Decimal
 from functools import partial
 
-import pytz
 from django import forms
 from django.core.files.uploadedfile import UploadedFile
 from django.utils.translation import gettext_lazy as _
@@ -88,10 +87,7 @@ class QuestionFieldsMixin:
     def get_field(self, *, question, initial, initial_object, readonly):
         from pretalx.submission.models import QuestionVariant
 
-        disable_question = question.disabled
-        if readonly:
-            disable_question = True
-
+        read_only = readonly or question.read_only
         original_help_text = question.help_text
         help_text = rich_text(question.help_text)
         if question.is_public and self.event.settings.show_schedule:
@@ -107,7 +103,7 @@ class QuestionFieldsMixin:
             )
 
             field = forms.BooleanField(
-                disabled=disable_question,
+                disabled=read_only,
                 help_text=help_text,
                 label=question.question,
                 required=question.required,
@@ -120,7 +116,7 @@ class QuestionFieldsMixin:
             return field
         if question.variant == QuestionVariant.NUMBER:
             field = forms.DecimalField(
-                disabled=disable_question,
+                disabled=read_only,
                 help_text=help_text,
                 label=question.question,
                 required=question.required,
@@ -132,7 +128,7 @@ class QuestionFieldsMixin:
             return field
         if question.variant == QuestionVariant.STRING:
             field = forms.CharField(
-                disabled=disable_question,
+                disabled=read_only,
                 help_text=get_help_text(
                     help_text,
                     question.min_length,
@@ -161,7 +157,7 @@ class QuestionFieldsMixin:
                 label=question.question,
                 required=question.required,
                 widget=forms.Textarea,
-                disabled=disable_question,
+                disabled=read_only,
                 help_text=get_help_text(
                     help_text,
                     question.min_length,
@@ -187,7 +183,7 @@ class QuestionFieldsMixin:
             field = SizeFileField(
                 label=question.question,
                 required=question.required,
-                disabled=disable_question,
+                disabled=read_only,
                 help_text=help_text,
                 initial=initial,
             )
@@ -204,7 +200,7 @@ class QuestionFieldsMixin:
                 initial=initial_object.options.first()
                 if initial_object
                 else question.default_answer,
-                disabled=disable_question,
+                disabled=read_only,
                 help_text=help_text,
                 widget=forms.RadioSelect if len(choices) < 4 else None,
             )
@@ -220,7 +216,7 @@ class QuestionFieldsMixin:
                 initial=initial_object.options.all()
                 if initial_object
                 else question.default_answer,
-                disabled=disable_question,
+                disabled=read_only,
                 help_text=help_text,
             )
             field.original_help_text = original_help_text
