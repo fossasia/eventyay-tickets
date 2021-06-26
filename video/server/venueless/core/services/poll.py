@@ -94,7 +94,7 @@ def delete_poll(**kwargs):
 
 @database_sync_to_async
 def vote_on_poll(pk, room, user, options):
-    poll = Poll.objects.get(pk=pk, room=room)
+    poll = Poll.objects.get(pk=pk, room=room, state=Poll.States.OPEN)
     PollVote.objects.filter(sender=user, option__poll=poll).delete()
     validated_options = PollOption.objects.filter(
         poll=poll, id__in=options
