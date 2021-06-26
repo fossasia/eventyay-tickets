@@ -17,6 +17,11 @@ def get_question(pk, room):
 
 
 @database_sync_to_async
+def unpin_question(room):
+    room.questions.all().update(is_pinned=False)
+
+
+@database_sync_to_async
 def pin_question(pk, room):
     room.questions.all().update(is_pinned=False)
     room.questions.filter(pk=pk).update(is_pinned=True)

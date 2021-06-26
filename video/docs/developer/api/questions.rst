@@ -13,7 +13,7 @@ To clear questions after or before a logical session, single questions can be de
 	content: String,
 	state: String, // 'mod_queue', 'visible', 'archived'
 	answered: Boolean,
-    is_pinned: Boolean,
+	is_pinned: Boolean,
 	score: Number,
         voted: Boolean // has the current user voted on the question? Available on list actions.
     }
@@ -90,13 +90,20 @@ Only moderators may delete questions. Delete notifications are broadcasted like 
     <- ["success", 1234, [{"id": }, ...]
     <= ["question.deleted", {"room": "room_0", "id": 12}]
 
-## ``question.pin``
+## ``question.pin``, ``question.unpin``
 
 Only moderators may pin questions, like this::
 
     => ["question.pin", 1234, {"room": "room_0", "id": 12}]
     <- ["success", 1234, [{"id": }, ...]
     <= ["question.pinned", {"room": "room_0", "id": 12}]
+
+Unpinning doesn't need a question ID::
+
+    => ["question.unpin", 1234, {"room": "room_0"}]
+    <- ["success", 1234, [{}, ...]
+    <= ["question.unpinned", {"room": "room_0"}]
+
 
 TODOs
 -----
