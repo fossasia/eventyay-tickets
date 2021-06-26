@@ -104,10 +104,16 @@ Only moderators may delete polls. Delete notifications are broadcasted like this
     <- ["success", 1234, [{"id": }, ...]
     <= ["poll.deleted", {"room": "room_0", "id": 12}]
 
-## ``poll.pin``
+## ``poll.pin``, ``poll.unpin``
 
 Only moderators may pin polls, like this::
 
     => ["poll.pin", 1234, {"room": "room_0", "id": 12}]
     <- ["success", 1234, [{"id": }, ...]
     <= ["poll.pinned", {"room": "room_0", "id": 12}]
+
+Unpinning does not require an ID::
+
+    => ["poll.unpin", 1234, {"room": "room_0"}]
+    <- ["success", 1234, [{}, ...]
+    <= ["poll.unpinned", {"room": "room_0"}]

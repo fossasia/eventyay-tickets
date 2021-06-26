@@ -21,6 +21,11 @@ def get_poll(pk, room):
 
 
 @database_sync_to_async
+def unpin_poll(room):
+    room.polls.all().update(is_pinned=False)
+
+
+@database_sync_to_async
 def pin_poll(pk, room):
     room.polls.all().update(is_pinned=False)
     room.polls.filter(pk=pk).update(is_pinned=True)

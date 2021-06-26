@@ -8,6 +8,7 @@ from venueless.core.services.poll import (
     get_poll,
     get_polls,
     pin_poll,
+    unpin_poll,
     update_poll,
     vote_on_poll,
 )
@@ -186,6 +187,20 @@ class PollModule(BaseModule):
             },
         )
 
+    @command("unpin")
+    @room_action(permission_required=Permission.ROOM_POLL_MANAGE)
+    async def unpin_poll(self, body):
+        await unpin_poll(room=self.room)
+        await self.consumer.send_success()
+        group = GROUP_ROOM_POLL_READ
+        await self.consumer.channel_layer.group_send(
+            group.format(id=self.room.pk),
+            {
+                "type": "poll.unpinned",
+                "room": str(self.room.pk),
+            },
+        )
+
     @event("created_or_updated")
     async def push_poll(self, body):
         await self.consumer.send_json(
@@ -207,5 +222,14 @@ class PollModule(BaseModule):
             [
                 "poll.pinned",
                 {"room": body.get("room"), "id": body.get("id")},
+            ]
+        )
+
+    @event("unpinned")
+    async def push_unpin(self, body):
+        await self.consumer.send_json(
+            [
+                "poll.unpinned",
+                {"room": body.get("room")},
             ]
         )
