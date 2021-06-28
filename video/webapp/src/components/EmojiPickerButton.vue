@@ -1,6 +1,6 @@
 <template lang="pug">
 .c-emoji-picker-button
-	.btn-emoji-picker(ref="button", @click="toggle")
+	bunt-icon-button.btn-emoji-picker(ref="button", :tooltip="$t('EmojiPickerButton:tooltip')", @click="toggle")
 		svg(v-if="iconStyle === 'plain'", xmlns="http://www.w3.org/2000/svg", viewBox="0 0 24 24")
 			path(d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0m0 22C6.486 22 2 17.514 2 12S6.486 2 12 2s10 4.486 10 10-4.486 10-10 10")
 			path(d="M8 7a2 2 0 1 0-.001 3.999A2 2 0 0 0 8 7M16 7a2 2 0 1 0-.001 3.999A2 2 0 0 0 16 7M15.232 15c-.693 1.195-1.87 2-3.349 2-1.477 0-2.655-.805-3.347-2H15m3-2H6a6 6 0 1 0 12 0")
@@ -54,7 +54,7 @@ export default {
 			}
 			this.showEmojiPicker = true
 			await this.$nextTick()
-			createPopper(this.$refs.button, this.$refs.picker.$el, {
+			createPopper(this.$refs.button.$el, this.$refs.picker.$el, {
 				placement: this.placement,
 				strategy: this.strategy,
 				modifiers: [
@@ -77,13 +77,7 @@ export default {
 <style lang="stylus">
 .c-emoji-picker-button
 	.btn-emoji-picker
-		height: 36px
-		width: @height
-		box-sizing: border-box
-		padding: 8px
-		&:hover
-			border-radius: 50%
-			background-color: $clr-grey-100
+		icon-button-style()
 		svg
 			path
 				fill: $clr-primary-text-light

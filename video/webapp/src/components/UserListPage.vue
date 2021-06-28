@@ -140,6 +140,7 @@ $logo-height = 130px
 	flex-direction row
 	+below('s')
 		flex-direction column
+		min-height: 0
 	.ui-page-header
 		padding 0
 	.user-list
