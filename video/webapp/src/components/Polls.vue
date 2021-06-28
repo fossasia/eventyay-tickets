@@ -30,6 +30,7 @@ export default {
 		...mapState('poll', ['polls']),
 		...mapGetters(['hasPermission']),
 		sortedPolls () {
+			if (!this.polls) return
 			let polls
 			if (this.isManaging) {
 				polls = this.polls.slice()
