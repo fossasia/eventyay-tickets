@@ -267,15 +267,37 @@ async def test_ask_question(questions_room, world):
                     "id": question_id,
                 },
             ]
-            await c_mod.receive_json_from()  # Delete broadcast
+            await c_mod.receive_json_from()  # Pin broadcast
 
-            response = await c.receive_json_from()  # Delete broadcast
+            response = await c.receive_json_from()  # Pin broadcast
             assert response == [
                 "question.pinned",
                 {
                     "id": question_id,
                     "room": str(questions_room.id),
                 },
+            ]
+
+            # Next: Moderators can unpin questions
+            await c_mod.send_json_to(
+                [
+                    "question.unpin",
+                    123,
+                    {"room": str(questions_room.id)},
+                ]
+            )
+            response = await c_mod.receive_json_from()
+            assert response == [
+                "success",
+                123,
+                {},
+            ]
+            await c_mod.receive_json_from()  # Unpin broadcast
+
+            response = await c.receive_json_from()  # Unpin broadcast
+            assert response == [
+                "question.unpinned",
+                {"room": str(questions_room.id)},
             ]
 
             # Finally: Moderators can delete questions

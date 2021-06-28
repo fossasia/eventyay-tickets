@@ -309,8 +309,7 @@
         {
           "type": "poll",
           "config": {
-            "active": true,
-            "requires_moderation": false
+            "active": true
           }
         }
       ]

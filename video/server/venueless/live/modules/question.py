@@ -8,6 +8,7 @@ from venueless.core.services.question import (
     get_question,
     get_questions,
     pin_question,
+    unpin_question,
     update_question,
     vote_on_question,
 )
@@ -195,6 +196,20 @@ class QuestionModule(BaseModule):
             },
         )
 
+    @command("unpin")
+    @room_action(permission_required=Permission.ROOM_QUESTION_MODERATE)
+    async def unpin_question(self, body):
+        await unpin_question(room=self.room)
+        await self.consumer.send_success()
+        group = GROUP_ROOM_QUESTION_READ
+        await self.consumer.channel_layer.group_send(
+            group.format(id=self.room.pk),
+            {
+                "type": "question.unpinned",
+                "room": str(self.room.pk),
+            },
+        )
+
     @event("created_or_updated")
     async def push_question(self, body):
         await self.consumer.send_json(
@@ -216,5 +231,14 @@ class QuestionModule(BaseModule):
             [
                 "question.pinned",
                 {"room": body.get("room"), "id": body.get("id")},
+            ]
+        )
+
+    @event("unpinned")
+    async def push_unpin(self, body):
+        await self.consumer.send_json(
+            [
+                "question.unpinned",
+                {"room": body.get("room")},
             ]
         )

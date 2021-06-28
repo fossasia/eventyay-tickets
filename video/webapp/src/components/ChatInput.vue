@@ -2,8 +2,8 @@
 bunt-input-outline-container.c-chat-input
 	.editor(ref="editor")
 	emoji-picker-button(@selected="addEmoji")
-	upload-button#btn-file(@change="attachFiles", accept="image/png, image/jpg, application/pdf, .png, .jpg, .jpeg, .pdf", icon="paperclip", multiple=true)
-	bunt-icon-button#btn-send(@click="send") send
+	upload-button#btn-file(accept="image/png, image/jpg, application/pdf, .png, .jpg, .jpeg, .pdf", icon="paperclip", multiple=true, :tooltip="$t('ChatInput:btn-file:tooltip')", @change="attachFiles")
+	bunt-icon-button#btn-send(:tooltip="$t('ChatInput:btn-send:tooltip')", tooltip-placement="top-end", @click="send") send
 	.files-preview(v-if="files.length > 0 || uploading")
 		template(v-for="file in files")
 			.chat-file(v-if="file === null")

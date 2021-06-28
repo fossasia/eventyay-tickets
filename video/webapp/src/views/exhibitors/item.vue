@@ -2,9 +2,11 @@
 scrollbars.c-exhibitor(y)
 	.content-wrapper(v-if="exhibitor")
 		.content
-			img.banner(:src="exhibitor.banner_detail", v-if="exhibitor.banner_detail && !bannerIsVideo")
-			.iframe-banner(v-else-if="exhibitor.banner_detail && bannerIsVideo")
+			img.banner(:src="exhibitor.banner_detail", v-if="exhibitor.banner_detail && !bannerIsVideo && !bannerIsFrame")
+			.iframe-banner(v-else-if="bannerIsFrame")
 				iframe(:src="bannerVideoSource", allowfullscreen, allow="fullscreen")
+			.video-banner(v-else-if="bannerIsVideo")
+				video(:src="exhibitor.banner_detail", autoplay, controls, loop)
 			markdown-content.text(v-if="exhibitor.text_legacy", :markdown="exhibitor.text_legacy")
 			rich-text-content.text(v-else, :content="exhibitor.text_content")
 			.downloads(v-if="downloadLinks.length > 0")
@@ -77,10 +79,16 @@ export default {
 		exhibitor () {
 			return this.exhibitorProp ? this.exhibitorProp : this.exhibitorApi
 		},
-		bannerIsVideo () {
+		bannerIsFrame () {
 			return this.exhibitor.banner_detail && (
 				this.exhibitor.banner_detail.match('^https?://(www.)?(youtube.com/watch\\?v=|youtu.be/)([^&?]*)([&?].*)?$') ||
 				this.exhibitor.banner_detail.match('^https?://(www.)?(vimeo.com)/(.*)$')
+			)
+		},
+		bannerIsVideo () {
+			return this.exhibitor.banner_detail && (
+				this.exhibitor.banner_detail.match('^(.*)\\.webm$') ||
+				this.exhibitor.banner_detail.match('^(.*)\\.mp4$')
 			)
 		},
 		bannerVideoSource () {
@@ -147,13 +155,13 @@ export default {
 			width: 100%
 			max-width: 720px
 			padding: 0 16px 0 0
-			.iframe-banner
+			.iframe-banner, .video-banner
 				padding-top: 56.25%
 				position: relative
 				height: 0
 				overflow: hidden
 				margin-top: 16px
-				iframe
+				iframe, video
 					position: absolute
 					top: 0
 					left: 0

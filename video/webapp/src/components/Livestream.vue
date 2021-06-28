@@ -5,7 +5,7 @@
 		.offline(v-if="offline")
 			img.offline-image(v-if="module.config.streamOfflineImage || theme.streamOfflineImage", :src="module.config.streamOfflineImage || theme.streamOfflineImage")
 			.offline-message(v-else) {{ $t('Livestream:offline-message:text') }}
-		.controls(v-if="!offline || module.config.alternatives", @click="toggleVideo")
+		.controls(v-if="!offline || hasAlternativeStreams", @click="toggleVideo")
 			.automuted-unmute(v-if="!offline && automuted")
 				span.mdi.mdi-volume-off
 				span {{ $t('Livestream:automuted-unmute:text') }}
@@ -21,7 +21,7 @@
 				bunt-icon-button(v-if="!offline", @click="toggleVideo") {{ playing ? 'pause' : 'play' }}
 				.live-indicator(v-if="!offline && isLive") live
 				.buffer
-				bunt-icon-button(v-if="module.config.alternatives", @click="showSourceChooser = !showSourceChooser") movie
+				bunt-icon-button(v-if="hasAlternativeStreams", @click="showSourceChooser = !showSourceChooser") movie
 				bunt-icon-button(v-if="!offline && textTracks.length > 0", @click="showCaptionsChooser = !showCaptionsChooser") {{ textTracks.some(t => t.mode === 'showing') ? 'closed-caption' : 'closed-caption-outline' }}
 				bunt-icon-button(v-else-if="!offline && module.config.subtitle_url", @click="openExternalSubtitles") closed-caption-outline
 				bunt-icon-button(v-if="!offline", @click="showLevelChooser = !showLevelChooser") {{ levelIcon }}
@@ -146,6 +146,9 @@ export default {
 			}
 			return this.module.config.hls_url
 		},
+		hasAlternativeStreams () {
+			return this.module.config.alternatives?.length > 0
+		}
 	},
 	watch: {
 		hlsUrl: 'initializePlayer',

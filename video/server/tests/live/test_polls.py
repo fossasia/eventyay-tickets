@@ -349,6 +349,25 @@ async def test_poll_lifecycle(questions_room, world):
             response = await c.receive_json_from()
             assert response[0] == "poll.pinned"
 
+            # Next: Moderators can unpin polls
+            await c_mod.send_json_to(
+                [
+                    "poll.unpin",
+                    123,
+                    {"room": str(room.id)},
+                ]
+            )
+            response = await c_mod.receive_json_from()
+            assert response == [
+                "success",
+                123,
+                {},
+            ]
+            response = await c_mod.receive_json_from()
+            assert response[0] == "poll.unpinned"
+            response = await c.receive_json_from()
+            assert response[0] == "poll.unpinned"
+
             poll_obj = await get_poll(room=room.id, pk=poll["id"])
             assert not poll_obj.cached_results
 

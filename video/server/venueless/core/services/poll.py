@@ -21,6 +21,11 @@ def get_poll(pk, room):
 
 
 @database_sync_to_async
+def unpin_poll(room):
+    room.polls.all().update(is_pinned=False)
+
+
+@database_sync_to_async
 def pin_poll(pk, room):
     room.polls.all().update(is_pinned=False)
     room.polls.filter(pk=pk).update(is_pinned=True)
@@ -89,7 +94,7 @@ def delete_poll(**kwargs):
 
 @database_sync_to_async
 def vote_on_poll(pk, room, user, options):
-    poll = Poll.objects.get(pk=pk, room=room)
+    poll = Poll.objects.get(pk=pk, room=room, state=Poll.States.OPEN)
     PollVote.objects.filter(sender=user, option__poll=poll).delete()
     validated_options = PollOption.objects.filter(
         poll=poll, id__in=options
