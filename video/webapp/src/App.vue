@@ -48,7 +48,7 @@ import GreetingPrompt from 'components/profile/GreetingPrompt'
 
 const mediaModules = ['livestream.native', 'livestream.youtube', 'livestream.iframe', 'call.bigbluebutton', 'call.janus', 'call.zoom']
 const stageToolModules = ['livestream.native', 'livestream.youtube', 'livestream.iframe', 'call.janus']
-const chatbarModules = ['chat.native', 'question']
+const chatbarModules = ['chat.native', 'question', 'poll']
 
 export default {
 	components: { AppBar, RoomsSidebar, MediaSource, GreetingPrompt, Notifications },
