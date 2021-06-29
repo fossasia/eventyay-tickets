@@ -1,9 +1,11 @@
 <template lang="pug">
 .c-iframe-page
 	bunt-progress-circular(size="huge", :page="true", v-if="loading")
-	iframe(:src="this.module.config.url", allow="camera; autoplay; microphone; fullscreen; display-capture", allowfullscreen, allowusermedia, @load="loaded")
+	iframe(:src="url", allow="camera; autoplay; microphone; fullscreen; display-capture", allowfullscreen, allowusermedia, @load="loaded")
 </template>
 <script>
+import {mapState} from 'vuex'
+
 export default {
 	props: {
 		module: {
@@ -13,8 +15,17 @@ export default {
 	},
 	data () {
 		return {
-			url: null,
 			loading: false,
+		}
+	},
+	computed: {
+		...mapState(['user']),
+
+		url () {
+			let url = this.module.config.url
+			url = url.replace('{display_name}', encodeURIComponent(this.user.profile.display_name))
+			url = url.replace('{id}', encodeURIComponent(this.user.id))
+			return url
 		}
 	},
 	methods: {
