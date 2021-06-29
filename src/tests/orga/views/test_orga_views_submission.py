@@ -164,7 +164,7 @@ def test_accept_submission_redirects_to_review_list(orga_client, submission):
     response = orga_client.post(
         submission.orga_urls.accept + f"?next={submission.event.orga_urls.reviews}"
     )
-    _, redirected_page_url = response._headers["location"]
+    redirected_page_url = response.headers["location"]
 
     assert response.status_code == 302
     assert redirected_page_url == submission.event.orga_urls.reviews
@@ -614,7 +614,7 @@ def test_orga_can_anonymise_submission(
         submission.orga_urls.anonymise,
         data={"title": submission.title, "description": "CENSORED!", "action": "next"},
     )
-    _, redirected_page_url = response._headers["location"]
+    redirected_page_url = response.headers["location"]
     assert response.status_code == 302
     assert redirected_page_url == other_submission.orga_urls.anonymise
     assert not other_submission.is_anonymised

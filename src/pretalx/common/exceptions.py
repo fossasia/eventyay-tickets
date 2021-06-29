@@ -14,7 +14,8 @@ class SubmissionError(Exception):
 class PretalxExceptionReporter(ExceptionReporter):
     def get_traceback_text(self):
         traceback_text = super().get_traceback_text()
-        if settings.DEBUG or not self.is_email:
+        # Don't try to send fancy emails in dev, or when the exception comes from a task
+        if settings.DEBUG or not self.is_email or not getattr(self, "request"):
             return traceback_text
         exception = self.exc_type.__name__ if getattr(self, "exc_type") else "Exception"
         exception_info = str(getattr(self, "exc_value") or "")

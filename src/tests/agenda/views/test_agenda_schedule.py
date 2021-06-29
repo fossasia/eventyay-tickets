@@ -129,7 +129,7 @@ def test_speaker_redirect(
     url = event.urls.speakers + f"by-id/{speaker.pk}/"
     response = client.get(url)
     assert response.status_code == 302
-    assert response._headers["location"][1].endswith(target_url)
+    assert response.headers["location"].endswith(target_url)
 
 
 @pytest.mark.django_db
@@ -211,7 +211,7 @@ def test_schedule_page_redirects(
     with django_assert_num_queries(9):
         response = client.get(url, HTTP_ACCEPT=header)
     assert response.status_code == 303
-    assert response._headers["location"][1] == getattr(event.urls, target).full()
+    assert response.headers["location"] == getattr(event.urls, target).full()
     assert response.content.decode() == ""
 
 

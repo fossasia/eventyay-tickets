@@ -2,7 +2,6 @@ import datetime as dt
 
 import pytest
 from django.core import mail as djmail
-from django.core.exceptions import ValidationError
 from django_scopes import scope
 from pytz import UTC
 
@@ -450,19 +449,18 @@ def test_can_add_simple_question_after_deadline(orga_client, event):
 def test_can_add_simple_question_after_deadline_missing_deadline(orga_client, event):
     with scope(event=event):
         assert event.questions.count() == 0
-    with pytest.raises(ValidationError):
-        orga_client.post(
-            event.cfp.urls.new_question,
-            {
-                "target": "submission",
-                "question_0": "What is your name?",
-                "variant": "string",
-                "active": True,
-                "help_text_0": "Answer if you want to reach the other side!",
-                "question_required": QuestionRequired.AFTER_DEADLINE,
-            },
-            follow=True,
-        )
+    orga_client.post(
+        event.cfp.urls.new_question,
+        {
+            "target": "submission",
+            "question_0": "What is your name?",
+            "variant": "string",
+            "active": True,
+            "help_text_0": "Answer if you want to reach the other side!",
+            "question_required": QuestionRequired.AFTER_DEADLINE,
+        },
+        follow=True,
+    )
     with scope(event=event):
         event.refresh_from_db()
         assert event.questions.count() == 0

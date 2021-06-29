@@ -130,7 +130,6 @@ class ExporterView(EventPermissionRequired, ScheduleMixin, TemplateView):
             ] = f'attachment; filename="{safe_filename(file_name)}"'
         if exporter.cors:
             headers["Access-Control-Allow-Origin"] = exporter.cors
-        return response
         return HttpResponse(data, content_type=file_type, headers=headers)
 
 

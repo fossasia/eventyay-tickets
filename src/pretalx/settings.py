@@ -201,6 +201,7 @@ DATABASES = {
         else {},
     }
 }
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 
 ## LOGGING SETTINGS
