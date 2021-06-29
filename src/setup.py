@@ -95,7 +95,7 @@ setup(
         "bleach~=3.3.0",  # https://bleach.readthedocs.io/en/latest/changes.html
         "celery~=4.4.0",  # search for "what's new" on http://docs.celeryproject.org/en/latest/
         "csscompressor~=0.9.0",  # 2017-11, no changelog, https://github.com/sprymix/csscompressor
-        "cssutils~=1.0.0",  # https://pythonhosted.org/cssutils/CHANGELOG.html
+        "cssutils~=2.3.0",
         "defusedcsv~=1.1.0",  # https://github.com/raphaelm/defusedcsv
         "Django~=3.1.0",  # https://docs.djangoproject.com/en/2.0/releases/
         "django-bootstrap4~=2.0.0",  # http://django-bootstrap4.readthedocs.io/en/latest/history.html
@@ -105,16 +105,16 @@ setup(
         "django-csp~=3.7.0",  # https://github.com/mozilla/django-csp/blob/master/CHANGES
         "django-filter~=2.4.0",  # https://github.com/carltongibson/django-filter/blob/master/CHANGES.rst
         "django-formset-js-improved==0.5.0.2",  # no changelog, https://github.com/pretix/django-formset-js
-        "django-formtools~=2.2.0",  # http://django-formtools.readthedocs.io/en/latest/changelog.html
+        "django-formtools~=2.3.0",
         "django-hierarkey~=1.0.0",  # no changelog, https://github.com/raphaelm/django-hierarkey
         "django-i18nfield~=1.9.0",  # 2020-06, no changelog, https://github.com/raphaelm/django-i18nfield/
         "django-libsass~=0.8",  # inactive, https://github.com/torchbox/django-libsass/blob/master/CHANGELOG.txt
         "django-scopes~=1.2.0",  # https://github.com/raphaelm/django-scopes/releases
         "djangorestframework~=3.12.0",  # http://www.django-rest-framework.org/community/release-notes/
         "inlinestyler~=0.2.0",  # https://github.com/dlanger/inlinestyler/blob/master/CHANGELOG
-        "libsass~=0.20.0",  # https://sass.github.io/libsass-python/changes.html
+        "libsass~=0.21.0",  # https://sass.github.io/libsass-python/changes.html
         "Markdown~=3.3.0",  # https://python-markdown.github.io/change_log/
-        "Pillow~=8.1.0",
+        "Pillow~=8.2.0",
         "publicsuffixlist~=0.7.0",
         "python-dateutil~=2.8.0",  # https://dateutil.readthedocs.io/en/stable/changelog.html
         "pytz",
@@ -144,7 +144,7 @@ setup(
             "pytest-mock",
             "pytest-rerunfailures",
             "pytest-sugar",
-            "pytest-xdist<2",  # Wait for a pytest-django newer than 3.9.0
+            "pytest-xdist",
             "pywatchman",
             "responses",
             "urllib3",
@@ -152,7 +152,7 @@ setup(
         "mysql": ["mysqlclient"],
         "postgres": ["psycopg2-binary"],
         "redis": [
-            "django_redis~=4.12.0",
+            "django_redis~=5.0.0",
             "redis~=3.5.0",
         ],
     },
