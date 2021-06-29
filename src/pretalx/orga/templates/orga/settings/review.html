@@ -56,7 +56,7 @@
         <div data-formset-body class="card"><div class="list-group">
             {% for form in scores_formset %}
                 <div data-formset-form class="score-group list-group-item">
-                    <h3 class="d-flex offset-md-3 flex-wrap">
+                    <h3 class="d-flex offset-md-3 flex-wrap align-items-start">
                         <span class="mr-2 ml-2">{% translate "Review Score category" %}</span>
                         {% bootstrap_field form.name form_group_class="" layout="inline" %}
                         {% if action != 'view' %}
@@ -113,7 +113,7 @@
         <script type="form-template" data-formset-empty-form>
             {% escapescript %}
                 <div data-formset-form class="score-group list-group-item">
-                    <h3 class="d-flex offset-md-3">
+                    <h3 class="d-flex offset-md-3 flex-wrap align-items-start">
                         <span class="mr-2 ml-2">{% translate "Score Category" %}</span>
                         {% bootstrap_field scores_formset.empty_form.name form_group_class="" layout="inline" %}
                         {% if action != 'view' %}

@@ -32,7 +32,7 @@
         {% include "cfp/event/fragment_state.html" with state=submission.state %}
         {% if submission.state == 'accepted' %}
             <a href="{{ submission.urls.confirm }}" class="btn btn-sm btn-success">
-                <i class="fa fa-check"></i>{% translate "Confirm your attendance" %}
+                <i class="fa fa-check"></i> {% translate "Confirm your attendance" %}
             </a>
         {% elif submission.state == 'confirmed' %}
             · <a href="{{ submission.urls.feedback }}">
