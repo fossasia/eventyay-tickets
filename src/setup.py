@@ -78,7 +78,7 @@ setup(
         "Development Status :: 5 - Production/Stable",
         "Environment :: Web Environment",
         "Framework :: Django",
-        "Framework :: Django :: 3.1",
+        "Framework :: Django :: 3.2",
         "Intended Audience :: Developers",
         "Intended Audience :: Other Audience",
         "License :: OSI Approved",
@@ -86,6 +86,8 @@ setup(
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
         "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
     ],
     keywords="conference cfp event schedule",
@@ -97,7 +99,7 @@ setup(
         "csscompressor~=0.9.0",  # 2017-11, no changelog, https://github.com/sprymix/csscompressor
         "cssutils~=2.3.0",
         "defusedcsv~=1.1.0",  # https://github.com/raphaelm/defusedcsv
-        "Django~=3.1.0",  # https://docs.djangoproject.com/en/2.0/releases/
+        "Django~=3.2.0",  # https://docs.djangoproject.com/en/2.0/releases/
         "django-bootstrap4~=3.0.0",  # http://django-bootstrap4.readthedocs.io/en/latest/history.html
         "django-compressor~=2.4.0",  # https://django-compressor.readthedocs.io/en/latest/changelog/
         "django-context-decorator",
