@@ -463,9 +463,6 @@ var app = new Vue({
           </div>
         </div>
       </div>
-      <div id="new-talk" @click="dragController.startModal({})">
-        +
-      </div>
     </div>
   `,
   data() {
