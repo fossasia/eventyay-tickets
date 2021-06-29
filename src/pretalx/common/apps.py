@@ -14,5 +14,3 @@ class CommonConfig(AppConfig):
 
 with suppress(ImportError):
     from pretalx import celery_app as celery  # NOQA
-
-default_app_config = "pretalx.common.CommonConfig"

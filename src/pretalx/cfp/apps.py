@@ -7,6 +7,3 @@ class CfPConfig(AppConfig):
     def ready(self):
         from . import permissions  # noqa
         from .phrases import CfPPhrases  # noqa
-
-
-default_app_config = "pretalx.cfp.CfPConfig"
