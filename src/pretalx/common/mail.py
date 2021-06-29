@@ -53,12 +53,15 @@ def mail_send_task(
     bcc: list = None,
     headers: dict = None,
 ):
+    if isinstance(to, str):
+        to = [to]
+    to = [t for t in to if not t.endswith("@localhost")]
+    if not to:
+        return
     reply_to = (
         [] if not reply_to or (len(reply_to) == 1 and reply_to[0] == "") else reply_to
     )
     reply_to = reply_to.split(",") if isinstance(reply_to, str) else reply_to
-    if isinstance(to, str):
-        to = [to]
     if event:
         event = Event.objects.get(pk=event)
         backend = event.get_mail_backend()

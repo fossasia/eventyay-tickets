@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` pretalx will no longer send emails to localhost addresses, as those are used for deleted users. Please get in touch if this is a problem for you.
 - :feature:`1069` You can freeze a question after a certain date, prohibiting users from changing their answers after the deadline.
 - :feature:`1069` You can now attach deadlines to questions, making them optional before the deadline and mandatory afterwards.
 - :feature:`-` With the ``anon`` query parameter, you can request anonymised proposal data from the API, even when you have permission to see the full data.
