@@ -28,7 +28,7 @@ and configuration here, but please have a look at the linked pages.
   ``pip3 -V`` to check.
 * An SMTP server to send out mails
 * An HTTP reverse proxy, e.g. `nginx`_ or Apache to allow HTTPS connections
-* A database server: `MySQL`_ 5.7+ or MariaDB 10.2+ or `PostgreSQL`_ 9.6+.
+* A database server: `MySQL`_ 5.7+ or MariaDB 10.2+ or `PostgreSQL`_ 10+.
   You can use SQLite, but we strongly recommend not to run SQLite in
   production. Given the choice, we'd recommend to use PostgreSQL.
 * A `redis`_ server, if you want to use pretalx with an asynchronous task
