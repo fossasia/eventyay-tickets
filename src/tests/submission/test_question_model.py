@@ -27,6 +27,84 @@ def test_missing_answers_submission_question(submission, target, question):
 
 
 @pytest.mark.django_db
+def test_question_required_property_optional_questions(question):
+    assert question.required is False
+
+
+@pytest.mark.django_db
+def test_question_required_property_always_required_questions(question_required_always):
+    assert question_required_always.required is True
+
+
+@pytest.mark.django_db
+def test_question_required_property_required_after_option_before_deadline(
+    question_required_after_option_before_deadline,
+):
+    assert question_required_after_option_before_deadline.required is False
+
+
+@pytest.mark.django_db
+def test_question_required_property_required_after_option_after_deadline(
+    question_required_after_option_after_deadline,
+):
+    assert question_required_after_option_after_deadline.required is True
+
+
+@pytest.mark.django_db
+def test_question_required_property_freeze_after_option_before_deadline_question_required_optional(
+    question_freeze_after_option_before_deadline_question_required_optional,
+):
+    assert (
+        question_freeze_after_option_before_deadline_question_required_optional.required
+        is False
+    )
+
+
+@pytest.mark.django_db
+def test_question_required_property_freeze_after_option_after_deadline_question_required_optional(
+    question_freeze_after_option_after_deadline_question_required_optional,
+):
+    assert (
+        question_freeze_after_option_after_deadline_question_required_optional.required
+        is False
+    )
+
+
+@pytest.mark.django_db
+def test_question_required_property_freeze_after_option_after_deadline_question_required(
+    question_freeze_after_option_after_deadline_question_required_required,
+):
+    assert (
+        question_freeze_after_option_after_deadline_question_required_required.required
+        is False
+    )
+
+
+@pytest.mark.django_db
+def test_question_required_property_freeze_after_option_before_deadline_question_required(
+    question_freeze_after_option_before_deadline_question_required_required,
+):
+    assert (
+        question_freeze_after_option_before_deadline_question_required_required.required
+        is True
+    )
+
+
+@pytest.mark.django_db
+def test_question_property_freeze_after_option_after_deadline(
+    question_freeze_after_option_after_deadline,
+):
+    assert question_freeze_after_option_after_deadline.read_only is True
+
+
+@pytest.mark.django_db
+def test_question_property_freeze_after_option_before_deadline(
+    question_freeze_after_option_before_deadline,
+):
+    assert question_freeze_after_option_before_deadline.read_only is False
+
+
+@pytest.mark.django_db
 def test_question_base_properties(submission, question):
     a = Answer.objects.create(answer="True", submission=submission, question=question)
     assert a.event == question.event

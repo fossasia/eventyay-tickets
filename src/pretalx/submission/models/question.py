@@ -221,7 +221,7 @@ class Question(LogMixin, models.Model):
         _now = now()
         # Question should become optional in order to be frozen
         if self.read_only:
-            return True
+            return False
         if self.question_required == QuestionRequired.REQUIRED:
             return True
         if self.question_required == QuestionRequired.AFTER_DEADLINE:
