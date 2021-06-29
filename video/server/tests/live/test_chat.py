@@ -450,7 +450,7 @@ async def test_send_empty(chat_room):
 @pytest.mark.django_db
 async def test_autofix_numbers(chat_room):
     async with world_communicator() as c1:
-        with aioredis() as redis:
+        async with aioredis() as redis:
             await redis.delete("chat.event_id")
         await c1.send_json_to(
             ["chat.join", 123, {"channel": str(chat_room.channel.id)}]
@@ -458,7 +458,7 @@ async def test_autofix_numbers(chat_room):
         await c1.receive_json_from()
         response = await c1.receive_json_from()
         assert response[1]["event_id"] == 1
-        with aioredis() as redis:
+        async with aioredis() as redis:
             await redis.delete("chat.event_id")
         await c1.send_json_to(
             [
