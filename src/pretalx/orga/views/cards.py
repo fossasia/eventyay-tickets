@@ -162,11 +162,13 @@ class SubmissionCards(EventPermissionRequired, View):
             )
             doc.build(self.get_story(doc))
             f.seek(0)
-            r = HttpResponse(content_type="application/pdf")
             timestamp = now().strftime("%Y-%m-%d-%H%M")
-            r[
-                "Content-Disposition"
-            ] = f'attachment; filename="{request.event.slug}_submission_cards_{timestamp}.pdf"'
+            r = HttpResponse(
+                content_type="application/pdf",
+                headers={
+                    "Content-Disposition": f'attachment; filename="{request.event.slug}_submission_cards_{timestamp}.pdf"'
+                },
+            )
             r.write(f.read())
             return r
 

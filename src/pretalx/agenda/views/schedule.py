@@ -123,15 +123,15 @@ class ExporterView(EventPermissionRequired, ScheduleMixin, TemplateView):
         if "If-None-Match" in request.headers:
             if request.headers["If-None-Match"] == etag:
                 return HttpResponseNotModified()
-        response = HttpResponse(data, content_type=file_type)
-        response["ETag"] = etag
+        headers = {"ETag": etag}
         if file_type not in ["application/json", "text/xml"]:
-            response[
+            headers[
                 "Content-Disposition"
             ] = f'attachment; filename="{safe_filename(file_name)}"'
         if exporter.cors:
-            response["Access-Control-Allow-Origin"] = exporter.cors
+            headers["Access-Control-Allow-Origin"] = exporter.cors
         return response
+        return HttpResponse(data, content_type=file_type, headers=headers)
 
 
 class ScheduleView(EventPermissionRequired, ScheduleMixin, TemplateView):

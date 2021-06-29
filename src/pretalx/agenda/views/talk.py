@@ -175,11 +175,13 @@ class SingleICalView(EventPageMixin, DetailView):
         cal.add("prodid").value = "-//pretalx//{}//{}".format(netloc, code)
         for talk in talk_slots:
             talk.build_ical(cal)
-        resp = HttpResponse(cal.serialize(), content_type="text/calendar")
-        resp[
-            "Content-Disposition"
-        ] = f'attachment; filename="{request.event.slug}-{code}.ics"'
-        return resp
+        return HttpResponse(
+            cal.serialize(),
+            content_type="text/calendar",
+            headers={
+                "Content-Disposition": f'attachment; filename="{request.event.slug}-{code}.ics"'
+            },
+        )
 
 
 class FeedbackView(PermissionRequired, FormView):
