@@ -1,7 +1,7 @@
 <template lang="pug">
 .c-iframe-page
 	bunt-progress-circular(size="huge", :page="true", v-if="loading")
-	iframe(ref="iframe", :src="url", allow="camera; autoplay; microphone; fullscreen; display-capture", allowfullscreen, allowusermedia, @load="loaded")
+	iframe(:src="url", allow="camera; autoplay; microphone; fullscreen; display-capture", allowfullscreen, allowusermedia, @load="loaded")
 </template>
 <script>
 import {mapState} from 'vuex'
