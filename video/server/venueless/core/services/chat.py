@@ -258,8 +258,8 @@ class ChatService:
         except IntegrityError as e:
             if "already exists" in str(e) and not _retry:
                 # Ooops! Probably our redis cleared out / failed over. Let's try to self-heal
+                current_max = await self._get_highest_id()
                 async with aioredis() as redis:
-                    current_max = await self._get_highest_id()
                     await redis.set("chat.event_id", current_max + 1)
                 res = await self.create_event(
                     channel, event_type, content, sender, _retry=True
