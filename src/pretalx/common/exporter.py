@@ -73,9 +73,12 @@ class BaseExporter:
 
     @property
     def group(self) -> str:
-        """ Return either 'speaker' or 'submission' to indicate on which
-        organiser export page to list this export. Invalid values default
-        to 'submission', which is also where all schedule exports live. """
+        """Return either 'speaker' or 'submission' to indicate on which
+        organiser export page to list this export.
+
+        Invalid values default to 'submission', which is also where all
+        schedule exports live.
+        """
         return "submission"
 
     def render(self, **kwargs) -> Tuple[str, str, str]:

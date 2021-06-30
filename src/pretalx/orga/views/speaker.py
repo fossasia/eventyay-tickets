@@ -1,5 +1,4 @@
 from csp.decorators import csp_update
-from pretalx.common.signals import register_data_exporters
 from django.contrib import messages
 from django.db import transaction
 from django.db.models import Exists, OuterRef
@@ -19,6 +18,7 @@ from pretalx.common.mixins.views import (
     PermissionRequired,
     Sortable,
 )
+from pretalx.common.signals import register_data_exporters
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.orga.forms.speaker import SpeakerExportForm
 from pretalx.person.forms import (
