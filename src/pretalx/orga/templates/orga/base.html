@@ -279,6 +279,9 @@
                         <a href="{{ request.event.orga_urls.feedback }}" class="nav-link nav-link-second-level{% if "submissions.feedback" in url_name %} active{% endif %}">
                             <span>{% translate "Feedback" %}</span>
                         </a>
+                        <a href="{{ request.event.orga_urls.schedule_export }}" class="nav-link nav-link-second-level">
+                            <span>{% translate "Export" %}</span>
+                        </a>
                     </div>
                 </div>
                 <a class="nav-link {% if "reviews." in url_name %}active{% endif %}" href="{% url "orga:reviews.dashboard" event=request.event.slug %}">
