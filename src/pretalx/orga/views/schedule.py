@@ -60,6 +60,7 @@ class ScheduleExportView(EventPermissionRequired, TemplateView):
         return list(
             exporter(self.request.event)
             for _, exporter in register_data_exporters.send(self.request.event)
+            if exporter.group != "speaker"
         )
 
 

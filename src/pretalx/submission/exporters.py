@@ -11,6 +11,7 @@ class SpeakerQuestionData(CSVExporterMixin, BaseExporter):
     public = False
     icon = "fa-question-circle"
     cors = "*"
+    group = "speaker"
 
     @property
     def verbose_name(self):

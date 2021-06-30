@@ -9,6 +9,11 @@ pretalx provides a range of exports. If none of these match what you are looking
 for, you can also provide a custom plugin to export the data – please ask
 your administrator to install the plugin.
 {% endblocktranslate %}
+{% blocktranslate trimmed %}
+    If you are looking for exports of proposals, sessions or schedule data, please head
+    here:
+{% endblocktranslate %}
+    <a class="btn btn-outline-info btn-sm" href="{{ request.event.orga_urls.speakers }}export/">{% trans "Speaker exports" %}</a>
 </p>
 
 <hr>

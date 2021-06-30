@@ -71,6 +71,13 @@ class BaseExporter:
         exporter in displays."""
         raise NotImplementedError()  # NOQA
 
+    @property
+    def group(self) -> str:
+        """ Return either 'speaker' or 'submission' to indicate on which
+        organiser export page to list this export. Invalid values default
+        to 'submission', which is also where all schedule exports live. """
+        return "submission"
+
     def render(self, **kwargs) -> Tuple[str, str, str]:
         """Render the exported file and return a tuple consisting of a file
         name, a file type and file content."""

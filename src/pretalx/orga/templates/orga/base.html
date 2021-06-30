@@ -305,6 +305,9 @@
                             <span>{% translate "Speaker Information" %}</span>
                         </a>
                         {% endif %}
+                        <a href="{{ request.event.orga_urls.speakers }}export/" class="nav-link nav-link-second-level{% if "speakers.export" in url_name %} active{% endif %}">
+                            <span>{% translate "Export" %}</span>
+                        </a>
                     </div>
                     {% endif %}
                 </div>

@@ -1,4 +1,5 @@
 from csp.decorators import csp_update
+from pretalx.common.signals import register_data_exporters
 from django.contrib import messages
 from django.db import transaction
 from django.db.models import Exists, OuterRef
@@ -7,7 +8,7 @@ from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
-from django.views.generic import DetailView, ListView, View
+from django.views.generic import DetailView, FormView, ListView, View
 from django_context_decorator import context
 
 from pretalx.common.exceptions import SendMailException
@@ -19,6 +20,7 @@ from pretalx.common.mixins.views import (
     Sortable,
 )
 from pretalx.common.views import CreateOrUpdateView
+from pretalx.orga.forms.speaker import SpeakerExportForm
 from pretalx.person.forms import (
     SpeakerFilterForm,
     SpeakerInformationForm,
@@ -300,3 +302,32 @@ class InformationDelete(PermissionRequired, DetailView):
         information.delete()
         messages.success(request, _("The information has been deleted."))
         return redirect(request.event.orga_urls.information)
+
+
+class SpeakerExport(EventPermissionRequired, FormView):
+    permission_required = "orga.view_speakers"
+    template_name = "orga/speaker/export.html"
+    form_class = SpeakerExportForm
+
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_form_kwargs(self):
+        result = super().get_form_kwargs()
+        result["event"] = self.request.event
+        return result
+
+    @context
+    def exporters(self):
+        return list(
+            exporter(self.request.event)
+            for _, exporter in register_data_exporters.send(self.request.event)
+            if exporter.group == "speaker"
+        )
+
+    def form_valid(self, form):
+        result = form.export_data()
+        if not result:
+            messages.success(self.request, _("No data to be exported"))
+            return redirect(self.request.path)
+        return result

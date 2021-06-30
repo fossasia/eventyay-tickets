@@ -491,6 +491,11 @@ urlpatterns = [
                 ),
                 path("speakers/", speaker.SpeakerList.as_view(), name="speakers.list"),
                 path(
+                    "speakers/export/",
+                    speaker.SpeakerExport.as_view(),
+                    name="speakers.export",
+                ),
+                path(
                     "speakers/<int:pk>/",
                     include(
                         [

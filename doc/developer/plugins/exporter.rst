@@ -60,6 +60,8 @@ The exporter class
 
       This is an abstract attribute, you **must** override this!
 
+   .. autoattribute:: group
+
    .. automethod:: render
 
       This is an abstract method, you **must** override this!

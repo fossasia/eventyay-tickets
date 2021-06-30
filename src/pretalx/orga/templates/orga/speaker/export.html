@@ -1,0 +1,81 @@
+{% extends "orga/cfp/base.html" %}
+{% load bootstrap4 %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+    <h2>
+        {% translate "Export speaker data" %}
+    </h2>
+
+    <p>
+    {% blocktranslate trimmed %}
+    pretalx provides a range of exports. If none of these match what you are looking
+    for, you can also provide a custom plugin to export the data – please ask
+    your administrator to install the plugin.
+    {% endblocktranslate %}
+    {% blocktranslate trimmed %}
+    If you are looking for exports of proposals, sessions or schedule data, please head
+    here:
+    {% endblocktranslate %}
+    <a class="btn btn-outline-info btn-sm" href="{{ request.event.orga_urls.schedule_export }}">{% trans "Schedule exports" %}</a>
+    </p>
+    <p>
+    {% blocktranslate trimmed %}
+    You can either create exactly the export you need below, or use these pre-built exports:
+    {% endblocktranslate %}
+    </p>
+    <ul>
+        {% for exporter in exporters %}
+        <li>
+            <a href="{{ exporter.urls.base }}">
+                {% if exporter.icon|slice:":3" == "fa-" %}
+                    <i class="fa {{ exporter.icon }}"></i>
+                {% else %}
+                    {{ exporter.icon }}
+                {% endif %}
+                {{ exporter.verbose_name }}
+                {% if exporter.show_qrcode %}
+                    <span class="export-qrcode">
+                      <div class="btn btn-default btn-sm">
+                          <i class="fa fa-qrcode"></i>
+                      </div>
+                      <div class="export-qrcode-image btn btn-default">{{ exporter.get_qrcode }}</div>
+                    </span>
+                {% endif %}
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+
+
+    <form method="post">
+        {% csrf_token %}
+        <fieldset>
+            <legend id="general">
+                {% translate "Dataset" %}
+            </legend>
+            {% bootstrap_field form.target layout='event' %}
+        </fieldset>
+        <fieldset>
+            <legend id="general">
+                {% translate "Data fields" %}
+            </legend>
+            {% for field in form.export_fields %}
+                {% bootstrap_field field layout='event' %}
+            {% endfor %}
+        </fieldset>
+        <fieldset>
+            <legend id="general">
+                {% translate "Export settings" %}
+            </legend>
+            {% bootstrap_field form.export_format layout='event' %}
+            <div id="data-delimiter">
+            {% bootstrap_field form.data_delimiter layout='event' %}
+            </div>
+        </fieldset>
+
+        {% include "orga/submit_row.html" %}
+    </form>
+    <script defer src="{% static "orga/js/speaker_export.js" %}"></script>
+{% endblock %}
