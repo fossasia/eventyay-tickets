@@ -77,10 +77,9 @@ class SpeakerExportForm(forms.Form):
         super().__init__(*args, **kwargs)
         self.event = event
 
-        self.questions = (
-            event.questions.filter(target="speaker", active=True)
-            .prefetch_related("answers", "answers__person", "options")
-        )
+        self.questions = event.questions.filter(
+            target="speaker", active=True
+        ).prefetch_related("answers", "answers__person", "options")
         self.question_field_names = [
             f"question_{question.pk}" for question in self.questions
         ]
@@ -167,7 +166,7 @@ class SpeakerExportForm(forms.Form):
                     )
                 )
             for question in questions:
-                question.answers.filter(person=speaker)
+                answer = question.answers.filter(person=speaker).first()
                 if answer:
                     speaker_data[str(question.question)] = answer.answer_string
                 else:
