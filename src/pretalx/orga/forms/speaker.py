@@ -7,8 +7,6 @@ from django.http import HttpResponse
 from django.utils.translation import gettext_lazy as _
 from i18nfield.utils import I18nJSONEncoder
 
-from pretalx.submission.models.question import Answer
-
 
 class SpeakerExportForm(forms.Form):
     target = forms.ChoiceField(
@@ -78,7 +76,11 @@ class SpeakerExportForm(forms.Form):
     def __init__(self, *args, event=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.event = event
-        self.questions = event.questions.filter(target="speaker", active=True)
+
+        self.questions = (
+            event.questions.filter(target="speaker", active=True)
+            .prefetch_related("answers", "answers__person", "options")
+        )
         self.question_field_names = [
             f"question_{question.pk}" for question in self.questions
         ]
@@ -165,9 +167,7 @@ class SpeakerExportForm(forms.Form):
                     )
                 )
             for question in questions:
-                answer = Answer.objects.filter(
-                    question=question, person=speaker
-                ).first()
+                question.answers.filter(person=speaker)
                 if answer:
                     speaker_data[str(question.question)] = answer.answer_string
                 else:
