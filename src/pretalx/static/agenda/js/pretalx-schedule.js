@@ -10920,7 +10920,7 @@ module.exports = !!Object.getOwnPropertySymbols && !fails(function () {
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__("24fb");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".c-grid-schedule{flex:auto;background-color:#fafafa}.c-grid-schedule .grid{display:grid;grid-template-columns:80px repeat(var(--total-rooms),1fr) auto;position:relative;min-width:-webkit-min-content;min-width:-moz-min-content;min-width:min-content}.c-grid-schedule .grid>.room{position:-webkit-sticky;position:sticky;top:48px;display:flex;justify-content:center;align-items:center;font-size:18px;background-color:#fff;border-bottom:1px solid rgba(0,0,0,.12);z-index:20}.c-grid-schedule .grid .c-linear-schedule-session{z-index:10}.c-grid-schedule .grid .break{z-index:10;margin:8px;border-radius:4px;background-color:#eee;display:flex;justify-content:center;align-items:center}.c-grid-schedule .grid .break .title{font-size:20px;font-weight:500;color:rgba(0,0,0,.54)}.c-grid-schedule .timeslice{color:rgba(0,0,0,.54);padding:8px 0 0 16px;white-space:nowrap;position:-webkit-sticky;position:sticky;left:0;background-color:#fafafa;border-top:1px solid rgba(0,0,0,.12);z-index:20}.c-grid-schedule .timeslice.datebreak{font-weight:600;border-top:3px solid rgba(0,0,0,.12)}.c-grid-schedule .timeline{height:1px;background-color:rgba(0,0,0,.12);position:absolute;width:100%}.c-grid-schedule .timeline.datebreak{height:3px}.c-grid-schedule .nowline{height:2px;background-color:#f44336;position:absolute;transform:translateY(calc(var(--offset)*100%));width:100%}.c-grid-schedule .now{margin-left:2px;z-index:20;position:relative}.c-grid-schedule .now:before{content:\"\";display:block;height:2px;background-color:#f44336;position:absolute;top:calc(var(--offset)*100%);width:100%}.c-grid-schedule .now.on-daybreak:before{background:repeating-linear-gradient(90deg,transparent,transparent 5px,#f44336 0,#f44336 10px)}.c-grid-schedule .now svg{position:absolute;top:calc(var(--offset)*100% - 11px);height:24px;width:24px;fill:#f44336}.c-grid-schedule .bunt-scrollbar-rail-wrapper-x,.c-grid-schedule .bunt-scrollbar-rail-wrapper-y{z-index:30}", ""]);
+exports.push([module.i, ".c-grid-schedule{flex:auto;background-color:#fafafa}.c-grid-schedule .grid{display:grid;grid-template-columns:72px repeat(var(--total-rooms),1fr) auto;position:relative;min-width:-webkit-min-content;min-width:-moz-min-content;min-width:min-content}.c-grid-schedule .grid>.room{position:-webkit-sticky;position:sticky;top:48px;display:flex;justify-content:center;align-items:center;font-size:18px;background-color:#fff;border-bottom:1px solid rgba(0,0,0,.12);z-index:20}.c-grid-schedule .grid .c-linear-schedule-session{z-index:10}.c-grid-schedule .grid .break{z-index:10;margin:8px;border-radius:4px;background-color:#eee;display:flex;justify-content:center;align-items:center}.c-grid-schedule .grid .break .title{font-size:20px;font-weight:500;color:rgba(0,0,0,.54)}.c-grid-schedule .timeslice{color:rgba(0,0,0,.54);padding:8px 0 0 16px;white-space:nowrap;position:-webkit-sticky;position:sticky;left:0;background-color:#fafafa;border-top:1px solid rgba(0,0,0,.12);z-index:20}.c-grid-schedule .timeslice.datebreak{font-weight:600;border-top:3px solid rgba(0,0,0,.12);white-space:pre}.c-grid-schedule .timeslice.gap{position:relative}.c-grid-schedule .timeslice.gap:before{content:\"\";display:block;width:6px;height:calc(100% - 42px);position:absolute;top:30px;left:calc(50% - 5px);background-image:radial-gradient(circle closest-side,#9e9e9e calc(100% - .5px),transparent 100%);background-position:0 0;background-size:5px 15px;background-repeat:repeat-y}.c-grid-schedule .timeline{height:1px;background-color:rgba(0,0,0,.12);position:absolute;width:100%}.c-grid-schedule .timeline.datebreak{height:3px}.c-grid-schedule .nowline{height:2px;background-color:#f44336;position:absolute;transform:translateY(calc(var(--offset)*100%));width:100%}.c-grid-schedule .now{margin-left:2px;z-index:20;position:relative}.c-grid-schedule .now:before{content:\"\";display:block;height:2px;background-color:#f44336;position:absolute;top:calc(var(--offset)*100%);width:100%}.c-grid-schedule .now.on-daybreak:before{background:repeating-linear-gradient(90deg,transparent,transparent 5px,#f44336 0,#f44336 10px)}.c-grid-schedule .now svg{position:absolute;top:calc(var(--offset)*100% - 11px);height:24px;width:24px;fill:#f44336}.c-grid-schedule .bunt-scrollbar-rail-wrapper-x,.c-grid-schedule .bunt-scrollbar-rail-wrapper-y{z-index:30}", ""]);
 // Exports
 module.exports = exports;
 
@@ -14427,12 +14427,12 @@ var LinearSchedule_component = Object(componentNormalizer["a" /* default */])(
 )
 
 /* harmony default export */ var LinearSchedule = (LinearSchedule_component.exports);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"52e7aa12-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/GridSchedule.vue?vue&type=template&id=6e09567a&lang=pug&
-var GridSchedulevue_type_template_id_6e09567a_lang_pug_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"c-grid-schedule"},[_c('div',{staticClass:"grid",style:(_vm.gridStyle)},[_vm._l((_vm.visibleTimeslices),function(slice){return [_c('div',{ref:slice.name,refInFor:true,staticClass:"timeslice",class:{datebreak: slice.datebreak},style:(_vm.getSliceStyle(slice)),attrs:{"data-slice":slice.date.format()}},[_vm._v(_vm._s(slice.datebreak ? slice.date.format('dddd DD. MMMM') : slice.date.format('LT')))]),_c('div',{staticClass:"timeline",class:{datebreak: slice.datebreak},style:(_vm.getSliceStyle(slice))})]}),(_vm.nowSlice)?_c('div',{ref:"now",staticClass:"now",class:{'on-daybreak': _vm.nowSlice.onDaybreak},style:({'grid-area': ((_vm.nowSlice.slice.name) + " / 1 / auto / auto"), '--offset': _vm.nowSlice.offset})},[_c('svg',{attrs:{"viewBox":"0 0 10 10"}},[_c('path',{attrs:{"d":"M 0 0 L 10 5 L 0 10 z"}})])]):_vm._e(),_c('div',{staticClass:"room",style:({'grid-area': "1 / 1 / auto / auto"})}),_vm._l((_vm.rooms),function(room,index){return _c('div',{staticClass:"room",style:({'grid-area': ("1 / " + (index + 2) + " / auto / auto")})},[_vm._v(_vm._s(_vm.getLocalizedString(room.name)))])}),(_vm.hasSessionsWithoutRoom)?_c('div',{staticClass:"room",style:({'grid-area': ("1 / " + (_vm.rooms.length + 2) + " / auto / -1")})},[_vm._v("sonstiger Ramsch")]):_vm._e(),_vm._l((_vm.sessions),function(session){return [(session.id)?_c('session',{style:(_vm.getSessionStyle(session)),attrs:{"session":session,"showAbstract":false,"showRoom":false,"faved":_vm.favs.includes(session.id)},on:{"fav":function($event){return _vm.$emit('fav', session.id)},"unfav":function($event){return _vm.$emit('unfav', session.id)}}}):_c('div',{staticClass:"break",style:(_vm.getSessionStyle(session))},[_c('div',{staticClass:"title"},[_vm._v(_vm._s(_vm.getLocalizedString(session.title)))])])]})],2)])}
-var GridSchedulevue_type_template_id_6e09567a_lang_pug_staticRenderFns = []
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"52e7aa12-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/GridSchedule.vue?vue&type=template&id=5c8fced2&lang=pug&
+var GridSchedulevue_type_template_id_5c8fced2_lang_pug_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"c-grid-schedule"},[_c('div',{staticClass:"grid",style:(_vm.gridStyle)},[_vm._l((_vm.visibleTimeslices),function(slice){return [_c('div',{ref:slice.name,refInFor:true,staticClass:"timeslice",class:_vm.getSliceClasses(slice),style:(_vm.getSliceStyle(slice)),attrs:{"data-slice":slice.date.format()}},[_vm._v(_vm._s(_vm.getSliceLabel(slice)))]),_c('div',{staticClass:"timeline",class:_vm.getSliceClasses(slice),style:(_vm.getSliceStyle(slice))})]}),(_vm.nowSlice)?_c('div',{ref:"now",staticClass:"now",class:{'on-daybreak': _vm.nowSlice.onDaybreak},style:({'grid-area': ((_vm.nowSlice.slice.name) + " / 1 / auto / auto"), '--offset': _vm.nowSlice.offset})},[_c('svg',{attrs:{"viewBox":"0 0 10 10"}},[_c('path',{attrs:{"d":"M 0 0 L 10 5 L 0 10 z"}})])]):_vm._e(),_c('div',{staticClass:"room",style:({'grid-area': "1 / 1 / auto / auto"})}),_vm._l((_vm.rooms),function(room,index){return _c('div',{staticClass:"room",style:({'grid-area': ("1 / " + (index + 2) + " / auto / auto")})},[_vm._v(_vm._s(_vm.getLocalizedString(room.name)))])}),(_vm.hasSessionsWithoutRoom)?_c('div',{staticClass:"room",style:({'grid-area': ("1 / " + (_vm.rooms.length + 2) + " / auto / -1")})},[_vm._v("sonstiger Ramsch")]):_vm._e(),_vm._l((_vm.sessions),function(session){return [(_vm.isProperSession(session))?_c('session',{style:(_vm.getSessionStyle(session)),attrs:{"session":session,"showAbstract":false,"showRoom":false,"faved":_vm.favs.includes(session.id)},on:{"fav":function($event){return _vm.$emit('fav', session.id)},"unfav":function($event){return _vm.$emit('unfav', session.id)}}}):_c('div',{staticClass:"break",style:(_vm.getSessionStyle(session))},[_c('div',{staticClass:"title"},[_vm._v(_vm._s(_vm.getLocalizedString(session.title)))])])]})],2)])}
+var GridSchedulevue_type_template_id_5c8fced2_lang_pug_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/components/GridSchedule.vue?vue&type=template&id=6e09567a&lang=pug&
+// CONCATENATED MODULE: ./src/components/GridSchedule.vue?vue&type=template&id=5c8fced2&lang=pug&
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/GridSchedule.vue?vue&type=script&lang=js&
 
@@ -14464,7 +14464,6 @@ var GridSchedulevue_type_template_id_6e09567a_lang_pug_staticRenderFns = []
 //
 // TODO
 // - handle click on already selected day (needs some buntpapier hacking)
-// - sessions spanning days collide with datebreaks
 // - optionally only show venueless rooms
 
 
@@ -14506,64 +14505,135 @@ const getSliceName = function (date) {
       const slices = [];
       const slicesLookup = {};
 
-      const pushSlice = function (date, datebreak) {
+      const pushSlice = function (date, {
+        hasSession = false,
+        hasBreak = false
+      } = {}) {
         const name = getSliceName(date);
-        if (slicesLookup[name]) return;
-        slices.push({
-          date,
-          name,
-          datebreak
-        });
-        slicesLookup[name] = true;
+        let slice = slicesLookup[name];
+
+        if (slice) {
+          slice.hasSession = slice.hasSession || hasSession;
+          slice.hasBreak = slice.hasBreak || hasBreak;
+        } else {
+          slice = {
+            date,
+            name,
+            hasSession,
+            hasBreak,
+            datebreak: date.isSame(date.clone().startOf('day'))
+          };
+          slices.push(slice);
+          slicesLookup[name] = slice;
+        }
       };
 
-      const fillHalfHours = function (start, end) {
+      const fillHalfHours = function (start, end, {
+        hasSession,
+        hasBreak
+      } = {}) {
         // fill to the nearest half hour, then each half hour, then fill to end
         let mins = end.diff(start, 'minutes');
-        const startingMins = minimumSliceMins - start.minute() % minimumSliceMins;
+        const startingMins = minimumSliceMins - start.minute() % minimumSliceMins; // buffer slices because we need to remove hasSession from the last one
+
+        const halfHourSlices = [];
 
         if (startingMins) {
-          pushSlice(start.clone().add(startingMins, 'minutes'));
+          halfHourSlices.push(start.clone().add(startingMins, 'minutes'));
           mins -= startingMins;
-        }
-
-        for (let i = 1; i <= mins / minimumSliceMins; i++) {
-          pushSlice(start.clone().add(startingMins + minimumSliceMins * i, 'minutes'));
         }
 
         const endingMins = end.minute() % minimumSliceMins;
 
-        if (endingMins) {
-          pushSlice(end.clone().subtract(endingMins, 'minutes'));
+        for (let i = 1; i <= mins / minimumSliceMins; i++) {
+          halfHourSlices.push(start.clone().add(startingMins + minimumSliceMins * i, 'minutes'));
         }
+
+        if (endingMins) {
+          halfHourSlices.push(end.clone().subtract(endingMins, 'minutes'));
+        } // last slice is actually just after the end of the session and has no session
+
+
+        const lastSlice = halfHourSlices.pop();
+        halfHourSlices.forEach(slice => pushSlice(slice, {
+          hasSession,
+          hasBreak
+        }));
+        pushSlice(lastSlice);
       };
 
       for (const session of this.sessions) {
         const lastSlice = slices[slices.length - 1]; // gap to last slice
 
         if (!lastSlice) {
-          pushSlice(session.start.clone().startOf('day'), true);
+          pushSlice(session.start.clone().startOf('day'));
         } else if (session.start.isAfter(lastSlice.date, 'minutes')) {
-          if (session.start.isSame(lastSlice.date, 'day')) {
-            // pad slices in gaps for same day
-            fillHalfHours(lastSlice.date, session.start);
-          } else {
-            // add date break
-            // TODO avoid overlaps
-            pushSlice(lastSlice.date.clone().add(minimumSliceMins, 'minutes'));
-            pushSlice(session.start.clone().startOf('day'), true);
-          }
-        } // add start and end slices for the session itself
+          fillHalfHours(lastSlice.date, session.start);
+        }
 
+        const isProper = this.isProperSession(session); // add start and end slices for the session itself
 
-        pushSlice(session.start);
+        pushSlice(session.start, {
+          hasSession: isProper,
+          hasBreak: !isProper
+        });
         pushSlice(session.end); // add half hour slices between a session
 
-        fillHalfHours(session.start, session.end);
+        fillHalfHours(session.start, session.end, {
+          hasSession: isProper,
+          hasBreak: !isProper
+        });
       }
 
-      slices.sort((a, b) => a.date.diff(b.date));
-      return slices;
+      const sliceIsFraction = function (slice) {
+        if (!slice) return;
+        return slice.date.minutes() !== 0 && slice.date.minutes() !== minimumSliceMins;
+      };
+
+      const sliceShouldDisplay = function (slice, index) {
+        if (!slice) return; // keep slices with sessions or when changing dates
+
+        if (slice.hasSession || slice.datebreak) return true;
+        const prevSlice = slices[index - 1];
+        const nextSlice = slices[index + 1]; // keep last slice for a break
+
+        if (slice.hasBreak && !(nextSlice === null || nextSlice === void 0 ? void 0 : nextSlice.hasBreak) && !(nextSlice === null || nextSlice === void 0 ? void 0 : nextSlice.hasSession)) return true; // drop slices inside breaks
+
+        if ((prevSlice === null || prevSlice === void 0 ? void 0 : prevSlice.hasBreak) && slice.hasBreak) return false; // keep non-whole slices
+
+        if (sliceIsFraction(slice)) return true; // keep slices before and after non-whole slices, if by session or break
+
+        if (((prevSlice === null || prevSlice === void 0 ? void 0 : prevSlice.hasSession) || (prevSlice === null || prevSlice === void 0 ? void 0 : prevSlice.hasBreak)) && sliceIsFraction(prevSlice) || ((nextSlice === null || nextSlice === void 0 ? void 0 : nextSlice.hasSession) || (nextSlice === null || nextSlice === void 0 ? void 0 : nextSlice.hasBreak)) && sliceIsFraction(nextSlice)) return true; // show breaks which would not be gaps, all others are automatically gaps
+        // TODO check how breaks with gaps AROUND them would render
+
+        if (slice.hasBreak && !(prevSlice === null || prevSlice === void 0 ? void 0 : prevSlice.hasBreak) && sliceShouldDisplay(nextSlice, index + 1)) return true;
+        return false;
+      };
+
+      slices.sort((a, b) => a.date.diff(b.date)); // remove empty gaps in slices
+
+      const compactedSlices = [];
+
+      for (const [index, slice] of slices.entries()) {
+        if (sliceShouldDisplay(slice, index)) {
+          compactedSlices.push(slice);
+          continue;
+        } // insert a gap slice if it would be the first to be removed
+        // but only if it isn't the start of the day
+        // and has no break
+
+
+        const prevSlice = slices[index - 1];
+
+        if (sliceShouldDisplay(prevSlice, index - 1) && (!prevSlice.datebreak || slice.hasBreak)) {
+          slice.gap = true;
+          compactedSlices.push(slice);
+        }
+      } // remove gap at the end of the schedule
+
+
+      if (compactedSlices[compactedSlices.length - 1].gap) compactedSlices.pop();
+      return compactedSlices;
     },
 
     visibleTimeslices() {
@@ -14576,15 +14646,15 @@ const getSliceName = function (date) {
         const next = this.timeslices[index + 1];
         let height = 60;
 
-        if (next) {
+        if (slice.gap) {
+          height = 100;
+        } else if (slice.datebreak) {
+          height = 60;
+        } else if (next) {
           height = Math.min(60, next.date.diff(slice.date, 'minutes') * 2);
         }
 
-        if (slice.datebreak) {
-          return `[${slice.name}] minmax(48px, auto)`;
-        } else {
-          return `[${slice.name}] minmax(${height}px, auto)`;
-        }
+        return `[${slice.name}] minmax(${height}px, auto)`;
       }).join(' ');
       return {
         '--total-rooms': this.rooms.length,
@@ -14649,11 +14719,23 @@ const getSliceName = function (date) {
   },
 
   methods: {
+    isProperSession(session) {
+      // breaks and such don't have ids
+      return !!session.id;
+    },
+
     getSessionStyle(session) {
       const roomIndex = this.rooms.indexOf(session.room);
       return {
         'grid-row': `${getSliceName(session.start)} / ${getSliceName(session.end)}`,
         'grid-column': roomIndex > -1 ? roomIndex + 2 : null
+      };
+    },
+
+    getSliceClasses(slice) {
+      return {
+        datebreak: slice.datebreak,
+        gap: slice.gap
       };
     },
 
@@ -14673,6 +14755,11 @@ const getSliceName = function (date) {
       return {
         'grid-area': `${slice.name} / 1 / auto / auto`
       };
+    },
+
+    getSliceLabel(slice) {
+      if (slice.datebreak) return slice.date.format('ddd[\n]DD. MMM');
+      return slice.date.format('LT');
     },
 
     changeDay(day) {
@@ -14720,8 +14807,8 @@ if (style0.__inject__) style0.__inject__(context)
 
 var GridSchedule_component = Object(componentNormalizer["a" /* default */])(
   components_GridSchedulevue_type_script_lang_js_,
-  GridSchedulevue_type_template_id_6e09567a_lang_pug_render,
-  GridSchedulevue_type_template_id_6e09567a_lang_pug_staticRenderFns,
+  GridSchedulevue_type_template_id_5c8fced2_lang_pug_render,
+  GridSchedulevue_type_template_id_5c8fced2_lang_pug_staticRenderFns,
   false,
   GridSchedule_injectStyles,
   null,
