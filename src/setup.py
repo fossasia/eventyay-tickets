@@ -120,7 +120,7 @@ setup(
         "publicsuffixlist~=0.7.0",
         "python-dateutil~=2.8.0",  # https://dateutil.readthedocs.io/en/stable/changelog.html
         "pytz",
-        "qrcode~=6.1",  # https://github.com/lincolnloop/python-qrcode/blob/master/CHANGES.rst
+        "qrcode~=7.0",
         "reportlab~=3.5.0",  # https://www.reportlab.com/documentation/relnotes/
         "requests~=2.25.0",  # https://2.python-requests.org/en/master/community/updates/#release-and-version-history
         "rules~=3.0.0",  # https://github.com/dfunckt/django-rules/blob/master/CHANGELOG.md
