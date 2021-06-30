@@ -33,6 +33,7 @@ extensions = [
     'sphinx.ext.todo',
     'sphinx.ext.viewcode',
     'sphinx_autodoc_typehints',
+    'sphinx_copybutton',
     'sphinxcontrib.httpdomain',
     'sphinxcontrib_django',
     'releases',
@@ -145,3 +146,8 @@ if HAS_PYENCHANT:
     spelling_lang = 'en_GB'
     spelling_word_list_filename='spelling_wordlist.txt'
     spelling_show_suggestions=True
+
+# Copybutton options
+copybutton_prompt_text = r">>> |\.\.\. |\$ |In \[\d*\]: | {2,5}\.\.\.: | {5,8}: |# "
+copybutton_prompt_is_regexp = True
+copybutton_line_continuation_character = "\\"
