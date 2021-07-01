@@ -42,6 +42,9 @@ jobs:
       - name: Run checks
         run: python manage.py check
         working-directory: ./server
+      - name: Run checks
+        run: python manage.py collectstatic
+        working-directory: ./server
       - name: Run tests
         working-directory: ./server
         run: VENUELESS_REDIS_HOST=redis VENUELESS_DB_TYPE=postgresql VENUELESS_DB_NAME=venueless VENUELESS_DB_USER=venueless VENUELESS_DB_PASS=venueless VENUELESS_DB_HOST=postgres py.test tests/ --cov=./ --cov-report=xml
