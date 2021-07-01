@@ -4,6 +4,7 @@ import json
 
 import icalendar
 import jwt
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.mixins import UserPassesTestMixin
@@ -88,6 +89,9 @@ class AdminBase(UserPassesTestMixin):
     login_url = "/control/auth/login/"
 
     def test_func(self):
+        secret_key = self.request.GET.get("control_token")
+        if secret_key and secret_key == settings.CONTROL_SECRET:
+            return True
         return self.request.user.is_staff
 
 

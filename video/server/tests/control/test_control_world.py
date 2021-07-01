@@ -1,5 +1,23 @@
 import icalendar
 import pytest
+from django.test import override_settings
+
+
+@pytest.mark.django_db
+def test_world_redirect_unauthenticated(world, client):
+    response = client.get("/control/worlds/")
+    assert response.status_code == 302
+
+
+@pytest.mark.django_db
+def test_world_allow_unauthenticated_with_secret_key(world, client):
+    token = "foobarverysecrettoken"
+    response = client.get(f"/control/worlds/?control_token={token}")
+    assert response.status_code == 302
+    with override_settings(CONTROL_SECRET=token):
+        response = client.get(f"/control/worlds/?control_token={token}")
+        assert response.status_code == 200
+        assert str(world.id) in response.content.decode()
 
 
 @pytest.mark.django_db
