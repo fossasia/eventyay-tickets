@@ -646,3 +646,94 @@ def test_regenerate_speaker_notifications_before_schedule(orga_client, event):
     )
     with scope(event=event):
         assert event.queued_mails.count() == queue_count
+
+
+@pytest.mark.django_db
+def test_orga_cant_export_answers_csv_empty(orga_client, speaker, event, submission):
+    response = orga_client.post(
+        event.orga_urls.schedule_export,
+        data={
+            "target": "rejected",
+            "title": "on",
+            "export_format": "csv",
+        },
+    )
+    assert response.status_code == 200
+    assert (
+        response.content.decode().strip().startswith("<!DOCTYPE")
+    )  # HTML response instead of empty download
+
+
+@pytest.mark.django_db
+def test_orga_cant_export_answers_csv_without_delimiter(
+    orga_client, speaker, event, submission, answered_choice_question
+):
+    with scope(event=event):
+        answered_choice_question.target = "submission"
+        answered_choice_question.save()
+    response = orga_client.post(
+        event.orga_urls.schedule_export,
+        data={
+            "target": "all",
+            "title": "on",
+            f"question_{answered_choice_question.id}": "on",
+            "export_format": "csv",
+        },
+    )
+    assert response.status_code == 200
+    assert response.content.decode().strip().startswith("<!DOCTYPE")
+
+
+@pytest.mark.django_db
+def test_orga_can_export_answers_csv(
+    orga_client, speaker, event, submission, answered_choice_question
+):
+    with scope(event=event):
+        answered_choice_question.target = "submission"
+        answered_choice_question.save()
+        answer = answered_choice_question.answers.all().first().answer_string
+    response = orga_client.post(
+        event.orga_urls.schedule_export,
+        data={
+            "target": "all",
+            "title": "on",
+            f"question_{answered_choice_question.id}": "on",
+            "speaker_ids": "on",
+            "export_format": "csv",
+            "data_delimiter": "comma",
+        },
+    )
+    assert response.status_code == 200
+    assert (
+        response.content.decode()
+        == f"ID,Title,Speaker IDs,{answered_choice_question.question}\r\n{submission.code},{submission.title},{speaker.code},{answer}\r\n"
+    )
+
+
+@pytest.mark.django_db
+def test_orga_can_export_answers_json(
+    orga_client, speaker, event, submission, answered_choice_question
+):
+    with scope(event=event):
+        answered_choice_question.target = "submission"
+        answered_choice_question.save()
+        answer = answered_choice_question.answers.all().first().answer_string
+    response = orga_client.post(
+        event.orga_urls.schedule_export,
+        data={
+            "target": "all",
+            "title": "on",
+            f"question_{answered_choice_question.id}": "on",
+            "speaker_ids": "on",
+            "export_format": "json",
+        },
+    )
+    assert response.status_code == 200
+    assert json.loads(response.content.decode()) == [
+        {
+            "ID": submission.code,
+            "Title": submission.title,
+            answered_choice_question.question: answer,
+            "Speaker IDs": [speaker.code],
+        }
+    ]

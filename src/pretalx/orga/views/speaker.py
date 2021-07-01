@@ -309,9 +309,6 @@ class SpeakerExport(EventPermissionRequired, FormView):
     template_name = "orga/speaker/export.html"
     form_class = SpeakerExportForm
 
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
-
     def get_form_kwargs(self):
         result = super().get_form_kwargs()
         result["event"] = self.request.event

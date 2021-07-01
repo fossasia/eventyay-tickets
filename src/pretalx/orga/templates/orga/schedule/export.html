@@ -1,5 +1,6 @@
 {% extends "orga/schedule/base.html" %}
 {% load i18n %}
+{% load bootstrap4 %}
 {% load static %}
 
 {% block schedule_content %}
@@ -86,7 +87,35 @@
         </div>
       </div>
       <div class="tab-pane fade" id="custom" role="tabpanel" aria-labelledby="custom-tab">
-    </div>
+        <form method="post">
+            {% csrf_token %}
+            <fieldset>
+                <legend id="general">
+                    {% translate "Dataset" %}
+                </legend>
+                {% bootstrap_field form.target layout='event' %}
+            </fieldset>
+            <fieldset>
+                <legend id="general">
+                    {% translate "Data fields" %}
+                </legend>
+                {% for field in form.export_fields %}
+                    {% bootstrap_field field layout='event' %}
+                {% endfor %}
+            </fieldset>
+            <fieldset>
+                <legend id="general">
+                    {% translate "Export settings" %}
+                </legend>
+                {% bootstrap_field form.export_format layout='event' %}
+                <div id="data-delimiter">
+                {% bootstrap_field form.data_delimiter layout='event' %}
+                </div>
+            </fieldset>
+
+            {% include "orga/submit_row.html" %}
+        </form>
+      </div>
 
     <div class="tab-pane fade" id="api" role="tabpanel" aria-labelledby="api-tab">
 

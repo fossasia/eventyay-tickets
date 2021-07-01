@@ -28,7 +28,7 @@ from pretalx.common.mixins.views import (
 from pretalx.common.signals import register_data_exporters
 from pretalx.common.utils import safe_filename
 from pretalx.common.views import CreateOrUpdateView
-from pretalx.orga.forms.schedule import ScheduleReleaseForm
+from pretalx.orga.forms.schedule import ScheduleExportForm, ScheduleReleaseForm
 from pretalx.schedule.forms import QuickScheduleForm, RoomForm
 from pretalx.schedule.models import Availability, Room, TalkSlot
 from pretalx.schedule.utils import guess_schedule_version
@@ -51,9 +51,15 @@ class ScheduleView(EventPermissionRequired, TemplateView):
         return result
 
 
-class ScheduleExportView(EventPermissionRequired, TemplateView):
+class ScheduleExportView(EventPermissionRequired, FormView):
     template_name = "orga/schedule/export.html"
     permission_required = "orga.view_schedule"
+    form_class = ScheduleExportForm
+
+    def get_form_kwargs(self):
+        result = super().get_form_kwargs()
+        result["event"] = self.request.event
+        return result
 
     @context
     def exporters(self):
@@ -62,6 +68,13 @@ class ScheduleExportView(EventPermissionRequired, TemplateView):
             for _, exporter in register_data_exporters.send(self.request.event)
             if exporter.group != "speaker"
         )
+
+    def form_valid(self, form):
+        result = form.export_data()
+        if not result:
+            messages.success(self.request, _("No data to be exported"))
+            return redirect(self.request.path)
+        return result
 
 
 class ScheduleExportTriggerView(EventPermissionRequired, View):
