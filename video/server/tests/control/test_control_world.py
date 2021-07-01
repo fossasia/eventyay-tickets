@@ -17,3 +17,16 @@ def test_world_admin_token_redirect(world, staff_client):
     assert location.startswith(f"https://{world.domain}/#token=")
     token = location.split("=")[-1]
     assert world.decode_token(token)
+
+
+@pytest.mark.django_db
+def test_world_calendar(staff_client, planned_usage):
+    world = planned_usage.world
+    response = staff_client.get("/control/worlds/calendar")
+    assert response.status_code == 200
+    assert str(world.id) in response.content.decode()
+    content = response.content.decode()
+    calendar = icalendar.Calendar.from_ical(content)
+    assert calendar
+    event = calendar.subcomponents[0]
+    assert world.domain in event["URL"]

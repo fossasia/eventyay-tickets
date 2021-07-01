@@ -2,6 +2,7 @@ import copy
 import datetime
 import json
 
+import icalendar
 import jwt
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
@@ -9,7 +10,7 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.db import transaction
 from django.db.models import Count, F, Max, OuterRef, Subquery
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
@@ -23,6 +24,7 @@ from django.views.generic import (
     ListView,
     TemplateView,
     UpdateView,
+    View,
 )
 
 from venueless.core.models import (
@@ -547,3 +549,17 @@ class FeedbackDetail(AdminBase, DetailView):
         ctx = super().get_context_data(**kwargs)
         ctx["trace"] = json.loads(self.object.trace)
         return ctx
+
+
+class WorldCalendar(AdminBase, View):
+    def get(self, request, *args, **kwargs):
+        queryset = PlannedUsage.objects.all().select_related("world")
+        calendar = icalendar.Calendar()
+        for planned_usage in queryset:
+            calendar.add_component(planned_usage.as_ical())
+
+        return HttpResponse(
+            calendar.to_ical(),
+            content_type="text/calendar",
+            headers={"Content-Disposition": 'attachment; filename="venueless.ics"'},
+        )

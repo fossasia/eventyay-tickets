@@ -47,6 +47,7 @@ urlpatterns = [
     ),
     path("worlds/", views.WorldList.as_view(), name="world.list"),
     path("worlds/new/", views.WorldCreate.as_view(), name="world.create"),
+    path("worlds/calendar", views.WorldCalendar.as_view(), name="world.calendar"),
     path("worlds/<slug:pk>/admin", views.WorldAdminToken.as_view(), name="world.admin"),
     path("worlds/<slug:pk>/clear", views.WorldClear.as_view(), name="world.clear"),
     path("worlds/<slug:pk>/", views.WorldUpdate.as_view(), name="world.update"),
