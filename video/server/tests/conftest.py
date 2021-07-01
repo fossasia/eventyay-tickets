@@ -1,7 +1,9 @@
+import datetime as dt
 import json
 
 import pytest
 from channels.db import database_sync_to_async
+from django.utils.timezone import now
 
 from venueless.core.models import (
     BBBServer,
@@ -12,6 +14,7 @@ from venueless.core.models import (
     User,
     World,
 )
+from venueless.core.models.world import PlannedUsage
 
 
 @pytest.fixture(autouse=True)
@@ -152,3 +155,32 @@ async def clear_database(request):
     if "django_db" not in request.keywords:  # pragma: no cover
         return
     await _clear_db()
+
+
+@pytest.fixture
+def staff_user():
+    from django.contrib.auth.models import User
+
+    return User.objects.create(is_staff=True)
+
+
+@pytest.fixture
+def staff_client(client, staff_user):
+    client.force_login(staff_user)
+    return client
+
+
+@pytest.fixture
+def planned_usage(world_data):
+    from venueless.core.utils.config import import_config
+
+    import_config(world_data)
+    world = World.objects.all().get()
+    world.domain = "localhost"
+    world.save()
+    return PlannedUsage.objects.create(
+        world=world,
+        start=now() + dt.timedelta(days=10),
+        end=now() + dt.timedelta(days=13),
+        attendees=200,
+    )
