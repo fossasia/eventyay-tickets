@@ -12,9 +12,9 @@
     <h2>{% translate "Access codes" %}</h2>
     <div class="alert alert-info">
         {% blocktranslate trimmed %}
-        Access codes can be used to allow proposals even when the CfP
-        is over. You can also use them for hidden tracks or hidden session
-        types, which can only be seen with a matching access code.
+            Access codes can be used to allow proposals even when the CfP
+            is over. You can also use them for hidden tracks or hidden session
+            types, which can only be seen with a matching access code.
         {% endblocktranslate %}
     </div>
     <div class="submit-group"><span></span>
@@ -24,61 +24,61 @@
         </a>
     </div>
     {% if access_codes %}
-    <table class="table table-sm table-hover table-responsive-md" id="access-codes">
-        <thead>
-            <tr>
-                <th>{% translate "Code" %}</th>
-                {% if request.event.settings.use_tracks %}<th>{% translate "Track" %}</th>{% endif %}
-                <th>{% translate "Session Type" %}</th>
-                <th>{% translate "Uses" %}</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for code in access_codes %}
+        <table class="table table-sm table-hover table-responsive-md" id="access-codes">
+            <thead>
                 <tr>
-                    <td>
-                        {{ code.code|copyable }}
-                    </td>
-                    {% if request.event.settings.use_tracks %}<td>
-                        {% if code.track %}
-                        <a href="{{ code.track.urls.base }}">{{ code.track.name }}</a>
-                        {% else %}–{% endif %}
-                    </td>{% endif %}
-                    <td>
-                        {% if code.submission_type %}
-                        <a href="{{ code.submission_type.urls.base }}">{{ code.submission_type.name }}</a>
-                        {% else %}–{% endif %}
-                    </td>
-                    <td>
-                        {{ code.redeemed|default:0 }} / {{ code.maximum_uses|default:'∞' }}
-                    </td>
-                    <td class="action-column">
-                        <div data-destination="{{ code.urls.cfp_url.full }}"
+                    <th>{% translate "Code" %}</th>
+                    {% if request.event.settings.use_tracks %}<th>{% translate "Track" %}</th>{% endif %}
+                    <th>{% translate "Session Type" %}</th>
+                    <th>{% translate "Uses" %}</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for code in access_codes %}
+                    <tr>
+                        <td>
+                            {{ code.code|copyable }}
+                        </td>
+                        {% if request.event.settings.use_tracks %}<td>
+                            {% if code.track %}
+                                <a href="{{ code.track.urls.base }}">{{ code.track.name }}</a>
+                            {% else %}–{% endif %}
+                        </td>{% endif %}
+                        <td>
+                            {% if code.submission_type %}
+                                <a href="{{ code.submission_type.urls.base }}">{{ code.submission_type.name }}</a>
+                            {% else %}–{% endif %}
+                        </td>
+                        <td>
+                            {{ code.redeemed|default:0 }} / {{ code.maximum_uses|default:'∞' }}
+                        </td>
+                        <td class="action-column">
+                            <div data-destination="{{ code.urls.cfp_url.full }}"
                                 title="{% translate 'Copy access code link' %}"
                                 class="btn btn-sm btn-info copyable-text">
                                 <i class="fa fa-link"></i>
-                        </div>
-                        <a href="{{ code.urls.send }}"
+                            </div>
+                            <a href="{{ code.urls.send }}"
                                 title="{% translate 'Send access code as email' %}"
                                 class="btn btn-sm btn-info">
-                            <i class="fa fa-envelope"></i>
-                        </a>
-                        <a href="{{ code.urls.edit }}"
+                                <i class="fa fa-envelope"></i>
+                            </a>
+                            <a href="{{ code.urls.edit }}"
                                 class="btn btn-sm btn-info">
-                            <i class="fa fa-edit"></i>
-                        </a>
-                        {% if not code.submissions.exists %}
-                        <a href="{{ code.urls.delete }}"
-                                class="btn btn-sm btn-danger">
-                            <i class="fa fa-trash"></i>
-                        </a>
-                        {% endif %}
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                                <i class="fa fa-edit"></i>
+                            </a>
+                            {% if not code.submissions.exists %}
+                                <a href="{{ code.urls.delete }}"
+                                    class="btn btn-sm btn-danger">
+                                    <i class="fa fa-trash"></i>
+                                </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     {% endif %}
 
 {% endblock %}

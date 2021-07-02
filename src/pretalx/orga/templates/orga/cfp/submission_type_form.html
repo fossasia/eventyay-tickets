@@ -6,19 +6,19 @@
 
 {% block scripts %}
     {% compress js %}
-    <script defer src="{% static "vendored/moment-with-locales.js" %}"></script>
-    <script defer src="{% static "vendored/moment-timezone-with-data-2012-2022.js" %}"></script>
-    <script defer src="{% static "vendored/datetimepicker/bootstrap-datetimepicker.js" %}"></script>
-    <script defer src="{% static "orga/js/datetimepicker.js" %}"></script>
+        <script defer src="{% static "vendored/moment-with-locales.js" %}"></script>
+        <script defer src="{% static "vendored/moment-timezone-with-data-2012-2022.js" %}"></script>
+        <script defer src="{% static "vendored/datetimepicker/bootstrap-datetimepicker.js" %}"></script>
+        <script defer src="{% static "orga/js/datetimepicker.js" %}"></script>
     {% endcompress %}
 {% endblock %}
 
 {% block cfp_content %}
     <h2>
         {% if form.instance.name %}
-        {% translate "Session Type" %}: {{ form.instance.name }}
+            {% translate "Session Type" %}: {{ form.instance.name }}
         {% else %}
-        {% translate "New Session Type" %}
+            {% translate "New Session Type" %}
         {% endif %}
     </h2>
     <form method="post">

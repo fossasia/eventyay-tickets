@@ -2,69 +2,69 @@
 {% load i18n %}
 
 {% block content %}
-<div>
-    <h2>
-        {{ request.event.rooms.count }}
-        {% blocktranslate trimmed count count=request.event.rooms.count context "Number of rooms" %}
-        Room
-        {% plural %}
-        Rooms
-        {% endblocktranslate %}
-    </h2>
+    <div>
+        <h2>
+            {{ request.event.rooms.count }}
+            {% blocktranslate trimmed count count=request.event.rooms.count context "Number of rooms" %}
+                Room
+            {% plural %}
+                Rooms
+            {% endblocktranslate %}
+        </h2>
 
-    <table class="table table-sm table-hover table-responsive-md">
-        <thead>
-            <tr>
-                <th>{% translate "Name" %}</th>
-                <th>{% translate "Capacity" %}</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for room in request.event.rooms.all %}
+        <table class="table table-sm table-hover table-responsive-md">
+            <thead>
                 <tr>
-                    <td>
-                        <a href="{{ room.urls.settings_base }}">
-                            {{ room.name }}
-                        </a>
-                    </td>
-                    <td>{% if room.capacity %}{{ room.capacity }}{% endif %}</td>
-                    <td class="action-column">
-                        {% if not forloop.last %}
-                        <a href="{{ room.urls.down }}"
-                           class="btn btn-sm btn-outline-info"
-                           title="{% translate "Move room down" %}">
-                            <i class="fa fa-arrow-down"></i>
-                        </a>
-                        {% endif %}
-                        {% if not forloop.first %}
-                        <a href="{{ room.urls.up }}"
-                           class="btn btn-sm btn-outline-info"
-                           title="{% translate "Move room up" %}">
-                            <i class="fa fa-arrow-up"></i>
-                        </a>
-                        {% endif %}
-                        <a href="{{ room.urls.edit }}"
-                            class="btn btn-sm btn-info">
-                            <i class="fa fa-edit"></i>
-                        </a>
-                        <a href="{{ room.urls.delete }}"
-                            class="btn btn-sm btn-danger">
-                            <i class="fa fa-trash"></i>
-                        </a>
-                    </td>
+                    <th>{% translate "Name" %}</th>
+                    <th>{% translate "Capacity" %}</th>
+                    <th></th>
                 </tr>
-            {% empty %}
-                <tr><td> {% translate "Please add at least one place in which sessions can take place." %} </td></tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                {% for room in request.event.rooms.all %}
+                    <tr>
+                        <td>
+                            <a href="{{ room.urls.settings_base }}">
+                                {{ room.name }}
+                            </a>
+                        </td>
+                        <td>{% if room.capacity %}{{ room.capacity }}{% endif %}</td>
+                        <td class="action-column">
+                            {% if not forloop.last %}
+                                <a href="{{ room.urls.down }}"
+                                    class="btn btn-sm btn-outline-info"
+                                    title="{% translate "Move room down" %}">
+                                    <i class="fa fa-arrow-down"></i>
+                                </a>
+                            {% endif %}
+                            {% if not forloop.first %}
+                                <a href="{{ room.urls.up }}"
+                                    class="btn btn-sm btn-outline-info"
+                                    title="{% translate "Move room up" %}">
+                                    <i class="fa fa-arrow-up"></i>
+                                </a>
+                            {% endif %}
+                            <a href="{{ room.urls.edit }}"
+                                class="btn btn-sm btn-info">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                            <a href="{{ room.urls.delete }}"
+                                class="btn btn-sm btn-danger">
+                                <i class="fa fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td> {% translate "Please add at least one place in which sessions can take place." %} </td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
 
-    <div class="submit-group"><span></span>
-        <a class="btn btn-lg btn-success" href="{{ request.event.orga_urls.new_room }}">
-            <i class="fa fa-plus"></i>
-            {% translate "New room" %}
-        </a>
+        <div class="submit-group"><span></span>
+            <a class="btn btn-lg btn-success" href="{{ request.event.orga_urls.new_room }}">
+                <i class="fa fa-plus"></i>
+                {% translate "New room" %}
+            </a>
+        </div>
     </div>
-</div>
 {% endblock %}

@@ -5,41 +5,41 @@
 
 <div class="pretalx-tabbed"><div class="pretalx-tabbed-content">
     {% if day_count > 1 %}
-    <div class="pretalx-tabs">
+        <div class="pretalx-tabs">
+            {% for day in data %}
+                <div class="pretalx-tab">
+                    <label class="pretalx-tab-label" for="{{ day.start|date:"Y-m-d" }}">
+                        {{ day.start|date:"l" }}, {{ day.start|date:"DATE_FORMAT" }}
+                    </label>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
     {% for day in data %}
-        <div class="pretalx-tab">
-          <label class="pretalx-tab-label" for="{{ day.start|date:"Y-m-d" }}">
-              {{ day.start|date:"l" }}, {{ day.start|date:"DATE_FORMAT" }}
-          </label>
+        {% if day_count > 1 %}
+            <input name="tabs" id="{{ day.start|date:"Y-m-d" }}" type="radio" {% if day.start.date == initial_day %}checked{% endif %}>
+        {% endif %}
+        <div class="pretalx-list-day pretalx-tab-content" data-start="{{ day.display_start|date:"c" }}">
+            {% if day.first_start %}
+                {% for session in day.talks %}
+                    <div class="bucket-time">{% ifchanged session.start %}{{ session.start|date:"H:i" }}{% endifchanged %}</div>
+                    {% if not schedule.is_archived and session.submission and not session.submission.is_deleted %}
+                        <a href="{{ session.submission.urls.public }}">
+                    {% endif %}
+                    {% include "agenda/session_block.html" %}
+                    {% if not schedule.is_archived and session.submission and not session.submission.is_deleted %}
+                        </a>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <div class="no-session">
+                    {% blocktranslate with current_day=day.start|date:'DATE_FORMAT' weekday=day.start|date:'l' trimmed %}
+                        No sessions on {{ weekday }}, {{ current_day }}.
+                    {% endblocktranslate %}
+                </div>
+            {% endif %}
         </div>
     {% endfor %}
-    </div>
-    {% endif %}
-{% for day in data %}
-  {% if day_count > 1 %}
-  <input name="tabs" id="{{ day.start|date:"Y-m-d" }}" type="radio" {% if day.start.date == initial_day %}checked{% endif %}>
-  {% endif %}
-    <div class="pretalx-list-day pretalx-tab-content" data-start="{{ day.display_start|date:"c" }}">
-        {% if day.first_start %}
-              {% for session in day.talks %}
-                <div class="bucket-time">{% ifchanged session.start %}{{ session.start|date:"H:i" }}{% endifchanged %}</div>
-                  {% if not schedule.is_archived and session.submission and not session.submission.is_deleted %}
-                    <a href="{{ session.submission.urls.public }}">
-                  {% endif %}
-                  {% include "agenda/session_block.html" %}
-                  {% if not schedule.is_archived and session.submission and not session.submission.is_deleted %}
-                    </a>
-                  {% endif %}
-              {% endfor %}
-        {% else %}
-            <div class="no-session">
-                {% blocktranslate with current_day=day.start|date:'DATE_FORMAT' weekday=day.start|date:'l' trimmed %}
-                  No sessions on {{ weekday }}, {{ current_day }}.
-                {% endblocktranslate %}
-            </div>
-        {% endif %}
-    </div>
-{% endfor %}
-{% compress js %}
-  <script defer src="{% static "agenda/js/time.js" %}"></script>
-{% endcompress %}
+    {% compress js %}
+        <script defer src="{% static "agenda/js/time.js" %}"></script>
+    {% endcompress %}

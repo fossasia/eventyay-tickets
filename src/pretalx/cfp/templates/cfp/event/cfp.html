@@ -18,13 +18,13 @@
             <p>
                 <strong>
                     {% if cfp.is_open %}
-                    {% blocktranslate with deadline=cfp.max_deadline|date:"SHORT_DATETIME_FORMAT" timezone=request.timezone until_string=cfp.max_deadline|timeuntil trimmed %}
-                        You can enter proposals until {{ deadline }} ({{ timezone }}), {{ until_string }} from now.
-                    {% endblocktranslate %}
+                        {% blocktranslate with deadline=cfp.max_deadline|date:"SHORT_DATETIME_FORMAT" timezone=request.timezone until_string=cfp.max_deadline|timeuntil trimmed %}
+                            You can enter proposals until {{ deadline }} ({{ timezone }}), {{ until_string }} from now.
+                        {% endblocktranslate %}
                     {% else %}
-                    {% blocktranslate with deadline=cfp.max_deadline|date:"SHORT_DATETIME_FORMAT" timezone=request.timezone trimmed %}
-                        This Call for Papers closed on {{ deadline }} ({{ timezone }}).
-                    {% endblocktranslate %}
+                        {% blocktranslate with deadline=cfp.max_deadline|date:"SHORT_DATETIME_FORMAT" timezone=request.timezone trimmed %}
+                            This Call for Papers closed on {{ deadline }} ({{ timezone }}).
+                        {% endblocktranslate %}
                     {% endif %}
                 </strong>
             </p>
@@ -46,11 +46,11 @@
             {% endif %}
             <a class="btn btn-success btn-lg btn-block {% if not cfp.is_open and not access_code.is_valid %}disabled{% endif %}"
                 href="{{ request.event.urls.submit }}{{ submit_qs }}">
-            {% if cfp.is_open or access_code.is_valid %}
-                {% translate "Submit a proposal" %}
-            {% else %}
-                {% translate "Proposals are closed" %}
-            {% endif %}
+                {% if cfp.is_open or access_code.is_valid %}
+                    {% translate "Submit a proposal" %}
+                {% else %}
+                    {% translate "Proposals are closed" %}
+                {% endif %}
             </a>
         </div>
     {% endwith %}

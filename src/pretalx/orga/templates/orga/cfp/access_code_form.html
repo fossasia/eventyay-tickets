@@ -6,34 +6,34 @@
 
 {% block scripts %}
     {% compress js %}
-    <script defer src="{% static "vendored/moment-with-locales.js" %}"></script>
-    <script defer src="{% static "vendored/moment-timezone-with-data-2012-2022.js" %}"></script>
-    <script defer src="{% static "vendored/datetimepicker/bootstrap-datetimepicker.js" %}"></script>
-    <script defer src="{% static "orga/js/datetimepicker.js" %}"></script>
+        <script defer src="{% static "vendored/moment-with-locales.js" %}"></script>
+        <script defer src="{% static "vendored/moment-timezone-with-data-2012-2022.js" %}"></script>
+        <script defer src="{% static "vendored/datetimepicker/bootstrap-datetimepicker.js" %}"></script>
+        <script defer src="{% static "orga/js/datetimepicker.js" %}"></script>
     {% endcompress %}
 {% endblock %}
 
 {% block cfp_content %}
     <h2>
         {% if form.instance.pk %}
-        {% translate "Edit access code" %}
+            {% translate "Edit access code" %}
         {% else %}
-        {% translate "New access code" %}
+            {% translate "New access code" %}
         {% endif %}
     </h2>
     {% if form.instance.submissions.exists %}
-    <div class="alert alert-info">
-        <span>
-        {% blocktranslate trimmed %}
-        This access code has already been used. You can't delete it, but you can disable it by setting an expiration date.
-        {% endblocktranslate %}
-        <ul>
-            {% for submission in form.instance.submissions.all %}
-            <li><a href="{{ submission.orga_urls.base }}">{{ submission.title }} ({{submission.display_speaker_names}})</a></li>
-            {% endfor %}
-        </ul>
-        </span>
-    </div>
+        <div class="alert alert-info">
+            <span>
+                {% blocktranslate trimmed %}
+                    This access code has already been used. You can't delete it, but you can disable it by setting an expiration date.
+                {% endblocktranslate %}
+                <ul>
+                    {% for submission in form.instance.submissions.all %}
+                        <li><a href="{{ submission.orga_urls.base }}">{{ submission.title }} ({{submission.display_speaker_names}})</a></li>
+                    {% endfor %}
+                </ul>
+            </span>
+        </div>
     {% endif %}
     <form method="post">
         {% csrf_token %}
@@ -42,9 +42,9 @@
         <div class="submit-group panel">
             <span>
                 {% if form.instance.pk and not form.instance.submissions.exists %}
-                <a class="btn btn-outline-danger btn-lg" href="{{ form.instance.urls.delete }}">
-                    <i class="fa fa-trash"></i> {% translate "Delete" %}
-                </a>
+                    <a class="btn btn-outline-danger btn-lg" href="{{ form.instance.urls.delete }}">
+                        <i class="fa fa-trash"></i> {% translate "Delete" %}
+                    </a>
                 {% endif %}
             </span>
             <span>

@@ -46,20 +46,20 @@
                         <td class="text-right">
                             {% if submission.public_slots %}
                                 <a href="{{ submission.urls.public }}">
-                                {% for talk in submission.public_slots %}
-                                {{ talk.start|date:"Y-m-d" }}, {{ talk.start|date:"H:i" }}–{{ talk.end|date:"H:i" }}, {{ talk.room.name }} {% if not forloop.last %}<br>{% endif %}
-                                {% endfor %}
+                                    {% for talk in submission.public_slots %}
+                                        {{ talk.start|date:"Y-m-d" }}, {{ talk.start|date:"H:i" }}–{{ talk.end|date:"H:i" }}, {{ talk.room.name }} {% if not forloop.last %}<br>{% endif %}
+                                    {% endfor %}
                                 </a>
                             {% endif %}
                         </td>
                         <td class="text-right">
                             {% if submission.review_code %}
                                 <button data-destination="{{ submission.urls.review.full }}"
-                                        class="btn btn-sm btn-info"
-                                        data-toggle="tooltip" 
-                                        data-placement="top" 
-                                        title="{% translate 'Copy code for review' %}"
-                                        target="_blank" rel="noopener">
+                                    class="btn btn-sm btn-info"
+                                    data-toggle="tooltip"
+                                    data-placement="top"
+                                    title="{% translate 'Copy code for review' %}"
+                                    target="_blank" rel="noopener">
                                     <i class="fa fa-link"></i>
                                 </button>
                             {% endif %}
@@ -68,13 +68,13 @@
                             </a>
                             {% if submission.state == 'accepted' %}
                                 <a href="{{ submission.urls.confirm }}"
-                                        class="btn btn-sm btn-success">
+                                    class="btn btn-sm btn-success">
                                     <i class="fa fa-check"></i> {% translate "Confirm" %}
                                 </a>
                             {% endif %}
                             {% if submission.does_accept_feedback %}
                                 <a href="{{ submission.urls.feedback }}"
-                                        class="btn btn-sm btn-info">
+                                    class="btn btn-sm btn-info">
                                     <i class="fa fa-comments"></i> {% translate "Feedback" %}{% if submission.feedback.count %}  ({{ submission.feedback.count }}){% endif %}
                                 </a>
                             {% endif %}
@@ -86,7 +86,7 @@
         <p>
             {% if request.event.cfp.is_open %}
                 <a class="btn btn-success btn-lg"
-                   href="{{ request.event.urls.submit }}">
+                    href="{{ request.event.urls.submit }}">
                     {% translate "Create a new proposal" %}
                 </a>
             {% endif %}
@@ -104,7 +104,7 @@
             </p>
             <p class="text-center">
                 <a class="btn btn-success btn-lg btn-block"
-                   href="{{ request.event.urls.submit }}">
+                    href="{{ request.event.urls.submit }}">
                     {% translate "Submit something now!" %}
                 </a>
             </p>

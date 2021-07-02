@@ -4,10 +4,10 @@
     <div class="navigation">
         <a href="{{ request.event.urls.schedule }}" class="btn btn-outline-success {% if "/schedule/" in request.path %} active{% endif %}">
             <i class="fa fa-calendar"></i> {% translate "Schedule" %}
-        {% if request.event.settings.schedule_display != "list" %}
-        </a><a href="{{ request.event.urls.talks }}" class="btn btn-outline-success {% if "/talk/" in request.path %} active{% endif %}">
-            <i class="fa fa-comments-o"></i> {% translate "Sessions" %}
-        {% endif %}
+            {% if request.event.settings.schedule_display != "list" %}
+                </a><a href="{{ request.event.urls.talks }}" class="btn btn-outline-success {% if "/talk/" in request.path %} active{% endif %}">
+                    <i class="fa fa-comments-o"></i> {% translate "Sessions" %}
+            {% endif %}
         </a><a href="{{ request.event.urls.speakers }}" class="btn btn-outline-success {% if "/speaker/" in request.path %} active{% endif %}">
             <i class="fa fa-group"></i> {% translate "Speakers" %}</a>
     </div>
@@ -20,22 +20,22 @@
                 </summary>
                 <ul class="dropdown-content dropdown-content-sw">
                     {% for exporter in exporters %}{% if exporter.public %}
-                    <li><a class="dropdown-item" href="{{ exporter.urls.base }}">
-                        {% if exporter.icon|slice:":3" == "fa-" %}
-                            <span class="fa {{ exporter.icon }} export-icon"></span>
-                        {% else %}
-                            <span class="export-icon">{{ exporter.icon }}</span>
-                        {% endif %}
-                        {{ exporter.verbose_name }}
-                        {% if exporter.show_qrcode %}
-                            <span class="export-qrcode">
-                              <div class="btn btn-default btn-sm">
-                                  <i class="fa fa-qrcode"></i>
-                              </div>
-                              <div class="export-qrcode-image btn btn-default">{{ exporter.get_qrcode }}</div>
-                            </span>
-                        {% endif %}
-                    </a></li>
+                        <li><a class="dropdown-item" href="{{ exporter.urls.base }}">
+                            {% if exporter.icon|slice:":3" == "fa-" %}
+                                <span class="fa {{ exporter.icon }} export-icon"></span>
+                            {% else %}
+                                <span class="export-icon">{{ exporter.icon }}</span>
+                            {% endif %}
+                            {{ exporter.verbose_name }}
+                            {% if exporter.show_qrcode %}
+                                <span class="export-qrcode">
+                                    <div class="btn btn-default btn-sm">
+                                        <i class="fa fa-qrcode"></i>
+                                    </div>
+                                    <div class="export-qrcode-image btn btn-default">{{ exporter.get_qrcode }}</div>
+                                </span>
+                            {% endif %}
+                        </a></li>
                     {% endif %}{% endfor %}
                 </ul>
             </details>

@@ -4,7 +4,7 @@
 <div class="pretalx-session">
     <div class="pretalx-session-time-box avatar">
         {% if add_links %}
-        <a href="{{ speaker.urls.public }}">
+            <a href="{{ speaker.urls.public }}">
         {% endif %}
         <div class="avatar-wrapper">
             {% if speaker.user.avatar_url %}
@@ -38,9 +38,9 @@
                 {% for talk in sessions %}
                     <li>
                         {% if add_links %}
-                        <a href="{{ talk.urls.public }}">{{ talk.title }}</a>
+                            <a href="{{ talk.urls.public }}">{{ talk.title }}</a>
                         {% else %}
-                        {{ talk.title }}
+                            {{ talk.title }}
                         {% endif %}
                     </li>
                 {% endfor %}

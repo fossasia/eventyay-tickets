@@ -3,8 +3,8 @@
 {% load rules %}
 
 {% block title %}
-{% has_perm 'orga.view_speakers' request.user request.event as can_view_speakers %}
-{% if can_view_speakers %}{{ submission.title }}{% else %}{{ submission.anonymised.title|default:submission.title }}{% endif %} :: {{ submission.event.name }}
+    {% has_perm 'orga.view_speakers' request.user request.event as can_view_speakers %}
+    {% if can_view_speakers %}{{ submission.title }}{% else %}{{ submission.anonymised.title|default:submission.title }}{% endif %} :: {{ submission.event.name }}
 {% endblock %}
 
 {% block alternate_link %}
@@ -12,79 +12,79 @@
 {% endblock %}
 
 {% block content %}
-{% if submission %}
-{% has_perm 'submission.edit_submission' request.user submission as can_edit_submission %}
-{% has_perm 'orga.view_reviews' request.user request.event as can_view_reviews %}
-{% has_perm 'orga.view_speakers' request.user request.event as can_view_speakers %}
-    <h2>
-        <span>
-            {{ quotation_open }}{% if can_view_speakers %}{{ submission.title }}{% else %}{{ submission.anonymised.title|default:submission.title }}{% endif %}{{ quotation_close }}
-            {% if submission.speakers.exists and can_view_speakers %}
-                by {{ submission.display_speaker_names }}
+    {% if submission %}
+        {% has_perm 'submission.edit_submission' request.user submission as can_edit_submission %}
+        {% has_perm 'orga.view_reviews' request.user request.event as can_view_reviews %}
+        {% has_perm 'orga.view_speakers' request.user request.event as can_view_speakers %}
+        <h2>
+            <span>
+                {{ quotation_open }}{% if can_view_speakers %}{{ submission.title }}{% else %}{{ submission.anonymised.title|default:submission.title }}{% endif %}{{ quotation_close }}
+                {% if submission.speakers.exists and can_view_speakers %}
+                    by {{ submission.display_speaker_names }}
+                {% endif %}
+                {% include "orga/submission/state_dropdown.html" with submission=submission %}
+            </span>
+        </h2>
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a
+                    class="nav-link {% if "submissions.content" in url_name %}active{% endif %}"
+                    href="{{ submission.orga_urls.base }}"
+                >
+                    {% translate "Content" %}
+                </a>
+            </li>
+            {% if can_view_speakers %}
+                <li class="nav-item">
+                    <a
+                        class="nav-link {% if "submissions.speakers" in url_name %}active{% endif %}"
+                        href="{{ submission.orga_urls.speakers }}"
+                    >
+                        {% translate "Speakers" %}
+                    </a>
+                </li>
             {% endif %}
-            {% include "orga/submission/state_dropdown.html" with submission=submission %}
-        </span>
-    </h2>
-    <ul class="nav nav-tabs">
-      <li class="nav-item">
-        <a
-          class="nav-link {% if "submissions.content" in url_name %}active{% endif %}"
-          href="{{ submission.orga_urls.base }}"
-        >
-            {% translate "Content" %}
-        </a>
-      </li>
-      {% if can_view_speakers %}
-      <li class="nav-item">
-          <a
-            class="nav-link {% if "submissions.speakers" in url_name %}active{% endif %}"
-            href="{{ submission.orga_urls.speakers }}"
-          >
-            {% translate "Speakers" %}
-          </a>
-      </li>
-      {% endif %}
-      {% if can_edit_submission and has_anonymised_review %}
-      <li class="nav-item">
-          <a
-            class="nav-link {% if "submissions.anonymise" in url_name %}active{% endif %}"
-            href="{{ submission.orga_urls.anonymise }}"
-          >
-            {% translate "Anonymisation" %}
-          </a>
-      </li>
-      {% endif %}
-      {% if submission.feedback.count %}
-          <li class="nav-item">
-              <a
-                class="nav-link {% if "submissions.feedback" in url_name %}active{% endif %}"
-                href="{{ submission.orga_urls.feedback }}"
-              >
-                {% translate "Feedback" %}
-              </a>
-          </li>
-      {% endif %}
-      {% if can_view_reviews %}
-      <li class="nav-item">
-          <a
-            class="nav-link {% if "reviews" in url_name %}active{% endif %}"
-            href="{{ submission.orga_urls.reviews }}"
-          >
-            {% translate "Reviews" %}
-          </a>
-      </li>
+            {% if can_edit_submission and has_anonymised_review %}
+                <li class="nav-item">
+                    <a
+                        class="nav-link {% if "submissions.anonymise" in url_name %}active{% endif %}"
+                        href="{{ submission.orga_urls.anonymise }}"
+                    >
+                        {% translate "Anonymisation" %}
+                    </a>
+                </li>
+            {% endif %}
+            {% if submission.feedback.count %}
+                <li class="nav-item">
+                    <a
+                        class="nav-link {% if "submissions.feedback" in url_name %}active{% endif %}"
+                        href="{{ submission.orga_urls.feedback }}"
+                    >
+                        {% translate "Feedback" %}
+                    </a>
+                </li>
+            {% endif %}
+            {% if can_view_reviews %}
+                <li class="nav-item">
+                    <a
+                        class="nav-link {% if "reviews" in url_name %}active{% endif %}"
+                        href="{{ submission.orga_urls.reviews }}"
+                    >
+                        {% translate "Reviews" %}
+                    </a>
+                </li>
+            {% endif %}
+            {% if submission.state == "confirmed" or can_view_speakers %}
+                <details class="dropdown ml-auto">
+                    <summary class="btn btn-primary">{% translate "Links" %} <i class="fa fa-caret-down"></i></summary>
+                    <ul class="dropdown-content dropdown-content-sw">
+                        {% if submission.state == "confirmed" %}<li><a href="{{ submission.urls.public.full }}" class="dropdown-item" target=_blank>{% translate "Public link" %}</a></li>{% endif %}
+                        {% if can_view_speakers %}<li><a href="{{ submission.urls.review.full }}" class="dropdown-item" target=_blank>{% translate "Secret public link" %}</a></li>{% endif %}
+                    </ul>
+                </details>
+            {% endif %}
+        </ul>
     {% endif %}
-    {% if submission.state == "confirmed" or can_view_speakers %}
-        <details class="dropdown ml-auto">
-            <summary class="btn btn-primary">{% translate "Links" %} <i class="fa fa-caret-down"></i></summary>
-            <ul class="dropdown-content dropdown-content-sw">
-                {% if submission.state == "confirmed" %}<li><a href="{{ submission.urls.public.full }}" class="dropdown-item" target=_blank>{% translate "Public link" %}</a></li>{% endif %}
-                {% if can_view_speakers %}<li><a href="{{ submission.urls.review.full }}" class="dropdown-item" target=_blank>{% translate "Secret public link" %}</a></li>{% endif %}
-            </ul>
-        </details>
-    {% endif %}
-    </ul>
-{% endif %}
-{% block submission_content %}
-{% endblock %}
+    {% block submission_content %}
+    {% endblock %}
 {% endblock %}

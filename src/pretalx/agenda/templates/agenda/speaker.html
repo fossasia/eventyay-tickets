@@ -28,14 +28,14 @@
                 </div>
                 <div class="speaker-avatar">
                     {% if profile.user.get_gravatar or profile.user.avatar %}
-                    <img width="100%"
-                         {% if profile.user.get_gravatar %}
-                         src="https://www.gravatar.com/avatar/{{ profile.user.gravatar_parameter }}?s=200"
-                         {% elif profile.user.avatar %}
-                         src="{{ profile.user.avatar.url }}"
-                         {% endif %}
-                         alt="{% translate "The speaker's profile picture" %}"
-                    >
+                        <img width="100%"
+                            {% if profile.user.get_gravatar %}
+                                src="https://www.gravatar.com/avatar/{{ profile.user.gravatar_parameter }}?s=200"
+                            {% elif profile.user.avatar %}
+                                src="{{ profile.user.avatar.url }}"
+                            {% endif %}
+                            alt="{% translate "The speaker's profile picture" %}"
+                        >
                     {% endif %}
                 </div>
             </section>
@@ -52,9 +52,9 @@
             <section class="speaker-talks">
                 <h4>{% translate "Sessions" %}</h4>
                 {% for session in talks %}
-                <a href="{{ session.submission.urls.public }}">
-                    {% include "agenda/session_block.html" with show_date=True %}
-                </a>
+                    <a href="{{ session.submission.urls.public }}">
+                        {% include "agenda/session_block.html" with show_date=True %}
+                    </a>
                 {% endfor %}
             </section>
         </div>

@@ -3,84 +3,84 @@
 {% load rules %}
 
 {% block content %}
-{% has_perm 'orga.view_speakers' request.user request.event as can_view_speakers %}
-{% has_perm 'orga.change_settings' request.user request.event as can_change_settings %}
-{% if "congratulations" in request.GET %}
-<div class="alert alert-success congratulations">
-    {% blocktranslate trimmed %}
-    Your event has been created and you're ready to go! Check out the
-    event settings, set up your Call for Papers with session types and questions,
-    and you're ready to go!
-    {% endblocktranslate %}
-    </span>
-</div>
-{% endif %}
-<h2 id="main-title">
-    <span>
-        {{ request.event.name }}
-        <small class="text-muted small">{{ request.event.get_date_range_display }}</small>
-    </span>
-</h2>
-<div id="timeline-steps" class="stages">
-    {% for stp in timeline %}
-    <div {% if stp.phase == 'done' and stp.url %}href="{{ stp.url }}"{% endif %} class="step step-{{ stp.phase }}">
-        <div class="step-icon">
-            <span class="fa {% if stp.icon %}fa-{{ stp.icon }}{% else %}fa-check{% endif %}"></span>
+    {% has_perm 'orga.view_speakers' request.user request.event as can_view_speakers %}
+    {% has_perm 'orga.change_settings' request.user request.event as can_change_settings %}
+    {% if "congratulations" in request.GET %}
+        <div class="alert alert-success congratulations">
+            {% blocktranslate trimmed %}
+                Your event has been created and you're ready to go! Check out the
+                event settings, set up your Call for Papers with session types and questions,
+                and you're ready to go!
+            {% endblocktranslate %}
+        </span>
         </div>
-        <div class="step-label">
-            {{ stp.label }}
-        </div>
-        {% if stp.links and can_change_settings %}
-        <div class="step-links">
-            <ul>
-            {% for link in stp.links %}
-            <li>
-                <a {% if link.url %}href="{{ link.url }}"{% endif %}>
-                    {{ link.title }}
-                </a>
-            </li>
-            {% endfor %}
-            </ul>
-        </div>
-        {% endif %}
+    {% endif %}
+    <h2 id="main-title">
+        <span>
+            {{ request.event.name }}
+            <small class="text-muted small">{{ request.event.get_date_range_display }}</small>
+        </span>
+    </h2>
+    <div id="timeline-steps" class="stages">
+        {% for stp in timeline %}
+            <div {% if stp.phase == 'done' and stp.url %}href="{{ stp.url }}"{% endif %} class="step step-{{ stp.phase }}">
+                <div class="step-icon">
+                    <span class="fa {% if stp.icon %}fa-{{ stp.icon }}{% else %}fa-check{% endif %}"></span>
+                </div>
+                <div class="step-label">
+                    {{ stp.label }}
+                </div>
+                {% if stp.links and can_change_settings %}
+                    <div class="step-links">
+                        <ul>
+                            {% for link in stp.links %}
+                                <li>
+                                    <a {% if link.url %}href="{{ link.url }}"{% endif %}>
+                                        {{ link.title }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
     </div>
-    {% endfor %}
-</div>
 
-<div class="dashboard-list">
-    <a href="{{ request.event.orga_urls.live }}" class="dashboard-block">
-        <div class="dashboard-live-text">
-            {% translate "Your event is currently" %}
-        </div>
-        {% if request.event.is_public %}
-        <div class="dashboard-live text-success">
-            <i class="fa fa-check-circle"></i>
-            {% translate "live" %}
-        </div>
-        {% else %}
-        <div class="dashboard-live text-danger">
-            <i class="fa fa-times-circle"></i>
-            {% translate "not live" %}
-        </div>
-        {% endif %}
-        <div class="dashboard-live-text">
-            {% translate "Click here to change" %}
-        </div>
-    </a>
-    {% for tile in tiles %}
-    <{% if tile.url %}a href="{{ tile.url }}"{% else %}div{% endif %} class="dashboard-block">
+    <div class="dashboard-list">
+        <a href="{{ request.event.orga_urls.live }}" class="dashboard-block">
+            <div class="dashboard-live-text">
+                {% translate "Your event is currently" %}
+            </div>
+            {% if request.event.is_public %}
+                <div class="dashboard-live text-success">
+                    <i class="fa fa-check-circle"></i>
+                    {% translate "live" %}
+                </div>
+            {% else %}
+                <div class="dashboard-live text-danger">
+                    <i class="fa fa-times-circle"></i>
+                    {% translate "not live" %}
+                </div>
+            {% endif %}
+            <div class="dashboard-live-text">
+                {% translate "Click here to change" %}
+            </div>
+        </a>
+        {% for tile in tiles %}
+            <{% if tile.url %}a href="{{ tile.url }}"{% else %}div{% endif %} class="dashboard-block">
             <h1>{{ tile.large }}</h1>
             <div class="dashboard-description">
                 {{ tile.small }}
             </div>
             </{% if tile.url %}a{% else %}div{% endif %}>
-    {% endfor %}
-</div>
+        {% endfor %}
+    </div>
 
-{% if history and can_view_speakers %}
-<div class="dashboard-history">
-    <div class="d-flex"><h2>{% translate "History" %}<h2> {% if can_change_settings %}<small><a href="{{ request.event.orga_urls.history }}" class="text-muted ml-2">({% translate "Full history" %})</a></small>{% endif %}</div>
-    {% include "common/logs.html" with entries=history hide_title=True %}
-</div>
-{% endif %}
+    {% if history and can_view_speakers %}
+        <div class="dashboard-history">
+            <div class="d-flex"><h2>{% translate "History" %}<h2> {% if can_change_settings %}<small><a href="{{ request.event.orga_urls.history }}" class="text-muted ml-2">({% translate "Full history" %})</a></small>{% endif %}</div>
+                {% include "common/logs.html" with entries=history hide_title=True %}
+            </div>
+    {% endif %}
 {% endblock %}

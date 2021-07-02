@@ -12,16 +12,16 @@
     {% endblocktranslate %}</p>
 
     {% if submission.abstract %}
-    <div class="card submission-abstract">
-        <div class="card-header">
-            {% translate "Abstract:" %} {{ submission.title }}
+        <div class="card submission-abstract">
+            <div class="card-header">
+                {% translate "Abstract:" %} {{ submission.title }}
+            </div>
+            <div class="card-body">
+                <p class="card-text">
+                    {{ submission.abstract|rich_text }}
+                </p>
+            </div>
         </div>
-        <div class="card-body">
-            <p class="card-text">
-                {{ submission.abstract|rich_text }}
-            </p>
-        </div>
-    </div>
     {% endif %}
     <form method="post" class="form">
         {% csrf_token %}

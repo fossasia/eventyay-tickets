@@ -6,17 +6,17 @@
     </h2>
     <strong>
         {{ quotation_open }}{{ request.organiser.name }}{{ quotation_close }}</strong>
-        – {% translate "ALL related data for ALL events, such as proposals, and speaker profiles, and uploads, will also be deleted and cannot be restored." %}<p>
-    <form method="post">
-        {% csrf_token %}
-        <div class="submit-group">
-            <a href="{{ request.organiser.orga_urls.base }}" class="btn btn-lg btn-outline-info">
-                {% translate "Back" %}
-            </a>
-            <button type="submit" class="btn btn-lg btn-danger">
-                <i class="fa fa-trash"></i>
-                {% translate "Yes" %}
-            </button>
-        </div>
-    </form>
+    – {% translate "ALL related data for ALL events, such as proposals, and speaker profiles, and uploads, will also be deleted and cannot be restored." %}<p>
+        <form method="post">
+            {% csrf_token %}
+            <div class="submit-group">
+                <a href="{{ request.organiser.orga_urls.base }}" class="btn btn-lg btn-outline-info">
+                    {% translate "Back" %}
+                </a>
+                <button type="submit" class="btn btn-lg btn-danger">
+                    <i class="fa fa-trash"></i>
+                    {% translate "Yes" %}
+                </button>
+            </div>
+        </form>
 {% endblock %}

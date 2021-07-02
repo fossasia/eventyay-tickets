@@ -5,15 +5,15 @@
         {% translate "Do you really want to delete this information?" %}
     </h2>
     <strong>{{ quotation_close }}{{ object.title }}{{ quotation_open }}</strong> – {{ object.text }}<p>
-    <form method="post">
-        {% csrf_token %}
-        <div class="submit-group">
-            <a href="{{ request.event.orga_urls.information }}" class="btn btn-lg btn-danger">
-                {% translate "Back" %}
-            </a>
-            <button type="submit" class="btn btn-lg btn-success">
-                {% translate "Yes" %}
-            </button>
-        </div>
-    </form>
+        <form method="post">
+            {% csrf_token %}
+            <div class="submit-group">
+                <a href="{{ request.event.orga_urls.information }}" class="btn btn-lg btn-danger">
+                    {% translate "Back" %}
+                </a>
+                <button type="submit" class="btn btn-lg btn-success">
+                    {% translate "Yes" %}
+                </button>
+            </div>
+        </form>
 {% endblock %}

@@ -5,21 +5,21 @@
 {% load static %}
 
 {% block scripts %}
-{% compress js %}<script src="{% static 'orga/js/event_wizard.js' %}" defer></script>{% endcompress %}
+    {% compress js %}<script src="{% static 'orga/js/event_wizard.js' %}" defer></script>{% endcompress %}
 {% endblock %}
 
 {% block content %}
-<form method="post"><fieldset>
-    <legend>
-        <span>
-            {% translate "New event" %}
-            <span class="text-muted small">{% blocktranslate with total=wizard.steps.count current=wizard.steps.step1 trimmed %}
-                Step {{current}} of {{ total }}
-            {% endblocktranslate %}</span>
-        </span>
-    </legend>
-    {{ wizard.form.media }}
-    {% block wizard_content %}{% endblock %}
+    <form method="post"><fieldset>
+        <legend>
+            <span>
+                {% translate "New event" %}
+                <span class="text-muted small">{% blocktranslate with total=wizard.steps.count current=wizard.steps.step1 trimmed %}
+                    Step {{current}} of {{ total }}
+                {% endblocktranslate %}</span>
+            </span>
+        </legend>
+        {{ wizard.form.media }}
+        {% block wizard_content %}{% endblock %}
         {% csrf_token %}
         {{ wizard.management_form }}
         {% bootstrap_form_errors wizard.form %}
@@ -28,13 +28,13 @@
         {% bootstrap_field wizard.form.timezone layout='event' %}
         {% bootstrap_field wizard.form.email layout='event' %}
         {% bootstrap_field wizard.form.locale layout='event' %}
-    <div class="submit-group wizard-row">
-        <button type="submit" class="btn btn-success btn-lg float-right ml-auto">{% translate "Next step" %}</button>
-        {% if wizard.steps.prev %}
-        <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}" class="btn btn-lg btn-info">{% translate "Previous step" %}</button>
-        {% else %}
-        <span></span>
-        {% endif %}
-    </div>
-</fieldset></form>
+        <div class="submit-group wizard-row">
+            <button type="submit" class="btn btn-success btn-lg float-right ml-auto">{% translate "Next step" %}</button>
+            {% if wizard.steps.prev %}
+                <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}" class="btn btn-lg btn-info">{% translate "Previous step" %}</button>
+            {% else %}
+                <span></span>
+            {% endif %}
+        </div>
+    </fieldset></form>
 {% endblock %}

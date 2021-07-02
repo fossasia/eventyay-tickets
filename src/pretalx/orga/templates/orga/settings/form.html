@@ -11,107 +11,107 @@
 
 {% block scripts %}
     {% compress js %}
-    <script defer src="{% static "vendored/moment-with-locales.js" %}"></script>
-    <script defer src="{% static "vendored/moment-timezone-with-data-2012-2022.js" %}"></script>
-    <script defer src="{% static "vendored/datetimepicker/bootstrap-datetimepicker.js" %}"></script>
-    <script defer src="{% static "orga/js/datetimepicker.js" %}"></script>
-    <script defer src="{% static "vendored/colorpicker/js/bootstrap-colorpicker.min.js" %}"></script>
-    <script defer src="{% static "orga/js/colorpicker.js" %}"></script>
+        <script defer src="{% static "vendored/moment-with-locales.js" %}"></script>
+        <script defer src="{% static "vendored/moment-timezone-with-data-2012-2022.js" %}"></script>
+        <script defer src="{% static "vendored/datetimepicker/bootstrap-datetimepicker.js" %}"></script>
+        <script defer src="{% static "orga/js/datetimepicker.js" %}"></script>
+        <script defer src="{% static "vendored/colorpicker/js/bootstrap-colorpicker.min.js" %}"></script>
+        <script defer src="{% static "orga/js/colorpicker.js" %}"></script>
     {% endcompress %}
 {% endblock %}
 
 {% block settings_content %}
-<h2>{% translate "Settings" %}</h2>
-<div class="flex-container"><div class="flex-content">
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <fieldset>
-        <legend id="general">
-            {% translate "General information" %}
-        </legend>
-        {% bootstrap_form_errors form %}
-        {% bootstrap_form_errors sform %}
+    <h2>{% translate "Settings" %}</h2>
+    <div class="flex-container"><div class="flex-content">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <fieldset>
+                <legend id="general">
+                    {% translate "General information" %}
+                </legend>
+                {% bootstrap_form_errors form %}
+                {% bootstrap_form_errors sform %}
 
-        {% bootstrap_field form.name layout='event' %}
-        {% bootstrap_field form.slug layout='event' addon_before=url_placeholder addon_before_class="input-group-prepend input-group-text" %}
-        {% bootstrap_field form.date_from layout='event' %}
-        {% bootstrap_field form.date_to layout='event' %}
-        {% bootstrap_field form.email layout='event' %}
-        {% bootstrap_field sform.custom_domain layout='event' %}
-        {% bootstrap_field form.timezone layout='event' %}
-        {% bootstrap_field form.locale layout='event' %}
-        {% bootstrap_field form.locales layout='event' %}
-        {% bootstrap_field sform.show_schedule layout='event' %}
-        {% bootstrap_field sform.show_featured layout='event' %}
-        {% bootstrap_field form.featured_sessions_text layout='event' %}
-        {% bootstrap_field sform.schedule_display layout='event' %}
-        {% bootstrap_field sform.export_html_on_schedule_release layout='event' %}
-        {% bootstrap_field sform.html_export_url layout='event' %}
-        {% bootstrap_field sform.meta_noindex layout='event' %}
+                {% bootstrap_field form.name layout='event' %}
+                {% bootstrap_field form.slug layout='event' addon_before=url_placeholder addon_before_class="input-group-prepend input-group-text" %}
+                {% bootstrap_field form.date_from layout='event' %}
+                {% bootstrap_field form.date_to layout='event' %}
+                {% bootstrap_field form.email layout='event' %}
+                {% bootstrap_field sform.custom_domain layout='event' %}
+                {% bootstrap_field form.timezone layout='event' %}
+                {% bootstrap_field form.locale layout='event' %}
+                {% bootstrap_field form.locales layout='event' %}
+                {% bootstrap_field sform.show_schedule layout='event' %}
+                {% bootstrap_field sform.show_featured layout='event' %}
+                {% bootstrap_field form.featured_sessions_text layout='event' %}
+                {% bootstrap_field sform.schedule_display layout='event' %}
+                {% bootstrap_field sform.export_html_on_schedule_release layout='event' %}
+                {% bootstrap_field sform.html_export_url layout='event' %}
+                {% bootstrap_field sform.meta_noindex layout='event' %}
 
-        </fieldset>
-        <fieldset>
-        <legend id="display">
-            {% translate "Display settings" %}
-        </legend>
-        {% bootstrap_field form.landing_page_text layout='event' %}
-        {% bootstrap_field sform.imprint_url layout='event' %}
-        {% bootstrap_field form.primary_color layout='event' addon_before="<i></i>" addon_before_class="colorpicker-input-addon color-readable" %}
-        <div id="csswrap">
-        {% bootstrap_field form.custom_css layout='event' %}
-        <button class="btn btn-outline-info" type="button" data-toggle="collapse" data-target="#collapseCSSBox" aria-expanded="false" aria-controls="collapseCSSBox">
-          <i class="fa fa-code"></i>
-        </button>
-        </div>
-        <div class="collapse" id="collapseCSSBox">
-          {% bootstrap_field form.custom_css_text layout='event' %}
-        </div>
-        <div class="event-logo-field form-group row">
-            <label class="col-md-3 col-form-label" for="id_logo">{% translate "Event logo" %}<br><span class="optional">Optional</span></label>
-            <div class="event-logo-form-fields col-md-9">
-                {% if request.event.logo %}
-                <img class="event-logo-display"
-                  src="{{ request.event.logo.url }}"
-                  alt="{% translate "The event's logo" %}"
-                />
-                {% endif %}
-                <br>
-                {% bootstrap_field form.logo layout="inline" %}
-            </div>
-        </div>
-        <div class="event-logo-field form-group row">
-            <label class="col-md-3 col-form-label" for="id_custom_css">{% translate "Event header image" %}<br><span class="optional">Optional</span></label>
-            <div class="event-logo-form-fields col-md-9">
-                {% if request.event.header_image %}
-                <img class="event-logo-display"
-                  src="{{ request.event.header_image.url }}"
-                  alt="{% translate "The event's header_image" %}"
-                />
-                {% endif %}
-                <br>
-                {% bootstrap_field form.header_image layout="inline" %}
-            </div>
-        </div>
-        <div {% if request.event.primary_color %}style="--color: {{ request.event.primary_color }}"{% endif %} class="colorpicker-update">
-        {% bootstrap_field sform.display_header_pattern layout='event' %}
-        </div>
-        <fieldset>
-        <div class="submit-group panel">
-            <span>
-                {% has_perm "person.is_administrator" request.user request.event as can_delete_event %}
-                {% if can_delete_event %}
-                <a class="btn btn-outline-danger btn-lg" href="{{ request.event.orga_urls.delete }}">
-                    {% translate "Delete event" %}
-                </a>
-                {% endif %}
-            </span>
-            <span>
-                <button type="submit" class="btn btn-success btn-lg">
-                    <i class="fa fa-check"></i>
-                    {% translate "Save" %}
-                </button>
-            </span>
-        </div>
-    </form>
-</div></div>
+            </fieldset>
+            <fieldset>
+                <legend id="display">
+                    {% translate "Display settings" %}
+                </legend>
+                {% bootstrap_field form.landing_page_text layout='event' %}
+                {% bootstrap_field sform.imprint_url layout='event' %}
+                {% bootstrap_field form.primary_color layout='event' addon_before="<i></i>" addon_before_class="colorpicker-input-addon color-readable" %}
+                <div id="csswrap">
+                    {% bootstrap_field form.custom_css layout='event' %}
+                    <button class="btn btn-outline-info" type="button" data-toggle="collapse" data-target="#collapseCSSBox" aria-expanded="false" aria-controls="collapseCSSBox">
+                        <i class="fa fa-code"></i>
+                    </button>
+                </div>
+                <div class="collapse" id="collapseCSSBox">
+                    {% bootstrap_field form.custom_css_text layout='event' %}
+                </div>
+                <div class="event-logo-field form-group row">
+                    <label class="col-md-3 col-form-label" for="id_logo">{% translate "Event logo" %}<br><span class="optional">Optional</span></label>
+                    <div class="event-logo-form-fields col-md-9">
+                        {% if request.event.logo %}
+                            <img class="event-logo-display"
+                                src="{{ request.event.logo.url }}"
+                                alt="{% translate "The event's logo" %}"
+                            />
+                        {% endif %}
+                        <br>
+                        {% bootstrap_field form.logo layout="inline" %}
+                    </div>
+                </div>
+                <div class="event-logo-field form-group row">
+                    <label class="col-md-3 col-form-label" for="id_custom_css">{% translate "Event header image" %}<br><span class="optional">Optional</span></label>
+                    <div class="event-logo-form-fields col-md-9">
+                        {% if request.event.header_image %}
+                            <img class="event-logo-display"
+                                src="{{ request.event.header_image.url }}"
+                                alt="{% translate "The event's header_image" %}"
+                            />
+                        {% endif %}
+                        <br>
+                        {% bootstrap_field form.header_image layout="inline" %}
+                    </div>
+                </div>
+                <div {% if request.event.primary_color %}style="--color: {{ request.event.primary_color }}"{% endif %} class="colorpicker-update">
+                    {% bootstrap_field sform.display_header_pattern layout='event' %}
+                </div>
+                <fieldset>
+                    <div class="submit-group panel">
+                        <span>
+                            {% has_perm "person.is_administrator" request.user request.event as can_delete_event %}
+                            {% if can_delete_event %}
+                                <a class="btn btn-outline-danger btn-lg" href="{{ request.event.orga_urls.delete }}">
+                                    {% translate "Delete event" %}
+                                </a>
+                            {% endif %}
+                        </span>
+                        <span>
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fa fa-check"></i>
+                                {% translate "Save" %}
+                            </button>
+                        </span>
+                    </div>
+                </form>
+            </div></div>
 {% endblock %}

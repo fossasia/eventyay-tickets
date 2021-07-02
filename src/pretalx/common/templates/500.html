@@ -4,12 +4,12 @@
 {% block error_image %}<img src="{% static "common/img/error_5xx.svg" %}" class="img" alt="{% translate "Internal server error." %}">{% endblock %}
 {% block error_message %}
     <p>{% translate "We have encountered an error." %}<br></p></h2>
-<h2><p>
-    {% if development_warning %}
-        {% blocktranslate with link='https://github.com/pretalx/pretalx/issues/new?template=bug_report.md&title=Error+on+'|add:request_path trimmed %}
-        Please help us to fix this by submitting <a href="{{ link }}" rel=noopener>a bug report</a>!
-        {% endblocktranslate %}
-    {% endif %}
+    <h2><p>
+        {% if development_warning %}
+            {% blocktranslate with link='https://github.com/pretalx/pretalx/issues/new?template=bug_report.md&title=Error+on+'|add:request_path trimmed %}
+                Please help us to fix this by submitting <a href="{{ link }}" rel=noopener>a bug report</a>!
+            {% endblocktranslate %}
+        {% endif %}
     </p>
 {% endblock %}
 {% block error_code %}500{% endblock %}

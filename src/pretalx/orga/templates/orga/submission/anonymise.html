@@ -7,56 +7,56 @@
 {% load static %}
 
 {% block submission_content %}
-<div class="alert alert-info">
-{% blocktranslate trimmed %}
-    If a review phase with anonymisation is currently active, all reviewers
-    who have no permissions to change this proposal will be shown the anonymised
-    proposal content.
-{% endblocktranslate %}
-</div>
-<form method="post" enctype="multipart/form-data"><fieldset>
-    {% bootstrap_form_errors form %}
-    {% csrf_token %}
-
-    <div id="anonymise">
-        <div>
-            <div class="plaintext">
-                <h2>{% translate "Original" %}</h2>
-            </div>
-            <div class="anonymised">
-                <h2>{% translate "Anonymised" %}</h2>
-            </div>
-        </div>
-        {% for field in form %}
-        <h4>{{ field.label }}</h4>
-        <div>
-            <div class="plaintext"><p>{{ field.field.plaintext|rich_text }}</p></div>
-            <div class="anonymised">{% bootstrap_field field layout="inline" %}</div>
-        </div>
-        {% endfor %}
+    <div class="alert alert-info">
+        {% blocktranslate trimmed %}
+            If a review phase with anonymisation is currently active, all reviewers
+            who have no permissions to change this proposal will be shown the anonymised
+            proposal content.
+        {% endblocktranslate %}
     </div>
-    <div class="submit-group panel">
-        <span></span>
-        <span>
-            <button type="submit" class="btn btn-success btn-lg" name="action" value="save">
-                <i class="fa fa-check"></i>
-                {% translate "Save" %}
-            </button>
-            {% if next_unanonymised %}
-            <button type="submit" class="btn btn-info btn-lg" name="action" value="next">
-                <i class="fa fa-arrow-right"></i>
-                {% translate "Save and go to next unanonymised" %}
-            </button>
-            {% endif %}
-        </span>
+    <form method="post" enctype="multipart/form-data"><fieldset>
+        {% bootstrap_form_errors form %}
+        {% csrf_token %}
+
+        <div id="anonymise">
+            <div>
+                <div class="plaintext">
+                    <h2>{% translate "Original" %}</h2>
+                </div>
+                <div class="anonymised">
+                    <h2>{% translate "Anonymised" %}</h2>
+                </div>
+            </div>
+            {% for field in form %}
+                <h4>{{ field.label }}</h4>
+                <div>
+                    <div class="plaintext"><p>{{ field.field.plaintext|rich_text }}</p></div>
+                    <div class="anonymised">{% bootstrap_field field layout="inline" %}</div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="submit-group panel">
+            <span></span>
+            <span>
+                <button type="submit" class="btn btn-success btn-lg" name="action" value="save">
+                    <i class="fa fa-check"></i>
+                    {% translate "Save" %}
+                </button>
+                {% if next_unanonymised %}
+                    <button type="submit" class="btn btn-info btn-lg" name="action" value="next">
+                        <i class="fa fa-arrow-right"></i>
+                        {% translate "Save and go to next unanonymised" %}
+                    </button>
+                {% endif %}
+            </span>
+        </div>
+    </fieldset></form>
+
+    <div id="anon-menu" class="d-none">
+        <button>{% translate "Replace selection with █" %}</button>
     </div>
-</fieldset></form>
 
-<div id="anon-menu" class="d-none">
-    <button>{% translate "Replace selection with █" %}</button>
-</div>
-
-{% compress js %}
-    <script defer src="{% static "orga/js/anonymise.js" %}"></script>
-{% endcompress %}
+    {% compress js %}
+        <script defer src="{% static "orga/js/anonymise.js" %}"></script>
+    {% endcompress %}
 {% endblock %}

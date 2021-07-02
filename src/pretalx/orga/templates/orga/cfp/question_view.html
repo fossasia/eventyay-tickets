@@ -4,17 +4,17 @@
 {% block cfp_content %}
     <div class="alert alert-info">
         {% blocktranslate trimmed %}
-        Questions can help you sort out additional details with speakers, such as
-        clothing sizes, special requirements such as dietary needs, or accommodation.
-        Questions can be asked either on a per-proposal level, or per speaker, as
-        you see fit.
+            Questions can help you sort out additional details with speakers, such as
+            clothing sizes, special requirements such as dietary needs, or accommodation.
+            Questions can be asked either on a per-proposal level, or per speaker, as
+            you see fit.
         {% endblocktranslate %}
     </div>
     <div class="submit-group">
         <span></span>
         <span>
             {% if questions %}
-            <a href="{{ request.event.cfp.urls.remind_questions }}" class="btn btn-info">{% translate "Send out reminders for unanswered questions" %}</a>
+                <a href="{{ request.event.cfp.urls.remind_questions }}" class="btn btn-info">{% translate "Send out reminders for unanswered questions" %}</a>
             {% endif %}
             <a href="{{request.event.cfp.urls.new_question }}" class="btn btn-success">
                 <i class="fa fa-plus"></i>
@@ -57,18 +57,18 @@
                     </td>
                     <td class="action-column">
                         {% if not forloop.last %}
-                        <a href="{{ question.urls.down }}"
-                           class="btn btn-sm btn-outline-info"
-                           title="{% translate "Move question down" %}">
-                            <i class="fa fa-arrow-down"></i>
-                        </a>
+                            <a href="{{ question.urls.down }}"
+                                class="btn btn-sm btn-outline-info"
+                                title="{% translate "Move question down" %}">
+                                <i class="fa fa-arrow-down"></i>
+                            </a>
                         {% endif %}
                         {% if not forloop.first %}
-                        <a href="{{ question.urls.up }}"
-                           class="btn btn-sm btn-outline-info"
-                           title="{% translate "Move question up" %}">
-                            <i class="fa fa-arrow-up"></i>
-                        </a>
+                            <a href="{{ question.urls.up }}"
+                                class="btn btn-sm btn-outline-info"
+                                title="{% translate "Move question up" %}">
+                                <i class="fa fa-arrow-up"></i>
+                            </a>
                         {% endif %}
                         <a href="{{ question.urls.edit }}"
                             class="btn btn-sm btn-info"

@@ -8,9 +8,9 @@
     <h2>
         {{ page_obj.paginator.count }}
         {% blocktranslate trimmed count count=page_obj.paginator.count %}
-        submitter
+            submitter
         {% plural %}
-        submitters
+            submitters
         {% endblocktranslate %}
     </h2>
 
@@ -55,22 +55,22 @@
                     {% if can_mark_speaker or can_see_speaker_status %}
                         <td class="action-column">
                             {% if can_mark_speaker %}
-                            <a class="btn btn-sm btn-{{ profile.has_arrived|yesno:'success,info' }}" href="{{ profile.orga_urls.toggle_arrived }}?from=list">
-                                {% if profile.has_arrived %}
-                                    {% translate "Mark speaker as not arrived" %}
-                                {% else %}
-                                    {% translate "Mark speaker as arrived" %}
-                                {% endif %}
-                            </a>
+                                <a class="btn btn-sm btn-{{ profile.has_arrived|yesno:'success,info' }}" href="{{ profile.orga_urls.toggle_arrived }}?from=list">
+                                    {% if profile.has_arrived %}
+                                        {% translate "Mark speaker as not arrived" %}
+                                    {% else %}
+                                        {% translate "Mark speaker as arrived" %}
+                                    {% endif %}
+                                </a>
                             {% else %}
                                 {% if profile.has_arrived %}
-                                <a><i class="fa fa-check"></i> {% translate "Arrived" %}</a>
+                                    <a><i class="fa fa-check"></i> {% translate "Arrived" %}</a>
                                 {% else %}
-                                <a><i class="fa fa-times"></i> {% translate "Not arrived" %}</a>
+                                    <a><i class="fa fa-times"></i> {% translate "Not arrived" %}</a>
                                 {% endif %}
                             {% endif %}
                         </td>
-                        {% endif %}
+                    {% endif %}
                 </tr>
             {% endfor %}
         </tbody>

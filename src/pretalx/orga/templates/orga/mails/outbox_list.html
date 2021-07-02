@@ -19,9 +19,9 @@
         </span>
         <span>
             {% if is_paginated and page_obj.paginator.num_pages > 1 %}
-            <a href="{{ request.event.orga_urls.send_outbox }}?pks={% for mail in mails %}{{ mail.pk }}{% if not forloop.last %},{% endif %}{% endfor %}">
-                <button class="btn btn-lg btn-outline-success">{% translate "Send all on this page" %}</button>
-            </a>
+                <a href="{{ request.event.orga_urls.send_outbox }}?pks={% for mail in mails %}{{ mail.pk }}{% if not forloop.last %},{% endif %}{% endfor %}">
+                    <button class="btn btn-lg btn-outline-success">{% translate "Send all on this page" %}</button>
+                </a>
             {% endif %}
             <a href="{{ request.event.orga_urls.send_outbox }}">
                 <button class="btn btn-lg btn-success">{% translate "Send all" %}</button>
@@ -49,41 +49,41 @@
         </thead>
         <tbody>
             {% for mail in mails %}
-            <tr>
-                <td>
-                    <a href="{{ mail.urls.base }}">
-                        {{ mail.subject }}
-                    </a>
-                </td>
-                <td>
-                    {% for user in mail.to_users.all %}
-                    {% if user in request.event.submitters %}
-                        <a href="{% url "orga:speakers.view" event=request.event.slug pk=user.pk %}">
-                            {{ user }}
-                        </a>{% else %}{{ user }}{% endif %}{% if not forloop.last or mail.to %}, {% endif %}
-                    {% endfor %}
-                    {% if mail.to %}
-                    {{ mail.to }}
-                    {% endif %}
-                </td>
-                <td class="action-column">
-                    <a href="{{ mail.urls.send }}"
-                        title="{% translate "send" %}"
-                        class="btn btn-sm btn-success">
-                        <i class="fa fa-mail-forward"></i>
-                    </a>
-                    <a href="{{ mail.urls.edit }}"
-                        title="{% translate "edit" %}"
-                        class="btn btn-sm btn-info">
-                        <i class="fa fa-edit"></i>
-                    </a>
-                    <a href="{{ mail.urls.delete }}"
-                        title="{% translate "delete" %}"
-                        class="btn btn-sm btn-danger">
-                        <i class="fa fa-trash"></i>
-                    </a>
-                </td>
-            </tr>
+                <tr>
+                    <td>
+                        <a href="{{ mail.urls.base }}">
+                            {{ mail.subject }}
+                        </a>
+                    </td>
+                    <td>
+                        {% for user in mail.to_users.all %}
+                            {% if user in request.event.submitters %}
+                                <a href="{% url "orga:speakers.view" event=request.event.slug pk=user.pk %}">
+                                    {{ user }}
+                                </a>{% else %}{{ user }}{% endif %}{% if not forloop.last or mail.to %}, {% endif %}
+                        {% endfor %}
+                        {% if mail.to %}
+                            {{ mail.to }}
+                        {% endif %}
+                    </td>
+                    <td class="action-column">
+                        <a href="{{ mail.urls.send }}"
+                            title="{% translate "send" %}"
+                            class="btn btn-sm btn-success">
+                            <i class="fa fa-mail-forward"></i>
+                        </a>
+                        <a href="{{ mail.urls.edit }}"
+                            title="{% translate "edit" %}"
+                            class="btn btn-sm btn-info">
+                            <i class="fa fa-edit"></i>
+                        </a>
+                        <a href="{{ mail.urls.delete }}"
+                            title="{% translate "delete" %}"
+                            class="btn btn-sm btn-danger">
+                            <i class="fa fa-trash"></i>
+                        </a>
+                    </td>
+                </tr>
             {% endfor %}
         </tbody>
     </table>

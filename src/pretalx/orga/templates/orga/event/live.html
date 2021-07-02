@@ -2,46 +2,46 @@
 {% load i18n %}
 
 {% block content %}
-<h2>{% if request.event.is_public %}{% translate "Deactivate event" %}{% else %}{% translate "Go live" %}{% endif %}</h2>
+    <h2>{% if request.event.is_public %}{% translate "Deactivate event" %}{% else %}{% translate "Go live" %}{% endif %}</h2>
 
-{% if request.event.is_public %}
-    {% blocktranslate trimmed %}
-    Your event is currently live and publicly visible.
-    If you take it down, it will only be visible to you and your team.
-    {% endblocktranslate %}
-{% else %}
-    {% blocktranslate trimmed %}
-    Your event is currently only visible to you and your team.
-    By going live, it will be publicly visible.
-    {% endblocktranslate %}
+    {% if request.event.is_public %}
+        {% blocktranslate trimmed %}
+            Your event is currently live and publicly visible.
+            If you take it down, it will only be visible to you and your team.
+        {% endblocktranslate %}
+    {% else %}
+        {% blocktranslate trimmed %}
+            Your event is currently only visible to you and your team.
+            By going live, it will be publicly visible.
+        {% endblocktranslate %}
 
-    {% if warnings %}
-    <p>
-    <h4>{% translate "Your event may not be ready for release yet!" %}</h4>
-    <ul>
-        {% for warning in warnings %}<li>{{ warning.text }} <a class="btn btn-sm btn-outline-info" href="{{ warning.url }}">{% translate "Fix me" %}</a></li>{% endfor %}
-    </ul>
-    </p>
-    {% endif %}
-    {% if suggestions %}
-    <p>
-    <h4>{% translate "There may be easy ways to improve your event before its release!" %}</h4>
-    <ul>
-    {% for suggestion in suggestions %}<li>{{ suggestion.text }} <a class="btn btn-sm btn-outline-info" href="{{ suggestion.url }}">{% translate "Fix me" %}</a></li>{% endfor %}
-    </ul>
-    </p>
-    {% endif %}
-{% endif %}
-<p>
-<div class="submit-group">
-    <span></span>
-    <form method="post">
-        {% csrf_token %}
-        {% if request.event.is_public %}
-        <button class="btn btn-lg btn-danger" type="submit" name="action" value="deactivate">{% translate "Go offline" %}</button>
-        {% else %}
-        <button class="btn btn-lg btn-success" type="submit" name="action" value="activate">{% translate "Go live" %}</button>
+        {% if warnings %}
+            <p>
+                <h4>{% translate "Your event may not be ready for release yet!" %}</h4>
+                <ul>
+                    {% for warning in warnings %}<li>{{ warning.text }} <a class="btn btn-sm btn-outline-info" href="{{ warning.url }}">{% translate "Fix me" %}</a></li>{% endfor %}
+                </ul>
+            </p>
         {% endif %}
-    </form>
-</div>
+        {% if suggestions %}
+            <p>
+                <h4>{% translate "There may be easy ways to improve your event before its release!" %}</h4>
+                <ul>
+                    {% for suggestion in suggestions %}<li>{{ suggestion.text }} <a class="btn btn-sm btn-outline-info" href="{{ suggestion.url }}">{% translate "Fix me" %}</a></li>{% endfor %}
+                </ul>
+            </p>
+        {% endif %}
+    {% endif %}
+    <p>
+        <div class="submit-group">
+            <span></span>
+            <form method="post">
+                {% csrf_token %}
+                {% if request.event.is_public %}
+                    <button class="btn btn-lg btn-danger" type="submit" name="action" value="deactivate">{% translate "Go offline" %}</button>
+                {% else %}
+                    <button class="btn btn-lg btn-success" type="submit" name="action" value="activate">{% translate "Go live" %}</button>
+                {% endif %}
+            </form>
+        </div>
 {% endblock %}

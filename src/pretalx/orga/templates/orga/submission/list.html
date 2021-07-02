@@ -7,33 +7,33 @@
 {% load url_replace %}
 
 {% block stylesheets %}
-{% if timeline_data %}
-    <link rel="alternate" hreflang="en" type="application/rss+xml" title="{% translate "Proposal feed" %}" href="{{ request.event.orga_urls.submission_feed }}">
-{% endif %}
+    {% if timeline_data %}
+        <link rel="alternate" hreflang="en" type="application/rss+xml" title="{% translate "Proposal feed" %}" href="{{ request.event.orga_urls.submission_feed }}">
+    {% endif %}
 {% endblock %}
 
 {% block content %}
-{% has_perm 'orga.create_submission' request.user request.event as can_create_submission %}
-{% has_perm 'orga.change_submission_state' request.user request.event as can_change_submission %}
-{% has_perm 'orga.view_speakers' request.user request.event as can_view_speakers %}
+    {% has_perm 'orga.create_submission' request.user request.event as can_create_submission %}
+    {% has_perm 'orga.change_submission_state' request.user request.event as can_change_submission %}
+    {% has_perm 'orga.view_speakers' request.user request.event as can_view_speakers %}
     <h2 class="d-flex align-items-center">
         <span>
             {{ page_obj.paginator.count }}
             {% blocktranslate trimmed count count=page_obj.paginator.count %}
-            proposal
+                proposal
             {% plural %}
-            proposals
+                proposals
             {% endblocktranslate %}
         </span>
         {% if can_create_submission %}
-        <p class="ml-auto">
-            <a href="{{ request.event.orga_urls.new_submission }}" class="btn btn-info mt-2">
-                <i class="fa fa-plus"></i> {% translate "Add new proposal" %}
+            <p class="ml-auto">
+                <a href="{{ request.event.orga_urls.new_submission }}" class="btn btn-info mt-2">
+                    <i class="fa fa-plus"></i> {% translate "Add new proposal" %}
+                </a>
+            </p>
+            <a href="{{ request.event.orga_urls.submission_feed }}" title="{% translate "Proposal feed" %}">
+                <i class="fa fa-feed ml-3 mb-2"></i>
             </a>
-        </p>
-        <a href="{{ request.event.orga_urls.submission_feed }}" title="{% translate "Proposal feed" %}">
-            <i class="fa fa-feed ml-3 mb-2"></i>
-        </a>
         {% endif %}
     </h2>
 
@@ -64,7 +64,7 @@
         <thead>
             <tr>
                 {% if request.event.settings.use_tracks %}
-                <th></th>
+                    <th></th>
                 {% endif %}
                 <th>
                     {% translate "Title" %}
@@ -81,12 +81,12 @@
                     <a href="?{% url_replace request 'sort' '-state' %}"><i class="fa fa-caret-up" title="{% translate "Sort by state (z-a)" %}"></i></a>
                 </th>
                 {% if can_change_submission %}
-                <th>
-                    {% translate "Featured" %} <i class="fa fa-question-circle" data-toggle="tooltip" title="{% translate "Show this session on the list of featured sessions, once it was accepted" %}"></i>
-                    <a href="?{% url_replace request 'sort' '-is_featured' %}"><i class="fa fa-caret-down" title="{% translate "Sort by featured first" %}"></i></a>
-                    <a href="?{% url_replace request 'sort' 'is_featured' %}"><i class="fa fa-caret-up" title="{% translate "Sort featured last" %}"></i></a>
-                </th>
-                <th></th>
+                    <th>
+                        {% translate "Featured" %} <i class="fa fa-question-circle" data-toggle="tooltip" title="{% translate "Show this session on the list of featured sessions, once it was accepted" %}"></i>
+                        <a href="?{% url_replace request 'sort' '-is_featured' %}"><i class="fa fa-caret-down" title="{% translate "Sort by featured first" %}"></i></a>
+                        <a href="?{% url_replace request 'sort' 'is_featured' %}"><i class="fa fa-caret-up" title="{% translate "Sort featured last" %}"></i></a>
+                    </th>
+                    <th></th>
                 {% endif %}
             </tr>
         </thead>
@@ -94,12 +94,12 @@
             {% for submission in submissions %}
                 <tr>
                     {% if request.event.settings.use_tracks %}
-                    <td>
-                        {% if submission.track %}
-                        <div class="color-square" style="background-color: {{ submission.track.color }}" title="{{ submission.track.name }}">
-                        </div>
-                        {% endif %}
-                    </td>
+                        <td>
+                            {% if submission.track %}
+                                <div class="color-square" style="background-color: {{ submission.track.color }}" title="{{ submission.track.name }}">
+                                </div>
+                            {% endif %}
+                        </td>
                     {% endif %}
                     <td>
                         <a href="{{ submission.orga_urls.base }}">
@@ -107,13 +107,13 @@
                         </a>
                     </td>
                     {% if can_view_speakers %}
-                    <td>
-                        {% for speaker in submission.speakers.all %}
-                            <a href="{% url "orga:speakers.view" event=request.event.slug pk=speaker.id %}">
-                                {{ speaker.get_display_name }}
-                            </a><br>
-                        {% endfor %}
-                    </td>
+                        <td>
+                            {% for speaker in submission.speakers.all %}
+                                <a href="{% url "orga:speakers.view" event=request.event.slug pk=speaker.id %}">
+                                    {{ speaker.get_display_name }}
+                                </a><br>
+                            {% endfor %}
+                        </td>
                     {% endif %}
                     <td>
                         {{ submission.submission_type.name }}
@@ -122,33 +122,33 @@
                         {% include "orga/submission/state_dropdown.html" with submission=submission %}
                     </td>
                     {% if can_change_submission %}
-                    <td class="submission_featured">
-                        <div class="mt-1 form-check" title="{% translate 'Show this proposal in the list of featured sessions.' %}">
-                            <input
-                                type="checkbox"
-                                id="featured_{{ submission.code }}"
-                                data-id="{{ submission.code }}"
-                                class="submission_featured"
-                                {% if submission.is_featured %}checked{% endif %}
-                            >
-                            <label for="featured_{{ submission.code }}"></label>
-                        </div>
-                        <i class="working fa fa-spinner fa-spin d-none"></i>
-                        <i class="done fa fa-check d-none"></i>
-                        <i class="fail fa fa-times d-none"></i>
-                    </td>
-                    <td class="action-column">
-                        <a href="{{ submission.orga_urls.edit }}"
-                            title="{% translate "edit" %}"
-                            class="btn btn-sm btn-info">
-                            <i class="fa fa-edit"></i>
-                        </a>
-                        <a href="{{ submission.orga_urls.delete }}?from=list"
-                            title="{% translate "delete" %}"
-                            class="btn btn-sm btn-danger">
-                            <i class="fa fa-trash"></i>
-                        </a>
-                    </td>
+                        <td class="submission_featured">
+                            <div class="mt-1 form-check" title="{% translate 'Show this proposal in the list of featured sessions.' %}">
+                                <input
+                                    type="checkbox"
+                                    id="featured_{{ submission.code }}"
+                                    data-id="{{ submission.code }}"
+                                    class="submission_featured"
+                                    {% if submission.is_featured %}checked{% endif %}
+                                >
+                                <label for="featured_{{ submission.code }}"></label>
+                            </div>
+                            <i class="working fa fa-spinner fa-spin d-none"></i>
+                            <i class="done fa fa-check d-none"></i>
+                            <i class="fail fa fa-times d-none"></i>
+                        </td>
+                        <td class="action-column">
+                            <a href="{{ submission.orga_urls.edit }}"
+                                title="{% translate "edit" %}"
+                                class="btn btn-sm btn-info">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                            <a href="{{ submission.orga_urls.delete }}?from=list"
+                                title="{% translate "delete" %}"
+                                class="btn btn-sm btn-danger">
+                                <i class="fa fa-trash"></i>
+                            </a>
+                        </td>
                     {% endif %}
                 </tr>
             {% endfor %}

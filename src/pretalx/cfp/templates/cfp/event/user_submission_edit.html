@@ -12,8 +12,8 @@
 {% block content %}
     {% has_perm 'cfp.add_speakers' request.user submission  as can_invite_speakers %}
     {% compress js %}
-    <script defer src="{% static "js/jquery.formset.js" %}"></script>
-    <script defer src="{% static "cfp/js/animateFormset.js" %}"></script>
+        <script defer src="{% static "js/jquery.formset.js" %}"></script>
+        <script defer src="{% static "cfp/js/animateFormset.js" %}"></script>
     {% endcompress %}
     <script src="{% static "vendored/marked.min.js" %}" defer></script> {# do not compress #}
     <script src="{% static "common/js/markdown.js" %}" defer></script>
@@ -49,18 +49,18 @@
             <div class="form-group form-inline">
                 {% blocktranslate trimmed count count=submission.speakers.count %}
                     Speaker:
-                    {% plural %}
+                {% plural %}
                     Speakers:
                 {% endblocktranslate %}
                 {{ submission.display_speaker_names }}{% if can_invite_speakers %},
-                <div class="input-group">
-                    <input name="email" class="form-control form-control-sm" placeholder="mail@example.org">
-                    <span class="input-group-btn">
-                        <button class="btn btn-success btn-sm">
-                            <i class="fa fa-plus"></i>
-                        </button>
-                    </span>
-                </div>
+                    <div class="input-group">
+                        <input name="email" class="form-control form-control-sm" placeholder="mail@example.org">
+                        <span class="input-group-btn">
+                            <button class="btn btn-success btn-sm">
+                                <i class="fa fa-plus"></i>
+                            </button>
+                        </span>
+                    </div>
                 {% endif %}
             </div>
         </form>
@@ -76,9 +76,9 @@
                 <label class="col-md-3 col-form-label">{% translate "Resources" %}</label>
                 <div data-formset-body>
                     {% if can_edit %}
-                    <div class="alert alert-info col-md-9 ml-auto">
-                        {% translate "Resources will be publicly visible. Please try to keep your uploads below 16MB." %}
-                    </div>
+                        <div class="alert alert-info col-md-9 ml-auto">
+                            {% translate "Resources will be publicly visible. Please try to keep your uploads below 16MB." %}
+                        </div>
                     {% endif %}
                     {% for form in formset %}
                         <div data-formset-form>
@@ -93,42 +93,42 @@
                                     {% bootstrap_field form.resource layout='inline'  %}
                                 </div>
                                 {% if can_edit %}
-                                <div class="resource-option-delete">
-                                    <button type="button" class="btn btn-danger" data-formset-delete-button>
-                                        <i class="fa fa-trash"></i></button>
-                                </div>
+                                    <div class="resource-option-delete">
+                                        <button type="button" class="btn btn-danger" data-formset-delete-button>
+                                            <i class="fa fa-trash"></i></button>
+                                    </div>
                                 {% endif %}
                             </div>
                         </div>
                     {% endfor %}
                 </div>
                 {% if can_edit %}
-                <script type="form-template" data-formset-empty-form>
-                    {% escapescript %}
-                        <div data-formset-form>
+                    <script type="form-template" data-formset-empty-form>
+                        {% escapescript %}
+                            <div data-formset-form>
                             <div class="sr-only">
-                                {{ formset.empty_form.id }}
-                                {% bootstrap_field formset.empty_form.DELETE form_group_class="" layout="inline" %}
+                            {{ formset.empty_form.id }}
+                            {% bootstrap_field formset.empty_form.DELETE form_group_class="" layout="inline" %}
                             </div>
                             <div class="resource-option-row ml-auto col-md-9">
-                                <div class="resource-option-input">
-                                    {% bootstrap_field formset.empty_form.description layout='inline' %}
-                                    {% bootstrap_field formset.empty_form.resource layout='inline'  %}
-                                </div>
-                                <div class="resource-option-delete">
-                                    <button type="button" class="btn btn-danger" data-formset-delete-button>
-                                        <i class="fa fa-trash"></i></button>
-                                </div>
+                            <div class="resource-option-input">
+                            {% bootstrap_field formset.empty_form.description layout='inline' %}
+                            {% bootstrap_field formset.empty_form.resource layout='inline'  %}
                             </div>
+                            <div class="resource-option-delete">
+                            <button type="button" class="btn btn-danger" data-formset-delete-button>
+                            <i class="fa fa-trash"></i></button>
+                            </div>
+                            </div>
+                            </div>
+                        {% endescapescript %}
+                    </script>
+                    {% if action != 'view' %}
+                        <div class="d-flex flex-row-reverse">
+                            <button type="button" class="btn btn-info" data-formset-add>
+                                <i class="fa fa-plus"></i> {% translate "Add another resource" %}</button>
                         </div>
-                    {% endescapescript %}
-                </script>
-                {% if action != 'view' %}
-                <div class="d-flex flex-row-reverse">
-                    <button type="button" class="btn btn-info" data-formset-add>
-                        <i class="fa fa-plus"></i> {% translate "Add another resource" %}</button>
-                </div>
-                {% endif %}
+                    {% endif %}
                 {% endif %}
             </div>
         {% endif %}
@@ -160,7 +160,7 @@
         <div class="row">
             <div class="col-md-3 ml-auto">
                 <a href="{{ submission.urls.withdraw }}"
-                   class="btn float-right btn-danger btn-block">
+                    class="btn float-right btn-danger btn-block">
                     {% translate "Withdraw" %}
                 </a>
             </div>

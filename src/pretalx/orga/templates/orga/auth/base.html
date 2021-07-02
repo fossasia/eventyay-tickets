@@ -3,46 +3,46 @@
 {% load static %}
 <!DOCTYPE html>
 <html>
-<head>
-    <title>{% block title %}{% endblock %} :: pretalx</title>
-    {% compress css %}
-        <link rel="stylesheet" type="text/x-scss" href="{% static "orga/scss/auth.scss" %}"/>
-    {% endcompress %}
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#3aa57c">
+    <head>
+        <title>{% block title %}{% endblock %} :: pretalx</title>
+        {% compress css %}
+            <link rel="stylesheet" type="text/x-scss" href="{% static "orga/scss/auth.scss" %}"/>
+        {% endcompress %}
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#3aa57c">
 
-    {% if development_warning %}
-    <link rel="icon" type="image/png" sizes="32x32" href="{% static "common/img/favicon-32x32_debug.png" %}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{% static "common/img/favicon-16x16_debug.png" %}">
-    {% else %}
-    <link rel="icon" type="image/png" sizes="32x32" href="{% static "common/img/favicon-32x32.png" %}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{% static "common/img/favicon-16x16.png" %}">
-    {% endif %}
-    {% compress js %}
-        <script defer src="{% static "vendored/jquery-3.1.1.js" %}"></script>
-        <script defer src="{% static "vendored/bootstrap/dist/js/bootstrap.bundle.min.js" %}"></script>
-    {% endcompress %}
-</head>
-<body>
-    <div id="wrapper"{% if request.event.primary_color %} style="background-color: {{ request.event.primary_color }}"{% endif %}>
-    {% if not request.event.logo %}
-        <img src="{% static "common/img/logo_white.svg" %}" class="logo" alt="{% translate "The pretalx logo" %}">
-    {% else %}
-            <img height="150" width="auto" src="{{ request.event.logo.url }}" id="event-logo" alt="{% translate "The event's logo" %}">
-    {% endif %}
-    <p>
-    {% if messages %}
-        {% for message in messages %}
-            <div class="card card-inverse card-{{ message.tags }} mb-3 text-center">
-                {{ message }}
-            </div>
-        {% endfor %}
-    {% endif %}
-    <p>
-    <div class="card card-login">
-        {% block content %}
-        {% endblock %}
-    </div>
-</div>
-</body>
-</html>
+        {% if development_warning %}
+            <link rel="icon" type="image/png" sizes="32x32" href="{% static "common/img/favicon-32x32_debug.png" %}">
+            <link rel="icon" type="image/png" sizes="16x16" href="{% static "common/img/favicon-16x16_debug.png" %}">
+        {% else %}
+            <link rel="icon" type="image/png" sizes="32x32" href="{% static "common/img/favicon-32x32.png" %}">
+            <link rel="icon" type="image/png" sizes="16x16" href="{% static "common/img/favicon-16x16.png" %}">
+        {% endif %}
+        {% compress js %}
+            <script defer src="{% static "vendored/jquery-3.1.1.js" %}"></script>
+            <script defer src="{% static "vendored/bootstrap/dist/js/bootstrap.bundle.min.js" %}"></script>
+        {% endcompress %}
+    </head>
+    <body>
+        <div id="wrapper"{% if request.event.primary_color %} style="background-color: {{ request.event.primary_color }}"{% endif %}>
+            {% if not request.event.logo %}
+                <img src="{% static "common/img/logo_white.svg" %}" class="logo" alt="{% translate "The pretalx logo" %}">
+            {% else %}
+                <img height="150" width="auto" src="{{ request.event.logo.url }}" id="event-logo" alt="{% translate "The event's logo" %}">
+            {% endif %}
+            <p>
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="card card-inverse card-{{ message.tags }} mb-3 text-center">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                <p>
+                    <div class="card card-login">
+                        {% block content %}
+                        {% endblock %}
+                    </div>
+                </div>
+            </body>
+        </html>

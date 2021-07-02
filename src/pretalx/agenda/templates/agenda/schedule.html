@@ -8,55 +8,55 @@
 {% block container_width %}{% if not show_talk_list %} main-schedule{% endif %}{% endblock %}
 
 {% block agenda_custom_header %}
-{% compress js %}
-<script src="{% static 'common/js/tabbed.js' %}"></script>
-{% endcompress %}
+    {% compress js %}
+        <script src="{% static 'common/js/tabbed.js' %}"></script>
+    {% endcompress %}
 {% endblock %}
 
 {% block agenda_content %}
-<div id="fahrplan" class="{% if show_talk_list %}list{% else %}grid{% endif %}">
-    {% if schedule != schedule.event.current_schedule %}
-        <div class="alert alert-warning m-3"><span>
-            {% if not schedule.version %}
-              {% translate "You are currently viewing the editable schedule version, which is unreleased and may change at any time." %}
-            {% else %}
-                {% blocktranslate trimmed with current_url=schedule.event.urls.schedule %}
-                    You are currently viewing an older schedule version.
-                {% endblocktranslate %}
+    <div id="fahrplan" class="{% if show_talk_list %}list{% else %}grid{% endif %}">
+        {% if schedule != schedule.event.current_schedule %}
+            <div class="alert alert-warning m-3"><span>
+                {% if not schedule.version %}
+                    {% translate "You are currently viewing the editable schedule version, which is unreleased and may change at any time." %}
+                {% else %}
+                    {% blocktranslate trimmed with current_url=schedule.event.urls.schedule %}
+                        You are currently viewing an older schedule version.
+                    {% endblocktranslate %}
+                {% endif %}
+                {% if request.event.current_schedule %}
+                    {% blocktranslate trimmed with current_url=schedule.event.urls.schedule %}
+                        You can find the current version <a href="{{ current_url }}">here</a>.
+                    {% endblocktranslate %}
+                {% endif %}
+            </span></div>
+        {% endif %}
+
+        {% include "agenda/header_row.html" with with_margin=True with_extra=True %}
+
+        <script type="text/javascript" src="{{ request.event.urls.schedule }}widget/v2.{{ request.event.locale|slice:":2" }}.js" async></script>
+
+        <pretalx-schedule
+            event-url="{{ request.event.urls.base }}"
+            version="{{ schedule.version|default:'wip'|urlencode }}"
+            locale="{{ request.LANGUAGE_CODE }}"
+            timezone="{{ request.event.timezone }}"
+            {% if show_talk_list %}format="list"{% endif %}
+            style="--pretalx-clr-primary: {{ request.event.primary_color|default:'#3aa57c' }}"
+        ></pretalx-schedule>
+        <noscript>
+            {% if not show_talk_list %}
+                <div class="alert alert-info">
+                    <div></div>
+                    <div>
+                        {% blocktranslate trimmed %}
+                            To see our schedule in grid from, please enable JavaScript.
+                        {% endblocktranslate %}
+                    </div>
+                </div>
             {% endif %}
-            {% if request.event.current_schedule %}
-                {% blocktranslate trimmed with current_url=schedule.event.urls.schedule %}
-                    You can find the current version <a href="{{ current_url }}">here</a>.
-                {% endblocktranslate %}
-            {% endif %}
-        </span></div>
-    {% endif %}
-
-    {% include "agenda/header_row.html" with with_margin=True with_extra=True %}
-
-  <script type="text/javascript" src="{{ request.event.urls.schedule }}widget/v2.{{ request.event.locale|slice:":2" }}.js" async></script>
-
-    <pretalx-schedule
-      event-url="{{ request.event.urls.base }}"
-      version="{{ schedule.version|default:'wip'|urlencode }}"
-      locale="{{ request.LANGUAGE_CODE }}"
-      timezone="{{ request.event.timezone }}"
-      {% if show_talk_list %}format="list"{% endif %}
-      style="--pretalx-clr-primary: {{ request.event.primary_color|default:'#3aa57c' }}"
-    ></pretalx-schedule>
-    <noscript>
-      {% if not show_talk_list %}
-        <div class="alert alert-info">
-          <div></div>
-          <div>
-            {% blocktranslate trimmed %}
-            To see our schedule in grid from, please enable JavaScript.
-            {% endblocktranslate %}
-          </div>
-        </div>
-      {% endif %}
-      {% include "agenda/schedule_list.html" %}
-    </noscript>
-</div>
+            {% include "agenda/schedule_list.html" %}
+        </noscript>
+    </div>
 
 {% endblock %}

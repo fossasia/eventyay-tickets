@@ -3,11 +3,11 @@
 <p>
     {% if obj.changes.action == 'update' %}
         {% blocktranslate trimmed with event_name=obj.event.name %}
-        A new {{ event_name }} schedule has been released!
+            A new {{ event_name }} schedule has been released!
         {% endblocktranslate %}
     {% else %}
         {% blocktranslate trimmed with event_name=obj.event.name %}
-        The first {{ event_name }} schedule has been released!
+            The first {{ event_name }} schedule has been released!
         {% endblocktranslate %}
     {% endif %}
 </p>

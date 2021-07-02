@@ -5,9 +5,9 @@
     <h2>{% translate "Session Types" %}</h2>
     <div class="alert alert-info">
         {% blocktranslate trimmed %}
-        Different session types may help to guide speakers into different slot
-        lengths (short sessions vs long sessions) or different presentation formats
-        (talk vs workshop vs metal concert).
+            Different session types may help to guide speakers into different slot
+            lengths (short sessions vs long sessions) or different presentation formats
+            (talk vs workshop vs metal concert).
         {% endblocktranslate %}
     </div>
     <table class="table table-sm table-hover table-responsive-md">
@@ -39,21 +39,21 @@
                             <a><i class="fa fa-check"></i> {% translate "Default" %}</a>
                         {% else %}
                             <a href="{{ type.urls.default }}"
-                                    class="btn btn-sm btn-info">
+                                class="btn btn-sm btn-info">
                                 Make default
                             </a>
                         {% endif %}
                         <a href="{{ type.urls.prefilled_cfp.full }}"
-                                title="{% translate 'Go to pre-filled CfP form' %}"
-                                class="btn btn-sm btn-info">
+                            title="{% translate 'Go to pre-filled CfP form' %}"
+                            class="btn btn-sm btn-info">
                             <i class="fa fa-link"></i>
                         </a>
                         <a href="{{ type.urls.edit }}"
-                                class="btn btn-sm btn-info">
+                            class="btn btn-sm btn-info">
                             <i class="fa fa-edit"></i>
                         </a>
                         <a href="{{ type.urls.delete }}"
-                                class="btn btn-sm btn-danger">
+                            class="btn btn-sm btn-danger">
                             <i class="fa fa-trash"></i>
                         </a>
                     </td>

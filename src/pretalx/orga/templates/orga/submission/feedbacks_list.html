@@ -12,16 +12,16 @@
 
     {% for submission in feedbacks_list %}
         <h4>{% translate "Feedback for" %} {{ quotation_open }}<a href="{{ submission.list.1.talk.orga_urls.base }}">{{ submission.grouper }}</a>{{ quotation_close }}</h4>
-        
+
         {% for entry in submission.list %}
-        {% has_perm 'submission.view_feedback' request.user entry.talk as can_see_feedback %}
-        {% if can_see_feedback %}
-        <div class="card feedback-card">
-            <div class="card-body">
-                {{ entry.review|rich_text }}
-            </div>
-        </div>
-        {% endif %}
+            {% has_perm 'submission.view_feedback' request.user entry.talk as can_see_feedback %}
+            {% if can_see_feedback %}
+                <div class="card feedback-card">
+                    <div class="card-body">
+                        {{ entry.review|rich_text }}
+                    </div>
+                </div>
+            {% endif %}
         {% endfor %}
         <br><br>
     {% empty %}

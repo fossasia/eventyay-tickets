@@ -28,12 +28,12 @@
         {% bootstrap_field profile_form.name layout='event' %}
         {% if profile_form.biography %}{% bootstrap_field profile_form.biography layout='event' %}{% endif %}
         {% if profile_form.availabilities %}
-        {% compress js %}
-            <script defer src="{% static "vendored/moment-with-locales.js" %}"></script>
-            <script defer src="{% static "vendored/moment-timezone-with-data-2012-2022.js" %}"></script>
-        {% endcompress %}
-        {% include "common/availabilities.html" %}
-        {% bootstrap_field profile_form.availabilities layout='event' %}
+            {% compress js %}
+                <script defer src="{% static "vendored/moment-with-locales.js" %}"></script>
+                <script defer src="{% static "vendored/moment-timezone-with-data-2012-2022.js" %}"></script>
+            {% endcompress %}
+            {% include "common/availabilities.html" %}
+            {% bootstrap_field profile_form.availabilities layout='event' %}
         {% endif %}
         <div class="row">
             <div class="col-md-4 ml-auto">

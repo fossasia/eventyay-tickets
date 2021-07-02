@@ -5,15 +5,15 @@
 
 {% block scripts %}
     {% compress js %}
-    <script defer src="{% static "vendored/moment-with-locales.js" %}"></script>
-    <script defer src="{% static "vendored/moment-timezone-with-data-2012-2022.js" %}"></script>
-    <script defer src="{% static "vendored/datetimepicker/bootstrap-datetimepicker.js" %}"></script>
-    <script defer src="{% static "orga/js/datetimepicker.js" %}"></script>
+        <script defer src="{% static "vendored/moment-with-locales.js" %}"></script>
+        <script defer src="{% static "vendored/moment-timezone-with-data-2012-2022.js" %}"></script>
+        <script defer src="{% static "vendored/datetimepicker/bootstrap-datetimepicker.js" %}"></script>
+        <script defer src="{% static "orga/js/datetimepicker.js" %}"></script>
     {% endcompress %}
 {% endblock %}
 
 {% block wizard_content %}
-<div class="alert alert-info col-md-9 offset-md-3">
-    {% translate "What's your timeline like? You can later add session types with different deadlines (e.g. if you accept workshop proposals later than your talk proposals)." %}
-</div>
+    <div class="alert alert-info col-md-9 offset-md-3">
+        {% translate "What's your timeline like? You can later add session types with different deadlines (e.g. if you accept workshop proposals later than your talk proposals)." %}
+    </div>
 {% endblock %}

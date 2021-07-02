@@ -4,17 +4,17 @@
 
 {% block mail_content %}
     {% if placeholders %}
-    <div class="alert alert-info"><span>
-        {% blocktranslate trimmed %}
-            You have some variables available that will be rendered into the mails
-            (in the appropriate language) before sending:
-        {% endblocktranslate %}
-        <ul>
-        {% for placeholder in placeholders %}
-            <li>{{ placeholder.name }}{% if placeholder.explanation %}: {{ placeholder.explanation }}{% endif %}</li>
-        {% endfor %}
-        </ul>
-    </span></div>
+        <div class="alert alert-info"><span>
+            {% blocktranslate trimmed %}
+                You have some variables available that will be rendered into the mails
+                (in the appropriate language) before sending:
+            {% endblocktranslate %}
+            <ul>
+                {% for placeholder in placeholders %}
+                    <li>{{ placeholder.name }}{% if placeholder.explanation %}: {{ placeholder.explanation }}{% endif %}</li>
+                {% endfor %}
+            </ul>
+        </span></div>
     {% endif %}
     <form method="post">
         {% csrf_token %}

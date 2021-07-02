@@ -5,8 +5,8 @@
         {% translate "Regenerate notification emails" %}
     </h2>
     {% blocktranslate trimmed with count=count %}
-    Do you really want to regenerate {{ count }} acceptance and rejection emails?
-    They will be placed in the outbox and not sent out directly.
+        Do you really want to regenerate {{ count }} acceptance and rejection emails?
+        They will be placed in the outbox and not sent out directly.
     {% endblocktranslate %}
     {{ question }}
     <form method="post">

@@ -34,19 +34,19 @@
         {% if action != 'create' %}
             {% if question.active %}
                 <div class="alert alert-info col-md-9 offset-md-3">
-              <span>
-              {% translate "This question is currently active, it will be asked during submission." %}
-              <a class="btn btn-sm btn-outline-danger"
-                 href="{{ question.urls.toggle }}">{% translate "Hide question" %}</a>
-              </span>
+                    <span>
+                        {% translate "This question is currently active, it will be asked during submission." %}
+                        <a class="btn btn-sm btn-outline-danger"
+                            href="{{ question.urls.toggle }}">{% translate "Hide question" %}</a>
+                    </span>
                 </div>
             {% else %}
                 <div class="alert alert-info col-md-9 offset-md-3">
-              <span>
-              {% translate "This question is currently inactive, and will not be asked during submission." %}
-              <a class="btn btn-sm btn-success"
-                 href="{{ question.urls.toggle }}">{% translate "Activate question" %}</a>
-              </span>
+                    <span>
+                        {% translate "This question is currently inactive, and will not be asked during submission." %}
+                        <a class="btn btn-sm btn-success"
+                            href="{{ question.urls.toggle }}">{% translate "Activate question" %}</a>
+                    </span>
                 </div>
             {% endif %}
         {% endif %}
@@ -66,17 +66,17 @@
         {% bootstrap_field form.freeze_after layout='event' %}
         {% bootstrap_field form.is_public layout='event' %}
         <span id="is-visible-to-reviewers">
-        {% bootstrap_field form.is_visible_to_reviewers layout='event' %}
+            {% bootstrap_field form.is_visible_to_reviewers layout='event' %}
         </span>
         {% if form.tracks %}
             <span class="limit-submission">
-            {% bootstrap_field form.tracks layout='event' %}
-        </span>
+                {% bootstrap_field form.tracks layout='event' %}
+            </span>
         {% endif %}
         {% if form.submission_types %}
             <span class="limit-submission">
-            {% bootstrap_field form.submission_types layout='event' %}
-        </span>
+                {% bootstrap_field form.submission_types layout='event' %}
+            </span>
         {% endif %}
         <span id="limit-length">
             {% bootstrap_field form.min_length layout='event' %}
@@ -114,19 +114,19 @@
                 <script type="form-template" data-formset-empty-form>
                     {% escapescript %}
                         <div data-formset-form>
-                            <div class="sr-only">
-                                {{ formset.empty_form.id }}
-                                {% bootstrap_field formset.empty_form.DELETE form_group_class="" layout="inline" %}
-                            </div>
-                            <div class="question-option-row ml-auto col-md-9">
-                                <div class="question-option-input">
-                                    {% bootstrap_field formset.empty_form.answer layout='inline' form_group_class="" %}
-                                </div>
-                                <div class="question-option-delete">
-                                    <button type="button" class="btn btn-danger" data-formset-delete-button>
-                                        <i class="fa fa-trash"></i></button>
-                                </div>
-                            </div>
+                        <div class="sr-only">
+                        {{ formset.empty_form.id }}
+                        {% bootstrap_field formset.empty_form.DELETE form_group_class="" layout="inline" %}
+                        </div>
+                        <div class="question-option-row ml-auto col-md-9">
+                        <div class="question-option-input">
+                        {% bootstrap_field formset.empty_form.answer layout='inline' form_group_class="" %}
+                        </div>
+                        <div class="question-option-delete">
+                        <button type="button" class="btn btn-danger" data-formset-delete-button>
+                        <i class="fa fa-trash"></i></button>
+                        </div>
+                        </div>
                         </div>
                     {% endescapescript %}
                 </script>

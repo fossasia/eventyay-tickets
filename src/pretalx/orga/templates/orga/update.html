@@ -4,93 +4,93 @@
 
 {% block content %}
 
-<h2>{% translate "Update check results" %}</h2>
+    <h2>{% translate "Update check results" %}</h2>
 
-{% if not gs.settings.update_check_enabled %}
-    <div class="alert alert-warning">
-        {% translate "Update checks are disabled." %}
-    </div>
-{% elif not gs.settings.update_check_last %}
-    <div class="alert alert-info">
-        {% translate "No update check has been performed yet since the last update of this installation. Update checks are performed on a daily basis if your cronjob is set up properly." %}
-    </div>
-    <form action="" method="post">
-        {% csrf_token %}
-        <p class="d-flex">
-            <button type="submit" name="trigger" value="1" class="btn btn-outline-info ml-auto">
-                <i class="fa fa-refresh mr-2"></i>
-                {% translate "Check for updates now" %}
-            </button>
-        </p>
-    </form>
-{% elif "error" in gs.settings.update_check_result %}
-    <div class="alert alert-danger">
-        {% translate "The last update check was not successful." %}
-        {% if gs.settings.update_check_result.error == "http_error" %}
-            {% translate "The pretalx.com server returned an error code." %}
-        {% elif gs.settings.update_check_result.error == "unavailable" %}
-            {% translate "The pretalx.com server could not be reached." %}
-        {% elif gs.settings.update_check_result.error == "development" %}
-            {% translate "This installation appears to be a development installation." %}
-        {% endif %}
-    </div>
-    <form action="" method="post">
-        {% csrf_token %}
-        <p class="d-flex">
-            <button type="submit" name="trigger" value="1" class="btn btn-outline-info ml-auto">
-                <i class="fa fa-refresh mr-2"></i>
-                {% translate "Check for updates now" %}
-            </button>
-        </p>
-    </form>
-{% else %}
-    <form action="" method="post">
-        {% csrf_token %}
-        <p class="d-flex flex-baseline">
-            {% blocktranslate trimmed with date=gs.settings.update_check_last|date:"SHORT_DATETIME_FORMAT" %}
-                Last updated: {{ date }}
-            {% endblocktranslate %}
-            <button type="submit" name="trigger" value="1" class="btn btn-outline-info ml-auto">
-                <i class="fa fa-refresh mr-2"></i>
-                {% translate "Check for updates now" %}
-            </button>
-        </p>
-    </form>
-    <div class="table-responsive">
-        <table class="table table-condensed">
-            <thead>
-            <tr>
-                <th>{% translate "Component" %}</th>
-                <th>{% translate "Installed version" %}</th>
-                <th>{% translate "Latest version" %}</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for row in result_table %}
-            <tr class="table-{% if row.3 %}danger{% elif row.2 == "?" %}warning{% else %}success{% endif %}">
-                <td>{{ row.0 }}</td>
-                <td>{{ row.1 }}</td>
-                <td>{{ row.2 }}</td>
-            </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
-{% endif %}
+    {% if not gs.settings.update_check_enabled %}
+        <div class="alert alert-warning">
+            {% translate "Update checks are disabled." %}
+        </div>
+    {% elif not gs.settings.update_check_last %}
+        <div class="alert alert-info">
+            {% translate "No update check has been performed yet since the last update of this installation. Update checks are performed on a daily basis if your cronjob is set up properly." %}
+        </div>
+        <form action="" method="post">
+            {% csrf_token %}
+            <p class="d-flex">
+                <button type="submit" name="trigger" value="1" class="btn btn-outline-info ml-auto">
+                    <i class="fa fa-refresh mr-2"></i>
+                    {% translate "Check for updates now" %}
+                </button>
+            </p>
+        </form>
+    {% elif "error" in gs.settings.update_check_result %}
+        <div class="alert alert-danger">
+            {% translate "The last update check was not successful." %}
+            {% if gs.settings.update_check_result.error == "http_error" %}
+                {% translate "The pretalx.com server returned an error code." %}
+            {% elif gs.settings.update_check_result.error == "unavailable" %}
+                {% translate "The pretalx.com server could not be reached." %}
+            {% elif gs.settings.update_check_result.error == "development" %}
+                {% translate "This installation appears to be a development installation." %}
+            {% endif %}
+        </div>
+        <form action="" method="post">
+            {% csrf_token %}
+            <p class="d-flex">
+                <button type="submit" name="trigger" value="1" class="btn btn-outline-info ml-auto">
+                    <i class="fa fa-refresh mr-2"></i>
+                    {% translate "Check for updates now" %}
+                </button>
+            </p>
+        </form>
+    {% else %}
+        <form action="" method="post">
+            {% csrf_token %}
+            <p class="d-flex flex-baseline">
+                {% blocktranslate trimmed with date=gs.settings.update_check_last|date:"SHORT_DATETIME_FORMAT" %}
+                    Last updated: {{ date }}
+                {% endblocktranslate %}
+                <button type="submit" name="trigger" value="1" class="btn btn-outline-info ml-auto">
+                    <i class="fa fa-refresh mr-2"></i>
+                    {% translate "Check for updates now" %}
+                </button>
+            </p>
+        </form>
+        <div class="table-responsive">
+            <table class="table table-condensed">
+                <thead>
+                    <tr>
+                        <th>{% translate "Component" %}</th>
+                        <th>{% translate "Installed version" %}</th>
+                        <th>{% translate "Latest version" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in result_table %}
+                        <tr class="table-{% if row.3 %}danger{% elif row.2 == "?" %}warning{% else %}success{% endif %}">
+                            <td>{{ row.0 }}</td>
+                            <td>{{ row.1 }}</td>
+                            <td>{{ row.2 }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
 
-<h2>{% translate "Update check settings" %}</h2>
+    <h2>{% translate "Update check settings" %}</h2>
 
-<form action="" method="post" class="form-horizontal">
-    {% csrf_token %}
-    {% bootstrap_form_errors form %}
-    {% bootstrap_form form layout='event' %}
-    <div class="submit-group panel">
-        <span></span>
-        <button type="submit" class="btn btn-success btn-lg">
-            <i class="fa fa-check"></i>
-            {% translate "Save" %}
-        </button>
-    </div>
-</form>
+    <form action="" method="post" class="form-horizontal">
+        {% csrf_token %}
+        {% bootstrap_form_errors form %}
+        {% bootstrap_form form layout='event' %}
+        <div class="submit-group panel">
+            <span></span>
+            <button type="submit" class="btn btn-success btn-lg">
+                <i class="fa fa-check"></i>
+                {% translate "Save" %}
+            </button>
+        </div>
+    </form>
 
 {% endblock %}

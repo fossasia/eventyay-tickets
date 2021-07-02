@@ -9,9 +9,9 @@
     {{ event_configuration|json_script:"eventConfiguration" }}
 
     {% if debug %}
-    <script defer src="{% static "vendored/vue.js" %}"></script>
+        <script defer src="{% static "vendored/vue.js" %}"></script>
     {% else %}
-    <script defer src="{% static "vendored/vue.min.js" %}"></script>
+        <script defer src="{% static "vendored/vue.min.js" %}"></script>
     {% endif %}
     <script defer src="{% static "vendored/marked.min.js" %}"></script> {# do not compress #}
     <script defer src="{% static "orga/js/cfp_flow.js" %}"></script>
@@ -21,10 +21,10 @@
     <h1>{% translate "CfP Editor" %}</h1>
     <p>
         {% blocktranslate trimmed %}
-        This is the pretalx CfP editor. This page allows you to change the
-        headline and information text on all of the individual CfP steps. You
-        can also add a custom help text to individual fields. Just click on the
-        item you want to change!
+            This is the pretalx CfP editor. This page allows you to change the
+            headline and information text on all of the individual CfP steps. You
+            can also add a custom help text to individual fields. Just click on the
+            item you want to change!
         {% endblocktranslate %}
     </p>
     <div id="flow">

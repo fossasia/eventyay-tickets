@@ -1,60 +1,60 @@
 {% load i18n %}
 
 {% if entries|length %}
-<div class="panel panel-default">
-    {% if not hide_title %}
-    <div class="panel-heading"><h3>
-        {% translate "History" %}
-    </h3></div>
-    {% endif %}
+    <div class="panel panel-default">
+        {% if not hide_title %}
+            <div class="panel-heading"><h3>
+                {% translate "History" %}
+            </h3></div>
+        {% endif %}
 
-    <ul class="list-group">
-        {% for log in entries %}
-            <li class="list-group-item logentry">
-                <p class="meta">
-                    <span class="time">
-                        <i class="fa fa-clock-o"></i> {{ log.timestamp|date:"Y-m-d H:i" }}
-                    </span>
-                    {% if log.person %}
-                        <span class="person">
-                        {% if log.is_orga_action %}
-                            <br>
-                            <i class="fa fa-check-circle fa-fw"
-                                    data-toggle="tooltip"
-                                    title="{% translate "This change was performed by a member of the event orga." %}">
-                            </i>
-                        {% else %}
-                            <br><i class="fa fa-user fa-fw"></i>
-                        {% endif %}
-                        {% if log.is_orga_action and hide_orga %}
-                            {% translate "An orga member" %}
-                        {% else %}
-                            {{ log.person.get_display_name }}
-                        {% endif %}
+        <ul class="list-group">
+            {% for log in entries %}
+                <li class="list-group-item logentry">
+                    <p class="meta">
+                        <span class="time">
+                            <i class="fa fa-clock-o"></i> {{ log.timestamp|date:"Y-m-d H:i" }}
                         </span>
-                    {% endif %}
-                </p>
-              <p>
-                {% if not hide_orga %}
-                    {% with log.get_orga_url as log_content_url %}
-                      {% if log_content_url %}
-                        <a href="{{ log_content_url }}">{{ log.display }}</a>
-                      {% else %}
-                        {{ log.display }}
-                      {% endif %}
-                    {% endwith %}
-                {% else %}
-                    {% with log.get_public_url as log_content_url %}
-                      {% if log_content_url %}
-                        <a href="{{ log_content_url }}">{{ log.display }}</a>
-                      {% else %}
-                        {{ log.display }}
-                      {% endif %}
-                    {% endwith %}
-                {% endif %}
-              </p>
-            </li>
-        {% endfor %}
-    </ul>
-</div>
+                        {% if log.person %}
+                            <span class="person">
+                                {% if log.is_orga_action %}
+                                    <br>
+                                    <i class="fa fa-check-circle fa-fw"
+                                        data-toggle="tooltip"
+                                        title="{% translate "This change was performed by a member of the event orga." %}">
+                                    </i>
+                                {% else %}
+                                    <br><i class="fa fa-user fa-fw"></i>
+                                {% endif %}
+                                {% if log.is_orga_action and hide_orga %}
+                                    {% translate "An orga member" %}
+                                {% else %}
+                                    {{ log.person.get_display_name }}
+                                {% endif %}
+                            </span>
+                        {% endif %}
+                    </p>
+                    <p>
+                        {% if not hide_orga %}
+                            {% with log.get_orga_url as log_content_url %}
+                                {% if log_content_url %}
+                                    <a href="{{ log_content_url }}">{{ log.display }}</a>
+                                {% else %}
+                                    {{ log.display }}
+                                {% endif %}
+                            {% endwith %}
+                        {% else %}
+                            {% with log.get_public_url as log_content_url %}
+                                {% if log_content_url %}
+                                    <a href="{{ log_content_url }}">{{ log.display }}</a>
+                                {% else %}
+                                    {{ log.display }}
+                                {% endif %}
+                            {% endwith %}
+                        {% endif %}
+                    </p>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
 {% endif %}

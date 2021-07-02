@@ -5,16 +5,16 @@
 {% load static %}
 
 {% block stylesheets %}
-{% compress css %}
-<link rel="stylesheet" type="text/x-scss" href="{% static "orga/scss/quick_schedule.scss" %}">
-{% endcompress %}
+    {% compress css %}
+        <link rel="stylesheet" type="text/x-scss" href="{% static "orga/scss/quick_schedule.scss" %}">
+    {% endcompress %}
 {% endblock %}
 
 {% block schedule_content %}
-<h2>{% translate "Schedule session" %} {{ quotation_close }}{{ form.instance.submission.title }}{{ quotation_open }}</h2>
-<form method="post">
-    {% csrf_token %}
-    {% bootstrap_form form layout='event' %}
-    <button id="quick-schedule-submit" type="submit" class="btn btn-success btn-lg offset-md-3"><i class="fa fa-tick"></i> {% translate "Save" %}</button>
-</form>
+    <h2>{% translate "Schedule session" %} {{ quotation_close }}{{ form.instance.submission.title }}{{ quotation_open }}</h2>
+    <form method="post">
+        {% csrf_token %}
+        {% bootstrap_form form layout='event' %}
+        <button id="quick-schedule-submit" type="submit" class="btn btn-success btn-lg offset-md-3"><i class="fa fa-tick"></i> {% translate "Save" %}</button>
+    </form>
 {% endblock %}

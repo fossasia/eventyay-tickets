@@ -26,26 +26,26 @@
                     <div class="submissions">
                         {{ organiser.events.count }}
                         {% blocktranslate trimmed count count=organiser.events.count %}
-                        event
+                            event
                         {% plural %}
-                        events
+                            events
                         {% endblocktranslate %}
                     </div>
                     <div class="state inactive">
                         {{ organiser.teams.count }}
                         {% blocktranslate trimmed count count=organiser.teams.count %}
-                        team
+                            team
                         {% plural %}
-                        teams
+                            teams
                         {% endblocktranslate %}
                     </div>
                 </div>
             </a>
         {% endfor %}
     </div>
-{% if not organisers and not can_create_organiser %}
-<div class="alert alert-info">
-    {% translate "There are no organisers you can edit." %}
-</div>
-{% endif %}
+    {% if not organisers and not can_create_organiser %}
+        <div class="alert alert-info">
+            {% translate "There are no organisers you can edit." %}
+        </div>
+    {% endif %}
 {% endblock %}

@@ -7,31 +7,31 @@
 {% load rules %}
 
 {% block submission_content %}
-{% has_perm 'orga.send_mails' request.user request.event as can_send_mails %}
-{% has_perm 'orga.view_all_reviews' request.user request.event as can_view_all_reviews %}
-{% compress js %}
-    <script defer src="{% static "js/jquery.formset.js" %}"></script>
-    <script defer src="{% static "cfp/js/animateFormset.js" %}"></script>
-    <script defer src="{% static "vendored/moment-with-locales.js" %}"></script>
-    <script defer src="{% static "vendored/moment-timezone-with-data-2012-2022.js" %}"></script>
-    <script defer src="{% static "vendored/datetimepicker/bootstrap-datetimepicker.js" %}"></script>
-    <script defer src="{% static "orga/js/datetimepicker.js" %}"></script>
-    <script defer src="{% static "vendored/typeahead.bundle.min.js" %}"></script>
-    <script defer src="{% static "orga/js/speakers.js" %}"></script>
-    <script defer src="{% static "orga/js/submission_form.js" %}"></script>
-{% endcompress %}
-<form method="post" enctype="multipart/form-data"><fieldset>
-    {% if not submission %}
-    <legend>{% translate "Create proposal" %}</legend>
-    {% endif %}
+    {% has_perm 'orga.send_mails' request.user request.event as can_send_mails %}
+    {% has_perm 'orga.view_all_reviews' request.user request.event as can_view_all_reviews %}
+    {% compress js %}
+        <script defer src="{% static "js/jquery.formset.js" %}"></script>
+        <script defer src="{% static "cfp/js/animateFormset.js" %}"></script>
+        <script defer src="{% static "vendored/moment-with-locales.js" %}"></script>
+        <script defer src="{% static "vendored/moment-timezone-with-data-2012-2022.js" %}"></script>
+        <script defer src="{% static "vendored/datetimepicker/bootstrap-datetimepicker.js" %}"></script>
+        <script defer src="{% static "orga/js/datetimepicker.js" %}"></script>
+        <script defer src="{% static "vendored/typeahead.bundle.min.js" %}"></script>
+        <script defer src="{% static "orga/js/speakers.js" %}"></script>
+        <script defer src="{% static "orga/js/submission_form.js" %}"></script>
+    {% endcompress %}
+    <form method="post" enctype="multipart/form-data"><fieldset>
+        {% if not submission %}
+            <legend>{% translate "Create proposal" %}</legend>
+        {% endif %}
 
-    {% if submission.access_code %}
-    <div class="alert alert-info"><span></span><span>
-        {% blocktranslate trimmed %}
-        This proposal was created using an access code:
-        {% endblocktranslate %} <a href="{{ submission.access_code.urls.edit }}">{{ submission.access_code.code }}</a>
-    </span></div>
-    {% endif %}
+        {% if submission.access_code %}
+            <div class="alert alert-info"><span></span><span>
+                {% blocktranslate trimmed %}
+                    This proposal was created using an access code:
+                {% endblocktranslate %} <a href="{{ submission.access_code.urls.edit }}">{{ submission.access_code.code }}</a>
+            </span></div>
+        {% endif %}
         {% bootstrap_form_errors form %}
         {% csrf_token %}
         {% bootstrap_field form.title layout='event' %}
@@ -40,22 +40,22 @@
             {% bootstrap_field form.speaker_name layout='event' %}
             {% bootstrap_field form.state layout='event' %}
             <div id="show-if-state" class="d-none">
-            {% bootstrap_field form.room layout='event' %}
-            {% bootstrap_field form.start layout='event' %}
-            {% bootstrap_field form.end layout='event' %}
+                {% bootstrap_field form.room layout='event' %}
+                {% bootstrap_field form.start layout='event' %}
+                {% bootstrap_field form.end layout='event' %}
             </div>
         {% endif %}
         {% if form.instance.median_score != None and can_view_all_reviews %}
-        <div class="form-group row">
-            <label class="col-md-3 col-form-label">
-                {% translate "Reviews" %}
-            </label>
-            <div class="col-md-9">
-                <label>
-                    {{ submission.reviews.count }} {% translate "reviews" %}
+            <div class="form-group row">
+                <label class="col-md-3 col-form-label">
+                    {% translate "Reviews" %}
                 </label>
+                <div class="col-md-9">
+                    <label>
+                        {{ submission.reviews.count }} {% translate "reviews" %}
+                    </label>
+                </div>
             </div>
-        </div>
         {% endif %}
         {% bootstrap_field form.submission_type layout='event' %}
         {% if form.track %}{% bootstrap_field form.track layout='event' %}{% endif %}
@@ -89,44 +89,44 @@
                                     {% bootstrap_field form.resource layout='inline'  %}
                                 </div>
                                 {% if action != 'view' %}
-                                <div class="resource-option-delete">
-                                    <button type="button" class="btn btn-danger" data-formset-delete-button>
-                                        <i class="fa fa-trash"></i></button>
-                                </div>
+                                    <div class="resource-option-delete">
+                                        <button type="button" class="btn btn-danger" data-formset-delete-button>
+                                            <i class="fa fa-trash"></i></button>
+                                    </div>
                                 {% endif %}
                             </div>
                         </div>
                     {% empty %}
-                    <div class="mt-1">
-                        {% translate "This proposal has no file uploads yet." %}
-                    </div>
+                        <div class="mt-1">
+                            {% translate "This proposal has no file uploads yet." %}
+                        </div>
                     {% endfor %}
                 </div>
                 <script type="form-template" data-formset-empty-form>
                     {% escapescript %}
                         <div data-formset-form>
-                            <div class="sr-only">
-                                {{ formset.empty_form.id }}
-                                {% bootstrap_field formset.empty_form.DELETE form_group_class="" layout="inline" %}
-                            </div>
-                            <div class="resource-option-row">
-                                <div class="resource-option-input">
-                                    {% bootstrap_field formset.empty_form.description layout='inline' %}
-                                    {% bootstrap_field formset.empty_form.resource layout='inline'  %}
-                                </div>
-                                <div class="resource-option-delete">
-                                    <button type="button" class="btn btn-danger" data-formset-delete-button>
-                                        <i class="fa fa-trash"></i></button>
-                                </div>
-                            </div>
+                        <div class="sr-only">
+                        {{ formset.empty_form.id }}
+                        {% bootstrap_field formset.empty_form.DELETE form_group_class="" layout="inline" %}
+                        </div>
+                        <div class="resource-option-row">
+                        <div class="resource-option-input">
+                        {% bootstrap_field formset.empty_form.description layout='inline' %}
+                        {% bootstrap_field formset.empty_form.resource layout='inline'  %}
+                        </div>
+                        <div class="resource-option-delete">
+                        <button type="button" class="btn btn-danger" data-formset-delete-button>
+                        <i class="fa fa-trash"></i></button>
+                        </div>
+                        </div>
                         </div>
                     {% endescapescript %}
                 </script>
                 {% if action != 'view' %}
-                <div class="col-md-3 offset-md-9">
-                    <button type="button" class="btn btn-info btn-block" data-formset-add>
-                        <i class="fa fa-plus"></i> {% translate "Add another resource" %}</button>
-                </div>
+                    <div class="col-md-3 offset-md-9">
+                        <button type="button" class="btn btn-info btn-block" data-formset-add>
+                            <i class="fa fa-plus"></i> {% translate "Add another resource" %}</button>
+                    </div>
                 {% endif %}
             </div>
         {% endif %}
@@ -137,23 +137,23 @@
         {% endif %}
 
         {% if can_send_mails or not form.read_only %}
-        <div class="submit-group panel">
-            <span></span>
-            <span>
-                {% if form.instance.code and can_send_mails %}
-                    <a class="btn btn-lg btn-info" href="{{ request.event.orga_urls.compose_mails }}?submission={{ form.instance.code }}">
-                        <i class="fa fa-envelope-o"></i>
-                        {% translate "Send mail to speakers" %}
-                    </a>
-                {% endif %}
-                {% if not form.read_only %}
-                <button type="submit" class="btn btn-success btn-lg">
-                    <i class="fa fa-check"></i>
-                    {% translate "Save" %}
-                </button>
-                {% endif %}
-            </span>
-        </div>
+            <div class="submit-group panel">
+                <span></span>
+                <span>
+                    {% if form.instance.code and can_send_mails %}
+                        <a class="btn btn-lg btn-info" href="{{ request.event.orga_urls.compose_mails }}?submission={{ form.instance.code }}">
+                            <i class="fa fa-envelope-o"></i>
+                            {% translate "Send mail to speakers" %}
+                        </a>
+                    {% endif %}
+                    {% if not form.read_only %}
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="fa fa-check"></i>
+                            {% translate "Save" %}
+                        </button>
+                    {% endif %}
+                </span>
+            </div>
         {% endif %}
     </fieldset></form>
 

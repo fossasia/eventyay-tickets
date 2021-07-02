@@ -9,13 +9,13 @@
 
 {% block scripts %}
     {% compress js %}
-    <script defer src="{% static "vendored/colorpicker/js/bootstrap-colorpicker.min.js" %}"></script>
-    <script defer src="{% static "orga/js/colorpicker.js" %}"></script>
+        <script defer src="{% static "vendored/colorpicker/js/bootstrap-colorpicker.min.js" %}"></script>
+        <script defer src="{% static "orga/js/colorpicker.js" %}"></script>
     {% endcompress %}
 {% endblock %}
 
 {% block wizard_content %}
-<div class="alert alert-info col-md-9 offset-md-3">
-    {% translate "Choose your inital customisations here – you can always change them later, or enhance them with custom CSS." %}
-</div>
+    <div class="alert alert-info col-md-9 offset-md-3">
+        {% translate "Choose your inital customisations here – you can always change them later, or enhance them with custom CSS." %}
+    </div>
 {% endblock %}

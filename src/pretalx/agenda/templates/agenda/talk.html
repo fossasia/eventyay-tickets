@@ -16,86 +16,86 @@
 {% endblock %}
 
 {% block agenda_content %}
-<article>
-    <h3 class="talk-title">
-        <div class="heading-with-buttons">
-        {{ submission.title }}
-        <div class="buttons" id="talk-buttons">
-            {% if submission.state == 'confirmed' %}
-            <a class="btn btn-outline-primary" href="{{ submission.urls.ical }}">
-                <i class="fa fa-calendar"></i> .ical
-            </a>
-            {% endif %}
-            {% if submission.does_accept_feedback and not is_html_export %}
-                <a href="{{ submission.urls.feedback }}"
-                        class="btn btn-success">
-                    <i class="fa fa-comments"></i> {{ phrases.agenda.feedback }}
-                </a>
-            {% endif %}
-            {% if request.user in submission.speakers.all %}
-                <a href="{{ submission.urls.user_base }}"
-                        class="btn btn-info">
-                    <i class="fa fa-edit"></i> {{ phrases.base.edit }}
-                </a>
-            {% endif %}
-        </div>
-        </div>
-        <small>
-            {% if talk_slots|length == 1 %}
-                {{ talk_slots.0.start|date:"Y-m-d" }}, {{ talk_slots.0.start|date:"H:i" }}–{{ talk_slots.0.end|date:"H:i" }}, {{ talk_slots.0.room.name }}
-            {% endif %}
-            {% if request.event.is_multilingual %}
-            <div class="speakers">
-                <strong>{% translate "Language" %}:</strong> {{ submission.get_content_locale_display }}
+    <article>
+        <h3 class="talk-title">
+            <div class="heading-with-buttons">
+                {{ submission.title }}
+                <div class="buttons" id="talk-buttons">
+                    {% if submission.state == 'confirmed' %}
+                        <a class="btn btn-outline-primary" href="{{ submission.urls.ical }}">
+                            <i class="fa fa-calendar"></i> .ical
+                        </a>
+                    {% endif %}
+                    {% if submission.does_accept_feedback and not is_html_export %}
+                        <a href="{{ submission.urls.feedback }}"
+                            class="btn btn-success">
+                            <i class="fa fa-comments"></i> {{ phrases.agenda.feedback }}
+                        </a>
+                    {% endif %}
+                    {% if request.user in submission.speakers.all %}
+                        <a href="{{ submission.urls.user_base }}"
+                            class="btn btn-info">
+                            <i class="fa fa-edit"></i> {{ phrases.base.edit }}
+                        </a>
+                    {% endif %}
+                </div>
             </div>
-            {% endif %}
-            {% if submission.do_not_record %}
-                <span class="fa-stack">
-                  <i class="fa fa-video-camera fa-stack-1x"></i>
-                  <i class="fa fa-ban do-not-record fa-stack-2x" aria-hidden="true" alt="{{ phrases.agenda.schedule_do_not_record }}"></i>
-                </span>
-                <em>{{ phrases.agenda.schedule.do_not_record }}</em>
-            {% endif %}
-        </small>
-    </h3>
-    <div class="talk row">
-        <div class="talk-content">
-            {% if submission.image %}
-            <div class="talk-image">
-                <a href="{{ submission.image.url }}">
-                    <img src="{{ submission.image.url }}" alt="{% translate "This session's header image" %}">
-                </a>
-            </div>
-            {% endif %}
-            {% if talk_slots|length > 1 %}
-            <ul class="talk-slots">
-                {% for talk in talk_slots %}
-                <li class="talk-slot">
-                    {{ talk.start|date:"Y-m-d" }}, {{ talk.start|date:"H:i" }}–{{ talk.end|date:"H:i" }}, {{ talk.room.name }}
-                </li>
-                {% endfor %}
-            </ul>
-            {% endif %}
-            {% if recording_iframe %}
-                {{ recording_iframe|safe }}
-            {% endif %}
-            <section class="abstract">
-                {{ submission.abstract|rich_text }}
-            </section>
-            {% if submission.abstract and submission.description %}
-            <hr />
-            {% endif %}
-            <section class="description">
-                {{ submission.description|rich_text }}
-            </section>
-            {% if answers %}
-            <hr />
-            <section class="answers">
-                {% for answer in answers %}
-                    <span class="question"><strong>{{ answer.question.question }}</strong></span>
-                    <span class="answer">– {% include "common/question_answer.html" with answer=answer %}</span>
-                {% endfor %}
-            {% endif %}
+            <small>
+                {% if talk_slots|length == 1 %}
+                    {{ talk_slots.0.start|date:"Y-m-d" }}, {{ talk_slots.0.start|date:"H:i" }}–{{ talk_slots.0.end|date:"H:i" }}, {{ talk_slots.0.room.name }}
+                {% endif %}
+                {% if request.event.is_multilingual %}
+                    <div class="speakers">
+                        <strong>{% translate "Language" %}:</strong> {{ submission.get_content_locale_display }}
+                    </div>
+                {% endif %}
+                {% if submission.do_not_record %}
+                    <span class="fa-stack">
+                        <i class="fa fa-video-camera fa-stack-1x"></i>
+                        <i class="fa fa-ban do-not-record fa-stack-2x" aria-hidden="true" alt="{{ phrases.agenda.schedule_do_not_record }}"></i>
+                    </span>
+                    <em>{{ phrases.agenda.schedule.do_not_record }}</em>
+                {% endif %}
+            </small>
+        </h3>
+        <div class="talk row">
+            <div class="talk-content">
+                {% if submission.image %}
+                    <div class="talk-image">
+                        <a href="{{ submission.image.url }}">
+                            <img src="{{ submission.image.url }}" alt="{% translate "This session's header image" %}">
+                        </a>
+                    </div>
+                {% endif %}
+                {% if talk_slots|length > 1 %}
+                    <ul class="talk-slots">
+                        {% for talk in talk_slots %}
+                            <li class="talk-slot">
+                                {{ talk.start|date:"Y-m-d" }}, {{ talk.start|date:"H:i" }}–{{ talk.end|date:"H:i" }}, {{ talk.room.name }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                {% if recording_iframe %}
+                    {{ recording_iframe|safe }}
+                {% endif %}
+                <section class="abstract">
+                    {{ submission.abstract|rich_text }}
+                </section>
+                {% if submission.abstract and submission.description %}
+                    <hr />
+                {% endif %}
+                <section class="description">
+                    {{ submission.description|rich_text }}
+                </section>
+                {% if answers %}
+                    <hr />
+                    <section class="answers">
+                        {% for answer in answers %}
+                            <span class="question"><strong>{{ answer.question.question }}</strong></span>
+                            <span class="answer">– {% include "common/question_answer.html" with answer=answer %}</span>
+                        {% endfor %}
+                {% endif %}
             </section>
             {% if submission.active_resources %}
                 <section class="resources">
@@ -105,7 +105,7 @@
                             <i class="fa fa-file-o"></i>
                             {{ resource.description }}
                         </a>
-                        {% endwith %}{% else %}
+                    {% endwith %}{% else %}
                         <ul>
                             {% for resource in submission.active_resources %}
                                 <li>
@@ -127,5 +127,5 @@
             {% include "agenda/speaker_block.html" with speaker=speaker.talk_profile sessions=speaker.other_submissions add_links=True filter_talks=True %}
         {% endfor %}
     {% endif %}
-</article>
+    </article>
 {% endblock %}

@@ -31,27 +31,27 @@
         </thead>
         <tbody>
             {% for mail in mails %}
-            <tr>
-                <td>
-                    <a href="{{ mail.urls.base }}">
-                        {{ mail.subject }}
-                    </a>
-                </td>
-                <td>
-                    {% for user in mail.to_users.all %}
-                    {% if user in request.event.submitters %}
-                        <a href="{% url "orga:speakers.view" event=request.event.slug pk=user.pk %}">
-                            {{ user }}
-                        </a>{% else %}{{ user }}{% endif %}{% if not forloop.last or mail.to %}, {% endif %}
-                    {% endfor %}
-                    {% if mail.to %}
-                        {{ mail.to }}
-                    {% endif %}
-                </td>
-                <td>
-                    {{ mail.sent }}
-                </td>
-            </tr>
+                <tr>
+                    <td>
+                        <a href="{{ mail.urls.base }}">
+                            {{ mail.subject }}
+                        </a>
+                    </td>
+                    <td>
+                        {% for user in mail.to_users.all %}
+                            {% if user in request.event.submitters %}
+                                <a href="{% url "orga:speakers.view" event=request.event.slug pk=user.pk %}">
+                                    {{ user }}
+                                </a>{% else %}{{ user }}{% endif %}{% if not forloop.last or mail.to %}, {% endif %}
+                        {% endfor %}
+                        {% if mail.to %}
+                            {{ mail.to }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {{ mail.sent }}
+                    </td>
+                </tr>
             {% endfor %}
         </tbody>
     </table>

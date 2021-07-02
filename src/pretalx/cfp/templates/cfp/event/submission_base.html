@@ -35,21 +35,21 @@
             {% block inner %}
             {% endblock %}
             {% block buttons %}
-            <div class="row wizard-row">
-                <div class="col-md-3 ml-auto">
-                    <button type="submit" class="btn btn-block btn-success btn-lg">
-                        {% translate "Continue" %} &raquo;
-                    </button>
+                <div class="row wizard-row">
+                    <div class="col-md-3 ml-auto">
+                        <button type="submit" class="btn btn-block btn-success btn-lg">
+                            {% translate "Continue" %} &raquo;
+                        </button>
+                    </div>
+                    <div class="col-md-3">
+                        {% if prev_url %}
+                            <a href="{{ prev_url }}" class="btn btn-block btn-info btn-lg">
+                                &laquo; {% translate "Back" %}
+                            </a>
+                        {% endif %}
+                    </div>
                 </div>
-                <div class="col-md-3">
-                    {% if prev_url %}
-                        <a href="{{ prev_url }}" class="btn btn-block btn-info btn-lg">
-                            &laquo; {% translate "Back" %}
-                        </a>
-                    {% endif %}
-                </div>
-            </div>
-        {% endblock %}
-    </form>
+            {% endblock %}
+        </form>
     {% endblock %}
 {% endblock %}

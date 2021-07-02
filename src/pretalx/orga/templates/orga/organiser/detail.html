@@ -6,86 +6,86 @@
 {% block title %}{% if request.event %}{{ request.event.name }}{% else %}{{ request.organiser.name }}{% endif %}{% endblock %}
 
 {% block content %}
-<form method="post"><fieldset>
-    <legend>{% translate "Settings" %}</legend>
-    {% csrf_token %}
-    {% bootstrap_form form layout='event' %}
-    <div class="submit-group panel">
-        <span>
-            {% has_perm "person.is_administrator" request.user request.organiser as can_delete_event %}
-            {% if can_delete_event %}
-            <a class="btn btn-outline-danger btn-lg" href="{{ request.organiser.orga_urls.delete }}">
-                {% translate "Delete organiser" %}
-            </a>
-            {% endif %}
-        </span>
-        <span>
-            <button type="submit" class="btn btn-success btn-lg">
-                <i class="fa fa-check"></i>
-                {% translate "Save" %}
-            </button>
-        </span>
-    </div>
-</fieldset>
+    <form method="post"><fieldset>
+        <legend>{% translate "Settings" %}</legend>
+        {% csrf_token %}
+        {% bootstrap_form form layout='event' %}
+        <div class="submit-group panel">
+            <span>
+                {% has_perm "person.is_administrator" request.user request.organiser as can_delete_event %}
+                {% if can_delete_event %}
+                    <a class="btn btn-outline-danger btn-lg" href="{{ request.organiser.orga_urls.delete }}">
+                        {% translate "Delete organiser" %}
+                    </a>
+                {% endif %}
+            </span>
+            <span>
+                <button type="submit" class="btn btn-success btn-lg">
+                    <i class="fa fa-check"></i>
+                    {% translate "Save" %}
+                </button>
+            </span>
+        </div>
+    </fieldset>
 
-{% if request.organiser %}
+        {% if request.organiser %}
 
-<fieldset>
-    <legend>{% translate "Teams" %}</legend>
-    <table class="table table-hover table-sm table-responsive-md">
-        <thead>
-            <tr>
-                <th>{% translate "Team" %}</th>
-                <th>{% translate "Members" %}</th>
-                <th>{% translate "All events" %}</th>
-                <th>{% translate "Reviewer" %}</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for team in request.organiser.teams.all %}
-            <tr>
-                <td>
-                    <a href="{{ team.orga_urls.base }}">
-                        {{ team.name }}
-                        {% if request.user in team.members.all %}
-                        <i class="fa fa-star text-warning" title="{% translate "You are a member of this team" %}"></i>
-                        {% endif %}
-                    </a>
-                </td>
-                <td>{{ team.members.count }}</td>
-                <td>
-                    <i class="fa fa-{{ team.all_events|yesno:"check-circle text-success,times-circle text-danger" }}">
-                </td>
-                <td>
-                    <i class="fa fa-{{ team.is_reviewer|yesno:"check-circle text-success,times-circle text-danger" }}">
-                </td>
-                <td>
-                    <a href="{{ team.orga_urls.base }}"
-                        class="btn btn-sm btn-info"
-                        title="{% translate "Edit" %}">
-                        <i class="fa fa-edit"></i>
-                    </a>
-                    <a href="{{ team.orga_urls.delete }}"
-                        class="btn btn-sm btn-danger"
-                        title="{% translate "Delete" %}">
-                        <i class="fa fa-trash"></i>
-                    </a>
-                </td>
-            </a>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-    <div class="submit-group">
-        <span></span>
-        <span>
-            <a href="{{ request.organiser.orga_urls.new_team }}" class="btn btn-info">
-                <i class="fa fa-plus"></i> {% translate "New team" %}
-            </a>
-        </span>
-    </div>
-</fieldset>
-{% endif %}
-</form>
+            <fieldset>
+                <legend>{% translate "Teams" %}</legend>
+                <table class="table table-hover table-sm table-responsive-md">
+                    <thead>
+                        <tr>
+                            <th>{% translate "Team" %}</th>
+                            <th>{% translate "Members" %}</th>
+                            <th>{% translate "All events" %}</th>
+                            <th>{% translate "Reviewer" %}</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for team in request.organiser.teams.all %}
+                            <tr>
+                                <td>
+                                    <a href="{{ team.orga_urls.base }}">
+                                        {{ team.name }}
+                                        {% if request.user in team.members.all %}
+                                            <i class="fa fa-star text-warning" title="{% translate "You are a member of this team" %}"></i>
+                                        {% endif %}
+                                    </a>
+                                </td>
+                                <td>{{ team.members.count }}</td>
+                                <td>
+                                    <i class="fa fa-{{ team.all_events|yesno:"check-circle text-success,times-circle text-danger" }}">
+                                    </td>
+                                    <td>
+                                        <i class="fa fa-{{ team.is_reviewer|yesno:"check-circle text-success,times-circle text-danger" }}">
+                                        </td>
+                                        <td>
+                                            <a href="{{ team.orga_urls.base }}"
+                                                class="btn btn-sm btn-info"
+                                                title="{% translate "Edit" %}">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                            <a href="{{ team.orga_urls.delete }}"
+                                                class="btn btn-sm btn-danger"
+                                                title="{% translate "Delete" %}">
+                                                <i class="fa fa-trash"></i>
+                                            </a>
+                                        </td>
+                                    </a>
+                                </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="submit-group">
+                    <span></span>
+                    <span>
+                        <a href="{{ request.organiser.orga_urls.new_team }}" class="btn btn-info">
+                            <i class="fa fa-plus"></i> {% translate "New team" %}
+                        </a>
+                    </span>
+                </div>
+            </fieldset>
+        {% endif %}
+    </form>
 {% endblock %}

@@ -8,144 +8,144 @@
         {% translate "Export schedule data" %}
     </h2>
     <ul class="nav nav-tabs" id="myTab" role="tablist">
-      <li class="nav-item" role="presentation">
-          <a class="nav-link active" id="general-tab" data-toggle="tab" href="#general" role="tab" aria-controls="general" aria-selected="true">{% trans "General" %}</a>
-      </li>
-      <li class="nav-item" role="presentation">
-          <a class="nav-link" id="custom-tab" data-toggle="tab" href="#custom" role="tab" aria-controls="custom" aria-selected="false">{% trans "Custom" %}</a>
-      </li>
-      <li class="nav-item" role="presentation">
-          <a class="nav-link" id="api-tab" data-toggle="tab" href="#api" role="tab" aria-controls="api" aria-selected="false">{% trans "API" %}</a>
-      </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link active" id="general-tab" data-toggle="tab" href="#general" role="tab" aria-controls="general" aria-selected="true">{% trans "General" %}</a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" id="custom-tab" data-toggle="tab" href="#custom" role="tab" aria-controls="custom" aria-selected="false">{% trans "Custom" %}</a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" id="api-tab" data-toggle="tab" href="#api" role="tab" aria-controls="api" aria-selected="false">{% trans "API" %}</a>
+        </li>
     </ul>
     <div class="tab-content" id="myTabContent">
-      <div class="tab-pane fade show active" id="general" role="tabpanel" aria-labelledby="general-tab">
-        {% blocktranslate trimmed %}
-        pretalx provides a range of exports. If none of these match what you are looking
-        for, you can also provide a custom plugin to export the data – please ask
-        your administrator to install the plugin.
-        {% endblocktranslate %}
-        {% blocktranslate trimmed %}
-            If you are looking for exports of proposals, sessions or schedule data, please head
-            here:
-        {% endblocktranslate %}
-            <a class="btn btn-outline-info btn-sm" href="{{ request.event.orga_urls.speakers }}export/">{% trans "Speaker exports" %}</a>
-        {% if not request.event.current_schedule %}
-        <div class="alert alert-warning">
+        <div class="tab-pane fade show active" id="general" role="tabpanel" aria-labelledby="general-tab">
             {% blocktranslate trimmed %}
-            You haven't released a schedule yet – many of these data exporters only work on a released schedule.
+                pretalx provides a range of exports. If none of these match what you are looking
+                for, you can also provide a custom plugin to export the data – please ask
+                your administrator to install the plugin.
             {% endblocktranslate %}
-        </div>
-        {% endif %}
-        <ul>
-            {% for exporter in exporters %}
-            <li>
-                <a href="{{ exporter.urls.base }}">
-                    {% if exporter.icon|slice:":3" == "fa-" %}
-                        <i class="fa {{ exporter.icon }}"></i>
-                    {% else %}
-                        {{ exporter.icon }}
-                    {% endif %}
-                    {{ exporter.verbose_name }}
-                    {% if exporter.show_qrcode %}
-                        <span class="export-qrcode">
-                          <div class="btn btn-default btn-sm">
-                              <i class="fa fa-qrcode"></i>
-                          </div>
-                          <div class="export-qrcode-image btn btn-default">{{ exporter.get_qrcode }}</div>
-                        </span>
-                    {% endif %}
-                </a>
-            </li>
-            {% endfor %}
-        </ul>
-
-        <hr>
-        <h3>{% translate "HTML Export" %}</h3>
-
-        <p>
-        {% blocktranslate trimmed %}
-        The event schedule can be exported to a static HTML dump, so you can upload it
-        to a normal file-serving web server like nginx. This is done automatically on
-        schedule release, but you can also trigger that action here.
-        {% endblocktranslate %}
-        </p>
-
-        <div class="submit-group"><span></span><span>
-            <a href='{{ request.event.orga_urls.schedule_export_download }}' class="btn btn-lg btn-info">
-                <i class="fa fa-download"></i>
-                {% translate "Download ZIP" %}
-            </a>
-            <form action="{{ request.event.orga_urls.schedule_export_trigger }}" method="POST" class="d-inline-block">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-lg btn-success">
-                    <i class="fa fa-refresh"></i>
-                    {% translate "Regenerate Export" %}
-                </button>
-            </form>
-        </span>
-        </div>
-      </div>
-      <div class="tab-pane fade" id="custom" role="tabpanel" aria-labelledby="custom-tab">
-        <form method="post">
-            {% csrf_token %}
-            <fieldset>
-                <legend id="general">
-                    {% translate "Dataset" %}
-                </legend>
-                {% bootstrap_field form.target layout='event' %}
-            </fieldset>
-            <fieldset>
-                <legend id="general">
-                    {% translate "Data fields" %}
-                </legend>
-                {% for field in form.export_fields %}
-                    {% bootstrap_field field layout='event' %}
-                {% endfor %}
-            </fieldset>
-            <fieldset>
-                <legend id="general">
-                    {% translate "Export settings" %}
-                </legend>
-                {% bootstrap_field form.export_format layout='event' %}
-                <div id="data-delimiter">
-                {% bootstrap_field form.data_delimiter layout='event' %}
+            {% blocktranslate trimmed %}
+                If you are looking for exports of proposals, sessions or schedule data, please head
+                here:
+            {% endblocktranslate %}
+            <a class="btn btn-outline-info btn-sm" href="{{ request.event.orga_urls.speakers }}export/">{% trans "Speaker exports" %}</a>
+            {% if not request.event.current_schedule %}
+                <div class="alert alert-warning">
+                    {% blocktranslate trimmed %}
+                        You haven't released a schedule yet – many of these data exporters only work on a released schedule.
+                    {% endblocktranslate %}
                 </div>
-            </fieldset>
+            {% endif %}
+            <ul>
+                {% for exporter in exporters %}
+                    <li>
+                        <a href="{{ exporter.urls.base }}">
+                            {% if exporter.icon|slice:":3" == "fa-" %}
+                                <i class="fa {{ exporter.icon }}"></i>
+                            {% else %}
+                                {{ exporter.icon }}
+                            {% endif %}
+                            {{ exporter.verbose_name }}
+                            {% if exporter.show_qrcode %}
+                                <span class="export-qrcode">
+                                    <div class="btn btn-default btn-sm">
+                                        <i class="fa fa-qrcode"></i>
+                                    </div>
+                                    <div class="export-qrcode-image btn btn-default">{{ exporter.get_qrcode }}</div>
+                                </span>
+                            {% endif %}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
 
-            {% include "orga/submit_row.html" %}
-        </form>
-      </div>
+            <hr>
+            <h3>{% translate "HTML Export" %}</h3>
 
-    <div class="tab-pane fade" id="api" role="tabpanel" aria-labelledby="api-tab">
+            <p>
+                {% blocktranslate trimmed %}
+                    The event schedule can be exported to a static HTML dump, so you can upload it
+                    to a normal file-serving web server like nginx. This is done automatically on
+                    schedule release, but you can also trigger that action here.
+                {% endblocktranslate %}
+            </p>
 
-        <h3>{% translate "API" %}</h3>
+            <div class="submit-group"><span></span><span>
+                <a href='{{ request.event.orga_urls.schedule_export_download }}' class="btn btn-lg btn-info">
+                    <i class="fa fa-download"></i>
+                    {% translate "Download ZIP" %}
+                </a>
+                <form action="{{ request.event.orga_urls.schedule_export_trigger }}" method="POST" class="d-inline-block">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-lg btn-success">
+                        <i class="fa fa-refresh"></i>
+                        {% translate "Regenerate Export" %}
+                    </button>
+                </form>
+            </span>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="custom" role="tabpanel" aria-labelledby="custom-tab">
+            <form method="post">
+                {% csrf_token %}
+                <fieldset>
+                    <legend id="general">
+                        {% translate "Dataset" %}
+                    </legend>
+                    {% bootstrap_field form.target layout='event' %}
+                </fieldset>
+                <fieldset>
+                    <legend id="general">
+                        {% translate "Data fields" %}
+                    </legend>
+                    {% for field in form.export_fields %}
+                        {% bootstrap_field field layout='event' %}
+                    {% endfor %}
+                </fieldset>
+                <fieldset>
+                    <legend id="general">
+                        {% translate "Export settings" %}
+                    </legend>
+                    {% bootstrap_field form.export_format layout='event' %}
+                    <div id="data-delimiter">
+                        {% bootstrap_field form.data_delimiter layout='event' %}
+                    </div>
+                </fieldset>
 
-        <p>
-        {% translate "You can also use the API to export or use data." %}
-        </p>
+                {% include "orga/submit_row.html" %}
+            </form>
+        </div>
 
-        <p>{% blocktranslate trimmed %}
-            Some of the general exports are only accessible for organisers, or include
-            more information when accessed with your organiser account. If you want to
-            access the organiser version in automatic integrations, you'll have to
-            provide your authentication token just like in the API, like this:
-        {% endblocktranslate %}</p>
+        <div class="tab-pane fade" id="api" role="tabpanel" aria-labelledby="api-tab">
 
-        <pre> curl -H "Authorization: Token {{ request.user.auth_token.key }}" {{ request.event.urls.frab_xml.full }}
+            <h3>{% translate "API" %}</h3>
+
+            <p>
+                {% translate "You can also use the API to export or use data." %}
+            </p>
+
+            <p>{% blocktranslate trimmed %}
+                Some of the general exports are only accessible for organisers, or include
+                more information when accessed with your organiser account. If you want to
+                access the organiser version in automatic integrations, you'll have to
+                provide your authentication token just like in the API, like this:
+            {% endblocktranslate %}</p>
+
+            <pre> curl -H "Authorization: Token {{ request.user.auth_token.key }}" {{ request.event.urls.frab_xml.full }}
  curl -H "Authorization: Token {{ request.user.auth_token.key }}" {{ request.event.api_urls.submissions.full }} </pre>
 
-        <div class="submit-group"><span></span><span>
-            <a class="btn btn-lg btn-info" href="https://docs.pretalx.org/en/latest/api/index.html">
-                <i class="fa fa-book"></i>
-                {% translate "Documentation" %}
-            </a>
-            <a class="btn btn-lg btn-success" href="{{ request.event.api_urls.base }}">
-                {% translate "Go to API" %}
-            </a>
-        </span>
+            <div class="submit-group"><span></span><span>
+                <a class="btn btn-lg btn-info" href="https://docs.pretalx.org/en/latest/api/index.html">
+                    <i class="fa fa-book"></i>
+                    {% translate "Documentation" %}
+                </a>
+                <a class="btn btn-lg btn-success" href="{{ request.event.api_urls.base }}">
+                    {% translate "Go to API" %}
+                </a>
+            </span>
+            </div>
         </div>
-      </div>
     </div>
     <script defer src="{% static "orga/js/speaker_export.js" %}"></script>
 

@@ -2,9 +2,9 @@
 {% load static %}
 
 {% with html_locale|slice:":2" as calendar_locale %}
-{% if calendar_locale and calendar_locale != "en" %}
-    <script id="calendar-locale" data-locale="{{ calendar_locale }}" src="{% static "vendored/fullcalendar/"|add:calendar_locale|add:".js" %}"></script>
-{% endif %}
+    {% if calendar_locale and calendar_locale != "en" %}
+        <script id="calendar-locale" data-locale="{{ calendar_locale }}" src="{% static "vendored/fullcalendar/"|add:calendar_locale|add:".js" %}"></script>
+    {% endif %}
 {% endwith %}
 {% compress js %}
     <script defer src="{% static "vendored/fullcalendar/fullcalendar.min.js" %}"></script>

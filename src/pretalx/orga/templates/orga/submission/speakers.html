@@ -22,47 +22,47 @@
     </div>{% endif %}
 
     {% for speaker in speakers %}
-    <div class="card"><div class="card-body">
-        <h3 class="card-title">
-            <a href="{% url "orga:speakers.view" event=request.event.slug pk=speaker.id %}">
-                {{ speaker.name }}
-            </a>
-        </h3>
-        {% if request.event.settings.cfp_request_biography %}
+        <div class="card"><div class="card-body">
+            <h3 class="card-title">
+                <a href="{% url "orga:speakers.view" event=request.event.slug pk=speaker.id %}">
+                    {{ speaker.name }}
+                </a>
+            </h3>
+            {% if request.event.settings.cfp_request_biography %}
+                <p class="card-text">
+                    <h5>{% translate "Biography" %}:</h5>
+                    {{ speaker.biography|rich_text|default:"-" }}
+                </p>
+            {% endif %}
             <p class="card-text">
-                <h5>{% translate "Biography" %}:</h5>
-                {{ speaker.biography|rich_text|default:"-" }}
+                {% if speaker.other_submissions %}
+                    <h5>{% translate "Other proposals by this speaker:" %}</h5>
+                    <ul>
+                        {% for submission in speaker.other_submissions %}
+                            <li>
+                                <a href="{{ submission.orga_urls.base }}">{{ submission.title }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
             </p>
-        {% endif %}
-        <p class="card-text">
-        {% if speaker.other_submissions %}
-            <h5>{% translate "Other proposals by this speaker:" %}</h5>
-            <ul>
-                {% for submission in speaker.other_submissions %}
-                <li>
-                    <a href="{{ submission.orga_urls.base }}">{{ submission.title }}</a>
-                </li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-        </p>
-        {% if can_edit_speakers %}
-        <a href="{% url "orga:speakers.view" event=request.event.slug pk=speaker.id %}"
-            class="btn btn-info">
-            <i class="fa fa-edit"></i> {% translate "Edit" %}
-        </a>
-        <a href="{{ submission.orga_urls.delete_speaker }}?id={{ speaker.id }}"
-            class="btn btn-danger">
-            <i class="fa fa-trash"></i> {% translate "Remove" %}
-        </a>
-        {% endif %}
-    </div></div>
+            {% if can_edit_speakers %}
+                <a href="{% url "orga:speakers.view" event=request.event.slug pk=speaker.id %}"
+                    class="btn btn-info">
+                    <i class="fa fa-edit"></i> {% translate "Edit" %}
+                </a>
+                <a href="{{ submission.orga_urls.delete_speaker }}?id={{ speaker.id }}"
+                    class="btn btn-danger">
+                    <i class="fa fa-trash"></i> {% translate "Remove" %}
+                </a>
+            {% endif %}
+        </div></div>
     {% endfor %}
 
 
     <span id="vars" remoteUrl="{{ request.event.orga_urls.users }}?search=%QUERY"></span>
     {% compress js %}
-    <script defer src="{% static "vendored/typeahead.bundle.min.js" %}"></script>
-    <script defer src="{% static "orga/js/speakers.js" %}"></script>
+        <script defer src="{% static "vendored/typeahead.bundle.min.js" %}"></script>
+        <script defer src="{% static "orga/js/speakers.js" %}"></script>
     {% endcompress %}
 {% endblock %}

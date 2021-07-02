@@ -7,42 +7,42 @@
 
 {% block title %}{{ form.instance.user.get_display_name }} :: {{ request.event.name }}{% endblock %}
 {% block content %}
-{% if form.biography %}
-    <script src="{% static "vendored/marked.min.js" %}" defer></script> {# do not compress #}
-    <script src="{% static "common/js/markdown.js" %}" defer></script>
-{% endif %}
-{% block alternate_link %}
-    <link rel="alternate" type="application/json" title="{{ request.event.name }} API" href="{{ request.event.api_urls.speakers.full }}{{ form.instance.code }}" />
-{% endblock %}
+    {% if form.biography %}
+        <script src="{% static "vendored/marked.min.js" %}" defer></script> {# do not compress #}
+        <script src="{% static "common/js/markdown.js" %}" defer></script>
+    {% endif %}
+    {% block alternate_link %}
+        <link rel="alternate" type="application/json" title="{{ request.event.name }} API" href="{{ request.event.api_urls.speakers.full }}{{ form.instance.code }}" />
+    {% endblock %}
 
-{% has_perm 'orga.change_speaker' request.user form.instance as can_edit_speaker %}
+    {% has_perm 'orga.change_speaker' request.user form.instance as can_edit_speaker %}
     <h2>
         {{ form.instance.user.get_display_name }} ({{ submissions.count }}
         {% blocktranslate trimmed count count=submissions.count %}
-        proposal
+            proposal
         {% plural %}
-        proposals
+            proposals
         {% endblocktranslate %})
     </h2>
     <div class="alert alert-info col-md-9 ml-auto">
         <span>
-        <h5>
-            {% blocktranslate trimmed count count=submissions.count %}
-            Proposal
-            {% plural %}
-            Proposals
-            {% endblocktranslate %})
-        </h5>
-        <ul>
-            {% for submission in submissions %}
-            <li>
-                <a href="{{ submission.orga_urls.base }}">
-                    {{ submission.title }}
-                    ({% include "cfp/event/fragment_state.html" with state=submission.state %})
-                </a>
-            </li>
-            {% endfor %}
-        </ul>
+            <h5>
+                {% blocktranslate trimmed count count=submissions.count %}
+                    Proposal
+                {% plural %}
+                    Proposals
+                {% endblocktranslate %})
+            </h5>
+            <ul>
+                {% for submission in submissions %}
+                    <li>
+                        <a href="{{ submission.orga_urls.base }}">
+                            {{ submission.title }}
+                            ({% include "cfp/event/fragment_state.html" with state=submission.state %})
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
         </span>
     </div>
     <form method="post" enctype="multipart/form-data">
@@ -59,28 +59,28 @@
         </div>
         {% if form.biography %}{% bootstrap_field form.biography layout='event' %}{% endif %}
         {% if form.availabilities %}
-        {% compress js %}
-            <script defer src="{% static "vendored/moment-with-locales.js" %}"></script>
-            <script defer src="{% static "vendored/moment-timezone-with-data-2012-2022.js" %}"></script>
-        {% endcompress %}
-        {% include "common/availabilities.html" %}
-        {% bootstrap_field form.availabilities layout='event' %}
+            {% compress js %}
+                <script defer src="{% static "vendored/moment-with-locales.js" %}"></script>
+                <script defer src="{% static "vendored/moment-timezone-with-data-2012-2022.js" %}"></script>
+            {% endcompress %}
+            {% include "common/availabilities.html" %}
+            {% bootstrap_field form.availabilities layout='event' %}
         {% endif %}
         {% bootstrap_form questions_form layout='event' %}
-    <div class="submit-group panel">
-        <span>
-            <a class="btn btn-info btn-lg" href="{{ request.event.orga_urls.compose_mails }}?email={{ form.instance.user.email }}">
-            <i class="fa fa-envelope"></i>
-            {% translate "Compose mail" %}
-            </a>
-        </span>
-        <span>
-            <button type="submit" class="btn btn-success btn-lg">
-                <i class="fa fa-check"></i>
-                {% translate "Save" %}
-            </button>
-        </span>
-    </div>
+        <div class="submit-group panel">
+            <span>
+                <a class="btn btn-info btn-lg" href="{{ request.event.orga_urls.compose_mails }}?email={{ form.instance.user.email }}">
+                    <i class="fa fa-envelope"></i>
+                    {% translate "Compose mail" %}
+                </a>
+            </span>
+            <span>
+                <button type="submit" class="btn btn-success btn-lg">
+                    <i class="fa fa-check"></i>
+                    {% translate "Save" %}
+                </button>
+            </span>
+        </div>
     </form>
 
 

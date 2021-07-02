@@ -7,13 +7,13 @@
 
 {% block settings_content %}
     {% compress js %}
-    <script defer src="{% static "js/jquery.formset.js" %}"></script>
-    <script defer src="{% static "cfp/js/animateFormset.js" %}"></script>
-    <script defer src="{% static "vendored/moment-with-locales.js" %}"></script>
-    <script defer src="{% static "vendored/moment-timezone-with-data-2012-2022.js" %}"></script>
-    <script defer src="{% static "vendored/datetimepicker/bootstrap-datetimepicker.js" %}"></script>
-    <script defer src="{% static "orga/js/datetimepicker.js" %}"></script>
-    <script defer src="{% static "orga/js/reviewSettings.js" %}"></script>
+        <script defer src="{% static "js/jquery.formset.js" %}"></script>
+        <script defer src="{% static "cfp/js/animateFormset.js" %}"></script>
+        <script defer src="{% static "vendored/moment-with-locales.js" %}"></script>
+        <script defer src="{% static "vendored/moment-timezone-with-data-2012-2022.js" %}"></script>
+        <script defer src="{% static "vendored/datetimepicker/bootstrap-datetimepicker.js" %}"></script>
+        <script defer src="{% static "orga/js/datetimepicker.js" %}"></script>
+        <script defer src="{% static "orga/js/reviewSettings.js" %}"></script>
     {% endcompress %}
     <form method="post" class="d-flex flex-column">
         {% csrf_token %}
@@ -21,9 +21,9 @@
         <h2>{% translate "Review settings" %}</h2>
         <div class="alert alert-info col-md-9 ml-auto">
             {% blocktranslate trimmed %}
-            If you require neither a review score nor a review text, reviewers will
-            be offered an additional {{ quotation_open }}Abstain{{ quotation_close }}
-            button when reviewing proposals.
+                If you require neither a review score nor a review text, reviewers will
+                be offered an additional {{ quotation_open }}Abstain{{ quotation_close }}
+                button when reviewing proposals.
             {% endblocktranslate %}
         </div>
         {% bootstrap_form form layout='event' %}
@@ -39,11 +39,11 @@
         <h2>{% translate "Review scoring" %}</h2>
         <div class="alert alert-info">
             <p>
-            {% blocktranslate trimmed %}
-            You can ask reviewers to provide one or multiple scores. If you ask for multiple scores,
-            they will be added up to a final total score. If you want, this total score can be weighted.
-            Currently, the total score is calculated as:
-            {% endblocktranslate %}
+                {% blocktranslate trimmed %}
+                    You can ask reviewers to provide one or multiple scores. If you ask for multiple scores,
+                    they will be added up to a final total score. If you want, this total score can be weighted.
+                    Currently, the total score is calculated as:
+                {% endblocktranslate %}
                 <span class="text-center d-block">
                     <strong><span id="total-score"></span></strong>
                 </span>
@@ -51,208 +51,208 @@
         </div>
         {# TODO warn about changing score categories #}
         <div id="score-formset" class="formset" data-formset data-formset-prefix="{{ scores_formset.prefix }}">
-        {{ scores_formset.management_form }}
-        {% bootstrap_formset_errors scores_formset %}
-        <div data-formset-body class="card"><div class="list-group">
-            {% for form in scores_formset %}
-                <div data-formset-form class="score-group list-group-item">
-                    <h3 class="d-flex offset-md-3 flex-wrap align-items-start">
-                        <span class="mr-2 ml-2">{% translate "Review Score category" %}</span>
-                        {% bootstrap_field form.name form_group_class="" layout="inline" %}
-                        {% if action != 'view' %}
-                        <a href="{{ form.instance.urls.delete }}"
-                           class="btn btn-danger ml-auto"
-                           title="{% translate "Delete score category" %}">
-                            <i class="fa fa-trash"></i>
-                        </a>
-                        {% endif %}
-                    </h3>
-                    <div class="sr-only">
-                        {{ form.id }}
-                        {{ form.new_scores }}
-                        {% bootstrap_field form.DELETE form_group_class="" layout="event" %}
-                    </div>
-                    <div class="score-row ml-auto score-input{% if action == 'view' %} disabled{% endif %}">
-                        {% bootstrap_form_errors form %}
-                        {% bootstrap_field form.is_independent layout="event" form_group_class="" %}
-                        {% bootstrap_field form.weight layout="event" form_group_class="" %}
-                        {% bootstrap_field form.required layout="event" form_group_class="" %}
-                        {% bootstrap_field form.active layout="event" form_group_class="" %}
+            {{ scores_formset.management_form }}
+            {% bootstrap_formset_errors scores_formset %}
+            <div data-formset-body class="card"><div class="list-group">
+                {% for form in scores_formset %}
+                    <div data-formset-form class="score-group list-group-item">
+                        <h3 class="d-flex offset-md-3 flex-wrap align-items-start">
+                            <span class="mr-2 ml-2">{% translate "Review Score category" %}</span>
+                            {% bootstrap_field form.name form_group_class="" layout="inline" %}
+                            {% if action != 'view' %}
+                                <a href="{{ form.instance.urls.delete }}"
+                                    class="btn btn-danger ml-auto"
+                                    title="{% translate "Delete score category" %}">
+                                    <i class="fa fa-trash"></i>
+                                </a>
+                            {% endif %}
+                        </h3>
+                        <div class="sr-only">
+                            {{ form.id }}
+                            {{ form.new_scores }}
+                            {% bootstrap_field form.DELETE form_group_class="" layout="event" %}
+                        </div>
+                        <div class="score-row ml-auto score-input{% if action == 'view' %} disabled{% endif %}">
+                            {% bootstrap_form_errors form %}
+                            {% bootstrap_field form.is_independent layout="event" form_group_class="" %}
+                            {% bootstrap_field form.weight layout="event" form_group_class="" %}
+                            {% bootstrap_field form.required layout="event" form_group_class="" %}
+                            {% bootstrap_field form.active layout="event" form_group_class="" %}
 
-                        {% if form.limit_tracks %}{% bootstrap_field form.limit_tracks layout="event" form_group_class="" %}{% endif %}
+                            {% if form.limit_tracks %}{% bootstrap_field form.limit_tracks layout="event" form_group_class="" %}{% endif %}
 
-                        {% for label_pair in form.get_label_fields %}
-                            <div class="row">
-                                {% if forloop.first %}
-                                <label class="col-md-3 col-form-label">
-                                    {% trans "Scores" %}
-                                </label>
-                                {% endif %}
-                                <div class="col-md-9 ml-auto d-flex">
-                                    {% bootstrap_field label_pair.0 layout="inline" form_group_class="mr-2 ml-0 pl-0 col-md-1" %}
-                                    {% bootstrap_field label_pair.1 layout="inline" form_group_class="" %}
+                            {% for label_pair in form.get_label_fields %}
+                                <div class="row">
                                     {% if forloop.first %}
-                                        <div class="new-score btn btn-info ml-auto"><i class="fa fa-plus"></i></div>
+                                        <label class="col-md-3 col-form-label">
+                                            {% trans "Scores" %}
+                                        </label>
                                     {% endif %}
+                                    <div class="col-md-9 ml-auto d-flex">
+                                        {% bootstrap_field label_pair.0 layout="inline" form_group_class="mr-2 ml-0 pl-0 col-md-1" %}
+                                        {% bootstrap_field label_pair.1 layout="inline" form_group_class="" %}
+                                        {% if forloop.first %}
+                                            <div class="new-score btn btn-info ml-auto"><i class="fa fa-plus"></i></div>
+                                        {% endif %}
+                                    </div>
                                 </div>
-                            </div>
-                        {% empty %}
-                            <div class="row">
-                                <label class="col-md-3 col-form-label">
-                                    {% trans "Scores" %}
-                                </label>
-                                <div class="col-md-9 ml-auto d-flex">
-                                    <div class="new-score btn btn-info ml-auto"><i class="fa fa-plus"></i></div>
+                            {% empty %}
+                                <div class="row">
+                                    <label class="col-md-3 col-form-label">
+                                        {% trans "Scores" %}
+                                    </label>
+                                    <div class="col-md-9 ml-auto d-flex">
+                                        <div class="new-score btn btn-info ml-auto"><i class="fa fa-plus"></i></div>
+                                    </div>
                                 </div>
-                            </div>
-                        {% endfor %}
+                            {% endfor %}
+                        </div>
                     </div>
-                </div>
-            {% endfor %}
-        </div>
-        <script type="form-template" data-formset-empty-form>
-            {% escapescript %}
-                <div data-formset-form class="score-group list-group-item">
-                    <h3 class="d-flex offset-md-3 flex-wrap align-items-start">
+                {% endfor %}
+            </div>
+                <script type="form-template" data-formset-empty-form>
+                    {% escapescript %}
+                        <div data-formset-form class="score-group list-group-item">
+                        <h3 class="d-flex offset-md-3 flex-wrap align-items-start">
                         <span class="mr-2 ml-2">{% translate "Score Category" %}</span>
                         {% bootstrap_field scores_formset.empty_form.name form_group_class="" layout="inline" %}
                         {% if action != 'view' %}
-                        <div class="score-delete ml-auto">
+                            <div class="score-delete ml-auto">
                             <button type="button" class="btn btn-danger" data-formset-delete-button>
-                                <i class="fa fa-trash"></i></button>
-                        </div>
+                            <i class="fa fa-trash"></i></button>
+                            </div>
                         {% endif %}
-                    </h3>
-                    <div class="sr-only">
+                        </h3>
+                        <div class="sr-only">
                         {{ scores_formset.empty_form.id }}
                         {{ scores_formset.empty_form.new_scores }}
                         {% bootstrap_field scores_formset.empty_form.DELETE form_group_class="" layout="event" %}
-                    </div>
-                    <div class="score-row ml-auto score-input">
+                        </div>
+                        <div class="score-row ml-auto score-input">
                         {% bootstrap_field scores_formset.empty_form.is_independent layout="event" form_group_class="" %}
                         {% bootstrap_field scores_formset.empty_form.weight layout="event" form_group_class="" %}
                         {% bootstrap_field scores_formset.empty_form.required layout="event" form_group_class="" %}
                         {% bootstrap_field scores_formset.empty_form.active layout="event" form_group_class="" %}
                         <div class="row">
-                            <label class="col-md-3 col-form-label">
-                                {% trans "Scores" %}
-                            </label>
-                            <div class="col-md-9 d-flex">
-                                <div class="new-score btn btn-info ml-auto"><i class="fa fa-plus"></i></div>
-                            </div>
+                        <label class="col-md-3 col-form-label">
+                        {% trans "Scores" %}
+                        </label>
+                        <div class="col-md-9 d-flex">
+                        <div class="new-score btn btn-info ml-auto"><i class="fa fa-plus"></i></div>
                         </div>
-                    </div>
-                </div>
-            {% endescapescript %}
-        </script>
-        </div>
-        {% if action == "edit" or action == "create" %}
-            <div class="list-group-item d-flex">
-                <button type="button" id="score-add" class="btn btn-lg btn-info ml-auto mr-4" data-formset-add>
-                    <i class="fa fa-plus"></i> {% translate "Add another score category" %}
-                </button>
-                <button type="submit" class="btn btn-lg btn-success">{% translate "Save" %}</button>
+                        </div>
+                        </div>
+                        </div>
+                    {% endescapescript %}
+                </script>
             </div>
-        {% endif %}
+            {% if action == "edit" or action == "create" %}
+                <div class="list-group-item d-flex">
+                    <button type="button" id="score-add" class="btn btn-lg btn-info ml-auto mr-4" data-formset-add>
+                        <i class="fa fa-plus"></i> {% translate "Add another score category" %}
+                    </button>
+                    <button type="submit" class="btn btn-lg btn-success">{% translate "Save" %}</button>
+                </div>
+            {% endif %}
         </div>
 
         <h2>{% translate "Review phases" %}</h2>
         <div class="alert alert-info">
             {% blocktranslate trimmed %}
-            Review phases allow you to structure your review process.
-            By default, there are two review phases: The review itself, and
-            the selection process once the review phase is over. But you could for example
-            add another review and selection phase after that, if you require additional
-            review rounds.
+                Review phases allow you to structure your review process.
+                By default, there are two review phases: The review itself, and
+                the selection process once the review phase is over. But you could for example
+                add another review and selection phase after that, if you require additional
+                review rounds.
             {% endblocktranslate %}
         </div>
         <div class="formset" data-formset data-formset-prefix="{{ phases_formset.prefix }}">
-        {{ phases_formset.management_form }}
-        {% bootstrap_formset_errors phases_formset %}
-        <div data-formset-body class="card"><div class="list-group">
-            {% for form in phases_formset %}
-                <div data-formset-form class="list-group-item">
-                    <h3 class="d-flex offset-md-3 flex-wrap">
-                        <span class="mr-2 ml-2">{% translate "Review Phase" %}</span>
-                        {% bootstrap_field form.name form_group_class="" layout="inline" %}
-                        {% if action != 'view' %}
-                        {% if not form.instance.is_active %}
-                            <a href="{{ form.instance.urls.activate }}"
-                               class="btn btn-outline-warning ml-auto mr-2 keep-scroll-position"
-                               title="{% translate "Activate phase" %}">
-                                <i class="fa fa-star"></i>
-                            </a>
-                        {% else %}
-                            <a href=""
-                               class="btn btn-warning ml-auto mr-2 keep-scroll-position"
-                               title="{% translate "Phase is active" %}">
-                                <i class="fa fa-star"></i>
-                            </a>
-                        {% endif %}
-                        <a href="{{ form.instance.urls.down }}"
-                           class="btn btn-outline-info mr-2 keep-scroll-position"
-                           title="{% translate "Move phase down" %}">
-                            <i class="fa fa-arrow-down"></i>
-                        </a>
-                        <a href="{{ form.instance.urls.up }}"
-                           class="btn btn-outline-info mr-2 keep-scroll-position"
-                           title="{% translate "Move phase up" %}">
-                            <i class="fa fa-arrow-up"></i>
-                        </a>
-                        <a href="{{ form.instance.urls.delete }}"
-                           class="btn btn-danger"
-                           title="{% translate "Delete phase" %}">
-                            <i class="fa fa-trash"></i>
-                        </a>
-                        {% endif %}
-                    </h3>
-                    <div class="sr-only">
-                        {{ form.id }}
-                        {% bootstrap_field form.DELETE form_group_class="" layout="event" %}
-                    </div>
-                    <div class="phase-option-row ml-auto">
-                        <div class="phase-option-input{% if action == 'view' %} disabled{% endif %}">
-                            {% bootstrap_form_errors form %}
-                            {% bootstrap_form form layout="event" form_group_class="" exclude="DELETE,name" %}
+            {{ phases_formset.management_form }}
+            {% bootstrap_formset_errors phases_formset %}
+            <div data-formset-body class="card"><div class="list-group">
+                {% for form in phases_formset %}
+                    <div data-formset-form class="list-group-item">
+                        <h3 class="d-flex offset-md-3 flex-wrap">
+                            <span class="mr-2 ml-2">{% translate "Review Phase" %}</span>
+                            {% bootstrap_field form.name form_group_class="" layout="inline" %}
+                            {% if action != 'view' %}
+                                {% if not form.instance.is_active %}
+                                    <a href="{{ form.instance.urls.activate }}"
+                                        class="btn btn-outline-warning ml-auto mr-2 keep-scroll-position"
+                                        title="{% translate "Activate phase" %}">
+                                        <i class="fa fa-star"></i>
+                                    </a>
+                                {% else %}
+                                    <a href=""
+                                        class="btn btn-warning ml-auto mr-2 keep-scroll-position"
+                                        title="{% translate "Phase is active" %}">
+                                        <i class="fa fa-star"></i>
+                                    </a>
+                                {% endif %}
+                                <a href="{{ form.instance.urls.down }}"
+                                    class="btn btn-outline-info mr-2 keep-scroll-position"
+                                    title="{% translate "Move phase down" %}">
+                                    <i class="fa fa-arrow-down"></i>
+                                </a>
+                                <a href="{{ form.instance.urls.up }}"
+                                    class="btn btn-outline-info mr-2 keep-scroll-position"
+                                    title="{% translate "Move phase up" %}">
+                                    <i class="fa fa-arrow-up"></i>
+                                </a>
+                                <a href="{{ form.instance.urls.delete }}"
+                                    class="btn btn-danger"
+                                    title="{% translate "Delete phase" %}">
+                                    <i class="fa fa-trash"></i>
+                                </a>
+                            {% endif %}
+                        </h3>
+                        <div class="sr-only">
+                            {{ form.id }}
+                            {% bootstrap_field form.DELETE form_group_class="" layout="event" %}
+                        </div>
+                        <div class="phase-option-row ml-auto">
+                            <div class="phase-option-input{% if action == 'view' %} disabled{% endif %}">
+                                {% bootstrap_form_errors form %}
+                                {% bootstrap_form form layout="event" form_group_class="" exclude="DELETE,name" %}
+                            </div>
                         </div>
                     </div>
-                </div>
-            {% endfor %}
-        </div>
-        <script type="form-template" data-formset-empty-form>
-            {% escapescript %}
-                <div data-formset-form class="list-group-item">
-                    <h3 class="d-flex offset-md-3">
+                {% endfor %}
+            </div>
+                <script type="form-template" data-formset-empty-form>
+                    {% escapescript %}
+                        <div data-formset-form class="list-group-item">
+                        <h3 class="d-flex offset-md-3">
                         <span class="mr-2 ml-2">{% translate "Review Phase" %}</span>
                         {% bootstrap_field phases_formset.empty_form.name form_group_class="" layout="inline" %}
                         {% if action != 'view' %}
-                        <div class="phase-option-delete ml-auto">
+                            <div class="phase-option-delete ml-auto">
                             <button type="button" class="btn btn-danger" data-formset-delete-button>
-                                <i class="fa fa-trash"></i></button>
-                        </div>
+                            <i class="fa fa-trash"></i></button>
+                            </div>
                         {% endif %}
-                    </h3>
-                    <div class="sr-only">
+                        </h3>
+                        <div class="sr-only">
                         {{ phases_formset.empty_form.id }}
                         {% bootstrap_field phases_formset.empty_form.DELETE form_group_class="" layout="event" %}
-                    </div>
-                    <div class="phase-option-row ml-auto">
-                        <div class="phase-option-input">
-                            {% bootstrap_form phases_formset.empty_form layout="event" form_group_class="" exclude="DELETE,name" %}
                         </div>
-                    </div>
-                </div>
-            {% endescapescript %}
-        </script>
-        </div>
-        {% if action == "edit" or action == "create" %}
-            <div class="list-group-item d-flex">
-                <button type="button" class="btn btn-lg btn-info ml-auto mr-4" data-formset-add>
-                    <i class="fa fa-plus"></i> {% translate "Add another phase" %}
-                </button>
-                <button type="submit" class="btn btn-lg btn-success">{% translate "Save" %}</button>
+                        <div class="phase-option-row ml-auto">
+                        <div class="phase-option-input">
+                        {% bootstrap_form phases_formset.empty_form layout="event" form_group_class="" exclude="DELETE,name" %}
+                        </div>
+                        </div>
+                        </div>
+                    {% endescapescript %}
+                </script>
             </div>
-        {% endif %}
+            {% if action == "edit" or action == "create" %}
+                <div class="list-group-item d-flex">
+                    <button type="button" class="btn btn-lg btn-info ml-auto mr-4" data-formset-add>
+                        <i class="fa fa-plus"></i> {% translate "Add another phase" %}
+                    </button>
+                    <button type="submit" class="btn btn-lg btn-success">{% translate "Save" %}</button>
+                </div>
+            {% endif %}
         </div>
     </form>
 {% endblock %}
