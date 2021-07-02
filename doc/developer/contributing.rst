@@ -59,6 +59,7 @@ you're not sure how to format something. They are configured via the
     black .
     docformatter --in-place -r .
     flake8 .
+    find -name "*.html" | xargs djhtml -i
 
 While we enforce no strict line length, please try to keep your lines **below
 120 characters**. Other than that, we generally subscribe to the `Django

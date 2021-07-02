@@ -134,6 +134,7 @@ setup(
             "black",
             "check-manifest",
             "coverage",
+            "djhtml",
             "docformatter",
             "Faker",
             "flake8",
