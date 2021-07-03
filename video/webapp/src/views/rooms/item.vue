@@ -52,7 +52,7 @@ export default {
 	components: { EditRoomSchedule, Chat, Exhibition, LandingPage, MarkdownPage, StaticPage, IframePage, ReactionsBar, ReactionsOverlay, RecordingsPrompt, UserListPage, Roulette, Polls, Questions },
 	props: {
 		room: Object,
-		modules: Array
+		modules: Object
 	},
 	data () {
 		return {
