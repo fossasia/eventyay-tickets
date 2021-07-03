@@ -54,6 +54,13 @@ export default {
 		pinQuestion ({state, rootState}, question) {
 			return api.call('question.pin', {room: rootState.activeRoom.id, id: question.id})
 		},
+		// redirect per question menu unpin to global unpin
+		unpinQuestion ({dispatch}) {
+			return dispatch('unpinAllQuestions')
+		},
+		unpinAllQuestions ({state, rootState}) {
+			return api.call('question.unpin', {room: rootState.activeRoom.id})
+		},
 		'api::question.created_or_updated' ({state}, {question}) {
 			const existingQuestion = state.questions.find(q => q.id === question.id)
 			if (existingQuestion) {
@@ -73,6 +80,13 @@ export default {
 			for (const question of state.questions) {
 				// unpin all other questions
 				question.is_pinned = question.id === id
+			}
+		},
+		'api::question.unpinned' ({state}) {
+			// TODO check room
+			for (const question of state.questions) {
+				// unpin all questions
+				question.is_pinned = false
 			}
 		}
 	}

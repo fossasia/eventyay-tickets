@@ -67,6 +67,13 @@ export default {
 		pinPoll ({state, rootState}, poll) {
 			return api.call('poll.pin', {room: rootState.activeRoom.id, id: poll.id})
 		},
+		// redirect per poll menu unpin to global unpin
+		unpinPoll ({dispatch}) {
+			return dispatch('unpinAllPolls')
+		},
+		unpinAllPolls ({state, rootState}) {
+			return api.call('poll.unpin', {room: rootState.activeRoom.id})
+		},
 		'api::poll.created_or_updated' ({state}, {poll}) {
 			const existingPoll = state.polls.find(q => q.id === poll.id)
 			if (existingPoll) {
@@ -87,6 +94,13 @@ export default {
 			for (const poll of state.polls) {
 				// unpin all other polls
 				poll.is_pinned = poll.id === id
+			}
+		},
+		'api::poll.unpinned' ({state}) {
+			// TODO check room
+			for (const poll of state.polls) {
+				// unpin all polls
+				poll.is_pinned = false
 			}
 		}
 	}

@@ -15,6 +15,7 @@
 			.close-poll(v-if="poll.state === 'open'", @click="doAction('close')") {{ $t('Poll:moderation-menu:close-poll:label') }}
 			.redraft-poll(v-if="poll.state === 'open'", @click="doAction('redraft')") {{ $t('Poll:moderation-menu:redraft-poll:label') }}
 			.pin-poll(v-if="poll.state === 'open' && !poll.is_pinned", @click="doAction('pin')") {{ $t('Poll:moderation-menu:pin-poll:label') }}
+			.unpin-poll(v-if="poll.state === 'open' && poll.is_pinned", @click="doAction('unpin')") {{ $t('Poll:moderation-menu:unpin-poll:label') }}
 			.archive-poll(v-if="poll.state !== 'archived'", @click="doAction('archive')") {{ $t('Poll:moderation-menu:archive-poll:label') }}
 			.unarchive-poll(v-if="poll.state === 'archived'", @click="doAction('unarchive')") {{ $t('Poll:moderation-menu:unarchive-poll:label') }}
 			.delete-poll(@click="doAction('delete')") {{ $t('Poll:moderation-menu:delete-poll:label') }}

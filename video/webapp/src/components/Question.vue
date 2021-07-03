@@ -10,7 +10,8 @@
 			bunt-icon-button(@click="toggle") dots-vertical
 		template(v-slot:menu)
 			.approve-question(v-if="question.state === 'mod_queue'", @click="approveQuestion") {{ $t('Question:moderation-menu:approve-question:label') }}
-			.approve-question(v-if="question.state === 'visible'", @click="pinQuestion") {{ $t('Question:moderation-menu:pin-question:label') }}
+			.pin-question(v-if="question.state === 'visible' && !question.is_pinned", @click="pinQuestion") {{ $t('Question:moderation-menu:pin-question:label') }}
+			.unpin-question(v-if="question.state === 'visible' && question.is_pinned", @click="unpinQuestion") {{ $t('Question:moderation-menu:unpin-question:label') }}
 			.archive-question(v-if="question.state !== 'archived'", @click="archiveQuestion") {{ $t('Question:moderation-menu:archive-question:label') }}
 			.unarchive-question(v-if="question.state === 'archived'", @click="unarchiveQuestion") {{ $t('Question:moderation-menu:unarchive-question:label') }}
 			.delete-question(@click="deleteQuestion") {{ $t('Question:moderation-menu:delete-question:label') }}
@@ -47,6 +48,10 @@ export default {
 		},
 		async pinQuestion () {
 			await this.$store.dispatch('question/pinQuestion', this.question)
+			this.modding = false
+		},
+		async unpinQuestion () {
+			await this.$store.dispatch('question/unpinQuestion', this.question)
 			this.modding = false
 		},
 		async archiveQuestion () {
