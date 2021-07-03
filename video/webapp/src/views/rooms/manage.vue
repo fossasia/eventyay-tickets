@@ -61,7 +61,7 @@ export default {
 	components: { Chat, MenuDropdown, Polls, Prompt, Questions },
 	props: {
 		room: Object,
-		modules: Array
+		modules: Object
 	},
 	provide: {
 		isManaging: true
