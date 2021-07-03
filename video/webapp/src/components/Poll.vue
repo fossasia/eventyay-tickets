@@ -63,7 +63,7 @@ export default {
 		async doAction (action) {
 			await this.$store.dispatch(`poll/${action}Poll`, this.poll)
 			this.showModerationMenu = false
-		},
+		}
 	}
 }
 </script>
@@ -129,7 +129,7 @@ export default {
 	.c-menu-dropdown
 		position: absolute
 		top: 4px
-		right: 0
+		right: 4px
 		display: none
 		z-index: 102
 		.bunt-icon-button
