@@ -5,8 +5,10 @@
 	.polls
 		.header
 			h3 Polls
-			bunt-icon-button(@click="showUrlPopup('poll')") presentation
-		bunt-button#btn-create-poll(@click="pollQuestion = ''; pollOptions = []; showCreatePollPrompt = true") Create A Poll
+			.actions
+				bunt-button#btn-create-poll(@click="pollQuestion = ''; pollOptions = []; showCreatePollPrompt = true") Create Poll
+				bunt-icon-button(@click="showUrlPopup('poll')") presentation
+
 		polls(v-if="modules['poll']", :module="modules['poll']")
 	.questions
 		.header
@@ -135,6 +137,7 @@ export default {
 			.actions
 				display: flex
 				gap: 8px
+				align-items: center
 			.bunt-icon-button
 				icon-button-style(style: clear)
 		.c-chat
@@ -142,9 +145,6 @@ export default {
 	.polls
 		#btn-create-poll
 			themed-button-primary()
-			margin: 16px 0
-			padding: 0 32px
-			align-self: center
 
 	.url-popup
 		card()
