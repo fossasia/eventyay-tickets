@@ -5,6 +5,7 @@ import PresentationMode from 'views/rooms/presentation'
 import PresentationModeChat from 'views/rooms/presentation/chat'
 import PresentationModePoll from 'views/rooms/presentation/poll'
 import PresentationModeQuestion from 'views/rooms/presentation/question'
+import RoomHeader from 'views/rooms/RoomHeader'
 import Room from 'views/rooms/item'
 import RoomManager from 'views/rooms/manage'
 import Channel from 'views/channels/item'
@@ -42,14 +43,19 @@ const routes = [{
 		component: Room
 	}, {
 		path: '/rooms/:roomId',
-		name: 'room',
-		component: Room,
-		props: true
-	}, {
-		path: '/rooms/:roomId/manage',
-		name: 'room:manage',
-		component: RoomManager,
-		props: true
+		component: RoomHeader,
+		props: true,
+		children: [{
+			path: '',
+			name: 'room',
+			component: Room,
+			props: true
+		}, {
+			path: 'manage',
+			name: 'room:manage',
+			component: RoomManager,
+			props: true
+		}]
 	}, {
 		path: '/channels/:channelId',
 		name: 'channel',

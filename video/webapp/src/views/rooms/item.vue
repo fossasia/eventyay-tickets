@@ -1,36 +1,29 @@
 <template lang="pug">
 .c-room(v-if="room", :class="{'standalone-chat': modules['chat.native'] && room.modules.length === 1}")
-	.ui-page-header.room-info(v-if="!modules['page.markdown'] && !modules['page.landing']")
-		.room-name {{ room.name }}
-		.room-session(v-if="currentSession") {{ currentSession.title }}
-		//- bunt-icon-button(v-if="$features.enabled('schedule-control')", @click="showEditSchedule = true") calendar_edit
-		link-icon-button(:to="{name: 'room:manage'}") movie-open-cog-outline
-		bunt-icon-button(@click="showRecordingsPrompt = true", :tooltip="$t('Room:recordings:tooltip')", tooltipPlacement="left", v-if="modules['call.bigbluebutton'] && hasPermission('room:bbb.recordings')") file-video-outline
-	.main
-		.stage(v-if="modules['livestream.native'] || modules['livestream.youtube'] || modules['livestream.iframe'] || modules['call.janus']")
-			.mediasource-placeholder
-			reactions-overlay(v-if="modules['livestream.native'] || modules['livestream.youtube'] || modules['livestream.iframe'] || modules['call.janus']")
-			.stage-tool-blocker(v-if="activeStageTool !== null", @click="activeStageTool = null")
-			.stage-tools(v-if="modules['livestream.native'] || modules['livestream.youtube'] || modules['livestream.iframe'] || modules['call.janus']")
-				reactions-bar(:expanded="true", @expand="activeStageTool = 'reaction'")
-				//- reactions-bar(:expanded="activeStageTool === 'reaction'", @expand="activeStageTool = 'reaction'")
-		.mediasource-placeholder(v-else-if="modules['call.bigbluebutton'] || modules['call.zoom']")
-		roulette(v-else-if="modules['networking.roulette'] && $features.enabled('roulette')", :module="modules['networking.roulette']", :room="room")
-		landing-page(v-else-if="modules['page.landing']", :module="modules['page.landing']")
-		markdown-page(v-else-if="modules['page.markdown']", :module="modules['page.markdown']")
-		static-page(v-else-if="modules['page.static']", :module="modules['page.static']")
-		UserListPage(v-else-if="modules['page.userlist']", :module="modules['page.userlist']")
-		iframe-page(v-else-if="modules['page.iframe']", :module="modules['page.iframe']")
-		exhibition(v-else-if="modules['exhibition.native']", :room="room")
-		chat(v-if="room.modules.length === 1 && modules['chat.native']", :room="room", :module="modules['chat.native']", mode="standalone", :key="room.id")
-		.room-sidebar(v-else-if="modules['chat.native'] || modules['question'] || modules['poll']", :class="unreadTabsClasses", role="complementary")
-			bunt-tabs(v-if="(!!modules['question'] + !!modules['poll'] + !!modules['chat.native']) > 1", :active-tab="activeSidebarTab")
-				bunt-tab(v-if="modules['chat.native']", id="chat", :header="$t('Room:sidebar:tabs-header:chat')", @selected="activeSidebarTab = 'chat'")
-				bunt-tab(v-if="modules['question']", id="questions", :header="$t('Room:sidebar:tabs-header:questions')", @selected="activeSidebarTab = 'questions'")
-				bunt-tab(v-if="modules['poll']", id="polls", :header="$t('Room:sidebar:tabs-header:polls')", @selected="activeSidebarTab = 'polls'")
-			chat(v-if="modules['chat.native']", v-show="activeSidebarTab === 'chat'", :room="room", :module="modules['chat.native']", mode="compact", :key="room.id", @change="changedTabContent('chat')")
-			questions(v-if="modules['question']", v-show="activeSidebarTab === 'questions'", :module="modules['question']", @change="changedTabContent('questions')")
-			polls(v-if="modules['poll']", v-show="activeSidebarTab === 'polls'", :module="modules['poll']", @change="changedTabContent('polls')")
+	.stage(v-if="modules['livestream.native'] || modules['livestream.youtube'] || modules['livestream.iframe'] || modules['call.janus']")
+		.mediasource-placeholder
+		reactions-overlay(v-if="modules['livestream.native'] || modules['livestream.youtube'] || modules['livestream.iframe'] || modules['call.janus']")
+		.stage-tool-blocker(v-if="activeStageTool !== null", @click="activeStageTool = null")
+		.stage-tools(v-if="modules['livestream.native'] || modules['livestream.youtube'] || modules['livestream.iframe'] || modules['call.janus']")
+			reactions-bar(:expanded="true", @expand="activeStageTool = 'reaction'")
+			//- reactions-bar(:expanded="activeStageTool === 'reaction'", @expand="activeStageTool = 'reaction'")
+	.mediasource-placeholder(v-else-if="modules['call.bigbluebutton'] || modules['call.zoom']")
+	roulette(v-else-if="modules['networking.roulette'] && $features.enabled('roulette')", :module="modules['networking.roulette']", :room="room")
+	landing-page(v-else-if="modules['page.landing']", :module="modules['page.landing']")
+	markdown-page(v-else-if="modules['page.markdown']", :module="modules['page.markdown']")
+	static-page(v-else-if="modules['page.static']", :module="modules['page.static']")
+	UserListPage(v-else-if="modules['page.userlist']", :module="modules['page.userlist']")
+	iframe-page(v-else-if="modules['page.iframe']", :module="modules['page.iframe']")
+	exhibition(v-else-if="modules['exhibition.native']", :room="room")
+	chat(v-if="room.modules.length === 1 && modules['chat.native']", :room="room", :module="modules['chat.native']", mode="standalone", :key="room.id")
+	.room-sidebar(v-else-if="modules['chat.native'] || modules['question'] || modules['poll']", :class="unreadTabsClasses", role="complementary")
+		bunt-tabs(v-if="(!!modules['question'] + !!modules['poll'] + !!modules['chat.native']) > 1", :active-tab="activeSidebarTab")
+			bunt-tab(v-if="modules['chat.native']", id="chat", :header="$t('Room:sidebar:tabs-header:chat')", @selected="activeSidebarTab = 'chat'")
+			bunt-tab(v-if="modules['question']", id="questions", :header="$t('Room:sidebar:tabs-header:questions')", @selected="activeSidebarTab = 'questions'")
+			bunt-tab(v-if="modules['poll']", id="polls", :header="$t('Room:sidebar:tabs-header:polls')", @selected="activeSidebarTab = 'polls'")
+		chat(v-if="modules['chat.native']", v-show="activeSidebarTab === 'chat'", :room="room", :module="modules['chat.native']", mode="compact", :key="room.id", @change="changedTabContent('chat')")
+		questions(v-if="modules['question']", v-show="activeSidebarTab === 'questions'", :module="modules['question']", @change="changedTabContent('questions')")
+		polls(v-if="modules['poll']", v-show="activeSidebarTab === 'polls'", :module="modules['poll']", @change="changedTabContent('polls')")
 	transition(name="prompt")
 		recordings-prompt(:room="room", v-if="showRecordingsPrompt", @close="showRecordingsPrompt = false")
 	edit-room-schedule(v-if="showEditSchedule", :room="room", :currentSession="currentSession", @close="showEditSchedule = false")
@@ -39,7 +32,6 @@
 // TODO
 // - questions without chat
 // - tab activity
-import {mapGetters, mapState} from 'vuex'
 import EditRoomSchedule from './EditRoomSchedule'
 import Chat from 'components/Chat'
 import LandingPage from 'components/LandingPage'
@@ -59,7 +51,8 @@ export default {
 	name: 'Room',
 	components: { EditRoomSchedule, Chat, Exhibition, LandingPage, MarkdownPage, StaticPage, IframePage, ReactionsBar, ReactionsOverlay, RecordingsPrompt, UserListPage, Roulette, Polls, Questions },
 	props: {
-		roomId: String
+		room: Object,
+		modules: Array
 	},
 	data () {
 		return {
@@ -75,30 +68,6 @@ export default {
 		}
 	},
 	computed: {
-		...mapGetters(['hasPermission']),
-		...mapState(['rooms']),
-		...mapGetters('schedule', ['sessions', 'sessionsScheduledNow']),
-		room () {
-			if (this.roomId === undefined) return this.rooms[0] // '/' is the first room
-			return this.rooms.find(room => room.id === this.roomId)
-		},
-		modules () {
-			return this.room?.modules.reduce((acc, module) => {
-				acc[module.type] = module
-				return acc
-			}, {})
-		},
-		currentSession () {
-			if (!this.$features.enabled('schedule-control')) return
-			let session
-			if (this.room.schedule_data) {
-				session = this.sessions?.find(session => session.id === this.room.schedule_data.session)
-			}
-			if (!session) {
-				session = this.sessionsScheduledNow?.find(session => session.room === this.room)
-			}
-			return session
-		},
 		unreadTabsClasses () {
 			return Object.entries(this.unreadTabs).filter(([tab, value]) => value).map(([tab]) => `tab-${tab}-unread`)
 		}
@@ -129,31 +98,7 @@ export default {
 .c-room
 	flex: auto
 	display: flex
-	flex-direction: column
-	background-color: $clr-white
 	min-height: 0
-	min-width: 0
-	.main
-		flex: auto
-		display: flex
-		min-height: 0
-	.room-info
-		padding: 0 24px
-		height: 56px
-		align-items: baseline
-		.room-name
-			font-size: 24px
-			line-height: 56px
-			font-weight: 600
-			display: flex
-			flex-direction: column
-		.room-session
-			margin-left: 8px
-			font-size: 18px
-		.bunt-icon-button
-			margin-left: 36px
-			icon-button-style(style: clear)
-			align-self: center
 	.stage
 		display: flex
 		flex-direction: column
