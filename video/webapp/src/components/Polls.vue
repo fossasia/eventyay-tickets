@@ -1,7 +1,7 @@
 <template lang="pug">
 .c-polls
-	.polls(v-if="polls && (module.config.active || hasPermission('room:poll.moderate'))", :class="{'can-vote': hasPermission('room:poll.vote')}", v-scrollbar.y="")
-		.empty-placeholder(v-if="polls.length === 0") {{ $t('Questions:empty-placeholder') }}
+	.polls(v-if="polls && module.config.active", :class="{'can-vote': hasPermission('room:poll.vote')}", v-scrollbar.y="")
+		.empty-placeholder(v-if="sortedPolls.length === 0") {{ $t('Questions:empty-placeholder') }}
 		poll(v-for="poll of sortedPolls", :poll="poll")
 </template>
 <script>

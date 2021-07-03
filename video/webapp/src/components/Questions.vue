@@ -12,8 +12,8 @@
 		template(v-else-if="!isManaging")
 			bunt-button#btn-ask-question(v-if="hasPermission('room:question.ask')", @click="question = ''; showAskingForm = true") {{ $t('Questions:ask-question-button:label') }}
 			//- v-else ?
-	.questions(v-if="questions && (module.config.active || hasPermission('room:question.moderate'))", :class="{'can-vote': hasPermission('room:question.vote')}", v-scrollbar.y="")
-		.empty-placeholder(v-if="questions.length === 0") {{ $t('Questions:empty-placeholder') }}
+	.questions(v-if="questions && module.config.active", :class="{'can-vote': hasPermission('room:question.vote')}", v-scrollbar.y="")
+		.empty-placeholder(v-if="sortedQuestions.length === 0") {{ $t('Questions:empty-placeholder') }}
 		question(v-for="question of sortedQuestions", :question="question")
 </template>
 <script>
@@ -44,14 +44,21 @@ export default {
 		...mapState('question', ['questions']),
 		...mapGetters(['hasPermission']),
 		sortedQuestions () {
-			const questions = this.questions.slice()
+			if (!this.questions) return
+			let questions
+			if (this.isManaging) {
+				questions = this.questions.slice()
+			} else {
+				// filter questions for moderators looking at the list like a normal attendee
+				questions = this.questions.filter(p => p.state === 'visible')
+			}
 			const weight = q => q.is_pinned + (q.state !== 'archived') + (q.state === 'mod_queue') // assume archived and mod_queue cannot be pinned
 			questions.sort((a, b) => weight(b) - weight(a) || new Date(b.timestamp) - new Date(a.timestamp))
 			return questions
 		}
 	},
 	watch: {
-		questions () {
+		sortedPolls () {
 			// HACK suppress firing event on `question.list`
 			if (this.hasLoaded) {
 				this.$emit('change')
