@@ -1,32 +1,29 @@
 <template lang="pug">
 .c-room-manager
-	.ui-page-header.room-info(v-if="!modules['page.markdown'] && !modules['page.landing']")
-		.room-name {{ room.name }}
-	.main
-		.schedule
-			h3 Schedule?
-		.polls
-			.header
-				h3 Polls
-				bunt-icon-button(@click="showUrlPopup('poll')") presentation
-			bunt-button#btn-create-poll(@click="pollQuestion = ''; pollOptions = []; showCreatePollPrompt = true") Create A Poll
-			polls(v-if="modules['poll']", :module="modules['poll']")
-		.questions
-			.header
-				h3 Questions
-				.actions
-					bunt-icon-button(@click="showUrlPopup('question')") presentation
-					menu-dropdown(v-if="hasPermission('room:question.moderate')", v-model="showQuestionsMenu", strategy="fixed")
-						template(v-slot:button="{toggle}")
-							bunt-icon-button(@click="toggle") dots-vertical
-						template(v-slot:menu)
-							.archive-all(@click="$store.dispatch('question/archiveAll')") {{ $t('Questions:moderator-actions:archive-all:label') }}
-			questions(v-if="modules['question']", :module="modules['question']")
-		.chat
-			.header
-				h3 Chat
-				bunt-icon-button(@click="showUrlPopup('chat')") presentation
-			chat(v-if="modules['chat.native']", :room="room", :module="modules['chat.native']", mode="compact", :key="room.id")
+	.schedule
+		h3 Schedule?
+	.polls
+		.header
+			h3 Polls
+			bunt-icon-button(@click="showUrlPopup('poll')") presentation
+		bunt-button#btn-create-poll(@click="pollQuestion = ''; pollOptions = []; showCreatePollPrompt = true") Create A Poll
+		polls(v-if="modules['poll']", :module="modules['poll']")
+	.questions
+		.header
+			h3 Questions
+			.actions
+				bunt-icon-button(@click="showUrlPopup('question')") presentation
+				menu-dropdown(v-if="hasPermission('room:question.moderate')", v-model="showQuestionsMenu", strategy="fixed")
+					template(v-slot:button="{toggle}")
+						bunt-icon-button(@click="toggle") dots-vertical
+					template(v-slot:menu)
+						.archive-all(@click="$store.dispatch('question/archiveAll')") {{ $t('Questions:moderator-actions:archive-all:label') }}
+		questions(v-if="modules['question']", :module="modules['question']")
+	.chat
+		.header
+			h3 Chat
+			bunt-icon-button(@click="showUrlPopup('chat')") presentation
+		chat(v-if="modules['chat.native']", :room="room", :module="modules['chat.native']", mode="compact", :key="room.id")
 	.ui-background-blocker(v-if="showPresentationUrlFor", @click="showPresentationUrlFor = null")
 	.url-popup(v-if="showPresentationUrlFor", ref="urlPopup", :class="{'url-copied': copiedUrl}")
 		.copy-success(v-if="copiedUrl") Copied!
@@ -63,7 +60,8 @@ export default {
 	name: 'RoomManager',
 	components: { Chat, MenuDropdown, Polls, Prompt, Questions },
 	props: {
-		roomId: String
+		room: Object,
+		modules: Array
 	},
 	provide: {
 		isManaging: true
@@ -79,19 +77,9 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['world', 'rooms', 'token']),
+		...mapState(['world', 'token']),
 		...mapGetters(['hasPermission']),
 		...mapGetters('schedule', ['sessions', 'sessionsScheduledNow']),
-		room () {
-			if (this.roomId === undefined) return this.rooms[0] // '/' is the first room
-			return this.rooms.find(room => room.id === this.roomId)
-		},
-		modules () {
-			return this.room?.modules.reduce((acc, module) => {
-				acc[module.type] = module
-				return acc
-			}, {})
-		},
 	},
 	methods: {
 		async showUrlPopup (type) {
@@ -123,25 +111,7 @@ export default {
 <style lang="stylus">
 .c-room-manager
 	display: flex
-	flex-direction: column
 	min-height: 0
-	background-color: $clr-white
-	.room-info
-		padding: 0 24px
-		height: 56px
-		align-items: baseline
-		.room-name
-			font-size: 24px
-			line-height: 56px
-			font-weight: 600
-			display: flex
-			flex-direction: column
-		.room-session
-			margin-left: 8px
-			font-size: 18px
-	.main
-		display: flex
-		min-height: 0
 	.schedule
 		flex: auto
 		margin-top: 360px
