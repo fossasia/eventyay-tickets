@@ -1,7 +1,7 @@
 <template lang="pug">
-.c-poll(:class="{draft: poll.state === 'draft', 'has-voted': poll.answers, pinned: poll.is_pinned, archived: poll.state === 'archived', managing: isManaging}", :style="{'--total-votes': totalVotes}")
+.c-poll(:class="[poll.state, {'has-voted': poll.answers, pinned: poll.is_pinned, managing: isManaging}]", :style="{'--total-votes': totalVotes}")
 	.question {{ poll.content }}
-	template(v-if="!isManaging && !poll.answers")
+	template(v-if="!isManaging && !poll.answers && poll.state === 'open'")
 		bunt-button.btn-option(v-for="option of poll.options", @click="$store.dispatch('poll/vote', {poll, option})") {{ option.content }}
 	template(v-else)
 		.option(v-for="option of poll.options", :class="{'most-votes': optionsWithMostVotes.includes(option.id)}")
@@ -14,13 +14,14 @@
 			.open-poll(v-if="['draft', 'closed'].includes(poll.state)", @click="doAction('open')") {{ $t('Poll:moderation-menu:open-poll:label') }}
 			.close-poll(v-if="poll.state === 'open'", @click="doAction('close')") {{ $t('Poll:moderation-menu:close-poll:label') }}
 			.redraft-poll(v-if="poll.state === 'open'", @click="doAction('redraft')") {{ $t('Poll:moderation-menu:redraft-poll:label') }}
-			.pin-poll(v-if="poll.state === 'open' && !poll.is_pinned", @click="doAction('pin')") {{ $t('Poll:moderation-menu:pin-poll:label') }}
-			.unpin-poll(v-if="poll.state === 'open' && poll.is_pinned", @click="doAction('unpin')") {{ $t('Poll:moderation-menu:unpin-poll:label') }}
+			.pin-poll(v-if="['open', 'closed'].includes(poll.state) && !poll.is_pinned", @click="doAction('pin')") {{ $t('Poll:moderation-menu:pin-poll:label') }}
+			.unpin-poll(v-if="poll.is_pinned", @click="doAction('unpin')") {{ $t('Poll:moderation-menu:unpin-poll:label') }}
 			.archive-poll(v-if="poll.state !== 'archived'", @click="doAction('archive')") {{ $t('Poll:moderation-menu:archive-poll:label') }}
 			.unarchive-poll(v-if="poll.state === 'archived'", @click="doAction('unarchive')") {{ $t('Poll:moderation-menu:unarchive-poll:label') }}
 			.delete-poll(@click="doAction('delete')") {{ $t('Poll:moderation-menu:delete-poll:label') }}
 </template>
 <script>
+// TODO show own vote
 import { mapGetters } from 'vuex'
 import MenuDropdown from 'components/MenuDropdown'
 
@@ -146,4 +147,14 @@ export default {
 			background-color: $clr-grey-100
 			.c-menu-dropdown
 				display: block
+		&.closed
+			&::after
+				content: 'closed'
+				display: block
+				position: absolute
+				right: 8px
+				top: 8px
+				font-size: 12px
+				color: $clr-secondary-text-light
+				font-weight: 600
 </style>
