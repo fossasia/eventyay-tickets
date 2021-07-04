@@ -1,7 +1,6 @@
 <template lang="pug">
 .c-room-manager
 	.schedule
-		h3 Schedule?
 	.polls
 		.header
 			h3 Polls
