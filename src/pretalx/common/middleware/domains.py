@@ -8,7 +8,7 @@ from django.contrib.sessions.middleware import (
 )
 from django.core.exceptions import DisallowedHost
 from django.db.models import Q
-from django.http import HttpResponseNotFound
+from django.http import Http404
 from django.http.request import split_domain_port
 from django.middleware.csrf import CsrfViewMiddleware as BaseCsrfMiddleware
 from django.shortcuts import get_object_or_404, redirect
@@ -86,7 +86,7 @@ class MultiDomainMiddleware:
                 events.sort(key=lambda x: x.date_from, reverse=True)
                 return redirect(events[0].urls.base.full())
             else:
-                return HttpResponseNotFound()
+                raise Http404()
         raise DisallowedHost(f"Unknown host: {host}")
 
     def __call__(self, request):
