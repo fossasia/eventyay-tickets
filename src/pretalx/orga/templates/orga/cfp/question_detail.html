@@ -66,35 +66,35 @@
         <div id="question-stats" class="d-flex mt-4 pt-4">
             {% if question.variant != "file" and grouped_answers|length < 50 %}
                 <div id="question-answers"></div>
+                <table class="table table-responsive">
+                    <thead>
+                        <th>{% translate "Answer" %}</th>
+                        <th>{% translate "Count" %}</th>
+                        <th class="text-center">{% translate "%" %}</th>
+                    </thead>
+                    <tbody>
+                        {% for answer in grouped_answers %}
+                            <tr>
+                                <td>
+                                    {% if question.target != "reviewer" %}
+                                        <a href="{{ base_search_url }}{% if answer.answer %}answer={{ answer.answer|urlencode }}{% else %}answer__options={{ answer.options|urlencode }}{% endif %}">
+                                    {% endif %}
+                                    {% if answer.answer %}{{ answer.answer|truncatechars:140 }}{% else %}{{ answer.options__answer|truncatechars:140 }}{% endif %}
+                                    {% if question.target != "reviewer" %}
+                                        </a>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    {{ answer.count }}
+                                </td>
+                                <td class="text-right">
+                                    {% widthratio answer.count answer_count 100 %}&nbsp;%
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                </div>
             {% endif %}
-            <table class="table table-responsive">
-                <thead>
-                    <th>{% translate "Answer" %}</th>
-                    <th>{% translate "Count" %}</th>
-                    <th class="text-center">{% translate "%" %}</th>
-                </thead>
-                <tbody>
-                    {% for answer in grouped_answers %}
-                        <tr>
-                            <td>
-                                {% if question.target != "reviewer" %}
-                                    <a href="{{ base_search_url }}{% if answer.answer %}answer={{ answer.answer|urlencode }}{% else %}answer__options={{ answer.options|urlencode }}{% endif %}">
-                                {% endif %}
-                                {% if answer.answer %}{{ answer.answer|truncatechars:140 }}{% else %}{{ answer.options__answer|truncatechars:140 }}{% endif %}
-                                {% if question.target != "reviewer" %}
-                                    </a>
-                                {% endif %}
-                            </td>
-                            <td class="text-center">
-                                {{ answer.count }}
-                            </td>
-                            <td class="text-right">
-                                {% widthratio answer.count answer_count 100 %}&nbsp;%
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
     {% endif %}
 {% endblock %}
