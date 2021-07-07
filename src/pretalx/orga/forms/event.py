@@ -264,20 +264,6 @@ class EventSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
             raise ValidationError(
                 _("Please do not choose the default domain as custom event domain.")
             )
-        known_domains = [
-            domain.lower()
-            for domain in set(
-                Event_SettingsStore.objects.filter(key="custom_domain")
-                .exclude(object=self.obj)
-                .values_list("value", flat=True)
-            )
-            if domain
-        ]
-        parsed_domains = [urlparse(domain).hostname for domain in known_domains]
-        if data in known_domains or data in parsed_domains:
-            raise ValidationError(
-                _("This domain is already in use for a different event.")
-            )
         if not data.startswith("https://"):
             data = data[len("http://") :] if data.startswith("http://") else data
             data = "https://" + data

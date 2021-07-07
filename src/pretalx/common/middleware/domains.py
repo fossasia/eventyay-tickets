@@ -7,6 +7,7 @@ from django.contrib.sessions.middleware import (
     SessionMiddleware as BaseSessionMiddleware,
 )
 from django.core.exceptions import DisallowedHost
+from django.db.models import Q
 from django.http.request import split_domain_port
 from django.middleware.csrf import CsrfViewMiddleware as BaseCsrfMiddleware
 from django.shortcuts import get_object_or_404, redirect
@@ -14,10 +15,10 @@ from django.urls import resolve
 from django.utils.cache import patch_vary_headers
 from django.utils.http import http_date
 
-from pretalx.event.models import Event
+from pretalx.event.models.event import Event, Event_SettingsStore
 
 LOCAL_HOST_NAMES = ("testserver", "localhost")
-ANY_DOMAIN_ALLOWED = ("robots.txt", "root.main")
+ANY_DOMAIN_ALLOWED = ("robots.txt",)
 
 
 class MultiDomainMiddleware:
@@ -71,6 +72,17 @@ class MultiDomainMiddleware:
             if default_port not in (80, 443):
                 default_domain = f"{default_domain}:{default_port}"
             return redirect(urljoin(default_domain, request.get_full_path()))
+
+        # If this domain is used as custom domain, redirect to most recent event
+        event_settings = Event_SettingsStore.objects.filter(
+            Q(value=f"{request.scheme}://{domain}")
+            | Q(value=f"{request.scheme}://{host}"),
+            key="custom_domain",
+        )
+        if event_settings:
+            events = [s.object for s in event_settings]
+            events.sort(key=lambda x: x.date_from, reverse=True)
+            return redirect(events[0].urls.base.full())
         raise DisallowedHost(f"Unknown host: {host}")
 
     def __call__(self, request):

@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` If you use custom domains, pretalx will automatically redirect the domain to the most recent event that uses this domain. This also means that you can configure multiple events with the same custom domain!
 - :feature:`656` You can now choose if you want to compare the median of review scores or the average/mean.
 - :feature:`313` Organisers can now create custom proposal and speaker exports (as either CSV or JSON), including any data they need.
 - :support:`-` If you use PostgreSQL, please make sure to be on at least PostgreSQL 10.
