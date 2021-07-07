@@ -325,6 +325,14 @@ footer {
     margin-right: 16px;
   }
 }
+.filter-form {
+  .form-group {
+    margin-right: 8px;
+    .form-control.is-valid {
+      background-image: none;
+    }
+  }
+}
 .resource-option-row,
 .resource-option-input {
   display: flex;
