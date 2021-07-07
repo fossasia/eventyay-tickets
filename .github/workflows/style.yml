@@ -113,7 +113,7 @@ jobs:
       - name: Install Dependencies
         run: pip3 install -Ue "src[dev]"
       - name: Run djhtml
-        run: 'find -name "*.html" | xargs djhtml -i'
+        run: 'find -name "*.html" | xargs djhtml -c'
         working-directory: ./src
   packaging:
     name: packaging

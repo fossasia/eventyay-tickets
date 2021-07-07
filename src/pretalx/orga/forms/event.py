@@ -17,7 +17,7 @@ from pretalx.common.css import validate_css
 from pretalx.common.forms.fields import ImageField
 from pretalx.common.mixins.forms import ReadOnlyFlag
 from pretalx.common.phrases import phrases
-from pretalx.event.models.event import Event, Event_SettingsStore
+from pretalx.event.models.event import Event
 from pretalx.orga.forms.widgets import HeaderSelect, MultipleLanguagesWidget
 from pretalx.submission.models import ReviewPhase, ReviewScore, ReviewScoreCategory
 
