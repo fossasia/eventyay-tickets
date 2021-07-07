@@ -566,6 +566,11 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
         return statistics.median(scores) if scores else None
 
     @cached_property
+    def mean_score(self):
+        scores = [r.score for r in self.reviews.all() if r.score is not None]
+        return round(statistics.fmean(scores), 1) if scores else None
+
+    @cached_property
     def score_categories(self):
         track = self.track
         track_filter = models.Q(limit_tracks__isnull=True)

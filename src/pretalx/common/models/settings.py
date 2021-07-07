@@ -92,6 +92,7 @@ hierarkey.add_default("cfp_abstract_max_length", None, int)
 hierarkey.add_default("cfp_description_max_length", None, int)
 hierarkey.add_default("cfp_biography_max_length", None, int)
 
+hierarkey.add_default("review_score_aggregate", "median", str)
 hierarkey.add_default("review_score_mandatory", "False", bool)
 hierarkey.add_default("review_text_mandatory", "False", bool)
 hierarkey.add_default(

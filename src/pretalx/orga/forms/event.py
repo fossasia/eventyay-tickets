@@ -408,6 +408,12 @@ class ReviewSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
     review_text_mandatory = forms.BooleanField(
         label=_("Require a review text"), required=False
     )
+    review_score_aggregate = forms.ChoiceField(
+        label=_("Score aggregation method"),
+        required=True,
+        choices=(("median", _("Median")), ("mean", _("Average (mean)"))),
+        widget=forms.RadioSelect,
+    )
     review_help_text = I18nFormField(
         label=_("Help text for reviewers"),
         help_text=_(

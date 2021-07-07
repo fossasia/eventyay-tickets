@@ -64,6 +64,10 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
         return queryset
 
     def get_queryset(self):
+        aggregate_method = self.request.event.settings.review_score_aggregate
+        statistics_method = (
+            statistics.median if aggregate_method == "median" else statistics.fmean
+        )
         queryset = self.request.event.submissions.filter(
             state__in=[
                 SubmissionStates.SUBMITTED,
@@ -99,8 +103,14 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
 
         for submission in queryset:
             if self.can_see_all_reviews:
-                submission.current_score = submission.median_score
-                if self.independent_categories:  # Assemble medians on the fly. Yay.
+                submission.current_score = (
+                    submission.median_score
+                    if aggregate_method == "median"
+                    else submission.mean_score
+                )
+                if (
+                    self.independent_categories
+                ):  # Assemble medians/means on the fly. Yay.
                     independent_ids = [cat.pk for cat in self.independent_categories]
                     mapping = defaultdict(list)
                     for review in submission.reviews.all():
@@ -108,7 +118,7 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
                             if score.category_id in independent_ids:
                                 mapping[score.category_id].append(score.value)
                     mapping = {
-                        key: statistics.median(value) for key, value in mapping.items()
+                        key: statistics_method(value) for key, value in mapping.items()
                     }
                     result = []
                     for category in self.independent_categories:

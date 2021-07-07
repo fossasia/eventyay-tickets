@@ -103,6 +103,11 @@ class ScheduleExportForm(ExportForm):
             label=_("Median score"),
             help_text=_("Median review score, if there have been reviews yet"),
         )
+        self.fields["mean_score"] = forms.BooleanField(
+            required=False,
+            label=_("Average (mean) score"),
+            help_text=_("Average review score, if there have been reviews yet"),
+        )
 
     @cached_property
     def questions(self):
@@ -123,6 +128,7 @@ class ScheduleExportForm(ExportForm):
             "start",
             "end",
             "median_score",
+            "mean_score",
         ]
 
     def get_queryset(self):
