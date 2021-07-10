@@ -9,7 +9,8 @@
 			bunt-icon-button(v-if="modules['call.bigbluebutton'] && hasPermission('room:bbb.recordings')", :tooltip="$t('Room:recordings:tooltip')", tooltipPlacement="bottom-end", @click="showRecordingsPrompt = true") file-video-outline
 			.button-group(v-if="canManage")
 				// TODO buntpapier does not support replace
-				bunt-link-button(:to="{name: 'room:manage'}", replace) manage
+				// hardlink params so home page alias works
+				bunt-link-button(:to="{name: 'room:manage', params: {roomId: room.id}}", replace) manage
 				bunt-link-button(:to="{name: 'room'}", replace) view
 	router-view(:room="room", :modules="modules")
 </template>
@@ -23,13 +24,8 @@ const PERMISSIONS_TO_MANAGE = [
 ]
 
 export default {
-	components: {},
 	props: {
 		roomId: String
-	},
-	data () {
-		return {
-		}
 	},
 	computed: {
 		...mapGetters(['hasPermission']),
@@ -62,13 +58,7 @@ export default {
 			}
 			return false
 		}
-	},
-	created () {},
-	mounted () {
-		this.$nextTick(() => {
-		})
-	},
-	methods: {}
+	}
 }
 </script>
 <style lang="stylus">

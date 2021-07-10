@@ -38,9 +38,15 @@ const routes = [{
 	path: '/',
 	component: App,
 	children: [{
+		// we can't alias this because vue-router links seem to explode
+		// manage view gets linked to room url
 		path: '/',
-		name: 'home',
-		component: Room
+		component: RoomHeader,
+		children: [{
+			path: '',
+			name: 'home',
+			component: Room
+		}]
 	}, {
 		path: '/rooms/:roomId',
 		component: RoomHeader,
@@ -48,13 +54,11 @@ const routes = [{
 		children: [{
 			path: '',
 			name: 'room',
-			component: Room,
-			props: true
+			component: Room
 		}, {
 			path: 'manage',
 			name: 'room:manage',
-			component: RoomManager,
-			props: true
+			component: RoomManager
 		}]
 	}, {
 		path: '/channels/:channelId',
