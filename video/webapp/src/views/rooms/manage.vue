@@ -1,30 +1,30 @@
 <template lang="pug">
 .c-room-manager
 	.schedule
-	.polls(v-if="modules['poll']")
-		.header
-			h3 Polls
-			.actions
-				bunt-button#btn-create-poll(@click="pollQuestion = ''; pollOptions = []; showCreatePollPrompt = true") Create Poll
-				bunt-icon-button(@click="showUrlPopup('poll')") presentation
-
-		polls(:module="modules['poll']")
-	.questions(v-if="modules['question']")
-		.header
-			h3 Questions
-			.actions
-				bunt-icon-button(@click="showUrlPopup('question')") presentation
-				menu-dropdown(v-if="hasPermission('room:question.moderate')", v-model="showQuestionsMenu", strategy="fixed")
-					template(v-slot:button="{toggle}")
-						bunt-icon-button(@click="toggle") dots-vertical
-					template(v-slot:menu)
-						.archive-all(@click="$store.dispatch('question/archiveAll')") {{ $t('Questions:moderator-actions:archive-all:label') }}
-		questions(:module="modules['question']")
-	.chat(v-if="modules['chat.native']")
-		.header
-			h3 Chat
-			bunt-icon-button(@click="showUrlPopup('chat')") presentation
-		chat(:room="room", :module="modules['chat.native']", mode="compact", :key="room.id")
+	.modules
+		.polls(v-if="modules['poll']")
+			.header
+				h3 Polls
+				.actions
+					bunt-button#btn-create-poll(@click="pollQuestion = ''; pollOptions = []; showCreatePollPrompt = true") Create Poll
+					bunt-icon-button(@click="showUrlPopup('poll')") presentation
+			polls(:module="modules['poll']")
+		.questions(v-if="modules['question']")
+			.header
+				h3 Questions
+				.actions
+					bunt-icon-button(@click="showUrlPopup('question')") presentation
+					menu-dropdown(v-if="hasPermission('room:question.moderate')", v-model="showQuestionsMenu", strategy="fixed")
+						template(v-slot:button="{toggle}")
+							bunt-icon-button(@click="toggle") dots-vertical
+						template(v-slot:menu)
+							.archive-all(@click="$store.dispatch('question/archiveAll')") {{ $t('Questions:moderator-actions:archive-all:label') }}
+			questions(:module="modules['question']")
+		.chat(v-if="modules['chat.native']")
+			.header
+				h3 Chat
+				bunt-icon-button(@click="showUrlPopup('chat')") presentation
+			chat(:room="room", :module="modules['chat.native']", mode="compact", :key="room.id")
 	.ui-background-blocker(v-if="showPresentationUrlFor", @click="showPresentationUrlFor = null")
 	.url-popup(v-if="showPresentationUrlFor", ref="urlPopup", :class="{'url-copied': copiedUrl}")
 		.copy-success(v-if="copiedUrl") Copied!
@@ -116,10 +116,13 @@ export default {
 	flex: auto
 	.schedule
 		flex: auto
-		margin-top: 360px
-		padding: 16px
+		// margin-top: 360px
+		// padding: 16px
 		h3
 			margin: 0
+	.modules
+		display: flex
+		min-height: 0
 	.chat, .questions, .polls
 		display: flex
 		flex-direction: column
@@ -183,4 +186,12 @@ export default {
 		#btn-create-poll
 			themed-button-primary()
 			margin: 16px
+	+below(1800px) // total guess
+		flex-direction: column
+		.schedule
+			flex: none
+			height: 56px
+			border-bottom: border-separator()
+		.modules
+			justify-content: flex-end
 </style>

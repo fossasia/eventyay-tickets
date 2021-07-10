@@ -147,4 +147,9 @@ export default {
 				right: calc(var(--chatbar-width) * var(--stage-module-count) + 3px)
 				width: calc(100vw - var(--sidebar-width) - var(--chatbar-width) * var(--stage-module-count) - 3px)
 				height: 360px
+				+below(1800px)
+					bottom: calc(var(--vh100) - 56px - 56px)
+					right: 0
+					width: calc(100vw - var(--sidebar-width))
+					height: 56px
 </style>
