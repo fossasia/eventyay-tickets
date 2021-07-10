@@ -37,7 +37,7 @@
 				| Don't make this url publicly accessible!
 	transition(name="prompt")
 		// TODO less hacks
-		prompt.create-poll-prompt(v-if="showCreatePollPrompt")
+		prompt.create-poll-prompt(v-if="showCreatePollPrompt", @close="showCreatePollPrompt = false")
 			.content
 				h1 Create a Poll
 				bunt-input(name="poll-question", label="Question", v-model="pollQuestion")
