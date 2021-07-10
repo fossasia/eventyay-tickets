@@ -1,15 +1,15 @@
 <template lang="pug">
 .c-room-manager
 	.schedule
-	.polls
+	.polls(v-if="modules['poll']")
 		.header
 			h3 Polls
 			.actions
 				bunt-button#btn-create-poll(@click="pollQuestion = ''; pollOptions = []; showCreatePollPrompt = true") Create Poll
 				bunt-icon-button(@click="showUrlPopup('poll')") presentation
 
-		polls(v-if="modules['poll']", :module="modules['poll']")
-	.questions
+		polls(:module="modules['poll']")
+	.questions(v-if="modules['question']")
 		.header
 			h3 Questions
 			.actions
@@ -19,12 +19,12 @@
 						bunt-icon-button(@click="toggle") dots-vertical
 					template(v-slot:menu)
 						.archive-all(@click="$store.dispatch('question/archiveAll')") {{ $t('Questions:moderator-actions:archive-all:label') }}
-		questions(v-if="modules['question']", :module="modules['question']")
-	.chat
+		questions(:module="modules['question']")
+	.chat(v-if="modules['chat.native']")
 		.header
 			h3 Chat
 			bunt-icon-button(@click="showUrlPopup('chat')") presentation
-		chat(v-if="modules['chat.native']", :room="room", :module="modules['chat.native']", mode="compact", :key="room.id")
+		chat(:room="room", :module="modules['chat.native']", mode="compact", :key="room.id")
 	.ui-background-blocker(v-if="showPresentationUrlFor", @click="showPresentationUrlFor = null")
 	.url-popup(v-if="showPresentationUrlFor", ref="urlPopup", :class="{'url-copied': copiedUrl}")
 		.copy-success(v-if="copiedUrl") Copied!
@@ -80,7 +80,7 @@ export default {
 	computed: {
 		...mapState(['world', 'token']),
 		...mapGetters(['hasPermission']),
-		...mapGetters('schedule', ['sessions', 'sessionsScheduledNow']),
+		...mapGetters('schedule', ['sessions', 'sessionsScheduledNow'])
 	},
 	methods: {
 		async showUrlPopup (type) {
