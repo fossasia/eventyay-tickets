@@ -144,7 +144,7 @@ export default {
 		.c-livestream, .c-iframe-player, .c-youtube
 			&:not(.size-tiny):not(.background)
 				bottom: calc(var(--vh100) - 56px - 360px)
-				right: calc(var(--chatbar-width) * 3 + 3px)
-				width: calc(100vw - var(--sidebar-width) - var(--chatbar-width) * 3 - 3px)
+				right: calc(var(--chatbar-width) * var(--stage-module-count) + 3px)
+				width: calc(100vw - var(--sidebar-width) - var(--chatbar-width) * var(--stage-module-count) - 3px)
 				height: 360px
 </style>
