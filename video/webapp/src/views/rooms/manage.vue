@@ -113,6 +113,7 @@ export default {
 .c-room-manager
 	display: flex
 	min-height: 0
+	flex: auto
 	.schedule
 		flex: auto
 		margin-top: 360px
@@ -124,7 +125,6 @@ export default {
 		flex-direction: column
 		min-height: 0
 		width: var(--chatbar-width)
-		flex: none
 		border-left: border-separator()
 		.header
 			display: flex
