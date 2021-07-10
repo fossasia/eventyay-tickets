@@ -7,7 +7,7 @@
 		//- bunt-icon-button(v-if="$features.enabled('schedule-control')", @click="showEditSchedule = true") calendar_edit
 		.actions
 			bunt-icon-button(v-if="modules['call.bigbluebutton'] && hasPermission('room:bbb.recordings')", :tooltip="$t('Room:recordings:tooltip')", tooltipPlacement="bottom-end", @click="showRecordingsPrompt = true") file-video-outline
-			.button-group(v-if="canManage")
+			.button-group(v-if="roomType === 'stage' && canManage")
 				// TODO buntpapier does not support replace
 				// hardlink params so home page alias works
 				bunt-link-button(:to="{name: 'room:manage', params: {roomId: room.id}}", replace) manage
@@ -16,6 +16,7 @@
 </template>
 <script>
 import {mapGetters, mapState} from 'vuex'
+import { inferRoomType } from 'lib/room-types'
 
 const PERMISSIONS_TO_MANAGE = [
 	'room:chat.moderate',
@@ -34,6 +35,9 @@ export default {
 		room () {
 			if (this.roomId === undefined) return this.rooms[0] // '/' is the first room
 			return this.rooms.find(room => room.id === this.roomId)
+		},
+		roomType () {
+			return inferRoomType(this.room).id
 		},
 		modules () {
 			return this.room?.modules.reduce((acc, module) => {
