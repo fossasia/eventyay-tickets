@@ -71,3 +71,4 @@ Experimental Features
 * janus
 * page.landing
 * iframe-player
+* polls

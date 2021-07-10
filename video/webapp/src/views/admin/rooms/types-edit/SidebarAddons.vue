@@ -6,7 +6,7 @@
 	template(v-if="hasQuestions")
 		bunt-checkbox(v-model="modules['question'].config.active", label="Active", name="active")
 		bunt-checkbox(v-model="modules['question'].config.requires_moderation", label="Questions require moderation", name="requires_moderation")
-	bunt-switch(name="enable-polls", v-model="hasPolls", label="Enable Polls")
+	bunt-switch(v-if="$features.enabled('polls')", name="enable-polls", v-model="hasPolls", label="Enable Polls")
 </template>
 <script>
 import mixin from './mixin'
@@ -63,4 +63,7 @@ export default {
 }
 </script>
 <style lang="stylus">
+.c-sidebar-addons
+	.bunt-checkbox
+		margin-bottom: 8px
 </style>
