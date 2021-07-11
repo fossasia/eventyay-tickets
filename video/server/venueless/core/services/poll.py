@@ -71,7 +71,7 @@ def update_poll(**kwargs):
         setattr(poll, key, value)
     poll.save()
     if options:
-        old_options = set(poll.options.all().values_list("id", flat=True))
+        old_options = set([str(pk) for pk in poll.options.all().values_list("id", flat=True)])
         updated_options = set(option["id"] for option in options if option.get("id"))
         PollOption.objects.filter(
             poll=poll, id__in=old_options - updated_options
