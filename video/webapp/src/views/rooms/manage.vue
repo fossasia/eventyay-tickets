@@ -6,7 +6,7 @@
 			.header
 				h3 Polls
 				.actions
-					bunt-button#btn-create-poll(@click="pollQuestion = ''; pollOptions = []; showCreatePollPrompt = true") Create Poll
+					bunt-button#btn-create-poll(@click="showCreatePollPrompt") Create Poll
 					bunt-icon-button(@click="showUrlPopup('poll')") presentation
 			polls(:module="modules['poll']")
 		.questions(v-if="modules['question']")
@@ -14,7 +14,7 @@
 				h3 Questions
 				.actions
 					bunt-icon-button(@click="showUrlPopup('question')") presentation
-					menu-dropdown(v-if="hasPermission('room:question.moderate')", v-model="showQuestionsMenu", strategy="fixed")
+					menu-dropdown(v-if="hasPermission('room:question.moderate')", v-model="showingQuestionsMenu", strategy="fixed")
 						template(v-slot:button="{toggle}")
 							bunt-icon-button(@click="toggle") dots-vertical
 						template(v-slot:menu)
@@ -25,25 +25,29 @@
 				h3 Chat
 				bunt-icon-button(@click="showUrlPopup('chat')") presentation
 			chat(:room="room", :module="modules['chat.native']", mode="compact", :key="room.id")
-	.ui-background-blocker(v-if="showPresentationUrlFor", @click="showPresentationUrlFor = null")
-	.url-popup(v-if="showPresentationUrlFor", ref="urlPopup", :class="{'url-copied': copiedUrl}")
+	.ui-background-blocker(v-if="showingPresentationUrlFor", @click="showingPresentationUrlFor = null")
+	.url-popup(v-if="showingPresentationUrlFor", ref="urlPopup", :class="{'url-copied': copiedUrl}")
 		.copy-success(v-if="copiedUrl") Copied!
 		template(v-else)
 			.copy-url
-				bunt-input(ref="urlInput", name="presentation-url", :readonly="true", :value="getPresentationUrl(showPresentationUrlFor)")
+				bunt-input(ref="urlInput", name="presentation-url", :readonly="true", :value="getPresentationUrl(showingPresentationUrlFor)")
 				bunt-button(@click="copyUrl") Copy
 			.hint This url contains your personal token.
 				br
 				| Don't make this url publicly accessible!
 	transition(name="prompt")
 		// TODO less hacks
-		prompt.create-poll-prompt(v-if="showCreatePollPrompt", @close="showCreatePollPrompt = false")
+		prompt.create-poll-prompt(v-if="showingCreatePollPrompt", @close="showingCreatePollPrompt = false")
 			.content
 				h1 Create a Poll
-				bunt-input(name="poll-question", label="Question", v-model="pollQuestion")
-				bunt-input(v-for="(option, index) of pollOptions", :name="`poll-option-${index}`", :label="`Option ${index + 1}`", v-model="option.content")
-				bunt-button(@click="pollOptions.push({content: ''})") Add Option
-				bunt-button#btn-create-poll(@click="$store.dispatch('poll/createPoll', {content: pollQuestion, options: pollOptions}) ; showCreatePollPrompt = false") Create Poll
+				.form-content
+					bunt-input-outline-container(name="poll-question", label="Question")
+						textarea(slot-scope="{focus, blur}", @focus="focus", @blur="blur", v-model="pollQuestion")
+					.option(v-for="(option, index) of pollOptions")
+						bunt-input(:name="`poll-option-${index}`", :label="`Option ${index + 1}`", v-model="option.content")
+						bunt-icon-button.btn-delete-poll-option(@click="pollOptions.splice(index, 1)") delete-outline
+					bunt-button#btn-add-poll-option(@click="pollOptions.push({content: ''})") Add Option
+				bunt-button#btn-create-poll(@click="$store.dispatch('poll/createPoll', {content: pollQuestion, options: pollOptions}) ; showingCreatePollPrompt = false") Create Poll
 </template>
 <script>
 // TODO
@@ -69,10 +73,10 @@ export default {
 	},
 	data () {
 		return {
-			showPresentationUrlFor: null,
+			showingPresentationUrlFor: null,
 			copiedUrl: false,
-			showQuestionsMenu: false,
-			showCreatePollPrompt: false,
+			showingQuestionsMenu: false,
+			showingCreatePollPrompt: false,
 			pollQuestion: '',
 			pollOptions: []
 		}
@@ -84,7 +88,7 @@ export default {
 	},
 	methods: {
 		async showUrlPopup (type) {
-			this.showPresentationUrlFor = type
+			this.showingPresentationUrlFor = type
 			await this.$nextTick()
 			createPopper(event.target, this.$refs.urlPopup, {
 				placement: 'bottom-end',
@@ -92,6 +96,15 @@ export default {
 					{name: 'offset', options: {offset: [16, 12]}}
 				]
 			})
+		},
+		showCreatePollPrompt () {
+			this.pollQuestion = ''
+			this.pollOptions = [{
+				content: ''
+			}, {
+				content: ''
+			}]
+			this.showingCreatePollPrompt = true
 		},
 		getPresentationUrl (type) {
 			console.log(type)
@@ -103,7 +116,7 @@ export default {
 			this.copiedUrl = true
 			setTimeout(() => {
 				this.copiedUrl = false
-				this.showPresentationUrlFor = null
+				this.showingPresentationUrlFor = null
 			}, 600)
 		}
 	}
@@ -183,7 +196,40 @@ export default {
 		display: flex
 		flex-direction: column
 		align-items: center
+		h1
+			margin: 16px 0 0
+		.form-content
+			display: flex
+			flex-direction: column
+			width: 336px
+		.bunt-input-outline-container
+			// TODO decopypaste
+			textarea
+				font-family: $font-stack
+				font-size: 16px
+				background-color: transparent
+				border: none
+				outline: none
+				resize: vertical
+				min-height: 64px
+
+				padding: 0 8px
+		.option
+			display: flex
+			align-items: baseline
+			.bunt-input
+				flex: auto
+				input-style(size: compact)
+			.btn-delete-poll-option
+				icon-button-style(style: clear)
+				margin-left: 4px
+
+		#btn-add-poll-option
+			align-self: flex-start
+			themed-button-secondary()
+			margin: 16px 0 0 0
 		#btn-create-poll
+			align-self: flex-end
 			themed-button-primary()
 			margin: 16px
 	+below(1800px) // total guess
