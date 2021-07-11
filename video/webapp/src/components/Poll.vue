@@ -7,18 +7,20 @@
 		.option(v-for="option of poll.options", :class="{'most-votes': optionsWithMostVotes.includes(option.id)}")
 			.content {{ option.content }}
 			.votes(:style="{'--votes': poll.results[option.id]}") {{ totalVotes ? (poll.results[option.id] / totalVotes * 100).toFixed() : 0 }}%
-	menu-dropdown(v-if="isManaging && hasPermission('room:poll.manage')", v-model="showModerationMenu", strategy="fixed")
-		template(v-slot:button="{toggle}")
-			bunt-icon-button(@click="toggle") dots-vertical
-		template(v-slot:menu)
-			.open-poll(v-if="['draft', 'closed'].includes(poll.state)", @click="doAction('open')") {{ $t('Poll:moderation-menu:open-poll:label') }}
-			.close-poll(v-if="poll.state === 'open'", @click="doAction('close')") {{ $t('Poll:moderation-menu:close-poll:label') }}
-			.redraft-poll(v-if="poll.state === 'open'", @click="doAction('redraft')") {{ $t('Poll:moderation-menu:redraft-poll:label') }}
-			.pin-poll(v-if="['open', 'closed'].includes(poll.state) && !poll.is_pinned", @click="doAction('pin')") {{ $t('Poll:moderation-menu:pin-poll:label') }}
-			.unpin-poll(v-if="poll.is_pinned", @click="doAction('unpin')") {{ $t('Poll:moderation-menu:unpin-poll:label') }}
-			.archive-poll(v-if="poll.state !== 'archived'", @click="doAction('archive')") {{ $t('Poll:moderation-menu:archive-poll:label') }}
-			.unarchive-poll(v-if="poll.state === 'archived'", @click="doAction('unarchive')") {{ $t('Poll:moderation-menu:unarchive-poll:label') }}
-			.delete-poll(@click="doAction('delete')") {{ $t('Poll:moderation-menu:delete-poll:label') }}
+	.actions(v-if="isManaging && hasPermission('room:poll.manage')")
+		bunt-icon-button(@click="$emit('edit')") pencil
+		menu-dropdown(v-model="showModerationMenu", strategy="fixed")
+			template(v-slot:button="{toggle}")
+				bunt-icon-button(@click="toggle") dots-vertical
+			template(v-slot:menu)
+				.open-poll(v-if="['draft', 'closed'].includes(poll.state)", @click="doAction('open')") {{ $t('Poll:moderation-menu:open-poll:label') }}
+				.close-poll(v-if="poll.state === 'open'", @click="doAction('close')") {{ $t('Poll:moderation-menu:close-poll:label') }}
+				.redraft-poll(v-if="poll.state === 'open'", @click="doAction('redraft')") {{ $t('Poll:moderation-menu:redraft-poll:label') }}
+				.pin-poll(v-if="['open', 'closed'].includes(poll.state) && !poll.is_pinned", @click="doAction('pin')") {{ $t('Poll:moderation-menu:pin-poll:label') }}
+				.unpin-poll(v-if="poll.is_pinned", @click="doAction('unpin')") {{ $t('Poll:moderation-menu:unpin-poll:label') }}
+				.archive-poll(v-if="poll.state !== 'archived'", @click="doAction('archive')") {{ $t('Poll:moderation-menu:archive-poll:label') }}
+				.unarchive-poll(v-if="poll.state === 'archived'", @click="doAction('unarchive')") {{ $t('Poll:moderation-menu:unarchive-poll:label') }}
+				.delete-poll(@click="doAction('delete')") {{ $t('Poll:moderation-menu:delete-poll:label') }}
 </template>
 <script>
 // TODO show own vote
@@ -127,7 +129,7 @@ export default {
 		&.most-votes
 			.votes::before
 				background-color: var(--clr-primary)
-	.c-menu-dropdown
+	.actions
 		position: absolute
 		top: 4px
 		right: 4px
@@ -145,8 +147,9 @@ export default {
 		position: relative
 		&:hover
 			background-color: $clr-grey-100
-			.c-menu-dropdown
-				display: block
+			.actions
+				display: flex
+				gap: 4px
 		&.closed
 			&::after
 				content: 'closed'

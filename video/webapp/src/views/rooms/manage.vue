@@ -8,7 +8,7 @@
 				.actions
 					bunt-button#btn-create-poll(@click="showCreatePollPrompt") Create Poll
 					bunt-icon-button(@click="showUrlPopup('poll')") presentation
-			polls(:module="modules['poll']")
+			polls(:module="modules['poll']", @edit="startEditingPoll")
 		.questions(v-if="modules['question']")
 			.header
 				h3 Questions
@@ -37,17 +37,17 @@
 				| Don't make this url publicly accessible!
 	transition(name="prompt")
 		// TODO less hacks
-		prompt.create-poll-prompt(v-if="showingCreatePollPrompt", @close="showingCreatePollPrompt = false")
+		prompt.create-poll-prompt(v-if="editedPoll", @close="editedPoll = null")
 			.content
-				h1 Create a Poll
+				h1 {{ editedPoll.id ? 'Edit Poll' : 'Create a Poll' }}
 				.form-content
 					bunt-input-outline-container(name="poll-question", label="Question")
-						textarea(slot-scope="{focus, blur}", @focus="focus", @blur="blur", v-model="pollQuestion")
-					.option(v-for="(option, index) of pollOptions")
+						textarea(slot-scope="{focus, blur}", @focus="focus", @blur="blur", v-model="editedPoll.content")
+					.option(v-for="(option, index) of editedPoll.options")
 						bunt-input(:name="`poll-option-${index}`", :label="`Option ${index + 1}`", v-model="option.content")
-						bunt-icon-button.btn-delete-poll-option(@click="pollOptions.splice(index, 1)") delete-outline
-					bunt-button#btn-add-poll-option(@click="pollOptions.push({content: ''})") Add Option
-				bunt-button#btn-create-poll(@click="$store.dispatch('poll/createPoll', {content: pollQuestion, options: pollOptions}) ; showingCreatePollPrompt = false") Create Poll
+						bunt-icon-button.btn-delete-poll-option(@click="editedPoll.options.splice(index, 1)") delete-outline
+					bunt-button#btn-add-poll-option(@click="editedPoll.options.push({content: ''})") Add Option
+				bunt-button#btn-submit-poll(@click="submitPoll") {{ editedPoll.id ? 'Save Poll' : 'Create Poll' }}
 </template>
 <script>
 // TODO
@@ -76,9 +76,7 @@ export default {
 			showingPresentationUrlFor: null,
 			copiedUrl: false,
 			showingQuestionsMenu: false,
-			showingCreatePollPrompt: false,
-			pollQuestion: '',
-			pollOptions: []
+			editedPoll: null
 		}
 	},
 	computed: {
@@ -98,13 +96,36 @@ export default {
 			})
 		},
 		showCreatePollPrompt () {
-			this.pollQuestion = ''
-			this.pollOptions = [{
-				content: ''
-			}, {
-				content: ''
-			}]
-			this.showingCreatePollPrompt = true
+			this.editedPoll = {
+				content: '',
+				options: [{
+					content: ''
+				}, {
+					content: ''
+				}]
+			}
+		},
+		startEditingPoll (poll) {
+			// only clone relevant parts of the poll to not update too much
+			this.editedPoll = {
+				id: poll.id,
+				content: poll.content,
+				options: poll.options.map(o => Object.assign({}, o))
+			}
+		},
+		submitPoll () {
+			if (this.editedPoll.id) {
+				this.$store.dispatch('poll/updatePoll', {
+					poll: this.editedPoll,
+					update: {
+						content: this.editedPoll.content,
+						options: this.editedPoll.options
+					}
+				})
+			} else {
+				this.$store.dispatch('poll/createPoll', this.editedPoll)
+			}
+			this.editedPoll = null
 		},
 		getPresentationUrl (type) {
 			console.log(type)
@@ -197,7 +218,7 @@ export default {
 		flex-direction: column
 		align-items: center
 		h1
-			margin: 16px 0 0
+			margin: 16px 0 8px 0
 		.form-content
 			display: flex
 			flex-direction: column
@@ -221,14 +242,14 @@ export default {
 				flex: auto
 				input-style(size: compact)
 			.btn-delete-poll-option
-				icon-button-style(style: clear)
+				icon-button-style()
 				margin-left: 4px
 
 		#btn-add-poll-option
 			align-self: flex-start
 			themed-button-secondary()
 			margin: 16px 0 0 0
-		#btn-create-poll
+		#btn-submit-poll
 			align-self: flex-end
 			themed-button-primary()
 			margin: 16px

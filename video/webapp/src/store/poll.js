@@ -24,6 +24,11 @@ export default {
 			options.forEach((option, index) => option.order = index + 1)
 			return api.call('poll.create', {room: rootState.activeRoom.id, content, options})
 		},
+		updatePoll ({state, rootState}, {poll, update}) {
+			return api.call('poll.update', {room: rootState.activeRoom.id, id: poll.id, ...update})
+			// update handled in create_or_update
+			// TODO error handling
+		},
 		async vote ({state, rootState}, {poll, option}) {
 			await api.call('poll.vote', {room: rootState.activeRoom.id, id: poll.id, options: [option.id]})
 			Vue.set(poll, 'answers', [option.id])
