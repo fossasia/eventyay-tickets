@@ -8,3 +8,4 @@ Welcome to our integration documentation! Here, we document everything around in
    :caption: Contents:
 
    authentication
+   iframe

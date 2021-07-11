@@ -3,6 +3,7 @@ from contextlib import suppress
 from typing import List
 from urllib.parse import urljoin
 
+import icalendar
 import jwt
 from django.conf import settings
 from django.contrib.postgres.fields import JSONField
@@ -419,3 +420,13 @@ class PlannedUsage(models.Model):
 
     class Meta:
         ordering = ("start",)
+
+    def as_ical(self):
+        event = icalendar.Event()
+        event["uid"] = f"{self.world.id}-{self.id}"
+        event["dtstart"] = self.start
+        event["dtend"] = self.start
+        event["summary"] = self.world.title
+        event["description"] = self.notes
+        event["url"] = self.world.domain
+        return event

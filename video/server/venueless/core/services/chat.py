@@ -211,14 +211,19 @@ class ChatService:
                 content["body"]["id"] = str(call.id)
                 content["body"]["type"] = "bbb"
 
-        ce = ChatEvent.objects.create(
-            id=id,
-            channel=channel,
-            event_type=event_type,
-            content=content,
-            sender=sender,
-            replaces_id=replaces,
-        )
+        try:
+            ce = ChatEvent.objects.create(
+                id=id,
+                channel=channel,
+                event_type=event_type,
+                content=content,
+                sender=sender,
+                replaces_id=replaces,
+            )
+        except IntegrityError as e:
+            if "already exists" in str(e):
+                return None
+            raise e
         return ce.serialize_public()
 
     @database_sync_to_async
@@ -246,26 +251,25 @@ class ChatService:
     ):
         async with aioredis() as redis:
             event_id = await redis.incr("chat.event_id")
-        try:
-            return await self._store_event(
-                channel=channel,
-                id=event_id,
-                event_type=event_type,
-                content=content,
-                sender=sender,
-                replaces=replaces,
+        event = await self._store_event(
+            channel=channel,
+            id=event_id,
+            event_type=event_type,
+            content=content,
+            sender=sender,
+            replaces=replaces,
+        )
+        if event:
+            return event
+        elif not _retry:
+            # Ooops! Probably our redis cleared out / failed over. Let's try to self-heal
+            current_max = await self._get_highest_id()
+            async with aioredis() as redis:
+                await redis.set("chat.event_id", current_max + 1)
+            return await self.create_event(
+                channel, event_type, content, sender, _retry=True
             )
-        except IntegrityError as e:
-            if "already exists" in str(e) and not _retry:
-                # Ooops! Probably our redis cleared out / failed over. Let's try to self-heal
-                async with aioredis() as redis:
-                    current_max = await self._get_highest_id()
-                    await redis.set("chat.event_id", current_max + 1)
-                res = await self.create_event(
-                    channel, event_type, content, sender, _retry=True
-                )
-                return res
-            raise e  # pragma: no cover
+        raise ValueError("unable to recover in store_event")  # pragma: no cover
 
     @database_sync_to_async
     def remove_reaction(self, event, reaction, user):

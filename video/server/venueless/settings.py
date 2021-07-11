@@ -168,6 +168,11 @@ ZOOM_SECRET = os.getenv(
     "VENUELESS_ZOOM_SECRET", config.get("zoom", "secret", fallback="")
 )
 
+# Use with ?control_token= to access /control
+CONTROL_SECRET = os.getenv(
+    "VENUELESS_CONTROL_SECRET", config.get("control", "secret", fallback="")
+)
+
 STATSD_HOST = os.getenv(
     "VENUELESS_STATSD_HOST", config.get("statsd", "host", fallback="")
 )

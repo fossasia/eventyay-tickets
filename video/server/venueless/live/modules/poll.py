@@ -71,13 +71,19 @@ class PollModule(BaseModule):
             await self.consumer.send_error("poll.inactive")
             return
 
-        await get_poll(body.get("id"), self.room)  # make sure poll exists
+        old_poll = await get_poll(body.get("id"), self.room)  # make sure poll exists
         body["room"] = self.room
         new_poll = await update_poll(**body)
 
         await self.consumer.send_success({"poll": new_poll})
 
-        group = self.get_group_for_state(new_poll["state"])
+        group = self.get_group_for_state(old_poll["state"])
+        new_group = self.get_group_for_state(new_poll["state"])
+        if group != new_group:
+            # we only have two possible groups here. A group change means we send the
+            # message to the larger group.
+            group = GROUP_ROOM_POLL_READ.format(id=self.room.pk)
+
         await self.consumer.channel_layer.group_send(
             group.format(id=self.room.pk),
             {

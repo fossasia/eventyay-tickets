@@ -73,7 +73,7 @@ def update_poll(**kwargs):
     if options:
         old_options = set(poll.options.all().values_list("id", flat=True))
         updated_options = set(option["id"] for option in options if option.get("id"))
-        PollOption.objects.delete(poll=poll, id__in=old_options - updated_options)
+        PollOption.objects.filter(poll=poll, id__in=old_options - updated_options).delete()
         for option_kwargs in options:
             if "id" in option_kwargs:
                 option = PollOption.objects.get(pk=option_kwargs["id"], poll=poll)
