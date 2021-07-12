@@ -15,7 +15,7 @@
 	edit-form(v-else, :config="config", :creating="true")
 </template>
 <script>
-import ROOM_TYPES from './room-types'
+import ROOM_TYPES from 'lib/room-types'
 import EditForm from './EditForm'
 
 export default {

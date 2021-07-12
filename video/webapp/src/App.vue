@@ -48,7 +48,7 @@ import GreetingPrompt from 'components/profile/GreetingPrompt'
 
 const mediaModules = ['livestream.native', 'livestream.youtube', 'livestream.iframe', 'call.bigbluebutton', 'call.janus', 'call.zoom']
 const stageToolModules = ['livestream.native', 'livestream.youtube', 'livestream.iframe', 'call.janus']
-const chatbarModules = ['chat.native', 'question']
+const chatbarModules = ['chat.native', 'question', 'poll']
 
 export default {
 	components: { AppBar, RoomsSidebar, MediaSource, GreetingPrompt, Notifications },
@@ -68,6 +68,13 @@ export default {
 			if (this.$route.name.startsWith('admin')) return
 			if (this.$route.name === 'home') return this.rooms?.[0]
 			return this.rooms?.find(room => room.id === this.$route.params.roomId)
+		},
+		// TODO since this is used EVERYWHERE, use provide/inject?
+		modules () {
+			return this.room?.modules.reduce((acc, module) => {
+				acc[module.type] = module
+				return acc
+			}, {})
 		},
 		roomHasMedia () {
 			return this.room?.modules.some(module => mediaModules.includes(module.type))
@@ -91,6 +98,7 @@ export default {
 				'--chatbar-width': hasChatbar ? '380px' : '0px',
 				'--mobile-media-height': hasChatbar ? '40vh' : (hasStageTools ? 'calc(100vh - 48px - 2 * 56px)' : 'calc(100vh - 48px - 56px)'),
 				'--has-stagetools': hasStageTools ? '1' : '0',
+				'--stage-module-count': !!this.modules?.question + !!this.modules?.poll + !!this.modules?.['chat.native']
 			}
 		},
 		browserhackStyle () {

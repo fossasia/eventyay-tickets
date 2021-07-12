@@ -23,7 +23,7 @@
 <script>
 import api from 'lib/api'
 import Prompt from 'components/Prompt'
-import { inferType } from './room-types'
+import { inferType } from 'lib/room-types'
 import EditForm from './EditForm'
 
 export default {
