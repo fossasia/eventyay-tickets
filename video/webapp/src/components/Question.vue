@@ -1,19 +1,20 @@
 <template lang="pug">
-.c-question(:class="{queued: hasPermission('room:question.moderate') && question.state === 'mod_queue', 'has-voted': question.voted, pinned: question.is_pinned, archived: question.state === 'archived'}")
+.c-question(:class="{queued: hasPermission('room:question.moderate') && question.state === 'mod_queue', 'has-voted': question.voted, pinned: question.is_pinned, archived: question.state === 'archived', managing: isManaging}")
 	.votes(@click="vote")
-		.mdi.mdi-menu-up.upvote
+		.mdi.mdi-menu-up.upvote(v-if="!isManaging")
 		.vote-count {{ question.score }}
 		| Votes
 	.content {{ question.content }}
-	menu-dropdown(v-if="hasPermission('room:question.moderate')", v-model="modding", strategy="fixed")
+	menu-dropdown(v-if="isManaging && hasPermission('room:question.moderate')", v-model="showModerationMenu", strategy="fixed")
 		template(v-slot:button="{toggle}")
 			bunt-icon-button(@click="toggle") dots-vertical
 		template(v-slot:menu)
-			.approve-question(v-if="question.state === 'mod_queue'", @click="approveQuestion") {{ $t('Question:moderation-menu:approve-question:label') }}
-			.approve-question(v-if="question.state === 'visible'", @click="pinQuestion") {{ $t('Question:moderation-menu:pin-question:label') }}
-			.archive-question(v-if="question.state !== 'archived'", @click="archiveQuestion") {{ $t('Question:moderation-menu:archive-question:label') }}
-			.unarchive-question(v-if="question.state === 'archived'", @click="unarchiveQuestion") {{ $t('Question:moderation-menu:unarchive-question:label') }}
-			.delete-question(@click="deleteQuestion") {{ $t('Question:moderation-menu:delete-question:label') }}
+			.approve-question(v-if="question.state === 'mod_queue'", @click="doAction('approve')") {{ $t('Question:moderation-menu:approve-question:label') }}
+			.pin-question(v-if="question.state === 'visible' && !question.is_pinned", @click="doAction('pin')") {{ $t('Question:moderation-menu:pin-question:label') }}
+			.unpin-question(v-if="question.state === 'visible' && question.is_pinned", @click="doAction('unpin')") {{ $t('Question:moderation-menu:unpin-question:label') }}
+			.archive-question(v-if="question.state !== 'archived'", @click="doAction('archive')") {{ $t('Question:moderation-menu:archive-question:label') }}
+			.unarchive-question(v-if="question.state === 'archived'", @click="doAction('unarchive')") {{ $t('Question:moderation-menu:unarchive-question:label') }}
+			.delete-question(@click="doAction('delete')") {{ $t('Question:moderation-menu:delete-question:label') }}
 </template>
 <script>
 import { mapGetters } from 'vuex'
@@ -24,9 +25,14 @@ export default {
 	props: {
 		question: Object
 	},
+	inject: {
+		isManaging: {
+			default: false
+		}
+	},
 	data () {
 		return {
-			modding: false
+			showModerationMenu: false
 		}
 	},
 	computed: {
@@ -41,25 +47,9 @@ export default {
 		async vote () {
 			this.$store.dispatch('question/vote', this.question)
 		},
-		async approveQuestion () {
-			await this.$store.dispatch('question/approveQuestion', this.question)
-			this.modding = false
-		},
-		async pinQuestion () {
-			await this.$store.dispatch('question/pinQuestion', this.question)
-			this.modding = false
-		},
-		async archiveQuestion () {
-			await this.$store.dispatch('question/archiveQuestion', this.question)
-			this.modding = false
-		},
-		async unarchiveQuestion () {
-			await this.$store.dispatch('question/unarchiveQuestion', this.question)
-			this.modding = false
-		},
-		async deleteQuestion () {
-			await this.$store.dispatch('question/deleteQuestion', this.question)
-			this.modding = false
+		async doAction (action) {
+			await this.$store.dispatch(`question/${action}Question`, this.question)
+			this.showModerationMenu = false
 		}
 	}
 }
@@ -129,11 +119,26 @@ export default {
 			font-size: 12px
 			color: $clr-secondary-text-light
 			font-weight: 600
-	.c-menu-dropdown .menu
-		color: $clr-primary-text-light
+	.c-menu-dropdown
+		position: absolute
+		top: 4px
+		right: 4px
+		display: none
+		z-index: 102
+		.bunt-icon-button
+			icon-button-style()
+			background-color: $clr-white
 		.delete-question
 			color: $clr-danger
 			&:hover
 				background-color: $clr-danger
 				color: $clr-primary-text-dark
+	&.managing
+		position: relative
+		.votes
+			pointer-events: none
+		&:hover
+			background-color: $clr-grey-100
+			.c-menu-dropdown
+				display: block
 </style>

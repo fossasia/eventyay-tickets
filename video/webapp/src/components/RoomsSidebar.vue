@@ -265,7 +265,7 @@ export default {
 			color: var(--clr-sidebar-text-secondary)
 			display: flex
 			position: relative
-			&.router-link-exact-active
+			&.router-link-active
 				background-color: var(--clr-sidebar-active-bg)
 				color: var(--clr-sidebar-text-primary)
 			&:hover

@@ -106,7 +106,7 @@ export default {
 		message: Object,
 		previousMessage: Object,
 		nextMessage: Object,
-		mode: String,
+		mode: String, // standalone, compact
 		readonly: {
 			type: Boolean,
 			default: false

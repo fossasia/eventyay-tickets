@@ -93,3 +93,8 @@ export function inferType (config) {
 		return findByModule(config.module_config[0].type)
 	}
 }
+
+// TODO clean up with `inferType` function
+export function inferRoomType (room) {
+	return inferType({module_config: room.modules})
+}
