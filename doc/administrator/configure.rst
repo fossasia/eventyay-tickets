@@ -25,7 +25,7 @@ file looks like this:
 The configuration format is the INI file format as understood by `Python`_.
 It's worth mentioning that you can use any of 'yes'/'no', 'on'/'off',
 'true'/'false' and '1'/'0' to set boolean settings. You can add add comments by
-starting a line with ';' or '#'.
+starting a line with ';' or '#'. Also strings don't need to be quoted as every value is already a string.
 
 The filesystem section
 ----------------------
@@ -240,7 +240,7 @@ cycle.
 ~~~~~~~~~~~
 
 - The celery backend. If you use a standard redis-based setup,
-  ``'redis://127.0.0.1/1'`` would be a sensible value.
+  ``redis://127.0.0.1/1`` would be a sensible value.
 - **Environment variable:** ``PRETALX_CELERY_BACKEND``
 - **Default:** ``''``
 
@@ -248,7 +248,7 @@ cycle.
 ~~~~~~~~~~~
 
 - The celery broker. If you use a standard redis-based setup,
-  ``'redis://127.0.0.1/2'`` would be a sensible value.
+  ``redis://127.0.0.1/2`` would be a sensible value.
 - **Environment variable:** ``PRETALX_CELERY_BROKER``
 - **Default:** ``''``
 
@@ -262,7 +262,7 @@ session storage to speed up operations. You will need to install ``django_redis`
 ~~~~~~~~~~~~
 
 - The location of redis, if you want to use it as a cache.
-  ``'redis://[:password]@127.0.0.1:6379/1'`` would be a sensible value, or
+  ``redis://[:password]@127.0.0.1:6379/1`` would be a sensible value, or
   ``unix://[:password]@/path/to/socket.sock?db=0`` if you prefer to use sockets.
 - **Environment variable:** ``PRETALX_REDIS``
 - **Default:** ``''``
@@ -271,7 +271,6 @@ session storage to speed up operations. You will need to install ``django_redis`
 ~~~~~~~~~~~
 
 - If you want to use redis as your session storage, set this to ``True``.
-  ``'redis://127.0.0.1/2'`` would be a sensible value.
 - **Environment variable:** ``PRETALX_REDIS_SESSIONS``
 - **Default:** ``False``
 
@@ -290,7 +289,7 @@ The logging section
 
 - The log level to start sending emails at. Any of ``[DEBUG, INFO, WARNING, ERROR, CRITICAL]``.
 - **Environment variable:** ``PRETALX_LOGGING_EMAIL_LEVEL``
-- **Default:** ``'ERROR'``
+- **Default:** ``ERROR``
 
 The locale section
 ------------------
@@ -300,14 +299,14 @@ The locale section
 
 - The system's default locale.
 - **Environment variable:** ``PRETALX_LANGUAGE_CODE``
-- **Default:** ``'en'``
+- **Default:** ``en``
 
 ``time_zone``
 ~~~~~~~~~~~~~
 
 - The system's default time zone as a ``pytz`` name.
 - **Environment variable:** ``PRETALX_TIME_ZONE``
-- **Default:** ``'UTC'``
+- **Default:** ``UTC``
 
 
 .. _Python: https://docs.python.org/3/library/configparser.html
