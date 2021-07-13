@@ -262,7 +262,7 @@ session storage to speed up operations. You will need to install ``django_redis`
 ~~~~~~~~~~~~
 
 - The location of redis, if you want to use it as a cache.
-  ``'redis://[:password]@127.0.0.1:6397/1'`` would be a sensible value, or
+  ``'redis://[:password]@127.0.0.1:6379/1'`` would be a sensible value, or
   ``unix://[:password]@/path/to/socket.sock?db=0`` if you prefer to use sockets.
 - **Environment variable:** ``PRETALX_REDIS``
 - **Default:** ``''``
