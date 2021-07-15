@@ -26,6 +26,7 @@ py_test:
     - source env/bin/activate
     - pip install -U pip wheel setuptools
     - XDG_CACHE_HOME=/cache pip install -Ur requirements.txt
+    - python manage.py collectstatic
     - VENUELESS_REDIS_HOST=redis VENUELESS_DB_TYPE=postgresql VENUELESS_DB_NAME=venueless VENUELESS_DB_USER=venueless VENUELESS_DB_PASS=venueless VENUELESS_DB_HOST=postgres py.test tests/ --reuse-db
   interruptible: true
   tags:
