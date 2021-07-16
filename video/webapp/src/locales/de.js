@@ -193,6 +193,7 @@ export default {
 	'Question:moderation-menu:delete-question:label': 'löschen',
 	'Question:moderation-menu:pin-question:label': 'anpinnen',
 	'Question:moderation-menu:unarchive-question:label': 'wiederherstellen',
+	'Question:vote-count:label': 'Votes',
 	'Questions:asking-form:label': 'Stelle deine Frage',
 	'Questions:asking-form:submit': 'Frage abschicken',
 	'Questions:ask-question-button:label': 'Frage stellen',

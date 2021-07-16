@@ -3,7 +3,7 @@
 	.votes(@click="vote")
 		.mdi.mdi-menu-up.upvote(v-if="!isManaging")
 		.vote-count {{ question.score }}
-		| Votes
+		| {{ $t('Question:vote-count:label') }}
 	.content {{ question.content }}
 	menu-dropdown(v-if="isManaging && hasPermission('room:question.moderate')", v-model="showModerationMenu", strategy="fixed")
 		template(v-slot:button="{toggle}")
