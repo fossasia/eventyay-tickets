@@ -194,6 +194,7 @@ export default {
 	'Question:moderation-menu:delete-question:label': 'delete',
 	'Question:moderation-menu:pin-question:label': 'pin',
 	'Question:moderation-menu:unarchive-question:label': 'unarchive',
+	'Question:vote-count:label': 'Votes',
 	'Questions:asking-form:label': 'Ask your question',
 	'Questions:asking-form:mod-approve-question:label': 'approve',
 	'Questions:asking-form:mod-delete-question:label': 'delete',
