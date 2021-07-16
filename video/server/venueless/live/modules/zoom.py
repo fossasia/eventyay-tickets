@@ -24,6 +24,9 @@ class ZoomModule(BaseModule):
         if not self.consumer.user.profile.get("display_name"):
             raise ConsumerException("bbb.join.missing_profile")
 
+        if not self.module_config.get("meeting_number"):
+            raise ConsumerException("zoom.no_meeting_id")
+
         data = signing.dumps(
             {
                 "mn": int(
