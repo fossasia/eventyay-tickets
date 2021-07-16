@@ -99,6 +99,7 @@ FEATURE_FLAGS = [
     "page.landing",
     "zoom",
     "janus",
+    "polls",
 ]
 
 
