@@ -1,15 +1,16 @@
 <template lang="pug">
 .c-room-manager
-	.schedule
-	.modules
-		.polls(v-if="modules['poll']")
+	dashboard-layout
+		panel.media
+			media-source-placeholder
+		panel.polls(v-if="modules['poll']")
 			.header
 				h3 Polls
 				.actions
 					bunt-button#btn-create-poll(@click="showCreatePollPrompt") Create Poll
 					bunt-icon-button(@click="showUrlPopup('poll')") presentation
 			polls(:module="modules['poll']", @edit="startEditingPoll")
-		.questions(v-if="modules['question']")
+		panel.questions(v-if="modules['question']")
 			.header
 				h3 Questions
 				.actions
@@ -20,7 +21,7 @@
 						template(v-slot:menu)
 							.archive-all(@click="$store.dispatch('question/archiveAll')") {{ $t('Questions:moderator-actions:archive-all:label') }}
 			questions(:module="modules['question']")
-		.chat(v-if="modules['chat.native']")
+		panel.chat(v-if="modules['chat.native']")
 			.header
 				h3 Chat
 				bunt-icon-button(@click="showUrlPopup('chat')") presentation
@@ -55,7 +56,10 @@
 
 import {mapGetters, mapState} from 'vuex'
 import { createPopper } from '@popperjs/core'
+import DashboardLayout from 'components/dashboard-layout'
+import Panel from 'components/dashboard-layout/Panel'
 import Chat from 'components/Chat'
+import MediaSourcePlaceholder from 'components/MediaSourcePlaceholder'
 import MenuDropdown from 'components/MenuDropdown'
 import Polls from 'components/Polls'
 import Prompt from 'components/Prompt'
@@ -63,7 +67,7 @@ import Questions from 'components/Questions'
 
 export default {
 	name: 'RoomManager',
-	components: { Chat, MenuDropdown, Polls, Prompt, Questions },
+	components: { Chat, DashboardLayout, MediaSourcePlaceholder, MenuDropdown, Panel, Polls, Prompt, Questions },
 	props: {
 		room: Object,
 		modules: Object
@@ -161,8 +165,9 @@ export default {
 		display: flex
 		flex-direction: column
 		min-height: 0
-		width: var(--chatbar-width)
-		border-left: border-separator()
+		flex: 1 1 0px
+		// width: var(--chatbar-width)
+		// border-left: border-separator()
 		.header
 			display: flex
 			justify-content: space-between
@@ -178,6 +183,8 @@ export default {
 				icon-button-style(style: clear)
 		.c-chat
 			min-height: 0
+	.media .c-media-source-placeholder
+		height: 360px
 	.polls
 		#btn-create-poll
 			themed-button-primary()

@@ -25,6 +25,7 @@ export default new Vuex.Store({
 		permissions: null,
 		activeRoom: null,
 		reactions: null,
+		mediaSourcePlaceholderRect: null
 	},
 	getters: {
 		hasPermission (state) {
@@ -46,6 +47,9 @@ export default new Vuex.Store({
 				}
 			}
 			state.rooms = rooms
+		},
+		reportMediaSourcePlaceholderRect (state, rect) {
+			state.mediaSourcePlaceholderRect = rect
 		}
 	},
 	actions: {
