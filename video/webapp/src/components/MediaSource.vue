@@ -1,5 +1,5 @@
 <template lang="pug">
-.c-media-source(:class="{'in-background': background, 'in-room-manager': inRoomManager}")
+.c-media-source(:class="{'in-background': background, 'in-room-manager': inRoomManager}", :style="style")
 	transition(name="background-room")
 		router-link.background-room(v-if="background", :to="room ? {name: 'room', params: {roomId: room.id}}: {name: 'channel', params: {channelId: call.channel}}")
 			.description
@@ -18,6 +18,7 @@
 </template>
 <script>
 // TODO functional component?
+import { mapState } from 'vuex'
 import api from 'lib/api'
 import BigBlueButton from 'components/BigBlueButton'
 import Zoom from 'components/Zoom'
@@ -38,6 +39,16 @@ export default {
 		}
 	},
 	computed: {
+		...mapState(['mediaSourcePlaceholderRect']),
+		style () {
+			if (this.mediaSourcePlaceholderRect) {
+				return {
+					'--placeholder-height': this.mediaSourcePlaceholderRect.height + 'px',
+					'--placeholder-width': this.mediaSourcePlaceholderRect.width + 'px'
+				}
+			}
+			return {}
+		},
 		module () {
 			return this.room.modules.find(module => ['livestream.native', 'livestream.youtube', 'livestream.iframe', 'call.bigbluebutton', 'call.janus', 'call.zoom'].includes(module.type))
 		},
@@ -143,13 +154,11 @@ export default {
 	&.in-room-manager
 		.c-livestream, .c-iframe-player, .c-youtube
 			&:not(.size-tiny):not(.background)
-				bottom: calc(var(--vh100) - 56px - 360px)
-				right: calc(var(--chatbar-width) * var(--stage-module-count) + 3px)
-				width: calc(100vw - var(--sidebar-width) - var(--chatbar-width) * var(--stage-module-count) - 3px)
-				height: 360px
-				+below(1800px)
-					bottom: calc(var(--vh100) - 56px - 56px)
-					right: 0
-					width: calc(100vw - var(--sidebar-width))
-					height: 56px
+				bottom: calc(var(--vh100) - 56px - var(--placeholder-height))
+				right: calc(100vw - var(--sidebar-width) - var(--placeholder-width))
+				width: var(--placeholder-width)
+				height: var(--placeholder-height)
+				+below('l')
+					bottom: calc(var(--vh100) - 48px - 56px - var(--placeholder-height))
+					right: calc(100vw - var(--placeholder-width))
 </style>
