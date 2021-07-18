@@ -15,7 +15,6 @@ export default {
 	'AVDevicePrompt:default:label': 'System default',
 	'AVDevicePrompt:headline:label': 'Device configuration',
 	'AVDevicePrompt:videoout:label': 'Show video from other users (might cause a reconnect)',
-	'BigBlueButton:error:text': 'We could not connect to the video conference server, sorry.',
 	'ChannelBrowser:create:label': 'Alternatively, you can create a new channel.',
 	'ChannelBrowser:headline:text': 'Browse channels',
 	'ChannelBrowser:intro:text': 'Here, we show you a list of all channels that you can join for this event.',
@@ -153,6 +152,7 @@ export default {
 	'Livestream:default-source:text': 'Default',
 	'Livestream:offline-message:text': 'Stream offline',
 	'MediaSource:call:label': 'Private call',
+	'MediaSource:iframe-error:text': 'We could not connect to the video conference server, sorry.',
 	'MediaSource:room:hint': 'Currently playing',
 	'notifications/NotificationPermissionNotification:accept:label': 'Enable notifications',
 	'notifications/NotificationPermissionNotification:decline:label': 'Not now',
@@ -306,5 +306,4 @@ export default {
 	'UserListPage:placeholder:text': 'Click on a person on the left to view more details or get in touch with them!',
 	'UserListPage:staffed-exhibitions:text': 'This person represents',
 	'UserSearch:placeholder:text': 'search users',
-	'Zoom:error:text': 'We could not connect to the video conference server, sorry.',
 }

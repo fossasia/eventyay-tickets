@@ -26,6 +26,7 @@
 		media-source(v-if="roomHasMedia && user.profile.greeted", ref="primaryMediaSource", :room="room", :key="room.id", role="main")
 		media-source(v-if="call", ref="channelCallSource", :call="call", :background="call.channel !== $route.params.channelId", :key="call.id", @close="$store.dispatch('chat/leaveCall')")
 		media-source(v-else-if="backgroundRoom", ref="backgroundMediaSource", :room="backgroundRoom", :background="true", :key="backgroundRoom.id", @close="backgroundRoom = null")
+		#media-source-iframes
 		notifications(:has-background-media="!!backgroundRoom")
 		.disconnected-warning(v-if="!connected") {{ $t('App:disconnected-warning:text') }}
 		transition(name="prompt")
@@ -61,7 +62,7 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['fatalConnectionError', 'fatalError', 'connected', 'socketCloseCode', 'world', 'rooms', 'user']),
+		...mapState(['fatalConnectionError', 'fatalError', 'connected', 'socketCloseCode', 'world', 'rooms', 'user', 'mediaSourcePlaceholderRect']),
 		...mapState('notifications', ['askingPermission']),
 		...mapState('chat', ['call']),
 		room () {
@@ -93,12 +94,18 @@ export default {
 				(this.room?.modules.length > 1 && this.room?.modules.some(module => chatbarModules.includes(module.type))) ||
 				(this.call && this.call.channel === this.$route.params.channelId)
 			)
-
-			return {
+			const style = {
 				'--chatbar-width': hasChatbar ? '380px' : '0px',
 				'--mobile-media-height': hasChatbar ? '40vh' : (hasStageTools ? 'calc(100vh - 48px - 2 * 56px)' : 'calc(100vh - 48px - 56px)'),
 				'--has-stagetools': hasStageTools ? '1' : '0'
 			}
+			if (this.mediaSourcePlaceholderRect) {
+				Object.assign(style, {
+					'--mediasource-placeholder-height': this.mediaSourcePlaceholderRect.height + 'px',
+					'--mediasource-placeholder-width': this.mediaSourcePlaceholderRect.width + 'px'
+				})
+			}
+			return style
 		},
 		browserhackStyle () {
 			return {
@@ -203,6 +210,8 @@ export default {
 		grid-area: app-bar
 	.c-rooms-sidebar
 		grid-area: rooms-sidebar
+	.c-room-header
+		grid-area: main
 	> .bunt-progress-circular
 		position: fixed
 		top: 50%
@@ -265,11 +274,11 @@ export default {
 
 	+below('l')
 		&.override-sidebar-collapse
-			grid-template-rows: 48px auto
+			grid-template-rows: 48px 1fr
 			grid-template-areas: "app-bar app-bar" "rooms-sidebar main"
 		&:not(.override-sidebar-collapse)
 			grid-template-columns: auto
-			grid-template-rows: 48px auto
+			grid-template-rows: 48px 1fr
 			grid-template-areas: "app-bar" "main"
 
 			.sidebar-backdrop

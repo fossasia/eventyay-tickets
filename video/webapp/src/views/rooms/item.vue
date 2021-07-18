@@ -1,13 +1,13 @@
 <template lang="pug">
 .c-room(v-if="room", :class="{'standalone-chat': modules['chat.native'] && room.modules.length === 1}")
 	.stage(v-if="modules['livestream.native'] || modules['livestream.youtube'] || modules['livestream.iframe'] || modules['call.janus']")
-		.mediasource-placeholder
+		media-source-placeholder
 		reactions-overlay(v-if="modules['livestream.native'] || modules['livestream.youtube'] || modules['livestream.iframe'] || modules['call.janus']")
 		.stage-tool-blocker(v-if="activeStageTool !== null", @click="activeStageTool = null")
 		.stage-tools(v-if="modules['livestream.native'] || modules['livestream.youtube'] || modules['livestream.iframe'] || modules['call.janus']")
 			reactions-bar(:expanded="true", @expand="activeStageTool = 'reaction'")
 			//- reactions-bar(:expanded="activeStageTool === 'reaction'", @expand="activeStageTool = 'reaction'")
-	.mediasource-placeholder(v-else-if="modules['call.bigbluebutton'] || modules['call.zoom']")
+	media-source-placeholder(v-else-if="modules['call.bigbluebutton'] || modules['call.zoom']")
 	roulette(v-else-if="modules['networking.roulette'] && $features.enabled('roulette')", :module="modules['networking.roulette']", :room="room")
 	landing-page(v-else-if="modules['page.landing']", :module="modules['page.landing']")
 	markdown-page(v-else-if="modules['page.markdown']", :module="modules['page.markdown']")
@@ -46,10 +46,11 @@ import Roulette from 'components/Roulette'
 import UserListPage from 'components/UserListPage'
 import Polls from 'components/Polls'
 import Questions from 'components/Questions'
+import MediaSourcePlaceholder from 'components/MediaSourcePlaceholder'
 
 export default {
 	name: 'Room',
-	components: { EditRoomSchedule, Chat, Exhibition, LandingPage, MarkdownPage, StaticPage, IframePage, ReactionsBar, ReactionsOverlay, RecordingsPrompt, UserListPage, Roulette, Polls, Questions },
+	components: { EditRoomSchedule, Chat, Exhibition, LandingPage, MarkdownPage, StaticPage, IframePage, ReactionsBar, ReactionsOverlay, RecordingsPrompt, UserListPage, Roulette, Polls, Questions, MediaSourcePlaceholder },
 	props: {
 		room: Object,
 		modules: Object
@@ -104,7 +105,7 @@ export default {
 		flex-direction: column
 		min-height: 0
 		flex: auto
-	.mediasource-placeholder
+	.c-media-source-placeholder
 		flex: auto
 	.room-sidebar
 		display: flex
@@ -166,20 +167,18 @@ export default {
 		height: var(--vh100)
 		z-index: 800
 	&.standalone-chat
-		.main
-			flex: auto
+		flex: auto
 	&:not(.standalone-chat)
 		.c-chat
 			min-height: 0
 	+below('m')
-		.main
-			flex-direction: column
+		flex-direction: column
 		.stage
 			flex: none
 		.room-sidebar
 			width: 100%
 			flex: auto
-		.mediasource-placeholder
+		.c-media-source-placeholder
 			height: var(--mobile-media-height)
 			flex: none
 		&:not(.standalone-chat)

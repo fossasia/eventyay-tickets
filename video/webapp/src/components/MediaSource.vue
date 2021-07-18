@@ -1,5 +1,5 @@
 <template lang="pug">
-.c-media-source(:class="{'in-background': background, 'in-room-manager': inRoomManager}", :style="style")
+.c-media-source(:class="{'in-background': background, 'in-room-manager': inRoomManager}")
 	transition(name="background-room")
 		router-link.background-room(v-if="background", :to="room ? {name: 'room', params: {roomId: room.id}}: {name: 'channel', params: {channelId: call.channel}}")
 			.description
@@ -9,27 +9,19 @@
 			.global-placeholder
 			bunt-icon-button(@click.prevent.stop="$emit('close')") close
 	livestream(v-if="room && module.type === 'livestream.native'", ref="livestream", :room="room", :module="module", :size="background ? 'tiny' : 'normal'", :key="`livestream-${room.id}`")
-	you-tube(v-else-if="room && module.type === 'livestream.youtube'", :room="room", :module="module", :size="background ? 'tiny' : 'normal'", :key="`youtube-${room.id}`")
-	iframe-player(v-else-if="room && module.type === 'livestream.iframe'", :room="room", :module="module", :background="background", :key="`iframe-player-${room.id}`")
-	big-blue-button(v-else-if="room && module.type === 'call.bigbluebutton'", ref="bigbluebutton", :room="room", :module="module", :background="background", :key="`bbb-${room.id}`")
-	zoom(v-else-if="room && module.type === 'call.zoom'", ref="zoom", :room="room", :module="module", :background="background", :key="`zoom-${room.id}`")
 	janus-call(v-else-if="room && module.type === 'call.janus'", ref="janus", :room="room", :module="module", :background="background", :size="background ? 'tiny' : 'normal'", :key="`janus-${room.id}`")
 	janus-channel-call(v-else-if="call", ref="janus", :call="call", :background="background", :size="background ? 'tiny' : 'normal'", :key="`call-${call.id}`", @close="$emit('close')")
+	.iframe-error(v-if="iframeError") {{ $t('MediaSource:iframe-error:text') }}
 </template>
 <script>
 // TODO functional component?
-import { mapState } from 'vuex'
 import api from 'lib/api'
-import BigBlueButton from 'components/BigBlueButton'
-import Zoom from 'components/Zoom'
 import JanusCall from 'components/JanusCall'
 import JanusChannelCall from 'components/JanusChannelCall'
 import Livestream from 'components/Livestream'
-import IframePlayer from 'components/IframePlayer'
-import YouTube from 'components/YouTube'
 
 export default {
-	components: { BigBlueButton, Zoom, Livestream, IframePlayer, YouTube, JanusCall, JanusChannelCall },
+	components: { Livestream, JanusCall, JanusChannelCall },
 	props: {
 		room: Object,
 		call: Object,
@@ -38,17 +30,12 @@ export default {
 			default: false
 		}
 	},
+	data () {
+		return {
+			iframeError: null
+		}
+	},
 	computed: {
-		...mapState(['mediaSourcePlaceholderRect']),
-		style () {
-			if (this.mediaSourcePlaceholderRect) {
-				return {
-					'--placeholder-height': this.mediaSourcePlaceholderRect.height + 'px',
-					'--placeholder-width': this.mediaSourcePlaceholderRect.width + 'px'
-				}
-			}
-			return {}
-		},
 		module () {
 			return this.room.modules.find(module => ['livestream.native', 'livestream.youtube', 'livestream.iframe', 'call.bigbluebutton', 'call.janus', 'call.zoom'].includes(module.type))
 		},
@@ -56,10 +43,63 @@ export default {
 			return this.$route.name === 'room:manage'
 		}
 	},
-	created () {
+	watch: {
+		background () {
+			if (!this.iframe) return
+			if (this.background) {
+				this.iframe.classList.add('background')
+			} else {
+				this.iframe.classList.remove('background')
+			}
+		}
+	},
+	async mounted () {
 		if (this.room) api.call('room.enter', {room: this.room.id})
+		try {
+			let iframeUrl
+			let hideIfBackground = false
+			switch (this.module.type) {
+				case 'call.bigbluebutton': {
+					({url: iframeUrl} = await api.call('bbb.room_url', {room: this.room.id}))
+					hideIfBackground = true
+					break
+				}
+				case 'call.zoom': {
+					({url: iframeUrl} = await api.call('zoom.room_url', {room: this.room.id}))
+					hideIfBackground = true
+					break
+				}
+				case 'livestream.iframe': {
+					iframeUrl = this.module.config.url
+					break
+				}
+				case 'livestream.youtube': {
+					iframeUrl = `https://www.youtube-nocookie.com/embed/${this.module.config.ytid}?autoplay=1&rel=0&showinfo=0`
+					break
+				}
+			}
+			if (!iframeUrl || !this.$el || this._isDestroyed) return
+			const iframe = document.createElement('iframe')
+			iframe.src = iframeUrl
+			iframe.classList.add('iframe-media-source')
+			if (hideIfBackground) {
+				iframe.classList.add('hide-if-background')
+			}
+			iframe.allow = 'camera; autoplay; microphone; fullscreen; display-capture'
+			iframe.allowfullscreen = true
+			iframe.allowusermedia = true
+			iframe.setAttribute('allowfullscreen', '') // iframe.allowfullscreen is not enough in firefox#media-source-iframes
+			const container = document.querySelector('#media-source-iframes')
+			container.appendChild(iframe)
+			this.iframe = iframe
+		} catch (error) {
+			// TODO handle bbb/zoom.join.missing_profile
+			this.iframeError = error
+			console.log(error)
+		}
 	},
 	beforeDestroy () {
+		this.iframe?.remove()
 		if (api.socketState !== 'open') return
 		if (this.room) api.call('room.leave', {room: this.room.id})
 	},
@@ -75,10 +115,10 @@ export default {
 				return this.$refs.janus.roomId
 			}
 			if (this.module.type === 'call.bigbluebutton') {
-				return !!this.$refs.bigbluebutton.iframe
+				return !!this.iframe
 			}
 			if (this.module.type === 'call.zoom') {
-				return !!this.$refs.zoom.iframe
+				return !!this.iframe
 			}
 			return true
 		}
@@ -92,27 +132,6 @@ export default {
 	height: 0
 	&.in-background
 		z-index: 101
-	.c-livestream, .c-iframe-player, .c-youtube, .c-januscall, .c-bigbluebutton, .c-zoom, .c-januschannelcall
-		position: fixed
-		transition: all .3s ease
-		&.size-tiny, &.background
-			bottom: calc(var(--vh100) - 48px - 3px)
-			right: 4px + 36px + 4px
-			+below('l')
-				bottom: calc(var(--vh100) - 48px - 48px - 3px)
-		&:not(.size-tiny):not(.background)
-			bottom: calc(56px * var(--has-stagetools))
-			right: var(--chatbar-width)
-			width: calc(100vw - var(--sidebar-width) - var(--chatbar-width))
-			height: calc(var(--vh100) - 56px * (1 + var(--has-stagetools)))
-			+below('l')
-				height: calc(var(--vh100) - 56px * (1 + var(--has-stagetools)) - 48px)
-				width: calc(100vw - var(--chatbar-width))
-			+below('m')
-				bottom: calc(var(--vh100) - 48px - 56px - var(--mobile-media-height))
-				right: 0
-				width: 100vw
-				height: var(--mobile-media-height)
 	.background-room
 		position: fixed
 		top: 3px
@@ -151,14 +170,36 @@ export default {
 	// 	transition-delay: .1s
 	.background-room-enter, .background-room-leave-to
 		transform: translate(calc(-1 * var(--chatbar-width)), 52px)
-	&.in-room-manager
-		.c-livestream, .c-iframe-player, .c-youtube
-			&:not(.size-tiny):not(.background)
-				bottom: calc(var(--vh100) - 56px - var(--placeholder-height))
-				right: calc(100vw - var(--sidebar-width) - var(--placeholder-width))
-				width: var(--placeholder-width)
-				height: var(--placeholder-height)
-				+below('l')
-					bottom: calc(var(--vh100) - 48px - 56px - var(--placeholder-height))
-					right: calc(100vw - var(--placeholder-width))
+.c-media-source .c-livestream, .c-media-source .c-januscall, .c-media-source .c-januschannelcall, iframe.iframe-media-source
+	position: fixed
+	transition: all .3s ease
+	&.size-tiny, &.background
+		bottom: calc(var(--vh100) - 48px - 3px)
+		right: 4px + 36px + 4px
+		+below('l')
+			bottom: calc(var(--vh100) - 48px - 48px - 3px)
+	&:not(.size-tiny):not(.background)
+		bottom: calc(var(--vh100) - 56px - var(--mediasource-placeholder-height))
+		right: calc(100vw - var(--sidebar-width) - var(--mediasource-placeholder-width))
+		width: var(--mediasource-placeholder-width)
+		height: var(--mediasource-placeholder-height)
+		+below('l')
+			bottom: calc(var(--vh100) - 48px - 56px - var(--mediasource-placeholder-height))
+			right: calc(100vw - var(--mediasource-placeholder-width))
+		+below('m')
+			bottom: calc(var(--vh100) - 48px - 56px - var(--mobile-media-height))
+			right: 0
+			width: 100vw
+			height: var(--mobile-media-height)
+iframe.iframe-media-source
+	transition: all .3s ease
+	border: none
+	&.background
+		pointer-events: none
+		height: 48px
+		width: 86px
+		z-index: 101
+		&.hide-if-background
+			width: 0
+			height: 0
 </style>
