@@ -17,7 +17,7 @@
 	exhibition(v-else-if="modules['exhibition.native']", :room="room")
 	chat(v-if="room.modules.length === 1 && modules['chat.native']", :room="room", :module="modules['chat.native']", mode="standalone", :key="room.id")
 	.room-sidebar(v-else-if="modules['chat.native'] || modules['question'] || modules['poll']", :class="unreadTabsClasses", role="complementary")
-		bunt-tabs(v-if="(!!modules['question'] + !!modules['poll'] + !!modules['chat.native']) > 1", :active-tab="activeSidebarTab")
+		bunt-tabs(v-if="(!!modules['question'] + !!modules['poll'] + !!modules['chat.native']) > 1 && activeSidebarTab", :active-tab="activeSidebarTab")
 			bunt-tab(v-if="modules['chat.native']", id="chat", :header="$t('Room:sidebar:tabs-header:chat')", @selected="activeSidebarTab = 'chat'")
 			bunt-tab(v-if="modules['question']", id="questions", :header="$t('Room:sidebar:tabs-header:questions')", @selected="activeSidebarTab = 'questions'")
 			bunt-tab(v-if="modules['poll']", id="polls", :header="$t('Room:sidebar:tabs-header:polls')", @selected="activeSidebarTab = 'polls'")
@@ -58,7 +58,7 @@ export default {
 		return {
 			showRecordingsPrompt: false,
 			showEditSchedule: false,
-			activeSidebarTab: 'chat', // chat, questions, polls
+			activeSidebarTab: null, // chat, questions, polls
 			unreadTabs: {
 				chat: false,
 				questions: false,
