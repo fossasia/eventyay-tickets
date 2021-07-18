@@ -90,10 +90,11 @@ export default {
 <style lang="stylus">
 .c-reactions-overlay
 	position: absolute
-	bottom: 56px
-	right: var(--chatbar-width)
-	width: calc(100vw - var(--sidebar-width) - var(--chatbar-width))
-	height: calc(var(--vh100) - 112px)
+	// TODO decopypaste
+	bottom: calc(var(--vh100) - 56px - var(--mediasource-placeholder-height))
+	right: calc(100vw - var(--sidebar-width) - var(--mediasource-placeholder-width))
+	width: var(--mediasource-placeholder-width)
+	height: var(--mediasource-placeholder-height)
 	pointer-events: none
 	overflow: hidden
 	z-index: 50
@@ -107,9 +108,6 @@ export default {
 		background-size: 5700% 5700%
 		image-rendering: -webkit-optimize-contrast
 	+below('l')
-		width: 100vw
-		height: 40vh
-		right: 0
-		bottom: none
-		top: 48px + 56px
+		bottom: calc(var(--vh100) - 48px - 56px - var(--mediasource-placeholder-height))
+		right: calc(100vw - var(--mediasource-placeholder-width))
 </style>
