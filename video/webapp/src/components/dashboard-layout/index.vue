@@ -24,7 +24,8 @@ export default {
 	},
 	methods: {},
 	render (createElement) {
-		const panels = this.$slots.default.slice()
+		// filter out v-if=false nodes
+		const panels = this.$slots.default.filter(vnode => !vnode.isComment)
 		const panelCount = panels.length
 		const columns = []
 		if (this.contentRect) {
