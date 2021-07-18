@@ -15,7 +15,6 @@ export default {
 	'AVDevicePrompt:default:label': 'System-Standard',
 	'AVDevicePrompt:headline:label': 'Gerätekonfiguration',
 	'AVDevicePrompt:videoout:label': 'Video von anderen Benutzern empfangen (startet ggf. die Verbindung neu)',
-	'BigBlueButton:error:text': 'Wir konnten den Videokonferenzserver nicht erreichen, tut uns leid.',
 	'ChannelBrowser:create:label': 'Alternativ kannst du einen neuen Kanal erstellen.',
 	'ChannelBrowser:headline:text': 'Weitere Kanäle',
 	'ChannelBrowser:intro:text': 'Hier zeigen wir dir eine Liste aller Kanäle in dieser Veranstaltung, denen du beitreten kannst.',
@@ -151,7 +150,8 @@ export default {
 	'Livestream:default-source:text': 'Standard',
 	'Livestream:offline-message:text': 'Der Stream ist offline',
 	'MediaSource:call:label': 'Privates Gespräch',
-	'MediaSource:room:hint': 'Du hörst gerade',
+	'MediaSource:iframe-error:text': 'Wir konnten den Videokonferenzserver nicht erreichen, tut uns leid.',
+	'MediaSource:room:hint': 'Du hörst gerade', // technically wrong, since video is also shown
 	'notifications/NotificationPermissionNotification:accept:label': 'Aktivieren',
 	'notifications/NotificationPermissionNotification:decline:label': 'Jetzt nicht',
 	'notifications/NotificationPermissionNotification:prompt': 'Möchtest du Desktop-Benachrichtigungen für Direktnachrichten, Kontaktanfragen und weitere Ereignisse bekommen, während die Veranstaltung im Hintergrund läuft?',
@@ -294,5 +294,4 @@ export default {
 	'UserListPage:placeholder:text': 'Hier kannst Du dir die Profile anderer Teilnehmer*innen ansehen.\nSchau dich ruhig etwas um.',
 	'UserListPage:staffed-exhibitions:text': 'Von diesem/dieser Benutzer*in betreute Ausstellungen ',
 	'UserSearch:placeholder:text': 'Teilnehmer*innen durchsuchen',
-	'Zoom:error:text': 'Wir konnten den Videokonferenzserver nicht erreichen, tut uns leid.',
 }
