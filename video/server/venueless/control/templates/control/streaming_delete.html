@@ -1,0 +1,10 @@
+{% extends "control/base.html" %}
+{% load i18n %}
+
+{% block content %}
+<h1>{% trans "Delete streaming server" %}</h1>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">{% blocktrans with id=server.url %}Delete {{ id }}{% endblocktrans %}</button>
+</form>
+{% endblock %}

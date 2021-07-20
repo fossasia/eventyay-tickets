@@ -16,6 +16,7 @@ from .poll import Poll, PollOption, PollVote
 from .question import Question, QuestionVote
 from .room import Reaction, Room, RoomView
 from .roulette import RoulettePairing, RouletteRequest
+from .streaming import StreamingServer
 from .turn import TurnServer
 from .world import World
 

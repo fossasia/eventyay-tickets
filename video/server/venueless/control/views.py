@@ -33,6 +33,7 @@ from venueless.core.models import (
     Feedback,
     JanusServer,
     RoomView,
+    StreamingServer,
     TurnServer,
     World,
 )
@@ -44,6 +45,8 @@ from .forms import (
     PlannedUsageFormSet,
     ProfileForm,
     SignupForm,
+    StreamingServerForm,
+    StreamKeyGeneratorForm,
     TurnServerForm,
     UserForm,
     WorldForm,
@@ -567,3 +570,85 @@ class WorldCalendar(AdminBase, View):
             content_type="text/calendar",
             headers={"Content-Disposition": 'attachment; filename="venueless.ics"'},
         )
+
+
+class StreamingServerList(AdminBase, ListView):
+    template_name = "control/streaming_list.html"
+    queryset = StreamingServer.objects.order_by("name")
+    context_object_name = "streamings"
+
+
+class StreamingServerCreate(AdminBase, CreateView):
+    template_name = "control/streaming_form.html"
+    form_class = StreamingServerForm
+    success_url = "/control/streamingservers/"
+
+    @transaction.atomic()
+    def form_valid(self, form):
+        self.object = form.save()
+
+        LogEntry.objects.create(
+            content_object=form.instance,
+            user=self.request.user,
+            action_type="streamingserver.created",
+            data={k: str(v) for k, v in form.cleaned_data.items()},
+        )
+        messages.success(self.request, _("Ok!"))
+        return super().form_valid(form)
+
+
+class StreamingServerUpdate(AdminBase, UpdateView):
+    template_name = "control/streaming_form.html"
+    form_class = StreamingServerForm
+    queryset = StreamingServer.objects.all()
+    success_url = "/control/streamingservers/"
+
+    def form_valid(self, form):
+        self.object = form.save()
+
+        LogEntry.objects.create(
+            content_object=form.instance,
+            user=self.request.user,
+            action_type="streamingserver.updated",
+            data={k: str(v) for k, v in form.cleaned_data.items()},
+        )
+        messages.success(self.request, _("Ok!"))
+        return super().form_valid(form)
+
+
+class StreamingServerDelete(AdminBase, DeleteView):
+    template_name = "control/streaming_delete.html"
+    queryset = StreamingServer.objects.all()
+    success_url = "/control/streamingservers/"
+    context_object_name = "server"
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        LogEntry.objects.create(
+            content_object=self.object,
+            user=self.request.user,
+            action_type="streamingserver.deleted",
+            data={},
+        )
+        success_url = self.get_success_url()
+        self.object.delete()
+        messages.success(self.request, _("Ok!"))
+        return HttpResponseRedirect(success_url)
+
+
+class StreamkeyGenerator(AdminBase, FormView):
+    template_name = "control/streamkey.html"
+    form_class = StreamKeyGeneratorForm
+
+    def form_valid(self, form):
+        return self.get(self.request, *self.args, **self.kwargs)
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        form = ctx["form"]
+        if self.request.method == "POST" and form.is_valid():
+            ctx["result"] = form.cleaned_data["server"].generate_streamkey(
+                form.cleaned_data["name"],
+                form.cleaned_data["days"],
+            )
+        return ctx

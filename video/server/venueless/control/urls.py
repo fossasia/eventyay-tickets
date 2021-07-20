@@ -43,7 +43,30 @@ urlpatterns = [
         name="turnserver.delete",
     ),
     path(
-        "turns/<uuid:pk>/", views.TurnServerUpdate.as_view(), name="turnserver.update"
+        "turnservers/<uuid:pk>/",
+        views.TurnServerUpdate.as_view(),
+        name="turnserver.update",
+    ),
+    path("streamkey/", views.StreamkeyGenerator.as_view(), name="streamkey"),
+    path(
+        "streamingservers/",
+        views.StreamingServerList.as_view(),
+        name="streamingserver.list",
+    ),
+    path(
+        "streamingservers/new/",
+        views.StreamingServerCreate.as_view(),
+        name="streamingserver.create",
+    ),
+    path(
+        "streamingservers/<uuid:pk>/delete",
+        views.StreamingServerDelete.as_view(),
+        name="streamingserver.delete",
+    ),
+    path(
+        "streamingservers/<uuid:pk>/",
+        views.StreamingServerUpdate.as_view(),
+        name="streamingserver.update",
     ),
     path("worlds/", views.WorldList.as_view(), name="world.list"),
     path("worlds/new/", views.WorldCreate.as_view(), name="world.create"),

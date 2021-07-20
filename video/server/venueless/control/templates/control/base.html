@@ -34,6 +34,12 @@
                 <a href="{% url "control:janusserver.list" %}"{% if request.path == "/control/janus/" %} class="active"{% endif %}>
                     {% trans "Janus servers" %}
                 </a>
+                <a href="{% url "control:streamingserver.list" %}"{% if request.path == "/control/streamingservers/" %} class="active"{% endif %}>
+                    {% trans "Streaming servers" %}
+                </a>
+                <a href="{% url "control:streamkey" %}"{% if request.path == "/control/streamkey/" %} class="active"{% endif %}>
+                    {% trans "Streamkey generator" %}
+                </a>
                 <a href="{% url "control:feedback.list" %}"{% if request.path == "/control/feedback/" %} class="active"{% endif %}>
                     {% trans "Feedback" %}
                 </a>

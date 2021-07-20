@@ -1,0 +1,26 @@
+{% extends "control/base.html" %}
+{% load i18n %}
+{% load formset_tags %}
+
+{% block content %}
+<h1>{% trans "Stream key generator" %}</h1>
+
+{% if result %}
+<p>
+    {% trans "Stream server" %}: <code>{{result.input_server}}</code>
+</p>
+<p>
+    {% trans "Stream key" %}: <code>{{result.input_key}}</code>
+</p>
+<p>
+    {% trans "HLS URL" %}: <code>{{result.output}}</code>
+</p>
+<hr/>
+{% endif %}
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">{% trans "Generate" %}</button>
+</form>
+{% endblock %}
