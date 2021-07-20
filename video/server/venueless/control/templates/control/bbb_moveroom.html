@@ -1,0 +1,16 @@
+{% extends "control/base.html" %}
+{% load i18n %}
+{% load formset_tags %}
+
+{% block content %}
+<h1>{% trans "Move a BBB room to a new server" %}</h1>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <p class="messages warning">
+        {% trans 'Moving a room will try to kick everyone out of the room. People need to re-join by reloading the page. If kicking people fails (i.e. server down), it will still proceed, but might create a "split" room, i.e. two groups of people who think they are in the same room but are not. Recordings of the room will be no longer accessible through the interface later. It is recommended to join the room yourself to be able to react to this. Use with caution.' %}
+    </p>
+    <button type="submit">{% trans "Move" %}</button>
+</form>
+{% endblock %}

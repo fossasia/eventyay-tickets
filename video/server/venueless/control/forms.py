@@ -6,6 +6,7 @@ from django.forms import inlineformset_factory
 from venueless.core.models import (
     BBBServer,
     JanusServer,
+    Room,
     StreamingServer,
     TurnServer,
     World,
@@ -227,3 +228,12 @@ class StreamKeyGeneratorForm(forms.Form):
     )
     name = forms.CharField(label="Name", validators=[RegexValidator("^[a-z0-9A-Z]+$")])
     days = forms.IntegerField(label="Validity in days", initial=180)
+
+
+class BBBMoveRoomForm(forms.Form):
+    room = forms.ModelChoiceField(
+        label="Room ID", queryset=Room.objects.all(), widget=forms.TextInput
+    )
+    server = forms.ModelChoiceField(
+        label="Target Server", queryset=BBBServer.objects.filter(active=True)
+    )

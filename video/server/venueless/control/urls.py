@@ -18,6 +18,7 @@ urlpatterns = [
     path("users/", views.UserList.as_view(), name="user.list"),
     path("users/<int:pk>/", views.UserUpdate.as_view(), name="user.update"),
     path("bbbs/", views.BBBServerList.as_view(), name="bbbserver.list"),
+    path("bbbs/moveroom/", views.BBBMoveRoom.as_view(), name="bbbserver.moveroom"),
     path("bbbs/new/", views.BBBServerCreate.as_view(), name="bbbserver.create"),
     path(
         "bbbs/<uuid:pk>/delete",

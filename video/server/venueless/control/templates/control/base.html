@@ -28,6 +28,9 @@
                 <a href="{% url "control:bbbserver.list" %}"{% if request.path == "/control/bbbs/" %} class="active"{% endif %}>
                     {% trans "BBB servers" %}
                 </a>
+                <a href="{% url "control:bbbserver.moveroom" %}"{% if request.path == "/control/bbbs/moveroom/" %} class="active"{% endif %}>
+                {% trans "Move BBB room" %}
+                </a>
                 <a href="{% url "control:turnserver.list" %}"{% if request.path == "/control/turns/" %} class="active"{% endif %}>
                    {% trans "TURN servers" %}
                 </a>

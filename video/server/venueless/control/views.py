@@ -4,6 +4,7 @@ import json
 
 import icalendar
 import jwt
+import requests
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
@@ -29,6 +30,7 @@ from django.views.generic import (
 )
 
 from venueless.core.models import (
+    BBBCall,
     BBBServer,
     Feedback,
     JanusServer,
@@ -39,7 +41,9 @@ from venueless.core.models import (
 )
 
 from ..core.models.world import PlannedUsage
+from ..core.services.bbb import get_url
 from .forms import (
+    BBBMoveRoomForm,
     BBBServerForm,
     JanusServerForm,
     PlannedUsageFormSet,
@@ -652,3 +656,34 @@ class StreamkeyGenerator(AdminBase, FormView):
                 form.cleaned_data["days"],
             )
         return ctx
+
+
+class BBBMoveRoom(AdminBase, FormView):
+    template_name = "control/bbb_moveroom.html"
+    form_class = BBBMoveRoomForm
+
+    def form_valid(self, form):
+        server = form.cleaned_data["server"]
+        room = form.cleaned_data["room"]
+
+        try:
+            c = BBBCall.objects.get(room=room)
+        except BBBCall.DoesNotExist:
+            messages.error(self.request, _("No BBB session found for this room."))
+            return HttpResponseRedirect(self.request.path)
+        try:
+            u = get_url(
+                "end",
+                {"meetingID": c.meeting_id, "password": c.moderator_pw},
+                server.url,
+                server.secret,
+            )
+            r = requests.get(u, timeout=15)
+            r.raise_for_status()
+        except:
+            messages.warning(self.request, _("Kicking all attendees did not work."))
+
+        c.server = server
+        c.save()
+        messages.success(self.request, _("Moved."))
+        return HttpResponseRedirect(self.request.path)

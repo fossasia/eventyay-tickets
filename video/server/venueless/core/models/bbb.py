@@ -15,6 +15,9 @@ class BBBServer(models.Model):
     rooms_only = models.BooleanField(default=False)
     cost = models.IntegerField(default=0)
 
+    def __str__(self):
+        return self.url
+
 
 def random_key():
     return get_random_string(24)
