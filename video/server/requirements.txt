@@ -5,7 +5,7 @@ aioredis-lock
 beautifulsoup4==4.9.*
 celery==5.0.*
 channels>=3.0.3,<3.1.0
-channels_redis==3.2.*
+channels_redis==3.3.*
 Django==3.2.*
 django-cors-headers==3.7.*
 django-extensions==3.1.*
