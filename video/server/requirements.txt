@@ -3,7 +3,7 @@ aiofile==3.5.*
 aiohttp==3.7.4.post0  # 3.7.4.post0 breaks aioresponses which does not support "post" version numbers (wtf)
 aioredis-lock
 beautifulsoup4==4.9.*
-celery==5.0.*
+celery==5.1.*
 channels>=3.0.3,<3.1.0
 channels_redis==3.3.*
 Django==3.2.*
