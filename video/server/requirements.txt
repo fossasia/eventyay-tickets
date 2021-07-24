@@ -48,5 +48,6 @@ pytest
 pytest-django
 pytest-asyncio
 pytest-cov
+pytest-rerunfailures
 aioresponses
 yappi
