@@ -29,6 +29,7 @@ py_test:
     - python manage.py collectstatic
     - VENUELESS_REDIS_HOST=redis VENUELESS_DB_TYPE=postgresql VENUELESS_DB_NAME=venueless VENUELESS_DB_USER=venueless VENUELESS_DB_PASS=venueless VENUELESS_DB_HOST=postgres py.test tests/ --reruns 3 --reruns-delay 1
   interruptible: true
+  allow_failure: true  # We check this in Github, and if it's urgent, we don't want to skip deployments because of this
   tags:
     - python3
 
