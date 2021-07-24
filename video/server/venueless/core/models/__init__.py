@@ -49,4 +49,5 @@ __all__ = [
     "ExhibitorView",
     "ContactRequest",
     "TurnServer",
+    "StreamingServer",
 ]
