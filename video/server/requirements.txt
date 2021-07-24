@@ -11,7 +11,7 @@ django-cors-headers==3.7.*
 django-extensions==3.1.*
 django-formset-js-improved
 djangorestframework==3.12.*
-emoji==1.2.*
+emoji==1.4.*
 icalendar==4.0.*
 lxml==4.6.*
 matplotlib==3.4.*
