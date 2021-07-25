@@ -271,6 +271,10 @@ export default {
 		height: var(--vh100)
 		z-index: 2000
 		background-color: $clr-secondary-text-light
+	#media-source-iframes
+		position: absolute
+		width: 0
+		height: 0
 
 	+below('l')
 		&.override-sidebar-collapse
