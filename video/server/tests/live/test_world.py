@@ -153,6 +153,8 @@ async def test_config_get(world):
             "videoPlayer": None,
             "timezone": "Europe/Berlin",
             "connection_limit": 2,
+            "conftool_url": "",
+            "conftool_password": "",
             "profile_fields": [
                 {
                     "id": "dd8fdb7a-4d83-4000-b2fe-e38ca50f92fe",
