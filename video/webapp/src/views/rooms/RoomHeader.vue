@@ -7,7 +7,7 @@
 		//- bunt-icon-button(v-if="$features.enabled('schedule-control')", @click="showEditSchedule = true") calendar_edit
 		.actions
 			bunt-icon-button(v-if="modules['call.bigbluebutton'] && hasPermission('room:bbb.recordings')", :tooltip="$t('Room:recordings:tooltip')", tooltipPlacement="bottom-end", @click="showRecordingsPrompt = true") file-video-outline
-			.button-group(v-if="(modules['question'] || modules['poll'] || modules['chat.native']) && canManage")
+			.button-group(v-if="['stage', 'channel-bbb', 'channel-janus', 'channel-zoom'].includes(roomType) && canManage")
 				// TODO buntpapier does not support replace
 				// hardlink params so home page alias works
 				bunt-link-button(:to="{name: 'room:manage', params: {roomId: room.id}}", replace) manage
