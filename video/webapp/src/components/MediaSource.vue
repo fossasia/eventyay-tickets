@@ -186,11 +186,6 @@ export default {
 		+below('l')
 			bottom: calc(var(--vh100) - 48px - 56px - var(--mediasource-placeholder-height))
 			right: calc(100vw - var(--mediasource-placeholder-width))
-		+below('m')
-			bottom: calc(var(--vh100) - 48px - 56px - var(--mobile-media-height))
-			right: 0
-			width: 100vw
-			height: var(--mobile-media-height)
 iframe.iframe-media-source
 	transition: all .3s ease
 	border: none
