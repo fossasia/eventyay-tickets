@@ -24,7 +24,7 @@
 			bunt-select(v-model="exhibitor.size", :disabled="!hasPermission('world:rooms.create.exhibition')", :label="$t('Exhibitors:size:label')", name="size", :options="sizes", :validation="$v.exhibitor.size")
 			bunt-input(v-model="exhibitor.sorting_priority", :disabled="!hasPermission('world:rooms.create.exhibition')", :label="$t('Exhibitors:sorting-priority:label')", name="sortingPriority", :validation="$v.exhibitor.sorting_priority")
 			bunt-select(v-model="exhibitor.room_id", :disabled="!hasPermission('world:rooms.create.exhibition')", :label="$t('Exhibitors:room:label')", name="room", :options="rooms", option-label="name", :validation="$v.exhibitor.room_id")
-			bunt-select(v-model="exhibitor.highlighted_room_id", :label="$t('Exhibitors:highlighted-room:label')", name="highlighted_room", :options="all_rooms_or_none", option-label="name", :validation="$v.exhibitor.highlighted_room_id")
+			bunt-select(v-model="exhibitor.highlighted_room_id", :disabled="!hasPermission('world:rooms.create.exhibition')", :label="$t('Exhibitors:highlighted-room:label')", name="highlighted_room", :options="all_rooms_or_none", option-label="name", :validation="$v.exhibitor.highlighted_room_id")
 				template(slot-scope="{ option }")
 					.label {{ option.name }}
 			table.links
@@ -109,7 +109,7 @@
 							bunt-button(@click="showStaffPrompt=true") {{ $t('Exhibitors:add-staff:text') }}
 						td
 						td
-			bunt-checkbox(v-model="exhibitor.contact_enabled", :label="$t('Exhibitors:contact-enabled:label')", name="contactEnabled")
+			bunt-checkbox(v-model="exhibitor.contact_enabled", :disabled="!hasPermission('world:rooms.create.exhibition')", :label="$t('Exhibitors:contact-enabled:label')", name="contactEnabled")
 
 			.danger-zone(v-if="hasPermission('world:rooms.create.exhibition')")
 				bunt-button.delete(icon="delete", @click="showDeletePrompt = true") {{ $t('DeletePrompt:button:label') }}

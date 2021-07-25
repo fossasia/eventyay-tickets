@@ -72,7 +72,15 @@ class ExhibitionModule(BaseModule):
         ):
             exclude_fields = set()
         elif self.consumer.user.id in staff:
-            exclude_fields = {"staff", "size", "name", "sorting_priority", "room_id"}
+            exclude_fields = {
+                "staff",
+                "size",
+                "name",
+                "sorting_priority",
+                "room_id",
+                "highlighted_room_id",
+                "contact_enabled",
+            }
         else:
             await self.consumer.send_error("exhibition.not_staff_member")
             return
