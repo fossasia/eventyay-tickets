@@ -19,6 +19,7 @@ from venueless.graphs.tasks import (
     generate_report,
     generate_room_views,
 )
+from venueless.importers.tasks import conftool_update_schedule
 from venueless.live.decorators import command, event, require_world_permission
 from venueless.live.modules.base import BaseModule
 
@@ -73,6 +74,8 @@ class WorldModule(BaseModule):
                 "profile_fields",
                 "track_room_views",
                 "track_exhibitor_views",
+                "conftool_url",
+                "conftool_password",
             )
             model_fields = ("title", "locale", "timezone", "roles", "trait_grants")
             update_fields = set()
@@ -104,6 +107,11 @@ class WorldModule(BaseModule):
             )
             await self.consumer.send_success(new)
             await notify_world_change(self.consumer.world.id)
+
+            if "conftool_url" in body:
+                await sync_to_async(conftool_update_schedule.apply_async)(
+                    kwargs={"world": str(self.consumer.world.id)}
+                )
         else:
             await self.consumer.send_error(code="config.invalid")
 

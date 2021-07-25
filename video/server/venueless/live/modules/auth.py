@@ -1,6 +1,7 @@
 import logging
 import time
 
+from asgiref.sync import sync_to_async
 from channels.db import database_sync_to_async
 from django.conf import settings
 from sentry_sdk import configure_scope
@@ -28,6 +29,7 @@ from venueless.core.services.user import (
 )
 from venueless.core.utils.redis import aioredis
 from venueless.core.utils.statsd import statsd
+from venueless.importers.tasks import conftool_update_schedule
 from venueless.live.channels import GROUP_USER, GROUP_WORLD
 from venueless.live.decorators import command, require_world_permission
 from venueless.live.modules.base import BaseModule
@@ -120,6 +122,20 @@ class AuthModule(BaseModule):
 
         async with statsd() as s:
             s.increment(f"authentication.completed,world={self.consumer.world.pk}")
+
+        if self.consumer.world.config.get("pretalx", {}).get("conftool"):
+            async with aioredis() as redis:
+                # This is a very hacky replacement of a cronjob. The main advantage is that it will only run while
+                # the world is in use and stop running after the event. Let's see how it works out in the real world.
+                if await redis.set(
+                    f"conftool:update.triggered:{self.consumer.world.pk}",
+                    "yes",
+                    expire=300,
+                    exist=redis.SET_IF_NOT_EXIST,
+                ):
+                    await sync_to_async(conftool_update_schedule.apply_async)(
+                        kwargs={"world": str(self.consumer.world.id)}
+                    )
 
     async def _enforce_connection_limit(self):
         connection_limit = self.consumer.world.config.get("connection_limit")

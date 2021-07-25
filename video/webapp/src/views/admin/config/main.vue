@@ -13,7 +13,11 @@
 			bunt-input(v-model="config.timezone", label="Time zone", name="timezone", :validation="$v.config.timezone")
 			bunt-input(v-model="config.connection_limit", label="Connection limit", name="connection_limit", hint="Set to 0 to allow unlimited connections per user", :validation="$v.config.connection_limit")
 			h2 Schedule
-			p(v-if="config.pretalx.url") Schedule is loaded from a file
+			p(v-if="config.pretalx.conftool") Schedule is loaded from conftool
+				bunt-icon-button(@click="clearSchedule", tooltip="Remove schedule") delete
+				| {{ ' ' }}
+				a(v-if="config.pretalx.url", :href="config.pretalx.url", target="_blank") (view file)
+			p(v-else-if="config.pretalx.url") Schedule is loaded from a file
 				| {{ ' ' }}
 				a(:href="config.pretalx.url", target="_blank") (view file)
 				bunt-icon-button(@click="clearSchedule", tooltip="Remove schedule") delete
@@ -25,6 +29,10 @@
 				bunt-icon-button(@click="clearSchedule", tooltip="Remove schedule") delete
 			p(v-else) No schedule loaded
 			bunt-button.btn-schedule(@click="showSchedulePrompt = true") Load schedule
+			div(v-if="$features.enabled('conftool')")
+				h2 Conftool
+				bunt-input(v-model="config.conftool_url", label="Conftool REST API URL", name="conftool_url", :validation="$v.config.conftool_url")
+				bunt-input(v-model="config.conftool_password", label="Conftool REST API Password", name="conftool_password")
 			h2 Tracking and statistics
 			bunt-checkbox(v-model="config.track_room_views", label="Track room views", name="track_room_views")
 			bunt-checkbox(v-model="config.track_exhibitor_views", label="Track exhibitor views", name="track_exhibitor_views")
@@ -50,7 +58,7 @@
 <script>
 import api from 'lib/api'
 import i18n from 'i18n'
-import { required, integer, isJson } from 'lib/validators'
+import { required, integer, isJson, url } from 'lib/validators'
 import ValidationErrorsMixin from 'components/mixins/validation-errors'
 import SchedulePrompt from './SchedulePrompt'
 
@@ -100,6 +108,9 @@ export default {
 				required: required('Connection Limit is required'),
 				integer: integer('Connection limit must be a number')
 			},
+			conftool_url: {
+				url: url('Conftool URL must be a URL'),
+			},
 		},
 		hlsConfig: {
 			isJson: isJson()
@@ -135,6 +146,10 @@ export default {
 				track_exhibitor_views: this.config.track_exhibitor_views,
 				track_room_views: this.config.track_room_views,
 				pretalx: this.config.pretalx,
+			}
+			if (this.$features.enabled('conftool')) {
+				patch.conftool_url = this.config.conftool_url
+				patch.conftool_password = this.config.conftool_password
 			}
 			if (this.hlsConfig) {
 				patch.videoPlayer = {

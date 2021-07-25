@@ -38,6 +38,10 @@ class WorldConfigSerializer(serializers.Serializer):
     profile_fields = serializers.JSONField()
     track_exhibitor_views = serializers.BooleanField()
     track_room_views = serializers.BooleanField()
+    conftool_url = serializers.URLField(allow_null=True, required=False)
+    conftool_password = serializers.CharField(
+        required=False, allow_null=True, allow_blank=True
+    )
 
     def _available_permissions(self, *args):
         return [d.value for d in Permission]
@@ -327,6 +331,8 @@ def _config_serializer(world, *args, **kwargs):
             "trait_grants": world.trait_grants,
             "connection_limit": world.config.get("connection_limit", 0),
             "profile_fields": world.config.get("profile_fields", []),
+            "conftool_url": world.config.get("conftool_url", ""),
+            "conftool_password": world.config.get("conftool_password", ""),
         },
         *args,
         **kwargs,

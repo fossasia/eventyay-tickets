@@ -100,6 +100,7 @@ FEATURE_FLAGS = [
     "zoom",
     "janus",
     "polls",
+    "conftool",
 ]
 
 

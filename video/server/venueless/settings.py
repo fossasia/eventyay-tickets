@@ -213,6 +213,7 @@ INSTALLED_APPS = [
     "venueless.api.ApiConfig",
     "venueless.live.LiveConfig",
     "venueless.graphs.GraphsConfig",
+    "venueless.importers.ImportersConfig",
     "venueless.storage.StorageConfig",
     "venueless.zoom.ZoomConfig",
     "venueless.control.ControlConfig",
