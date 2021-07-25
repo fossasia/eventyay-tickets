@@ -1,7 +1,7 @@
 <template lang="pug">
 .c-polls
 	.polls(v-if="polls && module.config.active", :class="{'can-vote': hasPermission('room:poll.vote')}", v-scrollbar.y="")
-		.empty-placeholder(v-if="sortedPolls.length === 0") {{ $t('Questions:empty-placeholder') }}
+		.empty-placeholder(v-if="sortedPolls.length === 0") {{ $t('Poll:empty-placeholder') }}
 		poll(v-for="poll of sortedPolls", :poll="poll", @edit="$emit('edit', poll)")
 </template>
 <script>
@@ -62,6 +62,11 @@ export default {
 	flex-direction: column
 	min-height: 0
 	flex: auto
+	.empty-placeholder
+		margin-top: 16px
+		padding: 0 16px
+		color: $clr-secondary-text-light
+		align-self: center
 	.polls
 		display: flex
 		flex-direction: column

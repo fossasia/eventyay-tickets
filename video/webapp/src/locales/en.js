@@ -158,6 +158,7 @@ export default {
 	'notifications/NotificationPermissionNotification:decline:label': 'Not now',
 	'notifications/NotificationPermissionNotification:prompt': 'Do you want to get desktop notifications for direct messages, contact requests and more while the event is running in the background?',
 	'notifications/NotificationPermissionNotification:title': 'Desktop Notifications',
+	'Poll:empty-placeholder': 'No polls currently running',
 	'Poll:moderation-menu:open-poll:label': 'open for voting',
 	'Poll:moderation-menu:close-poll:label': 'close',
 	'Poll:moderation-menu:redraft-poll:label': 're-draft',
