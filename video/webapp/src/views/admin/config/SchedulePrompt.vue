@@ -19,6 +19,9 @@ prompt.c-schedule-prompt(@close="$emit('close')")
 				p If you want to automatically load the schedule from an external system, you can enter an URL here. Note that the URL must be a JSON file compliant with the pretalx schedule widget API version 2.
 				bunt-input(name="url", label="JSON URL", v-model="url", placeholder="e.g. https://website.com/event.json", :validation="$v.url")
 				bunt-button.btn-load(:error-message="error", :loading="loading", @click="saveURL") Load schedule
+			bunt-tab(id="conftool", v-if="$features.enabled('conftool')", header="From Conftool")
+				p If you want to automatically load the schedule from conftool, just click the button. Make sure your Conftool REST API details are configured.
+				bunt-button.btn-load(:error-message="error", :loading="loading", @click="saveConftool") Load schedule
 </template>
 <script>
 import Prompt from 'components/Prompt'
@@ -61,6 +64,9 @@ export default {
 				if (this.currentConfig.url.includes('/pub/')) { // this *looks* like our storage
 					return 'file'
 				}
+				if (this.currentConfig.conftool) { // this *looks* like our conftool api
+					return 'conftool'
+				}
 				return 'url'
 			}
 			return 'pretalx'
@@ -98,6 +104,10 @@ export default {
 			if (this.$v.$invalid) return
 			this.$emit('save', {domain: this.domain, event: this.event})
 		},
+		saveConftool () {
+			this.error = null
+			this.$emit('save', {conftool: true, url: this.currentConfig.url})
+		},
 		saveURL () {
 			this.error = null
 			this.$v.$touch()
@@ -109,8 +119,14 @@ export default {
 </script>
 <style lang="stylus">
 .c-schedule-prompt
+	.prompt-wrapper
+		width: 600px
 	.btn-load
 		themed-button-primary()
+	.bunt-tabs
+		tabs-style(active-color: var(--clr-primary), indicator-color: var(--clr-primary), background-color: transparent)
+	.bunt-tab
+		padding: 16px
 	input[type=file]
-		margin-bottom: 20px
+		margin-bottom: 16px
 </style>
