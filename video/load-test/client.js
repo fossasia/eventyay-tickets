@@ -30,7 +30,7 @@ module.exports = function (url, clientNumber, MESSAGES_PER_CLIENT_PER_SECOND, pi
 			ws.send(JSON.stringify(['chat.join', correlationId++, {
 				channel: chatModule.channel_id,
 			}]))
-			setTimeout(spam, Math.random() * 500 / MESSAGES_PER_CLIENT_PER_SECOND)
+			if (MESSAGES_PER_CLIENT_PER_SECOND) setTimeout(spam, Math.random() * 500 / MESSAGES_PER_CLIENT_PER_SECOND)
 			ping()
 		} else if (data.startsWith(`["pong"`)) {
 			pingCb(Date.now() - lastPing)
