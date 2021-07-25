@@ -18,6 +18,7 @@ services:
             - VENUELESS_REDIS_HOST=redis
             - VENUELESS_DATA_DIR=/data
             - VENUELESS_MEDIA_URL=http://localhost:8375/media/
+            - VENUELESS_REDIS_USE_PUBSUB=true
         entrypoint: ["bash", "/app/docker-dev-entrypoint.sh"]
         depends_on:
             - db

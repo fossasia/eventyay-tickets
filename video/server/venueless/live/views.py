@@ -3,6 +3,7 @@ import os
 import re
 
 from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 from django.conf import settings
 from django.db import OperationalError
 from django.http import HttpResponse, JsonResponse
@@ -17,7 +18,6 @@ from django.views.generic import TemplateView
 
 from venueless.core.models import Feedback, World
 from venueless.core.models.auth import ShortToken
-from venueless.core.utils.redis import aioredis
 
 
 class SourceCache:
@@ -129,8 +129,7 @@ class HealthcheckView(View):
 
     @async_to_sync
     async def _check_redis(self):
-        async with aioredis() as redis:
-            await redis.set("healthcheck", "1")
+        await get_channel_layer().send("healthcheck_channel", {"type": "healthcheck"})
 
     def get(self, request, *args, **kwargs):
         self._check_redis()

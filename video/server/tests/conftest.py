@@ -3,6 +3,8 @@ import json
 
 import pytest
 from channels.db import database_sync_to_async
+from channels.layers import channel_layers, get_channel_layer
+from django.conf import settings
 from django.utils.timezone import now
 
 from venueless.core.models import (
@@ -20,6 +22,12 @@ from venueless.core.models.world import PlannedUsage
 @pytest.fixture(autouse=True)
 async def clear_redis():
     from venueless.core.utils.redis import aioredis
+
+    if settings.REDIS_USE_PUBSUB:
+        try:
+            await get_channel_layer().flush()
+        except:
+            channel_layers._reset_backends("CHANNEL_LAYERS")
 
     async with aioredis() as redis:
         await redis.flushall()

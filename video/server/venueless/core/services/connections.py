@@ -30,32 +30,39 @@ async def unregister_connection():
         )
 
 
-async def register_user_connection(user_id, socket_id):
+async def register_user_connection(user_id, channel_name):
     async with aioredis() as redis:
         tr = redis.multi_exec()
-        tr.sadd(
-            f"connections.user:{user_id}",
-            socket_id,
+        tr.rpush(
+            f"connections.list.user:{user_id}",
+            channel_name,
         )
         tr.expire(
-            f"connections.user:{user_id}",
+            f"connections.list.user:{user_id}",
             90,
         )
         await tr.execute()
 
 
-async def unregister_user_connection(user_id, socket_id):
+async def unregister_user_connection(user_id, channel_name):
     async with aioredis() as redis:
-        await redis.srem(
-            f"connections.user:{user_id}",
-            socket_id,
+        await redis.lrem(
+            f"connections.list.user:{user_id}",
+            0,
+            channel_name,
         )
 
 
 async def get_user_connection_count(user_id):
     async with aioredis() as redis:
-        return await redis.scard(
-            f"connections.user:{user_id}",
+        print(
+            f"connections.list.user:{user_id}",
+            await redis.llen(
+                f"connections.list.user:{user_id}",
+            ),
+        )
+        return await redis.llen(
+            f"connections.list.user:{user_id}",
         )
 
 
@@ -67,7 +74,7 @@ async def ping_connection(last_ping, user=None):
         tr = redis.multi_exec()
         if user:
             tr.expire(
-                f"connections.user:{user.id}",
+                f"connections.list.user:{user.id}",
                 90,
             )
         tr.setex(

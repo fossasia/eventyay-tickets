@@ -125,9 +125,18 @@ redis_url = (
         config.get("redis", "db", fallback="0"),
     )
 )
+
+REDIS_USE_PUBSUB = os.getenv(
+    "VENUELESS_REDIS_USE_PUBSUB", config.get("redis", "use_pubsub", fallback="false")
+) in (True, "yes", "on", "true", "True", "1")
+
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "BACKEND": (
+            "venueless.platforms.channels.pubsub.ChannelLayer"
+            if REDIS_USE_PUBSUB
+            else "channels_redis.core.RedisChannelLayer"
+        ),
         "CONFIG": {
             "hosts": [{"address": redis_url}],
             "prefix": "venueless:asgi:",
@@ -410,3 +419,4 @@ CELERY_TASK_QUEUES = (
     Queue("default", routing_key="default.#"),
     Queue("longrunning", routing_key="longrunning.#"),
 )
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"

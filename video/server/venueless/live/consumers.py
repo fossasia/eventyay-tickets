@@ -18,10 +18,11 @@ from venueless.core.services.connections import (
     unregister_connection,
 )
 from venueless.core.services.world import get_world
-from venueless.live.channels import GROUP_VERSION
 from venueless.live.exceptions import ConsumerException
 
+from ..core.utils.redis import aioredis
 from ..core.utils.statsd import statsd
+from .channels import GROUP_VERSION
 from .modules.auth import AuthModule
 from .modules.bbb import BBBModule
 from .modules.chat import ChatModule
@@ -58,12 +59,27 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
         self.conn_time = time.time()
         world_id = self.scope["url_route"]["kwargs"]["world"]
         await self.accept()
-        await self.channel_layer.group_add(
-            GROUP_VERSION.format(
-                label=settings.VENUELESS_COMMIT + "." + settings.VENUELESS_ENVIRONMENT
-            ),
-            self.channel_name,
-        )
+        if settings.REDIS_USE_PUBSUB:
+            async with aioredis() as redis:
+                await redis.zadd(
+                    f"version.{settings.VENUELESS_COMMIT}.{settings.VENUELESS_ENVIRONMENT}",
+                    int(time.time()),
+                    self.channel_name,
+                )
+                await redis.expire(
+                    f"version.{settings.VENUELESS_COMMIT}.{settings.VENUELESS_ENVIRONMENT}",
+                    24 * 3600,
+                )
+        else:
+            await self.channel_layer.group_add(
+                GROUP_VERSION.format(
+                    label=settings.VENUELESS_COMMIT
+                    + "."
+                    + settings.VENUELESS_ENVIRONMENT
+                ),
+                self.channel_name,
+            )
+
         await register_connection()
 
         try:
@@ -104,12 +120,22 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
             if hasattr(c, "dispatch_disconnect"):
                 await c.dispatch_disconnect(close_code)
 
-        await self.channel_layer.group_discard(
-            GROUP_VERSION.format(
-                label=settings.VENUELESS_COMMIT + "." + settings.VENUELESS_ENVIRONMENT
-            ),
-            self.channel_name,
-        )
+        if settings.REDIS_USE_PUBSUB:
+            async with aioredis() as redis:
+                await redis.zrem(
+                    f"version.{settings.VENUELESS_COMMIT}.{settings.VENUELESS_ENVIRONMENT}",
+                    self.channel_name,
+                )
+        else:
+            await self.channel_layer.group_discard(
+                GROUP_VERSION.format(
+                    label=settings.VENUELESS_COMMIT
+                    + "."
+                    + settings.VENUELESS_ENVIRONMENT
+                ),
+                self.channel_name,
+            )
+
         await unregister_connection()
 
     # Receive message from WebSocket
@@ -145,14 +171,12 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
             await self.send_error("protocol.unknown_command")
 
     async def dispatch(self, message):
-        if (
-            self.conn_time
-            and time.time() - self.conn_time
-            > self.channel_layer.group_expiry * random.uniform(0.9, 1)
+        if self.conn_time and time.time() - self.conn_time > 3600 * 24 * random.uniform(
+            0.9, 1
         ):
             # Django channels forgets which groups we're in after `group_expiry`, usually a day, so we do a force
             # reconnect every day. That's good for memory usage on both ends as well, probably :) We randomize the
-            # interval a little to prevent everying reconnecting at the same time.
+            # interval a little to prevent everyone reconnecting at the same time.
             return await self.close()
 
         try:

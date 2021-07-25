@@ -1,9 +1,20 @@
+from contextlib import asynccontextmanager
+
 from channels.layers import get_channel_layer
+from django.conf import settings
+
+if settings.REDIS_USE_PUBSUB:
+
+    @asynccontextmanager
+    async def aioredis():
+        conn = await get_channel_layer()._shards[0]._get_pub_conn()
+        yield conn
 
 
-def aioredis():
-    # TODO: we're assuming there is no sharding
-    return get_channel_layer().connection(0)
+else:
+
+    def aioredis():
+        return get_channel_layer().connection(0)
 
 
 """
