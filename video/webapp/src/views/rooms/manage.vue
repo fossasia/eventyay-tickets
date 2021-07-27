@@ -26,6 +26,8 @@
 				h3 Chat
 				bunt-icon-button(@click="showUrlPopup('chat')") presentation
 			chat(:room="room", :module="modules['chat.native']", mode="compact", :key="room.id")
+		panel.no-modules(v-if="Object.keys(modules).length === 1")
+			p No modules to manage in this room
 	.ui-background-blocker(v-if="showingPresentationUrlFor", @click="showingPresentationUrlFor = null")
 	.url-popup(v-if="showingPresentationUrlFor", ref="urlPopup", :class="{'url-copied': copiedUrl}")
 		.copy-success(v-if="copiedUrl") Copied!
@@ -161,7 +163,7 @@ export default {
 	.modules
 		display: flex
 		min-height: 0
-	.chat, .questions, .polls
+	.chat, .questions, .polls, .no-modules
 		display: flex
 		flex-direction: column
 		min-height: 0
@@ -189,6 +191,11 @@ export default {
 		#btn-create-poll
 			themed-button-primary()
 
+	.no-modules
+		align-items: center
+		p
+			color: $clr-secondary-text-light
+			margin: 32px
 	.url-popup
 		card()
 		display: flex
