@@ -36,6 +36,11 @@ class ResourceSerializer(ModelSerializer):
 
 class SlotSerializer(I18nAwareModelSerializer):
     room = SlugRelatedField(slug_field="name", read_only=True)
+    end = SerializerMethodField()
+
+    @staticmethod
+    def get_end(obj):
+        return obj.real_end
 
     class Meta:
         model = TalkSlot
