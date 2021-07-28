@@ -277,35 +277,6 @@ def test_change_custom_domain_to_site_url(event, orga_client):
 
 
 @pytest.mark.django_db
-def test_change_custom_domain_to_other_event_domain(event, orga_client, other_event):
-    other_event.settings.set("custom_domain", "https://myevent.com")
-    assert not event.settings.custom_domain
-    response = orga_client.post(
-        event.orga_urls.edit_settings,
-        {
-            "name_0": event.name,
-            "slug": event.slug,
-            "locales": event.locales,
-            "locale": event.locale,
-            "date_from": event.date_from,
-            "date_to": event.date_to,
-            "timezone": event.timezone,
-            "email": event.email,
-            "primary_color": "",
-            "custom_css": "",
-            "logo": "",
-            "settings-custom_domain": other_event.settings.custom_domain,
-            "settings-schedule_display": event.settings.schedule_display,
-            "settings-show_featured": event.settings.show_featured,
-        },
-        follow=True,
-    )
-    event = Event.objects.get(pk=event.pk)
-    assert response.status_code == 200
-    assert not event.settings.custom_domain
-
-
-@pytest.mark.django_db
 def test_change_custom_domain_to_unavailable_domain(
     event, orga_client, other_event, monkeypatch
 ):
@@ -586,6 +557,7 @@ def test_edit_review_settings(orga_client, event):
             f"scores-0-label_{scores[1].id}": scores[1].label,
             f"scores-0-value_{scores[2].id}": scores[2].value,
             f"scores-0-label_{scores[2].id}": scores[2].label,
+            "review_score_aggregate": event.settings.review_score_aggregate,
         },
         follow=True,
     )
@@ -740,6 +712,7 @@ def test_edit_review_settings_new_review_phase(orga_client, event):
             f"scores-0-label_{scores[1].id}": scores[1].label,
             f"scores-0-value_{scores[2].id}": scores[2].value,
             f"scores-0-label_{scores[2].id}": scores[2].label,
+            "review_score_aggregate": event.settings.review_score_aggregate,
         },
         follow=True,
     )
