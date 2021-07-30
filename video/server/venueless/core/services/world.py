@@ -38,7 +38,9 @@ class WorldConfigSerializer(serializers.Serializer):
     profile_fields = serializers.JSONField()
     track_exhibitor_views = serializers.BooleanField()
     track_room_views = serializers.BooleanField()
-    conftool_url = serializers.URLField(allow_null=True, required=False, allow_blank=True)
+    conftool_url = serializers.URLField(
+        required=False, allow_null=True, allow_blank=True
+    )
     conftool_password = serializers.CharField(
         required=False, allow_null=True, allow_blank=True
     )
