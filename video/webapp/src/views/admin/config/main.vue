@@ -29,7 +29,7 @@
 				bunt-icon-button(@click="clearSchedule", tooltip="Remove schedule") delete
 			p(v-else) No schedule loaded
 			bunt-button.btn-schedule(@click="showSchedulePrompt = true") Load schedule
-			div(v-if="$features.enabled('conftool')")
+			template(v-if="$features.enabled('conftool')")
 				h2 Conftool
 				bunt-input(v-model="config.conftool_url", label="Conftool REST API URL", name="conftool_url", :validation="$v.config.conftool_url")
 				bunt-input(v-model="config.conftool_password", label="Conftool REST API Password", name="conftool_password")
