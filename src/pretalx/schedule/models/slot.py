@@ -91,9 +91,11 @@ class TalkSlot(LogMixin, models.Model):
     def real_end(self):
         """Guaranteed to provide a useful end datetime if ``start`` is set,
         even if ``end`` is empty."""
-        return self.end or (
+        result = self.end or (
             self.start + dt.timedelta(minutes=self.duration) if self.start else None
         )
+        if result:
+            return result.astimezone(self.event.tz)
 
     @cached_property
     def as_availability(self):
