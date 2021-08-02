@@ -61,7 +61,7 @@ class TalkSlot(LogMixin, models.Model):
 
     @cached_property
     def event(self):
-        return self.submission.event
+        return self.schedule.event
 
     @property
     def duration(self) -> int:
