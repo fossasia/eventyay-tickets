@@ -110,6 +110,17 @@ The site section
 - **Environment variable:** ``PRETALX_SITE_STATIC``
 - **Default**: ``/static/``
 
+``csp``, ``csp_script``, ``csp_style``, ``csp_img``, ``csp_form``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Use any of these settings to update the matching CSP security headers. Your
+  configuration values will be *added* to the default headers, they won't replace
+  them completely!
+  If you need to include special values like ``self``, remember to use single tick
+  quotation marks: ``csp=https://rixx.de,'self'``
+- **Environment variables:** ``PRETALX_SITE_CSP``, ``PRETALX_SITE_CSP_SCRIPT`` etc.
+- **Default**: ``""``
+
 
 The database section
 --------------------

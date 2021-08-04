@@ -45,6 +45,11 @@ CONFIG = {
         },
         "media": {"default": "/media/", "env": os.getenv("PRETALX_SITE_MEDIA")},
         "static": {"default": "/static/", "env": os.getenv("PRETALX_SITE_STATIC")},
+        "csp": {"default": "", "env": os.getenv("PRETALX_SITE_CSP")},
+        "csp_script": {"default": "", "env": os.getenv("PRETALX_SITE_CSP_SCRIPT")},
+        "csp_style": {"default": "", "env": os.getenv("PRETALX_SITE_CSP_STYLE")},
+        "csp_img": {"default": "", "env": os.getenv("PRETALX_SITE_CSP_IMG")},
+        "csp_form": {"default": "", "env": os.getenv("PRETALX_SITE_CSP_FORM")},
     },
     "database": {
         "backend": {

@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`1143` On self-hosted pretalx instances, you can now configure pretalx to include additional CSP headers, especially of interest for plugin developers.
 - :bug:`-` In the submission API view, the end time of a slot was sometimes empty.
 - :feature:`-` If you use custom domains, pretalx will automatically redirect the domain to the most recent event that uses this domain. This also means that you can configure multiple events with the same custom domain!
 - :feature:`656` You can now choose if you want to compare the median of review scores or the average/mean.

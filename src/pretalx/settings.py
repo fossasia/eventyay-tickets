@@ -130,12 +130,22 @@ SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
 
-CSP_DEFAULT_SRC = "'self'"
-CSP_SCRIPT_SRC = ("'self'",)
-CSP_STYLE_SRC = ("'self'", "'unsafe-inline'")
-CSP_IMG_SRC = ("'self'", "data:")
-CSP_BASE_URI = "'none'"
-CSP_FORM_ACTION = "'self'"
+
+def merge_csp(*options, config=None):
+    result = list(options)
+    if config:
+        result += config.split(",")
+    return tuple(result)
+
+
+CSP_DEFAULT_SRC = merge_csp("'self'", config=config.get("site", "csp"))
+CSP_SCRIPT_SRC = merge_csp("'self'", config=config.get("site", "csp_script"))
+CSP_STYLE_SRC = merge_csp(
+    "'self'", "'unsafe-inline'", config=config.get("site", "csp_style")
+)
+CSP_IMG_SRC = merge_csp("'self'", "data:", config=config.get("site", "csp_img"))
+CSP_BASE_URI = ("'none'",)
+CSP_FORM_ACTION = merge_csp("'self'", config=config.get("site", "csp_form"))
 
 CSRF_COOKIE_NAME = "pretalx_csrftoken"
 CSRF_TRUSTED_ORIGINS = [urlparse(SITE_URL).hostname]
