@@ -40,10 +40,14 @@ class LogMixin:
     def logged_actions(self):
         from pretalx.common.models import ActivityLog
 
-        return ActivityLog.objects.filter(
-            content_type=ContentType.objects.get_for_model(type(self)),
-            object_id=self.pk,
-        ).select_related("event", "person").prefetch_related("content_object")
+        return (
+            ActivityLog.objects.filter(
+                content_type=ContentType.objects.get_for_model(type(self)),
+                object_id=self.pk,
+            )
+            .select_related("event", "person")
+            .prefetch_related("content_object")
+        )
 
 
 class GenerateCode:
