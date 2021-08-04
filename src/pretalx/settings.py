@@ -488,6 +488,11 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 ## EXTERNAL APP SETTINGS
 with suppress(ImportError):
+    from rich.traceback import install
+
+    install(show_locals=True)
+
+with suppress(ImportError):
     import django_extensions  # noqa
 
     INSTALLED_APPS.append("django_extensions")

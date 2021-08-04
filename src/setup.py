@@ -150,6 +150,7 @@ setup(
             "pytest-xdist",
             "pywatchman",
             "responses",
+            "rich",
             "urllib3",
         ],
         "mysql": ["mysqlclient"],
