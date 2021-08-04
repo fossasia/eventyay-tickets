@@ -1,7 +1,9 @@
-import md5hex from 'md5-hex'
+import { createHash } from 'crypto'
 
 const getHash = function (id) {
-	return md5hex(id.toLowerCase().trim())
+	const hash = createHash('md5')
+	hash.update(id.toLowerCase().trim())
+	return hash.digest('hex')
 }
 
 const getProfile = async function (hash) {
