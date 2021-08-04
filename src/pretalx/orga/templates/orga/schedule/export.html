@@ -91,6 +91,15 @@
                 {% csrf_token %}
                 <fieldset>
                     <legend id="general">
+                        {% translate "Export settings" %}
+                    </legend>
+                    {% bootstrap_field form.export_format layout='event' %}
+                    <div id="data-delimiter">
+                        {% bootstrap_field form.data_delimiter layout='event' %}
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend id="general">
                         {% translate "Dataset" %}
                     </legend>
                     {% bootstrap_field form.target layout='event' %}
@@ -102,15 +111,6 @@
                     {% for field in form.export_fields %}
                         {% bootstrap_field field layout='event' %}
                     {% endfor %}
-                </fieldset>
-                <fieldset>
-                    <legend id="general">
-                        {% translate "Export settings" %}
-                    </legend>
-                    {% bootstrap_field form.export_format layout='event' %}
-                    <div id="data-delimiter">
-                        {% bootstrap_field form.data_delimiter layout='event' %}
-                    </div>
                 </fieldset>
 
                 {% include "orga/submit_row.html" %}
