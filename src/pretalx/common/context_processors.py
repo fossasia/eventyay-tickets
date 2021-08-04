@@ -77,8 +77,8 @@ def system_information(request):
 
     context["warning_update_available"] = False
     context["warning_update_check_active"] = False
-    gs = GlobalSettings()
     if not request.user.is_anonymous and request.user.is_administrator:
+        gs = GlobalSettings()
         if gs.settings.update_check_result_warning:
             context["warning_update_available"] = True
         if not gs.settings.update_check_ack and "runserver" not in sys.argv:

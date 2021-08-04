@@ -123,7 +123,7 @@ class SubmissionViewMixin:
         users = [self.request.user] if not self.request.user.is_anonymous else []
         return get_object_or_404(
             self.request.event.submissions.prefetch_related(
-                "answers", "answers__options"
+                "answers", "answers__options", "speakers"
             ),
             speakers__in=users,
             code__iexact=self.kwargs.get("code"),

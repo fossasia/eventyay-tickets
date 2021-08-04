@@ -546,7 +546,7 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
             return []
         return self.event.current_schedule.talks.filter(
             submission=self, is_visible=True
-        )
+        ).select_related("room")
 
     @cached_property
     def display_speaker_names(self):

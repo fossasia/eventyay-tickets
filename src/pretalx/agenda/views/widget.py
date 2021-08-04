@@ -154,7 +154,7 @@ def widget_data_v2(request, event, version=None):
 
     talks = (
         talks.select_related(
-            "submission", "room", "submission__track"
+            "submission", "room", "submission__track", "submission__event",
         ).prefetch_related("submission__speakers")
     ).order_by("start")
     rooms = set()
@@ -177,7 +177,7 @@ def widget_data_v2(request, event, version=None):
                     if talk.submission
                     else talk.description,
                     "abstract": talk.submission.abstract if talk.submission else None,
-                    "speakers": talk.submission.speakers.values_list("code", flat=True)
+                    "speakers": [speaker.code for speaker in talk.submission.speakers.all()]
                     if talk.submission
                     else None,
                     "track": talk.submission.track_id if talk.submission else None,
