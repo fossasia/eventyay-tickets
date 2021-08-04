@@ -32,7 +32,7 @@ module.exports = {
 			]
 		}
 	},
-	transpileDependencies: ['buntpapier'],
+	transpileDependencies: ['buntpapier', 'color'],
 	configureWebpack: {
 		resolve: {
 			symlinks: false, // don't flatten symlinks (for npm link)
