@@ -3,6 +3,7 @@ import random
 
 import pytest
 from django.core.management import call_command
+from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from django_scopes import scope
 
@@ -18,14 +19,17 @@ def chrome_options(chrome_options):
 
 @pytest.fixture(autouse=True)
 def event():
+    from pretalx.common.models.settings import GlobalSettings
     from pretalx.event.models import Event
     from pretalx.person.models import User
     from pretalx.submission.models import AnswerOption, Question, QuestionVariant
 
+    gs = GlobalSettings()
+    gs.settings.update_check_result_warning = False
+    gs.settings.update_check_ack = True
     User.objects.create_superuser(
         email="jane@example.org", name=_("Jane Doe"), locale="en", password="jane"
     )
-    call_command("collectstatic", "--noinput", "--clear")
     call_command("create_test_event", "--seed", str(SEED))
     event = Event.objects.last()
     with scope(event=event):
@@ -36,6 +40,7 @@ def event():
         event.date_to = dt.date.today() + dt.timedelta(days=1)
         event.settings.export_html_on_schedule_release = False
         event.settings.display_header_pattern = "topo"
+        event.primary_color = "#4D64BE"
         event.save()
         assert event.submissions.count()
         assert event.slug == "democon"
@@ -45,7 +50,6 @@ def event():
             question="Which of these will you require for your presentation?",
             variant=QuestionVariant.MULTIPLE,
             target="submission",
-            required=False,
         )
         AnswerOption.objects.create(answer="Projector", question=question)
         AnswerOption.objects.create(answer="Sound playback", question=question)
@@ -58,8 +62,10 @@ def event():
             question="Do you have dietary requirements?",
             variant=QuestionVariant.STRING,
             target="speaker",
-            required=False,
         )
+        event.cfp.deadline = now() + dt.timedelta(days=1, hours=8)
+        event.cfp.save()
+    call_command("collectstatic", "--noinput", "--clear")
     return event
 
 

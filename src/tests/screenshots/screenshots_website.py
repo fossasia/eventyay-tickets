@@ -102,4 +102,5 @@ def screenshot_export_schedule_editor(live_server, logged_in_client, event):
         logged_in_client.get(
             live_server.url + "/orga/event/{}/schedule/export".format(event.slug)
         )
+        logged_in_client.find_element_by_css_selector("#custom-tab").click()
     screenshot(logged_in_client, "website/schedule_export.png")
