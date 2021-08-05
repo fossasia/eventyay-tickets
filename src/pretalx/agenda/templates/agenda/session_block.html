@@ -2,7 +2,7 @@
 {% load rich_text %}
 <div class="pretalx-session{% if request.user in session.submission.speakers.all %} session-highlight{% endif %}{% if session.is_active %} active{% endif %}{% if session.submission.state == 'accepted' %} accepted{% endif %}{% if not session.submission %} break{% endif %}"
     id="{{ session.submission.code|default:"break" }}"
-    style="--track-color:{% if not session.submission %}#ccc{% elif request.event.settings.use_tracks and session.submission.track %}{{ session.submission.track.color }}{% else %}{{ request.event.primary_color|default:'#3aa57c' }}{% endif %}"
+    style="--track-color:{% if not session.submission %}#ccc{% elif request.event.settings.use_tracks and session.submission.track and session.submission.track.color %}{{ session.submission.track.color }}{% else %}{{ request.event.primary_color|default:'#3aa57c' }}{% endif %}"
 >
     <div class="pretalx-session-time-box">
         {% if show_date %}
