@@ -53,7 +53,8 @@ const RETRY_INTERVAL = 5000
 // TODO look at capLevelToPlayerSize
 const HLS_DEFAULT_CONFIG = {
 	// never fall behind live edge
-	liveBackBufferLength: 0,
+	liveBackBufferLength: 0, // DEPRECATED
+	liveSyncDurationCount: 3,
 	liveMaxLatencyDurationCount: 5,
 	fragLoadingMaxRetry: Infinity,
 	fragLoadingMaxRetryTimeout: 5000,
