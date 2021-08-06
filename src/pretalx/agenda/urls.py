@@ -19,6 +19,7 @@ def get_schedule_urls(regex_prefix, name_prefix=""):
         path(f"{regex_prefix}{regex}", view, name=f"{name_prefix}{name}")
         for regex, view, name in [
             ("/", schedule.ScheduleView.as_view(), "schedule"),
+            ("/nojs", schedule.ScheduleNoJsView.as_view(), "schedule-nojs"),
             (".xml", schedule.ExporterView.as_view(), "export.schedule.xml"),
             (".xcal", schedule.ExporterView.as_view(), "export.schedule.xcal"),
             (".json", schedule.ExporterView.as_view(), "export.schedule.json"),

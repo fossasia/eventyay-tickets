@@ -56,6 +56,7 @@ class Schedule(LogMixin, models.Model):
     class urls(EventUrls):
         public = "{self.event.urls.schedule}v/{self.url_version}/"
         widget_data = "{public}widget/v2.json"
+        nojs = "{public}nojs"
 
     @transaction.atomic
     def freeze(

@@ -259,6 +259,7 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
         user_submissions = "{user}submissions/"
         user_mails = "{user}mails/"
         schedule = "{base}schedule/"
+        schedule_nojs = "{schedule}nojs"
         featured = "{base}featured/"
         talks = "{base}talk/"
         speakers = "{base}speaker/"

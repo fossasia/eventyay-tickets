@@ -45,17 +45,14 @@
             style="--pretalx-clr-primary: {{ request.event.primary_color|default:'#3aa57c' }}"
         ></pretalx-schedule>
         <noscript>
-            {% if not show_talk_list %}
-                <div class="alert alert-info">
-                    <div></div>
-                    <div>
-                        {% blocktranslate trimmed %}
-                            To see our schedule in grid from, please enable JavaScript.
-                        {% endblocktranslate %}
-                    </div>
+            <div class="alert alert-info m-4">
+                <div></div>
+                <div>
+                    {% blocktranslate trimmed with href=request.event.urls.schedule_nojs %}
+                        To see our schedule, please either enable JavaScript or go <a href="{{ href }}">here</a> for our NoJS schedule.
+                    {% endblocktranslate %}
                 </div>
-            {% endif %}
-            {% include "agenda/schedule_list.html" %}
+            </div>
         </noscript>
     </div>
 

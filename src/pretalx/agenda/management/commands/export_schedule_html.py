@@ -79,11 +79,13 @@ def schedule_version_urls(event):
     for schedule in event.schedules.filter(version__isnull=False):
         yield schedule.urls.public
         yield schedule.urls.widget_data
+        yield schedule.urls.nojs
 
 
 def event_urls(event):
     yield event.urls.base
     yield event.urls.schedule
+    yield event.urls.schedule_nojs
     yield event.urls.widget_data
     yield from schedule_version_urls(event)
     yield event.urls.featured

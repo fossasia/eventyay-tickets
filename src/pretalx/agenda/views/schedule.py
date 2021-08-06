@@ -258,6 +258,10 @@ class ScheduleView(EventPermissionRequired, ScheduleMixin, TemplateView):
         return {"data": list(data)}
 
 
+class ScheduleNoJsView(ScheduleView):
+    template_name = "agenda/schedule_nojs.html"
+
+
 class ChangelogView(EventPermissionRequired, TemplateView):
     template_name = "agenda/changelog.html"
     permission_required = "agenda.view_schedule"
