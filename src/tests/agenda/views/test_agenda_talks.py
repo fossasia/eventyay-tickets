@@ -12,7 +12,7 @@ def test_can_see_talk_list(client, django_assert_num_queries, event, slot, other
     with django_assert_num_queries(11):
         response = client.get(event.urls.talks, follow=True, HTTP_ACCEPT="text/html")
     assert response.status_code == 200
-    assert slot.submission.title in response.content.decode()
+    assert "<pretalx-schedule" in response.content.decode()
 
 
 @pytest.mark.django_db

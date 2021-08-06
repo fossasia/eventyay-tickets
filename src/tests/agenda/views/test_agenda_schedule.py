@@ -7,35 +7,38 @@ from django_scopes import scope
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize("layout", ("proportional", "list"))
+@pytest.mark.parametrize("version", ("js", "nojs"))
 def test_can_see_schedule(
-    client, django_assert_num_queries, user, event, slot, other_slot, layout
+    client, django_assert_num_queries, user, event, slot, other_slot, version
 ):
     with scope(event=event):
         del event.current_schedule
-        event.settings.schedule_display = layout
         assert user.has_perm("agenda.view_schedule", event)
+        url = event.urls.schedule if version == "js" else event.urls.schedule_nojs
+
     with django_assert_num_queries(11):
-        response = client.get(event.urls.schedule, follow=True, HTTP_ACCEPT="text/html")
+        response = client.get(url, follow=True, HTTP_ACCEPT="text/html")
     assert response.status_code == 200
     with scope(event=event):
         assert event.schedules.count() == 2
-        assert slot.submission.title in response.content.decode()
+        test_string = "<pretalx-schedule" if version == "js" else slot.submission.title
+        assert test_string in response.content.decode()
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize("layout", ("proportional", "list"))
+@pytest.mark.parametrize("version", ("js", "nojs"))
 def test_orga_can_see_wip_schedule(
-    orga_client, django_assert_num_queries, user, event, slot, other_slot, layout
+    orga_client, django_assert_num_queries, user, event, slot, other_slot, version
 ):
     with scope(event=event):
-        event.settings.schedule_display = layout
-    response = orga_client.get(
-        event.urls.schedule + "v/wip/", follow=True, HTTP_ACCEPT="text/html"
-    )
+        url = event.urls.schedule + "v/wip/"
+        if version != "js":
+            url += "nojs"
+    response = orga_client.get(url, follow=True, HTTP_ACCEPT="text/html")
     assert response.status_code == 200
     with scope(event=event):
-        assert slot.submission.title in response.content.decode()
+        test_string = "<pretalx-schedule" if version == "js" else slot.submission.title
+        assert test_string in response.content.decode()
 
 
 @pytest.mark.django_db
@@ -49,16 +52,13 @@ def test_can_see_text_schedule(
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize("layout", ("proportional", "list"))
 def test_can_see_schedule_with_broken_accept_header(
-    client, django_assert_num_queries, user, event, slot, other_slot, layout
+    client, django_assert_num_queries, user, event, slot, other_slot
 ):
-    with scope(event=event):
-        event.settings.schedule_display = layout
     response = client.get(event.urls.schedule, follow=True, HTTP_ACCEPT="foo/bar")
     assert response.status_code == 200
     with scope(event=event):
-        assert slot.submission.title in response.content.decode()
+        assert "<pretalx-schedule" in response.content.decode()
 
 
 @pytest.mark.django_db
@@ -141,17 +141,6 @@ def test_speaker_redirect_unknown(client, django_assert_num_queries, event, subm
         )
     response = client.get(url)
     assert response.status_code == 404
-
-
-@pytest.mark.django_db
-def test_schedule_page(
-    client, django_assert_num_queries, event, speaker, slot, schedule, other_slot
-):
-    url = event.urls.schedule
-    with django_assert_num_queries(11):
-        response = client.get(url, follow=True, HTTP_ACCEPT="text/html")
-    assert response.status_code == 200
-    assert slot.submission.title in response.content.decode()
 
 
 @pytest.mark.django_db
@@ -238,27 +227,42 @@ def test_schedule_page_text_wrong_format(
 
 
 @pytest.mark.django_db
+@pytest.mark.parametrize("version", ("js", "nojs"))
 def test_versioned_schedule_page(
-    client, django_assert_num_queries, event, speaker, slot, schedule, other_slot
+    client,
+    django_assert_num_queries,
+    event,
+    speaker,
+    slot,
+    schedule,
+    other_slot,
+    version,
 ):
     with scope(event=event):
         event.release_schedule("new schedule")
         event.current_schedule.talks.update(is_visible=False)
+        test_string = "<pretalx-schedule" if version == "js" else slot.submission.title
 
-    url = event.urls.schedule
+    url = event.urls.schedule if version == "js" else event.urls.schedule_nojs
     with django_assert_num_queries(10):
         response = client.get(url, follow=True, HTTP_ACCEPT="text/html")
-    with scope(event=event):
-        assert slot.submission.title not in response.content.decode()
+    if version == "js":
+        assert (
+            test_string in response.content.decode()
+        )  # JS widget is displayed even on empty schedules
+    else:
+        assert (
+            test_string not in response.content.decode()
+        )  # But our talk has been made invisible
 
-    url = schedule.urls.public
+    url = schedule.urls.public if version == "js" else schedule.urls.nojs
     with django_assert_num_queries(12):
         response = client.get(url, follow=True, HTTP_ACCEPT="text/html")
     assert response.status_code == 200
-    with scope(event=event):
-        assert slot.submission.title in response.content.decode()
+    assert test_string in response.content.decode()
 
-    url = f"/{event.slug}/schedule?version={quote(schedule.version)}"
+    url = event.urls.schedule if version == "js" else event.urls.schedule_nojs
+    url += f"?version={quote(schedule.version)}"
     with django_assert_num_queries(21):
         redirected_response = client.get(url, follow=True, HTTP_ACCEPT="text/html")
     assert redirected_response._request.path == response._request.path
