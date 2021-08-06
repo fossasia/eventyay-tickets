@@ -19,7 +19,7 @@
     "color": "^4.0.0",
     "color-blend": "^3.0.0",
     "core-js": "^3.6.5",
-    "emoji-datasource-twitter": "^7.0.2",
+    "emoji-datasource-twitter": "^5.0.1",
     "emoji-mart": "^3.0.0",
     "emoji-regex": "^9.0.0",
     "hls.js": "^0.14.9",
