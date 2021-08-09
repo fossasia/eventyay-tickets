@@ -30,7 +30,7 @@ export default new Vuex.Store({
 	getters: {
 		hasPermission (state) {
 			return (permission) => {
-				return !!state.permissions?.includes(permission)
+				return !!state.permissions?.includes(permission) || (permission.startsWith('room:') && state.activeRoom?.permissions?.includes(permission))
 			}
 		}
 	},
