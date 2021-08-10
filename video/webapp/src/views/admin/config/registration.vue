@@ -22,6 +22,7 @@
 							td
 								bunt-select(v-model="field.type", label="Type", name="type", :options="['text', 'textarea', 'select']")
 							td
+								//- ids are needed to match external tools' (pretix) supplied fields
 								bunt-input(v-model="field.id", label="ID", name="id")
 							td
 								bunt-input(v-if="field.type === 'select'", v-model="field.choices", label="Choices (comma seperated)", name="choices")
