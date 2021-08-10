@@ -79,6 +79,7 @@ export default {
 			return sessions
 		},
 		currentSessionPerRoom (state, getters, rootState) {
+			if (!getters.sessions) return
 			const rooms = {}
 			for (const room of rootState.rooms) {
 				if (room.schedule_data?.computeSession) {

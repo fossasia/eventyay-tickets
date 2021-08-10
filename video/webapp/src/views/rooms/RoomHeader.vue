@@ -47,7 +47,7 @@ export default {
 		},
 		currentSession () {
 			if (!this.$features.enabled('schedule-control')) return
-			return this.currentSessionPerRoom[this.room.id]?.session
+			return this.currentSessionPerRoom?.[this.room.id]?.session
 		},
 		canManage () {
 			for (const permission of PERMISSIONS_TO_MANAGE) {
