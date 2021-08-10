@@ -31,7 +31,7 @@ export default {
 	computed: {
 		...mapGetters(['hasPermission']),
 		...mapState(['rooms']),
-		...mapGetters('schedule', ['sessions', 'sessionsScheduledNow']),
+		...mapGetters('schedule', ['sessions', 'currentSessionPerRoom']),
 		room () {
 			if (this.roomId === undefined) return this.rooms[0] // '/' is the first room
 			return this.rooms.find(room => room.id === this.roomId)
@@ -47,14 +47,7 @@ export default {
 		},
 		currentSession () {
 			if (!this.$features.enabled('schedule-control')) return
-			let session
-			if (this.room.schedule_data) {
-				session = this.sessions?.find(session => session.id === this.room.schedule_data.session)
-			}
-			if (!session) {
-				session = this.sessionsScheduledNow?.find(session => session.room === this.room)
-			}
-			return session
+			return this.currentSessionPerRoom[this.room.id]?.session
 		},
 		canManage () {
 			for (const permission of PERMISSIONS_TO_MANAGE) {

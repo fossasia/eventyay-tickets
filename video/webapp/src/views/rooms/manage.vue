@@ -3,6 +3,10 @@
 	dashboard-layout
 		panel.media
 			media-source-placeholder
+		panel.schedule(v-if="$features.enabled('schedule-control')")
+			.header
+				h3 Schedule
+			SchedulePanel(:room="room")
 		panel.polls(v-if="modules['poll']")
 			.header
 				h3 Polls
@@ -66,10 +70,11 @@ import MenuDropdown from 'components/MenuDropdown'
 import Polls from 'components/Polls'
 import Prompt from 'components/Prompt'
 import Questions from 'components/Questions'
+import SchedulePanel from './ManagePanels/Schedule'
 
 export default {
 	name: 'RoomManager',
-	components: { Chat, DashboardLayout, MediaSourcePlaceholder, MenuDropdown, Panel, Polls, Prompt, Questions },
+	components: { Chat, DashboardLayout, MediaSourcePlaceholder, MenuDropdown, Panel, Polls, Prompt, Questions, SchedulePanel },
 	props: {
 		room: Object,
 		modules: Object
@@ -160,10 +165,7 @@ export default {
 		// padding: 16px
 		h3
 			margin: 0
-	.modules
-		display: flex
-		min-height: 0
-	.chat, .questions, .polls, .no-modules
+	.c-dashboard-layout-panel
 		display: flex
 		flex-direction: column
 		min-height: 0

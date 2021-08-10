@@ -101,7 +101,7 @@ export default {
 		...mapState('exhibition', ['staffedExhibitions']),
 		...mapGetters(['hasPermission']),
 		...mapGetters('chat', ['hasUnreadMessages']),
-		...mapGetters('schedule', ['sessions', 'sessionsScheduledNow']),
+		...mapGetters('schedule', ['sessions', 'currentSessionPerRoom']),
 		style () {
 			if (this.pointerMovementX === 0) return
 			return {
@@ -124,19 +124,14 @@ export default {
 				} else if (room.modules.some(module => ['livestream.native', 'livestream.youtube', 'livestream.iframe'].includes(module.type))) {
 					let session
 					if (this.$features.enabled('schedule-control')) {
-						if (room.schedule_data) {
-							session = this.sessions?.find(session => session.id === room.schedule_data.session)
-						}
-						if (!session) {
-							session = this.sessionsScheduledNow?.find(session => session.room === room)
-						}
+						session = this.currentSessionPerRoom[room.id]?.session
 					}
 					// TODO handle session image and multiple speaker avatars
-					const image = session?.speakers.length === 1 ? session.speakers[0].avatar : null
+					// const image = session?.speakers.length === 1 ? session.speakers[0].avatar : null
 					rooms.stage.push({
 						room,
 						session,
-						image
+						// image
 					})
 				} else {
 					rooms.page.push(room)
