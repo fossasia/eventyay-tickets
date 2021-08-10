@@ -124,7 +124,7 @@ export default {
 				} else if (room.modules.some(module => ['livestream.native', 'livestream.youtube', 'livestream.iframe'].includes(module.type))) {
 					let session
 					if (this.$features.enabled('schedule-control')) {
-						session = this.currentSessionPerRoom[room.id]?.session
+						session = this.currentSessionPerRoom?.[room.id]?.session
 					}
 					// TODO handle session image and multiple speaker avatars
 					// const image = session?.speakers.length === 1 ? session.speakers[0].avatar : null
