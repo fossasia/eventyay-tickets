@@ -10,7 +10,7 @@ if (ENV_DEVELOPMENT || !window.venueless) {
 			scheduleImport: `http://${hostname}:8375/storage/schedule_import/`,
 			feedback: `http://${hostname}:8375/_feedback/`,
 		},
-		timetravelTo: '2020-08-26T06:49:28.975Z'
+		timetravelTo: '2020-04-17T10:49:28.975Z'
 	}
 } else {
 	// load from index.html as `window.venueless = {…}`

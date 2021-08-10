@@ -333,7 +333,7 @@ class RoomModule(BaseModule):
     async def change_schedule_data(self, body):
         old = RoomConfigSerializer(self.room).data
         data = body.get("schedule_data")
-        if data and not all(key in ["title", "session"] for key in data.keys()):
+        if data and not all(key in ["title", "session", "computeSession"] for key in data.keys()):
             raise ConsumerException(
                 code="room.unknown_schedule_data", message="Unknown schedule data"
             )

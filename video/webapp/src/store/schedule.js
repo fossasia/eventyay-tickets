@@ -78,6 +78,21 @@ export default {
 			}
 			return sessions
 		},
+		currentSessionPerRoom (state, getters, rootState) {
+			const rooms = {}
+			for (const room of rootState.rooms) {
+				if (room.schedule_data?.computeSession) {
+					rooms[room.id] = {
+						session: getters.sessionsScheduledNow.find(session => session.room === room)
+					}
+				} else if (room.schedule_data?.session) {
+					rooms[room.id] = {
+						session: state.sessions?.find(session => session.id === room.schedule_data.session)
+					}
+				}
+			}
+			return rooms
+		}
 	},
 	mutations: {
 		updateNow (state) {
