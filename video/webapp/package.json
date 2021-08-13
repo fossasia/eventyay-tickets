@@ -22,7 +22,7 @@
     "emoji-datasource-twitter": "^5.0.1",
     "emoji-mart": "^3.0.0",
     "emoji-regex": "^9.0.0",
-    "hls.js": "^1.0.7",
+    "hls.js": "^1.0.8",
     "janus-gateway": "git+https://wtf-npm@github.com/meetecho/janus-gateway.git#7b010cd265991132158541ea80afcaa14bf4eb42",
     "lodash": "^4.17.20",
     "markdown-it": "^12.2.0",
