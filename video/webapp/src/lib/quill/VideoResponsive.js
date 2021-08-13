@@ -11,10 +11,10 @@ class VideoResponsive extends BlockEmbed {
 
 	static blotName = 'video'
 	static tagName = 'div'
+	static className = 'ql-video-wrapper'
 
 	static create (value) {
 		const node = super.create(value)
-		node.classList.add('ql-video-wrapper')
 
 		const innerNode = document.createElement('div')
 		innerNode.classList.add('ql-video-inner')
