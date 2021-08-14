@@ -175,18 +175,19 @@ class ImageField(ExtensionFileInput, SizeFileInput, FileField):
         if hasattr(f, "seek") and callable(f.seek):
             f.seek(0)
 
+        image.fp = file
+        if hasattr(image, "png"):  # Yeah, idk what's up with this
+            image.png.fp = file
+
         stream = BytesIO()
 
         extension = ".jpg"
-        if image.mode == "RGBA":
+        if image.mode.lower() in ("rgba", "la", "pa"):
             extension = ".png"
         elif image.mode != "RGB":
             image = image.convert("RGB")
 
         stream.name = Path(data.name).stem + extension
-        image.fp = file
-        if hasattr(image, "png"):  # Yeah, idk what's up with this
-            image.png.fp = file
         image_data = image.getdata()
         image_without_exif = Image.new(image.mode, image.size)
         image_without_exif.putdata(image_data)
