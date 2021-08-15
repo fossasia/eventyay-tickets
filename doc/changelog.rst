@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :release:`2.2.0 <2021-08-15>`
 - :feature:`-` To improve performance, the NoJS schedule is now located on a separate page.
 - :feature:`1143` On self-hosted pretalx instances, you can now configure pretalx to include additional CSP headers, especially of interest for plugin developers.
 - :bug:`-` In the submission API view, the end time of a slot was sometimes empty.
