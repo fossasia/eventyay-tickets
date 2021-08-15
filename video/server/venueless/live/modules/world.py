@@ -10,6 +10,7 @@ from venueless.core.services.world import (
     generate_tokens,
     get_audit_log,
     get_world_config_for_user,
+    notify_schedule_change,
     notify_world_change,
     save_world,
 )
@@ -37,6 +38,12 @@ class WorldModule(BaseModule):
         )
         self.consumer.known_room_id_cache = {r["id"] for r in world_config["rooms"]}
         await self.consumer.send_json(["world.updated", world_config])
+
+    @event("schedule.update", refresh_world=True, refresh_user=True)
+    async def push_schedule_update(self, body):
+        await self.consumer.send_json(
+            ["world.schedule.updated", self.consumer.world.config.get("pretalx", {})]
+        )
 
     @event("user_count_change")
     async def push_user_count_change(self, body):

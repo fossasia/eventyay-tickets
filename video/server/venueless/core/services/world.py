@@ -115,6 +115,15 @@ async def notify_world_change(world_id):
     )
 
 
+async def notify_schedule_change(world_id):
+    await get_channel_layer().group_send(
+        f"world.{world_id}",
+        {
+            "type": "world.schedule.update",
+        },
+    )
+
+
 def get_room_config(room, permissions):
     room_config = {
         "id": str(room.id),

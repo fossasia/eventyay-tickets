@@ -67,3 +67,32 @@ def test_world_no_delete(client, world):
         HTTP_AUTHORIZATION=get_token_header(world),
     )
     assert r.status_code == 403
+
+
+@pytest.mark.django_db
+def test_schedule_update(client, world):
+    world.trait_grants["apiuser"] = ["foobartrait"]
+    world.save()
+    r = client.post(
+        "/api/v1/worlds/sample/",
+        {"data": {"domain": "https://pretalx.dev"}, "action": "schedule_update"},
+        format="json",
+        HTTP_AUTHORIZATION=get_token_header(world, ["foobartrait", "admin", "api"]),
+    )
+    assert r.status_code == 200
+    world.refresh_from_db()
+    assert world.config["pretalx"]["domain"] != "https://pretalx.dev"
+
+    r = client.post(
+        "/api/v1/worlds/sample/",
+        {
+            "data": {"domain": "https://pretalx.dev", "event": "demofon"},
+            "action": "schedule_update",
+        },
+        format="json",
+        HTTP_AUTHORIZATION=get_token_header(world, ["foobartrait", "admin", "api"]),
+    )
+    assert r.status_code == 200
+    world.refresh_from_db()
+    assert world.config["pretalx"]["domain"] == "https://pretalx.dev"
+    assert world.config["pretalx"]["event"] == "demofon"

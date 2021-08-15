@@ -6,7 +6,7 @@ World configuration
 The world configuration is pushed to the client first as part of the successful authentication response.
 If the world config changes, you will get an update like this::
 
-    <= ["world.update", { … }]
+    <= ["world.updated", { … }]
 
 The body of the configuration is structured like this, filtered to user visibility:
 The first room acts as the landing page.
@@ -62,3 +62,14 @@ The first room acts as the landing page.
             }
         ]
     }
+
+Schedule updates
+================
+
+When venueless is notified about an updated schedule, you will get a
+notification like this::
+
+    <= ["world.schedule.updated", { … }]
+
+The data will be the ``pretalx`` configuration of the event, so either a
+``url`` or a ``domain`` with an ``event``.
