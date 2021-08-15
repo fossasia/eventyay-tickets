@@ -1,7 +1,7 @@
 from asgiref.sync import async_to_sync
 from django.db import transaction
 from rest_framework import viewsets
-from rest_framework.exceptions import MethodNotAllowed
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -75,29 +75,26 @@ class WorldView(APIView):
         )
         return Response(serializer.data)
 
-    def post(self, request, **kwargs):
-        """POST on a detail view is, for now, inteded to execute actions, similar
-        to how you would do it with @action on a real ViewSet.
 
-        The request is expected to pass an 'action' attribute, and optionally content
-        in a 'data' attribute. Supported actions:
-            - schedule_update
-        """
-        action = request.data.get("action")
-        if not action or action != "schedule_update":
-            raise MethodNotAllowed
+@api_view(http_method_names=["POST"])
+@permission_classes([ApiAccessRequiredPermission & WorldPermissions])
+def schedule_update(request, **kwargs):
+    """POST endpoint to notify venueless that schedule data has changed.
 
-        domain = request.data.get("data", {}).get("domain")
-        event = request.data.get("data", {}).get("event")
+    Optionally, the request may contain data for the ``pretalx`` field in the
+    world config.
+    """
+    domain = request.data.get("domain")
+    event = request.data.get("event")
 
-        if domain and event:
-            pretalx_config = request.world.config.get("pretalx", {})
-            if domain != pretalx_config.get("domain") or event != pretalx_config.get(
-                "event"
-            ):
-                request.world.config["pretalx"] = {"domain": domain, "event": event}
-                request.world.save()
-                async_to_sync(notify_world_change)(request.world.id)
+    if domain and event:
+        pretalx_config = request.world.config.get("pretalx", {})
+        if domain != pretalx_config.get("domain") or event != pretalx_config.get(
+            "event"
+        ):
+            request.world.config["pretalx"] = {"domain": domain, "event": event}
+            request.world.save()
+            async_to_sync(notify_world_change)(request.world.id)
 
-        async_to_sync(notify_schedule_change)(request.world.id)
-        return Response()
+    async_to_sync(notify_schedule_change)(request.world.id)
+    return Response()

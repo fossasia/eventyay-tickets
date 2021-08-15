@@ -8,5 +8,6 @@ world_router.register(r"rooms", views.RoomViewSet)
 
 urlpatterns = [
     re_path("worlds/(?P<world_id>[^/]+)/$", views.WorldView.as_view()),
+    re_path("worlds/(?P<world_id>[^/]+)/schedule_update$", views.schedule_update),
     re_path("worlds/(?P<world_id>[^/]+)/", include(world_router.urls)),
 ]

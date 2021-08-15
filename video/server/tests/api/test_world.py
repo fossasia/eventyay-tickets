@@ -74,8 +74,8 @@ def test_schedule_update(client, world):
     world.trait_grants["apiuser"] = ["foobartrait"]
     world.save()
     r = client.post(
-        "/api/v1/worlds/sample/",
-        {"data": {"domain": "https://pretalx.dev"}, "action": "schedule_update"},
+        "/api/v1/worlds/sample/schedule_update",
+        {"domain": "https://pretalx.dev"},
         format="json",
         HTTP_AUTHORIZATION=get_token_header(world, ["foobartrait", "admin", "api"]),
     )
@@ -84,10 +84,10 @@ def test_schedule_update(client, world):
     assert world.config["pretalx"]["domain"] != "https://pretalx.dev"
 
     r = client.post(
-        "/api/v1/worlds/sample/",
+        "/api/v1/worlds/sample/schedule_update",
         {
-            "data": {"domain": "https://pretalx.dev", "event": "demofon"},
-            "action": "schedule_update",
+            "domain": "https://pretalx.dev",
+            "event": "demofon",
         },
         format="json",
         HTTP_AUTHORIZATION=get_token_header(world, ["foobartrait", "admin", "api"]),
