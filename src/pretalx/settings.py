@@ -371,19 +371,19 @@ LANGUAGES_INFORMATION = {
         "name": _("French"),
         "natural_name": "Français",
         "official": False,
-        "percentage": 93,
+        "percentage": 87,
     },
     "zh-tw": {
         "name": _("Traditional Chinese (Taiwan)"),
         "natural_name": "Traditional Chinese (Taiwan)",
         "official": False,
-        "percentage": 73,
+        "percentage": 69,
     },
     "ja-JP": {
         "name": _("Japanese"),
         "natural_name": "Japanese",
         "official": False,
-        "percentage": 96,
+        "percentage": 90,
         "public_code": "jp",
     },
 }
