@@ -227,7 +227,7 @@ class SubmissionFilterForm(forms.Form):
             for d in qs.order_by("track").values("track").annotate(Count("track"))
         }
         tag_count = event.tags.prefetch_related("submissions").annotate(
-            submission_count=Count("submissions")
+            submission_count=Count("submissions", distinct=True)
         )
         tag_count = {tag.tag: tag.submission_count for tag in tag_count}
         self.fields["submission_type"].choices = [

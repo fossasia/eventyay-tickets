@@ -87,7 +87,7 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
                 tracks.update(team.limit_tracks.filter(event=self.request.event))
             queryset = queryset.filter(track__in=tracks)
         queryset = self.filter_queryset(queryset).annotate(
-            review_count=Count("reviews")
+            review_count=Count("reviews", distinct=True)
         )
         queryset = self.filter_range(queryset)
 
@@ -196,7 +196,7 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
     def max_review_count(self):
         return (
             self.request.event.submissions.all()
-            .annotate(review_count=Count("reviews"))
+            .annotate(review_count=Count("reviews", distinct=True))
             .aggregate(Max("review_count"))
             .get("review_count__max")
         )
