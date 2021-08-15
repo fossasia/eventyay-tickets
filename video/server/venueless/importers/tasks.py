@@ -6,7 +6,7 @@ from django.core.files.base import ContentFile
 from django.utils.timezone import now
 
 from venueless.celery_app import app
-from venueless.core.services.world import notify_world_change
+from venueless.core.services.world import notify_schedule_change
 from venueless.core.tasks import WorldTask
 from venueless.importers.conftool import fetch_schedule_from_conftool
 from venueless.storage.models import StoredFile
@@ -42,5 +42,5 @@ def conftool_update_schedule(world):
     world.config["pretalx"]["url"] = sf.file.url
     world.config["pretalx"]["conftool"] = True
     world.save()
-    async_to_sync(notify_world_change)(world.id)
+    async_to_sync(notify_schedule_change)(world.id)
     return sf.pk

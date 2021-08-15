@@ -1,6 +1,7 @@
 import logging
 from io import BytesIO
 
+from asgiref.sync import async_to_sync
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.core.files import File
 from django.core.files.base import ContentFile
@@ -18,6 +19,7 @@ from xlrd import XLRDError
 from venueless.core.models import World
 from venueless.core.permissions import Permission
 from venueless.core.services.user import login
+from venueless.core.services.world import notify_schedule_change
 from venueless.storage.models import StoredFile
 from venueless.storage.schedule_to_json import convert
 
@@ -205,4 +207,5 @@ class ScheduleImportView(UploadMixin, View):
             public=True,
             user=self.user,
         )
+        async_to_sync(notify_schedule_change)(self.world.id)
         return JsonResponse({"url": sf.file.url}, status=201)

@@ -96,10 +96,10 @@ class WorldModule(BaseModule):
                 if f in body:
                     if (
                         f == "pretalx"
-                        and not s.validated_data[f].get("url")
-                        and not s.validated_data[f].get("domain")
+                        and not s.validated_data["pretalx"].get("url")
+                        and not s.validated_data["pretalx"].get("domain")
                     ):
-                        s.validated_data[f] = {}
+                        s.validated_data["pretalx"] = {}
                     self.consumer.world.config[f] = s.validated_data[f]
                     update_fields.add("config")
 
@@ -119,6 +119,8 @@ class WorldModule(BaseModule):
                 await sync_to_async(conftool_update_schedule.apply_async)(
                     kwargs={"world": str(self.consumer.world.id)}
                 )
+            if old["pretalx"] != new["pretalx"]:
+                await notify_schedule_change(world_id=self.consumer.world.id)
         else:
             await self.consumer.send_error(code="config.invalid")
 
