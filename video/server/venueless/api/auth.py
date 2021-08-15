@@ -70,7 +70,7 @@ class WorldPermissions(permissions.BasePermission):
             traits=traits, permissions=[Permission.WORLD_SECRETS]
         ):
             return False
-        if request.method in ("PATCH", "PUT"):
+        if request.method in ("PATCH", "PUT", "POST"):
             return request.world.has_permission_implicit(
                 traits=traits, permissions=[Permission.WORLD_UPDATE]
             )
