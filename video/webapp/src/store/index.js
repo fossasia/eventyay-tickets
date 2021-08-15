@@ -151,6 +151,9 @@ export default new Vuex.Store({
 			state.world = world
 			state.permission = permissions
 			commit('updateRooms', rooms)
+		},
+		'api::world.schedule.updated' ({state, commit, dispatch}, {pretalx}) {
+			state.world.pretalx = pretalx
 			dispatch('schedule/fetch', {root: true})
 		},
 		'api::world.user_count_change' ({state, commit, dispatch}, {room, users}) {
