@@ -1,0 +1,155 @@
+name: Code Style
+
+on:
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - 'pretalx_venueless/locale/**'
+      - 'pretalx_venueless/static/**'
+  pull_request:
+    branches: [ main ]
+    paths-ignore:
+      - 'pretalx_venueless/locale/**'
+      - 'pretalx_venueless/static/**'
+
+
+jobs:
+  isort:
+    name: isort
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+      - uses: actions/cache@v1
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/setup.py') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      - name: Install pretalx
+        run: pip3 install pretalx
+      - name: Install Dependencies
+        run: pip3 install isort -Ue .
+      - name: Run isort
+        run: isort -c .
+  flake:
+    name: flake8
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+      - uses: actions/cache@v1
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/setup.py') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      - name: Install pretalx
+        run: pip3 install pretalx
+      - name: Install Dependencies
+        run: pip3 install flake8 -Ue .
+      - name: Run flake8
+        run: flake8 .
+        working-directory: .
+  black:
+    name: black
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+      - uses: actions/cache@v1
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/setup.py') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      - name: Install pretalx
+        run: pip3 install pretalx
+      - name: Install Dependencies
+        run: pip3 install black -Ue .
+      - name: Run black
+        run: black --check .
+        working-directory: .
+  docformatter:
+    name: docformatter
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+      - uses: actions/cache@v1
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/setup.py') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      - name: Install pretalx
+        run: pip3 install pretalx
+      - name: Install Dependencies
+        run: pip3 install docformatter -Ue .
+      - name: Run docformatter
+        run: docformatter --check -r .
+        working-directory: .
+      - name: Run docformatter
+  djhtml:
+    name: djhtml
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+      - uses: actions/cache@v1
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/setup.py') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      - name: Install pretalx
+        run: pip3 install pretalx
+      - name: Install Dependencies
+        run: pip3 install djhtml -Ue .
+      - name: Run docformatter
+        run: find -name "*.html" | xargs djhtml -c
+        working-directory: .
+  packaging:
+    name: packaging
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+      - uses: actions/cache@v1
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/setup.py') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      - name: Install pretalx
+        run: pip3 install pretalx
+      - name: Install Dependencies
+        run: pip3 install twine check-manifest -Ue .
+      - name: Run check-manifest
+        run: check-manifest .
+        working-directory: .
+      - name: Build package
+        run: python setup.py sdist
+        working-directory: .
+      - name: Check package
+        run: twine check dist/*
+        working-directory: .
+
