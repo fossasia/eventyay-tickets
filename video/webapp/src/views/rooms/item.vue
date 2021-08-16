@@ -24,15 +24,11 @@
 		chat(v-if="modules['chat.native']", v-show="activeSidebarTab === 'chat'", :room="room", :module="modules['chat.native']", mode="compact", :key="room.id", @change="changedTabContent('chat')")
 		questions(v-if="modules['question']", v-show="activeSidebarTab === 'questions'", :module="modules['question']", @change="changedTabContent('questions')")
 		polls(v-if="modules['poll']", v-show="activeSidebarTab === 'polls'", :module="modules['poll']", @change="changedTabContent('polls')")
-	transition(name="prompt")
-		recordings-prompt(:room="room", v-if="showRecordingsPrompt", @close="showRecordingsPrompt = false")
-	edit-room-schedule(v-if="showEditSchedule", :room="room", :currentSession="currentSession", @close="showEditSchedule = false")
 </template>
 <script>
 // TODO
 // - questions without chat
 // - tab activity
-import EditRoomSchedule from './EditRoomSchedule'
 import Chat from 'components/Chat'
 import LandingPage from 'components/LandingPage'
 import MarkdownPage from 'components/MarkdownPage'
@@ -41,7 +37,6 @@ import IframePage from 'components/IframePage'
 import Exhibition from 'components/Exhibition'
 import ReactionsBar from 'components/ReactionsBar'
 import ReactionsOverlay from 'components/ReactionsOverlay'
-import RecordingsPrompt from 'components/RecordingsPrompt'
 import Roulette from 'components/Roulette'
 import UserListPage from 'components/UserListPage'
 import Polls from 'components/Polls'
@@ -50,15 +45,13 @@ import MediaSourcePlaceholder from 'components/MediaSourcePlaceholder'
 
 export default {
 	name: 'Room',
-	components: { EditRoomSchedule, Chat, Exhibition, LandingPage, MarkdownPage, StaticPage, IframePage, ReactionsBar, ReactionsOverlay, RecordingsPrompt, UserListPage, Roulette, Polls, Questions, MediaSourcePlaceholder },
+	components: { Chat, Exhibition, LandingPage, MarkdownPage, StaticPage, IframePage, ReactionsBar, ReactionsOverlay, UserListPage, Roulette, Polls, Questions, MediaSourcePlaceholder },
 	props: {
 		room: Object,
 		modules: Object
 	},
 	data () {
 		return {
-			showRecordingsPrompt: false,
-			showEditSchedule: false,
 			activeSidebarTab: null, // chat, questions, polls
 			unreadTabs: {
 				chat: false,

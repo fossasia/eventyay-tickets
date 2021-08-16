@@ -13,10 +13,13 @@
 				bunt-link-button(:to="{name: 'room:manage', params: {roomId: room.id}}", replace) manage
 				bunt-link-button(:to="{name: 'room'}", replace) view
 	router-view(:room="room", :modules="modules")
+	transition(name="prompt")
+		recordings-prompt(:room="room", v-if="showRecordingsPrompt", @close="showRecordingsPrompt = false")
 </template>
 <script>
 import {mapGetters, mapState} from 'vuex'
 import { inferRoomType } from 'lib/room-types'
+import RecordingsPrompt from 'components/RecordingsPrompt'
 
 const PERMISSIONS_TO_MANAGE = [
 	'room:chat.moderate',
@@ -25,8 +28,14 @@ const PERMISSIONS_TO_MANAGE = [
 ]
 
 export default {
+	components: { RecordingsPrompt },
 	props: {
 		roomId: String
+	},
+	data () {
+		return {
+			showRecordingsPrompt: false,
+		}
 	},
 	computed: {
 		...mapGetters(['hasPermission']),
