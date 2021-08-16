@@ -193,6 +193,8 @@ class ScheduleImportView(UploadMixin, View):
             return JsonResponse({"error": ", ".join(e)}, status=400)
         except XLRDError as e:
             return JsonResponse({"error": str(e)}, status=400)
+        except ValueError as e:
+            return JsonResponse({"error": str(e)}, status=400)
 
         sf = StoredFile.objects.create(
             world=self.world,
