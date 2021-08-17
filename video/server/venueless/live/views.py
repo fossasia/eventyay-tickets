@@ -119,7 +119,12 @@ class AppView(View):
 
         source = re.sub("<html[^>]*>", '<html lang="{}">'.format(world.locale), source)
 
-        return HttpResponse(source, content_type="text/html")
+        r = HttpResponse(source, content_type="text/html")
+        if "cross-origin-isolation" in world.feature_flags:
+            r["Cross-Origin-Resource-Policy"] = "cross-origin"
+            r["Cross-Origin-Embedder-Policy"] = "require-corp"
+            r["Cross-Origin-Opener-Policy"] = "same-origin"
+        return r
 
 
 class HealthcheckView(View):

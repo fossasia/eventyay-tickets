@@ -71,6 +71,14 @@ class ZoomViewMixin:
 class MeetingView(ZoomViewMixin, TemplateView):
     template_name = "zoom/meeting.html"
 
+    def dispatch(self, request, *args, **kwargs):
+        r = super().dispatch(request, *args, **kwargs)
+        if "cross-origin-isolation" in self.world.feature_flags:
+            r["Cross-Origin-Resource-Policy"] = "cross-origin"
+            r["Cross-Origin-Embedder-Policy"] = "require-corp"
+            r["Cross-Origin-Opener-Policy"] = "same-origin"
+        return r
+
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data()
 

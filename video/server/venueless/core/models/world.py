@@ -101,6 +101,7 @@ FEATURE_FLAGS = [
     "janus",
     "polls",
     "conftool",
+    "cross-origin-isolation",
 ]
 
 
