@@ -1,6 +1,6 @@
 <template lang="pug">
 router-link.c-room-list-item.table-row(:to="{name: 'admin:rooms:item', params: {roomId: room.id}}")
-	.handle.mdi.mdi-drag-vertical(v-handle)
+	.handle.mdi.mdi-drag-vertical(class="{disabled}", v-handle, v-tooltip="disabled ? 'sorting is disabled while searching' : ''")
 	.name {{ room.name }}
 </template>
 <script>
@@ -22,4 +22,7 @@ export default {
 		user-select: none
 		cursor: row-resize
 		font-size: 24px
+		&.disabled
+			cursor: auto
+			color: $clr-grey-300
 </style>

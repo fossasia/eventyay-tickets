@@ -10,7 +10,7 @@
 			.drag
 			.name Name
 		SlickList.tbody(v-if="filteredRooms", v-model="rooms", lockAxis="y", :useDragHandle="true", v-scrollbar.y="", @input="onListSort")
-			RoomListItem(v-for="(room, index) of rooms" :index="index", :key="index", :room="room")
+			RoomListItem(v-for="(room, index) of filteredRooms" :index="index", :key="index", :room="room", :disabled="filteredRooms !== rooms")
 		bunt-progress-circular(v-else, size="huge", :page="true")
 </template>
 <script>
