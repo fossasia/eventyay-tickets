@@ -421,6 +421,7 @@ export default {
 	flex-direction: column
 	background: $clr-white
 	min-height: 0
+	min-width: 0
 	.bunt-icon-button
 		icon-button-style(style: clear)
 	.header
