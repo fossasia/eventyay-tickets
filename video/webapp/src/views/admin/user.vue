@@ -109,28 +109,28 @@ export default {
 </script>
 <style lang="stylus">
 .c-admin-user
-	background-color $clr-white
-	display flex
-	flex-direction column
-	min-height 0
+	background-color: $clr-white
+	display: flex
+	flex-direction: column
+	min-height: 0
 	min-width: 0
 	.bunt-icon-button
 		icon-button-style(style: clear)
 	.ui-page-header
-		background-color $clr-grey-100
+		background-color: $clr-grey-100
 		.bunt-icon-button
-			margin-right 8px
+			margin-right: 8px
 		h2
-			flex auto
-			font-size 21px
-			font-weight 500
-			margin 1px 16px 0 0
+			flex: auto
+			font-size: 21px
+			font-weight: 500
+			margin: 1px 16px 0 0
 			ellipsis()
 		.actions
-			display flex
-			flex none
+			display: flex
+			flex: none
 			.bunt-button:not(:last-child)
-				margin-right 16px
+				margin-right: 16px
 			.btn-dm, .btn-call
 				button-style(style: clear)
 			.btn-reactivate
@@ -144,29 +144,29 @@ export default {
 			#btn-edit
 				button-style(color: $clr-danger)
 	.user-info
-		display flex
-		flex-direction column
-		padding 32px
+		display: flex
+		flex-direction: column
+		padding: 32px
 		.avatar-wrapper
-			display flex
-			align-items center
+			display: flex
+			align-items: center
 			#btn-change-avatar
 				themed-button-secondary()
-				margin-left 16px
+				margin-left: 16px
 
 	.change-avatar-prompt
 		.content
-			display flex
-			flex-direction column
-			padding 48px 32px 32px
+			display: flex
+			flex-direction: column
+			padding: 48px 32px 32px
 		.actions
-			margin-top 32px
-			align-self stretch
-			display flex
-			justify-content flex-end
+			margin-top: 32px
+			align-self: stretch
+			display: flex
+			justify-content: flex-end
 		#btn-cancel
 			themed-button-secondary()
-			margin-right 8px
+			margin-right: 8px
 		#btn-upload
 			themed-button-primary()
 
