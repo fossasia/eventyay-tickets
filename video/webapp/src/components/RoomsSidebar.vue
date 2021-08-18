@@ -13,7 +13,7 @@ transition(name="sidebar")
 				span {{ $t('RoomsSidebar:stages-headline:text') }}
 				bunt-icon-button(v-if="hasPermission('world:rooms.create.stage')", @click="showStageCreationPrompt = true") plus
 			.stages(role="group", aria-describedby="stages-title")
-				router-link.stage(v-for="stage, index of roomsByType.stage", :to="stage.room === rooms[0] ? {name: 'home'} : {name: 'room', params: {roomId: stage.room.id}}", :class="{session: stage.session, live: stage.session && stage.room.schedule_data, 'has-image': stage.image}")
+				router-link.stage(v-for="stage, index of roomsByType.stage", :to="stage.room === rooms[0] ? {name: 'home'} : {name: 'room', params: {roomId: stage.room.id}}", :class="{active: stage.room.id === $route.params.roomId, session: stage.session, live: stage.session && stage.room.schedule_data, 'has-image': stage.image}")
 					template(v-if="stage.session")
 						img.preview(v-if="stage.image", :src="stage.image")
 						.info
@@ -30,7 +30,7 @@ transition(name="sidebar")
 				bunt-icon-button(v-if="hasPermission('world:rooms.create.chat') || hasPermission('world:rooms.create.bbb')", tooltip="Create Channel", @click="showChatCreationPrompt = true") plus
 				bunt-icon-button(v-if="worldHasTextChannels", tooltip="Browse all channels", @click="showChannelBrowser = true") compass-outline
 			.chats(role="group", aria-describedby="chats-title")
-				router-link.video-chat(v-for="chat of roomsByType.videoChat", :to="chat === rooms[0] ? {name: 'home'} : {name: 'room', params: {roomId: chat.id}}")
+				router-link.video-chat(v-for="chat of roomsByType.videoChat", :to="chat === rooms[0] ? {name: 'home'} : {name: 'room', params: {roomId: chat.id}}", :class="{active: chat.id === $route.params.roomId}")
 					.room-icon(aria-hidden="true")
 					.name {{ chat.name }}
 					i.bunt-icon.activity-icon.mdi(v-if="chat.users === 'many' || chat.users === 'few'", :class="{'mdi-account-group': (chat.users === 'many'), 'mdi-account-multiple': (chat.users === 'few')}", v-tooltip="{text: $t('RoomsSidebar:users-tooltip:' + chat.users), placement: 'left'}", :aria-label="$t('RoomsSidebar:users-tooltip:' + chat.users)")
@@ -260,14 +260,15 @@ export default {
 			color: var(--clr-sidebar-text-secondary)
 			display: flex
 			position: relative
-			&.router-link-active
+			&.router-link-exact-active, &.active
 				background-color: var(--clr-sidebar-active-bg)
 				color: var(--clr-sidebar-text-primary)
 			&:hover
 				background-color: var(--clr-sidebar-hover-bg)
 				color: var(--clr-sidebar-text-primary)
-			&.router-link-active .room-icon::before
-				color: var(--clr-sidebar-text-secondary)
+			&.router-link-exact-active, &.active
+				.room-icon::before
+					color: var(--clr-sidebar-text-secondary)
 			.room-icon::before
 				font-family: "Material Design Icons"
 				font-size: 18px
@@ -378,6 +379,10 @@ export default {
 			border-radius: 0
 			&:hover:not(.disabled)
 				background-color: var(--clr-sidebar-hover-bg)
+	.admin
+		> .router-link-active
+				background-color: var(--clr-sidebar-active-bg)
+				color: var(--clr-sidebar-text-primary)
 	.buffer
 		flex: auto
 	> .profile
