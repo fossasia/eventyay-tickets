@@ -1,4 +1,5 @@
 import pytest
+from django.conf import settings
 
 from tests.utils import get_token_header
 
