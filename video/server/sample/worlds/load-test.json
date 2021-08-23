@@ -1,0 +1,186 @@
+{
+  "world": {
+    "id": "load-test",
+    "title": "Unsere tolle Online-Konferenz",
+    "pretalx": {
+      "domain": "https://pretalx.com/",
+      "event": "democon"
+    },
+    "bbb_defaults": {
+      "record": false
+    },
+    "connection_limit": 2,
+    "user_list": {
+      "search_min_chars": 3,
+      "page_size": 50
+    },
+    "profile_fields": [],
+    "JWT_secrets": [
+      {
+        "secret": "FaZaa4KeeZoo2ahgoh2uenahd3Uta4Ei",
+        "issuer": "https://pretix.eu/",
+        "audience": "demo-event"
+      }
+    ]
+  },
+  "roles": {
+    "attendee": [
+      "world:view",
+      "world:chat.direct",
+      "room:view",
+      "room:chat.read",
+      "room:bbb.join",
+      "room:chat.send",
+      "room:chat.join",
+      "room:roulette.join",
+      "room:question.read",
+      "room:question.ask",
+      "room:question.vote",
+      "room:poll.read",
+      "room:poll.vote",
+      "world:exhibition.contact"
+    ]
+  },
+  "trait_grants": {
+    "attendee": []
+  },
+  "rooms": [
+    {
+      "id": "about",
+      "name": "About",
+      "description": "about",
+      "picture": "NO",
+      "modules": [
+        {
+          "type": "page.landing",
+          "config": {
+            "header_background_color": "#673ab7",
+            "header_image": "/venueless-logo-full-white.svg",
+            "content": "# Welcome to this example event!\n\nYou might notice that the dates for the current sessions are not actually your current time and that time does not progress. That's because we froze time – only in this demo of course – with the power of programming!\n\nHave a look around!"
+          }
+        }
+      ]
+    },
+    {
+      "id": "a-page",
+      "name": "More Info",
+      "description": "more info",
+      "picture": "NO",
+      "modules": [
+        {
+          "type": "page.markdown",
+          "config": {
+            "content": "# Unsere tolle Online-Konferenz\n\nHallo!\nDas ist ein Markdowntext!"
+          }
+        }
+      ]
+    },
+    {
+      "id": "room_0",
+      "name": "Plenum",
+      "description": "Hier findet die Eröffnungs- und End-Veranstaltung statt",
+      "picture": "NO",  "pretalx_id": 130,
+      "modules": [
+        {
+          "type": "livestream.native",
+          "config": {
+            "hls_url": "https://s1.live.pretix.eu/hls/sample.m3u8"
+          }
+        },
+        {
+          "type": "question",
+          "config": {
+            "active": true
+          }
+        },
+        {
+          "type": "poll",
+          "config": {
+            "active": true
+          }
+        },
+        {
+          "type": "chat.native",
+          "config": {
+            "volatile": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "room_1",
+      "name": "Gruppenraum 1",
+      "description": "Hier findet die Eröffnungs- und End-Veranstaltung statt",
+      "picture": "NO",
+      "pretalx_id": 131,
+      "modules": [
+        {
+          "type": "call.bigbluebutton",
+          "config": {
+            "record": false
+          }
+        },
+        {
+          "type": "question",
+          "config": {
+            "active": true,
+            "requires_moderation": false
+          }
+        },
+        {
+          "type": "poll",
+          "config": {
+            "active": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "room_2",
+      "name": "Stage 2",
+      "description": "Hier findet mehr Zeug statt",
+      "picture": "NO",
+      "modules": [
+        {
+          "type": "livestream.native",
+          "config": {
+            "hls_url": "https://s1.live.pretix.eu/hls/sample.m3u8"
+          }
+        },
+        {
+          "type": "question",
+          "config": {
+            "active": false
+          }
+        },
+        {
+          "type": "poll",
+          "config": {
+            "active": false
+          }
+        },
+        {
+          "type": "chat.native",
+          "config": {
+            "volatile": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "chat",
+      "name": "Chat",
+      "description": "Standalone Chat",
+      "picture": "NO",
+      "modules": [
+        {
+          "type": "chat.native",
+          "config": {
+            "volatile": false
+          }
+        }
+      ]
+    }
+  ],
+  "exhibitors": []
+}
