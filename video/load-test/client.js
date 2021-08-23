@@ -73,9 +73,10 @@ export default class VenueLessClient extends EventEmitter {
 			})
 			this.lastPing = null
 		} else if (payload[0] === 'success') {
-			const timestamp = this.messagesInFlight[payload[1]]
+			const {timestamp, cb} = this.messagesInFlight[payload[1]]
 			this.messagesInFlight[payload[1]] = undefined
 			responseTrend.add(Date.now() - timestamp)
+			if (cb) cb(payload[2])
 		} else if(payload[0] === 'chat.event') {
 			if (payload[1].sender === this.user.id) {
 				chatTrend.add(Date.now() - new Date(payload[1].timestamp))
@@ -87,14 +88,17 @@ export default class VenueLessClient extends EventEmitter {
 		this.socket.close()
 	}
 
-	send (action, data) {
+	send (action, data, cb) {
 		let payload
 		if (action instanceof Array && !data) {
 			payload = action
 		} else {
 			const correlationId = this.correlationId++
 			payload = [action, correlationId, data]
-			this.messagesInFlight[correlationId] = Date.now()
+			this.messagesInFlight[correlationId] = {
+				timestamp: Date.now(),
+				cb
+			}
 		}
 		this.socket.send(JSON.stringify(payload))
 	}
@@ -129,8 +133,15 @@ export default class VenueLessClient extends EventEmitter {
 		const channelModule = room.modules.find(m => m.type === 'chat.native')
 		this.chatChannel = channelModule ? channelModule.channel_id : undefined
 		if (this.chatChannel) {
-			this.send('chat.subscribe', {channel: this.chatChannel})
+			this.send('chat.subscribe', {channel: this.chatChannel}, ({next_event_id}) => {
+				this.send('chat.fetch', {
+					channel: this.chatChannel,
+					before_id: next_event_id,
+					count: 25
+				})
+			})
 			this.send('chat.join', {channel: this.chatChannel})
+
 		}
 	}
 
