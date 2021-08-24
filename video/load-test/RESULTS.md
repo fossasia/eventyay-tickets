@@ -1,5 +1,33 @@
 # Load test results
 
+Newest result first.
+
+## 2021-08-25 docker compose gunicorn on single CPX51
+
+- joining clients: 33.3/s
+- mean time to chat message: 15s
+
+Changes:
+- added more realistic stage join behaviour (fetches chat logs and user profiles)
+- lowered ping timeout threshold to 0.9
+
+```
+     chat_message_time.......: avg=2.6s     min=-6000000ns med=967ms  max=37.68s   p(90)=6.48s   p(95)=11.94s
+     checks..................: 76.79% ✓ 6756        ✗ 2041   
+     ✗ { ping:no-timeout }...: 89.95% ✓ 4506        ✗ 503    
+     concurrent_clients......: 1799   33.260349/s
+     data_received...........: 282 MB 5.2 MB/s
+     data_sent...............: 13 MB  238 kB/s
+     ping_time...............: avg=3.08s    min=0s         med=868ms  max=26.85s   p(90)=10s     p(95)=10.18s
+     request_response_time...: avg=704.33ms min=2ms        med=206ms  max=36.85s   p(90)=1.27s   p(95)=2.97s  
+     vus.....................: 1799   min=33        max=1799
+     vus_max.................: 10000  min=10000     max=10000
+     ws_connecting...........: avg=9.81ms   min=1.79ms     med=6.01ms max=318.09ms p(90)=15.13ms p(95)=20.07ms
+     ws_msgs_received........: 324629 6001.819755/s
+     ws_msgs_sent............: 173393 3205.731875/s
+     ws_sessions.............: 1799   33.260349/s
+```
+
 ## 2021-08-24 docker compose gunicorn on single CPX51
 
 - joining clients: 33.3/s

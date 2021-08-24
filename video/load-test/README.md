@@ -7,7 +7,7 @@ Download and install k6
 
 ```sh
 ulimit -n 30000 # bump socket limit
-docker-compose up server redis db celery --build
+docker-compose up --build server redis db celery
 docker-compose exec server python manage.py import_config sample/worlds/load-test.json
 ```
 (or see docs/admin/management.rst for detailed instructions)
