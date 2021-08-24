@@ -4,12 +4,14 @@ Newest result first.
 
 ## 2021-08-25 docker compose gunicorn on single CPX51
 
-- joining clients: 33.3/s
-- mean time to chat message: 15s
-
 Changes:
 - added more realistic stage join behaviour (fetches chat logs and user profiles)
 - lowered ping timeout threshold to 0.9
+
+### Run 1
+
+- joining clients: 33.3/s
+- mean time to chat message: 15s
 
 ```
      chat_message_time.......: avg=2.6s     min=-6000000ns med=967ms  max=37.68s   p(90)=6.48s   p(95)=11.94s
@@ -28,7 +30,31 @@ Changes:
      ws_sessions.............: 1799   33.260349/s
 ```
 
+### Run 2
+
+- joining clients: 16.6/s
+- mean time to chat message: 15s
+
+```
+     chat_message_time.......: avg=12.35s  min=-17000000ns med=2.98s  max=2m58s p(90)=38s     p(95)=55.64s
+     checks..................: 63.27%  ✓ 33054       ✗ 19188
+     ✗ { ping:no-timeout }...: 89.98%  ✓ 25283       ✗ 2813  
+     concurrent_clients......: 4099    16.659273/s
+     data_received...........: 1.9 GB  7.6 MB/s
+     data_sent...............: 74 MB   299 kB/s
+     ping_time...............: avg=5.07s   min=0s          med=2.9s   max=2m6s  p(90)=10s     p(95)=12.2s  
+     request_response_time...: avg=3.02s   min=2ms         med=864ms  max=2m16s p(90)=7.54s   p(95)=12.62s
+     vus.....................: 4099    min=16        max=4099
+     vus_max.................: 5000    min=5000      max=5000
+     ws_connecting...........: avg=15.93ms min=1.83ms      med=6.03ms max=2.62s p(90)=21.36ms p(95)=31.91ms
+     ws_msgs_received........: 1922707 7814.320581/s
+     ws_msgs_sent............: 1004104 4080.908091/s
+     ws_sessions.............: 4099    16.659273/s
+```
+
 ## 2021-08-24 docker compose gunicorn on single CPX51
+
+### Run 1
 
 - joining clients: 33.3/s
 - mean time to chat message: 500ms
@@ -54,7 +80,7 @@ Changes:
      ws_sessions.............: 2734    33.300828/s
 ```
 
-Run 2:
+### Run 2
 - joining clients: 33.3/s
 - mean time to chat message: 15s
 
