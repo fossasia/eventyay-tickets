@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` Plugin selection is now available for all organisers, not just administrators.
 - :bug:`-` Session detail pages didn't use the full width of the page.
 - :feature:`-` There is a new plugin hook that allows you to perform actions when a new schedule is released.
 - :release:`2.2.0 <2021-08-15>`

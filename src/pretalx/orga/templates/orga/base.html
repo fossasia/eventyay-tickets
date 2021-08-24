@@ -208,11 +208,9 @@
                                     <a href="{{ request.event.orga_urls.widget_settings }}" class="nav-link nav-link-second-level{% if "settings.widget" in url_name %} active{% endif %}">
                                         <span>{% translate "Widget" %}</span>
                                     </a>
-                                    {% if request.user.is_administrator %}
-                                        <a href="{{ request.event.orga_urls.plugins }}" class="nav-link nav-link-second-level{% if "settings.plugins.select" in url_name %} active{% endif %}">
-                                            <span>{% translate "Select Plugins" %}</span>
-                                        </a>
-                                    {% endif %}
+                                    <a href="{{ request.event.orga_urls.plugins }}" class="nav-link nav-link-second-level{% if "settings.plugins.select" in url_name %} active{% endif %}">
+                                        <span>{% translate "Plugins" %}</span>
+                                    </a>
                                     {% for plugin_setting in nav_settings %}
                                         <a href="{{ plugin_setting.url }}" class="nav-link nav-link-second-level{% if plugin_setting.active %} active{% endif %}">
                                             <span>{{ plugin_setting.label }}</span>
