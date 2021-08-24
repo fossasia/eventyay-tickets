@@ -6,8 +6,10 @@ displayed on the public talk pages of a talk.
 
 In this document, we will walk through the creation of a plugin for a new
 recording provider step by step. If you'd like to look at a completed working
-recording provider, take a look at our `plugin for media.ccc.de
-<https://github.com/pretalx/pretalx-media-ccc-de>`_.
+recording provider, take a look at our `plugin for Vimeo
+<https://github.com/pretalx/pretalx-vimeo>`_ (manual embedding) or our `plugin
+for media.ccc.de <https://github.com/pretalx/pretalx-media-ccc-de>`_ (using an
+API).
 
 Please read :ref:`Creating a plugin <pluginsetup>` first, if you haven't
 already.
@@ -25,7 +27,7 @@ subclass of ``pretalx.agenda.recording.BaseRecordingProvider``::
 
 
    @receiver(register_recording_provider)
-   def media_ccc_de_provider(sender, **kwargs):
+   def vimeo_provider(sender, **kwargs):
       from .recording import VimeoProvider
        return VimeoProvider(sender)
 
@@ -59,3 +61,7 @@ and in the week afterwards should be sufficient.
 
 If you're able to gather recording URLs automatically, your users will still
 want an interface to see and potentially edit said recording URLs.
+
+If you wrap your ``iframe`` in a ``<div class="embed-responsive
+embed-responsive-16by9">``, it should look good on the session page. Remember
+to set ``allowfullscreen`` on the iframe!
