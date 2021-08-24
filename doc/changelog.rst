@@ -3,6 +3,8 @@
 Release Notes
 =============
 
+- :bug:`-` Session detail pages didn't use the full width of the page.
+- :feature:`-` There is a new plugin hook that allows you to perform actions when a new schedule is released.
 - :release:`2.2.0 <2021-08-15>`
 - :feature:`-` To improve performance, the NoJS schedule is now located on a separate page.
 - :feature:`1143` On self-hosted pretalx instances, you can now configure pretalx to include additional CSP headers, especially of interest for plugin developers.
