@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-08-11 20:38+0000\n"
-"PO-Revision-Date: 2021-08-15 00:53+0000\n"
-"Last-Translator: Tobias Kunze <r@rixx.de>\n"
+"PO-Revision-Date: 2021-08-17 18:36+0000\n"
+"Last-Translator: David Mehren <git@herrmehren.de>\n"
 "Language-Team: \n"
 "Language: de_DE\n"
 "MIME-Version: 1.0\n"
@@ -5287,7 +5287,7 @@ msgstr ""
 
 #: pretalx/orga/templates/orga/settings/mail.html:31
 msgid "Save and test custom SMTP connection"
-msgstr "Speichern und SMTP-Einstellung testen"
+msgstr "Speichern und eigene SMTP-Einstellung testen"
 
 #: pretalx/orga/templates/orga/settings/review.html:21
 msgid "Review settings"
