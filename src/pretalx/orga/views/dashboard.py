@@ -126,7 +126,9 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
 
     @context
     def history(self):
-        return ActivityLog.objects.filter(event=self.request.event)[:20]
+        return ActivityLog.objects.filter(event=self.request.event).select_related(
+            "person", "event"
+        )[:20]
 
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)
