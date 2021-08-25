@@ -1,10 +1,11 @@
+from django.db.models import Count
 from django.template.defaultfilters import timeuntil
+from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import ngettext_lazy
 from django.views.generic import TemplateView
 from django_context_decorator import context
-from django_scopes import scope
 
 from pretalx.common.mixins.views import EventPermissionRequired, PermissionRequired
 from pretalx.common.models.log import ActivityLog
@@ -17,12 +18,6 @@ from pretalx.submission.models.submission import SubmissionStates
 class DashboardEventListView(TemplateView):
     template_name = "orga/event_list.html"
 
-    def event_info(self, event):
-        with scope(event=event):
-            event.is_open = event.cfp.is_open
-            event.submission_count = event.submissions.count()
-        return event
-
     def filter_event(self, event):
         query = self.request.GET.get("q")
         if not query:
@@ -32,19 +27,23 @@ class DashboardEventListView(TemplateView):
         name = {"en": name} if isinstance(name, str) else name
         return query in event.slug or any(query in value for value in name.values())
 
+    @cached_property
+    def queryset(self):
+        return self.request.orga_events.annotate(submission_count=Count("submissions"))
+
     @context
     def current_orga_events(self):
         return [
-            self.event_info(e)
-            for e in self.request.orga_events
+            e
+            for e in self.queryset
             if e.date_to >= now().date() and self.filter_event(e)
         ]
 
     @context
     def past_orga_events(self):
         return [
-            self.event_info(e)
-            for e in self.request.orga_events
+            e
+            for e in self.queryset
             if e.date_to < now().date() and self.filter_event(e)
         ]
 
