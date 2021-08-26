@@ -35,6 +35,7 @@
 				bunt-input(v-model="config.conftool_password", label="Conftool REST API Password", name="conftool_password")
 			h2 Tracking and statistics
 			bunt-checkbox(v-model="config.track_room_views", label="Track room views", name="track_room_views")
+			bunt-checkbox(v-model="config.track_world_views", label="Track world views", name="track_world_views")
 			bunt-checkbox(v-model="config.track_exhibitor_views", label="Track exhibitor views", name="track_exhibitor_views")
 			h2 Settings for newly-created BBB rooms
 			bunt-checkbox(v-model="config.bbb_defaults.record", label="Allow recording", name="record")
@@ -145,6 +146,7 @@ export default {
 				bbb_defaults: this.config.bbb_defaults,
 				track_exhibitor_views: this.config.track_exhibitor_views,
 				track_room_views: this.config.track_room_views,
+				track_world_views: this.config.track_world_views,
 				pretalx: this.config.pretalx,
 			}
 			if (this.$features.enabled('conftool')) {
