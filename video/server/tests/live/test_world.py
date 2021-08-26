@@ -134,7 +134,7 @@ async def test_config_get(world):
             "theme": {},
             "track_exhibitor_views": True,
             "track_room_views": True,
-            "track_world_views": True,
+            "track_world_views": False,
             "trait_grants": {
                 "admin": ["admin"],
                 "viewer": ["global-viewer"],
