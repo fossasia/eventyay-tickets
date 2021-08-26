@@ -293,6 +293,7 @@ class World(VersionedModel):
         ExhibitorView.objects.filter(exhibitor__world=self).delete()
         Reaction.objects.filter(room__world=self).delete()
         RoomView.objects.filter(room__world=self).delete()
+        WorldView.objects.filter(world=self).delete()
         Question.objects.filter(room__world=self).delete()
         Poll.objects.filter(room__world=self).delete()
         Feedback.objects.filter(world=self).delete()
@@ -433,3 +434,23 @@ class PlannedUsage(models.Model):
         event["description"] = self.notes
         event["url"] = self.world.domain
         return event
+
+
+class WorldView(models.Model):
+    world = models.ForeignKey(
+        to="World", related_name="views", on_delete=models.CASCADE
+    )
+    start = models.DateTimeField(
+        auto_now_add=True,
+    )
+    end = models.DateTimeField(
+        null=True, db_index=True
+    )  # index required for control/ dashboard
+    user = models.ForeignKey(
+        to="user", related_name="world_views", on_delete=models.CASCADE
+    )
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["start"]),
+        ]

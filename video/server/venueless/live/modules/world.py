@@ -80,6 +80,7 @@ class WorldModule(BaseModule):
                 "videoPlayer",
                 "profile_fields",
                 "track_room_views",
+                "track_world_views",
                 "track_exhibitor_views",
                 "conftool_url",
                 "conftool_password",

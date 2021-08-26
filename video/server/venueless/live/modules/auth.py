@@ -15,6 +15,7 @@ from venueless.core.services.connections import (
 )
 from venueless.core.services.user import (
     block_user,
+    end_view,
     get_blocked_users,
     get_public_user,
     get_public_users,
@@ -39,6 +40,10 @@ logger = logging.getLogger(__name__)
 
 class AuthModule(BaseModule):
     prefix = "user"
+
+    def __init__(self, consumer):
+        super().__init__(consumer)
+        self._current_view = None
 
     async def login(self, body):
         kwargs = {
@@ -75,6 +80,7 @@ class AuthModule(BaseModule):
             return
 
         self.consumer.user = login_result.user
+        self._current_view = login_result.view
         if settings.SENTRY_DSN:
             with configure_scope() as scope:
                 scope.user = {"id": str(self.consumer.user.id)}
@@ -284,6 +290,11 @@ class AuthModule(BaseModule):
             )
             await unregister_user_connection(
                 self.consumer.user.id, self.consumer.channel_name
+            )
+        if self._current_view and self.consumer.world:
+            await database_sync_to_async(end_view)(
+                self._current_view,
+                delete=not self.consumer.world.config.get("track_world_views", False),
             )
 
     @command("list")

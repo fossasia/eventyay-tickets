@@ -13,6 +13,7 @@ from django.utils.timezone import now
 from ...live.channels import GROUP_USER
 from ..models import AuditLog
 from ..models.auth import User
+from ..models.world import WorldView
 from ..permissions import Permission
 
 
@@ -208,8 +209,41 @@ def update_user(world_id, id, *, traits=None, public_data=None, serialize=True):
     )
 
 
+def start_view(user: User, delete=False):
+    # The majority of WorldView that go "abandoned" (i.e. ``end`` is never set) are likely caused by server
+    # crashes or restarts, in which case ``end`` can't be set. However, after a server crash, the client
+    # either reconnects automatically or the user will attempt a reconnect themselves through a page reload,
+    # so the most likely end of the previous session is "just before this", and the best assumption is to set
+    # the end to "now".
+    #
+    # Obviously, this is wrong whenever a user has multiple sessions open, e.g. if the same user has the room
+    # open in browser A and then opens the same room in browser B, this will set the ``end`` for the session
+    # in browser A, even though it's already running. It doesn't matter, though! First, for all our statistics
+    # we only count unique users and the result "this user was present at the time" is still correct. Second,
+    # the way ``end_view`` is implemented, the session from browser A will still be corrected with the accurate
+    # time as soon as browser A leaves.
+    previous = WorldView.objects.filter(
+        user=user, world_id=user.world_id, end__isnull=True
+    )
+    if delete:
+        previous.delete()
+    else:
+        previous.update(end=now())
+    r = WorldView.objects.create(world_id=user.world_id, user=user)
+    return r
+
+
+def end_view(view: WorldView, delete=False):
+    if delete:
+        if view.pk:
+            view.delete()
+    else:
+        view.end = now()
+        view.save()
+
+
 LoginResult = namedtuple(
-    "LoginResult", "user world_config chat_channels exhibition_data"
+    "LoginResult", "user world_config chat_channels exhibition_data view"
 )
 
 
@@ -235,6 +269,11 @@ def login(
     user.last_login = now()
     user.save(update_fields=["last_login"])
 
+    if world.config.get("track_world_views", False):
+        view = start_view(user)
+    else:
+        view = None
+
     return LoginResult(
         user=user,
         world_config=get_world_config_for_user(world, user),
@@ -242,6 +281,7 @@ def login(
             user.pk, is_volatile=False
         ),
         exhibition_data=ExhibitionService(world).get_exhibition_data_for_user(user.pk),
+        view=view,
     )
 
 

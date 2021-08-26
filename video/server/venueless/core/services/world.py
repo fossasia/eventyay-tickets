@@ -38,6 +38,7 @@ class WorldConfigSerializer(serializers.Serializer):
     profile_fields = serializers.JSONField()
     track_exhibitor_views = serializers.BooleanField()
     track_room_views = serializers.BooleanField()
+    track_world_views = serializers.BooleanField()
     conftool_url = serializers.URLField(
         required=False, allow_null=True, allow_blank=True
     )
@@ -336,6 +337,7 @@ def _config_serializer(world, *args, **kwargs):
             "bbb_defaults": bbb_defaults,
             "track_exhibitor_views": world.config.get("track_exhibitor_views", True),
             "track_room_views": world.config.get("track_room_views", True),
+            "track_world_views": world.config.get("track_world_views", False),
             "pretalx": world.config.get("pretalx", {}),
             "videoPlayer": world.config.get("videoPlayer"),
             "timezone": world.timezone,

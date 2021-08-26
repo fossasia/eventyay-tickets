@@ -7,6 +7,7 @@ from django.utils.timezone import now
 
 from venueless.core.models import RouletteRequest
 from venueless.core.models.room import RoomView
+from venueless.core.models.world import WorldView
 from venueless.storage.models import StoredFile
 
 logger = logging.getLogger(__name__)
@@ -16,7 +17,7 @@ class Command(BaseCommand):
     help = "Perform cleanup tasks"
 
     def handle(self, *args, **options):
-        self._cleanup_roomviews()
+        self._cleanup_views()
         self._cleanup_files()
 
     def _cleanup_files(self):
@@ -25,7 +26,7 @@ class Command(BaseCommand):
                 f.file.delete(False)
             f.delete()
 
-    def _cleanup_roomviews(self):
+    def _cleanup_views(self):
         # Reset RoomView objects that never "ended". In the unlikely event the session *is* still open, this will
         # *temporarily* break the statistics, but it will be auto-corrected as soon as ``end_view`` is properly
         # called.
@@ -35,4 +36,12 @@ class Command(BaseCommand):
         RoomView.objects.filter(
             end__isnull=False, room__world__config__track_room_views=False
         ).delete()
+
+        WorldView.objects.filter(
+            end__isnull=True, start__lt=now() - timedelta(hours=24)
+        ).update(end=F("start") + timedelta(hours=4))
+        WorldView.objects.filter(
+            end__isnull=False, room__world__config__track_world_views=False
+        ).delete()
+
         RouletteRequest.objects.filter(expiry__lte=now() - timedelta(hours=1)).delete()
