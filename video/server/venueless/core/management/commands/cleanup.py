@@ -41,7 +41,7 @@ class Command(BaseCommand):
             end__isnull=True, start__lt=now() - timedelta(hours=24)
         ).update(end=F("start") + timedelta(hours=4))
         WorldView.objects.filter(
-            end__isnull=False, room__world__config__track_world_views=False
+            end__isnull=False, world__config__track_world_views=False
         ).delete()
 
         RouletteRequest.objects.filter(expiry__lte=now() - timedelta(hours=1)).delete()
