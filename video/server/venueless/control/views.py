@@ -40,7 +40,7 @@ from venueless.core.models import (
     World,
 )
 
-from ..core.models.world import PlannedUsage, WorldView
+from ..core.models.world import PlannedUsage
 from ..core.services.bbb import get_url
 from .forms import (
     BBBMoveRoomForm,
@@ -151,13 +151,13 @@ class WorldList(AdminBase, ListView):
         World.objects.annotate(
             user_count=Count("user"),
             current_view_count=Subquery(
-                WorldView.objects.filter(
-                    world=OuterRef("pk"),
+                RoomView.objects.filter(
+                    room__world=OuterRef("pk"),
                     start__gt=now() - datetime.timedelta(hours=24),
                     end__isnull=True,
                 )
                 .order_by()
-                .values("world")
+                .values("room__world")
                 .annotate(c=Count("*"))
                 .values("c")
             ),
