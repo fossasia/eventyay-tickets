@@ -66,6 +66,8 @@ export default class VenueLessClient extends EventEmitter {
 					} else {
 						this._fetchUsersFromMessages([payload[1]])
 					}
+				} else if (payload[0] === 'error') {
+					console.log(data)
 				}
 			})
 			socket.on('close', () => console.log('disconnected'))
