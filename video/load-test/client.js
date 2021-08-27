@@ -16,6 +16,7 @@ const chatTrend = new Trend('chat_message_time', true)
 const responseTrend = new Trend('request_response_time', true)
 const concurrentClients = new Counter('concurrent_clients')
 const connectionErrors = new Counter('connection_errors')
+const messageErrors = new Counter('message_errors')
 
 export default class VenueLessClient extends EventEmitter {
 
@@ -36,7 +37,6 @@ export default class VenueLessClient extends EventEmitter {
 				this.send(['authenticate', {client_id: this.clientId}])
 			})
 			socket.on('message', (data) => {
-				// TODO handle errors
 				const payload = JSON.parse(data)
 				if (payload[0] === 'authenticated') {
 					this._ping()
@@ -68,6 +68,7 @@ export default class VenueLessClient extends EventEmitter {
 					}
 				} else if (payload[0] === 'error') {
 					console.log(data)
+					messageErrors.add(1)
 				}
 			})
 			socket.on('close', () => console.log('disconnected'))
