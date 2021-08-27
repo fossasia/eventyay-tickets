@@ -140,7 +140,7 @@ export default class VenueLessClient extends EventEmitter {
 		this.send('chat.send', {
 			channel: this.chatChannel,
 			event_type: 'channel.message',
-			content: {type: 'text', timestamp: Date.now()}
+			content: {type: 'text', timestamp: Date.now(), 'body': Date.now().toString()}
 		})
 	}
 
