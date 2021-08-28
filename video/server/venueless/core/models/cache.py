@@ -1,4 +1,5 @@
 import logging
+import os
 import random
 import time
 
@@ -57,10 +58,17 @@ class VersionedModel(models.Model):
 
     async def refresh_from_db_if_outdated(self, allowed_age=0):
         if allowed_age:
-            if time.time() - self.__refresh_time < allowed_age * random.uniform(
-                0.8, 1.2
+            # In some places, we allow the cache to be a little outdated to avoid thousands
+            # of GET calls to redis. We add some random variance to the duration to soften
+            # load spikes if all threads force-refreshed at the same time. We also do not do
+            # this during unit testing, which is bad (since it means tests are different from
+            # the real world) but also necessary if we don't want to have long sleep() calls
+            # in our tests.
+            if (
+                time.time() - self.__refresh_time
+                < allowed_age * random.uniform(0.8, 1.2)
+                and "PYTEST_CURRENT_TEST" not in os.environ
             ):
-                # Add some random variance to soften load spikes on the cache
                 return
 
         async with aioredis() as redis:
