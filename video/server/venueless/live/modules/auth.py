@@ -229,7 +229,7 @@ class AuthModule(BaseModule):
             user.pk,
             self.consumer.socket_id,
         )
-        await self.consumer.user.refresh_from_db_if_outdated()
+        await self.consumer.user.refresh_from_db_if_outdated(allowed_age=0)
         await ChatService(self.consumer.world).enforce_forced_joins(self.consumer.user)
 
     @command("admin.update")

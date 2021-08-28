@@ -47,7 +47,7 @@ def channel_action(
                     )
                     self.consumer.channel_cache[body["channel"]] = self.channel
                 elif self.channel.room:
-                    await self.channel.room.refresh_from_db_if_outdated()
+                    await self.channel.room.refresh_from_db_if_outdated(allowed_age=30)
             else:
                 raise ConsumerException("chat.unknown", "Unknown channel ID")
             if not self.channel:
@@ -472,12 +472,12 @@ class ChatModule(BaseModule):
             GROUP_CHAT.format(channel=self.channel_id), event
         )
 
-    @event("event", refresh_world=True, refresh_user=True)
+    @event("event", refresh_world=30, refresh_user=30)
     async def publish_event(self, body):
         channel = self.consumer.channel_cache.get(body["channel"])
         if channel:
             if channel.room:
-                await channel.room.refresh_from_db_if_outdated()
+                await channel.room.refresh_from_db_if_outdated(allowed_age=30)
         else:
             channel = await get_channel(world=self.consumer.world, id=body["channel"])
             self.consumer.channel_cache[body["channel"]] = channel

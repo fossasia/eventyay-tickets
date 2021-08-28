@@ -1,4 +1,6 @@
 import logging
+import random
+import time
 
 from asgiref.sync import async_to_sync
 from channels.db import database_sync_to_async
@@ -31,6 +33,11 @@ class VersionedModel(models.Model):
     class Meta:
         abstract = True
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.__refresh_time = time.time()
+        self.clear_caches()
+
     def save(self, *args, **kwargs):
         if "update_fields" in kwargs and "version" not in kwargs.get("update_fields"):
             kwargs["update_fields"].append("version")
@@ -48,7 +55,14 @@ class VersionedModel(models.Model):
         self.save(update_fields=["version"])
         self.clear_caches()
 
-    async def refresh_from_db_if_outdated(self):
+    async def refresh_from_db_if_outdated(self, allowed_age=0):
+        if allowed_age:
+            if time.time() - self.__refresh_time < allowed_age * random.uniform(
+                0.8, 1.2
+            ):
+                # Add some random variance to soften load spikes on the cache
+                return
+
         async with aioredis() as redis:
             latest_version = await redis.get(f"{self._cachekey}:version")
         if latest_version:
@@ -71,10 +85,6 @@ class VersionedModel(models.Model):
         cache.set(self._cachekey, self, timeout=600)
         if latest_version < self.version:
             await self._set_cache_version()
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.clear_caches()
 
     def clear_caches(self):
         pass
@@ -100,10 +110,12 @@ class VersionedModel(models.Model):
             if field.is_cached(self):
                 field.delete_cached_value(self)
         self.clear_caches()
+        self.__refresh_time = time.time()
 
     def refresh_from_db(self, *args, **kwargs):
         super().refresh_from_db(*args, **kwargs)
         self.clear_caches()
+        self.__refresh_time = time.time()
 
     async def _set_cache_version(self):
         async with aioredis() as redis:
@@ -115,6 +127,7 @@ class VersionedModel(models.Model):
 
         cache = caches["process"]
         cache.set(self._cachekey, self, timeout=600)
+        self.__refresh_time = time.time()
 
     async def _set_cache_deleted(self):
         async with aioredis() as redis:

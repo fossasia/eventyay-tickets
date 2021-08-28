@@ -393,7 +393,7 @@ class ChatService:
         )
 
     async def broadcast_channel_list(self, user, socket_id):
-        await user.refresh_from_db_if_outdated()
+        await user.refresh_from_db_if_outdated(allowed_age=60)
         await user_broadcast(
             "chat.channels",
             {

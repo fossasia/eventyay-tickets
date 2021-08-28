@@ -149,7 +149,7 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
 
         if not self.user:
             if content[0] == "authenticate":
-                await self.world.refresh_from_db_if_outdated()
+                await self.world.refresh_from_db_if_outdated(allowed_age=0)
                 await self.components["user"].login(content[-1])
             else:
                 await self.send_error("protocol.unauthenticated")
@@ -162,8 +162,8 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
         component = self.components.get(namespace)
         if component:
             try:
-                await self.world.refresh_from_db_if_outdated()
-                await self.user.refresh_from_db_if_outdated()
+                await self.world.refresh_from_db_if_outdated(allowed_age=30)
+                await self.user.refresh_from_db_if_outdated(allowed_age=30)
                 await component.dispatch_command(content)
             except ConsumerException as e:
                 await self.send_error(e.code, e.message)
@@ -201,7 +201,7 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
                 return
             elif message["type"] == "user.broadcast":
                 if self.socket_id != message["socket"]:
-                    await self.user.refresh_from_db_if_outdated()
+                    await self.user.refresh_from_db_if_outdated(allowed_age=0)
                     await self.send_json([message["event_type"], message["data"]])
                 return
 

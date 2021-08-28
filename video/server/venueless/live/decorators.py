@@ -30,10 +30,14 @@ def event(event_name, refresh_world=False, refresh_user=False):
     def wrapper(func):
         @functools.wraps(func)
         async def wrapped(self, *args):
-            if refresh_world:
-                await self.consumer.world.refresh_from_db_if_outdated()
-            if refresh_user:
-                await self.consumer.user.refresh_from_db_if_outdated()
+            if refresh_world is not False:
+                await self.consumer.world.refresh_from_db_if_outdated(
+                    allowed_age=0 if refresh_world is True else refresh_world
+                )
+            if refresh_user is not False:
+                await self.consumer.user.refresh_from_db_if_outdated(
+                    allowed_age=0 if refresh_user is True else refresh_user
+                )
             return await func(self, *args)
 
         wrapped._event = event_name
@@ -59,7 +63,7 @@ def room_action(permission_required: Permission = None, module_required=None):
             if "room" in body:
                 self.room = self.consumer.room_cache.get(body["room"])
                 if self.room:
-                    await self.room.refresh_from_db_if_outdated()
+                    await self.room.refresh_from_db_if_outdated(allowed_age=30)
                 else:
                     self.room = await get_room(
                         world=self.consumer.world, id=body["room"]
@@ -73,7 +77,7 @@ def room_action(permission_required: Permission = None, module_required=None):
                     )
                     self.consumer.channel_cache[body["channel"]] = channel
                 elif channel.room:
-                    await channel.room.refresh_from_db_if_outdated()
+                    await channel.room.refresh_from_db_if_outdated(allowed_age=30)
 
                 if channel and channel.room:
                     self.room = channel.room
