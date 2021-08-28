@@ -32,7 +32,7 @@ class WorldModule(BaseModule):
 
     @event("update", refresh_user=True)
     async def push_world_update(self, body):
-        self.consumer.world.refresh_from_db_if_outdated(allowed_age=0)
+        await self.consumer.world.refresh_from_db_if_outdated(allowed_age=0)
         world_config = await database_sync_to_async(get_world_config_for_user)(
             self.consumer.world,
             self.consumer.user,
@@ -42,7 +42,7 @@ class WorldModule(BaseModule):
 
     @event("schedule.update", refresh_user=True)
     async def push_schedule_update(self, body):
-        self.consumer.world.refresh_from_db_if_outdated(allowed_age=0)
+        await self.consumer.world.refresh_from_db_if_outdated(allowed_age=0)
         await self.consumer.send_json(
             ["world.schedule.updated", self.consumer.world.config.get("pretalx", {})]
         )
