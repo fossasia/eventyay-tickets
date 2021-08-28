@@ -66,7 +66,7 @@ class VersionedModel(models.Model):
             # in our tests.
             if (
                 time.time() - self.__refresh_time
-                < allowed_age * random.uniform(0.8, 1.2)
+                < allowed_age * random.uniform(0.7, 1.3)
                 and "PYTEST_CURRENT_TEST" not in os.environ
             ):
                 return

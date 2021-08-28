@@ -256,8 +256,9 @@ class RoomModule(BaseModule):
             ]
         )
 
-    @event("create", refresh_user=True, refresh_world=True)
+    @event("create", refresh_user=True)
     async def push_room_info(self, body):
+        self.consumer.world.refresh_from_db_if_outdated(allowed_age=0)
         conf = await get_room_config_for_user(
             body["room"], self.consumer.world.id, self.consumer.user
         )
@@ -354,8 +355,9 @@ class RoomModule(BaseModule):
             {"type": "room.schedule", "schedule_data": data, "room": str(self.room.pk)},
         )
 
-    @event("schedule", refresh_world=True)
+    @event("schedule")
     async def push_schedule_data(self, body):
+        self.consumer.world.refresh_from_db_if_outdated(allowed_age=0)
         config = await get_room_config_for_user(
             body["room"], self.consumer.world.id, self.consumer.user
         )

@@ -22,7 +22,7 @@ def command(event_name):
     return wrapper
 
 
-def event(event_name, refresh_world=False, refresh_user=False):
+def event(event_name, refresh_user=False):
     """
     Registers a function to be the handler of a specific event within a module.
     """
@@ -30,10 +30,6 @@ def event(event_name, refresh_world=False, refresh_user=False):
     def wrapper(func):
         @functools.wraps(func)
         async def wrapped(self, *args):
-            if refresh_world is not False:
-                await self.consumer.world.refresh_from_db_if_outdated(
-                    allowed_age=0 if refresh_world is True else refresh_world
-                )
             if refresh_user is not False:
                 await self.consumer.user.refresh_from_db_if_outdated(
                     allowed_age=0 if refresh_user is True else refresh_user

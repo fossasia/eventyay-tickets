@@ -472,7 +472,7 @@ class ChatModule(BaseModule):
             GROUP_CHAT.format(channel=self.channel_id), event
         )
 
-    @event("event", refresh_world=30, refresh_user=30)
+    @event("event", refresh_user=30)
     async def publish_event(self, body):
         channel = self.consumer.channel_cache.get(body["channel"])
         if channel:
