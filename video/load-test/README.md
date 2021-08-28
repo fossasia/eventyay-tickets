@@ -6,7 +6,8 @@ Download and install k6
 ## Setup Server
 
 ```sh
-ulimit -n 30000 # bump socket limit
+load-test/limits.sh # bump socket limit
+ulimit -n 4000000
 docker-compose up --build server redis db celery
 docker-compose exec server python manage.py import_config sample/worlds/load-test.json
 ```
@@ -15,7 +16,8 @@ docker-compose exec server python manage.py import_config sample/worlds/load-tes
 ## Setup Client
 
 ```sh
-ulimit -n 30000 # bump socket limit
+load-test/limits.sh # bump socket limit
+ulimit -n 4000000
 ```
 
 ## Run
