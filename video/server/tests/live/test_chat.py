@@ -123,8 +123,6 @@ async def test_join_volatile_based_on_room_config(volatile_chat_room, chat_room,
         )
         response = await c.receive_json_from()
         assert response[0] == "success"
-        response = await c.receive_json_from()
-        assert response[0] == "chat.event"
 
         assert await ChatService(world).membership_is_volatile(
             str(volatile_chat_room.channel.id), c.context["user.config"]["id"]
@@ -136,8 +134,6 @@ async def test_join_volatile_based_on_room_config(volatile_chat_room, chat_room,
         await c.send_json_to(["chat.join", 123, {"channel": str(chat_room.channel.id)}])
         response = await c.receive_json_from()
         assert response[0] == "success"
-        response = await c.receive_json_from()
-        assert response[0] == "chat.event"
 
         assert not await ChatService(world).membership_is_volatile(
             str(chat_room.channel.id), c.context["user.config"]["id"]
@@ -165,8 +161,6 @@ async def test_join_convert_volatile_to_persistent(volatile_chat_room, world):
         )
         response = await c.receive_json_from()
         assert response[0] == "success"
-        response = await c.receive_json_from()
-        assert response[0] == "chat.event"
 
         assert await ChatService(world).membership_is_volatile(
             str(volatile_chat_room.channel.id), c.context["user.config"]["id"]
@@ -199,8 +193,6 @@ async def test_join_convert_volatile_to_persistent_require_moderator(
         )
         response = await c.receive_json_from()
         assert response[0] == "success"
-        response = await c.receive_json_from()
-        assert response[0] == "chat.event"
 
         assert await ChatService(world).membership_is_volatile(
             str(volatile_chat_room.channel.id), c.context["user.config"]["id"]
@@ -951,7 +943,6 @@ async def test_last_disconnect_is_leave_in_volatile_channel(world, volatile_chat
                     ["chat.join", 123, {"channel": str(volatile_chat_room.channel.id)}]
                 )
                 response = await c1.receive_json_from()
-                await c1.receive_json_from()  # join notification c1
                 assert response == [
                     "success",
                     123,
@@ -976,8 +967,6 @@ async def test_last_disconnect_is_leave_in_volatile_channel(world, volatile_chat
                     "badges",
                     "inactive",
                 }
-                await c1.receive_json_from()  # join notification c2
-                await c2.receive_json_from()  # join notification c2
 
                 response = await c3.receive_json_from()
                 assert response == ["chat.channels", {"channels": []}]
@@ -1009,10 +998,6 @@ async def test_last_disconnect_is_leave_in_volatile_channel(world, volatile_chat
             len(await ChatService(world).get_channel_users(volatile_chat_room.channel))
             == 1
         )
-
-        response = await c1.receive_json_from()
-        assert response[0] == "chat.event"
-        assert response[1]["content"]["membership"] == "leave"
 
     assert (
         len(await ChatService(world).get_channel_users(volatile_chat_room.channel)) == 0

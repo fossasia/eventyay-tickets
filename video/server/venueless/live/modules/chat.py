@@ -183,23 +183,24 @@ class ChatModule(BaseModule):
             self.channel_id, self.consumer.user, volatile=volatile_config
         )
         if joined:
-            event = await self.service.create_event(
-                channel=self.channel,
-                event_type="channel.member",
-                content={
-                    "membership": "join",
-                    "user": self.consumer.user.serialize_public(
-                        trait_badges_map=self.consumer.world.config.get(
-                            "trait_badges_map"
-                        )
-                    ),
-                },
-                sender=self.consumer.user,
-            )
-            await self.consumer.channel_layer.group_send(
-                GROUP_CHAT.format(channel=self.channel_id),
-                event,
-            )
+            if not volatile_config:
+                event = await self.service.create_event(
+                    channel=self.channel,
+                    event_type="channel.member",
+                    content={
+                        "membership": "join",
+                        "user": self.consumer.user.serialize_public(
+                            trait_badges_map=self.consumer.world.config.get(
+                                "trait_badges_map"
+                            )
+                        ),
+                    },
+                    sender=self.consumer.user,
+                )
+                await self.consumer.channel_layer.group_send(
+                    GROUP_CHAT.format(channel=self.channel_id),
+                    event,
+                )
             await self.service.broadcast_channel_list(
                 self.consumer.user, self.consumer.socket_id
             )
@@ -211,24 +212,25 @@ class ChatModule(BaseModule):
                     )
         await self.consumer.send_success(reply)
 
-    async def _leave(self):
+    async def _leave(self, volatile=False):
         await self.service.remove_channel_user(self.channel_id, self.consumer.user.id)
-        await self.consumer.channel_layer.group_send(
-            GROUP_CHAT.format(channel=self.channel_id),
-            await self.service.create_event(
-                channel=self.channel,
-                event_type="channel.member",
-                content={
-                    "membership": "leave",
-                    "user": self.consumer.user.serialize_public(
-                        trait_badges_map=self.consumer.world.config.get(
-                            "trait_badges_map"
-                        )
-                    ),
-                },
-                sender=self.consumer.user,
-            ),
-        )
+        if not volatile:
+            await self.consumer.channel_layer.group_send(
+                GROUP_CHAT.format(channel=self.channel_id),
+                await self.service.create_event(
+                    channel=self.channel,
+                    event_type="channel.member",
+                    content={
+                        "membership": "leave",
+                        "user": self.consumer.user.serialize_public(
+                            trait_badges_map=self.consumer.world.config.get(
+                                "trait_badges_map"
+                            )
+                        ),
+                    },
+                    sender=self.consumer.user,
+                ),
+            )
         await self.service.broadcast_channel_list(
             self.consumer.user, self.consumer.socket_id
         )
@@ -241,7 +243,7 @@ class ChatModule(BaseModule):
     async def leave(self, body):
         await self._unsubscribe(clean_volatile_membership=False)
         if self.channel.room:
-            await self._leave()
+            await self._leave(self.module_config.get("volatile", False))
             async with aioredis() as redis:
                 await redis.srem(
                     f"chat:unread.notify:{self.channel_id}", str(self.consumer.user.id)
