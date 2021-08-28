@@ -139,7 +139,9 @@ CHANNEL_LAYERS = {
         ),
         "CONFIG": {
             "hosts": [{"address": redis_url}],
-            "prefix": "venueless:asgi:",
+            # If pubsub is used, redis ignores the database parameter, so we prefix instead to differentiate between
+            # staging and production.
+            "prefix": "venueless:{}:asgi:".format(config.get("redis", "db", fallback="0")),
             "capacity": 10000,
         },
     },
