@@ -57,7 +57,6 @@ class VersionedModel(models.Model):
         self.clear_caches()
 
     async def refresh_from_db_if_outdated(self, allowed_age=0):
-        return
         if allowed_age:
             # In some places, we allow the cache to be a little outdated to avoid thousands
             # of GET calls to redis. We add some random variance to the duration to soften
