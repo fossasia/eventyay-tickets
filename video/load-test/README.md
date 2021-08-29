@@ -34,3 +34,7 @@ docker-compose run -p 8375:8375 --entrypoint "gunicorn -k uvicorn.workers.Uvicor
 ```sh
 WS_URL=ws://localhost:8375/ws/world/load-test/ k6 run load-test/flood.js
 ```
+
+### Additional notes
+
+* For production systems with multiple DNS entries, use `--dns ttl=1m,select=roundRobin`
