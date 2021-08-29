@@ -15,7 +15,7 @@ services:
             - VENUELESS_DB_USER=venueless
             - VENUELESS_DB_PASS=venueless
             - VENUELESS_DB_HOST=db
-            - VENUELESS_REDIS_HOST=redis
+            - VENUELESS_REDIS_URLS=redis://redis:6379/0,redis://redis1:6379/0
             - VENUELESS_DATA_DIR=/data
             - VENUELESS_MEDIA_URL=http://localhost:8375/media/
             - VENUELESS_REDIS_USE_PUBSUB=true
@@ -23,6 +23,7 @@ services:
         depends_on:
             - db
             - redis
+            - redis1
     celery:
         build:
             context: ./server
@@ -36,13 +37,14 @@ services:
             - VENUELESS_DB_USER=venueless
             - VENUELESS_DB_PASS=venueless
             - VENUELESS_DB_HOST=db
-            - VENUELESS_REDIS_HOST=redis
+            - VENUELESS_REDIS_URLS=redis://redis:6379/0,redis://redis1:6379/0
             - VENUELESS_DATA_DIR=/data
             - VENUELESS_MEDIA_URL=http://localhost:8375/media/
         entrypoint: ["bash", "/app/docker-dev-entrypoint-celery.sh"]
         depends_on:
             - db
             - redis
+            - redis1
     webapp:
         build:
             context: ./webapp
@@ -53,6 +55,8 @@ services:
             - ./webapp:/app:ro
         command: ["npm", "start", "--", "--host", "0.0.0.0"]
     redis:
+        image: "redis:latest"
+    redis1:
         image: "redis:latest"
     db:
         image: "postgres:11"

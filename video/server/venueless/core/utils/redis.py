@@ -6,15 +6,28 @@ from django.conf import settings
 if settings.REDIS_USE_PUBSUB:
 
     @asynccontextmanager
-    async def aioredis():
-        conn = await get_channel_layer()._shards[0]._get_pub_conn()
+    async def aioredis(shard_key=None):
+        if shard_key:
+            shard_index = abs(hash(shard_key)) % len(settings.REDIS_HOSTS)
+        else:
+            shard_index = 0
+        import logging
+
+        logging.getLogger(__name__).warning(
+            f"shard key {shard_key} {abs(hash(shard_key))} {shard_index}/{len(settings.REDIS_HOSTS)}"
+        )
+        conn = await get_channel_layer()._shards[shard_index]._get_pub_conn()
         yield conn
 
 
 else:
 
-    def aioredis():
-        return get_channel_layer().connection(0)
+    def aioredis(shard_key=None):
+        if shard_key:
+            shard_index = abs(hash(shard_key)) % len(settings.REDIS_HOSTS)
+        else:
+            shard_index = 0
+        return get_channel_layer().connection(shard_index)
 
 
 """

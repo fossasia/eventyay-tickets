@@ -3,6 +3,7 @@ import os
 import sys
 from urllib.parse import urlparse
 
+from django.core.exceptions import ImproperlyConfigured
 from django.utils.crypto import get_random_string
 from kombu import Queue
 
@@ -103,28 +104,38 @@ DATABASES = {
     }
 }
 
-redis_auth = os.getenv(
-    "VENUELESS_REDIS_AUTH",
-    config.get("redis", "auth", fallback=""),
-)
-redis_url = (
-    "redis://"
-    + ((":" + redis_auth + "@") if redis_auth else "")
-    + os.getenv(
-        "VENUELESS_REDIS_HOST",
-        config.get("redis", "host", fallback="127.0.0.1"),
+if os.getenv("VENUELESS_REDIS_URLS", config.get("redis", "urls", fallback="")):
+    REDIS_HOSTS = [
+        {"address": u}
+        for u in os.getenv(
+            "VENUELESS_REDIS_URLS", config.get("redis", "urls", fallback="")
+        ).split(",")
+    ]
+else:
+    redis_auth = os.getenv(
+        "VENUELESS_REDIS_AUTH",
+        config.get("redis", "auth", fallback=""),
     )
-    + ":"
-    + os.getenv(
-        "VENUELESS_REDIS_PORT",
-        config.get("redis", "port", fallback="6379"),
+    redis_url = (
+        "redis://"
+        + ((":" + redis_auth + "@") if redis_auth else "")
+        + os.getenv(
+            "VENUELESS_REDIS_HOST",
+            config.get("redis", "host", fallback="127.0.0.1"),
+        )
+        + ":"
+        + os.getenv(
+            "VENUELESS_REDIS_PORT",
+            config.get("redis", "port", fallback="6379"),
+        )
+        + "/"
+        + os.getenv(
+            "VENUELESS_REDIS_DB",
+            config.get("redis", "db", fallback="0"),
+        )
     )
-    + "/"
-    + os.getenv(
-        "VENUELESS_REDIS_DB",
-        config.get("redis", "db", fallback="0"),
-    )
-)
+    REDIS_HOSTS = [{"address": redis_url}]
+
 
 REDIS_USE_PUBSUB = os.getenv(
     "VENUELESS_REDIS_USE_PUBSUB", config.get("redis", "use_pubsub", fallback="false")
@@ -138,10 +149,12 @@ CHANNEL_LAYERS = {
             else "channels_redis.core.RedisChannelLayer"
         ),
         "CONFIG": {
-            "hosts": [{"address": redis_url}],
+            "hosts": REDIS_HOSTS,
             # If pubsub is used, redis ignores the database parameter, so we prefix instead to differentiate between
             # staging and production.
-            "prefix": "venueless:{}:asgi:".format(config.get("redis", "db", fallback="0")),
+            "prefix": "venueless:{}:asgi:".format(
+                config.get("redis", "db", fallback="0")
+            ),
             "capacity": 10000,
         },
     },
@@ -383,15 +396,14 @@ STATICI18N_ROOT = os.path.join(BASE_DIR, "venueless/static")
 
 STATICFILES_STORAGE = "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"
 
-
 LOGIN_URL = LOGOUT_REDIRECT_URL = "control:login"
 LOGIN_REDIRECT_URL = "/control/"
 
 VENUELESS_COMMIT = os.environ.get("VENUELESS_COMMIT_SHA", "unknown")
 VENUELESS_ENVIRONMENT = os.environ.get("VENUELESS_ENVIRONMENT", "unknown")
 
-CELERY_BROKER_URL = redis_url
-CELERY_RESULT_BACKEND = redis_url
+CELERY_BROKER_URL = REDIS_HOSTS[0]["address"]
+CELERY_RESULT_BACKEND = REDIS_HOSTS[0]["address"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TASK_DEFAULT_QUEUE = "default"

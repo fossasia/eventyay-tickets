@@ -71,7 +71,7 @@ class VersionedModel(models.Model):
             ):
                 return
 
-        async with aioredis() as redis:
+        async with aioredis(self._cachekey) as redis:
             latest_version = await redis.get(f"{self._cachekey}:version")
         if latest_version:
             if latest_version == b"deleted":
@@ -126,7 +126,7 @@ class VersionedModel(models.Model):
         self.__refresh_time = time.time()
 
     async def _set_cache_version(self):
-        async with aioredis() as redis:
+        async with aioredis(self._cachekey) as redis:
             await redis.eval(
                 SETIFHIGHER,
                 [f"{self._cachekey}:version"],
@@ -138,7 +138,7 @@ class VersionedModel(models.Model):
         self.__refresh_time = time.time()
 
     async def _set_cache_deleted(self):
-        async with aioredis() as redis:
+        async with aioredis(self._cachekey) as redis:
             await redis.set(
                 f"{self._cachekey}:version",
                 "deleted",
