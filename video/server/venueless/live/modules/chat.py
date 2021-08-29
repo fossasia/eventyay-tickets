@@ -110,7 +110,7 @@ class ChatModule(BaseModule):
         self.channels_subscribed = set()
         self.service = ChatService(self.consumer.world)
 
-    async def _subscribe(self):
+    async def _subscribe(self, volatile=False):
         self.channels_subscribed.add(self.channel)
         await self.consumer.channel_layer.group_add(
             GROUP_CHAT.format(channel=self.channel_id), self.consumer.channel_name
@@ -130,7 +130,9 @@ class ChatModule(BaseModule):
                 include_admin_info=await self.consumer.world.has_permission_async(
                     user=self.consumer.user, permission=Permission.WORLD_USERS_MANAGE
                 ),
-            ),
+            )
+            if not volatile
+            else [],
         }
 
     async def _unsubscribe(self, clean_volatile_membership=True):
@@ -155,7 +157,7 @@ class ChatModule(BaseModule):
         require_membership=lambda channel: not channel.room,
     )
     async def subscribe(self, body):
-        reply = await self._subscribe()
+        reply = await self._subscribe(self.module_config.get("volatile", False))
         await self.consumer.send_success(reply)
 
     @command("join")
@@ -165,7 +167,6 @@ class ChatModule(BaseModule):
     async def join(self, body):
         if not self.consumer.user.profile.get("display_name"):
             raise ConsumerException("channel.join.missing_profile")
-        reply = await self._subscribe()
 
         volatile_config = self.module_config.get("volatile", False)
         volatile_client = body.get("volatile", volatile_config)
@@ -178,6 +179,8 @@ class ChatModule(BaseModule):
             )
         ):
             volatile_config = volatile_client
+
+        reply = await self._subscribe(volatile_config)
 
         joined = await self.service.add_channel_user(
             self.channel_id, self.consumer.user, volatile=volatile_config
