@@ -72,6 +72,10 @@ class DashboardOrganiserListView(PermissionRequired, TemplateView):
                     can_change_organiser_settings=True
                 )
             )
+        orgs = orgs.annotate(
+            event_count=Count("events", distinct=True),
+            team_count=Count("teams", distinct=True),
+        )
         query = self.request.GET.get("q")
         if not query:
             return orgs

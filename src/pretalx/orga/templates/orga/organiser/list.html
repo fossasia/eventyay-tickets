@@ -24,16 +24,16 @@
                 </div>
                 <div class="stats">
                     <div class="submissions">
-                        {{ organiser.events.count }}
-                        {% blocktranslate trimmed count count=organiser.events.count %}
+                        {{ organiser.event_count }}
+                        {% blocktranslate trimmed count count=organiser.event_count %}
                             event
                         {% plural %}
                             events
                         {% endblocktranslate %}
                     </div>
                     <div class="state inactive">
-                        {{ organiser.teams.count }}
-                        {% blocktranslate trimmed count count=organiser.teams.count %}
+                        {{ organiser.team_count }}
+                        {% blocktranslate trimmed count count=organiser.team_count %}
                             team
                         {% plural %}
                             teams
