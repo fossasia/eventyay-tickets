@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`933` You can now change a session's room and time in the session form, allowing for minute-level accuracy instead of our usual 5-minute intervals.
 - :feature:`-` Plugins can now perform actions on every schedule release (for example, to trigger an update in external consumers to avoid polling).
 - :feature:`-` On session detail pages, the event timezone is now noted next to the time.
 - :feature:`-` As a reminder, the event timezone will be shown at the top of the schedule editor page.

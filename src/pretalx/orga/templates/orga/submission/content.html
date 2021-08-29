@@ -39,7 +39,9 @@
             {% bootstrap_field form.speaker layout='event' %}
             {% bootstrap_field form.speaker_name layout='event' %}
             {% bootstrap_field form.state layout='event' %}
-            <div id="show-if-state" class="d-none">
+        {% endif %}
+        {% if form.room %}
+            <div id="show-if-state" {% if action == "create" %}class="d-none"{% endif %}>
                 {% bootstrap_field form.room layout='event' %}
                 {% bootstrap_field form.start layout='event' %}
                 {% bootstrap_field form.end layout='event' %}
