@@ -157,7 +157,9 @@ class ChatModule(BaseModule):
         require_membership=lambda channel: not channel.room,
     )
     async def subscribe(self, body):
-        reply = await self._subscribe(self.module_config.get("volatile", False))
+        reply = await self._subscribe(
+            self.channel.room_id and self.module_config.get("volatile", False)
+        )
         await self.consumer.send_success(reply)
 
     @command("join")
