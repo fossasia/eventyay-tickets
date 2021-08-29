@@ -42,7 +42,7 @@
             </div>
             <small>
                 {% if talk_slots|length == 1 %}
-                    {{ talk_slots.0.start|date:"Y-m-d" }}, {{ talk_slots.0.start|date:"H:i" }}–{{ talk_slots.0.end|date:"H:i" }}, {{ talk_slots.0.room.name }}
+                    {{ talk_slots.0.start|date:"Y-m-d" }}, {{ talk_slots.0.start|date:"H:i" }}–{{ talk_slots.0.end|date:"H:i" }} ({{ request.event.timezone }}), {{ talk_slots.0.room.name }}
                 {% endif %}
                 {% if request.event.is_multilingual %}
                     <div class="speakers">
@@ -75,6 +75,7 @@
                             </li>
                         {% endfor %}
                     </ul>
+                    <p><i>{% blocktranslate with tz=request.event.timezone %}All times in {{ tz }}{% endblocktranslate %}</i></p>
                 {% endif %}
                 {% if recording_iframe %}
                     {{ recording_iframe|safe }}
