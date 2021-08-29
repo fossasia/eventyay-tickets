@@ -2,6 +2,81 @@
 
 Newest result first.
 
+## 2021-08-28 docker compose gunicorn on single CCX62
+
+### Run 1
+
+- joining clients: 33.3/s
+- mean time to chat message: 15s
+- silent users: 99%
+
+```
+chat_message_time.......: avg=6.57s   min=5ms    med=1.23s  max=1m56s    p(90)=20.26s  p(95)=33.76s
+checks..................: 69.86%  ✓ 32343        ✗ 13951  
+✗ { ping:no-timeout }...: 89.91%  ✓ 22629        ✗ 2538   
+concurrent_clients......: 4733    33.318857/s
+data_received...........: 2.5 GB  18 MB/s
+data_sent...............: 102 MB  721 kB/s
+ping_time...............: avg=3.99s   min=0s     med=1.64s  max=1m6s     p(90)=10s     p(95)=11.51s
+request_response_time...: avg=1.17s   min=1ms    med=346ms  max=1m16s    p(90)=2.29s   p(95)=4.57s  
+vus.....................: 4733    min=33         max=4733
+vus_max.................: 10000   min=10000      max=10000
+ws_connecting...........: avg=16.54ms min=2.13ms med=8.11ms max=463.43ms p(90)=31.72ms p(95)=42.99ms
+ws_msgs_received........: 2699790 19005.687007/s
+ws_msgs_sent............: 1393294 9808.359047/s
+ws_sessions.............: 4733    33.318857/s
+```
+
+### Run 2
+
+- joining clients: 33.3/s
+- mean time to chat message: 15s
+- silent users: 99.9%
+
+
+```
+chat_message_time.......: avg=5.03s   min=11ms   med=1.06s  max=1m44s    p(90)=11.87s  p(95)=26.67s
+checks..................: 69.75%  ✓ 25627        ✗ 11113  
+✗ { ping:no-timeout }...: 89.99%  ✓ 18054        ✗ 2007   
+concurrent_clients......: 4199    33.314503/s
+data_received...........: 2.0 GB  16 MB/s
+data_sent...............: 80 MB   637 kB/s
+ping_time...............: avg=4.11s   min=0s     med=1.6s   max=1m7s     p(90)=10s     p(95)=11.99s
+request_response_time...: avg=1.2s    min=2ms    med=340ms  max=1m17s    p(90)=2.29s   p(95)=4.73s  
+vus.....................: 4199    min=33         max=4199
+vus_max.................: 10000   min=10000      max=10000
+ws_connecting...........: avg=15.93ms min=1.93ms med=7.96ms max=465.71ms p(90)=32.43ms p(95)=43.38ms
+ws_msgs_received........: 2062756 16365.727896/s
+ws_msgs_sent............: 1069701 8486.915319/s
+ws_sessions.............: 4199    33.314503/s
+```
+
+### Run 3
+
+- joining clients: 100/s
+- mean time to chat message: 15s
+- silent users: 99.9%
+
+
+```
+chat_message_time.......: avg=1.8s     min=23ms   med=635ms  max=22.28s  p(90)=5.88s   p(95)=8.22s
+checks..................: 76.42% ✓ 6767         ✗ 2088   
+✗ { ping:no-timeout }...: 89.11% ✓ 4853         ✗ 593    
+concurrent_clients......: 3599   99.731696/s
+data_received...........: 493 MB 14 MB/s
+data_sent...............: 23 MB  638 kB/s
+ping_time...............: avg=3.12s    min=0s     med=1.18s  max=21.79s  p(90)=10s     p(95)=10s   
+request_response_time...: avg=334.41ms min=1ms    med=72ms   max=30.97s  p(90)=545ms   p(95)=1.15s
+vus.....................: 3599   min=99         max=3599
+vus_max.................: 60000  min=60000      max=60000
+ws_connecting...........: avg=10.13ms  min=1.78ms med=6.13ms max=650.5ms p(90)=19.56ms p(95)=25.1ms
+ws_msgs_received........: 569878 15791.858633/s
+ws_msgs_sent............: 302215 8374.663624/s
+ws_sessions.............: 3599   99.731696/s
+
+```
+
+
 ## 2021-08-27 docker compose gunicorn on single CPX51
 
 Changes:

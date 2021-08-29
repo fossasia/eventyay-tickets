@@ -7,7 +7,7 @@ import VenueLessClient from './client.js'
 
 import { getRandomNormalDist } from './utils.js'
 
-const SILENT_USER_PROPABILITY = 0.99
+const SILENT_USER_PROPABILITY = 0.999
 const MEAN_TIME_TO_CHAT_MESSAGE = 15000 // 15s
 
 export const options = {
