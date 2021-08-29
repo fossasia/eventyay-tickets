@@ -14,12 +14,16 @@ def can_change_submissions(user, obj):
     )
 
 
+def get_reviewer_teams(user, event):
+    return event.teams.filter(members__in=[user], is_reviewer=True)
+
+
 @rules.predicate
 def is_reviewer(user, obj):
     event = getattr(obj, "event", None)
     if not user or user.is_anonymous or not obj or not event:
         return False
-    return event.teams.filter(members__in=[user], is_reviewer=True).exists()
+    return get_reviewer_teams(user, event).exists()
 
 
 @rules.predicate
