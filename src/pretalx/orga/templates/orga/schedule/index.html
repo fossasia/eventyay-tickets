@@ -17,6 +17,15 @@
     {% endcompress %}
 {% endblock %}
 
+{% block navbar_right %}
+<li class="nav-item">
+    <a class="nav-link text-danger">
+    <i class="fa fa-clock-o"></i>
+    {% blocktranslate with tz=request.event.timezone %}All times in {{ tz }}{% endblocktranslate %}
+    </a>
+</li>
+{% endblock %}
+
 {% block schedule_content %}
 
     {% if schedule_version %}
