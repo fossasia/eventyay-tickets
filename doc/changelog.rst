@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` Anonymisation for reviewers can now be switched on on a team level, overriding the general event settings.
 - :feature:`-` Plugin selection is now available for all organisers, not just administrators.
 - :bug:`-` Session detail pages didn't use the full width of the page.
 - :feature:`-` There is a new plugin hook that allows you to perform actions when a new schedule is released.

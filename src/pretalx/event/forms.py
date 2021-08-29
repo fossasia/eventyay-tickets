@@ -27,7 +27,7 @@ class TeamForm(ReadOnlyFlag, I18nModelForm):
         if instance and instance.pk:
             self.fields["is_reviewer"].help_text = mark_safe(
                 f' (<a href="{instance.orga_urls.base}tracks">'
-                + str(_("Limit to certain tracks?"))
+                + str(_("Additional review team settings"))
                 + "</a>)"
             )
 
@@ -67,10 +67,11 @@ class TeamTrackForm(I18nModelForm):
 
     class Meta:
         model = Team
-        fields = ["limit_tracks"]
+        fields = ["force_hide_speaker_names", "limit_tracks"]
         field_classes = {
             "limit_tracks": SafeModelMultipleChoiceField,
         }
+        widgets = {"limit_tracks": forms.CheckboxSelectMultiple}
 
 
 class TeamInviteForm(ReadOnlyFlag, forms.ModelForm):

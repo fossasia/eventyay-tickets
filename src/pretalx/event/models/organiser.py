@@ -108,6 +108,14 @@ class Team(LogMixin, models.Model):
         default=False, verbose_name=_("Can work with and change proposals")
     )
     is_reviewer = models.BooleanField(default=False, verbose_name=_("Is a reviewer"))
+    force_hide_speaker_names = models.BooleanField(
+        verbose_name=_("Always hide speaker names"),
+        help_text=_(
+            "Normally, anonymisation is configured in the event review settings. "
+            "This setting will <b>override the event settings</b> and always hide speaker names for this team."
+        ),
+        default=False,
+    )
 
     def __str__(self) -> str:
         """Help with debugging."""

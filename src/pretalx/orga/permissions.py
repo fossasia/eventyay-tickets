@@ -5,6 +5,7 @@ from django.utils.timezone import now
 
 from pretalx.person.permissions import (
     can_change_submissions,
+    get_reviewer_teams,
     is_administrator,
     is_reviewer,
 )
@@ -96,7 +97,13 @@ def is_event_over(user, obj):
 
 @rules.predicate
 def can_view_speaker_names(user, obj):
+    """ONLY in use with users who don't have change permissions."""
     event = obj.event
+    reviewer_teams = get_reviewer_teams(user, event)
+    if reviewer_teams and all(
+        [team.force_hide_speaker_names for team in reviewer_teams]
+    ):
+        return False
     return event.active_review_phase and event.active_review_phase.can_see_speaker_names
 
 

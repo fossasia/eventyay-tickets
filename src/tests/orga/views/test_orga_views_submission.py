@@ -64,6 +64,24 @@ def test_reviewer_cannot_search_submissions_by_speaker_when_anonymised(
 
 
 @pytest.mark.django_db
+def test_reviewer_cannot_search_submissions_by_speaker_when_anonymised_on_team_level(
+    review_client, event, submission, review_user
+):
+    with scope(event=event):
+        team = review_user.teams.all().filter(is_reviewer=True).first()
+        team.force_hide_speaker_names = True
+        team.save()
+        assert submission.event.active_review_phase.can_see_speaker_names
+        assert not review_user.has_perm("orga.view_speakers", event)
+    response = review_client.get(
+        event.orga_urls.submissions + f"?q={submission.speakers.first().name[:5]}",
+        follow=True,
+    )
+    assert response.status_code == 200
+    assert submission.title not in response.content.decode()
+
+
+@pytest.mark.django_db
 def test_orga_can_miss_search_submissions(orga_client, event, submission):
     response = orga_client.get(
         event.orga_urls.submissions + f"?q={submission.title[:5]}xxy", follow=True
