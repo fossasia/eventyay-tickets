@@ -3,7 +3,6 @@ import os
 import sys
 from urllib.parse import urlparse
 
-from django.core.exceptions import ImproperlyConfigured
 from django.utils.crypto import get_random_string
 from kombu import Queue
 

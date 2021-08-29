@@ -1,14 +1,28 @@
+import binascii
 from contextlib import asynccontextmanager
 
 from channels.layers import get_channel_layer
 from django.conf import settings
+
+
+def consistent_hash(value):
+    """
+    Maps the value to a node value between 0 and 4095
+    using CRC, then down to one of the ring nodes.
+    """
+    if isinstance(value, str):
+        value = value.encode("utf8")
+    bigval = binascii.crc32(value) & 0xFFF
+    ring_divisor = 4096 / float(len(settings.REDIS_HOSTS))
+    return int(bigval / ring_divisor)
+
 
 if settings.REDIS_USE_PUBSUB:
 
     @asynccontextmanager
     async def aioredis(shard_key=None):
         if shard_key:
-            shard_index = abs(hash(shard_key)) % len(settings.REDIS_HOSTS)
+            shard_index = consistent_hash(shard_key)
         else:
             shard_index = 0
         import logging
@@ -24,7 +38,7 @@ else:
 
     def aioredis(shard_key=None):
         if shard_key:
-            shard_index = abs(hash(shard_key)) % len(settings.REDIS_HOSTS)
+            shard_index = consistent_hash(shard_key)
         else:
             shard_index = 0
         return get_channel_layer().connection(shard_index)
