@@ -122,14 +122,14 @@ class ChatService:
         return users
 
     async def track_subscription(self, channel, uid, socket_id):
-        async with aioredis() as redis:
+        async with aioredis(f"chat:subscriptions:{uid}:{channel}") as redis:
             tr = redis.multi_exec()
             tr.sadd(f"chat:subscriptions:{uid}:{channel}", socket_id)
             tr.expire(f"chat:subscriptions:{uid}:{channel}", 3600 * 24 * 2)
             await tr.execute()
 
     async def track_unsubscription(self, channel, uid, socket_id):
-        async with aioredis() as redis:
+        async with aioredis(f"chat:subscriptions:{uid}:{channel}") as redis:
             await redis.srem(f"chat:subscriptions:{uid}:{channel}", socket_id)
             return await redis.scard(f"chat:subscriptions:{uid}:{channel}")
 

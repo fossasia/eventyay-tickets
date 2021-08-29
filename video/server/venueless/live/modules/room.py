@@ -133,7 +133,7 @@ class RoomModule(BaseModule):
             await self._update_view_count(room, actual_view_count)
 
     async def _update_view_count(self, room, actual_view_count):
-        async with aioredis() as redis:
+        async with aioredis(f"room:approxcount:known:{room.pk}") as redis:
             next_value = approximate_view_number(actual_view_count)
             prev_value = await redis.getset(
                 f"room:approxcount:known:{room.pk}", next_value
@@ -181,7 +181,7 @@ class RoomModule(BaseModule):
 
         # We want to send reactions out to anyone, but we want to aggregate them over short time frames ("ticks") to
         # make sure we do not send 500 messages if 500 people react in the same second, but just one.
-        async with aioredis() as redis:
+        async with aioredis(redis_debounce_key) as redis:
             debounce = await redis.set(
                 redis_debounce_key, "1", expire=2, exist=redis.SET_IF_NOT_EXIST
             )
@@ -190,6 +190,7 @@ class RoomModule(BaseModule):
                 await self.consumer.send_success({})
                 return
 
+        async with aioredis(redis_key) as redis:
             # First, increase the number of reactions
             tr = redis.multi_exec()
             tr.hsetnx(redis_key, "tick", int(time.time()))
