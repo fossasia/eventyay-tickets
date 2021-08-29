@@ -27,8 +27,12 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
             if slot:
                 initial_slot = {
                     "room": slot.room,
-                    "start": slot.start.astimezone(self.event.tz).isoformat(),
-                    "end": slot.real_end.astimezone(self.event.tz).isoformat(),
+                    "start": slot.start.astimezone(self.event.tz).isoformat()
+                    if slot.start
+                    else "",
+                    "end": slot.real_end.astimezone(self.event.tz).isoformat()
+                    if slot.real_end
+                    else "",
                 }
         if anonymise:
             kwargs.pop("initial", None)
