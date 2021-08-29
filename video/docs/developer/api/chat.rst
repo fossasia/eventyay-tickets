@@ -94,15 +94,18 @@ Events
 Everything that happens within chat, is an *event*. For example, if a user sends a message, you will receive an event
 like this::
 
-    <= ["chat.event", {"channel": "room_0", "event_type": "channel.message", "content": {"type": "text", "body": "Hello world"}, "sender": "user_todo", "event_id": 4}]
-    
+    <= ["chat.event", {"channel": "room_0", "event_type": "channel.message", "content": {"type": "text", "body": "Hello world"}, "sender": "user_todo", "sender_user": {…}, "event_id": 4}]
+
+``sender_user`` will only be sent if the server believes the client does not already know this user yet, since the client
+is expected to cache user profiles. You can also use ``user.fetch`` to fetch missing profiles.
+
 The different event types are described below. After you joined a channel, the first event you see will be a membership
 event announcing your join. If you want to fetch previous events, you can do so with the ``chat.fetch`` command. As
 a base point, you can use the ``next_event_id`` from the reply to ``chat.subscribe`` or ``chat.leave``. This is built
 in a way that if events happen *while* you join, you might see the same event *twice*, but you will not miss any events::
 
     => ["chat.fetch", 1234, {"channel": "room_0", "count": 30, "before_id": 54321}]
-    <- ["success", 1234, {"results": […]}]
+    <- ["success", 1234, {"results": […], "users": {"user_id": {…}, …}}]
 
 In volatile chat rooms, ``chat.fetch`` will skip membership messages (joins/leaves).
 

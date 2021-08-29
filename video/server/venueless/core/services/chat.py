@@ -182,19 +182,34 @@ class ChatService:
         return u
 
     @database_sync_to_async
-    def get_events(self, channel, before_id, count=50, skip_membership=False):
+    def get_events(
+        self,
+        channel,
+        before_id,
+        count=50,
+        skip_membership=False,
+        users_known_to_client=None,
+        include_admin_info=False,
+        trait_badges_map=None,
+    ):
         events = ChatEvent.objects
         if skip_membership:
             events = events.exclude(event_type="channel.member")
-        events = (
+        events = list(
             events.filter(
                 id__lt=before_id,
                 channel=channel,
             )
-            .prefetch_related("reactions")
+            .prefetch_related("reactions", "sender")
             .order_by("-id")[: min(count, 1000)]
         )
-        return [e.serialize_public() for e in reversed(list(events))]
+        return [e.serialize_public() for e in reversed(events)], {
+            str(e.sender.pk): e.sender.serialize_public(
+                include_admin_info=include_admin_info, trait_badges_map=trait_badges_map
+            )
+            for e in events
+            if str(e.sender.pk) not in users_known_to_client
+        }
 
     @database_sync_to_async
     def _store_event(self, channel, id, event_type, content, sender, replaces=None):

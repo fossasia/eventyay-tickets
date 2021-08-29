@@ -82,6 +82,7 @@ async def test_join_leave(chat_room):
         ]
         response = await c.receive_json_from()
         del response[1]["timestamp"]
+        del response[1]["sender_user"]
         assert response == [
             "chat.event",
             {
@@ -296,6 +297,7 @@ async def test_subscribe_join_leave(chat_room):
         ]
         response = await c.receive_json_from()
         del response[1]["timestamp"]
+        del response[1]["sender_user"]
         assert response == [
             "chat.event",
             {
@@ -717,6 +719,7 @@ async def test_send_message_to_other_client(chat_room):
         response = await c2.receive_json_from()
         response[1]["event_id"] = 0
         del response[1]["timestamp"]
+        del response[1]["sender_user"]
         assert response == [
             "chat.event",
             {
@@ -960,13 +963,7 @@ async def test_last_disconnect_is_leave_in_volatile_channel(world, volatile_chat
                 response = await c2.receive_json_from()
                 assert response[0] == "success"
                 assert response[2]["state"] is None
-                assert len(response[2]["members"]) == 1
-                assert set(response[2]["members"][0].keys()) == {
-                    "id",
-                    "profile",
-                    "badges",
-                    "inactive",
-                }
+                assert len(response[2]["members"]) == 0
 
                 response = await c3.receive_json_from()
                 assert response == ["chat.channels", {"channels": []}]

@@ -91,9 +91,13 @@ export default {
 			if (!state.beforeCursor || state.fetchingMessages) return
 			state.fetchingMessages = true
 			try {
-				const {results} = await api.call('chat.fetch', {channel: state.channel, count: 25, before_id: state.beforeCursor})
+				const {results, users} = await api.call('chat.fetch', {channel: state.channel, count: 25, before_id: state.beforeCursor})
 				// rely on the backend to have resolved all edits and deletes, filter deleted messages in view
 				state.timeline.unshift(...results)
+				// cache profiles the server sent us
+				for (const user of Object.values(users)) {
+					Vue.set(state.usersLookup, user.id, user)
+				}
 				// assume past events don't just appear and stop forever when results are smaller than count
 				state.beforeCursor = results.length < 25 ? null : results[0].event_id
 				// hit the user profile cache for each message
@@ -124,6 +128,7 @@ export default {
 			Vue.set(state.readPointers, state.channel, pointer)
 		},
 		async fetchUsers ({state}, ids) {
+			if (ids.length() === 0) return
 			const users = await api.call('user.fetch', {ids})
 			for (const user of Object.values(users)) {
 				Vue.set(state.usersLookup, user.id, user)
@@ -277,7 +282,11 @@ export default {
 
 			// hit the user profile cache for each message
 			if (!state.usersLookup[event.sender]) {
-				await dispatch('fetchUsers', [event.sender])
+				if (event.sender_user) {
+					Vue.set(state.usersLookup, event.sender, event.sender_user)
+				} else {
+					await dispatch('fetchUsers', [event.sender])
+				}
 			}
 		},
 		'api::chat.channels' ({state}, {channels}) {

@@ -9,6 +9,7 @@ from sentry_sdk import configure_scope
 
 from venueless.core.permissions import Permission
 from venueless.core.services.chat import ChatService, get_channel
+from venueless.core.services.user import get_public_user
 from venueless.core.utils.redis import aioredis
 from venueless.live.channels import GROUP_CHAT, GROUP_USER
 from venueless.live.decorators import (
@@ -108,6 +109,7 @@ class ChatModule(BaseModule):
         super().__init__(*args, **kwargs)
         self.channel_id = None
         self.channels_subscribed = set()
+        self.users_known_to_client = set()
         self.service = ChatService(self.consumer.world)
 
     async def _subscribe(self, volatile=False):
@@ -281,13 +283,19 @@ class ChatModule(BaseModule):
         volatile_config = self.channel.room and (
             self.module_config.get("volatile", False) or self.channel.room.force_join
         )
-        events = await self.service.get_events(
+        events, users = await self.service.get_events(
             self.channel_id,
             before_id=before_id,
             count=count,
             skip_membership=volatile_config,
+            users_known_to_client=self.users_known_to_client,
+            include_admin_info=await self.consumer.world.has_permission_async(
+                user=self.consumer.user, permission=Permission.WORLD_USERS_MANAGE
+            ),
+            trait_badges_map=self.consumer.world.config.get("trait_badges_map"),
         )
-        await self.consumer.send_success({"results": events})
+        self.users_known_to_client |= set(users.keys())
+        await self.consumer.send_success({"results": events, "users": users})
 
     @command("mark_read")
     @channel_action(room_module_required="chat.native", require_membership=False)
@@ -495,9 +503,22 @@ class ChatModule(BaseModule):
             room=channel.room,
         ):
             return
-        await self.consumer.send_json(
-            [body["type"], {k: v for k, v in body.items() if k != "type"}]
-        )
+
+        data = {k: v for k, v in body.items() if k != "type"}
+
+        if data.get("sender") and data["sender"] not in self.users_known_to_client:
+            user = await get_public_user(
+                self.consumer.world.id,
+                data["sender"],
+                include_admin_info=await self.consumer.world.has_permission_async(
+                    user=self.consumer.user, permission=Permission.WORLD_USERS_MANAGE
+                ),
+                trait_badges_map=self.consumer.world.config.get("trait_badges_map"),
+            )
+            data["sender_user"] = user
+            self.users_known_to_client.add(data["sender"])
+
+        await self.consumer.send_json([body["type"], data])
 
     @command("direct.create")
     @require_world_permission(Permission.WORLD_CHAT_DIRECT)
