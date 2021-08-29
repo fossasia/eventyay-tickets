@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` Plugins can now perform actions on every schedule release (for example, to trigger an update in external consumers to avoid polling).
 - :feature:`-` On session detail pages, the event timezone is now noted next to the time.
 - :feature:`-` As a reminder, the event timezone will be shown at the top of the schedule editor page.
 - :feature:`-` Anonymisation for reviewers can now be switched on on a team level, overriding the general event settings.

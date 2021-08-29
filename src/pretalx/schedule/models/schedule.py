@@ -20,6 +20,7 @@ from pretalx.common.phrases import phrases
 from pretalx.common.urls import EventUrls
 from pretalx.mail.context import template_context_from_event
 from pretalx.person.models import SpeakerProfile, User
+from pretalx.schedule.signals import schedule_release
 from pretalx.submission.models import SubmissionStates
 
 
@@ -112,6 +113,8 @@ class Schedule(LogMixin, models.Model):
             del wip_schedule.event.wip_schedule
         with suppress(AttributeError):
             del wip_schedule.event.current_schedule
+
+        schedule_release.send_robust(self.event, schedule=self, user=user)
 
         if self.event.settings.export_html_on_schedule_release:
             if settings.HAS_CELERY:

@@ -18,6 +18,9 @@ Core
 .. automodule:: pretalx.submission.signals
    :members: submission_state_change
 
+.. automodule:: pretalx.schedule.signals
+   :members: schedule_release
+
 Exporters
 ---------
 

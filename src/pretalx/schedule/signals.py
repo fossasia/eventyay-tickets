@@ -1,6 +1,18 @@
 from django.dispatch import receiver
 
-from pretalx.common.signals import register_data_exporters
+from pretalx.common.signals import EventPluginSignal, register_data_exporters
+
+schedule_release = EventPluginSignal()
+"""
+This signal allows you to trigger additional events when a new schedule
+version is released. You will receive the new schedule and the user triggering
+the change (if any).
+Any exceptions raised will be ignored.
+
+As with all plugin signals, the ``sender`` keyword argument will contain the event.
+Additionally, you will receive the keyword arguments ``schedule``
+and ``user`` (which may be ``None``).
+"""
 
 
 @receiver(register_data_exporters, dispatch_uid="exporter_builtin_ical")
