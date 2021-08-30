@@ -134,6 +134,7 @@ class MailTemplate(LogMixin, models.Model):
 
             mail = QueuedMail(
                 event=self.event,
+                template=self,
                 to=address,
                 reply_to=self.reply_to,
                 bcc=self.bcc,
@@ -168,6 +169,13 @@ class QueuedMail(LogMixin, models.Model):
         to="event.Event",
         on_delete=models.PROTECT,
         related_name="queued_mails",
+        null=True,
+        blank=True,
+    )
+    template = models.ForeignKey(
+        to=MailTemplate,
+        related_name="mails",
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
     )

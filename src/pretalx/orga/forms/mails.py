@@ -1,5 +1,5 @@
-from django.db.models import Q
 from django import forms
+from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 from i18nfield.forms import I18nModelForm
 
@@ -164,7 +164,11 @@ class WriteMailForm(I18nModelForm):
         submissions = self.event.submissions.all()
 
         query = Q()
-        submission_states = [s for s in ["submitted", "accepted", "confirmed", "rejected"] if s in self.cleaned_data["recipeients"]]
+        submission_states = [
+            s
+            for s in ["submitted", "accepted", "confirmed", "rejected"]
+            if s in self.cleaned_data["recipeients"]
+        ]
         if submission_states:
             query = query | Q(state__in=submission_states)
 
