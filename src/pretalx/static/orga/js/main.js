@@ -9,6 +9,8 @@ document.addEventListener("DOMContentLoaded", function() {
     question_page_toggle_target_view()
   }
 
+  $('.select2').select2();
+
   $("input.submission_featured").change(function() {
     var id = this.dataset.id
 

@@ -8,7 +8,6 @@ from django_scopes.forms import SafeModelChoiceField, SafeModelMultipleChoiceFie
 
 from pretalx.common.forms.fields import ImageField
 from pretalx.common.mixins.forms import ReadOnlyFlag, RequestRequire
-from pretalx.orga.forms.widgets import TagWidget
 from pretalx.submission.models import Submission, SubmissionStates, SubmissionType
 
 
@@ -190,7 +189,7 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
             "is_featured",
         ]
         widgets = {
-            "tags": TagWidget,
+            "tags": forms.SelectMultiple(attrs={"class": "select2"}),
         }
         field_classes = {
             "submission_type": SafeModelChoiceField,

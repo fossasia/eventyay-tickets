@@ -5,7 +5,6 @@ from django_scopes.forms import SafeModelMultipleChoiceField
 from pretalx.common.forms.widgets import MarkdownWidget
 from pretalx.common.mixins.forms import ReadOnlyFlag
 from pretalx.common.phrases import phrases
-from pretalx.orga.forms.widgets import TagWidget
 from pretalx.submission.models import Review, Submission
 
 
@@ -25,7 +24,7 @@ class TagsForm(ReadOnlyFlag, forms.ModelForm):
             "tags",
         ]
         widgets = {
-            "tags": TagWidget,
+            "tags": forms.SelectMultiple(attrs={"class": "select2"}),
         }
         field_classes = {
             "tags": SafeModelMultipleChoiceField,
