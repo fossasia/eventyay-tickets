@@ -6,6 +6,7 @@ from operator import itemgetter
 
 from dateutil import rrule
 from django.contrib import messages
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.syndication.views import Feed
 from django.db import transaction
 from django.db.models import Exists, OuterRef, Q
@@ -658,12 +659,17 @@ class SubmissionStats(PermissionRequired, TemplateView):
 
     @cached_property
     def raw_submission_timeline_data(self):
+        talk_ids = self.request.event.submissions.exclude(
+            state=SubmissionStates.DELETED
+        ).values_list("id", flat=True)
         data = Counter(
             log.timestamp.astimezone(self.request.event.tz).date()
             for log in ActivityLog.objects.filter(
-                event=self.request.event, action_type="pretalx.submission.create"
+                event=self.request.event,
+                action_type="pretalx.submission.create",
+                content_type=ContentType.objects.get_for_model(Submission),
+                object_id__in=talk_ids,
             )
-            if getattr(log.content_object, "state", None) != SubmissionStates.DELETED
         )
         dates = data.keys()
         if len(dates) > 1:
@@ -715,7 +721,9 @@ class SubmissionStats(PermissionRequired, TemplateView):
     def submission_type_data(self):
         counter = Counter(
             str(submission.submission_type)
-            for submission in Submission.objects.filter(event=self.request.event)
+            for submission in Submission.objects.filter(
+                event=self.request.event
+            ).select_related("submission_type")
         )
         return json.dumps(
             sorted(
@@ -731,7 +739,9 @@ class SubmissionStats(PermissionRequired, TemplateView):
         if self.request.event.settings.use_tracks:
             counter = Counter(
                 str(submission.track)
-                for submission in Submission.objects.filter(event=self.request.event)
+                for submission in Submission.objects.filter(
+                    event=self.request.event
+                ).select_related("track")
             )
             return json.dumps(
                 sorted(
@@ -746,14 +756,17 @@ class SubmissionStats(PermissionRequired, TemplateView):
 
     @context
     def talk_timeline_data(self):
+        talk_ids = self.request.event.submissions.filter(
+            state__in=[SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED]
+        ).values_list("id", flat=True)
         data = Counter(
             log.timestamp.astimezone(self.request.event.tz).date().isoformat()
             for log in ActivityLog.objects.filter(
                 event=self.request.event,
                 action_type="pretalx.submission.create",
+                content_type=ContentType.objects.get_for_model(Submission),
+                object_id__in=talk_ids,
             )
-            if getattr(log.content_object, "state", None)
-            in [SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED]
         )
         if len(data.keys()) > 1:
             return json.dumps(
@@ -787,7 +800,7 @@ class SubmissionStats(PermissionRequired, TemplateView):
             str(submission.submission_type)
             for submission in self.request.event.submissions.filter(
                 state__in=[SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED]
-            )
+            ).select_related("submission_type")
         )
         return json.dumps(
             sorted(
@@ -805,7 +818,7 @@ class SubmissionStats(PermissionRequired, TemplateView):
                 str(submission.track)
                 for submission in self.request.event.submissions.filter(
                     state__in=[SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED]
-                )
+                ).select_related("track")
             )
             return json.dumps(
                 sorted(
