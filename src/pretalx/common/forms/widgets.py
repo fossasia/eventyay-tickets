@@ -2,7 +2,6 @@ from pathlib import Path
 
 from django.core.files import File
 from django.forms import (
-    CheckboxSelectMultiple,
     ClearableFileInput,
     PasswordInput,
     Textarea,

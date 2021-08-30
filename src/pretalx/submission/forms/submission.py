@@ -199,8 +199,12 @@ class SubmissionFilterForm(forms.Form):
     submission_type = forms.MultipleChoiceField(
         required=False, widget=forms.SelectMultiple(attrs={"class": "select2"})
     )
-    track = forms.MultipleChoiceField(required=False, widget=forms.SelectMultiple(attrs={"class": "select2"}))
-    tags = forms.MultipleChoiceField(required=False, widget=forms.SelectMultiple(attrs={"class": "select2"}))
+    track = forms.MultipleChoiceField(
+        required=False, widget=forms.SelectMultiple(attrs={"class": "select2"})
+    )
+    tags = forms.MultipleChoiceField(
+        required=False, widget=forms.SelectMultiple(attrs={"class": "select2"})
+    )
     question = SafeModelChoiceField(queryset=Question.objects.none(), required=False)
 
     def __init__(self, event, *args, **kwargs):
