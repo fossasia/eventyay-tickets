@@ -81,10 +81,10 @@ class MailDetailForm(ReadOnlyFlag, forms.ModelForm):
     class Meta:
         model = QueuedMail
         fields = ["to", "to_users", "reply_to", "cc", "bcc", "subject", "text"]
-        widgets = {"to_users": forms.CheckboxSelectMultiple}
+        widgets = {"to_users": forms.SelectMultiple(attrs={"class": "select2"})}
 
 
-class WriteMailForm(forms.ModelForm):
+class WriteMailForm(I18nModelForm):
     recipients = forms.MultipleChoiceField(
         label=_("Recipient groups"),
         choices=(
@@ -101,16 +101,35 @@ class WriteMailForm(forms.ModelForm):
             ("reviewers", _("All reviewers in your team")),
             ("no_slides", _("All confirmed speakers who have not uploaded slides")),
         ),
-        widget=forms.CheckboxSelectMultiple,
         required=False,
+        widget=forms.SelectMultiple(
+            attrs={"class": "select2", "title": _("Recipient groups")}
+        ),
     )
     tracks = forms.MultipleChoiceField(
-        label=_("All proposals in these tracks"), required=False
+        label=_("All proposals in these tracks"),
+        required=False,
+        widget=forms.SelectMultiple(attrs={"class": "select2", "title": _("Tracks")}),
+        help_text=_("Leave empty to include proposals from all tracks."),
     )
     submission_types = forms.MultipleChoiceField(
-        label=_("All proposals of these types"), required=False
+        label=_("All proposals of these types"),
+        required=False,
+        widget=forms.SelectMultiple(
+            attrs={"class": "select2", "title": _("Session types")}
+        ),
+        help_text=_("Leave empty to include proposals of all session types."),
     )
-    submissions = forms.MultipleChoiceField(required=False)
+    submissions = forms.MultipleChoiceField(
+        required=False,
+        label=_("Proposals"),
+        widget=forms.SelectMultiple(
+            attrs={"class": "select2", "title": _("Proposals")}
+        ),
+        help_text=_(
+            "Select proposals that should receive the email regardless of the other filters."
+        ),
+    )
     additional_recipients = forms.CharField(
         label=_("Recipients"),
         required=False,
@@ -119,6 +138,9 @@ class WriteMailForm(forms.ModelForm):
     reply_to = forms.CharField(required=False)
 
     def __init__(self, event, **kwargs):
+        self.event = event
+        if event:
+            kwargs["locales"] = event.locales
         super().__init__(**kwargs)
         self.fields["submissions"].choices = [
             (sub.code, sub.title) for sub in event.submissions.all()
@@ -133,11 +155,15 @@ class WriteMailForm(forms.ModelForm):
             (submission_type.pk, submission_type.name)
             for submission_type in event.submission_types.all()
         ]
+        if len(self.event.locales) > 1:
+            self.fields["subject"].help_text = _(
+                "If you provide only one language, that language will be used for all emails. If you provide multiple languages, the best fit for each speaker will be used."
+            )
         self.fields["text"].help_text = _(
             "Please note: Placeholders will not be substituted, this is an upcoming feature. "
             "Leave no placeholders in this field."
         )
 
     class Meta:
-        model = QueuedMail
-        fields = ["cc", "bcc", "subject", "text"]
+        model = MailTemplate
+        fields = ["subject", "text"]

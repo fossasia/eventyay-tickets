@@ -1,11 +1,7 @@
 from pathlib import Path
 
 from django.core.files import File
-from django.forms import (
-    ClearableFileInput,
-    PasswordInput,
-    Textarea,
-)
+from django.forms import ClearableFileInput, PasswordInput, Textarea
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext as _
 
