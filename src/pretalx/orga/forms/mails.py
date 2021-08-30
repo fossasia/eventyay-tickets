@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django import forms
 from django.utils.translation import gettext_lazy as _
 from i18nfield.forms import I18nModelForm
@@ -130,11 +131,6 @@ class WriteMailForm(I18nModelForm):
             "Select proposals that should receive the email regardless of the other filters."
         ),
     )
-    additional_recipients = forms.CharField(
-        label=_("Recipients"),
-        required=False,
-        help_text=_("One email address or several addresses separated by commas."),
-    )
     reply_to = forms.CharField(required=False)
 
     def __init__(self, event, **kwargs):
@@ -163,6 +159,37 @@ class WriteMailForm(I18nModelForm):
             "Please note: Placeholders will not be substituted, this is an upcoming feature. "
             "Leave no placeholders in this field."
         )
+
+    def get_recipient_submissions(self):
+        submissions = self.event.submissions.all()
+
+        query = Q()
+        submission_states = [s for s in ["submitted", "accepted", "confirmed", "rejected"] if s in self.cleaned_data["recipeients"]]
+        if submission_states:
+            query = query | Q(state__in=submission_states)
+
+        if "no_slides":
+            query = query | Q(resources__isnull=True)
+
+        filter_submissions = self.cleaned_data.get("submissions")
+        if filter_submissions:
+            query = query | Q(pk__in=[s.pk for s in filter_submissions])
+
+        submissions = submissions.filter(query)
+
+        tracks = self.cleaned_data.get("tracks")
+        if tracks:
+            submissions = submissions.filter(track__in=tracks)
+
+        submission_types = self.cleaned_data.get("submission_types")
+        if submission_types:
+            submissions = submissions.filter(submission_type__in=submission_types)
+        return submissions
+
+    def clean(self):
+        # TODO validate placeholders
+        # - room/start/end are only allowed when all talks are in accepted/confirmed
+        return super().clean()
 
     class Meta:
         model = MailTemplate

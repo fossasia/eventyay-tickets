@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`715` Email filters are now subtractive instead of additive, giving you more fine-grained control about your bulk emails.
 - :bug:`1150` pretalx now doesn't allow you to test your custom SMTP settings until you have actually configured them.
 - :feature:`976` Improved the tagging interface to be still useful with a large number of tags.
 - :feature:`933` You can now change a session's room and time in the session form, allowing for minute-level accuracy instead of our usual 5-minute intervals.
