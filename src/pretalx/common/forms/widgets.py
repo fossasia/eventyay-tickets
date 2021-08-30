@@ -11,22 +11,6 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import gettext as _
 
 
-class CheckboxMultiDropdown(CheckboxSelectMultiple):
-    def render(self, name, value, attrs=None, renderer=None):
-        attrs["layout"] = "event-inline"
-        checkboxes = super().render(name, value, attrs=attrs, renderer=renderer)
-        title = attrs.get("title") if attrs else None
-        title = title or _("Choose one or more")
-        markup = f"""
-        <div class="checkbox-multi-select form-group">
-            <span class="multi-select-title form-control" data-title="{title}">{title}</span>
-            <span class="multi-select-options"><div class="form-group">
-                {checkboxes}
-            </div></span>
-        </div>"""
-        return mark_safe(markup)
-
-
 class PasswordStrengthInput(PasswordInput):
     def render(self, name, value, attrs=None, renderer=None):
         markup = """

@@ -149,41 +149,6 @@ table .radio .form-check {
   }
 }
 
-.checkbox-multi-select {
-  height: calc(2.25rem - 2px);
-  margin-top: 0px !important;
-  width: 300px;
-
-  .multi-select-title {
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-  }
-
-  .multi-select-options {
-    display: none;
-    position: absolute;
-    margin-top: calc(2.25rem - 2px);
-    padding: 16px;
-    padding-bottom: 4px;
-    background-color: $white;
-    border: 1px solid #ced4da;
-    border-bottom-left-radius: 0.25rem;
-    border-bottom-right-radius: 0.25rem;
-    color: #495057;
-    width: 300px;
-    z-index: 100;
-    .form-group {
-      margin-bottom: 0;
-    }
-  }
-  &:hover {
-    .multi-select-options {
-      display: inherit;
-    }
-  }
-}
-
 .form-check {
   position: relative;
   padding: 4px 0 4px 36px;

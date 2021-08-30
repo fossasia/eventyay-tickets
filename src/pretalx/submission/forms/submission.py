@@ -7,7 +7,7 @@ from django_scopes.forms import SafeModelChoiceField
 
 from pretalx.cfp.forms.cfp import CfPFormMixin
 from pretalx.common.forms.fields import ImageField
-from pretalx.common.forms.widgets import CheckboxMultiDropdown, MarkdownWidget
+from pretalx.common.forms.widgets import MarkdownWidget
 from pretalx.common.mixins.forms import PublicContent, RequestRequire
 from pretalx.submission.forms.track_select_widget import TrackSelectWidget
 from pretalx.submission.models import Question, Submission, SubmissionStates
@@ -194,13 +194,13 @@ class SubmissionFilterForm(forms.Form):
     state = forms.MultipleChoiceField(
         choices=SubmissionStates.get_choices(),
         required=False,
-        widget=CheckboxMultiDropdown,
+        widget=forms.SelectMultiple(attrs={"class": "select2"}),
     )
     submission_type = forms.MultipleChoiceField(
-        required=False, widget=CheckboxMultiDropdown
+        required=False, widget=forms.SelectMultiple(attrs={"class": "select2"})
     )
-    track = forms.MultipleChoiceField(required=False, widget=CheckboxMultiDropdown)
-    tags = forms.MultipleChoiceField(required=False, widget=CheckboxMultiDropdown)
+    track = forms.MultipleChoiceField(required=False, widget=forms.SelectMultiple(attrs={"class": "select2"}))
+    tags = forms.MultipleChoiceField(required=False, widget=forms.SelectMultiple(attrs={"class": "select2"}))
     question = SafeModelChoiceField(queryset=Question.objects.none(), required=False)
 
     def __init__(self, event, *args, **kwargs):
@@ -231,7 +231,7 @@ class SubmissionFilterForm(forms.Form):
         )
         tag_count = {tag.tag: tag.submission_count for tag in tag_count}
         self.fields["submission_type"].choices = [
-            (sub_type.pk, f"{str(sub_type)} ({type_count.get(sub_type.pk, 0)})")
+            (sub_type.pk, f"{str(sub_type.name)} ({type_count.get(sub_type.pk, 0)})")
             for sub_type in event.submission_types.all()
         ]
         self.fields["submission_type"].widget.attrs["title"] = _("Session types")
