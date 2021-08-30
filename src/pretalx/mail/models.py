@@ -82,6 +82,7 @@ class MailTemplate(LogMixin, models.Model):
         commit: bool = True,
         full_submission_content: bool = False,
         allow_empty_address: bool = False,
+        attachments: list = False,
     ):
         """Creates a :class:`~pretalx.mail.models.QueuedMail` object from a
         MailTemplate.
@@ -152,6 +153,7 @@ class MailTemplate(LogMixin, models.Model):
                 subject=subject,
                 text=text,
                 locale=locale,
+                attachments=attachments,
             )
             if commit:
                 mail.save()
@@ -227,6 +229,7 @@ class QueuedMail(LogMixin, models.Model):
     text = models.TextField(verbose_name=_("Text"))
     sent = models.DateTimeField(null=True, blank=True, verbose_name=_("Sent at"))
     locale = models.CharField(max_length=32, null=True, blank=True)
+    attachments = models.JSONField(default=None, null=True, blank=True)
 
     objects = ScopedManager(event="event")
 
@@ -313,6 +316,7 @@ class QueuedMail(LogMixin, models.Model):
                 "event": self.event.pk if has_event else None,
                 "cc": (self.cc or "").split(","),
                 "bcc": (self.bcc or "").split(","),
+                "attachments": self.attachments,
             }
         )
 

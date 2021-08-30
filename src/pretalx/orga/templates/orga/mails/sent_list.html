@@ -23,6 +23,7 @@
                         <a href="?{% url_replace request 'sort' 'to' %}"><i class="fa fa-caret-down" title="{% translate "Sort by recipient (a-z)" %}"></i></a>
                         <a href="?{% url_replace request 'sort' '-to' %}"><i class="fa fa-caret-up" title="{% translate "Sort by recipient (z-a)" %}"></i></a>
                     </th>
+                    <th></th>
                     <th>
                         {% translate "Sent" %}
                         <a href="?{% url_replace request 'sort' '-sent' %}"><i class="fa fa-caret-down" title="{% translate "Sort by sending time (most recent first)" %}"></i></a>
@@ -47,6 +48,22 @@
                             {% endfor %}
                             {% if mail.to %}
                                 {{ mail.to }}
+                            {% endif %}
+                        </td>
+                        <td class="text-right">
+                            {% if mail.attachments %}
+                                <i class="fa fa-paperclip" title="{% translate "Contains an attachment" %}"></i>
+                            {% endif %}
+                            {% if mail.template %}
+                                {% if mail.template == request.event.accept_template %}
+                                    <span class="badge badge-success">{% trans "Accept email" %}</span>
+                                {% elif mail.template == request.event.reject_template %}
+                                    <span class="badge badge-error">{% trans "Reject email" %}</span>
+                                {% elif mail.template == request.event.update_template %}
+                                    <span class="badge badge-info">{% trans "Schedule update" %}</span>
+                                {% elif mail.template == request.event.question_template %}
+                                    <span class="badge badge-info">{% trans "Unanswered questions reminder" %}</span>
+                                {% endif %}
                             {% endif %}
                         </td>
                         <td>

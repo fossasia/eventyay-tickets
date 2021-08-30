@@ -247,6 +247,7 @@ class Schedule(LogMixin, models.Model):
                     "old_room": old_slot.room.name,
                     "new_room": new_slot.room.name,
                     "new_info": new_slot.room.speaker_info,
+                    "new_slot": new_slot,
                 }
             )
         return new, canceled, moved
@@ -544,8 +545,8 @@ class Schedule(LogMixin, models.Model):
         Each speaker is assigned a dictionary with ``create`` and
         ``update`` fields, each containing a list of submissions.
         """
+        result = {}
         if self.changes["action"] == "create":
-            result = {}
             for speaker in User.objects.filter(submissions__slots__schedule=self):
                 talks = self.talks.filter(
                     submission__speakers=speaker,
@@ -557,7 +558,7 @@ class Schedule(LogMixin, models.Model):
             return result
 
         if self.changes["count"] == len(self.changes["canceled_talks"]):
-            return []
+            return result
 
         speakers = defaultdict(lambda: {"create": [], "update": []})
         for new_talk in self.changes["new_talks"]:
@@ -573,7 +574,7 @@ class Schedule(LogMixin, models.Model):
         to be sent on schedule release."""
         mails = []
         date_formats = {}
-        for speaker in self.speakers_concerned:
+        for speaker, data in self.speakers_concerned.items():
             locale = (
                 speaker.locale
                 if speaker.locale in self.event.locales
@@ -592,9 +593,12 @@ class Schedule(LogMixin, models.Model):
                     {
                         "speaker": speaker,
                         "START_DATE_FORMAT": date_format,
-                        **self.speakers_concerned[speaker],
+                        **data,
                     }
                 )
+            slots = (data.get("create") or []) + [
+                talk["new_slot"] for talk in (data.get("update") or [])
+            ]
             mails.append(
                 self.event.update_template.to_mail(
                     user=speaker,
@@ -603,6 +607,14 @@ class Schedule(LogMixin, models.Model):
                     context={"notifications": notifications},
                     commit=save,
                     locale=locale,
+                    attachments=[
+                        {
+                            "name": f"{slot.frab_slug}.ics",
+                            "content": slot.full_ical().serialize(),
+                            "content_type": "text/calendar",
+                        }
+                        for slot in slots
+                    ],
                 )
             )
         return mails

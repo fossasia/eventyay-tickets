@@ -6,6 +6,8 @@ from contextlib import suppress
 from urllib.parse import urlparse
 
 import pytz
+import vobject
+from django.conf import settings
 from django.db import models
 from django.utils.functional import cached_property
 from django_scopes import ScopedManager
@@ -199,3 +201,12 @@ class TalkSlot(LogMixin, models.Model):
         vevent.add("dtend").value = self.local_end
         vevent.add("description").value = self.submission.abstract or ""
         vevent.add("url").value = self.submission.urls.public.full()
+
+    def full_ical(self):
+        netloc = urlparse(settings.SITE_URL).netloc
+        cal = vobject.iCalendar()
+        cal.add("prodid").value = "-//pretalx//{}//{}".format(
+            netloc, self.submission.code
+        )
+        self.build_ical(cal)
+        return cal

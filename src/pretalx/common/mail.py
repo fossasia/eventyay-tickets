@@ -1,4 +1,5 @@
 import logging
+from contextlib import suppress
 from email.utils import formataddr
 from smtplib import SMTPResponseException, SMTPSenderRefused
 
@@ -52,6 +53,7 @@ def mail_send_task(
     cc: list = None,
     bcc: list = None,
     headers: dict = None,
+    attachments: list = None,
 ):
     if isinstance(to, str):
         to = [to]
@@ -82,6 +84,7 @@ def mail_send_task(
             reply_to = [formataddr((str(event.name), reply_to))]
 
         sender = formataddr((str(event.name), sender or settings.MAIL_FROM))
+
     else:
         sender = formataddr(("pretalx", settings.MAIL_FROM))
         backend = get_connection(fail_silently=False)
@@ -100,6 +103,15 @@ def mail_send_task(
         from inlinestyler.utils import inline_css
 
         email.attach_alternative(inline_css(html), "text/html")
+
+    if attachments:
+        for attachment in attachments:
+            with suppress(Exception):
+                email.attach(
+                    attachment["name"],
+                    attachment["content"],
+                    attachment["content_type"],
+                )
 
     try:
         backend.send_messages([email])
