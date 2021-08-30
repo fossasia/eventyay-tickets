@@ -501,6 +501,7 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
         self.question_template = self.question_template or MailTemplate.objects.create(
             event=self, subject=QUESTION_SUBJECT, text=QUESTION_TEXT
         )
+        # TODO clone other mail templates, but **not** the is_auto_created=True ones.
 
         if not self.review_phases.all().exists():
             from pretalx.submission.models import ReviewPhase

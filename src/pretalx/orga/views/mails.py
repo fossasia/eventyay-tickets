@@ -242,7 +242,6 @@ class ComposeMail(EventPermissionRequired, FormView):
                 initial["subject"] = template.subject
                 initial["text"] = template.text
                 initial["reply_to"] = template.reply_to
-                initial["bcc"] = template.bcc
         if "submission" in self.request.GET:
             submission = self.request.event.submissions.filter(
                 code=self.request.GET.get("submission")
@@ -384,7 +383,7 @@ class TemplateList(EventPermissionRequired, TemplateView):
             )
             for template in self.request.event.mail_templates.exclude(
                 pk__in=[pk for pk in pks if pk]
-            )
+            ).exclude(is_auto_created=True)
         ]
         return result
 
@@ -435,7 +434,7 @@ class TemplateDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
 
     def get_object(self) -> MailTemplate:
         return MailTemplate.objects.filter(
-            event=self.request.event, pk=self.kwargs.get("pk")
+            event=self.request.event, pk=self.kwargs.get("pk"), is_auto_created=False
         ).first()
 
     @cached_property

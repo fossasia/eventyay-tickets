@@ -55,6 +55,9 @@ class MailTemplate(LogMixin, models.Model):
             "Enter comma separated addresses. Will receive a blind copy of every mail sent from this template. This may be a LOT!"
         ),
     )
+    # Auto-created templates are created when mass emails are sent out. They are only used to re-create similar
+    # emails, and are never shown in a list of email templates or anywhere else.
+    is_auto_created = models.BooleanField(default=False)
 
     objects = ScopedManager(event="event")
 
