@@ -190,6 +190,8 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
         ]
         widgets = {
             "tags": forms.SelectMultiple(attrs={"class": "select2"}),
+            "track": forms.Select(attrs={"class": "select2"}),
+            "submission_type": forms.Select(attrs={"class": "select2"}),
         }
         field_classes = {
             "submission_type": SafeModelChoiceField,

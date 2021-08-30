@@ -439,6 +439,7 @@ class WidgetGenerationForm(forms.ModelForm):
     class Meta:
         model = Event
         fields = ["locale"]
+        widgets = {"locale": forms.Select(attrs={"class": "select2"})}
 
 
 class ReviewPhaseForm(I18nModelForm):
@@ -559,4 +560,4 @@ class ReviewScoreCategoryForm(I18nModelForm):
         field_classes = {
             "limit_tracks": SafeModelMultipleChoiceField,
         }
-        widgets = {"limit_tracks": forms.CheckboxSelectMultiple}
+        widgets = {"limit_tracks": forms.SelectMultiple(attrs={"class": "select2"})}

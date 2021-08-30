@@ -192,6 +192,8 @@ class QuestionForm(ReadOnlyFlag, I18nModelForm):
             "deadline": forms.DateTimeInput(attrs={"class": "datetimepickerfield"}),
             "question_required": forms.RadioSelect(),
             "freeze_after": forms.DateTimeInput(attrs={"class": "datetimepickerfield"}),
+            "tracks": forms.SelectMultiple(attrs={"class": "select2"}),
+            "submission_types": forms.SelectMultiple(attrs={"class": "select2"}),
         }
         field_classes = {
             "variant": SafeModelChoiceField,
@@ -286,7 +288,9 @@ class SubmitterAccessCodeForm(forms.ModelForm):
             "submission_type": SafeModelChoiceField,
         }
         widgets = {
-            "valid_until": forms.DateTimeInput(attrs={"class": "datetimepickerfield"})
+            "valid_until": forms.DateTimeInput(attrs={"class": "datetimepickerfield"}),
+            "track": forms.Select(attrs={"class": "select2"}),
+            "submission_type": forms.Select(attrs={"class": "select2"}),
         }
 
 
