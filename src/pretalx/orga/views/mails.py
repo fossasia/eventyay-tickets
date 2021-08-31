@@ -257,23 +257,60 @@ class ComposeMail(EventPermissionRequired, FormView):
     def get_success_url(self):
         return self.request.event.orga_urls.compose_mails
 
+    def get_context_data(self, *args, **kwargs):
+        ctx = super().get_context_data(*args, **kwargs)
+        ctx["output"] = getattr(self, "output", None)
+        ctx["mail_count"] = getattr(self, "mail_count", None)
+        return ctx
+
     def form_valid(self, form):
-        recipient_submissions = form.get_recipient_submissions()
-        for user in user_set:
-            mail = QueuedMail.objects.create(
-                event=self.request.event,
-                reply_to=form.cleaned_data.get("reply_to", self.request.event.email),
-                cc=form.cleaned_data.get("cc"),
-                bcc=form.cleaned_data.get("bcc"),
-                subject=form.cleaned_data.get("subject"),
-                text=form.cleaned_data.get("text"),
-            )
-            mail.to_users.add(user)
+        preview = self.request.POST.get("action") == "preview"
+        if preview:
+            self.output = {}
+            # Only approximate, good enough. Doesn't run deduplication, so it doesn't have to
+            # run rendering for all placeholders for all people, either.
+            result = form.get_recipient_submissions()
+            if not len(result):
+                messages.error(
+                    self.request,
+                    _("There are no proposals or sessions matching this selection."),
+                )
+                return self.get(self.request, *self.args, **self.kwargs)
+            for locale in self.request.event.locales:
+                with language(locale):
+                    context_dict = TolerantDict()
+                    for k, v in form.get_valid_placeholders().items():
+                        context_dict[
+                            k
+                        ] = '<span class="placeholder" title="{}">{}</span>'.format(
+                            _(
+                                "This value will be replaced based on dynamic parameters."
+                            ),
+                            v.render_sample(self.request.event),
+                        )
+
+                    subject = bleach.clean(
+                        form.cleaned_data["subject"].localize(locale), tags=[]
+                    )
+                    preview_subject = subject.format_map(context_dict)
+                    message = form.cleaned_data["text"].localize(locale)
+                    preview_text = rich_text(message.format_map(context_dict))
+
+                    self.output[locale] = {
+                        "subject": _("Subject: {subject}").format(
+                            subject=preview_subject
+                        ),
+                        "html": preview_text,
+                    }
+                    self.mail_count = len(result)
+            return self.get(self.request, *self.args, **self.kwargs)
+
+        result = form.save()
         messages.success(
             self.request,
             _(
                 "{count} emails have been saved to the outbox – you can make individual changes there or just send them all."
-            ).format(count=len(user_set) + len(additional_mails) - users_found),
+            ).format(count=len(result)),
         )
         return super().form_valid(form)
 
@@ -328,7 +365,6 @@ class TemplateDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
 
     @context
     def placeholders(self):
-        # TODO fix how to display placeholders in template details
         template = self.object
         if template and template in template.event.fixed_templates:
             result = {}

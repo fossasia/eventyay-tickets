@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`412` pretalx finally supports sending of emails based on templates, with a full template placeholder system. Hello, {name}!
 - :feature:`715` Email filters are now subtractive instead of additive, giving you more fine-grained control about your bulk emails.
 - :bug:`1150` pretalx now doesn't allow you to test your custom SMTP settings until you have actually configured them.
 - :feature:`976` Improved the tagging interface to be still useful with a large number of tags.

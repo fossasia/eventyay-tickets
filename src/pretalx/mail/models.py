@@ -107,6 +107,9 @@ class MailTemplate(LogMixin, models.Model):
         elif isinstance(user, User):
             address = None
             users = [user]
+        elif not user and allow_empty_address:
+            address = None
+            users = None
         else:
             raise TypeError(
                 "First argument to to_mail must be a string or a User, not "

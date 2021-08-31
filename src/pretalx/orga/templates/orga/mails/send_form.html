@@ -14,9 +14,42 @@
         {% bootstrap_field form.reply_to layout='event' %}
         {% bootstrap_field form.subject layout='event' %}
         {% bootstrap_field form.text layout='event' %}
-        <div class="submit-group"><span></span>
+        {% if request.method == "POST" %}
+            <fieldset class="mt-4">
+                <legend>{% trans "E-mail preview" %}</legend>
+                <div class="alert alert-info">
+                    {% blocktranslate trimmed with count=mail_count %}
+                        Roughly {{ count }} emails will be generated.
+                    {% endblocktranslate %}
+                </div>
+                {% if form.warnings %}
+                    <div class="alert alert-warning">
+                        <span>
+                            {% blocktranslate trimmed %}
+                                You have placeholders in your email that are either not valid or not valid for every email!
+                            {% endblocktranslate %}
+                            <ul>{% for w in form.warnings %}<li>&#123;{{w}}}</li>{% endfor %}</ul>
+                        </span>
+                    </div>
+                {% endif %}
+                <div class="tab-pane mail-preview-group">
+                    {% for locale, out in output.items %}
+                        <div lang="{{ locale }}" class="mail-preview">
+                            <strong>{{ out.subject|safe }}</strong><br><br>
+                            {{ out.html|safe }}
+                        </div>
+                    {% endfor %}
+                </div>
+            </fieldset>
+        {% endif %}
+        <div class="submit-group mt-3"><span></span>
             <span>
-                <button type="submit" class="btn btn-lg btn-success">{% translate "Send" %}</button>
+                <button type="submit" class="btn btn-lg btn-outline-info btn-save mr-2" name="action" value="preview">
+                    {% trans "Preview email" %}
+                </button>
+                {% if request.method == "POST" %}
+                    <button type="submit" class="btn btn-lg btn-success">{% translate "Send" %}</button>
+                {% endif %}
             </span>
         </div>
     </form>
