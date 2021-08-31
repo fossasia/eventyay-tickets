@@ -271,10 +271,6 @@ export default {
 			margin: 16px
 	+below(1800px) // total guess
 		flex-direction: column
-		.schedule
-			flex: none
-			height: 56px
-			border-bottom: border-separator()
 		.modules
 			justify-content: flex-end
 </style>

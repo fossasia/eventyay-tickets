@@ -43,4 +43,7 @@ export default {
 }
 </script>
 <style lang="stylus">
+.c-manage-schedule
+	.bunt-switch
+		margin: 16px
 </style>
