@@ -103,8 +103,9 @@ class SubmitWizard(EventPageMixin, View):
                     event=request.event,
                     context_kwargs={
                         "user": request.user,
-                        "submisssion": request.submission,
+                        "submission": request.submission,
                     },
+                    context={"orga_url": request.submission.orga_urls.base.full()},
                     skip_queue=True,
                     locale=request.event.locale,
                 )

@@ -92,10 +92,14 @@ def base_placeholders(sender, **kwargs):
             ["event"],
             lambda event: _date(
                 event.cfp.deadline.astimezone(event.tz), "SHORT_DATETIME_FORMAT"
-            ),
+            )
+            if event.cfp.deadline
+            else "",
             lambda event: _date(
                 event.cfp.deadline.astimezone(event.tz), "SHORT_DATETIME_FORMAT"
-            ),
+            )
+            if event.cfp.deadline
+            else "",
             _("The general CfP deadline"),
         ),
         SimpleFunctionalMailTextPlaceholder(

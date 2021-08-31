@@ -464,7 +464,7 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
         for speaker in self.speakers.all():
             template.to_mail(
                 user=speaker,
-                locale=self.speaker.locale,
+                locale=speaker.locale,
                 context_kwargs={"submission": self, "user": speaker},
                 event=self.event,
             )

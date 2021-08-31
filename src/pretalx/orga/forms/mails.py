@@ -212,8 +212,8 @@ class WriteMailForm(MailTemplateBase):
         return get_available_placeholders(event=self.event, kwargs=kwargs)
 
     def get_recipient_submissions(self):
+        # If no recipient base groups are selected,
         submissions = self.event.submissions.all()
-
         submission_states = [
             s
             for s in ["submitted", "accepted", "confirmed", "rejected"]
@@ -221,15 +221,15 @@ class WriteMailForm(MailTemplateBase):
         ]
         if submission_states:
             query = Q(state__in=submission_states)
-        else:
+        elif "no_slides" in self.cleaned_data["recipients"]:
             query = Q(state__isnull=False)
-
+        else:
+            query = Q()
         if "no_slides" in self.cleaned_data["recipients"]:
-            query = query | Q(resources__isnull=True)
-
-        filter_submissions = self.cleaned_data.get("submissions")
-        if filter_submissions:
-            query = query | Q(pk__in=[s.pk for s in filter_submissions])
+            if submission_states:
+                query = query | Q(resources__isnull=True)
+            else:
+                query = Q(resources__isnull=True)
 
         submissions = submissions.filter(query)
 
@@ -240,9 +240,30 @@ class WriteMailForm(MailTemplateBase):
         submission_types = self.cleaned_data.get("submission_types")
         if submission_types:
             submissions = submissions.filter(submission_type__in=submission_types)
-        return submissions.select_related(
+
+        submissions = submissions.select_related(
             "track", "submission_type", "event"
         ).prefetch_related("speakers")
+
+        # Specifically filtered-for submissions need to come last, so they can't be excluded
+        filter_submissions = self.cleaned_data.get("submissions")
+        if filter_submissions:
+            filtered = any(
+                self.cleaned_data.get(key)
+                for key in ["recipients", "tracks", "submission_types"]
+            )
+            specific_submissions = (
+                self.event.submissions.filter(code__in=filter_submissions)
+                .select_related("track", "submission_type", "event")
+                .prefetch_related("speakers")
+            )
+            if filtered:
+                # If we have filtered on things already, we add our specific sessions to the existing set
+                submissions = submissions.union(specific_submissions)
+            else:
+                # Otherwise, we assume that the user wanted *only* the specific sessions
+                submissions = specific_submissions
+        return submissions
 
     def clean(self):
         cleaned_data = super().clean()

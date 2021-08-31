@@ -273,7 +273,7 @@ def test_reviewer_can_see_dashboard(
     django_assert_max_num_queries,
     other_submission,
 ):
-    with django_assert_max_num_queries(56):
+    with django_assert_max_num_queries(58):
         response = review_client.get(
             submission.event.orga_urls.reviews + "?sort=" + sort
         )
@@ -291,7 +291,7 @@ def test_reviewer_with_track_limit_can_see_dashboard(
     other_submission,
 ):
     review_user.teams.first().limit_tracks.add(track)
-    with django_assert_max_num_queries(56):
+    with django_assert_max_num_queries(58):
         response = review_client.get(submission.event.orga_urls.reviews)
     assert response.status_code == 200
 
