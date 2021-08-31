@@ -21,6 +21,9 @@ Core
 .. automodule:: pretalx.schedule.signals
    :members: schedule_release
 
+.. automodule:: pretalx.mail.signals
+   :members: register_mail_placeholders
+
 Exporters
 ---------
 
