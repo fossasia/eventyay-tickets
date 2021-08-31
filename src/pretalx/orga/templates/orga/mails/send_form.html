@@ -29,6 +29,10 @@
                                 You have placeholders in your email that are either not valid or not valid for every email!
                             {% endblocktranslate %}
                             <ul>{% for w in form.warnings %}<li>&#123;{{w}}}</li>{% endfor %}</ul>
+                            {% blocktranslate trimmed %}
+                                Emails where placeholders are invalid will <b>not</b> be created!
+                                For example, if you are using {session_room}, but some proposals don't have a room yet, only emails for proposals with a scheduled room will be created.
+                            {% endblocktranslate %}
                         </span>
                     </div>
                 {% endif %}
