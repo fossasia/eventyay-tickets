@@ -19,7 +19,6 @@ from pretalx.common.mixins.models import FileCleanupMixin, GenerateCode, LogMixi
 from pretalx.common.phrases import phrases
 from pretalx.common.urls import EventUrls
 from pretalx.common.utils import path_with_hash
-from pretalx.mail.context import template_context_from_submission
 from pretalx.mail.models import QueuedMail
 from pretalx.submission.signals import submission_state_change
 
@@ -462,13 +461,13 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
         else:
             return
 
-        kwargs = {
-            "event": self.event,
-            "context": template_context_from_submission(self),
-            "locale": self.content_locale,
-        }
         for speaker in self.speakers.all():
-            template.to_mail(user=speaker, **kwargs)
+            template.to_mail(
+                user=speaker,
+                locale=self.speaker.locale,
+                context_kwargs={"submission": self, "user": speaker},
+                event=self.event,
+            )
 
     send_state_mail.alters_data = True
 

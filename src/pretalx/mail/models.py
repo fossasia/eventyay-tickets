@@ -14,6 +14,7 @@ from pretalx.common.exceptions import SendMailException
 from pretalx.common.mixins.models import LogMixin
 from pretalx.common.templatetags.rich_text import ALLOWED_TAGS
 from pretalx.common.urls import EventUrls
+from pretalx.mail.context import get_mail_context
 
 
 class MailTemplate(LogMixin, models.Model):
@@ -75,10 +76,11 @@ class MailTemplate(LogMixin, models.Model):
         event,
         locale: str = None,
         context: dict = None,
+        context_kwargs: dict = None,
         skip_queue: bool = False,
         commit: bool = True,
-        submission=None,
         full_submission_content: bool = False,
+        allow_empty_address: bool = False,
     ):
         """Creates a :class:`~pretalx.mail.models.QueuedMail` object from a
         MailTemplate.
@@ -89,11 +91,11 @@ class MailTemplate(LogMixin, models.Model):
         :param locale: The locale will be set via the event and the recipient,
             but can be overridden with this parameter.
         :param context: Context to be used when rendering the template.
+        :param context_kwargs: Passed to get_email_context to retrieve the correct
+            context when rendering the template.
         :param skip_queue: Send directly without saving. Use with caution, as
             it removes any logging and traces.
         :param commit: Set ``False`` to return an unsaved object.
-        :param submission: Pass a submission if one is related to the mail.
-            Will be used to generate context.
         :param full_submission_content: Attach the complete submission with
             all its fields to the email.
         """
@@ -115,15 +117,19 @@ class MailTemplate(LogMixin, models.Model):
             users = None
 
         with override(locale):
-            context = context or dict()
+            context_kwargs = context_kwargs or dict()
+            context_kwargs["event"] = self.event
+            default_context = get_mail_context(**context_kwargs)
+            default_context.update(context or {})
+            context = default_context
             try:
                 subject = str(self.subject).format(**context)
                 text = str(self.text).format(**context)
-                if submission and full_submission_content:
+                if full_submission_content and "submission" in context_kwargs:
                     text += "\n\n\n***********\n\n" + str(
                         _("Full proposal content:\n\n")
                     )
-                    text += submission.get_content_for_mail()
+                    text += context_kwargs["submission"].get_content_for_mail()
             except KeyError as e:
                 raise SendMailException(
                     f"Experienced KeyError when rendering email text: {str(e)}"

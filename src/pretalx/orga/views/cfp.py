@@ -391,7 +391,6 @@ class CfPQuestionRemind(EventPermissionRequired, TemplateView):
         )
         data = {
             "url": request.event.urls.user_submissions.full(),
-            "event_name": request.event.name,
         }
         for person in people:
             missing = self.get_missing_answers(
@@ -402,7 +401,10 @@ class CfPQuestionRemind(EventPermissionRequired, TemplateView):
                     f"- {question.question}" for question in missing
                 )
                 request.event.question_template.to_mail(
-                    person, event=request.event, context=data
+                    person,
+                    event=request.event,
+                    context=data,
+                    context_kwargs={"user": person},
                 )
         return redirect(request.event.orga_urls.outbox)
 

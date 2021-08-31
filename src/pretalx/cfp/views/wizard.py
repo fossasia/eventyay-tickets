@@ -14,7 +14,6 @@ from django.views import View
 from pretalx.cfp.views.event import EventPageMixin
 from pretalx.common.exceptions import SendMailException
 from pretalx.common.phrases import phrases
-from pretalx.mail.context import template_context_from_submission
 from pretalx.mail.models import MailTemplate
 
 
@@ -87,10 +86,9 @@ class SubmitWizard(EventPageMixin, View):
             request.event.ack_template.to_mail(
                 user=request.user,
                 event=request.event,
-                context=template_context_from_submission(request.submission),
+                context_kwargs={"user": request.user, "submission": request.submission},
                 skip_queue=True,
                 locale=request.user.locale,
-                submission=request.submission,
                 full_submission_content=True,
             )
             if request.event.settings.mail_on_new_submission:
@@ -103,7 +101,10 @@ class SubmitWizard(EventPageMixin, View):
                 ).to_mail(
                     user=request.event.email,
                     event=request.event,
-                    context=template_context_from_submission(request.submission),
+                    context_kwargs={
+                        "user": request.user,
+                        "submisssion": request.submission,
+                    },
                     skip_queue=True,
                     locale=request.event.locale,
                 )

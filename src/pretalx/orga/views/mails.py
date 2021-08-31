@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import FormView, ListView, TemplateView, View
 from django_context_decorator import context
 
+from pretalx.common.mail import TolerantDict
 from pretalx.common.mixins.views import (
     ActionFromUrl,
     EventPermissionRequired,
@@ -12,11 +13,11 @@ from pretalx.common.mixins.views import (
     PermissionRequired,
     Sortable,
 )
+from pretalx.common.templatetags.rich_text import rich_text
+from pretalx.common.utils import language
 from pretalx.common.views import CreateOrUpdateView
-from pretalx.mail.context import get_context_explanation
 from pretalx.mail.models import MailTemplate, QueuedMail
 from pretalx.orga.forms.mails import MailDetailForm, MailTemplateForm, WriteMailForm
-from pretalx.person.models import User
 
 
 class OutboxList(EventPermissionRequired, Sortable, Filterable, ListView):
@@ -327,9 +328,10 @@ class TemplateDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
 
     @context
     def placeholders(self):
+        # TODO fix how to display placeholders in template details
         template = self.object
         if template and template in template.event.fixed_templates:
-            result = get_context_explanation()
+            result = {}
             if template == template.event.update_template:
                 result = [item for item in result if item["name"] == "event_name"]
                 result.append(

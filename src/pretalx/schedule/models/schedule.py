@@ -18,7 +18,6 @@ from pretalx.agenda.tasks import export_schedule_html
 from pretalx.common.mixins.models import LogMixin
 from pretalx.common.phrases import phrases
 from pretalx.common.urls import EventUrls
-from pretalx.mail.context import template_context_from_event
 from pretalx.person.models import SpeakerProfile, User
 from pretalx.schedule.signals import schedule_release
 from pretalx.submission.models import SubmissionStates
@@ -520,11 +519,13 @@ class Schedule(LogMixin, models.Model):
                 notifications = get_template(
                     "schedule/speaker_notification.txt"
                 ).render({"speaker": speaker, **self.speakers_concerned[speaker]})
-            context = template_context_from_event(self.event)
-            context["notifications"] = notifications
             mails.append(
                 self.event.update_template.to_mail(
-                    user=speaker, event=self.event, context=context, commit=save
+                    user=speaker,
+                    event=self.event,
+                    context_kwargs={"user": speaker},
+                    context={"notifications": notifications},
+                    commit=save,
                 )
             )
         return mails
