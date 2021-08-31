@@ -337,7 +337,9 @@ def test_orga_can_delete_template(orga_client, event, mail_template):
 
 
 @pytest.mark.django_db
-def test_orga_can_compose_single_mail(orga_client, event, submission):
+def test_orga_can_compose_single_mail(
+    orga_client, speaker, event, submission, other_submission
+):
     response = orga_client.get(
         event.orga_urls.compose_mails,
         follow=True,
@@ -345,6 +347,7 @@ def test_orga_can_compose_single_mail(orga_client, event, submission):
     assert response.status_code == 200
     with scope(event=event):
         assert QueuedMail.objects.filter(sent__isnull=True).count() == 0
+        other_submission.accept()
     response = orga_client.post(
         event.orga_urls.compose_mails,
         follow=True,
@@ -359,7 +362,66 @@ def test_orga_can_compose_single_mail(orga_client, event, submission):
     )
     assert response.status_code == 200
     with scope(event=event):
-        assert QueuedMail.objects.filter(sent__isnull=True).count() == 1
+        mails = QueuedMail.objects.filter(sent__isnull=True)
+        assert mails.count() == 2  # one of them is the accept mail!
+        assert any(m.subject == f"foo {speaker.name}" for m in mails)
+        assert any(m.text == f"bar {submission.title}" for m in mails)
+
+
+@pytest.mark.django_db
+def test_orga_can_compose_single_mail_multiple_states_and_failing_placeholders(
+    orga_client, orga_user, event, slot, other_submission
+):
+    with scope(event=event):
+        QueuedMail.objects.filter(sent__isnull=True).delete()
+    response = orga_client.post(
+        event.orga_urls.compose_mails,
+        follow=True,
+        data={
+            "recipients": ["submitted", "confirmed"],
+            "bcc": "",
+            "cc": "",
+            "reply_to": "",
+            "subject_0": "foo {name}",
+            "text_0": "bar {session_room}",
+        },
+    )
+    assert response.status_code == 200
+    with scope(event=event):
+        assert (
+            QueuedMail.objects.filter(sent__isnull=True).count() == 1
+        )  # only one, the other fails for lack of a room name!
+        assert (
+            QueuedMail.objects.filter(sent__isnull=True).first().text
+            == f"bar {slot.room.name}"
+        )
+
+
+@pytest.mark.django_db
+def test_orga_can_compose_single_mail_with_specific_submission(
+    orga_client, speaker, event, slot, other_submission
+):
+    with scope(event=event):
+        assert QueuedMail.objects.filter(sent__isnull=True).delete()
+    response = orga_client.post(
+        event.orga_urls.compose_mails,
+        follow=True,
+        data={
+            "recipients": "submitted",
+            "submissions": slot.submission.code,
+            "bcc": "",
+            "cc": "",
+            "reply_to": "",
+            "subject_0": "foo {name}",
+            "text_0": "bar {submission_title}",
+        },
+    )
+    assert response.status_code == 200
+    with scope(event=event):
+        mails = QueuedMail.objects.filter(sent__isnull=True)
+        assert mails.count() == 2  # one of them is the accept mail!
+        assert any(m.text == f"bar {other_submission.title}" for m in mails)
+        assert any(m.text == f"bar {slot.submission.title}" for m in mails)
 
 
 @pytest.mark.django_db
@@ -367,11 +429,6 @@ def test_orga_can_compose_mail_for_track(orga_client, event, submission, track):
     with scope(event=event):
         submission.track = track
         submission.save()
-    response = orga_client.get(
-        event.orga_urls.compose_mails,
-        follow=True,
-    )
-    assert response.status_code == 200
     with scope(event=event):
         assert QueuedMail.objects.filter(sent__isnull=True).count() == 0
     response = orga_client.post(

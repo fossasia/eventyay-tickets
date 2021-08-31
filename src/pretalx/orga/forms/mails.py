@@ -1,5 +1,6 @@
 import string
 from collections import defaultdict
+from contextlib import suppress
 
 from django import forms
 from django.db import transaction
@@ -7,6 +8,7 @@ from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 from i18nfield.forms import I18nModelForm
 
+from pretalx.common.exceptions import SendMailException
 from pretalx.common.mixins.forms import ReadOnlyFlag
 from pretalx.mail.context import get_available_placeholders
 from pretalx.mail.models import MailTemplate, QueuedMail
@@ -285,15 +287,18 @@ class WriteMailForm(MailTemplateBase):
         # First, render all emails
         for submission in submissions:
             for speaker in submission.speakers.all():
-                mail = template.to_mail(
-                    user=None,
-                    event=self.event,
-                    locale=speaker.locale,
-                    context_kwargs={"submission": submission, "user": speaker},
-                    commit=False,
-                    allow_empty_address=True,
-                )
-                mails_by_user[speaker].append(mail)
+                with suppress(
+                    SendMailException
+                ):  # This happens when there are template errors
+                    mail = template.to_mail(
+                        user=None,
+                        event=self.event,
+                        locale=speaker.locale,
+                        context_kwargs={"submission": submission, "user": speaker},
+                        commit=False,
+                        allow_empty_address=True,
+                    )
+                    mails_by_user[speaker].append(mail)
 
         for user, user_mails in mails_by_user.items():
             # Second, deduplicate mails: we don't want speakers to receive the same
