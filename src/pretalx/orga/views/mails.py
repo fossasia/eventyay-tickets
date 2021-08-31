@@ -1,3 +1,4 @@
+import bleach
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.functional import cached_property
@@ -127,16 +128,29 @@ class MailDelete(PermissionRequired, TemplateView):
     def get_permission_object(self):
         return self.request.event
 
+    @cached_property
+    def queryset(self):
+        mail = self.request.event.queued_mails.filter(
+            sent__isnull=True, pk=self.kwargs.get("pk")
+        )
+        if "all" in self.request.GET and mail:
+            return self.request.event.queued_mails.filter(
+                sent__isnull=True, template=mail.first().template
+            )
+        return mail
+
     @context
     def question(self):
-        return _("Do you really want to delete this mail?")
+        if len(self.queryset) == 1:
+            return _("Do you really want to delete this mail?")
+        return _("Do you really want to purge {count} mails?").format(
+            count=len(self.queryset)
+        )
 
     def post(self, request, *args, **kwargs):
-        try:
-            mail = self.request.event.queued_mails.get(
-                sent__isnull=True, pk=self.kwargs.get("pk")
-            )
-        except QueuedMail.DoesNotExist:
+        mails = self.queryset
+        mail_count = len(mails)
+        if not mails:
             messages.error(
                 request,
                 _(
@@ -144,9 +158,15 @@ class MailDelete(PermissionRequired, TemplateView):
                 ),
             )
             return redirect(self.request.event.orga_urls.outbox)
-        mail.log_action("pretalx.mail.delete", person=self.request.user, orga=True)
-        mail.delete()
-        messages.success(request, _("The mail has been deleted."))
+        for mail in mails:
+            mail.log_action("pretalx.mail.delete", person=self.request.user, orga=True)
+            mail.delete()
+        if mail_count == 1:
+            messages.success(request, _("The mail has been deleted."))
+        else:
+            messages.success(
+                request, _("{count} mails have been purged.").format(count=mail_count)
+            )
         return redirect(request.event.orga_urls.outbox)
 
 

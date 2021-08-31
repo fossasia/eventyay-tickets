@@ -102,15 +102,18 @@
         {% endif %}
 
         <div class="submit-group">
-            <span></span>
             <span>
                 {% if action == "edit" %}
-                    <button type="submit" class="btn btn-lg btn-success" name="form" value="save">{% translate "Save" %}</button>
-                    <button class="btn btn-lg btn-info" name="form" value="send">{% translate "Save and send" %}</button>
-                    <a class="btn btn-lg btn-danger" href={{ form.instance.urls.delete }}>{% translate "Discard" %}</a>
+                    <a class="btn btn-lg btn-danger mr-auto" href={{ form.instance.urls.delete }}>{% translate "Discard" %}</a>
+                    <a class="btn btn-lg btn-outline-danger mr-auto" href="{{ form.instance.urls.delete }}?all">{% translate "Discard all from this template" %}</a>
+                    </span><span>
+                        <button type="submit" class="btn btn-lg btn-success" name="form" value="save">{% translate "Save" %}</button>
+                        <button class="btn btn-lg btn-info" name="form" value="send">{% translate "Save and send" %}</button>
                 {% elif action == "view" %}
                     {% if form.instance.sent %}
-                        <a class="btn btn-lg btn-success" href={{ form.instance.urls.copy }}>{% translate "Copy to draft" %}</a>
+                        <a class="btn btn-lg btn-success" href="{% if form.instance.template %}{{ request.event.orga_urls.compose_mails }}?template={{ form.instance.template.pk }}{% else %}{{ form.instance.urls.copy }}{% endif %}">
+                            {% translate "Copy to draft" %}
+                        </a>
                     {% endif %}
                 {% endif %}
             </span>
