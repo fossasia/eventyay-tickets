@@ -52,6 +52,9 @@ urlpatterns = [
                     organiser.OrganiserDelete.as_view(),
                     name="organiser.delete",
                 ),
+                path(
+                    "api/users", person.UserList.as_view(), name="organiser.user_list"
+                ),
                 path("teams/", organiser.TeamDetail.as_view(), name="organiser.teams"),
                 path(
                     "teams/new",

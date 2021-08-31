@@ -17,7 +17,14 @@ var speakers = new Bloodhound({
   },
 })
 
-$("#id_speaker").typeahead(null, {
+let selector = ""
+if (document.querySelector("#id_speaker")) {
+  selector = "#id_speaker"
+} else if (document.querySelector("#id_email")) {
+  selector = "#id_email"
+}
+
+$(selector).typeahead(null, {
   name: "email",
   display: "value",
   source: speakers,
@@ -34,7 +41,9 @@ $("#id_speaker").typeahead(null, {
     },
   },
 })
-$("#id_speaker").bind("typeahead:select", function(ev, suggestion) {
-  $("#id_speaker").text(suggestion.value)
-  document.querySelector("#id_speaker_name").value = suggestion.name
+$(selector).bind("typeahead:select", function(ev, suggestion) {
+  $(selector).text(suggestion.value)
+  if (selector == "#id_speaker") {
+    document.querySelector("#id_speaker_name").value = suggestion.name
+  }
 })

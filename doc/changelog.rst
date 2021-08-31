@@ -3,6 +3,8 @@
 Release Notes
 =============
 
+- :bug:`1157` When adding a new organisers to a team, email suggestions from known users didn't work.
+- :bug:`1157` When adding a new speaker to a proposal, pretalx would suggest organiser accounts rather than speaker accounts.
 - :feature:`412` pretalx finally supports sending of emails based on templates, with a full template placeholder system. Hello, {name}!
 - :feature:`715` Email filters are now subtractive instead of additive, giving you more fine-grained control about your bulk emails.
 - :bug:`1150` pretalx now doesn't allow you to test your custom SMTP settings until you have actually configured them.
