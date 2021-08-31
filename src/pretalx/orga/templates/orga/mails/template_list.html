@@ -21,74 +21,75 @@
         </div>
     </div>
 
-    <div><a href="{{ request.event.orga_urls.new_template }}">
-        <button class="btn btn-success float-right">
+    <div class="d-flex w-100 mb-3">
+        <a href="{{ request.event.orga_urls.new_template }}" class="btn btn-success ml-auto btn-lg">
             <i class="fa fa-plus"></i>
             {% translate "New custom template" %}
-        </button>
-    </a></div>
+        </a></div>
 
     <div>
+        <hr class="mt-4 mb-4">
         <div>
-            {% csrf_token %}
-            <h3 class="mb-4">{% translate "Acknowledge Mail" %}</h3>
+            <div class="d-flex w-100 mb-3">
+                <h3>{% translate "Acknowledge Mail" %}</h3>
+                <a href="{{ ack.instance.urls.edit }}" class="btn btn-info ml-auto">{% translate "Edit template" %}</a>
+            </div>
             {% bootstrap_form ack layout='event' %}
-            <div class="clearfix"><a href="{{ ack.instance.urls.edit }}">
-                <button class="btn btn-info float-right">{% translate "Edit template" %}</button>
-                <a href="{{ request.event.orga_urls.compose_mails }}?template={{ ack.instance.pk }}" class="btn btn-success float-right">{% translate "Send mails" %}</a>
-            </a></div>
         </div>
+
+        <hr class="mt-4 mb-4">
+
         <div>
-            {% csrf_token %}
-            <h3>{% translate "Accept Mail" %}</h3>
+            <div class="d-flex w-100 mb-3">
+                <h3>{% translate "Accept Mail" %}</h3>
+                <a href="{{ accept.instance.urls.edit }}" class="btn btn-info ml-auto">{% translate "Edit template" %}</a>
+            </div>
             {% bootstrap_form accept layout='event' %}
-            <div class="clearfix"><a href="{{ accept.instance.urls.edit }}">
-                <button class="btn btn-info float-right">{% translate "Edit template" %}</button>
-                <a href="{{ request.event.orga_urls.compose_mails }}?template={{ accept.instance.pk }}" class="btn btn-success float-right">{% translate "Send mails" %}</a>
-            </a></div>
         </div>
+
+        <hr class="mt-4 mb-4">
+
         <div>
-            {% csrf_token %}
-            <h3>{% translate "Rejection Mail" %}</h3>
+            <div class="d-flex w-100 mb-3">
+                <h3>{% translate "Rejection Mail" %}</h3>
+                <a href="{{ reject.instance.urls.edit }}" class="btn btn-info ml-auto">{% translate "Edit template" %}</a>
+            </div>
             {% bootstrap_form reject layout='event' %}
-            <div class="clearfix"><a href="{{ reject.instance.urls.edit }}">
-                <button class="btn btn-info float-right">{% translate "Edit template" %}</button>
-                <a href="{{ request.event.orga_urls.compose_mails }}?template={{ reject.instance.pk }}" class="btn btn-success float-right">{% translate "Send mails" %}</a>
-            </a></div>
         </div>
+
+        <hr class="mt-4 mb-4">
+
         <div>
-            {% csrf_token %}
-            <h3>{% translate "New schedule version" %}</h3>
+            <div class="d-flex w-100 mb-3">
+                <h3>{% translate "New schedule version" %}</h3>
+                <a href="{{ update.instance.urls.edit }}" class="btn btn-info ml-auto">{% translate "Edit template" %}</a>
+            </div>
             {% bootstrap_form update layout='event' %}
-            <div class="clearfix"><a href="{{ update.instance.urls.edit }}">
-                <button class="btn btn-info float-right">{% translate "Edit template" %}</button>
-                <a href="{{ request.event.orga_urls.compose_mails }}?template={{ update.instance.pk }}" class="btn btn-success float-right">{% translate "Send mails" %}</a>
-            </a></div>
         </div>
+
+        <hr class="mt-4 mb-4">
+
         <div>
-            {% csrf_token %}
-            <h3>{% translate "Unanswered questions reminder" %}</h3>
+            <div class="d-flex w-100 mb-3">
+                <h3>{% translate "Unanswered questions reminder" %}</h3>
+                <a href="{{ remind.instance.urls.edit }}" class="btn btn-info ml-auto">{% translate "Edit template" %}</a>
+            </div>
             {% bootstrap_form remind layout='event' %}
-            <div class="clearfix"><a href="{{ remind.instance.urls.edit }}">
-                <button class="btn btn-info float-right">{% translate "Edit template" %}</button>
-                <a href="{{ request.event.orga_urls.compose_mails }}?template={{ remind.instance.pk }}" class="btn btn-success float-right">{% translate "Send mails" %}</a>
-            </a></div>
         </div>
+
+        <hr class="mt-4 mb-4">
 
         {% for template in other %}
             <div>
-                {% csrf_token %}
-                <h3>{% translate "Custom Mail" %}</h3>
-                {% bootstrap_form template layout='event' %}
-                <div><a href="{{ template.instance.urls.delete }}">
-                    <button class="btn btn-danger">{% translate "Delete template" %}</button>
-                </a></div>
-                <div class="clearfix"><a href="{{ template.instance.urls.edit }}">
-                    <button class="btn btn-info float-right">{% translate "Edit template" %}</button>
-                </a>
-                    <a href="{{ request.event.orga_urls.compose_mails }}?template={{ template.instance.pk }}" class="btn btn-success float-right">{% translate "Send mails" %}</a>
+                <div class="d-flex w-100 mb-3">
+                    <h3>{% translate "Custom Mail" %}</h3>
+                    <a href="{{ template.instance.urls.delete }}" class="btn btn-danger ml-auto mr-2">{% translate "Delete template" %}</a>
+                    <a href="{{ template.instance.urls.edit }}" class="btn btn-info mr-2">{% translate "Edit template" %}</a>
+                    <a href="{{ request.event.orga_urls.compose_mails }}?template={{ template.instance.pk }}" class="btn btn-success">{% translate "Send mails" %}</a>
                 </div>
+                {% bootstrap_form template layout='event' %}
             </div>
+            <hr class="mt-4 mb-4">
         {% endfor %}
     </div>
 {% endblock %}
