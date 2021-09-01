@@ -18,8 +18,11 @@ export default {
 				state.questions = await api.call('question.list', {room: room.id})
 			}
 		},
-		submitQuestion ({state, rootState}, question) {
-			return api.call('question.ask', {room: rootState.activeRoom.id, content: question})
+		async submitQuestion ({state, rootState}, question) {
+			const result = await api.call('question.ask', {room: rootState.activeRoom.id, content: question})
+			if (state.questions.some(q => q.id === result.question.id)) return
+			// add own question to the list since we're not getting a broadcast for own questions waiting in mod queue
+			state.questions.push(result.question)
 		},
 		async vote ({state, rootState}, question) {
 			await api.call('question.vote', {room: rootState.activeRoom.id, id: question.id, vote: !question.voted})
