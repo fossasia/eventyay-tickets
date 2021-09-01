@@ -46,7 +46,7 @@ export default {
 		sortedQuestions () {
 			if (!this.questions) return
 			let questions
-			if (this.isManaging) {
+			if (this.isManaging || !this.hasPermission('room:question.moderate')) {
 				questions = this.questions.slice()
 			} else {
 				// filter questions for moderators looking at the list like a normal attendee
