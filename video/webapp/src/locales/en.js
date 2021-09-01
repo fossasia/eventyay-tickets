@@ -204,6 +204,8 @@ export default {
 	'Question:moderation-menu:pin-question:label': 'pin',
 	'Question:moderation-menu:unpin-question:label': 'unpin',
 	'Question:moderation-menu:unarchive-question:label': 'unarchive',
+	'Question:moderation-approve-button:label': 'Approve question',
+	'Question:attendee-awaiting-approval:label': 'Your question awaits approval by a moderator',
 	'Question:vote-count:label': 'Votes',
 	'Questions:asking-form:label': 'Ask your question',
 	'Questions:asking-form:mod-approve-question:label': 'approve',

@@ -1,6 +1,8 @@
 <template lang="pug">
 .c-question(:class="{queued: question.state === 'mod_queue', 'has-voted': question.voted, pinned: question.is_pinned, archived: question.state === 'archived', managing: isManaging}")
-	.votes(@click="vote")
+	.moderation-block(v-if="question.state === 'mod_queue'")
+		bunt-icon-button(:disabled="!isManaging", :tooltip="isManaging ? $t('Question:moderation-approve-button:label') : $t('Question:attendee-awaiting-approval:label')", tooltip-placement="right", :tooltip-fixed="true", @click="doAction('approve')") {{ isManaging ? 'eye-check' : 'eye-off' }}
+	.votes(v-else, @click="vote")
 		.mdi.mdi-menu-up.upvote(v-if="!isManaging")
 		.vote-count {{ question.score }}
 		| {{ $t('Question:vote-count:label') }}
@@ -61,7 +63,29 @@ export default {
 	align-items: center
 	border-bottom: border-separator()
 	position: relative
+	min-height: 72px
+	.moderation-block
+		flex: none
+		width: 56px
+		box-sizing: border-box
+		display: flex
+		align-items: center
+		justify-content: center
+		.bunt-icon-button
+			icon-button-style(style: clear)
+			height: 48px
+			line-height: @height
+			width: @height
+			.bunt-icon
+				color: $clr-deep-orange-800
+				font-size: 28px
+				height: 48px
+				line-height: @height
+				opacity: 1
 	.votes
+		flex: none
+		width: 56px
+		box-sizing: border-box
 		display: flex
 		flex-direction: column
 		align-items: center
@@ -87,15 +111,6 @@ export default {
 	&.queued
 		$clr-queued = alpha($clr-black, .05)
 		background: repeating-linear-gradient(-45deg, transparent, transparent 10px, $clr-queued 10px, $clr-queued 20px, transparent 20px)
-		&::after
-			content: 'needs approval'
-			display: block
-			position: absolute
-			right: 8px
-			top: 8px
-			font-size: 12px
-			color: $clr-deep-orange
-			font-weight: 600
 	&.has-voted
 		.votes
 			color: $clr-green-700
