@@ -147,7 +147,7 @@ class ChatModule(BaseModule):
             if remaining_sockets == 0 and await self.service.membership_is_volatile(
                 self.channel_id, self.consumer.user.id
             ):
-                await self._leave()
+                await self._leave(volatile=True)
         await self.consumer.channel_layer.group_discard(
             GROUP_CHAT.format(channel=self.channel_id), self.consumer.channel_name
         )
