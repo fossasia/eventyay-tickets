@@ -128,7 +128,7 @@ export default {
 			Vue.set(state.readPointers, state.channel, pointer)
 		},
 		async fetchUsers ({state}, ids) {
-			if (ids.length() === 0) return
+			if (!ids?.length) return
 			const users = await api.call('user.fetch', {ids})
 			for (const user of Object.values(users)) {
 				Vue.set(state.usersLookup, user.id, user)
