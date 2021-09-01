@@ -1,5 +1,5 @@
 <template lang="pug">
-.c-question(:class="{queued: hasPermission('room:question.moderate') && question.state === 'mod_queue', 'has-voted': question.voted, pinned: question.is_pinned, archived: question.state === 'archived', managing: isManaging}")
+.c-question(:class="{queued: question.state === 'mod_queue', 'has-voted': question.voted, pinned: question.is_pinned, archived: question.state === 'archived', managing: isManaging}")
 	.votes(@click="vote")
 		.mdi.mdi-menu-up.upvote(v-if="!isManaging")
 		.vote-count {{ question.score }}
