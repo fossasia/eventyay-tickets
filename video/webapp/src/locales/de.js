@@ -203,6 +203,8 @@ export default {
 	'Question:moderation-menu:pin-question:label': 'oben anpinnen',
 	'Question:moderation-menu:unpin-question:label': 'oben lösen',
 	'Question:moderation-menu:unarchive-question:label': 'wiederherstellen',
+	'Question:moderation-approve-button:label': 'Frage freischalten',
+	'Question:attendee-awaiting-approval:label': 'Deine Frage wartet auf Freischaltung durch einen Moderator',
 	'Question:vote-count:label': 'Votes',
 	'Questions:asking-form:label': 'Stelle deine Frage',
 	'Questions:asking-form:submit': 'Frage abschicken',
