@@ -285,7 +285,8 @@ export default {
 				for (const user of Object.values(event.users)) {
 					Vue.set(state.usersLookup, user.id, user)
 				}
-			} else if (!state.usersLookup[event.sender]) {
+			}
+			if (!state.usersLookup[event.sender]) {
 				await dispatch('fetchUsers', [event.sender])
 			}
 		},
