@@ -82,7 +82,7 @@ async def test_join_leave(chat_room):
         ]
         response = await c.receive_json_from()
         del response[1]["timestamp"]
-        del response[1]["sender_user"]
+        del response[1]["users"]
         assert response == [
             "chat.event",
             {
@@ -297,7 +297,7 @@ async def test_subscribe_join_leave(chat_room):
         ]
         response = await c.receive_json_from()
         del response[1]["timestamp"]
-        del response[1]["sender_user"]
+        del response[1]["users"]
         assert response == [
             "chat.event",
             {
@@ -702,6 +702,7 @@ async def test_send_message_to_other_client(chat_room):
         response = await c1.receive_json_from()
         response[1]["event_id"] = 0
         del response[1]["timestamp"]
+        del response[1]["users"]
         assert response == [
             "chat.event",
             {
@@ -719,7 +720,7 @@ async def test_send_message_to_other_client(chat_room):
         response = await c2.receive_json_from()
         response[1]["event_id"] = 0
         del response[1]["timestamp"]
-        del response[1]["sender_user"]
+        del response[1]["users"]
         assert response == [
             "chat.event",
             {
@@ -800,6 +801,7 @@ async def test_no_messages_after_leave(chat_room):
         response = await c1.receive_json_from()
         response[1]["event_id"] = 0
         del response[1]["timestamp"]
+        del response[1]["users"]
         assert response == [
             "chat.event",
             {
@@ -874,6 +876,7 @@ async def test_no_message_after_unsubscribe(chat_room):
         response = await c1.receive_json_from()
         response[1]["event_id"] = 0
         del response[1]["timestamp"]
+        del response[1]["users"]
         assert response == [
             "chat.event",
             {
