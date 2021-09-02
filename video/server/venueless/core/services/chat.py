@@ -203,13 +203,24 @@ class ChatService:
             .prefetch_related("reactions", "sender")
             .order_by("-id")[: min(count, 1000)]
         )
-        return [e.serialize_public() for e in reversed(events)], {
+        users = {
             str(e.sender.pk): e.sender.serialize_public(
                 include_admin_info=include_admin_info, trait_badges_map=trait_badges_map
             )
             for e in events
             if str(e.sender.pk) not in users_known_to_client
         }
+        for e in events:
+            for r in e.reactions.all():
+                if (
+                    str(r.sender.pk) not in users
+                    and str(r.sender.pk) not in users_known_to_client
+                ):
+                    users[str(r.sender.pk)] = r.sender.serialize_public(
+                        include_admin_info=include_admin_info,
+                        trait_badges_map=trait_badges_map,
+                    )
+        return [e.serialize_public() for e in reversed(events)], users
 
     @database_sync_to_async
     def _store_event(self, channel, id, event_type, content, sender, replaces=None):
