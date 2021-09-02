@@ -113,6 +113,7 @@ class ChatModule(BaseModule):
         self.service = ChatService(self.consumer.world)
 
     async def _subscribe(self, volatile=False):
+        self.users_known_to_client.clear()  # client implementation nukes cache on channel switch
         self.channels_subscribed.add(self.channel)
         await self.consumer.channel_layer.group_add(
             GROUP_CHAT.format(channel=self.channel_id), self.consumer.channel_name
@@ -138,6 +139,7 @@ class ChatModule(BaseModule):
         }
 
     async def _unsubscribe(self, clean_volatile_membership=True):
+        self.users_known_to_client.clear()  # client implementation nukes cache on channel switch
         with suppress(KeyError):
             self.channels_subscribed.remove(self.channel)
         if clean_volatile_membership:
