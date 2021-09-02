@@ -94,10 +94,10 @@ Events
 Everything that happens within chat, is an *event*. For example, if a user sends a message, you will receive an event
 like this::
 
-    <= ["chat.event", {"channel": "room_0", "event_type": "channel.message", "content": {"type": "text", "body": "Hello world"}, "sender": "user_todo", "sender_user": {…}, "event_id": 4}]
+    <= ["chat.event", {"channel": "room_0", "event_type": "channel.message", "content": {"type": "text", "body": "Hello world"}, "sender": "user_todo", "users": {"id1": {…}}, "event_id": 4}]
 
-``sender_user`` will only be sent if the server believes the client does not already know this user yet, since the client
-is expected to cache user profiles. You can also use ``user.fetch`` to fetch missing profiles.
+``users`` will only be sent if the server believes the client does not already know any user profiles required to render
+this message since the client is expected to cache user profiles. You can also use ``user.fetch`` to fetch missing profiles.
 
 The different event types are described below. After you joined a channel, the first event you see will be a membership
 event announcing your join. If you want to fetch previous events, you can do so with the ``chat.fetch`` command. As
