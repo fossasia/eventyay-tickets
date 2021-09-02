@@ -281,12 +281,12 @@ export default {
 			dispatch('markChannelRead')
 
 			// hit the user profile cache for each message
-			if (!state.usersLookup[event.sender]) {
-				if (event.sender_user) {
-					Vue.set(state.usersLookup, event.sender, event.sender_user)
-				} else {
-					await dispatch('fetchUsers', [event.sender])
+			if (event.users) {
+				for (const user of Object.values(event.users)) {
+					Vue.set(state.usersLookup, user.id, user)
 				}
+			} else if (!state.usersLookup[event.sender]) {
+				await dispatch('fetchUsers', [event.sender])
 			}
 		},
 		'api::chat.channels' ({state}, {channels}) {
@@ -322,6 +322,11 @@ export default {
 			const original = state.timeline.find(msg => msg.event_id === event.event_id)
 			if (original) {
 				original.reactions = event.reactions
+			}
+			if (event.users) {
+				for (const user of Object.values(event.users)) {
+					Vue.set(state.usersLookup, user.id, user)
+				}
 			}
 		}
 	}
