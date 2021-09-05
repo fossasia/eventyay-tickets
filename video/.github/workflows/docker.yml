@@ -1,4 +1,4 @@
-name: Server style
+name: Docker
 on:
   push:
     branches: [ dev, stable ]
@@ -22,7 +22,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
         with:
-          images: my-docker-hub-namespace/my-docker-hub-repository
+          images: venueless/venueless
       
       - name: Build and push Docker image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
