@@ -91,14 +91,9 @@ export default {
 					return resolve()
 				}
 				if (!this.changedImage) return resolve()
-				const resizeCanvas = document.createElement('canvas')
-				resizeCanvas.width = MAX_AVATAR_SIZE
-				resizeCanvas.height = MAX_AVATAR_SIZE
 
-				const ctx = resizeCanvas.getContext('2d')
-				ctx.drawImage(canvas, 0, 0, canvas.width, canvas.height, 0, 0, MAX_AVATAR_SIZE, MAX_AVATAR_SIZE)
-				resizeCanvas.toBlob(blob => {
-					const request = api.uploadFile(blob, 'avatar.png')
+				canvas.toBlob(blob => {
+					const request = api.uploadFile(blob, 'avatar.png', null, MAX_AVATAR_SIZE, MAX_AVATAR_SIZE)
 					request.addEventListener('load', (event) => {
 						const response = JSON.parse(request.responseText)
 						this.$emit('input', {url: response.url})

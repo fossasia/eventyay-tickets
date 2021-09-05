@@ -54,10 +54,12 @@ api.connect = function ({token, clientId}) {
 	})
 }
 
-api.uploadFile = function (file, filename, url) {
+api.uploadFile = function (file, filename, url, width, height) {
 	url = url || config.api.upload
 	const data = new FormData()
 	data.append('file', file, filename)
+	if (width) data.append('width', width)
+	if (height) data.append('height', height)
 	const request = new XMLHttpRequest()
 	request.open('POST', url)
 	request.setRequestHeader('Accept', 'application/json')
