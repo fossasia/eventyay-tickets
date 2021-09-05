@@ -17,10 +17,10 @@
 		bunt-button.btn-generate(@click="generateSummary", :loading="task == 'summary' && running", :error="task == 'summary' && error") Generate PDF (may take a while)
 		bunt-button.btn-secondary(@click="generateRoomviews", :loading="task == 'roomviews' && running", :error="task == 'roomviews' && error") Room activity (XLSX)
 		h3 Attendee list
-		bunt-button.btn-generate(@click="generateAttendeeList", :loading="task == 'attendee_list' && running", :error="task == 'attendee_list' && error") Generate XLSX (may take a while)
+		bunt-button.btn-generate(@click="run('attendee_list', {})", :loading="task == 'attendee_list' && running", :error="task == 'attendee_list' && error") Generate XLSX (may take a while)
 		h3 Chat history
 		bunt-select(v-model="channel", label="Room", name="channel", :options="channels", option-label="name")
-		bunt-button.btn-generate(@click="generateChatHistory", :loading="task == 'chat' && running", :error="task == 'chat' && error") Generate XLSX (may take a while)
+		bunt-button.btn-generate(@click="run('chat_history', {channel})", :disabled="!channel", :loading="task == 'chat' && running", :error="task == 'chat' && error") Generate XLSX (may take a while)
 </template>
 <script>
 import api from 'lib/api'
@@ -83,68 +83,29 @@ export default {
 		window.clearTimeout(this.timeout)
 	},
 	methods: {
-		async generateAttendeeList () {
-			this.running = true
-			this.error = false
-			this.task = 'attendee_list'
-			try {
-				const r = await api.call('world.report.generate.attendee_list', {
-				})
-				this.resultid = r.resultid
-				this.timeout = window.setTimeout(this.check, 2000)
-			} catch {
-				this.error = true
-				this.running = false
-			}
-		},
-		async generateChatHistory () {
-			if (!this.channel) return
-
-			this.running = true
-			this.error = false
-			this.task = 'chat'
-			try {
-				const r = await api.call('world.report.generate.chat_history', {
-					channel: this.channel
-				})
-				this.resultid = r.resultid
-				this.timeout = window.setTimeout(this.check, 2000)
-			} catch {
-				this.error = true
-				this.running = false
-			}
-		},
 		async generateRoomviews () {
 			this.$v.$touch()
 			if (this.$v.$invalid) return
-
-			this.running = true
-			this.error = false
-			this.task = 'roomviews'
-			try {
-				const r = await api.call('world.report.generate.roomviews', {
-					begin: this.day_start + 'T' + this.time_start,
-					end: this.day_end + 'T' + this.time_end,
-				})
-				this.resultid = r.resultid
-				this.timeout = window.setTimeout(this.check, 2000)
-			} catch {
-				this.error = true
-				this.running = false
-			}
+			await this.run('roomviews', {
+				begin: this.day_start + 'T' + this.time_start,
+				end: this.day_end + 'T' + this.time_end,
+			})
 		},
 		async generateSummary () {
 			this.$v.$touch()
 			if (this.$v.$invalid) return
 
+			await this.run('summary', {
+				begin: this.day_start + 'T' + this.time_start,
+				end: this.day_end + 'T' + this.time_end,
+			})
+		},
+		async run (name, payload) {
 			this.running = true
 			this.error = false
-			this.task = 'summary'
+			this.task = name
 			try {
-				const r = await api.call('world.report.generate.summary', {
-					begin: this.day_start + 'T' + this.time_start,
-					end: this.day_end + 'T' + this.time_end,
-				})
+				const r = await api.call(`world.report.generate.${name}`, payload)
 				this.resultid = r.resultid
 				this.timeout = window.setTimeout(this.check, 2000)
 			} catch {
