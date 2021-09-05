@@ -17,7 +17,9 @@
 			.display-name
 				| {{ user.profile.display_name }}
 				.ui-badge(v-for="badge in user.badges") {{ badge }}
-				span.inactive-label(v-if="user.inactive") {{ $t('User:state:inactive') }}
+				span.inactive-label(v-if="user.moderation_state === 'banned'") {{ $t('User:state:banned') }}
+				span.inactive-label(v-else-if="user.moderation_state === 'silenced'") {{ $t('User:state:silenced') }}
+				span.inactive-label(v-else-if="user.inactive") {{ $t('User:state:inactive') }}
 		infinite-scroll(v-if="nextPage", :loading="loading", @load="loadPage")
 </template>
 <script>
