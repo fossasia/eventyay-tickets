@@ -14,24 +14,35 @@
 				bunt-input(v-model="time_start", label="Start of day", name="time_start", :validation="$v.time_start")
 			div
 				bunt-input(v-model="time_end", label="End of day", name="time_end", :validation="$v.time_end")
-		bunt-button.btn-generate(@click="generateSummary", :loading="task == 'summary' && running", :error="task == 'summary' && error") Generate PDF (may take a while)
-		bunt-button.btn-secondary(@click="generateRoomviews", :loading="task == 'roomviews' && running", :error="task == 'roomviews' && error") Room activity (XLSX)
+		bunt-button.btn-generate(@click="generateSummary", :error="task == 'summary' && error") Generate PDF
+		bunt-button.btn-secondary(@click="generateRoomviews", :error="task == 'roomviews' && error") Room activity (XLSX)
 		h3 Attendee list
-		bunt-button.btn-generate(@click="run('attendee_list', {})", :loading="task == 'attendee_list' && running", :error="task == 'attendee_list' && error") Generate XLSX (may take a while)
+		bunt-button.btn-generate(@click="run('attendee_list', {})", :error="task == 'attendee_list' && error") Generate XLSX
 		h3 Chat history
 		bunt-select(v-model="channel", label="Room", name="channel", :options="channels", option-label="name")
-		bunt-button.btn-generate(@click="run('chat_history', {channel})", :disabled="!channel", :loading="task == 'chat' && running", :error="task == 'chat' && error") Generate XLSX (may take a while)
+		bunt-button.btn-generate(@click="run('chat_history', {channel})", :disabled="!channel", :error="task == 'chat' && error") Generate XLSX
+	transition(name="prompt")
+		prompt.report-result-prompt(v-if="running || result", @close="clear")
+			.content
+				h1(v-if="running") Preparing report…
+				h1(v-else) Report ready
+				bunt-progress-circular(v-if="running", size="huge")
+				bunt-button.btn-download(v-else, @click="open") Download report
+				p(v-if="running") If your event is large, this might take multiple minutes.
+
 </template>
 <script>
 import api from 'lib/api'
 import i18n from 'i18n'
 import moment from 'lib/timetravelMoment'
 import {helpers, required} from 'vuelidate/lib/validators'
+import Prompt from 'components/Prompt'
 
 const day = helpers.regex('day', /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/)
 const time = helpers.regex('time', /^[0-9]{2}:[0-9]{2}$/)
 
 export default {
+	components: { Prompt },
 	data () {
 		return {
 			day_start: moment().format('YYYY-MM-DD'),
@@ -40,6 +51,7 @@ export default {
 			time_end: '19:00',
 			channel: null,
 			resultid: null,
+			result: null,
 			running: false,
 			error: false,
 			timeout: null,
@@ -119,7 +131,7 @@ export default {
 					resultid: this.resultid
 				})
 				if (r.ready) {
-					window.open(r.result)
+					this.result = r.result
 					this.error = false
 					this.running = false
 				} else {
@@ -129,6 +141,16 @@ export default {
 				this.error = true
 				this.running = false
 			}
+		},
+		open () {
+			window.open(this.result)
+			this.clear()
+		},
+		clear () {
+			this.result = null
+			this.error = false
+			this.running = false
+			window.clearTimeout(this.timeout)
 		}
 	}
 }
@@ -161,4 +183,10 @@ export default {
 			resize: vertical
 			min-height: 250px
 			padding: 0 8px
+	.report-result-prompt
+		.content
+			padding: 0 20px 20px
+			text-align: center
+			.btn-download
+				themed-button-primary()
 </style>
