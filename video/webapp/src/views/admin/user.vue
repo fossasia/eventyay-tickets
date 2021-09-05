@@ -19,6 +19,7 @@
 				bunt-button#btn-change-avatar(@click="showChangeAvatar = true", v-if="edit") {{ $t('preferences/index:btn-change-avatar:label') }}
 			bunt-input.display-name(name="displayName", :label="$t('profile/GreetingPrompt:displayname:label')", v-model.trim="user.profile.display_name", :validation="$v.user.profile.display_name", :disabled="!edit")
 			bunt-input(name="id", label="ID", :value="user.id", :disabled="true")
+			bunt-input(name="token_id", label="External ID", :value="user.token_id", :disabled="true")
 			bunt-input(name="mod_state", label="Moderation state", :value="user.moderation_state || '-'", :disabled="true")
 			change-additional-fields(v-model="user.profile.fields", :disabled="!edit")
 	bunt-progress-circular(v-else, size="huge")
