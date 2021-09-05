@@ -8,7 +8,9 @@
 				span.display-name
 					| {{ user ? user.profile.display_name : '' }}
 					span.ui-badge(v-for="badge in user.badges") {{ badge }}
-					span.inactive-label(v-if="user.inactive") {{ $t('User:state:inactive') }}
+					span.inactive-label(v-if="user.moderation_state === 'banned'") {{ $t('User:state:banned') }}
+					span.inactive-label(v-else-if="user.moderation_state === 'silenced'") {{ $t('User:state:silenced') }}
+					span.inactive-label(v-else-if="user.inactive") {{ $t('User:state:inactive') }}
 			li(v-if="!lastPage")
 				infinite-scroll(:loading="loading", @load="page++")
 </template>
@@ -36,7 +38,7 @@ export default {
 	watch: {
 		page: async function () {
 			this.loading = true
-			const newPage = (await api.call('user.list.search', {search_term: this.search, page: this.page}))
+			const newPage = (await api.call('user.list.search', {search_term: this.search, page: this.page, include_banned: false}))
 			this.lastPage = newPage.isLastPage
 			this.list.push(...newPage.results)
 			this.loading = false
@@ -47,14 +49,14 @@ export default {
 	},
 	async created () {
 		this.loading = true
-		this.list = (await api.call('user.list.search', {search_term: this.search, page: this.page})).results
+		this.list = (await api.call('user.list.search', {search_term: this.search, page: this.page, include_banned: false})).results
 		this.loading = false
 	},
 	methods: {
 		updateList: async function () {
 			this.loading = true
 			this.page = 1
-			this.list = (await api.call('user.list.search', {search_term: this.search, page: this.page})).results
+			this.list = (await api.call('user.list.search', {search_term: this.search, page: this.page, include_banned: false})).results
 			this.loading = false
 		},
 		select: function (index) {

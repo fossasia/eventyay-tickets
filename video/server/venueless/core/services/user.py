@@ -403,6 +403,7 @@ def list_users(
     search_fields=[],
     trait_badges_map=None,
     include_banned=True,
+    include_admin_info=False,
 ) -> object:
     qs = (
         User.objects.filter(world_id=world_id, show_publicly=True)
@@ -422,7 +423,7 @@ def list_users(
     try:
         p = Paginator(
             qs.order_by("profile__display_name").values(
-                "id", "profile", "traits", "last_login"
+                "id", "profile", "traits", "last_login", "moderation_state", "token_id"
             ),
             page_size,
         ).page(page)
@@ -445,6 +446,14 @@ def list_users(
                         )
                         if trait_badges_map
                         else [],
+                        **(
+                            dict(
+                                moderation_state=u["moderation_state"],
+                                token_id=u["token_id"],
+                            )
+                            if include_admin_info
+                            else {}
+                        ),
                     )
                     for u in p.object_list
                 ],
