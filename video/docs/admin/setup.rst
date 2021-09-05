@@ -128,7 +128,7 @@ Docker image and service
 
 First of all, download the latest venueless image by running::
 
-    $ docker pull venueless/venueless:latest
+    $ docker pull venueless/venueless:stable
 
 We recommend starting the docker container using systemd to make sure it runs correctly after a reboot. Create a file
 named ``/etc/systemd/system/venueless.service`` with the following content::
@@ -146,7 +146,7 @@ named ``/etc/systemd/system/venueless.service`` with the following content::
         -v /var/venueless-data:/data \
         -v /etc/venueless:/etc/venueless \
         --sysctl net.core.somaxconn=4096 \
-        venueless/venueless:latest all
+        venueless/venueless:stable all
     ExecStop=/usr/bin/docker stop %n
 
     [Install]
@@ -233,7 +233,7 @@ Updates
 
 Updates are fairly simple, but require at least a short downtime::
 
-    # docker pull venueless/venueless:latest
+    # docker pull venueless/venueless:stable
     # systemctl restart venueless.service
 
 Restarting the service can take a few seconds, especially if the update requires changes to the database.
