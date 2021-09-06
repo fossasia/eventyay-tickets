@@ -305,7 +305,7 @@ class AuthModule(BaseModule):
             include_admin_info=await self.consumer.world.has_permission_async(
                 user=self.consumer.user, permission=Permission.WORLD_USERS_MANAGE
             ),
-            include_banned=body.get("include_banned", True)
+            include_banned=not body or body.get("include_banned", True)
             and await self.consumer.world.has_permission_async(
                 user=self.consumer.user, permission=Permission.WORLD_USERS_MANAGE
             ),
