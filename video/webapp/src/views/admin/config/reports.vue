@@ -16,6 +16,7 @@
 				bunt-input(v-model="time_end", label="End of day", name="time_end", :validation="$v.time_end")
 		bunt-button.btn-generate(@click="generateSummary", :error="task == 'summary' && error") Generate PDF
 		bunt-button.btn-secondary(@click="generateRoomviews", :error="task == 'roomviews' && error") Room activity (XLSX)
+		bunt-button.btn-secondary(@click="generateViews", :error="task == 'views' && error") Raw tracking data (XLSX)
 		h3 Attendee list
 		bunt-button.btn-generate(@click="run('attendee_list', {})", :error="task == 'attendee_list' && error") Generate XLSX
 		h3 Chat history
@@ -104,6 +105,14 @@ export default {
 		window.clearTimeout(this.timeout)
 	},
 	methods: {
+		async generateViews () {
+			this.$v.$touch()
+			if (this.$v.$invalid) return
+			await this.run('views', {
+				begin: this.day_start + 'T' + this.time_start,
+				end: this.day_end + 'T' + this.time_end,
+			})
+		},
 		async generateRoomviews () {
 			this.$v.$touch()
 			if (this.$v.$invalid) return
