@@ -13,7 +13,8 @@ from openpyxl import Workbook
 from openpyxl.utils import get_column_letter
 
 from venueless.celery_app import app
-from venueless.core.models import Channel, Room
+from venueless.core.models import Channel, ExhibitorView, Room, RoomView
+from venueless.core.models.world import WorldView
 from venueless.core.tasks import WorldTask
 from venueless.graphs.report import ReportGenerator
 from venueless.storage.models import StoredFile
@@ -244,6 +245,159 @@ def generate_room_views(world, input=None):
                     t += timedelta(minutes=5)
 
                 day += timedelta(days=1)
+
+    wb.save(io)
+    io.seek(0)
+
+    sf = StoredFile.objects.create(
+        world=world,
+        date=now(),
+        filename="report.xlsx",
+        expires=now() + timedelta(hours=2),
+        type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        public=True,
+        user=None,
+    )
+    sf.file.save("report.xlsx", ContentFile(io.read()))
+    return sf.file.url
+
+
+@app.task(base=WorldTask)
+def generate_views(world, input=None):
+    wb = Workbook(write_only=True)
+    io = BytesIO()
+    tz = pytz.timezone(world.timezone)
+    begin = dateutil.parser.parse(input.get("begin"))
+    if is_naive(begin):
+        make_aware(begin, tz)
+    begin = begin.astimezone(tz)
+    end = dateutil.parser.parse(input.get("end"))
+    if is_naive(end):
+        make_aware(end, tz)
+    end = end.astimezone(tz)
+
+    ws = wb.create_sheet("Room views")
+    header = [
+        "Room",
+        "Start",
+        "End",
+        "User ID",
+        "External ID",
+        "User name",
+    ]
+    for n in world.config["profile_fields"]:
+        header.append(n.get("label") or "")
+    ws.append(header)
+    rvq = (
+        RoomView.objects.filter(
+            Q(end__isnull=True) | Q(end__gte=begin),
+            start__lte=end,
+            room__world=world,
+        )
+        .select_related("room", "user")
+        .order_by("start")
+    )
+    for v in rvq:
+        u = v.user
+        if u.profile.get("display_name"):
+            ws.append(
+                [
+                    v.room.name,
+                    v.start.astimezone(pytz.timezone(world.timezone)).strftime(
+                        "%d.%m.%Y %H:%M:%S"
+                    ),
+                    (v.end or now())
+                    .astimezone(pytz.timezone(world.timezone))
+                    .strftime("%d.%m.%Y %H:%M:%S"),
+                    str(u.pk),
+                    u.token_id,
+                    u.profile.get("display_name"),
+                ]
+                + [
+                    (u.profile["fields"].get(n.get("id"), "") or "").strip()
+                    for n in world.config["profile_fields"]
+                ]
+            )
+
+    ws = wb.create_sheet("World views")
+    header = [
+        "Start",
+        "End",
+        "User ID",
+        "External ID",
+        "User name",
+    ]
+    for n in world.config["profile_fields"]:
+        header.append(n.get("label") or "")
+    ws.append(header)
+    rvq = (
+        WorldView.objects.filter(
+            Q(end__isnull=True) | Q(end__gte=begin),
+            start__lte=end,
+            world=world,
+        )
+        .select_related("user")
+        .order_by("start")
+    )
+    for v in rvq:
+        u = v.user
+        if u.profile.get("display_name"):
+            ws.append(
+                [
+                    v.start.astimezone(pytz.timezone(world.timezone)).strftime(
+                        "%d.%m.%Y %H:%M:%S"
+                    ),
+                    (v.end or now())
+                    .astimezone(pytz.timezone(world.timezone))
+                    .strftime("%d.%m.%Y %H:%M:%S"),
+                    str(u.pk),
+                    u.token_id,
+                    u.profile.get("display_name"),
+                ]
+                + [
+                    (u.profile["fields"].get(n.get("id"), "") or "").strip()
+                    for n in world.config["profile_fields"]
+                ]
+            )
+
+    ws = wb.create_sheet("Exhibitor views")
+    header = [
+        "Exhibitor",
+        "Datetime",
+        "User ID",
+        "External ID",
+        "User name",
+    ]
+    for n in world.config["profile_fields"]:
+        header.append(n.get("label") or "")
+    ws.append(header)
+    rvq = (
+        ExhibitorView.objects.filter(
+            datetime__gte=begin,
+            datetime__lte=end,
+            exhibitor__world=world,
+        )
+        .select_related("exhibitor", "user")
+        .order_by("datetime")
+    )
+    for v in rvq:
+        u = v.user
+        if u.profile.get("display_name"):
+            ws.append(
+                [
+                    v.exhibitor.name,
+                    v.datetime.astimezone(pytz.timezone(world.timezone)).strftime(
+                        "%d.%m.%Y %H:%M:%S"
+                    ),
+                    str(u.pk),
+                    u.token_id,
+                    u.profile.get("display_name"),
+                ]
+                + [
+                    (u.profile["fields"].get(n.get("id"), "") or "").strip()
+                    for n in world.config["profile_fields"]
+                ]
+            )
 
     wb.save(io)
     io.seek(0)

@@ -20,6 +20,7 @@ from venueless.graphs.tasks import (
     generate_question_history,
     generate_report,
     generate_room_views,
+    generate_views,
 )
 from venueless.importers.tasks import conftool_update_schedule
 from venueless.live.decorators import command, event, require_world_permission
@@ -152,6 +153,14 @@ class WorldModule(BaseModule):
     @require_world_permission(Permission.WORLD_GRAPHS)
     async def roomviews_generate(self, body):
         result = await sync_to_async(generate_room_views.apply_async)(
+            kwargs={"world": str(self.consumer.world.id), "input": body}
+        )
+        await self.consumer.send_success({"resultid": str(result.id)})
+
+    @command("report.generate.views")
+    @require_world_permission(Permission.WORLD_GRAPHS)
+    async def views_generate(self, body):
+        result = await sync_to_async(generate_views.apply_async)(
             kwargs={"world": str(self.consumer.world.id), "input": body}
         )
         await self.consumer.send_success({"resultid": str(result.id)})
