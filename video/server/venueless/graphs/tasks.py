@@ -13,7 +13,7 @@ from openpyxl import Workbook
 from openpyxl.utils import get_column_letter
 
 from venueless.celery_app import app
-from venueless.core.models import Channel
+from venueless.core.models import Channel, Room
 from venueless.core.tasks import WorldTask
 from venueless.graphs.report import ReportGenerator
 from venueless.storage.models import StoredFile
@@ -116,6 +116,49 @@ def generate_chat_history(world, input=None):
                 e.timestamp.astimezone(tz).time(),
                 e.sender.profile.get("display_name", ""),
                 msg,
+            ]
+        )
+
+    wb.save(io)
+    io.seek(0)
+
+    sf = StoredFile.objects.create(
+        world=world,
+        date=now(),
+        filename="report.xlsx",
+        expires=now() + timedelta(hours=2),
+        type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        public=True,
+        user=None,
+    )
+    sf.file.save("report.xlsx", ContentFile(io.read()))
+    return sf.file.url
+
+
+@app.task(base=WorldTask)
+def generate_question_history(world, input=None):
+    room = Room.objects.get(pk=input.get("room"))
+    tz = pytz.timezone(world.timezone)
+    io = BytesIO()
+
+    wb = Workbook(write_only=True)
+    ws = wb.create_sheet("Questions")
+    ws.freeze_panes = "A2"
+    ws.column_dimensions["A"].width = 15
+    ws.column_dimensions["B"].width = 15
+    ws.column_dimensions["C"].width = 40
+
+    header = ["Date", "Time", "Content", "Votes", "Status"]
+    ws.append(header)
+
+    for e in room.questions.with_score().order_by("timestamp"):
+        ws.append(
+            [
+                e.timestamp.astimezone(tz).date(),
+                e.timestamp.astimezone(tz).time(),
+                e.content,
+                e.score,
+                e.state,
             ]
         )
 

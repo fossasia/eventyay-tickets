@@ -20,7 +20,10 @@
 		bunt-button.btn-generate(@click="run('attendee_list', {})", :error="task == 'attendee_list' && error") Generate XLSX
 		h3 Chat history
 		bunt-select(v-model="channel", label="Room", name="channel", :options="channels", option-label="name")
-		bunt-button.btn-generate(@click="run('chat_history', {channel})", :disabled="!channel", :error="task == 'chat' && error") Generate XLSX
+		bunt-button.btn-generate(@click="run('chat_history', {channel})", :disabled="!channel", :error="task == 'chat_history' && error") Generate XLSX
+		h3 Questions
+		bunt-select(v-model="questionRoom", label="Room", name="questionRoom", :options="questionRooms", option-label="name")
+		bunt-button.btn-generate(@click="run('question_history', {room: questionRoom})", :disabled="!questionRoom", :error="task == 'question_history' && error") Generate XLSX
 	transition(name="prompt")
 		prompt.report-result-prompt(v-if="running || result", @close="clear")
 			.content
@@ -50,6 +53,7 @@ export default {
 			time_start: '07:00',
 			time_end: '19:00',
 			channel: null,
+			questionRoom: null,
 			resultid: null,
 			result: null,
 			running: false,
@@ -61,6 +65,11 @@ export default {
 	computed: {
 		strings () {
 			return i18n.messages[i18n.locale]
+		},
+		questionRooms () {
+			const r = []
+			r.push(...this.$store.state.rooms.filter((room) => room.modules.filter(m => m.type === 'question').length))
+			return r
 		},
 		channels () {
 			const r = []
