@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-09-03 16:20+0000\n"
-"PO-Revision-Date: 2021-09-03 16:17+0000\n"
-"Last-Translator: hamza Hamwie <hamza@live.hk>\n"
+"PO-Revision-Date: 2021-09-06 17:01+0000\n"
+"Last-Translator: Thomas Nappey <Thomas.nappey@newcastle.ac.uk>\n"
 "Language-Team: none\n"
 "Language: ar\n"
 "MIME-Version: 1.0\n"
@@ -243,7 +243,7 @@ msgstr "%(minutes)s دقيقة"
 #: pretalx/cfp/templates/cfp/event/fragment_state.html:15
 #: pretalx/submission/models/submission.py:52
 msgid "deleted"
-msgstr ""
+msgstr "تم الحذف"
 
 #: pretalx/agenda/templates/agenda/speaker.html:37
 msgid "The speaker's profile picture"
@@ -271,7 +271,7 @@ msgstr "صورة الجلسة الرئيسية"
 #: pretalx/orga/templates/orga/schedule/index.html:24
 #, python-format
 msgid "All times in %(tz)s"
-msgstr ""
+msgstr "كل الأوقات في %(tz)s"
 
 #: pretalx/agenda/templates/agenda/talk.html:103
 msgid "See also:"
@@ -524,8 +524,8 @@ msgid ""
 "You can enter proposals until %(deadline)s (%(timezone)s), %(until_string)s "
 "from now."
 msgstr ""
-"يمكنك الدخول الى المقترحات %(deadline)s (%(timezone)s) ,  %(until_string)s  "
-"من الأن."
+"يمكنك الدخول الى المقترحات %(deadline)s (%(timezone)s) , %(until_string)s من "
+"الأن."
 
 #: pretalx/cfp/templates/cfp/event/cfp.html:25
 #, python-format
@@ -6694,7 +6694,7 @@ msgstr ""
 
 #: pretalx/person/forms.py:37
 msgid "Password (again)"
-msgstr ""
+msgstr "كلمه السر(تكرارا)"
 
 #: pretalx/person/forms.py:56
 msgid ""
@@ -6780,7 +6780,7 @@ msgstr ""
 
 #: pretalx/person/models/user.py:86
 msgid "E-Mail"
-msgstr ""
+msgstr "إيميل"
 
 #: pretalx/person/models/user.py:88
 msgid ""
@@ -6930,11 +6930,11 @@ msgstr ""
 
 #: pretalx/settings.py:352
 msgid "English"
-msgstr ""
+msgstr "إنجليزي"
 
 #: pretalx/settings.py:358
 msgid "German"
-msgstr ""
+msgstr "ألمانية"
 
 #: pretalx/settings.py:364
 msgid "German (formal)"
@@ -6942,7 +6942,7 @@ msgstr ""
 
 #: pretalx/settings.py:371
 msgid "French"
-msgstr ""
+msgstr "فرنسي"
 
 #: pretalx/settings.py:377
 msgid "Traditional Chinese (Taiwan)"
@@ -6962,7 +6962,7 @@ msgstr ""
 
 #: pretalx/submission/forms/feedback.py:14
 msgid "All speakers"
-msgstr ""
+msgstr "كل المتحدثين"
 
 #: pretalx/submission/forms/submission.py:18
 msgid "Additional Speaker"
@@ -6982,7 +6982,7 @@ msgstr ""
 
 #: pretalx/submission/forms/submission.py:49
 msgid "Proposal title"
-msgstr ""
+msgstr "عنوان الاقتراح"
 
 #: pretalx/submission/forms/submission.py:151
 msgid ""
@@ -7038,7 +7038,7 @@ msgstr ""
 
 #: pretalx/submission/models/cfp.py:29
 msgid "text"
-msgstr ""
+msgstr "نص"
 
 #: pretalx/submission/models/cfp.py:36
 msgid "Default session type"
@@ -7048,7 +7048,7 @@ msgstr ""
 #: pretalx/submission/models/question.py:125
 #: pretalx/submission/models/type.py:39
 msgid "deadline"
-msgstr ""
+msgstr "الموعد النهائي"
 
 #: pretalx/submission/models/cfp.py:43
 msgid "Please put in the last date you want to accept proposals from users."
@@ -7056,7 +7056,7 @@ msgstr ""
 
 #: pretalx/submission/models/feedback.py:23
 msgid "Session"
-msgstr ""
+msgstr "حصة"
 
 #: pretalx/submission/models/feedback.py:33
 msgid "Rating"
@@ -7064,7 +7064,7 @@ msgstr ""
 
 #: pretalx/submission/models/question.py:43
 msgid "Number"
-msgstr ""
+msgstr "عدد"
 
 #: pretalx/submission/models/question.py:44
 msgid "Text (one-line)"

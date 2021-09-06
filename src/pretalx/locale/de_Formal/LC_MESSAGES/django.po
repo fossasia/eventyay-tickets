@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-09-03 16:20+0000\n"
-"PO-Revision-Date: 2021-08-15 00:53+0000\n"
-"Last-Translator: Problemkerze <problemkerze.github@uomc.de>\n"
+"PO-Revision-Date: 2021-09-06 17:01+0000\n"
+"Last-Translator: Tobias Kunze <r@rixx.de>\n"
 "Language-Team: \n"
 "Language: de_Formal\n"
 "MIME-Version: 1.0\n"
@@ -274,7 +274,7 @@ msgstr "Das Titelbild des Vortrags"
 #: pretalx/orga/templates/orga/schedule/index.html:24
 #, python-format
 msgid "All times in %(tz)s"
-msgstr ""
+msgstr "Alle Zeiten in %(tz)s"
 
 #: pretalx/agenda/templates/agenda/talk.html:103
 msgid "See also:"
@@ -2065,10 +2065,8 @@ msgid "{date_from} – {date_to}"
 msgstr "{date_from} – {date_to}"
 
 #: pretalx/event/forms.py:30
-#, fuzzy
-#| msgid "Review settings"
 msgid "Additional review team settings"
-msgstr "Review-Einstellungen"
+msgstr "Zusätzliche Review-Einstellungen"
 
 #: pretalx/event/forms.py:102
 msgid "Use languages"
@@ -2412,10 +2410,8 @@ msgid "Is a reviewer"
 msgstr "Ist ein Reviewer"
 
 #: pretalx/event/models/organiser.py:112
-#, fuzzy
-#| msgid "Title or speaker name"
 msgid "Always hide speaker names"
-msgstr "Titel oder Vortragende"
+msgstr "Namen von Vortragenden nie anzeigen"
 
 #: pretalx/event/models/organiser.py:114
 msgid ""
@@ -2423,6 +2419,10 @@ msgid ""
 "setting will <b>override the event settings</b> and always hide speaker "
 "names for this team."
 msgstr ""
+"Normalerweise wird Anonymisierung in den Review-Einstellungen einer "
+"Veranstaltung konfiguriert. Diese Option <b>überschreibt die "
+"Veranstaltungseinstellungen</b> und zeigt Mitgliedern dieses Teams nie die "
+"Namen von Vortragenden an."
 
 #: pretalx/event/models/organiser.py:122
 #, python-brace-format
@@ -2549,140 +2549,100 @@ msgid "Release next event date?"
 msgstr "Veröffentlichen Sie den nächsten Veranstaltungstermin?"
 
 #: pretalx/mail/context.py:46 pretalx/mail/context.py:53
-#, fuzzy
-#| msgid "The event's full name."
 msgid "The event's full name"
-msgstr "Der volle Name der Veranstaltung."
+msgstr "Der volle Name der Veranstaltung"
 
 #: pretalx/mail/context.py:60
 msgid "The event's short form, used in URLs"
-msgstr ""
+msgstr "Die Kurzform der Veranstaltung, zur Verwendung in URLs"
 
 #: pretalx/mail/context.py:67
-#, fuzzy
-#| msgid "The event's full name."
 msgid "The event's public base URL"
-msgstr "Der volle Name der Veranstaltung."
+msgstr "Die öffentliche URL der Veranstaltung"
 
 #: pretalx/mail/context.py:74
-#, fuzzy
-#| msgid "The event's full name."
 msgid "The event's public schedule URL"
-msgstr "Der volle Name der Veranstaltung."
+msgstr "Die Programm-URL der Veranstaltung"
 
 #: pretalx/mail/context.py:81
-#, fuzzy
-#| msgid "The event was made public."
 msgid "The event's public CfP URL"
-msgstr "Die Veranstaltung wurde veröffentlicht."
+msgstr "Die CfP-URL der Veranstaltung"
 
 #: pretalx/mail/context.py:88
-#, fuzzy
-#| msgid "The link to the user's list of proposals"
 msgid "URL to a user's list of proposals"
-msgstr "Der Link zur Einreichungsliste des Users"
+msgstr "Link zur Einreichungsliste einer Person"
 
 #: pretalx/mail/context.py:103
-#, fuzzy
-#| msgid "Text and deadline"
 msgid "The general CfP deadline"
-msgstr "Text und Einsendeschluss"
+msgstr "Die allgemeine Einsendefrist"
 
 #: pretalx/mail/context.py:110
-#, fuzzy
-#| msgid "The proposal was unconfirmed."
 msgid "The proposal's unique ID"
-msgstr "Die Bestätigung der Einreichung wurde zurückgenommen."
+msgstr "Die eindeutige ID der Einreichung"
 
 #: pretalx/mail/context.py:117
-#, fuzzy
-#| msgid "The proposal was deleted."
 msgid "The proposal's public URL"
-msgstr "Die Einreichung wurde gelöscht."
+msgstr "Die öffentliche URL der Veranstaltung"
 
 #: pretalx/mail/context.py:124 pretalx/mail/context.py:131
-#, fuzzy
-#| msgid "The speaker was already part of the proposal."
 msgid "The speaker's edit page for the proposal"
-msgstr "Der Vortragende war bereits Teil der Einreichung."
+msgstr "Der Bearbeitungslink für Vortragende der Einreichung"
 
 #: pretalx/mail/context.py:138
 msgid "Link to confirm a proposal after it has been accepted."
 msgstr "Link, um eine angenommene Einreichung zu bestätigen."
 
 #: pretalx/mail/context.py:145
-#, fuzzy
-#| msgid "Withdraw proposal"
 msgid "Link to withdraw the proposal"
-msgstr "Einreichung zurückziehen"
+msgstr "Link zum Zurückziehen der Einreichung"
 
 #: pretalx/mail/context.py:152 pretalx/mail/context.py:159
-#, fuzzy
-#| msgid "New proposal: {title}"
 msgid "The proposal's title"
-msgstr "Neue Einreichung: {title}"
+msgstr "Titel der Einreichung"
 
 #: pretalx/mail/context.py:166
 msgid "The name(s) of all speakers in this proposal."
 msgstr "Die Namen aller Vortragenden dieser Einreichung."
 
 #: pretalx/mail/context.py:173 pretalx/mail/context.py:180
-#, fuzzy
-#| msgid "Proposals by session type"
 msgid "The proposal's session type"
-msgstr "Einreichungen nach Einreichungstyp"
+msgstr "Einreichungstyp der Einreichung"
 
 #: pretalx/mail/context.py:187
 msgid "The track the proposal belongs to"
 msgstr "Der Track, zu dem die Einreichung gehört"
 
 #: pretalx/mail/context.py:194
-#, fuzzy
-#| msgid "This session's header image"
 msgid "The session's start date"
-msgstr "Das Titelbild des Vortrags"
+msgstr "Startdatum des Vortrags"
 
 #: pretalx/mail/context.py:201
-#, fuzzy
-#| msgid "This session's header image"
 msgid "The session's start time"
-msgstr "Das Titelbild des Vortrags"
+msgstr "Startuhrzeit des Vortrags"
 
 #: pretalx/mail/context.py:208
-#, fuzzy
-#| msgid "This session's header image"
 msgid "The session's end date"
-msgstr "Das Titelbild des Vortrags"
+msgstr "Enddatum des Vortrags"
 
 #: pretalx/mail/context.py:215
-#, fuzzy
-#| msgid "This session's header image"
 msgid "The session's end time"
-msgstr "Das Titelbild des Vortrags"
+msgstr "Enduhrzeit des Vortrags"
 
 #: pretalx/mail/context.py:221
-#, fuzzy
-#| msgid "Room I"
 msgid "Room 101"
-msgstr "Raum I"
+msgstr "Raum 101"
 
 #: pretalx/mail/context.py:222
-#, fuzzy
-#| msgid "This session's header image"
 msgid "The session's room"
-msgstr "Das Titelbild des Vortrags"
+msgstr "Der Raum des Vortrags"
 
 #: pretalx/mail/context.py:229
-#, fuzzy
-#| msgid "The event's full name."
 msgid "The addressed user's full name"
-msgstr "Der volle Name der Veranstaltung."
+msgstr "Der volle Name der Adressat:in"
 
 #: pretalx/mail/context.py:236
-#, fuzzy
-#| msgid "Organiser email address"
 msgid "The addressed user's email address"
-msgstr "Veranstalter-Adresse"
+msgstr "E-Mail-Adresse der Addressat:in"
 
 #: pretalx/mail/default_templates.py:4
 #, python-brace-format
@@ -3480,11 +3440,11 @@ msgstr "Bitte wählen Sie ein Trennzeichen für den CSV-Export aus."
 
 #: pretalx/orga/forms/mails.py:28 pretalx/orga/forms/mails.py:31
 msgid "Available placeholders:"
-msgstr ""
+msgstr "Verfügbare Platzhalter:"
 
 #: pretalx/orga/forms/mails.py:83
 msgid "Unknown template key!"
-msgstr ""
+msgstr "Unbekannter Platzhalter im Template!"
 
 #: pretalx/orga/forms/mails.py:107
 msgid "An email needs to have at least one recipient."
@@ -3533,10 +3493,8 @@ msgid "Tracks"
 msgstr "Tracks"
 
 #: pretalx/orga/forms/mails.py:160
-#, fuzzy
-#| msgid "Leave empty to use this category for all tracks."
 msgid "Leave empty to include proposals from all tracks."
-msgstr "Leer lassen, um die Standard-Kategorie zu verwenden."
+msgstr "Leerlassen für Einreichungen aller Tracks."
 
 #: pretalx/orga/forms/mails.py:163
 msgid "All proposals of these types"
@@ -3549,7 +3507,7 @@ msgstr "Einreichungsarten"
 
 #: pretalx/orga/forms/mails.py:168
 msgid "Leave empty to include proposals of all session types."
-msgstr ""
+msgstr "Leerlassen für Einreichungen aller Einreichungstypen."
 
 #: pretalx/orga/forms/mails.py:172 pretalx/orga/forms/mails.py:174
 #: pretalx/orga/templates/orga/base.html:265
@@ -3568,6 +3526,8 @@ msgid ""
 "Select proposals that should receive the email regardless of the other "
 "filters."
 msgstr ""
+"Auswahl von Einreichungen, die diese Mail zusätzlich zu den augewählten "
+"Filtern erhalten sollen."
 
 #: pretalx/orga/forms/mails.py:202
 msgid ""
@@ -3575,6 +3535,9 @@ msgid ""
 "If you provide multiple languages, the best fit for each speaker will be "
 "used."
 msgstr ""
+"Bei nur einer ausgefüllten Sprache wird diese Sprache für alle Mails "
+"verwendet. Bei mehreren Sprachen wird jeweils die am besten passende Sprache "
+"versendet."
 
 #: pretalx/orga/forms/review.py:61
 msgid "No score"
@@ -4725,10 +4688,8 @@ msgid "Discard"
 msgstr "Verwerfen"
 
 #: pretalx/orga/templates/orga/mails/outbox_form.html:108
-#, fuzzy
-#| msgid "Send all on this page"
 msgid "Discard all from this template"
-msgstr "Alle auf dieser Seite abschicken"
+msgstr "Alle Mails von dieser Vorlage verwerfen"
 
 #: pretalx/orga/templates/orga/mails/outbox_form.html:111
 msgid "Save and send"
@@ -4791,21 +4752,21 @@ msgid "delete"
 msgstr "Löschen"
 
 #: pretalx/orga/templates/orga/mails/send_form.html:19
-#, fuzzy
-#| msgid "Widget preview"
 msgid "E-mail preview"
-msgstr "Widget-Vorschau"
+msgstr "E-Mail-Vorschau"
 
 #: pretalx/orga/templates/orga/mails/send_form.html:21
 #, python-format
 msgid "Roughly %(count)s emails will be generated."
-msgstr ""
+msgstr "Etwa %(count)s E-Mails werden generiert werden."
 
 #: pretalx/orga/templates/orga/mails/send_form.html:28
 msgid ""
 "You have placeholders in your email that are either not valid or not valid "
 "for every email!"
 msgstr ""
+"In dieser E-Mail sind Platzhalter, die entweder gar nicht oder nicht für "
+"alle E-Mails anwendbar sind!"
 
 #: pretalx/orga/templates/orga/mails/send_form.html:32
 #, python-brace-format
@@ -4814,12 +4775,14 @@ msgid ""
 "example, if you are using {session_room}, but some proposals don't have a "
 "room yet, only emails for proposals with a scheduled room will be created."
 msgstr ""
+"E-Mails, in denen unbekannte oder unzutreffende Platzhalter sind, werden "
+"<b>nicht</b> generiert werden. Wenn beispielsweise {session_room} enthalten "
+"ist, aber einige Einreichungen noch keinen Raum haben, werden nur E-Mails "
+"für Einreichungen mit Raum generiert."
 
 #: pretalx/orga/templates/orga/mails/send_form.html:52
-#, fuzzy
-#| msgid "Review deadline"
 msgid "Preview email"
-msgstr "Reviewschluss"
+msgstr "E-Mail-Vorschau"
 
 #: pretalx/orga/templates/orga/mails/sent_list.html:9
 msgid "Sent Mails"
@@ -6523,19 +6486,18 @@ msgid "The mail has been copied, you can edit it now."
 msgstr "Die E-Mail wurde kopiert, Sie können sie jetzt editieren."
 
 #: pretalx/orga/views/mails.py:296
-#, fuzzy
-#| msgid "There has been no feedback for sessions in this event yet."
 msgid "There are no proposals or sessions matching this selection."
-msgstr "Es gab bislang keine Rückmeldungen zu dieser Veranstaltung."
+msgstr ""
+"Es gibt keine Einreichungen oder Vorträge, auf die diese Filter zutreffen."
 
 #: pretalx/orga/views/mails.py:307
 msgid "This value will be replaced based on dynamic parameters."
-msgstr ""
+msgstr "Dieser Wert wird ersetzt."
 
 #: pretalx/orga/views/mails.py:320
 #, python-brace-format
 msgid "Subject: {subject}"
-msgstr ""
+msgstr "Betreff: {subject}"
 
 #: pretalx/orga/views/mails.py:332 pretalx/orga/views/schedule.py:212
 #, python-brace-format
