@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-03 16:20+0000\n"
+"POT-Creation-Date: 2021-09-06 17:02+0000\n"
 "PO-Revision-Date: 2021-09-06 17:01+0000\n"
 "Last-Translator: laurent fernandez <laurent@ushova.io>\n"
 "Language-Team: none\n"
@@ -391,7 +391,7 @@ msgstr "Texto"
 #: pretalx/submission/models/submission.py:668
 #, python-brace-format
 msgid "{speaker} invites you to join their session!"
-msgstr "{orador} te invitaron a unirte a la sesión!"
+msgstr "{speaker} te invitaron a unirte a la sesión!"
 
 #: pretalx/cfp/forms/submissions.py:18
 #: pretalx/submission/models/submission.py:673
@@ -414,15 +414,15 @@ msgstr ""
 "\n"
 "Me gustaría invitarte a ser el ponente de la charla\n"
 "\n"
-"{titulo}\n"
+"{title}\n"
 "\n"
-"en el evento {evento}. Por favor sigue el enlace para unirte.\n"
+"en el evento {event}. Por favor sigue el enlace para unirte.\n"
 "\n"
-"{dirección}\n"
+"{url}\n"
 "\n"
 "¡Estoy deseando que llegue!\n"
 "\n"
-"{ponente}"
+"{speaker}"
 
 #: pretalx/cfp/phrases.py:9
 msgid ""
@@ -537,14 +537,14 @@ msgid ""
 "You can enter proposals until %(deadline)s (%(timezone)s), %(until_string)s "
 "from now."
 msgstr ""
-"Puede ingresar propuestas hasta%(deadline)%(timezone)s) , %(until_string)s "
+"Puede ingresar propuestas hasta %(deadline)s %(timezone)s, %(until_string)s "
 "desde ahora."
 
 #: pretalx/cfp/templates/cfp/event/cfp.html:25
 #, python-format
 msgid "This Call for Papers closed on %(deadline)s (%(timezone)s)."
 msgstr ""
-"Esta convocatoria de ponencias cerró el %(fecha límite)s %(zona horaria)s."
+"Esta convocatoria de ponencias cerró el %(deadline)s %(timezone)s."
 
 #: pretalx/cfp/templates/cfp/event/cfp.html:35
 #: pretalx/cfp/templates/cfp/event/index.html:23
@@ -614,8 +614,8 @@ msgid ""
 "You, %(name)s, have been invited to be a speaker for the session “%(talk)s”. "
 "Do you accept the invitation?"
 msgstr ""
-"Usted,% (nombre)s, ha sido invitado a ser un ponente de la sesión “% "
-"(charla)s”. ¿Aceptas la invitación?"
+"Usted, %(name)s, ha sido invitado a ser un ponente de la sesión “"
+"%(talk)s”. ¿Aceptas la invitación?"
 
 #: pretalx/cfp/templates/cfp/event/invitation.html:17
 msgid "Abstract:"
@@ -1123,7 +1123,7 @@ msgstr ""
 #: pretalx/cfp/views/wizard.py:97
 #, python-brace-format
 msgid "New proposal: {title}"
-msgstr "Nueva propuesta:{título}"
+msgstr "Nueva propuesta:{title}"
 
 #: pretalx/common/context_processors.py:37
 msgid "“"
@@ -1136,17 +1136,17 @@ msgstr "\""
 #: pretalx/common/css.py:116
 #, python-brace-format
 msgid "\"{value}\" is not allowed as attribute of \"{key}\""
-msgstr "\"{valor}\"no está permitido como atributo de\"{llave}\""
+msgstr "\"{value}\"no está permitido como atributo de\"{key}\""
 
 #: pretalx/common/css.py:122
 #, python-brace-format
 msgid "You are not allowed to include \"{key}\" keys in your CSS."
-msgstr "No se le permite incluir claves\"{llave}\" en su CSS."
+msgstr "No se le permite incluir claves\"{key}\" en su CSS."
 
 #: pretalx/common/forms/fields.py:83
 #, python-brace-format
 msgid "Please do not upload files larger than {size}!"
-msgstr "¡No suba archivos de más de{tamaño}!"
+msgstr "¡No suba archivos de más de{size}!"
 
 #: pretalx/common/forms/fields.py:104
 #, python-brace-format
@@ -1154,7 +1154,7 @@ msgid ""
 "This filetype ({extension}) is not allowed, it has to be one of the "
 "following: "
 msgstr ""
-"Este tipo de archivo ({extensión}) no está permitido, debe ser uno de los "
+"Este tipo de archivo ({extension}) no está permitido, debe ser uno de los "
 "siguientes: "
 
 #: pretalx/common/forms/fields.py:171
@@ -1188,7 +1188,7 @@ msgstr "Escriba entre {min_length} y {max_length} palabras."
 #: pretalx/common/forms/utils.py:17
 #, python-brace-format
 msgid "Please write between {min_length} and {max_length} characters."
-msgstr "Escriba entre {min_length} y {max_lengtrash} caracteres."
+msgstr "Escriba entre {min_length} y {max_length} caracteres."
 
 #: pretalx/common/forms/utils.py:19
 #, python-brace-format
@@ -1594,14 +1594,14 @@ msgid ""
 msgstr ""
 "Hola,\n"
 "\n"
-"ha recibido una nueva propuesta para su evento {evento_nombre}\n"
-"\"{Submit_title}\" de {ponente}.\n"
+"ha recibido una nueva propuesta para su evento {event_name}\n"
+"\"{submission_title}\" de {speakers}.\n"
 "Puedes ver los detalles en\n"
 "\n"
-"\"{orga_URL}\n"
+"\"{orga_url}\n"
 "\n"
 "Todo lo mejor\n"
-"para{event_nombre} sistema Cfp.\n"
+"para{event_name} sistema Cfp.\n"
 
 #: pretalx/common/models/settings.py:148
 #, python-brace-format
@@ -1624,9 +1624,9 @@ msgstr ""
 "Esperamos que esté satisfecho con pretalx como sistema CfP de su evento.\n"
 "Estos enlaces pueden ser útiles en los próximos días y semanas.\n"
 "\n"
-"- Panel de control de su evento:{event_tablero}\n"
-"- Una lista de propuestas:{event_presentaciones}\n"
-"- Su editor de horarios:{event_calendario}\n"
+"- Panel de control de su evento:{event_dashboard}\n"
+"- Una lista de propuestas:{event_submissions}\n"
+"- Su editor de horarios:{event_schedule}\n"
 "\n"
 "Si hay algo que te falta, ven y cuéntanoslo.\n"
 "en https://github.com/pretalx/pretalx/issues/new o mediante un\n"
@@ -1650,14 +1650,14 @@ msgstr ""
 "\n"
 "solo le escribo para informarle que su Convocatoria de Participación esta "
 "ahora\n"
-"cerrada. Aquí encontrará una lista de todas sus{presentaciones_count} "
+"cerrada. Aquí encontrará una lista de todas sus {submission_count} "
 "propuestas.\n"
-"{event_presentaciones}\n"
+"{event_submissions}\n"
 "\n"
-"Puede agregar revisores aquí:{event_equipo}\n"
-"Puede revisar las propuestas aquí:{event_revisión}\n"
+"Puede agregar revisores aquí:{event_team}\n"
+"Puede revisar las propuestas aquí:{event_review}\n"
 "Y cree su agenda aquí, una vez que haya aceptado las propuestas:"
-"{event_calendario}\n"
+"{event_schedule}\n"
 
 #: pretalx/common/models/settings.py:187
 #, python-brace-format
@@ -1683,11 +1683,11 @@ msgstr ""
 "algunas\n"
 "estadísticas que pueden resultarle interesantes:\n"
 "\n"
-"- Tenías{propuestas_count} propuestas,\n"
-"- De las cuales seleccionó{orales_count} sesiones.\n"
-"- Los revisores escribieron{reseñas_count} reseñas.\n"
-"- Lanzaste{calendario_count} programadas en total.\n"
-"- Durante el transcurso del evento, enviaste {correo_count} correos.\n"
+"- Tenías {submission_count} propuestas,\n"
+"- De las cuales seleccionó{talk_count} sesiones.\n"
+"- Los revisores escribieron{review_count} reseñas.\n"
+"- Lanzaste {schedule_count} programadas en total.\n"
+"- Durante el transcurso del evento, enviaste {mail_count} correos.\n"
 "\n"
 "Si hay algo que te falta, ven y cuéntanoslo\n"
 "en https://github.com/pretalx/pretalx/issues/new o mediante un\n"
@@ -1793,7 +1793,7 @@ msgstr ""
 #: pretalx/common/phrases.py:85
 #, python-brace-format
 msgid "You can use {link_start}Markdown{link_end} here."
-msgstr "Puede utilizar {link_comienzo} reducido {link_final} aquí."
+msgstr "Puede utilizar {link_start}reducido{link_end} aquí."
 
 #: pretalx/common/phrases.py:89
 msgid "This content will be shown publicly."
@@ -1909,7 +1909,7 @@ msgstr "Cerrar sesión"
 #: pretalx/common/templates/common/base.html:148
 #, python-format
 msgid "This is a static export generated at %(timestamp)s"
-msgstr "Esta es una exportación estática generada en%(marca de tiempo)s"
+msgstr "Esta es una exportación estática generada en%(timestamp)s"
 
 #: pretalx/common/templates/common/base.html:156
 msgid "Contact us"
@@ -1992,7 +1992,7 @@ msgstr "dos veces"
 #: pretalx/common/templatetags/times.py:17
 #, python-brace-format
 msgid "{number} times"
-msgstr "{número}veces"
+msgstr "{number} veces"
 
 #: pretalx/common/update_check.py:97
 msgid "pretalx update available"
@@ -2024,10 +2024,10 @@ msgstr ""
 "¡Hola!\n"
 "\n"
 "Hay una actualización disponible para pretalx o para uno de los complementos "
-"que instaló en su instalación pretalx en{base_url}.\n"
+"que instaló en su instalación pretalx en {base_url}.\n"
 "Por favor siga este enlace para más información:\n"
 "\n"
-"\"{URL}\n"
+"\"{url}\n"
 "\n"
 "Siempre puede encontrar información sobre las últimas actualizaciones en el "
 "registro de cambios:\n"
@@ -2047,7 +2047,7 @@ msgstr "complemento: {}"
 #: pretalx/common/utils.py:77
 #, python-brace-format
 msgid "{date_from} – {date_to}"
-msgstr "{fecha_desde} -{fecha_hasta}"
+msgstr "{date_from} -{date_to}"
 
 #: pretalx/event/forms.py:30
 msgid "Additional review team settings"
@@ -2168,7 +2168,7 @@ msgstr "No copiar"
 #: pretalx/event/models/event.py:50
 #, python-brace-format
 msgid "Invalid event slug – this slug is reserved: {value}."
-msgstr "Token del evento no válido: este token está reservado:{valor}."
+msgstr "Token del evento no válido: este token está reservado: {value}."
 
 #: pretalx/event/models/event.py:101 pretalx/event/models/organiser.py:24
 #: pretalx/orga/templates/orga/admin.html:41
@@ -2438,13 +2438,13 @@ msgid ""
 "The {organiser} team"
 msgstr ""
 "¡Hola!\n"
-"Te invitaron al equipo organizador de eventos de{name} equipo organizador "
+"Te invitaron al equipo organizador de eventos de {name} equipo organizador "
 "del evento: haga clic aquí para aceptar:\n"
 "\n"
-"{link_invitación}\n"
+"{invitation_link}\n"
 "\n"
 "Te veo allí,\n"
-"El equipo de {organización}"
+"El equipo de {organiser}"
 
 #: pretalx/event/models/organiser.py:186
 msgid "You have been invited to an organiser team"
@@ -2633,7 +2633,7 @@ msgstr "La dirección de correo electrónico del usuario destinatario"
 #: pretalx/mail/default_templates.py:4
 #, python-brace-format
 msgid "Your proposal: {submission_title}"
-msgstr "Su propuesta:{submit_title}"
+msgstr "Su propuesta:{submission_title}"
 
 #: pretalx/mail/default_templates.py:8
 #, python-brace-format
@@ -2651,15 +2651,15 @@ msgid ""
 msgstr ""
 "!Hola¡\n"
 "\n"
-"Hemos recibido tu propuesta\"{submit_title}\" a\n"
-"{nombre del evento}. Le sera notificado una vez que hayamos tenido tiempo de "
+"Hemos recibido tu propuesta\"{submission_title}\" a\n"
+"{event_name}. Le sera notificado una vez que hayamos tenido tiempo de "
 "considerar todos\n"
 "propuestas, pero hasta entonces puede ver y editar su propuesta en\n"
-"{submit_url}\n"
+"{submission_url}\n"
 "\n"
 "No dude en ponerse en contacto con nosotros si tiene alguna pregunta.\n"
 "\n"
-"Los organizadores{event_nombre}"
+"Los organizadores{event_name}"
 
 #: pretalx/mail/default_templates.py:23
 #, python-brace-format
@@ -2684,20 +2684,19 @@ msgid ""
 msgstr ""
 "!Hola¡\n"
 "\n"
-"Nos complace informarle que aceptamos su propuesta.\"{Presentación del "
-"título}\"\n"
-"a {event_nombre}. Haga clic en este enlace para confirmar su asistencia:\n"
+"Nos complace informarle que aceptamos su propuesta.\n\"{submission_title}\" \n"
+"a {event_name}. Haga clic en este enlace para confirmar su asistencia:\n"
 "\n"
-"···{confirmación_link}\n"
+"    {confirmation_link}\n"
 "\n"
-"Esperamos verte en{event_nombre} - ¡Por favor contáctenos si tiene alguna\n"
+"Esperamos verte en {event_name} - ¡Por favor contáctenos si tiene alguna\n"
 "pregunta! Nos comunicaremos nuevamente antes de la conferencia para "
 "brindarle detalles\n"
 "sobre su espacio en el horario y detalles técnicos relacionados con la sala\n"
 "y tecnología de presentación.\n"
 "\n"
 "¡Nos vemos allí!\n"
-"Los organizadores{event_nombre}"
+"Los organizadores{event_name}"
 
 #: pretalx/mail/default_templates.py:42
 #, python-brace-format
@@ -2714,11 +2713,11 @@ msgstr ""
 "¡Hola!\n"
 "\n"
 "Lamentamos informarle que no podemos aceptar su propuesta\n"
-"\"{submit_title}\" a{event_name}. Había demasiados propuestas\n"
+"\"{submission_title}\" a {event_name}. Había demasiados propuestas\n"
 "geniales - ¡pero esperamos verte en{event_name} como asistente en su lugar\n"
 "de un orador!\n"
 "\n"
-"Los organizadores{event_name}"
+"Los organizadores {event_name}"
 
 #: pretalx/mail/default_templates.py:53
 msgid "New schedule!"
@@ -2742,12 +2741,12 @@ msgstr ""
 "\n"
 "Hemos lanzado una nueva versión de programación y queríamos contarles:\n"
 "\n"
-"···{notificación}\n"
+"{notifications}\n"
 "\n"
 "Esperamos verte, y por favor contáctenos si hay algún problema con tu sesión "
 "o espacio asignado.\n"
 "\n"
-"Los organizadores{event_name}"
+"Los organizadores {event_name}"
 
 #: pretalx/mail/default_templates.py:69
 msgid "We have some questions about your proposal"
@@ -2774,13 +2773,13 @@ msgstr ""
 "Tenemos algunas preguntas abiertas sobre usted y su propuesta que queremos\n"
 "quisiera pedirle que conteste:\n"
 "\n"
-"··{questions}\n"
+"{questions}\n"
 "\n"
-"Puedes responderlos en {URL}.\n"
+"Puedes responderlos en {url}.\n"
 "\n"
 "No dude en ponerse en contacto con nosotros si tiene alguna pregunta.\n"
 "\n"
-"Los organizadores{event_name}"
+"Los organizadores {event_name}"
 
 #: pretalx/mail/models.py:45 pretalx/mail/models.py:206
 msgid "Reply-To"
@@ -2993,7 +2992,7 @@ msgstr "Le permitirá enviar una propuesta a nuestro CfP."
 #: pretalx/orga/forms/cfp.py:329
 #, python-brace-format
 msgid "This access code is valid until {date}."
-msgstr "Este código de acceso es válido hasta el{fecha}."
+msgstr "Este código de acceso es válido hasta el {date}."
 
 #: pretalx/orga/forms/cfp.py:341
 #, python-brace-format
@@ -3205,7 +3204,7 @@ msgid ""
 "The domain \"{domain}\" does not have a name server entry at this time. "
 "Please make sure the domain is working before configuring it here."
 msgstr ""
-"El dominio\"{dominio}\" no tiene una entrada de servidor de nombres en este "
+"El dominio \"{domain}\" no tiene una entrada de servidor de nombres en este "
 "momento. Asegúrese de que el dominio esté funcionando antes de configurarlo "
 "aquí."
 
@@ -3514,6 +3513,18 @@ msgstr ""
 "Si introduce un solo idioma, se utilizará este idioma para todos los correos "
 "electrónicos. Si introduce varios idiomas, se utilizará el más adecuado para "
 "cada orador."
+
+#: pretalx/orga/forms/mails.py:273
+#, fuzzy
+#| msgid "Please provide a valid email address."
+msgid "Please provide an email subject!"
+msgstr "Por favor ingrese una dirección de correo electrónico válida."
+
+#: pretalx/orga/forms/mails.py:275
+#, fuzzy
+#| msgid "Please provide a valid email address."
+msgid "Please provide an email text!"
+msgstr "Por favor ingrese una dirección de correo electrónico válida."
 
 #: pretalx/orga/forms/review.py:61
 msgid "No score"
@@ -6616,7 +6627,8 @@ msgstr "Idioma preferrido"
 
 #: pretalx/person/models/user.py:118
 msgid "If possible, upload an image that is least 120 pixels wide."
-msgstr "Si es posible, suba una imagen que tenga al menos 120 píxeles de ancho."
+msgstr ""
+"Si es posible, suba una imagen que tenga al menos 120 píxeles de ancho."
 
 #: pretalx/person/models/user.py:123
 msgid "Retrieve profile picture via gravatar"
@@ -6793,7 +6805,7 @@ msgid "German (formal)"
 msgstr ""
 
 #: pretalx/settings.py:371
-msgid "French"
+msgid "Arabic"
 msgstr ""
 
 #: pretalx/settings.py:377
@@ -6801,7 +6813,15 @@ msgid "Traditional Chinese (Taiwan)"
 msgstr ""
 
 #: pretalx/settings.py:383
+msgid "French"
+msgstr ""
+
+#: pretalx/settings.py:389
 msgid "Japanese"
+msgstr ""
+
+#: pretalx/settings.py:396
+msgid "Spanish"
 msgstr ""
 
 #: pretalx/submission/exporters.py:18
