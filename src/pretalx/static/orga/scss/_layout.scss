@@ -909,7 +909,7 @@ h2 .submission-state-dropdown {
 .review-table.table {
   thead th {
     position: sticky;
-    top: 50px;
+    top: 0;  // can't be sticky due to scroll containers, but we keep the sticky to make the &:after work
     background-color: white;
     border-bottom: none;
     z-index: 50;
