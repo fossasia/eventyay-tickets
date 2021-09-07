@@ -362,6 +362,7 @@ def generate_views(world, input=None):
 
     ws = wb.create_sheet("Exhibitor views")
     header = [
+        "Exhibition room",
         "Exhibitor",
         "Datetime",
         "User ID",
@@ -377,7 +378,7 @@ def generate_views(world, input=None):
             datetime__lte=end,
             exhibitor__world=world,
         )
-        .select_related("exhibitor", "user")
+        .select_related("exhibitor__room", "exhibitor", "user")
         .order_by("datetime")
     )
     for v in rvq:
@@ -385,6 +386,7 @@ def generate_views(world, input=None):
         if u.profile.get("display_name"):
             ws.append(
                 [
+                    v.exhibitor.room.name,
                     v.exhibitor.name,
                     v.datetime.astimezone(pytz.timezone(world.timezone)).strftime(
                         "%d.%m.%Y %H:%M:%S"
