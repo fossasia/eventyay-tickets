@@ -11,6 +11,14 @@ instead::
 
     $ docker-compose exec server python manage.py <COMMAND> <ARGS>
 
+User management
+---------------
+
+``createsuperuser``
+"""""""""""""""""""
+
+The ``createsuperuser`` allows you to interactively create a user for the backend configuration interface.
+
 Database management
 -------------------
 

@@ -212,7 +212,12 @@ Right now, every world needs its own domain to run on::
     World created.
     Default API keys: [{'issuer': 'any', 'audience': 'venueless', 'secret': 'zvB7hI28vbrI7KtsRnJ1TZBSN3DvYdoy9VoJGLI1ouHQP5VtRG3U6AgKJ9YOqKNU'}]
 
-That's it! You should now be able to access venueless on the configured domain.
+That's it! You should now be able to access venueless on the configured domain. To get access to the administration
+web interface, you first need to create a user::
+
+    $ docker exec -it venueless.service venueless createsuperuser
+
+Then, open ``/control/`` on your own domain and log in.
 
 Cronjobs
 --------
