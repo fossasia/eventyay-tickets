@@ -118,7 +118,8 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
                             if score.category_id in independent_ids:
                                 mapping[score.category_id].append(score.value)
                     mapping = {
-                        key: statistics_method(value) for key, value in mapping.items()
+                        key: round(statistics_method(value), 1)
+                        for key, value in mapping.items()
                     }
                     result = []
                     for category in self.independent_categories:
