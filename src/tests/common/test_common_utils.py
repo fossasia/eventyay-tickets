@@ -24,7 +24,7 @@ from pretalx.common.utils import I18nStrJSONEncoder, daterange, safe_filename
             "es",
             date(2003, 2, 1),
             date(2005, 4, 3),
-            "1 de Febrero de 2003 – 3 de Abril de 2005",
+            "1 de Febrero de 2003 -3 de Abril de 2005",
         ),
     ),
 )
