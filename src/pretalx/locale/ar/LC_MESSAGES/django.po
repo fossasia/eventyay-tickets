@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-09-06 17:02+0000\n"
-"PO-Revision-Date: 2021-09-06 17:01+0000\n"
-"Last-Translator: Thomas Nappey <Thomas.nappey@newcastle.ac.uk>\n"
+"PO-Revision-Date: 2021-09-08 20:57+0000\n"
+"Last-Translator: hamza Hamwie <hamza@live.hk>\n"
 "Language-Team: none\n"
 "Language: ar\n"
 "MIME-Version: 1.0\n"
@@ -2017,10 +2017,8 @@ msgid "{date_from} – {date_to}"
 msgstr "{date_from} – {date_to}"
 
 #: pretalx/event/forms.py:30
-#, fuzzy
-#| msgid "Review settings"
 msgid "Additional review team settings"
-msgstr "مراجعة الإعدادات"
+msgstr "مراجعة الإعدادات الإضافية الخاصة بالفريق"
 
 #: pretalx/event/forms.py:102
 msgid "Use languages"
@@ -2356,10 +2354,8 @@ msgid "Is a reviewer"
 msgstr "تمت مراجعتها"
 
 #: pretalx/event/models/organiser.py:112
-#, fuzzy
-#| msgid "Speaker names"
 msgid "Always hide speaker names"
-msgstr "أسماء المتحدثين"
+msgstr "قم بإخفاء أسماء المتحدثين دائما"
 
 #: pretalx/event/models/organiser.py:114
 msgid ""
@@ -2367,6 +2363,9 @@ msgid ""
 "setting will <b>override the event settings</b> and always hide speaker "
 "names for this team."
 msgstr ""
+"عادة ، يتم تكوين خاصية إخفاء الهوية في إعدادات مراجعة الحدث. سيؤدي إجراء هذا "
+"الإعدادات <b> إلى تجاوز إعدادات الحدث </ b> وإخفاء أسماء المتحدثين لهذا "
+"الفريق دائمًا."
 
 #: pretalx/event/models/organiser.py:122
 #, python-brace-format
@@ -2492,26 +2491,20 @@ msgid "Release next event date?"
 msgstr "تحرير تاريخ الحدث القادم ؟"
 
 #: pretalx/mail/context.py:46 pretalx/mail/context.py:53
-#, fuzzy
-#| msgid "The event's full name."
 msgid "The event's full name"
 msgstr "الاسم الكامل للحدث."
 
 #: pretalx/mail/context.py:60
 msgid "The event's short form, used in URLs"
-msgstr ""
+msgstr "النموذج المختصر للحدث ، المستخدم ضمن رابط URL"
 
 #: pretalx/mail/context.py:67
-#, fuzzy
-#| msgid "The event's full name."
 msgid "The event's public base URL"
-msgstr "الاسم الكامل للحدث."
+msgstr "عنوان الرابط (URL) الأساسي العام"
 
 #: pretalx/mail/context.py:74
-#, fuzzy
-#| msgid "The event's full name."
 msgid "The event's public schedule URL"
-msgstr "الاسم الكامل للحدث."
+msgstr "عنوان الرابط (URL) العام للجدول الزمني للحدث"
 
 #: pretalx/mail/context.py:81
 #, fuzzy
@@ -2521,47 +2514,35 @@ msgstr "تم الإعلان عن الحدث."
 
 #: pretalx/mail/context.py:88
 msgid "URL to a user's list of proposals"
-msgstr ""
+msgstr "عنوان URL لقائمة مقترحات المستخدم"
 
 #: pretalx/mail/context.py:103
-#, fuzzy
-#| msgid "Text and deadline"
 msgid "The general CfP deadline"
-msgstr "النص والموعد النهائي"
+msgstr "الموعد النهائي العام ل CfP"
 
 #: pretalx/mail/context.py:110
-#, fuzzy
-#| msgid "The proposal was unconfirmed."
 msgid "The proposal's unique ID"
-msgstr "كان الاقتراح غير مؤكد."
+msgstr "المعرف الفريد الخاص بالمقترح"
 
 #: pretalx/mail/context.py:117
-#, fuzzy
-#| msgid "The proposal was deleted."
 msgid "The proposal's public URL"
-msgstr "تم حذف المقترح."
+msgstr "عنوان رابط (URL) العام للمقتراح"
 
 #: pretalx/mail/context.py:124 pretalx/mail/context.py:131
-#, fuzzy
-#| msgid "A speaker was invited to the proposal."
 msgid "The speaker's edit page for the proposal"
-msgstr "تمت دعوة أحد المتحدثين إلى الاقتراح."
+msgstr "تعديل صفحة المتحدثين إلخاصة بالمقترح."
 
 #: pretalx/mail/context.py:138
 msgid "Link to confirm a proposal after it has been accepted."
 msgstr "رابط لتأكيد الاقتراح بعد قبوله."
 
 #: pretalx/mail/context.py:145
-#, fuzzy
-#| msgid "Withdraw proposal"
 msgid "Link to withdraw the proposal"
-msgstr "سحب مقترجك"
+msgstr "رابط لسحب المقترح"
 
 #: pretalx/mail/context.py:152 pretalx/mail/context.py:159
-#, fuzzy
-#| msgid "New proposal: {title}"
 msgid "The proposal's title"
-msgstr "مقترح جديد :{title}"
+msgstr "عنوان المقترح :{title}"
 
 #: pretalx/mail/context.py:166
 msgid "The name(s) of all speakers in this proposal."
@@ -2578,52 +2559,36 @@ msgid "The track the proposal belongs to"
 msgstr "المسار الذي ينتمي إليه الاقتراح يعود ل"
 
 #: pretalx/mail/context.py:194
-#, fuzzy
-#| msgid "This session's header image"
 msgid "The session's start date"
-msgstr "صورة الجلسة الرئيسية"
+msgstr "تاريح بدأ الجلسة"
 
 #: pretalx/mail/context.py:201
-#, fuzzy
-#| msgid "This session's header image"
 msgid "The session's start time"
-msgstr "صورة الجلسة الرئيسية"
+msgstr "وقت بدأ الجلسة"
 
 #: pretalx/mail/context.py:208
-#, fuzzy
-#| msgid "This session's header image"
 msgid "The session's end date"
-msgstr "صورة الجلسة الرئيسية"
+msgstr "تاريخ انتهاء الجلسة"
 
 #: pretalx/mail/context.py:215
-#, fuzzy
-#| msgid "This session's header image"
 msgid "The session's end time"
-msgstr "صورة الجلسة الرئيسية"
+msgstr "وقت إنتهاء الجلسة"
 
 #: pretalx/mail/context.py:221
-#, fuzzy
-#| msgid "Room"
 msgid "Room 101"
-msgstr "الغرفة"
+msgstr "الغرفة ١٠١"
 
 #: pretalx/mail/context.py:222
-#, fuzzy
-#| msgid "This session's header image"
 msgid "The session's room"
-msgstr "صورة الجلسة الرئيسية"
+msgstr "غرفة الجلسة"
 
 #: pretalx/mail/context.py:229
-#, fuzzy
-#| msgid "The event's full name."
 msgid "The addressed user's full name"
-msgstr "الاسم الكامل للحدث."
+msgstr "اسم المستخدم الكامل ."
 
 #: pretalx/mail/context.py:236
-#, fuzzy
-#| msgid "Organiser email address"
 msgid "The addressed user's email address"
-msgstr "عنوان البريد الإلكتروني الخاص المنظم"
+msgstr "عنوان ايميل المستخدم"
 
 #: pretalx/mail/default_templates.py:4
 #, python-brace-format
@@ -6702,7 +6667,7 @@ msgstr ""
 
 #: pretalx/person/exporters.py:17
 msgid "Speaker CSV"
-msgstr ""
+msgstr "المتحدث CSV"
 
 #: pretalx/person/forms.py:37
 msgid "Password (again)"
@@ -6713,82 +6678,90 @@ msgid ""
 "No user account matches the entered credentials. Are you sure that you typed "
 "your password correctly?"
 msgstr ""
+"لا يوجد حساب مستخدم يطابق بيانات الاعتماد التي ثمت إدخالها. هل أنت متأكد أنك "
+"كتبت كلمة المرور الخاصة بك بشكل صحيح؟"
 
 #: pretalx/person/forms.py:62
 msgid "Sorry, your account is currently disabled."
-msgstr ""
+msgstr "عذرا ، حسابك معطل حاليا."
 
 #: pretalx/person/forms.py:78
 msgid ""
 "We already have a user with that email address. Did you already register "
 "before and just need to log in?"
 msgstr ""
+"لدينا بالفعل مستخدم بعنوان البريد الإلكتروني هذا. هل قمت بالتسجيل مسبقا و "
+"أنت فقط بحاجة للقيام بعملية تسجيل الدخول؟"
 
 #: pretalx/person/forms.py:98
 msgid "Please fill all fields of either the login or the registration form."
-msgstr ""
+msgstr "يرجى ملء جميع الحقول الخاصة بتسجيل الدخول أو استمارة التسجيل."
 
 #: pretalx/person/forms.py:181 pretalx/person/forms.py:259
 msgid "Please choose a different email address."
-msgstr ""
+msgstr "الرجاء اختيار عنوان بريد إلكتروني مختلف."
 
 #: pretalx/person/forms.py:190
 msgid ""
 "Please provide a profile picture or allow us to load your picture from "
 "gravatar!"
-msgstr ""
+msgstr "يرجى تقديم صورة للملف الشخصي أو السماح لنا بتحميل صورتك من Gravatar!"
 
 #: pretalx/person/forms.py:237
 msgid "The current password you entered was not correct."
-msgstr ""
+msgstr "كلمة المرور الحالية التي أدخلتها غير صحيحة."
 
 #: pretalx/person/forms.py:241
 msgid "Password (current)"
-msgstr ""
+msgstr "كلمة السر (الحالية)"
 
 #: pretalx/person/forms.py:327
 msgid "Non-accepted submitters"
-msgstr ""
+msgstr "مقدمو الطلبات غير المقبولين"
 
 #: pretalx/person/models/information.py:26
 msgid "All accepted speakers"
-msgstr ""
+msgstr "دميع المتحدثين المقبولين."
 
 #: pretalx/person/models/information.py:27
 msgid "Only confirmed speakers"
-msgstr ""
+msgstr "فقط المتحدثين المعتمدين"
 
 #: pretalx/person/models/information.py:36
 msgid "Leave empty to show this information to all tracks."
-msgstr ""
+msgstr "اتركه فارغا لاستعراض هذه المعلومات ضمن جميع المسارات."
 
 #: pretalx/person/models/information.py:40
 msgid "Limit to proposal types"
-msgstr ""
+msgstr "قم بتحديد أنواع الطلبات (المقترحات)"
 
 #: pretalx/person/models/information.py:42
 msgid "Leave empty to show this information for all proposal types."
-msgstr ""
+msgstr "اتركه فارغًا لإظهار هذه المعلومات ضمن جميع أنواع العروض."
 
 #: pretalx/person/models/information.py:47
 #: pretalx/submission/models/resource.py:23
 msgid "file"
-msgstr ""
+msgstr "الملف"
 
 #: pretalx/person/models/information.py:50
 #: pretalx/submission/models/resource.py:24
 msgid "Please try to keep your upload small, preferably below 16 MB."
 msgstr ""
+"يرجى محاولة تقليل حجم الملف الذي تقوم بتحميله ، ويفضل أن يكون أقل من 16 "
+"ميغابايت."
 
 #: pretalx/person/models/profile.py:38
 msgid "The speaker has arrived"
-msgstr ""
+msgstr "حضر المتحدث"
 
 #: pretalx/person/models/user.py:81
 msgid ""
 "Please enter the name you wish to be displayed publicly. This name will be "
 "used for all events you are participating in on this server."
 msgstr ""
+"الرجاء إدخال الاسم الذي ترغب في عرضه علنًا. سيتم استخدام هذا الاسم لجميع "
+"الأحداث التي تشارك فيها على هذا الخادم."
 
 #: pretalx/person/models/user.py:86
 msgid "E-Mail"
@@ -6799,28 +6772,32 @@ msgid ""
 "Your email address will be used for password resets and notification about "
 "your event/proposals."
 msgstr ""
+"سيتم استخدام عنوان بريدك الإلكتروني لإعادة تعيين كلمة المرور وإعلامك ب "
+"الأحدث/المقترحات الخاصة بك."
 
 #: pretalx/person/models/user.py:109
 msgid "Preferred language"
-msgstr ""
+msgstr "اللغة المفضلة"
 
 #: pretalx/person/models/user.py:118
 msgid "If possible, upload an image that is least 120 pixels wide."
-msgstr ""
+msgstr "إذا أمكن ، قم بتحميل صورة لا يقل عرضها عن 120 بكسل."
 
 #: pretalx/person/models/user.py:123
 msgid "Retrieve profile picture via gravatar"
-msgstr ""
+msgstr "استرجاع صورة الملف الشخصي من خلال Gravatar"
 
 #: pretalx/person/models/user.py:125
 msgid ""
 "If you have registered with an email address that has a gravatar account, we "
 "can retrieve your profile picture from there."
 msgstr ""
+"إذا قمت بالتسجيل باستخدام عنوان بريد إلكتروني يحتوي على حساب Graatar ، "
+"فيمكننا استرداد صورة ملفك الشخصي من هناك."
 
 #: pretalx/person/models/user.py:136 pretalx/person/models/user.py:140
 msgid "Unnamed user"
-msgstr ""
+msgstr "مستخدم بدون اسم"
 
 #: pretalx/person/models/user.py:374
 #, python-brace-format
@@ -6837,14 +6814,25 @@ msgid ""
 "All the best,\n"
 "the pretalx robot"
 msgstr ""
+"نرحب بك {name} ،\n"
+"\n"
+"لقد طلبت كلمة مرور جديدة لحسابك على منصة pretalx.\n"
+"لإعادة تعيين كلمة المرور الخاصة بك ، انقر فوق الرابط التالي:\n"
+"\n"
+"   {url}\n"
+"\n"
+"إذا لم تكن أنت ، فيمكنك تجاهل هذا البريد الإلكتروني.\n"
+"\n"
+"أتمنى لك حظا موفقا،\n"
+"الروبوت بريترالكس"
 
 #: pretalx/person/models/user.py:389
 msgid "Password recovery"
-msgstr ""
+msgstr "استعادة كلمة السر"
 
 #: pretalx/schedule/ascii.py:24
 msgid "No speakers"
-msgstr ""
+msgstr "لا يوجد متحدثين"
 
 #: pretalx/schedule/forms.py:21
 msgid ""
@@ -6852,79 +6840,86 @@ msgid ""
 "green blocks. We will try to schedule your slot during these times. You can "
 "click a block twice to remove it."
 msgstr ""
+"يرجى النقر والسحب لتحديد مدى تواجدك أثناء المؤتمر باستخدام المربعات الخضراء. "
+"سنحاول جدولة موعدك خلال هذه الأوقات. يمكنك النقر فوق block مرتين لإزالتها."
 
 #: pretalx/schedule/forms.py:62
 #, python-brace-format
 msgid "Please note that all times are in the event timezone, {tz}."
-msgstr ""
+msgstr "يرجى ملاحظة أن جميع الأوقات وفق المنطقة الزمنية للحدث ، {tz}."
 
 #: pretalx/schedule/forms.py:96
 msgid "The submitted availability does not comply with the required format."
-msgstr ""
+msgstr "الملف الذي تم رفعه لا يتوافق مع التنسيق المطلوب."
 
 #: pretalx/schedule/forms.py:112
 msgid "The submitted availability contains an invalid date."
-msgstr ""
+msgstr "الاصدار المتاح يحتوي على تاريخ غير صالح."
 
 #: pretalx/schedule/forms.py:137 pretalx/schedule/forms.py:151
 msgid "Please fill in your availability!"
-msgstr ""
+msgstr "يرجى مشاركة الوقت الذي تكون فيه متاحا!"
 
 #: pretalx/schedule/forms.py:186
 msgid "Room I"
-msgstr ""
+msgstr "الغرفة ١"
 
 #: pretalx/schedule/forms.py:188
 msgid ""
 "Description, e.g.: Our main meeting place, Room I, enter from the right."
 msgstr ""
+"الوصف ، على سبيل المثال: مكان الاجتماع الرئيسي ، الغرفة I ، أدخل من الواجه "
+"اليمنى."
 
 #: pretalx/schedule/forms.py:191
 msgid "Information for speakers, e.g.: Projector has only HDMI input."
 msgstr ""
+"معلومات للمتحدثين ، على سبيل المثال: يحتوي جهاز العرض على مدخل HDMI فقط."
 
 #: pretalx/schedule/models/room.py:26
 msgid "A description for attendees, for example directions."
-msgstr ""
+msgstr "وصف للحضور ، على سبيل المثال الاتجاهات."
 
 #: pretalx/schedule/models/room.py:34
 msgid ""
 "Information relevant for speakers scheduled in this room, for example room "
 "size, special directions, available adaptors for video input …"
 msgstr ""
+"المعلومات ذات الصلة بالمتحدثين المجدولين في هذه الغرفة ، على سبيل المثال حجم "
+"الغرفة ، والاتجاهات الخاصة ، تكييف المدخلات المتاحة للفيديو …"
 
 #: pretalx/schedule/models/room.py:41
 msgid "How many people can fit in the room?"
-msgstr ""
+msgstr "كم عدد الأشخاص الذي يمكن للقاعة أن تستضيفهم؟"
 
 #: pretalx/schedule/models/room.py:46
 msgid "Position"
-msgstr ""
+msgstr "الموقع"
 
 #: pretalx/schedule/models/room.py:48
 msgid ""
 "This is the order that rooms are displayed in in the schedule (lower = left)."
-msgstr ""
+msgstr "هذا هو الترتيب الذي يتم به عرض القاعات ضمن الجدول (أسفل = يسار)."
 
 #: pretalx/schedule/models/schedule.py:39
 msgid "version"
-msgstr ""
+msgstr "النسحة"
 
 #: pretalx/schedule/models/schedule.py:45
 msgid "This text will be shown in the public changelog and the RSS feed."
-msgstr ""
+msgstr "سيعرض هذا النص في السجل العام وموجز RSS."
 
 #: pretalx/schedule/models/schedule.py:356
 msgid "The room is not available at the scheduled time."
-msgstr ""
+msgstr "القاعة غير متوفرة في الوقت المحدد."
 
 #: pretalx/schedule/models/schedule.py:381
 msgid "A speaker is not available at the scheduled time."
-msgstr ""
+msgstr "المتحدث غير متوفر في الوقت المحدد."
 
 #: pretalx/schedule/models/schedule.py:405
 msgid "A speaker is holding another session at the scheduled time."
-msgstr ""
+msgstr "المتحدث يعقد جلسة أخرى في الوقت المحدد."
 
 #: pretalx/schedule/templates/schedule/speaker_notification.txt:1
 #, python-format
@@ -6932,6 +6927,8 @@ msgid ""
 "\n"
 "- Your session “%(title)s” will take place at %(start)s in %(location)s"
 msgstr ""
+"\n"
+"جلستك“%(title)s”ستعقد %(start)s في%(location)s"
 
 #: pretalx/schedule/templates/schedule/speaker_notification.txt:2
 #, python-format
@@ -6939,6 +6936,8 @@ msgid ""
 "\n"
 "- Your session “%(title)s” has been moved to %(start)s in %(location)s"
 msgstr ""
+"\n"
+"جلستك %(title)s” نقلت الى %(start)s في %(location)s"
 
 #: pretalx/settings.py:352
 msgid "English"
@@ -6950,15 +6949,15 @@ msgstr "ألمانية"
 
 #: pretalx/settings.py:364
 msgid "German (formal)"
-msgstr ""
+msgstr "ألماني (رسمي)"
 
 #: pretalx/settings.py:371
 msgid "Arabic"
-msgstr ""
+msgstr "العربية"
 
 #: pretalx/settings.py:377
 msgid "Traditional Chinese (Taiwan)"
-msgstr ""
+msgstr "الصينية (تايوان)"
 
 #: pretalx/settings.py:383
 msgid "French"
@@ -6966,19 +6965,19 @@ msgstr "فرنسي"
 
 #: pretalx/settings.py:389
 msgid "Japanese"
-msgstr ""
+msgstr "اليابانية"
 
 #: pretalx/settings.py:396
 msgid "Spanish"
-msgstr ""
+msgstr "الاسبانية"
 
 #: pretalx/submission/exporters.py:18
 msgid "Answered speaker questions"
-msgstr ""
+msgstr "قم بالإجلبة على أسئلة المتحدث"
 
 #: pretalx/submission/exporters.py:63
 msgid "Answered session questions"
-msgstr ""
+msgstr "قم بالاجابة على الإسئلة المطروحة ضمن الجلسة"
 
 #: pretalx/submission/forms/feedback.py:14
 msgid "All speakers"
@@ -6986,7 +6985,7 @@ msgstr "كل المتحدثين"
 
 #: pretalx/submission/forms/submission.py:18
 msgid "Additional Speaker"
-msgstr ""
+msgstr "متحدث إضافي"
 
 #: pretalx/submission/forms/submission.py:20
 msgid ""
@@ -6994,11 +6993,14 @@ msgid ""
 "invite them to create an account. If you have more than one co-speaker, you "
 "can add more speakers after finishing the proposal process."
 msgstr ""
+"إذا كان لديك متحدث مشارك ، يرجى إضافة عنوان بريده الإلكتروني هنا ، وسوف "
+"ندعوهم لإنشاء حساب. إذا كان لديك أكثر من متحدث مشارك ، فيمكنك إضافة المزيد "
+"من المتحدثين بعد الانتهاء من عملية تقديم المقترح."
 
 #: pretalx/submission/forms/submission.py:27
 #: pretalx/submission/models/submission.py:205
 msgid "Use this if you want an illustration to go with your proposal."
-msgstr ""
+msgstr "استخدم هذا إذا كنت تريد رسمًا توضيحيًا يتناسب مع طلبك (مقنرحك)."
 
 #: pretalx/submission/forms/submission.py:49
 msgid "Proposal title"
@@ -7009,52 +7011,58 @@ msgid ""
 "Please contact the organisers if you want to change how often you're "
 "presenting this proposal."
 msgstr ""
+"يرجى الاتصال بالمنظمين إذا كنت تريد تغيير عدد المرات التي تقدم فيها هذا "
+"المقترح."
 
 #: pretalx/submission/forms/submission.py:254
 msgid "Proposal states"
-msgstr ""
+msgstr "حالة الطلب (المقترح)"
 
 #: pretalx/submission/forms/tag.py:21
 msgid "You already have a tag by this name!"
-msgstr ""
+msgstr "لديك بالفعل علامة بهذا الاسم!"
 
 #: pretalx/submission/models/access_code.py:18
 msgid "Access code"
-msgstr ""
+msgstr "رمز الدخول"
 
 #: pretalx/submission/models/access_code.py:27
 msgid ""
 "You can restrict the access code to a single track, or leave it open for all "
 "tracks."
-msgstr ""
+msgstr "يمكنك تقييد رمز الوصول إلى مسار واحد ، أو تركه مفتوحًا لجميع المسارات."
 
 #: pretalx/submission/models/access_code.py:38
 msgid ""
 "You can restrict the access code to a single session type, or leave it open "
 "for all session types."
 msgstr ""
+"يمكنك تقييد رمز الدخول ضمن نوع جلسة واحدة ، أو تركه مفتوحًا لجميع أنواع "
+"الجلسات."
 
 #: pretalx/submission/models/access_code.py:45
 msgid "Valid until"
-msgstr ""
+msgstr "صالح لغاية"
 
 #: pretalx/submission/models/access_code.py:47
 msgid "You can set or change this date later to invalidate the access code."
-msgstr ""
+msgstr "يمكنك تعيين هذا التاريخ أو تغييره لاحقًا لإبطال رمز الدخول."
 
 #: pretalx/submission/models/access_code.py:53
 msgid "Maximum uses"
-msgstr ""
+msgstr "العدد الكلي للمستخدمين"
 
 #: pretalx/submission/models/access_code.py:55
 msgid ""
 "Numbers of times this access code can be used to submit a proposal. Leave "
 "empty for no limit."
 msgstr ""
+"عدد المرات التي يمكن فيها استخدام رمز الدخول هذا لتقديم الطلب (المقترح). "
+"اتركه فارغا لاستخدامه بلا حدود."
 
 #: pretalx/submission/models/cfp.py:24
 msgid "headline"
-msgstr ""
+msgstr "العناوين الرئيسية"
 
 #: pretalx/submission/models/cfp.py:29
 msgid "text"
@@ -7062,7 +7070,7 @@ msgstr "نص"
 
 #: pretalx/submission/models/cfp.py:36
 msgid "Default session type"
-msgstr ""
+msgstr "نوع الجلسة بشكل افتراضي"
 
 #: pretalx/submission/models/cfp.py:41
 #: pretalx/submission/models/question.py:125
@@ -7073,6 +7081,8 @@ msgstr "الموعد النهائي"
 #: pretalx/submission/models/cfp.py:43
 msgid "Please put in the last date you want to accept proposals from users."
 msgstr ""
+"يرجى تحديد الموعد التاريخ النعائي الذي تفضله لقبول الطلبات (المقترحات) من "
+"المستخدمين."
 
 #: pretalx/submission/models/feedback.py:23
 msgid "Session"
@@ -7080,7 +7090,7 @@ msgstr "حصة"
 
 #: pretalx/submission/models/feedback.py:33
 msgid "Rating"
-msgstr ""
+msgstr "التقييم"
 
 #: pretalx/submission/models/question.py:43
 msgid "Number"
@@ -7088,142 +7098,150 @@ msgstr "عدد"
 
 #: pretalx/submission/models/question.py:44
 msgid "Text (one-line)"
-msgstr ""
+msgstr "النص (سطر واحد)"
 
 #: pretalx/submission/models/question.py:45
 msgid "Multi-line text"
-msgstr ""
+msgstr "النص (عدة أسطر)"
 
 #: pretalx/submission/models/question.py:46
 msgid "Yes/No"
-msgstr ""
+msgstr "نعم / لا"
 
 #: pretalx/submission/models/question.py:47
 msgid "File upload"
-msgstr ""
+msgstr "تم رفع الملف"
 
 #: pretalx/submission/models/question.py:48
 msgid "Choose one from a list"
-msgstr ""
+msgstr "اختيار واحد من القائمة"
 
 #: pretalx/submission/models/question.py:49
 msgid "Choose multiple from a list"
-msgstr ""
+msgstr "اختيار متعدد من القائمة"
 
 #: pretalx/submission/models/question.py:59
 msgid "per proposal"
-msgstr ""
+msgstr "لكل الطلب (مقترح)"
 
 #: pretalx/submission/models/question.py:60
 msgid "per speaker"
-msgstr ""
+msgstr "لكل متحدث"
 
 #: pretalx/submission/models/question.py:61
 msgid "for reviewers"
-msgstr ""
+msgstr "لكل مشارك"
 
 #: pretalx/submission/models/question.py:71
 msgid "always optional"
-msgstr ""
+msgstr "اختياري (دائما)"
 
 #: pretalx/submission/models/question.py:72
 msgid "always required"
-msgstr ""
+msgstr "مطلوب (بكل اأوقات)"
 
 #: pretalx/submission/models/question.py:73
 msgid "required after a deadline"
-msgstr ""
+msgstr "مطلوب بعد الموعد النهائي"
 
 #: pretalx/submission/models/question.py:117
 msgid "question type"
-msgstr ""
+msgstr "نوع السؤال"
 
 #: pretalx/submission/models/question.py:119
 msgid "Do you require an answer from every speaker or for every session?"
-msgstr ""
+msgstr "هل تطلب إجابة من كل متحدث أم لكل جلسة؟"
 
 #: pretalx/submission/models/question.py:127
 msgid "Set a deadline to make this question required after the given date."
-msgstr ""
+msgstr "وضع موعدًا نهائي لجعل هذا السؤال مطلوبًا بعد التاريخ المحدد."
 
 #: pretalx/submission/models/question.py:133
 msgid "freeze after"
-msgstr ""
+msgstr "بعد التعليق"
 
 #: pretalx/submission/models/question.py:134
 msgid "Set a deadline to stop changes to answers after the given date."
-msgstr ""
+msgstr "تحدد موعدًا نهائيًا لإيقاف التغييرات على الإجابات بعد التاريخ المحدد."
 
 #: pretalx/submission/models/question.py:140
 msgid "question required"
-msgstr ""
+msgstr "السؤال مطلوب"
 
 #: pretalx/submission/models/question.py:146
 msgid ""
 "You can limit this question to some tracks. Leave this field empty to apply "
 "to all tracks."
 msgstr ""
+"يمكنك تحديد هذا السؤال على بعض المسارات. اترك هذا الحقل فارغًا ليتم تطبيقه "
+"على جميع المسارات."
 
 #: pretalx/submission/models/question.py:155
 msgid ""
 "You can limit this question to some session types. Leave this field empty to "
 "apply to all session types."
 msgstr ""
+"يمكنك طرح هذا السؤال ضمن أنواع الجلسات محددة. اترك هذا الحقل فارغًا لتطبيقه "
+"على جميع أنواع الجلسات."
 
 #: pretalx/submission/models/question.py:160
 msgid "question"
-msgstr ""
+msgstr "السؤال"
 
 #: pretalx/submission/models/question.py:165
 msgid "help text"
-msgstr ""
+msgstr "النص المساعد"
 
 #: pretalx/submission/models/question.py:166
 msgid "Will appear just like this text below the question input field."
-msgstr ""
+msgstr "سيظهر تمامًا مثل هذا النص أسفل حقل إدخال السؤال."
 
 #: pretalx/submission/models/question.py:171
 msgid "default answer"
-msgstr ""
+msgstr "الإجابة الافتراضية"
 
 #: pretalx/submission/models/question.py:173
 msgid "position"
-msgstr ""
+msgstr "الموقع"
 
 #: pretalx/submission/models/question.py:177
 msgid "Inactive questions will no longer be asked."
-msgstr ""
+msgstr "لن يتم طرح الأسئلة غير النشطة بعد الآن."
 
 #: pretalx/submission/models/question.py:181
 msgid "Answers contain personal data"
-msgstr ""
+msgstr "تحتوي الإجابات على بيانات شخصية"
 
 #: pretalx/submission/models/question.py:183
 msgid ""
 "If a user deletes their account, answers of questions for personal data will "
 "be removed, too."
 msgstr ""
+"إذا قام أحد المستخدمين بحذف حسابه ، فستتم أيضًا إزالة إجابات الأسئلة الخاصة "
+"بالبيانات الشخصية."
 
 #: pretalx/submission/models/question.py:189
 msgid "Minimum text length"
-msgstr ""
+msgstr "الحد الأدنى لطول النص"
 
 #: pretalx/submission/models/question.py:191
 msgid "Minimum allowed text in characters or words (set in CfP settings)."
 msgstr ""
+"الحد الأدنى المسموح به للنص بالأحرف أو الكلمات (تم ضبطه في إعدادات CfP)."
 
 #: pretalx/submission/models/question.py:197
 msgid "Maximum text length"
-msgstr ""
+msgstr "الحد الأقصى لطول للنص"
 
 #: pretalx/submission/models/question.py:199
 msgid ""
 "Maximum allowed text length in characters or words (set in CfP settings)."
 msgstr ""
+"الحد الأقصى لطول النص المسموح به بالأحرف أو الكلمات (تم ضبطه في إعدادات CfP)."
 
 #: pretalx/submission/models/question.py:204
 msgid "Publish answers"
-msgstr ""
+msgstr "انشر الإجابات"
 
 #: pretalx/submission/models/question.py:206
 msgid ""
@@ -7231,194 +7249,211 @@ msgid ""
 "note that you cannot make a question public after the first answers have "
 "been given, to allow speakers explicit consent before publishing information."
 msgstr ""
+"سيتم عرض الإجابات على صفحات الجلسة أو المتحدث حسب الاقتضاء. يرجى ملاحظة أنه "
+"لا يمكنك جعل السؤال علنيًا بعد إعطاء الإجابات الأولى ، يجب إعلام للمتحدثين "
+"بالموافقة الصريحة قبل نشر المعلومات."
 
 #: pretalx/submission/models/question.py:211
 msgid "Show answers to reviewers"
-msgstr ""
+msgstr "عرض الإجابات للمراجعين"
 
 #: pretalx/submission/models/question.py:213
 msgid ""
 "Should answers to this question be shown to reviewers? This is helpful if "
 "you want to collect personal information, but use anonymous reviews."
 msgstr ""
+"هل يجب عرض الإجابات على هذا السؤال للمشاركين؟ هذا مفيد إذا كنت ترغب في جمع "
+"المعلومات الشخصية ، ولكن استخدام المراجعات مجهولة المصدر."
 
 #: pretalx/submission/models/resource.py:28
 msgid "description"
-msgstr ""
+msgstr "الوصف"
 
 #: pretalx/submission/models/review.py:22
 msgid "Leave empty to use this category for all tracks."
-msgstr ""
+msgstr "اتركه فارغا لاستخدام هذه الفئة لجميع المسارات."
 
 #: pretalx/submission/models/review.py:26
 msgid "Independent score"
-msgstr ""
+msgstr "النتيجة المستقلة"
 
 #: pretalx/submission/models/review.py:28
 msgid ""
 "Independent scores are not part of the total score. Instead they are shown "
 "in a separate column in the review dashboard."
 msgstr ""
+"النتيجة المستقلة ليست جزءًا من النتيجة الإجمالية. وبدلاً من ذلك ، يتم عرضها "
+"في عمود منفصل في لوحة معلومات المراجعة."
 
 #: pretalx/submission/models/review.py:89
 msgid "What do you think?"
-msgstr ""
+msgstr "ماذا تعتقد؟"
 
 #: pretalx/submission/models/review.py:194
 msgid "Phase start"
-msgstr ""
+msgstr "بداية المرحلة"
 
 #: pretalx/submission/models/review.py:195
 msgid "Phase end"
-msgstr ""
+msgstr "نهاية المرحلة"
 
 #: pretalx/submission/models/review.py:200
 msgid "Reviewers can write and edit reviews"
-msgstr ""
+msgstr "يمكن للمشاركين كتابة التقييمات وتعديلها"
 
 #: pretalx/submission/models/review.py:204
 msgid "Reviewers can see other reviews"
-msgstr ""
+msgstr "يمكن للمشاركين الاطلاع على التقييمات الأخرى"
 
 #: pretalx/submission/models/review.py:209
 msgid "After reviewing the proposal"
-msgstr ""
+msgstr "بعد مراجعة الطلب (المقترح)"
 
 #: pretalx/submission/models/review.py:214
 msgid "Reviewers can see speaker names"
-msgstr ""
+msgstr "يمكن للمشاركين رؤية أسماء المتحدثين"
 
 #: pretalx/submission/models/review.py:218
 msgid "Reviewers can see the names of other reviewers"
-msgstr ""
+msgstr "يمكن للمشاركين رؤية أسماء المشاركين الآخرين"
 
 #: pretalx/submission/models/review.py:222
 msgid "Reviewers can accept and reject proposals"
-msgstr ""
+msgstr "يمكن للمشاركين قبول الطلبات(المقترحات) ورفضها"
 
 #: pretalx/submission/models/review.py:226
 msgid "Reviewers can tag proposals"
-msgstr ""
+msgstr "يمكن للمشاركين وضع علامات على المقترحات"
 
 #: pretalx/submission/models/review.py:230
 msgid "Add and remove existing tags"
-msgstr ""
+msgstr "إضافة وإزالة العلامات الموجودة"
 
 #: pretalx/submission/models/review.py:231
 msgid "Add, remove and create tags"
-msgstr ""
+msgstr "إضافة وإزالة وإنشاء العلامات"
 
 #: pretalx/submission/models/review.py:236
 msgid "Speakers can modify their proposals before acceptance"
-msgstr ""
+msgstr "يمكن للمتحدثين تعديل طلباتهم (مقترحاتهم) قبل القبول"
 
 #: pretalx/submission/models/review.py:238
 msgid ""
 "By default, modification of proposals is locked after the CfP ends, and is "
 "re-enabled once the proposal was accepted."
 msgstr ""
+"بشكل افتراضي ، يتم قفل تعديل الطلبات(المقترحات) بعد انتهاء CfP ، ويتم إعادة "
+"تمكينه بمجرد قبول المقترح."
 
 #: pretalx/submission/models/submission.py:49
 msgid "rejected"
-msgstr ""
+msgstr "لم يتم الموافقة"
 
 #: pretalx/submission/models/submission.py:163
 msgid "These notes are meant for the organiser and won't be made public."
-msgstr ""
+msgstr "هذه الملاحظات مخصصة للمنظم ولن يتم نشرها على الملأ."
 
 #: pretalx/submission/models/submission.py:169
 msgid "Internal notes"
-msgstr ""
+msgstr "ملاحظات للمنظمين فقط"
 
 #: pretalx/submission/models/submission.py:171
 msgid ""
 "Internal notes for other organisers/reviewers. Not visible to the speakers "
 "or the public."
 msgstr ""
+"ملاحظات داخلية مع بقية المنظمين. لن يتم مشاركتها مع للمتحدثين أو الجمهور."
 
 #: pretalx/submission/models/submission.py:179
 msgid ""
 "The duration in minutes. Leave empty for default duration for this session "
 "type."
 msgstr ""
+"المدة بالدقائق. اتركه فارغًا تديدها ضمن المدة الافتراضية وفقا ل نوع الجلسة "
+"هذا."
 
 #: pretalx/submission/models/submission.py:185
 msgid "How many times this session will take place."
-msgstr ""
+msgstr "كم مرة ستعقد هذه الجلسة."
 
 #: pretalx/submission/models/submission.py:195
 msgid "Show this session in public list of featured sessions."
-msgstr ""
+msgstr "اعرض هذه الجلسة في القائمة العامة للجلسات المميزة."
 
 #: pretalx/submission/models/submission.py:198
 msgid "Don't record this session."
-msgstr ""
+msgstr "لاتقم بتسجل هذه الجلسة."
 
 #: pretalx/submission/models/submission.py:356
 msgctxt ""
 "used in talk confirm/accept/reject/...-errors, like \"... must be accepted "
 "OR foo OR bar ...\""
 msgid " or "
-msgstr ""
+msgstr " أو "
 
 #: pretalx/submission/models/submission.py:364
 #, python-brace-format
 msgid "Proposal must be {src_states} not {state} to be {new_state}."
 msgstr ""
+"يجب أن يكون الطلب (امقترح( {src_states} وليس {state} أن يكون {new_state}."
 
 #: pretalx/submission/models/tag.py:31
 msgid "Show tag publicly"
-msgstr ""
+msgstr "إظهار الإشارة للجميع"
 
 #: pretalx/submission/models/tag.py:33
 msgid ""
 "Tags are currently only in use for organisers and reviewers. They will be "
 "visible publicly in a future release of pretalx."
 msgstr ""
+"العلامات قيد الاستخدام حاليًا للمنظمين والمراجعين فقط. ستكون مرئية للعامة في "
+"إصدار مستقبلي من pretalx."
 
 #: pretalx/submission/models/track.py:41
 msgid ""
 "This track will only be shown to submitters with a matching access code."
-msgstr ""
+msgstr "لن يتم عرض هذا المسار إلا للمُقدمين الذين لديهم رمز دخول مطابق."
 
 #: pretalx/submission/models/type.py:30
 msgid "name"
-msgstr ""
+msgstr "الاسم"
 
 #: pretalx/submission/models/type.py:33
 msgid "default duration"
-msgstr ""
+msgstr "المدة الافتراضية"
 
 #: pretalx/submission/models/type.py:34
 msgid "Default duration in minutes"
-msgstr ""
+msgstr "المدة الافتراضية بالدقائق"
 
 #: pretalx/submission/models/type.py:41
 msgid ""
 "If you want a different deadline than the global deadline for this session "
 "type, enter it here."
 msgstr ""
+"إذا كنت تريد موعدًا نهائيًا مختلفًا عن الموعد النهائي العام لنوع الجلسة هذا ،"
+" قم بإدخاله هنا."
 
 #: pretalx/submission/models/type.py:47
 msgid ""
 "This session type will only be shown to submitters with a matching access "
 "code."
-msgstr ""
+msgstr "سيتم عرض نوع الجلسة هذا فقط للمُقدمين الذين لديهم رمزا لدخول المطابق."
 
 #: pretalx/submission/models/type.py:63
 #, python-brace-format
 msgid "{name} ({duration} days)"
-msgstr ""
+msgstr "{name} (مدة الأيام {duration} )"
 
 #: pretalx/submission/models/type.py:68
 #, python-brace-format
 msgid "{name} ({duration} hours)"
-msgstr ""
+msgstr "{name} (عدد الساعات {duration} )"
 
 #: pretalx/submission/models/type.py:72
 #, python-brace-format
 msgid "{name} ({duration} minutes)"
-msgstr ""
+msgstr "{name} ({duration} دقيقة)"
 
 #~ msgid "Choose one or more"
 #~ msgstr "اختر واحدًا أو أكثر"
