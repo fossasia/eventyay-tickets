@@ -35,7 +35,7 @@
         {% endblocktranslate %}
     </p>
 
-    <div id="widget-generation mw-100">
+    <div id="widget-generation">
         <p>
             {% blocktranslate trimmed %}
                 Using this form, you can generate code to copy and paste to your website source.
@@ -86,6 +86,7 @@
     </div>
 
     {% if request.event.is_public and request.event.settings.show_schedule and request.event.current_schedule %}
+    <div class="mw-100 overflow-auto">
         <h2>{% translate "Widget preview" %}</h2>
         <p>
             {% blocktranslate trimmed %}
@@ -93,6 +94,7 @@
             {% endblocktranslate %}
         </p>
         <pretalx-schedule event-url="{{ request.event.urls.base }}" locale="{{ request.event.locale }}" style="--pretalx-clr-primary: {{ request.event.primary_color|default:'#3aa57c' }}"></pretalx-schedule>
+      </div>
    <script type="text/javascript" src="{{ request.event.urls.schedule }}widget/v2.{{ request.event.locale }}.js" async></script>
         <noscript>
            <div class="pretalx-widget">
