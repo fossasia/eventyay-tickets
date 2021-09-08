@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` If you attach ``?lang=en`` to a request, pretalx will serve the page in the requested language (if active in the current event).
 - :bug:`1157` When adding a new organisers to a team, email suggestions from known users didn't work.
 - :bug:`1157` When adding a new speaker to a proposal, pretalx would suggest organiser accounts rather than speaker accounts.
 - :feature:`412` pretalx finally supports sending of emails based on templates, with a full template placeholder system. Hello, {name}!

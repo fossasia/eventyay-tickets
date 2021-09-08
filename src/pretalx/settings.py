@@ -347,6 +347,7 @@ LOCALE_PATHS = (Path(__file__).resolve().parent / "locale",)
 FORMAT_MODULE_PATH = ["pretalx.common.formats"]
 
 LANGUAGE_CODE = config.get("locale", "language_code")
+LANGUAGE_COOKIE_NAME = "pretalx_language"
 LANGUAGES_INFORMATION = {
     "en": {
         "name": _("English"),
