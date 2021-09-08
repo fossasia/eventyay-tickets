@@ -363,7 +363,7 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
         from pretalx.common.signals import register_locales
 
         result = []
-        for receiver, locales in register_locales.send(sender=None):
+        for receiver, locales in register_locales.send(sender=self):
             result += locales
         return result
 

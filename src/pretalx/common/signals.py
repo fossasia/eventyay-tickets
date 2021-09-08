@@ -170,4 +170,9 @@ register_locales = django.dispatch.Signal()
 To provide additional languages via plugins, you will have to provide some settings in
 the pretalx settings file, and return a list of the registered locales as response
 to this plugin signal.
+
+You should always return your locale when no ``sender`` keyword argument is given to
+make your locale available to the makemessages command. Otherwise, check that your
+plugin is enabled in the current event context if your locale should be scoped to
+events with your plugin activated.
 """
