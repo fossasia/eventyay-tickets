@@ -72,7 +72,9 @@ class TalkView(PermissionRequired, TemplateView):
 
     def get(self, request, *args, **kwargs):
         response = super().get(request, *args, **kwargs)
-        csp_update = {"img-src": "https://www.gravatar.com"}
+        csp_update = {}
+        if request.event.settings.use_gravatar:
+            csp_update["img-src"] = "https://www.gravatar.com"
         if self.recording.get("csp_header"):
             csp_update["frame-src"] = self.recording.get("csp_header")
         response._csp_update = csp_update

@@ -161,6 +161,8 @@ class SpeakerProfileForm(
             self.fields.pop("get_gravatar", None)
         elif not self.event.settings.cfp_require_avatar and "avatar" in self.fields:
             self.fields["avatar"].required = False
+        if not self.event.settings.use_gravatar:
+            self.fields.pop("get_gravatar", None)
 
     @cached_property
     def user_fields(self):

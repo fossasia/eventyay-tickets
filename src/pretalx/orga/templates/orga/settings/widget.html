@@ -86,14 +86,14 @@
     </div>
 
     {% if request.event.is_public and request.event.settings.show_schedule and request.event.current_schedule %}
-    <div class="mw-100 overflow-auto">
-        <h2>{% translate "Widget preview" %}</h2>
-        <p>
-            {% blocktranslate trimmed %}
-                This is roughly what your widget will look like if you choose the grid format:
-            {% endblocktranslate %}
-        </p>
-        <pretalx-schedule event-url="{{ request.event.urls.base }}" locale="{{ request.event.locale }}" style="--pretalx-clr-primary: {{ request.event.primary_color|default:'#3aa57c' }}"></pretalx-schedule>
+        <div class="mw-100 overflow-auto">
+            <h2>{% translate "Widget preview" %}</h2>
+            <p>
+                {% blocktranslate trimmed %}
+                    This is roughly what your widget will look like if you choose the grid format:
+                {% endblocktranslate %}
+            </p>
+            <pretalx-schedule event-url="{{ request.event.urls.base }}" locale="{{ request.event.locale }}" style="--pretalx-clr-primary: {{ request.event.primary_color|default:'#3aa57c' }}"></pretalx-schedule>
       </div>
    <script type="text/javascript" src="{{ request.event.urls.schedule }}widget/v2.{{ request.event.locale }}.js" async></script>
         <noscript>
