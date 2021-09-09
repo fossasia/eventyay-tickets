@@ -3,12 +3,13 @@ from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from i18nfield.forms import I18nModelForm
 
+from pretalx.common.mixins.forms import I18nHelpText
 from pretalx.orga.forms.export import ExportForm
 from pretalx.schedule.models import Schedule
 from pretalx.submission.models.submission import Submission, SubmissionStates
 
 
-class ScheduleReleaseForm(I18nModelForm):
+class ScheduleReleaseForm(I18nHelpText, I18nModelForm):
     notify_speakers = forms.BooleanField(
         label=_("Notify speakers of changes"), required=False, initial=True
     )

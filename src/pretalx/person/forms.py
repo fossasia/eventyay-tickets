@@ -16,7 +16,12 @@ from pretalx.common.forms.fields import (
     SizeFileField,
 )
 from pretalx.common.forms.widgets import MarkdownWidget
-from pretalx.common.mixins.forms import PublicContent, ReadOnlyFlag, RequestRequire
+from pretalx.common.mixins.forms import (
+    I18nHelpText,
+    PublicContent,
+    ReadOnlyFlag,
+    RequestRequire,
+)
 from pretalx.common.phrases import phrases
 from pretalx.person.models import SpeakerInformation, SpeakerProfile, User
 from pretalx.schedule.forms import AvailabilitiesFormMixin
@@ -286,7 +291,7 @@ class LoginInfoForm(forms.ModelForm):
         fields = ("email",)
 
 
-class SpeakerInformationForm(I18nModelForm):
+class SpeakerInformationForm(I18nHelpText, I18nModelForm):
     def __init__(self, *args, event=None, **kwargs):
         self.event = event
         super().__init__(*args, **kwargs)

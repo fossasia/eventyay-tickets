@@ -6,7 +6,7 @@ from django_scopes.forms import SafeModelChoiceField, SafeModelMultipleChoiceFie
 from hierarkey.forms import HierarkeyForm
 from i18nfield.forms import I18nFormMixin, I18nModelForm
 
-from pretalx.common.mixins.forms import ReadOnlyFlag
+from pretalx.common.mixins.forms import I18nHelpText, ReadOnlyFlag
 from pretalx.submission.models import (
     AnswerOption,
     CfP,
@@ -19,7 +19,7 @@ from pretalx.submission.models import (
 from pretalx.submission.models.question import QuestionRequired
 
 
-class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
+class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, I18nHelpText, HierarkeyForm):
     use_tracks = forms.BooleanField(
         label=_("Use tracks"),
         required=False,
@@ -129,7 +129,7 @@ class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
         super().save(*args, **kwargs)
 
 
-class CfPForm(ReadOnlyFlag, I18nModelForm):
+class CfPForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
     class Meta:
         model = CfP
         fields = ["headline", "text", "deadline"]
@@ -138,7 +138,7 @@ class CfPForm(ReadOnlyFlag, I18nModelForm):
         }
 
 
-class QuestionForm(ReadOnlyFlag, I18nModelForm):
+class QuestionForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
     def __init__(self, *args, event=None, **kwargs):
         super().__init__(*args, **kwargs)
         instance = kwargs.get("instance")
@@ -209,13 +209,13 @@ class QuestionForm(ReadOnlyFlag, I18nModelForm):
         }
 
 
-class AnswerOptionForm(ReadOnlyFlag, I18nModelForm):
+class AnswerOptionForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
     class Meta:
         model = AnswerOption
         fields = ["answer"]
 
 
-class SubmissionTypeForm(ReadOnlyFlag, I18nModelForm):
+class SubmissionTypeForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
     def __init__(self, *args, event=None, **kwargs):
         self.event = event
         super().__init__(*args, **kwargs)
@@ -244,7 +244,7 @@ class SubmissionTypeForm(ReadOnlyFlag, I18nModelForm):
         }
 
 
-class TrackForm(ReadOnlyFlag, I18nModelForm):
+class TrackForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
     def __init__(self, *args, event=None, **kwargs):
         self.event = event
         super().__init__(*args, **kwargs)

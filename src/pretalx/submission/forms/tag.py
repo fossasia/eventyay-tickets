@@ -2,11 +2,11 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from i18nfield.forms import I18nModelForm
 
-from pretalx.common.mixins.forms import ReadOnlyFlag
+from pretalx.common.mixins.forms import I18nHelpText, ReadOnlyFlag
 from pretalx.submission.models import Tag
 
 
-class TagForm(ReadOnlyFlag, I18nModelForm):
+class TagForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
     def __init__(self, *args, event=None, **kwargs):
         self.event = event
         super().__init__(*args, **kwargs)

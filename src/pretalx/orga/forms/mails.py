@@ -9,13 +9,13 @@ from django.utils.translation import gettext_lazy as _
 from i18nfield.forms import I18nModelForm
 
 from pretalx.common.exceptions import SendMailException
-from pretalx.common.mixins.forms import ReadOnlyFlag
+from pretalx.common.mixins.forms import I18nHelpText, ReadOnlyFlag
 from pretalx.mail.context import get_available_placeholders
 from pretalx.mail.models import MailTemplate, QueuedMail
 from pretalx.person.models import User
 
 
-class MailTemplateBase(I18nModelForm):
+class MailTemplateBase(I18nHelpText, I18nModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         available_placeholders = ", ".join(

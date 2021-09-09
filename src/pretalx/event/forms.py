@@ -8,13 +8,13 @@ from django_scopes.forms import SafeModelMultipleChoiceField
 from i18nfield.forms import I18nModelForm
 
 from pretalx.common.forms.fields import ImageField
-from pretalx.common.mixins.forms import ReadOnlyFlag
+from pretalx.common.mixins.forms import I18nHelpText, ReadOnlyFlag
 from pretalx.event.models import Event, Organiser, Team, TeamInvite
 from pretalx.orga.forms.widgets import HeaderSelect, MultipleLanguagesWidget
 from pretalx.submission.models import Track
 
 
-class TeamForm(ReadOnlyFlag, I18nModelForm):
+class TeamForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
     def __init__(self, *args, organiser=None, instance=None, **kwargs):
         super().__init__(*args, instance=instance, **kwargs)
         self.fields["organiser"].widget = forms.HiddenInput()
@@ -47,7 +47,7 @@ class TeamForm(ReadOnlyFlag, I18nModelForm):
         ]
 
 
-class TeamTrackForm(I18nModelForm):
+class TeamTrackForm(I18nHelpText, I18nModelForm):
     @scopes_disabled()
     def __init__(self, *args, organiser=None, **kwargs):
         super().__init__(*args, **kwargs)
@@ -84,7 +84,7 @@ class TeamInviteForm(ReadOnlyFlag, forms.ModelForm):
         fields = ("email",)
 
 
-class OrganiserForm(ReadOnlyFlag, I18nModelForm):
+class OrganiserForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -125,7 +125,7 @@ class EventWizardInitialForm(forms.Form):
         self.fields["organiser"].initial = self.fields["organiser"].queryset.first()
 
 
-class EventWizardBasicsForm(I18nModelForm):
+class EventWizardBasicsForm(I18nHelpText, I18nModelForm):
     def __init__(self, *args, user=None, locales=None, organiser=None, **kwargs):
         self.locales = locales or []
         super().__init__(*args, **kwargs, locales=locales)

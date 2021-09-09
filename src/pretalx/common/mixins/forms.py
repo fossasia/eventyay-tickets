@@ -4,6 +4,7 @@ from functools import partial
 from django import forms
 from django.core.files.uploadedfile import UploadedFile
 from django.utils.translation import gettext_lazy as _
+from i18nfield.forms import I18nFormField
 
 from pretalx.common.forms.fields import SizeFileField
 from pretalx.common.forms.utils import get_help_text, validate_field_length
@@ -280,3 +281,13 @@ class QuestionFieldsMixin:
             value = answer.answer
         else:
             answer.answer = value
+
+
+class I18nHelpText:
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            if isinstance(field, I18nFormField) and not field.widget.attrs.get(
+                "placeholder"
+            ):
+                field.widget.attrs["placeholder"] = field.label

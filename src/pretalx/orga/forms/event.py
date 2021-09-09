@@ -15,7 +15,7 @@ from i18nfield.forms import I18nFormMixin, I18nModelForm
 
 from pretalx.common.css import validate_css
 from pretalx.common.forms.fields import ImageField
-from pretalx.common.mixins.forms import ReadOnlyFlag
+from pretalx.common.mixins.forms import I18nHelpText, ReadOnlyFlag
 from pretalx.common.phrases import phrases
 from pretalx.event.models.event import Event
 from pretalx.orga.forms.widgets import HeaderSelect, MultipleLanguagesWidget
@@ -24,7 +24,7 @@ from pretalx.submission.models import ReviewPhase, ReviewScore, ReviewScoreCateg
 ENCRYPTED_PASSWORD_PLACEHOLDER = "*******"
 
 
-class EventForm(ReadOnlyFlag, I18nModelForm):
+class EventForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
     locales = forms.MultipleChoiceField(
         label=_("Active languages"),
         choices=[],
@@ -180,7 +180,7 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
         }
 
 
-class EventSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
+class EventSettingsForm(ReadOnlyFlag, I18nFormMixin, I18nHelpText, HierarkeyForm):
 
     custom_domain = forms.URLField(
         label=_("Custom domain"),
@@ -279,7 +279,7 @@ class EventSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
         return data
 
 
-class MailSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
+class MailSettingsForm(ReadOnlyFlag, I18nFormMixin, I18nHelpText, HierarkeyForm):
     mail_reply_to = forms.EmailField(
         label=_("Contact address"),
         help_text=_(
@@ -387,7 +387,7 @@ class MailSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
             )
 
 
-class ReviewSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
+class ReviewSettingsForm(ReadOnlyFlag, I18nFormMixin, I18nHelpText, HierarkeyForm):
     review_score_mandatory = forms.BooleanField(
         label=_("Require a review score"), required=False
     )
@@ -442,7 +442,7 @@ class WidgetGenerationForm(forms.ModelForm):
         widgets = {"locale": forms.Select(attrs={"class": "select2"})}
 
 
-class ReviewPhaseForm(I18nModelForm):
+class ReviewPhaseForm(I18nHelpText, I18nModelForm):
     def __init__(self, *args, event=None, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -477,7 +477,7 @@ class ReviewPhaseForm(I18nModelForm):
         }
 
 
-class ReviewScoreCategoryForm(I18nModelForm):
+class ReviewScoreCategoryForm(I18nHelpText, I18nModelForm):
     new_scores = forms.CharField(required=False, initial="")
 
     def __init__(self, *args, event=None, **kwargs):
