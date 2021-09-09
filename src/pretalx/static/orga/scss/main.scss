@@ -8,6 +8,7 @@
 @import "../../common/scss/_stages";
 @import "../../common/scss/_avatar";
 @import "../../common/scss/_dropdown";
+@import "../../common/scss/_rtl";
 @import "../../vendored/forkawesome/scss/fork-awesome";
 @import "../../vendored/datetimepicker/_bootstrap-datetimepicker";
 @import "../../common/scss/pretalx";
@@ -15,6 +16,7 @@
 @import "_schedule";
 @import "_flow";
 @import "_select";
+@import "_rtl";
 
 h3 {
   margin-left: 0px;

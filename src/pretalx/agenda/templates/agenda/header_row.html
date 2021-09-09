@@ -18,7 +18,7 @@
                 <summary class="btn btn-sm btn-outline-info">
                     <i class="fa fa-code"></i><i class="fa fa-caret-down"></i>
                 </summary>
-                <ul class="dropdown-content dropdown-content-sw">
+                <ul class="dropdown-content dropdown-content-s{% if rtl %}e{% else %}w{% endif %}">
                     {% for exporter in exporters %}{% if exporter.public %}
                         <li><a class="dropdown-item" href="{{ exporter.urls.base }}">
                             {% if exporter.icon|slice:":3" == "fa-" %}

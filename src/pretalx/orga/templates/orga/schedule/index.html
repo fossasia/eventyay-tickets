@@ -64,7 +64,7 @@
                 {% translate "Actions" %} <i class="fa fa-caret-down"></i>
             </summary>
 
-            <ul class="dropdown-content dropdown-front dropdown-content-sw">
+            <ul class="dropdown-content dropdown-front dropdown-content-s{% if rtl %}e{% else %}w{% endif %}">
                 <li><a class="dropdown-item" href="{{ active_schedule.urls.public }}" target="_blank" rel="noopener">
                     <i class="fa fa-link"></i> {% translate "View in frontend" %}
                 </a></li>

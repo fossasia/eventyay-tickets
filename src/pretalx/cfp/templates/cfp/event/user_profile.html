@@ -36,7 +36,7 @@
             {% bootstrap_field profile_form.availabilities layout='event' %}
         {% endif %}
         <div class="row">
-            <div class="col-md-4 ml-auto">
+            <div class="col-md-4 flip ml-auto">
                 <button type="submit" class="btn btn-block btn-success btn-lg" name="form" value="profile">
                     {% translate "Save" %}
                 </button>
@@ -50,7 +50,7 @@
             {% csrf_token %}
             {% bootstrap_form questions_form layout='event' %}
             <div class="row">
-                <div class="col-md-4 ml-auto">
+                <div class="col-md-4 flip ml-auto">
                     <button type="submit" class="btn btn-block btn-success btn-lg" name="form" value="questions">
                         {% translate "Save" %}
                     </button>
@@ -71,7 +71,7 @@
         {% bootstrap_field login_form.password layout='event' %}
         {% bootstrap_field login_form.password_repeat layout='event' %}
         <div class="row">
-            <div class="col-md-4 ml-auto">
+            <div class="col-md-4 flip ml-auto">
                 <button type="submit" class="btn btn-block btn-success btn-lg" name="form" value="login">
                     {% translate "Save" %}
                 </button>
@@ -90,10 +90,12 @@
             <input type="checkbox" name="really" id="really">
             <label class="form-control-label" for="really">{% translate "I really do want to delete my account, losing access to my proposals and sessions, and overriding my public and private data." %}</label>
         </div>
-        <div class="col-md-4 ml-auto">
-            <button type="submit" class="btn btn-block btn-danger btn-lg" name="form" value="">
-                {% translate "Delete my account" %}
-            </button>
+        <div class="row">
+            <div class="col-md-4 flip ml-auto">
+                <button type="submit" class="btn btn-block btn-danger btn-lg" name="form" value="">
+                    {% translate "Delete my account" %}
+                </button>
+            </div>
         </div>
     </form>
     {% compress js %}

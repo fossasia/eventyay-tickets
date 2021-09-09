@@ -17,7 +17,7 @@
         <form action="" method="post">
             {% csrf_token %}
             <p class="d-flex">
-                <button type="submit" name="trigger" value="1" class="btn btn-outline-info ml-auto">
+                <button type="submit" name="trigger" value="1" class="btn btn-outline-info flip ml-auto">
                     <i class="fa fa-refresh mr-2"></i>
                     {% translate "Check for updates now" %}
                 </button>
@@ -37,7 +37,7 @@
         <form action="" method="post">
             {% csrf_token %}
             <p class="d-flex">
-                <button type="submit" name="trigger" value="1" class="btn btn-outline-info ml-auto">
+                <button type="submit" name="trigger" value="1" class="btn btn-outline-info flip ml-auto">
                     <i class="fa fa-refresh mr-2"></i>
                     {% translate "Check for updates now" %}
                 </button>
@@ -50,14 +50,14 @@
                 {% blocktranslate trimmed with date=gs.settings.update_check_last|date:"SHORT_DATETIME_FORMAT" %}
                     Last updated: {{ date }}
                 {% endblocktranslate %}
-                <button type="submit" name="trigger" value="1" class="btn btn-outline-info ml-auto">
+                <button type="submit" name="trigger" value="1" class="btn btn-outline-info flip ml-auto">
                     <i class="fa fa-refresh mr-2"></i>
                     {% translate "Check for updates now" %}
                 </button>
             </p>
         </form>
         <div class="table-responsive">
-            <table class="table table-condensed">
+            <table class="table table-condensed table-flip">
                 <thead>
                     <tr>
                         <th>{% translate "Component" %}</th>

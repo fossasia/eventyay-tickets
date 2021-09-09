@@ -12,7 +12,7 @@
             </h2>
 
             <form method="post">{% csrf_token %}
-                <table class="table table-sm table-hover table-responsive-md">
+                <table class="table table-sm table-hover table-responsive-md table-flip">
                     <thead>
                         <tr>
                             <th>{% translate "Name" %}</th>
@@ -25,7 +25,7 @@
                             <tr>
                                 <td>{{ member.get_display_name }}</td>
                                 <td><a href="mailto:{{ member.email }}">{{ member.email }}</a></td>
-                                <td class="text-right">
+                                <td class="flip text-right">
                                     <a
                                         href="{% if request.event %}{{ request.event.orga_urls.team_settings }}{% else %}{{ request.organiser.orga_urls.teams }}{% endif %}{{ team.id }}/reset/{{ member.id }}"
                                         class="btn btn-sm btn-warning"
@@ -52,7 +52,7 @@
                                         <i class="fa fa-link"></i>
                                     </a>
                                 </td>
-                                <td class="text-right">
+                                <td class="flip text-right">
                                     <a
                                         href="{% if request.event %}{{ request.event.orga_urls.team_settings }}{% else %}{{ request.organiser.orga_urls.teams }}{% endif %}{{ member.id }}/resend"
                                         class="btn btn-sm btn-outline-warning"
@@ -71,7 +71,7 @@
                         <tr>
                             <td><strong>{% translate "Add member" %}</strong></td>
                             <td>{% csrf_token %}{% bootstrap_field invite_form.email layout='inline' %}</td>
-                            <td class="text-right">
+                            <td class="flip text-right">
                                 <button type="submit" name="form" value="invite" class="btn btn-success btn-sm"><i class="fa fa-check"></i></button>
                             </td>
                         </tr>

@@ -96,7 +96,7 @@
                                 {{ form.id }}
                                 {% bootstrap_field form.DELETE form_group_class="" layout="inline" %}
                             </div>
-                            <div class="question-option-row ml-auto col-md-9">
+                            <div class="question-option-row flip ml-auto col-md-9">
                                 <div class="question-option-input{% if action == 'view' %} disabled{% endif %}">
                                     {% bootstrap_form_errors form %}
                                     {% bootstrap_field form.answer layout='inline' form_group_class="" %}
@@ -118,7 +118,7 @@
                         {{ formset.empty_form.id }}
                         {% bootstrap_field formset.empty_form.DELETE form_group_class="" layout="inline" %}
                         </div>
-                        <div class="question-option-row ml-auto col-md-9">
+                        <div class="question-option-row flip ml-auto col-md-9">
                         <div class="question-option-input">
                         {% bootstrap_field formset.empty_form.answer layout='inline' form_group_class="" %}
                         </div>
@@ -131,7 +131,7 @@
                     {% endescapescript %}
                 </script>
                 {% if action != 'view' %}
-                    <p class="col-md-9 ml-auto">
+                    <p class="col-md-9 flip ml-auto">
                         <button type="button" class="btn btn-info" data-formset-add>
                             <i class="fa fa-plus"></i> {% translate "Add a new option" %}</button>
                     </p>

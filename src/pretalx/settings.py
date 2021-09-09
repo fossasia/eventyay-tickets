@@ -401,6 +401,9 @@ LANGUAGES_INFORMATION = {
         "public_code": "jp",
     },
 }
+LANGUAGES_RTL = {
+    "ar",
+}
 
 for section in config.sections():
     # Plugins can add languages, which will not be visible

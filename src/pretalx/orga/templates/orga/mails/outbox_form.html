@@ -27,7 +27,7 @@
         {% else %}
             <div class="container">
                 <div class="row mb-3">
-                    <div class="col col-md-3 text-right font-weight-bold">
+                    <div class="col col-md-3 flip text-right font-weight-bold">
                         <label>To</label>
                     </div>
                     <div class="col col-md-9">
@@ -37,7 +37,7 @@
 
                 {% if form.to_users %}
                     <div class="row mb-3">
-                        <div class="col col-md-3 text-right font-weight-bold">
+                        <div class="col col-md-3 flip text-right font-weight-bold">
                             <label>To Users</label>
                         </div>
                         <div class="col col-md-9">
@@ -55,7 +55,7 @@
                 {% endif %}
 
                 <div class="row mb-3">
-                    <div class="col col-md-3 text-right font-weight-bold">
+                    <div class="col col-md-3 flip text-right font-weight-bold">
                         <label>Reply-To</label>
                     </div>
                     <div class="col col-md-9">
@@ -64,7 +64,7 @@
                 </div>
 
                 <div class="row mb-3">
-                    <div class="col col-md-3 text-right font-weight-bold">
+                    <div class="col col-md-3 flip text-right font-weight-bold">
                         <label>CC</label>
                     </div>
                     <div class="col col-md-9">
@@ -73,7 +73,7 @@
                 </div>
 
                 <div class="row mb-3">
-                    <div class="col col-md-3 text-right font-weight-bold">
+                    <div class="col col-md-3 flip text-right font-weight-bold">
                         <label>BCC</label>
                     </div>
                     <div class="col col-md-9">
@@ -82,7 +82,7 @@
                 </div>
 
                 <div class="row mb-3">
-                    <div class="col col-md-3 text-right font-weight-bold">
+                    <div class="col col-md-3 flip text-right font-weight-bold">
                         <label>Subject</label>
                     </div>
                     <div class="col col-md-9">
@@ -91,7 +91,7 @@
                 </div>
 
                 <div class="row mb-3">
-                    <div class="col col-md-3 text-right font-weight-bold">
+                    <div class="col col-md-3 flip text-right font-weight-bold">
                         <label>Text</label>
                     </div>
                     <div class="col col-md-9">
@@ -102,21 +102,19 @@
         {% endif %}
 
         <div class="submit-group">
-            <span>
-                {% if action == "edit" %}
-                    <a class="btn btn-lg btn-danger mr-auto" href={{ form.instance.urls.delete }}>{% translate "Discard" %}</a>
-                    <a class="btn btn-lg btn-outline-danger mr-auto" href="{{ form.instance.urls.delete }}?all">{% translate "Discard all from this template" %}</a>
-                    </span><span>
-                        <button type="submit" class="btn btn-lg btn-success" name="form" value="save">{% translate "Save" %}</button>
-                        <button class="btn btn-lg btn-info" name="form" value="send">{% translate "Save and send" %}</button>
-                {% elif action == "view" %}
-                    {% if form.instance.sent %}
-                        <a class="btn btn-lg btn-success" href="{% if form.instance.template %}{{ request.event.orga_urls.compose_mails }}?template={{ form.instance.template.pk }}{% else %}{{ form.instance.urls.copy }}{% endif %}">
-                            {% translate "Copy to draft" %}
-                        </a>
-                    {% endif %}
+            {% if action == "edit" %}
+                <a class="btn btn-lg btn-danger ml-1 mr-1" href={{ form.instance.urls.delete }}>{% translate "Discard" %}</a>
+                <a class="btn btn-lg btn-outline-danger flip mr-auto" href="{{ form.instance.urls.delete }}?all">{% translate "Discard all from this template" %}</a>
+                </span><span>
+                    <button type="submit" class="btn btn-lg btn-success" name="form" value="save">{% translate "Save" %}</button>
+                    <button class="btn btn-lg btn-info" name="form" value="send">{% translate "Save and send" %}</button>
+            {% elif action == "view" %}
+                {% if form.instance.sent %}
+                    <a class="btn btn-lg btn-success ml-auto flip" href="{% if form.instance.template %}{{ request.event.orga_urls.compose_mails }}?template={{ form.instance.template.pk }}{% else %}{{ form.instance.urls.copy }}{% endif %}">
+                        {% translate "Copy to draft" %}
+                    </a>
                 {% endif %}
-            </span>
+            {% endif %}
         </div>
     </form>
 

@@ -23,7 +23,7 @@
     {% html_signal "pretalx.cfp.signals.html_above_submission_list" sender=request.event request=request %}
     <h2>{% translate "Your proposals" %}</h2>
     {% if submissions %}
-        <table class="table table-sm table-responsive table-responsive-md">
+        <table class="table table-sm table-responsive table-responsive-md table-flip">
             <thead>
                 <tr>
                     <th>{% translate "Title" %}</th>
@@ -43,7 +43,7 @@
                         <td>
                             {% include "cfp/event/fragment_state.html" with state=submission.state %}
                         </td>
-                        <td class="text-right">
+                        <td class="flip text-right">
                             {% if submission.public_slots %}
                                 <a href="{{ submission.urls.public }}">
                                     {% for talk in submission.public_slots %}
@@ -52,7 +52,7 @@
                                 </a>
                             {% endif %}
                         </td>
-                        <td class="text-right">
+                        <td class="flip text-right">
                             {% if submission.review_code %}
                                 <button data-destination="{{ submission.urls.review.full }}"
                                     class="btn btn-sm btn-info"

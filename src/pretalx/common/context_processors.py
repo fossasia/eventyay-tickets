@@ -40,6 +40,7 @@ def locale_context(request):
     context["html_locale"] = translation.get_language_info(lang).get(
         "public_code", lang
     )
+    context["rtl"] = getattr(request, "LANGUAGE_CODE", "en") in settings.LANGUAGES_RTL
     return context
 
 

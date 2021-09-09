@@ -19,7 +19,7 @@
         {% csrf_token %}
 
         <h2>{% translate "Review settings" %}</h2>
-        <div class="alert alert-info col-md-9 ml-auto">
+        <div class="alert alert-info col-md-9 flip ml-auto">
             {% blocktranslate trimmed %}
                 If you require neither a review score nor a review text, reviewers will
                 be offered an additional {{ quotation_open }}Abstain{{ quotation_close }}
@@ -61,7 +61,7 @@
                             {% bootstrap_field form.name form_group_class="" layout="inline" %}
                             {% if action != 'view' %}
                                 <a href="{{ form.instance.urls.delete }}"
-                                    class="btn btn-danger ml-auto"
+                                    class="btn btn-danger flip ml-auto"
                                     title="{% translate "Delete score category" %}">
                                     <i class="fa fa-trash"></i>
                                 </a>
@@ -72,7 +72,7 @@
                             {{ form.new_scores }}
                             {% bootstrap_field form.DELETE form_group_class="" layout="event" %}
                         </div>
-                        <div class="score-row ml-auto score-input{% if action == 'view' %} disabled{% endif %}">
+                        <div class="score-row flip ml-auto score-input{% if action == 'view' %} disabled{% endif %}">
                             {% bootstrap_form_errors form %}
                             {% bootstrap_field form.is_independent layout="event" form_group_class="" %}
                             {% bootstrap_field form.weight layout="event" form_group_class="" %}
@@ -88,11 +88,11 @@
                                             {% trans "Scores" %}
                                         </label>
                                     {% endif %}
-                                    <div class="col-md-9 ml-auto d-flex">
+                                    <div class="col-md-9 flip ml-auto d-flex">
                                         {% bootstrap_field label_pair.0 layout="inline" form_group_class="mr-2 ml-0 pl-0 col-md-1" %}
                                         {% bootstrap_field label_pair.1 layout="inline" form_group_class="" %}
                                         {% if forloop.first %}
-                                            <div class="new-score btn btn-info ml-auto"><i class="fa fa-plus"></i></div>
+                                            <div class="new-score btn btn-info flip ml-auto"><i class="fa fa-plus"></i></div>
                                         {% endif %}
                                     </div>
                                 </div>
@@ -101,8 +101,8 @@
                                     <label class="col-md-3 col-form-label">
                                         {% trans "Scores" %}
                                     </label>
-                                    <div class="col-md-9 ml-auto d-flex">
-                                        <div class="new-score btn btn-info ml-auto"><i class="fa fa-plus"></i></div>
+                                    <div class="col-md-9 flip ml-auto d-flex">
+                                        <div class="new-score btn btn-info flip ml-auto"><i class="fa fa-plus"></i></div>
                                     </div>
                                 </div>
                             {% endfor %}
@@ -117,7 +117,7 @@
                         <span class="mr-2 ml-2">{% translate "Score Category" %}</span>
                         {% bootstrap_field scores_formset.empty_form.name form_group_class="" layout="inline" %}
                         {% if action != 'view' %}
-                            <div class="score-delete ml-auto">
+                            <div class="score-delete flip ml-auto">
                             <button type="button" class="btn btn-danger" data-formset-delete-button>
                             <i class="fa fa-trash"></i></button>
                             </div>
@@ -128,7 +128,7 @@
                         {{ scores_formset.empty_form.new_scores }}
                         {% bootstrap_field scores_formset.empty_form.DELETE form_group_class="" layout="event" %}
                         </div>
-                        <div class="score-row ml-auto score-input">
+                        <div class="score-row flip ml-auto score-input">
                         {% bootstrap_field scores_formset.empty_form.is_independent layout="event" form_group_class="" %}
                         {% bootstrap_field scores_formset.empty_form.weight layout="event" form_group_class="" %}
                         {% bootstrap_field scores_formset.empty_form.required layout="event" form_group_class="" %}
@@ -138,7 +138,7 @@
                         {% trans "Scores" %}
                         </label>
                         <div class="col-md-9 d-flex">
-                        <div class="new-score btn btn-info ml-auto"><i class="fa fa-plus"></i></div>
+                        <div class="new-score btn btn-info flip ml-auto"><i class="fa fa-plus"></i></div>
                         </div>
                         </div>
                         </div>
@@ -148,7 +148,7 @@
             </div>
             {% if action == "edit" or action == "create" %}
                 <div class="list-group-item d-flex">
-                    <button type="button" id="score-add" class="btn btn-lg btn-info ml-auto mr-4" data-formset-add>
+                    <button type="button" id="score-add" class="btn btn-lg btn-info flip ml-auto mr-4" data-formset-add>
                         <i class="fa fa-plus"></i> {% translate "Add another score category" %}
                     </button>
                     <button type="submit" class="btn btn-lg btn-success">{% translate "Save" %}</button>
@@ -178,13 +178,13 @@
                             {% if action != 'view' %}
                                 {% if not form.instance.is_active %}
                                     <a href="{{ form.instance.urls.activate }}"
-                                        class="btn btn-outline-warning ml-auto mr-2 keep-scroll-position"
+                                        class="btn btn-outline-warning flip ml-auto mr-2 keep-scroll-position"
                                         title="{% translate "Activate phase" %}">
                                         <i class="fa fa-star"></i>
                                     </a>
                                 {% else %}
                                     <a href=""
-                                        class="btn btn-warning ml-auto mr-2 keep-scroll-position"
+                                        class="btn btn-warning flip ml-auto mr-2 keep-scroll-position"
                                         title="{% translate "Phase is active" %}">
                                         <i class="fa fa-star"></i>
                                     </a>
@@ -210,7 +210,7 @@
                             {{ form.id }}
                             {% bootstrap_field form.DELETE form_group_class="" layout="event" %}
                         </div>
-                        <div class="phase-option-row ml-auto">
+                        <div class="phase-option-row flip ml-auto">
                             <div class="phase-option-input{% if action == 'view' %} disabled{% endif %}">
                                 {% bootstrap_form_errors form %}
                                 {% bootstrap_form form layout="event" form_group_class="" exclude="DELETE,name" %}
@@ -226,7 +226,7 @@
                         <span class="mr-2 ml-2">{% translate "Review Phase" %}</span>
                         {% bootstrap_field phases_formset.empty_form.name form_group_class="" layout="inline" %}
                         {% if action != 'view' %}
-                            <div class="phase-option-delete ml-auto">
+                            <div class="phase-option-delete flip ml-auto">
                             <button type="button" class="btn btn-danger" data-formset-delete-button>
                             <i class="fa fa-trash"></i></button>
                             </div>
@@ -236,7 +236,7 @@
                         {{ phases_formset.empty_form.id }}
                         {% bootstrap_field phases_formset.empty_form.DELETE form_group_class="" layout="event" %}
                         </div>
-                        <div class="phase-option-row ml-auto">
+                        <div class="phase-option-row flip ml-auto">
                         <div class="phase-option-input">
                         {% bootstrap_form phases_formset.empty_form layout="event" form_group_class="" exclude="DELETE,name" %}
                         </div>
@@ -247,7 +247,7 @@
             </div>
             {% if action == "edit" or action == "create" %}
                 <div class="list-group-item d-flex">
-                    <button type="button" class="btn btn-lg btn-info ml-auto mr-4" data-formset-add>
+                    <button type="button" class="btn btn-lg btn-info flip ml-auto mr-4" data-formset-add>
                         <i class="fa fa-plus"></i> {% translate "Add another phase" %}
                     </button>
                     <button type="submit" class="btn btn-lg btn-success">{% translate "Save" %}</button>

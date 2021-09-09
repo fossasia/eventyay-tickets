@@ -26,7 +26,7 @@
             {% endblocktranslate %}
         </span>
         {% if can_create_submission %}
-            <p class="ml-auto">
+            <p class="flip ml-auto">
                 <a href="{{ request.event.orga_urls.new_submission }}" class="btn btn-info mt-2">
                     <i class="fa fa-plus"></i> {% translate "Add new proposal" %}
                 </a>
@@ -60,7 +60,7 @@
         {% endif %}
     </div>
 
-    <table class="table table-sm table-hover table-responsive-md">
+    <table class="table table-sm table-hover table-responsive-md table-flip">
         <thead>
             <tr>
                 {% if request.event.settings.use_tracks %}

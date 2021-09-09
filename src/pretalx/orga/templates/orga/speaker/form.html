@@ -24,7 +24,7 @@
             proposals
         {% endblocktranslate %})
     </h2>
-    <div class="alert alert-info col-md-9 ml-auto">
+    <div class="alert alert-info col-md-9 flip offset-md-3">
         <span>
             <h5>
                 {% blocktranslate trimmed count count=submissions.count %}
@@ -55,7 +55,7 @@
         {% bootstrap_field form.name layout='event' %}
         {% bootstrap_field form.email layout='event' %}
         <div class="d-flex mb-4">
-            <a href="{{ form.instance.orga_urls.password_reset }}" class="btn btn-info ml-auto">{% translate "Reset password" %}</a>
+            <a href="{{ form.instance.orga_urls.password_reset }}" class="btn btn-info flip flip ml-auto">{% translate "Reset password" %}</a>
         </div>
         {% if form.biography %}{% bootstrap_field form.biography layout='event' %}{% endif %}
         {% if form.availabilities %}

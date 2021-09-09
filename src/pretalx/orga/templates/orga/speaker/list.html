@@ -35,7 +35,7 @@
     {% endif %}
     {% has_perm 'orga.mark_speakers_arrived' request.user request.event as can_mark_speaker %}
     {% has_perm 'orga.see_speakers_arrival' request.user request.event as can_see_speaker_status %}
-    <table class="table table-sm table-hover table-responsive-md">
+    <table class="table table-sm table-hover table-responsive-md table-flip">
         <thead>
             <tr>
                 <th>{% translate "Name" %}</th>

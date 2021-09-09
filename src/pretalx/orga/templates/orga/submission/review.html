@@ -166,7 +166,7 @@
             {% endif %}
 
             {% if can_view_other_reviews or form.instance.pk %}
-                <table class="table review-table table-hover table-responsive-md">
+                <table class="table review-table table-hover table-responsive-md table-flip">
                     <tr>
                         <th>{% translate "Score" %}</th>
                         {% if score_categories|length > 1 %}

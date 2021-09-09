@@ -3,7 +3,7 @@
 {% load rules %}
 {% load static %}
 <!DOCTYPE html>
-<html lang="{{ html_locale }}">
+<html lang="{{ html_locale }}"{% if rtl %} dir="rtl" class="rtl"{% endif %}>
     <head>
         <meta charset="utf-8">
         <title>{% block title %}{% if request.event %}{{ request.event.name }}{% endif %}{% endblock %} :: pretalx</title>
@@ -60,7 +60,7 @@
                 <img src="{% static "common/img/icon.svg" %}" alt="{% translate "The pretalx logo" %}"> pretalx
             </a>
             <div class="navbar-collapse event-dropdown" id="navbartoggle">
-                <ul class="navbar-nav mr-auto">
+                <ul class="navbar-nav mr-auto flip">
                     <li class="nav-item dropdown active" id="event-navigation">
                         {% if request.orga_events.count > 1 %}
                             <a class="nav-link dropdown-toggle" id="eventDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
