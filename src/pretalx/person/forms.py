@@ -206,13 +206,17 @@ class SpeakerProfileForm(
     def save(self, **kwargs):
         for user_attribute in self.user_fields:
             value = self.cleaned_data.get(user_attribute)
-            if value is False and user_attribute == "avatar":
-                self.user.avatar = None
+            if user_attribute == "avatar":
+                if value is False:
+                    self.user.avatar = None
+                    # self.user.avatar = getattr(self.user, "avatar") or None  # Don't unset avatar in
+                elif value:
+                    self.user.avatar = value
             elif value is None and user_attribute == "get_gravatar":
                 self.user.get_gravatar = False
             else:
                 setattr(self.user, user_attribute, value)
-                self.user.save(update_fields=[user_attribute])
+            self.user.save(update_fields=[user_attribute])
 
         self.instance.event = self.event
         self.instance.user = self.user
