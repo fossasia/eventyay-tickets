@@ -76,9 +76,6 @@ def get_sizes(size, imgsize):
 
 
 def resize_image(image, size):
-    # before we calc thumbnail, we need to check and apply EXIF-orientation
-    image = ImageOps.exif_transpose(image)
-
     new_size = get_sizes(size, image.size)
     image = image.resize(new_size, resample=LANCZOS)
     return image
@@ -174,6 +171,10 @@ class UploadView(UploadMixin, View):
             file.seek(0)
 
         image = original_image = Image.open(file)
+
+        # before we resize or resave anything
+        image = ImageOps.exif_transpose(image)
+
         if self.request.POST.get("width") and self.request.POST.get("height"):
             try:
                 image = resize_image(
