@@ -91,7 +91,10 @@ export default {
 			if (!state.beforeCursor || state.fetchingMessages) return
 			state.fetchingMessages = true
 			try {
-				const {results, users} = await api.call('chat.fetch', {channel: state.channel, count: 25, before_id: state.beforeCursor})
+				const channel = state.channel
+				const {results, users} = await api.call('chat.fetch', {channel, count: 25, before_id: state.beforeCursor})
+				// have we left the channel already?
+				if (channel !== state.channel) return
 				// rely on the backend to have resolved all edits and deletes, filter deleted messages in view
 				state.timeline.unshift(...results)
 				// cache profiles the server sent us
