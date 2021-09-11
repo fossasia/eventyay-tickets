@@ -30,7 +30,7 @@ setup. To run a more production-like setting, you can run the following commands
 
     $ docker-compose stop server
     $ docker-compose run -p 8375:8375 \
-        --entrypoint "gunicorn -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8375 --max-requests 1200 --max-requests-jitter 200 -w 12 venueless.asgi:application" \
+        --entrypoint "gunicorn -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8375 -w 12 venueless.asgi:application" \
         server
 
 Replace ``12`` with two times the number of CPU cores you have.
