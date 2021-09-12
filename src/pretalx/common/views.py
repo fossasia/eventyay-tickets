@@ -65,7 +65,10 @@ class GenericLoginView(FormView):
 
     def dispatch(self, request, *args, **kwargs):
         if not self.request.user.is_anonymous:
-            return redirect(self.get_success_url())
+            try:
+                return redirect(self.get_success_url())
+            except Exception:
+                return redirect(self.success_url)
         return super().dispatch(request, *args, **kwargs)
 
     @classmethod
