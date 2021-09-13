@@ -4,6 +4,8 @@
     .select2-selection {
       border: 1px solid #ced4da;
       height: 38px;
+      width: 100% !important;
+      overflow-y: hidden;
     }
     .select2-selection--single {
       .select2-selection__arrow {
@@ -32,12 +34,15 @@
     }
   }
   .select2-container {
-    .select2-search--inline .select2-search__field {
-      height: auto;
-      margin-left: 12px;
-      font-size: 1rem;
-      font-family: Muli;
-    }
+      .select2-search--inline {
+        width: calc(100% - 20px);
+        .select2-search__field {
+          height: auto;
+          margin-left: 12px;
+          font-size: 1rem;
+          font-family: Muli;
+        }
+      }
     .select2-selection--multiple {
       display: flex;
 
@@ -56,4 +61,7 @@
     display: inline;
     vertical-align: top;
   }
+}
+.form-group.row .select2 textarea::placeholder {
+  color: white;
 }
