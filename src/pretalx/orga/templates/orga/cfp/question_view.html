@@ -85,12 +85,7 @@
 
             {% empty %}
                 <tr>
-                    <td colspan=3 class="w-75">{% translate "You have configured no questions yet." %}</td>
-                    <td class="flip text-right"><a href="{{request.event.cfp.urls.new_question }}?type={{ type }}" class="btn btn-small btn-success flip ml-auto">
-                        <i class="fa fa-plus"></i>
-                        {% translate "Add a question now!" %}
-                    </a>
-                    </td>
+                    <td colspan=4 class="w-75">{% translate "You have configured no questions yet." %}</td>
                 </tr>
             {% endfor %}
         </tbody>
