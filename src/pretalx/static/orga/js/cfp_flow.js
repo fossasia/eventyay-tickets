@@ -143,9 +143,9 @@ Vue.component("field", {
         </template>
       </label>
       <div class="col-md-9">
-        <input class="form-control" type="text" :placeholder="field.title" readonly v-if="field.widget === 'TextInput' || field.widget === 'NumberInput' || field.widget === 'EmailInput'">
-        <select class="form-control" type="text" :placeholder="field.title" readonly v-else-if="field.widget === 'Select'"></select>
-        <textarea class="form-control" type="text" :placeholder="field.title" readonly v-else-if="field.widget === 'Textarea' || field.widget === 'MarkdownWidget'"></textarea>
+        <input class="form-control" type="text" :placeholder="field.title" readonly disabled v-if="field.widget === 'TextInput' || field.widget === 'NumberInput' || field.widget === 'EmailInput'">
+        <select class="form-control" type="text" :placeholder="field.title" readonly disabled v-else-if="field.widget === 'Select'"></select>
+        <textarea class="form-control" type="text" :placeholder="field.title" readonly disabled v-else-if="field.widget === 'Textarea' || field.widget === 'MarkdownWidget'"></textarea>
         <div class="form-check" v-else-if="field.widget === 'CheckboxInput'">
           <input type="checkbox" class="form-check-input">
           <label class="form-check-label">{{ field.label[currentLanguage] }}</label>
@@ -264,16 +264,16 @@ Vue.component("step", {
         <form v-else id="auth-form">
           <div class="auth-form-block">
             <h4 class="text-center">I already have an account</h4>
-            <div class="form-group"><input type="text" class="form-control" placeholder="Email address" readonly></div>
-            <div class="form-group"><input type="password" class="form-control" placeholder="Password" readonly></div>
+            <div class="form-group"><input type="text" class="form-control" placeholder="Email address" readonly disabled></div>
+            <div class="form-group"><input type="password" class="form-control" placeholder="Password" readonly disabled></div>
             <button type="submit" class="btn btn-lg btn-success btn-block" disabled>Log in</button>
           </div>
           <div class="auth-form-block">
             <h4 class="text-center">I need a new account</h4>
-            <div class="form-group"><input type="text" class="form-control" placeholder="Name" readonly></div>
-            <div class="form-group"><input type="text" class="form-control" placeholder="Email address" readonly></div>
-            <div class="form-group"><input type="password" class="form-control" placeholder="Password" readonly></div>
-            <div class="form-group"><input type="password" class="form-control" placeholder="Password (again)" readonly></div>
+            <div class="form-group"><input type="text" class="form-control" placeholder="Name" readonly disabled></div>
+            <div class="form-group"><input type="text" class="form-control" placeholder="Email address" readonly disabled></div>
+            <div class="form-group"><input type="password" class="form-control" placeholder="Password" readonly disabled></div>
+            <div class="form-group"><input type="password" class="form-control" placeholder="Password (again)" readonly disabled></div>
             <button type="submit" class="btn btn-lg btn-info btn-block" disabled>Register</button>
             <div class="overlay">
               This form cannot be modified – a page to login or register needs to be in place, but you can change the page title and description.
