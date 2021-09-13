@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-09-08 22:12+0000\n"
-"PO-Revision-Date: 2021-09-08 20:57+0000\n"
+"PO-Revision-Date: 2021-09-13 11:09+0000\n"
 "Last-Translator: hamza Hamwie <hamza@live.hk>\n"
 "Language-Team: none\n"
 "Language: ar\n"
@@ -256,7 +256,7 @@ msgstr "يظهر هذا المتحدث أيضًا في:"
 
 #: pretalx/agenda/templates/agenda/speakers.html:17
 msgid "No speaker matches your search."
-msgstr "لا يوجد محاضر يطابق بحثك."
+msgstr "لا يوجد متحدث يطابق عملية البحث التي قمت بإجرائها."
 
 #: pretalx/agenda/templates/agenda/talk.html:49
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:18
@@ -302,8 +302,8 @@ msgid ""
 "We're glad that you want to contribute to our event with your proposal. "
 "Let's get started, this won't take long."
 msgstr ""
-"نحن سعداء أنك تريد مشاركت اقتراحاتكفي هذا الحدث. لنبدأ ، لن يستغرق الأمر "
-"وقتًا طويلاً."
+"نحن سعداء أنك تريد المساهمة في طرح طلبك (مقترحك) في هذا الحدث. لنبدأ ، لن "
+"يستغرق الأمر وقتًا طويلاً."
 
 #: pretalx/cfp/flow.py:353 pretalx/orga/forms/cfp.py:455
 #: pretalx/orga/templates/orga/base.html:243
@@ -358,7 +358,7 @@ msgid ""
 "always edit for as long as proposals are still open."
 msgstr ""
 "سيتم عرض هذه المعلومات علنًا بجوار جلستك - يمكنك دائمًا التعديل طالما أن "
-"المقترحات لا تزال مفتوحة."
+"الطلبات (المقترحات) لا تزال مفتوحة."
 
 #: pretalx/cfp/forms/auth.py:30 pretalx/person/forms.py:245
 msgid "New password"
@@ -447,20 +447,20 @@ msgid ""
 "excellent support for English in pretalx, but if you encounter issues or "
 "errors, please contact us!"
 msgstr ""
-"تم حفظ تفضيلاتك المحلية. نود أن نعتقد أن لدينا دعمًا ممتازًا للغة الإنجليزية "
-"في اللغة ب pretalx ، ولكن إذا واجهتك مشكلات أو أخطاء ، فيرجى الاتصال بنا!"
+"تم حفظ تفضيلاتك المحلية. نود أن نعتقد أن لدينا دعمًا ممتازًا للغة العربية "
+"ضمن منصة pretalx ، ولكن إذا واجهتك مشكلات أو أخطاء ، فيرجى الاتصال بنا!"
 
 #: pretalx/cfp/phrases.py:23
 msgid "Your proposal has been withdrawn."
-msgstr "تم سحب اقتراحك."
+msgstr "تم حذف طلبك (مقترحك)."
 
 #: pretalx/cfp/phrases.py:25
 msgid ""
 "Your proposal can't be withdrawn at this time – please contact us if you "
 "need to withdraw your proposal!"
 msgstr ""
-"لا يمكن التراجع عن اقتراحك في الوقت الحالي - يرجى الاتصال بنا إذا كنت بحاجة "
-"إلى حذف اقتراحك!"
+"لا يمكن التراجع عن تقديم طلبك (مقترحك) في الوقت الحالي - يرجى الاتصال بنا "
+"إذا كنت بحاجة إلى حذف اقتراحك!"
 
 #: pretalx/cfp/phrases.py:28
 msgid "Your session has been confirmed – we're looking forward to seeing you!"
@@ -470,7 +470,7 @@ msgstr "تم تأكيد جلستك - نتطلع إلى رؤيتك!"
 msgid ""
 "This proposal has already been confirmed – we're looking forward to seeing "
 "you!"
-msgstr "تم تأكيد هذا الاقتراح بالفعل - نتطلع إلى رؤيتك!"
+msgstr "تم تأكيد هذا الطلب (المقترح) مسبقا - نتطلع إلى رؤيتك!"
 
 #: pretalx/cfp/phrases.py:34
 msgid ""
@@ -502,7 +502,8 @@ msgstr "تم إرسال الدعوة!"
 
 #: pretalx/cfp/phrases.py:44
 msgid "You are now part of this proposal! Please fill in your profile below."
-msgstr "أنت الآن جزء من هذا الاقتراح! يرجى ملء ملف التعريف الخاص بك أدناه."
+msgstr ""
+"أنت الآن جزء من هذا الطلب(المقترح)! يرجى ملء ملف التعريف الخاص بك أدناه."
 
 #: pretalx/cfp/phrases.py:47
 msgid "This event currently does not accept new proposals, sorry!"
@@ -525,8 +526,8 @@ msgid ""
 "You can enter proposals until %(deadline)s (%(timezone)s), %(until_string)s "
 "from now."
 msgstr ""
-"يمكنك الدخول الى المقترحات %(deadline)s (%(timezone)s) , %(until_string)s من "
-"الأن."
+"يمكنك الدخول الى الطلبات (المقترحات) %(deadline)s (%(timezone)s) , "
+"%(until_string)s من الأن."
 
 #: pretalx/cfp/templates/cfp/event/cfp.html:25
 #, python-format
@@ -554,7 +555,7 @@ msgstr "تقديم مقترحك"
 
 #: pretalx/cfp/templates/cfp/event/cfp.html:52
 msgid "Proposals are closed"
-msgstr "تم إغلاق المقترحات"
+msgstr "تم إغلاق الطلبات(المقترحات)"
 
 #: pretalx/cfp/templates/cfp/event/fragment_state.html:3
 #: pretalx/submission/models/submission.py:46
@@ -659,8 +660,7 @@ msgstr "حسنا، هذا يبدو جيدا!"
 #: pretalx/cfp/templates/cfp/event/recover.html:15
 #: pretalx/orga/templates/orga/auth/recover.html:14
 msgid "Now you just need to choose your new password and you are ready to go."
-msgstr ""
-"الآن تحتاج فقط إلى اختيار كلمة المرور الجديدة وأنت على استعداد للانطلاق."
+msgstr "الآن تحتاج فقط إلى اختيار كلمة المرور الجديدة وستكون جاهزا للانطلاق."
 
 #: pretalx/cfp/templates/cfp/event/recover.html:21
 #: pretalx/orga/templates/orga/auth/recover.html:20
@@ -730,9 +730,9 @@ msgid ""
 "email address was unavailable or the emails got lost in some way."
 msgstr ""
 "هذه هي رسائل البريد الإلكتروني التي أرسلها لك المنظمون ، لذا يجب أن تكون "
-"قادرًا على العثور عليها في صندوق البريد الإلكتروني الخاص بك ، ولكن هذه الصفحة "
-"تعمل كمساعد في حالة عدم توفر عنوان بريدك الإلكتروني أو فقدت رسائل البريد "
-"الإلكترونيالخاصة بك بطريقة ما."
+"قادرًا على العثور عليها في صندوق البريد الوارد الخاص بك ، ولكن هذه الصفحة "
+"تعمل كمساعد في حالة عدم توفر عنوان بريدك الإلكتروني أو فقدت رسائل بريدك "
+"الالكتروني بطريقة ما."
 
 #: pretalx/cfp/templates/cfp/event/user_profile.html:8
 #: pretalx/cfp/templates/cfp/event/user_profile.html:18
@@ -802,8 +802,8 @@ msgid ""
 "I really do want to delete my account, losing access to my proposals and "
 "sessions, and overriding my public and private data."
 msgstr ""
-"أرغب حقًا في حذف حسابي ، وفقدان الوصول إلى مقترحاتي وجلساتي ، وتجاوز كل من "
-"بياناتي العامة والخاصة."
+"أرغب حقًا في حذف حسابي ، وفقدان الوصول إلى طلباتي (مقترحاتي) وجلساتي ، "
+"وتجاوز كل من بياناتي العامة والخاصة."
 
 #: pretalx/cfp/templates/cfp/event/user_profile.html:95
 msgid "Delete my account"
@@ -866,9 +866,9 @@ msgid ""
 "proposal data, such as title, abstract, description, and any uploads you "
 "provided, can be made publicly available once the proposal is confirmed."
 msgstr ""
-"بتأكيد اقتراحك ، فإنك توافق على أنك قادر على المشاركة في هذا الحدث وعلى "
-"استعداد لتقديم محتوى هذا الاقتراح. يمكن إتاحة بيانات الاقتراح ، مثل العنوان "
-"والملخص والوصف وأي تحميلات قدمتها، سيتم نشرها بمجرد تأكيد الاقتراح."
+"بتأكيد طلبك (مقترحك) ، فإنك توافق على أنك قادر على المشاركة في هذا الحدث "
+"وعلى استعداد لتقديم محتوى هذا الطلب. يمكن إتاحة بيانات الطلب ، مثل العنوان "
+"والملخص والوصف وأي تحميلات قدمتها، سيتم نشرها بمجرد تأكيد الطلب (المقترح)."
 
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:52
 #: pretalx/cfp/templates/cfp/event/user_submission_withdraw.html:27
@@ -879,7 +879,7 @@ msgstr "العودة للخلف"
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:164
 #: pretalx/cfp/templates/cfp/event/user_submission_withdraw.html:23
 msgid "Withdraw"
-msgstr "التراجع"
+msgstr "الحذف"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:62
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:72
@@ -928,20 +928,20 @@ msgstr "إضافة مصادر أخرى"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:145
 msgid "Share proposal"
-msgstr "مشاركة المقترج"
+msgstr "مشاركة طلبك (مقترحك)"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:147
 msgid ""
 "If you need a review from a colleague or a friend here's a link that you can "
 "send out for viewing your proposal:"
 msgstr ""
-"إذا أردت الحصول على التقييمات من قبل الزملاء أو الأصدقاء ، فإليك رابطًا يمكنك "
-"إرساله للإطلاع على مقترحك:"
+"إذا أردت الحصول على التقييمات من قبل الزملاء أو الأصدقاء ، فإليك رابطًا "
+"يمكنك إرساله للإطلاع على طلبك (مقترحك):"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:153
 #: pretalx/cfp/templates/cfp/event/user_submission_withdraw.html:14
 msgid "Withdraw proposal"
-msgstr "سحب مقترجك"
+msgstr "حذف طلبك (مقترحك)"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:155
 msgid ""
@@ -949,13 +949,13 @@ msgid ""
 "undo this - if you are just uncertain if you can or should hold your "
 "session, please contact the organiser instead."
 msgstr ""
-"يمكنك سحب مقترحك من عملية الاختيار هنا. لا يمكنك التراجع عن هذه العمليةا - "
-"إذا لم تكن متأكدًا مما إذا كان بإمكانك أو يجب أن تعليق جلستك ، فيرجى الاتصال "
-"بالمنظم بدلاً من ذلك."
+"يمكنك سحب طلبك (مقترحك) من عملية الاختيار هنا. لا يمكنك التراجع عن هذه "
+"العمليةا - إذا لم تكن متأكدًا مما إذا كان بإمكانك أو يجب أن تعليق جلستك ، "
+"فيرجى الاتصال بالمنظم بدلاً من ذلك."
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:169
 msgid "Cancel proposal"
-msgstr "إلغاء جلستك"
+msgstr "إلغاء طلبك (مقترحك)"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:171
 msgid ""
@@ -963,7 +963,7 @@ msgid ""
 "organising team to cancel it. The best way to reach out would be an answer "
 "to your acceptance mail."
 msgstr ""
-"نظرًا لأنه تم قبول اقتراحك بالفعل ، يرجى الاتصال بالفريق المنظم للحدث "
+"نظرًا لأنه تم قبول طلبك (مقترحك) بالفعل ، يرجى الاتصال بالفريق المنظم للحدث "
 "لإلغائه. أفضل طريقة للتواصل هي الرد على بريد القبول الخاص بك."
 
 #: pretalx/cfp/templates/cfp/event/user_submission_invitation.html:18
@@ -972,9 +972,9 @@ msgid ""
 "email, (which might get caught by spam filters) you can also give them this "
 "link:"
 msgstr ""
-"قم بدعوة متحدث آخر إلى اقتراحك هنا. بدلاً من السماح لنا بإرسال بريد "
-"إلكتروني ، (والذي قد يتم فلترته وضعه في البريد العشوائي) ، يمكنك أيضًا "
-"مشاركتهم هذا الرابط بشكل مباشر:"
+"قم بدعوة متحدث آخر إلى جلستك هنا. بدلاً من السماح لنا بإرسال بريد إلكتروني ، "
+"(والذي قد يتم فلترته ووضعه في البريد العشوائي) ، يمكنك أيضًا مشاركتهم هذا "
+"الرابط بشكل مباشر:"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_invitation.html:31
 #: pretalx/common/phrases.py:45
@@ -991,7 +991,7 @@ msgstr "إرسال"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_withdraw.html:16
 msgid "Do you really want to withdraw your proposal?"
-msgstr "هل تؤد تأكيد سحب مقترحك؟"
+msgstr "هل تؤد تأكيد سحب وحذف طلبك (مقترحك)؟"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_withdraw.html:29
 msgid "You will not be able to revert this action."
@@ -1000,11 +1000,11 @@ msgstr "لن تتمكن من التراجع عن هذا الإجراء."
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:9
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:24
 msgid "Your proposals"
-msgstr "مقترحاتك"
+msgstr "طلبك (مقترحاتك)"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:13
 msgid "Important Information"
-msgstr "معلومات هامى"
+msgstr "معلومات هامة"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:29
 #: pretalx/orga/templates/orga/cfp/text.html:67
@@ -1051,7 +1051,8 @@ msgid ""
 "If you did not, why not go ahead and create a proposal now? We'd love to "
 "hear from you!"
 msgstr ""
-"إذا لم تقم بذلك ، ندعوك للمضي قدمًا وتقدم اقتراحًا الآن؟ نحب أن نسمع منك!"
+"إذا لم تقم بذلك، ندعوك للمضي قدمًا وتقدم طلبا(اقتراحًا) الآن؟ نود أن نسمع "
+"منك!"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:108
 msgid "Submit something now!"
@@ -1129,7 +1130,7 @@ msgstr "غير مسموح لك بتضمين مفاتيح \"{key}\" في CSS ال
 #: pretalx/common/forms/fields.py:83
 #, python-brace-format
 msgid "Please do not upload files larger than {size}!"
-msgstr "الرجاء عدم تحميل ملفات أكبر من {size}!"
+msgstr "الرجاء عدم تحميل ملفات أكبر من حجم {size}!"
 
 #: pretalx/common/forms/fields.py:104
 #, python-brace-format
@@ -1324,7 +1325,7 @@ msgstr "تم إصدار جدول المواعيد جديد."
 
 #: pretalx/common/log_display.py:54
 msgid "The proposal was accepted."
-msgstr "تم قبول المقترح."
+msgstr "تم قبول الطلب (المقترح)."
 
 #: pretalx/common/log_display.py:55
 msgid "The proposal was cancelled."
@@ -1336,7 +1337,7 @@ msgstr "تم تاكيد الاقترح."
 
 #: pretalx/common/log_display.py:58
 msgid "The proposal was added."
-msgstr "تمت إضافة الاقتراح."
+msgstr "تمت إضافة الطلب (المقترح)."
 
 #: pretalx/common/log_display.py:59
 msgid "The proposal was deleted."
@@ -1348,7 +1349,7 @@ msgstr "تم رفض المقترح."
 
 #: pretalx/common/log_display.py:61
 msgid "A proposal resource was added."
-msgstr "تمت إضافة مورد الاقتراح."
+msgstr "تمت إضافة مرجع الطلب (المقترح)."
 
 #: pretalx/common/log_display.py:62
 msgid "A proposal resource was deleted."
@@ -1360,7 +1361,7 @@ msgstr "تم تعديل مورد الاقتراح."
 
 #: pretalx/common/log_display.py:64
 msgid "A speaker was added to the proposal."
-msgstr "تمت إضافة متحدث إلى الاقتراح."
+msgstr "تمت إضافة متحدث إلى الطلب (المقترح)."
 
 #: pretalx/common/log_display.py:65
 msgid "A speaker was invited to the proposal."
@@ -1380,7 +1381,7 @@ msgstr "تم تعديل المقترح."
 
 #: pretalx/common/log_display.py:69
 msgid "The proposal was withdrawn."
-msgstr "تم سحب المقترح."
+msgstr "تم حذف الطلب (المقترح)."
 
 #: pretalx/common/log_display.py:70 pretalx/common/log_display.py:71
 msgid "A proposal answer was modified."
@@ -1436,11 +1437,11 @@ msgstr "تمت تعديل المسار."
 
 #: pretalx/common/log_display.py:85
 msgid "A speaker has been marked as arrived."
-msgstr "تم وضع علامة على وصول المتحدث."
+msgstr "تم وضع علامة على حضور المتحدث."
 
 #: pretalx/common/log_display.py:86
 msgid "A speaker has been marked as not arrived."
-msgstr "تم وضع إشعار على عدم وضول المتحدث."
+msgstr "تم وضع إشعار على عدم حضور المتحدث."
 
 #: pretalx/common/log_display.py:87
 msgid "The API token was reset."
@@ -1597,10 +1598,10 @@ msgid ""
 msgstr ""
 "نرحب بك،\n"
 "\n"
-"نأمل أن تكون سعيدًا مع pretalx كنظام CfP للحدث الخاص بك.\n"
+"نأمل أن تكون سعيدًا مع pretalx كنظام CfP مستخدم للحدث الخاص بك.\n"
 "قد تكون هذه الروابط مفيدة في الأيام والأسابيع القادمة:\n"
 "\n"
-"- لوحة تحكم الحدث: {event_dashboard}\n"
+"- لوحة تحكم في الحدث: {event_dashboard}\n"
 "- قائمة العروض: {event_submissions}\n"
 "- محرر جدولك الزمني: {event_schedule}\n"
 "\n"
@@ -1839,7 +1840,7 @@ msgstr "التسجيل"
 #: pretalx/orga/templates/orga/cfp/text.html:97
 #: pretalx/person/models/user.py:117
 msgid "Profile picture"
-msgstr "صورة الملف التعريقي"
+msgstr "صورة الملف التعريفي"
 
 #: pretalx/common/templates/common/avatar.html:14
 msgid "Your avatar"
@@ -1857,7 +1858,7 @@ msgstr "شعار الفعالية"
 
 #: pretalx/common/templates/common/base.html:101
 msgid "My proposals"
-msgstr "مقترحاتك"
+msgstr "طلباتك (مقترحاتك)"
 
 #: pretalx/common/templates/common/base.html:105
 msgid "My E-mails"
@@ -2433,7 +2434,7 @@ msgstr "ال CfP مفتوح"
 
 #: pretalx/event/stages.py:59
 msgid "Monitor proposals"
-msgstr "رصد المقترحات"
+msgstr "رصد الطلبات (المقترحات)"
 
 #: pretalx/event/stages.py:61
 msgid "Submit sessions for your speakers"
@@ -2441,7 +2442,7 @@ msgstr "إرسال الجلسات للمتحدثين"
 
 #: pretalx/event/stages.py:64
 msgid "Invite reviewers"
-msgstr "دعوة المراجعين"
+msgstr "دعوة المشاركين"
 
 #: pretalx/event/stages.py:72
 msgid "Let reviewers do their work"
@@ -2449,7 +2450,7 @@ msgstr "دع المراجعين يقومون بواجباتهم"
 
 #: pretalx/event/stages.py:74
 msgid "Accept or reject proposals"
-msgstr "قبول ورفض المقترحات"
+msgstr "قبول و رفض الطلبات (المقترحات)"
 
 #: pretalx/event/stages.py:77
 msgid "Build your first schedule"
@@ -2461,7 +2462,7 @@ msgstr "تحرير الجداول وفق الحاجة"
 
 #: pretalx/event/stages.py:90
 msgid "Inform your speakers about the infrastructure"
-msgstr "أبلغ المتحدثين عن البنية التحتية"
+msgstr "أعلم المتحدثين عن بنية المعلومات الأساسية"
 
 #: pretalx/event/stages.py:96
 msgid "Event"
@@ -2469,7 +2470,7 @@ msgstr "الحدث"
 
 #: pretalx/event/stages.py:100
 msgid "Provide a point of contact for the speakers"
-msgstr "توفير معلومات اتصال للمتحدثين"
+msgstr "توفير معلومات الاتصال للمتحدثين"
 
 #: pretalx/event/stages.py:101
 msgid "Enjoy the event!"
@@ -2515,7 +2516,7 @@ msgstr "تم الإعلان عن الحدث."
 
 #: pretalx/mail/context.py:88
 msgid "URL to a user's list of proposals"
-msgstr "عنوان URL لقائمة مقترحات المستخدم"
+msgstr "عنوان URL لقائمةطلبات ( مقترحات) المستخدم"
 
 #: pretalx/mail/context.py:103
 msgid "The general CfP deadline"
@@ -2535,11 +2536,11 @@ msgstr "تعديل صفحة المتحدثين إلخاصة بالمقترح."
 
 #: pretalx/mail/context.py:138
 msgid "Link to confirm a proposal after it has been accepted."
-msgstr "رابط لتأكيد الاقتراح بعد قبوله."
+msgstr "رابط لتأكيد الطلب (المقترح) بعد قبوله."
 
 #: pretalx/mail/context.py:145
 msgid "Link to withdraw the proposal"
-msgstr "رابط لسحب المقترح"
+msgstr "رابط للتراجع عن تقديم الطلب (المقترح)"
 
 #: pretalx/mail/context.py:152 pretalx/mail/context.py:159
 msgid "The proposal's title"
@@ -2550,10 +2551,8 @@ msgid "The name(s) of all speakers in this proposal."
 msgstr "أسماء جميع المتحدثين ضمن هذا المقترح."
 
 #: pretalx/mail/context.py:173 pretalx/mail/context.py:180
-#, fuzzy
-#| msgid "Proposals by session type"
 msgid "The proposal's session type"
-msgstr "الاقتراحات حسب نوع الجلسة"
+msgstr "الطلبات (المقترحات) حسب نوع الجلسة"
 
 #: pretalx/mail/context.py:187
 msgid "The track the proposal belongs to"
@@ -2612,7 +2611,7 @@ msgid ""
 msgstr ""
 "نرحب بك!\n"
 "\n"
-"لقد تلقينا اقتراحك \"{submission_title}\" في\n"
+"لقد تلقينا طلبك (مقترحك) \"{submission_title}\" في\n"
 "{event_name}. سنقوم بإخطارك بمجرد أن يكون لدينا الوقت للنظر بجميع\n"
 "الطلبات المقدمة ، ولكن حتى ذلك الحين يمكنك رؤية مقترحك وتعديله ضمن\n"
 "{submission_url}.\n"
@@ -2644,15 +2643,15 @@ msgid ""
 msgstr ""
 "{confirmation_link}نرحب بك!\n"
 "\n"
-"يسعدنا إخبارك بإن طلب مقترحك قد تم قبوله \"{submission_title}\"\n"
+"يسعدنا إخبارك بإنه قد تم قبول طلبك (مقترحك) - \"{submission_title}\"\n"
 "إلى {event_name}. الرجاء الضغط على هذا الرابط لتأكيد حضورك:\n"
 "\n"
 "{confirmation_link}\n"
 "\n"
-"نتطلع إلى رؤيتك في {event_name} - يرجى الاتصال بنا إذا كان لديكالمزيد من\n"
+"نتطلع إلى رؤيتك في {event_name} - يرجى الاتصال بنا إذا كان لديك المزيد من\n"
 "الأسئلة! سنتواصل معك مرة أخرى قبل المؤتمر لنخبرك بالتفاصيل\n"
 "يمكنك ايجاد المزيد حول الجدول الزمني والتفاصيل الفنية المتعلقة بالغرفة\n"
-"والعروض التقديميو.\n"
+"والعروض التقديمية.\n"
 "\n"
 "نتطلع لرؤيتكم!\n"
 "المنظمين {event_name}"
@@ -2761,15 +2760,15 @@ msgid ""
 "Enter comma separated addresses. Will receive a blind copy of every mail "
 "sent from this template. This may be a LOT!"
 msgstr ""
-"أدخل عناوين الايميل قم باستخدم الفواصل بينها. سوف تتلقى نسخة بريدأوتوماتيكي "
-"من كل بريد مرسل ضمن هذا القالب. قد يكون هنالك الكثير!"
+"عند إدخل عناوين الايميلات يرجى استخدم الفواصل بينها. سوف تتلقى نسخة "
+"بريدأوتوماتيكي من كل بريد مرسل ضمن هذا القالب. قد يكون هنالك الكثير!"
 
 #: pretalx/mail/models.py:133
 msgid ""
 "Full proposal content:\n"
 "\n"
 msgstr ""
-"محتوى المقترح الكامل:\n"
+"محتوى الطلب (المقترح) الكامل:\n"
 "\n"
 
 #: pretalx/mail/models.py:193 pretalx/orga/forms/cfp.py:305
@@ -2781,7 +2780,7 @@ msgstr "الى"
 #: pretalx/mail/models.py:194 pretalx/mail/models.py:214
 #: pretalx/mail/models.py:221
 msgid "One email address or several addresses separated by commas."
-msgstr "ايميل واحد أو عدةايميلات بينها فواصل."
+msgstr "ايميل واحد أو عدة ايميلات بينها فواصل."
 
 #: pretalx/mail/models.py:207
 msgid "By default, the organiser address is used as Reply-To."
@@ -2813,7 +2812,7 @@ msgid ""
 "instance. You can disable this behavior here at any time."
 msgstr ""
 "خلال عملية التحقق من التحديثات ، ستقدم خدمة Pretalx تقريرًا مجهولاً ومعرف "
-"تثبيت فريدًا والإصدار الحالي من برنامج بريتالكس والمكونات الإضافية المثبتة "
+"تثبيت فريدًا، والإصدار الحالي من برنامج بريتالكس والمكونات الإضافية المثبتة "
 "وعدد الأحداث النشطة وغير النشطة في التثبيت الخاص بك إلى الخوادم التي يديرها "
 "مطورو بريتالكس. سنقوم بتخزين البيانات مجهولة المصدر فقط ، ولن نقوم بتخزين أي "
 "عناوين IP ولن نشارك هويتك أو معلوماتك أو مكانتواجدك. يمكنك تعطيل هذه الخاصية "
@@ -2842,14 +2841,12 @@ msgid "Do you organise your sessions by tracks?"
 msgstr "هل قمت بتنظم جلساتك وفقا للمسارات؟"
 
 #: pretalx/orga/forms/cfp.py:29
-#, fuzzy
-#| msgid "Your avatar"
 msgid "Use Gravatar"
-msgstr "شخصيتك الإفتراضية"
+msgstr "استخدم Gravatar"
 
 #: pretalx/orga/forms/cfp.py:32
 msgid "Allow speakers to automatically include their gravatar profile image."
-msgstr ""
+msgstr "السماح للمتحدثين بتضمين صورة ملف Gravatar الخاص بهم تلقائيًا."
 
 #: pretalx/orga/forms/cfp.py:36 pretalx/submission/models/submission.py:184
 msgid "Slot Count"
@@ -2911,7 +2908,7 @@ msgstr "قم بطرح الأسئلة ، لكن لا تتطلب مدخلات"
 
 #: pretalx/orga/forms/cfp.py:116
 msgid "Ask and require input"
-msgstr "قم بطرح الأسئة والمدخلات"
+msgstr "طلب ومعاينة المدخلات"
 
 #: pretalx/orga/forms/cfp.py:171
 msgid ""
@@ -3002,7 +2999,7 @@ msgstr "إذا لم تقم بتحدد أي سؤال ، فسيتم استخدام
 
 #: pretalx/orga/forms/event.py:29
 msgid "Active languages"
-msgstr "اللغات الفعالة"
+msgstr "اللغات النشطة"
 
 #: pretalx/orga/forms/event.py:33
 msgid ""
@@ -3382,7 +3379,7 @@ msgstr "المجموعات المستفيدة"
 
 #: pretalx/orga/forms/mails.py:140
 msgid "Everyone with proposal(s) that have not been accepted/rejected yet"
-msgstr "لكل شخص قدم مقترحات (عروض) لم يتم قبوله / رفضه بعد"
+msgstr "لكل شخص قدم طلبات (مقترحات) والتي لم يتم قبولها / رفضها بعد"
 
 #: pretalx/orga/forms/mails.py:144
 msgid "All accepted speakers (who have not confirmed their session yet)"
@@ -3406,7 +3403,7 @@ msgstr "جميع المتحدثين المعتمدين الذين لم يقوم�
 
 #: pretalx/orga/forms/mails.py:157
 msgid "All proposals in these tracks"
-msgstr "كل المقترحات في هذه المسارات"
+msgstr "كل الطلبات (المقترحات) في هذه المسارات"
 
 #: pretalx/orga/forms/mails.py:159 pretalx/orga/templates/orga/base.html:247
 #: pretalx/orga/templates/orga/cfp/track_view.html:5
@@ -3422,7 +3419,7 @@ msgstr ""
 
 #: pretalx/orga/forms/mails.py:163
 msgid "All proposals of these types"
-msgstr "كل المقترحات من هذه الأنواع"
+msgstr "كل الطلبات (المقترحات) من هذه الأنواع"
 
 #: pretalx/orga/forms/mails.py:166 pretalx/orga/templates/orga/base.html:251
 #: pretalx/submission/forms/submission.py:241
@@ -3443,7 +3440,7 @@ msgstr ""
 #: pretalx/orga/templates/orga/submission/stats.html:32
 #: pretalx/orga/templates/orga/submission/tag_list.html:11
 msgid "Proposals"
-msgstr "المقترحات"
+msgstr "الطلبات (المقترحات)"
 
 #: pretalx/orga/forms/mails.py:177
 msgid ""
@@ -3493,7 +3490,7 @@ msgstr "المجموعة المستهدفة"
 
 #: pretalx/orga/forms/schedule.py:48
 msgid "All proposals"
-msgstr "جميع المقترحات"
+msgstr "جميع الطلبات (المقترحات)"
 
 #: pretalx/orga/forms/schedule.py:77
 msgid "Speaker IDs"
@@ -3553,15 +3550,15 @@ msgstr "جميع الطلبات المقدمة"
 
 #: pretalx/orga/forms/speaker.py:15
 msgid "With accepted proposals"
-msgstr "مع المقترحات المقبولة"
+msgstr "مع الطلبات (المقترحات) المقبولة"
 
 #: pretalx/orga/forms/speaker.py:16
 msgid "With confirmed proposals"
-msgstr "مع المقترحات المعتمدة"
+msgstr "مع الطلبات (المقترحات) المعتمدة"
 
 #: pretalx/orga/forms/speaker.py:17
 msgid "With rejected proposals"
-msgstr "مع المقترحات الغير مقبولة"
+msgstr "مع الطلبات (المقترحات) الغير مقبولة"
 
 #: pretalx/orga/forms/speaker.py:30
 msgid "Proposal IDs"
@@ -3573,7 +3570,7 @@ msgstr "يتم استخدام المعرف ID للاقتراح في عنوان U
 
 #: pretalx/orga/forms/speaker.py:37
 msgid "Proposal titles"
-msgstr "عناوين المقترحات"
+msgstr "عناوين الطللبات (المقترحات)"
 
 #: pretalx/orga/forms/speaker.py:41
 #: pretalx/orga/templates/orga/cfp/text.html:91
@@ -3952,7 +3949,7 @@ msgid ""
 "you can always delete or invalidate it."
 msgstr ""
 "يمكن أن تسمح رموز الوصول بالوصول إلى CfP الخاص بك بعد الموعد النهائي لتقديم "
-"واحد أو أكثر من العروض (المقترحات). إذا تم تعميم الرمز على نطاق أوسع مما "
+"واحد أو أكثر من الطلبات (المقترحات). إذا تم تعميم الرمز على نطاق أوسع مما "
 "تريد ، فيمكنك دائمًا حذفه أو إبطاله."
 
 #: pretalx/orga/templates/orga/cfp/access_code_view.html:14
@@ -4483,7 +4480,7 @@ msgstr ""
 
 #: pretalx/orga/templates/orga/event_list.html:12
 msgid "Your upcoming events"
-msgstr "الأحداث القادمة الخاصب بك"
+msgstr "الأحداث القادمة"
 
 #: pretalx/orga/templates/orga/event_list.html:24
 #: pretalx/orga/templates/orga/event_list.html:60
@@ -5676,12 +5673,12 @@ msgstr "إضافة ملاحظة جديدة"
 #: pretalx/orga/views/dashboard.py:202
 msgid "submitter"
 msgid_plural "submitters"
-msgstr[0] "المرسل"
-msgstr[1] "المرسل"
-msgstr[2] "المرسلان"
-msgstr[3] "المرسلين"
-msgstr[4] "المرسلين"
-msgstr[5] "المرسلين"
+msgstr[0] "مقدم الطلب"
+msgstr[1] "مقدم الطلب"
+msgstr[2] "المتقدمان"
+msgstr[3] "عدد المقدمين"
+msgstr[4] "عدد المقدمين"
+msgstr[5] "عدد المقدمين"
 
 #: pretalx/orga/templates/orga/speaker/list.html:27
 #: pretalx/orga/templates/orga/submission/list.html:52
@@ -6169,12 +6166,12 @@ msgstr ""
 #: pretalx/orga/views/dashboard.py:156
 msgid "day until event start"
 msgid_plural "days until event start"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "يوم متبقي حتى بداية الحدث"
+msgstr[1] "يوم متبقي حتى بداية الحدث"
+msgstr[2] "يومان متبقيان حتى بداية الحدث"
+msgstr[3] "الأيام المتبقية حتى بداية الحدث"
+msgstr[4] "الأيام المتبقية حتى بداية الحدث"
+msgstr[5] "الأيام المتبقية حتى بداية الحدث"
 
 #: pretalx/orga/views/dashboard.py:166
 msgid "day since event end"
@@ -7004,9 +7001,10 @@ msgid ""
 "invite them to create an account. If you have more than one co-speaker, you "
 "can add more speakers after finishing the proposal process."
 msgstr ""
-"إذا كان لديك متحدث مشارك ، يرجى إضافة عنوان بريده الإلكتروني هنا ، وسوف "
-"ندعوهم لإنشاء حساب. إذا كان لديك أكثر من متحدث مشارك ، فيمكنك إضافة المزيد "
-"من المتحدثين بعد الانتهاء من عملية تقديم المقترح."
+"إذا كان لديك متحدث مشارك ، يرجى إضافة عنوان بريده الإلكتروني هنا ، وسوف نقوم "
+"بدعوته/ها لإنشاء حساب. \n"
+"إذا كان لديك أكثر من متحدث مشارك ، فيمكنك إضافة المزيد من المتحدثين بعد "
+"الانتهاء من عملية تقديم الطلب (المقترح)."
 
 #: pretalx/submission/forms/submission.py:27
 #: pretalx/submission/models/submission.py:205
@@ -7015,7 +7013,7 @@ msgstr "استخدم هذا إذا كنت تريد رسمًا توضيحيًا �
 
 #: pretalx/submission/forms/submission.py:49
 msgid "Proposal title"
-msgstr "عنوان الاقتراح"
+msgstr "عنوان الطلب (المقترح)"
 
 #: pretalx/submission/forms/submission.py:151
 msgid ""
@@ -7353,7 +7351,7 @@ msgid ""
 "By default, modification of proposals is locked after the CfP ends, and is "
 "re-enabled once the proposal was accepted."
 msgstr ""
-"بشكل افتراضي ، يتم قفل تعديل الطلبات(المقترحات) بعد انتهاء CfP ، ويتم إعادة "
+"بشكل افتراضي ، يتم قفل تعديل الطلبات (المقترحات) بعد انتهاء CfP ، ويتم إعادة "
 "تمكينه بمجرد قبول المقترح."
 
 #: pretalx/submission/models/submission.py:49

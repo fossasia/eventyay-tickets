@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-09-08 22:12+0000\n"
-"PO-Revision-Date: 2021-08-24 23:09+0000\n"
+"PO-Revision-Date: 2021-09-12 19:50+0000\n"
 "Last-Translator: Bruno <buccalon@gmail.com>\n"
 "Language-Team: none\n"
 "Language: pt_BR\n"
@@ -1263,11 +1263,11 @@ msgstr "O convite para o organização do evento foi aceito."
 
 #: pretalx/common/log_display.py:17 pretalx/common/log_display.py:27
 msgid "An invitation to the event orga was retracted."
-msgstr ""
+msgstr "Um convite para o organizador do evento foi retirado."
 
 #: pretalx/common/log_display.py:18 pretalx/common/log_display.py:30
 msgid "An invitation to the event orga was sent."
-msgstr ""
+msgstr "Um convite para o organizador do evento foi enviado."
 
 #: pretalx/common/log_display.py:20 pretalx/common/log_display.py:33
 msgid "The invitation to the review team was retracted."
@@ -1524,7 +1524,7 @@ msgstr ""
 
 #: pretalx/common/management/commands/init.py:57
 msgid "Slug (e.g. \"conforg\", used in urls): "
-msgstr ""
+msgstr "Slug (ex.: \"conforq\", utilizando em urls): "
 
 #: pretalx/common/management/commands/init.py:71
 msgid ""
@@ -1787,7 +1787,7 @@ msgstr ""
 #: pretalx/common/phrases.py:85
 #, python-brace-format
 msgid "You can use {link_start}Markdown{link_end} here."
-msgstr ""
+msgstr "Você pode usar {link_start}Markdown{link_end} aqui."
 
 #: pretalx/common/phrases.py:89
 msgid "This content will be shown publicly."
@@ -1902,7 +1902,7 @@ msgstr "Sair"
 #: pretalx/common/templates/common/base.html:148
 #, python-format
 msgid "This is a static export generated at %(timestamp)s"
-msgstr ""
+msgstr "Essa é uma exportação estática gerada em %(timestamp)s"
 
 #: pretalx/common/templates/common/base.html:156
 msgid "Contact us"
@@ -1919,16 +1919,16 @@ msgstr "História"
 
 #: pretalx/common/templates/common/logs.html:24
 msgid "This change was performed by a member of the event orga."
-msgstr ""
+msgstr "Essa mudança foi realizada por um membro da organização do evento."
 
 #: pretalx/common/templates/common/logs.html:30
 msgid "An orga member"
-msgstr ""
+msgstr "Um membro da organização"
 
 #: pretalx/common/templates/common/powered_by.html:33
 #, python-format
 msgid "powered by <a %(a_attr)s>pretalx</a>"
-msgstr ""
+msgstr "feito com <a %(a_attr)s>pretalx</a>"
 
 #: pretalx/common/templates/common/question_answer.html:8
 msgid "No file provided"
@@ -1949,6 +1949,9 @@ msgid ""
 "generate a new token, which will invalidate the old one. To find out more, "
 "please have a look at the <a %(docurl)s> API documentation</a>."
 msgstr ""
+"Esse token pode ser utilizado para acessar a <a %(apiurl)s>API do pretalx</"
+"a>. Você pode gerar um novo token, que invalidará o anterior. Para mais "
+"informações, por favor veja a <a %(docurl)s> documentação da API</a>."
 
 #: pretalx/common/templates/common/user_api_token.html:17
 msgid "API Token"
@@ -2013,16 +2016,16 @@ msgstr ""
 
 #: pretalx/common/update_check.py:142 pretalx/common/update_check.py:149
 msgid "Plugin: {}"
-msgstr ""
+msgstr "Plugin: {}"
 
 #: pretalx/common/utils.py:77
 #, python-brace-format
 msgid "{date_from} – {date_to}"
-msgstr ""
+msgstr "{date_from} – {date_to}"
 
 #: pretalx/event/forms.py:30
 msgid "Additional review team settings"
-msgstr ""
+msgstr "Configurações adicionais da equipe de revisores"
 
 #: pretalx/event/forms.py:102
 msgid "Use languages"
@@ -2041,6 +2044,8 @@ msgid ""
 "The organiser running the event can copy settings from previous events and "
 "share team permissions across all or multiple events."
 msgstr ""
+"A organização do evento pode copiar configurações de eventos anteriores e "
+"compartilhar permissões de equipe através de todos ou múltiplos eventos."
 
 #: pretalx/event/forms.py:138
 msgid ""
@@ -2059,6 +2064,8 @@ msgid ""
 "This short name is already taken, please choose another one (or ask the "
 "owner of that event to add you to their team)."
 msgstr ""
+"Esse nome curto já foi escolhido, por favor escolhar outro (ou peça ao dono "
+"do evento te adicionar em sua equipe)."
 
 #: pretalx/event/forms.py:169
 msgid ""

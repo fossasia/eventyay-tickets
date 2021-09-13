@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-09-08 22:12+0000\n"
-"PO-Revision-Date: 2021-09-08 22:00+0000\n"
+"PO-Revision-Date: 2021-09-13 19:27+0000\n"
 "Last-Translator: Tobias Kunze <r@rixx.de>\n"
 "Language-Team: \n"
 "Language: de_Formal\n"
@@ -2913,14 +2913,12 @@ msgid "Do you organise your sessions by tracks?"
 msgstr "Werden die Vorträge dieser Veranstaltung in Tracks sortiert?"
 
 #: pretalx/orga/forms/cfp.py:29
-#, fuzzy
-#| msgid "Your avatar"
 msgid "Use Gravatar"
-msgstr "Ihr Profilbild"
+msgstr "Gravatar einbinden"
 
 #: pretalx/orga/forms/cfp.py:32
 msgid "Allow speakers to automatically include their gravatar profile image."
-msgstr ""
+msgstr "Vortragende können ihr Profilbild automatisch von Gravatar einbinden."
 
 #: pretalx/orga/forms/cfp.py:36 pretalx/submission/models/submission.py:184
 msgid "Slot Count"
