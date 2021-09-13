@@ -8,8 +8,9 @@ import aiohttp
 import pytz
 from channels.db import database_sync_to_async
 from django.conf import settings
-from django.db import transaction
-from django.db.models import F, Q, Value
+from django.db import models, transaction
+from django.db.models import Count, F, OuterRef, Q, Subquery, Value
+from django.db.models.functions import Coalesce
 from django.urls import reverse
 from django.utils.html import escape
 from lxml import etree
@@ -35,9 +36,33 @@ def escape_name(name):
 
 
 def choose_server(world, room=None, prefer_server=None):
-    servers = BBBServer.objects.filter(active=True).order_by("cost")
+    servers = BBBServer.objects.filter(active=True)
+
+    # If we're looking for a server to put a direct message on (no room), we'll take a server with
+    # the lowest 'cost', which means it is least used *right now*.
+    # If we're looking to place a room, this makes less sense since 95% of Venueless rooms are created
+    # *days* before their peak usage times. However, peak usage often coincides for rooms in the same
+    # world, so we'll try to distribute them evenly.
     if not room:
-        servers = servers.filter(rooms_only=False)
+        servers = (
+            servers.filter(rooms_only=False)
+            .annotate(relevant_cost=F("cost"))
+            .order_by("relevant_cost")
+        )
+    else:
+        servers = servers.annotate(
+            relevant_cost=Coalesce(
+                Subquery(
+                    BBBCall.objects.filter(room__world=world, server_id=OuterRef("pk"))
+                    .values("server_id")
+                    .order_by()
+                    .annotate(c=Count("server_id"))
+                    .values("c"),
+                    output_field=models.IntegerField(),
+                ),
+                0,
+            )
+        ).order_by("relevant_cost")
 
     search_order = [
         servers.filter(url=prefer_server).filter(
@@ -52,8 +77,8 @@ def choose_server(world, room=None, prefer_server=None):
             continue
 
         # Servers are sorted by cost, let's do a random pick if we have multiple with the smallest cost
-        smallest_cost = servers[0].cost
-        server = random.choice([s for s in servers if s.cost == smallest_cost])
+        smallest_cost = servers[0].relevant_cost
+        server = random.choice([s for s in servers if s.relevant_cost == smallest_cost])
 
         if len(servers) > 1:
             # Usually, if there are multiple servers, a cron job should be set up to the bbb_update_cost management
