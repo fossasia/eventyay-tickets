@@ -50,6 +50,17 @@
         display: inline-flex;
         margin-bottom: 0;
         max-width: 100%;
+
+        &::after {
+          content: "";
+          position: absolute;
+          right: 10px;
+          top: 50%;
+          transform: translateY(-50%);
+          border-top: 5px solid #6c757d;
+          border-left: 5px solid transparent;
+          border-right: 5px solid transparent;
+        }
       }
 
     }
