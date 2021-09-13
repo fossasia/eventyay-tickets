@@ -34,15 +34,15 @@
     }
   }
   .select2-container {
-      .select2-search--inline {
-        width: calc(100% - 20px);
-        .select2-search__field {
-          height: auto;
-          margin-left: 12px;
-          font-size: 1rem;
-          font-family: Muli;
-        }
+    .select2-search--inline {
+      width: calc(100% - 20px);
+      .select2-search__field {
+        height: auto;
+        margin-left: 12px;
+        font-size: 1rem;
+        font-family: Muli;
       }
+    }
     .select2-selection--multiple {
       display: flex;
 
@@ -75,4 +75,12 @@
 }
 .form-group.row .select2 textarea::placeholder {
   color: white;
+}
+.select2-search input[type="search"] {
+  border-radius: 4px;
+  &:focus, &:focus-visible {  /* on search fields, focus-visible applies when on other fields focus applies, so we copy :focus rules here */
+    box-shadow: 0 0 0 1px rgba(58, 165, 124, 0.25);
+    border-color: #89d6b8;
+    outline: 0;
+  }
 }
