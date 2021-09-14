@@ -221,6 +221,13 @@ class EventSettingsForm(ReadOnlyFlag, I18nFormMixin, I18nHelpText, HierarkeyForm
         help_text=_("Should the sessions marked as featured be shown publicly?"),
         required=True,
     )
+    use_feedback = forms.BooleanField(
+        label=_("Enable anonymous feedback"),
+        help_text=_(
+            "Attendees will be able to send in feedback after a session is over."
+        ),
+        required=False,
+    )
     export_html_on_schedule_release = forms.BooleanField(
         label=_("Generate HTML export on schedule release"),
         help_text=_(

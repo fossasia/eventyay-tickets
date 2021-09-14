@@ -209,6 +209,11 @@ class FeedbackView(PermissionRequired, FormView):
     def speakers(self):
         return self.talk.speakers.all()
 
+    def dispatch(self, request, *args, **kwargs):
+        if not request.event.settings.use_feedback:
+            raise Http404()
+        return super().dispatch(request, *args, **kwargs)
+
     def get(self, *args, **kwargs):
         talk = self.talk
         if talk and self.request.user in self.speakers:

@@ -54,7 +54,7 @@
                     </a>
                 </li>
             {% endif %}
-            {% if submission.feedback.count %}
+            {% if submission.feedback.count and request.event.settings.use_feedback %}
                 <li class="nav-item">
                     <a
                         class="nav-link {% if "submissions.feedback" in url_name %}active{% endif %}"

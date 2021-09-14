@@ -44,6 +44,7 @@ hierarkey.add_default("imprint_url", None, str)
 hierarkey.add_default("html_export_url", "", str)
 hierarkey.add_default("custom_domain", "", str)
 hierarkey.add_default("use_tracks", "True", bool)
+hierarkey.add_default("use_feedback", "True", bool)
 hierarkey.add_default("use_gravatar", "True", bool)
 hierarkey.add_default("present_multiple_times", "False", bool)
 

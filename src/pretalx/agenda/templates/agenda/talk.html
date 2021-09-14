@@ -26,7 +26,7 @@
                             <i class="fa fa-calendar"></i> .ical
                         </a>
                     {% endif %}
-                    {% if submission.does_accept_feedback and not is_html_export %}
+                    {% if submission.does_accept_feedback and request.event.settings.use_feedback and not is_html_export %}
                         <a href="{{ submission.urls.feedback }}"
                             class="btn btn-success">
                             <i class="fa fa-comments"></i> {{ phrases.agenda.feedback }}

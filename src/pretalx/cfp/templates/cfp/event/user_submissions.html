@@ -72,7 +72,7 @@
                                     <i class="fa fa-check"></i> {% translate "Confirm" %}
                                 </a>
                             {% endif %}
-                            {% if submission.does_accept_feedback %}
+                            {% if request.event.settings.use_feedback submission.does_accept_feedback %}
                                 <a href="{{ submission.urls.feedback }}"
                                     class="btn btn-sm btn-info">
                                     <i class="fa fa-comments"></i> {% translate "Feedback" %}{% if submission.feedback.count %}  ({{ submission.feedback.count }}){% endif %}

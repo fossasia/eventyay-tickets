@@ -105,6 +105,7 @@ def test_add_custom_css(event, orga_client, path, allowed):
                 "custom_css": custom_css,
                 "settings-schedule_display": event.settings.schedule_display,
                 "settings-show_featured": event.settings.show_featured,
+                "settings-use_feedback": event.settings.use_feedback,
             },
             follow=True,
         )
@@ -140,6 +141,7 @@ def test_add_custom_css_as_administrator(event, administrator_client, path):
                 "custom_css": custom_css,
                 "settings-schedule_display": event.settings.schedule_display,
                 "settings-show_featured": event.settings.show_featured,
+                "settings-use_feedback": event.settings.use_feedback,
             },
             follow=True,
         )
@@ -170,6 +172,7 @@ def test_add_logo(event, orga_client):
                 "logo": logo,
                 "settings-schedule_display": event.settings.schedule_display,
                 "settings-show_featured": event.settings.show_featured,
+                "settings-use_feedback": event.settings.use_feedback,
             },
             follow=True,
         )
@@ -203,6 +206,7 @@ def test_add_logo_no_svg(event, orga_client):
                 "logo": logo,
                 "settings-schedule_display": event.settings.schedule_display,
                 "settings-show_featured": event.settings.show_featured,
+                "settings-use_feedback": event.settings.use_feedback,
             },
             follow=True,
         )
@@ -240,6 +244,7 @@ def test_change_custom_domain(event, orga_client, monkeypatch):
             "settings-custom_domain": "https://myevent.com",
             "settings-schedule_display": event.settings.schedule_display,
             "settings-show_featured": event.settings.show_featured,
+            "settings-use_feedback": event.settings.use_feedback,
         },
         follow=True,
     )
@@ -268,6 +273,7 @@ def test_change_custom_domain_to_site_url(event, orga_client):
             "settings-custom_domain": settings.SITE_URL,
             "settings-schedule_display": event.settings.schedule_display,
             "settings-show_featured": event.settings.show_featured,
+            "settings-use_feedback": event.settings.use_feedback,
         },
         follow=True,
     )
@@ -304,6 +310,7 @@ def test_change_custom_domain_to_unavailable_domain(
             "settings-custom_domain": "https://example.org",
             "settings-schedule_display": event.settings.schedule_display,
             "settings-show_featured": event.settings.show_featured,
+            "settings-use_feedback": event.settings.use_feedback,
         },
         follow=True,
     )
