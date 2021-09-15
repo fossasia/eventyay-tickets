@@ -16,7 +16,6 @@ from django.db.models import Q
 from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
 from django.utils.timezone import now
-from django.utils.translation import get_language
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import override
 from django_scopes import scopes_disabled
@@ -384,11 +383,11 @@ All the best,
 the pretalx robot"""
             )
 
-        with override(get_language()):
+        with override(self.locale):
             mail = QueuedMail.objects.create(
                 subject=_("Password recovery"),
                 text=str(mail_text).format(**context),
-                locale=get_language(),
+                locale=self.locale,
             )
             mail.to_users.add(self)
             mail.send()
