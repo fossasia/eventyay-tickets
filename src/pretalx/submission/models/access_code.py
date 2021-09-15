@@ -2,6 +2,7 @@ import math
 
 from django.db import models
 from django.utils.timezone import now
+from django.utils.translation import get_language
 from django.utils.translation import gettext_lazy as _
 
 from pretalx.common.mixins.models import GenerateCode, LogMixin
@@ -95,6 +96,7 @@ class SubmitterAccessCode(LogMixin, GenerateCode, models.Model):
                 to=invite,
                 subject=subject,
                 text=text,
+                locale=get_language(),
             ).send()
 
     send_invite.alters_data = True

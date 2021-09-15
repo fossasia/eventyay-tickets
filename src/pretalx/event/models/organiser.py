@@ -4,6 +4,7 @@ from django.core.validators import RegexValidator
 from django.db import models, transaction
 from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
+from django.utils.translation import get_language
 from django.utils.translation import gettext_lazy as _
 from django_scopes import scope, scopes_disabled
 from i18nfield.fields import I18nCharField
@@ -189,6 +190,7 @@ The {organiser} team"""
             to=self.email,
             subject=str(invitation_subject),
             text=str(invitation_text),
+            locale=get_language(),
         )
         mail.send()
         return mail

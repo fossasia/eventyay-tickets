@@ -894,6 +894,7 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
                 subject=_("News from your content system"),
                 text=str(text).format(**context),
                 to=self.email,
+                locale=self.locale,
             ).send()
 
     @transaction.atomic

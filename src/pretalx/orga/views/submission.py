@@ -96,6 +96,7 @@ The {event} orga crew"""
                 )
             ),
             text=invitation_text,
+            locale=submission.content_locale,
         )
         mail.to_users.add(user)
     return user

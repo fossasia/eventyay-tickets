@@ -388,6 +388,7 @@ the pretalx robot"""
             mail = QueuedMail.objects.create(
                 subject=_("Password recovery"),
                 text=str(mail_text).format(**context),
+                locale=get_language(),
             )
             mail.to_users.add(self)
             mail.send()

@@ -9,6 +9,7 @@ from django.db.models.fields.files import FieldFile
 from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
 from django.utils.timezone import now
+from django.utils.translation import get_language
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import pgettext
 from django_scopes import ScopedManager
@@ -695,6 +696,7 @@ I'm looking forward to it!
                 to=invite,
                 subject=subject,
                 text=text,
+                locale=get_language(),
             ).send()
 
     send_invite.alters_data = True

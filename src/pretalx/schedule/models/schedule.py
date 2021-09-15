@@ -515,7 +515,12 @@ class Schedule(LogMixin, models.Model):
         to be sent on schedule release."""
         mails = []
         for speaker in self.speakers_concerned:
-            with override(speaker.locale), tzoverride(self.tz):
+            locale = (
+                speaker.locale
+                if speaker.locale in self.event.locales
+                else self.event.locale
+            )
+            with override(locale), tzoverride(self.tz):
                 notifications = get_template(
                     "schedule/speaker_notification.txt"
                 ).render({"speaker": speaker, **self.speakers_concerned[speaker]})
@@ -526,6 +531,7 @@ class Schedule(LogMixin, models.Model):
                     context_kwargs={"user": speaker},
                     context={"notifications": notifications},
                     commit=save,
+                    locale=locale,
                 )
             )
         return mails

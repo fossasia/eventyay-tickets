@@ -2,6 +2,7 @@ from copy import deepcopy
 
 import bleach
 import markdown
+from django.conf import settings
 from django.db import models, transaction
 from django.template.loader import get_template
 from django.utils.timezone import now
@@ -149,6 +150,7 @@ class MailTemplate(LogMixin, models.Model):
                 bcc=self.bcc,
                 subject=subject,
                 text=text,
+                locale=locale,
             )
             if skip_queue:
                 mail.send()
@@ -223,6 +225,7 @@ class QueuedMail(LogMixin, models.Model):
     subject = models.CharField(max_length=200, verbose_name=_("Subject"))
     text = models.TextField(verbose_name=_("Text"))
     sent = models.DateTimeField(null=True, blank=True, verbose_name=_("Sent at"))
+    locale = models.CharField(max_length=5, null=True, blank=True)
 
     objects = ScopedManager(event="event")
 
@@ -238,7 +241,7 @@ class QueuedMail(LogMixin, models.Model):
         return f"OutboxMail(to={self.to}, subject={self.subject}, sent={sent})"
 
     @classmethod
-    def make_html(cls, text, event=None):
+    def make_html(cls, text, event=None, locale=None):
         body_md = bleach.linkify(
             bleach.clean(markdown.markdown(text), tags=ALLOWED_TAGS),
             parse_email=True,
@@ -283,7 +286,7 @@ class QueuedMail(LogMixin, models.Model):
 
         has_event = getattr(self, "event", None)
         text = self.make_text(self.text, event=has_event)
-        body_html = self.make_html(text)
+        body_html = self.make_html(text, locale=self.locale, event=self.event)
 
         from pretalx.common.mail import mail_send_task
 
