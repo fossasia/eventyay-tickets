@@ -253,6 +253,10 @@ class QueuedMail(LogMixin, models.Model):
             "body": body_md,
             "event": event,
             "color": (event.primary_color if event else "") or "#3aa57c",
+            "locale": self.locale,
+            "rtl": self.locale in settings.LANGUAGES_RTL,
+            "subject": self.subject,
+            "signature": sig,
         }
         return get_template("mail/mailwrapper.html").render(html_context)
 
