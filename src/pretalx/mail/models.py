@@ -240,8 +240,11 @@ class QueuedMail(LogMixin, models.Model):
         sent = self.sent.isoformat() if self.sent else None
         return f"OutboxMail(to={self.to}, subject={self.subject}, sent={sent})"
 
-    @classmethod
-    def make_html(cls, text, event=None, locale=None):
+    def make_html(self):
+        event = getattr(self, "event", None)
+        sig = event.settings.mail_signature
+        if sig.strip().startswith("-- "):
+            sig = sig.strip()[3:].stipr()
         body_md = bleach.linkify(
             bleach.clean(markdown.markdown(self.text), tags=ALLOWED_TAGS),
             parse_email=True,

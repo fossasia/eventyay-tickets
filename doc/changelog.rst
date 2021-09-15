@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` Email signatures now look a lot better in HTML emails
 - :feature:`1171` Organisers can now disable audience feedback.
 - :feature:`1163` You can now link to specific days on the schedule again, as with our old schedule. The link is generated when you click the tabs leading to specific days.
 - :feature:`-` Plugin languages can now be either globally available or only for active events – plugin developers, please adjust your plugins!

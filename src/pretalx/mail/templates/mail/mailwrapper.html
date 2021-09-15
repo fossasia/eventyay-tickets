@@ -109,7 +109,16 @@
                     </div>
                 </td>
             </tr>
+            {% if signature %}
+                <tr class="signature">
+                    <td>{{ signature }}</td>
+                </tr>
+            {% endif %}
+            <tr class="last"></tr>
         </table>
+        <div class="footer">
+            powered by <a href="https://pretalx.com">pretalx</a>
+        </div>
         <br/>
         <br/>
     </body>
