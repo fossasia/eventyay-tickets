@@ -294,15 +294,10 @@ class WriteMailForm(MailTemplateBase):
                 with suppress(
                     SendMailException
                 ):  # This happens when there are template errors
-                    locale = submission.content_locale
-                    if locale not in self.event.locales:
-                        locale = speaker.locale
-                    if locale not in self.event.locales:
-                        locale = self.event.locale
                     mail = template.to_mail(
                         user=None,
                         event=self.event,
-                        locale=locale,
+                        locale=submission.get_email_locale(speaker.locale),
                         context_kwargs={"submission": submission, "user": speaker},
                         commit=False,
                         allow_empty_address=True,

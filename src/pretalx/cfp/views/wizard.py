@@ -88,7 +88,7 @@ class SubmitWizard(EventPageMixin, View):
                 event=request.event,
                 context_kwargs={"user": request.user, "submission": request.submission},
                 skip_queue=True,
-                locale=request.user.locale,
+                locale=request.submission.get_email_locale(request.user.locale),
                 full_submission_content=True,
             )
             if request.event.settings.mail_on_new_submission:

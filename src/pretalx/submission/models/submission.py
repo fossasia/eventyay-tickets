@@ -9,7 +9,6 @@ from django.db.models.fields.files import FieldFile
 from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
 from django.utils.timezone import now
-from django.utils.translation import get_language
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import pgettext
 from django_scopes import ScopedManager
@@ -454,6 +453,13 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
 
     reject.alters_data = True
 
+    def get_email_locale(self, fallback=None):
+        if self.content_locale in self.event.locales:
+            return self.content_locale
+        if fallback and fallback in self.event.locales:
+            return fallback
+        return self.event.locale
+
     def send_state_mail(self):
         if self.state == SubmissionStates.ACCEPTED:
             template = self.event.accept_template
@@ -465,7 +471,7 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
         for speaker in self.speakers.all():
             template.to_mail(
                 user=speaker,
-                locale=speaker.locale,
+                locale=self.get_email_locale(self.speaker.locale),
                 context_kwargs={"submission": self, "user": speaker},
                 event=self.event,
             )
@@ -696,7 +702,7 @@ I'm looking forward to it!
                 to=invite,
                 subject=subject,
                 text=text,
-                locale=get_language(),
+                locale=self.get_email_locale(),
             ).send()
 
     send_invite.alters_data = True
