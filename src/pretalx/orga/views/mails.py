@@ -1,5 +1,6 @@
 import bleach
 from django.contrib import messages
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
@@ -244,6 +245,19 @@ class MailCopy(PermissionRequired, View):
         new_mail = mail.copy_to_draft()
         messages.success(request, _("The mail has been copied, you can edit it now."))
         return redirect(new_mail.urls.edit)
+
+
+class MailPreview(PermissionRequired, View):
+    permission_required = "orga.send_mails"
+
+    def get_object(self) -> QueuedMail:
+        return get_object_or_404(
+            self.request.event.queued_mails, pk=self.kwargs.get("pk")
+        )
+
+    def get(self, request, *args, **kwargs):
+        mail = self.get_object()
+        return HttpResponse(mail.make_html())
 
 
 class ComposeMail(EventPermissionRequired, FormView):

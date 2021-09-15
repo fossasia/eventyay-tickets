@@ -297,6 +297,11 @@ urlpatterns = [
                                 mails.OutboxSend.as_view(),
                                 name="mails.outbox.mail.send",
                             ),
+                            path(
+                                "preview",
+                                mails.MailPreview.as_view(),
+                                name="mails.outbox.mail.preview",
+                            ),
                         ]
                     ),
                 ),
