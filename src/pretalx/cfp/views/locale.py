@@ -1,4 +1,5 @@
 import datetime as dt
+from urllib.parse import parse_qs, urlencode, urlparse
 
 from django.conf import settings
 from django.contrib import messages
@@ -13,9 +14,20 @@ from pretalx.common.phrases import phrases
 class LocaleSet(View):
     def get(self, request, *args, **kwargs):
         url = request.GET.get("next", request.headers.get("Referer", "/"))
-        url = url if url_has_allowed_host_and_scheme(url, allowed_hosts=None) else "/"
-        resp = HttpResponseRedirect(url)
+        if url_has_allowed_host_and_scheme(url, allowed_hosts=None):
 
+            parsed = urlparse(url)
+            url = parsed.path
+            if parsed.query:
+                query = parse_qs(parsed.query)
+                query.pop("lang", None)
+                query = urlencode(query, doseq=True)
+                if query:
+                    url = f"{url}?{query}"
+        else:
+            url = "/"
+
+        resp = HttpResponseRedirect(url)
         locale = request.GET.get("locale")
         if locale in [lc for lc, ll in settings.LANGUAGES]:
             if request.user.is_authenticated:
