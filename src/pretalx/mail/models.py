@@ -242,9 +242,11 @@ class QueuedMail(LogMixin, models.Model):
 
     def make_html(self):
         event = getattr(self, "event", None)
-        sig = event.settings.mail_signature
-        if sig.strip().startswith("-- "):
-            sig = sig.strip()[3:].stipr()
+        sig = None
+        if event:
+            sig = event.settings.mail_signature
+            if sig.strip().startswith("-- "):
+                sig = sig.strip()[3:].stipr()
         body_md = bleach.linkify(
             bleach.clean(markdown.markdown(self.text), tags=ALLOWED_TAGS),
             parse_email=True,
