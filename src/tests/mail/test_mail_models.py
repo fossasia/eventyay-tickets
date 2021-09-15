@@ -60,7 +60,7 @@ def test_mail_template_model_to_mail_shortens_subject(mail_template):
 def test_mail_make_text(event, text, signature, expected):
     if signature:
         event.settings.mail_signature = signature
-    assert QueuedMail.make_text(text, event) == expected
+    assert QueuedMail(text=text, event=event).make_text() == expected
 
 
 @pytest.mark.django_db
@@ -75,4 +75,4 @@ def test_mail_make_text(event, text, signature, expected):
 def test_mail_make_subject(event, text, prefix, expected):
     if prefix:
         event.settings.mail_subject_prefix = prefix
-    assert QueuedMail.make_subject(text, event) == expected
+    assert QueuedMail(text=text, subject=text, event=event).make_subject() == expected
