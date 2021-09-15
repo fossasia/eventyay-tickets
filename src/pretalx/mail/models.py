@@ -225,7 +225,7 @@ class QueuedMail(LogMixin, models.Model):
     subject = models.CharField(max_length=200, verbose_name=_("Subject"))
     text = models.TextField(verbose_name=_("Text"))
     sent = models.DateTimeField(null=True, blank=True, verbose_name=_("Sent at"))
-    locale = models.CharField(max_length=5, null=True, blank=True)
+    locale = models.CharField(max_length=32, null=True, blank=True)
 
     objects = ScopedManager(event="event")
 

@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="queuedmail",
             name="locale",
-            field=models.CharField(max_length=5, null=True),
+            field=models.CharField(max_length=32, null=True),
         ),
     ]
