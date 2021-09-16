@@ -5,6 +5,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.utils.http import url_has_allowed_host_and_scheme
+from django.utils.translation import LANGUAGE_SESSION_KEY
 from django.utils.translation import override
 from django.views.generic import View
 
@@ -44,6 +45,7 @@ class LocaleSet(View):
                 ),
                 domain=settings.SESSION_COOKIE_DOMAIN,
             )
+            request.session[LANGUAGE_SESSION_KEY] = locale
             with override(locale):
                 messages.success(request, str(phrases.cfp.locale_change_success))
 
