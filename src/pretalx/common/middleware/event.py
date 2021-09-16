@@ -186,8 +186,9 @@ class EventPermissionMiddleware:
         if hasattr(request, "session"):
             with suppress(LookupError):
                 session_value = request.session.get(LANGUAGE_SESSION_KEY)
-                session_value = get_supported_language_variant(session_value)
-                return session_value if session_value in supported else None
+                with suppress(LookupError):
+                    session_value = get_supported_language_variant(session_value)
+                    return session_value if session_value in supported else None
 
         cookie_value = request.COOKIES.get(settings.LANGUAGE_COOKIE_NAME)
         with suppress(LookupError):
@@ -205,10 +206,11 @@ class EventPermissionMiddleware:
     def _language_from_request(request, supported):
         lang = request.GET.get("lang")
         if lang:
-            value = get_supported_language_variant(lang)
-            if value in supported:
-                if hasattr(request, "session"):
-                    request.session[LANGUAGE_SESSION_KEY] = value
-                else:
-                    request.COOKIES[settings.LANGUAGE_COOKIE_NAME] = value
-                return value
+            with suppress(LookupError):
+                value = get_supported_language_variant(lang)
+                if value in supported:
+                    if hasattr(request, "session"):
+                        request.session[LANGUAGE_SESSION_KEY] = value
+                    else:
+                        request.COOKIES[settings.LANGUAGE_COOKIE_NAME] = value
+                    return value
