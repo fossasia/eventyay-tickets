@@ -1,5 +1,6 @@
 {% load i18n %}
 {% load eventurl %}
+{% load rich_text %}
 {% load bootstrap3 %}
 <div class="panel panel-primary">
     <div class="panel-heading">
@@ -13,7 +14,7 @@
                 <p>
                     {{ p.item.name }}
                     {% if p.variation %}
-                        – {{ p.variation.name }}
+                        – {{ p.variation.value }}
                     {% endif %}
                     {% if p.subevent %}
                         – {{ p.subevent }}
@@ -21,14 +22,19 @@
                     {% if p.attendee_name %}
                         – {{ p.attendee_name }}
                     {% endif %}
-                    <br>
-                    {% blocktrans trimmed %}
-                        You can now join the event using the following button:
-                    {% endblocktrans %}
                 </p>
+                {% if request.event.settings.venueless_text %}
+                    {{ request.event.settings.venueless_text|rich_text }}
+                {% else %}
+                    <p>
+                        {% blocktrans trimmed %}
+                            You can now join the event using the following button:
+                        {% endblocktrans %}
+                    </p>
+                {% endif %}
                 <div class="form-inline text-center">
                     <form method="post" target="_blank"
-                          action="{% eventurl event "plugins:pretix_venueless:join" order=order.code position=p.positionid secret=p.web_secret %}">
+                            action="{% eventurl event "plugins:pretix_venueless:join" order=order.code position=p.positionid secret=p.web_secret %}">
                         {% csrf_token %}
                         <button
                                 class="btn btn-primary btn-lg">
@@ -37,7 +43,7 @@
                     </form>
                 </div>
             </li>
-            {% empty %}
+        {% empty %}
             <li class="list-group-item">
                 <p>
                     {% blocktrans trimmed %}

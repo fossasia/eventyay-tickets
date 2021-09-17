@@ -11,6 +11,7 @@ from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _, gettext
 from django.views import View
 from django.views.decorators.clickjacking import xframe_options_exempt
+from i18nfield.forms import I18nFormField, I18nTextarea
 
 from pretix.base.forms import SettingsForm, SecretKeySettingsField
 from pretix.base.models import Event, Order, Item, Question, CheckinList
@@ -39,7 +40,7 @@ class VenuelessSettingsForm(SettingsForm):
         required=False,
     )
     venueless_start = RelativeDateTimeField(
-        label=_('Start of live event'),
+        label=_('Do not allow access before'),
         required=False,
     )
     venueless_allow_pending = forms.BooleanField(
@@ -72,6 +73,11 @@ class VenuelessSettingsForm(SettingsForm):
         required=False,
         queryset=Question.objects.none(),
         initial=None
+    )
+    venueless_text = I18nFormField(
+        label=_('Introductory text'),
+        required=False,
+        widget=I18nTextarea,
     )
 
     def __init__(self, *args, **kwargs):
