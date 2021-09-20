@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` pretalx now comes with new translations, in Arabic, Spanish, and Brazilian Portuguese!
 - :feature:`-` Email signatures now look a lot better in HTML emails
 - :feature:`1171` Organisers can now disable audience feedback.
 - :feature:`1163` You can now link to specific days on the schedule again, as with our old schedule. The link is generated when you click the tabs leading to specific days.

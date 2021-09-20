@@ -379,6 +379,7 @@ LANGUAGES_INFORMATION = {
         "natural_name": "漢語",
         "official": False,
         "percentage": 66,
+        "public_code": "zh",
     },
     "fr": {
         "name": _("French"),
@@ -398,7 +399,13 @@ LANGUAGES_INFORMATION = {
         "natural_name": "Español",
         "official": False,
         "percentage": 100,
-        "public_code": "jp",
+    },
+    "pt-BR": {
+        "name": _("Brasilian Portuguese"),
+        "natural_name": "Português brasileiro",
+        "official": False,
+        "percentage": 100,
+        "public_code": "pt",
     },
 }
 LANGUAGES_RTL = {
