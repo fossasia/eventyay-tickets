@@ -9,6 +9,7 @@
     "lint": "vue-cli-service lint",
     "lint:nofix": "vue-cli-service lint --no-fix",
     "i18n:report": "vue-i18n-extract report -v './src/**/*.?(js|vue)' -l './src/locales/*.js'",
+    "i18n:extract": "npx i18next-parser 'src/**/*.vue' -c i18next-parser.config.js",
     "start": "vue-cli-service serve",
     "analyze": "ANALYZE=true npm run build"
   },
@@ -23,6 +24,7 @@
     "emoji-mart": "^3.0.0",
     "emoji-regex": "^9.0.0",
     "hls.js": "^1.0.8",
+    "i18next": "^21.0.1",
     "janus-gateway": "git+https://wtf-npm@github.com/meetecho/janus-gateway.git#7b010cd265991132158541ea80afcaa14bf4eb42",
     "lodash": "^4.17.20",
     "markdown-it": "^12.2.0",
@@ -37,7 +39,6 @@
     "uuid": "^8.3.0",
     "vue": "^2.6.12",
     "vue-advanced-cropper": "^0.16.10",
-    "vue-i18n": "^8.21.0",
     "vue-router": "^3.4.3",
     "vue-slicksort": "^1.2.0",
     "vue-virtual-scroller": "^1.0.10",
@@ -46,6 +47,7 @@
     "web-animations-js": "^2.3.2"
   },
   "devDependencies": {
+    "@babel/eslint-parser": "^7.15.7",
     "@babel/plugin-proposal-json-strings": "^7.10.4",
     "@babel/plugin-proposal-nullish-coalescing-operator": "^7.10.4",
     "@babel/plugin-proposal-optional-chaining": "^7.11.0",
@@ -67,6 +69,7 @@
     "eslint-plugin-standard": "^4.0.0",
     "eslint-plugin-vue": "^6.2.2",
     "exports-loader": "^1.1.1",
+    "i18next-parser": "^4.7.0",
     "json-loader": "^0.5.7",
     "modernizr": "^3.11.3",
     "modernizr-loader": "^1.0.1",
@@ -74,7 +77,6 @@
     "pug-plain-loader": "^1.0.0",
     "stylus": "^0.54.8",
     "stylus-loader": "^3.0.2",
-    "vue-i18n-extract": "^1.1.1",
     "vue-template-compiler": "^2.6.12",
     "webpack-bundle-analyzer": "^3.8.0"
   }
