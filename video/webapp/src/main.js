@@ -16,50 +16,52 @@ import 'roboto-fontface'
 import 'roboto-fontface/css/roboto-condensed/roboto-condensed-fontface.css'
 import '@mdi/font/css/materialdesignicons.css'
 import './registerServiceWorker'
-import i18n from './i18n'
+import I18n from './i18n'
 import features from 'features'
 
-Vue.config.productionTip = false
-Vue.use(Buntpapier)
-Vue.use(Vuelidate)
-Vue.use(VueVirtualScroller)
-Vue.component('scrollbars', Scrollbars)
-Vue.component('link-icon-button', LinkIconButton)
-Vue.use(MediaQueries)
-// auth.
-// history.replaceState('', document.title, location.pathname + location.search)
+async function init () {
+	Vue.config.productionTip = false
+	Vue.use(Buntpapier)
+	Vue.use(Vuelidate)
+	Vue.use(VueVirtualScroller)
+	Vue.component('scrollbars', Scrollbars)
+	Vue.component('link-icon-button', LinkIconButton)
+	Vue.use(MediaQueries)
+	await I18n(Vue)
+	Vue.prototype.$features = features
 
-Vue.prototype.$features = features
-window.vapp = new Vue({
-	router,
-	store,
-	i18n,
-	render: h => h('router-view')
-}).$mount('#app')
+	window.vapp = new Vue({
+		router,
+		store,
+		render: h => h('router-view')
+	}).$mount('#app')
 
-const token = new URLSearchParams(router.currentRoute.hash.substr(1)).get('token')
-if (token) {
-	localStorage.token = token
-	router.replace(router.currentRoute.path)
-	store.dispatch('login', {token})
-} else if (localStorage.token) {
-	store.dispatch('login', {token: localStorage.token})
-} else {
-	console.warn('no token found, login in anonymously')
-	let clientId = localStorage.clientId
-	if (!clientId) {
-		clientId = uuid()
-		localStorage.clientId = clientId
+	const token = new URLSearchParams(router.currentRoute.hash.substr(1)).get('token')
+	if (token) {
+		localStorage.token = token
+		router.replace(router.currentRoute.path)
+		store.dispatch('login', {token})
+	} else if (localStorage.token) {
+		store.dispatch('login', {token: localStorage.token})
+	} else {
+		console.warn('no token found, login in anonymously')
+		let clientId = localStorage.clientId
+		if (!clientId) {
+			clientId = uuid()
+			localStorage.clientId = clientId
+		}
+		store.dispatch('login', {clientId})
 	}
-	store.dispatch('login', {clientId})
+	store.dispatch('connect')
+
+	// TODO properly time between minutes
+	setInterval(() => store.commit('schedule/updateNow'), 30000)
+	setInterval(() => store.dispatch('notifications/pollExternals'), 1000)
+	window.__venueless__release = RELEASE
+
+	window.addEventListener('beforeinstallprompt', function (event) {
+		console.log('install prompt', event)
+	})
 }
-store.dispatch('connect')
 
-// TODO properly time between minutes
-setInterval(() => store.commit('schedule/updateNow'), 30000)
-setInterval(() => store.dispatch('notifications/pollExternals'), 1000)
-window.__venueless__release = RELEASE
-
-window.addEventListener('beforeinstallprompt', function (event) {
-	console.log('install prompt', event)
-})
+init()

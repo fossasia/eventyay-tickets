@@ -1,3 +1,5 @@
+const path = require('path')
+
 module.exports = {
 	root: true,
 	env: {
@@ -9,7 +11,10 @@ module.exports = {
 		'@vue/standard'
 	],
 	parserOptions: {
-		parser: 'babel-eslint'
+		parser: '@babel/eslint-parser',
+		babelOptions: {
+			configFile: path.resolve(__dirname, 'babel.config.js')
+		}
 	},
 	plugins: [
 		'babel'
