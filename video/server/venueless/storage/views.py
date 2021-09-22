@@ -171,9 +171,12 @@ class UploadView(UploadMixin, View):
             file.seek(0)
 
         image = original_image = Image.open(file)
+        image_modified = False
 
         # before we resize or resave anything
-        image = ImageOps.exif_transpose(image)
+        if image.format == "JPEG":
+            image = ImageOps.exif_transpose(image)
+            image_modified = True
 
         if self.request.POST.get("width") and self.request.POST.get("height"):
             try:
@@ -184,6 +187,7 @@ class UploadView(UploadMixin, View):
                         int(self.request.POST.get("height")),
                     ),
                 )
+                image_modified = True
             except ValueError:
                 pass
 
@@ -195,8 +199,14 @@ class UploadView(UploadMixin, View):
             image_without_exif.save(
                 o, format="JPEG", quality=95
             )  # Pillow's default JPEG quality is 75
+        elif not image_modified:
+            size = len(data)
+            if hasattr(data, "seek"):
+                data.seek(0)
+            return Image.MIME.get(image.format), data, size
         else:
             image.save(o, format=original_image.format)
+
         o.seek(0)
         return (
             Image.MIME.get(original_image.format),
