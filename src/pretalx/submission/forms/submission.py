@@ -207,7 +207,7 @@ class SubmissionFilterForm(forms.Form):
     )
     question = SafeModelChoiceField(queryset=Question.objects.none(), required=False)
 
-    def __init__(self, event, *args, **kwargs):
+    def __init__(self, event, *args, limit_tracks=False, **kwargs):
         self.event = event
         usable_states = kwargs.pop("usable_states", None)
         super().__init__(*args, **kwargs)
@@ -220,25 +220,51 @@ class SubmissionFilterForm(forms.Form):
             d["state"]: d["state__count"]
             for d in state_qs.order_by("state").values("state").annotate(Count("state"))
         }
-        type_count = {
-            d["submission_type_id"]: d["submission_type_id__count"]
-            for d in qs.order_by("submission_type_id")
-            .values("submission_type_id")
-            .annotate(Count("submission_type_id"))
-        }
-        track_count = {
-            d["track"]: d["track__count"]
-            for d in qs.order_by("track").values("track").annotate(Count("track"))
-        }
-        tag_count = event.tags.prefetch_related("submissions").annotate(
-            submission_count=Count("submissions", distinct=True)
-        )
-        tag_count = {tag.tag: tag.submission_count for tag in tag_count}
-        self.fields["submission_type"].choices = [
-            (sub_type.pk, f"{str(sub_type.name)} ({type_count.get(sub_type.pk, 0)})")
-            for sub_type in event.submission_types.all()
-        ]
-        self.fields["submission_type"].widget.attrs["title"] = _("Session types")
+        sub_types = event.submission_types.all()
+        tracks = limit_tracks or event.tracks.all()
+        if len(sub_types) > 1:
+            type_count = {
+                d["submission_type_id"]: d["submission_type_id__count"]
+                for d in qs.order_by("submission_type_id")
+                .values("submission_type_id")
+                .annotate(Count("submission_type_id"))
+            }
+            self.fields["submission_type"].choices = [
+                (
+                    sub_type.pk,
+                    f"{str(sub_type.name)} ({type_count.get(sub_type.pk, 0)})",
+                )
+                for sub_type in event.submission_types.all()
+            ]
+            self.fields["submission_type"].widget.attrs["title"] = _("Session types")
+        else:
+            self.fields.pop("submission_type", None)
+        if len(tracks) > 1:
+            track_count = {
+                d["track"]: d["track__count"]
+                for d in qs.order_by("track").values("track").annotate(Count("track"))
+            }
+            self.fields["track"].choices = [
+                (track.pk, f"{track.name} ({track_count.get(track.pk, 0)})")
+                for track in tracks
+            ]
+            self.fields["track"].widget.attrs["title"] = _("Tracks")
+        else:
+            self.fields.pop("track", None)
+
+        if not self.event.tags.all().exists():
+            self.fields.pop("tags", None)
+        else:
+            tag_count = event.tags.prefetch_related("submissions").annotate(
+                submission_count=Count("submissions", distinct=True)
+            )
+            tag_count = {tag.tag: tag.submission_count for tag in tag_count}
+            self.fields["tags"].choices = [
+                (tag.pk, f"{tag.tag} ({tag_count.get(tag.tag, 0)})")
+                for tag in self.event.tags.all()
+            ]
+            self.fields["tags"].widget.attrs["title"] = _("Tags")
+
         if usable_states:
             usable_states = [
                 choice
@@ -252,17 +278,4 @@ class SubmissionFilterForm(forms.Form):
             for choice in usable_states
         ]
         self.fields["state"].widget.attrs["title"] = _("Proposal states")
-        self.fields["track"].choices = [
-            (track.pk, f"{track.name} ({track_count.get(track.pk, 0)})")
-            for track in event.tracks.all()
-        ]
-        self.fields["track"].widget.attrs["title"] = _("Tracks")
         self.fields["question"].queryset = event.questions.all()
-        self.fields["tags"].widget.attrs["title"] = _("Tags")
-        if not self.event.tags.all().exists():
-            self.fields.pop("tags")
-        else:
-            self.fields["tags"].choices = [
-                (tag.pk, f"{tag.tag} ({tag_count.get(tag.tag, 0)})")
-                for tag in self.event.tags.all()
-            ]

@@ -35,7 +35,6 @@ class ReviewDashboard(
         "speakers__name__icontains",
         "title__icontains",
     )
-    filter_fields = ("submission_type", "state", "track", "tags")
 
     def get_filter_form(self):
         return SubmissionFilterForm(
@@ -47,6 +46,7 @@ class ReviewDashboard(
                 SubmissionStates.REJECTED,
                 SubmissionStates.CONFIRMED,
             ],
+            limit_tracks=self.limit_tracks,
         )
 
     def filter_range(self, queryset):

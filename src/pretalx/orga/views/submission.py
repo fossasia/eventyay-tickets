@@ -132,17 +132,13 @@ class SubmissionViewMixin(PermissionRequired):
 
 
 class ReviewerSubmissionFilter:
-    def get_queryset(self, for_reviews=False):
-        queryset = (
-            self.request.event.submissions.all()
-            .select_related("submission_type", "event", "track")
-            .prefetch_related("speakers")
-        )
+    @cached_property
+    def limit_tracks(self):
         permissions = self.request.user.get_permissions_for_event(self.request.event)
         if "is_reviewer" not in permissions:
-            return queryset
-        if "can_change_submissions" in permissions and not for_reviews:
-            return queryset
+            return None
+        if "can_change_submissions" in permissions and not self._for_reviews:
+            return None
         limit_tracks = self.request.user.teams.filter(
             Q(all_events=True)
             | Q(Q(all_events=False) & Q(limit_events__in=[self.request.event])),
@@ -152,7 +148,17 @@ class ReviewerSubmissionFilter:
             tracks = set()
             for team in limit_tracks:
                 tracks.update(team.limit_tracks.filter(event=self.request.event))
-            queryset = queryset.filter(track__in=tracks)
+        return tracks
+
+    def get_queryset(self, for_reviews=False):
+        self._for_reviews = for_reviews
+        queryset = (
+            self.request.event.submissions.all()
+            .select_related("submission_type", "event", "track")
+            .prefetch_related("speakers")
+        )
+        if self.limit_tracks:
+            queryset = queryset.filter(track__in=self.limit_tracks)
         return queryset
 
 
@@ -482,10 +488,16 @@ class SubmissionList(
     context_object_name = "submissions"
     template_name = "orga/submission/list.html"
     filter_fields = ("submission_type", "state", "track", "tags")
-    filter_form_class = SubmissionFilterForm
     sortable_fields = ("code", "title", "state", "is_featured")
     permission_required = "orga.view_submissions"
     paginate_by = 25
+
+    def get_filter_form(self):
+        return SubmissionFilterForm(
+            data=self.request.GET,
+            event=self.request.event,
+            limit_tracks=self.limit_tracks,
+        )
 
     def get_default_filters(self, *args, **kwargs):
         default_filters = {"code__icontains", "title__icontains"}
@@ -499,10 +511,10 @@ class SubmissionList(
 
     @context
     def show_tracks(self):
-        return (
-            self.request.event.settings.use_tracks
-            and self.request.event.tracks.all().count() > 1
-        )
+        if self.request.event.settings.use_tracks:
+            if self.limit_tracks:
+                return len(self.limit_tracks) > 1
+            return self.request.event.tracks.all().count() > 1
 
     def get_queryset(self):
         qs = super().get_queryset().order_by("-id")

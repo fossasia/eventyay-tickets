@@ -39,9 +39,9 @@
     <div class="submit-group search-submit-group">
         <form class="search-form" id="review-filter-form">
             {% bootstrap_form search_form %}
-            {% if show_submission_types %}{% bootstrap_field filter_form.submission_type %}{% endif %}
+            {% if show_submission_types and filter_form.submission_type %}{% bootstrap_field filter_form.submission_type %}{% endif %}
             {% bootstrap_field filter_form.state layout='inline' %}
-            {% if show_tracks %}{% bootstrap_field filter_form.track %}{% endif %}
+            {% if filter_form.tags %}{% bootstrap_field filter_form.tags %}{% endif %}
             {% if filter_form.tags %}{% bootstrap_field filter_form.tags %}{% endif %}
             {% if max_review_count and max_review_count > 1 %}
                 <div id="range-wrapper">
