@@ -148,7 +148,7 @@ class ReviewerSubmissionFilter:
             tracks = set()
             for team in limit_tracks:
                 tracks.update(team.limit_tracks.filter(event=self.request.event))
-        return tracks
+            return tracks
 
     def get_queryset(self, for_reviews=False):
         self._for_reviews = for_reviews
