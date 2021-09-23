@@ -103,9 +103,12 @@ The {event} orga crew"""
 
 
 class SubmissionViewMixin(PermissionRequired):
+    def get_queryset(self):
+        return Submission.all_objects.filter(event=self.request.event)
+
     def get_object(self):
         return get_object_or_404(
-            Submission.all_objects.filter(event=self.request.event),
+            self.get_queryset(),
             code__iexact=self.kwargs.get("code"),
         )
 
@@ -126,6 +129,31 @@ class SubmissionViewMixin(PermissionRequired):
         return self.request.event.review_phases.filter(
             can_see_speaker_names=False
         ).exists()
+
+
+class ReviewerSubmissionFilter:
+    def get_queryset(self, for_reviews=False):
+        queryset = (
+            self.request.event.submissions.all()
+            .select_related("submission_type", "event", "track")
+            .prefetch_related("speakers")
+        )
+        permissions = self.request.user.get_permissions_for_event(self.request.event)
+        if "is_reviewer" not in permissions:
+            return queryset
+        if "can_change_submissions" in permissions and not for_reviews:
+            return queryset
+        limit_tracks = self.request.user.teams.filter(
+            Q(all_events=True)
+            | Q(Q(all_events=False) & Q(limit_events__in=[self.request.event])),
+            limit_tracks__isnull=False,
+        ).prefetch_related("limit_tracks", "limit_tracks__event")
+        if limit_tracks:
+            tracks = set()
+            for team in limit_tracks:
+                tracks.update(team.limit_tracks.filter(event=self.request.event))
+            queryset = queryset.filter(track__in=tracks)
+        return queryset
 
 
 class SubmissionStateChange(SubmissionViewMixin, TemplateView):
@@ -234,7 +262,7 @@ class SubmissionSpeakersDelete(SubmissionViewMixin, View):
         return redirect(submission.orga_urls.speakers)
 
 
-class SubmissionSpeakers(SubmissionViewMixin, TemplateView):
+class SubmissionSpeakers(ReviewerSubmissionFilter, SubmissionViewMixin, TemplateView):
     template_name = "orga/submission/speakers.html"
     permission_required = "orga.view_speakers"
 
@@ -260,7 +288,9 @@ class SubmissionSpeakers(SubmissionViewMixin, TemplateView):
         return User.objects.all()
 
 
-class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
+class SubmissionContent(
+    ActionFromUrl, ReviewerSubmissionFilter, SubmissionViewMixin, CreateOrUpdateView
+):
     model = Submission
     form_class = SubmissionForm
     template_name = "orga/submission/content.html"
@@ -445,7 +475,9 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
         return kwargs
 
 
-class SubmissionList(EventPermissionRequired, Sortable, Filterable, ListView):
+class SubmissionList(
+    EventPermissionRequired, Sortable, Filterable, ReviewerSubmissionFilter, ListView
+):
     model = Submission
     context_object_name = "submissions"
     template_name = "orga/submission/list.html"
@@ -473,13 +505,7 @@ class SubmissionList(EventPermissionRequired, Sortable, Filterable, ListView):
         )
 
     def get_queryset(self):
-        qs = (
-            Submission.all_objects.filter(event=self.request.event)
-            .select_related("submission_type", "event", "track")
-            .prefetch_related("speakers")
-            .order_by("-id")
-            .all()
-        )
+        qs = super().get_queryset().order_by("-id")
         qs = self.filter_queryset(qs)
         question = self.request.GET.get("question")
         unanswered = self.request.GET.get("unanswered")

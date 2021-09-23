@@ -4,7 +4,7 @@ from contextlib import suppress
 
 from django.contrib import messages
 from django.db import transaction
-from django.db.models import Count, Max, OuterRef, Q, Subquery
+from django.db.models import Count, Max, OuterRef, Subquery
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
@@ -18,11 +18,14 @@ from pretalx.common.mixins.views import (
 )
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.orga.forms.review import ReviewForm, TagsForm
+from pretalx.orga.views.submission import ReviewerSubmissionFilter
 from pretalx.submission.forms import QuestionsForm, SubmissionFilterForm
 from pretalx.submission.models import Review, Submission, SubmissionStates
 
 
-class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
+class ReviewDashboard(
+    EventPermissionRequired, Filterable, ReviewerSubmissionFilter, ListView
+):
     template_name = "orga/review/dashboard.html"
     paginate_by = None
     context_object_name = "submissions"
@@ -68,24 +71,18 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
         statistics_method = (
             statistics.median if aggregate_method == "median" else statistics.fmean
         )
-        queryset = self.request.event.submissions.filter(
-            state__in=[
-                SubmissionStates.SUBMITTED,
-                SubmissionStates.ACCEPTED,
-                SubmissionStates.REJECTED,
-                SubmissionStates.CONFIRMED,
-            ]
+        queryset = (
+            super()
+            .get_queryset(for_reviews=True)
+            .filter(
+                state__in=[
+                    SubmissionStates.SUBMITTED,
+                    SubmissionStates.ACCEPTED,
+                    SubmissionStates.REJECTED,
+                    SubmissionStates.CONFIRMED,
+                ]
+            )
         )
-        limit_tracks = self.request.user.teams.filter(
-            Q(all_events=True)
-            | Q(Q(all_events=False) & Q(limit_events__in=[self.request.event])),
-            limit_tracks__isnull=False,
-        ).prefetch_related("limit_tracks", "limit_tracks__event")
-        if limit_tracks:
-            tracks = set()
-            for team in limit_tracks:
-                tracks.update(team.limit_tracks.filter(event=self.request.event))
-            queryset = queryset.filter(track__in=tracks)
         queryset = self.filter_queryset(queryset).annotate(
             review_count=Count("reviews", distinct=True)
         )
