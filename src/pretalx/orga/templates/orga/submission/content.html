@@ -65,7 +65,7 @@
         {% if form.description %}{% bootstrap_field form.description layout='event' %}{% endif %}
         {% if form.notes %}{% bootstrap_field form.notes layout='event' %}{% endif %}
         {% bootstrap_field form.internal_notes layout='event' %}
-        {% bootstrap_field form.content_locale layout='event' %}
+        {% if form.content_locale %}{% bootstrap_field form.content_locale layout='event' %}{% endif %}
         {% if form.do_not_record %}{% bootstrap_field form.do_not_record layout='event' %}{% endif %}
         {% bootstrap_field form.is_featured layout='event' %}
         {% bootstrap_field form.duration addon_after='minutes' layout='event' addon_after_class="input-group-append input-group-text" %}

@@ -122,7 +122,7 @@ def _create_talk(*, talk, room, event):
     if talk.find("subtitle").text:
         sub.description = talk.find("subtitle").text + "\n" + (sub.description or "")
     sub.abstract = talk.find("abstract").text
-    sub.content_locale = talk.find("language").text or "en"
+    sub.content_locale = talk.find("language").text or event.locale
     sub.do_not_record = optout
     sub.state = SubmissionStates.CONFIRMED
     sub.save()

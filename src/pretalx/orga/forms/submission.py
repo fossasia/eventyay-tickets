@@ -139,6 +139,8 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
                 ]
 
     def save(self, *args, **kwargs):
+        if "content_locale" not in self.fields:
+            self.instance.content_locale = self.event.locale
         instance = super().save(*args, **kwargs)
         if self.is_creating:
             instance._set_state(self.cleaned_data["state"], force=True)
@@ -206,6 +208,7 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
             "notes",
             "image",
             "do_not_record",
+            "content_locale",
         }
 
 

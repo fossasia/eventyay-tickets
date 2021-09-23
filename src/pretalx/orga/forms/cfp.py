@@ -98,6 +98,7 @@ class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, I18nHelpText, HierarkeyForm):
             "image",
             "track",
             "duration",
+            "content_locale",
         ]
         for attribute in self.request_require_fields:
             field_name = f"cfp_ask_{attribute}"

@@ -44,7 +44,7 @@
                 {% if talk_slots|length == 1 %}
                     {{ talk_slots.0.start|date:"Y-m-d" }}, {{ talk_slots.0.start|date:"H:i" }}–{{ talk_slots.0.end|date:"H:i" }} ({{ request.event.timezone }}), {{ talk_slots.0.room.name }}
                 {% endif %}
-                {% if request.event.is_multilingual %}
+                {% if request.event.is_multilingual and request.event.settings.cfp_request_content_locale %}
                     <div class="speakers">
                         <strong>{% translate "Language" %}:</strong> {{ submission.get_content_locale_display }}
                     </div>

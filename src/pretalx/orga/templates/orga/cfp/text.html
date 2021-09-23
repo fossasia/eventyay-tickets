@@ -87,6 +87,14 @@
                                     <td></td>
                                     <td></td>
                                 </tr>
+                                {% if request.event.is_multilingual %}
+                                <tr>
+                                    <th>{% translate "Language" %}</th>
+                                    <td class="hide-label">{% bootstrap_field sform.cfp_ask_content_locale layout='event-inline' %}</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                {% endif %}
                                 <tr>
                                     <th>{% translate "Biography" %}</th>
                                     <td class="hide-label">{% bootstrap_field sform.cfp_ask_biography layout='event-inline' %}</td>

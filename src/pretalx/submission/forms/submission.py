@@ -127,14 +127,15 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
             self.fields["submission_type"].widget = forms.HiddenInput()
 
     def _set_locales(self):
-        if len(self.event.locales) == 1:
-            self.initial["content_locale"] = self.event.locales[0]
-            self.fields["content_locale"].widget = forms.HiddenInput()
-        else:
-            locale_names = dict(settings.LANGUAGES)
-            self.fields["content_locale"].choices = [
-                (a, locale_names[a]) for a in self.event.locales
-            ]
+        if "content_locale" in self.fields:
+            if len(self.event.locales) == 1:
+                self.initial["content_locale"] = self.event.locales[0]
+                self.fields["content_locale"].widget = forms.HiddenInput()
+            else:
+                locale_names = dict(settings.LANGUAGES)
+                self.fields["content_locale"].choices = [
+                    (a, locale_names[a]) for a in self.event.locales
+                ]
 
     def _set_slot_count(self, instance=None):
         if not self.event.settings.present_multiple_times:
@@ -151,6 +152,11 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
                     "Please contact the organisers if you want to change how often you're presenting this proposal."
                 )
             )
+
+    def save(self, *args, **kwargs):
+        if "content_locale" not in self.fields:
+            self.instance.content_locale = self.event.locale
+        return super().save(*args, **kwargs)
 
     class Meta:
         model = Submission
@@ -176,6 +182,7 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
             "do_not_record",
             "track",
             "duration",
+            "content_locale",
         ]
         public_fields = ["title", "abstract", "description", "image"]
         widgets = {
