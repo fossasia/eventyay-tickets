@@ -50,6 +50,7 @@
         display: inline-flex;
         margin-bottom: 0;
         max-width: 100%;
+        min-height: 32px;
 
         &::after {
           content: "";
