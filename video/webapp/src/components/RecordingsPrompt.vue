@@ -11,6 +11,7 @@ prompt.c-recordings-prompt(@close="$emit('close')")
 				.recording-dates {{ moment(r.start).format('l, LT') }} – {{ moment(r.end).format('LT') }}
 				a.link.bunt-button(v-if="r.url && (r.state == 'published' || r.state == 'available')", :href="r.url", target="_blank") {{ $t('RecordingsPrompt:view:label') }}
 				a.link.bunt-button(v-if="r.url_screenshare && (r.state == 'published' || r.state == 'available')", :href="r.url_screenshare", target="_blank") {{ $t('RecordingsPrompt:view-screenshare:label') }}
+				a.link.bunt-button(v-if="r.url_video && (r.state == 'published' || r.state == 'available')", :href="r.url_video", target="_blank") {{ $t('RecordingsPrompt:view-video:label') }}
 				span(v-if="!r.url && !r.url_screenshare") {{ r.state }}
 </template>
 <script>
@@ -47,6 +48,8 @@ export default {
 </script>
 <style lang="stylus">
 .c-recordings-prompt
+	.prompt-wrapper
+		width: 640px
 	.content
 		display: flex
 		flex-direction: column

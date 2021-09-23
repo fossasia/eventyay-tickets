@@ -217,6 +217,7 @@ export default {
 	'RecordingsPrompt:info:text': 'Die Verarbeitung von Aufzeichnungen beginnt erst, nachdem das Meeting beendet wurde (in der Regel nachdem alle Teilnehmer den Raum verlassen haben). Danach kann es noch einige Minuten dauern, bis die Aufzeichnungen hier verfügbar sind.',
 	'RecordingsPrompt:view:label': 'Playback',
 	'RecordingsPrompt:view-screenshare:label': 'Screenshare',
+	'RecordingsPrompt:view-video:label': 'Video',
 	'RichTextEditor:align-center:tooltip': 'Zentriert',
 	'RichTextEditor:align-left:tooltip': 'Links',
 	'RichTextEditor:align-right:tooltip': 'Rechts',

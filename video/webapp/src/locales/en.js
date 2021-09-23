@@ -220,6 +220,7 @@ export default {
 	'RecordingsPrompt:info:text': 'Please note that recordings start processing and showing up here only a few minutes after the meeting has ended (usually, if the room was empty for a while).',
 	'RecordingsPrompt:view:label': 'Playback',
 	'RecordingsPrompt:view-screenshare:label': 'Screenshare',
+	'RecordingsPrompt:view-video:label': 'Video',
 	'RichTextEditor:align-center:tooltip': 'Center',
 	'RichTextEditor:align-left:tooltip': 'Left',
 	'RichTextEditor:align-right:tooltip': 'Right',
