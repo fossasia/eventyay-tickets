@@ -93,8 +93,8 @@ setup(
     keywords="conference cfp event schedule",
     python_requires=">={}.{}".format(*REQUIRED_PYTHON),
     install_requires=[
-        "beautifulsoup4~=4.9.0",  # https://bazaar.launchpad.net/~leonardr/beautifulsoup/bs4/view/head:/CHANGELOG
-        "bleach~=3.3.0",  # https://bleach.readthedocs.io/en/latest/changes.html
+        "beautifulsoup4~=4.10.0",  # https://bazaar.launchpad.net/~leonardr/beautifulsoup/bs4/view/head:/CHANGELOG
+        "bleach~=4.1.0",  # https://bleach.readthedocs.io/en/latest/changes.html
         "celery~=4.4.0",  # search for "what's new" on http://docs.celeryproject.org/en/latest/
         "csscompressor~=0.9.0",  # 2017-11, no changelog, https://github.com/sprymix/csscompressor
         "cssutils~=2.3.0",
@@ -105,7 +105,7 @@ setup(
         "django-context-decorator",
         "django-countries~=7.0",  # https://github.com/SmileyChris/django-countries/blob/master/CHANGES.rst
         "django-csp~=3.7.0",  # https://github.com/mozilla/django-csp/blob/master/CHANGES
-        "django-filter~=2.4.0",  # https://github.com/carltongibson/django-filter/blob/master/CHANGES.rst
+        "django-filter==21.1",  # https://github.com/carltongibson/django-filter/blob/master/CHANGES.rst
         "django-formset-js-improved==0.5.0.2",  # no changelog, https://github.com/pretix/django-formset-js
         "django-formtools~=2.3.0",
         "django-hierarkey~=1.0.0",  # no changelog, https://github.com/raphaelm/django-hierarkey
@@ -116,17 +116,17 @@ setup(
         "inlinestyler~=0.2.0",  # https://github.com/dlanger/inlinestyler/blob/master/CHANGELOG
         "libsass~=0.21.0",  # https://sass.github.io/libsass-python/changes.html
         "Markdown~=3.3.0",  # https://python-markdown.github.io/change_log/
-        "Pillow~=8.2.0",
+        "Pillow~=8.3.0",  # https://github.com/python-pillow/Pillow/blob/master/CHANGES.rst
         "publicsuffixlist~=0.7.0",
         "python-dateutil~=2.8.0",  # https://dateutil.readthedocs.io/en/stable/changelog.html
         "pytz",
         "qrcode~=7.0",
         "reportlab~=3.5.0",  # https://www.reportlab.com/documentation/relnotes/
-        "requests~=2.25.0",  # https://2.python-requests.org/en/master/community/updates/#release-and-version-history
+        "requests~=2.26.0",  # https://2.python-requests.org/en/master/community/updates/#release-and-version-history
         "rules~=3.0.0",  # https://github.com/dfunckt/django-rules/blob/master/CHANGELOG.md
         "urlman~=2.0.1",  # https://github.com/andrewgodwin/urlman/blob/master/CHANGELOG
         "vobject~=0.9.0",  # 2017-06, http://eventable.github.io/vobject/ look for "release"
-        "whitenoise~=5.2.0",  # http://whitenoise.evans.io/en/stable/changelog.html
+        "whitenoise~=5.3.0",  # http://whitenoise.evans.io/en/stable/changelog.html
         "zxcvbn~=4.4.0",  # Nothing? https://github.com/dwolfhub/zxcvbn-python/issues/38
     ],
     extras_require={
