@@ -9,7 +9,7 @@
 	.content {{ question.content }}
 	menu-dropdown(v-if="isManaging && hasPermission('room:question.moderate')", v-model="showModerationMenu", strategy="fixed")
 		template(v-slot:button="{toggle}")
-			bunt-icon-button(@click="toggle") dots-vertical
+			bunt-icon-button#btn-menu-toggle(@click="toggle") dots-vertical
 		template(v-slot:menu)
 			.approve-question(v-if="question.state === 'mod_queue'", @click="doAction('approve')") {{ $t('Question:moderation-menu:approve-question:label') }}
 			.pin-question(v-if="question.state === 'visible' && !question.is_pinned", @click="doAction('pin')") {{ $t('Question:moderation-menu:pin-question:label') }}
@@ -118,7 +118,7 @@ export default {
 				color: $clr-green-800
 	&.pinned
 		border: 4px solid var(--clr-primary)
-		border-bottom: none
+		border-bottom: border-separator()
 		border-top: none
 	&.archived
 		background-color: $clr-grey-200
@@ -138,9 +138,9 @@ export default {
 		position: absolute
 		top: 4px
 		right: 4px
-		display: none
 		z-index: 102
-		.bunt-icon-button
+		#btn-menu-toggle
+			display: none
 			icon-button-style()
 			background-color: $clr-white
 		.delete-question
@@ -154,6 +154,6 @@ export default {
 			pointer-events: none
 		&:hover
 			background-color: $clr-grey-100
-			.c-menu-dropdown
+			#btn-menu-toggle
 				display: block
 </style>
