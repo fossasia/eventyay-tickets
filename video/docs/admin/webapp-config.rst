@@ -18,7 +18,9 @@ Full configuration
 			"socket": "wss://sample.demo.venueless.org/ws/world/sample/"
 		},
 		"features": [] // enable experimental features,
-		"locale": "en",
+		"locale": "en", // DEPRECTATED, alias of defaultLocale
+		"defaultLocale": "en",
+		"locales": ["en", "de", "pt_BR"], // keep this empty to disable user-choosable locale. Order of this array is dropdown order
 		"dateLocale": "en-ie",
 		"timetravelTo": "2020-08-26T06:49:28.975Z", // forces local time to always be this (for schedule demo purposes ONLY)
 		"theme": {
