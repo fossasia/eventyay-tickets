@@ -1,22 +1,25 @@
 <template lang="pug">
-scrollbars.v-preferences(y)
-	h1 {{ $t('preferences/index:heading') }}
-	.inputs
-		.avatar-wrapper
-			avatar(:user="{profile}", :size="128")
-			bunt-button#btn-change-avatar(@click="showChangeAvatar = true") {{ $t('preferences/index:btn-change-avatar:label') }}
-		bunt-input.display-name(name="displayName", :label="$t('profile/GreetingPrompt:displayname:label')", v-model.trim="profile.display_name", :validation="$v.profile.display_name")
-		change-additional-fields(v-model="profile.fields")
-		template(v-if="languages")
-			h2 {{ $t('preferences/index:interface-language:header') }}
-			bunt-select#select-interface-language(name="interface-language", v-model="interfaceLanguage", :options="languages", option-value="code", option-label="nativeLabel")
-		h2 {{ $t('preferences/index:notifications:header') }}
-		p {{ $t('preferences/index:notifications:description') }}
-		bunt-button#btn-enable-desktop-notifications(v-if="notificationPermission === 'default'", icon="bell", @click="$store.dispatch('notifications/askForPermission')") {{ $t('preferences/index:btn-enable-desktop-notifications:label') }}
-		.notification-permission-denied(v-else-if="notificationPermission === 'denied'") {{ $t('preferences/index:notification-permission-denied-warning') }}
-		template(v-else)
-			bunt-switch(name="notificationSettings.notify", :label="$t('preferences/index:switch-enable-desktop-notifications:label')", v-model="notificationSettings.notify")
-			bunt-switch(name="notificationSettings.playSounds", :label="$t('preferences/index:switch-enable-desktop-notification-sound:label')", v-model="notificationSettings.playSounds")
+.v-preferences
+	.ui-page-header
+		h1 {{ $t('preferences/index:heading') }}
+	scrollbars(y)
+		.inputs
+			.avatar-wrapper
+				avatar(:user="{profile}", :size="128")
+				bunt-button#btn-change-avatar(@click="showChangeAvatar = true") {{ $t('preferences/index:btn-change-avatar:label') }}
+			bunt-input.display-name(name="displayName", :label="$t('profile/GreetingPrompt:displayname:label')", v-model.trim="profile.display_name", :validation="$v.profile.display_name")
+			change-additional-fields(v-model="profile.fields")
+			template(v-if="languages")
+				h2 {{ $t('preferences/index:interface-language:header') }}
+				bunt-select#select-interface-language(name="interface-language", v-model="interfaceLanguage", :options="languages", option-value="code", option-label="nativeLabel")
+			h2 {{ $t('preferences/index:notifications:header') }}
+			p {{ $t('preferences/index:notifications:description') }}
+			bunt-button#btn-enable-desktop-notifications(v-if="notificationPermission === 'default'", icon="bell", @click="$store.dispatch('notifications/askForPermission')") {{ $t('preferences/index:btn-enable-desktop-notifications:label') }}
+			.notification-permission-denied(v-else-if="notificationPermission === 'denied'") {{ $t('preferences/index:notification-permission-denied-warning') }}
+			template(v-else)
+				bunt-switch(name="notificationSettings.notify", :label="$t('preferences/index:switch-enable-desktop-notifications:label')", v-model="notificationSettings.notify")
+				bunt-switch(name="notificationSettings.playSounds", :label="$t('preferences/index:switch-enable-desktop-notification-sound:label')", v-model="notificationSettings.playSounds")
+	.ui-form-actions
 		bunt-button#btn-save(:disabled="$v.$invalid && $v.$dirty", :loading="saving", @click="save") {{ $t('preferences/index:btn-save:label') }}
 	transition(name="prompt")
 		prompt.change-avatar-prompt(v-if="showChangeAvatar", @close="showChangeAvatar = false")
@@ -27,7 +30,6 @@ scrollbars.v-preferences(y)
 					bunt-button#btn-upload(:loading="savingAvatar", :disabled="blockSave", @click="uploadAvatar") {{ $t('preferences/index:btn-upload-save:label') }}
 </template>
 <script>
-// TODO add proper static header and footer
 // TODO communicate language change to other tabs?
 import { mapState } from 'vuex'
 import cloneDeep from 'lodash/cloneDeep'
@@ -108,6 +110,8 @@ export default {
 	background-color: $clr-white
 	display: flex
 	flex-direction: column
+	flex: auto
+	min-height: 0
 	.scroll-content
 		padding: 16px 32px
 	h1
@@ -138,7 +142,6 @@ export default {
 		padding: 16px
 		font-weight: 500
 	#btn-save
-		margin-top: 32px
 		themed-button-primary()
 
 	.change-avatar-prompt
