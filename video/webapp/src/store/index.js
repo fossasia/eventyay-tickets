@@ -25,7 +25,8 @@ export default new Vuex.Store({
 		permissions: null,
 		activeRoom: null,
 		reactions: null,
-		mediaSourcePlaceholderRect: null
+		mediaSourcePlaceholderRect: null,
+		userLocale: null // only used to force UI render
 	},
 	getters: {
 		hasPermission (state) {
@@ -50,6 +51,9 @@ export default new Vuex.Store({
 		},
 		reportMediaSourcePlaceholderRect (state, rect) {
 			state.mediaSourcePlaceholderRect = rect
+		},
+		setUserLocale (state, locale) {
+			state.userLocale = locale
 		}
 	},
 	actions: {
@@ -132,6 +136,11 @@ export default new Vuex.Store({
 		},
 		async updateRoomSchedule ({state}, {room, schedule_data}) {
 			return await api.call('room.schedule', {room: room.id, schedule_data})
+		},
+		async updateUserLocale ({state}, locale) {
+			// HACK HACK we can do better with vue3
+			await Vue.prototype.$i18n.changeLanguage(locale)
+			state.userLocale = locale
 		},
 		'api::room.create' ({state}, room) {
 			state.rooms.push(room)

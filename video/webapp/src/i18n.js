@@ -31,7 +31,6 @@ export default async function (Vue) {
 			async read (language, namespace, callback) {
 				try {
 					const locale = await import(/* webpackChunkName: "locale-[request]" */ `./locales/${language}.json`)
-					console.log(locale)
 					callback(null, locale.default)
 				} catch (error) {
 					callback(error)
@@ -47,7 +46,7 @@ export default async function (Vue) {
 			}
 		})
 		.init({
-			lng: config.locale || 'en',
+			lng: localStorage.userLanguage || config.defaultLocale || config.locale || 'en',
 			fallbackLng: 'en',
 			debug: ENV_DEVELOPMENT,
 			keySeparator: false,

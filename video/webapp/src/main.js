@@ -30,11 +30,16 @@ async function init () {
 	await I18n(Vue)
 	Vue.prototype.$features = features
 
-	window.vapp = new Vue({
+	const app = new Vue({
 		router,
 		store,
 		render: h => h('router-view')
 	}).$mount('#app')
+
+	window.vapp = app
+
+	store.commit('setUserLocale', app.$i18n.resolvedLanguage)
+
 
 	const token = new URLSearchParams(router.currentRoute.hash.substr(1)).get('token')
 	if (token) {

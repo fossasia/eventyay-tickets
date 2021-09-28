@@ -7,6 +7,9 @@ scrollbars.v-preferences(y)
 			bunt-button#btn-change-avatar(@click="showChangeAvatar = true") {{ $t('preferences/index:btn-change-avatar:label') }}
 		bunt-input.display-name(name="displayName", :label="$t('profile/GreetingPrompt:displayname:label')", v-model.trim="profile.display_name", :validation="$v.profile.display_name")
 		change-additional-fields(v-model="profile.fields")
+		template(v-if="languages")
+			h2 {{ $t('preferences/index:interface-language:header') }}
+			bunt-select#select-interface-language(name="interface-language", v-model="interfaceLanguage", :options="languages", option-value="code", option-label="nativeLabel")
 		h2 {{ $t('preferences/index:notifications:header') }}
 		p {{ $t('preferences/index:notifications:description') }}
 		bunt-button#btn-enable-desktop-notifications(v-if="notificationPermission === 'default'", icon="bell", @click="$store.dispatch('notifications/askForPermission')") {{ $t('preferences/index:btn-enable-desktop-notifications:label') }}
@@ -24,8 +27,12 @@ scrollbars.v-preferences(y)
 					bunt-button#btn-upload(:loading="savingAvatar", :disabled="blockSave", @click="uploadAvatar") {{ $t('preferences/index:btn-upload-save:label') }}
 </template>
 <script>
+// TODO add proper static header and footer
+// TODO communicate language change to other tabs?
 import { mapState } from 'vuex'
 import cloneDeep from 'lodash/cloneDeep'
+import config from 'config'
+import { locales } from 'locales'
 import Avatar from 'components/Avatar'
 import Prompt from 'components/Prompt'
 import ChangeAvatar from 'components/profile/ChangeAvatar'
@@ -38,6 +45,7 @@ export default {
 	data () {
 		return {
 			profile: null,
+			interfaceLanguage: this.$i18n.resolvedLanguage,
 			notificationSettings: cloneDeep(this.$store.state.notifications.settings),
 			showChangeAvatar: false,
 			savingAvatar: false,
@@ -56,7 +64,11 @@ export default {
 		...mapState(['user', 'world']),
 		...mapState('notifications', {
 			notificationPermission: 'permission'
-		})
+		}),
+		languages () {
+			if (!config.locales?.length) return null
+			return locales.filter(locale => config.locales.includes(locale.code))
+		}
 	},
 	created () {
 		this.profile = Object.assign({}, this.user.profile)
@@ -80,6 +92,12 @@ export default {
 			this.saving = true
 			await this.$store.dispatch('updateUser', {profile: this.profile})
 			this.$store.dispatch('notifications/updateSettings', this.notificationSettings)
+			localStorage.userLanguage = this.interfaceLanguage
+			try {
+				await this.$store.dispatch('updateUserLocale', this.interfaceLanguage)
+			} catch (error) {
+				console.error(error)
+			}
 			this.saving = false
 		}
 	}

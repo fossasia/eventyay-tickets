@@ -10,6 +10,8 @@ if (ENV_DEVELOPMENT || !window.venueless) {
 			scheduleImport: `http://${hostname}:8375/storage/schedule_import/`,
 			feedback: `http://${hostname}:8375/_feedback/`,
 		},
+		defaultLocale: 'en',
+		locales: ['en', 'de', 'pt_BR'],
 		timetravelTo: '2020-04-17T10:49:28.975Z'
 	}
 } else {
