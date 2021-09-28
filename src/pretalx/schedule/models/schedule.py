@@ -323,6 +323,13 @@ class Schedule(LogMixin, models.Model):
         )
         return result
 
+    @cached_property
+    def use_room_availabilities(self):
+        return any(
+            room.availabilities.all()
+            for room in self.event.rooms.all().prefetch_related("availabilities")
+        )
+
     def get_talk_warnings(
         self,
         talk,
@@ -342,7 +349,7 @@ class Schedule(LogMixin, models.Model):
             return []
         warnings = []
         availability = talk.as_availability
-        if talk.room:
+        if talk.room and self.use_room_availabilities:
             if room_avails is None:
                 room_avails = talk.room.availabilities.all()
             if not any(
