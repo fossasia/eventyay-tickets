@@ -202,6 +202,11 @@ class FormFlowStep(TemplateFlowStep):
         self.request = request
         form = self.get_form()
         if not form.is_valid():
+            error_message = "\n\n".join(
+                form.fields[key].label + ": " + " ".join(values)
+                for key, values in form.errors.items()
+            )
+            messages.error(self.request, error_message)
             return self.get(request)
         self.set_data(form.cleaned_data)
         self.set_files(form.files)
