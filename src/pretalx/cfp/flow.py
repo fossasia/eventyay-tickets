@@ -203,7 +203,8 @@ class FormFlowStep(TemplateFlowStep):
         form = self.get_form()
         if not form.is_valid():
             error_message = "\n\n".join(
-                form.fields[key].label + ": " + " ".join(values)
+                (f"{form.fields[key].label}: " if key != "__all__" else "")
+                + " ".join(values)
                 for key, values in form.errors.items()
             )
             messages.error(self.request, error_message)
