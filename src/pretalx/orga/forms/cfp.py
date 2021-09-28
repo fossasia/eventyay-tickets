@@ -117,10 +117,14 @@ class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, I18nHelpText, HierarkeyForm):
                     ("required", _("Ask and require input")),
                 ],
             )
+        if not obj.is_multilingual:
+            self.fields.pop("cfp_ask_content_locale", None)
 
     def save(self, *args, **kwargs):
         for attribute in self.request_require_fields:
             key = f"cfp_ask_{attribute}"
+            if not key in self.fields:
+                continue
             data = self.cleaned_data.pop(key)
             self.fields.pop(
                 key
