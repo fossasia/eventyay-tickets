@@ -53,24 +53,3 @@ jobs:
     - name: Lint webapp
       run: npm run lint:nofix
       working-directory: ./webapp
-  i18n:
-    name: i18n
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions/cache@v1
-      with:
-        path: ~/.npm
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-
-    - name: Use Node.js 14
-      uses: actions/setup-node@v1
-      with:
-        node-version: 14
-    - name: Install dependencies
-      run: npm ci
-      working-directory: ./webapp
-    - name: Check for missing i18n entries
-      run: npm run i18n:report
-      working-directory: ./webapp
