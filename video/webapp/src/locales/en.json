@@ -216,7 +216,7 @@
   "Questions:deactivated-placeholder": "Questions are currently disabled.",
   "Questions:empty-placeholder": "No questions yet, why not ask one?",
   "Questions:moderator-actions:archive-all:label": "Archive All",
-  "RecordingsPrompt:error:text": "Failed to load recordings from the sever.",
+  "RecordingsPrompt:error:text": "Failed to load recordings from the server.",
   "RecordingsPrompt:headline:text": "Recordings",
   "RecordingsPrompt:info:text": "Please note that recordings start processing and showing up here only a few minutes after the meeting has ended (usually, if the room was empty for a while).",
   "RecordingsPrompt:view:label": "Playback",
