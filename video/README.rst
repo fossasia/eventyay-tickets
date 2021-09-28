@@ -18,6 +18,18 @@ venueless is brought to you by `pretix`_, `pretalx`_, and `rash.codes`_.
 
 **This project is in a development stage and requires in-depth technical knowledge for production use.**
 
+Contributing
+------------
+
+Translation
+^^^^^^^^^^^
+
+We manage our translations over at `weblate.pretix.eu <https://translate.pretix.eu/engage/venueless/>`_.
+
+.. image:: https://translate.pretix.eu/widgets/venueless/-/webapp/multi-blue.svg
+   :target: https://translate.pretix.eu/engage/venueless/
+
+
 License
 -------
 
