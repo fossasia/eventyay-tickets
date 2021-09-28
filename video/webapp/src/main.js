@@ -40,7 +40,6 @@ async function init () {
 
 	store.commit('setUserLocale', app.$i18n.resolvedLanguage)
 
-
 	const token = new URLSearchParams(router.currentRoute.hash.substr(1)).get('token')
 	if (token) {
 		localStorage.token = token
