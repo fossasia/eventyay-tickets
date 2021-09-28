@@ -30,7 +30,8 @@ export default async function (Vue) {
 			init (services, backendOptions, i18nextOptions) {},
 			async read (language, namespace, callback) {
 				try {
-					const locale = await import(/* webpackChunkName: "locale-[request]" */ `./locales/${language}.js`)
+					const locale = await import(/* webpackChunkName: "locale-[request]" */ `./locales/${language}.json`)
+					console.log(locale)
 					callback(null, locale.default)
 				} catch (error) {
 					callback(error)
