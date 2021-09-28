@@ -123,7 +123,7 @@ class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, I18nHelpText, HierarkeyForm):
     def save(self, *args, **kwargs):
         for attribute in self.request_require_fields:
             key = f"cfp_ask_{attribute}"
-            if not key in self.fields:
+            if key not in self.fields:
                 continue
             data = self.cleaned_data.pop(key)
             self.fields.pop(
