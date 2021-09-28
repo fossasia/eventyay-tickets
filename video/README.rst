@@ -24,7 +24,7 @@ Contributing
 Translation
 ^^^^^^^^^^^
 
-We manage our translations over at `weblate.pretix.eu <https://translate.pretix.eu/engage/venueless/>`_.
+We manage our translations over at `translate.pretix.eu <https://translate.pretix.eu/engage/venueless/>`_.
 
 .. image:: https://translate.pretix.eu/widgets/venueless/-/webapp/multi-blue.svg
    :target: https://translate.pretix.eu/engage/venueless/
