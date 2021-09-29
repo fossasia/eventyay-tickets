@@ -150,17 +150,6 @@ class WorldList(AdminBase, ListView):
     queryset = (
         World.objects.annotate(
             user_count=Count("user"),
-            current_view_count=Subquery(
-                RoomView.objects.filter(
-                    room__world=OuterRef("pk"),
-                    start__gt=now() - datetime.timedelta(hours=24),
-                    end__isnull=True,
-                )
-                .order_by()
-                .values("room__world")
-                .annotate(c=Count("*"))
-                .values("c")
-            ),
             last_usage=Subquery(
                 PlannedUsage.objects.filter(world=OuterRef("pk"))
                 .order_by()
@@ -171,7 +160,6 @@ class WorldList(AdminBase, ListView):
         )
         .prefetch_related("planned_usages")
         .order_by(
-            F("current_view_count").desc(nulls_last=True),
             F("last_usage").desc(nulls_last=True),
         )
     )
