@@ -16,7 +16,7 @@ import 'roboto-fontface'
 import 'roboto-fontface/css/roboto-condensed/roboto-condensed-fontface.css'
 import '@mdi/font/css/materialdesignicons.css'
 import './registerServiceWorker'
-import I18n from './i18n'
+import i18n, { init as i18nInit } from './i18n'
 import features from 'features'
 
 async function init () {
@@ -27,7 +27,7 @@ async function init () {
 	Vue.component('scrollbars', Scrollbars)
 	Vue.component('link-icon-button', LinkIconButton)
 	Vue.use(MediaQueries)
-	await I18n(Vue)
+	await i18nInit(Vue)
 	Vue.prototype.$features = features
 
 	const app = new Vue({
@@ -35,10 +35,9 @@ async function init () {
 		store,
 		render: h => h('router-view')
 	}).$mount('#app')
-
 	window.vapp = app
 
-	store.commit('setUserLocale', app.$i18n.resolvedLanguage)
+	store.commit('setUserLocale', i18n.resolvedLanguage)
 
 	const token = new URLSearchParams(router.currentRoute.hash.substr(1)).get('token')
 	if (token) {

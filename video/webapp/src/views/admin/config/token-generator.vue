@@ -14,7 +14,6 @@
 <script>
 import api from 'lib/api'
 import { DEFAULT_COLORS, DEFAULT_LOGO } from 'theme'
-import i18n from 'i18n'
 import { required, integer } from 'vuelidate/lib/validators'
 
 export default {
@@ -26,11 +25,6 @@ export default {
 			result: '',
 			saving: false,
 		}
-	},
-	computed: {
-		strings () {
-			return i18n.messages[i18n.locale]
-		},
 	},
 	validations: {
 		number: {

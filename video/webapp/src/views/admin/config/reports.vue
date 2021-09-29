@@ -37,7 +37,6 @@
 </template>
 <script>
 import api from 'lib/api'
-import i18n from 'i18n'
 import moment from 'lib/timetravelMoment'
 import {helpers, required} from 'vuelidate/lib/validators'
 import Prompt from 'components/Prompt'
@@ -64,9 +63,6 @@ export default {
 		}
 	},
 	computed: {
-		strings () {
-			return i18n.messages[i18n.locale]
-		},
 		questionRooms () {
 			const r = []
 			r.push(...this.$store.state.rooms.filter((room) => room.modules.filter(m => m.type === 'question').length))

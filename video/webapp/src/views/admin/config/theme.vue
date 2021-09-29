@@ -50,7 +50,8 @@ export default {
 	},
 	computed: {
 		strings () {
-			return i18n.messages[i18n.locale]
+			// access i18n dict via undocumented api
+			return i18n.store.data[this.config.locale].translation
 		},
 	},
 	validations: {

@@ -22,7 +22,9 @@ import config from 'config'
 // 	messages: loadLocaleMessages()
 // })
 
-export default async function (Vue) {
+export default i18next
+
+export async function init (Vue) {
 	await i18next
 		// dynamic locale loader using webpack chunks
 		.use({
