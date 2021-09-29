@@ -335,7 +335,7 @@ export default {
 					display: flex
 					justify-content: space-between
 					line-height: 24px
-					color: $clr-disabled-text-dark
+					color: var(--clr-sidebar-text-disabled)
 					.room
 						display: flex
 						line-height: 24px
