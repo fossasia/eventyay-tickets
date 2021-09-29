@@ -19,7 +19,7 @@ transition(name="sidebar")
 						.info
 							.title {{ stage.session.title }}
 							.subtitle
-								.speakers {{ stage.session.speakers.map(s => s.name).join(', ') }}
+								.speakers {{ stage.session.speakers ? stage.session.speakers.map(s => s.name).join(', ') : '' }}
 								.room {{ stage.room.name }}
 					template(v-else)
 						.room-icon(aria-hidden="true")
