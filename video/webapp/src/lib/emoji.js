@@ -104,6 +104,6 @@ export function markdownEmoji (md) {
 	})
 	md.renderer.rules.emoji = (tokens, idx) => {
 		const emoji = data.emojis[_getEmojiDataFromNative(tokens[idx].content, 'twitter', data).id]
-		return `<span class="emoji" style="background-position: ${getEmojiPosition(emoji)}"></span>`
+		return `<span class="emoji" style="background-position: ${getEmojiPosition(emoji)}">${tokens[idx].content}</span>`
 	}
 }
