@@ -43,4 +43,7 @@ export default {
 			margin: 0 16px
 			img, .ql-video-wrapper
 				margin: 0 -16px
+#app.override-sidebar-collapse .c-static-page .rich-text-content
+	> *, li
+		margin: 0 16px
 </style>
