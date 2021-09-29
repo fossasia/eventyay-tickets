@@ -272,6 +272,7 @@ export default {
 				max-height: 300px
 		.content, .reactions
 			.emoji
+				color: transparent // hide unicode emoji
 				vertical-align: bottom
 				line-height: 20px
 				width: 20px
