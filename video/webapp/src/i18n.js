@@ -24,6 +24,14 @@ import config from 'config'
 
 export default i18next
 
+export function localize (string) {
+	if (typeof string === 'string') return string
+	for (const lang of i18next.languages) {
+		if (string[lang]) return string[lang]
+	}
+	return Object.values(string)[0]
+}
+
 export async function init (Vue) {
 	await i18next
 		// dynamic locale loader using webpack chunks
@@ -57,4 +65,5 @@ export async function init (Vue) {
 		})
 	Vue.prototype.$i18n = i18next
 	Vue.prototype.$t = i18next.t.bind(i18next)
+	Vue.prototype.$localize = localize
 }

@@ -6,16 +6,15 @@ a.c-linear-schedule-session(:href="linkHref", :style="style", @click="linkClick(
 			.ampm(v-if="startTime.ampm") {{ startTime.ampm }}
 		.duration {{ durationMinutes }}min
 	.info
-		.title {{ getLocalizedString(session.title) }}
+		.title {{ $localize(session.title) }}
 		.speakers(v-if="session.speakers") {{ session.speakers.map(s => s.name).join(', ') }}
 		.abstract(v-if="showAbstract") {{ session.abstract }}
 		.bottom-info
-			.track(v-if="session.track") {{ getLocalizedString(session.track.name) }}
-			.room(v-if="showRoom && session.room") {{ getLocalizedString(session.room.name) }}
+			.track(v-if="session.track") {{ $localize(session.track.name) }}
+			.room(v-if="showRoom && session.room") {{ $localize(session.room.name) }}
 </template>
 <script>
 import moment from 'lib/timetravelMoment'
-import { getLocalizedString } from './utils'
 import router from 'router'
 
 export default {
@@ -32,7 +31,6 @@ export default {
 	},
 	data () {
 		return {
-			getLocalizedString
 		}
 	},
 	computed: {

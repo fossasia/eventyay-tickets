@@ -13,11 +13,11 @@
 					img.preview(:src="`https://picsum.photos/64?v=${index}`")
 					.info
 						.title-time
-							.title {{ session.title }}
+							.title {{ $localize(session.title) }}
 							.time {{ state.timeString }}
 						.speakers-room
-							.speakers {{ session.speakers.map(s => s.name).join(', ')}}
-							.room {{ getLocalizedString(session.room.name) }}
+							.speakers {{ session.speakers ? session.speakers.map(s => s.name).join(', ') : '' }}
+							.room {{ $localize(session.room.name) }}
 			//- .header
 			//- 	h3 Sponsors
 			//- 	router-link(:to="{name: 'schedule'}") all sponsors
@@ -30,7 +30,6 @@
 import { mapState, mapGetters } from 'vuex'
 import moment from 'lib/timetravelMoment'
 import MarkdownContent from 'components/MarkdownContent'
-import { getLocalizedString } from 'components/schedule/utils'
 
 export default {
 	components: { MarkdownContent },
@@ -40,7 +39,6 @@ export default {
 	data () {
 		return {
 			moment,
-			getLocalizedString,
 			sponsors: [{
 				name: 'pretix',
 				logo: '/sponsors/pretix.svg'

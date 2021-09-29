@@ -17,7 +17,7 @@ transition(name="sidebar")
 					template(v-if="stage.session")
 						img.preview(v-if="stage.image", :src="stage.image")
 						.info
-							.title {{ stage.session.title }}
+							.title {{ $localize(stage.session.title) }}
 							.subtitle
 								.speakers {{ stage.session.speakers ? stage.session.speakers.map(s => s.name).join(', ') : '' }}
 								.room {{ stage.room.name }}
