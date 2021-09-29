@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import i18n from 'i18n'
 import api from 'lib/api'
 import chat from './chat'
 import question from './question'
@@ -138,8 +139,7 @@ export default new Vuex.Store({
 			return await api.call('room.schedule', {room: room.id, schedule_data})
 		},
 		async updateUserLocale ({state}, locale) {
-			// HACK HACK we can do better with vue3
-			await Vue.prototype.$i18n.changeLanguage(locale)
+			await i18n.changeLanguage(locale)
 			state.userLocale = locale
 		},
 		'api::room.create' ({state}, room) {

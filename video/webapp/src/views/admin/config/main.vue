@@ -8,7 +8,7 @@
 		.ui-form-body(v-if="config")
 			h2 System details
 			bunt-input(v-model="config.title", label="Title", name="title", :validation="$v.config.title")
-			bunt-select(v-model="config.locale", label="Language", name="locale", :options="locales")
+			bunt-select(v-model="config.locale", label="Language", name="locale", :options="locales", option-value="code", option-label="nativeLabel")
 			bunt-select(v-model="config.dateLocale", label="Date locale", name="dateLocale", :options="momentLocales")
 			bunt-input(v-model="config.timezone", label="Time zone", name="timezone", :validation="$v.config.timezone")
 			bunt-input(v-model="config.connection_limit", label="Connection limit", name="connection_limit", hint="Set to 0 to allow unlimited connections per user", :validation="$v.config.connection_limit")
@@ -58,7 +58,7 @@
 </template>
 <script>
 import api from 'lib/api'
-import i18n from 'i18n'
+import { locales } from 'locales'
 import { required, integer, isJson, url } from 'lib/validators'
 import ValidationErrorsMixin from 'components/mixins/validation-errors'
 import SchedulePrompt from './SchedulePrompt'
@@ -91,7 +91,7 @@ export default {
 	},
 	computed: {
 		locales () {
-			return i18n.availableLocales
+			return locales
 		},
 		momentLocales () {
 			return momentLocaleSet
