@@ -340,6 +340,9 @@ export default {
 						display: flex
 						line-height: 24px
 						margin-right: 4px
+						ellipsis()
+						flex: 1
+						max-width: max-content
 						&::before
 							content: '\F050D'
 							font-family: "Material Design Icons"
@@ -349,6 +352,8 @@ export default {
 							margin-right: 4px
 				.speakers
 					ellipsis()
+					flex: 1
+					max-width: max-content
 			&:not(.session)
 				.room-icon::before
 					content: '\F050D'
