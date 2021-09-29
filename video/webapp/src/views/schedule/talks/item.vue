@@ -20,7 +20,6 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import { getLocalizedString } from 'components/schedule/utils'
 import moment from 'lib/timetravelMoment'
 import MarkdownContent from 'components/MarkdownContent'
 
@@ -40,7 +39,7 @@ export default {
 			return moment(this.talk.slot?.start || this.talk.start).format('L LT') + ' - ' + moment(this.talk.slot?.end || this.talk.end).format('LT')
 		},
 		roomName () {
-			return getLocalizedString(this.talk.slot?.room || this.talk.room.name)
+			return this.$localize(this.talk.slot?.room || this.talk.room.name)
 		}
 	},
 	watch: {

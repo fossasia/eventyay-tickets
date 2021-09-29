@@ -8,14 +8,14 @@
 				.session(v-for="session, index of sessions", :ref="session === currentSession ? 'currentSession': null", :class="{current: session === currentSession, selected: session === selectedSession}", @click="selectedSession = session")
 					img.preview(:src="`https://picsum.photos/64?v=${index}`")
 					.info
-						.title {{ session.title }}
+						.title {{ $localize(session.title) }}
 						.speakers(v-if="session.speakers") {{ session.speakers.map(s => s.name).join(', ')}}
 					.time {{ formatTime(session.start) }}-{{ formatTime(session.end) }}
 			.selected-session(v-if="selectedSession")
 				img.preview(:src="`https://picsum.photos/64`")
 				h3 DETAIL VIEW HERE
 				.info
-					.title {{ selectedSession.title }}
+					.title {{ $localize(selectedSession.title) }}
 					.speakers(v-if="selectedSession.speakers") {{ selectedSession.speakers.map(s => s.name).join(', ')}}
 				.time {{ formatTime(selectedSession.start) }}-{{ formatTime(selectedSession.end) }}
 				bunt-button#btn-change(@click="change") change to
