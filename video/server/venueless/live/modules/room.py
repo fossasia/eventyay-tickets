@@ -166,11 +166,11 @@ class RoomModule(BaseModule):
     async def send_reaction(self, body):
         reaction = body.get("reaction")
         if reaction not in (
-            "+1",
-            "clap",
-            "heart",
-            "open_mouth",
-            "rolling_on_the_floor_laughing",
+            "👏",
+            "❤️",
+            "👍",
+            "🤣",
+            "😮",
         ):
             raise ConsumerException(
                 code="room.unknown_reaction", message="Unknown reaction"

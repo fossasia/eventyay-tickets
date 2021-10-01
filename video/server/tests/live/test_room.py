@@ -53,7 +53,7 @@ async def test_reactions_invalid(world, stream_room):
         await c1.receive_json_from()  # world.user_count_change
 
         await c1.send_json_to(
-            ["room.react", 123, {"room": str(stream_room.pk), "reaction": "hate"}]
+            ["room.react", 123, {"room": str(stream_room.pk), "reaction": "👎"}]
         )
         response = await c1.receive_json_from()
         assert response[0] == "error"
@@ -69,7 +69,7 @@ async def test_reactions_room(world, stream_room):
         await c1.receive_json_from()  # world.user_count_change
 
         await c1.send_json_to(
-            ["room.react", 123, {"room": str(stream_room.pk), "reaction": "+1"}]
+            ["room.react", 123, {"room": str(stream_room.pk), "reaction": "👍"}]
         )
         response = await c1.receive_json_from()
         assert response[0] == "success"
@@ -77,7 +77,7 @@ async def test_reactions_room(world, stream_room):
         response = await c1.receive_json_from(timeout=3)
         assert response[0] == "room.reaction"
         assert response[1] == {
-            "reactions": {"+1": 1},
+            "reactions": {"👍": 1},
             "room": str(stream_room.pk),
         }
 
@@ -92,12 +92,12 @@ async def test_reactions_room_debounce(world, stream_room):
         await c1.receive_json_from()  # world.user_count_change
 
         await c1.send_json_to(
-            ["room.react", 123, {"room": str(stream_room.pk), "reaction": "+1"}]
+            ["room.react", 123, {"room": str(stream_room.pk), "reaction": "👍"}]
         )
         response = await c1.receive_json_from()
         assert response[0] == "success"
         await c1.send_json_to(
-            ["room.react", 123, {"room": str(stream_room.pk), "reaction": "+1"}]
+            ["room.react", 123, {"room": str(stream_room.pk), "reaction": "👍"}]
         )
 
         # Order of responses is not deterministic
@@ -109,7 +109,7 @@ async def test_reactions_room_debounce(world, stream_room):
             r
             == [
                 "room.reaction",
-                {"reactions": {"+1": 1}, "room": str(stream_room.pk)},
+                {"reactions": {"👍": 1}, "room": str(stream_room.pk)},
             ]
             for r in responses
         )
@@ -138,12 +138,12 @@ async def test_reactions_room_aggregate(world, stream_room):
         assert "success" in responses
 
         await c1.send_json_to(
-            ["room.react", 123, {"room": str(stream_room.pk), "reaction": "+1"}]
+            ["room.react", 123, {"room": str(stream_room.pk), "reaction": "👍"}]
         )
         response = await c1.receive_json_from()
         assert response[0] == "success"
         await c2.send_json_to(
-            ["room.react", 123, {"room": str(stream_room.pk), "reaction": "+1"}]
+            ["room.react", 123, {"room": str(stream_room.pk), "reaction": "👍"}]
         )
         response = await c2.receive_json_from()
         assert response[0] == "success"
@@ -151,20 +151,20 @@ async def test_reactions_room_aggregate(world, stream_room):
         response = await c1.receive_json_from(timeout=3)
         assert response[0] == "room.reaction"
         assert response[1] == {
-            "reactions": {"+1": 2},
+            "reactions": {"👍": 2},
             "room": str(stream_room.pk),
         }
         response = await c2.receive_json_from(timeout=3)
         assert response[0] == "room.reaction"
         assert response[1] == {
-            "reactions": {"+1": 2},
+            "reactions": {"👍": 2},
             "room": str(stream_room.pk),
         }
 
         await asyncio.sleep(1.5)
 
         await c1.send_json_to(
-            ["room.react", 123, {"room": str(stream_room.pk), "reaction": "+1"}]
+            ["room.react", 123, {"room": str(stream_room.pk), "reaction": "👍"}]
         )
         response = await c1.receive_json_from()
         assert response[0] == "success"
@@ -175,7 +175,7 @@ async def test_reactions_room_aggregate(world, stream_room):
         response = await c1.receive_json_from(timeout=3)
         assert response[0] == "room.reaction"
         assert response[1] == {
-            "reactions": {"+1": 1},
+            "reactions": {"👍": 1},
             "room": str(stream_room.pk),
         }
         with pytest.raises(asyncio.TimeoutError):
