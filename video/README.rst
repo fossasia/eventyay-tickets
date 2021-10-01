@@ -36,6 +36,11 @@ License
 venueless is released under the terms of the Business Source License 1.1. See the ``LICENSE`` file for the full
 license text as well as the license parameters.
 
+Credits
+^^^^^^^
+
+`Twemoji <https://twemoji.twitter.com/>`_ emoji graphics are licensed under `Creative Commons Attribution 4.0 International <https://creativecommons.org/licenses/by/4.0/>`_ (CC-BY-4.0) by Twitter, Inc. and other contributors.
+
 License FAQ
 ^^^^^^^^^^^
 
