@@ -2,7 +2,7 @@
 .c-room-header
 	.ui-page-header(v-if="!modules['page.markdown'] && !modules['page.landing']")
 		.room-info
-			.room-name {{ room.name }}
+			.room-name(v-html="$emojify(room.name)")
 			.room-session(v-if="currentSession") {{ $localize(currentSession.title) }}
 		//- bunt-icon-button(v-if="$features.enabled('schedule-control')", @click="showEditSchedule = true") calendar_edit
 		.actions
@@ -83,11 +83,19 @@ export default {
 			align-items: baseline
 			min-width: 0
 			.room-name
+				ellipsis()
 				font-size: 24px
 				line-height: 56px
 				font-weight: 600
-				display: flex
-				flex-direction: column
+				// TODO decopypaste
+				.emoji
+					color: transparent // hide unicode emoji
+					display: inline-block
+					vertical-align: middle
+					width: 36px
+					height: @width
+					&.needs-space
+						margin-right: 8px
 			.room-session
 				margin-left: 8px
 				font-size: 18px

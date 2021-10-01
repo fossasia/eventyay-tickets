@@ -1,12 +1,11 @@
 <template lang="pug">
 .c-reactions-bar(:class="{expanded}")
 	.actions(@click="expand")
-		bunt-icon-button(v-for="reaction of availableReactions", @click.stop="react(reaction.id)")
+		bunt-icon-button(v-for="reaction of availableReactions", @click.stop="react(reaction.emoji)")
 			.emoji(:style="reaction.style")
 </template>
 <script>
-import emojiData from 'emoji-mart/data/twitter.json'
-import { getEmojiPosition } from 'lib/emoji'
+import { nativeToStyle as nativeEmojiToStyle } from 'lib/emoji'
 
 export default {
 	props: {
@@ -21,14 +20,8 @@ export default {
 	},
 	computed: {
 		availableReactions () {
-			const emoji = [
-				emojiData.emojis.clap,
-				emojiData.emojis.heart,
-				emojiData.emojis['+1'],
-				emojiData.emojis.rolling_on_the_floor_laughing,
-				emojiData.emojis.open_mouth,
-			]
-			return emoji.map(e => ({id: e.short_names[0], style: {'background-position': getEmojiPosition(e)}}))
+			const emoji = ['👏', '❤️', '👍', '🤣', '😮']
+			return emoji.map(e => ({emoji: e, style: nativeEmojiToStyle(e)}))
 		}
 	},
 	methods: {
@@ -36,8 +29,8 @@ export default {
 			if (this.expanded) return
 			this.$emit('expand')
 		},
-		react (id) {
-			this.$store.dispatch('addReaction', id)
+		react (emoji) {
+			this.$store.dispatch('addReaction', emoji)
 			// TODO display immediately and add own cooldown
 		}
 	}
@@ -67,9 +60,6 @@ export default {
 		height: 28px
 		width: @height
 		display: inline-block
-		background-image: url("~emoji-datasource-twitter/img/twitter/sheets-256/64.png")
-		background-size: 5700% 5700%
-		image-rendering: -webkit-optimize-contrast
 	&:not(.expanded)
 		.actions:hover
 			cursor: pointer
