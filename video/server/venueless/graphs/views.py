@@ -25,6 +25,13 @@ from venueless.core.permissions import Permission
 logger = logging.getLogger(__name__)
 
 EMOJIS = {
+    "clap": urljoin(dirname(__file__) + "/", "data/clap.png"),
+    "+1": urljoin(dirname(__file__) + "/", "data/plus1.png"),
+    "heart": urljoin(dirname(__file__) + "/", "data/heart.png"),
+    "open_mouth": urljoin(dirname(__file__) + "/", "data/open_mouth.png"),
+    "rolling_on_the_floor_laughing": urljoin(
+        dirname(__file__) + "/", "data/rolling_on_the_floor_laughing.png"
+    ),
     "👏": urljoin(dirname(__file__) + "/", "data/clap.png"),
     "👍": urljoin(dirname(__file__) + "/", "data/plus1.png"),
     "❤️": urljoin(dirname(__file__) + "/", "data/heart.png"),
