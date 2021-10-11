@@ -206,6 +206,8 @@ class SubmissionStateChange(SubmissionViewMixin, TemplateView):
         url = self.request.GET.get("next")
         if url and url_has_allowed_host_and_scheme(url, allowed_hosts=None):
             return redirect(url)
+        elif self.object.state == SubmissionStates.DELETED:
+            return redirect(self.request.event.orga_urls.submissions)
         return redirect(self.object.orga_urls.base)
 
     @context
