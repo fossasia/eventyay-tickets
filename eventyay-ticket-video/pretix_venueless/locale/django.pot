@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-28 10:28+0200\n"
+"POT-Creation-Date: 2021-09-17 13:21+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,22 +25,23 @@ msgstr ""
 msgid "Integrates pretix with venueless.org"
 msgstr ""
 
-#: pretix_venueless/templates/pretix_venueless/order_info.html:7
-#: pretix_venueless/templates/pretix_venueless/order_info.html:35
+#: pretix_venueless/templates/pretix_venueless/order_info.html:8
+#: pretix_venueless/templates/pretix_venueless/order_info.html:41
 msgid "Join online event"
 msgstr ""
 
-#: pretix_venueless/templates/pretix_venueless/order_info.html:25
+#: pretix_venueless/templates/pretix_venueless/order_info.html:30
 msgid "You can now join the event using the following button:"
 msgstr ""
 
-#: pretix_venueless/templates/pretix_venueless/order_info.html:43
+#: pretix_venueless/templates/pretix_venueless/order_info.html:49
 msgid ""
 "You will be able to join this event with your browser right here when it "
 "starts."
 msgstr ""
 
 #: pretix_venueless/templates/pretix_venueless/settings.html:5
+#: pretix_venueless/views.py:178
 msgid "Venueless"
 msgstr ""
 
@@ -48,30 +49,46 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
-#: pretix_venueless/views.py:25
+#: pretix_venueless/views.py:27
 msgid "Venueless URL"
 msgstr ""
 
-#: pretix_venueless/views.py:29
+#: pretix_venueless/views.py:31
 msgid "Venueless secret"
 msgstr ""
 
-#: pretix_venueless/views.py:33
+#: pretix_venueless/views.py:35
 msgid "Venueless issuer"
 msgstr ""
 
-#: pretix_venueless/views.py:37
+#: pretix_venueless/views.py:39
 msgid "Venueless audience"
 msgstr ""
 
-#: pretix_venueless/views.py:41
-msgid "Start of live event"
+#: pretix_venueless/views.py:43
+msgid "Do not allow access before"
 msgstr ""
 
-#: pretix_venueless/views.py:45
+#: pretix_venueless/views.py:47
 msgid "Allow users to access the live event before their order is paid"
 msgstr ""
 
-#: pretix_venueless/views.py:68
+#: pretix_venueless/views.py:51
+msgid "Allow buyers of all admission products"
+msgstr ""
+
+#: pretix_venueless/views.py:61
+msgid "Limit to products"
+msgstr ""
+
+#: pretix_venueless/views.py:72
+msgid "Transmit answers to questions"
+msgstr ""
+
+#: pretix_venueless/views.py:78
+msgid "Introductory text"
+msgstr ""
+
+#: pretix_venueless/views.py:118
 msgid "Unknown order code or not authorized to access this order."
 msgstr ""

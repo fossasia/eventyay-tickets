@@ -12,7 +12,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.10.3\n"
+"X-Generator: Poedit 3.0\n"
 
 #: pretix_venueless/__init__.py:16
 msgid "Venueless integration"
@@ -22,24 +22,25 @@ msgstr "Venueless-Integration"
 msgid "Integrates pretix with venueless.org"
 msgstr "Integriert pretix und venueless.org"
 
-#: pretix_venueless/templates/pretix_venueless/order_info.html:7
-#: pretix_venueless/templates/pretix_venueless/order_info.html:35
+#: pretix_venueless/templates/pretix_venueless/order_info.html:8
+#: pretix_venueless/templates/pretix_venueless/order_info.html:41
 msgid "Join online event"
 msgstr "Online-Event betreten"
 
-#: pretix_venueless/templates/pretix_venueless/order_info.html:25
+#: pretix_venueless/templates/pretix_venueless/order_info.html:30
 msgid "You can now join the event using the following button:"
 msgstr "Sie können der Veranstaltung mit folgendem Button beitreten:"
 
-#: pretix_venueless/templates/pretix_venueless/order_info.html:43
+#: pretix_venueless/templates/pretix_venueless/order_info.html:49
 msgid ""
 "You will be able to join this event with your browser right here when it "
 "starts."
 msgstr ""
-"Sie können der Veranstaltung mit Ihrem Browser genau hier beitreten, "
-"wenn die Veranstaltung beginnt."
+"Sie können der Veranstaltung mit Ihrem Browser genau hier beitreten, wenn "
+"die Veranstaltung beginnt."
 
 #: pretix_venueless/templates/pretix_venueless/settings.html:5
+#: pretix_venueless/views.py:178
 msgid "Venueless"
 msgstr "Venueless"
 
@@ -47,32 +48,48 @@ msgstr "Venueless"
 msgid "Save"
 msgstr "Speichern"
 
-#: pretix_venueless/views.py:25
+#: pretix_venueless/views.py:27
 msgid "Venueless URL"
 msgstr "Venueless-URL"
 
-#: pretix_venueless/views.py:29
+#: pretix_venueless/views.py:31
 msgid "Venueless secret"
 msgstr "Venueless-Secret"
 
-#: pretix_venueless/views.py:33
+#: pretix_venueless/views.py:35
 msgid "Venueless issuer"
 msgstr "Venueless-Issuer"
 
-#: pretix_venueless/views.py:37
+#: pretix_venueless/views.py:39
 msgid "Venueless audience"
 msgstr "Venueless-Audience"
 
-#: pretix_venueless/views.py:41
-msgid "Start of live event"
-msgstr "Veranstaltungsbeginn"
+#: pretix_venueless/views.py:43
+msgid "Do not allow access before"
+msgstr "Keinen Zugang erlauben vor"
 
-#: pretix_venueless/views.py:45
+#: pretix_venueless/views.py:47
 msgid "Allow users to access the live event before their order is paid"
 msgstr ""
 "Erlaube Nutzern die Live-Veranstaltung zu besuchen, bevor die Bestellung "
 "bezahlt wurde"
 
-#: pretix_venueless/views.py:68
+#: pretix_venueless/views.py:51
+msgid "Allow buyers of all admission products"
+msgstr "Käufern aller Zutrittsprodukte Zugang gewähren"
+
+#: pretix_venueless/views.py:61
+msgid "Limit to products"
+msgstr "Auf Produkte einschränken"
+
+#: pretix_venueless/views.py:72
+msgid "Transmit answers to questions"
+msgstr "Antworten auf Fragen übermitteln"
+
+#: pretix_venueless/views.py:78
+msgid "Introductory text"
+msgstr "Einleitender Text"
+
+#: pretix_venueless/views.py:118
 msgid "Unknown order code or not authorized to access this order."
 msgstr "Ungültige Bestellnummer oder kein Zugriff auf diese Bestellung."
