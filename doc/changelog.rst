@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`-` Fixed a bug where abstaining during the review process wasn't possible while review scores were mandatory.
 - :feature:`-` If you run a multi-lingual event, you don't have to request the content locale in your CfP anymore.
 - :feature:`-` pretalx now comes with new translations, in Arabic, Spanish, and Brazilian Portuguese!
 - :feature:`-` Email signatures now look a lot better in HTML emails
