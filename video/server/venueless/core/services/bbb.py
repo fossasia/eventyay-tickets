@@ -348,9 +348,11 @@ class BBBService:
 
     @database_sync_to_async
     def _get_possible_servers(self):
-        return list(BBBServer.objects.filter(
-            Q(world_exclusive=self.world) | Q(world_exclusive__isnull=True)
-        ))
+        return list(
+            BBBServer.objects.filter(
+                Q(world_exclusive=self.world) | Q(world_exclusive__isnull=True)
+            )
+        )
 
     async def get_recordings_for_room(self, room):
         recordings = []
@@ -382,7 +384,11 @@ class BBBService:
                                 url_video = url_video.replace(
                                     "///", f"//{urlparse(recordings_url).hostname}/"
                                 )
-                        if not url_presentation and not url_screenshare and not url_video:
+                        if (
+                            not url_presentation
+                            and not url_screenshare
+                            and not url_video
+                        ):
                             continue
                     recordings.append(
                         {
@@ -412,5 +418,5 @@ class BBBService:
                         }
                     )
             except:
-                logger.exception(f'Could not fetch recordings from server {server}')
+                logger.exception(f"Could not fetch recordings from server {server}")
         return recordings

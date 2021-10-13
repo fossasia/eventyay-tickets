@@ -11,4 +11,4 @@ class ChannelLayer(RedisPubSubChannelLayer):
         group_channels = l.groups[group_channel]
         if channel not in group_channels:
             return
-        return await super()._proxy('group_discard', group, channel)
+        return await super()._proxy("group_discard", group, channel)
