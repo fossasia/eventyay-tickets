@@ -93,10 +93,8 @@ class ReviewForm(ReadOnlyFlag, forms.ModelForm):
 
     def _clean_score_category(self, category):
         score = self.cleaned_data.get(f"score_{category.id}")
-        if score is None and category.required:
-            raise forms.ValidationError(
-                _("Please provide a review score ({category.name})!")
-            )
+        if score in ('', None) and category.required:
+            raise forms.ValidationError(_("Please provide a review score!"))
         return score
 
     def save(self, *args, **kwargs):
