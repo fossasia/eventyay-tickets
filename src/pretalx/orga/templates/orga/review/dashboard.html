@@ -49,7 +49,9 @@
                     <input type="text" id="review-count" name="review-count" data-max="{{ max_review_count }}"/>
                 </div>
             {% endif %}
-            <button class="btn btn-success" type="submit">{% translate "Search" %}</button>
+            <div class="form-group w-auto">
+                <button class="btn btn-success" type="submit">{% translate "Search" %}</button>
+            </div>
             <details class="dropdown flip ml-auto fix-height">
                 <summary class="btn btn-info">
                     {% translate "Actions" %} <i class="fa fa-caret-down"></i>
