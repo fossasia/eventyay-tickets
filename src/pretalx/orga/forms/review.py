@@ -41,7 +41,6 @@ class ReviewForm(ReadOnlyFlag, forms.ModelForm):
         super().__init__(*args, instance=instance, **kwargs)
 
         # We validate existing score/text server-side to allow form-submit to skip/abstain
-        self.fields["score"].required = False
         self.fields["text"].required = False
 
         self.scores = (
@@ -92,12 +91,6 @@ class ReviewForm(ReadOnlyFlag, forms.ModelForm):
             raise forms.ValidationError(_("Please provide a review text!"))
         return text
 
-    def clean_score(self):
-        score = self.cleaned_data.get("score")
-        if score is None and self.event.settings.review_score_mandatory:
-            raise forms.ValidationError(_("Please provide a review score!"))
-        return score
-
     def _clean_score_category(self, category):
         score = self.cleaned_data.get(f"score_{category.id}")
         if score is None and category.required:
@@ -119,7 +112,7 @@ class ReviewForm(ReadOnlyFlag, forms.ModelForm):
 
     class Meta:
         model = Review
-        fields = ("text", "score")
+        fields = ("text", )
         widgets = {
             "text": MarkdownWidget,
         }
