@@ -145,6 +145,7 @@ class WriteMailForm(MailTemplateBase):
             ),
             ("confirmed", _("All confirmed speakers")),
             ("rejected", _("All rejected speakers")),
+            ("canceled", _("All canceled speakers")),
             ("reviewers", _("All reviewers in your team")),
             ("no_slides", _("All confirmed speakers who have not uploaded slides")),
         ),
@@ -218,7 +219,7 @@ class WriteMailForm(MailTemplateBase):
         submissions = self.event.submissions.all()
         submission_states = [
             s
-            for s in ["submitted", "accepted", "confirmed", "rejected"]
+            for s in ["submitted", "accepted", "confirmed", "rejected", "canceled"]
             if s in self.cleaned_data["recipients"]
         ]
         if submission_states:
