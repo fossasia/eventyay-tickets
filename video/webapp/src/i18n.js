@@ -52,7 +52,7 @@ export async function init (Vue) {
 			type: 'postProcessor',
 			name: 'themeOverwrites',
 			process (value, key, options, translator) {
-				return config.theme?.textOverwrites[key[0]] ?? value
+				return config.theme?.textOverwrites?.[key[0]] ?? value
 			}
 		})
 		.init({
