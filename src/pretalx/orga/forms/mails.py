@@ -178,7 +178,6 @@ class WriteMailForm(MailTemplateBase):
             "Select proposals that should receive the email regardless of the other filters."
         ),
     )
-    reply_to = forms.CharField(required=False)
 
     def __init__(self, event, **kwargs):
         self.event = event
