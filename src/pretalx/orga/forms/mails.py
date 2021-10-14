@@ -318,4 +318,4 @@ class WriteMailForm(MailTemplateBase):
 
     class Meta:
         model = MailTemplate
-        fields = ["subject", "text"]
+        fields = ["subject", "text", "bcc", "reply_to"]
