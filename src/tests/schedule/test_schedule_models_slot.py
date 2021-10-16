@@ -58,8 +58,11 @@ def test_slot_warnings_without_room(slot):
 
 
 @pytest.mark.django_db
-def test_slot_warnings_when_room_unavailable(slot):
+def test_slot_warnings_when_room_unavailable(slot, room_availability):
     with scope(event=slot.event):
+        slot.start = room_availability.end
+        slot.end = slot.start + dt.timedelta(minutes=30)
+        slot.save()
         warnings = slot.schedule.get_talk_warnings(slot)
         assert len(warnings) == 1
         assert warnings[0]["type"] == "room"
