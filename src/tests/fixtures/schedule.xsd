@@ -56,8 +56,8 @@
       <xs:element type="room" name="room" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute type="xs:date" name="date"/>
-    <xs:attribute type="dateTimeTZ" name="start"/>
-    <xs:attribute type="dateTimeTZ" name="end"/>
+    <xs:attribute type="dateTimeTZ" name="start" use="required"/>
+    <xs:attribute type="dateTimeTZ" name="end" use="required"/>
     <xs:attribute type="xs:positiveInteger" name="index"/>
   </xs:complexType>
 
