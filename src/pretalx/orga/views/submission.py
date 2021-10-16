@@ -556,8 +556,19 @@ class FeedbackList(SubmissionViewMixin, ListView):
     paginate_by = 25
     permission_required = "submission.view_feedback"
 
+    @context
+    @cached_property
+    def submission(self):
+        return get_object_or_404(
+            Submission.all_objects.filter(event=self.request.event),
+            code__iexact=self.kwargs.get("code"),
+        )
+
     def get_queryset(self):
-        return self.object.feedback.all().order_by("pk")
+        return self.submission.feedback.all().order_by("pk")
+
+    def get_permission_object(self):
+        return self.submission
 
 
 class ToggleFeatured(SubmissionViewMixin, View):
