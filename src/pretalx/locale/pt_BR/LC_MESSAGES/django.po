@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-09-13 19:37+0000\n"
-"PO-Revision-Date: 2021-09-20 13:14+0000\n"
+"PO-Revision-Date: 2021-09-22 18:56+0000\n"
 "Last-Translator: Alberto Leoncio <albertoleoncio@hotmail.com>\n"
 "Language-Team: none\n"
 "Language: pt_BR\n"
@@ -2940,15 +2940,15 @@ msgstr ""
 
 #: pretalx/orga/forms/cfp.py:114
 msgid "Do not ask"
-msgstr "Não pergunte"
+msgstr "Não solicitar"
 
 #: pretalx/orga/forms/cfp.py:115
 msgid "Ask, but do not require input"
-msgstr "Pergunte, mas não requer entrada"
+msgstr "Solicitar, de forma opcional"
 
 #: pretalx/orga/forms/cfp.py:116
 msgid "Ask and require input"
-msgstr "Pergunte e requeira entrada"
+msgstr "Solicitar, de forma obrigatória"
 
 #: pretalx/orga/forms/cfp.py:171
 msgid ""
