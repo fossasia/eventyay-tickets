@@ -116,7 +116,7 @@ setup(
         "inlinestyler~=0.2.0",  # https://github.com/dlanger/inlinestyler/blob/master/CHANGELOG
         "libsass~=0.21.0",  # https://sass.github.io/libsass-python/changes.html
         "Markdown~=3.3.0",  # https://python-markdown.github.io/change_log/
-        "Pillow~=8.3.0",  # https://github.com/python-pillow/Pillow/blob/master/CHANGES.rst
+        "Pillow~=8.4.0",  # https://github.com/python-pillow/Pillow/blob/master/CHANGES.rst
         "publicsuffixlist~=0.7.0",
         "python-dateutil~=2.8.0",  # https://dateutil.readthedocs.io/en/stable/changelog.html
         "pytz",
