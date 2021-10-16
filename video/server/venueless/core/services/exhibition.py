@@ -293,53 +293,6 @@ class ExhibitionService:
         return r.serialize()
 
     @database_sync_to_async
-    @atomic
-    def add_staff(self, exhibitor_id, user_id, by_user):
-        e = get_exhibitor_by_id(self.world.pk, exhibitor_id)
-        if not e:
-            return None
-        u = get_user_by_id(self.world.pk, user_id)
-        if not u:
-            return None
-        try:
-            s = ExhibitorStaff.objects.get(
-                user=u,
-                exhibitor=e,
-            )
-        except ExhibitorStaff.DoesNotExist:
-            s = ExhibitorStaff.objects.create(
-                user=u,
-                exhibitor=e,
-            )
-        AuditLog.objects.create(
-            world_id=self.world.pk,
-            user=by_user,
-            type="exhibition.exhibitor.staff.added",
-            data={
-                "object": exhibitor_id,
-                "staff": user_id,
-            },
-        )
-        return s
-
-    @database_sync_to_async
-    @atomic
-    def remove_staff(self, exhibitor_id, user_id, by_user):
-        s = get_staff_by_id(exhibitor_id, user_id)
-        if not s:
-            return None
-        AuditLog.objects.create(
-            world_id=self.world.pk,
-            user=by_user,
-            type="exhibition.exhibitor.staff.removed",
-            data={
-                "object": exhibitor_id,
-                "staff": user_id,
-            },
-        )
-        return s.delete()
-
-    @database_sync_to_async
     def get_staff(self, exhibitor_id):
         e = get_exhibitor_by_id(self.world.pk, exhibitor_id)
         if not e:
