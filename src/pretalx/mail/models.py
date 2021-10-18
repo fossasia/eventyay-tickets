@@ -246,7 +246,7 @@ class QueuedMail(LogMixin, models.Model):
         if event:
             sig = event.settings.mail_signature
             if sig.strip().startswith("-- "):
-                sig = sig.strip()[3:].stipr()
+                sig = sig.strip()[3:].strip()
         body_md = bleach.linkify(
             bleach.clean(markdown.markdown(self.text), tags=ALLOWED_TAGS),
             parse_email=True,
