@@ -19,7 +19,7 @@ input.availabilities-editor-data {
 
 .fc-event.delete::before {
   font-family: ForkAwesome;
-  content: fa-content($fa-var-trash);
+  content: "\f014";
   position: absolute;
   top: calc(50% - 1ex);
   left: 0;
