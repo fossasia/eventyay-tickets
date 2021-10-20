@@ -5,7 +5,11 @@ input.availabilities-editor-data {
 }
 
 .availabilities-editor {
-  max-width: 100vh;
+  max-width: 100%;
+}
+.availabilities-tz-hint {
+  text-align: right;
+  color: $gray;
 }
 
 .fc-event.delete {

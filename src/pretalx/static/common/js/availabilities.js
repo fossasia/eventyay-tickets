@@ -3,9 +3,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
   $("input.availabilities-editor-data").each(function() {
     var data_field = $(this)
+    var data = JSON.parse(data_field.attr("value"))
+
     var editor = $('<div class="availabilities-editor">')
     editor.attr("data-name", data_field.attr("name"))
     data_field.after(editor)
+    editor.before($(`<div class="availabilities-tz-hint">${data.event.timezone}</div>`))
 
     function save_events() {
       data = {
@@ -28,7 +31,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
     var editable = !Boolean(data_field.attr("disabled"))
 
-    var data = JSON.parse(data_field.attr("value"))
     let slotDuration = data_field.attr("resolution")
     slotDuration = slotDuration || "00:30:00"
     var events = data.availabilities.map(function(e) {
