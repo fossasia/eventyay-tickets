@@ -38,7 +38,11 @@
                 <div class="row wizard-row">
                     <div class="col-md-3 flip ml-auto">
                         <button type="submit" class="btn btn-block btn-success btn-lg">
-                            {% translate "Continue" %} &raquo;
+                            {% if next_url %}
+                                {% translate "Continue" %} &raquo;
+                            {% else %}
+                                {% translate "Submit proposal!" %} &raquo;
+                            {% endif %}
                         </button>
                     </div>
                     <div class="col-md-3">
