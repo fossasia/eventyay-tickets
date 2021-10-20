@@ -134,7 +134,7 @@ html_context = {
     "display_github": True, # Integrate GitHub
     "github_user": "pretalx", # Username
     "github_repo": "pretalx", # Repo name
-    "github_version": "master", # Version
+    "github_version": "main", # Version
     "conf_py_path": "/doc/", # Path in the checkout to the docs root
 }
 

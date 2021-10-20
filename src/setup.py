@@ -104,19 +104,19 @@ setup(
         "django-compressor~=2.4.0",  # https://django-compressor.readthedocs.io/en/latest/changelog/
         "django-context-decorator",
         "django-countries~=7.0",  # https://github.com/SmileyChris/django-countries/blob/master/CHANGES.rst
-        "django-csp~=3.7.0",  # https://github.com/mozilla/django-csp/blob/master/CHANGES
-        "django-filter==21.1",  # https://github.com/carltongibson/django-filter/blob/master/CHANGES.rst
+        "django-csp~=3.7.0",  # https://github.com/mozilla/django-csp/blob/main/CHANGES
+        "django-filter==21.1",  # https://github.com/carltongibson/django-filter/blob/main/CHANGES.rst
         "django-formset-js-improved==0.5.0.2",  # no changelog, https://github.com/pretix/django-formset-js
         "django-formtools~=2.3.0",
         "django-hierarkey~=1.0.0",  # no changelog, https://github.com/raphaelm/django-hierarkey
         "django-i18nfield~=1.9.0",  # 2020-06, no changelog, https://github.com/raphaelm/django-i18nfield/
-        "django-libsass~=0.8",  # inactive, https://github.com/torchbox/django-libsass/blob/master/CHANGELOG.txt
+        "django-libsass~=0.8",  # inactive, https://github.com/torchbox/django-libsass/blob/main/CHANGELOG.txt
         "django-scopes~=1.2.0",  # https://github.com/raphaelm/django-scopes/releases
         "djangorestframework~=3.12.0",  # http://www.django-rest-framework.org/community/release-notes/
         "inlinestyler~=0.2.0",  # https://github.com/dlanger/inlinestyler/blob/master/CHANGELOG
         "libsass~=0.21.0",  # https://sass.github.io/libsass-python/changes.html
         "Markdown~=3.3.0",  # https://python-markdown.github.io/change_log/
-        "Pillow~=8.4.0",  # https://github.com/python-pillow/Pillow/blob/master/CHANGES.rst
+        "Pillow~=8.4.0",  # https://github.com/python-pillow/Pillow/blob/main/CHANGES.rst
         "publicsuffixlist~=0.7.0",
         "python-dateutil~=2.8.0",  # https://dateutil.readthedocs.io/en/stable/changelog.html
         "pytz",
