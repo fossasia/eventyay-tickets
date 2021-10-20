@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-19 15:12+0000\n"
+"POT-Creation-Date: 2021-10-20 16:00+0000\n"
 "PO-Revision-Date: 2021-08-31 11:44+0000\n"
 "Last-Translator: laurent fernandez <laurent@ushova.io>\n"
 "Language-Team: \n"
@@ -311,33 +311,40 @@ msgstr ""
 "Nous sommes heureux de voir que vous voulez proposer une intervention pour "
 "notre évènement. Commençons, ça ne va pas être long."
 
-#: pretalx/cfp/flow.py:359 pretalx/orga/forms/cfp.py:460
+#: pretalx/cfp/flow.py:333
+msgid ""
+"Congratulations, you've submitted your proposal! You can continue to make "
+"changes to it up to the submission deadline, and you will be notified of any "
+"changes or questions."
+msgstr ""
+
+#: pretalx/cfp/flow.py:365 pretalx/orga/forms/cfp.py:460
 #: pretalx/orga/templates/orga/base.html:243
 #: pretalx/orga/templates/orga/submission/content.html:136
 msgid "Questions"
 msgstr "Questions"
 
-#: pretalx/cfp/flow.py:363
+#: pretalx/cfp/flow.py:369
 msgid "Tell us more!"
 msgstr "Dites-nous en plus !"
 
-#: pretalx/cfp/flow.py:368
+#: pretalx/cfp/flow.py:374
 msgid "Before we can save your proposal, we have some more questions for you."
 msgstr ""
 "Avant de sauver votre proposition, nous avons quelques questions "
 "supplémentaires à vous poser."
 
-#: pretalx/cfp/flow.py:414
+#: pretalx/cfp/flow.py:420
 msgid "Account"
 msgstr "Compte"
 
-#: pretalx/cfp/flow.py:419
+#: pretalx/cfp/flow.py:425
 msgid "That's it about your proposal! We now just need a way to contact you."
 msgstr ""
 "C'est tout pour votre proposition ! Maintenant nous avons juste besoin d'un "
 "moyen de vous contacter."
 
-#: pretalx/cfp/flow.py:425
+#: pretalx/cfp/flow.py:431
 msgid ""
 "To create your proposal, you need an account on this page. This not only "
 "gives us a way to contact you, it also gives you the possibility to edit "
@@ -347,7 +354,7 @@ msgstr ""
 "Non seulement cela nous permet de vous contacter, mais cela vous permet "
 "aussi d'éditer votre proposition et de voir son état."
 
-#: pretalx/cfp/flow.py:440
+#: pretalx/cfp/flow.py:446
 msgid ""
 "There was an error when logging in. Please contact the organiser for further "
 "help."
@@ -355,15 +362,15 @@ msgstr ""
 "Il y a eu un problème lors de la connexion. Veuillez contacter l'équipe "
 "d'organisation pour obtenir de l'aide supplémentaire."
 
-#: pretalx/cfp/flow.py:457
+#: pretalx/cfp/flow.py:463
 msgid "Profile"
 msgstr "Profil"
 
-#: pretalx/cfp/flow.py:461
+#: pretalx/cfp/flow.py:467
 msgid "Tell us something about yourself!"
 msgstr "Parlez nous de vous !"
 
-#: pretalx/cfp/flow.py:466
+#: pretalx/cfp/flow.py:472
 msgid ""
 "This information will be publicly displayed next to your session - you can "
 "always edit for as long as proposals are still open."
@@ -712,11 +719,17 @@ msgstr "Créer une proposition"
 msgid "Done!"
 msgstr "Fini !"
 
-#: pretalx/cfp/templates/cfp/event/submission_base.html:41
+#: pretalx/cfp/templates/cfp/event/submission_base.html:42
 msgid "Continue"
 msgstr "Continuer"
 
-#: pretalx/cfp/templates/cfp/event/submission_base.html:47
+#: pretalx/cfp/templates/cfp/event/submission_base.html:44
+#, fuzzy
+#| msgid "Submit a proposal"
+msgid "Submit proposal!"
+msgstr "Proposer une intervention"
+
+#: pretalx/cfp/templates/cfp/event/submission_base.html:51
 #: pretalx/orga/templates/orga/cfp/access_code_delete.html:11
 #: pretalx/orga/templates/orga/cfp/question_delete.html:11
 #: pretalx/orga/templates/orga/cfp/submission_type_delete.html:11
