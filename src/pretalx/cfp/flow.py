@@ -327,7 +327,13 @@ class InfoStep(GenericFlowStep, FormFlowStep):
         submission = form.instance
         submission.speakers.add(request.user)
         submission.log_action("pretalx.submission.create", person=request.user)
-        messages.success(request, phrases.cfp.submission_success)
+        messages.success(
+            self.request,
+            _(
+                "Congratulations, you've submitted your proposal! You can continue to make changes to it "
+                "up to the submission deadline, and you will be notified of any changes or questions."
+            ),
+        )
 
         additional_speaker = form.cleaned_data.get("additional_speaker").strip()
         if additional_speaker:
