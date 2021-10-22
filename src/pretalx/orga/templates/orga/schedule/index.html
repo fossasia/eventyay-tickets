@@ -51,6 +51,17 @@
                 </form>
             </div>
         </div>
+
+        <div id="room-choice">
+            <div class="input-group">
+                <form class="form-inline" novalidate>
+                    <div class="input-group">
+                        {{ schedule_room_form.room }}
+                    </div>
+                </form>
+            </div>
+        </div>
+
         {% if not schedule_version %}
             <a id="schedule-release" href="{{ request.event.orga_urls.release_schedule }}" class="btn btn-success"><i class="fa fa-plus"></i> {% translate "New release" %}</a>
         {% else %}

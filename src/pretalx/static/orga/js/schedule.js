@@ -447,7 +447,7 @@ var app = new Vue({
           <div class="alert alert-danger room-column" v-if="rooms && rooms.length < 1">
             Please configure some rooms first.
           </div>
-          <room v-for="room in rooms" :room="room" :talks="talks" :duration="duration" :start="start" :end="end" :key="room.id">
+          <room v-for="room in filteredRooms" :room="room" :talks="talks" :duration="duration" :start="start" :end="end" :key="room.id">
           </room>
         </div>
       </div>
@@ -477,6 +477,7 @@ var app = new Vue({
       showUnassigned: true,
       search: "",
       dragController: dragController,
+      selectedRooms: [],
     }
   },
   created() {
@@ -491,6 +492,14 @@ var app = new Vue({
         this.start = moment.tz(result.start, this.timezone)
         this.end = moment.tz(result.end, this.timezone)
         this.locales = result.locales
+      })
+      .then(() => {
+        const self = this;
+        const s = $("select[name='room']");
+        s.on("change", function(e) {
+            self.selectedRooms = s.select2('data').map(v => parseInt(v.id));
+        });
+        s.trigger("change");
       })
       .then(() => {
         this.loading = false
@@ -535,6 +544,16 @@ var app = new Vue({
         })
       })
     },
+    filteredRooms() {
+      this.updateURL();
+
+      if (!this.rooms) return [];
+      if (this.selectedRooms.length === 0) return this.rooms;
+
+      return this.rooms.filter(room => {
+        return this.selectedRooms.includes(room.id);
+      })
+    },
     eventSlug() {
       const relevant = window.location.pathname.substring(12)
       return relevant.substring(0, relevant.indexOf("/"))
@@ -549,9 +568,15 @@ var app = new Vue({
     newTalk(talk) {
       this.talks.push(talk)
     },
-    saveTalk (response) {
+    saveTalk(response) {
       const talk = this.talks.find((talk) => talk.id == response.id)
       Object.assign(talk, response)
+    },
+    updateURL() {
+      let qp = new URLSearchParams(location.search);
+      qp.delete('room');
+      this.selectedRooms.forEach((r) => { qp.append('room', r) });
+      history.replaceState(null, null, "?" + qp.toString());
     },
     onMouseMove(event) {
       if (dragController.draggedTalk) {

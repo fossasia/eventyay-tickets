@@ -28,7 +28,11 @@ from pretalx.common.mixins.views import (
 from pretalx.common.signals import register_data_exporters
 from pretalx.common.utils import safe_filename
 from pretalx.common.views import CreateOrUpdateView
-from pretalx.orga.forms.schedule import ScheduleExportForm, ScheduleReleaseForm
+from pretalx.orga.forms.schedule import (
+    ScheduleExportForm,
+    ScheduleReleaseForm,
+    ScheduleRoomForm,
+)
 from pretalx.schedule.forms import QuickScheduleForm, RoomForm
 from pretalx.schedule.models import Availability, Room, TalkSlot
 from pretalx.schedule.utils import guess_schedule_version
@@ -43,6 +47,12 @@ class ScheduleView(EventPermissionRequired, TemplateView):
         result = super().get_context_data(**kwargs)
         version = self.request.GET.get("version")
         result["schedule_version"] = version
+        result["schedule_room_form"] = ScheduleRoomForm(
+            {"room": self.request.GET.getlist("room")}
+            if "room" in self.request.GET
+            else None,
+            event=self.request.event,
+        )
         result["active_schedule"] = (
             self.request.event.schedules.filter(version=version).first()
             if version
