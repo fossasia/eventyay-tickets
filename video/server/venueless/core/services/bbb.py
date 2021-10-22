@@ -185,10 +185,10 @@ class BBBService:
     def __init__(self, world):
         self.world = world
 
-    async def _get(self, url):
+    async def _get(self, url, timeout=30):
         try:
             async with aiohttp.ClientSession() as session:
-                async with session.get(URL(url, encoded=True)) as resp:
+                async with session.get(URL(url, encoded=True), timeout=timeout) as resp:
                     if resp.status != 200:
                         logger.error(
                             f"Could not contact BBB. Return code: {resp.status}"
@@ -350,7 +350,8 @@ class BBBService:
     def _get_possible_servers(self):
         return list(
             BBBServer.objects.filter(
-                Q(world_exclusive=self.world) | Q(world_exclusive__isnull=True)
+                Q(world_exclusive=self.world) | Q(world_exclusive__isnull=True),
+                active=True
             )
         )
 
@@ -365,7 +366,7 @@ class BBBService:
                     server.url,
                     server.secret,
                 )
-                root = await self._get(recordings_url)
+                root = await self._get(recordings_url, timeout=10)
                 if root is False:
                     return []
 

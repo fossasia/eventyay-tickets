@@ -33,7 +33,7 @@ export default {
 	computed: {},
 	async created () {
 		try {
-			this.recordings = (await api.call('bbb.recordings', {room: this.room.id})).results
+			this.recordings = (await api.call('bbb.recordings', {room: this.room.id}, {timeout: 150000})).results
 			this.error = null
 		} catch (error) {
 			this.error = error
