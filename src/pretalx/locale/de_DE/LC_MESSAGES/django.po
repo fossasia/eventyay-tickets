@@ -3602,7 +3602,7 @@ msgstr "Vortragende über Änderungen informieren"
 
 #: pretalx/orga/forms/schedule.py:25
 msgid "We released a new schedule version!"
-msgstr "Wir eine neue Programmversion veröffentlicht!"
+msgstr "Wir haben eine neue Programmversion veröffentlicht!"
 
 #: pretalx/orga/forms/schedule.py:32
 msgid "This schedule version was used already, please choose a different one."
