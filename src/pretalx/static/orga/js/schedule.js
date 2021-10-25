@@ -481,6 +481,9 @@ var app = new Vue({
     }
   },
   created() {
+    $("#id_version").on("change", e => {
+      document.querySelector("#schedule-version").submit()
+    })
     $("#id_room").on("change", e => {
       this.updateRooms()
     })

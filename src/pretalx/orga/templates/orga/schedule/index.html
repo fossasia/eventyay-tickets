@@ -36,21 +36,9 @@
     {% endif %}
     <div class="schedule-header">
         <div id="schedule-choice">
-            <div class="input-group">
-                <form class="form-inline">
-                    <div class="input-group">
-                        <select name="version" id="version" class="form-control">
-                            <option value="">{% translate "Current draft" %}</option>
-                            {% for schedule in request.event.schedules.all %}
-                                {% if schedule.version %}
-                                    <option value="{{ schedule.version }}" {% if schedule.version == schedule_version %}selected{% endif %}>{{ schedule.version }}</option>
-                                {% endif %}
-                            {% endfor %}
-                        </select>
-                        <button type="submit" class="btn btn-info">{% translate "Show" %}</button>
-                    </div>
-                </form>
-            </div>
+            <form id="schedule-version">
+                {% bootstrap_form schedule_version_form layout="inline" %}
+            </form>
             <form id="schedule-rooms">
                 {% bootstrap_form schedule_room_form layout="inline" %}
             </form>

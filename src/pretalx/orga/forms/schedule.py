@@ -202,3 +202,21 @@ class ScheduleRoomForm(I18nFormMixin, forms.Form):
         super().__init__(*args, **kwargs)
         self.fields["room"].queryset = self.event.rooms.all()
 
+
+class ScheduleVersionForm(forms.Form):
+    version = forms.ChoiceField(
+        label=_("Version"),
+        required=False,
+        choices=[],
+        widget=forms.SelectMultiple(
+            attrs={"class": "select2", "data-placeholder": _("Version")}
+        ),
+    )
+
+    def __init__(self, *args, event=None, **kwargs):
+        self.event = event
+        super().__init__(*args, **kwargs)
+        self.fields["version"].choices = [
+            (s.version, s.version)
+            for s in self.event.schedules.filter(version__isnull=False)
+        ]
