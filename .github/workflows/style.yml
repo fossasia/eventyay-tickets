@@ -2,13 +2,13 @@ name: Code Style
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
     paths-ignore:
       - 'src/pretalx/locale/**'
       - 'src/pretalx/static/**'
       - 'doc/**'
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
     paths-ignore:
       - 'src/pretalx/locale/**'
       - 'src/pretalx/static/**'
