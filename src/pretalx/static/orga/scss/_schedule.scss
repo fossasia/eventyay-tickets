@@ -28,9 +28,10 @@
   select {
     height: 38px;
   }
-
-  option {
-    background-color: $white;
+  #schedule-rooms {
+    .select2 {
+      min-width: 300px;
+    }
   }
 }
 

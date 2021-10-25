@@ -1,4 +1,5 @@
 {% extends "orga/schedule/base.html" %}
+{% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
 {% load static %}
@@ -50,17 +51,12 @@
                     </div>
                 </form>
             </div>
+            <form id="schedule-rooms">
+                {% bootstrap_form schedule_room_form layout="inline" %}
+            </form>
         </div>
 
-        <div id="room-choice">
-            <div class="input-group">
-                <form class="form-inline" novalidate>
-                    <div class="input-group">
-                        {{ schedule_room_form.room }}
-                    </div>
                 </form>
-            </div>
-        </div>
 
         {% if not schedule_version %}
             <a id="schedule-release" href="{{ request.event.orga_urls.release_schedule }}" class="btn btn-success"><i class="fa fa-plus"></i> {% translate "New release" %}</a>

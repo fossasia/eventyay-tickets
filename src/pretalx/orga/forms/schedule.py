@@ -2,11 +2,11 @@ from django import forms
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from django_scopes.forms import SafeModelMultipleChoiceField
-from i18nfield.forms import I18nModelForm
+from i18nfield.forms import I18nFormMixin, I18nModelForm
 
 from pretalx.common.mixins.forms import I18nHelpText
 from pretalx.orga.forms.export import ExportForm
-from pretalx.schedule.models import Schedule, Room
+from pretalx.schedule.models import Room, Schedule
 from pretalx.submission.models.submission import Submission, SubmissionStates
 
 
@@ -187,13 +187,13 @@ class ScheduleExportForm(ExportForm):
         return [tag.tag for tag in obj.tags.all()] or None
 
 
-class ScheduleRoomForm(I18nModelForm):
+class ScheduleRoomForm(I18nFormMixin, forms.Form):
     room = SafeModelMultipleChoiceField(
         label=_("Rooms"),
         required=False,
         queryset=Room.objects.none(),
         widget=forms.SelectMultiple(
-            attrs={"class": "select2", "data-placeholder": _("All rooms")}
+            attrs={"class": "select2", "data-placeholder": _("Rooms")}
         ),
     )
 
@@ -202,6 +202,3 @@ class ScheduleRoomForm(I18nModelForm):
         super().__init__(*args, **kwargs)
         self.fields["room"].queryset = self.event.rooms.all()
 
-    class Meta:
-        model = Room
-        fields = ("id",)

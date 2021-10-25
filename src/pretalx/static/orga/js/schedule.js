@@ -481,6 +481,9 @@ var app = new Vue({
     }
   },
   created() {
+    $("#id_room").on("change", e => {
+      this.updateRooms()
+    })
     api.fetchRooms(this.eventSlug).then(result => {
       this.rooms = result.results
     })
@@ -493,14 +496,7 @@ var app = new Vue({
         this.end = moment.tz(result.end, this.timezone)
         this.locales = result.locales
       })
-      .then(() => {
-        const self = this;
-        const s = $("select[name='room']");
-        s.on("change", function(e) {
-            self.selectedRooms = s.select2('data').map(v => parseInt(v.id));
-        });
-        s.trigger("change");
-      })
+      .then(() => this.updateRooms())
       .then(() => {
         this.loading = false
         $(function() {
@@ -577,6 +573,11 @@ var app = new Vue({
       qp.delete('room');
       this.selectedRooms.forEach((r) => { qp.append('room', r) });
       history.replaceState(null, null, "?" + qp.toString());
+    },
+    updateRooms() {
+      this.selectedRooms = [...document.querySelector("#id_room").options].filter(
+        option => option.selected
+      ).map(option => parseInt(option.value))
     },
     onMouseMove(event) {
       if (dragController.draggedTalk) {
