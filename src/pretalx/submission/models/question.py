@@ -290,7 +290,7 @@ class AnswerOption(LogMixin, models.Model):
     question = models.ForeignKey(
         to="submission.Question", on_delete=models.PROTECT, related_name="options"
     )
-    answer = I18nCharField(max_length=200)
+    answer = I18nCharField(verbose_name=_("Answer"))
 
     objects = ScopedManager(event="question__event")
 
