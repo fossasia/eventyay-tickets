@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-20 16:00+0000\n"
+"POT-Creation-Date: 2021-10-26 13:05+0000\n"
 "PO-Revision-Date: 2021-02-03 16:17+0000\n"
 "Last-Translator: Bryan Hernandez <bryan27hr@protonmail.ch>\n"
 "Language-Team: none\n"
@@ -59,13 +59,14 @@ msgstr ""
 
 #: pretalx/agenda/templates/agenda/changelog.html:11
 #: pretalx/agenda/templates/agenda/header_row.html:16
+#: pretalx/orga/forms/schedule.py:208 pretalx/orga/forms/schedule.py:212
 #: pretalx/orga/templates/orga/schedule/release.html:74
 #: pretalx/orga/templates/orga/schedule/release.html:75
 msgid "Version"
 msgstr "Versión"
 
 #: pretalx/agenda/templates/agenda/changelog_block.html:6
-#: pretalx/orga/forms/schedule.py:23
+#: pretalx/orga/forms/schedule.py:24
 msgid "We released our first schedule!"
 msgstr "¡Publicamos nuestro primer calendario!"
 
@@ -269,7 +270,7 @@ msgid "This session's header image"
 msgstr "La imagen de encabezado de esta charla"
 
 #: pretalx/agenda/templates/agenda/talk.html:78
-#: pretalx/orga/templates/orga/schedule/index.html:24
+#: pretalx/orga/templates/orga/schedule/index.html:25
 #, python-format
 msgid "All times in %(tz)s"
 msgstr ""
@@ -3318,83 +3319,88 @@ msgstr "Por favor indica una cuenta de correo válida."
 msgid "Please provide a review score!"
 msgstr "Por favor indica una cuenta de correo válida."
 
-#: pretalx/orga/forms/schedule.py:14
+#: pretalx/orga/forms/schedule.py:15
 msgid "Notify speakers of changes"
 msgstr ""
 
-#: pretalx/orga/forms/schedule.py:25
+#: pretalx/orga/forms/schedule.py:26
 msgid "We released a new schedule version!"
 msgstr "¡Publicamos una nueva versión de la agenda!"
 
-#: pretalx/orga/forms/schedule.py:32
+#: pretalx/orga/forms/schedule.py:33
 msgid "This schedule version was used already, please choose a different one."
 msgstr ""
 
-#: pretalx/orga/forms/schedule.py:48 pretalx/orga/forms/speaker.py:12
+#: pretalx/orga/forms/schedule.py:49 pretalx/orga/forms/speaker.py:12
 #: pretalx/orga/templates/orga/speaker/information_list.html:23
 msgid "Target group"
 msgstr ""
 
-#: pretalx/orga/forms/schedule.py:49
+#: pretalx/orga/forms/schedule.py:50
 #, fuzzy
 #| msgid "Your proposals"
 msgid "All proposals"
 msgstr "Tus propuestas"
 
-#: pretalx/orga/forms/schedule.py:78
+#: pretalx/orga/forms/schedule.py:79
 #, fuzzy
 #| msgid "Speakers"
 msgid "Speaker IDs"
 msgstr "Conferencistas"
 
-#: pretalx/orga/forms/schedule.py:80
+#: pretalx/orga/forms/schedule.py:81
 msgid "The unique ID of a speaker is used in the speaker URL and in exports"
 msgstr ""
 
-#: pretalx/orga/forms/schedule.py:85
+#: pretalx/orga/forms/schedule.py:86
 #, fuzzy
 #| msgid "Speakers"
 msgid "Speaker names"
 msgstr "Conferencistas"
 
-#: pretalx/orga/forms/schedule.py:89 pretalx/orga/forms/submission.py:90
+#: pretalx/orga/forms/schedule.py:90 pretalx/orga/forms/submission.py:90
 msgid "Room"
 msgstr ""
 
-#: pretalx/orga/forms/schedule.py:90
+#: pretalx/orga/forms/schedule.py:91
 msgid "The room this talk is scheduled in, if any"
 msgstr ""
 
-#: pretalx/orga/forms/schedule.py:94 pretalx/orga/forms/submission.py:95
+#: pretalx/orga/forms/schedule.py:95 pretalx/orga/forms/submission.py:95
 msgid "Start"
 msgstr ""
 
-#: pretalx/orga/forms/schedule.py:95
+#: pretalx/orga/forms/schedule.py:96
 msgid "When the talk starts, if it is currently scheduled"
 msgstr ""
 
-#: pretalx/orga/forms/schedule.py:99 pretalx/orga/forms/submission.py:110
+#: pretalx/orga/forms/schedule.py:100 pretalx/orga/forms/submission.py:110
 msgid "End"
 msgstr ""
 
-#: pretalx/orga/forms/schedule.py:100
+#: pretalx/orga/forms/schedule.py:101
 msgid "When the talk ends, if it is currently scheduled"
 msgstr ""
 
-#: pretalx/orga/forms/schedule.py:104
+#: pretalx/orga/forms/schedule.py:105
 msgid "Median score"
 msgstr ""
 
-#: pretalx/orga/forms/schedule.py:105
+#: pretalx/orga/forms/schedule.py:106
 msgid "Median review score, if there have been reviews yet"
 msgstr ""
 
-#: pretalx/orga/forms/schedule.py:109
+#: pretalx/orga/forms/schedule.py:110
 msgid "Average (mean) score"
 msgstr ""
 
-#: pretalx/orga/forms/schedule.py:110
+#: pretalx/orga/forms/schedule.py:111
 msgid "Average review score, if there have been reviews yet"
+msgstr ""
+
+#: pretalx/orga/forms/schedule.py:192 pretalx/orga/forms/schedule.py:196
+#: pretalx/orga/templates/orga/base.html:339
+msgid "Rooms"
 msgstr ""
 
 #: pretalx/orga/forms/speaker.py:14 pretalx/person/models/information.py:25
@@ -3739,10 +3745,6 @@ msgstr ""
 msgid "Speaker Information"
 msgstr ""
 
-#: pretalx/orga/templates/orga/base.html:339
-msgid "Rooms"
-msgstr ""
-
 #: pretalx/orga/templates/orga/base.html:362
 msgid "Outbox"
 msgstr ""
@@ -3896,6 +3898,7 @@ msgid ""
 msgstr ""
 
 #: pretalx/orga/templates/orga/cfp/question_detail.html:71
+#: pretalx/submission/models/question.py:293
 msgid "Answer"
 msgstr ""
 
@@ -4673,7 +4676,7 @@ msgid "Number of reviews"
 msgstr ""
 
 #: pretalx/orga/templates/orga/review/dashboard.html:57
-#: pretalx/orga/templates/orga/schedule/index.html:64
+#: pretalx/orga/templates/orga/schedule/index.html:58
 msgid "Actions"
 msgstr ""
 
@@ -4878,55 +4881,49 @@ msgstr ""
 msgid "Upload"
 msgstr ""
 
-#: pretalx/orga/templates/orga/schedule/index.html:33
+#: pretalx/orga/templates/orga/schedule/index.html:34
 msgid ""
 "You're currently viewing a released schedule version. Released versions "
 "cannot be edited directly."
 msgstr ""
 
-#: pretalx/orga/templates/orga/schedule/index.html:42
-msgid "Current draft"
-msgstr ""
-
 #: pretalx/orga/templates/orga/schedule/index.html:49
-msgid "Show"
-msgstr ""
-
-#: pretalx/orga/templates/orga/schedule/index.html:55
 msgid "New release"
 msgstr ""
 
-#: pretalx/orga/templates/orga/schedule/index.html:59
-msgid "Reset to current version"
-msgstr ""
+#: pretalx/orga/templates/orga/schedule/index.html:53
+#, fuzzy
+#| msgid "New schedule version"
+msgid "Override WIP schedule with this version"
+msgstr "Ver la nueva versión de la agenda"
 
-#: pretalx/orga/templates/orga/schedule/index.html:69
+#: pretalx/orga/templates/orga/schedule/index.html:63
 msgid "View in frontend"
 msgstr ""
 
-#: pretalx/orga/templates/orga/schedule/index.html:73
+#: pretalx/orga/templates/orga/schedule/index.html:67
 msgid "Hide schedule"
 msgstr ""
 
-#: pretalx/orga/templates/orga/schedule/index.html:77
+#: pretalx/orga/templates/orga/schedule/index.html:71
 msgid "Make schedule public"
 msgstr ""
 
-#: pretalx/orga/templates/orga/schedule/index.html:81
+#: pretalx/orga/templates/orga/schedule/index.html:75
 msgid "Print cards"
 msgstr ""
 
-#: pretalx/orga/templates/orga/schedule/index.html:84
+#: pretalx/orga/templates/orga/schedule/index.html:78
 msgid "Resend speaker notifications"
 msgstr ""
 
-#: pretalx/orga/templates/orga/schedule/index.html:92
+#: pretalx/orga/templates/orga/schedule/index.html:87
 msgid ""
 "You can start planning your schedule once you have configured some rooms for "
 "sessions to take place in."
 msgstr ""
 
-#: pretalx/orga/templates/orga/schedule/index.html:93
+#: pretalx/orga/templates/orga/schedule/index.html:88
 msgid "Configure rooms"
 msgstr ""
 
@@ -6041,7 +6038,7 @@ msgstr ""
 msgid "Subject: {subject}"
 msgstr ""
 
-#: pretalx/orga/views/mails.py:346 pretalx/orga/views/schedule.py:212
+#: pretalx/orga/views/mails.py:346 pretalx/orga/views/schedule.py:227
 #, python-brace-format
 msgid ""
 "{count} emails have been saved to the outbox – you can make individual "
@@ -6093,7 +6090,7 @@ msgid ""
 "The password reset email could not be sent, so the password was not reset."
 msgstr ""
 
-#: pretalx/orga/views/organiser.py:225 pretalx/orga/views/schedule.py:494
+#: pretalx/orga/views/organiser.py:225 pretalx/orga/views/schedule.py:509
 msgid "Saved!"
 msgstr ""
 
@@ -6131,68 +6128,68 @@ msgstr ""
 msgid "{count} emails were generated and placed in the outbox."
 msgstr ""
 
-#: pretalx/orga/views/schedule.py:75 pretalx/orga/views/speaker.py:328
+#: pretalx/orga/views/schedule.py:90 pretalx/orga/views/speaker.py:328
 msgid "No data to be exported"
 msgstr ""
 
-#: pretalx/orga/views/schedule.py:88
+#: pretalx/orga/views/schedule.py:103
 msgid "A new export is being generated and will be available soon."
 msgstr ""
 
-#: pretalx/orga/views/schedule.py:95
+#: pretalx/orga/views/schedule.py:110
 msgid ""
 "A new export will be generated on the next scheduled opportunity – please "
 "contact your administrator for details."
 msgstr ""
 
-#: pretalx/orga/views/schedule.py:113
+#: pretalx/orga/views/schedule.py:128
 #, python-brace-format
 msgid ""
 "Could not find the current export, please try to regenerate it. ({error})"
 msgstr ""
 
-#: pretalx/orga/views/schedule.py:152
+#: pretalx/orga/views/schedule.py:167
 msgid "You have to provide a new, unique schedule version!"
 msgstr ""
 
-#: pretalx/orga/views/schedule.py:163
+#: pretalx/orga/views/schedule.py:178
 msgid "Nice, your schedule has been released!"
 msgstr ""
 
-#: pretalx/orga/views/schedule.py:179
+#: pretalx/orga/views/schedule.py:194
 msgid ""
 "Reset successful – start editing the schedule from your selected version!"
 msgstr ""
 
-#: pretalx/orga/views/schedule.py:184
+#: pretalx/orga/views/schedule.py:199
 msgid "Error retrieving the schedule version to reset to."
 msgstr ""
 
-#: pretalx/orga/views/schedule.py:219
+#: pretalx/orga/views/schedule.py:234
 msgid "You can only regenerate mails after the first schedule was released."
 msgstr ""
 
-#: pretalx/orga/views/schedule.py:404
+#: pretalx/orga/views/schedule.py:419
 msgid "The session has been scheduled."
 msgstr ""
 
-#: pretalx/orga/views/schedule.py:449
+#: pretalx/orga/views/schedule.py:464
 msgid "Room deleted. Hopefully nobody was still in there …"
 msgstr ""
 
-#: pretalx/orga/views/schedule.py:455
+#: pretalx/orga/views/schedule.py:470
 msgid "There is or was a session scheduled in this room. It cannot be deleted."
 msgstr ""
 
-#: pretalx/orga/views/schedule.py:510
+#: pretalx/orga/views/schedule.py:525
 msgid "The selected room does not exist."
 msgstr ""
 
-#: pretalx/orga/views/schedule.py:512
+#: pretalx/orga/views/schedule.py:527
 msgid "Sorry, you are not allowed to reorder rooms."
 msgstr ""
 
-#: pretalx/orga/views/schedule.py:526
+#: pretalx/orga/views/schedule.py:541
 msgid "The order of rooms has been updated."
 msgstr ""
 

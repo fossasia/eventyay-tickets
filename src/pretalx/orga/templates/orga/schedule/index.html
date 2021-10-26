@@ -50,7 +50,7 @@
             {% else %}
                 <form method="post" action="{{ request.event.orga_urls.reset_schedule }}?{{ request.GET.urlencode }}">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-info">{% translate "Reset to current version" %}</button>
+                    <button type="submit" class="btn btn-outline-danger">{% translate "Override WIP schedule with this version" %}</button>
                 </form>
             {% endif %}
             <details class="dropdown">
