@@ -311,5 +311,7 @@
   "preferences/index:interface-language:header": "Interface de linguagem",
   "Question:moderation-approve-button:label": "Aprovar pergunta",
   "RecordingsPrompt:view-video:label": "Vídeo",
-  "User:state:banned": "banido"
+  "User:state:banned": "banido",
+  "schedule/talks/item:speakers:header_one": "Palestrante",
+  "schedule/talks/item:speakers:header_other": "Palestrantes"
 }
