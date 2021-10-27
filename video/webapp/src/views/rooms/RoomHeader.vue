@@ -1,6 +1,6 @@
 <template lang="pug">
 .c-room-header
-	.ui-page-header(v-if="!modules['page.markdown'] && !modules['page.landing']")
+	.ui-page-header(v-if="!modules['page.markdown'] && !modules['page.static'] && !modules['page.iframe'] && !modules['page.landing']")
 		.room-info
 			.room-name {{ room.name }}
 			.room-session(v-if="currentSession") {{ $localize(currentSession.title) }}
@@ -17,6 +17,8 @@
 		recordings-prompt(:room="room", v-if="showRecordingsPrompt", @close="showRecordingsPrompt = false")
 </template>
 <script>
+// TODO
+// better ellipsing for room name + session title on small screens
 import {mapGetters, mapState} from 'vuex'
 import { inferRoomType } from 'lib/room-types'
 import RecordingsPrompt from 'components/RecordingsPrompt'
@@ -88,6 +90,7 @@ export default {
 				font-weight: 600
 				display: flex
 				flex-direction: column
+				ellipsis()
 			.room-session
 				margin-left: 8px
 				font-size: 18px
