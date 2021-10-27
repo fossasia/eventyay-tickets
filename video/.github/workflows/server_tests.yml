@@ -14,9 +14,15 @@ jobs:
     name: Tests
     runs-on: ubuntu-latest
     container: python:3.8
+    continue-on-error: ${{ matrix.experimental }}
     strategy:
+      fail-fast: false
       matrix:
-        pubsub: ["yes", "no"]
+        pubsub: ["no"]
+        experimental: [false]
+        include:
+          - pubsub: "yes"
+            experimental: true
     services:
       redis:
         image: redis:latest
