@@ -39,16 +39,6 @@ The response will contain the fields
 * ``social_media_links``: (list of objects ``{"url", "display_text"}``)
 * ``staff``: (list of user objects)
 
-Staff
------
-
-A client can associate a user with an exhibitor as staff by pushing a message like this::
-
-    => ["exhibition.add_staff", 1234, {"exhibitor": id, "user": id}]
-    <- ["success", 1234, {}]
-
-The ``world:rooms.create.exhibition`` permission is required to perform this action.
-
 Contact request
 ---------------
 
