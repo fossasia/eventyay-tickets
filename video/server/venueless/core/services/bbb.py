@@ -351,7 +351,7 @@ class BBBService:
         return list(
             BBBServer.objects.filter(
                 Q(world_exclusive=self.world) | Q(world_exclusive__isnull=True),
-                active=True
+                active=True,
             )
         )
 
