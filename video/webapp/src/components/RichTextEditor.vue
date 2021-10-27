@@ -1,5 +1,5 @@
 <template lang="pug">
-bunt-input-outline-container.c-rich-text-editor(ref="outline")
+bunt-input-outline-container.c-rich-text-editor(ref="outline", :label="label")
 	.toolbar(ref="toolbar")
 		.buttongroup
 			bunt-icon-button.ql-bold(v-tooltip="$t('RichTextEditor:bold:tooltip')") format-bold
@@ -46,7 +46,8 @@ const Delta = Quill.import('delta')
 
 export default {
 	props: {
-		value: Object,
+		value: [Delta, Object],
+		label: String
 	},
 	data () {
 		return {

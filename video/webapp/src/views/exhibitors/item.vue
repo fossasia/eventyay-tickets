@@ -12,14 +12,7 @@ scrollbars.c-exhibitor(y)
 			.downloads(v-if="downloadLinks.length > 0")
 				h2 {{ $t("Exhibitor:downloads-headline:text") }}
 				a.download(v-for="link in downloadLinks", :href="link.url", target="_blank")
-					.mdi.mdi-file-pdf-outline(v-if="link.url.toLowerCase().endsWith('pdf')")
-					.mdi.mdi-file-excel-outline(v-else-if="link.url.toLowerCase().endsWith('xlsx') || link.url.toLowerCase().endsWith('xls')")
-					.mdi.mdi-file-word-outline(v-else-if="link.url.toLowerCase().endsWith('docx') || link.url.toLowerCase().endsWith('doc')")
-					.mdi.mdi-file-powerpoint-outline(v-else-if="link.url.toLowerCase().endsWith('pptx') || link.url.toLowerCase().endsWith('ppt')")
-					.mdi.mdi-file-music-outline(v-else-if="link.url.toLowerCase().endsWith('mp3') || link.url.toLowerCase().endsWith('ogg') || link.url.toLowerCase().endsWith('wav') || link.url.toLowerCase().endsWith('flac')")
-					.mdi.mdi-file-image-outline(v-else-if="link.url.toLowerCase().endsWith('jpg') || link.url.toLowerCase().endsWith('jpeg') || link.url.toLowerCase().endsWith('png') || link.url.toLowerCase().endsWith('tiff')")
-					.mdi.mdi-file-video-outline(v-else-if="link.url.toLowerCase().endsWith('mp4') || link.url.toLowerCase().endsWith('mov') || link.url.toLowerCase().endsWith('webm') || link.url.toLowerCase().endsWith('avi') || link.url.includes('//youtube.com') || link.url.includes('//youtu.be') || link.url.includes('//vimeo.com')")
-					.mdi.mdi-file-download-outline(v-else)
+					.mdi(:class="`mdi-${getIconByFileEnding(link.url)}`")
 					.filename {{ link.display_text }}
 		.sidebar
 			.header
@@ -59,6 +52,7 @@ import ChatUserCard from 'components/ChatUserCard'
 import MarkdownContent from 'components/MarkdownContent'
 import RichTextContent from 'components/RichTextContent'
 import { createPopper } from '@popperjs/core'
+import { getIconByFileEnding } from 'lib/filetypes'
 
 export default {
 	components: { Avatar, ChatUserCard, ContactExhibitorPrompt, MarkdownContent, RichTextContent },
@@ -70,7 +64,8 @@ export default {
 		return {
 			exhibitorApi: null,
 			selectedUser: null,
-			showContactPrompt: false
+			showContactPrompt: false,
+			getIconByFileEnding
 		}
 	},
 	computed: {

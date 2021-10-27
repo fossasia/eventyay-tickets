@@ -53,6 +53,10 @@ transition(name="sidebar")
 				.admin
 					router-link(:to="{name: 'exhibitors'}")  {{ $t('RoomsSidebar:exhibitions-manage:label') }}
 					router-link(:to="{name: 'contactRequests'}")  {{ $t('RoomsSidebar:exhibitions-requests:label') }}
+			template(v-if="staffedExhibitions.length > 0 || hasPermission('world:rooms.create.poster')")
+				.group-title {{ $t('RoomsSidebar:posters-headline:text') }}
+				.admin
+					router-link(:to="{name: 'posters'}")  {{ $t('RoomsSidebar:posters-manage:label') }}
 			template(v-if="hasPermission('world:users.list') || hasPermission('world:update') || hasPermission('room:update')")
 				.group-title {{ $t('RoomsSidebar:admin-headline:text') }}
 				.admin

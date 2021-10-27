@@ -12,6 +12,7 @@ class Permission(Enum):
     WORLD_ROOMS_CREATE_CHAT = "world:rooms.create.chat"
     WORLD_ROOMS_CREATE_BBB = "world:rooms.create.bbb"
     WORLD_ROOMS_CREATE_EXHIBITION = "world:rooms.create.exhibition"
+    WORLD_ROOMS_CREATE_POSTER = "world:rooms.create.poster"
     WORLD_USERS_LIST = "world:users.list"
     WORLD_USERS_MANAGE = "world:users.manage"
     WORLD_CHAT_DIRECT = "world:chat.direct"
