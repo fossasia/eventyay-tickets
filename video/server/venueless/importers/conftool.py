@@ -1,6 +1,7 @@
 import copy
 import hashlib
 import logging
+import re
 import string
 import time
 from io import BytesIO
@@ -225,7 +226,21 @@ def create_posters_from_conftool(world, url, password):
             )
 
         poster.title = paper.xpath("title")[0].text
-        poster.tags = [t.strip() for t in paper.xpath("keywords")[0].text.split(";")]
+        poster.tags = [
+            t.strip() for t in re.split("[;,]", paper.xpath("keywords")[0].text)
+        ]
+
+        r = poster.parent_room
+        for m in r.module_config:
+            if m["type"] == "poster.native":
+                tags = m["config"].get("tags", [])
+                for t in poster.tags:
+                    if t not in [tt["label"] for tt in tags]:
+                        tags.append({"id": t, "label": t, "color": ""})
+
+                m["config"]["tags"] = tags
+        r.save()
+
         poster.category = paper.xpath("topics")[0].text or None
         poster.schedule_session = paper.xpath("session_ID")[0].text or None
         poster.abstract = {"ops": [{"insert": paper.xpath("abstract_plain")[0].text}]}
