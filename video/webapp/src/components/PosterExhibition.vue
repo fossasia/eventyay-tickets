@@ -1,9 +1,9 @@
 <template lang="pug">
 .c-poster-exhibition
-	//- bunt-input#input-search(name="search", placeholder="Search/Filter/Sort", icon="search")
+	bunt-input#input-search(name="search", placeholder="Search posters", icon="search", v-model="search")
 	//- p Search by everything, filter by category, tags, ?, sort by name, likes
 	scrollbars.posters(v-if="posters", y)
-		.category(v-for="(posters, category) of categorizedPosters")
+		.category(v-for="(posters, category) of categorizedFilteredPosters")
 			h2 {{ category }}
 			router-link.poster(v-for="poster of posters", :to="{name: 'poster', params: {posterId: poster.id}}")
 				.content
@@ -20,9 +20,11 @@
 	bunt-progress-circular(v-else, size="huge", :page="true")
 </template>
 <script>
+import union from 'lodash/union'
 import api from 'lib/api'
 import RichTextContent from 'components/RichTextContent'
 import { getIconByFileEnding } from 'lib/filetypes'
+import { phonyMatcher } from 'lib/search'
 
 export default {
 	components: { RichTextContent },
@@ -32,6 +34,7 @@ export default {
 	data () {
 		return {
 			posters: null,
+			search: '',
 			getIconByFileEnding
 		}
 	},
@@ -51,7 +54,19 @@ export default {
 				return acc
 			}, {})
 		},
-		categorizedPosters () {
+		filteredPosters () {
+			const singleSearch = (searchTerm) => {
+				const matchesSearch = phonyMatcher(searchTerm)
+				return this.posters.filter(poster =>
+					matchesSearch(poster.title) ||
+					poster.tags.some(tag => matchesSearch(tag)) ||
+					poster.authors.authors.some(author => matchesSearch(author.name))
+				)
+			}
+			return union(...this.search.trim().toLowerCase().split(' ').map(singleSearch))
+		},
+		categorizedFilteredPosters () {
+			if (!this.posterModule.config.categories) return this.filteredPosters
 			// prefill configured categories to enforce order, null/'' category is first, unknown categories are at the end, by order of poster appearance
 			const categorizedPosters = {
 				'': []
@@ -61,7 +76,7 @@ export default {
 				categorizedPosters[category.id] = []
 			}
 
-			for (const poster of this.posters) {
+			for (const poster of this.filteredPosters) {
 				if (poster.category && !categorizedPosters[poster.category]) categorizedPosters[poster.category] = []
 				categorizedPosters[poster.category || ''].push(poster)
 			}
