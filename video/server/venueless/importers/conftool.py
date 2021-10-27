@@ -316,6 +316,8 @@ def create_posters_from_conftool(world, url, password):
         elif not poster.poster_url:
             poster.poster_url = poster_url
 
+        poster.save()
+
         if poster.poster_url:
             poster.links.update_or_create(
                 display_text=paper.xpath("original_filename_a")[0].text,
@@ -323,8 +325,6 @@ def create_posters_from_conftool(world, url, password):
                     "url": poster.poster_url,
                 },
             )
-
-        poster.save()
 
         for fileindex in string.ascii_lowercase[1:]:
             if not paper.xpath(f"download_link_{fileindex}"):
