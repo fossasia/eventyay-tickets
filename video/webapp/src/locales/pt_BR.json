@@ -265,7 +265,6 @@
   "Roulette:waiting-few:text": "Existem algumas pessoas disponíveis, devemos encontrar alguém para você conversar em breve.",
   "Roulette:waiting-many:text": "Há muitas pessoas disponívis, devemos encontrar alguém para você conversar assim que uma de suas conversas terminar.",
   "Schedule:headline:text": "Cronograma",
-  "schedule/talks/item:speakers:header": "Palestrante | Palestrantes",
   "schedule/index:scheduleLoadingError": "Não foi possível carregar a programação.",
   "User:state:blocked": "bloqueado",
   "User:state:inactive": "inativo",
