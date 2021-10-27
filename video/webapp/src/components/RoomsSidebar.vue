@@ -48,12 +48,12 @@ transition(name="sidebar")
 					.name {{ getDMChannelName(channel) }}
 					bunt-icon-button(tooltip="remove", @click.prevent.stop="$store.dispatch('chat/leaveChannel', {channelId: channel.id})") close
 			.buffer
-			template(v-if="staffedExhibitions.length > 0 || hasPermission('world:rooms.create.exhibition')")
+			template(v-if="worldHasExhibition && (staffedExhibitions.length > 0 || hasPermission('world:rooms.create.exhibition'))")
 				.group-title {{ $t('RoomsSidebar:exhibitions-headline:text') }}
 				.admin
 					router-link(:to="{name: 'exhibitors'}")  {{ $t('RoomsSidebar:exhibitions-manage:label') }}
 					router-link(:to="{name: 'contactRequests'}")  {{ $t('RoomsSidebar:exhibitions-requests:label') }}
-			template(v-if="staffedExhibitions.length > 0 || hasPermission('world:rooms.create.poster')")
+			template(v-if="worldHasPosters && hasPermission('world:rooms.create.poster')")
 				.group-title {{ $t('RoomsSidebar:posters-headline:text') }}
 				.admin
 					router-link(:to="{name: 'posters'}")  {{ $t('RoomsSidebar:posters-manage:label') }}
@@ -154,6 +154,12 @@ export default {
 		},
 		worldHasTextChannels () {
 			return this.rooms.some(room => room.modules.length === 1 && room.modules[0].type === 'chat.native')
+		},
+		worldHasExhibition () {
+			return this.rooms.some(room => room.modules.length === 1 && room.modules[0].type === 'exhibition.native')
+		},
+		worldHasPosters () {
+			return this.rooms.some(room => room.modules.length === 1 && room.modules[0].type === 'poster.native')
 		},
 	},
 	methods: {
