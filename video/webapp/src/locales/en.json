@@ -256,6 +256,8 @@
   "RoomsSidebar:exhibitions-headline:text": "Exhibitions",
   "RoomsSidebar:exhibitions-manage:label": "Manage",
   "RoomsSidebar:exhibitions-requests:label": "Contact requests",
+  "RoomsSidebar:posters-headline:text": "Posters",
+  "RoomsSidebar:posters-manage:label": "Manage",
   "RoomsSidebar:schedule:label": "Schedule",
   "RoomsSidebar:stages-headline:text": "Stages",
   "RoomsSidebar:users-tooltip:few": "Some people are currently inside this room",
