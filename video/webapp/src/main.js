@@ -15,7 +15,6 @@ import 'styles/global.styl'
 import 'roboto-fontface'
 import 'roboto-fontface/css/roboto-condensed/roboto-condensed-fontface.css'
 import '@mdi/font/css/materialdesignicons.css'
-import './registerServiceWorker'
 import i18n, { init as i18nInit } from './i18n'
 import features from 'features'
 
