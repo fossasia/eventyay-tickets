@@ -15,7 +15,6 @@ import Speaker from 'views/schedule/speakers/item'
 import Exhibitor from 'views/exhibitors/item'
 import ContactRequests from 'views/contact-requests'
 import Preferences from 'views/preferences'
-import Poster from 'views/posters/item'
 
 Vue.use(VueRouter)
 
@@ -98,7 +97,7 @@ const routes = [{
 	}, {
 		path: '/posters/:posterId',
 		name: 'poster',
-		component: Poster,
+		component: () => import(/* webpackChunkName: "posters" */ 'views/posters/item'),
 		props: true
 	}, {
 		path: '/manage-exhibitors',
