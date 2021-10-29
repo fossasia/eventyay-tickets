@@ -93,6 +93,9 @@ module.exports = {
 				return [options]
 			})
 		}
+		// remove prefetch plugins because WHY
+		config.plugins.delete('prefetch')
+		config.plugins.delete('preload')
 	},
 	css: {
 		loaderOptions: {
