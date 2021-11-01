@@ -40,7 +40,9 @@
 				h2 Presentation
 				p presented in:
 				router-link.room(:to="{name: 'room', params: {roomId: presentationRoom.id}}") {{ presentationRoom.name }}
-				p(v-if="session") {{ session.start.format('dddd DD. MMMM LT') }} - {{ session.end.format('dddd DD. MMMM LT') }}
+				router-link.session(v-if="session", :to="{name: 'schedule:talk', params: {talkId: session.id}}")
+					.title {{ session.title }}
+					.date {{ session.start.format('dddd DD. MMMM LT') }} - {{ session.end.isSame(session.start, 'day') ? session.end.format('LT') : session.end.format('dddd DD. MMMM LT') }}
 				p presented by:
 				.presenters
 					.presenter(v-for="user in poster.presenters", @click="showUserCard($event, user)")
@@ -278,20 +280,36 @@ export default {
 			padding: 8px
 			border-bottom: border-separator()
 		.presentation
-			padding: 8px
+			display: flex
+			flex-direction: column
+			> h2, p
+				margin: 0 0 0 8px
+			.session, .room, .presenter
+				display: flex
+				height: 52px
+				cursor: pointer
+				padding: 8px 8px 8px 16px
+				box-sizing: border-box
+				color: $clr-primary-text-light
+				&:hover
+					background-color: $clr-grey-100
 			.room
-				margin-left: 4px
+				ellipsis()
 				font-size: 16px
 				font-weight: 500
-				ellipsis()
+				line-height: 36px
+			.session
+				flex-direction: column
+				justify-content: center
+				.title
+					ellipsis()
+					font-size: 16px
 			.presenters
 				display: flex
 				flex-direction: column
 				.presenter
-					display: flex
 					align-items: center
 					gap: 8px
-					cursor: pointer
 	+below(1200px)
 		flex-direction: column
 		.bunt-tabs
