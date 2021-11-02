@@ -58,7 +58,7 @@
     <xs:attribute type="xs:date" name="date"/>
     <xs:attribute type="dateTimeTZ" name="start" use="required"/>
     <xs:attribute type="dateTimeTZ" name="end" use="required"/>
-    <xs:attribute type="xs:positiveInteger" name="index"/>
+    <xs:attribute type="xs:positiveInteger" name="index" use="required"/>
   </xs:complexType>
 
   <xs:complexType name="room">
