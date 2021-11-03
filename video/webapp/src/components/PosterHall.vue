@@ -1,6 +1,6 @@
 <template lang="pug">
 .c-poster-hall
-	bunt-input#input-search(name="search", placeholder="Search posters", icon="search", v-model="search")
+	bunt-input#input-search(name="search", :placeholder="$t('PosterHall:input-search:placeholder')", icon="search", v-model="search")
 	//- p Search by everything, filter by category, tags, ?, sort by name, likes
 	scrollbars.posters(v-if="posters", y)
 		.category(v-for="(posters, category) of categorizedFilteredPosters")
@@ -13,7 +13,7 @@
 					.authors {{ poster.authors.authors.map(a => a.name).join(' / ') }}
 					rich-text-content.abstract(:content="poster.abstract")
 					.actions
-						bunt-button {{ $t('Exhibition:more:label') }}
+						bunt-button {{ $t('PosterHall:more:label') }}
 				img.poster-screenshot(v-if="poster.poster_preview", :src="poster.poster_preview")
 				.preview-placeholder(v-else)
 					.mdi(:class="`mdi-${getIconByFileEnding(poster.poster_url)}`")

@@ -1,40 +1,40 @@
 <template lang="pug">
 .c-manage-poster
-	.error(v-if="error") {{ $t('Exhibitors:exhibitor-not-found:text') }}
+	.error(v-if="error") {{ $t('poster-manager/poster:poster-not-found:text') }}
 	template(v-else-if="poster")
 		.ui-page-header
 			bunt-icon-button(@click="$router.push({name: 'posters'})") arrow_left
-			h1 {{ create ? 'New Poster' : poster.title }}
+			h1 {{ create ? $t('poster-manager/poster:new-poster:title') : poster.title }}
 			.actions
-				bunt-button.btn-delete-room(@click="showDeletePrompt = true") delete
+				//- bunt-button.btn-delete-poster(@click="showDeletePrompt = true") delete
 		scrollbars(y)
 			.ui-form-body
-				bunt-select(name="parent_room", v-model="poster.parent_room_id", label="Room", :options="rooms", option-label="name")
+				bunt-select(name="parent_room", v-model="poster.parent_room_id", :label="$t('poster-manager/poster:input-parent-room:label')", :options="rooms", option-label="name")
 				template(v-if="room")
-					bunt-input(name="title", v-model="poster.title", label="Title", :validation="$v.poster.title")
-					rich-text-editor(v-model="poster.abstract", label="Abstract")
-					bunt-select(name="category", v-model="poster.category", :options="posterModule.config.categories", label="Category")
-					bunt-input(name="tags", v-model="tags", label="Tags", hint="comma separated tag keys")
-					upload-url-input(name="poster-pdf", v-model="poster.poster_url", label="Poster PDF", @input="generatePosterPreview")
+					bunt-input(name="title", v-model="poster.title", :label="$t('poster-manager/poster:input-title:label')", :validation="$v.poster.title")
+					rich-text-editor(v-model="poster.abstract", :label="$t('poster-manager/poster:input-abstract:label')")
+					bunt-select(name="category", v-model="poster.category", :options="posterModule.config.categories", :label="$t('poster-manager/poster:input-category:label')")
+					bunt-input(name="tags", v-model="tags", :label="$t('poster-manager/poster:input-tags:label')", hint="comma separated tag keys")
+					upload-url-input(name="poster-pdf", v-model="poster.poster_url", :label="$t('poster-manager/poster:input-poster-pdf:label')", @input="generatePosterPreview")
 					img(:src="poster.poster_preview")
-					h2 Authors
+					h2 {{ $t('poster-manager/poster:authors:headline') }}
 					.authors
 						.header
-							.name Name
+							.name {{ $t('poster-manager/poster:authors:header:name') }}
 							.orgs
 								.org(v-for="(org, index) of poster.authors.organizations") {{ index + 1 }}.
 						.author(v-for="author of poster.authors.authors")
-							bunt-input.name(name="name", v-model="author.name", label="name")
+							bunt-input.name(name="name", v-model="author.name", :label="$t('poster-manager/poster:authors:input-name:label')")
 							.orgs
 								bunt-checkbox.org(v-for="(org, index) of poster.authors.organizations", name="org", :value="author.orgs.includes(index)", @input="toggleAuthorOrg(author, index)")
-					bunt-button(@click="addAuthor") Add Author
-					h3 Organizations
+					bunt-button(@click="addAuthor") {{ $t('poster-manager/poster:btn-add-author') }}
+					h3 {{ $t('poster-manager/poster:organizations:headline') }}
 					.organizations
 						.organization(v-for="(organization, index) of poster.authors.organizations")
 							.index {{ index + 1 }}.
 							bunt-input(name="organization", :value="organization", @input="$set(poster.authors.organizations, index, $event)")
-					bunt-button(@click="poster.authors.organizations.push('')") Add Organization
-					h2 Presenters
+					bunt-button(@click="poster.authors.organizations.push('')") {{ $t('poster-manager/poster:btn-add-organization') }}
+					h2 {{ $t('poster-manager/poster:presenters:headline') }}
 					.presenters
 						.presenter(v-for="(presenter, index) in poster.presenters")
 							.user
@@ -42,14 +42,14 @@
 								span.display-name {{ presenter.profile.display_name }}
 							td.actions
 								bunt-icon-button(v-if="hasPermission('world:rooms.create.exhibition')", @click="removePresenter(presenter)") delete-outline
-					bunt-button(@click="showPresenterPrompt = true") Add Presenters
-					bunt-select(name="presentation-room", v-model="poster.presentation_room_id", :disabled="!hasPermission('world:rooms.create.poster')", label="Presentation Room",  :options="presentationRoomOptions", option-label="name")
-					bunt-input(name="schedule-session", v-model="poster.schedule_session", label="Schedule Session Id")
-					h2 Files
+					bunt-button(@click="showPresenterPrompt = true") {{ $t('poster-manager/poster:btn-add-presenter') }}
+					bunt-select(name="presentation-room", v-model="poster.presentation_room_id", :disabled="!hasPermission('world:rooms.create.poster')", :label="$t('poster-manager/poster:input-presentation-room:label')",  :options="presentationRoomOptions", option-label="name")
+					bunt-input(name="schedule-session", v-model="poster.schedule_session", :label="$t('poster-manager/poster:input-schedule-session:label')")
+					h2 {{ $t('poster-manager/poster:files:headline') }}
 					.links(v-for="(link, index) in poster.links")
 						.header
-							.label Label
-							.url Url
+							.label {{ $t('poster-manager/poster:files:header:label') }}
+							.url {{ $t('poster-manager/poster:files:header:url') }}
 							//- .actions
 						.link
 							bunt-input.label(name="display-text", v-model="link.display_text")
@@ -58,22 +58,23 @@
 						//- 	bunt-icon-button(@click="remove_link(index, link.category)") delete-outline
 						//- 	bunt-icon-button(@click="up_link(index, link.category)") arrow-up-bold-outline
 						//- 	bunt-icon-button(@click="down_link(index, link.category)") arrow-down-bold-outline
-					bunt-button(@click="poster.links.push({display_text: '', url: ''})") Add File
+					bunt-button(@click="poster.links.push({display_text: '', url: ''})") {{ $t('poster-manager/poster:btn-add-file') }}
 		.ui-form-actions
-			bunt-button.btn-save(@click="save", :loading="saving", :error-message="error") {{ create ? 'create' : 'save' }}
+			bunt-button.btn-save(@click="save", :loading="saving", :error-message="error") {{ create ? $t('poster-manager/poster:btn-create') : $t('poster-manager/poster:btn-save') }}
 			//- .errors {{ validationErrors.join(', ') }}
 	bunt-progress-circular(v-else, size="huge")
 	transition(name="prompt")
 		prompt.add-presenter-prompt(v-if="showPresenterPrompt", :scrollable="false", @close="showPresenterPrompt = false")
 			.content
-				h1 {{ $t('Exhibitors:add-staff:text') }}
-				user-select(:button-label="$t('Exhibitors:add-staff:label')", @selected="addPresenters")
+				h1 {{ $t('poster-manager/poster:add-presenter-prompt:headline') }}
+				user-select(:button-label="$t('poster-manager/poster:add-presenter-prompt:btn-label')", @selected="addPresenters")
 </template>
 <script>
 // TODO
 // - better tag input
 // - deletable authors and organizations
 // - file attachments
+// - delete
 
 import * as pdfjs from 'pdfjs-dist/webpack'
 import Quill from 'quill'

@@ -1,12 +1,12 @@
 <template lang="pug">
 .c-posters
 	.ui-page-header
-		h2 Your Posters
+		h2 {{ $t("poster-manager/index:headline:text") }}
 	.poster-list
 		.header
-			.title Poster
+			.title {{ $t("poster-manager/index:poster:label") }}
 			.actions
-					bunt-link-button.btn-create(v-if="hasPermission('world:rooms.create.poster')", :to="{name: 'posters:create-poster'}") {{ $t('Exhibitors:create:label') }}
+					bunt-link-button.btn-create(v-if="hasPermission('world:rooms.create.poster')", :to="{name: 'posters:create-poster'}") {{ $t('poster-manager/index:create:label') }}
 		RecycleScroller.tbody.bunt-scrollbar(v-if="posters", :items="posters", :item-size="48", v-slot="{item: poster}", v-scrollbar.y="")
 			router-link.poster(:to="{name: 'posters:poster', params: {posterId: poster.id}}").table-row
 				.title {{ poster.title }}
