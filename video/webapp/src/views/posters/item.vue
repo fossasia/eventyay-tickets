@@ -2,9 +2,9 @@
 .v-poster
 	template(v-if="poster")
 		bunt-tabs(v-if="$mq.below['1200px']", :active-tab="activeTab")
-			bunt-tab(id="info", header="Info", @selected="activeTab = 'info'")
-			bunt-tab(id="poster", header="Poster", @selected="activeTab = 'poster'")
-			bunt-tab(id="chat", header="Presentation", @selected="activeTab = 'chat'")
+			bunt-tab(id="info", :header="$t('posters/item:tabs:info:header')", @selected="activeTab = 'info'")
+			bunt-tab(id="poster", :header="$t('posters/item:tabs:poster:header')", @selected="activeTab = 'poster'")
+			bunt-tab(id="chat", :header="$t('posters/item:tabs:presentation:header')", @selected="activeTab = 'chat'")
 		.info-sidebar(v-if="$mq.above['1200px'] || activeTab === 'info'")
 			scrollbars(y)
 				.info
@@ -22,28 +22,28 @@
 							.name {{ organziation }}
 					rich-text-content.abstract(:content="poster.abstract")
 					.downloads(v-if="poster.links.length > 0")
-						h3 {{ $t("Exhibitor:downloads-headline:text") }}
+						h3 {{ $t("posters/item:downloads-headline:text") }}
 						a.download(v-for="file in poster.links", :href="file.url", target="_blank")
 							.mdi.mdi-file-pdf-outline(v-if="file.url.toLowerCase().endsWith('pdf')")
 							.filename {{ file.display_text }}
 		template(v-if="$mq.above['1200px'] || activeTab === 'poster'")
 			a.poster.no-pdf(v-if="pdfLoadFailed", :href="poster.poster_url", target="_blank", title="Download poster")
 				.mdi(:class="`mdi-${getIconByFileEnding(poster.poster_url)}`")
-				p Download Poster
-			a.poster(v-else, v-scrollbar.x.y="", :href="poster.poster_url", target="_blank", title="Download poster")
+				p {{ $t("posters/item:poster-pdf:placeholder") }}
+			a.poster(v-else, v-scrollbar.x.y="", :href="poster.poster_url", target="_blank", :title="$t('posters/item:poster-pdf:tooltip')")
 				canvas(ref="pdfCanvas")
 		.chat-sidebar(v-if="$mq.above['1200px'] || activeTab === 'chat'")
-			bunt-button.btn-likes(tooltip="like this poster", @click="like")
+			bunt-button.btn-likes(:tooltip="$t('posters/item:btn-likes:tooltip')", @click="like")
 				.mdi(:class="poster.has_voted ? 'mdi-heart' : 'mdi-heart-outline'")
 				.count {{ poster.votes }}
 			.presentation(v-if="presentationRoom")
-				h2 Presentation
-				p presented in:
+				h2 {{ $t('posters/item:presentation:headline') }}
+				p {{ $t('posters/item:presentation:room-label') }}
 				router-link.room(:to="{name: 'room', params: {roomId: presentationRoom.id}}") {{ presentationRoom.name }}
 				router-link.session(v-if="session", :to="{name: 'schedule:talk', params: {talkId: session.id}}")
 					.title {{ session.title }}
 					.date {{ session.start.format('dddd DD. MMMM LT') }} - {{ session.end.isSame(session.start, 'day') ? session.end.format('LT') : session.end.format('dddd DD. MMMM LT') }}
-				p presented by:
+				p {{ $t('posters/item:presentation:presenters-label') }}
 				.presenters
 					.presenter(v-for="user in poster.presenters", @click="showUserCard($event, user)")
 						avatar(:user="user", :size="36")
