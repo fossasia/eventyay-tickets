@@ -234,7 +234,7 @@ The following snippet is an example on how to configure an nginx proxy for preta
         ssl_certificate /path/to/cert.chain.pem;
         ssl_certificate_key /path/to/key.pem;
 
-        add_header Referrer-Options same-origin;
+        add_header Referrer-Policy same-origin;
         add_header X-Content-Type-Options nosniff;
 
         location / {
