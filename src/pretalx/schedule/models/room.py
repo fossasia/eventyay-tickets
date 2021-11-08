@@ -18,6 +18,14 @@ class Room(LogMixin, models.Model):
         to="event.Event", on_delete=models.PROTECT, related_name="rooms"
     )
     name = I18nCharField(max_length=100, verbose_name=_("Name"))
+    guid = models.UUIDField(
+        null=True,
+        blank=True,
+        verbose_name=_("GUID"),
+        help_text=_(
+            "Unique identifier (UUID) to help external tools identify the room."
+        ),
+    )
     description = I18nCharField(
         max_length=1000,
         null=True,
@@ -53,6 +61,7 @@ class Room(LogMixin, models.Model):
 
     class Meta:
         ordering = ("position",)
+        unique_together = ("event", "guid")
 
     class urls(EventUrls):
         settings_base = edit = "{self.event.orga_urls.room_settings}{self.pk}/"

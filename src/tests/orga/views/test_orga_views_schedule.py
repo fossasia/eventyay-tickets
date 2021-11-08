@@ -1,5 +1,6 @@
 import datetime as dt
 import json
+from uuid import uuid4
 
 import pytest
 import pytz
@@ -457,6 +458,7 @@ def test_create_room(orga_client, event, availability):
         follow=True,
         data={
             "name_0": "A room",
+            "guid": uuid4(),
             "availabilities": json.dumps(
                 {
                     "availabilities": [
@@ -487,7 +489,11 @@ def test_edit_room(orga_client, event, room):
     response = orga_client.post(
         room.urls.edit,
         follow=True,
-        data={"name_0": "A room", "availabilities": '{"availabilities": []}'},
+        data={
+            "name_0": "A room",
+            "guid": uuid4(),
+            "availabilities": '{"availabilities": []}',
+        },
     )
     assert response.status_code == 200
     with scope(event=event):

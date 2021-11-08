@@ -84,6 +84,7 @@ class ScheduleData(BaseExporter):
             if str(talk.room.name) not in day_data["rooms"]:
                 day_data["rooms"][str(talk.room.name)] = {
                     "id": talk.room.id,
+                    "guid": talk.room.guid,
                     "name": talk.room.name,
                     "position": talk.room.position,
                     "talks": [talk],
