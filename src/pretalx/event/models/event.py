@@ -910,6 +910,7 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
             Question,
             Resource,
             Submission,
+            Tag,
         )
 
         deletion_order = [
@@ -926,6 +927,7 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
             (Question.all_objects.filter(event=self), False),
             (Submission.all_objects.filter(event=self), True),
             (self.tracks.all(), False),
+            (self.tags.all(), False),
             (self.submission_types.all(), False),
             (self.schedules.all(), False),
             (SpeakerProfile.objects.filter(event=self), False),
