@@ -910,7 +910,6 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
             Question,
             Resource,
             Submission,
-            Tag,
         )
 
         deletion_order = [
