@@ -6,12 +6,13 @@ from django.views.decorators.cache import cache_page
 def robots_txt(request):
     return HttpResponse(
         """User-agent: *
-Disallow: */me/*
-Disallow: */locale/set*
+Disallow: /me/
+Disallow: /locale/set*
 Disallow: /orga/
 Disallow: /download/
 Disallow: /redirect/
 Disallow: /api/
+Disallow: /media/
 """,
         content_type="text/plain",
     )
