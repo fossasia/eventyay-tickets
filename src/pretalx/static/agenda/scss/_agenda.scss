@@ -1,12 +1,14 @@
 #main-container.main-schedule {
   min-width: min-content;
-  max-width: calc(100vw);
-  margin: 0;
+  max-width: 100vw;
+  margin: 0 auto;
   padding-left: 0;
   padding-right: 0;
   padding-bottom: 0;
   #main-card {
-    border-radius: 0;
+    max-width: min-content;
+    min-width: 1200px; // make loading look less awkward
+    margin: 0 auto;
     main {
       padding: 1rem 0;
     }
@@ -14,7 +16,6 @@
   header {
     margin: 0;
     padding: 0;
-    width: calc(100vw - 20px);
     position: sticky;
     left: 0;
     box-sizing: border-box;
@@ -24,9 +25,6 @@
     }
   }
   #fahrplan.grid #schedule-nav {
-    position: sticky;
-    left: 0;
-    width: calc(100vw - 20px);
     box-sizing: border-box;
   }
 }
@@ -288,6 +286,9 @@ article .pretalx-session .pretalx-session-info .abstract {
     text-align: right;
     flex-direction: column;
   }
+  #main-container.main-schedule #main-card {
+    min-width: 1000px;
+  }
   #fahrplan {
     width: 100%;
 
@@ -312,6 +313,10 @@ article .pretalx-session .pretalx-session-info .abstract {
 @media (max-width: 1000px) {
   #fahrplan #schedule-nav {
     flex-direction: column;
+  }
+  #main-container.main-schedule #main-card {
+    min-width: 0;
+    max-width: 100vw;
   }
 }
 
