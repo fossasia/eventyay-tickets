@@ -3,6 +3,8 @@
 Release Notes
 =============
 
+- :support:`-` As Python 3.6 is EOL soon, we've dropped support, and now support Python 3.7+.
+- :feature:`-` Schedules have better scroll behaviour on very wide and very narrow displays.
 - :feature:`-` Media files are now excluded from crawlers via robots.txt.
 - :bug:`-` Fixed a bug where abstaining during the review process wasn't possible while review scores were mandatory.
 - :feature:`-` If you run a multi-lingual event, you don't have to request the content locale in your CfP anymore.

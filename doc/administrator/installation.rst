@@ -24,7 +24,7 @@ Step 0: Prerequisites
 Please set up the following systems beforehand. We can't go into their use
 and configuration here, but please have a look at the linked pages.
 
-* **Python 3.6 or newer** and a ``pip`` to match. You can use ``python -V`` and
+* **Python 3.7 or newer** and a ``pip`` to match. You can use ``python -V`` and
   ``pip3 -V`` to check.
 * An SMTP server to send out mails
 * An HTTP reverse proxy, e.g. `nginx`_ or Apache to allow HTTPS connections
