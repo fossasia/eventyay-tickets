@@ -161,6 +161,15 @@ class FrabJsonExporter(ScheduleData):
                 "end": self.event.date_to.strftime("%Y-%m-%d"),
                 "daysCount": self.event.duration,
                 "timeslot_duration": "00:05",
+                "rooms": [
+                    {
+                        "name": str(room.name),
+                        "guid": room.guid,
+                        "description": str(room.description) or None,
+                        "capacity": room.capacity,
+                    }
+                    for room in self.event.rooms.all()
+                ],
                 "days": [
                     {
                         "index": day["index"],
