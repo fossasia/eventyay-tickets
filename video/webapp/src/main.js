@@ -67,3 +67,11 @@ async function init () {
 }
 
 init()
+
+// remove all old service workers
+navigator.serviceWorker?.getRegistrations().then((registrations) => {
+	for (const registration of registrations) {
+		console.warn('Removed an old service worker')
+		registration.unregister()
+	}
+})
