@@ -338,7 +338,7 @@ export default {
 		onTextTracksChanged () {
 			const newList = []
 			this.$refs.video.textTracks.forEach((t) => {
-				if (t.kind === 'captions') {
+				if (t.kind === 'captions' || t.kind === 'subtitles') {
 					newList.push({
 						label: t.label,
 						language: t.language,
