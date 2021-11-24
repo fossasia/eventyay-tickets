@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` Pretalx will now highlight overlapping sessions on the schedule editor, and will also warn you before you release a new schedule if sessions overlap in the same room.
 - :bug:`-` When you clicked a talk in the schedule editor, it would open in a new window, but also stay in dragging mode in the editor page.
 - :bug:`-` Fixed an issue when rendering individual session times in emails.
 - :support:`-` As Python 3.6 is EOL soon, we've dropped support, and now support Python 3.7+.
