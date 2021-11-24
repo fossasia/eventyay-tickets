@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`-` Fixed an issue when rendering individual session times in emails.
 - :support:`-` As Python 3.6 is EOL soon, we've dropped support, and now support Python 3.7+.
 - :feature:`-` Schedules have better scroll behaviour on very wide and very narrow displays.
 - :feature:`-` Media files are now excluded from crawlers via robots.txt.
