@@ -3,8 +3,6 @@
 {% load i18n %}
 {% load static %}
 
-{% block body_tag %}{% if not request.event.settings.schedule_display or request.event.settings.schedule_display == "proportional" %} class="body-schedule"{% endif %}{% endblock %}
-
 {% block container_width %}{% if not show_talk_list %} main-schedule{% endif %}{% endblock %}
 
 {% block agenda_custom_header %}
