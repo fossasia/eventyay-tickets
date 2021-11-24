@@ -91,7 +91,9 @@ footer {
   padding: 20px 0;
   text-align: center;
   font-size: 11px;
-  max-width: 100vw;
+  max-width: calc(100vw - 12px);
+  position: sticky;
+  left: 0;
 
   img {
     max-height: 50px;
