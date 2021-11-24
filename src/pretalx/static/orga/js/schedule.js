@@ -122,11 +122,11 @@ var dragController = {
   stopDragging() {
     if (this.roomColumn) {
       this.roomColumn.classList.remove("hover-active")
-      this.dragSource.classList.remove("drag-source")
-      this.draggedTalk = null
-      this.event = null
-      this.startY = null
     }
+    this.dragSource.classList.remove("drag-source")
+    this.draggedTalk = null
+    this.event = null
+    this.startY = null
   },
   startModal(talk) {
     this.modalTalk = talk

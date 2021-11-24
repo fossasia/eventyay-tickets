@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`-` When you clicked a talk in the schedule editor, it would open in a new window, but also stay in dragging mode in the editor page.
 - :bug:`-` Fixed an issue when rendering individual session times in emails.
 - :support:`-` As Python 3.6 is EOL soon, we've dropped support, and now support Python 3.7+.
 - :feature:`-` Schedules have better scroll behaviour on very wide and very narrow displays.
