@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` Pretalx now remembers the timezone you've selected on the schedule page across reloads.
 - :feature:`-` The schedule editor now polls changes, so if somebody else changes the schedule while you're editing it, you will see the changes soon afterwards.
 - :feature:`-` Pretalx will now highlight overlapping sessions on the schedule editor, and will also warn you before you release a new schedule if sessions overlap in the same room.
 - :bug:`-` When you clicked a talk in the schedule editor, it would open in a new window, but also stay in dragging mode in the editor page.
