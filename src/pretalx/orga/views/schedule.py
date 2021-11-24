@@ -11,6 +11,7 @@ from django.http import FileResponse, Http404, JsonResponse
 from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
+from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import FormView, TemplateView, UpdateView, View
 from django_context_decorator import context
@@ -301,20 +302,24 @@ class TalkList(EventPermissionRequired, View):
             schedule = request.event.wip_schedule
 
         warnings = schedule.get_all_talk_warnings()
-        result["results"] = [
-            serialize_slot(slot, warnings=warnings.get(slot))
-            for slot in (
-                schedule.talks.all()
-                .select_related(
-                    "submission",
-                    "submission__event",
-                    "room",
-                    "submission__submission_type",
-                    "submission__track",
-                )
-                .prefetch_related("submission__speakers")
+        slots = (
+            schedule.talks.all()
+            .select_related(
+                "submission",
+                "submission__event",
+                "room",
+                "submission__submission_type",
+                "submission__track",
             )
+            .prefetch_related("submission__speakers")
+        )
+        filter_updated = request.GET.get("since")
+        if filter_updated:
+            slots = slots.filter(updated__gte=filter_updated)
+        result["results"] = [
+            serialize_slot(slot, warnings=warnings.get(slot)) for slot in slots
         ]
+        result["now"] = now().strftime("%Y-%m-%d %H:%M:%S%z")
         return JsonResponse(result, encoder=I18nJSONEncoder)
 
     def post(self, request, event):
@@ -377,12 +382,15 @@ class TalkUpdate(PermissionRequired, View):
             )
             if not talk.submission:
                 talk.description = LazyI18nString(data.get("description", ""))
-            talk.save(update_fields=["start", "end", "room", "description"])
+            print(talk.updated)
+            talk.save(update_fields=["start", "end", "room", "description", "updated"])
+            talk.refresh_from_db()
+            print(talk.updated)
         else:
             talk.start = None
             talk.end = None
             talk.room = None
-            talk.save(update_fields=["start", "end", "room"])
+            talk.save(update_fields=["start", "end", "room", "updated"])
 
         with_speakers = self.request.event.settings.cfp_request_availabilities
         warnings = talk.schedule.get_talk_warnings(talk, with_speakers=with_speakers)

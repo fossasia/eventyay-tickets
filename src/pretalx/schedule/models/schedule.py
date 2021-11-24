@@ -366,14 +366,13 @@ class Schedule(LogMixin, models.Model):
                 )
         if talk.room:
             overlaps = (
-                TalkSlot.objects.filter(
-                    schedule=self, room=talk.room
-                )
+                TalkSlot.objects.filter(schedule=self, room=talk.room)
                 .filter(
                     models.Q(start__lt=talk.start, end__gt=talk.start)
                     | models.Q(start__lt=talk.real_end, end__gt=talk.real_end)
                     | models.Q(start__gt=talk.start, end__lt=talk.real_end)
-                ).exclude(pk=talk.pk)
+                )
+                .exclude(pk=talk.pk)
                 .exists()
             )
             if overlaps:

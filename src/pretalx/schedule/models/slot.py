@@ -53,6 +53,8 @@ class TalkSlot(LogMixin, models.Model):
     end = models.DateTimeField(null=True)
     description = I18nCharField(null=True)
 
+    updated = models.DateTimeField(auto_now=True)
+
     objects = ScopedManager(event="schedule__event")
 
     def __str__(self):

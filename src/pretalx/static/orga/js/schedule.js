@@ -28,7 +28,7 @@ var api = {
         return Promise.reject(error)
       })
   },
-  fetchTalks() {
+  fetchTalks(since) {
     var url = [
       window.location.protocol,
       "//",
@@ -37,6 +37,9 @@ var api = {
       "api/talks/",
       window.location.search,
     ].join("")
+    if (since) {
+      url += `?since=${encodeURIComponent(since)}`
+    }
     return api.http("GET", url, null)
   },
   fetchRooms(eventSlug) {
@@ -471,6 +474,7 @@ var app = new Vue({
       rooms: null,
       start: null,
       end: null,
+      since: null,
       timezone: null,
       locales: null,
       loading: true,
@@ -498,6 +502,7 @@ var app = new Vue({
         this.start = moment.tz(result.start, this.timezone)
         this.end = moment.tz(result.end, this.timezone)
         this.locales = result.locales
+        this.since = result.now
       })
       .then(() => this.updateRooms())
       .then(() => {
@@ -506,6 +511,7 @@ var app = new Vue({
           $('[data-toggle="tooltip"]').tooltip()
         })
       })
+    window.setTimeout(this.pollUpdates, 10*1000)
   },
   computed: {
     currentDay() {},
@@ -570,6 +576,25 @@ var app = new Vue({
     saveTalk(response) {
       const talk = this.talks.find((talk) => talk.id == response.id)
       Object.assign(talk, response)
+    },
+    pollUpdates() {
+      console.log("polling updates")
+      if (this.since) {
+        api
+          .fetchTalks(this.since)
+          .then(result => {
+            if (result.results.length) {
+              console.log("got result")
+              console.log(result)
+            }
+            this.since = result.now
+            result.results.forEach((data) => {
+              const talk = this.talks.find((talk) => talk.id == data.id)
+              Object.assign(talk, data)
+            })
+            window.setTimeout(this.pollUpdates, 10*1000)
+          })
+      }
     },
     updateURL() {
       let qp = new URLSearchParams(location.search);
