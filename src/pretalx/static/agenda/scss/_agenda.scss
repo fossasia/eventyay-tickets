@@ -18,7 +18,7 @@
     position: sticky;
     left: 0;
     box-sizing: border-box;
-    max-width: calc(100vw - 12px);
+    max-width: calc(100vw - 16px);
   }
   header > * {
     padding: 0 16px;
@@ -316,12 +316,10 @@ article .pretalx-session .pretalx-session-info .abstract {
   }
   #main-container.main-schedule #main-card {
     min-width: 90vw;
-    max-width: 100vw;
   }
 }
 @media (max-width: 800px) {
   #main-container.main-schedule #main-card {
-    max-width: 100vw;
     main {
       max-width: inherit;
     }
