@@ -7,16 +7,23 @@ from django_scopes import scope
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize("version", ("js", "nojs"))
+@pytest.mark.parametrize("version,queries", (("js", 9), ("nojs", 11)))
 def test_can_see_schedule(
-    client, django_assert_num_queries, user, event, slot, other_slot, version
+    client,
+    django_assert_num_queries,
+    user,
+    event,
+    slot,
+    other_slot,
+    version,
+    queries,
 ):
     with scope(event=event):
         del event.current_schedule
         assert user.has_perm("agenda.view_schedule", event)
         url = event.urls.schedule if version == "js" else event.urls.schedule_nojs
 
-    with django_assert_num_queries(9):
+    with django_assert_num_queries(queries):
         response = client.get(url, follow=True, HTTP_ACCEPT="text/html")
     assert response.status_code == 200
     with scope(event=event):
@@ -227,7 +234,9 @@ def test_schedule_page_text_wrong_format(
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize("version", ("js", "nojs"))
+@pytest.mark.parametrize(
+    "version,queries_main,queries_versioned", (("js", 9, 10), ("nojs", 10, 12))
+)
 def test_versioned_schedule_page(
     client,
     django_assert_num_queries,
@@ -237,6 +246,8 @@ def test_versioned_schedule_page(
     schedule,
     other_slot,
     version,
+    queries_main,
+    queries_versioned,
 ):
     with scope(event=event):
         event.release_schedule("new schedule")
@@ -244,7 +255,7 @@ def test_versioned_schedule_page(
         test_string = "<pretalx-schedule" if version == "js" else slot.submission.title
 
     url = event.urls.schedule if version == "js" else event.urls.schedule_nojs
-    with django_assert_num_queries(9):
+    with django_assert_num_queries(queries_main):
         response = client.get(url, follow=True, HTTP_ACCEPT="text/html")
     if version == "js":
         assert (
@@ -256,13 +267,13 @@ def test_versioned_schedule_page(
         )  # But our talk has been made invisible
 
     url = schedule.urls.public if version == "js" else schedule.urls.nojs
-    with django_assert_num_queries(12):
+    with django_assert_num_queries(queries_versioned):
         response = client.get(url, follow=True, HTTP_ACCEPT="text/html")
     assert response.status_code == 200
     assert test_string in response.content.decode()
 
     url = event.urls.schedule if version == "js" else event.urls.schedule_nojs
     url += f"?version={quote(schedule.version)}"
-    with django_assert_num_queries(21):
+    with django_assert_num_queries(queries_versioned + 9):
         redirected_response = client.get(url, follow=True, HTTP_ACCEPT="text/html")
     assert redirected_response._request.path == response._request.path
