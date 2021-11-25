@@ -9,7 +9,7 @@ from django_scopes import scope
 
 @pytest.mark.django_db
 def test_can_see_talk_list(client, django_assert_num_queries, event, slot, other_slot):
-    with django_assert_num_queries(11):
+    with django_assert_num_queries(9):
         response = client.get(event.urls.talks, follow=True, HTTP_ACCEPT="text/html")
     assert response.status_code == 200
     assert "<pretalx-schedule" in response.content.decode()

@@ -16,7 +16,7 @@ def test_can_see_schedule(
         assert user.has_perm("agenda.view_schedule", event)
         url = event.urls.schedule if version == "js" else event.urls.schedule_nojs
 
-    with django_assert_num_queries(11):
+    with django_assert_num_queries(9):
         response = client.get(url, follow=True, HTTP_ACCEPT="text/html")
     assert response.status_code == 200
     with scope(event=event):
@@ -244,7 +244,7 @@ def test_versioned_schedule_page(
         test_string = "<pretalx-schedule" if version == "js" else slot.submission.title
 
     url = event.urls.schedule if version == "js" else event.urls.schedule_nojs
-    with django_assert_num_queries(10):
+    with django_assert_num_queries(9):
         response = client.get(url, follow=True, HTTP_ACCEPT="text/html")
     if version == "js":
         assert (

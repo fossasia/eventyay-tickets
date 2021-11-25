@@ -106,9 +106,14 @@ def test_slot_warning_when_speaker_overbooked(
         other_slot.save()
         other_slot.submission.save()
         warnings = slot.schedule.get_talk_warnings(slot)
-        assert len(warnings) == 1
-        assert warnings[0]["type"] == "speaker"
+        assert len(warnings) == 2
+        assert warnings[0]["type"] == "room_overlap"
         assert (
             warnings[0]["message"]
+            == "There's an overlapping session scheduled in this room."
+        )
+        assert warnings[1]["type"] == "speaker"
+        assert (
+            warnings[1]["message"]
             == "A speaker is holding another session at the scheduled time."
         )
