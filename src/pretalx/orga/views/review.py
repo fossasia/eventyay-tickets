@@ -101,7 +101,9 @@ class ReviewDashboard(
         queryset = (
             queryset.annotate(user_score=Subquery(user_reviews))
             .select_related("track", "submission_type")
-            .prefetch_related("speakers", "reviews", "reviews__user", "reviews__scores")
+            .prefetch_related(
+                "speakers", "reviews", "reviews__user", "reviews__scores", "tags"
+            )
         )
 
         for submission in queryset:

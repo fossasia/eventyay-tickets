@@ -117,6 +117,7 @@
                         <th>{% translate "Title" %}</th>
                         {% if can_view_speakers %}<th>{% translate "Speakers" %}</th>{% endif %}
                         {% if show_submission_types %}<th>{% translate "Type" %}</th>{% endif %}
+                        {% if filter_form.tags %}<th>{% translate "Tags" %}</th>{% endif %}
                         <th>{% translate "State" %}</th>
                         <th><span class="action-row d-flex justify-space-around">
                             {% if can_accept_submissions %}
@@ -173,6 +174,13 @@
                                 {% endfor %}
                             </td>{% endif %}
                             {% if show_submission_types %}<td>{{ submission.submission_type.name }}</td>{% endif %}
+                            {% if filter_form.tags %}<td>
+                                <div class="d-flex flex-column">
+                                    {% for tag in submission.tags.all %}
+                                        {{ tag.tag }}
+                                    {% endfor %}
+                                </div>
+                            </td>{% endif %}
                             <td class="nowrap">
                                 {% include "cfp/event/fragment_state.html" with state=submission.state %}
                             </td>
