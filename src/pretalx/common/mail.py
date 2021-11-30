@@ -55,7 +55,11 @@ def mail_send_task(
 ):
     if isinstance(to, str):
         to = [to]
-    to = [t for t in to if not t.endswith("@localhost")]
+    to = [
+        t
+        for t in to
+        if (not t.endswith("@localhost")) and (not t.endswith("@example.org"))
+    ]
     if not to:
         return
     reply_to = (
