@@ -684,7 +684,7 @@ def speaker_client(client, speaker):
 def other_speaker(event):
     with scopes_disabled():
         user = User.objects.create_user(
-            email="speaker2@example.org", password="speakerpwd1!", name="Krümelmonster"
+            email="speaker2@example.com", password="speakerpwd1!", name="Krümelmonster"
         )
     with scope(event=event):
         SpeakerProfile.objects.create(user=user, event=event, biography="COOKIIIIES!!")

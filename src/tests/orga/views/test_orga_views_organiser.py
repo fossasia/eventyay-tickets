@@ -201,7 +201,7 @@ def test_invite_orga_member_wrong_email(orga_client, organiser):
     assert team.members.count() == 1
     assert team.invites.count() == 0
     response = orga_client.post(
-        url, {"email": "otherexample.org", "form": "invite"}, follow=True
+        url, {"email": "otherexample.com", "form": "invite"}, follow=True
     )
     assert response.status_code == 200
     assert team.members.count() == 1

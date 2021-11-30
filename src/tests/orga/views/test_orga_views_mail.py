@@ -546,7 +546,7 @@ def test_orga_can_compose_single_mail_to_additional_recipients(
         event.orga_urls.compose_mails,
         follow=True,
         data={
-            "additional_recipients": f"foot@example.org,{orga_user.email}",
+            "additional_recipients": f"foot@example.com,{orga_user.email}",
             "bcc": "",
             "cc": "",
             "reply_to": "",

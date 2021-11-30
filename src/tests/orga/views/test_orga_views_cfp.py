@@ -848,13 +848,13 @@ def test_can_send_access_code(orga_client, access_code):
     assert response.status_code == 200
     response = orga_client.post(
         access_code.urls.send,
-        {"to": "test@example.org", "text": "test test", "subject": "test"},
+        {"to": "test@example.com", "text": "test test", "subject": "test"},
         follow=True,
     )
     assert response.status_code == 200
     assert len(djmail.outbox) == 1
     mail = djmail.outbox[0]
-    assert mail.to == ["test@example.org"]
+    assert mail.to == ["test@example.com"]
     assert mail.body == "test test"
     assert mail.subject == "test"
 

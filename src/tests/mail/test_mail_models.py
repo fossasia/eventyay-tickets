@@ -32,7 +32,7 @@ def test_mail_template_model(mail_template):
 @pytest.mark.parametrize("commit", (True, False))
 @pytest.mark.django_db
 def test_mail_template_model_to_mail(mail_template, commit):
-    mail_template.to_mail("testdummy@example.org", None, commit=commit)
+    mail_template.to_mail("testdummy@exacmple.com", None, commit=commit)
 
 
 @pytest.mark.django_db
@@ -44,7 +44,7 @@ def test_mail_template_model_to_mail_fails_without_address(mail_template):
 @pytest.mark.django_db
 def test_mail_template_model_to_mail_shortens_subject(mail_template):
     mail_template.subject = "A" * 300
-    mail = mail_template.to_mail("testdummy@example.org", None, commit=False)
+    mail = mail_template.to_mail("testdummy@exacmple.com", None, commit=False)
     assert len(mail.subject) == 199
 
 

@@ -73,7 +73,7 @@ def test_settings(client, user):
 
     client.post(
         "/orga/admin/update/",
-        {"update_check_email": "test@example.org", "update_check_enabled": "on"},
+        {"update_check_email": "test@example.com", "update_check_enabled": "on"},
     )
     gs = GlobalSettings()
     gs.settings.flush()

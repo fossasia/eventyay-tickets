@@ -113,7 +113,7 @@ def test_update_check_sent_updates():
 @responses.activate
 def test_update_check_mail_sent():
     gs = GlobalSettings()
-    gs.settings.update_check_email = "test@example.org"
+    gs.settings.update_check_email = "test@example.com"
 
     responses.add_callback(
         responses.POST,
@@ -124,7 +124,7 @@ def test_update_check_mail_sent():
     update_check.apply(throw=True)
 
     assert len(djmail.outbox) == 1
-    assert djmail.outbox[0].to == ["test@example.org"]
+    assert djmail.outbox[0].to == ["test@example.com"]
     assert "update" in djmail.outbox[0].subject
 
 
@@ -132,7 +132,7 @@ def test_update_check_mail_sent():
 @responses.activate
 def test_update_check_mail_sent_only_after_change():
     gs = GlobalSettings()
-    gs.settings.update_check_email = "test@example.org"
+    gs.settings.update_check_email = "test@example.com"
 
     with responses.RequestsMock() as rsps:
         rsps.add_callback(
@@ -182,7 +182,7 @@ def test_update_cron_interval(monkeypatch):
     monkeypatch.setattr(update_check, "apply_async", callee)
 
     gs = GlobalSettings()
-    gs.settings.update_check_email = "test@example.org"
+    gs.settings.update_check_email = "test@example.com"
 
     gs.settings.update_check_last = now() - timedelta(hours=14)
     run_update_check(None)
