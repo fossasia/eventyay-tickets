@@ -9,7 +9,9 @@ class PluginApp(AppConfig):
     class PretalxPluginMeta:
         name = gettext_lazy("Venueless integration")
         author = "Tobias Kunze"
-        description = gettext_lazy("Venueless integration in pretalx: Notify venueless about new schedule releases!")
+        description = gettext_lazy(
+            "Venueless integration in pretalx: Notify venueless about new schedule releases!"
+        )
         visible = True
         version = "0.0.0"
 
