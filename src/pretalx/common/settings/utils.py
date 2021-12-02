@@ -1,4 +1,5 @@
 import os
+import textwrap
 from contextlib import suppress
 from itertools import repeat
 from pathlib import Path
@@ -22,7 +23,9 @@ def log_initial(*, debug, config_files, db_name, db_backend, LOG_DIR, plugins):
         (f"Python:    {executable}", False),
     ]
     if plugins:
-        lines += [(f'Plugins:   {",".join(plugins)}', False)]
+        plugin_lines = textwrap.wrap(", ".join(plugins), width=92)
+        lines.append((f"Plugins:   {plugin_lines[0]}", False))
+        lines += [(" " * 11 + line, False) for line in plugin_lines[1:]]
     if debug:
         lines += [("DEVELOPMENT MODE, DO NOT USE IN PRODUCTION!", True)]
     image = """
