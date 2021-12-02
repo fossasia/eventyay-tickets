@@ -1,7 +1,3 @@
-from urllib.parse import urljoin
-
-import requests
-from django.conf import settings
 from django.contrib import messages
 from django.http import Http404, HttpResponse
 from django.shortcuts import redirect
@@ -12,6 +8,7 @@ from pretalx.event.models import Event
 from pretalx.orga.views.event import EventSettingsPermission
 
 from .forms import VenuelessSettingsForm
+from .venueless import push_to_venueless
 
 
 class Settings(EventSettingsPermission, FormView):
@@ -39,6 +36,7 @@ class Settings(EventSettingsPermission, FormView):
     def get_context_data(self):
         data = super().get_context_data()
         data["connect_in_progress"] = self.request.GET.get("token")
+        data["last_push"] = self.request.event.settings.venueless_last_push
         return data
 
     def form_valid(self, form):
@@ -46,22 +44,9 @@ class Settings(EventSettingsPermission, FormView):
 
         # TODO use short token / login URL to get long token
         # then save the long token and perform the POST request below
-        url = urljoin(self.request.event.settings.venueless_url, "schedule_update")
-        token = self.request.event.settings.venueless_token
 
         try:
-            response = requests.post(
-                url,
-                json={
-                    "domain": self.request.event.settings.custom_domain
-                    or settings.SITE_URL,
-                    "event": self.request.event.slug,
-                },
-                headers={
-                    "Authorization": f"Bearer {token}",
-                },
-            )
-            response.raise_for_status()
+            push_to_venueless(self.request.event)
             redirect_url = self.request.GET.get("returnUrl")
             if redirect_url:
                 return redirect(redirect_url)

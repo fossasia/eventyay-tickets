@@ -1,15 +1,22 @@
+import datetime as dt
+
 from django.dispatch import receiver
 from django.urls import resolve, reverse
 from django.utils.translation import ugettext_lazy as _
+from pretalx.common.models.settings import hierarkey
 from pretalx.orga.signals import nav_event_settings
 from pretalx.schedule.signals import schedule_release
+
+from .venueless import push_to_venueless
+
+hierarkey.add_type("venueless_last_push", None, dt.datetime)
 
 
 @receiver(schedule_release, dispatch_uid="venuless_schedule_release")
 def on_schedule_release(event, schedule, user, **kwargs):
     if not (event.settings.venueless_url and event.settings.venueless_token):
         return
-    # TODO venueless call
+    push_to_venueless()
 
 
 @receiver(nav_event_settings, dispatch_uid="venueless_nav_settings")
