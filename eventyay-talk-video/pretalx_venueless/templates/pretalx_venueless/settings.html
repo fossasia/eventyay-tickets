@@ -20,13 +20,19 @@
     {% else %}
         <h2>{% trans "Venueless" %}</h2>
     {% endif %}
-    {% if not request.event.settings.venueless_token and not connect_in_progress %}
-        <div class="alert alert-info">
+    {% if last_push %}
+        <div class="alert alert-success">
+            {% blocktrans trimmed with last_push=last_push %}
+                Successfully connected to venueless. Data was last pushed on {{ last_push }}.
+            {% endblocktrans %}
+        </div>
+    {% elif not connect_in_progress %}
+        <div class="alert alert-warning">
             <div>
                 {% blocktrans trimmed %}
                     Setting up the connection with Venueless will configure the pretalx settings
                     in Venueless, and will automatically push schedule changes to venueless users.
-                    To begin this process, please go to <b>Config → Event</b> in Venueless,
+                    Please use Venueless to begin this process. Go to <b>Config → Event</b> in Venueless,
                     and enter the following settings to create the connection:
                 {% endblocktrans %}
                 <ul>
