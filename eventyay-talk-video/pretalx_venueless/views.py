@@ -4,6 +4,7 @@ import requests
 from django.conf import settings
 from django.contrib import messages
 from django.http import Http404, HttpResponse
+from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import FormView
@@ -61,6 +62,9 @@ class Settings(EventSettingsPermission, FormView):
                 },
             )
             response.raise_for_status()
+            redirect_url = self.request.GET.get("returnUrl")
+            if redirect_url:
+                return redirect(redirect_url)
             messages.success(self.request, _("Yay! We saved your changes."))
         except Exception as e:
             messages.error(self.request, _("Unable to reach Venueless:") + f" {e}")
