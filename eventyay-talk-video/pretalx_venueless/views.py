@@ -29,28 +29,32 @@ class Settings(EventSettingsPermission, FormView):
         kwargs = super().get_form_kwargs()
         kwargs["obj"] = self.request.event
         kwargs["attribute_name"] = "settings"
+        if "token" in self.request.GET:
+            kwargs["initial_token"] = self.request.GET.get("token")
+        if "url" in self.request.GET:
+            kwargs["initial_url"] = self.request.GET.get("url")
         return kwargs
+
+    def get_context_data(self):
+        data = super().get_context_data()
+        data["connect_in_progress"] = self.request.GET.get("token")
+        return data
 
     def form_valid(self, form):
         form.save()
 
         # TODO use short token / login URL to get long token
         # then save the long token and perform the POST request below
-        url = urljoin(
-            self.request.event.settings.venueless_url, "api/v1/worlds/sample/"
-        )
+        url = urljoin(self.request.event.settings.venueless_url, "schedule_update")
         token = self.request.event.settings.venueless_token
 
         try:
             response = requests.post(
                 url,
                 json={
-                    "data": {
-                        "domain": self.request.event.settings.custom_domain
-                        or settings.SITE_URL,
-                        "event": self.request.event.slug,
-                    },
-                    "action": "schedule_update",
+                    "domain": self.request.event.settings.custom_domain
+                    or settings.SITE_URL,
+                    "event": self.request.event.slug,
                 },
                 headers={
                     "Authorization": f"Bearer {token}",

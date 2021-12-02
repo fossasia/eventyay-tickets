@@ -1,18 +1,45 @@
 {% extends "orga/base.html" %}
 {% load bootstrap4 %}
 {% load compress %}
+{% load copyable %}
 {% load i18n %}
 {% load static %}
 
 {% block content %}
 
-    <h2>{% trans "Venueless" %}</h2>
-    <p>
-        {% blocktrans trimmed %}
-            Setting up the connection with Venueless will configure the pretalx settings
-            in Venueless, and will automatically push schedule changes to venueless users.
-        {% endblocktrans %}
-    </p><p></p>
+    {% if connect_in_progress %}
+        <h2>{% trans "Confirm your Venueless connection" %}</h2>
+        <div class="alert alert-info">
+            <div>
+                {% blocktrans trimmed %}
+                    <b>Venueless</b> is asking to connect to your pretalx event. If you confirm
+                    this connection, pretalx will notify Venueless about all schedule changes.
+                {% endblocktrans %}
+            </div>
+        </div>
+    {% else %}
+        <h2>{% trans "Venueless" %}</h2>
+    {% endif %}
+    {% if not request.event.settings.venueless_token and not connect_in_progress %}
+        <div class="alert alert-info">
+            <div>
+                {% blocktrans trimmed %}
+                    Setting up the connection with Venueless will configure the pretalx settings
+                    in Venueless, and will automatically push schedule changes to venueless users.
+                    To begin this process, please go to <b>Config → Event</b> in Venueless,
+                    and enter the following settings to create the connection:
+                {% endblocktrans %}
+                <ul>
+                    <li>pretalx domain:
+                        {{ request.event.settings.custom_domain|default:settings.SITE_URL|copyable }}
+                    </li>
+                    <li>
+                        pretalx event slug: {{ request.event.slug|copyable }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+    {% endif %}
     <form method="post">
         {% csrf_token %}
         {% bootstrap_form form layout='event' %}
@@ -24,7 +51,11 @@
                     name="action" value="save"
                 >
                     <i class="fa fa-check"></i>
-                    {% trans "Save" %}
+                    {% if connect_in_progress %}
+                        {% trans "Connect" %}
+                    {% else %}
+                        {% trans "Save" %}
+                    {% endif %}
                 </button>
             </span>
         </div>
