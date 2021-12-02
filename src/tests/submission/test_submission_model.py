@@ -375,7 +375,7 @@ def test_content_for_mail(submission, file_question, boolean_question):
         fa = Answer.objects.create(
             question=file_question, answer_file=f, submission=submission
         )
-        host = submission.event.settings.custom_domain or settings.SITE_URL
+        host = submission.event.custom_domain or settings.SITE_URL
 
         assert (
             submission.get_content_for_mail().strip()

@@ -226,7 +226,7 @@ def test_change_custom_domain(event, orga_client, monkeypatch):
 
     yessocket = lambda x: True  # noqa
     monkeypatch.setattr(socket, "gethostbyname", yessocket)
-    assert not event.settings.custom_domain
+    assert not event.custom_domain
     response = orga_client.post(
         event.orga_urls.edit_settings,
         {
@@ -241,7 +241,7 @@ def test_change_custom_domain(event, orga_client, monkeypatch):
             "primary_color": "",
             "custom_css": "",
             "logo": "",
-            "settings-custom_domain": "https://myevent.com",
+            "custom_domain": "https://myevent.com",
             "settings-schedule_display": event.settings.schedule_display,
             "settings-show_featured": event.settings.show_featured,
             "settings-use_feedback": event.settings.use_feedback,
@@ -250,12 +250,12 @@ def test_change_custom_domain(event, orga_client, monkeypatch):
     )
     event = Event.objects.get(pk=event.pk)
     assert response.status_code == 200
-    assert event.settings.custom_domain == "https://myevent.com"
+    assert event.custom_domain == "https://myevent.com"
 
 
 @pytest.mark.django_db
 def test_change_custom_domain_to_site_url(event, orga_client):
-    assert not event.settings.custom_domain
+    assert not event.custom_domain
     response = orga_client.post(
         event.orga_urls.edit_settings,
         {
@@ -270,7 +270,7 @@ def test_change_custom_domain_to_site_url(event, orga_client):
             "primary_color": "",
             "custom_css": "",
             "logo": "",
-            "settings-custom_domain": settings.SITE_URL,
+            "custom_domain": settings.SITE_URL,
             "settings-schedule_display": event.settings.schedule_display,
             "settings-show_featured": event.settings.show_featured,
             "settings-use_feedback": event.settings.use_feedback,
@@ -279,7 +279,7 @@ def test_change_custom_domain_to_site_url(event, orga_client):
     )
     event = Event.objects.get(pk=event.pk)
     assert response.status_code == 200
-    assert not event.settings.custom_domain
+    assert not event.custom_domain
 
 
 @pytest.mark.django_db
@@ -292,7 +292,7 @@ def test_change_custom_domain_to_unavailable_domain(
         raise OSError
 
     monkeypatch.setattr(socket, "gethostbyname", nosocket)
-    assert not event.settings.custom_domain
+    assert not event.custom_domain
     response = orga_client.post(
         event.orga_urls.edit_settings,
         {
@@ -307,7 +307,7 @@ def test_change_custom_domain_to_unavailable_domain(
             "primary_color": "",
             "custom_css": "",
             "logo": "",
-            "settings-custom_domain": "https://example.org",
+            "custom_domain": "https://example.org",
             "settings-schedule_display": event.settings.schedule_display,
             "settings-show_featured": event.settings.show_featured,
             "settings-use_feedback": event.settings.use_feedback,
@@ -316,7 +316,7 @@ def test_change_custom_domain_to_unavailable_domain(
     )
     event = Event.objects.get(pk=event.pk)
     assert response.status_code == 200
-    assert not event.settings.custom_domain
+    assert not event.custom_domain
 
 
 @pytest.mark.django_db

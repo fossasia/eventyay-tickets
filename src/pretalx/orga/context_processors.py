@@ -48,7 +48,7 @@ def orga_events(request):
 
     if (
         not request.event.is_public
-        and request.event.settings.custom_domain
+        and request.event.custom_domain
         and request.user.has_perm("cfp.view_event", request.event)
     ):
         child_session_key = f"child_session_{request.event.pk}"

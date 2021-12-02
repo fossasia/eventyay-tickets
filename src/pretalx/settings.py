@@ -45,6 +45,7 @@ STATIC_ROOT = Path(
         fallback=BASE_DIR / "static.dist",
     )
 )
+IS_HTML_EXPORT = False
 HTMLEXPORT_ROOT = Path(
     config.get(
         "filesystem",

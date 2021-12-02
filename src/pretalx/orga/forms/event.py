@@ -68,6 +68,29 @@ class EventForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
             or choice[0] in self.instance.plugin_locales
         ]
 
+    def clean_custom_domain(self):
+        data = self.cleaned_data["custom_domain"]
+        if not data:
+            return data
+        data = data.lower()
+        if data in [urlparse(settings.SITE_URL).hostname, settings.SITE_URL]:
+            raise ValidationError(
+                _("Please do not choose the default domain as custom event domain.")
+            )
+        if not data.startswith("https://"):
+            data = data[len("http://") :] if data.startswith("http://") else data
+            data = "https://" + data
+        data = data.rstrip("/")
+        try:
+            socket.gethostbyname(data[len("https://") :])
+        except OSError:
+            raise forms.ValidationError(
+                _(
+                    'The domain "{domain}" does not have a name server entry at this time. Please make sure the domain is working before configuring it here.'
+                ).format(domain=data)
+            )
+        return data
+
     def clean_custom_css(self):
         if self.cleaned_data.get("custom_css") or self.files.get("custom_css"):
             css = self.cleaned_data["custom_css"] or self.files["custom_css"]
@@ -161,6 +184,7 @@ class EventForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
             "timezone",
             "email",
             "locale",
+            "custom_domain",
             "primary_color",
             "custom_css",
             "logo",
@@ -184,11 +208,6 @@ class EventForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
 
 class EventSettingsForm(ReadOnlyFlag, I18nFormMixin, I18nHelpText, HierarkeyForm):
 
-    custom_domain = forms.URLField(
-        label=_("Custom domain"),
-        help_text=_("Enter a custom domain, such as https://my.event.example.org"),
-        required=False,
-    )
     imprint_url = forms.URLField(
         label=_("Imprint URL"),
         help_text=_(
@@ -263,29 +282,6 @@ class EventSettingsForm(ReadOnlyFlag, I18nFormMixin, I18nHelpText, HierarkeyForm
     meta_noindex = forms.BooleanField(
         label=_("Ask search engines not to index the event pages"), required=False
     )
-
-    def clean_custom_domain(self):
-        data = self.cleaned_data["custom_domain"]
-        if not data:
-            return data
-        data = data.lower()
-        if data in [urlparse(settings.SITE_URL).hostname, settings.SITE_URL]:
-            raise ValidationError(
-                _("Please do not choose the default domain as custom event domain.")
-            )
-        if not data.startswith("https://"):
-            data = data[len("http://") :] if data.startswith("http://") else data
-            data = "https://" + data
-        data = data.rstrip("/")
-        try:
-            socket.gethostbyname(data[len("https://") :])
-        except OSError:
-            raise forms.ValidationError(
-                _(
-                    'The domain "{domain}" does not have a name server entry at this time. Please make sure the domain is working before configuring it here.'
-                ).format(domain=data)
-            )
-        return data
 
 
 class MailSettingsForm(ReadOnlyFlag, I18nFormMixin, I18nHelpText, HierarkeyForm):

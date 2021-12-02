@@ -8,7 +8,6 @@ from django.contrib.sessions.middleware import (
 )
 from django.core.exceptions import DisallowedHost
 from django.db.models import Q
-from django.http import Http404
 from django.http.request import split_domain_port
 from django.middleware.csrf import CsrfViewMiddleware as BaseCsrfMiddleware
 from django.shortcuts import get_object_or_404, redirect
@@ -16,7 +15,7 @@ from django.urls import resolve
 from django.utils.cache import patch_vary_headers
 from django.utils.http import http_date
 
-from pretalx.event.models.event import Event, Event_SettingsStore
+from pretalx.event.models.event import Event
 
 LOCAL_HOST_NAMES = ("testserver", "localhost")
 ANY_DOMAIN_ALLOWED = ("robots.txt",)
@@ -55,8 +54,8 @@ class MultiDomainMiddleware:
         if event_slug:
             event = get_object_or_404(Event, slug__iexact=event_slug)
             request.event = event
-            if event.settings.custom_domain:
-                custom_domain = urlparse(event.settings.custom_domain)
+            if event.custom_domain:
+                custom_domain = urlparse(event.custom_domain)
                 event_domain, event_port = split_domain_port(custom_domain.netloc)
                 if event_domain == domain and event_port == port:
                     request.uses_custom_domain = True
@@ -75,18 +74,14 @@ class MultiDomainMiddleware:
             return redirect(urljoin(default_domain, request.get_full_path()))
 
         # If this domain is used as custom domain, redirect to most recent event
-        event_settings = Event_SettingsStore.objects.filter(
-            Q(value=f"{request.scheme}://{domain}")
-            | Q(value=f"{request.scheme}://{host}"),
-            key="custom_domain",
+        events = Event.objects.filter(
+            Q(custom_domain=f"{request.scheme}://{domain}")
+            | Q(custom_domain=f"{request.scheme}://{host}"),
+            is_public=True,
         )
-        if event_settings:
-            events = [s.object for s in event_settings if s.object.is_public]
-            if events:
-                events.sort(key=lambda x: x.date_from, reverse=True)
-                return redirect(events[0].urls.base.full())
-            else:
-                raise Http404()
+        if events:
+            events.sort(key=lambda x: x.date_from, reverse=True)
+            return redirect(events[0].urls.base.full())
         raise DisallowedHost(f"Unknown host: {host}")
 
     def __call__(self, request):

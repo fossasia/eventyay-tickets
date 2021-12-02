@@ -89,6 +89,7 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
         ``#00ff00``.
     :param custom_css: Custom event CSS. Has to pass fairly restrictive
         validation for security considerations.
+    :param custom_domain: Custom event domain.
     :param logo: Replaces the event name in the public header. Will be
         displayed at up to full header height and up to full content width.
     :param header_image: Replaces the header pattern and/or background
@@ -135,6 +136,12 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
     email = models.EmailField(
         verbose_name=_("Organiser email address"),
         help_text=_("Will be used as Reply-To in emails."),
+    )
+    custom_domain = models.URLField(
+        verbose_name=_("Custom domain"),
+        help_text=_("Enter a custom domain, such as https://my.event.example.org"),
+        null=True,
+        blank=True,
     )
     primary_color = models.CharField(
         max_length=7,
@@ -563,7 +570,6 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
     def copy_data_from(self, other_event):
         from pretalx.orga.signals import event_copy_data
 
-        protected_settings = ["custom_domain", "display_header_data"]
         self._delete_mail_templates()
         self.submission_types.exclude(pk=self.cfp.default_type_id).delete()
         for template in self.template_names:
@@ -626,7 +632,7 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
                 question.limit_types.add(submission_type_map.get(stype))
 
         for s in other_event.settings._objects.all():
-            if s.value.startswith("file://") or s.key in protected_settings:
+            if s.value.startswith("file://"):
                 continue
             s.object = self
             s.pk = None

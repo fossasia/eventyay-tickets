@@ -663,7 +663,7 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
                 field_content = _("Yes") if field_content else _("No")
             elif isinstance(field_content, FieldFile):
                 field_content = (
-                    self.event.settings.custom_domain or settings.SITE_URL
+                    self.event.custom_domain or settings.SITE_URL
                 ) + field_content.url
             result += f"**{field_name}**: {field_content}\n\n"
         return result

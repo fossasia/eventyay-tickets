@@ -275,8 +275,8 @@ class User(PermissionsMixin, GenerateCode, FileCleanupMixin, AbstractBaseUser):
         absolute URL."""
         if not self.avatar_url or "gravatar" in self.avatar_url:
             return self.avatar_url
-        if event and event.settings.custom_domain:
-            return urljoin(event.settings.custom_domain, self.avatar_url)
+        if event and event.custom_domain:
+            return urljoin(event.custom_domain, self.avatar_url)
         return urljoin(settings.SITE_URL, self.avatar_url)
 
     def get_events_with_any_permission(self):

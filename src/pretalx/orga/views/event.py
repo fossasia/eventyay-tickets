@@ -690,10 +690,7 @@ class EventWizard(PermissionRequired, SensibleBackWizardMixin, SessionWizardView
                 zone = timezone(event.timezone)
                 event.cfp.deadline = zone.localize(deadline.replace(tzinfo=None))
                 event.cfp.save()
-            for setting in [
-                "custom_domain",
-                "display_header_data",
-            ]:
+            for setting in ("display_header_data",):
                 value = steps["display"].get(setting)
                 if value:
                     event.settings.set(setting, value)

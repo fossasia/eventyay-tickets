@@ -127,7 +127,7 @@ def test_event_model_slug_uniqueness():
 def test_event_copy_settings(event, submission_type, with_url, choice_question, track):
     with scope(event=event):
         if with_url:
-            event.settings.custom_domain = "https://testeventcopysettings.example.org"
+            event.custom_domain = "https://testeventcopysettings.example.org"
         event.settings.random_value = "testcopysettings"
         event.accept_template.text = "testtemplate"
         event.accept_template.save()
@@ -156,7 +156,7 @@ def test_event_copy_settings(event, submission_type, with_url, choice_question, 
         assert new_event.accept_template
         assert new_event.accept_template.text == "testtemplate"
         assert new_event.settings.random_value == "testcopysettings"
-        assert not new_event.settings.custom_domain
+        assert not new_event.custom_domain
 
 
 @pytest.mark.django_db
@@ -171,7 +171,7 @@ def test_event_get_default_type(event):
 def test_event_urls_custom(event):
     custom = "https://foo.bar.com"
     assert custom not in event.urls.submit.full()
-    event.settings.custom_domain = custom
+    event.custom_domain = custom
     assert custom in event.urls.submit.full()
     assert custom not in event.orga_urls.cfp.full()
 

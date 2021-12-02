@@ -15,8 +15,8 @@ def get_base_url(event=None, url=None):
                 resolved = resolve(url)
                 if "agenda" in resolved.namespaces:
                     return event.settings.html_export_url
-        if event.settings.custom_domain:
-            return event.settings.custom_domain
+        if event.custom_domain:
+            return event.custom_domain
     return settings.SITE_URL
 
 
