@@ -9,4 +9,9 @@ urlpatterns = [
         views.Settings.as_view(),
         name="settings",
     ),
+    url(
+        f"^(?P<event>[{SLUG_CHARS}]+)/p/venueless/check",
+        views.check,
+        name="check",
+    ),
 ]

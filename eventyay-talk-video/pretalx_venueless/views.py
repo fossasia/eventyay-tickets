@@ -3,9 +3,11 @@ from urllib.parse import urljoin
 import requests
 from django.conf import settings
 from django.contrib import messages
+from django.http import Http404, HttpResponse
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import FormView
+from pretalx.event.models import Event
 from pretalx.orga.views.event import EventSettingsPermission
 
 from .forms import VenuelessSettingsForm
@@ -59,3 +61,10 @@ class Settings(EventSettingsPermission, FormView):
         except Exception as e:
             messages.error(self.request, _("Unable to reach Venueless:") + f" {e}")
         return super().form_valid(form)
+
+
+def check(request, event):
+    e = Event.objects.filter(slug__iexact=event).first()
+    if e and "pretalx_venueless" in e.plugin_list:
+        return HttpResponse("")
+    raise Http404()
