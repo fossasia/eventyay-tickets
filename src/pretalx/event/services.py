@@ -70,7 +70,7 @@ def task_periodic_schedule_export(event_slug):
         zip_path = get_export_zip_path(event)
         last_time = event.cache.get("last_schedule_rebuild")
         _now = now()
-        if not event.settings.export_html_on_schedule_release:
+        if not event.feature_flags["export_html_on_release"]:
             event.cache.delete("rebuild_schedule_export")
             return
         if last_time and _now - last_time < dt.timedelta(hours=1):

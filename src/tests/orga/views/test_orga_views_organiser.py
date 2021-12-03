@@ -283,7 +283,7 @@ class TestEventCreation:
         )
 
     def submit_display(self, client, **kwargs):
-        data = {"display_header_pattern": "", "logo": "", "primary_color": ""}
+        data = {"header_pattern": "", "logo": "", "primary_color": ""}
         data.update(kwargs)
         return self.post(step="display", data=data, client=client)
 
@@ -299,7 +299,7 @@ class TestEventCreation:
         self.submit_initial(organiser, client=orga_client)
         self.submit_basics(client=orga_client, slug=f"newevent{now().year}")
         self.submit_timeline(deadline=deadline, client=orga_client)
-        self.submit_display(client=orga_client, display_header_pattern="topo")
+        self.submit_display(client=orga_client, header_pattern="topo")
         self.submit_copy(client=orga_client)
         event = Event.objects.get(slug=f"newevent{now().year}")
         assert Event.objects.count() == count + 1
@@ -318,7 +318,7 @@ class TestEventCreation:
         self.submit_initial(organiser, client=orga_client)
         self.submit_basics(client=orga_client, slug=event.slug)
         self.submit_timeline(deadline=deadline, client=orga_client)
-        self.submit_display(client=orga_client, display_header_pattern="topo")
+        self.submit_display(client=orga_client, header_pattern="topo")
         self.submit_copy(client=orga_client)
         assert Event.objects.count() == count
 
@@ -349,7 +349,8 @@ class TestEventCreation:
     ):
         organiser.teams.all().update(can_create_events=True)
         count = Event.objects.count()
-        event.settings.cfp_title_min_length = 50
+        event.cfp.fields["title"]["min_length"] = 50
+        event.save()
         team_count = organiser.teams.count()
         self.submit_initial(organiser, client=orga_client)
         self.submit_basics(client=orga_client)
@@ -364,8 +365,8 @@ class TestEventCreation:
         new_event = Event.objects.exclude(pk=event.pk).first()
         with scopes_disabled():
             assert (
-                new_event.settings.cfp_title_min_length
-                == event.settings.cfp_title_min_length
+                new_event.cfp.fields["title"]["min_length"]
+                == event.cfp.fields["title"]["min_length"]
             )
             assert new_event.questions.all().count()
             assert new_event.tracks.all().count()

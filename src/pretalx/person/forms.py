@@ -161,12 +161,12 @@ class SpeakerProfileForm(
             )
             self._update_cfp_help_text(field)
 
-        if not self.event.settings.cfp_request_avatar:
+        if not self.event.cfp.request_avatar:
             self.fields.pop("avatar", None)
             self.fields.pop("get_gravatar", None)
-        elif not self.event.settings.cfp_require_avatar and "avatar" in self.fields:
+        elif not self.event.cfp.require_avatar and "avatar" in self.fields:
             self.fields["avatar"].required = False
-        if not self.event.settings.use_gravatar:
+        if not self.event.feature_flags["use_gravatar"]:
             self.fields.pop("get_gravatar", None)
 
     @cached_property
@@ -190,7 +190,7 @@ class SpeakerProfileForm(
 
     def clean(self):
         data = super().clean()
-        if self.event.settings.cfp_require_avatar:
+        if self.event.cfp.require_avatar:
             if (
                 not data.get("avatar")
                 and not data.get("get_gravatar")
@@ -304,7 +304,7 @@ class SpeakerInformationForm(I18nHelpText, I18nModelForm):
         self.event = event
         super().__init__(*args, **kwargs)
         self.fields["limit_types"].queryset = event.submission_types.all()
-        if not event.settings.use_tracks:
+        if not event.feature_flags["use_tracks"]:
             self.fields.pop("limit_tracks")
         else:
             self.fields["limit_tracks"].queryset = event.tracks.all()

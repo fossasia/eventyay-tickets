@@ -194,7 +194,7 @@ class EventWizardDisplayForm(forms.Form):
         ),
         required=False,
     )
-    display_header_pattern = forms.ChoiceField(
+    header_pattern = forms.ChoiceField(
         label=_("Frontpage header pattern"),
         help_text=_(
             'Choose how the frontpage header banner will be styled. Pattern source: <a href="http://www.heropatterns.com/">heropatterns.com</a>, CC BY 4.0.'

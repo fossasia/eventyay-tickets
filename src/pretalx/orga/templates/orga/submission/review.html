@@ -75,7 +75,7 @@
                     </div>
                 </div>
             {% endif %}
-            {% if request.event.settings.cfp_request_abstract %}
+            {% if request.event.cfp.request_abstract %}
                 <div class="form-group row">
                     <label class="col-md-3 col-form-label">{% translate "Abstract" %}</label>
                     <div class="col-md-9 mt-1">
@@ -87,7 +87,7 @@
                     </div>
                 </div>
             {% endif %}
-            {% if request.event.settings.cfp_request_description %}
+            {% if request.event.cfp.request_description %}
                 <div class="form-group row">
                     <label class="col-md-3 col-form-label">{% translate "Description" %}</label>
                     <div class="col-md-9 mt-1">
@@ -99,7 +99,7 @@
                     </div>
                 </div>
             {% endif %}
-            {% if request.event.settings.cfp_request_notes %}
+            {% if request.event.cfp.request_notes %}
                 <div class="form-group row">
                     <label class="col-md-3 col-form-label">{% translate "Notes" %}</label>
                     <div class="col-md-9 mt-1">
@@ -124,7 +124,7 @@
                     <div class="form-group row">
                         <label class="col-md-3 col-form-label">{% translate "Speaker" %}: {{ speaker.user.get_display_name }}</label>
                         <div class="col-md-9 mt-1">
-                            {% if request.event.settings.cfp_request_biography %}
+                            {% if request.event.cfp.request_biography %}
                                 {{ speaker.biography|rich_text|default:'-' }}
                             {% endif %}
                             {% if speaker.submissions.count > 1 %}<br><strong>{% translate "Other proposals" %}:</strong>
@@ -207,7 +207,7 @@
                     </div>
                     <div>
                         <button type="submit" class="btn btn-lg btn-info" name="review_submit" value="skip_for_now" data-toggle="tooltip" data-placement="bottom" title="{% translate "Go to random next unreviewed proposal, mark this one as skipped" %}">{% translate "Skip for now" %}</button>
-                        {% if not request.event.settings.review_score_mandatory and not request.event.settings.review_text_mandatory %}
+                        {% if not request.event.review_settings.review_score_mandatory and not request.event.review_settings.review_text_mandatory %}
                             <button type="submit" class="btn btn-lg btn-info" name="review_submit" value="abstain" data-toggle="tooltip" data-placement="bottom" title="{% translate "Go to random next unreviewed proposal" %}">{% translate "Abstain" %}</button>
                         {% endif %}
                         <button type="submit" class="btn btn-lg btn-success" name="review_submit" value="save_and_next" data-toggle="tooltip" data-placement="bottom" title="{% translate "Go to random next unreviewed proposal" %}">{% translate "Save and next" %}</button>

@@ -284,7 +284,8 @@ def test_html_export_release_without_celery(mocker, event):
     with scope(event=event):
         event.cache.delete("rebuild_schedule_export")
         assert not event.cache.get("rebuild_schedule_export")
-        event.settings.export_html_on_schedule_release = True
+        event.feature_flags["export_html_on_release"] = True
+        event.save()
         event.wip_schedule.freeze(name="ohaio means hello")
         assert event.cache.get("rebuild_schedule_export")
 
@@ -308,7 +309,8 @@ def test_html_export_release_with_celery(mocker, event):
 
     with scope(event=event):
         event.cache.delete("rebuild_schedule_export")
-        event.settings.export_html_on_schedule_release = True
+        event.feature_flags["export_html_on_release"] = True
+        event.save()
         event.wip_schedule.freeze(name="ohaio means hello")
         assert not event.cache.get("rebuild_schedule_export")
 
@@ -324,7 +326,8 @@ def test_html_export_release_disabled(mocker, event):
     )
 
     with scope(event=event):
-        event.settings.export_html_on_schedule_release = False
+        event.feature_flags["export_html_on_release"] = False
+        event.save()
         event.wip_schedule.freeze(name="ohaio means hello")
 
     call_command.assert_not_called()

@@ -15,7 +15,7 @@
         </p>
         {% if submission.submission_type and request.event.submission_types.all|length > 1 %}<p>{% translate "Session type" %}: {{ submission.submission_type }}</p>{% endif %}
         {% if submission.track and request.event.tracks.all|length > 1 %}<p>{% translate "Track" %}: {{ submission.track.name }}</p>{% endif %}
-        {% if request.event.is_multilingual and request.event.settings.cfp_request_content_locale %}<p>{% translate "Language" %}: {{ submission.get_content_locale_display }}</p>{% endif %}
+        {% if request.event.is_multilingual and request.event.cfp.request_content_locale %}<p>{% translate "Language" %}: {{ submission.get_content_locale_display }}</p>{% endif %}
         <div class="text">
             {% blocktranslate trimmed %}
                 Congratulations on your acceptance!

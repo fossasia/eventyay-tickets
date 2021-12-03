@@ -24,7 +24,8 @@ def test_agenda_permission_is_agenda_visible(
 ):
     with scope(event=event):
         event.is_public = is_public
-        event.settings.show_schedule = show_schedule
+        event.feature_flags["show_schedule"] = show_schedule
+        event.save()
         if has_schedule:
             event.release_schedule("42")
         assert is_agenda_visible(None, event) is result

@@ -22,7 +22,7 @@
     <form method="post" enctype="multipart/form-data" class="speaker-profile-form">
         {% csrf_token %}
         {% bootstrap_form_errors profile_form %}
-        {% if request.event.settings.cfp_request_avatar %}
+        {% if request.event.cfp.request_avatar %}
             {% include "common/avatar.html" with user=request.user form=profile_form %}
         {% endif %}
         {% bootstrap_field profile_form.name layout='event' %}

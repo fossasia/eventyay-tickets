@@ -24,8 +24,9 @@ def test_widget_pages(
     slot,
     other_slot,
 ):
-    event.settings.show_schedule = show_schedule
-    event.settings.show_widget_if_not_public = show_widget_if_not_public
+    event.feature_flags["show_schedule"] = show_schedule
+    event.feature_flags["show_widget_if_not_public"] = show_widget_if_not_public
+    event.save()
     response = client.get(event.urls.schedule + "widget/" + url, follow=True)
     assert response.status_code == expected
 
@@ -48,7 +49,8 @@ def test_widget_data(
     queries,
     django_assert_max_num_queries,
 ):
-    event.settings.show_schedule = True
+    event.feature_flags["show_schedule"] = True
+    event.save()
     with django_assert_max_num_queries(queries):
         response = client.get(
             event.urls.schedule + f"widget/v{version}.json", follow=True

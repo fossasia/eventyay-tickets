@@ -53,6 +53,22 @@ def default_fields():
     }
 
 
+def field_helper(cls):
+    for field in default_fields().keys():
+        setattr(
+            cls,
+            f"request_{field}",
+            property(lambda x: x.fields[field]["visibility"] != "do_not_ask"),
+        )
+        setattr(
+            cls,
+            f"require_{field}",
+            property(lambda x: x.fields[field]["visibility"] == "required"),
+        )
+    return cls
+
+
+@field_helper
 class CfP(LogMixin, models.Model):
     """Every :class:`~pretalx.event.models.event.Event` has one Call for
     Papers/Participation/Proposals.

@@ -64,7 +64,7 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
     def _set_track(self, instance=None):
         if "track" in self.fields:
             if (
-                not self.event.settings.use_tracks
+                not self.event.feature_flags["use_tracks"]
                 or instance
                 and instance.state != SubmissionStates.SUBMITTED
             ):
@@ -138,7 +138,7 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
                 ]
 
     def _set_slot_count(self, instance=None):
-        if not self.event.settings.present_multiple_times:
+        if not self.event.feature_flags["present_multiple_times"]:
             self.fields.pop("slot_count", None)
         elif (
             "slot_count" in self.fields

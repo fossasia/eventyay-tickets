@@ -88,7 +88,12 @@ Feel free to look around, but don\'t be alarmed if something doesn\'t quite make
                 event=event, name="Workshop", default_duration=90
             )
 
-            event.settings.use_tracks = True
+            event.feature_flags["use_tracks"] = True
+            event.display_settings["header_pattern"] = random.choice(
+                ("", "pcb", "bubbles", "signal", "topo", "graph")
+            )
+            event.save()
+
             for _ in range(self.fake.random_int(min=2, max=5)):
                 Track.objects.create(
                     event=event,
@@ -112,9 +117,6 @@ If you have any interest in {self.fake.catch_phrase().lower()}, {self.fake.catch
 """
             event.cfp.deadline = event.datetime_from - dt.timedelta(days=60)
             event.cfp.save()
-            event.settings.display_header_pattern = random.choice(
-                ("", "pcb", "bubbles", "signal", "topo", "graph")
-            )
             event.settings.review_max_score = 2
             self.event = event
             self.build_room()

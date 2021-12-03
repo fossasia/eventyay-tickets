@@ -242,7 +242,7 @@
                                     <a href="{{ request.event.cfp.urls.questions }}" class="nav-link nav-link-second-level{% if "cfp.question" in url_name %} active{% endif %}">
                                         <span>{% translate "Questions" %}</span>
                                     </a>
-                                    {% if request.event.settings.use_tracks %}
+                                    {% if request.event.feature_flags.use_tracks %}
                                         <a href="{{ request.event.cfp.urls.tracks }}" class="nav-link nav-link-second-level{% if "cfp.track" in url_name %} active{% endif %}">
                                             <span>{% translate "Tracks" %}</span>
                                         </a>
@@ -278,7 +278,7 @@
                                 <a href="{{ request.event.orga_urls.stats }}" class="nav-link nav-link-second-level{% if "submissions.statistics" in url_name %} active{% endif %}">
                                     <span>{% translate "Statistics" %}</span>
                                 </a>
-                                {% if request.event.settings.use_feedback %}
+                                {% if request.event.feature_flags.use_feedback %}
                                     <a href="{{ request.event.orga_urls.feedback }}" class="nav-link nav-link-second-level{% if "submissions.feedback" in url_name %} active{% endif %}">
                                         <span>{% translate "Feedback" %}</span>
                                     </a>

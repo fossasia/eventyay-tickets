@@ -207,9 +207,10 @@ class ScheduleToggleView(EventPermissionRequired, View):
 
     def dispatch(self, request, event):
         super().dispatch(request, event)
-        self.request.event.settings.set(
-            "show_schedule", not self.request.event.settings.show_schedule
-        )
+        self.request.event.feature_flags[
+            "show_schedule"
+        ] = not self.request.event.feature_flags["show_schedule"]
+        self.request.event.save()
         return redirect(self.request.event.orga_urls.schedule)
 
 
@@ -393,7 +394,7 @@ class TalkUpdate(PermissionRequired, View):
             talk.room = None
             talk.save(update_fields=["start", "end", "room", "updated"])
 
-        with_speakers = self.request.event.settings.cfp_request_availabilities
+        with_speakers = self.request.event.cfp.request_availabilities
         warnings = talk.schedule.get_talk_warnings(talk, with_speakers=with_speakers)
 
         return JsonResponse(serialize_slot(talk, warnings=warnings))

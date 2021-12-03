@@ -59,7 +59,8 @@ def test_mail_template_model_to_mail_shortens_subject(mail_template):
 )
 def test_mail_make_text(event, text, signature, expected):
     if signature:
-        event.settings.mail_signature = signature
+        event.mail_settings["signature"] = signature
+        event.save()
     assert QueuedMail(text=text, event=event).make_text() == expected
 
 
@@ -74,5 +75,6 @@ def test_mail_make_text(event, text, signature, expected):
 )
 def test_mail_make_subject(event, text, prefix, expected):
     if prefix:
-        event.settings.mail_subject_prefix = prefix
+        event.mail_settings["subject_prefix"] = prefix
+        event.save()
     assert QueuedMail(text=text, subject=text, event=event).make_subject() == expected

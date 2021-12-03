@@ -739,14 +739,14 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
     def get_mail_backend(self, force_custom: bool = False) -> BaseEmailBackend:
         from pretalx.common.mail import CustomSMTPBackend
 
-        if self.settings.smtp_use_custom or force_custom:
+        if self.mail_settings["smtp_use_custom"] or force_custom:
             return CustomSMTPBackend(
-                host=self.settings.smtp_host,
-                port=self.settings.smtp_port,
-                username=self.settings.smtp_username,
-                password=self.settings.smtp_password,
-                use_tls=self.settings.smtp_use_tls,
-                use_ssl=self.settings.smtp_use_ssl,
+                host=self.mail_settings["smtp_host"],
+                port=self.mail_settings["smtp_port"],
+                username=self.mail_settings["smtp_username"],
+                password=self.mail_settings["smtp_password"],
+                use_tls=self.mail_settings["smtp_use_tls"],
+                use_ssl=self.mail_settings["smtp_use_ssl"],
                 fail_silently=False,
             )
         return get_connection(fail_silently=False)

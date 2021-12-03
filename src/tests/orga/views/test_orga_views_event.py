@@ -12,15 +12,15 @@ from pretalx.event.models import Event
 
 @pytest.mark.django_db
 def test_edit_mail_settings(orga_client, event, availability):
-    assert event.settings.mail_from != "foo@bar.com"
-    assert event.settings.smtp_port != "25"
+    assert event.mail_settings["from"] != "foo@bar.com"
+    assert event.mail_settings["smtp_port"] != 25
     response = orga_client.get(event.orga_urls.mail_settings, follow=True)
     assert response.status_code == 200
     response = orga_client.post(
         event.orga_urls.mail_settings,
         follow=True,
         data={
-            "mail_from": "foo@bar.com",
+            "from": "foo@bar.com",
             "smtp_host": "localhost",
             "smtp_password": "",
             "smtp_port": "25",
@@ -28,21 +28,21 @@ def test_edit_mail_settings(orga_client, event, availability):
     )
     assert response.status_code == 200
     event = Event.objects.get(pk=event.pk)
-    assert event.settings.mail_from == "foo@bar.com"
-    assert event.settings.smtp_port == 25
+    assert event.mail_settings["from"] == "foo@bar.com"
+    assert event.mail_settings["smtp_port"] == 25
 
 
 @pytest.mark.django_db
 def test_fail_unencrypted_mail_settings(orga_client, event, availability):
-    assert event.settings.mail_from != "foo@bar.com"
-    assert event.settings.smtp_port != "25"
+    assert event.mail_settings["from"] != "foo@bar.com"
+    assert event.mail_settings["smtp_port"] != 25
     response = orga_client.get(event.orga_urls.mail_settings, follow=True)
     assert response.status_code == 200
     response = orga_client.post(
         event.orga_urls.mail_settings,
         follow=True,
         data={
-            "mail_from": "foo@bar.com",
+            "from": "foo@bar.com",
             "smtp_host": "foo.bar.com",
             "smtp_password": "",
             "smtp_port": "25",
@@ -50,21 +50,21 @@ def test_fail_unencrypted_mail_settings(orga_client, event, availability):
     )
     assert response.status_code == 200
     event = Event.objects.get(pk=event.pk)
-    assert event.settings.mail_from != "foo@bar.com"
-    assert event.settings.smtp_port != 25
+    assert event.mail_settings["from"] != "foo@bar.com"
+    assert event.mail_settings["smtp_port"] != 25
 
 
 @pytest.mark.django_db
 def test_test_mail_settings(orga_client, event, availability):
-    assert event.settings.mail_from != "foo@bar.com"
-    assert event.settings.smtp_port != "25"
+    assert event.mail_settings["from"] != "foo@bar.com"
+    assert event.mail_settings["smtp_port"] != 25
     response = orga_client.get(event.orga_urls.mail_settings, follow=True)
     assert response.status_code == 200
     response = orga_client.post(
         event.orga_urls.mail_settings,
         follow=True,
         data={
-            "mail_from": "foo@bar.com",
+            "from": "foo@bar.com",
             "smtp_host": "localhost",
             "smtp_password": "",
             "smtp_port": "25",
@@ -74,8 +74,8 @@ def test_test_mail_settings(orga_client, event, availability):
     )
     assert response.status_code == 200
     event = Event.objects.get(pk=event.pk)
-    assert event.settings.mail_from == "foo@bar.com"
-    assert event.settings.smtp_port == 25
+    assert event.mail_settings["from"] == "foo@bar.com"
+    assert event.mail_settings["smtp_port"] == 25
 
 
 @pytest.mark.django_db
@@ -103,9 +103,10 @@ def test_add_custom_css(event, orga_client, path, allowed):
                 "email": event.email or "",
                 "primary_color": event.primary_color or "",
                 "custom_css": custom_css,
-                "settings-schedule_display": event.settings.schedule_display,
-                "settings-show_featured": event.settings.show_featured,
-                "settings-use_feedback": event.settings.use_feedback,
+                # TODO
+                "settings-schedule_display": event.feature_flags["schedule_display"],
+                "settings-show_featured": event.feature_flags["show_featured"],
+                "settings-use_feedback": event.feature_flags["use_feedback"],
             },
             follow=True,
         )
@@ -139,9 +140,9 @@ def test_add_custom_css_as_administrator(event, administrator_client, path):
                 "email": event.email,
                 "primary_color": event.primary_color or "",
                 "custom_css": custom_css,
-                "settings-schedule_display": event.settings.schedule_display,
-                "settings-show_featured": event.settings.show_featured,
-                "settings-use_feedback": event.settings.use_feedback,
+                "settings-schedule_display": event.feature_flags["schedule_display"],
+                "settings-show_featured": event.feature_flags["show_featured"],
+                "settings-use_feedback": event.feature_flags["use_feedback"],
             },
             follow=True,
         )
@@ -170,9 +171,9 @@ def test_add_logo(event, orga_client):
                 "primary_color": "#00ff00",
                 "custom_css": "",
                 "logo": logo,
-                "settings-schedule_display": event.settings.schedule_display,
-                "settings-show_featured": event.settings.show_featured,
-                "settings-use_feedback": event.settings.use_feedback,
+                "settings-schedule_display": event.feature_flags["schedule_display"],
+                "settings-show_featured": event.feature_flags["show_featured"],
+                "settings-use_feedback": event.feature_flags["use_feedback"],
             },
             follow=True,
         )
@@ -204,9 +205,9 @@ def test_add_logo_no_svg(event, orga_client):
                 "primary_color": "#00ff00",
                 "custom_css": "",
                 "logo": logo,
-                "settings-schedule_display": event.settings.schedule_display,
-                "settings-show_featured": event.settings.show_featured,
-                "settings-use_feedback": event.settings.use_feedback,
+                "settings-schedule_display": event.feature_flags["schedule_display"],
+                "settings-show_featured": event.feature_flags["show_featured"],
+                "settings-use_feedback": event.feature_flags["use_feedback"],
             },
             follow=True,
         )
@@ -242,9 +243,9 @@ def test_change_custom_domain(event, orga_client, monkeypatch):
             "custom_css": "",
             "logo": "",
             "custom_domain": "https://myevent.com",
-            "settings-schedule_display": event.settings.schedule_display,
-            "settings-show_featured": event.settings.show_featured,
-            "settings-use_feedback": event.settings.use_feedback,
+            "settings-schedule_display": event.feature_flags["schedule_display"],
+            "settings-show_featured": event.feature_flags["show_featured"],
+            "settings-use_feedback": event.feature_flags["use_feedback"],
         },
         follow=True,
     )
@@ -271,9 +272,9 @@ def test_change_custom_domain_to_site_url(event, orga_client):
             "custom_css": "",
             "logo": "",
             "custom_domain": settings.SITE_URL,
-            "settings-schedule_display": event.settings.schedule_display,
-            "settings-show_featured": event.settings.show_featured,
-            "settings-use_feedback": event.settings.use_feedback,
+            "settings-schedule_display": event.feature_flags["schedule_display"],
+            "settings-show_featured": event.feature_flags["show_featured"],
+            "settings-use_feedback": event.feature_flags["use_feedback"],
         },
         follow=True,
     )
@@ -308,9 +309,9 @@ def test_change_custom_domain_to_unavailable_domain(
             "custom_css": "",
             "logo": "",
             "custom_domain": "https://example.org",
-            "settings-schedule_display": event.settings.schedule_display,
-            "settings-show_featured": event.settings.show_featured,
-            "settings-use_feedback": event.settings.use_feedback,
+            "settings-schedule_display": event.feature_flags["schedule_display"],
+            "settings-show_featured": event.feature_flags["show_featured"],
+            "settings-use_feedback": event.feature_flags["use_feedback"],
         },
         follow=True,
     )
@@ -358,12 +359,12 @@ def test_toggle_event_is_public_without_warnings(
 ):
     with scope(event=event):
         event.cfp.text = "a" * 100
+        event.cfp.fields["track"]["visbility"] = "optional"
         event.cfp.save()
         event.landing_page_text = "a" * 100
         event.is_public = False
+        event.feature_flags["use_track"] = True
         event.save()
-        event.settings.use_tracks = True
-        event.settings.cfp_request_track = True
     response = orga_client.get(event.orga_urls.live, follow=True)
     assert response.status_code == 200
     event.refresh_from_db()
@@ -564,6 +565,7 @@ def test_edit_review_settings(orga_client, event):
             f"scores-0-label_{scores[1].id}": scores[1].label,
             f"scores-0-value_{scores[2].id}": scores[2].value,
             f"scores-0-label_{scores[2].id}": scores[2].label,
+            # TODO
             "review_score_aggregate": event.settings.review_score_aggregate,
         },
         follow=True,
@@ -719,6 +721,7 @@ def test_edit_review_settings_new_review_phase(orga_client, event):
             f"scores-0-label_{scores[1].id}": scores[1].label,
             f"scores-0-value_{scores[2].id}": scores[2].value,
             f"scores-0-label_{scores[2].id}": scores[2].label,
+            # TODO
             "review_score_aggregate": event.settings.review_score_aggregate,
         },
         follow=True,
@@ -907,7 +910,7 @@ def test_speaker_cannot_see_event_suggestions(speaker_client, event):
 
 @pytest.mark.django_db
 def test_widget_settings(event, orga_client):
-    assert not event.settings.show_widget_if_not_public
+    assert not event.feature_flags["show_widget_if_not_public"]
     response = orga_client.get(event.orga_urls.widget_settings, follow=True)
     response = orga_client.post(
         event.orga_urls.widget_settings,
@@ -918,4 +921,4 @@ def test_widget_settings(event, orga_client):
     )
     assert response.status_code == 200
     event = Event.objects.get(slug=event.slug)
-    assert event.settings.show_widget_if_not_public
+    assert event.feature_flags["show_widget_if_not_public"]

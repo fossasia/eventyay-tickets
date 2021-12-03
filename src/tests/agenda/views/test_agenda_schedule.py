@@ -74,9 +74,11 @@ def test_cannot_see_schedule_by_setting(
     client, user, event, slot, other_slot, featured
 ):
     with scope(event=event):
-        event.settings.show_schedule = False
+        event.feature_flags["show_schedule"] = False
+        event.save()
         assert not user.has_perm("agenda.view_schedule", event)
-        event.settings.show_featured = featured
+        event.feature_flags["show_featured"] = featured
+        event.save()
     response = client.get(event.urls.schedule, HTTP_ACCEPT="text/html")
     if featured == "never":
         assert response.status_code == 404
@@ -92,7 +94,8 @@ def test_cannot_see_no_schedule(client, user, event, slot, other_slot, featured)
         event.current_schedule.talks.all().delete()
         event.current_schedule.delete()
         del event.current_schedule
-        event.settings.show_featured = featured
+        event.feature_flags["show_featured"] = featured
+        event.save()
         assert not user.has_perm("agenda.view_schedule", event)
     response = client.get(event.urls.schedule, HTTP_ACCEPT="text/html")
     if featured == "never":

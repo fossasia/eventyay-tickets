@@ -63,7 +63,7 @@
     <table class="table table-sm table-hover table-responsive-md table-flip">
         <thead>
             <tr>
-                {% if request.event.settings.use_tracks %}
+                {% if request.event.feature_flags.use_tracks %}
                     <th></th>
                 {% endif %}
                 <th>
@@ -93,7 +93,7 @@
         <tbody>
             {% for submission in submissions %}
                 <tr>
-                    {% if request.event.settings.use_tracks %}
+                    {% if request.event.feature_flags.use_tracks %}
                         <td>
                             {% if submission.track %}
                                 <div class="color-square" style="background-color: {{ submission.track.color }}" title="{{ submission.track.name }}">

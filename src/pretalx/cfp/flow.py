@@ -529,7 +529,7 @@ class CfPFlow:
 
     def __init__(self, event):
         self.event = event
-        data = event.settings.cfp_flow
+        data = event.cfp.settings["flow"]
         self.config = self.get_config(data)
 
         steps = [step(event=event) for step in DEFAULT_STEPS]
@@ -645,7 +645,8 @@ class CfPFlow:
         if isinstance(data, list) or (isinstance(data, dict) and "steps" not in data):
             data = {"steps": data}
         data = self.get_config(data, json_compat=True)
-        self.event.settings.cfp_flow = data
+        self.event.cfp.settings["flow"] = data
+        self.event.cfp.save()
 
     def reset(self):
         self.save_config(None)

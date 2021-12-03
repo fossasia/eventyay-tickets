@@ -159,8 +159,8 @@ class EventLive(EventSettingsPermission, TemplateView):
             )
         # TODO: test that mails can be sent
         if (
-            self.request.event.settings.use_tracks
-            and self.request.event.settings.cfp_request_track
+            self.request.event.feature_flags["use_tracks"]
+            and self.request.event.cfp.request_track
             and self.request.event.tracks.count() < 2
         ):
             suggestions.append(
@@ -456,7 +456,7 @@ class EventMailSettings(EventSettingsPermission, ActionFromUrl, FormView):
         if self.request.POST.get("test", "0").strip() == "1":
             backend = self.request.event.get_mail_backend(force_custom=True)
             try:
-                backend.test(self.request.event.settings.mail_from)
+                backend.test(self.request.event.mail_settings["from"])
             except Exception as e:
                 messages.warning(
                     self.request,
@@ -786,13 +786,17 @@ class WidgetSettings(EventPermissionRequired, FormView):
 
     def form_valid(self, form):
         messages.success(self.request, _("The widget settings have been saved."))
-        form.save()
+        self.request.event.feature_flags[
+            "show_widget_if_not_public"
+        ] = form.cleaned_data["show_widget_if_not_public"]
+        self.request.event.save()
         return super().form_valid(form)
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs["obj"] = self.request.event
-        kwargs["attribute_name"] = "settings"
+        kwargs["initial"] = self.request.event.feature_flags[
+            "show_widget_if_not_public"
+        ]
         return kwargs
 
     def get_context_data(self, **kwargs):

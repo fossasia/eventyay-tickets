@@ -62,7 +62,7 @@
                     <li><a class="dropdown-item" href="{{ active_schedule.urls.public }}" target="_blank" rel="noopener">
                         <i class="fa fa-link"></i> {% translate "View in frontend" %}
                     </a></li>
-                    {% if request.event.settings.show_schedule %}
+                    {% if request.event.feature_flags.show_schedule %}
                         <li><a class="dropdown-item" href="{{ request.event.orga_urls.toggle_schedule }}">
                             <i class="fa fa-eye"></i> {% translate "Hide schedule" %}
                         </a></li>

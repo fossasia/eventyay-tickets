@@ -220,12 +220,12 @@ class SubmissionConfirmView(LoggedInEventPageMixin, SubmissionViewMixin, FormVie
 
     def get_form(self):
         form = super().get_form()
-        if not self.request.event.settings.cfp_request_availabilities:
+        if not self.request.event.cfp.request_availabilities:
             form.fields.pop("availabilities")
         else:
             form.fields[
                 "availabilities"
-            ].required = self.request.event.settings.cfp_require_availabilities
+            ].required = self.request.event.cfp.require_availabilities
         return form
 
     def form_valid(self, form):

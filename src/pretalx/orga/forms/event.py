@@ -225,7 +225,7 @@ class EventSettingsForm(ReadOnlyFlag, I18nFormMixin, I18nHelpText, HierarkeyForm
     schedule_display = forms.ChoiceField(
         label=_("Schedule display format"),  # TODO show small preview / icons
         choices=(
-            ("proportional", _("Grid")),
+            ("grid", _("Grid")),
             ("list", _("List")),
         ),
         required=True,
@@ -262,7 +262,7 @@ class EventSettingsForm(ReadOnlyFlag, I18nFormMixin, I18nHelpText, HierarkeyForm
         ),
         required=False,
     )
-    display_header_pattern = forms.ChoiceField(
+    header_pattern = forms.ChoiceField(
         label=_("Frontpage header pattern"),
         help_text=_(
             "Choose how the frontpage header banner will be styled if you don't upload an image. Pattern source: "
@@ -285,21 +285,21 @@ class EventSettingsForm(ReadOnlyFlag, I18nFormMixin, I18nHelpText, HierarkeyForm
 
 
 class MailSettingsForm(ReadOnlyFlag, I18nFormMixin, I18nHelpText, HierarkeyForm):
-    mail_reply_to = forms.EmailField(
+    reply_to = forms.EmailField(
         label=_("Contact address"),
         help_text=_(
             "Reply-To address. If this setting is empty and you have no custom sender, your event email address will be used as Reply-To address."
         ),
         required=False,
     )
-    mail_subject_prefix = forms.CharField(
+    subject_prefix = forms.CharField(
         label=_("Mail subject prefix"),
         help_text=_(
             "The prefix will be prepended to outgoing mail subjects in [brackets]."
         ),
         required=False,
     )
-    mail_signature = forms.CharField(
+    signature = forms.CharField(
         label=_("Mail signature"),
         help_text=_(
             'The signature will be added to outgoing mails, preceded by "-- ".'
@@ -417,7 +417,7 @@ class ReviewSettingsForm(ReadOnlyFlag, I18nFormMixin, I18nHelpText, HierarkeyFor
     )
 
 
-class WidgetSettingsForm(HierarkeyForm):
+class WidgetSettingsForm(forms.Form):
     show_widget_if_not_public = forms.BooleanField(
         label=_("Show the widget even if the schedule is not public"),
         help_text=_(
@@ -488,7 +488,7 @@ class ReviewScoreCategoryForm(I18nHelpText, I18nModelForm):
     def __init__(self, *args, event=None, **kwargs):
         self.event = event
         super().__init__(*args, **kwargs)
-        if not event or not event.settings.use_tracks:
+        if not event or not event.feature_flags["use_tracks"]:
             self.fields.pop("limit_tracks")
         else:
             self.fields["limit_tracks"].queryset = event.tracks.all()

@@ -106,7 +106,8 @@ def test_orga_can_see_submission_404(orga_client, event, submission):
 
 @pytest.mark.django_db
 def test_reviewer_can_see_single_submission(review_client, event, submission, answer):
-    event.settings.use_tracks = True
+    event.feature_flags["use_tracks"] = True
+    event.save()
     response = review_client.get(submission.orga_urls.base, follow=True)
     assert response.status_code == 200
     assert submission.title in response.content.decode()
@@ -121,7 +122,8 @@ def test_reviewer_can_see_single_submission_but_hide_question(
     with scope(event=event):
         answer.question.is_visible_to_reviewers = False
         answer.question.save()
-    event.settings.use_tracks = True
+    event.feature_flags["use_tracks"] = True
+    event.save()
     response = review_client.get(submission.orga_urls.base, follow=True)
     assert response.status_code == 200
     assert submission.title in response.content.decode()
@@ -390,7 +392,8 @@ def test_orga_can_create_submission(orga_client, event, known_speaker, orga_user
 
 @pytest.mark.django_db
 def test_orga_can_edit_submission(orga_client, event, accepted_submission):
-    event.settings.present_multiple_times = True
+    event.feature_flags["present_multiple_times"] = True
+    event.save()
     with scope(event=event):
         assert event.submissions.count() == 1
         assert accepted_submission.slots.count() == 1
@@ -514,7 +517,8 @@ def test_orga_edit_submission_with_wrong_resources(
 def test_orga_can_edit_submission_wrong_answer(
     orga_client, event, accepted_submission, question
 ):
-    event.settings.present_multiple_times = True
+    event.feature_flags["present_multiple_times"] = True
+    event.save()
     with scope(event=event):
         question.question_required = QuestionRequired.REQUIRED
         question.save
@@ -672,7 +676,8 @@ def test_reviewer_cannot_see_anonymisation_interface(review_client, submission):
 @pytest.mark.parametrize("use_tracks", (True, False))
 def test_submission_statistics(use_tracks, slot, other_slot, orga_client):
     with scope(event=slot.event):
-        slot.event.settings.use_tracks = use_tracks
+        slot.event.feature_flags["use_tracks"] = use_tracks
+        slot.event.save()
         logs = []
         subs = [slot.submission, other_slot.submission]
         for i in range(2):

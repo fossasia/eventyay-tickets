@@ -87,6 +87,7 @@ class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, I18nHelpText, HierarkeyForm):
         for field in ["abstract", "description", "biography"]:
             self.fields[f"cfp_{field}_min_length"].widget.attrs["placeholder"] = ""
             self.fields[f"cfp_{field}_max_length"].widget.attrs["placeholder"] = ""
+            # TODO
         self.request_require_fields = [
             "abstract",
             "description",
@@ -104,13 +105,7 @@ class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, I18nHelpText, HierarkeyForm):
             field_name = f"cfp_ask_{attribute}"
             self.fields[field_name] = forms.ChoiceField(
                 required=True,
-                initial="required"
-                if obj.settings.get(f"cfp_require_{attribute}")
-                else (
-                    "optional"
-                    if obj.settings.get(f"cfp_request_{attribute}")
-                    else "do_not_ask"
-                ),
+                initial=obj.cfp.fields[field_name]["visibility"],
                 choices=[
                     ("do_not_ask", _("Do not ask")),
                     ("optional", _("Ask, but do not require input")),
@@ -121,16 +116,14 @@ class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, I18nHelpText, HierarkeyForm):
             self.fields.pop("cfp_ask_content_locale", None)
 
     def save(self, *args, **kwargs):
-        for attribute in self.request_require_fields:
-            key = f"cfp_ask_{attribute}"
+        for key in self.request_require_fields:
             if key not in self.fields:
                 continue
-            data = self.cleaned_data.pop(key)
+            value = self.cleaned_data.pop(key)
             self.fields.pop(
                 key
             )  # Hierarkey falls over when fields are not in cleaned_data
-            self._s.set(f"cfp_request_{attribute}", data != "do_not_ask")
-            self._s.set(f"cfp_require_{attribute}", data == "required")
+            self.obj.cfp.fields[key]["visibility"] = value
         super().save(*args, **kwargs)
 
 
@@ -148,7 +141,7 @@ class QuestionForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
         super().__init__(*args, **kwargs)
         instance = kwargs.get("instance")
         if not (
-            event.settings.use_tracks
+            event.feature_flags["use_tracks"]
             and event.tracks.all().count()
             and event.settings.cfp_request_track
         ):
@@ -281,7 +274,7 @@ class SubmitterAccessCodeForm(forms.ModelForm):
         self.fields["submission_type"].queryset = SubmissionType.objects.filter(
             event=self.event
         )
-        if event.settings.use_tracks:
+        if event.feature_flags["use_tracks"]:
             self.fields["track"].queryset = Track.objects.filter(event=self.event)
         else:
             self.fields.pop("track")
@@ -401,7 +394,7 @@ class QuestionFilterForm(forms.Form):
         self.fields["submission_type"].queryset = SubmissionType.objects.filter(
             event=event
         )
-        if not event.settings.use_tracks:
+        if not event.feature_flags["use_tracks"]:
             self.fields.pop("track", None)
         elif "track" in self.fields:
             self.fields["track"].queryset = event.tracks.all()

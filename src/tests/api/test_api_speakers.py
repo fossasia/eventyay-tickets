@@ -138,7 +138,8 @@ def test_can_only_see_public_speakers(
 def test_can_only_see_public_speakerss_if_public_schedule(
     client, slot, accepted_submission, rejected_submission, submission
 ):
-    submission.event.settings.set("show_schedule", False)
+    submission.event.feature_flags["show_schedule"] = False
+    submission.event.save()
     response = client.get(submission.event.api_urls.speakers, follow=True)
     content = json.loads(response.content.decode())
 
@@ -227,7 +228,8 @@ def test_reviewer_cannot_see_speakers(
 def test_orga_can_see_all_speakers_even_nonpublic(
     orga_client, slot, accepted_submission, rejected_submission, submission
 ):
-    submission.event.settings.set("show_schedule", False)
+    submission.event.feature_flags["show_schedule"] = False
+    submission.event.save()
     response = orga_client.get(submission.event.api_urls.speakers, follow=True)
     content = json.loads(response.content.decode())
 

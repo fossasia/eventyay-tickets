@@ -106,8 +106,8 @@ def test_orga_can_edit_speaker_unchanged(orga_client, speaker, event, submission
         url = speaker.event_profile(event).orga_urls.base
         profile = speaker.event_profile(event)
         count = profile.logged_actions().all().count()
-        event.settings.cfp_request_availabilities = False
-        event.settings.cfp_require_availabilities = False
+        event.cfp.fields["availabilities"]["visibility"] = "do_not_ask"
+        event.cfp.save()
     response = orga_client.post(
         url,
         data={
@@ -151,7 +151,8 @@ def test_orga_cannot_edit_speaker_without_filling_questions(
 def test_orga_cant_assign_duplicate_address(
     orga_client, speaker, event, submission, other_speaker
 ):
-    event.settings.cfp_request_availabilities = False
+    event.cfp.fields["availabilities"]["visibility"] = "do_not_ask"
+    event.cfp.save()
     with scope(event=event):
         url = speaker.event_profile(event).orga_urls.base
     response = orga_client.post(

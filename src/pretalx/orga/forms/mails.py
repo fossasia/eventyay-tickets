@@ -187,7 +187,7 @@ class WriteMailForm(MailTemplateBase):
         self.fields["submissions"].choices = [
             (sub.code, sub.title) for sub in event.submissions.all()
         ]
-        if event.settings.use_tracks and event.tracks.all().exists():
+        if event.feature_flags["use_tracks"] and event.tracks.all().exists():
             self.fields["tracks"].choices = [
                 (track.pk, track.name) for track in event.tracks.all()
             ]

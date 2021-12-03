@@ -700,7 +700,7 @@ class CfPFlowEditor(EventPermissionRequired, TemplateView):
             "current_configuration"
         ] = self.request.event.cfp_flow.get_editor_config(json_compat=True)
         context["event_configuration"] = {
-            "header_pattern": self.request.event.settings.display_header_pattern
+            "header_pattern": self.request.event.display_settings["header_pattern"]
             or "bg-primary",
             "header_image": self.request.event.header_image.url
             if self.request.event.header_image

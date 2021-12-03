@@ -87,7 +87,7 @@ class ReviewForm(ReadOnlyFlag, forms.ModelForm):
 
     def clean_text(self):
         text = self.cleaned_data.get("text")
-        if not text and self.event.settings.review_text_mandatory:
+        if not text and self.event.review_settings["review_text_mandatory"]:
             raise forms.ValidationError(_("Please provide a review text!"))
         return text
 

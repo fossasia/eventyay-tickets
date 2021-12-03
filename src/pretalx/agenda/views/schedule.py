@@ -216,7 +216,7 @@ class ScheduleView(EventPermissionRequired, ScheduleMixin, TemplateView):
     def show_talk_list(self):
         return (
             self.request.path.endswith("/talk/")
-            or self.request.event.settings.schedule_display == "list"
+            or self.request.event.display_settings["schedule_display"] == "list"
         )
 
 

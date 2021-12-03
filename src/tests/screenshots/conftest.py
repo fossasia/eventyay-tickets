@@ -38,8 +38,8 @@ def event():
         event.email = "orga@orga.org"
         event.date_from = dt.date.today()
         event.date_to = dt.date.today() + dt.timedelta(days=1)
-        event.settings.export_html_on_schedule_release = False
-        event.settings.display_header_pattern = "topo"
+        event.feature_flags["export_html_on_release"] = False
+        event.display_settings["header_pattern"] = "topo"
         event.primary_color = "#4D64BE"
         event.save()
         assert event.submissions.count()

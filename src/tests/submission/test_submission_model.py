@@ -265,7 +265,8 @@ def test_submission_change_slot_count(accepted_submission):
             ).count()
             == 1
         )
-        accepted_submission.event.settings.present_multiple_times = True
+        accepted_submission.event.feature_flags["present_multiple_times"] = True
+        accepted_submission.event.save()
         accepted_submission.slot_count = 2
         accepted_submission.save()
         accepted_submission.accept()
@@ -351,7 +352,7 @@ def test_public_slots_without_schedule(submission):
     with scope(event=submission.event):
         submission.event.schedules.all().delete()
         submission.event.is_public = True
-        submission.event.settings.show_schedule = True
+        submission.event.feature_flags["show_schedule"] = True
         submission.event.save()
         assert submission.public_slots == []
 
@@ -360,7 +361,7 @@ def test_public_slots_without_schedule(submission):
 def test_public_slots_with_visible_agenda(submission, slot):
     with scope(event=submission.event):
         submission.event.is_public = True
-        submission.event.settings.show_schedule = True
+        submission.event.feature_flags["show_schedule"] = True
         submission.event.save()
         assert len(submission.public_slots) == 0
 

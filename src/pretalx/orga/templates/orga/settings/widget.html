@@ -85,7 +85,7 @@
         </p>
     </div>
 
-    {% if request.event.is_public and request.event.settings.show_schedule and request.event.current_schedule %}
+    {% if request.event.is_public and request.event.feature_flags.show_schedule and request.event.current_schedule %}
         <div class="mw-100 overflow-auto">
             <h2>{% translate "Widget preview" %}</h2>
             <p>

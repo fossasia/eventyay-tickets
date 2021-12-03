@@ -533,8 +533,8 @@ td.reviewer {
   flex-direction: row;
 }
 
-form #id_settings-display_header_pattern,
-form #id_display-display_header_pattern {
+form #id_settings-header_pattern,
+form #id_display-header_pattern {
   display: flex;
   padding: 0;
   overflow-x: auto;

@@ -9,19 +9,19 @@
         <div class="d-flex align-items-start">
             <img
                 class="avatar {% if not user.avatar and not user.get_gravatar %}d-none{% endif %} order-1"
-                {% if request.event.settings.use_gravatar %}data-gravatar="{{ user.gravatar_parameter }}"{% endif %}
+                {% if request.event.feature_flags.use_gravatar %}data-gravatar="{{ user.gravatar_parameter }}"{% endif %}
                 data-avatar="{% if user.avatar %}{{ user.avatar.url }}{% endif %}"
                 alt="{% translate "Your avatar" %}"
                 {% if user.avatar %}
                     src="{{ user.avatar.url }}"
                 {% elif user.get_gravatar %}
-                    {% if request.event.settings.use_gravatar %}
+                    {% if request.event.feature_flags.use_gravatar %}
                         src="https://www.gravatar.com/avatar/{{ user.gravatar_parameter }}?s=512"
                     {% endif %}
                 {% endif %}
             />
 
-            {% if request.event.settings.use_gravatar %}
+            {% if request.event.feature_flags.use_gravatar %}
                 {% bootstrap_field form.get_gravatar layout='event-inline' %}
             {% endif %}
         </div>

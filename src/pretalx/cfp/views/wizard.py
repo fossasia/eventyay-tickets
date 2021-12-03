@@ -91,7 +91,7 @@ class SubmitWizard(EventPageMixin, View):
                 locale=request.submission.get_email_locale(request.user.locale),
                 full_submission_content=True,
             )
-            if request.event.settings.mail_on_new_submission:
+            if request.event.mail_settings["mail_on_new_submission"]:
                 MailTemplate(
                     event=request.event,
                     subject=str(_("New proposal: {title}")).format(

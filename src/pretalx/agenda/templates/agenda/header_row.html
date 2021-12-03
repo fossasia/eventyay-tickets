@@ -4,7 +4,7 @@
     <div class="navigation">
         <a href="{{ request.event.urls.schedule }}" class="btn btn-outline-success {% if "/schedule/" in request.path %} active{% endif %}">
             <i class="fa fa-calendar"></i> {% translate "Schedule" %}
-            {% if request.event.settings.schedule_display != "list" %}
+            {% if request.event.display_settings.schedule_display != "list" %}
                 </a><a href="{{ request.event.urls.talks }}" class="btn btn-outline-success {% if "/talk/" in request.path %} active{% endif %}">
                     <i class="fa fa-comments-o"></i> {% translate "Sessions" %}
             {% endif %}

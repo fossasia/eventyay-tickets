@@ -244,7 +244,7 @@ class QueuedMail(LogMixin, models.Model):
         event = getattr(self, "event", None)
         sig = None
         if event:
-            sig = event.settings.mail_signature
+            sig = event.mail_settings["signature"]
             if sig.strip().startswith("-- "):
                 sig = sig.strip()[3:].strip()
         body_md = bleach.linkify(
@@ -264,18 +264,18 @@ class QueuedMail(LogMixin, models.Model):
 
     def make_text(self):
         event = getattr(self, "event", None)
-        if not event or not event.settings.mail_signature:
+        if not event or not event.mail_settings["signature"]:
             return self.text
-        sig = event.settings.mail_signature
+        sig = event.mail_settings["signature"]
         if not sig.strip().startswith("-- "):
             sig = f"-- \n{sig}"
         return f"{self.text}\n{sig}"
 
     def make_subject(self):
         event = getattr(self, "event", None)
-        if not event or not event.settings.mail_subject_prefix:
+        if not event or not event.mail_settings["subject_prefix"]:
             return self.subject
-        prefix = event.settings.mail_subject_prefix
+        prefix = event.mail_settings["subject_prefix"]
         if not (prefix.startswith("[") and prefix.endswith("]")):
             prefix = f"[{prefix}]"
         return f"{prefix} {self.subject}"

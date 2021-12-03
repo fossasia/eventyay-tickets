@@ -137,7 +137,8 @@ def test_periodic_event_fail():
 
 @pytest.mark.django_db
 def test_trigger_schedule_export_unnecessary(event):
-    event.settings.export_html_on_schedule_release = True
+    event.feature_flags["export_html_on_release"] = True
+    event.save()
     timestamp = now() - dt.timedelta(minutes=10)
     event.cache.set("last_schedule_rebuild", timestamp)
     task_periodic_schedule_export(event.slug)
@@ -145,6 +146,7 @@ def test_trigger_schedule_export_unnecessary(event):
 
 @pytest.mark.django_db
 def test_trigger_schedule_export_regularly(event):
-    event.settings.export_html_on_schedule_release = True
+    event.feature_flags["export_html_on_release"] = True
+    event.save()
     assert not event.cache.get("last_schedule_rebuild")
     task_periodic_schedule_export(event.slug)

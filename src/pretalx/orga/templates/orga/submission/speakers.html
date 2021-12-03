@@ -28,7 +28,7 @@
                     {{ speaker.name }}
                 </a>
             </h3>
-            {% if request.event.settings.cfp_request_biography %}
+            {% if request.event.cfp.request_biography %}
                 <p class="card-text">
                     <h5>{% translate "Biography" %}:</h5>
                     {{ speaker.biography|rich_text|default:"-" }}

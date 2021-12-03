@@ -83,7 +83,7 @@
                     <tr>
                         {% if can_see_all_reviews %}
                             <th>
-                                {% if request.event.settings.review_score_aggregate == "median" %}
+                                {% if request.event.review_settings.review_score_aggregate == "median" %}
                                     {% translate "Median" %}
                                 {% else %}
                                     {% translate "Average" %}

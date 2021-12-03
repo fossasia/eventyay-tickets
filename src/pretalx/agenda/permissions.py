@@ -8,14 +8,14 @@ def is_agenda_visible(user, event):
     return bool(
         event
         and event.is_public
-        and event.settings.show_schedule
+        and event.feature_flags["show_schedule"]
         and event.current_schedule
     )
 
 
 @rules.predicate
 def is_widget_always_visible(user, event):
-    return event.settings.show_widget_if_not_public
+    return event.feature_flags["show_widget_if_not_public"]
 
 
 @rules.predicate
@@ -25,11 +25,14 @@ def has_agenda(user, event):
 
 @rules.predicate
 def are_featured_submissions_visible(user, event):
-    if not event or not event.is_public or event.settings.show_featured == "never":
+    if (
+        not event
+        or not event.is_public
+        or event.feature_flags["show_featured"] == "never"
+    ):
         return False
-    if event.settings.show_featured == "always":
+    if event.feature_flags["show_featured"] == "always":
         return True
-    # event.settings.show_featured == "pre_schedule"
     return (not is_agenda_visible(user, event)) or (not has_agenda(user, event))
 
 

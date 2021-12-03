@@ -34,7 +34,7 @@
             <a href="{{ submission.urls.confirm }}" class="btn btn-sm btn-success">
                 <i class="fa fa-check"></i> {% translate "Confirm your attendance" %}
             </a>
-        {% elif submission.state == 'confirmed' and request.event.settings.use_feedback %}
+        {% elif submission.state == 'confirmed' and request.event.feature_flags.use_feedback %}
             · <a href="{{ submission.urls.feedback }}">
                 {% if submission.does_accept_feedback %}
                     {% translate "Audience feedback" %}

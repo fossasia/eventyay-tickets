@@ -28,7 +28,7 @@
             <thead>
                 <tr>
                     <th>{% translate "Code" %}</th>
-                    {% if request.event.settings.use_tracks %}<th>{% translate "Track" %}</th>{% endif %}
+                    {% if request.event.feature_flags.use_tracks %}<th>{% translate "Track" %}</th>{% endif %}
                     <th>{% translate "Session Type" %}</th>
                     <th>{% translate "Uses" %}</th>
                     <th></th>
@@ -40,7 +40,7 @@
                         <td>
                             {{ code.code|copyable }}
                         </td>
-                        {% if request.event.settings.use_tracks %}<td>
+                        {% if request.event.feature_flags.use_tracks %}<td>
                             {% if code.track %}
                                 <a href="{{ code.track.urls.base }}">{{ code.track.name }}</a>
                             {% else %}–{% endif %}

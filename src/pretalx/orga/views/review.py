@@ -73,7 +73,7 @@ class ReviewDashboard(
         return queryset
 
     def get_queryset(self):
-        aggregate_method = self.request.event.settings.review_score_aggregate
+        aggregate_method = self.request.event.review_settings["review_score_aggregate"]
         statistics_method = (
             statistics.median if aggregate_method == "median" else statistics.fmean
         )
@@ -230,7 +230,7 @@ class ReviewDashboard(
     @cached_property
     def show_tracks(self):
         return (
-            self.request.event.settings.use_tracks
+            self.request.event.feature_flags["use_tracks"]
             and self.request.event.tracks.all().count() > 1
         )
 

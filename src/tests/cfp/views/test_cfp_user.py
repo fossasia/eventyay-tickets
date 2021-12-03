@@ -129,7 +129,8 @@ def test_can_edit_submission(speaker_client, submission, resource, other_resourc
 @pytest.mark.django_db
 def test_can_edit_slot_count(speaker_client, submission):
     with scope(event=submission.event):
-        submission.event.settings.present_multiple_times = True
+        submission.event.feature_flags["present_multiple_times"] = True
+        submission.event.save()
         data = {
             "title": "Ein ganz neuer Titel",
             "submission_type": submission.submission_type.pk,
@@ -153,7 +154,8 @@ def test_can_edit_slot_count(speaker_client, submission):
 @pytest.mark.django_db
 def test_cannot_edit_confirmed_slot_count(speaker_client, confirmed_submission):
     submission = confirmed_submission
-    submission.event.settings.present_multiple_times = True
+    submission.event.feature_flags["present_multiple_times"] = True
+    submission.event.save()
     with scope(event=submission.event):
         data = {
             "title": "Ein ganz neuer Titel",
@@ -283,7 +285,8 @@ def test_can_change_api_token(speaker, event, speaker_client):
 
 @pytest.mark.django_db
 def test_must_provide_availabilities(speaker, event, speaker_client):
-    event.settings.cfp_require_availabilities = True
+    event.cfp.fields["availabilities"]["visibility"] = "required"
+    event.cfp.save()
     response = speaker_client.post(
         event.urls.user,
         data={
@@ -500,9 +503,10 @@ def test_wrong_acceptance_link(orga_client, submission):
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize("request_availability", (True, False))
-def test_submission_accept(speaker_client, submission, request_availability):
-    submission.event.settings.cfp_request_availabilities = request_availability
+@pytest.mark.parametrize("get_availability", ("optional", "do_not_ask"))
+def test_submission_accept(speaker_client, submission, get_availability):
+    submission.event.cfp.fields["availabilities"]["visibility"] = get_availability
+    submission.event.cfp.save()
     submission.state = SubmissionStates.ACCEPTED
     submission.save()
 
@@ -515,8 +519,8 @@ def test_submission_accept(speaker_client, submission, request_availability):
 
 @pytest.mark.django_db
 def test_submission_accept_with_missing_availability(speaker_client, submission):
-    submission.event.settings.cfp_request_availabilities = True
-    submission.event.settings.cfp_require_availabilities = True
+    submission.event.cfp.fields["availabilities"]["visibility"] = "required"
+    submission.event.cfp.save()
     submission.state = SubmissionStates.ACCEPTED
     submission.save()
 

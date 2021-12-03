@@ -55,7 +55,7 @@
         {% block custom_header %}{% endblock %}
     </head>
     <body>
-        <div id="top-bg" class="header {{ request.event.settings.display_header_pattern|default:"bg-primary" }}">
+        <div id="top-bg" class="header {{ request.event.display_settings.header_pattern|default:"bg-primary" }}">
             {% if request.event and request.event.header_image %}
                 <img src="{{ request.event.header_image.url }}" id="header-image">
             {% endif %}
@@ -155,9 +155,9 @@
                     &middot;
                     <a href="mailto:{{ request.event.email }}">{% translate "Contact us" %}</a>
                 {% endif %}
-                {% if request.event.settings.imprint_url %}
+                {% if request.event.display_settings.imprint_url %}
                     &middot;
-                    <a href="{{ request.event.settings.imprint_url }}" target="_blank" rel="noopener">{% translate "Imprint" %}</a>
+                    <a href="{{ request.event.display_settings.imprint_url }}" target="_blank" rel="noopener">{% translate "Imprint" %}</a>
                 {% endif %}
                 {% for footer in footer_links %}
                     &middot;

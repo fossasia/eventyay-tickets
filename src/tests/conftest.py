@@ -110,7 +110,8 @@ def event(organiser):
             organiser=organiser,
         )
         # exporting takes quite some time, so this speeds up our tests
-        event.settings.export_html_on_schedule_release = False
+        event.feature_flags["export_html_on_release"] = False
+        event.save()
         for team in organiser.teams.all():
             team.limit_events.add(event)
     return event
@@ -128,7 +129,8 @@ def other_event(other_organiser):
             date_to=dt.date.today() + dt.timedelta(days=1),
             organiser=other_organiser,
         )
-        event.settings.export_html_on_schedule_release = False
+        event.feature_flags["export_html_on_release"] = False
+        event.save()
         for team in other_organiser.teams.all():
             team.limit_events.add(event)
     return event
@@ -148,7 +150,8 @@ def multilingual_event(organiser):
             locale_array="en,de",
             organiser=organiser,
         )
-        event.settings.export_html_on_schedule_release = False
+        event.feature_flags["export_html_on_release"] = False
+        event.save()
         for team in organiser.teams.all():
             team.limit_events.add(event)
     return event
@@ -1044,14 +1047,16 @@ def information(event):
 @pytest.fixture
 def track(event):
     with scope(event=event):
-        event.settings.use_tracks = True
+        event.feature_flags["use_tracks"] = True
+        event.save()
         return Track.objects.create(name="Test Track", color="00ff00", event=event)
 
 
 @pytest.fixture
 def other_track(event):
     with scope(event=event):
-        event.settings.use_tracks = True
+        event.feature_flags["use_tracks"] = True
+        event.save()
         return Track.objects.create(
             name="Second Test Track", color="ff0000", event=event
         )

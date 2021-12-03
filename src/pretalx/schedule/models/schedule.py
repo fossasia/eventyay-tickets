@@ -115,7 +115,7 @@ class Schedule(LogMixin, models.Model):
 
         schedule_release.send_robust(self.event, schedule=self, user=user)
 
-        if self.event.settings.export_html_on_schedule_release:
+        if self.event.feature_flags["export_html_on_release"]:
             if settings.HAS_CELERY:
                 export_schedule_html.apply_async(kwargs={"event_id": self.event.id})
             else:
@@ -442,7 +442,7 @@ class Schedule(LogMixin, models.Model):
             "submission", "room"
         ).prefetch_related("submission__speakers")
         result = {}
-        with_speakers = self.event.settings.cfp_request_availabilities
+        with_speakers = self.event.cfp.request_availabilities
         room_avails = defaultdict(
             list,
             {
@@ -500,7 +500,7 @@ class Schedule(LogMixin, models.Model):
             ).count(),
             "no_track": [],
         }
-        if self.event.settings.use_tracks:
+        if self.event.feature_flags["use_tracks"]:
             warnings["no_track"] = talks.filter(
                 submission__track_id__isnull=True
             ).count()
