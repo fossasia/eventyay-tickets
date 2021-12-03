@@ -12,6 +12,47 @@ from pretalx.common.phrases import phrases
 from pretalx.common.urls import EventUrls
 
 
+def default_settings():
+    return {
+        "flow": {},
+        "count_length_in": "chars",
+        "show_deadline": True,
+    }
+
+
+def default_fields():
+    return {
+        "title": {
+            "visibility": "required",
+            "min_length": None,
+            "max_length": None,
+        },
+        "abstract": {
+            "visibility": "required",
+            "min_length": None,
+            "max_length": None,
+        },
+        "description": {
+            "visibility": "optional",
+            "min_length": None,
+            "max_length": None,
+        },
+        "biography": {
+            "visibility": "required",
+            "min_length": None,
+            "max_length": None,
+        },
+        "avatar": {"visibility": "optional"},
+        "availabilities": {"visibility": "optional"},
+        "notes": {"visibility": "optional"},
+        "do_not_record": {"visibility": "optional"},
+        "image": {"visibility": "optional"},
+        "track": {"visibility": "do_not_ask"},
+        "duration": {"visibility": "do_not_ask"},
+        "content_locale": {"visibility": "require"},
+    }
+
+
 class CfP(LogMixin, models.Model):
     """Every :class:`~pretalx.event.models.event.Event` has one Call for
     Papers/Participation/Proposals.
@@ -43,6 +84,8 @@ class CfP(LogMixin, models.Model):
             "Please put in the last date you want to accept proposals from users."
         ),
     )
+    settings = models.JSONField(default=default_settings)
+    fields = models.JSONField(default=default_fields)
 
     objects = ScopedManager(event="event")
 

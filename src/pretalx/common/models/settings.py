@@ -33,24 +33,6 @@ hierarkey.add_type(
 )
 
 
-hierarkey.add_default("show_schedule", "True", bool)
-hierarkey.add_default("schedule_display", "proportional", str)
-hierarkey.add_default(
-    "show_featured", "pre_schedule", str
-)  # always, never, pre-schedule
-hierarkey.add_default("show_widget_if_not_public", "False", bool)
-hierarkey.add_default("export_html_on_schedule_release", "False", bool)
-hierarkey.add_default("imprint_url", None, str)
-hierarkey.add_default("html_export_url", "", str)
-hierarkey.add_default("use_tracks", "True", bool)
-hierarkey.add_default("use_feedback", "True", bool)
-hierarkey.add_default("use_gravatar", "True", bool)
-hierarkey.add_default("present_multiple_times", "False", bool)
-
-hierarkey.add_default("display_header_pattern", "", str)
-
-hierarkey.add_default("cfp_flow", "", str)
-
 hierarkey.add_default("update_check_ack", "False", bool)
 hierarkey.add_default("update_check_email", "", str)
 hierarkey.add_default("update_check_enabled", "True", bool)
@@ -59,45 +41,10 @@ hierarkey.add_default("update_check_result_warning", "False", bool)
 hierarkey.add_default("update_check_last", None, dt.datetime)
 hierarkey.add_default("update_check_id", None, str)
 
-hierarkey.add_default("cfp_request_title", "True", bool)
-hierarkey.add_default("cfp_request_abstract", "True", bool)
-hierarkey.add_default("cfp_request_description", "True", bool)
-hierarkey.add_default("cfp_request_biography", "True", bool)
-hierarkey.add_default("cfp_request_avatar", "True", bool)
-hierarkey.add_default("cfp_request_availabilities", "True", bool)
-hierarkey.add_default("cfp_request_notes", "True", bool)
-hierarkey.add_default("cfp_request_do_not_record", "True", bool)
-hierarkey.add_default("cfp_request_image", "True", bool)
-hierarkey.add_default("cfp_request_track", "False", bool)
-hierarkey.add_default("cfp_request_duration", "False", bool)
-hierarkey.add_default("cfp_request_content_locale", "True", bool)
+hierarkey.add_default("sent_mail_event_created", "False", bool)
+hierarkey.add_default("sent_mail_cfp_closed", "False", bool)
+hierarkey.add_default("sent_mail_event_over", "False", bool)
 
-hierarkey.add_default("cfp_require_title", "True", bool)
-hierarkey.add_default("cfp_require_abstract", "True", bool)
-hierarkey.add_default("cfp_require_description", "False", bool)
-hierarkey.add_default("cfp_require_availabilities", "False", bool)
-hierarkey.add_default("cfp_require_biography", "True", bool)
-hierarkey.add_default("cfp_require_avatar", "False", bool)
-hierarkey.add_default("cfp_require_notes", "False", bool)
-hierarkey.add_default("cfp_require_do_not_record", "False", bool)
-hierarkey.add_default("cfp_require_image", "False", bool)
-hierarkey.add_default("cfp_require_track", "False", bool)
-hierarkey.add_default("cfp_require_duration", "False", bool)
-hierarkey.add_default("cfp_require_content_locale", "True", bool)
-
-hierarkey.add_default("cfp_count_length_in", "chars", str)
-hierarkey.add_default("cfp_title_min_length", None, int)
-hierarkey.add_default("cfp_abstract_min_length", None, int)
-hierarkey.add_default("cfp_description_min_length", None, int)
-hierarkey.add_default("cfp_biography_min_length", None, int)
-hierarkey.add_default("cfp_title_max_length", None, int)
-hierarkey.add_default("cfp_abstract_max_length", None, int)
-hierarkey.add_default("cfp_description_max_length", None, int)
-hierarkey.add_default("cfp_biography_max_length", None, int)
-
-hierarkey.add_default("review_score_aggregate", "median", str)
-hierarkey.add_default("review_score_mandatory", "False", bool)
-hierarkey.add_default("review_text_mandatory", "False", bool)
 hierarkey.add_default(
     "review_help_text",
     LazyI18nString.from_gettext(
@@ -107,20 +54,6 @@ hierarkey.add_default(
     ),
     LazyI18nString,
 )
-
-hierarkey.add_default("mail_from", "", str)
-hierarkey.add_default("mail_reply_to", "", str)
-hierarkey.add_default("mail_subject_prefix", "", str)
-hierarkey.add_default("mail_signature", "", str)
-hierarkey.add_default("smtp_use_custom", "False", bool)
-hierarkey.add_default("smtp_host", "", str)
-hierarkey.add_default("smtp_port", "587", int)
-hierarkey.add_default("smtp_username", "", str)
-hierarkey.add_default("smtp_password", "", str)
-hierarkey.add_default("smtp_use_tls", "True", bool)
-hierarkey.add_default("smtp_use_ssl", "False", bool)
-
-hierarkey.add_default("mail_on_new_submission", "False", bool)
 hierarkey.add_default(
     "mail_text_new_submission",
     LazyI18nString.from_gettext(
@@ -140,10 +73,6 @@ your {event_name} CfP system.
     ),
     LazyI18nString,
 )
-
-hierarkey.add_default("sent_mail_event_created", "False", bool)
-hierarkey.add_default("sent_mail_cfp_closed", "False", bool)
-hierarkey.add_default("sent_mail_event_over", "False", bool)
 hierarkey.add_default(
     "mail_text_event_created",
     LazyI18nString.from_gettext(

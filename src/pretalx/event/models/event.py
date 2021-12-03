@@ -63,6 +63,52 @@ def event_logo_path(instance, filename):
     return f"{instance.slug}/img/{path_with_hash(filename)}"
 
 
+def default_feature_flags():
+    return {
+        "show_schedule": True,
+        "show_featured": "pre_schedule",  # or always, or never
+        "show_widget_if_not_public": False,
+        "export_html_on_release": False,
+        "use_tracks": True,
+        "use_feedback": True,
+        "use_gravatar": True,
+        "present_multiple_times": False,
+    }
+
+
+def default_display_settings():
+    return {
+        "schedule": "grid",  # or list
+        "imprint_url": None,
+        "header_pattern": "",
+        "html_export_url": "",
+    }
+
+
+def default_review_settings():
+    return {
+        "score_mandatory": False,
+        "text_mandatory": False,
+        "aggregate_method": "median",  # or mean
+    }
+
+
+def default_mail_settings():
+    return {
+        "from": "",
+        "reply_to": "",
+        "subject_prefix": "",
+        "smtp_use_custom": "",
+        "smtp_host": "",
+        "smtp_port": 587,
+        "smtp_username": "",
+        "smtp_password": "",
+        "smtp_use_tls": "",
+        "smtp_use_ssl": "",
+        "mail_on_new_submission": False,
+    }
+
+
 @hierarkey.add()
 class Event(LogMixin, FileCleanupMixin, models.Model):
     """The Event class has direct or indirect relations to all other models.
@@ -143,6 +189,10 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
         null=True,
         blank=True,
     )
+    feature_flags = models.JSONField(default=default_feature_flags)
+    display_settings = models.JSONField(default=default_display_settings)
+    review_settings = models.JSONField(default=default_review_settings)
+    mail_settings = models.JSONField(default=default_mail_settings)
     primary_color = models.CharField(
         max_length=7,
         null=True,

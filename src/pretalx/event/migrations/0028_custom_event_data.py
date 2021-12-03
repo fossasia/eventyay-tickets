@@ -3,17 +3,108 @@
 from django.db import migrations
 
 
+def to_data(value):
+    if value == "True":
+        return True
+    if value == "False":
+        return False
+    return value
+
+
+def get_settings_dict(settings, keys, mapping):
+    result = {}
+    for key in keys:
+        value = settings.get(key)
+        if value:
+            result[mapping.get(key) or key] = to_data(value)
+    return result
+
+
 def update_custom_domain(apps, schema_editor):
+    Event = apps.get_model("event", "Event")
     EventSettings = apps.get_model("event", "Event_SettingsStore")
-    for setting in EventSettings.objects.filter(key="custom_domain"):
-        setting.object.custom_domain = setting.value
-        setting.object.save()
+    # CfP = apps.get_model("submission", "CfP")
+    for event in Event.objects.all():
+        settings = {s.key: s.value for s in EventSettings.objects.filter(object=event)}
+        # cfp = CfP.objects.filter(event=event).first()
+        event.feature_flags.update(
+            get_settings_dict(
+                settings,
+                (
+                    "show_schedule",
+                    "show_featured",
+                    "show_widget_if_not_public",
+                    "export_html_on_schedule_release",
+                    "use_tracks",
+                    "use_gravatar",
+                    "present_multiple_times",
+                ),
+                {"export_html_on_schedule_release": "export_html_on_release"},
+            )
+        )
+        event.display_settings.update(
+            get_settings_dict(
+                settings,
+                (
+                    "schedule_display",
+                    "imprint_url",
+                    "display_header_pattern",
+                    "html_export_url",
+                ),
+                {
+                    "schedule_display": "schedule",
+                    "display_header_pattern": "header_pattern",
+                },
+            )
+        )
+        if event.display_settings["schedule"] == "proportional":
+            event.display_settings["schedule"] = "grid"
+        event.review_settings.update(
+            get_settings_dict(
+                settings,
+                (
+                    "review_score_aggregate",
+                    "review_score_mandatory",
+                    "review_text_mandatory",
+                ),
+                {
+                    "review_score_aggregate": "aggregate_method",
+                    "review_score_mandatory": "score_mandatory",
+                    "review_text_mandatory": "text_mandatory",
+                },
+            )
+        )
+        event.mail_settings.update(
+            get_settings_dict(
+                settings,
+                (
+                    "mail_from",
+                    "mail_reply_to",
+                    "mail_subject_prefix",
+                    "mail_signature",
+                    "smtp_use_custom",
+                    "smtp_host",
+                    "smtp_username",
+                    "smtp_password",
+                    "smtp_use_tls",
+                    "smtp_use_ssl",
+                    "mail_on_new_submission",
+                ),
+                {
+                    "mail_from": "from",
+                    "mail_reply_to": "reply_to",
+                    "mail_subject_prefix": "subject_prefix",
+                    "mail_signature": "signature",
+                },
+            )
+        )
+        event.save()
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("event", "0027_event_custom_domain"),
+        ("event", "0027_event_settings"),
     ]
 
     operations = [migrations.RunPython(update_custom_domain, migrations.RunPython.noop)]
