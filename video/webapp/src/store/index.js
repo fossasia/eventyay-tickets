@@ -9,6 +9,7 @@ import roulette from './roulette'
 import exhibition from './exhibition'
 import schedule from './schedule'
 import notifications from './notifications'
+import moment from 'lib/timetravelMoment'
 
 Vue.use(Vuex)
 
@@ -27,7 +28,8 @@ export default new Vuex.Store({
 		activeRoom: null,
 		reactions: null,
 		mediaSourcePlaceholderRect: null,
-		userLocale: null // only used to force UI render
+		userLocale: null, // only used to force UI render
+		userTimezone: null
 	},
 	getters: {
 		hasPermission (state) {
@@ -141,6 +143,11 @@ export default new Vuex.Store({
 		async updateUserLocale ({state}, locale) {
 			await i18n.changeLanguage(locale)
 			state.userLocale = locale
+		},
+		updateUserTimezone ({state}, timezone) {
+			moment.tz.setDefault(timezone)
+			state.userTimezone = timezone
+			localStorage.userTimezone = timezone // TODO this bakes the auto-detected timezone into localStorage on first load, do we really want this?
 		},
 		'api::room.create' ({state}, room) {
 			state.rooms.push(room)

@@ -1,6 +1,10 @@
 const path = require('path')
 const webpack = require('webpack')
+const MomentLocalesPlugin = require('moment-locales-webpack-plugin')
+const MomentTimezoneDataPlugin = require('moment-timezone-data-webpack-plugin')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+
+const currentYear = new Date().getFullYear()
 
 module.exports = {
 	devServer: {
@@ -81,6 +85,14 @@ module.exports = {
 			}),
 			new webpack.ProvidePlugin({
 				adapter: ['webrtc-adapter', 'default']
+			}),
+			// TODO check if we can exclude locales
+			// new MomentLocalesPlugin({
+			// 	localesToKeep: ['en-us', 'en-ie', ]
+			// }),
+			new MomentTimezoneDataPlugin({
+				startYear: currentYear - 1,
+				endYear: currentYear + 1
 			})
 		],
 	},

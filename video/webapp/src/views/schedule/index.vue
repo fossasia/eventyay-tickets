@@ -1,6 +1,9 @@
 <template lang="pug">
 .c-schedule
 	template(v-if="schedule")
+		.timezone-control
+			p timezone:
+			timezone-changer
 		bunt-tabs.days(v-if="days && days.length > 1", :active-tab="currentDay.toISOString()", ref="tabs", v-scrollbar.x="")
 			bunt-tab(v-for="day in days", :id="day.toISOString()", :header="moment(day).format('dddd DD. MMMM')", @selected="changeDay(day)")
 		grid-schedule(v-if="$mq.above['m']", :currentDay="currentDay", @changeDay="currentDay = $event")
@@ -13,11 +16,12 @@
 <script>
 import { mapState, mapGetters } from 'vuex'
 import moment from 'lib/timetravelMoment'
+import TimezoneChanger from 'components/TimezoneChanger'
 import LinearSchedule from 'components/schedule/LinearSchedule'
 import GridSchedule from 'components/schedule/GridSchedule'
 
 export default {
-	components: { LinearSchedule, GridSchedule },
+	components: { LinearSchedule, GridSchedule, TimezoneChanger },
 	data () {
 		return {
 			moment,

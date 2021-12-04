@@ -5,7 +5,7 @@ import Vuelidate from 'vuelidate'
 import VueVirtualScroller from 'vue-virtual-scroller'
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 import { v4 as uuid } from 'uuid'
-import 'lib/timetravelMoment' // init timetravel before anything else to avoid module loading race conditions
+import moment from 'lib/timetravelMoment' // init timetravel before anything else to avoid module loading race conditions
 import router from 'router'
 import store from 'store'
 import LinkIconButton from 'components/link-icon-button'
@@ -39,6 +39,7 @@ async function init () {
 	window.vapp = app
 
 	store.commit('setUserLocale', i18n.resolvedLanguage)
+	store.dispatch('updateUserTimezone', localStorage.userTimezone || moment.tz.guess())
 
 	const token = new URLSearchParams(router.currentRoute.hash.substr(1)).get('token')
 	if (token) {
