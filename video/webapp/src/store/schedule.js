@@ -37,7 +37,7 @@ export default {
 			if (!state.schedule) return {}
 			return state.schedule.speakers.reduce((acc, s) => { acc[s.code] = s; return acc }, {})
 		},
-		sessions (state, getters) {
+		sessions (state, getters, rootState) {
 			if (!state.schedule) return
 			const sessions = []
 			for (const session of state.schedule.talks) {
@@ -46,8 +46,8 @@ export default {
 					title: session.title,
 					abstract: session.abstract,
 					url: session.url,
-					start: moment(session.start),
-					end: moment(session.end),
+					start: moment.tz(session.start, rootState.userTimezone),
+					end: moment.tz(session.end, rootState.userTimezone),
 					speakers: session.speakers?.map(s => getters.speakersLookup[s]),
 					track: getters.tracksLookup[session.track],
 					room: getters.roomsLookup[session.room]
