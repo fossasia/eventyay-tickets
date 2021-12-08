@@ -136,7 +136,7 @@ jobs:
         run: check-manifest .
         working-directory: ./src
       - name: Build package
-        run: python setup.py sdist
+        run: python -m build
         working-directory: ./src
       - name: Check package
         run: twine check dist/*

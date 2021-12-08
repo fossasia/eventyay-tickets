@@ -37,7 +37,7 @@ Take-off and landing
 5. Make a commit with the message ``Release vx.y.z``
 6. Tag the commit: ``git tag -u F0DAD3990F9C816CFD30F8F329C085265D94C052 vx.y.z -m 'Release vx.y.z'``
 7. Remove old build artefacts: ``rm -rf dist/ build/ pretalx.egg-info``
-8. Build a new release: ``python setup.py sdist``
+8. Build a new release: ``python -m build``
 9. Sign the release: ``gpg --default-key F0DAD3990F9C816CFD30F8F329C085265D94C052 --detach-sign -a dist/pretalx-x.y.z.tar.gz``
 10. Upload the release: ``twine upload dist/pretalx-x.y.z.tar.gz dist/pretalx-x.y.z.tar.gz.asc``
 11. Push the release: ``git push && git push --tags``

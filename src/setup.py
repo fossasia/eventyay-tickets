@@ -135,6 +135,7 @@ setup(
     extras_require={
         "dev": [
             "black",
+            "build",
             "check-manifest",
             "coverage",
             "djhtml",
