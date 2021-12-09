@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.http import Http404, HttpResponse
+from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
@@ -58,6 +58,8 @@ class Settings(EventSettingsPermission, FormView):
 
 def check(request, event):
     e = Event.objects.filter(slug__iexact=event).first()
-    if e and "pretalx_venueless" in e.plugin_list:
-        return HttpResponse("")
-    raise Http404()
+    response = HttpResponse("")
+    if not e or "pretalx_venueless" not in e.plugin_list:
+        response.status_code = 404
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    return response
