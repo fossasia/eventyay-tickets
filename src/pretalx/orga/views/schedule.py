@@ -298,7 +298,7 @@ class TalkList(EventPermissionRequired, View):
         version = self.request.GET.get("version")
         if version:
             schedule = request.event.schedules.filter(version=version).first()
-        else:
+        if not schedule:
             schedule = request.event.wip_schedule
 
         warnings = schedule.get_all_talk_warnings()
