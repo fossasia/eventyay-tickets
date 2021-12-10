@@ -296,6 +296,7 @@ class TalkList(EventPermissionRequired, View):
             "results": [],
         }
         version = self.request.GET.get("version")
+        schedule = None
         if version:
             schedule = request.event.schedules.filter(version=version).first()
         if not schedule:
