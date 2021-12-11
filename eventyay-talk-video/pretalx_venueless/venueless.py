@@ -18,5 +18,6 @@ def push_to_venueless(event):
             "Authorization": f"Bearer {token}",
         },
     )
-    event.settings.venueless_last_push = now()
+    if response.status_code == 200:
+        event.settings.venueless_last_push = now()
     return response
