@@ -51,7 +51,7 @@ class Settings(EventSettingsPermission, FormView):
         try:
             response = push_to_venueless(self.request.event)
             response.raise_for_status()
-            redirect_url = form.get("return_url")
+            redirect_url = form.cleaned_data.get("return_url")
             if redirect_url:
                 return redirect(redirect_url)
             messages.success(self.request, _("Yay! We saved your changes."))
