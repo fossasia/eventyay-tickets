@@ -57,7 +57,7 @@ class Settings(EventSettingsPermission, FormView):
             messages.success(self.request, _("Yay! We saved your changes."))
         except Exception as e:
             error_message = ""
-            if not response is None and len(response.content.decode()) < 100:
+            if response is not None and len(response.content.decode()) < 100:
                 error_message = response.content.decode().strip('"')
             if not error_message:
                 error_message = str(e)
