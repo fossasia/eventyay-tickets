@@ -1,7 +1,9 @@
+from csp.decorators import csp_replace
 from django.contrib import messages
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse
+from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import FormView
 from pretalx.event.models import Event
@@ -11,6 +13,7 @@ from .forms import VenuelessSettingsForm
 from .venueless import push_to_venueless
 
 
+@method_decorator(csp_replace(FORM_ACTION="*"), name="dispatch")
 class Settings(EventSettingsPermission, FormView):
     form_class = VenuelessSettingsForm
     template_name = "pretalx_venueless/settings.html"
