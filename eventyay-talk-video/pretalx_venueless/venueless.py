@@ -18,6 +18,5 @@ def push_to_venueless(event):
             "Authorization": f"Bearer {token}",
         },
     )
-    response.raise_for_status()
     event.settings.venueless_last_push = now()
     return response

@@ -49,13 +49,21 @@ class Settings(EventSettingsPermission, FormView):
 
         response = None
         try:
-            push_to_venueless(self.request.event)
-            redirect_url = self.request.GET.get("returnUrl")
+            response = push_to_venueless(self.request.event)
+            response.raise_for_status()
+            redirect_url = form.get("return_url")
             if redirect_url:
                 return redirect(redirect_url)
             messages.success(self.request, _("Yay! We saved your changes."))
         except Exception as e:
-            messages.error(self.request, _("Unable to reach Venueless:") + f" {e}")
+            error_message = ""
+            if response and len(response.content.decode() < 50):
+                error_message = response.content.decode()
+            if not error_message:
+                error_message = str(e)
+            messages.error(
+                self.request, _("Unable to reach Venueless:") + f" {error_message}"
+            )
         return super().form_valid(form)
 
 
