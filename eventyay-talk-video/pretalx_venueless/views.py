@@ -31,10 +31,12 @@ class Settings(EventSettingsPermission, FormView):
             kwargs["initial_token"] = self.request.GET.get("token")
         if "url" in self.request.GET:
             kwargs["initial_url"] = self.request.GET.get("url")
+        if "returnUrl" in self.request.GET:
+            kwargs["return_url"] = self.request.GET.get("returnUrl")
         return kwargs
 
-    def get_context_data(self):
-        data = super().get_context_data()
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
         data["connect_in_progress"] = self.request.GET.get("token")
         data["last_push"] = self.request.event.settings.venueless_last_push
         return data
@@ -45,6 +47,7 @@ class Settings(EventSettingsPermission, FormView):
         # TODO use short token / login URL to get long token
         # then save the long token and perform the POST request below
 
+        response = None
         try:
             push_to_venueless(self.request.event)
             redirect_url = self.request.GET.get("returnUrl")
