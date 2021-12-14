@@ -3,6 +3,8 @@ Venueless integration
 
 This is a plugin for `pretalx`_. 
 
+Use version 1.0.0 with pretalx 2.2.0, and later versions with pretalx versions past 2.2.0.
+
 Development setup
 -----------------
 
