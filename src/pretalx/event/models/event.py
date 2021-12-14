@@ -690,6 +690,7 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
             s.pk = None
             s.save()
         self.settings.flush()
+        self.cfp.copy_data_from(other_event.cfp)
         event_copy_data.send(
             sender=self,
             other=other_event.slug,

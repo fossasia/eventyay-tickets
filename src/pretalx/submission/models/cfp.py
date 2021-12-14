@@ -125,6 +125,12 @@ class CfP(LogMixin, models.Model):
         """Help with debugging."""
         return f"CfP(event={self.event.slug})"
 
+    def copy_data_from(self, other_cfp):
+        # default_type gets set by event.copy_data_from
+        for field in ("headline", "text", "settings", "fields"):
+            setattr(self, field, getattr(other_cfp, field))
+        self.save()
+
     @cached_property
     def is_open(self) -> bool:
         """``True`` if ``max_deadline`` is not over yet, or if no deadline is
