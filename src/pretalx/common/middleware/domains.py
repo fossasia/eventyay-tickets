@@ -74,14 +74,17 @@ class MultiDomainMiddleware:
             return redirect(urljoin(default_domain, request.get_full_path()))
 
         # If this domain is used as custom domain, redirect to most recent event
-        events = Event.objects.filter(
-            Q(custom_domain=f"{request.scheme}://{domain}")
-            | Q(custom_domain=f"{request.scheme}://{host}"),
-            is_public=True,
+        event = (
+            Event.objects.filter(
+                Q(custom_domain=f"{request.scheme}://{domain}")
+                | Q(custom_domain=f"{request.scheme}://{host}"),
+                is_public=True,
+            )
+            .order_by("-date_from")
+            .first()
         )
-        if events:
-            events.sort(key=lambda x: x.date_from, reverse=True)
-            return redirect(events[0].urls.base.full())
+        if event:
+            return redirect(event.urls.base.full())
         raise DisallowedHost(f"Unknown host: {host}")
 
     def __call__(self, request):
