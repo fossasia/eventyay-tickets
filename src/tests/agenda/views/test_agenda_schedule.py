@@ -277,6 +277,6 @@ def test_versioned_schedule_page(
 
     url = event.urls.schedule if version == "js" else event.urls.schedule_nojs
     url += f"?version={quote(schedule.version)}"
-    with django_assert_num_queries(queries_versioned + 9):
+    with django_assert_num_queries(queries_versioned + 5):
         redirected_response = client.get(url, follow=True, HTTP_ACCEPT="text/html")
     assert redirected_response._request.path == response._request.path

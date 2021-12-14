@@ -1,4 +1,5 @@
 import datetime as dt
+from functools import partial
 
 from django.db import models
 from django.utils.functional import cached_property
@@ -54,16 +55,18 @@ def default_fields():
 
 
 def field_helper(cls):
+    def is_field_requested(self, field):
+        return self.fields[field]["visibility"] != "do_not_ask"
+
+    def is_field_required(self, field):
+        return self.fields[field]["visibility"] == "require"
+
     for field in default_fields().keys():
         setattr(
-            cls,
-            f"request_{field}",
-            property(lambda x: x.fields[field]["visibility"] != "do_not_ask"),
+            cls, f"request_{field}", property(partial(is_field_requested, field=field))
         )
         setattr(
-            cls,
-            f"require_{field}",
-            property(lambda x: x.fields[field]["visibility"] == "require"),
+            cls, f"require_{field}", property(partial(is_field_required, field=field))
         )
     return cls
 

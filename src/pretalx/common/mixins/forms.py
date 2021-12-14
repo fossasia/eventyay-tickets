@@ -328,7 +328,8 @@ class JsonSubfieldMixin:
 
 
 class HierarkeyMixin:
-    """This basically vendors hierarkey.forms.HierarkeyForm, but with more selective saving of fields."""
+    """This basically vendors hierarkey.forms.HierarkeyForm, but with more
+    selective saving of fields."""
 
     BOOL_CHOICES = HierarkeyForm.BOOL_CHOICES
 
@@ -342,9 +343,7 @@ class HierarkeyMixin:
         super().__init__(*args, **kwargs)
 
     def save(self, *args, **kwargs):
-        """
-        Saves all changed values to the database.
-        """
+        """Saves all changed values to the database."""
         super().save(*args, **kwargs)
         for name in self.Meta.hierarkey_fields:
             field = self.fields.get(name)

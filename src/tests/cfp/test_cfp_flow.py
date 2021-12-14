@@ -1,5 +1,3 @@
-import json
-
 import pytest
 from django.http import HttpResponseNotAllowed
 from django_scopes import scope
