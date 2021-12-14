@@ -11,7 +11,7 @@ def push_to_venueless(event):
     response = requests.post(
         url,
         json={
-            "domain": event.settings.custom_domain or settings.SITE_URL,
+            "domain": event.custom_domain or settings.SITE_URL,
             "event": event.slug,
         },
         headers={

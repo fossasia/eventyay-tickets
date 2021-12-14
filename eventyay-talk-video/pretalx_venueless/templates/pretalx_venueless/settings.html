@@ -37,7 +37,7 @@
                 {% endblocktrans %}
                 <ul>
                     <li>pretalx domain:
-                        {{ request.event.settings.custom_domain|default:settings.SITE_URL|copyable }}
+                        {{ request.event.custom_domain|default:settings.SITE_URL|copyable }}
                     </li>
                     <li>
                         pretalx event slug: {{ request.event.slug|copyable }}
