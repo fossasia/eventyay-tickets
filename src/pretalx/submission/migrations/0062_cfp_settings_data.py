@@ -56,8 +56,11 @@ def update_custom_domain(apps, schema_editor):
         cfp.settings.update(
             get_settings_dict(
                 settings,
-                ["count_length_in", "cfp_show_deadline"],
-                {"cfp_show_deadline": "show_deadline"},
+                ["cfp_count_length_in", "cfp_show_deadline"],
+                {
+                    "cfp_show_deadline": "show_deadline",
+                    "cfp_count_length_in": "count_length_in",
+                },
             )
         )
 
