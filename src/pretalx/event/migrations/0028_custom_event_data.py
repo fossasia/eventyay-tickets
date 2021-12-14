@@ -50,6 +50,7 @@ def update_custom_domain(apps, schema_editor):
                     "imprint_url",
                     "display_header_pattern",
                     "html_export_url",
+                    "meta_noindex",
                 ),
                 {
                     "schedule_display": "schedule",
@@ -91,7 +92,6 @@ def update_custom_domain(apps, schema_editor):
                     "mail_on_new_submission",
                 ),
                 {
-                    "mail_from": "from",
                     "mail_reply_to": "reply_to",
                     "mail_subject_prefix": "subject_prefix",
                     "mail_signature": "signature",

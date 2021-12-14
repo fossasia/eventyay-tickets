@@ -440,7 +440,7 @@ class EventMailSettings(EventSettingsPermission, ActionFromUrl, FormView):
         if self.request.POST.get("test", "0").strip() == "1":
             backend = self.request.event.get_mail_backend(force_custom=True)
             try:
-                backend.test(self.request.event.mail_settings["from"])
+                backend.test(self.request.event.mail_settings["mail_from"])
             except Exception as e:
                 messages.warning(
                     self.request,
@@ -488,7 +488,7 @@ class InvitationView(FormView):
     def post(self, *args, **kwargs):
         if not self.request.user.is_anonymous:
             self.accept_invite(self.request.user)
-            return redirect("/orga")
+            return redirect("/orga/event/")
         return super().post(*args, **kwargs)
 
     def form_valid(self, form):
@@ -505,7 +505,7 @@ class InvitationView(FormView):
 
         self.accept_invite(user)
         login(self.request, user, backend="django.contrib.auth.backends.ModelBackend")
-        return redirect("/orga")
+        return redirect("/orga/event/")
 
     @transaction.atomic()
     def accept_invite(self, user):

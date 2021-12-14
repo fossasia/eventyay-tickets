@@ -1,4 +1,4 @@
-const dependents = ["from", "smtp_host", "smtp_port", "smtp_username", "smtp_password"]
+const dependents = ["mail_from", "smtp_host", "smtp_port", "smtp_username", "smtp_password"]
 const checkboxDependents = ["smtp_use_tls", "smtp_use_ssl"]
 const updateVisibility = () => {
 

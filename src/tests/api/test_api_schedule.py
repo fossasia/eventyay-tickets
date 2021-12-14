@@ -26,7 +26,7 @@ def test_user_cannot_see_wip_schedule(client, slot, event):
 
 @pytest.mark.django_db
 def test_user_cannot_see_schedule_if_not_public(client, slot, event):
-    slot.submission.event["show_schedule"] = False
+    slot.submission.event.feature_flags["show_schedule"] = False
     slot.submission.event.save()
     with scope(event=event):
         assert slot.submission.event.schedules.count() == 2
@@ -74,7 +74,7 @@ def test_orga_can_see_current_schedule(orga_client, slot, event):
 
 @pytest.mark.django_db
 def test_orga_cannot_see_schedule_even_if_not_public(orga_client, slot, event):
-    slot.submission.event["show_schedule"] = False
+    slot.submission.event.feature_flags["show_schedule"] = False
     slot.submission.event.save()
     with scope(event=event):
         assert slot.submission.event.schedules.count() == 2

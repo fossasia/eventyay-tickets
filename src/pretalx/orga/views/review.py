@@ -73,7 +73,7 @@ class ReviewDashboard(
         return queryset
 
     def get_queryset(self):
-        aggregate_method = self.request.event.review_settings["review_score_aggregate"]
+        aggregate_method = self.request.event.review_settings["aggregate_method"]
         statistics_method = (
             statistics.median if aggregate_method == "median" else statistics.fmean
         )

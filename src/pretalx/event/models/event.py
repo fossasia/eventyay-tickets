@@ -82,6 +82,7 @@ def default_display_settings():
         "imprint_url": None,
         "header_pattern": "",
         "html_export_url": "",
+        "meta_noindex": False,
     }
 
 
@@ -95,8 +96,9 @@ def default_review_settings():
 
 def default_mail_settings():
     return {
-        "from": "",
+        "mail_from": "",
         "reply_to": "",
+        "signature": "",
         "subject_prefix": "",
         "smtp_use_custom": "",
         "smtp_host": "",

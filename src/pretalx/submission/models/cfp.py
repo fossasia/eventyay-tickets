@@ -63,7 +63,7 @@ def field_helper(cls):
         setattr(
             cls,
             f"require_{field}",
-            property(lambda x: x.fields[field]["visibility"] == "required"),
+            property(lambda x: x.fields[field]["visibility"] == "require"),
         )
     return cls
 

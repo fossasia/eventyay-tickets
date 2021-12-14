@@ -157,7 +157,7 @@ def test_can_only_see_public_submissions(
 def test_can_only_see_public_submissions_if_public_schedule(
     client, slot, accepted_submission, rejected_submission, submission, answer
 ):
-    submission.event["show_schedule"] = False
+    submission.event.feature_flags["show_schedule"] = False
     submission.event.save()
     response = client.get(submission.event.api_urls.submissions, follow=True)
     content = json.loads(response.content.decode())
@@ -226,7 +226,7 @@ def test_answer_is_visible_to_reviewers(
 def test_orga_can_see_all_submissions_even_nonpublic(
     orga_client, slot, accepted_submission, rejected_submission, submission
 ):
-    submission.event["show_schedule"] = False
+    submission.event.feature_flags["show_schedule"] = False
     submission.event.save()
     response = orga_client.get(submission.event.api_urls.submissions, follow=True)
     content = json.loads(response.content.decode())
@@ -269,7 +269,7 @@ def test_can_only_see_public_talks(
 def test_can_only_see_public_talks_if_public_schedule(
     client, slot, accepted_submission, rejected_submission, submission
 ):
-    submission.event["show_schedule"] = False
+    submission.event.feature_flags["show_schedule"] = False
     submission.event.save()
     response = client.get(submission.event.api_urls.talks, follow=True)
     content = json.loads(response.content.decode())
@@ -294,7 +294,7 @@ def test_orga_can_see_all_talks(
 def test_orga_can_see_all_talks_even_nonpublic(
     orga_client, slot, accepted_submission, rejected_submission, submission
 ):
-    submission.event["show_schedule"] = False
+    submission.event.feature_flags["show_schedule"] = False
     submission.event.save()
     response = orga_client.get(submission.event.api_urls.talks, follow=True)
     content = json.loads(response.content.decode())

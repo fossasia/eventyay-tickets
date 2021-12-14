@@ -19,7 +19,7 @@ def test_edit_cfp(orga_client, event):
             "headline_0": "new headline",
             "text_0": "",
             "deadline": "2000-10-10 20:20",
-            "settings-cfp_count_length_in": "chars",
+            "count_length_in": "chars",
             "settings-cfp_ask_abstract": "required",
             "settings-cfp_ask_description": "do_not_ask",
             "settings-cfp_ask_notes": "optional",

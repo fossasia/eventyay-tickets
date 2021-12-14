@@ -350,7 +350,7 @@ class TestEventCreation:
         organiser.teams.all().update(can_create_events=True)
         count = Event.objects.count()
         event.cfp.fields["title"]["min_length"] = 50
-        event.save()
+        event.cfp.save()
         team_count = organiser.teams.count()
         self.submit_initial(organiser, client=orga_client)
         self.submit_basics(client=orga_client)

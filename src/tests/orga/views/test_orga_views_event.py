@@ -12,7 +12,7 @@ from pretalx.event.models import Event
 
 @pytest.mark.django_db
 def test_edit_mail_settings(orga_client, event, availability):
-    assert event.mail_settings["from"] != "foo@bar.com"
+    assert event.mail_settings["mail_from"] != "foo@bar.com"
     assert event.mail_settings["smtp_port"] != 25
     response = orga_client.get(event.orga_urls.mail_settings, follow=True)
     assert response.status_code == 200
@@ -20,7 +20,7 @@ def test_edit_mail_settings(orga_client, event, availability):
         event.orga_urls.mail_settings,
         follow=True,
         data={
-            "from": "foo@bar.com",
+            "mail_from": "foo@bar.com",
             "smtp_host": "localhost",
             "smtp_password": "",
             "smtp_port": "25",
@@ -28,13 +28,13 @@ def test_edit_mail_settings(orga_client, event, availability):
     )
     assert response.status_code == 200
     event = Event.objects.get(pk=event.pk)
-    assert event.mail_settings["from"] == "foo@bar.com"
+    assert event.mail_settings["mail_from"] == "foo@bar.com"
     assert event.mail_settings["smtp_port"] == 25
 
 
 @pytest.mark.django_db
 def test_fail_unencrypted_mail_settings(orga_client, event, availability):
-    assert event.mail_settings["from"] != "foo@bar.com"
+    assert event.mail_settings["mail_from"] != "foo@bar.com"
     assert event.mail_settings["smtp_port"] != 25
     response = orga_client.get(event.orga_urls.mail_settings, follow=True)
     assert response.status_code == 200
@@ -42,7 +42,7 @@ def test_fail_unencrypted_mail_settings(orga_client, event, availability):
         event.orga_urls.mail_settings,
         follow=True,
         data={
-            "from": "foo@bar.com",
+            "mail_from": "foo@bar.com",
             "smtp_host": "foo.bar.com",
             "smtp_password": "",
             "smtp_port": "25",
@@ -50,13 +50,13 @@ def test_fail_unencrypted_mail_settings(orga_client, event, availability):
     )
     assert response.status_code == 200
     event = Event.objects.get(pk=event.pk)
-    assert event.mail_settings["from"] != "foo@bar.com"
+    assert event.mail_settings["mail_from"] != "foo@bar.com"
     assert event.mail_settings["smtp_port"] != 25
 
 
 @pytest.mark.django_db
 def test_test_mail_settings(orga_client, event, availability):
-    assert event.mail_settings["from"] != "foo@bar.com"
+    assert event.mail_settings["mail_from"] != "foo@bar.com"
     assert event.mail_settings["smtp_port"] != 25
     response = orga_client.get(event.orga_urls.mail_settings, follow=True)
     assert response.status_code == 200
@@ -64,7 +64,7 @@ def test_test_mail_settings(orga_client, event, availability):
         event.orga_urls.mail_settings,
         follow=True,
         data={
-            "from": "foo@bar.com",
+            "mail_from": "foo@bar.com",
             "smtp_host": "localhost",
             "smtp_password": "",
             "smtp_port": "25",
@@ -74,7 +74,7 @@ def test_test_mail_settings(orga_client, event, availability):
     )
     assert response.status_code == 200
     event = Event.objects.get(pk=event.pk)
-    assert event.mail_settings["from"] == "foo@bar.com"
+    assert event.mail_settings["mail_from"] == "foo@bar.com"
     assert event.mail_settings["smtp_port"] == 25
 
 
@@ -564,8 +564,7 @@ def test_edit_review_settings(orga_client, event):
             f"scores-0-label_{scores[1].id}": scores[1].label,
             f"scores-0-value_{scores[2].id}": scores[2].value,
             f"scores-0-label_{scores[2].id}": scores[2].label,
-            # TODO
-            "review_score_aggregate": event.settings.review_score_aggregate,
+            "aggregate_method": event.review_settings["aggregate_method"],
         },
         follow=True,
     )
@@ -720,8 +719,7 @@ def test_edit_review_settings_new_review_phase(orga_client, event):
             f"scores-0-label_{scores[1].id}": scores[1].label,
             f"scores-0-value_{scores[2].id}": scores[2].value,
             f"scores-0-label_{scores[2].id}": scores[2].label,
-            # TODO
-            "review_score_aggregate": event.settings.review_score_aggregate,
+            "aggregate_method": event.review_settings["aggregate_method"],
         },
         follow=True,
     )
