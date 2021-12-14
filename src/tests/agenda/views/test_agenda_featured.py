@@ -13,7 +13,7 @@ def test_featured_invisible_because_setting(
         confirmed_submission.is_featured = True
         confirmed_submission.save()
     url = str(event.urls.featured)
-    with django_assert_max_num_queries(18):
+    with django_assert_max_num_queries(9):
         response = client.get(url, follow=True)
     if featured == "never":
         assert response.status_code == 404
@@ -34,7 +34,7 @@ def test_featured_invisible_because_schedule(
         event.feature_flags["show_featured"] = featured
         event.save()
         event.release_schedule("42")
-    with django_assert_max_num_queries(27):
+    with django_assert_max_num_queries(8):
         response = client.get(event.urls.featured)
 
     if featured != "always":
@@ -56,7 +56,7 @@ def test_featured_visible_despite_schedule(
     event.save()
     with scope(event=event):
         event.release_schedule("42")
-    with django_assert_max_num_queries(17):
+    with django_assert_max_num_queries(8):
         response = client.get(event.urls.featured, follow=True)
     assert response.status_code == 200
     assert "featured" in response.content.decode()
@@ -76,7 +76,7 @@ def test_featured_talk_list(
     event.feature_flags["show_featured"] = True
     event.save()
 
-    with django_assert_max_num_queries(18):
+    with django_assert_max_num_queries(9):
         response = client.get(event.urls.featured, follow=True)
     assert response.status_code == 200
     content = response.content.decode()

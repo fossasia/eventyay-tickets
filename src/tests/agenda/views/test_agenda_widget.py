@@ -35,8 +35,8 @@ def test_widget_pages(
 @pytest.mark.parametrize(
     "version,queries",
     (
-        ("1", 19),
-        ("2", 21),
+        ("1", 8),
+        ("2", 10),
     ),
 )
 def test_widget_data(
@@ -47,11 +47,11 @@ def test_widget_data(
     other_slot,
     version,
     queries,
-    django_assert_max_num_queries,
+    django_assert_num_queries,
 ):
     event.feature_flags["show_schedule"] = True
     event.save()
-    with django_assert_max_num_queries(queries):
+    with django_assert_num_queries(queries):
         response = client.get(
             event.urls.schedule + f"widget/v{version}.json", follow=True
         )
