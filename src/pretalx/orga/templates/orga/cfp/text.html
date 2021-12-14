@@ -40,7 +40,7 @@
                         {% bootstrap_field form.headline layout='event' %}
                         {% bootstrap_field form.text layout='event' %}
                         {% bootstrap_field form.deadline layout='event' %}
-                        {% bootstrap_field sform.cfp_show_deadline layout='event' %}
+                        {% bootstrap_field form.show_deadline layout='event' %}
                         {% bootstrap_field sform.use_tracks layout='event' %}
                         {% bootstrap_field sform.use_gravatar layout='event' %}
                         {% bootstrap_field sform.present_multiple_times layout='event' %}
@@ -140,7 +140,7 @@
                             </tbody>
                         </table></div>
                         <div class="inline-group">
-                            {% bootstrap_field sform.cfp_count_length_in layout='event' %}
+                            {% bootstrap_field form.count_length_in layout='event' %}
                         </div>
                     </fieldset>
 

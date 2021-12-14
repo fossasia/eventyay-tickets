@@ -30,7 +30,6 @@
                     {% translate "General information" %}
                 </legend>
                 {% bootstrap_form_errors form %}
-                {% bootstrap_form_errors sform %}
 
                 {% bootstrap_field form.name layout='event' %}
                 {% bootstrap_field form.slug layout='event' addon_before=url_placeholder addon_before_class="input-group-prepend input-group-text" %}
@@ -41,14 +40,14 @@
                 {% bootstrap_field form.timezone layout='event' %}
                 {% bootstrap_field form.locale layout='event' %}
                 {% bootstrap_field form.locales layout='event' %}
-                {% bootstrap_field sform.show_schedule layout='event' %}
-                {% bootstrap_field sform.show_featured layout='event' %}
+                {% bootstrap_field form.show_schedule layout='event' %}
+                {% bootstrap_field form.show_featured layout='event' %}
                 {% bootstrap_field form.featured_sessions_text layout='event' %}
-                {% bootstrap_field sform.use_feedback layout='event' %}
-                {% bootstrap_field sform.schedule_display layout='event' %}
-                {% bootstrap_field sform.export_html_on_schedule_release layout='event' %}
-                {% bootstrap_field sform.html_export_url layout='event' %}
-                {% bootstrap_field sform.meta_noindex layout='event' %}
+                {% bootstrap_field form.use_feedback layout='event' %}
+                {% bootstrap_field form.schedule layout='event' %}
+                {% bootstrap_field form.export_html_on_release layout='event' %}
+                {% bootstrap_field form.html_export_url layout='event' %}
+                {% bootstrap_field form.meta_noindex layout='event' %}
 
             </fieldset>
             <fieldset>
@@ -56,7 +55,7 @@
                     {% translate "Display settings" %}
                 </legend>
                 {% bootstrap_field form.landing_page_text layout='event' %}
-                {% bootstrap_field sform.imprint_url layout='event' %}
+                {% bootstrap_field form.imprint_url layout='event' %}
                 {% bootstrap_field form.primary_color layout='event' addon_before="<i></i>" addon_before_class="colorpicker-input-addon color-readable" %}
                 <div id="csswrap">
                     {% bootstrap_field form.custom_css layout='event' %}
@@ -94,7 +93,7 @@
                     </div>
                 </div>
                 <div {% if request.event.primary_color %}style="--color: {{ request.event.primary_color }}"{% endif %} class="colorpicker-update">
-                    {% bootstrap_field sform.header_pattern layout='event' %}
+                    {% bootstrap_field form.header_pattern layout='event' %}
                 </div>
                 <fieldset>
                     <div class="submit-group panel">

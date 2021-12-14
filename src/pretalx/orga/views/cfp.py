@@ -56,7 +56,6 @@ class CfPTextDetail(PermissionRequired, ActionFromUrl, UpdateView):
             read_only=(self.action == "view"),
             locales=self.request.event.locales,
             obj=self.request.event,
-            attribute_name="settings",
             data=self.request.POST if self.request.method == "POST" else None,
             prefix="settings",
         )

@@ -51,7 +51,7 @@ from pretalx.event.forms import (
     EventWizardTimelineForm,
 )
 from pretalx.event.models import Event, Team, TeamInvite
-from pretalx.orga.forms import EventForm, EventSettingsForm
+from pretalx.orga.forms import EventForm
 from pretalx.orga.forms.event import (
     MailSettingsForm,
     ReviewPhaseForm,
@@ -89,18 +89,6 @@ class EventDetail(EventSettingsPermission, ActionFromUrl, UpdateView):
     def object(self):
         return self.request.event
 
-    @context
-    @cached_property
-    def sform(self):
-        return EventSettingsForm(
-            read_only=(self.action == "view"),
-            locales=self.request.event.locales,
-            obj=self.request.event,
-            attribute_name="settings",
-            data=self.request.POST if self.request.method == "POST" else None,
-            prefix="settings",
-        )
-
     def get_form_kwargs(self, *args, **kwargs):
         response = super().get_form_kwargs(*args, **kwargs)
         response["is_administrator"] = self.request.user.is_administrator
@@ -115,11 +103,8 @@ class EventDetail(EventSettingsPermission, ActionFromUrl, UpdateView):
 
     @transaction.atomic
     def form_valid(self, form):
-        if not self.sform.is_valid():
-            return self.form_invalid(form)
         result = super().form_valid(form)
 
-        self.sform.save()
         form.instance.log_action(
             "pretalx.event.update", person=self.request.user, orga=True
         )
@@ -446,7 +431,6 @@ class EventMailSettings(EventSettingsPermission, ActionFromUrl, FormView):
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs["obj"] = self.request.event
-        kwargs["attribute_name"] = "settings"
         kwargs["locales"] = self.request.event.locales
         return kwargs
 
@@ -785,18 +769,13 @@ class WidgetSettings(EventPermissionRequired, FormView):
     template_name = "orga/settings/widget.html"
 
     def form_valid(self, form):
+        form.save()
         messages.success(self.request, _("The widget settings have been saved."))
-        self.request.event.feature_flags[
-            "show_widget_if_not_public"
-        ] = form.cleaned_data["show_widget_if_not_public"]
-        self.request.event.save()
         return super().form_valid(form)
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs["initial"] = self.request.event.feature_flags[
-            "show_widget_if_not_public"
-        ]
+        kwargs["obj"] = self.request.event
         return kwargs
 
     def get_context_data(self, **kwargs):
