@@ -10,7 +10,7 @@ from pretalx import __version__ as pretalx_version
 here = path.abspath(path.dirname(__file__))
 
 CURRENT_PYTHON = sys.version_info[:2]
-REQUIRED_PYTHON = (3, 6)
+REQUIRED_PYTHON = (3, 7)
 if CURRENT_PYTHON < REQUIRED_PYTHON:
     sys.stderr.write(
         """
@@ -84,10 +84,10 @@ setup(
         "License :: OSI Approved",
         "License :: OSI Approved :: Apache Software License",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
         "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
     ],
     keywords="conference cfp event schedule",
