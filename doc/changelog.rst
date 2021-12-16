@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`1232` You can filter submissions by multiple states in the API now.
 - :support:`-` When updating, please take care to update your plugins, as some interfaces have changed. Plugin authors, please refer to PR 1230 to see changed settings access.
 - :feature:`-` Tags are now shown in the reviewer dashboard and can be filtered for.
 - :feature:`-` Pretalx now remembers the timezone you've selected on the schedule page across reloads.

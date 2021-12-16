@@ -115,7 +115,7 @@ Endpoints
    :query q: Search through submissions by title and speaker name
    :query anon: Send the ``anon`` parameter with any value to receive anonymised data even when you have permissions to see the full data set.
    :query submission_type: Filter submissions by submission type
-   :query state: Filter submission by state
+   :query state: Filter submission by state. Will filter by multiple states if you provide multiple state arguments.
 
 .. http:get:: /api/events/(event)/submissions/{code}
 
