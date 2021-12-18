@@ -170,10 +170,7 @@ CHANNEL_LAYERS = {
 SITE_URL = os.getenv(
     "VENUELESS_SITE_URL", config.get("venueless", "url", fallback="http://localhost")
 )
-if SITE_URL == "http://localhost" or DEBUG:
-    ALLOWED_HOSTS = ["*"]
-else:
-    ALLOWED_HOSTS = [urlparse(SITE_URL).netloc]
+ALLOWED_HOSTS = ["*"]
 
 if os.getenv("VENUELESS_COOKIE_DOMAIN", ""):
     CSRF_COOKIE_DOMAIN = os.getenv("VENUELESS_COOKIE_DOMAIN", "")
