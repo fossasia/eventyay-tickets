@@ -56,6 +56,14 @@ if not SECRET_KEY:
 debug_default = "runserver" in sys.argv
 DEBUG = os.environ.get("VENUELESS_DEBUG", str(debug_default)) == "True"
 
+VENUELESS_MULTIFACTOR_REQUIRE = (
+    os.environ.get(
+        "VENUELESS_MULTIFACTOR_REQUIRE",
+        str(config.getboolean("venueless", "multifactor_require", fallback=False)),
+    )
+    == "True"
+)
+
 MAIL_FROM = SERVER_EMAIL = DEFAULT_FROM_EMAIL = os.environ.get(
     "VENUELESS_MAIL_FROM", config.get("mail", "from", fallback="admin@localhost")
 )
@@ -231,6 +239,7 @@ INSTALLED_APPS = [
     "venueless.storage.StorageConfig",
     "venueless.zoom.ZoomConfig",
     "venueless.control.ControlConfig",
+    "multifactor",  # after our modules since we replace some templates
 ]
 
 try:
@@ -434,3 +443,19 @@ CELERY_TASK_QUEUES = (
     Queue("longrunning", routing_key="longrunning.#"),
 )
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
+
+LOGIN_URL = "/admin/login/"
+LOGIN_REDIRECT_URL = "/admin/"
+
+MULTIFACTOR = {
+    "LOGIN_CALLBACK": False,  # False, or dotted import path to function to process after successful authentication
+    "RECHECK": True,  # Invalidate previous authorisations at random intervals
+    "RECHECK_MIN": 3600 * 24,  # No recheks before this many days
+    "RECHECK_MAX": 3600 * 24 * 7,  # But within this many days
+    "FIDO_SERVER_ID": urlparse(SITE_URL).hostname,  # Server ID for FIDO request
+    "FIDO_SERVER_NAME": "Venueless",  # Human-readable name for FIDO request
+    "TOKEN_ISSUER_NAME": "Venueless",  # TOTP token issuing name (to be shown in authenticator)
+    "U2F_APPID": SITE_URL,  # U2F request issuer
+    "FACTORS": ["FIDO2"],
+    "FALLBACKS": {},
+}

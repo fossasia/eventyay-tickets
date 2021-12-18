@@ -105,6 +105,9 @@ We now create a config directory and config file for venueless::
 
 Fill the configuration file ``/etc/venueless/venueless.cfg`` with the following content (adjusted to your environment)::
 
+    [venueless]
+    url=https://venueless.mydomain.com
+
     [database]
     backend=postgresql
     name=venueless

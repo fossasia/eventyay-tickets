@@ -29,7 +29,6 @@ if settings.REDIS_USE_PUBSUB:
         conn = await get_channel_layer()._shards[shard_index]._get_pub_conn()
         yield conn
 
-
 else:
 
     def aioredis(shard_key=None):
