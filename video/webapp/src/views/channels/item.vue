@@ -8,16 +8,17 @@
 				span {{ u.profile.display_name }}
 		bunt-icon-button(@click="startCall", tooltip="start video call", tooltipPlacement="left") phone_outline
 	.main
-		.channel-call(v-if="hasCall")
+		media-source-placeholder.channel-call(v-if="hasCall")
 		chat(:mode="hasCall ? 'compact' : 'standalone'", :module="{channel_id: channelId}", :showUserlist="false")
 </template>
 <script>
 import { mapState } from 'vuex'
 import api from 'lib/api'
 import Chat from 'components/Chat'
+import MediaSourcePlaceholder from 'components/MediaSourcePlaceholder'
 
 export default {
-	components: { Chat },
+	components: { Chat, MediaSourcePlaceholder },
 	props: {
 		channelId: String
 	},
