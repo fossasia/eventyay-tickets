@@ -12,7 +12,7 @@ django-decorator-include
 django-extensions==3.1.*
 django-formset-js-improved
 django-multifactor==0.5.*
-djangorestframework==3.12.*
+djangorestframework==3.13.*
 emoji==1.6.*
 icalendar==4.0.*
 lxml==4.6.*
