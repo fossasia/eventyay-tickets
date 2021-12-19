@@ -143,7 +143,7 @@ class JanusCallModule(BaseModule):
     @require_world_permission(Permission.WORLD_VIEW)
     async def identify(self, body):
         async with aioredis() as redis:
-            sessionid = body.get("id", "").split(";")[0]
+            sessionid = body.get("id", "").split("_")[0]
             userid = await redis.get(f"januscall:user:{sessionid}")
             if userid:
                 user = await get_public_user(
