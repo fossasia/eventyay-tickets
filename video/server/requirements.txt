@@ -32,7 +32,7 @@ reportlab==3.5.*
 requests==2.26.*
 sentry-sdk==1.5.*
 tqdm==4.62.*
-websockets==8.*
+websockets==10.*
 xlrd~=1.2.0
 
 # temporary
