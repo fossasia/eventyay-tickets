@@ -143,6 +143,7 @@ class ReviewerSubmissionFilter:
             Q(all_events=True)
             | Q(Q(all_events=False) & Q(limit_events__in=[self.request.event])),
             limit_tracks__isnull=False,
+            organiser=self.request.event.organiser,
         ).prefetch_related("limit_tracks", "limit_tracks__event")
         if limit_tracks:
             tracks = set()
