@@ -72,9 +72,11 @@
                     <a href="?{% url_replace request 'sort' '-title' %}"><i class="fa fa-caret-up" title="{% translate "Sort by title (z-a)" %}"></i></a>
                 </th>
                 {% if can_view_speakers %}<th>{% translate "Speakers" %}</th>{% endif %}
-                <th>
-                    {% translate "Type" %}
-                </th>
+                {% if show_submission_types  %}
+                    <th>
+                        {% translate "Type" %}
+                    </th>
+                {% endif %}
                 <th>
                     {% translate "State" %}
                     <a href="?{% url_replace request 'sort' 'state' %}"><i class="fa fa-caret-down" title="{% translate "Sort by state (a-z)" %}"></i></a>
@@ -115,9 +117,11 @@
                             {% endfor %}
                         </td>
                     {% endif %}
-                    <td>
-                        {{ submission.submission_type.name }}
-                    </td>
+                    {% if show_submission_types  %}
+                        <td>
+                            {{ submission.submission_type.name }}
+                        </td>
+                    {% endif %}
                     <td>
                         {% include "orga/submission/state_dropdown.html" with submission=submission %}
                     </td>
