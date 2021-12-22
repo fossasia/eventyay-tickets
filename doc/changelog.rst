@@ -3,6 +3,8 @@
 Release Notes
 =============
 
+- :support:`-` Due to database versions going EOL, please make sure to use PostgreSQL 12+, MySQL 8+, MariaDB 10.4+, or SQLite 3.21.
+- :support:`-` As Python 3.6 and 3.7 are now EOL, and we are using new Python features, pretalx supports Python versions 3.9+.
 - :feature:`-` The review dashboard can now be filtered by question answers, just like the submission list.
 - :feature:`-` New anonymisation indicator in proposal list.
 - :feature:`1418` Speaker availabilities are now limited to the sum of all room availabilites.
@@ -119,7 +121,6 @@ Release Notes
 - :feature:`-` Pretalx will now highlight overlapping sessions on the schedule editor, and will also warn you before you release a new schedule if sessions overlap in the same room.
 - :bug:`-` When you clicked a talk in the schedule editor, it would open in a new window, but also stay in dragging mode in the editor page.
 - :bug:`-` Fixed an issue when rendering individual session times in emails.
-- :support:`-` As Python 3.6 is EOL soon, we've dropped support, and now support Python 3.7+.
 - :feature:`-` Schedules have better scroll behaviour on very wide and very narrow displays.
 - :feature:`-` Media files are now excluded from crawlers via robots.txt.
 - :bug:`-` Fixed a bug where abstaining during the review process wasn't possible while review scores were mandatory.

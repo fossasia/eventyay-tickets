@@ -4,7 +4,7 @@ sphinx
 sphinx-autobuild
 sphinx-autodoc-typehints
 sphinx-copybutton
-git+https://github.com/rixx/sphinxcontrib-django.git@master
+sphinxcontrib-django
 sphinxcontrib-httpdomain
 sphinxcontrib-spelling
 

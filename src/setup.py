@@ -83,10 +83,11 @@ setup(
         "License :: OSI Approved",
         "License :: OSI Approved :: Apache Software License",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Framework :: Django :: 4.1",
         "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
     ],
     keywords="conference cfp event schedule",
@@ -98,7 +99,7 @@ setup(
         "csscompressor~=0.9.0",  # 2017-11, no changelog, https://github.com/sprymix/csscompressor
         "cssutils~=2.6.0",
         "defusedcsv~=2.0.0",  # https://github.com/raphaelm/defusedcsv
-        "Django~=3.2.0",  # https://docs.djangoproject.com/en/dev/releases/
+        "Django~=4.2.0",  # https://docs.djangoproject.com/en/dev/releases/
         "django-bootstrap4~=3.0.0",  # http://django-bootstrap4.readthedocs.io/en/latest/history.html
         "django-compressor~=4.3.0",  # https://django-compressor.readthedocs.io/en/latest/changelog/
         "django-context-decorator",
@@ -121,7 +122,6 @@ setup(
         "Pillow~=9.4.0",  # https://github.com/python-pillow/Pillow/blob/main/CHANGES.rst
         "publicsuffixlist~=0.10.0",
         "python-dateutil~=2.8.0",  # https://dateutil.readthedocs.io/en/stable/changelog.html
-        "pytz",
         "qrcode~=7.0",
         "reportlab~=3.6.0",  # https://www.reportlab.com/documentation/relnotes/
         "requests~=2.31.0",  # https://2.python-requests.org/en/master/community/updates/#release-and-version-history

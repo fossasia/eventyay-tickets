@@ -24,11 +24,11 @@ Step 0: Prerequisites
 Please set up the following systems beforehand. We can't go into their use
 and configuration here, but please have a look at the linked pages.
 
-* **Python 3.7 or newer** and a ``pip`` to match. You can use ``python -V`` and
+* **Python 3.9 or newer** and a ``pip`` to match. You can use ``python -V`` and
   ``pip3 -V`` to check.
 * An SMTP server to send out mails
 * An HTTP reverse proxy, e.g. `nginx`_ or Apache to allow HTTPS connections
-* A database server: `MySQL`_ 5.7+ or MariaDB 10.2+ or `PostgreSQL`_ 10+.
+* A database server: `MySQL`_ 8+ or MariaDB 10.4+ or `PostgreSQL`_ 12+.
   You can use SQLite, but we strongly recommend not to run SQLite in
   production. Given the choice, we'd recommend to use PostgreSQL.
 * A `redis`_ server, if you want to use pretalx with an asynchronous task
