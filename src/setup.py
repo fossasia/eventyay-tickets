@@ -112,7 +112,7 @@ setup(
         "django-i18nfield~=1.9.0",  # 2020-06, no changelog, https://github.com/raphaelm/django-i18nfield/
         "django-libsass~=0.8",  # inactive, https://github.com/torchbox/django-libsass/blob/main/CHANGELOG.txt
         "django-scopes~=1.2.0",  # https://github.com/raphaelm/django-scopes/releases
-        "djangorestframework~=3.12.0",  # http://www.django-rest-framework.org/community/release-notes/
+        "djangorestframework~=3.13.0",  # http://www.django-rest-framework.org/community/release-notes/
         "inlinestyler~=0.2.0",  # https://github.com/dlanger/inlinestyler/blob/master/CHANGELOG
         "libsass~=0.21.0",  # https://sass.github.io/libsass-python/changes.html
         "Markdown==3.3.4",  # https://python-markdown.github.io/change_log/
