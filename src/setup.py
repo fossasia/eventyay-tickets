@@ -160,8 +160,8 @@ setup(
         "mysql": ["mysqlclient"],
         "postgres": ["psycopg2-binary"],
         "redis": [
-            "django_redis~=5.0.0",
-            "redis~=3.5.0",
+            "django_redis~=5.1.0",
+            "redis~=4.0.0",
         ],
     },
     packages=find_packages(exclude=["tests", "tests.*"]),
