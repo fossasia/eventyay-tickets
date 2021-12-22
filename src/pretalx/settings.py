@@ -555,12 +555,13 @@ BOOTSTRAP4 = {
 COMPRESS_ENABLED = COMPRESS_OFFLINE = not DEBUG
 COMPRESS_PRECOMPILERS = (("text/x-scss", "django_libsass.SassCompiler"),)
 COMPRESS_FILTERS = {
+    "js": ["compressor.filters.jsmin.rJSMinFilter"],
     "css": (
         # CssAbsoluteFilter is incredibly slow, especially when dealing with our _flags.scss
         # However, we don't need it if we consequently use the static() function in Sass
         # 'compressor.filters.css_default.CssAbsoluteFilter',
         "compressor.filters.cssmin.CSSCompressorFilter",
-    )
+    ),
 }
 
 REST_FRAMEWORK = {
