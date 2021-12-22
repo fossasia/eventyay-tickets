@@ -1,16 +1,16 @@
-from django.conf.urls import url
 from pretalx.event.models.event import SLUG_CHARS
+from django.urls import path
 
 from . import views
 
 urlpatterns = [
-    url(
-        f"^orga/event/(?P<event>[{SLUG_CHARS}]+)/settings/p/venueless/",
+    path(
+        f"orga/event/<slug:event>/settings/p/venueless/",
         views.Settings.as_view(),
         name="settings",
     ),
-    url(
-        f"^(?P<event>[{SLUG_CHARS}]+)/p/venueless/check",
+    path(
+        f"(<slug:event>/p/venueless/check",
         views.check,
         name="check",
     ),
