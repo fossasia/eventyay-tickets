@@ -143,6 +143,14 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
         default=SubmissionStates.SUBMITTED,
         verbose_name=_("Proposal state"),
     )
+    pending_state = models.CharField(
+        null=True,
+        blank=True,
+        max_length=SubmissionStates.get_max_length(),
+        choices=SubmissionStates.get_choices(),
+        default=None,
+        verbose_name=_("Pending proposal state"),
+    )
     abstract = models.TextField(
         null=True,
         blank=True,
@@ -338,7 +346,8 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
         if force or new_state in valid_next_states:
             old_state = self.state
             self.state = new_state
-            self.save(update_fields=["state"])
+            self.pending_state = None
+            self.save(update_fields=["state", "pending_state"])
             self.update_talk_slots()
             submission_state_change.send_robust(
                 self.event, submission=self, old_state=old_state, user=person
@@ -414,20 +423,51 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
 
     update_talk_slots.alters_data = True
 
-    def make_submitted(self, person=None, force: bool = False, orga: bool = False):
+    def make_submitted(
+        self,
+        person=None,
+        force: bool = False,
+        orga: bool = False,
+        from_pending: bool = False,
+    ):
         """Sets the submission's state to 'submitted'."""
+        previous = self.state
         self._set_state(SubmissionStates.SUBMITTED, force, person=person)
+        self.log_action(
+            "pretalx.submission.make_submitted",
+            person=person,
+            orga=orga,
+            data={"previous": previous, "from_pending": from_pending},
+        )
 
     make_submitted.alters_data = True
 
-    def confirm(self, person=None, force: bool = False, orga: bool = False):
+    def confirm(
+        self,
+        person=None,
+        force: bool = False,
+        orga: bool = False,
+        from_pending: bool = False,
+    ):
         """Sets the submission's state to 'confirmed'."""
+        previous = self.state
         self._set_state(SubmissionStates.CONFIRMED, force, person=person)
-        self.log_action("pretalx.submission.confirm", person=person, orga=orga)
+        self.log_action(
+            "pretalx.submission.confirm",
+            person=person,
+            orga=orga,
+            data={"previous": previous, "from_pending": from_pending},
+        )
 
     confirm.alters_data = True
 
-    def accept(self, person=None, force: bool = False, orga: bool = True):
+    def accept(
+        self,
+        person=None,
+        force: bool = False,
+        orga: bool = True,
+        from_pending: bool = False,
+    ):
         """Sets the submission's state to 'accepted'.
 
         Creates an acceptance :class:`~pretalx.mail.models.QueuedMail`
@@ -435,23 +475,59 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
         """
         previous = self.state
         self._set_state(SubmissionStates.ACCEPTED, force, person=person)
-        self.log_action("pretalx.submission.accept", person=person, orga=True)
+        self.log_action(
+            "pretalx.submission.accept",
+            person=person,
+            orga=True,
+            data={"previous": previous, "from_pending": from_pending},
+        )
 
-        if previous != SubmissionStates.CONFIRMED:
+        if previous not in (SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED):
             self.send_state_mail()
 
     accept.alters_data = True
 
-    def reject(self, person=None, force: bool = False, orga: bool = True):
+    def reject(
+        self,
+        person=None,
+        force: bool = False,
+        orga: bool = True,
+        from_pending: bool = False,
+    ):
         """Sets the submission's state to 'rejected' and creates a rejection.
 
         :class:`~pretalx.mail.models.QueuedMail`.
         """
+        previous = self.state
         self._set_state(SubmissionStates.REJECTED, force, person=person)
-        self.log_action("pretalx.submission.reject", person=person, orga=True)
-        self.send_state_mail()
+        self.log_action(
+            "pretalx.submission.reject",
+            person=person,
+            orga=True,
+            data={"previous": previous, "from_pending": from_pending},
+        )
+
+        if previous != SubmissionStates.REJECTED:
+            self.send_state_mail()
 
     reject.alters_data = True
+
+    def apply_pending_state(self, person=None, force: bool = False):
+        if not self.pending_state:
+            return
+
+        if self.pending_state == self.state:
+            self.pending_state = None
+            self.save()
+            return
+
+        pending_state = self.pending_state
+        self.pending_state = None  # Will get saved in _set_state
+        getattr(self, SubmissionStates.method_names[pending_state])(
+            force=force, person=person, from_pending=True
+        )
+
+    apply_pending_state.alters_data = True
 
     def get_email_locale(self, fallback=None):
         if self.content_locale in self.event.locales:
@@ -478,26 +554,62 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
 
     send_state_mail.alters_data = True
 
-    def cancel(self, person=None, force: bool = False, orga: bool = True):
+    def cancel(
+        self,
+        person=None,
+        force: bool = False,
+        orga: bool = True,
+        from_pending: bool = False,
+    ):
         """Sets the submission's state to 'canceled'."""
+        previous = self.state
         self._set_state(SubmissionStates.CANCELED, force, person=person)
-        self.log_action("pretalx.submission.cancel", person=person, orga=True)
+        self.log_action(
+            "pretalx.submission.cancel",
+            person=person,
+            orga=True,
+            data={"previous": previous, "from_pending": from_pending},
+        )
 
     cancel.alters_data = True
 
-    def withdraw(self, person=None, force: bool = False, orga: bool = False):
+    def withdraw(
+        self,
+        person=None,
+        force: bool = False,
+        orga: bool = False,
+        from_pending: bool = False,
+    ):
         """Sets the submission's state to 'withdrawn'."""
+        previous = self.state
         self._set_state(SubmissionStates.WITHDRAWN, force, person=person)
-        self.log_action("pretalx.submission.withdraw", person=person, orga=orga)
+        self.log_action(
+            "pretalx.submission.withdraw",
+            person=person,
+            orga=orga,
+            data={"previous": previous, "from_pending": from_pending},
+        )
 
     withdraw.alters_data = True
 
-    def remove(self, person=None, force: bool = False, orga: bool = True):
+    def remove(
+        self,
+        person=None,
+        force: bool = False,
+        orga: bool = True,
+        from_pending: bool = False,
+    ):
         """Sets the submission's state to 'deleted'."""
+        previous = self.state
         self._set_state(SubmissionStates.DELETED, force, person=person)
         for answer in self.answers.all():
             answer.remove(person=person, force=force)
-        self.log_action("pretalx.submission.deleted", person=person, orga=True)
+        self.log_action(
+            "pretalx.submission.deleted",
+            person=person,
+            orga=True,
+            data={"previous": previous, "from_pending": from_pending},
+        )
 
     remove.alters_data = True
 

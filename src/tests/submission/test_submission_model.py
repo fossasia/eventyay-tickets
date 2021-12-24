@@ -401,3 +401,42 @@ def test_send_invite_requires_signature(submission):
     with scope(event=submission.event):
         with pytest.raises(Exception):
             submission.send_invite(None)
+
+
+@pytest.mark.parametrize(
+    "state",
+    (
+        SubmissionStates.SUBMITTED,
+        SubmissionStates.ACCEPTED,
+        SubmissionStates.REJECTED,
+        SubmissionStates.CONFIRMED,
+        SubmissionStates.CANCELED,
+    ),
+)
+@pytest.mark.parametrize(
+    "pending_state",
+    (
+        SubmissionStates.SUBMITTED,
+        SubmissionStates.ACCEPTED,
+        SubmissionStates.REJECTED,
+        SubmissionStates.CONFIRMED,
+        SubmissionStates.CANCELED,
+    ),
+)
+@pytest.mark.django_db
+def test_pending_state(submission, state, pending_state):
+    with scope(event=submission.event):
+        submission.state = state
+        submission.pending_state = pending_state
+        submission.save()
+        count = submission.logged_actions().count()
+
+        submission.apply_pending_state(force=True)
+
+        assert submission.state == pending_state
+        assert submission.logged_actions().count() == (
+            count + int(state != pending_state)
+        )
+        if pending_state == "accepted" and state == "submitted":
+            assert submission.event.queued_mails.count() == 1
+            assert submission.event.wip_schedule.talks.count() == 1
