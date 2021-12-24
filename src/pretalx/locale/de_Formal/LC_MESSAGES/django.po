@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-26 13:05+0000\n"
-"PO-Revision-Date: 2021-09-13 19:27+0000\n"
+"PO-Revision-Date: 2021-12-24 20:54+0000\n"
 "Last-Translator: Tobias Kunze <r@rixx.de>\n"
 "Language-Team: \n"
 "Language: de_Formal\n"
@@ -316,6 +316,9 @@ msgid ""
 "changes to it up to the submission deadline, and you will be notified of any "
 "changes or questions."
 msgstr ""
+"Herzlichen Glückwunsch, Sie haben Ihre Einreichung abgeschlossen! Sie können "
+"sie bis zur Abgabefrist weiter anpassen, und sollten sich Änderungen oder "
+"Fragen ergeben, werden wir Sie benachrichtigen."
 
 #: pretalx/cfp/flow.py:365 pretalx/orga/forms/cfp.py:460
 #: pretalx/orga/templates/orga/base.html:243
@@ -714,8 +717,6 @@ msgid "Continue"
 msgstr "Weiter"
 
 #: pretalx/cfp/templates/cfp/event/submission_base.html:44
-#, fuzzy
-#| msgid "Submit a proposal"
 msgid "Submit proposal!"
 msgstr "Zur Einreichung"
 
@@ -3203,12 +3204,9 @@ msgstr "Sollen die als Highlight markierten Vorträge sichtbar sein?"
 
 #: pretalx/orga/forms/event.py:225
 msgid "Enable anonymous feedback"
-msgstr ""
+msgstr "Anonymes Feedback zulassen"
 
 #: pretalx/orga/forms/event.py:227
-#, fuzzy
-#| msgid ""
-#| "Attendees can leave feedback here after your session has taken place."
 msgid "Attendees will be able to send in feedback after a session is over."
 msgstr ""
 "Teilnehmende können hier Feedback abschicken, sobald der Vortrag "
@@ -3510,10 +3508,8 @@ msgid "All rejected speakers"
 msgstr "Alle abgelehnten Vortragenden"
 
 #: pretalx/orga/forms/mails.py:148
-#, fuzzy
-#| msgid "All accepted speakers"
 msgid "All canceled speakers"
-msgstr "Alle angenommenen Vortragende"
+msgstr "Alle abgesagten Vortragende"
 
 #: pretalx/orga/forms/mails.py:149
 msgid "All reviewers in your team"
@@ -3595,16 +3591,12 @@ msgid "No score"
 msgstr "Keine Punkte"
 
 #: pretalx/orga/forms/review.py:91
-#, fuzzy
-#| msgid "Please provide an email text!"
 msgid "Please provide a review text!"
-msgstr "Bitte geben Sie einen gültigen Text an!"
+msgstr "Bitte geben Sie einen gültigen Text ein!"
 
 #: pretalx/orga/forms/review.py:97
-#, fuzzy
-#| msgid "Please provide an email text!"
 msgid "Please provide a review score!"
-msgstr "Bitte geben Sie einen gültigen Text an!"
+msgstr "Bitte geben Sie einen Wertung an!"
 
 #: pretalx/orga/forms/schedule.py:15
 msgid "Notify speakers of changes"
@@ -5299,10 +5291,8 @@ msgid "New release"
 msgstr "Neue Programmversion"
 
 #: pretalx/orga/templates/orga/schedule/index.html:53
-#, fuzzy
-#| msgid "New schedule version"
 msgid "Override WIP schedule with this version"
-msgstr "Neue Programmversion"
+msgstr "Die aktuelle Arbeitsversion durch diese Programmversion übersetzen"
 
 #: pretalx/orga/templates/orga/schedule/index.html:63
 msgid "View in frontend"
@@ -7172,7 +7162,7 @@ msgstr "Spanisch"
 
 #: pretalx/settings.py:404
 msgid "Brasilian Portuguese"
-msgstr ""
+msgstr "Brasilianisches Portugiesisch"
 
 #: pretalx/submission/exporters.py:18
 msgid "Answered speaker questions"
