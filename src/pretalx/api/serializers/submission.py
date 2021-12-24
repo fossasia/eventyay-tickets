@@ -132,6 +132,7 @@ class SubmissionOrgaSerializer(SubmissionSerializer):
     class Meta(SubmissionSerializer.Meta):
         fields = SubmissionSerializer.Meta.fields + [
             "created",
+            "pending_state",
             "answers",
             "notes",
             "internal_notes",

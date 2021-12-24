@@ -64,6 +64,7 @@ def test_submission_serializer_for_organiser(submission, orga_user, resource, ta
             "title",
             "submission_type",
             "state",
+            "pending_state",
             "abstract",
             "description",
             "duration",
