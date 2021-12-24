@@ -600,14 +600,35 @@ h2 .submission-state-dropdown {
 
 .submission-state-dropdown {
   display: inline-block;
+  border-radius: 6px;
+  background-image: repeating-linear-gradient(315deg, var(--submission-color-primary), var(--submission-color-primary) 8px, var(--submission-color-secondary) 8px, var(--submission-color-secondary) 16px);
+  padding: 3px;
 
   summary {
+    background-color: white;
+    border-radius: 3px;
+    padding: 0.25rem 0.5rem;
+    line-height: 1.5;
     display: flex;
-    align-items: baseline;
-
-    & > * {
-      padding: 0 4px;
+    align-items: center;
+    h4 {
+      font-size: 0.875rem;
+      font-weight: 400;
+      margin-bottom: 0;
+      display: inline-block;
+      padding: 4px 0 3px 0;
     }
+
+    i.fa:first-child {
+      padding: 0 3px;
+    }
+    i.fa.fa-caret-down {
+      margin-left: 10px;
+    }
+  }
+  &:hover summary {
+    background-color:inherit;
+    color: inherit;
   }
 
   a {
@@ -620,57 +641,74 @@ h2 .submission-state-dropdown {
 .submission-state-withdrawn,
 .submission-state-canceled {
   color: $gray;
-  border-color: $gray;
+  --submission-color-primary: #{$gray};
+  --submission-color-secondary: #{$gray};
+}
+.submission-state-dropdown.submission-state-pending-deleted,
+.submission-state-dropdown.submission-state-pending-withdrawn,
+.submission-state-dropdown.submission-state-pending-canceled {
+  --submission-color-secondary: #{$gray};
 }
 .submission-state-deleted:hover,
 .submission-state-withdrawn:hover,
 .submission-state-canceled:hover {
   color: $white;
   background-color: $gray;
-  border-color: $gray;
 }
 
 .submission-state-submitted {
   color: $brand-info;
-  border-color: $brand-info;
   background-color: $white;
+  --submission-color-primary: #{$brand-info};
+  --submission-color-secondary: #{$brand-info};
+}
+.submission-state-dropdown.submission-state-pending-submitted {
+  --submission-color-secondary: #{$brand-info};
 }
 .submission-state-submitted:hover {
   color: $white;
   background-color: $brand-info;
-  border-color: $brand-info;
 }
 
 .submission-state-accepted {
   color: lighten($brand-success, 10%);
-  border-color: lighten($brand-success, 10%);
   background-color: $white;
+  --submission-color-primary: #{lighten($brand-success, 10%)};
+  --submission-color-secondary: #{lighten($brand-success, 10%)};
+}
+.submission-state-dropdown.submission-state-pending-accepted {
+  --submission-color-secondary: #{lighten($brand-success, 10%)};
 }
 .submission-state-accepted:hover {
   background-color: lighten($brand-success, 10%);
-  border-color: lighten($brand-success, 10%);
   color: $white;
 }
 
 .submission-state-confirmed {
   color: lighten($brand-primary, 10%);
-  border-color: lighten($brand-primary, 10%);
   background-color: $white;
+  --submission-color-primary: #{lighten($brand-primary, 10%)};
+  --submission-color-secondary: #{lighten($brand-primary, 10%)};
+}
+.submission-state-dropdown.submission-state-pending-confirmed {
+  --submission-color-secondary: #{lighten($brand-primary, 10%)};
 }
 .submission-state-confirmed:hover {
   color: $white;
-  border-color: lighten($brand-primary, 10%);
   background-color: lighten($brand-primary, 10%);
 }
 
 .submission-state-rejected {
   color: $danger;
-  border-color: $danger;
   background-color: $white;
+  --submission-color-primary: #{$danger};
+  --submission-color-secondary: #{$danger};
+}
+.submission-state-dropdown.submission-state-pending-rejected {
+  --submission-color-secondary: #{$danger};
 }
 .submission-state-rejected:hover {
   color: $white;
-  border-color: $danger;
   background-color: $danger;
 }
 

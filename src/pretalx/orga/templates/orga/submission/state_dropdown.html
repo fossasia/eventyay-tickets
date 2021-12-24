@@ -1,7 +1,12 @@
 {% load i18n %}
-<details class="dropdown submission-state-dropdown">
-    <summary class="btn btn-sm submission-state-{{ submission.state }}">
-        {% include "cfp/event/fragment_state.html" with state=submission.state %}
+<details class="dropdown submission-state-dropdown submission-state-{{ submission.state }}{% if submission.pending_state %} submission-state-pending-{{ submission.pending_state }}{% endif %}">
+    <summary>
+        <h4>
+            {% include "cfp/event/fragment_state.html" with state=submission.state %}
+            {% if submission.pending_state %}
+                ({% include "cfp/event/fragment_state.html" with state=submission.pending_state %})
+            {% endif %}
+        </h4>
         <i class="fa fa-caret-down"></i>
     </summary>
     <ul class="dropdown-content dropdown-content-s submission-dropdown-menu">

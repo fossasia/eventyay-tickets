@@ -186,6 +186,9 @@
                             </td>{% endif %}
                             <td class="nowrap">
                                 {% include "cfp/event/fragment_state.html" with state=submission.state %}
+                                {% if submission.pending_state %}<br>
+                                    ({% translate "pending" %} {% include "cfp/event/fragment_state.html" with state=submission.pending_state %})
+                                {% endif %}
                             </td>
                             <td class="action-row d-flex justify-space-around">
                                 {% if submission.state == 'submitted' and can_accept_submissions %}
