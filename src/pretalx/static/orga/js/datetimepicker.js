@@ -63,12 +63,12 @@ $(function() {
         let earlier = relatedDateAfter.val()
 
         if (earlier) {
-          earlier = moment(earlier)
+          earlier = moment(earlier, $("body").attr("data-dateformat"))
         } else {
           earlier = dateAfter
         }
         if (dateAfter && earlier) {
-          earlier = (moment(earlier).isBefore(moment(dateAfter)) ? dateAfter : earlier)
+          earlier = (moment(earlier, $("body").attr("data-dateformat")).isBefore(moment(dateAfter)) ? dateAfter : earlier)
         }
         if (
           current !== null &&
@@ -84,12 +84,12 @@ $(function() {
         let later = relatedDateBefore.val()
 
         if (later) {
-          later = moment(later)
+          later = moment(later, $("body").attr("data-dateformat"))
         } else {
           later = dateBefore
         }
         if (dateBefore && later) {
-          later = (moment(later).isAfter(moment(dateBefore)) ? dateBefore : later)
+          later = (moment(later, $("body").attr("data-dateformat")).isAfter(moment(dateBefore, $("body").attr("data-dateformat"))) ? dateBefore : later)
         }
         if (
           current !== null &&
