@@ -96,7 +96,7 @@ const acceptAll = document.getElementById("a-all")
 if (acceptAll) {
   acceptAll.addEventListener("click", ev => {
     document.querySelectorAll("tbody .action-row").forEach(td => {
-      if (!td.querySelector(".radio.reject input").checked) {
+      if (td.querySelector(".radio.reject input") && !td.querySelector(".radio.reject input").checked) {
         td.querySelector(".radio.accept input").checked = true
       }
     })
@@ -108,7 +108,7 @@ const rejectAll = document.getElementById("r-all")
 if (rejectAll) {
   rejectAll.addEventListener("click", ev => {
     document.querySelectorAll("tbody .action-row").forEach(td => {
-      if (!td.querySelector(".radio.accept input").checked) {
+      if (td.querySelector(".radio.accept input") && !td.querySelector(".radio.accept input").checked) {
         td.querySelector(".radio.reject input").checked = true
       }
     })
