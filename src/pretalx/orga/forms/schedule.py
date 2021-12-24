@@ -56,6 +56,7 @@ class ScheduleExportForm(ExportForm):
         model_fields = [
             "title",
             "state",
+            "pending_state",
             "submission_type",
             "track",
             "created",

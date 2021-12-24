@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` The new pending state feature is now available in custom JSON and CSV exports.
 - :release:`2.3.0 <2021-12-24>`
 - :feature:`667` Thanks to the new "pending state" feature, organisers and reviewers can mark proposals as accepted/rejected without letting speakers see the decision yet.
 - :feature:`1232` You can filter submissions by multiple states in the API now.
