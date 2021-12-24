@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-12-24 20:56+0000\n"
-"PO-Revision-Date: 2021-12-24 20:55+0000\n"
+"PO-Revision-Date: 2021-12-24 21:23+0000\n"
 "Last-Translator: Tobias Kunze <r@rixx.de>\n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -1356,22 +1356,16 @@ msgid "A question option was modified."
 msgstr "Eine Frage wurde verändert."
 
 #: pretalx/common/log_display.py:52
-#, fuzzy
-#| msgid "A track was added."
 msgid "A tag was added."
-msgstr "Ein Track wurde hinzugefügt."
+msgstr "Ein Tag wurde hinzugefügt."
 
 #: pretalx/common/log_display.py:53
-#, fuzzy
-#| msgid "A track was deleted."
 msgid "A tag was deleted."
-msgstr "Ein Track wurde gelöscht."
+msgstr "Ein Tag wurde gelöscht."
 
 #: pretalx/common/log_display.py:54
-#, fuzzy
-#| msgid "A track was modified."
 msgid "A tag was modified."
-msgstr "Ein Track wurde verändert."
+msgstr "Ein Tag wurde verändert."
 
 #: pretalx/common/log_display.py:55
 msgid "A new room was added."
@@ -3750,7 +3744,7 @@ msgstr "Einreichungsstatus"
 
 #: pretalx/orga/forms/submission.py:255
 msgid "Mark the new state as 'pending'?"
-msgstr ""
+msgstr "Neuen Status als 'vorgemerkt' markieren?"
 
 #: pretalx/orga/forms/submission.py:257
 #: pretalx/orga/templates/orga/review/dashboard.html:220
@@ -3759,6 +3753,10 @@ msgid ""
 "right away. You can always apply pending changes for some or all proposals "
 "in one go once you're ready to make your decisions public."
 msgstr ""
+"Wenn du einen Status als 'vorgemerkt' markierst, wird er für die "
+"Vortragenden noch nicht sichtbar. Du kannst immer alle oder manche der "
+"vorgemerkten Änderungen auf einen Schlag freischalten, wenn du sie "
+"veröffentlichen willst."
 
 #: pretalx/orga/phrases.py:16
 msgid "I think this session is well-suited to this conference, because ..."
@@ -5078,7 +5076,7 @@ msgstr "Benachrichtigungs-Mails erneut erstellen"
 #: pretalx/orga/templates/orga/review/dashboard.html:64
 #: pretalx/orga/templates/orga/submission/list.html:31
 msgid "Apply pending changes"
-msgstr ""
+msgstr "Vorgemerkte Änderungen freischalten"
 
 #: pretalx/orga/templates/orga/review/dashboard.html:92
 msgid "Average"
@@ -5136,11 +5134,8 @@ msgstr "Du hast diese Einreichung schon bewertet"
 
 #: pretalx/orga/templates/orga/review/dashboard.html:190
 #: pretalx/orga/templates/orga/speaker/form.html:41
-#, fuzzy
-#| msgid "pending mail"
-#| msgid_plural "pending mails"
 msgid "pending"
-msgstr "Ausgehende E-Mail"
+msgstr "vorgemerkt"
 
 #: pretalx/orga/templates/orga/review/dashboard.html:201
 #: pretalx/orga/templates/orga/review/dashboard.html:223
@@ -5157,7 +5152,7 @@ msgstr "Ihr habt noch keine Einreichungen."
 
 #: pretalx/orga/templates/orga/review/dashboard.html:218
 msgid "Mark new states as 'pending'"
-msgstr ""
+msgstr "Neuen Status als 'vorgemerkt' markieren"
 
 #: pretalx/orga/templates/orga/review/dashboard.html:225
 msgid "Go!"
@@ -5905,15 +5900,16 @@ msgstr "Bislang scheint keine Frage beantwortet worden zu sein."
 #: pretalx/orga/templates/orga/submission/apply_pending.html:8
 #, python-format
 msgid "Apply %(count)s pending changes?"
-msgstr ""
+msgstr "Alle %(count)s vorgemerkten Änderungen freischalten?"
 
 #: pretalx/orga/templates/orga/submission/apply_pending.html:11
-#, fuzzy, python-format
-#| msgid "Do you really want to change the state of this proposal?"
+#, python-format
 msgid ""
 " Please confirm that you really want to change the state of these %(count)s "
 "proposals."
-msgstr "Möchtest du den Status dieser Einreichung wirklich ändern?"
+msgstr ""
+" Bitte bestätige, dass du wirklich den Status dieser %(count)s Einreichungen "
+"ändern willst."
 
 #: pretalx/orga/templates/orga/submission/apply_pending.html:25
 #: pretalx/orga/templates/orga/submission/state_change.html:30
@@ -5921,10 +5917,8 @@ msgid "Do it"
 msgstr "Los!"
 
 #: pretalx/orga/templates/orga/submission/apply_pending.html:30
-#, fuzzy
-#| msgid "There are no organisers you can edit."
 msgid "There are no pending changes to apply right now."
-msgstr "Du kannst gerade keine Veranstalter bearbeiten."
+msgstr "Es gibt gerade keine vorgemerkten Änderungen."
 
 #: pretalx/orga/templates/orga/submission/base.html:53
 msgid "Anonymisation"
@@ -6090,11 +6084,11 @@ msgid "Remove"
 msgstr "Entfernen"
 
 #: pretalx/orga/templates/orga/submission/state_change.html:14
-#, fuzzy
-#| msgid "Do you really want to change the state of this proposal?"
 msgid ""
 "Please confirm that you really want to change the state of this proposal."
-msgstr "Möchtest du den Status dieser Einreichung wirklich ändern?"
+msgstr ""
+"Bitte bestätige, dass du wirklich den Status dieser Einreichung ändern "
+"willst."
 
 #: pretalx/orga/templates/orga/submission/stats.html:20
 msgid "Proposal Statistics"
@@ -6895,10 +6889,9 @@ msgid "The tag has been deleted."
 msgstr "Der Tag wurde gelöscht."
 
 #: pretalx/orga/views/submission.py:1008
-#, fuzzy, python-brace-format
-#| msgid "New {event} proposal: {title}"
+#, python-brace-format
 msgid "Changed {count} proposal states."
-msgstr "Neue Einreichung ({event}): {title}"
+msgstr "{count} Einreichungen wurden angepasst."
 
 #: pretalx/person/exporters.py:17
 msgid "Speaker CSV"
@@ -7119,11 +7112,13 @@ msgstr ""
 
 #: pretalx/schedule/models/room.py:24
 msgid "GUID"
-msgstr ""
+msgstr "GUID"
 
 #: pretalx/schedule/models/room.py:26
 msgid "Unique identifier (UUID) to help external tools identify the room."
 msgstr ""
+"Eindeutiger Bezeichner (UUID), der externen Anwendungen hilft, diesen Raum "
+"zu identifizieren."
 
 #: pretalx/schedule/models/room.py:34
 msgid "A description for attendees, for example directions."
@@ -7166,13 +7161,8 @@ msgid "The room is not available at the scheduled time."
 msgstr "Der Raum steht zur gewählten Zeit nicht zur Verfügung."
 
 #: pretalx/schedule/models/schedule.py:383
-#, fuzzy
-#| msgid ""
-#| "There is or was a session scheduled in this room. It cannot be deleted."
 msgid "There's an overlapping session scheduled in this room."
-msgstr ""
-"Es findet oder fand ein Talk in diesem Raum statt, deshalb kann er nicht "
-"gelöscht werden."
+msgstr "Es findet gleichzeitig schon ein anderer Vortrag in diesem Raum statt."
 
 #: pretalx/schedule/models/schedule.py:409
 msgid "A speaker is not available at the scheduled time."
@@ -7286,10 +7276,9 @@ msgid "Proposal states"
 msgstr "Einreichungsstatus"
 
 #: pretalx/submission/forms/submission.py:342
-#, fuzzy, python-brace-format
-#| msgid "pending Invitation"
+#, python-brace-format
 msgid "Pending {state}"
-msgstr "ausstehende Einladung"
+msgstr "Als {state} vorgemerkt"
 
 #: pretalx/submission/forms/tag.py:21
 msgid "You already have a tag by this name!"
@@ -7636,10 +7625,8 @@ msgid "rejected"
 msgstr "abgelehnt"
 
 #: pretalx/submission/models/submission.py:152
-#, fuzzy
-#| msgid "Proposal state"
 msgid "Pending proposal state"
-msgstr "Einreichungsstatus"
+msgstr "Vorgemerkter Status"
 
 #: pretalx/submission/models/submission.py:171
 msgid "These notes are meant for the organiser and won't be made public."
