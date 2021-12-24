@@ -18,6 +18,7 @@ from pretalx.common.mixins.views import (
 )
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.orga.forms.review import ReviewForm, TagsForm
+from pretalx.orga.forms.submission import SubmissionStateChangeForm
 from pretalx.orga.views.submission import ReviewerSubmissionFilter
 from pretalx.submission.forms import QuestionsForm, SubmissionFilterForm
 from pretalx.submission.models import Review, Submission, SubmissionStates
@@ -247,9 +248,15 @@ class ReviewDashboard(
         result["next_submission"] = missing_reviews[0] if missing_reviews else None
         return result
 
+    def get_pending(self, request):
+        form = SubmissionStateChangeForm(request.POST)
+        if form.is_valid():
+            return form.cleaned_data.get("pending")
+
     @transaction.atomic
     def post(self, request, *args, **kwargs):
         total = {"accept": 0, "reject": 0, "error": 0}
+        pending = self.get_pending(request)
         for key, value in request.POST.items():
             if not key.startswith("s-") or value not in ["accept", "reject"]:
                 continue
@@ -266,7 +273,15 @@ class ReviewDashboard(
             ):
                 total["error"] += 1
                 continue
-            getattr(submission, value)(person=request.user)
+            if pending:
+                submission.pending_state = (
+                    SubmissionStates.ACCEPTED
+                    if value == "accept"
+                    else SubmissionStates.REJECTED
+                )
+                submission.save()
+            else:
+                getattr(submission, value)(person=request.user)
             total[value] += 1
         if total["accept"] or total["reject"]:
             msg = str(

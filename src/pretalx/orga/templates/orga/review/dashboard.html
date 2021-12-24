@@ -210,7 +210,12 @@
             </table>
         </div>
         <div id="submitBar">
-            <span id="submitText" class="d-none">
+            <div id="pending" class="form-check mr-2">
+                <input type="checkbox" id="id_pending" name="pending">
+                <label for="id_pending">{% translate "Mark new states as 'pending'" %}</label>
+            </div>
+            <i class="fa fa-question-circle mr-4" data-toggle="tooltip" data-placement="top" title="{% translate "If you mark state changes as pending, they won't be visible to speakers right away. You can always apply pending changes for some or all proposals in one go once you're ready to make your decisions public." %}"></i>
+            <span id="submitText" class="d-none ml-2">
                 {% translate "Accept" %}: <span id="acceptCount" class="text-success"></span>
                 {% translate "Reject" %}: <span id="rejectCount" class="text-danger"></span>
             </span>

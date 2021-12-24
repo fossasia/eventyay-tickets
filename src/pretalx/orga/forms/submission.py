@@ -248,3 +248,14 @@ class AnonymiseForm(SubmissionForm):
             "notes",
         ]
         request_require = fields
+
+
+class SubmissionStateChangeForm(forms.Form):
+    pending = forms.BooleanField(
+        label=_("Mark the new state as 'pending'?"),
+        help_text=_(
+            "If you mark state changes as pending, they won't be visible to speakers right away. You can always apply pending changes for some or all proposals in one go once you're ready to make your decisions public."
+        ),
+        required=False,
+        initial=False,
+    )

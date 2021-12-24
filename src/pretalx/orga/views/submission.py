@@ -20,7 +20,14 @@ from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from django.utils.translation import override
-from django.views.generic import DetailView, ListView, TemplateView, UpdateView, View
+from django.views.generic import (
+    DetailView,
+    FormView,
+    ListView,
+    TemplateView,
+    UpdateView,
+    View,
+)
 
 from pretalx.common.exceptions import SubmissionError
 from pretalx.common.mixins.views import (
@@ -34,7 +41,11 @@ from pretalx.common.models import ActivityLog
 from pretalx.common.urls import build_absolute_uri
 from pretalx.common.views import CreateOrUpdateView, context
 from pretalx.mail.models import QueuedMail
-from pretalx.orga.forms import AnonymiseForm, SubmissionForm
+from pretalx.orga.forms.submission import (
+    AnonymiseForm,
+    SubmissionForm,
+    SubmissionStateChangeForm,
+)
 from pretalx.person.forms import OrgaSpeakerForm
 from pretalx.person.models import SpeakerProfile, User
 from pretalx.submission.forms import (
@@ -163,7 +174,8 @@ class ReviewerSubmissionFilter:
         return queryset
 
 
-class SubmissionStateChange(SubmissionViewMixin, TemplateView):
+class SubmissionStateChange(SubmissionViewMixin, FormView):
+    form_class = SubmissionStateChangeForm
     permission_required = "orga.change_submission_state"
     template_name = "orga/submission/state_change.html"
     TARGETS = {
@@ -186,22 +198,26 @@ class SubmissionStateChange(SubmissionViewMixin, TemplateView):
     def target(self):
         return self._target
 
-    def do(self, force=False):
-        method = getattr(self.object, SubmissionStates.method_names[self._target])
-        method(person=self.request.user, force=force, orga=True)
+    def do(self, force=False, pending=False):
+        if pending:
+            self.object.pending_state = self._target
+            self.object.save()
+        else:
+            method = getattr(self.object, SubmissionStates.method_names[self._target])
+            method(person=self.request.user, force=force, orga=True)
 
     @transaction.atomic
-    def post(self, request, *args, **kwargs):
+    def form_valid(self, form):
         if self._target == self.object.state:
             messages.info(
-                request,
+                self.request,
                 _(
                     "Somebody else was faster than you: this proposal was already in the state you wanted to change it to."
                 ),
             )
         else:
             try:
-                self.do()
+                self.do(pending=form.cleaned_data.get("pending"))
             except SubmissionError:
                 self.do(force=True)
         url = self.request.GET.get("next")
@@ -511,6 +527,13 @@ class SubmissionList(
     @context
     def show_submission_types(self):
         return self.request.event.submission_types.all().count() > 1
+
+    @context
+    @cached_property
+    def pending_changes(self):
+        return self.request.event.submissions.filter(
+            pending_state__isnull=False
+        ).count()
 
     @context
     def show_tracks(self):
