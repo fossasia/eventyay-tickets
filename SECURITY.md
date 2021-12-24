@@ -2,10 +2,12 @@
 
 ## Supported Versions
 
+We can currently only support the current version. At least our support matrix is simple!
+
 | Version | Supported |
 | ------- | --------- |
-| > 2.3.0 | ✅        |
-| < 2.3.1 | ❌        |
+| ≥ 2.3.0 | ✅        |
+| < 2.3.0 | ❌        |
 
 ## Reporting a Vulnerability
 

@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :release:`2.3.0 <2021-12-24>`
 - :feature:`667` Thanks to the new "pending state" feature, organisers and reviewers can mark proposals as accepted/rejected without letting speakers see the decision yet.
 - :feature:`1232` You can filter submissions by multiple states in the API now.
 - :support:`-` When updating, please take care to update your plugins, as some interfaces have changed. Plugin authors, please refer to PR 1230 to see changed settings access.
