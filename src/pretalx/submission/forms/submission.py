@@ -200,9 +200,11 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
 class SelectMultipleWithCount(forms.SelectMultiple):
     """A widget for multi-selects that correspond to countable values.
 
-    This widget doesn't support some of the options of the default SelectMultiple, most notably
-    it doesn't support optgroups. In return, it takes a third value per choice, makes zero-values
-    disabled and sorts options by numerical value."""
+    This widget doesn't support some of the options of the default
+    SelectMultiple, most notably it doesn't support optgroups. In
+    return, it takes a third value per choice, makes zero-values
+    disabled and sorts options by numerical value.
+    """
 
     def optgroups(self, name, value, attrs=None):
         choices = sorted(self.choices, key=lambda x: x[1].count, reverse=True)

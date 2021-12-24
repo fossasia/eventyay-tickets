@@ -28,7 +28,7 @@ def test_accept_success(submission, state):
         submission.accept()
         assert submission.state == SubmissionStates.ACCEPTED
         assert submission.event.queued_mails.count() == int(
-            state != SubmissionStates.CONFIRMED
+            state not in (SubmissionStates.CONFIRMED, SubmissionStates.ACCEPTED)
         )
         assert submission.logged_actions().count() == (count + 1)
         assert submission.event.wip_schedule.talks.count() == 1
@@ -201,7 +201,7 @@ def test_make_submitted(submission, state):
         assert submission.state == SubmissionStates.SUBMITTED
         assert submission.event.queued_mails.count() == 0
         assert submission.event.wip_schedule.talks.count() == 0
-        assert submission.logged_actions().count() == 0
+        assert submission.logged_actions().count() == 1
 
 
 @pytest.mark.django_db
