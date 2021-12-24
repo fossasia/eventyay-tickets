@@ -197,20 +197,68 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
         }
 
 
+class SelectMultipleWithCount(forms.SelectMultiple):
+    """A widget for multi-selects that correspond to countable values.
+
+    This widget doesn't support some of the options of the default SelectMultiple, most notably
+    it doesn't support optgroups. In return, it takes a third value per choice, makes zero-values
+    disabled and sorts options by numerical value."""
+
+    def optgroups(self, name, value, attrs=None):
+        choices = sorted(self.choices, key=lambda x: x[1].count, reverse=True)
+        result = []
+        for index, (option_value, label) in enumerate(choices):
+            selected = str(option_value) in value
+            result.append(
+                self.create_option(
+                    name,
+                    value=option_value,
+                    label=label,
+                    selected=selected,
+                    index=index,
+                )
+            )
+        return [(None, result, 0)]
+
+    def create_option(self, name, value, label, *args, count=0, **kwargs):
+        option = super().create_option(name, value, str(label), *args, **kwargs)
+        if label.count == 0:
+            option["attrs"]["class"] = "hidden"
+        return option
+
+
+class CountableOption:
+    def __init__(self, name, count):
+        self.name = name
+        self.count = count
+
+    def __str__(self):
+        return f"{self.name} ({self.count})"
+
+
 class SubmissionFilterForm(forms.Form):
     state = forms.MultipleChoiceField(
-        choices=SubmissionStates.get_choices(),
         required=False,
-        widget=forms.SelectMultiple(attrs={"class": "select2"}),
+        widget=SelectMultipleWithCount(
+            attrs={"class": "select2", "title": _("Proposal states")}
+        ),
+        choices=SubmissionStates.get_choices(),
     )
     submission_type = forms.MultipleChoiceField(
-        required=False, widget=forms.SelectMultiple(attrs={"class": "select2"})
+        required=False,
+        widget=SelectMultipleWithCount(
+            attrs={"class": "select2", "title": _("Session types")}
+        ),
     )
     track = forms.MultipleChoiceField(
-        required=False, widget=forms.SelectMultiple(attrs={"class": "select2"})
+        required=False,
+        widget=SelectMultipleWithCount(
+            attrs={"class": "select2", "title": _("Tracks")}
+        ),
     )
     tags = forms.MultipleChoiceField(
-        required=False, widget=forms.SelectMultiple(attrs={"class": "select2"})
+        required=False,
+        widget=SelectMultipleWithCount(attrs={"class": "select2", "title": _("Tags")}),
     )
     question = SafeModelChoiceField(queryset=Question.objects.none(), required=False)
 
@@ -239,11 +287,10 @@ class SubmissionFilterForm(forms.Form):
             self.fields["submission_type"].choices = [
                 (
                     sub_type.pk,
-                    f"{str(sub_type.name)} ({type_count.get(sub_type.pk, 0)})",
+                    CountableOption(sub_type.name, type_count.get(sub_type.pk, 0)),
                 )
                 for sub_type in event.submission_types.all()
             ]
-            self.fields["submission_type"].widget.attrs["title"] = _("Session types")
         else:
             self.fields.pop("submission_type", None)
         if len(tracks) > 1:
@@ -252,10 +299,9 @@ class SubmissionFilterForm(forms.Form):
                 for d in qs.order_by("track").values("track").annotate(Count("track"))
             }
             self.fields["track"].choices = [
-                (track.pk, f"{track.name} ({track_count.get(track.pk, 0)})")
+                (track.pk, CountableOption(track.name, track_count.get(track.pk, 0)))
                 for track in tracks
             ]
-            self.fields["track"].widget.attrs["title"] = _("Tracks")
         else:
             self.fields.pop("track", None)
 
@@ -267,10 +313,9 @@ class SubmissionFilterForm(forms.Form):
             )
             tag_count = {tag.tag: tag.submission_count for tag in tag_count}
             self.fields["tags"].choices = [
-                (tag.pk, f"{tag.tag} ({tag_count.get(tag.tag, 0)})")
+                (tag.pk, CountableOption(tag.tag, tag_count.get(tag.tag, 0)))
                 for tag in self.event.tags.all()
             ]
-            self.fields["tags"].widget.attrs["title"] = _("Tags")
 
         if usable_states:
             usable_states = [
@@ -281,8 +326,10 @@ class SubmissionFilterForm(forms.Form):
         else:
             usable_states = self.fields["state"].choices
         self.fields["state"].choices = [
-            (choice[0], f"{choice[1].capitalize()} ({state_count.get(choice[0], 0)})")
+            (
+                choice[0],
+                CountableOption(choice[1].capitalize(), state_count.get(choice[0], 0)),
+            )
             for choice in usable_states
         ]
-        self.fields["state"].widget.attrs["title"] = _("Proposal states")
         self.fields["question"].queryset = event.questions.all()

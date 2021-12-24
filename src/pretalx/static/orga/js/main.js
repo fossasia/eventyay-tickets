@@ -9,8 +9,13 @@ document.addEventListener("DOMContentLoaded", function() {
     question_page_toggle_target_view()
   }
 
+  function hideOptions (state) {
+    if (!state.id || !state.element) return state.text
+    if (state.element && state.element.classList.contains("hidden")) return
+    return state.text
+  }
   document.querySelectorAll(".select2").forEach(select => {
-    $(select).select2({placeholder: select.title})
+    $(select).select2({placeholder: select.title, templateResult: hideOptions})
   })
 
   $("input.submission_featured").change(function() {
