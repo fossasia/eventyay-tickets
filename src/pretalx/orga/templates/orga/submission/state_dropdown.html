@@ -4,7 +4,7 @@
         <h4>
             {% include "cfp/event/fragment_state.html" with state=submission.state %}
             {% if submission.pending_state %}
-                ({% include "cfp/event/fragment_state.html" with state=submission.pending_state %})
+                (<i class="fa fa-arrow-right"></i> {% include "cfp/event/fragment_state.html" with state=submission.pending_state %})
             {% endif %}
         </h4>
         <i class="fa fa-caret-down"></i>

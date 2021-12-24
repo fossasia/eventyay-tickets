@@ -275,6 +275,15 @@ class SubmissionFilterForm(forms.Form):
             d["state"]: d["state__count"]
             for d in state_qs.order_by("state").values("state").annotate(Count("state"))
         }
+        state_count.update(
+            {
+                f"pending_state__{d['pending_state']}": d["pending_state__count"]
+                for d in state_qs.filter(pending_state__isnull=False)
+                .order_by("pending_state")
+                .values("pending_state")
+                .annotate(Count("pending_state"))
+            }
+        )
         sub_types = event.submission_types.all()
         tracks = limit_tracks or event.tracks.all()
         if len(sub_types) > 1:
@@ -325,6 +334,13 @@ class SubmissionFilterForm(forms.Form):
             ]
         else:
             usable_states = self.fields["state"].choices
+        usable_states += [
+            (
+                f"pending_state__{choice[0]}",
+                str(_("Pending {state}")).format(state=choice[1]),
+            )
+            for choice in usable_states
+        ]
         self.fields["state"].choices = [
             (
                 choice[0],

@@ -31,12 +31,7 @@ class ReviewDashboard(
     paginate_by = None
     context_object_name = "submissions"
     permission_required = "orga.view_review_dashboard"
-    filter_fields = (
-        "state",
-        "submission_type",
-        "tags",
-        "track",
-    )
+    filter_fields = ("state", "submission_type", "tags", "track", "pending_state")
     default_filters = (
         "code__icontains",
         "speakers__name__icontains",

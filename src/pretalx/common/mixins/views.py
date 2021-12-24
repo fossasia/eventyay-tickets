@@ -1,4 +1,5 @@
 import urllib
+from collections import defaultdict
 from contextlib import suppress
 from importlib import import_module
 from urllib.parse import quote
@@ -126,15 +127,23 @@ class Filterable:
 
     def _handle_filter(self, qs):
         for key in self.request.GET:  # Do NOT use items() to preserve multivalue fields
-            value = self.request.GET.getlist(key)
-            if len(value) == 1:
-                value = value[0]
-            elif len(value) > 1:
-                key = f"{key}__in" if not key.endswith("__in") else key
-            if value:
-                lookup_key = key.split("__")[0]
-                if lookup_key in self.filter_fields:
-                    qs = qs.filter(**{key: value})
+            # There is a special case here: we hack in OR lookups by allowing __ in values.
+            lookups = defaultdict(list)
+            values = self.request.GET.getlist(key)
+            for value in values:
+                value_parts = value.split("__", maxsplit=1)
+                if len(value_parts) > 1 and value_parts[0] in self.filter_fields:
+                    _key = value_parts[0]
+                    _value = value_parts[1]
+                else:
+                    _key = key
+                    _value = value_parts[0]
+                if _key in self.filter_fields and _value:
+                    lookups[_key].append(_value)
+            _filters = Q()
+            for _key, value in lookups.items():
+                _filters |= Q(**{f"{_key}__in": value})
+            qs = qs.filter(_filters)
         return qs
 
     def _handle_search(self, qs):
