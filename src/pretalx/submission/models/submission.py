@@ -521,9 +521,7 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
             self.save()
             return
 
-        pending_state = self.pending_state
-        self.pending_state = None  # Will get saved in _set_state
-        getattr(self, SubmissionStates.method_names[pending_state])(
+        getattr(self, SubmissionStates.method_names[self.pending_state])(
             force=force, person=person, from_pending=True
         )
 

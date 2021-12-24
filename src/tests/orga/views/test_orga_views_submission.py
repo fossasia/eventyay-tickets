@@ -687,3 +687,29 @@ def test_submission_statistics(use_tracks, slot, other_slot, orga_client):
         )
     response = orga_client.get(slot.event.orga_urls.stats)
     assert response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_submission_apply_pending(submission, orga_client):
+    with scope(event=submission.event):
+        submission.state = "submitted"
+        submission.pending_state = "accepted"
+        submission.save()
+        assert submission.event.queued_mails.count() == 0
+
+    response = orga_client.get(submission.event.orga_urls.apply_pending)
+    assert response.status_code == 200
+    with scope(event=submission.event):
+        submission.state = "submitted"
+        submission.pending_state = "accepted"
+        assert submission.event.queued_mails.count() == 0
+
+    response = orga_client.post(submission.event.orga_urls.apply_pending)
+    assert response.status_code == 302
+    with scope(event=submission.event):
+        submission.state = "accepted"
+        submission.pending_state is None
+        assert submission.event.queued_mails.count() == 1
+
+    response = orga_client.get(submission.event.orga_urls.apply_pending)
+    assert response.status_code == 200

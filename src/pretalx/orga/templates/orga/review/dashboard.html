@@ -60,6 +60,9 @@
                     <li><a class="dropdown-item" href="{{ request.event.orga_urls.reviews }}regenerate">
                         <i class="fa fa-link"></i> {% translate "Regenerate decision emails" %}
                     </a></li>
+                    <li><a class="dropdown-item" href="{{ request.event.orga_urls.apply_pending }}?next={{ request.path }}">
+                        <i class="fa fa-link"></i> {% translate "Apply pending changes" %}
+                    </a></li>
                 </ul>
             </details>
         </form>

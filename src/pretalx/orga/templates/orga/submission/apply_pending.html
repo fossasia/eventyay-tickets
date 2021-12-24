@@ -1,0 +1,43 @@
+{% extends "orga/base.html" %}
+{% load i18n %}
+{% load bootstrap4 %}
+
+{% block content %}
+    <form method="post">
+        {% if submission_count %}
+            <h3>{% blocktranslate with count=submission_count %}Apply {{ count }} pending changes?{% endblocktranslate %}</h3>
+
+            <p>
+                {% blocktranslate %} Please confirm that you really want to change the state of these {{ count }} proposals.{% endblocktranslate %}
+            </p>
+
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ next }}">
+
+            <div class="submit-group"><span></span><span>
+                <a
+                    class="btn btn-lg btn-outline-info"
+                    href="{% if request.GET.next %}{{ request.GET.next }}{% else %}{{ request.event.orga_urls.submissions }}{% endif %}"
+                >
+                    {% translate "Back" %}
+                </a>
+                <button type="submit" class="btn btn-lg btn-success">
+                    {% translate "Do it" %}
+                </button>
+            </span></div>
+        {% else %}
+            <p>
+                {% translate "There are no pending changes to apply right now." %}
+            </p>
+            <div class="submit-group" id="submission-state-change"><span></span><span>
+                <a
+                    class="btn btn-lg btn-outline-info"
+                    href="{% if request.GET.next %}{{ request.GET.next }}{% else %}{{ request.event.orga_urls.submissions }}{% endif %}"
+                >
+                    {% translate "Back" %}
+                </a>
+            </span></div>
+        {% endif %}
+    </form>
+{% endblock %}
+

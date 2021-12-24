@@ -959,3 +959,38 @@ class TagDelete(PermissionRequired, DetailView):
         )
         messages.success(request, _("The tag has been deleted."))
         return redirect(self.request.event.orga_urls.tags)
+
+
+class ApplyPending(EventPermissionRequired, TemplateView):
+    permission_required = "orga.change_submissions"
+    template_name = "orga/submission/apply_pending.html"
+
+    @cached_property
+    def submissions(self):
+        return self.request.event.submissions.filter(pending_state__isnull=False)
+
+    @context
+    @cached_property
+    def submission_count(self):
+        return len(self.submissions)
+
+    def post(self, request, *args, **kwargs):
+        for submission in self.submissions:
+            try:
+                submission.apply_pending_state(person=self.request.user)
+            except Exception:
+                submission.apply_pending_state(person=self.request.user, force=True)
+        messages.success(
+            self.request,
+            str(_("Changed {count} proposal states.")).format(
+                count=self.submission_count
+            ),
+        )
+        url = self.request.GET.get("next")
+        if url and url_has_allowed_host_and_scheme(url, allowed_hosts=None):
+            return redirect(url)
+        return redirect(self.request.event.orga_urls.submissions)
+
+    @context
+    def next(self):
+        return self.request.GET.get("next")

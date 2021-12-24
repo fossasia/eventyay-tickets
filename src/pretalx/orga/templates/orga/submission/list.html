@@ -25,16 +25,21 @@
                 proposals
             {% endblocktranslate %}
         </span>
-        {% if can_create_submission %}
-            <p class="flip ml-auto">
+        <p class="flip ml-auto">
+            {% if pending_changes and can_change_submission %}
+                <a class="btn btn-info mt-2" href="{{ request.event.orga_urls.apply_pending }}">
+                    {% translate "Apply pending changes" %} ({{ pending_changes }})
+                </a>
+            {% endif %}
+            {% if can_create_submission %}
                 <a href="{{ request.event.orga_urls.new_submission }}" class="btn btn-info mt-2">
                     <i class="fa fa-plus"></i> {% translate "Add new proposal" %}
                 </a>
-            </p>
-            <a href="{{ request.event.orga_urls.submission_feed }}" title="{% translate "Proposal feed" %}">
-                <i class="fa fa-feed ml-3 mb-2"></i>
-            </a>
-        {% endif %}
+                <a href="{{ request.event.orga_urls.submission_feed }}" title="{% translate "Proposal feed" %}">
+                    <i class="fa fa-feed ml-3 mb-2"></i>
+                </a>
+            {% endif %}
+        </p>
     </h2>
 
     <div class="submit-group search-submit-group">

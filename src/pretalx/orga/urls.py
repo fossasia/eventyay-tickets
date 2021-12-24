@@ -374,6 +374,11 @@ urlpatterns = [
                     name="submissions.feed",
                 ),
                 path(
+                    "submissions/apply-pending/",
+                    submission.ApplyPending.as_view(),
+                    name="submissions.apply_pending",
+                ),
+                path(
                     "submissions/statistics/",
                     submission.SubmissionStats.as_view(),
                     name="submissions.statistics",

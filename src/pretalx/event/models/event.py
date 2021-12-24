@@ -355,6 +355,7 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
         submission_feed = "{base}submissions/feed/"
         new_submission = "{submissions}new"
         feedback = "{submissions}feedback/"
+        apply_pending = "{submissions}apply-pending/"
         speakers = "{base}speakers/"
         settings = edit_settings = "{base}settings/"
         review_settings = "{settings}review/"
