@@ -343,7 +343,9 @@ class SpeakerFilterForm(forms.Form):
         ),
         required=False,
     )
-    question = SafeModelChoiceField(queryset=Question.objects.none(), required=False)
+    question = SafeModelChoiceField(
+        queryset=Question.objects.none(), required=False, widget=forms.HiddenInput()
+    )
 
     def __init__(self, event, *args, **kwargs):
         super().__init__(*args, **kwargs)
