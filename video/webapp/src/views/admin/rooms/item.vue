@@ -4,7 +4,8 @@
 	template(v-else-if="config")
 		.ui-page-header
 			bunt-icon-button(@click="$router.push({name: 'admin:rooms:index'})") arrow_left
-			h1 {{ inferredType ? inferredType.name : 'Mystery Room' }} : {{ config.name }}
+			h1 {{ inferredType ? inferredType.name : 'Mystery Room' }} :
+				span.room-name(v-html="$emojify(config.name)")
 			.actions
 				bunt-button.btn-delete-room(@click="showDeletePrompt = true") delete
 		edit-form(:config="config")
@@ -84,6 +85,26 @@ export default {
 		background-color: $clr-grey-100
 		.bunt-icon-button
 			margin-right: 8px
+		h1
+			flex: auto
+			font-size: 24px
+			font-weight: 500
+			margin: 1px 16px 0 0
+			ellipsis()
+			.room-name
+				margin-left: 8px
+				font-size: 24px
+				line-height: 56px
+				font-weight: 600
+				// TODO decopypaste
+				.emoji
+					color: transparent // hide unicode emoji
+					display: inline-block
+					vertical-align: middle
+					width: 36px
+					height: @width
+					&.needs-space
+						margin-right: 8px
 		.actions
 			display: flex
 			flex: none

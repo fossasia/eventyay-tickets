@@ -1,8 +1,8 @@
 import data from 'emoji-mart/data/twitter.json'
 import EmojiRegex from 'emoji-regex'
 import { getEmojiDataFromNative as _getEmojiDataFromNative } from 'emoji-mart'
-import { unifiedToNative } from 'emoji-mart/dist-es/utils'
 import { uncompress } from 'emoji-mart/dist-es/utils/data.js'
+import MarkdownIt from 'markdown-it'
 
 // force uncompress data, because we don't use emoji-mart methods
 if (data.compressed) {
@@ -11,24 +11,21 @@ if (data.compressed) {
 
 const emojiRegex = EmojiRegex()
 const splitEmojiRegex = new RegExp(`(${emojiRegex.source})`, 'g')
+const startsWithEmojiRegex = new RegExp(`^${emojiRegex.source}`)
 
-export function getEmojiPosition (emoji) {
-	if (typeof emoji === 'string') {
-		emoji = data.emojis[emoji]
-	}
-	if (!emoji) return
-	const { sheet_x: sheetX, sheet_y: sheetY } = emoji
-	const multiplyX = 100 / (57 - 1)
-	const multiplyY = 100 / (57 - 1)
+export function objectToCssString (object) {
+	return Object.entries(object).map(([key, value]) => `${key}:${value}`).join(';')
+}
 
-	return `${multiplyX * sheetX}% ${multiplyY * sheetY}%`
+export function startsWithEmoji (string) {
+	return startsWithEmojiRegex.test(string)
 }
 
 export function nativeToOps (string) {
 	return string.split(splitEmojiRegex).map(match => {
-		const emoji = _getEmojiDataFromNative(match, 'twitter', data)
-		if (emoji) {
-			return {insert: {emoji: emoji.id}}
+		if (emojiRegex.test(match)) {
+			// slightly wasteful to test for emoji again
+			return {insert: {emoji: match}}
 		} else {
 			return {insert: match}
 		}
@@ -40,13 +37,25 @@ export function getEmojiDataFromNative (native) {
 }
 
 export function nativeToStyle (unicodeEmoji) {
-	return {'background-position': getEmojiPosition(data.emojis[_getEmojiDataFromNative(unicodeEmoji, 'twitter', data).id])}
-}
+	// maps multi-codepoint emoji like 🇻🇦 / \uD83C\uDDFB\uD83C\uDDE6 => 1f1fb-1f1e6.svg
+	const codepoints = Array.from(unicodeEmoji).map(c => c.codePointAt(0).toString(16))
+	let src
+	// drop modifiers if we don't have the full emoji
+	// for example red heart => heart
+	while (codepoints.length) {
+		try {
+			src = require(`twemoji-emojis/vendor/svg/${codepoints.join('-')}.svg`)
+			break
+		} catch (e) {}
+		codepoints.pop()
+	}
 
-export function toNative (emojiId) {
-	const emoji = data.emojis[emojiId]
-	if (!emoji) return
-	return unifiedToNative(emoji.unified)
+	// if we don't have the emoji, show❓
+	if (!src) {
+		src = require('twemoji-emojis/vendor/svg/2753.svg')
+	}
+
+	return {'background-image': `url(${src})`}
 }
 
 export function markdownEmoji (md) {
@@ -103,7 +112,24 @@ export function markdownEmoji (md) {
 		}
 	})
 	md.renderer.rules.emoji = (tokens, idx) => {
-		const emoji = data.emojis[_getEmojiDataFromNative(tokens[idx].content, 'twitter', data).id]
-		return `<span class="emoji" style="background-position: ${getEmojiPosition(emoji)}">${tokens[idx].content}</span>`
+		const isFirst = idx === 0
+		const needsSpace = tokens[idx + 1] && !tokens[idx + 1].content.startsWith(' ')
+		const emoji = tokens[idx].content
+		return `<span class="emoji${isFirst && needsSpace ? ' needs-space' : ''}" style="${objectToCssString(nativeToStyle(emoji))}">${emoji}</span>`
+	}
+}
+
+// global markdown instance to emojify plaintext
+const markdownIt = MarkdownIt('zero', {})
+markdownIt.use(markdownEmoji)
+
+export function emojifyString (input) {
+	if (!input) return
+	return markdownIt.renderInline(input)
+}
+
+export const emojiPlugin = {
+	install (Vue) {
+		Vue.prototype.$emojify = emojifyString
 	}
 }

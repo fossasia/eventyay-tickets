@@ -37,6 +37,7 @@
     "register-service-worker": "^1.7.1",
     "roboto-fontface": "^0.10.0",
     "sanitize-html": "2.4",
+    "twemoji-emojis": "^14.1.0",
     "uuid": "^8.3.0",
     "vue": "^2.6.12",
     "vue-advanced-cropper": "^0.16.10",

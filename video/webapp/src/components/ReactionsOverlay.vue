@@ -4,8 +4,7 @@
 <script>
 import { mapState } from 'vuex'
 import shuffle from 'lodash/shuffle'
-import emojiData from 'emoji-mart/data/twitter.json'
-import { getEmojiPosition } from 'lib/emoji'
+import { nativeToStyle as nativeEmojiToStyle } from 'lib/emoji'
 
 const MAX_PARTICLE_POOL = 70 // TODO derive from width to have consistent density
 const SERVER_REACTIONS_INTERVAL = 1000
@@ -50,7 +49,7 @@ export default {
 		this.overlayHeight = this.$el.offsetHeight
 	},
 	methods: {
-		renderReaction (id) {
+		renderReaction (emoji) {
 			let element = this.freeParticles.pop()
 			if (!element) {
 				if (this.particlePool.length < MAX_PARTICLE_POOL) {
@@ -63,10 +62,9 @@ export default {
 				}
 			}
 
-			const emoji = emojiData.emojis[id]
 			const startingPosition = Math.random()
 			const targetHeight = 0.5 * Math.max(0.7, Math.random()) * this.overlayHeight
-			element.style['background-position'] = getEmojiPosition(emoji)
+			element.style['background-image'] = nativeEmojiToStyle(emoji)['background-image']
 			element.style.left = `calc(${startingPosition * 100}% - 24px)`
 			const animation = element.animate([
 				{opacity: 1, transform: 'translateY(0px)'},
@@ -104,9 +102,6 @@ export default {
 		height: 28px
 		width: @height
 		display: inline-block
-		background-image: url("~emoji-datasource-twitter/img/twitter/sheets-256/64.png")
-		background-size: 5700% 5700%
-		image-rendering: -webkit-optimize-contrast
 	+below('l')
 		bottom: calc(var(--vh100) - 48px - 56px - var(--mediasource-placeholder-height))
 		right: calc(100vw - var(--mediasource-placeholder-width))
