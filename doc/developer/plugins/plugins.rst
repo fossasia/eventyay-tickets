@@ -97,7 +97,7 @@ should extend your ``AppConfig`` (see above) by the following method to make
 your receivers available::
 
     class PaypalApp(AppConfig):
-        …
+        ...
 
         def ready(self):
             from . import signals  # noqa
@@ -107,7 +107,7 @@ activates your plugin for an event in the ``installed`` method, and code to
 execute upon removal in the ``uninstalled`` method::
 
     class PaypalApp(AppConfig):
-        …
+        ...
 
         def installed(self, event):
             pass  # Your code here

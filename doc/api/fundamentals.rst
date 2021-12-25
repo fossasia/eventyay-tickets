@@ -58,13 +58,13 @@ Pagination
 The API will paginate most lists of objects. The response will take the form
 of:
 
-.. sourcecode:: javascript
+.. sourcecode:: json
 
     {
         "count": 117,
         "next": "https://pretalx.yourdomain.com/api/v1/organisers/?limit=20&offset=40",
         "previous": null,
-        "results": […],
+        "results": []
     }
 
 As you can see, the response contains the total number of results in the field
