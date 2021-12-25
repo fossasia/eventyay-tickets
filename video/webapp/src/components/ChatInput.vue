@@ -31,16 +31,15 @@ import Quill from 'quill'
 import 'quill/dist/quill.core.css'
 import EmojiPickerButton from 'components/EmojiPickerButton'
 import UploadButton from 'components/UploadButton'
-import { getEmojiPosition, nativeToOps, toNative } from 'lib/emoji'
+import { nativeToStyle as nativeEmojiToStyle, nativeToOps, objectToCssString } from 'lib/emoji'
 
 const Delta = Quill.import('delta')
 const Embed = Quill.import('blots/embed')
 class EmojiBlot extends Embed {
 	static create (value) {
 		const node = super.create()
-		const position = getEmojiPosition(value)
 		node.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
-		node.style = `background-position: ${position};`
+		node.style = objectToCssString(nativeEmojiToStyle(value))
 		node.dataset.emoji = value
 		return node
 	}
@@ -63,7 +62,6 @@ export default {
 	},
 	data () {
 		return {
-			showEmojiPicker: false,
 			files: [],
 			uploading: false
 		}
@@ -111,7 +109,7 @@ export default {
 				if (typeof op.insert === 'string') {
 					text += op.insert
 				} else if (op.insert.emoji) {
-					text += toNative(op.insert.emoji)
+					text += op.insert.emoji
 				}
 			}
 			text = text.trim()
@@ -155,7 +153,7 @@ export default {
 		addEmoji (emoji) {
 			// TODO skin color
 			const selection = this.quill.getSelection(true)
-			this.quill.updateContents(new Delta().retain(selection.index).delete(selection.length).insert({emoji: emoji.id}), 'user')
+			this.quill.updateContents(new Delta().retain(selection.index).delete(selection.length).insert({emoji: emoji.native}), 'user')
 			this.quill.setSelection(selection.index + 1, 0)
 		},
 		removeFile (file) {
@@ -196,9 +194,6 @@ export default {
 			height: 20px
 			vertical-align: middle
 			display: inline-block
-			background-image: url("~emoji-datasource-twitter/img/twitter/sheets-256/64.png")
-			background-size: 5700% 5700%
-			image-rendering: -webkit-optimize-contrast
 	.bunt-input
 		input-style(size: compact)
 		padding: 0

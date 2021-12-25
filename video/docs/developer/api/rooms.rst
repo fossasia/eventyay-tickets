@@ -24,21 +24,22 @@ Reactions
 
 You can send a reaction like this::
 
-    => ["room.react", 123, {"room": "room_1", "reaction": "clap"}]
+    => ["room.react", 123, {"room": "room_1", "reaction": "👏"}]
     <- ["success", 123, {}]
 
 You will get a success message even if the reaction is ignored due to rate limiting.
 
 If you or someone else reacts, you receive aggregated reaction events, approximately one per second::
 
-    <= ["room.reaction", {"room": "room_1", "reactions": {"clap": 42, "+1": 12}}]
+    <= ["room.reaction", {"room": "room_1", "reactions": {"👏": 42, "👍": 12}}]
 
 Allowed reactions currently are:
 
-* ``clap``
-* ``+1``
-* ``open_mouth``
-* ``heart``
+* ``👏``
+* ``❤️``
+* ``👍``
+* ``🤣``
+* ``😮``
 
 Room management
 ---------------

@@ -15,7 +15,8 @@ import 'styles/global.styl'
 import 'roboto-fontface'
 import 'roboto-fontface/css/roboto-condensed/roboto-condensed-fontface.css'
 import '@mdi/font/css/materialdesignicons.css'
-import i18n, { init as i18nInit } from './i18n'
+import i18n, { init as i18nInit } from 'i18n'
+import { emojiPlugin } from 'lib/emoji'
 import features from 'features'
 
 async function init () {
@@ -26,6 +27,7 @@ async function init () {
 	Vue.component('scrollbars', Scrollbars)
 	Vue.component('link-icon-button', LinkIconButton)
 	Vue.use(MediaQueries)
+	Vue.use(emojiPlugin)
 	await i18nInit(Vue)
 	Vue.prototype.$features = features
 

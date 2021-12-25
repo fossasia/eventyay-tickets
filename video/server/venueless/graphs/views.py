@@ -32,6 +32,11 @@ EMOJIS = {
     "rolling_on_the_floor_laughing": urljoin(
         dirname(__file__) + "/", "data/rolling_on_the_floor_laughing.png"
     ),
+    "👏": urljoin(dirname(__file__) + "/", "data/clap.png"),
+    "👍": urljoin(dirname(__file__) + "/", "data/plus1.png"),
+    "❤️": urljoin(dirname(__file__) + "/", "data/heart.png"),
+    "😮": urljoin(dirname(__file__) + "/", "data/open_mouth.png"),
+    "🤣": urljoin(dirname(__file__) + "/", "data/rolling_on_the_floor_laughing.png"),
 }
 
 
