@@ -2,12 +2,9 @@
 
 ## Supported Versions
 
-We can currently only support the current version. At least our support matrix is simple!
-
-| Version | Supported |
-| ------- | --------- |
-| ≥ 2.3.0 | ✅        |
-| < 2.3.0 | ❌        |
+Due to limited development bandwidth, only the [most recent release](https://pypi.org/project/pretalx/#history) is
+currently supported. If you need support for previous releases, please contact
+[support@pretalx.com](mailto:support@pretalx.com).
 
 ## Reporting a Vulnerability
 
