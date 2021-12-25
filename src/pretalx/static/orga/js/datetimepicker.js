@@ -1,8 +1,9 @@
 const setDates = (picker) => {
+  const format = $("body").attr("data-dateformat")
   const minDate = $(picker).attr("data-date-start-date")
   const maxDate = $(picker).attr("data-date-end-date")
-  if (minDate) $(picker).data("DateTimePicker").minDate(minDate)
-  if (maxDate) $(picker).data("DateTimePicker").maxDate(maxDate)
+  if (minDate) $(picker).data("DateTimePicker").minDate(moment(minDate, format))
+  if (maxDate) $(picker).data("DateTimePicker").maxDate(moment(maxDate, format))
 }
 $(function() {
   "use strict"

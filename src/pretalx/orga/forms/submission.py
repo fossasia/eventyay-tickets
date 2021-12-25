@@ -1,8 +1,8 @@
-import datetime as dt
 import json
 
 from django import forms
 from django.conf import settings
+from django.utils.formats import get_format
 from django.utils.translation import gettext as _
 from django_scopes.forms import SafeModelChoiceField, SafeModelMultipleChoiceField
 
@@ -24,12 +24,17 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
                 .first()
             )
             if slot:
+                datetime_format = get_format("DATETIME_INPUT_FORMATS")[0]
                 initial_slot = {
                     "room": slot.room,
-                    "start": slot.start.astimezone(self.event.tz).isoformat()
+                    "start": slot.start.astimezone(self.event.tz).strftime(
+                        datetime_format
+                    )
                     if slot.start
                     else "",
-                    "end": slot.real_end.astimezone(self.event.tz).isoformat()
+                    "end": slot.real_end.astimezone(self.event.tz).strftime(
+                        datetime_format
+                    )
                     if slot.real_end
                     else "",
                 }
@@ -96,11 +101,6 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
                 widget=forms.DateInput(
                     attrs={
                         "class": "datetimepickerfield",
-                        "data-date-start-date": event.date_from.isoformat(),
-                        "data-date-end-date": (
-                            event.date_to + dt.timedelta(days=1)
-                        ).isoformat(),
-                        "data-date-before": "#id_end",
                     }
                 ),
                 initial=initial_slot.get("start"),
@@ -111,11 +111,6 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
                 widget=forms.DateInput(
                     attrs={
                         "class": "datetimepickerfield",
-                        "data-date-start-date": event.date_from.isoformat(),
-                        "data-date-end-date": (
-                            event.date_to + dt.timedelta(days=1)
-                        ).isoformat(),
-                        "data-date-after": "#id_start",
                     }
                 ),
                 initial=initial_slot.get("end"),
