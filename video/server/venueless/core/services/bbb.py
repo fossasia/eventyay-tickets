@@ -185,10 +185,10 @@ class BBBService:
     def __init__(self, world):
         self.world = world
 
-    async def _get(self, url):
+    async def _get(self, url, timeout=30):
         try:
             async with aiohttp.ClientSession() as session:
-                async with session.get(URL(url, encoded=True)) as resp:
+                async with session.get(URL(url, encoded=True), timeout=timeout) as resp:
                     if resp.status != 200:
                         logger.error(
                             f"Could not contact BBB. Return code: {resp.status}"
@@ -346,61 +346,78 @@ class BBBService:
             server.secret,
         )
 
-    async def get_recordings_for_room(self, room):
-        call = await get_call_for_room(room)
-        recordings_url = get_url(
-            "getRecordings",
-            {"meetingID": call.meeting_id, "state": "any"},
-            call.server.url,
-            call.server.secret,
-        )
-        root = await self._get(recordings_url)
-        if root is False:
-            return []
-
-        tz = pytz.timezone(self.world.timezone)
-        recordings = []
-        for rec in root.xpath("recordings/recording"):
-            url_presentation = url_screenshare = url_video = None
-            for f in rec.xpath("playback/format"):
-                if f.xpath("type")[0].text == "presentation":
-                    url_presentation = f.xpath("url")[0].text
-                if f.xpath("type")[0].text == "screenshare":
-                    url_screenshare = f.xpath("url")[0].text
-                if f.xpath("type")[0].text == "Video":
-                    url_video = f.xpath("url")[0].text
-                    # Work around an upstream bug
-                    if "///" in url_video:
-                        url_video = url_video.replace(
-                            "///", f"//{urlparse(recordings_url).hostname}/"
-                        )
-                if not url_presentation and not url_screenshare and not url_video:
-                    continue
-            recordings.append(
-                {
-                    "start": (
-                        # BBB outputs timestamps in server time, not UTC :( Let's assume the BBB server time
-                        # is the same as ours…
-                        datetime.fromtimestamp(
-                            int(rec.xpath("startTime")[0].text) / 1000,
-                            pytz.timezone(settings.TIME_ZONE),
-                        )
-                    )
-                    .astimezone(tz)
-                    .isoformat(),
-                    "end": (
-                        datetime.fromtimestamp(
-                            int(rec.xpath("endTime")[0].text) / 1000,
-                            pytz.timezone(settings.TIME_ZONE),
-                        )
-                    )
-                    .astimezone(tz)
-                    .isoformat(),
-                    "participants": rec.xpath("participants")[0].text,
-                    "state": rec.xpath("state")[0].text,
-                    "url": url_presentation,
-                    "url_video": url_video,
-                    "url_screenshare": url_screenshare,
-                }
+    @database_sync_to_async
+    def _get_possible_servers(self):
+        return list(
+            BBBServer.objects.filter(
+                Q(world_exclusive=self.world) | Q(world_exclusive__isnull=True),
+                active=True,
             )
+        )
+
+    async def get_recordings_for_room(self, room):
+        recordings = []
+        for server in await self._get_possible_servers():
+            try:
+                call = await get_call_for_room(room)
+                recordings_url = get_url(
+                    "getRecordings",
+                    {"meetingID": call.meeting_id, "state": "any"},
+                    server.url,
+                    server.secret,
+                )
+                root = await self._get(recordings_url, timeout=10)
+                if root is False:
+                    return []
+
+                tz = pytz.timezone(self.world.timezone)
+                for rec in root.xpath("recordings/recording"):
+                    url_presentation = url_screenshare = url_video = None
+                    for f in rec.xpath("playback/format"):
+                        if f.xpath("type")[0].text == "presentation":
+                            url_presentation = f.xpath("url")[0].text
+                        if f.xpath("type")[0].text == "screenshare":
+                            url_screenshare = f.xpath("url")[0].text
+                        if f.xpath("type")[0].text == "Video":
+                            url_video = f.xpath("url")[0].text
+                            # Work around an upstream bug
+                            if "///" in url_video:
+                                url_video = url_video.replace(
+                                    "///", f"//{urlparse(recordings_url).hostname}/"
+                                )
+                        if (
+                            not url_presentation
+                            and not url_screenshare
+                            and not url_video
+                        ):
+                            continue
+                    recordings.append(
+                        {
+                            "start": (
+                                # BBB outputs timestamps in server time, not UTC :( Let's assume the BBB server time
+                                # is the same as ours…
+                                datetime.fromtimestamp(
+                                    int(rec.xpath("startTime")[0].text) / 1000,
+                                    pytz.timezone(settings.TIME_ZONE),
+                                )
+                            )
+                            .astimezone(tz)
+                            .isoformat(),
+                            "end": (
+                                datetime.fromtimestamp(
+                                    int(rec.xpath("endTime")[0].text) / 1000,
+                                    pytz.timezone(settings.TIME_ZONE),
+                                )
+                            )
+                            .astimezone(tz)
+                            .isoformat(),
+                            "participants": rec.xpath("participants")[0].text,
+                            "state": rec.xpath("state")[0].text,
+                            "url": url_presentation,
+                            "url_video": url_video,
+                            "url_screenshare": url_screenshare,
+                        }
+                    )
+            except:
+                logger.exception(f"Could not fetch recordings from server {server}")
         return recordings

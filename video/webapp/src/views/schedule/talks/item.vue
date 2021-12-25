@@ -8,7 +8,7 @@
 			markdown-content.abstract(:markdown="talk.abstract")
 			markdown-content.biography(:markdown="talk.description")
 		.speakers(v-if="talk.speakers.length > 0")
-			.header {{ $tc('schedule/talks/item:speakers:header', talk.speakers.length)}}
+			.header {{ $t('schedule/talks/item:speakers:header', {count: talk.speakers.length})}}
 			.speakers-list
 				.speaker(v-for="speaker of talk.speakers")
 					img.avatar(v-if="speaker.avatar", :src="speaker.avatar")

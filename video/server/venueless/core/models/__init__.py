@@ -13,6 +13,7 @@ from .exhibitor import (
 from .feedback import Feedback
 from .janus import JanusServer
 from .poll import Poll, PollOption, PollVote
+from .poster import Poster, PosterLink, PosterPresenter, PosterVote
 from .question import Question, QuestionVote
 from .room import Reaction, Room, RoomView
 from .roulette import RoulettePairing, RouletteRequest
@@ -34,6 +35,10 @@ __all__ = [
     "Poll",
     "PollOption",
     "PollVote",
+    "Poster",
+    "PosterLink",
+    "PosterPresenter",
+    "PosterVote",
     "Question",
     "QuestionVote",
     "Reaction",

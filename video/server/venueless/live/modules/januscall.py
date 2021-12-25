@@ -1,3 +1,4 @@
+import hashlib
 import json
 import uuid
 
@@ -13,7 +14,7 @@ from venueless.core.services.janus import (
     JanusError,
     choose_server,
     create_videoroom,
-    videoroom_exists,
+    videoroom_add_token_if_exists,
 )
 from venueless.core.services.roulette import is_member_of_roulette_call
 from venueless.core.services.user import get_public_user
@@ -69,6 +70,9 @@ class JanusCallModule(BaseModule):
         if not self.consumer.user.profile.get("display_name"):
             raise ConsumerException("janus.join.missing_profile")
 
+        user_secret_token = hashlib.sha256(
+            f"januscall:usersecret:{settings.SECRET_KEY}:{self.consumer.user.pk}".encode()
+        ).hexdigest()
         async with aioredis() as redis:
             async with RedisLock(
                 redis,
@@ -76,6 +80,7 @@ class JanusCallModule(BaseModule):
                 timeout=90,
                 wait_timeout=90,
             ):
+
                 room_data = await redis.get(f"januscall:{redis_key}")
 
                 if room_data:
@@ -86,7 +91,12 @@ class JanusCallModule(BaseModule):
                         url=room_data["server"]
                     )
                     try:
-                        if not await videoroom_exists(server, room_data["roomId"]):
+                        if not await videoroom_add_token_if_exists(
+                            server,
+                            room_data,
+                            user_secret_token,
+                            audiobridge=room_data.get("audiobridge", False),
+                        ):
                             room_data = None
                     except JanusError as e:
                         # todo
@@ -103,6 +113,7 @@ class JanusCallModule(BaseModule):
                             janus_server,
                             room_id=str(uuid.uuid4()),
                             audiobridge=audiobridge,
+                            init_token=user_secret_token,
                         )
                         await redis.setex(
                             f"januscall:{redis_key}",
@@ -131,19 +142,26 @@ class JanusCallModule(BaseModule):
                 str(self.consumer.user.pk),
             )
 
-        room_data["sessionId"] = user_id
         if turn_server:
-            room_data["iceServers"] = turn_server.get_ice_servers()
+            iceServers = turn_server.get_ice_servers()
         else:
-            room_data["iceServers"] = []
+            iceServers = []
 
-        await self.consumer.send_success(room_data)
+        await self.consumer.send_success(
+            {
+                "token": user_secret_token,
+                "sessionId": user_id,
+                "server": room_data["server"],
+                "roomId": room_data["roomId"],
+                "iceServers": iceServers,
+            }
+        )
 
     @command("identify")
     @require_world_permission(Permission.WORLD_VIEW)
     async def identify(self, body):
         async with aioredis() as redis:
-            sessionid = body.get("id", "").split(";")[0]
+            sessionid = body.get("id", "").split("_")[0]
             userid = await redis.get(f"januscall:user:{sessionid}")
             if userid:
                 user = await get_public_user(

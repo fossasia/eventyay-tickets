@@ -199,31 +199,6 @@ class ExhibitionModule(BaseModule):
                 {"type": "exhibition.contact_close", "contact_request": request},
             )
 
-    @command("add_staff")
-    @require_world_permission(Permission.WORLD_ROOMS_CREATE_EXHIBITION)
-    async def add_staff(self, body):
-        staff = await self.service.add_staff(
-            exhibitor_id=body["exhibitor"],
-            user_id=body["user"],
-            by_user=self.consumer.user,
-        )
-        if not staff:
-            await self.consumer.send_error("exhibition.unknown_user_or_exhibitor")
-            return
-        await self.consumer.send_success()
-
-    @command("remove_staff")
-    @require_world_permission(Permission.WORLD_ROOMS_CREATE_EXHIBITION)
-    async def remove_staff(self, body):
-        if not await self.service.remove_staff(
-            exhibitor_id=body["exhibitor"],
-            user_id=body["user"],
-            by_user=self.consumer.user,
-        ):
-            await self.consumer.send_error("exhibition.unknown_user_or_exhibitor")
-            return
-        await self.consumer.send_success()
-
     @event("contact_request")
     async def contact_request(self, body):
         await self.consumer.send_json(

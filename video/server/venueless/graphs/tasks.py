@@ -285,7 +285,7 @@ def generate_views(world, input=None):
         "External ID",
         "User name",
     ]
-    for n in world.config["profile_fields"]:
+    for n in world.config.get("profile_fields", []):
         header.append(n.get("label") or "")
     ws.append(header)
     rvq = (
@@ -315,7 +315,7 @@ def generate_views(world, input=None):
                 ]
                 + [
                     (u.profile["fields"].get(n.get("id"), "") or "").strip()
-                    for n in world.config["profile_fields"]
+                    for n in world.config.get("profile_fields", [])
                 ]
             )
 
@@ -327,7 +327,7 @@ def generate_views(world, input=None):
         "External ID",
         "User name",
     ]
-    for n in world.config["profile_fields"]:
+    for n in world.config.get("profile_fields", []):
         header.append(n.get("label") or "")
     ws.append(header)
     rvq = (
@@ -356,7 +356,7 @@ def generate_views(world, input=None):
                 ]
                 + [
                     (u.profile["fields"].get(n.get("id"), "") or "").strip()
-                    for n in world.config["profile_fields"]
+                    for n in world.config.get("profile_fields", [])
                 ]
             )
 
@@ -369,7 +369,7 @@ def generate_views(world, input=None):
         "External ID",
         "User name",
     ]
-    for n in world.config["profile_fields"]:
+    for n in world.config.get("profile_fields", []):
         header.append(n.get("label") or "")
     ws.append(header)
     rvq = (
@@ -397,7 +397,7 @@ def generate_views(world, input=None):
                 ]
                 + [
                     (u.profile["fields"].get(n.get("id"), "") or "").strip()
-                    for n in world.config["profile_fields"]
+                    for n in world.config.get("profile_fields", [])
                 ]
             )
 

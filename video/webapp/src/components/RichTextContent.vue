@@ -9,7 +9,7 @@ import fullWidthFormat from 'lib/quill/fullWidthFormat'
 
 export default {
 	props: {
-		content: Object,
+		content: [Array, Object],
 	},
 	computed: {
 		renderedContent () {

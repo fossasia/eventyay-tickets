@@ -351,7 +351,7 @@ export default {
 								room: this.roomId,
 								ptype: 'publisher',
 								token: this.token,
-								id: this.sessionId + ';' + uuid(),
+								id: this.sessionId + '_' + uuid(),
 								display: 'venueless user', // we abuse janus' display name field for the venueless user id
 							}
 							this.screensharePluginHandle.send({message: register})

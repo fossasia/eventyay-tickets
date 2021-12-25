@@ -25,14 +25,9 @@ if settings.REDIS_USE_PUBSUB:
             shard_index = consistent_hash(shard_key)
         else:
             shard_index = 0
-        import logging
 
-        logging.getLogger(__name__).warning(
-            f"shard key {shard_key} {abs(hash(shard_key))} {shard_index}/{len(settings.REDIS_HOSTS)}"
-        )
         conn = await get_channel_layer()._shards[shard_index]._get_pub_conn()
         yield conn
-
 
 else:
 

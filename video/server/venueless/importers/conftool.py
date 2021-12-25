@@ -1,12 +1,23 @@
 import copy
 import hashlib
+import logging
+import re
+import string
 import time
+from io import BytesIO
 
 import dateutil.parser
 import pytz
 import requests
-from django.utils.timezone import make_aware
+from django.core.files.base import ContentFile
+from django.utils.timezone import make_aware, now
 from lxml import etree
+from pdf2image import convert_from_bytes
+
+from venueless.core.models import Poster
+from venueless.storage.models import StoredFile
+
+logger = logging.getLogger(__name__)
 
 
 def escape_markdown(text):
@@ -176,3 +187,169 @@ def fetch_schedule_from_conftool(url, password):
                 talk["room"] = result["rooms"][0]["id"]
 
     return result
+
+
+def create_posters_from_conftool(world, url, password):
+    nonce = int(time.time())
+    passhash = hashlib.sha256((str(nonce) + password).encode()).hexdigest()
+    r = requests.get(
+        f"{url}?nonce={nonce}&passhash={passhash}&page=adminExport&export_select=papers"
+        f"&form_export_papers_options[]=authors_extended_columns"
+        f"&form_export_papers_options[]=abstracts"
+        f"&form_export_papers_options[]=session"
+        f"&form_export_papers_options[]=downloads"
+        f"&form_export_papers_options[]=submitter"
+        f"&form_export_papers_options[]=newlines"
+        f"&form_export_format=xml"
+        f"&cmd_create_export=true"
+        # TODO: filter by form_track ?
+    )
+    r.encoding = "utf-8"
+    root = etree.fromstring(r.text.encode())
+
+    for paper in root.xpath("paper"):
+        try:
+            poster = Poster.objects.get(
+                world=world, import_id=f"conftool/{paper.xpath('paperID')[0].text}"
+            )
+        except Poster.DoesNotExist:
+            poster = Poster(
+                world=world,
+                import_id=f"conftool/{paper.xpath('paperID')[0].text}",
+                parent_room=[
+                    r
+                    for r in world.rooms.all()
+                    if any(m["type"] == "poster.native" for m in r.module_config)
+                ][
+                    0
+                ],  # todo: replace this hack with configuration?
+            )
+
+        poster.title = paper.xpath("title")[0].text
+        poster.tags = [
+            t.strip() for t in re.split("[;,]", paper.xpath("keywords")[0].text)
+        ]
+
+        r = poster.parent_room
+        for m in r.module_config:
+            if m["type"] == "poster.native":
+                tags = m["config"].get("tags", [])
+                for t in poster.tags:
+                    if t not in [tt["label"] for tt in tags]:
+                        tags.append({"id": t, "label": t, "color": ""})
+
+                m["config"]["tags"] = tags
+        r.save()
+
+        poster.category = paper.xpath("topics")[0].text or None
+        poster.schedule_session = paper.xpath("session_ID")[0].text or None
+        poster.abstract = {"ops": [{"insert": paper.xpath("abstract_plain")[0].text}]}
+
+        poster.authors = {
+            "organizations": [],
+            "authors": [],
+        }
+        for i in range(100):
+            if (
+                paper.xpath(f"authors_formatted_{i}_name")
+                and paper.xpath(f"authors_formatted_{i}_name")[0].text
+            ):
+                name = paper.xpath(f"authors_formatted_{i}_name")[0].text
+                orgs = []
+                for orgname in paper.xpath(f"authors_formatted_{i}_organisation")[
+                    0
+                ].text.split(";"):
+                    orgname = orgname.strip()
+                    if orgname not in poster.authors["organizations"]:
+                        poster.authors["organizations"].append(orgname)
+                    orgidx = poster.authors["organizations"].index(orgname)
+                    orgs.append(orgidx)
+                poster.authors["authors"].append({"name": name, "orgs": orgs})
+
+        poster_url = paper.xpath("download_link_a")[0].text or None
+
+        if (
+            poster_url
+            and "downloadPaper" in poster_url
+            and (not poster.poster_url or "downloadPaper" in poster.poster_url)
+        ):
+            try:
+                nonce += 1
+                passhash = hashlib.sha256((str(nonce) + password).encode()).hexdigest()
+                r = requests.get(
+                    f"{poster_url.replace('index.php', 'rest.php')}&nonce={nonce}&passhash={passhash}"
+                )
+                r.raise_for_status()
+
+                if len(r.content) > 10 * 1024 * 1024:
+                    raise ValueError("File to large")
+
+                content_types = {"application/pdf": "pdf"}
+
+                content_type = r.headers["Content-Type"].split(";")[0]
+                if content_type not in content_types:
+                    raise ValueError(f"Content {content_type} type not allowed")
+
+                linkhash = hashlib.sha256((str(poster_url)).encode()).hexdigest()
+                c = ContentFile(r.content)
+                sf = StoredFile.objects.create(
+                    world=world,
+                    date=now(),
+                    filename=f"poster_{linkhash}.{content_types[content_type]}",
+                    type=content_type,
+                    public=True,
+                )
+                sf.file.save(f"poster_{linkhash}.{content_types[content_type]}", c)
+                poster.poster_url = sf.file.url
+
+                if content_type == "application/pdf":
+                    o = BytesIO()
+                    images = convert_from_bytes(
+                        r.content,
+                        fmt="png",
+                        dpi=72,
+                        first_page=1,
+                        last_page=1,
+                    )
+                    images[0].save(o, format="PNG")
+                    o.seek(0)
+                    sf = StoredFile.objects.create(
+                        world=world,
+                        date=now(),
+                        filename=f"poster_{linkhash}_preview.png",
+                        type=content_type,
+                        public=True,
+                    )
+                    sf.file.save(
+                        f"poster_{linkhash}_preview.png", ContentFile(o.getvalue())
+                    )
+                    poster.poster_preview = sf.file.url
+
+            except Exception:
+                logger.exception("Could not download poster")
+                poster.poster_url = poster_url
+        elif not poster.poster_url:
+            poster.poster_url = poster_url
+
+        poster.save()
+
+        if poster.poster_url:
+            poster.links.update_or_create(
+                display_text=paper.xpath("original_filename_a")[0].text,
+                defaults={
+                    "url": poster.poster_url,
+                },
+            )
+
+        for fileindex in string.ascii_lowercase[1:]:
+            if not paper.xpath(f"download_link_{fileindex}"):
+                break
+
+            poster.links.update_or_create(
+                display_text=paper.xpath(f"original_filename_{fileindex}")[0].text,
+                defaults={
+                    "url": paper.xpath(f"download_link_{fileindex}")[0].text,
+                },
+            )
+
+        # todo: presenters

@@ -369,7 +369,7 @@ export default {
 							const register = {
 								request: 'join',
 								room: this.roomId,
-								id: this.sessionId + ';screenshare;' + uuid(),
+								id: this.sessionId + '_screenshare_' + uuid(),
 								ptype: 'publisher',
 								token: this.token,
 								display: 'new user'
@@ -478,7 +478,7 @@ export default {
 			localStorage.videoOutput = false
 
 			for (const h of this.feeds) {
-				if (!h.rfid.includes(';screenshare;'))
+				if (!h.rfid.includes('_screenshare_'))
 					h.hangup()
 			}
 
@@ -594,7 +594,7 @@ export default {
 				})
 		},
 		subscribeRemoteVideo (id, display, audio, video) {
-			if (!this.videoOutput && !id.includes(';screenshare;')) {
+			if (!this.videoOutput && !id.includes('_screenshare_')) {
 				return
 			}
 			let remoteFeed = null
@@ -616,7 +616,7 @@ export default {
 					// In case you don't want to receive audio, video or data, even if the
 					// publisher is sending them, set the 'offer_audio', 'offer_video' or
 					// 'offer_data' properties to false (they're true by default), e.g
-					subscribe.offer_video = this.videoOutput || id.includes(';screenshare;')
+					subscribe.offer_video = this.videoOutput || id.includes('_screenshare_')
 					// For example, if the publisher is VP8 and this is Safari, let's avoid video
 					if (Janus.webRTCAdapter.browserDetails.browser === 'safari' &&
 						(video === 'vp9' || (video === 'vp8' && !Janus.safariVp8))) {

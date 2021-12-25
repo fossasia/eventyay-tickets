@@ -1,10 +1,12 @@
 import re
 from urllib.parse import urlsplit
 
+from decorator_include import decorator_include
 from django.conf import settings
 from django.urls import include, re_path
 from django.views.generic import RedirectView
 from django.views.static import serve
+from multifactor.decorators import multifactor_protected
 
 from .api.urls import urlpatterns as api_patterns
 from .control import urls as control
@@ -37,7 +39,17 @@ urlpatterns = (
         re_path(r"zoom/", include((zoom, "zoom"), namespace="zoom")),
         re_path(r"storage/", include((storage, "storage"), namespace="storage")),
         re_path("control$", RedirectView.as_view(url="/control/")),
-        re_path("control/", include((control, "control"), namespace="control")),
+        re_path("control/multifactor/", include("multifactor.urls")),
+        re_path(
+            "control/",
+            decorator_include(
+                multifactor_protected(
+                    factors=1 if settings.VENUELESS_MULTIFACTOR_REQUIRE else 0
+                ),
+                (control, "control"),
+                namespace="control",
+            ),
+        ),
         re_path(r"", include((live, "live"), namespace="live")),
     ]
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -15,6 +15,7 @@ import Speaker from 'views/schedule/speakers/item'
 import Exhibitor from 'views/exhibitors/item'
 import ContactRequests from 'views/contact-requests'
 import Preferences from 'views/preferences'
+
 Vue.use(VueRouter)
 
 const routes = [{
@@ -94,6 +95,11 @@ const routes = [{
 		name: 'preferences',
 		component: Preferences
 	}, {
+		path: '/posters/:posterId',
+		name: 'poster',
+		component: () => import(/* webpackChunkName: "posters" */ 'views/posters/item'),
+		props: true
+	}, {
 		path: '/manage-exhibitors',
 		name: 'exhibitors',
 		component: () => import(/* webpackChunkName: "exhibitors" */ 'views/exhibitor-manager')
@@ -101,6 +107,22 @@ const routes = [{
 		path: '/manage-exhibitors/:exhibitorId',
 		name: 'exhibitors:exhibitor',
 		component: () => import(/* webpackChunkName: "exhibitors" */ 'views/exhibitor-manager/exhibitor'),
+		props: true
+	}, {
+		path: '/manage-posters',
+		name: 'posters',
+		component: () => import(/* webpackChunkName: "posters" */ 'views/poster-manager')
+	}, {
+		path: '/manage-posters/create',
+		name: 'posters:create-poster',
+		component: () => import(/* webpackChunkName: "posters" */ 'views/poster-manager/poster'),
+		props: {
+			create: true
+		}
+	}, {
+		path: '/manage-posters/:posterId',
+		name: 'posters:poster',
+		component: () => import(/* webpackChunkName: "posters" */ 'views/poster-manager/poster'),
 		props: true
 	}, {
 		path: '/admin',

@@ -15,7 +15,6 @@ import 'styles/global.styl'
 import 'roboto-fontface'
 import 'roboto-fontface/css/roboto-condensed/roboto-condensed-fontface.css'
 import '@mdi/font/css/materialdesignicons.css'
-import './registerServiceWorker'
 import i18n, { init as i18nInit } from 'i18n'
 import { emojiPlugin } from 'lib/emoji'
 import features from 'features'
@@ -70,3 +69,11 @@ async function init () {
 }
 
 init()
+
+// remove all old service workers
+navigator.serviceWorker?.getRegistrations().then((registrations) => {
+	for (const registration of registrations) {
+		console.warn('Removed an old service worker')
+		registration.unregister()
+	}
+})

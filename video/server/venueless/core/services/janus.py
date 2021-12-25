@@ -35,7 +35,7 @@ def choose_server(world):
         return server
 
 
-async def videoroom_exists(server, roomid):
+async def videoroom_add_token_if_exists(server, room_data, token, audiobridge=False):
     # todo: handle connection errors to janus, encapsulate room creation into service
     async with websockets.connect(
         server.url, subprotocols=["janus-protocol"]
@@ -69,7 +69,7 @@ async def videoroom_exists(server, roomid):
                     "janus": "message",
                     "body": {
                         "request": "exists",
-                        "room": roomid,
+                        "room": room_data["roomId"],
                     },
                     "transaction": get_random_string(),
                     "session_id": session_id,
@@ -84,11 +84,85 @@ async def videoroom_exists(server, roomid):
         if "error" in resp["plugindata"]["data"]:
             raise JanusPluginError(resp["plugindata"]["data"]["error"])
 
-        return resp["plugindata"]["data"]["exists"]
+        exists = resp["plugindata"]["data"]["exists"]
+
+        if exists:
+            await websocket.send(
+                json.dumps(
+                    {
+                        # Docs: https://janus.conf.meetecho.com/docs/videoroom.html
+                        "janus": "message",
+                        "body": {
+                            "request": "allowed",
+                            "secret": hashlib.sha256(
+                                f"{server.room_create_key}:secret:{room_data['seed']}".encode()
+                            ).hexdigest(),
+                            "room": room_data["roomId"],
+                            "action": "add",
+                            "allowed": [token],
+                        },
+                        "transaction": get_random_string(),
+                        "session_id": session_id,
+                        "handle_id": handle_id,
+                    }
+                )
+            )
+            resp = json.loads(await websocket.recv())
+
+            if resp["janus"] != "success":
+                raise JanusError(repr(resp))
+            if "error" in resp["plugindata"]["data"]:
+                raise JanusPluginError(resp["plugindata"]["data"]["error"])
+
+            if audiobridge:
+                await websocket.send(
+                    json.dumps(
+                        {
+                            "janus": "attach",
+                            "plugin": "janus.plugin.audiobridge",
+                            "transaction": get_random_string(),
+                            "session_id": session_id,
+                        }
+                    )
+                )
+                resp = json.loads(await websocket.recv())
+                if resp["janus"] != "success":
+                    raise JanusError(repr(resp))
+
+                audio_handle_id = resp["data"]["id"]
+                await websocket.send(
+                    json.dumps(
+                        {
+                            # Docs: https://janus.conf.meetecho.com/docs/videoroom.html
+                            "janus": "message",
+                            "body": {
+                                "request": "allowed",
+                                "secret": hashlib.sha256(
+                                    f"{server.room_create_key}:secret:{room_data['seed']}".encode()
+                                ).hexdigest(),
+                                "room": room_data["roomId"],
+                                "action": "add",
+                                "allowed": [token],
+                            },
+                            "transaction": get_random_string(),
+                            "session_id": session_id,
+                            "handle_id": audio_handle_id,
+                        }
+                    )
+                )
+                resp = json.loads(await websocket.recv())
+
+                if resp["janus"] != "success":
+                    raise JanusError(repr(resp))
+                if "error" in resp["plugindata"]["data"]:
+                    raise JanusPluginError(resp["plugindata"]["data"]["error"])
+
+        return exists
 
 
-async def create_videoroom(server, room_id, audiobridge=False, bitrate=200_000):
-    token = get_random_string(16)
+async def create_videoroom(
+    server, room_id, init_token, audiobridge=False, bitrate=200_000
+):
     seed = get_random_string(16)
     # todo: handle connection errors to janus, encapsulate room creation into service
     async with websockets.connect(
@@ -134,7 +208,7 @@ async def create_videoroom(server, room_id, audiobridge=False, bitrate=200_000):
                         "lock_record": True,
                         "notify_joining": True,
                         "publishers": 100,  # todo
-                        "allowed": [token],
+                        "allowed": [init_token],
                         "bitrate": bitrate,
                     },
                     "transaction": get_random_string(),
@@ -187,7 +261,7 @@ async def create_videoroom(server, room_id, audiobridge=False, bitrate=200_000):
                             "audio_active_packets": 50,
                             "audio_level_average": 50,
                             "is_private": True,
-                            "allowed": [token],
+                            "allowed": [init_token],
                             "record": False,
                         },
                         "transaction": get_random_string(),
@@ -206,7 +280,6 @@ async def create_videoroom(server, room_id, audiobridge=False, bitrate=200_000):
     return {
         "server": server.url,
         "roomId": room_id,
-        "token": token,
         "seed": seed,
         "audiobridge": audiobridge,
     }

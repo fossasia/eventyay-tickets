@@ -3,7 +3,7 @@
 	template(v-if="user")
 		.ui-page-header
 			bunt-icon-button(@click="$router.push({name: 'admin:users'})") arrow_left
-			h2 User: {{ (user.profile && user.profile.display_name) || user.id }}
+			h1 User: {{ (user.profile && user.profile.display_name) || user.id }}
 			.actions(v-if="user.id !== ownUser.id")
 				bunt-button.btn-dm(@click="openDM") message
 				bunt-button.btn-call( @click="startCall") call
@@ -121,12 +121,6 @@ export default {
 		background-color: $clr-grey-100
 		.bunt-icon-button
 			margin-right: 8px
-		h2
-			flex: auto
-			font-size: 21px
-			font-weight: 500
-			margin: 1px 16px 0 0
-			ellipsis()
 		.actions
 			display: flex
 			flex: none
