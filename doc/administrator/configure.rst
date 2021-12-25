@@ -8,11 +8,15 @@ combine those two options, and their precedence is in this order:
 
 1. Environment variables
 2. Configuration files
-  - The config file in the environment variable ``PRETALX_CONFIG_FILE`` if present, **or**:
-  - The following three configuration files in this order:
-    - The config file ``pretalx.cfg`` in the ``src`` directory, next to the ``pretalx.example.cfg`` file.
-    - The config file ``~/.pretalx.cfg`` in the home of the executing user.
-    - The config file ``/etc/pretalx/pretalx.cfg``
+
+   * The config file in the environment variable ``PRETALX_CONFIG_FILE`` if present, **or**
+
+   * The following three configuration files in this order:
+
+      - The config file ``pretalx.cfg`` in the ``src`` directory, next to the ``pretalx.example.cfg`` file.
+      - The config file ``~/.pretalx.cfg`` in the home of the executing user.
+      - The config file ``/etc/pretalx/pretalx.cfg``
+
 3. Sensible defaults
 
 This page explains the options grouped by configuration file sections. You'll
@@ -102,7 +106,7 @@ The site section
 - **Default**: ``/media/``
 
 ``static``
-~~~~~~~~~
+~~~~~~~~~~
 
 - The URL under which the static files should be. This includes all JavaScript and CSS files that
   are packaged with pretalx. If you change this value, remember to change your web server configuration,

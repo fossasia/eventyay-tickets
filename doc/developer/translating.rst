@@ -40,7 +40,19 @@ If you visit `translate.pretalx.com`_ for the first time, it will look a bit bar
 Once you create an account – which you can either do with your email address or
 by signing in with GitHub – you can look at and edit translations.
 
-First off, take care to change your preferences so that you'll be presented with the languages
+First off, take care to change your preferences so that you'll be presented
+with the languages you want to translate. You can do this in your profile
+settings, which you can find when clicking your profile picture in the upper
+right.
 
+Then, click through the missing translations for your language by going to
+the pretalx project dashboard. You can add new translations by clicking on
+the “Strings needing action” link for your language.
+
+In the translate view, you can input your translation for a given source
+string. If you’re unsure about your translation, you can also just “Suggest” it
+or mark it as “Needs editing”. If you have no idea, just “Skip”. If you scroll
+down, there is also a “Comments” section to discuss any questions with fellow
+translators or us developers.
 
 .. _translate.pretalx.com: https://translate.pretalx.com

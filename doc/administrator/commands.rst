@@ -159,7 +159,7 @@ Development commands
 --------------------
 
 ``python -m pretalx makemessages``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This command regenerates translation files. It should only be used during
 pretalx development.
