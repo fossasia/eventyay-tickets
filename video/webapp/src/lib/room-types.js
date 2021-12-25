@@ -39,6 +39,13 @@ const ROOM_TYPES = [{
 	description: 'Using an exhibition room, sponsors or exhibitors can present themselves to your audience.',
 	startingModule: 'exhibition.native'
 }, {
+	id: 'posters',
+	icon: 'domain',
+	name: 'Poster Hall',
+	description: 'Hang your posters high!',
+	startingModule: 'poster.native',
+	behindFeatureFlag: 'poster'
+}, {
 	id: 'channel-roulette',
 	icon: 'webcam',
 	name: 'Random video calls',

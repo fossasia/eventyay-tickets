@@ -22,7 +22,7 @@
 				.live-indicator(v-if="!offline && isLive") live
 				.buffer
 				bunt-icon-button(v-if="hasAlternativeStreams", @click="showSourceChooser = !showSourceChooser") movie
-				bunt-icon-button(v-if="!offline && textTracks.length > 0", @click="showCaptionsChooser = !showCaptionsChooser") {{ textTracks.some(t => t.mode === 'showing') ? 'closed-caption' : 'closed-caption-outline' }}
+				bunt-icon-button(v-if="!offline && textTracks.length > 0", @click="toggleCaptions") {{ textTracks.some(t => t.mode === 'showing') ? 'closed-caption' : 'closed-caption-outline' }}
 				bunt-icon-button(v-else-if="!offline && module.config.subtitle_url", @click="openExternalSubtitles") closed-caption-outline
 				bunt-icon-button(v-if="!offline", @click="showLevelChooser = !showLevelChooser") {{ levelIcon }}
 				bunt-icon-button(v-if="!offline", @click="toggleVolume") {{ muted || volume === 0 ? 'volume_off' : 'volume_high' }}
@@ -306,6 +306,17 @@ export default {
 			}
 			this.showSourceChooser = false
 		},
+		toggleCaptions () {
+			if (this.$refs.video.textTracks.length === 1) {
+				// single track: just toggle
+				this.$refs.video.textTracks.forEach((t) => {
+					t.mode = t.mode == 'showing' ? 'hidden' : 'showing'
+				})
+			} else {
+				// multiple tracks: allow to choose which one
+				this.showCaptionsChooser = true
+			}
+		},
 		chooseTextTrack (track) {
 			this.$refs.video.textTracks.forEach((t) => {
 				if (track !== null && t.label === track.label) {
@@ -338,7 +349,7 @@ export default {
 		onTextTracksChanged () {
 			const newList = []
 			this.$refs.video.textTracks.forEach((t) => {
-				if (t.kind === 'captions') {
+				if (t.kind === 'captions' || t.kind === 'subtitles') {
 					newList.push({
 						label: t.label,
 						language: t.language,

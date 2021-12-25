@@ -9,7 +9,7 @@
 				template(v-if="inferredType")
 					bunt-input(v-if="inferredType.id === 'stage'", name="pretalx_id", v-model="config.pretalx_id", label="pretalx ID", :validation="$v.config.pretalx_id")
 					bunt-checkbox(v-if="inferredType.id === 'channel-text'", name="force_join", v-model="config.force_join", label="Force join on login (use for non-volatile, text-based chats only!!)")
-			component.stage-settings(v-if="inferredType && typeComponents[inferredType.id]", :is="typeComponents[inferredType.id]", :config="config", :modules="modules")
+			component.stage-settings(ref="settings", v-if="inferredType && typeComponents[inferredType.id]", :is="typeComponents[inferredType.id]", :config="config", :modules="modules")
 	.ui-form-actions
 		bunt-button.btn-save(@click="save", :loading="saving", :error-message="error") {{ creating ? 'create' : 'save' }}
 		.errors {{ validationErrors.join(', ') }}
@@ -27,6 +27,7 @@ import ChannelBBB from './types-edit/channel-bbb'
 import ChannelJanus from './types-edit/channel-janus'
 import ChannelZoom from './types-edit/channel-zoom'
 import ChannelRoulette from './types-edit/channel-roulette'
+import Posters from './types-edit/posters'
 
 export default {
 	components: { Prompt },
@@ -50,7 +51,8 @@ export default {
 				'channel-bbb': ChannelBBB,
 				'channel-roulette': ChannelRoulette,
 				'channel-janus': ChannelJanus,
-				'channel-zoom': ChannelZoom
+				'channel-zoom': ChannelZoom,
+				posters: Posters
 			},
 			saving: false,
 			error: null
@@ -89,6 +91,7 @@ export default {
 			this.error = null
 			this.$v.$touch()
 			if (this.$v.$invalid) return
+			this.$refs.settings?.beforeSave?.()
 			this.saving = true
 			try {
 				let roomId = this.config.id

@@ -15,6 +15,7 @@
 	UserListPage(v-else-if="modules['page.userlist']", :module="modules['page.userlist']")
 	iframe-page(v-else-if="modules['page.iframe']", :module="modules['page.iframe']")
 	exhibition(v-else-if="modules['exhibition.native']", :room="room")
+	poster-hall(v-else-if="modules['poster.native']", :room="room")
 	chat(v-if="room.modules.length === 1 && modules['chat.native']", :room="room", :module="modules['chat.native']", mode="standalone", :key="room.id")
 	.room-sidebar(v-else-if="modules['chat.native'] || modules['question'] || modules['poll']", :class="unreadTabsClasses", role="complementary")
 		bunt-tabs(v-if="(!!modules['question'] + !!modules['poll'] + !!modules['chat.native']) > 1 && activeSidebarTab", :active-tab="activeSidebarTab")
@@ -40,12 +41,13 @@ import ReactionsOverlay from 'components/ReactionsOverlay'
 import Roulette from 'components/Roulette'
 import UserListPage from 'components/UserListPage'
 import Polls from 'components/Polls'
+import PosterHall from 'components/PosterHall'
 import Questions from 'components/Questions'
 import MediaSourcePlaceholder from 'components/MediaSourcePlaceholder'
 
 export default {
 	name: 'Room',
-	components: { Chat, Exhibition, LandingPage, MarkdownPage, StaticPage, IframePage, ReactionsBar, ReactionsOverlay, UserListPage, Roulette, Polls, Questions, MediaSourcePlaceholder },
+	components: { Chat, Exhibition, LandingPage, MarkdownPage, StaticPage, IframePage, ReactionsBar, ReactionsOverlay, UserListPage, Roulette, Polls, PosterHall, Questions, MediaSourcePlaceholder },
 	props: {
 		room: Object,
 		modules: Object

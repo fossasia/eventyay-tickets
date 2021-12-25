@@ -37,6 +37,9 @@ export default {
 	},
 	computed: {
 		module () {
+			if (!this.room) {
+				return null
+			}
 			return this.room.modules.find(module => ['livestream.native', 'livestream.youtube', 'livestream.iframe', 'call.bigbluebutton', 'call.janus', 'call.zoom'].includes(module.type))
 		},
 		inRoomManager () {
@@ -54,7 +57,10 @@ export default {
 		}
 	},
 	async mounted () {
-		if (this.room) api.call('room.enter', {room: this.room.id})
+		if (!this.room) {
+			return
+		}
+		api.call('room.enter', {room: this.room.id})
 		try {
 			let iframeUrl
 			let hideIfBackground = false
