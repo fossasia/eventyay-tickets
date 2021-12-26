@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-12-24 20:56+0000\n"
+"POT-Creation-Date: 2021-12-26 23:24+0000\n"
 "PO-Revision-Date: 2021-09-13 11:09+0000\n"
 "Last-Translator: hamza Hamwie <hamza@live.hk>\n"
 "Language-Team: none\n"
@@ -58,7 +58,7 @@ msgstr ""
 
 #: pretalx/agenda/templates/agenda/changelog.html:11
 #: pretalx/agenda/templates/agenda/header_row.html:16
-#: pretalx/orga/forms/schedule.py:208 pretalx/orga/forms/schedule.py:212
+#: pretalx/orga/forms/schedule.py:209 pretalx/orga/forms/schedule.py:213
 #: pretalx/orga/templates/orga/schedule/release.html:74
 #: pretalx/orga/templates/orga/schedule/release.html:75
 msgid "Version"
@@ -1644,18 +1644,33 @@ msgstr ""
 "الايميل: support@pretalx.com !\n"
 
 #: pretalx/common/models/settings.py:101
-#, python-brace-format
+#, fuzzy, python-brace-format
+#| msgid ""
+#| "Hi,\n"
+#| "\n"
+#| "just writing you to let you know that your Call for Participation is now\n"
+#| "closed. You'll find a list of all your {submission_count} proposals "
+#| "here:\n"
+#| "{event_submissions}\n"
+#| "\n"
+#| "You can add reviewers here: {event_team}\n"
+#| "You can review proposals here: {event_review}\n"
+#| "And create your schedule here, once you have accepted proposals: "
+#| "{event_schedule}\n"
 msgid ""
 "Hi,\n"
 "\n"
 "just writing you to let you know that your Call for Participation is now\n"
-"closed. You'll find a list of all your {submission_count} proposals here:\n"
-"{event_submissions}\n"
+"closed. Here is a list of links that should be useful in the next days:\n"
 "\n"
-"You can add reviewers here: {event_team}\n"
-"You can review proposals here: {event_review}\n"
-"And create your schedule here, once you have accepted proposals: "
-"{event_schedule}\n"
+"- You'll find a list of all your {submission_count} proposals here:\n"
+"  {event_submissions}\n"
+"- You can add reviewers here:\n"
+"  {event_team}\n"
+"- You can review proposals here:\n"
+"  {event_review}\n"
+"- And create your schedule here, once you have accepted proposals:\n"
+"  {event_schedule}\n"
 msgstr ""
 "نرحب بك،\n"
 "\n"
@@ -1667,7 +1682,7 @@ msgstr ""
 "يمكنك مراجعة العروض هنا: {event_review}\n"
 "وأنشئ جدولك هنا ، بمجرد قبولك للعروض: {event_schedule}\n"
 
-#: pretalx/common/models/settings.py:119
+#: pretalx/common/models/settings.py:123
 #, python-brace-format
 msgid ""
 "Hi,\n"
@@ -3545,59 +3560,59 @@ msgstr "المجموعة المستهدفة"
 msgid "All proposals"
 msgstr "جميع الطلبات (المقترحات)"
 
-#: pretalx/orga/forms/schedule.py:79
+#: pretalx/orga/forms/schedule.py:80
 msgid "Speaker IDs"
 msgstr "الملف التعريقي الخاص بالمتحدثين"
 
-#: pretalx/orga/forms/schedule.py:81
+#: pretalx/orga/forms/schedule.py:82
 msgid "The unique ID of a speaker is used in the speaker URL and in exports"
 msgstr "يتم استخدام المعرف في عنوان URL الخاص بالمتحدث وأثناء عمليات التصدير"
 
-#: pretalx/orga/forms/schedule.py:86
+#: pretalx/orga/forms/schedule.py:87
 msgid "Speaker names"
 msgstr "أسماء المتحدثين"
 
-#: pretalx/orga/forms/schedule.py:90 pretalx/orga/forms/submission.py:90
+#: pretalx/orga/forms/schedule.py:91 pretalx/orga/forms/submission.py:95
 msgid "Room"
 msgstr "الغرفة"
 
-#: pretalx/orga/forms/schedule.py:91
+#: pretalx/orga/forms/schedule.py:92
 msgid "The room this talk is scheduled in, if any"
 msgstr "الغرفة التي تمت جدولة هذا الحديث فيها ، إن وجدت"
 
-#: pretalx/orga/forms/schedule.py:95 pretalx/orga/forms/submission.py:95
+#: pretalx/orga/forms/schedule.py:96 pretalx/orga/forms/submission.py:100
 msgid "Start"
 msgstr "ابدأ"
 
-#: pretalx/orga/forms/schedule.py:96
+#: pretalx/orga/forms/schedule.py:97
 msgid "When the talk starts, if it is currently scheduled"
 msgstr "عندما يبدأ الحديث ، إذا كان مجدولًابالةقت الحالي"
 
-#: pretalx/orga/forms/schedule.py:100 pretalx/orga/forms/submission.py:110
+#: pretalx/orga/forms/schedule.py:101 pretalx/orga/forms/submission.py:110
 msgid "End"
 msgstr "إغلاق"
 
-#: pretalx/orga/forms/schedule.py:101
+#: pretalx/orga/forms/schedule.py:102
 msgid "When the talk ends, if it is currently scheduled"
 msgstr "عند انتهاء الحديث ، إذا كان مجدولًا بالوقت الحالي"
 
-#: pretalx/orga/forms/schedule.py:105
+#: pretalx/orga/forms/schedule.py:106
 msgid "Median score"
 msgstr "متوسط النتائج"
 
-#: pretalx/orga/forms/schedule.py:106
+#: pretalx/orga/forms/schedule.py:107
 msgid "Median review score, if there have been reviews yet"
 msgstr "متوسط نتائج التقييم ، إذا كانت هناك تقيمات حتى الآن"
 
-#: pretalx/orga/forms/schedule.py:110
+#: pretalx/orga/forms/schedule.py:111
 msgid "Average (mean) score"
 msgstr "متوسط النتائج mean)"
 
-#: pretalx/orga/forms/schedule.py:111
+#: pretalx/orga/forms/schedule.py:112
 msgid "Average review score, if there have been reviews yet"
 msgstr "متوسط نتائج التقييم ، إذا كانت هناك تقييمات حتى الآن"
 
-#: pretalx/orga/forms/schedule.py:192 pretalx/orga/forms/schedule.py:196
+#: pretalx/orga/forms/schedule.py:193 pretalx/orga/forms/schedule.py:197
 #: pretalx/orga/templates/orga/base.html:339
 msgid "Rooms"
 msgstr "الغرف"
@@ -3645,35 +3660,35 @@ msgstr "الصورة"
 msgid "The link to the speaker's profile picture"
 msgstr "رابط صورة الملف الشخصي للمتحدث"
 
-#: pretalx/orga/forms/submission.py:64
+#: pretalx/orga/forms/submission.py:69
 msgid "Speaker email"
 msgstr "ايميل المتحدث"
 
-#: pretalx/orga/forms/submission.py:66
+#: pretalx/orga/forms/submission.py:71
 msgid ""
 "The email address of the speaker holding the session. They will be invited "
 "to create an account."
 msgstr ""
 "عنوان البريد الإلكتروني للمتحدث الذي يعقد الجلسة. ستتم دعوتهم لإنشاء حساب."
 
-#: pretalx/orga/forms/submission.py:71
+#: pretalx/orga/forms/submission.py:76
 msgid "Speaker name"
 msgstr "اسم المتحدث"
 
-#: pretalx/orga/forms/submission.py:73
+#: pretalx/orga/forms/submission.py:78
 msgid "The name of the speaker that should be displayed publicly."
 msgstr "اسم المتحدث الذي يجب مشاركته مع العامة."
 
-#: pretalx/orga/forms/submission.py:79
+#: pretalx/orga/forms/submission.py:84
 #: pretalx/submission/models/submission.py:144
 msgid "Proposal state"
 msgstr "حالة المقترح"
 
-#: pretalx/orga/forms/submission.py:255
+#: pretalx/orga/forms/submission.py:250
 msgid "Mark the new state as 'pending'?"
 msgstr ""
 
-#: pretalx/orga/forms/submission.py:257
+#: pretalx/orga/forms/submission.py:252
 #: pretalx/orga/templates/orga/review/dashboard.html:220
 msgid ""
 "If you mark state changes as pending, they won't be visible to speakers "
@@ -7083,28 +7098,28 @@ msgid "German (formal)"
 msgstr "ألماني (رسمي)"
 
 #: pretalx/settings.py:373
-msgid "Arabic"
-msgstr "العربية"
+msgid "Spanish"
+msgstr "الاسبانية"
 
 #: pretalx/settings.py:379
-msgid "Traditional Chinese (Taiwan)"
-msgstr "الصينية (تايوان)"
+msgid "Brasilian Portuguese"
+msgstr ""
 
 #: pretalx/settings.py:386
 msgid "French"
 msgstr "فرنسي"
 
 #: pretalx/settings.py:392
+msgid "Arabic"
+msgstr "العربية"
+
+#: pretalx/settings.py:398
 msgid "Japanese"
 msgstr "اليابانية"
 
-#: pretalx/settings.py:399
-msgid "Spanish"
-msgstr "الاسبانية"
-
 #: pretalx/settings.py:405
-msgid "Brasilian Portuguese"
-msgstr ""
+msgid "Traditional Chinese (Taiwan)"
+msgstr "الصينية (تايوان)"
 
 #: pretalx/submission/exporters.py:18
 msgid "Answered speaker questions"

@@ -101,12 +101,16 @@ hierarkey.add_default(
             """Hi,
 
 just writing you to let you know that your Call for Participation is now
-closed. You'll find a list of all your {submission_count} proposals here:
-{event_submissions}
+closed. Here is a list of links that should be useful in the next days:
 
-You can add reviewers here: {event_team}
-You can review proposals here: {event_review}
-And create your schedule here, once you have accepted proposals: {event_schedule}
+- You'll find a list of all your {submission_count} proposals here:
+  {event_submissions}
+- You can add reviewers here:
+  {event_team}
+- You can review proposals here:
+  {event_review}
+- And create your schedule here, once you have accepted proposals:
+  {event_schedule}
 """
         )
     ),
