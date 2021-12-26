@@ -28,6 +28,7 @@ import ChannelJanus from './types-edit/channel-janus'
 import ChannelZoom from './types-edit/channel-zoom'
 import ChannelRoulette from './types-edit/channel-roulette'
 import Posters from './types-edit/posters'
+import PageLanding from './types-edit/page-landing'
 
 export default {
 	components: { Prompt },
@@ -48,6 +49,7 @@ export default {
 				stage: Stage,
 				'page-static': PageStatic,
 				'page-iframe': PageIframe,
+				'page-landing': PageLanding,
 				'channel-bbb': ChannelBBB,
 				'channel-roulette': ChannelRoulette,
 				'channel-janus': ChannelJanus,
