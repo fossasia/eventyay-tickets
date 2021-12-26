@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :release:`2.3.1 <2021-12-26>`
 - :bug:`1243` Fix bug in setting proposal start times.
 - :feature:`-` The new pending state feature is now available in custom JSON and CSV exports.
 - :release:`2.3.0 <2021-12-24>`
