@@ -155,6 +155,20 @@ The ``--slug`` flag allows you to specify the slug of the event to be created.
 It defaults to ``democon``. Please only use alphanumerical characters and ``-``
 in the slug, otherwise you won't be able to see the event in the web interface.
 
+``python -m pretalx move_event``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This command will move a given event (with the ``--event <event_slug>``
+parameter) event. By default, the event start date will be set to the current
+day, but youc can configure any date using the ``--date 2021-12-26`` argument.
+
+Data moved includes event start and end dates and the dates of all talks, both
+current and historical. No new schedule versions will need to be created.
+
+This command is intended to be used with demo or test events. If you move an
+actual event like this, be prepared for some odd behaviour and please release a
+new schedule version to make sure external tools can process the changes.
+
 Development commands
 --------------------
 

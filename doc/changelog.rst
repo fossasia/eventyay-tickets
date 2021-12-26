@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :support:`-` With the new ``move_event`` command, you can move events to the current day (default) or any other date, like this: ``move_event --event <event_name> --date 2021-12-26``
 - :release:`2.3.1 <2021-12-26>`
 - :bug:`1243` Fix bug in setting proposal start times.
 - :feature:`-` The new pending state feature is now available in custom JSON and CSV exports.
