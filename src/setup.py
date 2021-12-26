@@ -1,13 +1,14 @@
 import codecs
 import sys
 from distutils.command.build import build
-from os import environ, path
+from os import environ
+from pathlib import Path
 
 from setuptools import find_packages, setup
 
 from pretalx import __version__ as pretalx_version
 
-here = path.abspath(path.dirname(__file__))
+here = Path(__file__).resolve().parent
 
 CURRENT_PYTHON = sys.version_info[:2]
 REQUIRED_PYTHON = (3, 7)
@@ -34,7 +35,7 @@ version of Python.
 
 # Get the long description from the relevant file
 try:
-    with codecs.open(path.join(here, "../README.rst"), encoding="utf-8") as f:
+    with codecs.open(here.parent / "README.rst", encoding="utf-8") as f:
         long_description = f.read()
 except:  # noqa
     long_description = ""
