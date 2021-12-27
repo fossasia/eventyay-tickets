@@ -375,6 +375,7 @@ LOGGING = {
 
 if DEBUG:
     import logging
+
     logging.getLogger("matplotlib").setLevel(logging.WARNING)
 
 REST_FRAMEWORK = {
