@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`1244` Removed incorrect link to email editor from speaker pages.
 - :support:`-` With the new ``move_event`` command, you can move events to the current day (default) or any other date, like this: ``move_event --event <event_name> --date 2021-12-26``
 - :release:`2.3.1 <2021-12-26>`
 - :bug:`1243` Fix bug in setting proposal start times.
