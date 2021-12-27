@@ -1,9 +1,9 @@
 <template lang="pug">
 .c-schedule
 	template(v-if="schedule")
-		.timezone-control
-			p timezone:
-			timezone-changer
+		//- .timezone-control
+		//- 	p timezone:
+		//- 	timezone-changer
 		bunt-tabs.days(v-if="days && days.length > 1", :active-tab="currentDay.toISOString()", ref="tabs", v-scrollbar.x="")
 			bunt-tab(v-for="day in days", :id="day.toISOString()", :header="moment(day).format('dddd DD. MMMM')", @selected="changeDay(day)")
 		grid-schedule(v-if="$mq.above['m']", :currentDay="currentDay", @changeDay="currentDay = $event")
