@@ -158,6 +158,10 @@ const routes = [{
 			name: 'admin:config',
 			component: () => import(/* webpackChunkName: "admin" */ 'views/admin/config/main')
 		}, {
+			path: 'schedule',
+			name: 'admin:config:schedule',
+			component: () => import(/* webpackChunkName: "admin" */ 'views/admin/config/schedule')
+		}, {
 			path: 'theme',
 			name: 'admin:config:theme',
 			component: () => import(/* webpackChunkName: "admin" */ 'views/admin/config/theme')

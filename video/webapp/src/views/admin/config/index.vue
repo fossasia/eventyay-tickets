@@ -3,6 +3,7 @@
 	nav.admin-nav
 		h1 Configuration
 		router-link(:to="{name: 'admin:config'}") Event
+		router-link(:to="{name: 'admin:config:schedule'}") Schedule
 		router-link(:to="{name: 'admin:config:theme'}") Theme
 		router-link(:to="{name: 'admin:config:permissions'}") Permissions
 		router-link(:to="{name: 'admin:config:registration'}") User Profile

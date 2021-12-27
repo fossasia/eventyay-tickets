@@ -1,6 +1,5 @@
 const path = require('path')
 const webpack = require('webpack')
-const MomentLocalesPlugin = require('moment-locales-webpack-plugin')
 const MomentTimezoneDataPlugin = require('moment-timezone-data-webpack-plugin')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
