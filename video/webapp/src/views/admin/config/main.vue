@@ -12,23 +12,6 @@
 			bunt-select(v-model="config.dateLocale", label="Date locale", name="dateLocale", :options="momentLocales")
 			bunt-input(v-model="config.timezone", label="Time zone", name="timezone", :validation="$v.config.timezone")
 			bunt-input(v-model="config.connection_limit", label="Connection limit", name="connection_limit", hint="Set to 0 to allow unlimited connections per user", :validation="$v.config.connection_limit")
-			h2 Schedule
-			p(v-if="config.pretalx.conftool") Schedule is loaded from conftool
-				bunt-icon-button(@click="clearSchedule", tooltip="Remove schedule") delete
-				| {{ ' ' }}
-				a(v-if="config.pretalx.url", :href="config.pretalx.url", target="_blank") (view file)
-			p(v-else-if="config.pretalx.url") Schedule is loaded from a file
-				| {{ ' ' }}
-				a(:href="config.pretalx.url", target="_blank") (view file)
-				bunt-icon-button(@click="clearSchedule", tooltip="Remove schedule") delete
-			p(v-else-if="config.pretalx.domain") Schedule is loaded from pretalx event
-				a(:href="config.pretalx.domain + config.pretalx.event", target="_blank")
-					strong {{ " " + config.pretalx.event + " " }}
-				| on
-				strong {{ " " + config.pretalx.domain + " " }}
-				bunt-icon-button(@click="clearSchedule", tooltip="Remove schedule") delete
-			p(v-else) No schedule loaded
-			bunt-button.btn-schedule(@click="showSchedulePrompt = true") Load schedule
 			template(v-if="$features.enabled('conftool')")
 				h2 Conftool
 				bunt-input(v-model="config.conftool_url", label="Conftool REST API URL", name="conftool_url", :validation="$v.config.conftool_url")
@@ -53,15 +36,12 @@
 	.ui-form-actions
 		bunt-button.btn-save(@click="save", :loading="saving", :error-message="error") Save
 		.errors {{ validationErrors.join(', ') }}
-	transition(name="prompt")
-		schedule-prompt(v-if="showSchedulePrompt", :currentConfig="config.pretalx", @save="config.pretalx = $event; showSchedulePrompt = false", @close="showSchedulePrompt = false")
 </template>
 <script>
 import api from 'lib/api'
 import { locales } from 'locales'
 import { required, integer, isJson, url } from 'lib/validators'
 import ValidationErrorsMixin from 'components/mixins/validation-errors'
-import SchedulePrompt from './SchedulePrompt'
 
 const momentLocaleSet = [
 	// do not use moment.locales() since moment lazy-loads locales and will only return "en" and the active locale
@@ -77,14 +57,12 @@ const momentLocaleSet = [
 ]
 
 export default {
-	components: { SchedulePrompt },
 	mixins: [ValidationErrorsMixin],
 	data () {
 		return {
 			config: null,
 			hlsConfig: '',
 			saving: false,
-			showSchedulePrompt: false,
 			errors: [],
 			error: null
 		}
@@ -129,9 +107,6 @@ export default {
 		}
 	},
 	methods: {
-		clearSchedule () {
-			this.config.pretalx = {}
-		},
 		async save () {
 			this.$v.$touch()
 			if (this.$v.$invalid) return
@@ -146,8 +121,7 @@ export default {
 				bbb_defaults: this.config.bbb_defaults,
 				track_exhibitor_views: this.config.track_exhibitor_views,
 				track_room_views: this.config.track_room_views,
-				track_world_views: this.config.track_world_views,
-				pretalx: this.config.pretalx,
+				track_world_views: this.config.track_world_views
 			}
 			if (this.$features.enabled('conftool')) {
 				patch.conftool_url = this.config.conftool_url
@@ -172,8 +146,6 @@ export default {
 	flex: auto
 	display: flex
 	flex-direction: column
-	.btn-schedule
-		themed-button-secondary()
 	.bunt-input-outline-container
 		margin-top: 16px
 		&.error

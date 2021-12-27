@@ -99,12 +99,15 @@ class WorldModule(BaseModule):
 
             for f in config_fields:
                 if f in body:
-                    if (
-                        f == "pretalx"
-                        and not s.validated_data["pretalx"].get("url")
-                        and not s.validated_data["pretalx"].get("domain")
-                    ):
-                        s.validated_data["pretalx"] = {}
+                    if f == "pretalx":
+                        pretalx_data = s.validated_data["pretalx"]
+                        old_pretalx_data = self.consumer.world.config.get("pretalx", {})
+                        if any(
+                            (pretalx_data.get(key) or "")
+                            != (old_pretalx_data.get(key) or "")
+                            for key in ("domain", "url", "event")
+                        ):
+                            s.validated_data["pretalx"]["connected"] = False
                     self.consumer.world.config[f] = s.validated_data[f]
                     update_fields.add("config")
 
@@ -138,6 +141,7 @@ class WorldModule(BaseModule):
             body["traits"],
             body["days"],
             by_user=self.consumer.user,
+            long=body.get("long") or False,
         )
         await self.consumer.send_success({"results": result})
 

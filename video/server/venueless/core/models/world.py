@@ -72,6 +72,7 @@ def default_roles():
         ]
     )
     apiuser = admin + [Permission.WORLD_API, Permission.WORLD_SECRETS]
+    scheduleuser = [Permission.WORLD_API]
     return {
         "attendee": attendee,
         "viewer": viewer,
@@ -82,6 +83,7 @@ def default_roles():
         "moderator": moderator,
         "admin": admin,
         "apiuser": apiuser,
+        "scheduleuser": scheduleuser,
     }
 
 
@@ -89,6 +91,7 @@ def default_grants():
     return {
         "attendee": ["attendee"],
         "admin": ["admin"],
+        "scheduleuser": ["schedule-update"],
     }
 
 

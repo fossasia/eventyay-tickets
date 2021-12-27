@@ -15,7 +15,9 @@ Full configuration
 
 	{
 		"api": {
-			"socket": "wss://sample.demo.venueless.org/ws/world/sample/"
+			"base": "https://sample.demo.venueless.org/api/world/sample/",
+			"socket": "wss://sample.demo.venueless.org/ws/world/sample/",
+			"upload": "https://sample.demo.venueless.org/storage/upload/"
 		},
 		"features": [] // enable experimental features,
 		"locale": "en", // DEPRECTATED, alias of defaultLocale

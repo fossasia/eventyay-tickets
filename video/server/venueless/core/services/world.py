@@ -287,7 +287,7 @@ async def get_room_config_for_user(room: str, world_id: str, user):
 
 
 @database_sync_to_async
-def generate_tokens(world, number, traits, days, by_user):
+def generate_tokens(world, number, traits, days, by_user, long=False):
     jwt_config = world.config["JWT_secrets"][0]
     secret = jwt_config["secret"]
     audience = jwt_config["audience"]
@@ -306,10 +306,15 @@ def generate_tokens(world, number, traits, days, by_user):
             "traits": traits,
         }
         token = jwt.encode(payload, secret, algorithm="HS256")
-        st = ShortToken(world=world, long_token=token, expires=exp)
-        result.append(st.short_token)
-        bulk_create.append(st)
-    ShortToken.objects.bulk_create(bulk_create)
+        if long:
+            result.append(token)
+        else:
+            st = ShortToken(world=world, long_token=token, expires=exp)
+            result.append(st.short_token)
+            bulk_create.append(st)
+
+    if not long:
+        ShortToken.objects.bulk_create(bulk_create)
 
     AuditLog.objects.create(
         world_id=world.id,
@@ -319,6 +324,7 @@ def generate_tokens(world, number, traits, days, by_user):
             "number": number,
             "days": days,
             "traits": traits,
+            "long": long,
         },
     )
     return result

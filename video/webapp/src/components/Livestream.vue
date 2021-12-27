@@ -310,7 +310,7 @@ export default {
 			if (this.$refs.video.textTracks.length === 1) {
 				// single track: just toggle
 				this.$refs.video.textTracks.forEach((t) => {
-					t.mode = t.mode == 'showing' ? 'hidden' : 'showing'
+					t.mode = t.mode === 'showing' ? 'hidden' : 'showing'
 				})
 			} else {
 				// multiple tracks: allow to choose which one

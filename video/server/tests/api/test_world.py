@@ -74,18 +74,50 @@ def test_world_no_delete(client, world):
 @pytest.mark.skipif(
     settings.REDIS_USE_PUBSUB, reason="asyncio weirdness makes this fail"
 )
-def test_schedule_update(client, world):
-    world.trait_grants["apiuser"] = ["foobartrait"]
-    world.save()
+@pytest.mark.parametrize(
+    "data", ({}, {"event": "foo"}, {"domain": "https://pretalx.dev"})
+)
+def test_schedule_update_domain_and_event_required(client, world, data):
+    assert not world.config["pretalx"].get("connected")
     r = client.post(
         "/api/v1/worlds/sample/schedule_update",
-        {"domain": "https://pretalx.dev"},
+        data,
         format="json",
-        HTTP_AUTHORIZATION=get_token_header(world, ["foobartrait", "admin", "api"]),
+        HTTP_AUTHORIZATION=get_token_header(world, ["admin", "api"]),
     )
-    assert r.status_code == 200
+    assert r.status_code == 401
+    assert r.content.decode() == '"Missing fields in request."'
     world.refresh_from_db()
-    assert world.config["pretalx"]["domain"] != "https://pretalx.dev"
+    assert not world.config["pretalx"].get("connected")
+
+
+@pytest.mark.django_db
+@pytest.mark.skipif(
+    settings.REDIS_USE_PUBSUB, reason="asyncio weirdness makes this fail"
+)
+def test_schedule_update_wrong_event(client, world):
+    assert not world.config["pretalx"].get("connected")
+    r = client.post(
+        "/api/v1/worlds/sample/schedule_update",
+        {"domain": "https://pretalx.dev", "event": "foo"},
+        format="json",
+        HTTP_AUTHORIZATION=get_token_header(world, ["admin", "api"]),
+    )
+    assert r.status_code == 401
+    assert r.content.decode() == '"Incorrect domain or event data"'
+    world.refresh_from_db()
+    assert not world.config["pretalx"].get("connected")
+
+
+@pytest.mark.django_db
+@pytest.mark.skipif(
+    settings.REDIS_USE_PUBSUB, reason="asyncio weirdness makes this fail"
+)
+def test_schedule_update(client, world):
+    assert not world.config["pretalx"].get("connected")
+    world.config["pretalx"]["domain"] = "https://pretalx.dev"
+    world.config["pretalx"]["event"] = "demofon"
+    world.save()
 
     r = client.post(
         "/api/v1/worlds/sample/schedule_update",
@@ -100,3 +132,4 @@ def test_schedule_update(client, world):
     world.refresh_from_db()
     assert world.config["pretalx"]["domain"] == "https://pretalx.dev"
     assert world.config["pretalx"]["event"] == "demofon"
+    assert world.config["pretalx"]["connected"] is True

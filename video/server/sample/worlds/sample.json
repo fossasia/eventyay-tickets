@@ -177,6 +177,9 @@
       "room:update",
       "world:api",
       "world:secrets"
+    ],
+    "scheduleuser": [
+      "world:api"
     ]
   },
   "trait_grants": {
@@ -204,6 +207,9 @@
     ],
     "apiuser": [
       "api"
+    ],
+    "scheduleuser": [
+      "schedule-update"
     ]
   },
   "rooms": [

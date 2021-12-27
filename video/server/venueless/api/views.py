@@ -1,5 +1,6 @@
 from asgiref.sync import async_to_sync
 from django.db import transaction
+from django.utils.timezone import now
 from rest_framework import viewsets
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
@@ -77,7 +78,7 @@ class WorldView(APIView):
 
 
 @api_view(http_method_names=["POST"])
-@permission_classes([ApiAccessRequiredPermission & WorldPermissions])
+@permission_classes([ApiAccessRequiredPermission])
 def schedule_update(request, **kwargs):
     """POST endpoint to notify venueless that schedule data has changed.
 
@@ -87,14 +88,17 @@ def schedule_update(request, **kwargs):
     domain = request.data.get("domain")
     event = request.data.get("event")
 
-    if domain and event:
-        pretalx_config = request.world.config.get("pretalx", {})
-        if domain != pretalx_config.get("domain") or event != pretalx_config.get(
-            "event"
-        ):
-            request.world.config["pretalx"] = {"domain": domain, "event": event}
-            request.world.save()
-            async_to_sync(notify_world_change)(request.world.id)
+    if not domain or not event:
+        return Response("Missing fields in request.", status=401)
+
+    pretalx_config = request.world.config.get("pretalx", {})
+    if domain != pretalx_config.get("domain") or event != pretalx_config.get("event"):
+        return Response("Incorrect domain or event data", status=401)
+
+    # We assume that only pretalx uses this endpoint
+    request.world.config["pretalx"]["connected"] = True
+    request.world.config["pretalx"]["pushed"] = now().isoformat()
+    request.world.save()
 
     async_to_sync(notify_schedule_change)(request.world.id)
-    return Response()
+    return Response(status=200)

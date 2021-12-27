@@ -145,6 +145,7 @@ async def test_config_get(world):
                 "room_owner": ["room-owner"],
                 "participant": ["global-participant"],
                 "room_creator": ["room-creator"],
+                "scheduleuser": ["schedule-update"],
             },
             "bbb_defaults": {"record": False},
             "pretalx": {"domain": "https://pretalx.com/", "event": "democon"},
