@@ -90,6 +90,7 @@ class AppView(View):
                 json.dumps(
                     {
                         "api": {
+                            "base": reverse("api:root", kwargs={world_id=world.id}),
                             "socket": "{}://{}/ws/world/{}/".format(
                                 settings.WEBSOCKET_PROTOCOL,
                                 request.headers["Host"],
