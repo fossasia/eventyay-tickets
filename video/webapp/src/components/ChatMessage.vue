@@ -214,6 +214,7 @@ export default {
 			await this.$nextTick()
 			createPopper(this.$refs.avatar.$el, this.$refs.avatarCard.$refs.card, {
 				placement: 'right-start',
+				strategy: 'fixed',
 				modifiers: [{
 					name: 'flip',
 					options: {

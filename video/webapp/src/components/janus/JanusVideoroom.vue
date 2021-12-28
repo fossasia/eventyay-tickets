@@ -320,10 +320,16 @@ export default {
 			const target = event.target.closest('.user')
 			createPopper(target, this.$refs.avatarCard.$refs.card, {
 				placement: 'bottom',
+				strategy: 'fixed',
 				modifiers: [{
 					name: 'flip',
 					options: {
 						flipVariations: false
+					}
+				}, {
+					name: 'preventOverflow',
+					options: {
+						padding: 8
 					}
 				}]
 			})
