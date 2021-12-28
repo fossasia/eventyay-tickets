@@ -191,7 +191,7 @@ export default {
 				traits: ['schedule-update'],
 				long: true
 			})
-			window.location = `${this.config.pretalx.domain}orga/event/${this.config.pretalx.event}/settings/p/venueless/?url=${config.api.base}&token=${token}&returnUrl=${window.location.href}`
+			window.location = `${this.config.pretalx.domain}orga/event/${this.config.pretalx.event}/settings/p/venueless/?url=${window.location.origin}${config.api.base}&token=${token}&returnUrl=${window.location.href}`
 		},
 		async save () {
 			this.$v.$touch()
