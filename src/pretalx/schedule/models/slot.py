@@ -169,7 +169,7 @@ class TalkSlot(LogMixin, models.Model):
         return uuid.uuid5(INSTANCE_IDENTIFIER, self.submission.code + self.id_suffix)
 
     def build_ical(self, calendar, creation_time=None, netloc=None):
-        if not self.start or not self.end or not self.room or not self.submission:
+        if not self.start or not self.real_end or not self.room or not self.submission:
             return
         creation_time = creation_time or dt.datetime.now(pytz.utc)
         netloc = netloc or urlparse(get_base_url(self.event)).netloc
@@ -186,6 +186,6 @@ class TalkSlot(LogMixin, models.Model):
         )
 
         vevent.add("dtstart").value = self.start.astimezone(tz)
-        vevent.add("dtend").value = self.end.astimezone(tz)
+        vevent.add("dtend").value = self.real_end.astimezone(tz)
         vevent.add("description").value = self.submission.abstract or ""
         vevent.add("url").value = self.submission.urls.public.full()
