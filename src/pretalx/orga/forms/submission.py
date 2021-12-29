@@ -133,6 +133,17 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
                     (a, locale_names[a]) for a in event.locales
                 ]
 
+    def clean(self):
+        data = super().clean()
+        start = cleaned_data.get("start")
+        end = cleaned_data.get("end")
+        if start and end and start > end:
+            error = forms.ValidationError(
+                _("The end time has to be after the start time."),
+            )
+            self.add_error("locale", end)
+        return data
+
     def save(self, *args, **kwargs):
         if "content_locale" not in self.fields:
             self.instance.content_locale = self.event.locale
