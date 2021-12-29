@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-12-26 23:24+0000\n"
+"POT-Creation-Date: 2021-12-29 01:06+0000\n"
 "PO-Revision-Date: 2021-08-31 11:44+0000\n"
 "Last-Translator: laurent fernandez <laurent@ushova.io>\n"
 "Language-Team: \n"
@@ -190,7 +190,7 @@ msgstr "Interventions"
 #: pretalx/orga/templates/orga/review/dashboard.html:121
 #: pretalx/orga/templates/orga/submission/base.html:43
 #: pretalx/orga/templates/orga/submission/list.html:79
-#: pretalx/person/forms.py:341
+#: pretalx/person/forms.py:345
 msgid "Speakers"
 msgstr "Intervenants"
 
@@ -319,7 +319,7 @@ msgid ""
 "changes or questions."
 msgstr ""
 
-#: pretalx/cfp/flow.py:365 pretalx/orga/forms/cfp.py:466
+#: pretalx/cfp/flow.py:365 pretalx/orga/forms/cfp.py:469
 #: pretalx/orga/templates/orga/base.html:243
 #: pretalx/orga/templates/orga/submission/content.html:136
 msgid "Questions"
@@ -380,7 +380,7 @@ msgstr ""
 "pourrez toujours les modifier tant que l'appel à participation n'est pas "
 "clôt."
 
-#: pretalx/cfp/forms/auth.py:30 pretalx/person/forms.py:258
+#: pretalx/cfp/forms/auth.py:30 pretalx/person/forms.py:261
 msgid "New password"
 msgstr "Nouveau mot de passe"
 
@@ -389,7 +389,7 @@ msgid "Speaker E-Mail"
 msgstr "Courriel de l'intervenant"
 
 #: pretalx/cfp/forms/submissions.py:7 pretalx/mail/models.py:37
-#: pretalx/mail/models.py:225 pretalx/orga/forms/cfp.py:317
+#: pretalx/mail/models.py:225 pretalx/orga/forms/cfp.py:320
 #: pretalx/orga/templates/orga/mails/outbox_list.html:38
 #: pretalx/orga/templates/orga/mails/sent_list.html:16
 #: pretalx/person/models/information.py:44
@@ -397,7 +397,7 @@ msgid "Subject"
 msgstr "Sujet"
 
 #: pretalx/cfp/forms/submissions.py:8 pretalx/mail/models.py:40
-#: pretalx/mail/models.py:226 pretalx/orga/forms/cfp.py:318
+#: pretalx/mail/models.py:226 pretalx/orga/forms/cfp.py:321
 #: pretalx/person/models/information.py:45
 msgid "Text"
 msgstr "Texte"
@@ -804,7 +804,7 @@ msgstr ""
 #: pretalx/orga/templates/orga/settings/review.html:154
 #: pretalx/orga/templates/orga/settings/review.html:253
 #: pretalx/orga/templates/orga/settings/widget.html:26
-#: pretalx/orga/templates/orga/speaker/form.html:80
+#: pretalx/orga/templates/orga/speaker/form.html:76
 #: pretalx/orga/templates/orga/submission/anonymise.html:43
 #: pretalx/orga/templates/orga/submission/content.html:153
 #: pretalx/orga/templates/orga/submission/review.html:206
@@ -2943,7 +2943,7 @@ msgstr ""
 "Contenu complet de la proposition :\n"
 "\n"
 
-#: pretalx/mail/models.py:195 pretalx/orga/forms/cfp.py:316
+#: pretalx/mail/models.py:195 pretalx/orga/forms/cfp.py:319
 #: pretalx/orga/templates/orga/mails/outbox_list.html:43
 #: pretalx/orga/templates/orga/mails/sent_list.html:21
 msgid "To"
@@ -3079,27 +3079,27 @@ msgstr "Caractères"
 msgid "Words"
 msgstr "Mots"
 
-#: pretalx/orga/forms/cfp.py:182
+#: pretalx/orga/forms/cfp.py:184
 msgid ""
 "Please select a deadline after which the question should become mandatory."
 msgstr ""
 "Merci de sélectionner une date butoir au-delà de laquelle la question "
 "devient obligatoire."
 
-#: pretalx/orga/forms/cfp.py:241
+#: pretalx/orga/forms/cfp.py:244
 msgid "You already have a session type by this name!"
 msgstr "Vous avez déjà un type de session portant ce nom!"
 
-#: pretalx/orga/forms/cfp.py:270
+#: pretalx/orga/forms/cfp.py:273
 msgid "You already have a track by this name!"
 msgstr "Vous avez déjà un itinéraire portant ce nom!"
 
-#: pretalx/orga/forms/cfp.py:322
+#: pretalx/orga/forms/cfp.py:325
 #, python-brace-format
 msgid "Access code for the {event} CfP"
 msgstr "Code d'accès pour l'appel à participation de l'évènement \"{event}\""
 
-#: pretalx/orga/forms/cfp.py:326
+#: pretalx/orga/forms/cfp.py:329
 #, python-brace-format
 msgid ""
 "Hi!\n"
@@ -3111,29 +3111,29 @@ msgstr ""
 "Ceci est un code d'accès pour l'appel à participation de l’évènement "
 "\"{event}\"."
 
-#: pretalx/orga/forms/cfp.py:337
+#: pretalx/orga/forms/cfp.py:340
 #, python-brace-format
 msgid "It will allow you to submit a proposal to the “{track}” track."
 msgstr ""
 "Il vous permettra de déposer une proposition pour le parcours \"{track}\"."
 
-#: pretalx/orga/forms/cfp.py:343
+#: pretalx/orga/forms/cfp.py:346
 msgid "It will allow you to submit a proposal to our CfP."
 msgstr ""
 "Il vous permettra de déposer une proposition pour notre appel à "
 "participation."
 
-#: pretalx/orga/forms/cfp.py:347
+#: pretalx/orga/forms/cfp.py:350
 #, python-brace-format
 msgid "This access code is valid until {date}."
 msgstr "Ce code d'accès est valide jusqu'au {date}."
 
-#: pretalx/orga/forms/cfp.py:359
+#: pretalx/orga/forms/cfp.py:362
 #, python-brace-format
 msgid "The code can be redeemed multiple times ({num})."
 msgstr "Ce code peut être utilisé plusieurs fois ({num})."
 
-#: pretalx/orga/forms/cfp.py:364
+#: pretalx/orga/forms/cfp.py:367
 #, python-brace-format
 msgid ""
 "\n"
@@ -3152,23 +3152,23 @@ msgstr ""
 "J'attends avec impatience votre proposition !\n"
 "{name}"
 
-#: pretalx/orga/forms/cfp.py:392 pretalx/person/forms.py:340
+#: pretalx/orga/forms/cfp.py:395 pretalx/person/forms.py:344
 msgid "all"
 msgstr "tous"
 
-#: pretalx/orga/forms/cfp.py:393
+#: pretalx/orga/forms/cfp.py:396
 msgid "Accepted or confirmed speakers"
 msgstr "Intervenants acceptés et confirmés"
 
-#: pretalx/orga/forms/cfp.py:394
+#: pretalx/orga/forms/cfp.py:397
 msgid "Confirmed speakers"
 msgstr "Intervenants confirmés"
 
-#: pretalx/orga/forms/cfp.py:397
+#: pretalx/orga/forms/cfp.py:400
 msgid "Recipients"
 msgstr "Desinataires"
 
-#: pretalx/orga/forms/cfp.py:465
+#: pretalx/orga/forms/cfp.py:468
 msgid "If you select no question, all questions will be used."
 msgstr ""
 "Si vous ne sélectionnez pas de question, toutes les questions seront "
@@ -3555,7 +3555,7 @@ msgstr "Virgule"
 msgid "Answer to the question '{q}'"
 msgstr "Réponse à la question '{q}'"
 
-#: pretalx/orga/forms/export.py:84
+#: pretalx/orga/forms/export.py:86
 msgid "Please select a delimiter for your CSV export."
 msgstr "Merci de sélectionner un délimiteur pour votre export CSV."
 
@@ -3658,24 +3658,12 @@ msgid ""
 "filters."
 msgstr ""
 
-#: pretalx/orga/forms/mails.py:202
+#: pretalx/orga/forms/mails.py:204
 msgid ""
 "If you provide only one language, that language will be used for all emails. "
 "If you provide multiple languages, the best fit for each speaker will be "
 "used."
 msgstr ""
-
-#: pretalx/orga/forms/mails.py:273
-#, fuzzy
-#| msgid "Please provide a valid email address!"
-msgid "Please provide an email subject!"
-msgstr "Veuillez fournir une adresse électronique valide !"
-
-#: pretalx/orga/forms/mails.py:275
-#, fuzzy
-#| msgid "Please provide a valid email address!"
-msgid "Please provide an email text!"
-msgstr "Veuillez fournir une adresse électronique valide !"
 
 #: pretalx/orga/forms/review.py:71
 msgid "No score"
@@ -3847,11 +3835,17 @@ msgstr "Le nom de l'intervenant qui sera affiché publiquement."
 msgid "Proposal state"
 msgstr "Statut de la proposition"
 
-#: pretalx/orga/forms/submission.py:250
+#: pretalx/orga/forms/submission.py:144
+#, fuzzy
+#| msgid "The end of a phase has to be after its start."
+msgid "The end time has to be after the start time."
+msgstr "La fin d'une phase doit être après son début."
+
+#: pretalx/orga/forms/submission.py:263
 msgid "Mark the new state as 'pending'?"
 msgstr ""
 
-#: pretalx/orga/forms/submission.py:252
+#: pretalx/orga/forms/submission.py:265
 #: pretalx/orga/templates/orga/review/dashboard.html:220
 msgid ""
 "If you mark state changes as pending, they won't be visible to speakers "
@@ -5930,15 +5924,11 @@ msgid_plural "Proposals"
 msgstr[0] "Proposition"
 msgstr[1] "Propositions"
 
-#: pretalx/orga/templates/orga/speaker/form.html:74
-msgid "Compose mail"
-msgstr "Composer des couriels"
-
-#: pretalx/orga/templates/orga/speaker/form.html:87
+#: pretalx/orga/templates/orga/speaker/form.html:83
 msgid "Emails"
 msgstr "Courriels"
 
-#: pretalx/orga/templates/orga/speaker/form.html:91
+#: pretalx/orga/templates/orga/speaker/form.html:87
 msgid "No mails were sent to this speaker yet."
 msgstr "Aucun courriel n'a été envoyé à cet intervenant pour le moment."
 
@@ -7096,26 +7086,26 @@ msgstr ""
 "Veuillez remplir tous les champs du formulaire de connexion ou de création "
 "de compte."
 
-#: pretalx/person/forms.py:188 pretalx/person/forms.py:274
+#: pretalx/person/forms.py:188 pretalx/person/forms.py:277
 msgid "Please choose a different email address."
 msgstr "Veuillez choisir une autre adresse électronique."
 
-#: pretalx/person/forms.py:201
+#: pretalx/person/forms.py:203
 msgid ""
 "Please provide a profile picture or allow us to load your picture from "
 "gravatar!"
 msgstr ""
 "Veuillez fournir une image de profil ou charger votre image depuis gravatar !"
 
-#: pretalx/person/forms.py:252
+#: pretalx/person/forms.py:255
 msgid "The current password you entered was not correct."
 msgstr "Le mot de passe que vous avez entré est incorrect."
 
-#: pretalx/person/forms.py:256
+#: pretalx/person/forms.py:259
 msgid "Password (current)"
 msgstr "Mot de passe (actuel)"
 
-#: pretalx/person/forms.py:342
+#: pretalx/person/forms.py:346
 msgid "Non-accepted submitters"
 msgstr "Intervenants pas encore acceptés"
 
@@ -7928,6 +7918,19 @@ msgstr "{name} ({duration} heures)"
 #, python-brace-format
 msgid "{name} ({duration} minutes)"
 msgstr "{name} ({duration} minutes)"
+
+#, fuzzy
+#~| msgid "Please provide a valid email address!"
+#~ msgid "Please provide an email subject!"
+#~ msgstr "Veuillez fournir une adresse électronique valide !"
+
+#, fuzzy
+#~| msgid "Please provide a valid email address!"
+#~ msgid "Please provide an email text!"
+#~ msgstr "Veuillez fournir une adresse électronique valide !"
+
+#~ msgid "Compose mail"
+#~ msgstr "Composer des couriels"
 
 #~ msgid "Current draft"
 #~ msgstr "Brouillon actuel"

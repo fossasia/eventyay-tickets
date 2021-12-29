@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-12-26 23:24+0000\n"
+"POT-Creation-Date: 2021-12-29 01:06+0000\n"
 "PO-Revision-Date: 2021-09-13 11:09+0000\n"
 "Last-Translator: hamza Hamwie <hamza@live.hk>\n"
 "Language-Team: none\n"
@@ -185,7 +185,7 @@ msgstr "الجلسات"
 #: pretalx/orga/templates/orga/review/dashboard.html:121
 #: pretalx/orga/templates/orga/submission/base.html:43
 #: pretalx/orga/templates/orga/submission/list.html:79
-#: pretalx/person/forms.py:341
+#: pretalx/person/forms.py:345
 msgid "Speakers"
 msgstr "المحاضرون"
 
@@ -314,7 +314,7 @@ msgid ""
 "changes or questions."
 msgstr ""
 
-#: pretalx/cfp/flow.py:365 pretalx/orga/forms/cfp.py:466
+#: pretalx/cfp/flow.py:365 pretalx/orga/forms/cfp.py:469
 #: pretalx/orga/templates/orga/base.html:243
 #: pretalx/orga/templates/orga/submission/content.html:136
 msgid "Questions"
@@ -369,7 +369,7 @@ msgstr ""
 "سيتم عرض هذه المعلومات علنًا بجوار جلستك - يمكنك دائمًا التعديل طالما أن "
 "الطلبات (المقترحات) لا تزال مفتوحة."
 
-#: pretalx/cfp/forms/auth.py:30 pretalx/person/forms.py:258
+#: pretalx/cfp/forms/auth.py:30 pretalx/person/forms.py:261
 msgid "New password"
 msgstr "كلمة سر جديدة"
 
@@ -378,7 +378,7 @@ msgid "Speaker E-Mail"
 msgstr "ايميل المحاضر"
 
 #: pretalx/cfp/forms/submissions.py:7 pretalx/mail/models.py:37
-#: pretalx/mail/models.py:225 pretalx/orga/forms/cfp.py:317
+#: pretalx/mail/models.py:225 pretalx/orga/forms/cfp.py:320
 #: pretalx/orga/templates/orga/mails/outbox_list.html:38
 #: pretalx/orga/templates/orga/mails/sent_list.html:16
 #: pretalx/person/models/information.py:44
@@ -386,7 +386,7 @@ msgid "Subject"
 msgstr "الموضوع"
 
 #: pretalx/cfp/forms/submissions.py:8 pretalx/mail/models.py:40
-#: pretalx/mail/models.py:226 pretalx/orga/forms/cfp.py:318
+#: pretalx/mail/models.py:226 pretalx/orga/forms/cfp.py:321
 #: pretalx/person/models/information.py:45
 msgid "Text"
 msgstr "النص"
@@ -779,7 +779,7 @@ msgstr ""
 #: pretalx/orga/templates/orga/settings/review.html:154
 #: pretalx/orga/templates/orga/settings/review.html:253
 #: pretalx/orga/templates/orga/settings/widget.html:26
-#: pretalx/orga/templates/orga/speaker/form.html:80
+#: pretalx/orga/templates/orga/speaker/form.html:76
 #: pretalx/orga/templates/orga/submission/anonymise.html:43
 #: pretalx/orga/templates/orga/submission/content.html:153
 #: pretalx/orga/templates/orga/submission/review.html:206
@@ -2828,7 +2828,7 @@ msgstr ""
 "محتوى الطلب (المقترح) الكامل:\n"
 "\n"
 
-#: pretalx/mail/models.py:195 pretalx/orga/forms/cfp.py:316
+#: pretalx/mail/models.py:195 pretalx/orga/forms/cfp.py:319
 #: pretalx/orga/templates/orga/mails/outbox_list.html:43
 #: pretalx/orga/templates/orga/mails/sent_list.html:21
 msgid "To"
@@ -2957,25 +2957,25 @@ msgstr "الأحرف"
 msgid "Words"
 msgstr "الكلمات"
 
-#: pretalx/orga/forms/cfp.py:182
+#: pretalx/orga/forms/cfp.py:184
 msgid ""
 "Please select a deadline after which the question should become mandatory."
 msgstr "الرجاء تحديد موعد نهائي يصبح السؤال بعده إلزاميًا."
 
-#: pretalx/orga/forms/cfp.py:241
+#: pretalx/orga/forms/cfp.py:244
 msgid "You already have a session type by this name!"
 msgstr "لديك مسبقا جلسة بهذا الاسم!"
 
-#: pretalx/orga/forms/cfp.py:270
+#: pretalx/orga/forms/cfp.py:273
 msgid "You already have a track by this name!"
 msgstr "لديك مسبقا مسار بهذا الاسم!"
 
-#: pretalx/orga/forms/cfp.py:322
+#: pretalx/orga/forms/cfp.py:325
 #, python-brace-format
 msgid "Access code for the {event} CfP"
 msgstr "رمز الوصول لـ {event} CfP"
 
-#: pretalx/orga/forms/cfp.py:326
+#: pretalx/orga/forms/cfp.py:329
 #, python-brace-format
 msgid ""
 "Hi!\n"
@@ -2986,26 +2986,26 @@ msgstr ""
 "\n"
 "هذا رمز الوصول لـ{event} CfP."
 
-#: pretalx/orga/forms/cfp.py:337
+#: pretalx/orga/forms/cfp.py:340
 #, python-brace-format
 msgid "It will allow you to submit a proposal to the “{track}” track."
 msgstr "سيسمح لك بإرسال المقترح إلى المسار \"{track}\"."
 
-#: pretalx/orga/forms/cfp.py:343
+#: pretalx/orga/forms/cfp.py:346
 msgid "It will allow you to submit a proposal to our CfP."
 msgstr "سيسمح لك بتقديم المقترح إلى CfP."
 
-#: pretalx/orga/forms/cfp.py:347
+#: pretalx/orga/forms/cfp.py:350
 #, python-brace-format
 msgid "This access code is valid until {date}."
 msgstr "رمز الوصول هذا صالح حتى تاريخ {date}."
 
-#: pretalx/orga/forms/cfp.py:359
+#: pretalx/orga/forms/cfp.py:362
 #, python-brace-format
 msgid "The code can be redeemed multiple times ({num})."
 msgstr "يمكن استرداد الرمز عدة مرات ({num})."
 
-#: pretalx/orga/forms/cfp.py:364
+#: pretalx/orga/forms/cfp.py:367
 #, python-brace-format
 msgid ""
 "\n"
@@ -3024,23 +3024,23 @@ msgstr ""
 "نتطلع الى اقتراحكم!\n"
 "{name}"
 
-#: pretalx/orga/forms/cfp.py:392 pretalx/person/forms.py:340
+#: pretalx/orga/forms/cfp.py:395 pretalx/person/forms.py:344
 msgid "all"
 msgstr "الكل"
 
-#: pretalx/orga/forms/cfp.py:393
+#: pretalx/orga/forms/cfp.py:396
 msgid "Accepted or confirmed speakers"
 msgstr "المتحدثين المقبولين أو المعتمدين"
 
-#: pretalx/orga/forms/cfp.py:394
+#: pretalx/orga/forms/cfp.py:397
 msgid "Confirmed speakers"
 msgstr "المتحدثين المعتمدين"
 
-#: pretalx/orga/forms/cfp.py:397
+#: pretalx/orga/forms/cfp.py:400
 msgid "Recipients"
 msgstr "المستلمون"
 
-#: pretalx/orga/forms/cfp.py:465
+#: pretalx/orga/forms/cfp.py:468
 msgid "If you select no question, all questions will be used."
 msgstr "إذا لم تقم بتحدد أي سؤال ، فسيتم استخدام جميع الأسئلة."
 
@@ -3407,7 +3407,7 @@ msgstr "فاصلة"
 msgid "Answer to the question '{q}'"
 msgstr "إجابة عن السؤال \"{q}\""
 
-#: pretalx/orga/forms/export.py:84
+#: pretalx/orga/forms/export.py:86
 msgid "Please select a delimiter for your CSV export."
 msgstr "الرجاء تحديد محدد لتصدير ملف CSV."
 
@@ -3504,24 +3504,12 @@ msgid ""
 "filters."
 msgstr ""
 
-#: pretalx/orga/forms/mails.py:202
+#: pretalx/orga/forms/mails.py:204
 msgid ""
 "If you provide only one language, that language will be used for all emails. "
 "If you provide multiple languages, the best fit for each speaker will be "
 "used."
 msgstr ""
-
-#: pretalx/orga/forms/mails.py:273
-#, fuzzy
-#| msgid "Please provide a valid email address."
-msgid "Please provide an email subject!"
-msgstr "يرجى تقديم عنوان بريد إلكتروني فعال."
-
-#: pretalx/orga/forms/mails.py:275
-#, fuzzy
-#| msgid "Please provide a valid email address."
-msgid "Please provide an email text!"
-msgstr "يرجى تقديم عنوان بريد إلكتروني فعال."
 
 #: pretalx/orga/forms/review.py:71
 msgid "No score"
@@ -3684,11 +3672,17 @@ msgstr "اسم المتحدث الذي يجب مشاركته مع العامة."
 msgid "Proposal state"
 msgstr "حالة المقترح"
 
-#: pretalx/orga/forms/submission.py:250
+#: pretalx/orga/forms/submission.py:144
+#, fuzzy
+#| msgid "The end of a phase has to be after its start."
+msgid "The end time has to be after the start time."
+msgstr "يجب أن تكون نهاية المرحلة بعد بدايتها."
+
+#: pretalx/orga/forms/submission.py:263
 msgid "Mark the new state as 'pending'?"
 msgstr ""
 
-#: pretalx/orga/forms/submission.py:252
+#: pretalx/orga/forms/submission.py:265
 #: pretalx/orga/templates/orga/review/dashboard.html:220
 msgid ""
 "If you mark state changes as pending, they won't be visible to speakers "
@@ -5726,15 +5720,11 @@ msgstr[3] "المقترحات"
 msgstr[4] "المقترحات"
 msgstr[5] "المقترحات"
 
-#: pretalx/orga/templates/orga/speaker/form.html:74
-msgid "Compose mail"
-msgstr "كتابة رسالة"
-
-#: pretalx/orga/templates/orga/speaker/form.html:87
+#: pretalx/orga/templates/orga/speaker/form.html:83
 msgid "Emails"
 msgstr "الايميلات"
 
-#: pretalx/orga/templates/orga/speaker/form.html:91
+#: pretalx/orga/templates/orga/speaker/form.html:87
 msgid "No mails were sent to this speaker yet."
 msgstr "لم يتم إرسال أي رسائل إلى هذا المتحدث حتى الآن."
 
@@ -6831,25 +6821,25 @@ msgstr ""
 msgid "Please fill all fields of either the login or the registration form."
 msgstr "يرجى ملء جميع الحقول الخاصة بتسجيل الدخول أو استمارة التسجيل."
 
-#: pretalx/person/forms.py:188 pretalx/person/forms.py:274
+#: pretalx/person/forms.py:188 pretalx/person/forms.py:277
 msgid "Please choose a different email address."
 msgstr "الرجاء اختيار عنوان بريد إلكتروني مختلف."
 
-#: pretalx/person/forms.py:201
+#: pretalx/person/forms.py:203
 msgid ""
 "Please provide a profile picture or allow us to load your picture from "
 "gravatar!"
 msgstr "يرجى تقديم صورة للملف الشخصي أو السماح لنا بتحميل صورتك من Gravatar!"
 
-#: pretalx/person/forms.py:252
+#: pretalx/person/forms.py:255
 msgid "The current password you entered was not correct."
 msgstr "كلمة المرور الحالية التي أدخلتها غير صحيحة."
 
-#: pretalx/person/forms.py:256
+#: pretalx/person/forms.py:259
 msgid "Password (current)"
 msgstr "كلمة السر (الحالية)"
 
-#: pretalx/person/forms.py:342
+#: pretalx/person/forms.py:346
 msgid "Non-accepted submitters"
 msgstr "مقدمو الطلبات غير المقبولين"
 
@@ -7617,6 +7607,19 @@ msgstr "{name} (عدد الساعات {duration} )"
 #, python-brace-format
 msgid "{name} ({duration} minutes)"
 msgstr "{name} ({duration} دقيقة)"
+
+#, fuzzy
+#~| msgid "Please provide a valid email address."
+#~ msgid "Please provide an email subject!"
+#~ msgstr "يرجى تقديم عنوان بريد إلكتروني فعال."
+
+#, fuzzy
+#~| msgid "Please provide a valid email address."
+#~ msgid "Please provide an email text!"
+#~ msgstr "يرجى تقديم عنوان بريد إلكتروني فعال."
+
+#~ msgid "Compose mail"
+#~ msgstr "كتابة رسالة"
 
 #~ msgid "Current draft"
 #~ msgstr "المسودة الحالية"
