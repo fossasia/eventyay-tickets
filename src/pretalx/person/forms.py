@@ -196,10 +196,13 @@ class SpeakerProfileForm(
                 and not data.get("get_gravatar")
                 and not (self.user and self.user.has_avatar)
             ):
-                raise ValidationError(
-                    _(
-                        "Please provide a profile picture or allow us to load your picture from gravatar!"
-                    )
+                self.add_error(
+                    "avatar",
+                    forms.ValidationError(
+                        _(
+                            "Please provide a profile picture or allow us to load your picture from gravatar!"
+                        )
+                    ),
                 )
         return data
 
@@ -275,12 +278,13 @@ class LoginInfoForm(forms.ModelForm):
         return email
 
     def clean(self):
-        super().clean()
+        data = super().clean()
         password = self.cleaned_data.get("password")
         if password and not password == self.cleaned_data.get("password_repeat"):
             self.add_error(
                 "password_repeat", ValidationError(phrases.base.passwords_differ)
             )
+        return data
 
     def __init__(self, user, *args, **kwargs):
         self.user = user

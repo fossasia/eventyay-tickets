@@ -177,10 +177,13 @@ class QuestionForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
         deadline = self.cleaned_data["deadline"]
         question_required = self.cleaned_data["question_required"]
         if (not deadline) and (question_required == QuestionRequired.AFTER_DEADLINE):
-            raise forms.ValidationError(
-                _(
-                    "Please select a deadline after which the question should become mandatory."
-                )
+            self.add_error(
+                "deadline",
+                forms.ValidationError(
+                    _(
+                        "Please select a deadline after which the question should become mandatory."
+                    )
+                ),
             )
         if (
             question_required == QuestionRequired.OPTIONAL

@@ -184,6 +184,8 @@ class WriteMailForm(MailTemplateBase):
         if event:
             kwargs["locales"] = event.locales
         super().__init__(**kwargs)
+        self.fields["subject"].required = True
+        self.fields["text"].required = True
         self.fields["submissions"].choices = [
             (sub.code, sub.title) for sub in event.submissions.all()
         ]
@@ -269,10 +271,6 @@ class WriteMailForm(MailTemplateBase):
 
     def clean(self):
         cleaned_data = super().clean()
-        if not cleaned_data.get("subject"):
-            raise forms.ValidationError(_("Please provide an email subject!"))
-        if not cleaned_data.get("text"):
-            raise forms.ValidationError(_("Please provide an email text!"))
         valid_placeholders = self.get_valid_placeholders().keys()
         self.warnings = self._clean_for_placeholders(
             cleaned_data["subject"], valid_placeholders

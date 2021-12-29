@@ -135,13 +135,15 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
 
     def clean(self):
         data = super().clean()
-        start = cleaned_data.get("start")
-        end = cleaned_data.get("end")
+        start = data.get("start")
+        end = data.get("end")
         if start and end and start > end:
-            error = forms.ValidationError(
-                _("The end time has to be after the start time."),
+            self.add_error(
+                "end",
+                forms.ValidationError(
+                    _("The end time has to be after the start time."),
+                ),
             )
-            self.add_error("locale", end)
         return data
 
     def save(self, *args, **kwargs):

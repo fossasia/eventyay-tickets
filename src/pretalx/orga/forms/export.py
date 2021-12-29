@@ -80,8 +80,11 @@ class ExportForm(forms.Form):
     def clean(self):
         data = super().clean()
         if data.get("export_format") == "csv" and not data.get("data_delimiter"):
-            raise forms.ValidationError(
-                _("Please select a delimiter for your CSV export.")
+            self.add_error(
+                "data_delimiter",
+                forms.ValidationError(
+                    _("Please select a delimiter for your CSV export.")
+                ),
             )
         return data
 
