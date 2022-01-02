@@ -30,7 +30,8 @@ export default new Vuex.Store({
 		mediaSourcePlaceholderRect: null,
 		userLocale: null, // only used to force UI render
 		userTimezone: null,
-		autoplay: localStorage.disableAutoplay !== 'true'
+		autoplay: localStorage.disableAutoplay !== 'true',
+		stageStreamCollapsed: false
 	},
 	getters: {
 		hasPermission (state) {
@@ -58,6 +59,9 @@ export default new Vuex.Store({
 		},
 		setUserLocale (state, locale) {
 			state.userLocale = locale
+		},
+		updateStageStreamCollapsed (state, stageStreamCollapsed) {
+			state.stageStreamCollapsed = stageStreamCollapsed
 		}
 	},
 	actions: {

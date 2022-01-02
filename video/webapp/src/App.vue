@@ -80,6 +80,10 @@ export default {
 		roomHasMedia () {
 			return this.room?.modules.some(module => mediaModules.includes(module.type))
 		},
+		stageStreamCollapsed () {
+			if (this.$mq.above.m) return false
+			return this.$refs.primaryMediaSource?.$refs.livestream ? !this.$refs.primaryMediaSource.$refs.livestream.playing : false
+		},
 		// force open sidebar on medium screens on home page (with no media) so certain people can find the menu
 		overrideSidebarCollapse () {
 			return this.$mq.below.l &&
@@ -96,7 +100,7 @@ export default {
 			)
 			const style = {
 				'--chatbar-width': hasChatbar ? '380px' : '0px',
-				'--mobile-media-height': hasChatbar ? '40vh' : (hasStageTools ? 'calc(100vh - 48px - 2 * 56px)' : 'calc(100vh - 48px - 56px)'),
+				'--mobile-media-height': this.stageStreamCollapsed ? '56px' : hasChatbar ? '40vh' : (hasStageTools ? 'calc(100vh - 48px - 2 * 56px)' : 'calc(100vh - 48px - 56px)'),
 				'--has-stagetools': hasStageTools ? '1' : '0'
 			}
 			if (this.mediaSourcePlaceholderRect) {
@@ -121,6 +125,12 @@ export default {
 		call: 'callChange',
 		$route () {
 			this.showSidebar = false
+		},
+		stageStreamCollapsed: {
+			handler  () {
+				this.$store.commit('updateStageStreamCollapsed', this.stageStreamCollapsed)
+			},
+			immediate: true
 		}
 	},
 	mounted () {
