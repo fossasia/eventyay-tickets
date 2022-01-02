@@ -18,7 +18,7 @@
 						.play-progress
 					.progress-indicator
 					.time(:style="{'--hovered-progress': hoveredProgress}") {{ formatTime(hoveredTime) }}
-				bunt-icon-button(v-if="!offline", @click="toggleVideo") {{ playing ? 'pause' : 'play' }}
+				bunt-icon-button#btn-play(v-if="!offline", @click="toggleVideo") {{ playing ? 'pause' : 'play' }}
 				.live-indicator(v-if="!offline && isLive") live
 				.buffer
 				bunt-icon-button(v-if="hasAlternativeStreams", @click="showSourceChooser = !showSourceChooser") movie
@@ -709,4 +709,14 @@ export default {
 			color: $clr-secondary-text-light
 			font-size: 14px
 			text-align: center
+
+	+below('m')
+		&:not(.playing)
+			.big-button
+				display: none
+			.bottom-controls
+				pointer-events: none
+				> *:not(#btn-play, .buffer)
+					display: none
+
 </style>

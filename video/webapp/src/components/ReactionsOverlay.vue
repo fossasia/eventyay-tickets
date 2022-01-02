@@ -1,5 +1,5 @@
 <template lang="pug">
-.c-reactions-overlay(v-resize-observer="onResize")
+.c-reactions-overlay(:class="[direction]")
 </template>
 <script>
 import { mapState } from 'vuex'
@@ -12,17 +12,19 @@ const SERVER_REACTIONS_INTERVAL = 1000
 export default {
 	components: {},
 	props: {
-		showReactionBar: Boolean
+		showReactionBar: Boolean,
 	},
 	data () {
 		return {
 			particlePool: [],
-			freeParticles: [],
-			overlayHeight: null
+			freeParticles: []
 		}
 	},
 	computed: {
-		...mapState(['reactions']),
+		...mapState(['mediaSourcePlaceholderRect', 'reactions', 'stageStreamCollapsed']),
+		direction () {
+			return this.stageStreamCollapsed ? 'horizontal' : 'vertical'
+		}
 	},
 	watch: {
 		reactions () {
@@ -43,10 +45,14 @@ export default {
 				setTimeout(distribute, SERVER_REACTIONS_INTERVAL / finalLength)
 			}
 			distribute()
+		},
+		direction () {
+			// reset reactions on direction change
+			for (const element of this.particlePool) {
+				element.style.left = null
+				element.style.top = null
+			}
 		}
-	},
-	mounted () {
-		this.overlayHeight = this.$el.offsetHeight
 	},
 	methods: {
 		renderReaction (emoji) {
@@ -62,13 +68,16 @@ export default {
 				}
 			}
 
+			const overlaySize = this.direction === 'vertical' ? this.mediaSourcePlaceholderRect.height : this.mediaSourcePlaceholderRect.width
+
 			const startingPosition = Math.random()
-			const targetHeight = 0.5 * Math.max(0.7, Math.random()) * this.overlayHeight
+			const targetPosition = (this.direction === 'vertical' ? 0.5 : 1) * Math.max(0.7, Math.random()) * overlaySize
 			element.style['background-image'] = nativeEmojiToStyle(emoji)['background-image']
-			element.style.left = `calc(${startingPosition * 100}% - 24px)`
+			element.style[this.direction === 'vertical' ? 'left' : 'top'] = `calc(${startingPosition * 100}% - 12px)`
+			const axis = this.direction === 'vertical' ? 'Y' : 'X'
 			const animation = element.animate([
-				{opacity: 1, transform: 'translateY(0px)'},
-				{opacity: 0, transform: `translateY(-${targetHeight}px)`}
+				{opacity: 1, transform: `translate${axis}(0px)`},
+				{opacity: 0, transform: `translate${axis}(-${targetPosition}px)`}
 			], {
 				duration: 1200 + 500 * Math.random()
 			})
@@ -77,10 +86,6 @@ export default {
 				if (this.freeParticles.includes(element)) return
 				this.freeParticles.push(element)
 			}
-		},
-		onResize () {
-			// TODO use reported size from observer
-			this.overlayHeight = this.$el.offsetHeight
 		}
 	}
 }
@@ -98,10 +103,15 @@ export default {
 	z-index: 50
 	.reaction
 		position: absolute
-		bottom: -32px
 		height: 28px
 		width: @height
 		display: inline-block
+	&.vertical
+		.reaction
+			bottom: -32px
+	&.horizontal
+		.reaction
+			right: -32px
 	+below('l')
 		bottom: calc(var(--vh100) - 48px - 56px - var(--mediasource-placeholder-height))
 		right: calc(100vw - var(--mediasource-placeholder-width))
