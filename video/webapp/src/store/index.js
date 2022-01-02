@@ -29,7 +29,8 @@ export default new Vuex.Store({
 		reactions: null,
 		mediaSourcePlaceholderRect: null,
 		userLocale: null, // only used to force UI render
-		userTimezone: null
+		userTimezone: null,
+		autoplay: localStorage.disableAutoplay !== 'true'
 	},
 	getters: {
 		hasPermission (state) {
@@ -148,6 +149,10 @@ export default new Vuex.Store({
 			moment.tz.setDefault(timezone)
 			state.userTimezone = timezone
 			localStorage.userTimezone = timezone // TODO this bakes the auto-detected timezone into localStorage on first load, do we really want this?
+		},
+		setAutoplay ({state}, autoplay) {
+			state.autoplay = autoplay
+			localStorage.disableAutoplay = !autoplay
 		},
 		'api::room.create' ({state}, room) {
 			state.rooms.push(room)

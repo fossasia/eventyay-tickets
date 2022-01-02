@@ -114,7 +114,7 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['streamingRoom']),
+		...mapState(['autoplay', 'streamingRoom']),
 		seekable () {
 			return this.isLive === false || config.seekableLiveStreams
 		},
@@ -155,6 +155,8 @@ export default {
 		hlsUrl: 'initializePlayer',
 	},
 	created () {
+		// don't start playing when autoplay is disabled
+		this.playing = this.autoplay
 		if (localStorage[`livestream.native.alternative:${this.room.id}`]) {
 			this.chosenAlternative = localStorage[`livestream.native.alternative:${this.room.id}`]
 		}
@@ -188,8 +190,8 @@ export default {
 			const start = async () => {
 				this.offline = false
 				this.buffering = false
+				if (!this.playing) return
 				try {
-					if (!this.playing) return
 					await video.play()
 				} catch (e) {
 					video.muted = true
@@ -199,7 +201,9 @@ export default {
 				this.onVolumechange()
 			}
 			if (Hls.isSupported()) {
-				const hlsConfig = Object.assign({}, HLS_DEFAULT_CONFIG, config.videoPlayer?.['hls.js'])
+				const hlsConfig = Object.assign({}, HLS_DEFAULT_CONFIG, config.videoPlayer?.['hls.js'], {
+					autoStartLoad: this.playing
+				})
 				const player = new Hls(hlsConfig)
 				let started = false
 				player.attachMedia(video)
@@ -286,10 +290,13 @@ export default {
 			}
 			if (this.$refs.video.paused) {
 				this.$refs.video.play()
+				this.player.startLoad()
 				// force live edge after unpausing
+				// TODO make this less yarring
 				this.$refs.video.currentTime = this.$refs.video.buffered.end(this.$refs.video.buffered.length - 1)
 			} else {
 				this.$refs.video.pause()
+				this.player.stopLoad()
 			}
 		},
 		chooseLevel (level) {
