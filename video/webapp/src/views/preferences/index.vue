@@ -19,6 +19,9 @@
 			template(v-else)
 				bunt-switch(name="notificationSettings.notify", :label="$t('preferences/index:switch-enable-desktop-notifications:label')", v-model="notificationSettings.notify")
 				bunt-switch(name="notificationSettings.playSounds", :label="$t('preferences/index:switch-enable-desktop-notification-sound:label')", v-model="notificationSettings.playSounds")
+			h2 Stage Stream Defaults
+			p Should streams start playing automatically? Use this when attending a hybrid event physically.
+			bunt-switch(name="autoplay", v-model="autoplay", label="Start playing streams automatically when entering stages")
 	.ui-form-actions
 		bunt-button#btn-save(:disabled="$v.$invalid && $v.$dirty", :loading="saving", @click="save") {{ $t('preferences/index:btn-save:label') }}
 	transition(name="prompt")
@@ -49,6 +52,7 @@ export default {
 			profile: null,
 			interfaceLanguage: this.$i18n.resolvedLanguage,
 			notificationSettings: cloneDeep(this.$store.state.notifications.settings),
+			autoplay: true,
 			showChangeAvatar: false,
 			savingAvatar: false,
 			blockSave: false,
@@ -74,6 +78,7 @@ export default {
 	},
 	created () {
 		this.profile = Object.assign({}, this.user.profile)
+		this.autoplay = this.$store.state.autoplay
 		if (!this.profile.avatar || (!this.profile.avatar.url && !this.profile.avatar.identicon)) {
 			this.profile.avatar = {
 				identicon: this.user.id
@@ -94,6 +99,7 @@ export default {
 			this.saving = true
 			await this.$store.dispatch('updateUser', {profile: this.profile})
 			this.$store.dispatch('notifications/updateSettings', this.notificationSettings)
+			this.$store.dispatch('setAutoplay', this.autoplay)
 			localStorage.userLanguage = this.interfaceLanguage
 			try {
 				await this.$store.dispatch('updateUserLocale', this.interfaceLanguage)
