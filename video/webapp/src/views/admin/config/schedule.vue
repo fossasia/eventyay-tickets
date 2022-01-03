@@ -191,7 +191,7 @@ export default {
 				traits: ['schedule-update'],
 				long: true
 			})
-			const apiUrl = config.api.base.startsWith("http") ? config.api.base : (window.location.origin + config.api.base)
+			const apiUrl = config.api.base.startsWith('http') ? config.api.base : (window.location.origin + config.api.base)
 			window.location = `${this.config.pretalx.domain}orga/event/${this.config.pretalx.event}/settings/p/venueless/?url=${apiUrl}&token=${token}&returnUrl=${window.location.href}`
 		},
 		async save () {
