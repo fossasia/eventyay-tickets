@@ -411,79 +411,6 @@ exports.normalizeReference  = normalizeReference;
 
 /***/ }),
 
-/***/ "00ee":
-/***/ (function(module, exports, __webpack_require__) {
-
-var wellKnownSymbol = __webpack_require__("b622");
-
-var TO_STRING_TAG = wellKnownSymbol('toStringTag');
-var test = {};
-
-test[TO_STRING_TAG] = 'z';
-
-module.exports = String(test) === '[object z]';
-
-
-/***/ }),
-
-/***/ "0366":
-/***/ (function(module, exports, __webpack_require__) {
-
-var aFunction = __webpack_require__("1c0b");
-
-// optional / simple context binding
-module.exports = function (fn, that, length) {
-  aFunction(fn);
-  if (that === undefined) return fn;
-  switch (length) {
-    case 0: return function () {
-      return fn.call(that);
-    };
-    case 1: return function (a) {
-      return fn.call(that, a);
-    };
-    case 2: return function (a, b) {
-      return fn.call(that, a, b);
-    };
-    case 3: return function (a, b, c) {
-      return fn.call(that, a, b, c);
-    };
-  }
-  return function (/* ...args */) {
-    return fn.apply(that, arguments);
-  };
-};
-
-
-/***/ }),
-
-/***/ "06cf":
-/***/ (function(module, exports, __webpack_require__) {
-
-var DESCRIPTORS = __webpack_require__("83ab");
-var propertyIsEnumerableModule = __webpack_require__("d1e7");
-var createPropertyDescriptor = __webpack_require__("5c6c");
-var toIndexedObject = __webpack_require__("fc6a");
-var toPrimitive = __webpack_require__("c04e");
-var has = __webpack_require__("5135");
-var IE8_DOM_DEFINE = __webpack_require__("0cfb");
-
-var nativeGetOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
-
-// `Object.getOwnPropertyDescriptor` method
-// https://tc39.github.io/ecma262/#sec-object.getownpropertydescriptor
-exports.f = DESCRIPTORS ? nativeGetOwnPropertyDescriptor : function getOwnPropertyDescriptor(O, P) {
-  O = toIndexedObject(O);
-  P = toPrimitive(P, true);
-  if (IE8_DOM_DEFINE) try {
-    return nativeGetOwnPropertyDescriptor(O, P);
-  } catch (error) { /* empty */ }
-  if (has(O, P)) return createPropertyDescriptor(!propertyIsEnumerableModule.f.call(O, P), O[P]);
-};
-
-
-/***/ }),
-
 /***/ "0758":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -716,10 +643,10 @@ module.exports = function heading(state, startLine, endLine, silent) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_style_loader_index_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_3_node_modules_stylus_loader_index_js_ref_11_oneOf_1_4_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_GridSchedule_vue_vue_type_style_index_0_lang_stylus___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("2fdf");
-/* harmony import */ var _node_modules_vue_style_loader_index_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_3_node_modules_stylus_loader_index_js_ref_11_oneOf_1_4_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_GridSchedule_vue_vue_type_style_index_0_lang_stylus___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_vue_style_loader_index_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_3_node_modules_stylus_loader_index_js_ref_11_oneOf_1_4_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_GridSchedule_vue_vue_type_style_index_0_lang_stylus___WEBPACK_IMPORTED_MODULE_0__);
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_vue_style_loader_index_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_3_node_modules_stylus_loader_index_js_ref_11_oneOf_1_4_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_GridSchedule_vue_vue_type_style_index_0_lang_stylus___WEBPACK_IMPORTED_MODULE_0__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_vue_style_loader_index_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_3_node_modules_stylus_loader_index_js_ref_11_oneOf_1_4_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_GridSchedule_vue_vue_type_style_index_0_lang_stylus___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
- /* harmony default export */ __webpack_exports__["default"] = (_node_modules_vue_style_loader_index_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_3_node_modules_stylus_loader_index_js_ref_11_oneOf_1_4_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_GridSchedule_vue_vue_type_style_index_0_lang_stylus___WEBPACK_IMPORTED_MODULE_0___default.a); 
+/* harmony import */ var _node_modules_vue_style_loader_index_js_ref_12_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_12_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_12_oneOf_1_2_node_modules_postcss_loader_src_index_js_ref_12_oneOf_1_3_node_modules_stylus_loader_index_js_ref_12_oneOf_1_4_node_modules_cache_loader_dist_cjs_js_ref_1_0_node_modules_vue_loader_lib_index_js_vue_loader_options_GridSchedule_vue_vue_type_style_index_0_lang_stylus___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("2fdf");
+/* harmony import */ var _node_modules_vue_style_loader_index_js_ref_12_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_12_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_12_oneOf_1_2_node_modules_postcss_loader_src_index_js_ref_12_oneOf_1_3_node_modules_stylus_loader_index_js_ref_12_oneOf_1_4_node_modules_cache_loader_dist_cjs_js_ref_1_0_node_modules_vue_loader_lib_index_js_vue_loader_options_GridSchedule_vue_vue_type_style_index_0_lang_stylus___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_vue_style_loader_index_js_ref_12_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_12_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_12_oneOf_1_2_node_modules_postcss_loader_src_index_js_ref_12_oneOf_1_3_node_modules_stylus_loader_index_js_ref_12_oneOf_1_4_node_modules_cache_loader_dist_cjs_js_ref_1_0_node_modules_vue_loader_lib_index_js_vue_loader_options_GridSchedule_vue_vue_type_style_index_0_lang_stylus___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_vue_style_loader_index_js_ref_12_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_12_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_12_oneOf_1_2_node_modules_postcss_loader_src_index_js_ref_12_oneOf_1_3_node_modules_stylus_loader_index_js_ref_12_oneOf_1_4_node_modules_cache_loader_dist_cjs_js_ref_1_0_node_modules_vue_loader_lib_index_js_vue_loader_options_GridSchedule_vue_vue_type_style_index_0_lang_stylus___WEBPACK_IMPORTED_MODULE_0__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_vue_style_loader_index_js_ref_12_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_12_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_12_oneOf_1_2_node_modules_postcss_loader_src_index_js_ref_12_oneOf_1_3_node_modules_stylus_loader_index_js_ref_12_oneOf_1_4_node_modules_cache_loader_dist_cjs_js_ref_1_0_node_modules_vue_loader_lib_index_js_vue_loader_options_GridSchedule_vue_vue_type_style_index_0_lang_stylus___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+
 
 /***/ }),
 
@@ -728,10 +655,10 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_style_loader_index_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_3_node_modules_stylus_loader_index_js_ref_11_oneOf_1_4_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_App_vue_vue_type_style_index_0_lang_stylus_shadow__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("6aea");
-/* harmony import */ var _node_modules_vue_style_loader_index_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_3_node_modules_stylus_loader_index_js_ref_11_oneOf_1_4_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_App_vue_vue_type_style_index_0_lang_stylus_shadow__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_vue_style_loader_index_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_3_node_modules_stylus_loader_index_js_ref_11_oneOf_1_4_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_App_vue_vue_type_style_index_0_lang_stylus_shadow__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_vue_style_loader_index_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_3_node_modules_stylus_loader_index_js_ref_11_oneOf_1_4_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_App_vue_vue_type_style_index_0_lang_stylus_shadow__WEBPACK_IMPORTED_MODULE_0__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_vue_style_loader_index_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_3_node_modules_stylus_loader_index_js_ref_11_oneOf_1_4_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_App_vue_vue_type_style_index_0_lang_stylus_shadow__WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
- /* harmony default export */ __webpack_exports__["default"] = (_node_modules_vue_style_loader_index_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_3_node_modules_stylus_loader_index_js_ref_11_oneOf_1_4_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_App_vue_vue_type_style_index_0_lang_stylus_shadow__WEBPACK_IMPORTED_MODULE_0___default.a); 
+/* harmony import */ var _node_modules_vue_style_loader_index_js_ref_12_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_12_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_12_oneOf_1_2_node_modules_postcss_loader_src_index_js_ref_12_oneOf_1_3_node_modules_stylus_loader_index_js_ref_12_oneOf_1_4_node_modules_cache_loader_dist_cjs_js_ref_1_0_node_modules_vue_loader_lib_index_js_vue_loader_options_App_vue_vue_type_style_index_0_lang_stylus_shadow__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("6aea");
+/* harmony import */ var _node_modules_vue_style_loader_index_js_ref_12_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_12_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_12_oneOf_1_2_node_modules_postcss_loader_src_index_js_ref_12_oneOf_1_3_node_modules_stylus_loader_index_js_ref_12_oneOf_1_4_node_modules_cache_loader_dist_cjs_js_ref_1_0_node_modules_vue_loader_lib_index_js_vue_loader_options_App_vue_vue_type_style_index_0_lang_stylus_shadow__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_vue_style_loader_index_js_ref_12_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_12_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_12_oneOf_1_2_node_modules_postcss_loader_src_index_js_ref_12_oneOf_1_3_node_modules_stylus_loader_index_js_ref_12_oneOf_1_4_node_modules_cache_loader_dist_cjs_js_ref_1_0_node_modules_vue_loader_lib_index_js_vue_loader_options_App_vue_vue_type_style_index_0_lang_stylus_shadow__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_vue_style_loader_index_js_ref_12_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_12_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_12_oneOf_1_2_node_modules_postcss_loader_src_index_js_ref_12_oneOf_1_3_node_modules_stylus_loader_index_js_ref_12_oneOf_1_4_node_modules_cache_loader_dist_cjs_js_ref_1_0_node_modules_vue_loader_lib_index_js_vue_loader_options_App_vue_vue_type_style_index_0_lang_stylus_shadow__WEBPACK_IMPORTED_MODULE_0__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_vue_style_loader_index_js_ref_12_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_12_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_12_oneOf_1_2_node_modules_postcss_loader_src_index_js_ref_12_oneOf_1_3_node_modules_stylus_loader_index_js_ref_12_oneOf_1_4_node_modules_cache_loader_dist_cjs_js_ref_1_0_node_modules_vue_loader_lib_index_js_vue_loader_options_App_vue_vue_type_style_index_0_lang_stylus_shadow__WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+
 
 /***/ }),
 
@@ -752,7 +679,7 @@ var ParserBlock  = __webpack_require__("7696");
 var ParserInline = __webpack_require__("4cb4");
 var LinkifyIt    = __webpack_require__("fbcd");
 var mdurl        = __webpack_require__("d8a6");
-var punycode     = __webpack_require__("1985");
+var punycode     = __webpack_require__("9d88");
 
 
 var config = {
@@ -1419,6 +1346,7 @@ function Token(type, tag, nesting) {
    *
    * - Info string for "fence" tokens
    * - The value "auto" for autolink "link_open" and "link_close" tokens
+   * - The string value of the item marker for ordered-list "list_item_open" tokens
    **/
   this.info     = '';
 
@@ -1695,68 +1623,11 @@ module.exports = StateInline;
 
 /***/ }),
 
-/***/ "0cfb":
-/***/ (function(module, exports, __webpack_require__) {
-
-var DESCRIPTORS = __webpack_require__("83ab");
-var fails = __webpack_require__("d039");
-var createElement = __webpack_require__("cc12");
-
-// Thank's IE8 for his funny defineProperty
-module.exports = !DESCRIPTORS && !fails(function () {
-  return Object.defineProperty(createElement('div'), 'a', {
-    get: function () { return 7; }
-  }).a != 7;
-});
-
-
-/***/ }),
-
-/***/ "0d3b":
-/***/ (function(module, exports, __webpack_require__) {
-
-var fails = __webpack_require__("d039");
-var wellKnownSymbol = __webpack_require__("b622");
-var IS_PURE = __webpack_require__("c430");
-
-var ITERATOR = wellKnownSymbol('iterator');
-
-module.exports = !fails(function () {
-  var url = new URL('b?a=1&b=2&c=3', 'http://a');
-  var searchParams = url.searchParams;
-  var result = '';
-  url.pathname = 'c%20d';
-  searchParams.forEach(function (value, key) {
-    searchParams['delete']('b');
-    result += key + value;
-  });
-  return (IS_PURE && !url.toJSON)
-    || !searchParams.sort
-    || url.href !== 'http://a/c%20d?a=1&c=3'
-    || searchParams.get('c') !== '3'
-    || String(new URLSearchParams('?a=1')) !== 'a=1'
-    || !searchParams[ITERATOR]
-    // throws in Edge
-    || new URL('https://a@b').username !== 'a'
-    || new URLSearchParams(new URLSearchParams('a=b')).get('a') !== 'b'
-    // not punycoded in Edge
-    || new URL('http://тест').host !== 'xn--e1aybc'
-    // not escaped in Chrome 62-
-    || new URL('http://a#б').hash !== '#%D0%B1'
-    // fails in Chrome 66-
-    || result !== 'a1c3'
-    // throws in Safari
-    || new URL('http://x', undefined).host !== 'x';
-});
-
-
-/***/ }),
-
 /***/ "0efb":
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//! moment-timezone.js
-//! version : 0.5.31
+//! version : 0.5.34
 //! Copyright (c) JS Foundation and other contributors
 //! license : MIT
 //! github.com/moment/moment-timezone
@@ -1787,7 +1658,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 	// 	return moment;
 	// }
 
-	var VERSION = "0.5.31",
+	var VERSION = "0.5.34",
 		zones = {},
 		links = {},
 		countries = {},
@@ -2461,10 +2332,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_style_loader_index_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_3_node_modules_stylus_loader_index_js_ref_11_oneOf_1_4_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Session_vue_vue_type_style_index_0_lang_stylus___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("8463");
-/* harmony import */ var _node_modules_vue_style_loader_index_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_3_node_modules_stylus_loader_index_js_ref_11_oneOf_1_4_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Session_vue_vue_type_style_index_0_lang_stylus___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_vue_style_loader_index_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_3_node_modules_stylus_loader_index_js_ref_11_oneOf_1_4_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Session_vue_vue_type_style_index_0_lang_stylus___WEBPACK_IMPORTED_MODULE_0__);
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_vue_style_loader_index_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_3_node_modules_stylus_loader_index_js_ref_11_oneOf_1_4_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Session_vue_vue_type_style_index_0_lang_stylus___WEBPACK_IMPORTED_MODULE_0__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_vue_style_loader_index_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_3_node_modules_stylus_loader_index_js_ref_11_oneOf_1_4_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Session_vue_vue_type_style_index_0_lang_stylus___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
- /* harmony default export */ __webpack_exports__["default"] = (_node_modules_vue_style_loader_index_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_3_node_modules_stylus_loader_index_js_ref_11_oneOf_1_4_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Session_vue_vue_type_style_index_0_lang_stylus___WEBPACK_IMPORTED_MODULE_0___default.a); 
+/* harmony import */ var _node_modules_vue_style_loader_index_js_ref_12_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_12_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_12_oneOf_1_2_node_modules_postcss_loader_src_index_js_ref_12_oneOf_1_3_node_modules_stylus_loader_index_js_ref_12_oneOf_1_4_node_modules_cache_loader_dist_cjs_js_ref_1_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Session_vue_vue_type_style_index_0_lang_stylus___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("8463");
+/* harmony import */ var _node_modules_vue_style_loader_index_js_ref_12_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_12_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_12_oneOf_1_2_node_modules_postcss_loader_src_index_js_ref_12_oneOf_1_3_node_modules_stylus_loader_index_js_ref_12_oneOf_1_4_node_modules_cache_loader_dist_cjs_js_ref_1_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Session_vue_vue_type_style_index_0_lang_stylus___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_vue_style_loader_index_js_ref_12_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_12_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_12_oneOf_1_2_node_modules_postcss_loader_src_index_js_ref_12_oneOf_1_3_node_modules_stylus_loader_index_js_ref_12_oneOf_1_4_node_modules_cache_loader_dist_cjs_js_ref_1_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Session_vue_vue_type_style_index_0_lang_stylus___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_vue_style_loader_index_js_ref_12_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_12_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_12_oneOf_1_2_node_modules_postcss_loader_src_index_js_ref_12_oneOf_1_3_node_modules_stylus_loader_index_js_ref_12_oneOf_1_4_node_modules_cache_loader_dist_cjs_js_ref_1_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Session_vue_vue_type_style_index_0_lang_stylus___WEBPACK_IMPORTED_MODULE_0__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_vue_style_loader_index_js_ref_12_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_12_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_12_oneOf_1_2_node_modules_postcss_loader_src_index_js_ref_12_oneOf_1_3_node_modules_stylus_loader_index_js_ref_12_oneOf_1_4_node_modules_cache_loader_dist_cjs_js_ref_1_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Session_vue_vue_type_style_index_0_lang_stylus___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+
 
 /***/ }),
 
@@ -2503,562 +2374,6 @@ webpackContext.keys = function webpackContextKeys() {
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
 webpackContext.id = "1334";
-
-/***/ }),
-
-/***/ "14c3":
-/***/ (function(module, exports, __webpack_require__) {
-
-var classof = __webpack_require__("c6b6");
-var regexpExec = __webpack_require__("9263");
-
-// `RegExpExec` abstract operation
-// https://tc39.github.io/ecma262/#sec-regexpexec
-module.exports = function (R, S) {
-  var exec = R.exec;
-  if (typeof exec === 'function') {
-    var result = exec.call(R, S);
-    if (typeof result !== 'object') {
-      throw TypeError('RegExp exec method returned something other than an Object or null');
-    }
-    return result;
-  }
-
-  if (classof(R) !== 'RegExp') {
-    throw TypeError('RegExp#exec called on incompatible receiver');
-  }
-
-  return regexpExec.call(R, S);
-};
-
-
-
-/***/ }),
-
-/***/ "1985":
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(module, global) {var __WEBPACK_AMD_DEFINE_RESULT__;/*! https://mths.be/punycode v1.4.1 by @mathias */
-;(function(root) {
-
-	/** Detect free variables */
-	var freeExports =  true && exports &&
-		!exports.nodeType && exports;
-	var freeModule =  true && module &&
-		!module.nodeType && module;
-	var freeGlobal = typeof global == 'object' && global;
-	if (
-		freeGlobal.global === freeGlobal ||
-		freeGlobal.window === freeGlobal ||
-		freeGlobal.self === freeGlobal
-	) {
-		root = freeGlobal;
-	}
-
-	/**
-	 * The `punycode` object.
-	 * @name punycode
-	 * @type Object
-	 */
-	var punycode,
-
-	/** Highest positive signed 32-bit float value */
-	maxInt = 2147483647, // aka. 0x7FFFFFFF or 2^31-1
-
-	/** Bootstring parameters */
-	base = 36,
-	tMin = 1,
-	tMax = 26,
-	skew = 38,
-	damp = 700,
-	initialBias = 72,
-	initialN = 128, // 0x80
-	delimiter = '-', // '\x2D'
-
-	/** Regular expressions */
-	regexPunycode = /^xn--/,
-	regexNonASCII = /[^\x20-\x7E]/, // unprintable ASCII chars + non-ASCII chars
-	regexSeparators = /[\x2E\u3002\uFF0E\uFF61]/g, // RFC 3490 separators
-
-	/** Error messages */
-	errors = {
-		'overflow': 'Overflow: input needs wider integers to process',
-		'not-basic': 'Illegal input >= 0x80 (not a basic code point)',
-		'invalid-input': 'Invalid input'
-	},
-
-	/** Convenience shortcuts */
-	baseMinusTMin = base - tMin,
-	floor = Math.floor,
-	stringFromCharCode = String.fromCharCode,
-
-	/** Temporary variable */
-	key;
-
-	/*--------------------------------------------------------------------------*/
-
-	/**
-	 * A generic error utility function.
-	 * @private
-	 * @param {String} type The error type.
-	 * @returns {Error} Throws a `RangeError` with the applicable error message.
-	 */
-	function error(type) {
-		throw new RangeError(errors[type]);
-	}
-
-	/**
-	 * A generic `Array#map` utility function.
-	 * @private
-	 * @param {Array} array The array to iterate over.
-	 * @param {Function} callback The function that gets called for every array
-	 * item.
-	 * @returns {Array} A new array of values returned by the callback function.
-	 */
-	function map(array, fn) {
-		var length = array.length;
-		var result = [];
-		while (length--) {
-			result[length] = fn(array[length]);
-		}
-		return result;
-	}
-
-	/**
-	 * A simple `Array#map`-like wrapper to work with domain name strings or email
-	 * addresses.
-	 * @private
-	 * @param {String} domain The domain name or email address.
-	 * @param {Function} callback The function that gets called for every
-	 * character.
-	 * @returns {Array} A new string of characters returned by the callback
-	 * function.
-	 */
-	function mapDomain(string, fn) {
-		var parts = string.split('@');
-		var result = '';
-		if (parts.length > 1) {
-			// In email addresses, only the domain name should be punycoded. Leave
-			// the local part (i.e. everything up to `@`) intact.
-			result = parts[0] + '@';
-			string = parts[1];
-		}
-		// Avoid `split(regex)` for IE8 compatibility. See #17.
-		string = string.replace(regexSeparators, '\x2E');
-		var labels = string.split('.');
-		var encoded = map(labels, fn).join('.');
-		return result + encoded;
-	}
-
-	/**
-	 * Creates an array containing the numeric code points of each Unicode
-	 * character in the string. While JavaScript uses UCS-2 internally,
-	 * this function will convert a pair of surrogate halves (each of which
-	 * UCS-2 exposes as separate characters) into a single code point,
-	 * matching UTF-16.
-	 * @see `punycode.ucs2.encode`
-	 * @see <https://mathiasbynens.be/notes/javascript-encoding>
-	 * @memberOf punycode.ucs2
-	 * @name decode
-	 * @param {String} string The Unicode input string (UCS-2).
-	 * @returns {Array} The new array of code points.
-	 */
-	function ucs2decode(string) {
-		var output = [],
-		    counter = 0,
-		    length = string.length,
-		    value,
-		    extra;
-		while (counter < length) {
-			value = string.charCodeAt(counter++);
-			if (value >= 0xD800 && value <= 0xDBFF && counter < length) {
-				// high surrogate, and there is a next character
-				extra = string.charCodeAt(counter++);
-				if ((extra & 0xFC00) == 0xDC00) { // low surrogate
-					output.push(((value & 0x3FF) << 10) + (extra & 0x3FF) + 0x10000);
-				} else {
-					// unmatched surrogate; only append this code unit, in case the next
-					// code unit is the high surrogate of a surrogate pair
-					output.push(value);
-					counter--;
-				}
-			} else {
-				output.push(value);
-			}
-		}
-		return output;
-	}
-
-	/**
-	 * Creates a string based on an array of numeric code points.
-	 * @see `punycode.ucs2.decode`
-	 * @memberOf punycode.ucs2
-	 * @name encode
-	 * @param {Array} codePoints The array of numeric code points.
-	 * @returns {String} The new Unicode string (UCS-2).
-	 */
-	function ucs2encode(array) {
-		return map(array, function(value) {
-			var output = '';
-			if (value > 0xFFFF) {
-				value -= 0x10000;
-				output += stringFromCharCode(value >>> 10 & 0x3FF | 0xD800);
-				value = 0xDC00 | value & 0x3FF;
-			}
-			output += stringFromCharCode(value);
-			return output;
-		}).join('');
-	}
-
-	/**
-	 * Converts a basic code point into a digit/integer.
-	 * @see `digitToBasic()`
-	 * @private
-	 * @param {Number} codePoint The basic numeric code point value.
-	 * @returns {Number} The numeric value of a basic code point (for use in
-	 * representing integers) in the range `0` to `base - 1`, or `base` if
-	 * the code point does not represent a value.
-	 */
-	function basicToDigit(codePoint) {
-		if (codePoint - 48 < 10) {
-			return codePoint - 22;
-		}
-		if (codePoint - 65 < 26) {
-			return codePoint - 65;
-		}
-		if (codePoint - 97 < 26) {
-			return codePoint - 97;
-		}
-		return base;
-	}
-
-	/**
-	 * Converts a digit/integer into a basic code point.
-	 * @see `basicToDigit()`
-	 * @private
-	 * @param {Number} digit The numeric value of a basic code point.
-	 * @returns {Number} The basic code point whose value (when used for
-	 * representing integers) is `digit`, which needs to be in the range
-	 * `0` to `base - 1`. If `flag` is non-zero, the uppercase form is
-	 * used; else, the lowercase form is used. The behavior is undefined
-	 * if `flag` is non-zero and `digit` has no uppercase form.
-	 */
-	function digitToBasic(digit, flag) {
-		//  0..25 map to ASCII a..z or A..Z
-		// 26..35 map to ASCII 0..9
-		return digit + 22 + 75 * (digit < 26) - ((flag != 0) << 5);
-	}
-
-	/**
-	 * Bias adaptation function as per section 3.4 of RFC 3492.
-	 * https://tools.ietf.org/html/rfc3492#section-3.4
-	 * @private
-	 */
-	function adapt(delta, numPoints, firstTime) {
-		var k = 0;
-		delta = firstTime ? floor(delta / damp) : delta >> 1;
-		delta += floor(delta / numPoints);
-		for (/* no initialization */; delta > baseMinusTMin * tMax >> 1; k += base) {
-			delta = floor(delta / baseMinusTMin);
-		}
-		return floor(k + (baseMinusTMin + 1) * delta / (delta + skew));
-	}
-
-	/**
-	 * Converts a Punycode string of ASCII-only symbols to a string of Unicode
-	 * symbols.
-	 * @memberOf punycode
-	 * @param {String} input The Punycode string of ASCII-only symbols.
-	 * @returns {String} The resulting string of Unicode symbols.
-	 */
-	function decode(input) {
-		// Don't use UCS-2
-		var output = [],
-		    inputLength = input.length,
-		    out,
-		    i = 0,
-		    n = initialN,
-		    bias = initialBias,
-		    basic,
-		    j,
-		    index,
-		    oldi,
-		    w,
-		    k,
-		    digit,
-		    t,
-		    /** Cached calculation results */
-		    baseMinusT;
-
-		// Handle the basic code points: let `basic` be the number of input code
-		// points before the last delimiter, or `0` if there is none, then copy
-		// the first basic code points to the output.
-
-		basic = input.lastIndexOf(delimiter);
-		if (basic < 0) {
-			basic = 0;
-		}
-
-		for (j = 0; j < basic; ++j) {
-			// if it's not a basic code point
-			if (input.charCodeAt(j) >= 0x80) {
-				error('not-basic');
-			}
-			output.push(input.charCodeAt(j));
-		}
-
-		// Main decoding loop: start just after the last delimiter if any basic code
-		// points were copied; start at the beginning otherwise.
-
-		for (index = basic > 0 ? basic + 1 : 0; index < inputLength; /* no final expression */) {
-
-			// `index` is the index of the next character to be consumed.
-			// Decode a generalized variable-length integer into `delta`,
-			// which gets added to `i`. The overflow checking is easier
-			// if we increase `i` as we go, then subtract off its starting
-			// value at the end to obtain `delta`.
-			for (oldi = i, w = 1, k = base; /* no condition */; k += base) {
-
-				if (index >= inputLength) {
-					error('invalid-input');
-				}
-
-				digit = basicToDigit(input.charCodeAt(index++));
-
-				if (digit >= base || digit > floor((maxInt - i) / w)) {
-					error('overflow');
-				}
-
-				i += digit * w;
-				t = k <= bias ? tMin : (k >= bias + tMax ? tMax : k - bias);
-
-				if (digit < t) {
-					break;
-				}
-
-				baseMinusT = base - t;
-				if (w > floor(maxInt / baseMinusT)) {
-					error('overflow');
-				}
-
-				w *= baseMinusT;
-
-			}
-
-			out = output.length + 1;
-			bias = adapt(i - oldi, out, oldi == 0);
-
-			// `i` was supposed to wrap around from `out` to `0`,
-			// incrementing `n` each time, so we'll fix that now:
-			if (floor(i / out) > maxInt - n) {
-				error('overflow');
-			}
-
-			n += floor(i / out);
-			i %= out;
-
-			// Insert `n` at position `i` of the output
-			output.splice(i++, 0, n);
-
-		}
-
-		return ucs2encode(output);
-	}
-
-	/**
-	 * Converts a string of Unicode symbols (e.g. a domain name label) to a
-	 * Punycode string of ASCII-only symbols.
-	 * @memberOf punycode
-	 * @param {String} input The string of Unicode symbols.
-	 * @returns {String} The resulting Punycode string of ASCII-only symbols.
-	 */
-	function encode(input) {
-		var n,
-		    delta,
-		    handledCPCount,
-		    basicLength,
-		    bias,
-		    j,
-		    m,
-		    q,
-		    k,
-		    t,
-		    currentValue,
-		    output = [],
-		    /** `inputLength` will hold the number of code points in `input`. */
-		    inputLength,
-		    /** Cached calculation results */
-		    handledCPCountPlusOne,
-		    baseMinusT,
-		    qMinusT;
-
-		// Convert the input in UCS-2 to Unicode
-		input = ucs2decode(input);
-
-		// Cache the length
-		inputLength = input.length;
-
-		// Initialize the state
-		n = initialN;
-		delta = 0;
-		bias = initialBias;
-
-		// Handle the basic code points
-		for (j = 0; j < inputLength; ++j) {
-			currentValue = input[j];
-			if (currentValue < 0x80) {
-				output.push(stringFromCharCode(currentValue));
-			}
-		}
-
-		handledCPCount = basicLength = output.length;
-
-		// `handledCPCount` is the number of code points that have been handled;
-		// `basicLength` is the number of basic code points.
-
-		// Finish the basic string - if it is not empty - with a delimiter
-		if (basicLength) {
-			output.push(delimiter);
-		}
-
-		// Main encoding loop:
-		while (handledCPCount < inputLength) {
-
-			// All non-basic code points < n have been handled already. Find the next
-			// larger one:
-			for (m = maxInt, j = 0; j < inputLength; ++j) {
-				currentValue = input[j];
-				if (currentValue >= n && currentValue < m) {
-					m = currentValue;
-				}
-			}
-
-			// Increase `delta` enough to advance the decoder's <n,i> state to <m,0>,
-			// but guard against overflow
-			handledCPCountPlusOne = handledCPCount + 1;
-			if (m - n > floor((maxInt - delta) / handledCPCountPlusOne)) {
-				error('overflow');
-			}
-
-			delta += (m - n) * handledCPCountPlusOne;
-			n = m;
-
-			for (j = 0; j < inputLength; ++j) {
-				currentValue = input[j];
-
-				if (currentValue < n && ++delta > maxInt) {
-					error('overflow');
-				}
-
-				if (currentValue == n) {
-					// Represent delta as a generalized variable-length integer
-					for (q = delta, k = base; /* no condition */; k += base) {
-						t = k <= bias ? tMin : (k >= bias + tMax ? tMax : k - bias);
-						if (q < t) {
-							break;
-						}
-						qMinusT = q - t;
-						baseMinusT = base - t;
-						output.push(
-							stringFromCharCode(digitToBasic(t + qMinusT % baseMinusT, 0))
-						);
-						q = floor(qMinusT / baseMinusT);
-					}
-
-					output.push(stringFromCharCode(digitToBasic(q, 0)));
-					bias = adapt(delta, handledCPCountPlusOne, handledCPCount == basicLength);
-					delta = 0;
-					++handledCPCount;
-				}
-			}
-
-			++delta;
-			++n;
-
-		}
-		return output.join('');
-	}
-
-	/**
-	 * Converts a Punycode string representing a domain name or an email address
-	 * to Unicode. Only the Punycoded parts of the input will be converted, i.e.
-	 * it doesn't matter if you call it on a string that has already been
-	 * converted to Unicode.
-	 * @memberOf punycode
-	 * @param {String} input The Punycoded domain name or email address to
-	 * convert to Unicode.
-	 * @returns {String} The Unicode representation of the given Punycode
-	 * string.
-	 */
-	function toUnicode(input) {
-		return mapDomain(input, function(string) {
-			return regexPunycode.test(string)
-				? decode(string.slice(4).toLowerCase())
-				: string;
-		});
-	}
-
-	/**
-	 * Converts a Unicode string representing a domain name or an email address to
-	 * Punycode. Only the non-ASCII parts of the domain name will be converted,
-	 * i.e. it doesn't matter if you call it with a domain that's already in
-	 * ASCII.
-	 * @memberOf punycode
-	 * @param {String} input The domain name or email address to convert, as a
-	 * Unicode string.
-	 * @returns {String} The Punycode representation of the given domain name or
-	 * email address.
-	 */
-	function toASCII(input) {
-		return mapDomain(input, function(string) {
-			return regexNonASCII.test(string)
-				? 'xn--' + encode(string)
-				: string;
-		});
-	}
-
-	/*--------------------------------------------------------------------------*/
-
-	/** Define the public API */
-	punycode = {
-		/**
-		 * A string representing the current Punycode.js version number.
-		 * @memberOf punycode
-		 * @type String
-		 */
-		'version': '1.4.1',
-		/**
-		 * An object of methods to convert from JavaScript's internal character
-		 * representation (UCS-2) to Unicode code points, and back.
-		 * @see <https://mathiasbynens.be/notes/javascript-encoding>
-		 * @memberOf punycode
-		 * @type Object
-		 */
-		'ucs2': {
-			'decode': ucs2decode,
-			'encode': ucs2encode
-		},
-		'decode': decode,
-		'encode': encode,
-		'toASCII': toASCII,
-		'toUnicode': toUnicode
-	};
-
-	/** Expose `punycode` */
-	// Some AMD build optimizers, like r.js, check for specific condition patterns
-	// like the following:
-	if (
-		true
-	) {
-		!(__WEBPACK_AMD_DEFINE_RESULT__ = (function() {
-			return punycode;
-		}).call(exports, __webpack_require__, exports, module),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	} else {}
-
-}(this));
-
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__("62e4")(module), __webpack_require__("c8ba")))
 
 /***/ }),
 
@@ -3153,40 +2468,6 @@ module.exports = function lheading(state, startLine, endLine/*, silent*/) {
 
 /***/ }),
 
-/***/ "19aa":
-/***/ (function(module, exports) {
-
-module.exports = function (it, Constructor, name) {
-  if (!(it instanceof Constructor)) {
-    throw TypeError('Incorrect ' + (name ? name + ' ' : '') + 'invocation');
-  } return it;
-};
-
-
-/***/ }),
-
-/***/ "1be4":
-/***/ (function(module, exports, __webpack_require__) {
-
-var getBuiltIn = __webpack_require__("d066");
-
-module.exports = getBuiltIn('document', 'documentElement');
-
-
-/***/ }),
-
-/***/ "1c0b":
-/***/ (function(module, exports) {
-
-module.exports = function (it) {
-  if (typeof it != 'function') {
-    throw TypeError(String(it) + ' is not a function');
-  } return it;
-};
-
-
-/***/ }),
-
 /***/ "1caa":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -3257,19 +2538,6 @@ module.exports = {
 
 /***/ }),
 
-/***/ "1d80":
-/***/ (function(module, exports) {
-
-// `RequireObjectCoercible` abstract operation
-// https://tc39.github.io/ecma262/#sec-requireobjectcoercible
-module.exports = function (it) {
-  if (it == undefined) throw TypeError("Can't call method on " + it);
-  return it;
-};
-
-
-/***/ }),
-
 /***/ "2085":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -3324,106 +2592,9 @@ module.exports = function text_collapse(state) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_style_loader_index_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_3_node_modules_stylus_loader_index_js_ref_11_oneOf_1_4_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_LinearSchedule_vue_vue_type_style_index_0_lang_stylus___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("7ce2");
-/* harmony import */ var _node_modules_vue_style_loader_index_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_3_node_modules_stylus_loader_index_js_ref_11_oneOf_1_4_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_LinearSchedule_vue_vue_type_style_index_0_lang_stylus___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_vue_style_loader_index_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_3_node_modules_stylus_loader_index_js_ref_11_oneOf_1_4_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_LinearSchedule_vue_vue_type_style_index_0_lang_stylus___WEBPACK_IMPORTED_MODULE_0__);
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_vue_style_loader_index_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_3_node_modules_stylus_loader_index_js_ref_11_oneOf_1_4_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_LinearSchedule_vue_vue_type_style_index_0_lang_stylus___WEBPACK_IMPORTED_MODULE_0__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_vue_style_loader_index_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_3_node_modules_stylus_loader_index_js_ref_11_oneOf_1_4_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_LinearSchedule_vue_vue_type_style_index_0_lang_stylus___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
- /* harmony default export */ __webpack_exports__["default"] = (_node_modules_vue_style_loader_index_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_3_node_modules_stylus_loader_index_js_ref_11_oneOf_1_4_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_LinearSchedule_vue_vue_type_style_index_0_lang_stylus___WEBPACK_IMPORTED_MODULE_0___default.a); 
-
-/***/ }),
-
-/***/ "23cb":
-/***/ (function(module, exports, __webpack_require__) {
-
-var toInteger = __webpack_require__("a691");
-
-var max = Math.max;
-var min = Math.min;
-
-// Helper for a popular repeating case of the spec:
-// Let integer be ? ToInteger(index).
-// If integer < 0, let result be max((length + integer), 0); else let result be min(integer, length).
-module.exports = function (index, length) {
-  var integer = toInteger(index);
-  return integer < 0 ? max(integer + length, 0) : min(integer, length);
-};
-
-
-/***/ }),
-
-/***/ "23e7":
-/***/ (function(module, exports, __webpack_require__) {
-
-var global = __webpack_require__("da84");
-var getOwnPropertyDescriptor = __webpack_require__("06cf").f;
-var createNonEnumerableProperty = __webpack_require__("9112");
-var redefine = __webpack_require__("6eeb");
-var setGlobal = __webpack_require__("ce4e");
-var copyConstructorProperties = __webpack_require__("e893");
-var isForced = __webpack_require__("94ca");
-
-/*
-  options.target      - name of the target object
-  options.global      - target is the global object
-  options.stat        - export as static methods of target
-  options.proto       - export as prototype methods of target
-  options.real        - real prototype method for the `pure` version
-  options.forced      - export even if the native feature is available
-  options.bind        - bind methods to the target, required for the `pure` version
-  options.wrap        - wrap constructors to preventing global pollution, required for the `pure` version
-  options.unsafe      - use the simple assignment of property instead of delete + defineProperty
-  options.sham        - add a flag to not completely full polyfills
-  options.enumerable  - export as enumerable property
-  options.noTargetGet - prevent calling a getter on target
-*/
-module.exports = function (options, source) {
-  var TARGET = options.target;
-  var GLOBAL = options.global;
-  var STATIC = options.stat;
-  var FORCED, target, key, targetProperty, sourceProperty, descriptor;
-  if (GLOBAL) {
-    target = global;
-  } else if (STATIC) {
-    target = global[TARGET] || setGlobal(TARGET, {});
-  } else {
-    target = (global[TARGET] || {}).prototype;
-  }
-  if (target) for (key in source) {
-    sourceProperty = source[key];
-    if (options.noTargetGet) {
-      descriptor = getOwnPropertyDescriptor(target, key);
-      targetProperty = descriptor && descriptor.value;
-    } else targetProperty = target[key];
-    FORCED = isForced(GLOBAL ? key : TARGET + (STATIC ? '.' : '#') + key, options.forced);
-    // contained in target
-    if (!FORCED && targetProperty !== undefined) {
-      if (typeof sourceProperty === typeof targetProperty) continue;
-      copyConstructorProperties(sourceProperty, targetProperty);
-    }
-    // add a flag to not completely full polyfills
-    if (options.sham || (targetProperty && targetProperty.sham)) {
-      createNonEnumerableProperty(sourceProperty, 'sham', true);
-    }
-    // extend global
-    redefine(target, key, sourceProperty, options);
-  }
-};
-
-
-/***/ }),
-
-/***/ "241c":
-/***/ (function(module, exports, __webpack_require__) {
-
-var internalObjectKeys = __webpack_require__("ca84");
-var enumBugKeys = __webpack_require__("7839");
-
-var hiddenKeys = enumBugKeys.concat('length', 'prototype');
-
-// `Object.getOwnPropertyNames` method
-// https://tc39.github.io/ecma262/#sec-object.getownpropertynames
-exports.f = Object.getOwnPropertyNames || function getOwnPropertyNames(O) {
-  return internalObjectKeys(O, hiddenKeys);
-};
+/* harmony import */ var _node_modules_vue_style_loader_index_js_ref_12_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_12_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_12_oneOf_1_2_node_modules_postcss_loader_src_index_js_ref_12_oneOf_1_3_node_modules_stylus_loader_index_js_ref_12_oneOf_1_4_node_modules_cache_loader_dist_cjs_js_ref_1_0_node_modules_vue_loader_lib_index_js_vue_loader_options_LinearSchedule_vue_vue_type_style_index_0_lang_stylus___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("7ce2");
+/* harmony import */ var _node_modules_vue_style_loader_index_js_ref_12_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_12_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_12_oneOf_1_2_node_modules_postcss_loader_src_index_js_ref_12_oneOf_1_3_node_modules_stylus_loader_index_js_ref_12_oneOf_1_4_node_modules_cache_loader_dist_cjs_js_ref_1_0_node_modules_vue_loader_lib_index_js_vue_loader_options_LinearSchedule_vue_vue_type_style_index_0_lang_stylus___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_vue_style_loader_index_js_ref_12_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_12_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_12_oneOf_1_2_node_modules_postcss_loader_src_index_js_ref_12_oneOf_1_3_node_modules_stylus_loader_index_js_ref_12_oneOf_1_4_node_modules_cache_loader_dist_cjs_js_ref_1_0_node_modules_vue_loader_lib_index_js_vue_loader_options_LinearSchedule_vue_vue_type_style_index_0_lang_stylus___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_vue_style_loader_index_js_ref_12_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_12_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_12_oneOf_1_2_node_modules_postcss_loader_src_index_js_ref_12_oneOf_1_3_node_modules_stylus_loader_index_js_ref_12_oneOf_1_4_node_modules_cache_loader_dist_cjs_js_ref_1_0_node_modules_vue_loader_lib_index_js_vue_loader_options_LinearSchedule_vue_vue_type_style_index_0_lang_stylus___WEBPACK_IMPORTED_MODULE_0__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_vue_style_loader_index_js_ref_12_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_12_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_12_oneOf_1_2_node_modules_postcss_loader_src_index_js_ref_12_oneOf_1_3_node_modules_stylus_loader_index_js_ref_12_oneOf_1_4_node_modules_cache_loader_dist_cjs_js_ref_1_0_node_modules_vue_loader_lib_index_js_vue_loader_options_LinearSchedule_vue_vue_type_style_index_0_lang_stylus___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
 
 
 /***/ }),
@@ -3725,8 +2896,8 @@ module.exports = function autolink(state, silent) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(global) {/*!
- * Vue.js v2.6.12
- * (c) 2014-2020 Evan You
+ * Vue.js v2.6.14
+ * (c) 2014-2021 Evan You
  * Released under the MIT License.
  */
 /*  */
@@ -5268,13 +4439,14 @@ function assertProp (
       type = [type];
     }
     for (var i = 0; i < type.length && !valid; i++) {
-      var assertedType = assertType(value, type[i]);
+      var assertedType = assertType(value, type[i], vm);
       expectedTypes.push(assertedType.expectedType || '');
       valid = assertedType.valid;
     }
   }
 
-  if (!valid) {
+  var haveExpectedTypes = expectedTypes.some(function (t) { return t; });
+  if (!valid && haveExpectedTypes) {
     warn(
       getInvalidTypeMessage(name, value, expectedTypes),
       vm
@@ -5292,9 +4464,9 @@ function assertProp (
   }
 }
 
-var simpleCheckRE = /^(String|Number|Boolean|Function|Symbol)$/;
+var simpleCheckRE = /^(String|Number|Boolean|Function|Symbol|BigInt)$/;
 
-function assertType (value, type) {
+function assertType (value, type, vm) {
   var valid;
   var expectedType = getType(type);
   if (simpleCheckRE.test(expectedType)) {
@@ -5309,7 +4481,12 @@ function assertType (value, type) {
   } else if (expectedType === 'Array') {
     valid = Array.isArray(value);
   } else {
-    valid = value instanceof type;
+    try {
+      valid = value instanceof type;
+    } catch (e) {
+      warn('Invalid prop type: "' + String(type) + '" is not a constructor', vm);
+      valid = false;
+    }
   }
   return {
     valid: valid,
@@ -5317,13 +4494,15 @@ function assertType (value, type) {
   }
 }
 
+var functionTypeCheckRE = /^\s*function (\w+)/;
+
 /**
  * Use function string name to check built-in types,
  * because a simple equality check will fail when running
  * across different vms / iframes.
  */
 function getType (fn) {
-  var match = fn && fn.toString().match(/^\s*function (\w+)/);
+  var match = fn && fn.toString().match(functionTypeCheckRE);
   return match ? match[1] : ''
 }
 
@@ -5348,18 +4527,19 @@ function getInvalidTypeMessage (name, value, expectedTypes) {
     " Expected " + (expectedTypes.map(capitalize).join(', '));
   var expectedType = expectedTypes[0];
   var receivedType = toRawType(value);
-  var expectedValue = styleValue(value, expectedType);
-  var receivedValue = styleValue(value, receivedType);
   // check if we need to specify expected value
-  if (expectedTypes.length === 1 &&
-      isExplicable(expectedType) &&
-      !isBoolean(expectedType, receivedType)) {
-    message += " with value " + expectedValue;
+  if (
+    expectedTypes.length === 1 &&
+    isExplicable(expectedType) &&
+    isExplicable(typeof value) &&
+    !isBoolean(expectedType, receivedType)
+  ) {
+    message += " with value " + (styleValue(value, expectedType));
   }
   message += ", got " + receivedType + " ";
   // check if we need to specify received value
   if (isExplicable(receivedType)) {
-    message += "with value " + receivedValue + ".";
+    message += "with value " + (styleValue(value, receivedType)) + ".";
   }
   return message
 }
@@ -5374,9 +4554,9 @@ function styleValue (value, type) {
   }
 }
 
+var EXPLICABLE_TYPES = ['string', 'number', 'boolean'];
 function isExplicable (value) {
-  var explicitTypes = ['string', 'number', 'boolean'];
-  return explicitTypes.some(function (elem) { return value.toLowerCase() === elem; })
+  return EXPLICABLE_TYPES.some(function (elem) { return value.toLowerCase() === elem; })
 }
 
 function isBoolean () {
@@ -5977,6 +5157,12 @@ function isWhitespace (node) {
 
 /*  */
 
+function isAsyncPlaceholder (node) {
+  return node.isComment && node.asyncFactory
+}
+
+/*  */
+
 function normalizeScopedSlots (
   slots,
   normalSlots,
@@ -6033,9 +5219,10 @@ function normalizeScopedSlot(normalSlots, key, fn) {
     res = res && typeof res === 'object' && !Array.isArray(res)
       ? [res] // single vnode
       : normalizeChildren(res);
+    var vnode = res && res[0];
     return res && (
-      res.length === 0 ||
-      (res.length === 1 && res[0].isComment) // #9658
+      !vnode ||
+      (res.length === 1 && vnode.isComment && !isAsyncPlaceholder(vnode)) // #9658, #10391
     ) ? undefined
       : res
   };
@@ -6108,21 +5295,26 @@ function renderList (
  */
 function renderSlot (
   name,
-  fallback,
+  fallbackRender,
   props,
   bindObject
 ) {
   var scopedSlotFn = this.$scopedSlots[name];
   var nodes;
-  if (scopedSlotFn) { // scoped slot
+  if (scopedSlotFn) {
+    // scoped slot
     props = props || {};
     if (bindObject) {
       if (false) {}
       props = extend(extend({}, bindObject), props);
     }
-    nodes = scopedSlotFn(props) || fallback;
+    nodes =
+      scopedSlotFn(props) ||
+      (typeof fallbackRender === 'function' ? fallbackRender() : fallbackRender);
   } else {
-    nodes = this.$slots[name] || fallback;
+    nodes =
+      this.$slots[name] ||
+      (typeof fallbackRender === 'function' ? fallbackRender() : fallbackRender);
   }
 
   var target = props && props.slot;
@@ -6172,6 +5364,7 @@ function checkKeyCodes (
   } else if (eventKeyName) {
     return hyphenate(eventKeyName) !== key
   }
+  return eventKeyCode === undefined
 }
 
 /*  */
@@ -6687,8 +5880,10 @@ function createComponent (
 }
 
 function createComponentInstanceForVnode (
-  vnode, // we know it's MountedComponentVNode but flow doesn't
-  parent // activeInstance in lifecycle state
+  // we know it's MountedComponentVNode but flow doesn't
+  vnode,
+  // activeInstance in lifecycle state
+  parent
 ) {
   var options = {
     _isComponent: true,
@@ -7118,12 +6313,6 @@ function resolveAsyncComponent (
 
 /*  */
 
-function isAsyncPlaceholder (node) {
-  return node.isComment && node.asyncFactory
-}
-
-/*  */
-
 function getFirstComponentChild (children) {
   if (Array.isArray(children)) {
     for (var i = 0; i < children.length; i++) {
@@ -7444,7 +6633,8 @@ function updateChildComponent (
   var hasDynamicScopedSlot = !!(
     (newScopedSlots && !newScopedSlots.$stable) ||
     (oldScopedSlots !== emptyObject && !oldScopedSlots.$stable) ||
-    (newScopedSlots && vm.$scopedSlots.$key !== newScopedSlots.$key)
+    (newScopedSlots && vm.$scopedSlots.$key !== newScopedSlots.$key) ||
+    (!newScopedSlots && vm.$scopedSlots.$key)
   );
 
   // Any static slot children from the parent may have changed during parent's
@@ -7873,11 +7063,8 @@ Watcher.prototype.run = function run () {
       var oldValue = this.value;
       this.value = value;
       if (this.user) {
-        try {
-          this.cb.call(this.vm, value, oldValue);
-        } catch (e) {
-          handleError(e, this.vm, ("callback for watcher \"" + (this.expression) + "\""));
-        }
+        var info = "callback for watcher \"" + (this.expression) + "\"";
+        invokeWithErrorHandling(this.cb, this.vm, [value, oldValue], this.vm, info);
       } else {
         this.cb.call(this.vm, value, oldValue);
       }
@@ -8169,11 +7356,10 @@ function stateMixin (Vue) {
     options.user = true;
     var watcher = new Watcher(vm, expOrFn, cb, options);
     if (options.immediate) {
-      try {
-        cb.call(vm, watcher.value);
-      } catch (error) {
-        handleError(error, vm, ("callback for immediate watcher \"" + (watcher.expression) + "\""));
-      }
+      var info = "callback for immediate watcher \"" + (watcher.expression) + "\"";
+      pushTarget();
+      invokeWithErrorHandling(cb, vm, [watcher.value], vm, info);
+      popTarget();
     }
     return function unwatchFn () {
       watcher.teardown();
@@ -8457,6 +7643,8 @@ function initAssetRegisters (Vue) {
 
 
 
+
+
 function getComponentName (opts) {
   return opts && (opts.Ctor.options.name || opts.tag)
 }
@@ -8478,9 +7666,9 @@ function pruneCache (keepAliveInstance, filter) {
   var keys = keepAliveInstance.keys;
   var _vnode = keepAliveInstance._vnode;
   for (var key in cache) {
-    var cachedNode = cache[key];
-    if (cachedNode) {
-      var name = getComponentName(cachedNode.componentOptions);
+    var entry = cache[key];
+    if (entry) {
+      var name = entry.name;
       if (name && !filter(name)) {
         pruneCacheEntry(cache, key, keys, _vnode);
       }
@@ -8494,9 +7682,9 @@ function pruneCacheEntry (
   keys,
   current
 ) {
-  var cached$$1 = cache[key];
-  if (cached$$1 && (!current || cached$$1.tag !== current.tag)) {
-    cached$$1.componentInstance.$destroy();
+  var entry = cache[key];
+  if (entry && (!current || entry.tag !== current.tag)) {
+    entry.componentInstance.$destroy();
   }
   cache[key] = null;
   remove(keys, key);
@@ -8514,6 +7702,32 @@ var KeepAlive = {
     max: [String, Number]
   },
 
+  methods: {
+    cacheVNode: function cacheVNode() {
+      var ref = this;
+      var cache = ref.cache;
+      var keys = ref.keys;
+      var vnodeToCache = ref.vnodeToCache;
+      var keyToCache = ref.keyToCache;
+      if (vnodeToCache) {
+        var tag = vnodeToCache.tag;
+        var componentInstance = vnodeToCache.componentInstance;
+        var componentOptions = vnodeToCache.componentOptions;
+        cache[keyToCache] = {
+          name: getComponentName(componentOptions),
+          tag: tag,
+          componentInstance: componentInstance,
+        };
+        keys.push(keyToCache);
+        // prune oldest entry
+        if (this.max && keys.length > parseInt(this.max)) {
+          pruneCacheEntry(cache, keys[0], keys, this._vnode);
+        }
+        this.vnodeToCache = null;
+      }
+    }
+  },
+
   created: function created () {
     this.cache = Object.create(null);
     this.keys = [];
@@ -8528,12 +7742,17 @@ var KeepAlive = {
   mounted: function mounted () {
     var this$1 = this;
 
+    this.cacheVNode();
     this.$watch('include', function (val) {
       pruneCache(this$1, function (name) { return matches(val, name); });
     });
     this.$watch('exclude', function (val) {
       pruneCache(this$1, function (name) { return !matches(val, name); });
     });
+  },
+
+  updated: function updated () {
+    this.cacheVNode();
   },
 
   render: function render () {
@@ -8569,12 +7788,9 @@ var KeepAlive = {
         remove(keys, key);
         keys.push(key);
       } else {
-        cache[key] = vnode;
-        keys.push(key);
-        // prune oldest entry
-        if (this.max && keys.length > parseInt(this.max)) {
-          pruneCacheEntry(cache, keys[0], keys, this._vnode);
-        }
+        // delay setting the cache until update
+        this.vnodeToCache = vnode;
+        this.keyToCache = key;
       }
 
       vnode.data.keepAlive = true;
@@ -8651,7 +7867,7 @@ Object.defineProperty(Vue, 'FunctionalRenderContext', {
   value: FunctionalRenderContext
 });
 
-Vue.version = '2.6.12';
+Vue.version = '2.6.14';
 
 /*  */
 
@@ -8688,7 +7904,7 @@ var isBooleanAttr = makeMap(
   'default,defaultchecked,defaultmuted,defaultselected,defer,disabled,' +
   'enabled,formnovalidate,hidden,indeterminate,inert,ismap,itemscope,loop,multiple,' +
   'muted,nohref,noresize,noshade,novalidate,nowrap,open,pauseonexit,readonly,' +
-  'required,reversed,scoped,seamless,selected,sortable,translate,' +
+  'required,reversed,scoped,seamless,selected,sortable,' +
   'truespeed,typemustmatch,visible'
 );
 
@@ -8812,7 +8028,7 @@ var isHTMLTag = makeMap(
 // contain child elements.
 var isSVG = makeMap(
   'svg,animate,circle,clippath,cursor,defs,desc,ellipse,filter,font-face,' +
-  'foreignObject,g,glyph,image,line,marker,mask,missing-glyph,path,pattern,' +
+  'foreignobject,g,glyph,image,line,marker,mask,missing-glyph,path,pattern,' +
   'polygon,polyline,rect,switch,symbol,text,textpath,tspan,use,view',
   true
 );
@@ -9013,7 +8229,8 @@ var hooks = ['create', 'activate', 'update', 'remove', 'destroy'];
 
 function sameVnode (a, b) {
   return (
-    a.key === b.key && (
+    a.key === b.key &&
+    a.asyncFactory === b.asyncFactory && (
       (
         a.tag === b.tag &&
         a.isComment === b.isComment &&
@@ -9021,7 +8238,6 @@ function sameVnode (a, b) {
         sameInputType(a, b)
       ) || (
         isTrue(a.isAsyncPlaceholder) &&
-        a.asyncFactory === b.asyncFactory &&
         isUndef(b.asyncFactory.error)
       )
     )
@@ -9866,7 +9082,7 @@ function updateAttrs (oldVnode, vnode) {
     cur = attrs[key];
     old = oldAttrs[key];
     if (old !== cur) {
-      setAttr(elm, key, cur);
+      setAttr(elm, key, cur, vnode.data.pre);
     }
   }
   // #4391: in IE9, setting type can reset value for input[type=radio]
@@ -9886,8 +9102,8 @@ function updateAttrs (oldVnode, vnode) {
   }
 }
 
-function setAttr (el, key, value) {
-  if (el.tagName.indexOf('-') > -1) {
+function setAttr (el, key, value, isInPre) {
+  if (isInPre || el.tagName.indexOf('-') > -1) {
     baseSetAttr(el, key, value);
   } else if (isBooleanAttr(key)) {
     // set attribute for blank value
@@ -11569,1021 +10785,6 @@ if (inBrowser) {
 
 /***/ }),
 
-/***/ "2b3d":
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-// TODO: in core-js@4, move /modules/ dependencies to public entries for better optimization by tools like `preset-env`
-__webpack_require__("3ca3");
-var $ = __webpack_require__("23e7");
-var DESCRIPTORS = __webpack_require__("83ab");
-var USE_NATIVE_URL = __webpack_require__("0d3b");
-var global = __webpack_require__("da84");
-var defineProperties = __webpack_require__("37e8");
-var redefine = __webpack_require__("6eeb");
-var anInstance = __webpack_require__("19aa");
-var has = __webpack_require__("5135");
-var assign = __webpack_require__("60da");
-var arrayFrom = __webpack_require__("4df4");
-var codeAt = __webpack_require__("6547").codeAt;
-var toASCII = __webpack_require__("5fb2");
-var setToStringTag = __webpack_require__("d44e");
-var URLSearchParamsModule = __webpack_require__("9861");
-var InternalStateModule = __webpack_require__("69f3");
-
-var NativeURL = global.URL;
-var URLSearchParams = URLSearchParamsModule.URLSearchParams;
-var getInternalSearchParamsState = URLSearchParamsModule.getState;
-var setInternalState = InternalStateModule.set;
-var getInternalURLState = InternalStateModule.getterFor('URL');
-var floor = Math.floor;
-var pow = Math.pow;
-
-var INVALID_AUTHORITY = 'Invalid authority';
-var INVALID_SCHEME = 'Invalid scheme';
-var INVALID_HOST = 'Invalid host';
-var INVALID_PORT = 'Invalid port';
-
-var ALPHA = /[A-Za-z]/;
-var ALPHANUMERIC = /[\d+-.A-Za-z]/;
-var DIGIT = /\d/;
-var HEX_START = /^(0x|0X)/;
-var OCT = /^[0-7]+$/;
-var DEC = /^\d+$/;
-var HEX = /^[\dA-Fa-f]+$/;
-// eslint-disable-next-line no-control-regex
-var FORBIDDEN_HOST_CODE_POINT = /[\u0000\u0009\u000A\u000D #%/:?@[\\]]/;
-// eslint-disable-next-line no-control-regex
-var FORBIDDEN_HOST_CODE_POINT_EXCLUDING_PERCENT = /[\u0000\u0009\u000A\u000D #/:?@[\\]]/;
-// eslint-disable-next-line no-control-regex
-var LEADING_AND_TRAILING_C0_CONTROL_OR_SPACE = /^[\u0000-\u001F ]+|[\u0000-\u001F ]+$/g;
-// eslint-disable-next-line no-control-regex
-var TAB_AND_NEW_LINE = /[\u0009\u000A\u000D]/g;
-var EOF;
-
-var parseHost = function (url, input) {
-  var result, codePoints, index;
-  if (input.charAt(0) == '[') {
-    if (input.charAt(input.length - 1) != ']') return INVALID_HOST;
-    result = parseIPv6(input.slice(1, -1));
-    if (!result) return INVALID_HOST;
-    url.host = result;
-  // opaque host
-  } else if (!isSpecial(url)) {
-    if (FORBIDDEN_HOST_CODE_POINT_EXCLUDING_PERCENT.test(input)) return INVALID_HOST;
-    result = '';
-    codePoints = arrayFrom(input);
-    for (index = 0; index < codePoints.length; index++) {
-      result += percentEncode(codePoints[index], C0ControlPercentEncodeSet);
-    }
-    url.host = result;
-  } else {
-    input = toASCII(input);
-    if (FORBIDDEN_HOST_CODE_POINT.test(input)) return INVALID_HOST;
-    result = parseIPv4(input);
-    if (result === null) return INVALID_HOST;
-    url.host = result;
-  }
-};
-
-var parseIPv4 = function (input) {
-  var parts = input.split('.');
-  var partsLength, numbers, index, part, radix, number, ipv4;
-  if (parts.length && parts[parts.length - 1] == '') {
-    parts.pop();
-  }
-  partsLength = parts.length;
-  if (partsLength > 4) return input;
-  numbers = [];
-  for (index = 0; index < partsLength; index++) {
-    part = parts[index];
-    if (part == '') return input;
-    radix = 10;
-    if (part.length > 1 && part.charAt(0) == '0') {
-      radix = HEX_START.test(part) ? 16 : 8;
-      part = part.slice(radix == 8 ? 1 : 2);
-    }
-    if (part === '') {
-      number = 0;
-    } else {
-      if (!(radix == 10 ? DEC : radix == 8 ? OCT : HEX).test(part)) return input;
-      number = parseInt(part, radix);
-    }
-    numbers.push(number);
-  }
-  for (index = 0; index < partsLength; index++) {
-    number = numbers[index];
-    if (index == partsLength - 1) {
-      if (number >= pow(256, 5 - partsLength)) return null;
-    } else if (number > 255) return null;
-  }
-  ipv4 = numbers.pop();
-  for (index = 0; index < numbers.length; index++) {
-    ipv4 += numbers[index] * pow(256, 3 - index);
-  }
-  return ipv4;
-};
-
-// eslint-disable-next-line max-statements
-var parseIPv6 = function (input) {
-  var address = [0, 0, 0, 0, 0, 0, 0, 0];
-  var pieceIndex = 0;
-  var compress = null;
-  var pointer = 0;
-  var value, length, numbersSeen, ipv4Piece, number, swaps, swap;
-
-  var char = function () {
-    return input.charAt(pointer);
-  };
-
-  if (char() == ':') {
-    if (input.charAt(1) != ':') return;
-    pointer += 2;
-    pieceIndex++;
-    compress = pieceIndex;
-  }
-  while (char()) {
-    if (pieceIndex == 8) return;
-    if (char() == ':') {
-      if (compress !== null) return;
-      pointer++;
-      pieceIndex++;
-      compress = pieceIndex;
-      continue;
-    }
-    value = length = 0;
-    while (length < 4 && HEX.test(char())) {
-      value = value * 16 + parseInt(char(), 16);
-      pointer++;
-      length++;
-    }
-    if (char() == '.') {
-      if (length == 0) return;
-      pointer -= length;
-      if (pieceIndex > 6) return;
-      numbersSeen = 0;
-      while (char()) {
-        ipv4Piece = null;
-        if (numbersSeen > 0) {
-          if (char() == '.' && numbersSeen < 4) pointer++;
-          else return;
-        }
-        if (!DIGIT.test(char())) return;
-        while (DIGIT.test(char())) {
-          number = parseInt(char(), 10);
-          if (ipv4Piece === null) ipv4Piece = number;
-          else if (ipv4Piece == 0) return;
-          else ipv4Piece = ipv4Piece * 10 + number;
-          if (ipv4Piece > 255) return;
-          pointer++;
-        }
-        address[pieceIndex] = address[pieceIndex] * 256 + ipv4Piece;
-        numbersSeen++;
-        if (numbersSeen == 2 || numbersSeen == 4) pieceIndex++;
-      }
-      if (numbersSeen != 4) return;
-      break;
-    } else if (char() == ':') {
-      pointer++;
-      if (!char()) return;
-    } else if (char()) return;
-    address[pieceIndex++] = value;
-  }
-  if (compress !== null) {
-    swaps = pieceIndex - compress;
-    pieceIndex = 7;
-    while (pieceIndex != 0 && swaps > 0) {
-      swap = address[pieceIndex];
-      address[pieceIndex--] = address[compress + swaps - 1];
-      address[compress + --swaps] = swap;
-    }
-  } else if (pieceIndex != 8) return;
-  return address;
-};
-
-var findLongestZeroSequence = function (ipv6) {
-  var maxIndex = null;
-  var maxLength = 1;
-  var currStart = null;
-  var currLength = 0;
-  var index = 0;
-  for (; index < 8; index++) {
-    if (ipv6[index] !== 0) {
-      if (currLength > maxLength) {
-        maxIndex = currStart;
-        maxLength = currLength;
-      }
-      currStart = null;
-      currLength = 0;
-    } else {
-      if (currStart === null) currStart = index;
-      ++currLength;
-    }
-  }
-  if (currLength > maxLength) {
-    maxIndex = currStart;
-    maxLength = currLength;
-  }
-  return maxIndex;
-};
-
-var serializeHost = function (host) {
-  var result, index, compress, ignore0;
-  // ipv4
-  if (typeof host == 'number') {
-    result = [];
-    for (index = 0; index < 4; index++) {
-      result.unshift(host % 256);
-      host = floor(host / 256);
-    } return result.join('.');
-  // ipv6
-  } else if (typeof host == 'object') {
-    result = '';
-    compress = findLongestZeroSequence(host);
-    for (index = 0; index < 8; index++) {
-      if (ignore0 && host[index] === 0) continue;
-      if (ignore0) ignore0 = false;
-      if (compress === index) {
-        result += index ? ':' : '::';
-        ignore0 = true;
-      } else {
-        result += host[index].toString(16);
-        if (index < 7) result += ':';
-      }
-    }
-    return '[' + result + ']';
-  } return host;
-};
-
-var C0ControlPercentEncodeSet = {};
-var fragmentPercentEncodeSet = assign({}, C0ControlPercentEncodeSet, {
-  ' ': 1, '"': 1, '<': 1, '>': 1, '`': 1
-});
-var pathPercentEncodeSet = assign({}, fragmentPercentEncodeSet, {
-  '#': 1, '?': 1, '{': 1, '}': 1
-});
-var userinfoPercentEncodeSet = assign({}, pathPercentEncodeSet, {
-  '/': 1, ':': 1, ';': 1, '=': 1, '@': 1, '[': 1, '\\': 1, ']': 1, '^': 1, '|': 1
-});
-
-var percentEncode = function (char, set) {
-  var code = codeAt(char, 0);
-  return code > 0x20 && code < 0x7F && !has(set, char) ? char : encodeURIComponent(char);
-};
-
-var specialSchemes = {
-  ftp: 21,
-  file: null,
-  http: 80,
-  https: 443,
-  ws: 80,
-  wss: 443
-};
-
-var isSpecial = function (url) {
-  return has(specialSchemes, url.scheme);
-};
-
-var includesCredentials = function (url) {
-  return url.username != '' || url.password != '';
-};
-
-var cannotHaveUsernamePasswordPort = function (url) {
-  return !url.host || url.cannotBeABaseURL || url.scheme == 'file';
-};
-
-var isWindowsDriveLetter = function (string, normalized) {
-  var second;
-  return string.length == 2 && ALPHA.test(string.charAt(0))
-    && ((second = string.charAt(1)) == ':' || (!normalized && second == '|'));
-};
-
-var startsWithWindowsDriveLetter = function (string) {
-  var third;
-  return string.length > 1 && isWindowsDriveLetter(string.slice(0, 2)) && (
-    string.length == 2 ||
-    ((third = string.charAt(2)) === '/' || third === '\\' || third === '?' || third === '#')
-  );
-};
-
-var shortenURLsPath = function (url) {
-  var path = url.path;
-  var pathSize = path.length;
-  if (pathSize && (url.scheme != 'file' || pathSize != 1 || !isWindowsDriveLetter(path[0], true))) {
-    path.pop();
-  }
-};
-
-var isSingleDot = function (segment) {
-  return segment === '.' || segment.toLowerCase() === '%2e';
-};
-
-var isDoubleDot = function (segment) {
-  segment = segment.toLowerCase();
-  return segment === '..' || segment === '%2e.' || segment === '.%2e' || segment === '%2e%2e';
-};
-
-// States:
-var SCHEME_START = {};
-var SCHEME = {};
-var NO_SCHEME = {};
-var SPECIAL_RELATIVE_OR_AUTHORITY = {};
-var PATH_OR_AUTHORITY = {};
-var RELATIVE = {};
-var RELATIVE_SLASH = {};
-var SPECIAL_AUTHORITY_SLASHES = {};
-var SPECIAL_AUTHORITY_IGNORE_SLASHES = {};
-var AUTHORITY = {};
-var HOST = {};
-var HOSTNAME = {};
-var PORT = {};
-var FILE = {};
-var FILE_SLASH = {};
-var FILE_HOST = {};
-var PATH_START = {};
-var PATH = {};
-var CANNOT_BE_A_BASE_URL_PATH = {};
-var QUERY = {};
-var FRAGMENT = {};
-
-// eslint-disable-next-line max-statements
-var parseURL = function (url, input, stateOverride, base) {
-  var state = stateOverride || SCHEME_START;
-  var pointer = 0;
-  var buffer = '';
-  var seenAt = false;
-  var seenBracket = false;
-  var seenPasswordToken = false;
-  var codePoints, char, bufferCodePoints, failure;
-
-  if (!stateOverride) {
-    url.scheme = '';
-    url.username = '';
-    url.password = '';
-    url.host = null;
-    url.port = null;
-    url.path = [];
-    url.query = null;
-    url.fragment = null;
-    url.cannotBeABaseURL = false;
-    input = input.replace(LEADING_AND_TRAILING_C0_CONTROL_OR_SPACE, '');
-  }
-
-  input = input.replace(TAB_AND_NEW_LINE, '');
-
-  codePoints = arrayFrom(input);
-
-  while (pointer <= codePoints.length) {
-    char = codePoints[pointer];
-    switch (state) {
-      case SCHEME_START:
-        if (char && ALPHA.test(char)) {
-          buffer += char.toLowerCase();
-          state = SCHEME;
-        } else if (!stateOverride) {
-          state = NO_SCHEME;
-          continue;
-        } else return INVALID_SCHEME;
-        break;
-
-      case SCHEME:
-        if (char && (ALPHANUMERIC.test(char) || char == '+' || char == '-' || char == '.')) {
-          buffer += char.toLowerCase();
-        } else if (char == ':') {
-          if (stateOverride && (
-            (isSpecial(url) != has(specialSchemes, buffer)) ||
-            (buffer == 'file' && (includesCredentials(url) || url.port !== null)) ||
-            (url.scheme == 'file' && !url.host)
-          )) return;
-          url.scheme = buffer;
-          if (stateOverride) {
-            if (isSpecial(url) && specialSchemes[url.scheme] == url.port) url.port = null;
-            return;
-          }
-          buffer = '';
-          if (url.scheme == 'file') {
-            state = FILE;
-          } else if (isSpecial(url) && base && base.scheme == url.scheme) {
-            state = SPECIAL_RELATIVE_OR_AUTHORITY;
-          } else if (isSpecial(url)) {
-            state = SPECIAL_AUTHORITY_SLASHES;
-          } else if (codePoints[pointer + 1] == '/') {
-            state = PATH_OR_AUTHORITY;
-            pointer++;
-          } else {
-            url.cannotBeABaseURL = true;
-            url.path.push('');
-            state = CANNOT_BE_A_BASE_URL_PATH;
-          }
-        } else if (!stateOverride) {
-          buffer = '';
-          state = NO_SCHEME;
-          pointer = 0;
-          continue;
-        } else return INVALID_SCHEME;
-        break;
-
-      case NO_SCHEME:
-        if (!base || (base.cannotBeABaseURL && char != '#')) return INVALID_SCHEME;
-        if (base.cannotBeABaseURL && char == '#') {
-          url.scheme = base.scheme;
-          url.path = base.path.slice();
-          url.query = base.query;
-          url.fragment = '';
-          url.cannotBeABaseURL = true;
-          state = FRAGMENT;
-          break;
-        }
-        state = base.scheme == 'file' ? FILE : RELATIVE;
-        continue;
-
-      case SPECIAL_RELATIVE_OR_AUTHORITY:
-        if (char == '/' && codePoints[pointer + 1] == '/') {
-          state = SPECIAL_AUTHORITY_IGNORE_SLASHES;
-          pointer++;
-        } else {
-          state = RELATIVE;
-          continue;
-        } break;
-
-      case PATH_OR_AUTHORITY:
-        if (char == '/') {
-          state = AUTHORITY;
-          break;
-        } else {
-          state = PATH;
-          continue;
-        }
-
-      case RELATIVE:
-        url.scheme = base.scheme;
-        if (char == EOF) {
-          url.username = base.username;
-          url.password = base.password;
-          url.host = base.host;
-          url.port = base.port;
-          url.path = base.path.slice();
-          url.query = base.query;
-        } else if (char == '/' || (char == '\\' && isSpecial(url))) {
-          state = RELATIVE_SLASH;
-        } else if (char == '?') {
-          url.username = base.username;
-          url.password = base.password;
-          url.host = base.host;
-          url.port = base.port;
-          url.path = base.path.slice();
-          url.query = '';
-          state = QUERY;
-        } else if (char == '#') {
-          url.username = base.username;
-          url.password = base.password;
-          url.host = base.host;
-          url.port = base.port;
-          url.path = base.path.slice();
-          url.query = base.query;
-          url.fragment = '';
-          state = FRAGMENT;
-        } else {
-          url.username = base.username;
-          url.password = base.password;
-          url.host = base.host;
-          url.port = base.port;
-          url.path = base.path.slice();
-          url.path.pop();
-          state = PATH;
-          continue;
-        } break;
-
-      case RELATIVE_SLASH:
-        if (isSpecial(url) && (char == '/' || char == '\\')) {
-          state = SPECIAL_AUTHORITY_IGNORE_SLASHES;
-        } else if (char == '/') {
-          state = AUTHORITY;
-        } else {
-          url.username = base.username;
-          url.password = base.password;
-          url.host = base.host;
-          url.port = base.port;
-          state = PATH;
-          continue;
-        } break;
-
-      case SPECIAL_AUTHORITY_SLASHES:
-        state = SPECIAL_AUTHORITY_IGNORE_SLASHES;
-        if (char != '/' || buffer.charAt(pointer + 1) != '/') continue;
-        pointer++;
-        break;
-
-      case SPECIAL_AUTHORITY_IGNORE_SLASHES:
-        if (char != '/' && char != '\\') {
-          state = AUTHORITY;
-          continue;
-        } break;
-
-      case AUTHORITY:
-        if (char == '@') {
-          if (seenAt) buffer = '%40' + buffer;
-          seenAt = true;
-          bufferCodePoints = arrayFrom(buffer);
-          for (var i = 0; i < bufferCodePoints.length; i++) {
-            var codePoint = bufferCodePoints[i];
-            if (codePoint == ':' && !seenPasswordToken) {
-              seenPasswordToken = true;
-              continue;
-            }
-            var encodedCodePoints = percentEncode(codePoint, userinfoPercentEncodeSet);
-            if (seenPasswordToken) url.password += encodedCodePoints;
-            else url.username += encodedCodePoints;
-          }
-          buffer = '';
-        } else if (
-          char == EOF || char == '/' || char == '?' || char == '#' ||
-          (char == '\\' && isSpecial(url))
-        ) {
-          if (seenAt && buffer == '') return INVALID_AUTHORITY;
-          pointer -= arrayFrom(buffer).length + 1;
-          buffer = '';
-          state = HOST;
-        } else buffer += char;
-        break;
-
-      case HOST:
-      case HOSTNAME:
-        if (stateOverride && url.scheme == 'file') {
-          state = FILE_HOST;
-          continue;
-        } else if (char == ':' && !seenBracket) {
-          if (buffer == '') return INVALID_HOST;
-          failure = parseHost(url, buffer);
-          if (failure) return failure;
-          buffer = '';
-          state = PORT;
-          if (stateOverride == HOSTNAME) return;
-        } else if (
-          char == EOF || char == '/' || char == '?' || char == '#' ||
-          (char == '\\' && isSpecial(url))
-        ) {
-          if (isSpecial(url) && buffer == '') return INVALID_HOST;
-          if (stateOverride && buffer == '' && (includesCredentials(url) || url.port !== null)) return;
-          failure = parseHost(url, buffer);
-          if (failure) return failure;
-          buffer = '';
-          state = PATH_START;
-          if (stateOverride) return;
-          continue;
-        } else {
-          if (char == '[') seenBracket = true;
-          else if (char == ']') seenBracket = false;
-          buffer += char;
-        } break;
-
-      case PORT:
-        if (DIGIT.test(char)) {
-          buffer += char;
-        } else if (
-          char == EOF || char == '/' || char == '?' || char == '#' ||
-          (char == '\\' && isSpecial(url)) ||
-          stateOverride
-        ) {
-          if (buffer != '') {
-            var port = parseInt(buffer, 10);
-            if (port > 0xFFFF) return INVALID_PORT;
-            url.port = (isSpecial(url) && port === specialSchemes[url.scheme]) ? null : port;
-            buffer = '';
-          }
-          if (stateOverride) return;
-          state = PATH_START;
-          continue;
-        } else return INVALID_PORT;
-        break;
-
-      case FILE:
-        url.scheme = 'file';
-        if (char == '/' || char == '\\') state = FILE_SLASH;
-        else if (base && base.scheme == 'file') {
-          if (char == EOF) {
-            url.host = base.host;
-            url.path = base.path.slice();
-            url.query = base.query;
-          } else if (char == '?') {
-            url.host = base.host;
-            url.path = base.path.slice();
-            url.query = '';
-            state = QUERY;
-          } else if (char == '#') {
-            url.host = base.host;
-            url.path = base.path.slice();
-            url.query = base.query;
-            url.fragment = '';
-            state = FRAGMENT;
-          } else {
-            if (!startsWithWindowsDriveLetter(codePoints.slice(pointer).join(''))) {
-              url.host = base.host;
-              url.path = base.path.slice();
-              shortenURLsPath(url);
-            }
-            state = PATH;
-            continue;
-          }
-        } else {
-          state = PATH;
-          continue;
-        } break;
-
-      case FILE_SLASH:
-        if (char == '/' || char == '\\') {
-          state = FILE_HOST;
-          break;
-        }
-        if (base && base.scheme == 'file' && !startsWithWindowsDriveLetter(codePoints.slice(pointer).join(''))) {
-          if (isWindowsDriveLetter(base.path[0], true)) url.path.push(base.path[0]);
-          else url.host = base.host;
-        }
-        state = PATH;
-        continue;
-
-      case FILE_HOST:
-        if (char == EOF || char == '/' || char == '\\' || char == '?' || char == '#') {
-          if (!stateOverride && isWindowsDriveLetter(buffer)) {
-            state = PATH;
-          } else if (buffer == '') {
-            url.host = '';
-            if (stateOverride) return;
-            state = PATH_START;
-          } else {
-            failure = parseHost(url, buffer);
-            if (failure) return failure;
-            if (url.host == 'localhost') url.host = '';
-            if (stateOverride) return;
-            buffer = '';
-            state = PATH_START;
-          } continue;
-        } else buffer += char;
-        break;
-
-      case PATH_START:
-        if (isSpecial(url)) {
-          state = PATH;
-          if (char != '/' && char != '\\') continue;
-        } else if (!stateOverride && char == '?') {
-          url.query = '';
-          state = QUERY;
-        } else if (!stateOverride && char == '#') {
-          url.fragment = '';
-          state = FRAGMENT;
-        } else if (char != EOF) {
-          state = PATH;
-          if (char != '/') continue;
-        } break;
-
-      case PATH:
-        if (
-          char == EOF || char == '/' ||
-          (char == '\\' && isSpecial(url)) ||
-          (!stateOverride && (char == '?' || char == '#'))
-        ) {
-          if (isDoubleDot(buffer)) {
-            shortenURLsPath(url);
-            if (char != '/' && !(char == '\\' && isSpecial(url))) {
-              url.path.push('');
-            }
-          } else if (isSingleDot(buffer)) {
-            if (char != '/' && !(char == '\\' && isSpecial(url))) {
-              url.path.push('');
-            }
-          } else {
-            if (url.scheme == 'file' && !url.path.length && isWindowsDriveLetter(buffer)) {
-              if (url.host) url.host = '';
-              buffer = buffer.charAt(0) + ':'; // normalize windows drive letter
-            }
-            url.path.push(buffer);
-          }
-          buffer = '';
-          if (url.scheme == 'file' && (char == EOF || char == '?' || char == '#')) {
-            while (url.path.length > 1 && url.path[0] === '') {
-              url.path.shift();
-            }
-          }
-          if (char == '?') {
-            url.query = '';
-            state = QUERY;
-          } else if (char == '#') {
-            url.fragment = '';
-            state = FRAGMENT;
-          }
-        } else {
-          buffer += percentEncode(char, pathPercentEncodeSet);
-        } break;
-
-      case CANNOT_BE_A_BASE_URL_PATH:
-        if (char == '?') {
-          url.query = '';
-          state = QUERY;
-        } else if (char == '#') {
-          url.fragment = '';
-          state = FRAGMENT;
-        } else if (char != EOF) {
-          url.path[0] += percentEncode(char, C0ControlPercentEncodeSet);
-        } break;
-
-      case QUERY:
-        if (!stateOverride && char == '#') {
-          url.fragment = '';
-          state = FRAGMENT;
-        } else if (char != EOF) {
-          if (char == "'" && isSpecial(url)) url.query += '%27';
-          else if (char == '#') url.query += '%23';
-          else url.query += percentEncode(char, C0ControlPercentEncodeSet);
-        } break;
-
-      case FRAGMENT:
-        if (char != EOF) url.fragment += percentEncode(char, fragmentPercentEncodeSet);
-        break;
-    }
-
-    pointer++;
-  }
-};
-
-// `URL` constructor
-// https://url.spec.whatwg.org/#url-class
-var URLConstructor = function URL(url /* , base */) {
-  var that = anInstance(this, URLConstructor, 'URL');
-  var base = arguments.length > 1 ? arguments[1] : undefined;
-  var urlString = String(url);
-  var state = setInternalState(that, { type: 'URL' });
-  var baseState, failure;
-  if (base !== undefined) {
-    if (base instanceof URLConstructor) baseState = getInternalURLState(base);
-    else {
-      failure = parseURL(baseState = {}, String(base));
-      if (failure) throw TypeError(failure);
-    }
-  }
-  failure = parseURL(state, urlString, null, baseState);
-  if (failure) throw TypeError(failure);
-  var searchParams = state.searchParams = new URLSearchParams();
-  var searchParamsState = getInternalSearchParamsState(searchParams);
-  searchParamsState.updateSearchParams(state.query);
-  searchParamsState.updateURL = function () {
-    state.query = String(searchParams) || null;
-  };
-  if (!DESCRIPTORS) {
-    that.href = serializeURL.call(that);
-    that.origin = getOrigin.call(that);
-    that.protocol = getProtocol.call(that);
-    that.username = getUsername.call(that);
-    that.password = getPassword.call(that);
-    that.host = getHost.call(that);
-    that.hostname = getHostname.call(that);
-    that.port = getPort.call(that);
-    that.pathname = getPathname.call(that);
-    that.search = getSearch.call(that);
-    that.searchParams = getSearchParams.call(that);
-    that.hash = getHash.call(that);
-  }
-};
-
-var URLPrototype = URLConstructor.prototype;
-
-var serializeURL = function () {
-  var url = getInternalURLState(this);
-  var scheme = url.scheme;
-  var username = url.username;
-  var password = url.password;
-  var host = url.host;
-  var port = url.port;
-  var path = url.path;
-  var query = url.query;
-  var fragment = url.fragment;
-  var output = scheme + ':';
-  if (host !== null) {
-    output += '//';
-    if (includesCredentials(url)) {
-      output += username + (password ? ':' + password : '') + '@';
-    }
-    output += serializeHost(host);
-    if (port !== null) output += ':' + port;
-  } else if (scheme == 'file') output += '//';
-  output += url.cannotBeABaseURL ? path[0] : path.length ? '/' + path.join('/') : '';
-  if (query !== null) output += '?' + query;
-  if (fragment !== null) output += '#' + fragment;
-  return output;
-};
-
-var getOrigin = function () {
-  var url = getInternalURLState(this);
-  var scheme = url.scheme;
-  var port = url.port;
-  if (scheme == 'blob') try {
-    return new URL(scheme.path[0]).origin;
-  } catch (error) {
-    return 'null';
-  }
-  if (scheme == 'file' || !isSpecial(url)) return 'null';
-  return scheme + '://' + serializeHost(url.host) + (port !== null ? ':' + port : '');
-};
-
-var getProtocol = function () {
-  return getInternalURLState(this).scheme + ':';
-};
-
-var getUsername = function () {
-  return getInternalURLState(this).username;
-};
-
-var getPassword = function () {
-  return getInternalURLState(this).password;
-};
-
-var getHost = function () {
-  var url = getInternalURLState(this);
-  var host = url.host;
-  var port = url.port;
-  return host === null ? ''
-    : port === null ? serializeHost(host)
-    : serializeHost(host) + ':' + port;
-};
-
-var getHostname = function () {
-  var host = getInternalURLState(this).host;
-  return host === null ? '' : serializeHost(host);
-};
-
-var getPort = function () {
-  var port = getInternalURLState(this).port;
-  return port === null ? '' : String(port);
-};
-
-var getPathname = function () {
-  var url = getInternalURLState(this);
-  var path = url.path;
-  return url.cannotBeABaseURL ? path[0] : path.length ? '/' + path.join('/') : '';
-};
-
-var getSearch = function () {
-  var query = getInternalURLState(this).query;
-  return query ? '?' + query : '';
-};
-
-var getSearchParams = function () {
-  return getInternalURLState(this).searchParams;
-};
-
-var getHash = function () {
-  var fragment = getInternalURLState(this).fragment;
-  return fragment ? '#' + fragment : '';
-};
-
-var accessorDescriptor = function (getter, setter) {
-  return { get: getter, set: setter, configurable: true, enumerable: true };
-};
-
-if (DESCRIPTORS) {
-  defineProperties(URLPrototype, {
-    // `URL.prototype.href` accessors pair
-    // https://url.spec.whatwg.org/#dom-url-href
-    href: accessorDescriptor(serializeURL, function (href) {
-      var url = getInternalURLState(this);
-      var urlString = String(href);
-      var failure = parseURL(url, urlString);
-      if (failure) throw TypeError(failure);
-      getInternalSearchParamsState(url.searchParams).updateSearchParams(url.query);
-    }),
-    // `URL.prototype.origin` getter
-    // https://url.spec.whatwg.org/#dom-url-origin
-    origin: accessorDescriptor(getOrigin),
-    // `URL.prototype.protocol` accessors pair
-    // https://url.spec.whatwg.org/#dom-url-protocol
-    protocol: accessorDescriptor(getProtocol, function (protocol) {
-      var url = getInternalURLState(this);
-      parseURL(url, String(protocol) + ':', SCHEME_START);
-    }),
-    // `URL.prototype.username` accessors pair
-    // https://url.spec.whatwg.org/#dom-url-username
-    username: accessorDescriptor(getUsername, function (username) {
-      var url = getInternalURLState(this);
-      var codePoints = arrayFrom(String(username));
-      if (cannotHaveUsernamePasswordPort(url)) return;
-      url.username = '';
-      for (var i = 0; i < codePoints.length; i++) {
-        url.username += percentEncode(codePoints[i], userinfoPercentEncodeSet);
-      }
-    }),
-    // `URL.prototype.password` accessors pair
-    // https://url.spec.whatwg.org/#dom-url-password
-    password: accessorDescriptor(getPassword, function (password) {
-      var url = getInternalURLState(this);
-      var codePoints = arrayFrom(String(password));
-      if (cannotHaveUsernamePasswordPort(url)) return;
-      url.password = '';
-      for (var i = 0; i < codePoints.length; i++) {
-        url.password += percentEncode(codePoints[i], userinfoPercentEncodeSet);
-      }
-    }),
-    // `URL.prototype.host` accessors pair
-    // https://url.spec.whatwg.org/#dom-url-host
-    host: accessorDescriptor(getHost, function (host) {
-      var url = getInternalURLState(this);
-      if (url.cannotBeABaseURL) return;
-      parseURL(url, String(host), HOST);
-    }),
-    // `URL.prototype.hostname` accessors pair
-    // https://url.spec.whatwg.org/#dom-url-hostname
-    hostname: accessorDescriptor(getHostname, function (hostname) {
-      var url = getInternalURLState(this);
-      if (url.cannotBeABaseURL) return;
-      parseURL(url, String(hostname), HOSTNAME);
-    }),
-    // `URL.prototype.port` accessors pair
-    // https://url.spec.whatwg.org/#dom-url-port
-    port: accessorDescriptor(getPort, function (port) {
-      var url = getInternalURLState(this);
-      if (cannotHaveUsernamePasswordPort(url)) return;
-      port = String(port);
-      if (port == '') url.port = null;
-      else parseURL(url, port, PORT);
-    }),
-    // `URL.prototype.pathname` accessors pair
-    // https://url.spec.whatwg.org/#dom-url-pathname
-    pathname: accessorDescriptor(getPathname, function (pathname) {
-      var url = getInternalURLState(this);
-      if (url.cannotBeABaseURL) return;
-      url.path = [];
-      parseURL(url, pathname + '', PATH_START);
-    }),
-    // `URL.prototype.search` accessors pair
-    // https://url.spec.whatwg.org/#dom-url-search
-    search: accessorDescriptor(getSearch, function (search) {
-      var url = getInternalURLState(this);
-      search = String(search);
-      if (search == '') {
-        url.query = null;
-      } else {
-        if ('?' == search.charAt(0)) search = search.slice(1);
-        url.query = '';
-        parseURL(url, search, QUERY);
-      }
-      getInternalSearchParamsState(url.searchParams).updateSearchParams(url.query);
-    }),
-    // `URL.prototype.searchParams` getter
-    // https://url.spec.whatwg.org/#dom-url-searchparams
-    searchParams: accessorDescriptor(getSearchParams),
-    // `URL.prototype.hash` accessors pair
-    // https://url.spec.whatwg.org/#dom-url-hash
-    hash: accessorDescriptor(getHash, function (hash) {
-      var url = getInternalURLState(this);
-      hash = String(hash);
-      if (hash == '') {
-        url.fragment = null;
-        return;
-      }
-      if ('#' == hash.charAt(0)) hash = hash.slice(1);
-      url.fragment = '';
-      parseURL(url, hash, FRAGMENT);
-    })
-  });
-}
-
-// `URL.prototype.toJSON` method
-// https://url.spec.whatwg.org/#dom-url-tojson
-redefine(URLPrototype, 'toJSON', function toJSON() {
-  return serializeURL.call(this);
-}, { enumerable: true });
-
-// `URL.prototype.toString` method
-// https://url.spec.whatwg.org/#URL-stringification-behavior
-redefine(URLPrototype, 'toString', function toString() {
-  return serializeURL.call(this);
-}, { enumerable: true });
-
-if (NativeURL) {
-  var nativeCreateObjectURL = NativeURL.createObjectURL;
-  var nativeRevokeObjectURL = NativeURL.revokeObjectURL;
-  // `URL.createObjectURL` method
-  // https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL
-  // eslint-disable-next-line no-unused-vars
-  if (nativeCreateObjectURL) redefine(URLConstructor, 'createObjectURL', function createObjectURL(blob) {
-    return nativeCreateObjectURL.apply(NativeURL, arguments);
-  });
-  // `URL.revokeObjectURL` method
-  // https://developer.mozilla.org/en-US/docs/Web/API/URL/revokeObjectURL
-  // eslint-disable-next-line no-unused-vars
-  if (nativeRevokeObjectURL) redefine(URLConstructor, 'revokeObjectURL', function revokeObjectURL(url) {
-    return nativeRevokeObjectURL.apply(NativeURL, arguments);
-  });
-}
-
-setToStringTag(URLConstructor, 'URL');
-
-$({ global: true, forced: !USE_NATIVE_URL, sham: !DESCRIPTORS }, {
-  URL: URLConstructor
-});
-
-
-/***/ }),
-
 /***/ "2e39":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -12623,12 +10824,13 @@ module.exports = fuzzysearch;
 
 // load the styles
 var content = __webpack_require__("4a23");
+if(content.__esModule) content = content.default;
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add CSS to Shadow Root
 var add = __webpack_require__("35d6").default
 module.exports.__inject__ = function (shadowRoot) {
-  add("38add4ad", content, shadowRoot)
+  add("02eb54ae", content, shadowRoot)
 };
 
 /***/ }),
@@ -12652,24 +10854,6 @@ module.exports = function block(state) {
   } else {
     state.md.block.parse(state.src, state.md, state.env, state.tokens);
   }
-};
-
-
-/***/ }),
-
-/***/ "35a1":
-/***/ (function(module, exports, __webpack_require__) {
-
-var classof = __webpack_require__("f5df");
-var Iterators = __webpack_require__("3f8c");
-var wellKnownSymbol = __webpack_require__("b622");
-
-var ITERATOR = wellKnownSymbol('iterator');
-
-module.exports = function (it) {
-  if (it != undefined) return it[ITERATOR]
-    || it['@@iterator']
-    || Iterators[classof(it)];
 };
 
 
@@ -12785,88 +10969,6 @@ function addStyle (obj /* StyleObjectPart */, shadowRoot) {
     styleElement.appendChild(document.createTextNode(css))
   }
 }
-
-
-/***/ }),
-
-/***/ "37e8":
-/***/ (function(module, exports, __webpack_require__) {
-
-var DESCRIPTORS = __webpack_require__("83ab");
-var definePropertyModule = __webpack_require__("9bf2");
-var anObject = __webpack_require__("825a");
-var objectKeys = __webpack_require__("df75");
-
-// `Object.defineProperties` method
-// https://tc39.github.io/ecma262/#sec-object.defineproperties
-module.exports = DESCRIPTORS ? Object.defineProperties : function defineProperties(O, Properties) {
-  anObject(O);
-  var keys = objectKeys(Properties);
-  var length = keys.length;
-  var index = 0;
-  var key;
-  while (length > index) definePropertyModule.f(O, key = keys[index++], Properties[key]);
-  return O;
-};
-
-
-/***/ }),
-
-/***/ "3bbe":
-/***/ (function(module, exports, __webpack_require__) {
-
-var isObject = __webpack_require__("861d");
-
-module.exports = function (it) {
-  if (!isObject(it) && it !== null) {
-    throw TypeError("Can't set " + String(it) + ' as a prototype');
-  } return it;
-};
-
-
-/***/ }),
-
-/***/ "3ca3":
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var charAt = __webpack_require__("6547").charAt;
-var InternalStateModule = __webpack_require__("69f3");
-var defineIterator = __webpack_require__("7dd0");
-
-var STRING_ITERATOR = 'String Iterator';
-var setInternalState = InternalStateModule.set;
-var getInternalState = InternalStateModule.getterFor(STRING_ITERATOR);
-
-// `String.prototype[@@iterator]` method
-// https://tc39.github.io/ecma262/#sec-string.prototype-@@iterator
-defineIterator(String, 'String', function (iterated) {
-  setInternalState(this, {
-    type: STRING_ITERATOR,
-    string: String(iterated),
-    index: 0
-  });
-// `%StringIteratorPrototype%.next` method
-// https://tc39.github.io/ecma262/#sec-%stringiteratorprototype%.next
-}, function next() {
-  var state = getInternalState(this);
-  var string = state.string;
-  var index = state.index;
-  var point;
-  if (index >= string.length) return { value: undefined, done: true };
-  point = charAt(string, index);
-  state.index += point.length;
-  return { value: point, done: false };
-});
-
-
-/***/ }),
-
-/***/ "3f8c":
-/***/ (function(module, exports) {
-
-module.exports = {};
 
 
 /***/ }),
@@ -13009,16 +11111,6 @@ module.exports = {
 
 /***/ }),
 
-/***/ "428f":
-/***/ (function(module, exports, __webpack_require__) {
-
-var global = __webpack_require__("da84");
-
-module.exports = global;
-
-
-/***/ }),
-
 /***/ "43e0":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -13112,53 +11204,6 @@ module.exports = function paragraph(state, startLine/*, endLine*/) {
 
 /***/ }),
 
-/***/ "44ad":
-/***/ (function(module, exports, __webpack_require__) {
-
-var fails = __webpack_require__("d039");
-var classof = __webpack_require__("c6b6");
-
-var split = ''.split;
-
-// fallback for non-array-like ES3 and non-enumerable old V8 strings
-module.exports = fails(function () {
-  // throws an error in rhino, see https://github.com/mozilla/rhino/issues/346
-  // eslint-disable-next-line no-prototype-builtins
-  return !Object('z').propertyIsEnumerable(0);
-}) ? function (it) {
-  return classof(it) == 'String' ? split.call(it, '') : Object(it);
-} : Object;
-
-
-/***/ }),
-
-/***/ "44d2":
-/***/ (function(module, exports, __webpack_require__) {
-
-var wellKnownSymbol = __webpack_require__("b622");
-var create = __webpack_require__("7c73");
-var definePropertyModule = __webpack_require__("9bf2");
-
-var UNSCOPABLES = wellKnownSymbol('unscopables');
-var ArrayPrototype = Array.prototype;
-
-// Array.prototype[@@unscopables]
-// https://tc39.github.io/ecma262/#sec-array.prototype-@@unscopables
-if (ArrayPrototype[UNSCOPABLES] == undefined) {
-  definePropertyModule.f(ArrayPrototype, UNSCOPABLES, {
-    configurable: true,
-    value: create(null)
-  });
-}
-
-// add a key to Array.prototype[@@unscopables]
-module.exports = function (key) {
-  ArrayPrototype[UNSCOPABLES][key] = true;
-};
-
-
-/***/ }),
-
 /***/ "472d":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -13166,8 +11211,8 @@ module.exports = function (key) {
 // ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"be35bd0e-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/popover.vue?vue&type=template&id=916c9948&lang=pug&
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{ref:"dropdown",staticClass:"bunt-popover-inner",attrs:{"role":"dialog","tabindex":"-1"},on:{"keydown":function($event){if(!$event.type.indexOf('key')&&_vm._k($event.keyCode,"esc",27,$event.key,["Esc","Escape"])){ return null; }return _vm.closeDropdown($event)}}},[_vm._t("default")],2)}
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"75d05200-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/popover.vue?vue&type=template&id=916c9948&lang=pug&
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{ref:"dropdown",staticClass:"bunt-popover-inner",attrs:{"role":"dialog","tabindex":"-1"},on:{"keydown":function($event){if(!$event.type.indexOf('key')&&_vm._k($event.keyCode,"esc",27,$event.key,["Esc","Escape"])){ return null; }return _vm.closeDropdown.apply(null, arguments)}}},[_vm._t("default")],2)}
 var staticRenderFns = []
 
 
@@ -13183,7 +11228,7 @@ const BuntDrop = drop_default.a.createContext({
   classPrefix: `bunt-drop`
 });
 /* harmony default export */ var src_drop = (BuntDrop);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/popover.vue?vue&type=script&lang=js&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--13-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/popover.vue?vue&type=script&lang=js&
 //
 //
 //
@@ -13683,20 +11728,6 @@ module.exports = Ruler;
 
 /***/ }),
 
-/***/ "4930":
-/***/ (function(module, exports, __webpack_require__) {
-
-var fails = __webpack_require__("d039");
-
-module.exports = !!Object.getOwnPropertySymbols && !fails(function () {
-  // Chrome 38 Symbol has incorrect toString conversion
-  // eslint-disable-next-line no-undef
-  return !String(Symbol());
-});
-
-
-/***/ }),
-
 /***/ "4a23":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -13704,7 +11735,7 @@ module.exports = !!Object.getOwnPropertySymbols && !fails(function () {
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__("24fb");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".c-grid-schedule{flex:auto;background-color:#fafafa}.c-grid-schedule .grid{display:grid;grid-template-columns:78px repeat(var(--total-rooms),1fr) auto;position:relative;min-width:-webkit-min-content;min-width:-moz-min-content;min-width:min-content}.c-grid-schedule .grid>.room{position:-webkit-sticky;position:sticky;top:48px;display:flex;justify-content:center;align-items:center;font-size:18px;background-color:#fff;border-bottom:1px solid rgba(0,0,0,.12);z-index:20}.c-grid-schedule .grid .c-linear-schedule-session{z-index:10}.c-grid-schedule .grid .break{z-index:10;margin:8px;border-radius:4px;background-color:#eee;display:flex;justify-content:center;align-items:center}.c-grid-schedule .grid .break .title{font-size:20px;font-weight:500;color:rgba(0,0,0,.54)}.c-grid-schedule .timeslice{color:rgba(0,0,0,.54);padding:8px 10px 0 16px;white-space:nowrap;position:-webkit-sticky;position:sticky;left:0;text-align:center;background-color:#fafafa;border-top:1px solid rgba(0,0,0,.12);z-index:20}.c-grid-schedule .timeslice.datebreak{font-weight:600;border-top:3px solid rgba(0,0,0,.12);white-space:pre}.c-grid-schedule .timeslice.gap{position:relative}.c-grid-schedule .timeslice.gap:before{content:\"\";display:block;width:6px;height:calc(100% - 42px);position:absolute;top:30px;left:50%;background-image:radial-gradient(circle closest-side,#9e9e9e calc(100% - .5px),transparent 100%);background-position:0 0;background-size:5px 15px;background-repeat:repeat-y}.c-grid-schedule .timeline{height:1px;background-color:rgba(0,0,0,.12);position:absolute;width:100%}.c-grid-schedule .timeline.datebreak{height:3px}.c-grid-schedule .nowline{height:2px;background-color:#f44336;position:absolute;transform:translateY(calc(var(--offset)*100%));width:100%}.c-grid-schedule .now{margin-left:2px;z-index:20;position:relative}.c-grid-schedule .now:before{content:\"\";display:block;height:2px;background-color:#f44336;position:absolute;top:calc(var(--offset)*100%);width:100%}.c-grid-schedule .now.on-daybreak:before{background:repeating-linear-gradient(90deg,transparent,transparent 5px,#f44336 0,#f44336 10px)}.c-grid-schedule .now svg{position:absolute;top:calc(var(--offset)*100% - 11px);height:24px;width:24px;fill:#f44336}.c-grid-schedule .bunt-scrollbar-rail-wrapper-x,.c-grid-schedule .bunt-scrollbar-rail-wrapper-y{z-index:30}", ""]);
+exports.push([module.i, ".c-grid-schedule{flex:auto;background-color:#fafafa}.c-grid-schedule .grid{display:grid;grid-template-columns:78px repeat(var(--total-rooms),1fr) auto;position:relative;min-width:-webkit-min-content;min-width:-moz-min-content;min-width:min-content}.c-grid-schedule .grid>.room{position:sticky;top:48px;display:flex;justify-content:center;align-items:center;font-size:18px;background-color:#fff;border-bottom:1px solid rgba(0,0,0,.12);z-index:20}.c-grid-schedule .grid .c-linear-schedule-session{z-index:10}.c-grid-schedule .grid .break{z-index:10;margin:8px;border-radius:4px;background-color:#eee;display:flex;justify-content:center;align-items:center}.c-grid-schedule .grid .break .title{font-size:20px;font-weight:500;color:rgba(0,0,0,.54)}.c-grid-schedule .timeslice{color:rgba(0,0,0,.54);padding:8px 10px 0 16px;white-space:nowrap;position:sticky;left:0;text-align:center;background-color:#fafafa;border-top:1px solid rgba(0,0,0,.12);z-index:20}.c-grid-schedule .timeslice.datebreak{font-weight:600;border-top:3px solid rgba(0,0,0,.12);white-space:pre}.c-grid-schedule .timeslice.gap{position:relative}.c-grid-schedule .timeslice.gap:before{content:\"\";display:block;width:6px;height:calc(100% - 42px);position:absolute;top:30px;left:50%;background-image:radial-gradient(circle closest-side,#9e9e9e calc(100% - .5px),transparent 100%);background-position:0 0;background-size:5px 15px;background-repeat:repeat-y}.c-grid-schedule .timeline{height:1px;background-color:rgba(0,0,0,.12);position:absolute;width:100%}.c-grid-schedule .timeline.datebreak{height:3px}.c-grid-schedule .nowline{height:2px;background-color:#f44336;position:absolute;transform:translateY(calc(var(--offset)*100%));width:100%}.c-grid-schedule .now{margin-left:2px;z-index:20;position:relative}.c-grid-schedule .now:before{content:\"\";display:block;height:2px;background-color:#f44336;position:absolute;top:calc(var(--offset)*100%);width:100%}.c-grid-schedule .now.on-daybreak:before{background:repeating-linear-gradient(90deg,transparent,transparent 5px,#f44336 0,#f44336 10px)}.c-grid-schedule .now svg{position:absolute;top:calc(var(--offset)*100% - 11px);height:24px;width:24px;fill:#f44336}.c-grid-schedule .bunt-scrollbar-rail-wrapper-x,.c-grid-schedule .bunt-scrollbar-rail-wrapper-y{z-index:30}", ""]);
 // Exports
 module.exports = exports;
 
@@ -13949,7 +11980,7 @@ module.exports = function list(state, startLine, endLine, silent) {
   if ((posAfterMarker = skipOrderedListMarker(state, startLine)) >= 0) {
     isOrdered = true;
     start = state.bMarks[startLine] + state.tShift[startLine];
-    markerValue = Number(state.src.substr(start, posAfterMarker - start - 1));
+    markerValue = Number(state.src.slice(start, posAfterMarker - 1));
 
     // If we're starting a new ordered list right after
     // a paragraph, it should start with 1.
@@ -14042,6 +12073,9 @@ module.exports = function list(state, startLine, endLine, silent) {
     token        = state.push('list_item_open', 'li', 1);
     token.markup = String.fromCharCode(markerCharCode);
     token.map    = itemLines = [ startLine, 0 ];
+    if (isOrdered) {
+      token.info = state.src.slice(start, posAfterMarker - 1);
+    }
 
     // change current state, then restore it after parser subcall
     oldTight = state.tight;
@@ -14118,6 +12152,7 @@ module.exports = function list(state, startLine, endLine, silent) {
     if (isOrdered) {
       posAfterMarker = skipOrderedListMarker(state, nextLine);
       if (posAfterMarker < 0) { break; }
+      start = state.bMarks[nextLine] + state.tShift[nextLine];
     } else {
       posAfterMarker = skipBulletListMarker(state, nextLine);
       if (posAfterMarker < 0) { break; }
@@ -14364,269 +12399,10 @@ module.exports = ParserInline;
 
 /***/ }),
 
-/***/ "4d64":
-/***/ (function(module, exports, __webpack_require__) {
-
-var toIndexedObject = __webpack_require__("fc6a");
-var toLength = __webpack_require__("50c4");
-var toAbsoluteIndex = __webpack_require__("23cb");
-
-// `Array.prototype.{ indexOf, includes }` methods implementation
-var createMethod = function (IS_INCLUDES) {
-  return function ($this, el, fromIndex) {
-    var O = toIndexedObject($this);
-    var length = toLength(O.length);
-    var index = toAbsoluteIndex(fromIndex, length);
-    var value;
-    // Array#includes uses SameValueZero equality algorithm
-    // eslint-disable-next-line no-self-compare
-    if (IS_INCLUDES && el != el) while (length > index) {
-      value = O[index++];
-      // eslint-disable-next-line no-self-compare
-      if (value != value) return true;
-    // Array#indexOf ignores holes, Array#includes - not
-    } else for (;length > index; index++) {
-      if ((IS_INCLUDES || index in O) && O[index] === el) return IS_INCLUDES || index || 0;
-    } return !IS_INCLUDES && -1;
-  };
-};
-
-module.exports = {
-  // `Array.prototype.includes` method
-  // https://tc39.github.io/ecma262/#sec-array.prototype.includes
-  includes: createMethod(true),
-  // `Array.prototype.indexOf` method
-  // https://tc39.github.io/ecma262/#sec-array.prototype.indexof
-  indexOf: createMethod(false)
-};
-
-
-/***/ }),
-
-/***/ "4df4":
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var bind = __webpack_require__("0366");
-var toObject = __webpack_require__("7b0b");
-var callWithSafeIterationClosing = __webpack_require__("9bdd");
-var isArrayIteratorMethod = __webpack_require__("e95a");
-var toLength = __webpack_require__("50c4");
-var createProperty = __webpack_require__("8418");
-var getIteratorMethod = __webpack_require__("35a1");
-
-// `Array.from` method implementation
-// https://tc39.github.io/ecma262/#sec-array.from
-module.exports = function from(arrayLike /* , mapfn = undefined, thisArg = undefined */) {
-  var O = toObject(arrayLike);
-  var C = typeof this == 'function' ? this : Array;
-  var argumentsLength = arguments.length;
-  var mapfn = argumentsLength > 1 ? arguments[1] : undefined;
-  var mapping = mapfn !== undefined;
-  var iteratorMethod = getIteratorMethod(O);
-  var index = 0;
-  var length, result, step, iterator, next, value;
-  if (mapping) mapfn = bind(mapfn, argumentsLength > 2 ? arguments[2] : undefined, 2);
-  // if the target is not iterable or it's an array with the default iterator - use a simple case
-  if (iteratorMethod != undefined && !(C == Array && isArrayIteratorMethod(iteratorMethod))) {
-    iterator = iteratorMethod.call(O);
-    next = iterator.next;
-    result = new C();
-    for (;!(step = next.call(iterator)).done; index++) {
-      value = mapping ? callWithSafeIterationClosing(iterator, mapfn, [step.value, index], true) : step.value;
-      createProperty(result, index, value);
-    }
-  } else {
-    length = toLength(O.length);
-    result = new C(length);
-    for (;length > index; index++) {
-      value = mapping ? mapfn(O[index], index) : O[index];
-      createProperty(result, index, value);
-    }
-  }
-  result.length = index;
-  return result;
-};
-
-
-/***/ }),
-
 /***/ "4fc2":
 /***/ (function(module, exports) {
 
 module.exports=/[ \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000]/
-
-/***/ }),
-
-/***/ "50c4":
-/***/ (function(module, exports, __webpack_require__) {
-
-var toInteger = __webpack_require__("a691");
-
-var min = Math.min;
-
-// `ToLength` abstract operation
-// https://tc39.github.io/ecma262/#sec-tolength
-module.exports = function (argument) {
-  return argument > 0 ? min(toInteger(argument), 0x1FFFFFFFFFFFFF) : 0; // 2 ** 53 - 1 == 9007199254740991
-};
-
-
-/***/ }),
-
-/***/ "5135":
-/***/ (function(module, exports) {
-
-var hasOwnProperty = {}.hasOwnProperty;
-
-module.exports = function (it, key) {
-  return hasOwnProperty.call(it, key);
-};
-
-
-/***/ }),
-
-/***/ "5319":
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var fixRegExpWellKnownSymbolLogic = __webpack_require__("d784");
-var anObject = __webpack_require__("825a");
-var toObject = __webpack_require__("7b0b");
-var toLength = __webpack_require__("50c4");
-var toInteger = __webpack_require__("a691");
-var requireObjectCoercible = __webpack_require__("1d80");
-var advanceStringIndex = __webpack_require__("8aa5");
-var regExpExec = __webpack_require__("14c3");
-
-var max = Math.max;
-var min = Math.min;
-var floor = Math.floor;
-var SUBSTITUTION_SYMBOLS = /\$([$&'`]|\d\d?|<[^>]*>)/g;
-var SUBSTITUTION_SYMBOLS_NO_NAMED = /\$([$&'`]|\d\d?)/g;
-
-var maybeToString = function (it) {
-  return it === undefined ? it : String(it);
-};
-
-// @@replace logic
-fixRegExpWellKnownSymbolLogic('replace', 2, function (REPLACE, nativeReplace, maybeCallNative, reason) {
-  var REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE = reason.REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE;
-  var REPLACE_KEEPS_$0 = reason.REPLACE_KEEPS_$0;
-  var UNSAFE_SUBSTITUTE = REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE ? '$' : '$0';
-
-  return [
-    // `String.prototype.replace` method
-    // https://tc39.github.io/ecma262/#sec-string.prototype.replace
-    function replace(searchValue, replaceValue) {
-      var O = requireObjectCoercible(this);
-      var replacer = searchValue == undefined ? undefined : searchValue[REPLACE];
-      return replacer !== undefined
-        ? replacer.call(searchValue, O, replaceValue)
-        : nativeReplace.call(String(O), searchValue, replaceValue);
-    },
-    // `RegExp.prototype[@@replace]` method
-    // https://tc39.github.io/ecma262/#sec-regexp.prototype-@@replace
-    function (regexp, replaceValue) {
-      if (
-        (!REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE && REPLACE_KEEPS_$0) ||
-        (typeof replaceValue === 'string' && replaceValue.indexOf(UNSAFE_SUBSTITUTE) === -1)
-      ) {
-        var res = maybeCallNative(nativeReplace, regexp, this, replaceValue);
-        if (res.done) return res.value;
-      }
-
-      var rx = anObject(regexp);
-      var S = String(this);
-
-      var functionalReplace = typeof replaceValue === 'function';
-      if (!functionalReplace) replaceValue = String(replaceValue);
-
-      var global = rx.global;
-      if (global) {
-        var fullUnicode = rx.unicode;
-        rx.lastIndex = 0;
-      }
-      var results = [];
-      while (true) {
-        var result = regExpExec(rx, S);
-        if (result === null) break;
-
-        results.push(result);
-        if (!global) break;
-
-        var matchStr = String(result[0]);
-        if (matchStr === '') rx.lastIndex = advanceStringIndex(S, toLength(rx.lastIndex), fullUnicode);
-      }
-
-      var accumulatedResult = '';
-      var nextSourcePosition = 0;
-      for (var i = 0; i < results.length; i++) {
-        result = results[i];
-
-        var matched = String(result[0]);
-        var position = max(min(toInteger(result.index), S.length), 0);
-        var captures = [];
-        // NOTE: This is equivalent to
-        //   captures = result.slice(1).map(maybeToString)
-        // but for some reason `nativeSlice.call(result, 1, result.length)` (called in
-        // the slice polyfill when slicing native arrays) "doesn't work" in safari 9 and
-        // causes a crash (https://pastebin.com/N21QzeQA) when trying to debug it.
-        for (var j = 1; j < result.length; j++) captures.push(maybeToString(result[j]));
-        var namedCaptures = result.groups;
-        if (functionalReplace) {
-          var replacerArgs = [matched].concat(captures, position, S);
-          if (namedCaptures !== undefined) replacerArgs.push(namedCaptures);
-          var replacement = String(replaceValue.apply(undefined, replacerArgs));
-        } else {
-          replacement = getSubstitution(matched, S, position, captures, namedCaptures, replaceValue);
-        }
-        if (position >= nextSourcePosition) {
-          accumulatedResult += S.slice(nextSourcePosition, position) + replacement;
-          nextSourcePosition = position + matched.length;
-        }
-      }
-      return accumulatedResult + S.slice(nextSourcePosition);
-    }
-  ];
-
-  // https://tc39.github.io/ecma262/#sec-getsubstitution
-  function getSubstitution(matched, str, position, captures, namedCaptures, replacement) {
-    var tailPos = position + matched.length;
-    var m = captures.length;
-    var symbols = SUBSTITUTION_SYMBOLS_NO_NAMED;
-    if (namedCaptures !== undefined) {
-      namedCaptures = toObject(namedCaptures);
-      symbols = SUBSTITUTION_SYMBOLS;
-    }
-    return nativeReplace.call(replacement, symbols, function (match, ch) {
-      var capture;
-      switch (ch.charAt(0)) {
-        case '$': return '$';
-        case '&': return matched;
-        case '`': return str.slice(0, position);
-        case "'": return str.slice(tailPos);
-        case '<':
-          capture = namedCaptures[ch.slice(1, -1)];
-          break;
-        default: // \d\d?
-          var n = +ch;
-          if (n === 0) return match;
-          if (n > m) {
-            var f = floor(n / 10);
-            if (f === 0) return match;
-            if (f <= m) return captures[f - 1] === undefined ? ch.charAt(1) : captures[f - 1] + ch.charAt(1);
-            return match;
-          }
-          capture = captures[n - 1];
-      }
-      return capture === undefined ? '' : capture;
-    });
-  }
-});
-
 
 /***/ }),
 
@@ -14641,41 +12417,6 @@ fixRegExpWellKnownSymbolLogic('replace', 2, function (REPLACE, nativeReplace, ma
 exports.parseLinkLabel       = __webpack_require__("df56");
 exports.parseLinkDestination = __webpack_require__("e4ca");
 exports.parseLinkTitle       = __webpack_require__("7d91");
-
-
-/***/ }),
-
-/***/ "5692":
-/***/ (function(module, exports, __webpack_require__) {
-
-var IS_PURE = __webpack_require__("c430");
-var store = __webpack_require__("c6cd");
-
-(module.exports = function (key, value) {
-  return store[key] || (store[key] = value !== undefined ? value : {});
-})('versions', []).push({
-  version: '3.6.5',
-  mode: IS_PURE ? 'pure' : 'global',
-  copyright: '© 2020 Denis Pushkarev (zloirock.ru)'
-});
-
-
-/***/ }),
-
-/***/ "56ef":
-/***/ (function(module, exports, __webpack_require__) {
-
-var getBuiltIn = __webpack_require__("d066");
-var getOwnPropertyNamesModule = __webpack_require__("241c");
-var getOwnPropertySymbolsModule = __webpack_require__("7418");
-var anObject = __webpack_require__("825a");
-
-// all object keys, includes non-enumerable and symbols
-module.exports = getBuiltIn('Reflect', 'ownKeys') || function ownKeys(it) {
-  var keys = getOwnPropertyNamesModule.f(anObject(it));
-  var getOwnPropertySymbols = getOwnPropertySymbolsModule.f;
-  return getOwnPropertySymbols ? keys.concat(getOwnPropertySymbols(it)) : keys;
-};
 
 
 /***/ }),
@@ -14799,10 +12540,10 @@ function convertAttributeValue (value, name, { type } = {}) {
     if (value === 'true' || value === 'false') {
       return value === 'true'
     }
-    if (value === '' || value === name) {
+    if (value === '' || value === name || value != null) {
       return true
     }
-    return value != null
+    return value
   } else if (isNumber(type)) {
     const parsed = parseFloat(value, 10);
     return isNaN(parsed) ? value : parsed
@@ -14919,13 +12660,13 @@ function wrap (Vue, Component) {
 
   class CustomElement extends HTMLElement {
     constructor () {
-      super();
-      this.attachShadow({ mode: 'open' });
+      const self = super();
+      self.attachShadow({ mode: 'open' });
 
-      const wrapper = this._wrapper = new Vue({
+      const wrapper = self._wrapper = new Vue({
         name: 'shadow-root',
-        customElement: this,
-        shadowRoot: this.shadowRoot,
+        customElement: self,
+        shadowRoot: self.shadowRoot,
         data () {
           return {
             props: {},
@@ -14945,8 +12686,8 @@ function wrap (Vue, Component) {
         let hasChildrenChange = false;
         for (let i = 0; i < mutations.length; i++) {
           const m = mutations[i];
-          if (isInitialized && m.type === 'attributes' && m.target === this) {
-            syncAttribute(this, m.attributeName);
+          if (isInitialized && m.type === 'attributes' && m.target === self) {
+            syncAttribute(self, m.attributeName);
           } else {
             hasChildrenChange = true;
           }
@@ -14954,11 +12695,11 @@ function wrap (Vue, Component) {
         if (hasChildrenChange) {
           wrapper.slotChildren = Object.freeze(toVNodes(
             wrapper.$createElement,
-            this.childNodes
+            self.childNodes
           ));
         }
       });
-      observer.observe(this, {
+      observer.observe(self, {
         childList: true,
         subtree: true,
         characterData: true,
@@ -15028,27 +12769,17 @@ var addStylesShadow = __webpack_require__("35d6");
 // EXTERNAL MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
 var componentNormalizer = __webpack_require__("2877");
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"be35bd0e-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/App.vue?vue&type=template&id=795dee5c&lang=pug&shadow
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"75d05200-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./src/App.vue?vue&type=template&id=795dee5c&lang=pug&shadow
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"pretalx-schedule",class:_vm.showGrid ? ['grid-schedule'] : ['list-schedule'],style:({'--scrollparent-width': _vm.scrollParentWidth + 'px', '--schedule-max-width': _vm.scheduleMaxWidth + 'px'})},[(_vm.schedule && _vm.sessions)?[_c('div',{staticClass:"settings"},[(!_vm.inEventTimezone)?[_c('bunt-select',{attrs:{"name":"timezone","options":[{id: _vm.schedule.timezone, label: _vm.schedule.timezone}, {id: _vm.userTimezone, label: _vm.userTimezone}]},on:{"blur":_vm.saveTimezone},model:{value:(_vm.currentTimezone),callback:function ($$v) {_vm.currentTimezone=$$v},expression:"currentTimezone"}})]:[_c('div',{staticClass:"timezone-label bunt-tab-header-item",domProps:{"innerHTML":_vm._s(_vm.schedule.timezone)}})],(_vm.favs.length)?_c('bunt-button',{staticClass:"fav-toggle",class:_vm.onlyFavs ? ['active'] : [],on:{"click":function($event){_vm.onlyFavs = !_vm.onlyFavs}}},[_c('svg',{attrs:{"id":"star","viewBox":"0 0 24 24"}},[_c('polygon',{style:({fill: '#FFA000', stroke: '#FFA000'}),attrs:{"points":"14.43,10 12,2 9.57,10 2,10 8.18,14.41 5.83,22 12,17.31 18.18,22 15.83,14.41 22,10"}})]),[_vm._v(_vm._s(_vm.favs.length))]],2):_vm._e()],2),(_vm.days && _vm.days.length > 1)?_c('bunt-tabs',{ref:"tabs",staticClass:"days",class:_vm.showGrid? ['grid-tabs'] : ['list-tabs'],attrs:{"active-tab":_vm.currentDay && _vm.currentDay.format()}},_vm._l((_vm.days),function(day){return _c('bunt-tab',{attrs:{"id":day.format(),"header":day.format(_vm.dateFormat)},on:{"selected":function($event){return _vm.changeDay(day)}}})}),1):_vm._e(),(_vm.showGrid)?_c('grid-schedule',{attrs:{"sessions":_vm.sessions,"rooms":_vm.schedule.rooms,"currentDay":_vm.currentDay,"now":_vm.now,"scrollParent":_vm.scrollParent,"favs":_vm.favs},on:{"changeDay":function($event){_vm.currentDay = $event},"fav":function($event){return _vm.fav($event)},"unfav":function($event){return _vm.unfav($event)}}}):_c('linear-schedule',{attrs:{"sessions":_vm.sessions,"currentDay":_vm.currentDay,"now":_vm.now,"scrollParent":_vm.scrollParent,"favs":_vm.favs},on:{"changeDay":function($event){_vm.currentDay = $event},"fav":function($event){return _vm.fav($event)},"unfav":function($event){return _vm.unfav($event)}}})]:_c('bunt-progress-circular',{attrs:{"size":"huge","page":true}})],2)}
 var staticRenderFns = []
 
 
 // CONCATENATED MODULE: ./src/App.vue?vue&type=template&id=795dee5c&lang=pug&shadow
 
-// EXTERNAL MODULE: ./node_modules/core-js/modules/es.string.replace.js
-var es_string_replace = __webpack_require__("5319");
-
-// EXTERNAL MODULE: ./node_modules/core-js/modules/web.dom-collections.iterator.js
-var web_dom_collections_iterator = __webpack_require__("ddb0");
-
-// EXTERNAL MODULE: ./node_modules/core-js/modules/web.url.js
-var web_url = __webpack_require__("2b3d");
-
 // EXTERNAL MODULE: ./node_modules/resize-observer-polyfill/dist/ResizeObserver.es.js
 var ResizeObserver_es = __webpack_require__("6dd8");
 
 // CONCATENATED MODULE: ./node_modules/buntpapier/src/directives/scrollbar.js
-
 // TODO look at this https://developers.google.com/web/updates/2017/03/custom-scrollbar
 // usage
 //
@@ -15533,21 +13264,21 @@ const ANIMATION_OFFSET = 32;
   scrollbar(Vue);
   tooltip(Vue);
 });
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"be35bd0e-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/button.vue?vue&type=template&id=7b7300be&lang=pug&
-var buttonvue_type_template_id_7b7300be_lang_pug_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('button',{directives:[{name:"tooltip",rawName:"v-tooltip",value:(_vm.tooltipOptions || {text: _vm._tooltip, show: !!this.errorMessage, placement: _vm.tooltipPlacement, fixed: _vm.tooltipFixed}),expression:"tooltipOptions || {text: _tooltip, show: !!this.errorMessage, placement: tooltipPlacement, fixed: tooltipFixed}"}],ref:"button",staticClass:"bunt-button",class:{disabled: _vm.disabled || _vm.loading || _vm.showSuccess, error: _vm.errorMessage || _vm.error, success: _vm.showSuccess},attrs:{"type":_vm.type,"aria-disabled":_vm.disabled},on:{"click":_vm.onClick}},[_c('div',{staticClass:"bunt-button-content",class:{invisible: _vm.loading || _vm.errorMessage || _vm.error || _vm.showSuccess }},[(_vm.icon)?_c('i',{staticClass:"bunt-icon mdi",class:[_vm.iconClass]}):_vm._e(),_c('div',{staticClass:"bunt-button-text"},[_vm._t("default",[_c('span',{domProps:{"textContent":_vm._s(_vm.text)}})])],2)]),_c('progress-circular',{directives:[{name:"show",rawName:"v-show",value:(_vm.loading),expression:"loading"}],attrs:{"size":"small"}}),(_vm.errorMessage || _vm.error)?_c('i',{staticClass:"bunt-icon mdi mdi-replay error"}):_vm._e(),(_vm.showSuccess)?_c('i',{staticClass:"bunt-icon mdi mdi-check success"}):_vm._e(),(!_vm.noInk && !_vm.disabled)?_c('ripple-ink'):_vm._e()],1)}
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"75d05200-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/button.vue?vue&type=template&id=7b7300be&lang=pug&
+var buttonvue_type_template_id_7b7300be_lang_pug_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('button',{directives:[{name:"tooltip",rawName:"v-tooltip",value:(_vm.tooltipOptions || {text: _vm._tooltip, show: !!this.errorMessage, placement: _vm.tooltipPlacement, fixed: _vm.tooltipFixed}),expression:"tooltipOptions || {text: _tooltip, show: !!this.errorMessage, placement: tooltipPlacement, fixed: tooltipFixed}"}],ref:"button",staticClass:"bunt-button",class:{disabled: _vm.disabled || _vm.loading || _vm.showSuccess, error: _vm.errorMessage || _vm.error, success: _vm.showSuccess},attrs:{"type":_vm.type,"aria-disabled":_vm.disabled},on:{"click":_vm.onClick}},[_c('div',{staticClass:"bunt-button-content",class:{invisible: _vm.loading || _vm.errorMessage || _vm.error || _vm.showSuccess }},[(_vm.icon)?_c('i',{staticClass:"bunt-icon mdi",class:[_vm.iconClass]}):_vm._e(),_c('div',{staticClass:"bunt-button-text"},[_vm._t("default",function(){return [_c('span',{domProps:{"textContent":_vm._s(_vm.text)}})]})],2)]),_c('progress-circular',{directives:[{name:"show",rawName:"v-show",value:(_vm.loading),expression:"loading"}],attrs:{"size":"small"}}),(_vm.errorMessage || _vm.error)?_c('i',{staticClass:"bunt-icon mdi mdi-replay error"}):_vm._e(),(_vm.showSuccess)?_c('i',{staticClass:"bunt-icon mdi mdi-check success"}):_vm._e(),(!_vm.noInk && !_vm.disabled)?_c('ripple-ink'):_vm._e()],1)}
 var buttonvue_type_template_id_7b7300be_lang_pug_staticRenderFns = []
 
 
 // CONCATENATED MODULE: ./node_modules/buntpapier/src/button.vue?vue&type=template&id=7b7300be&lang=pug&
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"be35bd0e-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/ripple-ink.vue?vue&type=template&id=4083cb56&lang=pug&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"75d05200-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/ripple-ink.vue?vue&type=template&id=4083cb56&lang=pug&
 var ripple_inkvue_type_template_id_4083cb56_lang_pug_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"bunt-ripple-ink",on:{"mousedown":function($event){return _vm.mousedown($event)},"touchstart":function($event){return _vm.touchstart($event)}}},[_c('transition',{attrs:{"name":"ripple-ink"}},[(_vm.show)?_c('div',{staticClass:"ripple",style:(_vm.style)}):_vm._e()])],1)}
 var ripple_inkvue_type_template_id_4083cb56_lang_pug_staticRenderFns = []
 
 
 // CONCATENATED MODULE: ./node_modules/buntpapier/src/ripple-ink.vue?vue&type=template&id=4083cb56&lang=pug&
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/ripple-ink.vue?vue&type=script&lang=js&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--13-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/ripple-ink.vue?vue&type=script&lang=js&
 //
 //
 //
@@ -15663,14 +13394,14 @@ var component = Object(componentNormalizer["a" /* default */])(
     RippleInk: ripple_ink
   }
 });
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"be35bd0e-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/progress-circular.vue?vue&type=template&id=19fbca2a&lang=pug&
-var progress_circularvue_type_template_id_19fbca2a_lang_pug_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"bunt-progress-circular active",class:[_vm.size, {'progress-center': _vm.center, 'progress-page': _vm.page}]},[_c('svg',{attrs:{"viewBox":"25 25 50 50"}},[_c('circle',{attrs:{"cx":"50","cy":"50","r":"20"}})])])}
-var progress_circularvue_type_template_id_19fbca2a_lang_pug_staticRenderFns = []
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"75d05200-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/progress-circular.vue?vue&type=template&id=dd6bdf72&lang=pug&
+var progress_circularvue_type_template_id_dd6bdf72_lang_pug_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"bunt-progress-circular active",class:[_vm.size, {'progress-center': _vm.center, 'progress-page': _vm.page}]},[_c('svg',{attrs:{"viewBox":"25 25 50 50"}},[_c('circle',{attrs:{"cx":"50","cy":"50","r":"20"}})])])}
+var progress_circularvue_type_template_id_dd6bdf72_lang_pug_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./node_modules/buntpapier/src/progress-circular.vue?vue&type=template&id=19fbca2a&lang=pug&
+// CONCATENATED MODULE: ./node_modules/buntpapier/src/progress-circular.vue?vue&type=template&id=dd6bdf72&lang=pug&
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/progress-circular.vue?vue&type=script&lang=js&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--13-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/progress-circular.vue?vue&type=script&lang=js&
 //
 //
 //
@@ -15714,8 +13445,8 @@ var progress_circularvue_type_template_id_19fbca2a_lang_pug_staticRenderFns = []
 
 var progress_circular_component = Object(componentNormalizer["a" /* default */])(
   src_progress_circularvue_type_script_lang_js_,
-  progress_circularvue_type_template_id_19fbca2a_lang_pug_render,
-  progress_circularvue_type_template_id_19fbca2a_lang_pug_staticRenderFns,
+  progress_circularvue_type_template_id_dd6bdf72_lang_pug_render,
+  progress_circularvue_type_template_id_dd6bdf72_lang_pug_staticRenderFns,
   false,
   null,
   null,
@@ -15725,7 +13456,6 @@ var progress_circular_component = Object(componentNormalizer["a" /* default */])
 
 /* harmony default export */ var progress_circular = (progress_circular_component.exports);
 // CONCATENATED MODULE: ./node_modules/buntpapier/src/helpers/icon.js
-
 const alias = {
   add: 'plus',
   done: 'check',
@@ -15740,7 +13470,7 @@ const alias = {
   }
 
 });
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/button.vue?vue&type=script&lang=js&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--13-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/button.vue?vue&type=script&lang=js&
 //
 //
 //
@@ -15873,14 +13603,14 @@ var button_component = Object(componentNormalizer["a" /* default */])(
 )
 
 /* harmony default export */ var src_button = (button_component.exports);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"be35bd0e-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/checkbox.vue?vue&type=template&id=db2bd15a&lang=pug&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"75d05200-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/checkbox.vue?vue&type=template&id=db2bd15a&lang=pug&
 var checkboxvue_type_template_id_db2bd15a_lang_pug_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"bunt-checkbox",class:{checked: _vm.value}},[_c('input',{attrs:{"type":"checkbox","name":_vm.name,"disabled":_vm.disabled,"readonly":_vm.readonly},domProps:{"checked":_vm.value},on:{"change":function($event){return _vm.onChange($event)},"focus":function($event){_vm.focused = true},"blur":_vm.onBlur}}),_c('div',{staticClass:"bunt-checkbox-box"}),(_vm.label)?_c('label',[_vm._v(_vm._s(_vm.label))]):_c('label',[_vm._t("default")],2)])}
 var checkboxvue_type_template_id_db2bd15a_lang_pug_staticRenderFns = []
 
 
 // CONCATENATED MODULE: ./node_modules/buntpapier/src/checkbox.vue?vue&type=template&id=db2bd15a&lang=pug&
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/checkbox.vue?vue&type=script&lang=js&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--13-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/checkbox.vue?vue&type=script&lang=js&
 //
 //
 //
@@ -15961,14 +13691,14 @@ var checkbox_component = Object(componentNormalizer["a" /* default */])(
 )
 
 /* harmony default export */ var src_checkbox = (checkbox_component.exports);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"be35bd0e-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/radio.vue?vue&type=template&id=0bd99fc8&lang=pug&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"75d05200-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/radio.vue?vue&type=template&id=0bd99fc8&lang=pug&
 var radiovue_type_template_id_0bd99fc8_lang_pug_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"bunt-radio",class:{checked: _vm.isChecked}},[_c('input',{attrs:{"type":"radio","name":_vm.name,"disabled":_vm.disabled,"readonly":_vm.readonly},domProps:{"value":_vm.value,"checked":_vm.isChecked},on:{"change":function($event){return _vm.onChange($event)},"focus":function($event){_vm.focused = true},"blur":_vm.onBlur}}),_c('div',{staticClass:"bunt-radio-circle"}),(_vm.label)?_c('label',[_vm._v(_vm._s(_vm.label))]):_c('label',[_vm._t("default")],2)])}
 var radiovue_type_template_id_0bd99fc8_lang_pug_staticRenderFns = []
 
 
 // CONCATENATED MODULE: ./node_modules/buntpapier/src/radio.vue?vue&type=template&id=0bd99fc8&lang=pug&
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/radio.vue?vue&type=script&lang=js&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--13-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/radio.vue?vue&type=script&lang=js&
 //
 //
 //
@@ -16048,14 +13778,14 @@ var radio_component = Object(componentNormalizer["a" /* default */])(
 )
 
 /* harmony default export */ var src_radio = (radio_component.exports);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"be35bd0e-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/icon.vue?vue&type=template&id=766d2492&lang=pug&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"75d05200-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/icon.vue?vue&type=template&id=766d2492&lang=pug&
 var iconvue_type_template_id_766d2492_lang_pug_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('i',{staticClass:"bunt-icon mdi",class:[_vm.iconClass]})}
 var iconvue_type_template_id_766d2492_lang_pug_staticRenderFns = []
 
 
 // CONCATENATED MODULE: ./node_modules/buntpapier/src/icon.vue?vue&type=template&id=766d2492&lang=pug&
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/icon.vue?vue&type=script&lang=js&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--13-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/icon.vue?vue&type=script&lang=js&
 //
 //
 //
@@ -16097,14 +13827,14 @@ var icon_component = Object(componentNormalizer["a" /* default */])(
 )
 
 /* harmony default export */ var src_icon = (icon_component.exports);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"be35bd0e-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/icon-button.vue?vue&type=template&id=1fb7e979&lang=pug&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"75d05200-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/icon-button.vue?vue&type=template&id=1fb7e979&lang=pug&
 var icon_buttonvue_type_template_id_1fb7e979_lang_pug_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('button',{directives:[{name:"tooltip",rawName:"v-tooltip",value:(_vm.tooltipOptions || {text: _vm.tooltip, placement: _vm.tooltipPlacement, fixed: _vm.tooltipFixed}),expression:"tooltipOptions || {text: tooltip, placement: tooltipPlacement, fixed: tooltipFixed}"}],ref:"button",staticClass:"bunt-icon-button",class:{disabled: _vm.disabled},attrs:{"type":_vm.type,"aria-disabled":_vm.disabled},on:{"click":_vm.onClick}},[(_vm.iconClass())?_c('i',{staticClass:"bunt-icon mdi",class:[_vm.iconClass()]}):_vm._t("default"),(!_vm.noInk && !_vm.disabled)?_c('ripple-ink'):_vm._e()],2)}
 var icon_buttonvue_type_template_id_1fb7e979_lang_pug_staticRenderFns = []
 
 
 // CONCATENATED MODULE: ./node_modules/buntpapier/src/icon-button.vue?vue&type=template&id=1fb7e979&lang=pug&
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/icon-button.vue?vue&type=script&lang=js&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--13-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/icon-button.vue?vue&type=script&lang=js&
 //
 //
 //
@@ -16178,7 +13908,7 @@ var icon_button_component = Object(componentNormalizer["a" /* default */])(
 )
 
 /* harmony default export */ var icon_button = (icon_button_component.exports);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"be35bd0e-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/input.vue?vue&type=template&id=04b10eff&lang=pug&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"75d05200-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/input.vue?vue&type=template&id=04b10eff&lang=pug&
 var inputvue_type_template_id_04b10eff_lang_pug_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{directives:[{name:"resize-observer",rawName:"v-resize-observer",value:(_vm.generateOutline),expression:"generateOutline"}],staticClass:"bunt-input",class:{focused: _vm.focused, 'floating-label': _vm.floatingLabel, invalid: _vm.invalid, disabled: _vm.disabled, 'with-icon': _vm.icon},style:({'--label-gap': _vm.floatingLabelWidth})},[_c('div',{staticClass:"label-input-container"},[_c('label',{attrs:{"for":_vm.name}},[_vm._v(_vm._s(_vm.label))]),(_vm.icon)?_c('div',{staticClass:"icon mdi",class:[_vm.iconClass]}):_vm._e(),_c('input',{ref:"input",attrs:{"type":_vm.type,"name":_vm.name,"disabled":_vm.disabled,"readonly":_vm.readonly,"placeholder":_vm.placeholder},domProps:{"value":_vm.value},on:{"input":function($event){return _vm.onInput($event)},"focus":function($event){_vm.focused = true},"blur":_vm.onBlur}}),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.invalid),expression:"invalid"}],staticClass:"error-icon mdi mdi-alert-circle",attrs:{"title":_vm.hintText}}),_c('svg',{ref:"outline",staticClass:"outline"},[_c('path',{attrs:{"d":_vm.outlineStroke}})])]),(_vm.hintIsHtml)?_c('div',{staticClass:"hint",domProps:{"innerHTML":_vm._s(_vm.hintText)}}):_c('div',{staticClass:"hint"},[_vm._v(_vm._s(_vm.hintText))])])}
 var inputvue_type_template_id_04b10eff_lang_pug_staticRenderFns = []
 
@@ -16236,7 +13966,7 @@ function getTextMetrics(text, font) {
 
   }
 });
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/input.vue?vue&type=script&lang=js&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--13-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/input.vue?vue&type=script&lang=js&
 //
 //
 //
@@ -16356,14 +14086,14 @@ var input_component = Object(componentNormalizer["a" /* default */])(
 )
 
 /* harmony default export */ var input = (input_component.exports);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"be35bd0e-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/input-outline-container.vue?vue&type=template&id=b84b1ad8&lang=pug&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"75d05200-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/input-outline-container.vue?vue&type=template&id=b84b1ad8&lang=pug&
 var input_outline_containervue_type_template_id_b84b1ad8_lang_pug_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{directives:[{name:"resize-observer",rawName:"v-resize-observer",value:(_vm.generateOutline),expression:"generateOutline"}],staticClass:"bunt-input-outline-container",class:{focused: _vm.focused},style:({'--label-gap': _vm.floatingLabelWidth})},[_c('label',[_vm._v(_vm._s(_vm.label))]),_vm._t("default",null,{"focus":_vm.focus,"blur":_vm.blur}),_c('svg',{ref:"outline",staticClass:"outline"},[_c('path',{attrs:{"d":_vm.outlineStroke}})])],2)}
 var input_outline_containervue_type_template_id_b84b1ad8_lang_pug_staticRenderFns = []
 
 
 // CONCATENATED MODULE: ./node_modules/buntpapier/src/input-outline-container.vue?vue&type=template&id=b84b1ad8&lang=pug&
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/input-outline-container.vue?vue&type=script&lang=js&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--13-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/input-outline-container.vue?vue&type=script&lang=js&
 //
 //
 //
@@ -16426,14 +14156,14 @@ var input_outline_container_component = Object(componentNormalizer["a" /* defaul
 )
 
 /* harmony default export */ var input_outline_container = (input_outline_container_component.exports);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"be35bd0e-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/link-button.vue?vue&type=template&id=0fc223b2&lang=pug&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"75d05200-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/link-button.vue?vue&type=template&id=0fc223b2&lang=pug&
 var link_buttonvue_type_template_id_0fc223b2_lang_pug_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('router-link',{staticClass:"bunt-link-button",attrs:{"to":_vm.to}},[_vm._t("default"),_c('ripple-ink')],2)}
 var link_buttonvue_type_template_id_0fc223b2_lang_pug_staticRenderFns = []
 
 
 // CONCATENATED MODULE: ./node_modules/buntpapier/src/link-button.vue?vue&type=template&id=0fc223b2&lang=pug&
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/link-button.vue?vue&type=script&lang=js&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--13-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/link-button.vue?vue&type=script&lang=js&
 //
 //
 //
@@ -16478,12 +14208,12 @@ var link_button_component = Object(componentNormalizer["a" /* default */])(
 )
 
 /* harmony default export */ var link_button = (link_button_component.exports);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"be35bd0e-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/select.vue?vue&type=template&id=378968a6&lang=pug&
-var selectvue_type_template_id_378968a6_lang_pug_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{directives:[{name:"resize-observer",rawName:"v-resize-observer",value:(_vm.generateOutline),expression:"generateOutline"}],staticClass:"bunt-select dropdown",class:_vm.dropdownClasses},[_c('div',{ref:"searchContainer",staticClass:"bunt-input dense",class:{focused: _vm.open, 'floating-label': _vm.rawSearch.length != 0 || !_vm.isValueEmpty, invalid: _vm.invalid, disabled: _vm.disabled},style:({'--label-gap': _vm.floatingLabelWidth})},[_c('div',{staticClass:"label-input-container"},[_c('label',{attrs:{"for":_vm.name}},[_vm._v(_vm._s(_vm.label))]),(_vm.icon)?_c('div',{staticClass:"icon mdi",class:[_vm.iconClass]}):_vm._e(),_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.rawSearch),expression:"rawSearch"}],ref:"search",attrs:{"type":"text","name":_vm.name,"disabled":_vm.disabled,"placeholder":_vm.searchPlaceholder,"autocomplete":"off"},domProps:{"value":(_vm.rawSearch)},on:{"keydown":[function($event){if(!$event.type.indexOf('key')&&_vm._k($event.keyCode,"delete",[8,46],$event.key,["Backspace","Delete","Del"])){ return null; }return _vm.maybeDeleteValue($event)},function($event){if(!$event.type.indexOf('key')&&_vm._k($event.keyCode,"up",38,$event.key,["Up","ArrowUp"])){ return null; }$event.preventDefault();return _vm.typeAheadUp($event)},function($event){if(!$event.type.indexOf('key')&&_vm._k($event.keyCode,"down",40,$event.key,["Down","ArrowDown"])){ return null; }$event.preventDefault();return _vm.typeAheadDown($event)}],"keyup":[function($event){if(!$event.type.indexOf('key')&&_vm._k($event.keyCode,"esc",27,$event.key,["Esc","Escape"])){ return null; }return _vm.onEscape($event)},function($event){if(!$event.type.indexOf('key')&&_vm._k($event.keyCode,"enter",13,$event.key,"Enter")){ return null; }$event.preventDefault();return _vm.typeAheadSelect($event)}],"blur":_vm.blur,"focus":_vm.focus,"input":function($event){if($event.target.composing){ return; }_vm.rawSearch=$event.target.value}}}),_c('i',{ref:"openIndicator",staticClass:"open-indicator mdi mdi-menu-down",attrs:{"role":"presentation"},on:{"mousedown":function($event){$event.preventDefault();$event.stopPropagation();},"click":function($event){$event.preventDefault();$event.stopPropagation();return _vm.toggleDropdown($event)}}}),_c('svg',{ref:"outline",staticClass:"outline"},[_c('path',{attrs:{"d":_vm.outlineStroke}})])]),(_vm.hintIsHtml)?_c('div',{staticClass:"hint",domProps:{"innerHTML":_vm._s(_vm.hintText)}}):_c('div',{staticClass:"hint"},[_vm._v(_vm._s(_vm.hintText))])]),(_vm.open)?_c(_vm.usePortals ? 'portal' : 'div',{tag:"component",attrs:{"to":"bunt-overlays"}},[_c('div',{ref:"dropdownMenu",staticClass:"bunt-select-dropdown-menu",class:[_vm.dropdownClass],style:({ 'max-height': _vm.maxHeight, 'width': _vm.width+'px' }),on:{"mousedown":function($event){$event.preventDefault();$event.stopPropagation();}}},[_vm._t("result-header"),_c('div',{directives:[{name:"scrollbar",rawName:"v-scrollbar.y",value:({_preventMousedown: true}),expression:"{_preventMousedown: true}",modifiers:{"y":true}}],staticClass:"scrollable-menu"},[_c('ul',[_vm._l((_vm.filteredOptions),function(option,index){return _c('li',{key:index,class:{ active: _vm.isOptionSelected(option), highlight: index === _vm.typeAheadPointer },on:{"mouseover":function($event){_vm.typeAheadPointer = index},"click":function($event){$event.preventDefault();$event.stopPropagation();return _vm.select(option)}}},[_vm._t("default",[_vm._v(_vm._s(_vm.getOptionLabel(option)))],{"option":option})],2)}),(!_vm.filteredOptions.length)?_c('li',{staticClass:"divider",attrs:{"transition":"fade"}}):_vm._e(),(!_vm.filteredOptions.length)?_c('li',{staticClass:"text-center",attrs:{"transition":"fade"}},[_vm._t("no-options",[_vm._v("Sorry, no matching options.")])],2):_vm._e()],2)])],2)]):_vm._e()],1)}
-var selectvue_type_template_id_378968a6_lang_pug_staticRenderFns = []
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"75d05200-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/select.vue?vue&type=template&id=dc84a8a0&lang=pug&
+var selectvue_type_template_id_dc84a8a0_lang_pug_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{directives:[{name:"resize-observer",rawName:"v-resize-observer",value:(_vm.generateOutline),expression:"generateOutline"}],staticClass:"bunt-select dropdown",class:_vm.dropdownClasses},[_c('div',{ref:"searchContainer",staticClass:"bunt-input dense",class:{focused: _vm.open, 'floating-label': _vm.rawSearch.length != 0 || !_vm.isValueEmpty, invalid: _vm.invalid, disabled: _vm.disabled},style:({'--label-gap': _vm.floatingLabelWidth})},[_c('div',{staticClass:"label-input-container"},[_c('label',{attrs:{"for":_vm.name}},[_vm._v(_vm._s(_vm.label))]),(_vm.icon)?_c('div',{staticClass:"icon mdi",class:[_vm.iconClass]}):_vm._e(),_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.rawSearch),expression:"rawSearch"}],ref:"search",attrs:{"type":"text","name":_vm.name,"disabled":_vm.disabled,"placeholder":_vm.searchPlaceholder,"autocomplete":"off"},domProps:{"value":(_vm.rawSearch)},on:{"keydown":[function($event){if(!$event.type.indexOf('key')&&_vm._k($event.keyCode,"delete",[8,46],$event.key,["Backspace","Delete","Del"])){ return null; }return _vm.maybeDeleteValue.apply(null, arguments)},function($event){if(!$event.type.indexOf('key')&&_vm._k($event.keyCode,"up",38,$event.key,["Up","ArrowUp"])){ return null; }$event.preventDefault();return _vm.typeAheadUp.apply(null, arguments)},function($event){if(!$event.type.indexOf('key')&&_vm._k($event.keyCode,"down",40,$event.key,["Down","ArrowDown"])){ return null; }$event.preventDefault();return _vm.typeAheadDown.apply(null, arguments)}],"keyup":[function($event){if(!$event.type.indexOf('key')&&_vm._k($event.keyCode,"esc",27,$event.key,["Esc","Escape"])){ return null; }return _vm.onEscape.apply(null, arguments)},function($event){if(!$event.type.indexOf('key')&&_vm._k($event.keyCode,"enter",13,$event.key,"Enter")){ return null; }$event.preventDefault();return _vm.typeAheadSelect.apply(null, arguments)}],"blur":_vm.blur,"focus":_vm.focus,"input":function($event){if($event.target.composing){ return; }_vm.rawSearch=$event.target.value}}}),_c('i',{ref:"openIndicator",staticClass:"open-indicator mdi mdi-menu-down",attrs:{"role":"presentation"},on:{"mousedown":function($event){$event.preventDefault();$event.stopPropagation();},"click":function($event){$event.preventDefault();$event.stopPropagation();return _vm.toggleDropdown.apply(null, arguments)}}}),_c('svg',{ref:"outline",staticClass:"outline"},[_c('path',{attrs:{"d":_vm.outlineStroke}})])]),(_vm.hintIsHtml)?_c('div',{staticClass:"hint",domProps:{"innerHTML":_vm._s(_vm.hintText)}}):_c('div',{staticClass:"hint"},[_vm._v(_vm._s(_vm.hintText))])]),(_vm.open)?_c(_vm.usePortals ? 'portal' : 'div',{tag:"component",attrs:{"to":"bunt-overlays"}},[_c('div',{ref:"dropdownMenu",staticClass:"bunt-select-dropdown-menu",class:[_vm.dropdownClass],style:({ 'max-height': _vm.maxHeight, 'width': _vm.width+'px' }),on:{"mousedown":function($event){$event.preventDefault();$event.stopPropagation();}}},[_vm._t("result-header"),_c('div',{directives:[{name:"scrollbar",rawName:"v-scrollbar.y",value:({_preventMousedown: true}),expression:"{_preventMousedown: true}",modifiers:{"y":true}}],staticClass:"scrollable-menu"},[_c('ul',[_vm._l((_vm.filteredOptions),function(option,index){return _c('li',{key:index,class:{ active: _vm.isOptionSelected(option), highlight: index === _vm.typeAheadPointer },on:{"mouseover":function($event){_vm.typeAheadPointer = index},"click":function($event){$event.preventDefault();$event.stopPropagation();return _vm.select(option)}}},[_vm._t("default",function(){return [_vm._v(_vm._s(_vm.getOptionLabel(option)))]},{"option":option})],2)}),(!_vm.filteredOptions.length)?_c('li',{staticClass:"divider",attrs:{"transition":"fade"}}):_vm._e(),(!_vm.filteredOptions.length)?_c('li',{staticClass:"text-center",attrs:{"transition":"fade"}},[_vm._t("no-options",function(){return [_vm._v("Sorry, no matching options.")]})],2):_vm._e()],2)])],2)]):_vm._e()],1)}
+var selectvue_type_template_id_dc84a8a0_lang_pug_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./node_modules/buntpapier/src/select.vue?vue&type=template&id=378968a6&lang=pug&
+// CONCATENATED MODULE: ./node_modules/buntpapier/src/select.vue?vue&type=template&id=dc84a8a0&lang=pug&
 
 // CONCATENATED MODULE: ./node_modules/buntpapier/src/mixins/pointer-scroll.js
 /* harmony default export */ var pointer_scroll = ({
@@ -16632,7 +14362,7 @@ var selectvue_type_template_id_378968a6_lang_pug_staticRenderFns = []
 var fuzzysearch = __webpack_require__("2e39");
 var fuzzysearch_default = /*#__PURE__*/__webpack_require__.n(fuzzysearch);
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/select.vue?vue&type=script&lang=js&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--13-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/select.vue?vue&type=script&lang=js&
 //
 //
 //
@@ -16786,7 +14516,8 @@ var fuzzysearch_default = /*#__PURE__*/__webpack_require__.n(fuzzysearch);
     },
     validation: Object,
     // vuelidate result
-    dropdownClass: String
+    dropdownClass: String,
+    dropdownOverflowElement: [String, Object]
   },
 
   data() {
@@ -16911,14 +14642,19 @@ var fuzzysearch_default = /*#__PURE__*/__webpack_require__.n(fuzzysearch);
       this.$nextTick(() => {
         const options = {
           placement: 'bottom',
-          positionFixed: true
+          positionFixed: true,
+          modifiers: {}
         };
 
         if (this.icon) {
-          options.modifiers = {
-            offset: {
-              offset: '-15, 0'
-            }
+          options.modifiers.offset = {
+            offset: '-15, 0'
+          };
+        }
+
+        if (this.dropdownOverflowElement) {
+          options.modifiers.preventOverflow = {
+            boundariesElement: this.dropdownOverflowElement
           };
         }
 
@@ -17058,8 +14794,8 @@ var fuzzysearch_default = /*#__PURE__*/__webpack_require__.n(fuzzysearch);
 
 var select_component = Object(componentNormalizer["a" /* default */])(
   src_selectvue_type_script_lang_js_,
-  selectvue_type_template_id_378968a6_lang_pug_render,
-  selectvue_type_template_id_378968a6_lang_pug_staticRenderFns,
+  selectvue_type_template_id_dc84a8a0_lang_pug_render,
+  selectvue_type_template_id_dc84a8a0_lang_pug_staticRenderFns,
   false,
   null,
   null,
@@ -17068,14 +14804,14 @@ var select_component = Object(componentNormalizer["a" /* default */])(
 )
 
 /* harmony default export */ var src_select = (select_component.exports);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"be35bd0e-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/switch.vue?vue&type=template&id=eaa87848&lang=pug&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"75d05200-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/switch.vue?vue&type=template&id=eaa87848&lang=pug&
 var switchvue_type_template_id_eaa87848_lang_pug_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"bunt-switch",class:{checked: _vm.value}},[_c('input',{attrs:{"type":"checkbox","name":_vm.name,"disabled":_vm.disabled,"readonly":_vm.readonly},domProps:{"checked":_vm.value},on:{"change":function($event){return _vm.onChange($event)},"focus":function($event){_vm.focused = true},"blur":_vm.onBlur}}),_vm._m(0),_c('label',[_vm._v(_vm._s(_vm.label))])])}
 var switchvue_type_template_id_eaa87848_lang_pug_staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"bunt-switch-track"},[_c('div',{staticClass:"bunt-switch-thumb"})])}]
 
 
 // CONCATENATED MODULE: ./node_modules/buntpapier/src/switch.vue?vue&type=template&id=eaa87848&lang=pug&
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/switch.vue?vue&type=script&lang=js&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--13-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/switch.vue?vue&type=script&lang=js&
 //
 //
 //
@@ -17155,21 +14891,21 @@ var switch_component = Object(componentNormalizer["a" /* default */])(
 )
 
 /* harmony default export */ var src_switch = (switch_component.exports);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"be35bd0e-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/tabs.vue?vue&type=template&id=56045201&lang=pug&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"75d05200-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/tabs.vue?vue&type=template&id=56045201&lang=pug&
 var tabsvue_type_template_id_56045201_lang_pug_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{directives:[{name:"resize-observer",rawName:"v-resize-observer",value:(_vm._onResizeObserver),expression:"_onResizeObserver"}],staticClass:"bunt-tabs",class:_vm.styleClasses},[_c('div',{staticClass:"bunt-tabs-header"},[_c('ul',{ref:"tabsContainer",staticClass:"bunt-tabs-header-items",attrs:{"role":"tablist"}},_vm._l((_vm.tabs),function(tab,index){return _c('bunt-tab-header-item',{key:tab.id,ref:"tabElements",refInFor:true,attrs:{"type":_vm.type,"id":tab.id,"icon":tab.icon,"text":tab.header,"active":_vm.activeTabObj === tab,"disabled":tab.disabled},nativeOn:{"click":function($event){return _vm.select(tab, index)}}})}),1),_c('div',{staticClass:"bunt-tabs-indicator",class:[_vm.indicatorState],style:(_vm.indicatorStyle),on:{"transitionend":_vm.onIndicatorTransitionEnd}})]),_c('div',{ref:"body",staticClass:"bunt-tabs-body"},[_vm._t("default")],2)])}
 var tabsvue_type_template_id_56045201_lang_pug_staticRenderFns = []
 
 
 // CONCATENATED MODULE: ./node_modules/buntpapier/src/tabs.vue?vue&type=template&id=56045201&lang=pug&
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"be35bd0e-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/tab-header.vue?vue&type=template&id=86cbdda6&lang=pug&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"75d05200-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/tab-header.vue?vue&type=template&id=86cbdda6&lang=pug&
 var tab_headervue_type_template_id_86cbdda6_lang_pug_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('li',{ref:"item",staticClass:"bunt-tab-header-item",class:['type-' + _vm.type, { 'active': _vm.active, 'disabled': _vm.disabled }],attrs:{"role":"tab","tabindex":_vm.active ? 0 : -1,"aria-controls":_vm.id,"aria-selected":_vm.active ? 'true' : null,"disabled":_vm.disabled}},[(_vm.type === 'icon' || _vm.type === 'icon-and-text')?_c('div',{staticClass:"bunt-tab-header-item-icon"},[_c('i',{staticClass:"bunt-icon mdi",class:[_vm.iconClass]})]):_vm._e(),(_vm.type === 'text' || _vm.type === 'icon-and-text')?_c('div',{staticClass:"bunt-tab-header-item-text",domProps:{"textContent":_vm._s(_vm.text)}}):_vm._e(),(!_vm.noInk && !_vm.disabled)?_c('ripple-ink'):_vm._e()],1)}
 var tab_headervue_type_template_id_86cbdda6_lang_pug_staticRenderFns = []
 
 
 // CONCATENATED MODULE: ./node_modules/buntpapier/src/tab-header.vue?vue&type=template&id=86cbdda6&lang=pug&
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/tab-header.vue?vue&type=script&lang=js&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--13-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/tab-header.vue?vue&type=script&lang=js&
 //
 //
 //
@@ -17231,7 +14967,7 @@ var tab_header_component = Object(componentNormalizer["a" /* default */])(
 )
 
 /* harmony default export */ var tab_header = (tab_header_component.exports);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/tabs.vue?vue&type=script&lang=js&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--13-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/tabs.vue?vue&type=script&lang=js&
 //
 //
 //
@@ -17425,14 +15161,14 @@ var tabs_component = Object(componentNormalizer["a" /* default */])(
 )
 
 /* harmony default export */ var tabs = (tabs_component.exports);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"be35bd0e-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/tab.vue?vue&type=template&id=7e2c5012&lang=pug&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"75d05200-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/tab.vue?vue&type=template&id=7e2c5012&lang=pug&
 var tabvue_type_template_id_7e2c5012_lang_pug_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.active),expression:"active"}],staticClass:"bunt-tab",attrs:{"id":_vm.id,"role":"tabpanel","tabindex":_vm.active ? '0' : null,"aria-hidden":!_vm.active ? 'true' : null}},[_vm._t("default")],2)}
 var tabvue_type_template_id_7e2c5012_lang_pug_staticRenderFns = []
 
 
 // CONCATENATED MODULE: ./node_modules/buntpapier/src/tab.vue?vue&type=template&id=7e2c5012&lang=pug&
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/tab.vue?vue&type=script&lang=js&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--13-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/tab.vue?vue&type=script&lang=js&
 //
 //
 //
@@ -17492,14 +15228,14 @@ var tab_component = Object(componentNormalizer["a" /* default */])(
 )
 
 /* harmony default export */ var tab = (tab_component.exports);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"be35bd0e-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/dialog.vue?vue&type=template&id=870b43de&lang=pug&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"75d05200-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/dialog.vue?vue&type=template&id=870b43de&lang=pug&
 var dialogvue_type_template_id_870b43de_lang_pug_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return (_vm.open)?_c('div',{staticClass:"bunt-dialog-container"},[_c('div',{staticClass:"bunt-dialog"},[_vm._t("default")],2),_c('div',{staticClass:"bunt-backdrop",attrs:{"keyup.esc":"close"},on:{"click":_vm.close}})]):_vm._e()}
 var dialogvue_type_template_id_870b43de_lang_pug_staticRenderFns = []
 
 
 // CONCATENATED MODULE: ./node_modules/buntpapier/src/dialog.vue?vue&type=template&id=870b43de&lang=pug&
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/dialog.vue?vue&type=script&lang=js&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--13-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/buntpapier/src/dialog.vue?vue&type=script&lang=js&
 //
 //
 //
@@ -17611,22 +15347,22 @@ const lib = {
 var moment_timezone = __webpack_require__("7f45");
 var moment_timezone_default = /*#__PURE__*/__webpack_require__.n(moment_timezone);
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"be35bd0e-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/LinearSchedule.vue?vue&type=template&id=3f2644ad&lang=pug&
-var LinearSchedulevue_type_template_id_3f2644ad_lang_pug_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{directives:[{name:"scrollbar",rawName:"v-scrollbar.y",modifiers:{"y":true}}],staticClass:"c-linear-schedule"},_vm._l((_vm.sessionBuckets),function(ref,index){
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"75d05200-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/LinearSchedule.vue?vue&type=template&id=d3fc9d98&lang=pug&
+var LinearSchedulevue_type_template_id_d3fc9d98_lang_pug_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{directives:[{name:"scrollbar",rawName:"v-scrollbar.y",modifiers:{"y":true}}],staticClass:"c-linear-schedule"},_vm._l((_vm.sessionBuckets),function(ref,index){
 var date = ref.date;
 var sessions = ref.sessions;
 return _c('div',{staticClass:"bucket"},[_c('div',{ref:_vm.getBucketName(date),refInFor:true,staticClass:"bucket-label",attrs:{"data-date":date.format()}},[(index === 0 || date.clone().startOf('day').diff(_vm.sessionBuckets[index - 1].date.clone().startOf('day'), 'day') > 0)?_c('div',{staticClass:"day"},[_vm._v(" "+_vm._s(date.format('dddd DD. MMMM')))]):_vm._e(),_c('div',{staticClass:"time"},[_vm._v(_vm._s(date.format('LT')))])]),_vm._l((sessions),function(session){return _c('session',{attrs:{"session":session,"faved":session.id && _vm.favs.includes(session.id)},on:{"fav":function($event){return _vm.$emit('fav', session.id)},"unfav":function($event){return _vm.$emit('unfav', session.id)}}})})],2)}),0)}
-var LinearSchedulevue_type_template_id_3f2644ad_lang_pug_staticRenderFns = []
+var LinearSchedulevue_type_template_id_d3fc9d98_lang_pug_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/components/LinearSchedule.vue?vue&type=template&id=3f2644ad&lang=pug&
+// CONCATENATED MODULE: ./src/components/LinearSchedule.vue?vue&type=template&id=d3fc9d98&lang=pug&
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"be35bd0e-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/Session.vue?vue&type=template&id=63fe0cac&lang=pug&
-var Sessionvue_type_template_id_63fe0cac_lang_pug_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('a',{staticClass:"c-linear-schedule-session",style:(_vm.style),attrs:{"href":_vm.link}},[_c('div',{staticClass:"time-box"},[_c('div',{staticClass:"start",class:{'has-ampm': _vm.startTime.ampm}},[_c('div',{staticClass:"time"},[_vm._v(_vm._s(_vm.startTime.time))]),(_vm.startTime.ampm)?_c('div',{staticClass:"ampm"},[_vm._v(_vm._s(_vm.startTime.ampm))]):_vm._e()]),_c('div',{staticClass:"duration"},[_vm._v(_vm._s(_vm.durationPretty))])]),_c('div',{staticClass:"info"},[_c('div',{staticClass:"title"},[_vm._v(_vm._s(_vm.getLocalizedString(_vm.session.title)))]),(_vm.session.speakers)?_c('div',{staticClass:"speakers"},[_vm._v(_vm._s(_vm.session.speakers.map(function (s) { return s.name; }).join(', ')))]):_vm._e(),(_vm.showAbstract)?_c('div',{staticClass:"abstract",domProps:{"innerHTML":_vm._s(_vm.abstract)}}):_vm._e(),_c('div',{staticClass:"bottom-info"},[(_vm.session.track)?_c('div',{staticClass:"track"},[_vm._v(_vm._s(_vm.getLocalizedString(_vm.session.track.name)))]):_vm._e(),(_vm.showRoom && _vm.session.room)?_c('div',{staticClass:"room"},[_vm._v(_vm._s(_vm.getLocalizedString(_vm.session.room.name)))]):_vm._e()])]),_c('div',{staticClass:"fav-container",class:_vm.faved ? ['faved'] : []},[_c('svg',{staticClass:"star",attrs:{"viewBox":"0 0 24 24"},on:{"click":function($event){$event.preventDefault();_vm.faved ? _vm.$emit('unfav', _vm.session.id) : _vm.$emit('fav', _vm.session.id)}}},[_c('polygon',{style:(_vm.faved ? {fill: '#FFA000', stroke: '#FFA000'} : {stroke: '#FFA000', fill: 'white', strokeWidth: 1.5}),attrs:{"points":"14.43,10 12,2 9.57,10 2,10 8.18,14.41 5.83,22 12,17.31 18.18,22 15.83,14.41 22,10"}})])])])}
-var Sessionvue_type_template_id_63fe0cac_lang_pug_staticRenderFns = []
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"75d05200-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/Session.vue?vue&type=template&id=3410e42c&lang=pug&
+var Sessionvue_type_template_id_3410e42c_lang_pug_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('a',{staticClass:"c-linear-schedule-session",class:{faved: _vm.faved},style:(_vm.style),attrs:{"href":_vm.link,"target":_vm.linkTarget},on:{"click":function($event){return _vm.onSessionLinkClick($event, _vm.session)}}},[_c('div',{staticClass:"time-box"},[_c('div',{staticClass:"start",class:{'has-ampm': _vm.startTime.ampm}},[_c('div',{staticClass:"time"},[_vm._v(_vm._s(_vm.startTime.time))]),(_vm.startTime.ampm)?_c('div',{staticClass:"ampm"},[_vm._v(_vm._s(_vm.startTime.ampm))]):_vm._e()]),_c('div',{staticClass:"duration"},[_vm._v(_vm._s(_vm.durationPretty))])]),_c('div',{staticClass:"info"},[_c('div',{staticClass:"title"},[_vm._v(_vm._s(_vm.getLocalizedString(_vm.session.title)))]),(_vm.session.speakers)?_c('div',{staticClass:"speakers"},[_vm._v(_vm._s(_vm.session.speakers.map(function (s) { return s.name; }).join(', ')))]):_vm._e(),(_vm.showAbstract)?_c('div',{staticClass:"abstract",domProps:{"innerHTML":_vm._s(_vm.abstract)}}):_vm._e(),_c('div',{staticClass:"bottom-info"},[(_vm.session.track)?_c('div',{staticClass:"track"},[_vm._v(_vm._s(_vm.getLocalizedString(_vm.session.track.name)))]):_vm._e(),(_vm.showRoom && _vm.session.room)?_c('div',{staticClass:"room"},[_vm._v(_vm._s(_vm.getLocalizedString(_vm.session.room.name)))]):_vm._e()])]),_c('bunt-icon-button',{staticClass:"btn-fav-container",on:{"click":function($event){$event.preventDefault();$event.stopPropagation();_vm.faved ? _vm.$emit('unfav', _vm.session.id) : _vm.$emit('fav', _vm.session.id)}}},[_c('svg',{staticClass:"star",attrs:{"viewBox":"0 0 24 24"}},[_c('path',{attrs:{"d":"M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z"}})])])],1)}
+var Sessionvue_type_template_id_3410e42c_lang_pug_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/components/Session.vue?vue&type=template&id=63fe0cac&lang=pug&
+// CONCATENATED MODULE: ./src/components/Session.vue?vue&type=template&id=3410e42c&lang=pug&
 
 // EXTERNAL MODULE: ./node_modules/markdown-it/index.js
 var markdown_it = __webpack_require__("d4cd");
@@ -17648,13 +15384,7 @@ function findScrollParent(node) {
   if (isScrolling(node)) return node;
   return findScrollParent(node.parentNode);
 }
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/Session.vue?vue&type=script&lang=js&
-//
-//
-//
-//
-//
-//
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--13-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/Session.vue?vue&type=script&lang=js&
 //
 //
 //
@@ -17697,7 +15427,29 @@ const markdownIt = markdown_it_default()({
       default: false
     }
   },
-  inject: ['eventUrl'],
+  inject: {
+    eventUrl: {
+      default: null
+    },
+    linkTarget: {
+      default: '_self'
+    },
+    generateSessionLinkUrl: {
+      default() {
+        return ({
+          eventUrl,
+          session
+        }) => `${eventUrl}talk/${session.id}/`;
+      }
+
+    },
+    onSessionLinkClick: {
+      default() {
+        return () => {};
+      }
+
+    }
+  },
 
   data() {
     return {
@@ -17707,7 +15459,10 @@ const markdownIt = markdown_it_default()({
 
   computed: {
     link() {
-      return `${this.eventUrl}talk/${this.session.id}/`;
+      return this.generateSessionLinkUrl({
+        eventUrl: this.eventUrl,
+        session: this.session
+      });
     },
 
     style() {
@@ -17780,8 +15535,8 @@ if (style0.__inject__) style0.__inject__(context)
 
 var Session_component = Object(componentNormalizer["a" /* default */])(
   components_Sessionvue_type_script_lang_js_,
-  Sessionvue_type_template_id_63fe0cac_lang_pug_render,
-  Sessionvue_type_template_id_63fe0cac_lang_pug_staticRenderFns,
+  Sessionvue_type_template_id_3410e42c_lang_pug_render,
+  Sessionvue_type_template_id_3410e42c_lang_pug_staticRenderFns,
   false,
   injectStyles,
   null,
@@ -17790,8 +15545,7 @@ var Session_component = Object(componentNormalizer["a" /* default */])(
 )
 
 /* harmony default export */ var Session = (Session_component.exports);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/LinearSchedule.vue?vue&type=script&lang=js&
-
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--13-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/LinearSchedule.vue?vue&type=script&lang=js&
 //
 //
 //
@@ -17814,7 +15568,14 @@ var Session_component = Object(componentNormalizer["a" /* default */])(
   },
   props: {
     sessions: Array,
-    favs: Array,
+    favs: {
+      type: Array,
+
+      default() {
+        return [];
+      }
+
+    },
     currentDay: Object,
     now: Object,
     scrollParent: Element
@@ -17963,8 +15724,8 @@ if (style0.__inject__) style0.__inject__(context)
 
 var LinearSchedule_component = Object(componentNormalizer["a" /* default */])(
   components_LinearSchedulevue_type_script_lang_js_,
-  LinearSchedulevue_type_template_id_3f2644ad_lang_pug_render,
-  LinearSchedulevue_type_template_id_3f2644ad_lang_pug_staticRenderFns,
+  LinearSchedulevue_type_template_id_d3fc9d98_lang_pug_render,
+  LinearSchedulevue_type_template_id_d3fc9d98_lang_pug_staticRenderFns,
   false,
   LinearSchedule_injectStyles,
   null,
@@ -17973,15 +15734,14 @@ var LinearSchedule_component = Object(componentNormalizer["a" /* default */])(
 )
 
 /* harmony default export */ var LinearSchedule = (LinearSchedule_component.exports);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"be35bd0e-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/GridSchedule.vue?vue&type=template&id=2ea59af9&lang=pug&
-var GridSchedulevue_type_template_id_2ea59af9_lang_pug_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"c-grid-schedule"},[_c('div',{staticClass:"grid",style:(_vm.gridStyle)},[_vm._l((_vm.visibleTimeslices),function(slice){return [_c('div',{ref:slice.name,refInFor:true,staticClass:"timeslice",class:_vm.getSliceClasses(slice),style:(_vm.getSliceStyle(slice)),attrs:{"data-slice":slice.date.format()}},[_vm._v(_vm._s(_vm.getSliceLabel(slice)))]),_c('div',{staticClass:"timeline",class:_vm.getSliceClasses(slice),style:(_vm.getSliceStyle(slice))})]}),(_vm.nowSlice)?_c('div',{ref:"now",staticClass:"now",class:{'on-daybreak': _vm.nowSlice.onDaybreak},style:({'grid-area': ((_vm.nowSlice.slice.name) + " / 1 / auto / auto"), '--offset': _vm.nowSlice.offset})},[_c('svg',{attrs:{"viewBox":"0 0 10 10"}},[_c('path',{attrs:{"d":"M 0 0 L 10 5 L 0 10 z"}})])]):_vm._e(),_c('div',{staticClass:"room",style:({'grid-area': "1 / 1 / auto / auto"})}),_vm._l((_vm.rooms),function(room,index){return _c('div',{staticClass:"room",style:({'grid-area': ("1 / " + (index + 2) + " / auto / auto")})},[_vm._v(_vm._s(_vm.getLocalizedString(room.name)))])}),(_vm.hasSessionsWithoutRoom)?_c('div',{staticClass:"room",style:({'grid-area': ("1 / " + (_vm.rooms.length + 2) + " / auto / -1")})},[_vm._v("sonstiger Ramsch")]):_vm._e(),_vm._l((_vm.sessions),function(session){return [(_vm.isProperSession(session))?_c('session',{style:(_vm.getSessionStyle(session)),attrs:{"session":session,"showAbstract":false,"showRoom":false,"faved":_vm.favs.includes(session.id)},on:{"fav":function($event){return _vm.$emit('fav', session.id)},"unfav":function($event){return _vm.$emit('unfav', session.id)}}}):_c('div',{staticClass:"break",style:(_vm.getSessionStyle(session))},[_c('div',{staticClass:"title"},[_vm._v(_vm._s(_vm.getLocalizedString(session.title)))])])]})],2)])}
-var GridSchedulevue_type_template_id_2ea59af9_lang_pug_staticRenderFns = []
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"75d05200-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/GridSchedule.vue?vue&type=template&id=3e9f38fc&lang=pug&
+var GridSchedulevue_type_template_id_3e9f38fc_lang_pug_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"c-grid-schedule"},[_c('div',{staticClass:"grid",style:(_vm.gridStyle)},[_vm._l((_vm.visibleTimeslices),function(slice){return [_c('div',{ref:slice.name,refInFor:true,staticClass:"timeslice",class:_vm.getSliceClasses(slice),style:(_vm.getSliceStyle(slice)),attrs:{"data-slice":slice.date.format()}},[_vm._v(_vm._s(_vm.getSliceLabel(slice)))]),_c('div',{staticClass:"timeline",class:_vm.getSliceClasses(slice),style:(_vm.getSliceStyle(slice))})]}),(_vm.nowSlice)?_c('div',{ref:"now",staticClass:"now",class:{'on-daybreak': _vm.nowSlice.onDaybreak},style:({'grid-area': ((_vm.nowSlice.slice.name) + " / 1 / auto / auto"), '--offset': _vm.nowSlice.offset})},[_c('svg',{attrs:{"viewBox":"0 0 10 10"}},[_c('path',{attrs:{"d":"M 0 0 L 10 5 L 0 10 z"}})])]):_vm._e(),_c('div',{staticClass:"room",style:({'grid-area': "1 / 1 / auto / auto"})}),_vm._l((_vm.rooms),function(room,index){return _c('div',{staticClass:"room",style:({'grid-area': ("1 / " + (index + 2) + " / auto / auto")})},[_vm._v(_vm._s(_vm.getLocalizedString(room.name)))])}),(_vm.hasSessionsWithoutRoom)?_c('div',{staticClass:"room",style:({'grid-area': ("1 / " + (_vm.rooms.length + 2) + " / auto / -1")})},[_vm._v("sonstiger Ramsch")]):_vm._e(),_vm._l((_vm.sessions),function(session){return [(_vm.isProperSession(session))?_c('session',{style:(_vm.getSessionStyle(session)),attrs:{"session":session,"showAbstract":false,"showRoom":false,"faved":_vm.favs.includes(session.id)},on:{"fav":function($event){return _vm.$emit('fav', session.id)},"unfav":function($event){return _vm.$emit('unfav', session.id)}}}):_c('div',{staticClass:"break",style:(_vm.getSessionStyle(session))},[_c('div',{staticClass:"title"},[_vm._v(_vm._s(_vm.getLocalizedString(session.title)))])])]})],2)])}
+var GridSchedulevue_type_template_id_3e9f38fc_lang_pug_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/components/GridSchedule.vue?vue&type=template&id=2ea59af9&lang=pug&
+// CONCATENATED MODULE: ./src/components/GridSchedule.vue?vue&type=template&id=3e9f38fc&lang=pug&
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/GridSchedule.vue?vue&type=script&lang=js&
-
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--13-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/GridSchedule.vue?vue&type=script&lang=js&
 //
 //
 //
@@ -18026,7 +15786,14 @@ const getSliceName = function (date) {
   props: {
     sessions: Array,
     rooms: Array,
-    favs: Array,
+    favs: {
+      type: Array,
+
+      default() {
+        return [];
+      }
+
+    },
     currentDay: Object,
     now: Object,
     scrollParent: Element
@@ -18142,16 +15909,16 @@ const getSliceName = function (date) {
         const prevSlice = slices[index - 1];
         const nextSlice = slices[index + 1]; // keep last slice for a break
 
-        if (slice.hasBreak && !(nextSlice === null || nextSlice === void 0 ? void 0 : nextSlice.hasBreak) && !(nextSlice === null || nextSlice === void 0 ? void 0 : nextSlice.hasSession)) return true; // drop slices inside breaks
+        if (slice.hasBreak && !(nextSlice !== null && nextSlice !== void 0 && nextSlice.hasBreak) && !(nextSlice !== null && nextSlice !== void 0 && nextSlice.hasSession)) return true; // drop slices inside breaks
 
-        if ((prevSlice === null || prevSlice === void 0 ? void 0 : prevSlice.hasBreak) && slice.hasBreak) return false; // keep non-whole slices
+        if (prevSlice !== null && prevSlice !== void 0 && prevSlice.hasBreak && slice.hasBreak) return false; // keep non-whole slices
 
         if (sliceIsFraction(slice)) return true; // keep slices before and after non-whole slices, if by session or break
 
-        if (((prevSlice === null || prevSlice === void 0 ? void 0 : prevSlice.hasSession) || (prevSlice === null || prevSlice === void 0 ? void 0 : prevSlice.hasBreak)) && sliceIsFraction(prevSlice) || ((nextSlice === null || nextSlice === void 0 ? void 0 : nextSlice.hasSession) || (nextSlice === null || nextSlice === void 0 ? void 0 : nextSlice.hasBreak)) && sliceIsFraction(nextSlice)) return true; // show breaks which would not be gaps, all others are automatically gaps
+        if ((prevSlice !== null && prevSlice !== void 0 && prevSlice.hasSession || prevSlice !== null && prevSlice !== void 0 && prevSlice.hasBreak) && sliceIsFraction(prevSlice) || (nextSlice !== null && nextSlice !== void 0 && nextSlice.hasSession || nextSlice !== null && nextSlice !== void 0 && nextSlice.hasBreak) && sliceIsFraction(nextSlice)) return true; // show breaks which would not be gaps, all others are automatically gaps
         // TODO check how breaks with gaps AROUND them would render
 
-        if (slice.hasBreak && !(prevSlice === null || prevSlice === void 0 ? void 0 : prevSlice.hasBreak) && sliceShouldDisplay(nextSlice, index + 1)) return true;
+        if (slice.hasBreak && !(prevSlice !== null && prevSlice !== void 0 && prevSlice.hasBreak) && sliceShouldDisplay(nextSlice, index + 1)) return true;
         return false;
       };
 
@@ -18368,8 +16135,8 @@ if (style0.__inject__) style0.__inject__(context)
 
 var GridSchedule_component = Object(componentNormalizer["a" /* default */])(
   components_GridSchedulevue_type_script_lang_js_,
-  GridSchedulevue_type_template_id_2ea59af9_lang_pug_render,
-  GridSchedulevue_type_template_id_2ea59af9_lang_pug_staticRenderFns,
+  GridSchedulevue_type_template_id_3e9f38fc_lang_pug_render,
+  GridSchedulevue_type_template_id_3e9f38fc_lang_pug_staticRenderFns,
   false,
   GridSchedule_injectStyles,
   null,
@@ -18378,10 +16145,7 @@ var GridSchedule_component = Object(componentNormalizer["a" /* default */])(
 )
 
 /* harmony default export */ var GridSchedule = (GridSchedule_component.exports);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/App.vue?vue&type=script&lang=js&shadow
-
-
-
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--13-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./src/App.vue?vue&type=script&lang=js&shadow
 //
 //
 //
@@ -18778,21 +16542,6 @@ module.exports = function entity(state, silent) {
   if (!silent) { state.pending += '&'; }
   state.pos++;
   return true;
-};
-
-
-/***/ }),
-
-/***/ "5c6c":
-/***/ (function(module, exports) {
-
-module.exports = function (bitmap, value) {
-  return {
-    enumerable: !(bitmap & 1),
-    configurable: !(bitmap & 2),
-    writable: !(bitmap & 4),
-    value: value
-  };
 };
 
 
@@ -19364,182 +17113,6 @@ return Drop;
 
 /***/ }),
 
-/***/ "5fb2":
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-// based on https://github.com/bestiejs/punycode.js/blob/master/punycode.js
-var maxInt = 2147483647; // aka. 0x7FFFFFFF or 2^31-1
-var base = 36;
-var tMin = 1;
-var tMax = 26;
-var skew = 38;
-var damp = 700;
-var initialBias = 72;
-var initialN = 128; // 0x80
-var delimiter = '-'; // '\x2D'
-var regexNonASCII = /[^\0-\u007E]/; // non-ASCII chars
-var regexSeparators = /[.\u3002\uFF0E\uFF61]/g; // RFC 3490 separators
-var OVERFLOW_ERROR = 'Overflow: input needs wider integers to process';
-var baseMinusTMin = base - tMin;
-var floor = Math.floor;
-var stringFromCharCode = String.fromCharCode;
-
-/**
- * Creates an array containing the numeric code points of each Unicode
- * character in the string. While JavaScript uses UCS-2 internally,
- * this function will convert a pair of surrogate halves (each of which
- * UCS-2 exposes as separate characters) into a single code point,
- * matching UTF-16.
- */
-var ucs2decode = function (string) {
-  var output = [];
-  var counter = 0;
-  var length = string.length;
-  while (counter < length) {
-    var value = string.charCodeAt(counter++);
-    if (value >= 0xD800 && value <= 0xDBFF && counter < length) {
-      // It's a high surrogate, and there is a next character.
-      var extra = string.charCodeAt(counter++);
-      if ((extra & 0xFC00) == 0xDC00) { // Low surrogate.
-        output.push(((value & 0x3FF) << 10) + (extra & 0x3FF) + 0x10000);
-      } else {
-        // It's an unmatched surrogate; only append this code unit, in case the
-        // next code unit is the high surrogate of a surrogate pair.
-        output.push(value);
-        counter--;
-      }
-    } else {
-      output.push(value);
-    }
-  }
-  return output;
-};
-
-/**
- * Converts a digit/integer into a basic code point.
- */
-var digitToBasic = function (digit) {
-  //  0..25 map to ASCII a..z or A..Z
-  // 26..35 map to ASCII 0..9
-  return digit + 22 + 75 * (digit < 26);
-};
-
-/**
- * Bias adaptation function as per section 3.4 of RFC 3492.
- * https://tools.ietf.org/html/rfc3492#section-3.4
- */
-var adapt = function (delta, numPoints, firstTime) {
-  var k = 0;
-  delta = firstTime ? floor(delta / damp) : delta >> 1;
-  delta += floor(delta / numPoints);
-  for (; delta > baseMinusTMin * tMax >> 1; k += base) {
-    delta = floor(delta / baseMinusTMin);
-  }
-  return floor(k + (baseMinusTMin + 1) * delta / (delta + skew));
-};
-
-/**
- * Converts a string of Unicode symbols (e.g. a domain name label) to a
- * Punycode string of ASCII-only symbols.
- */
-// eslint-disable-next-line  max-statements
-var encode = function (input) {
-  var output = [];
-
-  // Convert the input in UCS-2 to an array of Unicode code points.
-  input = ucs2decode(input);
-
-  // Cache the length.
-  var inputLength = input.length;
-
-  // Initialize the state.
-  var n = initialN;
-  var delta = 0;
-  var bias = initialBias;
-  var i, currentValue;
-
-  // Handle the basic code points.
-  for (i = 0; i < input.length; i++) {
-    currentValue = input[i];
-    if (currentValue < 0x80) {
-      output.push(stringFromCharCode(currentValue));
-    }
-  }
-
-  var basicLength = output.length; // number of basic code points.
-  var handledCPCount = basicLength; // number of code points that have been handled;
-
-  // Finish the basic string with a delimiter unless it's empty.
-  if (basicLength) {
-    output.push(delimiter);
-  }
-
-  // Main encoding loop:
-  while (handledCPCount < inputLength) {
-    // All non-basic code points < n have been handled already. Find the next larger one:
-    var m = maxInt;
-    for (i = 0; i < input.length; i++) {
-      currentValue = input[i];
-      if (currentValue >= n && currentValue < m) {
-        m = currentValue;
-      }
-    }
-
-    // Increase `delta` enough to advance the decoder's <n,i> state to <m,0>, but guard against overflow.
-    var handledCPCountPlusOne = handledCPCount + 1;
-    if (m - n > floor((maxInt - delta) / handledCPCountPlusOne)) {
-      throw RangeError(OVERFLOW_ERROR);
-    }
-
-    delta += (m - n) * handledCPCountPlusOne;
-    n = m;
-
-    for (i = 0; i < input.length; i++) {
-      currentValue = input[i];
-      if (currentValue < n && ++delta > maxInt) {
-        throw RangeError(OVERFLOW_ERROR);
-      }
-      if (currentValue == n) {
-        // Represent delta as a generalized variable-length integer.
-        var q = delta;
-        for (var k = base; /* no condition */; k += base) {
-          var t = k <= bias ? tMin : (k >= bias + tMax ? tMax : k - bias);
-          if (q < t) break;
-          var qMinusT = q - t;
-          var baseMinusT = base - t;
-          output.push(stringFromCharCode(digitToBasic(t + qMinusT % baseMinusT)));
-          q = floor(qMinusT / baseMinusT);
-        }
-
-        output.push(stringFromCharCode(digitToBasic(q)));
-        bias = adapt(delta, handledCPCountPlusOne, handledCPCount == basicLength);
-        delta = 0;
-        ++handledCPCount;
-      }
-    }
-
-    ++delta;
-    ++n;
-  }
-  return output.join('');
-};
-
-module.exports = function (input) {
-  var encoded = [];
-  var labels = input.toLowerCase().replace(regexSeparators, '\u002E').split('.');
-  var i, label;
-  for (i = 0; i < labels.length; i++) {
-    label = labels[i];
-    encoded.push(regexNonASCII.test(label) ? 'xn--' + encode(label) : label);
-  }
-  return encoded.join('.');
-};
-
-
-/***/ }),
-
 /***/ "5fbd":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -19622,66 +17195,6 @@ module.exports = function html_block(state, startLine, endLine, silent) {
 
 /***/ }),
 
-/***/ "60da":
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var DESCRIPTORS = __webpack_require__("83ab");
-var fails = __webpack_require__("d039");
-var objectKeys = __webpack_require__("df75");
-var getOwnPropertySymbolsModule = __webpack_require__("7418");
-var propertyIsEnumerableModule = __webpack_require__("d1e7");
-var toObject = __webpack_require__("7b0b");
-var IndexedObject = __webpack_require__("44ad");
-
-var nativeAssign = Object.assign;
-var defineProperty = Object.defineProperty;
-
-// `Object.assign` method
-// https://tc39.github.io/ecma262/#sec-object.assign
-module.exports = !nativeAssign || fails(function () {
-  // should have correct order of operations (Edge bug)
-  if (DESCRIPTORS && nativeAssign({ b: 1 }, nativeAssign(defineProperty({}, 'a', {
-    enumerable: true,
-    get: function () {
-      defineProperty(this, 'b', {
-        value: 3,
-        enumerable: false
-      });
-    }
-  }), { b: 2 })).b !== 1) return true;
-  // should work with symbols and should have deterministic property order (V8 bug)
-  var A = {};
-  var B = {};
-  // eslint-disable-next-line no-undef
-  var symbol = Symbol();
-  var alphabet = 'abcdefghijklmnopqrst';
-  A[symbol] = 7;
-  alphabet.split('').forEach(function (chr) { B[chr] = chr; });
-  return nativeAssign({}, A)[symbol] != 7 || objectKeys(nativeAssign({}, B)).join('') != alphabet;
-}) ? function assign(target, source) { // eslint-disable-line no-unused-vars
-  var T = toObject(target);
-  var argumentsLength = arguments.length;
-  var index = 1;
-  var getOwnPropertySymbols = getOwnPropertySymbolsModule.f;
-  var propertyIsEnumerable = propertyIsEnumerableModule.f;
-  while (argumentsLength > index) {
-    var S = IndexedObject(arguments[index++]);
-    var keys = getOwnPropertySymbols ? objectKeys(S).concat(getOwnPropertySymbols(S)) : objectKeys(S);
-    var length = keys.length;
-    var j = 0;
-    var key;
-    while (length > j) {
-      key = keys[j++];
-      if (!DESCRIPTORS || propertyIsEnumerable.call(S, key)) T[key] = S[key];
-    }
-  } return T;
-} : nativeAssign;
-
-
-/***/ }),
-
 /***/ "62e4":
 /***/ (function(module, exports) {
 
@@ -19711,108 +17224,6 @@ module.exports = function(module) {
 
 /***/ }),
 
-/***/ "6547":
-/***/ (function(module, exports, __webpack_require__) {
-
-var toInteger = __webpack_require__("a691");
-var requireObjectCoercible = __webpack_require__("1d80");
-
-// `String.prototype.{ codePointAt, at }` methods implementation
-var createMethod = function (CONVERT_TO_STRING) {
-  return function ($this, pos) {
-    var S = String(requireObjectCoercible($this));
-    var position = toInteger(pos);
-    var size = S.length;
-    var first, second;
-    if (position < 0 || position >= size) return CONVERT_TO_STRING ? '' : undefined;
-    first = S.charCodeAt(position);
-    return first < 0xD800 || first > 0xDBFF || position + 1 === size
-      || (second = S.charCodeAt(position + 1)) < 0xDC00 || second > 0xDFFF
-        ? CONVERT_TO_STRING ? S.charAt(position) : first
-        : CONVERT_TO_STRING ? S.slice(position, position + 2) : (first - 0xD800 << 10) + (second - 0xDC00) + 0x10000;
-  };
-};
-
-module.exports = {
-  // `String.prototype.codePointAt` method
-  // https://tc39.github.io/ecma262/#sec-string.prototype.codepointat
-  codeAt: createMethod(false),
-  // `String.prototype.at` method
-  // https://github.com/mathiasbynens/String.prototype.at
-  charAt: createMethod(true)
-};
-
-
-/***/ }),
-
-/***/ "69f3":
-/***/ (function(module, exports, __webpack_require__) {
-
-var NATIVE_WEAK_MAP = __webpack_require__("7f9a");
-var global = __webpack_require__("da84");
-var isObject = __webpack_require__("861d");
-var createNonEnumerableProperty = __webpack_require__("9112");
-var objectHas = __webpack_require__("5135");
-var sharedKey = __webpack_require__("f772");
-var hiddenKeys = __webpack_require__("d012");
-
-var WeakMap = global.WeakMap;
-var set, get, has;
-
-var enforce = function (it) {
-  return has(it) ? get(it) : set(it, {});
-};
-
-var getterFor = function (TYPE) {
-  return function (it) {
-    var state;
-    if (!isObject(it) || (state = get(it)).type !== TYPE) {
-      throw TypeError('Incompatible receiver, ' + TYPE + ' required');
-    } return state;
-  };
-};
-
-if (NATIVE_WEAK_MAP) {
-  var store = new WeakMap();
-  var wmget = store.get;
-  var wmhas = store.has;
-  var wmset = store.set;
-  set = function (it, metadata) {
-    wmset.call(store, it, metadata);
-    return metadata;
-  };
-  get = function (it) {
-    return wmget.call(store, it) || {};
-  };
-  has = function (it) {
-    return wmhas.call(store, it);
-  };
-} else {
-  var STATE = sharedKey('state');
-  hiddenKeys[STATE] = true;
-  set = function (it, metadata) {
-    createNonEnumerableProperty(it, STATE, metadata);
-    return metadata;
-  };
-  get = function (it) {
-    return objectHas(it, STATE) ? it[STATE] : {};
-  };
-  has = function (it) {
-    return objectHas(it, STATE);
-  };
-}
-
-module.exports = {
-  set: set,
-  get: get,
-  has: has,
-  enforce: enforce,
-  getterFor: getterFor
-};
-
-
-/***/ }),
-
 /***/ "6aea":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -19820,12 +17231,13 @@ module.exports = {
 
 // load the styles
 var content = __webpack_require__("8ca0");
+if(content.__esModule) content = content.default;
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add CSS to Shadow Root
 var add = __webpack_require__("35d6").default
 module.exports.__inject__ = function (shadowRoot) {
-  add("4889451e", content, shadowRoot)
+  add("effe31e0", content, shadowRoot)
 };
 
 /***/ }),
@@ -20827,47 +18239,6 @@ module.exports = function escape(state, silent) {
 
 /***/ }),
 
-/***/ "6eeb":
-/***/ (function(module, exports, __webpack_require__) {
-
-var global = __webpack_require__("da84");
-var createNonEnumerableProperty = __webpack_require__("9112");
-var has = __webpack_require__("5135");
-var setGlobal = __webpack_require__("ce4e");
-var inspectSource = __webpack_require__("8925");
-var InternalStateModule = __webpack_require__("69f3");
-
-var getInternalState = InternalStateModule.get;
-var enforceInternalState = InternalStateModule.enforce;
-var TEMPLATE = String(String).split('String');
-
-(module.exports = function (O, key, value, options) {
-  var unsafe = options ? !!options.unsafe : false;
-  var simple = options ? !!options.enumerable : false;
-  var noTargetGet = options ? !!options.noTargetGet : false;
-  if (typeof value == 'function') {
-    if (typeof key == 'string' && !has(value, 'name')) createNonEnumerableProperty(value, 'name', key);
-    enforceInternalState(value).source = TEMPLATE.join(typeof key == 'string' ? key : '');
-  }
-  if (O === global) {
-    if (simple) O[key] = value;
-    else setGlobal(key, value);
-    return;
-  } else if (!unsafe) {
-    delete O[key];
-  } else if (!noTargetGet && O[key]) {
-    simple = true;
-  }
-  if (simple) O[key] = value;
-  else createNonEnumerableProperty(O, key, value);
-// add fake Function#toString for correct work wrapped methods / constructors with methods like LoDash isNative
-})(Function.prototype, 'toString', function toString() {
-  return typeof this == 'function' && getInternalState(this).source || inspectSource(this);
-});
-
-
-/***/ }),
-
 /***/ "6fd1":
 /***/ (function(module, exports) {
 
@@ -20900,21 +18271,6 @@ StateCore.prototype.Token = Token;
 
 module.exports = StateCore;
 
-
-/***/ }),
-
-/***/ "7418":
-/***/ (function(module, exports) {
-
-exports.f = Object.getOwnPropertySymbols;
-
-
-/***/ }),
-
-/***/ "742f":
-/***/ (function(module) {
-
-module.exports = JSON.parse("{\"version\":\"2020a\",\"zones\":[\"Africa/Abidjan|GMT|0|0||48e5\",\"Africa/Nairobi|EAT|-30|0||47e5\",\"Africa/Algiers|CET|-10|0||26e5\",\"Africa/Lagos|WAT|-10|0||17e6\",\"Africa/Maputo|CAT|-20|0||26e5\",\"Africa/Cairo|EET|-20|0||15e6\",\"Africa/Casablanca|+00 +01|0 -10|0101010101010101010101010101|1QyO0 s00 e00 IM0 WM0 mo0 gM0 LA0 WM0 jA0 e00 28M0 e00 2600 gM0 2600 e00 2600 gM0 2600 e00 28M0 e00 2600 gM0 2600 e00|32e5\",\"Europe/Paris|CET CEST|-10 -20|01010101010101010101010|1QyN0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1o00|11e6\",\"Africa/Johannesburg|SAST|-20|0||84e5\",\"Africa/Khartoum|EAT CAT|-30 -20|01|1Usl0|51e5\",\"Africa/Sao_Tome|GMT WAT|0 -10|010|1UQN0 2q00|\",\"Africa/Windhoek|CAT WAT|-20 -10|01010|1QBA0 11B0 1nX0 11B0|32e4\",\"America/Adak|HST HDT|a0 90|01010101010101010101010|1Qto0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0|326\",\"America/Anchorage|AKST AKDT|90 80|01010101010101010101010|1Qtn0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0|30e4\",\"America/Santo_Domingo|AST|40|0||29e5\",\"America/Fortaleza|-03|30|0||34e5\",\"America/Asuncion|-03 -04|30 40|01010101010101010101010|1QyP0 1fB0 19X0 1fB0 19X0 1ip0 17b0 1ip0 17b0 1ip0 19X0 1fB0 19X0 1fB0 19X0 1fB0 19X0 1ip0 17b0 1ip0 17b0 1ip0|28e5\",\"America/Panama|EST|50|0||15e5\",\"America/Mexico_City|CST CDT|60 50|01010101010101010101010|1QBI0 1nX0 11B0 1nX0 11B0 1nX0 14p0 1lb0 14p0 1lb0 14p0 1nX0 11B0 1nX0 11B0 1nX0 14p0 1lb0 14p0 1lb0 14p0 1lb0|20e6\",\"America/Managua|CST|60|0||22e5\",\"America/La_Paz|-04|40|0||19e5\",\"America/Lima|-05|50|0||11e6\",\"America/Denver|MST MDT|70 60|01010101010101010101010|1Qtl0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0|26e5\",\"America/Campo_Grande|-03 -04|30 40|01010101|1QkP0 1zd0 On0 1zd0 On0 1HB0 FX0|77e4\",\"America/Caracas|-0430 -04|4u 40|01|1QMT0|29e5\",\"America/Chicago|CST CDT|60 50|01010101010101010101010|1Qtk0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0|92e5\",\"America/Chihuahua|MST MDT|70 60|01010101010101010101010|1QBJ0 1nX0 11B0 1nX0 11B0 1nX0 14p0 1lb0 14p0 1lb0 14p0 1nX0 11B0 1nX0 11B0 1nX0 14p0 1lb0 14p0 1lb0 14p0 1lb0|81e4\",\"America/Phoenix|MST|70|0||42e5\",\"America/Whitehorse|PST PDT MST|80 70 70|0101010102|1Qtm0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0|23e3\",\"America/New_York|EST EDT|50 40|01010101010101010101010|1Qtj0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0|21e6\",\"America/Los_Angeles|PST PDT|80 70|01010101010101010101010|1Qtm0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0|15e6\",\"America/Halifax|AST ADT|40 30|01010101010101010101010|1Qti0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0|39e4\",\"America/Godthab|-03 -02|30 20|01010101010101010101010|1QyN0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1o00|17e3\",\"America/Grand_Turk|AST EDT EST|40 40 50|0121212121212121212|1Vkv0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0|37e2\",\"America/Havana|CST CDT|50 40|01010101010101010101010|1Qth0 1zc0 Oo0 1zc0 Oo0 1zc0 Oo0 1zc0 Oo0 1zc0 Rc0 1zc0 Oo0 1zc0 Oo0 1zc0 Oo0 1zc0 Oo0 1zc0 Oo0 1zc0|21e5\",\"America/Metlakatla|AKST AKDT PST|90 80 80|010101201010101010101010|1Qtn0 1zb0 Op0 1zb0 Op0 1zb0 uM0 jB0 1zb0 Op0 1zb0 Rd0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0|14e2\",\"America/Miquelon|-03 -02|30 20|01010101010101010101010|1Qth0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0|61e2\",\"America/Noronha|-02|20|0||30e2\",\"America/Port-au-Prince|EST EDT|50 40|010101010101010101010|1SST0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0|23e5\",\"Antarctica/Palmer|-03 -04|30 40|010|1QSr0 Ap0|40\",\"America/Santiago|-03 -04|30 40|01010101010101010101010|1QSr0 Ap0 1Nb0 Ap0 1Nb0 Ap0 1zb0 11B0 1nX0 11B0 1nX0 11B0 1nX0 11B0 1nX0 11B0 1qL0 11B0 1nX0 11B0 1nX0 11B0|62e5\",\"America/Sao_Paulo|-02 -03|20 30|01010101|1QkO0 1zd0 On0 1zd0 On0 1HB0 FX0|20e6\",\"Atlantic/Azores|-01 +00|10 0|01010101010101010101010|1QyN0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1o00|25e4\",\"America/St_Johns|NST NDT|3u 2u|01010101010101010101010|1Qthu 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0|11e4\",\"Antarctica/Casey|+08 +11|-80 -b0|010|1RWg0 3m10|10\",\"Asia/Bangkok|+07|-70|0||15e6\",\"Asia/Vladivostok|+10|-a0|0||60e4\",\"Pacific/Bougainville|+11|-b0|0||18e4\",\"Asia/Tashkent|+05|-50|0||23e5\",\"Pacific/Auckland|NZDT NZST|-d0 -c0|01010101010101010101010|1QBq0 1a00 1fA0 1a00 1fA0 1cM0 1fA0 1a00 1fA0 1a00 1fA0 1a00 1fA0 1a00 1fA0 1a00 1io0 1a00 1fA0 1a00 1fA0 1a00|14e5\",\"Asia/Baghdad|+03|-30|0||66e5\",\"Antarctica/Troll|+00 +02|0 -20|01010101010101010101010|1QyN0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1o00|40\",\"Asia/Dhaka|+06|-60|0||16e6\",\"Asia/Amman|EET EEST|-20 -30|01010101010101010101010|1QAK0 1o00 11A0 1o00 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0|25e5\",\"Asia/Kamchatka|+12|-c0|0||18e4\",\"Asia/Dubai|+04|-40|0||39e5\",\"Asia/Barnaul|+06 +07|-60 -70|01|1QyI0|\",\"Asia/Beirut|EET EEST|-20 -30|01010101010101010101010|1QyK0 1qL0 WN0 1qL0 WN0 1qL0 11B0 1nX0 11B0 1nX0 11B0 1qL0 WN0 1qL0 WN0 1qL0 11B0 1nX0 11B0 1nX0 11B0 1nX0|22e5\",\"Asia/Kuala_Lumpur|+08|-80|0||71e5\",\"Asia/Kolkata|IST|-5u|0||15e6\",\"Asia/Chita|+08 +09|-80 -90|01|1QyG0|33e4\",\"Asia/Ulaanbaatar|+08 +09|-80 -90|010|1Qyi0 1cJ0|12e5\",\"Asia/Shanghai|CST|-80|0||23e6\",\"Asia/Colombo|+0530|-5u|0||22e5\",\"Asia/Damascus|EET EEST|-20 -30|01010101010101010101010|1QxW0 1qL0 11B0 1nX0 11B0 1nX0 11B0 1nX0 11B0 1qL0 WN0 1qL0 WN0 1qL0 11B0 1nX0 11B0 1nX0 11B0 1qL0 WN0 1qL0|26e5\",\"Asia/Yakutsk|+09|-90|0||28e4\",\"Asia/Famagusta|EET EEST +03|-20 -30 -30|0120101010101010101010|1QyN0 15U0 2Ks0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1o00|\",\"Asia/Gaza|EET EEST|-20 -30|01010101010101010101010|1Qyn0 1qL0 WN0 1qL0 WN0 1qL0 11c0 1oo0 11c0 1rc0 Wo0 1rc0 Wo0 1rc0 11c0 1oo0 11c0 1oo0 11c0 1oo0 11c0 1rc0|18e5\",\"Asia/Hong_Kong|HKT|-80|0||73e5\",\"Asia/Hovd|+07 +08|-70 -80|010|1Qyj0 1cJ0|81e3\",\"Europe/Istanbul|EET EEST +03|-20 -30 -30|012|1QyN0 15w0|13e6\",\"Asia/Jakarta|WIB|-70|0||31e6\",\"Asia/Jayapura|WIT|-90|0||26e4\",\"Asia/Jerusalem|IST IDT|-20 -30|01010101010101010101010|1Qy00 1rz0 W10 1rz0 W10 1rz0 10N0 1oL0 10N0 1oL0 10N0 1rz0 W10 1rz0 W10 1rz0 10N0 1oL0 10N0 1oL0 10N0 1oL0|81e4\",\"Asia/Kabul|+0430|-4u|0||46e5\",\"Asia/Karachi|PKT|-50|0||24e6\",\"Asia/Kathmandu|+0545|-5J|0||12e5\",\"Asia/Magadan|+10 +11|-a0 -b0|01|1QJQ0|95e3\",\"Asia/Makassar|WITA|-80|0||15e5\",\"Asia/Manila|PST|-80|0||24e6\",\"Europe/Athens|EET EEST|-20 -30|01010101010101010101010|1QyN0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1o00|35e5\",\"Asia/Novosibirsk|+06 +07|-60 -70|01|1Rmk0|15e5\",\"Asia/Pyongyang|KST KST|-8u -90|01|1VGf0|29e5\",\"Asia/Qyzylorda|+06 +05|-60 -50|01|1Xei0|73e4\",\"Asia/Rangoon|+0630|-6u|0||48e5\",\"Asia/Sakhalin|+10 +11|-a0 -b0|01|1QyE0|58e4\",\"Asia/Seoul|KST|-90|0||23e6\",\"Asia/Tehran|+0330 +0430|-3u -4u|01010101010101010101010|1Qwku 1dz0 1cN0 1dz0 1cp0 1dz0 1cp0 1dz0 1cp0 1dz0 1cN0 1dz0 1cp0 1dz0 1cp0 1dz0 1cp0 1dz0 1cN0 1dz0 1cp0 1dz0|14e6\",\"Asia/Tokyo|JST|-90|0||38e6\",\"Asia/Tomsk|+06 +07|-60 -70|01|1QXU0|10e5\",\"Europe/Lisbon|WET WEST|0 -10|01010101010101010101010|1QyN0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1o00|27e5\",\"Atlantic/Cape_Verde|-01|10|0||50e4\",\"Australia/Sydney|AEDT AEST|-b0 -a0|01010101010101010101010|1QBs0 1cM0 1cM0 1cM0 1cM0 1fA0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1fA0 1cM0 1cM0 1cM0 1cM0 1cM0|40e5\",\"Australia/Adelaide|ACDT ACST|-au -9u|01010101010101010101010|1QBsu 1cM0 1cM0 1cM0 1cM0 1fA0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1fA0 1cM0 1cM0 1cM0 1cM0 1cM0|11e5\",\"Australia/Brisbane|AEST|-a0|0||20e5\",\"Australia/Darwin|ACST|-9u|0||12e4\",\"Australia/Eucla|+0845|-8J|0||368\",\"Australia/Lord_Howe|+11 +1030|-b0 -au|01010101010101010101010|1QBr0 1cMu 1cLu 1cMu 1cLu 1fAu 1cLu 1cMu 1cLu 1cMu 1cLu 1cMu 1cLu 1cMu 1cLu 1cMu 1fzu 1cMu 1cLu 1cMu 1cLu 1cMu|347\",\"Australia/Perth|AWST|-80|0||18e5\",\"Pacific/Easter|-05 -06|50 60|01010101010101010101010|1QSr0 Ap0 1Nb0 Ap0 1Nb0 Ap0 1zb0 11B0 1nX0 11B0 1nX0 11B0 1nX0 11B0 1nX0 11B0 1qL0 11B0 1nX0 11B0 1nX0 11B0|30e2\",\"Europe/Dublin|GMT IST|0 -10|01010101010101010101010|1QyN0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1o00|12e5\",\"Etc/GMT-1|+01|-10|0||\",\"Pacific/Fakaofo|+13|-d0|0||483\",\"Pacific/Kiritimati|+14|-e0|0||51e2\",\"Etc/GMT-2|+02|-20|0||\",\"Pacific/Tahiti|-10|a0|0||18e4\",\"Pacific/Niue|-11|b0|0||12e2\",\"Etc/GMT+12|-12|c0|0||\",\"Pacific/Galapagos|-06|60|0||25e3\",\"Etc/GMT+7|-07|70|0||\",\"Pacific/Pitcairn|-08|80|0||56\",\"Pacific/Gambier|-09|90|0||125\",\"Etc/UTC|UTC|0|0||\",\"Europe/Ulyanovsk|+03 +04|-30 -40|01|1QyL0|13e5\",\"Europe/London|GMT BST|0 -10|01010101010101010101010|1QyN0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1o00|10e6\",\"Europe/Chisinau|EET EEST|-20 -30|01010101010101010101010|1QyM0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1o00|67e4\",\"Europe/Moscow|MSK|-30|0||16e6\",\"Europe/Saratov|+03 +04|-30 -40|01|1Sfz0|\",\"Europe/Volgograd|+03 +04|-30 -40|01|1WQL0|10e5\",\"Pacific/Honolulu|HST|a0|0||37e4\",\"MET|MET MEST|-10 -20|01010101010101010101010|1QyN0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1o00|\",\"Pacific/Chatham|+1345 +1245|-dJ -cJ|01010101010101010101010|1QBq0 1a00 1fA0 1a00 1fA0 1cM0 1fA0 1a00 1fA0 1a00 1fA0 1a00 1fA0 1a00 1fA0 1a00 1io0 1a00 1fA0 1a00 1fA0 1a00|600\",\"Pacific/Apia|+14 +13|-e0 -d0|01010101010101010101010|1QBq0 1a00 1fA0 1a00 1fA0 1cM0 1fA0 1a00 1fA0 1a00 1fA0 1a00 1fA0 1a00 1fA0 1a00 1io0 1a00 1fA0 1a00 1fA0 1a00|37e3\",\"Pacific/Fiji|+13 +12|-d0 -c0|01010101010101010101010|1Q6C0 1VA0 s00 1VA0 s00 1VA0 s00 20o0 pc0 20o0 s00 20o0 pc0 20o0 pc0 20o0 pc0 20o0 pc0 20o0 s00 1VA0|88e4\",\"Pacific/Guam|ChST|-a0|0||17e4\",\"Pacific/Marquesas|-0930|9u|0||86e2\",\"Pacific/Pago_Pago|SST|b0|0||37e2\",\"Pacific/Norfolk|+11 +12|-b0 -c0|0101010101010101|219P0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1fA0 1cM0 1cM0 1cM0 1cM0 1cM0|25e4\",\"Pacific/Tongatapu|+13 +14|-d0 -e0|010|1S4d0 s00|75e3\"],\"links\":[\"Africa/Abidjan|Africa/Accra\",\"Africa/Abidjan|Africa/Bamako\",\"Africa/Abidjan|Africa/Banjul\",\"Africa/Abidjan|Africa/Bissau\",\"Africa/Abidjan|Africa/Conakry\",\"Africa/Abidjan|Africa/Dakar\",\"Africa/Abidjan|Africa/Freetown\",\"Africa/Abidjan|Africa/Lome\",\"Africa/Abidjan|Africa/Monrovia\",\"Africa/Abidjan|Africa/Nouakchott\",\"Africa/Abidjan|Africa/Ouagadougou\",\"Africa/Abidjan|Africa/Timbuktu\",\"Africa/Abidjan|America/Danmarkshavn\",\"Africa/Abidjan|Atlantic/Reykjavik\",\"Africa/Abidjan|Atlantic/St_Helena\",\"Africa/Abidjan|Etc/GMT\",\"Africa/Abidjan|Etc/GMT+0\",\"Africa/Abidjan|Etc/GMT-0\",\"Africa/Abidjan|Etc/GMT0\",\"Africa/Abidjan|Etc/Greenwich\",\"Africa/Abidjan|GMT\",\"Africa/Abidjan|GMT+0\",\"Africa/Abidjan|GMT-0\",\"Africa/Abidjan|GMT0\",\"Africa/Abidjan|Greenwich\",\"Africa/Abidjan|Iceland\",\"Africa/Algiers|Africa/Tunis\",\"Africa/Cairo|Africa/Tripoli\",\"Africa/Cairo|Egypt\",\"Africa/Cairo|Europe/Kaliningrad\",\"Africa/Cairo|Libya\",\"Africa/Casablanca|Africa/El_Aaiun\",\"Africa/Johannesburg|Africa/Maseru\",\"Africa/Johannesburg|Africa/Mbabane\",\"Africa/Lagos|Africa/Bangui\",\"Africa/Lagos|Africa/Brazzaville\",\"Africa/Lagos|Africa/Douala\",\"Africa/Lagos|Africa/Kinshasa\",\"Africa/Lagos|Africa/Libreville\",\"Africa/Lagos|Africa/Luanda\",\"Africa/Lagos|Africa/Malabo\",\"Africa/Lagos|Africa/Ndjamena\",\"Africa/Lagos|Africa/Niamey\",\"Africa/Lagos|Africa/Porto-Novo\",\"Africa/Maputo|Africa/Blantyre\",\"Africa/Maputo|Africa/Bujumbura\",\"Africa/Maputo|Africa/Gaborone\",\"Africa/Maputo|Africa/Harare\",\"Africa/Maputo|Africa/Kigali\",\"Africa/Maputo|Africa/Lubumbashi\",\"Africa/Maputo|Africa/Lusaka\",\"Africa/Nairobi|Africa/Addis_Ababa\",\"Africa/Nairobi|Africa/Asmara\",\"Africa/Nairobi|Africa/Asmera\",\"Africa/Nairobi|Africa/Dar_es_Salaam\",\"Africa/Nairobi|Africa/Djibouti\",\"Africa/Nairobi|Africa/Juba\",\"Africa/Nairobi|Africa/Kampala\",\"Africa/Nairobi|Africa/Mogadishu\",\"Africa/Nairobi|Indian/Antananarivo\",\"Africa/Nairobi|Indian/Comoro\",\"Africa/Nairobi|Indian/Mayotte\",\"America/Adak|America/Atka\",\"America/Adak|US/Aleutian\",\"America/Anchorage|America/Juneau\",\"America/Anchorage|America/Nome\",\"America/Anchorage|America/Sitka\",\"America/Anchorage|America/Yakutat\",\"America/Anchorage|US/Alaska\",\"America/Campo_Grande|America/Cuiaba\",\"America/Chicago|America/Indiana/Knox\",\"America/Chicago|America/Indiana/Tell_City\",\"America/Chicago|America/Knox_IN\",\"America/Chicago|America/Matamoros\",\"America/Chicago|America/Menominee\",\"America/Chicago|America/North_Dakota/Beulah\",\"America/Chicago|America/North_Dakota/Center\",\"America/Chicago|America/North_Dakota/New_Salem\",\"America/Chicago|America/Rainy_River\",\"America/Chicago|America/Rankin_Inlet\",\"America/Chicago|America/Resolute\",\"America/Chicago|America/Winnipeg\",\"America/Chicago|CST6CDT\",\"America/Chicago|Canada/Central\",\"America/Chicago|US/Central\",\"America/Chicago|US/Indiana-Starke\",\"America/Chihuahua|America/Mazatlan\",\"America/Chihuahua|Mexico/BajaSur\",\"America/Denver|America/Boise\",\"America/Denver|America/Cambridge_Bay\",\"America/Denver|America/Edmonton\",\"America/Denver|America/Inuvik\",\"America/Denver|America/Ojinaga\",\"America/Denver|America/Shiprock\",\"America/Denver|America/Yellowknife\",\"America/Denver|Canada/Mountain\",\"America/Denver|MST7MDT\",\"America/Denver|Navajo\",\"America/Denver|US/Mountain\",\"America/Fortaleza|America/Araguaina\",\"America/Fortaleza|America/Argentina/Buenos_Aires\",\"America/Fortaleza|America/Argentina/Catamarca\",\"America/Fortaleza|America/Argentina/ComodRivadavia\",\"America/Fortaleza|America/Argentina/Cordoba\",\"America/Fortaleza|America/Argentina/Jujuy\",\"America/Fortaleza|America/Argentina/La_Rioja\",\"America/Fortaleza|America/Argentina/Mendoza\",\"America/Fortaleza|America/Argentina/Rio_Gallegos\",\"America/Fortaleza|America/Argentina/Salta\",\"America/Fortaleza|America/Argentina/San_Juan\",\"America/Fortaleza|America/Argentina/San_Luis\",\"America/Fortaleza|America/Argentina/Tucuman\",\"America/Fortaleza|America/Argentina/Ushuaia\",\"America/Fortaleza|America/Bahia\",\"America/Fortaleza|America/Belem\",\"America/Fortaleza|America/Buenos_Aires\",\"America/Fortaleza|America/Catamarca\",\"America/Fortaleza|America/Cayenne\",\"America/Fortaleza|America/Cordoba\",\"America/Fortaleza|America/Jujuy\",\"America/Fortaleza|America/Maceio\",\"America/Fortaleza|America/Mendoza\",\"America/Fortaleza|America/Montevideo\",\"America/Fortaleza|America/Paramaribo\",\"America/Fortaleza|America/Recife\",\"America/Fortaleza|America/Rosario\",\"America/Fortaleza|America/Santarem\",\"America/Fortaleza|Antarctica/Rothera\",\"America/Fortaleza|Atlantic/Stanley\",\"America/Fortaleza|Etc/GMT+3\",\"America/Godthab|America/Nuuk\",\"America/Halifax|America/Glace_Bay\",\"America/Halifax|America/Goose_Bay\",\"America/Halifax|America/Moncton\",\"America/Halifax|America/Thule\",\"America/Halifax|Atlantic/Bermuda\",\"America/Halifax|Canada/Atlantic\",\"America/Havana|Cuba\",\"America/La_Paz|America/Boa_Vista\",\"America/La_Paz|America/Guyana\",\"America/La_Paz|America/Manaus\",\"America/La_Paz|America/Porto_Velho\",\"America/La_Paz|Brazil/West\",\"America/La_Paz|Etc/GMT+4\",\"America/Lima|America/Bogota\",\"America/Lima|America/Eirunepe\",\"America/Lima|America/Guayaquil\",\"America/Lima|America/Porto_Acre\",\"America/Lima|America/Rio_Branco\",\"America/Lima|Brazil/Acre\",\"America/Lima|Etc/GMT+5\",\"America/Los_Angeles|America/Ensenada\",\"America/Los_Angeles|America/Santa_Isabel\",\"America/Los_Angeles|America/Tijuana\",\"America/Los_Angeles|America/Vancouver\",\"America/Los_Angeles|Canada/Pacific\",\"America/Los_Angeles|Mexico/BajaNorte\",\"America/Los_Angeles|PST8PDT\",\"America/Los_Angeles|US/Pacific\",\"America/Los_Angeles|US/Pacific-New\",\"America/Managua|America/Belize\",\"America/Managua|America/Costa_Rica\",\"America/Managua|America/El_Salvador\",\"America/Managua|America/Guatemala\",\"America/Managua|America/Regina\",\"America/Managua|America/Swift_Current\",\"America/Managua|America/Tegucigalpa\",\"America/Managua|Canada/Saskatchewan\",\"America/Mexico_City|America/Bahia_Banderas\",\"America/Mexico_City|America/Merida\",\"America/Mexico_City|America/Monterrey\",\"America/Mexico_City|Mexico/General\",\"America/New_York|America/Detroit\",\"America/New_York|America/Fort_Wayne\",\"America/New_York|America/Indiana/Indianapolis\",\"America/New_York|America/Indiana/Marengo\",\"America/New_York|America/Indiana/Petersburg\",\"America/New_York|America/Indiana/Vevay\",\"America/New_York|America/Indiana/Vincennes\",\"America/New_York|America/Indiana/Winamac\",\"America/New_York|America/Indianapolis\",\"America/New_York|America/Iqaluit\",\"America/New_York|America/Kentucky/Louisville\",\"America/New_York|America/Kentucky/Monticello\",\"America/New_York|America/Louisville\",\"America/New_York|America/Montreal\",\"America/New_York|America/Nassau\",\"America/New_York|America/Nipigon\",\"America/New_York|America/Pangnirtung\",\"America/New_York|America/Thunder_Bay\",\"America/New_York|America/Toronto\",\"America/New_York|Canada/Eastern\",\"America/New_York|EST5EDT\",\"America/New_York|US/East-Indiana\",\"America/New_York|US/Eastern\",\"America/New_York|US/Michigan\",\"America/Noronha|Atlantic/South_Georgia\",\"America/Noronha|Brazil/DeNoronha\",\"America/Noronha|Etc/GMT+2\",\"America/Panama|America/Atikokan\",\"America/Panama|America/Cancun\",\"America/Panama|America/Cayman\",\"America/Panama|America/Coral_Harbour\",\"America/Panama|America/Jamaica\",\"America/Panama|EST\",\"America/Panama|Jamaica\",\"America/Phoenix|America/Creston\",\"America/Phoenix|America/Dawson_Creek\",\"America/Phoenix|America/Fort_Nelson\",\"America/Phoenix|America/Hermosillo\",\"America/Phoenix|MST\",\"America/Phoenix|US/Arizona\",\"America/Santiago|Chile/Continental\",\"America/Santo_Domingo|America/Anguilla\",\"America/Santo_Domingo|America/Antigua\",\"America/Santo_Domingo|America/Aruba\",\"America/Santo_Domingo|America/Barbados\",\"America/Santo_Domingo|America/Blanc-Sablon\",\"America/Santo_Domingo|America/Curacao\",\"America/Santo_Domingo|America/Dominica\",\"America/Santo_Domingo|America/Grenada\",\"America/Santo_Domingo|America/Guadeloupe\",\"America/Santo_Domingo|America/Kralendijk\",\"America/Santo_Domingo|America/Lower_Princes\",\"America/Santo_Domingo|America/Marigot\",\"America/Santo_Domingo|America/Martinique\",\"America/Santo_Domingo|America/Montserrat\",\"America/Santo_Domingo|America/Port_of_Spain\",\"America/Santo_Domingo|America/Puerto_Rico\",\"America/Santo_Domingo|America/St_Barthelemy\",\"America/Santo_Domingo|America/St_Kitts\",\"America/Santo_Domingo|America/St_Lucia\",\"America/Santo_Domingo|America/St_Thomas\",\"America/Santo_Domingo|America/St_Vincent\",\"America/Santo_Domingo|America/Tortola\",\"America/Santo_Domingo|America/Virgin\",\"America/Sao_Paulo|Brazil/East\",\"America/St_Johns|Canada/Newfoundland\",\"America/Whitehorse|America/Dawson\",\"America/Whitehorse|Canada/Yukon\",\"Antarctica/Palmer|America/Punta_Arenas\",\"Asia/Baghdad|Antarctica/Syowa\",\"Asia/Baghdad|Asia/Aden\",\"Asia/Baghdad|Asia/Bahrain\",\"Asia/Baghdad|Asia/Kuwait\",\"Asia/Baghdad|Asia/Qatar\",\"Asia/Baghdad|Asia/Riyadh\",\"Asia/Baghdad|Etc/GMT-3\",\"Asia/Baghdad|Europe/Kirov\",\"Asia/Baghdad|Europe/Minsk\",\"Asia/Bangkok|Antarctica/Davis\",\"Asia/Bangkok|Asia/Ho_Chi_Minh\",\"Asia/Bangkok|Asia/Krasnoyarsk\",\"Asia/Bangkok|Asia/Novokuznetsk\",\"Asia/Bangkok|Asia/Phnom_Penh\",\"Asia/Bangkok|Asia/Saigon\",\"Asia/Bangkok|Asia/Vientiane\",\"Asia/Bangkok|Etc/GMT-7\",\"Asia/Bangkok|Indian/Christmas\",\"Asia/Dhaka|Antarctica/Vostok\",\"Asia/Dhaka|Asia/Almaty\",\"Asia/Dhaka|Asia/Bishkek\",\"Asia/Dhaka|Asia/Dacca\",\"Asia/Dhaka|Asia/Kashgar\",\"Asia/Dhaka|Asia/Omsk\",\"Asia/Dhaka|Asia/Qostanay\",\"Asia/Dhaka|Asia/Thimbu\",\"Asia/Dhaka|Asia/Thimphu\",\"Asia/Dhaka|Asia/Urumqi\",\"Asia/Dhaka|Etc/GMT-6\",\"Asia/Dhaka|Indian/Chagos\",\"Asia/Dubai|Asia/Baku\",\"Asia/Dubai|Asia/Muscat\",\"Asia/Dubai|Asia/Tbilisi\",\"Asia/Dubai|Asia/Yerevan\",\"Asia/Dubai|Etc/GMT-4\",\"Asia/Dubai|Europe/Samara\",\"Asia/Dubai|Indian/Mahe\",\"Asia/Dubai|Indian/Mauritius\",\"Asia/Dubai|Indian/Reunion\",\"Asia/Gaza|Asia/Hebron\",\"Asia/Hong_Kong|Hongkong\",\"Asia/Jakarta|Asia/Pontianak\",\"Asia/Jerusalem|Asia/Tel_Aviv\",\"Asia/Jerusalem|Israel\",\"Asia/Kamchatka|Asia/Anadyr\",\"Asia/Kamchatka|Etc/GMT-12\",\"Asia/Kamchatka|Kwajalein\",\"Asia/Kamchatka|Pacific/Funafuti\",\"Asia/Kamchatka|Pacific/Kwajalein\",\"Asia/Kamchatka|Pacific/Majuro\",\"Asia/Kamchatka|Pacific/Nauru\",\"Asia/Kamchatka|Pacific/Tarawa\",\"Asia/Kamchatka|Pacific/Wake\",\"Asia/Kamchatka|Pacific/Wallis\",\"Asia/Kathmandu|Asia/Katmandu\",\"Asia/Kolkata|Asia/Calcutta\",\"Asia/Kuala_Lumpur|Asia/Brunei\",\"Asia/Kuala_Lumpur|Asia/Irkutsk\",\"Asia/Kuala_Lumpur|Asia/Kuching\",\"Asia/Kuala_Lumpur|Asia/Singapore\",\"Asia/Kuala_Lumpur|Etc/GMT-8\",\"Asia/Kuala_Lumpur|Singapore\",\"Asia/Makassar|Asia/Ujung_Pandang\",\"Asia/Rangoon|Asia/Yangon\",\"Asia/Rangoon|Indian/Cocos\",\"Asia/Seoul|ROK\",\"Asia/Shanghai|Asia/Chongqing\",\"Asia/Shanghai|Asia/Chungking\",\"Asia/Shanghai|Asia/Harbin\",\"Asia/Shanghai|Asia/Macao\",\"Asia/Shanghai|Asia/Macau\",\"Asia/Shanghai|Asia/Taipei\",\"Asia/Shanghai|PRC\",\"Asia/Shanghai|ROC\",\"Asia/Tashkent|Antarctica/Mawson\",\"Asia/Tashkent|Asia/Aqtau\",\"Asia/Tashkent|Asia/Aqtobe\",\"Asia/Tashkent|Asia/Ashgabat\",\"Asia/Tashkent|Asia/Ashkhabad\",\"Asia/Tashkent|Asia/Atyrau\",\"Asia/Tashkent|Asia/Dushanbe\",\"Asia/Tashkent|Asia/Oral\",\"Asia/Tashkent|Asia/Samarkand\",\"Asia/Tashkent|Asia/Yekaterinburg\",\"Asia/Tashkent|Etc/GMT-5\",\"Asia/Tashkent|Indian/Kerguelen\",\"Asia/Tashkent|Indian/Maldives\",\"Asia/Tehran|Iran\",\"Asia/Tokyo|Japan\",\"Asia/Ulaanbaatar|Asia/Choibalsan\",\"Asia/Ulaanbaatar|Asia/Ulan_Bator\",\"Asia/Vladivostok|Antarctica/DumontDUrville\",\"Asia/Vladivostok|Asia/Ust-Nera\",\"Asia/Vladivostok|Etc/GMT-10\",\"Asia/Vladivostok|Pacific/Chuuk\",\"Asia/Vladivostok|Pacific/Port_Moresby\",\"Asia/Vladivostok|Pacific/Truk\",\"Asia/Vladivostok|Pacific/Yap\",\"Asia/Yakutsk|Asia/Dili\",\"Asia/Yakutsk|Asia/Khandyga\",\"Asia/Yakutsk|Etc/GMT-9\",\"Asia/Yakutsk|Pacific/Palau\",\"Atlantic/Azores|America/Scoresbysund\",\"Atlantic/Cape_Verde|Etc/GMT+1\",\"Australia/Adelaide|Australia/Broken_Hill\",\"Australia/Adelaide|Australia/South\",\"Australia/Adelaide|Australia/Yancowinna\",\"Australia/Brisbane|Australia/Lindeman\",\"Australia/Brisbane|Australia/Queensland\",\"Australia/Darwin|Australia/North\",\"Australia/Lord_Howe|Australia/LHI\",\"Australia/Perth|Australia/West\",\"Australia/Sydney|Australia/ACT\",\"Australia/Sydney|Australia/Canberra\",\"Australia/Sydney|Australia/Currie\",\"Australia/Sydney|Australia/Hobart\",\"Australia/Sydney|Australia/Melbourne\",\"Australia/Sydney|Australia/NSW\",\"Australia/Sydney|Australia/Tasmania\",\"Australia/Sydney|Australia/Victoria\",\"Etc/UTC|Etc/UCT\",\"Etc/UTC|Etc/Universal\",\"Etc/UTC|Etc/Zulu\",\"Etc/UTC|UCT\",\"Etc/UTC|UTC\",\"Etc/UTC|Universal\",\"Etc/UTC|Zulu\",\"Europe/Athens|Asia/Nicosia\",\"Europe/Athens|EET\",\"Europe/Athens|Europe/Bucharest\",\"Europe/Athens|Europe/Helsinki\",\"Europe/Athens|Europe/Kiev\",\"Europe/Athens|Europe/Mariehamn\",\"Europe/Athens|Europe/Nicosia\",\"Europe/Athens|Europe/Riga\",\"Europe/Athens|Europe/Sofia\",\"Europe/Athens|Europe/Tallinn\",\"Europe/Athens|Europe/Uzhgorod\",\"Europe/Athens|Europe/Vilnius\",\"Europe/Athens|Europe/Zaporozhye\",\"Europe/Chisinau|Europe/Tiraspol\",\"Europe/Dublin|Eire\",\"Europe/Istanbul|Asia/Istanbul\",\"Europe/Istanbul|Turkey\",\"Europe/Lisbon|Atlantic/Canary\",\"Europe/Lisbon|Atlantic/Faeroe\",\"Europe/Lisbon|Atlantic/Faroe\",\"Europe/Lisbon|Atlantic/Madeira\",\"Europe/Lisbon|Portugal\",\"Europe/Lisbon|WET\",\"Europe/London|Europe/Belfast\",\"Europe/London|Europe/Guernsey\",\"Europe/London|Europe/Isle_of_Man\",\"Europe/London|Europe/Jersey\",\"Europe/London|GB\",\"Europe/London|GB-Eire\",\"Europe/Moscow|Europe/Simferopol\",\"Europe/Moscow|W-SU\",\"Europe/Paris|Africa/Ceuta\",\"Europe/Paris|Arctic/Longyearbyen\",\"Europe/Paris|Atlantic/Jan_Mayen\",\"Europe/Paris|CET\",\"Europe/Paris|Europe/Amsterdam\",\"Europe/Paris|Europe/Andorra\",\"Europe/Paris|Europe/Belgrade\",\"Europe/Paris|Europe/Berlin\",\"Europe/Paris|Europe/Bratislava\",\"Europe/Paris|Europe/Brussels\",\"Europe/Paris|Europe/Budapest\",\"Europe/Paris|Europe/Busingen\",\"Europe/Paris|Europe/Copenhagen\",\"Europe/Paris|Europe/Gibraltar\",\"Europe/Paris|Europe/Ljubljana\",\"Europe/Paris|Europe/Luxembourg\",\"Europe/Paris|Europe/Madrid\",\"Europe/Paris|Europe/Malta\",\"Europe/Paris|Europe/Monaco\",\"Europe/Paris|Europe/Oslo\",\"Europe/Paris|Europe/Podgorica\",\"Europe/Paris|Europe/Prague\",\"Europe/Paris|Europe/Rome\",\"Europe/Paris|Europe/San_Marino\",\"Europe/Paris|Europe/Sarajevo\",\"Europe/Paris|Europe/Skopje\",\"Europe/Paris|Europe/Stockholm\",\"Europe/Paris|Europe/Tirane\",\"Europe/Paris|Europe/Vaduz\",\"Europe/Paris|Europe/Vatican\",\"Europe/Paris|Europe/Vienna\",\"Europe/Paris|Europe/Warsaw\",\"Europe/Paris|Europe/Zagreb\",\"Europe/Paris|Europe/Zurich\",\"Europe/Paris|Poland\",\"Europe/Ulyanovsk|Europe/Astrakhan\",\"Pacific/Auckland|Antarctica/McMurdo\",\"Pacific/Auckland|Antarctica/South_Pole\",\"Pacific/Auckland|NZ\",\"Pacific/Bougainville|Antarctica/Macquarie\",\"Pacific/Bougainville|Asia/Srednekolymsk\",\"Pacific/Bougainville|Etc/GMT-11\",\"Pacific/Bougainville|Pacific/Efate\",\"Pacific/Bougainville|Pacific/Guadalcanal\",\"Pacific/Bougainville|Pacific/Kosrae\",\"Pacific/Bougainville|Pacific/Noumea\",\"Pacific/Bougainville|Pacific/Pohnpei\",\"Pacific/Bougainville|Pacific/Ponape\",\"Pacific/Chatham|NZ-CHAT\",\"Pacific/Easter|Chile/EasterIsland\",\"Pacific/Fakaofo|Etc/GMT-13\",\"Pacific/Fakaofo|Pacific/Enderbury\",\"Pacific/Galapagos|Etc/GMT+6\",\"Pacific/Gambier|Etc/GMT+9\",\"Pacific/Guam|Pacific/Saipan\",\"Pacific/Honolulu|HST\",\"Pacific/Honolulu|Pacific/Johnston\",\"Pacific/Honolulu|US/Hawaii\",\"Pacific/Kiritimati|Etc/GMT-14\",\"Pacific/Niue|Etc/GMT+11\",\"Pacific/Pago_Pago|Pacific/Midway\",\"Pacific/Pago_Pago|Pacific/Samoa\",\"Pacific/Pago_Pago|US/Samoa\",\"Pacific/Pitcairn|Etc/GMT+8\",\"Pacific/Tahiti|Etc/GMT+10\",\"Pacific/Tahiti|Pacific/Rarotonga\"],\"countries\":[\"AD|Europe/Andorra\",\"AE|Asia/Dubai\",\"AF|Asia/Kabul\",\"AG|America/Port_of_Spain America/Antigua\",\"AI|America/Port_of_Spain America/Anguilla\",\"AL|Europe/Tirane\",\"AM|Asia/Yerevan\",\"AO|Africa/Lagos Africa/Luanda\",\"AQ|Antarctica/Casey Antarctica/Davis Antarctica/DumontDUrville Antarctica/Mawson Antarctica/Palmer Antarctica/Rothera Antarctica/Syowa Antarctica/Troll Antarctica/Vostok Pacific/Auckland Antarctica/McMurdo\",\"AR|America/Argentina/Buenos_Aires America/Argentina/Cordoba America/Argentina/Salta America/Argentina/Jujuy America/Argentina/Tucuman America/Argentina/Catamarca America/Argentina/La_Rioja America/Argentina/San_Juan America/Argentina/Mendoza America/Argentina/San_Luis America/Argentina/Rio_Gallegos America/Argentina/Ushuaia\",\"AS|Pacific/Pago_Pago\",\"AT|Europe/Vienna\",\"AU|Australia/Lord_Howe Antarctica/Macquarie Australia/Hobart Australia/Currie Australia/Melbourne Australia/Sydney Australia/Broken_Hill Australia/Brisbane Australia/Lindeman Australia/Adelaide Australia/Darwin Australia/Perth Australia/Eucla\",\"AW|America/Curacao America/Aruba\",\"AX|Europe/Helsinki Europe/Mariehamn\",\"AZ|Asia/Baku\",\"BA|Europe/Belgrade Europe/Sarajevo\",\"BB|America/Barbados\",\"BD|Asia/Dhaka\",\"BE|Europe/Brussels\",\"BF|Africa/Abidjan Africa/Ouagadougou\",\"BG|Europe/Sofia\",\"BH|Asia/Qatar Asia/Bahrain\",\"BI|Africa/Maputo Africa/Bujumbura\",\"BJ|Africa/Lagos Africa/Porto-Novo\",\"BL|America/Port_of_Spain America/St_Barthelemy\",\"BM|Atlantic/Bermuda\",\"BN|Asia/Brunei\",\"BO|America/La_Paz\",\"BQ|America/Curacao America/Kralendijk\",\"BR|America/Noronha America/Belem America/Fortaleza America/Recife America/Araguaina America/Maceio America/Bahia America/Sao_Paulo America/Campo_Grande America/Cuiaba America/Santarem America/Porto_Velho America/Boa_Vista America/Manaus America/Eirunepe America/Rio_Branco\",\"BS|America/Nassau\",\"BT|Asia/Thimphu\",\"BW|Africa/Maputo Africa/Gaborone\",\"BY|Europe/Minsk\",\"BZ|America/Belize\",\"CA|America/St_Johns America/Halifax America/Glace_Bay America/Moncton America/Goose_Bay America/Blanc-Sablon America/Toronto America/Nipigon America/Thunder_Bay America/Iqaluit America/Pangnirtung America/Atikokan America/Winnipeg America/Rainy_River America/Resolute America/Rankin_Inlet America/Regina America/Swift_Current America/Edmonton America/Cambridge_Bay America/Yellowknife America/Inuvik America/Creston America/Dawson_Creek America/Fort_Nelson America/Vancouver America/Whitehorse America/Dawson\",\"CC|Indian/Cocos\",\"CD|Africa/Maputo Africa/Lagos Africa/Kinshasa Africa/Lubumbashi\",\"CF|Africa/Lagos Africa/Bangui\",\"CG|Africa/Lagos Africa/Brazzaville\",\"CH|Europe/Zurich\",\"CI|Africa/Abidjan\",\"CK|Pacific/Rarotonga\",\"CL|America/Santiago America/Punta_Arenas Pacific/Easter\",\"CM|Africa/Lagos Africa/Douala\",\"CN|Asia/Shanghai Asia/Urumqi\",\"CO|America/Bogota\",\"CR|America/Costa_Rica\",\"CU|America/Havana\",\"CV|Atlantic/Cape_Verde\",\"CW|America/Curacao\",\"CX|Indian/Christmas\",\"CY|Asia/Nicosia Asia/Famagusta\",\"CZ|Europe/Prague\",\"DE|Europe/Zurich Europe/Berlin Europe/Busingen\",\"DJ|Africa/Nairobi Africa/Djibouti\",\"DK|Europe/Copenhagen\",\"DM|America/Port_of_Spain America/Dominica\",\"DO|America/Santo_Domingo\",\"DZ|Africa/Algiers\",\"EC|America/Guayaquil Pacific/Galapagos\",\"EE|Europe/Tallinn\",\"EG|Africa/Cairo\",\"EH|Africa/El_Aaiun\",\"ER|Africa/Nairobi Africa/Asmara\",\"ES|Europe/Madrid Africa/Ceuta Atlantic/Canary\",\"ET|Africa/Nairobi Africa/Addis_Ababa\",\"FI|Europe/Helsinki\",\"FJ|Pacific/Fiji\",\"FK|Atlantic/Stanley\",\"FM|Pacific/Chuuk Pacific/Pohnpei Pacific/Kosrae\",\"FO|Atlantic/Faroe\",\"FR|Europe/Paris\",\"GA|Africa/Lagos Africa/Libreville\",\"GB|Europe/London\",\"GD|America/Port_of_Spain America/Grenada\",\"GE|Asia/Tbilisi\",\"GF|America/Cayenne\",\"GG|Europe/London Europe/Guernsey\",\"GH|Africa/Accra\",\"GI|Europe/Gibraltar\",\"GL|America/Nuuk America/Danmarkshavn America/Scoresbysund America/Thule\",\"GM|Africa/Abidjan Africa/Banjul\",\"GN|Africa/Abidjan Africa/Conakry\",\"GP|America/Port_of_Spain America/Guadeloupe\",\"GQ|Africa/Lagos Africa/Malabo\",\"GR|Europe/Athens\",\"GS|Atlantic/South_Georgia\",\"GT|America/Guatemala\",\"GU|Pacific/Guam\",\"GW|Africa/Bissau\",\"GY|America/Guyana\",\"HK|Asia/Hong_Kong\",\"HN|America/Tegucigalpa\",\"HR|Europe/Belgrade Europe/Zagreb\",\"HT|America/Port-au-Prince\",\"HU|Europe/Budapest\",\"ID|Asia/Jakarta Asia/Pontianak Asia/Makassar Asia/Jayapura\",\"IE|Europe/Dublin\",\"IL|Asia/Jerusalem\",\"IM|Europe/London Europe/Isle_of_Man\",\"IN|Asia/Kolkata\",\"IO|Indian/Chagos\",\"IQ|Asia/Baghdad\",\"IR|Asia/Tehran\",\"IS|Atlantic/Reykjavik\",\"IT|Europe/Rome\",\"JE|Europe/London Europe/Jersey\",\"JM|America/Jamaica\",\"JO|Asia/Amman\",\"JP|Asia/Tokyo\",\"KE|Africa/Nairobi\",\"KG|Asia/Bishkek\",\"KH|Asia/Bangkok Asia/Phnom_Penh\",\"KI|Pacific/Tarawa Pacific/Enderbury Pacific/Kiritimati\",\"KM|Africa/Nairobi Indian/Comoro\",\"KN|America/Port_of_Spain America/St_Kitts\",\"KP|Asia/Pyongyang\",\"KR|Asia/Seoul\",\"KW|Asia/Riyadh Asia/Kuwait\",\"KY|America/Panama America/Cayman\",\"KZ|Asia/Almaty Asia/Qyzylorda Asia/Qostanay Asia/Aqtobe Asia/Aqtau Asia/Atyrau Asia/Oral\",\"LA|Asia/Bangkok Asia/Vientiane\",\"LB|Asia/Beirut\",\"LC|America/Port_of_Spain America/St_Lucia\",\"LI|Europe/Zurich Europe/Vaduz\",\"LK|Asia/Colombo\",\"LR|Africa/Monrovia\",\"LS|Africa/Johannesburg Africa/Maseru\",\"LT|Europe/Vilnius\",\"LU|Europe/Luxembourg\",\"LV|Europe/Riga\",\"LY|Africa/Tripoli\",\"MA|Africa/Casablanca\",\"MC|Europe/Monaco\",\"MD|Europe/Chisinau\",\"ME|Europe/Belgrade Europe/Podgorica\",\"MF|America/Port_of_Spain America/Marigot\",\"MG|Africa/Nairobi Indian/Antananarivo\",\"MH|Pacific/Majuro Pacific/Kwajalein\",\"MK|Europe/Belgrade Europe/Skopje\",\"ML|Africa/Abidjan Africa/Bamako\",\"MM|Asia/Yangon\",\"MN|Asia/Ulaanbaatar Asia/Hovd Asia/Choibalsan\",\"MO|Asia/Macau\",\"MP|Pacific/Guam Pacific/Saipan\",\"MQ|America/Martinique\",\"MR|Africa/Abidjan Africa/Nouakchott\",\"MS|America/Port_of_Spain America/Montserrat\",\"MT|Europe/Malta\",\"MU|Indian/Mauritius\",\"MV|Indian/Maldives\",\"MW|Africa/Maputo Africa/Blantyre\",\"MX|America/Mexico_City America/Cancun America/Merida America/Monterrey America/Matamoros America/Mazatlan America/Chihuahua America/Ojinaga America/Hermosillo America/Tijuana America/Bahia_Banderas\",\"MY|Asia/Kuala_Lumpur Asia/Kuching\",\"MZ|Africa/Maputo\",\"NA|Africa/Windhoek\",\"NC|Pacific/Noumea\",\"NE|Africa/Lagos Africa/Niamey\",\"NF|Pacific/Norfolk\",\"NG|Africa/Lagos\",\"NI|America/Managua\",\"NL|Europe/Amsterdam\",\"NO|Europe/Oslo\",\"NP|Asia/Kathmandu\",\"NR|Pacific/Nauru\",\"NU|Pacific/Niue\",\"NZ|Pacific/Auckland Pacific/Chatham\",\"OM|Asia/Dubai Asia/Muscat\",\"PA|America/Panama\",\"PE|America/Lima\",\"PF|Pacific/Tahiti Pacific/Marquesas Pacific/Gambier\",\"PG|Pacific/Port_Moresby Pacific/Bougainville\",\"PH|Asia/Manila\",\"PK|Asia/Karachi\",\"PL|Europe/Warsaw\",\"PM|America/Miquelon\",\"PN|Pacific/Pitcairn\",\"PR|America/Puerto_Rico\",\"PS|Asia/Gaza Asia/Hebron\",\"PT|Europe/Lisbon Atlantic/Madeira Atlantic/Azores\",\"PW|Pacific/Palau\",\"PY|America/Asuncion\",\"QA|Asia/Qatar\",\"RE|Indian/Reunion\",\"RO|Europe/Bucharest\",\"RS|Europe/Belgrade\",\"RU|Europe/Kaliningrad Europe/Moscow Europe/Simferopol Europe/Kirov Europe/Astrakhan Europe/Volgograd Europe/Saratov Europe/Ulyanovsk Europe/Samara Asia/Yekaterinburg Asia/Omsk Asia/Novosibirsk Asia/Barnaul Asia/Tomsk Asia/Novokuznetsk Asia/Krasnoyarsk Asia/Irkutsk Asia/Chita Asia/Yakutsk Asia/Khandyga Asia/Vladivostok Asia/Ust-Nera Asia/Magadan Asia/Sakhalin Asia/Srednekolymsk Asia/Kamchatka Asia/Anadyr\",\"RW|Africa/Maputo Africa/Kigali\",\"SA|Asia/Riyadh\",\"SB|Pacific/Guadalcanal\",\"SC|Indian/Mahe\",\"SD|Africa/Khartoum\",\"SE|Europe/Stockholm\",\"SG|Asia/Singapore\",\"SH|Africa/Abidjan Atlantic/St_Helena\",\"SI|Europe/Belgrade Europe/Ljubljana\",\"SJ|Europe/Oslo Arctic/Longyearbyen\",\"SK|Europe/Prague Europe/Bratislava\",\"SL|Africa/Abidjan Africa/Freetown\",\"SM|Europe/Rome Europe/San_Marino\",\"SN|Africa/Abidjan Africa/Dakar\",\"SO|Africa/Nairobi Africa/Mogadishu\",\"SR|America/Paramaribo\",\"SS|Africa/Juba\",\"ST|Africa/Sao_Tome\",\"SV|America/El_Salvador\",\"SX|America/Curacao America/Lower_Princes\",\"SY|Asia/Damascus\",\"SZ|Africa/Johannesburg Africa/Mbabane\",\"TC|America/Grand_Turk\",\"TD|Africa/Ndjamena\",\"TF|Indian/Reunion Indian/Kerguelen\",\"TG|Africa/Abidjan Africa/Lome\",\"TH|Asia/Bangkok\",\"TJ|Asia/Dushanbe\",\"TK|Pacific/Fakaofo\",\"TL|Asia/Dili\",\"TM|Asia/Ashgabat\",\"TN|Africa/Tunis\",\"TO|Pacific/Tongatapu\",\"TR|Europe/Istanbul\",\"TT|America/Port_of_Spain\",\"TV|Pacific/Funafuti\",\"TW|Asia/Taipei\",\"TZ|Africa/Nairobi Africa/Dar_es_Salaam\",\"UA|Europe/Simferopol Europe/Kiev Europe/Uzhgorod Europe/Zaporozhye\",\"UG|Africa/Nairobi Africa/Kampala\",\"UM|Pacific/Pago_Pago Pacific/Wake Pacific/Honolulu Pacific/Midway\",\"US|America/New_York America/Detroit America/Kentucky/Louisville America/Kentucky/Monticello America/Indiana/Indianapolis America/Indiana/Vincennes America/Indiana/Winamac America/Indiana/Marengo America/Indiana/Petersburg America/Indiana/Vevay America/Chicago America/Indiana/Tell_City America/Indiana/Knox America/Menominee America/North_Dakota/Center America/North_Dakota/New_Salem America/North_Dakota/Beulah America/Denver America/Boise America/Phoenix America/Los_Angeles America/Anchorage America/Juneau America/Sitka America/Metlakatla America/Yakutat America/Nome America/Adak Pacific/Honolulu\",\"UY|America/Montevideo\",\"UZ|Asia/Samarkand Asia/Tashkent\",\"VA|Europe/Rome Europe/Vatican\",\"VC|America/Port_of_Spain America/St_Vincent\",\"VE|America/Caracas\",\"VG|America/Port_of_Spain America/Tortola\",\"VI|America/Port_of_Spain America/St_Thomas\",\"VN|Asia/Bangkok Asia/Ho_Chi_Minh\",\"VU|Pacific/Efate\",\"WF|Pacific/Wallis\",\"WS|Pacific/Apia\",\"YE|Asia/Riyadh Asia/Aden\",\"YT|Africa/Nairobi Indian/Mayotte\",\"ZA|Africa/Johannesburg\",\"ZM|Africa/Maputo Africa/Lusaka\",\"ZW|Africa/Maputo Africa/Harare\"]}");
 
 /***/ }),
 
@@ -21044,122 +18400,6 @@ ParserBlock.prototype.State = __webpack_require__("834f");
 
 
 module.exports = ParserBlock;
-
-
-/***/ }),
-
-/***/ "7839":
-/***/ (function(module, exports) {
-
-// IE8- don't enum bug keys
-module.exports = [
-  'constructor',
-  'hasOwnProperty',
-  'isPrototypeOf',
-  'propertyIsEnumerable',
-  'toLocaleString',
-  'toString',
-  'valueOf'
-];
-
-
-/***/ }),
-
-/***/ "7b0b":
-/***/ (function(module, exports, __webpack_require__) {
-
-var requireObjectCoercible = __webpack_require__("1d80");
-
-// `ToObject` abstract operation
-// https://tc39.github.io/ecma262/#sec-toobject
-module.exports = function (argument) {
-  return Object(requireObjectCoercible(argument));
-};
-
-
-/***/ }),
-
-/***/ "7c73":
-/***/ (function(module, exports, __webpack_require__) {
-
-var anObject = __webpack_require__("825a");
-var defineProperties = __webpack_require__("37e8");
-var enumBugKeys = __webpack_require__("7839");
-var hiddenKeys = __webpack_require__("d012");
-var html = __webpack_require__("1be4");
-var documentCreateElement = __webpack_require__("cc12");
-var sharedKey = __webpack_require__("f772");
-
-var GT = '>';
-var LT = '<';
-var PROTOTYPE = 'prototype';
-var SCRIPT = 'script';
-var IE_PROTO = sharedKey('IE_PROTO');
-
-var EmptyConstructor = function () { /* empty */ };
-
-var scriptTag = function (content) {
-  return LT + SCRIPT + GT + content + LT + '/' + SCRIPT + GT;
-};
-
-// Create object with fake `null` prototype: use ActiveX Object with cleared prototype
-var NullProtoObjectViaActiveX = function (activeXDocument) {
-  activeXDocument.write(scriptTag(''));
-  activeXDocument.close();
-  var temp = activeXDocument.parentWindow.Object;
-  activeXDocument = null; // avoid memory leak
-  return temp;
-};
-
-// Create object with fake `null` prototype: use iframe Object with cleared prototype
-var NullProtoObjectViaIFrame = function () {
-  // Thrash, waste and sodomy: IE GC bug
-  var iframe = documentCreateElement('iframe');
-  var JS = 'java' + SCRIPT + ':';
-  var iframeDocument;
-  iframe.style.display = 'none';
-  html.appendChild(iframe);
-  // https://github.com/zloirock/core-js/issues/475
-  iframe.src = String(JS);
-  iframeDocument = iframe.contentWindow.document;
-  iframeDocument.open();
-  iframeDocument.write(scriptTag('document.F=Object'));
-  iframeDocument.close();
-  return iframeDocument.F;
-};
-
-// Check for document.domain and active x support
-// No need to use active x approach when document.domain is not set
-// see https://github.com/es-shims/es5-shim/issues/150
-// variation of https://github.com/kitcambridge/es5-shim/commit/4f738ac066346
-// avoid IE GC bug
-var activeXDocument;
-var NullProtoObject = function () {
-  try {
-    /* global ActiveXObject */
-    activeXDocument = document.domain && new ActiveXObject('htmlfile');
-  } catch (error) { /* ignore */ }
-  NullProtoObject = activeXDocument ? NullProtoObjectViaActiveX(activeXDocument) : NullProtoObjectViaIFrame();
-  var length = enumBugKeys.length;
-  while (length--) delete NullProtoObject[PROTOTYPE][enumBugKeys[length]];
-  return NullProtoObject();
-};
-
-hiddenKeys[IE_PROTO] = true;
-
-// `Object.create` method
-// https://tc39.github.io/ecma262/#sec-object.create
-module.exports = Object.create || function create(O, Properties) {
-  var result;
-  if (O !== null) {
-    EmptyConstructor[PROTOTYPE] = anObject(O);
-    result = new EmptyConstructor();
-    EmptyConstructor[PROTOTYPE] = null;
-    // add "__proto__" for Object.getPrototypeOf polyfill
-    result[IE_PROTO] = O;
-  } else result = NullProtoObject();
-  return Properties === undefined ? result : defineProperties(result, Properties);
-};
 
 
 /***/ }),
@@ -21434,7 +18674,7 @@ Renderer.prototype.renderToken = function renderToken(tokens, idx, options) {
 
 /**
  * Renderer.renderInline(tokens, options, env) -> String
- * - tokens (Array): list on block tokens to renter
+ * - tokens (Array): list on block tokens to render
  * - options (Object): params of parser instance
  * - env (Object): additional data from parsed input (references, for example)
  *
@@ -21461,7 +18701,7 @@ Renderer.prototype.renderInline = function (tokens, options, env) {
 
 /** internal
  * Renderer.renderInlineAsText(tokens, options, env) -> String
- * - tokens (Array): list on block tokens to renter
+ * - tokens (Array): list on block tokens to render
  * - options (Object): params of parser instance
  * - env (Object): additional data from parsed input (references, for example)
  *
@@ -21488,7 +18728,7 @@ Renderer.prototype.renderInlineAsText = function (tokens, options, env) {
 
 /**
  * Renderer.render(tokens, options, env) -> String
- * - tokens (Array): list on block tokens to renter
+ * - tokens (Array): list on block tokens to render
  * - options (Object): params of parser instance
  * - env (Object): additional data from parsed input (references, for example)
  *
@@ -21527,12 +18767,13 @@ module.exports = Renderer;
 
 // load the styles
 var content = __webpack_require__("c842");
+if(content.__esModule) content = content.default;
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add CSS to Shadow Root
 var add = __webpack_require__("35d6").default
 module.exports.__inject__ = function (shadowRoot) {
-  add("c268562a", content, shadowRoot)
+  add("0e576c6c", content, shadowRoot)
 };
 
 /***/ }),
@@ -21600,122 +18841,11 @@ module.exports = function parseLinkTitle(str, pos, max) {
 
 /***/ }),
 
-/***/ "7dd0":
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var $ = __webpack_require__("23e7");
-var createIteratorConstructor = __webpack_require__("9ed3");
-var getPrototypeOf = __webpack_require__("e163");
-var setPrototypeOf = __webpack_require__("d2bb");
-var setToStringTag = __webpack_require__("d44e");
-var createNonEnumerableProperty = __webpack_require__("9112");
-var redefine = __webpack_require__("6eeb");
-var wellKnownSymbol = __webpack_require__("b622");
-var IS_PURE = __webpack_require__("c430");
-var Iterators = __webpack_require__("3f8c");
-var IteratorsCore = __webpack_require__("ae93");
-
-var IteratorPrototype = IteratorsCore.IteratorPrototype;
-var BUGGY_SAFARI_ITERATORS = IteratorsCore.BUGGY_SAFARI_ITERATORS;
-var ITERATOR = wellKnownSymbol('iterator');
-var KEYS = 'keys';
-var VALUES = 'values';
-var ENTRIES = 'entries';
-
-var returnThis = function () { return this; };
-
-module.exports = function (Iterable, NAME, IteratorConstructor, next, DEFAULT, IS_SET, FORCED) {
-  createIteratorConstructor(IteratorConstructor, NAME, next);
-
-  var getIterationMethod = function (KIND) {
-    if (KIND === DEFAULT && defaultIterator) return defaultIterator;
-    if (!BUGGY_SAFARI_ITERATORS && KIND in IterablePrototype) return IterablePrototype[KIND];
-    switch (KIND) {
-      case KEYS: return function keys() { return new IteratorConstructor(this, KIND); };
-      case VALUES: return function values() { return new IteratorConstructor(this, KIND); };
-      case ENTRIES: return function entries() { return new IteratorConstructor(this, KIND); };
-    } return function () { return new IteratorConstructor(this); };
-  };
-
-  var TO_STRING_TAG = NAME + ' Iterator';
-  var INCORRECT_VALUES_NAME = false;
-  var IterablePrototype = Iterable.prototype;
-  var nativeIterator = IterablePrototype[ITERATOR]
-    || IterablePrototype['@@iterator']
-    || DEFAULT && IterablePrototype[DEFAULT];
-  var defaultIterator = !BUGGY_SAFARI_ITERATORS && nativeIterator || getIterationMethod(DEFAULT);
-  var anyNativeIterator = NAME == 'Array' ? IterablePrototype.entries || nativeIterator : nativeIterator;
-  var CurrentIteratorPrototype, methods, KEY;
-
-  // fix native
-  if (anyNativeIterator) {
-    CurrentIteratorPrototype = getPrototypeOf(anyNativeIterator.call(new Iterable()));
-    if (IteratorPrototype !== Object.prototype && CurrentIteratorPrototype.next) {
-      if (!IS_PURE && getPrototypeOf(CurrentIteratorPrototype) !== IteratorPrototype) {
-        if (setPrototypeOf) {
-          setPrototypeOf(CurrentIteratorPrototype, IteratorPrototype);
-        } else if (typeof CurrentIteratorPrototype[ITERATOR] != 'function') {
-          createNonEnumerableProperty(CurrentIteratorPrototype, ITERATOR, returnThis);
-        }
-      }
-      // Set @@toStringTag to native iterators
-      setToStringTag(CurrentIteratorPrototype, TO_STRING_TAG, true, true);
-      if (IS_PURE) Iterators[TO_STRING_TAG] = returnThis;
-    }
-  }
-
-  // fix Array#{values, @@iterator}.name in V8 / FF
-  if (DEFAULT == VALUES && nativeIterator && nativeIterator.name !== VALUES) {
-    INCORRECT_VALUES_NAME = true;
-    defaultIterator = function values() { return nativeIterator.call(this); };
-  }
-
-  // define iterator
-  if ((!IS_PURE || FORCED) && IterablePrototype[ITERATOR] !== defaultIterator) {
-    createNonEnumerableProperty(IterablePrototype, ITERATOR, defaultIterator);
-  }
-  Iterators[NAME] = defaultIterator;
-
-  // export additional methods
-  if (DEFAULT) {
-    methods = {
-      values: getIterationMethod(VALUES),
-      keys: IS_SET ? defaultIterator : getIterationMethod(KEYS),
-      entries: getIterationMethod(ENTRIES)
-    };
-    if (FORCED) for (KEY in methods) {
-      if (BUGGY_SAFARI_ITERATORS || INCORRECT_VALUES_NAME || !(KEY in IterablePrototype)) {
-        redefine(IterablePrototype, KEY, methods[KEY]);
-      }
-    } else $({ target: NAME, proto: true, forced: BUGGY_SAFARI_ITERATORS || INCORRECT_VALUES_NAME }, methods);
-  }
-
-  return methods;
-};
-
-
-/***/ }),
-
 /***/ "7f45":
 /***/ (function(module, exports, __webpack_require__) {
 
 var moment = module.exports = __webpack_require__("0efb");
-moment.tz.load(__webpack_require__("742f"));
-
-
-/***/ }),
-
-/***/ "7f9a":
-/***/ (function(module, exports, __webpack_require__) {
-
-var global = __webpack_require__("da84");
-var inspectSource = __webpack_require__("8925");
-
-var WeakMap = global.WeakMap;
-
-module.exports = typeof WeakMap === 'function' && /native code/.test(inspectSource(WeakMap));
+moment.tz.load(__webpack_require__("dcdf"));
 
 
 /***/ }),
@@ -21944,20 +19074,6 @@ module.exports = function table(state, startLine, endLine, silent) {
   state.parentType = oldParentType;
   state.line = nextLine;
   return true;
-};
-
-
-/***/ }),
-
-/***/ "825a":
-/***/ (function(module, exports, __webpack_require__) {
-
-var isObject = __webpack_require__("861d");
-
-module.exports = function (it) {
-  if (!isObject(it)) {
-    throw TypeError(String(it) + ' is not an object');
-  } return it;
 };
 
 
@@ -22217,8 +19333,27 @@ function processDelimiters(state, delimiters) {
       openersBottom = {},
       max = delimiters.length;
 
+  if (!max) return;
+
+  // headerIdx is the first delimiter of the current (where closer is) delimiter run
+  var headerIdx = 0;
+  var lastTokenIdx = -2; // needs any value lower than -1
+  var jumps = [];
+
   for (closerIdx = 0; closerIdx < max; closerIdx++) {
     closer = delimiters[closerIdx];
+
+    jumps.push(0);
+
+    // markers belong to same delimiter run if:
+    //  - they have adjacent tokens
+    //  - AND markers are the same
+    //
+    if (delimiters[headerIdx].marker !== closer.marker || lastTokenIdx !== closer.token - 1) {
+      headerIdx = closerIdx;
+    }
+
+    lastTokenIdx = closer.token;
 
     // Length is only used for emphasis-specific "rule of 3",
     // if it's not defined (in strikethrough or 3rd party plugins),
@@ -22238,14 +19373,11 @@ function processDelimiters(state, delimiters) {
 
     minOpenerIdx = openersBottom[closer.marker][(closer.open ? 3 : 0) + (closer.length % 3)];
 
-    openerIdx = closerIdx - closer.jump - 1;
-
-    // avoid crash if `closer.jump` is pointing outside of the array, see #742
-    if (openerIdx < -1) openerIdx = -1;
+    openerIdx = headerIdx - jumps[headerIdx] - 1;
 
     newMinOpenerIdx = openerIdx;
 
-    for (; openerIdx > minOpenerIdx; openerIdx -= opener.jump + 1) {
+    for (; openerIdx > minOpenerIdx; openerIdx -= jumps[openerIdx] + 1) {
       opener = delimiters[openerIdx];
 
       if (opener.marker !== closer.marker) continue;
@@ -22275,15 +19407,19 @@ function processDelimiters(state, delimiters) {
           // sure algorithm has linear complexity (see *_*_*_*_*_... case).
           //
           lastJump = openerIdx > 0 && !delimiters[openerIdx - 1].open ?
-            delimiters[openerIdx - 1].jump + 1 :
+            jumps[openerIdx - 1] + 1 :
             0;
 
-          closer.jump  = closerIdx - openerIdx + lastJump;
+          jumps[closerIdx] = closerIdx - openerIdx + lastJump;
+          jumps[openerIdx] = lastJump;
+
           closer.open  = false;
           opener.end   = closerIdx;
-          opener.jump  = lastJump;
           opener.close = false;
           newMinOpenerIdx = -1;
+          // treat next token as start of run,
+          // it optimizes skips in **<...>**a**<...>** pathological case
+          lastTokenIdx = -2;
           break;
         }
       }
@@ -22320,37 +19456,6 @@ module.exports = function link_pairs(state) {
 
 /***/ }),
 
-/***/ "83ab":
-/***/ (function(module, exports, __webpack_require__) {
-
-var fails = __webpack_require__("d039");
-
-// Thank's IE8 for his funny defineProperty
-module.exports = !fails(function () {
-  return Object.defineProperty({}, 1, { get: function () { return 7; } })[1] != 7;
-});
-
-
-/***/ }),
-
-/***/ "8418":
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var toPrimitive = __webpack_require__("c04e");
-var definePropertyModule = __webpack_require__("9bf2");
-var createPropertyDescriptor = __webpack_require__("5c6c");
-
-module.exports = function (object, key, value) {
-  var propertyKey = toPrimitive(key);
-  if (propertyKey in object) definePropertyModule.f(object, propertyKey, createPropertyDescriptor(0, value));
-  else object[propertyKey] = value;
-};
-
-
-/***/ }),
-
 /***/ "8463":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22358,23 +19463,14 @@ module.exports = function (object, key, value) {
 
 // load the styles
 var content = __webpack_require__("c246");
+if(content.__esModule) content = content.default;
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add CSS to Shadow Root
 var add = __webpack_require__("35d6").default
 module.exports.__inject__ = function (shadowRoot) {
-  add("6672e04d", content, shadowRoot)
+  add("2ea184e4", content, shadowRoot)
 };
-
-/***/ }),
-
-/***/ "861d":
-/***/ (function(module, exports) {
-
-module.exports = function (it) {
-  return typeof it === 'object' ? it !== null : typeof it === 'function';
-};
-
 
 /***/ }),
 
@@ -22463,25 +19559,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 /***/ }),
 
-/***/ "8925":
-/***/ (function(module, exports, __webpack_require__) {
-
-var store = __webpack_require__("c6cd");
-
-var functionToString = Function.toString;
-
-// this helper broken in `3.4.1-3.4.4`, so we can't use `shared` helper
-if (typeof store.inspectSource != 'function') {
-  store.inspectSource = function (it) {
-    return functionToString.call(it);
-  };
-}
-
-module.exports = store.inspectSource;
-
-
-/***/ }),
-
 /***/ "8a31":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22531,22 +19608,6 @@ module.exports = {
 
 /***/ }),
 
-/***/ "8aa5":
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var charAt = __webpack_require__("6547").charAt;
-
-// `AdvanceStringIndex` abstract operation
-// https://tc39.github.io/ecma262/#sec-advancestringindex
-module.exports = function (S, index, unicode) {
-  return index + (unicode ? charAt(S, index).length : 1);
-};
-
-
-/***/ }),
-
 /***/ "8ca0":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22554,7 +19615,7 @@ module.exports = function (S, index, unicode) {
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__("24fb");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, "html{font-size:14px;font-size:87.5%}body{font-family:Roboto,Helvetica Neue,HelveticaNeue,Helvetica,Arial,sans-serif;color:rgba(0,0,0,.87);-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;font-size-adjust:auto}b{font-weight:700}i{font-style:italic}strong{font-weight:700}em{font-style:italic}h1{font-size:33.6px;font-size:2.4rem}h1,h2{text-rendering:optimizelegibility;font-weight:700;margin:.75em 0;line-height:1.6em}h2{font-size:25.2px;font-size:1.8rem}h3{font-size:21px;font-size:1.5rem}h3,h4{text-rendering:optimizelegibility;font-weight:700;margin:.75em 0;line-height:1.6em}h4{font-size:18.2px;font-size:1.3rem}h5{font-size:14px;font-size:1rem}h5,h6{text-rendering:optimizelegibility;font-weight:700;margin:.75em 0;line-height:1.6em}h6{font-size:12.6px;font-size:.9rem;text-transform:uppercase}ul{margin:5px 15px;margin:.32rem .94rem;padding-left:1rem}ul li{list-style-type:disc;padding:2px 0;padding:.125rem}ol{margin:5px 18px;margin:.32rem 1.125rem;padding-left:1rem}ol li{list-style-type:decimal;padding:2px 0;padding:.125rem}::-moz-selection{background:#2196f3;color:#fff}::selection{background:#2196f3;color:#fff}p{font-size:1rem;margin:.75em 0;line-height:1.6em}small{font-size:55%;opacity:.6;font-weight:400}a[href]:not([class]){color:#2196f3;text-decoration:none}a[href]:not([class]):hover{color:#0c81df}a[href]:not([class]):visited{opacity:.8}blockquote{border-left:4px solid #2196f3;margin:1em 0;padding-left:1.5em}blockquote>p{font-weight:300;font-size:127%;font-size:1.27rem;line-height:127%;line-height:1.27rem;margin-top:0}blockquote>cite,blockquote>figcaption,blockquote>footer{color:#888}blockquote>cite:before,blockquote>figcaption:before,blockquote>footer:before{content:\"\\2014\"}.hyphenation{-ms-word-break:break-all;word-break:break-all;word-break:break-word;-webkit-hyphens:auto;-ms-hyphens:auto;hyphens:auto;-webkit-hyphenate-before:2;-webkit-hyphenate-after:3;hyphenate-lines:3}.bunt-ripple-ink{display:block;overflow:hidden;border-radius:inherit;position:absolute;top:0;left:0;right:0;bottom:0;-webkit-mask-image:-webkit-radial-gradient(circle,#fff,#000)}.ripple{position:absolute;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;border-radius:50%;background-color:currentColor;background-clip:padding-box;transition:transform .4s ease-out,opacity .4s ease-out;opacity:.1;transform:scale(1)}.ripple-ink-enter{opacity:.2;transform:scale(0)}.ripple-ink-leave-active{opacity:0;transition:transform .1s ease-out,opacity .1s ease-out}.bunt-icon{font-size:24px;width:24px;height:24px;line-height:24px;display:inline-block;cursor:inherit}.bunt-button,.bunt-link-button{font-family:Roboto,Helvetica Neue,HelveticaNeue,Helvetica,Arial,sans-serif;font-size:14px;text-transform:uppercase;font-weight:500;line-height:36px;vertical-align:middle;flex-shrink:0;outline:none;border:none;position:relative;display:inline-flex;align-items:center;justify-content:center;cursor:default;border-radius:4px;padding:0 16px;min-width:80px;height:36px;white-space:nowrap}.bunt-button::-moz-focus-inner,.bunt-link-button::-moz-focus-inner{border:0}.bunt-button.autofocus:focus,.bunt-link-button.autofocus:focus,body[modality=keyboard] .bunt-button:focus,body[modality=keyboard] .bunt-link-button:focus{outline-style:solid}.bunt-button.disabled .bunt-button-content,.bunt-link-button.disabled .bunt-button-content{opacity:.6}.bunt-button:not(.disabled),.bunt-link-button:not(.disabled){cursor:pointer}.bunt-button .bunt-progress-circular,.bunt-link-button .bunt-progress-circular{position:absolute;top:50%;left:50%}.bunt-button .bunt-progress-circular.active,.bunt-link-button .bunt-progress-circular.active{-webkit-animation:button-container-rotate 1568ms linear infinite;animation:button-container-rotate 1568ms linear infinite}@-webkit-keyframes button-container-rotate{0%{transform:translate(-50%,-50%) rotate(0deg)}to{transform:translate(-50%,-50%) rotate(1turn)}}@keyframes button-container-rotate{0%{transform:translate(-50%,-50%) rotate(0deg)}to{transform:translate(-50%,-50%) rotate(1turn)}}.bunt-button .bunt-icon.error,.bunt-button .bunt-icon.success,.bunt-link-button .bunt-icon.error,.bunt-link-button .bunt-icon.success{position:absolute}.bunt-button.error .bunt-tooltip,.bunt-link-button.error .bunt-tooltip{background-color:#f44336}.bunt-button-content{display:flex}.bunt-button-content.invisible{visibility:hidden}.bunt-icon{height:36px;line-height:36px;font-size:20px}.bunt-button-raised{box-shadow:0 0 2px rgba(0,0,0,.12),0 2px 2px rgba(0,0,0,.2);transition:box-shadow .1s}.bunt-button-raised.autofocus:focus,body[modality=keyboard] .bunt-button-raised:focus{outline:none;box-shadow:0 0 5px rgba(0,0,0,.22),0 3px 6px rgba(0,0,0,.3)}.bunt-checkbox{cursor:pointer;position:relative;display:flex;flex-shrink:0}.bunt-checkbox input{position:absolute;cursor:inherit;pointer-events:all;opacity:0;width:100%;height:100%;z-index:2;left:0;box-sizing:border-box;padding:0;margin:0}.bunt-checkbox label{font-size:14px;line-height:24px}.bunt-checkbox .bunt-checkbox-box{height:20px;width:20px;border-radius:2px;border:2px solid rgba(0,0,0,.54);margin-right:8px;position:relative;transition:all .2s ease-out}.bunt-checkbox .bunt-checkbox-box:after{width:6px;height:13px;position:absolute;top:0;left:6px;border:2px solid #fff;border-top:0;border-left:0;opacity:0;transform:rotate(45deg) scale3D(.15,.15,1);transition:all .3s cubic-bezier(.55,0,.55,.2);content:\" \"}.bunt-checkbox.checked .bunt-checkbox-box{background-color:#2196f3;border-color:#2196f3}.bunt-checkbox.checked .bunt-checkbox-box:after{opacity:1;transform:rotate(45deg) scaleX(1);transition:all .4s cubic-bezier(.25,.8,.25,1)}.bunt-radio{cursor:pointer;position:relative;display:flex;flex-shrink:0;padding-top:16px}.bunt-radio input{position:absolute;cursor:inherit;pointer-events:all;opacity:0;width:100%;height:100%;z-index:2;left:0;box-sizing:border-box;padding:0;margin:0}.bunt-radio label{font-size:14px;line-height:20px}.bunt-radio .bunt-radio-circle{height:20px;width:20px;border-radius:50%;border:2px solid rgba(0,0,0,.54);margin-right:8px;position:relative;transition:all .2s ease-out;box-sizing:border-box}.bunt-radio .bunt-radio-circle:after{width:10px;height:10px;position:absolute;top:3px;left:3px;background-color:#2196f3;transition:all .4s cubic-bezier(.25,.8,.25,1);border-radius:50%;opacity:0;content:\" \"}.bunt-radio.checked .bunt-radio-circle{border-color:#2196f3}.bunt-radio.checked .bunt-radio-circle:after{opacity:1}.bunt-icon-button{line-height:36px;vertical-align:middle;flex-shrink:0;background:none;outline:none;border:none;position:relative;display:inline-flex;align-items:center;justify-content:center;cursor:default;border-radius:50%;padding:0;height:36px;width:36px;background-color:transparent}.bunt-icon-button::-moz-focus-inner{border:0}.bunt-icon-button.autofocus:focus,body[modality=keyboard] .bunt-icon-button:focus{outline-style:solid}.bunt-icon-button.disabled .bunt-icon{opacity:.6}.bunt-icon-button:not(.disabled){cursor:pointer}.bunt-icon-button.autofocus:focus,body[modality=keyboard] .bunt-icon-button:focus{outline-width:2px;outline-offset:0}.bunt-icon-button .bunt-icon{height:36px;line-height:36px;font-size:20px;width:auto}.bunt-icon-button svg{height:20px}.bunt-input{display:flex;flex-direction:column;height:56px;padding-top:16px;flex-shrink:0}.bunt-input .label-input-container{position:relative;display:flex;align-items:center}.bunt-input .icon{font-size:22px;color:rgba(0,0,0,.54);padding:0 0 0 8px}.bunt-input input{box-sizing:border-box;height:37px;width:100%;border:none;outline:none;font-family:Roboto,Helvetica Neue,HelveticaNeue,Helvetica,Arial,sans-serif;font-size:16px;font-weight:400;flex:auto;padding:8px 8px 8px 12px;background-color:transparent;border-radius:4px}.bunt-input label{position:absolute;top:8px;left:12px;font-size:16px;font-weight:400;line-height:21px;pointer-events:none;color:rgba(0,0,0,.54);transition:transform .25s,width .25s;transform-origin:left top}.bunt-input ::-moz-placeholder{color:rgba(0,0,0,.54)}.bunt-input :-ms-input-placeholder{color:rgba(0,0,0,.54)}.bunt-input ::placeholder{color:rgba(0,0,0,.54)}.bunt-input .error-icon{font-size:22px;color:#f44336;padding-right:8px}.bunt-input .outline{position:absolute;top:0;left:0;height:100%;width:100%;stroke:rgba(0,0,0,.38);stroke-width:1px;fill:none;pointer-events:none;stroke-dasharray:calc(var(--label-gap)/2 + 4) 0 100000;transition:stroke .15s cubic-bezier(.4,0,.2,1),stroke-width .15s cubic-bezier(.4,0,.2,1),stroke-dasharray .15s cubic-bezier(.4,0,.2,1)}.bunt-input .hint{font-size:13px;padding-top:0;padding-left:16px;color:rgba(0,0,0,.54);line-height:18px}.bunt-input .hint p{margin:0}.bunt-input.with-icon input{padding-left:4px}.bunt-input.focused .outline{stroke:#2196f3;stroke-width:2px}.bunt-input.focused label{color:#2196f3}.bunt-input.floating-label .outline,.bunt-input.focused .outline{stroke-dasharray:3 var(--label-gap) 10000}.bunt-input.floating-label label,.bunt-input.focused label{transform:translateY(-15px) scale(.75)}.bunt-input.disabled{cursor:not-allowed}.bunt-input.disabled input{cursor:not-allowed;background-color:rgba(0,0,0,.08);color:rgba(0,0,0,.38)}.bunt-input.disabled .outline{stroke-dasharray:10}.bunt-input.disabled.floating-label .outline,.bunt-input.disabled.focused .outline{stroke-dasharray:3 var(--label-gap) 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10}.bunt-input.invalid .hint,.bunt-input.invalid label{color:#f44336}.bunt-input.invalid .outline{stroke:#f44336;stroke-width:2px}.bunt-input-outline-container{display:flex;flex-direction:column;padding-top:16px;flex-shrink:0;position:relative}.bunt-input-outline-container label{position:absolute;top:8px;left:12px;font-size:16px;font-weight:400;line-height:21px;pointer-events:none;color:rgba(0,0,0,.54);transform-origin:left top;transform:translateY(-15px) scale(.75)}.bunt-input-outline-container .outline{position:absolute;top:0;left:0;height:100%;width:100%;stroke:rgba(0,0,0,.38);stroke-width:1px;fill:none;pointer-events:none;stroke-dasharray:3 var(--label-gap) 10000;transition:stroke .15s cubic-bezier(.4,0,.2,1),stroke-width .15s cubic-bezier(.4,0,.2,1),stroke-dasharray .15s cubic-bezier(.4,0,.2,1)}.bunt-input-outline-container.focused .outline{stroke:#2196f3;stroke-width:2px}.bunt-input-outline-container.focused label{color:#2196f3}a.bunt-link-button{display:inline-flex;background-color:#eee;text-decoration:none;color:rgba(0,0,0,.87)}.bunt-drop-element{position:absolute;display:none;z-index:$z-index-dropdown;max-width:100%;max-height:100%;transition:opacity .2s ease;opacity:0}.bunt-drop-element,.bunt-drop-element *,.bunt-drop-element:after,.bunt-drop-element :after,.bunt-drop-element:before,.bunt-drop-element :before{box-sizing:border-box}.bunt-drop-element.bunt-drop-open{display:block}.bunt-drop-element.bunt-drop-after-open{opacity:1}.bunt-progress-circular{display:inline-block;position:relative;width:48px;height:48px}.bunt-progress-circular.tiny{width:14px;height:14px}.bunt-progress-circular.tiny circle{stroke-width:8}.bunt-progress-circular.small{width:24px;height:24px}.bunt-progress-circular.small circle{stroke-width:7}.bunt-progress-circular.big{width:64px;height:64px}.bunt-progress-circular.big circle{stroke-width:4}.bunt-progress-circular.huge{width:128px;height:128px}.bunt-progress-circular.huge circle{stroke-width:3}.bunt-progress-circular.progress-center{display:block;margin:auto}.bunt-progress-circular.progress-page{display:block;margin:7rem auto}.bunt-progress-circular svg{-webkit-animation:bunt-progress-circular-rotate 1568ms linear infinite;animation:bunt-progress-circular-rotate 1568ms linear infinite;position:relative;height:100%;width:100%}.bunt-progress-circular svg circle{fill:none;stroke:#2196f3;stroke-width:5px;stroke-miterlimit:10;stroke-dasharray:1,200;stroke-dashoffset:0;stroke-linecap:square;-webkit-animation:bunt-progress-circular-dash 1333ms ease-in-out infinite;animation:bunt-progress-circular-dash 1333ms ease-in-out infinite}@-webkit-keyframes bunt-progress-circular-rotate{to{transform:rotate(1turn)}}@keyframes bunt-progress-circular-rotate{to{transform:rotate(1turn)}}@-webkit-keyframes bunt-progress-circular-dash{0%{stroke-dasharray:1,200;stroke-dashoffset:0}50%{stroke-dasharray:89,200;stroke-dashoffset:-35}to{stroke-dasharray:89,200;stroke-dashoffset:-124}}@keyframes bunt-progress-circular-dash{0%{stroke-dasharray:1,200;stroke-dashoffset:0}50%{stroke-dasharray:89,200;stroke-dashoffset:-35}to{stroke-dasharray:89,200;stroke-dashoffset:-124}}.bunt-select{position:relative}.bunt-select .open-indicator{position:absolute;right:4px;color:rgba(0,0,0,.54);font-size:28px;line-height:20px;top:8px;transition:all .25s ease-in-out;cursor:pointer}.bunt-select.open .open-indicator{transform-origin:center;transform:rotate(180deg)}.bunt-select .bunt-input input{padding-right:20px}.bunt-select-dropdown-menu{border-radius:2px;box-shadow:0 2px 5px 0 rgba(0,0,0,.16),0 2px 10px 0 rgba(0,0,0,.12);background-color:#fff;transition:box-shadow .3s;border-top:none;border-radius:0 0 2px 2px;z-index:100;display:flex;flex-direction:column}.bunt-select-dropdown-menu .scrollable-menu{display:flex;flex-direction:column;flex:auto;min-height:0}.bunt-select-dropdown-menu ul{margin:0;padding:0}.bunt-select-dropdown-menu li{list-style-type:none;height:32px;padding:0 8px;line-height:32px;text-overflow:ellipsis;overflow:hidden;white-space:nowrap}.bunt-select-dropdown-menu li.highlight{background-color:#2196f3}.bunt-switch{cursor:pointer;position:relative;display:flex;height:20px;margin-bottom:8px;flex-shrink:0}.bunt-switch input{position:absolute;cursor:inherit;pointer-events:all;opacity:0;width:100%;height:100%;z-index:2;left:0;box-sizing:border-box;padding:0;margin:0}.bunt-switch label{font-size:14px;line-height:14px}.bunt-switch .bunt-switch-track{height:14px;width:36px;border-radius:30px;background-color:rgba(0,0,0,.38);margin-right:8px;position:relative;transition:all .4s ease-out}.bunt-switch .bunt-switch-thumb{height:20px;width:20px;background-color:#fafafa;border-radius:50%;position:absolute;left:0;top:50%;transform:translate3d(-1px,-50%,0);transition:all .3s ease;box-shadow:0 1px 1px 0 rgba(0,0,0,.14),0 1px 3px 0 rgba(0,0,0,.12),0 2px 1px -1px rgba(0,0,0,.2)}.bunt-switch.checked .bunt-switch-track{background-color:rgba(33,150,243,.5)}.bunt-switch.checked .bunt-switch-thumb{background-color:#2196f3;transform:translate3d(75%,-50%,0);box-shadow:0 2px 2px 0 rgba(0,0,0,.14),0 1px 5px 0 rgba(0,0,0,.12),0 3px 1px -2px rgba(0,0,0,.2)}.bunt-tabs{width:100%;margin-bottom:24px}.bunt-tabs.fullwidth .ui-tab-header-item{flex-grow:1}.bunt-tabs.raised{border:none;box-shadow:0 0 2px rgba(0,0,0,.12),0 2px 2px rgba(0,0,0,.2)}.bunt-tabs.raised .bunt-tabs-body{border:none}.bunt-tabs-header{position:relative;width:100%}.bunt-tabs-header .bunt-tab-header-item .ui-ripple-ink .ripple.held{opacity:.7}.bunt-tabs-header-items{position:relative;display:flex;list-style:none;margin:0;padding:0}.bunt-tab{outline:none}.bunt-tab-header-item{font-family:Roboto,Helvetica Neue,HelveticaNeue,Helvetica,Arial,sans-serif;position:relative;display:flex;height:48px;padding:0 12px;text-transform:uppercase;align-items:center;justify-content:center;cursor:pointer;min-width:80px;outline:none}.bunt-tab-header-item.type-icon-and-text{display:flex;flex-direction:column;height:72px}.bunt-tab-header-item.type-icon-and-text .bunt-tab-header-item-icon{margin-bottom:4px}.bunt-tab-header-item.disabled{opacity:.4;cursor:default}.bunt-tabs-indicator{position:absolute;height:2px;bottom:0;left:0;right:0;transform:scale(0);transform-origin:left center;transition:transform}.bunt-tabs-indicator.align-bottom{top:0;bottom:auto}.bunt-tabs-indicator.expand{transition-duration:75ms;transition-timing-function:cubic-bezier(.4,0,1,1)}.bunt-tabs-indicator.contract{transition-duration:.09s;transition-timing-function:cubic-bezier(0,0,.2,1)}.bunt-tooltip{left:0;top:0;will-change:transform,opacity;background-color:rgba(0,0,0,.54);color:#fff;height:24px;white-space:nowrap;line-height:24px;padding:0 8px;font-size:14px;font-weight:400;text-transform:none;border-radius:2px;pointer-events:none;-webkit-user-select:none;-ms-user-select:none;user-select:none;-moz-user-select:none;z-index:90000}.bunt-dialog-container{position:fixed;top:0;bottom:0;left:0;right:0;z-index:90001;display:flex;justify-content:center;align-items:center}.bunt-dialog-container .bunt-dialog{z-index:90003;width:50vw;border-radius:2px;box-shadow:0 2px 5px 0 rgba(0,0,0,.16),0 2px 10px 0 rgba(0,0,0,.12);background-color:#fff;transition:box-shadow .3s}.bunt-dialog-container .bunt-backdrop{z-index:90002;position:absolute;top:0;bottom:0;left:0;right:0;background-color:rgba(0,0,0,.54)}.bunt-scrollbar{position:relative;box-sizing:border-box;overflow:scroll;scrollbar-width:none}.bunt-scrollbar:hover .bunt-scrollbar-thumb{opacity:.4}.bunt-scrollbar::-webkit-scrollbar{display:none}.bunt-scrollbar .bunt-scrollbar-rail-wrapper-x,.bunt-scrollbar .bunt-scrollbar-rail-wrapper-y{position:-webkit-sticky;position:sticky;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;margin:0!important}.bunt-scrollbar .bunt-scrollbar-rail-x,.bunt-scrollbar .bunt-scrollbar-rail-y{position:absolute;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.bunt-scrollbar .bunt-scrollbar-thumb{position:absolute;background-color:#546e7a;opacity:.2;border-radius:6px;transition:height .3s cubic-bezier(.4,0,.2,1),width .3s cubic-bezier(.4,0,.2,1),opacity .3s cubic-bezier(.4,0,.2,1)}.bunt-scrollbar .bunt-scrollbar-rail-wrapper-x{top:100%;bottom:0;left:0;width:0;height:0}.bunt-scrollbar .bunt-scrollbar-rail-wrapper-x .bunt-scrollbar-rail-x{height:15px;bottom:0}.bunt-scrollbar .bunt-scrollbar-rail-wrapper-x .bunt-scrollbar-rail-x .bunt-scrollbar-thumb{bottom:2px;height:6px}.bunt-scrollbar .bunt-scrollbar-rail-wrapper-x .bunt-scrollbar-rail-x.active .bunt-scrollbar-thumb,.bunt-scrollbar .bunt-scrollbar-rail-wrapper-x .bunt-scrollbar-rail-x:hover .bunt-scrollbar-thumb{height:12px;opacity:.8}.bunt-scrollbar .bunt-scrollbar-rail-wrapper-y{bottom:100%;left:100%;right:0;height:0;width:0}.bunt-scrollbar .bunt-scrollbar-rail-wrapper-y .bunt-scrollbar-rail-y{width:15px;right:0;top:0}.bunt-scrollbar .bunt-scrollbar-rail-wrapper-y .bunt-scrollbar-rail-y .bunt-scrollbar-thumb{right:2px;width:6px}.bunt-scrollbar .bunt-scrollbar-rail-wrapper-y .bunt-scrollbar-rail-y.active .bunt-scrollbar-thumb,.bunt-scrollbar .bunt-scrollbar-rail-wrapper-y .bunt-scrollbar-rail-y:hover .bunt-scrollbar-thumb{width:12px;opacity:.8}a{color:var(--pretalx-clr-primary);text-decoration:none}body,html{margin:0;--pretalx-clr-primary:#673ab7}.bunt-scrollbar{min-height:0}.pretalx-schedule{display:flex;flex-direction:column;min-height:0;height:100%;font-size:14px}.pretalx-schedule.grid-schedule{min-width:-webkit-min-content;min-width:-moz-min-content;min-width:min-content;max-width:var(--schedule-max-width);margin:0 auto}.pretalx-schedule.list-schedule{min-width:0}.pretalx-schedule .settings{margin-left:18px;align-self:flex-start;display:flex;align-items:center;position:-webkit-sticky;position:sticky;left:18px}.pretalx-schedule .settings .fav-toggle{margin-right:8px;display:flex}.pretalx-schedule .settings .fav-toggle.active{border:2px solid #ffa000}.pretalx-schedule .settings .fav-toggle .bunt-button-text{display:flex;align-items:center}.pretalx-schedule .settings .fav-toggle svg{width:20px;height:20px;margin-right:6px}.pretalx-schedule .settings .bunt-select{max-width:300px;padding-right:8px}.pretalx-schedule .settings .timezone-label{cursor:default;color:rgba(0,0,0,.54)}.pretalx-schedule .days{background-color:#fff;overflow-x:auto;position:-webkit-sticky;position:sticky;top:0;left:0;margin-bottom:0;flex:none;min-width:0;height:48px;z-index:30}.pretalx-schedule .days .bunt-tabs-header{background-color:transparent}.pretalx-schedule .days .bunt-tabs-header .bunt-tabs-header-items,.pretalx-schedule .days .bunt-tabs-header .bunt-tabs-header-items .bunt-tab-header-item-icon{color:rgba(0,0,0,.54)}body[modality=keyboard] .pretalx-schedule .days .bunt-tabs-header .bunt-tab-header-item:focus{outline:1px solid var(--pretalx-clr-primary)}.pretalx-schedule .days .bunt-tabs-header .bunt-tab-header-item.active,.pretalx-schedule .days .bunt-tabs-header .bunt-tab-header-item.active .bunt-tab-header-item-icon{color:var(--pretalx-clr-primary)}.pretalx-schedule .days .bunt-tabs-indicator{background-color:var(--pretalx-clr-primary)}.pretalx-schedule .days.grid-tabs{width:var(--schedule-max-width)}.pretalx-schedule .days .bunt-tabs-header,.pretalx-schedule .days .bunt-tabs-header-items{min-width:-webkit-min-content;min-width:-moz-min-content;min-width:min-content}.pretalx-schedule .days .bunt-tabs-header-items{justify-content:center}.pretalx-schedule .days .bunt-tabs-header-items .bunt-tab-header-item{min-width:-webkit-min-content;min-width:-moz-min-content;min-width:min-content}.pretalx-schedule .days .bunt-tabs-header-items .bunt-tab-header-item-text{white-space:nowrap}", ""]);
+exports.push([module.i, "html{font-size:14px;font-size:87.5%}body{font-family:Roboto,Helvetica Neue,HelveticaNeue,Helvetica,Arial,sans-serif;color:rgba(0,0,0,.87);-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;font-size-adjust:auto}b{font-weight:700}i{font-style:italic}strong{font-weight:700}em{font-style:italic}h1{font-size:33.6px;font-size:2.4rem}h1,h2{text-rendering:optimizelegibility;font-weight:700;margin:.75em 0;line-height:1.6em}h2{font-size:25.2px;font-size:1.8rem}h3{font-size:21px;font-size:1.5rem}h3,h4{text-rendering:optimizelegibility;font-weight:700;margin:.75em 0;line-height:1.6em}h4{font-size:18.2px;font-size:1.3rem}h5{font-size:14px;font-size:1rem}h5,h6{text-rendering:optimizelegibility;font-weight:700;margin:.75em 0;line-height:1.6em}h6{font-size:12.6px;font-size:.9rem;text-transform:uppercase}ul{margin:5px 15px;margin:.32rem .94rem;padding-left:1rem}ul li{list-style-type:disc;padding:2px 0;padding:.125rem}ol{margin:5px 18px;margin:.32rem 1.125rem;padding-left:1rem}ol li{list-style-type:decimal;padding:2px 0;padding:.125rem}::-moz-selection{background:#2196f3;color:#fff}::selection{background:#2196f3;color:#fff}p{font-size:1rem;margin:.75em 0;line-height:1.6em}small{font-size:55%;opacity:.6;font-weight:400}a[href]:not([class]){color:#2196f3;text-decoration:none}a[href]:not([class]):hover{color:#0c81df}a[href]:not([class]):visited{opacity:.8}blockquote{border-left:4px solid #2196f3;margin:1em 0;padding-left:1.5em}blockquote>p{font-weight:300;font-size:127%;font-size:1.27rem;line-height:127%;line-height:1.27rem;margin-top:0}blockquote>cite,blockquote>figcaption,blockquote>footer{color:#888}blockquote>cite:before,blockquote>figcaption:before,blockquote>footer:before{content:\"\\2014\"}.hyphenation{-ms-word-break:break-all;word-break:break-all;word-break:break-word;-webkit-hyphens:auto;-ms-hyphens:auto;hyphens:auto;-webkit-hyphenate-before:2;-webkit-hyphenate-after:3;hyphenate-lines:3}.bunt-ripple-ink{display:block;overflow:hidden;border-radius:inherit;position:absolute;top:0;left:0;right:0;bottom:0;-webkit-mask-image:-webkit-radial-gradient(circle,#fff,#000)}.ripple{position:absolute;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;border-radius:50%;background-color:currentColor;background-clip:padding-box;transition:transform .4s ease-out,opacity .4s ease-out;opacity:.1;transform:scale(1)}.ripple-ink-enter{opacity:.2;transform:scale(0)}.ripple-ink-leave-active{opacity:0;transition:transform .1s ease-out,opacity .1s ease-out}.bunt-icon{font-size:24px;width:24px;height:24px;line-height:24px;display:inline-block;cursor:inherit}.bunt-button,.bunt-link-button{font-family:Roboto,Helvetica Neue,HelveticaNeue,Helvetica,Arial,sans-serif;font-size:14px;text-transform:uppercase;font-weight:500;line-height:36px;vertical-align:middle;flex-shrink:0;outline:none;border:none;position:relative;display:inline-flex;align-items:center;justify-content:center;cursor:default;border-radius:4px;padding:0 16px;min-width:80px;height:36px;white-space:nowrap}.bunt-button::-moz-focus-inner,.bunt-link-button::-moz-focus-inner{border:0}.bunt-button.autofocus:focus,.bunt-link-button.autofocus:focus,body[modality=keyboard] .bunt-button:focus,body[modality=keyboard] .bunt-link-button:focus{outline-style:solid}.bunt-button.disabled .bunt-button-content,.bunt-link-button.disabled .bunt-button-content{opacity:.6}.bunt-button:not(.disabled),.bunt-link-button:not(.disabled){cursor:pointer}.bunt-button .bunt-progress-circular,.bunt-link-button .bunt-progress-circular{position:absolute;top:50%;left:50%}.bunt-button .bunt-progress-circular.active,.bunt-link-button .bunt-progress-circular.active{-webkit-animation:button-container-rotate 1568ms linear infinite;animation:button-container-rotate 1568ms linear infinite}@-webkit-keyframes button-container-rotate{0%{transform:translate(-50%,-50%) rotate(0deg)}to{transform:translate(-50%,-50%) rotate(1turn)}}@keyframes button-container-rotate{0%{transform:translate(-50%,-50%) rotate(0deg)}to{transform:translate(-50%,-50%) rotate(1turn)}}.bunt-button .bunt-icon.error,.bunt-button .bunt-icon.success,.bunt-link-button .bunt-icon.error,.bunt-link-button .bunt-icon.success{position:absolute}.bunt-button.error .bunt-tooltip,.bunt-link-button.error .bunt-tooltip{background-color:#f44336}.bunt-button-content{display:flex}.bunt-button-content.invisible{visibility:hidden}.bunt-icon{height:36px;line-height:36px;font-size:20px}.bunt-button-raised{box-shadow:0 0 2px rgba(0,0,0,.12),0 2px 2px rgba(0,0,0,.2);transition:box-shadow .1s}.bunt-button-raised.autofocus:focus,body[modality=keyboard] .bunt-button-raised:focus{outline:none;box-shadow:0 0 5px rgba(0,0,0,.22),0 3px 6px rgba(0,0,0,.3)}.bunt-checkbox{cursor:pointer;position:relative;display:flex;flex-shrink:0}.bunt-checkbox input{position:absolute;cursor:inherit;pointer-events:all;opacity:0;width:100%;height:100%;z-index:2;left:0;box-sizing:border-box;padding:0;margin:0}.bunt-checkbox label{font-size:14px;line-height:24px}.bunt-checkbox .bunt-checkbox-box{height:20px;width:20px;border-radius:2px;border:2px solid rgba(0,0,0,.54);margin-right:8px;position:relative;transition:all .2s ease-out}.bunt-checkbox .bunt-checkbox-box:after{width:6px;height:13px;position:absolute;top:0;left:6px;border:2px solid #fff;border-top:0;border-left:0;opacity:0;transform:rotate(45deg) scale3D(.15,.15,1);transition:all .3s cubic-bezier(.55,0,.55,.2);content:\" \"}.bunt-checkbox.checked .bunt-checkbox-box{background-color:#2196f3;border-color:#2196f3}.bunt-checkbox.checked .bunt-checkbox-box:after{opacity:1;transform:rotate(45deg) scaleX(1);transition:all .4s cubic-bezier(.25,.8,.25,1)}.bunt-radio{cursor:pointer;position:relative;display:flex;flex-shrink:0;padding-top:16px}.bunt-radio input{position:absolute;cursor:inherit;pointer-events:all;opacity:0;width:100%;height:100%;z-index:2;left:0;box-sizing:border-box;padding:0;margin:0}.bunt-radio label{font-size:14px;line-height:20px}.bunt-radio .bunt-radio-circle{height:20px;width:20px;border-radius:50%;border:2px solid rgba(0,0,0,.54);margin-right:8px;position:relative;transition:all .2s ease-out;box-sizing:border-box}.bunt-radio .bunt-radio-circle:after{width:10px;height:10px;position:absolute;top:3px;left:3px;background-color:#2196f3;transition:all .4s cubic-bezier(.25,.8,.25,1);border-radius:50%;opacity:0;content:\" \"}.bunt-radio.checked .bunt-radio-circle{border-color:#2196f3}.bunt-radio.checked .bunt-radio-circle:after{opacity:1}.bunt-icon-button{line-height:36px;vertical-align:middle;flex-shrink:0;background:none;outline:none;border:none;position:relative;display:inline-flex;align-items:center;justify-content:center;cursor:default;border-radius:50%;padding:0;height:36px;width:36px;background-color:transparent}.bunt-icon-button::-moz-focus-inner{border:0}.bunt-icon-button.autofocus:focus,body[modality=keyboard] .bunt-icon-button:focus{outline-style:solid}.bunt-icon-button.disabled .bunt-icon{opacity:.6}.bunt-icon-button:not(.disabled){cursor:pointer}.bunt-icon-button.autofocus:focus,body[modality=keyboard] .bunt-icon-button:focus{outline-width:2px;outline-offset:0}.bunt-icon-button .bunt-icon{height:36px;line-height:36px;font-size:20px;width:auto}.bunt-icon-button svg{height:20px}.bunt-input{display:flex;flex-direction:column;height:56px;padding-top:16px;flex-shrink:0}.bunt-input .label-input-container{position:relative;display:flex;align-items:center}.bunt-input .icon{font-size:22px;color:rgba(0,0,0,.54);padding:0 0 0 8px}.bunt-input input{box-sizing:border-box;height:37px;width:100%;border:none;outline:none;font-family:Roboto,Helvetica Neue,HelveticaNeue,Helvetica,Arial,sans-serif;font-size:16px;font-weight:400;flex:auto;padding:8px 8px 8px 12px;background-color:transparent;border-radius:4px}.bunt-input label{position:absolute;top:8px;left:12px;font-size:16px;font-weight:400;line-height:21px;pointer-events:none;color:rgba(0,0,0,.54);transition:transform .25s,width .25s;transform-origin:left top}.bunt-input ::-moz-placeholder{color:rgba(0,0,0,.54)}.bunt-input :-ms-input-placeholder{color:rgba(0,0,0,.54)}.bunt-input ::placeholder{color:rgba(0,0,0,.54)}.bunt-input .error-icon{font-size:22px;color:#f44336;padding-right:8px}.bunt-input .outline{position:absolute;top:0;left:0;height:100%;width:100%;stroke:rgba(0,0,0,.38);stroke-width:1px;fill:none;pointer-events:none;stroke-dasharray:calc(var(--label-gap)/2 + 4) 0 100000;transition:stroke .15s cubic-bezier(.4,0,.2,1),stroke-width .15s cubic-bezier(.4,0,.2,1),stroke-dasharray .15s cubic-bezier(.4,0,.2,1)}.bunt-input .hint{font-size:13px;padding-top:0;padding-left:16px;color:rgba(0,0,0,.54);line-height:18px}.bunt-input .hint p{margin:0}.bunt-input.with-icon input{padding-left:4px}.bunt-input.focused .outline{stroke:#2196f3;stroke-width:2px}.bunt-input.focused label{color:#2196f3}.bunt-input.floating-label .outline,.bunt-input.focused .outline{stroke-dasharray:3 var(--label-gap) 10000}.bunt-input.floating-label label,.bunt-input.focused label{transform:translateY(-15px) scale(.75)}.bunt-input.disabled{cursor:not-allowed}.bunt-input.disabled input{cursor:not-allowed;background-color:rgba(0,0,0,.08);color:rgba(0,0,0,.38)}.bunt-input.disabled .outline{stroke-dasharray:10}.bunt-input.disabled.floating-label .outline,.bunt-input.disabled.focused .outline{stroke-dasharray:3 var(--label-gap) 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10}.bunt-input.invalid .hint,.bunt-input.invalid label{color:#f44336}.bunt-input.invalid .outline{stroke:#f44336;stroke-width:2px}.bunt-input-outline-container{display:flex;flex-direction:column;padding-top:16px;flex-shrink:0;position:relative}.bunt-input-outline-container label{position:absolute;top:8px;left:12px;font-size:16px;font-weight:400;line-height:21px;pointer-events:none;color:rgba(0,0,0,.54);transform-origin:left top;transform:translateY(-15px) scale(.75)}.bunt-input-outline-container .outline{position:absolute;top:0;left:0;height:100%;width:100%;stroke:rgba(0,0,0,.38);stroke-width:1px;fill:none;pointer-events:none;stroke-dasharray:3 var(--label-gap) 10000;transition:stroke .15s cubic-bezier(.4,0,.2,1),stroke-width .15s cubic-bezier(.4,0,.2,1),stroke-dasharray .15s cubic-bezier(.4,0,.2,1)}.bunt-input-outline-container.focused .outline{stroke:#2196f3;stroke-width:2px}.bunt-input-outline-container.focused label{color:#2196f3}a.bunt-link-button{display:inline-flex;background-color:#eee;text-decoration:none;color:rgba(0,0,0,.87)}.bunt-drop-element{position:absolute;display:none;z-index:$z-index-dropdown;max-width:100%;max-height:100%;transition:opacity .2s ease;opacity:0}.bunt-drop-element,.bunt-drop-element *,.bunt-drop-element:after,.bunt-drop-element :after,.bunt-drop-element:before,.bunt-drop-element :before{box-sizing:border-box}.bunt-drop-element.bunt-drop-open{display:block}.bunt-drop-element.bunt-drop-after-open{opacity:1}.bunt-progress-circular{display:inline-block;position:relative;width:48px;height:48px}.bunt-progress-circular.tiny{width:14px;height:14px}.bunt-progress-circular.tiny circle{stroke-width:8}.bunt-progress-circular.small{width:24px;height:24px}.bunt-progress-circular.small circle{stroke-width:7}.bunt-progress-circular.big{width:64px;height:64px}.bunt-progress-circular.big circle{stroke-width:4}.bunt-progress-circular.huge{width:128px;height:128px}.bunt-progress-circular.huge circle{stroke-width:3}.bunt-progress-circular.progress-center{display:block;margin:auto}.bunt-progress-circular.progress-page{display:block;margin:7rem auto}.bunt-progress-circular svg{-webkit-animation:bunt-progress-circular-rotate 1568ms linear infinite;animation:bunt-progress-circular-rotate 1568ms linear infinite;position:relative;height:100%;width:100%}.bunt-progress-circular svg circle{fill:none;stroke:#2196f3;stroke-width:5px;stroke-miterlimit:10;stroke-dasharray:1,200;stroke-dashoffset:0;stroke-linecap:square;-webkit-animation:bunt-progress-circular-dash 1333ms ease-in-out infinite;animation:bunt-progress-circular-dash 1333ms ease-in-out infinite}@-webkit-keyframes bunt-progress-circular-rotate{to{transform:rotate(1turn)}}@keyframes bunt-progress-circular-rotate{to{transform:rotate(1turn)}}@-webkit-keyframes bunt-progress-circular-dash{0%{stroke-dasharray:1,200;stroke-dashoffset:0}50%{stroke-dasharray:89,200;stroke-dashoffset:-35}to{stroke-dasharray:89,200;stroke-dashoffset:-124}}@keyframes bunt-progress-circular-dash{0%{stroke-dasharray:1,200;stroke-dashoffset:0}50%{stroke-dasharray:89,200;stroke-dashoffset:-35}to{stroke-dasharray:89,200;stroke-dashoffset:-124}}.bunt-select{position:relative}.bunt-select .open-indicator{position:absolute;right:4px;color:rgba(0,0,0,.54);font-size:28px;line-height:20px;top:8px;transition:all .25s ease-in-out;cursor:pointer}.bunt-select.open .open-indicator{transform-origin:center;transform:rotate(180deg)}.bunt-select .bunt-input input{padding-right:20px}.bunt-select-dropdown-menu{border-radius:2px;box-shadow:0 2px 5px 0 rgba(0,0,0,.16),0 2px 10px 0 rgba(0,0,0,.12);background-color:#fff;transition:box-shadow .3s;border-top:none;border-radius:0 0 2px 2px;z-index:100;display:flex;flex-direction:column}.bunt-select-dropdown-menu .scrollable-menu{display:flex;flex-direction:column;flex:auto;min-height:0}.bunt-select-dropdown-menu ul{margin:0;padding:0}.bunt-select-dropdown-menu li{list-style-type:none;height:32px;padding:0 8px;line-height:32px;text-overflow:ellipsis;overflow:hidden;white-space:nowrap}.bunt-select-dropdown-menu li.highlight{background-color:#2196f3}.bunt-switch{cursor:pointer;position:relative;display:flex;height:20px;margin-bottom:8px;flex-shrink:0}.bunt-switch input{position:absolute;cursor:inherit;pointer-events:all;opacity:0;width:100%;height:100%;z-index:2;left:0;box-sizing:border-box;padding:0;margin:0}.bunt-switch label{font-size:14px;line-height:14px}.bunt-switch .bunt-switch-track{height:14px;width:36px;border-radius:30px;background-color:rgba(0,0,0,.38);margin-right:8px;position:relative;transition:all .4s ease-out}.bunt-switch .bunt-switch-thumb{height:20px;width:20px;background-color:#fafafa;border-radius:50%;position:absolute;left:0;top:50%;transform:translate3d(-1px,-50%,0);transition:all .3s ease;box-shadow:0 1px 1px 0 rgba(0,0,0,.14),0 1px 3px 0 rgba(0,0,0,.12),0 2px 1px -1px rgba(0,0,0,.2)}.bunt-switch.checked .bunt-switch-track{background-color:rgba(33,150,243,.5)}.bunt-switch.checked .bunt-switch-thumb{background-color:#2196f3;transform:translate3d(75%,-50%,0);box-shadow:0 2px 2px 0 rgba(0,0,0,.14),0 1px 5px 0 rgba(0,0,0,.12),0 3px 1px -2px rgba(0,0,0,.2)}.bunt-tabs{width:100%;margin-bottom:24px}.bunt-tabs.fullwidth .ui-tab-header-item{flex-grow:1}.bunt-tabs.raised{border:none;box-shadow:0 0 2px rgba(0,0,0,.12),0 2px 2px rgba(0,0,0,.2)}.bunt-tabs.raised .bunt-tabs-body{border:none}.bunt-tabs-header{position:relative;width:100%}.bunt-tabs-header .bunt-tab-header-item .ui-ripple-ink .ripple.held{opacity:.7}.bunt-tabs-header-items{position:relative;display:flex;list-style:none;margin:0;padding:0}.bunt-tab{outline:none}.bunt-tab-header-item{font-family:Roboto,Helvetica Neue,HelveticaNeue,Helvetica,Arial,sans-serif;position:relative;display:flex;height:48px;padding:0 12px;text-transform:uppercase;align-items:center;justify-content:center;cursor:pointer;min-width:80px;outline:none}.bunt-tab-header-item.type-icon-and-text{display:flex;flex-direction:column;height:72px}.bunt-tab-header-item.type-icon-and-text .bunt-tab-header-item-icon{margin-bottom:4px}.bunt-tab-header-item.disabled{opacity:.4;cursor:default}.bunt-tabs-indicator{position:absolute;height:2px;bottom:0;left:0;right:0;transform:scale(0);transform-origin:left center;transition:transform}.bunt-tabs-indicator.align-bottom{top:0;bottom:auto}.bunt-tabs-indicator.expand{transition-duration:75ms;transition-timing-function:cubic-bezier(.4,0,1,1)}.bunt-tabs-indicator.contract{transition-duration:.09s;transition-timing-function:cubic-bezier(0,0,.2,1)}.bunt-tooltip{left:0;top:0;will-change:transform,opacity;background-color:rgba(0,0,0,.54);color:#fff;height:24px;white-space:nowrap;line-height:24px;padding:0 8px;font-size:14px;font-weight:400;text-transform:none;border-radius:2px;pointer-events:none;-webkit-user-select:none;-ms-user-select:none;user-select:none;-moz-user-select:none;z-index:90000}.bunt-dialog-container{position:fixed;top:0;bottom:0;left:0;right:0;z-index:90001;display:flex;justify-content:center;align-items:center}.bunt-dialog-container .bunt-dialog{z-index:90003;width:50vw;border-radius:2px;box-shadow:0 2px 5px 0 rgba(0,0,0,.16),0 2px 10px 0 rgba(0,0,0,.12);background-color:#fff;transition:box-shadow .3s}.bunt-dialog-container .bunt-backdrop{z-index:90002;position:absolute;top:0;bottom:0;left:0;right:0;background-color:rgba(0,0,0,.54)}.bunt-scrollbar{position:relative;box-sizing:border-box;overflow:scroll;scrollbar-width:none}.bunt-scrollbar:hover .bunt-scrollbar-thumb{opacity:.4}.bunt-scrollbar::-webkit-scrollbar{display:none}.bunt-scrollbar .bunt-scrollbar-rail-wrapper-x,.bunt-scrollbar .bunt-scrollbar-rail-wrapper-y{position:sticky;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;margin:0!important}.bunt-scrollbar .bunt-scrollbar-rail-x,.bunt-scrollbar .bunt-scrollbar-rail-y{position:absolute;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.bunt-scrollbar .bunt-scrollbar-thumb{position:absolute;background-color:#546e7a;opacity:.2;border-radius:6px;transition:height .3s cubic-bezier(.4,0,.2,1),width .3s cubic-bezier(.4,0,.2,1),opacity .3s cubic-bezier(.4,0,.2,1)}.bunt-scrollbar .bunt-scrollbar-rail-wrapper-x{top:100%;bottom:0;left:0;width:0;height:0}.bunt-scrollbar .bunt-scrollbar-rail-wrapper-x .bunt-scrollbar-rail-x{height:15px;bottom:0}.bunt-scrollbar .bunt-scrollbar-rail-wrapper-x .bunt-scrollbar-rail-x .bunt-scrollbar-thumb{bottom:2px;height:6px}.bunt-scrollbar .bunt-scrollbar-rail-wrapper-x .bunt-scrollbar-rail-x.active .bunt-scrollbar-thumb,.bunt-scrollbar .bunt-scrollbar-rail-wrapper-x .bunt-scrollbar-rail-x:hover .bunt-scrollbar-thumb{height:12px;opacity:.8}.bunt-scrollbar .bunt-scrollbar-rail-wrapper-y{bottom:100%;left:100%;right:0;height:0;width:0}.bunt-scrollbar .bunt-scrollbar-rail-wrapper-y .bunt-scrollbar-rail-y{width:15px;right:0;top:0}.bunt-scrollbar .bunt-scrollbar-rail-wrapper-y .bunt-scrollbar-rail-y .bunt-scrollbar-thumb{right:2px;width:6px}.bunt-scrollbar .bunt-scrollbar-rail-wrapper-y .bunt-scrollbar-rail-y.active .bunt-scrollbar-thumb,.bunt-scrollbar .bunt-scrollbar-rail-wrapper-y .bunt-scrollbar-rail-y:hover .bunt-scrollbar-thumb{width:12px;opacity:.8}a{color:var(--pretalx-clr-primary);text-decoration:none}body,html{margin:0;--pretalx-clr-primary:#673ab7}.bunt-scrollbar{min-height:0}.pretalx-schedule{display:flex;flex-direction:column;min-height:0;height:100%;font-size:14px}.pretalx-schedule.grid-schedule{min-width:-webkit-min-content;min-width:-moz-min-content;min-width:min-content;max-width:var(--schedule-max-width);margin:0 auto}.pretalx-schedule.list-schedule{min-width:0}.pretalx-schedule .settings{margin-left:18px;align-self:flex-start;display:flex;align-items:center;position:sticky;left:18px}.pretalx-schedule .settings .fav-toggle{margin-right:8px;display:flex}.pretalx-schedule .settings .fav-toggle.active{border:2px solid #ffa000}.pretalx-schedule .settings .fav-toggle .bunt-button-text{display:flex;align-items:center}.pretalx-schedule .settings .fav-toggle svg{width:20px;height:20px;margin-right:6px}.pretalx-schedule .settings .bunt-select{max-width:300px;padding-right:8px}.pretalx-schedule .settings .timezone-label{cursor:default;color:rgba(0,0,0,.54)}.pretalx-schedule .days{background-color:#fff;overflow-x:auto;position:sticky;top:0;left:0;margin-bottom:0;flex:none;min-width:0;height:48px;z-index:30}.pretalx-schedule .days .bunt-tabs-header{background-color:transparent}.pretalx-schedule .days .bunt-tabs-header .bunt-tabs-header-items,.pretalx-schedule .days .bunt-tabs-header .bunt-tabs-header-items .bunt-tab-header-item-icon{color:rgba(0,0,0,.54)}body[modality=keyboard] .pretalx-schedule .days .bunt-tabs-header .bunt-tab-header-item:focus{outline:1px solid var(--pretalx-clr-primary)}.pretalx-schedule .days .bunt-tabs-header .bunt-tab-header-item.active,.pretalx-schedule .days .bunt-tabs-header .bunt-tab-header-item.active .bunt-tab-header-item-icon{color:var(--pretalx-clr-primary)}.pretalx-schedule .days .bunt-tabs-indicator{background-color:var(--pretalx-clr-primary)}.pretalx-schedule .days.grid-tabs{width:var(--schedule-max-width)}.pretalx-schedule .days .bunt-tabs-header,.pretalx-schedule .days .bunt-tabs-header-items{min-width:-webkit-min-content;min-width:-moz-min-content;min-width:min-content}.pretalx-schedule .days .bunt-tabs-header-items{justify-content:center}.pretalx-schedule .days .bunt-tabs-header-items .bunt-tab-header-item{min-width:-webkit-min-content;min-width:-moz-min-content;min-width:min-content}.pretalx-schedule .days .bunt-tabs-header-items .bunt-tab-header-item-text{white-space:nowrap}", ""]);
 // Exports
 module.exports = exports;
 
@@ -22691,19 +19752,6 @@ module.exports = decode;
 
 /***/ }),
 
-/***/ "90e3":
-/***/ (function(module, exports) {
-
-var id = 0;
-var postfix = Math.random();
-
-module.exports = function (key) {
-  return 'Symbol(' + String(key === undefined ? '' : key) + ')_' + (++id + postfix).toString(36);
-};
-
-
-/***/ }),
-
 /***/ "90ea":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22819,23 +19867,6 @@ module.exports = function (key) {
 
 /***/ }),
 
-/***/ "9112":
-/***/ (function(module, exports, __webpack_require__) {
-
-var DESCRIPTORS = __webpack_require__("83ab");
-var definePropertyModule = __webpack_require__("9bf2");
-var createPropertyDescriptor = __webpack_require__("5c6c");
-
-module.exports = DESCRIPTORS ? function (object, key, value) {
-  return definePropertyModule.f(object, key, createPropertyDescriptor(1, value));
-} : function (object, key, value) {
-  object[key] = value;
-  return object;
-};
-
-
-/***/ }),
-
 /***/ "922c":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22875,7 +19906,6 @@ module.exports.tokenize = function strikethrough(state, silent) {
     state.delimiters.push({
       marker: marker,
       length: 0,     // disable "rule of 3" length checks meant for emphasis
-      jump:   i / 2, // for `~~` 1 marker = 2 characters
       token:  state.tokens.length - 1,
       end:    -1,
       open:   scanned.can_open,
@@ -22971,101 +20001,6 @@ module.exports.postProcess = function strikethrough(state) {
     }
   }
 };
-
-
-/***/ }),
-
-/***/ "9263":
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var regexpFlags = __webpack_require__("ad6d");
-var stickyHelpers = __webpack_require__("9f7f");
-
-var nativeExec = RegExp.prototype.exec;
-// This always refers to the native implementation, because the
-// String#replace polyfill uses ./fix-regexp-well-known-symbol-logic.js,
-// which loads this file before patching the method.
-var nativeReplace = String.prototype.replace;
-
-var patchedExec = nativeExec;
-
-var UPDATES_LAST_INDEX_WRONG = (function () {
-  var re1 = /a/;
-  var re2 = /b*/g;
-  nativeExec.call(re1, 'a');
-  nativeExec.call(re2, 'a');
-  return re1.lastIndex !== 0 || re2.lastIndex !== 0;
-})();
-
-var UNSUPPORTED_Y = stickyHelpers.UNSUPPORTED_Y || stickyHelpers.BROKEN_CARET;
-
-// nonparticipating capturing group, copied from es5-shim's String#split patch.
-var NPCG_INCLUDED = /()??/.exec('')[1] !== undefined;
-
-var PATCH = UPDATES_LAST_INDEX_WRONG || NPCG_INCLUDED || UNSUPPORTED_Y;
-
-if (PATCH) {
-  patchedExec = function exec(str) {
-    var re = this;
-    var lastIndex, reCopy, match, i;
-    var sticky = UNSUPPORTED_Y && re.sticky;
-    var flags = regexpFlags.call(re);
-    var source = re.source;
-    var charsAdded = 0;
-    var strCopy = str;
-
-    if (sticky) {
-      flags = flags.replace('y', '');
-      if (flags.indexOf('g') === -1) {
-        flags += 'g';
-      }
-
-      strCopy = String(str).slice(re.lastIndex);
-      // Support anchored sticky behavior.
-      if (re.lastIndex > 0 && (!re.multiline || re.multiline && str[re.lastIndex - 1] !== '\n')) {
-        source = '(?: ' + source + ')';
-        strCopy = ' ' + strCopy;
-        charsAdded++;
-      }
-      // ^(? + rx + ) is needed, in combination with some str slicing, to
-      // simulate the 'y' flag.
-      reCopy = new RegExp('^(?:' + source + ')', flags);
-    }
-
-    if (NPCG_INCLUDED) {
-      reCopy = new RegExp('^' + source + '$(?!\\s)', flags);
-    }
-    if (UPDATES_LAST_INDEX_WRONG) lastIndex = re.lastIndex;
-
-    match = nativeExec.call(sticky ? reCopy : re, strCopy);
-
-    if (sticky) {
-      if (match) {
-        match.input = match.input.slice(charsAdded);
-        match[0] = match[0].slice(charsAdded);
-        match.index = re.lastIndex;
-        re.lastIndex += match[0].length;
-      } else re.lastIndex = 0;
-    } else if (UPDATES_LAST_INDEX_WRONG && match) {
-      re.lastIndex = re.global ? match.index + match[0].length : lastIndex;
-    }
-    if (NPCG_INCLUDED && match && match.length > 1) {
-      // Fix browsers whose `exec` methods don't consistently return `undefined`
-      // for NPCG, like IE8. NOTE: This doesn' work for /(.?)?/
-      nativeReplace.call(match[0], reCopy, function () {
-        for (i = 1; i < arguments.length - 2; i++) {
-          if (arguments[i] === undefined) match[i] = undefined;
-        }
-      });
-    }
-
-    return match;
-  };
-}
-
-module.exports = patchedExec;
 
 
 /***/ }),
@@ -23230,389 +20165,6 @@ module.exports = function image(state, silent) {
 
 /***/ }),
 
-/***/ "94ca":
-/***/ (function(module, exports, __webpack_require__) {
-
-var fails = __webpack_require__("d039");
-
-var replacement = /#|\.prototype\./;
-
-var isForced = function (feature, detection) {
-  var value = data[normalize(feature)];
-  return value == POLYFILL ? true
-    : value == NATIVE ? false
-    : typeof detection == 'function' ? fails(detection)
-    : !!detection;
-};
-
-var normalize = isForced.normalize = function (string) {
-  return String(string).replace(replacement, '.').toLowerCase();
-};
-
-var data = isForced.data = {};
-var NATIVE = isForced.NATIVE = 'N';
-var POLYFILL = isForced.POLYFILL = 'P';
-
-module.exports = isForced;
-
-
-/***/ }),
-
-/***/ "9861":
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-// TODO: in core-js@4, move /modules/ dependencies to public entries for better optimization by tools like `preset-env`
-__webpack_require__("e260");
-var $ = __webpack_require__("23e7");
-var getBuiltIn = __webpack_require__("d066");
-var USE_NATIVE_URL = __webpack_require__("0d3b");
-var redefine = __webpack_require__("6eeb");
-var redefineAll = __webpack_require__("e2cc");
-var setToStringTag = __webpack_require__("d44e");
-var createIteratorConstructor = __webpack_require__("9ed3");
-var InternalStateModule = __webpack_require__("69f3");
-var anInstance = __webpack_require__("19aa");
-var hasOwn = __webpack_require__("5135");
-var bind = __webpack_require__("0366");
-var classof = __webpack_require__("f5df");
-var anObject = __webpack_require__("825a");
-var isObject = __webpack_require__("861d");
-var create = __webpack_require__("7c73");
-var createPropertyDescriptor = __webpack_require__("5c6c");
-var getIterator = __webpack_require__("9a1f");
-var getIteratorMethod = __webpack_require__("35a1");
-var wellKnownSymbol = __webpack_require__("b622");
-
-var $fetch = getBuiltIn('fetch');
-var Headers = getBuiltIn('Headers');
-var ITERATOR = wellKnownSymbol('iterator');
-var URL_SEARCH_PARAMS = 'URLSearchParams';
-var URL_SEARCH_PARAMS_ITERATOR = URL_SEARCH_PARAMS + 'Iterator';
-var setInternalState = InternalStateModule.set;
-var getInternalParamsState = InternalStateModule.getterFor(URL_SEARCH_PARAMS);
-var getInternalIteratorState = InternalStateModule.getterFor(URL_SEARCH_PARAMS_ITERATOR);
-
-var plus = /\+/g;
-var sequences = Array(4);
-
-var percentSequence = function (bytes) {
-  return sequences[bytes - 1] || (sequences[bytes - 1] = RegExp('((?:%[\\da-f]{2}){' + bytes + '})', 'gi'));
-};
-
-var percentDecode = function (sequence) {
-  try {
-    return decodeURIComponent(sequence);
-  } catch (error) {
-    return sequence;
-  }
-};
-
-var deserialize = function (it) {
-  var result = it.replace(plus, ' ');
-  var bytes = 4;
-  try {
-    return decodeURIComponent(result);
-  } catch (error) {
-    while (bytes) {
-      result = result.replace(percentSequence(bytes--), percentDecode);
-    }
-    return result;
-  }
-};
-
-var find = /[!'()~]|%20/g;
-
-var replace = {
-  '!': '%21',
-  "'": '%27',
-  '(': '%28',
-  ')': '%29',
-  '~': '%7E',
-  '%20': '+'
-};
-
-var replacer = function (match) {
-  return replace[match];
-};
-
-var serialize = function (it) {
-  return encodeURIComponent(it).replace(find, replacer);
-};
-
-var parseSearchParams = function (result, query) {
-  if (query) {
-    var attributes = query.split('&');
-    var index = 0;
-    var attribute, entry;
-    while (index < attributes.length) {
-      attribute = attributes[index++];
-      if (attribute.length) {
-        entry = attribute.split('=');
-        result.push({
-          key: deserialize(entry.shift()),
-          value: deserialize(entry.join('='))
-        });
-      }
-    }
-  }
-};
-
-var updateSearchParams = function (query) {
-  this.entries.length = 0;
-  parseSearchParams(this.entries, query);
-};
-
-var validateArgumentsLength = function (passed, required) {
-  if (passed < required) throw TypeError('Not enough arguments');
-};
-
-var URLSearchParamsIterator = createIteratorConstructor(function Iterator(params, kind) {
-  setInternalState(this, {
-    type: URL_SEARCH_PARAMS_ITERATOR,
-    iterator: getIterator(getInternalParamsState(params).entries),
-    kind: kind
-  });
-}, 'Iterator', function next() {
-  var state = getInternalIteratorState(this);
-  var kind = state.kind;
-  var step = state.iterator.next();
-  var entry = step.value;
-  if (!step.done) {
-    step.value = kind === 'keys' ? entry.key : kind === 'values' ? entry.value : [entry.key, entry.value];
-  } return step;
-});
-
-// `URLSearchParams` constructor
-// https://url.spec.whatwg.org/#interface-urlsearchparams
-var URLSearchParamsConstructor = function URLSearchParams(/* init */) {
-  anInstance(this, URLSearchParamsConstructor, URL_SEARCH_PARAMS);
-  var init = arguments.length > 0 ? arguments[0] : undefined;
-  var that = this;
-  var entries = [];
-  var iteratorMethod, iterator, next, step, entryIterator, entryNext, first, second, key;
-
-  setInternalState(that, {
-    type: URL_SEARCH_PARAMS,
-    entries: entries,
-    updateURL: function () { /* empty */ },
-    updateSearchParams: updateSearchParams
-  });
-
-  if (init !== undefined) {
-    if (isObject(init)) {
-      iteratorMethod = getIteratorMethod(init);
-      if (typeof iteratorMethod === 'function') {
-        iterator = iteratorMethod.call(init);
-        next = iterator.next;
-        while (!(step = next.call(iterator)).done) {
-          entryIterator = getIterator(anObject(step.value));
-          entryNext = entryIterator.next;
-          if (
-            (first = entryNext.call(entryIterator)).done ||
-            (second = entryNext.call(entryIterator)).done ||
-            !entryNext.call(entryIterator).done
-          ) throw TypeError('Expected sequence with length 2');
-          entries.push({ key: first.value + '', value: second.value + '' });
-        }
-      } else for (key in init) if (hasOwn(init, key)) entries.push({ key: key, value: init[key] + '' });
-    } else {
-      parseSearchParams(entries, typeof init === 'string' ? init.charAt(0) === '?' ? init.slice(1) : init : init + '');
-    }
-  }
-};
-
-var URLSearchParamsPrototype = URLSearchParamsConstructor.prototype;
-
-redefineAll(URLSearchParamsPrototype, {
-  // `URLSearchParams.prototype.appent` method
-  // https://url.spec.whatwg.org/#dom-urlsearchparams-append
-  append: function append(name, value) {
-    validateArgumentsLength(arguments.length, 2);
-    var state = getInternalParamsState(this);
-    state.entries.push({ key: name + '', value: value + '' });
-    state.updateURL();
-  },
-  // `URLSearchParams.prototype.delete` method
-  // https://url.spec.whatwg.org/#dom-urlsearchparams-delete
-  'delete': function (name) {
-    validateArgumentsLength(arguments.length, 1);
-    var state = getInternalParamsState(this);
-    var entries = state.entries;
-    var key = name + '';
-    var index = 0;
-    while (index < entries.length) {
-      if (entries[index].key === key) entries.splice(index, 1);
-      else index++;
-    }
-    state.updateURL();
-  },
-  // `URLSearchParams.prototype.get` method
-  // https://url.spec.whatwg.org/#dom-urlsearchparams-get
-  get: function get(name) {
-    validateArgumentsLength(arguments.length, 1);
-    var entries = getInternalParamsState(this).entries;
-    var key = name + '';
-    var index = 0;
-    for (; index < entries.length; index++) {
-      if (entries[index].key === key) return entries[index].value;
-    }
-    return null;
-  },
-  // `URLSearchParams.prototype.getAll` method
-  // https://url.spec.whatwg.org/#dom-urlsearchparams-getall
-  getAll: function getAll(name) {
-    validateArgumentsLength(arguments.length, 1);
-    var entries = getInternalParamsState(this).entries;
-    var key = name + '';
-    var result = [];
-    var index = 0;
-    for (; index < entries.length; index++) {
-      if (entries[index].key === key) result.push(entries[index].value);
-    }
-    return result;
-  },
-  // `URLSearchParams.prototype.has` method
-  // https://url.spec.whatwg.org/#dom-urlsearchparams-has
-  has: function has(name) {
-    validateArgumentsLength(arguments.length, 1);
-    var entries = getInternalParamsState(this).entries;
-    var key = name + '';
-    var index = 0;
-    while (index < entries.length) {
-      if (entries[index++].key === key) return true;
-    }
-    return false;
-  },
-  // `URLSearchParams.prototype.set` method
-  // https://url.spec.whatwg.org/#dom-urlsearchparams-set
-  set: function set(name, value) {
-    validateArgumentsLength(arguments.length, 1);
-    var state = getInternalParamsState(this);
-    var entries = state.entries;
-    var found = false;
-    var key = name + '';
-    var val = value + '';
-    var index = 0;
-    var entry;
-    for (; index < entries.length; index++) {
-      entry = entries[index];
-      if (entry.key === key) {
-        if (found) entries.splice(index--, 1);
-        else {
-          found = true;
-          entry.value = val;
-        }
-      }
-    }
-    if (!found) entries.push({ key: key, value: val });
-    state.updateURL();
-  },
-  // `URLSearchParams.prototype.sort` method
-  // https://url.spec.whatwg.org/#dom-urlsearchparams-sort
-  sort: function sort() {
-    var state = getInternalParamsState(this);
-    var entries = state.entries;
-    // Array#sort is not stable in some engines
-    var slice = entries.slice();
-    var entry, entriesIndex, sliceIndex;
-    entries.length = 0;
-    for (sliceIndex = 0; sliceIndex < slice.length; sliceIndex++) {
-      entry = slice[sliceIndex];
-      for (entriesIndex = 0; entriesIndex < sliceIndex; entriesIndex++) {
-        if (entries[entriesIndex].key > entry.key) {
-          entries.splice(entriesIndex, 0, entry);
-          break;
-        }
-      }
-      if (entriesIndex === sliceIndex) entries.push(entry);
-    }
-    state.updateURL();
-  },
-  // `URLSearchParams.prototype.forEach` method
-  forEach: function forEach(callback /* , thisArg */) {
-    var entries = getInternalParamsState(this).entries;
-    var boundFunction = bind(callback, arguments.length > 1 ? arguments[1] : undefined, 3);
-    var index = 0;
-    var entry;
-    while (index < entries.length) {
-      entry = entries[index++];
-      boundFunction(entry.value, entry.key, this);
-    }
-  },
-  // `URLSearchParams.prototype.keys` method
-  keys: function keys() {
-    return new URLSearchParamsIterator(this, 'keys');
-  },
-  // `URLSearchParams.prototype.values` method
-  values: function values() {
-    return new URLSearchParamsIterator(this, 'values');
-  },
-  // `URLSearchParams.prototype.entries` method
-  entries: function entries() {
-    return new URLSearchParamsIterator(this, 'entries');
-  }
-}, { enumerable: true });
-
-// `URLSearchParams.prototype[@@iterator]` method
-redefine(URLSearchParamsPrototype, ITERATOR, URLSearchParamsPrototype.entries);
-
-// `URLSearchParams.prototype.toString` method
-// https://url.spec.whatwg.org/#urlsearchparams-stringification-behavior
-redefine(URLSearchParamsPrototype, 'toString', function toString() {
-  var entries = getInternalParamsState(this).entries;
-  var result = [];
-  var index = 0;
-  var entry;
-  while (index < entries.length) {
-    entry = entries[index++];
-    result.push(serialize(entry.key) + '=' + serialize(entry.value));
-  } return result.join('&');
-}, { enumerable: true });
-
-setToStringTag(URLSearchParamsConstructor, URL_SEARCH_PARAMS);
-
-$({ global: true, forced: !USE_NATIVE_URL }, {
-  URLSearchParams: URLSearchParamsConstructor
-});
-
-// Wrap `fetch` for correct work with polyfilled `URLSearchParams`
-// https://github.com/zloirock/core-js/issues/674
-if (!USE_NATIVE_URL && typeof $fetch == 'function' && typeof Headers == 'function') {
-  $({ global: true, enumerable: true, forced: true }, {
-    fetch: function fetch(input /* , init */) {
-      var args = [input];
-      var init, body, headers;
-      if (arguments.length > 1) {
-        init = arguments[1];
-        if (isObject(init)) {
-          body = init.body;
-          if (classof(body) === URL_SEARCH_PARAMS) {
-            headers = init.headers ? new Headers(init.headers) : new Headers();
-            if (!headers.has('content-type')) {
-              headers.set('content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
-            }
-            init = create(init, {
-              body: createPropertyDescriptor(0, String(body)),
-              headers: createPropertyDescriptor(0, headers)
-            });
-          }
-        }
-        args.push(init);
-      } return $fetch.apply(this, args);
-    }
-  });
-}
-
-module.exports = {
-  URLSearchParams: URLSearchParamsConstructor,
-  getState: getInternalParamsState
-};
-
-
-/***/ }),
-
 /***/ "9921":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -23754,69 +20306,6 @@ module.exports = function linkify(state) {
 
 /***/ }),
 
-/***/ "9a1f":
-/***/ (function(module, exports, __webpack_require__) {
-
-var anObject = __webpack_require__("825a");
-var getIteratorMethod = __webpack_require__("35a1");
-
-module.exports = function (it) {
-  var iteratorMethod = getIteratorMethod(it);
-  if (typeof iteratorMethod != 'function') {
-    throw TypeError(String(it) + ' is not iterable');
-  } return anObject(iteratorMethod.call(it));
-};
-
-
-/***/ }),
-
-/***/ "9bdd":
-/***/ (function(module, exports, __webpack_require__) {
-
-var anObject = __webpack_require__("825a");
-
-// call something on iterator step with safe closing on error
-module.exports = function (iterator, fn, value, ENTRIES) {
-  try {
-    return ENTRIES ? fn(anObject(value)[0], value[1]) : fn(value);
-  // 7.4.6 IteratorClose(iterator, completion)
-  } catch (error) {
-    var returnMethod = iterator['return'];
-    if (returnMethod !== undefined) anObject(returnMethod.call(iterator));
-    throw error;
-  }
-};
-
-
-/***/ }),
-
-/***/ "9bf2":
-/***/ (function(module, exports, __webpack_require__) {
-
-var DESCRIPTORS = __webpack_require__("83ab");
-var IE8_DOM_DEFINE = __webpack_require__("0cfb");
-var anObject = __webpack_require__("825a");
-var toPrimitive = __webpack_require__("c04e");
-
-var nativeDefineProperty = Object.defineProperty;
-
-// `Object.defineProperty` method
-// https://tc39.github.io/ecma262/#sec-object.defineproperty
-exports.f = DESCRIPTORS ? nativeDefineProperty : function defineProperty(O, P, Attributes) {
-  anObject(O);
-  P = toPrimitive(P, true);
-  anObject(Attributes);
-  if (IE8_DOM_DEFINE) try {
-    return nativeDefineProperty(O, P, Attributes);
-  } catch (error) { /* empty */ }
-  if ('get' in Attributes || 'set' in Attributes) throw TypeError('Accessors not supported');
-  if ('value' in Attributes) O[P] = Attributes.value;
-  return O;
-};
-
-
-/***/ }),
-
 /***/ "9c12":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -23850,7 +20339,7 @@ module.exports = function code(state, startLine, endLine/*, silent*/) {
   state.line = last;
 
   token         = state.push('code_block', 'code', 0);
-  token.content = state.getLines(startLine, last, 4 + state.blkIndent, true);
+  token.content = state.getLines(startLine, last, 4 + state.blkIndent, false) + '\n';
   token.map     = [ startLine, state.line ];
 
   return true;
@@ -23859,27 +20348,530 @@ module.exports = function code(state, startLine, endLine/*, silent*/) {
 
 /***/ }),
 
-/***/ "9ed3":
+/***/ "9d88":
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
+/* WEBPACK VAR INJECTION */(function(module, global) {var __WEBPACK_AMD_DEFINE_RESULT__;/*! https://mths.be/punycode v1.4.1 by @mathias */
+;(function(root) {
 
-var IteratorPrototype = __webpack_require__("ae93").IteratorPrototype;
-var create = __webpack_require__("7c73");
-var createPropertyDescriptor = __webpack_require__("5c6c");
-var setToStringTag = __webpack_require__("d44e");
-var Iterators = __webpack_require__("3f8c");
+	/** Detect free variables */
+	var freeExports =  true && exports &&
+		!exports.nodeType && exports;
+	var freeModule =  true && module &&
+		!module.nodeType && module;
+	var freeGlobal = typeof global == 'object' && global;
+	if (
+		freeGlobal.global === freeGlobal ||
+		freeGlobal.window === freeGlobal ||
+		freeGlobal.self === freeGlobal
+	) {
+		root = freeGlobal;
+	}
 
-var returnThis = function () { return this; };
+	/**
+	 * The `punycode` object.
+	 * @name punycode
+	 * @type Object
+	 */
+	var punycode,
 
-module.exports = function (IteratorConstructor, NAME, next) {
-  var TO_STRING_TAG = NAME + ' Iterator';
-  IteratorConstructor.prototype = create(IteratorPrototype, { next: createPropertyDescriptor(1, next) });
-  setToStringTag(IteratorConstructor, TO_STRING_TAG, false, true);
-  Iterators[TO_STRING_TAG] = returnThis;
-  return IteratorConstructor;
-};
+	/** Highest positive signed 32-bit float value */
+	maxInt = 2147483647, // aka. 0x7FFFFFFF or 2^31-1
 
+	/** Bootstring parameters */
+	base = 36,
+	tMin = 1,
+	tMax = 26,
+	skew = 38,
+	damp = 700,
+	initialBias = 72,
+	initialN = 128, // 0x80
+	delimiter = '-', // '\x2D'
+
+	/** Regular expressions */
+	regexPunycode = /^xn--/,
+	regexNonASCII = /[^\x20-\x7E]/, // unprintable ASCII chars + non-ASCII chars
+	regexSeparators = /[\x2E\u3002\uFF0E\uFF61]/g, // RFC 3490 separators
+
+	/** Error messages */
+	errors = {
+		'overflow': 'Overflow: input needs wider integers to process',
+		'not-basic': 'Illegal input >= 0x80 (not a basic code point)',
+		'invalid-input': 'Invalid input'
+	},
+
+	/** Convenience shortcuts */
+	baseMinusTMin = base - tMin,
+	floor = Math.floor,
+	stringFromCharCode = String.fromCharCode,
+
+	/** Temporary variable */
+	key;
+
+	/*--------------------------------------------------------------------------*/
+
+	/**
+	 * A generic error utility function.
+	 * @private
+	 * @param {String} type The error type.
+	 * @returns {Error} Throws a `RangeError` with the applicable error message.
+	 */
+	function error(type) {
+		throw new RangeError(errors[type]);
+	}
+
+	/**
+	 * A generic `Array#map` utility function.
+	 * @private
+	 * @param {Array} array The array to iterate over.
+	 * @param {Function} callback The function that gets called for every array
+	 * item.
+	 * @returns {Array} A new array of values returned by the callback function.
+	 */
+	function map(array, fn) {
+		var length = array.length;
+		var result = [];
+		while (length--) {
+			result[length] = fn(array[length]);
+		}
+		return result;
+	}
+
+	/**
+	 * A simple `Array#map`-like wrapper to work with domain name strings or email
+	 * addresses.
+	 * @private
+	 * @param {String} domain The domain name or email address.
+	 * @param {Function} callback The function that gets called for every
+	 * character.
+	 * @returns {Array} A new string of characters returned by the callback
+	 * function.
+	 */
+	function mapDomain(string, fn) {
+		var parts = string.split('@');
+		var result = '';
+		if (parts.length > 1) {
+			// In email addresses, only the domain name should be punycoded. Leave
+			// the local part (i.e. everything up to `@`) intact.
+			result = parts[0] + '@';
+			string = parts[1];
+		}
+		// Avoid `split(regex)` for IE8 compatibility. See #17.
+		string = string.replace(regexSeparators, '\x2E');
+		var labels = string.split('.');
+		var encoded = map(labels, fn).join('.');
+		return result + encoded;
+	}
+
+	/**
+	 * Creates an array containing the numeric code points of each Unicode
+	 * character in the string. While JavaScript uses UCS-2 internally,
+	 * this function will convert a pair of surrogate halves (each of which
+	 * UCS-2 exposes as separate characters) into a single code point,
+	 * matching UTF-16.
+	 * @see `punycode.ucs2.encode`
+	 * @see <https://mathiasbynens.be/notes/javascript-encoding>
+	 * @memberOf punycode.ucs2
+	 * @name decode
+	 * @param {String} string The Unicode input string (UCS-2).
+	 * @returns {Array} The new array of code points.
+	 */
+	function ucs2decode(string) {
+		var output = [],
+		    counter = 0,
+		    length = string.length,
+		    value,
+		    extra;
+		while (counter < length) {
+			value = string.charCodeAt(counter++);
+			if (value >= 0xD800 && value <= 0xDBFF && counter < length) {
+				// high surrogate, and there is a next character
+				extra = string.charCodeAt(counter++);
+				if ((extra & 0xFC00) == 0xDC00) { // low surrogate
+					output.push(((value & 0x3FF) << 10) + (extra & 0x3FF) + 0x10000);
+				} else {
+					// unmatched surrogate; only append this code unit, in case the next
+					// code unit is the high surrogate of a surrogate pair
+					output.push(value);
+					counter--;
+				}
+			} else {
+				output.push(value);
+			}
+		}
+		return output;
+	}
+
+	/**
+	 * Creates a string based on an array of numeric code points.
+	 * @see `punycode.ucs2.decode`
+	 * @memberOf punycode.ucs2
+	 * @name encode
+	 * @param {Array} codePoints The array of numeric code points.
+	 * @returns {String} The new Unicode string (UCS-2).
+	 */
+	function ucs2encode(array) {
+		return map(array, function(value) {
+			var output = '';
+			if (value > 0xFFFF) {
+				value -= 0x10000;
+				output += stringFromCharCode(value >>> 10 & 0x3FF | 0xD800);
+				value = 0xDC00 | value & 0x3FF;
+			}
+			output += stringFromCharCode(value);
+			return output;
+		}).join('');
+	}
+
+	/**
+	 * Converts a basic code point into a digit/integer.
+	 * @see `digitToBasic()`
+	 * @private
+	 * @param {Number} codePoint The basic numeric code point value.
+	 * @returns {Number} The numeric value of a basic code point (for use in
+	 * representing integers) in the range `0` to `base - 1`, or `base` if
+	 * the code point does not represent a value.
+	 */
+	function basicToDigit(codePoint) {
+		if (codePoint - 48 < 10) {
+			return codePoint - 22;
+		}
+		if (codePoint - 65 < 26) {
+			return codePoint - 65;
+		}
+		if (codePoint - 97 < 26) {
+			return codePoint - 97;
+		}
+		return base;
+	}
+
+	/**
+	 * Converts a digit/integer into a basic code point.
+	 * @see `basicToDigit()`
+	 * @private
+	 * @param {Number} digit The numeric value of a basic code point.
+	 * @returns {Number} The basic code point whose value (when used for
+	 * representing integers) is `digit`, which needs to be in the range
+	 * `0` to `base - 1`. If `flag` is non-zero, the uppercase form is
+	 * used; else, the lowercase form is used. The behavior is undefined
+	 * if `flag` is non-zero and `digit` has no uppercase form.
+	 */
+	function digitToBasic(digit, flag) {
+		//  0..25 map to ASCII a..z or A..Z
+		// 26..35 map to ASCII 0..9
+		return digit + 22 + 75 * (digit < 26) - ((flag != 0) << 5);
+	}
+
+	/**
+	 * Bias adaptation function as per section 3.4 of RFC 3492.
+	 * https://tools.ietf.org/html/rfc3492#section-3.4
+	 * @private
+	 */
+	function adapt(delta, numPoints, firstTime) {
+		var k = 0;
+		delta = firstTime ? floor(delta / damp) : delta >> 1;
+		delta += floor(delta / numPoints);
+		for (/* no initialization */; delta > baseMinusTMin * tMax >> 1; k += base) {
+			delta = floor(delta / baseMinusTMin);
+		}
+		return floor(k + (baseMinusTMin + 1) * delta / (delta + skew));
+	}
+
+	/**
+	 * Converts a Punycode string of ASCII-only symbols to a string of Unicode
+	 * symbols.
+	 * @memberOf punycode
+	 * @param {String} input The Punycode string of ASCII-only symbols.
+	 * @returns {String} The resulting string of Unicode symbols.
+	 */
+	function decode(input) {
+		// Don't use UCS-2
+		var output = [],
+		    inputLength = input.length,
+		    out,
+		    i = 0,
+		    n = initialN,
+		    bias = initialBias,
+		    basic,
+		    j,
+		    index,
+		    oldi,
+		    w,
+		    k,
+		    digit,
+		    t,
+		    /** Cached calculation results */
+		    baseMinusT;
+
+		// Handle the basic code points: let `basic` be the number of input code
+		// points before the last delimiter, or `0` if there is none, then copy
+		// the first basic code points to the output.
+
+		basic = input.lastIndexOf(delimiter);
+		if (basic < 0) {
+			basic = 0;
+		}
+
+		for (j = 0; j < basic; ++j) {
+			// if it's not a basic code point
+			if (input.charCodeAt(j) >= 0x80) {
+				error('not-basic');
+			}
+			output.push(input.charCodeAt(j));
+		}
+
+		// Main decoding loop: start just after the last delimiter if any basic code
+		// points were copied; start at the beginning otherwise.
+
+		for (index = basic > 0 ? basic + 1 : 0; index < inputLength; /* no final expression */) {
+
+			// `index` is the index of the next character to be consumed.
+			// Decode a generalized variable-length integer into `delta`,
+			// which gets added to `i`. The overflow checking is easier
+			// if we increase `i` as we go, then subtract off its starting
+			// value at the end to obtain `delta`.
+			for (oldi = i, w = 1, k = base; /* no condition */; k += base) {
+
+				if (index >= inputLength) {
+					error('invalid-input');
+				}
+
+				digit = basicToDigit(input.charCodeAt(index++));
+
+				if (digit >= base || digit > floor((maxInt - i) / w)) {
+					error('overflow');
+				}
+
+				i += digit * w;
+				t = k <= bias ? tMin : (k >= bias + tMax ? tMax : k - bias);
+
+				if (digit < t) {
+					break;
+				}
+
+				baseMinusT = base - t;
+				if (w > floor(maxInt / baseMinusT)) {
+					error('overflow');
+				}
+
+				w *= baseMinusT;
+
+			}
+
+			out = output.length + 1;
+			bias = adapt(i - oldi, out, oldi == 0);
+
+			// `i` was supposed to wrap around from `out` to `0`,
+			// incrementing `n` each time, so we'll fix that now:
+			if (floor(i / out) > maxInt - n) {
+				error('overflow');
+			}
+
+			n += floor(i / out);
+			i %= out;
+
+			// Insert `n` at position `i` of the output
+			output.splice(i++, 0, n);
+
+		}
+
+		return ucs2encode(output);
+	}
+
+	/**
+	 * Converts a string of Unicode symbols (e.g. a domain name label) to a
+	 * Punycode string of ASCII-only symbols.
+	 * @memberOf punycode
+	 * @param {String} input The string of Unicode symbols.
+	 * @returns {String} The resulting Punycode string of ASCII-only symbols.
+	 */
+	function encode(input) {
+		var n,
+		    delta,
+		    handledCPCount,
+		    basicLength,
+		    bias,
+		    j,
+		    m,
+		    q,
+		    k,
+		    t,
+		    currentValue,
+		    output = [],
+		    /** `inputLength` will hold the number of code points in `input`. */
+		    inputLength,
+		    /** Cached calculation results */
+		    handledCPCountPlusOne,
+		    baseMinusT,
+		    qMinusT;
+
+		// Convert the input in UCS-2 to Unicode
+		input = ucs2decode(input);
+
+		// Cache the length
+		inputLength = input.length;
+
+		// Initialize the state
+		n = initialN;
+		delta = 0;
+		bias = initialBias;
+
+		// Handle the basic code points
+		for (j = 0; j < inputLength; ++j) {
+			currentValue = input[j];
+			if (currentValue < 0x80) {
+				output.push(stringFromCharCode(currentValue));
+			}
+		}
+
+		handledCPCount = basicLength = output.length;
+
+		// `handledCPCount` is the number of code points that have been handled;
+		// `basicLength` is the number of basic code points.
+
+		// Finish the basic string - if it is not empty - with a delimiter
+		if (basicLength) {
+			output.push(delimiter);
+		}
+
+		// Main encoding loop:
+		while (handledCPCount < inputLength) {
+
+			// All non-basic code points < n have been handled already. Find the next
+			// larger one:
+			for (m = maxInt, j = 0; j < inputLength; ++j) {
+				currentValue = input[j];
+				if (currentValue >= n && currentValue < m) {
+					m = currentValue;
+				}
+			}
+
+			// Increase `delta` enough to advance the decoder's <n,i> state to <m,0>,
+			// but guard against overflow
+			handledCPCountPlusOne = handledCPCount + 1;
+			if (m - n > floor((maxInt - delta) / handledCPCountPlusOne)) {
+				error('overflow');
+			}
+
+			delta += (m - n) * handledCPCountPlusOne;
+			n = m;
+
+			for (j = 0; j < inputLength; ++j) {
+				currentValue = input[j];
+
+				if (currentValue < n && ++delta > maxInt) {
+					error('overflow');
+				}
+
+				if (currentValue == n) {
+					// Represent delta as a generalized variable-length integer
+					for (q = delta, k = base; /* no condition */; k += base) {
+						t = k <= bias ? tMin : (k >= bias + tMax ? tMax : k - bias);
+						if (q < t) {
+							break;
+						}
+						qMinusT = q - t;
+						baseMinusT = base - t;
+						output.push(
+							stringFromCharCode(digitToBasic(t + qMinusT % baseMinusT, 0))
+						);
+						q = floor(qMinusT / baseMinusT);
+					}
+
+					output.push(stringFromCharCode(digitToBasic(q, 0)));
+					bias = adapt(delta, handledCPCountPlusOne, handledCPCount == basicLength);
+					delta = 0;
+					++handledCPCount;
+				}
+			}
+
+			++delta;
+			++n;
+
+		}
+		return output.join('');
+	}
+
+	/**
+	 * Converts a Punycode string representing a domain name or an email address
+	 * to Unicode. Only the Punycoded parts of the input will be converted, i.e.
+	 * it doesn't matter if you call it on a string that has already been
+	 * converted to Unicode.
+	 * @memberOf punycode
+	 * @param {String} input The Punycoded domain name or email address to
+	 * convert to Unicode.
+	 * @returns {String} The Unicode representation of the given Punycode
+	 * string.
+	 */
+	function toUnicode(input) {
+		return mapDomain(input, function(string) {
+			return regexPunycode.test(string)
+				? decode(string.slice(4).toLowerCase())
+				: string;
+		});
+	}
+
+	/**
+	 * Converts a Unicode string representing a domain name or an email address to
+	 * Punycode. Only the non-ASCII parts of the domain name will be converted,
+	 * i.e. it doesn't matter if you call it with a domain that's already in
+	 * ASCII.
+	 * @memberOf punycode
+	 * @param {String} input The domain name or email address to convert, as a
+	 * Unicode string.
+	 * @returns {String} The Punycode representation of the given domain name or
+	 * email address.
+	 */
+	function toASCII(input) {
+		return mapDomain(input, function(string) {
+			return regexNonASCII.test(string)
+				? 'xn--' + encode(string)
+				: string;
+		});
+	}
+
+	/*--------------------------------------------------------------------------*/
+
+	/** Define the public API */
+	punycode = {
+		/**
+		 * A string representing the current Punycode.js version number.
+		 * @memberOf punycode
+		 * @type String
+		 */
+		'version': '1.4.1',
+		/**
+		 * An object of methods to convert from JavaScript's internal character
+		 * representation (UCS-2) to Unicode code points, and back.
+		 * @see <https://mathiasbynens.be/notes/javascript-encoding>
+		 * @memberOf punycode
+		 * @type Object
+		 */
+		'ucs2': {
+			'decode': ucs2decode,
+			'encode': ucs2encode
+		},
+		'decode': decode,
+		'encode': encode,
+		'toASCII': toASCII,
+		'toUnicode': toUnicode
+	};
+
+	/** Expose `punycode` */
+	// Some AMD build optimizers, like r.js, check for specific condition patterns
+	// like the following:
+	if (
+		true
+	) {
+		!(__WEBPACK_AMD_DEFINE_RESULT__ = (function() {
+			return punycode;
+		}).call(exports, __webpack_require__, exports, module),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	} else {}
+
+}(this));
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__("62e4")(module), __webpack_require__("c8ba")))
 
 /***/ }),
 
@@ -23960,6 +20952,8 @@ module.exports = function (IteratorConstructor, NAME, next) {
             hh: '%d heures',
             d: 'un jour',
             dd: '%d jours',
+            w: 'une semaine',
+            ww: '%d semaines',
             M: 'un mois',
             MM: '%d mois',
             y: 'un an',
@@ -23997,37 +20991,6 @@ module.exports = function (IteratorConstructor, NAME, next) {
     return fr;
 
 })));
-
-
-/***/ }),
-
-/***/ "9f7f":
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var fails = __webpack_require__("d039");
-
-// babel-minify transpiles RegExp('a', 'y') -> /a/y and it causes SyntaxError,
-// so we use an intermediate function.
-function RE(s, f) {
-  return RegExp(s, f);
-}
-
-exports.UNSUPPORTED_Y = fails(function () {
-  // babel-minify transpiles RegExp('a', 'y') -> /a/y and it causes SyntaxError
-  var re = RE('a', 'y');
-  re.lastIndex = 2;
-  return re.exec('abcd') != null;
-});
-
-exports.BROKEN_CARET = fails(function () {
-  // https://bugzilla.mozilla.org/show_bug.cgi?id=773687
-  var re = RE('^r', 'gy');
-  re.lastIndex = 2;
-  return re.exec('str') != null;
-});
 
 
 /***/ }),
@@ -25879,21 +22842,6 @@ module.exports = function inline(state) {
 
 /***/ }),
 
-/***/ "a691":
-/***/ (function(module, exports) {
-
-var ceil = Math.ceil;
-var floor = Math.floor;
-
-// `ToInteger` abstract operation
-// https://tc39.github.io/ecma262/#sec-tointeger
-module.exports = function (argument) {
-  return isNaN(argument = +argument) ? 0 : (argument > 0 ? floor : ceil)(argument);
-};
-
-
-/***/ }),
-
 /***/ "a7bc":
 /***/ (function(module, exports) {
 
@@ -25963,90 +22911,6 @@ Core.prototype.State = __webpack_require__("7133");
 
 
 module.exports = Core;
-
-
-/***/ }),
-
-/***/ "ac1f":
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var $ = __webpack_require__("23e7");
-var exec = __webpack_require__("9263");
-
-$({ target: 'RegExp', proto: true, forced: /./.exec !== exec }, {
-  exec: exec
-});
-
-
-/***/ }),
-
-/***/ "ad6d":
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var anObject = __webpack_require__("825a");
-
-// `RegExp.prototype.flags` getter implementation
-// https://tc39.github.io/ecma262/#sec-get-regexp.prototype.flags
-module.exports = function () {
-  var that = anObject(this);
-  var result = '';
-  if (that.global) result += 'g';
-  if (that.ignoreCase) result += 'i';
-  if (that.multiline) result += 'm';
-  if (that.dotAll) result += 's';
-  if (that.unicode) result += 'u';
-  if (that.sticky) result += 'y';
-  return result;
-};
-
-
-/***/ }),
-
-/***/ "ae93":
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var getPrototypeOf = __webpack_require__("e163");
-var createNonEnumerableProperty = __webpack_require__("9112");
-var has = __webpack_require__("5135");
-var wellKnownSymbol = __webpack_require__("b622");
-var IS_PURE = __webpack_require__("c430");
-
-var ITERATOR = wellKnownSymbol('iterator');
-var BUGGY_SAFARI_ITERATORS = false;
-
-var returnThis = function () { return this; };
-
-// `%IteratorPrototype%` object
-// https://tc39.github.io/ecma262/#sec-%iteratorprototype%-object
-var IteratorPrototype, PrototypeOfArrayIteratorPrototype, arrayIterator;
-
-if ([].keys) {
-  arrayIterator = [].keys();
-  // Safari 8 has buggy iterators w/o `next`
-  if (!('next' in arrayIterator)) BUGGY_SAFARI_ITERATORS = true;
-  else {
-    PrototypeOfArrayIteratorPrototype = getPrototypeOf(getPrototypeOf(arrayIterator));
-    if (PrototypeOfArrayIteratorPrototype !== Object.prototype) IteratorPrototype = PrototypeOfArrayIteratorPrototype;
-  }
-}
-
-if (IteratorPrototype == undefined) IteratorPrototype = {};
-
-// 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
-if (!IS_PURE && !has(IteratorPrototype, ITERATOR)) {
-  createNonEnumerableProperty(IteratorPrototype, ITERATOR, returnThis);
-}
-
-module.exports = {
-  IteratorPrototype: IteratorPrototype,
-  BUGGY_SAFARI_ITERATORS: BUGGY_SAFARI_ITERATORS
-};
 
 
 /***/ }),
@@ -26315,7 +23179,7 @@ module.exports = function (opts) {
     '(?:' +
       '[/?#]' +
         '(?:' +
-          '(?!' + re.src_ZCc + '|' + text_separators + '|[()[\\]{}.,"\'?!\\-]).|' +
+          '(?!' + re.src_ZCc + '|' + text_separators + '|[()[\\]{}.,"\'?!\\-;]).|' +
           '\\[(?:(?!' + re.src_ZCc + '|\\]).)*\\]|' +
           '\\((?:(?!' + re.src_ZCc + '|[)]).)*\\)|' +
           '\\{(?:(?!' + re.src_ZCc + '|[}]).)*\\}|' +
@@ -26336,7 +23200,8 @@ module.exports = function (opts) {
             :
             '\\-+|'
           ) +
-          '\\,(?!' + re.src_ZCc + ').|' +       // allow `,,,` in paths
+          ',(?!' + re.src_ZCc + ').|' +       // allow `,,,` in paths
+          ';(?!' + re.src_ZCc + ').|' +       // allow `;` if not followed by space-like char
           '\\!+(?!' + re.src_ZCc + '|[!]).|' +  // allow `!!!` in paths, but not at the end
           '\\?(?!' + re.src_ZCc + '|[?]).' +
         ')+' +
@@ -26538,30 +23403,6 @@ module.exports = function (opts) {
     return de;
 
 })));
-
-
-/***/ }),
-
-/***/ "b622":
-/***/ (function(module, exports, __webpack_require__) {
-
-var global = __webpack_require__("da84");
-var shared = __webpack_require__("5692");
-var has = __webpack_require__("5135");
-var uid = __webpack_require__("90e3");
-var NATIVE_SYMBOL = __webpack_require__("4930");
-var USE_SYMBOL_AS_UID = __webpack_require__("fdbf");
-
-var WellKnownSymbolsStore = shared('wks');
-var Symbol = global.Symbol;
-var createWellKnownSymbol = USE_SYMBOL_AS_UID ? Symbol : Symbol && Symbol.withoutSetter || uid;
-
-module.exports = function (name) {
-  if (!has(WellKnownSymbolsStore, name)) {
-    if (NATIVE_SYMBOL && has(Symbol, name)) WellKnownSymbolsStore[name] = Symbol[name];
-    else WellKnownSymbolsStore[name] = createWellKnownSymbol('Symbol.' + name);
-  } return WellKnownSymbolsStore[name];
-};
 
 
 /***/ }),
@@ -26898,32 +23739,11 @@ module.exports = function fence(state, startLine, endLine, silent) {
 
 /***/ }),
 
-/***/ "c04e":
-/***/ (function(module, exports, __webpack_require__) {
-
-var isObject = __webpack_require__("861d");
-
-// `ToPrimitive` abstract operation
-// https://tc39.github.io/ecma262/#sec-toprimitive
-// instead of the ES6 spec version, we didn't implement @@toPrimitive case
-// and the second argument - flag - preferred type is a string
-module.exports = function (input, PREFERRED_STRING) {
-  if (!isObject(input)) return input;
-  var fn, val;
-  if (PREFERRED_STRING && typeof (fn = input.toString) == 'function' && !isObject(val = fn.call(input))) return val;
-  if (typeof (fn = input.valueOf) == 'function' && !isObject(val = fn.call(input))) return val;
-  if (!PREFERRED_STRING && typeof (fn = input.toString) == 'function' && !isObject(val = fn.call(input))) return val;
-  throw TypeError("Can't convert object to primitive value");
-};
-
-
-/***/ }),
-
 /***/ "c1df":
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var require;//! moment.js
-//! version : 2.27.0
+//! version : 2.29.1
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
 //! license : MIT
 //! momentjs.com
@@ -29463,8 +26283,7 @@ module.exports = function (input, PREFERRED_STRING) {
     hooks.createFromInputFallback = deprecate(
         'value provided is not in a recognized RFC2822 or ISO format. moment construction falls back to js Date(), ' +
             'which is not reliable across all browsers and versions. Non RFC2822/ISO date formats are ' +
-            'discouraged and will be removed in an upcoming major release. Please refer to ' +
-            'http://momentjs.com/guides/#/warnings/js-date/ for more info.',
+            'discouraged. Please refer to http://momentjs.com/guides/#/warnings/js-date/ for more info.',
         function (config) {
             config._d = new Date(config._i + (config._useUTC ? ' UTC' : ''));
         }
@@ -30649,7 +27468,10 @@ module.exports = function (input, PREFERRED_STRING) {
     function calendar$1(time, formats) {
         // Support for single parameter, formats only overload to the calendar function
         if (arguments.length === 1) {
-            if (isMomentInput(arguments[0])) {
+            if (!arguments[0]) {
+                time = undefined;
+                formats = undefined;
+            } else if (isMomentInput(arguments[0])) {
                 time = arguments[0];
                 formats = undefined;
             } else if (isCalendarSpec(arguments[0])) {
@@ -31327,7 +28149,7 @@ module.exports = function (input, PREFERRED_STRING) {
             eras = this.localeData().eras();
         for (i = 0, l = eras.length; i < l; ++i) {
             // truncate time
-            val = this.startOf('day').valueOf();
+            val = this.clone().startOf('day').valueOf();
 
             if (eras[i].since <= val && val <= eras[i].until) {
                 return eras[i].name;
@@ -31347,7 +28169,7 @@ module.exports = function (input, PREFERRED_STRING) {
             eras = this.localeData().eras();
         for (i = 0, l = eras.length; i < l; ++i) {
             // truncate time
-            val = this.startOf('day').valueOf();
+            val = this.clone().startOf('day').valueOf();
 
             if (eras[i].since <= val && val <= eras[i].until) {
                 return eras[i].narrow;
@@ -31367,7 +28189,7 @@ module.exports = function (input, PREFERRED_STRING) {
             eras = this.localeData().eras();
         for (i = 0, l = eras.length; i < l; ++i) {
             // truncate time
-            val = this.startOf('day').valueOf();
+            val = this.clone().startOf('day').valueOf();
 
             if (eras[i].since <= val && val <= eras[i].until) {
                 return eras[i].abbr;
@@ -31390,7 +28212,7 @@ module.exports = function (input, PREFERRED_STRING) {
             dir = eras[i].since <= eras[i].until ? +1 : -1;
 
             // truncate time
-            val = this.startOf('day').valueOf();
+            val = this.clone().startOf('day').valueOf();
 
             if (
                 (eras[i].since <= val && val <= eras[i].until) ||
@@ -32541,7 +29363,7 @@ module.exports = function (input, PREFERRED_STRING) {
 
     //! moment.js
 
-    hooks.version = '2.27.0';
+    hooks.version = '2.29.1';
 
     setHookCallback(createLocal);
 
@@ -32601,7 +29423,7 @@ module.exports = function (input, PREFERRED_STRING) {
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__("24fb");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".c-linear-schedule-session{display:flex;min-width:300px;min-height:96px;margin:8px;overflow:hidden;color:rgba(0,0,0,.87);position:relative}.c-linear-schedule-session .time-box{width:69px;box-sizing:border-box;background-color:var(--track-color);padding:12px 16px 8px 12px;border-radius:6px 0 0 6px;display:flex;flex-direction:column;align-items:center}.c-linear-schedule-session .time-box .start{color:#fff;font-size:16px;font-weight:600;margin-bottom:8px;display:flex;flex-direction:column;align-items:flex-end}.c-linear-schedule-session .time-box .start.has-ampm{align-self:stretch}.c-linear-schedule-session .time-box .start .ampm{font-weight:400;font-size:13px}.c-linear-schedule-session .time-box .duration{color:hsla(0,0%,100%,.7)}.c-linear-schedule-session .info{flex:auto;display:flex;flex-direction:column;padding:8px;border:1px solid rgba(0,0,0,.12);border-left:none;border-radius:0 6px 6px 0;background-color:#fff;min-width:0}.c-linear-schedule-session .info .title{font-size:16px;font-weight:500;margin-bottom:4px}.c-linear-schedule-session .info .speakers{color:rgba(0,0,0,.54)}.c-linear-schedule-session .info .abstract{margin:8px 0 12px 0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}.c-linear-schedule-session .info .bottom-info{flex:auto;display:flex;align-items:flex-end}.c-linear-schedule-session .info .bottom-info .track{color:var(--track-color);margin-right:4px}.c-linear-schedule-session .info .bottom-info .room,.c-linear-schedule-session .info .bottom-info .track{flex:1;white-space:nowrap;display:inline-block;max-width:100%;overflow:hidden;text-overflow:ellipsis;word-wrap:normal}.c-linear-schedule-session .info .bottom-info .room{text-align:right;color:rgba(0,0,0,.54)}.c-linear-schedule-session .fav-container{display:none;position:absolute;width:16px;height:16px;top:2px;right:4px}.c-linear-schedule-session .fav-container.faved{display:block}.c-linear-schedule-session:hover .info{border:1px solid var(--track-color);border-left:none}.c-linear-schedule-session:hover .info .title{color:var(--pretalx-clr-primary)}.c-linear-schedule-session:hover .fav-container{display:block}", ""]);
+exports.push([module.i, ".c-linear-schedule-session{display:flex;min-width:300px;min-height:96px;margin:8px;overflow:hidden;color:rgba(0,0,0,.87);position:relative}.c-linear-schedule-session .time-box{width:69px;box-sizing:border-box;background-color:var(--track-color);padding:12px 16px 8px 12px;border-radius:6px 0 0 6px;display:flex;flex-direction:column;align-items:center}.c-linear-schedule-session .time-box .start{color:#fff;font-size:16px;font-weight:600;margin-bottom:8px;display:flex;flex-direction:column;align-items:flex-end}.c-linear-schedule-session .time-box .start.has-ampm{align-self:stretch}.c-linear-schedule-session .time-box .start .ampm{font-weight:400;font-size:13px}.c-linear-schedule-session .time-box .duration{color:hsla(0,0%,100%,.7)}.c-linear-schedule-session .info{flex:auto;display:flex;flex-direction:column;padding:8px;border:1px solid rgba(0,0,0,.12);border-left:none;border-radius:0 6px 6px 0;background-color:#fff;min-width:0}.c-linear-schedule-session .info .title{font-size:16px;font-weight:500;margin-bottom:4px}.c-linear-schedule-session .info .speakers{color:rgba(0,0,0,.54)}.c-linear-schedule-session .info .abstract{margin:8px 0 12px 0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}.c-linear-schedule-session .info .bottom-info{flex:auto;display:flex;align-items:flex-end}.c-linear-schedule-session .info .bottom-info .track{color:var(--track-color);margin-right:4px}.c-linear-schedule-session .info .bottom-info .room,.c-linear-schedule-session .info .bottom-info .track{flex:1;white-space:nowrap;display:inline-block;max-width:100%;overflow:hidden;text-overflow:ellipsis;word-wrap:normal}.c-linear-schedule-session .info .bottom-info .room{text-align:right;color:rgba(0,0,0,.54)}.c-linear-schedule-session .btn-fav-container{display:none;position:absolute;top:2px;right:2px;color:rgba(0,0,0,.87);background-color:transparent}.c-linear-schedule-session .btn-fav-container.dropdown-open,.c-linear-schedule-session .btn-fav-container:hover:not(.disabled),body[modality=keyboard] .c-linear-schedule-session .btn-fav-container:focus{background-color:rgba(0,0,0,.1)}.c-linear-schedule-session .btn-fav-container .bunt-icon{color:rgba(0,0,0,.87)}.c-linear-schedule-session .btn-fav-container svg{fill:rgba(0,0,0,.87)}.c-linear-schedule-session .btn-fav-container svg path{fill:none;stroke:rgba(0,0,0,.87);stroke-width:1px;vector-effect:non-scaling-stroke}.c-linear-schedule-session.faved .btn-fav-container{display:inline-flex}.c-linear-schedule-session.faved .btn-fav-container svg path{fill:rgba(0,0,0,.87)}.c-linear-schedule-session:hover .info{border:1px solid var(--track-color);border-left:none}.c-linear-schedule-session:hover .info .title{color:var(--pretalx-clr-primary)}.c-linear-schedule-session:hover .btn-fav-container{display:inline-flex}", ""]);
 // Exports
 module.exports = exports;
 
@@ -32659,14 +29481,6 @@ module.exports = function html_inline(state, silent) {
   state.pos += match[0].length;
   return true;
 };
-
-
-/***/ }),
-
-/***/ "c430":
-/***/ (function(module, exports) {
-
-module.exports = false;
 
 
 /***/ }),
@@ -32784,32 +29598,6 @@ module.exports = JSON.parse("{\"Aacute\":\"Á\",\"aacute\":\"á\",\"Abreve\":\"�
 
 /***/ }),
 
-/***/ "c6b6":
-/***/ (function(module, exports) {
-
-var toString = {}.toString;
-
-module.exports = function (it) {
-  return toString.call(it).slice(8, -1);
-};
-
-
-/***/ }),
-
-/***/ "c6cd":
-/***/ (function(module, exports, __webpack_require__) {
-
-var global = __webpack_require__("da84");
-var setGlobal = __webpack_require__("ce4e");
-
-var SHARED = '__core-js_shared__';
-var store = global[SHARED] || setGlobal(SHARED, {});
-
-module.exports = store;
-
-
-/***/ }),
-
 /***/ "c842":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -32858,15 +29646,6 @@ module.exports.tokenize = function emphasis(state, silent) {
       // Total length of these series of delimiters.
       //
       length: scanned.length,
-
-      // An amount of characters before this one that's equivalent to
-      // current one. In plain English: if this delimiter does not open
-      // an emphasis, neither do previous `jump` characters.
-      //
-      // Used to skip sequences like "*****" in one step, for 1st asterisk
-      // value will be 0, for 2nd it's 1 and so on.
-      //
-      jump:   i,
 
       // A position of the token this delimiter corresponds to.
       //
@@ -32921,9 +29700,11 @@ function postProcess(state, delimiters) {
     //
     isStrong = i > 0 &&
                delimiters[i - 1].end === startDelim.end + 1 &&
+               // check that first two markers match and adjacent
+               delimiters[i - 1].marker === startDelim.marker &&
                delimiters[i - 1].token === startDelim.token - 1 &&
-               delimiters[startDelim.end + 1].token === endDelim.token + 1 &&
-               delimiters[i - 1].marker === startDelim.marker;
+               // check that last two markers are adjacent (we can safely assume they match)
+               delimiters[startDelim.end + 1].token === endDelim.token + 1;
 
     ch = String.fromCharCode(startDelim.marker);
 
@@ -32996,51 +29777,10 @@ module.exports = g;
 
 /***/ }),
 
-/***/ "ca84":
-/***/ (function(module, exports, __webpack_require__) {
-
-var has = __webpack_require__("5135");
-var toIndexedObject = __webpack_require__("fc6a");
-var indexOf = __webpack_require__("4d64").indexOf;
-var hiddenKeys = __webpack_require__("d012");
-
-module.exports = function (object, names) {
-  var O = toIndexedObject(object);
-  var i = 0;
-  var result = [];
-  var key;
-  for (key in O) !has(hiddenKeys, key) && has(O, key) && result.push(key);
-  // Don't enum bug & hidden keys
-  while (names.length > i) if (has(O, key = names[i++])) {
-    ~indexOf(result, key) || result.push(key);
-  }
-  return result;
-};
-
-
-/***/ }),
-
 /***/ "cbc7":
 /***/ (function(module, exports) {
 
 module.exports=/[\0-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]/
-
-/***/ }),
-
-/***/ "cc12":
-/***/ (function(module, exports, __webpack_require__) {
-
-var global = __webpack_require__("da84");
-var isObject = __webpack_require__("861d");
-
-var document = global.document;
-// typeof document.createElement is 'object' in old IE
-var EXISTS = isObject(document) && isObject(document.createElement);
-
-module.exports = function (it) {
-  return EXISTS ? document.createElement(it) : {};
-};
-
 
 /***/ }),
 
@@ -33195,133 +29935,6 @@ module.exports = function link(state, silent) {
   state.pos = pos;
   state.posMax = max;
   return true;
-};
-
-
-/***/ }),
-
-/***/ "ce4e":
-/***/ (function(module, exports, __webpack_require__) {
-
-var global = __webpack_require__("da84");
-var createNonEnumerableProperty = __webpack_require__("9112");
-
-module.exports = function (key, value) {
-  try {
-    createNonEnumerableProperty(global, key, value);
-  } catch (error) {
-    global[key] = value;
-  } return value;
-};
-
-
-/***/ }),
-
-/***/ "d012":
-/***/ (function(module, exports) {
-
-module.exports = {};
-
-
-/***/ }),
-
-/***/ "d039":
-/***/ (function(module, exports) {
-
-module.exports = function (exec) {
-  try {
-    return !!exec();
-  } catch (error) {
-    return true;
-  }
-};
-
-
-/***/ }),
-
-/***/ "d066":
-/***/ (function(module, exports, __webpack_require__) {
-
-var path = __webpack_require__("428f");
-var global = __webpack_require__("da84");
-
-var aFunction = function (variable) {
-  return typeof variable == 'function' ? variable : undefined;
-};
-
-module.exports = function (namespace, method) {
-  return arguments.length < 2 ? aFunction(path[namespace]) || aFunction(global[namespace])
-    : path[namespace] && path[namespace][method] || global[namespace] && global[namespace][method];
-};
-
-
-/***/ }),
-
-/***/ "d1e7":
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var nativePropertyIsEnumerable = {}.propertyIsEnumerable;
-var getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
-
-// Nashorn ~ JDK8 bug
-var NASHORN_BUG = getOwnPropertyDescriptor && !nativePropertyIsEnumerable.call({ 1: 2 }, 1);
-
-// `Object.prototype.propertyIsEnumerable` method implementation
-// https://tc39.github.io/ecma262/#sec-object.prototype.propertyisenumerable
-exports.f = NASHORN_BUG ? function propertyIsEnumerable(V) {
-  var descriptor = getOwnPropertyDescriptor(this, V);
-  return !!descriptor && descriptor.enumerable;
-} : nativePropertyIsEnumerable;
-
-
-/***/ }),
-
-/***/ "d2bb":
-/***/ (function(module, exports, __webpack_require__) {
-
-var anObject = __webpack_require__("825a");
-var aPossiblePrototype = __webpack_require__("3bbe");
-
-// `Object.setPrototypeOf` method
-// https://tc39.github.io/ecma262/#sec-object.setprototypeof
-// Works with __proto__ only. Old v8 can't work with null proto objects.
-/* eslint-disable no-proto */
-module.exports = Object.setPrototypeOf || ('__proto__' in {} ? function () {
-  var CORRECT_SETTER = false;
-  var test = {};
-  var setter;
-  try {
-    setter = Object.getOwnPropertyDescriptor(Object.prototype, '__proto__').set;
-    setter.call(test, []);
-    CORRECT_SETTER = test instanceof Array;
-  } catch (error) { /* empty */ }
-  return function setPrototypeOf(O, proto) {
-    anObject(O);
-    aPossiblePrototype(proto);
-    if (CORRECT_SETTER) setter.call(O, proto);
-    else O.__proto__ = proto;
-    return O;
-  };
-}() : undefined);
-
-
-/***/ }),
-
-/***/ "d44e":
-/***/ (function(module, exports, __webpack_require__) {
-
-var defineProperty = __webpack_require__("9bf2").f;
-var has = __webpack_require__("5135");
-var wellKnownSymbol = __webpack_require__("b622");
-
-var TO_STRING_TAG = wellKnownSymbol('toStringTag');
-
-module.exports = function (it, TAG, STATIC) {
-  if (it && !has(it = STATIC ? it : it.prototype, TO_STRING_TAG)) {
-    defineProperty(it, TO_STRING_TAG, { configurable: true, value: TAG });
-  }
 };
 
 
@@ -33555,139 +30168,6 @@ module.exports = function reference(state, startLine, _endLine, silent) {
 
   state.line = startLine + lines + 1;
   return true;
-};
-
-
-/***/ }),
-
-/***/ "d784":
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-// TODO: Remove from `core-js@4` since it's moved to entry points
-__webpack_require__("ac1f");
-var redefine = __webpack_require__("6eeb");
-var fails = __webpack_require__("d039");
-var wellKnownSymbol = __webpack_require__("b622");
-var regexpExec = __webpack_require__("9263");
-var createNonEnumerableProperty = __webpack_require__("9112");
-
-var SPECIES = wellKnownSymbol('species');
-
-var REPLACE_SUPPORTS_NAMED_GROUPS = !fails(function () {
-  // #replace needs built-in support for named groups.
-  // #match works fine because it just return the exec results, even if it has
-  // a "grops" property.
-  var re = /./;
-  re.exec = function () {
-    var result = [];
-    result.groups = { a: '7' };
-    return result;
-  };
-  return ''.replace(re, '$<a>') !== '7';
-});
-
-// IE <= 11 replaces $0 with the whole match, as if it was $&
-// https://stackoverflow.com/questions/6024666/getting-ie-to-replace-a-regex-with-the-literal-string-0
-var REPLACE_KEEPS_$0 = (function () {
-  return 'a'.replace(/./, '$0') === '$0';
-})();
-
-var REPLACE = wellKnownSymbol('replace');
-// Safari <= 13.0.3(?) substitutes nth capture where n>m with an empty string
-var REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE = (function () {
-  if (/./[REPLACE]) {
-    return /./[REPLACE]('a', '$0') === '';
-  }
-  return false;
-})();
-
-// Chrome 51 has a buggy "split" implementation when RegExp#exec !== nativeExec
-// Weex JS has frozen built-in prototypes, so use try / catch wrapper
-var SPLIT_WORKS_WITH_OVERWRITTEN_EXEC = !fails(function () {
-  var re = /(?:)/;
-  var originalExec = re.exec;
-  re.exec = function () { return originalExec.apply(this, arguments); };
-  var result = 'ab'.split(re);
-  return result.length !== 2 || result[0] !== 'a' || result[1] !== 'b';
-});
-
-module.exports = function (KEY, length, exec, sham) {
-  var SYMBOL = wellKnownSymbol(KEY);
-
-  var DELEGATES_TO_SYMBOL = !fails(function () {
-    // String methods call symbol-named RegEp methods
-    var O = {};
-    O[SYMBOL] = function () { return 7; };
-    return ''[KEY](O) != 7;
-  });
-
-  var DELEGATES_TO_EXEC = DELEGATES_TO_SYMBOL && !fails(function () {
-    // Symbol-named RegExp methods call .exec
-    var execCalled = false;
-    var re = /a/;
-
-    if (KEY === 'split') {
-      // We can't use real regex here since it causes deoptimization
-      // and serious performance degradation in V8
-      // https://github.com/zloirock/core-js/issues/306
-      re = {};
-      // RegExp[@@split] doesn't call the regex's exec method, but first creates
-      // a new one. We need to return the patched regex when creating the new one.
-      re.constructor = {};
-      re.constructor[SPECIES] = function () { return re; };
-      re.flags = '';
-      re[SYMBOL] = /./[SYMBOL];
-    }
-
-    re.exec = function () { execCalled = true; return null; };
-
-    re[SYMBOL]('');
-    return !execCalled;
-  });
-
-  if (
-    !DELEGATES_TO_SYMBOL ||
-    !DELEGATES_TO_EXEC ||
-    (KEY === 'replace' && !(
-      REPLACE_SUPPORTS_NAMED_GROUPS &&
-      REPLACE_KEEPS_$0 &&
-      !REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE
-    )) ||
-    (KEY === 'split' && !SPLIT_WORKS_WITH_OVERWRITTEN_EXEC)
-  ) {
-    var nativeRegExpMethod = /./[SYMBOL];
-    var methods = exec(SYMBOL, ''[KEY], function (nativeMethod, regexp, str, arg2, forceStringMethod) {
-      if (regexp.exec === regexpExec) {
-        if (DELEGATES_TO_SYMBOL && !forceStringMethod) {
-          // The native String method already delegates to @@method (this
-          // polyfilled function), leasing to infinite recursion.
-          // We avoid it by directly calling the native @@method method.
-          return { done: true, value: nativeRegExpMethod.call(regexp, str, arg2) };
-        }
-        return { done: true, value: nativeMethod.call(str, regexp, arg2) };
-      }
-      return { done: false };
-    }, {
-      REPLACE_KEEPS_$0: REPLACE_KEEPS_$0,
-      REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE: REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE
-    });
-    var stringMethod = methods[0];
-    var regexMethod = methods[1];
-
-    redefine(String.prototype, KEY, stringMethod);
-    redefine(RegExp.prototype, SYMBOL, length == 2
-      // 21.2.5.8 RegExp.prototype[@@replace](string, replaceValue)
-      // 21.2.5.11 RegExp.prototype[@@split](string, limit)
-      ? function (string, arg) { return regexMethod.call(string, this, arg); }
-      // 21.2.5.6 RegExp.prototype[@@match](string)
-      // 21.2.5.9 RegExp.prototype[@@search](string)
-      : function (string) { return regexMethod.call(string, this); }
-    );
-  }
-
-  if (sham) createNonEnumerableProperty(RegExp.prototype[SYMBOL], 'sham', true);
 };
 
 
@@ -34028,64 +30508,10 @@ module.exports = urlParse;
 
 /***/ }),
 
-/***/ "da84":
-/***/ (function(module, exports, __webpack_require__) {
+/***/ "dcdf":
+/***/ (function(module) {
 
-/* WEBPACK VAR INJECTION */(function(global) {var check = function (it) {
-  return it && it.Math == Math && it;
-};
-
-// https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
-module.exports =
-  // eslint-disable-next-line no-undef
-  check(typeof globalThis == 'object' && globalThis) ||
-  check(typeof window == 'object' && window) ||
-  check(typeof self == 'object' && self) ||
-  check(typeof global == 'object' && global) ||
-  // eslint-disable-next-line no-new-func
-  Function('return this')();
-
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__("c8ba")))
-
-/***/ }),
-
-/***/ "ddb0":
-/***/ (function(module, exports, __webpack_require__) {
-
-var global = __webpack_require__("da84");
-var DOMIterables = __webpack_require__("fdbc");
-var ArrayIteratorMethods = __webpack_require__("e260");
-var createNonEnumerableProperty = __webpack_require__("9112");
-var wellKnownSymbol = __webpack_require__("b622");
-
-var ITERATOR = wellKnownSymbol('iterator');
-var TO_STRING_TAG = wellKnownSymbol('toStringTag');
-var ArrayValues = ArrayIteratorMethods.values;
-
-for (var COLLECTION_NAME in DOMIterables) {
-  var Collection = global[COLLECTION_NAME];
-  var CollectionPrototype = Collection && Collection.prototype;
-  if (CollectionPrototype) {
-    // some Chrome versions have non-configurable methods on DOMTokenList
-    if (CollectionPrototype[ITERATOR] !== ArrayValues) try {
-      createNonEnumerableProperty(CollectionPrototype, ITERATOR, ArrayValues);
-    } catch (error) {
-      CollectionPrototype[ITERATOR] = ArrayValues;
-    }
-    if (!CollectionPrototype[TO_STRING_TAG]) {
-      createNonEnumerableProperty(CollectionPrototype, TO_STRING_TAG, COLLECTION_NAME);
-    }
-    if (DOMIterables[COLLECTION_NAME]) for (var METHOD_NAME in ArrayIteratorMethods) {
-      // some Chrome versions have non-configurable methods on DOMTokenList
-      if (CollectionPrototype[METHOD_NAME] !== ArrayIteratorMethods[METHOD_NAME]) try {
-        createNonEnumerableProperty(CollectionPrototype, METHOD_NAME, ArrayIteratorMethods[METHOD_NAME]);
-      } catch (error) {
-        CollectionPrototype[METHOD_NAME] = ArrayIteratorMethods[METHOD_NAME];
-      }
-    }
-  }
-}
-
+module.exports = JSON.parse("{\"version\":\"2021e\",\"zones\":[\"Africa/Abidjan|GMT|0|0||48e5\",\"Africa/Nairobi|EAT|-30|0||47e5\",\"Africa/Algiers|CET|-10|0||26e5\",\"Africa/Lagos|WAT|-10|0||17e6\",\"Africa/Maputo|CAT|-20|0||26e5\",\"Africa/Cairo|EET|-20|0||15e6\",\"Africa/Casablanca|+00 +01|0 -10|01010101010101010101010101|1T0q0 mo0 gM0 LA0 WM0 jA0 e00 28M0 e00 2600 gM0 2600 e00 2600 gM0 2600 gM0 2600 e00 2600 gM0 2600 e00 28M0 e00|32e5\",\"Europe/Paris|CET CEST|-10 -20|01010101010101010101010|1T0p0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1o00 11A0 1qM0|11e6\",\"Africa/Johannesburg|SAST|-20|0||84e5\",\"Africa/Juba|EAT CAT|-30 -20|01|24nx0|\",\"Africa/Khartoum|EAT CAT|-30 -20|01|1Usl0|51e5\",\"Africa/Sao_Tome|GMT WAT|0 -10|010|1UQN0 2q00|\",\"Africa/Windhoek|CAT WAT|-20 -10|010|1T3c0 11B0|32e4\",\"America/Adak|HST HDT|a0 90|01010101010101010101010|1ST00 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0|326\",\"America/Anchorage|AKST AKDT|90 80|01010101010101010101010|1SSX0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0|30e4\",\"America/Santo_Domingo|AST|40|0||29e5\",\"America/Fortaleza|-03|30|0||34e5\",\"America/Asuncion|-03 -04|30 40|01010101010101010101010|1T0r0 1fB0 19X0 1ip0 17b0 1ip0 17b0 1ip0 19X0 1fB0 19X0 1fB0 19X0 1fB0 19X0 1ip0 17b0 1ip0 17b0 1ip0 19X0 1fB0|28e5\",\"America/Panama|EST|50|0||15e5\",\"America/Mexico_City|CST CDT|60 50|01010101010101010101010|1T3k0 1nX0 11B0 1nX0 14p0 1lb0 14p0 1lb0 14p0 1nX0 11B0 1nX0 11B0 1nX0 14p0 1lb0 14p0 1lb0 14p0 1lb0 14p0 1nX0|20e6\",\"America/Managua|CST|60|0||22e5\",\"America/Caracas|-04|40|0||29e5\",\"America/Lima|-05|50|0||11e6\",\"America/Denver|MST MDT|70 60|01010101010101010101010|1SSV0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0|26e5\",\"America/Campo_Grande|-03 -04|30 40|010101|1SKr0 1zd0 On0 1HB0 FX0|77e4\",\"America/Chicago|CST CDT|60 50|01010101010101010101010|1SSU0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0|92e5\",\"America/Chihuahua|MST MDT|70 60|01010101010101010101010|1T3l0 1nX0 11B0 1nX0 14p0 1lb0 14p0 1lb0 14p0 1nX0 11B0 1nX0 11B0 1nX0 14p0 1lb0 14p0 1lb0 14p0 1lb0 14p0 1nX0|81e4\",\"America/Phoenix|MST|70|0||42e5\",\"America/Whitehorse|PST PDT MST|80 70 70|010101012|1SSW0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1z90|23e3\",\"America/New_York|EST EDT|50 40|01010101010101010101010|1SST0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0|21e6\",\"America/Los_Angeles|PST PDT|80 70|01010101010101010101010|1SSW0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0|15e6\",\"America/Halifax|AST ADT|40 30|01010101010101010101010|1SSS0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0|39e4\",\"America/Godthab|-03 -02|30 20|01010101010101010101010|1T0p0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1o00 11A0 1qM0|17e3\",\"America/Grand_Turk|AST EDT EST|40 40 50|012121212121212121212|1Vkv0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0|37e2\",\"America/Havana|CST CDT|50 40|01010101010101010101010|1SSR0 1zc0 Oo0 1zc0 Oo0 1zc0 Oo0 1zc0 Rc0 1zc0 Oo0 1zc0 Oo0 1zc0 Oo0 1zc0 Oo0 1zc0 Oo0 1zc0 Rc0 1zc0|21e5\",\"America/Metlakatla|AKST AKDT PST|90 80 80|010120101010101010101010|1SSX0 1zb0 Op0 1zb0 uM0 jB0 1zb0 Op0 1zb0 Rd0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0|14e2\",\"America/Miquelon|-03 -02|30 20|01010101010101010101010|1SSR0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0|61e2\",\"America/Noronha|-02|20|0||30e2\",\"America/Santiago|-03 -04|30 40|01010101010101010101010|1Tk30 Ap0 1Nb0 Ap0 1zb0 11B0 1nX0 11B0 1nX0 11B0 1nX0 11B0 1nX0 11B0 1qL0 11B0 1nX0 11B0 1nX0 11B0 1nX0 11B0|62e5\",\"America/Sao_Paulo|-02 -03|20 30|010101|1SKq0 1zd0 On0 1HB0 FX0|20e6\",\"Atlantic/Azores|-01 +00|10 0|01010101010101010101010|1T0p0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1o00 11A0 1qM0|25e4\",\"America/St_Johns|NST NDT|3u 2u|01010101010101010101010|1SSRu 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0|11e4\",\"Antarctica/Casey|+11 +08|-b0 -80|0101010|1Vkh0 1o30 14k0 1kr0 12l0 1o01|10\",\"Asia/Bangkok|+07|-70|0||15e6\",\"Asia/Vladivostok|+10|-a0|0||60e4\",\"Australia/Sydney|AEDT AEST|-b0 -a0|01010101010101010101010|1T340 1cM0 1cM0 1fA0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1fA0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0|40e5\",\"Asia/Tashkent|+05|-50|0||23e5\",\"Pacific/Auckland|NZDT NZST|-d0 -c0|01010101010101010101010|1T320 1a00 1fA0 1cM0 1fA0 1a00 1fA0 1a00 1fA0 1a00 1fA0 1a00 1fA0 1a00 1io0 1a00 1fA0 1a00 1fA0 1a00 1fA0 1a00|14e5\",\"Europe/Istanbul|+03|-30|0||13e6\",\"Antarctica/Troll|+00 +02|0 -20|01010101010101010101010|1T0p0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1o00 11A0 1qM0|40\",\"Asia/Dhaka|+06|-60|0||16e6\",\"Asia/Amman|EET EEST|-20 -30|01010101010101010101010|1T2m0 1o00 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 LA0 1C00 LA0 1C00 Oo0 1zc0 Oo0 1C00 LA0 1C00 LA0 1C00|25e5\",\"Asia/Kamchatka|+12|-c0|0||18e4\",\"Asia/Dubai|+04|-40|0||39e5\",\"Asia/Beirut|EET EEST|-20 -30|01010101010101010101010|1T0m0 1qL0 WN0 1qL0 11B0 1nX0 11B0 1nX0 11B0 1qL0 WN0 1qL0 WN0 1qL0 11B0 1nX0 11B0 1nX0 11B0 1nX0 11B0 1qL0|22e5\",\"Asia/Kuala_Lumpur|+08|-80|0||71e5\",\"Asia/Kolkata|IST|-5u|0||15e6\",\"Asia/Chita|+09|-90|0||33e4\",\"Asia/Shanghai|CST|-80|0||23e6\",\"Asia/Colombo|+0530|-5u|0||22e5\",\"Asia/Damascus|EET EEST|-20 -30|01010101010101010101010|1T2m0 1nX0 11B0 1nX0 11B0 1nX0 11B0 1qL0 WN0 1qL0 WN0 1qL0 11B0 1nX0 11B0 1nX0 11B0 1qL0 WN0 1qL0 WN0 1qL0|26e5\",\"Asia/Famagusta|+03 EET EEST|-30 -20 -30|0121212121212121212121|1Urd0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1o00 11A0 1qM0|\",\"Asia/Gaza|EET EEST|-20 -30|01010101010101010101010|1SXX0 1qL0 WN0 1qL0 11c0 1on0 11B0 1o00 11A0 1qo0 Xc0 1qo0 Xc0 1qo0 1200 1nA0 1200 1qo0 Xc0 1qo0 Xc0 1qo0|18e5\",\"Asia/Hong_Kong|HKT|-80|0||73e5\",\"Asia/Jakarta|WIB|-70|0||31e6\",\"Asia/Jayapura|WIT|-90|0||26e4\",\"Asia/Jerusalem|IST IDT|-20 -30|01010101010101010101010|1SXA0 1rz0 W10 1rz0 10N0 1oL0 10N0 1oL0 10N0 1rz0 W10 1rz0 W10 1rz0 10N0 1oL0 10N0 1oL0 10N0 1oL0 10N0 1rz0|81e4\",\"Asia/Kabul|+0430|-4u|0||46e5\",\"Asia/Karachi|PKT|-50|0||24e6\",\"Asia/Kathmandu|+0545|-5J|0||12e5\",\"Asia/Sakhalin|+11|-b0|0||58e4\",\"Asia/Makassar|WITA|-80|0||15e5\",\"Asia/Manila|PST|-80|0||24e6\",\"Europe/Athens|EET EEST|-20 -30|01010101010101010101010|1T0p0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1o00 11A0 1qM0|35e5\",\"Asia/Pyongyang|KST KST|-8u -90|01|1VGf0|29e5\",\"Asia/Qyzylorda|+06 +05|-60 -50|01|1Xei0|73e4\",\"Asia/Rangoon|+0630|-6u|0||48e5\",\"Asia/Seoul|KST|-90|0||23e6\",\"Asia/Tehran|+0330 +0430|-3u -4u|01010101010101010101010|1SWIu 1dz0 1cp0 1dz0 1cp0 1dz0 1cp0 1dz0 1cN0 1dz0 1cp0 1dz0 1cp0 1dz0 1cp0 1dz0 1cN0 1dz0 1cp0 1dz0 1cp0 1dz0|14e6\",\"Asia/Tokyo|JST|-90|0||38e6\",\"Europe/Lisbon|WET WEST|0 -10|01010101010101010101010|1T0p0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1o00 11A0 1qM0|27e5\",\"Atlantic/Cape_Verde|-01|10|0||50e4\",\"Australia/Adelaide|ACDT ACST|-au -9u|01010101010101010101010|1T34u 1cM0 1cM0 1fA0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1fA0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0|11e5\",\"Australia/Brisbane|AEST|-a0|0||20e5\",\"Australia/Darwin|ACST|-9u|0||12e4\",\"Australia/Eucla|+0845|-8J|0||368\",\"Australia/Lord_Howe|+11 +1030|-b0 -au|01010101010101010101010|1T330 1cMu 1cLu 1fAu 1cLu 1cMu 1cLu 1cMu 1cLu 1cMu 1cLu 1cMu 1cLu 1cMu 1fzu 1cMu 1cLu 1cMu 1cLu 1cMu 1cLu 1cMu|347\",\"Australia/Perth|AWST|-80|0||18e5\",\"Pacific/Easter|-05 -06|50 60|01010101010101010101010|1Tk30 Ap0 1Nb0 Ap0 1zb0 11B0 1nX0 11B0 1nX0 11B0 1nX0 11B0 1nX0 11B0 1qL0 11B0 1nX0 11B0 1nX0 11B0 1nX0 11B0|30e2\",\"Europe/Dublin|GMT IST|0 -10|01010101010101010101010|1T0p0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1o00 11A0 1qM0|12e5\",\"Etc/GMT-1|+01|-10|0||\",\"Pacific/Fakaofo|+13|-d0|0||483\",\"Pacific/Kiritimati|+14|-e0|0||51e2\",\"Etc/GMT-2|+02|-20|0||\",\"Pacific/Tahiti|-10|a0|0||18e4\",\"Pacific/Niue|-11|b0|0||12e2\",\"Etc/GMT+12|-12|c0|0||\",\"Pacific/Galapagos|-06|60|0||25e3\",\"Etc/GMT+7|-07|70|0||\",\"Pacific/Pitcairn|-08|80|0||56\",\"Pacific/Gambier|-09|90|0||125\",\"Etc/UTC|UTC|0|0||\",\"Europe/London|GMT BST|0 -10|01010101010101010101010|1T0p0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1o00 11A0 1qM0|10e6\",\"Europe/Chisinau|EET EEST|-20 -30|01010101010101010101010|1T0o0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1o00 11A0 1qM0|67e4\",\"Europe/Moscow|MSK|-30|0||16e6\",\"Europe/Volgograd|+03 +04|-30 -40|010|1WQL0 5gn0|10e5\",\"Pacific/Honolulu|HST|a0|0||37e4\",\"MET|MET MEST|-10 -20|01010101010101010101010|1T0p0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1o00 11A0 1qM0|\",\"Pacific/Chatham|+1345 +1245|-dJ -cJ|01010101010101010101010|1T320 1a00 1fA0 1cM0 1fA0 1a00 1fA0 1a00 1fA0 1a00 1fA0 1a00 1fA0 1a00 1io0 1a00 1fA0 1a00 1fA0 1a00 1fA0 1a00|600\",\"Pacific/Apia|+14 +13|-e0 -d0|0101010101|1T320 1a00 1fA0 1cM0 1fA0 1a00 1fA0 1a00 1fA0|37e3\",\"Pacific/Fiji|+13 +12|-d0 -c0|010101010101010101010|1Swe0 1VA0 s00 1VA0 s00 20o0 pc0 2hc0 bc0 4q00 pc0 20o0 pc0 20o0 pc0 20o0 s00 1VA0 s00 20o0|88e4\",\"Pacific/Guam|ChST|-a0|0||17e4\",\"Pacific/Marquesas|-0930|9u|0||86e2\",\"Pacific/Pago_Pago|SST|b0|0||37e2\",\"Pacific/Norfolk|+11 +12|-b0 -c0|010101010101010101|219P0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1fA0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0|25e4\",\"Pacific/Tongatapu|+14 +13|-e0 -d0|01|1Swd0|75e3\"],\"links\":[\"Africa/Abidjan|Africa/Accra\",\"Africa/Abidjan|Africa/Bamako\",\"Africa/Abidjan|Africa/Banjul\",\"Africa/Abidjan|Africa/Bissau\",\"Africa/Abidjan|Africa/Conakry\",\"Africa/Abidjan|Africa/Dakar\",\"Africa/Abidjan|Africa/Freetown\",\"Africa/Abidjan|Africa/Lome\",\"Africa/Abidjan|Africa/Monrovia\",\"Africa/Abidjan|Africa/Nouakchott\",\"Africa/Abidjan|Africa/Ouagadougou\",\"Africa/Abidjan|Africa/Timbuktu\",\"Africa/Abidjan|America/Danmarkshavn\",\"Africa/Abidjan|Atlantic/Reykjavik\",\"Africa/Abidjan|Atlantic/St_Helena\",\"Africa/Abidjan|Etc/GMT\",\"Africa/Abidjan|Etc/GMT+0\",\"Africa/Abidjan|Etc/GMT-0\",\"Africa/Abidjan|Etc/GMT0\",\"Africa/Abidjan|Etc/Greenwich\",\"Africa/Abidjan|GMT\",\"Africa/Abidjan|GMT+0\",\"Africa/Abidjan|GMT-0\",\"Africa/Abidjan|GMT0\",\"Africa/Abidjan|Greenwich\",\"Africa/Abidjan|Iceland\",\"Africa/Algiers|Africa/Tunis\",\"Africa/Cairo|Africa/Tripoli\",\"Africa/Cairo|Egypt\",\"Africa/Cairo|Europe/Kaliningrad\",\"Africa/Cairo|Libya\",\"Africa/Casablanca|Africa/El_Aaiun\",\"Africa/Johannesburg|Africa/Maseru\",\"Africa/Johannesburg|Africa/Mbabane\",\"Africa/Lagos|Africa/Bangui\",\"Africa/Lagos|Africa/Brazzaville\",\"Africa/Lagos|Africa/Douala\",\"Africa/Lagos|Africa/Kinshasa\",\"Africa/Lagos|Africa/Libreville\",\"Africa/Lagos|Africa/Luanda\",\"Africa/Lagos|Africa/Malabo\",\"Africa/Lagos|Africa/Ndjamena\",\"Africa/Lagos|Africa/Niamey\",\"Africa/Lagos|Africa/Porto-Novo\",\"Africa/Maputo|Africa/Blantyre\",\"Africa/Maputo|Africa/Bujumbura\",\"Africa/Maputo|Africa/Gaborone\",\"Africa/Maputo|Africa/Harare\",\"Africa/Maputo|Africa/Kigali\",\"Africa/Maputo|Africa/Lubumbashi\",\"Africa/Maputo|Africa/Lusaka\",\"Africa/Nairobi|Africa/Addis_Ababa\",\"Africa/Nairobi|Africa/Asmara\",\"Africa/Nairobi|Africa/Asmera\",\"Africa/Nairobi|Africa/Dar_es_Salaam\",\"Africa/Nairobi|Africa/Djibouti\",\"Africa/Nairobi|Africa/Kampala\",\"Africa/Nairobi|Africa/Mogadishu\",\"Africa/Nairobi|Indian/Antananarivo\",\"Africa/Nairobi|Indian/Comoro\",\"Africa/Nairobi|Indian/Mayotte\",\"America/Adak|America/Atka\",\"America/Adak|US/Aleutian\",\"America/Anchorage|America/Juneau\",\"America/Anchorage|America/Nome\",\"America/Anchorage|America/Sitka\",\"America/Anchorage|America/Yakutat\",\"America/Anchorage|US/Alaska\",\"America/Campo_Grande|America/Cuiaba\",\"America/Caracas|America/Boa_Vista\",\"America/Caracas|America/Guyana\",\"America/Caracas|America/La_Paz\",\"America/Caracas|America/Manaus\",\"America/Caracas|America/Porto_Velho\",\"America/Caracas|Brazil/West\",\"America/Caracas|Etc/GMT+4\",\"America/Chicago|America/Indiana/Knox\",\"America/Chicago|America/Indiana/Tell_City\",\"America/Chicago|America/Knox_IN\",\"America/Chicago|America/Matamoros\",\"America/Chicago|America/Menominee\",\"America/Chicago|America/North_Dakota/Beulah\",\"America/Chicago|America/North_Dakota/Center\",\"America/Chicago|America/North_Dakota/New_Salem\",\"America/Chicago|America/Rainy_River\",\"America/Chicago|America/Rankin_Inlet\",\"America/Chicago|America/Resolute\",\"America/Chicago|America/Winnipeg\",\"America/Chicago|CST6CDT\",\"America/Chicago|Canada/Central\",\"America/Chicago|US/Central\",\"America/Chicago|US/Indiana-Starke\",\"America/Chihuahua|America/Mazatlan\",\"America/Chihuahua|Mexico/BajaSur\",\"America/Denver|America/Boise\",\"America/Denver|America/Cambridge_Bay\",\"America/Denver|America/Edmonton\",\"America/Denver|America/Inuvik\",\"America/Denver|America/Ojinaga\",\"America/Denver|America/Shiprock\",\"America/Denver|America/Yellowknife\",\"America/Denver|Canada/Mountain\",\"America/Denver|MST7MDT\",\"America/Denver|Navajo\",\"America/Denver|US/Mountain\",\"America/Fortaleza|America/Araguaina\",\"America/Fortaleza|America/Argentina/Buenos_Aires\",\"America/Fortaleza|America/Argentina/Catamarca\",\"America/Fortaleza|America/Argentina/ComodRivadavia\",\"America/Fortaleza|America/Argentina/Cordoba\",\"America/Fortaleza|America/Argentina/Jujuy\",\"America/Fortaleza|America/Argentina/La_Rioja\",\"America/Fortaleza|America/Argentina/Mendoza\",\"America/Fortaleza|America/Argentina/Rio_Gallegos\",\"America/Fortaleza|America/Argentina/Salta\",\"America/Fortaleza|America/Argentina/San_Juan\",\"America/Fortaleza|America/Argentina/San_Luis\",\"America/Fortaleza|America/Argentina/Tucuman\",\"America/Fortaleza|America/Argentina/Ushuaia\",\"America/Fortaleza|America/Bahia\",\"America/Fortaleza|America/Belem\",\"America/Fortaleza|America/Buenos_Aires\",\"America/Fortaleza|America/Catamarca\",\"America/Fortaleza|America/Cayenne\",\"America/Fortaleza|America/Cordoba\",\"America/Fortaleza|America/Jujuy\",\"America/Fortaleza|America/Maceio\",\"America/Fortaleza|America/Mendoza\",\"America/Fortaleza|America/Montevideo\",\"America/Fortaleza|America/Paramaribo\",\"America/Fortaleza|America/Punta_Arenas\",\"America/Fortaleza|America/Recife\",\"America/Fortaleza|America/Rosario\",\"America/Fortaleza|America/Santarem\",\"America/Fortaleza|Antarctica/Palmer\",\"America/Fortaleza|Antarctica/Rothera\",\"America/Fortaleza|Atlantic/Stanley\",\"America/Fortaleza|Etc/GMT+3\",\"America/Godthab|America/Nuuk\",\"America/Halifax|America/Glace_Bay\",\"America/Halifax|America/Goose_Bay\",\"America/Halifax|America/Moncton\",\"America/Halifax|America/Thule\",\"America/Halifax|Atlantic/Bermuda\",\"America/Halifax|Canada/Atlantic\",\"America/Havana|Cuba\",\"America/Lima|America/Bogota\",\"America/Lima|America/Eirunepe\",\"America/Lima|America/Guayaquil\",\"America/Lima|America/Porto_Acre\",\"America/Lima|America/Rio_Branco\",\"America/Lima|Brazil/Acre\",\"America/Lima|Etc/GMT+5\",\"America/Los_Angeles|America/Ensenada\",\"America/Los_Angeles|America/Santa_Isabel\",\"America/Los_Angeles|America/Tijuana\",\"America/Los_Angeles|America/Vancouver\",\"America/Los_Angeles|Canada/Pacific\",\"America/Los_Angeles|Mexico/BajaNorte\",\"America/Los_Angeles|PST8PDT\",\"America/Los_Angeles|US/Pacific\",\"America/Managua|America/Belize\",\"America/Managua|America/Costa_Rica\",\"America/Managua|America/El_Salvador\",\"America/Managua|America/Guatemala\",\"America/Managua|America/Regina\",\"America/Managua|America/Swift_Current\",\"America/Managua|America/Tegucigalpa\",\"America/Managua|Canada/Saskatchewan\",\"America/Mexico_City|America/Bahia_Banderas\",\"America/Mexico_City|America/Merida\",\"America/Mexico_City|America/Monterrey\",\"America/Mexico_City|Mexico/General\",\"America/New_York|America/Detroit\",\"America/New_York|America/Fort_Wayne\",\"America/New_York|America/Indiana/Indianapolis\",\"America/New_York|America/Indiana/Marengo\",\"America/New_York|America/Indiana/Petersburg\",\"America/New_York|America/Indiana/Vevay\",\"America/New_York|America/Indiana/Vincennes\",\"America/New_York|America/Indiana/Winamac\",\"America/New_York|America/Indianapolis\",\"America/New_York|America/Iqaluit\",\"America/New_York|America/Kentucky/Louisville\",\"America/New_York|America/Kentucky/Monticello\",\"America/New_York|America/Louisville\",\"America/New_York|America/Montreal\",\"America/New_York|America/Nassau\",\"America/New_York|America/Nipigon\",\"America/New_York|America/Pangnirtung\",\"America/New_York|America/Port-au-Prince\",\"America/New_York|America/Thunder_Bay\",\"America/New_York|America/Toronto\",\"America/New_York|Canada/Eastern\",\"America/New_York|EST5EDT\",\"America/New_York|US/East-Indiana\",\"America/New_York|US/Eastern\",\"America/New_York|US/Michigan\",\"America/Noronha|Atlantic/South_Georgia\",\"America/Noronha|Brazil/DeNoronha\",\"America/Noronha|Etc/GMT+2\",\"America/Panama|America/Atikokan\",\"America/Panama|America/Cancun\",\"America/Panama|America/Cayman\",\"America/Panama|America/Coral_Harbour\",\"America/Panama|America/Jamaica\",\"America/Panama|EST\",\"America/Panama|Jamaica\",\"America/Phoenix|America/Creston\",\"America/Phoenix|America/Dawson_Creek\",\"America/Phoenix|America/Fort_Nelson\",\"America/Phoenix|America/Hermosillo\",\"America/Phoenix|MST\",\"America/Phoenix|US/Arizona\",\"America/Santiago|Chile/Continental\",\"America/Santo_Domingo|America/Anguilla\",\"America/Santo_Domingo|America/Antigua\",\"America/Santo_Domingo|America/Aruba\",\"America/Santo_Domingo|America/Barbados\",\"America/Santo_Domingo|America/Blanc-Sablon\",\"America/Santo_Domingo|America/Curacao\",\"America/Santo_Domingo|America/Dominica\",\"America/Santo_Domingo|America/Grenada\",\"America/Santo_Domingo|America/Guadeloupe\",\"America/Santo_Domingo|America/Kralendijk\",\"America/Santo_Domingo|America/Lower_Princes\",\"America/Santo_Domingo|America/Marigot\",\"America/Santo_Domingo|America/Martinique\",\"America/Santo_Domingo|America/Montserrat\",\"America/Santo_Domingo|America/Port_of_Spain\",\"America/Santo_Domingo|America/Puerto_Rico\",\"America/Santo_Domingo|America/St_Barthelemy\",\"America/Santo_Domingo|America/St_Kitts\",\"America/Santo_Domingo|America/St_Lucia\",\"America/Santo_Domingo|America/St_Thomas\",\"America/Santo_Domingo|America/St_Vincent\",\"America/Santo_Domingo|America/Tortola\",\"America/Santo_Domingo|America/Virgin\",\"America/Sao_Paulo|Brazil/East\",\"America/St_Johns|Canada/Newfoundland\",\"America/Whitehorse|America/Dawson\",\"America/Whitehorse|Canada/Yukon\",\"Asia/Bangkok|Antarctica/Davis\",\"Asia/Bangkok|Asia/Barnaul\",\"Asia/Bangkok|Asia/Ho_Chi_Minh\",\"Asia/Bangkok|Asia/Hovd\",\"Asia/Bangkok|Asia/Krasnoyarsk\",\"Asia/Bangkok|Asia/Novokuznetsk\",\"Asia/Bangkok|Asia/Novosibirsk\",\"Asia/Bangkok|Asia/Phnom_Penh\",\"Asia/Bangkok|Asia/Saigon\",\"Asia/Bangkok|Asia/Tomsk\",\"Asia/Bangkok|Asia/Vientiane\",\"Asia/Bangkok|Etc/GMT-7\",\"Asia/Bangkok|Indian/Christmas\",\"Asia/Chita|Asia/Dili\",\"Asia/Chita|Asia/Khandyga\",\"Asia/Chita|Asia/Yakutsk\",\"Asia/Chita|Etc/GMT-9\",\"Asia/Chita|Pacific/Palau\",\"Asia/Dhaka|Antarctica/Vostok\",\"Asia/Dhaka|Asia/Almaty\",\"Asia/Dhaka|Asia/Bishkek\",\"Asia/Dhaka|Asia/Dacca\",\"Asia/Dhaka|Asia/Kashgar\",\"Asia/Dhaka|Asia/Omsk\",\"Asia/Dhaka|Asia/Qostanay\",\"Asia/Dhaka|Asia/Thimbu\",\"Asia/Dhaka|Asia/Thimphu\",\"Asia/Dhaka|Asia/Urumqi\",\"Asia/Dhaka|Etc/GMT-6\",\"Asia/Dhaka|Indian/Chagos\",\"Asia/Dubai|Asia/Baku\",\"Asia/Dubai|Asia/Muscat\",\"Asia/Dubai|Asia/Tbilisi\",\"Asia/Dubai|Asia/Yerevan\",\"Asia/Dubai|Etc/GMT-4\",\"Asia/Dubai|Europe/Astrakhan\",\"Asia/Dubai|Europe/Samara\",\"Asia/Dubai|Europe/Saratov\",\"Asia/Dubai|Europe/Ulyanovsk\",\"Asia/Dubai|Indian/Mahe\",\"Asia/Dubai|Indian/Mauritius\",\"Asia/Dubai|Indian/Reunion\",\"Asia/Gaza|Asia/Hebron\",\"Asia/Hong_Kong|Hongkong\",\"Asia/Jakarta|Asia/Pontianak\",\"Asia/Jerusalem|Asia/Tel_Aviv\",\"Asia/Jerusalem|Israel\",\"Asia/Kamchatka|Asia/Anadyr\",\"Asia/Kamchatka|Etc/GMT-12\",\"Asia/Kamchatka|Kwajalein\",\"Asia/Kamchatka|Pacific/Funafuti\",\"Asia/Kamchatka|Pacific/Kwajalein\",\"Asia/Kamchatka|Pacific/Majuro\",\"Asia/Kamchatka|Pacific/Nauru\",\"Asia/Kamchatka|Pacific/Tarawa\",\"Asia/Kamchatka|Pacific/Wake\",\"Asia/Kamchatka|Pacific/Wallis\",\"Asia/Kathmandu|Asia/Katmandu\",\"Asia/Kolkata|Asia/Calcutta\",\"Asia/Kuala_Lumpur|Asia/Brunei\",\"Asia/Kuala_Lumpur|Asia/Choibalsan\",\"Asia/Kuala_Lumpur|Asia/Irkutsk\",\"Asia/Kuala_Lumpur|Asia/Kuching\",\"Asia/Kuala_Lumpur|Asia/Singapore\",\"Asia/Kuala_Lumpur|Asia/Ulaanbaatar\",\"Asia/Kuala_Lumpur|Asia/Ulan_Bator\",\"Asia/Kuala_Lumpur|Etc/GMT-8\",\"Asia/Kuala_Lumpur|Singapore\",\"Asia/Makassar|Asia/Ujung_Pandang\",\"Asia/Rangoon|Asia/Yangon\",\"Asia/Rangoon|Indian/Cocos\",\"Asia/Sakhalin|Asia/Magadan\",\"Asia/Sakhalin|Asia/Srednekolymsk\",\"Asia/Sakhalin|Etc/GMT-11\",\"Asia/Sakhalin|Pacific/Bougainville\",\"Asia/Sakhalin|Pacific/Efate\",\"Asia/Sakhalin|Pacific/Guadalcanal\",\"Asia/Sakhalin|Pacific/Kosrae\",\"Asia/Sakhalin|Pacific/Noumea\",\"Asia/Sakhalin|Pacific/Pohnpei\",\"Asia/Sakhalin|Pacific/Ponape\",\"Asia/Seoul|ROK\",\"Asia/Shanghai|Asia/Chongqing\",\"Asia/Shanghai|Asia/Chungking\",\"Asia/Shanghai|Asia/Harbin\",\"Asia/Shanghai|Asia/Macao\",\"Asia/Shanghai|Asia/Macau\",\"Asia/Shanghai|Asia/Taipei\",\"Asia/Shanghai|PRC\",\"Asia/Shanghai|ROC\",\"Asia/Tashkent|Antarctica/Mawson\",\"Asia/Tashkent|Asia/Aqtau\",\"Asia/Tashkent|Asia/Aqtobe\",\"Asia/Tashkent|Asia/Ashgabat\",\"Asia/Tashkent|Asia/Ashkhabad\",\"Asia/Tashkent|Asia/Atyrau\",\"Asia/Tashkent|Asia/Dushanbe\",\"Asia/Tashkent|Asia/Oral\",\"Asia/Tashkent|Asia/Samarkand\",\"Asia/Tashkent|Asia/Yekaterinburg\",\"Asia/Tashkent|Etc/GMT-5\",\"Asia/Tashkent|Indian/Kerguelen\",\"Asia/Tashkent|Indian/Maldives\",\"Asia/Tehran|Iran\",\"Asia/Tokyo|Japan\",\"Asia/Vladivostok|Antarctica/DumontDUrville\",\"Asia/Vladivostok|Asia/Ust-Nera\",\"Asia/Vladivostok|Etc/GMT-10\",\"Asia/Vladivostok|Pacific/Chuuk\",\"Asia/Vladivostok|Pacific/Port_Moresby\",\"Asia/Vladivostok|Pacific/Truk\",\"Asia/Vladivostok|Pacific/Yap\",\"Atlantic/Azores|America/Scoresbysund\",\"Atlantic/Cape_Verde|Etc/GMT+1\",\"Australia/Adelaide|Australia/Broken_Hill\",\"Australia/Adelaide|Australia/South\",\"Australia/Adelaide|Australia/Yancowinna\",\"Australia/Brisbane|Australia/Lindeman\",\"Australia/Brisbane|Australia/Queensland\",\"Australia/Darwin|Australia/North\",\"Australia/Lord_Howe|Australia/LHI\",\"Australia/Perth|Australia/West\",\"Australia/Sydney|Antarctica/Macquarie\",\"Australia/Sydney|Australia/ACT\",\"Australia/Sydney|Australia/Canberra\",\"Australia/Sydney|Australia/Currie\",\"Australia/Sydney|Australia/Hobart\",\"Australia/Sydney|Australia/Melbourne\",\"Australia/Sydney|Australia/NSW\",\"Australia/Sydney|Australia/Tasmania\",\"Australia/Sydney|Australia/Victoria\",\"Etc/UTC|Etc/UCT\",\"Etc/UTC|Etc/Universal\",\"Etc/UTC|Etc/Zulu\",\"Etc/UTC|UCT\",\"Etc/UTC|UTC\",\"Etc/UTC|Universal\",\"Etc/UTC|Zulu\",\"Europe/Athens|Asia/Nicosia\",\"Europe/Athens|EET\",\"Europe/Athens|Europe/Bucharest\",\"Europe/Athens|Europe/Helsinki\",\"Europe/Athens|Europe/Kiev\",\"Europe/Athens|Europe/Mariehamn\",\"Europe/Athens|Europe/Nicosia\",\"Europe/Athens|Europe/Riga\",\"Europe/Athens|Europe/Sofia\",\"Europe/Athens|Europe/Tallinn\",\"Europe/Athens|Europe/Uzhgorod\",\"Europe/Athens|Europe/Vilnius\",\"Europe/Athens|Europe/Zaporozhye\",\"Europe/Chisinau|Europe/Tiraspol\",\"Europe/Dublin|Eire\",\"Europe/Istanbul|Antarctica/Syowa\",\"Europe/Istanbul|Asia/Aden\",\"Europe/Istanbul|Asia/Baghdad\",\"Europe/Istanbul|Asia/Bahrain\",\"Europe/Istanbul|Asia/Istanbul\",\"Europe/Istanbul|Asia/Kuwait\",\"Europe/Istanbul|Asia/Qatar\",\"Europe/Istanbul|Asia/Riyadh\",\"Europe/Istanbul|Etc/GMT-3\",\"Europe/Istanbul|Europe/Kirov\",\"Europe/Istanbul|Europe/Minsk\",\"Europe/Istanbul|Turkey\",\"Europe/Lisbon|Atlantic/Canary\",\"Europe/Lisbon|Atlantic/Faeroe\",\"Europe/Lisbon|Atlantic/Faroe\",\"Europe/Lisbon|Atlantic/Madeira\",\"Europe/Lisbon|Portugal\",\"Europe/Lisbon|WET\",\"Europe/London|Europe/Belfast\",\"Europe/London|Europe/Guernsey\",\"Europe/London|Europe/Isle_of_Man\",\"Europe/London|Europe/Jersey\",\"Europe/London|GB\",\"Europe/London|GB-Eire\",\"Europe/Moscow|Europe/Simferopol\",\"Europe/Moscow|W-SU\",\"Europe/Paris|Africa/Ceuta\",\"Europe/Paris|Arctic/Longyearbyen\",\"Europe/Paris|Atlantic/Jan_Mayen\",\"Europe/Paris|CET\",\"Europe/Paris|Europe/Amsterdam\",\"Europe/Paris|Europe/Andorra\",\"Europe/Paris|Europe/Belgrade\",\"Europe/Paris|Europe/Berlin\",\"Europe/Paris|Europe/Bratislava\",\"Europe/Paris|Europe/Brussels\",\"Europe/Paris|Europe/Budapest\",\"Europe/Paris|Europe/Busingen\",\"Europe/Paris|Europe/Copenhagen\",\"Europe/Paris|Europe/Gibraltar\",\"Europe/Paris|Europe/Ljubljana\",\"Europe/Paris|Europe/Luxembourg\",\"Europe/Paris|Europe/Madrid\",\"Europe/Paris|Europe/Malta\",\"Europe/Paris|Europe/Monaco\",\"Europe/Paris|Europe/Oslo\",\"Europe/Paris|Europe/Podgorica\",\"Europe/Paris|Europe/Prague\",\"Europe/Paris|Europe/Rome\",\"Europe/Paris|Europe/San_Marino\",\"Europe/Paris|Europe/Sarajevo\",\"Europe/Paris|Europe/Skopje\",\"Europe/Paris|Europe/Stockholm\",\"Europe/Paris|Europe/Tirane\",\"Europe/Paris|Europe/Vaduz\",\"Europe/Paris|Europe/Vatican\",\"Europe/Paris|Europe/Vienna\",\"Europe/Paris|Europe/Warsaw\",\"Europe/Paris|Europe/Zagreb\",\"Europe/Paris|Europe/Zurich\",\"Europe/Paris|Poland\",\"Pacific/Auckland|Antarctica/McMurdo\",\"Pacific/Auckland|Antarctica/South_Pole\",\"Pacific/Auckland|NZ\",\"Pacific/Chatham|NZ-CHAT\",\"Pacific/Easter|Chile/EasterIsland\",\"Pacific/Fakaofo|Etc/GMT-13\",\"Pacific/Fakaofo|Pacific/Enderbury\",\"Pacific/Fakaofo|Pacific/Kanton\",\"Pacific/Galapagos|Etc/GMT+6\",\"Pacific/Gambier|Etc/GMT+9\",\"Pacific/Guam|Pacific/Saipan\",\"Pacific/Honolulu|HST\",\"Pacific/Honolulu|Pacific/Johnston\",\"Pacific/Honolulu|US/Hawaii\",\"Pacific/Kiritimati|Etc/GMT-14\",\"Pacific/Niue|Etc/GMT+11\",\"Pacific/Pago_Pago|Pacific/Midway\",\"Pacific/Pago_Pago|Pacific/Samoa\",\"Pacific/Pago_Pago|US/Samoa\",\"Pacific/Pitcairn|Etc/GMT+8\",\"Pacific/Tahiti|Etc/GMT+10\",\"Pacific/Tahiti|Pacific/Rarotonga\"],\"countries\":[\"AD|Europe/Andorra\",\"AE|Asia/Dubai\",\"AF|Asia/Kabul\",\"AG|America/Port_of_Spain America/Antigua\",\"AI|America/Port_of_Spain America/Anguilla\",\"AL|Europe/Tirane\",\"AM|Asia/Yerevan\",\"AO|Africa/Lagos Africa/Luanda\",\"AQ|Antarctica/Casey Antarctica/Davis Antarctica/DumontDUrville Antarctica/Mawson Antarctica/Palmer Antarctica/Rothera Antarctica/Syowa Antarctica/Troll Antarctica/Vostok Pacific/Auckland Antarctica/McMurdo\",\"AR|America/Argentina/Buenos_Aires America/Argentina/Cordoba America/Argentina/Salta America/Argentina/Jujuy America/Argentina/Tucuman America/Argentina/Catamarca America/Argentina/La_Rioja America/Argentina/San_Juan America/Argentina/Mendoza America/Argentina/San_Luis America/Argentina/Rio_Gallegos America/Argentina/Ushuaia\",\"AS|Pacific/Pago_Pago\",\"AT|Europe/Vienna\",\"AU|Australia/Lord_Howe Antarctica/Macquarie Australia/Hobart Australia/Melbourne Australia/Sydney Australia/Broken_Hill Australia/Brisbane Australia/Lindeman Australia/Adelaide Australia/Darwin Australia/Perth Australia/Eucla\",\"AW|America/Curacao America/Aruba\",\"AX|Europe/Helsinki Europe/Mariehamn\",\"AZ|Asia/Baku\",\"BA|Europe/Belgrade Europe/Sarajevo\",\"BB|America/Barbados\",\"BD|Asia/Dhaka\",\"BE|Europe/Brussels\",\"BF|Africa/Abidjan Africa/Ouagadougou\",\"BG|Europe/Sofia\",\"BH|Asia/Qatar Asia/Bahrain\",\"BI|Africa/Maputo Africa/Bujumbura\",\"BJ|Africa/Lagos Africa/Porto-Novo\",\"BL|America/Port_of_Spain America/St_Barthelemy\",\"BM|Atlantic/Bermuda\",\"BN|Asia/Brunei\",\"BO|America/La_Paz\",\"BQ|America/Curacao America/Kralendijk\",\"BR|America/Noronha America/Belem America/Fortaleza America/Recife America/Araguaina America/Maceio America/Bahia America/Sao_Paulo America/Campo_Grande America/Cuiaba America/Santarem America/Porto_Velho America/Boa_Vista America/Manaus America/Eirunepe America/Rio_Branco\",\"BS|America/Nassau\",\"BT|Asia/Thimphu\",\"BW|Africa/Maputo Africa/Gaborone\",\"BY|Europe/Minsk\",\"BZ|America/Belize\",\"CA|America/St_Johns America/Halifax America/Glace_Bay America/Moncton America/Goose_Bay America/Blanc-Sablon America/Toronto America/Nipigon America/Thunder_Bay America/Iqaluit America/Pangnirtung America/Atikokan America/Winnipeg America/Rainy_River America/Resolute America/Rankin_Inlet America/Regina America/Swift_Current America/Edmonton America/Cambridge_Bay America/Yellowknife America/Inuvik America/Creston America/Dawson_Creek America/Fort_Nelson America/Whitehorse America/Dawson America/Vancouver\",\"CC|Indian/Cocos\",\"CD|Africa/Maputo Africa/Lagos Africa/Kinshasa Africa/Lubumbashi\",\"CF|Africa/Lagos Africa/Bangui\",\"CG|Africa/Lagos Africa/Brazzaville\",\"CH|Europe/Zurich\",\"CI|Africa/Abidjan\",\"CK|Pacific/Rarotonga\",\"CL|America/Santiago America/Punta_Arenas Pacific/Easter\",\"CM|Africa/Lagos Africa/Douala\",\"CN|Asia/Shanghai Asia/Urumqi\",\"CO|America/Bogota\",\"CR|America/Costa_Rica\",\"CU|America/Havana\",\"CV|Atlantic/Cape_Verde\",\"CW|America/Curacao\",\"CX|Indian/Christmas\",\"CY|Asia/Nicosia Asia/Famagusta\",\"CZ|Europe/Prague\",\"DE|Europe/Zurich Europe/Berlin Europe/Busingen\",\"DJ|Africa/Nairobi Africa/Djibouti\",\"DK|Europe/Copenhagen\",\"DM|America/Port_of_Spain America/Dominica\",\"DO|America/Santo_Domingo\",\"DZ|Africa/Algiers\",\"EC|America/Guayaquil Pacific/Galapagos\",\"EE|Europe/Tallinn\",\"EG|Africa/Cairo\",\"EH|Africa/El_Aaiun\",\"ER|Africa/Nairobi Africa/Asmara\",\"ES|Europe/Madrid Africa/Ceuta Atlantic/Canary\",\"ET|Africa/Nairobi Africa/Addis_Ababa\",\"FI|Europe/Helsinki\",\"FJ|Pacific/Fiji\",\"FK|Atlantic/Stanley\",\"FM|Pacific/Chuuk Pacific/Pohnpei Pacific/Kosrae\",\"FO|Atlantic/Faroe\",\"FR|Europe/Paris\",\"GA|Africa/Lagos Africa/Libreville\",\"GB|Europe/London\",\"GD|America/Port_of_Spain America/Grenada\",\"GE|Asia/Tbilisi\",\"GF|America/Cayenne\",\"GG|Europe/London Europe/Guernsey\",\"GH|Africa/Accra\",\"GI|Europe/Gibraltar\",\"GL|America/Nuuk America/Danmarkshavn America/Scoresbysund America/Thule\",\"GM|Africa/Abidjan Africa/Banjul\",\"GN|Africa/Abidjan Africa/Conakry\",\"GP|America/Port_of_Spain America/Guadeloupe\",\"GQ|Africa/Lagos Africa/Malabo\",\"GR|Europe/Athens\",\"GS|Atlantic/South_Georgia\",\"GT|America/Guatemala\",\"GU|Pacific/Guam\",\"GW|Africa/Bissau\",\"GY|America/Guyana\",\"HK|Asia/Hong_Kong\",\"HN|America/Tegucigalpa\",\"HR|Europe/Belgrade Europe/Zagreb\",\"HT|America/Port-au-Prince\",\"HU|Europe/Budapest\",\"ID|Asia/Jakarta Asia/Pontianak Asia/Makassar Asia/Jayapura\",\"IE|Europe/Dublin\",\"IL|Asia/Jerusalem\",\"IM|Europe/London Europe/Isle_of_Man\",\"IN|Asia/Kolkata\",\"IO|Indian/Chagos\",\"IQ|Asia/Baghdad\",\"IR|Asia/Tehran\",\"IS|Atlantic/Reykjavik\",\"IT|Europe/Rome\",\"JE|Europe/London Europe/Jersey\",\"JM|America/Jamaica\",\"JO|Asia/Amman\",\"JP|Asia/Tokyo\",\"KE|Africa/Nairobi\",\"KG|Asia/Bishkek\",\"KH|Asia/Bangkok Asia/Phnom_Penh\",\"KI|Pacific/Tarawa Pacific/Enderbury Pacific/Kiritimati\",\"KM|Africa/Nairobi Indian/Comoro\",\"KN|America/Port_of_Spain America/St_Kitts\",\"KP|Asia/Pyongyang\",\"KR|Asia/Seoul\",\"KW|Asia/Riyadh Asia/Kuwait\",\"KY|America/Panama America/Cayman\",\"KZ|Asia/Almaty Asia/Qyzylorda Asia/Qostanay Asia/Aqtobe Asia/Aqtau Asia/Atyrau Asia/Oral\",\"LA|Asia/Bangkok Asia/Vientiane\",\"LB|Asia/Beirut\",\"LC|America/Port_of_Spain America/St_Lucia\",\"LI|Europe/Zurich Europe/Vaduz\",\"LK|Asia/Colombo\",\"LR|Africa/Monrovia\",\"LS|Africa/Johannesburg Africa/Maseru\",\"LT|Europe/Vilnius\",\"LU|Europe/Luxembourg\",\"LV|Europe/Riga\",\"LY|Africa/Tripoli\",\"MA|Africa/Casablanca\",\"MC|Europe/Monaco\",\"MD|Europe/Chisinau\",\"ME|Europe/Belgrade Europe/Podgorica\",\"MF|America/Port_of_Spain America/Marigot\",\"MG|Africa/Nairobi Indian/Antananarivo\",\"MH|Pacific/Majuro Pacific/Kwajalein\",\"MK|Europe/Belgrade Europe/Skopje\",\"ML|Africa/Abidjan Africa/Bamako\",\"MM|Asia/Yangon\",\"MN|Asia/Ulaanbaatar Asia/Hovd Asia/Choibalsan\",\"MO|Asia/Macau\",\"MP|Pacific/Guam Pacific/Saipan\",\"MQ|America/Martinique\",\"MR|Africa/Abidjan Africa/Nouakchott\",\"MS|America/Port_of_Spain America/Montserrat\",\"MT|Europe/Malta\",\"MU|Indian/Mauritius\",\"MV|Indian/Maldives\",\"MW|Africa/Maputo Africa/Blantyre\",\"MX|America/Mexico_City America/Cancun America/Merida America/Monterrey America/Matamoros America/Mazatlan America/Chihuahua America/Ojinaga America/Hermosillo America/Tijuana America/Bahia_Banderas\",\"MY|Asia/Kuala_Lumpur Asia/Kuching\",\"MZ|Africa/Maputo\",\"NA|Africa/Windhoek\",\"NC|Pacific/Noumea\",\"NE|Africa/Lagos Africa/Niamey\",\"NF|Pacific/Norfolk\",\"NG|Africa/Lagos\",\"NI|America/Managua\",\"NL|Europe/Amsterdam\",\"NO|Europe/Oslo\",\"NP|Asia/Kathmandu\",\"NR|Pacific/Nauru\",\"NU|Pacific/Niue\",\"NZ|Pacific/Auckland Pacific/Chatham\",\"OM|Asia/Dubai Asia/Muscat\",\"PA|America/Panama\",\"PE|America/Lima\",\"PF|Pacific/Tahiti Pacific/Marquesas Pacific/Gambier\",\"PG|Pacific/Port_Moresby Pacific/Bougainville\",\"PH|Asia/Manila\",\"PK|Asia/Karachi\",\"PL|Europe/Warsaw\",\"PM|America/Miquelon\",\"PN|Pacific/Pitcairn\",\"PR|America/Puerto_Rico\",\"PS|Asia/Gaza Asia/Hebron\",\"PT|Europe/Lisbon Atlantic/Madeira Atlantic/Azores\",\"PW|Pacific/Palau\",\"PY|America/Asuncion\",\"QA|Asia/Qatar\",\"RE|Indian/Reunion\",\"RO|Europe/Bucharest\",\"RS|Europe/Belgrade\",\"RU|Europe/Kaliningrad Europe/Moscow Europe/Simferopol Europe/Kirov Europe/Volgograd Europe/Astrakhan Europe/Saratov Europe/Ulyanovsk Europe/Samara Asia/Yekaterinburg Asia/Omsk Asia/Novosibirsk Asia/Barnaul Asia/Tomsk Asia/Novokuznetsk Asia/Krasnoyarsk Asia/Irkutsk Asia/Chita Asia/Yakutsk Asia/Khandyga Asia/Vladivostok Asia/Ust-Nera Asia/Magadan Asia/Sakhalin Asia/Srednekolymsk Asia/Kamchatka Asia/Anadyr\",\"RW|Africa/Maputo Africa/Kigali\",\"SA|Asia/Riyadh\",\"SB|Pacific/Guadalcanal\",\"SC|Indian/Mahe\",\"SD|Africa/Khartoum\",\"SE|Europe/Stockholm\",\"SG|Asia/Singapore\",\"SH|Africa/Abidjan Atlantic/St_Helena\",\"SI|Europe/Belgrade Europe/Ljubljana\",\"SJ|Europe/Oslo Arctic/Longyearbyen\",\"SK|Europe/Prague Europe/Bratislava\",\"SL|Africa/Abidjan Africa/Freetown\",\"SM|Europe/Rome Europe/San_Marino\",\"SN|Africa/Abidjan Africa/Dakar\",\"SO|Africa/Nairobi Africa/Mogadishu\",\"SR|America/Paramaribo\",\"SS|Africa/Juba\",\"ST|Africa/Sao_Tome\",\"SV|America/El_Salvador\",\"SX|America/Curacao America/Lower_Princes\",\"SY|Asia/Damascus\",\"SZ|Africa/Johannesburg Africa/Mbabane\",\"TC|America/Grand_Turk\",\"TD|Africa/Ndjamena\",\"TF|Indian/Reunion Indian/Kerguelen\",\"TG|Africa/Abidjan Africa/Lome\",\"TH|Asia/Bangkok\",\"TJ|Asia/Dushanbe\",\"TK|Pacific/Fakaofo\",\"TL|Asia/Dili\",\"TM|Asia/Ashgabat\",\"TN|Africa/Tunis\",\"TO|Pacific/Tongatapu\",\"TR|Europe/Istanbul\",\"TT|America/Port_of_Spain\",\"TV|Pacific/Funafuti\",\"TW|Asia/Taipei\",\"TZ|Africa/Nairobi Africa/Dar_es_Salaam\",\"UA|Europe/Simferopol Europe/Kiev Europe/Uzhgorod Europe/Zaporozhye\",\"UG|Africa/Nairobi Africa/Kampala\",\"UM|Pacific/Pago_Pago Pacific/Wake Pacific/Honolulu Pacific/Midway\",\"US|America/New_York America/Detroit America/Kentucky/Louisville America/Kentucky/Monticello America/Indiana/Indianapolis America/Indiana/Vincennes America/Indiana/Winamac America/Indiana/Marengo America/Indiana/Petersburg America/Indiana/Vevay America/Chicago America/Indiana/Tell_City America/Indiana/Knox America/Menominee America/North_Dakota/Center America/North_Dakota/New_Salem America/North_Dakota/Beulah America/Denver America/Boise America/Phoenix America/Los_Angeles America/Anchorage America/Juneau America/Sitka America/Metlakatla America/Yakutat America/Nome America/Adak Pacific/Honolulu\",\"UY|America/Montevideo\",\"UZ|Asia/Samarkand Asia/Tashkent\",\"VA|Europe/Rome Europe/Vatican\",\"VC|America/Port_of_Spain America/St_Vincent\",\"VE|America/Caracas\",\"VG|America/Port_of_Spain America/Tortola\",\"VI|America/Port_of_Spain America/St_Thomas\",\"VN|Asia/Bangkok Asia/Ho_Chi_Minh\",\"VU|Pacific/Efate\",\"WF|Pacific/Wallis\",\"WS|Pacific/Apia\",\"YE|Asia/Riyadh Asia/Aden\",\"YT|Africa/Nairobi Indian/Mayotte\",\"ZA|Africa/Johannesburg\",\"ZM|Africa/Maputo Africa/Lusaka\",\"ZW|Africa/Maputo Africa/Harare\"]}");
 
 /***/ }),
 
@@ -34141,59 +30567,6 @@ module.exports = function parseLinkLabel(state, start, disableNested) {
 
   return labelEnd;
 };
-
-
-/***/ }),
-
-/***/ "df75":
-/***/ (function(module, exports, __webpack_require__) {
-
-var internalObjectKeys = __webpack_require__("ca84");
-var enumBugKeys = __webpack_require__("7839");
-
-// `Object.keys` method
-// https://tc39.github.io/ecma262/#sec-object.keys
-module.exports = Object.keys || function keys(O) {
-  return internalObjectKeys(O, enumBugKeys);
-};
-
-
-/***/ }),
-
-/***/ "e163":
-/***/ (function(module, exports, __webpack_require__) {
-
-var has = __webpack_require__("5135");
-var toObject = __webpack_require__("7b0b");
-var sharedKey = __webpack_require__("f772");
-var CORRECT_PROTOTYPE_GETTER = __webpack_require__("e177");
-
-var IE_PROTO = sharedKey('IE_PROTO');
-var ObjectPrototype = Object.prototype;
-
-// `Object.getPrototypeOf` method
-// https://tc39.github.io/ecma262/#sec-object.getprototypeof
-module.exports = CORRECT_PROTOTYPE_GETTER ? Object.getPrototypeOf : function (O) {
-  O = toObject(O);
-  if (has(O, IE_PROTO)) return O[IE_PROTO];
-  if (typeof O.constructor == 'function' && O instanceof O.constructor) {
-    return O.constructor.prototype;
-  } return O instanceof Object ? ObjectPrototype : null;
-};
-
-
-/***/ }),
-
-/***/ "e177":
-/***/ (function(module, exports, __webpack_require__) {
-
-var fails = __webpack_require__("d039");
-
-module.exports = !fails(function () {
-  function F() { /* empty */ }
-  F.prototype.constructor = null;
-  return Object.getPrototypeOf(new F()) !== F.prototype;
-});
 
 
 /***/ }),
@@ -34356,80 +30729,6 @@ module.exports = [
   'track',
   'ul'
 ];
-
-
-/***/ }),
-
-/***/ "e260":
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var toIndexedObject = __webpack_require__("fc6a");
-var addToUnscopables = __webpack_require__("44d2");
-var Iterators = __webpack_require__("3f8c");
-var InternalStateModule = __webpack_require__("69f3");
-var defineIterator = __webpack_require__("7dd0");
-
-var ARRAY_ITERATOR = 'Array Iterator';
-var setInternalState = InternalStateModule.set;
-var getInternalState = InternalStateModule.getterFor(ARRAY_ITERATOR);
-
-// `Array.prototype.entries` method
-// https://tc39.github.io/ecma262/#sec-array.prototype.entries
-// `Array.prototype.keys` method
-// https://tc39.github.io/ecma262/#sec-array.prototype.keys
-// `Array.prototype.values` method
-// https://tc39.github.io/ecma262/#sec-array.prototype.values
-// `Array.prototype[@@iterator]` method
-// https://tc39.github.io/ecma262/#sec-array.prototype-@@iterator
-// `CreateArrayIterator` internal method
-// https://tc39.github.io/ecma262/#sec-createarrayiterator
-module.exports = defineIterator(Array, 'Array', function (iterated, kind) {
-  setInternalState(this, {
-    type: ARRAY_ITERATOR,
-    target: toIndexedObject(iterated), // target
-    index: 0,                          // next index
-    kind: kind                         // kind
-  });
-// `%ArrayIteratorPrototype%.next` method
-// https://tc39.github.io/ecma262/#sec-%arrayiteratorprototype%.next
-}, function () {
-  var state = getInternalState(this);
-  var target = state.target;
-  var kind = state.kind;
-  var index = state.index++;
-  if (!target || index >= target.length) {
-    state.target = undefined;
-    return { value: undefined, done: true };
-  }
-  if (kind == 'keys') return { value: index, done: false };
-  if (kind == 'values') return { value: target[index], done: false };
-  return { value: [index, target[index]], done: false };
-}, 'values');
-
-// argumentsList[@@iterator] is %ArrayProto_values%
-// https://tc39.github.io/ecma262/#sec-createunmappedargumentsobject
-// https://tc39.github.io/ecma262/#sec-createmappedargumentsobject
-Iterators.Arguments = Iterators.Array;
-
-// https://tc39.github.io/ecma262/#sec-array.prototype-@@unscopables
-addToUnscopables('keys');
-addToUnscopables('values');
-addToUnscopables('entries');
-
-
-/***/ }),
-
-/***/ "e2cc":
-/***/ (function(module, exports, __webpack_require__) {
-
-var redefine = __webpack_require__("6eeb");
-
-module.exports = function (target, src, options) {
-  for (var key in src) redefine(target, key, src[key], options);
-  return target;
-};
 
 
 /***/ }),
@@ -34811,44 +31110,6 @@ module.exports = function blockquote(state, startLine, endLine, silent) {
   state.blkIndent = oldIndent;
 
   return true;
-};
-
-
-/***/ }),
-
-/***/ "e893":
-/***/ (function(module, exports, __webpack_require__) {
-
-var has = __webpack_require__("5135");
-var ownKeys = __webpack_require__("56ef");
-var getOwnPropertyDescriptorModule = __webpack_require__("06cf");
-var definePropertyModule = __webpack_require__("9bf2");
-
-module.exports = function (target, source) {
-  var keys = ownKeys(source);
-  var defineProperty = definePropertyModule.f;
-  var getOwnPropertyDescriptor = getOwnPropertyDescriptorModule.f;
-  for (var i = 0; i < keys.length; i++) {
-    var key = keys[i];
-    if (!has(target, key)) defineProperty(target, key, getOwnPropertyDescriptor(source, key));
-  }
-};
-
-
-/***/ }),
-
-/***/ "e95a":
-/***/ (function(module, exports, __webpack_require__) {
-
-var wellKnownSymbol = __webpack_require__("b622");
-var Iterators = __webpack_require__("3f8c");
-
-var ITERATOR = wellKnownSymbol('iterator');
-var ArrayPrototype = Array.prototype;
-
-// check on default Array iterator
-module.exports = function (it) {
-  return it !== undefined && (Iterators.Array === it || ArrayPrototype[ITERATOR] === it);
 };
 
 
@@ -37479,54 +33740,6 @@ Popper.Defaults = Defaults;
 
 /***/ }),
 
-/***/ "f5df":
-/***/ (function(module, exports, __webpack_require__) {
-
-var TO_STRING_TAG_SUPPORT = __webpack_require__("00ee");
-var classofRaw = __webpack_require__("c6b6");
-var wellKnownSymbol = __webpack_require__("b622");
-
-var TO_STRING_TAG = wellKnownSymbol('toStringTag');
-// ES3 wrong here
-var CORRECT_ARGUMENTS = classofRaw(function () { return arguments; }()) == 'Arguments';
-
-// fallback for IE11 Script Access Denied error
-var tryGet = function (it, key) {
-  try {
-    return it[key];
-  } catch (error) { /* empty */ }
-};
-
-// getting tag from ES6+ `Object.prototype.toString`
-module.exports = TO_STRING_TAG_SUPPORT ? classofRaw : function (it) {
-  var O, tag, result;
-  return it === undefined ? 'Undefined' : it === null ? 'Null'
-    // @@toStringTag case
-    : typeof (tag = tryGet(O = Object(it), TO_STRING_TAG)) == 'string' ? tag
-    // builtinTag case
-    : CORRECT_ARGUMENTS ? classofRaw(O)
-    // ES3 arguments fallback
-    : (result = classofRaw(O)) == 'Object' && typeof O.callee == 'function' ? 'Arguments' : result;
-};
-
-
-/***/ }),
-
-/***/ "f772":
-/***/ (function(module, exports, __webpack_require__) {
-
-var shared = __webpack_require__("5692");
-var uid = __webpack_require__("90e3");
-
-var keys = shared('keys');
-
-module.exports = function (key) {
-  return keys[key] || (keys[key] = uid(key));
-};
-
-
-/***/ }),
-
 /***/ "fbcd":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -38167,76 +34380,6 @@ LinkifyIt.prototype.onCompile = function onCompile() {
 
 
 module.exports = LinkifyIt;
-
-
-/***/ }),
-
-/***/ "fc6a":
-/***/ (function(module, exports, __webpack_require__) {
-
-// toObject with fallback for non-array-like ES3 strings
-var IndexedObject = __webpack_require__("44ad");
-var requireObjectCoercible = __webpack_require__("1d80");
-
-module.exports = function (it) {
-  return IndexedObject(requireObjectCoercible(it));
-};
-
-
-/***/ }),
-
-/***/ "fdbc":
-/***/ (function(module, exports) {
-
-// iterable DOM collections
-// flag - `iterable` interface - 'entries', 'keys', 'values', 'forEach' methods
-module.exports = {
-  CSSRuleList: 0,
-  CSSStyleDeclaration: 0,
-  CSSValueList: 0,
-  ClientRectList: 0,
-  DOMRectList: 0,
-  DOMStringList: 0,
-  DOMTokenList: 1,
-  DataTransferItemList: 0,
-  FileList: 0,
-  HTMLAllCollection: 0,
-  HTMLCollection: 0,
-  HTMLFormElement: 0,
-  HTMLSelectElement: 0,
-  MediaList: 0,
-  MimeTypeArray: 0,
-  NamedNodeMap: 0,
-  NodeList: 1,
-  PaintRequestList: 0,
-  Plugin: 0,
-  PluginArray: 0,
-  SVGLengthList: 0,
-  SVGNumberList: 0,
-  SVGPathSegList: 0,
-  SVGPointList: 0,
-  SVGStringList: 0,
-  SVGTransformList: 0,
-  SourceBufferList: 0,
-  StyleSheetList: 0,
-  TextTrackCueList: 0,
-  TextTrackList: 0,
-  TouchList: 0
-};
-
-
-/***/ }),
-
-/***/ "fdbf":
-/***/ (function(module, exports, __webpack_require__) {
-
-var NATIVE_SYMBOL = __webpack_require__("4930");
-
-module.exports = NATIVE_SYMBOL
-  // eslint-disable-next-line no-undef
-  && !Symbol.sham
-  // eslint-disable-next-line no-undef
-  && typeof Symbol.iterator == 'symbol';
 
 
 /***/ }),
