@@ -239,6 +239,8 @@
                                 {% if submission.review_count != submission.review_nonnull_count %}({{ submission.review_count|default:'-' }}){% endif %}
                                 {% if submission.pk in submissions_reviewed %}
                                     <i class="fa fa-check text-success" title="{% translate "You have reviewed this proposal" %}"></i>
+                                {% elif request.user in submission.speakers.all %}
+                                    <i class="fa fa-check text-muted" title="{% translate "You cannot review this proposal" %}"></i>
                                 {% endif %}
                                 {% if submission.is_assigned %}
                                     <i class="fa fa-star text-warning" title="{% translate "You have been assigned to this proposal" %}"></i>

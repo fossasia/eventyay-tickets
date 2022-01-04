@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`1185` Reviewers will see a checkmark next to talks they have submitted, so they won't appear like things they should review.
 - :feature:`-` In the review dashboards, users can now remove and add columns, including the track, session duration and shorter questions.
 - :feature:`-` The submission API now includes IDs for submission types, tracks and rooms, rather than just references by name.
 - :feature:`672` Speakers (or rather submitters) can now save a proposal as a draft while they are working on finishing the submission process.
