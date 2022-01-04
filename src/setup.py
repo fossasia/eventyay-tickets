@@ -126,7 +126,7 @@ setup(
         "pytz",
         "qrcode~=7.0",
         "reportlab~=3.5.0",  # https://www.reportlab.com/documentation/relnotes/
-        "requests~=2.26.0",  # https://2.python-requests.org/en/master/community/updates/#release-and-version-history
+        "requests~=2.27.0",  # https://2.python-requests.org/en/master/community/updates/#release-and-version-history
         "rules~=3.1.0",  # https://github.com/dfunckt/django-rules/blob/master/CHANGELOG.md
         "urlman~=2.0.1",  # https://github.com/andrewgodwin/urlman/blob/master/CHANGELOG
         "vobject~=0.9.0",  # 2017-06, http://eventable.github.io/vobject/ look for "release"
