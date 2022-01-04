@@ -4,6 +4,7 @@ import statistics
 from itertools import repeat
 
 from django.conf import settings
+from django.core.validators import MinValueValidator
 from django.db import models
 from django.db.models.fields.files import FieldFile
 from django.utils.crypto import get_random_string
@@ -187,10 +188,11 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
             "The duration in minutes. Leave empty for default duration for this session type."
         ),
     )
-    slot_count = models.PositiveIntegerField(
+    slot_count = models.IntegerField(
         default=1,
         verbose_name=_("Slot Count"),
         help_text=_("How many times this session will take place."),
+        validators=[MinValueValidator(1)],
     )
     content_locale = models.CharField(
         max_length=32,
