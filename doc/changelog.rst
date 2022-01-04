@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`766` When you change an event's timezone, all talks will now be moved to appear at the same *local* time.
 - :bug:`1248` It was possible to set a talk's end time before its start time.
 - :bug:`1247` In some cases, individual talk iCalendar files could be empty.
 - :bug:`1244` Removed incorrect link to email editor from speaker pages.

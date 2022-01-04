@@ -1,3 +1,4 @@
+import datetime as dt
 import socket
 from urllib.parse import urlparse
 
@@ -23,6 +24,7 @@ from pretalx.common.mixins.forms import (
 from pretalx.common.phrases import phrases
 from pretalx.event.models.event import Event
 from pretalx.orga.forms.widgets import HeaderSelect, MultipleLanguagesWidget
+from pretalx.schedule.models import Availability, TalkSlot
 from pretalx.submission.models import ReviewPhase, ReviewScore, ReviewScoreCategory
 
 ENCRYPTED_PASSWORD_PLACEHOLDER = "*******"
@@ -205,6 +207,8 @@ class EventForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
         self.instance.locale_array = ",".join(self.cleaned_data["locales"])
         if any(key in self.changed_data for key in ("date_from", "date_to")):
             self.change_dates()
+        if "timezone" in self.changed_data:
+            self.change_timezone()
         result = super().save(*args, **kwargs)
         css_text = self.cleaned_data["custom_css_text"]
         if css_text:
@@ -215,7 +219,6 @@ class EventForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
 
     def change_dates(self):
         """Changes dates of current WIP slots, or deschedules them."""
-        from pretalx.schedule.models import Availability
 
         old_instance = Event.objects.get(pk=self.instance.pk)
         if not self.instance.wip_schedule.talks.filter(start__isnull=False).exists():
@@ -230,13 +233,7 @@ class EventForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
 
         if start_delta and end_delta:
             # The event was moved, and we will move all talks with it.
-            for key in ("start", "end"):
-                filt = {f"{key}__isnull": False}
-                update = {key: F(key) + start_delta}
-                self.instance.wip_schedule.talks.filter(**filt).update(**update)
-                Availability.objects.filter(event=self.instance).filter(**filt).update(
-                    **update
-                )
+            self._move_by(start_delta)
 
         # Otherwise, the event got longer, no need to do anything.
         # We *could* move all talks towards the new start date, but I'm
@@ -251,6 +248,47 @@ class EventForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
                 Q(end__date__gt=new_date_to) | Q(start__date__lt=new_date_from),
                 event=self.instance.event,
             ).delete()
+
+    def change_timezone(self):
+        """Changes times of all current wip slots, on the assumption that a
+        change in timezone is usually not intentional, and people would like to
+        keep the apparent time rather the absolute one."""
+
+        old_instance = Event.objects.get(pk=self.instance.pk)
+        first_slot = self.instance.wip_schedule.talks.filter(
+            start__isnull=False
+        ).first()
+        if not first_slot:
+            return
+
+        def make_naive(moment):
+            return dt.datetime(
+                year=moment.year,
+                month=moment.month,
+                day=moment.day,
+                hour=moment.hour,
+                minute=moment.minute,
+            )
+
+        old_start = make_naive(first_slot.start.astimezone(old_instance.tz))
+        new_start = make_naive(first_slot.start.astimezone(self.instance.tz))
+
+        delta = old_start - new_start
+        if delta:
+            self._move_by(delta, past=True)
+
+    def _move_by(self, delta, past=False):
+        if past:
+            talk_queryset = TalkSlot.objects.filter(schedule__event=self.instance)
+        else:
+            talk_queryset = self.instance.wip_schedule.talks
+        for key in ("start", "end"):
+            filt = {f"{key}__isnull": False}
+            update = {key: F(key) + delta}
+            talk_queryset.filter(**filt).update(**update)
+            Availability.objects.filter(event=self.instance).filter(**filt).update(
+                **update
+            )
 
     class Meta:
         model = Event
