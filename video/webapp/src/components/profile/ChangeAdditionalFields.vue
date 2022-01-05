@@ -29,9 +29,6 @@ export default {
 .c-additional-fields
 	display: flex
 	flex-direction: column
-	> *
-		width: 320px
-		max-width: 100%
 	.bunt-input-outline-container
 		margin-bottom 16px
 		textarea

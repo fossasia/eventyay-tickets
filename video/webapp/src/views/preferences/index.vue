@@ -19,9 +19,9 @@
 			template(v-else)
 				bunt-switch(name="notificationSettings.notify", :label="$t('preferences/index:switch-enable-desktop-notifications:label')", v-model="notificationSettings.notify")
 				bunt-switch(name="notificationSettings.playSounds", :label="$t('preferences/index:switch-enable-desktop-notification-sound:label')", v-model="notificationSettings.playSounds")
-			h2 Stage Stream Defaults
-			p Should streams start playing automatically? Use this when attending a hybrid event physically.
-			bunt-switch(name="autoplay", v-model="autoplay", label="Start playing streams automatically when entering stages")
+			h2 {{ $t('preferences/index:autoplay:header') }}
+			p {{ $t('preferences/index:autoplay:description') }}
+			bunt-switch(name="autoplay", v-model="autoplay", :label="$t('preferences/index:switch-autoplay:label')")
 	.ui-form-actions
 		bunt-button#btn-save(:disabled="$v.$invalid && $v.$dirty", :loading="saving", @click="save") {{ $t('preferences/index:btn-save:label') }}
 	transition(name="prompt")
@@ -133,7 +133,9 @@ export default {
 			themed-button-secondary()
 			margin-left: 16px
 	.inputs
-		width: 320px
+		width: 420px
+		display: flex
+		flex-direction: column
 		.permission-info
 			font-size 13px
 			line-height 18px
@@ -165,4 +167,7 @@ export default {
 			margin-right: 8px
 		#btn-upload
 			themed-button-primary()
+	+below('s')
+		.inputs
+			width: auto
 </style>
