@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('submission', '0064_slot_count_min_value'),
+        ("submission", "0064_slot_count_min_value"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='submission',
-            name='slot_count',
+            model_name="submission",
+            name="slot_count",
             field=models.IntegerField(default=1),
         ),
     ]
