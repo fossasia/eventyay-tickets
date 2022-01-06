@@ -15,6 +15,7 @@
 </template>
 <script>
 // TODO functional component?
+import { mapState } from 'vuex'
 import api from 'lib/api'
 import JanusCall from 'components/JanusCall'
 import JanusChannelCall from 'components/JanusChannelCall'
@@ -36,6 +37,7 @@ export default {
 		}
 	},
 	computed: {
+		...mapState(['autoplay', 'streamingRoom']),
 		module () {
 			if (!this.room) {
 				return null
@@ -80,7 +82,7 @@ export default {
 					break
 				}
 				case 'livestream.youtube': {
-					iframeUrl = `https://www.youtube-nocookie.com/embed/${this.module.config.ytid}?autoplay=1&rel=0&showinfo=0`
+					iframeUrl = `https://www.youtube-nocookie.com/embed/${this.module.config.ytid}?${this.autoplay ? 'autoplay=1&' : ''}rel=0&showinfo=0`
 					break
 				}
 			}
@@ -91,7 +93,7 @@ export default {
 			if (hideIfBackground) {
 				iframe.classList.add('hide-if-background')
 			}
-			iframe.allow = 'camera; autoplay; microphone; fullscreen; display-capture'
+			iframe.allow = 'camera; microphone; fullscreen; display-capture' + this.autoplay ? '; autoplay' : ''
 			iframe.allowfullscreen = true
 			iframe.allowusermedia = true
 			iframe.setAttribute('allowfullscreen', '') // iframe.allowfullscreen is not enough in firefox#media-source-iframes
