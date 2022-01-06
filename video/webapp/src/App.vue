@@ -100,7 +100,7 @@ export default {
 			)
 			const style = {
 				'--chatbar-width': hasChatbar ? '380px' : '0px',
-				'--mobile-media-height': this.stageStreamCollapsed ? '56px' : hasChatbar ? '56.25vw' : (hasStageTools ? 'calc(100vh - 48px - 2 * 56px)' : 'calc(100vh - 48px - 56px)'),
+				'--mobile-media-height': this.stageStreamCollapsed ? '56px' : hasChatbar ? 'min(56.25vw, 40vh)' : (hasStageTools ? 'calc(100vh - 48px - 2 * 56px)' : 'calc(100vh - 48px - 56px)'),
 				'--has-stagetools': hasStageTools ? '1' : '0'
 			}
 			if (this.mediaSourcePlaceholderRect) {
