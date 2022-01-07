@@ -4,7 +4,7 @@
 	bunt-progress-circular(v-if="uploading", size="small")
 	.file-selector(v-else)
 		bunt-icon-button upload
-		input(type="file", @change="upload", ref="fileInput")
+		input(ref="fileInput", type="file", :accept="accept", @change="upload")
 
 </template>
 <script>
@@ -16,6 +16,11 @@ export default {
 		label: String,
 		name: String,
 		validation: Object,
+		uploadUrl: String,
+		accept: {
+			type: String,
+			default: 'image/png, .png, image/jpg, .jpg, .jpeg, image/gif, .gif, application/pdf, .pdf, image/svg+xml, .svg, video/mp4, video/mpeg, .mp4, video/webm, audio/webm, .webm, audio/mp3, audio/mpeg, .mp3'
+		}
 	},
 	data () {
 		return {
@@ -29,7 +34,7 @@ export default {
 		upload () {
 			var file = this.$refs.fileInput.files[0]
 
-			api.uploadFilePromise(file, file.name).then(data => {
+			api.uploadFilePromise(file, file.name, this.uploadUrl).then(data => {
 				if (data.error) {
 					alert(`Upload error: ${data.error}`) // Proper user-friendly messages
 					this.$emit('input', '')

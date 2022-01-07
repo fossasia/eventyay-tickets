@@ -34,7 +34,7 @@
 					a(href="/schedule_ex_en.xlsx", target="_blank") Download English sample file
 					| {{ " / " }}
 					a(href="/schedule_ex_de.xlsx", target="_blank") Download German sample file
-				upload-url-input(name="schedule-file", v-model="config.pretalx.url", label="Schedule file", :validation="$v.config.pretalx.url")
+				upload-url-input(name="schedule-file", v-model="config.pretalx.url", label="Schedule file", :upload-url="uploadUrl", accept="application/vnd.ms-excel, .xlsx", :validation="$v.config.pretalx.url")
 			template(v-else-if="source === 'conftool'")
 				p conftool is controlled by the main conftool settings.
 	.ui-form-actions
@@ -56,6 +56,7 @@ export default {
 	mixins: [ValidationErrorsMixin],
 	data () {
 		return {
+			uploadUrl: config.api.scheduleImport,
 			showUpload: false, // HACK we need an extra flag to show an empty file upload, since url and file use the same config field
 			isPretalxPluginInstalled: false,
 			config: null,
