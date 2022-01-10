@@ -1,17 +1,25 @@
 codecov:
-  notify:
-    require_ci_to_pass: yes
+  branch: main
+  max_report_age: off
+  require_ci_to_pass: yes
 
 coverage:
   precision: 2
   round: down
-  range: "70...100"
+  range: "85...100"
 
   status:
-    threshold: 2%
-    project: yes
-    patch: yes
     changes: no
+    project:
+      default:
+        target: auto
+        # informational means codecov will never block a pr on grounds of total coverage
+        # and will also never mark a single commit as not-passing based on total coverage
+        informational: true
+    patch:
+      default:
+        # this allows 10% of a patch to be not covered by tests
+        threshold: 10%
 
 parsers:
   gcov:
