@@ -12,7 +12,7 @@ class SubmissionError(Exception):
 
 
 class PretalxExceptionReporter(ExceptionReporter):
-    def get_traceback_text(self):
+    def get_traceback_text(self):  # pragma: no cover
         traceback_text = super().get_traceback_text()
         # Don't try to send fancy emails in dev, or when the exception comes from a task
         if settings.DEBUG or not self.is_email or not getattr(self, "request"):
@@ -55,7 +55,7 @@ It occurred when {user} accessed {self.request.path}.
 class PretalxAdminEmailHandler(AdminEmailHandler):
     reporter_class = PretalxExceptionReporter
 
-    def emit(self, record):
+    def emit(self, record):  # pragma: no cover
         request = getattr(record, "request", None)
         if request and request.path == "/500":
             return

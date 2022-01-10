@@ -18,3 +18,4 @@ def test_common_base_exporter_raises_proper_exceptions():
     with pytest.raises(NotImplementedError):
         str(exporter)
     assert exporter.cors is None
+    assert exporter.group == "submission"

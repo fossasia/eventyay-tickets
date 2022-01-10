@@ -58,7 +58,7 @@ def mail_send_task(
     to = [
         t
         for t in to
-        if (not t.endswith("@localhost")) and (not t.endswith("@example.org"))
+        if (not t.endswith("@localhost")) and (not t.endswith("@example.org")) and t
     ]
     if not to:
         return
@@ -71,7 +71,7 @@ def mail_send_task(
         backend = event.get_mail_backend()
 
         sender = settings.MAIL_FROM
-        if event.mail_settings["smtp_use_custom"]:
+        if event.mail_settings["smtp_use_custom"]:  # pragma: no cover
             sender = event.mail_settings["mail_from"] or sender
 
         reply_to = reply_to or event.mail_settings["reply_to"]

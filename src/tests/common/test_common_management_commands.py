@@ -1,6 +1,9 @@
+import datetime as dt
+
 import pytest
 import responses
 from django.core.management import call_command
+from django_scopes import scope
 
 from pretalx.event.models import Event
 
@@ -48,7 +51,7 @@ def test_common_test_regenerate_css_single_event(event):
     event.settings.agenda_css_checksum = "a"
     event.primary_color = "#ff0000"
     event.save()
-    call_command("regenerate_css", event=event.slug)
+    call_command("regenerate_css", "--silent", event=event.slug)
 
 
 @pytest.mark.django_db
@@ -62,3 +65,35 @@ def test_common_uncallable(event):
         call_command("init")
     with pytest.raises(Exception):
         call_command("shell_scoped")
+
+
+@pytest.mark.django_db
+def test_common_custom_migrate_does_not_blow_up():
+    call_command("migrate")
+
+
+@pytest.mark.django_db
+def test_common_custom_makemessages_does_not_blow_up():
+    call_command("makemessages", "--keep-pot", locale=["de_DE"])
+
+
+@pytest.mark.django_db
+def test_common_move_event(event, slot):
+    with scope(event=event):
+        old_start = event.date_from
+        first_start = slot.start
+    call_command(
+        "move_event",
+        event=event.slug,
+        date=(event.date_from + dt.timedelta(days=1)).strftime("%Y-%m-%d"),
+    )
+    with scope(event=event):
+        event.refresh_from_db()
+        new_start = event.date_from
+        assert new_start != old_start
+        slot.refresh_from_db()
+        assert slot.start != first_start
+    call_command("move_event", event=event.slug)
+    with scope(event=event):
+        event.refresh_from_db()
+        assert event.date_from == old_start

@@ -2,6 +2,7 @@ from datetime import date
 
 import pytest
 from django.utils import translation
+from i18nfield.strings import LazyI18nString
 
 from pretalx.common.utils import I18nStrJSONEncoder, daterange, safe_filename
 
@@ -70,3 +71,11 @@ def test_safe_filename(filename, expected):
 @pytest.mark.django_db
 def test_json_encoder_inheritance(event):
     assert I18nStrJSONEncoder().default(event) == {"id": event.pk, "type": "Event"}
+
+
+@pytest.mark.django_db
+def test_json_encoder_i18nstr(event):
+    assert (
+        I18nStrJSONEncoder().default(LazyI18nString({"en": "foo", "de": "bar"}))
+        == "foo"
+    )
