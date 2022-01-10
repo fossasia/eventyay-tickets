@@ -420,21 +420,6 @@ def test_schedule_orga_trigger_export_with_celery(
 
 
 @pytest.mark.django_db
-def test_schedule_orga_download_export(
-    mocker, orga_client, django_assert_max_num_queries, event, slot
-):
-    export_schedule_html.apply_async(kwargs={"event_id": event.id, "make_zip": True})
-    with django_assert_max_num_queries(39):
-        response = orga_client.get(
-            event.orga_urls.schedule_export_download, follow=True
-        )
-    assert response.status_code == 200
-    streaming_content = getattr(response, "streaming_content", None)
-    if streaming_content:
-        assert len(b"".join(response.streaming_content)) > 100_000  # 100 KB
-
-
-@pytest.mark.django_db
 def test_html_export_full(
     event,
     other_event,
