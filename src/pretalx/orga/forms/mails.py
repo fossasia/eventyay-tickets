@@ -37,7 +37,10 @@ class MailTemplateBase(I18nHelpText, I18nModelForm):
         # We need to do this here, since we need to be sure about the valid placeholders first
         used_placeholders = set()
         for field in ("subject", "text"):
-            for lang in cleaned_data[field].data.values():
+            value = cleaned_data.get(field)
+            if not value:
+                continue
+            for lang in value.data.values():
                 used_placeholders |= set(
                     [v[1] for v in string.Formatter().parse(lang) if v[1]]
                 )
@@ -184,8 +187,6 @@ class WriteMailForm(MailTemplateBase):
         if event:
             kwargs["locales"] = event.locales
         super().__init__(**kwargs)
-        self.fields["subject"].required = True
-        self.fields["text"].required = True
         self.fields["submissions"].choices = [
             (sub.code, sub.title) for sub in event.submissions.all()
         ]
@@ -273,8 +274,8 @@ class WriteMailForm(MailTemplateBase):
         cleaned_data = super().clean()
         valid_placeholders = self.get_valid_placeholders().keys()
         self.warnings = self._clean_for_placeholders(
-            cleaned_data["subject"], valid_placeholders
-        ) | self._clean_for_placeholders(cleaned_data["text"], valid_placeholders)
+            cleaned_data.get("subject", ""), valid_placeholders
+        ) | self._clean_for_placeholders(cleaned_data.get("text", ""), valid_placeholders)
         return cleaned_data
 
     @transaction.atomic
