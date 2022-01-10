@@ -275,7 +275,9 @@ class WriteMailForm(MailTemplateBase):
         valid_placeholders = self.get_valid_placeholders().keys()
         self.warnings = self._clean_for_placeholders(
             cleaned_data.get("subject", ""), valid_placeholders
-        ) | self._clean_for_placeholders(cleaned_data.get("text", ""), valid_placeholders)
+        ) | self._clean_for_placeholders(
+            cleaned_data.get("text", ""), valid_placeholders
+        )
         return cleaned_data
 
     @transaction.atomic
