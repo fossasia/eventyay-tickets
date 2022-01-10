@@ -393,6 +393,21 @@ def test_toggle_event_cannot_activate_due_to_plugin(event, orga_client):
 
 
 @pytest.mark.django_db
+def test_toggle_event_can_take_live_with_plugins(event, orga_client):
+    with scope(event=event):
+        event.is_public = False
+        event.plugins = "tests"
+        event.save()
+    response = orga_client.post(
+        event.orga_urls.live, {"action": "activate"}, follow=True
+    )
+    assert response.status_code == 200
+    assert "It's not safe to go alone take this" not in response.content.decode()
+    event.refresh_from_db()
+    assert event.is_public
+
+
+@pytest.mark.django_db
 def test_invite_orga_member(orga_client, event):
     team = event.organiser.teams.get(can_change_submissions=True, is_reviewer=False)
     assert team.members.count() == 1

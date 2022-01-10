@@ -85,13 +85,14 @@ def test_common_templatetag_copyable(value, copy):
 
 @pytest.mark.django_db
 @pytest.mark.parametrize("slug", (True, False))
-def test_html_signal(event, slug):
+@pytest.mark.parametrize("signal", ("html_head", "html_above_profile_page"))
+def test_html_signal(event, slug, signal):
     with scope(event=event):
         if slug:
             event.slug = "ignore_signal"
         event.plugins = "tests"
         event.save()
         result = html_signal(
-            "pretalx.cfp.signals.html_head", sender=event, request=None
+            f"pretalx.cfp.signals.{signal}", sender=event, request=None
         )
         assert bool(result) is not slug

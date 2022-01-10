@@ -24,7 +24,8 @@ def html_head_test(sender, request, **kwargs):
 
 @receiver(html_above_profile_page)
 def html_above_profile_page_test(sender, request, **kwargs):
-    return "<p></p>"
+    if sender.slug != "ignore_signal":
+        return "<p></p>"
 
 
 @receiver(nav_event_settings)

@@ -713,3 +713,104 @@ def test_submission_apply_pending(submission, orga_client):
 
     response = orga_client.get(submission.event.orga_urls.apply_pending)
     assert response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_can_see_tags(orga_client, tag):
+    response = orga_client.get(tag.event.orga_urls.tags)
+    assert response.status_code == 200
+    assert tag.tag in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_can_create_tag_no_duplicates(orga_client, tag):
+    with scope(event=tag.event):
+        count = tag.event.tags.count()
+    response = orga_client.get(tag.event.orga_urls.new_tag)
+    assert response.status_code == 200
+    response = orga_client.post(
+        tag.event.orga_urls.new_tag,
+        {"tag": "New tag!", "color": "#ffff99"},
+        follow=True,
+    )
+    assert response.status_code == 200
+    with scope(event=tag.event):
+        assert tag.event.tags.count() == count + 1
+    response = orga_client.post(
+        tag.event.orga_urls.new_tag,
+        {"tag": "New tag!", "color": "#ffff99"},
+        follow=True,
+    )
+    assert response.status_code == 200
+    assert "You already have a tag by this name!" in response.content.decode()
+    with scope(event=tag.event):
+        assert tag.event.tags.count() == count + 1
+
+
+@pytest.mark.django_db
+def test_can_see_single_tag(orga_client, tag):
+    response = orga_client.get(tag.urls.base)
+    assert response.status_code == 200
+    assert tag.tag in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_can_edit_tag(orga_client, tag):
+    with scope(event=tag.event):
+        count = tag.logged_actions().count()
+    response = orga_client.post(
+        tag.urls.base, {"tag": "Name", "color": "#ffff99"}, follow=True
+    )
+    assert response.status_code == 200
+    with scope(event=tag.event):
+        assert tag.logged_actions().count() == count + 1
+        tag.refresh_from_db()
+    assert str(tag.tag) == "Name"
+
+
+@pytest.mark.django_db
+def test_can_edit_tag_without_changes(orga_client, tag):
+    with scope(event=tag.event):
+        count = tag.logged_actions().count()
+    response = orga_client.post(
+        tag.urls.base, {"tag": str(tag.tag), "color": tag.color}, follow=True
+    )
+    assert response.status_code == 200
+    with scope(event=tag.event):
+        assert tag.logged_actions().count() == count
+
+
+@pytest.mark.django_db
+def test_cannot_set_incorrect_tag_color(orga_client, tag):
+    response = orga_client.post(
+        tag.urls.base, {"tag": "Name", "color": "#fgff99"}, follow=True
+    )
+    assert response.status_code == 200
+    tag.refresh_from_db()
+    assert str(tag.tag) != "Name"
+
+
+@pytest.mark.django_db
+def test_can_delete_single_tag(orga_client, tag, event):
+    response = orga_client.get(tag.urls.delete)
+    assert response.status_code == 200
+    with scope(event=event):
+        assert event.tags.count() == 1
+    response = orga_client.post(tag.urls.delete, follow=True)
+    assert response.status_code == 200
+    with scope(event=event):
+        assert event.tags.count() == 0
+
+
+@pytest.mark.django_db
+def test_can_delete_used_tag(orga_client, tag, event, submission):
+    with scope(event=event):
+        assert event.tags.count() == 1
+        submission.tags.add(tag)
+        submission.save()
+    response = orga_client.post(tag.urls.delete, follow=True)
+    assert response.status_code == 200
+    with scope(event=event):
+        assert event.tags.count() == 0
+        submission.refresh_from_db()
+        assert submission.tags.count() == 0
