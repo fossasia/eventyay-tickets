@@ -440,7 +440,8 @@ class UserStep(GenericFlowStep, FormFlowStep):
             form.is_valid()
             uid = form.save()
             request.user = User.objects.filter(pk=uid).first()
-        if not request.user or not request.user.is_active:
+        # This should never happen
+        if not request.user or not request.user.is_active:  # pragma: no cover
             raise ValidationError(
                 _(
                     "There was an error when logging in. Please contact the organiser for further help."

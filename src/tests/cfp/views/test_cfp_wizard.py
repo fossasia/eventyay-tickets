@@ -365,6 +365,33 @@ class TestWizard:
         self.assert_mail(submission, user, extra="additional@example.com", count=2)
 
     @pytest.mark.django_db
+    def test_wizard_logged_in_user_additional_speaker_mail_fail(
+        self, event, client, user
+    ):
+        with scope(event=event):
+            submission_type = SubmissionType.objects.filter(event=event).first().pk
+            event.mail_settings["smtp_use_custom"] = True
+            event.save()
+
+        client.force_login(user)
+        response, current_url = self.perform_init_wizard(client, event=event)
+        response, current_url = self.perform_info_wizard(
+            client,
+            response,
+            current_url,
+            submission_type=submission_type,
+            next_step="profile",
+            event=event,
+            additional_speaker="additional@example.com",
+        )
+        response, current_url = self.perform_profile_form(
+            client, response, current_url, event=event
+        )
+        submission = self.assert_submission(event)
+        user = self.assert_user(submission)
+        assert len(djmail.outbox) == 0
+
+    @pytest.mark.django_db
     def test_wizard_logged_in_user_only_review_questions(
         self, event, client, user, review_question
     ):

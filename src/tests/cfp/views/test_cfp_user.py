@@ -42,6 +42,30 @@ def test_can_confirm_submission(speaker_client, accepted_submission):
 
 
 @pytest.mark.django_db
+def test_cannot_confirm_confirmed_submission(speaker_client, confirmed_submission):
+    response = speaker_client.get(confirmed_submission.urls.confirm, follow=True)
+    confirmed_submission.refresh_from_db()
+    assert response.status_code == 200
+    assert confirmed_submission.state == SubmissionStates.CONFIRMED
+    response = speaker_client.post(confirmed_submission.urls.confirm, follow=True)
+    confirmed_submission.refresh_from_db()
+    assert response.status_code == 200
+    assert confirmed_submission.state == SubmissionStates.CONFIRMED
+
+
+@pytest.mark.django_db
+def test_cannot_confirm_submitted_submission(speaker_client, submission):
+    response = speaker_client.get(submission.urls.confirm, follow=True)
+    submission.refresh_from_db()
+    assert response.status_code == 200
+    assert submission.state == SubmissionStates.SUBMITTED
+    response = speaker_client.post(submission.urls.confirm, follow=True)
+    submission.refresh_from_db()
+    assert response.status_code == 200
+    assert submission.state == SubmissionStates.SUBMITTED
+
+
+@pytest.mark.django_db
 def test_can_reconfirm_submission(speaker_client, accepted_submission):
     accepted_submission.state = SubmissionStates.CONFIRMED
     accepted_submission.save()
@@ -265,6 +289,20 @@ def test_can_edit_profile(speaker, event, speaker_client):
         speaker.refresh_from_db()
         assert speaker.profiles.get(event=event).biography == "Ruling since forever."
         assert speaker.name == "Lady Imperator"
+    response = speaker_client.post(
+        event.urls.user,
+        data={
+            "name": "Lady Imperator",
+            "biography": "Ruling since forever.",
+            "form": "profile",
+        },
+        follow=True,
+    )
+    assert response.status_code == 200
+    with scope(event=event):
+        speaker.refresh_from_db()
+        assert speaker.profiles.get(event=event).biography == "Ruling since forever."
+        assert speaker.name == "Lady Imperator"
 
 
 @pytest.mark.django_db
@@ -409,6 +447,19 @@ def test_can_edit_and_update_speaker_answers(
         answer.refresh_from_db()
         assert answer.answer == "green as the sky"
 
+    response = speaker_client.post(
+        event.urls.user,
+        data={
+            f"question_{speaker_question.id}": "green as the sky",
+            "form": "questions",
+        },
+        follow=True,
+    )
+    assert response.status_code == 200
+    with scope(event=event):
+        answer.refresh_from_db()
+        assert answer.answer == "green as the sky"
+
 
 @pytest.mark.django_db
 def test_cannot_delete_profile_on_first_try(speaker, event, speaker_client):
@@ -446,6 +497,19 @@ def test_can_change_locale(multilingual_event, client):
     second_response = client.get(
         reverse("cfp:locale.set", kwargs={"event": multilingual_event.slug})
         + f"?locale=de&next=/{multilingual_event.slug}/",
+        follow=True,
+    )
+    assert "Einreichung" in second_response.content.decode()
+
+
+@pytest.mark.django_db
+def test_can_change_locale_with_queryparam(multilingual_event, client):
+    first_response = client.get(multilingual_event.cfp.urls.public, follow=True)
+    assert "submission" in first_response.content.decode()
+    assert "Einreichung" not in first_response.content.decode()
+    second_response = client.get(
+        reverse("cfp:locale.set", kwargs={"event": multilingual_event.slug})
+        + f"?locale=de&next=/{multilingual_event.slug}/?foo=bar",
         follow=True,
     )
     assert "Einreichung" in second_response.content.decode()
