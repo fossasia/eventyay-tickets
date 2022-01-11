@@ -189,14 +189,14 @@ def base_placeholders(sender, **kwargs):
         SimpleFunctionalMailTextPlaceholder(
             "session_start_date",
             ["slot"],
-            lambda slot: _date(slot.start, "SHORT_DATE_FORMAT"),
+            lambda slot: _date(slot.local_start, "SHORT_DATE_FORMAT"),
             _date(now(), "SHORT_DATE_FORMAT"),
             _("The session's start date"),
         ),
         SimpleFunctionalMailTextPlaceholder(
             "session_start_time",
             ["slot"],
-            lambda slot: _date(slot.start, "TIME_FORMAT"),
+            lambda slot: _date(slot.local_start, "TIME_FORMAT"),
             _date(now(), "TIME_FORMAT"),
             _("The session's start time"),
         ),

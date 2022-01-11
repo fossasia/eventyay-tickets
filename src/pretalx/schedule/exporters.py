@@ -75,8 +75,8 @@ class ScheduleData(BaseExporter):
                 or (not talk.submission and not self.with_breaks)
             ):
                 continue
-            talk_date = talk.start.astimezone(tz).date()
-            if talk.start.astimezone(tz).hour < 3 and talk_date != event.date_from:
+            talk_date = talk.local_start.date()
+            if talk.local_start.hour < 3 and talk_date != event.date_from:
                 talk_date -= dt.timedelta(days=1)
             day_data = data.get(talk_date)
             if not day_data:
@@ -182,10 +182,8 @@ class FrabJsonExporter(ScheduleData):
                                     "id": talk.submission.id,
                                     "guid": talk.uuid,
                                     "logo": talk.submission.urls.image,
-                                    "date": talk.start.astimezone(tz).isoformat(),
-                                    "start": talk.start.astimezone(tz).strftime(
-                                        "%H:%M"
-                                    ),
+                                    "date": talk.local_start.isoformat(),
+                                    "start": talk.local_start.strftime("%H:%M"),
                                     "duration": talk.export_duration,
                                     "room": str(room["name"]),
                                     "slug": talk.frab_slug,

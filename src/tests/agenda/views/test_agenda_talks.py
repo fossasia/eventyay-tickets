@@ -1,7 +1,6 @@
 import datetime as dt
 
 import pytest
-import pytz
 from django.utils import formats
 from django.utils.timezone import now
 from django_scopes import scope
@@ -27,18 +26,8 @@ def test_can_see_talk(client, django_assert_num_queries, event, slot, other_slot
         assert content.count(slot.submission.title) >= 2  # meta+h1
         assert slot.submission.abstract in content
         assert slot.submission.description in content
-        assert (
-            formats.date_format(
-                slot.start.astimezone(pytz.timezone(event.timezone)), "Y-m-d, H:i"
-            )
-            in content
-        )
-        assert (
-            formats.date_format(
-                slot.end.astimezone(pytz.timezone(event.timezone)), "H:i"
-            )
-            in content
-        )
+        assert formats.date_format(slot.local_start, "Y-m-d, H:i") in content
+        assert formats.date_format(slot.real_end, "H:i") in content
         assert str(slot.room.name) in content
         assert "fa-edit" not in content  # edit btn
         assert "fa-video" not in content  # do not record
@@ -68,18 +57,8 @@ def test_orga_can_see_new_talk(
         assert content.count(slot.submission.title) >= 2  # meta+h1
         assert slot.submission.abstract in content
         assert slot.submission.description in content
-        assert (
-            formats.date_format(
-                slot.start.astimezone(pytz.timezone(event.timezone)), "Y-m-d, H:i"
-            )
-            in content
-        )
-        assert (
-            formats.date_format(
-                slot.end.astimezone(pytz.timezone(event.timezone)), "H:i"
-            )
-            in content
-        )
+        assert formats.date_format(slot.local_start, "Y-m-d, H:i") in content
+        assert formats.date_format(slot.real_end, "H:i") in content
         assert str(slot.room.name) in content
         assert "fa-edit" not in content  # edit btn
         assert "fa-video" not in content  # do not record

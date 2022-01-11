@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`1258` The talk start time, when rendered in email templates, was always in UTC instead of local time.
 - :bug:`1257` The email editor started to require all languages to be filled in, instead of at least one language. This was unintended, the previous behaviour has been restored.
 - :feature:`766` When you change an event's timezone, all talks will now be moved to appear at the same *local* time.
 - :bug:`1248` It was possible to set a talk's end time before its start time.

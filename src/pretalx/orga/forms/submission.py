@@ -27,14 +27,10 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
                 datetime_format = get_format("DATETIME_INPUT_FORMATS")[0]
                 initial_slot = {
                     "room": slot.room,
-                    "start": slot.start.astimezone(self.event.tz).strftime(
-                        datetime_format
-                    )
-                    if slot.start
+                    "start": slot.local_start.strftime(datetime_format)
+                    if slot.local_start
                     else "",
-                    "end": slot.real_end.astimezone(self.event.tz).strftime(
-                        datetime_format
-                    )
+                    "end": slot.real_end.strftime(datetime_format)
                     if slot.real_end
                     else "",
                 }

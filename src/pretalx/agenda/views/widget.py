@@ -57,9 +57,7 @@ class WidgetData(ScheduleView):
                 for room in date["rooms"]:
                     for talk in room.get("talks", []):
                         talk.top = int(
-                            (talk.start.astimezone(timezone) - start).total_seconds()
-                            / 60
-                            * 2
+                            (talk.local_start - start).total_seconds() / 60 * 2
                         )
                         talk.height = int(talk.duration * 2)
                         talk.is_active = talk.start <= now() <= talk.real_end
@@ -186,8 +184,8 @@ def widget_data_v2(request, event, version=None):
                     if talk.submission
                     else None,
                     "track": talk.submission.track_id if talk.submission else None,
-                    "start": talk.start.astimezone(event.tz),
-                    "end": talk.real_end.astimezone(event.tz),
+                    "start": talk.local_start,
+                    "end": talk.real_end,
                     "room": talk.room_id,
                 }
             )

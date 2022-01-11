@@ -233,8 +233,8 @@ class Schedule(LogMixin, models.Model):
             moved.append(
                 {
                     "submission": new_slot.submission,
-                    "old_start": old_slot.start.astimezone(self.tz),
-                    "new_start": new_slot.start.astimezone(self.tz),
+                    "old_start": old_slot.local_start,
+                    "new_start": new_slot.local_start,
                     "old_room": old_slot.room.name,
                     "new_room": new_slot.room.name,
                     "new_info": new_slot.room.speaker_info,
