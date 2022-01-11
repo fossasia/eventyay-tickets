@@ -1,8 +1,10 @@
+import json
 import logging
 
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
+from django.utils.functional import cached_property
 from django_scopes import ScopedManager
 
 
@@ -47,6 +49,12 @@ class ActivityLog(models.Model):
         event = getattr(self.event, "slug", "None")
         person = getattr(self.person, "name", "None")
         return f"ActivityLog(event={event}, person={person}, content_object={self.content_object}, action_type={self.action_type})"
+
+    @cached_property
+    def json_data(self):
+        if self.data:
+            return json.loads(self.data)
+        return {}
 
     def display(self):
         from pretalx.common.signals import activitylog_display

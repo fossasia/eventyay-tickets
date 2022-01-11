@@ -5,6 +5,7 @@ from pretalx.common.templatetags.copyable import copyable
 from pretalx.common.templatetags.html_signal import html_signal
 from pretalx.common.templatetags.rich_text import rich_text
 from pretalx.common.templatetags.times import times
+from pretalx.common.templatetags.url_replace import url_replace
 from pretalx.common.templatetags.xmlescape import xmlescape
 
 
@@ -96,3 +97,30 @@ def test_html_signal(event, slug, signal):
             f"pretalx.cfp.signals.{signal}", sender=event, request=None
         )
         assert bool(result) is not slug
+
+
+class MockEncodeDict(dict):
+    def urlencode(self, **kwargs):
+        return self
+
+    def copy(self):
+        return self
+
+
+class FakeRequest:
+    def __init__(self, get):
+        self.GET = MockEncodeDict(get)
+
+
+@pytest.mark.parametrize(
+    "get,replace,response",
+    (
+        ({"foo": "bar"}, ["baz", "bar"], {"foo": "bar", "baz": "bar"}),
+        ({}, ["baz", "bar"], {"baz": "bar"}),
+        ({"foo": "bar"}, ["foo", "baz"], {"foo": "baz"}),
+        ({"foo": "bar"}, ["foo", ""], {}),
+        ({"foo": "bar"}, ["bar", ""], {"foo": "bar"}),
+    ),
+)
+def test_url_replace(get, replace, response):
+    assert url_replace(FakeRequest(get), *replace) == response
