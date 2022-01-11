@@ -5,6 +5,8 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 
 const currentYear = new Date().getFullYear()
 
+const NODE_PATH = process.env.NODE_PATH
+
 module.exports = {
 	devServer: {
 		host: 'localhost',
@@ -91,7 +93,8 @@ module.exports = {
 			// }),
 			new MomentTimezoneDataPlugin({
 				startYear: currentYear - 1,
-				endYear: currentYear + 1
+				endYear: currentYear + 1,
+				...(NODE_PATH ? { cacheDir: `${NODE_PATH}/.cache/moment-timezone-data-webpack-plugin` } : {})
 			})
 		],
 	},
