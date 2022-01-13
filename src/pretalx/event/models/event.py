@@ -623,6 +623,8 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
     def copy_data_from(self, other_event):
         from pretalx.orga.signals import event_copy_data
 
+        delta = other_event.date_from - self.date_from
+
         self._delete_mail_templates()
         self.submission_types.exclude(pk=self.cfp.default_type_id).delete()
         for template in self.template_names:
@@ -683,6 +685,29 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
                 information.limit_tracks.add(track_map.get(track))
             for stype in types:
                 question.limit_types.add(submission_type_map.get(stype))
+
+        for review_phase in other_event.review_phases.all():
+            review_phase.pk = None
+            review_phase.event = self
+            review_phase.is_active = False
+            if review_phase.start:
+                review_phase.start += delta
+            if review_phase.end:
+                review_phase.end += delta
+            review_phase.save()
+
+        for score_category in other_event.score_categories.all():
+            scores = score_category.scores.all()
+            score_category.pk = None
+            score_category.event = self
+            score_category.save()
+            score_category.limit_tracks.set([])
+            for track in tracks:
+                score_category.limit_tracks.add(track_map.get(track))
+            for score in scores:
+                score.pk = None
+                score.category = score_category
+                score.save()
 
         for s in other_event.settings._objects.all():
             if s.value.startswith("file://"):
