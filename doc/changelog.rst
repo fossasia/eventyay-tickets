@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`1184` Review forms can now be sent with ctrl+enter for a smoother review workflow.
 - :bug:`1253` Review scores were not copied when choosing a previous event to copy to a new event.
 - :bug:`1258` The talk start time, when rendered in email templates, was always in UTC instead of local time.
 - :bug:`1257` The email editor started to require all languages to be filled in, instead of at least one language. This was unintended, the previous behaviour has been restored.
