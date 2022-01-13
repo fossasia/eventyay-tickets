@@ -315,23 +315,22 @@ export default {
 		},
 		toggleCaptions () {
 			if (this.$refs.video.textTracks.length === 1) {
-				// single track: just toggle
-				this.$refs.video.textTracks.forEach((t) => {
-					t.mode = t.mode === 'showing' ? 'hidden' : 'showing'
-				})
+				const t = this.$refs.video.textTracks[0]
+				t.mode = t.mode === 'showing' ? 'hidden' : 'showing'
 			} else {
 				// multiple tracks: allow to choose which one
 				this.showCaptionsChooser = true
 			}
 		},
 		chooseTextTrack (track) {
-			this.$refs.video.textTracks.forEach((t) => {
+			for (let i = 0; i < this.$refs.video.textTracks.length; i++) { // TextTrackList.forEach not supported in all browsers
+				const t = this.$refs.video.textTracks[i]
 				if (track !== null && t.label === track.label) {
 					t.mode = 'showing'
 				} else {
 					t.mode = 'hidden'
 				}
-			})
+			}
 			this.onTextTracksChanged()
 			this.showCaptionsChooser = false
 		},
@@ -355,7 +354,8 @@ export default {
 		},
 		onTextTracksChanged () {
 			const newList = []
-			this.$refs.video.textTracks.forEach((t) => {
+			for (let i = 0; i < this.$refs.video.textTracks.length; i++) { // TextTrackList.forEach not supported in all browsers
+				const t = this.$refs.video.textTracks[i]
 				if (t.kind === 'captions' || t.kind === 'subtitles') {
 					newList.push({
 						label: t.label,
@@ -363,7 +363,7 @@ export default {
 						mode: t.mode
 					})
 				}
-			})
+			}
 			this.textTracks = newList
 		},
 		onVolumechange () {
