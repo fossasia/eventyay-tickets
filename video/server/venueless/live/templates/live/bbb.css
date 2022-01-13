@@ -6,7 +6,7 @@
     --toast-info-color: {{ world.config.theme.colors.bbb_background|default:"#333333" }};
 }
 
-.overlay--1aTlbi, body {
+.overlay--1aTlbi, body, .layout--Z2pPMwf, .presentationContainer--1wqUYG {
     background-color: {{ world.config.theme.colors.bbb_background|default:"#333333" }} !important;
 }
 
