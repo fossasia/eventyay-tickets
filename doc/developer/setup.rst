@@ -193,7 +193,7 @@ You will now find the generated documentation in the ``doc/_build/html/`` subdir
 If you find yourself working with the documentation more than a little, give the ``autobuild``
 functionality a try::
 
-    (env)$ sphinx-autobuild . _build/html
+    (env)$ sphinx-autobuild . _build/html --port 8001
 
 Then, go to http://localhost:8081 for a version of the documentation that
 automatically re-builds when you save a changed source file.
