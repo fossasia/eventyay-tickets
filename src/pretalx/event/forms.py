@@ -174,14 +174,23 @@ class EventWizardTimelineForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields["deadline"].widget.attrs["class"] = "datetimepickerfield"
 
+    def clean(self):
+        data = super().clean()
+        date_from = data.get("date_from")
+        date_to = data.get("date_to")
+        if date_from and date_to and date_from > date_to:
+            error = forms.ValidationError(
+                _("The event end cannot be before the start.")
+            )
+            self.add_error("date_from", error)
+        return data
+
     class Meta:
         model = Event
         fields = ("date_from", "date_to")
         widgets = {
             "date_from": forms.DateInput(attrs={"class": "datepickerfield"}),
-            "date_to": forms.DateInput(
-                attrs={"class": "datepickerfield", "data-date-after": "#id_date_from"}
-            ),
+            "date_to": forms.DateInput(attrs={"class": "datepickerfield"}),
         }
 
 

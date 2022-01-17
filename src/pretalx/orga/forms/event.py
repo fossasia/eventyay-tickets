@@ -196,6 +196,13 @@ class EventForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
 
     def clean(self):
         data = super().clean()
+        date_from = data.get("date_from")
+        date_to = data.get("date_to")
+        if date_from and date_to and date_from > date_to:
+            error = forms.ValidationError(
+                _("The event end cannot be before the start.")
+            )
+            self.add_error("date_from", error)
         if data.get("locale") not in data.get("locales", []):
             error = forms.ValidationError(
                 _("Your default language needs to be one of your active languages."),
