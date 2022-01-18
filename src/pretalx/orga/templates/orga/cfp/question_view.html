@@ -23,72 +23,74 @@
         </span>
     </div>
 
-    <table class="table table-hover table-sm table-responsive-md table-flip">
-        <thead>
-            <tr>
-                <th>{% translate "Question" %}</th>
-                <th>{% translate "Target" %}</th>
-                <th>{% translate "required" %}</th>
-                <th>{% translate "active" %}</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for question in questions %}
+    <div class="table-responsive">
+        <table class="table table-hover table-sm table-flip">
+            <thead>
                 <tr>
-                    <td>
-                        <a href="{{ question.urls.base }}">
-                            {{ question.question }}
-                        </a>
-                    </td>
-                    <td>
-                        {{ question.get_target_display }}
-                    </td>
-                    <td>
-                        <i class="fa fa-{{ question.required|yesno:'check-circle text-success,times-circle text-danger' }}">
-                        </i>
-                        {% if question.question_required == "require after" or question.freeze_after%}
-                            <i class="fa fa-clock-o" title="{% trans "This question's availability depends on a deadline." %}"> </i>
-                        {% endif %}
-                    </td>
-                    <td>
-                        <i class="fa fa-{{ question.active|yesno:'check-circle text-success,times-circle text-danger' }}">
-                        </i>
-                    </td>
-                    <td class="action-column">
-                        {% if not forloop.last %}
-                            <a href="{{ question.urls.down }}"
-                                class="btn btn-sm btn-outline-info"
-                                title="{% translate "Move question down" %}">
-                                <i class="fa fa-arrow-down"></i>
-                            </a>
-                        {% endif %}
-                        {% if not forloop.first %}
-                            <a href="{{ question.urls.up }}"
-                                class="btn btn-sm btn-outline-info"
-                                title="{% translate "Move question up" %}">
-                                <i class="fa fa-arrow-up"></i>
-                            </a>
-                        {% endif %}
-                        <a href="{{ question.urls.edit }}"
-                            class="btn btn-sm btn-info"
-                            title="{% translate "Edit" %}">
-                            <i class="fa fa-edit"></i>
-                        </a>
-                        <a href="{{ question.urls.delete }}"
-                            class="btn btn-sm btn-danger"
-                            title="{% translate "Delete" %}">
-                            <i class="fa fa-trash"></i>
-                        </a>
-                    </td>
+                    <th>{% translate "Question" %}</th>
+                    <th>{% translate "Target" %}</th>
+                    <th>{% translate "required" %}</th>
+                    <th>{% translate "active" %}</th>
+                    <th></th>
                 </tr>
+            </thead>
+            <tbody>
+                {% for question in questions %}
+                    <tr>
+                        <td>
+                            <a href="{{ question.urls.base }}">
+                                {{ question.question }}
+                            </a>
+                        </td>
+                        <td>
+                            {{ question.get_target_display }}
+                        </td>
+                        <td>
+                            <i class="fa fa-{{ question.required|yesno:'check-circle text-success,times-circle text-danger' }}">
+                            </i>
+                            {% if question.question_required == "require after" or question.freeze_after%}
+                                <i class="fa fa-clock-o" title="{% trans "This question's availability depends on a deadline." %}"> </i>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <i class="fa fa-{{ question.active|yesno:'check-circle text-success,times-circle text-danger' }}">
+                            </i>
+                        </td>
+                        <td class="action-column">
+                            {% if not forloop.last %}
+                                <a href="{{ question.urls.down }}"
+                                    class="btn btn-sm btn-outline-info"
+                                    title="{% translate "Move question down" %}">
+                                    <i class="fa fa-arrow-down"></i>
+                                </a>
+                            {% endif %}
+                            {% if not forloop.first %}
+                                <a href="{{ question.urls.up }}"
+                                    class="btn btn-sm btn-outline-info"
+                                    title="{% translate "Move question up" %}">
+                                    <i class="fa fa-arrow-up"></i>
+                                </a>
+                            {% endif %}
+                            <a href="{{ question.urls.edit }}"
+                                class="btn btn-sm btn-info"
+                                title="{% translate "Edit" %}">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                            <a href="{{ question.urls.delete }}"
+                                class="btn btn-sm btn-danger"
+                                title="{% translate "Delete" %}">
+                                <i class="fa fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
 
-            {% empty %}
-                <tr>
-                    <td colspan=4 class="w-75">{% translate "You have configured no questions yet." %}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                {% empty %}
+                    <tr>
+                        <td colspan=4 class="w-75">{% translate "You have configured no questions yet." %}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
 {% endblock %}

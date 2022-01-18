@@ -10,57 +10,59 @@
             (talk vs workshop vs metal concert).
         {% endblocktranslate %}
     </div>
-    <table class="table table-sm table-hover table-responsive-md table-flip">
-        <thead>
-            <tr>
-                <th>{% translate "Session type" %}</th>
-                <th>{% translate "Proposals" %}</th>
-                <th>{% translate "Default duration" %}</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for type in types %}
+    <div class="table-responsive">
+        <table class="table table-sm table-hover table-flip">
+            <thead>
                 <tr>
-                    <td>
-                        {% if type.requires_access_code %}
-                            <i class="fa fa-lock" title="{% translate "Requires access code" %}"></i>
-                        {% endif %}
-                        <a href="{{ type.urls.edit }}">
-                            {{ type.name }}
-                        </a>
-                    </td>
-                    <td class="pl-4">
-                        {{ type.submissions.all.count }}
-                    </td>
-                    <td>{{ type.default_duration }}</td>
-                    <td class="action-column">
-                        {% if request.event.cfp.default_type == type %}
-                            <a><i class="fa fa-check"></i> {% translate "Default" %}</a>
-                        {% else %}
-                            <a href="{{ type.urls.default }}"
-                                class="btn btn-sm btn-info">
-                                Make default
-                            </a>
-                        {% endif %}
-                        <a href="{{ type.urls.prefilled_cfp.full }}"
-                            title="{% translate 'Go to pre-filled CfP form' %}"
-                            class="btn btn-sm btn-info">
-                            <i class="fa fa-link"></i>
-                        </a>
-                        <a href="{{ type.urls.edit }}"
-                            class="btn btn-sm btn-info">
-                            <i class="fa fa-edit"></i>
-                        </a>
-                        <a href="{{ type.urls.delete }}"
-                            class="btn btn-sm btn-danger">
-                            <i class="fa fa-trash"></i>
-                        </a>
-                    </td>
+                    <th>{% translate "Session type" %}</th>
+                    <th>{% translate "Proposals" %}</th>
+                    <th>{% translate "Default duration" %}</th>
+                    <th></th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                {% for type in types %}
+                    <tr>
+                        <td>
+                            {% if type.requires_access_code %}
+                                <i class="fa fa-lock" title="{% translate "Requires access code" %}"></i>
+                            {% endif %}
+                            <a href="{{ type.urls.edit }}">
+                                {{ type.name }}
+                            </a>
+                        </td>
+                        <td class="pl-4">
+                            {{ type.submissions.all.count }}
+                        </td>
+                        <td>{{ type.default_duration }}</td>
+                        <td class="action-column">
+                            {% if request.event.cfp.default_type == type %}
+                                <a><i class="fa fa-check"></i> {% translate "Default" %}</a>
+                            {% else %}
+                                <a href="{{ type.urls.default }}"
+                                    class="btn btn-sm btn-info">
+                                    Make default
+                                </a>
+                            {% endif %}
+                            <a href="{{ type.urls.prefilled_cfp.full }}"
+                                title="{% translate 'Go to pre-filled CfP form' %}"
+                                class="btn btn-sm btn-info">
+                                <i class="fa fa-link"></i>
+                            </a>
+                            <a href="{{ type.urls.edit }}"
+                                class="btn btn-sm btn-info">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                            <a href="{{ type.urls.delete }}"
+                                class="btn btn-sm btn-danger">
+                                <i class="fa fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
     <div class="submit-group"><span></span>
         <a class="btn btn-info" href="{{ request.event.cfp.urls.new_type }}">
             <i class="fa fa-plus"></i>

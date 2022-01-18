@@ -31,61 +31,63 @@
             </a>
         </span>
     </div>
-    <table class="table table-sm table-hover table-responsive-md table-flip">
-        <thead>
-            <tr>
-                <th>
-                    {% translate "Subject" %}
-                    <a href="?{% url_replace request 'sort' 'subject' %}"><i class="fa fa-caret-down" title="{% translate "Sort by subject (a-z)" %}"></i></a>
-                    <a href="?{% url_replace request 'sort' '-subject' %}"><i class="fa fa-caret-up" title="{% translate "Sort by subject (z-a)" %}"></i></a>
-                </th>
-                <th>
-                    {% translate "To" %}
-                    <a href="?{% url_replace request 'sort' 'to' %}"><i class="fa fa-caret-down" title="{% translate "Sort by recipient (a-z)" %}"></i></a>
-                    <a href="?{% url_replace request 'sort' '-to' %}"><i class="fa fa-caret-up" title="{% translate "Sort by recipient (z-a)" %}"></i></a>
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for mail in mails %}
+    <div class="table-responsive">
+        <table class="table table-sm table-hover table-flip">
+            <thead>
                 <tr>
-                    <td>
-                        <a href="{{ mail.urls.base }}">
-                            {{ mail.subject }}
-                        </a>
-                    </td>
-                    <td>
-                        {% for user in mail.to_users.all %}
-                            {% if user in request.event.submitters %}
-                                <a href="{% url "orga:speakers.view" event=request.event.slug pk=user.pk %}">
-                                    {{ user }}
-                                </a>{% else %}{{ user }}{% endif %}{% if not forloop.last or mail.to %}, {% endif %}
-                        {% endfor %}
-                        {% if mail.to %}
-                            {{ mail.to }}
-                        {% endif %}
-                    </td>
-                    <td class="action-column">
-                        <a href="{{ mail.urls.send }}"
-                            title="{% translate "send" %}"
-                            class="btn btn-sm btn-success">
-                            <i class="fa fa-mail-forward"></i>
-                        </a>
-                        <a href="{{ mail.urls.edit }}"
-                            title="{% translate "edit" %}"
-                            class="btn btn-sm btn-info">
-                            <i class="fa fa-edit"></i>
-                        </a>
-                        <a href="{{ mail.urls.delete }}"
-                            title="{% translate "delete" %}"
-                            class="btn btn-sm btn-danger">
-                            <i class="fa fa-trash"></i>
-                        </a>
-                    </td>
+                    <th>
+                        {% translate "Subject" %}
+                        <a href="?{% url_replace request 'sort' 'subject' %}"><i class="fa fa-caret-down" title="{% translate "Sort by subject (a-z)" %}"></i></a>
+                        <a href="?{% url_replace request 'sort' '-subject' %}"><i class="fa fa-caret-up" title="{% translate "Sort by subject (z-a)" %}"></i></a>
+                    </th>
+                    <th>
+                        {% translate "To" %}
+                        <a href="?{% url_replace request 'sort' 'to' %}"><i class="fa fa-caret-down" title="{% translate "Sort by recipient (a-z)" %}"></i></a>
+                        <a href="?{% url_replace request 'sort' '-to' %}"><i class="fa fa-caret-up" title="{% translate "Sort by recipient (z-a)" %}"></i></a>
+                    </th>
+                    <th></th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                {% for mail in mails %}
+                    <tr>
+                        <td>
+                            <a href="{{ mail.urls.base }}">
+                                {{ mail.subject }}
+                            </a>
+                        </td>
+                        <td>
+                            {% for user in mail.to_users.all %}
+                                {% if user in request.event.submitters %}
+                                    <a href="{% url "orga:speakers.view" event=request.event.slug pk=user.pk %}">
+                                        {{ user }}
+                                    </a>{% else %}{{ user }}{% endif %}{% if not forloop.last or mail.to %}, {% endif %}
+                            {% endfor %}
+                            {% if mail.to %}
+                                {{ mail.to }}
+                            {% endif %}
+                        </td>
+                        <td class="action-column">
+                            <a href="{{ mail.urls.send }}"
+                                title="{% translate "send" %}"
+                                class="btn btn-sm btn-success">
+                                <i class="fa fa-mail-forward"></i>
+                            </a>
+                            <a href="{{ mail.urls.edit }}"
+                                title="{% translate "edit" %}"
+                                class="btn btn-sm btn-info">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                            <a href="{{ mail.urls.delete }}"
+                                title="{% translate "delete" %}"
+                                class="btn btn-sm btn-danger">
+                                <i class="fa fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
     {% include "orga/pagination.html" %}
 {% endblock %}

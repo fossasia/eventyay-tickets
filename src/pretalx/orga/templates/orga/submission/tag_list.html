@@ -4,41 +4,43 @@
 
 {% block cfp_content %}
     <h2>{% translate "Tags" %}</h2>
-    <table class="table table-sm table-hover table-responsive-md table-flip">
-        <thead>
-            <tr>
-                <th>{% translate "Tag" %}</th>
-                <th>{% translate "Proposals" %}</th>
-                <th>{% translate "Color" %}</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for tag in tags %}
+    <div class="table-responsive">
+        <table class="table table-sm table-hover table-flip">
+            <thead>
                 <tr>
-                    <td>
-                        <a href="{{ tag.urls.edit }}">
-                            {{ tag.tag }}
-                        </a>
-                    </td>
-                    <td class="pl-4">
-                        {{ tag.submissions.all.count }}
-                    </td>
-                    <td><div class="color-square" style="background: {{ tag.color }}"></div></td>
-                    <td class="action-column">
-                        <a href="{{ tag.urls.edit }}"
-                            class="btn btn-sm btn-info">
-                            <i class="fa fa-edit"></i>
-                        </a>
-                        <a href="{{ tag.urls.delete }}"
-                            class="btn btn-sm btn-danger">
-                            <i class="fa fa-trash"></i>
-                        </a>
-                    </td>
+                    <th>{% translate "Tag" %}</th>
+                    <th>{% translate "Proposals" %}</th>
+                    <th>{% translate "Color" %}</th>
+                    <th></th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                {% for tag in tags %}
+                    <tr>
+                        <td>
+                            <a href="{{ tag.urls.edit }}">
+                                {{ tag.tag }}
+                            </a>
+                        </td>
+                        <td class="pl-4">
+                            {{ tag.submissions.all.count }}
+                        </td>
+                        <td><div class="color-square" style="background: {{ tag.color }}"></div></td>
+                        <td class="action-column">
+                            <a href="{{ tag.urls.edit }}"
+                                class="btn btn-sm btn-info">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                            <a href="{{ tag.urls.delete }}"
+                                class="btn btn-sm btn-danger">
+                                <i class="fa fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
     {% has_perm 'orga.add_tags' request.user request.event as can_edit_tags %}
     {% if can_edit_tags %}
         <div class="submit-group"><span></span>

@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`-` Some tables were not responsive on mobile devices, particularly in the organiser area.
 - :feature:`1184` Review forms can now be sent with ctrl+enter for a smoother review workflow.
 - :bug:`1253` Review scores were not copied when choosing a previous event to copy to a new event.
 - :bug:`1258` The talk start time, when rendered in email templates, was always in UTC instead of local time.

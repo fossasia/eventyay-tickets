@@ -10,49 +10,51 @@
             themselves. Track colors are helpful to help attendees navigate your schedule.
         {% endblocktranslate %}
     </div>
-    <table class="table table-sm table-hover table-responsive-md table-flip">
-        <thead>
-            <tr>
-                <th>{% translate "Track" %}</th>
-                <th>{% translate "Proposals" %}</th>
-                <th>{% translate "Color" %}</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for track in tracks %}
+    <div class="table-responsive">
+        <table class="table table-sm table-hover table-flip">
+            <thead>
                 <tr>
-                    <td>
-                        {% if track.requires_access_code %}
-                            <i class="fa fa-lock" title="{% translate "Requires access code" %}"></i>
-                        {% endif %}
-                        <a href="{{ track.urls.edit }}">
-                            {{ track.name }}
-                        </a>
-                    </td>
-                    <td class="pl-4">
-                        {{ track.submissions.all.count }}
-                    </td>
-                    <td><div class="color-square" style="background: {{ track.color }}"></div></td>
-                    <td class="action-column">
-                        <a href="{{ track.urls.prefilled_cfp.full }}"
-                            title="{% translate 'Go to pre-filled CfP form' %}"
-                            class="btn btn-sm btn-info">
-                            <i class="fa fa-link"></i>
-                        </a>
-                        <a href="{{ track.urls.edit }}"
-                            class="btn btn-sm btn-info">
-                            <i class="fa fa-edit"></i>
-                        </a>
-                        <a href="{{ track.urls.delete }}"
-                            class="btn btn-sm btn-danger">
-                            <i class="fa fa-trash"></i>
-                        </a>
-                    </td>
+                    <th>{% translate "Track" %}</th>
+                    <th>{% translate "Proposals" %}</th>
+                    <th>{% translate "Color" %}</th>
+                    <th></th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                {% for track in tracks %}
+                    <tr>
+                        <td>
+                            {% if track.requires_access_code %}
+                                <i class="fa fa-lock" title="{% translate "Requires access code" %}"></i>
+                            {% endif %}
+                            <a href="{{ track.urls.edit }}">
+                                {{ track.name }}
+                            </a>
+                        </td>
+                        <td class="pl-4">
+                            {{ track.submissions.all.count }}
+                        </td>
+                        <td><div class="color-square" style="background: {{ track.color }}"></div></td>
+                        <td class="action-column">
+                            <a href="{{ track.urls.prefilled_cfp.full }}"
+                                title="{% translate 'Go to pre-filled CfP form' %}"
+                                class="btn btn-sm btn-info">
+                                <i class="fa fa-link"></i>
+                            </a>
+                            <a href="{{ track.urls.edit }}"
+                                class="btn btn-sm btn-info">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                            <a href="{{ track.urls.delete }}"
+                                class="btn btn-sm btn-danger">
+                                <i class="fa fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
     <div class="submit-group"><span></span>
         <a class="btn btn-info" href="{{ request.event.cfp.urls.new_track }}">
             <i class="fa fa-plus"></i>

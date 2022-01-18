@@ -9,51 +9,53 @@
         {% translate "Sent Mails" %}
     </h2>
     {% include "common/search_form.html" %}
-    <table class="table table-sm table-hover table-responsive-md table-flip">
-        <thead>
-            <tr>
-                <th>
-                    {% translate "Subject" %}
-                    <a href="?{% url_replace request 'sort' 'subject' %}"><i class="fa fa-caret-down" title="{% translate "Sort by subject (a-z)" %}"></i></a>
-                    <a href="?{% url_replace request 'sort' '-subject' %}"><i class="fa fa-caret-up" title="{% translate "Sort by subject (z-a)" %}"></i></a>
-                </th>
-                <th>
-                    {% translate "To" %}
-                    <a href="?{% url_replace request 'sort' 'to' %}"><i class="fa fa-caret-down" title="{% translate "Sort by recipient (a-z)" %}"></i></a>
-                    <a href="?{% url_replace request 'sort' '-to' %}"><i class="fa fa-caret-up" title="{% translate "Sort by recipient (z-a)" %}"></i></a>
-                </th>
-                <th>
-                    {% translate "Sent" %}
-                    <a href="?{% url_replace request 'sort' '-sent' %}"><i class="fa fa-caret-down" title="{% translate "Sort by sending time (most recent first)" %}"></i></a>
-                    <a href="?{% url_replace request 'sort' 'sent' %}"><i class="fa fa-caret-up" title="{% translate "Sort by sending time (earliest first)" %}"></i></a>
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for mail in mails %}
+    <div class="table-responsive">
+        <table class="table table-sm table-hover table-flip">
+            <thead>
                 <tr>
-                    <td>
-                        <a href="{{ mail.urls.base }}">
-                            {{ mail.subject }}
-                        </a>
-                    </td>
-                    <td>
-                        {% for user in mail.to_users.all %}
-                            {% if user in request.event.submitters %}
-                                <a href="{% url "orga:speakers.view" event=request.event.slug pk=user.pk %}">
-                                    {{ user }}
-                                </a>{% else %}{{ user }}{% endif %}{% if not forloop.last or mail.to %}, {% endif %}
-                        {% endfor %}
-                        {% if mail.to %}
-                            {{ mail.to }}
-                        {% endif %}
-                    </td>
-                    <td>
-                        {{ mail.sent }}
-                    </td>
+                    <th>
+                        {% translate "Subject" %}
+                        <a href="?{% url_replace request 'sort' 'subject' %}"><i class="fa fa-caret-down" title="{% translate "Sort by subject (a-z)" %}"></i></a>
+                        <a href="?{% url_replace request 'sort' '-subject' %}"><i class="fa fa-caret-up" title="{% translate "Sort by subject (z-a)" %}"></i></a>
+                    </th>
+                    <th>
+                        {% translate "To" %}
+                        <a href="?{% url_replace request 'sort' 'to' %}"><i class="fa fa-caret-down" title="{% translate "Sort by recipient (a-z)" %}"></i></a>
+                        <a href="?{% url_replace request 'sort' '-to' %}"><i class="fa fa-caret-up" title="{% translate "Sort by recipient (z-a)" %}"></i></a>
+                    </th>
+                    <th>
+                        {% translate "Sent" %}
+                        <a href="?{% url_replace request 'sort' '-sent' %}"><i class="fa fa-caret-down" title="{% translate "Sort by sending time (most recent first)" %}"></i></a>
+                        <a href="?{% url_replace request 'sort' 'sent' %}"><i class="fa fa-caret-up" title="{% translate "Sort by sending time (earliest first)" %}"></i></a>
+                    </th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                {% for mail in mails %}
+                    <tr>
+                        <td>
+                            <a href="{{ mail.urls.base }}">
+                                {{ mail.subject }}
+                            </a>
+                        </td>
+                        <td>
+                            {% for user in mail.to_users.all %}
+                                {% if user in request.event.submitters %}
+                                    <a href="{% url "orga:speakers.view" event=request.event.slug pk=user.pk %}">
+                                        {{ user }}
+                                    </a>{% else %}{{ user }}{% endif %}{% if not forloop.last or mail.to %}, {% endif %}
+                            {% endfor %}
+                            {% if mail.to %}
+                                {{ mail.to }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {{ mail.sent }}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
     {% include "orga/pagination.html" %}
 {% endblock %}
