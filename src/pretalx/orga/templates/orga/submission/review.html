@@ -169,33 +169,35 @@
             {% endif %}
 
             {% if can_view_other_reviews or form.instance.pk %}
-                <table class="table review-table table-hover table-responsive-md table-flip">
-                    <tr>
-                        <th>{% translate "Score" %}</th>
-                        {% if score_categories|length > 1 %}
-                            {% for cat in score_categories %}
-                                <th>{{ cat.name }}</th>
+                <div class="table-responsive">
+                    <table class="table review-table table-hover table-flip">
+                        <tr>
+                            <th>{% translate "Score" %}</th>
+                            {% if score_categories|length > 1 %}
+                                {% for cat in score_categories %}
+                                    <th>{{ cat.name }}</th>
+                                {% endfor %}
+                            {% endif %}
+                            {% for field in qform %}
+                                <th>{{ field.label }}</th>
                             {% endfor %}
-                        {% endif %}
-                        {% for field in qform %}
-                            <th>{{ field.label }}</th>
-                        {% endfor %}
-                        <th>{% translate "Review" %}</th>
-                        <th></th>
-                    </tr>
-                    <tbody>
-                        {% if form.instance.pk and review_display %}
-                            {% include "orga/submission/review_fragment.html" with review=review_display read_only=read_only show_reviewer_name=False %}
-                        {% endif %}
-                        {% if can_view_other_reviews %}
-                            {% for review in reviews %}
-                                {% include "orga/submission/review_fragment.html" with review=review read_only=True show_reviewer_name=can_view_reviewer_names %}
-                            {% empty %}
-                                <tr><td colspan="100">{% translate "Nobody else has submitted a review yet." %}</td></tr>
-                            {% endfor %}
-                        {% endif %}
-                    </tbody>
-                </table>
+                            <th>{% translate "Review" %}</th>
+                            <th></th>
+                        </tr>
+                        <tbody>
+                            {% if form.instance.pk and review_display %}
+                                {% include "orga/submission/review_fragment.html" with review=review_display read_only=read_only show_reviewer_name=False %}
+                            {% endif %}
+                            {% if can_view_other_reviews %}
+                                {% for review in reviews %}
+                                    {% include "orga/submission/review_fragment.html" with review=review read_only=True show_reviewer_name=can_view_reviewer_names %}
+                                {% empty %}
+                                    <tr><td colspan="100">{% translate "Nobody else has submitted a review yet." %}</td></tr>
+                                {% endfor %}
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
             {% endif %}
             {% if not read_only %}
                 {% if done != total_reviews %}
