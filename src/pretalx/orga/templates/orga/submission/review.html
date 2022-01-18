@@ -22,20 +22,23 @@
         </div>
     {% else %}
         {% if not read_only %}
-            <div class="alert alert-info">
-                <div>
-                    <p>
-                        {{ request.event.settings.review_help_text|rich_text }}
-                    </p>
-                    {% if not form.instance.pk and not can_view_other_reviews and request.event.active_review_phase and request.event.active_review_phase.can_see_other_reviews == 'after_review' %}
+            {% if request.event.settings.review_help_text %}
+                <div class="alert alert-info">
+                    <div>
                         <p>
-                            {% blocktranslate trimmed %}
-                                You will be able to see other reviews once you have given yours.
-                            {% endblocktranslate %}
+                            {{ request.event.settings.review_help_text|rich_text }}
                         </p>
-                    {% endif %}
+                    </div>
                 </div>
-            </div>
+            {% elif not form.instance.pk and not can_view_other_reviews and request.event.active_review_phase and request.event.active_review_phase.can_see_other_reviews == 'after_review' %}
+                <div class="alert alert-info">
+                    <p>
+                        {% blocktranslate trimmed %}
+                            You will be able to see other reviews once you have given yours.
+                        {% endblocktranslate %}
+                    </p>
+                </div>
+            {% endif %}
         {% else %}
             <div class="alert alert-info">
                 <span>
