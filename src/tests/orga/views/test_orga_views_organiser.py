@@ -149,6 +149,31 @@ def test_orga_create_team(orga_client, organiser, event, is_administrator, orga_
 
 
 @pytest.mark.django_db
+def test_orga_create_team_without_event(orga_client, organiser, event, orga_user):
+    orga_user.is_administrator = True
+    orga_user.save()
+    count = organiser.teams.count()
+    response = orga_client.get(organiser.orga_urls.new_team, follow=True)
+    assert response.status_code == 200
+    response = orga_client.post(
+        organiser.orga_urls.new_team,
+        follow=True,
+        data={
+            "can_change_submissions": True,
+            "can_change_organiser_settings": True,
+            "can_change_event_settings": True,
+            "can_change_teams": True,
+            "can_create_events": True,
+            "form": "team",
+            "name": "Fancy New Name",
+            "organiser": organiser.pk,
+        },
+    )
+    assert response.status_code == 200
+    assert organiser.teams.count() == count
+
+
+@pytest.mark.django_db
 def test_invite_orga_member_as_orga(orga_client, organiser):
     djmail.outbox = []
     team = organiser.teams.get(can_change_submissions=True, is_reviewer=False)

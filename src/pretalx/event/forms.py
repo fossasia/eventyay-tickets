@@ -31,6 +31,19 @@ class TeamForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
                 + "</a>)"
             )
 
+    def clean(self):
+        data = super().clean()
+        all_events = data.get("all_events")
+        limit_events = data.get("limit_events")
+        if not all_events and not limit_events:
+            error = forms.ValidationError(
+                _(
+                    "Please either pick some events for this team, or grant access to all your events!"
+                )
+            )
+            self.add_error("limit_events", error)
+        return data
+
     class Meta:
         model = Team
         fields = [
