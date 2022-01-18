@@ -1,4 +1,4 @@
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.template.defaultfilters import timeuntil
 from django.utils.functional import cached_property
 from django.utils.timezone import now
@@ -29,7 +29,18 @@ class DashboardEventListView(TemplateView):
 
     @cached_property
     def queryset(self):
-        return self.request.orga_events.annotate(submission_count=Count("submissions"))
+        return self.request.orga_events.annotate(
+            submission_count=Count(
+                "submissions",
+                filter=Q(
+                    submissions__state__in=[
+                        state
+                        for state in SubmissionStates.display_values.keys()
+                        if state != SubmissionStates.DELETED
+                    ]
+                ),
+            )
+        )
 
     @context
     def current_orga_events(self):
