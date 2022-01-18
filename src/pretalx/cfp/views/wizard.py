@@ -88,6 +88,7 @@ class SubmitWizard(EventPageMixin, View):
                 event=request.event,
                 context_kwargs={"user": request.user, "submission": request.submission},
                 skip_queue=True,
+                commit=True,  # Send immediately, but save a record
                 locale=request.submission.get_email_locale(request.user.locale),
                 full_submission_content=True,
             )
@@ -107,6 +108,7 @@ class SubmitWizard(EventPageMixin, View):
                     },
                     context={"orga_url": request.submission.orga_urls.base.full()},
                     skip_queue=True,
+                    commit=False,  # Send immediately, don't save a record
                     locale=request.event.locale,
                 )
         except SendMailException as exception:

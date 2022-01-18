@@ -94,8 +94,8 @@ class MailTemplate(LogMixin, models.Model):
         :param context: Context to be used when rendering the template.
         :param context_kwargs: Passed to get_email_context to retrieve the correct
             context when rendering the template.
-        :param skip_queue: Send directly without saving. Use with caution, as
-            it removes any logging and traces.
+        :param skip_queue: Send directly. If combined with commit=False, this will
+            remove any logging and traces.
         :param commit: Set ``False`` to return an unsaved object.
         :param full_submission_content: Attach the complete submission with
             all its fields to the email.
@@ -116,7 +116,7 @@ class MailTemplate(LogMixin, models.Model):
                 "First argument to to_mail must be a string or a User, not "
                 + str(type(user))
             )
-        if users and (not commit or skip_queue):
+        if users and not commit:
             address = ",".join(user.email for user in users)
             users = None
 
@@ -154,7 +154,7 @@ class MailTemplate(LogMixin, models.Model):
             )
             if skip_queue:
                 mail.send()
-            elif commit:
+            if commit:
                 mail.save()
                 if users:
                     mail.to_users.set(users)

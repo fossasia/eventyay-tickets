@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`1261` Automatic confirmation emails of received proposals are now also shown in the list of a user's emails, since the absence was confusing for organisers and speakers.
 - :bug:`1260` It was possible to change teams so that they had access to no events – neither via the explicit list, nor via the "all events" flag, which was extremely confusing.
 - :bug:`1259` The organiser dashboard included deleted proposals in the count on the event overview.
 - :bug:`-` Some tables were not responsive on mobile devices, particularly in the organiser area.
