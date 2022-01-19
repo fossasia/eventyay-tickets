@@ -14,11 +14,11 @@ hierarkey.add_default("venueless_last_push", None, dt.datetime)
 
 
 @receiver(schedule_release, dispatch_uid="venuless_schedule_release")
-def on_schedule_release(event, schedule, user, **kwargs):
-    if not (event.settings.venueless_url and event.settings.venueless_token):
+def on_schedule_release(sender, schedule, user, **kwargs):
+    if not (sender.settings.venueless_url and sender.settings.venueless_token):
         return
     with suppress(Exception):
-        push_to_venueless()
+        push_to_venueless(sender)
 
 
 @receiver(nav_event_settings, dispatch_uid="venueless_nav_settings")
