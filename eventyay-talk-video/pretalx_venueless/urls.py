@@ -10,7 +10,7 @@ urlpatterns = [
         name="settings",
     ),
     path(
-        f"(<slug:event>/p/venueless/check",
+        f"<slug:event>/p/venueless/check",
         views.check,
         name="check",
     ),
