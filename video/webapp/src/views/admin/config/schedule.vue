@@ -13,6 +13,7 @@
 				h2 Pretalx Connection
 				template(v-if="config.pretalx.connected")
 					p Your pretalx instance has successfully connected to venueless.
+					p(v-if="lastPush") Last time pretalx pushed a new schedule version: {{ lastPush }}
 				template(v-else)
 					p To enable automatic schedule update pushes from pretalx to venueless, activate the pretalx-venueless plugin and complete the connection procedure.
 					h3 Step 1: Install and activate the pretalx-venueless plugin
@@ -45,6 +46,7 @@
 // TODO:
 // - trailing slash validation/enforcement for prexalx domain
 // - immediately disconnect pretalx here if domain or event changes
+import moment from 'moment'
 import config from 'config'
 import api from 'lib/api'
 import { required, url } from 'lib/validators'
@@ -77,6 +79,10 @@ export default {
 				sourceOptions.push({id: 'conftool', label: 'Conftool'})
 			}
 			return sourceOptions
+		},
+		lastPush () {
+			if (!this.config || !this.config.pretalx || !this.config.pretalx.pushed) return
+			return moment(this.config.pretalx.pushed).format('dddd, MMMM Do YYYY, h:mm:ss a')
 		},
 		source: {
 			get () {
