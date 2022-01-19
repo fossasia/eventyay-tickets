@@ -80,6 +80,8 @@ class WorldView(APIView):
 
 
 def get_domain(path):
+    if not path:
+        return ""
     domain = urlparse(path).netloc
     if ":" in domain:
         domain = domain.split(":")[0]
