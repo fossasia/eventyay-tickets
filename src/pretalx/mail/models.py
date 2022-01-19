@@ -152,12 +152,12 @@ class MailTemplate(LogMixin, models.Model):
                 text=text,
                 locale=locale,
             )
-            if skip_queue:
-                mail.send()
             if commit:
                 mail.save()
                 if users:
                     mail.to_users.set(users)
+            if skip_queue:
+                mail.send()
         return mail
 
     to_mail.alters_data = True
