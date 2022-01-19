@@ -1,3 +1,5 @@
+from urllib.parse import urlparse
+
 from asgiref.sync import async_to_sync
 from django.db import transaction
 from django.utils.timezone import now
@@ -77,6 +79,13 @@ class WorldView(APIView):
         return Response(serializer.data)
 
 
+def get_domain(path):
+    domain = urlparse(path).netloc
+    if ":" in domain:
+        domain = domain.split(":")[0]
+    return domain.lower()
+
+
 @api_view(http_method_names=["POST"])
 @permission_classes([ApiAccessRequiredPermission])
 def schedule_update(request, **kwargs):
@@ -85,14 +94,16 @@ def schedule_update(request, **kwargs):
     Optionally, the request may contain data for the ``pretalx`` field in the
     world config.
     """
-    domain = request.data.get("domain")
+    domain = get_domain(request.data.get("domain"))
     event = request.data.get("event")
 
     if not domain or not event:
         return Response("Missing fields in request.", status=401)
 
     pretalx_config = request.world.config.get("pretalx", {})
-    if domain != pretalx_config.get("domain") or event != pretalx_config.get("event"):
+    if domain != get_domain(
+        pretalx_config.get("domain")
+    ) or event != pretalx_config.get("event"):
         return Response("Incorrect domain or event data", status=401)
 
     # We assume that only pretalx uses this endpoint
