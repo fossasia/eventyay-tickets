@@ -11,6 +11,7 @@ from django.template import TemplateDoesNotExist, loader
 from django.urls import get_callable
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils.timezone import now
+from django.views.decorators.cache import cache_page
 from django.views.generic import FormView
 from django.views.generic.detail import SingleObjectTemplateResponseMixin
 from django.views.generic.edit import ModelFormMixin, ProcessFormView
@@ -151,3 +152,25 @@ def error_view(status_code):
         raise exception
 
     return error_view
+
+
+def conditional_cache_page(timeout, condition, *, cache=None, key_prefix=None):
+    """This decorator is exactly like cache_page, but with the option to skip
+    the caching entirely.
+
+    The second argument is a callable, ``condition``. It's given the
+    request and all further arguments, and if it evaluates to a true-ish
+    value, the cache is used.
+    """
+
+    def decorator(func):
+        def wrapper(request, *args, **kwargs):
+            if condition(request, *args, **kwargs):
+                return cache_page(timeout=timeout, cache=cache, key_prefix=key_prefix)(
+                    func
+                )(request, *args, **kwargs)
+            return func(request, *args, **kwargs)
+
+        return wrapper
+
+    return decorator

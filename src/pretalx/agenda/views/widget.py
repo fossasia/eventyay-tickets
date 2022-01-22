@@ -13,6 +13,7 @@ from i18nfield.utils import I18nJSONEncoder
 from pretalx.agenda.views.schedule import ScheduleView
 from pretalx.common.tasks import generate_widget_css, generate_widget_js
 from pretalx.common.utils import language
+from pretalx.common.views import conditional_cache_page
 from pretalx.schedule.exporters import ScheduleData
 
 
@@ -121,8 +122,16 @@ class WidgetData(ScheduleView):
             return response
 
 
-@condition(etag_func=widget_data_etag)
-@cache_page(60)
+def cache_version(request, event, version=None):
+    # Absolute versions can always be cached, except for the WIP schedule!
+    if version:
+        if version == "wip":
+            return False
+        return True
+    return True
+
+
+@conditional_cache_page(60, cache_version)
 def widget_data_v2(request, event, version=None):
     event = request.event
     if not request.user.has_perm("agenda.view_widget", event):
