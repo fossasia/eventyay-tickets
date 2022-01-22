@@ -124,6 +124,20 @@ class WidgetData(ScheduleView):
             return response
 
 
+def cache_control(request, event, version=None):
+    """We don't want cache control on unversioned and WIP schedule sites.
+
+    This differs from where we actually cache: We cache unversioned
+    sites, but we don't want clients to know about it, to make sure
+    they'll get the most recent content upon cache invalidation.
+    """
+    if version:
+        if version == "wip":
+            return False
+        return True
+    return False
+
+
 def cache_version(request, event, version=None):
     # Absolute versions can always be cached, except for the WIP schedule!
     if version:
@@ -152,7 +166,7 @@ def cache_version(request, event, version=None):
     return True
 
 
-@conditional_cache_page(60, cache_version)
+@conditional_cache_page(60, cache_version, cache_control=cache_control)
 def widget_data_v2(request, event, version=None):
     event = request.event
     if not request.user.has_perm("agenda.view_widget", event):

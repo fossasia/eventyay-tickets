@@ -154,7 +154,9 @@ def error_view(status_code):
     return error_view
 
 
-def conditional_cache_page(timeout, condition, *, cache=None, key_prefix=None):
+def conditional_cache_page(
+    timeout, condition, *, cache=None, key_prefix=None, cache_control=None
+):
     """This decorator is exactly like cache_page, but with the option to skip
     the caching entirely.
 
@@ -166,9 +168,13 @@ def conditional_cache_page(timeout, condition, *, cache=None, key_prefix=None):
     def decorator(func):
         def wrapper(request, *args, **kwargs):
             if condition(request, *args, **kwargs):
-                return cache_page(timeout=timeout, cache=cache, key_prefix=key_prefix)(
-                    func
-                )(request, *args, **kwargs)
+                response = cache_page(
+                    timeout=timeout, cache=cache, key_prefix=key_prefix
+                )(func)(request, *args, **kwargs)
+                if cache_control and not cache_control(request, *args, **kwargs):
+                    response.headers.pop("Expires")
+                    response.headers.pop("Cache-Control")
+
             return func(request, *args, **kwargs)
 
         return wrapper
