@@ -36,7 +36,7 @@ def test_widget_pages(
     "version,queries",
     (
         ("1", 8),
-        ("2", 10),
+        ("2", 11),
     ),
 )
 def test_widget_data(
