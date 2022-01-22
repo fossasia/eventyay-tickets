@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` Caching of schedule pages is reset the moment a new schedule version is released, so that integrations (for example with Venueless) that push notifications on new schedule releases will always see the actual new schedule.
 - :feature:`-` Schedule pages showing the WIP schedule to organsiers aren't cached anymore, so all changes show up immediately.
 - :feature:`1261` Automatic confirmation emails of received proposals are now also shown in the list of a user's emails, since the absence was confusing for organisers and speakers.
 - :bug:`1260` It was possible to change teams so that they had access to no events – neither via the explicit list, nor via the "all events" flag, which was extremely confusing.

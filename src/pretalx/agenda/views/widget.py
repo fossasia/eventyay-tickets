@@ -3,8 +3,10 @@ from urllib.parse import unquote
 
 import pytz
 from django.conf import settings
+from django.core.cache import caches
 from django.db.models import Q
 from django.http import Http404, HttpResponse, JsonResponse
+from django.utils.cache import get_cache_key
 from django.utils.timezone import now
 from django.views.decorators.cache import cache_page
 from django.views.decorators.http import condition
@@ -128,6 +130,25 @@ def cache_version(request, event, version=None):
         if version == "wip":
             return False
         return True
+
+    # We use the opportunity to *also* clear the cache if the current schedule
+    # version has changed. Note that we still return `True`, so that the cache
+    # will be populated with the new version!
+
+    # Ideally, we would do this in Schedule.freeze(), but it's hard to do this
+    # for every specific URL (since caching is per-URL).
+
+    cache = caches["default"]
+    content_key = get_cache_key(request, "", "GET", cache=cache)
+    version_key = f"{content_key}_known_version"
+    current_version = request.event.current_schedule.version
+
+    # If we have not seen this version for this URL before, remember it, but
+    # nuke the last remembered cached response, so that the cache function
+    # (or rather, middleware) will be forced to set a new cache.
+    if current_version != cache.get(version_key):
+        cache.set(version_key, current_version, 0)
+        cache.delete(content_key)
     return True
 
 
