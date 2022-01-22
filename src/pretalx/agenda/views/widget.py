@@ -125,7 +125,7 @@ class WidgetData(ScheduleView):
 
 
 def cache_control(request, event, version=None):
-    """We don't want cache control on unversioned and WIP schedule sites.
+    """We don't want cache headers on unversioned and WIP schedule sites.
 
     This differs from where we actually cache: We cache unversioned
     sites, but we don't want clients to know about it, to make sure
@@ -139,34 +139,26 @@ def cache_control(request, event, version=None):
 
 
 def cache_version(request, event, version=None):
-    # Absolute versions can always be cached, except for the WIP schedule!
-    if version:
-        if version == "wip":
-            return False
-        return True
+    """We want to cache all pages except for the WIP schedule site.
 
-    # We use the opportunity to *also* clear the cache if the current schedule
-    # version has changed. Note that we still return `True`, so that the cache
-    # will be populated with the new version!
-
-    # Ideally, we would do this in Schedule.freeze(), but it's hard to do this
-    # for every specific URL (since caching is per-URL).
-
-    cache = caches["default"]
-    content_key = get_cache_key(request, "", "GET", cache=cache)
-    version_key = f"{content_key}_known_version"
-    current_version = request.event.current_schedule.version
-
-    # If we have not seen this version for this URL before, remember it, but
-    # nuke the last remembered cached response, so that the cache function
-    # (or rather, middleware) will be forced to set a new cache.
-    if current_version != cache.get(version_key):
-        cache.set(version_key, current_version, 0)
-        cache.delete(content_key)
+    Note that unversioned pages will be cached, but no cache headers
+    will be sent to make sure users will always see the most recent
+    changes.
+    """
+    if version and version == "wip":
+        return False
     return True
 
 
-@conditional_cache_page(60, cache_version, cache_control=cache_control)
+def version_prefix(request, event, version=None):
+    """On non-versioned pages, we want cache-invalidation on schedule relese."""
+    if not version:
+        return request.event.current_schedule.version
+
+
+@conditional_cache_page(
+    60, cache_version, cache_control=cache_control, key_prefix=version_prefix
+)
 def widget_data_v2(request, event, version=None):
     event = request.event
     if not request.user.has_perm("agenda.view_widget", event):

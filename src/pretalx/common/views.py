@@ -168,6 +168,8 @@ def conditional_cache_page(
     def decorator(func):
         def wrapper(request, *args, **kwargs):
             if condition(request, *args, **kwargs):
+                if callable(key_prefix):
+                    key_prefix = key_prefix(request, *args, **kwargs)
                 response = cache_page(
                     timeout=timeout, cache=cache, key_prefix=key_prefix
                 )(func)(request, *args, **kwargs)
