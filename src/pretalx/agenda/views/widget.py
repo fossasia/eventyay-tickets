@@ -3,10 +3,8 @@ from urllib.parse import unquote
 
 import pytz
 from django.conf import settings
-from django.core.cache import caches
 from django.db.models import Q
 from django.http import Http404, HttpResponse, JsonResponse
-from django.utils.cache import get_cache_key
 from django.utils.timezone import now
 from django.views.decorators.cache import cache_page
 from django.views.decorators.http import condition
@@ -151,7 +149,8 @@ def cache_version(request, event, version=None):
 
 
 def version_prefix(request, event, version=None):
-    """On non-versioned pages, we want cache-invalidation on schedule relese."""
+    """On non-versioned pages, we want cache-invalidation on schedule
+    relese."""
     if not version:
         return request.event.current_schedule.version
 
