@@ -26,10 +26,10 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterUniqueTogether(
             name="schedule",
-            unique_together=set([("event", "version")]),
+            unique_together={("event", "version")},
         ),
         migrations.AlterUniqueTogether(
             name="talkslot",
-            unique_together=set([("submission", "schedule")]),
+            unique_together={("submission", "schedule")},
         ),
     ]

@@ -41,9 +41,9 @@ class MailTemplateBase(I18nHelpText, I18nModelForm):
             if not value:
                 continue
             for lang in value.data.values():
-                used_placeholders |= set(
-                    [v[1] for v in string.Formatter().parse(lang) if v[1]]
-                )
+                used_placeholders |= {
+                    v[1] for v in string.Formatter().parse(lang) if v[1]
+                }
         return used_placeholders - valid_placeholders
 
     class Meta:
@@ -116,7 +116,7 @@ class MailDetailForm(ReadOnlyFlag, forms.ModelForm):
         obj = super().save(*args, **kwargs)
         if self.has_changed() and "to" in self.changed_data:
             addresses = list(
-                set(a.strip().lower() for a in (obj.to or "").split(",") if a.strip())
+                {a.strip().lower() for a in (obj.to or "").split(",") if a.strip()}
             )
             for address in addresses:
                 user = User.objects.filter(email__iexact=address).first()
@@ -210,7 +210,7 @@ class WriteMailForm(MailTemplateBase):
         kwargs = ["event", "submission", "user"]
         if getattr(self, "cleaned_data", None):
             recipients = self.cleaned_data.get("recipients")
-            if recipients and not set(recipients) - set(["accepted", "confirmed"]):
+            if recipients and not set(recipients) - {"accepted", "confirmed"}:
                 kwargs.append("slot")
         else:  # Not cleaned yet, we only need this for the help text
             kwargs.append("slot")

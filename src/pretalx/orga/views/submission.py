@@ -755,10 +755,10 @@ class SubmissionStats(PermissionRequired, TemplateView):
                 dtstart=min(dates),
             )
             return sorted(
-                [
+                (
                     {"x": date.isoformat(), "y": data.get(date.date(), 0)}
                     for date in date_range
-                ],
+                ),
                 key=lambda x: x["x"],
             )
 

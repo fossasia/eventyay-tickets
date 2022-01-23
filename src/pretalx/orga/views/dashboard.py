@@ -78,12 +78,12 @@ class DashboardOrganiserListView(PermissionRequired, TemplateView):
             orgs = Organiser.objects.all()
         else:
             orgs = Organiser.objects.filter(
-                pk__in=set(
+                pk__in={
                     team.organiser_id
                     for team in self.request.user.teams.filter(
                         can_change_organiser_settings=True
                     )
-                )
+                }
             )
         orgs = orgs.annotate(
             event_count=Count("events", distinct=True),

@@ -151,7 +151,7 @@ def test_validate_availability_daylightsaving(availabilitiesform):
     availabilitiesform.event.date_to = dt.date(2018, 10, 28)
     availabilitiesform.event.save()
     availabilitiesform._validate_availability(
-        ({"start": "2018-10-22 00:00:00", "end": "2018-10-29 00:00:00"})
+        {"start": "2018-10-22 00:00:00", "end": "2018-10-29 00:00:00"}
     )
 
 
