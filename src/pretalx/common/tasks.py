@@ -51,7 +51,7 @@ def generate_widget_js(event, locale, save=True, version=2):
     else:
         widget_file = "agenda/js/pretalx-schedule.js"
     f = finders.find(widget_file)
-    with open(f, "r", encoding="utf-8") as fp:
+    with open(f, encoding="utf-8") as fp:
         code = fp.read()
     data = code.encode()
     if save:

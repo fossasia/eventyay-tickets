@@ -89,7 +89,7 @@ def test_test_mail_settings(orga_client, event, availability):
 )
 def test_add_custom_css(event, orga_client, path, allowed):
     assert not event.custom_css
-    with open(path, "r") as custom_css:
+    with open(path) as custom_css:
         response = orga_client.post(
             event.orga_urls.edit_settings,
             {
@@ -125,7 +125,7 @@ def test_add_custom_css(event, orga_client, path, allowed):
 )
 def test_add_custom_css_as_administrator(event, administrator_client, path):
     assert not event.custom_css
-    with open(path, "r") as custom_css:
+    with open(path) as custom_css:
         response = administrator_client.post(
             event.orga_urls.edit_settings,
             {

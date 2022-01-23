@@ -5,7 +5,7 @@ class TrackSelectWidget(forms.Select):
     template_name = "widgets/track-select-widget.html"
 
     def get_context(self, name, value, attrs):
-        context = super(TrackSelectWidget, self).get_context(name, value, attrs)
+        context = super().get_context(name, value, attrs)
         queryset = self.choices.queryset
         has_descriptions = any(track.description for track in queryset)
 
