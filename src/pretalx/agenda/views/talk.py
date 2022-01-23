@@ -174,7 +174,7 @@ class SingleICalView(EventPageMixin, DetailView):
 
         netloc = urlparse(settings.SITE_URL).netloc
         cal = vobject.iCalendar()
-        cal.add("prodid").value = "-//pretalx//{}//{}".format(netloc, code)
+        cal.add("prodid").value = f"-//pretalx//{netloc}//{code}"
         for talk in talk_slots:
             talk.build_ical(cal)
         return HttpResponse(

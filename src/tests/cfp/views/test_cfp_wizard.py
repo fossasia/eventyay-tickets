@@ -227,7 +227,7 @@ class TestWizard:
         response, current_url = self.perform_info_wizard(
             client,
             response,
-            current_url + "?submission_type={}-helpful-slug".format(submission_type),
+            current_url + f"?submission_type={submission_type}-helpful-slug",
             submission_type=submission_type,
             event=event,
         )

@@ -29,7 +29,7 @@ def screenshot_cfp_submission_questions(live_server, client, event):
 def screenshot_edit_cfp_settings(live_server, logged_in_client, event):
     with scope(event=event):
         logged_in_client.get(
-            live_server.url + "/orga/event/{}/cfp/text#information".format(event.slug)
+            live_server.url + f"/orga/event/{event.slug}/cfp/text#information"
         )
     screenshot(logged_in_client, "website/cfp_settings.png")
 
@@ -38,7 +38,7 @@ def screenshot_edit_cfp_settings(live_server, logged_in_client, event):
 def screenshot_edit_question_settings(live_server, logged_in_client, event):
     with scope(event=event):
         logged_in_client.get(
-            live_server.url + "/orga/event/{}/cfp/questions/new".format(event.slug)
+            live_server.url + f"/orga/event/{event.slug}/cfp/questions/new"
         )
         logged_in_client.find_element_by_css_selector("#id_variant").click()
     screenshot(logged_in_client, "website/question_settings.png")
@@ -50,7 +50,7 @@ def screenshot_edit_plugins(live_server, logged_in_client, user, event):
         user.is_administrator = True
         user.save()
         logged_in_client.get(
-            live_server.url + "/orga/event/{}/settings/plugins".format(event.slug)
+            live_server.url + f"/orga/event/{event.slug}/settings/plugins"
         )
     screenshot(logged_in_client, "website/plugin_settings.png", scroll=False)
 
@@ -59,7 +59,7 @@ def screenshot_edit_plugins(live_server, logged_in_client, user, event):
 def screenshot_edit_mail_templates(live_server, logged_in_client, event):
     with scope(event=event):
         logged_in_client.get(
-            live_server.url + "/orga/event/{}/mails/templates".format(event.slug)
+            live_server.url + f"/orga/event/{event.slug}/mails/templates"
         )
     screenshot(logged_in_client, "website/mail_templates.png")
 
@@ -81,7 +81,7 @@ def screenshot_review_submission(live_server, logged_in_client, event):
 def screenshot_bare_schedule_editor(live_server, logged_in_client, event):
     with scope(event=event):
         logged_in_client.get(
-            live_server.url + "/orga/event/{}/schedule/".format(event.slug)
+            live_server.url + f"/orga/event/{event.slug}/schedule/"
         )
         logged_in_client.execute_script(
             """
@@ -100,7 +100,7 @@ def screenshot_export_schedule_editor(live_server, logged_in_client, event):
     with scope(event=event):
         event.wip_schedule.freeze("v1")
         logged_in_client.get(
-            live_server.url + "/orga/event/{}/schedule/export".format(event.slug)
+            live_server.url + f"/orga/event/{event.slug}/schedule/export"
         )
         logged_in_client.find_element_by_css_selector("#custom-tab").click()
     screenshot(logged_in_client, "website/schedule_export.png")

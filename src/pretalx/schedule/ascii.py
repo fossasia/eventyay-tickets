@@ -17,7 +17,7 @@ def draw_schedule_list(data):
         if talk_list:
             result += "\n\033[33m{:%Y-%m-%d}\033[0m\n".format(date["start"])
             result += "".join(
-                "* \033[33m{:%H:%M}\033[0m ".format(talk.start)
+                f"* \033[33m{talk.start:%H:%M}\033[0m "
                 + (
                     "{}, {} ({}); in {}\n".format(
                         talk.submission.title,
@@ -26,7 +26,7 @@ def draw_schedule_list(data):
                         talk.room.name,
                     )
                     if talk.submission
-                    else "{} in {}\n".format(talk.description, talk.room.name)
+                    else f"{talk.description} in {talk.room.name}\n"
                 )
                 for talk in talk_list
             )

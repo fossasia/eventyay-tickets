@@ -380,7 +380,7 @@ class HierarkeyMixin:
 
     def get_new_filename(self, name: str) -> str:
         nonce = get_random_string(length=8)
-        return "%s-%s/%s/%s.%s.%s" % (
+        return "{}-{}/{}/{}.{}.{}".format(
             self.obj._meta.model_name,
             self.attribute_name,
             self.obj.pk,

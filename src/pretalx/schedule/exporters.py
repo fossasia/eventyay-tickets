@@ -277,7 +277,7 @@ class ICalExporter(BaseExporter):
     def render(self, **kwargs):
         netloc = urlparse(get_base_url(self.event)).netloc
         cal = vobject.iCalendar()
-        cal.add("prodid").value = "-//pretalx//{}//".format(netloc)
+        cal.add("prodid").value = f"-//pretalx//{netloc}//"
         creation_time = dt.datetime.now(pytz.utc)
 
         talks = (

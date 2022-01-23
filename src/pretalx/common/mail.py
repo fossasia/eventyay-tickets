@@ -110,10 +110,10 @@ def mail_send_task(
             self.retry(max_retries=5, countdown=2 ** (self.request.retries * 2))
         logger.exception("Error sending email")
         raise SendMailException(
-            "Failed to send an email to {}: {}".format(to, exception)
+            f"Failed to send an email to {to}: {exception}"
         )
     except Exception as exception:  # pragma: no cover
         logger.exception("Error sending email")
         raise SendMailException(
-            "Failed to send an email to {}: {}".format(to, exception)
+            f"Failed to send an email to {to}: {exception}"
         )
