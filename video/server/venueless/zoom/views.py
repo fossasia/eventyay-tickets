@@ -23,7 +23,7 @@ def generate_signature(data):
     hash = hmac.new(secret, message, hashlib.sha256)
     hash = base64.b64encode(hash.digest())
     hash = hash.decode("utf-8")
-    tmpString = "%s.%s.%s.%s.%s" % (
+    tmpString = "{}.{}.{}.{}.{}".format(
         data["apiKey"],
         str(data["meetingNumber"]),
         str(ts),

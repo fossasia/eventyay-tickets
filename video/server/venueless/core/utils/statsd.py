@@ -25,7 +25,7 @@ class StatsdProtocol(asyncio.DatagramProtocol):
         try:
             for stat in data.keys():
                 value = data[stat]
-                send_data = "%s.%s:%s" % (self.prefix, stat, value)
+                send_data = f"{self.prefix}.{stat}:{value}"
                 self.transport.sendto(send_data.encode("utf-8"))
         except Exception as e:
             logger.error("Statsd error %r", e)
@@ -68,7 +68,7 @@ class StatsD:
         data = {}
         for stat in stats:
             stat += f",env={settings.VENUELESS_ENVIRONMENT}"
-            data[stat] = "%s|%s" % (delta, metric)
+            data[stat] = f"{delta}|{metric}"
         self.protocol.send(data)
 
 

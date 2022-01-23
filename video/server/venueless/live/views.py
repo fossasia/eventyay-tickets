@@ -29,8 +29,8 @@ class SourceCache:
         try:
             with open(wapath) as f:
                 return f.read()
-        except IOError:
-            return "<!-- {} not found --><body></body>".format(wapath)
+        except OSError:
+            return f"<!-- {wapath} not found --><body></body>"
 
 
 sh = SourceCache()
@@ -118,7 +118,7 @@ class AppView(View):
                 ),
             )
 
-        source = re.sub("<html[^>]*>", '<html lang="{}">'.format(world.locale), source)
+        source = re.sub("<html[^>]*>", f'<html lang="{world.locale}">', source)
 
         r = HttpResponse(source, content_type="text/html")
         if "cross-origin-isolation" in world.feature_flags:

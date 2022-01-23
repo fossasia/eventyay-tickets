@@ -69,7 +69,7 @@ class Command(BaseCommand):
         rc = async_to_sync(get_connections)()
         print("{:60} {}".format("filter", "est. number of connections"))
         for k, v in rc.items():
-            print("{:60} {}".format(k, v))
+            print(f"{k:60} {v}")
 
     def _drop(self, *args, **options):
         rc = async_to_sync(get_connections)()

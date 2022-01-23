@@ -44,7 +44,7 @@ def test_room_list(client, world):
 @pytest.mark.django_db
 def test_room_detail(client, world):
     r = client.get(
-        "/api/v1/worlds/sample/rooms/{}/".format(str(world.rooms.first().id)),
+        f"/api/v1/worlds/sample/rooms/{str(world.rooms.first().id)}/",
         HTTP_AUTHORIZATION=get_token_header(world),
     )
     assert r.status_code == 200
@@ -80,12 +80,12 @@ def test_room_delete(client, world):
     rid = world.rooms.first().id
 
     r = client.delete(
-        "/api/v1/worlds/sample/rooms/{}/".format(str(rid)),
+        f"/api/v1/worlds/sample/rooms/{str(rid)}/",
         HTTP_AUTHORIZATION=get_token_header(world),
     )
     assert r.status_code == 403
     r = client.delete(
-        "/api/v1/worlds/sample/rooms/{}/".format(str(rid)),
+        f"/api/v1/worlds/sample/rooms/{str(rid)}/",
         HTTP_AUTHORIZATION=get_token_header(world, ["admin", "api", "foobartrait"]),
     )
     assert r.status_code == 204
@@ -99,14 +99,14 @@ def test_room_update(client, world):
     rid = world.rooms.first().id
 
     r = client.patch(
-        "/api/v1/worlds/sample/rooms/{}/".format(str(rid)),
+        f"/api/v1/worlds/sample/rooms/{str(rid)}/",
         dataß={"name": "Forum"},
         format="json",
         HTTP_AUTHORIZATION=get_token_header(world),
     )
     assert r.status_code == 403
     r = client.patch(
-        "/api/v1/worlds/sample/rooms/{}/".format(str(rid)),
+        f"/api/v1/worlds/sample/rooms/{str(rid)}/",
         data={
             "name": "Forum",
         },
@@ -190,7 +190,7 @@ async def test_push_world_update(client, world):
         assert r.status_code == 200
         rid = r.data["results"][0]["id"]
         r = await sync_to_async(client.patch)(
-            "/api/v1/worlds/sample/rooms/{}/".format(str(rid)),
+            f"/api/v1/worlds/sample/rooms/{str(rid)}/",
             format="json",
             data={"name": "Forum"},
             HTTP_AUTHORIZATION=get_token_header(world),

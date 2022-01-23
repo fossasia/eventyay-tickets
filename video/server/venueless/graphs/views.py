@@ -122,7 +122,7 @@ def build_room_view_fig(fig, room, begin, end, tz):
     else:
         ax.set_ylim(0, 100)
     ax.grid(True)
-    ax.set_ylabel("Unique viewers ({} total)".format(len(all_users)))
+    ax.set_ylabel(f"Unique viewers ({len(all_users)} total)")
 
     if isinstance(room, Room):
         reactions = (

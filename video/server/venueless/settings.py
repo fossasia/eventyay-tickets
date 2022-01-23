@@ -40,7 +40,7 @@ SECRET_KEY = os.environ.get(
 if not SECRET_KEY:
     SECRET_FILE = os.path.join(DATA_DIR, ".secret")
     if os.path.exists(SECRET_FILE):
-        with open(SECRET_FILE, "r") as f:
+        with open(SECRET_FILE) as f:
             SECRET_KEY = f.read().strip()
     else:
         chars = "abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)"
