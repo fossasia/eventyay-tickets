@@ -429,7 +429,7 @@ def list_users(
         ).page(page)
         return {
             "results": sorted(
-                [
+                (
                     dict(
                         id=str(u["id"]),
                         profile=u["profile"],
@@ -456,7 +456,7 @@ def list_users(
                         ),
                     )
                     for u in p.object_list
-                ],
+                ),
                 key=lambda u: (
                     u["profile"]["display_name"].lower(),
                     int(u["inactive"] or 0),

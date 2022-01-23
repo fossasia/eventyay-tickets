@@ -472,7 +472,7 @@ async def test_auth_private_rooms_in_world_config(
         await c.send_json_to(["authenticate", {"token": token}])
         response = await c.receive_json_from()
         assert response[0] == "authenticated"
-        assert set(r["name"] for r in response[1]["world.config"]["rooms"]) == {
+        assert {r["name"] for r in response[1]["world.config"]["rooms"]} == {
             "About",
             "More Info",
             "Exhibition Hall",
@@ -494,7 +494,7 @@ async def test_auth_private_rooms_in_world_config(
         await c.send_json_to(["authenticate", {"token": token}])
         response = await c.receive_json_from()
         assert response[0] == "authenticated"
-        assert set(r["name"] for r in response[1]["world.config"]["rooms"]) == {
+        assert {r["name"] for r in response[1]["world.config"]["rooms"]} == {
             "About",
             "More Info",
             "Exhibition Hall",
@@ -514,7 +514,7 @@ async def test_auth_private_rooms_in_world_config(
         await c.send_json_to(["authenticate", {"token": token}])
         response = await c.receive_json_from()
         assert response[0] == "authenticated"
-        assert set(r["name"] for r in response[1]["world.config"]["rooms"]) == {
+        assert {r["name"] for r in response[1]["world.config"]["rooms"]} == {
             "About",
             "More Info",
             "Exhibition Hall",

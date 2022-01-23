@@ -95,9 +95,9 @@ class User(VersionedModel):
         return roles
 
     def _update_membership_cache(self):
-        self._membership_cache = set(
+        self._membership_cache = {
             str(i) for i in self.chat_channels.values_list("channel_id", flat=True)
-        )
+        }
 
     async def is_member_of_channel_async(self, channel_id):
         if self._membership_cache is None:

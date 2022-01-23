@@ -61,7 +61,7 @@ def save_room(world, room, update_fields, old_data, by_user):
         },
     )
 
-    if "chat.native" in set(m["type"] for m in room.module_config):
+    if "chat.native" in {m["type"] for m in room.module_config}:
         Channel.objects.get_or_create(world_id=world.pk, room=room)
     return new
 
