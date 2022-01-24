@@ -174,7 +174,7 @@ export default {
 			this.error = error
 			console.log(error)
 		}
-		this.$watch(() => this.config?.pretalx?.domain ? `${this.config.pretalx.domain}${this.config.pretalx.event}/p/venueless/check` : null, async (url) => {
+		this.$watch(() => this.config?.pretalx?.domain ? `${this.pretalxDomain}${this.config.pretalx.event}/p/venueless/check` : null, async (url) => {
 			this.isPretalxPluginInstalled = false
 			console.log(url)
 			if (!url || !/^https?:\/\//.test(url)) return
@@ -204,7 +204,7 @@ export default {
 				long: true
 			})
 			const apiUrl = config.api.base.startsWith('http') ? config.api.base : (window.location.origin + config.api.base)
-			window.location = `${this.config.pretalx.domain}orga/event/${this.config.pretalx.event}/settings/p/venueless/?url=${apiUrl}&token=${token}&returnUrl=${window.location.href}`
+			window.location = `${this.pretalxDomain}orga/event/${this.config.pretalx.event}/settings/p/venueless/?url=${apiUrl}&token=${token}&returnUrl=${window.location.href}`
 		},
 		async save () {
 			this.$v.$touch()
