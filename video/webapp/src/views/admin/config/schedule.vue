@@ -81,9 +81,9 @@ export default {
 			return sourceOptions
 		},
 		pretalxDomain () {
-		  if (!this.config.pretalx.domain) return ""
-		  if (this.config.pretalx.domain.endsWith("/")) return this.config.pretalx.domain
-		  return this.config.pretalx.domain + "/"
+			if (!this.config.pretalx.domain) return ''
+			if (this.config.pretalx.domain.endsWith('/')) return this.config.pretalx.domain
+			return this.config.pretalx.domain + '/'
 		},
 		lastPush () {
 			if (!this.config || !this.config.pretalx || !this.config.pretalx.pushed) return
