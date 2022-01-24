@@ -108,8 +108,9 @@ class Review(models.Model):
         given :class:`~pretalx.event.models.event.Event`.
 
         Excludes submissions this user has submitted, and takes track
-        :class:`~pretalx.event.models.organiser.Team` permissions into account.
-        The result is ordered by review count.
+        :class:`~pretalx.event.models.organiser.Team` permissions into account,
+        as well as assignments if the current review phase is limited to assigned
+        proposals. The result is ordered by review count.
 
         :type event: :class:`~pretalx.event.models.event.Event`
         :type user: :class:`~pretalx.person.models.user.User`
@@ -122,17 +123,29 @@ class Review(models.Model):
             .exclude(reviews__user=user)
             .exclude(speakers__in=[user])
             .annotate(review_count=models.Count("reviews"))
+            .annotate(
+                is_assigned=models.Count(
+                    "assigned_reviewers", filter=models.Q(assigned_reviewers=user)
+                )
+            )
         )
-        limit_tracks = user.teams.filter(
-            models.Q(all_events=True)
-            | models.Q(models.Q(all_events=False) & models.Q(limit_events__in=[event])),
-            limit_tracks__isnull=False,
-        )
-        if limit_tracks.exists():
-            tracks = set()
-            for team in limit_tracks:
-                tracks.update(team.limit_tracks.filter(event=event))
-            queryset = queryset.filter(track__in=tracks)
+        phase = event.active_review_phase
+        if phase and phase.proposal_visibility == "assigned":
+            queryset = queryset.filter(is_assigned__gte=1)
+        else:
+            limit_tracks = user.teams.filter(
+                models.Q(all_events=True)
+                | models.Q(
+                    models.Q(all_events=False) & models.Q(limit_events__in=[event])
+                ),
+                limit_tracks__isnull=False,
+                organiser=event.organiser,
+            )
+            if limit_tracks.exists():
+                tracks = set()
+                for team in limit_tracks:
+                    tracks.update(team.limit_tracks.filter(event=event))
+                queryset = queryset.filter(track__in=tracks)
         if ignore:
             queryset = queryset.exclude(pk__in=ignore)
         # This is not randomised, because order_by("review_count", "?") sets all annotated

@@ -9,7 +9,7 @@ from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.syndication.views import Feed
 from django.db import transaction
-from django.db.models import Exists, OuterRef, Q
+from django.db.models import Count, Exists, OuterRef, Q
 from django.forms.models import BaseModelFormSet, inlineformset_factory
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
@@ -145,22 +145,33 @@ class SubmissionViewMixin(PermissionRequired):
 class ReviewerSubmissionFilter:
     @cached_property
     def limit_tracks(self):
-        permissions = self.request.user.get_permissions_for_event(self.request.event)
-        if "is_reviewer" not in permissions:
-            return None
-        if "can_change_submissions" in permissions and not self._for_reviews:
-            return None
-        limit_tracks = self.request.user.teams.filter(
+        teams = self.request.user.teams.filter(
             Q(all_events=True)
             | Q(Q(all_events=False) & Q(limit_events__in=[self.request.event])),
             limit_tracks__isnull=False,
             organiser=self.request.event.organiser,
         ).prefetch_related("limit_tracks", "limit_tracks__event")
-        if limit_tracks:
-            tracks = set()
-            for team in limit_tracks:
-                tracks.update(team.limit_tracks.filter(event=self.request.event))
-            return tracks
+        tracks = set()
+        for team in teams:
+            tracks.update(team.limit_tracks.filter(event=self.request.event))
+        return tracks
+
+    def limit_for_reviewers(self, queryset):
+        queryset = queryset.annotate(
+            is_assigned=Count(
+                "assigned_reviewers", filter=Q(assigned_reviewers=self.request.user)
+            )
+        )
+        phase = self.request.event.active_review_phase
+        if not phase:
+            return queryset
+
+        if phase.proposal_visibility == "assigned":
+            return queryset.filter(is_assigned__gte=1)
+
+        if self.limit_tracks:
+            return queryset.filter(track__in=self.limit_tracks)
+        return queryset
 
     def get_queryset(self, for_reviews=False):
         self._for_reviews = for_reviews
@@ -169,8 +180,8 @@ class ReviewerSubmissionFilter:
             .select_related("submission_type", "event", "track")
             .prefetch_related("speakers")
         )
-        if self.limit_tracks:
-            queryset = queryset.filter(track__in=self.limit_tracks)
+        if for_reviews:
+            queryset = self.limit_for_reviewers(queryset)
         return queryset
 
 
@@ -543,7 +554,11 @@ class SubmissionList(
             return self.request.event.tracks.all().count() > 1
 
     def get_queryset(self):
-        qs = super().get_queryset().order_by("-id")
+        # If somebody has *only* reviewer permissions for this event, they can only
+        # see the proposals they can review.
+        permissions = self.request.user.get_permissions_for_event(self.request.event)
+        for_reviews = permissions == {"is_reviewer"}
+        qs = super().get_queryset(for_reviews=for_reviews).order_by("-id")
         qs = self.filter_queryset(qs)
         question = self.request.GET.get("question")
         unanswered = self.request.GET.get("unanswered")
