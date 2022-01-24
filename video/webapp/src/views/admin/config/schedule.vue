@@ -21,7 +21,7 @@
 					.pretalx-status.plugin-not-installed(v-if="!isPretalxPluginInstalled")
 						| pretalx-venueless plugin not installed/activated or domain + event not a valid pretalx instance.
 						br
-						| Please install and activate the plugin in #[a(:href="`${config.pretalx.domain}orga/event/${config.pretalx.event}/settings/plugins`", target="_blank") your pretalx event plugin settings].
+						| Please install and activate the plugin in #[a(:href="`${pretalxDomain}orga/event/${config.pretalx.event}/settings/plugins`", target="_blank") your pretalx event plugin settings].
 					h3 Step 2: Connect pretalx to venueless
 					.pretalx-status(v-if="config.pretalx.connected") Pretalx-venueless connection active!
 					.pretalx-status.not-connected(v-else) Pretalx is not connected to venueless.
@@ -79,6 +79,11 @@ export default {
 				sourceOptions.push({id: 'conftool', label: 'Conftool'})
 			}
 			return sourceOptions
+		},
+		pretalxDomain () {
+		  if (!this.config.pretalx.domain) return ""
+		  if (this.config.pretalx.domain.endsWith("/")) return this.config.pretalx.domain
+		  return this.config.pretalx.domain + "/"
 		},
 		lastPush () {
 			if (!this.config || !this.config.pretalx || !this.config.pretalx.pushed) return
