@@ -4,11 +4,61 @@ from django_scopes import scope
 from pretalx.submission.models.question import QuestionRequired
 
 
+@pytest.mark.parametrize("assigned", (True, False))
 @pytest.mark.django_db
-def test_reviewer_can_add_review(review_client, submission):
+def test_reviewer_can_add_review(review_client, review_user, submission, assigned):
     with scope(event=submission.event):
         category = submission.event.score_categories.first()
         score = category.scores.filter(value=1).first()
+        if assigned:
+            submission.assigned_reviewers.add(review_user)
+    response = review_client.post(
+        submission.orga_urls.reviews,
+        follow=True,
+        data={
+            f"score_{category.id}": score.id,
+            "text": "LGTM",
+        },
+    )
+    assert response.status_code == 200
+    with scope(event=submission.event):
+        assert submission.reviews.count() == 1
+        assert submission.reviews.first().score == 1
+        assert submission.reviews.first().text == "LGTM"
+    response = review_client.get(submission.orga_urls.reviews, follow=True)
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_reviewer_cannot_add_review_when_unassigned(review_client, submission):
+    with scope(event=submission.event):
+        category = submission.event.score_categories.first()
+        score = category.scores.filter(value=1).first()
+        submission.event.active_review_phase.proposal_visibility = "assigned"
+        submission.event.active_review_phase.save()
+    response = review_client.post(
+        submission.orga_urls.reviews,
+        follow=True,
+        data={
+            f"score_{category.id}": score.id,
+            "text": "LGTM",
+        },
+    )
+    assert response.status_code == 404
+    with scope(event=submission.event):
+        assert submission.reviews.count() == 0
+    response = review_client.get(submission.orga_urls.reviews, follow=True)
+    assert response.status_code == 404
+
+
+@pytest.mark.django_db
+def test_reviewer_can_add_review_when_assigned(review_client, review_user, submission):
+    with scope(event=submission.event):
+        category = submission.event.score_categories.first()
+        score = category.scores.filter(value=1).first()
+        submission.event.active_review_phase.proposal_visibility = "assigned"
+        submission.event.active_review_phase.save()
+        submission.assigned_reviewers.add(review_user)
     response = review_client.post(
         submission.orga_urls.reviews,
         follow=True,
@@ -392,3 +442,49 @@ def test_orga_can_bulk_accept_and_reject_only_success(orga_client, submission):
         assert count + 1 == submission.event.queued_mails.count()
         submission.refresh_from_db()
         assert submission.state == "rejected"
+
+
+@pytest.mark.django_db
+def test_orga_can_assign_reviewer_to_submission(orga_client, review_user, submission):
+    with scope(event=submission.event):
+        assert submission.assigned_reviewers.all().count() == 0
+    response = orga_client.get(
+        submission.event.orga_urls.reviews + "assign/?direction=submission"
+    )
+    assert response.status_code == 200
+    response = orga_client.post(
+        submission.event.orga_urls.reviews + "assign/?direction=submission",
+        {
+            "formset-TOTAL_FORMS": 1,
+            "formset-INITIAL_FORMS": 1,
+            "formset-MIN_NUM_FORMS": 0,
+            "formset-MAX_NUM_FORMS": 0,
+            "formset-0-id": [submission.id, submission.id],
+            "formset-0-assigned_reviewers": review_user.id,
+        },
+    )
+    with scope(event=submission.event):
+        assert submission.assigned_reviewers.all().count() == 1
+
+
+@pytest.mark.django_db
+def test_orga_can_assign_submission_to_reviewer(orga_client, review_user, submission):
+    with scope(event=submission.event):
+        assert submission.assigned_reviewers.all().count() == 0
+    response = orga_client.get(
+        submission.event.orga_urls.reviews + "assign/?direction=reviewer"
+    )
+    assert response.status_code == 200
+    response = orga_client.post(
+        submission.event.orga_urls.reviews + "assign/?direction=reviewer",
+        {
+            "formset-TOTAL_FORMS": 1,
+            "formset-INITIAL_FORMS": 1,
+            "formset-MIN_NUM_FORMS": 0,
+            "formset-MAX_NUM_FORMS": 0,
+            "formset-0-id": review_user.id,
+            "formset-0-assigned_reviews": submission.id,
+        },
+    )
+    with scope(event=submission.event):
+        assert submission.assigned_reviewers.all().count() == 1

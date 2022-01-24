@@ -38,6 +38,7 @@ def test_user_can_access_url(orga_client, logged_in, url, template_patch):
         ("speakers.information.list", 200, 404),
         ("speakers.information.create", 200, 404),
         ("reviews.dashboard", 200, 200),
+        ("reviews.assign", 200, 404),
         ("settings.event.view", 200, 404),
         ("settings.mail.view", 200, 404),
         ("settings.plugins.select", 200, 404),
