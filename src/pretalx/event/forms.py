@@ -58,6 +58,9 @@ class TeamForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
             "can_change_submissions",
             "is_reviewer",
         ]
+        widgets = {
+            "limit_events": forms.SelectMultiple(attrs={"class": "select2"}),
+        }
 
 
 class TeamTrackForm(I18nHelpText, I18nModelForm):
