@@ -226,6 +226,10 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
         max_length=32, unique=True, null=True, blank=True, default=generate_invite_code
     )
     anonymised_data = models.TextField(null=True, blank=True, default="{}")
+    assigned_reviewers = models.ManyToManyField(
+        verbose_name=_("Assigned reviewers"),
+        to="person.User", related_name="assigned_reviews", blank=True
+    )
 
     objects = ScopedManager(event="event", _manager_class=SubmissionManager)
     deleted_objects = ScopedManager(

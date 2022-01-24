@@ -106,12 +106,18 @@ def has_reviewer_access(user, obj):
     obj = getattr(obj, "submission", obj)
     if not isinstance(obj, Submission):
         raise Exception("Incorrect use of reviewer permissions")
-    result = user.teams.filter(
-        Q(Q(all_events=True) | Q(limit_events__in=[obj.event]))
-        & Q(Q(limit_tracks__isnull=True) | Q(limit_tracks__in=[obj.track])),
-        is_reviewer=True,
-    )
-    return result.exists()
+    if user in obj.assigned_reviewers.all():
+        return True
+    phase = obj.event.active_review_phase
+    if not phase:
+        return False
+    if phase.proposal_visibility == "all":
+        return user.teams.filter(
+            Q(Q(all_events=True) | Q(limit_events__in=[obj.event]))
+            & Q(Q(limit_tracks__isnull=True) | Q(limit_tracks__in=[obj.track])),
+            is_reviewer=True,
+        ).exists()
+    return False
 
 
 @rules.predicate
@@ -155,7 +161,9 @@ rules.add_perm(
     is_speaker | can_change_submissions | has_reviewer_access,
 )
 rules.add_perm("submission.review_submission", has_reviewer_access & can_be_reviewed)
-rules.add_perm("submission.edit_review", can_be_reviewed & is_review_author)
+rules.add_perm(
+    "submission.edit_review", has_reviewer_access & can_be_reviewed & is_review_author
+)
 rules.add_perm("submission.view_reviews", has_reviewer_access | can_change_submissions)
 rules.add_perm("submission.edit_speaker_list", is_speaker | can_change_submissions)
 rules.add_perm(

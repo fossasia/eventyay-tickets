@@ -200,6 +200,18 @@ class ReviewPhase(models.Model):
         verbose_name=_("Reviewers can write and edit reviews"),
         default=True,
     )
+    proposal_visibility = models.CharField(
+        verbose_name=_("Proposals available for review"),
+        choices=(
+            ("all", _("All")),
+            ("assigned", _("Only assigned proposals")),
+        ),
+        max_length=8,
+        default="all",
+        help_text=_("If you select 'all', reviewers can review all proposals that their teams have access to (so either all, or specific tracks). "
+            "In this mode, assigned proposals will be highlighted and will be shown first in the review workflow. "),
+
+    )
     can_see_other_reviews = models.CharField(
         verbose_name=_("Reviewers can see other reviews"),
         max_length=12,
