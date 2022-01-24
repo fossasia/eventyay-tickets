@@ -76,11 +76,6 @@ urlpatterns = [
                                 name="organiser.teams.delete",
                             ),
                             path(
-                                "tracks",
-                                organiser.TeamTracks.as_view(),
-                                name="organiser.teams.tracks",
-                            ),
-                            path(
                                 "delete/<int:user_pk>",
                                 organiser.TeamDelete.as_view(),
                                 name="organiser.teams.delete_member",

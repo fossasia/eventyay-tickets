@@ -70,57 +70,6 @@ def test_orga_edit_team(orga_client, organiser, event):
 
 
 @pytest.mark.django_db
-def test_orga_edit_team_tracks(orga_client, organiser, event, track, other_track):
-    team = organiser.teams.first()
-    with scopes_disabled():
-        assert team.limit_tracks.all().count() == 0
-    url = reverse(
-        "orga:organiser.teams.tracks",
-        kwargs={"organiser": organiser.slug, "pk": team.pk},
-    )
-    response = orga_client.get(url, follow=True)
-    assert response.status_code == 200
-    response = orga_client.post(
-        url,
-        follow=True,
-        data={
-            "limit_tracks": track.pk,
-        },
-    )
-    assert response.status_code == 200
-    with scopes_disabled():
-        assert team.limit_tracks.all().count() == 1
-
-
-@pytest.mark.django_db
-def test_orga_edit_team_tracks_limited_by_events(
-    orga_client, organiser, event, track, other_track
-):
-    team = organiser.teams.first()
-    with scopes_disabled():
-        team.all_events = False
-        team.limit_events.add(event)
-        team.save()
-        assert team.limit_tracks.all().count() == 0
-    url = reverse(
-        "orga:organiser.teams.tracks",
-        kwargs={"organiser": organiser.slug, "pk": team.pk},
-    )
-    response = orga_client.get(url, follow=True)
-    assert response.status_code == 200
-    response = orga_client.post(
-        url,
-        follow=True,
-        data={
-            "limit_tracks": track.pk,
-        },
-    )
-    assert response.status_code == 200
-    with scopes_disabled():
-        assert team.limit_tracks.all().count() == 1
-
-
-@pytest.mark.django_db
 @pytest.mark.parametrize("is_administrator", [True, False])
 def test_orga_create_team(orga_client, organiser, event, is_administrator, orga_user):
     orga_user.is_administrator = is_administrator

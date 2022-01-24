@@ -89,7 +89,23 @@
 
         <form method="post">
             {% csrf_token %}
-            {% bootstrap_form form layout='event' %}
+            {% bootstrap_field form.name layout='event' %}
+            {% bootstrap_field form.all_events layout='event' %}
+            {% bootstrap_field form.limit_events layout='event' %}
+            {% bootstrap_field form.can_create_events layout='event' %}
+            {% bootstrap_field form.can_change_teams layout='event' %}
+            {% bootstrap_field form.can_change_organiser_settings layout='event' %}
+            {% bootstrap_field form.can_change_event_settings layout='event' %}
+            {% bootstrap_field form.can_change_submissions layout='event' %}
+            {% bootstrap_field form.is_reviewer layout='event' %}
+            <div class="form-group row">
+                <div class="col-md-3"></div>
+                <div class="col-md-9">
+                    <h3 id="review-settings">{% translate "Review settings" %}</h3>
+                </div>
+            </div>
+            {% bootstrap_field form.force_hide_speaker_names layout='event' %}
+            {% bootstrap_field form.limit_tracks layout='event' %}
             {% include "orga/submit_row.html" with submit_value="team" submit_name="form" %}
         </form>
     </div>
@@ -98,5 +114,6 @@
     {% compress js %}
         <script defer src="{% static "vendored/typeahead.bundle.min.js" %}"></script>
         <script defer src="{% static "orga/js/speakers.js" %}"></script>
+        <script defer src="{% static "orga/js/teamSettings.js" %}"></script>
     {% endcompress %}
 {% endblock %}

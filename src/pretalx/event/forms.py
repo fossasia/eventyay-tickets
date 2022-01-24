@@ -1,7 +1,6 @@
 from django import forms
 from django.conf import settings
 from django.db.models import Q
-from django.utils.html import mark_safe
 from django.utils.translation import gettext_lazy as _
 from django_scopes import scopes_disabled
 from django_scopes.forms import SafeModelMultipleChoiceField
@@ -15,21 +14,29 @@ from pretalx.submission.models import Track
 
 
 class TeamForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
+    @scopes_disabled()
     def __init__(self, *args, organiser=None, instance=None, **kwargs):
         super().__init__(*args, instance=instance, **kwargs)
         self.fields["organiser"].widget = forms.HiddenInput()
-        if instance and getattr(instance, "pk", None):
+        is_updating = instance and getattr(instance, "pk", None)
+        if is_updating:
             self.fields.pop("organiser")
             self.fields["limit_events"].queryset = instance.organiser.events.all()
         else:
             self.fields["organiser"].initial = organiser
             self.fields["limit_events"].queryset = organiser.events.all()
-        if instance and instance.pk:
-            self.fields["is_reviewer"].help_text = mark_safe(
-                f' (<a href="{instance.orga_urls.base}tracks">'
-                + str(_("Additional review team settings"))
-                + "</a>)"
+        if is_updating and not instance.all_events and instance.limit_events.count():
+            self.fields["limit_tracks"].queryset = Track.objects.filter(
+                event__in=instance.limit_events.all()
             )
+        else:
+            self.fields["limit_tracks"].queryset = Track.objects.filter(
+                event__organiser=organiser
+            ).order_by("-event__date_from", "name")
+
+    @scopes_disabled()
+    def save(self, *args, **kwargs):
+        return super().save(*args, **kwargs)
 
     def clean(self):
         data = super().clean()
@@ -57,37 +64,16 @@ class TeamForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
             "can_change_event_settings",
             "can_change_submissions",
             "is_reviewer",
+            "force_hide_speaker_names",
+            "limit_tracks",
         ]
         widgets = {
             "limit_events": forms.SelectMultiple(attrs={"class": "select2"}),
+            "limit_tracks": forms.SelectMultiple(attrs={"class": "select2"}),
         }
-
-
-class TeamTrackForm(I18nHelpText, I18nModelForm):
-    @scopes_disabled()
-    def __init__(self, *args, organiser=None, **kwargs):
-        super().__init__(*args, **kwargs)
-        instance = kwargs.get("instance")
-        if instance and not instance.all_events and instance.limit_events.count():
-            self.fields["limit_tracks"].queryset = Track.objects.filter(
-                event__in=instance.limit_events.all()
-            )
-        else:
-            self.fields["limit_tracks"].queryset = Track.objects.filter(
-                event__organiser=organiser
-            ).order_by("-event__date_from", "name")
-
-    @scopes_disabled()
-    def save(self, *args, **kwargs):
-        return super().save(*args, **kwargs)
-
-    class Meta:
-        model = Team
-        fields = ["force_hide_speaker_names", "limit_tracks"]
         field_classes = {
             "limit_tracks": SafeModelMultipleChoiceField,
         }
-        widgets = {"limit_tracks": forms.CheckboxSelectMultiple}
 
 
 class TeamInviteForm(ReadOnlyFlag, forms.ModelForm):
