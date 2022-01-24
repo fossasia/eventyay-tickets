@@ -159,7 +159,7 @@ class ReviewDashboard(
 
     def sort_queryset(self, queryset):
         order_prevalence = {
-            "default": ("state", "current_score", "code"),
+            "default": ("is_assigned", "state", "current_score", "code"),
             "score": ("current_score", "state", "code"),
             "my_score": ("user_score", "current_score", "state", "code"),
             "count": ("review_count", "code"),

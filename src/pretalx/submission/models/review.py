@@ -124,9 +124,9 @@ class Review(models.Model):
             .exclude(speakers__in=[user])
             .annotate(review_count=models.Count("reviews"))
             .annotate(
-                is_assigned=models.Count(
-                    "assigned_reviewers", filter=models.Q(assigned_reviewers=user)
-                )
+                is_assigned=models.Case(
+                    models.When(assigned_reviewers__in=[user], then=1), default=0
+                ),
             )
         )
         phase = event.active_review_phase
@@ -150,7 +150,7 @@ class Review(models.Model):
             queryset = queryset.exclude(pk__in=ignore)
         # This is not randomised, because order_by("review_count", "?") sets all annotated
         # review_count values to 1.
-        return queryset.order_by("review_count")
+        return queryset.order_by("-is_assigned", "review_count")
 
     @classmethod
     def calculate_score(cls, scores):

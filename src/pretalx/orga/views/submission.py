@@ -9,7 +9,7 @@ from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.syndication.views import Feed
 from django.db import transaction
-from django.db.models import Count, Exists, OuterRef, Q
+from django.db.models import Case, Exists, OuterRef, Q, When
 from django.forms.models import BaseModelFormSet, inlineformset_factory
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
@@ -158,9 +158,9 @@ class ReviewerSubmissionFilter:
 
     def limit_for_reviewers(self, queryset):
         queryset = queryset.annotate(
-            is_assigned=Count(
-                "assigned_reviewers", filter=Q(assigned_reviewers=self.request.user)
-            )
+            is_assigned=Case(
+                When(assigned_reviewers__in=[self.request.user], then=1), default=0
+            ),
         )
         phase = self.request.event.active_review_phase
         if not phase:
