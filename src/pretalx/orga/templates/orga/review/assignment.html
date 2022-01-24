@@ -39,7 +39,7 @@
             {% bootstrap_form form layout='inline' %}
         </form>
     </div>
-    <form method="post" class="d-flex flex-column">
+    <form method="post" class="d-flex flex-column select2-textbox">
         {% csrf_token %}
 
         <div class="formset" data-formset data-formset-prefix="{{ formset.prefix }}">

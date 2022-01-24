@@ -1,3 +1,21 @@
+.select2-textbox {
+  .form-group .select2-container--default .select2-selection--multiple,
+  .form-group .select2-container--default .select2-selection {
+    height: auto;
+    .select2-selection__rendered {
+      overflow: hidden;
+      height: auto;
+      display: flex;
+      flex-wrap: wrap;
+      .select2-selection__choice {
+        height: 28px;
+      }
+    }
+    .select2-search.select2-search--inline {
+      width: 20px;
+    }
+  }
+}
 .form-group, .score-group {
   .select2-container--default  {
     .select2-selection--multiple,
