@@ -5,10 +5,11 @@ from contextlib import suppress
 from django.contrib import messages
 from django.db import transaction
 from django.db.models import Count, Max, OuterRef, Subquery
+from django.forms.models import BaseModelFormSet, modelformset_factory
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
-from django.views.generic import ListView, TemplateView
+from django.views.generic import FormView, ListView, TemplateView
 from django_context_decorator import context
 
 from pretalx.common.mixins.views import (
@@ -17,9 +18,16 @@ from pretalx.common.mixins.views import (
     PermissionRequired,
 )
 from pretalx.common.views import CreateOrUpdateView
-from pretalx.orga.forms.review import ReviewForm, TagsForm
+from pretalx.orga.forms.review import (
+    DirectionForm,
+    ProposalForReviewerForm,
+    ReviewerForProposalForm,
+    ReviewForm,
+    TagsForm,
+)
 from pretalx.orga.forms.submission import SubmissionStateChangeForm
 from pretalx.orga.views.submission import ReviewerSubmissionFilter
+from pretalx.person.models import User
 from pretalx.submission.forms import QuestionsForm, SubmissionFilterForm
 from pretalx.submission.models import Review, Submission, SubmissionStates
 
@@ -547,3 +555,73 @@ class RegenerateDecisionMails(EventPermissionRequired, TemplateView):
             ),
         )
         return redirect(self.request.event.orga_urls.reviews)
+
+
+class ReviewAssignment(EventPermissionRequired, FormView):
+    template_name = "orga/review/assignment.html"
+    permission_required = "orga.change_settings"
+    form_class = DirectionForm
+
+    @cached_property
+    def form_type(self):
+        direction = self.request.GET.get("direction")
+        if not direction or direction not in ("reviewer", "submission"):
+            return "reviewer"
+        return direction
+
+    def get_form(self):
+        return DirectionForm(self.request.GET)
+
+    @context
+    @cached_property
+    def formset(self):
+        proposals = self.request.event.submissions.filter(state="submitted").order_by(
+            "title"
+        )
+        reviewers = User.objects.filter(
+            teams__in=self.request.event.teams.filter(is_reviewer=True)
+        ).order_by("name")
+
+        if self.form_type == "submission":
+            formset_class = modelformset_factory(
+                model=Submission,
+                form=ReviewerForProposalForm,
+                formset=BaseModelFormSet,
+                can_delete=False,
+                extra=0,
+                max_num=0,
+            )
+            result = formset_class(
+                self.request.POST if self.request.method == "POST" else None,
+                files=self.request.FILES if self.request.method == "POST" else None,
+                queryset=proposals,
+                form_kwargs={"reviewers": reviewers},
+                prefix="formset",
+            )
+            return result
+        else:
+            formset_class = modelformset_factory(
+                User,
+                form=ProposalForReviewerForm,
+                formset=BaseModelFormSet,
+                can_delete=False,
+                extra=0,
+                max_num=0,
+            )
+            return formset_class(
+                self.request.POST if self.request.method == "POST" else None,
+                files=self.request.FILES if self.request.method == "POST" else None,
+                queryset=reviewers,
+                form_kwargs={"proposals": proposals},
+                prefix="formset",
+            )
+
+    def post(self, request, *args, **kwargs):
+
+        if not self.formset.is_valid():
+            return self.get(self.request, *self.args, **self.kwargs)
+
+        for form in self.formset:
+            form.save()
+        messages.success(request, _("Saved!"))
+        return self.get(self.request, *self.args, **self.kwargs)

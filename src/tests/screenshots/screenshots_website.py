@@ -80,9 +80,7 @@ def screenshot_review_submission(live_server, logged_in_client, event):
 @pytest.mark.django_db
 def screenshot_bare_schedule_editor(live_server, logged_in_client, event):
     with scope(event=event):
-        logged_in_client.get(
-            live_server.url + f"/orga/event/{event.slug}/schedule/"
-        )
+        logged_in_client.get(live_server.url + f"/orga/event/{event.slug}/schedule/")
         logged_in_client.execute_script(
             """
     const selectors = [".alert", ".schedule-header"]

@@ -288,10 +288,32 @@
                                 </a>
                             </div>
                         </div>
-                        <a class="nav-link {% if "reviews." in url_name %}active{% endif %}" href="{% url "orga:reviews.dashboard" event=request.event.slug %}">
-                            <i class="fa fa-eye"></i>
-                            <span class="sidebar-text">{% translate "Review" %}</span>
-                        </a>
+                        {% if can_change_settings %}
+                            <div class="nav-fold">
+                                <span class="has-children">
+                                    <a class="nav-link nav-link-inner" href="{% url "orga:reviews.dashboard" event=request.event.slug %}">
+                                        <i class="fa fa-eye"></i>
+                                        <span class="sidebar-text">{% translate "Review" %}</span>
+                                    </a>
+                                    <a class="arrow nav-link" data-toggle="collapse" href="#collapseReviews" aria-controls="collapseReviews">
+                                        <i class="fa fa-angle-down"></i>
+                                    </a>
+                                </span>
+                                <div class="collapse in{% if "reviews." in url_name|slice:":9" %} show{% endif %}" aria-expand="true" id="collapseReviews">
+                                    <a href="{% url "orga:reviews.dashboard" event=request.event.slug %}" class="nav-link nav-link-second-level{% if "reviews.dashboard" in url_name %} active{% endif %}">
+                                        <span>{% translate "Review" %}</span>
+                                    </a>
+                                    <a href="{% url "orga:reviews.dashboard" event=request.event.slug %}assign/" class="nav-link nav-link-second-level{% if "reviews.assignm" in url_name %} active{% endif %}">
+                                        <span>{% translate "Assign reviewers" %}</span>
+                                    </a>
+                                </div>
+                            </div>
+                        {% else %}
+                            <a class="nav-link {% if "reviews." in url_name %}active{% endif %}" href="{% url "orga:reviews.dashboard" event=request.event.slug %}">
+                                <i class="fa fa-eye"></i>
+                                <span class="sidebar-text">{% translate "Review" %}</span>
+                            </a>
+                        {% endif %}
                         {% if can_view_speakers %}
                             <div class="nav-fold">
                                 <span class="has-children">

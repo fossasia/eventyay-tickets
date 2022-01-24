@@ -165,6 +165,9 @@
                                 {% if submission.pk in submissions_reviewed %}
                                     <i class="fa fa-check text-success" title="{% translate "You have reviewed this proposal" %}"></i>
                                 {% endif %}
+                                {% if submission.is_assigned %}
+                                    <i class="fa fa-star text-warning" title="{% translate "You have been assigned to this proposal" %}"></i>
+                                {% endif %}
                             </td>
                             <td>
                                 <a href="{% if can_review %}{{ submission.orga_urls.reviews }}{% else %}{{ submission.orga_urls.base }}{% endif %}">
@@ -206,7 +209,7 @@
                         </tr>
                     {% empty %}
                         <tr>
-                            <td>{% translate "You don't seem to have any proposals yet." %}</td>
+                            <td colspan=10>{% translate "You don't seem to have any proposals yet." %}</td>
                         </tr>
                     {% endfor %}
                 </tbody>

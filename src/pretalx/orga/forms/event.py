@@ -560,6 +560,7 @@ class ReviewPhaseForm(I18nHelpText, I18nModelForm):
             "start",
             "end",
             "can_review",
+            "proposal_visibility",
             "can_see_speaker_names",
             "can_see_reviewer_names",
             "can_change_submission_state",

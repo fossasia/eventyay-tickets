@@ -7,6 +7,7 @@ from django_scopes.forms import SafeModelMultipleChoiceField
 from pretalx.common.forms.widgets import MarkdownWidget
 from pretalx.common.mixins.forms import ReadOnlyFlag
 from pretalx.common.phrases import phrases
+from pretalx.person.models import User
 from pretalx.submission.models import Review, Submission
 
 
@@ -114,3 +115,51 @@ class ReviewForm(ReadOnlyFlag, forms.ModelForm):
         widgets = {
             "text": MarkdownWidget,
         }
+
+
+class DirectionForm(forms.Form):
+    direction = forms.ChoiceField(
+        choices=(
+            ("reviewer", _("Assign proposals to reviewers")),
+            ("submission", _("Assign reviewers to proposals")),
+        ),
+        required=False,
+    )
+
+
+class ReviewerForProposalForm(forms.ModelForm):
+    def __init__(self, *args, reviewers=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["assigned_reviewers"].queryset = reviewers
+        self.fields["assigned_reviewers"].label = self.instance.title
+
+    class Meta:
+        model = Submission
+        fields = ["assigned_reviewers"]
+        widgets = {
+            "assigned_reviewers": forms.SelectMultiple(attrs={"class": "select2"})
+        }
+
+
+class ProposalForReviewerForm(forms.ModelForm):
+    def __init__(self, *args, proposals=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        initial = initial = proposals.filter(
+            assigned_reviewers__in=[self.instance]
+        ).values_list("id", flat=True)
+        self.fields["assigned_reviews"] = forms.MultipleChoiceField(
+            choices=((p.id, p.title) for p in proposals),
+            widget=forms.SelectMultiple(attrs={"class": "select2"}),
+            label=self.instance.name,
+            initial=list(initial),
+            required=False,
+        )
+
+    def save(self, *args, **kwargs):
+        instance = super().save(*args, **kwargs)
+        if "assigned_reviews" in self.changed_data:
+            instance.assigned_reviews.set(self.cleaned_data["assigned_reviews"])
+
+    class Meta:
+        model = User
+        fields = []

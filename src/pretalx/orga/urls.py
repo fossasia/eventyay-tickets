@@ -568,6 +568,11 @@ urlpatterns = [
                     name="reviews.regenerate",
                 ),
                 path(
+                    "reviews/assign/",
+                    review.ReviewAssignment.as_view(),
+                    name="reviews.assign",
+                ),
+                path(
                     "settings/",
                     event.EventDetail.as_view(),
                     name="settings.event.view",

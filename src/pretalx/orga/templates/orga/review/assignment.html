@@ -1,0 +1,73 @@
+{% extends "orga/base.html" %}
+{% load bootstrap4 %}
+{% load compress %}
+{% load i18n %}
+{% load formset_tags %}
+{% load static %}
+
+{% block content %}
+    {% compress js %}
+        <script defer src="{% static "js/jquery.formset.js" %}"></script>
+        <script defer src="{% static "cfp/js/animateFormset.js" %}"></script>
+        <script defer src="{% static "orga/js/reviewAssignment.js" %}"></script>
+    {% endcompress %}
+    <h2>{% translate "Assign reviewers" %}</h2>
+    <div class="alert alert-info"><p>
+        {% if request.event.active_review_phase.proposal_visibility == "assigned" %}
+            {% blocktranslate trimmed with href=request.event.orga_urls.review_settings %}
+                According to your current review settings, reviewers will be able to
+                see and review <b>only their assigned</b> proposals. You can change this
+                in your <a href="{{ href }}">review settings</a>.
+            {% endblocktranslate %}
+        {% else %}
+            {% blocktranslate trimmed with href=request.event.orga_urls.review_settings %}
+                According to your current review settings, reviewers will be able to
+                see and review <b>all proposals</b>, but their assigned reviews will appear
+                highlighted, and they will be directed to them first. You can change this
+                in your <a href="{{ href }}">review settings</a>.
+            {% endblocktranslate %}
+        {% endif %}
+    </p></div>
+    <p>
+        {% blocktranslate trimmed %}
+            This is where you can assign reviewers to specific proposals! Please use this drop-down to
+            switch between the two assignment modes (assigning reviewers to proposals or proposals to reviewers).
+        {% endblocktranslate %}
+    </p>
+    <div class="ml-auto mr-auto col-md-4">
+        <form id="direction">
+            {% bootstrap_form form layout='inline' %}
+        </form>
+    </div>
+    <form method="post" class="d-flex flex-column">
+        {% csrf_token %}
+
+        <div class="formset" data-formset data-formset-prefix="{{ formset.prefix }}">
+            {{ formset.management_form }}
+            {% bootstrap_formset_errors formset %}
+            <div data-formset-body>
+                {% for form in formset %}
+                    <div data-formset-form>
+                        <div class="sr-only">
+                            {{ form.id }}
+                        </div>
+                        <div class="reviewer-formset">
+                            {% bootstrap_form_errors form %}
+                            {% bootstrap_form form layout='event' %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="submit-group panel">
+            <span></span>
+            <span>
+                <button type="submit" class="btn btn-success btn-lg">
+                    <i class="fa fa-check"></i>
+                    {% translate "Save" %}
+                </button>
+            </span>
+        </div>
+    </form>
+{% endblock %}
+
