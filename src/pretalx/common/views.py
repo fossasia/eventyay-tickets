@@ -171,9 +171,9 @@ def conditional_cache_page(
                 prefix = key_prefix
                 if callable(prefix):
                     prefix = prefix(request, *args, **kwargs)
-                response = cache_page(
-                    timeout=timeout, cache=cache, key_prefix=prefix
-                )(func)(request, *args, **kwargs)
+                response = cache_page(timeout=timeout, cache=cache, key_prefix=prefix)(
+                    func
+                )(request, *args, **kwargs)
                 if cache_control and not cache_control(request, *args, **kwargs):
                     response.headers.pop("Expires")
                     response.headers.pop("Cache-Control")

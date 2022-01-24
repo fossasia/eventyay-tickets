@@ -109,11 +109,7 @@ def mail_send_task(
         if exception.smtp_code in (101, 111, 421, 422, 431, 442, 447, 452):
             self.retry(max_retries=5, countdown=2 ** (self.request.retries * 2))
         logger.exception("Error sending email")
-        raise SendMailException(
-            f"Failed to send an email to {to}: {exception}"
-        )
+        raise SendMailException(f"Failed to send an email to {to}: {exception}")
     except Exception as exception:  # pragma: no cover
         logger.exception("Error sending email")
-        raise SendMailException(
-            f"Failed to send an email to {to}: {exception}"
-        )
+        raise SendMailException(f"Failed to send an email to {to}: {exception}")

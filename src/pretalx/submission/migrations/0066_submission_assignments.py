@@ -8,18 +8,20 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('submission', '0065_alter_submission_slot_count'),
+        ("submission", "0065_alter_submission_slot_count"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='reviewphase',
-            name='proposal_visibility',
-            field=models.CharField(default='all', max_length=8),
+            model_name="reviewphase",
+            name="proposal_visibility",
+            field=models.CharField(default="all", max_length=8),
         ),
         migrations.AddField(
-            model_name='submission',
-            name='assigned_reviewers',
-            field=models.ManyToManyField(related_name='assigned_reviews', to=settings.AUTH_USER_MODEL),
+            model_name="submission",
+            name="assigned_reviewers",
+            field=models.ManyToManyField(
+                related_name="assigned_reviews", to=settings.AUTH_USER_MODEL
+            ),
         ),
     ]
