@@ -151,7 +151,7 @@ def cache_version(request, event, version=None):
 def version_prefix(request, event, version=None):
     """On non-versioned pages, we want cache-invalidation on schedule
     relese."""
-    if not version:
+    if not version and request.event.current_schedule:
         return request.event.current_schedule.version
 
 
