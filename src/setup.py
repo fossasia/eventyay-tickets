@@ -143,6 +143,7 @@ setup(
             "docformatter",
             "Faker",
             "flake8<4",
+            "flake8-bugbear",
             "freezegun",
             "isort",
             "lxml",

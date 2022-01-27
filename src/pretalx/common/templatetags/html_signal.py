@@ -19,7 +19,7 @@ def html_signal(signame: str, **kwargs):
     sigmod = importlib.import_module(sigstr[0])
     signal = getattr(sigmod, sigstr[1])
     _html = []
-    for receiver, response in signal.send(**kwargs):
+    for _receiver, response in signal.send(**kwargs):
         if response:
             _html.append(response)
     return mark_safe("".join(_html))

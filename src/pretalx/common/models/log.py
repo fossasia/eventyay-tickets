@@ -59,7 +59,7 @@ class ActivityLog(models.Model):
     def display(self):
         from pretalx.common.signals import activitylog_display
 
-        for receiver, response in activitylog_display.send(
+        for _receiver, response in activitylog_display.send(
             self.event, activitylog=self
         ):
             if response:

@@ -306,7 +306,7 @@ class JsonSubfieldMixin:
         if not getattr(self, "instance", None):
             if obj:
                 self.instance = obj
-            elif getattr(self, "obj"):
+            elif getattr(self, "obj", None):
                 self.instance = self.obj
         for field, path in self.Meta.json_fields.items():
             data_dict = getattr(self.instance, path) or {}

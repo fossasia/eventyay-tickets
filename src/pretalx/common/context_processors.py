@@ -68,7 +68,7 @@ def system_information(request):
     context["footer_links"] = _footer
 
     if event:
-        for receiver, response in html_head.send(event, request=request):
+        for _receiver, response in html_head.send(event, request=request):
             _head.append(response)
         context["html_head"] = "".join(_head)
 

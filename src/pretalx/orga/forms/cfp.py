@@ -52,7 +52,7 @@ class CfPSettingsForm(
         )  # added in ActionFromUrl view mixin, but not needed here.
         self.instance = obj
         super().__init__(*args, **kwargs)
-        if getattr(obj, "email"):
+        if getattr(obj, "email", None):
             self.fields[
                 "mail_on_new_submission"
             ].help_text += f' (<a href="mailto:{obj.email}">{obj.email}</a>)'
