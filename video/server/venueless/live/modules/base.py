@@ -10,7 +10,7 @@ class BaseModuleMeta(type):
         newclass = super().__new__(cls, clsname, bases, attrs)
         newclass._commands = {}
         newclass._events = {}
-        for key, val in attrs.items():
+        for val in attrs.values():
             event = getattr(val, "_event", None)
             if event is not None:
                 if isinstance(event, (list, tuple)):

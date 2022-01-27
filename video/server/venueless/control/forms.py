@@ -50,7 +50,7 @@ class SecretKeyField(forms.CharField):
 
 class HasSecretsMixin:
     def save(self):
-        for k, v in self.cleaned_data.items():
+        for k in self.cleaned_data.keys():
             if (
                 isinstance(self.fields.get(k), SecretKeyField)
                 and self.cleaned_data.get(k).endswith(SECRET_REDACTED)

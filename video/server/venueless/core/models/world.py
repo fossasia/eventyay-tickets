@@ -262,8 +262,8 @@ class World(VersionedModel):
         for grant in user.room_grants.select_related("room"):
             result[grant.room].update(self.roles.get(grant.role, []))
         if user.is_silenced:
-            for k, v in result.items():
-                result[k] &= MAX_PERMISSIONS_IF_SILENCED
+            for key in result.keys():
+                result[key] &= MAX_PERMISSIONS_IF_SILENCED
 
         return result
 

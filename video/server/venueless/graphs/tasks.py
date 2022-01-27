@@ -43,7 +43,7 @@ def generate_attendee_list(world, input=None):
     ws.column_dimensions["B"].width = 30
     ws.column_dimensions["C"].width = 40
     ws.column_dimensions["D"].width = 30
-    for j, f in enumerate(world.config.get("profile_fields", [])):
+    for j in range(len(world.config.get("profile_fields", []))):
         ws.column_dimensions[get_column_letter(5 + j)].width = 30
 
     header = ["Internal ID", "External ID", "Name", "Permission traits"]
@@ -51,7 +51,7 @@ def generate_attendee_list(world, input=None):
         header.append(f.get("label"))
     ws.append(header)
 
-    for i, u in enumerate(world.user_set.all()):
+    for u in world.user_set.all():
         ws.append(
             [
                 str(u.pk),

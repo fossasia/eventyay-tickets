@@ -296,7 +296,7 @@ def generate_tokens(world, number, traits, days, by_user, long=False):
     exp = iat + datetime.timedelta(days=days)
     result = []
     bulk_create = []
-    for i in range(number):
+    for _ in range(number):
         payload = {
             "iss": issuer,
             "aud": audience,

@@ -509,7 +509,7 @@ class ChatModule(BaseModule):
         data = {k: v for k, v in body.items() if k != "type"}
 
         user_profiles_required = {data["sender"]}
-        for k, uids in data["reactions"].items():
+        for uids in data["reactions"].values():
             user_profiles_required |= set(uids)
         user_profiles_required -= self.users_known_to_client
         data["users"] = {}
