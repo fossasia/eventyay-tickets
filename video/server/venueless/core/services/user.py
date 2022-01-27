@@ -400,7 +400,7 @@ def list_users(
     page,
     page_size,
     search_term,
-    search_fields=[],
+    search_fields=None,
     trait_badges_map=None,
     include_banned=True,
     include_admin_info=False,
@@ -414,6 +414,7 @@ def list_users(
         qs = qs.exclude(moderation_state=User.ModerationState.BANNED)
     if search_term:
         conditions = [(Q(profile__display_name__icontains=search_term))]
+        search_fields = search_fields or []
         for field in search_fields:
             conditions.append(
                 Q(**{"profile__fields__" + field + "__icontains": search_term})
