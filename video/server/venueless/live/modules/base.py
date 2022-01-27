@@ -13,7 +13,11 @@ class BaseModuleMeta(type):
         for key, val in attrs.items():
             event = getattr(val, "_event", None)
             if event is not None:
-                newclass._events[event] = val
+                if isinstance(event, (list, tuple)):
+                    for e in event:
+                        newclass._events[e] = val
+                else:
+                    newclass._events[event] = val
             command = getattr(val, "_command", None)
             if command is not None:
                 newclass._commands[command] = val
