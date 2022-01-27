@@ -14,7 +14,7 @@ def roulette_request(user, room, socket_id, module_config):
         INTERVAL_REMATCH = timedelta(
             minutes=int(module_config.get("rematch_interval", 24 * 60))
         )
-    except:
+    except Exception:
         INTERVAL_REMATCH = timedelta(minutes=24 * 60)
 
     with transaction.atomic():

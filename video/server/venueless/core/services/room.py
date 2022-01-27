@@ -90,7 +90,7 @@ def reorder_rooms(world, id_list, by_user):
     def key(r):
         try:
             return id_list.index(str(r.id)), r.sorting_priority, r.name
-        except:
+        except Exception:
             return sys.maxsize, r.sorting_priority, r.name
 
     all_rooms = list(

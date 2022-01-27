@@ -26,7 +26,7 @@ async def clear_redis():
     if settings.REDIS_USE_PUBSUB:
         try:
             await get_channel_layer().flush()
-        except:
+        except:  # noqa
             channel_layers._reset_backends("CHANNEL_LAYERS")
 
     async with aioredis() as redis:

@@ -22,7 +22,8 @@ def get_token(world, traits):
     return jwt.encode(payload, config["secret"], algorithm="HS256")
 
 
-def get_token_header(world, traits=["admin", "api"]):
+def get_token_header(world, traits=None):
+    traits = traits or ["admin", "api"]
     token = get_token(world, traits)
     return "Bearer " + token
 

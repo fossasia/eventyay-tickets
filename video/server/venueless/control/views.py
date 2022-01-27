@@ -666,7 +666,7 @@ class BBBMoveRoom(AdminBase, FormView):
             )
             r = requests.get(u, timeout=15)
             r.raise_for_status()
-        except:
+        except Exception:
             messages.warning(self.request, _("Kicking all attendees did not work."))
 
         c.server = server

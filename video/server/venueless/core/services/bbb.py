@@ -201,7 +201,7 @@ class BBBService:
                 if root.xpath("returncode")[0].text != "SUCCESS":
                     logger.error(f"Could not contact BBB. Response: {body}")
                     return False
-        except:
+        except Exception:
             logger.exception("Could not contact BBB.")
             return False
         return root
@@ -226,7 +226,7 @@ class BBBService:
                 if root.xpath("returncode")[0].text != "SUCCESS":
                     logger.error(f"Could not contact BBB. Response: {body}")
                     return False
-        except:
+        except Exception:
             logger.exception("Could not contact BBB.")
             return False
         return root
@@ -418,6 +418,6 @@ class BBBService:
                             "url_screenshare": url_screenshare,
                         }
                     )
-            except:
+            except Exception:
                 logger.exception(f"Could not fetch recordings from server {server}")
         return recordings

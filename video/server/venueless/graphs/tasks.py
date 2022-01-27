@@ -25,7 +25,7 @@ def generate_report(world, input=None):
     with override(world.locale):
         try:
             cf = ReportGenerator(world, pdf_graphs=True).build(input)
-        except:
+        except Exception:
             # We first try to embed graphs directly into the PDF for best quality. Sometimes that fails,
             # then we fall back to PNG rendering of graphs
             cf = ReportGenerator(world, pdf_graphs=False).build(input)

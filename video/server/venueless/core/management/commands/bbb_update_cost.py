@@ -44,7 +44,7 @@ class Command(BaseCommand):
             server.cost = cost
             server.save(update_fields=["cost"])
 
-        except:
+        except Exception:
             logger.exception(f"Could not query BBB server {server.id} / {server.url}")
 
     def handle(self, *args, **options):

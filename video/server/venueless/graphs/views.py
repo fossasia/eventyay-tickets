@@ -63,7 +63,7 @@ class GraphView(View):
             token = self.world.decode_token(request.GET.get("token"))
             if not token:
                 raise PermissionDenied("Invalid token.")
-        except:
+        except Exception:
             raise PermissionDenied("Invalid token.")
         if not self.world.has_permission_implicit(
             traits=token.get("traits"), permissions=[Permission.WORLD_GRAPHS]

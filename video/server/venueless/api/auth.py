@@ -43,7 +43,7 @@ class WorldTokenAuthentication(authentication.BaseAuthentication):
             token = world.decode_token(key)
             if not token:
                 raise exceptions.AuthenticationFailed("Invalid token.")
-        except:
+        except Exception:
             raise exceptions.AuthenticationFailed("Invalid token.")
 
         return token.get("uid"), token

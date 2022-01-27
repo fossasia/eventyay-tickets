@@ -376,7 +376,7 @@ class World(VersionedModel):
         for r in old.rooms.all():
             try:
                 has_channel = r.channel
-            except:
+            except Exception:
                 has_channel = False
 
             old_id = r.pk
