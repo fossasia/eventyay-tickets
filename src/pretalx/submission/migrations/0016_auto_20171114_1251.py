@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="review",
             name="override_vote",
-            field=models.NullBooleanField(default=None),
+            field=models.BooleanField(default=None, null=True),
         ),
         migrations.AlterField(
             model_name="review",
