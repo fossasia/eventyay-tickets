@@ -22,7 +22,7 @@ from django.db.models.functions import Greatest
 from django.utils.formats import date_format
 from django.utils.functional import cached_property
 from django.utils.timezone import is_naive, make_aware, now
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from matplotlib.figure import Figure
 from reportlab.lib import colors
 from reportlab.lib.units import mm

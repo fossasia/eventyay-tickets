@@ -41,7 +41,7 @@ async def videoroom_add_token_if_exists(server, room_data, token, audiobridge=Fa
         server.url, subprotocols=["janus-protocol"]
     ) as websocket:
         await websocket.send(
-            json.dumps({"janus": "create", "transaction": get_random_string()})
+            json.dumps({"janus": "create", "transaction": get_random_string(length=12)})
         )
         resp = json.loads(await websocket.recv())
         session_id = resp["data"]["id"]
@@ -51,7 +51,7 @@ async def videoroom_add_token_if_exists(server, room_data, token, audiobridge=Fa
                 {
                     "janus": "attach",
                     "plugin": "janus.plugin.videoroom",
-                    "transaction": get_random_string(),
+                    "transaction": get_random_string(length=12),
                     "session_id": session_id,
                 }
             )
@@ -71,7 +71,7 @@ async def videoroom_add_token_if_exists(server, room_data, token, audiobridge=Fa
                         "request": "exists",
                         "room": room_data["roomId"],
                     },
-                    "transaction": get_random_string(),
+                    "transaction": get_random_string(length=12),
                     "session_id": session_id,
                     "handle_id": handle_id,
                 }
@@ -101,7 +101,7 @@ async def videoroom_add_token_if_exists(server, room_data, token, audiobridge=Fa
                             "action": "add",
                             "allowed": [token],
                         },
-                        "transaction": get_random_string(),
+                        "transaction": get_random_string(length=12),
                         "session_id": session_id,
                         "handle_id": handle_id,
                     }
@@ -120,7 +120,7 @@ async def videoroom_add_token_if_exists(server, room_data, token, audiobridge=Fa
                         {
                             "janus": "attach",
                             "plugin": "janus.plugin.audiobridge",
-                            "transaction": get_random_string(),
+                            "transaction": get_random_string(length=12),
                             "session_id": session_id,
                         }
                     )
@@ -144,7 +144,7 @@ async def videoroom_add_token_if_exists(server, room_data, token, audiobridge=Fa
                                 "action": "add",
                                 "allowed": [token],
                             },
-                            "transaction": get_random_string(),
+                            "transaction": get_random_string(length=12),
                             "session_id": session_id,
                             "handle_id": audio_handle_id,
                         }
@@ -169,7 +169,7 @@ async def create_videoroom(
         server.url, subprotocols=["janus-protocol"]
     ) as websocket:
         await websocket.send(
-            json.dumps({"janus": "create", "transaction": get_random_string()})
+            json.dumps({"janus": "create", "transaction": get_random_string(length=12)})
         )
         resp = json.loads(await websocket.recv())
         session_id = resp["data"]["id"]
@@ -179,7 +179,7 @@ async def create_videoroom(
                 {
                     "janus": "attach",
                     "plugin": "janus.plugin.videoroom",
-                    "transaction": get_random_string(),
+                    "transaction": get_random_string(length=12),
                     "session_id": session_id,
                 }
             )
@@ -211,7 +211,7 @@ async def create_videoroom(
                         "allowed": [init_token],
                         "bitrate": bitrate,
                     },
-                    "transaction": get_random_string(),
+                    "transaction": get_random_string(length=12),
                     "session_id": session_id,
                     "handle_id": handle_id,
                 }
@@ -232,7 +232,7 @@ async def create_videoroom(
                     {
                         "janus": "attach",
                         "plugin": "janus.plugin.audiobridge",
-                        "transaction": get_random_string(),
+                        "transaction": get_random_string(length=12),
                         "session_id": session_id,
                     }
                 )
@@ -264,7 +264,7 @@ async def create_videoroom(
                             "allowed": [init_token],
                             "record": False,
                         },
-                        "transaction": get_random_string(),
+                        "transaction": get_random_string(length=12),
                         "session_id": session_id,
                         "handle_id": handle_id,
                     }
