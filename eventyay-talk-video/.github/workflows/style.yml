@@ -4,13 +4,13 @@ on:
   push:
     branches: [ main ]
     paths-ignore:
-      - 'pretalx_pages/locale/**'
-      - 'pretalx_pages/static/**'
+      - 'pretalx_venueless/locale/**'
+      - 'pretalx_venueless/static/**'
   pull_request:
     branches: [ main ]
     paths-ignore:
-      - 'pretalx_pages/locale/**'
-      - 'pretalx_pages/static/**'
+      - 'pretalx_venueless/locale/**'
+      - 'pretalx_venueless/static/**'
 
 
 jobs:
