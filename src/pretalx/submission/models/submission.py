@@ -794,8 +794,10 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
             speaker=_from.get_display_name()
         )
         subject = f"[{self.event.slug}] {subject}"
-        text = text or _(
-            """Hi!
+        text = (
+            text
+            or _(
+                """Hi!
 
 I'd like to invite you to be a speaker in the session
 
@@ -807,11 +809,12 @@ at {event}. Please follow this link to join:
 
 I'm looking forward to it!
 {speaker}"""
-        ).format(
-            event=self.event.name,
-            title=self.title,
-            url=self.urls.accept_invitation.full(),
-            speaker=_from.get_display_name(),
+            ).format(
+                event=self.event.name,
+                title=self.title,
+                url=self.urls.accept_invitation.full(),
+                speaker=_from.get_display_name(),
+            )
         )
         to = to.split(",") if isinstance(to, str) else to
         for invite in to:
