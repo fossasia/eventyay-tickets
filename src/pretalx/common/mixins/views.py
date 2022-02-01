@@ -102,11 +102,12 @@ class Sortable:
                 if is_text:
                     # TODO: this only sorts direct lookups case insensitively
                     # A sorting field like 'speaker__name' will not be found
-                    qs = qs.annotate(key=Lower(plain_key)).order_by(
-                        "-key" if reverse else "key"
-                    )
-                else:
-                    qs = qs.order_by(sort_key)
+                    qs = qs.annotate(key=Lower(plain_key))
+                    sort_key = "-key" if reverse else "key"
+                secondary_sort = (
+                    getattr(self, "secondary_sort", {}).get(plain_key) or []
+                )
+                qs = qs.order_by(sort_key, *secondary_sort)
         return qs
 
 

@@ -524,6 +524,7 @@ class SubmissionList(
     template_name = "orga/submission/list.html"
     filter_fields = ("submission_type", "state", "track", "tags", "pending_state")
     sortable_fields = ("code", "title", "state", "is_featured")
+    secondary_sort = {"state": ("pending_state",)}
     permission_required = "orga.view_submissions"
     paginate_by = 25
 
