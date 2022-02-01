@@ -698,6 +698,7 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
 
         for score_category in other_event.score_categories.all():
             scores = score_category.scores.all()
+            tracks = score_category.limit_tracks.all()
             score_category.pk = None
             score_category.event = self
             score_category.save()
