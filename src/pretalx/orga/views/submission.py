@@ -145,16 +145,17 @@ class SubmissionViewMixin(PermissionRequired):
 class ReviewerSubmissionFilter:
     @cached_property
     def limit_tracks(self):
-        teams = self.request.user.teams.filter(
-            Q(all_events=True)
-            | Q(Q(all_events=False) & Q(limit_events__in=[self.request.event])),
-            limit_tracks__isnull=False,
-            organiser=self.request.event.organiser,
-        ).prefetch_related("limit_tracks", "limit_tracks__event")
-        tracks = set()
-        for team in teams:
-            tracks.update(team.limit_tracks.filter(event=self.request.event))
-        return tracks
+        if self.user_permissions == {"is_reviewer"}:
+            teams = self.request.user.teams.filter(
+                Q(all_events=True)
+                | Q(Q(all_events=False) & Q(limit_events__in=[self.request.event])),
+                limit_tracks__isnull=False,
+                organiser=self.request.event.organiser,
+            ).prefetch_related("limit_tracks", "limit_tracks__event")
+            tracks = set()
+            for team in teams:
+                tracks.update(team.limit_tracks.filter(event=self.request.event))
+            return tracks
 
     def limit_for_reviewers(self, queryset):
         phase = self.request.event.active_review_phase
@@ -168,20 +169,23 @@ class ReviewerSubmissionFilter:
             return queryset.filter(track__in=self.limit_tracks)
         return queryset
 
+    @cached_property
+    def user_permissions(self):
+        return self.request.user.get_permissions_for_event(self.request.event)
+
     def get_queryset(self, for_review=False):
         queryset = (
             self.request.event.submissions.all()
             .select_related("submission_type", "event", "track")
             .prefetch_related("speakers")
         )
-        permissions = self.request.user.get_permissions_for_event(self.request.event)
-        if "is_reviewer" in permissions or for_review:
+        if "is_reviewer" in self.user_permissions or for_review:
             queryset = queryset.annotate(
                 is_assigned=Case(
                     When(assigned_reviewers__in=[self.request.user], then=1), default=0
                 ),
             )
-        if permissions == {"is_reviewer"}:
+        if self.user_permissions == {"is_reviewer"}:
             queryset = self.limit_for_reviewers(queryset)
         return queryset
 
