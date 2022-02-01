@@ -157,11 +157,6 @@ class ReviewerSubmissionFilter:
         return tracks
 
     def limit_for_reviewers(self, queryset):
-        queryset = queryset.annotate(
-            is_assigned=Case(
-                When(assigned_reviewers__in=[self.request.user], then=1), default=0
-            ),
-        )
         phase = self.request.event.active_review_phase
         if not phase:
             return queryset
@@ -173,14 +168,20 @@ class ReviewerSubmissionFilter:
             return queryset.filter(track__in=self.limit_tracks)
         return queryset
 
-    def get_queryset(self, for_reviews=False):
-        self._for_reviews = for_reviews
+    def get_queryset(self, for_review=False):
         queryset = (
             self.request.event.submissions.all()
             .select_related("submission_type", "event", "track")
             .prefetch_related("speakers")
         )
-        if for_reviews:
+        permissions = self.request.user.get_permissions_for_event(self.request.event)
+        if "is_reviewer" in permissions or for_review:
+            queryset = queryset.annotate(
+                is_assigned=Case(
+                    When(assigned_reviewers__in=[self.request.user], then=1), default=0
+                ),
+            )
+        if permissions == {"is_reviewer"}:
             queryset = self.limit_for_reviewers(queryset)
         return queryset
 
@@ -556,9 +557,7 @@ class SubmissionList(
     def get_queryset(self):
         # If somebody has *only* reviewer permissions for this event, they can only
         # see the proposals they can review.
-        permissions = self.request.user.get_permissions_for_event(self.request.event)
-        for_reviews = permissions == {"is_reviewer"}
-        qs = super().get_queryset(for_reviews=for_reviews).order_by("-id")
+        qs = super().get_queryset().order_by("-id")
         qs = self.filter_queryset(qs)
         question = self.request.GET.get("question")
         unanswered = self.request.GET.get("unanswered")

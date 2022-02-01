@@ -83,7 +83,7 @@ class ReviewDashboard(
         )
         queryset = (
             super()
-            .get_queryset(for_reviews=True)
+            .get_queryset(for_review=True)
             .filter(
                 state__in=[
                     SubmissionStates.SUBMITTED,
