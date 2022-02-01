@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`-` The track filter was missing on the review dashboard page.
 - :bug:`-` Sometimes, breaks were shown oddly in the schedule editor, with incorrect start or end times.
 - :feature:`-` Reviewer team settings (like track assignments) are now on the same page as the general team settings, and will be shown only if the team is currently a reviewer team.
 - :feature:`619` Reviewers can now be assigned to proposals directly. Depending on your settings, reviewers can only see their assigned proposals, or will just see them highlighted.
