@@ -300,7 +300,7 @@ class SubmissionFilterForm(forms.Form):
                     sub_type.pk,
                     CountableOption(sub_type.name, type_count.get(sub_type.pk, 0)),
                 )
-                for sub_type in event.submission_types.all()
+                for sub_type in sub_types
             ]
         else:
             self.fields.pop("submission_type", None)

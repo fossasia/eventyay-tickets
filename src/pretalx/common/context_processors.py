@@ -56,21 +56,22 @@ def system_information(request):
     _head = []
     event = getattr(request, "event", None)
 
-    for __, response in footer_link.send(event, request=request):
-        if isinstance(response, list):
-            _footer += response
-        else:  # pragma: no cover
-            _footer.append(response)
-            warnings.warn(
-                "Please return a list in your footer_link signal receiver, not a dictionary.",
-                DeprecationWarning,
-            )
-    context["footer_links"] = _footer
+    if not request.path.startswith("/orga/"):
+        for __, response in footer_link.send(event, request=request):
+            if isinstance(response, list):
+                _footer += response
+            else:  # pragma: no cover
+                _footer.append(response)
+                warnings.warn(
+                    "Please return a list in your footer_link signal receiver, not a dictionary.",
+                    DeprecationWarning,
+                )
+        context["footer_links"] = _footer
 
-    if event:
-        for _receiver, response in html_head.send(event, request=request):
-            _head.append(response)
-        context["html_head"] = "".join(_head)
+        if event:
+            for _receiver, response in html_head.send(event, request=request):
+                _head.append(response)
+            context["html_head"] = "".join(_head)
 
     if settings.DEBUG:
         context["development_warning"] = True

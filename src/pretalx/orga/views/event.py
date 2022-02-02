@@ -272,7 +272,9 @@ class EventReviewSettings(EventSettingsPermission, ActionFromUrl, FormView):
         )
         return formset_class(
             self.request.POST if self.request.method == "POST" else None,
-            queryset=ReviewPhase.objects.filter(event=self.request.event),
+            queryset=ReviewPhase.objects.filter(
+                event=self.request.event
+            ).select_related("event"),
             event=self.request.event,
             prefix="phase",
         )
@@ -309,7 +311,9 @@ class EventReviewSettings(EventSettingsPermission, ActionFromUrl, FormView):
         )
         return formset_class(
             self.request.POST if self.request.method == "POST" else None,
-            queryset=ReviewScoreCategory.objects.filter(event=self.request.event),
+            queryset=ReviewScoreCategory.objects.filter(event=self.request.event)
+            .select_related("event")
+            .prefetch_related("scores"),
             event=self.request.event,
             prefix="scores",
         )
