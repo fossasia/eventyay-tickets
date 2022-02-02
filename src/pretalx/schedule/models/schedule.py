@@ -446,7 +446,7 @@ class Schedule(LogMixin, models.Model):
 
         return warnings
 
-    def get_all_talk_warnings(self):
+    def get_all_talk_warnings(self, ids=None):
         talks = (
             self.talks.filter(
                 submission__isnull=False, start__isnull=False, room__isnull=False
@@ -459,6 +459,8 @@ class Schedule(LogMixin, models.Model):
             )
             .prefetch_related("submission__speakers")
         )
+        if ids:
+            talks = talks.filter(ids__in=ids)
         result = {}
         with_speakers = self.event.cfp.request_availabilities
         room_avails = defaultdict(

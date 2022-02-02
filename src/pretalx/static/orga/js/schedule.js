@@ -28,7 +28,8 @@ var api = {
         return Promise.reject(error)
       })
   },
-  fetchTalks(since) {
+  fetchTalks(options) {
+    options = options || {}
     var url = [
       window.location.protocol,
       "//",
@@ -36,9 +37,13 @@ var api = {
       window.location.pathname,
       "api/talks/",
       window.location.search,
-    ].join("")
-    if (since) {
-      url += `?since=${encodeURIComponent(since)}`
+    ].join("") + "?"
+    console.log(options.since, options.warnings)
+    if (options.since) {
+      url += `since=${encodeURIComponent(options.since)}`
+    }
+    if (options.warnings) {
+      url += '&warnings=true'
     }
     return api.http("GET", url, null)
   },
@@ -511,6 +516,13 @@ var app = new Vue({
           $('[data-toggle="tooltip"]').tooltip()
         })
       })
+      .then(() => {
+        // load warnings later, because they are slow
+        api.fetchTalks({warnings: true}).then(result => {
+          this.talks = result.results.sort((a, b) => (a.title < b.title) ? -1 : 1)
+          this.since = result.now
+        })
+      })
     window.setTimeout(this.pollUpdates, 10*1000)
   },
   computed: {
@@ -581,7 +593,7 @@ var app = new Vue({
       console.log("polling updates")
       if (this.since) {
         api
-          .fetchTalks(this.since)
+          .fetchTalks({since: this.since, warnings: true})
           .then(result => {
             if (result.results.length) {
               console.log("got result")

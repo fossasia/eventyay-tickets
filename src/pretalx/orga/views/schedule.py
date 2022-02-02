@@ -298,12 +298,12 @@ class TalkList(EventPermissionRequired, View):
         }
         version = self.request.GET.get("version")
         schedule = None
+        warnings = {}
         if version:
             schedule = request.event.schedules.filter(version=version).first()
         if not schedule:
             schedule = request.event.wip_schedule
 
-        warnings = schedule.get_all_talk_warnings()
         slots = (
             schedule.talks.all()
             .select_related(
@@ -316,8 +316,15 @@ class TalkList(EventPermissionRequired, View):
             .prefetch_related("submission__speakers")
         )
         filter_updated = request.GET.get("since")
+        with_warnings = request.GET.get("warnings")
         if filter_updated:
             slots = slots.filter(updated__gte=filter_updated)
+            if with_warnings and slots:
+                warnings = schedule.get_all_talk_warnings(
+                    ids=slots.values_list("id", flat=True)
+                )
+        elif with_warnings:
+            warnings = schedule.get_all_talk_warnings()
         result["results"] = [
             serialize_slot(slot, warnings=warnings.get(slot)) for slot in slots
         ]
