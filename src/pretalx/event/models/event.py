@@ -44,6 +44,7 @@ def validate_event_slug_permitted(value):
         "403",
         "404",
         "500",
+        "p",
     ]
     if value.lower() in forbidden:
         raise ValidationError(
