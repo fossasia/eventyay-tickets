@@ -23,12 +23,14 @@ def can_change_event_settings(user, obj):
     event = getattr(obj, "event", None)
     if not user or user.is_anonymous or not obj or not event:
         return False
-    return (
-        user.is_administrator
-        or event.teams.filter(
-            members__in=[user], can_change_event_settings=True
-        ).exists()
-    )
+    if user.is_administrator:
+        return True
+    team_permissions = user.team_permissions.get(event.slug)
+    if team_permissions is not None:
+        return "can_change_event_settings" in team_permissions
+    return event.teams.filter(
+        members__in=[user], can_change_event_settings=True
+    ).exists()
 
 
 @rules.predicate
@@ -66,10 +68,12 @@ def can_change_teams(user, obj):
     event = getattr(obj, "event", None)
     if not user or user.is_anonymous or not obj or not event:
         return False
-    return (
-        user.is_administrator
-        or event.teams.filter(members__in=[user], can_change_teams=True).exists()
-    )
+    if user.is_administrator:
+        return True
+    team_permissions = user.team_permissions.get(event.slug)
+    if team_permissions is not None:
+        return "can_change_teams" in team_permissions
+    return event.teams.filter(members__in=[user], can_change_teams=True).exists()
 
 
 @rules.predicate

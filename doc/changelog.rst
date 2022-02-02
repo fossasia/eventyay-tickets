@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` The rendering speed of all backend pages has been improved.
 - :feature:`-` The performance of the schedule editor and release pages was improved for large events.
 - :bug:`-` The track filter was missing on the review dashboard page.
 - :bug:`-` Sometimes, breaks were shown oddly in the schedule editor, with incorrect start or end times.

@@ -1,5 +1,6 @@
 import json
 import random
+from contextlib import suppress
 from hashlib import md5
 from urllib.parse import urljoin
 
@@ -133,6 +134,21 @@ class User(PermissionsMixin, GenerateCode, FileCleanupMixin, AbstractBaseUser):
         """For public consumption as it is used for Select widgets, e.g. on the
         feedback form."""
         return self.name or str(_("Unnamed user"))
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.permission_cache = {}
+        self.team_permissions = {}
+
+    def has_perm(self, perm, obj, *args, **kwargs):
+        cached_result = None
+        with suppress(TypeError):
+            cached_result = self.permission_cache.get((perm, obj))
+        if cached_result is not None:
+            return cached_result
+        result = super().has_perm(perm, obj, *args, **kwargs)
+        self.permission_cache[(perm, obj)] = result
+        return result
 
     def get_display_name(self) -> str:
         """Returns a user's name or 'Unnamed user'."""

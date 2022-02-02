@@ -35,13 +35,11 @@ class EventPermissionMiddleware:
     @staticmethod
     def _set_orga_events(request):
         request.is_orga = False
-        request.is_reviewer = False
         request.orga_events = []
         if not request.user.is_anonymous:
             if request.user.is_administrator:
                 request.orga_events = Event.objects.order_by("date_from")
                 request.is_orga = True
-                request.is_reviewer = True
             else:
                 request.orga_events = request.user.get_events_for_permission().order_by(
                     "date_from"
@@ -52,6 +50,9 @@ class EventPermissionMiddleware:
                     request.is_reviewer = event.teams.filter(
                         members__in=[request.user], is_reviewer=True
                     ).exists()
+                    request.user.team_permissions[
+                        event.slug
+                    ] = request.user.get_permissions_for_event(event)
 
     def _handle_orga_url(self, request, url):
         if request.uses_custom_domain:
