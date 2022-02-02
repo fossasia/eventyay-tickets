@@ -167,7 +167,7 @@ class ScheduleExportForm(ExportForm):
     def _get_end_value(self, obj):
         slot = obj.slot
         if slot and slot.real_end:
-            return slot.real_end.isoformat()
+            return slot.local_end.isoformat()
 
     def _get_duration_value(self, obj):
         return obj.get_duration()

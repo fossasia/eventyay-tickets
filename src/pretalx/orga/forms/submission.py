@@ -30,7 +30,7 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
                     "start": slot.local_start.strftime(datetime_format)
                     if slot.local_start
                     else "",
-                    "end": slot.real_end.strftime(datetime_format)
+                    "end": slot.local_end.strftime(datetime_format)
                     if slot.real_end
                     else "",
                 }

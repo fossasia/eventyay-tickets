@@ -189,7 +189,7 @@ def draw_grid_for_day(day, col_width=20):
         return None
 
     global_start = day.get("first_start", min(talk.start for talk in talk_list))
-    global_end = day.get("last_end", max(talk.real_end for talk in talk_list))
+    global_end = day.get("last_end", max(talk.local_end for talk in talk_list))
     talks_by_room = {str(r["name"]): r["talks"] for r in day["rooms"]}
     cards_by_id = {talk.pk: talk_card(talk, col_width) for talk in talk_list}
     rooms = list(talks_by_room.keys())
@@ -213,13 +213,13 @@ def draw_grid_for_day(day, col_width=20):
         }
         running_events = {
             room: next(
-                (e for e in talks_by_room[room] if e.start < hour < e.real_end),
+                (e for e in talks_by_room[room] if e.start < hour < e.local_end),
                 None,
             )
             for room in rooms
         }
         ending_events = {
-            room: next((e for e in talks_by_room[room] if e.real_end == hour), None)
+            room: next((e for e in talks_by_room[room] if e.local_end == hour), None)
             for room in rooms
         }
         lines.append(

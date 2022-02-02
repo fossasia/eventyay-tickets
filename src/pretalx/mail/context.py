@@ -203,14 +203,14 @@ def base_placeholders(sender, **kwargs):
         SimpleFunctionalMailTextPlaceholder(
             "session_end_date",
             ["slot"],
-            lambda slot: _date(slot.real_end, "SHORT_DATE_FORMAT"),
+            lambda slot: _date(slot.local_end, "SHORT_DATE_FORMAT"),
             _date(now(), "SHORT_DATE_FORMAT"),
             _("The session's end date"),
         ),
         SimpleFunctionalMailTextPlaceholder(
             "session_end_time",
             ["slot"],
-            lambda slot: _date(slot.real_end, "TIME_FORMAT"),
+            lambda slot: _date(slot.local_end, "TIME_FORMAT"),
             _date(now(), "TIME_FORMAT"),
             _("The session's end time"),
         ),

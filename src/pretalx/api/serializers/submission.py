@@ -40,7 +40,7 @@ class SlotSerializer(I18nAwareModelSerializer):
 
     @staticmethod
     def get_end(obj):
-        return obj.real_end
+        return obj.local_end
 
     class Meta:
         model = TalkSlot

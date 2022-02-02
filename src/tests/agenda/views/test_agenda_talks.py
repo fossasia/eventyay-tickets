@@ -27,7 +27,7 @@ def test_can_see_talk(client, django_assert_num_queries, event, slot, other_slot
         assert slot.submission.abstract in content
         assert slot.submission.description in content
         assert formats.date_format(slot.local_start, "Y-m-d, H:i") in content
-        assert formats.date_format(slot.real_end, "H:i") in content
+        assert formats.date_format(slot.local_end, "H:i") in content
         assert str(slot.room.name) in content
         assert "fa-edit" not in content  # edit btn
         assert "fa-video" not in content  # do not record
@@ -58,7 +58,7 @@ def test_orga_can_see_new_talk(
         assert slot.submission.abstract in content
         assert slot.submission.description in content
         assert formats.date_format(slot.local_start, "Y-m-d, H:i") in content
-        assert formats.date_format(slot.real_end, "H:i") in content
+        assert formats.date_format(slot.local_end, "H:i") in content
         assert str(slot.room.name) in content
         assert "fa-edit" not in content  # edit btn
         assert "fa-video" not in content  # do not record

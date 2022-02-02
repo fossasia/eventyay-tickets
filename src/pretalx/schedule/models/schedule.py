@@ -325,10 +325,9 @@ class Schedule(LogMixin, models.Model):
 
     @cached_property
     def use_room_availabilities(self):
-        return any(
-            room.availabilities.all()
-            for room in self.event.rooms.all().prefetch_related("availabilities")
-        )
+        from pretalx.schedule.models import Availability
+
+        return Availability.objects.filter(room__isnull=False, event=self.event).exists
 
     def get_talk_warnings(
         self,
@@ -336,6 +335,7 @@ class Schedule(LogMixin, models.Model):
         with_speakers=True,
         room_avails=None,
         speaker_avails=None,
+        speaker_profiles=None,
     ) -> list:
         """A list of warnings that apply to this slot.
 
@@ -345,11 +345,12 @@ class Schedule(LogMixin, models.Model):
         """
         from pretalx.schedule.models import Availability, TalkSlot
 
-        if not talk.start or not talk.submission:
+        if not talk.start or not talk.submission or not talk.room:
             return []
         warnings = []
         availability = talk.as_availability
-        if talk.room and self.use_room_availabilities:
+        url = talk.submission.orga_urls.base
+        if self.use_room_availabilities:
             if room_avails is None:
                 room_avails = talk.room.availabilities.all()
             if not any(
@@ -362,36 +363,42 @@ class Schedule(LogMixin, models.Model):
                         "message": _(
                             "The room is not available at the scheduled time."
                         ),
+                        "url": url,
                     }
                 )
-        if talk.room:
-            overlaps = (
-                TalkSlot.objects.filter(schedule=self, room=talk.room)
-                .filter(
-                    models.Q(start__lt=talk.start, end__gt=talk.start)
-                    | models.Q(start__lt=talk.real_end, end__gt=talk.real_end)
-                    | models.Q(start__gt=talk.start, end__lt=talk.real_end)
-                )
-                .exclude(pk=talk.pk)
-                .exists()
+        overlaps = (
+            TalkSlot.objects.filter(schedule=self, room=talk.room)
+            .filter(
+                models.Q(start__lt=talk.start, end__gt=talk.start)
+                | models.Q(start__lt=talk.real_end, end__gt=talk.real_end)
+                | models.Q(start__gt=talk.start, end__lt=talk.real_end)
             )
-            if overlaps:
-                warnings.append(
-                    {
-                        "type": "room_overlap",
-                        "message": _(
-                            "There's an overlapping session scheduled in this room."
-                        ),
-                    }
-                )
+            .exclude(pk=talk.pk)
+            .exists()
+        )
+        if overlaps:
+            warnings.append(
+                {
+                    "type": "room_overlap",
+                    "message": _(
+                        "There's an overlapping session scheduled in this room."
+                    ),
+                    "url": url,
+                }
+            )
 
         for speaker in talk.submission.speakers.all():
             if with_speakers:
-                profile = speaker.event_profile(event=self.event)
+                if speaker_profiles:
+                    profile = speaker_profiles.get(speaker)
+                else:
+                    profile = speaker.event_profile(self.event)
                 if speaker_avails is not None:
                     profile_availabilities = speaker_avails.get(profile.pk)
                 else:
-                    profile_availabilities = list(profile.availabilities.all())
+                    profile_availabilities = (
+                        list(profile.availabilities.all()) if profile else []
+                    )
                 if profile_availabilities and not any(
                     speaker_availability.contains(availability)
                     for speaker_availability in Availability.union(
@@ -408,6 +415,7 @@ class Schedule(LogMixin, models.Model):
                             "message": _(
                                 "A speaker is not available at the scheduled time."
                             ),
+                            "url": url,
                         }
                     )
             overlaps = (
@@ -432,15 +440,25 @@ class Schedule(LogMixin, models.Model):
                         "message": _(
                             "A speaker is holding another session at the scheduled time."
                         ),
+                        "url": url,
                     }
                 )
 
         return warnings
 
-    def get_all_talk_warnings(self, talks=None):
-        talks = talks or self.talks.filter(submission__isnull=False).select_related(
-            "submission", "room"
-        ).prefetch_related("submission__speakers")
+    def get_all_talk_warnings(self):
+        talks = (
+            self.talks.filter(
+                submission__isnull=False, start__isnull=False, room__isnull=False
+            )
+            .select_related(
+                "submission",
+                "room",
+                "submission__event",
+                "schedule__event",
+            )
+            .prefetch_related("submission__speakers")
+        )
         result = {}
         with_speakers = self.event.cfp.request_availabilities
         room_avails = defaultdict(
@@ -451,7 +469,14 @@ class Schedule(LogMixin, models.Model):
             },
         )
         speaker_avails = None
+        speaker_profiles = None
         if with_speakers:
+            speaker_profiles = {
+                profile.user: profile
+                for profile in SpeakerProfile.objects.filter(
+                    event=self.event
+                ).select_related("user")
+            }
             speaker_avails = defaultdict(
                 list,
                 {
@@ -467,6 +492,7 @@ class Schedule(LogMixin, models.Model):
                 with_speakers=with_speakers,
                 room_avails=room_avails.get(talk.room_id) if talk.room_id else None,
                 speaker_avails=speaker_avails,
+                speaker_profiles=speaker_profiles,
             )
             if talk_warnings:
                 result[talk] = talk_warnings
@@ -482,17 +508,11 @@ class Schedule(LogMixin, models.Model):
         visible due to their unconfirmed status, and ``no_track`` are
         submissions without a track in a conference that uses tracks.
         """
-        talks = (
-            self.talks.filter(submission__isnull=False)
-            .select_related("submission", "room")
-            .prefetch_related("submission__speakers")
-        )
+        talks = self.talks.filter(submission__isnull=False)
         warnings = {
             "talk_warnings": [
                 {"talk": key, "warnings": value}
-                for key, value in self.get_all_talk_warnings(
-                    talks.filter(start__isnull=False)
-                ).items()
+                for key, value in self.get_all_talk_warnings().items()
             ],
             "unscheduled": talks.filter(start__isnull=True).count(),
             "unconfirmed": talks.exclude(

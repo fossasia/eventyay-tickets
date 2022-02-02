@@ -98,11 +98,14 @@ class TalkSlot(LogMixin, models.Model):
     def real_end(self):
         """Guaranteed to provide a useful end datetime if ``start`` is set,
         even if ``end`` is empty."""
-        result = self.end or (
+        return self.end or (
             self.start + dt.timedelta(minutes=self.duration) if self.start else None
         )
-        if result:
-            return result.astimezone(self.event.tz)
+
+    @cached_property
+    def local_end(self):
+        if self.real_end:
+            return self.real_end.astimezone(self.event.tz)
 
     @cached_property
     def as_availability(self):
@@ -174,7 +177,7 @@ class TalkSlot(LogMixin, models.Model):
         return uuid.uuid5(INSTANCE_IDENTIFIER, self.submission.code + self.id_suffix)
 
     def build_ical(self, calendar, creation_time=None, netloc=None):
-        if not self.start or not self.real_end or not self.room or not self.submission:
+        if not self.start or not self.local_end or not self.room or not self.submission:
             return
         creation_time = creation_time or dt.datetime.now(pytz.utc)
         netloc = netloc or urlparse(get_base_url(self.event)).netloc
@@ -190,6 +193,6 @@ class TalkSlot(LogMixin, models.Model):
         )
 
         vevent.add("dtstart").value = self.local_start
-        vevent.add("dtend").value = self.real_end
+        vevent.add("dtend").value = self.local_end
         vevent.add("description").value = self.submission.abstract or ""
         vevent.add("url").value = self.submission.urls.public.full()

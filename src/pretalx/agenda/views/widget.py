@@ -220,7 +220,7 @@ def widget_data_v2(request, event, version=None):
                     else None,
                     "track": talk.submission.track_id if talk.submission else None,
                     "start": talk.local_start,
-                    "end": talk.real_end,
+                    "end": talk.local_end,
                     "room": talk.room_id,
                 }
             )
@@ -229,7 +229,7 @@ def widget_data_v2(request, event, version=None):
                 {
                     "title": talk.description,
                     "start": talk.start,
-                    "end": talk.real_end,
+                    "end": talk.local_end,
                     "room": talk.room_id,
                 }
             )

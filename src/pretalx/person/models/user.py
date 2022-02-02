@@ -152,13 +152,13 @@ class User(PermissionsMixin, GenerateCode, FileCleanupMixin, AbstractBaseUser):
         """
         from pretalx.person.models.profile import SpeakerProfile
 
-        profile = self.profiles.select_related("event").filter(event=event).first()
-        if profile:
+        try:
+            return self.profiles.select_related("event").get(event=event)
+        except Exception:
+            profile = SpeakerProfile(event=event, user=self)
+            if self.pk:
+                profile.save()
             return profile
-        profile = SpeakerProfile(event=event, user=self)
-        if self.pk:
-            profile.save()
-        return profile
 
     def log_action(
         self, action: str, data: dict = None, person=None, orga: bool = False
