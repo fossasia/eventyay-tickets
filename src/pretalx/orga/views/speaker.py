@@ -1,7 +1,7 @@
 from csp.decorators import csp_update
 from django.contrib import messages
 from django.db import transaction
-from django.db.models import Exists, OuterRef
+from django.db.models import Count, Exists, OuterRef, Q
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.decorators import method_decorator
@@ -47,9 +47,23 @@ class SpeakerList(EventPermissionRequired, Sortable, Filterable, ListView):
         return SpeakerFilterForm(self.request.event, self.request.GET)
 
     def get_queryset(self):
-        qs = SpeakerProfile.objects.filter(
-            event=self.request.event, user__in=self.request.event.submitters
-        ).select_related("event", "user")
+        qs = (
+            SpeakerProfile.objects.filter(
+                event=self.request.event, user__in=self.request.event.submitters
+            )
+            .select_related("event", "user")
+            .annotate(
+                submission_count=Count(
+                    "user__submissions",
+                    filter=Q(user__submissions__event=self.request.event),
+                ),
+                accepted_submission_count=Count(
+                    "user__submissions",
+                    filter=Q(user__submissions__event=self.request.event)
+                    & Q(user__submissions__state__in=["accepted", "confirmed"]),
+                ),
+            )
+        )
 
         qs = self.filter_queryset(qs)
         if "role" in self.request.GET:

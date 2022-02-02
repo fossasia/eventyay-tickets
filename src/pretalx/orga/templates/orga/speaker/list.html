@@ -40,7 +40,6 @@
             <thead>
                 <tr>
                     <th>{% translate "Name" %}</th>
-                    <th>{% translate "Scheduled Sessions" %}</th>
                     <th>{% translate "Accepted Proposals" %}</th>
                     <th>{% translate "Proposals" %}</th>
                     {% if can_mark_speaker or can_see_speaker_status %}<th></th>{% endif %}
@@ -50,9 +49,8 @@
                 {% for profile in speakers %}
                     <tr>
                         <td><a href="{{ profile.orga_urls.base }}">{{ profile.user.get_display_name }}</a></td>
-                        <td>{{ profile.talks.count }}</td>
-                        <td>{{ profile.accepted_confirmed_submissions.count }}</td>
-                        <td>{{ profile.submissions.count }}</td>
+                        <td>{{ profile.accepted_submission_count }}</td>
+                        <td>{{ profile.submission_count }}</td>
                         {% if can_mark_speaker or can_see_speaker_status %}
                             <td class="action-column">
                                 {% if can_mark_speaker %}
