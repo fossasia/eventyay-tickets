@@ -615,12 +615,13 @@ h2 .submission-state-dropdown {
       font-size: 0.875rem;
       font-weight: 400;
       margin-bottom: 0;
-      display: inline-block;
+      display: inline-flex;
       padding: 4px 0 3px 0;
+      align-items: baseline;
     }
 
     i.fa:first-child {
-      padding: 0 3px;
+      padding: 0 6px 0 3px;
     }
     i.fa.fa-caret-down {
       margin-left: 10px;
