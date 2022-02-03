@@ -460,7 +460,7 @@ class Schedule(LogMixin, models.Model):
             .prefetch_related("submission__speakers")
         )
         if ids:
-            talks = talks.filter(ids__in=ids)
+            talks = talks.filter(id__in=ids)
         result = {}
         with_speakers = self.event.cfp.request_availabilities
         room_avails = defaultdict(
