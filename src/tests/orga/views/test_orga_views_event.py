@@ -480,6 +480,7 @@ def test_reset_team_member_password(orga_client, event, other_orga_user):
     member.refresh_from_db()
     assert member.pw_reset_token
     assert len(djmail.outbox) == 1
+    assert member.pw_reset_token in djmail.outbox[0].body
 
 
 @pytest.mark.django_db

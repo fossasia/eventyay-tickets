@@ -106,7 +106,7 @@ def test_schedule_frab_json_export(
     django_assert_max_num_queries,
     orga_user,
 ):
-    with django_assert_max_num_queries(11):
+    with django_assert_max_num_queries(12):
         regular_response = client.get(
             reverse(
                 "agenda:export.schedule.json",
@@ -115,7 +115,7 @@ def test_schedule_frab_json_export(
             follow=True,
         )
     client.force_login(orga_user)
-    with django_assert_max_num_queries(20):
+    with django_assert_max_num_queries(21):
         orga_response = client.get(
             reverse(
                 "agenda:export.schedule.json",
@@ -546,7 +546,7 @@ def test_html_export_full(
 
 @pytest.mark.django_db
 def test_speaker_csv_export(slot, orga_client, django_assert_max_num_queries):
-    with django_assert_max_num_queries(16):
+    with django_assert_max_num_queries(17):
         response = orga_client.get(
             reverse(
                 "agenda:export",

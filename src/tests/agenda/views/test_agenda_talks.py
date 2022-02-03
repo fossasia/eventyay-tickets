@@ -48,7 +48,7 @@ def test_orga_can_see_new_talk(
     orga_client, django_assert_num_queries, event, unreleased_slot
 ):
     slot = unreleased_slot
-    with django_assert_num_queries(28):
+    with django_assert_num_queries(26):
         response = orga_client.get(slot.submission.urls.public, follow=True)
     assert response.status_code == 200
     content = response.content.decode()

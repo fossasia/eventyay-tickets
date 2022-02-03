@@ -700,14 +700,16 @@ def test_submission_apply_pending(submission, orga_client):
     response = orga_client.get(submission.event.orga_urls.apply_pending)
     assert response.status_code == 200
     with scope(event=submission.event):
-        submission.state = "submitted"
-        submission.pending_state = "accepted"
+        submission.refresh_from_db()
+        assert submission.state == "submitted"
+        assert submission.pending_state == "accepted"
         assert submission.event.queued_mails.count() == 0
 
     response = orga_client.post(submission.event.orga_urls.apply_pending)
     assert response.status_code == 302
     with scope(event=submission.event):
-        submission.state = "accepted"
+        submission.refresh_from_db()
+        assert submission.state == "accepted"
         assert submission.pending_state is None
         assert submission.event.queued_mails.count() == 1
 
