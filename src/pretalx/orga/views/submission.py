@@ -9,7 +9,7 @@ from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.syndication.views import Feed
 from django.db import transaction
-from django.db.models import Case, Exists, OuterRef, Q, When
+from django.db.models import Exists, OuterRef, Q, Subquery
 from django.forms.models import BaseModelFormSet, inlineformset_factory
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
@@ -180,11 +180,10 @@ class ReviewerSubmissionFilter:
             .prefetch_related("speakers")
         )
         if "is_reviewer" in self.user_permissions or for_review:
-            queryset = queryset.annotate(
-                is_assigned=Case(
-                    When(assigned_reviewers__in=[self.request.user], then=1), default=0
-                ),
-            ).distinct("code")
+            assigned = self.request.user.assigned_reviews.filter(
+                event=self.request.event, pk=OuterRef("pk")
+            )
+            queryset = queryset.annotate(is_assigned=Exists(Subquery(assigned)))
         if self.user_permissions == {"is_reviewer"}:
             queryset = self.limit_for_reviewers(queryset)
         return queryset
