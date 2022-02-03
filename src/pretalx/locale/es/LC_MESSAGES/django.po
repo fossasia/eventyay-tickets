@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-01-24 06:34+0000\n"
-"PO-Revision-Date: 2021-09-12 19:50+0000\n"
-"Last-Translator: laurent fernandez <laurent@ushova.io>\n"
+"PO-Revision-Date: 2022-02-10 16:36+0000\n"
+"Last-Translator: Manuel Martin <draxus@gmail.com>\n"
 "Language-Team: none\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
@@ -878,7 +878,7 @@ msgstr "Tipo de sesión"
 #: pretalx/submission/models/access_code.py:26
 #: pretalx/submission/models/submission.py:132
 msgid "Track"
-msgstr "Seguimiento"
+msgstr "Sala"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:20
 msgid "Congratulations on your acceptance!"
@@ -1114,7 +1114,7 @@ msgstr "Eventos pasados"
 #: pretalx/cfp/templates/widgets/track-select-widget.html:9
 #: pretalx/cfp/templates/widgets/track-select-widget.html:22
 msgid "Track descriptions"
-msgstr "Seguimiento de las descripciones"
+msgstr "Descripciones de las salas"
 
 #: pretalx/cfp/templates/widgets/track-select-widget.html:33
 msgid "No description provided."
@@ -1353,22 +1353,16 @@ msgid "A question option was modified."
 msgstr "Se modificó una opción de pregunta."
 
 #: pretalx/common/log_display.py:52
-#, fuzzy
-#| msgid "A track was added."
 msgid "A tag was added."
-msgstr "Se agregó el seguimiento."
+msgstr "Se agregó una etiqueta."
 
 #: pretalx/common/log_display.py:53
-#, fuzzy
-#| msgid "A track was deleted."
 msgid "A tag was deleted."
-msgstr "Se eliminó un seguimiento."
+msgstr "Se eliminó una etiqueta."
 
 #: pretalx/common/log_display.py:54
-#, fuzzy
-#| msgid "A track was modified."
 msgid "A tag was modified."
-msgstr "Se modificó un seguimiento."
+msgstr "Se modificó una etiqueta."
 
 #: pretalx/common/log_display.py:55
 msgid "A new room was added."
@@ -1480,7 +1474,7 @@ msgstr "Se eliminó un código de acceso."
 
 #: pretalx/common/log_display.py:85
 msgid "A track was added."
-msgstr "Se agregó el seguimiento."
+msgstr "Se agregó una sala."
 
 #: pretalx/common/log_display.py:86
 msgid "A track was deleted."
@@ -1967,7 +1961,7 @@ msgstr "Contacta con nosotros"
 
 #: pretalx/common/templates/common/base.html:160
 msgid "Imprint"
-msgstr "Imprimir"
+msgstr "Información legal"
 
 #: pretalx/common/templates/common/logs.html:7
 #: pretalx/orga/templates/orga/event/dashboard.html:82
