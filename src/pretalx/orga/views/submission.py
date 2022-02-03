@@ -184,7 +184,7 @@ class ReviewerSubmissionFilter:
                 is_assigned=Case(
                     When(assigned_reviewers__in=[self.request.user], then=1), default=0
                 ),
-            )
+            ).distinct("code")
         if self.user_permissions == {"is_reviewer"}:
             queryset = self.limit_for_reviewers(queryset)
         return queryset
