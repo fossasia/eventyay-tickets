@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`1266` pretalx only recognised overlapping scheduled talks for a speaker when they didn't start or end at the exact same time.
 - :feature:`-` The rendering speed of all backend pages has been improved.
 - :feature:`-` The performance of the schedule editor and release pages was improved for large events.
 - :bug:`-` The track filter was missing on the review dashboard page.
