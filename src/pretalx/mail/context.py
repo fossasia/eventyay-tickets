@@ -33,6 +33,14 @@ def get_available_placeholders(event, kwargs):
                 params[placeholder.identifier] = placeholder
     return params
 
+def get_all_reviews(submission):
+    reviews = submission.reviews.all().filter(text__isnull=False)
+    if not reviews:
+        return ""
+    texts = [r.text.strip() for r in reviews if r.text.strip()]
+    if not texts:
+        return ""
+    return "\n\n--------------\n\n".join(texts)
 
 @receiver(register_mail_placeholders, dispatch_uid="pretalx_register_base_placeholders")
 def base_placeholders(sender, **kwargs):
@@ -185,6 +193,13 @@ def base_placeholders(sender, **kwargs):
             lambda submission: str(submission.track.name) if submission.track else "",
             "Science",
             _("The track the proposal belongs to"),
+        ),
+        SimpleFunctionalMailTextPlaceholder(
+            "all_reviews",
+            ["submission"],
+            get_all_reviews,
+            "This proposal sounds like a good idea.\n\n--------- \n\nAbsolutely not!",
+            _("All review texts for this proposal"),
         ),
         SimpleFunctionalMailTextPlaceholder(
             "session_start_date",
