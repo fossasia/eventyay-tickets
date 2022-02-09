@@ -394,7 +394,7 @@ class Schedule(LogMixin, models.Model):
                     profile = speaker_profiles.get(speaker)
                 else:
                     profile = speaker.event_profile(self.event)
-                if speaker_avails is not None:
+                if profile and speaker_avails is not None:
                     profile_availabilities = speaker_avails.get(profile.pk)
                 else:
                     profile_availabilities = (
