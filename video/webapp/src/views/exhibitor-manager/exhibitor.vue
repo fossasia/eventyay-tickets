@@ -182,7 +182,9 @@ export default {
 				'Reddit',
 				'Instagram',
 				'YouTube',
-				'Discord'
+				'Discord',
+				'Github',
+				'Dev-to'
 			]
 		}
 	},
