@@ -33,6 +33,7 @@ def get_available_placeholders(event, kwargs):
                 params[placeholder.identifier] = placeholder
     return params
 
+
 def get_all_reviews(submission):
     reviews = submission.reviews.all().filter(text__isnull=False)
     if not reviews:
@@ -41,6 +42,7 @@ def get_all_reviews(submission):
     if not texts:
         return ""
     return "\n\n--------------\n\n".join(texts)
+
 
 @receiver(register_mail_placeholders, dispatch_uid="pretalx_register_base_placeholders")
 def base_placeholders(sender, **kwargs):
