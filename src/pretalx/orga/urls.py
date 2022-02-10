@@ -35,6 +35,7 @@ urlpatterns = [
         event.InvitationView.as_view(),
         name="invitation.view",
     ),
+    path("start/redirect", dashboard.start_redirect_view, name="start.redirect"),
     path(
         "organiser/",
         dashboard.DashboardOrganiserListView.as_view(),

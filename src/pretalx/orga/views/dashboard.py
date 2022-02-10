@@ -1,18 +1,37 @@
 from django.db.models import Count, Q
+from django.shortcuts import redirect
 from django.template.defaultfilters import timeuntil
+from django.urls import reverse
 from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import ngettext_lazy
 from django.views.generic import TemplateView
 from django_context_decorator import context
+from django_scopes import scopes_disabled
 
 from pretalx.common.mixins.views import EventPermissionRequired, PermissionRequired
 from pretalx.common.models.log import ActivityLog
-from pretalx.event.models import Organiser
+from pretalx.event.models import Event, Organiser
 from pretalx.event.stages import get_stages
 from pretalx.person.models import User
 from pretalx.submission.models.submission import SubmissionStates
+
+
+def start_redirect_view(request):
+    orga_events = set(request.orga_events)
+    with scopes_disabled():
+        speaker_events = set(
+            Event.objects.filter(submissions__speakers__in=[request.user])
+        )
+
+    # Users with only one event, in only one role, are redirected to that event
+    if len(orga_events | speaker_events) == 1 and not (orga_events and speaker_events):
+        if orga_events:
+            return redirect(orga_events.pop().orga_urls.base)
+        return redirect(speaker_events.pop().urls.user_submissions)
+
+    return redirect(reverse("orga:event.list"))
 
 
 class DashboardEventListView(TemplateView):
