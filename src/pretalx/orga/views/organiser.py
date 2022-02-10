@@ -79,7 +79,10 @@ class TeamDetail(PermissionRequired, TeamMixin, CreateOrUpdateView):
     def form_valid(self, form):
         created = not bool(form.instance.pk)
         form.save()
-        messages.success(self.request, _("The settings have been saved."))
+        if created:
+            messages.success(self.request, _("The team has been created."))
+        else:
+            messages.success(self.request, _("The settings have been saved."))
         if created:
             return redirect(self.request.organiser.orga_urls.base)
         return redirect(self.request.path)

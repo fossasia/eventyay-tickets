@@ -16,14 +16,12 @@ from pretalx.submission.models import Track
 class TeamForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
     @scopes_disabled()
     def __init__(self, *args, organiser=None, instance=None, **kwargs):
+        self.organiser = organiser
         super().__init__(*args, instance=instance, **kwargs)
-        self.fields["organiser"].widget = forms.HiddenInput()
         is_updating = instance and getattr(instance, "pk", None)
         if is_updating:
-            self.fields.pop("organiser")
             self.fields["limit_events"].queryset = instance.organiser.events.all()
         else:
-            self.fields["organiser"].initial = organiser
             self.fields["limit_events"].queryset = organiser.events.all()
         if is_updating and not instance.all_events and instance.limit_events.count():
             self.fields["limit_tracks"].queryset = Track.objects.filter(
@@ -36,6 +34,7 @@ class TeamForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
 
     @scopes_disabled()
     def save(self, *args, **kwargs):
+        self.instance.organiser = self.organiser
         return super().save(*args, **kwargs)
 
     def clean(self):
@@ -55,7 +54,6 @@ class TeamForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
         model = Team
         fields = [
             "name",
-            "organiser",
             "all_events",
             "limit_events",
             "can_create_events",
