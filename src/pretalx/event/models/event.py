@@ -685,7 +685,7 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
             for track in tracks:
                 information.limit_tracks.add(track_map.get(track))
             for stype in types:
-                question.limit_types.add(submission_type_map.get(stype))
+                information.limit_types.add(submission_type_map.get(stype))
 
         for review_phase in other_event.review_phases.all():
             review_phase.pk = None
