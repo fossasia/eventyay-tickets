@@ -112,7 +112,12 @@ export default {
 		margin-bottom: 8px
 	.btn-option
 		margin-top: 8px
+		height: auto
+		min-height: 36px
 		button-style()
+		.bunt-button-text
+			white-space: normal
+			line-height: 2
 	.option
 		.votes
 			display: flex
