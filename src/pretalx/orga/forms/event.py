@@ -415,6 +415,10 @@ class MailSettingsForm(
 
     def clean(self):
         data = self.cleaned_data
+        if not data.get("smtp_use_custom"):
+            # We don't need to validate all the rest when we don't use a custom email server
+            return data
+
         if not data.get("smtp_password") and data.get("smtp_username"):
             # Leave password unchanged if the username is set and the password field is empty.
             # This makes it impossible to set an empty password as long as a username is set, but
