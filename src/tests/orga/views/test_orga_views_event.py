@@ -43,6 +43,7 @@ def test_fail_unencrypted_mail_settings(orga_client, event, availability):
         follow=True,
         data={
             "mail_from": "foo@bar.com",
+            "smtp_use_custom": True,
             "smtp_host": "foo.bar.com",
             "smtp_password": "",
             "smtp_port": "25",
