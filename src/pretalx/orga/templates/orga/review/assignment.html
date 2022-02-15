@@ -53,7 +53,9 @@
                         </div>
                         <div class="reviewer-formset">
                             {% bootstrap_form_errors form %}
-                            {% bootstrap_form form layout='event' %}
+                            {% for field in form %}{% if field.label %}
+                                {% bootstrap_field field layout='event' %}
+                            {% endif %}{% endfor %}
                         </div>
                     </div>
                 {% endfor %}

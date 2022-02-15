@@ -133,20 +133,30 @@ class ReviewerForProposalForm(forms.ModelForm):
         self.fields["assigned_reviewers"].queryset = reviewers
         self.fields["assigned_reviewers"].label = self.instance.title
 
+    def save(self, *args, **kwargs):
+        # No calling 'super().save()' here – it would potentially update a submission's code!
+        instance = self.instance
+        if "assigned_reviewers" in self.changed_data:
+            new_code = self.cleaned_data.get("code")
+            if instance.code != new_code:
+                instance = instance.event.submissions.all().get(code=new_code)
+            instance.assigned_reviewers.set(self.cleaned_data["assigned_reviewers"])
+
     class Meta:
         model = Submission
-        fields = ["assigned_reviewers"]
+        fields = ["assigned_reviewers", "code"]
         widgets = {
-            "assigned_reviewers": forms.SelectMultiple(attrs={"class": "select2"})
+            "assigned_reviewers": forms.SelectMultiple(attrs={"class": "select2"}),
+            "code": forms.HiddenInput(),
         }
 
 
 class ProposalForReviewerForm(forms.ModelForm):
     def __init__(self, *args, proposals=None, **kwargs):
         super().__init__(*args, **kwargs)
-        initial = initial = proposals.filter(
-            assigned_reviewers__in=[self.instance]
-        ).values_list("id", flat=True)
+        initial = proposals.filter(assigned_reviewers__in=[self.instance]).values_list(
+            "id", flat=True
+        )
         self.fields["assigned_reviews"] = forms.MultipleChoiceField(
             choices=((p.id, p.title) for p in proposals),
             widget=forms.SelectMultiple(attrs={"class": "select2"}),
@@ -156,10 +166,15 @@ class ProposalForReviewerForm(forms.ModelForm):
         )
 
     def save(self, *args, **kwargs):
-        instance = super().save(*args, **kwargs)
+        # No calling 'super().save()' here – it would potentially update a user's code!
+        instance = self.instance
         if "assigned_reviews" in self.changed_data:
+            new_code = self.cleaned_data.get("code")
+            if instance.code != new_code:
+                instance = User.objects.get(code=new_code)
             instance.assigned_reviews.set(self.cleaned_data["assigned_reviews"])
 
     class Meta:
         model = User
-        fields = []
+        fields = ["code"]
+        widgets = {"code": forms.HiddenInput()}
