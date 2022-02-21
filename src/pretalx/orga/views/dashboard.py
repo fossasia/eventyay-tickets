@@ -34,6 +34,10 @@ def start_redirect_view(request):
     return redirect(reverse("orga:event.list"))
 
 
+class StartView(TemplateView):
+    template_name = "orga/start.html"
+
+
 class DashboardEventListView(TemplateView):
     template_name = "orga/event_list.html"
 

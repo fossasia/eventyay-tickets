@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-02-11 23:07+0000\n"
-"PO-Revision-Date: 2022-02-10 16:36+0000\n"
+"PO-Revision-Date: 2022-02-21 17:41+0000\n"
 "Last-Translator: Manuel Martin <draxus@gmail.com>\n"
 "Language-Team: none\n"
 "Language: es\n"
@@ -316,6 +316,9 @@ msgid ""
 "changes to it up to the submission deadline, and you will be notified of any "
 "changes or questions."
 msgstr ""
+"¡Enhorabuena, su propuesta ha sido enviada! Puede hacer cambios en la "
+"propuesta hasta la fecha límite de envío. Le notificaremos con cualquier "
+"cambio o pregunta que tengamos."
 
 #: pretalx/cfp/flow.py:365 pretalx/orga/forms/cfp.py:469
 #: pretalx/orga/templates/orga/base.html:242
@@ -381,7 +384,7 @@ msgstr "Nueva contraseña"
 
 #: pretalx/cfp/forms/submissions.py:6
 msgid "Speaker E-Mail"
-msgstr "Correo electrónico del orador"
+msgstr "Correo electrónico del ponente"
 
 #: pretalx/cfp/forms/submissions.py:7 pretalx/mail/models.py:37
 #: pretalx/mail/models.py:225 pretalx/orga/forms/cfp.py:320
@@ -422,7 +425,7 @@ msgid ""
 msgstr ""
 "¡Hola!\n"
 "\n"
-"Me gustaría invitarte a ser orador en la sesión.\n"
+"Me gustaría invitarte a ser ponente en la sesión.\n"
 "\n"
 " “{title}”\n"
 "\n"
@@ -627,7 +630,7 @@ msgstr ""
 
 #: pretalx/cfp/templates/cfp/event/invitation.html:17
 msgid "Abstract:"
-msgstr "Abstracto:"
+msgstr "Resumen:"
 
 #: pretalx/cfp/templates/cfp/event/invitation.html:30
 #: pretalx/event/models/event.py:599 pretalx/submission/models/question.py:378
@@ -882,7 +885,7 @@ msgstr "Sala"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:20
 msgid "Congratulations on your acceptance!"
-msgstr "¡Felicitaciones por su aceptación!"
+msgstr "¡Enhorabuena por su propuesta aceptada!"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:24
 msgid ""
@@ -1728,8 +1731,8 @@ msgstr ""
 "estadísticas que pueden resultarle interesantes:\n"
 "\n"
 "- Tenías {submission_count} propuestas,\n"
-"- De las cuales seleccionó{talk_count} sesiones.\n"
-"- Los revisores escribieron{review_count} reseñas.\n"
+"- De las cuales seleccionó {talk_count} sesiones.\n"
+"- Los revisores escribieron {review_count} reseñas.\n"
 "- Lanzaste {schedule_count} programadas en total.\n"
 "- Durante el transcurso del evento, enviaste {mail_count} correos.\n"
 "\n"
@@ -2100,6 +2103,8 @@ msgid ""
 "Please either pick some events for this team, or grant access to all your "
 "events!"
 msgstr ""
+"Por favor, escoge algunos eventos para este equipo o da acceso a todos los "
+"eventos."
 
 #: pretalx/event/forms.py:102
 msgid "Use languages"
@@ -2462,7 +2467,7 @@ msgstr "Es un revisor"
 
 #: pretalx/event/models/organiser.py:113
 msgid "Always hide speaker names"
-msgstr "Siempre esconder los nombres de los oradores"
+msgstr "Siempre esconder los nombres de los ponentes"
 
 #: pretalx/event/models/organiser.py:115
 msgid ""
@@ -3092,7 +3097,7 @@ msgstr "todos"
 
 #: pretalx/orga/forms/cfp.py:396
 msgid "Accepted or confirmed speakers"
-msgstr "Oradores aceptados o confirmados"
+msgstr "Ponentes aceptados o confirmados"
 
 #: pretalx/orga/forms/cfp.py:397
 msgid "Confirmed speakers"
@@ -3185,7 +3190,7 @@ msgstr "¿Deben mostrarse públicamente las sesiones marcadas como destacadas?"
 
 #: pretalx/orga/forms/event.py:83
 msgid "Enable anonymous feedback"
-msgstr ""
+msgstr "Activar feedback anónimo"
 
 #: pretalx/orga/forms/event.py:85
 #, fuzzy
@@ -3518,13 +3523,11 @@ msgstr "Todos los ponentes confirmados"
 
 #: pretalx/orga/forms/mails.py:150
 msgid "All rejected speakers"
-msgstr "Todos los oradores rechazados"
+msgstr "Todos los ponentes rechazados"
 
 #: pretalx/orga/forms/mails.py:151
-#, fuzzy
-#| msgid "All accepted speakers"
 msgid "All canceled speakers"
-msgstr "Todos los oradores acceptados"
+msgstr "Todos los ponentes cancelados"
 
 #: pretalx/orga/forms/mails.py:152
 msgid "All reviewers in your team"
@@ -3623,7 +3626,7 @@ msgstr "Los revisores pueden etiquetar propuestas"
 
 #: pretalx/orga/forms/schedule.py:15
 msgid "Notify speakers of changes"
-msgstr "Notificar a los oradores de los cambios"
+msgstr "Notificar a los ponentes de los cambios"
 
 #: pretalx/orga/forms/schedule.py:26
 msgid "We released a new schedule version!"
@@ -3748,7 +3751,7 @@ msgstr "El enlace a la foto de perfil del orador"
 
 #: pretalx/orga/forms/submission.py:65
 msgid "Speaker email"
-msgstr "Correo electrónico del orador"
+msgstr "Correo electrónico del ponente"
 
 #: pretalx/orga/forms/submission.py:67
 msgid ""
@@ -3760,7 +3763,7 @@ msgstr ""
 
 #: pretalx/orga/forms/submission.py:72
 msgid "Speaker name"
-msgstr "Nombre del orador"
+msgstr "Nombre del ponente"
 
 #: pretalx/orga/forms/submission.py:74
 msgid "The name of the speaker that should be displayed publicly."
@@ -3779,7 +3782,7 @@ msgstr "El final de una fase tiene que ser posterior a su inicio."
 
 #: pretalx/orga/forms/submission.py:259
 msgid "Mark the new state as 'pending'?"
-msgstr ""
+msgstr "¿Marcar el nuevo estado como 'pendiente'?"
 
 #: pretalx/orga/forms/submission.py:261
 #: pretalx/orga/templates/orga/review/dashboard.html:223
@@ -3788,6 +3791,9 @@ msgid ""
 "right away. You can always apply pending changes for some or all proposals "
 "in one go once you're ready to make your decisions public."
 msgstr ""
+"Si marcas un cambio de estado como pendiente, no será visible a los ponentes "
+"de forma inmediata. Siempre confirmar los cambios pendientes para alguna o "
+"todas las propuestas a la vez."
 
 #: pretalx/orga/phrases.py:16
 msgid "I think this session is well-suited to this conference, because ..."
@@ -4072,7 +4078,7 @@ msgstr "Revisadores activos"
 
 #: pretalx/orga/templates/orga/base.html:333 pretalx/schedule/models/room.py:40
 msgid "Speaker Information"
-msgstr "Información del orador"
+msgstr "Información del ponente"
 
 #: pretalx/orga/templates/orga/base.html:383
 msgid "Outbox"
@@ -4479,7 +4485,7 @@ msgstr "Longitud máxima"
 #: pretalx/orga/templates/orga/submission/review.html:75
 #: pretalx/submission/models/submission.py:158
 msgid "Abstract"
-msgstr "Abstracto"
+msgstr "Resumen"
 
 #: pretalx/orga/templates/orga/cfp/text.html:79
 #: pretalx/orga/templates/orga/submission/review.html:87
@@ -5090,6 +5096,9 @@ msgid ""
 "review <b>only their assigned</b> proposals. You can change this in your <a "
 "href=\"%(href)s\">review settings</a>."
 msgstr ""
+"Según tus ajustes de revisión, el equipo de revisión será capaz de ver y "
+"revisar <b>solo sus propuestas asignadas</b>. Puedes cambiar esto en tus <a "
+"href=\"%(href)s\">ajustes de revisión</a>."
 
 #: pretalx/orga/templates/orga/review/assignment.html:23
 #, python-format
@@ -5283,7 +5292,7 @@ msgstr ""
 
 #: pretalx/orga/templates/orga/schedule/export.html:32
 msgid "Speaker exports"
-msgstr "Exportaciones de los oradores"
+msgstr "Exportaciones de los ponentes"
 
 #: pretalx/orga/templates/orga/schedule/export.html:35
 msgid ""
@@ -5414,7 +5423,7 @@ msgstr "Imprimir tarjetas"
 
 #: pretalx/orga/templates/orga/schedule/index.html:78
 msgid "Resend speaker notifications"
-msgstr "Reenviar notificaciones de los oradores"
+msgstr "Reenviar notificaciones de los ponentes"
 
 #: pretalx/orga/templates/orga/schedule/index.html:87
 msgid ""
@@ -5835,7 +5844,7 @@ msgstr ""
 
 #: pretalx/orga/templates/orga/speaker/export.html:8
 msgid "Export speaker data"
-msgstr "Exportar datos del/de la orador/a"
+msgstr "Exportar datos del ponente"
 
 #: pretalx/orga/templates/orga/speaker/export.html:34
 msgid "Schedule exports"
@@ -5883,8 +5892,8 @@ msgstr "Realmente quiere eliminar esta información?"
 #: pretalx/orga/templates/orga/speaker/information_list.html:7
 msgid "Speaker Information Note"
 msgid_plural "Speaker Information Notes"
-msgstr[0] "Nota de información del/de la orador/a"
-msgstr[1] "Notas de información del/de la orador/a"
+msgstr[0] "Nota de información del ponente"
+msgstr[1] "Notas de información del ponente"
 
 #: pretalx/orga/templates/orga/speaker/information_list.html:14
 msgid ""
@@ -5926,11 +5935,11 @@ msgstr "Propuestas aceptadas"
 
 #: pretalx/orga/templates/orga/speaker/list.html:59
 msgid "Mark speaker as not arrived"
-msgstr "Marcar el/la orador/a como no llegado"
+msgstr "Marcar el ponente como que no ha llegado"
 
 #: pretalx/orga/templates/orga/speaker/list.html:61
 msgid "Mark speaker as arrived"
-msgstr "Marcar el/la orador/a como llegado/a"
+msgstr "Marcar el ponente como que ha llegado"
 
 #: pretalx/orga/templates/orga/speaker/list.html:66
 msgid "Arrived"
@@ -6020,7 +6029,7 @@ msgstr "Aún no se ha cargado ningún archivo para esta propuesta."
 
 #: pretalx/orga/templates/orga/submission/content.html:147
 msgid "Send mail to speakers"
-msgstr "Enviar email a lo/as oradore/as"
+msgstr "Enviar email a los ponentes"
 
 #: pretalx/orga/templates/orga/submission/feedbacks_list.html:8
 msgid "Attendee feedback"
@@ -6140,11 +6149,11 @@ msgstr "Dirección de correo electrónico"
 
 #: pretalx/orga/templates/orga/submission/speakers.html:19
 msgid "Add speaker"
-msgstr "Añadir orador/a"
+msgstr "Añadir ponente"
 
 #: pretalx/orga/templates/orga/submission/speakers.html:39
 msgid "Other proposals by this speaker:"
-msgstr "Otras propuestas por este/a orador/a:"
+msgstr "Otras propuestas por este/a ponente:"
 
 #: pretalx/orga/templates/orga/submission/speakers.html:56
 msgid "Remove"
@@ -6965,7 +6974,7 @@ msgstr "Nueva propuesta {event}: {title}"
 
 #: pretalx/person/exporters.py:17
 msgid "Speaker CSV"
-msgstr "CSV del orador"
+msgstr "CSV del ponente"
 
 #: pretalx/person/forms.py:42
 msgid "Password (again)"
@@ -7022,11 +7031,11 @@ msgstr "Proponentes no acceptados"
 
 #: pretalx/person/models/information.py:26
 msgid "All accepted speakers"
-msgstr "Todos los oradores acceptados"
+msgstr "Todos los ponentes aceptados"
 
 #: pretalx/person/models/information.py:27
 msgid "Only confirmed speakers"
-msgstr "Solo los oradores confirmados"
+msgstr "Solo los ponentes confirmados"
 
 #: pretalx/person/models/information.py:36
 msgid "Leave empty to show this information to all tracks."
@@ -7054,7 +7063,7 @@ msgstr ""
 
 #: pretalx/person/models/profile.py:38
 msgid "The speaker has arrived"
-msgstr "El/la orador/a ha llegado"
+msgstr "El ponente ha llegado"
 
 #: pretalx/person/models/user.py:81
 msgid ""
@@ -7135,7 +7144,7 @@ msgstr "Recuperar contraseña"
 
 #: pretalx/schedule/ascii.py:24
 msgid "No speakers"
-msgstr "Ningúnos oradores"
+msgstr "Ningún ponente"
 
 #: pretalx/schedule/forms.py:21
 msgid ""
@@ -7304,7 +7313,7 @@ msgstr "Chino tradicional (Taiwan)"
 
 #: pretalx/submission/exporters.py:18
 msgid "Answered speaker questions"
-msgstr "Preguntas del orador contestadas"
+msgstr "Preguntas del ponente contestadas"
 
 #: pretalx/submission/exporters.py:63
 msgid "Answered session questions"
@@ -7312,11 +7321,11 @@ msgstr "Preguntas de la sesión contestadas"
 
 #: pretalx/submission/forms/feedback.py:14
 msgid "All speakers"
-msgstr "Todos los oradores"
+msgstr "Todos los ponentes"
 
 #: pretalx/submission/forms/submission.py:18
 msgid "Additional Speaker"
-msgstr "Orador(a) adicional"
+msgstr "Ponente adicional"
 
 #: pretalx/submission/forms/submission.py:20
 msgid ""
@@ -7467,7 +7476,7 @@ msgstr "por propuesta"
 
 #: pretalx/submission/models/question.py:60
 msgid "per speaker"
-msgstr "por orador"
+msgstr "por ponente"
 
 #: pretalx/submission/models/question.py:61
 msgid "for reviewers"

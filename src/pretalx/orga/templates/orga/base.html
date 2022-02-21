@@ -405,10 +405,12 @@
                         {% endfor %}
                     {% endif %}
                 {% else %}  {# if request.event #}
-                    <a class="nav-link {% if request.path == "/orga/event/" %} active{% endif %}" href="/orga/">
-                        <i class="fa fa-calendar-o"></i>
-                        <span>{% translate "Events" %}</span>
-                    </a>
+                    {% if request.orga_events.count > 1 %}
+                        <a class="nav-link {% if request.path == "/orga/event/" %} active{% endif %}" href="/orga/">
+                            <i class="fa fa-calendar-o"></i>
+                            <span>{% translate "Events" %}</span>
+                        </a>
+                    {% endif %}
                     {% has_perm 'orga.view_organisers' request.user request as can_see_organisers %}
                     {% if can_see_organisers %}
                         <a class="nav-link {% if "/orga/organiser/" in request.path %} active{% endif %}" href="/orga/organiser/">
