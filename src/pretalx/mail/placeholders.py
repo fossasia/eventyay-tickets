@@ -17,6 +17,12 @@ class BaseMailTextPlaceholder:
         email."""
         raise NotImplementedError()
 
+    @property
+    def is_visible(self):
+        """You can set ``is_visible`` to ``False`` to hide this placeholder
+        from the list, e.g. if it is just an alias."""
+        return True
+
     def render(self, context):
         """This method is called to generate the actual text that is being used
         in the email.
@@ -41,12 +47,15 @@ class BaseMailTextPlaceholder:
 
 
 class SimpleFunctionalMailTextPlaceholder(BaseMailTextPlaceholder):
-    def __init__(self, identifier, args, func, sample, explanation=None):
+    def __init__(
+        self, identifier, args, func, sample, explanation=None, is_visible=True
+    ):
         self._identifier = identifier
         self._args = args
         self._func = func
         self._sample = sample
         self._explanation = explanation
+        self._is_visible = is_visible
 
     @property
     def identifier(self):
@@ -59,6 +68,10 @@ class SimpleFunctionalMailTextPlaceholder(BaseMailTextPlaceholder):
     @property
     def explanation(self):
         return self._explanation or ""
+
+    @property
+    def is_visible(self):
+        return self._is_visible
 
     def render(self, context):
         return self._func(**{k: context[k] for k in self._args})

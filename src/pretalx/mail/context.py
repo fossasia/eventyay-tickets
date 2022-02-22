@@ -45,12 +45,21 @@ def get_all_reviews(submission):
 
 
 def placeholder_aliases(identifiers, args, func, sample, explanation=None):
-    return [
-        SimpleFunctionalMailTextPlaceholder(
-            identifier, args, func, sample, explanation=explanation
+    result = []
+    is_visible = True
+    for identifier in identifiers:
+        result.append(
+            SimpleFunctionalMailTextPlaceholder(
+                identifier,
+                args,
+                func,
+                sample,
+                explanation=explanation,
+                is_visible=is_visible,
+            )
         )
-        for identifier in identifiers
-    ]
+        is_visible = False
+    return result
 
 
 @receiver(register_mail_placeholders, dispatch_uid="pretalx_register_base_placeholders")

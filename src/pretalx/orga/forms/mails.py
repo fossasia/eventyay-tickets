@@ -18,10 +18,18 @@ from pretalx.person.models import User
 class MailTemplateBase(I18nHelpText, I18nModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        def display_placeholder(key, placeholder):
+            result = "{" + f"{key}" + "}"
+            if not placeholder or not placeholder.explanation:
+                return result
+            return f'<span data-toggle="tooltip" title="{placeholder.explanation}">{result}</span>'
+
         available_placeholders = ", ".join(
             [
-                "{" + f"{placeholder}" + "}"
-                for placeholder in self.get_valid_placeholders()
+                display_placeholder(key, placeholder)
+                for key, placeholder in self.get_valid_placeholders().items()
+                if (not placeholder or placeholder.is_visible)
             ]
         )
         self.fields["text"].help_text = (
@@ -60,25 +68,25 @@ class MailTemplateForm(ReadOnlyFlag, MailTemplateBase):
 
     def get_valid_placeholders(self):
         kwargs = ["event", "submission", "user", "slot"]
-        valid_placeholders = []
+        valid_placeholders = {}
 
         if self.instance and self.instance.id:
             if self.instance == self.event.update_template:
-                valid_placeholders.append("notifications")
+                valid_placeholders["notifications"] = []
                 kwargs = ["event", "user"]
             elif self.instance == self.event.question_template:
-                valid_placeholders.append("questions")
-                valid_placeholders.append("url")
+                valid_placeholders["questions"] = []
+                valid_placeholders["url"] = []
                 kwargs = ["event", "user"]
 
-        valid_placeholders += list(
-            get_available_placeholders(event=self.event, kwargs=kwargs).keys()
+        valid_placeholders.update(
+            get_available_placeholders(event=self.event, kwargs=kwargs)
         )
         return valid_placeholders
 
     def clean_text(self):
         text = self.cleaned_data["text"]
-        valid_placeholders = self.get_valid_placeholders()
+        valid_placeholders = self.get_valid_placeholders().keys()
         warnings = self._clean_for_placeholders(text, valid_placeholders)
         if warnings:
             warnings = ", ".join("{" + w + "}" for w in warnings)
