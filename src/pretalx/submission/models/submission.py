@@ -355,6 +355,13 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
             old_state = self.state
             self.state = new_state
             self.pending_state = None
+            if new_state in (
+                SubmissionStates.REJECTED,
+                SubmissionStates.DELETED,
+                SubmissionStates.CANCELED,
+                SubmissionStates.WITHDRAWN,
+            ):
+                self.is_featured = False
             self.save(update_fields=["state", "pending_state"])
             self.update_talk_slots()
             submission_state_change.send_robust(

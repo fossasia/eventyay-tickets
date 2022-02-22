@@ -19,6 +19,14 @@ class FeaturedView(EventPermissionRequired, TemplateView):
     def talks(self):
         return (
             self.request.event.submissions.filter(is_featured=True)
+            .exclude(
+                state__in=[
+                    SubmissionStates.REJECTED,
+                    SubmissionStates.CANCELED,
+                    SubmissionStates.WITHDRAWN,
+                    SubmissionStates.DELETED,
+                ]
+            )
             .select_related("event", "submission_type")
             .prefetch_related("speakers")
             .order_by("title")
