@@ -223,7 +223,7 @@ class SubmissionStateChange(SubmissionViewMixin, FormView):
 
     @transaction.atomic
     def form_valid(self, form):
-        if self._target == self.object.state:
+        if self._target == self.object.state and not self.object.pending_state:
             messages.info(
                 self.request,
                 _(

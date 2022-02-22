@@ -349,6 +349,8 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
         valid_next_states = SubmissionStates.valid_next_states.get(self.state, [])
 
         if self.state == new_state:
+            self.pending_state = None
+            self.save(update_fields=["state", "pending_state"])
             self.update_talk_slots()
             return
         if force or new_state in valid_next_states:
