@@ -23,7 +23,11 @@ class MailTemplateBase(I18nHelpText, I18nModelForm):
             result = "{" + f"{key}" + "}"
             if not placeholder or not placeholder.explanation:
                 return result
-            return f'<span data-toggle="tooltip" title="{placeholder.explanation}">{result}</span>'
+            title = placeholder.explanation
+            sample = placeholder.render_sample(self.event)
+            if sample:
+                title += f"; '{sample}'"
+            return f'<span data-toggle="tooltip" title="{title}">{result}</span>'
 
         available_placeholders = ", ".join(
             [
