@@ -13,7 +13,7 @@
                 <li class="list-group-item logentry">
                     <p class="meta">
                         <span class="time">
-                            <i class="fa fa-clock-o"></i> {{ log.timestamp|date:"Y-m-d H:i" }}
+                            <i class="fa fa-clock-o"></i> {{ log.timestamp|date:"SHORT_DATETIME_FORMAT" }}
                         </span>
                         {% if log.person %}
                             <span class="person">

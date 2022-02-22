@@ -7,7 +7,7 @@
     <div class="pretalx-session-time-box">
         {% if show_date %}
             <div class="start">
-                {{ session.start|date:"m-d" }}
+                {{ session.start|date:DAY_MONTH_DATE_FORMAT }}
             </div>
         {% endif %}
         <div class="start">

@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`1272` Speaker and talk pages now always use the user's current locale when formatting dates.
 - :feature:`-` You can now remove a pending state be re-selecting the current state of a proposal.
 - :feature:`-` Email placeholders now explain their use when you hover over them.
 - :feature:`-` New email placeholder: ``{all_reviews}`` allows you to send all review texts (though not scores!) to submitters.

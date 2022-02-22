@@ -5,6 +5,7 @@ from django.conf import settings
 from django.http import Http404
 from django.urls import resolve
 from django.utils import translation
+from django.utils.formats import get_format
 from django.utils.translation import gettext_lazy as _
 
 from pretalx.cfp.signals import footer_link, html_head
@@ -36,6 +37,10 @@ def locale_context(request):
     context["js_locale"] = get_moment_locale()
     context["quotation_open"] = _("“")
     context["quotation_close"] = _("”")
+
+    context["DAY_MONTH_DATE_FORMAT"] = (
+        get_format("SHORT_DATE_FORMAT", use_l10n=True).strip("Y").strip(".-/,")
+    )
     lang = translation.get_language()
     context["html_locale"] = translation.get_language_info(lang).get(
         "public_code", lang
