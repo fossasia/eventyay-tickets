@@ -5,6 +5,7 @@ from django.views.generic import TemplateView
 from django_context_decorator import context
 
 from pretalx.common.mixins.views import EventPermissionRequired
+from pretalx.submission.models.submission import SubmissionStates
 
 
 def sneakpeek_redirect(request, *args, **kwargs):
