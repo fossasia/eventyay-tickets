@@ -44,19 +44,21 @@ def get_all_reviews(submission):
     return "\n\n--------------\n\n".join(texts)
 
 
+def placeholder_aliases(identifiers, args, func, sample, explanation=None):
+    return [
+        SimpleFunctionalMailTextPlaceholder(
+            identifier, args, func, sample, explanation=explanation
+        )
+        for identifier in identifiers
+    ]
+
+
 @receiver(register_mail_placeholders, dispatch_uid="pretalx_register_base_placeholders")
 def base_placeholders(sender, **kwargs):
 
     placeholders = [
-        SimpleFunctionalMailTextPlaceholder(
-            "event",
-            ["event"],
-            lambda event: event.name,
-            lambda event: event.name,
-            _("The event's full name"),
-        ),
-        SimpleFunctionalMailTextPlaceholder(
-            "event_name",
+        *placeholder_aliases(
+            ["event_name", "event"],
             ["event"],
             lambda event: event.name,
             lambda event: event.name,
@@ -112,8 +114,8 @@ def base_placeholders(sender, **kwargs):
             else "",
             _("The general CfP deadline"),
         ),
-        SimpleFunctionalMailTextPlaceholder(
-            "code",
+        *placeholder_aliases(
+            ["proposal_code", "session_code", "code"],
             ["submission"],
             lambda submission: submission.code,
             "F8VVL",
@@ -126,15 +128,8 @@ def base_placeholders(sender, **kwargs):
             "https://pretalx.example.com/democon/schedule/F8VVL/",
             _("The proposal's public URL"),
         ),
-        SimpleFunctionalMailTextPlaceholder(
-            "edit_url",
-            ["submission"],
-            lambda submission: submission.urls.user_base.full(),
-            "https://pretalx.example.com/democon/me/submissions/F8VVL/",
-            _("The speaker's edit page for the proposal"),
-        ),
-        SimpleFunctionalMailTextPlaceholder(
-            "submission_url",
+        *placeholder_aliases(
+            ["proposal_url", "edit_url", "submission_url"],
             ["submission"],
             lambda submission: submission.urls.user_base.full(),
             "https://pretalx.example.com/democon/me/submissions/F8VVL/",
@@ -154,15 +149,8 @@ def base_placeholders(sender, **kwargs):
             "https://pretalx.example.com/democon/me/submissions/F8VVL/withdraw",
             _("Link to withdraw the proposal"),
         ),
-        SimpleFunctionalMailTextPlaceholder(
-            "proposal_title",
-            ["submission"],
-            lambda submission: submission.title,
-            "Open-architected uniform middleware",
-            _("The proposal's title"),
-        ),
-        SimpleFunctionalMailTextPlaceholder(
-            "submission_title",
+        *placeholder_aliases(
+            ["proposal_title", "submission_title"],
             ["submission"],
             lambda submission: submission.title,
             "Open-architected uniform middleware",
@@ -175,15 +163,8 @@ def base_placeholders(sender, **kwargs):
             "Open-architected uniform middleware",
             _("The name(s) of all speakers in this proposal."),
         ),
-        SimpleFunctionalMailTextPlaceholder(
-            "session_type",
-            ["submission"],
-            lambda submission: str(submission.submission_type.name),
-            "Workshop",
-            _("The proposal's session type"),
-        ),
-        SimpleFunctionalMailTextPlaceholder(
-            "submission_type",
+        *placeholder_aliases(
+            ["session_type", "submission_type"],
             ["submission"],
             lambda submission: str(submission.submission_type.name),
             "Workshop",
