@@ -284,7 +284,6 @@ class SubmitterAccessCodeForm(forms.ModelForm):
         initial = kwargs.get("initial", {})
         if not kwargs.get("instance"):
             initial["code"] = SubmitterAccessCode().generate_code()
-            initial["valid_until"] = event.cfp.deadline
         kwargs["initial"] = initial
         super().__init__(*args, **kwargs)
         self.fields["submission_type"].queryset = SubmissionType.objects.filter(
