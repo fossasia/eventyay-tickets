@@ -98,7 +98,7 @@ setup(
         "bleach~=4.1.0",  # https://bleach.readthedocs.io/en/latest/changes.html
         "celery~=4.4.0",  # search for "what's new" on http://docs.celeryproject.org/en/latest/
         "csscompressor~=0.9.0",  # 2017-11, no changelog, https://github.com/sprymix/csscompressor
-        "cssutils~=2.3.0",
+        "cssutils~=2.4.0",
         "defusedcsv~=1.1.0",  # https://github.com/raphaelm/defusedcsv
         "Django~=3.2.0",  # https://docs.djangoproject.com/en/2.0/releases/
         "django-bootstrap4~=3.0.0",  # http://django-bootstrap4.readthedocs.io/en/latest/history.html
