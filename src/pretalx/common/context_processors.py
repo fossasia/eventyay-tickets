@@ -30,6 +30,10 @@ def add_events(request):
     return {}
 
 
+def get_day_month_date_format(self):
+    return get_format("SHORT_DATE_FORMAT", use_l10n=True).strip("Y").strip(".-/,")
+
+
 def locale_context(request):
     context = {}
     context["js_datetime_format"] = get_javascript_format("DATETIME_INPUT_FORMATS")
@@ -38,9 +42,7 @@ def locale_context(request):
     context["quotation_open"] = _("“")
     context["quotation_close"] = _("”")
 
-    context["DAY_MONTH_DATE_FORMAT"] = (
-        get_format("SHORT_DATE_FORMAT", use_l10n=True).strip("Y").strip(".-/,")
-    )
+    context["DAY_MONTH_DATE_FORMAT"] = get_day_month_date_format()
     lang = translation.get_language()
     context["html_locale"] = translation.get_language_info(lang).get(
         "public_code", lang

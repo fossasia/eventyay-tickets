@@ -15,6 +15,7 @@ from django_scopes import ScopedManager
 from i18nfield.fields import I18nTextField
 
 from pretalx.agenda.tasks import export_schedule_html
+from pretalx.common.context_processors import get_day_month_date_format
 from pretalx.common.mixins.models import LogMixin
 from pretalx.common.phrases import phrases
 from pretalx.common.urls import EventUrls
@@ -565,6 +566,7 @@ class Schedule(LogMixin, models.Model):
         """A list of unsaved :class:`~pretalx.mail.models.QueuedMail` objects
         to be sent on schedule release."""
         mails = []
+        date_formats = {}
         for speaker in self.speakers_concerned:
             locale = (
                 speaker.locale
@@ -572,9 +574,19 @@ class Schedule(LogMixin, models.Model):
                 else self.event.locale
             )
             with override(locale), tzoverride(self.tz):
+                date_format = date_formats.get(locale)
+                if not date_format:
+                    date_format = get_day_month_date_format() + ", H:i"
+                    date_formats[locale] = date_format
                 notifications = get_template(
                     "schedule/speaker_notification.txt"
-                ).render({"speaker": speaker, **self.speakers_concerned[speaker]})
+                ).render(
+                    {
+                        "speaker": speaker,
+                        "START_DATE_FORMAT": date_format,
+                        **self.speakers_concerned[speaker],
+                    }
+                )
             mails.append(
                 self.event.update_template.to_mail(
                     user=speaker,
