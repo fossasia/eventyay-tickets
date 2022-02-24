@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-02-11 23:07+0000\n"
-"PO-Revision-Date: 2022-02-21 17:41+0000\n"
+"PO-Revision-Date: 2022-02-24 19:37+0000\n"
 "Last-Translator: Manuel Martin <draxus@gmail.com>\n"
 "Language-Team: none\n"
 "Language: es\n"
@@ -247,7 +247,7 @@ msgstr "%(minutes)sminutos"
 #: pretalx/cfp/templates/cfp/event/fragment_state.html:15
 #: pretalx/submission/models/submission.py:53
 msgid "deleted"
-msgstr "éliminad@"
+msgstr "eliminado/a"
 
 #: pretalx/agenda/templates/agenda/speaker.html:31
 #: pretalx/agenda/templates/agenda/speaker.html:33
@@ -5150,7 +5150,7 @@ msgstr "Regenerar correos electrónicos de decisión"
 #: pretalx/orga/templates/orga/review/dashboard.html:64
 #: pretalx/orga/templates/orga/submission/list.html:31
 msgid "Apply pending changes"
-msgstr ""
+msgstr "Confirmar cambios pendientes"
 
 #: pretalx/orga/templates/orga/review/dashboard.html:92
 msgid "Average"
@@ -5235,7 +5235,7 @@ msgstr "Parece que todavía no tienes ninguna propuesta."
 
 #: pretalx/orga/templates/orga/review/dashboard.html:221
 msgid "Mark new states as 'pending'"
-msgstr ""
+msgstr "Marcar los nuevos estados como 'pendientes'"
 
 #: pretalx/orga/templates/orga/review/dashboard.html:228
 msgid "Go!"
@@ -5982,15 +5982,14 @@ msgstr "Por ahora no se ha respondido a ninguna pregunta."
 #: pretalx/orga/templates/orga/submission/apply_pending.html:8
 #, python-format
 msgid "Apply %(count)s pending changes?"
-msgstr ""
+msgstr "¿Confirmar los %(count)s cambios pendientes?"
 
 #: pretalx/orga/templates/orga/submission/apply_pending.html:11
-#, fuzzy, python-format
-#| msgid "Do you really want to change the state of this proposal?"
+#, python-format
 msgid ""
 " Please confirm that you really want to change the state of these %(count)s "
 "proposals."
-msgstr "¿Realmente desea cambiar el estado de esta propuesta?"
+msgstr " ¿Realmente desea cambiar el estado de estas %(count)s propuestas?"
 
 #: pretalx/orga/templates/orga/submission/apply_pending.html:25
 #: pretalx/orga/templates/orga/submission/state_change.html:30
@@ -7194,11 +7193,13 @@ msgstr ""
 
 #: pretalx/schedule/models/room.py:24
 msgid "GUID"
-msgstr ""
+msgstr "GUID"
 
 #: pretalx/schedule/models/room.py:26
 msgid "Unique identifier (UUID) to help external tools identify the room."
 msgstr ""
+"Identificador único (UUID) para ayudar a las herramientas externas a "
+"identificar la sala."
 
 #: pretalx/schedule/models/room.py:34
 msgid "A description for attendees, for example directions."
@@ -7293,7 +7294,7 @@ msgstr "Español"
 
 #: pretalx/settings.py:379
 msgid "Brasilian Portuguese"
-msgstr ""
+msgstr "Portugués brasileño"
 
 #: pretalx/settings.py:386
 msgid "French"
