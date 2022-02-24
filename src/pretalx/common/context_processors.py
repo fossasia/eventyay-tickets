@@ -30,7 +30,7 @@ def add_events(request):
     return {}
 
 
-def get_day_month_date_format(self):
+def get_day_month_date_format():
     return get_format("SHORT_DATE_FORMAT", use_l10n=True).strip("Y").strip(".-/,")
 
 
