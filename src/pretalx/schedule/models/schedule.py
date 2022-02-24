@@ -269,12 +269,12 @@ class Schedule(LogMixin, models.Model):
         old_slots = list(self.previous_schedule.scheduled_talks)
         new_slots = list(self.scheduled_talks)
 
-        Slot = namedtuple("Slot", ["submission", "room", "start"])
+        Slot = namedtuple("Slot", ["submission", "room", "local_start"])
         old_slot_set = {
-            Slot(slot.submission, slot.room, slot.start) for slot in old_slots
+            Slot(slot.submission, slot.room, slot.local_start) for slot in old_slots
         }
         new_slot_set = {
-            Slot(slot.submission, slot.room, slot.start) for slot in new_slots
+            Slot(slot.submission, slot.room, slot.local_start) for slot in new_slots
         }
         old_submissions = {slot.submission for slot in old_slots}
         new_submissions = {slot.submission for slot in new_slots}
