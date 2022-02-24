@@ -427,13 +427,9 @@ class ChatModule(BaseModule):
         )
 
         # Unread notifications
-        # We pop user IDs from the list of users to notify, because once they've been notified they don't need a
-        # notification again until they sent a new read pointer.
         async with aioredis() as redis:
-            batch_size = 100
-            while True:
-                users = await redis.spop(f"chat:unread.notify:{self.channel_id}", 100)
 
+            async def _notify_users(users):
                 for user in users:
                     if user.decode() == str(self.consumer.user.id):
                         continue
@@ -445,8 +441,23 @@ class ChatModule(BaseModule):
                         },
                     )
 
-                if len(users) < batch_size:
-                    break
+            if self.channel.room:
+                # Normal rooms, possibly big crowds
+                # We pop user IDs from the list of users to notify, because once they've been notified they don't need a
+                # notification again until they sent a new read pointer.
+                batch_size = 100
+                while True:
+                    users = await redis.spop(
+                        f"chat:unread.notify:{self.channel_id}", 100
+                    )
+                    await _notify_users(users)
+
+                    if len(users) < batch_size:
+                        break
+            else:
+                # DMs
+                users = await redis.smembers(f"chat:unread.notify:{self.channel_id}")
+                await _notify_users(users)
 
         if content.get("type") == "text":
             match = re.search(r"(?P<url>https?://[^\s]+)", content.get("body"))
