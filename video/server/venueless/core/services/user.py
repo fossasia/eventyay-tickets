@@ -123,6 +123,7 @@ def get_user(
         if with_token and (user.traits != with_token.get("traits")):
             traits = with_token["traits"]
             update_user(world.id, id=user.id, traits=traits)
+            user = get_user_by_id(world.id, user.id)
         return user
 
     traits = with_token.get("traits") if with_token else None
