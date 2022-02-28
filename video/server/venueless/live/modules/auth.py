@@ -1,6 +1,7 @@
 import logging
 import time
 
+import jwt
 from asgiref.sync import sync_to_async
 from channels.db import database_sync_to_async
 from django.conf import settings
@@ -60,14 +61,24 @@ class AuthModule(BaseModule):
                 return
             kwargs["client_id"] = client_id
         else:
-            token = self.consumer.world.decode_token(body["token"])
-            if not token:
+            try:
+                token = self.consumer.world.decode_token(
+                    body["token"], allow_raise=True
+                )
+            except jwt.exceptions.ExpiredSignatureError:
+                async with statsd() as s:
+                    s.increment(
+                        f"authentication.failed,reason=expired_token,world={self.consumer.world.pk}"
+                    )
+                    await self.consumer.send_error(code="auth.expired_token")
+                    return
+            except jwt.exceptions.InvalidTokenError:
                 async with statsd() as s:
                     s.increment(
                         f"authentication.failed,reason=invalid_token,world={self.consumer.world.pk}"
                     )
-                await self.consumer.send_error(code="auth.invalid_token")
-                return
+                    await self.consumer.send_error(code="auth.invalid_token")
+                    return
             kwargs["token"] = token
 
         login_result = await database_sync_to_async(login)(**kwargs)
@@ -76,7 +87,10 @@ class AuthModule(BaseModule):
                 s.increment(
                     f"authentication.failed,reason=denied,world={self.consumer.world.pk}"
                 )
-            await self.consumer.send_error(code="auth.denied")
+            if "token" in kwargs:
+                await self.consumer.send_error(code="auth.missing_token")
+            else:
+                await self.consumer.send_error(code="auth.denied")
             return
 
         self.consumer.user = login_result.user

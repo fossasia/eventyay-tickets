@@ -1,5 +1,4 @@
 from collections import defaultdict
-from contextlib import suppress
 from typing import List
 from urllib.parse import urljoin
 
@@ -147,12 +146,13 @@ class World(VersionedModel):
     def __str__(self):
         return f"{self.id} ({self.title})"
 
-    def decode_token(self, token):
+    def decode_token(self, token, allow_raise=False):
+        exc = None
         for jwt_config in self.config["JWT_secrets"]:
             secret = jwt_config["secret"]
             audience = jwt_config["audience"]
             issuer = jwt_config["issuer"]
-            with suppress(jwt.exceptions.InvalidTokenError):
+            try:
                 return jwt.decode(
                     token,
                     secret,
@@ -160,6 +160,13 @@ class World(VersionedModel):
                     audience=audience,
                     issuer=issuer,
                 )
+            except jwt.exceptions.ExpiredSignatureError:
+                if allow_raise:
+                    raise
+            except jwt.exceptions.InvalidTokenError as e:
+                exc = e
+        if exc and allow_raise:
+            raise exc
 
     def has_permission_implicit(
         self, *, traits, permissions: List[Permission], room=None

@@ -103,6 +103,8 @@ export default new Vuex.Store({
 					case 'world.unknown_world':
 					case 'auth.invalid_token':
 					case 'auth.denied':
+					case 'auth.missing_token':
+					case 'auth.expired_token':
 					case 'auth.missing_id_or_token':
 					case 'connection.replaced':
 						state.fatalConnectionError = error
