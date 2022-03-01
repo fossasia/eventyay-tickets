@@ -127,6 +127,7 @@ class WorldForm(forms.ModelForm):
             "locale",
             "timezone",
             "feature_flags",
+            "external_auth_url",
         )
 
     def __init__(self, *args, **kwargs):

@@ -101,6 +101,7 @@ class AppView(View):
                             "feedback": reverse("live:feedback"),
                         },
                         "features": world.feature_flags,
+                        "externalAuthUrl": world.external_auth_url,
                         "locale": world.locale,
                         "dateLocale": world.config.get("dateLocale", "en-ie"),
                         "theme": world.config.get("theme", {}),

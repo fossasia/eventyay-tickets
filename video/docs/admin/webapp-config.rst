@@ -25,6 +25,9 @@ Full configuration
 		"locales": ["en", "de", "pt_BR"], // keep this empty to disable user-choosable locale. Order of this array is dropdown order
 		"dateLocale": "en-ie",
 		"timetravelTo": "2020-08-26T06:49:28.975Z", // forces local time to always be this (for schedule demo purposes ONLY)
+		// if no token is found in URL hash redirect to given authentication URL.
+		// used together with an external server which generates JW tokens based e.g. on user login and password
+		"externalAuthUrl": "https://example.com/auth",
 		"theme": {
 			"logo": {
 				"url": "/venueless-logo-full-white.svg",
