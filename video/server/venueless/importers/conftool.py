@@ -335,18 +335,18 @@ def create_posters_from_conftool(world, url, password):
 
         if poster.poster_url:
             poster.links.update_or_create(
-                display_text=paper.xpath("original_filename_a")[0].text,
+                display_text=paper.xpath("original_filename_a")[0].text or 'Poster',
                 defaults={
                     "url": poster.poster_url,
                 },
             )
 
         for fileindex in string.ascii_lowercase[1:]:
-            if not paper.xpath(f"download_link_{fileindex}"):
+            if not paper.xpath(f"download_link_{fileindex}") or not paper.xpath(f"download_link_{fileindex}")[0].text:
                 break
 
             poster.links.update_or_create(
-                display_text=paper.xpath(f"original_filename_{fileindex}")[0].text,
+                display_text=paper.xpath(f"original_filename_{fileindex}")[0].text or f'Link {fileindex}',
                 defaults={
                     "url": paper.xpath(f"download_link_{fileindex}")[0].text,
                 },
