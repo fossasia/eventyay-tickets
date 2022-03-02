@@ -11,15 +11,15 @@ class Poster(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     import_id = models.TextField(null=True, blank=True, db_index=True)
-    title = models.CharField(max_length=255, null=True)
+    title = models.TextField(null=True)
     abstract = models.JSONField(default=default_text)
     authors = models.JSONField(default=default_text)
     tags = models.JSONField(default=default_text)
-    category = models.CharField(null=True, blank=True, max_length=50)
+    category = models.TextField(null=True, blank=True)
 
     poster_url = models.URLField(null=True, blank=True)  # TODO file upload
     poster_preview = models.URLField(null=True, blank=True)  # TODO file upload
-    schedule_session = models.CharField(null=True, blank=True, max_length=50)
+    schedule_session = models.TextField(null=True, blank=True)
 
     world = models.ForeignKey(
         to="World",
