@@ -236,5 +236,6 @@ class BBBMoveRoomForm(forms.Form):
         label="Room ID", queryset=Room.objects.all(), widget=forms.TextInput
     )
     server = forms.ModelChoiceField(
-        label="Target Server", queryset=BBBServer.objects.filter(active=True)
+        label="Target Server",
+        queryset=BBBServer.objects.filter(active=True).order_by("url"),
     )
