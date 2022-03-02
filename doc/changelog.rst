@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`-` Fixed a bug where the time travelling option in the schedule editor was unreliable.
 - :bug:`-` Fixed a bug where trying to filter by answers to a multiple choice question would not work.
 - :feature:`1272` Speaker and talk pages now always use the user's current locale when formatting dates.
 - :feature:`-` You can now remove a pending state be re-selecting the current state of a proposal.

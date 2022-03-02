@@ -36,14 +36,18 @@ var api = {
       window.location.host,
       window.location.pathname,
       "api/talks/",
-      window.location.search,
-    ].join("") + "?"
+    ].join("")
+    if (window.location.search) {
+      url += window.location.search + "&"
+    } else {
+      url += "?"
+    }
     console.log(options.since, options.warnings)
     if (options.since) {
-      url += `since=${encodeURIComponent(options.since)}`
+      url += `since=${encodeURIComponent(options.since)}&`
     }
     if (options.warnings) {
-      url += '&warnings=true'
+      url += 'warnings=true'
     }
     return api.http("GET", url, null)
   },
