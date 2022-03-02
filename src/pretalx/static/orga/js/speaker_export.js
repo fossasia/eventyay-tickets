@@ -8,6 +8,11 @@ function docReady(fn) {
     }
 }
 
+const changeSelectAll = (e) => {
+  const checkBox = document.querySelector("#select-all")
+  checkBox.closest("fieldset").querySelectorAll("input[type=checkbox]").forEach(element => element.checked = checkBox.checked)
+}
+
 const addHook = () => {
   const updateVisibility = () => {
     const isCSV = document.querySelector("#id_export_format input[value='csv']").checked;
@@ -20,5 +25,6 @@ const addHook = () => {
   }
   updateVisibility()
   document.querySelectorAll("#id_export_format input").forEach(element => element.addEventListener("change", updateVisibility))
+  document.querySelector("#select-all").addEventListener("change", changeSelectAll)
 }
 docReady(addHook)

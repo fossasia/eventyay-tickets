@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` Added a way to quickly check or uncheck all the possible export fields in the export form.
 - :bug:`-` Fixed a bug where the time travelling option in the schedule editor was unreliable.
 - :bug:`-` Fixed a bug where trying to filter by answers to a multiple choice question would not work.
 - :feature:`1272` Speaker and talk pages now always use the user's current locale when formatting dates.

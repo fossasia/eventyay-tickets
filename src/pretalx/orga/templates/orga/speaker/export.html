@@ -82,6 +82,12 @@
                     <legend id="general">
                         {% translate "Data fields" %}
                     </legend>
+                    <div class="d-flex">
+                        <div class="ml-auto form-check">
+                            <input type="checkbox" id="select-all" name="select-all">
+                            <label for="select-all">{% translate "Select all" %}</label>
+                        </div>
+                    </div>
                     {% for field in form.export_fields %}
                         {% bootstrap_field field layout='event' %}
                     {% endfor %}
