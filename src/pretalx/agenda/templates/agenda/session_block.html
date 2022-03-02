@@ -11,7 +11,7 @@
             </div>
         {% endif %}
         <div class="start">
-            {{ session.start|date:TIME_FORMAT }}
+            {{ session.start|date:"H:i" }}
         </div>
         <div class="duration">
             {% blocktranslate trimmed with minutes=session.duration %}

@@ -53,7 +53,7 @@
                 <div class="pretalx-list-day pretalx-tab-content" data-start="{{ day.display_start|date:"c" }}">
                     {% if day.first_start %}
                         {% for session in day.talks %}
-                            <div class="bucket-time">{% ifchanged session.start %}{{ session.start|date:TIME_FORMAT }}{% endifchanged %}</div>
+                            <div class="bucket-time">{% ifchanged session.start %}{{ session.start|date:"H:i" }}{% endifchanged %}</div>
                             {% if not schedule.is_archived and session.submission and not session.submission.is_deleted %}
                                 <a href="{{ session.submission.urls.public }}">
                             {% endif %}
