@@ -6,6 +6,7 @@ import pytz
 from django.conf import settings
 from django.db import models, transaction
 from django.template.loader import get_template
+from django.utils.formats import get_format
 from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django.utils.timezone import override as tzoverride
@@ -576,7 +577,9 @@ class Schedule(LogMixin, models.Model):
             with override(locale), tzoverride(self.tz):
                 date_format = date_formats.get(locale)
                 if not date_format:
-                    date_format = get_day_month_date_format() + ", H:i"
+                    date_format = (
+                        get_day_month_date_format() + ", " + get_format("TIME_FORMAT")
+                    )
                     date_formats[locale] = date_format
                 notifications = get_template(
                     "schedule/speaker_notification.txt"
