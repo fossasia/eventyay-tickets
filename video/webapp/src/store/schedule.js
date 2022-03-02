@@ -4,8 +4,7 @@ export default {
 	namespaced: true,
 	state: {
 		schedule: null,
-		errorLoading: null,
-		now: moment()
+		errorLoading: null
 	},
 	getters: {
 		pretalxScheduleUrl (state, getters, rootState) {
@@ -69,11 +68,11 @@ export default {
 			}
 			return days
 		},
-		sessionsScheduledNow (state, getters) {
+		sessionsScheduledNow (state, getters, rootState) {
 			if (!getters.sessions) return
 			const sessions = []
 			for (const session of getters.sessions) {
-				if (session.end.isBefore(state.now) || session.start.isAfter(state.now)) continue
+				if (session.end.isBefore(rootState.now) || session.start.isAfter(rootState.now)) continue
 				sessions.push(session)
 			}
 			return sessions
@@ -93,11 +92,6 @@ export default {
 				}
 			}
 			return rooms
-		}
-	},
-	mutations: {
-		updateNow (state) {
-			state.now = moment()
 		}
 	},
 	actions: {

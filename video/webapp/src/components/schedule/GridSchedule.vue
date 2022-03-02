@@ -40,7 +40,8 @@ export default {
 		}
 	},
 	computed: {
-		...mapState('schedule', ['schedule', 'now']),
+		...mapState(['now']),
+		...mapState('schedule', ['schedule']),
 		...mapGetters('schedule', ['sessions']),
 		hasSessionsWithoutRoom () {
 			return this.sessions.some(s => !s.room)
