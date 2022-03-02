@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import i18n from 'i18n'
 import api from 'lib/api'
+import announcement from './announcement'
 import chat from './chat'
 import question from './question'
 import poll from './poll'
@@ -31,7 +32,8 @@ export default new Vuex.Store({
 		userLocale: null, // only used to force UI render
 		userTimezone: null,
 		autoplay: localStorage.disableAutoplay !== 'true',
-		stageStreamCollapsed: false
+		stageStreamCollapsed: false,
+		now: moment()
 	},
 	getters: {
 		hasPermission (state) {
@@ -62,6 +64,9 @@ export default new Vuex.Store({
 		},
 		updateStageStreamCollapsed (state, stageStreamCollapsed) {
 			state.stageStreamCollapsed = stageStreamCollapsed
+		},
+		updateNow (state) {
+			state.now = moment()
 		}
 	},
 	actions: {
@@ -81,6 +86,7 @@ export default new Vuex.Store({
 				commit('chat/setJoinedChannels', serverState['chat.channels'])
 				commit('chat/setReadPointers', serverState['chat.read_pointers'])
 				commit('exhibition/setData', serverState.exhibition)
+				commit('announcement/setAnnouncements', serverState.announcements)
 				commit('updateRooms', serverState['world.config'].rooms)
 				// FIXME copypasta from App.vue
 				if (state.activeRoom?.modules.some(module => ['livestream.native', 'livestream.youtube', 'livestream.iframe', 'call.bigbluebutton', 'call.zoom', 'call.janus'].includes(module.type))) {
@@ -201,6 +207,7 @@ export default new Vuex.Store({
 		}
 	},
 	modules: {
+		announcement,
 		chat,
 		question,
 		poll,

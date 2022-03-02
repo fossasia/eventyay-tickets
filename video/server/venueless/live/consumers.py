@@ -23,6 +23,7 @@ from venueless.live.exceptions import ConsumerException
 from ..core.utils.redis import aioredis
 from ..core.utils.statsd import statsd
 from .channels import GROUP_VERSION
+from .modules.announcement import AnnouncementModule
 from .modules.auth import AuthModule
 from .modules.bbb import BBBModule
 from .modules.chat import ChatModule
@@ -103,6 +104,7 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
             s.increment(f"connection.established,world={world_id}")
 
         self.components = {
+            "announcement": AnnouncementModule(self),
             "chat": ChatModule(self),
             "bbb": BBBModule(self),
             "zoom": ZoomModule(self),

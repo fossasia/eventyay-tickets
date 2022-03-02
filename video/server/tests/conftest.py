@@ -8,6 +8,7 @@ from django.conf import settings
 from django.utils.timezone import now
 
 from venueless.core.models import (
+    Announcement,
     BBBServer,
     Channel,
     ChatEvent,
@@ -192,3 +193,26 @@ def planned_usage(world_data):
         end=now() + dt.timedelta(days=13),
         attendees=200,
     )
+
+
+@database_sync_to_async
+def create_announcement(active):
+    world = World.objects.all().get()
+    announcement = Announcement.objects.create(
+        world=world,
+        state=Announcement.States.ACTIVE if active else Announcement.States.ARCHIVED,
+        text="Test announcement",
+    )
+    return announcement
+
+
+@pytest.fixture
+async def announcement():
+    announcement = await create_announcement(True)
+    return announcement
+
+
+@pytest.fixture
+async def inactive_announcement():
+    announcement = await create_announcement(False)
+    return announcement

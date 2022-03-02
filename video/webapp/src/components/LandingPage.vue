@@ -49,7 +49,7 @@ export default {
 		}
 	},
 	computed: {
-		...mapState('schedule', ['now']),
+		...mapState(['now']),
 		...mapGetters('schedule', ['sessions']),
 		nextSessions () {
 			if (!this.sessions) return

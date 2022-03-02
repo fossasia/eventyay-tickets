@@ -1,3 +1,4 @@
+from .announcement import Announcement
 from .audit import AuditLog
 from .auth import User
 from .bbb import BBBCall, BBBServer
@@ -22,6 +23,7 @@ from .turn import TurnServer
 from .world import World
 
 __all__ = [
+    "Announcement",
     "AuditLog",
     "User",
     "BBBCall",

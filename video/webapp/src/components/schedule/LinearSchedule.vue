@@ -23,7 +23,7 @@ export default {
 		}
 	},
 	computed: {
-		...mapState('schedule', ['now']),
+		...mapState(['now']),
 		...mapGetters('schedule', ['sessions']),
 		sessionBuckets () {
 			const buckets = {}
