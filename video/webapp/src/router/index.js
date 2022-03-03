@@ -142,7 +142,7 @@ const routes = [{
 		name: 'admin:rooms:index',
 		component: () => import(/* webpackChunkName: "admin" */ 'views/admin/rooms/index')
 	}, {
-		path: '/admin/rooms/new',
+		path: '/admin/rooms/new/:type?',
 		name: 'admin:rooms:new',
 		component: () => import(/* webpackChunkName: "admin" */ 'views/admin/rooms/new')
 	}, {

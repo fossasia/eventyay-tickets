@@ -7,7 +7,7 @@
 	.choose-type(v-if="!type", v-scrollbar.y="")
 		h2 Choose a room type
 		.types
-			router-link.type(v-for="type of ROOM_TYPES", :to="{name: 'admin:rooms:new', query: {type: type.id}}")
+			router-link.type(v-for="type of ROOM_TYPES", :to="{name: 'admin:rooms:new', params: {type: type.id}}")
 				.icon.mdi(:class="[`mdi-${type.icon}`]")
 				.text
 					.name {{ type.name }}
@@ -32,9 +32,15 @@ export default {
 			return ROOM_TYPES.find(t => t.id === this.type)
 		},
 	},
+	watch: {
+		$route: 'updateType'
+	},
+	created () {
+		this.updateType()
+	},
 	methods: {
-		initFromRoute () {
-			this.type = this.$route.query.type
+		updateType () {
+			this.type = this.$route.params.type
 			if (!this.type || !this.chosenType) return
 			this.config = {
 				name: '',
@@ -45,15 +51,7 @@ export default {
 				module_config: [{type: this.chosenType.startingModule, config: {}}],
 			}
 		}
-	},
-	watch: {
-    $route (to, from){
-			this.initFromRoute()
-    }
-	},
-	created () {
-		this.initFromRoute()
-	},
+	}
 }
 </script>
 <style lang="stylus">
