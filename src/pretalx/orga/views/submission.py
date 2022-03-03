@@ -236,11 +236,13 @@ class SubmissionStateChange(SubmissionViewMixin, FormView):
             except SubmissionError:
                 self.do(force=True)
         url = self.request.GET.get("next")
-        if url and url_has_allowed_host_and_scheme(url, allowed_hosts=None):
-            return redirect(url)
-        elif self.object.state == SubmissionStates.DELETED:
+        if self.object.state == SubmissionStates.DELETED and (
+            not url or self.object.code in url
+        ):
             return redirect(self.request.event.orga_urls.submissions)
-        return redirect(self.object.orga_urls.base)
+        elif url and url_has_allowed_host_and_scheme(url, allowed_hosts=None):
+            return redirect(url)
+        return redirect(self.object.orga_urls.submissions)
 
     @context
     def next(self):

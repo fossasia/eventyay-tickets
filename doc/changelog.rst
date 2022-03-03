@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`1278` Deleting a proposal from its detail view would lead to a 404 page (because pretalx tried to redirect you back to the original page, which was now unavailable).
 - :feature:`-` Added a way to quickly check or uncheck all the possible export fields in the export form.
 - :bug:`-` Fixed a bug where the time travelling option in the schedule editor was unreliable.
 - :bug:`-` Fixed a bug where trying to filter by answers to a multiple choice question would not work.
