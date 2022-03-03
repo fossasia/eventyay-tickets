@@ -32,18 +32,28 @@ export default {
 			return ROOM_TYPES.find(t => t.id === this.type)
 		},
 	},
-	created () {
-		this.type = this.$route.query.type
-		if (!this.type || !this.chosenType) return
-		this.config = {
-			name: '',
-			description: '',
-			sorting_priority: '',
-			pretalx_id: '',
-			force_join: false,
-			module_config: [{type: this.chosenType.startingModule, config: {}}],
+	methods: {
+		initFromRoute () {
+			this.type = this.$route.query.type
+			if (!this.type || !this.chosenType) return
+			this.config = {
+				name: '',
+				description: '',
+				sorting_priority: '',
+				pretalx_id: '',
+				force_join: false,
+				module_config: [{type: this.chosenType.startingModule, config: {}}],
+			}
 		}
-	}
+	},
+	watch: {
+    $route (to, from){
+			this.initFromRoute()
+    }
+	},
+	created () {
+		this.initFromRoute()
+	},
 }
 </script>
 <style lang="stylus">
