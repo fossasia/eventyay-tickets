@@ -33,7 +33,7 @@ requests==2.27.*
 sentry-sdk==1.5.*
 tqdm==4.63.*
 websockets==10.*
-xlrd~=1.2.0
+xlrd==2.0.*
 
 # temporary
 Twisted==20.3.0  # see https://github.com/django/daphne/pull/359 and https://github.com/django/channels/issues/1639
