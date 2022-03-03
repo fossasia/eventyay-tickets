@@ -242,7 +242,7 @@ class SubmissionStateChange(SubmissionViewMixin, FormView):
             return redirect(self.request.event.orga_urls.submissions)
         elif url and url_has_allowed_host_and_scheme(url, allowed_hosts=None):
             return redirect(url)
-        return redirect(self.object.orga_urls.submissions)
+        return redirect(self.object.orga_urls.base)
 
     @context
     def next(self):
