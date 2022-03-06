@@ -89,10 +89,12 @@ class Schedule(LogMixin, models.Model):
         self.version = name
         self.comment = comment
         self.published = now()
+
+        # Create WIP schedule first, to avoid race conditions
+        wip_schedule = Schedule.objects.create(event=self.event)
+
         self.save(update_fields=["published", "version", "comment"])
         self.log_action("pretalx.schedule.release", person=user, orga=True)
-
-        wip_schedule = Schedule.objects.create(event=self.event)
 
         # Set visibility
         self.talks.all().update(is_visible=False)
