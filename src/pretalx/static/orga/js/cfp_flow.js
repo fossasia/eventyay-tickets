@@ -167,7 +167,7 @@ Vue.component("field", {
       </div>
       <div v-else>
         <p>
-          This is a custom question you added to teh CfP. You can change or remove this CfP question <a :href="questionUrl">here</a>.
+          This is a custom question you added to the CfP. You can change or remove this CfP question <a :href="questionUrl">here</a>.
         </p>
       </div>
     </div>
