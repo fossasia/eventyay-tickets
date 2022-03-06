@@ -712,7 +712,7 @@ def test_orga_can_export_answers_csv(
     assert response.status_code == 200
     assert (
         response.content.decode()
-        == f"ID,Title,Speaker IDs,{answered_choice_question.question}\r\n{submission.code},{submission.title},{speaker.code},{answer}\r\n"
+        == f"ID,Proposal title,Speaker IDs,{answered_choice_question.question}\r\n{submission.code},{submission.title},{speaker.code},{answer}\r\n"
     )
 
 
@@ -738,7 +738,7 @@ def test_orga_can_export_answers_json(
     assert json.loads(response.content.decode()) == [
         {
             "ID": submission.code,
-            "Title": submission.title,
+            "Proposal title": submission.title,
             answered_choice_question.question: answer,
             "Speaker IDs": [speaker.code],
         }

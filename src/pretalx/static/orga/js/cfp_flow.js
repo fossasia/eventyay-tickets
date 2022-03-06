@@ -125,12 +125,19 @@ function areEqual () {
 Vue.component("field", {
   template: `
     <div>
-      <h2 v-if="isModal">Change field text<br></h2>
+      <h2 v-if="isModal" class="mb-4">Change input field</h2>
       <div :class="['form-group', 'row', field.field_source].concat(isModal ? '' : 'editable')" v-bind:style="style" @click.stop="makeModal" v-if="!(isModal && isQuestion)">
-      <label class="col-md-3 col-form-label">
+      <label class="col-md-3 col-form-label pt-0">
         <template v-if="field.widget !== 'CheckboxInput'">
-          {{ field.label[currentLanguage] }}
-          <br>
+          <template v-if="isModal">
+            <div class="i18n-form-group mb-2 title-input" @click.stop="">
+              <input type="text" class="form-control" :title="locale" :lang="locale" v-model="field.label[locale]" v-for="locale in locales">
+            </div>
+          </template>
+          <template v-else>
+            {{ field.label[currentLanguage] }}
+            <br>
+          </template>
           <template v-if="isModal && editRequirement">
             <span v-if="!field.required & !field.hard_required" :class="[editable ? 'editable' : '', 'optional']" @click.stop="field.required=true">Optional</span>
             <span v-else-if="!field.hard_required" :class="[editable ? 'editable' : '', 'optional']" @click.stop="field.required=false"><strong>Required</strong></span>

@@ -159,7 +159,7 @@ class SpeakerProfileForm(
             self.fields[field] = field_class(
                 initial=initial.get(field), disabled=read_only
             )
-            self._update_cfp_help_text(field)
+            self._update_cfp_texts(field)
 
         if not self.event.cfp.request_avatar:
             self.fields.pop("avatar", None)

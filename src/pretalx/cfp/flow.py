@@ -629,11 +629,11 @@ class CfPFlow:
         step_config["fields"] = []
         for config_field in data.get("fields", []):
             field = {}
-            for key in ("help_text", "request", "required", "key"):
+            for key in ("help_text", "request", "required", "key", "label"):
                 if key in config_field:
                     field[key] = (
                         i18n_string(config_field[key], locales)
-                        if key == "help_text"
+                        if key in ("help_text", "label")
                         else config_field[key]
                     )
             step_config["fields"].append(field)

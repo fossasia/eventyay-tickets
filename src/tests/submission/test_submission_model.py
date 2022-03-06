@@ -380,7 +380,7 @@ def test_content_for_mail(submission, file_question, boolean_question):
 
         assert (
             submission.get_content_for_mail().strip()
-            == f"""**Title**: {submission.title}
+            == f"""**Proposal title**: {submission.title}
 
 **Abstract**: {submission.abstract}
 

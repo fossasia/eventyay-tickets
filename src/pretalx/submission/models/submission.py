@@ -118,7 +118,7 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
     event = models.ForeignKey(
         to="event.Event", on_delete=models.PROTECT, related_name="submissions"
     )
-    title = models.CharField(max_length=200, verbose_name=_("Title"))
+    title = models.CharField(max_length=200, verbose_name=_("Proposal title"))
     submission_type = models.ForeignKey(  # Reasonable default must be set in form/view
         to="submission.SubmissionType",
         related_name="submissions",
