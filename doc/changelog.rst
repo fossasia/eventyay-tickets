@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` The custom CSV and JSON exports are now the new default on the export pages, since they're more useful to the average user.
 - :bug:`1281` Fixed a rare race condition, where on schedule release, two new WIP schedules were created, leading to persistent errors on some event pages.
 - :bug:`1278` Deleting a proposal from its detail view would lead to a 404 page (because pretalx tried to redirect you back to the original page, which was now unavailable).
 - :feature:`-` Added a way to quickly check or uncheck all the possible export fields in the export form.
