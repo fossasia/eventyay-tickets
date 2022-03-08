@@ -121,8 +121,7 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
             self.fields["track"].queryset = event.tracks.all()
         if "content_locale" in self.fields:
             if len(event.locales) == 1:
-                self.initial["content_locale"] = event.locales[0]
-                self.fields["content_locale"].widget = forms.HiddenInput()
+                self.fields.pop("content_locale")
             else:
                 locale_names = dict(settings.LANGUAGES)
                 self.fields["content_locale"].choices = [

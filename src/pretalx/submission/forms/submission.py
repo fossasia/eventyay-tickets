@@ -31,6 +31,7 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
         self.event = event
         self.readonly = kwargs.pop("readonly", False)
         self.access_code = kwargs.pop("access_code", None)
+        self.default_values = {}
         instance = kwargs.get("instance")
         initial = kwargs.pop("initial", {}) or {}
         if not instance or not instance.submission_type:
@@ -79,9 +80,12 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
                 self.fields["track"].queryset = self.event.tracks.filter(
                     pk=access_code.track.pk
                 )
-            if len(self.fields["track"].queryset) == 1:
-                self.initial["track"] = self.fields["track"].queryset.first().pk
-                self.fields["track"].widget = forms.HiddenInput()
+            if (
+                len(self.fields["track"].queryset) == 1
+                and self.fields["track"].required
+            ):
+                self.default_values["track"] = self.fields["track"].queryset.first()
+                self.fields.pop("track")
 
     def _set_submission_types(self, instance=None):
         _now = now()
@@ -120,16 +124,16 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
             pk__in=pks
         )
         if len(pks) == 1:
-            self.initial["submission_type"] = (
-                self.fields["submission_type"].queryset.first().pk
+            self.default_values["submission_type"] = self.event.submission_types.get(
+                pk=list(pks)[0]
             )
-            self.fields["submission_type"].widget = forms.HiddenInput()
+            self.fields.pop("submission_type")
 
     def _set_locales(self):
         if "content_locale" in self.fields:
             if len(self.event.locales) == 1:
-                self.initial["content_locale"] = self.event.locales[0]
-                self.fields["content_locale"].widget = forms.HiddenInput()
+                self.default_values["content_locale"] = self.event.locales[0]
+                self.fields.pop("content_locale")
             else:
                 locale_names = dict(settings.LANGUAGES)
                 self.fields["content_locale"].choices = [
@@ -153,8 +157,8 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
             )
 
     def save(self, *args, **kwargs):
-        if "content_locale" not in self.fields:
-            self.instance.content_locale = self.event.locale
+        for key, value in self.default_values.items():
+            setattr(self.instance, key, value)
         return super().save(*args, **kwargs)
 
     class Meta:

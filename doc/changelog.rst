@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`1284` Some browsers cached hidden fields in forms extremely aggressively, so pretalx has stopped relying on them as much.
 - :feature:`-` Organisers can now configure not just field help texts, but also field titles/labels.
 - :feature:`-` The custom CSV and JSON exports are now the new default on the export pages, since they're more useful to the average user.
 - :bug:`1281` Fixed a rare race condition, where on schedule release, two new WIP schedules were created, leading to persistent errors on some event pages.
