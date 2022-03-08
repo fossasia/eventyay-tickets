@@ -10,6 +10,10 @@ on:
     paths-ignore:
       - 'doc/**'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel_in_progress: true
+
 jobs:
   spelling:
     name: Spellcheck
