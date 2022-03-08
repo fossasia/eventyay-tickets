@@ -560,15 +560,6 @@ class TestWizard:
             event=event,
             track=track,
         )
-        self.perform_info_wizard(  # Does not work with token, because wrong track
-            client,
-            response,
-            current_url + "?access_code=" + access_code.code,
-            submission_type=submission_type,
-            next_step="info",
-            event=event,
-            track=other_track,
-        )
         (
             response,
             current_url,
@@ -696,7 +687,7 @@ def test_infoform_set_submission_type(event, other_event):
     with scope(event=event):
         f = InfoForm(event)
         assert len(event.submission_types.all()) == 1
-        assert len(f.fields["submission_type"].queryset) == 1
+        assert "submission_type" not in f.fields
         assert f.initial["submission_type"] == event.submission_types.all()[0].pk
         assert isinstance(f.fields["submission_type"].widget, forms.HiddenInput)
 
