@@ -69,7 +69,9 @@ class SpeakerExportForm(ExportForm):
         target = self.cleaned_data.get("target")
         queryset = self.event.submitters
         if target != "all":
-            queryset = queryset.filter(submissions__state=target).distinct()
+            queryset = queryset.filter(
+                submissions__in=self.event.submissions.filter(state=target)
+            ).distinct()
         return queryset.prefetch_related("profiles", "profiles__event").order_by("code")
 
     def _get_avatar_value(self, obj):
