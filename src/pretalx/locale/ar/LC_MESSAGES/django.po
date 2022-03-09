@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-07 20:53+0000\n"
+"POT-Creation-Date: 2022-03-09 16:42+0000\n"
 "PO-Revision-Date: 2021-09-13 11:09+0000\n"
 "Last-Translator: hamza Hamwie <hamza@live.hk>\n"
 "Language-Team: none\n"
@@ -1028,7 +1028,6 @@ msgstr "معلومات هامة"
 #: pretalx/orga/templates/orga/speaker/information_list.html:23
 #: pretalx/orga/templates/orga/submission/list.html:76
 #: pretalx/orga/templates/orga/submission/review.html:50
-#: pretalx/submission/models/submission.py:121
 msgid "Title"
 msgstr "العنوان"
 
@@ -2608,6 +2607,12 @@ msgstr "رابط لتأكيد الطلب (المقترح) بعد قبوله."
 msgid "Link to withdraw the proposal"
 msgstr "رابط للتراجع عن تقديم الطلب (المقترح)"
 
+#: pretalx/mail/context.py:165
+#, fuzzy
+#| msgid "Proposal title"
+msgid "This Is a Proposal Title"
+msgstr "عنوان الطلب (المقترح)"
+
 #: pretalx/mail/context.py:166
 msgid "The proposal's title"
 msgstr "عنوان المقترح :{title}"
@@ -2616,13 +2621,34 @@ msgstr "عنوان المقترح :{title}"
 msgid "The name(s) of all speakers in this proposal."
 msgstr "أسماء جميع المتحدثين ضمن هذا المقترح."
 
+#: pretalx/mail/context.py:179
+#, fuzzy
+#| msgid "Session Type"
+msgid "Session Type A"
+msgstr "نوع الجلسة"
+
 #: pretalx/mail/context.py:180
 msgid "The proposal's session type"
 msgstr "الطلبات (المقترحات) حسب نوع الجلسة"
 
+#: pretalx/mail/context.py:186
+#, fuzzy
+#| msgid "Track"
+msgid "Track A"
+msgstr "التتبع"
+
 #: pretalx/mail/context.py:187
 msgid "The track the proposal belongs to"
 msgstr "المسار الذي ينتمي إليه الاقتراح يعود ل"
+
+#: pretalx/mail/context.py:193
+msgid ""
+"First review, agreeing with the proposal.\n"
+"\n"
+"--------- \n"
+"\n"
+"Second review, containing heavy criticism!"
+msgstr ""
 
 #: pretalx/mail/context.py:194
 #, fuzzy
@@ -3479,7 +3505,7 @@ msgstr "كل الطلبات (المقترحات) في هذه المسارات"
 #: pretalx/orga/forms/mails.py:175 pretalx/orga/templates/orga/base.html:246
 #: pretalx/orga/templates/orga/cfp/track_view.html:5
 #: pretalx/orga/templates/orga/settings/team_tracks.html:8
-#: pretalx/submission/forms/submission.py:258
+#: pretalx/submission/forms/submission.py:261
 #: pretalx/submission/models/question.py:148
 msgid "Tracks"
 msgstr "المسارات"
@@ -3493,7 +3519,7 @@ msgid "All proposals of these types"
 msgstr "كل الطلبات (المقترحات) من هذه الأنواع"
 
 #: pretalx/orga/forms/mails.py:182 pretalx/orga/templates/orga/base.html:250
-#: pretalx/submission/forms/submission.py:252
+#: pretalx/submission/forms/submission.py:255
 msgid "Session types"
 msgstr "أنواع الجلسة"
 
@@ -3699,17 +3725,17 @@ msgstr "اسم المتحدث الذي يجب مشاركته مع العامة."
 msgid "Proposal state"
 msgstr "حالة المقترح"
 
-#: pretalx/orga/forms/submission.py:140
+#: pretalx/orga/forms/submission.py:139
 #, fuzzy
 #| msgid "The end of a phase has to be after its start."
 msgid "The end time has to be after the start time."
 msgstr "يجب أن تكون نهاية المرحلة بعد بدايتها."
 
-#: pretalx/orga/forms/submission.py:259
+#: pretalx/orga/forms/submission.py:258
 msgid "Mark the new state as 'pending'?"
 msgstr ""
 
-#: pretalx/orga/forms/submission.py:261
+#: pretalx/orga/forms/submission.py:260
 #: pretalx/orga/templates/orga/review/dashboard.html:223
 msgid ""
 "If you mark state changes as pending, they won't be visible to speakers "
@@ -3972,7 +3998,7 @@ msgstr "أكواد الوصول"
 #: pretalx/orga/templates/orga/base.html:275
 #: pretalx/orga/templates/orga/review/dashboard.html:123
 #: pretalx/orga/templates/orga/submission/tag_list.html:6
-#: pretalx/submission/forms/submission.py:263
+#: pretalx/submission/forms/submission.py:266
 #: pretalx/submission/models/submission.py:139
 msgid "Tags"
 msgstr "العلامات (Tags)"
@@ -7224,11 +7250,7 @@ msgstr ""
 msgid "Use this if you want an illustration to go with your proposal."
 msgstr "استخدم هذا إذا كنت تريد رسمًا توضيحيًا يتناسب مع طلبك (مقنرحك)."
 
-#: pretalx/submission/forms/submission.py:49
-msgid "Proposal title"
-msgstr "عنوان الطلب (المقترح)"
-
-#: pretalx/submission/forms/submission.py:152
+#: pretalx/submission/forms/submission.py:155
 msgid ""
 "Please contact the organisers if you want to change how often you're "
 "presenting this proposal."
@@ -7236,11 +7258,11 @@ msgstr ""
 "يرجى الاتصال بالمنظمين إذا كنت تريد تغيير عدد المرات التي تقدم فيها هذا "
 "المقترح."
 
-#: pretalx/submission/forms/submission.py:245
+#: pretalx/submission/forms/submission.py:248
 msgid "Proposal states"
 msgstr "حالة الطلب (المقترح)"
 
-#: pretalx/submission/forms/submission.py:342
+#: pretalx/submission/forms/submission.py:345
 #, fuzzy, python-brace-format
 #| msgid "pending Invitation"
 msgid "Pending {state}"
@@ -7603,6 +7625,10 @@ msgstr ""
 #: pretalx/submission/models/submission.py:50
 msgid "rejected"
 msgstr "لم يتم الموافقة"
+
+#: pretalx/submission/models/submission.py:121
+msgid "Proposal title"
+msgstr "عنوان الطلب (المقترح)"
 
 #: pretalx/submission/models/submission.py:153
 #, fuzzy

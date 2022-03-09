@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-07 20:53+0000\n"
+"POT-Creation-Date: 2022-03-09 16:42+0000\n"
 "PO-Revision-Date: 2020-09-28 02:42+0000\n"
 "Last-Translator: Satoshi IIDA <nyampire@gmail.com>\n"
 "Language-Team: \n"
@@ -1036,7 +1036,6 @@ msgstr "重要な情報"
 #: pretalx/orga/templates/orga/speaker/information_list.html:23
 #: pretalx/orga/templates/orga/submission/list.html:76
 #: pretalx/orga/templates/orga/submission/review.html:50
-#: pretalx/submission/models/submission.py:121
 msgid "Title"
 msgstr "タイトル"
 
@@ -2662,6 +2661,12 @@ msgstr "受付後の投稿を確認するためのリンク"
 msgid "Link to withdraw the proposal"
 msgstr "提案を撤回する"
 
+#: pretalx/mail/context.py:165
+#, fuzzy
+#| msgid "Proposal title"
+msgid "This Is a Proposal Title"
+msgstr "投稿タイトル"
+
 #: pretalx/mail/context.py:166
 #, fuzzy
 #| msgid "Proposal title"
@@ -2672,15 +2677,36 @@ msgstr "投稿タイトル"
 msgid "The name(s) of all speakers in this proposal."
 msgstr "この提案における全ての登壇者の名前"
 
+#: pretalx/mail/context.py:179
+#, fuzzy
+#| msgid "Session Type"
+msgid "Session Type A"
+msgstr "提案タイプ"
+
 #: pretalx/mail/context.py:180
 #, fuzzy
 #| msgid "Proposals by session type"
 msgid "The proposal's session type"
 msgstr "投稿タイプで投稿を並び替え"
 
+#: pretalx/mail/context.py:186
+#, fuzzy
+#| msgid "Track"
+msgid "Track A"
+msgstr "トラック"
+
 #: pretalx/mail/context.py:187
 msgid "The track the proposal belongs to"
 msgstr "提案が該当するトラック"
+
+#: pretalx/mail/context.py:193
+msgid ""
+"First review, agreeing with the proposal.\n"
+"\n"
+"--------- \n"
+"\n"
+"Second review, containing heavy criticism!"
+msgstr ""
 
 #: pretalx/mail/context.py:194
 #, fuzzy
@@ -3587,7 +3613,7 @@ msgstr "これらのトラックのすべての投稿"
 #: pretalx/orga/forms/mails.py:175 pretalx/orga/templates/orga/base.html:246
 #: pretalx/orga/templates/orga/cfp/track_view.html:5
 #: pretalx/orga/templates/orga/settings/team_tracks.html:8
-#: pretalx/submission/forms/submission.py:258
+#: pretalx/submission/forms/submission.py:261
 #: pretalx/submission/models/question.py:148
 msgid "Tracks"
 msgstr "トラック"
@@ -3603,7 +3629,7 @@ msgid "All proposals of these types"
 msgstr "これらのタイプのすべての提出物"
 
 #: pretalx/orga/forms/mails.py:182 pretalx/orga/templates/orga/base.html:250
-#: pretalx/submission/forms/submission.py:252
+#: pretalx/submission/forms/submission.py:255
 msgid "Session types"
 msgstr "提案種別"
 
@@ -3843,17 +3869,17 @@ msgstr "公表すべき登壇者名。"
 msgid "Proposal state"
 msgstr "投稿の状態"
 
-#: pretalx/orga/forms/submission.py:140
+#: pretalx/orga/forms/submission.py:139
 #, fuzzy
 #| msgid "The end of a phase has to be after its start."
 msgid "The end time has to be after the start time."
 msgstr "フェーズの終わりは、その開始後でなければなりません。"
 
-#: pretalx/orga/forms/submission.py:259
+#: pretalx/orga/forms/submission.py:258
 msgid "Mark the new state as 'pending'?"
 msgstr ""
 
-#: pretalx/orga/forms/submission.py:261
+#: pretalx/orga/forms/submission.py:260
 #: pretalx/orga/templates/orga/review/dashboard.html:223
 msgid ""
 "If you mark state changes as pending, they won't be visible to speakers "
@@ -4119,7 +4145,7 @@ msgstr "アクセスコード"
 #: pretalx/orga/templates/orga/base.html:275
 #: pretalx/orga/templates/orga/review/dashboard.html:123
 #: pretalx/orga/templates/orga/submission/tag_list.html:6
-#: pretalx/submission/forms/submission.py:263
+#: pretalx/submission/forms/submission.py:266
 #: pretalx/submission/models/submission.py:139
 msgid "Tags"
 msgstr ""
@@ -7425,21 +7451,17 @@ msgstr ""
 msgid "Use this if you want an illustration to go with your proposal."
 msgstr "投稿にイラストを添付する場合、こちらを利用ください。"
 
-#: pretalx/submission/forms/submission.py:49
-msgid "Proposal title"
-msgstr "投稿タイトル"
-
-#: pretalx/submission/forms/submission.py:152
+#: pretalx/submission/forms/submission.py:155
 msgid ""
 "Please contact the organisers if you want to change how often you're "
 "presenting this proposal."
 msgstr "あなたの投稿の発表頻度を変更したい場合は、主催者までご連絡ください。"
 
-#: pretalx/submission/forms/submission.py:245
+#: pretalx/submission/forms/submission.py:248
 msgid "Proposal states"
 msgstr "投稿状態"
 
-#: pretalx/submission/forms/submission.py:342
+#: pretalx/submission/forms/submission.py:345
 #, fuzzy, python-brace-format
 #| msgid "pending Invitation"
 msgid "Pending {state}"
@@ -7815,6 +7837,10 @@ msgstr ""
 #: pretalx/submission/models/submission.py:50
 msgid "rejected"
 msgstr "リジェクト済"
+
+#: pretalx/submission/models/submission.py:121
+msgid "Proposal title"
+msgstr "投稿タイトル"
 
 #: pretalx/submission/models/submission.py:153
 #, fuzzy
