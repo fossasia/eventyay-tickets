@@ -169,7 +169,7 @@ def base_placeholders(sender, **kwargs):
             "speakers",
             ["submission"],
             lambda submission: submission.display_speaker_names,
-            "Open-architected uniform middleware",
+            "Jane Smith, Fred Jones",
             _("The name(s) of all speakers in this proposal."),
         ),
         *placeholder_aliases(
