@@ -162,7 +162,7 @@ def base_placeholders(sender, **kwargs):
             ["proposal_title", "submission_title"],
             ["submission"],
             lambda submission: submission.title,
-            "Open-architected uniform middleware",
+            _("This Is a Proposal Title"),
             _("The proposal's title"),
         ),
         SimpleFunctionalMailTextPlaceholder(
@@ -176,21 +176,21 @@ def base_placeholders(sender, **kwargs):
             ["session_type", "submission_type"],
             ["submission"],
             lambda submission: str(submission.submission_type.name),
-            "Workshop",
+            _("Session Type A"),
             _("The proposal's session type"),
         ),
         SimpleFunctionalMailTextPlaceholder(
             "track_name",
             ["submission"],
             lambda submission: str(submission.track.name) if submission.track else "",
-            "Science",
+            _("Track A"),
             _("The track the proposal belongs to"),
         ),
         SimpleFunctionalMailTextPlaceholder(
             "all_reviews",
             ["submission"],
             get_all_reviews,
-            "This proposal sounds like a good idea.\n\n--------- \n\nAbsolutely not!",
+            _("First review, agreeing with the proposal.\n\n--------- \n\nSecond review, containing heavy criticism!"),
             _("All review texts for this proposal"),
         ),
         SimpleFunctionalMailTextPlaceholder(
