@@ -156,7 +156,7 @@ async def test_config_get(world):
             "videoPlayer": None,
             "timezone": "Europe/Berlin",
             "connection_limit": 2,
-            "disable_autoplay_traits": None,
+            "onsite_traits": None,
             "conftool_url": "",
             "conftool_password": "",
             "profile_fields": [

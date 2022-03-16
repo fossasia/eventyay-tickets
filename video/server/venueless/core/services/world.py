@@ -40,7 +40,7 @@ class WorldConfigSerializer(serializers.Serializer):
     track_exhibitor_views = serializers.BooleanField()
     track_room_views = serializers.BooleanField()
     track_world_views = serializers.BooleanField()
-    disable_autoplay_traits = serializers.CharField(
+    onsite_traits = serializers.CharField(
         required=False, allow_null=True, allow_blank=True
     )
     conftool_url = serializers.URLField(
@@ -357,7 +357,7 @@ def _config_serializer(world, *args, **kwargs):
             "trait_grants": world.trait_grants,
             "connection_limit": world.config.get("connection_limit", 0),
             "profile_fields": world.config.get("profile_fields", []),
-            "disable_autoplay_traits": world.config.get("disable_autoplay_traits", ""),
+            "onsite_traits": world.config.get("onsite_traits", ""),
             "conftool_url": world.config.get("conftool_url", ""),
             "conftool_password": world.config.get("conftool_password", ""),
             "iframe_blockers": world.config.get(

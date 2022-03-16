@@ -86,7 +86,7 @@ class WorldModule(BaseModule):
                 "track_room_views",
                 "track_world_views",
                 "track_exhibitor_views",
-                "disable_autoplay_traits",
+                "onsite_traits",
                 "conftool_url",
                 "conftool_password",
                 "iframe_blockers",

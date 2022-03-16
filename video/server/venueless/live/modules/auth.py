@@ -116,7 +116,6 @@ class AuthModule(BaseModule):
                             "trait_badges_map"
                         )
                     ),
-                    "disable_autoplay_by_default": login_result.disable_autoplay,
                     "world.config": login_result.world_config,
                     "chat.channels": login_result.chat_channels,
                     "chat.read_pointers": read_pointers,
