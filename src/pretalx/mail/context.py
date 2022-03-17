@@ -190,7 +190,9 @@ def base_placeholders(sender, **kwargs):
             "all_reviews",
             ["submission"],
             get_all_reviews,
-            _("First review, agreeing with the proposal.\n\n--------- \n\nSecond review, containing heavy criticism!"),
+            _(
+                "First review, agreeing with the proposal.\n\n--------- \n\nSecond review, containing heavy criticism!"
+            ),
             _("All review texts for this proposal"),
         ),
         SimpleFunctionalMailTextPlaceholder(

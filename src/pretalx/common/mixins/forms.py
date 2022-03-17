@@ -1,7 +1,7 @@
 import logging
-from decimal import Decimal
 from functools import partial
 
+import dateutil.parser
 from django import forms
 from django.core.files import File
 from django.core.files.storage import default_storage
@@ -11,8 +11,15 @@ from django.utils.translation import gettext_lazy as _
 from hierarkey.forms import HierarkeyForm
 from i18nfield.forms import I18nFormField
 
-from pretalx.common.forms.fields import SizeFileField
-from pretalx.common.forms.utils import get_help_text, validate_field_length
+from pretalx.common.forms.fields import ExtensionFileField
+from pretalx.common.forms.utils import (
+    MaxDateTimeValidator,
+    MaxDateValidator,
+    MinDateTimeValidator,
+    MinDateValidator,
+    get_help_text,
+    validate_field_length,
+)
 from pretalx.common.phrases import phrases
 from pretalx.common.templatetags.rich_text import rich_text
 
@@ -127,7 +134,8 @@ class QuestionFieldsMixin:
                 help_text=help_text,
                 label=question.question,
                 required=question.required,
-                min_value=Decimal("0.00"),
+                min_value=question.min_number,
+                max_value=question.max_number,
                 initial=initial,
             )
             field.original_help_text = original_help_text
@@ -159,6 +167,17 @@ class QuestionFieldsMixin:
                 )
             )
             return field
+        if question.variant == QuestionVariant.URL:
+            field = forms.URLField(
+                label=question.question,
+                required=question.required,
+                disabled=read_only,
+                help_text=question.help_text,
+                initial=initial,
+            )
+            field.original_help_text = original_help_text
+            field.widget.attrs["placeholder"] = ""  # XSS
+            return field
         if question.variant == QuestionVariant.TEXT:
             field = forms.CharField(
                 label=question.question,
@@ -187,12 +206,32 @@ class QuestionFieldsMixin:
             field.widget.attrs["placeholder"] = ""  # XSS
             return field
         if question.variant == QuestionVariant.FILE:
-            field = SizeFileField(
+            field = ExtensionFileField(
                 label=question.question,
                 required=question.required,
                 disabled=read_only,
                 help_text=help_text,
                 initial=initial,
+                extensions=(
+                    ".png",
+                    ".jpg",
+                    ".gif",
+                    ".jpeg",
+                    ".gif",
+                    ".svg",
+                    ".bmp",
+                    ".tif",
+                    ".tiff",
+                    ".pdf",
+                    ".txt",
+                    ".docx",
+                    "doc",
+                    "rtf",
+                    ".pptx",
+                    ".ppt",
+                    ".xlsx",
+                    ".xls",
+                ),
             )
             field.original_help_text = original_help_text
             field.widget.attrs["placeholder"] = ""  # XSS
@@ -228,6 +267,50 @@ class QuestionFieldsMixin:
             )
             field.original_help_text = original_help_text
             field.widget.attrs["placeholder"] = ""  # XSS
+            return field
+        if question.variant == QuestionVariant.DATE:
+            attrs = {"class": "datepickerfield"}
+            if question.min_date:
+                attrs["data-date-start-date"] = question.min_date.isoformat()
+            if question.max_date:
+                attrs["data-date-end-date"] = question.max_date.isoformat()
+            field = forms.DateField(
+                label=question.question,
+                required=question.required,
+                disabled=read_only,
+                help_text=help_text,
+                initial=dateutil.parser.parse(initial).date() if initial else None,
+                widget=forms.DateInput(attrs=attrs),
+            )
+            field.original_help_text = original_help_text
+            field.widget.attrs["placeholder"] = ""  # XSS
+            if question.min_date:
+                field.validators.append(MinDateValidator(question.min_date))
+            if question.max_date:
+                field.validators.append(MaxDateValidator(question.max_date))
+            return field
+        elif question.variant == QuestionVariant.DATETIME:
+            attrs = {"class": "datetimepickerfield"}
+            if question.min_datetime:
+                attrs["data-date-start-date"] = question.min_datetime.isoformat()
+            if question.max_datetime:
+                attrs["data-date-end-date"] = question.max_datetime.isoformat()
+            field = forms.DateTimeField(
+                label=question.question,
+                required=question.required,
+                disabled=read_only,
+                help_text=help_text,
+                initial=dateutil.parser.parse(initial).astimezone(self.event.tz)
+                if initial
+                else None,
+                widget=forms.DateTimeInput(attrs=attrs),
+            )
+            field.original_help_text = original_help_text
+            field.widget.attrs["placeholder"] = ""  # XSS
+            if question.min_datetime:
+                field.validators.append(MinDateTimeValidator(question.min_datetime))
+            if question.max_datetime:
+                field.validators.append(MaxDateTimeValidator(question.max_datetime))
             return field
         return None
 

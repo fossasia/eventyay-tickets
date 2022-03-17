@@ -208,11 +208,21 @@ class QuestionForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
             "contains_personal_data",
             "min_length",
             "max_length",
+            "min_number",
+            "max_number",
+            "min_date",
+            "max_date",
+            "min_datetime",
+            "max_datetime",
         ]
         widgets = {
             "deadline": forms.DateTimeInput(attrs={"class": "datetimepickerfield"}),
             "question_required": forms.RadioSelect(),
             "freeze_after": forms.DateTimeInput(attrs={"class": "datetimepickerfield"}),
+            "min_datetime": forms.DateTimeInput(attrs={"class": "datetimepickerfield"}),
+            "max_datetime": forms.DateTimeInput(attrs={"class": "datetimepickerfield"}),
+            "min_date": forms.DateInput(attrs={"class": "datepickerfield"}),
+            "max_date": forms.DateInput(attrs={"class": "datepickerfield"}),
             "tracks": forms.SelectMultiple(attrs={"class": "select2"}),
             "submission_types": forms.SelectMultiple(attrs={"class": "select2"}),
         }

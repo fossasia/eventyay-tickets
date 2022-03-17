@@ -34,6 +34,9 @@ class QuestionVariant(Choices):
     NUMBER = "number"
     STRING = "string"
     TEXT = "text"
+    URL = "url"
+    DATE = "date"
+    DATETIME = "datetime"
     BOOLEAN = "boolean"
     FILE = "file"
     CHOICES = "choices"
@@ -43,6 +46,9 @@ class QuestionVariant(Choices):
         (NUMBER, _("Number")),
         (STRING, _("Text (one-line)")),
         (TEXT, _("Multi-line text")),
+        (URL, _("URL")),
+        (DATE, _("Date")),
+        (DATETIME, _("Date and time")),
         (BOOLEAN, _("Yes/No")),
         (FILE, _("File upload")),
         (CHOICES, _("Choose one from a list")),
@@ -199,6 +205,38 @@ class Question(LogMixin, models.Model):
             "Maximum allowed text length in characters or words (set in CfP settings)."
         ),
     )
+    min_number = models.DecimalField(
+        decimal_places=6,
+        max_digits=16,
+        null=True,
+        blank=True,
+        verbose_name=_("Minimum value"),
+    )
+    max_number = models.DecimalField(
+        decimal_places=6,
+        max_digits=16,
+        null=True,
+        blank=True,
+        verbose_name=_("Maximum value"),
+    )
+    min_date = models.DateField(
+        null=True,
+        blank=True,
+        verbose_name=_("Minimum value"),
+    )
+    max_date = models.DateField(
+        null=True,
+        blank=True,
+        verbose_name=_("Maximum value"),
+    )
+    min_datetime = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name=_("Minimum value"),
+    )
+    max_datetime = models.DateTimeField(
+        null=True, blank=True, verbose_name=_("Maximum value")
+    )
     is_public = models.BooleanField(
         default=False,
         verbose_name=_("Publish answers"),
@@ -277,7 +315,7 @@ class Question(LogMixin, models.Model):
         return 0
 
     class Meta:
-        ordering = ["position"]
+        ordering = ("position", "id")
 
 
 class AnswerOption(LogMixin, models.Model):

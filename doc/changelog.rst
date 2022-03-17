@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` There are new question types: You can now ask for a URL, a date, or a date and a time (and you can set allowed ranges for the latter two).
 - :bug:`1284` Some browsers cached hidden fields in forms extremely aggressively, so pretalx has stopped relying on them as much.
 - :feature:`-` Organisers can now configure not just field help texts, but also field titles/labels.
 - :feature:`-` The custom CSV and JSON exports are now the new default on the export pages, since they're more useful to the average user.
