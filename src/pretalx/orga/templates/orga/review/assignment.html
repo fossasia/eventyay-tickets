@@ -15,16 +15,15 @@
     <div class="alert alert-info"><p>
         {% if request.event.active_review_phase.proposal_visibility == "assigned" %}
             {% blocktranslate trimmed with href=request.event.orga_urls.review_settings %}
-                According to your current review settings, reviewers will be able to
-                see and review <b>only their assigned</b> proposals. You can change this
-                in your <a href="{{ href }}">review settings</a>.
+                Reviewers will be able to see and review <b>only their assigned</b> proposals.
+                You can change this in your <a href="{{ href }}">review settings</a>.
             {% endblocktranslate %}
         {% else %}
             {% blocktranslate trimmed with href=request.event.orga_urls.review_settings %}
-                According to your current review settings, reviewers will be able to
-                see and review <b>all proposals</b>, but their assigned reviews will appear
-                highlighted, and they will be directed to them first. You can change this
-                in your <a href="{{ href }}">review settings</a>.
+                Reviewers will be able to see and review <b>all proposals</b>,
+                but their assigned reviews will appear highlighted, and they
+                will be directed to them first. You can change this in your <a
+                href="{{ href }}">review settings</a>.
             {% endblocktranslate %}
         {% endif %}
     </p></div>

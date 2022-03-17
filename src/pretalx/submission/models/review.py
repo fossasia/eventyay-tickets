@@ -214,7 +214,7 @@ class ReviewPhase(models.Model):
         default=True,
     )
     proposal_visibility = models.CharField(
-        verbose_name=_("Proposals available for review"),
+        verbose_name=_("Reviewers may see these proposals"),
         choices=(
             ("all", _("All")),
             ("assigned", _("Only assigned proposals")),
