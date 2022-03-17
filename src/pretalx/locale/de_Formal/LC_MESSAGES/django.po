@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-09 16:42+0000\n"
-"PO-Revision-Date: 2021-12-24 21:23+0000\n"
+"PO-Revision-Date: 2022-03-17 03:38+0000\n"
 "Last-Translator: Tobias Kunze <r@rixx.de>\n"
 "Language-Team: \n"
 "Language: de_Formal\n"
@@ -1670,19 +1670,7 @@ msgstr ""
 "Mail an support@pretalx.com!\n"
 
 #: pretalx/common/models/settings.py:101
-#, fuzzy, python-brace-format
-#| msgid ""
-#| "Hi,\n"
-#| "\n"
-#| "just writing you to let you know that your Call for Participation is now\n"
-#| "closed. You'll find a list of all your {submission_count} proposals "
-#| "here:\n"
-#| "{event_submissions}\n"
-#| "\n"
-#| "You can add reviewers here: {event_team}\n"
-#| "You can review proposals here: {event_review}\n"
-#| "And create your schedule here, once you have accepted proposals: "
-#| "{event_schedule}\n"
+#, python-brace-format
 msgid ""
 "Hi,\n"
 "\n"
@@ -1700,15 +1688,20 @@ msgid ""
 msgstr ""
 "Hi,\n"
 "\n"
-"der CfP für Ihre Veranstaltung ist nun geschlossen. Sie finden eine Liste\n"
-"aller {submission_count} Einreichungen hier:\n"
-"{event_submissions}\n"
+"der CfP für Ihre Veranstaltung ist nun geschlossen. Hier sind ein paar "
+"Links, die\n"
+"in den nächsten Tagen nützlich sein sollten:\n"
 "\n"
-"Hier können Sie Reviewer hinzufügen: {event_team}\n"
-"Übersicht über Reviews gibt es hier: {event_review}\n"
-"Und hier können Sie ein Programm erstellen, wenn Sie die ersten "
+"- Sie finden eine Liste aller {submission_count} Einreichungen hier:\n"
+"  {event_submissions}\n"
+"- Hier können Sie Reviewer hinzufügen:\n"
+"  {event_team}\n"
+"- Übersicht über Reviews gibt es hier:\n"
+"  {event_review}\n"
+"- Und hier können Sie ein Programm erstellen, wenn Sie die ersten "
 "Einreichungen\n"
-"angenommen haben: {event_schedule}\n"
+"  angenommen haben:\n"
+"  {event_schedule}\n"
 
 #: pretalx/common/models/settings.py:123
 #, python-brace-format
@@ -2113,6 +2106,8 @@ msgid ""
 "Please either pick some events for this team, or grant access to all your "
 "events!"
 msgstr ""
+"Bitte wählen Sie entweder Veranstaltungen für dieses Team aus, oder geben "
+"Sie ihm Zugriff auf alle Veranstaltungen!"
 
 #: pretalx/event/forms.py:102
 msgid "Use languages"
@@ -2170,10 +2165,8 @@ msgstr ""
 "haben."
 
 #: pretalx/event/forms.py:183 pretalx/orga/forms/event.py:203
-#, fuzzy
-#| msgid "The end of a phase has to be after its start."
 msgid "The event end cannot be before the start."
-msgstr "Das Ende dieser Phase muss nach ihrem Beginn liegen."
+msgstr "Das Ende dieser Veranstaltung darf nicht vor ihrem Beginn liegen."
 
 #: pretalx/event/forms.py:200 pretalx/event/models/event.py:206
 msgid "Main event colour"
@@ -2660,10 +2653,8 @@ msgid "Link to withdraw the proposal"
 msgstr "Link zum Zurückziehen der Einreichung"
 
 #: pretalx/mail/context.py:165
-#, fuzzy
-#| msgid "Proposal title"
 msgid "This Is a Proposal Title"
-msgstr "Titel"
+msgstr "Das ist ein Vortragstitel"
 
 #: pretalx/mail/context.py:166
 msgid "The proposal's title"
@@ -2674,20 +2665,16 @@ msgid "The name(s) of all speakers in this proposal."
 msgstr "Die Namen aller Vortragenden dieser Einreichung."
 
 #: pretalx/mail/context.py:179
-#, fuzzy
-#| msgid "Session Type"
 msgid "Session Type A"
-msgstr "Einreichungsart"
+msgstr "Einreichungsart A"
 
 #: pretalx/mail/context.py:180
 msgid "The proposal's session type"
 msgstr "Einreichungstyp der Einreichung"
 
 #: pretalx/mail/context.py:186
-#, fuzzy
-#| msgid "Track"
 msgid "Track A"
-msgstr "Track"
+msgstr "Track A"
 
 #: pretalx/mail/context.py:187
 msgid "The track the proposal belongs to"
@@ -2701,12 +2688,15 @@ msgid ""
 "\n"
 "Second review, containing heavy criticism!"
 msgstr ""
+"Erste Bewertung, sehr positiv, hält große Stücke auf die Einreichung.\n"
+"\n"
+"---------\n"
+"\n"
+"Zweite Bewertung, sehr kritisch!"
 
 #: pretalx/mail/context.py:194
-#, fuzzy
-#| msgid "You have reviewed this proposal"
 msgid "All review texts for this proposal"
-msgstr "Sie haben diese Einreichung schon bewertet"
+msgstr "Alle Bewertungstexte für diese Einreichung"
 
 #: pretalx/mail/context.py:201
 msgid "The session's start date"
@@ -3651,16 +3641,12 @@ msgid "Please provide a review score!"
 msgstr "Bitte geben Sie einen Wertung an!"
 
 #: pretalx/orga/forms/review.py:123
-#, fuzzy
-#| msgid "You've got no proposals left to review!"
 msgid "Assign proposals to reviewers"
-msgstr "Sie haben keine Einreichungen mehr zu bewerten!"
+msgstr "Reviewern Einreichungen zuweisen"
 
 #: pretalx/orga/forms/review.py:124
-#, fuzzy
-#| msgid "Reviewers can tag proposals"
 msgid "Assign reviewers to proposals"
-msgstr "Reviewer können Einreichungen taggen"
+msgstr "Einreichungen Reviewer zuweisen"
 
 #: pretalx/orga/forms/schedule.py:15
 msgid "Notify speakers of changes"
@@ -3813,10 +3799,8 @@ msgid "Proposal state"
 msgstr "Einreichungsstatus"
 
 #: pretalx/orga/forms/submission.py:139
-#, fuzzy
-#| msgid "The end of a phase has to be after its start."
 msgid "The end time has to be after the start time."
-msgstr "Das Ende dieser Phase muss nach ihrem Beginn liegen."
+msgstr "Der Endzeitpunkt muss nach dem Beginn liegen."
 
 #: pretalx/orga/forms/submission.py:258
 msgid "Mark the new state as 'pending'?"
@@ -4115,10 +4099,8 @@ msgstr "Export"
 
 #: pretalx/orga/templates/orga/base.html:306
 #: pretalx/orga/templates/orga/review/assignment.html:14
-#, fuzzy
-#| msgid "Active reviewers"
 msgid "Assign reviewers"
-msgstr "Aktive Reviewer"
+msgstr "Reviewer einteilen"
 
 #: pretalx/orga/templates/orga/base.html:333 pretalx/schedule/models/room.py:40
 msgid "Speaker Information"
@@ -5154,6 +5136,9 @@ msgid ""
 "this drop-down to switch between the two assignment modes (assigning "
 "reviewers to proposals or proposals to reviewers)."
 msgstr ""
+"Hier können Sie Reviewern bestimmte Einreichungen zuweisen. Bitte nutzen Sie "
+"das Drop-down, um zwischen den beiden Zuweisungsmethoden zu wechseln ("
+"Reviewer zu Einreichungen oder Einreichungen zu Reviewern)."
 
 #: pretalx/orga/templates/orga/review/dashboard.html:25
 msgid "proposal is waiting for your review."
@@ -5246,10 +5231,8 @@ msgid "You have reviewed this proposal"
 msgstr "Sie haben diese Einreichung schon bewertet"
 
 #: pretalx/orga/templates/orga/review/dashboard.html:169
-#, fuzzy
-#| msgid "You have reviewed this proposal"
 msgid "You have been assigned to this proposal"
-msgstr "Sie haben diese Einreichung schon bewertet"
+msgstr "Sie wurden für diese Einreichung eingeteilt"
 
 #: pretalx/orga/templates/orga/review/dashboard.html:193
 #: pretalx/orga/templates/orga/speaker/form.html:41
@@ -5296,17 +5279,13 @@ msgstr "Programmdaten exportieren"
 
 #: pretalx/orga/templates/orga/schedule/export.html:12
 #: pretalx/orga/templates/orga/speaker/export.html:13
-#, fuzzy
-#| msgid "JSON export"
 msgid "CSV/JSON exports"
-msgstr "JSON-Export"
+msgstr "CSV-/JSON-Exporte"
 
 #: pretalx/orga/templates/orga/schedule/export.html:15
 #: pretalx/orga/templates/orga/speaker/export.html:16
-#, fuzzy
-#| msgid "Speaker exports"
 msgid "More exports"
-msgstr "Vortragenden-Export"
+msgstr "Weitere Exporte"
 
 #: pretalx/orga/templates/orga/schedule/export.html:18
 #: pretalx/orga/templates/orga/schedule/export.html:128
@@ -5331,10 +5310,8 @@ msgstr "Datenfelder"
 
 #: pretalx/orga/templates/orga/schedule/export.html:47
 #: pretalx/orga/templates/orga/speaker/export.html:47
-#, fuzzy
-#| msgid "Reject all"
 msgid "Select all"
-msgstr "Alle ablehnen"
+msgstr "Alle auswählen"
 
 #: pretalx/orga/templates/orga/schedule/export.html:60
 #: pretalx/orga/templates/orga/speaker/export.html:70
@@ -6745,10 +6722,8 @@ msgid "The invitation has been sent."
 msgstr "Die Einladung wurde verschickt."
 
 #: pretalx/orga/views/organiser.py:83
-#, fuzzy
-#| msgid "The tag has been deleted."
 msgid "The team has been created."
-msgstr "Der Tag wurde gelöscht."
+msgstr "Das Team wurde erstellt."
 
 #: pretalx/orga/views/organiser.py:85
 msgid "The settings have been saved."
@@ -7718,16 +7693,12 @@ msgid "Proposals available for review"
 msgstr "Einreichung wartet auf Ihre Bewertung."
 
 #: pretalx/submission/models/review.py:219
-#, fuzzy
-#| msgid "all"
 msgid "All"
 msgstr "alle"
 
 #: pretalx/submission/models/review.py:220
-#, fuzzy
-#| msgid "Other proposals"
 msgid "Only assigned proposals"
-msgstr "Andere Einreichungen"
+msgstr "Nur zugewiesene Einreichungen"
 
 #: pretalx/submission/models/review.py:225
 msgid ""
