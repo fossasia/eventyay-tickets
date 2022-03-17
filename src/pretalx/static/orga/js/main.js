@@ -1,14 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
   "use strict"
   $('[data-toggle="tooltip"]').tooltip()
-  if ($("#answer-options").length) {
-    $("#id_variant").change(question_page_toggle_view)
-    $("#id_required").change(question_page_toggle_view)
-    question_page_toggle_view()
-    $("#id_target").change(question_page_toggle_target_view)
-    question_page_toggle_target_view()
-  }
-
   function hideOptions (state) {
     if (!state.id || !state.element) return state.text
     if (state.element && state.element.classList.contains("hidden")) return
@@ -110,32 +102,6 @@ function update_multi_select_caption(element) {
   }
 }
 
-function question_page_toggle_view() {
-  const variant = document.querySelector("#id_variant").value
-  setVisibility(
-    "#answer-options",
-    variant === "choices" || variant === "multiple_choice"
-  )
-  setVisibility(
-    "#alert-required-boolean",
-    variant === "boolean" && document.querySelector("#id_required").checked
-  )
-  setVisibility("#limit-length", variant === "text" || variant === "string")
-}
-
-function question_page_toggle_target_view() {
-  if ($(".limit-submission").length) {
-    setVisibility(
-      ".limit-submission",
-      document.querySelector("#id_target").value === "submission"
-    )
-  }
-  setVisibility(
-    "#is-visible-to-reviewers",
-    document.querySelector("#id_target").value !== "reviewer"
-  )
-}
-
 function getCookie(name) {
   let cookieValue = null
   if (document.cookie && document.cookie !== "") {
@@ -150,17 +116,4 @@ function getCookie(name) {
     }
   }
   return cookieValue
-}
-
-function setVisibility(element, value) {
-  if (typeof element === "string") {
-    element = $(element);
-  }
-  if (element) {
-    if (value) {
-      element.show();
-    } else {
-      element.hide();
-    }
-  }
 }

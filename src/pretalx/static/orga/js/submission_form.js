@@ -6,6 +6,7 @@ const updateVisibility = () => {
   }
 }
 
-document.querySelector("#id_state").addEventListener("change", updateVisibility)
-
-updateVisibility()
+if (document.querySelector("#id_state")) {
+  document.querySelector("#id_state").addEventListener("change", updateVisibility)
+  updateVisibility()
+}

@@ -8,15 +8,19 @@
 
 {% block title %}{% translate "Your proposal" %} :: {% endblock %}
 
-
-{% block content %}
-    {% has_perm 'cfp.add_speakers' request.user submission  as can_invite_speakers %}
+{% block cfp_header %}
     {% compress js %}
         <script defer src="{% static "js/jquery.formset.js" %}"></script>
         <script defer src="{% static "cfp/js/animateFormset.js" %}"></script>
+        <script defer src="{% static "vendored/datetimepicker/bootstrap-datetimepicker.js" %}"></script>
+        <script defer src="{% static "orga/js/datetimepicker.js" %}"></script>
     {% endcompress %}
     <script src="{% static "vendored/marked.min.js" %}" defer></script> {# do not compress #}
     <script src="{% static "common/js/markdown.js" %}" defer></script>
+{% endblock %}
+
+{% block content %}
+    {% has_perm 'cfp.add_speakers' request.user submission  as can_invite_speakers %}
     <h2>{% translate "Your proposal:" %} {{ submission.title }}</h2>
     {% if submission.public_slots %}
         <h3>

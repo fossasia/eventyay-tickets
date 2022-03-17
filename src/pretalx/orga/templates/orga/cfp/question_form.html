@@ -13,7 +13,7 @@
         <script defer src="{% static "vendored/moment-timezone-with-data-2012-2022.js" %}"></script>
         <script defer src="{% static "vendored/datetimepicker/bootstrap-datetimepicker.js" %}"></script>
         <script defer src="{% static "orga/js/datetimepicker.js" %}"></script>
-        <script defer src="{% static "orga/js/questionRequiredField.js" %}"></script>
+        <script defer src="{% static "orga/js/questionForm.js" %}"></script>
     {% endcompress %}
     <h2>
         {% if form.instance.question %}{% translate "Question" %}: {{ form.instance.question }}{% else %}{% translate "New question" %}{% endif %}
@@ -81,6 +81,18 @@
         <span id="limit-length">
             {% bootstrap_field form.min_length layout='event' %}
             {% bootstrap_field form.max_length layout='event' %}
+        </span>
+        <span id="limit-number">
+            {% bootstrap_field form.min_number layout='event' %}
+            {% bootstrap_field form.max_number layout='event' %}
+        </span>
+        <span id="limit-date">
+            {% bootstrap_field form.min_date layout='event' %}
+            {% bootstrap_field form.max_date layout='event' %}
+        </span>
+        <span id="limit-datetime">
+            {% bootstrap_field form.min_datetime layout='event' %}
+            {% bootstrap_field form.max_datetime layout='event' %}
         </span>
         {% bootstrap_field form.contains_personal_data layout='event' %}
 
