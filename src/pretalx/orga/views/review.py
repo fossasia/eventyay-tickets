@@ -578,9 +578,13 @@ class ReviewAssignment(EventPermissionRequired, FormView):
         proposals = self.request.event.submissions.filter(state="submitted").order_by(
             "title"
         )
-        reviewers = User.objects.filter(
-            teams__in=self.request.event.teams.filter(is_reviewer=True)
-        ).order_by("name").distinct()
+        reviewers = (
+            User.objects.filter(
+                teams__in=self.request.event.teams.filter(is_reviewer=True)
+            )
+            .order_by("name")
+            .distinct()
+        )
 
         if self.form_type == "submission":
             formset_class = modelformset_factory(
