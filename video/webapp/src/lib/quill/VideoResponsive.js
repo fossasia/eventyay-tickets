@@ -1,13 +1,15 @@
+import Vue from 'vue'
 import Quill from 'quill'
+import IframeBlocker from 'components/IframeBlocker'
 
 const BlockEmbed = Quill.import('blots/block/embed')
 const Link = Quill.import('formats/link')
 
-class VideoResponsive extends BlockEmbed {
+export default class VideoResponsive extends BlockEmbed {
 	/*
-	 With inspiration taken from https://github.com/pblobp/quill-video-responsive
-	Copyright (c) 2019 pblobp, MIT License
-	 */
+		With inspiration taken from https://github.com/pblobp/quill-video-responsive
+		Copyright (c) 2019 pblobp, MIT License
+	*/
 
 	static blotName = 'video'
 	static tagName = 'div'
@@ -15,17 +17,23 @@ class VideoResponsive extends BlockEmbed {
 
 	static create (value) {
 		const node = super.create(value)
-
+		const src = this.sanitize(value)
 		const innerNode = document.createElement('div')
 		innerNode.classList.add('ql-video-inner')
+		innerNode.contentEditable = false
+		innerNode.dataset.src = src
 		node.appendChild(innerNode)
-
-		const child = document.createElement('iframe')
-		child.setAttribute('frameborder', '0')
-		child.setAttribute('allowfullscreen', true)
-		child.setAttribute('src', this.sanitize(value))
-		innerNode.appendChild(child)
-
+		const blocker = document.createElement('div')
+		innerNode.appendChild(blocker)
+		new Vue({
+			render: h => h(IframeBlocker, {
+				props: {
+					src,
+					frameborder: '0',
+					allowfullscreen: true
+				}
+			})
+		}).$mount(blocker)
 		return node
 	}
 
@@ -34,9 +42,7 @@ class VideoResponsive extends BlockEmbed {
 	}
 
 	static value (domNode) {
-		const iframe = domNode.querySelector('iframe')
-		return iframe ? iframe.getAttribute('src') : ''
+		const iframe = domNode.querySelector('.ql-video-inner')
+		return iframe ? iframe.dataset.src : ''
 	}
 }
-
-export default VideoResponsive
