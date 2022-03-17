@@ -1,5 +1,5 @@
 <template lang="pug">
-.rich-text-content(v-html="renderedContent", @click="handleClick")
+.rich-text-content(@click="handleClick")
 </template>
 <script>
 import Quill from 'quill'
@@ -11,15 +11,21 @@ export default {
 	props: {
 		content: [Array, Object],
 	},
-	computed: {
-		renderedContent () {
-			const tempCont = document.createElement('div')
-			Quill.register(VideoResponsive)
-			Quill.register(fullWidthFormat)
-			const quill = new Quill(tempCont)
-			quill.setContents(this.content)
-			return tempCont.getElementsByClassName('ql-editor')[0].innerHTML
+	watch: {
+		content: {
+			handler (val) {
+				this.quill.setContents(val)
+			},
+			deep: true
 		},
+	},
+	mounted () {
+		Quill.register(VideoResponsive)
+		Quill.register(fullWidthFormat)
+		const quill = new Quill(this.$el, {
+			readOnly: true
+		})
+		quill.setContents(this.content)
 	},
 	methods: {
 		handleClick (event) {
@@ -40,7 +46,7 @@ export default {
 	},
 }
 </script>
-<style lang="styl">
+<style lang="stylus">
 .rich-text-content
 	table
 		border-collapse: collapse
@@ -56,13 +62,14 @@ export default {
 		max-width: 100%
 
 	.ql-video-wrapper
+		// TODO use aspect-ratio instead
 		.ql-video-inner
 			height: 0
 			width: 100%
 			padding-top: 56.25%
 			position: relative
 
-			iframe, object, embed
+			.c-iframe-blocker
 				position: absolute
 				top: 0
 				left: 0

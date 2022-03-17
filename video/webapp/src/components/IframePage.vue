@@ -1,12 +1,14 @@
 <template lang="pug">
 .c-iframe-page
 	bunt-progress-circular(size="huge", :page="true", v-if="loading")
-	iframe(:src="url", allow="camera *; autoplay *; microphone *; fullscreen *; display-capture *", allowfullscreen, allowusermedia, @load="loaded")
+	iframe-blocker(:src="url", allow="camera *; autoplay *; microphone *; fullscreen *; display-capture *", allowfullscreen, allowusermedia, @load="loaded")
 </template>
 <script>
 import {mapState} from 'vuex'
+import IframeBlocker from './IframeBlocker'
 
 export default {
+	components: { IframeBlocker },
 	props: {
 		module: {
 			type: Object,
@@ -55,12 +57,4 @@ export default {
 	display: flex
 	flex-direction: column
 	position: relative
-	iframe
-		height: 100%
-		width: 100%
-		position: absolute
-		top: 0
-		left: 0
-		border: none
-		flex: auto // because safari
 </style>
