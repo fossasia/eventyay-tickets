@@ -108,6 +108,7 @@ class MailTemplate(LogMixin, models.Model):
         elif isinstance(user, User):
             address = None
             users = [user]
+            locale = locale or user.locale
         elif not user and allow_empty_address:
             address = None
             users = None
