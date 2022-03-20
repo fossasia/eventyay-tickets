@@ -7,6 +7,7 @@ from django.utils.translation import gettext as _
 from django_scopes.forms import SafeModelChoiceField, SafeModelMultipleChoiceField
 
 from pretalx.common.forms.fields import ImageField
+from pretalx.common.forms.widgets import MarkdownWidget
 from pretalx.common.mixins.forms import ReadOnlyFlag, RequestRequire
 from pretalx.submission.models import Submission, SubmissionStates, SubmissionType
 
@@ -197,6 +198,9 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
             "tags": forms.SelectMultiple(attrs={"class": "select2"}),
             "track": forms.Select(attrs={"class": "select2"}),
             "submission_type": forms.Select(attrs={"class": "select2"}),
+            "abstract": MarkdownWidget,
+            "description": MarkdownWidget,
+            "notes": MarkdownWidget,
         }
         field_classes = {
             "submission_type": SafeModelChoiceField,

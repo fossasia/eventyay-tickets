@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` Markdown preview is now also available for organisers when they edit existing proposals.
 - :bug:`-` In some situations, it was impossible to delete uploaded files in question answers.
 - :feature:`-` If you try to upload files that are larger than the upload limit, pretalx will now warn you before you even attempt the upload.
 - :feature:`-` You can now, finally!, use SVGs as event logo and event header images.
