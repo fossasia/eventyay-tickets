@@ -16,18 +16,7 @@ from pretalx.common.forms.widgets import (
     PasswordStrengthInput,
 )
 
-"""
-SVG image uploads were possible in the past, but have been removed due to
-security concerns.
-SVG validation is nontrivial to the point of not having been convincingly
-implemented so far, and always pose the risk of data leakage. Additionally,
-Pillow does not support SVG images, and we use Pillow to strip metadata
-and reduce file size.
-
-As a compromise, users with the `is_administrator` flag are still allowed to
-upload SVGs, since they are presumed to have root access to the system.
-"""
-IMAGE_EXTENSIONS = (".png", ".jpg", ".gif", ".jpeg")
+IMAGE_EXTENSIONS = (".png", ".jpg", ".gif", ".jpeg", ".svg")
 
 
 class GlobalValidator:
@@ -138,8 +127,8 @@ class ImageField(ExtensionFileInput, SizeFileInput, FileField):
         .png.fp object for some unholy (and possibly buggy) reason.
         """
         f = super().to_python(data)
-        if f is None:
-            return None
+        if f is None or f.name.endswith(".svg"):
+            return f
 
         # We need to get a file object for Pillow. We might have a path or we might
         # have to read the data into memory.

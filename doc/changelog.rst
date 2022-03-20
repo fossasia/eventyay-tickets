@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` You can now, finally!, use SVGs as event logo and event header images.
 - :bug:`-` Reminders about unanswered questions were always sent in the event language, instead of the user's/speaker's chosen language.
 - :feature:`-` There are new question types: You can now ask for a URL, a date, or a date and a time (and you can set allowed ranges for the latter two).
 - :bug:`1284` Some browsers cached hidden fields in forms extremely aggressively, so pretalx has stopped relying on them as much.

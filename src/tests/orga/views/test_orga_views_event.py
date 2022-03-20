@@ -186,42 +186,6 @@ def test_add_logo(event, orga_client):
 
 
 @pytest.mark.django_db
-def test_add_logo_no_svg(event, orga_client):
-    assert not event.logo
-    response = orga_client.get(event.urls.base, follow=True)
-    assert '<img "src="/media' not in response.content.decode()
-    with open("../assets/icon.svg", "rb") as logo:
-        response = orga_client.post(
-            event.orga_urls.edit_settings,
-            {
-                "name_0": event.name,
-                "slug": "logotest",
-                "locales": event.locales,
-                "locale": event.locale,
-                "date_from": event.date_from,
-                "date_to": event.date_to,
-                "timezone": event.timezone,
-                "email": event.email,
-                "primary_color": "#00ff00",
-                "custom_css": "",
-                "logo": logo,
-                "schedule": event.display_settings["schedule"],
-                "show_featured": event.feature_flags["show_featured"],
-                "use_feedback": event.feature_flags["use_feedback"],
-            },
-            follow=True,
-        )
-    event.refresh_from_db()
-    assert event.primary_color != "#00ff00"
-    assert response.status_code == 200
-    assert not event.logo
-    response = orga_client.get(event.urls.base, follow=True)
-    assert (
-        '<img src="/media' not in response.content.decode()
-    ), response.content.decode()
-
-
-@pytest.mark.django_db
 def test_change_custom_domain(event, orga_client, monkeypatch):
     from pretalx.orga.forms.event import socket
 
