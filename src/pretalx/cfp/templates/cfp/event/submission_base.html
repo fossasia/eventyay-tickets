@@ -8,7 +8,7 @@
 {% block cfp_header %}
     <script src="{% static "vendored/marked.min.js" %}" defer></script> {# do not compress #}
     {% compress js %}
-        <script src="{% static "common/js/markdown.js" %}" defer></script>
+        <script src="{% static "common/js/formTools.js" %}" defer></script>
         <script src="{% static "cfp/js/trackDescriptions.js" %}" defer></script>
     {% endcompress %}
     {% block cfp_submission_header %}{% endblock %}

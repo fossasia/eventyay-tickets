@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` If you try to upload files that are larger than the upload limit, pretalx will now warn you before you even attempt the upload.
 - :feature:`-` You can now, finally!, use SVGs as event logo and event header images.
 - :bug:`-` Reminders about unanswered questions were always sent in the event language, instead of the user's/speaker's chosen language.
 - :feature:`-` There are new question types: You can now ask for a URL, a date, or a date and a time (and you can set allowed ranges for the latter two).

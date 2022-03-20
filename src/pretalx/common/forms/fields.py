@@ -52,6 +52,14 @@ class SizeFileInput:
         else:
             self.max_size = kwargs.pop("max_size")
         super().__init__(*args, **kwargs)
+        self.size_warning = _("Please do not upload files larger than {size}!").format(
+            size=SizeFileField._format_size(self.max_size)
+        )
+        self.original_help_text = getattr(self, "original_help_text", "") or self.help_text
+        self.added_help_text = getattr(self, "added_help_text", "") + self.size_warning
+        self.help_text = self.original_help_text + " " + self.added_help_text
+        self.widget.attrs["data-maxsize"] = self.max_size
+        self.widget.attrs["data-sizewarning"] = self.size_warning
 
     @staticmethod
     def _format_size(num):
