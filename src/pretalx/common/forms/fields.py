@@ -55,7 +55,9 @@ class SizeFileInput:
         self.size_warning = _("Please do not upload files larger than {size}!").format(
             size=SizeFileField._format_size(self.max_size)
         )
-        self.original_help_text = getattr(self, "original_help_text", "") or self.help_text
+        self.original_help_text = (
+            getattr(self, "original_help_text", "") or self.help_text
+        )
         self.added_help_text = getattr(self, "added_help_text", "") + self.size_warning
         self.help_text = self.original_help_text + " " + self.added_help_text
         self.widget.attrs["data-maxsize"] = self.max_size
@@ -70,17 +72,13 @@ class SizeFileInput:
         return f"{num:.1f}YiB"  # Future proof 11/10
 
     def validate(self, value):
-        value = super().validate(value)
+        super().validate(value)
         if (
             self.max_size
             and isinstance(value, UploadedFile)
             and value.size > self.max_size
         ):
-            raise ValidationError(
-                _("Please do not upload files larger than {size}!").format(
-                    size=SizeFileField._format_size(self.max_size)
-                )
-            )
+            raise ValidationError(self.size_warning)
 
 
 class ExtensionFileInput:
@@ -92,6 +90,7 @@ class ExtensionFileInput:
         super().__init__(*args, **kwargs)
 
     def validate(self, value):
+        super().validate(value)
         if value:
             filename = value.name
             extension = Path(filename).suffix.lower()
@@ -102,7 +101,6 @@ class ExtensionFileInput:
                     ).format(extension=extension)
                     + ", ".join(self.extensions)
                 )
-        return value
 
 
 class SizeFileField(SizeFileInput, FileField):

@@ -103,7 +103,7 @@ class QuestionFieldsMixin:
 
         read_only = readonly or question.read_only
         original_help_text = question.help_text
-        help_text = rich_text(question.help_text)
+        help_text = rich_text(question.help_text)[len("<p>") : -len("</p>")]
         if question.is_public and self.event.feature_flags["show_schedule"]:
             help_text += " " + str(phrases.base.public_content)
         count_chars = self.event.cfp.settings["count_length_in"] == "chars"
