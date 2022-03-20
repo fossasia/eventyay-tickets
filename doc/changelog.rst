@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`-` In some situations, it was impossible to delete uploaded files in question answers.
 - :feature:`-` If you try to upload files that are larger than the upload limit, pretalx will now warn you before you even attempt the upload.
 - :feature:`-` You can now, finally!, use SVGs as event logo and event header images.
 - :bug:`-` Reminders about unanswered questions were always sent in the event language, instead of the user's/speaker's chosen language.

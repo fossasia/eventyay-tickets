@@ -322,12 +322,12 @@ class QuestionFieldsMixin:
         if field.answer:
             # We already have a cached answer object, so we don't
             # have to create a new one
-            if v == "" or v is None:
+            if v == "" or v is None or v is False:
                 field.answer.delete()
             else:
                 self._save_to_answer(field, field.answer, v)
                 field.answer.save()
-        elif v != "" and v is not None:
+        elif v != "" and v is not None and v is not False:
             answer = Answer(
                 review=self.review
                 if field.question.target == QuestionTarget.REVIEWER
