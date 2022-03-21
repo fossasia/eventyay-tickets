@@ -14,6 +14,8 @@
 		bunt-button.btn-add-role(@click="addTraitGrant") Add role
 </template>
 <script>
+import { parseTraitGrants, stringifyTraitGrants } from 'lib/traitGrants'
+
 export default {
 	props: {
 		traitGrants: Object,
@@ -36,14 +38,12 @@ export default {
 		})
 	},
 	methods: {
-		getTraitGrants (trait) {
-			return trait ? trait.map(i => (Array.isArray(i) ? i.join('|') : i)).join(', ') : ''
+		getTraitGrants (traits) {
+			return stringifyTraitGrants(traits)
 		},
 		setTraitGrants (role, traits) {
 			if (typeof this.traitGrants[role] !== 'undefined') {
-				this.$set(this.traitGrants, role, traits.split(',').map(
-					(i) => i.trim().split('|').filter((j) => j.length > 0)
-				).filter((i) => i.length > 0))
+				this.$set(this.traitGrants, role, parseTraitGrants(traits))
 			}
 			this.$emit('changed')
 		},

@@ -39,12 +39,19 @@
 					.role-head
 						bunt-input(label="role name", v-model="newRoleName", name="newRoleName")
 						bunt-button.btn-add-role(@click="addRole", :disabled="!newRoleName || newRoleName in config.roles") Add new role
+		bunt-tab(header="On-site")
+			.permission-config
+				.ui-form-body
+					h3 Traits enabling on-site behaviour
+					p Users with the following traits will be treated as on-site attendees. This currently only disables stream autoplaying by default.
+					bunt-input.onsite-traits(name="onsite-traits", label="On-site Traits", v-model="onsiteTraits")
 	.ui-form-actions
 		bunt-button.btn-save(@click="save", :loading="saving", :error-message="error") Save
 </template>
 <script>
 import api from 'lib/api'
 import fuzzysearch from 'lib/fuzzysearch'
+import { parseTraitGrants, stringifyTraitGrants } from 'lib/traitGrants'
 import TraitGrants from './trait-grants'
 
 export default {
@@ -58,7 +65,8 @@ export default {
 			rooms: null,
 			changedRoomIds: [],
 			saving: false,
-			error: null
+			error: null,
+			onsiteTraits: ''
 		}
 	},
 	computed: {
@@ -74,6 +82,7 @@ export default {
 		try {
 			this.config = await api.call('world.config.get')
 			this.rooms = await api.call('room.config.list')
+			this.onsiteTraits = stringifyTraitGrants(this.config.onsite_traits)
 		} catch (error) {
 			this.error = error
 			console.log(error)
@@ -115,6 +124,7 @@ export default {
 			await api.call('world.config.patch', {
 				roles: this.config.roles,
 				trait_grants: this.config.trait_grants,
+				onsite_traits: parseTraitGrants(this.onsiteTraits)
 			})
 			for (const room of this.rooms.filter((r) => this.changedRoomIds.includes(r.id))) {
 				await api.call('room.config.patch', {

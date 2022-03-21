@@ -1,7 +1,9 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import i18n from 'i18n'
+import jwtDecode from 'jwt-decode'
 import api from 'lib/api'
+import { doesTraitsMatchGrants } from 'lib/traitGrants'
 import announcement from './announcement'
 import chat from './chat'
 import question from './question'
@@ -31,7 +33,7 @@ export default new Vuex.Store({
 		mediaSourcePlaceholderRect: null,
 		userLocale: null, // only used to force UI render
 		userTimezone: null,
-		autoplay: localStorage.disableAutoplay !== 'true',
+		autoplayUserSetting: !localStorage.disableAutoplay ? null : localStorage.disableAutoplay !== 'true',
 		stageStreamCollapsed: false,
 		now: moment(),
 		unblockedIframeDomains: new Set(JSON.parse(localStorage.unblockedIframeDomains || '[]'))
@@ -41,6 +43,11 @@ export default new Vuex.Store({
 			return (permission) => {
 				return !!state.permissions?.includes(permission) || (permission.startsWith('room:') && state.activeRoom?.permissions?.includes(permission))
 			}
+		},
+		autoplay (state) {
+			if (state.autoplayUserSetting) return state.autoplayUserSetting
+			const token = jwtDecode(state.token)
+			return !doesTraitsMatchGrants(token.traits, ['derp'])
 		}
 	},
 	mutations: {
@@ -163,8 +170,9 @@ export default new Vuex.Store({
 			state.userTimezone = timezone
 			localStorage.userTimezone = timezone // TODO this bakes the auto-detected timezone into localStorage on first load, do we really want this?
 		},
-		setAutoplay ({state}, autoplay) {
-			state.autoplay = autoplay
+		setAutoplay ({state, getters}, autoplay) {
+			if (getters.autoplay === autoplay) return
+			state.autoplayUserSetting = autoplay
 			localStorage.disableAutoplay = !autoplay
 		},
 		unblockIframeDomain ({state}, domain) {

@@ -43,7 +43,7 @@
 // - show controls based on mouse move time
 // - backdrop controls with black for contrast on white
 // - add blocking backdrop on level chooser
-import { mapState } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import Hls from 'hls.js'
 import mux from 'mux-embed'
 import config from 'config'
@@ -114,7 +114,8 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['autoplay', 'streamingRoom']),
+		...mapState(['streamingRoom']),
+		...mapGetters(['autoplay']),
 		seekable () {
 			return this.isLive === false || config.seekableLiveStreams
 		},

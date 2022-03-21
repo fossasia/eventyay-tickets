@@ -15,7 +15,7 @@
 </template>
 <script>
 // TODO functional component?
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import isEqual from 'lodash/isEqual'
 import api from 'lib/api'
 import JanusCall from 'components/JanusCall'
@@ -38,7 +38,8 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['autoplay', 'streamingRoom']),
+		...mapState(['streamingRoom']),
+		...mapGetters(['autoplay']),
 		module () {
 			if (!this.room) {
 				return null
