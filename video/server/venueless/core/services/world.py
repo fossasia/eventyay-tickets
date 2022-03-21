@@ -40,8 +40,8 @@ class WorldConfigSerializer(serializers.Serializer):
     track_exhibitor_views = serializers.BooleanField()
     track_room_views = serializers.BooleanField()
     track_world_views = serializers.BooleanField()
-    onsite_traits = serializers.CharField(
-        required=False, allow_null=True, allow_blank=True
+    onsite_traits = serializers.JSONField(
+        required=False, allow_null=False,
     )
     conftool_url = serializers.URLField(
         required=False, allow_null=True, allow_blank=True
@@ -168,6 +168,7 @@ def get_world_config_for_user(world, user):
                 "iframe_blockers", {"default": {"enabled": False, "policy_url": None}}
             ),
         },
+        "onsite_traits": world.config.get("onsite_traits", []),
         "permissions": list(permissions[world]),
         "rooms": [],
     }
@@ -357,7 +358,7 @@ def _config_serializer(world, *args, **kwargs):
             "trait_grants": world.trait_grants,
             "connection_limit": world.config.get("connection_limit", 0),
             "profile_fields": world.config.get("profile_fields", []),
-            "onsite_traits": world.config.get("onsite_traits", ""),
+            "onsite_traits": world.config.get("onsite_traits", []),
             "conftool_url": world.config.get("conftool_url", ""),
             "conftool_password": world.config.get("conftool_password", ""),
             "iframe_blockers": world.config.get(
