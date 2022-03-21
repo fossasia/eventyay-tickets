@@ -56,6 +56,13 @@ export default {
 			} else {
 				this.iframe.classList.remove('background')
 			}
+		},
+		module: {
+			handler () {
+				this.destroyIframe()
+				this.initializeIframe()
+			},
+			deep: true
 		}
 	},
 	async mounted () {
@@ -63,48 +70,7 @@ export default {
 			return
 		}
 		api.call('room.enter', {room: this.room.id})
-		try {
-			let iframeUrl
-			let hideIfBackground = false
-			switch (this.module.type) {
-				case 'call.bigbluebutton': {
-					({url: iframeUrl} = await api.call('bbb.room_url', {room: this.room.id}))
-					hideIfBackground = true
-					break
-				}
-				case 'call.zoom': {
-					({url: iframeUrl} = await api.call('zoom.room_url', {room: this.room.id}))
-					hideIfBackground = true
-					break
-				}
-				case 'livestream.iframe': {
-					iframeUrl = this.module.config.url
-					break
-				}
-				case 'livestream.youtube': {
-					iframeUrl = `https://www.youtube-nocookie.com/embed/${this.module.config.ytid}?${this.autoplay ? 'autoplay=1&' : ''}rel=0&showinfo=0`
-					break
-				}
-			}
-			if (!iframeUrl || !this.$el || this._isDestroyed) return
-			const iframe = document.createElement('iframe')
-			iframe.src = iframeUrl
-			iframe.classList.add('iframe-media-source')
-			if (hideIfBackground) {
-				iframe.classList.add('hide-if-background')
-			}
-			iframe.allow = 'camera *; microphone *; fullscreen *; display-capture *' + (this.autoplay ? '; autoplay *' : '')
-			iframe.allowfullscreen = true
-			iframe.allowusermedia = true
-			iframe.setAttribute('allowfullscreen', '') // iframe.allowfullscreen is not enough in firefox#media-source-iframes
-			const container = document.querySelector('#media-source-iframes')
-			container.appendChild(iframe)
-			this.iframe = iframe
-		} catch (error) {
-			// TODO handle bbb/zoom.join.missing_profile
-			this.iframeError = error
-			console.log(error)
-		}
+		this.initializeIframe()
 	},
 	beforeDestroy () {
 		this.iframe?.remove()
@@ -112,6 +78,53 @@ export default {
 		if (this.room) api.call('room.leave', {room: this.room.id})
 	},
 	methods: {
+		async initializeIframe () {
+			try {
+				let iframeUrl
+				let hideIfBackground = false
+				switch (this.module.type) {
+					case 'call.bigbluebutton': {
+						({url: iframeUrl} = await api.call('bbb.room_url', {room: this.room.id}))
+						hideIfBackground = true
+						break
+					}
+					case 'call.zoom': {
+						({url: iframeUrl} = await api.call('zoom.room_url', {room: this.room.id}))
+						hideIfBackground = true
+						break
+					}
+					case 'livestream.iframe': {
+						iframeUrl = this.module.config.url
+						break
+					}
+					case 'livestream.youtube': {
+						iframeUrl = `https://www.youtube-nocookie.com/embed/${this.module.config.ytid}?${this.autoplay ? 'autoplay=1&' : ''}rel=0&showinfo=0`
+						break
+					}
+				}
+				if (!iframeUrl || !this.$el || this._isDestroyed) return
+				const iframe = document.createElement('iframe')
+				iframe.src = iframeUrl
+				iframe.classList.add('iframe-media-source')
+				if (hideIfBackground) {
+					iframe.classList.add('hide-if-background')
+				}
+				iframe.allow = 'camera *; microphone *; fullscreen *; display-capture *' + (this.autoplay ? '; autoplay *' : '')
+				iframe.allowfullscreen = true
+				iframe.allowusermedia = true
+				iframe.setAttribute('allowfullscreen', '') // iframe.allowfullscreen is not enough in firefox#media-source-iframes
+				const container = document.querySelector('#media-source-iframes')
+				container.appendChild(iframe)
+				this.iframe = iframe
+			} catch (error) {
+				// TODO handle bbb/zoom.join.missing_profile
+				this.iframeError = error
+				console.error(error)
+			}
+		},
+		destroyIframe () {
+			this.iframe?.remove()
+		},
 		isPlaying () {
 			if (this.call) {
 				return this.$refs.janus.roomId
