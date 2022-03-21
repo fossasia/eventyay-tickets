@@ -10,13 +10,15 @@ __version__ = '1.1.0'
 
 class PluginApp(PluginConfig):
     name = 'pretix_venueless'
-    verbose_name = 'Venueless integration'
+    verbose_name = 'Venueless'
 
     class PretixPluginMeta:
-        name = gettext_lazy('Venueless integration')
+        name = gettext_lazy('Venueless')
         author = 'Raphael Michel'
-        description = gettext_lazy('Integrates pretix with venueless.org')
+        description = gettext_lazy('Grant access to your venueless event to your customers')
         visible = True
+        picture = "pretix_venueless/logo.svg"
+        featured = True
         version = __version__
         category = 'INTEGRATION'
         compatibility = "pretix>=3.8.0"
