@@ -15,7 +15,7 @@ class PluginApp(PluginConfig):
     class PretixPluginMeta:
         name = gettext_lazy('Venueless')
         author = 'Raphael Michel'
-        description = gettext_lazy('Grant access to your venueless event to your customers')
+        description = gettext_lazy('Grant access to your venueless event to your customers.')
         visible = True
         picture = "pretix_venueless/logo.svg"
         featured = True

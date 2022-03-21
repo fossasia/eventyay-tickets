@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-17 13:21+0200\n"
+"POT-Creation-Date: 2022-03-21 22:19+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,11 +18,13 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: pretix_venueless/__init__.py:16
-msgid "Venueless integration"
+#: pretix_venueless/templates/pretix_venueless/settings.html:5
+#: pretix_venueless/views.py:178
+msgid "Venueless"
 msgstr ""
 
 #: pretix_venueless/__init__.py:18
-msgid "Integrates pretix with venueless.org"
+msgid "Grant access to your venueless event to your customers."
 msgstr ""
 
 #: pretix_venueless/templates/pretix_venueless/order_info.html:8
@@ -38,11 +40,6 @@ msgstr ""
 msgid ""
 "You will be able to join this event with your browser right here when it "
 "starts."
-msgstr ""
-
-#: pretix_venueless/templates/pretix_venueless/settings.html:5
-#: pretix_venueless/views.py:178
-msgid "Venueless"
 msgstr ""
 
 #: pretix_venueless/templates/pretix_venueless/settings.html:12
