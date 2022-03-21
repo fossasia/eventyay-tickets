@@ -9,6 +9,6 @@ export function stringifyTraitGrants (grants) {
 }
 
 export function doesTraitsMatchGrants (traits, grants) {
-	if (!grants || !traits) return false
+	if (!grants || !traits || !Array.isArray(grants) || grants.length === 0) return false
 	return grants.every(or => (Array.isArray(or) ? or.some(t => traits.includes(t)) : traits.includes(or)))
 }
