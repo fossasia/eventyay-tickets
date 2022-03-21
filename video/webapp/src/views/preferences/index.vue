@@ -78,7 +78,7 @@ export default {
 	},
 	created () {
 		this.profile = Object.assign({}, this.user.profile)
-		this.autoplay = this.$store.state.autoplay
+		this.autoplay = this.$store.getters.autoplay
 		if (!this.profile.avatar || (!this.profile.avatar.url && !this.profile.avatar.identicon)) {
 			this.profile.avatar = {
 				identicon: this.user.id
