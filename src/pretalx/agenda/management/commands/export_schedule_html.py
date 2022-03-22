@@ -158,8 +158,8 @@ def export_event(event, destination):
                     css_assets |= set(find_urls(content))
 
             logging.info(f"Exporting {len(css_assets)} files from CSS links")
-            for url in (get_path(urllib.parse.unquote(url)) for url in css_assets):
-                dump_content(destination, url, get)
+            for url_path in (get_path(urllib.parse.unquote(url)) for url in css_assets):
+                dump_content(destination, url_path, get)
 
 
 def delete_directory(path):
