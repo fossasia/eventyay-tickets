@@ -7,7 +7,7 @@
             <a href="{{ speaker.urls.public }}">
         {% endif %}
         <div class="avatar-wrapper">
-            {% if speaker.user.avatar_url %}
+            {% if speaker.user.avatar_url and request.event.cfp.settings.request_avatar %}
                 <img src="{{ speaker.user.avatar_url }}">
             {% else %}
                 {% include "common/avatar.svg" %}
