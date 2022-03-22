@@ -234,6 +234,16 @@ class TestWizard:
         response, current_url = self.perform_question_wizard(
             client, response, current_url, answer_data, next_step="user", event=event
         )
+        # Try to login first, then remember you don't have an account yet
+        response, current_url = self.perform_user_wizard(
+            client,
+            response,
+            current_url,
+            email="wrong@example.org",
+            password="testpassw0rd!",
+            event=event,
+            next_step="user",
+        )
         response, current_url = self.perform_user_wizard(
             client,
             response,
