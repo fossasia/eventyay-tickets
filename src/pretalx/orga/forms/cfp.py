@@ -156,7 +156,7 @@ class QuestionForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
         if not (
             event.feature_flags["use_tracks"]
             and event.tracks.all().count()
-            and event.settings.cfp_request_track
+            and event.cfp.request_track
         ):
             self.fields.pop("tracks")
         else:
