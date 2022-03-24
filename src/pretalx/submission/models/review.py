@@ -67,6 +67,19 @@ class ReviewScore(models.Model):
         ordering = ("value",)
 
 
+class ReviewManager(models.Manager):
+    def get_queryset(self):
+        from pretalx.submission.models.submission import SubmissionStates
+
+        return (
+            super().get_queryset().exclude(submission__state=SubmissionStates.DELETED)
+        )
+
+
+class AllReviewManager(models.Manager):
+    pass
+
+
 class Review(models.Model):
     """Reviews model the opinion of reviewers of a.
 
@@ -94,7 +107,10 @@ class Review(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
-    objects = ScopedManager(event="submission__event")
+    objects = ScopedManager(event="submission__event", _manager_class=ReviewManager)
+    all_objects = ScopedManager(
+        event="submission__event", _manager_class=AllReviewManager
+    )
 
     def __str__(self):
         return f"Review(event={self.submission.event.slug}, submission={self.submission.title}, user={self.user.get_display_name}, score={self.score})"
