@@ -16,6 +16,7 @@
 <script>
 // TODO functional component?
 import { mapState } from 'vuex'
+import isEqual from 'lodash/isEqual'
 import api from 'lib/api'
 import JanusCall from 'components/JanusCall'
 import JanusChannelCall from 'components/JanusChannelCall'
@@ -58,11 +59,11 @@ export default {
 			}
 		},
 		module: {
-			handler () {
+			handler (value, oldValue) {
+				if (isEqual(value, oldValue)) return
 				this.destroyIframe()
 				this.initializeIframe()
-			},
-			deep: true
+			}
 		}
 	},
 	async mounted () {
