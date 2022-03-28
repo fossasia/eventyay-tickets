@@ -167,8 +167,8 @@ def get_world_config_for_user(world, user):
             "iframe_blockers": world.config.get(
                 "iframe_blockers", {"default": {"enabled": False, "policy_url": None}}
             ),
+            "onsite_traits": world.config.get("onsite_traits", []),
         },
-        "onsite_traits": world.config.get("onsite_traits", []),
         "permissions": list(permissions[world]),
         "rooms": [],
     }
