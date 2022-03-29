@@ -15,12 +15,14 @@ const changeSelectAll = (e) => {
 
 const addHook = () => {
   const updateVisibility = () => {
-    const isCSV = document.querySelector("#id_export_format input[value='csv']").checked;
-    if (isCSV) {
-      document.querySelector("#data-delimiter").style.display = "block"
-    } else {
-      document.querySelector("#data-delimiter").style.display = "none"
-
+    const delimiter = document.querySelector("#data-delimiter")
+    if (delimiter) {
+      const isCSV = document.querySelector("#id_export_format input[value='csv']").checked;
+      if (isCSV) {
+        document.querySelector("#data-delimiter").style.display = "block"
+      } else {
+        document.querySelector("#data-delimiter").style.display = "none"
+      }
     }
   }
   updateVisibility()
