@@ -47,7 +47,7 @@ export default new Vuex.Store({
 		autoplay (state) {
 			if (state.autoplayUserSetting) return state.autoplayUserSetting
 			const token = jwtDecode(state.token)
-			return !doesTraitsMatchGrants(token.traits, ['derp'])
+			return !doesTraitsMatchGrants(token.traits, state.world.onsite_traits)
 		}
 	},
 	mutations: {
