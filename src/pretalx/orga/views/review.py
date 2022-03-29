@@ -22,6 +22,7 @@ from pretalx.orga.forms.review import (
     DirectionForm,
     ProposalForReviewerForm,
     ReviewerForProposalForm,
+    ReviewExportForm,
     ReviewForm,
     TagsForm,
 )
@@ -629,3 +630,22 @@ class ReviewAssignment(EventPermissionRequired, FormView):
             form.save()
         messages.success(request, _("Saved!"))
         return self.get(self.request, *self.args, **self.kwargs)
+
+
+class ReviewExport(EventPermissionRequired, FormView):
+    permission_required = "orga.change_settings"
+    template_name = "orga/review/export.html"
+    form_class = ReviewExportForm
+
+    def get_form_kwargs(self):
+        result = super().get_form_kwargs()
+        result["event"] = self.request.event
+        result["user"] = self.request.user
+        return result
+
+    def form_valid(self, form):
+        result = form.export_data()
+        if not result:
+            messages.success(self.request, _("No data to be exported"))
+            return redirect(self.request.path)
+        return result

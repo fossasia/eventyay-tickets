@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` You can now export reviews in CSV or JSON formats, just like proposals, sessions and speakers.
 - :bug:`-` On the event dashboard, reviews of deleted proposals were included in the review count tile.
 - :bug:`-` On new events, questions could not be limited by track (because the field was hidden, due to legacy migrations).
 - :bug:`-` Pretalx displayed speaker profile pictures even if profile pictures were not requested in the CfP, if they existed e.g. from past events.

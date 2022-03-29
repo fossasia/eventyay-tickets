@@ -569,6 +569,11 @@ urlpatterns = [
                     name="reviews.assign",
                 ),
                 path(
+                    "reviews/export/",
+                    review.ReviewExport.as_view(),
+                    name="reviews.export",
+                ),
+                path(
                     "settings/",
                     event.EventDetail.as_view(),
                     name="settings.event.view",

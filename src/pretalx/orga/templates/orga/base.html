@@ -302,8 +302,11 @@
                                     <a href="{% url "orga:reviews.dashboard" event=request.event.slug %}" class="nav-link nav-link-second-level{% if "reviews.dashboard" in url_name %} active{% endif %}">
                                         <span>{% translate "Review" %}</span>
                                     </a>
-                                    <a href="{% url "orga:reviews.dashboard" event=request.event.slug %}assign/" class="nav-link nav-link-second-level{% if "reviews.assignm" in url_name %} active{% endif %}">
+                                    <a href="{% url "orga:reviews.assign" event=request.event.slug %}" class="nav-link nav-link-second-level{% if "reviews.assign" in url_name %} active{% endif %}">
                                         <span>{% translate "Assign reviewers" %}</span>
+                                    </a>
+                                    <a href="{% url "orga:reviews.export" event=request.event.slug %}" class="nav-link nav-link-second-level{% if "reviews.export" in url_name %} active{% endif %}">
+                                        <span>{% translate "Export reviews" %}</span>
                                     </a>
                                 </div>
                             </div>

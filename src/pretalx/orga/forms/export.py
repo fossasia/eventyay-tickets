@@ -79,7 +79,11 @@ class ExportForm(forms.Form):
 
     def clean(self):
         data = super().clean()
-        if data.get("export_format") == "csv" and not data.get("data_delimiter"):
+        if (
+            data.get("export_format") == "csv"
+            and "data_delimiter" in self.fields
+            and not data.get("data_delimiter")
+        ):
             self.add_error(
                 "data_delimiter",
                 forms.ValidationError(
@@ -98,7 +102,10 @@ class ExportForm(forms.Form):
         data = []
 
         for obj in queryset:
-            object_data = {"ID": obj.code}
+            object_data = {}
+            code = getattr(obj, "code", None)
+            if code:
+                object_data["ID"] = code
             prepare_method = getattr(self, "_prepare_object_data", None)
             if prepare_method:
                 obj = prepare_method(obj)
@@ -113,6 +120,9 @@ class ExportForm(forms.Form):
                     object_data[str(question.question)] = answer.answer_string
                 else:
                     object_data[str(question.question)] = None
+
+            if hasattr(self, "get_additional_data"):
+                object_data.update(**self.get_additional_data(obj))
             data.append(object_data)
         return data
 
@@ -138,7 +148,7 @@ class ExportForm(forms.Form):
             "newline": "\n",
             "comma": ", ",
         }
-        delimiter = delimiters[self.cleaned_data.get("data_delimiter")]
+        delimiter = delimiters[self.cleaned_data.get("data_delimiter") or "newline"]
 
         for row in data:
             for key, value in row.items():

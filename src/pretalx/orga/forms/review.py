@@ -1,14 +1,16 @@
 from functools import partial
 
 from django import forms
+from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from django_scopes.forms import SafeModelMultipleChoiceField
 
 from pretalx.common.forms.widgets import MarkdownWidget
 from pretalx.common.mixins.forms import ReadOnlyFlag
 from pretalx.common.phrases import phrases
+from pretalx.orga.forms.export import ExportForm
 from pretalx.person.models import User
-from pretalx.submission.models import Review, Submission
+from pretalx.submission.models import Question, Review, Submission
 
 
 class TagsForm(ReadOnlyFlag, forms.ModelForm):
@@ -178,3 +180,133 @@ class ProposalForReviewerForm(forms.ModelForm):
         model = User
         fields = ["code"]
         widgets = {"code": forms.HiddenInput()}
+
+
+class ReviewExportForm(ExportForm):
+    data_delimiter = None
+    target = forms.ChoiceField(
+        required=True,
+        label=_("Proposal"),
+        choices=(
+            ("all", _("All proposals")),
+            ("accepted", _("accepted")),
+            ("confirmed", _("confirmed")),
+            ("rejected", _("rejected")),
+        ),
+        widget=forms.RadioSelect,
+    )
+    submission_id = forms.BooleanField(
+        required=False,
+        label=_("Proposal ID"),
+        help_text=_(
+            "The unique ID of a proposal is used in the proposal URL and in exports"
+        ),
+    )
+    submission_title = forms.BooleanField(
+        required=False,
+        label=_("Proposal title"),
+    )
+    user_name = forms.BooleanField(
+        required=False,
+        label=_("Reviewer name"),
+    )
+    user_email = forms.BooleanField(
+        required=False,
+        label=_("Reviewer email"),
+    )
+
+    class Meta:
+        model = Review
+        model_fields = ["score", "text", "created", "updated"]
+
+    def __init__(self, *args, user=None, **kwargs):
+        self.user = user
+        super().__init__(*args, **kwargs)
+        self.fields["text"].label = _("Text")
+        self._build_score_fields()
+
+    @cached_property
+    def questions(self):
+        return Question.all_objects.filter(
+            target="reviewer",
+            active=True,
+            event=self.event,
+        ).prefetch_related("answers", "answers__review", "options")
+
+    @cached_property
+    def score_categories(self):
+        sc = self.event.score_categories.filter(active=True)
+        if len(sc) == 1:
+            return []
+        return sc
+
+    @cached_property
+    def score_field_names(self):
+        return [f"score_{sc.pk}" for sc in self.score_categories]
+
+    @cached_property
+    def filename(self):
+        return f"{self.event.slug}_reviews"
+
+    @cached_property
+    def export_field_names(self):
+        return (
+            [
+                "score",
+                "text",
+            ]
+            + self.score_field_names
+            + [
+                "submission_id",
+                "submission_title",
+                "created",
+                "updated",
+                "user_name",
+                "user_email",
+            ]
+        )
+
+    def _build_score_fields(self):
+        for score_category in self.score_categories:
+            self.fields[f"score_{score_category.pk}"] = forms.BooleanField(
+                required=False,
+                label=str(_("Score in '{score_category}'")).format(
+                    score_category=score_category.name
+                ),
+            )
+
+    def get_additional_data(self, obj):
+        return {
+            str(_("Score in '{score_category}'")).format(
+                score_category=sc.name
+            ): getattr(obj.scores.filter(category=sc).first(), "value", None)
+            for sc in self.score_categories
+        }
+
+    def get_queryset(self):
+        target = self.cleaned_data.get("target")
+        queryset = Review.objects.filter(submission__event=self.event)
+        if target != "all":
+            queryset = queryset.filter(
+                submission__in=self.event.submissions.filter(state=target)
+            ).distinct()
+        # TODO auto-adjust further to available tracks etc
+        queryset = queryset.exclude(submission__speakers__in=[self.user]).distinct()
+        return queryset.select_related("submission", "user").prefetch_related(
+            "answers", "answers__question", "scores", "scores__category"
+        )
+
+    def _get_submission_id_value(self, obj):
+        return obj.submission.code
+
+    def _get_submission_title_value(self, obj):
+        return obj.submission.title
+
+    def _get_user_name_value(self, obj):
+        return obj.user.name
+
+    def _get_user_email_value(self, obj):
+        return obj.user.email
+
+    def get_answer(self, question, obj):
+        return question.answers.filter(review=obj).first()
