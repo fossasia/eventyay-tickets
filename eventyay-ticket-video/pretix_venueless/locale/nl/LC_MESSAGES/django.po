@@ -1,0 +1,98 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-09-17 13:21+0200\n"
+"PO-Revision-Date: 2021-10-24 19:00+0000\n"
+"Last-Translator: Maarten van den Berg <maartenberg1@gmail.com>\n"
+"Language-Team: Dutch <https://translate.pretix.eu/projects/pretix/"
+"pretix-plugin-venueless/nl/>\n"
+"Language: nl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.8\n"
+
+#: pretix_venueless/__init__.py:16
+msgid "Venueless integration"
+msgstr "Venueless-integratie"
+
+#: pretix_venueless/__init__.py:18
+msgid "Integrates pretix with venueless.org"
+msgstr "Integreert pretix met venueless.org"
+
+#: pretix_venueless/templates/pretix_venueless/order_info.html:8
+#: pretix_venueless/templates/pretix_venueless/order_info.html:41
+msgid "Join online event"
+msgstr "Online evenement openen"
+
+#: pretix_venueless/templates/pretix_venueless/order_info.html:30
+msgid "You can now join the event using the following button:"
+msgstr "U kunt het evenement nu openen via de volgende knop:"
+
+#: pretix_venueless/templates/pretix_venueless/order_info.html:49
+msgid ""
+"You will be able to join this event with your browser right here when it "
+"starts."
+msgstr "U kunt het evenement vanaf deze pagina openen wanneer het is begonnen."
+
+#: pretix_venueless/templates/pretix_venueless/settings.html:5
+#: pretix_venueless/views.py:178
+msgid "Venueless"
+msgstr "Venueless"
+
+#: pretix_venueless/templates/pretix_venueless/settings.html:12
+msgid "Save"
+msgstr "Opslaan"
+
+#: pretix_venueless/views.py:27
+msgid "Venueless URL"
+msgstr "Venueless-URL"
+
+#: pretix_venueless/views.py:31
+msgid "Venueless secret"
+msgstr "Venueless-secret"
+
+#: pretix_venueless/views.py:35
+msgid "Venueless issuer"
+msgstr "Venueless-issuer"
+
+#: pretix_venueless/views.py:39
+msgid "Venueless audience"
+msgstr "Venueless-audience"
+
+#: pretix_venueless/views.py:43
+msgid "Do not allow access before"
+msgstr "Toegang niet toestaan voor"
+
+#: pretix_venueless/views.py:47
+msgid "Allow users to access the live event before their order is paid"
+msgstr ""
+"Sta gebruikers toe het live-evenement te openen voor hun bestelling is "
+"betaald"
+
+#: pretix_venueless/views.py:51
+msgid "Allow buyers of all admission products"
+msgstr "Laat kopers van alle toegangsbewijzen toe"
+
+#: pretix_venueless/views.py:61
+msgid "Limit to products"
+msgstr "Beperk tot producten"
+
+#: pretix_venueless/views.py:72
+msgid "Transmit answers to questions"
+msgstr "Verstuur antwoorden op vragen"
+
+#: pretix_venueless/views.py:78
+msgid "Introductory text"
+msgstr "Introductietekst"
+
+#: pretix_venueless/views.py:118
+msgid "Unknown order code or not authorized to access this order."
+msgstr "Onbekende bestelcode of niet gemachtigd om deze bestelling te bekijken."
