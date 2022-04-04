@@ -100,7 +100,7 @@ setup(
         "csscompressor~=0.9.0",  # 2017-11, no changelog, https://github.com/sprymix/csscompressor
         "cssutils~=2.4.0",
         "defusedcsv~=1.1.0",  # https://github.com/raphaelm/defusedcsv
-        "Django~=3.2.0",  # https://docs.djangoproject.com/en/2.0/releases/
+        "Django~=3.2.0",  # https://docs.djangoproject.com/en/dev/releases/
         "django-bootstrap4~=3.0.0",  # http://django-bootstrap4.readthedocs.io/en/latest/history.html
         "django-compressor~=3.1.0",  # https://django-compressor.readthedocs.io/en/latest/changelog/
         "django-context-decorator",
@@ -120,14 +120,14 @@ setup(
         # We can upgrade markdown again once django-bootstrap4 upgrades or once we drop Python 3.6 and 3.7
         # 3.3.5 requires importlib-metadata>=4.4, but django-bootstrap3 requires importlib-metadata<3.
         # see also https://github.com/zostera/django-bootstrap4/issues/380
-        "Pillow~=9.0.0",  # https://github.com/python-pillow/Pillow/blob/main/CHANGES.rst
+        "Pillow~=9.1.0",  # https://github.com/python-pillow/Pillow/blob/main/CHANGES.rst
         "publicsuffixlist~=0.7.0",
         "python-dateutil~=2.8.0",  # https://dateutil.readthedocs.io/en/stable/changelog.html
         "pytz",
         "qrcode~=7.0",
         "reportlab~=3.5.0",  # https://www.reportlab.com/documentation/relnotes/
         "requests~=2.27.0",  # https://2.python-requests.org/en/master/community/updates/#release-and-version-history
-        "rules~=3.2.0",  # https://github.com/dfunckt/django-rules/blob/master/CHANGELOG.md
+        "rules~=3.3.0",  # https://github.com/dfunckt/django-rules/blob/master/CHANGELOG.md
         "urlman~=2.0.1",  # https://github.com/andrewgodwin/urlman/blob/master/CHANGELOG
         "vobject~=0.9.0",  # 2017-06, http://eventable.github.io/vobject/ look for "release"
         "whitenoise~=6.0.0",  # http://whitenoise.evans.io/en/stable/changelog.html
@@ -163,7 +163,7 @@ setup(
         "postgres": ["psycopg2-binary"],
         "redis": [
             "django_redis~=5.2.0",
-            "redis~=4.0.0",
+            "redis~=4.2.0",
         ],
     },
     packages=find_packages(exclude=["tests", "tests.*"]),
