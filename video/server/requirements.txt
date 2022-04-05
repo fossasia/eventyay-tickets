@@ -31,7 +31,7 @@ redis==4.2.*
 reportlab==3.5.*
 requests==2.27.*
 sentry-sdk==1.5.*
-tqdm==4.63.*
+tqdm==4.64.*
 websockets==10.*
 xlrd~=1.2.0
 
