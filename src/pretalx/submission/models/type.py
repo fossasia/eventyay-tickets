@@ -59,7 +59,7 @@ class SubmissionType(LogMixin, models.Model):
 
     def __str__(self) -> str:
         """Used in choice drop downs."""
-        if not self.duration:
+        if not self.default_duration:
             return self.name
         if self.default_duration > 60 * 24:
             return _("{name} ({duration} days)").format(
