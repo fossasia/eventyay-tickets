@@ -4,7 +4,7 @@ import vobject
 from django.conf import settings
 from django.contrib import messages
 from django.db.models import Q
-from django.http import Http404, HttpResponse
+from django.http import FileResponse, Http404, HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
@@ -244,3 +244,13 @@ class FeedbackView(PermissionRequired, FormView):
 
     def get_success_url(self):
         return self.get_object().urls.public
+
+
+class TalkSocialMediaCard(TalkView):
+    def get(self, request, *args, **kwargs):
+        submission = self.get_object()
+        if submission.image:
+            return FileResponse(submission.image)
+        if submission.event.logo:
+            return FileResponse(submission.event.logo)
+        return ""

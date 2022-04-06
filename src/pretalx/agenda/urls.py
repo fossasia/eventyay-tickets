@@ -74,6 +74,11 @@ urlpatterns = [
                 path("talk/", schedule.ScheduleView.as_view(), name="talks"),
                 path("talk/<slug>/", talk.TalkView.as_view(), name="talk"),
                 path(
+                    "talk/<slug>/og-image",
+                    talk.TalkSocialMediaCard.as_view(),
+                    name="talk-social",
+                ),
+                path(
                     "talk/<slug>/feedback/",
                     talk.FeedbackView.as_view(),
                     name="feedback",

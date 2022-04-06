@@ -246,6 +246,7 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
         public_base = "{self.event.urls.base}talk/{self.code}"
         public = "{public_base}/"
         feedback = "{public}feedback/"
+        social_image = "{public}og-image"
         ical = "{public_base}.ics"
         image = "{self.image_url}"
         invite = "{user_base}invite"
