@@ -50,7 +50,7 @@ class ReviewScore(models.Model):
     category = models.ForeignKey(
         to=ReviewScoreCategory, related_name="scores", on_delete=models.CASCADE
     )
-    value = models.DecimalField(max_digits=3, decimal_places=1)
+    value = models.DecimalField(max_digits=7, decimal_places=2)
     label = models.CharField(null=True, blank=True, max_length=100)
 
     objects = ScopedManager(event="category__event")

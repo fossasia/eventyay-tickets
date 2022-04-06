@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` Instead of being restricted to *puny* ranges of 0-99 with one decimal place, review scores can now range up to 10,000 and have two decimal places, for all your > 9000 review scoring needs.
 - :feature:`-` If a submission type has a duration of 0 minutes, its duration won't be shown.
 - :bug:`-` On the review form, mandatory fields no longer are marked as "optional".
 - :bug:`-` Proposal answers now appear always in the original order for reviewers.
