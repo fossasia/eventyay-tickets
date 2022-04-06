@@ -1,6 +1,7 @@
 from urllib.parse import urlparse
 
 import vobject
+from csp.decorators import csp_exempt
 from django.conf import settings
 from django.contrib import messages
 from django.db.models import Q
@@ -247,6 +248,8 @@ class FeedbackView(PermissionRequired, FormView):
 
 
 class TalkSocialMediaCard(TalkView):
+
+    @csp_exempt
     def get(self, request, *args, **kwargs):
         submission = self.get_object()
         if submission.image:
