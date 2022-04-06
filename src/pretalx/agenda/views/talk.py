@@ -256,4 +256,4 @@ class TalkSocialMediaCard(TalkView):
             return FileResponse(submission.image)
         if submission.event.logo:
             return FileResponse(submission.event.logo)
-        return ""
+        raise Http404()
