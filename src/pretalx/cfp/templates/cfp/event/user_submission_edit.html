@@ -51,11 +51,19 @@
     <h5>
         <form class="add-speaker" action="{{ submission.urls.invite }}">
             <div class="form-group form-inline">
-                {% blocktranslate trimmed count count=submission.speakers.count %}
-                    Speaker:
-                {% plural %}
-                    Speakers:
-                {% endblocktranslate %}
+                {% if submission.state == "confirmed" %}
+                    {% blocktranslate trimmed count count=submission.speakers.count %}
+                        Speaker:
+                    {% plural %}
+                        Speakers:
+                    {% endblocktranslate %}
+                {% else %}
+                    {% blocktranslate trimmed count count=submission.speakers.count %}
+                        Submitter:
+                    {% plural %}
+                        Submitters:
+                    {% endblocktranslate %}
+                {% endif %}
                 {{ submission.display_speaker_names }}{% if can_invite_speakers %},
                     <div class="input-group">
                         <input name="email" class="form-control form-control-sm" placeholder="mail@example.org">
