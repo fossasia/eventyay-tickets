@@ -41,7 +41,7 @@
             {% endif %}
         {% endif %}
 
-        <form method="post">
+        <form method="post" id="review-form">
             {% csrf_token %}
             {% bootstrap_form_errors form %}
             {% bootstrap_form_errors qform %}

@@ -45,6 +45,8 @@ class ReviewForm(ReadOnlyFlag, forms.ModelForm):
 
         # We validate existing score/text server-side to allow form-submit to skip/abstain
         self.fields["text"].required = False
+        if self.event.review_settings["text_mandatory"]:
+            self.fields["text"].widget.attrs["class"] = "hide-optional"
 
         self.scores = (
             {
@@ -59,8 +61,8 @@ class ReviewForm(ReadOnlyFlag, forms.ModelForm):
                 category,
                 read_only=kwargs.get("read_only", False),
                 initial=self.scores.get(category),
+                hide_optional=self.event.review_settings["score_mandatory"],
             )
-            self.fields[f"score_{category.id}"].widget.attrs["autocomplete"] = "off"
             setattr(
                 self,
                 f"clean_score_{category.id}",
@@ -70,12 +72,14 @@ class ReviewForm(ReadOnlyFlag, forms.ModelForm):
         self.fields["text"].widget.attrs["placeholder"] = phrases.orga.example_review
         self.fields["text"].help_text += " " + phrases.base.use_markdown
 
-    def build_score_field(self, category, read_only=False, initial=None):
+    def build_score_field(
+        self, category, read_only=False, initial=None, hide_optional=False
+    ):
         choices = [(None, _("No score"))] if not category.required else []
         for score in category.scores.all():
             choices.append((score.id, str(score)))
 
-        return forms.ChoiceField(
+        field = forms.ChoiceField(
             choices=choices,
             required=False,
             widget=forms.RadioSelect,
@@ -83,6 +87,10 @@ class ReviewForm(ReadOnlyFlag, forms.ModelForm):
             initial=initial,
             label=category.name,
         )
+        field.widget.attrs["autocomplete"] = "off"
+        if hide_optional:
+            field.widget.attrs["class"] = "hide_optional"
+        return field
 
     def get_score_fields(self):
         for category in self.categories:
