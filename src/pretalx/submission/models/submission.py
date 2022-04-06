@@ -304,7 +304,9 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
 
     @property
     def reviewer_answers(self):
-        return self.answers.filter(question__is_visible_to_reviewers=True)
+        return self.answers.filter(question__is_visible_to_reviewers=True).order_by(
+            "question__position"
+        )
 
     def get_duration(self) -> int:
         """Returns this submission's duration in minutes.

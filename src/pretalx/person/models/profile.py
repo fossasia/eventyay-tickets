@@ -92,8 +92,10 @@ class SpeakerProfile(LogMixin, models.Model):
         )
         return Answer.objects.filter(
             models.Q(submission__in=submissions) | models.Q(person=self.user)
-        )
+        ).order_by("question__position")
 
     @property
     def reviewer_answers(self):
-        return self.answers.filter(question__is_visible_to_reviewers=True)
+        return self.answers.filter(question__is_visible_to_reviewers=True).order_by(
+            "question__position"
+        )
