@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` If a submission type has a duration of 0 minutes, its duration won't be shown.
 - :bug:`-` On the review form, mandatory fields no longer are marked as "optional".
 - :bug:`-` Proposal answers now appear always in the original order for reviewers.
 - :feature:`-` If you upload an image to a session, it is now used as a preview image on social media (with a fallback to the conference logo).
