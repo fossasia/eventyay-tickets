@@ -92,6 +92,7 @@ def default_review_settings():
         "score_mandatory": False,
         "text_mandatory": False,
         "aggregate_method": "median",  # or mean
+        "score_format": "words_numbers",
     }
 
 

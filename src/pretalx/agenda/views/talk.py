@@ -248,7 +248,6 @@ class FeedbackView(PermissionRequired, FormView):
 
 
 class TalkSocialMediaCard(TalkView):
-
     @csp_exempt
     def get(self, request, *args, **kwargs):
         submission = self.get_object()

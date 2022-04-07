@@ -393,7 +393,11 @@ class JsonSubfieldMixin:
                 self.instance = self.obj
         for field, path in self.Meta.json_fields.items():
             data_dict = getattr(self.instance, path) or {}
-            self.fields[field].initial = data_dict.get(field)
+            if "field" in data_dict:
+                self.fields[field].initial = data_dict.get(field)
+            else:
+                defaults = self.instance._meta.get_field(path).default()
+                self.fields[field].initial = defaults.get(field)
 
     def save(self, *args, **kwargs):
         if hasattr(super(), "save"):

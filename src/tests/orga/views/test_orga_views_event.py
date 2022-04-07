@@ -549,6 +549,7 @@ def test_edit_review_settings(orga_client, event):
             f"scores-0-value_{scores[2].id}": scores[2].value,
             f"scores-0-label_{scores[2].id}": scores[2].label,
             "aggregate_method": event.review_settings["aggregate_method"],
+            "score_format": event.review_settings["score_format"],
         },
         follow=True,
     )
@@ -711,6 +712,7 @@ def test_edit_review_settings_new_review_phase(orga_client, event):
             f"scores-0-value_{scores[2].id}": scores[2].value,
             f"scores-0-label_{scores[2].id}": scores[2].label,
             "aggregate_method": event.review_settings["aggregate_method"],
+            "score_format": event.review_settings["score_format"],
         },
         follow=True,
     )

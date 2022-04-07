@@ -483,6 +483,21 @@ class ReviewSettingsForm(
     text_mandatory = forms.BooleanField(
         label=_("Require a review text"), required=False
     )
+    score_format = forms.ChoiceField(
+        label=_("Score display"),
+        required=True,
+        choices=(
+            ("words_numbers", _("Text and score, e.g “Good (3)”")),
+            ("numbers_words", _("Score and text, e.g “3 (good)”")),
+            ("numbers", _("Just scores")),
+            ("words", _("Just text")),
+        ),
+        initial="words_numbers",
+        help_text=_(
+            "This is how the score will look like on the review interface. The dashboard will always show numerical scores."
+        ),
+        widget=forms.RadioSelect,
+    )
     aggregate_method = forms.ChoiceField(
         label=_("Score aggregation method"),
         required=True,
@@ -505,6 +520,7 @@ class ReviewSettingsForm(
             "score_mandatory": "review_settings",
             "text_mandatory": "review_settings",
             "aggregate_method": "review_settings",
+            "score_format": "review_settings",
         }
         hierarkey_fields = ("review_help_text",)
 

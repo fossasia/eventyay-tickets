@@ -56,12 +56,24 @@ class ReviewScore(models.Model):
     objects = ScopedManager(event="category__event")
 
     def __str__(self):
+        return self.format(self, "words_numbers")
+
+    def format(self, fmt):
+        if fmt == "words":
+            return self.label
+
         value = self.value
         if int(value) == value:
             value = int(value)
-        if self.label and self.label != str(value):
+
+        # we ignore the format if label and value are the same
+        if fmt == "numbers" or (self.label and self.label == str(value)):
+            return str(value)
+
+        if fmt == "words_numbers":
             return f"{self.label} ({value})"
-        return str(value)
+        # only remaining version is "numbers_words"
+        return f"{value} ({self.label})"
 
     class Meta:
         ordering = ("value",)
