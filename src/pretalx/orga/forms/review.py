@@ -89,7 +89,7 @@ class ReviewForm(ReadOnlyFlag, forms.ModelForm):
         )
         field.widget.attrs["autocomplete"] = "off"
         if hide_optional:
-            field.widget.attrs["class"] = "hide_optional"
+            field.widget.attrs["class"] = "hide-optional"
         return field
 
     def get_score_fields(self):
