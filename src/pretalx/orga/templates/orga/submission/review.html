@@ -117,10 +117,10 @@
             {% if can_view_speakers %}
                 {% for speaker in profiles %}
                     <div class="form-group row">
-                        <label class="col-md-3 col-form-label">{% translate "Speaker" %}: {{ speaker.user.get_display_name }}</label>
+                        <label class="col-md-3 col-form-label">{% translate "Biography" %}: {{ speaker.user.get_display_name }}</label>
                         <div class="col-md-9 mt-1">
                             {% if request.event.cfp.request_biography %}
-                                {{ speaker.biography|rich_text|default:'-' }}
+                                {{ speaker.biography|default:'-'|rich_text }}
                             {% endif %}
                             {% if speaker.submissions.count > 1 %}<br><strong>{% translate "Other proposals" %}:</strong>
                                 {% for other_submission in speaker.submissions %}{% if other_submission != submission %}
