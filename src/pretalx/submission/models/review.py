@@ -56,7 +56,7 @@ class ReviewScore(models.Model):
     objects = ScopedManager(event="category__event")
 
     def __str__(self):
-        return self.format(self, "words_numbers")
+        return self.format("words_numbers")
 
     def format(self, fmt):
         if fmt == "words":
