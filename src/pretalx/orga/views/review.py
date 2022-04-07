@@ -389,11 +389,14 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
 
     def get_scores_for_review(self, review):
         scores = []
+        score_format = self.request.event.review_settings.get(
+            "score_format", "words_numbers"
+        )
         review_scores = {score.category: score for score in review.scores.all()}
         for category in self.score_categories:
             score = review_scores.get(category)
             if score:
-                scores.append(str(score))
+                scores.append(score.format(score_format))
             else:
                 scores.append("×")
         return scores
