@@ -392,8 +392,9 @@ class JsonSubfieldMixin:
             elif getattr(self, "obj", None):
                 self.instance = self.obj
         for field, path in self.Meta.json_fields.items():
+            breakpoint()
             data_dict = getattr(self.instance, path) or {}
-            if "field" in data_dict:
+            if field in data_dict:
                 self.fields[field].initial = data_dict.get(field)
             else:
                 defaults = self.instance._meta.get_field(path).default()
