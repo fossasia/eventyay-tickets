@@ -77,7 +77,14 @@ class ReviewForm(ReadOnlyFlag, forms.ModelForm):
     ):
         choices = [(None, _("No score"))] if not category.required else []
         for score in category.scores.all():
-            choices.append((score.id, str(score)))
+            choices.append(
+                (
+                    score.id,
+                    score.format(
+                        self.event.review_settings.get("score_format", "words_numbers")
+                    ),
+                )
+            )
 
         field = forms.ChoiceField(
             choices=choices,
