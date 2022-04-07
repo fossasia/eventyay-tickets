@@ -712,7 +712,9 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
         track_filter = models.Q(limit_tracks__isnull=True)
         if track:
             track_filter |= models.Q(limit_tracks__in=[track])
-        return self.event.score_categories.filter(track_filter, active=True)
+        return self.event.score_categories.filter(track_filter, active=True).order_by(
+            "id"
+        )
 
     @cached_property
     def active_resources(self):
