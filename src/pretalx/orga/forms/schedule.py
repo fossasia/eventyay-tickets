@@ -5,6 +5,7 @@ from django_scopes.forms import SafeModelMultipleChoiceField
 from i18nfield.forms import I18nFormMixin, I18nModelForm
 
 from pretalx.common.mixins.forms import I18nHelpText
+from pretalx.common.urls import get_base_url
 from pretalx.orga.forms.export import ExportForm
 from pretalx.schedule.models import Room, Schedule
 from pretalx.submission.models.submission import Submission, SubmissionStates
@@ -111,6 +112,11 @@ class ScheduleExportForm(ExportForm):
             label=_("Average (mean) score"),
             help_text=_("Average review score, if there have been reviews yet"),
         )
+        self.fields["resources"] = forms.BooleanField(
+            required=False,
+            label=_("Resources"),
+            help_text=_("Files uploaded by the speakers"),
+        )
 
     @cached_property
     def questions(self):
@@ -132,6 +138,7 @@ class ScheduleExportForm(ExportForm):
             "end",
             "median_score",
             "mean_score",
+            "resources",
         ]
 
     def get_queryset(self):
@@ -142,6 +149,7 @@ class ScheduleExportForm(ExportForm):
         return (
             queryset.prefetch_related("tags")
             .select_related("submission_type", "track")
+            .prefetch_related("resources")
             .order_by("code")
         )
 
@@ -186,6 +194,12 @@ class ScheduleExportForm(ExportForm):
 
     def _get_tags_value(self, obj):
         return [tag.tag for tag in obj.tags.all()] or None
+
+    def _get_resources_value(self, obj):
+        base_url = get_base_url(self.event)
+        return [
+            base_url + r.resource.url for r in obj.resources.all() if r.resource
+        ] or None
 
 
 class ScheduleRoomForm(I18nFormMixin, forms.Form):

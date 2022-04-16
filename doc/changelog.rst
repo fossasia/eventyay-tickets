@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` Proposal attachments can be included in exports now.
 - :feature:`-` Organisers can configure how the review score should be displayed to reviewers: only explanation, only score, explanation first, score first.
 - :feature:`-` Instead of being restricted to *puny* ranges of 0-99 with one decimal place, review scores can now range up to 10,000 and have two decimal places, for all your > 9000 review scoring needs.
 - :feature:`-` If a submission type has a duration of 0 minutes, its duration won't be shown.
