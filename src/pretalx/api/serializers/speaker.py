@@ -26,6 +26,11 @@ class SubmitterSerializer(ModelSerializer):
         fields = ("code", "name", "biography", "avatar")
 
 
+class SubmitterOrgaSerializer(SubmitterSerializer):
+    class Meta(SubmitterSerializer.Meta):
+        fields = SubmitterSerializer.Meta.fields + ("email",)
+
+
 class SpeakerSerializer(ModelSerializer):
     code = CharField(source="user.code")
     name = CharField(source="user.name")

@@ -9,7 +9,7 @@ from rest_framework.serializers import (
 )
 
 from pretalx.api.serializers.question import AnswerSerializer
-from pretalx.api.serializers.speaker import SubmitterSerializer
+from pretalx.api.serializers.speaker import SubmitterOrgaSerializer, SubmitterSerializer
 from pretalx.schedule.models import Schedule, TalkSlot
 from pretalx.submission.models import Resource, Submission, SubmissionStates, Tag
 
@@ -60,6 +60,8 @@ class SubmissionSerializer(I18nAwareModelSerializer):
     abstract = SerializerMethodField()
     description = SerializerMethodField()
 
+    speaker_serializer_class = SubmitterSerializer
+
     @staticmethod
     def get_duration(obj):
         return obj.get_duration()
@@ -70,7 +72,7 @@ class SubmissionSerializer(I18nAwareModelSerializer):
             and obj.state == SubmissionStates.CONFIRMED
         )
         if has_slots or self.can_view_speakers:
-            return SubmitterSerializer(
+            return self.speaker_serializer_class(
                 obj.speakers.all(),
                 many=True,
                 context=self.context,
@@ -122,6 +124,8 @@ class SubmissionOrgaSerializer(SubmissionSerializer):
     answers = AnswerSerializer(many=True)
     tags = SerializerMethodField()
     created = SerializerMethodField()
+
+    speaker_serializer_class = SubmitterOrgaSerializer
 
     def get_created(self, obj):
         return obj.created.astimezone(obj.event.tz).isoformat()
