@@ -4,12 +4,13 @@
 	.consent-blocker(v-else)
 		.warning This content is hosted by a third party on
 		.domain {{ domain }}
-		.toc By showing this external content you accept their #[a(href="#") terms and conditions].
+		.toc By showing this external content you accept their #[a(:href="config.policy_url") terms and conditions].
 		bunt-button#btn-show(@click="showOnce") Show external content
 		bunt-checkbox(name="remember", v-model="remember") Remember my choice
 </template>
 <script>
-// external content
+import store from 'store'
+
 export default {
 	inheritAttrs: false,
 	props: {
@@ -17,7 +18,7 @@ export default {
 	},
 	data () {
 		return {
-			showIframe: false,
+			showingOnce: false,
 			remember: false
 		}
 	},
@@ -25,19 +26,30 @@ export default {
 		domain () {
 			if (typeof this.src !== 'string') return
 			return new URL(this.src).host
+		},
+		config () {
+			console.log(store.state.world.iframe_blockers, this.domain)
+			for (const [domain, domainConfig] of Object.entries(store.state.world.iframe_blockers)) {
+				if (this.domain.endsWith(domain)) return domainConfig
+			}
+			return store.state.world.iframe_blockers.default
+		},
+		showIframe () {
+			return this.showingOnce ||
+				store.state.unblockedIframeDomains.has(this.domain) ||
+				!this.config.enabled
 		}
 	},
 	async created () {},
 	async mounted () {
 		await this.$nextTick()
-		console.log(this)
 	},
 	methods: {
 		showOnce () {
-			this.showIframe = true
-		},
-		showAlways () {
-
+			if (this.remember) {
+				store.dispatch('unblockIframeDomain', this.domain)
+			}
+			this.showingOnce = true
 		}
 	}
 }
