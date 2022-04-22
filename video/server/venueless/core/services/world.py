@@ -36,6 +36,7 @@ class WorldConfigSerializer(serializers.Serializer):
     connection_limit = serializers.IntegerField(allow_null=True)
     available_permissions = serializers.SerializerMethodField("_available_permissions")
     profile_fields = serializers.JSONField()
+    iframe_blockers = serializers.JSONField()
     track_exhibitor_views = serializers.BooleanField()
     track_room_views = serializers.BooleanField()
     track_world_views = serializers.BooleanField()
@@ -160,6 +161,9 @@ def get_world_config_for_user(world, user):
             "title": world.title,
             "pretalx": world.config.get("pretalx", {}),
             "profile_fields": world.config.get("profile_fields", []),
+            "iframe_blockers": world.config.get(
+                "iframe_blockers", {"default": {"enabled": False, "policy_url": None}}
+            ),
         },
         "permissions": list(permissions[world]),
         "rooms": [],
@@ -352,6 +356,9 @@ def _config_serializer(world, *args, **kwargs):
             "profile_fields": world.config.get("profile_fields", []),
             "conftool_url": world.config.get("conftool_url", ""),
             "conftool_password": world.config.get("conftool_password", ""),
+            "iframe_blockers": world.config.get(
+                "iframe_blockers", {"default": {"enabled": False, "policy_url": None}}
+            ),
         },
         *args,
         **kwargs,
