@@ -8,17 +8,20 @@
 		template(v-if="config")
 			.ui-form-body
 				h3 IFrame Consent Blocker
-				bunt-checkbox(name="iframe-consent-blocker", v-model="enableBlocker", label="Enable consent blocker for all iframes")
+				p Enable or disable iframe blocking behaviour for matching domains and the default behaviour if no matching domains are found. Every iframe url domain that ends with a configured domain here will match. For example: configuring "youtube.com" on this page will match all iframes with "www.youtube.com".
 			.iframe-domains
 				.header
-					.domain Domain
+					.enabled Enable block
+					.domain For domain
 					.policy-link Privacy policy link
 					.actions
 				.iframe-domain(v-for="iframeDomain of iframeDomains")
-					bunt-input.domain(name="domain", v-model="iframeDomain.domain", placeholder="example.com")
-					bunt-input.policy-link(name="policy-link", v-model="iframeDomain.policyLink", placeholder="https://example.com/privacy")
+					bunt-checkbox.enabled(name="enabled", v-model="iframeDomain.enabled")
+					div.domain(v-if="iframeDomain.domain === 'default'") default
+					bunt-input.domain(v-else, name="domain", v-model="iframeDomain.domain", placeholder="example.com")
+					bunt-input.policy-link(name="policy-link", v-model="iframeDomain.policy_url", placeholder="https://example.com/privacy")
 					.actions
-						bunt-icon-button(@click="removeIframeDomain(iframeDomain)") delete-outline
+						bunt-icon-button(v-if="iframeDomain.domain !== 'default'", @click="removeIframeDomain(iframeDomain)") delete-outline
 				bunt-button.btn-add-domain(@click="addIframeDomain") Add domain
 	.ui-form-actions
 		bunt-button.btn-save(@click="save", :loading="saving", :error-message="error") Save
@@ -54,7 +57,21 @@ export default {
 		// TODO: Force reloading if world.updated is received from the server
 		try {
 			this.config = await api.call('world.config.get')
-
+			const defaultEntry = this.config.iframe_blockers?.default
+			// always have a default first entry
+			this.iframeDomains = [{
+				domain: 'default',
+				enabled: defaultEntry?.enabled ?? false,
+				policy_url: defaultEntry?.policy_url ?? ''
+			}]
+			this.iframeDomains.push(...Object.entries(this.config.iframe_blockers)
+				.filter(([domain, domainConfig]) => domain !== 'default')
+				.map(([domain, {enabled, policy_url}]) => ({
+					domain,
+					enabled,
+					policy_url
+				}))
+			)
 			// Enforce some defaults
 		} catch (error) {
 			this.error = error
@@ -66,22 +83,24 @@ export default {
 			this.$v.$touch()
 			if (this.$v.$invalid) return
 
-			// Cleanup empty strings in text overwrites
-			for (const key of Object.keys(this.config.theme.textOverwrites)) {
-				if (!this.config.theme.textOverwrites[key]) {
-					this.$delete(this.config.theme.textOverwrites, key)
+			const iframeBlockers = Object.fromEntries(this.iframeDomains.map(({domain, enabled, policy_url}) => [
+				domain,
+				{
+					enabled,
+					policy_url
 				}
-			}
+			]))
 
 			this.saving = true
-			await api.call('world.config.patch', {theme: this.config.theme})
+			await api.call('world.config.patch', {iframe_blockers: iframeBlockers})
 			this.saving = false
 			// TODO error handling
 		},
 		addIframeDomain () {
 			this.iframeDomains.push({
 				domain: '',
-				policyLink: ''
+				enabled: true,
+				policy_url: ''
 			})
 		},
 		removeIframeDomain (iframeDomain) {
@@ -110,13 +129,15 @@ export default {
 				input-style(size: compact)
 				padding-top: 0
 				margin-right: 8px
+			.enabled
+				width: 100px
 			.domain, .policy-link
 				flex: 1
 			.actions
 				width: 56px
 			& > *
 				box-sizing: border-box
-				padding-left: 8px
+				padding-left: 16px
 			> :first-child
 				padding-left: 16px
 			> :last-child
@@ -125,7 +146,6 @@ export default {
 			border-bottom-width: 3px
 			& > *
 				font-weight: 600
-				padding-left: 16px
 		.trait-grant
 			&:hover
 				background-color: $clr-grey-100
