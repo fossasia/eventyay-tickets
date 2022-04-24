@@ -30,7 +30,7 @@ export default {
 		config () {
 			console.log(store.state.world.iframe_blockers, this.domain)
 			for (const [domain, domainConfig] of Object.entries(store.state.world.iframe_blockers)) {
-				if (this.domain.endsWith(domain)) return domainConfig
+				if (this.domain === domain || this.domain.endsWith('.' + domain)) return domainConfig
 			}
 			return store.state.world.iframe_blockers.default
 		},
@@ -85,12 +85,25 @@ export default {
 			a
 				color: $clr-primary-text-dark
 				text-decoration: underline
-		#btn-show
-			margin-top: 24px
-			themed-button-primary(size: large)
 		.bunt-checkbox
 			label
 				font-size: 20px
 			&:not(.checked) .bunt-checkbox-box
 				border-color: $clr-primary-text-dark
+		+above('s')
+			#btn-show
+				margin-top: 24px
+				themed-button-primary(size: large)
+		+below('s')
+			gap: 8px
+			.warning, .domain
+				font-size: 12px
+			.toc
+				font-size: 10px
+			#btn-show
+				margin-top: 8px
+				themed-button-primary()
+			.bunt-checkbox
+				label
+					font-size: 16px
 </style>
