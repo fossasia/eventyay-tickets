@@ -147,7 +147,7 @@ database driver (unless you use SQLite, which has its driver built in):
 
 Now we will install pretalx itself::
 
-    $ pip install --user -U pretalx
+    $ pip install --user --upgrade-strategy eager -U pretalx
 
 If you intend to run pretalx with asynchronous task runners or with redis as
 cache server, you can install ``pretalx[redis]`` instead, which will pull in

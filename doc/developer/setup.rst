@@ -75,7 +75,7 @@ Working with the code
 First up, install all the main application dependencies::
 
     (env)$ cd src
-    (env)$ pip3 install -e ".[dev]"
+    (env)$ pip3 install --upgrade-strategy eager -Ue ".[dev]"
 
 Next, you will have to copy the static files from the source folder to the
 STATIC_ROOT directory, and create the local database::
@@ -183,7 +183,7 @@ Working with the documentation
 To build the documentation, you will have to install the documentation dependencies. Go to the root
 directory of your git repository, and then run::
 
-    (env)$ pip install -Ur doc/requirements.txt
+    (env)$ pip install --upgrade-strategy eager -Ur doc/requirements.txt
 
 Then, to build the documentation, run the following command::
 

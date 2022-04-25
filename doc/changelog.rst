@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :support:`-` Note to administrators of self-hosted instances: documentation for installation and upgrades now recommends that you use ``pip install --upgrade-strategy eager`` to make sure you get non-pinned bugfix updates.
 - :feature:`-` Organisers can see speaker email addresses in embedded API paths.
 - :feature:`-` Proposal attachments can be included in exports now.
 - :feature:`-` Organisers can configure how the review score should be displayed to reviewers: only explanation, only score, explanation first, score first.
