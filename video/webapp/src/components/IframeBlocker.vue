@@ -85,6 +85,8 @@ export default {
 			a
 				color: $clr-primary-text-dark
 				text-decoration: underline
+				&:hover
+					color: $clr-secondary-text-dark
 		.bunt-checkbox
 			label
 				font-size: 20px
