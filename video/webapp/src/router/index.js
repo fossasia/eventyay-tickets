@@ -188,6 +188,10 @@ const routes = [{
 			name: 'admin:config:registration',
 			component: () => import(/* webpackChunkName: "admin" */ 'views/admin/config/registration')
 		}, {
+			path: 'privacy',
+			name: 'admin:config:privacy',
+			component: () => import(/* webpackChunkName: "admin" */ 'views/admin/config/privacy')
+		}, {
 			path: 'audit-log',
 			name: 'admin:config:audit-log',
 			component: () => import(/* webpackChunkName: "admin" */ 'views/admin/config/audit-log')
