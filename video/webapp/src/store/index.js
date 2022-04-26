@@ -33,7 +33,8 @@ export default new Vuex.Store({
 		userTimezone: null,
 		autoplay: localStorage.disableAutoplay !== 'true',
 		stageStreamCollapsed: false,
-		now: moment()
+		now: moment(),
+		unblockedIframeDomains: new Set(JSON.parse(localStorage.unblockedIframeDomains || '[]'))
 	},
 	getters: {
 		hasPermission (state) {
@@ -165,6 +166,11 @@ export default new Vuex.Store({
 		setAutoplay ({state}, autoplay) {
 			state.autoplay = autoplay
 			localStorage.disableAutoplay = !autoplay
+		},
+		unblockIframeDomain ({state}, domain) {
+			state.unblockedIframeDomains.add(domain)
+			localStorage.unblockedIframeDomains = JSON.stringify(Array.from(state.unblockedIframeDomains))
+			// TODO propagate between tabs?
 		},
 		'api::room.create' ({state}, room) {
 			state.rooms.push(room)

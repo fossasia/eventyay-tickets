@@ -149,6 +149,7 @@ async def test_config_get(world):
             },
             "bbb_defaults": {"record": False},
             "pretalx": {"domain": "https://pretalx.com/", "event": "democon"},
+            "iframe_blockers": {"default": {"enabled": False, "policy_url": None}},
             "title": "Unsere tolle Online-Konferenz",
             "locale": "en",
             "dateLocale": "en-ie",
