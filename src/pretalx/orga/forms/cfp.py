@@ -8,13 +8,13 @@ from i18nfield.forms import I18nFormMixin, I18nModelForm
 from pretalx.common.mixins.forms import I18nHelpText, JsonSubfieldMixin, ReadOnlyFlag
 from pretalx.submission.models import (
     AnswerOption,
-    CfP,
     Question,
     QuestionVariant,
     SubmissionType,
     SubmitterAccessCode,
     Track,
 )
+from pretalx.submission.models.cfp import CfP, default_fields
 from pretalx.submission.models.question import QuestionRequired
 
 
@@ -63,6 +63,7 @@ class CfPSettingsForm(
             "notes",
             "biography",
             "avatar",
+            "additional_speaker",
             "availabilities",
             "do_not_record",
             "image",
@@ -89,7 +90,9 @@ class CfPSettingsForm(
             field_name = f"cfp_ask_{attribute}"
             self.fields[field_name] = forms.ChoiceField(
                 required=True,
-                initial=obj.cfp.fields[attribute]["visibility"],
+                initial=obj.cfp.fields.get(attribute, default_fields()[attribute])[
+                    "visibility"
+                ],
                 choices=[
                     ("do_not_ask", _("Do not ask")),
                     ("optional", _("Ask, but do not require input")),
@@ -101,6 +104,8 @@ class CfPSettingsForm(
 
     def save(self, *args, **kwargs):
         for key in self.request_require_fields:
+            if key not in self.instance.cfp.fields:
+                self.instance.cfp.fields[key] = default_fields()[key]
             self.instance.cfp.fields[key]["visibility"] = self.cleaned_data.get(
                 f"cfp_ask_{key}"
             )

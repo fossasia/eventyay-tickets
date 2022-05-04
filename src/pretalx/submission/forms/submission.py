@@ -49,7 +49,7 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
 
         if "abstract" in self.fields:
             self.fields["abstract"].widget.attrs["rows"] = 2
-        if instance and instance.pk:
+        if (instance and instance.pk) or not self.event.cfp.request_additional_speaker:
             self.fields.pop("additional_speaker")
 
         self._set_track(instance=instance)

@@ -335,7 +335,7 @@ class InfoStep(GenericFlowStep, FormFlowStep):
             ),
         )
 
-        additional_speaker = form.cleaned_data.get("additional_speaker").strip()
+        additional_speaker = (form.cleaned_data.get("additional_speaker") or "").strip()
         if additional_speaker:
             try:
                 submission.send_invite(to=[additional_speaker], _from=request.user)

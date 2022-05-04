@@ -51,15 +51,21 @@ def default_fields():
         "track": {"visibility": "do_not_ask"},
         "duration": {"visibility": "do_not_ask"},
         "content_locale": {"visibility": "require"},
+        "additional_speaker": {"visibility": "optional"},
     }
 
 
 def field_helper(cls):
     def is_field_requested(self, field):
-        return self.fields[field]["visibility"] != "do_not_ask"
+        return (
+            self.fields.get(field, default_fields()[field])["visibility"]
+            != "do_not_ask"
+        )
 
     def is_field_required(self, field):
-        return self.fields[field]["visibility"] == "require"
+        return (
+            self.fields.get(field, default_fields()[field])["visibility"] == "require"
+        )
 
     for field in default_fields().keys():
         setattr(

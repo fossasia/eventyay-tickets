@@ -22,6 +22,7 @@ from pretalx.common.forms.utils import (
 )
 from pretalx.common.phrases import phrases
 from pretalx.common.templatetags.rich_text import rich_text
+from pretalx.submission.models.cfp import default_fields
 
 logger = logging.getLogger(__name__)
 
@@ -64,7 +65,9 @@ class RequestRequire:
         super().__init__(*args, **kwargs)
         count_chars = self.event.cfp.settings["count_length_in"] == "chars"
         for key in self.Meta.request_require:
-            visibility = self.event.cfp.fields[key]["visibility"]
+            visibility = self.event.cfp.fields.get(key, default_fields()[key])[
+                "visibility"
+            ]
             if visibility == "do_not_ask":
                 self.fields.pop(key, None)
             else:
