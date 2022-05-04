@@ -15,7 +15,13 @@ def submission_deadline_open(user, submission):
     return (not deadline) or now() <= deadline
 
 
+@rules.predicate
+def can_request_speakers(user, submission):
+    # Only allow to request speakers if the field is active in the CfP
+    return submission.event.cfp.request_additional_speaker
+
+
 rules.add_perm(
     "cfp.view_event", is_event_visible | (can_change_submissions | is_reviewer)
 )
-rules.add_perm("cfp.add_speakers", submission_deadline_open)
+rules.add_perm("cfp.add_speakers", submission_deadline_open & can_request_speakers)
