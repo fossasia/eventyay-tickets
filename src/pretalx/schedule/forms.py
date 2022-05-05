@@ -52,11 +52,14 @@ class AvailabilitiesFormMixin(forms.Form):
         self.event = event
         self.resolution = kwargs.pop("resolution", None)
         initial = kwargs.pop("initial", dict())
-        initial["availabilities"] = self._serialize(self.event, kwargs["instance"])
+        initial_instance = kwargs["instance"]
+        initial["availabilities"] = self._serialize(self.event, initial_instance)
         if not isinstance(self, forms.BaseModelForm):
             kwargs.pop("instance")
         kwargs["initial"] = initial
         super().__init__(*args, **kwargs)
+        if not hasattr(self, "instance"):
+            self.instance = initial_instance
         if self.event and "availabilities" in self.fields:
             self.fields["availabilities"].help_text += " " + str(
                 _("Please note that all times are in the event timezone, {tz}.")
@@ -169,7 +172,10 @@ class AvailabilitiesFormMixin(forms.Form):
             Availability.objects.bulk_create(availabilities)
 
     def save(self, *args, **kwargs):
-        instance = super().save(*args, **kwargs)
+        if hasattr(super(), "save"):
+            instance = super().save(*args, **kwargs)
+        else:
+            instance = self.instance
         availabilities = self.cleaned_data.get("availabilities")
 
         if availabilities is not None:

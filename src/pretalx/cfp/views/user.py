@@ -207,14 +207,16 @@ class SubmissionConfirmView(LoggedInEventPageMixin, SubmissionViewMixin, FormVie
     def submission(self, **kwargs):
         return self.get_object()
 
+    @cached_property
+    def speaker_profile(self):
+        return self.request.user.event_profile(self.request.event)
+
     def get_permission_object(self):
         return self.submission
 
     def get_form_kwargs(self):
         result = super().get_form_kwargs()
-        result["instance"] = self.request.user.profiles.filter(
-            event=self.request.event
-        ).first()
+        result["instance"] = self.speaker_profile
         result["event"] = self.request.event
         return result
 
@@ -230,6 +232,7 @@ class SubmissionConfirmView(LoggedInEventPageMixin, SubmissionViewMixin, FormVie
 
     def form_valid(self, form):
         submission = self.submission
+        form.save()
         if self.request.user.has_perm("submission.confirm_submission", submission):
             submission.confirm(person=self.request.user)
             messages.success(self.request, phrases.cfp.submission_confirmed)
