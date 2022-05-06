@@ -46,6 +46,7 @@ export default new Vuex.Store({
 		},
 		autoplay (state) {
 			if (state.autoplayUserSetting) return state.autoplayUserSetting
+			if (!state.token) return true
 			const token = jwtDecode(state.token)
 			return !doesTraitsMatchGrants(token.traits, state.world.onsite_traits)
 		}
