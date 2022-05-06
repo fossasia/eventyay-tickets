@@ -41,7 +41,8 @@ class WorldConfigSerializer(serializers.Serializer):
     track_room_views = serializers.BooleanField()
     track_world_views = serializers.BooleanField()
     onsite_traits = serializers.JSONField(
-        required=False, allow_null=False,
+        required=False,
+        allow_null=False,
     )
     conftool_url = serializers.URLField(
         required=False, allow_null=True, allow_blank=True
