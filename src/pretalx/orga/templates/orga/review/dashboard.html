@@ -161,7 +161,8 @@
                                 {% endif %}
                             {% endif %}
                             <td class="text-center">
-                                {{ submission.reviews.all|length|default:'-' }}
+                                {{ submission.review_nonnull_count|default:'-' }}
+                                {% if submission.review_count != submission.review_nonnull_count %}({{ submission.review_count|default:'-' }}){% endif %}
                                 {% if submission.pk in submissions_reviewed %}
                                     <i class="fa fa-check text-success" title="{% translate "You have reviewed this proposal" %}"></i>
                                 {% endif %}

@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` When you sort the review dashboard by number of reviews, it will now only use real reviews, not abstentions. The number of reviews including abstentions will be shown in parentheses.
 - :bug:`1307` Availability times provided while confirming a proposal were not saved.
 - :feature:`819` You can now turn off co-speakers – organsiers can still assign additional speakers, but speakers themselves will not be asked for additional speakers.
 - :support:`-` Note to administrators of self-hosted instances: documentation for installation and upgrades now recommends that you use ``pip install --upgrade-strategy eager`` to make sure you get non-pinned bugfix updates.

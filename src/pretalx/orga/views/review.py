@@ -4,7 +4,7 @@ from contextlib import suppress
 
 from django.contrib import messages
 from django.db import transaction
-from django.db.models import Count, Max, OuterRef, Subquery
+from django.db.models import Count, Max, OuterRef, Q, Subquery
 from django.forms.models import BaseModelFormSet, modelformset_factory
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.functional import cached_property
@@ -95,7 +95,10 @@ class ReviewDashboard(
             )
         )
         queryset = self.filter_queryset(queryset).annotate(
-            review_count=Count("reviews", distinct=True)
+            review_count=Count("reviews", distinct=True),
+            review_nonnull_count=Count(
+                "reviews", distinct=True, filter=Q(reviews__score__isnull=False)
+            ),
         )
         queryset = self.filter_range(queryset)
 
@@ -163,7 +166,7 @@ class ReviewDashboard(
             "default": ("is_assigned", "state", "current_score", "code"),
             "score": ("current_score", "state", "code"),
             "my_score": ("user_score", "current_score", "state", "code"),
-            "count": ("review_count", "code"),
+            "count": ("review_nonnull_count", "code"),
         }
         ordering = self.request.GET.get("sort", "default")
         reverse = True
