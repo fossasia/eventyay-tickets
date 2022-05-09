@@ -25,6 +25,7 @@ from rest_framework.authtoken.models import Token
 
 from pretalx.cfp.forms.submissions import SubmissionInvitationForm
 from pretalx.cfp.views.event import LoggedInEventPageMixin
+from pretalx.common.middleware.event import get_login_redirect
 from pretalx.common.phrases import phrases
 from pretalx.common.views import is_form_bound
 from pretalx.person.forms import LoginInfoForm, SpeakerProfileForm
@@ -193,7 +194,6 @@ class SubmissionsWithdrawView(LoggedInEventPageMixin, SubmissionViewMixin, Detai
 
 
 class SubmissionConfirmView(LoggedInEventPageMixin, SubmissionViewMixin, FormView):
-    permission_required = "submission.perform_actions"
     template_name = "cfp/event/user_submission_confirm.html"
     form_class = AvailabilitiesFormMixin
 
@@ -201,6 +201,13 @@ class SubmissionConfirmView(LoggedInEventPageMixin, SubmissionViewMixin, FormVie
         return get_object_or_404(
             self.request.event.submissions, code__iexact=self.kwargs.get("code")
         )
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_anonymous:
+            return get_login_redirect(request)
+        if not request.user.has_perm("submission.perform_actions", self.submission):
+            self.template_name = "cfp/event/user_submission_confirm_error.html"
+        return super().dispatch(request, *args, **kwargs)
 
     @context
     @cached_property
@@ -210,9 +217,6 @@ class SubmissionConfirmView(LoggedInEventPageMixin, SubmissionViewMixin, FormVie
     @cached_property
     def speaker_profile(self):
         return self.request.user.event_profile(self.request.event)
-
-    def get_permission_object(self):
-        return self.submission
 
     def get_form_kwargs(self):
         result = super().get_form_kwargs()

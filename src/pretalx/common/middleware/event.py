@@ -17,6 +17,20 @@ from django_scopes import scope, scopes_disabled
 from pretalx.event.models import Event, Organiser, Team
 
 
+def get_login_redirect(request):
+    params = request.GET.copy()
+    next_url = params.pop("next", None)
+    next_url = next_url[0] if next_url else request.path
+    params = request.GET.urlencode() if request.GET else ""
+    params = f"?next={quote(next_url)}&{params}"
+    event = getattr(request, "event", None)
+    if event:
+        return redirect(
+            reverse("orga:event.login", kwargs={"event": event.slug}) + params
+        )
+    return redirect(reverse("orga:login") + params)
+
+
 class EventPermissionMiddleware:
     UNAUTHENTICATED_ORGA_URLS = (
         "invitation.view",
@@ -56,22 +70,12 @@ class EventPermissionMiddleware:
 
     def _handle_orga_url(self, request, url):
         if request.uses_custom_domain:
-            return urljoin(settings.SITE_URL, request.get_full_path())
+            return redirect(urljoin(settings.SITE_URL, request.get_full_path()))
         if (
             request.user.is_anonymous
             and url.url_name not in self.UNAUTHENTICATED_ORGA_URLS
         ):
-            params = request.GET.copy()
-            next_url = params.pop("next", None)
-            next_url = next_url[0] if next_url else request.path
-            params = request.GET.urlencode() if request.GET else ""
-            params = f"?next={quote(next_url)}&{params}"
-            event = getattr(request, "event", None)
-            if event:
-                return (
-                    reverse("orga:event.login", kwargs={"event": event.slug}) + params
-                )
-            return reverse("orga:login") + params
+            return get_login_redirect(request)
         return None
 
     def __call__(self, request):
@@ -115,9 +119,9 @@ class EventPermissionMiddleware:
         if "orga" in url.namespaces or (
             "plugins" in url.namespaces and request.path.startswith("/orga")
         ):
-            url = self._handle_orga_url(request, url)
-            if url:
-                return redirect(url)
+            response = self._handle_orga_url(request, url)
+            if response:
+                return response
         elif (
             event
             and request.event.custom_domain
