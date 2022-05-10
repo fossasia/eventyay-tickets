@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` The schedule widget can now be given a top margin at which to stop the scrolling of its room/day headers.
 - :feature:`1301` Following a confirmation link to a proposal you don't have access to now shows a helpful page prompting you to double-check your account is correct. Anonymous users will be directed to log in first.
 - :feature:`-` When you sort the review dashboard by number of reviews, it will now only use real reviews, not abstentions. The number of reviews including abstentions will be shown in parentheses.
 - :bug:`1307` Availability times provided while confirming a proposal were not saved.

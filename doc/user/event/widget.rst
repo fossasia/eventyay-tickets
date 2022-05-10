@@ -53,7 +53,7 @@ Your embedded widget could look like the following:
 
     <div class="nav-content" style="max-width: 100%; display: block; position: relative;">
     <div>
-    <pretalx-schedule event-url="https://pretalx.com/democon/" locale="en" style="--pretalx-clr-primary: #3aa57c"></pretalx-schedule>
+    <pretalx-schedule event-url="https://pretalx.com/democon/" locale="en" style="--pretalx-clr-primary: #3aa57c; --pretalx-sticky-top-offset: 70px"></pretalx-schedule>
     </div>
     </div>
     <noscript>
