@@ -280,7 +280,9 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
     @property
     def editable(self):
         if self.state == SubmissionStates.SUBMITTED:
-            return self.event.cfp.is_open or (
+            deadline = self.submission_type.deadline or self.event.cfp.deadline
+            deadline_ok = (not deadline) or now() <= deadline
+            return deadline_ok or (
                 self.event.active_review_phase
                 and self.event.active_review_phase.speakers_can_change_submissions
             )
