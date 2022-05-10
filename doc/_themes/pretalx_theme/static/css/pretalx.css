@@ -29,7 +29,7 @@ body {
 }
 
 main {
-    margin-left: 400px;
+    margin-left: 360px;
     margin-top: 70px;
     background: white;
     min-height: 100%
@@ -3684,12 +3684,12 @@ div[class^='highlight'] pre {
 }
 
 .nav-menu-vertical {
-    width: 400px
+    width: 360px
 }
 
 #toctree {
     line-height: 1.5em;
-    padding: 40px 20px 60px 60px;
+    padding: 40px 20px 60px 55px;
 }
 #toctree li {
     margin-top: 0.5em;
@@ -3769,7 +3769,7 @@ div.version {
     bottom: 0;
     left: 0;
     padding-bottom: 2em;
-    width: 400px;
+    width: 360px;
     overflow-x: hidden;
     overflow-y: hidden;
     min-height: 100%;
@@ -3779,7 +3779,7 @@ div.version {
 }
 
 .nav-scroll {
-    width: 400px;
+    width: 360px;
     position: relative;
     overflow-x: hidden;
     overflow-y: auto;
@@ -3818,7 +3818,7 @@ div.version {
 }
 
 .nav-content {
-    margin: 2em 8em;
+    margin: 3.5em 6em;
     height: 100%;
     max-width: 800px;
 }
