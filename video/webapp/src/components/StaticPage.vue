@@ -21,7 +21,7 @@ export default {
 		margin: 0 auto
 
 	// TODO decopypaste thhis
-	.rich-text-content
+	.rich-text-content .ql-editor
 		margin: 16px 0
 		> *, li
 			max-width: 960px
@@ -43,7 +43,7 @@ export default {
 			margin: 0 16px
 			img, .ql-video-wrapper
 				margin: 0 -16px
-#app.override-sidebar-collapse .c-static-page .rich-text-content
+#app.override-sidebar-collapse .c-static-page .rich-text-content .ql-editor
 	> *, li
 		margin: 0 16px
 </style>
