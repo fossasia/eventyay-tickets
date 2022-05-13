@@ -22,10 +22,9 @@ scrollbars.c-exhibitor(y)
 					h3.tagline(v-if="exhibitor.tagline") {{ exhibitor.tagline }}
 			.social-media-links(v-if="exhibitor.social_media_links.length > 0")
 				a.mdi(v-for="link in exhibitor.social_media_links", :class="`mdi-${link.display_text.toLowerCase()}`", :href="link.url", :title="link.display_text", target="_blank")
-			table.external-links(v-if="profileLinks.length > 0")
-				tr(v-for="link in profileLinks")
-					th.name {{ link.display_text }}
-					td: a(:href="link.url", target="_blank") {{ prettifyUrl(link.url) }}
+			.external-links(v-if="profileLinks.length > 0")
+				a(v-for="link of profileLinks", :href="link.url", target="_blank")
+					span {{ link.display_text || prettifyUrl(link.url) }}
 			.join-room(v-if="exhibitor.highlighted_room_id")
 				bunt-button(@click="joinRoom") {{ $t('Exhibition:room-button:label') }}
 			template(v-if="exhibitor.staff.length > 0")
@@ -215,20 +214,24 @@ export default {
 		.external-links
 			flex: none
 			border-bottom: border-separator()
-			tr
-				height: 24px
-			th
-				font-weight: 400
-				text-align: right
-			td
-				overflow: hidden
-				white-space: nowrap
-				text-overflow: ellipsis
-				max-width: 0
-				width: 100%
-			.name
-				white-space: nowrap
-			a:hover
+			display: flex
+			flex-direction: column
+			padding: 4px 8px
+			a
+				line-height: 24px
+				font-weight: 500
+				display: flex
+				align-items: center
+				span
+					ellipsis()
+				&::before
+					content: '\F03CC'
+					font-family: "Material Design Icons"
+					font-size: 18px
+					line-height: 24px
+					font-weight: 400
+					margin: 0 4px 0 0
+				&:hover span
 					text-decoration: underline
 		.contact, .join-room
 			flex: none
