@@ -8,7 +8,7 @@ from django.core.exceptions import PermissionDenied, SuspiciousOperation
 from django.http import FileResponse, Http404, HttpResponseServerError
 from django.shortcuts import redirect
 from django.template import TemplateDoesNotExist, loader
-from django.urls import get_callable
+from django.urls import NoReverseMatch, get_callable
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils.timezone import now
 from django.views.decorators.cache import cache_page
@@ -71,23 +71,31 @@ class GenericLoginView(FormView):
         return super().dispatch(request, *args, **kwargs)
 
     @classmethod
-    def get_next_url_or_fallback(cls, request, fallback):
+    def get_next_url_or_fallback(cls, request, fallback, ignore_next=False):
         """Reused in logout()"""
         params = request.GET.copy()
-        url = urllib.parse.unquote(params.pop("next", [""])[0])
+        url = None if ignore_next else urllib.parse.unquote(params.pop("next", [""])[0])
         params = "?" + params.urlencode() if params else ""
         if url and url_has_allowed_host_and_scheme(url, allowed_hosts=None):
             return url + params
         return fallback + params
 
-    def get_success_url(self):
-        return self.get_next_url_or_fallback(self.request, self.success_url)
+    def get_success_url(self, ignore_next=False):
+        return self.get_next_url_or_fallback(
+            self.request, self.success_url, ignore_next=ignore_next
+        )
+
+    def get_redirect(self):
+        try:
+            return redirect(self.get_success_url())
+        except NoReverseMatch:
+            return redirect(self.get_success_url(ignore_next=True))
 
     def form_valid(self, form):
         pk = form.save()
         user = User.objects.filter(pk=pk).first()
         login(self.request, user, backend="django.contrib.auth.backends.ModelBackend")
-        return redirect(self.get_success_url())
+        return self.get_redirect()
 
 
 class GenericResetView(FormView):
