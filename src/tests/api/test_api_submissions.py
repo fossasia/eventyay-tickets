@@ -86,6 +86,7 @@ def test_submission_serializer_for_organiser(submission, orga_user, resource, ta
         assert data["speakers"][0] == {
             "name": submission.speakers.first().name,
             "code": submission.speakers.first().code,
+            "email": submission.speakers.first().email,
             "biography": submission.speakers.first()
             .event_profile(submission.event)
             .biography,

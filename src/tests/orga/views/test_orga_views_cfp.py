@@ -30,6 +30,7 @@ def test_edit_cfp(orga_client, event):
             "settings-cfp_ask_image": "optional",
             "settings-cfp_ask_track": "optional",
             "settings-cfp_ask_duration": "optional",
+            "settings-cfp_ask_additional_speaker": "optional",
         },
         follow=True,
     )
