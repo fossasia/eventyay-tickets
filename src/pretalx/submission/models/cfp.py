@@ -50,7 +50,7 @@ def default_fields():
         "image": {"visibility": "optional"},
         "track": {"visibility": "do_not_ask"},
         "duration": {"visibility": "do_not_ask"},
-        "content_locale": {"visibility": "require"},
+        "content_locale": {"visibility": "required"},
         "additional_speaker": {"visibility": "optional"},
     }
 
@@ -64,7 +64,7 @@ def field_helper(cls):
 
     def is_field_required(self, field):
         return (
-            self.fields.get(field, default_fields()[field])["visibility"] == "require"
+            self.fields.get(field, default_fields()[field])["visibility"] == "required"
         )
 
     for field in default_fields().keys():
