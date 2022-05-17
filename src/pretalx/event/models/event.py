@@ -84,6 +84,7 @@ def default_display_settings():
         "header_pattern": "",
         "html_export_url": "",
         "meta_noindex": False,
+        "texts": {"agenda_session_above": "", "agenda_session_below": ""},
     }
 
 

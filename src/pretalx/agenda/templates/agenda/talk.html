@@ -1,5 +1,6 @@
 {% extends "agenda/base.html" %}
 {% load compress %}
+{% load html_signal %}
 {% load i18n %}
 {% load rich_text %}
 
@@ -16,6 +17,7 @@
 
 {% block agenda_content %}
     <article>
+        {% html_signal "pretalx.agenda.signals.html_above_session_pages" sender=request.event request=request submission=submission %}
         <h3 class="talk-title">
             <div class="heading-with-buttons">
                 {{ submission.title }}
@@ -120,6 +122,9 @@
                     {% endif %}
                 </section>
             {% endif %}
+            <section>
+                {% html_signal "pretalx.agenda.signals.html_below_session_pages" sender=request.event request=request submission=submission %}
+            </section>
         </div>
     </div>
     {% if not hide_speaker_links %}
