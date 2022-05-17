@@ -583,7 +583,7 @@ def test_submission_accept(speaker_client, submission, get_availability):
 
 @pytest.mark.django_db
 def test_submission_accept_with_missing_availability(speaker_client, submission):
-    submission.event.cfp.fields["availabilities"]["visibility"] = "require"
+    submission.event.cfp.fields["availabilities"]["visibility"] = "required"
     submission.event.cfp.save()
     submission.state = SubmissionStates.ACCEPTED
     submission.save()
