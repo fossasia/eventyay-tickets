@@ -67,6 +67,7 @@ setup(
     license="Apache License 2.0",
     description="Conference organisation: CfPs, scheduling, much more",
     long_description=long_description,
+    long_description_content_type="text/x-rst",
     author="Tobias Kunze",
     author_email="r@rixx.de",
     url="https://pretalx.com",
