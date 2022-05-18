@@ -25,8 +25,9 @@ jobs:
       - name: Post draft tweet
         run: python twitter.py
         working-directory: ./.github/workflows
-        TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
-        TWITTER_ACCESS_TOKEN_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
-        TWITTER_CONSUMER_KEY: ${{ secrets.TWITTER_CONSUMER_KEY }}
-        TWITTER_CONSUMER_SECRET_KEY: ${{ secrets.TWITTER_CONSUMER_SECRET_KEY }}
-        TWITTER_ADS_ACCOUNT_ID: ${{ secrets.TWITTER_ADS_ACCOUNT_ID }}
+        env:
+          TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+          TWITTER_ACCESS_TOKEN_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
+          TWITTER_CONSUMER_KEY: ${{ secrets.TWITTER_CONSUMER_KEY }}
+          TWITTER_CONSUMER_SECRET_KEY: ${{ secrets.TWITTER_CONSUMER_SECRET_KEY }}
+          TWITTER_ADS_ACCOUNT_ID: ${{ secrets.TWITTER_ADS_ACCOUNT_ID }}
