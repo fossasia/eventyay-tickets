@@ -140,7 +140,7 @@ jobs:
         run: check-manifest .
         working-directory: ./src
       - name: Build package
-        run: python -m build
+        run: python -m build -n
         working-directory: ./src
       - name: Check package
         run: twine check dist/*
