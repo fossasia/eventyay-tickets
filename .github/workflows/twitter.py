@@ -29,6 +29,7 @@ def get_new_features(diff_lines):
 
 
 def post_draft_tweet(text):
+    print(f"Attempting to post draft tweet: {text}")
     client = Client(
         CONSUMER_KEY, CONSUMER_SECRET_KEY, ACCESS_TOKEN, ACCESS_TOKEN_SECRET
     )
