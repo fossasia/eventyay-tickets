@@ -800,6 +800,14 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
         )
 
     @cached_property
+    def reviewers(self):
+        from pretalx.person.models import User
+
+        return User.objects.filter(
+            teams__in=self.teams.filter(is_reviewer=True)
+        ).distinct()
+
+    @cached_property
     def datetime_from(self) -> dt.datetime:
         """The localised datetime of the event start date.
 

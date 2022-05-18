@@ -23,7 +23,7 @@ def has_reviewer_teams(user, event):
     team_permissions = user.team_permissions.get(event.slug)
     if team_permissions is not None:
         return "is_reviewer" in team_permissions
-    return event.teams.filter(members__in=[user], is_reviewer=True).exists()
+    return user in event.reviewers
 
 
 @rules.predicate

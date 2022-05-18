@@ -14,7 +14,6 @@ from pretalx.common.mixins.views import EventPermissionRequired, PermissionRequi
 from pretalx.common.models.log import ActivityLog
 from pretalx.event.models import Event, Organiser
 from pretalx.event.stages import get_stages
-from pretalx.person.models import User
 from pretalx.submission.models.submission import SubmissionStates
 
 
@@ -144,10 +143,7 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
         )
         if review_count:
             active_reviewers = (
-                User.objects.filter(
-                    teams__in=self.request.event.teams.filter(is_reviewer=True),
-                    reviews__isnull=False,
-                )
+                self.request.event.reviewers.filter(reviews__isnull=False)
                 .order_by("id")
                 .distinct()
                 .count()
