@@ -15,7 +15,7 @@ ADS_ACCOUNT_ID = os.environ.get("TWITTER_ADS_ACCOUNT_ID")
 
 def get_diff_lines():
     result = subprocess.check_output(
-        "git diff -U0 ../../doc/changelog.rst", shell=True
+        "git diff -U0 @~1 ../../doc/changelog.rst", shell=True
     ).decode()
     return [d for d in result.split("\n")[5:] if d]
 
