@@ -214,7 +214,7 @@ msgstr ""
 #: pretalx/agenda/templates/agenda/schedule_nojs.html:67
 #, python-format
 msgid "No sessions on %(weekday)s, %(current_day)s."
-msgstr "No hi ha cap sessió per %(weekday)s,"
+msgstr "No hi ha cap sessió per %(weekday)s, %(current_day)s"
 
 #: pretalx/agenda/templates/agenda/session_block.html:17
 #, python-format
@@ -250,12 +250,6 @@ msgstr "Idioma"
 #: pretalx/agenda/templates/agenda/talk.html:67
 msgid "This session's header image"
 msgstr ""
-
-#: pretalx/agenda/templates/agenda/talk.html:79
-#: pretalx/orga/templates/orga/schedule/index.html:25
-#, python-format
-msgid "All times in %(tz)s"
-msgstr "Tots els horaris en"
 
 #: pretalx/agenda/templates/agenda/talk.html:104
 msgid "See also:"
