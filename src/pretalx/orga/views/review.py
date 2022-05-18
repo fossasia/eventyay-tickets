@@ -21,6 +21,7 @@ from pretalx.common.views import CreateOrUpdateView
 from pretalx.orga.forms.review import (
     DirectionForm,
     ProposalForReviewerForm,
+    ReviewAssignImportForm,
     ReviewerForProposalForm,
     ReviewExportForm,
     ReviewForm,
@@ -582,9 +583,7 @@ class ReviewAssignment(EventPermissionRequired, FormView):
     @context
     @cached_property
     def formset(self):
-        proposals = self.request.event.submissions.filter(state="submitted").order_by(
-            "title"
-        )
+        proposals = self.request.event.submissions.order_by("title")
         reviewers = (
             User.objects.filter(
                 teams__in=self.request.event.teams.filter(is_reviewer=True)
@@ -636,6 +635,23 @@ class ReviewAssignment(EventPermissionRequired, FormView):
             form.save()
         messages.success(request, _("Saved!"))
         return self.get(self.request, *self.args, **self.kwargs)
+
+
+class ReviewAssignmentImport(EventPermissionRequired, FormView):
+    template_name = "orga/review/assignment-import.html"
+    permission_required = "orga.change_settings"
+    form_class = ReviewAssignImportForm
+
+    def get_form_kwargs(self):
+        result = super().get_form_kwargs()
+        result["event"] = self.request.event
+        return result
+
+    @transaction.atomic
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, _("The reviewers were assigned successfully"))
+        return redirect(self.request.event.orga_urls.review_assignments)
 
 
 class ReviewExport(EventPermissionRequired, FormView):

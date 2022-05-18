@@ -1,6 +1,8 @@
+import json
 from functools import partial
 
 from django import forms
+from django.db.models import Q
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from django_scopes.forms import SafeModelMultipleChoiceField
@@ -325,3 +327,89 @@ class ReviewExportForm(ExportForm):
 
     def get_answer(self, question, obj):
         return question.answers.filter(review=obj).first()
+
+
+class ReviewAssignImportForm(DirectionForm):
+    import_file = forms.FileField(label=_("File"))
+    replace_assignments = forms.ChoiceField(
+        label=_("Replace current assignments"),
+        choices=((0, _("No")), (1, _("Yes"))),
+        help_text=_(
+            "Select to remove all current assignments and replace them with the import. Otherwise, the import will be an addition to the current assignments."
+        ),
+        widget=forms.RadioSelect,
+        initial=False,
+    )
+
+    def __init__(self, event, **kwargs):
+        self.event = event
+        self._user_cache = {}
+        self._submissions_cache = {}
+        super().__init__(**kwargs)
+        self.fields["direction"].required = True
+
+    def _get_user(self, text):
+        if text in self._user_cache:
+            return self._user_cache[text]
+        try:
+            user = self.event.reviewers.get(Q(email__iexact=text) | Q(code=text))
+            self._user_cache[text] = user
+            return user
+        except Exception:
+            raise forms.ValidationError(str(_("Unknown user: {}")).format(text))
+
+    def _get_submission(self, text):
+        if not self._submissions_cache:
+            self._submissions_cache = {s.code: s for s in self.event.submissions.all()}
+        try:
+            return self._submissions_cache[text.strip().upper()]
+        except Exception:
+            raise forms.ValidationError(str(_("Unknown proposal: {}")).format(text))
+
+    def clean_import_file(self):
+        uploaded_file = self.cleaned_data["import_file"]
+        try:
+            data = json.load(uploaded_file)
+        except Exception:
+            raise forms.ValidationError(_("Cannot parse JSON file."))
+        return data
+
+    def clean(self):
+        super().clean()
+        uploaded_data = self.cleaned_data.get("import_file")
+        direction = self.cleaned_data.get("direction")
+        if direction == "reviewer":
+            # keys should be users, values should be lists of proposals
+            new_uploaded_data = {
+                self._get_user(key): [self._get_submission(v) for v in value]
+                for key, value in uploaded_data.items()
+            }
+        else:
+            # keys should be proposals, values should be lists of users
+            new_uploaded_data = {
+                self._get_submission(key): [self._get_user(v) for v in value]
+                for key, value in uploaded_data.items()
+            }
+
+        self.cleaned_data["import_file"] = new_uploaded_data
+        return self.cleaned_data
+
+    def save(self):
+        direction = self.cleaned_data.get("direction")
+        replace_assignments = self.cleaned_data.get("replace_assignments")
+        uploaded_data = self.cleaned_data.get("import_file")
+
+        if replace_assignments in (1, "1"):
+            # There's no .update() for m2m fields
+            # We'll just assume that there are less reviewers than proposals, typically,
+            # so this should result in less queries
+            for user in self.event.reviewers:
+                user.assigned_reviews.set([])
+
+        if direction == "reviewer":
+            # keys should be users, values should be lists of proposals
+            for user, proposals in uploaded_data.items():
+                user.assigned_reviews.set(proposals)
+        else:
+            for proposal, users in uploaded_data.items():
+                proposal.assigned_reviewers.set(users)

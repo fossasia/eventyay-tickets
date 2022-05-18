@@ -1,0 +1,13 @@
+// assign proposals to users like this:
+
+{
+    "tobias@example.org": ["XYK3VH", "KJKJF3"],
+    "leah@example.org": ["KJKJF3"]
+}
+
+// assign users to proposals like this:
+
+{
+    "XYK3VH": ["tobias@example.org", "leah@example.org"],
+    "KJKJF3": ["tobias@example.org"]
+}

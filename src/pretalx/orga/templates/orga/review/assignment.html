@@ -11,6 +11,19 @@
         <script defer src="{% static "cfp/js/animateFormset.js" %}"></script>
         <script defer src="{% static "orga/js/reviewAssignment.js" %}"></script>
     {% endcompress %}
+    <div class="float-right">
+        <details class="dropdown">
+            <summary class="btn btn-info" id="review-actions">
+                {% translate "Actions" %} <i class="fa fa-caret-down"></i>
+            </summary>
+
+            <ul class="dropdown-content dropdown-front dropdown-content-s{% if rtl %}e{% else %}w{% endif %}">
+                <li><a class="dropdown-item" href="{{ request.path }}import" target="_blank" rel="noopener">
+                    <i class="fa fa-link"></i> {% translate "Import assignments" %}
+                </a></li>
+            </ul>
+        </details>
+    </div>
     <h2>{% translate "Assign reviewers" %}</h2>
     <div class="alert alert-info"><p>
         {% if request.event.active_review_phase.proposal_visibility == "assigned" %}
@@ -31,6 +44,9 @@
         {% blocktranslate trimmed %}
             This is where you can assign reviewers to specific proposals! Please use this drop-down to
             switch between the two assignment modes (assigning reviewers to proposals or proposals to reviewers).
+        {% endblocktranslate %}
+        {% blocktranslate trimmed %}
+            You can also use the Actions menu above to import your assignments from a prepared file.
         {% endblocktranslate %}
     </p>
     <div class="ml-auto mr-auto col-md-4">

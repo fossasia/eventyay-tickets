@@ -564,6 +564,11 @@ urlpatterns = [
                     name="reviews.regenerate",
                 ),
                 path(
+                    "reviews/assign/import",
+                    review.ReviewAssignmentImport.as_view(),
+                    name="reviews.assign.import",
+                ),
+                path(
                     "reviews/assign/",
                     review.ReviewAssignment.as_view(),
                     name="reviews.assign",

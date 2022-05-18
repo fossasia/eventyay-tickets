@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` Organisers can now assign reviewers to proposals in bulk, by uploading a JSON file.
 - :feature:`-` Two new signals: ``agenda.html_above_session_pages`` and ``agenda.html_below_session_pages`` allow plugins to add custom text to the public schedule session pages.
 - :feature:`-` The schedule widget can now be given a top margin at which to stop the scrolling of its room/day headers.
 - :feature:`1301` Following a confirmation link to a proposal you don't have access to now shows a helpful page prompting you to double-check your account is correct. Anonymous users will be directed to log in first.

@@ -376,6 +376,7 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
         reset_schedule = "{schedule}reset"
         toggle_schedule = "{schedule}toggle"
         reviews = "{base}reviews/"
+        review_assignments = "{reviews}assign/"
         schedule_api = "{base}schedule/api/"
         talks_api = "{schedule_api}talks/"
         plugins = "{settings}plugins"
