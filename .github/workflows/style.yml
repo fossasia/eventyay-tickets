@@ -136,6 +136,10 @@ jobs:
             ${{ runner.os }}-pip-
       - name: Install Dependencies
         run: python -m pip install twine wheel -Ue "src[dev]"
+      - name: Install system dependencies
+        run: |
+          sudo apt update
+          sudo apt install gettext
       - name: Run check-manifest
         run: check-manifest .
         working-directory: ./src
