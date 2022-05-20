@@ -377,18 +377,27 @@ class QuestionsStep(GenericFlowStep, FormFlowStep):
     def is_applicable(self, request):
         self.request = request
         info_data = self.cfp_session.get("data", {}).get("info", {})
-        if not info_data or not info_data.get("track"):
-            return self.event.questions.all().exists()
-        return self.event.questions.exclude(
-            Q(target=QuestionTarget.SUBMISSION)
-            & (
-                (~Q(tracks__in=[info_data.get("track")]) & Q(tracks__isnull=False))
-                | (
+        track = info_data.get("track")
+        if track:
+            questions = self.event.questions.exclude(
+                Q(target=QuestionTarget.SUBMISSION)
+                & (
+                    (~Q(tracks__in=[info_data.get("track")]) & Q(tracks__isnull=False))
+                    | (
+                        ~Q(submission_types__in=[info_data.get("submission_type")])
+                        & Q(submission_types__isnull=False)
+                    )
+                )
+            )
+        else:
+            questions = self.event.questions.exclude(
+                Q(target=QuestionTarget.SUBMISSION)
+                & (
                     ~Q(submission_types__in=[info_data.get("submission_type")])
                     & Q(submission_types__isnull=False)
                 )
             )
-        ).exists()
+        return questions.exists()
 
     def get_form_kwargs(self):
         result = super().get_form_kwargs()

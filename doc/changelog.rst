@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`-` Events with per-submission-type questions sometimes saw empty questions pages in the CfP flow.
 - :feature:`-` Organisers can now assign reviewers to proposals in bulk, by uploading a JSON file.
 - :feature:`-` Two new signals: ``agenda.html_above_session_pages`` and ``agenda.html_below_session_pages`` allow plugins to add custom text to the public schedule session pages.
 - :feature:`-` The schedule widget can now be given a top margin at which to stop the scrolling of its room/day headers.
