@@ -25,9 +25,7 @@ def get_login_redirect(request):
     params = f"?next={quote(next_url)}&{params}"
     event = getattr(request, "event", None)
     if event:
-        return redirect(
-            reverse("orga:event.login", kwargs={"event": event.slug}) + params
-        )
+        return redirect(event.urls.login.full() + params)
     return redirect(reverse("orga:login") + params)
 
 
