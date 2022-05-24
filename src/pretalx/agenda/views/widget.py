@@ -160,6 +160,11 @@ def version_prefix(request, event, version=None):
 )
 def widget_data_v2(request, event, version=None):
     event = request.event
+    if request.method == "OPTIONS":
+        response = JsonResponse({})
+        response["Access-Control-Allow-Origin"] = "*"
+        response["Access-Control-Allow-Headers"] = "authorization,content-type"
+        return response
     if not request.user.has_perm("agenda.view_widget", event):
         raise Http404()
 
@@ -179,11 +184,7 @@ def widget_data_v2(request, event, version=None):
     if schedule.version:
         talks = schedule.talks.filter(is_visible=True)
     else:
-        talks = schedule.talks.filter(
-            Q(submission__state="confirmed") | Q(submission__isnull=True),
-            start__isnull=False,
-            room__isnull=False,
-        )
+        talks = schedule.talks.all()
 
     talks = (
         talks.select_related(
@@ -191,6 +192,7 @@ def widget_data_v2(request, event, version=None):
             "room",
             "submission__track",
             "submission__event",
+            "submission__submission_type",
         ).prefetch_related("submission__speakers")
     ).order_by("start")
     rooms = set()
@@ -200,6 +202,8 @@ def widget_data_v2(request, event, version=None):
         "talks": [],
         "version": schedule.version,
         "timezone": event.timezone,
+        "event_start": event.date_from.isoformat(),
+        "event_end": event.date_to.isoformat(),
     }
     for talk in talks:
         rooms.add(talk.room)
@@ -223,6 +227,7 @@ def widget_data_v2(request, event, version=None):
                     "end": talk.local_end,
                     "room": talk.room_id,
                     "featured": talk.submission.is_featured,
+                    "duration": talk.submission.get_duration(),
                 }
             )
         else:
@@ -264,6 +269,7 @@ def widget_data_v2(request, event, version=None):
     ]
 
     response = JsonResponse(result, encoder=I18nJSONEncoder)
+    response["Access-Control-Allow-Headers"] = "authorization,content-type"
     response["Access-Control-Allow-Origin"] = "*"
     return response
 
