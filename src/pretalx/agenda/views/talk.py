@@ -1,11 +1,10 @@
 from urllib.parse import urlparse
 
 import vobject
-from csp.decorators import csp_exempt
 from django.conf import settings
 from django.contrib import messages
 from django.db.models import Q
-from django.http import FileResponse, Http404, HttpResponse
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
@@ -14,7 +13,7 @@ from django_context_decorator import context
 
 from pretalx.agenda.signals import register_recording_provider
 from pretalx.cfp.views.event import EventPageMixin
-from pretalx.common.mixins.views import PermissionRequired
+from pretalx.common.mixins.views import PermissionRequired, SocialMediaCardMixin
 from pretalx.common.phrases import phrases
 from pretalx.schedule.models import Schedule, TalkSlot
 from pretalx.submission.forms import FeedbackForm
@@ -247,12 +246,6 @@ class FeedbackView(PermissionRequired, FormView):
         return self.get_object().urls.public
 
 
-class TalkSocialMediaCard(TalkView):
-    @csp_exempt
-    def get(self, request, *args, **kwargs):
-        submission = self.get_object()
-        if submission.image:
-            return FileResponse(submission.image)
-        if submission.event.logo:
-            return FileResponse(submission.event.logo)
-        raise Http404()
+class TalkSocialMediaCard(SocialMediaCardMixin, TalkView):
+    def get_image(self):
+        return self.get_object().image

@@ -15,6 +15,7 @@ from pretalx.common.mixins.views import (
     EventPermissionRequired,
     Filterable,
     PermissionRequired,
+    SocialMediaCardMixin,
 )
 from pretalx.common.utils import safe_filename
 from pretalx.person.models import SpeakerProfile, User

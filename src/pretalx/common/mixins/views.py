@@ -4,13 +4,14 @@ from contextlib import suppress
 from importlib import import_module
 from urllib.parse import quote
 
+from csp.decorators import csp_exempt
 from django import forms
 from django.conf import settings
 from django.core.exceptions import FieldDoesNotExist
 from django.db.models import CharField, Q
 from django.db.models.functions import Lower
 from django.forms import ValidationError
-from django.http import Http404
+from django.http import FileResponse, Http404
 from django.shortcuts import redirect
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
@@ -272,3 +273,22 @@ class SensibleBackWizardMixin:
             # proceed to the next step
             return self.render_next_step(form)
         return self.render(form)
+
+
+class SocialMediaCardMixin:
+    def get_image(self):
+        raise NotImplementedError
+
+    @csp_exempt
+    def get(self, request, *args, **kwargs):
+        try:
+            image = self.get_image()
+            if image:
+                return FileResponse(image)
+        except Exception:
+            pass
+        if self.request.event.logo:
+            return FileResponse(self.request.event.logo)
+        if self.request.event.header_image:
+            return FileResponse(self.request.event.header_image)
+        raise Http404()
