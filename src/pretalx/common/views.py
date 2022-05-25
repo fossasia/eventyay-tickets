@@ -12,13 +12,14 @@ from django.urls import NoReverseMatch, get_callable
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils.timezone import now
 from django.views.decorators.cache import cache_page
-from django.views.generic import FormView
+from django.views.generic import FormView, View
 from django.views.generic.detail import SingleObjectTemplateResponseMixin
 from django.views.generic.edit import ModelFormMixin, ProcessFormView
 from django_context_decorator import context
 
 from pretalx.cfp.forms.auth import ResetForm
 from pretalx.common.exceptions import SendMailException
+from pretalx.common.mixins.views import SocialMediaCardMixin
 from pretalx.common.phrases import phrases
 from pretalx.person.forms import UserForm
 from pretalx.person.models import User
@@ -53,6 +54,10 @@ def get_static(request, path, content_type):  # pragma: no cover
     return FileResponse(
         open(path, "rb"), content_type=content_type, as_attachment=False
     )
+
+
+class EventSocialMediaCard(SocialMediaCardMixin, View):
+    pass
 
 
 class GenericLoginView(FormView):

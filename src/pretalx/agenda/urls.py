@@ -1,6 +1,6 @@
 from django.urls import include, path, re_path
 
-from pretalx.common.views import get_static
+from pretalx.common.views import EventSocialMediaCard, get_static
 
 from .views import featured, feed, schedule, speaker, talk, widget
 
@@ -107,6 +107,11 @@ urlpatterns = [
                     "speaker/<code>/talks.ics",
                     speaker.SpeakerTalksIcalView.as_view(),
                     name="speaker.talks.ical",
+                ),
+                path(
+                    "og-image",
+                    EventSocialMediaCard.as_view(),
+                    name="event-social",
                 ),
             ]
         ),
