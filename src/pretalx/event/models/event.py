@@ -337,6 +337,7 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
     class orga_urls(EventUrls):
         create = "/orga/event/new"
         base = "/orga/event/{self.slug}/"
+        login = "{base}login/"
         live = "{base}live"
         delete = "{base}delete"
         cfp = "{base}cfp/"
