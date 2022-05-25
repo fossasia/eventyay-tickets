@@ -314,6 +314,7 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
         logout = "{base}logout"
         auth = "{base}auth/"
         logo = "{self.logo.url}"
+        header_image = "{self.header_image.url}"
         reset = "{base}reset"
         submit = "{base}submit/"
         user = "{base}me/"
