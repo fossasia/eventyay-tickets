@@ -42,6 +42,7 @@ class SpeakerProfile(LogMixin, models.Model):
 
     class urls(EventUrls):
         public = "{self.event.urls.base}speaker/{self.user.code}/"
+        social_image = "{public}og-image"
         talks_ical = "{self.urls.public}talks.ics"
 
     class orga_urls(EventUrls):

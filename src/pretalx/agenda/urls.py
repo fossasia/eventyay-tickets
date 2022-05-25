@@ -99,6 +99,11 @@ urlpatterns = [
                     name="speaker",
                 ),
                 path(
+                    "speaker/<code>/og-image",
+                    speaker.SpeakerSocialMediaCard.as_view(),
+                    name="speaker-social",
+                ),
+                path(
                     "speaker/<code>/talks.ics",
                     speaker.SpeakerTalksIcalView.as_view(),
                     name="speaker.talks.ical",

@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` Use speaker profile images as social media preview where possible (does not include gravatar support atm).
 - :feature:`-` Header images are now used as fallback for social media preview images if there's no logo.
 - :bug:`-` Events with per-submission-type questions sometimes saw empty questions pages in the CfP flow.
 - :feature:`-` Organisers can now assign reviewers to proposals in bulk, by uploading a JSON file.

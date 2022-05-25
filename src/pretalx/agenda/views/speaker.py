@@ -128,3 +128,11 @@ class SpeakerTalksIcalView(PermissionRequired, DetailView):
                 "Content-Disposition": f'attachment; filename="{request.event.slug}-{safe_filename(speaker_name)}.ics"'
             },
         )
+
+
+class SpeakerSocialMediaCard(SocialMediaCardMixin, SpeakerView):
+    def get_image(self):
+        user = self.profile.user
+        if user.avatar:
+            return user.avatar
+        # TODO implement gravatar caching
