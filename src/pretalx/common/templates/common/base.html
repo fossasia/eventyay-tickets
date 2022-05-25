@@ -17,8 +17,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="{% if request.event and request.event.primary_color %}{{ request.event.primary_color }}{% else %}#3aa57c{% endif %}">
         <meta name="HandheldFriendly" content="True"/>
-        {% block meta_image %}{% if request.event %}<meta property="thumbnail" content="{{ request.event.urls.social_image }}">
-            <meta property="og:image" content="{{ request.event.urls.social_image }}">
+        {% block meta_image %}{% if request.event %}<meta property="thumbnail" content="{{ request.event.urls.social_image.full }}">
+            <meta property="og:image" content="{{ request.event.urls.social_image.full }}">
         {% endif %}{% endblock %}
         <meta property="og:title" content="{% block social_title %}{% endblock %} {% if request.event %}{{ request.event.name }}{% endif %}">
         <meta property="og:description" content="{% block social_description %}{% if request.event %}Schedule, talks and talk submissions for {{ request.event.name }}{% else %}Talks and talk submissions by pretalx{% endif %}{% endblock %}">
