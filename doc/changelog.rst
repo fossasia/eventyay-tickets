@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` Not so much a feature as a change: Speaker images are now cropped to the centre in the speaker list squares instead of to the top.
 - :bug:`-` Fix social media preview images sometimes not showing up due to robots.txt constraints.
 - :feature:`-` Use speaker profile images as social media preview where possible (does not include gravatar support atm).
 - :feature:`-` Header images are now used as fallback for social media preview images if there's no logo.
