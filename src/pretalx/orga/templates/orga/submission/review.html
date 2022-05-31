@@ -49,11 +49,7 @@
             <div class="form-group row">
                 <label class="col-md-3 col-form-label">{% translate "Title" %}</label>
                 <div class="col-md-9 mt-1">
-                    {% if can_view_speakers %}
-                        {{ submission.title|default:'-' }}
-                    {% else %}
-                        {{ submission.anonymised.title|default:submission.title|default:'-' }}
-                    {% endif %}
+                    {{ submission.anonymised.title|default:submission.title|default:'-' }}
                 </div>
             </div>
             <div class="form-group row">
@@ -74,11 +70,7 @@
                 <div class="form-group row">
                     <label class="col-md-3 col-form-label">{% translate "Abstract" %}</label>
                     <div class="col-md-9 mt-1">
-                        {% if can_view_speakers %}
-                            {{ submission.abstract|rich_text|default:'-' }}
-                        {% else %}
-                            {{ submission.anonymised.abstract|default:submission.abstract|rich_text|default:'-' }}
-                        {% endif %}
+                        {{ submission.anonymised.abstract|default:submission.abstract|rich_text|default:'-' }}
                     </div>
                 </div>
             {% endif %}
@@ -86,11 +78,7 @@
                 <div class="form-group row">
                     <label class="col-md-3 col-form-label">{% translate "Description" %}</label>
                     <div class="col-md-9 mt-1">
-                        {% if can_view_speakers %}
-                            {{ submission.description|rich_text|default:'-' }}
-                        {% else %}
-                            {{ submission.anonymised.description|default:submission.description|rich_text|default:'-' }}
-                        {% endif %}
+                        {{ submission.anonymised.description|default:submission.description|rich_text|default:'-' }}
                     </div>
                 </div>
             {% endif %}
@@ -98,11 +86,7 @@
                 <div class="form-group row">
                     <label class="col-md-3 col-form-label">{% translate "Notes" %}</label>
                     <div class="col-md-9 mt-1">
-                        {% if can_view_speakers %}
-                            {{ submission.notes|rich_text|default:'-' }}
-                        {% else %}
-                            {{ submission.anonymised.notes|default:submission.notes|rich_text|default:'-' }}
-                        {% endif %}
+                        {{ submission.anonymised.notes|default:submission.notes|rich_text|default:'-' }}
                     </div>
                 </div>
             {% endif %}
@@ -124,7 +108,7 @@
                             {% endif %}
                             {% if speaker.submissions.count > 1 %}<br><strong>{% translate "Other proposals" %}:</strong>
                                 {% for other_submission in speaker.submissions %}{% if other_submission != submission %}
-                                    <a href="{{ other_submission.orga_urls.base }}">{% if can_view_speakers %}{{ other_submission.title }}{% else %}{{ other_submission.anonymised.title|default:other_submission.title }}{% endif %}</a>{% if not forloop.last %}, {% endif %}
+                                    <a href="{{ other_submission.orga_urls.base }}">{{ other_submission.anonymised.title|default:other_submission.title }}</a>{% if not forloop.last %}, {% endif %}
                                 {% endif %}{% endfor %}
                             {% endif %}
                         </div>
