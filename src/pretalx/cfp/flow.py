@@ -216,8 +216,6 @@ class FormFlowStep(TemplateFlowStep):
 
     def set_data(self, data):
         def serialize_value(value):
-            if getattr(value, "file", None):
-                return None
             if getattr(value, "pk", None):
                 return value.pk
             if getattr(value, "__iter__", None):
@@ -227,7 +225,14 @@ class FormFlowStep(TemplateFlowStep):
             return str(value)
 
         self.cfp_session["data"][self.identifier] = json.loads(
-            json.dumps(data, default=serialize_value)
+            json.dumps(
+                {
+                    key: value
+                    for key, value in data.items()
+                    if not getattr(value, "file", None)
+                },
+                default=serialize_value,
+            )
         )
 
     def get_files(self):
