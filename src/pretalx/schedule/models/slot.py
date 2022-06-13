@@ -58,7 +58,7 @@ class TalkSlot(LogMixin, models.Model):
     objects = ScopedManager(event="schedule__event")
 
     class Meta:
-        ordering = ("start", )
+        ordering = ("start",)
 
     def __str__(self):
         """Help when debugging."""
