@@ -57,6 +57,9 @@ class TalkSlot(LogMixin, models.Model):
 
     objects = ScopedManager(event="schedule__event")
 
+    class Meta:
+        ordering = ("start", )
+
     def __str__(self):
         """Help when debugging."""
         return f'TalkSlot(event={self.schedule.event.slug}, submission={getattr(self.submission, "title", None)}, schedule={self.schedule.version})'
