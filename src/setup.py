@@ -79,9 +79,6 @@ setup(
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Environment :: Web Environment",
-        "Framework :: Django",
-        "Framework :: Django :: 3.2",
-        "Intended Audience :: Developers",
         "Intended Audience :: Other Audience",
         "License :: OSI Approved",
         "License :: OSI Approved :: Apache Software License",
