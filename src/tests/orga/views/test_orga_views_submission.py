@@ -652,7 +652,7 @@ def test_orga_can_anonymise_submission(
 
     response = orga_client.get(submission.orga_urls.reviews)
     assert response.status_code == 200
-    assert "CENSORED" not in response.content.decode()
+    assert "CENSORED" in response.content.decode()
     response = orga_client.get(submission.orga_urls.base)
     assert response.status_code == 200
     assert "CENSORED" not in response.content.decode()

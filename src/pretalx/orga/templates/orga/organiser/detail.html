@@ -44,7 +44,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for team in teams %}
+                            {% if teams %}{% for team in teams %}
                                 <tr>
                                     <td>
                                         <a href="{{ team.orga_urls.base }}">
@@ -75,7 +75,7 @@
                                             </td>
                                         </a>
                                     </tr>
-                            {% endfor %}
+                            {% endfor %}{% endif %}
                         </tbody>
                     </table>
                 </div>

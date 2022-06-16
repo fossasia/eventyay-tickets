@@ -203,10 +203,16 @@ class OrganiserDetail(PermissionRequired, CreateOrUpdateView):
     @context
     @cached_property
     def teams(self):
+        if not self.object:
+            return []
         return self.request.organiser.teams.all().order_by("-all_events", "-id")
 
     def get_object(self):
         return getattr(self.request, "organiser", None)
+
+    @cached_property
+    def object(self):
+        return self.get_object()
 
     def get_success_url(self):
         messages.success(self.request, _("Saved!"))
