@@ -44,7 +44,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for team in request.organiser.teams.all %}
+                            {% for team in teams %}
                                 <tr>
                                     <td>
                                         <a href="{{ team.orga_urls.base }}">

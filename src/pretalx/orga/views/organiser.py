@@ -200,6 +200,11 @@ class OrganiserDetail(PermissionRequired, CreateOrUpdateView):
     permission_required = "orga.change_organiser_settings"
     form_class = OrganiserForm
 
+    @context
+    @cached_property
+    def teams(self):
+        return self.request.organiser.teams.all().order_by("-all_events", "-id")
+
     def get_object(self):
         return getattr(self.request, "organiser", None)
 
