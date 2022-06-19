@@ -33,6 +33,8 @@ from pretalx.submission.models.submission import SubmissionStates
 
 
 def can_view_all_tracks(user, event):
+    if user.is_administrator:
+        return True
     user_teams = event.teams.filter(members__in=[user])
     return not all(team.limit_tracks.all().exists() for team in user_teams)
 
