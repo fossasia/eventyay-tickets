@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` If you limit reviewer teams to specific tracks, they won't be able to see speaker profiles from outside their track(s) anymore.
 - :feature:`-` Not so much a feature as a change: Speaker images are now cropped to the centre in the speaker list squares instead of to the top.
 - :bug:`-` Fix social media preview images sometimes not showing up due to robots.txt constraints.
 - :feature:`-` Use speaker profile images as social media preview where possible (does not include gravatar support atm).

@@ -29,7 +29,18 @@ from pretalx.person.forms import (
 from pretalx.person.models import SpeakerInformation, SpeakerProfile, User
 from pretalx.submission.forms import QuestionsForm
 from pretalx.submission.models import Answer
-from pretalx.submission.models.submission import Submission, SubmissionStates
+from pretalx.submission.models.submission import SubmissionStates
+
+
+def get_speaker_profiles_for_user(user, event):
+    user_teams = event.teams.filter(members__in=[user])
+    users = event.submitters
+    if all(team.limit_tracks.all().exists() for team in user_teams):
+        tracks = []
+        for team in user_teams:
+            tracks += list(team.limit_tracks.all())
+        users = users.filter(submissions__track__in=tracks)
+    return SpeakerProfile.objects.filter(event=event, user__in=users)
 
 
 class SpeakerList(EventPermissionRequired, Sortable, Filterable, ListView):
@@ -48,9 +59,7 @@ class SpeakerList(EventPermissionRequired, Sortable, Filterable, ListView):
 
     def get_queryset(self):
         qs = (
-            SpeakerProfile.objects.filter(
-                event=self.request.event, user__in=self.request.event.submitters
-            )
+            get_speaker_profiles_for_user(self.request.user, self.request.event)
             .select_related("event", "user")
             .annotate(
                 submission_count=Count(
@@ -125,7 +134,9 @@ class SpeakerDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     def get_object(self):
         return get_object_or_404(
             User.objects.filter(
-                submissions__in=Submission.all_objects.filter(event=self.request.event)
+                profiles__in=get_speaker_profiles_for_user(
+                    self.request.user, self.request.event
+                )
             )
             .order_by("id")
             .distinct(),
