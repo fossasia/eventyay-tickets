@@ -32,13 +32,23 @@ from pretalx.submission.models import Answer
 from pretalx.submission.models.submission import SubmissionStates
 
 
-def get_speaker_profiles_for_user(user, event):
+def can_view_all_tracks(user, event):
     user_teams = event.teams.filter(members__in=[user])
+    return not all(team.limit_tracks.all().exists() for team in user_teams)
+
+
+def get_review_tracks(user, event):
+    tracks = []
+    user_teams = event.teams.filter(members__in=[user])
+    for team in user_teams:
+        tracks += list(team.limit_tracks.all())
+    return tracks
+
+
+def get_speaker_profiles_for_user(user, event):
     users = event.submitters
-    if all(team.limit_tracks.all().exists() for team in user_teams):
-        tracks = []
-        for team in user_teams:
-            tracks += list(team.limit_tracks.all())
+    if not can_view_all_tracks(user, event):
+        tracks = get_review_tracks(user, event)
         users = users.filter(submissions__track__in=tracks)
     return SpeakerProfile.objects.filter(event=event, user__in=users)
 
@@ -163,7 +173,11 @@ class SpeakerDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     @context
     @cached_property
     def submissions(self, **kwargs):
-        return self.request.event.submissions.filter(speakers__in=[self.object])
+        qs = self.request.event.submissions.filter(speakers__in=[self.object])
+        if not can_view_all_tracks(self.request.user, self.request.event):
+            tracks = get_review_tracks(self.request.user, self.request.event)
+            qs = qs.filter(track__in=tracks)
+        return qs
 
     @context
     @cached_property
