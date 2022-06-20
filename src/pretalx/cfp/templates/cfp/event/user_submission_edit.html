@@ -78,6 +78,8 @@
         </form>
     </h5>
     <form method="post" enctype="multipart/form-data">
+        {% if form.errors %}{% bootstrap_form_errors form %}{% endif %}
+        {% if qform.errors %}{% bootstrap_form_errors qform %}{% endif %}
         {% csrf_token %}
         {% bootstrap_form form layout='event' %}
         {% bootstrap_form qform layout='event' %}
