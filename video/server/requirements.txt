@@ -21,7 +21,7 @@ numpy==1.23.*
 orjson==3.6.*
 openpyxl~=3.0.10
 Pillow==9.0.*
-pandas~=1.4.2
+pandas~=1.4.3
 pdf2image==1.16.*
 pdfrw==0.4
 pyjwt==2.4.*
