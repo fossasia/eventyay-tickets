@@ -102,6 +102,7 @@ class WidgetData(ScheduleView):
                             "track": getattr(talk.submission.track, "name", "")
                             if talk.submission
                             else None,
+                            "featured": talk.submission.is_featured,
                         }
                         for talk in room["talks"]
                     ]
