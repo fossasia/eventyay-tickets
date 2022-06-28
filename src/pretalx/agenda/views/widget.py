@@ -273,7 +273,7 @@ def widget_script(request, event, locale=None, version=2):
     the widget."""
     if not request.user.has_perm("agenda.view_widget", request.event):
         raise Http404()
-    if locale and locale not in [lc for lc, ll in settings.LANGUAGES]:
+    if locale and locale not in [lc[:2] for lc, ll in settings.LANGUAGES]:
         raise Http404()
 
     fname = f"widget_file_{version}"
