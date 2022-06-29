@@ -80,8 +80,11 @@ class ReviewDashboard(
 
     def get_queryset(self):
         aggregate_method = self.request.event.review_settings["aggregate_method"]
+        # TODO remove mean fallback once we drop Python 3.7
         statistics_method = (
-            statistics.median if aggregate_method == "median" else statistics.fmean
+            statistics.median
+            if aggregate_method == "median"
+            else (statistics.fmean if hasattr(statistics, "fmean") else statistics.mean)
         )
         queryset = (
             super()

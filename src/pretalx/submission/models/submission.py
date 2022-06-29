@@ -706,7 +706,11 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
     @cached_property
     def mean_score(self):
         scores = [r.score for r in self.reviews.all() if r.score is not None]
-        return round(statistics.fmean(scores), 1) if scores else None
+        # TODO drop this distinction when we drop Python 3.7
+        mean_function = (
+            statistics.fmean if hasattr(statistics, "fmean") else statistics.mean
+        )
+        return round(mean_function(scores), 1) if scores else None
 
     @cached_property
     def score_categories(self):
