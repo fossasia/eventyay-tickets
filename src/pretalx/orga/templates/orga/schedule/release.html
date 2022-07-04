@@ -39,7 +39,7 @@
                 <li>{% blocktranslate with unconfirmed=warnings.unconfirmed trimmed %}
                     {{ unconfirmed }} sessions are still <strong>unconfirmed</strong> and will not show up
                     on the public schedule.
-                {% endblocktranslate %}</li>
+                {% endblocktranslate %} <a href="{{ request.event.orga_urls.submissions }}?state=accepted">{% translate "See all unconfirmed sessions." %}</a></li>
             {% endif %}
             {% if warnings.unscheduled %}
                 <li>{% blocktranslate with unscheduled=warnings.unscheduled trimmed %}
@@ -47,9 +47,15 @@
                 {% endblocktranslate %}</li>
             {% endif %}
             {% if warnings.no_track %}
-                <li>{% blocktranslate with no_track=warnings.no_track trimmed %}
+                <li>{% blocktranslate with no_track=warnings.no_track|length trimmed %}
                     {{ no_track }} sessions have <strong>not yet been assigned a track</strong>.
-                {% endblocktranslate %}</li>
+                {% endblocktranslate %}
+                    <ul>
+                        {% for talk in warnings.no_track %}
+                            <li><a href="{{ talk.submission.orga_url }}">{{ quotation_open }}{{ talk.submission.title }}{{ quotation_close }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </li>
             {% endif %}
         </ul>
         {% if warnings.talk_warnings %}

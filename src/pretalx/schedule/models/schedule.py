@@ -528,9 +528,7 @@ class Schedule(LogMixin, models.Model):
             "no_track": [],
         }
         if self.event.feature_flags["use_tracks"]:
-            warnings["no_track"] = talks.filter(
-                submission__track_id__isnull=True
-            ).count()
+            warnings["no_track"] = talks.filter(submission__track_id__isnull=True)
         return warnings
 
     @cached_property
