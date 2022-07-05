@@ -39,6 +39,7 @@ def validate_event_slug_permitted(value):
         "metrics",
         "orga",
         "redirect",
+        "relay",
         "widget",
         "400",
         "403",
