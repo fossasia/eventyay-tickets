@@ -3,6 +3,12 @@
 Release Notes
 =============
 
+- :bug:`-` Review pages were not working when pretalx was run with Python 3.7 and the aggregation method "mean" (as opposed to "median").
+- :feature:`-` Teams are now sorted by the date of their accessible events, making it easier to manage organizers with many event-specific teams.
+- :bug:`-` The schedule widget was not showing up for some locales (particularly Chinese).
+- :feature:`-` On sessions that have both videos and images, videos now show up first, and the overall layout is improved.
+- :feature:`-` Schedule release warnings are now more actionable, by linking to more problematic proposals directly, or to a page listing all affected proposals for less complex warnings.
+- :bug:`-` The statistics page had an off-by-one problem with the timeline, where every date was shown as one day earlier.
 - :feature:`-` If you limit reviewer teams to specific tracks, they won't be able to see speaker profiles from outside their track(s) anymore.
 - :feature:`-` Not so much a feature as a change: Speaker images are now cropped to the centre in the speaker list squares instead of to the top.
 - :bug:`-` Fix social media preview images sometimes not showing up due to robots.txt constraints.

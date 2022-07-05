@@ -190,7 +190,7 @@ class PermissionRequired(PermissionRequiredMixin):
         if not hasattr(self, "get_permission_object"):
             for key in ("permission_object", "object"):
                 if getattr(self, key, None):
-                    self.get_permission_object = lambda self: getattr(self, key)
+                    self.get_permission_object = lambda self: getattr(self, key)  # noqa
 
     def has_permission(self):
         result = super().has_permission()
