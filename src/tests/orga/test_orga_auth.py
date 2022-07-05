@@ -1,4 +1,5 @@
 import pytest
+from django.conf import settings
 from django.core import mail as djmail
 from django.urls import reverse
 
@@ -31,7 +32,7 @@ def test_orga_redirect_login(client, orga_user, event):
     response = client.get(request_url, follow=True)
     assert response.status_code == 200
     assert response.redirect_chain[-1] == (
-        f"http://localhost/orga/event/{event.slug}/login/?next={event.orga_urls.base}&{queryparams}",
+        f"{settings.SITE_URL}/orga/event/{event.slug}/login/?next={event.orga_urls.base}&{queryparams}",
         302,
     )
 
