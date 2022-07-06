@@ -5,6 +5,7 @@ from urllib.parse import quote
 import pytz
 from django.conf import settings
 from django.db import models, transaction
+from django.db.utils import DatabaseError
 from django.template.loader import get_template
 from django.utils.formats import get_format
 from django.utils.functional import cached_property
@@ -138,9 +139,13 @@ class Schedule(LogMixin, models.Model):
 
         # collect all talks, which have been added since this schedule (#72)
         submission_ids = self.talks.all().values_list("submission_id", flat=True)
-        talks = self.event.wip_schedule.talks.exclude(
-            submission_id__in=submission_ids
-        ).union(self.talks.all())
+        talks = self.event.wip_schedule.talks.exclude(submission_id__in=submission_ids)
+        try:
+            talks = list(
+                talks.union(self.talks.all())
+            )  # We force evaluation to catch the DatabaseError early
+        except DatabaseError:  # SQLite cannot deal with ordered querysets in union()
+            talks = set(talks) | set(self.talks.all())
 
         wip_schedule = Schedule.objects.create(event=self.event)
         new_talks = []
