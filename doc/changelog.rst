@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` Breaks are now also shown on the mobile/minimal/linear schedule.
 - :bug:`-` Review pages were not working when pretalx was run with Python 3.7 and the aggregation method "mean" (as opposed to "median").
 - :feature:`-` Teams are now sorted by the date of their accessible events, making it easier to manage organizers with many event-specific teams.
 - :bug:`-` The schedule widget was not showing up for some locales (particularly Chinese).
