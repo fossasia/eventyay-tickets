@@ -9,7 +9,7 @@ channels_redis==3.3.*
 Django==3.2.*
 django-cors-headers==3.13.*
 django-decorator-include==3.0
-django-extensions==3.1.*
+django-extensions==3.2.*
 django-formset-js-improved
 django-multifactor==0.5.*
 djangorestframework==3.13.*
