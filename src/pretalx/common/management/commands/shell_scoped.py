@@ -1,9 +1,11 @@
+import logging
 import sys
 from contextlib import suppress
 
 from django.apps import apps
 from django.core.management import call_command
 from django.core.management.base import BaseCommand
+from django.db import connection
 from django_scopes import scope, scopes_disabled
 
 
@@ -19,6 +21,13 @@ class Command(BaseCommand):  # pragma: no cover
         parser.parse_args = parse_args
         return parser
 
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--print-sql',
+            action='store_true',
+            help='Print all SQL queries.',
+        )
+
     def handle(self, *args, **options):
         flags = self.create_parser(sys.argv[0], sys.argv[1]).parse_known_args(
             sys.argv[2:]
@@ -32,6 +41,11 @@ class Command(BaseCommand):  # pragma: no cover
                     )
                 )
                 return self.call_command(*args, **options)
+
+        if options['print_sql']:
+            connection.force_debug_cursor = True
+            logger = logging.getLogger("django.db.backends")
+            logger.setLevel(logging.DEBUG)
 
         lookups = {}
         for flag in flags:
