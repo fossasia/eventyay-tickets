@@ -15,6 +15,7 @@ class Command(BaseCommand):
         parser.add_argument("world_id", type=str)
         parser.add_argument("--trait", type=str, nargs="*", default=[])
         parser.add_argument("--days", type=int, default=90)
+        parser.add_argument("--raw", action="store_true", default=False)
         parser.add_argument("--profile", type=str, default="{}")
 
     def handle(self, *args, **options):
@@ -34,5 +35,8 @@ class Command(BaseCommand):
             "traits": options["trait"],
         }
         token = jwt.encode(payload, secret, algorithm="HS256")
-        st = ShortToken.objects.create(world=world, long_token=token, expires=exp)
-        self.stdout.write(f"https://{world.domain}/login/{st.short_token}\n")
+        if options.get("raw"):
+            self.stdout.write(f"https://{world.domain}/#token={token}\n")
+        else:
+            st = ShortToken.objects.create(world=world, long_token=token, expires=exp)
+            self.stdout.write(f"https://{world.domain}/login/{st.short_token}\n")
