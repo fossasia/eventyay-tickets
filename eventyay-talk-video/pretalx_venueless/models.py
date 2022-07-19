@@ -22,5 +22,4 @@ class VenuelessSettings(models.Model):
         null=True,
         blank=True,  # for easier get_or_create
     )
-    return_url = models.TextField(null=True, blank=True)
     last_push = models.DateTimeField(null=True, blank=True)
