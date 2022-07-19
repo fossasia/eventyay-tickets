@@ -18,6 +18,10 @@ without warning.
    world
    rooms
    chat
+   announcements
    bbb
    uploads
+   exhibition
+   poster
+   poll
    roulette
