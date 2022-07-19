@@ -18,7 +18,7 @@ icalendar==4.1.*
 lxml==4.9.*
 matplotlib==3.5.*
 numpy==1.23.*
-orjson==3.6.*
+orjson==3.7.*
 openpyxl~=3.0.10
 Pillow==9.0.*
 pandas~=1.4.3
