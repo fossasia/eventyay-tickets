@@ -44,7 +44,7 @@ gunicorn==20.1.0
 uvicorn[standard]==0.18.2
 
 # dev
-black==21.12b0  # 22.1 depends on a click version that conflicts with celery and uvicorn
+black==22.6.0  # 22.1 depends on a click version that conflicts with celery and uvicorn
 isort==5.10.1
 flake8==4.0.1
 pytest==7.1.2
