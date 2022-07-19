@@ -10,7 +10,7 @@
 					.tags
 						.tag(v-for="tag of poster.tags") {{ tag }}
 					h3.title {{ poster.title }}
-					.authors {{ poster.authors.authors.map(a => a.name).join(' / ') }}
+					.authors(v-if="poster.authors && poster.authors.authors") {{ poster.authors.authors.map(a => a.name).join(' / ') }}
 					rich-text-content.abstract(:content="poster.abstract")
 					.actions
 						bunt-button {{ $t('PosterHall:more:label') }}
@@ -43,12 +43,14 @@ export default {
 			return this.room.modules.find(module => module.type === 'poster.native')
 		},
 		categoriesLookup () {
+			if (!this.posterModule.config.categories) return {}
 			return this.posterModule.config.categories.reduce((acc, category) => {
 				acc[category.id] = category
 				return acc
 			}, {})
 		},
 		tagsLookup () {
+			if (!this.posterModule.config.tags) return {}
 			return this.posterModule.config.tags.reduce((acc, tag) => {
 				acc[tag.id] = tag
 				return acc
@@ -66,7 +68,7 @@ export default {
 			return union(...this.search.trim().toLowerCase().split(' ').map(singleSearch))
 		},
 		categorizedFilteredPosters () {
-			if (!this.posterModule.config.categories) return this.filteredPosters
+			if (!this.posterModule.config.categories) return {'': this.filteredPosters}
 			// prefill configured categories to enforce order, null/'' category is first, unknown categories are at the end, by order of poster appearance
 			const categorizedPosters = {
 				'': []
