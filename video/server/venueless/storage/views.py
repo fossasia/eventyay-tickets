@@ -13,7 +13,7 @@ from django.utils.timezone import now
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from PIL import Image, ImageOps
-from PIL.Image import LANCZOS
+from PIL.Image import Resampling
 from rest_framework.authentication import get_authorization_header
 from xlrd import XLRDError
 
@@ -77,7 +77,7 @@ def get_sizes(size, imgsize):
 
 def resize_image(image, size):
     new_size = get_sizes(size, image.size)
-    image = image.resize(new_size, resample=LANCZOS)
+    image = image.resize(new_size, resample=Resampling.LANCZOS)
     return image
 
 
