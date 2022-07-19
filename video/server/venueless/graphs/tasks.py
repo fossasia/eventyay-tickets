@@ -17,6 +17,7 @@ from venueless.core.models import Channel, ExhibitorView, Room, RoomView
 from venueless.core.models.world import WorldView
 from venueless.core.tasks import WorldTask
 from venueless.graphs.report import ReportGenerator
+from venueless.graphs.utils import get_schedule, pretalx_uni18n
 from venueless.storage.models import StoredFile
 
 
@@ -245,6 +246,76 @@ def generate_room_views(world, input=None):
                     t += timedelta(minutes=5)
 
                 day += timedelta(days=1)
+
+    wb.save(io)
+    io.seek(0)
+
+    sf = StoredFile.objects.create(
+        world=world,
+        date=now(),
+        filename="report.xlsx",
+        expires=now() + timedelta(hours=2),
+        type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        public=True,
+        user=None,
+    )
+    sf.file.save("report.xlsx", ContentFile(io.read()))
+    return sf.file.url
+
+
+@app.task(base=WorldTask)
+def generate_session_views(world, input=None):
+    wb = Workbook(write_only=True)
+    io = BytesIO()
+    tz = pytz.timezone(world.timezone)
+    begin = dateutil.parser.parse(input.get("begin"))
+    if is_naive(begin):
+        make_aware(begin, tz)
+    begin = begin.astimezone(tz)
+    end = dateutil.parser.parse(input.get("end"))
+    if is_naive(end):
+        make_aware(end, tz)
+    end = end.astimezone(tz)
+    ws = wb.create_sheet("Sessions")
+    ws.append(
+        [
+            "Title",
+            "Room",
+            "Start date",
+            "Start time",
+            "End date",
+            "End time",
+            "Viewership (approx. unique users)",
+        ]
+    )
+
+    room_cache = {r.pretalx_id: r for r in world.rooms.filter(deleted=False)}
+    schedule = get_schedule(world, fail_silently=False)
+    for talk in schedule["talks"]:
+        talk_start = dateutil.parser.parse(talk["start"])
+        talk_end = dateutil.parser.parse(talk["end"])
+        if talk_start > end or talk_end < begin:
+            continue
+
+        viewers = (
+            RoomView.objects.filter(room__pretalx_id=talk["room"])
+            .exclude(Q(end__lt=talk_start) | Q(start__gt=talk_end))
+            .values("user")
+            .distinct()
+            .count()
+        )
+
+        ws.append(
+            [
+                pretalx_uni18n(talk["title"]),
+                room_cache[talk["room"]].name if talk["room"] in room_cache else "?",
+                talk_start.astimezone(tz).date(),
+                talk_start.astimezone(tz).time(),
+                talk_end.astimezone(tz).date(),
+                talk_end.astimezone(tz).time(),
+                viewers,
+            ]
+        )
 
     wb.save(io)
     io.seek(0)

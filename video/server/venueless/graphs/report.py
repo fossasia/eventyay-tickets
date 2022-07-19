@@ -39,7 +39,7 @@ from reportlab.platypus import (
 from venueless.core.models import Channel, ChatEvent, Room, User
 from venueless.core.models.exhibitor import ContactRequest, ExhibitorView
 from venueless.core.models.room import RoomView
-from venueless.graphs.utils import PdfImage, median_value
+from venueless.graphs.utils import PdfImage, get_schedule, median_value, pretalx_uni18n
 from venueless.graphs.views import build_room_view_fig
 from venueless.storage.models import StoredFile
 
@@ -51,6 +51,7 @@ class ReportGenerator:
 
     def build(self, input):
         self.input = input
+        self.schedule = get_schedule(self.world)
 
         with tempfile.NamedTemporaryFile(suffix=".pdf") as f:
             doc = self.get_doc_template()(
@@ -334,6 +335,66 @@ class ReportGenerator:
                 )
             )
             day += timedelta(days=1)
+
+        if room.pretalx_id and self.schedule:
+            w = self.pagesize[0] - 30 * mm
+            colwidths = [0.4 * w, 0.25 * w, 0.25 * w, 0.1 * w]
+            tdata = []
+            tstyledata = [
+                ("ALIGN", (0, 0), (-1, 0), "LEFT"),
+                ("ALIGN", (-1, 0), (-1, -1), "RIGHT"),
+                ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                ("FONTNAME", (0, 0), (-1, -1), "Helvetica"),
+                ("BOX", (0, 0), (-1, -1), 0.25, colors.black),
+                ("INNERGRID", (0, 0), (-1, -1), 0.25, colors.black),
+                ("FONTSIZE", (0, 0), (-1, -1), 10),
+            ]
+            for talk in self.schedule["talks"]:
+                if str(talk["room"]) != str(room.pretalx_id):
+                    continue
+                talk_start = dateutil.parser.parse(talk["start"])
+                talk_end = dateutil.parser.parse(talk["end"])
+                if talk_start > self.date_end or talk_end < self.date_begin:
+                    continue
+
+                viewers = (
+                    RoomView.objects.filter(room=room)
+                    .exclude(Q(end__lt=talk_start) | Q(start__gt=talk_end))
+                    .values("user")
+                    .distinct()
+                    .count()
+                )
+
+                tdata.append(
+                    [
+                        Paragraph(
+                            pretalx_uni18n(talk["title"], self.world.locale),
+                            self.stylesheet["Normal"],
+                        ),
+                        Paragraph(
+                            date_format(talk_start, "SHORT_DATETIME_FORMAT"),
+                            self.stylesheet["Normal"],
+                        ),
+                        Paragraph(
+                            date_format(talk_end, "SHORT_DATETIME_FORMAT"),
+                            self.stylesheet["Normal"],
+                        ),
+                        str(viewers),
+                    ]
+                )
+
+            if tdata:
+                s.append(
+                    Paragraph(
+                        _("Unique viewers by session"),
+                        self.stylesheet["Heading3"],
+                    )
+                )
+                tdata.insert(0, [_("Session"), _("Start"), _("End"), _("Viewers")])
+                table = Table(tdata, colWidths=colwidths, repeatRows=1)
+                table.setStyle(TableStyle(tstyledata))
+                s.append(table)
+
         return s
 
     def story_for_exhibitors(self):

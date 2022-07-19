@@ -16,6 +16,7 @@
 				bunt-input(v-model="time_end", label="End of day", name="time_end", :validation="$v.time_end")
 		bunt-button.btn-generate(@click="generateSummary", :error="task == 'summary' && error") Generate PDF
 		bunt-button.btn-secondary(@click="generateRoomviews", :error="task == 'roomviews' && error") Room activity (XLSX)
+		bunt-button.btn-secondary(v-if="world.pretalx", @click="generateSessionviews", :error="task == 'sessionviews' && error") Session activity (XLSX)
 		bunt-button.btn-secondary(@click="generateViews", :error="task == 'views' && error") Raw tracking data (XLSX)
 		h3 Attendee list
 		bunt-button.btn-generate(@click="run('attendee_list', {})", :error="task == 'attendee_list' && error") Generate XLSX
@@ -36,6 +37,7 @@
 
 </template>
 <script>
+import { mapState } from 'vuex'
 import api from 'lib/api'
 import moment from 'lib/timetravelMoment'
 import {helpers, required} from 'vuelidate/lib/validators'
@@ -63,6 +65,7 @@ export default {
 		}
 	},
 	computed: {
+		...mapState(['world']),
 		questionRooms () {
 			const r = []
 			r.push(...this.$store.state.rooms.filter((room) => room.modules.filter(m => m.type === 'question').length))
@@ -113,6 +116,14 @@ export default {
 			this.$v.$touch()
 			if (this.$v.$invalid) return
 			await this.run('roomviews', {
+				begin: this.day_start + 'T' + this.time_start,
+				end: this.day_end + 'T' + this.time_end,
+			})
+		},
+		async generateSessionviews () {
+			this.$v.$touch()
+			if (this.$v.$invalid) return
+			await this.run('sessionviews', {
 				begin: this.day_start + 'T' + this.time_start,
 				end: this.day_end + 'T' + this.time_end,
 			})

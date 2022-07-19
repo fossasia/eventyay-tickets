@@ -1,10 +1,16 @@
+import logging
 from datetime import timedelta
 
+import requests
 from pdfrw import PdfReader
 from pdfrw.buildxobj import pagexobj
 from pdfrw.toreportlab import makerl
 from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
 from reportlab.platypus import Flowable
+
+from venueless.core.models import World
+
+logger = logging.getLogger(__name__)
 
 
 class PdfImage(Flowable):
@@ -62,7 +68,6 @@ class PdfImage(Flowable):
 
 
 def median_value(queryset, term):
-    count = queryset.count()
     values = [
         v for v in queryset.values_list(term, flat=True).order_by(term) if v is not None
     ]
@@ -81,3 +86,43 @@ def median_value(queryset, term):
             )
             / 2
         )
+
+
+def get_schedule(world: World, fail_silently=True):
+    pretalx_config = world.config.get("pretalx", {})
+    if pretalx_config.get("url"):
+        url = pretalx_config["url"]
+    elif pretalx_config.get("domain"):
+        domain = pretalx_config.get("domain")
+        if not domain.endswith("/"):
+            domain += "/"
+        url = (
+            pretalx_config["domain"]
+            + pretalx_config["event"]
+            + "/schedule/widget/v2.json"
+        )
+    else:
+        return {}
+
+    try:
+        r = requests.get(url)
+        r.raise_for_status()
+        return r.json()
+    except requests.RequestException:
+        logger.exception(f"Could not load schedule for world {world.pk} from {url}")
+        if fail_silently:
+            return {}
+        else:
+            raise
+
+
+def pretalx_uni18n(i18nstring, locale="en"):
+    if not i18nstring:
+        return ""
+    if isinstance(i18nstring, str):
+        return i18nstring
+    if i18nstring.get(locale):
+        return i18nstring[locale]
+    if i18nstring.get("en"):
+        return i18nstring["en"]
+    return next(i18nstring.values())
