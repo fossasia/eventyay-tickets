@@ -36,7 +36,7 @@ In a private meeting, everyone has moderator rights.
 Recordings
 ----------
 
-If the user has the ``room:bbb.recordings`` permission, you can access recordings with the following command:
+If the user has the ``room:bbb.recordings`` permission, you can access recordings with the following command::
 
     => ["bbb.recordings", 1234, {"room": "f160bf4f-93c4-4b50-b348-6ef61db4dbe7"}]
     <- [

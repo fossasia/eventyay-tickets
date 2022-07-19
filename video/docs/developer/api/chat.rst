@@ -161,6 +161,7 @@ Optional fields include:
 - ``replaces``, only valid on ``event_type: channel.message``, indicates that the current message supersedes a previous one.
 - ``preview_card``, sent in an update to ``event_type: channel.message``, if a link is included and we were able to
   extract some kind of preview data. These fields may be included (all are optional):
+
     - url: Extracted from og:url, falling back to the original URL
     - title: Extracted from og:title, falling back to <title>
     - description: Extracted from og:description, falling back to description

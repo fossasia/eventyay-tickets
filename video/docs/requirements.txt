@@ -1,4 +1,4 @@
-sphinx==3.0.*
+sphinx==5.0.*
 sphinx-autobuild
 sphinx-rtd-theme
 sphinxcontrib-httpdomain

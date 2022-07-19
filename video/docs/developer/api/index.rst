@@ -23,5 +23,6 @@ without warning.
    uploads
    exhibition
    poster
-   poll
+   polls
+   questions
    roulette

@@ -68,7 +68,7 @@ The interactive ``clone_world`` command allows you to create a venueless world w
     World cloned.
 
 ``generate_token``
-""""""""""""""""
+""""""""""""""""""
 
 The ``generate_token`` command allows you to create a valid access token to a venueless world::
 

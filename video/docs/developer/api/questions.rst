@@ -5,16 +5,18 @@ Users can ask questions in a room, which need to be approved by a moderator and 
 Asking questions can be locked per room to only allow questions at a certain time.
 To clear questions after or before a logical session, single questions can be deleted ("delete all" to be implemented by the client).
 
+Model::
+
     {
-	id: uuid,
-	room_id: uuid,
-	sender: uuid,
-	timestamp: Datetime,
-	content: String,
-	state: String, // 'mod_queue', 'visible', 'archived'
-	answered: Boolean,
-	is_pinned: Boolean,
-	score: Number,
+        id: uuid,
+        room_id: uuid,
+        sender: uuid,
+        timestamp: Datetime,
+        content: String,
+        state: String, // 'mod_queue', 'visible', 'archived'
+        answered: Boolean,
+        is_pinned: Boolean,
+        score: Number,
         voted: Boolean // has the current user voted on the question? Available on list actions.
     }
 
