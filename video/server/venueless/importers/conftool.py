@@ -189,7 +189,7 @@ def fetch_schedule_from_conftool(url, password):
     return result
 
 
-def create_posters_from_conftool(world, url, password):
+def create_posters_from_conftool(world, url, password, session_as_category=True):
     nonce = int(time.time())
     passhash = hashlib.sha256((str(nonce) + password).encode()).hexdigest()
     r = requests.get(
@@ -242,9 +242,18 @@ def create_posters_from_conftool(world, url, password):
                 m["config"]["tags"] = tags
         r.save()
 
-        poster.category = paper.xpath("topics")[0].text or None
-        poster.schedule_session = paper.xpath("session_ID")[0].text or None
+        if session_as_category:
+            if paper.xpath("session_short")[0].text:
+                poster.category = f"{paper.xpath('session_short')[0].text} / {paper.xpath('session_title')[0].text}"
+            elif paper.xpath("session_title")[0].text:
+                poster.category = paper.xpath("session_title")[0].text
+            else:
+                poster.category = None
+        else:
+            poster.category = paper.xpath("topics")[0].text or None
+
         poster.abstract = {"ops": [{"insert": paper.xpath("abstract_plain")[0].text}]}
+        poster.schedule_session = paper.xpath("session_ID")[0].text or None
 
         poster.authors = {
             "organizations": [],
