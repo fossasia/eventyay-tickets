@@ -338,12 +338,13 @@ class AuthModule(BaseModule):
         page_size = list_conf.get("page_size", 20)
         search_min_chars = list_conf.get("search_min_chars", 0)
         profile_fields = self.consumer.world.config.get("profile_fields", {})
+        badge = body.get("badge")
         search_fields = [
             field["id"]
             for field in filter(lambda f: f.get("searchable", False), profile_fields)
             if "id" in field
         ]
-        if len(body["search_term"]) < search_min_chars:
+        if len(body["search_term"]) < search_min_chars and not badge:
             result = {
                 "results": [],
                 "isLastPage": True,
@@ -354,6 +355,7 @@ class AuthModule(BaseModule):
                 page=body["page"],
                 page_size=page_size,
                 search_term=body["search_term"],
+                badge=badge,
                 search_fields=search_fields,
                 include_admin_info=await self.consumer.world.has_permission_async(
                     user=self.consumer.user, permission=Permission.WORLD_USERS_MANAGE

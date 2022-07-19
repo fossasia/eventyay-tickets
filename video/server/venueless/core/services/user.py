@@ -402,6 +402,7 @@ def list_users(
     page_size,
     search_term,
     search_fields=None,
+    badge=None,
     trait_badges_map=None,
     include_banned=True,
     include_admin_info=False,
@@ -413,6 +414,17 @@ def list_users(
     )
     if not include_banned:
         qs = qs.exclude(moderation_state=User.ModerationState.BANNED)
+    if badge:
+        conditions = []
+        if trait_badges_map:
+            for t_trait, t_badge in trait_badges_map.items():
+                if t_badge == badge:
+                    conditions.append(Q(traits__contains=[t_trait]))
+        if conditions:
+            qs = qs.filter(reduce(operator.or_, conditions))
+        else:
+            qs = qs.none()
+
     if search_term:
         conditions = [(Q(profile__display_name__icontains=search_term))]
         search_fields = search_fields or []

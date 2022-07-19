@@ -740,9 +740,23 @@ async def test_block_user(world):
 @pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_list_search_users(world):
+    config = world.config["JWT_secrets"][0]
+    iat = datetime.datetime.utcnow()
+    exp = iat + datetime.timedelta(days=999)
+    payload = {
+        "iss": config["issuer"],
+        "aud": config["audience"],
+        "exp": exp,
+        "iat": iat,
+        "uid": "123456",
+        "traits": ["moderator", "speaker"],
+    }
+    world.config["trait_badges_map"] = {"moderator": "Crew"}
+    await database_sync_to_async(world.save)()
+    token = jwt.encode(payload, config["secret"], algorithm="HS256")
     async with world_communicator() as c, world_communicator() as c_user1, world_communicator() as c_user2:
         # User 1
-        await c.send_json_to(["authenticate", {"client_id": "4"}])
+        await c.send_json_to(["authenticate", {"token": token}])
         response = await c.receive_json_from()
         assert response[0] == "authenticated"
         user_id = response[1]["user.config"]["id"]
@@ -822,7 +836,7 @@ async def test_list_search_users(world):
             "results": [
                 {
                     "id": user_id,
-                    "badges": [],
+                    "badges": ["Crew"],
                     "inactive": False,
                     "profile": {"display_name": "Foo Fighter"},
                 }
@@ -878,6 +892,18 @@ async def test_list_search_users(world):
             "results": [],
             "isLastPage": True,
         }
+
+        await c.send_json_to(
+            [
+                "user.list.search",
+                14,
+                {"page": 1, "search_term": "", "badge": "Crew"},
+            ]
+        )
+        response = await c.receive_json_from()
+        assert response[0] == "success"
+        assert len(response[2]["results"]) == 1
+        assert response[2]["results"][0]["id"] == user_id
 
 
 @pytest.mark.asyncio
