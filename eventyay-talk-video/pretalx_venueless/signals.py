@@ -3,7 +3,7 @@ from contextlib import suppress
 
 from django.dispatch import receiver
 from django.urls import resolve, reverse
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from pretalx.common.models.settings import hierarkey
 from pretalx.orga.signals import nav_event_settings
 from pretalx.schedule.signals import schedule_release
