@@ -28,8 +28,7 @@ class Settings(EventSettingsPermission, FormView):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs["obj"] = self.request.event
-        kwargs["attribute_name"] = "settings"
+        kwargs["event"] = self.request.event
         if "token" in self.request.GET:
             kwargs["initial_token"] = self.request.GET.get("token")
         if "url" in self.request.GET:

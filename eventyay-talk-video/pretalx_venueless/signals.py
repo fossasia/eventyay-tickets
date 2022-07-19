@@ -1,21 +1,21 @@
-import datetime as dt
 from contextlib import suppress
 
 from django.dispatch import receiver
 from django.urls import resolve, reverse
 from django.utils.translation import gettext_lazy as _
-from pretalx.common.models.settings import hierarkey
 from pretalx.orga.signals import nav_event_settings
 from pretalx.schedule.signals import schedule_release
 
 from .venueless import push_to_venueless
 
-hierarkey.add_default("venueless_last_push", None, dt.datetime)
-
 
 @receiver(schedule_release, dispatch_uid="venuless_schedule_release")
 def on_schedule_release(sender, schedule, user, **kwargs):
-    if not (sender.settings.venueless_url and sender.settings.venueless_token):
+    try:
+        venueless_settings = sender.venueless_settings
+    except Exception:
+        return
+    if not (venueless_settings.url and venueless_settings.token):
         return
     with suppress(Exception):
         push_to_venueless(sender)
