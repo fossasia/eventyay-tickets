@@ -26,6 +26,7 @@ class User(VersionedModel):
     show_publicly = models.BooleanField(default=True)
     profile = JSONField()
     traits = ArrayField(models.CharField(max_length=200), blank=True)
+    pretalx_id = models.CharField(max_length=200, null=True, blank=True)
     blocked_users = models.ManyToManyField(
         "self", related_name="blocked_by", symmetrical=False
     )
@@ -40,6 +41,7 @@ class User(VersionedModel):
         d = {
             "id": str(self.id),
             "profile": self.profile,
+            "pretalx_id": self.pretalx_id,
             "badges": sorted(
                 list(
                     {

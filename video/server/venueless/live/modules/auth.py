@@ -282,6 +282,16 @@ class AuthModule(BaseModule):
                 trait_badges_map=self.consumer.world.config.get("trait_badges_map"),
             )
             await self.consumer.send_success({u["id"]: u for u in users})
+        elif "pretalx_ids" in body:
+            users = await get_public_users(
+                self.consumer.world.id,
+                pretalx_ids=body.get("pretalx_ids")[:100],
+                include_admin_info=await self.consumer.world.has_permission_async(
+                    user=self.consumer.user, permission=Permission.WORLD_USERS_MANAGE
+                ),
+                trait_badges_map=self.consumer.world.config.get("trait_badges_map"),
+            )
+            await self.consumer.send_success({u["pretalx_id"]: u for u in users})
         else:
             user = await get_public_user(
                 self.consumer.world.id,

@@ -98,6 +98,7 @@ async def test_join_leave(chat_room):
                     "user": {
                         "profile": {"display_name": "Foo Fighter"},
                         "badges": [],
+                        "pretalx_id": None,
                         "inactive": False,
                         "id": c.context["user.config"]["id"],
                     },
@@ -312,6 +313,7 @@ async def test_subscribe_join_leave(chat_room):
                     "user": {
                         "profile": {"display_name": "Foo Fighter"},
                         "badges": [],
+                        "pretalx_id": None,
                         "inactive": False,
                         "id": c.context["user.config"]["id"],
                     },
@@ -623,6 +625,7 @@ async def test_fetch_messages_after_join(chat_room):
                         "id": c1.context["user.config"]["id"],
                         "profile": {"display_name": "Foo Fighter"},
                         "badges": [],
+                        "pretalx_id": None,
                         "inactive": False,
                     },
                     "membership": "join",
@@ -675,6 +678,7 @@ async def test_send_message_to_other_client(chat_room):
             "id",
             "profile",
             "badges",
+            "pretalx_id",
             "inactive",
         }
         response = await c1.receive_json_from()
@@ -768,6 +772,7 @@ async def test_no_messages_after_leave(chat_room):
             "id",
             "profile",
             "badges",
+            "pretalx_id",
             "inactive",
         }
         await c1.receive_json_from()  # join notification c1
@@ -848,6 +853,7 @@ async def test_no_message_after_unsubscribe(chat_room):
             "id",
             "profile",
             "badges",
+            "pretalx_id",
             "inactive",
         }
         await c1.receive_json_from()  # join notification c2
@@ -929,6 +935,7 @@ async def test_disconnect_is_no_leave(chat_room):
                 "id",
                 "profile",
                 "badges",
+                "pretalx_id",
                 "inactive",
             }
             await c1.receive_json_from()  # join notification c2

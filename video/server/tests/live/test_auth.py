@@ -110,6 +110,7 @@ async def test_auth_with_jwt_token(index, world):
         "iat": iat,
         "uid": 123456,
         "traits": ["chat.read", "foo.bar"],
+        "pretalx_id": "FOOBAR",
     }
     token = jwt.encode(payload, config["secret"], algorithm="HS256")
     async with world_communicator() as c:
@@ -196,6 +197,7 @@ async def test_update_user():
             {
                 "profile": {"display_name": "Cool User"},
                 "badges": [],
+                "pretalx_id": None,
                 "inactive": False,
                 "id": user_id,
             },
@@ -368,6 +370,7 @@ async def test_fetch_user():
                 "id": user_id,
                 "profile": {"display_name": "Cool User"},
                 "badges": [],
+                "pretalx_id": None,
                 "inactive": False,
             },
         ]
@@ -381,6 +384,7 @@ async def test_fetch_user():
                 user_id: {
                     "id": user_id,
                     "badges": [],
+                    "pretalx_id": None,
                     "inactive": False,
                     "profile": {"display_name": "Cool User"},
                 }
@@ -390,6 +394,25 @@ async def test_fetch_user():
         await c2.send_json_to(["user.fetch", 14, {"id": str(uuid.uuid4())}])
         response = await c2.receive_json_from()
         assert response == ["error", 14, {"code": "user.not_found"}]
+
+        u = await database_sync_to_async(User.objects.get)(pk=user_id)
+        u.pretalx_id = "1337"
+        await database_sync_to_async(u.save)()
+        await c2.send_json_to(["user.fetch", 14, {"pretalx_ids": ["1337"]}])
+        response = await c2.receive_json_from()
+        assert response == [
+            "success",
+            14,
+            {
+                "1337": {
+                    "id": user_id,
+                    "badges": [],
+                    "pretalx_id": "1337",
+                    "inactive": False,
+                    "profile": {"display_name": "Cool User"},
+                }
+            },
+        ]
 
 
 @pytest.mark.asyncio
@@ -573,6 +596,7 @@ async def test_list_users(world):
                         "moderation_state": "",
                         "inactive": False,
                         "badges": [],
+                        "pretalx_id": None,
                         "token_id": None,
                     }
                 ]
@@ -837,6 +861,7 @@ async def test_list_search_users(world):
                 {
                     "id": user_id,
                     "badges": ["Crew"],
+                    "pretalx_id": None,
                     "inactive": False,
                     "profile": {"display_name": "Foo Fighter"},
                 }

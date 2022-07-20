@@ -51,6 +51,7 @@ User objects currently contain the following properties:
 
 * ``id``
 * ``profile``
+* ``pretalx_id`` (string) Only set on speakers added by pretalx or other scheduling tools
 * ``badges`` list of user-visible badges to show for this user (i.e. "orga team member")
 * ``moderation_state`` (``""``, ``"silenced"``, or ``"banned"``). Only set on *other* users' profiles if you're allowed
   to perform silencing and banning.
@@ -82,6 +83,11 @@ You can also fetch multiple profiles at once::
 
 If one of the user does not exist, it will not be part of the response, but there will be no error message.
 The maximum number of users that can be fetched in one go is 100.
+
+Instead of IDs, you can also pass a set of ``pretalx_id`` values::
+
+    => ["user.fetch", 123, {"pretalx_ids": ["DKJ2E", "24"]}]
+    <- ["success", 123, {"DKJ2E": {"id": "1234", "pretalx_id": "DKJ2E", "profile": {…}}, "5679": {…}}]
 
 Profile updates
 ---------------

@@ -53,6 +53,8 @@ Optionally, you can also pass the following fields:
             }
         }
 
+``pretalx_id``
+    An ID mapping the user to a speaker profile.
 
 
 .. _JSON Web Tokens: https://en.wikipedia.org/wiki/JSON_Web_Token
