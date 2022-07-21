@@ -1,5 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from i18nfield.fields import I18nTextField
+from pretalx.common.phrases import phrases
 
 
 class VenuelessSettings(models.Model):
@@ -23,3 +25,42 @@ class VenuelessSettings(models.Model):
         blank=True,  # for easier get_or_create
     )
     last_push = models.DateTimeField(null=True, blank=True)
+
+    # settings required for join URLs
+    show_join_link = models.BooleanField(
+        help_text=_(
+            "If you enable this feature, speakers will find a venueless join button on their profile pages."
+        ),
+        verbose_name=_("Show join button"),
+        default=False,
+    )
+    join_url = models.URLField(
+        help_text=_("URL used for sign-up links"),
+        verbose_name=_("Venueless URL"),
+        null=True,
+        blank=True,
+    )
+    secret = models.TextField(
+        verbose_name=_("Venueless secret"),
+        null=True,
+        blank=True,
+    )
+    issuer = models.TextField(
+        verbose_name=_("Venueless issuer"),
+        null=True,
+        blank=True,
+    )
+    audience = models.TextField(
+        verbose_name=_("Venueless audience"),
+        null=True,
+        blank=True,
+    )
+    join_start = models.DateTimeField(
+        verbose_name=_("Do not allow access before"), null=True, blank=True
+    )
+    join_text = I18nTextField(
+        verbose_name=_("Introductory text"),
+        help_text=phrases.base.use_markdown,
+        null=True,
+        blank=True,
+    )

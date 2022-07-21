@@ -44,6 +44,31 @@ class VenuelessSettingsForm(forms.ModelForm):
             self.fields["return_url"].initial = return_url
             self.initial["return_url"] = return_url
 
+    def clean(self):
+        cleaned_data = super().clean()
+        if cleaned_data.get("show_join_link"):
+            # validate that all required data for join links has been provided
+            required_fields = ("join_url", "secret", "issuer", "audience")
+            for field in required_fields:
+                if not cleaned_data.get(field):
+                    self.add_error(
+                        field,
+                        _(
+                            "This field is required if you want to show a join button to your speakers."
+                        ),
+                    )
+        return cleaned_data
+
     class Meta:
         model = VenuelessSettings
-        fields = ("token", "url", "return_url")
+        fields = (
+            "token",
+            "url",
+            "show_join_link",
+            "join_url",
+            "secret",
+            "issuer",
+            "audience",
+            "join_start",
+            "join_text",
+        )
