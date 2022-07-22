@@ -66,12 +66,14 @@
                 top of this page!
             {% endblocktranslate %}
         </p>
+        
+        {% bootstrap_form_errors form %}
 
         {% bootstrap_field form.url layout='event' %}
         {% bootstrap_field form.token layout='event' %}
         {% bootstrap_field form.return_url layout='event' %}
 
-        <h2>{% translate "Link generation settings" %}</h2>
+        <h2>{% translate "Join link settings" %}</h2>
         <p>
             {% blocktranslate trimmed %}
                 These settings are only required if you want to distribute the sign-up links to
