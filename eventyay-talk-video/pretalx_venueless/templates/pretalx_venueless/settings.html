@@ -59,28 +59,35 @@
     <form method="post">
         {% csrf_token %}
         <h2>{% translate "Main settings" %}</h2>
-        {% blocktranslate trimmed %}
-            These settings will get filled in automatically when you set up
-            your event with venueless. Please follow the instructions at the
-            top of this page!
-        {% endblocktranslate %}
+        <p>
+            {% blocktranslate trimmed %}
+                These settings will get filled in automatically when you set up
+                your event with venueless. Please follow the instructions at the
+                top of this page!
+            {% endblocktranslate %}
+        </p>
 
         {% bootstrap_field form.url layout='event' %}
         {% bootstrap_field form.token layout='event' %}
         {% bootstrap_field form.return_url layout='event' %}
 
         <h2>{% translate "Link generation settings" %}</h2>
-        {% blocktranslate trimmed %}
-            These settings are only required if you want to distribute the sign-up links to
-            venueless for your speakers by way of pretalx.
-        {% endblocktranslate %}
+        <p>
+            {% blocktranslate trimmed %}
+                These settings are only required if you want to distribute the sign-up links to
+                venueless for your speakers by way of pretalx.
+            {% endblocktranslate %}
+        </p>
 
+        {% bootstrap_field form.show_join_link layout='event' %}
+        <div id="join-link-settings">
         {% bootstrap_field form.join_url layout='event' %}
         {% bootstrap_field form.secret layout='event' %}
         {% bootstrap_field form.issuer layout='event' %}
         {% bootstrap_field form.audience layout='event' %}
         {% bootstrap_field form.join_start layout='event' %}
         {% bootstrap_field form.join_text layout='event' %}
+        </div>
 
         <div class="submit-group panel">
             <span></span>
