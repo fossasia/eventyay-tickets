@@ -39,8 +39,20 @@ from pretalx.schedule.forms import QuickScheduleForm, RoomForm
 from pretalx.schedule.models import Availability, Room, TalkSlot
 from pretalx.schedule.utils import guess_schedule_version
 
+SCRIPT_SRC = "'self' 'unsafe-eval'"
+DEFAULT_SRC = "'self'"
 
-@method_decorator(csp_update(SCRIPT_SRC="'self' 'unsafe-eval'"), name="dispatch")
+
+if settings.DEBUG:
+    SCRIPT_SRC = (f"{SCRIPT_SRC} {settings.JS_DEV_SERVER}",)
+    DEFAULT_SRC = (
+        f"{DEFAULT_SRC} {settings.JS_DEV_SERVER} {settings.JS_DEV_SERVER.replace('http', 'ws')}",
+    )
+
+
+@method_decorator(
+    csp_update(SCRIPT_SRC=SCRIPT_SRC, DEFAULT_SRC=DEFAULT_SRC), name="dispatch"
+)
 class ScheduleView(EventPermissionRequired, TemplateView):
     template_name = "orga/schedule/index.html"
     permission_required = "orga.view_schedule"

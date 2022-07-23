@@ -545,6 +545,9 @@ STORAGES = {
     },
 }
 
+if DEBUG:
+    JS_DEV_SERVER = "http://localhost:8080"
+
 
 ## EXTERNAL APP SETTINGS
 with suppress(ImportError):
