@@ -84,8 +84,8 @@ export default {
 					id: session.code,
 					title: session.title,
 					abstract: session.abstract,
-					start: moment.tz(session.start, this.eventTimezone),
-					end: moment.tz(session.end, this.eventTimezone),
+					start: moment(session.start),
+					end: moment(session.end),
 					duration: moment(session.end).diff(session.start, 'm'),
 					speakers: session.speakers?.map(s => this.speakersLookup[s]),
 					track: this.tracksLookup[session.track],
@@ -124,6 +124,7 @@ export default {
 		this.schedule = await (api.fetchTalks())
 		this.currentDay = this.days[0]
 		this.eventTimezone = this.schedule.timezone
+		moment.tz.setDefault(this.eventTimezone)
 		window.setTimeout(this.pollUpdates, 10 * 1000)
 		await new Promise((resolve) => {
 			const poll = () => {
