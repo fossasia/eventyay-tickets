@@ -13,4 +13,9 @@ urlpatterns = [
         views.check,
         name="check",
     ),
+    path(
+        "<slug:event>/p/venueless/join",
+        views.SpeakerJoin,
+        name="join",
+    ),
 ]
