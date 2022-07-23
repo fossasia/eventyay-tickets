@@ -11,7 +11,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#3aa57c">
 
-        {% if development_warning %}
+        {% if development_mode %}
             <link rel="icon" type="image/png" sizes="32x32" href="{% static "common/img/favicon-32x32_debug.png" %}">
             <link rel="icon" type="image/png" sizes="16x16" href="{% static "common/img/favicon-16x16_debug.png" %}">
         {% else %}

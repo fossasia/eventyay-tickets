@@ -21,7 +21,7 @@
             <link rel="alternate" type="application/json" title="{{ request.event.name }} API" href="{{ request.event.api_urls.base.full }}" />
         {% endblock %}
 
-        {% if development_warning %}
+        {% if development_mode %}
             <link rel="icon" type="image/png" sizes="32x32" href="{% static "common/img/favicon-32x32_debug.png" %}">
             <link rel="icon" type="image/png" sizes="16x16" href="{% static "common/img/favicon-16x16_debug.png" %}">
         {% else %}
@@ -454,12 +454,12 @@
                 </main>
                 <footer>
                     {% include "common/powered_by.html" %}
-                    {% if development_warning %}
+                    {% if development_mode %}
                         <span class="text-warning">· {% translate "running in development mode" %}</span>
                     {% endif %}
                     {% if pretalx_version %}
                         <span>·
-                            {% if development_warning %}<a href="https://github.com/pretalx/pretalx/tree/{{ pretalx_version }}/">{{ pretalx_version }}</a>
+                            {% if development_mode %}<a href="https://github.com/pretalx/pretalx/tree/{{ pretalx_version }}/">{{ pretalx_version }}</a>
                             {% else %}v{{ pretalx_version }}{% endif %}
                         </span>
                     {% endif %}
