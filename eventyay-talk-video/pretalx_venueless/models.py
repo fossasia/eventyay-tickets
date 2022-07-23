@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from i18nfield.fields import I18nTextField
 from pretalx.common.phrases import phrases
@@ -64,3 +65,7 @@ class VenuelessSettings(models.Model):
         null=True,
         blank=True,
     )
+
+    @property
+    def can_join(self):
+        return self.show_join_link and (not self.join_start or self.join_start <= now())
