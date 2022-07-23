@@ -40,6 +40,8 @@ export default {
 
 <style lang="stylus">
 #editor
+	display: none
+	card()
 	flex: none
 	width: 400px
 	padding-left: 32px

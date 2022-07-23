@@ -1,8 +1,8 @@
 <template lang="pug">
-.pretalx-schedule(:style="{'--scrollparent-width': scrollParentWidth + 'px'}", :class="draggedSession ? ['is-dragging'] : []", @mouseup="stopDragging")
+.pretalx-schedule(:style="{'--scrollparent-width': scrollParentWidth + 'px'}", :class="draggedSession ? ['is-dragging'] : []", @pointerup="stopDragging")
 	template(v-if="schedule")
 		#main-wrapper
-			#unassigned(v-scrollbar.y="", @mouseenter="isUnassigning = true", @mouseLeave="isUnassigning = false")
+			#unassigned(v-scrollbar.y="", @pointerenter="isUnassigning = true", @pointerleave="isUnassigning = false")
 				h1 Unassigned
 				session(v-for="un in unscheduled", :session="un", :showAbstract="false", @startDragging="startDragging(un)", :isDragged="draggedSession && un.id === draggedSession.id")
 			#schedule-wrapper(v-scrollbar.x.y="")
@@ -30,16 +30,10 @@ export default {
 	components: { Editor, GridSchedule, Session },
 	props: {
 		eventUrl: String,
-		apiToken: String,
 		locale: String,
 		version: {
 			type: String,
 			default: ''
-		}
-	},
-	provide () {
-		return {
-			eventUrl: this.eventUrl
 		}
 	},
 	data () {
@@ -161,9 +155,13 @@ export default {
 			movedSession.room = e.room.id
 			// TODO push to server
 		},
-		startDragging (session) {
+		startDragging ({event, session}) {
 			this.draggedSession = session
 			this.editorSession = session
+			// TODO: capture the pointer with setPointerCapture(event)
+			// This allows us to call stopDragging() even when the mouse is released
+			// outside the browser.
+			// https://developer.mozilla.org/en-US/docs/Web/API/Element/setPointerCapture
 		},
 		stopDragging (session) {
 			if (this.isUnassigning && this.draggedSession) {
@@ -191,6 +189,8 @@ export default {
 }
 </script>
 <style lang="stylus">
+#page-content
+	padding: 0
 .pretalx-schedule
 	display: flex
 	flex-direction: column
@@ -199,6 +199,7 @@ export default {
 	height: 100vh
 	width: 100%
 	font-size: 14px
+	margin-left: 24px
 	&.is-dragging
 		user-select: none
 		cursor: grabbing

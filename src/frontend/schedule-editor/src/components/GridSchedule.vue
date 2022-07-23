@@ -1,12 +1,12 @@
 <template lang="pug">
 .c-grid-schedule()
-	.grid(:style="gridStyle", :class="gridClasses", @mousemove="updateHoverSlice($event)", @mouseup="stopDragging()")
+	.grid(ref="grid", :style="gridStyle", :class="gridClasses", @pointermove="updateHoverSlice($event)", @pointerup="stopDragging()")
 		template(v-for="slice of visibleTimeslices")
 			.timeslice(:ref="slice.name", :class="getSliceClasses(slice)", :data-slice="slice.date.format()", :style="getSliceStyle(slice)", @click="expandTimeslice(slice)") {{ getSliceLabel(slice) }}
 				svg(viewBox="0 0 10 10", v-if="isSliceExpandable(slice)").expand
 					path(d="M 0 4 L 5 0 L 10 4 z")
 					path(d="M 0 6 L 5 10 L 10 6 z")
-			.timeline(:class="getSliceClasses(slice)", :style="getSliceStyle(slice)")
+			.timeseparator(:class="getSliceClasses(slice)", :style="getSliceStyle(slice)")
 		.room(:style="{'grid-area': `1 / 1 / auto / auto`}")
 		.room(v-for="(room, index) of rooms", :style="{'grid-area': `1 / ${index + 2 } / auto / auto`}") {{ getLocalizedString(room.name) }}
 		.hover(v-if="draggedSession && hoverSlice", :style="getHoverSliceStyle()")
@@ -19,7 +19,7 @@
 				:isDragged="session === draggedSession",
 				:style="getSessionStyle(session)",
 				:showAbstract="false", :showRoom="false",
-				@startDragging="$emit('startDragging', session)"
+				@startDragging="$emit('startDragging', $event)"
 			)
 			.break(v-else, :style="getSessionStyle(session)")
 				.title {{ getLocalizedString(session.title) }}
@@ -52,6 +52,7 @@ export default {
 			scrolledDay: null,
 			hoverSlice: null,
 			expandedTimeslices: [],
+			gridOffset: 0,
 		}
 	},
 	computed: {
@@ -200,6 +201,7 @@ export default {
 			if (!ref.startsWith('slice') || !ref.endsWith('00-00')) continue
 			this.observer.observe(el[0])
 		}
+		this.gridOffset = this.$refs.grid.getBoundingClientRect().left
 	},
 	methods: {
 		stopDragging () {
@@ -227,7 +229,7 @@ export default {
 		updateHoverSlice (e) {
 			if (!this.draggedSession) { this.hoverSlice = null; return }
 			let hoverSlice = null
-			for (const element of document.elementsFromPoint(380, e.clientY)) {
+			for (const element of document.elementsFromPoint(this.gridOffset, e.clientY)) {
 				if (element && element.dataset.slice && element.classList.contains('timeslice') && !element.classList.contains('datebreak')) {
 					hoverSlice = element
 					break
@@ -235,7 +237,7 @@ export default {
 			}
 			if (!hoverSlice) return
 			const roomWidth = document.querySelectorAll('.grid .room')[1].clientWidth
-			const roomIndex = parseInt((e.layerX - 80) / roomWidth) // remove the timeline offset to the left
+			const roomIndex = parseInt((e.offsetX - 80) / roomWidth) // remove the timeline offset to the left
 			this.hoverSlice = { time: moment(hoverSlice.dataset.slice), roomIndex: roomIndex, room: this.rooms[roomIndex], duration: this.draggedSession.duration }
 		},
 		getHoverSliceStyle () {
@@ -385,7 +387,7 @@ export default {
 				path
 					fill: $clr-grey-500
 
-	.timeline
+	.timeseparator
 		height: 1px
 		background-color: $clr-dividers-light
 		position: absolute

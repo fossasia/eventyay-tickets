@@ -1,5 +1,5 @@
 <template lang="pug">
-.c-linear-schedule-session(:style="style", :target="linkTarget", @mousedown.stop="$emit('startDragging', session)", :class="isDragged ? ['dragging'] : []")
+.c-linear-schedule-session(:style="style", :target="linkTarget", @pointerdown.stop="$emit('startDragging', {session: session, event: $event})", :class="isDragged ? ['dragging'] : []")
 	.time-box
 		.start(:class="{'has-ampm': startTime.ampm}", v-if="startTime")
 			.time {{ startTime.time }}

@@ -1,14 +1,14 @@
 const api = {
-	cache: {},
-	http (token, verb, url, body) {
+	eventSlug: window.location.pathname.split("/")[3],
+	http (verb, url, body) {
 		var fullHeaders = {}
 		fullHeaders['Content-Type'] = 'application/json'
-		fullHeaders.Authorization = `Token ${token}`
 
 		const options = {
 			method: verb || 'GET',
 			headers: fullHeaders,
 			body: body && JSON.stringify(body),
+			credentials: 'same-origin',
 		}
 		return window
 			.fetch(url, options)
@@ -27,14 +27,14 @@ const api = {
 				return Promise.reject(error)
 			})
 	},
-	fetchTalks (token, eventSlug, options) {
+	fetchTalks (options) {
 		options = options || {}
 		var url = [
 			// window.location.protocol,
 			// "//",
 			// window.location.host,
 			// window.location.pathname,
-			'http://127.0.0.1:8000/35c3/schedule/v/wip/widget/v2.json'
+			`/${api.eventSlug}/schedule/v/wip/widget/v2.json`
 		].join('')
 		if (window.location.search) {
 			url += window.location.search + '&'
@@ -47,18 +47,18 @@ const api = {
 		if (options.warnings) {
 			url += 'warnings=true'
 		}
-		return api.http(token, 'GET', url, null)
+		return api.http('GET', url, null)
 	},
-	fetchRooms (token, eventSlug) {
+	fetchRooms () {
 		const url = [
 			// window.location.protocol,
 			// "//",
 			// window.location.host,
 			// "/api/events/",
 			// eventSlug,
-			'http://127.0.0.1:8000/api/events/35c3/rooms',
+			`/api/events/${api.eventSlug}/rooms`,
 		].join('')
-		return api.http(token, 'GET', url, null)
+		return api.http('GET', url, null)
 	},
 	saveTalk (talk) {
 		var url = [
