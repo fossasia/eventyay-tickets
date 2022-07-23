@@ -161,6 +161,7 @@ class FrabJsonExporter(ScheduleData):
                 "end": self.event.date_to.strftime("%Y-%m-%d"),
                 "daysCount": self.event.duration,
                 "timeslot_duration": "00:05",
+                "time_zone_name": self.event.timezone,
                 "rooms": [
                     {
                         "name": str(room.name),
