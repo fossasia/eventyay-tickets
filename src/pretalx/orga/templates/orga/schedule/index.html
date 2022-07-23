@@ -6,8 +6,7 @@
 
 {% block scripts %}
     {% if development_mode %}
-        <script defer type="text/javascript" src="{{ js_dev_server }}/js/chunk-vendors.js"></script>
-        <script defer type="text/javascript" src="{{ js_dev_server }}/js/app.js"></script>
+        <script defer type="module" src="{{ js_dev_server }}/src/main.js"></script>
     {% else %}
         {% compress js %}
             <script defer src="{% static "vendored/moment-with-locales.js" %}"></script>
@@ -16,6 +15,7 @@
             <script defer src="{% static "vendored/vue-async-computed.js" %}"></script>
             <script defer src="{% static "orga/js/schedule.js" %}"></script>
         {% endcompress %}
+        <script defer src="{% static "magic_path/schedule-editor.js" %}"></script>
     {% endif %}
 {% endblock %}
 

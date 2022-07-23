@@ -17,7 +17,7 @@
 <script>
 import moment from 'moment-timezone'
 import MarkdownIt from 'markdown-it'
-import { getLocalizedString } from 'utils'
+import { getLocalizedString } from '~/utils'
 
 const markdownIt = MarkdownIt({
 	linkify: true,

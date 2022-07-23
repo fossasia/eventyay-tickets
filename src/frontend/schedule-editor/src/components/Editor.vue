@@ -39,7 +39,6 @@ export default {
 </script>
 
 <style lang="stylus">
-@import '../styles/global.styl'
 #editor
 	flex: none
 	width: 400px

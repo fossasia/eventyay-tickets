@@ -30,7 +30,7 @@
 // - optionally only show venueless rooms
 import moment from 'moment-timezone'
 import Session from './Session'
-import { getLocalizedString } from 'utils'
+import { getLocalizedString } from '~/utils'
 
 const getSliceName = function (date) {
 	return `slice-${date.format('MM-DD-HH-mm')}`
