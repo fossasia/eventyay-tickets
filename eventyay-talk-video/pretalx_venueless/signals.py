@@ -65,7 +65,6 @@ def render_join_link(event, request):
         or not venueless_settings.show_join_link
     ):
         return
-    print("yoo")
 
     template = get_template("pretalx_venueless/join_link.html")
     ctx = {
