@@ -1,7 +1,7 @@
 import datetime as dt
 
 import jwt
-from csp.decoratorView import csp_replace
+from csp.decorators import csp_replace
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
 from django.http import Http404, HttpResponse

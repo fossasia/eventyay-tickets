@@ -21,10 +21,10 @@
         <h2>{% trans "Confirm your Venueless connection" %}</h2>
         <div class="alert alert-info">
             <div>
-                {% blocktrans trimmed %}
+                {% blocktranslate trimmed %}
                     <b>Venueless</b> is asking to connect to your pretalx event. If you confirm
                     this connection, pretalx will notify Venueless about all schedule changes.
-                {% endblocktrans %}
+                {% endblocktranslate %}
             </div>
         </div>
     {% else %}
@@ -32,19 +32,19 @@
     {% endif %}
     {% if last_push %}
         <div class="alert alert-success">
-            {% blocktrans trimmed with last_push=last_push %}
+            {% blocktranslate trimmed with last_push=last_push %}
                 Successfully connected to venueless. Data was last pushed on {{ last_push }}.
-            {% endblocktrans %}
+            {% endblocktranslate %}
         </div>
     {% elif not connect_in_progress %}
         <div class="alert alert-warning">
             <div>
-                {% blocktrans trimmed %}
+                {% blocktranslate trimmed %}
                     Setting up the connection with Venueless will configure the pretalx settings
                     in Venueless, and will automatically push schedule changes to venueless users.
                     Please use Venueless to begin this process. Go to <b>Config → Event</b> in Venueless,
                     and enter the following settings to create the connection:
-                {% endblocktrans %}
+                {% endblocktranslate %}
                 <ul>
                     <li>pretalx domain:
                         {{ request.event.custom_domain|default:settings.SITE_URL|copyable }}
@@ -66,7 +66,7 @@
                 top of this page!
             {% endblocktranslate %}
         </p>
-        
+
         {% bootstrap_form_errors form %}
 
         {% bootstrap_field form.url layout='event' %}
@@ -83,12 +83,12 @@
 
         {% bootstrap_field form.show_join_link layout='event' %}
         <div id="join-link-settings">
-        {% bootstrap_field form.join_url layout='event' %}
-        {% bootstrap_field form.secret layout='event' %}
-        {% bootstrap_field form.issuer layout='event' %}
-        {% bootstrap_field form.audience layout='event' %}
-        {% bootstrap_field form.join_start layout='event' %}
-        {% bootstrap_field form.join_text layout='event' %}
+            {% bootstrap_field form.join_url layout='event' %}
+            {% bootstrap_field form.secret layout='event' %}
+            {% bootstrap_field form.issuer layout='event' %}
+            {% bootstrap_field form.audience layout='event' %}
+            {% bootstrap_field form.join_start layout='event' %}
+            {% bootstrap_field form.join_text layout='event' %}
         </div>
 
         <div class="submit-group panel">
