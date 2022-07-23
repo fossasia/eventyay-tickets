@@ -1,11 +1,6 @@
 <template lang="pug">
 .pretalx-schedule(:style="{'--scrollparent-width': scrollParentWidth + 'px'}", :class="draggedSession ? ['is-dragging'] : []", @mouseup="stopDragging")
 	template(v-if="schedule")
-		.settings
-			template(v-if="!inEventTimezone")
-				bunt-select(name="timezone", :options="[{id: schedule.timezone, label: schedule.timezone}, {id: userTimezone, label: userTimezone}]", v-model="currentTimezone", @blur="saveTimezone")
-			template(v-else)
-				div.timezone-label.bunt-tab-header-item(v-html="schedule.timezone")
 		#main-wrapper
 			#unassigned(v-scrollbar.y="", @mouseenter="isUnassigning = true", @mouseLeave="isUnassigning = false")
 				h1 Unassigned
@@ -52,9 +47,7 @@ export default {
 			moment,
 			scrollParentWidth: Infinity,
 			schedule: null,
-			userTimezone: null,
 			currentDay: null,
-			currentTimezone: null,
 			draggedSession: null,
 			editorSession: null,
 			isUnassigning: false,
@@ -74,7 +67,7 @@ export default {
 			return this.schedule.speakers.reduce((acc, s) => { acc[s.code] = s; return acc }, {})
 		},
 		unscheduled () {
-			if (!this.schedule || !this.currentTimezone) return
+			if (!this.schedule) return
 			const sessions = []
 			for (const session of this.schedule.talks.filter(s => !s.start || !s.room)) {
 				sessions.push({
@@ -90,15 +83,15 @@ export default {
 			return sessions
 		},
 		sessions () {
-			if (!this.schedule || !this.currentTimezone) return
+			if (!this.schedule) return
 			const sessions = []
 			for (const session of this.schedule.talks.filter(s => s.start && moment(s.start).isAfter(this.days[0]) && moment(s.start).isBefore(this.days.at(-1).clone().endOf('day')))) {
 				sessions.push({
 					id: session.code,
 					title: session.title,
 					abstract: session.abstract,
-					start: moment.tz(session.start, this.currentTimezone),
-					end: moment.tz(session.end, this.currentTimezone),
+					start: moment.tz(session.start, this.eventTimezone),
+					end: moment.tz(session.end, this.eventTimezone),
 					duration: moment(session.end).diff(session.start, 'm'),
 					speakers: session.speakers?.map(s => this.speakersLookup[s]),
 					track: this.tracksLookup[session.track],
@@ -129,39 +122,15 @@ export default {
 			if (this.days && this.days.length <= 5) return 'dddd DD. MMMM'
 			if (this.days && this.days.length <= 7) return 'dddd DD. MMM'
 			return 'ddd DD. MMM'
-		},
-		eventSlug () {
-			let url = ''
-			if (this.eventUrl.startsWith('http')) {
-				url = new URL(this.eventUrl)
-			} else {
-				url = new URL('http://example.org/' + this.eventUrl)
-			}
-			return url.pathname.replace(/\//g, '')
 		}
 	},
 	async created () {
 		moment.locale(this.locale)
-		this.userTimezone = moment.tz.guess()
 		const version = ''
-		this.schedule = await (api.fetchTalks(this.apiToken, this.eventSlug))
-		this.currentTimezone = localStorage.getItem(`${this.eventSlug}_timezone`)
-		this.currentTimezone = [this.schedule.timezone, this.userTimezone].includes(this.currentTimezone) ? this.currentTimezone : this.schedule.timezone
+		this.schedule = await (api.fetchTalks())
 		this.currentDay = this.days[0]
-
-		const fragment = window.location.hash.slice(1)
-		if (fragment && fragment.length === 10) {
-			const initialDay = moment(fragment, 'YYYY-MM-DD')
-
-			const filteredDays = this.days.filter(d => d.format('YYYYMMDD') === initialDay.format('YYYYMMDD'))
-			if (filteredDays.length) {
-				this.currentDay = filteredDays[0]
-			}
-		}
+		this.eventTimezone = this.schedule.timezone
 		window.setTimeout(this.pollUpdates, 10 * 1000)
-	},
-	async mounted () {
-		// We block until we have either a regular parent or a shadow DOM parent
 		await new Promise((resolve) => {
 			const poll = () => {
 				if (this.$el.parentElement || this.$el.getRootNode().host) return resolve()
@@ -169,6 +138,9 @@ export default {
 			}
 			poll()
 		})
+	},
+	async mounted () {
+		// We block until we have either a regular parent or a shadow DOM parent
 		window.addEventListener('resize', this.onWindowResize)
 		this.onWindowResize()
 	},
@@ -178,7 +150,7 @@ export default {
 	methods: {
 		changeDay (day) {
 			if (day.isSame(this.currentDay)) return
-			this.currentDay = moment(day, this.currentTimezone).startOf('day')
+			this.currentDay = moment(day, this.eventTimezone).startOf('day')
 			window.location.hash = day.format('YYYY-MM-DD')
 		},
 		rescheduleSession (e) {
@@ -209,14 +181,11 @@ export default {
 		},
 		pollUpdates () {
 			api
-				.fetchTalks(this.apiToken, this.eventSlug, {since: this.since, warnings: true})
+				.fetchTalks({since: this.since, warnings: true})
 				.then(result => {
 					this.schedule = result
 					window.setTimeout(this.pollUpdates, 10 * 1000)
 				})
-		},
-		saveTimezone () {
-			localStorage.setItem(`${this.eventSlug}_timezone`, this.currentTimezone)
 		}
 	}
 }
