@@ -31,7 +31,7 @@ setup(
     author="Tobias Kunze",
     author_email="r@rixx.de",
     license="Apache Software License",
-    install_requires=[],
+    install_requires=["PyJWT"],
     packages=find_packages(exclude=["tests", "tests.*"]),
     include_package_data=True,
     cmdclass=cmdclass,

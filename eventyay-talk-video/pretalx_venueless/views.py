@@ -1,10 +1,17 @@
+import datetime as dt
+
+import jwt
 from csp.decorators import csp_replace
 from django.contrib import messages
-from django.http import HttpResponse
+from django.core.exceptions import PermissionDenied
+from django.http import Http404, HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.decorators import method_decorator
+from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
+from django.views import View
+from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.generic import FormView
 from pretalx.event.models import Event
 from pretalx.orga.views.event import EventSettingsPermission
@@ -76,3 +83,52 @@ def check(request, event):
         response.status_code = 404
     response.headers["Access-Control-Allow-Origin"] = "*"
     return response
+
+
+@method_decorator(xframe_options_exempt, "dispatch")
+class SpeakerJoin(View):
+    def post(self, request, *args, **kwargs):
+        speaker = request.user
+        if speaker.is_anonymous:
+            raise Http404(_("Unknown user or not authorized to access venueless."))
+        if speaker not in request.event.speakers:
+            raise PermissionDenied()
+
+        venueless_settings = request.event.venueless_settings
+        if venueless_settings.join_start and venueless_settings.join_start < now():
+            raise PermissionDenied()
+
+        talks = request.event.talks.filter(speakers__in=[speaker]).distinct()
+        iat = dt.datetime.utcnow()
+        exp = iat + dt.timedelta(days=30)
+        profile = {
+            "fields": {
+                "display_name": speaker.name,
+                "pretalx_id": speaker.code,
+            }
+        }
+        if speaker.avatar_url:
+            profile["fields"]["profile_picture"] = speaker.avatar_url
+
+        payload = {
+            "iss": venueless_settings.issuer,
+            "aud": venueless_settings.audience,
+            "exp": exp,
+            "iat": iat,
+            "uid": speaker.code,
+            "profile": profile,
+            "traits": list(
+                {
+                    f"pretalx-event-{request.event.slug}",
+                }
+                | {f"pretalx-session-{submission.code}" for submission in talks}
+            ),
+        }
+        token = jwt.encode(payload, venueless_settings.secret, algorithm="HS256")
+        speaker.profiles.filter(event=request.event).update(has_arrived=True)
+
+        return redirect(
+            "{}/#token={}".format(venueless_settings.join_url, token).replace(
+                "//#", "/#"
+            )
+        )
