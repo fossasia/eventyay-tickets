@@ -23,9 +23,9 @@ class Command(BaseCommand):  # pragma: no cover
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '--print-sql',
-            action='store_true',
-            help='Print all SQL queries.',
+            "--print-sql",
+            action="store_true",
+            help="Print all SQL queries.",
         )
 
     def handle(self, *args, **options):
@@ -42,7 +42,7 @@ class Command(BaseCommand):  # pragma: no cover
                 )
                 return self.call_command(*args, **options)
 
-        if options['print_sql']:
+        if options["print_sql"]:
             connection.force_debug_cursor = True
             logger = logging.getLogger("django.db.backends")
             logger.setLevel(logging.DEBUG)
