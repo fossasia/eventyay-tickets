@@ -102,8 +102,8 @@ class SpeakerJoin(View):
         iat = dt.datetime.utcnow()
         exp = iat + dt.timedelta(days=30)
         profile = {
+            "display_name": speaker.name,
             "fields": {
-                "display_name": speaker.name,
                 "pretalx_id": speaker.code,
             }
         }
