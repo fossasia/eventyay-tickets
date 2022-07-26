@@ -43,10 +43,10 @@ SCRIPT_SRC = "'self' 'unsafe-eval'"
 DEFAULT_SRC = "'self'"
 
 
-if settings.DEBUG:
-    SCRIPT_SRC = (f"{SCRIPT_SRC} {settings.JS_DEV_SERVER}",)
+if settings.VITE_DEV_MODE:
+    SCRIPT_SRC = (f"{SCRIPT_SRC} {settings.VITE_DEV_SERVER}",)
     DEFAULT_SRC = (
-        f"{DEFAULT_SRC} {settings.JS_DEV_SERVER} {settings.JS_DEV_SERVER.replace('http', 'ws')}",
+        f"{DEFAULT_SRC} {settings.VITE_DEV_SERVER} {settings.VITE_DEV_SERVER.replace('http', 'ws')}",
     )
 
 

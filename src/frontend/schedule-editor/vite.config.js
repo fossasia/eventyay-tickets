@@ -13,6 +13,7 @@ const stylusOptions = {
 }
 
 export default {
+	base: process.env.BASE_URL || '/',
 	plugins: [
 		vue()
 	],
@@ -26,6 +27,13 @@ export default {
 		mainFields: ['browser', 'module', 'jsnext:main', 'jsnext'],
 		extensions: ['.js', '.json', '.vue'],
 		alias: {'~': path.resolve(__dirname, './src')}
+	},
+	build: {
+		outDir: process.env.OUT_DIR,
+		emptyOutDir: false,
+		manifest: 'pretalx-manifest.json',
+		assetsDir: '',
+		rollupOptions: {input: 'src/main.js'},
 	},
 	server: {
 	  port: '8080'

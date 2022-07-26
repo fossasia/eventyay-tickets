@@ -3,20 +3,10 @@
 {% load compress %}
 {% load i18n %}
 {% load static %}
+{% load vite %}
 
 {% block scripts %}
-    {% if development_mode %}
-        <script defer type="module" src="{{ js_dev_server }}/src/main.js"></script>
-    {% else %}
-        {% compress js %}
-            <script defer src="{% static "vendored/moment-with-locales.js" %}"></script>
-            <script defer src="{% static "vendored/moment-timezone-with-data-10-year-range.js" %}"></script>
-            <script defer src="{% static "vendored/vue.min.js" %}"></script>
-            <script defer src="{% static "vendored/vue-async-computed.js" %}"></script>
-            <script defer src="{% static "orga/js/schedule.js" %}"></script>
-        {% endcompress %}
-        <script defer src="{% static "magic_path/schedule-editor.js" %}"></script>
-    {% endif %}
+    {% vite_asset "src/main.js" %}
 {% endblock %}
 
 {% block navbar_right %}

@@ -18,7 +18,7 @@ from django.utils.http import http_date
 
 from pretalx.event.models.event import Event
 
-LOCAL_HOST_NAMES = ("testserver", "localhost")
+LOCAL_HOST_NAMES = ("testserver", "localhost", "127.0.0.1")
 ANY_DOMAIN_ALLOWED = ("robots.txt",)
 
 

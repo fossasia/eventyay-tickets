@@ -1,7 +1,12 @@
+import os
+import subprocess
 from contextlib import suppress
+from pathlib import Path
 
+from django.conf import settings
 from django.core.management import call_command
 from django.core.management.base import BaseCommand
+from django.test import override_settings
 
 from pretalx.common.models.settings import GlobalSettings
 
@@ -31,6 +36,15 @@ class Command(BaseCommand):
         call_command(
             "collectstatic", verbosity=silent, interactive=False, clear=options["clear"]
         )
+        with override_settings(_VITE_IGNORE=True):
+            frontend_dir = (
+                Path(__file__).parent.parent.parent.parent.parent
+                / "frontend/schedule-editor/"
+            )
+            env = os.environ.copy()
+            env["OUT_DIR"] = str(settings.STATIC_ROOT)
+            env["BASE_URL"] = settings.STATIC_URL
+            subprocess.call(["/usr/bin/npm", "run", "build"], cwd=frontend_dir, env=env)
         call_command("compress", verbosity=silent)
         with suppress(
             Exception

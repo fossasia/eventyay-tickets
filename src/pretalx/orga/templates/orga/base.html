@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load rules %}
 {% load static %}
+{% load vite %}
 <!DOCTYPE html>
 <html lang="{{ html_locale }}"{% if rtl %} dir="rtl" class="rtl"{% endif %}>
     <head>
@@ -37,6 +38,7 @@
             <link rel="stylesheet" type="text/x-scss" href="{% static "orga/scss/main.scss" %}"/>
         {% endcompress %}
         {% block stylesheets %}{% endblock %}
+        {% vite_hmr %}
         {% compress js %}
             <script defer src="{% static "vendored/jquery-3.1.1.js" %}"></script>
             <script defer src="{% static "vendored/tether/tether.min.js" %}"></script>
