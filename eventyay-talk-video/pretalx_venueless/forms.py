@@ -75,4 +75,7 @@ class VenuelessSettingsForm(I18nModelForm):
         )
         widgets = {
             "join_start": forms.DateTimeInput(attrs={"class": "datetimepickerfield"}),
+            "secret": forms.TextInput(),
+            "audience": forms.TextInput(),
+            "issuer": forms.TextInput(),
         }
