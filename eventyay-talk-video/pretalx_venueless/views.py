@@ -108,7 +108,7 @@ class SpeakerJoin(View):
             }
         }
         if speaker.avatar_url:
-            profile["fields"]["profile_picture"] = speaker.avatar_url
+            profile["profile_picture"] = speaker.get_avatar_url(request.event)
 
         payload = {
             "iss": venueless_settings.issuer,
