@@ -105,7 +105,7 @@ class SpeakerJoin(View):
             "display_name": speaker.name,
             "fields": {
                 "pretalx_id": speaker.code,
-            }
+            },
         }
         if speaker.avatar_url:
             profile["profile_picture"] = speaker.get_avatar_url(request.event)
