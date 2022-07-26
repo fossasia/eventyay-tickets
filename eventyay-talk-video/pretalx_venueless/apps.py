@@ -13,7 +13,7 @@ class PluginApp(AppConfig):
             "Venueless integration in pretalx: Notify venueless about new schedule releases!"
         )
         visible = True
-        version = "1.2.0"
+        version = "1.2.1"
 
     def ready(self):
         from . import signals  # NOQA
