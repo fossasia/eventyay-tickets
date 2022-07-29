@@ -186,7 +186,14 @@ async def test_update_user():
         assert response[0] == "authenticated"
 
         await c.send_json_to(
-            ["user.update", 123, {"profile": {"display_name": "Cool User"}}]
+            [
+                "user.update",
+                123,
+                {
+                    "profile": {"display_name": "Cool User"},
+                    "pretalx_id": "HAXXOR_NOT_ALLOWED",
+                },
+            ]
         )
         response = await c.receive_json_from()
         assert response == ["success", 123, {}], response
@@ -216,6 +223,7 @@ async def test_update_user():
         }
         assert response[1]["user.config"]["profile"]["display_name"] == "Cool User"
         assert response[1]["user.config"]["id"] == user_id
+        assert response[1]["user.config"]["pretalx_id"] is None
 
 
 @pytest.mark.asyncio

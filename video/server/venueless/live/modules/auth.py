@@ -235,6 +235,7 @@ class AuthModule(BaseModule):
             self.consumer.world.id,
             self.consumer.user.id,
             public_data=body,
+            is_admin=False,
             serialize=False,
         )
         self.consumer.user = user
@@ -257,6 +258,7 @@ class AuthModule(BaseModule):
             self.consumer.world.id,
             body.pop("id"),
             public_data=body,
+            is_admin=True,
             serialize=False,
         )
         await user_broadcast(

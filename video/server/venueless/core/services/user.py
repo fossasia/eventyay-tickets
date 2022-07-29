@@ -181,7 +181,9 @@ def create_user(
 
 
 @atomic
-def update_user(world_id, id, *, traits=None, public_data=None, serialize=True):
+def update_user(
+    world_id, id, *, traits=None, public_data=None, is_admin=False, serialize=True
+):
     # TODO: Exception handling
     user = (
         User.objects.select_related("world")
@@ -218,7 +220,11 @@ def update_user(world_id, id, *, traits=None, public_data=None, serialize=True):
             user.profile = public_data.get("profile")
             save_fields.append("profile")
 
-        if "pretalx_id" in public_data and public_data["pretalx_id"] != user.pretalx_id:
+        if (
+            is_admin
+            and "pretalx_id" in public_data
+            and public_data["pretalx_id"] != user.pretalx_id
+        ):
             AuditLog.objects.create(
                 world_id=world_id,
                 user=user,
