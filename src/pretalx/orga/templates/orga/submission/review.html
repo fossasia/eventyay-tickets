@@ -108,7 +108,7 @@
                             {% endif %}
                             {% if speaker.submissions.count > 1 %}<br><strong>{% translate "Other proposals" %}:</strong>
                                 {% for other_submission in speaker.submissions %}{% if other_submission != submission %}
-                                    <a href="{{ other_submission.orga_urls.base }}">{{ other_submission.anonymised.title|default:other_submission.title }}</a>{% if not forloop.last %}, {% endif %}
+                                    <a href="{{ other_submission.orga_urls.reviews }}">{{ other_submission.anonymised.title|default:other_submission.title }}</a>{% if not forloop.last %}, {% endif %}
                                 {% endif %}{% endfor %}
                             {% endif %}
                         </div>
