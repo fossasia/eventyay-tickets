@@ -21,7 +21,7 @@ def widget_css_etag(request, **kwargs):
     return request.event.settings.widget_css_checksum
 
 
-def widget_js_etag(request, event, locale, version, **kwargs):
+def widget_js_etag(request, event, version, locale="en", **kwargs):
     return request.event.settings.get(f"widget_checksum_{version}_{locale}")
 
 
