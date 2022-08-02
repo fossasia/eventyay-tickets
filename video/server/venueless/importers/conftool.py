@@ -362,7 +362,7 @@ def create_posters_from_conftool(world, url, password, session_as_category=True)
                 display_text=paper.xpath(f"original_filename_final_{fileindex}")[0].text
                 or f"Link {fileindex}",
                 defaults={
-                    "url": paper.xpath(f"last_upload_final_{fileindex}")[0].text,
+                    "url": paper.xpath(f"download_link_final_{fileindex}")[0].text,
                 },
             )
 
