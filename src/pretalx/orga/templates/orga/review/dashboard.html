@@ -10,6 +10,7 @@
 {% block scripts %}
     {% compress js %}
         <script src="{% static 'vendored/rslider/rSlider.min.js' %}" defer></script>
+        <script src="{% static "orga/js/submission_filter.js" %}"></script>
         <script src="{% static 'orga/js/review.js' %}" defer></script>
     {% endcompress %}
     <link rel="stylesheet" type="text/css" href="{% static "vendored/rslider/rSlider.min.css" %}" />
@@ -40,7 +41,10 @@
         <form class="search-form" id="review-filter-form">
             {% bootstrap_form search_form %}
             {% if show_submission_types and filter_form.submission_type %}{% bootstrap_field filter_form.submission_type %}{% endif %}
-            {% bootstrap_field filter_form.state layout='inline' %}
+            <div class="d-flex flex-column form-group">
+                {% bootstrap_field filter_form.state layout='inline' %}
+                <div id="pending" class="d-none">{% bootstrap_field filter_form.pending_state__isnull layout='inline' %}</div>
+            </div>
             {% if filter_form.track %}{% bootstrap_field filter_form.track %}{% endif %}
             {% if filter_form.tags %}{% bootstrap_field filter_form.tags %}{% endif %}
             {% if max_review_count and max_review_count > 1 %}
