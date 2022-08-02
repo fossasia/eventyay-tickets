@@ -276,7 +276,7 @@ def create_posters_from_conftool(world, url, password, session_as_category=True)
                     orgs.append(orgidx)
                 poster.authors["authors"].append({"name": name, "orgs": orgs})
 
-        poster_url = paper.xpath("download_link_a")[0].text or None
+        poster_url = paper.xpath("download_final_link_a")[0].text or None
 
         if (
             poster_url
@@ -353,16 +353,16 @@ def create_posters_from_conftool(world, url, password, session_as_category=True)
 
         for fileindex in string.ascii_lowercase[1:]:
             if (
-                not paper.xpath(f"download_link_{fileindex}")
-                or not paper.xpath(f"download_link_{fileindex}")[0].text
+                not paper.xpath(f"download_final_link_{fileindex}")
+                or not paper.xpath(f"download_final_link_{fileindex}")[0].text
             ):
                 break
 
             poster.links.update_or_create(
-                display_text=paper.xpath(f"original_filename_{fileindex}")[0].text
+                display_text=paper.xpath(f"original_filename_final_{fileindex}")[0].text
                 or f"Link {fileindex}",
                 defaults={
-                    "url": paper.xpath(f"download_link_{fileindex}")[0].text,
+                    "url": paper.xpath(f"last_upload_final_{fileindex}")[0].text,
                 },
             )
 
