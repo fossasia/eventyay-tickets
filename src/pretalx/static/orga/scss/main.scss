@@ -148,3 +148,15 @@ h3 {
     color: $brand-danger;
   }
 }
+
+
+#template-accordion [data-toggle="collapse"] .fa, #template-accordion button {
+  align-items: center;
+}
+#template-accordion [data-toggle="collapse"][aria-expanded="false"] .fa:before {   
+  content: "\f106";
+}
+
+#template-accordion [data-toggle="collapse"][aria-expanded="true"] .fa:before {
+  content: "\f107";
+}

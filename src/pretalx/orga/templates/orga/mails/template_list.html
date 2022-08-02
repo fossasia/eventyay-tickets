@@ -27,69 +27,110 @@
             {% translate "New custom template" %}
         </a></div>
 
-    <div>
-        <hr class="mt-4 mb-4">
-        <div>
-            <div class="d-flex w-100 mb-3">
-                <h3>{% translate "Acknowledge Mail" %}</h3>
-                <a href="{{ ack.instance.urls.edit }}" class="btn btn-info flip ml-auto">{% translate "Edit template" %}</a>
+    <form class="accordion form" id="template-accordion">
+        <div class="card">
+            <div class="card-header" id="heading{{ ack.instance.id }}">
+                <h2>
+                    <button class="btn btn-block text-left d-flex" type="button" data-toggle="collapse" data-target="#collapse{{ ack.instance.id }}" aria-expanded="false" aria-controls="collapse{{ ack.instance.id }}">
+                        {% translate "Acknowledge Mail" %}
+                        <i class="fa fa-2x ml-auto"></i>
+                    </button>
+                </h2>
             </div>
-            {% bootstrap_form ack layout='event' %}
-        </div>
+            <div id="collapse{{ ack.instance.id }}" class="collapse" aria-labelledby="heading{{ ack.instance.id }}" data-parent="#template-accordion">
+                <div class="card-body">
 
-        <hr class="mt-4 mb-4">
-
-        <div>
-            <div class="d-flex w-100 mb-3">
-                <h3>{% translate "Accept Mail" %}</h3>
-                <a href="{{ accept.instance.urls.edit }}" class="btn btn-info flip ml-auto">{% translate "Edit template" %}</a>
-            </div>
-            {% bootstrap_form accept layout='event' %}
-        </div>
-
-        <hr class="mt-4 mb-4">
-
-        <div>
-            <div class="d-flex w-100 mb-3">
-                <h3>{% translate "Rejection Mail" %}</h3>
-                <a href="{{ reject.instance.urls.edit }}" class="btn btn-info flip ml-auto">{% translate "Edit template" %}</a>
-            </div>
-            {% bootstrap_form reject layout='event' %}
-        </div>
-
-        <hr class="mt-4 mb-4">
-
-        <div>
-            <div class="d-flex w-100 mb-3">
-                <h3>{% translate "New schedule version" %}</h3>
-                <a href="{{ update.instance.urls.edit }}" class="btn btn-info flip ml-auto">{% translate "Edit template" %}</a>
-            </div>
-            {% bootstrap_form update layout='event' %}
-        </div>
-
-        <hr class="mt-4 mb-4">
-
-        <div>
-            <div class="d-flex w-100 mb-3">
-                <h3>{% translate "Unanswered questions reminder" %}</h3>
-                <a href="{{ remind.instance.urls.edit }}" class="btn btn-info flip ml-auto">{% translate "Edit template" %}</a>
-            </div>
-            {% bootstrap_form remind layout='event' %}
-        </div>
-
-        <hr class="mt-4 mb-4">
-
-        {% for template in other %}
-            <div>
-                <div class="d-flex w-100 mb-3">
-                    <h3>{% translate "Custom Mail" %}</h3>
-                    <a href="{{ template.instance.urls.delete }}" class="btn btn-danger flip ml-auto mr-2">{% translate "Delete template" %}</a>
-                    <a href="{{ template.instance.urls.edit }}" class="btn btn-info mr-2">{% translate "Edit template" %}</a>
-                    <a href="{{ request.event.orga_urls.compose_mails }}?template={{ template.instance.pk }}" class="btn btn-success">{% translate "Send mails" %}</a>
+                    <div class="row mt-2 mb-4 mr-1">
+                        <a href="{{ ack.instance.urls.edit }}" class="btn btn-info flip ml-auto">{% translate "Edit template" %}</a>
+                    </div>
+                    {% bootstrap_form ack layout='event' %}
                 </div>
-                {% bootstrap_form template layout='event' %}
             </div>
-            <hr class="mt-4 mb-4">
-        {% endfor %}
-    </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header" id="heading{{ accept.instance.id }}">
+                <h2>
+                    <button class="btn btn-block text-left d-flex" type="button" data-toggle="collapse" data-target="#collapse{{ accept.instance.id }}" aria-expanded="false" aria-controls="collapse{{ accept.instance.id }}">
+                        {% translate "Accept Mail" %}
+                        <i class="fa fa-2x ml-auto"></i>
+                    </button>
+                </h2>
+            </div>
+            <div id="collapse{{ accept.instance.id }}" class="collapse" aria-labelledby="heading{{ accept.instance.id }}" data-parent="#template-accordion">
+                <div class="card-body">
+
+                    <div class="row mt-2 mb-4 mr-1">
+                        <a href="{{ accept.instance.urls.edit }}" class="btn btn-info flip ml-auto">{% translate "Edit template" %}</a>
+                    </div>
+                    {% bootstrap_form accept layout='event' %}
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion" id="template-accordion">
+            <div class="card">
+                <div class="card-header" id="heading{{ update.instance.id }}">
+                    <h2>
+                        <button class="btn btn-block text-left d-flex" type="button" data-toggle="collapse" data-target="#collapse{{ update.instance.id }}" aria-expanded="false" aria-controls="collapse{{ update.instance.id }}">
+                            {% translate "New schedule version" %}
+                            <i class="fa fa-2x ml-auto"></i>
+                        </button>
+                    </h2>
+                </div>
+                <div id="collapse{{ update.instance.id }}" class="collapse" aria-labelledby="heading{{ update.instance.id }}" data-parent="#template-accordion">
+                    <div class="card-body">
+
+                        <div class="row mt-2 mb-4 mr-1">
+                            <a href="{{ update.instance.urls.edit }}" class="btn btn-info flip ml-auto">{% translate "Edit template" %}</a>
+                        </div>
+                        {% bootstrap_form update layout='event' %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion" id="template-accordion">
+                <div class="card">
+                    <div class="card-header" id="heading{{ remind.instance.id }}">
+                        <h2>
+                            <button class="btn btn-block text-left d-flex" type="button" data-toggle="collapse" data-target="#collapse{{ remind.instance.id }}" aria-expanded="false" aria-controls="collapse{{ remind.instance.id }}">
+                                {% translate "Unanswered questions reminder" %}
+                                <i class="fa fa-2x ml-auto"></i>
+                            </button>
+                        </h2>
+                    </div>
+                    <div id="collapse{{ remind.instance.id }}" class="collapse" aria-labelledby="heading{{ remind.instance.id }}" data-parent="#template-accordion">
+                        <div class="card-body">
+
+                            <div class="row mt-2 mb-4 mr-1">
+                                <a href="{{ remind.instance.urls.edit }}" class="btn btn-info flip ml-auto">{% translate "Edit template" %}</a>
+                            </div>
+                            {% bootstrap_form remind layout='event' %}
+                        </div>
+                    </div>
+                </div>
+
+                {% for template in other %}
+                    <div class="card">
+                        <div class="card-header" id="heading{{ template.instance.id }}">
+                            <h2>
+                                <button class="btn btn-block text-left d-flex" type="button" data-toggle="collapse" data-target="#collapse{{ template.instance.id }}" aria-controls="collapse{{ template.instance.id }}">
+                                    {% translate "Custom Mail" %}: {{ template.instance.subject }}
+                                    <i class="fa fa-2x ml-auto"></i>
+                                </button>
+                            </h2>
+                        </div>
+                        <div id="collapse{{ template.instance.id }}" class="collapse" aria-labelledby="heading{{ template.instance.id }}" data-parent="#template-accordion">
+                            <div class="card-body">
+                                <div class="row mt-2 mb-4 mr-1">
+                                    <a href="{{ template.instance.urls.delete }}" class="btn btn-danger flip ml-auto mr-2">{% translate "Delete template" %}</a>
+                                    <a href="{{ template.instance.urls.edit }}" class="btn btn-info mr-2">{% translate "Edit template" %}</a>
+                                    <a href="{{ request.event.orga_urls.compose_mails }}?template={{ template.instance.pk }}" class="btn btn-success">{% translate "Send mails" %}</a>
+                                </div>
+                                {% bootstrap_form template layout='event' %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </form>
 {% endblock %}
