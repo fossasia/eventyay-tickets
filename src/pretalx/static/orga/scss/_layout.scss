@@ -332,6 +332,13 @@ footer {
   }
   .btn {
     margin-right: 16px;
+    margin-left: auto;
+  }
+  #pending .form-group {
+    margin-bottom: 0
+  }
+  #pending label {
+    color: #6c757d;
   }
 }
 .filter-form {

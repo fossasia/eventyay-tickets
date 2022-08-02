@@ -523,7 +523,14 @@ class SubmissionList(
     model = Submission
     context_object_name = "submissions"
     template_name = "orga/submission/list.html"
-    filter_fields = ("submission_type", "state", "track", "tags", "pending_state")
+    filter_fields = (
+        "submission_type",
+        "state",
+        "track",
+        "tags",
+        "pending_state",
+        "pending_state__isnull",
+    )
     sortable_fields = ("code", "title", "state", "is_featured")
     secondary_sort = {"state": ("pending_state",)}
     permission_required = "orga.view_submissions"

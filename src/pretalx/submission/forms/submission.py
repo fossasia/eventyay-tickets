@@ -255,6 +255,10 @@ class SubmissionFilterForm(forms.Form):
             attrs={"class": "select2", "title": _("Session types")}
         ),
     )
+    pending_state__isnull = forms.BooleanField(
+        required=False,
+        label=_("exclude pending"),
+    )
     track = forms.MultipleChoiceField(
         required=False,
         widget=SelectMultipleWithCount(
@@ -270,7 +274,9 @@ class SubmissionFilterForm(forms.Form):
     def __init__(self, event, *args, limit_tracks=False, **kwargs):
         self.event = event
         usable_states = kwargs.pop("usable_states", None)
-        super().__init__(*args, **kwargs)
+        initial = kwargs.pop("initial", {}) or {}
+        initial["exclude_pending"] = False
+        super().__init__(*args, initial=initial, **kwargs)
         qs = event.submissions
         state_qs = Submission.all_objects.filter(event=event)
         if usable_states:

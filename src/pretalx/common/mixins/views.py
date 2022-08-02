@@ -141,10 +141,14 @@ class Filterable:
                     _key = key
                     _value = value_parts[0]
                 if _key in self.filter_fields and _value:
+                    if "__isnull" in _key:
+                        _value = True if _value == "on" else False
+                    else:
+                        _key = f"{_key}__in"
                     lookups[_key].append(_value)
             _filters = Q()
             for _key, value in lookups.items():
-                _filters |= Q(**{f"{_key}__in": value})
+                _filters |= Q(**{_key: value})
             qs = qs.filter(_filters)
         return qs
 
