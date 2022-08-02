@@ -352,6 +352,7 @@
   "posters/item:tabs:presentation:header": "Präsentation",
   "posters/item:downloads-headline:text": "Downloads",
   "posters/item:poster-pdf:placeholder": "Poster herunterladen",
+  "posters/item:poster-pdf:empty-placeholder": "Kein Poster vorhanden",
   "posters/item:poster-pdf:tooltip": "Poster herunterladen",
   "posters/item:btn-likes:tooltip": "dieses Poster mit \"gefällt mir\" markieren",
   "posters/item:presentation:headline": "Präsentation",
