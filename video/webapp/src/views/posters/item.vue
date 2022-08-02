@@ -27,7 +27,10 @@
 							.mdi.mdi-file-pdf-outline(v-if="file.url.toLowerCase().endsWith('pdf')")
 							.filename {{ file.display_text }}
 		template(v-if="$mq.above['1200px'] || activeTab === 'poster'")
-			a.poster.no-pdf(v-if="pdfLoadFailed", :href="poster.poster_url", target="_blank", title="Download poster")
+			div.poster.no-pdf(v-if="!poster.poster_url")
+				.mdi(:class="`mdi-file-remove-outline`")
+				p {{ $t("posters/item:poster-pdf:empty-placeholder") }}
+			a.poster.no-pdf(v-else-if="pdfLoadFailed", :href="poster.poster_url", target="_blank", title="Download poster")
 				.mdi(:class="`mdi-${getIconByFileEnding(poster.poster_url)}`")
 				p {{ $t("posters/item:poster-pdf:placeholder") }}
 			a.poster(v-else, v-scrollbar.x.y="", :href="poster.poster_url", target="_blank", :title="$t('posters/item:poster-pdf:tooltip')")

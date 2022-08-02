@@ -213,6 +213,7 @@
   "posters/item:tabs:presentation:header": "Presentation",
   "posters/item:downloads-headline:text": "Downloads",
   "posters/item:poster-pdf:placeholder": "Download Poster",
+  "posters/item:poster-pdf:empty-placeholder": "No poster uploaded",
   "posters/item:poster-pdf:tooltip": "Download Poster",
   "posters/item:btn-likes:tooltip": "like this poster",
   "posters/item:presentation:headline": "Presentation",
