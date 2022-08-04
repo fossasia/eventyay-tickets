@@ -201,7 +201,7 @@ def create_posters_from_conftool(world, url, password, session_as_category=True)
         f"&form_export_papers_options[]=submitter"
         f"&form_export_papers_options[]=newlines"
         f"&form_export_format=xml"
-        f"&form_status=p"
+        f"&form_status=-3"
         f"&cmd_create_export=true"
         # TODO: filter by form_track ?
     )
