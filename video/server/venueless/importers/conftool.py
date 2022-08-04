@@ -356,7 +356,7 @@ def create_posters_from_conftool(world, url, password, session_as_category=True)
                 not paper.xpath(f"download_final_link_{fileindex}")
                 or not paper.xpath(f"download_final_link_{fileindex}")[0].text
             ):
-                break
+                continue
 
             poster.links.update_or_create(
                 display_text=paper.xpath(f"original_filename_final_{fileindex}")[0].text
