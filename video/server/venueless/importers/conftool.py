@@ -189,7 +189,7 @@ def fetch_schedule_from_conftool(url, password):
     return result
 
 
-def create_posters_from_conftool(world, url, password, session_as_category=True):
+def create_posters_from_conftool(world, url, password, status="-3", session_as_category=True):
     nonce = int(time.time())
     passhash = hashlib.sha256((str(nonce) + password).encode()).hexdigest()
     r = requests.get(
@@ -201,7 +201,7 @@ def create_posters_from_conftool(world, url, password, session_as_category=True)
         f"&form_export_papers_options[]=submitter"
         f"&form_export_papers_options[]=newlines"
         f"&form_export_format=xml"
-        f"&form_status=-3"
+        f"&form_status={status}"
         f"&cmd_create_export=true"
         # TODO: filter by form_track ?
     )
