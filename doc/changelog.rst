@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` In the email outbox, pretalx now shows if a pending email comes from a known template, e.g. if it is an accept or reject email.
 - :feature:`-` You can now exclude proposals with pending state changes from your search results.
 - :feature:`-` To improve email template handling, the list of emails now shows just the subjects or use case, and you can click them to expand and see the details.
 - :feature:`-` Breaks are now also shown on the mobile/minimal/linear schedule.
