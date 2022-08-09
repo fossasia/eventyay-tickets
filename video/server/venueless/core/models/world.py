@@ -289,6 +289,7 @@ class World(VersionedModel):
             Feedback,
             Membership,
             Poll,
+            PosterPresenter,
             Question,
             Reaction,
             RoomView,
@@ -302,6 +303,7 @@ class World(VersionedModel):
         ChatEvent.objects.filter(channel__world=self).delete()
         Membership.objects.filter(channel__world=self).delete()
         ExhibitorStaff.objects.filter(exhibitor__world=self).delete()
+        PosterPresenter.objects.filter(poster__world=self).delete()
         ContactRequest.objects.filter(exhibitor__world=self).delete()
         ExhibitorView.objects.filter(exhibitor__world=self).delete()
         Reaction.objects.filter(room__world=self).delete()
