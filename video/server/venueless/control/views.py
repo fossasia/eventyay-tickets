@@ -159,6 +159,7 @@ class WorldList(AdminBase, ListView):
         .prefetch_related("planned_usages")
         .order_by(
             F("last_usage").desc(nulls_last=True),
+            F("domain").asc(nulls_last=True),
         )
     )
     context_object_name = "worlds"
