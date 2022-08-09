@@ -19,7 +19,7 @@ from xlrd import XLRDError
 
 from venueless.core.models import World
 from venueless.core.permissions import Permission
-from venueless.core.services.user import login, AuthError
+from venueless.core.services.user import AuthError, login
 from venueless.core.services.world import notify_schedule_change
 from venueless.storage.models import StoredFile
 from venueless.storage.schedule_to_json import convert
