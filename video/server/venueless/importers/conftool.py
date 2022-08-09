@@ -278,7 +278,11 @@ def create_posters_from_conftool(
                     orgs.append(orgidx)
                 poster.authors["authors"].append({"name": name, "orgs": orgs})
 
-        poster_url = paper.xpath("download_final_link_a")[0].text or None
+        poster_url = (
+            paper.xpath("download_final_link_a")[0].text
+            or paper.xpath("download_link_a")[0].text
+            or None
+        )
 
         if (
             poster_url
