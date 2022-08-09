@@ -89,14 +89,14 @@ class PosterService:
         ]
 
     @database_sync_to_async
-    def get_posters(self, room_id, user=None):
+    def get_posters(self, room_id, user=None, list_format=True):
         qs = (
             Poster.objects.filter(world__id=self.world.pk)
             .filter(parent_room__id=room_id)
             .order_by("title")
         ).prefetch_related("links", "votes", "presenters")
 
-        return [p.serialize(user) for p in qs]
+        return [p.serialize(user, list_format=list_format) for p in qs]
 
     @database_sync_to_async
     def get_poster(self, poster_id, user=None):

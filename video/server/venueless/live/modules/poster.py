@@ -21,7 +21,7 @@ class PosterModule(BaseModule):
             user=self.consumer.user, permission=Permission.WORLD_ROOMS_CREATE_POSTER
         ):
             posters = await self.service.get_all_posters(
-                presenter_includes_user=self.consumer.user
+                presenter_includes_user=self.consumer.user, list_format=True
             )
         else:
             posters = await self.service.get_all_posters()
@@ -76,7 +76,9 @@ class PosterModule(BaseModule):
     @room_action(module_required="poster.native")
     async def list(self, body):
         posters = await self.service.get_posters(
-            room_id=body["room"], user=self.consumer.user
+            room_id=body["room"],
+            user=self.consumer.user,
+            list_format=True,
         )
         await self.consumer.send_success(posters)
 
