@@ -57,7 +57,7 @@ async def test_no_anonymous_access(world):
         await c.send_json_to(["authenticate", {"client_id": 4}])
         response = await c.receive_json_from()
         assert response[0] == "error"
-        assert response[1] == {"code": "auth.denied"}
+        assert response[1] == {"code": "auth.missing_token"}
         assert (await database_sync_to_async(User.objects.count)()) == 0
 
 
@@ -162,6 +162,7 @@ async def test_auth_with_invalid_jwt_token(world):
         await c.send_json_to(["authenticate", {"token": token}])
         response = await c.receive_json_from()
         assert response[0] == "error"
+        assert response[1] == {"code": "auth.invalid_token"}
 
 
 @pytest.mark.asyncio

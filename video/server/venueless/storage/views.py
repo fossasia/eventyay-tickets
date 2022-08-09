@@ -19,7 +19,7 @@ from xlrd import XLRDError
 
 from venueless.core.models import World
 from venueless.core.permissions import Permission
-from venueless.core.services.user import login
+from venueless.core.services.user import login, AuthError
 from venueless.core.services.world import notify_schedule_change
 from venueless.storage.models import StoredFile
 from venueless.storage.schedule_to_json import convert
@@ -47,12 +47,16 @@ class UploadMixin:
             token = self.world.decode_token(auth[1])
             if not token:
                 raise PermissionDenied()
-            res = login(world=self.world, token=token)
+            try:
+                res = login(world=self.world, token=token)
+            except AuthError:
+                raise PermissionDenied()
         elif auth[0].lower() == "client":
-            res = login(world=self.world, client_id=auth[1])
+            try:
+                res = login(world=self.world, client_id=auth[1])
+            except AuthError:
+                raise PermissionDenied()
         else:
-            raise PermissionDenied()
-        if not res:
             raise PermissionDenied()
 
         if any(p.value in res.world_config["permissions"] for p in self.permissions):

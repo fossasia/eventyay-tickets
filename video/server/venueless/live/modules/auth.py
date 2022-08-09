@@ -29,6 +29,7 @@ from venueless.core.services.user import (
     unblock_user,
     update_user,
     user_broadcast,
+    AuthError,
 )
 from venueless.core.utils.redis import aioredis
 from venueless.core.utils.statsd import statsd
@@ -82,16 +83,14 @@ class AuthModule(BaseModule):
                     return
             kwargs["token"] = token
 
-        login_result = await database_sync_to_async(login)(**kwargs)
-        if not login_result:
+        try:
+            login_result = await database_sync_to_async(login)(**kwargs)
+        except AuthError as e:
             async with statsd() as s:
                 s.increment(
                     f"authentication.failed,reason=denied,world={self.consumer.world.pk}"
                 )
-            if "token" in kwargs:
-                await self.consumer.send_error(code="auth.missing_token")
-            else:
-                await self.consumer.send_error(code="auth.denied")
+            await self.consumer.send_error(code=e.code)
             return
 
         self.consumer.user = login_result.user

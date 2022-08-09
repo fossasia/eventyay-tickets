@@ -288,6 +288,11 @@ LoginResult = namedtuple(
 )
 
 
+class AuthError(Exception):
+    def __init__(self, code):
+        self.code = code
+
+
 def login(
     *,
     world=None,
@@ -300,12 +305,16 @@ def login(
 
     user = get_user(world=world, with_client_id=client_id, with_token=token)
 
-    if (
-        not user
-        or user.is_banned
-        or not world.has_permission(user=user, permission=Permission.WORLD_VIEW)
+    if user and user.is_banned:
+        raise AuthError("auth.denied")
+
+    if not user or not world.has_permission(
+        user=user, permission=Permission.WORLD_VIEW
     ):
-        return
+        if token:
+            raise AuthError("auth.denied")
+        else:
+            raise AuthError("auth.missing_token")
 
     user.last_login = now()
     user.save(update_fields=["last_login"])
