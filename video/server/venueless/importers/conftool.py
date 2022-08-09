@@ -189,7 +189,9 @@ def fetch_schedule_from_conftool(url, password):
     return result
 
 
-def create_posters_from_conftool(world, url, password, status="-3", session_as_category=True):
+def create_posters_from_conftool(
+    world, url, password, status="-3", session_as_category=True
+):
     nonce = int(time.time())
     passhash = hashlib.sha256((str(nonce) + password).encode()).hexdigest()
     r = requests.get(
