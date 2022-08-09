@@ -2,21 +2,20 @@
 .c-poster-hall
 	bunt-input#input-search(name="search", :placeholder="$t('PosterHall:input-search:placeholder')", icon="search", v-model="search")
 	//- p Search by everything, filter by category, tags, ?, sort by name, likes
-	scrollbars.posters(v-if="posters", y)
-		.category(v-for="(posters, category) of categorizedFilteredPosters")
-			h2 {{ category }}
-			router-link.poster(v-for="poster of posters", :to="{name: 'poster', params: {posterId: poster.id}}")
-				.content
-					.tags
-						.tag(v-for="tag of poster.tags") {{ tag }}
-					h3.title {{ poster.title }}
-					.authors(v-if="poster.authors && poster.authors.authors") {{ poster.authors.authors.map(a => a.name).join(' / ') }}
-					rich-text-content.abstract(:content="poster.abstract")
-					.actions
-						bunt-button {{ $t('PosterHall:more:label') }}
-				img.poster-screenshot(v-if="poster.poster_preview", :src="poster.poster_preview")
-				.preview-placeholder(v-else)
-					.mdi(:class="`mdi-${getIconByFileEnding(poster.poster_url)}`")
+	RecycleScroller.posters.bunt-scrollbar(v-if="posters", :items="flatCategorizedFilteredPosters", type-field="type", v-slot="{item: poster}", v-scrollbar.y="")
+		h2.category(v-if="poster.type === 'category'") {{ poster.id }}
+		router-link.poster(v-else, :to="{name: 'poster', params: {posterId: poster.id}}", :key="poster.id")
+			.content
+				.tags
+					.tag(v-for="tag of poster.tags") {{ tag }}
+				h3.title {{ poster.title }}
+				.authors(v-if="poster.authors && poster.authors.authors") {{ poster.authors.authors.map(a => a.name).join(' / ') }}
+				rich-text-content.abstract(:content="poster.abstract", v-dynamic-line-clamp)
+				.actions
+					bunt-button {{ $t('PosterHall:more:label') }}
+			img.poster-screenshot(v-if="poster.poster_preview", :src="poster.poster_preview")
+			.preview-placeholder(v-else)
+				.mdi(:class="`mdi-${getIconByFileEnding(poster.poster_url)}`")
 	bunt-progress-circular(v-else, size="huge", :page="true")
 </template>
 <script>
@@ -84,6 +83,15 @@ export default {
 			}
 			// remove empty categories
 			return Object.fromEntries(Object.entries(categorizedPosters).filter(([key, value]) => value.length > 0))
+		},
+		flatCategorizedFilteredPosters () {
+			// hack categories into a flat list with posters for the virtual scroller
+			const flatCategorizedFilteredPosters = []
+			for (const [category, posters] of Object.entries(this.categorizedFilteredPosters)) {
+				flatCategorizedFilteredPosters.push({id: category, type: 'category', size: 56})
+				flatCategorizedFilteredPosters.push(...posters.map(poster => ({...poster, type: 'poster', size: 368})))
+			}
+			return flatCategorizedFilteredPosters
 		}
 	},
 	async created () {
@@ -103,22 +111,14 @@ $logo-height-large = 427px
 	flex-direction: column
 	min-height: 0
 	background-color: $clr-grey-50
-	#input-search, p
+	#input-search
 		width: 100%
 		max-width: 1160px
 		align-self: center
-	.posters .scroll-content
-		display: flex
-		flex-direction: column
-		gap: 8px
-		padding: 8px
-		align-items: center
-	.category
-		display: flex
-		flex-direction: column
-		gap: 16px
+	.category, .poster
 		width: 100%
 		max-width: 1160px
+		margin: 0 auto
 	.poster
 		background-color: $clr-white
 		border: border-separator()
@@ -126,8 +126,9 @@ $logo-height-large = 427px
 		display: flex
 		padding: 8px
 		cursor: pointer
-		max-height: 360px
+		height: 360px
 		box-sizing: border-box
+		margin-bottom: 8px
 		.content
 			display: flex
 			flex-direction: column
@@ -150,10 +151,17 @@ $logo-height-large = 427px
 		.abstract
 			margin-top: 12px
 			color: $clr-primary-text-light
-			display: -webkit-box
-			-webkit-line-clamp: 7
-			-webkit-box-orient: vertical
 			overflow: hidden
+			.ql-editor
+				display: -webkit-box
+				-webkit-line-clamp: var(--dynamic-line-clamp)
+				-webkit-box-orient: vertical
+				overflow: hidden
+				padding: 0
+				height: auto
+
+				> *
+					line-height: 1.4
 		.actions
 			flex: auto
 			display: flex
