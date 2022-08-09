@@ -1,5 +1,5 @@
 # prod
-aiofile==3.7.*
+aiofile==3.8.*
 aiohttp==3.8.1
 aioredis-lock==0.1.*
 beautifulsoup4==4.11.*
