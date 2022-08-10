@@ -17,8 +17,8 @@
 					h3 Are you ABSOLUTELY sure?
 				p This action #[b CANNOT] be undone. This will permanently delete the room
 				.room-name {{ config.name }}
-				p Please type in the name of the Project to confirm.
-				bunt-input(name="projectName", label="Room name", v-model="deletingRoomName", @keypress.enter="deleteRoom")
+				p Please type in the name of the room to confirm.
+				bunt-input(name="deletingRoomName", label="Room name", v-model="deletingRoomName", @keypress.enter="deleteRoom")
 				bunt-button.delete-room(icon="delete", :disabled="deletingRoomName !== config.name", @click="deleteRoom", :loading="deleting", :error-message="deleteError") delete this room
 </template>
 <script>
