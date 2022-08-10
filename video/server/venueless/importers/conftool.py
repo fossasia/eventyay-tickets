@@ -189,6 +189,93 @@ def fetch_schedule_from_conftool(url, password):
     return result
 
 
+def mirror_conftool_file(world, url, password, nonce, preview=False):
+    logger.debug(f"Downloading {url}…")
+    try:
+        passhash = hashlib.sha256((str(nonce) + password).encode()).hexdigest()
+        r = requests.get(
+            f"{url.replace('index.php', 'rest.php')}&nonce={nonce}&passhash={passhash}"
+        )
+        r.raise_for_status()
+
+        if len(r.content) > 10 * 1024 * 1024:
+            logger.warning(
+                f"Not mirroring conftool file {url} because it is {len(r.content)} byte"
+            )
+            return url, None
+
+        content_types = {
+            "application/pdf": "pdf",
+            "image/png": "png",
+            "image/jpeg": "jpg",
+            "image/gif": "gif",
+            "image/bmp": "bmp",
+            "audio/mpeg": "mp3",
+            "video/mpeg": "mpeg",
+            "video/mp4": "mp4",
+        }
+
+        content_type = r.headers["Content-Type"].split(";")[0]
+        if content_type not in content_types:
+            logger.warning(
+                f"Not mirroring conftool file {url} because it has type {content_type}"
+            )
+            return url, None
+
+        c = ContentFile(r.content)
+        c.seek(0)
+        contenthash = hashlib.sha256(c.read()).hexdigest()
+        filename = f"poster_{contenthash}.{content_types[content_type]}"
+
+        sf, created = StoredFile.objects.get_or_create(
+            world=world,
+            filename=filename,
+            type=content_type,
+            public=True,
+            defaults=dict(
+                date=now(),
+            ),
+        )
+        if created or not sf.file:
+            c.seek(0)
+            sf.file.save(f"poster_{contenthash}.{content_types[content_type]}", c)
+
+        if content_type == "application/pdf" and preview:
+            logger.debug(f"Creating a preview for {url}…")
+            psf, created = StoredFile.objects.get_or_create(
+                world=world,
+                filename=f"poster_{contenthash}_preview.png",
+                type="image/png",
+                public=True,
+                defaults=dict(
+                    date=now(),
+                ),
+            )
+            if created or not psf.file:
+                try:
+                    o = BytesIO()
+                    images = convert_from_bytes(
+                        r.content,
+                        fmt="png",
+                        dpi=72,
+                        first_page=1,
+                        last_page=1,
+                    )
+                    images[0].save(o, format="PNG")
+                    o.seek(0)
+                    psf.file.save(
+                        f"poster_{contenthash}_preview.png", ContentFile(o.getvalue())
+                    )
+                except Exception as e:
+                    psf.delete()
+                    raise
+            return sf.file.url, psf.file.url
+        return sf.file.url, None
+    except Exception:
+        logger.exception("Could not download poster attachment")
+        return url, None
+
+
 def create_posters_from_conftool(
     world, url, password, status="-3", session_as_category=True
 ):
@@ -289,61 +376,12 @@ def create_posters_from_conftool(
             and "downloadPaper" in poster_url
             and (not poster.poster_url or "downloadPaper" in poster.poster_url)
         ):
-            try:
-                nonce += 1
-                passhash = hashlib.sha256((str(nonce) + password).encode()).hexdigest()
-                r = requests.get(
-                    f"{poster_url.replace('index.php', 'rest.php')}&nonce={nonce}&passhash={passhash}"
-                )
-                r.raise_for_status()
-
-                if len(r.content) > 10 * 1024 * 1024:
-                    raise ValueError("File to large")
-
-                content_types = {"application/pdf": "pdf"}
-
-                content_type = r.headers["Content-Type"].split(";")[0]
-                if content_type not in content_types:
-                    raise ValueError(f"Content {content_type} type not allowed")
-
-                linkhash = hashlib.sha256((str(poster_url)).encode()).hexdigest()
-                c = ContentFile(r.content)
-                sf = StoredFile.objects.create(
-                    world=world,
-                    date=now(),
-                    filename=f"poster_{linkhash}.{content_types[content_type]}",
-                    type=content_type,
-                    public=True,
-                )
-                sf.file.save(f"poster_{linkhash}.{content_types[content_type]}", c)
-                poster.poster_url = sf.file.url
-
-                if content_type == "application/pdf":
-                    o = BytesIO()
-                    images = convert_from_bytes(
-                        r.content,
-                        fmt="png",
-                        dpi=72,
-                        first_page=1,
-                        last_page=1,
-                    )
-                    images[0].save(o, format="PNG")
-                    o.seek(0)
-                    sf = StoredFile.objects.create(
-                        world=world,
-                        date=now(),
-                        filename=f"poster_{linkhash}_preview.png",
-                        type=content_type,
-                        public=True,
-                    )
-                    sf.file.save(
-                        f"poster_{linkhash}_preview.png", ContentFile(o.getvalue())
-                    )
-                    poster.poster_preview = sf.file.url
-
-            except Exception:
-                logger.exception("Could not download poster")
-                poster.poster_url = poster_url
+            nonce += 1
+            poster_url, preview_url = mirror_conftool_file(
+                world, poster_url, password, nonce, preview=True
+            )
+            poster.poster_url = poster_url
+            poster.poster_preview = preview_url
         elif not poster.poster_url:
             poster.poster_url = poster_url
 
@@ -364,11 +402,20 @@ def create_posters_from_conftool(
             ):
                 continue
 
+            nonce += 1
+            download_url, preview_url = mirror_conftool_file(
+                world,
+                paper.xpath(f"download_final_link_{fileindex}")[0].text,
+                password,
+                nonce,
+                preview=False,
+            )
+
             poster.links.update_or_create(
                 display_text=paper.xpath(f"original_filename_final_{fileindex}")[0].text
                 or f"Link {fileindex}",
                 defaults={
-                    "url": paper.xpath(f"download_final_link_{fileindex}")[0].text,
+                    "url": download_url,
                 },
             )
 
