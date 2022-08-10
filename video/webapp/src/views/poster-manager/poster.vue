@@ -6,7 +6,7 @@
 			bunt-icon-button(@click="$router.push({name: 'posters'})") arrow_left
 			h1 {{ create ? $t('poster-manager/poster:new-poster:title') : poster.title }}
 			.actions
-				//- bunt-button.btn-delete-poster(@click="showDeletePrompt = true") delete
+				bunt-button.btn-delete-poster(v-if="!create", @click="showDeletePrompt = true") delete
 		scrollbars(y)
 			.ui-form-body
 				bunt-select(name="parent_room", v-model="poster.parent_room_id", :label="$t('poster-manager/poster:input-parent-room:label')", :options="rooms", option-label="name")
@@ -68,6 +68,16 @@
 			.content
 				h1 {{ $t('poster-manager/poster:add-presenter-prompt:headline') }}
 				user-select(:button-label="$t('poster-manager/poster:add-presenter-prompt:btn-label')", @selected="addPresenters")
+	transition(name="prompt")
+		prompt.delete-prompt(v-if="showDeletePrompt", @close="showDeletePrompt = false")
+			.content
+				.prompt-header
+					h3 {{ $t('poster-manager/poster:delete-prompt:header') }}
+				p {{ $t('poster-manager/poster:delete-prompt:warning') }}
+				.poster-title {{ poster.title }}
+				p {{ $t('poster-manager/poster:delete-prompt:confirm-cta') }}
+				bunt-input(name="posterTitle", :label="$t('poster-manager/poster:delete-prompt:input-title:label')", v-model="deletingPosterTitle", @keypress.enter="deletePoster")
+				bunt-button.delete-poster(icon="delete", :disabled="deletingPosterTitle !== poster.title", @click="deletePoster", :loading="deleting", :error-message="deleteError") {{ $t('poster-manager/poster:delete-prompt:btn-delete-poster') }}
 </template>
 <script>
 // TODO
@@ -103,7 +113,11 @@ export default {
 			poster: null,
 			tags: '',
 			showPresenterPrompt: false,
-			saving: false
+			saving: false,
+			showDeletePrompt: false,
+			deletingPosterTitle: '',
+			deleting: false,
+			deleteError: null
 		}
 	},
 	computed: {
@@ -211,6 +225,18 @@ export default {
 			poster = await api.call('poster.patch', poster)
 			if (this.create) await router.push({name: 'posters:poster', params: {posterId: poster.id}})
 			this.saving = false
+		},
+		async deletePoster () {
+			if (this.deletingPosterTitle !== this.poster.title) return
+			this.deleting = true
+			this.deleteError = null
+			try {
+				await api.call('poster.delete', {poster: this.poster.id})
+				this.$router.replace({name: 'posters'})
+			} catch (error) {
+				this.deleteError = this.$t(`error:${error.code}`)
+			}
+			this.deleting = false
 		}
 	}
 }
@@ -221,6 +247,8 @@ export default {
 	flex-direction: column
 	flex: auto
 	min-height: 0
+	.btn-delete-poster
+		button-style(color: $clr-danger)
 	.scroll-content
 		height: 100%
 	.authors
@@ -290,4 +318,25 @@ export default {
 		.prompt-wrapper
 			height: 80vh
 			width: 600px
+	.delete-prompt
+		.content
+			display: flex
+			flex-direction: column
+			padding: 16px
+		.question-box-header
+			margin-top: -10px
+			margin-bottom: 15px
+			align-items: center
+			display: flex
+			justify-content: space-between
+		.poster-title
+			font-family: monospace
+			font-size: 16px
+			border: border-separator()
+			border-radius: 4px
+			padding: 4px 8px
+			background-color: $clr-grey-100
+			align-self: center
+		.delete-poster
+			button-style(color: $clr-danger)
 </style>
