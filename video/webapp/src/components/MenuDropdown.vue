@@ -66,7 +66,7 @@ export default {
 		flex-direction: column
 		min-width: 240px
 		padding: 4px 0
-		> *
+		> *:not(.not-menu-item) // HACK
 			flex: none
 			height: 32px
 			font-size: 16px
