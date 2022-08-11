@@ -18,13 +18,13 @@
 						.filter
 							label Categories
 							.filter-items
-								.filter-item(v-for="category of categories", :title="category.name", @click="addFilter({field: 'category', value: category.name})")
+								.filter-item(v-for="category of categories", :title="category.name", :class="{active: filters.some(filter => filter.field === 'category' && filter.value === category.name)}", @click="toggleFilter({field: 'category', value: category.name})")
 									.name {{ category.name }}
 									.count {{ category.count }}
 						.filter
 							label Tags
 							.filter-items
-								.filter-item(v-for="tag of tags", :title="tag.name", @click="addFilter({field: 'tag', value: tag.name})")
+								.filter-item(v-for="tag of tags", :title="tag.name", :class="{active: filters.some(filter => filter.field === 'tag' && filter.value === tag.name)}", @click="toggleFilter({field: 'tag', value: tag.name})")
 									.name {{ tag.name }}
 									.count {{ tag.count }}
 		//- p Search by everything, filter by category, tags, ?, sort by name, likes
@@ -47,6 +47,7 @@
 <script>
 // TODO
 // - put categories through config key map
+// - don't let filters be applied multiple times
 
 import intersection from 'lodash/intersection'
 import api from 'lib/api'
@@ -164,9 +165,13 @@ export default {
 		this.posters = (await api.call('poster.list', {room: this.room.id}))
 	},
 	methods: {
-		addFilter (filter) {
-			this.filters.push(filter)
-			this.showAddFilters = false
+		toggleFilter (filter) {
+			const index = this.filters.findIndex(f => f.field === filter.field && f.value === filter.value)
+			if (index >= 0) {
+				this.filters.splice(index, 1)
+			} else {
+				this.filters.push(filter)
+			}
 		},
 		removeFilter (filter) {
 			this.filters = this.filters.filter(f => f !== filter)
@@ -247,18 +252,30 @@ $logo-height-large = 427px
 			flex-direction: column
 			width: 320px
 			max-height: calc(var(--vh100) - 56px * 2) // TODO add mobile header height
+
 			.filter
 				display: flex
 				flex-direction: column
 				cursor: pointer
+				&:not(:first-child)
+					margin-top: 4px
+					border-top: border-separator()
 				label
+					color: $clr-secondary-text-light
 					margin: 4px
 					font-size: 16px
+					line-height: 1.5
 					font-weight: 600
 				.filter-item
 					display: flex
 					gap: 8px
 					padding: 4px 10px 4px 8px
+					&.active
+						opacity: .7
+						background-color: var(--clr-input-primary-bg)
+						color: var(--clr-input-primary-fg)
+						.count
+							color: var(--clr-input-primary-fg)
 					&:hover
 						background-color: var(--clr-input-primary-bg)
 						color: var(--clr-input-primary-fg)
