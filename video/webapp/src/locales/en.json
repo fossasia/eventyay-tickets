@@ -178,6 +178,7 @@
   "Poll:moderation-menu:unarchive-poll:label": "unarchive",
   "Poll:moderation-menu:delete-poll:label": "delete",
   "PosterHall:input-search:placeholder": "Search posters",
+  "PosterHall:categories-filter:uncategorized": "uncategorized",
   "PosterHall:more:label": "More",
   "poster-manager/index:headline:text": "Your Posters",
   "poster-manager/index:poster:label": "Poster",
