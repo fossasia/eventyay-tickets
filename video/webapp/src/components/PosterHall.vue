@@ -5,29 +5,28 @@
 			bunt-input-outline-container#input-search
 				.search-field(slot-scope="{focus, blur}")
 					.icon.mdi.mdi-magnify
-					.applied-filter(v-for="filter of filters", :title="filter.field + ': ' + filter.value")
-						.field {{ filter.field }}:
+					.applied-filter(v-for="filter of filters", :title="`${$t(`PosterHall:filter:field-${filter.field}`)}: ${filter.value}`")
+						.field {{ $t(`PosterHall:filter:field-${filter.field}`) }}:
 						.value {{ filter.value }}
 						bunt-icon-button(@click="removeFilter(filter)") close
 					input(ref="input", name="search", v-model="search", :placeholder="$t('PosterHall:input-search:placeholder')", @focus="focus", @blur="blur", autofocus, autocomplete="off")
 			menu-dropdown(v-model="showAddFilters", placement="bottom-end", @mousedown.native.stop="")
 				template(v-slot:button="{toggle}")
-					bunt-button(icon="filter-plus", @click="toggle") add filter
+					bunt-button(icon="filter-plus", @click="toggle") {{ $t('PosterHall:button-add-filter') }}
 				template(v-slot:menu)
 					scrollbars.not-menu-item(y)
 						.filter
-							label Categories
+							label {{ $t(`PosterHall:add-filter:header-categories`) }}
 							.filter-items
 								.filter-item(v-for="category of categories", :title="category.name", :class="{active: filters.some(filter => filter.field === 'category' && filter.value === category.name)}", @click="toggleFilter({field: 'category', value: category.name})")
 									.name {{ category.name }}
 									.count {{ category.count }}
 						.filter
-							label Tags
+							label {{ $t(`PosterHall:add-filter:header-tags`) }}
 							.filter-items
 								.filter-item(v-for="tag of tags", :title="tag.name", :class="{active: filters.some(filter => filter.field === 'tag' && filter.value === tag.name)}", @click="toggleFilter({field: 'tag', value: tag.name})")
 									.name {{ tag.name }}
 									.count {{ tag.count }}
-		//- p Search by everything, filter by category, tags, ?, sort by name, likes
 		RecycleScroller.posters.bunt-scrollbar(:items="flatCategorizedFilteredPosters", type-field="type", v-slot="{item: poster}", v-scrollbar.y="")
 			h2.category(v-if="poster.type === 'category'") {{ poster.id }}
 			router-link.poster(v-else, :to="{name: 'poster', params: {posterId: poster.id}}", :key="poster.id")
@@ -47,7 +46,6 @@
 <script>
 // TODO
 // - put categories through config key map
-// - don't let filters be applied multiple times
 
 import intersection from 'lodash/intersection'
 import api from 'lib/api'
@@ -270,13 +268,9 @@ $logo-height-large = 427px
 					display: flex
 					gap: 8px
 					padding: 4px 10px 4px 8px
-					&.active
+					&.active:not(:hover)
 						opacity: .7
-						background-color: var(--clr-input-primary-bg)
-						color: var(--clr-input-primary-fg)
-						.count
-							color: var(--clr-input-primary-fg)
-					&:hover
+					&:hover, &.active
 						background-color: var(--clr-input-primary-bg)
 						color: var(--clr-input-primary-fg)
 						.count
