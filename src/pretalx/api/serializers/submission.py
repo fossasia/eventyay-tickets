@@ -47,6 +47,12 @@ class SlotSerializer(I18nAwareModelSerializer):
         fields = ("room", "start", "end")
 
 
+class BreakSerializer(SlotSerializer):
+    class Meta:
+        model = TalkSlot
+        fields = ("room", "start", "end", "description")
+
+
 class SubmissionSerializer(I18nAwareModelSerializer):
     submission_type = SlugRelatedField(slug_field="name", read_only=True)
     track = SlugRelatedField(slug_field="name", read_only=True)
@@ -167,7 +173,12 @@ class ScheduleSerializer(ModelSerializer):
     slots = SubmissionSerializer(
         Submission.objects.none().filter(state=SubmissionStates.CONFIRMED), many=True
     )
+    breaks = SerializerMethodField()
+
+    @staticmethod
+    def get_breaks(obj):
+        return BreakSerializer(obj.breaks, many=True).data
 
     class Meta:
         model = Schedule
-        fields = ("slots", "version")
+        fields = ("slots", "version", "breaks")
