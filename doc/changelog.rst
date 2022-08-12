@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`-` The schedule API did not work to retrieve historical schedule versions when the schedule version included a dot, as it often does.
 - :feature:`-` The schedule API now also includes breaks.
 - :feature:`-` In the email outbox, pretalx now shows if a pending email comes from a known template, e.g. if it is an accept or reject email.
 - :feature:`-` You can now exclude proposals with pending state changes from your search results.

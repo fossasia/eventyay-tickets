@@ -1,3 +1,4 @@
+from django.http import Http404
 from django_filters import rest_framework as filters
 from django_scopes import scopes_disabled
 from rest_framework import viewsets
@@ -74,7 +75,7 @@ class SubmissionViewSet(viewsets.ReadOnlyModelViewSet):
 class ScheduleViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = ScheduleSerializer
     queryset = Schedule.objects.none()
-    lookup_field = "version__iexact"
+    lookup_value_regex = "[^/]+"
 
     def get_serializer_class(self):
         if self.action == "list":
@@ -82,26 +83,16 @@ class ScheduleViewSet(viewsets.ReadOnlyModelViewSet):
         return ScheduleSerializer  # self.action == 'retrieve'
 
     def get_object(self):
-        try:
-            return super().get_object()
-        except Exception:
-            is_public = (
-                self.request.event.is_public
-                and self.request.event.feature_flags["show_schedule"]
-            )
-            has_perm = self.request.user.has_perm(
-                "orga.edit_schedule", self.request.event
-            )
-            query = self.kwargs.get(self.lookup_field)
-            if has_perm and query == "wip":
-                return self.request.event.wip_schedule
-            if (
-                (has_perm or is_public)
-                and query == "latest"
-                and self.request.event.current_schedule
-            ):
-                return self.request.event.current_schedule
-            raise
+        schedules = self.get_queryset()
+        query = self.kwargs.get(self.lookup_field)
+        if query == "wip":
+            query = ""
+        if query == "latest" and self.request.event.current_schedule:
+            query = self.request.event.current_schedule.version
+        schedule = schedules.filter(version__iexact=query).first()
+        if not schedule:
+            raise Http404
+        return schedule
 
     def get_queryset(self):
         qs = self.queryset
@@ -114,7 +105,6 @@ class ScheduleViewSet(viewsets.ReadOnlyModelViewSet):
             if self.request.event.current_schedule
             else None
         )
-
         if self.request.user.has_perm("orga.view_schedule", self.request.event):
             return self.request.event.schedules.all()
         if is_public:
