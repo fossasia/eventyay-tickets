@@ -86,10 +86,11 @@ class ScheduleViewSet(viewsets.ReadOnlyModelViewSet):
         schedules = self.get_queryset()
         query = self.kwargs.get(self.lookup_field)
         if query == "wip":
-            query = ""
-        if query == "latest" and self.request.event.current_schedule:
-            query = self.request.event.current_schedule.version
-        schedule = schedules.filter(version__iexact=query).first()
+            schedule = schedules.filter(version__isnull=True).first()
+        else:
+            if query == "latest" and self.request.event.current_schedule:
+                query = self.request.event.current_schedule.version
+            schedule = schedules.filter(version__iexact=query).first()
         if not schedule:
             raise Http404
         return schedule
