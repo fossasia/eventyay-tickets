@@ -77,5 +77,10 @@ urlpatterns = [
     path("worlds/<slug:pk>/", views.WorldUpdate.as_view(), name="world.update"),
     path("feedback/", views.FeedbackList.as_view(), name="feedback.list"),
     path("feedback/<uuid:pk>/", views.FeedbackDetail.as_view(), name="feedback.detail"),
+    path(
+        "conftool/syncposters/",
+        views.ConftoolSyncPosters.as_view(),
+        name="conftool.syncposters",
+    ),
     path("", views.IndexView.as_view(), name="index"),
 ]

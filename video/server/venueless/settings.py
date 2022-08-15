@@ -444,6 +444,7 @@ CELERY_TASK_QUEUES = (
     Queue("default", routing_key="default.#"),
     Queue("longrunning", routing_key="longrunning.#"),
 )
+CELERY_TASK_TRACK_STARTED = True
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 LOGIN_URL = "/admin/login/"

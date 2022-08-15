@@ -46,6 +46,9 @@
                 <a href="{% url "control:feedback.list" %}"{% if request.path == "/control/feedback/" %} class="active"{% endif %}>
                     {% trans "Feedback" %}
                 </a>
+                <a href="{% url "control:conftool.syncposters" %}"{% if request.path == "/control/conftool/syncposters/" %} class="active"{% endif %}>
+                    {% trans "Conftool posters" %}
+                </a>
                     {% if request.user.is_superuser %}
                     <a href="{% url "control:user.list" %}"{% if request.path == "/control/users/" %} class="active"{% endif %}>
                         {% trans "Users" %}

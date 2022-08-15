@@ -239,3 +239,10 @@ class BBBMoveRoomForm(forms.Form):
         label="Target Server",
         queryset=BBBServer.objects.filter(active=True).order_by("url"),
     )
+
+
+class ConftoolSyncPostersForm(forms.Form):
+    world = forms.ModelChoiceField(
+        label="World ID",
+        queryset=World.objects.filter(config__conftool_password__isnull=False),
+    )

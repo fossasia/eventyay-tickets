@@ -5,6 +5,7 @@ import json
 import icalendar
 import jwt
 import requests
+from celery.result import AsyncResult
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
@@ -40,9 +41,11 @@ from venueless.core.models import (
 
 from ..core.models.world import PlannedUsage
 from ..core.services.bbb import get_url
+from ..importers.tasks import conftool_sync_posters
 from .forms import (
     BBBMoveRoomForm,
     BBBServerForm,
+    ConftoolSyncPostersForm,
     JanusServerForm,
     PlannedUsageFormSet,
     ProfileForm,
@@ -674,3 +677,20 @@ class BBBMoveRoom(AdminBase, FormView):
         c.save()
         messages.success(self.request, _("Moved."))
         return HttpResponseRedirect(self.request.path)
+
+
+class ConftoolSyncPosters(AdminBase, FormView):
+    template_name = "control/conftool_syncposters.html"
+    form_class = ConftoolSyncPostersForm
+
+    def get_context_data(self, **kwargs):
+        if "task_id" in self.request.GET:
+            r = AsyncResult(self.request.GET["task_id"])
+            kwargs["task_state"] = r.state
+            kwargs["task"] = r
+        return super().get_context_data(**kwargs)
+
+    def form_valid(self, form):
+        world = form.cleaned_data["world"]
+        r = conftool_sync_posters.apply_async(args=(str(world.pk),))
+        return HttpResponseRedirect(self.request.path + "?task_id=" + r.id)

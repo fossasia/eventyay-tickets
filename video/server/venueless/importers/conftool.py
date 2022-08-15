@@ -294,8 +294,11 @@ def create_posters_from_conftool(
         f"&cmd_create_export=true"
         # TODO: filter by form_track ?
     )
+    r.raise_for_status()
     r.encoding = "utf-8"
     root = etree.fromstring(r.text.encode())
+    if not root.xpath("paper"):
+        raise ValueError(f"Could not find paper in {r.text}")
 
     for paper in root.xpath("paper"):
         try:

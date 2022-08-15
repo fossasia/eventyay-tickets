@@ -8,7 +8,10 @@ from django.utils.timezone import now
 from venueless.celery_app import app
 from venueless.core.services.world import notify_schedule_change
 from venueless.core.tasks import WorldTask
-from venueless.importers.conftool import fetch_schedule_from_conftool
+from venueless.importers.conftool import (
+    create_posters_from_conftool,
+    fetch_schedule_from_conftool,
+)
 from venueless.storage.models import StoredFile
 
 
@@ -44,3 +47,10 @@ def conftool_update_schedule(world):
     world.save()
     async_to_sync(notify_schedule_change)(world.id)
     return sf.pk
+
+
+@app.task(base=WorldTask)
+def conftool_sync_posters(world):
+    u = world.config.get("conftool_url")
+    p = world.config.get("conftool_password")
+    create_posters_from_conftool(world, u, p)
