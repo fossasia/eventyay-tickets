@@ -323,6 +323,19 @@ def create_posters_from_conftool(
             t.strip() for t in re.split("[;,]", paper.xpath("keywords")[0].text)
         ]
 
+        if session_as_category:
+            if paper.xpath("session_short")[0].text:
+                category_name = f"{paper.xpath('session_short')[0].text} / {paper.xpath('session_title')[0].text}"
+            elif paper.xpath("session_title")[0].text:
+                category_name = paper.xpath("session_title")[0].text
+            else:
+                category_name = None
+        else:
+            category_name = paper.xpath("topics")[0].text or None
+
+        category_id = re.sub('[^a-zA-Z0-9]', '-', category_name.lower()) if category_name else None
+        poster.category = category_id
+
         r = poster.parent_room
         for m in r.module_config:
             if m["type"] == "poster.native":
@@ -330,19 +343,15 @@ def create_posters_from_conftool(
                 for t in poster.tags:
                     if t not in [tt["label"] for tt in tags]:
                         tags.append({"id": t, "label": t, "color": ""})
-
                 m["config"]["tags"] = tags
-        r.save()
 
-        if session_as_category:
-            if paper.xpath("session_short")[0].text:
-                poster.category = f"{paper.xpath('session_short')[0].text} / {paper.xpath('session_title')[0].text}"
-            elif paper.xpath("session_title")[0].text:
-                poster.category = paper.xpath("session_title")[0].text
-            else:
-                poster.category = None
-        else:
-            poster.category = paper.xpath("topics")[0].text or None
+                if category_id:
+                    categories = m["config"].get("categories", [])
+                    if category_id not in [tt["id"] for tt in categories]:
+                        categories.append({"id": category_id, "label": category_name, "color": ""})
+                    m["config"]["categories"] = categories
+
+        r.save()
 
         poster.abstract = {"ops": [{"insert": paper.xpath("abstract_plain")[0].text}]}
         poster.schedule_session = paper.xpath("session_ID")[0].text or None
