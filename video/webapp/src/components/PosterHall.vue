@@ -147,7 +147,7 @@ export default {
 					name: key,
 					count: value
 				}
-			}).filter(filter => filter.count).sort((a, b) => b.count - a.count)
+			}).filter(filter => filter.count).sort((a, b) => b.count != a.count ? b.count - a.count : a.name.localeCompare(b.name))
 		},
 		flatCategorizedFilteredPosters () {
 			// hack categories into a flat list with posters for the virtual scroller
