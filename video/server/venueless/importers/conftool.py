@@ -333,7 +333,11 @@ def create_posters_from_conftool(
         else:
             category_name = paper.xpath("topics")[0].text or None
 
-        category_id = re.sub('[^a-zA-Z0-9]', '-', category_name.lower()) if category_name else None
+        category_id = (
+            re.sub("[^a-zA-Z0-9]", "-", category_name.lower())
+            if category_name
+            else None
+        )
         poster.category = category_id
 
         r = poster.parent_room
@@ -348,7 +352,9 @@ def create_posters_from_conftool(
                 if category_id:
                     categories = m["config"].get("categories", [])
                     if category_id not in [tt["id"] for tt in categories]:
-                        categories.append({"id": category_id, "label": category_name, "color": ""})
+                        categories.append(
+                            {"id": category_id, "label": category_name, "color": ""}
+                        )
                     m["config"]["categories"] = categories
 
         r.save()
