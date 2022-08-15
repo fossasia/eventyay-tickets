@@ -7,7 +7,7 @@
 					.icon.mdi.mdi-magnify
 					.applied-filter(v-for="filter of filters", :title="`${$t(`PosterHall:filter:field-${filter.field}`)}: ${filter.value}`")
 						.field {{ $t(`PosterHall:filter:field-${filter.field}`) }}:
-						.value {{ filter.value }}
+						.value {{ filter.label }}
 						bunt-icon-button(@click="removeFilter(filter)") close
 					input(ref="input", name="search", v-model="search", :placeholder="$t('PosterHall:input-search:placeholder')", @focus="focus", @blur="blur", autofocus, autocomplete="off")
 			menu-dropdown(v-model="showAddFilters", placement="bottom-end", @mousedown.native.stop="")
@@ -18,17 +18,17 @@
 						.filter
 							label {{ $t(`PosterHall:add-filter:header-categories`) }}
 							.filter-items
-								.filter-item(v-for="category of categories", :title="category.name", :class="{active: filters.some(filter => filter.field === 'category' && filter.value === category.name)}", @click="toggleFilter({field: 'category', value: category.name})")
+								.filter-item(v-for="category of categories", :title="category.name", :class="{active: filters.some(filter => filter.field === 'category' && filter.value === category.name)}", @click="toggleFilter({field: 'category', value: category.key, label: category.name})")
 									.name {{ category.name }}
 									.count {{ category.count }}
 						.filter
 							label {{ $t(`PosterHall:add-filter:header-tags`) }}
 							.filter-items
-								.filter-item(v-for="tag of tags", :title="tag.name", :class="{active: filters.some(filter => filter.field === 'tag' && filter.value === tag.name)}", @click="toggleFilter({field: 'tag', value: tag.name})")
+								.filter-item(v-for="tag of tags", :title="tag.name", :class="{active: filters.some(filter => filter.field === 'tag' && filter.value === tag.name)}", @click="toggleFilter({field: 'tag', value: tag.key, label: tag.name})")
 									.name {{ tag.name }}
 									.count {{ tag.count }}
 		RecycleScroller.posters.bunt-scrollbar(:items="flatCategorizedFilteredPosters", type-field="type", v-slot="{item: poster}", v-scrollbar.y="")
-			h2.category(v-if="poster.type === 'category'") {{ poster.id }}
+			h2.category(v-if="poster.type === 'category'") {{ poster.label }}
 			router-link.poster(v-else, :to="{name: 'poster', params: {posterId: poster.id}}", :key="poster.id")
 				.content
 					.tags
@@ -128,7 +128,8 @@ export default {
 		categories () {
 			return Object.entries(this.categorizedFilteredPosters).map(([key, value]) => {
 				return {
-					name: key === '' ? this.$t('PosterHall:categories-filter:uncategorized') : key,
+					name: key === '' ? this.$t('PosterHall:categories-filter:uncategorized') : (this.categoriesLookup[key] ? this.categoriesLookup[key].label : key),
+					key: key,
 					count: value.length
 				}
 			}).filter(filter => filter.count).sort((a, b) => b.count - a.count)
@@ -144,7 +145,8 @@ export default {
 			}
 			return Object.entries(tags).map(([key, value]) => {
 				return {
-					name: key,
+					name: (this.tagsLookup[key] ? this.tagsLookup[key].label : key),
+					key: key,
 					count: value
 				}
 			}).filter(filter => filter.count).sort((a, b) => b.count != a.count ? b.count - a.count : a.name.localeCompare(b.name))
@@ -153,7 +155,7 @@ export default {
 			// hack categories into a flat list with posters for the virtual scroller
 			const flatCategorizedFilteredPosters = []
 			for (const [category, posters] of Object.entries(this.categorizedFilteredPosters)) {
-				flatCategorizedFilteredPosters.push({id: category, type: 'category', size: 56})
+				flatCategorizedFilteredPosters.push({id: category, label: this.categoriesLookup[category] ? this.categoriesLookup[category].label : category, type: 'category', size: 56})
 				flatCategorizedFilteredPosters.push(...posters.map(poster => ({...poster, type: 'poster', size: 368})))
 			}
 			return flatCategorizedFilteredPosters
