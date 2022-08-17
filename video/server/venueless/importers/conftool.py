@@ -384,7 +384,8 @@ def create_posters_from_conftool(
                 poster.authors["authors"].append({"name": name, "orgs": orgs})
 
         poster_url = (
-            paper.xpath("download_final_link_a")[0].text
+            paper.xpath("download_final_link_b")[0].text
+            or paper.xpath("download_final_link_a")[0].text
             or paper.xpath("download_link_a")[0].text
             or None
         )
@@ -413,7 +414,7 @@ def create_posters_from_conftool(
                 },
             )
 
-        for fileindex in string.ascii_lowercase[1:]:
+        for fileindex in string.ascii_lowercase[2:]:
             if (
                 not paper.xpath(f"download_final_link_{fileindex}")
                 or not paper.xpath(f"download_final_link_{fileindex}")[0].text
