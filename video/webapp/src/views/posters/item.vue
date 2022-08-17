@@ -8,9 +8,9 @@
 		.info-sidebar(v-if="$mq.above['1200px'] || activeTab === 'info'")
 			scrollbars(y)
 				.info
-					h2.category(v-if="poster.category") {{ poster.category }}
+					h2.category(v-if="poster.category") {{ categoriesLookup[poster.category] ? categoriesLookup[poster.category].label : poster.category }}
 					.tags
-						.tag(v-for="tag of poster.tags") {{ tag }}
+						.tag(v-for="tag of poster.tags") {{ tagsLookup[tag] ? tagsLookup[tag].label : tag }}
 					h1.title {{ poster.title }}
 					.authors
 						.author(v-for="author of poster.authors.authors")
@@ -85,10 +85,31 @@ export default {
 			if (!this.poster?.presentation_room_id) return
 			return this.$store.state.rooms.find(room => room.id === this.poster.presentation_room_id)
 		},
+		parentRoom () {
+			if (!this.poster?.parent_room_id) return
+			return this.$store.state.rooms.find(room => room.id === this.poster.parent_room_id)
+		},
+		posterModule () {
+			return this.parentRoom?.modules?.find(module => module.type === 'poster.native')
+		},
 		session () {
 			if (!this.poster?.schedule_session || !this.$store.getters['schedule/sessions']) return
 			return this.$store.getters['schedule/sessions'].find(session => session.id === this.poster.schedule_session)
-		}
+		},
+		categoriesLookup () {
+			if (!this.posterModule?.config.categories) return {}
+			return this.posterModule.config.categories.reduce((acc, category) => {
+				acc[category.id] = category
+				return acc
+			}, {})
+		},
+		tagsLookup () {
+			if (!this.posterModule?.config.tags) return {}
+			return this.posterModule.config.tags.reduce((acc, tag) => {
+				acc[tag.id] = tag
+				return acc
+			}, {})
+		},
 	},
 	watch: {
 		async activeTab () {
