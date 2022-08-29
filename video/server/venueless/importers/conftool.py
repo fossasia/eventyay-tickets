@@ -266,7 +266,7 @@ def mirror_conftool_file(world, url, password, nonce, preview=False):
                     psf.file.save(
                         f"poster_{contenthash}_preview.png", ContentFile(o.getvalue())
                     )
-                except Exception as e:
+                except Exception:
                     psf.delete()
                     raise
             return sf.file.url, psf.file.url
