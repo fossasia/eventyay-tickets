@@ -22,7 +22,7 @@
         {% endif %}{% endblock %}
         <meta property="og:title" content="{% block social_title %}{% endblock %} {% if request.event %}{{ request.event.name }}{% endif %}">
         <meta property="og:description" content="{% block social_description %}{% if request.event %}Schedule, talks and talk submissions for {{ request.event.name }}{% else %}Talks and talk submissions by pretalx{% endif %}{% endblock %}">
-        <meta property="og:url" content="{{ request.build_absolute_uri }}">
+        <meta property="og:url" content="{% if request.event and request.event.display_settings.html_export_url %}{{ request.event.display_settings.html_export_url }}{{ request.path|slice:"1:" }}{% else %}{{ request.build_absolute_uri }}{% endif %}">
         <meta property="twitter:card" content="summary">
 
         {% if development_warning %}
