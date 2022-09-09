@@ -834,6 +834,9 @@ h2 .submission-state-dropdown {
 }
 .phase-option-row .row, .score-row .row {
   margin-bottom: 8px;
+  .text-right input {
+    text-align: right;
+  }
 }
 #stats {
   display: flex;

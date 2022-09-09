@@ -1,5 +1,6 @@
 import datetime as dt
 import socket
+from decimal import Decimal
 from urllib.parse import urlparse
 
 from django import forms
@@ -594,6 +595,13 @@ class ReviewPhaseForm(I18nHelpText, I18nModelForm):
         }
 
 
+def strip_zeroes(value):
+    if not isinstance(value, Decimal):
+        return value
+    value = str(value)
+    return Decimal(value.rstrip("0"))
+
+
 class ReviewScoreCategoryForm(I18nHelpText, I18nModelForm):
     new_scores = forms.CharField(required=False, initial="")
 
@@ -620,7 +628,7 @@ class ReviewScoreCategoryForm(I18nHelpText, I18nModelForm):
                             initial=score.label
                         ),
                         "value_field": score._meta.get_field("value").formfield(
-                            initial=score.value, required=False
+                            initial=strip_zeroes(score.value), required=False
                         ),
                     }
                 )
