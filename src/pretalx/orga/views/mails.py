@@ -261,7 +261,10 @@ class MailPreview(PermissionRequired, View):
 
 
 def check_markdown(text):
-    """Returns a dictionary of warnings. Currently only one warning type, hush."""
+    """Returns a dictionary of warnings.
+
+    Currently only one warning type, hush.
+    """
     from lxml import etree
 
     result = {}
