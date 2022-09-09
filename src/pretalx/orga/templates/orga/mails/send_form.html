@@ -37,6 +37,19 @@
                         </span>
                     </div>
                 {% endif %}
+                {% if output_warnings %}
+                    <div class="alert alert-warning">
+                        <span>
+                            {% for key, value in output_warnings.items %}
+                                {% if key == "empty_link" %}
+                                    {% blocktranslate trimmed with titled=value %}
+                                        You have an empty link in your email, labeled “{{ value }}”!
+                                    {% endblocktranslate %}
+                                {% endif %}
+                            {% endfor %}
+                        </span>
+                    </div>
+                {% endif %}
                 <div class="tab-pane mail-preview-group">
                     {% for locale, out in output.items %}
                         <div lang="{{ locale }}" class="mail-preview">
