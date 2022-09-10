@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`515` pretalx sometimes mysteriously creates two new schedules when releasing one, and then is in a confused and broken state until an administrator intervenes. Now pretalx can fix the situation on its own (though we still do not know how this ever happens).
 - :bug:`-` The schedule API did not work to retrieve historical schedule versions when the schedule version included a dot, as it often does.
 - :feature:`-` The schedule API now also includes breaks.
 - :feature:`-` In the email outbox, pretalx now shows if a pending email comes from a known template, e.g. if it is an accept or reject email.

@@ -4,7 +4,7 @@ from contextlib import suppress
 import pytz
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
-from django.core.exceptions import ValidationError
+from django.core.exceptions import MultipleObjectsReturned, ValidationError
 from django.core.mail import get_connection
 from django.core.mail.backends.base import BaseEmailBackend
 from django.core.validators import RegexValidator
@@ -753,7 +753,18 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
 
         :retval: :class:`~pretalx.schedule.models.schedule.Schedule`
         """
-        schedule, _ = self.schedules.get_or_create(version__isnull=True)
+        try:
+            schedule, _ = self.schedules.get_or_create(version__isnull=True)
+        except MultipleObjectsReturned:
+            # No idea how this happens – a race condition due to transaction weirdness?
+            from pretalx.schedule.models import TalkSlot
+
+            schedules = list(self.schedules.filter(version__isnull=True))
+            schedule = schedules[0]
+            # It's only ever been two so far, but while we're being resilient …
+            for dupe in schedules[1:]:
+                TalkSlot.objects.filter(schedule=dupe).delete()
+                dupe.delete()
         return schedule
 
     @cached_property
