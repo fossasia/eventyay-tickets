@@ -335,7 +335,6 @@ def test_html_export_release_disabled(mocker, event):
 
 @pytest.mark.django_db
 def test_html_export_language(event, slot):
-
     from django.core.management import (  # Import here to avoid overriding mocks
         call_command,
     )
