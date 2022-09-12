@@ -391,10 +391,8 @@ class TalkUpdate(PermissionRequired, View):
             )
             if not talk.submission:
                 talk.description = LazyI18nString(data.get("description", ""))
-            print(talk.updated)
             talk.save(update_fields=["start", "end", "room", "description", "updated"])
             talk.refresh_from_db()
-            print(talk.updated)
         else:
             talk.start = None
             talk.end = None
