@@ -326,6 +326,9 @@ class World(VersionedModel):
         from venueless.core.models import Channel
         from venueless.storage.models import StoredFile
 
+        if self.pk == old.pk:
+            raise ValueError("Illegal attempt to clone into same world")
+
         def clone_stored_files(*, inst=None, attrs=None, struct=None, url=None):
             if inst and attrs:
                 for a in attrs:

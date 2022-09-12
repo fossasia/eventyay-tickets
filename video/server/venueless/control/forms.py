@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.forms import inlineformset_factory
 
@@ -134,6 +135,13 @@ class WorldForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         if self.instance and self.instance.pk:
             self.fields["id"].disabled = True
+
+    def clean_id(self):
+        d = self.cleaned_data["id"]
+        if not self.instance or not self.instance.pk:
+            if World.objects.filter(id__iexact=d).exists():
+                raise ValidationError("ID is already in use")
+        return d
 
 
 class UserForm(forms.ModelForm):
