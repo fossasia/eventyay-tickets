@@ -1,6 +1,4 @@
-
 document.querySelectorAll("input.tokenfield").forEach(field => {
-  console.log(field)
   const initial = JSON.parse(field.dataset["value"])
   const options = JSON.parse(field.dataset["options"])
 

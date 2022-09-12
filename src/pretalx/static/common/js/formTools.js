@@ -34,7 +34,6 @@ function checkForChanges() {
 const warnFileSize = (element) => {
   const warning = document.createElement("div")
   warning.classList = ["invalid-feedback"]
-  console.log(warning)
   warning.textContent = element.dataset.sizewarning
   element.parentElement.appendChild(warning)
   element.classList.add("is-invalid")

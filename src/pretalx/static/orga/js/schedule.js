@@ -42,7 +42,6 @@ var api = {
     } else {
       url += "?"
     }
-    console.log(options.since, options.warnings)
     if (options.since) {
       url += `since=${encodeURIComponent(options.since)}&`
     }
@@ -594,15 +593,10 @@ var app = new Vue({
       Object.assign(talk, response)
     },
     pollUpdates() {
-      console.log("polling updates")
       if (this.since) {
         api
           .fetchTalks({since: this.since, warnings: true})
           .then(result => {
-            if (result.results.length) {
-              console.log("got result")
-              console.log(result)
-            }
             this.since = result.now
             result.results.forEach((data) => {
               const talk = this.talks.find((talk) => talk.id == data.id)

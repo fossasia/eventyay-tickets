@@ -37,7 +37,6 @@ const updateMenu = () => {
 }
 
 const censor = (ev) => {
-  console.log("censoring")
   let sel = getSelection()
   if (!sel) {
     return
