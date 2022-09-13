@@ -297,25 +297,28 @@ def generate_session_views(world, input=None):
         if talk_start > end or talk_end < begin:
             continue
 
-        viewers = (
-            RoomView.objects.filter(room__pretalx_id=talk["room"])
-            .exclude(Q(end__lt=talk_start) | Q(start__gt=talk_end))
-            .values("user")
-            .distinct()
-            .count()
-        )
+        try:
+            viewers = (
+                RoomView.objects.filter(room__pretalx_id=talk["room"])
+                .exclude(Q(end__lt=talk_start) | Q(start__gt=talk_end))
+                .values("user")
+                .distinct()
+                .count()
+            )
 
-        ws.append(
-            [
-                pretalx_uni18n(talk["title"]),
-                room_cache[talk["room"]].name if talk["room"] in room_cache else "?",
-                talk_start.astimezone(tz).date(),
-                talk_start.astimezone(tz).time(),
-                talk_end.astimezone(tz).date(),
-                talk_end.astimezone(tz).time(),
-                viewers,
-            ]
-        )
+            ws.append(
+                [
+                    pretalx_uni18n(talk["title"]),
+                    room_cache[talk["room"]].name if talk["room"] in room_cache else "?",
+                    talk_start.astimezone(tz).date(),
+                    talk_start.astimezone(tz).time(),
+                    talk_end.astimezone(tz).date(),
+                    talk_end.astimezone(tz).time(),
+                    viewers,
+                ]
+            )
+        except ValueError:  # e.g. pretalx_id not numeric
+            pass
 
     wb.save(io)
     io.seek(0)
