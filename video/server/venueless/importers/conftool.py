@@ -390,11 +390,7 @@ def create_posters_from_conftool(
             or None
         )
 
-        if (
-            poster_url
-            and "downloadPaper" in poster_url
-            and (not poster.poster_url or "downloadPaper" in poster.poster_url)
-        ):
+        if poster_url and "downloadPaper" in poster_url:
             nonce += 1
             poster_url, preview_url = mirror_conftool_file(
                 world, poster_url, password, nonce, preview=True
