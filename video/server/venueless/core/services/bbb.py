@@ -153,7 +153,7 @@ def get_create_params_for_room(
     m = [m for m in room.module_config if m["type"] == "call.bigbluebutton"][0]
     config = m["config"]
     create_params = {
-        "name": room.name,
+        "name": room.name or "Meeting",
         "meetingID": call.meeting_id,
         "attendeePW": call.attendee_pw,
         "moderatorPW": call.moderator_pw,
