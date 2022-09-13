@@ -309,7 +309,9 @@ def generate_session_views(world, input=None):
             ws.append(
                 [
                     pretalx_uni18n(talk["title"]),
-                    room_cache[talk["room"]].name if talk["room"] in room_cache else "?",
+                    room_cache[talk["room"]].name
+                    if talk["room"] in room_cache
+                    else "?",
                     talk_start.astimezone(tz).date(),
                     talk_start.astimezone(tz).time(),
                     talk_end.astimezone(tz).date(),
