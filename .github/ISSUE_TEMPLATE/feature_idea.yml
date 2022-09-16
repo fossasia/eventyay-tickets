@@ -10,7 +10,7 @@ body:
     attributes:
       label: Problem and impact
       description: What problem you're running into? What impact does it have on you / your event?
-      placeholder: When trying to do ____, I have to go through three separate pages: …
+      placeholder: "When trying to do ____, I have to go through three separate pages: …"
   - type: textarea
     id: solution
     attributes:
