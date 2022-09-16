@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-05-17 23:58+0000\n"
-"PO-Revision-Date: 2022-03-17 03:18+0000\n"
-"Last-Translator: ButterflyOfFire <butterflyoffire+pretalx@protonmail.com>\n"
+"PO-Revision-Date: 2022-09-16 11:29+0000\n"
+"Last-Translator: Stéphane Parunakian <parunakian.stephane@gmail.com>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
@@ -316,6 +316,9 @@ msgid ""
 "changes to it up to the submission deadline, and you will be notified of any "
 "changes or questions."
 msgstr ""
+"Félicitations, vous avez déposé votre proposition ! Vous pouvez continuer à "
+"la modifier jusqu'à la date butoir de dépôt et vous serez notifié de tout "
+"changement ou de toute question."
 
 #: pretalx/cfp/flow.py:365 pretalx/orga/forms/cfp.py:483
 #: pretalx/orga/templates/orga/base.html:242
@@ -723,10 +726,8 @@ msgid "Continue"
 msgstr "Continuer"
 
 #: pretalx/cfp/templates/cfp/event/submission_base.html:47
-#, fuzzy
-#| msgid "Submit a proposal"
 msgid "Submit proposal!"
-msgstr "Proposer une intervention"
+msgstr "Proposer une intervention !"
 
 #: pretalx/cfp/templates/cfp/event/submission_base.html:54
 #: pretalx/orga/templates/orga/cfp/access_code_delete.html:11
@@ -931,10 +932,8 @@ msgstr "Confirmer"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm_error.html:7
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm_error.html:11
-#, fuzzy
-#| msgid "Proposal information"
 msgid "Proposal not found"
-msgstr "Informations sur les propositions"
+msgstr "Proposition introuvable"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm_error.html:13
 msgid ""
@@ -942,6 +941,10 @@ msgid ""
 "belong to the account you're currently logged in with. Try logging in with a "
 "different account, or contact the event organisers for further information."
 msgstr ""
+"La proposition que vous essayez de confirmer n'existe pas ou n'est pas "
+"reliée au compte avec lequel vous êtes connecté. Essayez de vous connecter "
+"avec un autre compte ou contactez les organisateurs de l'évènement pour plus "
+"d'informations."
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:39
 msgid "Confirm your attendance"
@@ -963,12 +966,10 @@ msgstr[0] "Intervenant :"
 msgstr[1] "Intervenants :"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:61
-#, fuzzy
-#| msgid "Submitters"
 msgid "Submitter:"
 msgid_plural "Submitters:"
-msgstr[0] "Intervenants"
-msgstr[1] "Intervenants"
+msgstr[0] "Intervenant :"
+msgstr[1] "Intervenants :"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:88
 #: pretalx/orga/forms/schedule.py:117
@@ -1382,22 +1383,16 @@ msgid "A question option was modified."
 msgstr "Une réponse possible a été modifée."
 
 #: pretalx/common/log_display.py:52
-#, fuzzy
-#| msgid "A track was added."
 msgid "A tag was added."
-msgstr "Un parcours a été ajouté."
+msgstr "Un tag a été ajouté."
 
 #: pretalx/common/log_display.py:53
-#, fuzzy
-#| msgid "A track was deleted."
 msgid "A tag was deleted."
-msgstr "Une parcours a été supprimé."
+msgstr "Une tag a été supprimé."
 
 #: pretalx/common/log_display.py:54
-#, fuzzy
-#| msgid "A track was modified."
 msgid "A tag was modified."
-msgstr "Un parcours a été modifié."
+msgstr "Un tag a été modifié."
 
 #: pretalx/common/log_display.py:55
 msgid "A new room was added."
@@ -1700,19 +1695,7 @@ msgstr ""
 "ou par courriel à support@pretalx.com !\n"
 
 #: pretalx/common/models/settings.py:101
-#, fuzzy, python-brace-format
-#| msgid ""
-#| "Hi,\n"
-#| "\n"
-#| "just writing you to let you know that your Call for Participation is now\n"
-#| "closed. You'll find a list of all your {submission_count} proposals "
-#| "here:\n"
-#| "{event_submissions}\n"
-#| "\n"
-#| "You can add reviewers here: {event_team}\n"
-#| "You can review proposals here: {event_review}\n"
-#| "And create your schedule here, once you have accepted proposals: "
-#| "{event_schedule}\n"
+#, python-brace-format
 msgid ""
 "Hi,\n"
 "\n"
@@ -1731,13 +1714,17 @@ msgstr ""
 "Bonjour,\n"
 "\n"
 "Un petit mot pour vous dire que votre appel à participation est terminé.\n"
-"Vous trouverez la liste des {submission_count} propositions ici :\n"
-"{event_submissions}\n"
+"Voici une liste de liens qui devraient être utiles les prochaines jours :\n"
 "\n"
-"Vous pouvez ajouter des évaluateurs ici : {event_team}\n"
-"Vous pouvez évaluer les propositions ici : {event_review}\n"
-"Et vous pouvez créer votre planning ici, une fois que vous aurez accepté des "
-"propositions : {event_schedule}\n"
+"- Vous trouverez la liste des {submission_count} propositions ici :\n"
+"  {event_submissions}\n"
+"- Vous pouvez ajouter des évaluateurs ici :\n"
+"  {event_team}\n"
+"- Vous pouvez évaluer les propositions ici :\n"
+"  {event_review}\n"
+"- Et vous pouvez créer votre planning ici, une fois que vous aurez accepté "
+"des propositions :\n"
+"  {event_schedule}\n"
 
 #: pretalx/common/models/settings.py:123
 #, python-brace-format
@@ -2145,6 +2132,8 @@ msgid ""
 "Please either pick some events for this team, or grant access to all your "
 "events!"
 msgstr ""
+"Veuillez sélectionner des évènements pour cette équipe ou laisser un accès à "
+"tous vos évènements !"
 
 #: pretalx/event/forms.py:102
 msgid "Use languages"
@@ -2202,10 +2191,8 @@ msgstr ""
 "qui auront la priorité par rapport à cette date butoir."
 
 #: pretalx/event/forms.py:183 pretalx/orga/forms/event.py:203
-#, fuzzy
-#| msgid "The end of a phase has to be after its start."
 msgid "The event end cannot be before the start."
-msgstr "La fin d'une phase doit être après son début."
+msgstr "La fin de l'évènement ne peut pas être avant son début."
 
 #: pretalx/event/forms.py:200 pretalx/event/models/event.py:208
 msgid "Main event colour"
@@ -2510,10 +2497,8 @@ msgid "Is a reviewer"
 msgstr "Peut évaluer les interventions"
 
 #: pretalx/event/models/organiser.py:113
-#, fuzzy
-#| msgid "Title or speaker name"
 msgid "Always hide speaker names"
-msgstr "Titre ou nom de l'intervenant"
+msgstr "Toujours masquer le nom des intervenants"
 
 #: pretalx/event/models/organiser.py:115
 msgid ""
@@ -2521,6 +2506,9 @@ msgid ""
 "setting will <b>override the event settings</b> and always hide speaker "
 "names for this team."
 msgstr ""
+"Normalement l'anonymisation est configurée dans les paramètres d'évaluation "
+"de l'évènement. Ce paramètre va <b>écraser les paramètres de l'évènement</b> "
+"et toujours masquer le nom des intervenants pour cette équipe."
 
 #: pretalx/event/models/organiser.py:123
 #, python-brace-format
@@ -2648,94 +2636,68 @@ msgid "Release next event date?"
 msgstr "Publier les dates du prochain évènement ?"
 
 #: pretalx/mail/context.py:74
-#, fuzzy
-#| msgid "The event's full name."
 msgid "The event's full name"
-msgstr "Le nom complet de l'évènement."
+msgstr "Le nom complet de l'évènement"
 
 #: pretalx/mail/context.py:81
 msgid "The event's short form, used in URLs"
-msgstr ""
+msgstr "Le nom court de l'évènement, utilisé dans les URLs"
 
 #: pretalx/mail/context.py:88
-#, fuzzy
-#| msgid "The event's full name."
 msgid "The event's public base URL"
-msgstr "Le nom complet de l'évènement."
+msgstr "L'URL publique de base de l'évènement"
 
 #: pretalx/mail/context.py:95
-#, fuzzy
-#| msgid "The event's full name."
 msgid "The event's public schedule URL"
-msgstr "Le nom complet de l'évènement."
+msgstr "L'URL publique du planning de l'évènement"
 
 #: pretalx/mail/context.py:102
-#, fuzzy
-#| msgid "The event was made public."
 msgid "The event's public CfP URL"
-msgstr "L'évènement a été rendu public."
+msgstr "L'URL publique de l'appel à participation de l'évènement"
 
 #: pretalx/mail/context.py:109
-#, fuzzy
-#| msgid "The link to the user's list of proposals"
 msgid "URL to a user's list of proposals"
-msgstr "Le lien vers les propositions de l'intervenant"
+msgstr "L'URL vers la liste des propositions d'un intervenant"
 
 #: pretalx/mail/context.py:124
-#, fuzzy
-#| msgid "Text and deadline"
 msgid "The general CfP deadline"
-msgstr "Texte et date butoire"
+msgstr "La date butoir générale"
 
 #: pretalx/mail/context.py:131
-#, fuzzy
-#| msgid "The proposal was unconfirmed."
 msgid "The proposal's unique ID"
-msgstr "La proposition a été dé-confirmée."
+msgstr "L'ID unique de la proposition"
 
 #: pretalx/mail/context.py:138
-#, fuzzy
-#| msgid "The proposal was deleted."
 msgid "The proposal's public URL"
-msgstr "La proposition a été supprimée."
+msgstr "L'URL publique de la proposition"
 
 #: pretalx/mail/context.py:145
-#, fuzzy
-#| msgid "The speaker was already part of the proposal."
 msgid "The speaker's edit page for the proposal"
-msgstr "L'intervenant faisait déjà partie de la proposition."
+msgstr "La page d'édition de la proposition pour l'intervenant"
 
 #: pretalx/mail/context.py:152
 msgid "Link to confirm a proposal after it has been accepted."
 msgstr "Lien pour confirmer une proposition après qu'elle ait été acceptée."
 
 #: pretalx/mail/context.py:159
-#, fuzzy
-#| msgid "Withdraw proposal"
 msgid "Link to withdraw the proposal"
-msgstr "Retirer la proposition"
+msgstr "Lien pour retirer la proposition"
 
 #: pretalx/mail/context.py:165
-#, fuzzy
-#| msgid "Proposal title"
 msgid "This Is a Proposal Title"
-msgstr "Titre de la proposition"
+msgstr "Ceci est un titre de proposition"
 
 #: pretalx/mail/context.py:166
-#, fuzzy
-#| msgid "New proposal: {title}"
 msgid "The proposal's title"
-msgstr "Nouvelle proposition de session : {title}"
+msgstr "Le titre de la proposition"
 
 #: pretalx/mail/context.py:173
 msgid "The name(s) of all speakers in this proposal."
 msgstr "Les noms des intervenants dans la proposition."
 
 #: pretalx/mail/context.py:179
-#, fuzzy
-#| msgid "Session Type"
 msgid "Session Type A"
-msgstr "Type de proposition"
+msgstr "Type de proposition A"
 
 #: pretalx/mail/context.py:180
 #, fuzzy
