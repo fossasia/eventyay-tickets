@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-05-17 23:58+0000\n"
-"PO-Revision-Date: 2021-11-10 22:25+0000\n"
+"PO-Revision-Date: 2022-09-04 14:27+0000\n"
 "Last-Translator: Luca Delucchi <lucadeluge@gmail.com>\n"
 "Language-Team: none\n"
 "Language: it\n"
@@ -272,7 +272,7 @@ msgstr "Linguaggio"
 
 #: pretalx/agenda/templates/agenda/talk.html:67
 msgid "This session's header image"
-msgstr ""
+msgstr "Immagine del header di questa sessione"
 
 #: pretalx/agenda/templates/agenda/talk.html:79
 #: pretalx/orga/templates/orga/schedule/index.html:25
@@ -611,6 +611,8 @@ msgid ""
 "You, %(name)s, have been invited to be a speaker for the session “%(talk)s”. "
 "Do you accept the invitation?"
 msgstr ""
+"%(name)s sei stato invitato ad essere un relatore per la sessione “%(talk)s”"
+". Accetti l'invito?"
 
 #: pretalx/cfp/templates/cfp/event/invitation.html:17
 msgid "Abstract:"
@@ -620,7 +622,7 @@ msgstr "Abstract:"
 #: pretalx/event/models/event.py:601 pretalx/submission/models/question.py:416
 #: pretalx/submission/models/submission.py:797
 msgid "No"
-msgstr ""
+msgstr "No"
 
 #: pretalx/cfp/templates/cfp/event/invitation.html:33
 #: pretalx/orga/templates/orga/review/dashboard.html:201
@@ -1035,7 +1037,7 @@ msgstr "Vuoi veramente cancellare la tua proposta?"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_withdraw.html:29
 msgid "You will not be able to revert this action."
-msgstr ""
+msgstr "Non sarà possibile tornare indietro dopo questa scelta."
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:9
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:24
@@ -1092,7 +1094,7 @@ msgstr ""
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:110
 msgid "Submit something now!"
-msgstr ""
+msgstr "Proponi qualcosa ora!"
 
 #: pretalx/cfp/templates/cfp/index.html:4
 #: pretalx/cfp/templates/cfp/index.html:8
@@ -1100,19 +1102,19 @@ msgstr ""
 #: pretalx/orga/templates/orga/base.html:94
 #: pretalx/orga/templates/orga/base.html:414
 msgid "Events"
-msgstr ""
+msgstr "Eventi"
 
 #: pretalx/cfp/templates/cfp/index.html:20
 msgid "No events are currently ongoing."
-msgstr ""
+msgstr "Non ci sono eventi in corso."
 
 #: pretalx/cfp/templates/cfp/index.html:23
 msgid "Upcoming events"
-msgstr ""
+msgstr "Prossimi eventi"
 
 #: pretalx/cfp/templates/cfp/index.html:34
 msgid "Past events"
-msgstr ""
+msgstr "Eventi passati"
 
 #: pretalx/cfp/templates/widgets/track-select-widget.html:9
 #: pretalx/cfp/templates/widgets/track-select-widget.html:22
@@ -1121,11 +1123,11 @@ msgstr ""
 
 #: pretalx/cfp/templates/widgets/track-select-widget.html:33
 msgid "No description provided."
-msgstr ""
+msgstr "Nessuna descrizione è stata fornita."
 
 #: pretalx/cfp/templates/widgets/track-select-widget.html:40
 msgid "Close"
-msgstr ""
+msgstr "Chiudi"
 
 #: pretalx/cfp/views/auth.py:102 pretalx/cfp/views/auth.py:111
 #: pretalx/cfp/views/auth.py:114
@@ -1141,15 +1143,15 @@ msgstr ""
 #: pretalx/cfp/views/wizard.py:98
 #, python-brace-format
 msgid "New proposal: {title}"
-msgstr ""
+msgstr "Nuova proposta: {title}"
 
 #: pretalx/common/context_processors.py:42
 msgid "“"
-msgstr ""
+msgstr "“"
 
 #: pretalx/common/context_processors.py:43
 msgid "”"
-msgstr ""
+msgstr "”"
 
 #: pretalx/common/css.py:116
 #, python-brace-format
@@ -1164,7 +1166,7 @@ msgstr ""
 #: pretalx/common/forms/fields.py:55
 #, python-brace-format
 msgid "Please do not upload files larger than {size}!"
-msgstr ""
+msgstr "Si prega di non caricare file più larghi di {size}!"
 
 #: pretalx/common/forms/fields.py:100
 #, python-brace-format
@@ -1178,6 +1180,8 @@ msgid ""
 "Upload a valid image. The file you uploaded was either not an image or a "
 "corrupted image."
 msgstr ""
+"Caricare un'immagine valida. Il file caricato non è un'immagine o è "
+"danneggiato."
 
 #: pretalx/common/forms/forms.py:7
 #: pretalx/common/templates/common/search_form.html:6
@@ -1187,52 +1191,52 @@ msgstr ""
 #: pretalx/orga/templates/orga/speaker/list.html:21
 #: pretalx/orga/templates/orga/submission/list.html:52
 msgid "Search"
-msgstr ""
+msgstr "Cerca"
 
 #: pretalx/common/forms/renderers.py:28
 msgctxt "form"
 msgid "Optional"
-msgstr ""
+msgstr "Opzionale"
 
 #: pretalx/common/forms/utils.py:18
 #, python-brace-format
 msgid "Please write between {min_length} and {max_length} words."
-msgstr ""
+msgstr "Scrivete tra {min_length} e {max_length} parole."
 
 #: pretalx/common/forms/utils.py:20
 #, python-brace-format
 msgid "Please write between {min_length} and {max_length} characters."
-msgstr ""
+msgstr "Scrivere tra {min_length} e {max_length} caratteri."
 
 #: pretalx/common/forms/utils.py:22
 #, python-brace-format
 msgid "Please write at least {min_length} words."
-msgstr ""
+msgstr "Scrivere almeno {min_length} parole."
 
 #: pretalx/common/forms/utils.py:23
 #, python-brace-format
 msgid "Please write at least {min_length} characters."
-msgstr ""
+msgstr "Scrivere almeno {min_length} caratteri."
 
 #: pretalx/common/forms/utils.py:24
 #, python-brace-format
 msgid "Please write at most {max_length} words."
-msgstr ""
+msgstr "Scrivere al massimo {max_length} parole."
 
 #: pretalx/common/forms/utils.py:25
 #, python-brace-format
 msgid "Please write at most {max_length} characters."
-msgstr ""
+msgstr "Scrivere al massimo {max_length} caratteri."
 
 #: pretalx/common/forms/utils.py:42
 #, python-brace-format
 msgid "You wrote {count} characters."
-msgstr ""
+msgstr "Hai scritto {count} caratteri."
 
 #: pretalx/common/forms/utils.py:43
 #, python-brace-format
 msgid "You wrote {count} words."
-msgstr ""
+msgstr "Hai scritto {count} parole."
 
 #: pretalx/common/forms/widgets.py:29
 msgid ""
@@ -1241,11 +1245,11 @@ msgstr ""
 
 #: pretalx/common/forms/widgets.py:58
 msgid "Warning"
-msgstr ""
+msgstr "Attenzione"
 
 #: pretalx/common/forms/widgets.py:58
 msgid "Your passwords don't match."
-msgstr ""
+msgstr "Le tue password non coincidono."
 
 #: pretalx/common/log_display.py:9
 msgid "The CfP has been modified."
@@ -1253,27 +1257,27 @@ msgstr ""
 
 #: pretalx/common/log_display.py:10
 msgid "The event has been added."
-msgstr ""
+msgstr "L'evento è stato aggiunto."
 
 #: pretalx/common/log_display.py:11
 msgid "The event was modified."
-msgstr ""
+msgstr "L'evento è stato modificato."
 
 #: pretalx/common/log_display.py:12
 msgid "The event was made public."
-msgstr ""
+msgstr "L'evento è stato reso pubblico."
 
 #: pretalx/common/log_display.py:13
 msgid "The event was deactivated."
-msgstr ""
+msgstr "L'evento è stato disattivato."
 
 #: pretalx/common/log_display.py:14
 msgid "A plugin was enabled."
-msgstr ""
+msgstr "Un plugin è stato abilitato."
 
 #: pretalx/common/log_display.py:15
 msgid "A plugin was disabled."
-msgstr ""
+msgstr "Un plugin è stato disattivato."
 
 #: pretalx/common/log_display.py:16 pretalx/common/log_display.py:24
 msgid "The invitation to the event orga was accepted."
@@ -1297,7 +1301,7 @@ msgstr ""
 
 #: pretalx/common/log_display.py:38 pretalx/common/log_display.py:42
 msgid "An email was modified."
-msgstr ""
+msgstr "Una email è stata modificata."
 
 #: pretalx/common/log_display.py:39
 msgid "A pending email was deleted."
@@ -1325,19 +1329,19 @@ msgstr ""
 
 #: pretalx/common/log_display.py:46
 msgid "A question was added."
-msgstr ""
+msgstr "Una domanda è stata aggiunta."
 
 #: pretalx/common/log_display.py:47
 msgid "A question was deleted."
-msgstr ""
+msgstr "Una domanda è stata eliminata."
 
 #: pretalx/common/log_display.py:48
 msgid "A question was modified."
-msgstr ""
+msgstr "Una domanda è stata modificata."
 
 #: pretalx/common/log_display.py:49
 msgid "A question option was added."
-msgstr ""
+msgstr "Una domanda è stata aggiunta."
 
 #: pretalx/common/log_display.py:50
 msgid "A question option was deleted."
@@ -1361,35 +1365,35 @@ msgstr ""
 
 #: pretalx/common/log_display.py:55
 msgid "A new room was added."
-msgstr ""
+msgstr "Una nuova stanza è stata aggiunta."
 
 #: pretalx/common/log_display.py:56
 msgid "A new schedule version was released."
-msgstr ""
+msgstr "Una nuova versione del programma è stata rilasciata."
 
 #: pretalx/common/log_display.py:57
 msgid "The proposal was accepted."
-msgstr ""
+msgstr "La proposta è stata accettata."
 
 #: pretalx/common/log_display.py:58
 msgid "The proposal was cancelled."
-msgstr ""
+msgstr "La proposta è stata cancellata."
 
 #: pretalx/common/log_display.py:59 pretalx/common/log_display.py:60
 msgid "The proposal was confirmed."
-msgstr ""
+msgstr "La proposta è stata confermata."
 
 #: pretalx/common/log_display.py:61
 msgid "The proposal was added."
-msgstr ""
+msgstr "La proposta è stata aggiunta."
 
 #: pretalx/common/log_display.py:62
 msgid "The proposal was deleted."
-msgstr ""
+msgstr "La proposta è stata eliminata."
 
 #: pretalx/common/log_display.py:63
 msgid "The proposal was rejected."
-msgstr ""
+msgstr "La proposta è stata rifiutata."
 
 #: pretalx/common/log_display.py:64
 msgid "A proposal resource was added."
@@ -1405,27 +1409,27 @@ msgstr ""
 
 #: pretalx/common/log_display.py:67
 msgid "A speaker was added to the proposal."
-msgstr ""
+msgstr "Un relatore è stato aggiunto alla proposta."
 
 #: pretalx/common/log_display.py:68
 msgid "A speaker was invited to the proposal."
-msgstr ""
+msgstr "Un relatore è stato invitato alla proposta."
 
 #: pretalx/common/log_display.py:69
 msgid "A speaker was removed from the proposal."
-msgstr ""
+msgstr "Un relatore è stato rimosso alla proposta."
 
 #: pretalx/common/log_display.py:70
 msgid "The proposal was unconfirmed."
-msgstr ""
+msgstr "La proposta non è stata confermata."
 
 #: pretalx/common/log_display.py:71
 msgid "The proposal was modified."
-msgstr ""
+msgstr "La proposta è stata modificata."
 
 #: pretalx/common/log_display.py:72
 msgid "The proposal was withdrawn."
-msgstr ""
+msgstr "La proposta è stata ritirata."
 
 #: pretalx/common/log_display.py:73 pretalx/common/log_display.py:74
 msgid "A proposal answer was modified."
