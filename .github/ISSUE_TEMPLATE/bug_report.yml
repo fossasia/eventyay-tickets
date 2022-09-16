@@ -21,7 +21,7 @@ body:
     attributes:
       label: Steps to reproduce
       description: "Please give as much context as possible: Are there any settings that impact this behaviour? Which stage is your event in?"
-      placeholder: |
+      value: |
         1.
         2.
         3.
