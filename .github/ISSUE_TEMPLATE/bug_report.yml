@@ -6,19 +6,19 @@ body:
     attributes:
       value: Please make sure to search our issues for similar bugs first! If bug has been reported already, react with a thumbs-up, and/or leave a comment providing further details.
   - type: textarea
+    id: current
     attributes:
-      id: current
       label: Problem and impact
       description: What problem you're running into? What impact does it have on you / your event?
       placeholder: When trying to do ____, pretalx suddenly shows me an error saying "...".
   - type: textarea
+    id: expected
     attributes:
-      id: expected
       label: Expected behaviour
       description: Sometimes bugs are subtle and the expected behaviour may need some explanation. Leave empty if it's just "Don't be broken."
   - type: textarea
+    id: reproduction
     attributes:
-      id: reproduction
       label: Steps to reproduce
       description: "Please give as much context as possible: Are there any settings that impact this behaviour? Which stage is your event in?"
       placeholder: |
@@ -27,27 +27,27 @@ body:
         3.
         4.
   - type: textarea
+    id: screenshots
     attributes:
-      id: screenshots
       label: Screenshots
       description: If possible, show screenshots of the problem.
   - type: input
+    id: link
     attributes:
-      id: link
       label: Link
       description: Link to the page where the bug occurs
   - type: input
+    id: browser
     attributes:
-      id: browser
       label: Browser (software, desktop or mobile?) and version
       description: Leave empty for backend problems
   - type: input
+    id: os
     attributes:
-      id: os
       label: Operating system, dependency versions
       description: Leave empty for frontend problems
   - type: input
+    id: version
     attributes:
-      id: version
       label: Version
       description: The pretalx version in use. (Leave empty if unknown.)
