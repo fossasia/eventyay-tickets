@@ -6,19 +6,19 @@ body:
     attributes:
       value: Please make sure to search our issues for similar bugs first! If bug has been reported already, react with a thumbs-up, and/or leave a comment providing further details.
   - type: textarea
-    id: current
     attributes:
+      id: current
       label: Problem and impact
       description: What problem you're running into? What impact does it have on you / your event?
       placeholder: When trying to do ____, pretalx suddenly shows me an error saying "...".
   - type: textarea
-    id: expected
     attributes:
+      id: expected
       label: Expected behaviour
       description: Sometimes bugs are subtle and the expected behaviour may need some explanation. Leave empty if it's just "Don't be broken."
   - type: textarea
-    id: reproduction
     attributes:
+      id: reproduction
       label: Steps to reproduce
       description: "Please give as much context as possible: Are there any settings that impact this behaviour? Which stage is your event in?"
       placeholder: |
