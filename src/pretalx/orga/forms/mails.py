@@ -91,7 +91,16 @@ class MailTemplateForm(ReadOnlyFlag, MailTemplateBase):
     def clean_text(self):
         text = self.cleaned_data["text"]
         valid_placeholders = self.get_valid_placeholders().keys()
-        warnings = self._clean_for_placeholders(text, valid_placeholders)
+        try:
+            warnings = self._clean_for_placeholders(text, valid_placeholders)
+        except Exception:
+            raise forms.ValidationError(
+                _(
+                    "Invalid email template! "
+                    "Please check that you don't have stray { or } somewhere, "
+                    "and that there are no spaces inside the {} blocks."
+                )
+            )
         if warnings:
             warnings = ", ".join("{" + w + "}" for w in warnings)
             raise forms.ValidationError(
