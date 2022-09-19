@@ -59,6 +59,10 @@ export default {
 			))
 			return sessions
 		},
+		sessionsLookup (state, getters) {
+			if (!state.schedule) return {}
+			return getters.sessions.reduce((acc, s) => { acc[s.id] = s; return acc }, {})
+		},
 		days (state, getters) {
 			if (!getters.sessions) return
 			const days = []

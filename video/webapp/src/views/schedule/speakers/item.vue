@@ -1,16 +1,24 @@
 <template lang="pug">
 .c-schedule-speaker(v-scrollbar.y="")
-	.speaker(v-if="speaker")
-		h1 {{ speaker.name }}
-		img.avatar(v-if="speaker.avatar", :src="speaker.avatar")
-		markdown-content.biography(:markdown="speaker.biography")
-	bunt-progress-circular(v-else, size="huge", :page="true")
+	bunt-progress-circular(v-if="!speaker", size="huge", :page="true")
+	template(v-else)
+		.speaker
+			img.avatar(v-if="speaker.avatar", :src="speaker.avatar")
+			.content
+				h1 {{ speaker.name }}
+				markdown-content.biography(:markdown="speaker.biography")
+		.sessions
+			h2 Sessions
+			session-list(:sessions="sessions")
 </template>
 <script>
+import { mapGetters } from 'vuex'
 import MarkdownContent from 'components/MarkdownContent'
+// TODO remove this again
+import SessionList from 'components/SessionList'
 
 export default {
-	components: { MarkdownContent },
+	components: { MarkdownContent, SessionList },
 	props: {
 		speakerId: String
 	},
@@ -19,7 +27,12 @@ export default {
 			speaker: null
 		}
 	},
-	computed: {},
+	computed: {
+		...mapGetters('schedule', ['sessionsLookup']),
+		sessions () {
+			return this.speaker.submissions.map(submission => this.sessionsLookup[submission])
+		}
+	},
 	async created () {
 		// TODO error handling
 		if (!this.$store.getters['schedule/pretalxApiBaseUrl']) return
@@ -35,14 +48,20 @@ export default {
 <style lang="stylus">
 .c-schedule-speaker
 	display: flex
-	flex-direction: column
 	background-color: $clr-white
+	flex-direction: column
 	align-items: center
+	gap: 16px
 	.speaker
 		display: flex
-		flex-direction: column
-		padding: 16px
-		max-width: 720px
+		max-width: 920px
+		gap: 16px
 		img
-			object-fit: contain
+			border-radius: 50%
+			height: 256px
+			width: @height
+			object-fit: cover
+			padding: 16px
+		h1
+			margin: 24px 0 16px
 </style>
