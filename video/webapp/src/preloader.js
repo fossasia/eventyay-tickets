@@ -18,6 +18,9 @@ const showBrowserBlock = function () {
 		if (typeof Object.values !== 'function') {
 			throw new Error()
 		}
+		if (typeof Array.prototype.at !== 'function') {
+			throw new Error()
+		}
 		for (const feature in Modernizr) {
 			if (!Modernizr[feature]) {
 				if (feature === 'webanimations') {
