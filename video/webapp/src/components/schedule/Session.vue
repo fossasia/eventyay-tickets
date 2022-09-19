@@ -5,9 +5,15 @@ a.c-linear-schedule-session(:href="linkHref", :style="style", @click="linkClick(
 			.time {{ startTime.time }}
 			.ampm(v-if="startTime.ampm") {{ startTime.ampm }}
 		.duration {{ durationMinutes }}min
+		.buffer
+		.is-live(v-if="isLive") live
 	.info
 		.title {{ $localize(session.title) }}
-		.speakers(v-if="session.speakers") {{ session.speakers.map(s => s.name).join(', ') }}
+		.speakers(v-if="session.speakers")
+			.avatars
+				template(v-for="speaker of session.speakers")
+					img(v-if="speaker.avatar", :src="speaker.avatar")
+			.names {{ session.speakers.map(s => s.name).join(', ') }}
 		.abstract(v-if="showAbstract") {{ session.abstract }}
 		.bottom-info
 			.track(v-if="session.track") {{ $localize(session.track.name) }}
@@ -54,6 +60,9 @@ export default {
 		},
 		durationMinutes () {
 			return moment(this.session.end).diff(this.session.start, 'minutes')
+		},
+		isLive () {
+			return moment(this.session.start).isBefore(this.now) && moment(this.session.end).isAfter(this.now)
 		},
 		linkHref () {
 			if (this.session.url) {
@@ -105,6 +114,19 @@ export default {
 				font-size: 13px
 		.duration
 			color: $clr-secondary-text-dark
+		.buffer
+			flex: auto
+		.is-live
+			align-self: stretch
+			text-align: center
+			font-weight: 600
+			padding: 2px 4px
+			border-radius: 4px
+			margin: 0 -10px 0 -6px // HACK
+			background-color: $clr-danger
+			color: $clr-primary-text-dark
+			letter-spacing: 0.5px
+			text-transform: uppercase
 	.info
 		flex: auto
 		display: flex
@@ -121,6 +143,20 @@ export default {
 			margin-bottom: 4px
 		.speakers
 			color: $clr-secondary-text-light
+			display: flex
+			.avatars
+				flex: none
+				> *:not(:first-child)
+					margin-left: -20px
+				img
+					background-color: $clr-white
+					border-radius: 50%
+					height: 24px
+					width: @height
+					margin: 0 8px 0 0
+					object-fit: cover
+			.names
+				line-height: 24px
 		.abstract
 			margin: 8px 0 12px 0
 			// TODO make this take up more space if available?

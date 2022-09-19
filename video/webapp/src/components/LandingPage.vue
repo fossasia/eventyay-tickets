@@ -1,102 +1,124 @@
 <template lang="pug">
-.c-landing-page(v-scrollbar.y="", :style="{'--header-background': module.config.header_background_color}")
+.c-landing-page(v-scrollbar.y="", :style="{'--header-background-color': module.config.header_background_color, '--header-background-image': `url(${module.config.header_background_image})`}")
 	.hero
 		img(:src="module.config.header_image")
+	.sponsors.splide(ref="sponsors")
+		.splide__track
+			ul.splide__list
+				li.splide__slide(v-for="sponsor of sponsors")
+					router-link(:to="{name: 'exhibitor', params: {exhibitorId: sponsor.id}}")
+						img.sponsor(:src="sponsor.logo", :alt="sponsor.name")
 	.content
-		markdown-content(:markdown="module.config.content")
-		.sidebar
+		.schedule
+			template(v-if="featuredSessions && featuredSessions.length")
+				.header
+					h3 {{ $t('LandingPage:sessions:featured:header') }}
+					bunt-link-button(:to="{name: 'schedule'}") {{ $t('LandingPage:sessions:featured:link') }}
+				.sessions
+					session(v-for="session of featuredSessions", :session="session")
 			.header
-				h3 Schedule
-				router-link(:to="{name: 'schedule'}") full schedule
+				h3 {{ $t('LandingPage:sessions:next:header') }}
+				bunt-link-button(:to="{name: 'schedule'}") {{ $t('LandingPage:sessions:next:link') }}
 			.sessions
-				.session(v-for="{session, state}, index of nextSessions", :class="{live: state.isLive}")
-					img.preview(:src="`https://picsum.photos/64?v=${index}`")
-					.info
-						.title-time
-							.title {{ $localize(session.title) }}
-							.time {{ state.timeString }}
-						.speakers-room
-							.speakers {{ session.speakers ? session.speakers.map(s => s.name).join(', ') : '' }}
-							.room {{ $localize(session.room.name) }}
-			//- .header
-			//- 	h3 Sponsors
-			//- 	router-link(:to="{name: 'schedule'}") all sponsors
-			//- .sponsors
-			//- 	.sponsor(v-for="sponsor of sponsors")
-			//- 		img(:src="sponsor.logo")
-
+				session(v-for="session of nextSessions", :session="session")
+		.speakers(v-if="speakers")
+			.header
+				h3 {{ $t('LandingPage:speakers:header', {speakers: speakers.length}) }}
+				bunt-link-button(:to="{name: 'schedule:speakers'}") {{ $t('LandingPage:speakers:link') }}
+			.speakers-list
+				router-link.speaker(v-for="speaker of speakers.slice(0, 32)", :to="speaker.attendee ? {name: '', params: {}} : { name: 'schedule:speaker', params: { speakerId: speaker.code } }")
+					img.avatar(v-if="speaker.avatar", :src="speaker.avatar")
+					identicon(v-else, :id="speaker.name")
+					.name {{ speaker.name }}
+				router-link.additional-speakers(v-if="speakers.length > 32", :to="{name: 'schedule:speakers'}") {{ $t('LandingPage:speakers:more', {additional_speakers: speakers.length - 32}) }}
 </template>
 <script>
 import { mapState, mapGetters } from 'vuex'
+import '@splidejs/splide/dist/css/splide.min.css'
+import Splide from '@splidejs/splide'
+import api from 'lib/api'
 import moment from 'lib/timetravelMoment'
+import Identicon from 'components/Identicon'
 import MarkdownContent from 'components/MarkdownContent'
+import Session from 'components/schedule/Session'
 
 export default {
-	components: { MarkdownContent },
+	components: { Identicon, MarkdownContent, Session },
 	props: {
 		module: Object
 	},
 	data () {
 		return {
 			moment,
-			sponsors: [{
-				name: 'pretix',
-				logo: '/sponsors/pretix.svg'
-			}, {
-				name: 'pretalx',
-				logo: '/sponsors/pretalx.svg'
-			}]
+			sponsors: null
 		}
 	},
 	computed: {
-		...mapState(['now']),
+		...mapState(['now', 'rooms']),
+		...mapState('schedule', ['schedule']),
 		...mapGetters('schedule', ['sessions']),
+		featuredSessions () {
+			if (!this.sessions) return
+			return this.sessions.filter(session => session.featured)
+		},
 		nextSessions () {
 			if (!this.sessions) return
-			const getSessionState = (session) => {
-				if (session.room.schedule_data?.session === session.id) {
-					return {
-						isLive: true,
-						timeString: 'live now'
-					}
-				}
-				if (session.start.isBefore(this.now)) {
-					return {
-						timeString: 'starting soon'
-					}
-				}
-				return {
-					timeString: moment.duration(session.start.diff(this.now)).humanize(true).replace('minutes', 'mins')
-				}
-			}
 			// current or next sessions per room
 			const sessions = []
-			// TODO filter out sessions with no venueless room?
 			for (const session of this.sessions) {
 				if (!session.room) continue
-				if (session.end.isBefore(this.now) || sessions.reduce((acc, s) => s.session.room === session.room ? ++acc : acc, 0) >= 2) continue
-				sessions.push({session, state: getSessionState(session)})
+				if (session.end.isBefore(this.now) || sessions.reduce((acc, s) => s.room === session.room ? ++acc : acc, 0) >= 2) continue
+				sessions.push(session)
 			}
 			return sessions
+		},
+		speakers () {
+			return this.schedule?.speakers.slice().sort((a, b) => a.name.split(' ').at(-1).localeCompare(b.name.split(' ').at(-1)))
 		}
+	},
+	async mounted () {
+		// TODO make this configurable?
+		const sponsorRoom = this.rooms.find(r => r.id === this.module.config.sponsor_room_id)
+		if (!sponsorRoom) return
+		this.sponsors = (await api.call('exhibition.list', {room: sponsorRoom.id})).exhibitors
+		await this.$nextTick()
+		new Splide(this.$refs.sponsors, {
+			type: 'loop',
+			autoWidth: true,
+			clones: 50,
+			focus: 'center',
+			// padding: '16px 0'
+		}).mount()
 	}
 }
 </script>
 <style lang="stylus">
 .c-landing-page
 	flex: auto
-	background-color: $clr-white
+	background-color: $clr-grey-50
 	.hero
-		height: calc(var(--vh) * 30)
+		height: calc(var(--vh) * 20)
 		display: flex
 		justify-content: center
-		background-color: var(--header-background)
+		background-color: var(--header-background-color)
+		background-image: var(--header-background-image)
+		background-repeat: no-repeat
+		background-size: cover
+		background-position: center
 		img
 			height: 100%
+			max-width: 100%
 			object-fit: contain
 	.content
 		display: flex
 		justify-content: center
+		gap: 32px
+		padding: 0 16px
+		> *
+			flex: 1
+			min-width: 0
+			display: flex
+			flex-direction: column
 	.markdown-content
 		padding: 0 16px
 		width: 100%
@@ -106,85 +128,79 @@ export default {
 		justify-content: space-between
 		align-items: baseline
 		height: 56px
-		padding: 0 4px
 		h3
 			margin: 0
 			line-height: 56px
-	.sidebar
-		width: 420px
-	.sessions
+		.bunt-link-button
+			themed-button-primary()
+	.schedule
+		max-width: 960px
+		.header
+			padding: 0 8px
+	.speakers
+		max-width: calc(124px * 3 + 2px)
+	.speakers-list
 		display: flex
-		flex-direction: column
+		flex-wrap: wrap
+		justify-content: center
+		background-color: $clr-white
+		border-radius: 6px
 		border: border-separator()
-		.session
-			height: 56px
-			position: relative
-			padding: 4px 0
-			box-sizing: border-box
+		margin: 8px 0
+		.speaker
 			display: flex
+			flex-direction: column
+			align-items: center
+			gap: 4px
+			width: 124px
 			cursor: pointer
-			&:not(:last-child)
-				border-bottom: border-separator()
+			padding: 12px 4px
+			box-sizing: border-box
+			color: $clr-primary-text-light
 			&:hover
-				background-color: $clr-grey-100
-			.preview
-				border-radius: 50%
-				height: 48px
-				width: 48px
-				margin: 0 8px 0 4px
-			.info
-				flex: auto
-				min-width: 0
-				display: flex
-				flex-direction: column
-				justify-content: space-between
-			.title-time
-				flex: none
-				display: flex
-				align-items: center
-				overflow: hidden
-			.title
-				flex: auto
-				// font-weight: 600
-				// line-height: 32px
-				line-height: 28px
-				ellipsis()
-			.time
-				flex: none
-				background-color: $clr-blue-grey-500
-				color: $clr-primary-text-dark
-				padding: 2px 4px
-				margin: 0 4px 4px
-				border-radius: 4px
-			.speakers-room
-				display: flex
-				align-items: baseline
-				margin-right: 4px
-			.speakers, .room
-				flex: 1
-				color: $clr-secondary-text-light
-				ellipsis()
-			.room
-				margin-left: 4px
-				text-align: right
-			&.live .time
-				background-color: $clr-danger
-	.sponsors
-		.sponsor
-			display: flex
-			justify-content: center
-			padding: 16px
+				background-color: $clr-grey-200
 			img
-				width: 90%
-	+below('s')
-		.hero
-			height: auto
+				border-radius: 50%
+				height: 92px
+				width: @height
+				object-fit: cover
+			.name
+				text-align: center
+				white-space: break-word
+				font-weight: 500
+				font-size: 14px
+		.additional-speakers
+			font-size: 18px
+			font-weight: 600
+			align-self: center
+			width: 100%
+			height: 92px
+			text-align: center
+			line-height: 90px
+			&:hover
+				background-color: $clr-grey-200
+	.sponsors
+		padding: 8px 0 16px 0
+		margin: 0 0 8px 0
+		background-color: $clr-white
+		.sponsor
+			height: 10vh
+			max-height: 10vh
+			max-width: unquote("min(260px, 90vw)")
+			object-fit: contain
+			user-select: none
+			margin: 0 24px 0 24px
+		// .splide__pagination
+		.splide__pagination__page.is-active
+			background-color: var(--clr-primary)
+		.splide__arrow
+			top: calc(50% - 12px)
+
 	+below('m')
 		.content
 			flex-direction: column
 			align-items: center
 			padding: 0 8px
-			.sidebar
-				width: 100%
-				max-width: 560px
+			> *
+				max-width: 100%
 </style>
