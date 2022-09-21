@@ -6,8 +6,7 @@
 		.splide__track
 			ul.splide__list
 				li.splide__slide(v-for="sponsor of sponsors")
-					router-link(:to="{name: 'exhibitor', params: {exhibitorId: sponsor.id}}")
-						img.sponsor(:src="sponsor.logo", :alt="sponsor.name")
+					img.sponsor(:src="sponsor.logo", :alt="sponsor.name", @load="onSponsorImageLoad(sponsor.id)")
 	.content
 		.schedule
 			template(v-if="featuredSessions && featuredSessions.length")
@@ -50,7 +49,8 @@ export default {
 	data () {
 		return {
 			moment,
-			sponsors: null
+			sponsors: null,
+			loadedSponsorImages: []
 		}
 	},
 	computed: {
@@ -82,13 +82,37 @@ export default {
 		if (!sponsorRoom) return
 		this.sponsors = (await api.call('exhibition.list', {room: sponsorRoom.id})).exhibitors
 		await this.$nextTick()
-		new Splide(this.$refs.sponsors, {
+		const splide = new Splide(this.$refs.sponsors, {
 			type: 'loop',
-			autoWidth: true,
-			clones: 50,
-			focus: 'center',
-			// padding: '16px 0'
-		}).mount()
+			autoWidth: true
+		})
+
+		splide.on('overflow', (isOverflow) => {
+			splide.go(0)
+			splide.options = {
+				arrows: isOverflow,
+				pagination: isOverflow,
+				drag: isOverflow,
+				focus: isOverflow ? 'center' : false,
+				clones: isOverflow ? 50 : 0, // HACK setting this to 50 instead of undefined
+			}
+			splide.go(0)
+		})
+
+		splide.on('click', (slide) => {
+			this.$router.push({name: 'exhibitor', params: {exhibitorId: this.sponsors[slide.slideIndex].id}})
+		})
+
+		splide.mount()
+		this.sponsorSplide = splide
+	},
+	methods: {
+		onSponsorImageLoad (sponsorId) {
+			this.loadedSponsorImages.push(sponsorId)
+			if (this.loadedSponsorImages.length === this.sponsors.length) {
+				this.sponsorSplide.refresh()
+			}
+		}
 	}
 }
 </script>
@@ -195,6 +219,8 @@ export default {
 			background-color: var(--clr-primary)
 		.splide__arrow
 			top: calc(50% - 12px)
+		&:not(.is-overflow) .splide__list
+			justify-content: center
 
 	+below('m')
 		.content
