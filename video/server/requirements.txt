@@ -1,6 +1,6 @@
 # prod
 aiofile==3.8.*
-aiohttp==3.8.1
+aiohttp==3.8.3
 aioredis-lock==0.1.*
 beautifulsoup4==4.11.*
 celery==5.1.*
