@@ -77,7 +77,6 @@ class WidgetData(ScheduleView):
             for day in schedule:
                 for room in day["rooms"]:
                     room["name"] = str(room["name"])
-                    room["description"] = str(room["description"])
                     room["talks"] = [
                         {
                             "title": talk.submission.title
@@ -249,6 +248,7 @@ def widget_data_v2(request, event, version=None):
         {
             "id": room.id,
             "name": room.name,
+            "description": room.description,
         }
         for room in event.rooms.all()
         if room in rooms
