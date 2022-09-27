@@ -401,11 +401,6 @@ class MailSettingsForm(
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        event = kwargs.get("obj")
-        if event:
-            self.fields["mail_from"].help_text += " " + _(
-                "Leave empty to use the default address: {}"
-            ).format(settings.MAIL_FROM)
         self.set_encrypted_password_placeholder()
 
     def set_encrypted_password_placeholder(self):
@@ -426,6 +421,15 @@ class MailSettingsForm(
             # Python's smtplib does not support password-less schemes anyway.
             data["smtp_password"] = self.initial.get("smtp_password")
 
+        if not data.get("mail_from"):
+            self.add_error(
+                "mail_from",
+                ValidationError(
+                    _(
+                        "You have to provide a sender address if you use a custom SMTP server."
+                    )
+                ),
+            )
         if data.get("smtp_use_tls") and data.get("smtp_use_ssl"):
             self.add_error(
                 "smtp_use_tls",
