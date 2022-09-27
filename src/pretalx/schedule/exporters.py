@@ -86,6 +86,7 @@ class ScheduleData(BaseExporter):
                     "id": talk.room.id,
                     "guid": talk.room.guid,
                     "name": talk.room.name,
+                    "description": talk.room.description,
                     "position": talk.room.position,
                     "talks": [talk],
                 }

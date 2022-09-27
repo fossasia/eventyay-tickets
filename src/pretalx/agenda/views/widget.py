@@ -77,6 +77,7 @@ class WidgetData(ScheduleView):
             for day in schedule:
                 for room in day["rooms"]:
                     room["name"] = str(room["name"])
+                    room["description"] = str(room["description"])
                     room["talks"] = [
                         {
                             "title": talk.submission.title
