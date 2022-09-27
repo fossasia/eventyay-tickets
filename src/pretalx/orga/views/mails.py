@@ -1,4 +1,5 @@
 import bleach
+from bs4 import BeautifulSoup
 from django.contrib import messages
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
@@ -265,12 +266,11 @@ def check_markdown(text):
 
     Currently only one warning type, hush.
     """
-    from lxml import etree
 
     result = {}
-    doc = etree.fromstring(text)
-    for link in doc.xpath("//a"):
-        if link.get("href") in [None, "", "http://", "https://"]:
+    doc = BeautifulSoup(text, "lxml")
+    for link in doc.findAll("a"):
+        if link.attrs.get("href") in [None, "", "http://", "https://"]:
             result["empty_link"] = link.text
     return result
 
