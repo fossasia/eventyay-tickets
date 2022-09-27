@@ -112,7 +112,11 @@ class WidgetData(ScheduleView):
                     "event": {
                         "url": request.event.urls.schedule.full(),
                         "tracks": [
-                            {"name": track.name, "color": track.color}
+                            {
+                                "name": track.name,
+                                "color": track.color,
+                                "description": track.description,
+                            }
                             for track in request.event.tracks.all()
                         ],
                     },
