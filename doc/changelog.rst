@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` Track descriptions are now shown publicly on the schedule page, in the track filter.
 - :feature:`-` You can now filter the schedule by proposal track.
 - :feature:`-` If organisers provide a room description, it is now shown in the room header in the grid schedule.
 - :bug:`515` pretalx sometimes mysteriously creates two new schedules when releasing one, and then is in a confused and broken state until an administrator intervenes. Now pretalx can fix the situation on its own (though we still do not know how this ever happens).
