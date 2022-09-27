@@ -170,7 +170,7 @@ class ShortTokenView(View):
             st = ShortToken.objects.get(short_token=token, world=world)
             return redirect(f"/#token={st.long_token}")
         except ShortToken.DoesNotExist:
-            return redirect("/")
+            return HttpResponse("Unknown access token. Please check that you clicked the correct link.")
 
 
 class FeedbackView(View):
