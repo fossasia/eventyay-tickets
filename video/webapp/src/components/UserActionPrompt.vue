@@ -91,7 +91,7 @@ export default {
 			.btn-cancel
 				button-style(style: clear)
 				margin-right: 8px
-	&.action-ban, &.action-block
+	&.action-ban, &.action-block, &.action-delete
 		.btn-action
 			button-style(color: $clr-danger)
 	&.action-silence .btn-action

@@ -166,7 +166,7 @@ export default {
 	},
 	methods: {
 		getDMChannelName (channel) {
-			return channel.users.map(user => user.profile.display_name).join(', ')
+			return channel.users.map(user => user.deleted ? this.$t('User:label:deleted') : user.profile.display_name).join(', ')
 		},
 		startsWithEmoji (string) {
 			return startsWithEmoji(string)

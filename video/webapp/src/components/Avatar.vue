@@ -1,5 +1,5 @@
 <template lang="pug">
-.c-avatar(:style="{'--avatar-size': size + 'px'}")
+.c-avatar(:style="{'--avatar-size': size + 'px'}", :class="{deleted: user.deleted}")
 	img(v-if="imageUrl", :src="imageUrl")
 	identicon(v-else, :id="identicon")
 </template>
@@ -36,6 +36,8 @@ export default {
 <style lang="stylus">
 .c-avatar
 	display: flex
+	&.deleted
+		opacity: 0.2
 	img, .c-identicon
 		width: var(--avatar-size)
 		height: var(--avatar-size)
