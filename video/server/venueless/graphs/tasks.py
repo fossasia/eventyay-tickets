@@ -291,7 +291,7 @@ def generate_session_views(world, input=None):
 
     room_cache = {r.pretalx_id: r for r in world.rooms.filter(deleted=False)}
     schedule = get_schedule(world, fail_silently=False)
-    for talk in schedule["talks"]:
+    for talk in schedule.get("talks", []):
         talk_start = dateutil.parser.parse(talk["start"])
         talk_end = dateutil.parser.parse(talk["end"])
         if talk_start > end or talk_end < begin:
