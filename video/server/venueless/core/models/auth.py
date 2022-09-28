@@ -1,3 +1,4 @@
+import os
 import uuid
 from datetime import timedelta
 
@@ -31,9 +32,62 @@ class User(VersionedModel):
         "self", related_name="blocked_by", symmetrical=False
     )
     last_login = models.DateTimeField(null=True, blank=True)
+    deleted = models.BooleanField(default=False)
 
     class Meta:
         unique_together = (("token_id", "world"), ("client_id", "world"))
+
+    def soft_delete(self):
+        from venueless.storage.models import StoredFile
+
+        self.bbb_invites.clear()
+        self.room_grants.all().delete()
+        self.world_grants.all().delete()
+        self.rouletterequest_set.all().delete()
+        self.roulette_pairing_left.all().delete()
+        self.roulette_pairing_right.all().delete()
+        self.audit_logs.filter(
+            type__startswith="auth.user.profile",
+            data__object=str(self.pk),
+        ).update(
+            data={
+                "object": str(self.pk),
+                "old": {"__redacted": True},
+                "new": {"__redacted": True},
+            }
+        )
+        self.exhibitor_staff.all().delete()
+        self.poster_presenter.all().delete()
+        self.chat_channels.filter(channel__room__isnull=False).delete()
+
+        for dm_channel in self.chat_channels.filter(channel__room__isnull=True):
+            if dm_channel.channel.members.filter(user__deleted=False).count() == 1:
+                # Last one standing, delete DM channel including all messages as well as shared pictures
+                for event in dm_channel.channel.chat_events.filter(
+                    event_type="channel.message"
+                ):
+                    if event.content.get("files", []):
+                        for file in event.content.get("files", []):
+                            basename = os.path.basename(file["url"])
+                            fileid = basename.split(".")[0]
+                            sf = StoredFile.objects.filter(id=fileid, user=self).first()
+                            if sf:
+                                sf.full_delete()
+                dm_channel.channel.delete()
+
+        if "avatar" in self.profile and "url" in self.profile["avatar"]:
+            basename = os.path.basename(self.profile["avatar"]["url"])
+            fileid = basename.split(".")[0]
+            sf = StoredFile.objects.filter(id=fileid, user=self).first()
+            if sf:
+                sf.full_delete()
+
+        self.deleted = True
+        self.client_id = None
+        self.token_id = None
+        self.show_publicly = False
+        self.profile = {}
+        self.save()
 
     def serialize_public(self, include_admin_info=False, trait_badges_map=None):
         # Important: If this is updated, venueless.core.services.user.get_public_users also needs to be updated!
@@ -42,6 +96,7 @@ class User(VersionedModel):
             "id": str(self.id),
             "profile": self.profile,
             "pretalx_id": self.pretalx_id,
+            "deleted": self.deleted,
             "badges": sorted(
                 list(
                     {
@@ -64,7 +119,7 @@ class User(VersionedModel):
 
     @property
     def is_banned(self):
-        return self.moderation_state == self.ModerationState.BANNED
+        return self.moderation_state == self.ModerationState.BANNED or self.deleted
 
     @property
     def is_silenced(self):

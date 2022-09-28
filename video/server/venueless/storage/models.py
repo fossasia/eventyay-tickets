@@ -34,3 +34,8 @@ class StoredFile(models.Model):
     public = models.BooleanField(default=False)
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.PROTECT)
     source_url = models.CharField(max_length=255, null=True, blank=True)
+
+    def full_delete(self):
+        if self.file:
+            self.file.delete(False)
+        self.delete()

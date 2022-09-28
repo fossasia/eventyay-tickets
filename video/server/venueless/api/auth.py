@@ -79,6 +79,15 @@ class WorldPermissions(permissions.BasePermission):
         return False
 
 
+class UserDeletePermissions(permissions.BasePermission):
+    def has_permission(self, request, view):
+        traits = request.auth.get("traits")
+        return request.world.has_permission_implicit(
+            traits=traits,
+            permissions=[Permission.WORLD_USERS_MANAGE],
+        )
+
+
 class RoomPermissions(permissions.BasePermission):
     def has_permission(self, request, view):
         if request.method == "POST":

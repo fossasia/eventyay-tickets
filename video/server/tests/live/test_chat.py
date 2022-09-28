@@ -98,6 +98,7 @@ async def test_join_leave(chat_room):
                     "user": {
                         "profile": {"display_name": "Foo Fighter"},
                         "badges": [],
+                        "deleted": False,
                         "pretalx_id": None,
                         "inactive": False,
                         "id": c.context["user.config"]["id"],
@@ -313,6 +314,7 @@ async def test_subscribe_join_leave(chat_room):
                     "user": {
                         "profile": {"display_name": "Foo Fighter"},
                         "badges": [],
+                        "deleted": False,
                         "pretalx_id": None,
                         "inactive": False,
                         "id": c.context["user.config"]["id"],
@@ -625,6 +627,7 @@ async def test_fetch_messages_after_join(chat_room):
                         "id": c1.context["user.config"]["id"],
                         "profile": {"display_name": "Foo Fighter"},
                         "badges": [],
+                        "deleted": False,
                         "pretalx_id": None,
                         "inactive": False,
                     },
@@ -678,6 +681,7 @@ async def test_send_message_to_other_client(chat_room):
             "id",
             "profile",
             "badges",
+            "deleted",
             "pretalx_id",
             "inactive",
         }
@@ -772,6 +776,7 @@ async def test_no_messages_after_leave(chat_room):
             "id",
             "profile",
             "badges",
+            "deleted",
             "pretalx_id",
             "inactive",
         }
@@ -853,6 +858,7 @@ async def test_no_message_after_unsubscribe(chat_room):
             "id",
             "profile",
             "badges",
+            "deleted",
             "pretalx_id",
             "inactive",
         }
@@ -935,6 +941,7 @@ async def test_disconnect_is_no_leave(chat_room):
                 "id",
                 "profile",
                 "badges",
+                "deleted",
                 "pretalx_id",
                 "inactive",
             }

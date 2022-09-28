@@ -2,10 +2,10 @@
 .c-channel(:class="{'has-call': hasCall}")
 	.ui-page-header
 		h2
-			span.user(v-for="(u, key) in otherUsers")
+			span.user(v-for="(u, key) in otherUsers", :class="{deleted: u.deleted}")
 				span(v-if="key !== 0") {{ ', ' }}
-				.online-status(:class="onlineStatus[u.id] ? 'online' : (onlineStatus[u.id] === false ? 'offline' : 'unknown')", v-tooltip="onlineStatus[u.id] ? $t('UserAction:state.online:tooltip') : (onlineStatus[u.id] === false ? $t('UserAction:state.offline:tooltip') : '')")
-				span {{ u.profile.display_name }}
+				.online-status(v-if="!u.deleted", :class="onlineStatus[u.id] ? 'online' : (onlineStatus[u.id] === false ? 'offline' : 'unknown')", v-tooltip="onlineStatus[u.id] ? $t('UserAction:state.online:tooltip') : (onlineStatus[u.id] === false ? $t('UserAction:state.offline:tooltip') : '')")
+				span {{ u.deleted ? $t('User:label:deleted') : u.profile.display_name }}
 		bunt-icon-button(@click="startCall", tooltip="start video call", tooltipPlacement="left") phone_outline
 	.main
 		media-source-placeholder.channel-call(v-if="hasCall")
@@ -73,6 +73,9 @@ export default {
 		justify-content: space-between
 		h2
 			margin: 0
+			.user.deleted
+				color: $clr-disabled-text-light
+				text-decoration: line-through
 			.online-status
 				display: inline-block
 				margin-right: 8px

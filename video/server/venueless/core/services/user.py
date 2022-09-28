@@ -63,7 +63,7 @@ def get_public_users(
     if ids is not None:
         qs = User.objects.filter(id__in=ids, world_id=world_id)
     else:
-        qs = User.objects.filter(world_id=world_id).order_by(
+        qs = User.objects.filter(world_id=world_id, deleted=False).order_by(
             "profile__display_name", "id"
         )
     if pretalx_ids is not None:
@@ -75,6 +75,7 @@ def get_public_users(
             id=str(u["id"]),
             profile=u["profile"],
             pretalx_id=u["pretalx_id"],
+            deleted=u["deleted"],
             inactive=(
                 u["last_login"] is None or u["last_login"] < now() - timedelta(hours=36)
             ),
@@ -98,6 +99,7 @@ def get_public_users(
         for u in qs.values(
             "id",
             "profile",
+            "deleted",
             "moderation_state",
             "token_id",
             "traits",
@@ -366,6 +368,25 @@ def set_user_banned(world, user_id, by_user) -> bool:
 
 @database_sync_to_async
 @atomic
+def delete_user(world, user_id, by_user) -> bool:
+    user = get_user_by_id(world_id=world.pk, user_id=user_id)
+    if not user:
+        return False
+    user.soft_delete()
+
+    AuditLog.objects.create(
+        world=world,
+        user=by_user,
+        type="auth.user.deleted",
+        data={
+            "object": user_id,
+        },
+    )
+    return True
+
+
+@database_sync_to_async
+@atomic
 def set_user_silenced(world, user_id, by_user) -> bool:
     user = get_user_by_id(world_id=world.pk, user_id=user_id)
     if not user:
@@ -457,7 +478,7 @@ def list_users(
     include_admin_info=False,
 ) -> object:
     qs = (
-        User.objects.filter(world_id=world_id, show_publicly=True)
+        User.objects.filter(world_id=world_id, show_publicly=True, deleted=False)
         .exclude(profile__display_name__isnull=True)
         .exclude(profile__display_name__exact="")
     )

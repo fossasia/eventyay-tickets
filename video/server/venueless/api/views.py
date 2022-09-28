@@ -1,6 +1,8 @@
+from contextlib import suppress
 from urllib.parse import urlparse
 
 from asgiref.sync import async_to_sync
+from django.core import exceptions
 from django.db import transaction
 from django.utils.timezone import now
 from rest_framework import viewsets
@@ -11,10 +13,11 @@ from rest_framework.views import APIView
 from venueless.api.auth import (
     ApiAccessRequiredPermission,
     RoomPermissions,
+    UserDeletePermissions,
     WorldPermissions,
 )
 from venueless.api.serializers import RoomSerializer, WorldSerializer
-from venueless.core.models import Channel
+from venueless.core.models import Channel, User
 from venueless.core.services.world import notify_schedule_change, notify_world_change
 
 from ..core.models import Room
@@ -115,3 +118,23 @@ def schedule_update(request, **kwargs):
 
     async_to_sync(notify_schedule_change)(request.world.id)
     return Response(status=200)
+
+
+@api_view(http_method_names=["POST"])
+@permission_classes([UserDeletePermissions])
+def delete_user(request, **kwargs):
+    """POST endpoint to soft-delete a user.
+
+    This endpoint is called with a single POST parameter, 'user_id'."""
+    user_id = request.data.get("user_id")
+    if not user_id:
+        return Response("Missing user ID.", status=401)
+
+    user = None
+    with suppress(exceptions.ValidationError):  # raised when user_id isn't a uid
+        user = User.objects.filter(id=user_id, deleted=False).first()
+    if not user:
+        return Response(status=404)
+
+    user.soft_delete()
+    return Response(status=204)

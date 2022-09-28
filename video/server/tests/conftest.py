@@ -174,6 +174,11 @@ def staff_user():
 
 
 @pytest.fixture
+def event_user(world):
+    return User.objects.create(world=world, profile={"test": True}, traits=["test"])
+
+
+@pytest.fixture
 def staff_client(client, staff_user):
     client.force_login(staff_user)
     return client

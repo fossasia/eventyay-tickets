@@ -205,6 +205,7 @@ async def test_update_user():
             {
                 "profile": {"display_name": "Cool User"},
                 "badges": [],
+                "deleted": False,
                 "pretalx_id": None,
                 "inactive": False,
                 "id": user_id,
@@ -379,6 +380,7 @@ async def test_fetch_user():
                 "id": user_id,
                 "profile": {"display_name": "Cool User"},
                 "badges": [],
+                "deleted": False,
                 "pretalx_id": None,
                 "inactive": False,
             },
@@ -393,6 +395,7 @@ async def test_fetch_user():
                 user_id: {
                     "id": user_id,
                     "badges": [],
+                    "deleted": False,
                     "pretalx_id": None,
                     "inactive": False,
                     "profile": {"display_name": "Cool User"},
@@ -416,6 +419,7 @@ async def test_fetch_user():
                 "1337": {
                     "id": user_id,
                     "badges": [],
+                    "deleted": False,
                     "pretalx_id": "1337",
                     "inactive": False,
                     "profile": {"display_name": "Cool User"},
@@ -603,14 +607,49 @@ async def test_list_users(world):
                         "id": user_id,
                         "profile": {},
                         "moderation_state": "",
+                        "deleted": False,
                         "inactive": False,
                         "badges": [],
+                        "deleted": False,
                         "pretalx_id": None,
                         "token_id": None,
                     }
                 ]
             },
         ]
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_delete_user(world):
+    async with world_communicator() as c_admin:
+        token = get_token(world, ["admin"])
+        await c_admin.send_json_to(["authenticate", {"token": token}])
+        await c_admin.receive_json_from()
+        user_token = get_token(world, ["user"])
+
+        async with world_communicator() as c_user:
+            await c_user.send_json_to(["authenticate", {"token": user_token}])
+            response = await c_user.receive_json_from()
+            user_id = response[1]["user.config"]["id"]
+
+            await c_admin.send_json_to(["user.delete", 14, {"id": user_id}])
+            response = await c_admin.receive_json_from()
+            assert response[0] == "success"
+
+            await c_admin.send_json_to(["user.delete", 14, {"id": str(uuid.uuid4())}])
+            response = await c_admin.receive_json_from()
+            assert response[0] == "error"
+
+            assert ["connection.reload", {}] == await c_user.receive_json_from()
+            assert {"type": "websocket.close"} == await c_user.receive_output(timeout=3)
+
+        # New connect will be an entirely new user
+        async with world_communicator() as c_user:
+            await c_user.send_json_to(["authenticate", {"token": user_token}])
+            response = await c_user.receive_json_from()
+            new_user_id = response[1]["user.config"]["id"]
+            assert new_user_id != user_id
 
 
 @pytest.mark.asyncio

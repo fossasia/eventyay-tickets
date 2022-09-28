@@ -109,3 +109,25 @@ Endpoints
    :statuscode 400: The world could not be updated due to invalid submitted data.
    :statuscode 401: Authentication failure
    :statuscode 403: The requested organizer/event does not exist **or** you have no permission to create this resource.
+
+.. http:post:: /api/v1/worlds/(world_id)/delete_user
+
+   Deletes a given user by ID.
+
+   **Example request**:
+
+   .. sourcecode:: http
+
+      POST /api/v1/worlds/sample/delete_user HTTP/1.1
+      Accept: application/json, text/javascript
+      Content-Type: application/json
+
+      {
+        "user_id": "bbd1f53f-5340-4ba9-a9ff-ea5b843aa602"
+      }
+
+   **Example response**:
+
+   .. sourcecode:: http
+
+      HTTP/1.1 204 OK

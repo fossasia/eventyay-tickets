@@ -57,6 +57,7 @@ User objects currently contain the following properties:
   to perform silencing and banning.
 * ``inactive`` set to ``true`` if the user hasn't logged in in a while
 * ``token_id`` (external ID) Only set on users' profiles if you have admin permissions.
+* ``deleted`` (boolean) Set to ``true`` if the user has been soft-deleted
 
 Change user info
 ----------------

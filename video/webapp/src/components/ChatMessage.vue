@@ -1,5 +1,5 @@
 <template lang="pug">
-.c-chat-message(:class="[mode, {selected, readonly, 'system-message': isSystemMessage, 'merge-with-previous-message': mergeWithPreviousMessage, 'merge-with-next-message': mergeWithNextMessage}]")
+.c-chat-message(:class="[mode, {selected, readonly, 'system-message': isSystemMessage, 'merge-with-previous-message': mergeWithPreviousMessage, 'merge-with-next-message': mergeWithNextMessage, 'sender-deleted': sender.deleted}]")
 	.avatar-column
 		avatar(v-if="!mergeWithPreviousMessage", :user="sender", :size="avatarSize", @click.native="showAvatarCard", ref="avatar")
 		.timestamp(v-if="mergeWithPreviousMessage") {{ shortTimestamp }}
@@ -52,7 +52,7 @@
 					.edit-message(v-if="message.sender === user.id && message.content.type !== 'call'", @click="startEditingMessage") {{ $t('ChatMessage:message-edit:label') }}
 					.delete-message(@click="selected = false, showDeletePrompt = true") {{ $t('ChatMessage:message-delete:label') }}
 	template(v-else-if="message.event_type === 'channel.member'")
-		.system-content {{ sender.profile ? sender.profile.display_name : message.sender }} {{ message.content.membership === 'join' ? $t('ChatMessage:join-message:text') : $t('ChatMessage:leave-message:text') }}
+		.system-content {{ senderDisplayName }} {{ message.content.membership === 'join' ? $t('ChatMessage:join-message:text') : $t('ChatMessage:leave-message:text') }}
 	chat-user-card(v-if="showingAvatarCard", ref="avatarCard", :sender="sender", @close="showingAvatarCard = false")
 	prompt.delete-message-prompt(v-if="showDeletePrompt", @close="showDeletePrompt = false")
 		.prompt-content
@@ -142,6 +142,7 @@ export default {
 			return this.usersLookup[this.message.sender] || {id: this.message.sender, badges: {}}
 		},
 		senderDisplayName () {
+			if (this.sender.deleted) return this.$t('User:label:deleted')
 			return this.sender.profile?.display_name ?? this.message.sender ?? '(unknown user)'
 		},
 		timestamp () {
@@ -488,4 +489,8 @@ export default {
 	&.merge-with-previous-message
 		padding-top: 0
 		min-height: 0
+	&.sender-deleted
+		.display-name
+			color: $clr-disabled-text-light
+			text-decoration: line-through
 </style>

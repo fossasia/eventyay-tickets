@@ -326,6 +326,7 @@ class ChatService:
                 or len(users) < 2
                 or any(
                     any(v in u.blocked_users.all() for v in users if v != u)
+                    or u.deleted
                     for u in users
                 )
             ):

@@ -314,9 +314,7 @@ class World(VersionedModel):
         Feedback.objects.filter(world=self).delete()
 
         for f in StoredFile.objects.filter(world=self):
-            if f.file:
-                f.file.delete(False)
-            f.delete()
+            f.full_delete()
 
         self.user_set.all().delete()
         self.domain = None
