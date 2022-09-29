@@ -66,7 +66,7 @@ export default {
 			// current or next sessions per room
 			const sessions = []
 			for (const session of this.sessions) {
-				if (!session.room) continue
+				if (!session.room || !session.id) continue
 				if (session.end.isBefore(this.now) || sessions.reduce((acc, s) => s.room === session.room ? ++acc : acc, 0) >= 2) continue
 				sessions.push(session)
 			}
