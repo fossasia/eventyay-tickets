@@ -15,9 +15,8 @@ from django.shortcuts import get_object_or_404
 from django.utils.functional import cached_property
 from django.utils.timezone import is_naive
 from django.views import View
-from matplotlib import cbook, dates, pyplot, transforms
+from matplotlib import cbook, dates, pyplot
 from matplotlib.figure import Figure
-from matplotlib.patches import BoxStyle
 
 from venueless.core.models import Room, World
 from venueless.core.models.room import RoomView
