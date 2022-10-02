@@ -42,7 +42,8 @@ class Command(BaseCommand):  # pragma: no cover
                 )
                 return self.call_command(*args, **options)
 
-        if options["print_sql"]:
+        print_sql = options.pop("print_sql", None)
+        if print_sql:
             connection.force_debug_cursor = True
             logger = logging.getLogger("django.db.backends")
             logger.setLevel(logging.DEBUG)
@@ -77,4 +78,6 @@ class Command(BaseCommand):  # pragma: no cover
             import django_extensions  # noqa
 
             return call_command("shell_plus", *args, **options)
+
+        options.pop("print_sql", None)
         return call_command("shell", *args, **options)
