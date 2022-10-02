@@ -1,13 +1,16 @@
+import io
+from collections import defaultdict
 from urllib.parse import urlparse
 
 import vobject
 from csp.decorators import csp_update
 from django.conf import settings
 from django.core.files.storage import Storage
-from django.http import Http404, HttpResponse
+from django.http import FileResponse, Http404, HttpResponse
 from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
+from django.views.decorators.cache import cache_page
 from django.views.generic import DetailView, ListView, TemplateView
 from django_context_decorator import context
 
@@ -38,11 +41,14 @@ class SpeakerList(EventPermissionRequired, Filterable, ListView):
             .order_by("user__name")
         )
         qs = self.filter_queryset(qs)
-        all_talks = list(self.request.event.talks.all().prefetch_related("speakers"))
+
+        speaker_mapping = defaultdict(list)
+        for talk in self.request.event.talks.all().prefetch_related("speakers"):
+            for speaker in talk.speakers.all():
+                speaker_mapping[speaker.code].append(talk)
+
         for profile in qs:
-            profile.talks = [
-                talk for talk in all_talks if profile.user in talk.speakers.all()
-            ]
+            profile.talks = speaker_mapping[profile.user.code]
         return qs
 
 
@@ -136,3 +142,31 @@ class SpeakerSocialMediaCard(SocialMediaCardMixin, SpeakerView):
         if user.avatar:
             return user.avatar
         # TODO implement gravatar caching
+
+
+@cache_page(60 * 60)
+def empty_avatar_view(request, event):
+    # cached for an hour
+    color = request.event.primary_color or "#3aa57c"
+    avatar_template = f"""<svg
+   xmlns="http://www.w3.org/2000/svg"
+   viewBox="0 0 100 100">
+  <g>
+    <path
+       id="body"
+       d="m 2,98 h 96 0 c 0,0 6,-65 -48,-52 c 0,0 -54,-10 -48,52"
+       style="fill:none;stroke:{color};stroke-width:1.6;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:2.1, 2.1;stroke-dashoffset:0;stroke-opacity:0.87" />
+    <ellipse
+       ry="27"
+       rx="27"
+       cy="28"
+       cx="50"
+       id="heady"
+       style="fill:#ffffff;stroke:{color};stroke-width:1.3;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:6.5, 8;stroke-dashoffset:4;stroke-opacity:0.87" />
+  </g>
+</svg>"""
+    return FileResponse(
+        io.BytesIO(avatar_template.encode()),
+        as_attachment=True,
+        headers={"content-type": "image/svg+xml"},
+    )

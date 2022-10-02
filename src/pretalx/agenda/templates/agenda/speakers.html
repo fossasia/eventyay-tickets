@@ -1,6 +1,7 @@
 {% extends "agenda/base.html" %}
 {% load compress %}
 {% load i18n %}
+{% load rich_text %}
 {% load static %}
 
 {% block agenda_content %}
@@ -10,14 +11,29 @@
         <section style="--track-color: {{ request.event.primary_color|default:'#3aa57c' }}" class="pretalx-list-day">
             {% for speaker in speakers %}
                 <a href="{{ speaker.urls.public }}">
-                    {% include "agenda/speaker_block.html" with speaker=speaker %}
+                    <div class="pretalx-session">
+                        <div class="pretalx-session-time-box avatar">
+                            <div class="avatar-wrapper">
+                                {% if speaker.user.avatar_url and request.event.cfp.request_avatar %}
+                                    <img src="{{ speaker.user.avatar_url }}">
+                                {% else %}
+                                    <img src="{{ request.event.urls.speakers }}avatar.svg">
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="pretalx-session-info">
+                            <div class="title">
+                                {{ speaker.user.get_display_name }}
+                            </div>
+                            <div class="abstract">{{ speaker.biography|default:''|rich_text_without_links }}</div>
+                            <ul>
+                                {% for talk in speaker.talks %}
+                                    <li>{{ talk.title }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
                 </a>
-            {% empty %}
-                {% if search %}
-                    {% blocktranslate trimmed %}
-                        No speaker matches your search.
-                    {% endblocktranslate %}
-                {% endif %}
             {% endfor %}
         </section>
     </article>
