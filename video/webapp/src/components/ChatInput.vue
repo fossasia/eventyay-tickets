@@ -28,7 +28,6 @@ bunt-input-outline-container.c-chat-input
 // - add scrollbar when overflowing parent
 import api from 'lib/api'
 import Quill from 'quill'
-import 'quill/dist/quill.core.css'
 import EmojiPickerButton from 'components/EmojiPickerButton'
 import UploadButton from 'components/UploadButton'
 import { nativeToStyle as nativeEmojiToStyle, nativeToOps, objectToCssString } from 'lib/emoji'
@@ -176,8 +175,6 @@ export default {
 		padding: 8px 60px 6px 36px
 	.ql-editor
 		font-size: 16px
-		padding: 0
-		font-family: $font-stack
 		&.ql-blank::before
 			font-style: normal
 			color: var(--clr-text-secondary)

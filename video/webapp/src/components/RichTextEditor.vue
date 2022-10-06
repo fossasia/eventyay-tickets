@@ -35,7 +35,6 @@ bunt-input-outline-container.c-rich-text-editor(ref="outline", :label="label")
 <script>
 /* global ENV_DEVELOPMENT */
 import Quill from 'quill'
-import 'quill/dist/quill.core.css'
 import BuntTheme from 'lib/quill/BuntTheme'
 import VideoResponsive from 'lib/quill/VideoResponsive'
 import fullWidthFormat from 'lib/quill/fullWidthFormat'
@@ -129,8 +128,6 @@ export default {
 }
 </script>
 <style lang="stylus">
-@import 'typography'
-
 .c-rich-text-editor
 	padding-top: 0
 	position: relative
@@ -222,29 +219,4 @@ export default {
 
 	.ql-tooltip[data-mode=link]::before
 		content: "Enter link:"
-
-	.ql-container
-		font-family: $font-stack
-
-	.ql-editor
-		typography()
-
-		> *, p, h1, h2, h3, h4, h5, h6, blockquote, li, pre
-			max-width: 960px
-			margin: 0 auto
-		ul, ol
-			margin: 0
-			padding: 0
-			max-width: none
-			li
-				list-style-position: inside
-		img
-			margin: 0 auto
-			display: block
-		.ql-full-width-true
-			margin: 0
-			max-width: none
-
-		ol li::before, ul li::before
-			content: ""
 </style>
