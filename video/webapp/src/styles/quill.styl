@@ -1,0 +1,57 @@
+@import 'variables'
+@import 'typography'
+.ql-container
+	font-family: $font-stack
+	font-size: 14px
+	height: initial
+
+	.ql-editor
+		typography()
+		padding: 0
+		> *, p, h1, h2, h3, h4, h5, h6, blockquote, ul, ol, pre
+			margin: 0
+
+.rich-text-content .ql-editor
+	> *, p, h1, h2, h3, h4, h5, h6, blockquote, li, pre
+		max-width: 960px
+		margin: 0 auto
+		+below('m')
+			margin: 0 16px
+	ul, ol
+		margin: 0
+		padding: 0
+		max-width: none
+		li
+			list-style-position: inside
+	img
+		margin: 0 auto
+		display: block
+		max-width: 100%
+	.ql-full-width-true
+		margin: 0
+		max-width: none
+
+	ol li::before, ul li::before
+		content: ""
+
+	a:hover, a[href]:not([class]):hover
+		text-decoration: underline
+
+	li
+		line-height: 1.6
+
+	.ql-syntax
+		font-size: 1.2em
+
+	.ql-video-inner
+		height: 0
+		width: 100%
+		padding-top: 56.25%
+		position: relative
+
+		.c-iframe-blocker
+			position: absolute
+			top: 0
+			left: 0
+			width: 100%
+			height: 100%
