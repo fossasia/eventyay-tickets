@@ -39,7 +39,7 @@ xlrd~=1.2.0  # do not update, 2.x does not support .xlsx, only .xls
 Twisted==20.3.0  # see https://github.com/django/daphne/pull/359 and https://github.com/django/channels/issues/1639
 
 # deploy
-psycopg2-binary==2.9.3
+psycopg2-binary==2.9.4
 gunicorn==20.1.0
 uvicorn[standard]==0.18.3
 
