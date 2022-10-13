@@ -52,7 +52,7 @@ If you're sure that you know what you're doing, you can also install a specific
 commit or branch of pretalx. You can replace ``main`` with a short or long
 commit ID for a specific commit::
 
-    $ pip3 install --user --upgrade-strategy eager -U "git+git://github.com/pretalx/pretalx.git@main#egg=pretalx&subdirectory=src"
+    $ pip3 install --user --upgrade-strategy eager -U "git+https://github.com/pretalx/pretalx.git@main#egg=pretalx&subdirectory=src"
 
 
 Backups
