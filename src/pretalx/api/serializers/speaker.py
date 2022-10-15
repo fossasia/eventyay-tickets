@@ -37,6 +37,13 @@ class SpeakerSerializer(ModelSerializer):
     avatar = SerializerMethodField()
     submissions = SerializerMethodField()
 
+    def __init__(self, *args, **kwargs):
+        questions = kwargs.pop("questions", [])
+        self.questions = (
+            questions if questions == "all" else [q for q in questions if q]
+        )
+        super().__init__(*args, **kwargs)
+
     @staticmethod
     def get_avatar(obj):
         return obj.user.get_avatar_url(event=obj.event)
@@ -57,10 +64,21 @@ class SpeakerSerializer(ModelSerializer):
 
 class SpeakerOrgaSerializer(SpeakerSerializer):
     email = CharField(source="user.email")
-    answers = AnswerSerializer(Answer.objects.none(), many=True, read_only=True)
+    answers = SerializerMethodField()
     availabilities = AvailabilitySerializer(
         Availability.objects.none(), many=True, read_only=True
     )
+
+    def answers_queryset(self, obj):
+        return obj.answers.all()
+
+    def get_answers(self, obj):
+        if not self.questions:
+            return []
+        queryset = self.answers_queryset(obj)
+        if self.questions not in ["all", ["all"]]:
+            queryset = queryset.filter(question__in=self.questions)
+        return AnswerSerializer(queryset, many=True).data
 
     def get_submissions(self, obj):
         return obj.user.submissions.filter(event=obj.event).values_list(
@@ -72,7 +90,9 @@ class SpeakerOrgaSerializer(SpeakerSerializer):
 
 
 class SpeakerReviewerSerializer(SpeakerOrgaSerializer):
-    answers = AnswerSerializer(many=True, source="reviewer_answers")
+
+    def answers_queryset(self, obj):
+        return obj.reviewer_answers.all()
 
     class Meta(SpeakerOrgaSerializer.Meta):
         pass

@@ -31,7 +31,7 @@ content_locale                        string                     The language th
 slot                                  object                     An object with the scheduling details, e.g. ``{"start": …, "end": …, "room": "R101"}`` if they exist. This will not be present til after the schedule is released.
 slot_count                            number                     How often this submission may be scheduled.
 image                                 string                     The submission image URL
-answers                               list                       The question answers given by the speakers. Available if the requesting user has organiser permissions.
+answers                               list                       The question answers given by the speakers. Available if the requesting user has organiser permissions, and if the ``questions`` query parameter is passed.
 notes                                 string                     Notes the speaker left for the organisers. Available if the requesting user has organiser permissions.
 internal_notes                        string                     Notes the organisers left on the submission. Available if the requesting user has organiser permissions.
 resources                             object                     Files the speaker has uploaded for this submission. ``{"resource": "/path/to/file", "description": "Slides"}``
@@ -43,6 +43,9 @@ tags                                  list                       The tags attach
 
 .. versionadded:: 2.2.0
    The ``tags`` field was added in pretalx v2.2.0.
+
+.. versionchanged:: 3.0.0
+   The ``answers`` field was turned off by default in pretalx v3.0.0. Pass the ``questions`` query parameter to see questions, and pass ``questions=all`` to get the previous behaviour.
 
 
 Endpoints
@@ -117,6 +120,7 @@ Endpoints
    :query anon: Send the ``anon`` parameter with any value to receive anonymised data even when you have permissions to see the full data set.
    :query submission_type: Filter submissions by submission type
    :query state: Filter submission by state. Will filter by multiple states if you provide multiple state arguments.
+   :query questions: Pass a comma separated list of question IDs to load, or the string 'all' to return all answers.
 
 .. http:get:: /api/events/(event)/submissions/{code}
 
@@ -174,6 +178,7 @@ Endpoints
    :param event: The ``slug`` field of the event to fetch
    :param code: The ``code`` field of the submission to fetch
    :query anon: Send the ``anon`` parameter with any value to receive anonymised data even when you have permissions to see the full data set.
+   :query questions: Pass a comma separated list of question IDs to load, or the string 'all' to return all answers.
    :statuscode 200: no error
    :statuscode 401: Authentication failure
    :statuscode 403: The requested event does not exist **or** you have no permission to view it.

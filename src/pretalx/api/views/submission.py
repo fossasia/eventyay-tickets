@@ -1,4 +1,5 @@
 from django.http import Http404
+from django.utils.functional import cached_property
 from django_filters import rest_framework as filters
 from django_scopes import scopes_disabled
 from rest_framework import viewsets
@@ -58,6 +59,10 @@ class SubmissionViewSet(viewsets.ReadOnlyModelViewSet):
             return SubmissionReviewerSerializer
         return SubmissionSerializer
 
+    @cached_property
+    def serializer_questions(self):
+        return (self.request.query_params.get("questions") or "").split(",")
+
     def get_serializer(self, *args, **kwargs):
         can_view_speakers = self.request.user.has_perm(
             "agenda.view_schedule", self.request.event
@@ -68,6 +73,7 @@ class SubmissionViewSet(viewsets.ReadOnlyModelViewSet):
             *args,
             can_view_speakers=can_view_speakers,
             event=self.request.event,
+            questions=self.serializer_questions,
             **kwargs
         )
 

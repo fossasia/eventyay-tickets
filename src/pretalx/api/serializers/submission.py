@@ -94,6 +94,10 @@ class SubmissionSerializer(I18nAwareModelSerializer):
     def __init__(self, *args, **kwargs):
         self.can_view_speakers = kwargs.pop("can_view_speakers", False)
         self.event = kwargs.pop("event", None)
+        questions = kwargs.pop("questions", [])
+        self.questions = (
+            questions if questions == "all" else [q for q in questions if q]
+        )
         super().__init__(*args, **kwargs)
         for field in ("title", "abstract", "description"):
             setattr(self, f"get_{field}", partial(self.get_attribute, attribute=field))
@@ -127,11 +131,22 @@ class TagSerializer(I18nAwareModelSerializer):
 
 
 class SubmissionOrgaSerializer(SubmissionSerializer):
-    answers = AnswerSerializer(many=True)
+    answers = SerializerMethodField()
     tags = SerializerMethodField()
     created = SerializerMethodField()
 
     speaker_serializer_class = SubmitterOrgaSerializer
+
+    def answers_queryset(self, obj):
+        return obj.answers.all()
+
+    def get_answers(self, obj):
+        if not self.questions:
+            return []
+        queryset = self.answers_queryset(obj)
+        if self.questions not in ["all", ["all"]]:
+            queryset = queryset.filter(question__in=self.questions)
+        return AnswerSerializer(queryset, many=True).data
 
     def get_created(self, obj):
         return obj.created.astimezone(obj.event.tz).isoformat()
@@ -151,7 +166,9 @@ class SubmissionOrgaSerializer(SubmissionSerializer):
 
 
 class SubmissionReviewerSerializer(SubmissionOrgaSerializer):
-    answers = AnswerSerializer(many=True, source="reviewer_answers")
+
+    def answers_queryset(self, obj):
+        return obj.reviewer_answers.all()
 
     class Meta(SubmissionOrgaSerializer.Meta):
         pass

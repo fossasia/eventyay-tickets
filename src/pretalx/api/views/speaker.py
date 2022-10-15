@@ -1,4 +1,5 @@
 from rest_framework import viewsets
+from django.utils.functional import cached_property
 
 from pretalx.api.serializers.speaker import (
     SpeakerOrgaSerializer,
@@ -15,12 +16,23 @@ class SpeakerViewSet(viewsets.ReadOnlyModelViewSet):
     filterset_fields = ("user__name", "user__email")
     search_fields = ("user__name", "user__email")
 
+    @cached_property
+    def serializer_questions(self):
+        return (self.request.query_params.get("questions") or "").split(",")
+
     def get_serializer_class(self):
         if self.request.user.has_perm("orga.change_submissions", self.request.event):
             return SpeakerOrgaSerializer
         if self.request.user.has_perm("orga.view_speakers", self.request.event):
             return SpeakerReviewerSerializer
         return SpeakerSerializer
+
+    def get_serializer(self, *args, **kwargs):
+        return super().get_serializer(
+            *args,
+            questions=self.serializer_questions,
+            **kwargs,
+        )
 
     def get_base_queryset(self):
         if self.request.user.has_perm("orga.view_speakers", self.request.event):

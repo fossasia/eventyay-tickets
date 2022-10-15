@@ -18,10 +18,14 @@ submissions                           list                       A list of submi
 avatar                                string                     The speaker avatar URL
 email                                 string                     The speaker's email address. Available if the requesting user has organiser privileges.
 availabilities                        list                       A list of availability objects, containing the fields ``id``, ``start``, ``end``, and ``allDay`` for each availability object. Available if the requesting user has organiser privileges.
+answers                               list                       The question answers given by the speakers. Available if the requesting user has organiser permissions, and if the ``questions`` query parameter is passed.
 ===================================== ========================== =======================================================
 
 .. versionadded:: 1.1.0
    The ``availabilities`` field for organisers was added in pretalx v1.1.0.
+
+.. versionadded:: 3.0.0
+   The ``answers`` field for organisers was added in pretalx v3.0.0. You need to pass the ``questions`` query parameter to populate this field. You can set it to ``all`` to retrieve answers to all speaker questions.
 
 Endpoints
 ---------
@@ -72,6 +76,7 @@ Endpoints
    :param event: The ``slug`` field of the event to fetch
    :query page: The page number in case of a multi-page result set, default is 1
    :query q: Search through speakers by name
+   :query questions: Pass a comma separated list of question IDs to load, or the string 'all' to return all answers.
 
 .. http:get:: /api/events/(event)/speakers/{code}/
 
@@ -108,6 +113,7 @@ Endpoints
 
    :param event: The ``slug`` field of the event to fetch
    :param code: The ``code`` field of the speaker to fetch
+   :query questions: Pass a comma separated list of question IDs to load, or the string 'all' to return all answers.
    :statuscode 200: no error
    :statuscode 401: Authentication failure
    :statuscode 403: The requested event does not exist **or** you have no permission to view it.

@@ -173,7 +173,9 @@ def test_can_only_see_public_submissions_if_public_schedule(
 def test_orga_can_see_all_submissions(
     orga_client, slot, accepted_submission, rejected_submission, submission, answer
 ):
-    response = orga_client.get(submission.event.api_urls.submissions, follow=True)
+    response = orga_client.get(
+        submission.event.api_urls.submissions + "?questions=all", follow=True
+    )
     content = json.loads(response.content.decode())
 
     assert response.status_code == 200
@@ -183,6 +185,23 @@ def test_orga_can_see_all_submissions(
         [submission for submission in content["results"] if submission["answers"] == []]
     )
     assert len(
+        [submission for submission in content["results"] if submission["answers"] != []]
+    )
+
+
+@pytest.mark.django_db
+def test_orga_can_see_all_submissions_wrong_question(
+    orga_client, slot, accepted_submission, rejected_submission, submission, answer
+):
+    response = orga_client.get(
+        submission.event.api_urls.submissions + "?questions=1212112", follow=True
+    )
+    content = json.loads(response.content.decode())
+
+    assert response.status_code == 200
+    assert content["count"] == 4
+    assert content["results"][0]["title"] == slot.submission.title
+    assert not len(
         [submission for submission in content["results"] if submission["answers"] != []]
     )
 
@@ -215,7 +234,10 @@ def test_answer_is_visible_to_reviewers(
         question.is_visible_to_reviewers = is_visible_to_reviewers
         question.save()
 
-    response = orga_client.get(submission.event.api_urls.submissions, follow=True)
+    response = orga_client.get(
+        submission.event.api_urls.submissions + f"?questions={answer.question_id}",
+        follow=True,
+    )
     content = json.loads(response.content.decode())
 
     assert response.status_code == 200
