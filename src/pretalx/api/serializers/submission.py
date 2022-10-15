@@ -166,7 +166,6 @@ class SubmissionOrgaSerializer(SubmissionSerializer):
 
 
 class SubmissionReviewerSerializer(SubmissionOrgaSerializer):
-
     def answers_queryset(self, obj):
         return obj.reviewer_answers.all()
 

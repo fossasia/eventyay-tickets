@@ -4,7 +4,6 @@ from pretalx.api.serializers.question import AnswerSerializer
 from pretalx.api.serializers.room import AvailabilitySerializer
 from pretalx.person.models import SpeakerProfile, User
 from pretalx.schedule.models import Availability
-from pretalx.submission.models import Answer
 
 
 class SubmitterSerializer(ModelSerializer):
@@ -90,7 +89,6 @@ class SpeakerOrgaSerializer(SpeakerSerializer):
 
 
 class SpeakerReviewerSerializer(SpeakerOrgaSerializer):
-
     def answers_queryset(self, obj):
         return obj.reviewer_answers.all()
 

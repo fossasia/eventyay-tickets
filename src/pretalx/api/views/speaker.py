@@ -1,5 +1,5 @@
-from rest_framework import viewsets
 from django.utils.functional import cached_property
+from rest_framework import viewsets
 
 from pretalx.api.serializers.speaker import (
     SpeakerOrgaSerializer,

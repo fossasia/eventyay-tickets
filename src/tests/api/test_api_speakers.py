@@ -95,7 +95,9 @@ def test_speaker_answer_is_visible_to_reviewers(
         question.is_visible_to_reviewers = is_visible_to_reviewers
         question.save()
 
-    response = orga_client.get(submission.event.api_urls.speakers + "?questions=all", follow=True)
+    response = orga_client.get(
+        submission.event.api_urls.speakers + "?questions=all", follow=True
+    )
     content = json.loads(response.content.decode())
 
     assert response.status_code == 200
@@ -156,7 +158,11 @@ def test_orga_can_see_all_speakers(
     submission,
     impersonal_answer,
 ):
-    response = orga_client.get(submission.event.api_urls.speakers + f"?questions={impersonal_answer.question_id}", follow=True)
+    response = orga_client.get(
+        submission.event.api_urls.speakers
+        + f"?questions={impersonal_answer.question_id}",
+        follow=True,
+    )
     content = json.loads(response.content.decode())
 
     assert response.status_code == 200
