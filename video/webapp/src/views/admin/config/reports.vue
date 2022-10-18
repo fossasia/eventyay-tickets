@@ -26,6 +26,9 @@
 		h3 Questions
 		bunt-select(v-model="questionRoom", label="Room", name="questionRoom", :options="questionRooms", option-label="name")
 		bunt-button.btn-generate(@click="run('question_history', {room: questionRoom})", :disabled="!questionRoom", :error="task == 'question_history' && error") Generate XLSX
+		h3 Polls
+		bunt-select(v-model="pollRoom", label="Room", name="pollRoom", :options="pollRooms", option-label="name")
+		bunt-button.btn-generate(@click="run('poll_history', {room: pollRoom})", :disabled="!pollRoom", :error="task == 'poll_history' && error") Generate XLSX
 	transition(name="prompt")
 		prompt.report-result-prompt(v-if="running || result", @close="clear")
 			.content
@@ -56,6 +59,7 @@ export default {
 			time_end: '19:00',
 			channel: null,
 			questionRoom: null,
+			pollRoom: null,
 			resultid: null,
 			result: null,
 			running: false,
@@ -69,6 +73,11 @@ export default {
 		questionRooms () {
 			const r = []
 			r.push(...this.$store.state.rooms.filter((room) => room.modules.filter(m => m.type === 'question').length))
+			return r
+		},
+		pollRooms () {
+			const r = []
+			r.push(...this.$store.state.rooms.filter((room) => room.modules.filter(m => m.type === 'poll').length))
 			return r
 		},
 		channels () {
