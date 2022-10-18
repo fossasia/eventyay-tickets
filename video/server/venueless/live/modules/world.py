@@ -17,6 +17,7 @@ from venueless.core.services.world import (
 from venueless.graphs.tasks import (
     generate_attendee_list,
     generate_chat_history,
+    generate_poll_history,
     generate_question_history,
     generate_report,
     generate_room_views,
@@ -194,6 +195,16 @@ class WorldModule(BaseModule):
     )  # to be safe, "graphs" suggests only statistical data
     async def question_history_generate(self, body):
         result = await sync_to_async(generate_question_history.apply_async)(
+            kwargs={"world": str(self.consumer.world.id), "input": body}
+        )
+        await self.consumer.send_success({"resultid": str(result.id)})
+
+    @command("report.generate.poll_history")
+    @require_world_permission(
+        Permission.WORLD_UPDATE
+    )  # to be safe, "graphs" suggests only statistical data
+    async def question_poll_generate(self, body):
+        result = await sync_to_async(generate_poll_history.apply_async)(
             kwargs={"world": str(self.consumer.world.id), "input": body}
         )
         await self.consumer.send_success({"resultid": str(result.id)})

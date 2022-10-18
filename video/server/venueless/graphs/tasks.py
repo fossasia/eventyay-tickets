@@ -13,7 +13,7 @@ from openpyxl import Workbook
 from openpyxl.utils import get_column_letter
 
 from venueless.celery_app import app
-from venueless.core.models import Channel, ExhibitorView, Room, RoomView
+from venueless.core.models import Channel, ExhibitorView, PollVote, Room, RoomView
 from venueless.core.models.world import WorldView
 from venueless.core.tasks import WorldTask
 from venueless.graphs.report import ReportGenerator
@@ -474,6 +474,59 @@ def generate_views(world, input=None):
                 + [
                     (u.profile["fields"].get(n.get("id"), "") or "").strip()
                     for n in world.config.get("profile_fields", [])
+                ]
+            )
+
+    wb.save(io)
+    io.seek(0)
+
+    sf = StoredFile.objects.create(
+        world=world,
+        date=now(),
+        filename="report.xlsx",
+        expires=now() + timedelta(hours=2),
+        type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        public=True,
+        user=None,
+    )
+    sf.file.save("report.xlsx", ContentFile(io.read()))
+    return sf.file.url
+
+
+@app.task(base=WorldTask)
+def generate_poll_history(world, input=None):
+    room = Room.objects.get(pk=input.get("room"))
+    io = BytesIO()
+
+    wb = Workbook(write_only=True)
+
+    for poll in room.polls.all():
+        name = re.sub("[^a-zA-Z0-9 ]", "", poll.content)[:30]
+        ws = wb.create_sheet(name)
+
+        ws.freeze_panes = "A4"
+        ws.column_dimensions["A"].width = 30
+        ws.column_dimensions["B"].width = 15
+        ws.column_dimensions["C"].width = 15
+        ws.column_dimensions["D"].width = 30
+
+        ws.append([poll.content])
+        ws.append([])
+
+        header = ["Option", "Internal ID", "External ID", "Name"]
+        ws.append(header)
+
+        for v in (
+            PollVote.objects.filter(option__poll=poll)
+            .order_by("option__order", "option__id")
+            .select_related("option", "sender")
+        ):
+            ws.append(
+                [
+                    v.option.content,
+                    str(v.sender.pk),
+                    str(v.sender.token_id) if v.sender.token_id else "",
+                    v.sender.profile.get("display_name") or "",
                 ]
             )
 
