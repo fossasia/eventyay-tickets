@@ -19,7 +19,8 @@
 		bunt-button.btn-secondary(v-if="world.pretalx", @click="generateSessionviews", :error="task == 'sessionviews' && error") Session activity (XLSX)
 		bunt-button.btn-secondary(@click="generateViews", :error="task == 'views' && error") Raw tracking data (XLSX)
 		h3 Attendee list
-		bunt-button.btn-generate(@click="run('attendee_list', {})", :error="task == 'attendee_list' && error") Generate XLSX
+		bunt-button.btn-generate(@click="run('attendee_list', {})", :error="task == 'attendee_list' && error") Generate XLSX for event
+		bunt-button.btn-generate(@click="run('attendee_session_list', {})", :error="task == 'attendee_session_list' && error") Generate XLSX per session
 		h3 Chat history
 		bunt-select(v-model="channel", label="Room", name="channel", :options="channels", option-label="name")
 		bunt-button.btn-generate(@click="run('chat_history', {channel})", :disabled="!channel", :error="task == 'chat_history' && error") Generate XLSX
