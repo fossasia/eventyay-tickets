@@ -96,11 +96,7 @@ def get_schedule(world: World, fail_silently=True):
         domain = pretalx_config.get("domain")
         if not domain.endswith("/"):
             domain += "/"
-        url = (
-            pretalx_config["domain"]
-            + pretalx_config["event"]
-            + "/schedule/widget/v2.json"
-        )
+        url = domain + pretalx_config["event"] + "/schedule/widget/v2.json"
     else:
         return {}
 

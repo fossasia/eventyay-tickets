@@ -6,14 +6,14 @@ from io import BytesIO
 import dateutil
 import pytz
 from django.core.files.base import ContentFile
-from django.db.models import Q
+from django.db.models import Prefetch, Q
 from django.utils.timezone import is_naive, make_aware, now
 from django.utils.translation import override
 from openpyxl import Workbook
 from openpyxl.utils import get_column_letter
 
 from venueless.celery_app import app
-from venueless.core.models import Channel, ExhibitorView, PollVote, Room, RoomView
+from venueless.core.models import Channel, ExhibitorView, PollVote, Room, RoomView, User
 from venueless.core.models.world import WorldView
 from venueless.core.tasks import WorldTask
 from venueless.graphs.report import ReportGenerator
@@ -527,6 +527,106 @@ def generate_poll_history(world, input=None):
                     str(v.sender.pk),
                     str(v.sender.token_id) if v.sender.token_id else "",
                     v.sender.profile.get("display_name") or "",
+                ]
+            )
+
+    wb.save(io)
+    io.seek(0)
+
+    sf = StoredFile.objects.create(
+        world=world,
+        date=now(),
+        filename="report.xlsx",
+        expires=now() + timedelta(hours=2),
+        type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        public=True,
+        user=None,
+    )
+    sf.file.save("report.xlsx", ContentFile(io.read()))
+    return sf.file.url
+
+
+@app.task(base=WorldTask)
+def generate_attendee_session_list(world, input=None):
+    io = BytesIO()
+    tz = pytz.timezone(world.timezone)
+
+    wb = Workbook(write_only=True)
+
+    header = ["Internal ID", "External ID", "Name", "Duration (minutes)"]
+    for f in world.config.get("profile_fields", []):
+        header.append(f.get("label"))
+
+    room_cache = {r.pretalx_id: r for r in world.rooms.filter(deleted=False)}
+    schedule = get_schedule(world, fail_silently=False)
+    for talk in schedule.get("talks", []):
+        name = re.sub("[^a-zA-Z0-9 ]", "", pretalx_uni18n(talk["title"]))[:30]
+        ws = wb.create_sheet(name)
+        ws.freeze_panes = "A4"
+        ws.column_dimensions["A"].width = 40
+        ws.column_dimensions["B"].width = 30
+        ws.column_dimensions["C"].width = 40
+        ws.column_dimensions["D"].width = 20
+        for j in range(len(world.config.get("profile_fields", []))):
+            ws.column_dimensions[get_column_letter(5 + j)].width = 30
+
+        talk_start = dateutil.parser.parse(talk["start"])
+        talk_end = dateutil.parser.parse(talk["end"])
+
+        ws.append([pretalx_uni18n(talk["title"])])
+        ws.append(
+            [
+                room_cache[talk["room"]].name if talk["room"] in room_cache else "?",
+                talk_start.astimezone(tz).date(),
+                talk_start.astimezone(tz).time(),
+                talk_end.astimezone(tz).time(),
+            ]
+        )
+
+        ws.append(header)
+
+        try:
+            qs = User.objects.filter(world=world).prefetch_related(
+                Prefetch(
+                    "views",
+                    queryset=RoomView.objects.filter(
+                        room__pretalx_id=talk["room"]
+                    ).exclude(Q(end__lt=talk_start) | Q(start__gt=talk_end)),
+                    to_attr="room_views_for_talk",
+                )
+            )
+        except ValueError:  # e.g. pretalx_id not numeric
+            continue
+
+        for u in qs:
+            if not u.room_views_for_talk:
+                continue
+
+            # This is not entirely precise if there are multiple overlapping intervals because the user watched with
+            # multiple devices, but it's good enough for us
+            sum_views = min(
+                sum(
+                    (
+                        min(v.end or min(now(), v.start + timedelta(hours=3)), talk_end)
+                        - max(v.start, talk_start)
+                        for v in u.room_views_for_talk
+                    ),
+                    timedelta(seconds=0),
+                ),
+                talk_end - talk_start,
+            )
+
+            ws.append(
+                [
+                    str(u.pk),
+                    str(u.token_id) if u.token_id else "",
+                    u.profile.get("display_name") or "",
+                    sum_views.total_seconds() // 60,
+                    ",".join(t for t in u.traits),
+                ]
+                + [
+                    u.profile.get("fields", {}).get(f.get("id") or f.get("label")) or ""
+                    for j, f in enumerate(world.config.get("profile_fields", []))
                 ]
             )
 

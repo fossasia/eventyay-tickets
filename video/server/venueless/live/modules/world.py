@@ -16,6 +16,7 @@ from venueless.core.services.world import (
 )
 from venueless.graphs.tasks import (
     generate_attendee_list,
+    generate_attendee_session_list,
     generate_chat_history,
     generate_poll_history,
     generate_question_history,
@@ -223,6 +224,14 @@ class WorldModule(BaseModule):
     @require_world_permission(Permission.WORLD_GRAPHS)
     async def attendee_list_generate(self, body):
         result = await sync_to_async(generate_attendee_list.apply_async)(
+            kwargs={"world": str(self.consumer.world.id), "input": body}
+        )
+        await self.consumer.send_success({"resultid": str(result.id)})
+
+    @command("report.generate.attendee_session_list")
+    @require_world_permission(Permission.WORLD_GRAPHS)
+    async def attendee_session_list_generate(self, body):
+        result = await sync_to_async(generate_attendee_session_list.apply_async)(
             kwargs={"world": str(self.consumer.world.id), "input": body}
         )
         await self.consumer.send_success({"resultid": str(result.id)})
