@@ -8,6 +8,16 @@ from pretalx.submission.models import Submission
 @scopes_disabled()
 @transaction.atomic
 def move_submission(code, new_event):
+    """
+    Caution! Does not include
+    - submission type mapping (resets to default)
+    - probably buggy with resources
+    - questions with options (choice/multiple choice)
+    - other questions only if they are an exact string match
+    - tags
+    - tracks
+    - review scores, presumably
+    """
     submission = Submission.objects.get(code__iexact=code)
     old_event = submission.event
     new_event = Event.objects.get(slug__iexact=new_event)
@@ -21,6 +31,7 @@ def move_submission(code, new_event):
     }
 
     submission.event = new_event
+    submission.submission_type = event.default_submission_type
     submission.save()
 
     for answer in (
