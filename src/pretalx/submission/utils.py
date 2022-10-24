@@ -8,8 +8,8 @@ from pretalx.submission.models import Submission
 @scopes_disabled()
 @transaction.atomic
 def move_submission(code, new_event):
-    """
-    Caution! Does not include
+    """Caution! Does not include.
+
     - submission type mapping (resets to default)
     - probably buggy with resources
     - questions with options (choice/multiple choice)
@@ -31,7 +31,7 @@ def move_submission(code, new_event):
     }
 
     submission.event = new_event
-    submission.submission_type = event.default_submission_type
+    submission.submission_type = new_event.default_submission_type
     submission.save()
 
     for answer in (
