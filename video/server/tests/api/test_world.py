@@ -44,6 +44,7 @@ def test_delete_user(client, world):
     world.trait_grants["admin"] = ["blafasel"]
     world.save()
     u1 = create_user(world_id="sample", client_id="1234")
+    u2 = create_user(world_id="sample", token_id="5432")
 
     r = client.post(
         "/api/v1/worlds/sample/delete_user",
@@ -62,6 +63,15 @@ def test_delete_user(client, world):
     assert r.status_code == 204
     u1.refresh_from_db()
     assert not u1.client_id
+
+    r = client.post(
+        "/api/v1/worlds/sample/delete_user",
+        {"token_id": u2.token_id},
+        HTTP_AUTHORIZATION=get_token_header(world, ["foobartrait", "admin", "api"]),
+    )
+    assert r.status_code == 204
+    u1.refresh_from_db()
+    assert not u1.token_id
 
 
 @pytest.mark.django_db

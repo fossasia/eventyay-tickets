@@ -127,12 +127,18 @@ def delete_user(request, **kwargs):
 
     This endpoint is called with a single POST parameter, 'user_id'."""
     user_id = request.data.get("user_id")
-    if not user_id:
-        return Response("Missing user ID.", status=401)
+    token_id = request.data.get("token_id")
+    if not user_id and not token_id:
+        return Response("Missing user ID.", status=400)
+    if user_id and token_id:
+        return Response("Ambiguous user ID.", status=400)
 
     user = None
     with suppress(exceptions.ValidationError):  # raised when user_id isn't a uid
-        user = User.objects.filter(id=user_id, deleted=False).first()
+        if user_id:
+            user = User.objects.filter(id=user_id, deleted=False).first()
+        elif token_id:
+            user = User.objects.filter(token_id=token_id, deleted=False).first()
     if not user:
         return Response(status=404)
 
