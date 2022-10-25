@@ -144,6 +144,6 @@ def test_admin_delete_user_missing_id(client, world, event_user):
         HTTP_AUTHORIZATION="Bearer " + token,
         data={"user": str(event_user.id)},
     )
-    assert r.status_code == 401
+    assert r.status_code == 400
     event_user.refresh_from_db()
     assert event_user.deleted is False
