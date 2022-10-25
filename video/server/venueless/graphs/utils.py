@@ -121,4 +121,4 @@ def pretalx_uni18n(i18nstring, locale="en"):
         return i18nstring[locale]
     if i18nstring.get("en"):
         return i18nstring["en"]
-    return next(i18nstring.values())
+    return list(i18nstring.values())[0]
