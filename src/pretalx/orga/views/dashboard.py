@@ -14,7 +14,7 @@ from pretalx.common.mixins.views import EventPermissionRequired, PermissionRequi
 from pretalx.common.models.log import ActivityLog
 from pretalx.event.models import Event, Organiser
 from pretalx.event.stages import get_stages
-from pretalx.submission.models.submission import SubmissionStates
+from pretalx.submission.models import Review, SubmissionStates
 
 
 def start_redirect_view(request):
@@ -158,6 +158,22 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
                     else None,
                 }
             )
+        if self.request.is_reviewer:
+            reviews_missing = Review.find_missing_reviews(
+                self.request.event, self.request.user
+            ).count()
+            if reviews_missing:
+                result.append(
+                    {
+                        "large": reviews_missing,
+                        "small": ngettext_lazy(
+                            _("proposal is waiting for your review."),
+                            _("proposals are waiting for your review."),
+                            reviews_missing,
+                        ),
+                        "url": self.request.event.orga_urls.reviews,
+                    }
+                )
         return result
 
     @context

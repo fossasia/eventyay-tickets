@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ngettext_lazy
 from django.views.generic import FormView, ListView, TemplateView, View
 from django_context_decorator import context
 
@@ -143,11 +144,14 @@ class MailDelete(PermissionRequired, TemplateView):
 
     @context
     def question(self):
-        if len(self.queryset) == 1:
-            return _("Do you really want to delete this mail?")
-        return _("Do you really want to purge {count} mails?").format(
-            count=len(self.queryset)
-        )
+        count = len(self.queryset)
+        return str(
+            ngettext_lazy(
+                "Do you really want to delete this mail?",
+                "Do you really want to purge {count} mails?",
+                count=count,
+            )
+        ).format(count=count)
 
     def post(self, request, *args, **kwargs):
         mails = self.queryset
@@ -163,12 +167,18 @@ class MailDelete(PermissionRequired, TemplateView):
         for mail in mails:
             mail.log_action("pretalx.mail.delete", person=self.request.user, orga=True)
             mail.delete()
-        if mail_count == 1:
-            messages.success(request, _("The mail has been deleted."))
-        else:
-            messages.success(
-                request, _("{count} mails have been purged.").format(count=mail_count)
-            )
+
+        messages.success(
+            request,
+            str(
+                ngettext_lazy(
+                    "The mail has been discarded.",
+                    "{count} mails have been discarded.",
+                    mail_count,
+                )
+            ).format(count=mail_count),
+        )
+
         return redirect(request.event.orga_urls.outbox)
 
 
