@@ -730,7 +730,7 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
                 ~Q(resource="") & Q(resource__isnull=False) & ~Q(resource="None")
             )
             | Q(Q(link__isnull=False) & ~Q(link=""))  # or the link exists
-        )
+        ).order_by("link")
 
     @property
     def is_deleted(self):

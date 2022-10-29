@@ -430,7 +430,7 @@ class SubmissionContent(
             for form in self._formset.extra_forms
             if form.has_changed
             and not self._formset._should_delete_form(form)
-            and form.instance.resource
+            and form.is_valid()
         ]
         for form in extra_forms:
             form.instance.submission = obj

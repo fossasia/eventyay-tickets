@@ -104,7 +104,7 @@
                     {% translate "See also:" %}
                     {% if submission.active_resources.count == 1 %}{% with resource=submission.active_resources.first %}
                         <a href="{{ resource.url }}">
-                            <i class="fa fa-file-o"></i>
+                            <i class="fa fa-{% if resource.link %}link{% else %}file-o{% endif %}"></i>
                             {{ resource.description }}
                             {% if resource.resource %}({{ resource.resource.size|filesizeformat }}){% endif %}
                         </a>
@@ -113,7 +113,7 @@
                             {% for resource in submission.active_resources %}
                                 <li>
                                     <a href="{{ resource.url }}">
-                                        <i class="fa fa-file-o"></i>
+                                        <i class="fa fa-{% if resource.link %}link{% else %}file-o{% endif %}"></i>
                                         {{ resource.description }}
                                         {% if resource.resource %}({{ resource.resource.size|filesizeformat }}){% endif %}
                                     </a>
