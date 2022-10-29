@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from django.db import models
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
@@ -45,5 +47,10 @@ class Resource(LogMixin, FileCleanupMixin, models.Model):
             return self.link
         url = getattr(self.resource, "url", None)
         if url:
-            base_url = get_base_url(self.event)
+            base_url = get_base_url(self.submission.event)
             return base_url + url
+
+    @cached_property
+    def filename(self):
+        if self.resource:
+            return Path(self.resource.name).name

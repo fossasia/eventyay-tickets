@@ -182,7 +182,7 @@ footer {
       display: flex;
       flex-direction: column;
 
-      .resource-option-input {
+      .resource-option-fields {
         display: flex;
         flex-direction: column;
         border-bottom: 2px $gray-lighter solid;
@@ -191,11 +191,6 @@ footer {
 
       .btn-info {
         width: 100%;
-      }
-
-      .resource-option-delete {
-        float: none;
-        padding-left: -8px;
       }
     }
   }
@@ -246,17 +241,33 @@ footer {
   display: flex;
   flex-direction: row;
   width: 100%;
+  align-items: center;
+
+  .resource-option-fields {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    border-top: 1px $gray-lighter solid;
+    padding-top: 4px;
+    .resource-option-inline {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+    }
+  }
 
   .resource-option-delete {
     float: right;
-    padding-right: 8px;
     flex-grow: 0;
+    margin-top: 8px;
   }
 
   .form-group {
     display: flex;
     flex-direction: column;
     padding-right: 16px;
+    margin-bottom: 0;
+    margin-top: 2px;
 
     .bootstrap-multi-input {
       flex-grow: 1;

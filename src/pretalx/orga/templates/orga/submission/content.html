@@ -80,7 +80,7 @@
                 <label class="col-md-3 col-form-label" for="resources">{% translate "Resources" %}</label>
                 <div data-formset-body class="col-md-9">
                     {% for form in formset %}
-                        <div data-formset-form>
+                        <div data-formset-form class="mb-2">
                             <div class="sr-only">
                                 {{ form.id }}
                                 {% bootstrap_field form.DELETE form_group_class="" layout="inline" %}
@@ -89,11 +89,15 @@
                                 <div class="resource-option-input{% if action == 'view' %} disabled{% endif %}">
                                     {% bootstrap_form_errors form %}
                                     {% bootstrap_field form.description layout='inline' %}
-                                    {% bootstrap_field form.resource layout='inline'  %}
+                                    {% if form.instance.link %}
+                                        {% bootstrap_field form.link layout='inline'  %}
+                                    {% else %}
+                                        <i class="fa fa-paperclip mr-1 ml-2 pt-1"></i> <a href="{{ form.instance.url }}">{{ form.instance.filename }}</a>
+                                    {% endif %}
                                 </div>
                                 {% if action != 'view' %}
                                     <div class="resource-option-delete">
-                                        <button type="button" class="btn btn-danger" data-formset-delete-button>
+                                        <button type="button" class="btn btn-danger btn-sm" data-formset-delete-button>
                                             <i class="fa fa-trash"></i></button>
                                     </div>
                                 {% endif %}
@@ -107,7 +111,7 @@
                 </div>
                 <script type="form-template" data-formset-empty-form>
                     {% escapescript %}
-                        <div data-formset-form>
+                        <div data-formset-form class="formset-row">
                         <div class="sr-only">
                         {{ formset.empty_form.id }}
                         {% bootstrap_field formset.empty_form.DELETE form_group_class="" layout="inline" %}
@@ -115,13 +119,15 @@
                         <div class="resource-option-row">
                         <div class="resource-option-input">
                         {% bootstrap_field formset.empty_form.description layout='inline' %}
+                        {% bootstrap_field formset.empty_form.link layout='inline'  %}
                         {% bootstrap_field formset.empty_form.resource layout='inline'  %}
                         </div>
                         <div class="resource-option-delete">
-                        <button type="button" class="btn btn-danger" data-formset-delete-button>
+                        <button type="button" class="btn btn-danger btn-sm" data-formset-delete-button>
                         <i class="fa fa-trash"></i></button>
                         </div>
                         </div>
+                        <div class="form-text text-muted mt-0 pt-0 mb-2">{% translate "You can either provide a URL or upload a file." %}</div>
                         </div>
                     {% endescapescript %}
                 </script>
