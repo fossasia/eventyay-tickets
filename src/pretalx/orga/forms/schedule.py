@@ -5,7 +5,6 @@ from django_scopes.forms import SafeModelMultipleChoiceField
 from i18nfield.forms import I18nFormMixin, I18nModelForm
 
 from pretalx.common.mixins.forms import I18nHelpText
-from pretalx.common.urls import get_base_url
 from pretalx.orga.forms.export import ExportForm
 from pretalx.schedule.models import Room, Schedule
 from pretalx.submission.models.submission import Submission, SubmissionStates
@@ -115,7 +114,9 @@ class ScheduleExportForm(ExportForm):
         self.fields["resources"] = forms.BooleanField(
             required=False,
             label=_("Resources"),
-            help_text=_("Files uploaded by the speakers"),
+            help_text=_(
+                "Resources provided by the speaker, either as links or as uploaded files"
+            ),
         )
 
     @cached_property
@@ -196,10 +197,7 @@ class ScheduleExportForm(ExportForm):
         return [tag.tag for tag in obj.tags.all()] or None
 
     def _get_resources_value(self, obj):
-        base_url = get_base_url(self.event)
-        return [
-            base_url + r.resource.url for r in obj.resources.all() if r.resource
-        ] or None
+        return [r.url for r in obj.active_resources if r.url]
 
 
 class ScheduleRoomForm(I18nFormMixin, forms.Form):

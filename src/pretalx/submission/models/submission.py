@@ -6,6 +6,7 @@ from itertools import repeat
 from django.conf import settings
 from django.core.validators import MinValueValidator
 from django.db import models
+from django.db.models import Q
 from django.db.models.fields.files import FieldFile
 from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
@@ -724,7 +725,12 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
 
     @cached_property
     def active_resources(self):
-        return self.resources.exclude(resource=None).exclude(resource="")
+        return self.resources.filter(
+            Q(  # either the resource exists
+                ~Q(resource="") & Q(resource__isnull=False) & ~Q(resource="None")
+            )
+            | Q(Q(link__isnull=False) & ~Q(link=""))  # or the link exists
+        )
 
     @property
     def is_deleted(self):

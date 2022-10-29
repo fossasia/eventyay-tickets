@@ -1,8 +1,10 @@
 from django.db import models
+from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from django_scopes import ScopedManager
 
 from pretalx.common.mixins.models import FileCleanupMixin, LogMixin
+from pretalx.common.urls import get_base_url
 from pretalx.common.utils import path_with_hash
 
 
@@ -23,7 +25,10 @@ class Resource(LogMixin, FileCleanupMixin, models.Model):
         verbose_name=_("file"),
         help_text=_("Please try to keep your upload small, preferably below 16 MB."),
         upload_to=resource_path,
+        null=True,
+        blank=True,
     )
+    link = models.URLField(verbose_name=_("URL"), null=True, blank=True)
     description = models.CharField(
         null=True, blank=True, max_length=1000, verbose_name=_("description")
     )
@@ -33,3 +38,12 @@ class Resource(LogMixin, FileCleanupMixin, models.Model):
     def __str__(self):
         """Help when debugging."""
         return f"Resource(event={self.submission.event.slug}, submission={self.submission.title})"
+
+    @cached_property
+    def url(self):
+        if self.link:
+            return self.link
+        url = getattr(self.resource, "url", None)
+        if url:
+            base_url = get_base_url(self.event)
+            return base_url + url

@@ -2,7 +2,6 @@ from functools import partial
 
 from i18nfield.rest_framework import I18nAwareModelSerializer
 from rest_framework.serializers import (
-    Field,
     ModelSerializer,
     SerializerMethodField,
     SlugRelatedField,
@@ -14,20 +13,12 @@ from pretalx.schedule.models import Schedule, TalkSlot
 from pretalx.submission.models import Resource, Submission, SubmissionStates, Tag
 
 
-class FileField(Field):
-    """Serializer class for Django Restframework."""
-
-    read_only = True
-    write_only = False
-    label = None
-    source = "*"
-
-    def to_representation(self, value):
-        return value.url
-
-
 class ResourceSerializer(ModelSerializer):
-    resource = FileField()
+    resource = SerializerMethodField()
+
+    @staticmethod
+    def get_resource(obj):
+        return obj.url
 
     class Meta:
         model = Resource

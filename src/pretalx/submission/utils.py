@@ -11,7 +11,6 @@ def move_submission(code, new_event):
     """Caution! Does not include.
 
     - submission type mapping (resets to default)
-    - probably buggy with resources
     - questions with options (choice/multiple choice)
     - other questions only if they are an exact string match
     - tags
