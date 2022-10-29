@@ -1,3 +1,4 @@
+from contextlib import suppress
 from pathlib import Path
 
 from django.db import models
@@ -45,12 +46,14 @@ class Resource(LogMixin, FileCleanupMixin, models.Model):
     def url(self):
         if self.link:
             return self.link
-        url = getattr(self.resource, "url", None)
-        if url:
-            base_url = get_base_url(self.submission.event)
-            return base_url + url
+        with suppress(ValueError):
+            url = getattr(self.resource, "url", None)
+            if url:
+                base_url = get_base_url(self.submission.event)
+                return base_url + url
 
     @cached_property
     def filename(self):
-        if self.resource:
-            return Path(self.resource.name).name
+        with suppress(ValueError):
+            if self.resource:
+                return Path(self.resource.name).name

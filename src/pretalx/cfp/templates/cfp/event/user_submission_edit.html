@@ -100,14 +100,21 @@
                                 {{ form.id }}
                                 {% bootstrap_field form.DELETE form_group_class="" layout="inline" %}
                             </div>
+                            {% bootstrap_form_errors form %}
                             <div class="resource-option-row flip ml-auto">
-                                <div class="resource-option-input{% if action == 'view' %} disabled{% endif %}">
-                                    {% bootstrap_form_errors form %}
+                                <div class="resource-option{% if not form.errors %}-input{% endif %}{% if action == 'view' %} disabled{% endif %}">
                                     {% bootstrap_field form.description layout='inline' %}
-                                    {% if form.instance.link %}
-                                        {% bootstrap_field form.link layout='inline'  %}
+                                    {% if form.errors %}
+                                        <div class="resource-option-inline">
+                                            {% bootstrap_field form.link layout='inline'  %}
+                                            {% bootstrap_field form.resource layout='inline'  %}
+                                        </div>
                                     {% else %}
-                                        <i class="fa fa-paperclip mr-1 ml-2 pt-1"></i> <a href="{{ form.instance.url }}">{{ form.instance.filename }}</a>
+                                        {% if form.instance.link %}
+                                            {% bootstrap_field form.link layout='inline'  %}
+                                        {% else %}
+                                            <i class="fa fa-paperclip mr-1 ml-2 pt-1"></i> <a href="{{ form.instance.url }}">{{ form.instance.filename }}</a>
+                                        {% endif %}
                                     {% endif %}
                                 </div>
                                 {% if can_edit %}
