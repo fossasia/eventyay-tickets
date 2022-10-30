@@ -12,7 +12,7 @@
     </h2>
     <p>
         {% translate "Current state of your proposal:" %}
-        {% include "cfp/event/fragment_state.html" with state=submission.state %}
+        {% include "cfp/event/fragment_state.html" with state=submission.user_state %}
     </p>
     <div class="alert alert-info">
         {% blocktranslate trimmed %}

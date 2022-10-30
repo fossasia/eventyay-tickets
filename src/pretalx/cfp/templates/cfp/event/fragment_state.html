@@ -1,6 +1,8 @@
 {% load i18n %}
 {% if state == 'submitted' %}
     <i class="fa fa-inbox"></i> <span class="state-fragment">{% translate "submitted" %}</span>
+{% elif state == 'review' %}
+    <i class="fa fa-inbox"></i> <span class="state-fragment">{% translate "in review" %}</span>
 {% elif state == 'rejected' %}
     <i class="fa fa-ban"></i> <span class="state-fragment">{% translate "not accepted" %}</span>
 {% elif state == 'accepted' %}

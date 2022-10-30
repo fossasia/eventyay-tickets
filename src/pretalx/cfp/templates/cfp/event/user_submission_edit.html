@@ -33,7 +33,7 @@
     {% endif %}
     <p>
         {% translate "Current state of your proposal:" %}
-        {% include "cfp/event/fragment_state.html" with state=submission.state %}
+        {% include "cfp/event/fragment_state.html" with state=submission.user_state %}
         {% if submission.state == 'accepted' %}
             <a href="{{ submission.urls.confirm }}" class="btn btn-sm btn-success">
                 <i class="fa fa-check"></i> {% translate "Confirm your attendance" %}

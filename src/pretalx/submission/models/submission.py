@@ -278,12 +278,15 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
     def image_url(self):
         return self.image.url if self.image else ""
 
-    @property
+    @cached_property
+    def cfp_open(self):
+        deadline = self.submission_type.deadline or self.event.cfp.deadline
+        return (not deadline) or now() <= deadline
+
+    @cached_property
     def editable(self):
         if self.state == SubmissionStates.SUBMITTED:
-            deadline = self.submission_type.deadline or self.event.cfp.deadline
-            deadline_ok = (not deadline) or now() <= deadline
-            return deadline_ok or (
+            return self.cfp_open or (
                 self.event.active_review_phase
                 and self.event.active_review_phase.speakers_can_change_submissions
             )
@@ -735,6 +738,12 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
     @property
     def is_deleted(self):
         return self.state == SubmissionStates.DELETED
+
+    @property
+    def user_state(self):
+        if self.state == SubmissionStates.SUBMITTED and not self.cfp_open:
+            return "review"
+        return self.state
 
     def __str__(self):
         """Help when debugging."""

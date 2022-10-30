@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` The state of a proposal is now marked as "in review" on the speaker-facing side once the CfP closes, to make it clearer that there is no action to be taken at that time.
 - :feature:`-` Breaking API change: The submissions, talks and speakers API endpoints do not include all question answers the user has access to by default anymore, due to performance considerations. You can restore the old behaviour with ``?questions=all``, or ``?questions=id,id`` to show selected answers instead.
 - :feature:`-` Track descriptions are now shown publicly on the schedule page, in the track filter.
 - :feature:`-` You can now filter the schedule by proposal track.
