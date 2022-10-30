@@ -149,7 +149,7 @@ class MailDelete(PermissionRequired, TemplateView):
             ngettext_lazy(
                 "Do you really want to delete this mail?",
                 "Do you really want to purge {count} mails?",
-                count=count,
+                count,
             )
         ).format(count=count)
 
