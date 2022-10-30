@@ -14,7 +14,7 @@ from pretalx.common.mixins.views import EventPermissionRequired, PermissionRequi
 from pretalx.common.models.log import ActivityLog
 from pretalx.event.models import Event, Organiser
 from pretalx.event.stages import get_stages
-from pretalx.submission.models import Review, SubmissionStates
+from pretalx.submission.models import Review, Submission, SubmissionStates
 
 
 def start_redirect_view(request):
@@ -141,6 +141,21 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
                     "priority": 40,
                 }
             )
+            draft_proposals = Submission.all_objects.filter(
+                state=SubmissionStates.DRAFT, event=self.request.event
+            ).count()
+            if draft_proposals:
+                result.append(
+                    {
+                        "large": draft_proposals,
+                        "small": ngettext_lazy(
+                            "unsubmitted proposal draft",
+                            "unsubmitted proposal drafts",
+                            draft_proposals,
+                        ),
+                        "priority": 50,
+                    }
+                )
         return result
 
     def get_review_tiles(self):
