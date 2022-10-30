@@ -124,14 +124,22 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
 
     def get_cfp_tiles(self, _now):
         result = []
+        if self.request.event.cfp.is_open:
+            result.append(
+                {
+                    "url": self.request.event.cfp.urls.public,
+                    "large": _("Go to CfP"),
+                    "priority": 20,
+                }
+            )
         max_deadline = self.request.event.cfp.max_deadline
         if max_deadline and _now < max_deadline:
             result.append(
-                {"large": timeuntil(max_deadline), "small": _("until the CfP ends")}
-            )
-        if self.request.event.cfp.is_open:
-            result.append(
-                {"url": self.request.event.cfp.urls.public, "large": _("Go to CfP")}
+                {
+                    "large": timeuntil(max_deadline),
+                    "small": _("until the CfP ends"),
+                    "priority": 40,
+                }
             )
         return result
 
@@ -148,7 +156,9 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
                 .distinct()
                 .count()
             )
-            result.append({"large": review_count, "small": _("Reviews")})
+            result.append(
+                {"large": review_count, "small": _("Reviews"), "priority": 60}
+            )
             result.append(
                 {
                     "large": active_reviewers,
@@ -156,9 +166,13 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
                     "url": self.request.event.organiser.orga_urls.teams
                     if can_change_settings
                     else None,
+                    "priority": 60,
                 }
             )
-        if self.request.is_reviewer:
+        is_reviewer = self.request.event.teams.filter(
+            members__in=[self.request.user], is_reviewer=True
+        ).exists()
+        if is_reviewer:
             reviews_missing = Review.find_missing_reviews(
                 self.request.event, self.request.user
             ).count()
@@ -167,11 +181,12 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
                     {
                         "large": reviews_missing,
                         "small": ngettext_lazy(
-                            _("proposal is waiting for your review."),
-                            _("proposals are waiting for your review."),
+                            "proposal is waiting for your review.",
+                            "proposals are waiting for your review.",
                             reviews_missing,
                         ),
                         "url": self.request.event.orga_urls.reviews,
+                        "priority": 21,
                     }
                 )
         return result
@@ -183,6 +198,12 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
         )[:20]
 
     def get_context_data(self, **kwargs):
+        # Tiles can have priorities
+        # Priorities are meant to be between 0 and 100
+        # 0 is the first tile, the go-live tile
+        # 100+ is whatever can go to the very end
+        # actions should be between 10 and 30, with 20 being the "go to cfp" action
+        # general stats start at 50
         result = super().get_context_data(**kwargs)
         event = self.request.event
         stages = get_stages(event)
@@ -201,6 +222,7 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
                     "small": ngettext_lazy(
                         "day until event start", "days until event start", days
                     ),
+                    "priority": 10,
                 }
             )
         elif today > event.date_to:
@@ -211,6 +233,7 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
                     "small": ngettext_lazy(
                         "day since event end", "days since event end", days
                     ),
+                    "priority": 80,
                 }
             )
         elif event.date_to != event.date_from:
@@ -222,6 +245,7 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
                         total_days=(event.date_to - event.date_from).days + 1
                     ),
                     "url": event.urls.schedule + f"#{today.isoformat()}",
+                    "priority": 10,
                 }
             )
         if event.current_schedule:
@@ -230,6 +254,7 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
                     "large": event.current_schedule.version,
                     "small": _("current schedule"),
                     "url": event.urls.schedule,
+                    "priority": 25,
                 }
             )
         if event.submissions.count():
@@ -239,6 +264,7 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
                     "large": count,
                     "small": ngettext_lazy("proposal", "proposals", count),
                     "url": event.orga_urls.submissions,
+                    "priority": 60,
                 }
             )
             submitter_count = event.submitters.count()
@@ -247,6 +273,7 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
                     "large": submitter_count,
                     "small": ngettext_lazy("submitter", "submitters", submitter_count),
                     "url": event.orga_urls.speakers,
+                    "priority": 60,
                 }
             )
             talk_count = event.talks.count()
@@ -257,6 +284,7 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
                         "small": ngettext_lazy("session", "sessions", talk_count),
                         "url": event.orga_urls.submissions
                         + f"?state={SubmissionStates.ACCEPTED}&state={SubmissionStates.CONFIRMED}",
+                        "priority": 55,
                     }
                 )
                 accepted_count = event.talks.filter(
@@ -273,6 +301,7 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
                             ),
                             "url": event.orga_urls.submissions
                             + f"?state={SubmissionStates.ACCEPTED}",
+                            "priority": 50,
                         }
                     )
         count = event.speakers.count()
@@ -282,6 +311,7 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
                     "large": count,
                     "small": ngettext_lazy("speaker", "speakers", count),
                     "url": event.orga_urls.speakers + "?role=true",
+                    "priority": 56,
                 }
             )
         count = event.queued_mails.filter(sent__isnull=False).count()
@@ -290,7 +320,9 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
                 "large": count,
                 "small": ngettext_lazy("sent email", "sent emails", count),
                 "url": event.orga_urls.sent_mails,
+                "priority": 80,
             }
         )
         result["tiles"] += self.get_review_tiles()
+        result["tiles"].sort(key=lambda x: x.get("priority") or 100)
         return result
