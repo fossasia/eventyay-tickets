@@ -43,6 +43,7 @@ class SubmissionStates(Choices):
     CANCELED = "canceled"
     WITHDRAWN = "withdrawn"
     DELETED = "deleted"
+    DRAFT = "draft"
 
     display_values = {
         SUBMITTED: _("submitted"),
@@ -52,6 +53,7 @@ class SubmissionStates(Choices):
         CANCELED: _("canceled"),
         WITHDRAWN: _("withdrawn"),
         DELETED: _("deleted"),
+        DRAFT: _("Draft"),
     }
     valid_choices = [(key, value) for key, value in display_values.items()]
 
@@ -63,6 +65,7 @@ class SubmissionStates(Choices):
         CANCELED: (ACCEPTED, CONFIRMED),
         WITHDRAWN: (SUBMITTED),
         DELETED: tuple(),
+        DRAFT: (SUBMITTED,),
     }
 
     method_names = {
@@ -78,7 +81,12 @@ class SubmissionStates(Choices):
 
 class SubmissionManager(models.Manager):
     def get_queryset(self):
-        return super().get_queryset().exclude(state=SubmissionStates.DELETED)
+        return (
+            super()
+            .get_queryset()
+            .exclude(state=SubmissionStates.DELETED)
+            .exclude(state=SubmissionStates.DRAFT)
+        )
 
 
 class DeletedSubmissionManager(models.Manager):

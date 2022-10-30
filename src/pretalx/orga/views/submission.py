@@ -115,7 +115,7 @@ The {event} orga crew"""
 
 class SubmissionViewMixin(PermissionRequired):
     def get_queryset(self):
-        return Submission.all_objects.filter(event=self.request.event)
+        return Submission.objects.filter(event=self.request.event)
 
     def get_object(self):
         return get_object_or_404(
@@ -611,7 +611,7 @@ class FeedbackList(SubmissionViewMixin, ListView):
     @cached_property
     def submission(self):
         return get_object_or_404(
-            Submission.all_objects.filter(event=self.request.event),
+            Submission.objects.filter(event=self.request.event),
             code__iexact=self.kwargs.get("code"),
         )
 
@@ -809,7 +809,7 @@ class SubmissionStats(PermissionRequired, TemplateView):
     def submission_state_data(self):
         counter = Counter(
             submission.get_state_display()
-            for submission in Submission.all_objects.filter(event=self.request.event)
+            for submission in Submission.all_objects.exclude(state=SubmissionStates.DRAFT).filter(event=self.request.event)
         )
         return json.dumps(
             sorted(

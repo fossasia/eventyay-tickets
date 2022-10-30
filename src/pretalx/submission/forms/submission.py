@@ -278,7 +278,7 @@ class SubmissionFilterForm(forms.Form):
         initial["exclude_pending"] = False
         super().__init__(*args, initial=initial, **kwargs)
         qs = event.submissions
-        state_qs = Submission.all_objects.filter(event=event)
+        state_qs = Submission.objects.filter(event=event)
         if usable_states:
             qs = qs.filter(state__in=usable_states)
             state_qs = state_qs.filter(state__in=usable_states)
