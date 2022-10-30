@@ -21,7 +21,7 @@
 
 {% block content %}
     {% has_perm 'cfp.add_speakers' request.user submission  as can_invite_speakers %}
-    <h2>{% translate "Your proposal:" %} {{ submission.title }}</h2>
+    <h2>{% if submission.state != "draft" %}{% translate "Your proposal:" %}{% else %}{% translate "Your draft:" %}{% endif %} {{ submission.title }}</h2>
     {% if submission.public_slots %}
         <h3>
             <small>
@@ -32,8 +32,10 @@
         </h3>
     {% endif %}
     <p>
-        {% translate "Current state of your proposal:" %}
-        {% include "cfp/event/fragment_state.html" with state=submission.user_state %}
+        {% if submission.state != "draft" %}
+            {% translate "Current state of your proposal:" %}
+            {% include "cfp/event/fragment_state.html" with state=submission.user_state %}
+        {% endif %}
         {% if submission.state == 'accepted' %}
             <a href="{{ submission.urls.confirm }}" class="btn btn-sm btn-success">
                 <i class="fa fa-check"></i> {% translate "Confirm your attendance" %}
@@ -164,11 +166,23 @@
         {% endif %}
         {% if can_edit %}
             <div class="row mt-4">
-                <div class="col-md-3 flip ml-auto">
-                    <button type="submit" class="btn btn-block btn-success btn-lg">
-                        {% translate "Save" %}
-                    </button>
-                </div>
+                {% if submission.state == "draft" %}
+                    <div class="col-md-6 flip ml-auto">
+                        <div class="d-flex align-items-start">
+                            <button type="submit" class="btn btn-block btn-outline-success btn-lg" name="action" value="submit">
+                                {% translate "Save draft" %}
+                            </button>
+                            <button type="submit" class="btn btn-block btn-success btn-lg mt-0 ml-2" name="action" value="dedraft">
+                                {% translate "Submit proposal" %}
+                            </button>
+                        </div>
+                {% else %}
+                    <div class="col-md-3 flip ml-auto">
+                        <button type="submit" class="btn btn-block btn-success btn-lg" name="action" value="submit">
+                            {% translate "Save" %}
+                        </button>
+                {% endif %}
+            </div>
             </div>
         {% endif %}
     </form>

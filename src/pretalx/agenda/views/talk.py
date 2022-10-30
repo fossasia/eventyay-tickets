@@ -143,10 +143,11 @@ class TalkReviewView(TalkView):
 
     def get_object(self):
         return get_object_or_404(
-            self.request.event.submissions,
+            Submission.all_objects.filter(event=self.request.event),
             review_code=self.kwargs["slug"],
             state__in=[
                 SubmissionStates.SUBMITTED,
+                SubmissionStates.DRAFT,
                 SubmissionStates.ACCEPTED,
                 SubmissionStates.CONFIRMED,
             ],

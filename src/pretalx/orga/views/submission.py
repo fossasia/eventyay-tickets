@@ -809,7 +809,9 @@ class SubmissionStats(PermissionRequired, TemplateView):
     def submission_state_data(self):
         counter = Counter(
             submission.get_state_display()
-            for submission in Submission.all_objects.exclude(state=SubmissionStates.DRAFT).filter(event=self.request.event)
+            for submission in Submission.all_objects.exclude(
+                state=SubmissionStates.DRAFT
+            ).filter(event=self.request.event)
         )
         return json.dumps(
             sorted(

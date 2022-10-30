@@ -21,7 +21,7 @@ from pretalx.common.mixins.models import FileCleanupMixin, GenerateCode, LogMixi
 from pretalx.common.phrases import phrases
 from pretalx.common.urls import EventUrls
 from pretalx.common.utils import path_with_hash
-from pretalx.mail.models import QueuedMail
+from pretalx.mail.models import MailTemplate, QueuedMail
 from pretalx.submission.signals import submission_state_change
 
 
@@ -298,6 +298,8 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
                 self.event.active_review_phase
                 and self.event.active_review_phase.speakers_can_change_submissions
             )
+        if self.state == SubmissionStates.DRAFT:
+            return self.cfp_open
         return self.state in (SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED)
 
     @property
@@ -457,6 +459,37 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
 
     update_talk_slots.alters_data = True
 
+    def send_initial_mails(self, person):
+        self.event.ack_template.to_mail(
+            user=person,
+            event=self.event,
+            context_kwargs={
+                "user": person,
+                "submission": self,
+            },
+            skip_queue=True,
+            commit=True,  # Send immediately, but save a record
+            locale=self.get_email_locale(person.locale),
+            full_submission_content=True,
+        )
+        if self.event.mail_settings["mail_on_new_submission"]:
+            MailTemplate(
+                event=self.event,
+                subject=str(_("New proposal: {title}")).format(title=self.title),
+                text=self.event.settings.mail_text_new_submission,
+            ).to_mail(
+                user=self.event.email,
+                event=self.event,
+                context_kwargs={
+                    "user": person,
+                    "submission": self,
+                },
+                context={"orga_url": self.orga_urls.base.full()},
+                skip_queue=True,
+                commit=False,  # Send immediately, don't save a record
+                locale=self.event.locale,
+            )
+
     def make_submitted(
         self,
         person=None,
@@ -467,12 +500,15 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
         """Sets the submission's state to 'submitted'."""
         previous = self.state
         self._set_state(SubmissionStates.SUBMITTED, force, person=person)
-        self.log_action(
-            "pretalx.submission.make_submitted",
-            person=person,
-            orga=orga,
-            data={"previous": previous, "from_pending": from_pending},
-        )
+        if previous == SubmissionStates.DRAFT and person:
+            self.send_initial_mails(person=person)
+        else:
+            self.log_action(
+                "pretalx.submission.make_submitted",
+                person=person,
+                orga=orga,
+                data={"previous": previous, "from_pending": from_pending},
+            )
 
     make_submitted.alters_data = True
 

@@ -124,9 +124,9 @@ class SubmissionViewMixin:
     def get_object(self):
         users = [self.request.user] if not self.request.user.is_anonymous else []
         return get_object_or_404(
-            self.request.event.submissions.prefetch_related(
-                "answers", "answers__options", "speakers"
-            ),
+            Submission.all_objects.filter(event=self.request.event)
+            .exclude(state=SubmissionStates.DELETED)
+            .prefetch_related("answers", "answers__options", "speakers"),
             speakers__in=users,
             code__iexact=self.kwargs.get("code"),
         )
@@ -143,6 +143,14 @@ class SubmissionsListView(LoggedInEventPageMixin, ListView):
             for i in self.request.event.information.all()
             if person_can_view_information(self.request.user, i)
         ]
+
+    @context
+    def drafts(self):
+        return Submission.all_objects.filter(
+            event=self.request.event,
+            speakers__in=[self.request.user],
+            state=SubmissionStates.DRAFT,
+        )
 
     def get_queryset(self):
         return self.request.event.submissions.filter(speakers__in=[self.request.user])
@@ -372,7 +380,16 @@ class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateVie
                     "pretalx.submission.update", person=self.request.user
                 )
                 self.request.event.cache.set("rebuild_schedule_export", True, None)
-            messages.success(self.request, phrases.base.saved)
+            if (
+                form.instance.state == SubmissionStates.DRAFT
+                and self.request.method == "POST"
+                and self.request.POST.get("action", "submit") == "dedraft"
+            ):
+                form.instance.make_submitted(person=self.request.user)
+                messages.success(self.request, _("Your proposal has been submitted."))
+                return redirect(self.request.event.urls.user_submissions)
+            else:
+                messages.success(self.request, phrases.base.saved)
         else:
             messages.error(self.request, phrases.cfp.submission_uneditable)
         return redirect(self.object.urls.user_base)

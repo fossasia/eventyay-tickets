@@ -39,13 +39,17 @@
             {% endblock %}
             {% block buttons %}
                 <div class="row wizard-row">
-                    <div class="col-md-3 flip ml-auto">
-                        <button type="submit" class="btn btn-block btn-success btn-lg">
+                    <div class="col-md-3 flip ml-auto d-flex flex-column">
+                        <button type="submit" class="btn btn-block btn-success btn-lg" name="action" value="submit">
                             {% if next_url %}
                                 {% translate "Continue" %} &raquo;
                             {% else %}
                                 {% translate "Submit proposal!" %} &raquo;
                             {% endif %}
+                        </button>
+                        <button type="submit" class="btn btn-link text-center" name="action" value="draft">
+                            {% translate "or save as draft for now" %}
+                            <i class="fa fa-question-circle" data-toggle="tooltip" title="{% translate "You can save your proposal as a draft and submit it later. Organisers will not be able to see your proposal, though they will be able to send you reminder emails about the upcoming deadline." %}"></i>
                         </button>
                     </div>
                     <div class="col-md-3">

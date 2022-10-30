@@ -8,13 +8,11 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.crypto import get_random_string
 from django.utils.decorators import method_decorator
-from django.utils.translation import gettext_lazy as _
 from django.views import View
 
 from pretalx.cfp.views.event import EventPageMixin
 from pretalx.common.exceptions import SendMailException
 from pretalx.common.phrases import phrases
-from pretalx.mail.models import MailTemplate
 
 
 class SubmitStartView(EventPageMixin, View):
@@ -61,16 +59,30 @@ class SubmitWizard(EventPageMixin, View):
             raise Http404()
         handler = getattr(step, request.method.lower(), self.http_method_not_allowed)
         result = handler(request)
+
+        if request.method == "POST" and request.POST.get("action", "submit") == "draft":
+            return self.done(
+                request,
+                draft=True,
+                steps=[
+                    step
+                    for step in request.event.cfp_flow.steps
+                    if getattr(step, "is_before", False)
+                    or step.identifier == kwargs["step"]
+                    or step.identifier == "user"
+                ],
+            )
         if request.method == "GET" or (
             step.get_next_applicable(request) or not step.is_completed(request)
         ):
             return result
         return self.done(request)
 
-    def done(self, request):
+    def done(self, request, draft=False, steps=None):
         # We are done, or at least we finished the last step. Time to check results.
         valid_steps = []
-        for step in request.event.cfp_flow.steps:
+        steps = steps or request.event.cfp_flow.steps
+        for step in steps:
             if step.is_applicable(request):
                 if not step.is_completed(request):
                     return redirect(step.get_step_url(request))
@@ -80,40 +92,14 @@ class SubmitWizard(EventPageMixin, View):
         request.event.cfp_flow.steps_dict["user"].done(request)
         for step in valid_steps:
             if not step.identifier == "user":
-                step.done(request)
+                step.done(request, draft=draft)
 
-        try:
-            request.event.ack_template.to_mail(
-                user=request.user,
-                event=request.event,
-                context_kwargs={"user": request.user, "submission": request.submission},
-                skip_queue=True,
-                commit=True,  # Send immediately, but save a record
-                locale=request.submission.get_email_locale(request.user.locale),
-                full_submission_content=True,
-            )
-            if request.event.mail_settings["mail_on_new_submission"]:
-                MailTemplate(
-                    event=request.event,
-                    subject=str(_("New proposal: {title}")).format(
-                        title=request.submission.title
-                    ),
-                    text=request.event.settings.mail_text_new_submission,
-                ).to_mail(
-                    user=request.event.email,
-                    event=request.event,
-                    context_kwargs={
-                        "user": request.user,
-                        "submission": request.submission,
-                    },
-                    context={"orga_url": request.submission.orga_urls.base.full()},
-                    skip_queue=True,
-                    commit=False,  # Send immediately, don't save a record
-                    locale=request.event.locale,
-                )
-        except SendMailException as exception:
-            logging.getLogger("").warning(str(exception))
-            messages.warning(request, phrases.cfp.submission_email_fail)
+        if not draft:
+            try:
+                request.submission.send_initial_mails(person=request.user)
+            except SendMailException as exception:
+                logging.getLogger("").warning(str(exception))
+                messages.warning(request, phrases.cfp.submission_email_fail)
 
         return redirect(
             reverse("cfp:event.user.submissions", kwargs={"event": request.event.slug})

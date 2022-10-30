@@ -29,7 +29,12 @@ from pretalx.common.utils import language
 from pretalx.person.forms import SpeakerProfileForm, UserForm
 from pretalx.person.models import User
 from pretalx.submission.forms import InfoForm, QuestionsForm
-from pretalx.submission.models import QuestionTarget, SubmissionType, Track
+from pretalx.submission.models import (
+    QuestionTarget,
+    SubmissionStates,
+    SubmissionType,
+    Track,
+)
 
 
 def i18n_string(data, locales):
@@ -133,7 +138,7 @@ class BaseCfPStep:
     def post(self, request):
         return HttpResponseNotAllowed([])
 
-    def done(self, request):
+    def done(self, request, draft=False):
         pass
 
 
@@ -324,29 +329,41 @@ class InfoStep(GenericFlowStep, FormFlowStep):
                         result[field] = obj
         return result
 
-    def done(self, request):
+    def done(self, request, draft=False):
         self.request = request
         form = self.get_form(from_storage=True)
         form.instance.event = self.event
         form.save()
         submission = form.instance
         submission.speakers.add(request.user)
-        submission.log_action("pretalx.submission.create", person=request.user)
-        messages.success(
-            self.request,
-            _(
-                "Congratulations, you've submitted your proposal! You can continue to make changes to it "
-                "up to the submission deadline, and you will be notified of any changes or questions."
-            ),
-        )
+        if draft:
+            submission.state = SubmissionStates.DRAFT
+            submission.save()
+            messages.success(
+                self.request,
+                _(
+                    "Your draft was saved. You can continue to edit it as long as the CfP is open."
+                ),
+            )
+        else:
+            submission.log_action("pretalx.submission.create", person=request.user)
+            messages.success(
+                self.request,
+                _(
+                    "Congratulations, you've submitted your proposal! You can continue to make changes to it "
+                    "up to the submission deadline, and you will be notified of any changes or questions."
+                ),
+            )
 
-        additional_speaker = (form.cleaned_data.get("additional_speaker") or "").strip()
-        if additional_speaker:
-            try:
-                submission.send_invite(to=[additional_speaker], _from=request.user)
-            except SendMailException as exception:
-                logging.getLogger("").warning(str(exception))
-                messages.warning(self.request, phrases.cfp.submission_email_fail)
+            additional_speaker = (
+                form.cleaned_data.get("additional_speaker") or ""
+            ).strip()
+            if additional_speaker:
+                try:
+                    submission.send_invite(to=[additional_speaker], _from=request.user)
+                except SendMailException as exception:
+                    logging.getLogger("").warning(str(exception))
+                    messages.warning(self.request, phrases.cfp.submission_email_fail)
 
         access_code = getattr(request, "access_code", None)
         if access_code:
@@ -414,7 +431,7 @@ class QuestionsStep(GenericFlowStep, FormFlowStep):
             result["speaker"] = self.request.user
         return result
 
-    def done(self, request):
+    def done(self, request, draft=False):
         form = self.get_form(from_storage=True)
         form.speaker = request.user
         form.submission = request.submission
@@ -448,7 +465,7 @@ class UserStep(GenericFlowStep, FormFlowStep):
     def is_applicable(self, request):
         return not request.user.is_authenticated
 
-    def done(self, request):
+    def done(self, request, draft=False):
         if not getattr(request.user, "is_authenticated", False):
             form = self.get_form(from_storage=True)
             form.is_valid()
@@ -510,7 +527,7 @@ class ProfileStep(GenericFlowStep, FormFlowStep):
             result["gravatar_parameter"] = User(email=email).gravatar_parameter
         return result
 
-    def done(self, request):
+    def done(self, request, draft=False):
         form = self.get_form(from_storage=True)
         form.is_valid()
         form.user = request.user
