@@ -1,6 +1,7 @@
 import rules
 
 from pretalx.person.permissions import can_change_submissions, is_reviewer
+from pretalx.submission.models import SubmissionStates
 from pretalx.submission.permissions import can_be_edited
 
 
@@ -12,7 +13,10 @@ def is_event_visible(user, event):
 @rules.predicate
 def can_request_speakers(user, submission):
     # Only allow to request speakers if the field is active in the CfP
-    return submission.event.cfp.request_additional_speaker
+    return (
+        submission.state != SubmissionStates.DRAFT
+        and submission.event.cfp.request_additional_speaker
+    )
 
 
 rules.add_perm(
