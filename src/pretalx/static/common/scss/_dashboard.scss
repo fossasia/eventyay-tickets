@@ -5,7 +5,8 @@
   padding-bottom: 20px;
 }
 
-.dashboard-block {
+.dashboard-block-wrapper, .dashboard-block {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -21,6 +22,16 @@
   overflow-wrap: break-word;
   position: relative;
   border-radius: 4px;
+  &.dashboard-block-wrapper {
+    padding: 0;
+    max-width: 100%;
+    > .dashboard-block {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      max-width: 100%;
+    }
+  }
 
   &:hover {
     background: $gray-100;
@@ -28,6 +39,9 @@
     text-decoration: none;
   }
 
+  &.dashboard-block-extended {
+    min-height: 100px;
+  }
   &.symbol {
     display: flex;
     padding: 0;
@@ -53,6 +67,34 @@
 
     ul {
       text-align: left;
+    }
+  }
+  .dashboard-block-extension {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    .dashboard-block-addon {
+      flex-grow: 1;
+      font-weight: 400;
+      &:hover {
+        background: $gray-100;
+        color: $brand-primary;
+        text-decoration: none;
+      }
+      &.dashboard-block-addon-success {
+        color: $gray-100;
+        background-color: $brand-success;
+      }
+      &.dashboard-block-addon-info {
+        color: $gray-100;
+        background-color: $brand-info;
+      }
+      &.dashboard-block-addon-error {
+        color: $gray-100;
+        background-color: $brand-danger;
+      }
     }
   }
   &.event-block {

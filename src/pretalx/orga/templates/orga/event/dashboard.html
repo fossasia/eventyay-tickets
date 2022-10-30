@@ -68,12 +68,31 @@
             </div>
         </a>
         {% for tile in tiles %}
-            <{% if tile.url %}a href="{{ tile.url }}"{% else %}div{% endif %} class="dashboard-block">
-            <h1>{{ tile.large }}</h1>
-            <div class="dashboard-description">
-                {{ tile.small }}
-            </div>
+            <div class="dashboard-block-wrapper">
+                <{% if tile.url %}a href="{{ tile.url }}"{% else %}div{% endif %} class="dashboard-block{% if tile.left or tile.right %} dashboard-block-extended{% endif %}">
+                <h1>{{ tile.large }}</h1>
+                <div class="dashboard-description">
+                    {{ tile.small }}
+                </div>
             </{% if tile.url %}a{% else %}div{% endif %}>
+            {% if tile.left or tile.right %}
+                <div class="dashboard-block-extension">
+                    {% if tile.left %}
+                        <{% if tile.left.url %}a href="{{ tile.left.url }}"{% else %}div{% endif %} class="dashboard-block-addon{% if tile.left.color %} dashboard-block-addon-{{ tile.left.color }}{% endif %}">
+                        {{ tile.left.text }}
+
+                        </{% if tile.left.url %}a{% else %}div{% endif %}>
+                    {% endif %}
+                    {% if tile.right %}
+                        <{% if tile.right.url %}a href="{{ tile.right.url }}"{% else %}div{% endif %} class="dashboard-block-addon{% if tile.right.color %} dashboard-block-addon-{{ tile.right.color }}{% endif %}">
+                        {{ tile.right.text }}
+
+                        </{% if tile.right.url %}a{% else %}div{% endif %}>
+                    {% endif %}
+                </div>
+            {% endif %}
+            </div>
+
         {% endfor %}
     </div>
 

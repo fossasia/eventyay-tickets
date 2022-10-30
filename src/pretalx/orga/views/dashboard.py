@@ -257,7 +257,32 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
                     "priority": 25,
                 }
             )
-        if event.submissions.count():
+
+        talk_count = event.talks.count()
+        submission_count = event.submissions.count()
+        if talk_count:
+            accepted_count = event.talks.filter(state=SubmissionStates.ACCEPTED).count()
+            result["tiles"].append(
+                {
+                    "large": talk_count,
+                    "small": ngettext_lazy("session", "sessions", talk_count),
+                    "url": event.orga_urls.submissions
+                    + f"?state={SubmissionStates.ACCEPTED}&state={SubmissionStates.CONFIRMED}",
+                    "priority": 55,
+                    "right": {
+                        "text": str(_("unconfirmed")) + f": {accepted_count}",
+                        "url": event.orga_urls.submissions
+                        + f"?state={SubmissionStates.ACCEPTED}",
+                        "color": "error" if accepted_count else "info",
+                    },
+                    "left": {
+                        "text": str(_("submitted")) + f": {submission_count}",
+                        "url": event.orga_urls.submissions,
+                        "color": "success",
+                    },
+                }
+            )
+        elif submission_count:
             count = event.submissions.count()
             result["tiles"].append(
                 {
@@ -267,51 +292,34 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
                     "priority": 60,
                 }
             )
-            submitter_count = event.submitters.count()
+        submitter_count = event.submitters.count()
+        speaker_count = event.speakers.count()
+        if speaker_count:
+            result["tiles"].append(
+                {
+                    "large": speaker_count,
+                    "small": ngettext_lazy("speaker", "speakers", speaker_count),
+                    "url": event.orga_urls.speakers + "?role=true",
+                    "priority": 56,
+                    "right": {
+                        "text": _("rejected") + f": {submitter_count - speaker_count}",
+                        "url": event.orga_urls.speakers + "?role=false",
+                        "color": "error",
+                    },
+                    "left": {
+                        "text": _("submitted") + f": {submitter_count}",
+                        "url": event.orga_urls.speakers,
+                        "color": "success",
+                    },
+                }
+            )
+        else:
             result["tiles"].append(
                 {
                     "large": submitter_count,
                     "small": ngettext_lazy("submitter", "submitters", submitter_count),
                     "url": event.orga_urls.speakers,
                     "priority": 60,
-                }
-            )
-            talk_count = event.talks.count()
-            if talk_count:
-                result["tiles"].append(
-                    {
-                        "large": talk_count,
-                        "small": ngettext_lazy("session", "sessions", talk_count),
-                        "url": event.orga_urls.submissions
-                        + f"?state={SubmissionStates.ACCEPTED}&state={SubmissionStates.CONFIRMED}",
-                        "priority": 55,
-                    }
-                )
-                accepted_count = event.talks.filter(
-                    state=SubmissionStates.ACCEPTED
-                ).count()
-                if accepted_count != 0:
-                    result["tiles"].append(
-                        {
-                            "large": accepted_count,
-                            "small": ngettext_lazy(
-                                "unconfirmed session",
-                                "unconfirmed sessions",
-                                accepted_count,
-                            ),
-                            "url": event.orga_urls.submissions
-                            + f"?state={SubmissionStates.ACCEPTED}",
-                            "priority": 50,
-                        }
-                    )
-        count = event.speakers.count()
-        if count:
-            result["tiles"].append(
-                {
-                    "large": count,
-                    "small": ngettext_lazy("speaker", "speakers", count),
-                    "url": event.orga_urls.speakers + "?role=true",
-                    "priority": 56,
                 }
             )
         count = event.queued_mails.filter(sent__isnull=False).count()
