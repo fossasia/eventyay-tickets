@@ -213,7 +213,7 @@ def test_submission_set_state_error_msg(submission):
             submission._set_state(SubmissionStates.SUBMITTED)
 
         assert (
-            "must be rejected or accepted or withdrawn not canceled to be submitted"
+            "must be rejected or accepted or withdrawn or draft not canceled to be submitted"
             in str(excinfo.value)
         )
 

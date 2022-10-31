@@ -53,7 +53,7 @@ class SubmissionStates(Choices):
         CANCELED: _("canceled"),
         WITHDRAWN: _("withdrawn"),
         DELETED: _("deleted"),
-        DRAFT: _("Draft"),
+        DRAFT: _("draft"),
     }
     valid_choices = [(key, value) for key, value in display_values.items()]
 

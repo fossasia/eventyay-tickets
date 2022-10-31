@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-29 23:38+0000\n"
+"POT-Creation-Date: 2022-10-31 00:08+0000\n"
 "PO-Revision-Date: 2020-09-28 02:42+0000\n"
 "Last-Translator: Satoshi IIDA <nyampire@gmail.com>\n"
 "Language-Team: \n"
@@ -245,8 +245,8 @@ msgid "%(minutes)smin"
 msgstr ""
 
 #: pretalx/agenda/templates/agenda/session_block.html:27
-#: pretalx/cfp/templates/cfp/event/fragment_state.html:15
-#: pretalx/submission/models/submission.py:54
+#: pretalx/cfp/templates/cfp/event/fragment_state.html:17
+#: pretalx/submission/models/submission.py:55
 msgid "deleted"
 msgstr "削除済"
 
@@ -258,7 +258,7 @@ msgstr "登壇者のプロフィール写真"
 #: pretalx/agenda/templates/agenda/talk.html:50
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:18
 #: pretalx/orga/templates/orga/cfp/text.html:92
-#: pretalx/submission/models/submission.py:202
+#: pretalx/submission/models/submission.py:210
 msgid "Language"
 msgstr "言語"
 
@@ -291,15 +291,15 @@ msgstr "私たちのスケジュールはまだ公開されていません。"
 msgid "The session “{title}” at {event}"
 msgstr "講演 “{title}” at {event}"
 
-#: pretalx/cfp/flow.py:298 pretalx/orga/templates/orga/base.html:198
+#: pretalx/cfp/flow.py:303 pretalx/orga/templates/orga/base.html:198
 msgid "General"
 msgstr "一般"
 
-#: pretalx/cfp/flow.py:302
+#: pretalx/cfp/flow.py:307
 msgid "Hey, nice to meet you!"
 msgstr "こんにちは、はじめまして！"
 
-#: pretalx/cfp/flow.py:307
+#: pretalx/cfp/flow.py:312
 msgid ""
 "We're glad that you want to contribute to our event with your proposal. "
 "Let's get started, this won't take long."
@@ -307,38 +307,43 @@ msgstr ""
 "あなたの投稿でイベントに貢献したいと思っていただけて嬉しいです。さっそく始め"
 "てみましょう！それほど時間はかかりません。"
 
-#: pretalx/cfp/flow.py:338
+#: pretalx/cfp/flow.py:345
+msgid ""
+"Your draft was saved. You can continue to edit it as long as the CfP is open."
+msgstr ""
+
+#: pretalx/cfp/flow.py:353
 msgid ""
 "Congratulations, you've submitted your proposal! You can continue to make "
 "changes to it up to the submission deadline, and you will be notified of any "
 "changes or questions."
 msgstr ""
 
-#: pretalx/cfp/flow.py:370 pretalx/orga/forms/cfp.py:483
+#: pretalx/cfp/flow.py:387 pretalx/orga/forms/cfp.py:483
 #: pretalx/orga/templates/orga/base.html:242
 #: pretalx/orga/templates/orga/submission/content.html:144
 msgid "Questions"
 msgstr "質問"
 
-#: pretalx/cfp/flow.py:374
+#: pretalx/cfp/flow.py:391
 msgid "Tell us more!"
 msgstr "もっと教えて下さい！"
 
-#: pretalx/cfp/flow.py:379
+#: pretalx/cfp/flow.py:396
 msgid "Before we can save your proposal, we have some more questions for you."
 msgstr "投稿を保存する前に、いくつか質問があります。"
 
-#: pretalx/cfp/flow.py:434
+#: pretalx/cfp/flow.py:451
 msgid "Account"
 msgstr "アカウント"
 
-#: pretalx/cfp/flow.py:439
+#: pretalx/cfp/flow.py:456
 msgid "That's it about your proposal! We now just need a way to contact you."
 msgstr ""
 "あなたの提出物については以上です！私たちは今、あなたに連絡する方法を必要とし"
 "ています。"
 
-#: pretalx/cfp/flow.py:445
+#: pretalx/cfp/flow.py:462
 msgid ""
 "To create your proposal, you need an account on this page. This not only "
 "gives us a way to contact you, it also gives you the possibility to edit "
@@ -348,7 +353,7 @@ msgstr ""
 "絡を取ることができるだけでなく、投稿を編集したり、現在の状態を確認したりする"
 "ことができます。"
 
-#: pretalx/cfp/flow.py:461
+#: pretalx/cfp/flow.py:478
 msgid ""
 "There was an error when logging in. Please contact the organiser for further "
 "help."
@@ -356,15 +361,15 @@ msgstr ""
 "ログイン時にエラーが発生しました。お手数ですが、主催者にお問い合わせくださ"
 "い。"
 
-#: pretalx/cfp/flow.py:478
+#: pretalx/cfp/flow.py:495
 msgid "Profile"
 msgstr "プロフィール"
 
-#: pretalx/cfp/flow.py:482
+#: pretalx/cfp/flow.py:499
 msgid "Tell us something about yourself!"
 msgstr "あなたについて教えて下さい！"
 
-#: pretalx/cfp/flow.py:487
+#: pretalx/cfp/flow.py:504
 msgid ""
 "This information will be publicly displayed next to your session - you can "
 "always edit for as long as proposals are still open."
@@ -395,13 +400,13 @@ msgid "Text"
 msgstr "テキスト"
 
 #: pretalx/cfp/forms/submissions.py:13
-#: pretalx/submission/models/submission.py:819
+#: pretalx/submission/models/submission.py:872
 #, python-brace-format
 msgid "{speaker} invites you to join their session!"
 msgstr "{speaker} があなたを講演に招待しています！"
 
 #: pretalx/cfp/forms/submissions.py:18
-#: pretalx/submission/models/submission.py:826
+#: pretalx/submission/models/submission.py:879
 #, python-brace-format
 msgid ""
 "Hi!\n"
@@ -569,36 +574,43 @@ msgid "Proposals are closed"
 msgstr "提案期間は終了しました"
 
 #: pretalx/cfp/templates/cfp/event/fragment_state.html:3
-#: pretalx/submission/models/submission.py:48
+#: pretalx/orga/views/dashboard.py:294 pretalx/orga/views/dashboard.py:325
+#: pretalx/submission/models/submission.py:49
 msgid "submitted"
 msgstr "提出済"
 
 #: pretalx/cfp/templates/cfp/event/fragment_state.html:5
+#, fuzzy
+#| msgid "Send review"
+msgid "in review"
+msgstr "レビューを送る"
+
+#: pretalx/cfp/templates/cfp/event/fragment_state.html:7
 msgid "not accepted"
 msgstr "受理されませんでした"
 
-#: pretalx/cfp/templates/cfp/event/fragment_state.html:7
-#: pretalx/orga/forms/review.py:209 pretalx/submission/models/submission.py:49
+#: pretalx/cfp/templates/cfp/event/fragment_state.html:9
+#: pretalx/orga/forms/review.py:209 pretalx/submission/models/submission.py:50
 msgid "accepted"
 msgstr "受理されました"
 
-#: pretalx/cfp/templates/cfp/event/fragment_state.html:9
-#: pretalx/orga/forms/review.py:210 pretalx/submission/models/submission.py:50
+#: pretalx/cfp/templates/cfp/event/fragment_state.html:11
+#: pretalx/orga/forms/review.py:210 pretalx/submission/models/submission.py:51
 msgid "confirmed"
 msgstr "確定済"
 
-#: pretalx/cfp/templates/cfp/event/fragment_state.html:11
-#: pretalx/submission/models/submission.py:52
+#: pretalx/cfp/templates/cfp/event/fragment_state.html:13
+#: pretalx/submission/models/submission.py:53
 msgid "canceled"
 msgstr "キャンセル済"
 
-#: pretalx/cfp/templates/cfp/event/fragment_state.html:13
-#: pretalx/submission/models/submission.py:53
+#: pretalx/cfp/templates/cfp/event/fragment_state.html:15
+#: pretalx/submission/models/submission.py:54
 msgid "withdrawn"
 msgstr "取り下げ"
 
 #: pretalx/cfp/templates/cfp/event/index.html:31
-#: pretalx/orga/views/dashboard.py:134
+#: pretalx/orga/views/dashboard.py:131
 msgid "Go to CfP"
 msgstr "提案ページへ"
 
@@ -623,7 +635,7 @@ msgstr "概要: "
 #: pretalx/cfp/templates/cfp/event/invitation.html:30
 #: pretalx/event/models/event.py:605 pretalx/orga/forms/review.py:336
 #: pretalx/submission/models/question.py:416
-#: pretalx/submission/models/submission.py:807
+#: pretalx/submission/models/submission.py:860
 msgid "No"
 msgstr "いいえ"
 
@@ -710,7 +722,18 @@ msgstr "続ける"
 msgid "Submit proposal!"
 msgstr "提案を送信する"
 
-#: pretalx/cfp/templates/cfp/event/submission_base.html:54
+#: pretalx/cfp/templates/cfp/event/submission_base.html:51
+msgid "or save as draft for now"
+msgstr ""
+
+#: pretalx/cfp/templates/cfp/event/submission_base.html:52
+msgid ""
+"You can save your proposal as a draft and submit it later. Organisers will "
+"not be able to see your proposal, though they will be able to send you "
+"reminder emails about the upcoming deadline."
+msgstr ""
+
+#: pretalx/cfp/templates/cfp/event/submission_base.html:58
 #: pretalx/orga/templates/orga/cfp/access_code_delete.html:11
 #: pretalx/orga/templates/orga/cfp/question_delete.html:11
 #: pretalx/orga/templates/orga/cfp/submission_type_delete.html:11
@@ -771,7 +794,7 @@ msgstr ""
 #: pretalx/cfp/templates/cfp/event/user_profile.html:47
 #: pretalx/cfp/templates/cfp/event/user_profile.html:61
 #: pretalx/cfp/templates/cfp/event/user_profile.html:82
-#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:169
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:182
 #: pretalx/common/phrases.py:44
 #: pretalx/orga/templates/orga/cfp/access_code_form.html:53
 #: pretalx/orga/templates/orga/mails/outbox_form.html:109
@@ -846,7 +869,7 @@ msgid "Your proposal:"
 msgstr "あなたの提案: "
 
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:13
-#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:35
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:36
 #: pretalx/cfp/templates/cfp/event/user_submission_invitation.html:14
 #: pretalx/cfp/templates/cfp/event/user_submission_withdraw.html:9
 msgid "Current state of your proposal:"
@@ -854,7 +877,7 @@ msgstr "あなたの提案の現在の状況"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:16
 #: pretalx/orga/templates/orga/cfp/submission_type_view.html:17
-#: pretalx/submission/models/submission.py:127
+#: pretalx/submission/models/submission.py:135
 msgid "Session type"
 msgstr "提案のタイプ"
 
@@ -865,7 +888,7 @@ msgstr "提案のタイプ"
 #: pretalx/orga/templates/orga/cfp/track_view.html:17
 #: pretalx/orga/templates/orga/submission/review.html:63
 #: pretalx/submission/models/access_code.py:26
-#: pretalx/submission/models/submission.py:133
+#: pretalx/submission/models/submission.py:141
 msgid "Track"
 msgstr "トラック"
 
@@ -902,13 +925,13 @@ msgid "Go back"
 msgstr "戻る"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:56
-#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:194
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:208
 #: pretalx/cfp/templates/cfp/event/user_submission_withdraw.html:23
 msgid "Withdraw"
 msgstr "撤回する"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:62
-#: pretalx/cfp/templates/cfp/event/user_submissions.html:73
+#: pretalx/cfp/templates/cfp/event/user_submissions.html:112
 msgid "Confirm"
 msgstr "確認"
 
@@ -926,25 +949,31 @@ msgid ""
 "different account, or contact the event organisers for further information."
 msgstr ""
 
-#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:39
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:24
+#, fuzzy
+#| msgid "Current draft"
+msgid "Your draft:"
+msgstr "現状のドラフト"
+
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:41
 msgid "Confirm your attendance"
 msgstr "あなたの出席を確認"
 
-#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:44
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:46
 msgid "Audience feedback"
 msgstr "参加者の感想"
 
-#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:46
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:48
 msgid "Attendees can leave feedback here after your session has taken place."
 msgstr "あなたの講演実施後、参加者がここに感想を残すことができます"
 
-#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:55
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:57
 msgid "Speaker:"
 msgid_plural "Speakers:"
 msgstr[0] "登壇者: "
 msgstr[1] "Vortragende:"
 
-#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:61
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:63
 #, fuzzy
 #| msgid "Submitters"
 msgid "Submitter:"
@@ -952,33 +981,45 @@ msgid_plural "Submitters:"
 msgstr[0] "投稿者"
 msgstr[1] "投稿者"
 
-#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:90
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:92
 #: pretalx/orga/forms/schedule.py:116
 #: pretalx/orga/templates/orga/submission/content.html:80
 msgid "Resources"
 msgstr "参考資料"
 
-#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:94
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:96
 msgid ""
 "Resources will be publicly visible. Please try to keep your uploads below "
 "16MB."
 msgstr "参考資料は一般に公開されます。サイズは16MB以下に保ってください。"
 
-#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:145
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:147
 #: pretalx/orga/templates/orga/submission/content.html:130
 msgid "You can either provide a URL or upload a file."
 msgstr ""
 
-#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:159
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:161
 #: pretalx/orga/templates/orga/submission/content.html:137
 msgid "Add another resource"
 msgstr "他の参考資料を追加する"
 
-#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:175
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:173
+#, fuzzy
+#| msgid "Saved!"
+msgid "Save draft"
+msgstr "保存しました！"
+
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:176
+#, fuzzy
+#| msgid "Submit a proposal"
+msgid "Submit proposal"
+msgstr "提案を送信する"
+
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:189
 msgid "Share proposal"
 msgstr "提案をシェアする"
 
-#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:177
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:191
 msgid ""
 "If you need a review from a colleague or a friend here's a link that you can "
 "send out for viewing your proposal:"
@@ -986,12 +1027,12 @@ msgstr ""
 "もし同僚や友人からのレビューが必要な場合は、このリンクを送ることで提案内容を"
 "確認してもらうことができます。"
 
-#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:183
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:197
 #: pretalx/cfp/templates/cfp/event/user_submission_withdraw.html:14
 msgid "Withdraw proposal"
 msgstr "提案を撤回する"
 
-#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:185
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:199
 msgid ""
 "You can withdraw your proposal from the selection process here. You cannot "
 "undo this - if you are just uncertain if you can or should hold your "
@@ -1001,11 +1042,11 @@ msgstr ""
 "ができません。撤回しても良いかどうか確かでない場合は主催者に連絡してくださ"
 "い。"
 
-#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:199
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:213
 msgid "Cancel proposal"
 msgstr "提案をキャンセルする"
 
-#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:201
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:215
 msgid ""
 "As your proposal has been accepted already, please contact the event's "
 "organising team to cancel it. The best way to reach out would be an answer "
@@ -1047,7 +1088,7 @@ msgid "You will not be able to revert this action."
 msgstr "この動作は取り消しが"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:9
-#: pretalx/cfp/templates/cfp/event/user_submissions.html:24
+#: pretalx/cfp/templates/cfp/event/user_submissions.html:63
 msgid "Your proposals"
 msgstr "あなたの提案: "
 
@@ -1055,7 +1096,14 @@ msgstr "あなたの提案: "
 msgid "Important Information"
 msgstr "重要な情報"
 
+#: pretalx/cfp/templates/cfp/event/user_submissions.html:25
+#, fuzzy
+#| msgid "Current draft"
+msgid "Your drafts"
+msgstr "現状のドラフト"
+
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:30
+#: pretalx/cfp/templates/cfp/event/user_submissions.html:69
 #: pretalx/orga/templates/orga/cfp/text.html:67
 #: pretalx/orga/templates/orga/review/dashboard.html:124
 #: pretalx/orga/templates/orga/speaker/information_list.html:23
@@ -1064,37 +1112,38 @@ msgstr "重要な情報"
 msgid "Title"
 msgstr "タイトル"
 
-#: pretalx/cfp/templates/cfp/event/user_submissions.html:31
+#: pretalx/cfp/templates/cfp/event/user_submissions.html:48
+#: pretalx/cfp/templates/cfp/event/user_submissions.html:101
+msgid "Copy code for review"
+msgstr "コードのコピーまたはレビュー"
+
+#: pretalx/cfp/templates/cfp/event/user_submissions.html:70
 #: pretalx/orga/templates/orga/review/dashboard.html:128
 #: pretalx/orga/templates/orga/submission/list.html:96
 msgid "State"
 msgstr "状態"
 
-#: pretalx/cfp/templates/cfp/event/user_submissions.html:62
-msgid "Copy code for review"
-msgstr "コードのコピーまたはレビュー"
-
-#: pretalx/cfp/templates/cfp/event/user_submissions.html:79
+#: pretalx/cfp/templates/cfp/event/user_submissions.html:118
 #: pretalx/orga/templates/orga/base.html:282
 #: pretalx/orga/templates/orga/submission/base.html:63
 msgid "Feedback"
 msgstr "感想"
 
-#: pretalx/cfp/templates/cfp/event/user_submissions.html:92
+#: pretalx/cfp/templates/cfp/event/user_submissions.html:131
 msgid "Create a new proposal"
 msgstr "新しい提案を作る"
 
-#: pretalx/cfp/templates/cfp/event/user_submissions.html:98
+#: pretalx/cfp/templates/cfp/event/user_submissions.html:137
 msgid "It seems like you haven't submitted anything to this event yet."
 msgstr "まだあなたはこのイベントに対して提案を行っていないようです。"
 
-#: pretalx/cfp/templates/cfp/event/user_submissions.html:101
+#: pretalx/cfp/templates/cfp/event/user_submissions.html:140
 msgid "If you did, maybe you used a different account? Check your emails!"
 msgstr ""
 "もしそうだとしたら、もしかして違うアカウントを使っていませんか？メールを"
 "チェックしてみてください"
 
-#: pretalx/cfp/templates/cfp/event/user_submissions.html:105
+#: pretalx/cfp/templates/cfp/event/user_submissions.html:144
 msgid ""
 "If you did not, why not go ahead and create a proposal now? We'd love to "
 "hear from you!"
@@ -1102,7 +1151,7 @@ msgstr ""
 "そうでない方は、プロポーザルを作成してみてはいかがでしょうか？あなたのご意見"
 "をお待ちしております。"
 
-#: pretalx/cfp/templates/cfp/event/user_submissions.html:110
+#: pretalx/cfp/templates/cfp/event/user_submissions.html:149
 msgid "Submit something now!"
 msgstr "何か提案しましょう！"
 
@@ -1151,10 +1200,11 @@ msgid ""
 msgstr ""
 "APIトークンが再生成されました。以前のトークンはもう使うことができません。"
 
-#: pretalx/cfp/views/wizard.py:98
-#, python-brace-format
-msgid "New proposal: {title}"
-msgstr ""
+#: pretalx/cfp/views/user.py:389
+#, fuzzy
+#| msgid "Your proposal has been withdrawn."
+msgid "Your proposal has been submitted."
+msgstr "あなたの投稿は取り下げられました。"
 
 #: pretalx/common/context_processors.py:42
 msgid "“"
@@ -1980,7 +2030,7 @@ msgid "Imprint"
 msgstr "免責事項"
 
 #: pretalx/common/templates/common/logs.html:7
-#: pretalx/orga/templates/orga/event/dashboard.html:82
+#: pretalx/orga/templates/orga/event/dashboard.html:101
 msgid "History"
 msgstr "履歴"
 
@@ -2416,7 +2466,7 @@ msgstr ""
 #: pretalx/orga/templates/orga/speaker/reset_password.html:16
 #: pretalx/orga/templates/orga/submission/tag_delete.html:15
 #: pretalx/submission/models/question.py:414
-#: pretalx/submission/models/submission.py:807
+#: pretalx/submission/models/submission.py:860
 msgid "Yes"
 msgstr "はい"
 
@@ -3061,7 +3111,7 @@ msgstr "あなたのアバター"
 msgid "Allow speakers to automatically include their gravatar profile image."
 msgstr ""
 
-#: pretalx/orga/forms/cfp.py:37 pretalx/submission/models/submission.py:194
+#: pretalx/orga/forms/cfp.py:37 pretalx/submission/models/submission.py:202
 msgid "Slot Count"
 msgstr "スロット数"
 
@@ -3769,7 +3819,8 @@ msgstr[1] "投稿"
 msgid "All proposals"
 msgstr "私の提案"
 
-#: pretalx/orga/forms/review.py:211 pretalx/submission/models/submission.py:51
+#: pretalx/orga/forms/review.py:211 pretalx/orga/views/dashboard.py:320
+#: pretalx/submission/models/submission.py:52
 msgid "rejected"
 msgstr "リジェクト済"
 
@@ -3783,7 +3834,7 @@ msgstr "提案"
 msgid "The unique ID of a proposal is used in the proposal URL and in exports"
 msgstr ""
 
-#: pretalx/orga/forms/review.py:224 pretalx/submission/models/submission.py:122
+#: pretalx/orga/forms/review.py:224 pretalx/submission/models/submission.py:130
 msgid "Proposal title"
 msgstr "投稿タイトル"
 
@@ -4005,7 +4056,7 @@ msgid "The name of the speaker that should be displayed publicly."
 msgstr "公表すべき登壇者名。"
 
 #: pretalx/orga/forms/submission.py:81
-#: pretalx/submission/models/submission.py:146
+#: pretalx/submission/models/submission.py:154
 msgid "Proposal state"
 msgstr "投稿の状態"
 
@@ -4286,7 +4337,7 @@ msgstr "アクセスコード"
 #: pretalx/orga/templates/orga/review/dashboard.html:127
 #: pretalx/orga/templates/orga/submission/tag_list.html:6
 #: pretalx/submission/forms/submission.py:270
-#: pretalx/submission/models/submission.py:140
+#: pretalx/submission/models/submission.py:148
 msgid "Tags"
 msgstr ""
 
@@ -4710,14 +4761,14 @@ msgstr "最大長"
 
 #: pretalx/orga/templates/orga/cfp/text.html:73
 #: pretalx/orga/templates/orga/submission/review.html:71
-#: pretalx/submission/models/submission.py:159
+#: pretalx/submission/models/submission.py:167
 msgid "Abstract"
 msgstr "概要"
 
 #: pretalx/orga/templates/orga/cfp/text.html:79
 #: pretalx/orga/templates/orga/submission/review.html:79
 #: pretalx/schedule/models/room.py:33
-#: pretalx/submission/models/submission.py:165
+#: pretalx/submission/models/submission.py:173
 #: pretalx/submission/models/tag.py:19 pretalx/submission/models/track.py:28
 msgid "Description"
 msgstr "詳細"
@@ -4734,7 +4785,7 @@ msgstr "空き時間"
 
 #: pretalx/orga/templates/orga/cfp/text.html:123
 #: pretalx/orga/templates/orga/submission/review.html:87
-#: pretalx/submission/models/submission.py:171
+#: pretalx/submission/models/submission.py:179
 msgid "Notes"
 msgstr "備考"
 
@@ -4744,12 +4795,12 @@ msgstr "録画の許可"
 
 #: pretalx/orga/templates/orga/cfp/text.html:135
 #: pretalx/submission/forms/submission.py:26
-#: pretalx/submission/models/submission.py:215
+#: pretalx/submission/models/submission.py:223
 msgid "Session image"
 msgstr "講演イメージ"
 
 #: pretalx/orga/templates/orga/cfp/text.html:141
-#: pretalx/submission/models/submission.py:187
+#: pretalx/submission/models/submission.py:195
 msgid "Duration"
 msgstr "時間"
 
@@ -4804,7 +4855,7 @@ msgstr "未公開"
 msgid "Click here to change"
 msgstr "こちらをクリックして変更"
 
-#: pretalx/orga/templates/orga/event/dashboard.html:82
+#: pretalx/orga/templates/orga/event/dashboard.html:101
 msgid "Full history"
 msgstr "全ての履歴"
 
@@ -4930,7 +4981,7 @@ msgstr "あなたの近日公開イベント"
 #: pretalx/orga/templates/orga/event_list.html:60
 #: pretalx/orga/templates/orga/speaker/form.html:21
 #: pretalx/orga/templates/orga/submission/list.html:28
-#: pretalx/orga/views/dashboard.py:240
+#: pretalx/orga/views/dashboard.py:305
 #, fuzzy
 #| msgid "proposal"
 #| msgid_plural "submissions"
@@ -5392,7 +5443,7 @@ msgid ""
 msgstr ""
 
 #: pretalx/orga/templates/orga/review/dashboard.html:26
-#: pretalx/orga/views/dashboard.py:170
+#: pretalx/orga/views/dashboard.py:199
 #, fuzzy
 #| msgid "proposal is waiting for your review."
 #| msgid_plural "submissions are waiting for your review."
@@ -5451,7 +5502,7 @@ msgstr "あなたのスコア"
 #: pretalx/orga/templates/orga/review/dashboard.html:120
 #: pretalx/orga/templates/orga/submission/base.html:73
 #: pretalx/orga/templates/orga/submission/content.html:54
-#: pretalx/orga/views/dashboard.py:151
+#: pretalx/orga/views/dashboard.py:175
 msgid "Reviews"
 msgstr "レビュー"
 
@@ -6231,7 +6282,7 @@ msgid "Add a new note"
 msgstr "ノートを新規追加"
 
 #: pretalx/orga/templates/orga/speaker/list.html:10
-#: pretalx/orga/views/dashboard.py:248
+#: pretalx/orga/views/dashboard.py:335
 msgid "submitter"
 msgid_plural "submitters"
 msgstr[0] "投稿者"
@@ -6734,48 +6785,49 @@ msgstr ""
 "このアクセスコードは投稿に利用され、削除できません。コードを無効化するには過"
 "去の日付を入力してください。"
 
-#: pretalx/orga/views/dashboard.py:130
+#: pretalx/orga/views/dashboard.py:140
 msgid "until the CfP ends"
 msgstr "CfP終了まで"
 
-#: pretalx/orga/views/dashboard.py:155
+#: pretalx/orga/views/dashboard.py:152
+#, fuzzy
+#| msgid "Submit a proposal"
+msgid "unsubmitted proposal draft"
+msgid_plural "unsubmitted proposal drafts"
+msgstr[0] "提案を送信する"
+msgstr[1] "提案を送信する"
+
+#: pretalx/orga/views/dashboard.py:180
 msgid "Active reviewers"
 msgstr "活動中のレビュアー"
 
-#: pretalx/orga/views/dashboard.py:171
-#, fuzzy
-#| msgid "proposal is waiting for your review."
-#| msgid_plural "submissions are waiting for your review."
-msgid "proposals are waiting for your review."
-msgstr "投稿は審査待ちです。"
-
-#: pretalx/orga/views/dashboard.py:202
+#: pretalx/orga/views/dashboard.py:238
 msgid "day until event start"
 msgid_plural "days until event start"
 msgstr[0] "イベント開始まで"
 msgstr[1] "イベント開始まで"
 
-#: pretalx/orga/views/dashboard.py:212
+#: pretalx/orga/views/dashboard.py:249
 msgid "day since event end"
 msgid_plural "days since event end"
 msgstr[0] "イベント終了から"
 msgstr[1] "イベント終了から"
 
-#: pretalx/orga/views/dashboard.py:220
+#: pretalx/orga/views/dashboard.py:258
 #, python-brace-format
 msgid "Day {number}"
 msgstr "{number} 日"
 
-#: pretalx/orga/views/dashboard.py:221
+#: pretalx/orga/views/dashboard.py:259
 #, python-brace-format
 msgid "of {total_days} days"
 msgstr "全 {total_days} 日"
 
-#: pretalx/orga/views/dashboard.py:231
+#: pretalx/orga/views/dashboard.py:270
 msgid "current schedule"
 msgstr "現在のスケジュール"
 
-#: pretalx/orga/views/dashboard.py:257
+#: pretalx/orga/views/dashboard.py:283
 #, fuzzy
 #| msgid "session"
 #| msgid_plural "talks"
@@ -6784,22 +6836,19 @@ msgid_plural "sessions"
 msgstr[0] "講演"
 msgstr[1] "講演"
 
-#: pretalx/orga/views/dashboard.py:270
+#: pretalx/orga/views/dashboard.py:288
 #, fuzzy
-#| msgid "unconfirmed session"
-#| msgid_plural "unconfirmed talks"
-msgid "unconfirmed session"
-msgid_plural "unconfirmed sessions"
-msgstr[0] "未確認の講演"
-msgstr[1] "未確認の講演"
+#| msgid "confirmed"
+msgid "unconfirmed"
+msgstr "確定済"
 
-#: pretalx/orga/views/dashboard.py:283
+#: pretalx/orga/views/dashboard.py:316
 msgid "speaker"
 msgid_plural "speakers"
 msgstr[0] "講演者"
 msgstr[1] "講演者"
 
-#: pretalx/orga/views/dashboard.py:291
+#: pretalx/orga/views/dashboard.py:344
 msgid "sent email"
 msgid_plural "sent emails"
 msgstr[0] "送信済みメール"
@@ -7292,19 +7341,19 @@ msgstr "新しいイベント {event} への投稿: {title}"
 msgid "Deadline"
 msgstr "締め切り"
 
-#: pretalx/orga/views/submission.py:989
+#: pretalx/orga/views/submission.py:991
 #, fuzzy
 #| msgid "The track has been saved."
 msgid "The tag has been saved."
 msgstr "トラックが保存されました。"
 
-#: pretalx/orga/views/submission.py:1010
+#: pretalx/orga/views/submission.py:1012
 #, fuzzy
 #| msgid "The track has been deleted."
 msgid "The tag has been deleted."
 msgstr "トラックが削除されました。"
 
-#: pretalx/orga/views/submission.py:1035
+#: pretalx/orga/views/submission.py:1037
 #, fuzzy, python-brace-format
 #| msgid "New {event} proposal: {title}"
 msgid "Changed {count} proposal states."
@@ -7682,7 +7731,7 @@ msgstr ""
 "投稿プロセスが完了した後に追加することができます。"
 
 #: pretalx/submission/forms/submission.py:27
-#: pretalx/submission/models/submission.py:216
+#: pretalx/submission/models/submission.py:224
 msgid "Use this if you want an illustration to go with your proposal."
 msgstr "投稿にイラストを添付する場合、こちらを利用ください。"
 
@@ -8110,21 +8159,25 @@ msgstr ""
 "通常、CfPの終了後は投稿の修正がロックされ、投稿がアクセプトされると再び有効と"
 "なります。"
 
-#: pretalx/submission/models/submission.py:154
+#: pretalx/submission/models/submission.py:56
+msgid "draft"
+msgstr ""
+
+#: pretalx/submission/models/submission.py:162
 #, fuzzy
 #| msgid "Proposal state"
 msgid "Pending proposal state"
 msgstr "投稿の状態"
 
-#: pretalx/submission/models/submission.py:173
+#: pretalx/submission/models/submission.py:181
 msgid "These notes are meant for the organiser and won't be made public."
 msgstr "これらのノートは主催者のみが対象となっており、一般公開されません。"
 
-#: pretalx/submission/models/submission.py:179
+#: pretalx/submission/models/submission.py:187
 msgid "Internal notes"
 msgstr "内部ノート"
 
-#: pretalx/submission/models/submission.py:181
+#: pretalx/submission/models/submission.py:189
 msgid ""
 "Internal notes for other organisers/reviewers. Not visible to the speakers "
 "or the public."
@@ -8132,7 +8185,7 @@ msgstr ""
 "他の主催者/レビュアーに対する内部メモ。講演者からは閲覧できませんし、公開もさ"
 "れません。"
 
-#: pretalx/submission/models/submission.py:189
+#: pretalx/submission/models/submission.py:197
 msgid ""
 "The duration in minutes. Leave empty for default duration for this session "
 "type."
@@ -8140,39 +8193,44 @@ msgstr ""
 "待ち時間（分）。この投稿タイプには標準の待ち時間を適用する場合、空欄にしてお"
 "いてください。"
 
-#: pretalx/submission/models/submission.py:195
+#: pretalx/submission/models/submission.py:203
 msgid "How many times this session will take place."
 msgstr "この講演が何回行われるか"
 
-#: pretalx/submission/models/submission.py:206
+#: pretalx/submission/models/submission.py:214
 #, fuzzy
 #| msgid "Show this submission in the list of featured talks."
 msgid "Show this session in public list of featured sessions."
 msgstr "この投稿を特別講演の一覧に表示します。"
 
-#: pretalx/submission/models/submission.py:209
+#: pretalx/submission/models/submission.py:217
 msgid "Don't record this session."
 msgstr "動画や録音など記録を希望しません。"
 
-#: pretalx/submission/models/submission.py:231
+#: pretalx/submission/models/submission.py:239
 #, fuzzy
 #| msgid "Active reviewers"
 msgid "Assigned reviewers"
 msgstr "活動中のレビュアー"
 
-#: pretalx/submission/models/submission.py:388
+#: pretalx/submission/models/submission.py:401
 msgctxt ""
 "used in talk confirm/accept/reject/...-errors, like \"... must be accepted "
 "OR foo OR bar ...\""
 msgid " or "
 msgstr " あるいは "
 
-#: pretalx/submission/models/submission.py:396
+#: pretalx/submission/models/submission.py:409
 #, python-brace-format
 msgid "Proposal must be {src_states} not {state} to be {new_state}."
 msgstr ""
 "投稿は {state} ではなく {src_states} から {new_state} として記載する必要があ"
 "ります。"
+
+#: pretalx/submission/models/submission.py:478
+#, python-brace-format
+msgid "New proposal: {title}"
+msgstr ""
 
 #: pretalx/submission/models/tag.py:31
 #, fuzzy
@@ -8234,6 +8292,20 @@ msgstr "{name} ({duration} 時間)"
 msgid "{name} ({duration} minutes)"
 msgstr "{name} ({duration} 分)"
 
+#, fuzzy
+#~| msgid "proposal is waiting for your review."
+#~| msgid_plural "submissions are waiting for your review."
+#~ msgid "proposals are waiting for your review."
+#~ msgstr "投稿は審査待ちです。"
+
+#, fuzzy
+#~| msgid "unconfirmed session"
+#~| msgid_plural "unconfirmed talks"
+#~ msgid "unconfirmed session"
+#~ msgid_plural "unconfirmed sessions"
+#~ msgstr[0] "未確認の講演"
+#~ msgstr[1] "未確認の講演"
+
 #~ msgid "No speaker matches your search."
 #~ msgstr "条件に合う登壇者はいませんでした。"
 
@@ -8285,9 +8357,6 @@ msgstr "{name} ({duration} 分)"
 
 #~ msgid "Compose mail"
 #~ msgstr "メール作成"
-
-#~ msgid "Current draft"
-#~ msgstr "現状のドラフト"
 
 #~ msgid "Show"
 #~ msgstr "表示"
