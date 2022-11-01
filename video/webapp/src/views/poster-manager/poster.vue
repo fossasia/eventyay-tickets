@@ -23,16 +23,19 @@
 							.name {{ $t('poster-manager/poster:authors:header:name') }}
 							.orgs
 								.org(v-for="(org, index) of poster.authors.organizations") {{ index + 1 }}.
-						.author(v-for="author of poster.authors.authors")
+							.button-placeholder
+						.author(v-for="(author, index) of poster.authors.authors")
 							bunt-input.name(name="name", v-model="author.name", :label="$t('poster-manager/poster:authors:input-name:label')")
 							.orgs
 								bunt-checkbox.org(v-for="(org, index) of poster.authors.organizations", name="org", :value="author.orgs.includes(index)", @input="toggleAuthorOrg(author, index)")
+							bunt-icon-button(@click="poster.authors.authors.splice(index, 1)") delete-outline
 					bunt-button(@click="addAuthor") {{ $t('poster-manager/poster:btn-add-author') }}
 					h3 {{ $t('poster-manager/poster:organizations:headline') }}
 					.organizations
 						.organization(v-for="(organization, index) of poster.authors.organizations")
 							.index {{ index + 1 }}.
 							bunt-input(name="organization", :value="organization", @input="$set(poster.authors.organizations, index, $event)")
+							bunt-icon-button(@click="poster.authors.organizations.splice(index, 1)") delete-outline
 					bunt-button(@click="poster.authors.organizations.push('')") {{ $t('poster-manager/poster:btn-add-organization') }}
 					h2 {{ $t('poster-manager/poster:presenters:headline') }}
 					.presenters
@@ -54,8 +57,8 @@
 						.link
 							bunt-input.label(name="display-text", v-model="link.display_text")
 							upload-url-input.url(name="url", v-model="link.url")
-						//- .actions
-						//- 	bunt-icon-button(@click="remove_link(index, link.category)") delete-outline
+							.actions
+								bunt-icon-button(@click="poster.links.splice(index, 1)") delete-outline
 						//- 	bunt-icon-button(@click="up_link(index, link.category)") arrow-up-bold-outline
 						//- 	bunt-icon-button(@click="down_link(index, link.category)") arrow-down-bold-outline
 					bunt-button(@click="poster.links.push({display_text: '', url: ''})") {{ $t('poster-manager/poster:btn-add-file') }}
@@ -82,9 +85,6 @@
 <script>
 // TODO
 // - better tag input
-// - deletable authors and organizations
-// - file attachments
-// - delete
 
 import * as pdfjs from 'pdfjs-dist/webpack'
 import Quill from 'quill'
@@ -247,6 +247,9 @@ export default {
 	flex-direction: column
 	flex: auto
 	min-height: 0
+	.bunt-icon-button
+		margin-left: 4px
+		icon-button-style(style: clear)
 	.btn-delete-poster
 		button-style(color: $clr-danger)
 	.scroll-content
@@ -270,6 +273,8 @@ export default {
 					width: 32px
 					text-align: center
 					margin: 0 4px
+			.button-placeholder
+				width: 40px
 		.author
 			// .bunt-input
 			// 	input-style(size: compact)
@@ -285,7 +290,6 @@ export default {
 			align-items: baseline
 			.bunt-input
 				flex: auto
-				input-style(size: compact)
 	.presenters
 		display: flex
 		flex-direction: column
