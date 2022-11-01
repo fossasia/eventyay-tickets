@@ -5,12 +5,14 @@
 		.category(v-for="category of module.config.categories")
 			.id {{ category.id }}
 			bunt-input.label(name="label", v-model="category.label", @input="generateId(category)")
+			bunt-icon-button(@click="removeCategory(category)") delete-outline
 		bunt-button.btn-add(@click="addCategory") Add Category
 	h2 Tags
 	.tags
 		.tag(v-for="tag of module.config.tags")
 			.id {{ tag.id }}
 			bunt-input.label(name="label", v-model="tag.label", @input="generateId(tag)")
+			bunt-icon-button(@click="removeTag(tag)") delete-outline
 		bunt-button.btn-add(@click="addTag") Add Tag
 </template>
 <script>
@@ -36,6 +38,9 @@ export default {
 				label: ''
 			})
 		},
+		removeCategory (category) {
+			this.module.config.categories.splice(this.module.config.categories.indexOf(category), 1)
+		},
 		addTag () {
 			if (!this.module.config.tags) this.$set(this.module.config, 'tags', [])
 			this.module.config.tags.push({
@@ -44,6 +49,9 @@ export default {
 				label: '',
 				color: ''
 			})
+		},
+		removeTag (tag) {
+			this.module.config.tags.splice(this.module.config.tags.indexOf(tag), 1)
 		},
 		generateId (item) {
 			if (!item.new) return
