@@ -96,7 +96,7 @@ setup(
         "bleach~=4.1.0",  # https://bleach.readthedocs.io/en/latest/changes.html
         "celery~=4.4.0",  # search for "what's new" on http://docs.celeryproject.org/en/latest/
         "csscompressor~=0.9.0",  # 2017-11, no changelog, https://github.com/sprymix/csscompressor
-        "cssutils~=2.4.0",
+        "cssutils~=2.6.0",
         "defusedcsv~=1.1.0",  # https://github.com/raphaelm/defusedcsv
         "Django~=3.2.0",  # https://docs.djangoproject.com/en/dev/releases/
         "django-bootstrap4~=3.0.0",  # http://django-bootstrap4.readthedocs.io/en/latest/history.html
@@ -111,7 +111,7 @@ setup(
         "django-i18nfield~=1.9.0",  # 2020-06, no changelog, https://github.com/raphaelm/django-i18nfield/
         "django-libsass~=0.8",  # inactive, https://github.com/torchbox/django-libsass/blob/main/CHANGELOG.txt
         "django-scopes~=1.2.0",  # https://github.com/raphaelm/django-scopes/releases
-        "djangorestframework~=3.13.0",  # http://www.django-rest-framework.org/community/release-notes/
+        "djangorestframework~=3.14.0",  # http://www.django-rest-framework.org/community/release-notes/
         "inlinestyler~=0.2.0",  # https://github.com/dlanger/inlinestyler/blob/master/CHANGELOG
         "libsass~=0.21.0",  # https://sass.github.io/libsass-python/changes.html
         "Markdown==3.3.7",  # https://python-markdown.github.io/change_log/
