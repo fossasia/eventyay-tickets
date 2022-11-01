@@ -87,4 +87,7 @@ export default {
 	.btn-add
 		align-self: flex-start
 		margin-top: 8px
+	.bunt-icon-button
+		margin-left: 4px
+		icon-button-style(style: clear)
 </style>
