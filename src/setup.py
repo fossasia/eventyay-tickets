@@ -100,7 +100,7 @@ setup(
         "defusedcsv~=1.1.0",  # https://github.com/raphaelm/defusedcsv
         "Django~=3.2.0",  # https://docs.djangoproject.com/en/dev/releases/
         "django-bootstrap4~=3.0.0",  # http://django-bootstrap4.readthedocs.io/en/latest/history.html
-        "django-compressor~=3.1.0",  # https://django-compressor.readthedocs.io/en/latest/changelog/
+        "django-compressor~=4.1.0",  # https://django-compressor.readthedocs.io/en/latest/changelog/
         "django-context-decorator",
         "django-countries~=7.0",  # https://github.com/SmileyChris/django-countries/blob/master/CHANGES.rst
         "django-csp~=3.7.0",  # https://github.com/mozilla/django-csp/blob/main/CHANGES
@@ -119,7 +119,7 @@ setup(
         # 3.3.5 requires importlib-metadata>=4.4, but django-bootstrap3 requires importlib-metadata<3.
         # see also https://github.com/zostera/django-bootstrap4/issues/380
         "Pillow~=9.1.0",  # https://github.com/python-pillow/Pillow/blob/main/CHANGES.rst
-        "publicsuffixlist~=0.7.0",
+        "publicsuffixlist~=0.9.0",
         "python-dateutil~=2.8.0",  # https://dateutil.readthedocs.io/en/stable/changelog.html
         "pytz",
         "qrcode~=7.0",
