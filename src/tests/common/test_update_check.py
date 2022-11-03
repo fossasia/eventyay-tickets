@@ -217,8 +217,9 @@ def test_result_table_up2date():
     update_check.apply(throw=True)
     tbl = check_result_table()
     assert tbl[0] == ("pretalx", __version__, "1.0.0", False)
-    assert any(e[0] == "Plugin: test plugin for pretalx" for e in tbl)
-    assert any(e[2] == "?" for e in tbl)
+    plugin = [e for e in tbl if e[0] == "Plugin: test plugin for pretalx"][0]
+    assert plugin
+    assert plugin[2] == "?"
 
 
 @responses.activate
@@ -233,7 +234,9 @@ def test_result_table_up2date_with_plugins():
     update_check.apply(throw=True)
     tbl = check_result_table()
     assert tbl[0] == ("pretalx", __version__, "1.0.0", True)
-    assert any(
-        e == ("Plugin: test plugin for pretalx", "0.0.0", "1.1.1", True)
-        for e in tbl[1:]
-    )
+    line = [
+        e
+        for e in tbl
+        if e == ("Plugin: test plugin for pretalx", "0.0.0", "1.1.1", True)
+    ]
+    assert line

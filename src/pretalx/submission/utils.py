@@ -30,7 +30,7 @@ def move_submission(code, new_event):
     }
 
     submission.event = new_event
-    submission.submission_type = new_event.default_submission_type
+    submission.submission_type = new_event.cfp.default_type
     submission.save()
 
     for answer in (

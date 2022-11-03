@@ -370,6 +370,14 @@ def answer(event, submission, question):
 
 
 @pytest.fixture
+def speaker_answer(event, submission, speaker_question):
+    with scope(event=event):
+        return Answer.objects.create(
+            answer="11", person=submission.speakers.first(), question=speaker_question
+        )
+
+
+@pytest.fixture
 def speaker_question(event):
     with scope(event=event):
         return Question.objects.create(

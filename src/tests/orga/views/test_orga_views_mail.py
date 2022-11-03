@@ -364,8 +364,8 @@ def test_orga_can_compose_single_mail(
     with scope(event=event):
         mails = QueuedMail.objects.filter(sent__isnull=True)
         assert mails.count() == 2  # one of them is the accept mail!
-        assert any(m.subject == f"foo {speaker.name}" for m in mails)
-        assert any(m.text == f"bar {submission.title}" for m in mails)
+        mail = [m for m in mails if m.subject == f"foo {speaker.name}"][0]
+        assert mail.text == f"bar {submission.title}"
 
 
 @pytest.mark.django_db
@@ -420,8 +420,9 @@ def test_orga_can_compose_single_mail_with_specific_submission(
     with scope(event=event):
         mails = QueuedMail.objects.filter(sent__isnull=True)
         assert mails.count() == 2  # one of them is the accept mail!
-        assert any(m.text == f"bar {other_submission.title}" for m in mails)
-        assert any(m.text == f"bar {slot.submission.title}" for m in mails)
+        for title in [slot.submission.title, other_submission.title]:
+            mail = [m for m in mails if m.text == f"bar {title}"][0]
+            assert mail
 
 
 @pytest.mark.django_db
