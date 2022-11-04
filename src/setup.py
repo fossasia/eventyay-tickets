@@ -114,11 +114,11 @@ setup(
         "djangorestframework~=3.14.0",  # http://www.django-rest-framework.org/community/release-notes/
         "inlinestyler~=0.2.0",  # https://github.com/dlanger/inlinestyler/blob/master/CHANGELOG
         "libsass~=0.21.0",  # https://sass.github.io/libsass-python/changes.html
-        "Markdown==3.3.7",  # https://python-markdown.github.io/change_log/
+        "Markdown==3.4.7",  # https://python-markdown.github.io/change_log/
         # We can upgrade markdown again once django-bootstrap4 upgrades or once we drop Python 3.6 and 3.7
         # 3.3.5 requires importlib-metadata>=4.4, but django-bootstrap3 requires importlib-metadata<3.
         # see also https://github.com/zostera/django-bootstrap4/issues/380
-        "Pillow~=9.1.0",  # https://github.com/python-pillow/Pillow/blob/main/CHANGES.rst
+        "Pillow~=9.3.0",  # https://github.com/python-pillow/Pillow/blob/main/CHANGES.rst
         "publicsuffixlist~=0.9.0",
         "python-dateutil~=2.8.0",  # https://dateutil.readthedocs.io/en/stable/changelog.html
         "pytz",
@@ -140,7 +140,7 @@ setup(
             "djhtml",
             "docformatter",
             "Faker",
-            "flake8<4",
+            "flake8",
             "flake8-bugbear",
             "freezegun",
             "isort",
