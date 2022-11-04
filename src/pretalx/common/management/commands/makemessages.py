@@ -59,4 +59,6 @@ class Command(Parent):
         super().handle(*args, **options)
 
         for move in moves:
+            if not move[1].exists():
+                move[1].mkdir()
             move[1].replace(move[0])

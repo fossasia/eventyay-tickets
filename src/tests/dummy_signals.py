@@ -8,6 +8,12 @@ from pretalx.orga.signals import (
     nav_global,
 )
 
+from pretalx.common.signals import register_locales
+
+@receiver(register_locales)
+def register_locales_test(sender, **kwargs):
+    return ["testlocale"]
+
 
 @receiver(footer_link)
 def footer_link_test(sender, request, **kwargs):
