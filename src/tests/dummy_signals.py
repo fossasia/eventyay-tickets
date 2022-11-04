@@ -1,6 +1,7 @@
 from django.dispatch import receiver
 
 from pretalx.cfp.signals import footer_link, html_above_profile_page, html_head
+from pretalx.common.signals import register_locales
 from pretalx.orga.signals import (
     activate_event,
     nav_event,
@@ -8,7 +9,6 @@ from pretalx.orga.signals import (
     nav_global,
 )
 
-from pretalx.common.signals import register_locales
 
 @receiver(register_locales)
 def register_locales_test(sender, **kwargs):
