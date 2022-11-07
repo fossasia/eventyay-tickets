@@ -1,5 +1,5 @@
 /*
- * RANGE SLIDER CODE
+ * RANGE SLIDER
  */
 const slider = document.querySelector("#review-count")
 
@@ -23,9 +23,21 @@ if (slider) {
           set: [parseInt(minInitial), parseInt(maxInitial)]
       });
 }
+/*
+ * COLUMN SELECTION
+ */
+
+const updateColumnVisibility = (ev) => {
+  if (ev.target.checked) {
+    document.querySelectorAll(`.${ev.target.id}`).forEach(e => e.classList.remove("d-none"))
+  } else {
+    document.querySelectorAll(`.${ev.target.id}`).forEach(e => e.classList.add("d-none"))
+  }
+}
+document.querySelectorAll("#column-select input[type=checkbox]").forEach(element => element.addEventListener("change", updateColumnVisibility))
 
 /*
- * REVIEW SELECTION CODE
+ * REVIEW SELECTION
  *
  * When a radio button is selected (or has been selected from the start):
  * add the active class to its unmark-radio element

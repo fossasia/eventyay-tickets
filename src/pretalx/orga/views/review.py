@@ -121,7 +121,12 @@ class ReviewDashboard(
             queryset.annotate(user_score=Subquery(user_reviews))
             .select_related("track", "submission_type")
             .prefetch_related(
-                "speakers", "reviews", "reviews__user", "reviews__scores", "tags"
+                "speakers",
+                "reviews",
+                "reviews__user",
+                "reviews__scores",
+                "tags",
+                "answers",
             )
         )
 
@@ -149,6 +154,18 @@ class ReviewDashboard(
                     for category in self.independent_categories:
                         result.append(mapping.get(category.pk))
                     submission.independent_scores = result
+                if self.short_questions:
+                    answers = {
+                        answer.question_id: answer
+                        for answer in submission.answers.all()
+                    }
+                    submission.short_answers = [
+                        answers.get(
+                            question.id,
+                            {"question_id": question.id, "answer_string": ""},
+                        )
+                        for question in self.short_questions
+                    ]
             else:
                 reviews = [
                     review
@@ -237,6 +254,23 @@ class ReviewDashboard(
     @cached_property
     def show_submission_types(self):
         return self.request.event.submission_types.all().count() > 1
+
+    @context
+    @cached_property
+    def short_questions(self):
+        from pretalx.submission.models import QuestionVariant
+
+        return self.request.event.questions.filter(
+            target="submission",
+            variant__in=[
+                QuestionVariant.BOOLEAN,
+                QuestionVariant.CHOICES,
+                QuestionVariant.DATE,
+                QuestionVariant.DATETIME,
+                QuestionVariant.BOOLEAN,
+                QuestionVariant.NUMBER,
+            ],
+        )
 
     @context
     @cached_property

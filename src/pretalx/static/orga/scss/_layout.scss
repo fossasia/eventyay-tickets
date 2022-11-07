@@ -955,6 +955,12 @@ h2 .submission-state-dropdown {
       }
     }
   }
+  #column-select {
+    li.dropdown-item {
+      padding-left: 48px;
+      margin-top: 8px;
+    }
+  }
 
 }
 .review-table.table {

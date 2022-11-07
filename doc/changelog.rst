@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` In the review dashboards, users can now remove and add columns, including the track, session duration and shorter questions.
 - :feature:`-` The submission API now includes IDs for submission types, tracks and rooms, rather than just references by name.
 - :feature:`672` Speakers (or rather submitters) can now save a proposal as a draft while they are working on finishing the submission process.
 - :feature:`-` The state of a proposal is now marked as "in review" on the speaker-facing side once the CfP closes, to make it clearer that there is no action to be taken at that time.
