@@ -19,7 +19,9 @@ speakers                              list                       A list of speak
 created                               datetime                   The time of submission creation as an ISO-8601 formatted datetime. Available if the requesting user has organiser permission.
 title                                 string                     The submission's title
 submission_type                       multi-lingual string       The submission type
+submission_type_id                    number                     ID of the submission type
 track                                 multi-lingual string       The track this talk belongs to (e.g. "security", "design", or ``null``)
+track_id                              number                     ID of the track this talk belongs to (e.g. "security", "design", or ``null``)
 state                                 string                     The submission's state, one of "submitted", "accepted", "rejected", "confirmed"
 pending_state                         string                     Only present for organisers, this field signals the next ``state`` a submission is planned to have.
 abstract                              string                     The abstract, a short note of the submission's content
@@ -28,7 +30,7 @@ duration                              number                     The talk's dura
 do_not_record                         boolean                    Indicates if the speaker consent to recordings of their talk
 is_featured                           boolean                    Indicates if the talk is show in the schedule preview / sneak peek
 content_locale                        string                     The language the submission is in, e.g. "en" or "de"
-slot                                  object                     An object with the scheduling details, e.g. ``{"start": …, "end": …, "room": "R101"}`` if they exist. This will not be present til after the schedule is released.
+slot                                  object                     An object with the scheduling details, e.g. ``{"start": …, "end": …, "room": "R101", "room_id": 12}`` if they exist. This will not be present til after the schedule is released.
 slot_count                            number                     How often this submission may be scheduled.
 image                                 string                     The submission image URL
 answers                               list                       The question answers given by the speakers. Available if the requesting user has organiser permissions, and if the ``questions`` query parameter is passed.
@@ -43,6 +45,9 @@ tags                                  list                       The tags attach
 
 .. versionadded:: 2.2.0
    The ``tags`` field was added in pretalx v2.2.0.
+
+.. versionadded:: 3.0.0
+   The ``track_id`` and ``submission_type_id`` fields were added, as well as the ``room_id`` field in the ``slot`` object.
 
 .. versionchanged:: 3.0.0
    The ``answers`` field was turned off by default in pretalx v3.0.0. Pass the ``questions`` query parameter to see questions, and pass ``questions=all`` to get the previous behaviour.
@@ -83,6 +88,7 @@ Endpoints
             "speakers": [{"name": "Jane", "code": "DEFAB", "biography": "A speaker", "avatar": "avatar.png"}],
             "title": "A talk",
             "submission_type": "talk",
+            "submission_type_id": 12,
             "state": "confirmed",
             "abstract": "A good talk.",
             "description": "I will expand upon the properties of the talk, primarily its high quality.",
@@ -93,7 +99,8 @@ Endpoints
             "slot": {
               "start": "2017-12-27T10:00:00Z",
               "end": "2017-12-27T10:30:00Z",
-              "room": "R101"
+              "room": "R101",
+              "room_id": 12
             },
             "image": "submission.png",
             "answers": [
@@ -146,6 +153,7 @@ Endpoints
         "speakers": [{"name": "Jane", "code": "DEFAB", "biography": "A speaker", "avatar": "avatar.png"}],
         "title": "A talk",
         "submission_type": "talk",
+        "submission_type_id": 12,
         "state": "confirmed",
         "abstract": "A good talk.",
         "description": "I will expand upon the properties of the talk, primarily its high quality.",
@@ -156,7 +164,8 @@ Endpoints
         "slot": {
           "start": "2017-12-27T10:00:00Z",
           "end": "2017-12-27T10:30:00Z",
-          "room": "R101"
+          "room": "R101",
+          "room_id": 12
         },
         "image": "submission.png",
         "answers": [

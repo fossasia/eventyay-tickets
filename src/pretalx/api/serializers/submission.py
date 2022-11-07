@@ -35,13 +35,13 @@ class SlotSerializer(I18nAwareModelSerializer):
 
     class Meta:
         model = TalkSlot
-        fields = ("room", "start", "end")
+        fields = ("room_id", "room", "start", "end")
 
 
 class BreakSerializer(SlotSerializer):
     class Meta:
         model = TalkSlot
-        fields = ("room", "start", "end", "description")
+        fields = ("room", "room_id", "start", "end", "description")
 
 
 class SubmissionSerializer(I18nAwareModelSerializer):
@@ -100,7 +100,9 @@ class SubmissionSerializer(I18nAwareModelSerializer):
             "speakers",
             "title",
             "submission_type",
+            "submission_type_id",
             "track",
+            "track_id",
             "state",
             "abstract",
             "description",
@@ -118,7 +120,7 @@ class SubmissionSerializer(I18nAwareModelSerializer):
 class TagSerializer(I18nAwareModelSerializer):
     class Meta:
         model = Tag
-        fields = ["tag", "description", "color"]
+        fields = ["id", "tag", "description", "color"]
 
 
 class SubmissionOrgaSerializer(SubmissionSerializer):

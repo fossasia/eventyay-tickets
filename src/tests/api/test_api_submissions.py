@@ -21,6 +21,7 @@ def test_submission_slot_serializer(slot):
             "speakers",
             "title",
             "submission_type",
+            "submission_type_id",
             "state",
             "abstract",
             "description",
@@ -32,9 +33,10 @@ def test_submission_slot_serializer(slot):
             "slot",
             "image",
             "track",
+            "track_id",
             "resources",
         }
-        assert set(data["slot"].keys()) == {"start", "end", "room"}
+        assert set(data["slot"].keys()) == {"start", "end", "room", "room_id"}
         assert data["slot"]["room"] == slot.room.name
 
 
@@ -43,6 +45,7 @@ def test_tag_serializer(tag):
     with scope(event=tag.event):
         data = TagSerializer(tag, context={"event": tag.event}).data
         assert set(data.keys()) == {
+            "id",
             "tag",
             "description",
             "color",
@@ -63,6 +66,7 @@ def test_submission_serializer_for_organiser(submission, orga_user, resource, ta
             "speakers",
             "title",
             "submission_type",
+            "submission_type_id",
             "state",
             "pending_state",
             "abstract",
@@ -76,6 +80,7 @@ def test_submission_serializer_for_organiser(submission, orga_user, resource, ta
             "image",
             "answers",
             "track",
+            "track_id",
             "notes",
             "internal_notes",
             "created",
@@ -118,6 +123,7 @@ def test_submission_serializer(submission, resource):
             "speakers",
             "title",
             "submission_type",
+            "submission_type_id",
             "state",
             "abstract",
             "description",
@@ -129,6 +135,7 @@ def test_submission_serializer(submission, resource):
             "slot",
             "image",
             "track",
+            "track_id",
             "resources",
         }
         assert isinstance(data["speakers"], list)
