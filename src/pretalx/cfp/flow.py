@@ -117,19 +117,29 @@ class BaseCfPStep:
     def get_prev_url(self, request):
         prev = self.get_prev_applicable(request)
         if prev:
-            return prev.get_step_url(request)
+            return prev.get_step_url(request, query={"draft": False})
 
     def get_next_url(self, request):
         n = self.get_next_applicable(request)
         if n:
             return n.get_step_url(request)
 
-    def get_step_url(self, request):
+    def get_step_url(self, request, query=None):
         kwargs = request.resolver_match.kwargs
         kwargs["step"] = self.identifier
         url = reverse("cfp:event.submit", kwargs=kwargs)
-        if request.GET:
-            url += f"?{request.GET.urlencode()}"
+        new_query = request.GET.copy()
+        query = query or {}
+        for key, value in query.items():
+            if value is False:
+                new_query.pop(key, None)
+            else:
+                new_query.update({key: value})
+        if new_query:
+            for key, value in new_query.items():
+                if value is False:
+                    new_query.pop(key)
+            url += f"?{new_query.urlencode()}"
         return url
 
     def get(self, request):

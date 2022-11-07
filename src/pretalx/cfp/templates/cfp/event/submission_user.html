@@ -4,9 +4,19 @@
 {% load rich_text %}
 
 {% block inner %}
-    <h2>{{ title }}</h2>
+    {% if request.GET.draft == '1' %}
+        <h2>{% translate "Sign in or register to save your draft" %}</h2>
+    {% else %}
+        <h2>{{ title }}</h2>
+    {% endif %}
     <p>
-        {{ text|rich_text }}
+        {% if request.GET.draft == '1' %}
+            {% blocktranslate trimmed %}
+                Organisers will not be able to see your draft or your email address. They will be able to send you reminders about your pending proposal draft closer to the deadline.
+            {% endblocktranslate %}
+        {% else %}
+            {{ text|rich_text }}
+        {% endif %}
     </p>
     {% include "common/auth.html" with form=form no_form=True no_buttons=True %}
 {% endblock %}

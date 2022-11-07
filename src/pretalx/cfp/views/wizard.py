@@ -85,7 +85,8 @@ class SubmitWizard(EventPageMixin, View):
         for step in steps:
             if step.is_applicable(request):
                 if not step.is_completed(request):
-                    return redirect(step.get_step_url(request))
+                    query = {"draft": 1} if draft else None
+                    return redirect(step.get_step_url(request, query=query))
                 valid_steps.append(step)
 
         # We are done, or at least the data checks out. Time to save results.
