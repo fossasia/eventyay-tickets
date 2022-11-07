@@ -64,47 +64,47 @@
                     <ul id="column-select" class="dropdown-content dropdown-content-s{% if rtl %}w{% else %}e{% endif %}">
                         {% if can_see_all_reviews %}
                             <li class="dropdown-item form-check">
-                                <input type="checkbox" id="col-score-avg" checked>
+                                <input type="checkbox" id="col-score-avg" checked autocomplete=off>
                                 <label for="col-score-avg">{% translate "Score" %}</label>
                             </li>
                         {% endif %}
                         {% if can_review or submissions_reviewed %}
                             <li class="dropdown-item form-check">
-                                <input type="checkbox" id="col-score-user" checked>
+                                <input type="checkbox" id="col-score-user" checked autocomplete=off>
                                 <label for="col-score-user">{% translate "Your score" %}</label>
                             </li>
                         {% endif %}
                         {% if can_review or submissions_reviewed %}
                             <li class="dropdown-item form-check">
-                                <input type="checkbox" id="col-review-count" checked>
+                                <input type="checkbox" id="col-review-count" checked autocomplete=off>
                                 <label for="col-review-count">{% translate "Reviews" %}</label>
                             </li>
                         {% endif %}
                         <li class="dropdown-item form-check">
-                            <input type="checkbox" id="col-track" checked>
+                            <input type="checkbox" id="col-track" checked autocomplete=off>
                             <label for="col-track">{% translate "Track" %}</label>
                         </li>
                         {% if can_view_speakers %}
                             <li class="dropdown-item form-check">
-                                <input type="checkbox" id="col-speakers" checked>
+                                <input type="checkbox" id="col-speakers" checked autocomplete=off>
                                 <label for="col-speakers">{% translate "Speakers" %}</label>
                             </li>
                         {% endif %}
                         <li class="dropdown-item form-check">
-                            <input type="checkbox" id="col-duration">
+                            <input type="checkbox" id="col-duration" autocomplete=off>
                             <label for="col-duration">{% translate "Duration" %}</label>
                         </li>
                         <li class="dropdown-item form-check">
-                            <input type="checkbox" id="col-subtype">
+                            <input type="checkbox" id="col-subtype" autocomplete=off>
                             <label for="col-subtype">{% translate "Session type" %}</label>
                         </li>
                         <li class="dropdown-item form-check">
-                            <input type="checkbox" id="col-state" checked>
+                            <input type="checkbox" id="col-state" checked autocomplete=off>
                             <label for="col-state">{% translate "State" %}</label>
                         </li>
                         {% for question in short_questions %}
                             <li class="dropdown-item form-check">
-                                <input type="checkbox" id="col-question-{{ question.id }}">
+                                <input type="checkbox" id="col-question-{{ question.id }}" autocomplete=off>
                                 <label for="col-question-{{ question.id }}">{% translate "Question" %}: {{ question.question }}</label>
                             </li>
                         {% endfor %}
