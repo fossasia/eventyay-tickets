@@ -8,17 +8,20 @@
 				identicon(v-else, :id="speaker.name")
 				.content
 					.name {{ speaker.name }}
-					p.biography {{ speaker.biography }} //- this has html ?
+					//- this has html ?
+					p.biography {{ speaker.biography }}
 					.sessions
-						.session(v-for="session of speaker.sessions")
+						.session(v-for="session of speaker.sessions", v-if="session")
 							.title {{ session.title }}
 </template>
 <script>
 // TODOs
 // search
 import { mapGetters, mapState } from 'vuex'
+import Identicon from 'components/Identicon'
 
 export default {
+	components: { Identicon },
 	data () {
 		return {
 			speakers: null
@@ -54,13 +57,12 @@ export default {
 		flex: auto
 		min-height: 0
 		width: 100%
-		max-width: 960px
 		display: flex
 		flex-direction: column
-		gap: 8px
-		border: border-separator()
-		border-radius: 4px
-		margin: 8px 4px
+		.c-scrollbars
+			align-items: center
+		.scroll-content
+			max-width: 960px
 		.speaker
 			color: $clr-primary-text-light
 			display: flex
@@ -85,4 +87,8 @@ export default {
 				-webkit-box-orient: vertical
 				-webkit-line-clamp: 3
 				overflow: hidden
+		.sessions
+			display: flex
+			flex-direction: column
+			gap: 8px
 </style>
