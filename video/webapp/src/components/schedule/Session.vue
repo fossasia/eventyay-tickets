@@ -64,11 +64,17 @@ export default {
 		isLive () {
 			return moment(this.session.start).isBefore(this.now) && moment(this.session.end).isAfter(this.now)
 		},
+		targetRoute () {
+			if (this.isLive && this.session.room) {
+				return {name: 'room', params: {roomId: this.session.room.id}}
+			}
+			return {name: 'schedule:talk', params: {talkId: this.session.id}}
+		},
 		linkHref () {
 			if (this.session.url) {
 				return this.session.url
 			} else {
-				return router.resolve({name: 'schedule:talk', params: {talkId: this.session.id}}).href
+				return router.resolve(this.targetRoute).href
 			}
 		}
 	},
@@ -76,7 +82,7 @@ export default {
 		async linkClick (event) {
 			if (!this.session.url) {
 				event.preventDefault()
-				await router.push({name: 'schedule:talk', params: {talkId: this.session.id}})
+				await router.push(this.targetRoute)
 			}
 		}
 	}
