@@ -339,11 +339,17 @@ def test_reviewer_with_track_limit_can_see_dashboard(
     review,
     django_assert_max_num_queries,
     other_submission,
+    tag,
 ):
     review_user.teams.first().limit_tracks.add(track)
+    with scope(event=submission.event):
+        submission.event.active_review_phase.can_tag_submissions = True
+        submission.event.active_review_phase.save()
+        submission.tags.add(tag)
     with django_assert_max_num_queries(54):
         response = review_client.get(submission.event.orga_urls.reviews)
     assert response.status_code == 200
+    assert tag.tag in response.content.decode()
 
 
 @pytest.mark.django_db
