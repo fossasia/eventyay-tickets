@@ -70,10 +70,32 @@ def test_edit_cfp_flow(orga_client, event):
     with scope(event=event):
         response = orga_client.post(
             event.cfp.urls.editor,
-            event.cfp_flow.config,
+            event.cfp_flow.get_editor_config(json_compat=True),
             content_type="application/json",
         )
     assert response.status_code == 200, response.content.decode()
+
+
+@pytest.mark.django_db
+def test_edit_cfp_flow_shows_in_frontend(orga_client, event):
+    with scope(event=event):
+        new_config = event.cfp_flow.get_editor_config(json_compat=True)
+
+    new_config[0]["title"]["en"] = "TEST CFP WOO"
+    new_config[0]["text"]["en"] = "PLS SUBMIT HERE THX"
+    new_config[0]["fields"][0]["help_text"]["en"] = "titles are hard, y'know"
+    response = orga_client.post(
+        event.cfp.urls.editor,
+        new_config,
+        content_type="application/json",
+    )
+    assert response.status_code == 200, response.content.decode()
+
+    response = orga_client.get(event.cfp.urls.submit, follow=True)
+    assert response.status_code == 200
+    assert "TEST CFP WOO" in response.content.decode()
+    assert "PLS SUBMIT HERE THX" in response.content.decode()
+    assert "titles are hard, y'know" in response.content.decode()
 
 
 @pytest.mark.django_db
