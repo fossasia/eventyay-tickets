@@ -21,6 +21,12 @@ from django.core.management.commands.makemessages import Command as Parent
 from pretalx.common.signals import register_locales
 
 
+def pathreplace(left, right):
+    left.mkdir(parents=True, exist_ok=True)
+    right.mkdir(parents=True, exist_ok=True)
+    left.replace(right)
+
+
 class Command(Parent):
     def handle(self, *args, **options):
         locales = {}
@@ -59,6 +65,4 @@ class Command(Parent):
         super().handle(*args, **options)
 
         for move in moves:
-            if not move[1].exists():
-                move[1].mkdir()
-            move[1].replace(move[0])
+            pathreplace(move[1], move[0])
