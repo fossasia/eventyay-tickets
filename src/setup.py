@@ -113,7 +113,7 @@ setup(
         "django-scopes~=1.2.0",  # https://github.com/raphaelm/django-scopes/releases
         "djangorestframework~=3.14.0",  # http://www.django-rest-framework.org/community/release-notes/
         "inlinestyler~=0.2.0",  # https://github.com/dlanger/inlinestyler/blob/master/CHANGELOG
-        "libsass~=0.21.0",  # https://sass.github.io/libsass-python/changes.html
+        "libsass~=0.22.0",  # https://sass.github.io/libsass-python/changes.html
         "Markdown~=3.4.0",  # https://python-markdown.github.io/change_log/
         # We can upgrade markdown again once django-bootstrap4 upgrades or once we drop Python 3.6 and 3.7
         # 3.3.5 requires importlib-metadata>=4.4, but django-bootstrap3 requires importlib-metadata<3.
