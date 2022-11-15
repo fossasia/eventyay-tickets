@@ -244,10 +244,12 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
         response.append(data)
         return response
 
-    async def send_error(self, code, message=None, close=False):
+    async def send_error(self, code, message=None, close=False, details=None):
         data = {"code": code}
         if message:
             data["message"] = message
+        if details:
+            data["details"] = details
         await self.send_json(self.build_response("error", data), close=close)
 
     async def send_success(self, data=None, close=False):

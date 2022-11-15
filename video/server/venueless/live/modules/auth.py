@@ -1,10 +1,13 @@
 import logging
 import time
+from urllib.parse import urljoin
 
 import jwt
 from asgiref.sync import sync_to_async
 from channels.db import database_sync_to_async
 from django.conf import settings
+from django.core.signing import dumps
+from django.urls import reverse
 from sentry_sdk import configure_scope
 
 from venueless.core.permissions import Permission
@@ -496,3 +499,36 @@ class AuthModule(BaseModule):
     async def online_state(self, body):
         resp = {i: (await get_user_connection_count(i)) > 0 for i in body.get("ids")}
         await self.consumer.send_success(resp)
+
+    @command("social.connect")
+    @require_world_permission(Permission.WORLD_VIEW)
+    async def social_connect(self, body):
+        network = body.get("network")
+
+        if not body.get("return_url"):
+            await self.consumer.send_error(code="user.social.return_url_required")
+            return
+
+        if network not in ("twitter", "linkedin"):
+            await self.consumer.send_error(code="user.social.unknown")
+            return
+
+        if f"social-{network}" not in self.consumer.world.feature_flags:
+            await self.consumer.send_error(code="user.social.disabled")
+            return
+
+        payload = {
+            "network": network,
+            "return_url": body.get("return_url"),
+            "world": self.consumer.world.pk,
+            "user": str(self.consumer.user.pk),
+        }
+        token = dumps(payload, salt="venueless.social.start", compress=True)
+
+        await self.consumer.send_success(
+            {
+                "url": urljoin(settings.SITE_URL, reverse(f"social:{network}.start"))
+                + "?token="
+                + token,
+            }
+        )

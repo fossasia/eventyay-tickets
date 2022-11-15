@@ -93,6 +93,7 @@ class WorldModule(BaseModule):
                 "conftool_url",
                 "conftool_password",
                 "iframe_blockers",
+                "social_logins",
             )
             model_fields = ("title", "locale", "timezone", "roles", "trait_grants")
             update_fields = set()
@@ -135,7 +136,10 @@ class WorldModule(BaseModule):
             if old["pretalx"] != new["pretalx"]:
                 await notify_schedule_change(world_id=self.consumer.world.id)
         else:
-            await self.consumer.send_error(code="config.invalid")
+            await self.consumer.send_error(
+                code="config.invalid",
+                details=s.errors,
+            )
 
     @command("tokens.generate")
     @require_world_permission(Permission.WORLD_UPDATE)  # TODO: stricter permission?

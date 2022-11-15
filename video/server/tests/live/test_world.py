@@ -159,6 +159,7 @@ async def test_config_get(world):
             "onsite_traits": [],
             "conftool_url": "",
             "conftool_password": "",
+            "social_logins": [],
             "profile_fields": [
                 {
                     "id": "dd8fdb7a-4d83-4000-b2fe-e38ca50f92fe",
@@ -187,8 +188,22 @@ async def test_config_get(world):
 @pytest.mark.django_db
 async def test_config_patch(world):
     async with world_communicator(token=get_token(world, ["admin"])) as c1:
-        await c1.send_json_to(["world.config.patch", 123, {"title": "Foo"}])
+        await c1.send_json_to(
+            ["world.config.patch", 123, {"title": "Foo", "social_logins": ["gravatar"]}]
+        )
         response = await c1.receive_json_from()
         assert response[0] == "success"
         await database_sync_to_async(world.refresh_from_db)()
         assert world.title == "Foo"
+        assert world.config["social_logins"] == ["gravatar"]
+        await c1.receive_json_from()
+
+        await c1.send_json_to(
+            ["world.config.patch", 123, {"title": "Foo", "social_logins": ["unknown"]}]
+        )
+        response = await c1.receive_json_from()
+        assert response[0] == "error"
+        assert response[2] == {
+            "code": "config.invalid",
+            "details": {"social_logins": ["Invalid value for social_logins"]},
+        }

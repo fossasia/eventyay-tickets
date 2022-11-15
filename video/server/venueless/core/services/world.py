@@ -6,6 +6,7 @@ from contextlib import suppress
 import jwt
 from channels.db import database_sync_to_async
 from channels.layers import get_channel_layer
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.db.models import Count, Max, OuterRef, Subquery
@@ -36,6 +37,9 @@ class WorldConfigSerializer(serializers.Serializer):
     connection_limit = serializers.IntegerField(allow_null=True)
     available_permissions = serializers.SerializerMethodField("_available_permissions")
     profile_fields = serializers.JSONField()
+    social_logins = serializers.ListSerializer(
+        child=serializers.CharField(), required=False, allow_empty=True
+    )
     iframe_blockers = serializers.JSONField()
     track_exhibitor_views = serializers.BooleanField()
     track_room_views = serializers.BooleanField()
@@ -53,6 +57,25 @@ class WorldConfigSerializer(serializers.Serializer):
 
     def _available_permissions(self, *args):
         return [d.value for d in Permission]
+
+    def validate_social_logins(self, val):
+        known = ("gravatar", "twitter", "linkedin")
+        if any(v not in known for v in val):
+            raise ValidationError("Invalid value for social_logins")
+
+        if "twitter" in val and not settings.TWITTER_CLIENT_ID:
+            raise ValidationError(
+                "Twitter login can't be enabled since there's no Twitter API keys set for this "
+                "Venueless installation."
+            )
+
+        if "linkedin" in val and not settings.LINKEDIN_CLIENT_ID:
+            raise ValidationError(
+                "LinkedIn login can't be enabled since there's no LinkedIn API keys set for this "
+                "Venueless installation."
+            )
+
+        return val
 
 
 @database_sync_to_async
@@ -165,6 +188,7 @@ def get_world_config_for_user(world, user):
             "title": world.title,
             "pretalx": world.config.get("pretalx", {}),
             "profile_fields": world.config.get("profile_fields", []),
+            "social_logins": world.config.get("social_logins", []),
             "iframe_blockers": world.config.get(
                 "iframe_blockers", {"default": {"enabled": False, "policy_url": None}}
             ),
@@ -359,6 +383,7 @@ def _config_serializer(world, *args, **kwargs):
             "trait_grants": world.trait_grants,
             "connection_limit": world.config.get("connection_limit", 0),
             "profile_fields": world.config.get("profile_fields", []),
+            "social_logins": world.config.get("social_logins", []),
             "onsite_traits": world.config.get("onsite_traits", []),
             "conftool_url": world.config.get("conftool_url", ""),
             "conftool_password": world.config.get("conftool_password", ""),

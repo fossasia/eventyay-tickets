@@ -8,7 +8,9 @@ from django.contrib.sessions.middleware import SessionMiddleware as DjSessionMid
 class ControlMiddleware:
     def __call__(self, request):
 
-        if request.path.startswith("/control/"):  # Namespaces aren't set in error views
+        if request.path.startswith("/control/") or request.path.startswith(
+            "/social/"
+        ):  # Namespaces aren't set in error views
             return super().__call__(request)
         return self.get_response(request)
 

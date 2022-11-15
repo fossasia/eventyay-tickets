@@ -13,6 +13,7 @@ from .control import urls as control
 from .graphs import urls as graphs
 from .live import urls as live
 from .live import views
+from .social import urls as social
 from .storage import urls as storage
 from .zoom import urls as zoom
 
@@ -38,6 +39,7 @@ urlpatterns = (
         re_path(r"graphs/", include(graphs)),
         re_path(r"zoom/", include((zoom, "zoom"), namespace="zoom")),
         re_path(r"storage/", include((storage, "storage"), namespace="storage")),
+        re_path(r"social/", include((social, "social"), namespace="social")),
         re_path("control$", RedirectView.as_view(url="/control/")),
         re_path("control/multifactor/", include("multifactor.urls")),
         re_path(

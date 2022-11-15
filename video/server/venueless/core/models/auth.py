@@ -33,6 +33,12 @@ class User(VersionedModel):
     )
     last_login = models.DateTimeField(null=True, blank=True)
     deleted = models.BooleanField(default=False)
+    social_login_id_twitter = models.CharField(
+        null=True, blank=True, max_length=190, db_index=True
+    )
+    social_login_id_linkedin = models.CharField(
+        null=True, blank=True, max_length=190, db_index=True
+    )
 
     class Meta:
         unique_together = (("token_id", "world"), ("client_id", "world"))

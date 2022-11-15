@@ -209,6 +209,23 @@ STATSD_PORT = os.getenv(
 )
 STATSD_PREFIX = "venueless"
 
+
+TWITTER_CLIENT_ID = os.getenv(
+    "VENUELESS_TWITTER_CLIENT_ID", config.get("twitter", "client_id", fallback="")
+)
+TWITTER_CLIENT_SECRET = os.getenv(
+    "VENUELESS_TWITTER_CLIENT_SECRET",
+    config.get("twitter", "client_secret", fallback=""),
+)
+LINKEDIN_CLIENT_ID = os.getenv(
+    "VENUELESS_LINKEDIN_CLIENT_ID", config.get("linkedin", "client_id", fallback="")
+)
+LINKEDIN_CLIENT_SECRET = os.getenv(
+    "VENUELESS_LINKEDIN_CLIENT_SECRET",
+    config.get("linkedin", "client_secret", fallback=""),
+)
+
+
 CACHES = {
     "default": {"BACKEND": "django.core.cache.backends.dummy.DummyCache"},
     "process": {
@@ -234,6 +251,7 @@ INSTALLED_APPS = [
     "venueless.graphs.GraphsConfig",
     "venueless.importers.ImportersConfig",
     "venueless.storage.StorageConfig",
+    "venueless.social.SocialConfig",
     "venueless.zoom.ZoomConfig",
     "venueless.control.ControlConfig",
     "multifactor",  # after our modules since we replace some templates
@@ -251,7 +269,7 @@ MIDDLEWARE = [
     "django.middleware.locale.LocaleMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.middleware.common.CommonMiddleware",
-    "venueless.control.middleware.SessionMiddleware",  # Conditional for /control
+    "venueless.control.middleware.SessionMiddleware",  # Conditional for /control and /social
     "venueless.control.middleware.AuthenticationMiddleware",  # Conditional for /control
     "venueless.control.middleware.MessageMiddleware",  # Conditional for /control
     "django.middleware.csrf.CsrfViewMiddleware",
