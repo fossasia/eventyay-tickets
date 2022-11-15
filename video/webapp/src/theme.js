@@ -57,12 +57,17 @@ const DEFAULT_LOGO = {
 	fitToWidth: false
 }
 
+const DEFAULT_IDENTICONS = {
+	style: 'identiheart'
+}
+
 const configColors = config.theme?.colors
 
 const themeConfig = {
 	colors: configColors,
-	logo: Object.assign(DEFAULT_LOGO, config.theme?.logo),
-	streamOfflineImage: config.theme?.streamOfflineImage
+	logo: Object.assign({}, DEFAULT_LOGO, config.theme?.logo),
+	streamOfflineImage: config.theme?.streamOfflineImage,
+	identicons: Object.assign({}, DEFAULT_IDENTICONS, config.theme?.identicons),
 }
 
 const colors = Object.keys(DEFAULT_COLORS).reduce((acc, key) => (acc[key] = Color((configColors ?? DEFAULT_COLORS)[key]), acc), {}) // eslint-disable-line no-sequences
@@ -106,4 +111,4 @@ for (const [key, value] of Object.entries(colors)) {
 }
 
 export default themeConfig
-export { themeVariables, colors, DEFAULT_COLORS, DEFAULT_LOGO }
+export { themeVariables, colors, DEFAULT_COLORS, DEFAULT_LOGO, DEFAULT_IDENTICONS }

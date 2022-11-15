@@ -45,7 +45,7 @@ export default {
 			dispatch('notifications/createDesktopNotification', {
 				title: contactRequest.user?.profile.display_name,
 				body: i18n.t('ContactRequest:notification:text') + ' ' + contactRequest.exhibitor.name,
-				avatar: contactRequest.user?.profile.avatar,
+				user: contactRequest.user,
 				// TODO onClose?
 				onClick: () => dispatch('acceptContactRequest', contactRequest)
 			}, {root: true})

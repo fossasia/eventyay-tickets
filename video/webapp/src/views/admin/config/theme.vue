@@ -13,6 +13,7 @@
 				upload-url-input(name="logo_url", v-model="config.theme.logo.url", label="Logo", :validation="$v.config.theme.logo.url")
 				bunt-checkbox(name="logo_fit", v-model="config.theme.logo.fitToWidth", label="Fit logo to width")
 				upload-url-input(name="streamoffline_url", v-model="config.theme.streamOfflineImage", label="Stream offline image", :validation="$v.config.theme.streamOfflineImage")
+				bunt-select#select-identicon-style(name="identicon-style", v-model="config.theme.identicons.style", label="Identicon style", :options="identiconStyles")
 			.text-overwrites
 				.header
 					div Original
@@ -28,12 +29,13 @@
 </template>
 <script>
 import api from 'lib/api'
-import { DEFAULT_COLORS, DEFAULT_LOGO } from 'theme'
+import { DEFAULT_COLORS, DEFAULT_LOGO, DEFAULT_IDENTICONS } from 'theme'
 import i18n from 'i18n'
 import ColorPicker from 'components/ColorPicker'
 import UploadUrlInput from 'components/UploadUrlInput'
 import ValidationErrorsMixin from 'components/mixins/validation-errors'
 import { required, color, url } from 'lib/validators'
+import { renderers as identiconRenderers } from 'lib/identicons'
 
 export default {
 	components: { ColorPicker, UploadUrlInput },
@@ -53,6 +55,12 @@ export default {
 			// access i18n dict via undocumented api
 			return i18n.store.data[this.config.locale].translation
 		},
+		identiconStyles () {
+			return Object.entries(identiconRenderers).map(([id, renderer]) => ({
+				id,
+				label: renderer.definition.label
+			}))
+		}
 	},
 	validations: {
 		config: {
@@ -91,6 +99,7 @@ export default {
 			this.config.theme = {logo: {}, colors: {}, streamOfflineImage: null, textOverwrites: {}, ...this.config.theme}
 			this.config.theme.colors = {...DEFAULT_COLORS, ...this.config.theme.colors}
 			this.config.theme.logo = {...DEFAULT_LOGO, ...this.config.theme.logo}
+			this.config.theme.identicons = {...DEFAULT_IDENTICONS, ...this.config.theme.identicons}
 		} catch (error) {
 			this.error = error
 			console.log(error)

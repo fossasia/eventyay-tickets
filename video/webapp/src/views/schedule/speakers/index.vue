@@ -5,7 +5,7 @@
 		scrollbars(y="")
 			router-link.speaker(v-for="speaker of speakers", :to="speaker.attendee ? {name: '', params: {}} : { name: 'schedule:speaker', params: { speakerId: speaker.code } }")
 				img.avatar(v-if="speaker.avatar", :src="speaker.avatar")
-				identicon(v-else, :id="speaker.name")
+				identicon(v-else, :user="{id: speaker.name, profile: {display_name: speaker.name}}")
 				.content
 					.name {{ speaker.name }}
 					//- this has html ?

@@ -1,6 +1,6 @@
 // TODO handle mobile stuff
-
-import { getIdenticonSvgUrl } from 'lib/identicon'
+import theme from 'theme'
+import { renderUrl as renderIdenticonUrl } from 'lib/identicons'
 
 const loadSettings = function () {
 	try {
@@ -65,20 +65,24 @@ export default {
 			state.settings = Object.assign({}, state.settings, settings)
 			localStorage.notificationSettings = JSON.stringify(state.settings)
 		},
-		createDesktopNotification ({state, getters}, {title, body, tag, avatar, icon, onClose, onClick}) {
+		async createDesktopNotification ({state, getters}, {title, body, tag, user, icon, onClose, onClick}) {
 			if (!getters.shouldNotify || document.hasFocus()) return // don't show desktop notification when we have focus
-			if (avatar) {
-				if (avatar.url) {
-					icon = avatar.url
-				} else if (avatar.identicon) {
+			if (user) {
+				if (user.profile?.avatar?.url) {
+					icon = user.profile.avatar.url
+				} else {
 					const canvas = document.createElement('canvas')
 					canvas.height = 192
 					canvas.width = 192
 					const img = document.createElement('img')
-					img.src = getIdenticonSvgUrl(avatar.identicon)
+					img.src = renderIdenticonUrl(user, theme.identicons.style)
 					const ctx = canvas.getContext('2d')
-					// TODO use onload?
-					ctx.drawImage(img, 0, 0, 192, 192)
+					await new Promise((resolve) => {
+						img.onload = () => {
+							ctx.drawImage(img, 0, 0, 192, 192)
+							resolve()
+						}
+					})
 					icon = canvas.toDataURL()
 				}
 			}

@@ -9,7 +9,7 @@
 			.mdi.mdi-alert-octagon
 			.message {{ fileError }}
 		cropper(v-else-if="avatarImage", ref="cropper", classname="cropper", stencil-component="circle-stencil", :src="avatarImage", :stencil-props="{aspectRatio: '1/1'}", :restrictions="pixelsRestrictions")
-		identicon(v-else, :id="identicon", @click.native="changeIdenticon")
+		identicon(v-else, :user="identiconUser", @click.native="changeIdenticon")
 </template>
 <script>
 import { v4 as uuid } from 'uuid'
@@ -23,7 +23,8 @@ const MAX_AVATAR_SIZE = 128
 export default {
 	components: { Cropper, CircleStencil, Identicon, UploadButton },
 	props: {
-		value: Object
+		value: Object,
+		profile: Object
 	},
 	data () {
 		return {
@@ -31,6 +32,18 @@ export default {
 			avatarImage: null,
 			fileError: null,
 			changedImage: false
+		}
+	},
+	computed: {
+		identiconUser () {
+			return {
+				profile: {
+					...this.profile,
+					avatar: {
+						identicon: this.identicon
+					}
+				}
+			}
 		}
 	},
 	created () {
