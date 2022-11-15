@@ -11,7 +11,7 @@ if (ENV_DEVELOPMENT || !window.venueless) {
 			scheduleImport: `http://${hostname}:8375/storage/schedule_import/`,
 			feedback: `http://${hostname}:8375/_feedback/`,
 		},
-		defaultLocale: 'de',
+		defaultLocale: 'en',
 		locales: ['en', 'de', 'pt_BR'],
 	}
 } else {

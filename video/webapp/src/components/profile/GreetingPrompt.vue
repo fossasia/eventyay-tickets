@@ -18,8 +18,12 @@ prompt.c-profile-greeting-prompt(:allowCancel="false")
 			p.joiner or
 			bunt-button.manual(@click="activeStep = 'displayName'") {{ $t('profile/GreetingPrompt:step-social:button-fill-manually:label') }}
 		.step-display-name(v-else-if="activeStep === 'displayName'")
-			h1 {{ $t('profile/GreetingPrompt:step-display-name:heading') }}
-			p {{ $t('profile/GreetingPrompt:step-display-name:text') }}
+			template(v-if="steps.includes('connectSocial')")
+				h1 {{ $t('profile/GreetingPrompt:step-display-name:heading') }}
+				p {{ $t('profile/GreetingPrompt:step-display-name:text') }}
+			template(v-else)
+				h1 {{ $t('profile/GreetingPrompt:step-display-name~as-first-step:heading') }}
+				p {{ $t('profile/GreetingPrompt:step-display-name~as-first-step:text') }}
 			bunt-input.display-name(name="displayName", :label="$t('profile/GreetingPrompt:displayname:label')", v-model.trim="profile.display_name", :validation="$v.profile.display_name")
 		.step-avatar(v-else-if="activeStep === 'avatar'")
 			h1 {{ $t('profile/GreetingPrompt:step-avatar:heading') }}
@@ -149,6 +153,7 @@ export default {
 		p
 			margin: 0 0 8px 0
 			width: 360px
+			white-space: pre-wrap
 		.step-connect-social, .step-display-name, .step-avatar, .step-additional-fields
 			display: flex
 			flex-direction: column
