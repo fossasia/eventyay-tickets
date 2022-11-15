@@ -4,7 +4,7 @@
 		.speaker-avatars
 			template(v-for="speaker of session.speakers")
 				img(v-if="speaker.avatar", :src="speaker.avatar")
-				identicon(v-else, :id="speaker.name")
+				identicon(v-else, :user="{id: speaker.name, profile: {display_name: speaker.name}}")
 		.info
 			.title-time
 				.title {{ $localize(session.title) }}

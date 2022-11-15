@@ -28,7 +28,7 @@ prompt.c-profile-greeting-prompt(:allowCancel="false")
 		.step-avatar(v-else-if="activeStep === 'avatar'")
 			h1 {{ $t('profile/GreetingPrompt:step-avatar:heading') }}
 			p {{ $t('profile/GreetingPrompt:step-avatar:text') }}
-			change-avatar(ref="step", v-model="profile.avatar", @blockSave="blockSave = $event")
+			change-avatar(ref="step", v-model="profile.avatar", :profile="profile", @blockSave="blockSave = $event")
 		.step-additional-fields(v-else-if="activeStep === 'additionalFields'")
 			h1 {{ $t('profile/GreetingPrompt:step-fields:heading') }}
 			p {{ $t('profile/GreetingPrompt:step-fields:text') }}

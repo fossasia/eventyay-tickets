@@ -29,7 +29,7 @@
 	transition(name="prompt")
 		prompt.change-avatar-prompt(v-if="showChangeAvatar", @close="showChangeAvatar = false")
 			.content
-				change-avatar(ref="avatar", v-model="user.profile.avatar", @blockSave="blockSave = $event")
+				change-avatar(ref="avatar", v-model="user.profile.avatar", :profile="user.profile", @blockSave="blockSave = $event")
 				.actions
 					bunt-button#btn-cancel(@click="showChangeAvatar = false") {{ $t('Prompt:cancel:label') }}
 					bunt-button#btn-upload(:loading="savingAvatar", :disabled="blockSave", @click="uploadAvatar") {{ $t('preferences/index:btn-upload-save:label') }}

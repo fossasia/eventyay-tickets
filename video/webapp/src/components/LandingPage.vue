@@ -27,7 +27,7 @@
 			.speakers-list
 				router-link.speaker(v-for="speaker of speakers.slice(0, 32)", :to="speaker.attendee ? {name: '', params: {}} : { name: 'schedule:speaker', params: { speakerId: speaker.code } }")
 					img.avatar(v-if="speaker.avatar", :src="speaker.avatar")
-					identicon(v-else, :id="speaker.name")
+					identicon(v-else, :user="{id: speaker.name, profile: {display_name: speaker.name}}")
 					.name {{ speaker.name }}
 				router-link.additional-speakers(v-if="speakers.length > 32", :to="{name: 'schedule:speakers'}") {{ $t('LandingPage:speakers:more', {additional_speakers: speakers.length - 32}) }}
 </template>

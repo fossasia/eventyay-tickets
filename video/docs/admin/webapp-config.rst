@@ -43,6 +43,9 @@ Full configuration
 			// DO NOT use this to completely translate the ui
 			"textOverwrites": {
 				"ProfilePrompt:headline:text": "’ello Guv!"
+			},
+			"identicons": {
+				"style": "identiheart" // the identicon renderer, one of: identiheart, initials
 			}
 		},
 		"videoPlayer": {
