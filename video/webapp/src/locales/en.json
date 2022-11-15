@@ -274,6 +274,8 @@
   "profile/GreetingPrompt:step-avatar:text": "",
   "profile/GreetingPrompt:step-display-name:heading": "Hi! What are you called?",
   "profile/GreetingPrompt:step-display-name:text": "We will show your name to other attendees if you interact with them, e.g. in a chat. You do not need to use your real name. After this, you can optionally choose a picture.",
+  "profile/GreetingPrompt:step-display-name~as-first-step:heading": "Hi there!",
+  "profile/GreetingPrompt:step-display-name~as-first-step:text": "Before you join others in this event, please set up your profile.\nWe will show your name to other attendees if you interact with them, e.g. in a chat. You do not need to use your real name. After this, you can optionally choose a picture.",
   "profile/GreetingPrompt:step-fields:heading": "",
   "profile/GreetingPrompt:step-fields:text": "And lastly, why not add some optional information to your profile? Don't worry, you can always edit anything in your profile later.",
   "Prompt:cancel:label": "cancel",
