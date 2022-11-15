@@ -13,10 +13,7 @@
 					| {{ selectedUser.profile ? selectedUser.profile.display_name : (selectedUser.id ? selectedUser.id : '(unknown user)') }}
 					.ui-badge(v-for="badge in selectedUser.badges") {{ badge }}
 				.state {{ userStates.join(', ') }}
-				.fields(v-if="availableFields")
-					.field(v-for="field of availableFields")
-						.label {{ field.label }}
-						.value {{ field.value }}
+				ProfileFields(:user="selectedUser")
 				.exhibitions(v-if="exhibitors.length > 0")
 					h3 {{ $t('UserListPage:staffed-exhibitions:text') }}
 					.exhibitors
@@ -48,9 +45,10 @@ import api from 'lib/api'
 import Avatar from 'components/Avatar'
 import UserSearch from 'components/UserSearch'
 import UserActionPrompt from 'components/UserActionPrompt'
+import ProfileFields from 'components/profile/ProfileFields'
 
 export default {
-	components: { Avatar, UserSearch, UserActionPrompt },
+	components: { Avatar, UserSearch, UserActionPrompt, ProfileFields },
 	props: {
 		room: Object,
 		module: {
@@ -83,12 +81,6 @@ export default {
 		isBlocked () {
 			if (!this.blockedUsers) return
 			return this.blockedUsers.some(user => user.id === this.selectedUser.id)
-		},
-		availableFields () {
-			if (!this.selectedUser.profile?.fields) return
-			return this.world?.profile_fields
-				.map(field => ({label: field.label, value: this.selectedUser.profile.fields[field.id]}))
-				.filter(field => !!field.value)
 		},
 		userStates () {
 			const states = []
@@ -175,21 +167,6 @@ $logo-height = 130px
 					margin auto 8px
 					flex auto
 					ellipsis()
-			.fields
-				display flex
-				flex-direction column
-				align-self stretch
-				margin 0 8px
-				.field
-					display flex
-					flex-direction column
-					margin 4px
-					.label
-						color $clr-secondary-text-light
-						font-weight 500
-						font-size 12px
-					.value
-						margin 2px 0 0 8px
 			.state
 				height 16px
 				margin-bottom 8px
