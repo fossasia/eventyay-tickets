@@ -30,6 +30,32 @@ def test_reviewer_can_add_review(review_client, review_user, submission, assigne
 
 
 @pytest.mark.django_db
+def test_reviewer_can_add_review_with_tags(review_client, review_user, submission, tag):
+    with scope(event=submission.event):
+        submission.event.active_review_phase.can_tag_submissions = True
+        submission.event.active_review_phase.save()
+        assert not submission.tags.count()
+        category = submission.event.score_categories.first()
+        score = category.scores.filter(value=1).first()
+    response = review_client.post(
+        submission.orga_urls.reviews,
+        follow=True,
+        data={
+            f"score_{category.id}": score.id,
+            "text": "LGTM",
+            "tags": str(tag.id),
+        },
+    )
+    assert response.status_code == 200
+    assert str(tag.tag) in response.content.decode()
+    with scope(event=submission.event):
+        assert submission.reviews.count() == 1
+        assert submission.reviews.first().score == 1
+        assert submission.reviews.first().text == "LGTM"
+        assert submission.tags.first() == tag
+
+
+@pytest.mark.django_db
 def test_reviewer_cannot_add_review_when_unassigned(review_client, submission):
     with scope(event=submission.event):
         category = submission.event.score_categories.first()
