@@ -94,7 +94,7 @@ setup(
     install_requires=[
         "beautifulsoup4~=4.10.0",  # https://bazaar.launchpad.net/~leonardr/beautifulsoup/bs4/view/head:/CHANGELOG
         "bleach~=4.1.0",  # https://bleach.readthedocs.io/en/latest/changes.html
-        "celery~=4.4.0",  # search for "what's new" on http://docs.celeryproject.org/en/latest/
+        "celery~=5.2.0",  # search for "what's new" on http://docs.celeryproject.org/en/latest/
         "csscompressor~=0.9.0",  # 2017-11, no changelog, https://github.com/sprymix/csscompressor
         "cssutils~=2.6.0",
         "defusedcsv~=2.0.0",  # https://github.com/raphaelm/defusedcsv
@@ -123,7 +123,7 @@ setup(
         "python-dateutil~=2.8.0",  # https://dateutil.readthedocs.io/en/stable/changelog.html
         "pytz",
         "qrcode~=7.0",
-        "reportlab~=3.5.0",  # https://www.reportlab.com/documentation/relnotes/
+        "reportlab~=3.6.0",  # https://www.reportlab.com/documentation/relnotes/
         "requests~=2.28.0",  # https://2.python-requests.org/en/master/community/updates/#release-and-version-history
         "rules~=3.3.0",  # https://github.com/dfunckt/django-rules/blob/master/CHANGELOG.md
         "urlman~=2.0.1",  # https://github.com/andrewgodwin/urlman/blob/master/CHANGELOG
