@@ -213,10 +213,10 @@ class Schedule(LogMixin, models.Model):
         canceled = []
         moved = []
         all_old_slots = [
-            slot for slot in old_slots if slot.submission_id == submission.pk
+            slot for slot in old_slots.values() if slot.submission_id == submission.pk
         ]
         all_new_slots = [
-            slot for slot in new_slots if slot.submission_id == submission.pk
+            slot for slot in new_slots.values() if slot.submission_id == submission.pk
         ]
         old_slots = [
             slot
@@ -276,25 +276,27 @@ class Schedule(LogMixin, models.Model):
             result["action"] = "create"
             return result
 
-        old_slots = list(self.previous_schedule.scheduled_talks)
-        new_slots = list(self.scheduled_talks)
-
         Slot = namedtuple("Slot", ["submission", "room", "local_start"])
-        old_slot_set = {
-            Slot(slot.submission, slot.room, slot.local_start) for slot in old_slots
+        old_slots = {
+            Slot(slot.submission, slot.room, slot.local_start): slot
+            for slot in self.previous_schedule.scheduled_talks
         }
-        new_slot_set = {
-            Slot(slot.submission, slot.room, slot.local_start) for slot in new_slots
+        new_slots = {
+            Slot(slot.submission, slot.room, slot.local_start): slot
+            for slot in self.scheduled_talks
         }
+
+        old_slot_set = set(old_slots.keys())
+        new_slot_set = set(new_slots.keys())
         old_submissions = {slot.submission for slot in old_slots}
         new_submissions = {slot.submission for slot in new_slots}
         handled_submissions = set()
         new_by_submission = defaultdict(list)
         old_by_submission = defaultdict(list)
         for slot in new_slot_set:
-            new_by_submission[slot.submission].append(slot)
+            new_by_submission[slot.submission].append(new_slots[slot])
         for slot in old_slot_set:
-            old_by_submission[slot.submission].append(slot)
+            old_by_submission[slot.submission].append(old_slots[slot])
 
         moved_or_missing = old_slot_set - new_slot_set - {None}
         moved_or_new = new_slot_set - old_slot_set - {None}
@@ -596,7 +598,7 @@ class Schedule(LogMixin, models.Model):
                         **data,
                     }
                 )
-            slots = (data.get("create") or []) + [
+            slots = list(data.get("create") or []) + [
                 talk["new_slot"] for talk in (data.get("update") or [])
             ]
             mails.append(
