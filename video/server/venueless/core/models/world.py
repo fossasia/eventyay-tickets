@@ -106,8 +106,6 @@ FEATURE_FLAGS = [
     "poster",
     "conftool",
     "cross-origin-isolation",
-    "social-linkedin",
-    "social-twitter",
 ]
 
 

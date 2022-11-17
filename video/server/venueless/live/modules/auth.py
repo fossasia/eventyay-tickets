@@ -513,10 +513,6 @@ class AuthModule(BaseModule):
             await self.consumer.send_error(code="user.social.unknown")
             return
 
-        if f"social-{network}" not in self.consumer.world.feature_flags:
-            await self.consumer.send_error(code="user.social.disabled")
-            return
-
         payload = {
             "network": network,
             "return_url": body.get("return_url"),
