@@ -522,3 +522,26 @@ def test_orga_can_assign_submission_to_reviewer(orga_client, review_user, submis
     )
     with scope(event=submission.event):
         assert submission.assigned_reviewers.all().count() == 1
+
+
+@pytest.mark.django_db
+def test_orga_can_export_reviews(review, orga_client):
+    response = orga_client.get(review.event.orga_urls.reviews + "export/")
+    assert response.status_code == 200
+
+    response = orga_client.post(
+        review.event.orga_urls.reviews + "export/",
+        {
+            "target": "all",
+            "score": "on",
+            "text": "on",
+            "created": "on",
+            "user_name": "on",
+            "user_email": "on",
+            "submission_title": "on",
+            "submission_id": "on",
+            "export_format": "json",
+        },
+    )
+    assert response.status_code == 200
+    assert review.text in response.content.decode()
