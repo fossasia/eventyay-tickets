@@ -64,7 +64,12 @@ export default {
 	flex-direction: column
 	.field
 		flex: none
-		display: flex
+		.label
+			color: $clr-secondary-text-light
+			font-weight: 500
+			font-size: 12px
+		.value
+			margin: 2px 0 0 8px
 		a.link
 			display: flex
 			align-items: center
