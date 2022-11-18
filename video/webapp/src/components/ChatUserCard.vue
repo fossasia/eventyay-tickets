@@ -1,32 +1,30 @@
 <template lang="pug">
 .c-chat-user-card
 	.ui-background-blocker(v-if="!userAction", @click="$emit('close')")
-	.user-card(v-if="!userAction", :class="{deleted: sender.deleted}", v-scrollbar.y="", ref="card", @mousedown="showMoreActions=false")
-		avatar(:user="sender", :size="128")
-		.name
-			.online-status(v-if="!sender.deleted", :class="onlineStatus ? 'online' : (onlineStatus === false ? 'offline' : 'unknown')", v-tooltip="onlineStatus ? $t('UserAction:state.online:tooltip') : (onlineStatus === false ? $t('UserAction:state.offline:tooltip') : '')")
-			| {{ sender.deleted ? $t('User:label:deleted') : (sender.profile ? sender.profile.display_name : (sender.id ? sender.id : '(unknown user)')) }}
-			.ui-badge(v-for="badge in sender.badges") {{ badge }}
-		.fields(v-if="availableFields")
-			.field(v-for="field of availableFields")
-				.label {{ field.label }}
-				.value {{ field.value }}
-		.state {{ userStates.join(', ') }}
-		.actions(v-if="sender.id !== user.id && sender.id && !sender.deleted")
-			bunt-button.btn-dm(v-if="hasPermission('world:chat.direct')", @click="openDM") {{ $t('UserAction:action.dm:label') }}
-			bunt-button.btn-call(v-if="hasPermission('world:chat.direct')", @click="startCall") {{ $t('UserAction:action.call:label') }}
-			menu-dropdown(v-model="showMoreActions", :blockBackground="false", @mousedown.native.stop="")
-				template(v-slot:button="{toggle}")
-					bunt-icon-button(@click="toggle") dots-vertical
-				template(v-slot:menu)
-					.unblock(v-if="isBlocked", @click="userAction = 'unblock'") {{ $t('UserAction:action.unblock:label') }}
-					.block(v-else, @click="userAction = 'block'") {{ $t('UserAction:action.block:label') }}
-					template(v-if="hasPermission('room:chat.moderate') && sender.id !== user.id")
-						.divider {{ $t('UserAction:moderator-actions:title') }}
-						.reactivate(v-if="sender.moderation_state", @click="userAction = 'reactivate'")
-							| {{ sender.moderation_state === 'banned' ? $t('UserAction:action.unban:label') : $t('UserAction:action.unsilence:label') }}
-						.ban(v-if="sender.moderation_state !== 'banned'", @click="userAction = 'ban'") {{ $t('UserAction:action.ban:label') }}
-						.silence(v-if="!sender.moderation_state", @click="userAction = 'silence'") {{ $t('UserAction:action.silence:label') }}
+	.user-card(v-if="!userAction", :class="{deleted: sender.deleted}", ref="card", @mousedown="showMoreActions=false")
+		scrollbars(y)
+			avatar(:user="sender", :size="128")
+			.name
+				.online-status(v-if="!sender.deleted", :class="onlineStatus ? 'online' : (onlineStatus === false ? 'offline' : 'unknown')", v-tooltip="onlineStatus ? $t('UserAction:state.online:tooltip') : (onlineStatus === false ? $t('UserAction:state.offline:tooltip') : '')")
+				| {{ sender.deleted ? $t('User:label:deleted') : (sender.profile ? sender.profile.display_name : (sender.id ? sender.id : '(unknown user)')) }}
+				.ui-badge(v-for="badge in sender.badges") {{ badge }}
+			ProfileFields(:user="sender")
+			.state {{ userStates.join(', ') }}
+			.actions(v-if="sender.id !== user.id && sender.id && !sender.deleted")
+				bunt-button.btn-dm(v-if="hasPermission('world:chat.direct')", @click="openDM") {{ $t('UserAction:action.dm:label') }}
+				bunt-button.btn-call(v-if="hasPermission('world:chat.direct')", @click="startCall") {{ $t('UserAction:action.call:label') }}
+				menu-dropdown(v-model="showMoreActions", :blockBackground="false", @mousedown.native.stop="")
+					template(v-slot:button="{toggle}")
+						bunt-icon-button(@click="toggle") dots-vertical
+					template(v-slot:menu)
+						.unblock(v-if="isBlocked", @click="userAction = 'unblock'") {{ $t('UserAction:action.unblock:label') }}
+						.block(v-else, @click="userAction = 'block'") {{ $t('UserAction:action.block:label') }}
+						template(v-if="hasPermission('room:chat.moderate') && sender.id !== user.id")
+							.divider {{ $t('UserAction:moderator-actions:title') }}
+							.reactivate(v-if="sender.moderation_state", @click="userAction = 'reactivate'")
+								| {{ sender.moderation_state === 'banned' ? $t('UserAction:action.unban:label') : $t('UserAction:action.unsilence:label') }}
+							.ban(v-if="sender.moderation_state !== 'banned'", @click="userAction = 'ban'") {{ $t('UserAction:action.ban:label') }}
+							.silence(v-if="!sender.moderation_state", @click="userAction = 'silence'") {{ $t('UserAction:action.silence:label') }}
 	user-action-prompt(v-if="userAction", :action="userAction", :user="sender", @close="$emit('close')")
 </template>
 <script>
@@ -37,8 +35,10 @@ import api from 'lib/api'
 import Avatar from 'components/Avatar'
 import MenuDropdown from 'components/MenuDropdown'
 import UserActionPrompt from 'components/UserActionPrompt'
+import ProfileFields from 'components/profile/ProfileFields'
+
 export default {
-	components: { Avatar, MenuDropdown, UserActionPrompt },
+	components: { Avatar, MenuDropdown, UserActionPrompt, ProfileFields },
 	props: {
 		sender: Object,
 	},
@@ -57,12 +57,6 @@ export default {
 		isBlocked () {
 			if (!this.blockedUsers) return
 			return this.blockedUsers.some(user => user.id === this.sender.id)
-		},
-		availableFields () {
-			if (!this.sender.profile?.fields) return
-			return this.world?.profile_fields
-				.map(field => ({label: field.label, value: this.sender.profile.fields[field.id]}))
-				.filter(field => !!field.value)
 		},
 		userStates () {
 			const states = []
@@ -99,11 +93,12 @@ export default {
 		display: flex
 		flex-direction: column
 		align-items: center
-		padding: 8px
 		min-width: 196px
 		max-width: 380px
 		min-height: 0
 		max-height: 400px
+		.scroll-content
+			padding: 8px
 		&.deleted
 			.name
 				color: $clr-disabled-text-light

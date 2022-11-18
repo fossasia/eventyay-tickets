@@ -64,6 +64,10 @@ export default {
 	flex-direction: column
 	.field
 		flex: none
+		display: flex
+		flex-direction: column
+		margin: 4px
+		max-width: 420px
 		.label
 			color: $clr-secondary-text-light
 			font-weight: 500
@@ -73,7 +77,6 @@ export default {
 		a.link
 			display: flex
 			align-items: center
-			margin-bottom: 4px
 			.mdi
 				font-size: 24px
 				margin-right: 4px
