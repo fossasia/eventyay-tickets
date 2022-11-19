@@ -7,7 +7,7 @@ from django_scopes import scope
 
 from pretalx.common.models.log import ActivityLog
 from pretalx.submission.models import Submission, SubmissionStates
-from pretalx.submission.models.question import QuestionRequired
+from pretalx.submission.models.question import QuestionRequired, QuestionVariant
 
 
 @pytest.mark.django_db
@@ -521,7 +521,7 @@ def test_orga_can_edit_submission_wrong_answer(
     event.save()
     with scope(event=event):
         question.question_required = QuestionRequired.REQUIRED
-        question.save
+        question.save()
         assert event.submissions.count() == 1
         assert accepted_submission.slots.count() == 1
 
@@ -594,6 +594,59 @@ def test_orga_can_toggle_submission_featured(orga_client, event, submission):
     with scope(event=event):
         sub = event.submissions.first()
         assert sub.is_featured
+
+
+@pytest.mark.parametrize(
+    "question_type", (QuestionVariant.DATE, QuestionVariant.DATETIME)
+)
+@pytest.mark.parametrize(
+    "delta,success",
+    (
+        (dt.timedelta(days=-1), False),
+        (dt.timedelta(days=1), True),
+        (dt.timedelta(days=3), False),
+    ),
+)
+@pytest.mark.django_db
+def test_orga_can_edit_submission_wrong_datetime_answer(
+    orga_client, event, submission, question, question_type, delta, success
+):
+    min_value = now()
+    max_value = now() + dt.timedelta(days=2)
+    with scope(event=event):
+        question.question_required = QuestionRequired.REQUIRED
+        question.variant = question_type
+        question.min_date = min_value.date()
+        question.min_datetime = min_value
+        question.max_date = max_value.date()
+        question.max_datetime = max_value
+        question.save()
+
+    value = min_value + delta
+    if question_type == QuestionVariant.DATE:
+        value = value.date()
+    value = value.isoformat()
+    response = orga_client.post(
+        submission.orga_urls.base,
+        data={
+            "abstract": "abstract",
+            "content_locale": "en",
+            "description": "description",
+            "duration": "",
+            "slot_count": 2,
+            "notes": "notes",
+            "title": "new title",
+            "submission_type": submission.submission_type_id,
+            "resource-TOTAL_FORMS": 0,
+            "resource-INITIAL_FORMS": 0,
+            f"question_{question.pk}": value,
+        },
+        follow=True,
+    )
+    assert response.status_code == 200
+    with scope(event=event):
+        submission.refresh_from_db()
+        assert (submission.title == "new title") is success
 
 
 @pytest.mark.django_db
