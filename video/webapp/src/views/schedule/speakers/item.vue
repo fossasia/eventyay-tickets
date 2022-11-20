@@ -2,8 +2,9 @@
 .c-schedule-speaker
 	bunt-progress-circular(v-if="!speaker || !schedule", size="huge", :page="true")
 	scrollbars(v-else, y="")
-		.speaker
+		.profile
 			img.avatar(v-if="speaker.avatar", :src="speaker.avatar")
+			identicon(v-else, :user="{id: speaker.name, profile: {display_name: speaker.name}}")
 			.content
 				h1 {{ speaker.name }}
 				markdown-content.biography(:markdown="speaker.biography")
@@ -13,12 +14,12 @@
 </template>
 <script>
 import { mapState, mapGetters } from 'vuex'
+import Identicon from 'components/Identicon'
 import MarkdownContent from 'components/MarkdownContent'
-// TODO remove this again
 import Session from 'components/schedule/Session'
 
 export default {
-	components: { MarkdownContent, Session },
+	components: { Identicon, MarkdownContent, Session },
 	props: {
 		speakerId: String
 	},
@@ -53,10 +54,16 @@ export default {
 	flex-direction: column
 	min-height: 0
 	.c-scrollbars
-		align-items: center
 		.scroll-content
-			width: @css{min(920px, 100%)}
+			display: flex
+			flex-direction: column
+			align-items: center
+			> *
+				width: @css{min(920px, 100%)}
 	.speaker
+		display: flex
+		flex-direction: column
+	.profile
 		display: flex
 		gap: 16px
 		img

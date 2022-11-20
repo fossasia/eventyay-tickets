@@ -2,8 +2,8 @@
 .c-schedule-speakers
 	h1 {{ $t('schedule/speakers/index:header') }}
 	bunt-progress-circular(v-if="!speakers || !schedule", size="huge", :page="true")
-	.speakers(v-else)
-		scrollbars(y="")
+	scrollbars(v-else, y="")
+		.speakers
 			router-link.speaker(v-for="speaker of speakers", :to="speaker.attendee ? {name: '', params: {}} : { name: 'schedule:speaker', params: { speakerId: speaker.code } }")
 				img.avatar(v-if="speaker.avatar", :src="speaker.avatar")
 				identicon(v-else, :user="{id: speaker.name, profile: {display_name: speaker.name}}")
@@ -51,48 +51,46 @@ export default {
 	display: flex
 	flex-direction: column
 	align-items: center
-	.speakers
-		flex: auto
-		min-height: 0
-		width: 100%
+	.scroll-content
 		display: flex
 		flex-direction: column
-		.c-scrollbars
-			align-items: center
-		.scroll-content
+		align-items: center
+		> *
 			width: @css{min(920px, 100%)}
-			border: border-separator()
-		.speaker
-			color: $clr-primary-text-light
-			display: flex
-			gap: 8px
-			cursor: pointer
-			padding: 8px
-			&:not(:last-child)
-				border-bottom: border-separator()
-			&:hover
-				background-color: $clr-grey-200
-			img
-				flex: none
-				border-radius: 50%
-				height: 92px
-				width: @height
-				object-fit: cover
-			.name
-				font-weight: 500
-				font-size: 16px
-			.biography
-				display: -webkit-box
-				-webkit-box-orient: vertical
-				-webkit-line-clamp: 3
-				overflow: hidden
-		.sessions
-			display: flex
-			flex-direction: column
-			gap: 8px
-			margin-bottom: 8px
-			h2
-				font-weight: 500
-				font-size: 16px
-				margin: 0
+	.speaker
+		color: $clr-primary-text-light
+		display: flex
+		gap: 16px
+		cursor: pointer
+		padding: 8px
+		border-left: border-separator()
+		border-right: border-separator()
+		border-bottom: border-separator()
+		&:first-child
+			border-top: border-separator()
+		&:hover
+			background-color: $clr-grey-200
+		img
+			flex: none
+			border-radius: 50%
+			height: 92px
+			width: @height
+			object-fit: cover
+		.name
+			font-weight: 500
+			font-size: 16px
+		.biography
+			display: -webkit-box
+			-webkit-box-orient: vertical
+			-webkit-line-clamp: 3
+			overflow: hidden
+	.sessions
+		display: flex
+		flex-direction: column
+		gap: 8px
+		margin-bottom: 8px
+		h2
+			font-weight: 500
+			font-size: 16px
+			margin: 0
 </style>
