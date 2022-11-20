@@ -81,6 +81,7 @@ export function renderSvg (random, userProfile, config) {
 			.map((n) => n[0])
 			.join('')
 			.slice(0, 2)
+			.toUpperCase()
 	}
 
 	var initials = sliceNameToInitials(userProfile.display_name)
