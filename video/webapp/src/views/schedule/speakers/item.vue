@@ -1,24 +1,24 @@
 <template lang="pug">
-.c-schedule-speaker(v-scrollbar.y="")
-	bunt-progress-circular(v-if="!speaker", size="huge", :page="true")
-	template(v-else)
+.c-schedule-speaker
+	bunt-progress-circular(v-if="!speaker || !schedule", size="huge", :page="true")
+	scrollbars(v-else, y="")
 		.speaker
 			img.avatar(v-if="speaker.avatar", :src="speaker.avatar")
 			.content
 				h1 {{ speaker.name }}
 				markdown-content.biography(:markdown="speaker.biography")
 		.sessions
-			h2 Sessions
-			session-list(:sessions="sessions")
+			h2 {{ $t('schedule/speakers/item:sessions:header') }}
+			session(v-for="session of sessions", :session="session")
 </template>
 <script>
-import { mapGetters } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import MarkdownContent from 'components/MarkdownContent'
 // TODO remove this again
-import SessionList from 'components/SessionList'
+import Session from 'components/schedule/Session'
 
 export default {
-	components: { MarkdownContent, SessionList },
+	components: { MarkdownContent, Session },
 	props: {
 		speakerId: String
 	},
@@ -28,6 +28,7 @@ export default {
 		}
 	},
 	computed: {
+		...mapState('schedule', ['schedule']),
 		...mapGetters('schedule', ['sessionsLookup']),
 		sessions () {
 			return this.speaker.submissions.map(submission => this.sessionsLookup[submission])
@@ -50,11 +51,13 @@ export default {
 	display: flex
 	background-color: $clr-white
 	flex-direction: column
-	align-items: center
-	gap: 16px
+	min-height: 0
+	.c-scrollbars
+		align-items: center
+		.scroll-content
+			width: @css{min(920px, 100%)}
 	.speaker
 		display: flex
-		max-width: 920px
 		gap: 16px
 		img
 			border-radius: 50%
@@ -64,4 +67,16 @@ export default {
 			padding: 16px
 		h1
 			margin: 24px 0 16px
+		.content
+			flex: auto
+			margin-right: 16px
+	.sessions
+		h2
+			margin: 16px
+	+below('s')
+		.speaker
+			flex-direction: column
+			align-items: center
+		.content
+			margin: 0 16px
 </style>

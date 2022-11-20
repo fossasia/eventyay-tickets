@@ -1,5 +1,6 @@
 <template lang="pug">
 .c-schedule-speakers
+	h1 {{ $t('schedule/speakers/index:header') }}
 	bunt-progress-circular(v-if="!speakers || !schedule", size="huge", :page="true")
 	.speakers(v-else)
 		scrollbars(y="")
@@ -10,7 +11,8 @@
 					.name {{ speaker.name }}
 					//- this has html ?
 					p.biography {{ speaker.biography }}
-					.sessions
+					.sessions(v-if="speaker.sessions.length && speaker.sessions.some(s => s)")
+						h2 {{ $t('schedule/speakers/index:speaker-sessions:header') }}:
 						.session(v-for="session of speaker.sessions", v-if="session")
 							.title {{ session.title }}
 </template>
@@ -39,11 +41,7 @@ export default {
 			speaker.sessions = speaker.submissions.map(submission => this.sessionsLookup[submission])
 			// speaker.attendee = speakersToAttendee[speaker.code]
 		}
-	},
-	async mounted () {
-		await this.$nextTick()
-	},
-	methods: {}
+	}
 }
 </script>
 <style lang="stylus">
@@ -62,7 +60,8 @@ export default {
 		.c-scrollbars
 			align-items: center
 		.scroll-content
-			max-width: 960px
+			width: @css{min(920px, 100%)}
+			border: border-separator()
 		.speaker
 			color: $clr-primary-text-light
 			display: flex
@@ -91,4 +90,9 @@ export default {
 			display: flex
 			flex-direction: column
 			gap: 8px
+			margin-bottom: 8px
+			h2
+				font-weight: 500
+				font-size: 16px
+				margin: 0
 </style>
