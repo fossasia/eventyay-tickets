@@ -65,7 +65,8 @@ export default {
 			return moment(this.session.start).isBefore(this.now) && moment(this.session.end).isAfter(this.now)
 		},
 		targetRoute () {
-			if (this.isLive && this.session.room) {
+			// a room having modules is a good enough indicator for a native room
+			if (this.isLive && this.session.room?.modules) {
 				return {name: 'room', params: {roomId: this.session.room.id}}
 			}
 			return {name: 'schedule:talk', params: {talkId: this.session.id}}
