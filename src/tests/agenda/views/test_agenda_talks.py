@@ -34,6 +34,14 @@ def test_can_see_talk(client, django_assert_num_queries, event, slot, other_slot
 
 
 @pytest.mark.django_db
+def test_can_see_social_card(
+    client, django_assert_num_queries, event, slot, other_slot
+):
+    response = client.get(slot.submission.urls.social_image, follow=True)
+    assert response.status_code == 404  # no image
+
+
+@pytest.mark.django_db
 def test_cannot_see_new_talk(client, django_assert_num_queries, event, unreleased_slot):
     slot = unreleased_slot
     with django_assert_num_queries(7):

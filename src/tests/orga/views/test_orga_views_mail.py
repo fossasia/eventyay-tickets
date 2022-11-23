@@ -186,6 +186,20 @@ def test_orga_can_discard_all_mails(orga_client, event, mail, other_mail, sent_m
 
 
 @pytest.mark.django_db
+def test_orga_can_discard_all_mails_by_template(
+    orga_client, event, mail, other_mail, sent_mail, mail_template
+):
+    with scope(event=event):
+        QueuedMail.objects.all().update(template=mail_template)
+        assert QueuedMail.objects.count() == 3
+    response = orga_client.post(mail.urls.delete + "?all=true", follow=True)
+    assert response.status_code == 200
+    with scope(event=event):
+        assert QueuedMail.objects.filter(sent__isnull=True).count() == 0
+        assert QueuedMail.objects.count() == 1
+
+
+@pytest.mark.django_db
 def test_orga_can_view_discard_mail_confirm(orga_client, event, mail):
     with scope(event=event):
         assert QueuedMail.objects.count() == 1
