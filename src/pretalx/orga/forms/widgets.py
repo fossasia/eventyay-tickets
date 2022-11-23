@@ -12,9 +12,9 @@ class MultipleLanguagesWidget(CheckboxSelectMultiple):
     def sort(self):
         self.choices = sorted(
             self.choices,
-            key=lambda l: (
-                not settings.LANGUAGES_INFORMATION[l[0]].get("official"),
-                str(l[1]),
+            key=lambda locale: (
+                not settings.LANGUAGES_INFORMATION[locale[0]].get("official"),
+                str(locale[1]),
             ),
         )
 
