@@ -124,7 +124,7 @@ class MailTemplate(LogMixin, models.Model):
 
         with override(locale):
             context_kwargs = context_kwargs or dict()
-            context_kwargs["event"] = self.event
+            context_kwargs["event"] = event or self.event
             default_context = get_mail_context(**context_kwargs)
             default_context.update(context or {})
             context = default_context
@@ -145,7 +145,7 @@ class MailTemplate(LogMixin, models.Model):
                 subject = subject[:198] + "…"
 
             mail = QueuedMail(
-                event=self.event,
+                event=event or self.event,
                 template=self,
                 to=address,
                 reply_to=self.reply_to,

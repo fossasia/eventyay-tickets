@@ -154,6 +154,12 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
                             draft_proposals,
                         ),
                         "priority": 50,
+                        "url": self.request.event.orga_urls.send_drafts_reminder,
+                        "left": {
+                            "text": _("Send reminder"),
+                            "url": self.request.event.orga_urls.send_drafts_reminder,
+                            "color": "info",
+                        },
                     }
                 )
         return result

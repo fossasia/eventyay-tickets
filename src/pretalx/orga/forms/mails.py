@@ -13,6 +13,7 @@ from pretalx.common.mixins.forms import I18nHelpText, ReadOnlyFlag
 from pretalx.mail.context import get_available_placeholders
 from pretalx.mail.models import MailTemplate, QueuedMail
 from pretalx.person.models import User
+from pretalx.submission.models.submission import Submission, SubmissionStates
 
 
 class MailTemplateBase(I18nHelpText, I18nModelForm):
@@ -111,6 +112,36 @@ class MailTemplateForm(ReadOnlyFlag, MailTemplateBase):
     class Meta:
         model = MailTemplate
         fields = ["subject", "text", "reply_to", "bcc"]
+
+
+class DraftRemindersForm(MailTemplateForm):
+    def get_valid_placeholders(self):
+        kwargs = ["event", "submission", "user"]
+        return get_available_placeholders(event=self.event, kwargs=kwargs)
+
+    def save(self, *args, **kwargs):
+        template = self.instance
+        submissions = Submission.all_objects.filter(
+            state=SubmissionStates.DRAFT, event=self.event
+        )
+        mail_count = 0
+        for submission in submissions:
+            for user in submission.speakers.all():
+                template.to_mail(
+                    user=user,
+                    event=self.event,
+                    locale=submission.get_email_locale(user.locale),
+                    context_kwargs={"submission": submission, "user": user},
+                    skip_queue=True,
+                    commit=False,
+                )
+                mail_count += 1
+
+        return mail_count
+
+    class Meta:
+        model = MailTemplate
+        fields = ["subject", "text"]
 
 
 class MailDetailForm(ReadOnlyFlag, forms.ModelForm):

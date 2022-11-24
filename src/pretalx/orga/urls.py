@@ -329,6 +329,11 @@ urlpatterns = [
                     ),
                 ),
                 path(
+                    "mails/compose/reminders",
+                    mails.ComposeDraftReminders.as_view(),
+                    name="mails.compose.draft_reminders",
+                ),
+                path(
                     "mails/compose",
                     mails.ComposeMail.as_view(),
                     name="mails.compose",

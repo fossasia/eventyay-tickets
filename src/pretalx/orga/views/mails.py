@@ -21,7 +21,12 @@ from pretalx.common.templatetags.rich_text import rich_text
 from pretalx.common.utils import language
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.mail.models import MailTemplate, QueuedMail
-from pretalx.orga.forms.mails import MailDetailForm, MailTemplateForm, WriteMailForm
+from pretalx.orga.forms.mails import (
+    DraftRemindersForm,
+    MailDetailForm,
+    MailTemplateForm,
+    WriteMailForm,
+)
 
 
 class OutboxList(EventPermissionRequired, Sortable, Filterable, ListView):
@@ -374,6 +379,28 @@ class ComposeMail(EventPermissionRequired, FormView):
             _(
                 "{count} emails have been saved to the outbox – you can make individual changes there or just send them all."
             ).format(count=len(result)),
+        )
+        return super().form_valid(form)
+
+
+class ComposeDraftReminders(EventPermissionRequired, FormView):
+    form_class = DraftRemindersForm
+    template_name = "orga/mails/send_draft_reminders.html"
+    permission_required = "orga.send_mails"
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["event"] = self.request.event
+        return kwargs
+
+    def get_success_url(self):
+        return self.request.event.orga_urls.base
+
+    def form_valid(self, form):
+        result = form.save()
+        messages.success(
+            self.request,
+            _("{count} emails have been sent.").format(count=result),
         )
         return super().form_valid(form)
 

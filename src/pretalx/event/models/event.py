@@ -347,6 +347,7 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
         users = "{base}api/users"
         mail = "{base}mails/"
         compose_mails = "{mail}compose"
+        send_drafts_reminder = "{compose_mails}/reminders"
         mail_templates = "{mail}templates/"
         new_template = "{mail_templates}new"
         outbox = "{mail}outbox/"
