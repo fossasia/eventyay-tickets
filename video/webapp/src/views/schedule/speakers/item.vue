@@ -81,7 +81,7 @@ export default {
 		h2
 			margin: 16px
 	+below('s')
-		.speaker
+		.profile
 			flex-direction: column
 			align-items: center
 		.content
