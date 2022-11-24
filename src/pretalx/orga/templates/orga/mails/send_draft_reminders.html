@@ -1,0 +1,25 @@
+{% extends "orga/mails/base.html" %}
+{% load bootstrap4 %}
+{% load i18n %}
+
+{% block mail_content %}
+    <form method="post">
+        {% csrf_token %}
+        <h2>{% translate "Send reminder to unsubmitted proposal drafts" %}</h2>
+        <div class="alert alert-warning">
+            {% blocktranslate trimmed %}
+                These emails will be sent out immediately! They will not be
+                saved to the outbox or logged first, to protect the privacy of
+                the draft authors.
+            {% endblocktranslate %}
+        </div>
+        {% bootstrap_form_errors form %}
+        {% bootstrap_field form.subject layout='event' %}
+        {% bootstrap_field form.text layout='event' %}
+        <div class="submit-group mt-3"><span></span>
+            <span>
+                <button type="submit" class="btn btn-lg btn-success">{% translate "Send" %}</button>
+            </span>
+        </div>
+    </form>
+{% endblock %}
