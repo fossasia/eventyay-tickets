@@ -11,7 +11,7 @@
     },
     "connection_limit": 2,
     "user_list": {
-      "search_min_chars": 3,
+      "search_min_chars": 0,
       "page_size": 50
     },
     "profile_fields": [
