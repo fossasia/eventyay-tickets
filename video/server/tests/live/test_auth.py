@@ -824,6 +824,7 @@ async def test_list_search_users(world):
         "traits": ["moderator", "speaker"],
     }
     world.config["trait_badges_map"] = {"moderator": "Crew"}
+    world.config["user_list"]["search_min_chars"] = 3
     await database_sync_to_async(world.save)()
     token = jwt.encode(payload, config["secret"], algorithm="HS256")
     async with world_communicator() as c, world_communicator() as c_user1, world_communicator() as c_user2:
