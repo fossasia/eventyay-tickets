@@ -224,8 +224,16 @@ export default {
 					channel: state.channel
 				}
 			} else {
-				const {url} = await api.call('bbb.call_url', {call: body.id})
-				window.open(url, '_blank')
+				// We need to create the window right away, otherwise Safari will not believe this to be caused by the user
+				const win = window.open();
+				win.document.write("Please wait a second ...")
+				try {
+					const {url} = await api.call('bbb.call_url', {call: body.id})
+					win.location = url;
+				} catch (e) {
+					console.error(e);
+					win.close();
+				}
 			}
 		},
 		async leaveCall ({state}) {
