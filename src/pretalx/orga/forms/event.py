@@ -138,7 +138,7 @@ class EventForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
             "A color hex value, e.g. #ab01de"
         )
         self.fields["primary_color"].widget.attrs["class"] = "colorpickerfield"
-        self.fields["slug"].disabled = True
+        self.fields["slug"].disabled = not self.is_administrator
         self.fields["date_to"].help_text = _(
             "Any sessions you have scheduled already will be moved if you change the event dates. You will have to release a new schedule version to notify all speakers."
         )
