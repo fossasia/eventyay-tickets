@@ -46,6 +46,7 @@ export default {
 		sessions: {
 			handler () {
 				if (!this.sessions) return
+				if (this.talk) return
 				this.talk = this.sessions.find(session => session.id === this.talkId)
 			},
 			immediate: true
