@@ -24,6 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Tests
     strategy:
+      fail-fast: false
       matrix:
         python-version: [3.8, 3.9, '3.10']
         database: [sqlite, postgres, mysql]
