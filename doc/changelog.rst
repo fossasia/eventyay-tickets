@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`-` The reject email template was missing on the template list.
 - :feature:`-` Administrators can now change event short names in the frontend rather than having to dig into the database.
 - :feature:`699` In the emails sent to speakers when their talks change, they will now also receive calendar files for the changed talks.
 - :feature:`1185` Reviewers will see a checkmark next to talks they have submitted, so they won't appear like things they should review.

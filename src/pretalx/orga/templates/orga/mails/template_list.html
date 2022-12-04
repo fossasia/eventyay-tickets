@@ -68,6 +68,26 @@
             </div>
         </div>
 
+        <div class="card">
+            <div class="card-header" id="heading{{ reject.instance.id }}">
+                <h2>
+                    <button class="btn btn-block text-left d-flex" type="button" data-toggle="collapse" data-target="#collapse{{ reject.instance.id }}" aria-expanded="false" aria-controls="collapse{{ reject.instance.id }}">
+                        {% translate "Reject Mail" %}
+                        <i class="fa fa-2x ml-auto"></i>
+                    </button>
+                </h2>
+            </div>
+            <div id="collapse{{ reject.instance.id }}" class="collapse" aria-labelledby="heading{{ reject.instance.id }}" data-parent="#template-accordion">
+                <div class="card-body">
+
+                    <div class="row mt-2 mb-4 mr-1">
+                        <a href="{{ reject.instance.urls.edit }}" class="btn btn-info flip ml-auto">{% translate "Edit template" %}</a>
+                    </div>
+                    {% bootstrap_form reject layout='event' %}
+                </div>
+            </div>
+        </div>
+
         <div class="accordion" id="template-accordion">
             <div class="card">
                 <div class="card-header" id="heading{{ update.instance.id }}">
