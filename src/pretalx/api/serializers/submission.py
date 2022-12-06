@@ -126,6 +126,7 @@ class TagSerializer(I18nAwareModelSerializer):
 class SubmissionOrgaSerializer(SubmissionSerializer):
     answers = SerializerMethodField()
     tags = SerializerMethodField()
+    tag_ids = SerializerMethodField()
     created = SerializerMethodField()
 
     speaker_serializer_class = SubmitterOrgaSerializer
@@ -147,6 +148,9 @@ class SubmissionOrgaSerializer(SubmissionSerializer):
     def get_tags(self, obj):
         return list(obj.tags.all().values_list("tag", flat=True))
 
+    def get_tag_ids(self, obj):
+        return list(obj.tags.all().values_list("id", flat=True))
+
     class Meta(SubmissionSerializer.Meta):
         fields = SubmissionSerializer.Meta.fields + [
             "created",
@@ -155,6 +159,7 @@ class SubmissionOrgaSerializer(SubmissionSerializer):
             "notes",
             "internal_notes",
             "tags",
+            "tag_ids",
         ]
 
 

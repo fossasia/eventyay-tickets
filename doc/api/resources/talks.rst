@@ -34,6 +34,7 @@ answers                               list                       The question an
 notes                                 string                     Notes the speaker left for the organisers. Available if the requesting user has organiser permissions.
 internal_notes                        string                     Notes the organisers left on the submission. Available if the requesting user has organiser permissions.
 tags                                  list                       The tags attached to the current submission, as a list of strings. Available if the requesting user has organiser or reviewer permissions.
+tag_ids                               list                       The tags attached to the current submission, as a list of IDs. Available if the requesting user has organiser or reviewer permissions.
 ===================================== ========================== =======================================================
 
 .. versionadded:: 1.1.0
@@ -43,7 +44,7 @@ tags                                  list                       The tags attach
    The ``tags`` field was added in pretalx v2.2.0.
 
 .. versionadded:: 3.0.0
-   The ``track_id`` and ``submission_type_id`` fields were added, as well as the ``room_id`` field in the ``slot`` object.
+   The ``track_id``, ``tag_ids`` and ``submission_type_id`` fields were added, as well as the ``room_id`` field in the ``slot`` object.
 
 .. versionchanged:: 3.0.0
    The ``answers`` field was turned off by default in pretalx v3.0.0. Pass the ``questions`` query parameter to see questions, and pass ``questions=all`` to get the previous behaviour.
@@ -111,7 +112,8 @@ Endpoints
            ],
            "notes": "Please make sure you give me red M&Ms",
            "internal_notes": "Absolutely no M&Ms, but cool proposal otherwise!",
-           "tags": ["science"]
+           "tags": ["science"],
+           "tag_ids": [5]
         ]
       }
 
@@ -173,7 +175,8 @@ Endpoints
          ],
          "notes": "Please make sure you give me red M&Ms",
          "internal_notes": "Absolutely no M&Ms, but cool proposal otherwise!",
-         "tags": ["science"]
+         "tags": ["science"],
+         "tag_ids": [5]
       }
 
    :param event: The ``slug`` field of the event to fetch
