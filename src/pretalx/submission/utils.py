@@ -33,6 +33,7 @@ def move_submission(code, new_event, copy=False):
 
     if copy:
         submission.id = None
+        submission.code += "C"
     submission.event = new_event
     submission.submission_type = new_event.cfp.default_type
     submission.save()
