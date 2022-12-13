@@ -146,7 +146,7 @@
                     <div class="title">
                         <a href="{{ speaker.talk_profile.urls.public }}">{{ speaker.get_display_name }}</a>
                     </div>
-                    <div class="abstract">{{ speaker.talk_profile.biography|default:''|rich_text_without_links }}</div>
+                    <div class="abstract">{{ speaker.talk_profile.biography|default:''|rich_text }}</div>
                     {% if speaker.other_submissions %}
                         {% translate "This speaker also appears in:" %}
                         <ul>
