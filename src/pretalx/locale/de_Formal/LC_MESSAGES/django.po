@@ -7601,7 +7601,7 @@ msgid ""
 "- Your session “%(title)s” will take place at %(start)s in %(location)s"
 msgstr ""
 "\n"
-"- Ihr Vortrag „%(title)s“ wird um %(start)s in %(location)s stattfinden"
+"- Ihr Beitrag „%(title)s“ wird um %(start)s in %(location)s stattfinden"
 
 #: pretalx/schedule/templates/schedule/speaker_notification.txt:2
 #, python-format
@@ -7610,7 +7610,7 @@ msgid ""
 "- Your session “%(title)s” has been moved to %(start)s in %(location)s"
 msgstr ""
 "\n"
-"- Ihr Vortrag „%(title)s“ wurde auf %(start)s in %(location)s verschoben"
+"- Ihr Beitrag „%(title)s“ wurde auf %(start)s in %(location)s verschoben"
 
 #: pretalx/settings.py:354
 msgid "English"
