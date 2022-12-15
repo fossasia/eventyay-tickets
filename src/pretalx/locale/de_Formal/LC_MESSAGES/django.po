@@ -36,7 +36,7 @@ msgstr "Review abschicken"
 
 #: pretalx/agenda/phrases.py:17
 msgid "This session will not be recorded."
-msgstr "Dieser Vortrag wird nicht aufgezeichnet."
+msgstr "Dieser Beitrag wird nicht aufgezeichnet."
 
 #: pretalx/agenda/templates/agenda/base.html:22
 msgid "This schedule-related page is non-public. Only organisers can see it."
@@ -72,7 +72,7 @@ msgstr "von"
 
 #: pretalx/agenda/templates/agenda/changelog_block.html:25
 msgid "We have a new session: "
-msgstr "Wir haben einen neuen Vortrag: "
+msgstr "Wir haben einen neuen Beitrag: "
 
 #: pretalx/agenda/templates/agenda/changelog_block.html:39
 msgid "Sadly, we had to cancel sessions:"
@@ -80,7 +80,7 @@ msgstr "Leider müssen wir Vorträge absagen:"
 
 #: pretalx/agenda/templates/agenda/changelog_block.html:51
 msgid "We sadly had to cancel a session: "
-msgstr "Wir mussten leider einen Vortrag absagen: "
+msgstr "Wir mussten leider einen Beitrag absagen: "
 
 #: pretalx/agenda/templates/agenda/changelog_block.html:63
 msgid ""
@@ -92,7 +92,7 @@ msgstr ""
 
 #: pretalx/agenda/templates/agenda/changelog_block.html:83
 msgid "We have moved a session around: "
-msgstr "Wir mussten einen Vortrag verschieben: "
+msgstr "Wir mussten einen Beitrag verschieben: "
 
 #: pretalx/agenda/templates/agenda/featured.html:13
 msgid "Welcome to our list of featured sessions!"
@@ -137,7 +137,7 @@ msgid ""
 "This review is for you personally, not for all speakers in this session."
 msgstr ""
 "Dieses Rückmeldung ist nur für Sie, nicht für die restlichen Vortragenden in "
-"Ihrem Vortrag."
+"Ihrem Beitrag."
 
 #: pretalx/agenda/templates/agenda/feedback.html:29
 #: pretalx/orga/templates/orga/submission/feedback_list.html:13
@@ -150,7 +150,7 @@ msgid ""
 "presentation. Even a short review can prove valuable to a speaker! Please "
 "take the time and communicate your feedback in a constructive way."
 msgstr ""
-"Feedback ist wertvoll für Vortragende, um Vortrag und Präsentationsstil zu "
+"Feedback ist wertvoll für Vortragende, um Inhalte und Präsentationsstil zu "
 "verbessern. Auch eine kurze Rückmeldung kann einer Vortragenden sehr helfen "
 "– bitte nehmen Sie sich dabei die Zeit, eine konstruktive Formulierung für "
 "Ihre Meinung zu finden."
@@ -252,7 +252,7 @@ msgstr "Sprache"
 
 #: pretalx/agenda/templates/agenda/talk.html:70
 msgid "This session's header image"
-msgstr "Das Titelbild des Vortrags"
+msgstr "Das Titelbild des Beitrags"
 
 #: pretalx/agenda/templates/agenda/talk.html:82
 #: pretalx/orga/templates/orga/schedule/index.html:25
@@ -275,7 +275,7 @@ msgstr "Das Programm ist derzeit nicht öffentlich einsehbar."
 #: pretalx/agenda/views/talk.py:121
 #, python-brace-format
 msgid "The session “{title}” at {event}"
-msgstr "Der Vortrag „{title}“, {event}"
+msgstr "Der Beitrag „{title}“, {event}"
 
 #: pretalx/cfp/flow.py:313 pretalx/orga/templates/orga/base.html:198
 msgid "General"
@@ -620,7 +620,7 @@ msgid ""
 "You, %(name)s, have been invited to be a speaker for the session “%(talk)s”. "
 "Do you accept the invitation?"
 msgstr ""
-"Sie, %(name)s, wurden eingeladen, den Vortrag „%(talk)s“ mitzuhalten. Nehmen "
+"Sie, %(name)s, wurden eingeladen, am Beitrag „%(talk)s“ mitzuwirken. Nehmen "
 "Sie die Einladung an?"
 
 #: pretalx/cfp/templates/cfp/event/invitation.html:17
@@ -981,7 +981,7 @@ msgstr "Publikumsfeedback"
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:48
 msgid "Attendees can leave feedback here after your session has taken place."
 msgstr ""
-"Teilnehmende können hier Feedback abschicken, sobald der Vortrag "
+"Teilnehmende können hier Feedback abschicken, sobald der Beitrag "
 "stattgefunden hat."
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:57
@@ -1466,7 +1466,7 @@ msgstr "Die Einreichung wurde angenommen."
 
 #: pretalx/common/log_display.py:58
 msgid "The proposal was cancelled."
-msgstr "Der Vortrag wurde abgesagt."
+msgstr "Der Beitrag wurde abgesagt."
 
 #: pretalx/common/log_display.py:59 pretalx/common/log_display.py:60
 msgid "The proposal was confirmed."
@@ -2786,19 +2786,19 @@ msgstr "Alle Bewertungstexte für diese Einreichung"
 
 #: pretalx/mail/context.py:202
 msgid "The session's start date"
-msgstr "Startdatum des Vortrags"
+msgstr "Startdatum des Programmpunkts"
 
 #: pretalx/mail/context.py:209
 msgid "The session's start time"
-msgstr "Startuhrzeit des Vortrags"
+msgstr "Startuhrzeit des Programmpunkts"
 
 #: pretalx/mail/context.py:216
 msgid "The session's end date"
-msgstr "Enddatum des Vortrags"
+msgstr "Enddatum des Programmpunkts"
 
 #: pretalx/mail/context.py:223
 msgid "The session's end time"
-msgstr "Enduhrzeit des Vortrags"
+msgstr "Enduhrzeit des Programmpunkts"
 
 #: pretalx/mail/context.py:229
 msgid "Room 101"
@@ -2806,7 +2806,7 @@ msgstr "Raum 101"
 
 #: pretalx/mail/context.py:230
 msgid "The session's room"
-msgstr "Der Raum des Vortrags"
+msgstr "Der Raum des Programmpunkts"
 
 #: pretalx/mail/context.py:236
 msgid "Jane Doe"
@@ -2944,7 +2944,7 @@ msgstr ""
 "{notifications}\n"
 "\n"
 "Wir freuen uns schon darauf, Sie zu sehen. Bitte melden Sie sich jederzeit "
-"bei uns, wenn es ein Problem mit Ihrem Vortrag oder Ihrem Vortragstermin "
+"bei uns, wenn es ein Problem mit Ihrem Beitrag oder Ihrem Vortragstermin "
 "gibt.\n"
 "\n"
 "Die {event_name} Veranstalter"
@@ -3319,7 +3319,7 @@ msgstr "Anonymes Feedback zulassen"
 #: pretalx/orga/forms/event.py:86
 msgid "Attendees will be able to send in feedback after a session is over."
 msgstr ""
-"Teilnehmende können hier Feedback abschicken, sobald der Vortrag "
+"Teilnehmende können hier Feedback abschicken, sobald der Beitrag "
 "stattgefunden hat."
 
 #: pretalx/orga/forms/event.py:91
@@ -3893,7 +3893,7 @@ msgstr "Raum"
 
 #: pretalx/orga/forms/schedule.py:92
 msgid "The room this talk is scheduled in, if any"
-msgstr "Der Raum, in dem dieser Vortrag stattfindet, wenn es einen gibt"
+msgstr "Der Raum, in dem dieser Programmpunkt stattfindet, wenn es einen gibt"
 
 #: pretalx/orga/forms/schedule.py:96 pretalx/orga/forms/submission.py:97
 msgid "Start"
@@ -3901,7 +3901,7 @@ msgstr "Beginn"
 
 #: pretalx/orga/forms/schedule.py:97
 msgid "When the talk starts, if it is currently scheduled"
-msgstr "Wann der Vortrag beginnt, sofern er schon geplant ist"
+msgstr "Wann der Beitrag beginnt, sofern er schon geplant ist"
 
 #: pretalx/orga/forms/schedule.py:101 pretalx/orga/forms/submission.py:107
 msgid "End"
@@ -3909,7 +3909,7 @@ msgstr "Ende"
 
 #: pretalx/orga/forms/schedule.py:102
 msgid "When the talk ends, if it is currently scheduled"
-msgstr "Wann der Vortrag endet, sofern er schon geplant ist"
+msgstr "Wann der Beitrag endet, sofern er schon geplant ist"
 
 #: pretalx/orga/forms/schedule.py:106
 msgid "Median score"
@@ -4028,12 +4028,12 @@ msgstr ""
 
 #: pretalx/orga/phrases.py:17
 msgid "I think this session might fit the conference better, if ..."
-msgstr "Ich denke dieser Vortrag könnte besser sein, wenn …"
+msgstr "Ich denke dieser Beitrag könnte besser sein, wenn …"
 
 #: pretalx/orga/phrases.py:18
 msgid "I think this session sounds like a perfect fit for Day 2, since ..."
 msgstr ""
-"Dieser Vortrag passt meiner Ansicht nach sehr gut zum Programm an Tag 2, "
+"Dieser Beitrag passt meiner Ansicht nach sehr gut zum Programm an Tag 2, "
 "denn …"
 
 #: pretalx/orga/phrases.py:19
@@ -4042,16 +4042,16 @@ msgstr "Dieser Talk könnte vielleicht verbessert werden, indem …"
 
 #: pretalx/orga/phrases.py:20
 msgid "I have heard a similar session by this speaker, and I think ..."
-msgstr "Ich habe einen ähnlichen Vortrag dieses Speakers gehört, und denke …"
+msgstr "Ich habe einen ähnlichen Beitrag dieses Speakers gehört, und denke …"
 
 #: pretalx/orga/phrases.py:21
 msgid "In my opinion, this session will appeal to ..."
-msgstr "Meiner Meinung nach wird dieser Vortrag besonders für … relevant sein."
+msgstr "Meiner Meinung nach wird dieser Beitrag besonders für … relevant sein."
 
 #: pretalx/orga/phrases.py:22
 msgid "While I think the session is a great fit, it might be improved by ..."
 msgstr ""
-"Dieser Vortrag passt gut, könnte aber vielleicht verbessert werden, indem …"
+"Dieser Beitrag passt gut, könnte aber vielleicht verbessert werden, indem …"
 
 #: pretalx/orga/templates/orga/admin.html:15
 msgid "Administrator information"
@@ -7160,7 +7160,7 @@ msgstr ""
 
 #: pretalx/orga/views/schedule.py:434
 msgid "The session has been scheduled."
-msgstr "Der Vortrag wurde festgelegt."
+msgstr "Der Beitrag wurde ins Programm gesetzt."
 
 #: pretalx/orga/views/schedule.py:479
 msgid "Room deleted. Hopefully nobody was still in there …"
@@ -7496,7 +7496,7 @@ msgid ""
 "click a block twice to remove it."
 msgstr ""
 "Mit Klicken und Ziehen können Sie in grün Zeiträume markieren, in denen Sie "
-"verfügbar sind. Wir versuchen, Ihren Vortrag dann passend zu legen. Um einen "
+"verfügbar sind. Wir versuchen, Ihren Beitrag dann passend zu legen. Um einen "
 "Zeitraum wieder zu löschen, klicken Sie ihn zweimal an."
 
 #: pretalx/schedule/forms.py:65
@@ -7584,7 +7584,7 @@ msgstr "Der Raum steht zur gewählten Zeit nicht zur Verfügung."
 
 #: pretalx/schedule/models/schedule.py:394
 msgid "There's an overlapping session scheduled in this room."
-msgstr "Es findet gleichzeitig schon ein anderer Vortrag in diesem Raum statt."
+msgstr "Es findet gleichzeitig schon ein anderer Programmpunkt in diesem Raum statt."
 
 #: pretalx/schedule/models/schedule.py:426
 msgid "A speaker is not available at the scheduled time."
@@ -7785,7 +7785,7 @@ msgstr ""
 
 #: pretalx/submission/models/feedback.py:23
 msgid "Session"
-msgstr "Vortrag"
+msgstr "Beitrag"
 
 #: pretalx/submission/models/feedback.py:31
 msgid "Speaker"
@@ -7869,7 +7869,7 @@ msgstr "Frageart"
 #: pretalx/submission/models/question.py:125
 msgid "Do you require an answer from every speaker or for every session?"
 msgstr ""
-"Brauchen Sie eine Antwort von jeder Vortragenden oder für jeden Vortrag?"
+"Brauchen Sie eine Antwort von jeder Vortragenden oder für jeden Beitrag?"
 
 #: pretalx/submission/models/question.py:133
 msgid "Set a deadline to make this question required after the given date."
@@ -7991,7 +7991,7 @@ msgid ""
 "note that you cannot make a question public after the first answers have "
 "been given, to allow speakers explicit consent before publishing information."
 msgstr ""
-"Antworten werden auf der Vortrags- oder Vortragendenseite angezeigt. Bitte "
+"Antworten werden auf der Beitrags- oder Vortragendenseite angezeigt. Bitte "
 "beachten Sie, dass Sie Fragen nicht mehr öffentlich machen können, nachdem "
 "die erste Antwort gegeben wurde, damit sichergestellt ist, dass die "
 "Vortragenden in die Veröffentlichung eingewilligt haben."
@@ -8149,7 +8149,7 @@ msgstr ""
 
 #: pretalx/submission/models/submission.py:203
 msgid "How many times this session will take place."
-msgstr "Wie oft der Vortrag gehalten wird."
+msgstr "Wie oft der Programmpunkt abgehalten wird."
 
 #: pretalx/submission/models/submission.py:214
 msgid "Show this session in public list of featured sessions."
