@@ -1,15 +1,15 @@
-from django.conf.urls import url
+from django.urls import path, re_path
 
 from .views import (
     OrderPositionJoin, SettingsView
 )
 
 urlpatterns = [
-    url(r'^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/settings/venueless/$',
+    path('control/event/<str:organizer>/<str:event>/settings/venueless/',
         SettingsView.as_view(), name='settings'),
 ]
 event_patterns = [
-    url(
+    re_path(
         r'^ticket/(?P<order>[^/]+)/(?P<position>\d+)/(?P<secret>[A-Za-z0-9]+)/venueless/$',
         OrderPositionJoin.as_view(),
         name='join'),
