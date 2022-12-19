@@ -9,6 +9,7 @@ except ImportError:
 
 
 class PluginApp(PluginConfig):
+    default = True
     name = 'pretix_venueless'
     verbose_name = 'Venueless'
 
