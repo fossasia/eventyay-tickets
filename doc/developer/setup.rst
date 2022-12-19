@@ -127,7 +127,6 @@ Before you check in your code into git, always run the static linters and style 
     (env)$ isort .
     (env)$ flake8 .
     (env)$ find -name "*.html" | xargs djhtml -i
-    (env)$ docformatter --in-place -r .
 
 Once you're done with those, run the tests::
 

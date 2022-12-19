@@ -138,7 +138,6 @@ setup(
             "check-manifest",
             "coverage",
             "djhtml",
-            "docformatter",
             "Faker",
             "flake8",
             "flake8-bugbear",
