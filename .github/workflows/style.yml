@@ -79,26 +79,6 @@ jobs:
       - name: Run black
         run: black --check .
         working-directory: ./src
-  docformatter:
-    name: docformatter
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python 3.9
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.9
-      - uses: actions/cache@v1
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('src/setup.py') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-      - name: Install Dependencies
-        run: python -m pip install -Ue "src[dev]"
-      - name: Run docformatter
-        run: docformatter --check -r .
-        working-directory: ./src
   djhtml:
     name: djhtml
     runs-on: ubuntu-latest
