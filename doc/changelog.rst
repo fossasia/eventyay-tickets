@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`392` Our longest-standing feature request has finally been closed: You can now set the possible proposal/content languages independently from the available UI languages.
 - :bug:`1363` pretalx now shows the actual file upload limit to users uploading resources rather than a slightly too-large one.
 - :feature:`-` You can't accidentally remove all permissions from a team anymore.
 - :feature:`-` Added the ``tag_ids`` attribute in the proposal API for organisers.

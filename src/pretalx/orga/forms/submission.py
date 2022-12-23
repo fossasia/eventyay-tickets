@@ -46,6 +46,7 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
                 if hasattr(initial[key], "all"):  # Tags, for the moment
                     initial[key] = initial[key].all()
             kwargs["initial"] = initial
+        kwargs["initial"] = kwargs.get("initial") or {}
         kwargs["initial"].update(initial_slot)
         super().__init__(**kwargs)
         if "submission_type" in self.fields:
@@ -121,7 +122,6 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
             self.fields["track"].queryset = event.tracks.all()
         if "content_locale" in self.fields:
             if len(event.content_locales) == 1:
-                self.default_values["content_locale"] = self.event.content_locales[0]
                 self.fields.pop("content_locale")
             else:
                 self.fields["content_locale"].choices = self.event.named_content_locales

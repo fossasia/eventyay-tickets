@@ -12,7 +12,7 @@ def update_content_locale_array(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('event', '0030_event_content_locale_array'),
+        ("event", "0030_event_content_locale_array"),
     ]
 
     operations = [
