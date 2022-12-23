@@ -574,6 +574,7 @@ class UserSettings(TemplateView):
                 self.request,
                 _("Oh :( We had trouble saving your input. See below for details."),
             )
+            return self.get(request, *args, **kwargs)
         return redirect(self.get_success_url())
 
 
