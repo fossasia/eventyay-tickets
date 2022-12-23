@@ -1,6 +1,6 @@
 name: Feature idea
 description: Suggest a new pretalx feature.
-labels: ["feature"]
+labels: ["type: feature"]
 body:
   - type: markdown
     attributes:

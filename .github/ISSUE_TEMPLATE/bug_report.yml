@@ -1,6 +1,6 @@
 name: Bug Report
 description: Create a report about incorrect or unhelpful behaviour.
-labels: ["bug"]
+labels: ["type: bug"]
 body:
   - type: markdown
     attributes:
