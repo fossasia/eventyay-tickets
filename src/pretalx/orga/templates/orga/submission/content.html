@@ -1,6 +1,7 @@
 {% extends "orga/submission/base.html" %}
 {% load bootstrap4 %}
 {% load compress %}
+{% load filesize %}
 {% load formset_tags %}
 {% load i18n %}
 {% load static %}
@@ -127,7 +128,10 @@
                         <i class="fa fa-trash"></i></button>
                         </div>
                         </div>
-                        <div class="form-text text-muted mt-0 pt-0 mb-2">{% translate "You can either provide a URL or upload a file." %}</div>
+                        <div class="form-text text-muted mt-0 pt-0 mb-2">
+                        {% translate "You can either provide a URL or upload a file." %}
+                        {% translate "Max file size:" %}
+                        {{ settings.FILE_UPLOAD_DEFAULT_LIMIT | filesize }}
                         </div>
                     {% endescapescript %}
                 </script>

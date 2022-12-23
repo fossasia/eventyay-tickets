@@ -16,17 +16,13 @@ def resource_path(instance, filename):
 
 
 class Resource(LogMixin, FileCleanupMixin, models.Model):
-    """Resources are file uploads belonging to a.
-
-    :class:`~pretalx.submission.models.submission.Submission`.
-    """
+    """Resources are file uploads belonging to a :class:`~pretalx.submission.models.submission.Submission`."""
 
     submission = models.ForeignKey(
         to="submission.Submission", related_name="resources", on_delete=models.PROTECT
     )
     resource = models.FileField(
         verbose_name=_("file"),
-        help_text=_("Please try to keep your upload small, preferably below 16 MB."),
         upload_to=resource_path,
         null=True,
         blank=True,

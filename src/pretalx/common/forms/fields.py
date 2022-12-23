@@ -15,6 +15,7 @@ from pretalx.common.forms.widgets import (
     PasswordConfirmationInput,
     PasswordStrengthInput,
 )
+from pretalx.common.templatetags.filesize import filesize
 
 IMAGE_EXTENSIONS = (".png", ".jpg", ".gif", ".jpeg", ".svg")
 
@@ -53,7 +54,7 @@ class SizeFileInput:
             self.max_size = kwargs.pop("max_size")
         super().__init__(*args, **kwargs)
         self.size_warning = _("Please do not upload files larger than {size}!").format(
-            size=SizeFileField._format_size(self.max_size)
+            size=filesize(self.max_size)
         )
         self.original_help_text = (
             getattr(self, "original_help_text", "") or self.help_text
@@ -62,14 +63,6 @@ class SizeFileInput:
         self.help_text = self.original_help_text + " " + self.added_help_text
         self.widget.attrs["data-maxsize"] = self.max_size
         self.widget.attrs["data-sizewarning"] = self.size_warning
-
-    @staticmethod
-    def _format_size(num):
-        for unit in ["", "K", "M", "G", "T", "P", "E", "Z"]:  # Future proof 10/10
-            if abs(num) < 1024:
-                return f"{num:3.1f}{unit}B"
-            num /= 1024
-        return f"{num:.1f}YiB"  # Future proof 11/10
 
     def validate(self, value):
         super().validate(value)

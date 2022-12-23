@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`1363` pretalx now shows the actual file upload limit to users uploading resources rather than a slightly too-large one.
 - :feature:`-` You can't accidentally remove all permissions from a team anymore.
 - :feature:`-` Added the ``tag_ids`` attribute in the proposal API for organisers.
 - :bug:`-` The reject email template was missing on the template list.

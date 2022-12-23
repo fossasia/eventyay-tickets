@@ -1,6 +1,7 @@
 {% extends "cfp/event/base.html" %}
 {% load bootstrap4 %}
 {% load compress %}
+{% load filesize %}
 {% load formset_tags %}
 {% load i18n %}
 {% load rules %}
@@ -144,7 +145,10 @@
                             {% bootstrap_field formset.empty_form.link layout='inline'  %}
                             {% bootstrap_field formset.empty_form.resource layout='inline'  %}
                             </div>
-                            <div class="form-text text-muted mt-0 pt-0 mb-2">{% translate "You can either provide a URL or upload a file." %}</div>
+                            <div class="form-text text-muted mt-0 pt-0 mb-2">
+                            {% translate "You can either provide a URL or upload a file." %}
+                            {% translate "Max file size:" %}
+                            {{ settings.FILE_UPLOAD_DEFAULT_LIMIT | filesize }}
                             </div>
                             <div class="resource-option-delete">
                             <button type="button" class="btn btn-danger btn-sm" data-formset-delete-button>
