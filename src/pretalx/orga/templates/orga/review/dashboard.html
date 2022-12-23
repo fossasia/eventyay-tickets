@@ -80,16 +80,22 @@
                                 <label for="col-review-count">{% translate "Reviews" %}</label>
                             </li>
                         {% endif %}
-                        <li class="dropdown-item form-check">
-                            <input type="checkbox" id="col-track" checked autocomplete=off>
-                            <label for="col-track">{% translate "Track" %}</label>
-                        </li>
                         {% if can_view_speakers %}
                             <li class="dropdown-item form-check">
                                 <input type="checkbox" id="col-speakers" checked autocomplete=off>
                                 <label for="col-speakers">{% translate "Speakers" %}</label>
                             </li>
                         {% endif %}
+                        {% for question in short_questions %}
+                            <li class="dropdown-item form-check">
+                                <input type="checkbox" id="col-question-{{ question.id }}" autocomplete=off>
+                                <label for="col-question-{{ question.id }}">{% translate "Question" %}: {{ question.question }}</label>
+                            </li>
+                        {% endfor %}
+                        <li class="dropdown-item form-check">
+                            <input type="checkbox" id="col-track" checked autocomplete=off>
+                            <label for="col-track">{% translate "Track" %}</label>
+                        </li>
                         <li class="dropdown-item form-check">
                             <input type="checkbox" id="col-duration" autocomplete=off>
                             <label for="col-duration">{% translate "Duration" %}</label>
@@ -98,16 +104,16 @@
                             <input type="checkbox" id="col-subtype" autocomplete=off>
                             <label for="col-subtype">{% translate "Session type" %}</label>
                         </li>
+                        {% if filter_form.tags %}
+                        <li class="dropdown-item form-check">
+                            <input type="checkbox" id="col-tags" checked autocomplete=off>
+                            <label for="col-tags">{% translate "Tags" %}</label>
+                        </li>
+                        {% endif %}
                         <li class="dropdown-item form-check">
                             <input type="checkbox" id="col-state" checked autocomplete=off>
                             <label for="col-state">{% translate "State" %}</label>
                         </li>
-                        {% for question in short_questions %}
-                            <li class="dropdown-item form-check">
-                                <input type="checkbox" id="col-question-{{ question.id }}" autocomplete=off>
-                                <label for="col-question-{{ question.id }}">{% translate "Question" %}: {{ question.question }}</label>
-                            </li>
-                        {% endfor %}
                     </ul>
                 </details>
                 <details class="dropdown flip fix-height">
@@ -146,6 +152,7 @@
                     {% if can_view_speakers %}<col class="w-25 col-speakers">{% endif %}
                     {% for question in short_questions %}<col class="col-question-{{ question.id }} d-none">{% endfor %}
                     {% if filter_form.track %}<col class="nowrap col-track">{% endif %}
+                    {% if filter_form.tags %}<col class="nowrap col-tags">{% endif %}
                     <col class="nowrap d-none col-duration">
                     {% if show_submission_types %}<col class="nowrap d-none col-subtype">{% endif %}
                     <col class="nowrap col-state">
@@ -194,7 +201,7 @@
                         {% if filter_form.track %}<th class="col-track">{% translate "Track" %}</th>{% endif %}
                         <th class="d-none col-duration">{% translate "Duration" %}</th>
                         {% if show_submission_types %}<th class="col-subtype d-none">{% translate "Type" %}</th>{% endif %}
-                        {% if filter_form.tags %}<th>{% translate "Tags" %}</th>{% endif %}
+                        {% if filter_form.tags %}<th class="col-tags">{% translate "Tags" %}</th>{% endif %}
                         <th class="col-state">{% translate "State" %}</th>
                         <th><span class="action-row d-flex justify-space-around">
                             {% if can_accept_submissions %}
@@ -266,7 +273,7 @@
                             {% if filter_form.track %}<td class="col-track">{{ submission.track.name }}</td>{% endif %}
                             <td class="d-none col-duration">{{ submission.export_duration }}</td>
                             {% if show_submission_types %}<td class="col-subtype d-none">{{ submission.submission_type.name }}</td>{% endif %}
-                            {% if filter_form.tags %}<td>
+                            {% if filter_form.tags %}<td class="col-tags">
                                 <div class="d-flex flex-column">
                                     {% for tag in submission.tags.all %}
                                         {{ tag.tag }}
