@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` You can't accidentally remove all permissions from a team anymore.
 - :feature:`-` Added the ``tag_ids`` attribute in the proposal API for organisers.
 - :bug:`-` The reject email template was missing on the template list.
 - :feature:`-` Administrators can now change event short names in the frontend rather than having to dig into the database.

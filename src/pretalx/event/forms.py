@@ -48,6 +48,19 @@ class TeamForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
                 )
             )
             self.add_error("limit_events", error)
+        permissions = (
+            "can_create_events",
+            "can_change_teams",
+            "can_change_organiser_settings",
+            "can_change_event_settings",
+            "can_change_submissions",
+            "is_reviewer",
+        )
+        if not any(data.get(permission) for permission in permissions):
+            error = forms.ValidationError(
+                _("Please pick at least one permission for this team!")
+            )
+            self.add_error(None, error)
         return data
 
     class Meta:
