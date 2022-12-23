@@ -1,7 +1,6 @@
 import json
 
 from django import forms
-from django.conf import global_settings
 from django.utils.formats import get_format
 from django.utils.translation import gettext as _
 from django_scopes.forms import SafeModelChoiceField, SafeModelMultipleChoiceField
@@ -125,10 +124,7 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
                 self.default_values["content_locale"] = self.event.content_locales[0]
                 self.fields.pop("content_locale")
             else:
-                locale_names = dict(global_settings.LANGUAGES)
-                self.fields["content_locale"].choices = [
-                    (a, locale_names[a]) for a in self.event.content_locales
-                ]
+                self.fields["content_locale"].choices = self.event.named_content_locales
 
     def clean(self):
         data = super().clean()

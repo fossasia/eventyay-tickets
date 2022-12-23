@@ -1,5 +1,4 @@
 from django import forms
-from django.conf import global_settings
 from django.db.models import Count
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
@@ -135,10 +134,7 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
                 self.default_values["content_locale"] = self.event.content_locales[0]
                 self.fields.pop("content_locale")
             else:
-                locale_names = dict(global_settings.LANGUAGES)
-                self.fields["content_locale"].choices = [
-                    (a, locale_names[a]) for a in self.event.content_locales
-                ]
+                self.fields["content_locale"].choices = self.event.named_content_locales
 
     def _set_slot_count(self, instance=None):
         if not self.event.feature_flags["present_multiple_times"]:

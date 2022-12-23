@@ -3,7 +3,7 @@ from contextlib import suppress
 
 import pytz
 from dateutil.relativedelta import relativedelta
-from django.conf import settings
+from django.conf import global_settings, settings
 from django.core.exceptions import MultipleObjectsReturned, ValidationError
 from django.core.mail import get_connection
 from django.core.mail.backends.base import BaseEmailBackend
@@ -425,12 +425,16 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
     def named_locales(self) -> list:
         """Is a list of tuples of locale codes and natural names for this
         event."""
-        enabled = set(self.locale_array.split(","))
         return [
             (language["code"], language["natural_name"])
             for language in settings.LANGUAGES_INFORMATION.values()
-            if language["code"] in enabled
+            if language["code"] in self.locales
         ]
+
+    @cached_property
+    def named_content_locales(self) -> list:
+        locale_names = dict(global_settings.LANGUAGES)
+        return [(a, locale_names[a]) for a in self.content_locales]
 
     @cached_property
     def plugin_locales(self) -> list:
