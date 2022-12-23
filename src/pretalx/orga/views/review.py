@@ -46,6 +46,7 @@ class ReviewDashboard(
         "submission_type",
         "tags",
         "track",
+        "content_locale",
         "pending_state",
         "pending_state__isnull",
     )

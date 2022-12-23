@@ -528,6 +528,7 @@ class SubmissionList(
         "state",
         "track",
         "tags",
+        "content_locale",
         "pending_state",
         "pending_state__isnull",
     )

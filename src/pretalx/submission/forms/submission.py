@@ -255,6 +255,12 @@ class SubmissionFilterForm(forms.Form):
         required=False,
         label=_("exclude pending"),
     )
+    content_locale = forms.MultipleChoiceField(
+        required=False,
+        widget=SelectMultipleWithCount(
+            attrs={"class": "select2", "title": _("Language")}
+        ),
+    )
     track = forms.MultipleChoiceField(
         required=False,
         widget=SelectMultipleWithCount(
@@ -293,6 +299,7 @@ class SubmissionFilterForm(forms.Form):
         )
         sub_types = event.submission_types.all()
         tracks = limit_tracks or event.tracks.all()
+        languages = event.named_content_locales
         if len(sub_types) > 1:
             type_count = {
                 d["submission_type_id"]: d["submission_type_id__count"]
@@ -320,6 +327,19 @@ class SubmissionFilterForm(forms.Form):
             ]
         else:
             self.fields.pop("track", None)
+        if len(languages) > 1:
+            language_count = {
+                d["content_locale"]: d["content_locale__count"]
+                for d in qs.order_by("content_locale")
+                .values("content_locale")
+                .annotate(Count("content_locale"))
+            }
+            self.fields["content_locale"].choices = [
+                (code, CountableOption(name, language_count.get(code, 0)))
+                for code, name in languages
+            ]
+        else:
+            self.fields.pop("content_locale", None)
 
         if not self.event.tags.all().exists():
             self.fields.pop("tags", None)

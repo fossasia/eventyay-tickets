@@ -46,6 +46,7 @@
                 <div id="pending" class="d-none">{% bootstrap_field filter_form.pending_state__isnull layout='inline' %}</div>
             </div>
             {% if filter_form.track %}{% bootstrap_field filter_form.track %}{% endif %}
+            {% if filter_form.content_locale %}{% bootstrap_field filter_form.content_locale %}{% endif %}
             {% if filter_form.tags %}{% bootstrap_field filter_form.tags %}{% endif %}
             {% if max_review_count and max_review_count > 1 %}
                 <div id="range-wrapper">
