@@ -663,6 +663,7 @@ class EventWizard(PermissionRequired, SensibleBackWizardMixin, SessionWizardView
             event = Event.objects.create(
                 organiser=steps["initial"]["organiser"],
                 locale_array=",".join(steps["initial"]["locales"]),
+                content_locale_array=",".join(steps["initial"]["locales"]),
                 name=steps["basics"]["name"],
                 slug=steps["basics"]["slug"],
                 timezone=steps["basics"]["timezone"],

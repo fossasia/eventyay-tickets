@@ -265,6 +265,7 @@ class TestEventCreation:
         ).exists(), organiser.teams.all()
         assert str(event.name) == "New event!"
         assert event.locales == ["en", "de"]
+        assert event.content_locales == ["en", "de"]
 
     def test_orga_create_event_existing_slug(
         self, orga_client, organiser, deadline, event
@@ -295,6 +296,7 @@ class TestEventCreation:
         ).exists(), organiser.teams.all()
         assert str(event.name) == "New event!"
         assert event.locales == ["en", "de"]
+        assert event.content_locales == ["en", "de"]
 
     def test_orga_create_wrong_order(self, orga_client, organiser, deadline):
         organiser.teams.all().update(can_create_events=True)

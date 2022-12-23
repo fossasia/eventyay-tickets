@@ -4,7 +4,7 @@ from decimal import Decimal
 from urllib.parse import urlparse
 
 from django import forms
-from django.conf import settings
+from django.conf import global_settings, settings
 from django.core.exceptions import ValidationError
 from django.core.files.base import ContentFile
 from django.db.models import F, Q
@@ -41,6 +41,12 @@ class EventForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
             " languages. If you don't provide a text in the language a user selects, it will be shown in your event's"
             " default language instead."
         ),
+    )
+    content_locales = forms.MultipleChoiceField(
+        label=_("Content languages"),
+        choices=global_settings.LANGUAGES,
+        widget=forms.SelectMultiple(attrs={"class": "select2"}),
+        help_text=_("Users will be able to submit proposals in these languages."),
     )
     custom_css_text = forms.CharField(
         required=False,
@@ -127,6 +133,7 @@ class EventForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
         self.is_administrator = kwargs.pop("is_administrator", False)
         super().__init__(*args, **kwargs)
         self.initial["locales"] = self.instance.locale_array.split(",")
+        self.initial["content_locales"] = self.instance.content_locale_array.split(",")
         year = str(now().year)
         self.fields["name"].widget.attrs["placeholder"] = (
             _("The name of your conference, e.g. My Conference") + " " + year
@@ -213,6 +220,9 @@ class EventForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
 
     def save(self, *args, **kwargs):
         self.instance.locale_array = ",".join(self.cleaned_data["locales"])
+        self.instance.content_locale_array = ",".join(
+            self.cleaned_data["content_locales"]
+        )
         if any(key in self.changed_data for key in ("date_from", "date_to")):
             self.change_dates()
         if "timezone" in self.changed_data:

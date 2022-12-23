@@ -3,7 +3,7 @@ import json
 import statistics
 from itertools import repeat
 
-from django.conf import settings
+from django.conf import global_settings, settings
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.db.models import Q
@@ -206,7 +206,7 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
     content_locale = models.CharField(
         max_length=32,
         default=settings.LANGUAGE_CODE,
-        choices=settings.LANGUAGES,
+        choices=global_settings.LANGUAGES,
         verbose_name=_("Language"),
     )
     is_featured = models.BooleanField(

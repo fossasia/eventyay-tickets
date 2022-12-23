@@ -1,7 +1,7 @@
 import json
 
 from django import forms
-from django.conf import settings
+from django.conf import global_settings
 from django.utils.formats import get_format
 from django.utils.translation import gettext as _
 from django_scopes.forms import SafeModelChoiceField, SafeModelMultipleChoiceField
@@ -121,12 +121,13 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
         elif "track" in self.fields:
             self.fields["track"].queryset = event.tracks.all()
         if "content_locale" in self.fields:
-            if len(event.locales) == 1:
+            if len(event.content_locales) == 1:
+                self.default_values["content_locale"] = self.event.content_locales[0]
                 self.fields.pop("content_locale")
             else:
-                locale_names = dict(settings.LANGUAGES)
+                locale_names = dict(global_settings.LANGUAGES)
                 self.fields["content_locale"].choices = [
-                    (a, locale_names[a]) for a in event.locales
+                    (a, locale_names[a]) for a in self.event.content_locales
                 ]
 
     def clean(self):

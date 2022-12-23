@@ -242,6 +242,7 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
         ),
     )
     locale_array = models.TextField(default=settings.LANGUAGE_CODE)
+    content_locale_array = models.TextField(default=settings.LANGUAGE_CODE)
     locale = models.CharField(
         max_length=32,
         default=settings.LANGUAGE_CODE,
@@ -411,9 +412,14 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
         return self.locale_array.split(",")
 
     @cached_property
+    def content_locales(self) -> list:
+        """Is a list of active content locales."""
+        return self.content_locale_array.split(",")
+
+    @cached_property
     def is_multilingual(self) -> bool:
         """Is ``True`` if the event supports more than one locale."""
-        return len(self.locales) > 1
+        return len(self.content_locales) > 1
 
     @cached_property
     def named_locales(self) -> list:
