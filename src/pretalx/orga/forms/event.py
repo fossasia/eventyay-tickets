@@ -83,7 +83,9 @@ class EventForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
             ("pre_schedule", _("Until the first schedule is released")),
             ("always", _("Always")),
         ),
-        help_text=_("Should the sessions marked as featured be shown publicly?"),
+        help_text=_(
+            "Marking sessions as 'featured' is a good way to show them before the first schedule release, or to highlight them once the schedule is visible."
+        ),
         required=True,
     )
     use_feedback = forms.BooleanField(
@@ -135,6 +137,13 @@ class EventForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
         self.initial["locales"] = self.instance.locale_array.split(",")
         self.initial["content_locales"] = self.instance.content_locale_array.split(",")
         year = str(now().year)
+        self.fields["show_featured"].help_text = (
+            str(self.fields["show_featured"].help_text)
+            + " "
+            + str(_("You can find the page <a {href}>here</a>.")).format(
+                href=f'href="{self.instance.urls.featured}"'
+            )
+        )
         self.fields["name"].widget.attrs["placeholder"] = (
             _("The name of your conference, e.g. My Conference") + " " + year
         )

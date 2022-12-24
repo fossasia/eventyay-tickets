@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`963` The featured talks page is now linked in the corresponding setting, making it easier for organisers to find.
 - :feature:`392` Our longest-standing feature request has finally been closed: You can now set the possible proposal/content languages independently from the available UI languages.
 - :bug:`1363` pretalx now shows the actual file upload limit to users uploading resources rather than a slightly too-large one.
 - :feature:`-` You can't accidentally remove all permissions from a team anymore.
