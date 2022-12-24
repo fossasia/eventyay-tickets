@@ -124,6 +124,9 @@ class Review(models.Model):
         event="submission__event", _manager_class=AllReviewManager
     )
 
+    class Meta:
+        unique_together = (("user", "submission"),)
+
     def __str__(self):
         return f"Review(event={self.submission.event.slug}, submission={self.submission.title}, user={self.user.get_display_name}, score={self.score})"
 

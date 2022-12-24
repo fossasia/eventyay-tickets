@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`1098` There was a very rare bug that could lock up pretalx instances due to a race condition in the review process, and required manual admin intervention to get fixed.
 - :feature:`1061` Image previews (e.g. for event logos) now handle transparency by adding a checkered background, so even the white logo fans can still see their images.
 - :feature:`963` The featured talks page is now linked in the corresponding setting, making it easier for organisers to find.
 - :feature:`392` Our longest-standing feature request has finally been closed: You can now set the possible proposal/content languages independently from the available UI languages.
