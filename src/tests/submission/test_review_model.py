@@ -1,6 +1,9 @@
+import random
+
 import pytest
 from django_scopes import scope
 
+from pretalx.person.models import User
 from pretalx.submission.models import Review
 
 
@@ -20,9 +23,15 @@ from pretalx.submission.models import Review
 )
 def test_median_review_score(submission, scores, expected):
     with scope(event=submission.event):
-        speaker = submission.speakers.first()
         reviews = [
-            Review(submission=submission, score=score, user=speaker) for score in scores
+            Review(
+                submission=submission,
+                score=score,
+                user=User.objects.create(
+                    email=f"{random.randrange(0, 100000)}@example.org"
+                ),
+            )
+            for score in scores
         ]
         Review.objects.bulk_create(reviews)
         assert submission.median_score == expected
