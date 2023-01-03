@@ -82,7 +82,6 @@ def system_information(request):
 
     if settings.DEBUG:
         context["development_mode"] = True
-        context["js_dev_server"] = settings.JS_DEV_SERVER
         context["pretalx_version"] = settings.PRETALX_VERSION
 
     context["warning_update_available"] = False
