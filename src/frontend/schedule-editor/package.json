@@ -9,12 +9,13 @@
     "lint": "npm run lint:eslint && npm run lint:stylelint",
     "lint:eslint": "eslint . --ext .js,.vue",
     "lint:stylelint": "stylelint \"**/*.{styl,vue}\"",
-    "i18n:extract": "npx i18next-parser 'src/**/*.vue' -c i18next-parser.config.js",
+    "i18n:extract": "npx i18next-parser 'src/**/*.vue' -c i18next-parser.config.cjs",
     "i18n:convert2gettext": "i18next-conv -l en -s locales/en/translation.json -t locales/en/translation.po",
     "test": "echo \"Error: no test specified\" && exit 1",
     "analyze": "ANALYZE=true npm run build",
     "prepublishOnly": "npm run build:lib"
   },
+  "type": "module",
   "main": "dist/schedule-editor.common.js",
   "dependencies": {
     "buntpapier": "^2.0.0-alpha.20",

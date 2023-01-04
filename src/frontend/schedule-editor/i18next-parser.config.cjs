@@ -1,4 +1,4 @@
-const VueLexer = require('./i18next-parser-vue-lexer.js')
+const VueLexer = require('./i18next-parser-vue-lexer.cjs')
 
 module.exports = {
   locales: ['en'],
