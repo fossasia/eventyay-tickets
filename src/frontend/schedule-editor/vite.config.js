@@ -1,5 +1,6 @@
 import path from 'path'
 import vue from '@vitejs/plugin-vue'
+import gettext from './vite-gettext-plugin'
 import BuntpapierStylus from 'buntpapier/stylus.js'
 
 const stylusOptions = {
@@ -15,7 +16,7 @@ const stylusOptions = {
 export default {
 	base: process.env.BASE_URL || '/',
 	plugins: [
-		vue()
+		gettext(), vue()
 	],
 	css: {
 		preprocessorOptions: {

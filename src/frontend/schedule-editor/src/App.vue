@@ -3,7 +3,7 @@
 	template(v-if="schedule")
 		#main-wrapper
 			#unassigned(v-scrollbar.y="", @pointerenter="isUnassigning = true", @pointerleave="isUnassigning = false")
-				h1 Unassigned
+				h1 {{ $t('Unassigned') }}
 				session(v-for="un in unscheduled", :session="un", :showAbstract="false", @startDragging="startDragging(un)", :isDragged="draggedSession && un.id === draggedSession.id")
 			#schedule-wrapper(v-scrollbar.x.y="")
 				bunt-tabs.days(v-if="days && days.length > 1", :active-tab="currentDay && currentDay.format()", ref="tabs" :class="['grid-tabs']")

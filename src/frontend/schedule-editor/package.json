@@ -9,6 +9,8 @@
     "lint": "npm run lint:eslint && npm run lint:stylelint",
     "lint:eslint": "eslint . --ext .js,.vue",
     "lint:stylelint": "stylelint \"**/*.{styl,vue}\"",
+    "i18n:extract": "npx i18next-parser 'src/**/*.vue' -c i18next-parser.config.js",
+    "i18n:convert2gettext": "i18next-conv -l en -s locales/en/translation.json -t locales/en/translation.po",
     "test": "echo \"Error: no test specified\" && exit 1",
     "analyze": "ANALYZE=true npm run build",
     "prepublishOnly": "npm run build:lib"
@@ -16,6 +18,7 @@
   "main": "dist/schedule-editor.common.js",
   "dependencies": {
     "buntpapier": "^2.0.0-alpha.20",
+    "i18next": "^22.4.8",
     "lodash": "^4.17.20",
     "markdown-it": "^12.1.0",
     "moment": "^2.27.0",
@@ -29,6 +32,8 @@
     "eslint": "^8.20.0",
     "eslint-plugin-vue": "^9.2.0",
     "eslint-plugin-vue-pug": "^0.5.4",
+    "i18next-conv": "^13.1.0",
+    "i18next-parser": "^4.7.0",
     "pug": "^3.0.0",
     "stylelint-config-standard": "^26.0.0",
     "stylelint-plugin-stylus": "^0.16.1",
