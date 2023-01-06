@@ -8,7 +8,7 @@ const api = {
 			method: verb || 'GET',
 			headers: fullHeaders,
 			body: body && JSON.stringify(body),
-			credentials: 'same-origin',
+			credentials: 'include',
 		}
 		return window
 			.fetch(url, options)

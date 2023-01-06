@@ -1,6 +1,6 @@
 <template lang="pug">
-.c-linear-schedule-session(:style="style", :target="linkTarget", @pointerdown.stop="$emit('startDragging', {session: session, event: $event})", :class="isDragged ? ['dragging'] : []")
-	.time-box
+.c-linear-schedule-session(:style="style", :target="linkTarget", @pointerdown.stop="$emit('startDragging', {session: session, event: $event})", :class="classes")
+	.time-box(v-if="!isBreak")
 		.start(:class="{'has-ampm': startTime.ampm}", v-if="startTime")
 			.time {{ startTime.time }}
 			.ampm(v-if="startTime.ampm") {{ startTime.ampm }}
@@ -8,7 +8,6 @@
 	.info
 		.title {{ getLocalizedString(session.title) }}
 		.speakers(v-if="session.speakers") {{ session.speakers.map(s => s.name).join(', ') }}
-		.abstract(v-if="showAbstract", v-html="abstract")
 		.bottom-info
 			.track(v-if="session.track") {{ getLocalizedString(session.track.name) }}
 			.room(v-if="showRoom && session.room") {{ getLocalizedString(session.room.name) }}
@@ -28,9 +27,9 @@ export default {
 	props: {
 		session: Object,
 		isDragged: Boolean,
-		showAbstract: {
+		isDragClone: {
 			type: Boolean,
-			default: true
+			default: false
 		},
 		showRoom: {
 			type: Boolean,
@@ -54,6 +53,17 @@ export default {
 	computed: {
 		link () {
 			return this.generateSessionLinkUrl({eventUrl: this.eventUrl, session: this.session})
+		},
+		isBreak () {
+			return !this.session.code
+		},
+		classes () {
+			let classes = []
+			if (this.isBreak) classes.push('isbreak')
+			else classes.push('istalk')
+			if (this.isDragged) classes.push('dragging')
+			if (this.isDragClone) classes.push('clone')
+			return classes
 		},
 		style () {
 			return {
@@ -89,13 +99,6 @@ export default {
 				return `${hours}h${minutes}min`
 			}
 			return `${hours}h`
-		},
-		abstract () {
-			try {
-				return markdownIt.renderInline(this.session.abstract)
-			} catch (error) {
-				return this.session.abstract
-			}
 		}
 	}
 }
@@ -109,75 +112,84 @@ export default {
 	overflow: hidden
 	color: $clr-primary-text-light
 	position: relative
+	cursor: pointer
+	&.clone
+		z-index: 200
 	&.dragging
-		filter: opacity(0.5)
-	.time-box
-		width: 69px
-		box-sizing: border-box
-		background-color: var(--track-color)
-		padding: 12px 16px 8px 12px
-		border-radius: 6px 0 0 6px
+		filter: opacity(0.3)
+	&.isbreak
+		// border: border-separator()
+		background-color: $clr-grey-200
+		border-radius: 6px
 		display: flex
-		flex-direction: column
+		justify-content: center
 		align-items: center
-		.start
-			color: $clr-primary-text-dark
-			font-size: 16px
-			font-weight: 600
-			margin-bottom: 8px
+		.info .title
+			font-size: 20px
+			font-weight: 500
+			color: $clr-secondary-text-light
+			align: center
+	&.istalk
+		.time-box
+			width: 69px
+			box-sizing: border-box
+			background-color: var(--track-color)
+			padding: 12px 16px 8px 12px
+			border-radius: 6px 0 0 6px
 			display: flex
 			flex-direction: column
-			align-items: flex-end
-			&.has-ampm
-				align-self: stretch
-			.ampm
-				font-weight: 400
-				font-size: 13px
-		.duration
-			color: $clr-secondary-text-dark
-	.info
-		flex: auto
-		display: flex
-		flex-direction: column
-		padding: 8px
-		border: border-separator()
-		border-left: none
-		border-radius: 0 6px 6px 0
-		background-color: $clr-white
-		min-width: 0
-		.title
-			font-size: 16px
-			font-weight: 500
-			margin-bottom: 4px
-		.speakers
-			color: $clr-secondary-text-light
-		.abstract
-			margin: 8px 0 12px 0
-			// TODO make this take up more space if available?
-			display: -webkit-box
-			-webkit-line-clamp: 3
-			-webkit-box-orient: vertical
-			overflow: hidden
-		.bottom-info
+			align-items: center
+			.start
+				color: $clr-primary-text-dark
+				font-size: 16px
+				font-weight: 600
+				margin-bottom: 8px
+				display: flex
+				flex-direction: column
+				align-items: flex-end
+				&.has-ampm
+					align-self: stretch
+				.ampm
+					font-weight: 400
+					font-size: 13px
+			.duration
+				color: $clr-secondary-text-dark
+		.info
 			flex: auto
 			display: flex
-			align-items: flex-end
-			.track
-				flex: 1
-				color: var(--track-color)
-				ellipsis()
-				margin-right: 4px
-			.room
-				flex: 1
-				text-align: right
-				color: $clr-secondary-text-light
-				ellipsis()
-	&:hover
-		.info
-			border: 1px solid var(--track-color)
+			flex-direction: column
+			padding: 8px
+			border: border-separator()
 			border-left: none
+			border-radius: 0 6px 6px 0
+			background-color: $clr-white
+			min-width: 0
 			.title
-				color: var(--pretalx-clr-primary)
-	// +below('m')
-	// 	min-width: 0
+				font-size: 16px
+				font-weight: 500
+				margin-bottom: 4px
+			.speakers
+				color: $clr-secondary-text-light
+			.bottom-info
+				flex: auto
+				display: flex
+				align-items: flex-end
+				.track
+					flex: 1
+					color: var(--track-color)
+					ellipsis()
+					margin-right: 4px
+				.room
+					flex: 1
+					text-align: right
+					color: $clr-secondary-text-light
+					ellipsis()
+		&:hover
+			.info
+				border: 1px solid var(--track-color)
+				border-left: none
+				.title
+					color: var(--pretalx-clr-primary)
+		// +below('m')
+		//	min-width: 0
 </style>

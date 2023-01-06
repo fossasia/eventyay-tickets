@@ -3,8 +3,8 @@
 	template(v-if="schedule")
 		#main-wrapper
 			#unassigned(v-scrollbar.y="", @pointerenter="isUnassigning = true", @pointerleave="isUnassigning = false")
-				h1 {{ $t('Unassigned') }}
-				session(v-for="un in unscheduled", :session="un", :showAbstract="false", @startDragging="startDragging(un)", :isDragged="draggedSession && un.id === draggedSession.id")
+				h1 $t('Unassigned')
+				session(v-for="un in unscheduled", :session="un", :showAbstract="false", @startDragging="startDragging", :isDragged="draggedSession && un.id === draggedSession.id")
 			#schedule-wrapper(v-scrollbar.x.y="")
 				bunt-tabs.days(v-if="days && days.length > 1", :active-tab="currentDay && currentDay.format()", ref="tabs" :class="['grid-tabs']")
 					bunt-tab(v-for="day in days", :id="day.format()", :header="day.format(dateFormat)", @selected="changeDay(day)")
@@ -13,8 +13,8 @@
 					:currentDay="currentDay",
 					:draggedSession="draggedSession",
 					@changeDay="currentDay = $event",
-					@startDragging="startDragging($event)",
-					@rescheduleSession="rescheduleSession($event)")
+					@startDragging="startDragging",
+					@rescheduleSession="rescheduleSession")
 			editor(v-scrollbar.y="", :session="editorSession")
 	bunt-progress-circular(v-else, size="huge", :page="true")
 </template>
@@ -24,6 +24,7 @@ import Editor from '~/components/Editor'
 import GridSchedule from '~/components/GridSchedule'
 import Session from '~/components/Session'
 import api from '~/api'
+import { getLocalizedString } from '~/utils'
 
 export default {
 	name: 'PretalxSchedule',
@@ -73,7 +74,7 @@ export default {
 					duration: session.duration,
 				})
 			}
-			sessions.sort((a, b) => a.title.toUpperCase() > b.title.toUpperCase())
+			sessions.sort((a, b) => getLocalizedString(a.title).toUpperCase().localeCompare(getLocalizedString(b.title).toUpperCase()))
 			return sessions
 		},
 		sessions () {
@@ -165,15 +166,18 @@ export default {
 			// https://developer.mozilla.org/en-US/docs/Web/API/Element/setPointerCapture
 		},
 		stopDragging (session) {
-			if (this.isUnassigning && this.draggedSession) {
-				const movedSession = this.schedule.talks.find(s => s.code === this.draggedSession.id)
-				movedSession.start = null
-				movedSession.end = null
-				movedSession.room = null
-				// TODO push to server
+			try {
+				if (this.isUnassigning && this.draggedSession) {
+					const movedSession = this.schedule.talks.find(s => s.id === this.draggedSession.id)
+					movedSession.start = null
+					movedSession.end = null
+					movedSession.room = null
+					// TODO push to server
+				}
+			} finally {
+				this.draggedSession = null
+				this.isUnassigning = false
 			}
-			this.draggedSession = null
-			this.isUnassigning = false
 		},
 		onWindowResize () {
 			this.scrollParentWidth = document.body.offsetWidth

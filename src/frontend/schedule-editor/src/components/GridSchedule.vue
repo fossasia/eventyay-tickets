@@ -9,20 +9,15 @@
 			.timeseparator(:class="getSliceClasses(slice)", :style="getSliceStyle(slice)")
 		.room(:style="{'grid-area': `1 / 1 / auto / auto`}")
 		.room(v-for="(room, index) of rooms", :style="{'grid-area': `1 / ${index + 2 } / auto / auto`}") {{ getLocalizedString(room.name) }}
-		.hover(v-if="draggedSession && hoverSlice", :style="getHoverSliceStyle()")
-			.hover-left
-			.hover-right
+		session(v-if="draggedSession && hoverSlice", :style="getHoverSliceStyle()", :session="draggedSession", :isDragClone="true")
 		template(v-for="session of sessions")
 			session(
-				v-if="isProperSession(session)",
 				:session="session",
-				:isDragged="session === draggedSession",
+				:isDragged="draggedSession && (session.id === draggedSession.id)",
 				:style="getSessionStyle(session)",
-				:showAbstract="false", :showRoom="false",
+				:showRoom="false",
 				@startDragging="$emit('startDragging', $event)"
 			)
-			.break(v-else, :style="getSessionStyle(session)")
-				.title {{ getLocalizedString(session.title) }}
 </template>
 <script>
 // TODO
@@ -57,6 +52,7 @@ export default {
 	},
 	computed: {
 		hoverSliceLegal () {
+			if (!this.hoverSlice) return false
 			const start = this.hoverSlice.time
 			const end = this.hoverSlice.time.clone().add(this.draggedSession.duration, 'm')
 			const sessionId = this.draggedSession.id
@@ -83,12 +79,11 @@ export default {
 			const minimumSliceMins = 30
 			const slices = []
 			const slicesLookup = {}
-			const pushSlice = function (date, {hasSession = false, hasBreak = false, hasStart = false, hasEnd = false} = {}) {
+			const pushSlice = function (date, {hasStart = false, hasEnd = false, hasSession = false} = {}) {
 				const name = getSliceName(date)
 				let slice = slicesLookup[name]
 				if (slice) {
 					slice.hasSession = slice.hasSession || hasSession
-					slice.hasBreak = slice.hasBreak || hasBreak
 					slice.hasStart = slice.hasStart || hasStart
 					slice.hasEnd = slice.hasEnd || hasEnd
 				} else {
@@ -96,7 +91,6 @@ export default {
 						date,
 						name,
 						hasSession,
-						hasBreak,
 						hasStart,
 						hasEnd,
 						datebreak: date.isSame(date.clone().startOf('day'))
@@ -105,7 +99,7 @@ export default {
 					slicesLookup[name] = slice
 				}
 			}
-			const fillHalfHours = function (start, end, {hasSession, hasBreak} = {}) {
+			const fillHalfHours = function (start, end, {hasSession} = {}) {
 				// fill to the nearest half hour, then each half hour, then fill to end
 				let mins = end.diff(start, 'minutes')
 				const startingMins = minimumSliceMins - start.minute() % minimumSliceMins
@@ -126,7 +120,7 @@ export default {
 
 				// last slice is actually just after the end of the session and has no session
 				const lastSlice = halfHourSlices.pop()
-				halfHourSlices.forEach(slice => pushSlice(slice, {hasSession, hasBreak}))
+				halfHourSlices.forEach(slice => pushSlice(slice, {hasSession}))
 				pushSlice(lastSlice)
 			}
 			for (const session of this.sessions) {
@@ -138,12 +132,11 @@ export default {
 					fillHalfHours(lastSlice.date, session.start)
 				}
 
-				const isProper = this.isProperSession(session)
 				// add start and end slices for the session itself
-				pushSlice(session.start, {hasSession: isProper, hasBreak: !isProper, hasStart: true})
+				pushSlice(session.start, {hasStart: true, hasSession: true})
 				pushSlice(session.end, {hasEnd: true})
 				// add half hour slices between a session
-				fillHalfHours(session.start, session.end, {hasSession: isProper, hasBreak: !isProper})
+				fillHalfHours(session.start, session.end, {hasSession: true})
 			}
 			for (const slice of this.expandedTimeslices) {
 				pushSlice(slice)
@@ -236,17 +229,15 @@ export default {
 				}
 			}
 			if (!hoverSlice) return
-			const roomWidth = document.querySelectorAll('.grid .room')[1].clientWidth
-			const roomIndex = parseInt((e.offsetX - 80) / roomWidth) // remove the timeline offset to the left
+			// For the x axis, we need to know which room we are in, so we divide our position by 
+			const roomWidth = document.querySelectorAll('.grid .room')[1].getBoundingClientRect().width
+			const roomIndex = Math.floor((e.clientX - this.gridOffset - 80) / roomWidth) // remove the timeline offset to the left
+			console.log(roomIndex)
 			this.hoverSlice = { time: moment(hoverSlice.dataset.slice), roomIndex: roomIndex, room: this.rooms[roomIndex], duration: this.draggedSession.duration }
 		},
 		getHoverSliceStyle () {
 			if (!this.hoverSlice || !this.draggedSession) return
 			return { 'grid-area': `${getSliceName(this.hoverSlice.time)} / ${this.hoverSlice.roomIndex + 2} / ${getSliceName(this.hoverSlice.time.clone().add(this.hoverSlice.duration, 'm'))}` }
-		},
-		isProperSession (session) {
-			// breaks and such don't have ids
-			return !!session.id
 		},
 		getSessionStyle (session) {
 			if (!session.room || !session.start) return {}
@@ -322,20 +313,7 @@ export default {
 		position: relative
 		min-width: min-content
 		&.illegal-hover
-			cursor: not-allowed
-		.hover
-			display: flex
-			height: calc(100%-16px)
-			width: calc(100%-16px)
-			border-radius: 6px
-			border: 2px solid $clr-grey-300
-			margin: 8px
-			.hover-left
-				background-color: $clr-grey-300
-				width: 69px
-			.hover-right
-				background-color: $clr-white
-				border-radius: 6px
+			cursor: not-allowed !important
 		> .room
 			position: sticky
 			top: calc(48px)
@@ -348,19 +326,6 @@ export default {
 			z-index: 20
 		.c-linear-schedule-session
 			z-index: 10
-		.break
-			z-index: 10
-			margin: 8px
-			// border: border-separator()
-			border-radius: 4px
-			background-color: $clr-grey-200
-			display: flex
-			justify-content: center
-			align-items: center
-			.title
-				font-size: 20px
-				font-weight: 500
-				color: $clr-secondary-text-light
 	.timeslice
 		color: $clr-secondary-text-light
 		padding: 8px 10px 0 10px
