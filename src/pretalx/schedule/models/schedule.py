@@ -629,6 +629,124 @@ class Schedule(LogMixin, models.Model):
 
         return self != self.event.current_schedule
 
+    def build_data(
+        self, all_talks=False, filter_updated=None, with_availabilities=False
+    ):
+        talks = self.talks.all()
+        if not all_talks:
+            talks = self.talks.filter(is_visible=True)
+        if filter_updated:
+            talks = talks.filter(updated__gte=filter_updated)
+        talks = talks.select_related(
+            "submission",
+            "room",
+            "submission__track",
+            "submission__event",
+            "submission__submission_type",
+        ).prefetch_related("submission__speakers")
+        if with_availabilities:
+            talks = talks.select_related("room__availabilities").prefetch_related(
+                "submission__speakers__availabilities"
+            )
+        talks = talks.order_by("start")
+        rooms = set()
+        tracks = set()
+        speakers = set()
+        result = {
+            "talks": [],
+            "version": self.version,
+            "timezone": self.event.timezone,
+            "event_start": self.event.date_from.isoformat(),
+            "event_end": self.event.date_to.isoformat(),
+        }
+        for talk in talks:
+            rooms.add(talk.room)
+            if talk.submission:
+                tracks.add(talk.submission.track)
+                speakers |= set(talk.submission.speakers.all())
+                result["talks"].append(
+                    {
+                        "code": talk.submission.code if talk.submission else None,
+                        "id": talk.id,
+                        "title": talk.submission.title
+                        if talk.submission
+                        else talk.description,
+                        "abstract": talk.submission.abstract
+                        if talk.submission
+                        else None,
+                        "speakers": [
+                            speaker.code for speaker in talk.submission.speakers.all()
+                        ]
+                        if talk.submission
+                        else None,
+                        "track": talk.submission.track_id if talk.submission else None,
+                        "start": talk.local_start,
+                        "end": talk.local_end,
+                        "room": talk.room_id,
+                        "duration": talk.submission.get_duration(),
+                    }
+                )
+            else:
+                result["talks"].append(
+                    {
+                        "id": talk.id,
+                        "title": talk.description,
+                        "start": talk.start,
+                        "end": talk.local_end,
+                        "room": talk.room_id,
+                    }
+                )
+
+        result["tracks"] = [
+            {
+                "id": track.id,
+                "name": track.name,
+                "description": track.description,
+                "color": track.color,
+            }
+            for track in tracks
+            if track
+        ]
+        result["rooms"] = [
+            {
+                "id": room.id,
+                "name": room.name,
+                "description": room.description,
+            }
+            for room in self.event.rooms.all()
+            if room in rooms
+        ]
+        result["speakers"] = [
+            {
+                "code": user.code,
+                "name": user.name,
+                "avatar": user.get_avatar_url(event=self.event),
+            }
+            for user in speakers
+        ]
+        if with_availabilities:
+            result["availabilities"] = {
+                "rooms": [
+                    {
+                        "start": availability.start,
+                        "end": availability.end,
+                        "room": availability.room_id,
+                    }
+                    for availability in self.event.availabilities.filter(room__in=rooms)
+                ],
+                "speakers": [
+                    {
+                        "start": availability.start,
+                        "end": availability.end,
+                        "user": availability.person.user.code,
+                    }
+                    for availability in self.event.availabilities.filter(
+                        person__isnull=False
+                    ).select_related("person", "person__user")
+                ],
+            }
+        return result
+
     def __str__(self) -> str:
         """Help when debugging."""
         return f"Schedule(event={self.event.slug}, version={self.version})"

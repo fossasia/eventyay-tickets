@@ -222,6 +222,8 @@ export default {
 		updateHoverSlice (e) {
 			if (!this.draggedSession) { this.hoverSlice = null; return }
 			let hoverSlice = null
+			// We're grabbing the leftmost point of our y position and searching for the slice element there
+		    // to determine our hover slice's attributes (y axis)
 			for (const element of document.elementsFromPoint(this.gridOffset, e.clientY)) {
 				if (element && element.dataset.slice && element.classList.contains('timeslice') && !element.classList.contains('datebreak')) {
 					hoverSlice = element

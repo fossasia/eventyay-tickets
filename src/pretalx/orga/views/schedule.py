@@ -301,13 +301,6 @@ class TalkList(EventPermissionRequired, View):
     permission_required = "orga.edit_schedule"
 
     def get(self, request, event):
-        result = {
-            "start": request.event.datetime_from.isoformat(),
-            "end": request.event.datetime_to.isoformat(),
-            "timezone": request.event.timezone,
-            "locales": request.event.locales,
-            "results": [],
-        }
         version = self.request.GET.get("version")
         schedule = None
         warnings = {}
@@ -316,30 +309,16 @@ class TalkList(EventPermissionRequired, View):
         if not schedule:
             schedule = request.event.wip_schedule
 
-        slots = (
-            schedule.talks.all()
-            .select_related(
-                "submission",
-                "submission__event",
-                "room",
-                "submission__submission_type",
-                "submission__track",
-            )
-            .prefetch_related("submission__speakers")
-        )
-        filter_updated = request.GET.get("since")
         with_warnings = request.GET.get("warnings")
-        if filter_updated:
-            slots = slots.filter(updated__gte=filter_updated)
-            if with_warnings and slots:
-                warnings = schedule.get_all_talk_warnings(
-                    ids=slots.values_list("id", flat=True)
-                )
+        if with_warnings and slots:
+            warnings = schedule.get_all_talk_warnings(
+                ids=slots.values_list("id", flat=True)
+            )
         elif with_warnings:
             warnings = schedule.get_all_talk_warnings()
-        result["results"] = [
-            serialize_slot(slot, warnings=warnings.get(slot)) for slot in slots
-        ]
+
+        filter_updated = request.GET.get("since")
+        result = schedule.build_data(all_talks=True, filter_updated=filter_updated)
         result["now"] = now().strftime("%Y-%m-%d %H:%M:%S%z")
         return JsonResponse(result, encoder=I18nJSONEncoder)
 

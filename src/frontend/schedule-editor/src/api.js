@@ -34,7 +34,7 @@ const api = {
 			// "//",
 			// window.location.host,
 			// window.location.pathname,
-			`/${api.eventSlug}/schedule/v/wip/widget/v2.json`
+			`/orga/event/${api.eventSlug}/schedule/api/talks/`
 		].join('')
 		if (window.location.search) {
 			url += window.location.search + '&'

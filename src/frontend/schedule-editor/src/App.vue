@@ -66,7 +66,8 @@ export default {
 			const sessions = []
 			for (const session of this.schedule.talks.filter(s => !s.start || !s.room)) {
 				sessions.push({
-					id: session.code,
+					id: session.id,
+					code: session.code,
 					title: session.title,
 					abstract: session.abstract,
 					speakers: session.speakers?.map(s => this.speakersLookup[s]),
@@ -82,7 +83,8 @@ export default {
 			const sessions = []
 			for (const session of this.schedule.talks.filter(s => s.start && moment(s.start).isAfter(this.days[0]) && moment(s.start).isBefore(this.days.at(-1).clone().endOf('day')))) {
 				sessions.push({
-					id: session.code,
+					id: session.id,
+					code: session.code,
 					title: session.title,
 					abstract: session.abstract,
 					start: moment(session.start),
@@ -150,7 +152,7 @@ export default {
 			window.location.hash = day.format('YYYY-MM-DD')
 		},
 		rescheduleSession (e) {
-			const movedSession = this.schedule.talks.find(s => s.code === e.session.id)
+			const movedSession = this.schedule.talks.find(s => s.id === e.session.id)
 			this.stopDragging()
 			movedSession.start = e.start
 			movedSession.end = e.end
