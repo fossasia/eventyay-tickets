@@ -434,6 +434,7 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
     @cached_property
     def named_content_locales(self) -> list:
         locale_names = dict(global_settings.LANGUAGES)
+        locale_names.update(self.named_locales)
         return [(a, locale_names[a]) for a in self.content_locales]
 
     @cached_property
