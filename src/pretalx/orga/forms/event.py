@@ -164,6 +164,7 @@ class EventForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
             if settings.LANGUAGES_INFORMATION[choice[0]].get("visible", True)
             or choice[0] in self.instance.plugin_locales
         ]
+        self.fields["content_locales"].choices += self.instance.named_plugin_locales
 
     def clean_custom_domain(self):
         data = self.cleaned_data["custom_domain"]

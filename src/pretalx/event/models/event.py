@@ -447,6 +447,12 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
         return result
 
     @cached_property
+    def named_plugin_locales(self) -> list:
+        locale_names = dict(global_settings.LANGUAGES)
+        locale_names.update(self.named_locales)
+        return [(a, locale_names[a]) for a in self.plugin_locales]
+
+    @cached_property
     def cache(self):
         """Returns an :py:class:`ObjectRelatedCache` object.
 
