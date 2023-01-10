@@ -25,6 +25,7 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
         label=_("Session image"),
         help_text=_("Use this if you want an illustration to go with your proposal."),
     )
+    content_locale = forms.ChoiceField(label=_("Language"))
 
     def __init__(self, event, **kwargs):
         self.event = event

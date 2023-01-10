@@ -12,6 +12,8 @@ from pretalx.submission.models import Submission, SubmissionStates, SubmissionTy
 
 
 class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
+    content_locale = forms.ChoiceField(label=_("Language"))
+
     def __init__(self, event, anonymise=False, **kwargs):
         self.event = event
         initial_slot = {}
