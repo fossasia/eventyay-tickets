@@ -3,7 +3,7 @@ import json
 import statistics
 from itertools import repeat
 
-from django.conf import global_settings, settings
+from django.conf import settings
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.db.models import Q
