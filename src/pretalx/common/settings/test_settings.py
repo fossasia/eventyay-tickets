@@ -72,3 +72,11 @@ class DisableMigrations:
 
 if not os.environ.get("TRAVIS", ""):
     MIGRATION_MODULES = DisableMigrations()
+
+
+LANGUAGES_INFORMATION["en-mozilla"] = {
+    "name": "Testlocale",
+    "official": False,
+    "code": "testlocale",
+    "natural_name": "Testlocale",
+}
