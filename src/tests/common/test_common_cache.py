@@ -67,5 +67,5 @@ class CacheTest(TestCase):
 
 
 def test_incorrect_cache_creation():
-    with pytest.raises(Exception):
+    with pytest.raises(Exception):  # noqa
         ObjectRelatedCache(1)

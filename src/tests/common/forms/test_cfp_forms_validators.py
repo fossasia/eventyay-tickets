@@ -18,7 +18,7 @@ def test_zxcvbn_validator_init_works(score, works):
     if works:
         ZXCVBNValidator(min_score=score)
     else:
-        with pytest.raises(Exception):
+        with pytest.raises(Exception):  # noqa: it really is an Exception
             ZXCVBNValidator(min_score=score)
 
 
@@ -33,5 +33,5 @@ def test_password_validation(password, works):
     if works:
         ZXCVBNValidator()(password)
     else:
-        with pytest.raises(ValidationError):
+        with pytest.raises(ValidationError):  # noqa: it really is an Exception
             ZXCVBNValidator()(password)
