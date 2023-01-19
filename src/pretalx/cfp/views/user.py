@@ -290,6 +290,7 @@ class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateVie
     def save_formset(self, obj):
         if not self.formset.is_valid():
             return False
+
         for form in self.formset.initial_forms:
             if form in self.formset.deleted_forms:
                 if not form.instance.pk:
@@ -315,7 +316,7 @@ class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateVie
             for form in self.formset.extra_forms
             if form.has_changed
             and not self.formset._should_delete_form(form)
-            and form.instance.resource
+            and form.is_valid()
         ]
         for form in extra_forms:
             form.instance.submission = obj
