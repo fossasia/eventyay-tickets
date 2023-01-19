@@ -362,14 +362,7 @@ class User(PermissionsMixin, GenerateCode, FileCleanupMixin, AbstractBaseUser):
 
     regenerate_token.alters_data = True
 
-    @transaction.atomic
-    def reset_password(self, event, user=None, mail_text=None, orga=False):
-        from pretalx.mail.models import QueuedMail
-
-        self.pw_reset_token = get_random_string(32)
-        self.pw_reset_time = now()
-        self.save()
-
+    def get_password_reset_url(self, event=None):
         if event:
             path = "orga:event.auth.recover" if orga else "cfp:event.recover"
             url = build_absolute_uri(
@@ -380,9 +373,19 @@ class User(PermissionsMixin, GenerateCode, FileCleanupMixin, AbstractBaseUser):
             url = build_absolute_uri(
                 "orga:auth.recover", kwargs={"token": self.pw_reset_token}
             )
+        return url
+
+    @transaction.atomic
+    def reset_password(self, event, user=None, mail_text=None, orga=False):
+        from pretalx.mail.models import QueuedMail
+
+        self.pw_reset_token = get_random_string(32)
+        self.pw_reset_time = now()
+        self.save()
+
         context = {
             "name": self.name or "",
-            "url": url,
+            "url": self.get_password_reset_url(event=event),
         }
         if not mail_text:
             mail_text = _(
