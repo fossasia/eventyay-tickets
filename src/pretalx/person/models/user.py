@@ -362,7 +362,7 @@ class User(PermissionsMixin, GenerateCode, FileCleanupMixin, AbstractBaseUser):
 
     regenerate_token.alters_data = True
 
-    def get_password_reset_url(self, event=None):
+    def get_password_reset_url(self, event=None, orga=False):
         if event:
             path = "orga:event.auth.recover" if orga else "cfp:event.recover"
             url = build_absolute_uri(
@@ -385,7 +385,7 @@ class User(PermissionsMixin, GenerateCode, FileCleanupMixin, AbstractBaseUser):
 
         context = {
             "name": self.name or "",
-            "url": self.get_password_reset_url(event=event),
+            "url": self.get_password_reset_url(event=event, orga=orga),
         }
         if not mail_text:
             mail_text = _(
