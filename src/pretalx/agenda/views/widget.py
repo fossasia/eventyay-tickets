@@ -223,6 +223,7 @@ def widget_data_v2(request, event, version=None):
                     "start": talk.local_start,
                     "end": talk.local_end,
                     "room": talk.room_id,
+                    "featured": talk.submission.is_featured,
                 }
             )
         else:
