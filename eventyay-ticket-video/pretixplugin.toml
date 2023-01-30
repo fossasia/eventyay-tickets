@@ -4,7 +4,7 @@ package = "pretix-venueless"
 modules = [ "pretix_venueless" ]
 marketplace_name = "venueless"
 pypi = true
-repository_servers = { origin = "github.com", gitlab = "code.rami.io" }
-tag_targets = [ "origin", "gitlab" ]
-branch_targets = [ "origin/master", "gitlab/master", "f:gitlab/pypi" ]
+repository_servers = { origin = "github.com" }
+tag_targets = [ "origin" ]
+branch_targets = [ "origin/master" ]
 
