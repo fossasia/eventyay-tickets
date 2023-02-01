@@ -6,7 +6,6 @@ import venueless.storage.models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("storage", "0002_storedfile_source_url"),
     ]

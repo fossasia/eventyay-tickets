@@ -13,7 +13,6 @@ def add_permissions(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("core", "0053_poster_import_id"),
     ]

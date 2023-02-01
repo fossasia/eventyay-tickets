@@ -10,7 +10,6 @@ import venueless.core.utils.json
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("core", "0003_auto_20200430_2018"),
     ]

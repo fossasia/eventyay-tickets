@@ -6,7 +6,6 @@ import venueless.core.models.exhibitor
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("core", "0039_question_is_pinned"),
     ]

@@ -7,7 +7,6 @@ import venueless.core.models.auth
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("core", "0033_exhibitor_highlighted_room"),
     ]

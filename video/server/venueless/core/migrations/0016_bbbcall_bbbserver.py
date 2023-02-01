@@ -9,7 +9,6 @@ import venueless.core.models.bbb
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("core", "0015_room_pretalx_id"),
     ]

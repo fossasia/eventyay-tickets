@@ -8,7 +8,6 @@ def default_text():
 
 
 class Poster(models.Model):
-
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     import_id = models.TextField(null=True, blank=True, db_index=True)
     title = models.TextField(null=True)

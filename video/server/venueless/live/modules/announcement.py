@@ -20,7 +20,6 @@ class AnnouncementModule(BaseModule):
     @command("create")
     @require_world_permission(Permission.WORLD_ANNOUNCE)
     async def create_announcement(self, body):
-
         announcement = await create_announcement(
             world=self.consumer.world,
             text=body.get("text"),
@@ -41,7 +40,6 @@ class AnnouncementModule(BaseModule):
     @command("update")
     @require_world_permission(Permission.WORLD_ANNOUNCE)
     async def update_announcement(self, body):
-
         old_announcement = await get_announcement(
             body.get("id"), world=self.consumer.world.id
         )

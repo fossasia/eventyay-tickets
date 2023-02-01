@@ -9,7 +9,6 @@ import venueless.core.models.poster
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("core", "0050_auto_20210826_1050"),
     ]

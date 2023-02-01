@@ -343,7 +343,6 @@ async def test_change_schedule_data(world, stream_room):
 @pytest.mark.django_db
 async def test_user_count(world, stream_room):
     async with world_communicator() as c1, world_communicator() as c2:
-
         await c1.send_json_to(["room.enter", 123, {"room": str(stream_room.pk)}])
         response = await c1.receive_json_from()
         assert response[0] == "success"

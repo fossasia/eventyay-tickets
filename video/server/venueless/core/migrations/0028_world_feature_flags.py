@@ -7,7 +7,6 @@ import venueless.core.models.world
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("core", "0027_room_schedule_data"),
     ]

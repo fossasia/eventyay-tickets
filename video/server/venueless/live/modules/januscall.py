@@ -80,7 +80,6 @@ class JanusCallModule(BaseModule):
                 timeout=90,
                 wait_timeout=90,
             ):
-
                 room_data = await redis.get(f"januscall:{redis_key}")
 
                 if room_data:
