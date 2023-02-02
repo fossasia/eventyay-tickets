@@ -87,7 +87,7 @@
         {% bootstrap_form form layout='event' %}
         {% bootstrap_form qform layout='event' %}
         {% if can_edit or form.instance.resources.count %}
-            <div class="formset form-group row" data-formset data-formset-prefix="{{ formset.prefix }}">
+            <div class="formset form-group row" id="resource-upload" data-formset data-formset-prefix="{{ formset.prefix }}">
                 {{ formset.management_form }}
                 {% bootstrap_formset_errors formset %}
                 <label class="col-md-3 col-form-label">{% translate "Resources" %}</label>
@@ -190,7 +190,7 @@
             </div>
         {% endif %}
     </form>
-    <h3>{% translate "Share proposal" %}</h3>
+    <h3 id="share-proposal">{% translate "Share proposal" %}</h3>
     <p>
         {% blocktranslate trimmed %}
             If you need a review from a colleague or a friend here's a link that you can send out for viewing your proposal:
