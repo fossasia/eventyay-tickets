@@ -5,7 +5,6 @@ import i18nfield.fields
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("submission", "0059_remove_question_required"),
     ]

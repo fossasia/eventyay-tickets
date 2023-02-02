@@ -16,7 +16,6 @@ def fix_speaker_answers(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("submission", "0016_auto_20171114_1251"),
     ]

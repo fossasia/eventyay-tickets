@@ -15,7 +15,6 @@ class LocaleSet(View):
     def get(self, request, *args, **kwargs):
         url = request.GET.get("next", request.headers.get("Referer", "/"))
         if url_has_allowed_host_and_scheme(url, allowed_hosts=None):
-
             parsed = urlparse(url)
             url = parsed.path
             if parsed.query:

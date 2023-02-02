@@ -5,7 +5,6 @@ import pretalx.event.models.event
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("event", "0026_team_force_hide_speaker_names"),
     ]

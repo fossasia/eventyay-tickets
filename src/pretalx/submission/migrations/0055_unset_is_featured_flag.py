@@ -17,7 +17,6 @@ def update_is_featured_flag(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("submission", "0054_reviewscorecategory_limit_tracks"),
     ]

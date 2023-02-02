@@ -9,7 +9,6 @@ def update_question_required(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("submission", "0057_question_required_freeze"),
     ]

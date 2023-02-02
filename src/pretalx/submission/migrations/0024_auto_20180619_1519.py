@@ -15,7 +15,6 @@ def rebuild_review_codes(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("submission", "0023_submission_is_featured"),
     ]

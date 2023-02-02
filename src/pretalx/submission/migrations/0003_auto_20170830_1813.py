@@ -7,7 +7,6 @@ import pretalx.common.mixins
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
         ("submission", "0002_auto_20170820_1216"),

@@ -7,7 +7,6 @@ import pretalx.common.mixins
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [

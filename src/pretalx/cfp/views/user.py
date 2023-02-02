@@ -399,7 +399,6 @@ class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateVie
 class DeleteAccountView(LoggedInEventPageMixin, View):
     @staticmethod
     def post(request, event):
-
         if request.POST.get("really"):
             request.user.deactivate()
             logout(request)

@@ -42,7 +42,6 @@ class ReadOnlyFlag:
 
 
 class PublicContent:
-
     public_fields = []
 
     def __init__(self, *args, **kwargs):

@@ -7,7 +7,6 @@ import pretalx.common.mixins.models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("event", "0024_remove_team_review_override_votes"),
         ("submission", "0051_remove_review_override_vote"),

@@ -6,7 +6,6 @@ import pretalx.common.mixins.models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("event", "0021_auto_20190429_0750"),
         ("submission", "0040_submission_created_data"),

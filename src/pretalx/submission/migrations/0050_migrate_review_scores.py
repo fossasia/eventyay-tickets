@@ -66,7 +66,6 @@ def create_review_categories(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("submission", "0049_review_score_categories"),
     ]

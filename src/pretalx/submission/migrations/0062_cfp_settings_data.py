@@ -95,7 +95,6 @@ def update_custom_domain(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("submission", "0061_cfp_settings"),
     ]

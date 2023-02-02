@@ -5,7 +5,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("mail", "0003_auto_20171001_1358"),
         ("event", "0010_event_plugins"),

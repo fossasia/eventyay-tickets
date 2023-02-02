@@ -20,7 +20,6 @@ def update_show_featured(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("event", "0022_auto_20200124_1213"),
     ]

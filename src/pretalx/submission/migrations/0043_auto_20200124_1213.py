@@ -5,7 +5,6 @@ import pretalx.submission.models.resource
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("submission", "0042_question_is_visible_to_reviewers"),
     ]

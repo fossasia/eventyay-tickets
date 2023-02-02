@@ -6,7 +6,6 @@ import pretalx.submission.models.resource
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("submission", "0068_alter_reviewscore_value"),
     ]

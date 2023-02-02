@@ -663,7 +663,6 @@ class Anonymise(SubmissionViewMixin, UpdateView):
 
 
 class SubmissionFeed(PermissionRequired, Feed):
-
     permission_required = "orga.view_submission"
     feed_type = feedgenerator.Atom1Feed
 

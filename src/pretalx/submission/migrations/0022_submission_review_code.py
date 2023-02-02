@@ -5,7 +5,6 @@ import pretalx.submission.models.submission
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("submission", "0021_answer_review"),
     ]

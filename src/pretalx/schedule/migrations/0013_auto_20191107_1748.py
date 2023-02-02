@@ -6,7 +6,6 @@ import i18nfield.fields
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("schedule", "0012_auto_20190303_2358"),
     ]

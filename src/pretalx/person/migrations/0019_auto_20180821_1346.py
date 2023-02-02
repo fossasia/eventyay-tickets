@@ -12,7 +12,6 @@ def fill_names(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("person", "0018_auto_20180812_1523"),
     ]

@@ -7,7 +7,6 @@ import pretalx.common.mixins.models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("event", "0010_event_plugins"),
         ("person", "0013_auto_20180122_1615"),

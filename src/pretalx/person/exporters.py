@@ -5,7 +5,6 @@ from pretalx.submission.models import SubmissionStates
 
 
 class CSVSpeakerExporter(CSVExporterMixin, BaseExporter):
-
     public = False
     icon = "fa-users"
     identifier = "speakers.csv"

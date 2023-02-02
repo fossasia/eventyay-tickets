@@ -13,7 +13,6 @@ def update_custom_domain(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("event", "0028_custom_event_data"),
     ]

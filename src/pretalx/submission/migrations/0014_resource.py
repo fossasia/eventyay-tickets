@@ -6,7 +6,6 @@ import pretalx.common.mixins
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("submission", "0013_auto_20171104_1040"),
     ]

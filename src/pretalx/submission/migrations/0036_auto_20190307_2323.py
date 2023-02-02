@@ -45,7 +45,6 @@ def create_review_phases(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("submission", "0035_reviewphase"),
     ]

@@ -10,7 +10,6 @@ import pretalx.event.models.organiser
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
         ("event", "0012_auto_20180407_0814"),

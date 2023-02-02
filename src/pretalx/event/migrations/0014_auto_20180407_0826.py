@@ -74,7 +74,6 @@ def remove_organisers(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("event", "0013_auto_20180407_0817"),
     ]

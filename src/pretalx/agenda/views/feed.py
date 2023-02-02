@@ -4,7 +4,6 @@ from django.utils import feedgenerator
 
 
 class ScheduleFeed(Feed):
-
     feed_type = feedgenerator.Atom1Feed
     description_template = "agenda/feed/description.html"
 

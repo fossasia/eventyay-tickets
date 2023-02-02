@@ -6,7 +6,6 @@ import i18nfield.fields
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("event", "0023_update_featured_visibility"),
         ("submission", "0048_reviewphase_can_see_reviewer_names"),

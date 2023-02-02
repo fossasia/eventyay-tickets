@@ -5,7 +5,6 @@ import pretalx.event.models.event
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("event", "0007_auto_20170924_0505"),
     ]

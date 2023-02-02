@@ -5,7 +5,6 @@ import pretalx.event.models.event
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("event", "0004_event_update_template"),
     ]

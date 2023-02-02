@@ -5,7 +5,6 @@ import pretalx.submission.models.submission
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("submission", "0010_auto_20171006_1118"),
     ]

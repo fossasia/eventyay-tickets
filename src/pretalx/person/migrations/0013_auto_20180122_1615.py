@@ -11,7 +11,6 @@ def create_administrators(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("person", "0012_user_is_administrator"),
     ]

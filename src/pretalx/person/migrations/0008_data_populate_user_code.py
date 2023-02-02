@@ -18,7 +18,6 @@ def empty_code(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("person", "0007_user_code"),
     ]

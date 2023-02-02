@@ -507,7 +507,9 @@ class SubmissionTypeDelete(PermissionRequired, DetailView):
                     orga=True,
                 )
                 messages.success(request, _("The Session Type has been deleted."))
-            except ProtectedError:  # TODO: show which/how many submissions are concerned
+            except (
+                ProtectedError
+            ):  # TODO: show which/how many submissions are concerned
                 messages.error(
                     request,
                     _(

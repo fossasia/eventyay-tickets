@@ -37,7 +37,6 @@ def depopulate_to_users(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("mail", "0005_queuedmail_to_users"),
         ("person", "0020_auto_20180922_0511"),

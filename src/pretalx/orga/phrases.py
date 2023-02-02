@@ -4,7 +4,6 @@ from pretalx.common.phrases import Phrases
 
 
 class OrgaPhrases(Phrases, app="orga"):
-
     schedule_example_version = [
         "v1",
         "v2",

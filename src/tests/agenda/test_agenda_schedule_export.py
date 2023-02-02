@@ -404,7 +404,6 @@ def test_schedule_orga_trigger_export_without_celery(
 def test_schedule_orga_trigger_export_with_celery(
     mocker, orga_client, django_assert_max_num_queries, event
 ):
-
     mocker.patch("pretalx.agenda.tasks.export_schedule_html.apply_async")
     from pretalx.agenda.tasks import export_schedule_html
 

@@ -358,7 +358,6 @@ class ReviewDashboard(
 
 
 class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
-
     form_class = ReviewForm
     model = Review
     template_name = "orga/submission/review.html"
@@ -672,7 +671,6 @@ class ReviewAssignment(EventPermissionRequired, FormView):
             )
 
     def post(self, request, *args, **kwargs):
-
         if not self.formset.is_valid():
             return self.get(self.request, *self.args, **self.kwargs)
 

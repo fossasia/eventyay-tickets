@@ -13,7 +13,6 @@ def strip_submission_codes(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("submission", "0001_initial"),
     ]

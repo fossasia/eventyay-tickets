@@ -25,7 +25,6 @@ def update_target_group(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("person", "0023_speakerinformation_target_group"),
     ]

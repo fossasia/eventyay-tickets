@@ -11,7 +11,6 @@ def fix_log_action(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("common", "0004_auto_20170526_0437"),
     ]

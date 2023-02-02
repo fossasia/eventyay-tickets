@@ -6,7 +6,6 @@ import pretalx.event.models.event
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("event", "0011_event_question_template"),
     ]

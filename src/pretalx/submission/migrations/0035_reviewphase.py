@@ -5,7 +5,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("event", "0019_auto_20190224_0856"),
         ("submission", "0034_submission_internal_notes"),

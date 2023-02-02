@@ -113,7 +113,6 @@ class Sortable:
 
 
 class Filterable:
-
     filter_fields = []
     default_filters = []
 
