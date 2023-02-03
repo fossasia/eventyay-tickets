@@ -136,7 +136,10 @@ def can_change_tags(user, obj):
     )
 
 
-rules.add_perm("orga.view_orga_area", can_change_submissions | is_reviewer)
+rules.add_perm(
+    "orga.view_orga_area",
+    can_change_submissions | can_change_event_settings | is_reviewer,
+)
 rules.add_perm("orga.change_settings", can_change_event_settings)
 rules.add_perm("orga.change_organiser_settings", can_change_organiser_settings)
 rules.add_perm("orga.view_organisers", can_change_any_organiser_settings)
