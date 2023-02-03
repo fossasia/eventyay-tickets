@@ -6,7 +6,6 @@ from .models import VenuelessSettings
 
 
 class VenuelessSettingsForm(I18nModelForm):
-
     token = forms.CharField(
         help_text=_(
             "Generate a token with the trait 'world:api' in the Config -> Token Generator menu in Venueless. Leave empty to leave unchanged."

@@ -5,7 +5,6 @@ import i18nfield.fields
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("pretalx_venueless", "0002_data"),
     ]
