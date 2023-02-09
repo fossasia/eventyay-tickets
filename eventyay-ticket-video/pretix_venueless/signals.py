@@ -16,7 +16,7 @@ from pretix.presale.signals import order_info_top, position_info_top
 def w_order_info(sender: Event, request, order: Order, **kwargs):
     if (
             (order.status != Order.STATUS_PAID and not (order.status == Order.STATUS_PENDING and
-                                                        sender.settings.venueless_allow_pending))
+                                                        (sender.settings.venueless_allow_pending or order.valid_if_pending)))
             or not order.positions.exists() or not sender.settings.venueless_secret
     ):
         return
