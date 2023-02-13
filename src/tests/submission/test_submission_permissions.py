@@ -82,7 +82,7 @@ def test_can_change_state(current_state, target_state):
 
 
 def test_reviewer_permission_degrades_gracefully():
-    with pytest.raises(Exception):
+    with pytest.raises(Exception):  # noqa
         has_reviewer_access(None, None)
 
 

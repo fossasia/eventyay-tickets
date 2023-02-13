@@ -34,7 +34,7 @@ def test_frab_import_minimal(administrator):
             == 1
         )
 
-        with pytest.raises(Exception):
+        with pytest.raises(Exception):  # noqa
             call_command("import_schedule", "tests/fixtures/frab_schedule_minimal.xml")
 
         assert (

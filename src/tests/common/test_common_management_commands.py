@@ -63,7 +63,7 @@ def test_common_test_regenerate_css_wrong_slug(event):
 def test_common_uncallable(event):
     with pytest.raises(OSError):
         call_command("init")
-    with pytest.raises(Exception):
+    with pytest.raises(Exception):  # noqa
         call_command("shell_scoped")
 
 

@@ -20,7 +20,7 @@ def test_tolerant_dict(key, value):
 @pytest.mark.django_db
 def test_sent_mail_sending(sent_mail):
     assert str(sent_mail)
-    with pytest.raises(Exception):
+    with pytest.raises(Exception):  # noqa
         sent_mail.send()
 
 

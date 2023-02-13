@@ -84,7 +84,10 @@ CLEANER = bleach.Cleaner(
     ],
 )
 NO_LINKS_CLEANER = bleach.Cleaner(
-    tags=copy(ALLOWED_TAGS) - {"a", },
+    tags=copy(ALLOWED_TAGS)
+    - {
+        "a",
+    },
     attributes=ALLOWED_ATTRIBUTES,
     protocols=ALLOWED_PROTOCOLS,
     strip=True,

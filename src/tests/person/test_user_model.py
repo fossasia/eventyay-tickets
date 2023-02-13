@@ -78,7 +78,7 @@ def test_organizer_permissions(event, orga_user):
 @pytest.mark.django_db
 def test_do_not_shred_user_with_teams(orga_user):
     assert User.objects.count() == 1
-    with pytest.raises(Exception):
+    with pytest.raises(Exception):  # noqa
         orga_user.shred()
     assert User.objects.count() == 1
 

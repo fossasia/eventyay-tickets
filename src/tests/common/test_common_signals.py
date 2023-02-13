@@ -20,7 +20,7 @@ def test_is_plugin_active(event):
 @pytest.mark.django_db
 def test_cant_call_signal_without_event(event):
     _populate_app_cache()
-    with pytest.raises(Exception):
+    with pytest.raises(Exception):  # noqa
         footer_link.send("something", request="test")
     footer_link.send(event, request="test")
 
