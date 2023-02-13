@@ -13,6 +13,6 @@ def test_submissionform_content_locale_choices(event):
         submission_form = SubmissionForm(event)
         assert submission_form.fields["content_locale"].choices == [
             ("en", "English"),
-            ("de", "German"),
+            ("de", "Deutsch"),
             ("fr", "French"),
         ]
