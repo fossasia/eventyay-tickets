@@ -9,7 +9,7 @@ from publicsuffixlist import PublicSuffixList
 
 register = template.Library()
 
-ALLOWED_TAGS = [
+ALLOWED_TAGS = {
     "a",  # Keep in first position for link_cleaner
     "abbr",
     "acronym",
@@ -40,7 +40,7 @@ ALLOWED_TAGS = [
     "h4",
     "h5",
     "h6",
-]
+}
 
 ALLOWED_ATTRIBUTES = {
     "a": ["href", "title"],
@@ -53,7 +53,7 @@ ALLOWED_ATTRIBUTES = {
     "span": ["class"],
 }
 
-ALLOWED_PROTOCOLS = ["http", "https", "mailto", "tel"]
+ALLOWED_PROTOCOLS = {"http", "https", "mailto", "tel"}
 
 ALLOWED_TLDS = sorted(  # Sorting this list makes sure that shorter substring TLDs don't win against longer TLDs, e.g. matching '.com' before '.co'
     list({suffix.rsplit(".")[-1] for suffix in PublicSuffixList()._publicsuffix}),
@@ -78,13 +78,13 @@ CLEANER = bleach.Cleaner(
             bleach.linkifier.LinkifyFilter,
             url_re=TLD_REGEX,
             parse_email=True,
-            skip_tags=["pre", "code"],
+            skip_tags={"pre", "code"},
             callbacks=bleach.linkifier.DEFAULT_CALLBACKS + [link_callback],
         )
     ],
 )
 NO_LINKS_CLEANER = bleach.Cleaner(
-    tags=copy(ALLOWED_TAGS)[1:],
+    tags=copy(ALLOWED_TAGS) - {"a", },
     attributes=ALLOWED_ATTRIBUTES,
     protocols=ALLOWED_PROTOCOLS,
     strip=True,

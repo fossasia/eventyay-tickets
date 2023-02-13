@@ -356,7 +356,7 @@ class ComposeMail(EventPermissionRequired, FormView):
                         )
 
                     subject = bleach.clean(
-                        form.cleaned_data["subject"].localize(locale), tags=[]
+                        form.cleaned_data["subject"].localize(locale), tags={}
                     )
                     preview_subject = subject.format_map(context_dict)
                     message = form.cleaned_data["text"].localize(locale)

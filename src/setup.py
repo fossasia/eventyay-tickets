@@ -93,7 +93,7 @@ setup(
     python_requires=">={}.{}".format(*REQUIRED_PYTHON),
     install_requires=[
         "beautifulsoup4~=4.11.0",  # https://bazaar.launchpad.net/~leonardr/beautifulsoup/bs4/view/head:/CHANGELOG
-        "bleach~=4.1.0",  # https://bleach.readthedocs.io/en/latest/changes.html
+        "bleach~=6.0.0",  # https://bleach.readthedocs.io/en/latest/changes.html
         "celery~=5.2.0",  # search for "what's new" on http://docs.celeryproject.org/en/latest/
         "csscompressor~=0.9.0",  # 2017-11, no changelog, https://github.com/sprymix/csscompressor
         "cssutils~=2.6.0",
