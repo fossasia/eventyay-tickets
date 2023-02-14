@@ -19,7 +19,7 @@ lxml==4.9.*
 matplotlib==3.7.*
 numpy==1.24.*
 orjson==3.8.*
-openpyxl~=3.1.0
+openpyxl~=3.1.1
 Pillow==9.4.*
 pandas~=1.3.5  # do not update, newer version wants us to use openpyxl instead of xlrd which has different error handling
 pdf2image==1.16.*
