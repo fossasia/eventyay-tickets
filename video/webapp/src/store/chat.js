@@ -225,14 +225,14 @@ export default {
 				}
 			} else {
 				// We need to create the window right away, otherwise Safari will not believe this to be caused by the user
-				const win = window.open();
-				win.document.write("Please wait a second ...")
+				const win = window.open()
+				win.document.write('Please wait a second ...')
 				try {
 					const {url} = await api.call('bbb.call_url', {call: body.id})
-					win.location = url;
+					win.location = url
 				} catch (e) {
-					console.error(e);
-					win.close();
+					console.error(e)
+					win.close()
 				}
 			}
 		},
