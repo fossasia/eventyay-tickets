@@ -26,6 +26,7 @@ class User(VersionedModel):
     )
     show_publicly = models.BooleanField(default=True)
     profile = JSONField()
+    client_state = JSONField(default=dict)
     traits = ArrayField(models.CharField(max_length=200), blank=True)
     pretalx_id = models.CharField(max_length=200, null=True, blank=True)
     blocked_users = models.ManyToManyField(
@@ -95,7 +96,12 @@ class User(VersionedModel):
         self.profile = {}
         self.save()
 
-    def serialize_public(self, include_admin_info=False, trait_badges_map=None):
+    def serialize_public(
+        self,
+        include_admin_info=False,
+        trait_badges_map=None,
+        include_client_state=False,
+    ):
         # Important: If this is updated, venueless.core.services.user.get_public_users also needs to be updated!
         # For performance reasons, it does not use this method directly.
         d = {
@@ -121,6 +127,8 @@ class User(VersionedModel):
         if include_admin_info:
             d["moderation_state"] = self.moderation_state
             d["token_id"] = self.token_id
+        if include_client_state:
+            d["client_state"] = self.client_state
         return d
 
     @property

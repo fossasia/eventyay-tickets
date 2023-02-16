@@ -192,6 +192,7 @@ async def test_update_user():
                 123,
                 {
                     "profile": {"display_name": "Cool User"},
+                    "client_state": {"favs": [3, 4]},
                     "pretalx_id": "HAXXOR_NOT_ALLOWED",
                 },
             ]
@@ -205,6 +206,7 @@ async def test_update_user():
             {
                 "profile": {"display_name": "Cool User"},
                 "badges": [],
+                "client_state": {"favs": [3, 4]},
                 "deleted": False,
                 "pretalx_id": None,
                 "inactive": False,
@@ -226,6 +228,7 @@ async def test_update_user():
         assert response[1]["user.config"]["profile"]["display_name"] == "Cool User"
         assert response[1]["user.config"]["id"] == user_id
         assert response[1]["user.config"]["pretalx_id"] is None
+        assert response[1]["user.config"]["client_state"] == {"favs": [3, 4]}
 
 
 @pytest.mark.asyncio
@@ -610,7 +613,6 @@ async def test_list_users(world):
                         "deleted": False,
                         "inactive": False,
                         "badges": [],
-                        "deleted": False,
                         "pretalx_id": None,
                         "token_id": None,
                     }

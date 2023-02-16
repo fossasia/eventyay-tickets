@@ -31,7 +31,7 @@ With a token, it works just the same way::
 ``chat.channels`` contains a list of **non-volatile** chat rooms the user is a member of. See chat module
 documentation for membership semantics.
 
-If authentication failes, you receive an error instead::
+If authentication fails, you receive an error instead::
 
     => ["authenticate", {"client_id": "UUID4"}]
     <- ["error", {"code": "auth.invalid_token"}]
@@ -64,7 +64,7 @@ Change user info
 
 You can change a user's profile using the ``user.update`` call::
 
-    => ["user.update", 123, {"profile": {…}}]
+    => ["user.update", 123, {"profile": {…}, "client_state": {}}]
     <- ["success", 123, {}]
 
 Receiving info on another user
@@ -96,7 +96,7 @@ Profile updates
 If your user data changes, you will receive a broadcast with your new profile. This is e.g. important if your profile
 is changed from a different connection::
 
-    <= ["user.updated", {"id": "1234", "profile": {…}}]
+    <= ["user.updated", {"id": "1234", "profile": {…}, "client_state": {…}}]
 
 Fetching a list of users
 ------------------------

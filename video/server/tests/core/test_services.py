@@ -13,13 +13,13 @@ def test_get_user_requires_parameters():
 @pytest.mark.django_db
 def test_update_user_requires_valid_id():
     with pytest.raises(Exception):
-        update_user("sample", "foo", public_data={"data": True})
+        update_user("sample", "foo", data={"data": True})
 
 
 @pytest.mark.django_db
 def test_update_user_empty(world):
     u = create_user(world_id="sample", client_id="1234")
-    update_user("sample", str(u.pk), public_data={})
+    update_user("sample", str(u.pk), data={})
 
 
 @pytest.mark.django_db

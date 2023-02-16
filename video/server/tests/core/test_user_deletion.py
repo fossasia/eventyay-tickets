@@ -95,7 +95,7 @@ def test_delete_user(world, chat_room):
     assert update_user(
         "sample",
         str(u1.pk),
-        public_data={
+        data={
             "profile": {
                 "display_name": "John Doe",
                 "avatar": {
@@ -108,6 +108,7 @@ def test_delete_user(world, chat_room):
     log = AuditLog.objects.get(type="auth.user.profile.changed")
     assert log.data == {
         "object": str(u1.pk),
+        "is_admin": False,
         "old": {},
         "new": {
             "display_name": "John Doe",

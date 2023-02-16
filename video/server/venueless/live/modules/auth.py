@@ -117,7 +117,8 @@ class AuthModule(BaseModule):
                     "user.config": self.consumer.user.serialize_public(
                         trait_badges_map=self.consumer.world.config.get(
                             "trait_badges_map"
-                        )
+                        ),
+                        include_client_state=True,
                     ),
                     "world.config": login_result.world_config,
                     "chat.channels": login_result.chat_channels,
@@ -237,7 +238,7 @@ class AuthModule(BaseModule):
         user = await database_sync_to_async(update_user)(
             self.consumer.world.id,
             self.consumer.user.id,
-            public_data=body,
+            data=body,
             is_admin=False,
             serialize=False,
         )
@@ -246,7 +247,8 @@ class AuthModule(BaseModule):
         await user_broadcast(
             "user.updated",
             user.serialize_public(
-                trait_badges_map=self.consumer.world.config.get("trait_badges_map")
+                trait_badges_map=self.consumer.world.config.get("trait_badges_map"),
+                include_client_state=True,
             ),
             user.pk,
             self.consumer.socket_id,
@@ -260,7 +262,7 @@ class AuthModule(BaseModule):
         user = await database_sync_to_async(update_user)(
             self.consumer.world.id,
             body.pop("id"),
-            public_data=body,
+            data=body,
             is_admin=True,
             serialize=False,
         )

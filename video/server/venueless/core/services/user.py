@@ -184,7 +184,7 @@ def create_user(
 
 @atomic
 def update_user(
-    world_id, id, *, traits=None, public_data=None, is_admin=False, serialize=True
+    world_id, id, *, traits=None, data=None, is_admin=False, serialize=True
 ):
     # TODO: Exception handling
     user = (
@@ -204,9 +204,9 @@ def update_user(
             user.traits = traits
         user.save(update_fields=["traits"])
 
-    if public_data is not None:
+    if data is not None:
         save_fields = []
-        if "profile" in public_data and public_data["profile"] != user.profile:
+        if "profile" in data and data["profile"] != user.profile:
             AuditLog.objects.create(
                 world_id=world_id,
                 user=user,
@@ -214,19 +214,16 @@ def update_user(
                 data={
                     "object": str(user.pk),
                     "old": user.profile,
-                    "new": public_data["profile"],
+                    "new": data["profile"],
+                    "is_admin": is_admin,
                 },
             )
 
             # TODO: Anything we want to validate here?
-            user.profile = public_data.get("profile")
+            user.profile = data.get("profile")
             save_fields.append("profile")
 
-        if (
-            is_admin
-            and "pretalx_id" in public_data
-            and public_data["pretalx_id"] != user.pretalx_id
-        ):
+        if is_admin and "pretalx_id" in data and data["pretalx_id"] != user.pretalx_id:
             AuditLog.objects.create(
                 world_id=world_id,
                 user=user,
@@ -234,11 +231,19 @@ def update_user(
                 data={
                     "object": str(user.pk),
                     "old": user.pretalx_id,
-                    "new": public_data["pretalx_id"],
+                    "new": data["pretalx_id"],
                 },
             )
-            user.pretalx_id = public_data.get("pretalx_id")
+            user.pretalx_id = data.get("pretalx_id")
             save_fields.append("pretalx_id")
+
+        if (
+            not is_admin
+            and "client_state" in data
+            and data["client_state"] != user.client_state
+        ):
+            user.client_state = data.get("client_state")
+            save_fields.append("client_state")
 
         if save_fields:
             user.save(update_fields=save_fields)
