@@ -2,6 +2,7 @@ import logging
 
 from venueless.core.models.poll import Poll
 from venueless.core.permissions import Permission
+from venueless.core.services.chat import ChatService, get_channel
 from venueless.core.services.poll import (
     create_poll,
     delete_poll,
@@ -13,6 +14,7 @@ from venueless.core.services.poll import (
     vote_on_poll,
 )
 from venueless.live.channels import (
+    GROUP_CHAT,
     GROUP_ROOM_POLL_MANAGE,
     GROUP_ROOM_POLL_READ,
     GROUP_ROOM_POLL_RESULTS,
@@ -92,6 +94,25 @@ class PollModule(BaseModule):
                 "poll": new_poll,
             },
         )
+
+        if (
+            new_poll["state"] == Poll.States.OPEN
+            and old_poll["state"] == Poll.States.DRAFT
+        ):
+            chat_channel = await get_channel(room=self.room)
+            if chat_channel:
+                await self.consumer.channel_layer.group_send(
+                    GROUP_CHAT.format(channel=chat_channel.id),
+                    await ChatService(self.consumer.world).create_event(
+                        channel=chat_channel,
+                        event_type="channel.poll",
+                        content={
+                            "poll_id": new_poll["id"],
+                            "state": new_poll["state"],
+                        },
+                        sender=self.consumer.user,
+                    ),
+                )
 
     @command("delete")
     @room_action(

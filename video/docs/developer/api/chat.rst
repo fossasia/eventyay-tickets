@@ -155,6 +155,7 @@ Currently, the following values for ``event_type`` are defined:
 
 - ``channel.message``
 - ``channel.member``
+- ``channel.poll``
 
 Optional fields include:
 
@@ -203,6 +204,11 @@ following properties inside the ``content`` property:
 
 - ``membership``: "join" or "leave" or "ban"
 - ``user``: A dictionary of user data of the user concerned (i.e. the user joining or leaving or being banned)
+
+``channel.poll``
+""""""""""""""""""
+
+This poll type is used when a poll is opened. It has two fields, ``poll_id`` and ``state``.
 
 Read/unread status
 ------------------
