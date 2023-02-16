@@ -41,6 +41,7 @@
   "ChatMessage:leave-message:text": "left",
   "ChatMessage:message-delete:label": "delete message",
   "ChatMessage:message-edit:label": "edit message",
+  "ChatMessage:poll-message:header": "New poll:",
   "Chat:permission-block:room:chat.join": "Sorry, you can't join this channel.",
   "Chat:permission-block:room:chat.send": "This channel is readonly.",
   "ContactExhibitorPrompt:dismiss-button:label": "cancel",

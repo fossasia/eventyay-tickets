@@ -1,6 +1,6 @@
 <template lang="pug">
 .c-chat-message(:class="[mode, {selected, readonly, 'system-message': isSystemMessage, 'merge-with-previous-message': mergeWithPreviousMessage, 'merge-with-next-message': mergeWithNextMessage, 'sender-deleted': sender.deleted}]")
-	.avatar-column
+	.avatar-column(v-if="message.event_type !== 'channel.poll'")
 		avatar(v-if="!mergeWithPreviousMessage", :user="sender", :size="avatarSize", @click.native="showAvatarCard", ref="avatar")
 		.timestamp(v-if="mergeWithPreviousMessage") {{ shortTimestamp }}
 	template(v-if="message.event_type === 'channel.message'")
@@ -53,6 +53,12 @@
 					.delete-message(@click="selected = false, showDeletePrompt = true") {{ $t('ChatMessage:message-delete:label') }}
 	template(v-else-if="message.event_type === 'channel.member'")
 		.system-content {{ senderDisplayName }} {{ message.content.membership === 'join' ? $t('ChatMessage:join-message:text') : $t('ChatMessage:leave-message:text') }}
+	template(v-else-if="message.event_type === 'channel.poll' && poll")
+		.content-wrapper
+			.message-header
+				.timestamp {{ timestamp }}
+				span {{ $t('ChatMessage:poll-message:header') }}
+			Poll(:poll="poll")
 	chat-user-card(v-if="showingAvatarCard", ref="avatarCard", :sender="sender", @close="showingAvatarCard = false")
 	prompt.delete-message-prompt(v-if="showDeletePrompt", @close="showDeletePrompt = false")
 		.prompt-content
@@ -78,6 +84,7 @@ import ChatUserCard from 'components/ChatUserCard'
 import EmojiPickerButton from 'components/EmojiPickerButton'
 import MenuDropdown from 'components/MenuDropdown'
 import Prompt from 'components/Prompt'
+import Poll from 'components/Poll'
 
 const DATETIME_FORMAT = 'DD.MM. LT'
 const TIME_FORMAT = 'LT'
@@ -101,7 +108,7 @@ const generateHTML = function (input) {
 
 export default {
 	name: 'ChatMessage',
-	components: { Avatar, ChatInput, ChatUserCard, EmojiPickerButton, MenuDropdown, Prompt },
+	components: { Avatar, ChatInput, ChatUserCard, EmojiPickerButton, MenuDropdown, Prompt, Poll },
 	props: {
 		message: Object,
 		previousMessage: Object,
@@ -126,6 +133,7 @@ export default {
 	computed: {
 		...mapState(['user']),
 		...mapState('chat', ['usersLookup']),
+		...mapState('poll', ['polls']),
 		...mapGetters(['hasPermission']),
 		isSystemMessage () {
 			return this.message.event_type !== 'channel.message'
@@ -166,6 +174,9 @@ export default {
 		},
 		mergeWithNextMessage () {
 			return this.nextMessage && !this.isSystemMessage && this.nextMessage.event_type === 'channel.message' && this.nextMessage.sender === this.message.sender && moment(this.nextMessage.timestamp).diff(this.message.timestamp, 'minutes') < 15
+		},
+		poll () {
+			return this.polls?.find(p => p.id === this.message.content?.poll_id)
 		}
 	},
 	methods: {
