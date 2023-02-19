@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function() {
   if (sidebar && element) {
     element.addEventListener("click", () => {
       sidebar.classList.toggle(cls)
-      localStorage["sidebarVisible"] = sidebar.classList.contains(cls) ? 1 : 0
+      localStorage["sidebarVisible"] = sidebar.classList.contains(cls) ? "1" : ""
     })
   }
 })
