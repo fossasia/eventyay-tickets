@@ -10,7 +10,6 @@
 		.speakers(v-if="session.speakers") {{ session.speakers.map(s => s.name).join(', ') }}
 		.bottom-info
 			.track(v-if="session.track") {{ getLocalizedString(session.track.name) }}
-			.room(v-if="showRoom && session.room") {{ getLocalizedString(session.room.name) }}
 
 </template>
 <script>
@@ -30,11 +29,7 @@ export default {
 		isDragClone: {
 			type: Boolean,
 			default: false
-		},
-		showRoom: {
-			type: Boolean,
-			default: true
-		},
+		}
 	},
 	inject: {
 		eventUrl: { default: null },
@@ -179,11 +174,6 @@ export default {
 					color: var(--track-color)
 					ellipsis()
 					margin-right: 4px
-				.room
-					flex: 1
-					text-align: right
-					color: $clr-secondary-text-light
-					ellipsis()
 		&:hover
 			.info
 				border: 1px solid var(--track-color)
