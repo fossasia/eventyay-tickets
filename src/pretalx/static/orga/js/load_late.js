@@ -1,10 +1,14 @@
 document.addEventListener("DOMContentLoaded", function() {
   const element = document.querySelector("[data-toggle=sidebar]")
-  if (element) {
+  const sidebar = document.querySelector("aside.sidebar")
+  const cls = "sidebar-uncollapsed"
+  if (sidebar && localStorage["sidebarVisible"]) {
+    sidebar.classList.add(cls)
+  }
+  if (sidebar && element) {
     element.addEventListener("click", () => {
-      document
-        .querySelector(".flex-column.sidebar")
-        .classList.toggle("sidebar-uncollapsed")
+      sidebar.classList.toggle(cls)
+      localStorage["sidebarVisible"] = sidebar.classList.contains(cls) ? 1 : 0
     })
   }
 })

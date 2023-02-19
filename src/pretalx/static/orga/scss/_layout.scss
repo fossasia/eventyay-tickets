@@ -1,3 +1,9 @@
+body {
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
 #wrapper {
   display: flex;
   flex-direction: column;
@@ -14,12 +20,13 @@
 #page-content {
   background: $white;
   flex-grow: 1;
-  padding: 20px 40px;
-  margin-left: 250px;
-  margin-top: 50px;
   max-width: 100%;
+  padding: 20px 40px;
+  margin: 0;
+  margin-top: 50px;
+  height: calc(100vh - 50px);
   overflow-x: hidden;
-  overflow-y: hidden;
+  overflow-y: auto;
 
   .flex-content {
     max-width: 100%;
@@ -28,16 +35,25 @@
 
 aside.sidebar {
   background-color: $gray-lightest;
-  width: 250px;
+  width: 45px;
   height: 100vh;
   font-size: 14px;
   flex-grow: 0;
   flex-shrink: 0;
   flex-wrap: nowrap;
   z-index: 150;
-  position: fixed;
   margin-top: 50px;
   overflow-y: auto;
+
+  &.sidebar-uncollapsed, &:hover {
+    width: 250px;
+    a.nav-link i + span {
+      display: inline-block
+    }
+    .nav-fold div > a {
+      display: block
+    }
+  }
 
   a {
     color: $body-color-light;
@@ -68,6 +84,9 @@ aside.sidebar {
   .nav-link,
   .nav-fold {
     border-top: 1px solid $gray-light;
+    div > a {
+      display: none;
+    }
   }
 
   .nav-link {
@@ -81,6 +100,10 @@ aside.sidebar {
   .nav-link {
     .fa {
       margin-right: 5px;
+    }
+
+    i + span {
+      display: none;
     }
 
     &.nav-link-second-level span {
