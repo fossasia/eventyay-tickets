@@ -4,7 +4,8 @@
 		#main-wrapper
 			#unassigned(v-scrollbar.y="", @pointerenter="isUnassigning = true", @pointerleave="isUnassigning = false")
 				h1 $t('Unassigned')
-				session(v-for="un in unscheduled", :session="un", :showAbstract="false", @startDragging="startDragging", :isDragged="draggedSession && un.id === draggedSession.id")
+				session(:session="{title: 'New break'}", :isDragged="false", @startDragging="startNewBreak")
+				session(v-for="un in unscheduled", :session="un", @startDragging="startDragging", :isDragged="draggedSession && un.id === draggedSession.id")
 			#schedule-wrapper(v-scrollbar.x.y="")
 				bunt-tabs.days(v-if="days && days.length > 1", :active-tab="currentDay && currentDay.format()", ref="tabs" :class="['grid-tabs']")
 					bunt-tab(v-for="day in days", :id="day.format()", :header="day.format(dateFormat)", @selected="changeDay(day)")
@@ -158,6 +159,10 @@ export default {
 			movedSession.end = e.end
 			movedSession.room = e.room.id
 			// TODO push to server
+		},
+		startNewBreak({event}) {
+			console.log("starting dragging")
+			this.startDragging(event, {title: "New Break", duration: "30"})
 		},
 		startDragging ({event, session}) {
 			this.draggedSession = session

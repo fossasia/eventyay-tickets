@@ -25,9 +25,9 @@
             {% translate "You're currently viewing a released schedule version. Released versions cannot be edited directly." %}
         </div>
     {% endif %}
-    <div class="schedule-header">
-        <div id="schedule-choice">
-            <form id="schedule-version">
+    <div class="schedule-header d-flex">
+        <div id="schedule-choice" class="d-flex align-items-center mt-3">
+            <form id="schedule-version" class="ml-4 mr-2">
                 {% bootstrap_form schedule_version_form layout="inline" %}
             </form>
             <form id="schedule-rooms">
@@ -35,16 +35,16 @@
             </form>
         </div>
 
-        <div id="schedule-action-wrapper">
+        <div id="schedule-action-wrapper" class="d-flex align-items-center">
             {% if not schedule_version %}
-                <a id="schedule-release" href="{{ request.event.orga_urls.release_schedule }}" class="btn btn-success"><i class="fa fa-plus"></i> {% translate "New release" %}</a>
+                <a id="schedule-release" href="{{ request.event.orga_urls.release_schedule }}" class="btn ml-2 btn-success"><i class="fa fa-plus"></i> {% translate "New release" %}</a>
             {% else %}
                 <form method="post" action="{{ request.event.orga_urls.reset_schedule }}?{{ request.GET.urlencode }}">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-outline-danger">{% translate "Override WIP schedule with this version" %}</button>
+                    <button type="submit" class="btn btn-outline-danger ml-2">{% translate "Override WIP schedule with this version" %}</button>
                 </form>
             {% endif %}
-            <details class="dropdown">
+            <details class="dropdown ml-2">
                 <summary class="btn btn-info" id="schedule-actions">
                     {% translate "Actions" %} <i class="fa fa-caret-down"></i>
                 </summary>

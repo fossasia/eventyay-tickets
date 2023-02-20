@@ -52,7 +52,7 @@ export default {
 	},
 	computed: {
 		hoverSliceLegal () {
-			if (!this.hoverSlice) return false
+			if (!this.hoverSlice || !this.hoverSlice.room) return false
 			const start = this.hoverSlice.time
 			const end = this.hoverSlice.time.clone().add(this.draggedSession.duration, 'm')
 			const sessionId = this.draggedSession.id
@@ -198,6 +198,7 @@ export default {
 	},
 	methods: {
 		stopDragging () {
+			console.log("alaaaarm")
 			if (!this.draggedSession || !this.hoverSlice || !this.hoverSliceLegal) return
 			const start = this.hoverSlice.time
 			const end = this.hoverSlice.time.clone().add(this.draggedSession.duration, 'm')

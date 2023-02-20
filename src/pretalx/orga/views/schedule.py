@@ -303,22 +303,21 @@ class TalkList(EventPermissionRequired, View):
     def get(self, request, event):
         version = self.request.GET.get("version")
         schedule = None
-        warnings = {}
         if version:
             schedule = request.event.schedules.filter(version=version).first()
         if not schedule:
             schedule = request.event.wip_schedule
 
-        with_warnings = request.GET.get("warnings")
-        if with_warnings and slots:
-            warnings = schedule.get_all_talk_warnings(
-                ids=slots.values_list("id", flat=True)
-            )
-        elif with_warnings:
-            warnings = schedule.get_all_talk_warnings()
-
         filter_updated = request.GET.get("since")
         result = schedule.build_data(all_talks=True, filter_updated=filter_updated)
+
+        if request.GET.get("warnings"):
+            result["warnings"] = {
+                talk.submission.code: warnings
+                for talk, warnings in schedule.get_all_talk_warnings(
+                    filter_updated=filter_updated
+                ).items()
+            }
         result["now"] = now().strftime("%Y-%m-%d %H:%M:%S%z")
         return JsonResponse(result, encoder=I18nJSONEncoder)
 
