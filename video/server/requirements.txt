@@ -51,6 +51,6 @@ pytest==7.2.1
 pytest-django==4.5.2
 pytest-asyncio==0.20.3
 pytest-cov==4.0.0
-pytest-rerunfailures==11.1
+pytest-rerunfailures==11.1.1
 aioresponses==0.7.4
 yappi==1.4.0
