@@ -270,13 +270,17 @@ class ChatService:
             rval = await redis.get("chat.event_id", encoding="utf-8")
             if rval:
                 return int(rval)
-            return 0
+            return await self._get_highest_id()
 
     async def create_event(
         self, channel, event_type, content, sender, replaces=None, _retry=False
     ):
         async with aioredis() as redis:
             event_id = await redis.incr("chat.event_id")
+        if event_id < 2:  # Safety if redis is cleared out
+            current_max = await self._get_highest_id()
+            async with aioredis() as redis:
+                await redis.set("chat.event_id", current_max + 1)
         event = await self._store_event(
             channel=channel,
             id=event_id,

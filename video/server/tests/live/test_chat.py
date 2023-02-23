@@ -473,6 +473,15 @@ async def test_autofix_numbers(chat_room):
         response = await c1.receive_json_from()
         assert response[1]["event_id"] == 3
 
+        async with aioredis() as redis:
+            await redis.delete("chat.event_id")
+
+        await c1.send_json_to(
+            ["chat.join", 123, {"channel": str(chat_room.channel.id)}]
+        )
+        response = await c1.receive_json_from()  # Success
+        assert response[2]["next_event_id"] == 4
+
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
