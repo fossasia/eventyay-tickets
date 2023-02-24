@@ -14,12 +14,24 @@
 					h3 {{ $t('LandingPage:sessions:featured:header') }}
 					bunt-link-button(:to="{name: 'schedule'}") {{ $t('LandingPage:sessions:featured:link') }}
 				.sessions
-					session(v-for="session of featuredSessions", :session="session")
+					session(
+						v-for="session of featuredSessions",
+						:session="session",
+						:faved="favs.includes(session.id)",
+						@fav="$store.dispatch('schedule/fav', $event)",
+						@unfav="$store.dispatch('schedule/unfav', $event)"
+					)
 			.header
 				h3 {{ $t('LandingPage:sessions:next:header') }}
 				bunt-link-button(:to="{name: 'schedule'}") {{ $t('LandingPage:sessions:next:link') }}
 			.sessions
-				session(v-for="session of nextSessions", :session="session")
+				session(
+					v-for="session of nextSessions",
+					:session="session",
+					:faved="favs.includes(session.id)",
+					@fav="$store.dispatch('schedule/fav', $event)",
+					@unfav="$store.dispatch('schedule/unfav', $event)"
+				)
 		.speakers(v-if="speakers")
 			.header
 				h3 {{ $t('LandingPage:speakers:header', {speakers: speakers.length}) }}
@@ -35,14 +47,16 @@
 import { mapState, mapGetters } from 'vuex'
 import '@splidejs/splide/dist/css/splide.min.css'
 import Splide from '@splidejs/splide'
+import { Session } from '@pretalx/schedule'
 import api from 'lib/api'
 import moment from 'lib/timetravelMoment'
 import Identicon from 'components/Identicon'
 import MarkdownContent from 'components/MarkdownContent'
-import Session from 'components/schedule/Session'
+import scheduleProvidesMixin from 'components/mixins/schedule-provides'
 
 export default {
 	components: { Identicon, MarkdownContent, Session },
+	mixins: [scheduleProvidesMixin],
 	props: {
 		module: Object
 	},
@@ -56,7 +70,7 @@ export default {
 	computed: {
 		...mapState(['now', 'rooms']),
 		...mapState('schedule', ['schedule']),
-		...mapGetters('schedule', ['sessions']),
+		...mapGetters('schedule', ['sessions', 'favs']),
 		featuredSessions () {
 			if (!this.sessions) return
 			return this.sessions.filter(session => session.featured)
