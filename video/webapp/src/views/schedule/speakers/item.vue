@@ -10,13 +10,19 @@
 				markdown-content.biography(:markdown="speaker.biography")
 		.sessions
 			h2 {{ $t('schedule/speakers/item:sessions:header') }}
-			session(v-for="session of sessions", :session="session")
+			session(
+				v-for="session of sessions",
+				:session="session",
+				:faved="favs.includes(session.id)",
+				@fav="$store.dispatch('schedule/fav', $event)",
+				@unfav="$store.dispatch('schedule/unfav', $event)"
+			)
 </template>
 <script>
 import { mapState, mapGetters } from 'vuex'
 import Identicon from 'components/Identicon'
 import MarkdownContent from 'components/MarkdownContent'
-import Session from 'components/schedule/Session'
+import { Session } from '@pretalx/schedule'
 
 export default {
 	components: { Identicon, MarkdownContent, Session },
@@ -30,7 +36,7 @@ export default {
 	},
 	computed: {
 		...mapState('schedule', ['schedule']),
-		...mapGetters('schedule', ['sessionsLookup']),
+		...mapGetters('schedule', ['sessionsLookup', 'favs']),
 		sessions () {
 			return this.speaker.submissions.map(submission => this.sessionsLookup[submission])
 		}
