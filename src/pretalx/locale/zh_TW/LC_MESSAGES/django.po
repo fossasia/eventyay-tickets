@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-02-19 15:38+0000\n"
-"PO-Revision-Date: 2020-01-29 12:01+0000\n"
-"Last-Translator: Franklin Weng <franklin@goodhorse.idv.tw>\n"
+"PO-Revision-Date: 2023-02-28 19:43+0000\n"
+"Last-Translator: Robert Sim <contact@robertsky.com>\n"
 "Language-Team: none\n"
-"Language: zh_Hant\n"
+"Language: zh_TW\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 3.10.3\n"
+"X-Generator: Weblate 4.4.2\n"
 
 #: pretalx/agenda/phrases.py:8
 msgid "Thank you for your feedback!"
@@ -70,7 +70,7 @@ msgstr "由："
 
 #: pretalx/agenda/templates/agenda/changelog_block.html:25
 msgid "We have a new session: "
-msgstr "我們有一個新的議程："
+msgstr "我們有一個新的議程： "
 
 #: pretalx/agenda/templates/agenda/changelog_block.html:39
 msgid "Sadly, we had to cancel sessions:"
@@ -78,7 +78,7 @@ msgstr "呃，我們得取消這些議程："
 
 #: pretalx/agenda/templates/agenda/changelog_block.html:51
 msgid "We sadly had to cancel a session: "
-msgstr "我們不得不取消這場議程："
+msgstr "我們不得不取消這場議程： "
 
 #: pretalx/agenda/templates/agenda/changelog_block.html:63
 msgid ""
@@ -92,10 +92,8 @@ msgid "We have moved a session around: "
 msgstr "我們更動了一場議程："
 
 #: pretalx/agenda/templates/agenda/featured.html:13
-#, fuzzy
-#| msgid "Welcome to our schedule sneak peek!"
 msgid "Welcome to our list of featured sessions!"
-msgstr "歡迎來到議程搶先看！"
+msgstr "歡迎來到精選議程列表！"
 
 #: pretalx/agenda/templates/agenda/featured.html:14
 msgid ""
@@ -122,7 +120,7 @@ msgstr "%(event_name)s 已釋出新的議程表。"
 #: pretalx/agenda/templates/agenda/feed/description.html:9
 #, python-format
 msgid "The first %(event_name)s schedule has been released!"
-msgstr "%(event_name)s 已釋出第一版的議程表。"
+msgstr "%(event_name)s 已釋出第一版的議程表！"
 
 #: pretalx/agenda/templates/agenda/feedback.html:8
 #: pretalx/orga/templates/orga/submission/feedbacks_list.html:14
@@ -140,20 +138,12 @@ msgid "There has been no feedback for this session yet."
 msgstr "目前這場議程還沒有任何回饋。"
 
 #: pretalx/agenda/templates/agenda/feedback_form.html:19
-#, fuzzy
-#| msgid ""
-#| "Reviews are a valuable tool for speakers to improve their content and "
-#| "presentation. Even a very short review can prove very valuable to a "
-#| "speaker – but we'd like to ask you to take the time and find a "
-#| "constructive way to communicate your feedback."
 msgid ""
 "Reviews are a valuable tool for speakers to improve their content and "
 "presentation. Even a short review can prove valuable to a speaker! Please "
 "take the time and communicate your feedback in a constructive way."
 msgstr ""
-"檢閱意見對講者來說是很珍貴的，讓他們可以改進演講與展示的內容。即使是短短的意"
-"見，對講者也是很有價值的—不過我們還是希望您花點時間，用建設性的方式來表達您的"
-"檢閱意見。"
+"檢閱意見對講者來說是很珍貴的，讓他們可以改進演講與展示的內容。即使是短短的意見，對講者也是很有價值的！请您花點時間，用建設性的方式來表達您的檢閱意見。"
 
 #: pretalx/agenda/templates/agenda/feedback_form.html:26
 msgid "You can't give feedback for this session at this time."
@@ -207,6 +197,7 @@ msgid ""
 "To see our schedule, please either enable JavaScript or go <a "
 "href=\"%(href)s\">here</a> for our NoJS schedule."
 msgstr ""
+"如果您要查看我們的議程表，請啟用 JavaScript 或前往<a href=\"%(href)s\">此處</a> 查看我們的 NoJS 議程表。"
 
 #: pretalx/agenda/templates/agenda/schedule_nojs.html:14
 #, python-format
@@ -225,7 +216,7 @@ msgstr "%(current_day)s（%(weekday)s）沒有議程。"
 #: pretalx/agenda/templates/agenda/session_block.html:17
 #, python-format
 msgid "%(minutes)smin"
-msgstr ""
+msgstr "%(minutes)s 分钟"
 
 #: pretalx/agenda/templates/agenda/session_block.html:27
 #: pretalx/cfp/templates/cfp/event/fragment_state.html:17
@@ -256,7 +247,7 @@ msgstr "此議程的標頭影像"
 #: pretalx/orga/templates/orga/schedule/index.html:25
 #, python-format
 msgid "All times in %(tz)s"
-msgstr ""
+msgstr "所有時間均以%(tz)s顯示"
 
 #: pretalx/agenda/templates/agenda/talk.html:104
 msgid "See also:"
@@ -301,7 +292,7 @@ msgid ""
 "Congratulations, you've submitted your proposal! You can continue to make "
 "changes to it up to the submission deadline, and you will be notified of any "
 "changes or questions."
-msgstr ""
+msgstr "恭喜，您已提交提案！ 您可以在提交截止日期之前繼續對其進行更改，並且您會收到任何更改或問題的通知。"
 
 #: pretalx/cfp/flow.py:397 pretalx/orga/forms/cfp.py:483
 #: pretalx/orga/templates/orga/base.html:242
@@ -3247,7 +3238,7 @@ msgstr "使用語言"
 
 #: pretalx/orga/forms/event.py:49
 msgid "Users will be able to submit proposals in these languages."
-msgstr ""
+msgstr "用戶將能夠以這些語言提交提案。"
 
 #: pretalx/orga/forms/event.py:55
 msgid "You can type in your CSS instead of uploading it, too."
@@ -4466,8 +4457,10 @@ msgid ""
 "href=\"%(base_search_url)sunanswered=1\">are still missing</a>.\n"
 "                "
 msgstr ""
-"此問題已被回答 <strong>%(count)s</strong> 次，還缺 <strong>%(missing)s</"
-"strong> 次。"
+"\n"
+"                    此問題已被回答 <strong>%(count)s</strong> 次，還<a href=\""
+"%(base_search_url)sunanswered=1\">缺 <strong>%(missing)s</strong> 次</a>。\n"
+"                "
 
 #: pretalx/orga/templates/orga/cfp/question_detail.html:56
 #, python-format
@@ -6323,7 +6316,7 @@ msgstr "依狀態排序（z-a）"
 
 #: pretalx/orga/templates/orga/submission/list.html:103
 msgid "Featured"
-msgstr ""
+msgstr "精選"
 
 #: pretalx/orga/templates/orga/submission/list.html:103
 #, fuzzy
@@ -7487,15 +7480,15 @@ msgstr "德文"
 
 #: pretalx/settings.py:367
 msgid "German (formal)"
-msgstr ""
+msgstr "德文（正式）"
 
 #: pretalx/settings.py:374
 msgid "Spanish"
-msgstr ""
+msgstr "西班牙文"
 
 #: pretalx/settings.py:380
 msgid "Brasilian Portuguese"
-msgstr ""
+msgstr "巴西葡萄牙文"
 
 #: pretalx/settings.py:387
 msgid "French"
@@ -7503,15 +7496,15 @@ msgstr "法文"
 
 #: pretalx/settings.py:393
 msgid "Arabic"
-msgstr ""
+msgstr "阿拉伯文"
 
 #: pretalx/settings.py:399
 msgid "Japanese"
-msgstr ""
+msgstr "日文"
 
 #: pretalx/settings.py:406
 msgid "Traditional Chinese (Taiwan)"
-msgstr ""
+msgstr "臺灣正體"
 
 #: pretalx/submission/exporters.py:18
 msgid "Answered speaker questions"
