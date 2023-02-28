@@ -128,7 +128,7 @@ setup(
         "rules~=3.3.0",  # https://github.com/dfunckt/django-rules/blob/master/CHANGELOG.md
         "urlman~=2.0.1",  # https://github.com/andrewgodwin/urlman/blob/master/CHANGELOG
         "vobject~=0.9.0",  # 2017-06, http://eventable.github.io/vobject/ look for "release"
-        "whitenoise~=6.3.0",  # http://whitenoise.evans.io/en/stable/changelog.html
+        "whitenoise~=6.4.0",  # http://whitenoise.evans.io/en/stable/changelog.html
         "zxcvbn~=4.4.0",  # Nothing? https://github.com/dwolfhub/zxcvbn-python/issues/38
     ],
     extras_require={
