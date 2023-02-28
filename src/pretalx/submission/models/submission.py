@@ -603,6 +603,9 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
             return fallback
         return self.event.locale
 
+    def get_content_locale_display(self):
+        return str(dict(self.event.named_content_locales)[self.content_locale])
+
     def send_state_mail(self):
         if self.state == SubmissionStates.ACCEPTED:
             template = self.event.accept_template
