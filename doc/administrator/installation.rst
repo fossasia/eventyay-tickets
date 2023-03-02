@@ -234,6 +234,7 @@ The following snippet is an example on how to configure an nginx proxy for preta
         ssl_certificate /path/to/cert.chain.pem;
         ssl_certificate_key /path/to/key.pem;
 
+        gzip off;
         add_header Referrer-Policy same-origin;
         add_header X-Content-Type-Options nosniff;
 
@@ -245,6 +246,7 @@ The following snippet is an example on how to configure an nginx proxy for preta
         }
 
         location /media/ {
+            gzip on;
             alias /var/pretalx/data/media/;
             add_header Content-Disposition 'attachment; filename="$1"';
             expires 7d;
@@ -252,6 +254,7 @@ The following snippet is an example on how to configure an nginx proxy for preta
         }
 
         location /static/ {
+            gzip on;
             alias /path/to/static.dist/;
             access_log off;
             expires 365d;

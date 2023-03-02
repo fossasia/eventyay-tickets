@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :support:`-` Document that in nginx, gzip should be turned on only for static files.
 - :bug:`1098` There was a very rare bug that could lock up pretalx instances due to a race condition in the review process, and required manual admin intervention to get fixed.
 - :feature:`1061` Image previews (e.g. for event logos) now handle transparency by adding a checkered background, so even the white logo fans can still see their images.
 - :feature:`963` The featured talks page is now linked in the corresponding setting, making it easier for organisers to find.
