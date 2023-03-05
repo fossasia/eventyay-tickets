@@ -3,7 +3,7 @@
 	template(v-if="schedule")
 		#main-wrapper
 			#unassigned(v-scrollbar.y="", @pointerenter="isUnassigning = true", @pointerleave="isUnassigning = false")
-				h1 $t('Unassigned')
+				h1 {{$t('Unassigned')}}
 				session(:session="{title: 'New break'}", :isDragged="false", @startDragging="startNewBreak")
 				session(v-for="un in unscheduled", :session="un", @startDragging="startDragging", :isDragged="draggedSession && un.id === draggedSession.id")
 			#schedule-wrapper(v-scrollbar.x.y="")

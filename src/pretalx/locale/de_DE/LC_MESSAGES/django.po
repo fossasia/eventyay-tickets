@@ -8397,12 +8397,6 @@ msgstr "{name} ({duration} Minuten)"
 #~ msgid "Should the sessions marked as featured be shown publicly?"
 #~ msgstr "Sollen die als Highlight markierten Vorträge sichtbar sein?"
 
-#, fuzzy
-#~| msgid "proposal is waiting for your review."
-#~| msgid_plural "proposals are waiting for your review."
-#~ msgid "proposals are waiting for your review."
-#~ msgstr "Einreichung wartet auf dein Review."
-
 #~ msgid "unconfirmed session"
 #~ msgid_plural "unconfirmed sessions"
 #~ msgstr[0] "nicht bestätigte Session"
@@ -8413,11 +8407,6 @@ msgstr "{name} ({duration} Minuten)"
 
 #~ msgid "Leave empty to use the default address: {}"
 #~ msgstr "Leer lassen, um die Standardadresse zu verwenden: {}"
-
-#, fuzzy
-#~| msgid "Other proposals by this speaker:"
-#~ msgid "Files uploaded by the speakers"
-#~ msgstr "Andere Einreichungen mit dieser Vortragenden:"
 
 #~ msgid "The mail has been deleted."
 #~ msgstr "Die Mail wurde gelöscht."

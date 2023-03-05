@@ -3,10 +3,10 @@
 // Usable with `this.$t` or just `{{ $t('plz translate me') }}` in templates
 
 import i18next from 'i18next'
-const localeModules = import.meta.glob('../../../locale/*/LC_MESSAGES/django.po')
+const localeModules = import.meta.glob('../../../../pretalx/locale/*/LC_MESSAGES/django.po')
 
 export default async function (locale) {
-  const localeModule = await localeModules[`../../../locale/${locale}/LC_MESSAGES/django.po`]()
+  const localeModule = await localeModules[`../../../../pretalx/locale/${locale}/LC_MESSAGES/django.po`]()
   return {
     install (app) {
       i18next.init({
@@ -20,7 +20,7 @@ export default async function (locale) {
         interpolation: {
           // gettext style interpolation
           prefix: '%(',
-          suffic: ')'
+          suffix: ')'
         }
       })
       app.config.globalProperties.$i18n = i18next
