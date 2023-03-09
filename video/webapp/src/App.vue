@@ -220,7 +220,7 @@ export default {
 	grid-template-rows: auto
 	grid-template-areas: "rooms-sidebar main"
 	--sidebar-width: 280px
-
+	--pretalx-clr-primary: var(--clr-primary)
 	.c-app-bar
 		grid-area: app-bar
 	.c-rooms-sidebar
