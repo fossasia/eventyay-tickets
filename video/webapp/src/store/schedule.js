@@ -27,10 +27,14 @@ export default {
 			if (!rootState.world.pretalx?.domain || !rootState.world.pretalx?.event) return
 			return rootState.world.pretalx.domain + 'api/events/' + rootState.world.pretalx.event
 		},
-		roomsLookup (state, getters, rootState) {
+		rooms (state, getters, rootState) {
+			if (!state.schedule) return
+			return state.schedule.rooms.map(room => rootState.rooms.find(r => r.pretalx_id === room.id) || room)
+		},
+		roomsLookup (state, getters) {
 			if (!state.schedule) return {}
-			return state.schedule.rooms.reduce((acc, room) => {
-				acc[room.id] = rootState.rooms.find(r => r.pretalx_id === room.id) || room
+			return getters.rooms.reduce((acc, room) => {
+				acc[room.pretalx_id || room.id] = room
 				return acc
 			}, {})
 		},
