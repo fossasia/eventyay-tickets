@@ -107,4 +107,6 @@ export default {
 			text-align: center
 	.c-grid-schedule .grid > .room
 		top: 0
+	.bunt-scrollbar-rail-wrapper-x, .bunt-scrollbar-rail-wrapper-y
+		z-index: 20
 </style>
