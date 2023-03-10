@@ -78,8 +78,8 @@
                                 <li class="query-holder">
                                     <div class="form-box">
                                         <input type="text" class="form-control"
-                                            placeholder="{% translate "Search for events" %}"
-                                            data-typeahead-query>
+                                               placeholder="{% translate "Search for events" %}"
+                                               data-typeahead-query>
                                     </div>
                                 </li>
                             </ul>
@@ -101,7 +101,7 @@
                         <li class="nav-item">
                             {% if request.event.custom_domain and not request.event.is_public %}
                                 <form action="{{ request.event.urls.auth.full }}" method="post"
-                                    target="_blank" class="mobile-navbar-view-form visible-xs-block">
+                                      target="_blank" class="mobile-navbar-view-form visible-xs-block">
                                     <input type="hidden" value="{{ new_session }}" name="session">
                                     <input type="hidden" value="{{ go_to_target }}" name="target">
                                     <button type="submit" class="btn btn-link navbar-toggle">

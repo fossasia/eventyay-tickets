@@ -61,8 +61,8 @@
                             {% bootstrap_field form.name form_group_class="" layout="inline" %}
                             {% if action != 'view' %}
                                 <a href="{{ form.instance.urls.delete }}"
-                                    class="btn btn-danger flip ml-auto"
-                                    title="{% translate "Delete score category" %}">
+                                   class="btn btn-danger flip ml-auto"
+                                   title="{% translate "Delete score category" %}">
                                     <i class="fa fa-trash"></i>
                                 </a>
                             {% endif %}
@@ -178,30 +178,30 @@
                             {% if action != 'view' %}
                                 {% if not form.instance.is_active %}
                                     <a href="{{ form.instance.urls.activate }}"
-                                        class="btn btn-outline-warning flip ml-auto mr-2 keep-scroll-position"
-                                        title="{% translate "Activate phase" %}">
+                                       class="btn btn-outline-warning flip ml-auto mr-2 keep-scroll-position"
+                                       title="{% translate "Activate phase" %}">
                                         <i class="fa fa-star"></i>
                                     </a>
                                 {% else %}
                                     <a href=""
-                                        class="btn btn-warning flip ml-auto mr-2 keep-scroll-position"
-                                        title="{% translate "Phase is active" %}">
+                                       class="btn btn-warning flip ml-auto mr-2 keep-scroll-position"
+                                       title="{% translate "Phase is active" %}">
                                         <i class="fa fa-star"></i>
                                     </a>
                                 {% endif %}
                                 <a href="{{ form.instance.urls.down }}"
-                                    class="btn btn-outline-info mr-2 keep-scroll-position"
-                                    title="{% translate "Move phase down" %}">
+                                   class="btn btn-outline-info mr-2 keep-scroll-position"
+                                   title="{% translate "Move phase down" %}">
                                     <i class="fa fa-arrow-down"></i>
                                 </a>
                                 <a href="{{ form.instance.urls.up }}"
-                                    class="btn btn-outline-info mr-2 keep-scroll-position"
-                                    title="{% translate "Move phase up" %}">
+                                   class="btn btn-outline-info mr-2 keep-scroll-position"
+                                   title="{% translate "Move phase up" %}">
                                     <i class="fa fa-arrow-up"></i>
                                 </a>
                                 <a href="{{ form.instance.urls.delete }}"
-                                    class="btn btn-danger"
-                                    title="{% translate "Delete phase" %}">
+                                   class="btn btn-danger"
+                                   title="{% translate "Delete phase" %}">
                                     <i class="fa fa-trash"></i>
                                 </a>
                             {% endif %}

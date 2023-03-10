@@ -59,8 +59,8 @@
             {% endif %}
         </p>
         <div id="question-data" class="d-none"
-            data-states='{{ grouped_answers_json }}'
-            data-url="{{ base_search_url }}{% if answer.answer %}answer={{ answer.answer|urlencode }}{% else %}{{ answer.options|urlencode }}{% endif %}"
+             data-states='{{ grouped_answers_json }}'
+             data-url="{{ base_search_url }}{% if answer.answer %}answer={{ answer.answer|urlencode }}{% else %}{{ answer.options|urlencode }}{% endif %}"
         >
         </div>
         <div id="question-stats" class="d-flex mt-4 pt-4">

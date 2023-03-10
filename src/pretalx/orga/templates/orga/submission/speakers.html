@@ -48,11 +48,11 @@
             </p>
             {% if can_edit_speakers %}
                 <a href="{% url "orga:speakers.view" event=request.event.slug pk=speaker.id %}"
-                    class="btn btn-info">
+                   class="btn btn-info">
                     <i class="fa fa-edit"></i> {% translate "Edit" %}
                 </a>
                 <a href="{{ submission.orga_urls.delete_speaker }}?id={{ speaker.id }}"
-                    class="btn btn-danger">
+                   class="btn btn-danger">
                     <i class="fa fa-trash"></i> {% translate "Remove" %}
                 </a>
             {% endif %}

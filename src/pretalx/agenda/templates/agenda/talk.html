@@ -29,13 +29,13 @@
                     {% endif %}
                     {% if submission.does_accept_feedback and request.event.feature_flags.use_feedback and not is_html_export %}
                         <a href="{{ submission.urls.feedback }}"
-                            class="btn btn-success">
+                           class="btn btn-success">
                             <i class="fa fa-comments"></i> {{ phrases.agenda.feedback }}
                         </a>
                     {% endif %}
                     {% if request.user in submission.speakers.all %}
                         <a href="{{ submission.urls.user_base }}"
-                            class="btn btn-info">
+                           class="btn btn-info">
                             <i class="fa fa-edit"></i> {{ phrases.base.edit }}
                         </a>
                     {% endif %}

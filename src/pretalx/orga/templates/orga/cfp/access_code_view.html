@@ -56,22 +56,22 @@
                             </td>
                             <td class="action-column">
                                 <div data-destination="{{ code.urls.cfp_url.full }}"
-                                    title="{% translate 'Copy access code link' %}"
-                                    class="btn btn-sm btn-info copyable-text">
+                                     title="{% translate 'Copy access code link' %}"
+                                     class="btn btn-sm btn-info copyable-text">
                                     <i class="fa fa-link"></i>
                                 </div>
                                 <a href="{{ code.urls.send }}"
-                                    title="{% translate 'Send access code as email' %}"
-                                    class="btn btn-sm btn-info">
+                                   title="{% translate 'Send access code as email' %}"
+                                   class="btn btn-sm btn-info">
                                     <i class="fa fa-envelope"></i>
                                 </a>
                                 <a href="{{ code.urls.edit }}"
-                                    class="btn btn-sm btn-info">
+                                   class="btn btn-sm btn-info">
                                     <i class="fa fa-edit"></i>
                                 </a>
                                 {% if not code.submissions.exists %}
                                     <a href="{{ code.urls.delete }}"
-                                        class="btn btn-sm btn-danger">
+                                       class="btn btn-sm btn-danger">
                                         <i class="fa fa-trash"></i>
                                     </a>
                                 {% endif %}

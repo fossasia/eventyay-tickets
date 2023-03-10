@@ -37,7 +37,7 @@
                     <span>
                         {% translate "This question is currently active, it will be asked during submission." %}
                         <a class="btn btn-sm btn-outline-danger"
-                            href="{{ question.urls.toggle }}">{% translate "Hide question" %}</a>
+                           href="{{ question.urls.toggle }}">{% translate "Hide question" %}</a>
                     </span>
                 </div>
             {% else %}
@@ -45,7 +45,7 @@
                     <span>
                         {% translate "This question is currently inactive, and will not be asked during submission." %}
                         <a class="btn btn-sm btn-success"
-                            href="{{ question.urls.toggle }}">{% translate "Activate question" %}</a>
+                           href="{{ question.urls.toggle }}">{% translate "Activate question" %}</a>
                     </span>
                 </div>
             {% endif %}

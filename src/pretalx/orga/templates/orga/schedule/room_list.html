@@ -33,24 +33,24 @@
                             <td class="action-column">
                                 {% if not forloop.last %}
                                     <a href="{{ room.urls.down }}"
-                                        class="btn btn-sm btn-outline-info"
-                                        title="{% translate "Move room down" %}">
+                                       class="btn btn-sm btn-outline-info"
+                                       title="{% translate "Move room down" %}">
                                         <i class="fa fa-arrow-down"></i>
                                     </a>
                                 {% endif %}
                                 {% if not forloop.first %}
                                     <a href="{{ room.urls.up }}"
-                                        class="btn btn-sm btn-outline-info"
-                                        title="{% translate "Move room up" %}">
+                                       class="btn btn-sm btn-outline-info"
+                                       title="{% translate "Move room up" %}">
                                         <i class="fa fa-arrow-up"></i>
                                     </a>
                                 {% endif %}
                                 <a href="{{ room.urls.edit }}"
-                                    class="btn btn-sm btn-info">
+                                   class="btn btn-sm btn-info">
                                     <i class="fa fa-edit"></i>
                                 </a>
                                 <a href="{{ room.urls.delete }}"
-                                    class="btn btn-sm btn-danger">
+                                   class="btn btn-sm btn-danger">
                                     <i class="fa fa-trash"></i>
                                 </a>
                             </td>
