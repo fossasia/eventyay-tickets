@@ -22,7 +22,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for member in team.members.all %}
+                            {% for member in members %}
                                 <tr>
                                     <td>{{ member.get_display_name }}</td>
                                     <td><a href="mailto:{{ member.email }}">{{ member.email }}</a></td>
