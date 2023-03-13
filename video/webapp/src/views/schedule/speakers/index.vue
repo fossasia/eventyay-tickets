@@ -31,15 +31,24 @@ export default {
 	},
 	computed: {
 		...mapState('schedule', ['schedule']),
-		...mapGetters('schedule', ['sessionsLookup'])
+		...mapGetters('schedule', ['sessions', 'sessionsLookup'])
 	},
 	async created () {
-		if (!this.$store.getters['schedule/pretalxApiBaseUrl']) return
-		this.speakers = (await (await fetch(`${this.$store.getters['schedule/pretalxApiBaseUrl']}/speakers/?limit=999`)).json()).results.sort((a, b) => a.name.localeCompare(b.name))
-		// const speakersToAttendee = await api.call('user.fetch', {pretalx_ids: this.speakers.map(speaker => speaker.code)})
-		for (const speaker of this.speakers) {
-			speaker.sessions = speaker.submissions.map(submission => this.sessionsLookup[submission])
-			// speaker.attendee = speakersToAttendee[speaker.code]
+		if (this.$store.getters['schedule/pretalxApiBaseUrl']) {
+			this.speakers = (await (await fetch(`${this.$store.getters['schedule/pretalxApiBaseUrl']}/speakers/?limit=999`)).json()).results.sort((a, b) => a.name.localeCompare(b.name))
+			// const speakersToAttendee = await api.call('user.fetch', {pretalx_ids: this.speakers.map(speaker => speaker.code)})
+			for (const speaker of this.speakers) {
+				speaker.sessions = speaker.submissions.map(submission => this.sessionsLookup[submission])
+				// speaker.attendee = speakersToAttendee[speaker.code]
+			}
+		} else {
+			this.$watch('schedule', (schedule) => {
+				if (!schedule) return
+				this.speakers = schedule.speakers.map(speaker => ({
+					...speaker,
+					sessions: this.sessions.filter(session => session.speakers.includes(speaker))
+				})).sort((a, b) => a.name.localeCompare(b.name))
+			}, { immediate: true })
 		}
 	}
 }
