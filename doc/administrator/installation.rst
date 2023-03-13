@@ -297,7 +297,7 @@ In the same environment as you ran the previous pretalx commands (e.g. the
 
 You could for example configure the ``pretalx`` user cron like this::
 
-  15,45 * * * * /var/pretalx/.local/bin/python -m pretalx runperiodic
+  15,45 * * * * python -m pretalx runperiodic
 
 Next Steps
 ----------
