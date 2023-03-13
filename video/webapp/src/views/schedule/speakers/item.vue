@@ -38,13 +38,22 @@ export default {
 		...mapState('schedule', ['schedule']),
 		...mapGetters('schedule', ['sessionsLookup', 'favs']),
 		sessions () {
-			return this.speaker.submissions.map(submission => this.sessionsLookup[submission])
+			if (this.speaker.submissions) {
+				return this.speaker.submissions.map(submission => this.sessionsLookup[submission])
+			}
+			return this.$store.getters['schedule/sessions'].filter(session => session.speakers.includes(this.speaker))
 		}
 	},
 	async created () {
 		// TODO error handling
-		if (!this.$store.getters['schedule/pretalxApiBaseUrl']) return
-		this.speaker = await (await fetch(`${this.$store.getters['schedule/pretalxApiBaseUrl']}/speakers/${this.speakerId}/`)).json()
+		if (this.$store.getters['schedule/pretalxApiBaseUrl']) {
+			this.speaker = await (await fetch(`${this.$store.getters['schedule/pretalxApiBaseUrl']}/speakers/${this.speakerId}/`)).json()
+		} else {
+			this.$watch('schedule', (schedule) => {
+				if (!schedule) return
+				this.speaker = schedule.speakers.find(speaker => speaker.id === this.speakerId || speaker.code === this.speakerId)
+			}, { immediate: true })
+		}
 	},
 	mounted () {
 		this.$nextTick(() => {
