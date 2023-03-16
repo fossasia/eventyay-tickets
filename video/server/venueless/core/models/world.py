@@ -144,6 +144,9 @@ class World(VersionedModel):
     feature_flags = JSONField(blank=True, default=default_feature_flags)
     external_auth_url = models.URLField(null=True, blank=True)
 
+    class Meta:
+        ordering = ("id",)
+
     def __str__(self):
         return f"{self.id} ({self.title})"
 
