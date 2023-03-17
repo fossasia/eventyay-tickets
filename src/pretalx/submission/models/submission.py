@@ -193,9 +193,7 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
         null=True,
         blank=True,
         verbose_name=_("Duration"),
-        help_text=_(
-            "The duration in minutes. Leave empty for default duration for this session type."
-        ),
+        help_text=_("The duration in minutes."),
     )
     slot_count = models.IntegerField(
         default=1,
