@@ -1,28 +1,29 @@
 <html>
 <head>
-    <!-- import #zmmtg-root css -->
-    <link type="text/css" rel="stylesheet" href="https://source.zoom.us/1.9.9/css/bootstrap.css"/>
-    <link type="text/css" rel="stylesheet" href="https://source.zoom.us/1.9.9/css/react-select.css"/>
+    <link type="text/css" rel="stylesheet" href="https://source.zoom.us/2.10.1/css/bootstrap.css"/>
+    <link type="text/css" rel="stylesheet" href="https://source.zoom.us/2.10.1/css/react-select.css"/>
 </head>
 <body>
-<!-- import ZoomMtg dependencies -->
-<script src="https://source.zoom.us/1.9.9/lib/vendor/react.min.js"></script>
-<script src="https://source.zoom.us/1.9.9/lib/vendor/react-dom.min.js"></script>
-<script src="https://source.zoom.us/1.9.9/lib/vendor/redux.min.js"></script>
-<script src="https://source.zoom.us/1.9.9/lib/vendor/redux-thunk.min.js"></script>
-<script src="https://source.zoom.us/1.9.9/lib/vendor/lodash.min.js"></script>
+<!-- Dependencies for client view and component view -->
+<script src="https://source.zoom.us/2.10.1/lib/vendor/react.min.js"></script>
+<script src="https://source.zoom.us/2.10.1/lib/vendor/react-dom.min.js"></script>
+<script src="https://source.zoom.us/2.10.1/lib/vendor/redux.min.js"></script>
+<script src="https://source.zoom.us/2.10.1/lib/vendor/redux-thunk.min.js"></script>
+<script src="https://source.zoom.us/2.10.1/lib/vendor/lodash.min.js"></script>
 
-<!-- import ZoomMtg -->
-<script src="https://source.zoom.us/zoom-meeting-1.9.9.min.js"></script>
+<!-- CDN for client view -->
+<script src="https://source.zoom.us/zoom-meeting-2.10.1.min.js"></script>
 
 <script>
-	ZoomMtg.setZoomJSLib('https://source.zoom.us/1.9.9/lib', '/av');
+	ZoomMtg.setZoomJSLib('https://source.zoom.us/2.10.1/lib', '/av');
 	ZoomMtg.preLoadWasm();
-	ZoomMtg.prepareJssdk();
+	ZoomMtg.prepareWebSDK()
     {% if langurl %}
 		ZoomMtg.i18n.load('{{ langurl }}', '{{ lang }}');
+		ZoomMtg.i18n.reload('{{ langurl }}', '{{ lang }}');
     {% else %}
 		ZoomMtg.i18n.load('{{ lang }}');
+		ZoomMtg.i18n.reload('{{ lang }}');
     {% endif %}
 	ZoomMtg.init({
 		debug: {% if debug %}true{% else %}false{% endif %},
@@ -32,12 +33,12 @@
         showMeetingHeader: false,
         disableInvite: true,
         disableCallOut: true,
-        inviteUrlFormat: 'hide',
+        disableInvite: true,
         meetingInfo: ['topic', 'host', 'telPwd', 'participant', 'dc', 'enctype', 'report'],
 		success: function() {
 			ZoomMtg.join({
 				signature: '{{ signature }}',
-				apiKey: '{{ api_key }}',
+				sdkKey: '{{ api_key }}',
 				meetingNumber: '{{ meeting_number }}',
 				userName: '{{ user_name }}',
                 userEmail: '{{ user_email }}',

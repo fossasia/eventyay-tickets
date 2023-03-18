@@ -111,7 +111,7 @@ export default {
 				if (hideIfBackground) {
 					iframe.classList.add('hide-if-background')
 				}
-				iframe.allow = 'camera *; microphone *; fullscreen *; display-capture *' + (this.autoplay ? '; autoplay *' : '')
+				iframe.allow = 'screen-wake-lock *; camera *; microphone *; fullscreen *; display-capture *' + (this.autoplay ? '; autoplay *' : '')
 				iframe.allowfullscreen = true
 				iframe.allowusermedia = true
 				iframe.setAttribute('allowfullscreen', '') // iframe.allowfullscreen is not enough in firefox#media-source-iframes

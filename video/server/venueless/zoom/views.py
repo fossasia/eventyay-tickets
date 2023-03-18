@@ -1,8 +1,7 @@
-import base64
-import hashlib
-import hmac
-import time
+import datetime
+from calendar import timegm
 
+import jwt
 from django.conf import settings
 from django.core import signing
 from django.core.exceptions import PermissionDenied
@@ -14,25 +13,17 @@ from venueless.core.models import World
 
 
 def generate_signature(data):
-    # From https://marketplace.zoom.us/docs/sdk/native-sdks/web/build/signature
-    ts = int(round(time.time() * 1000)) - 30000
-    msg = data["apiKey"] + str(data["meetingNumber"]) + str(ts) + str(data["role"])
-    message = base64.b64encode(bytes(msg, "utf-8"))
-    # message = message.decode("utf-8");
-    secret = bytes(data["apiSecret"], "utf-8")
-    hash = hmac.new(secret, message, hashlib.sha256)
-    hash = base64.b64encode(hash.digest())
-    hash = hash.decode("utf-8")
-    tmpString = "{}.{}.{}.{}.{}".format(
-        data["apiKey"],
-        str(data["meetingNumber"]),
-        str(ts),
-        str(data["role"]),
-        hash,
-    )
-    signature = base64.b64encode(bytes(tmpString, "utf-8"))
-    signature = signature.decode("utf-8")
-    return signature.rstrip("=")
+    iat = datetime.datetime.utcnow()
+    payload = {
+        "appKey": data["apiKey"],
+        "sdkKey": data["apiKey"],
+        "mn": data["meetingNumber"],
+        "role": data["role"],
+        "iat": iat,
+        "exp": iat + datetime.timedelta(hours=24),
+        "tokenExp": timegm((iat + datetime.timedelta(hours=24)).utctimetuple()),
+    }
+    return jwt.encode(payload, data["apiSecret"], algorithm="HS256")
 
 
 def get_closest_zoom_lang(world):
@@ -67,10 +58,6 @@ class ZoomViewMixin:
             raise PermissionDenied("Feature disabled")
         return w
 
-
-class MeetingView(ZoomViewMixin, TemplateView):
-    template_name = "zoom/meeting.html"
-
     def dispatch(self, request, *args, **kwargs):
         r = super().dispatch(request, *args, **kwargs)
         if "cross-origin-isolation" in self.world.feature_flags:
@@ -78,6 +65,10 @@ class MeetingView(ZoomViewMixin, TemplateView):
             r["Cross-Origin-Embedder-Policy"] = "require-corp"
             r["Cross-Origin-Opener-Policy"] = "same-origin"
         return r
+
+
+class MeetingView(ZoomViewMixin, TemplateView):
+    template_name = "zoom/meeting.html"
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data()
@@ -119,3 +110,7 @@ class MeetingView(ZoomViewMixin, TemplateView):
 
 class MeetingEndedView(ZoomViewMixin, TemplateView):
     template_name = "zoom/ended.html"
+
+
+class IframeTestView(ZoomViewMixin, TemplateView):
+    template_name = "zoom/iframetest.html"
