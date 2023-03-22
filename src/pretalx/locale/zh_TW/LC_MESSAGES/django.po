@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-02-19 15:38+0000\n"
-"PO-Revision-Date: 2023-02-28 19:43+0000\n"
+"PO-Revision-Date: 2023-03-22 22:30+0000\n"
 "Last-Translator: Robert Sim <contact@robertsky.com>\n"
 "Language-Team: none\n"
 "Language: zh_TW\n"
@@ -66,7 +66,7 @@ msgstr "我們有新的議程喔！"
 #: pretalx/agenda/templates/agenda/changelog_block.html:69
 #: pretalx/agenda/templates/agenda/changelog_block.html:88
 msgid "by"
-msgstr "由："
+msgstr "由"
 
 #: pretalx/agenda/templates/agenda/changelog_block.html:25
 msgid "We have a new session: "
@@ -89,7 +89,7 @@ msgstr ""
 
 #: pretalx/agenda/templates/agenda/changelog_block.html:83
 msgid "We have moved a session around: "
-msgstr "我們更動了一場議程："
+msgstr "我們已经更動了一場議程： "
 
 #: pretalx/agenda/templates/agenda/featured.html:13
 msgid "Welcome to our list of featured sessions!"
@@ -100,9 +100,7 @@ msgid ""
 "We prepared a list of exciting sessions, so you can get a feel for our "
 "conference. Please keep in mind that this is not our full schedule. We will "
 "follow up with the full schedule in time, stay tuned!"
-msgstr ""
-"我們準備了一份議程清單，讓您可以先感受一下我們的活動。請記住，這不是完整的議"
-"程表。完整的議程表會在計畫的時間發表出來，敬請耐心等候。"
+msgstr "我們準備了一份議程清單，讓您可以先感受一下我們的活動。請記住，這不是完整的議程表。完整的議程表會在計畫的時間發表出來，敬請耐心等候！"
 
 #: pretalx/agenda/templates/agenda/featured.html:20
 msgid ""
@@ -115,7 +113,7 @@ msgstr ""
 #: pretalx/agenda/templates/agenda/feed/description.html:5
 #, python-format
 msgid "A new %(event_name)s schedule has been released!"
-msgstr "%(event_name)s 已釋出新的議程表。"
+msgstr "%(event_name)s 已釋出新的議程表！"
 
 #: pretalx/agenda/templates/agenda/feed/description.html:9
 #, python-format
@@ -254,10 +252,8 @@ msgid "See also:"
 msgstr "您也可參考："
 
 #: pretalx/agenda/templates/agenda/talk.html:151
-#, fuzzy
-#| msgid "This speaker also holds:"
 msgid "This speaker also appears in:"
-msgstr "此講者也主持了："
+msgstr "此講者還出現在："
 
 #: pretalx/agenda/views/schedule.py:172
 msgid "Our schedule is not live yet."
@@ -280,7 +276,7 @@ msgstr "嗨，很高興見到您！"
 msgid ""
 "We're glad that you want to contribute to our event with your proposal. "
 "Let's get started, this won't take long."
-msgstr "我們很高興看到您想投稿我們的活動。讓我們開始吧，不用很久！"
+msgstr "我們很高興与我們的活動提出提案。讓我們開始吧，這不會花很長時間。"
 
 #: pretalx/cfp/flow.py:355
 msgid ""
@@ -332,10 +328,8 @@ msgid ""
 msgstr "登入時發生了錯誤。請聯繫主辦者以尋求協助。"
 
 #: pretalx/cfp/flow.py:505
-#, fuzzy
-#| msgid "Your Profile"
 msgid "Profile"
-msgstr "您的個人資料"
+msgstr "個人資料"
 
 #: pretalx/cfp/flow.py:509
 msgid "Tell us something about yourself!"
@@ -445,9 +439,7 @@ msgstr "您投稿的議程已被退回。"
 msgid ""
 "Your proposal can't be withdrawn at this time – please contact us if you "
 "need to withdraw your proposal!"
-msgstr ""
-"您投稿的議程現在不應該在已退回的狀態。如果您真的要撤回您的投稿，請與我們聯"
-"繫。"
+msgstr "目前無法撤回您的提案——如果您需要撤回您的提案，請聯繫我們！"
 
 #: pretalx/cfp/phrases.py:27
 msgid "Your session has been confirmed – we're looking forward to seeing you!"
@@ -476,7 +468,7 @@ msgstr "您的帳號已被刪除。"
 
 #: pretalx/cfp/phrases.py:38
 msgid "Are you really sure? Please tick the box"
-msgstr "您確定嗎？請點一下勾選盒。"
+msgstr "您確定嗎？請點一下勾選盒"
 
 #: pretalx/cfp/phrases.py:40
 msgid "Please provide a valid email address."
@@ -492,7 +484,7 @@ msgstr "您已加入此議程投稿。請在下方填寫您的資料。"
 
 #: pretalx/cfp/phrases.py:46
 msgid "This event currently does not accept new proposals, sorry!"
-msgstr "抱歉，此活動已不再接受投稿。"
+msgstr "抱歉，此活動已不再接受新的提案！"
 
 #: pretalx/cfp/phrases.py:47
 msgid "Your session has been submitted successfully!"
@@ -502,7 +494,7 @@ msgstr "您已投稿成功！"
 msgid ""
 "We are experiencing difficulties when sending mails, but your session was "
 "submitted successfully!"
-msgstr "我們發送電子郵件時發生問題，不過您的議程已完成投稿。"
+msgstr "我們在發送郵件時遇到困難，但您的議程已成功提交！"
 
 #: pretalx/cfp/templates/cfp/event/cfp.html:20
 #, python-format
@@ -548,10 +540,8 @@ msgid "submitted"
 msgstr "已提交"
 
 #: pretalx/cfp/templates/cfp/event/fragment_state.html:5
-#, fuzzy
-#| msgid "Send review"
 msgid "in review"
-msgstr "傳送檢閱意見"
+msgstr "在檢閱中"
 
 #: pretalx/cfp/templates/cfp/event/fragment_state.html:7
 msgid "not accepted"
@@ -674,27 +664,23 @@ msgstr "提交議程投稿"
 
 #: pretalx/cfp/templates/cfp/event/submission_base.html:31
 msgid "Done!"
-msgstr ""
+msgstr "完成！"
 
 #: pretalx/cfp/templates/cfp/event/submission_base.html:45
-#, fuzzy
-#| msgid "Saved!"
 msgid "Save as draft"
-msgstr "已儲存！"
+msgstr "保存為草稿"
 
 #: pretalx/cfp/templates/cfp/event/submission_base.html:50
 msgid "Continue"
 msgstr "繼續"
 
 #: pretalx/cfp/templates/cfp/event/submission_base.html:52
-#, fuzzy
-#| msgid "Submit a proposal"
 msgid "Submit proposal!"
-msgstr "提交一份議程投稿"
+msgstr "提交議程投稿！"
 
 #: pretalx/cfp/templates/cfp/event/submission_base.html:56
 msgid "or save as draft for now"
-msgstr ""
+msgstr "或暫時保存為草稿"
 
 #: pretalx/cfp/templates/cfp/event/submission_base.html:57
 msgid ""
@@ -878,14 +864,10 @@ msgid "Congratulations on your acceptance!"
 msgstr "恭喜，您投稿的議程被接受了！"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:24
-#, fuzzy
-#| msgid ""
-#| "Please provide us with your available hours during the event, so that we "
-#| "can schedule your event accordingly:<p>"
 msgid ""
 "Please provide us with your available hours during the event, so that we can "
 "schedule your event accordingly:"
-msgstr "請提供您在活動期間可以參加的時段，以便我們適當地安排您的議程：<p>"
+msgstr "請提供您在活動期間可以參加的時段，以便我們適當地安排您的議程："
 
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:42
 msgid ""
@@ -916,10 +898,8 @@ msgstr "確認"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm_error.html:7
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm_error.html:11
-#, fuzzy
-#| msgid "Proposal information"
 msgid "Proposal not found"
-msgstr "提交資訊"
+msgstr "找不到提案"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm_error.html:13
 msgid ""
@@ -929,10 +909,8 @@ msgid ""
 msgstr ""
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:25
-#, fuzzy
-#| msgid "Current draft"
 msgid "Your draft:"
-msgstr "目前的草稿"
+msgstr "您的草稿："
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:42
 msgid "Confirm your attendance"
@@ -952,12 +930,9 @@ msgid_plural "Speakers:"
 msgstr[0] "講者："
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:64
-#, fuzzy
-#| msgid "submitter"
-#| msgid_plural "submitters"
 msgid "Submitter:"
 msgid_plural "Submitters:"
-msgstr[0] "名提交者"
+msgstr[0] "名提交者："
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:93
 #: pretalx/orga/forms/schedule.py:116
@@ -978,10 +953,8 @@ msgstr ""
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:150
 #: pretalx/orga/templates/orga/submission/content.html:133
-#, fuzzy
-#| msgid "Media files"
 msgid "Max file size:"
-msgstr "媒體檔案"
+msgstr "最大文件大小："
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:165
 #: pretalx/orga/templates/orga/submission/content.html:141
@@ -989,16 +962,12 @@ msgid "Add another resource"
 msgstr "新增其他資源"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:177
-#, fuzzy
-#| msgid "Saved!"
 msgid "Save draft"
-msgstr "已儲存！"
+msgstr "儲存草稿"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:180
-#, fuzzy
-#| msgid "Submit a proposal"
 msgid "Submit proposal"
-msgstr "提交一份議程投稿"
+msgstr "提交提案"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:193
 msgid "Share proposal"
@@ -1212,7 +1181,7 @@ msgstr ""
 msgid ""
 "This filetype ({extension}) is not allowed, it has to be one of the "
 "following: "
-msgstr "此檔案型態（{extension}）不被接受。可接受的檔案型態如下："
+msgstr "此檔案型態（{extension}）不被接受。可接受的檔案型態如下： "
 
 #: pretalx/common/forms/fields.py:159
 msgid ""
@@ -1553,7 +1522,7 @@ msgstr "個人資料已變更。"
 
 #: pretalx/common/management/commands/init.py:18
 msgid "This value is required, please enter some value to proceed: "
-msgstr "這個欄位是必填的，請輸入："
+msgstr "這個欄位是必填的，請輸入： "
 
 #: pretalx/common/management/commands/init.py:31
 msgid ""
@@ -1593,11 +1562,11 @@ msgid ""
 "Name (e.g. \"The Conference Organiser\"): "
 msgstr ""
 "\n"
-"名字（例如「研討會主辦者」）："
+"名字（例如「研討會主辦者」）： "
 
 #: pretalx/common/management/commands/init.py:57
 msgid "Slug (e.g. \"conforg\", used in urls): "
-msgstr "短名稱（例如 \"slat\"，用於網址）："
+msgstr "短名稱（例如 \"conforg\"，用於網址）： "
 
 #: pretalx/common/management/commands/init.py:71
 msgid ""
@@ -1880,7 +1849,7 @@ msgstr "錯誤的要求。"
 msgid ""
 "It looks as if the communication between you and pretalx went wrong in some "
 "way.<br>Please return to the last page and try again!"
-msgstr "您跟 Pretalx 間的通訊似乎有些問題。<br>請回到上一頁然後再試一次。"
+msgstr "您跟 Pretalx 間的通訊似乎有些問題。<br>請回到上一頁然後再試一次！"
 
 #: pretalx/common/templates/403_csrf.html:4
 #: pretalx/common/templates/403_csrf.html:6
@@ -1909,9 +1878,7 @@ msgstr "我們遇到麻煩了。"
 msgid ""
 "Please help us to fix this by submitting <a href=\"%(link)s\" rel=noopener>a "
 "bug report</a>!"
-msgstr ""
-"請幫忙提交<a href=\"%(link)s\" rel=noopener>錯誤報告</a>給我們，以便我們修"
-"復。"
+msgstr "請幫忙提交<a href=\"%(link)s\" rel=noopener>錯誤報告</a>給我們，以便我們修復！"
 
 #: pretalx/common/templates/common/auth.html:20
 msgid "I already have an account"
@@ -2006,7 +1973,7 @@ msgstr "主辦團隊成員"
 #: pretalx/common/templates/common/powered_by.html:33
 #, python-format
 msgid "powered by <a %(a_attr)s>pretalx</a>"
-msgstr "Powered by <a %(a_attr)s>pretalx</a>"
+msgstr "由<a %(a_attr)s>pretalx</a>提供支持"
 
 #: pretalx/common/templates/common/question_answer.html:8
 msgid "No file provided"
@@ -2067,7 +2034,7 @@ msgstr "{number} 次"
 
 #: pretalx/common/update_check.py:97
 msgid "pretalx update available"
-msgstr "Pretalx 有新的更新"
+msgstr "pretalx 有新的更新"
 
 #: pretalx/common/update_check.py:101
 #, python-brace-format
@@ -4175,11 +4142,11 @@ msgstr "連結"
 
 #: pretalx/orga/templates/orga/admin.html:92
 msgid "pretalx website"
-msgstr "Pretalx 網站"
+msgstr "pretalx 網站"
 
 #: pretalx/orga/templates/orga/admin.html:93
 msgid "pretalx documentation"
-msgstr "Pretalx 文件"
+msgstr "pretalx 文件"
 
 #: pretalx/orga/templates/orga/admin.html:95
 msgid "Configuration reference"
@@ -4199,7 +4166,7 @@ msgstr "釋出備忘"
 
 #: pretalx/orga/templates/orga/admin.html:101
 msgid "pretalx blog (release announcements, features)"
-msgstr "Pretalx 部落格（新版本釋出宣告、新功能宣告）"
+msgstr "pretalx 部落格（新版本釋出宣告、新功能宣告）"
 
 #: pretalx/orga/templates/orga/auth/base.html:29
 #: pretalx/orga/templates/orga/base.html:60
@@ -4636,7 +4603,7 @@ msgstr "對於非主題相關的其他題目是否接受"
 
 #: pretalx/orga/templates/orga/cfp/text.html:25
 msgid "The people coming to your conference: interests, experience level …"
-msgstr "會來參加的客群：興趣、經驗、可能的專長等"
+msgstr "會來參加的客群：興趣、經驗、可能的專長等…"
 
 #: pretalx/orga/templates/orga/cfp/text.html:26
 msgid "Link your Code of Conduct and Data Protection statements."
@@ -4832,7 +4799,7 @@ msgstr "請求修正"
 
 #: pretalx/orga/templates/orga/event/live.html:28
 msgid "There may be easy ways to improve your event before its release!"
-msgstr "在發布活動前，有些簡單的方法來改進。"
+msgstr "在發布活動前，有些簡單的方法來改進！"
 
 #: pretalx/orga/templates/orga/event/live.html:41
 msgid "Go offline"
@@ -5385,7 +5352,7 @@ msgstr "點擊此處以開始！"
 
 #: pretalx/orga/templates/orga/review/dashboard.html:34
 msgid "You've got no proposals left to review!"
-msgstr "您沒有需要檢閱的議程投稿了。"
+msgstr "您沒有需要檢閱的提案了!"
 
 #: pretalx/orga/templates/orga/review/dashboard.html:36
 msgid "Reviews are currently closed."
@@ -5416,7 +5383,7 @@ msgstr "檢閱"
 
 #: pretalx/orga/templates/orga/review/dashboard.html:126
 msgid "Regenerate decision emails"
-msgstr "重新產生決策電子郵件。"
+msgstr "重新產生決策電子郵件"
 
 #: pretalx/orga/templates/orga/review/dashboard.html:129
 #: pretalx/orga/templates/orga/submission/list.html:37
@@ -5790,7 +5757,7 @@ msgstr "還有 %(unscheduled)s 個議程<strong>還沒安排時間</strong>。"
 #, python-format
 msgid ""
 "%(no_track)s sessions have <strong>not yet been assigned a track</strong>."
-msgstr "還有 %(no_track)s 個議程<strong>並未指定給任何議程軌。</strong>"
+msgstr "還有 %(no_track)s 個議程<strong>並未指定給任何議程軌</strong>。"
 
 #: pretalx/orga/templates/orga/schedule/release.html:62
 msgid "Warnings"
@@ -6027,9 +5994,7 @@ msgstr "密碼已重置："
 msgid ""
 "Do you really want to reset this user's password? They won't be able to log "
 "in until they set a new password. The email will go to: "
-msgstr ""
-"您確定要重置此使用者的密碼嗎？他們必須設定新的密碼，否則不能再登入。電子郵件"
-"通知將送到："
+msgstr "您確定要重置此使用者的密碼嗎？他們必須設定新的密碼，否則不能再登入。電子郵件通知將送到： "
 
 #: pretalx/orga/templates/orga/settings/team_tracks.html:11
 msgid ""
@@ -6505,7 +6470,7 @@ msgstr "上次的更新檢查沒有成功。"
 
 #: pretalx/orga/templates/orga/update.html:30
 msgid "The pretalx.com server returned an error code."
-msgstr "pretalx.com 傳回一個錯誤代碼。"
+msgstr "pretalx.com 服務器傳回錯誤代碼。"
 
 #: pretalx/orga/templates/orga/update.html:32
 msgid "The pretalx.com server could not be reached."
@@ -6619,7 +6584,7 @@ msgstr "這是唯一的提交型態，別刪了它啊。至少先新增一個提
 #: pretalx/orga/views/cfp.py:498
 msgid ""
 "You cannot delete the default session type. Make another type default first!"
-msgstr "您不能刪除預設的提交型態。請先指定另一個型態為預設值。"
+msgstr "您不能刪除預設的提交型態。請先指定另一個型態為預設值！"
 
 #: pretalx/orga/views/cfp.py:509
 msgid "The Session Type has been deleted."
@@ -6798,7 +6763,7 @@ msgstr ""
 
 #: pretalx/orga/views/event.py:474
 msgid "Yay! We saved your changes."
-msgstr "我們把您做的變更儲存起來了。Woo-hoo!"
+msgstr "耶！我們保存了您的更改。"
 
 #: pretalx/orga/views/event.py:505
 msgid ""
@@ -7125,7 +7090,7 @@ msgstr ""
 
 #: pretalx/orga/views/submission.py:267
 msgid "Please provide a valid email address!"
-msgstr "請輸入正確的電子郵件地址。"
+msgstr "請輸入正確的電子郵件地址！"
 
 #: pretalx/orga/views/submission.py:275
 msgid "The speaker has been added to the proposal."
