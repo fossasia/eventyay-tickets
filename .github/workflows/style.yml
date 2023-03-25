@@ -21,7 +21,7 @@ concurrency:
 jobs:
   isort:
     name: isort
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python 3.9
@@ -41,7 +41,7 @@ jobs:
         working-directory: ./src
   flake:
     name: flake8
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python 3.9
@@ -61,7 +61,7 @@ jobs:
         working-directory: ./src
   black:
     name: black
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python 3.9
@@ -81,7 +81,7 @@ jobs:
         working-directory: ./src
   djhtml:
     name: djhtml
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python 3.9
@@ -101,7 +101,7 @@ jobs:
         working-directory: ./src
   packaging:
     name: packaging
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python 3.9
