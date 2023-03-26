@@ -65,6 +65,8 @@ class TeamDetail(PermissionRequired, TeamMixin, CreateOrUpdateView):
     @context
     @cached_property
     def members(self):
+        if not self.team or not self.team.pk:
+            return []
         return self.team.members.all().order_by("name")
 
     def post(self, *args, **kwargs):
