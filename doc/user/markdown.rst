@@ -36,14 +36,17 @@ on the right:
 | .. code-block:: md                       |                                      |
 |                                          | Look at https://pretalx.com.         |
 |     Look at https://pretalx.com.         |                                      |
-|     Look at [this](https://pretalx.com). | Look at this.                        |
+|     Look at [this](https://pretalx.com)  | Look at `this <https://pretalx.com>`_|
 +------------------------------------------+--------------------------------------+
 | .. code-block:: md                       |                                      |
 |                                          |                                      |
 |    * First item                          |  * First item                        |
 |    * Second item which is too long to    |  * Second item which is too long to  |
 |      fit in a line                       |    fit in a line                     |
-|    * Third item                          |  * Third item                        |
+|    * **Note:** Keep an empty line before |  * **Note:** Keep an empty line      |
+|      and after your list!                |    before and after your list!       |
+|      * Lists can be nested               |                                      |
+|                                          |    - Lists can be nested             |
 +------------------------------------------+--------------------------------------+
 | .. code-block:: md                       |                                      |
 |                                          |                                      |

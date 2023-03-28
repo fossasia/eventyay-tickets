@@ -150,6 +150,14 @@ li {
     list-style: none
 }
 
+table ul {
+    list-style: inherit;
+    padding-left: 18px;
+}
+table ul li {
+    list-style: inherit;
+}
+
 img {
     border: 0;
     vertical-align: middle;
