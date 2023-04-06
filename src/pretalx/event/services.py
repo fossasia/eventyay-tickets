@@ -15,7 +15,21 @@ def task_periodic_event_services(event_slug):
     with scopes_disabled():
         event = (
             Event.objects.filter(slug=event_slug)
-            .prefetch_related("_settings_objects", "submissions__slots")
+            .select_related(
+                "ack_template",
+                "accept_template",
+                "reject_template",
+                "update_template",
+                "question_template",
+                "cfp",
+            )
+            .prefetch_related(
+                "_settings_objects",
+                "submissions__slots",
+                "schedules",
+                "review_phases",
+                "score_categories",
+            )
             .first()
         )
     if not event:
