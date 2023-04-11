@@ -106,7 +106,7 @@ setup(
         "django-csp~=3.7.0",  # https://github.com/mozilla/django-csp/blob/main/CHANGES
         "django-filter==23.1",  # https://github.com/carltongibson/django-filter/blob/main/CHANGES.rst
         "django-formset-js-improved==0.5.0.3",  # no changelog, https://github.com/pretix/django-formset-js
-        "django-formtools~=2.4.0",
+        "django-formtools~=2.3.0",
         "django-hierarkey~=1.1.0",  # no changelog, https://github.com/raphaelm/django-hierarkey
         "django-i18nfield~=1.9.0",  # 2020-06, no changelog, https://github.com/raphaelm/django-i18nfield/
         "django-libsass~=0.8",  # inactive, https://github.com/torchbox/django-libsass/blob/main/CHANGELOG.txt
