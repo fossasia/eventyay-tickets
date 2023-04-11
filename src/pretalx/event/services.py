@@ -100,13 +100,9 @@ def task_periodic_schedule_export(event_slug):
 
 @receiver(periodic_task)
 def periodic_event_services(sender, **kwargs):
-    for event in Event.objects.all().prefetch_related("review_phases"):
+    for event in Event.objects.all():
         with scope(event=event):
             task_periodic_event_services.apply_async(args=(event.slug,))
-            if (
-                event.current_schedule
-                and event.current_schedule.is_public
-                and event.feature_flags["export_html_on_release"]
-            ):
+            if event.current_schedule:
                 task_periodic_schedule_export.apply_async(args=(event.slug,))
             event.update_review_phase()
