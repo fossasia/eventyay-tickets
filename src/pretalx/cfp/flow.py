@@ -478,7 +478,7 @@ class UserStep(GenericFlowStep, FormFlowStep):
     def done(self, request, draft=False):
         if not getattr(request.user, "is_authenticated", False):
             form = self.get_form(from_storage=True)
-            form.is_valid()
+            form.clean()
             uid = form.save()
             request.user = User.objects.filter(pk=uid).first()
         # This should never happen
