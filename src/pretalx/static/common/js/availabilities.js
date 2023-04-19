@@ -29,12 +29,12 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     var editable = !Boolean(data_field.attr("disabled"))
+    const constraints = data.constraints || null
 
-    let slotDuration = data_field.attr("resolution")
-    slotDuration = slotDuration || "00:30:00"
+    const slotDuration = data.resolution || "00:30:00"
     var events = data.availabilities.map(function(e) {
-      const start = moment(e.start).tz(data.event.timezone)
-      const end = moment(e.end).tz(data.event.timezone)
+      const start = moment(e.start)
+      const end = moment(e.end)
       if (start.format("HHmmss") == 0 && end.format("HHmmss") == 0) {
         e.allDay = true
       }
@@ -45,15 +45,18 @@ document.addEventListener("DOMContentLoaded", function() {
     let localeData = document.querySelector("#calendar-locale")
     const locale = localeData ? localeData.dataset.locale : "en"
     const calendar = new FullCalendar.Calendar(editor[0], {
+      timeZone: data.event.timezone,
+      locale: locale,
       initialView: 'timeGrid',
       headerToolbar: {},
       visibleRange: {
         start: data.event.date_from,
         end: moment(data.event.date_to) + 1,
       },
+      duration: {
+        days: moment(data.event.date_to).diff(moment(data.event.date_from), 'days') + 1,
+      },
       headerToolbar: false,
-      footerToolbar: false,
-      locale: locale,
       events: events,
       slotDuration: slotDuration,
       slotLabelFormat: {
@@ -78,6 +81,9 @@ document.addEventListener("DOMContentLoaded", function() {
       allDayMaintainDuration: true,
       eventsSet: save_events,
       eventColor: "#3aa57c",
+      eventConstraint: constraints,
+      selectConstraint: constraints,
+      businessHours: constraints,
       select: function(info) {
         if (document.querySelector(".availabilities-editor .fc-event.delete")) {
           document.querySelectorAll(".availabilities-editor .fc-event.delete").forEach(function(e) { e.classList.remove("delete") })
@@ -103,5 +109,7 @@ document.addEventListener("DOMContentLoaded", function() {
       },
     })
     calendar.render()
+    // not sure why the calendar doesn't render properly without this. Has to be in a timeout, though!
+    setTimeout(function() {calendar.updateSize() }, 20)
   })
 })

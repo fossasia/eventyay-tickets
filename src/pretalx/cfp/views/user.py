@@ -230,6 +230,7 @@ class SubmissionConfirmView(LoggedInEventPageMixin, SubmissionViewMixin, FormVie
         result = super().get_form_kwargs()
         result["instance"] = self.speaker_profile
         result["event"] = self.request.event
+        result["limit_to_rooms"] = True
         return result
 
     def get_form(self):

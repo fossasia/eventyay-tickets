@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`1418` Speaker availabilities are now limited to the sum of all room availabilites.
 - :feature:`1440` The list of team members is now always sorted by name.
 - :support:`-` Document that in nginx, gzip should be turned on only for static files.
 - :bug:`1098` There was a very rare bug that could lock up pretalx instances due to a race condition in the review process, and required manual admin intervention to get fixed.

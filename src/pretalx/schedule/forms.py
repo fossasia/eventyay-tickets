@@ -46,11 +46,28 @@ class AvailabilitiesFormMixin(forms.Form):
         }
         if self.resolution:
             result["resolution"] = self.resolution
+        if self.limit_to_rooms and self.event:
+            room_avails = self.event.availabilities.filter(room__isnull=False)
+            if room_avails:
+                merged_avails = Availability.union(room_avails)
+                result["constraints"] = [
+                    {
+                        "daysOfWeek": [(avail.start.weekday() + 1) % 7],
+                        "startTime": avail.start.astimezone(self.event.tz)
+                        .time()
+                        .isoformat(),
+                        "endTime": avail.end.astimezone(self.event.tz)
+                        .time()
+                        .isoformat(),
+                    }
+                    for avail in merged_avails
+                ]
         return json.dumps(result)
 
-    def __init__(self, *args, event=None, **kwargs):
+    def __init__(self, *args, event=None, limit_to_rooms=False, **kwargs):
         self.event = event
         self.resolution = kwargs.pop("resolution", None)
+        self.limit_to_rooms = limit_to_rooms
         initial = kwargs.pop("initial", dict())
         initial_instance = kwargs["instance"]
         initial["availabilities"] = self._serialize(self.event, initial_instance)
@@ -61,9 +78,18 @@ class AvailabilitiesFormMixin(forms.Form):
         if not hasattr(self, "instance"):
             self.instance = initial_instance
         if self.event and "availabilities" in self.fields:
-            self.fields["availabilities"].help_text += " " + str(
-                _("Please note that all times are in the event timezone, {tz}.")
-            ).format(tz=self.event.timezone)
+            self.fields["availabilities"].help_text += (
+                " "
+                + str(
+                    _("Please note that all times are in the event timezone, {tz}.")
+                ).format(tz=self.event.timezone)
+                + " "
+                + str(
+                    _(
+                        "If you set room availabilities, speakers will only be able to set their availability for when any room is available."
+                    )
+                )
+            )
 
     def _parse_availabilities_json(self, jsonavailabilities):
         try:
