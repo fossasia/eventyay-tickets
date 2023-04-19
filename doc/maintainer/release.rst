@@ -7,7 +7,7 @@ Boarding checks
 ---------------
 
 1. Are the translations up to date?
-2. If new translations were added, add new `fullcalendar locales <https://github.com/fullcalendar/fullcalendar/tree/v3.5.1/dist/locale>`
+2. If new translations were added, add new fullcalendar locales (you have to download the `release archive <https://github.com/fullcalendar/fullcalendar/releases/download/v6.1.5/fullcalendar-6.1.5.zip>`) and extract the locales from there).
 3. Are there warnings about missing migrations?
 4. Any blockers to see `here <https://github.com/pretalx/pretalx/issues?q=is%3Aopen+is%3Aissue+label%3A%22issue%3Abug+%F0%9F%90%9B%22>`_?
 5. Are there any TODOs that you have to be resolve?
