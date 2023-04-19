@@ -489,6 +489,7 @@ class RoomDelete(EventPermissionRequired, View):
         return redirect(request.event.orga_urls.room_settings)
 
 
+@method_decorator(csp_update(SCRIPT_SRC="'self' 'unsafe-eval'"), name="dispatch")
 class RoomDetail(EventPermissionRequired, ActionFromUrl, CreateOrUpdateView):
     model = Room
     form_class = RoomForm
