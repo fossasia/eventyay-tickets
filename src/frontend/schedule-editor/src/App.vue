@@ -15,7 +15,8 @@
 					:draggedSession="draggedSession",
 					@changeDay="currentDay = $event",
 					@startDragging="startDragging",
-					@rescheduleSession="rescheduleSession")
+					@rescheduleSession="rescheduleSession",
+					@createSession="createSession")
 			editor(v-scrollbar.y="", :session="editorSession")
 	bunt-progress-circular(v-else, size="huge", :page="true")
 </template>
@@ -160,9 +161,13 @@ export default {
 			movedSession.room = e.room.id
 			// TODO push to server
 		},
+		createSession (e) {
+			console.log(e.session)
+			this.schedule.talks.push(e.session)
+			// TODO push to server
+		},
 		startNewBreak({event}) {
-			console.log("starting dragging")
-			this.startDragging(event, {title: "New Break", duration: "30"})
+		  this.startDragging({event, session: {title: "New Break", duration: "30", uncreated: true}})
 		},
 		startDragging ({event, session}) {
 			this.draggedSession = session

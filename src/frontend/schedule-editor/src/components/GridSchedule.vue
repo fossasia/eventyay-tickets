@@ -198,11 +198,14 @@ export default {
 	},
 	methods: {
 		stopDragging () {
-			console.log("alaaaarm")
 			if (!this.draggedSession || !this.hoverSlice || !this.hoverSliceLegal) return
 			const start = this.hoverSlice.time
 			const end = this.hoverSlice.time.clone().add(this.draggedSession.duration, 'm')
-			this.$emit('rescheduleSession', {session: this.draggedSession, start: start.format(), end: end.format(), room: this.hoverSlice.room})
+			if (!this.draggedSession.id) {
+			  this.$emit('createSession', {session: {...this.draggedSession, start: start.format(), end: end.format(), room: this.hoverSlice.room.id}})
+			} else {
+				this.$emit('rescheduleSession', {session: this.draggedSession, start: start.format(), end: end.format(), room: this.hoverSlice.room})
+			}
 		},
 		expandTimeslice (slice) {
 			// Find next visible timeslice
