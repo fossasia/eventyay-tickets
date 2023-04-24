@@ -49,7 +49,7 @@ export default {
 			getLocalizedString,
 			scrolledDay: null,
 			hoverSlice: null,
-			expandedTimeslices: [],
+			expandedTimes: [],
 			gridOffset: 0,
 		}
 	},
@@ -82,13 +82,14 @@ export default {
 			const minimumSliceMins = 30
 			const slices = []
 			const slicesLookup = {}
-			const pushSlice = function (date, {hasStart = false, hasEnd = false, hasSession = false} = {}) {
+			const pushSlice = function (date, {hasStart = false, hasEnd = false, hasSession = false, isExpanded = false} = {}) {
 				const name = getSliceName(date)
 				let slice = slicesLookup[name]
 				if (slice) {
 					slice.hasSession = slice.hasSession || hasSession
 					slice.hasStart = slice.hasStart || hasStart
 					slice.hasEnd = slice.hasEnd || hasEnd
+					slice.isExpanded = slice.isExpanded || isExpanded
 				} else {
 					slice = {
 						date,
@@ -96,6 +97,7 @@ export default {
 						hasSession,
 						hasStart,
 						hasEnd,
+						isExpanded,
 						datebreak: date.isSame(date.clone().startOf('day'))
 					}
 					slices.push(slice)
@@ -141,25 +143,58 @@ export default {
 				// add half hour slices between a session
 				fillHalfHours(session.start, session.end, {hasSession: true})
 			}
-			for (const slice of this.expandedTimeslices) {
-				pushSlice(slice)
+			for (const slice of this.expandedTimes) {
+				pushSlice(slice, {isExpanded: true})
 			}
-			// Also include everything from event start to first slice, and last slice to event end
-			const start = this.start
-			const end = this.end
-			fillHalfHours(start, slices[0].date)
-			fillHalfHours(slices[slices.length - 1].date, end)
-			if (this.hoverEndSlice) pushSlice(this.hoverEndSlice)
-			return [...new Set(slices)].sort((a, b) => a.date.diff(b.date))
+			// Always show business hours
+			fillHalfHours(this.start, this.end)
+			if (this.hoverEndSlice) pushSlice(this.hoverEndSlice, {hasEnd: true})
+			const sliceIsFraction = function (slice) {
+				if (!slice) return
+				return slice.date.minutes() !== 0 && slice.date.minutes() !== minimumSliceMins
+			}
+			const sliceShouldDisplay = function (slice, index) {
+				if (!slice) return
+				// keep slices with sessions or when changing dates, or when sessions start or immediately after they end
+				if (slice.hasSession || slice.datebreak || slice.hasStart || slice.hasEnd || slice.isExpanded) return true
+				// keep slices between 9 and 18 o'clock
+				if (slice.date.hour() >= 9 && slice.date.hour() < 19) return true
+				const prevSlice = slices[index - 1]
+				const nextSlice = slices[index + 1]
+
+				// keep non-whole slices
+				if (sliceIsFraction(slice)) return true
+				// keep slices before and after non-whole slices, if by session or break
+				if (
+					((prevSlice?.hasSession || prevSlice?.hasBreak || prevSlice?.hasEnd) && sliceIsFraction(prevSlice)) ||
+					((nextSlice?.hasSession || nextSlice?.hasBreak) && sliceIsFraction(nextSlice)) ||
+					((!nextSlice?.hasSession || !nextSlice?.hasBreak) && (slice.hasSession || slice.hasBreak) && sliceIsFraction(nextSlice))
+				) return true
+				// but drop slices inside breaks
+				if (prevSlice?.hasBreak && slice.hasBreak) return false
+				return false
+			}
+			slices.sort((a, b) => a.date.diff(b.date))
+			const compactedSlices = []
+			for (const [index, slice] of slices.entries()) {
+				if (sliceShouldDisplay(slice, index)) {
+					compactedSlices.push(slice)
+					continue
+				}
+				// make the previous slice a gap slice if this one would be the first to be removed
+				// but only if it isn't the start of the day
+				const prevSlice = slices[index - 1]
+				if (sliceShouldDisplay(prevSlice, index - 1) && !prevSlice.datebreak) {
+					prevSlice.gap = true
+				}
+			}
+			return compactedSlices
 		},
 		visibleTimeslices () {
 			// Inside normal conference hours, from 9am to 6pm, we show all half and full hour marks, plus all dates that were click-expanded, plus all start times of talks
 			// Outside, we only show the first slice, which can be expanded
 		  return this.timeslices.filter(slice => {
-			  // if (slice.date.hour() < 9) return slice.date.minute() === 0 && slice.date.hour() === 1
-			  // if (slice.date.hour() >= 18) return slice.date.minute() === 0 && slice.date.hour() === 18
-			  return slice.date.minute() % 30 === 0 || this.expandedTimeslices.includes(slice.date) || this.oddTimeslices.includes(slice.date)
-
+			  return slice.date.minute() % 30 === 0 || this.expandedTimes.includes(slice.date) || this.oddTimeslices.includes(slice.date)
 		  })
 		},
 		oddTimeslices () {
@@ -196,7 +231,7 @@ export default {
 		},
 		availabilities () {
 			const avails = []
-			if (!this.visibleTimeslices.length) return avails
+			if (!this.visibleTimeslices?.length) return avails
 			const earliestStart = this.visibleTimeslices[0].date
 			const latestEnd = this.visibleTimeslices.at(-1).date
 			for (const room of this.rooms) {
@@ -244,18 +279,25 @@ export default {
 		expandTimeslice (slice) {
 			// Find next visible timeslice
 			const index = this.visibleTimeslices.indexOf(slice)
-			const time = slice.date.clone().add(5, 'm')
 			if (index + 1 >= this.visibleTimeslices.length) {
-				// last timeslice: add one more
-				this.expandedTimeslices.push(time.clone())
+				// last timeslice: add five more minutes
+				this.expandedTimes.push(slice.date.clone().add(5, 'm'))
 			} else {
 				const end = this.visibleTimeslices[index + 1].date.clone()
+				// if next time slice is within 30 minutes, set interval to 5 minutes, otherwise to 30 minutes
+				let interval = 0
+				if (end.diff(slice.date, 'minutes') <= 30) {
+					interval = 5
+				} else {
+					interval = 30
+				}
+				const time = slice.date.clone().add(interval, 'm')
 				while (time.isBefore(end)) {
-					this.expandedTimeslices.push(time.clone())
-					time.add(5, 'm')
+					this.expandedTimes.push(time.clone())
+					time.add(interval, 'm')
 				}
 			}
-			this.expandedTimeslices = [...new Set(this.expandedTimeslices)]
+			this.expandedTimes = [...new Set(this.expandedTimes)]
 		},
 		updateHoverSlice (e) {
 			if (!this.draggedSession) { this.hoverSlice = null; return }
@@ -300,7 +342,6 @@ export default {
 			return classes
 		},
 		isSliceExpandable (slice) {
-			if (slice.gap) return false
 			const index = this.visibleTimeslices.indexOf(slice)
 			if (index + 1 === this.visibleTimeslices.length) return false
 			const nextSlice = this.visibleTimeslices[index + 1]
