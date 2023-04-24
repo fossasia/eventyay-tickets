@@ -49,10 +49,7 @@ document.addEventListener("DOMContentLoaded", function() {
       locale: locale,
       initialView: 'timeGrid',
       headerToolbar: {},
-      visibleRange: {
-        start: data.event.date_from,
-        end: moment(data.event.date_to) + 1,
-      },
+      initialDate: data.event.date_from,
       duration: {
         days: moment(data.event.date_to).diff(moment(data.event.date_from), 'days') + 1,
       },
@@ -108,6 +105,8 @@ document.addEventListener("DOMContentLoaded", function() {
         }
       },
     })
+    // initialDate is not respected, so we have to set it manually
+    calendar.gotoDate(data.event.date_from)
     calendar.render()
     // not sure why the calendar doesn't render properly without this. Has to be in a timeout, though!
     setTimeout(function() {calendar.updateSize() }, 20)
