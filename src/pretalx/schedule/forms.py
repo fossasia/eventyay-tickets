@@ -50,18 +50,47 @@ class AvailabilitiesFormMixin(forms.Form):
             room_avails = self.event.availabilities.filter(room__isnull=False)
             if room_avails:
                 merged_avails = Availability.union(room_avails)
-                result["constraints"] = [
-                    {
-                        "daysOfWeek": [(avail.start.weekday() + 1) % 7],
-                        "startTime": avail.start.astimezone(self.event.tz)
-                        .time()
-                        .isoformat(),
-                        "endTime": avail.end.astimezone(self.event.tz)
-                        .time()
-                        .isoformat(),
-                    }
-                    for avail in merged_avails
-                ]
+                result["constraints"] = []
+                # make sure the availabilities don't cross date boundaries, otherwise split
+                for avail in merged_avails:
+                    start = avail.start.astimezone(self.event.tz)
+                    end = avail.end.astimezone(self.event.tz)
+                    if start.date() == end.date():
+                        result["constraints"].append(
+                            {
+                                "daysOfWeek": [(start.weekday() + 1) % 7],
+                                "startTime": start.time().isoformat(),
+                                "endTime": end.time().isoformat(),
+                            }
+                        )
+                    else:
+                        start_day = start.weekday()
+                        end_day = end.weekday()
+                        result["constraints"].append(
+                            {
+                                "daysOfWeek": [(start_day + 1) % 7],
+                                "startTime": start.time().isoformat(),
+                                "endTime": "23:59",
+                            }
+                        )
+                        result["constraints"].append(
+                            {
+                                "daysOfWeek": [(end_day + 1) % 7],
+                                "startTime": "00:00",
+                                "endTime": end.time().isoformat(),
+                            }
+                        )
+                        end_day = end_day + 7 if end_day < start_day else end_day
+                        days_between = range(start_day + 1, end_day)
+                        for day in days_between:
+                            result["constraints"].append(
+                                {
+                                    "daysOfWeek": [(day + 1) % 7],
+                                    "startTime": "00:00",
+                                    "endTime": "23:59",
+                                }
+                            )
+
         return json.dumps(result)
 
     def __init__(self, *args, event=None, limit_to_rooms=False, **kwargs):
