@@ -18,6 +18,7 @@
 				:showRoom="false",
 				@startDragging="$emit('startDragging', $event)"
 			)
+		.availability(v-for="availability of availabilities", :style="getSessionStyle(availability)")
 </template>
 <script>
 // TODO
@@ -35,6 +36,8 @@ export default {
 	components: { Session },
 	props: {
 		sessions: Array,
+		start: Object,
+		end: Object,
 		rooms: Array,
 		currentDay: Object,
 		draggedSession: Object,
@@ -141,12 +144,23 @@ export default {
 			for (const slice of this.expandedTimeslices) {
 				pushSlice(slice)
 			}
+			// Also include everything from event start to first slice, and last slice to event end
+			const start = this.start
+			const end = this.end
+			fillHalfHours(start, slices[0].date)
+			fillHalfHours(slices[slices.length - 1].date, end)
 			if (this.hoverEndSlice) pushSlice(this.hoverEndSlice)
 			return [...new Set(slices)].sort((a, b) => a.date.diff(b.date))
 		},
 		visibleTimeslices () {
-			// We show all half and full hour marks, plus all dates that were click-expanded, plus all start times of talks
-			return this.timeslices.filter(slice => slice.date.minute() % 30 === 0 || this.expandedTimeslices.includes(slice.date) || this.oddTimeslices.includes(slice.date))
+			// Inside normal conference hours, from 9am to 6pm, we show all half and full hour marks, plus all dates that were click-expanded, plus all start times of talks
+			// Outside, we only show the first slice, which can be expanded
+		  return this.timeslices.filter(slice => {
+			  // if (slice.date.hour() < 9) return slice.date.minute() === 0 && slice.date.hour() === 1
+			  // if (slice.date.hour() >= 18) return slice.date.minute() === 0 && slice.date.hour() === 18
+			  return slice.date.minute() % 30 === 0 || this.expandedTimeslices.includes(slice.date) || this.oddTimeslices.includes(slice.date)
+
+		  })
 		},
 		oddTimeslices () {
 			const result = []
@@ -180,6 +194,26 @@ export default {
 			if (this.hoverSlice && this.draggedSession && !this.hoverSliceLegal) result.push('illegal-hover')
 			return result
 		},
+		availabilities () {
+			const avails = []
+			if (!this.visibleTimeslices.length) return avails
+			const earliestStart = this.visibleTimeslices[0].date
+			const latestEnd = this.visibleTimeslices.at(-1).date
+			for (const room of this.rooms) {
+				if (!room.availabilities || !room.availabilities.length) avails.push({room: room, start: earliestStart, end: latestEnd})
+				else {
+					for (const avail of room.availabilities) {
+						avails.push({
+							room: room,
+							start: moment(avail.start),
+							end: moment(avail.end)
+						})
+					}
+				}
+			}
+			console.log(avails)
+			return avails
+		}
 	},
 	watch: {
 		currentDay: 'changeDay'
@@ -368,4 +402,7 @@ export default {
 			height: 3px
 	.bunt-scrollbar-rail-wrapper-x, .bunt-scrollbar-rail-wrapper-y
 		z-index: 30
+.availability
+	background-color: white
+	pointer-events: none
 </style>

@@ -11,6 +11,8 @@
 					bunt-tab(v-for="day in days", :id="day.format()", :header="day.format(dateFormat)", @selected="changeDay(day)")
 				grid-schedule(:sessions="sessions",
 					:rooms="schedule.rooms",
+					:start="days[0]",
+					:end="days.at(-1).clone().endOf('day')",
 					:currentDay="currentDay",
 					:draggedSession="draggedSession",
 					@changeDay="currentDay = $event",
@@ -126,7 +128,7 @@ export default {
 	async created () {
 		moment.locale(this.locale)
 		const version = ''
-		this.schedule = await (api.fetchTalks())
+		this.schedule = await this.fetchSchedule()
 		this.currentDay = this.days[0]
 		this.eventTimezone = this.schedule.timezone
 		moment.tz.setDefault(this.eventTimezone)
@@ -194,13 +196,18 @@ export default {
 		onWindowResize () {
 			this.scrollParentWidth = document.body.offsetWidth
 		},
-		pollUpdates () {
-			api
-				.fetchTalks({since: this.since, warnings: true})
-				.then(result => {
-					this.schedule = result
-					window.setTimeout(this.pollUpdates, 10 * 1000)
-				})
+		async fetchSchedule(options) {
+		  const schedule = await (api.fetchTalks(options))
+		  const apiRooms = (await api.fetchRooms()).results.reduce((acc, room) => {
+			  acc[room.id] = room
+			  return acc
+		  }, {})
+		  schedule.rooms = schedule.rooms.map(room => apiRooms[room.id])
+		  return schedule
+		},
+		async pollUpdates () {
+			this.schedule = await this.fetchSchedule({since: this.since, warnings: true})
+			window.setTimeout(this.pollUpdates, 10 * 1000)
 		}
 	}
 }
