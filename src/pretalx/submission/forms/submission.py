@@ -183,6 +183,7 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
             "track",
             "duration",
             "content_locale",
+            "additional_speaker",
         ]
         public_fields = ["title", "abstract", "description", "image"]
         widgets = {
