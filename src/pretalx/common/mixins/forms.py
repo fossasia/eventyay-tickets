@@ -72,8 +72,8 @@ class RequestRequire:
             elif key in self.fields:
                 field = self.fields[key]
                 field.required = visibility == "required"
-                min_value = self.event.cfp.fields[key].get("min_length")
-                max_value = self.event.cfp.fields[key].get("max_length")
+                min_value = self.event.cfp.fields.get(key, {}).get("min_length")
+                max_value = self.event.cfp.fields.get(key, {}).get("max_length")
                 if min_value or max_value:
                     if min_value and count_chars:
                         field.widget.attrs["minlength"] = min_value
