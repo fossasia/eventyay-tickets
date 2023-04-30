@@ -69,7 +69,7 @@ class RequestRequire:
             ]
             if visibility == "do_not_ask":
                 self.fields.pop(key, None)
-            else:
+            elif key in self.fields:
                 field = self.fields[key]
                 field.required = visibility == "required"
                 min_value = self.event.cfp.fields[key].get("min_length")
