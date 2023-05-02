@@ -168,6 +168,11 @@ class SpeakerProfileForm(
             self.fields["avatar"].required = False
         if not self.event.feature_flags["use_gravatar"]:
             self.fields.pop("get_gravatar", None)
+        if self.is_bound and not self.is_valid() and "availabilities" in self.errors:
+            # Replace self.data with a version that uses initial["availabilities"]
+            # in order to have event and timezone data available
+            self.data = self.data.copy()
+            self.data["availabilities"] = self.initial["availabilities"]
 
     @cached_property
     def user_fields(self):
