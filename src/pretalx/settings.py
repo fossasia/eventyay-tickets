@@ -370,12 +370,17 @@ LANGUAGES_INFORMATION = {
         "percentage": 100,
         "public_code": "de",
     },
-    "pt-BR": {
-        "name": _("Brasilian Portuguese"),
-        "natural_name": "Português brasileiro",
+    "ar": {
+        "name": _("Arabic"),
+        "natural_name": "اَلْعَرَبِيَّةُ",
+        "official": False,
+        "percentage": 83,
+    },
+    "cs": {
+        "name": _("Czech"),
+        "natural_name": "Čeština",
         "official": False,
         "percentage": 99,
-        "public_code": "pt",
     },
     "es": {
         "name": _("Spanish"),
@@ -389,24 +394,26 @@ LANGUAGES_INFORMATION = {
         "official": False,
         "percentage": 89,
     },
-    "cs": {
-        "name": _("Czech"),
-        "natural_name": "Čeština",
-        "official": False,
-        "percentage": 89,
-    },
-    "ar": {
-        "name": _("Arabic"),
-        "natural_name": "اَلْعَرَبِيَّةُ",
-        "official": False,
-        "percentage": 83,
-    },
     "ja-JP": {
         "name": _("Japanese"),
         "natural_name": "日本語",
         "official": False,
         "percentage": 80,
         "public_code": "jp",
+    },
+    "pt-BR": {
+        "name": _("Brasilian Portuguese"),
+        "natural_name": "Português brasileiro",
+        "official": False,
+        "percentage": 91,
+        "public_code": "pt",
+    },
+    "pt-PT": {
+        "name": _("Portuguese"),
+        "natural_name": "Português",
+        "official": False,
+        "percentage": 99,
+        "public_code": "pt",
     },
     "zh-tw": {
         "name": _("Traditional Chinese (Taiwan)"),
