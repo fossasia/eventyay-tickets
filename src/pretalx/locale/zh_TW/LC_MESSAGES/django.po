@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-02-19 15:38+0000\n"
-"PO-Revision-Date: 2023-03-22 22:30+0000\n"
-"Last-Translator: Robert Sim <contact@robertsky.com>\n"
+"PO-Revision-Date: 2023-05-12 12:16+0000\n"
+"Last-Translator: Li-Heng Yu <007seadog@gmail.com>\n"
 "Language-Team: none\n"
 "Language: zh_TW\n"
 "MIME-Version: 1.0\n"
@@ -204,17 +204,17 @@ msgid ""
 "personal scheduling, please enable JavaScript and go <a "
 "href=\"%(href)s\">here</a>."
 msgstr ""
+"如果想使用議程表的所有功能，如時區轉換或個人議程表，請啟用瀏覽器的 Javascript 並前往 <a href=\"%(href)s\">這裡</a>。"
 
 #: pretalx/agenda/templates/agenda/schedule_nojs.html:67
-#, fuzzy, python-format
-#| msgid "No talks on %(weekday)s, %(current_day)s."
+#, python-format
 msgid "No sessions on %(weekday)s, %(current_day)s."
 msgstr "%(current_day)s（%(weekday)s）沒有議程。"
 
 #: pretalx/agenda/templates/agenda/session_block.html:17
 #, python-format
 msgid "%(minutes)smin"
-msgstr "%(minutes)s 分钟"
+msgstr "%(minutes)s 分鐘"
 
 #: pretalx/agenda/templates/agenda/session_block.html:27
 #: pretalx/cfp/templates/cfp/event/fragment_state.html:17
@@ -257,7 +257,7 @@ msgstr "此講者還出現在："
 
 #: pretalx/agenda/views/schedule.py:172
 msgid "Our schedule is not live yet."
-msgstr ""
+msgstr "我們的議程表尚未上線。"
 
 #: pretalx/agenda/views/talk.py:121
 #, python-brace-format
@@ -281,7 +281,7 @@ msgstr "我們很高興与我們的活動提出提案。讓我們開始吧，這
 #: pretalx/cfp/flow.py:355
 msgid ""
 "Your draft was saved. You can continue to edit it as long as the CfP is open."
-msgstr ""
+msgstr "您的草稿已儲存，您依舊可以編輯您的稿件直到徵稿結束。"
 
 #: pretalx/cfp/flow.py:363
 msgid ""
@@ -1046,10 +1046,8 @@ msgid "Important Information"
 msgstr "重要資訊"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:25
-#, fuzzy
-#| msgid "Current draft"
 msgid "Your drafts"
-msgstr "目前的草稿"
+msgstr "您的草稿"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:30
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:69
@@ -1148,10 +1146,8 @@ msgid ""
 msgstr "您的 API token 已重新產生。先前的 token 將無法再使用。"
 
 #: pretalx/cfp/views/user.py:390
-#, fuzzy
-#| msgid "Your proposal has been withdrawn."
 msgid "Your proposal has been submitted."
-msgstr "您投稿的議程已被退回。"
+msgstr "您投稿的議程已送出。"
 
 #: pretalx/common/context_processors.py:42
 msgid "“"
@@ -1359,22 +1355,16 @@ msgid "A question option was modified."
 msgstr "已變更一個問題選項。"
 
 #: pretalx/common/log_display.py:52
-#, fuzzy
-#| msgid "A track was added."
 msgid "A tag was added."
-msgstr "已加入一個議程軌。"
+msgstr "已加入一個標籤。"
 
 #: pretalx/common/log_display.py:53
-#, fuzzy
-#| msgid "A track was deleted."
 msgid "A tag was deleted."
-msgstr "已刪除一個議程軌。"
+msgstr "已刪除一個標籤。"
 
 #: pretalx/common/log_display.py:54
-#, fuzzy
-#| msgid "A track was modified."
 msgid "A tag was modified."
-msgstr "已變更一個議程軌。"
+msgstr "已變更一個標籤。"
 
 #: pretalx/common/log_display.py:55
 msgid "A new room was added."
@@ -2754,7 +2744,7 @@ msgstr "此議程的標頭影像"
 
 #: pretalx/mail/context.py:236
 msgid "Jane Doe"
-msgstr "Jane Doe"
+msgstr "小明"
 
 #: pretalx/mail/context.py:237
 #, fuzzy
@@ -2798,7 +2788,7 @@ msgstr ""
 "\n"
 "有任何問題，歡迎與我們聯繫。\n"
 "\n"
-"{event_name} 主辦團隊  敬上"
+"{event_name} 主辦團隊 敬上"
 
 #: pretalx/mail/default_templates.py:23
 #, python-brace-format
@@ -2858,7 +2848,7 @@ msgstr ""
 "\n"
 "未被接受。不過我們還是希望您能前來參加我們的活動！\n"
 "\n"
-"{event_name} 主辦團隊  敬上"
+"{event_name} 主辦團隊 敬上"
 
 #: pretalx/mail/default_templates.py:53
 msgid "New schedule!"
@@ -2886,7 +2876,7 @@ msgstr ""
 "\n"
 "如果您對新的議程中您的時間有意見或問題，請隨時與我們聯繫。\n"
 "\n"
-"{event_name} 開發團隊  敬上"
+"{event_name} 開發團隊 敬上"
 
 #: pretalx/mail/default_templates.py:69
 msgid "We have some questions about your proposal"
@@ -3314,11 +3304,9 @@ msgid "Ask search engines not to index the event pages"
 msgstr "要求搜尋引擎不要對活動頁面建立搜尋索引"
 
 #: pretalx/orga/forms/event.py:143
-#, fuzzy, python-brace-format
-#| msgid ""
-#| "You can find the current version <a href=\"%(current_url)s\">here</a>."
+#, python-brace-format
 msgid "You can find the page <a {href}>here</a>."
-msgstr "您可以在<a href=\"%(current_url)s\">這裡</a>查看最新版本。"
+msgstr "您可以在<a {href}>這裡</a>查看最新版本。"
 
 #: pretalx/orga/forms/event.py:148
 msgid "The name of your conference, e.g. My Conference"
@@ -4905,10 +4893,9 @@ msgstr "給 %(organiser)s 團隊 \"%(name)s\" 的邀請"
 
 #: pretalx/orga/templates/orga/invitation.html:16
 #: pretalx/orga/templates/orga/invitation.html:33
-#, fuzzy, python-format
-#| msgid "You have been invited to an organiser team"
+#, python-format
 msgid "You have been invited to join the organiser team %(name)s."
-msgstr "您已被邀請加入主辦團隊"
+msgstr "您已被邀請加入 %(name)s 團隊"
 
 #: pretalx/orga/templates/orga/invitation.html:21
 #, python-format
@@ -6196,12 +6183,11 @@ msgid "Apply %(count)s pending changes?"
 msgstr ""
 
 #: pretalx/orga/templates/orga/submission/apply_pending.html:11
-#, fuzzy, python-format
-#| msgid "Do you really want to change the state of this proposal?"
+#, python-format
 msgid ""
 " Please confirm that you really want to change the state of these %(count)s "
 "proposals."
-msgstr "您確定要改變此議程投稿的狀態嗎？"
+msgstr " 您確定要改變這 %(count) 個議程投稿的狀態嗎？"
 
 #: pretalx/orga/templates/orga/submission/apply_pending.html:25
 #: pretalx/orga/templates/orga/submission/state_change.html:30
@@ -6824,18 +6810,16 @@ msgid "{count} mails have been sent."
 msgstr "{count} 份郵件已送出。"
 
 #: pretalx/orga/views/mails.py:155
-#, fuzzy, python-brace-format
-#| msgid "Do you really want to delete this track?"
+#, python-brace-format
 msgid "Do you really want to delete this mail?"
 msgid_plural "Do you really want to purge {count} mails?"
-msgstr[0] "您確定要刪除此議程軌嗎？"
+msgstr[0] "您確定要刪除這 {count} 封郵件嗎？"
 
 #: pretalx/orga/views/mails.py:180
-#, fuzzy, python-brace-format
-#| msgid "The mail has been sent."
+#, python-brace-format
 msgid "The mail has been discarded."
 msgid_plural "{count} mails have been discarded."
-msgstr[0] "此郵件已送出。"
+msgstr[0] "{count} 封郵件已送出。"
 
 #: pretalx/orga/views/mails.py:199
 #, python-brace-format
