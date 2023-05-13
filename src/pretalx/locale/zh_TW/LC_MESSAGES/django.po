@@ -6187,7 +6187,7 @@ msgstr ""
 msgid ""
 " Please confirm that you really want to change the state of these %(count)s "
 "proposals."
-msgstr " 您確定要改變這 %(count) 個議程投稿的狀態嗎？"
+msgstr " 您確定要改變這 %(count)s 個議程投稿的狀態嗎？"
 
 #: pretalx/orga/templates/orga/submission/apply_pending.html:25
 #: pretalx/orga/templates/orga/submission/state_change.html:30
