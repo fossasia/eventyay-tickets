@@ -33,7 +33,7 @@ const updateMenu = () => {
     return
   }
   MENU.classList.remove("d-none")
-  MENU.style.top = ACTIVE_ELEMENT.offsetTop + "px"
+  MENU.style.top = ACTIVE_ELEMENT.offsetTop - document.querySelector("#page-content").scrollTop + "px"
 }
 
 const censor = (ev) => {
