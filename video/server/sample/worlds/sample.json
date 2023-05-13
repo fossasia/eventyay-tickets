@@ -113,6 +113,7 @@
       "room:bbb.recordings",
       "room:roulette.join",
       "room:chat.moderate",
+      "room:viewers",
       "room:announce",
       "world:exhibition.contact",
       "room:question.read",

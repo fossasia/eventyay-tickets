@@ -6,7 +6,7 @@ from channels.testing import WebsocketCommunicator
 from django.utils.crypto import get_random_string
 
 
-def get_token(world, traits):
+def get_token(world, traits, uid=None):
     config = world.config["JWT_secrets"][0]
 
     iat = dt.datetime.utcnow()
@@ -16,7 +16,7 @@ def get_token(world, traits):
         "aud": config["audience"],
         "exp": exp,
         "iat": iat,
-        "uid": random.randint(9999, 99999),
+        "uid": uid or random.randint(9999, 99999),
         "traits": traits,
     }
     return jwt.encode(payload, config["secret"], algorithm="HS256")

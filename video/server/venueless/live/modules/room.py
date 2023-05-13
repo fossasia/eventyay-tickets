@@ -15,6 +15,7 @@ from venueless.core.services.reactions import store_reaction
 from venueless.core.services.room import (
     delete_room,
     end_view,
+    get_viewers,
     reorder_rooms,
     save_room,
     start_view,
@@ -33,6 +34,7 @@ from venueless.live.channels import (
     GROUP_ROOM_POLL_RESULTS,
     GROUP_ROOM_QUESTION_MODERATE,
     GROUP_ROOM_QUESTION_READ,
+    GROUP_ROOM_VIEWERS,
     GROUP_WORLD,
 )
 from venueless.live.decorators import (
@@ -89,7 +91,6 @@ class RoomModule(BaseModule):
                     GROUP_ROOM_POLL_RESULTS.format(id=self.room.pk, poll=poll),
                     self.consumer.channel_name,
                 )
-        await self.consumer.send_success({})
 
         self.current_views[self.room], actual_view_count = await start_view(
             self.room,
@@ -97,6 +98,37 @@ class RoomModule(BaseModule):
             delete=not self.consumer.world.config.get("track_room_views", True),
         )
         await self._update_view_count(self.room, actual_view_count)
+
+        if self.consumer.user.show_publicly:
+            await get_channel_layer().group_send(
+                GROUP_ROOM_VIEWERS.format(id=self.room.pk),
+                {
+                    "type": "room.viewer.added",
+                    "user": self.consumer.user.serialize_public(
+                        trait_badges_map=self.consumer.world.config.get(
+                            "trait_badges_map"
+                        )
+                    ),
+                },
+            )
+
+        data = {}
+
+        if await self.consumer.world.has_permission_async(
+            user=self.consumer.user,
+            room=self.room,
+            permission=Permission.ROOM_VIEWERS,
+        ):
+            await self.consumer.channel_layer.group_add(
+                GROUP_ROOM_VIEWERS.format(id=self.room.pk),
+                self.consumer.channel_name,
+            )
+            data["viewers"] = await get_viewers(
+                self.consumer.world,
+                self.room,
+            )
+
+        await self.consumer.send_success(data)
 
         if settings.SENTRY_DSN:
             add_breadcrumb(
@@ -114,6 +146,7 @@ class RoomModule(BaseModule):
             GROUP_ROOM_QUESTION_READ,
             GROUP_ROOM_POLL_MANAGE,
             GROUP_ROOM_POLL_READ,
+            GROUP_ROOM_VIEWERS,
         ]
         for group_name in group_names:
             await self.consumer.channel_layer.group_discard(
@@ -125,12 +158,20 @@ class RoomModule(BaseModule):
                 self.consumer.channel_name,
             )
         if room in self.current_views:
-            actual_view_count = await end_view(
+            actual_view_count, is_last = await end_view(
                 self.current_views[room],
                 delete=not self.consumer.world.config.get("track_room_views", True),
             )
             del self.current_views[room]
             await self._update_view_count(room, actual_view_count)
+            if self.consumer.user.show_publicly and is_last:
+                await get_channel_layer().group_send(
+                    GROUP_ROOM_VIEWERS.format(id=room.pk),
+                    {
+                        "type": "room.viewer.removed",
+                        "user_id": str(self.consumer.user.id),
+                    },
+                )
 
     async def _update_view_count(self, room, actual_view_count):
         async with aioredis(f"room:approxcount:known:{room.pk}") as redis:
@@ -250,6 +291,24 @@ class RoomModule(BaseModule):
 
     @event("reaction")
     async def push_reaction(self, body):
+        await self.consumer.send_json(
+            [
+                body["type"],
+                {k: v for k, v in body.items() if k != "type"},
+            ]
+        )
+
+    @event("viewer.added")
+    async def push_viewer_added(self, body):
+        await self.consumer.send_json(
+            [
+                body["type"],
+                {k: v for k, v in body.items() if k != "type"},
+            ]
+        )
+
+    @event("viewer.removed")
+    async def push_viewer_removed(self, body):
         await self.consumer.send_json(
             [
                 body["type"],

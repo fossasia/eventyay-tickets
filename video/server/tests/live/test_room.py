@@ -6,18 +6,19 @@ import pytest
 from channels.db import database_sync_to_async
 
 from tests.utils import LoggingCommunicator, get_token
+from venueless.core.models import User
 from venueless.routing import application
 
 
 @asynccontextmanager
-async def world_communicator(token=None):
+async def world_communicator(token=None, client_id=None):
     communicator = LoggingCommunicator(application, "/ws/world/sample/")
     await communicator.connect()
     if token:
         await communicator.send_json_to(["authenticate", {"token": token}])
     else:
         await communicator.send_json_to(
-            ["authenticate", {"client_id": str(uuid.uuid4())}]
+            ["authenticate", {"client_id": client_id or str(uuid.uuid4())}]
         )
     response = await communicator.receive_json_from()
     assert response[0] == "authenticated", response
@@ -307,6 +308,7 @@ async def test_change_schedule_data(world, stream_room):
         await c1.receive_json_from()  # world.user_count_change
 
         await c2.send_json_to(["room.enter", 123, {"room": str(stream_room.pk)}])
+        await c1.receive_json_from()  # room.viewer.added
 
         responses = [
             r[0] for r in (await c2.receive_json_from(), await c2.receive_json_from())
@@ -377,3 +379,61 @@ async def test_user_count(world, stream_room):
             "world.user_count_change",
             {"room": str(stream_room.pk), "users": "none"},
         ]
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_viewers(world, stream_room):
+    token = get_token(world, ["moderator"], uid="moderator")
+
+    async with world_communicator(token=token) as c1, world_communicator(
+        client_id="guest"
+    ) as c2, world_communicator(client_id="guest") as c3:
+        u1 = await database_sync_to_async(User.objects.get)(token_id="moderator")
+        u2 = await database_sync_to_async(User.objects.get)(client_id="guest")
+
+        await c1.send_json_to(["room.enter", 123, {"room": str(stream_room.pk)}])
+        response = await c1.receive_json_from()
+        assert response[0] == "success"
+        viewers = response[2]["viewers"]
+        assert len(viewers) == 1
+        assert str(viewers[0]["id"]) == str(u1.pk)
+
+        await c1.receive_json_from()  # world.user_count_change
+        await c2.receive_json_from()  # world.user_count_change
+        await c3.receive_json_from()  # world.user_count_change
+
+        await c2.send_json_to(["room.enter", 123, {"room": str(stream_room.pk)}])
+        response = await c2.receive_json_from()
+        assert response[0] == "success"
+        assert "viewers" not in response[2]
+
+        response = await c1.receive_json_from()  # room.viewer.added
+        assert response[0] == "room.viewer.added"
+        assert str(response[1]["user"]["id"]) == str(u2.pk)
+
+        # same user joins with a different browser
+        await c3.send_json_to(["room.enter", 123, {"room": str(stream_room.pk)}])
+        response = await c3.receive_json_from()
+        assert response[0] == "success"
+
+        response = await c1.receive_json_from()  # room.viewer.added
+        assert response[0] == "room.viewer.added"
+        assert str(response[1]["user"]["id"]) == str(u2.pk)
+
+        # user leaves with first browser
+        await c2.send_json_to(["room.leave", 123, {"room": str(stream_room.pk)}])
+        response = await c2.receive_json_from()
+        assert response[0] == "success"
+
+        # user leaves with second browser
+        await c3.send_json_to(["room.leave", 123, {"room": str(stream_room.pk)}])
+        response = await c3.receive_json_from()
+        assert response[0] == "success"
+
+        response = await c1.receive_json_from()  # room.viewer.added
+        assert response[0] == "room.viewer.removed"
+        assert str(response[1]["user_id"]) == str(u2.pk)
+
+        with pytest.raises(asyncio.TimeoutError):
+            await c1.receive_json_from()

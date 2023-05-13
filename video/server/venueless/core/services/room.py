@@ -4,8 +4,9 @@ from channels.db import database_sync_to_async
 from django.db.transaction import atomic
 from django.utils.timezone import now
 
-from venueless.core.models import AuditLog, Channel, User
+from venueless.core.models import AuditLog, Channel, User, World
 from venueless.core.models.room import Room, RoomConfigSerializer, RoomView
+from venueless.core.services.user import get_public_users
 
 
 @database_sync_to_async
@@ -41,7 +42,28 @@ def end_view(view: RoomView, delete=False):
         view.end = now()
         view.save()
     c = RoomView.objects.filter(room_id=view.room_id, end__isnull=True).count()
-    return c
+    is_last = (
+        RoomView.objects.filter(
+            room_id=view.room_id, end__isnull=True, user=view.user
+        ).count()
+        == 0
+    )
+    return c, is_last
+
+
+async def get_viewers(world: World, room: Room):
+    users = await get_public_users(
+        # We're doing an ORM query in an async method, but it's okay, since it is not going to be evaluated but
+        # lazily passed to get_public_users which will use it as a subquery :)
+        ids=RoomView.objects.filter(room=room, end__isnull=True).values_list(
+            "user_id", flat=True
+        ),
+        world_id=world.pk,
+        include_banned=False,
+        trait_badges_map=world.config.get("trait_badges_map"),
+        require_show_publicly=True,
+    )
+    return users
 
 
 @database_sync_to_async

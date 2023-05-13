@@ -57,6 +57,7 @@ def get_public_users(
     include_admin_info=False,
     trait_badges_map=None,
     include_banned=True,
+    require_show_publicly=False,
 ):
     # This method is called a lot, especially when lots of people join at once (event start, server reboot, …)
     # For performance reasons, we therefore do not initialize model instances and use serialize_public()
@@ -66,6 +67,8 @@ def get_public_users(
         qs = User.objects.filter(world_id=world_id, deleted=False).order_by(
             "profile__display_name", "id"
         )
+    if require_show_publicly:
+        qs = qs.filter(show_publicly=True)
     if pretalx_ids is not None:
         qs = qs.filter(pretalx_id__in=pretalx_ids)
     if not include_banned:

@@ -46,6 +46,7 @@ def default_roles():
         Permission.ROOM_JANUSCALL_MODERATE,
     ]
     moderator = speaker + [
+        Permission.ROOM_VIEWERS,
         Permission.ROOM_CHAT_MODERATE,
         Permission.ROOM_ANNOUNCE,
         Permission.ROOM_BBB_RECORDINGS,
