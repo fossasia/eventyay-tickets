@@ -15,7 +15,7 @@ const getSelection = () => {
   if (!ACTIVE_ELEMENT) return ""
   let start = ACTIVE_ELEMENT.selectionStart;
   let finish = ACTIVE_ELEMENT.selectionEnd;
-  if (!(start && finish)) {
+  if (start === undefined || finish === undefined) {
     return ""
   }
   return ACTIVE_ELEMENT.value.substring(start, finish);
