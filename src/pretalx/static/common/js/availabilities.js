@@ -1,8 +1,8 @@
 document.addEventListener("DOMContentLoaded", function() {
 
   $("input.availabilities-editor-data").each(function() {
-    var data_field = $(this)
-    var data = JSON.parse(data_field.attr("value"))
+    const data_field = $(this)
+    const data = JSON.parse(data_field.attr("value"))
 
     var editor = $('<div class="availabilities-editor">')
     editor.attr("data-name", data_field.attr("name"))
@@ -44,6 +44,7 @@ document.addEventListener("DOMContentLoaded", function() {
     })
     let localeData = document.querySelector("#calendar-locale")
     const locale = localeData ? localeData.dataset.locale : "en"
+    console.log(data)
     const calendar = new FullCalendar.Calendar(editor[0], {
       timeZone: data.event.timezone,
       locale: locale,

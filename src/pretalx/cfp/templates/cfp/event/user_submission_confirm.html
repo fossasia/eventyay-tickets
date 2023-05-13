@@ -27,13 +27,9 @@
                 <p></p>
             {% endif %}
         </div>
-        <form method="post">
+        <form method="post" class="availability-form">
             {% csrf_token %}
             {% if form.availabilities %}
-                {% compress js %}
-                    <script defer src="{% static "vendored/moment-with-locales.js" %}"></script>
-                    <script defer src="{% static "vendored/moment-timezone-with-data-10-year-range.js" %}"></script>
-                {% endcompress %}
                 {% include "common/availabilities.html" %}
                 {% bootstrap_field form.availabilities layout='inline' %}
                 <small class="form-text text-muted">{{ form.availabilities.help_text }}</small>

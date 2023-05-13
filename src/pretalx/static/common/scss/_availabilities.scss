@@ -4,6 +4,9 @@ input.availabilities-editor-data {
   display: none;
 }
 
+.availability-form .form-group {
+  flex-direction: column;
+}
 .availabilities-editor {
   max-width: 100%;
 }
