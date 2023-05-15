@@ -79,9 +79,7 @@
         <table class="table table-sm table-hover table-flip">
             <thead>
                 <tr>
-                    {% if request.event.feature_flags.use_tracks %}
-                        <th></th>
-                    {% endif %}
+                    <th></th>
                     <th>
                         {% translate "Title" %}
                         <a href="?{% url_replace request 'sort' 'title' %}"><i class="fa fa-caret-down" title="{% translate "Sort by title (a-z)" %}"></i></a>
@@ -111,14 +109,20 @@
             <tbody>
                 {% for submission in submissions %}
                     <tr>
-                        {% if request.event.feature_flags.use_tracks %}
-                            <td>
-                                {% if submission.track %}
+                        <td class="text-center">
+                            {% if request.event.feature_flags.use_tracks and submission.track %}
+                                {% if not submission.is_anonymised %}
                                     <div class="color-square" style="background-color: {{ submission.track.color }}" title="{{ submission.track.name }}">
                                     </div>
+                                {% else %}
+                                    <i class="fa fa-user-secret" style="color: {{ submission.track.color }}" title="{{ submission.track.name }}, {% translate "anonymised" %}" aria-hidden="true"></i>
                                 {% endif %}
-                            </td>
-                        {% endif %}
+                            {% else %}
+                                {% if submission.anonymised %}
+                                    <i class="fa fa-user-secret" style="color: #888" title="{% translate "anonymised" %}" aria-hidden="true"></i>
+                                {% endif %}
+                            {% endif %}
+                        </td>
                         <td>
                             <a href="{{ submission.orga_urls.base }}">
                                 {% if can_view_speakers %}{{ submission.title }}{% else %}{{ submission.anonymised.title|default:submission.title }}{% endif %}
