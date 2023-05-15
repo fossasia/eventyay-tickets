@@ -1104,6 +1104,8 @@ main .progress {
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
+    height: calc(100% - 24px);
+    margin: 8px 16px;
     > div {
       flex-grow: 1;
       min-width: 300px;
