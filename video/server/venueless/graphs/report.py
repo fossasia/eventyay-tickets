@@ -248,7 +248,9 @@ class ReportGenerator:
         )
 
         unique_users = rvqs.filter(room=room).values("user")
-        users_with_duration = User.objects.filter(id__in=unique_users,).annotate(
+        users_with_duration = User.objects.filter(
+            id__in=unique_users,
+        ).annotate(
             total_duration=Subquery(
                 rvqs.filter(
                     user=OuterRef("pk"),
