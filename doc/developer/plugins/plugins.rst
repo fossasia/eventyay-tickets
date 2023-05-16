@@ -23,6 +23,16 @@ time, we created a `cookiecutter`_ template that you can use like this::
    (env)$ cookiecutter https://github.com/pretalx/pretalx-plugin-cookiecutter
 
 This will ask you some questions and then create a project folder for your plugin.
+Afterwards install your plugin into pretalx:
+
+   (env)$ cd pretalx-pluginname
+   (env)$ python setup.py develop
+
+If you already had it running, you'll now have to restart your pretalx dev-server
+for it to recognize the new plugin.
+
+About this Documentation
+------------------------
 
 The following pages go into detail about the types of plugins
 supported. While these instructions don't assume that you know a lot about

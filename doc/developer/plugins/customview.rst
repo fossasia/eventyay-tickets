@@ -27,11 +27,14 @@ If you want to add a custom view to the organiser area of an event, register an 
     urlpatterns = [
         url(f'^orga/event/(?P<event>[{SLUG_CHARS}]+)/',
             views.admin_view, name='backend'),
-        url(r'^(?P<event>[{SLUG_CHARS}]+)/p/mypluginname/',
+        url(f'^(?P<event>[{SLUG_CHARS}]+)/p/mypluginname/',
             views.frontend_view, name='frontend'),
-        url(r'^p/mypluginname/',
+        url(f'^p/mypluginname/',
             views.global_view, name='global-frontend'),
     ]
+
+If you just created your `urls.py` file and you already had the dev-server running, you'll
+now have to restart it for the new file to be recognized.
 
 If your view is event-specific, you have to name one parameter in your URL
 ``event``. By convention, all plugin URLs except for backend URLs start with
@@ -51,7 +54,7 @@ your views::
     from pretalx.common.mixins.views import PermissionRequired
 
     class AdminView(PermissionRequired, View):
-        permission_required = 'can_view_orders'
+        permission_required = 'orga.view_submissions'
 
         ...
 
@@ -68,7 +71,7 @@ There is also a signal that allows you to add the view to the event sidebar navi
     @receiver(nav_event, dispatch_uid='friends_tickets_nav')
     def navbar_info(sender, request, **kwargs):
         url = resolve(request.path_info)
-        if not request.user.has_perm('can_see_orga_area', request.event):
+        if not request.user.has_perm('orga.view_orga_area', request.event):
             return []
         return [{
             'label': _('My plugin view'),
@@ -84,8 +87,8 @@ Frontend views
 --------------
 
 Frontend views work pretty much like organiser area views. Take care that your URL starts
-with ``/(P?P<event>[\]+)/``, or even better, ``/(P?P<event>[\]+)/p/``.
-You can then write a regular view. It will be automatically ensured that:
+with ``f'^(?P<event>[{SLUG_CHARS}]+)/p/mypluginname`` for event related urls or ``f'^p/mypluginname``
+for global views. You can then write a regular view. It will be automatically ensured that:
 
 * The requested event exists
 * The requested event is visible (either by being public, or if an organiser looks at it)
