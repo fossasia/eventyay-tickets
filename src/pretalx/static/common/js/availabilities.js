@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function() {
     editor.before($(`<div class="availabilities-tz-hint">${data.event.timezone}</div>`))
 
     function save_events() {
-      data = {
+      const data = {
         availabilities: calendar.getEvents().map(function(e) {
           if (e.allDay) {
             return {
@@ -44,7 +44,6 @@ document.addEventListener("DOMContentLoaded", function() {
     })
     let localeData = document.querySelector("#calendar-locale")
     const locale = localeData ? localeData.dataset.locale : "en"
-    console.log(data)
     const calendar = new FullCalendar.Calendar(editor[0], {
       timeZone: data.event.timezone,
       locale: locale,
