@@ -372,12 +372,16 @@ class BBBService:
 
                 tz = pytz.timezone(self.world.timezone)
                 for rec in root.xpath("recordings/recording"):
-                    url_presentation = url_screenshare = url_video = None
+                    url_presentation = url_screenshare = url_video = url_notes = None
                     for f in rec.xpath("playback/format"):
                         if f.xpath("type")[0].text == "presentation":
                             url_presentation = f.xpath("url")[0].text
                         if f.xpath("type")[0].text == "screenshare":
                             url_screenshare = f.xpath("url")[0].text
+                        if f.xpath("type")[0].text == "video":
+                            url_video = f.xpath("url")[0].text
+                        if f.xpath("type")[0].text == "notes":
+                            url_notes = f.xpath("url")[0].text
                         if f.xpath("type")[0].text == "Video":
                             url_video = f.xpath("url")[0].text
                             # Work around an upstream bug
@@ -389,6 +393,7 @@ class BBBService:
                             not url_presentation
                             and not url_screenshare
                             and not url_video
+                            and not url_notes
                         ):
                             continue
                     recordings.append(
@@ -416,6 +421,7 @@ class BBBService:
                             "url": url_presentation,
                             "url_video": url_video,
                             "url_screenshare": url_screenshare,
+                            "url_notes": url_notes,
                         }
                     )
             except Exception:
