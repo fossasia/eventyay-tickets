@@ -83,7 +83,10 @@ class MailTemplateForm(ReadOnlyFlag, MailTemplateBase):
                 valid_placeholders["questions"] = []
                 valid_placeholders["url"] = []
                 kwargs = ["event", "user"]
-            elif self.instance in (self.event.accept_template, self.event.reject_template):
+            elif self.instance in (
+                self.event.accept_template,
+                self.event.reject_template,
+            ):
                 kwargs.remove("slot")
 
         valid_placeholders.update(
