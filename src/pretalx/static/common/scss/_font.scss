@@ -4,8 +4,8 @@
   font-weight: 600;
   font-display: swap;
   src: local('Titillium Web SemiBold'), local('TitilliumWeb-SemiBold'),
-       url(static('fonts/titillium-web-v8-latin-600.woff2')) format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
-       url(static('fonts/titillium-web-v8-latin-600.woff')) format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+       url(static('fonts/titillium-web-v15-latin-ext-600.woff2')) format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url(static('fonts/titillium-web-v15-latin-ext-600.woff')) format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
 @font-face {
   font-family: 'Titillium Web';
@@ -13,8 +13,8 @@
   font-weight: 700;
   font-display: swap;
   src: local('Titillium Web Bold'), local('TitilliumWeb-Bold'),
-       url(static('fonts/titillium-web-v8-latin-700.woff2')) format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
-       url(static('fonts/titillium-web-v8-latin-700.woff')) format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+       url(static('fonts/titillium-web-v15-latin-ext-700.woff2')) format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url(static('fonts/titillium-web-v15-latin-ext-700.woff')) format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
 @font-face {
   font-family: 'Titillium Web';
@@ -22,8 +22,8 @@
   font-weight: 600;
   font-display: swap;
   src: local('Titillium Web SemiBold Italic'), local('TitilliumWeb-SemiBoldItalic'),
-       url(static('fonts/titillium-web-v8-latin-600italic.woff2')) format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
-       url(static('fonts/titillium-web-v8-latin-600italic.woff')) format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+       url(static('fonts/titillium-web-v15-latin-ext-600italic.woff2')) format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url(static('fonts/titillium-web-v15-latin-ext-600italic.woff')) format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
 @font-face {
   font-family: 'Titillium Web';
@@ -31,8 +31,8 @@
   font-weight: 700;
   font-display: swap;
   src: local('Titillium Web Bold Italic'), local('TitilliumWeb-BoldItalic'),
-       url(static('fonts/titillium-web-v8-latin-700italic.woff2')) format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
-       url(static('fonts/titillium-web-v8-latin-700italic.woff')) format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+       url(static('fonts/titillium-web-v15-latin-ext-700italic.woff2')) format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url(static('fonts/titillium-web-v15-latin-ext-700italic.woff')) format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
 @font-face {
   font-family: 'Muli';
@@ -40,8 +40,8 @@
   font-weight: 400;
   font-display: swap;
   src: local(''),
-       url(static('fonts/muli-v19-latin-regular.woff2')) format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
-       url(static('fonts/muli-v19-latin-regular.woff')) format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+       url(static('fonts/mulish-v12-latin-ext-regular.woff2')) format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url(static('fonts/mulish-v12-latin-ext-regular.woff')) format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
 @font-face {
   font-family: 'Muli';
@@ -49,8 +49,8 @@
   font-weight: 700;
   font-display: swap;
   src: local(''),
-       url(static('fonts/muli-v19-latin-700.woff2')) format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
-       url(static('fonts/muli-v19-latin-700.woff')) format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+       url(static('fonts/mulish-v12-latin-ext-700.woff2')) format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url(static('fonts/mulish-v12-latin-ext-700.woff')) format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
 @font-face {
   font-family: 'Muli';
@@ -58,16 +58,16 @@
   font-weight: 400;
   font-display: swap;
   src: local(''),
-       url(static('fonts/muli-v19-latin-italic.woff2')) format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
-       url(static('fonts/muli-v19-latin-italic.woff')) format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+       url(static('fonts/mulish-v12-latin-ext-italic.woff2')) format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url(static('fonts/mulish-v12-latin-ext-italic.woff')) format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
 @font-face {
   font-family: 'Muli';
   font-style: italic;
   font-weight: 700;
   font-display: swap;
-  src: url(static('fonts/muli-v19-latin-700italic.woff2')) format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
-       url(static('fonts/muli-v19-latin-700italic.woff')) format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+  src: url(static('fonts/mulish-v12-latin-ext-700italic.woff2')) format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url(static('fonts/mulish-v12-latin-ext-700italic.woff')) format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
 body {
     font-family: "Muli","Open Sans","OpenSans","Helvetica Neue",Helvetica,Arial,sans-serif;
