@@ -38,12 +38,12 @@ class ReviewDashboard(EventPermissionRequired, BaseSubmissionList):
     template_name = "orga/review/dashboard.html"
     permission_required = "orga.view_review_dashboard"
     paginate_by = None
-    usable_states=(
+    usable_states = (
         SubmissionStates.SUBMITTED,
         SubmissionStates.ACCEPTED,
         SubmissionStates.REJECTED,
         SubmissionStates.CONFIRMED,
-        )
+    )
 
     def filter_range(self, queryset):
         review_count = self.request.GET.get("review-count") or ","
@@ -70,9 +70,8 @@ class ReviewDashboard(EventPermissionRequired, BaseSubmissionList):
             if aggregate_method == "median"
             else (statistics.fmean if hasattr(statistics, "fmean") else statistics.mean)
         )
-        queryset = (
-            self._get_base_queryset(for_review=True)
-            .filter(state__in=self.usable_states)
+        queryset = self._get_base_queryset(for_review=True).filter(
+            state__in=self.usable_states
         )
         queryset = self.filter_queryset(queryset).annotate(
             review_count=Count("reviews", distinct=True),
