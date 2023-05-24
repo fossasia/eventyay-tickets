@@ -517,12 +517,9 @@ class SubmissionContent(
         return kwargs
 
 
-class SubmissionList(
-    EventPermissionRequired, Sortable, Filterable, ReviewerSubmissionFilter, ListView
-):
+class BaseSubmissionList(Sortable, Filterable, ReviewerSubmissionFilter, ListView):
     model = Submission
     context_object_name = "submissions"
-    template_name = "orga/submission/list.html"
     filter_fields = (
         "submission_type",
         "state",
@@ -533,14 +530,13 @@ class SubmissionList(
         "pending_state__isnull",
     )
     sortable_fields = ("code", "title", "state", "is_featured")
-    secondary_sort = {"state": ("pending_state",)}
-    permission_required = "orga.view_submissions"
-    paginate_by = 25
+    usable_states = None
 
     def get_filter_form(self):
         return SubmissionFilterForm(
             data=self.request.GET,
             event=self.request.event,
+            usable_states=self.usable_states,
             limit_tracks=self.limit_tracks,
         )
 
@@ -550,28 +546,10 @@ class SubmissionList(
             default_filters.add("speakers__name__icontains")
         return default_filters
 
-    @context
-    def show_submission_types(self):
-        return self.request.event.submission_types.all().count() > 1
-
-    @context
-    @cached_property
-    def pending_changes(self):
-        return self.request.event.submissions.filter(
-            pending_state__isnull=False
-        ).count()
-
-    @context
-    def show_tracks(self):
-        if self.request.event.feature_flags["use_tracks"]:
-            if self.limit_tracks:
-                return len(self.limit_tracks) > 1
-            return self.request.event.tracks.all().count() > 1
-
-    def get_queryset(self):
+    def _get_base_queryset(self, for_review=False):
         # If somebody has *only* reviewer permissions for this event, they can only
         # see the proposals they can review.
-        qs = super().get_queryset().order_by("-id")
+        qs = super().get_queryset(for_review=for_review).order_by("-id")
         qs = self.filter_queryset(qs)
         question = self.request.GET.get("question")
         unanswered = self.request.GET.get("unanswered")
@@ -598,8 +576,35 @@ class SubmissionList(
             qs = qs.annotate(has_answer=Exists(answers)).filter(has_answer=False)
         if "state" not in self.request.GET:
             qs = qs.exclude(state="deleted")
-        qs = self.sort_queryset(qs)
-        return qs.distinct()
+        return qs
+
+    def get_queryset(self):
+        return self.sort_queryset(self._get_base_queryset()).distinct()
+
+
+class SubmissionList(EventPermissionRequired, BaseSubmissionList):
+    template_name = "orga/submission/list.html"
+    permission_required = "orga.view_submissions"
+    paginate_by = 25
+    secondary_sort = {"state": ("pending_state",)}
+
+    @context
+    def show_submission_types(self):
+        return self.request.event.submission_types.all().count() > 1
+
+    @context
+    @cached_property
+    def pending_changes(self):
+        return self.request.event.submissions.filter(
+            pending_state__isnull=False
+        ).count()
+
+    @context
+    def show_tracks(self):
+        if self.request.event.feature_flags["use_tracks"]:
+            if self.limit_tracks:
+                return len(self.limit_tracks) > 1
+            return self.request.event.tracks.all().count() > 1
 
 
 class FeedbackList(SubmissionViewMixin, ListView):

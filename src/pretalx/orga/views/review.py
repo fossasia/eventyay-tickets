@@ -28,45 +28,21 @@ from pretalx.orga.forms.review import (
     TagsForm,
 )
 from pretalx.orga.forms.submission import SubmissionStateChangeForm
-from pretalx.orga.views.submission import ReviewerSubmissionFilter
+from pretalx.orga.views.submission import BaseSubmissionList
 from pretalx.person.models import User
 from pretalx.submission.forms import QuestionsForm, SubmissionFilterForm
 from pretalx.submission.models import Review, Submission, SubmissionStates
 
 
-class ReviewDashboard(
-    EventPermissionRequired, Filterable, ReviewerSubmissionFilter, ListView
-):
+class ReviewDashboard(EventPermissionRequired, BaseSubmissionList):
     template_name = "orga/review/dashboard.html"
-    paginate_by = None
-    context_object_name = "submissions"
     permission_required = "orga.view_review_dashboard"
-    filter_fields = (
-        "state",
-        "submission_type",
-        "tags",
-        "track",
-        "content_locale",
-        "pending_state",
-        "pending_state__isnull",
-    )
-    default_filters = (
-        "code__icontains",
-        "speakers__name__icontains",
-        "title__icontains",
-    )
-
-    def get_filter_form(self):
-        return SubmissionFilterForm(
-            data=self.request.GET,
-            event=self.request.event,
-            usable_states=[
-                SubmissionStates.SUBMITTED,
-                SubmissionStates.ACCEPTED,
-                SubmissionStates.REJECTED,
-                SubmissionStates.CONFIRMED,
-            ],
-            limit_tracks=self.limit_tracks,
+    paginate_by = None
+    usable_states=(
+        SubmissionStates.SUBMITTED,
+        SubmissionStates.ACCEPTED,
+        SubmissionStates.REJECTED,
+        SubmissionStates.CONFIRMED,
         )
 
     def filter_range(self, queryset):
@@ -95,16 +71,8 @@ class ReviewDashboard(
             else (statistics.fmean if hasattr(statistics, "fmean") else statistics.mean)
         )
         queryset = (
-            super()
-            .get_queryset(for_review=True)
-            .filter(
-                state__in=[
-                    SubmissionStates.SUBMITTED,
-                    SubmissionStates.ACCEPTED,
-                    SubmissionStates.REJECTED,
-                    SubmissionStates.CONFIRMED,
-                ]
-            )
+            self._get_base_queryset(for_review=True)
+            .filter(state__in=self.usable_states)
         )
         queryset = self.filter_queryset(queryset).annotate(
             review_count=Count("reviews", distinct=True),

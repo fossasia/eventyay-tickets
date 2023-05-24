@@ -132,6 +132,18 @@
                 </details>
             </div>
         </form>
+        {% if filter_form.is_valid and filter_form.cleaned_data.question %}
+            <p class="text-muted ml-2">
+                <span class="fa fa-filter"></span>
+                {% blocktranslate trimmed with question=filter_form.cleaned_data.question.question %}
+                    List filtered by answers to question "{{ question }}".
+                {% endblocktranslate %}
+                <a href="?{% url_replace request 'question' '' 'answer' '' 'answer__options' '' %}" class="text-muted">
+                    <span class="fa fa-times"></span>
+                    {% translate "Remove filter" %}
+                </a>
+            </p>
+        {% endif %}
     </div>
 
     <form method="post">{% csrf_token %}

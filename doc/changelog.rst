@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` The review dashboard can now be filtered by question answers, just like the submission list.
 - :feature:`-` New anonymisation indicator in proposal list.
 - :feature:`1418` Speaker availabilities are now limited to the sum of all room availabilites.
 - :feature:`1440` The list of team members is now always sorted by name.
