@@ -9,14 +9,10 @@ from django.forms.models import BaseModelFormSet, modelformset_factory
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
-from django.views.generic import FormView, ListView, TemplateView
+from django.views.generic import FormView, TemplateView
 from django_context_decorator import context
 
-from pretalx.common.mixins.views import (
-    EventPermissionRequired,
-    Filterable,
-    PermissionRequired,
-)
+from pretalx.common.mixins.views import EventPermissionRequired, PermissionRequired
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.orga.forms.review import (
     DirectionForm,
@@ -30,7 +26,7 @@ from pretalx.orga.forms.review import (
 from pretalx.orga.forms.submission import SubmissionStateChangeForm
 from pretalx.orga.views.submission import BaseSubmissionList
 from pretalx.person.models import User
-from pretalx.submission.forms import QuestionsForm, SubmissionFilterForm
+from pretalx.submission.forms import QuestionsForm
 from pretalx.submission.models import Review, Submission, SubmissionStates
 
 
