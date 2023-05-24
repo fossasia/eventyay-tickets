@@ -71,7 +71,7 @@ export default {
 				(showJoinleave || message.event_type !== 'channel.member') &&
 				message.content.type !== 'deleted' &&
 				!message.replaces &&
-				(!message.content.poll_id || this.polls.find(poll => poll.id === message.content.poll_id))
+				(!message.content.poll_id || this.polls?.find(poll => poll.id === message.content.poll_id))
 			)
 		},
 		sortedMembers () {
