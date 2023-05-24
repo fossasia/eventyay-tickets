@@ -234,6 +234,7 @@ class ReviewDashboard(EventPermissionRequired, BaseSubmissionList):
             variant__in=[
                 QuestionVariant.BOOLEAN,
                 QuestionVariant.CHOICES,
+                QuestionVariant.MULTIPLE,
                 QuestionVariant.DATE,
                 QuestionVariant.DATETIME,
                 QuestionVariant.BOOLEAN,
