@@ -71,12 +71,12 @@ export default {
 		if (!this.room) {
 			return
 		}
-		api.call('room.enter', {room: this.room.id})
 		this.initializeIframe()
 	},
 	beforeDestroy () {
 		this.iframe?.remove()
 		if (api.socketState !== 'open') return
+		// TODO move to store?
 		if (this.room) api.call('room.leave', {room: this.room.id})
 	},
 	methods: {

@@ -1,5 +1,6 @@
 /* global RELEASE */
 import Vue from 'vue'
+import jwtDecode from 'jwt-decode'
 import Buntpapier from 'buntpapier'
 import Vuelidate from 'vuelidate'
 import VueVirtualScroller from 'vue-virtual-scroller'
@@ -60,6 +61,11 @@ async function init (token) {
 			localStorage.clientId = clientId
 		}
 		store.dispatch('login', {clientId})
+	}
+	if (store.state.token && jwtDecode(store.state.token).traits.includes('-kiosk')) {
+		store.watch(state => state.user, ({profile}) => {
+			router.replace({name: 'standalone:kiosk', params: {roomId: profile.room_id}})
+		}, {deep: true})
 	}
 	store.dispatch('connect')
 

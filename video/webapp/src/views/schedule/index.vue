@@ -9,7 +9,7 @@
 		.scroll-parent(ref="scrollParent", v-scrollbar.x.y="")
 			grid-schedule(v-if="$mq.above['m']",
 				:sessions="sessions",
-				:rooms="rooms",
+				:rooms="schedule.rooms",
 				:currentDay="currentDay",
 				:now="now",
 				:scrollParent="$refs.scrollParent",
@@ -20,7 +20,7 @@
 			)
 			linear-schedule(v-else,
 				:sessions="sessions",
-				:rooms="rooms",
+				:rooms="schedule.rooms",
 				:currentDay="currentDay",
 				:now="now",
 				:scrollParent="$refs.scrollParent",
@@ -53,7 +53,7 @@ export default {
 	computed: {
 		...mapState(['now']),
 		...mapState('schedule', ['schedule', 'errorLoading']),
-		...mapGetters('schedule', ['days', 'rooms', 'sessions', 'favs']),
+		...mapGetters('schedule', ['days', 'sessions', 'favs']),
 	},
 	methods: {
 		changeDay (day) {
@@ -107,6 +107,4 @@ export default {
 			text-align: center
 	.c-grid-schedule .grid > .room
 		top: 0
-	.bunt-scrollbar-rail-wrapper-x, .bunt-scrollbar-rail-wrapper-y
-		z-index: 20
 </style>
