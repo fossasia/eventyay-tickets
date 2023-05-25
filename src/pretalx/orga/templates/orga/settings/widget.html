@@ -85,7 +85,7 @@
         </p>
     </div>
 
-    {% if request.event.is_public and request.event.feature_flags.show_schedule and request.event.current_schedule %}
+    {% if request.event.is_public and request.event.feature_flags.show_schedule and request.event.current_schedule and not request.event.custom_domain %}
         <div class="mw-100">
             <h2>{% translate "Widget preview" %}</h2>
             <p>
