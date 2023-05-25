@@ -50,7 +50,7 @@ flake8==6.0.0
 pytest==7.3.1
 pytest-django==4.5.2
 pytest-asyncio==0.21.0
-pytest-cov==4.0.0
+pytest-cov==4.1.0
 pytest-rerunfailures==11.1.2
 aioresponses==0.7.4
 yappi==1.4.0
