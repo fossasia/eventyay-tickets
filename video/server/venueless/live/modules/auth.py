@@ -1,5 +1,7 @@
+import datetime
 import logging
 import time
+import uuid
 from urllib.parse import urljoin
 
 import jwt
@@ -10,6 +12,8 @@ from django.core.signing import dumps
 from django.urls import reverse
 from sentry_sdk import configure_scope
 
+from venueless.core.models import User
+from venueless.core.models.auth import ShortToken
 from venueless.core.permissions import Permission
 from venueless.core.services.announcement import get_announcements
 from venueless.core.services.chat import ChatService
@@ -26,6 +30,7 @@ from venueless.core.services.user import (
     get_blocked_users,
     get_public_user,
     get_public_users,
+    get_user_by_id,
     list_users,
     login,
     set_user_banned,
@@ -269,7 +274,8 @@ class AuthModule(BaseModule):
         await user_broadcast(
             "user.updated",
             user.serialize_public(
-                trait_badges_map=self.consumer.world.config.get("trait_badges_map")
+                trait_badges_map=self.consumer.world.config.get("trait_badges_map"),
+                include_client_state=user.type == User.UserType.KIOSK,
             ),
             user.pk,
             self.consumer.socket_id,
@@ -279,13 +285,14 @@ class AuthModule(BaseModule):
     @command("fetch")
     @require_world_permission(Permission.WORLD_VIEW)
     async def fetch(self, body):
+        admin = await self.consumer.world.has_permission_async(
+            user=self.consumer.user, permission=Permission.WORLD_USERS_MANAGE
+        )
         if "ids" in body:
             users = await get_public_users(
                 self.consumer.world.id,
                 ids=body.get("ids")[:100],
-                include_admin_info=await self.consumer.world.has_permission_async(
-                    user=self.consumer.user, permission=Permission.WORLD_USERS_MANAGE
-                ),
+                include_admin_info=admin,
                 trait_badges_map=self.consumer.world.config.get("trait_badges_map"),
             )
             await self.consumer.send_success({u["id"]: u for u in users})
@@ -293,9 +300,7 @@ class AuthModule(BaseModule):
             users = await get_public_users(
                 self.consumer.world.id,
                 pretalx_ids=body.get("pretalx_ids")[:100],
-                include_admin_info=await self.consumer.world.has_permission_async(
-                    user=self.consumer.user, permission=Permission.WORLD_USERS_MANAGE
-                ),
+                include_admin_info=admin,
                 trait_badges_map=self.consumer.world.config.get("trait_badges_map"),
             )
             await self.consumer.send_success({u["pretalx_id"]: u for u in users})
@@ -303,9 +308,7 @@ class AuthModule(BaseModule):
             user = await get_public_user(
                 self.consumer.world.id,
                 body.get("id"),
-                include_admin_info=await self.consumer.world.has_permission_async(
-                    user=self.consumer.user, permission=Permission.WORLD_USERS_MANAGE
-                ),
+                include_admin_info=admin,
                 trait_badges_map=self.consumer.world.config.get("trait_badges_map"),
             )
             if user:
@@ -335,11 +338,13 @@ class AuthModule(BaseModule):
     @command("list")
     @require_world_permission(Permission.WORLD_USERS_LIST)
     async def list(self, body):
+        body = body or {}
         users = await get_public_users(
             self.consumer.world.pk,
             include_admin_info=await self.consumer.world.has_permission_async(
                 user=self.consumer.user, permission=Permission.WORLD_USERS_MANAGE
             ),
+            type=body.get("type", User.UserType.PERSON),
             include_banned=not body
             or body.get("include_banned", True)
             and await self.consumer.world.has_permission_async(
@@ -530,3 +535,66 @@ class AuthModule(BaseModule):
                 + token,
             }
         )
+
+    @command("kiosk.create")
+    @require_world_permission(Permission.WORLD_UPDATE)  # TODO: stricter permission?
+    async def kiosk_create(self, body):
+        uid = str(uuid.uuid4())
+
+        @database_sync_to_async
+        def create_user():
+            user = User.objects.create(
+                type=User.UserType.KIOSK,
+                token_id=uid,
+                world=self.consumer.world,
+                show_publicly=False,
+                profile=body["profile"]
+                if isinstance(body.get("profile"), dict)
+                else {},
+                traits=[],
+            )
+            user.world_grants.create(world=self.consumer.world, role="__kiosk")
+            return user
+
+        user = await create_user()
+
+        await self.consumer.send_success({"user": str(user.pk)})
+
+    @command("kiosk.fetch")
+    @require_world_permission(
+        Permission.WORLD_USERS_MANAGE
+    )  # TODO: stricter permission?
+    async def kiosk_fetch(self, body):
+        @database_sync_to_async
+        def get_user(uid):
+            user = get_user_by_id(self.consumer.world.pk, uid)
+            if not user or user.type != User.UserType.KIOSK:
+                return None
+            user = user.serialize_public(
+                include_admin_info=True,
+                trait_badges_map=None,
+                include_client_state=True,
+            )
+            jwt_config = self.consumer.world.config["JWT_secrets"][0]
+            iat = datetime.datetime.utcnow()
+            exp = iat + datetime.timedelta(days=365)
+            payload = {
+                "iss": jwt_config["issuer"],
+                "aud": jwt_config["audience"],
+                "exp": exp,
+                "iat": iat,
+                "uid": user["token_id"],
+                "traits": ["-kiosk"],
+            }
+
+            token = jwt.encode(payload, jwt_config["secret"], algorithm="HS256")
+            st = ShortToken(world=self.consumer.world, long_token=token, expires=exp)
+            st.save()
+            user["token"] = st.short_token
+            return user
+
+        user = await get_user(body.get("id"))
+        if user:
+            await self.consumer.send_success(user)
+        else:
+            await self.consumer.send_error(code="user.not_found")

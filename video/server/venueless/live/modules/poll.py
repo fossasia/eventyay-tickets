@@ -15,6 +15,7 @@ from venueless.core.services.poll import (
 )
 from venueless.live.channels import (
     GROUP_CHAT,
+    GROUP_ROOM_POLL_ALL_RESULTS,
     GROUP_ROOM_POLL_MANAGE,
     GROUP_ROOM_POLL_READ,
     GROUP_ROOM_POLL_RESULTS,
@@ -170,6 +171,14 @@ class PollModule(BaseModule):
             },
         )
         await self.consumer.channel_layer.group_send(
+            GROUP_ROOM_POLL_ALL_RESULTS.format(id=self.room.pk),
+            {
+                "type": "poll.created_or_updated",
+                "room": str(self.room.pk),
+                "poll": poll,
+            },
+        )
+        await self.consumer.channel_layer.group_send(
             poll_results.format(id=self.room.pk, poll=poll["id"]),
             {
                 "type": "poll.created_or_updated",
@@ -185,16 +194,21 @@ class PollModule(BaseModule):
             await self.consumer.send_error("poll.inactive")
             return
 
-        polls = []
         is_moderator = await self.consumer.world.has_permission_async(
             user=self.consumer.user,
             room=self.room,
             permission=Permission.ROOM_POLL_MANAGE,
         )
+        early_results = is_moderator or await self.consumer.world.has_permission_async(
+            user=self.consumer.user,
+            room=self.room,
+            permission=Permission.ROOM_POLL_EARLY_RESULTS,
+        )
         polls = await get_polls(
             room=self.room.id,
             for_user=self.consumer.user,
             moderator=is_moderator,
+            early_results=early_results,
         )
         await self.consumer.send_success(polls)
 

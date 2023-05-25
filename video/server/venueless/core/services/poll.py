@@ -41,7 +41,7 @@ def get_voted_polls(room, user):
 
 
 @database_sync_to_async
-def get_polls(room, moderator=False, for_user=None, **kwargs):
+def get_polls(room, moderator=False, early_results=False, for_user=None, **kwargs):
     polls = Poll.objects.with_results().filter(room=room)
     if not moderator:
         polls = polls.filter(Q(state=Poll.States.OPEN) | Q(state=Poll.States.CLOSED))
@@ -56,7 +56,7 @@ def get_polls(room, moderator=False, for_user=None, **kwargs):
     return [
         poll.serialize_public(
             answers=answers.filter(poll=poll) if for_user else None,
-            force_results=moderator,
+            force_results=early_results,
         )
         for poll in polls
     ]

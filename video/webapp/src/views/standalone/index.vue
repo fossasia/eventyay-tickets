@@ -1,25 +1,29 @@
 <template lang="pug">
-#presentation-mode(:class="{fullscreen}", :style="[style, themeVariables]")
+#standalone-app(:class="{fullscreen, 'themed-bg': themedBackground}", :style="[style, themeVariables]")
 	.fatal-indicator.mdi.mdi-alert-octagon(v-if="fatalError || fatalConnectionError", :title="errorMessage")
 	.content(v-else-if="world")
 		router-view(:room="room")
+	//- hoist reactions to escale scaling
+	ReactionsOverlay(v-if="$route.name === 'standalone:kiosk'")
 	bunt-progress-circular(v-else, size="small")
 </template>
 <script>
 import { mapState } from 'vuex'
 import { themeVariables } from 'theme'
-import api from 'lib/api'
+import ReactionsOverlay from 'components/ReactionsOverlay.vue'
 
 const SLIDE_WIDTH = 960
 const SLIDE_HEIGHT = 700
 
 export default {
+	components: { ReactionsOverlay },
 	props: {
 		roomId: String
 	},
 	data () {
 		return {
 			fullscreen: false,
+			themedBackground: true,
 			themeVariables,
 			scale: 1
 		}
@@ -41,10 +45,10 @@ export default {
 	watch: {
 		room () {
 			this.$store.dispatch('changeRoom', this.room)
-			api.call('room.enter', {room: this.room.id})
 		}
 	},
 	created () {
+		this.$store.dispatch('changeRoom', this.room)
 		this.fullscreen = this.$route.query.fullscreen ?? !this.$route.name.endsWith('chat')
 	},
 	mounted () {
@@ -60,16 +64,19 @@ export default {
 			const width = document.body.offsetWidth
 			const height = document.body.offsetHeight
 			this.scale = Math.min(width / SLIDE_WIDTH, height / SLIDE_HEIGHT)
+			this.$store.commit('reportMediaSourcePlaceholderRect', this.$el.getBoundingClientRect())
 		}
 	}
 }
 </script>
 <style lang="stylus">
-#presentation-mode
+#standalone-app
 	height: 100%
 	display: flex
 	flex-direction: column
 	font-size: 16px // somehow obs has no default font size, so setting size via percentage breaks everything
+	--mediasource-placeholder-height: 100vh
+	--mediasource-placeholder-width: 100vw
 	> .bunt-progress-circular, > .fatal-indicator
 		position: fixed
 		top: 100%
@@ -94,4 +101,14 @@ export default {
 			width: 960px
 			height: 700px
 			flex: none
+	&.themed-bg
+		background-color: var(--clr-primary)
+		color: var(--clr-input-primary-fg)
+	.c-reactions-overlay
+		bottom: 0
+		right: 0
+		.reaction
+			height: calc(28px * var(--scale))
+			width: @height
+			bottom: calc(-32px * var(--scale))
 </style>

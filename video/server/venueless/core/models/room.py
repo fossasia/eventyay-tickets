@@ -7,7 +7,7 @@ from django.db.models.expressions import RawSQL
 from rest_framework import serializers
 
 from venueless.core.models.cache import VersionedModel
-from venueless.core.permissions import Permission
+from venueless.core.permissions import SYSTEM_ROLES, Permission
 
 
 def empty_module_config():
@@ -34,7 +34,7 @@ class RoomQuerySet(models.QuerySet):
         # Get all roles that grant view access
         roles = [
             role
-            for role, permissions in world.roles.items()
+            for role, permissions in [*world.roles.items(), *SYSTEM_ROLES.items()]
             if permission.value in permissions
         ]
 

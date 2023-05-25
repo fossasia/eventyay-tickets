@@ -44,7 +44,9 @@ def get_public_user(world_id, id, include_admin_info=False, trait_badges_map=Non
     if not user:
         return None
     return user.serialize_public(
-        include_admin_info=include_admin_info, trait_badges_map=trait_badges_map
+        include_admin_info=include_admin_info,
+        trait_badges_map=trait_badges_map,
+        include_client_state=include_admin_info and user.type == User.UserType.KIOSK,
     )
 
 
@@ -58,6 +60,7 @@ def get_public_users(
     trait_badges_map=None,
     include_banned=True,
     require_show_publicly=False,
+    type=User.UserType.PERSON,
 ):
     # This method is called a lot, especially when lots of people join at once (event start, server reboot, …)
     # For performance reasons, we therefore do not initialize model instances and use serialize_public()
@@ -71,6 +74,8 @@ def get_public_users(
         qs = qs.filter(show_publicly=True)
     if pretalx_ids is not None:
         qs = qs.filter(pretalx_id__in=pretalx_ids)
+    if type is not None:
+        qs = qs.filter(type=type)
     if not include_banned:
         qs = qs.exclude(moderation_state=User.ModerationState.BANNED)
     return [
@@ -94,6 +99,11 @@ def get_public_users(
             if trait_badges_map
             else [],
             **(
+                {"client_state": u["client_state"]}
+                if include_admin_info and u["type"] == User.UserType.KIOSK
+                else {}
+            ),
+            **(
                 {"moderation_state": u["moderation_state"], "token_id": u["token_id"]}
                 if include_admin_info
                 else {}
@@ -101,6 +111,7 @@ def get_public_users(
         )
         for u in qs.values(
             "id",
+            "type",
             "profile",
             "deleted",
             "moderation_state",
@@ -108,6 +119,7 @@ def get_public_users(
             "traits",
             "last_login",
             "pretalx_id",
+            "client_state",
         )
     ]
 
@@ -242,6 +254,11 @@ def update_user(
 
         if (
             not is_admin
+            and "client_state" in data
+            and data["client_state"] != user.client_state
+        ) or (
+            is_admin
+            and user.type == User.UserType.KIOSK
             and "client_state" in data
             and data["client_state"] != user.client_state
         ):
@@ -486,7 +503,12 @@ def list_users(
     include_admin_info=False,
 ) -> object:
     qs = (
-        User.objects.filter(world_id=world_id, show_publicly=True, deleted=False)
+        User.objects.filter(
+            world_id=world_id,
+            show_publicly=True,
+            deleted=False,
+            type=User.UserType.PERSON,
+        )
         .exclude(profile__display_name__isnull=True)
         .exclude(profile__display_name__exact="")
     )

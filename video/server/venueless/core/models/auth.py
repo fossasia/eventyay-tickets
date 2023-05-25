@@ -17,12 +17,19 @@ class User(VersionedModel):
         SILENCED = "silenced"
         BANNED = "banned"
 
+    class UserType(models.TextChoices):
+        PERSON = "person"
+        KIOSK = "kiosk"
+
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     client_id = models.CharField(max_length=200, db_index=True, null=True, blank=True)
     token_id = models.CharField(max_length=200, db_index=True, null=True, blank=True)
     world = models.ForeignKey(to="World", db_index=True, on_delete=models.CASCADE)
     moderation_state = models.CharField(
         max_length=8, default=ModerationState.NONE, choices=ModerationState.choices
+    )
+    type = models.CharField(
+        max_length=8, default=UserType.PERSON, choices=UserType.choices
     )
     show_publicly = models.BooleanField(default=True)
     profile = JSONField()

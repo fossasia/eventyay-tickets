@@ -103,8 +103,12 @@ Fetching a list of users
 
 If you have sufficient permissions, you can fetch a list of all users like this::
 
-    => ["user.list", 123, {"ids": ["1234", "5679"]}]
+    => ["user.list", 123, {}]
     <- ["success", 123, {"1234": {"id": "1234", "profile": {…}}, "5679": {…}}]
+
+By default, you only get users of the type ``"person"`` , but you can also get other types like this::
+
+    => ["user.list", 123, {"type": "kiosk"}]
 
 .. note:: Pagination will be implemented on this endpoint in the future.
 

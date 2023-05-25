@@ -12,7 +12,11 @@ from django.db import models
 from django.utils.crypto import get_random_string
 
 from venueless.core.models.cache import VersionedModel
-from venueless.core.permissions import MAX_PERMISSIONS_IF_SILENCED, Permission
+from venueless.core.permissions import (
+    MAX_PERMISSIONS_IF_SILENCED,
+    SYSTEM_ROLES,
+    Permission,
+)
 from venueless.core.utils.json import CustomJSONEncoder
 
 
@@ -44,6 +48,7 @@ def default_roles():
     speaker = participant + [
         Permission.ROOM_BBB_MODERATE,
         Permission.ROOM_JANUSCALL_MODERATE,
+        Permission.ROOM_POLL_EARLY_RESULTS,
     ]
     moderator = speaker + [
         Permission.ROOM_VIEWERS,
@@ -51,6 +56,7 @@ def default_roles():
         Permission.ROOM_ANNOUNCE,
         Permission.ROOM_BBB_RECORDINGS,
         Permission.ROOM_QUESTION_MODERATE,
+        Permission.ROOM_POLL_EARLY_RESULTS,
         Permission.ROOM_POLL_MANAGE,
         Permission.WORLD_ANNOUNCE,
     ]
@@ -181,7 +187,10 @@ class World(VersionedModel):
                 any(x in traits for x in (r if isinstance(r, list) else [r]))
                 for r in required_traits
             ):
-                if any(p.value in self.roles.get(role, []) for p in permissions):
+                if any(
+                    p.value in self.roles.get(role, SYSTEM_ROLES.get(role, []))
+                    for p in permissions
+                ):
                     return True
 
         if room:
@@ -190,7 +199,10 @@ class World(VersionedModel):
                     any(x in traits for x in (r if isinstance(r, list) else [r]))
                     for r in required_traits
                 ):
-                    if any(p.value in self.roles.get(role, []) for p in permissions):
+                    if any(
+                        p.value in self.roles.get(role, SYSTEM_ROLES.get(role, []))
+                        for p in permissions
+                    ):
                         return True
 
     def has_permission(self, *, user, permission: Permission, room=None):
@@ -217,7 +229,10 @@ class World(VersionedModel):
 
         roles = user.get_role_grants(room)
         for r in roles:
-            if any(p.value in self.roles.get(r, []) for p in permission):
+            if any(
+                p.value in self.roles.get(r, SYSTEM_ROLES.get(r, []))
+                for p in permission
+            ):
                 return True
 
     async def has_permission_async(self, *, user, permission: Permission, room=None):
@@ -244,7 +259,10 @@ class World(VersionedModel):
 
         roles = await user.get_role_grants_async(room)
         for r in roles:
-            if any(p.value in self.roles.get(r, []) for p in permission):
+            if any(
+                p.value in self.roles.get(r, SYSTEM_ROLES.get(r, []))
+                for p in permission
+            ):
                 return True
 
     def get_all_permissions(self, user):
@@ -258,10 +276,12 @@ class World(VersionedModel):
                 any(x in user.traits for x in (r if isinstance(r, list) else [r]))
                 for r in required_traits
             ):
-                result[self].update(self.roles.get(role, []))
+                result[self].update(self.roles.get(role, SYSTEM_ROLES.get(role, [])))
 
         for grant in user.world_grants.all():
-            result[self].update(self.roles.get(grant.role, []))
+            result[self].update(
+                self.roles.get(grant.role, SYSTEM_ROLES.get(grant.role, []))
+            )
 
         for room in self.rooms.all():
             for role, required_traits in room.trait_grants.items():
@@ -269,10 +289,14 @@ class World(VersionedModel):
                     any(x in user.traits for x in (r if isinstance(r, list) else [r]))
                     for r in required_traits
                 ):
-                    result[room].update(self.roles.get(role, []))
+                    result[room].update(
+                        self.roles.get(role, SYSTEM_ROLES.get(role, []))
+                    )
 
         for grant in user.room_grants.select_related("room"):
-            result[grant.room].update(self.roles.get(grant.role, []))
+            result[grant.room].update(
+                self.roles.get(grant.role, SYSTEM_ROLES.get(grant.role, []))
+            )
         if user.is_silenced:
             for key in result.keys():
                 result[key] &= MAX_PERMISSIONS_IF_SILENCED

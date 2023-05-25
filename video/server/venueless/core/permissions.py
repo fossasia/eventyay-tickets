@@ -40,6 +40,7 @@ class Permission(Enum):
     ROOM_QUESTION_MODERATE = "room:question.moderate"
     ROOM_ROULETTE_JOIN = "room:roulette.join"
     ROOM_POLL_READ = "room:poll.read"
+    ROOM_POLL_EARLY_RESULTS = "room:poll.early_results"
     ROOM_POLL_VOTE = "room:poll.vote"
     ROOM_POLL_MANAGE = "room:poll.manage"
 
@@ -49,4 +50,17 @@ MAX_PERMISSIONS_IF_SILENCED = {
     Permission.ROOM_VIEW,
     Permission.ROOM_CHAT_READ,
     Permission.ROOM_CHAT_JOIN,
+}
+
+
+SYSTEM_ROLES = {
+    "__kiosk": [
+        Permission.WORLD_VIEW.value,
+        Permission.ROOM_VIEW.value,
+        Permission.ROOM_CHAT_READ.value,
+        Permission.ROOM_QUESTION_READ.value,
+        Permission.ROOM_POLL_READ.value,
+        Permission.ROOM_POLL_EARLY_RESULTS.value,
+        Permission.ROOM_VIEWERS.value,
+    ]
 }
