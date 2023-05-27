@@ -419,6 +419,13 @@ LANGUAGES_INFORMATION = {
         "percentage": 63,
         "public_code": "zh",
     },
+    "zh-CN": {
+        "name": _("Simplified Chinese"),
+        "natural_name": "简体中文",
+        "official": False,
+        "percentage": 99,
+        "public_code": "zh",
+    },
 }
 LANGUAGES_RTL = {
     "ar",
