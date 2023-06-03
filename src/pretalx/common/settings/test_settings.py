@@ -30,7 +30,9 @@ EMAIL_BACKEND = "django.core.mail.outbox"
 MAIL_FROM = "orga@orga.org"
 
 COMPRESS_ENABLED = COMPRESS_OFFLINE = False
-STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
+STORAGES["staticfiles"][
+    "BACKEND"
+] = "django.contrib.staticfiles.storage.StaticFilesStorage"
 
 COMPRESS_PRECOMPILERS_ORIGINAL = COMPRESS_PRECOMPILERS  # NOQA
 COMPRESS_PRECOMPILERS = ()  # NOQA

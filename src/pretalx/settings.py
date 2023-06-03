@@ -343,7 +343,6 @@ MESSAGE_TAGS = {
 
 ## I18N SETTINGS
 USE_I18N = True
-USE_L10N = True
 USE_TZ = True
 TIME_ZONE = config.get("locale", "time_zone")
 LOCALE_PATHS = (Path(__file__).resolve().parent / "locale",)
@@ -533,7 +532,14 @@ STATICFILES_FINDERS = (
 static_path = BASE_DIR / "pretalx" / "static"
 STATICFILES_DIRS = [static_path] if static_path.exists() else []
 
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 
 
 ## EXTERNAL APP SETTINGS
