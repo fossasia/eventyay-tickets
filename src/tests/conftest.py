@@ -1,7 +1,7 @@
 import datetime as dt
+from zoneinfo import ZoneInfo
 
 import pytest
-import pytz
 from django.core import management
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.utils.timezone import now
@@ -216,8 +216,9 @@ def question_required_always(event):
 @pytest.fixture
 def question_required_after_option_before_deadline(event):
     with scope(event=event):
-        utc = pytz.timezone(event.timezone)
-        date_of_deadline = dt.datetime.now().replace(tzinfo=utc) + dt.timedelta(weeks=4)
+        date_of_deadline = dt.datetime.now().replace(tzinfo=event.tz) + dt.timedelta(
+            weeks=4
+        )
         return Question.objects.create(
             event=event,
             question="How much do you like green, on a scale from 1-10?",
@@ -233,8 +234,9 @@ def question_required_after_option_before_deadline(event):
 @pytest.fixture
 def question_freeze_after_option_before_deadline_question_required_optional(event):
     with scope(event=event):
-        utc = pytz.timezone(event.timezone)
-        date_of_freeze = dt.datetime.now().replace(tzinfo=utc) + dt.timedelta(weeks=4)
+        date_of_freeze = dt.datetime.now().replace(tzinfo=event.tz) + dt.timedelta(
+            weeks=4
+        )
         return Question.objects.create(
             event=event,
             question="How much do you like green, on a scale from 1-10?",
@@ -250,8 +252,9 @@ def question_freeze_after_option_before_deadline_question_required_optional(even
 @pytest.fixture
 def question_freeze_after_option_after_deadline_question_required_optional(event):
     with scope(event=event):
-        utc = pytz.timezone(event.timezone)
-        date_of_freeze = dt.datetime.now().replace(tzinfo=utc) - dt.timedelta(weeks=4)
+        date_of_freeze = dt.datetime.now().replace(tzinfo=event.tz) - dt.timedelta(
+            weeks=4
+        )
         return Question.objects.create(
             event=event,
             question="How much do you like green, on a scale from 1-10?",
@@ -267,8 +270,9 @@ def question_freeze_after_option_after_deadline_question_required_optional(event
 @pytest.fixture
 def question_freeze_after_option_before_deadline_question_required_required(event):
     with scope(event=event):
-        utc = pytz.timezone(event.timezone)
-        date_of_freeze = dt.datetime.now().replace(tzinfo=utc) + dt.timedelta(weeks=4)
+        date_of_freeze = dt.datetime.now().replace(tzinfo=event.tz) + dt.timedelta(
+            weeks=4
+        )
         return Question.objects.create(
             event=event,
             question="How much do you like green, on a scale from 1-10?",
@@ -284,8 +288,9 @@ def question_freeze_after_option_before_deadline_question_required_required(even
 @pytest.fixture
 def question_freeze_after_option_after_deadline_question_required_required(event):
     with scope(event=event):
-        utc = pytz.timezone(event.timezone)
-        date_of_freeze = dt.datetime.now().replace(tzinfo=utc) - dt.timedelta(weeks=4)
+        date_of_freeze = dt.datetime.now().replace(tzinfo=event.tz) - dt.timedelta(
+            weeks=4
+        )
         return Question.objects.create(
             event=event,
             question="How much do you like green, on a scale from 1-10?",
@@ -301,8 +306,9 @@ def question_freeze_after_option_after_deadline_question_required_required(event
 @pytest.fixture
 def question_freeze_after_option_after_deadline(event):
     with scope(event=event):
-        utc = pytz.timezone(event.timezone)
-        date_of_freeze = dt.datetime.now().replace(tzinfo=utc) - dt.timedelta(weeks=4)
+        date_of_freeze = dt.datetime.now().replace(tzinfo=event.tz) - dt.timedelta(
+            weeks=4
+        )
         return Question.objects.create(
             event=event,
             question="How much do you like green, on a scale from 1-10?",
@@ -317,8 +323,9 @@ def question_freeze_after_option_after_deadline(event):
 @pytest.fixture
 def question_freeze_after_option_before_deadline(event):
     with scope(event=event):
-        utc = pytz.timezone(event.timezone)
-        date_of_freeze = dt.datetime.now().replace(tzinfo=utc) + dt.timedelta(weeks=4)
+        date_of_freeze = dt.datetime.now().replace(tzinfo=event.tz) + dt.timedelta(
+            weeks=4
+        )
         return Question.objects.create(
             event=event,
             question="How much do you like green, on a scale from 1-10?",
@@ -333,8 +340,9 @@ def question_freeze_after_option_before_deadline(event):
 @pytest.fixture
 def question_required_after_option_after_deadline(event):
     with scope(event=event):
-        utc = pytz.timezone(event.timezone)
-        date_of_deadline = dt.datetime.now().replace(tzinfo=utc) - dt.timedelta(weeks=4)
+        date_of_deadline = dt.datetime.now().replace(tzinfo=event.tz) - dt.timedelta(
+            weeks=4
+        )
         return Question.objects.create(
             event=event,
             question="How much do you like green, on a scale from 1-10?",
@@ -901,8 +909,10 @@ def availability(event):
     with scope(event=event):
         return Availability(
             event=event,
-            start=dt.datetime.combine(event.date_from, dt.time.min, tzinfo=pytz.utc),
-            end=dt.datetime.combine(event.date_to, dt.time.max, tzinfo=pytz.utc),
+            start=dt.datetime.combine(
+                event.date_from, dt.time.min, tzinfo=ZoneInfo("UTC")
+            ),
+            end=dt.datetime.combine(event.date_to, dt.time.max, tzinfo=ZoneInfo("UTC")),
         )
 
 

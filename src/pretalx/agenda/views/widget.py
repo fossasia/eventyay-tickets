@@ -1,7 +1,6 @@
 import datetime as dt
 from urllib.parse import unquote
 
-import pytz
 from django.conf import settings
 from django.db.models import Q
 from django.http import Http404, HttpResponse, JsonResponse
@@ -36,7 +35,7 @@ class WidgetData(ScheduleView):
         return super().dispatch(request, *args, **kwargs)
 
     def get_schedule_data_proportional(self, data):
-        timezone = pytz.timezone(self.request.event.timezone)
+        timezone = self.request.event.tz
         max_rooms = 0
         for date in data:
             if date.get("first_start") and date.get("last_end"):

@@ -2,7 +2,6 @@ from collections import defaultdict, namedtuple
 from contextlib import suppress
 from urllib.parse import quote
 
-import pytz
 from django.conf import settings
 from django.db import models, transaction
 from django.db.utils import DatabaseError
@@ -251,10 +250,6 @@ class Schedule(LogMixin, models.Model):
                 }
             )
         return new, canceled, moved
-
-    @cached_property
-    def tz(self):
-        return pytz.timezone(self.event.timezone)
 
     @cached_property
     def changes(self) -> dict:
@@ -582,7 +577,7 @@ class Schedule(LogMixin, models.Model):
                 if speaker.locale in self.event.locales
                 else self.event.locale
             )
-            with override(locale), tzoverride(self.tz):
+            with override(locale), tzoverride(self.event.tz):
                 date_format = date_formats.get(locale)
                 if not date_format:
                     date_format = (

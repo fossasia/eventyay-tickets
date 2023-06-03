@@ -4,8 +4,8 @@ import string
 import uuid
 from contextlib import suppress
 from urllib.parse import urlparse
+from zoneinfo import ZoneInfo
 
-import pytz
 import vobject
 from django.conf import settings
 from django.db import models
@@ -184,7 +184,7 @@ class TalkSlot(LogMixin, models.Model):
     def build_ical(self, calendar, creation_time=None, netloc=None):
         if not self.start or not self.local_end or not self.room or not self.submission:
             return
-        creation_time = creation_time or dt.datetime.now(pytz.utc)
+        creation_time = creation_time or dt.datetime.now(ZoneInfo("UTC"))
         netloc = netloc or urlparse(get_base_url(self.event)).netloc
 
         vevent = calendar.add("vevent")

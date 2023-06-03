@@ -1,9 +1,9 @@
 import datetime as dt
 import json
 from uuid import uuid4
+from zoneinfo import ZoneInfo
 
 import pytest
-import pytz
 from django.urls import reverse
 from django.utils.timezone import now
 from django_scopes import scope
@@ -260,14 +260,14 @@ def test_api_availabilities(orga_client, event, room, speaker, confirmed_submiss
         Availability.objects.create(
             event=event,
             room=room,
-            start=dt.datetime(2017, 1, 1, 1, tzinfo=pytz.utc),
-            end=dt.datetime(2017, 1, 1, 5, tzinfo=pytz.utc),
+            start=dt.datetime(2017, 1, 1, 1, tzinfo=ZoneInfo("UTC")),
+            end=dt.datetime(2017, 1, 1, 5, tzinfo=ZoneInfo("UTC")),
         )
         Availability.objects.create(
             event=event,
             person=speaker.profiles.first(),
-            start=dt.datetime(2017, 1, 1, 3, tzinfo=pytz.utc),
-            end=dt.datetime(2017, 1, 1, 6, tzinfo=pytz.utc),
+            start=dt.datetime(2017, 1, 1, 3, tzinfo=ZoneInfo("UTC")),
+            end=dt.datetime(2017, 1, 1, 6, tzinfo=ZoneInfo("UTC")),
         )
 
     response = orga_client.get(
@@ -310,8 +310,8 @@ def test_api_availabilities_only_room(
         Availability.objects.create(
             event=event,
             room=room,
-            start=dt.datetime(2017, 1, 1, 1, tzinfo=pytz.utc),
-            end=dt.datetime(2017, 1, 1, 5, tzinfo=pytz.utc),
+            start=dt.datetime(2017, 1, 1, 1, tzinfo=ZoneInfo("UTC")),
+            end=dt.datetime(2017, 1, 1, 5, tzinfo=ZoneInfo("UTC")),
         )
 
     response = orga_client.get(

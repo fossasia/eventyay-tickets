@@ -1,7 +1,7 @@
 import datetime as dt
+import zoneinfo
 from contextlib import suppress
 
-import pytz
 from dateutil.relativedelta import relativedelta
 from django.conf import global_settings, settings
 from django.core.exceptions import MultipleObjectsReturned, ValidationError
@@ -17,6 +17,7 @@ from i18nfield.fields import I18nCharField, I18nTextField
 
 from pretalx.common.cache import ObjectRelatedCache
 from pretalx.common.mixins.models import FileCleanupMixin, LogMixin
+from pretalx.common.models import TIMEZONE_CHOICES
 from pretalx.common.models.settings import hierarkey
 from pretalx.common.phrases import phrases
 from pretalx.common.urls import EventUrls
@@ -864,7 +865,7 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
 
     @cached_property
     def tz(self):
-        return pytz.timezone(self.timezone)
+        return zoneinfo.ZoneInfo(self.timezone)
 
     @cached_property
     def reviews(self):

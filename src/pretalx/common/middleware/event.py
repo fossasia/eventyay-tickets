@@ -1,7 +1,7 @@
+import zoneinfo
 from contextlib import suppress
 from urllib.parse import quote, urljoin
 
-import pytz
 from django.conf import settings
 from django.shortcuts import get_object_or_404, redirect, reverse
 from django.urls import resolve
@@ -164,14 +164,14 @@ class EventPermissionMiddleware:
         translation.activate(language)
         request.LANGUAGE_CODE = translation.get_language()
 
-        with suppress(pytz.UnknownTimeZoneError):
+        with suppress(zoneinfo.ZoneInfoNotFoundError):
             if hasattr(request, "event") and request.event:
                 tzname = request.event.timezone
             elif request.user.is_authenticated:
                 tzname = request.user.timezone
             else:
                 tzname = settings.TIME_ZONE
-            timezone.activate(pytz.timezone(tzname))
+            timezone.activate(zoneinfo.ZoneInfo(tzname))
             request.timezone = tzname
 
     @staticmethod

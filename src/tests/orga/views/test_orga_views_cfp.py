@@ -1,9 +1,9 @@
 import datetime as dt
+from zoneinfo import ZoneInfo
 
 import pytest
 from django.core import mail as djmail
 from django_scopes import scope
-from pytz import UTC
 
 from pretalx.event.models import Event
 from pretalx.mail.models import QueuedMail
@@ -45,7 +45,7 @@ def test_edit_cfp_timezones(orga_client, event):
     event = Event.objects.get(slug=event.slug)
     event.timezone = "Europe/Berlin"
     event.save()
-    event.cfp.deadline = dt.datetime(2018, 3, 5, 17, 39, 15, tzinfo=UTC)
+    event.cfp.deadline = dt.datetime(2018, 3, 5, 17, 39, 15, tzinfo=ZoneInfo("UTC"))
     event.cfp.save()
     response = orga_client.get(event.cfp.urls.edit_text)
     assert response.status_code == 200
@@ -459,7 +459,9 @@ def test_can_add_simple_question_after_deadline(orga_client, event):
         q = event.questions.first()
         assert str(q.question) == "What is your name?"
         assert q.variant == "string"
-        assert q.deadline == dt.datetime(2021, 6, 22, 12, 44, 42, tzinfo=UTC)
+        assert q.deadline == dt.datetime(
+            2021, 6, 22, 12, 44, 42, tzinfo=ZoneInfo("UTC")
+        )
     response = orga_client.get(q.urls.base + "?role=true", follow=True)
     with scope(event=event):
         assert str(q.question) in response.content.decode()

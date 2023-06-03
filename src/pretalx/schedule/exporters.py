@@ -1,8 +1,8 @@
 import datetime as dt
 import json
 from urllib.parse import urlparse
+from zoneinfo import ZoneInfo
 
-import pytz
 import vobject
 from django.template.loader import get_template
 from django.utils.functional import cached_property
@@ -33,7 +33,6 @@ class ScheduleData(BaseExporter):
 
         event = self.event
         schedule = self.schedule
-        tz = pytz.timezone(event.timezone)
 
         base_qs = (
             schedule.talks.all()
@@ -55,8 +54,8 @@ class ScheduleData(BaseExporter):
         data = {
             current_date.date(): {
                 "index": index + 1,
-                "start": current_date.replace(hour=4, minute=0).astimezone(tz),
-                "end": current_date.replace(hour=3, minute=59).astimezone(tz)
+                "start": current_date.replace(hour=4, minute=0).astimezone(event.tz),
+                "end": current_date.replace(hour=3, minute=59).astimezone(event.tz)
                 + dt.timedelta(days=1),
                 "first_start": None,
                 "last_end": None,
@@ -150,7 +149,6 @@ class FrabJsonExporter(ScheduleData):
     cors = "*"
 
     def get_data(self, **kwargs):
-        tz = pytz.timezone(self.event.timezone)
         schedule = self.schedule
         return {
             "version": schedule.version,
@@ -176,8 +174,8 @@ class FrabJsonExporter(ScheduleData):
                     {
                         "index": day["index"],
                         "date": day["start"].strftime("%Y-%m-%d"),
-                        "day_start": day["start"].astimezone(tz).isoformat(),
-                        "day_end": day["end"].astimezone(tz).isoformat(),
+                        "day_start": day["start"].astimezone(self.event.tz).isoformat(),
+                        "day_end": day["end"].astimezone(self.event.tz).isoformat(),
                         "rooms": {
                             str(room["name"]): [
                                 {
@@ -280,7 +278,7 @@ class ICalExporter(BaseExporter):
         netloc = urlparse(get_base_url(self.event)).netloc
         cal = vobject.iCalendar()
         cal.add("prodid").value = f"-//pretalx//{netloc}//"
-        creation_time = dt.datetime.now(pytz.utc)
+        creation_time = dt.datetime.now(ZoneInfo("UTC"))
 
         talks = (
             self.schedule.talks.filter(is_visible=True)

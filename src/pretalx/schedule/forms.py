@@ -1,7 +1,6 @@
 import datetime as dt
 import json
 
-import pytz
 from django import forms
 from django.db import transaction
 from django.utils.dateparse import parse_datetime
@@ -139,13 +138,11 @@ class AvailabilitiesFormMixin(forms.Form):
         return availabilities
 
     def _parse_datetime(self, strdate):
-        tz = pytz.timezone(self.event.timezone)
-
         obj = parse_datetime(strdate)
         if not obj:
             raise TypeError
         if obj.tzinfo is None:
-            obj = tz.localize(obj)
+            obj = obj.replace(tzinfo=self.event.tz)
 
         return obj
 
@@ -170,18 +167,17 @@ class AvailabilitiesFormMixin(forms.Form):
                 _("The submitted availability contains an invalid date.")
             )
 
-        tz = pytz.timezone(self.event.timezone)
-
-        timeframe_start = tz.localize(
-            dt.datetime.combine(self.event.date_from, dt.time())
+        timeframe_start = dt.datetime.combine(
+            self.event.date_from, dt.time(), tzinfo=self.event.tz
         )
         if rawavail["start"] < timeframe_start:
             rawavail["start"] = timeframe_start
 
         # add 1 day, not 24 hours, https://stackoverflow.com/a/25427822/2486196
-        timeframe_end = dt.datetime.combine(self.event.date_to, dt.time())
+        timeframe_end = dt.datetime.combine(
+            self.event.date_to, dt.time(), tzinfo=self.event.tz
+        )
         timeframe_end = timeframe_end + dt.timedelta(days=1)
-        timeframe_end = tz.localize(timeframe_end, is_dst=None)
         # If the submitted availability ended outside the event timeframe, fix it silently
         rawavail["end"] = min(rawavail["end"], timeframe_end)
 
@@ -274,11 +270,10 @@ class QuickScheduleForm(forms.ModelForm):
 
     def save(self):
         talk = self.instance
-        tz = pytz.timezone(self.event.timezone)
-        talk.start = tz.localize(
-            dt.datetime.combine(
-                self.cleaned_data["start_date"], self.cleaned_data["start_time"]
-            )
+        talk.start = dt.datetime.combine(
+            self.cleaned_data["start_date"],
+            self.cleaned_data["start_time"],
+            tzinfo=self.event.tz,
         )
         talk.end = talk.start + dt.timedelta(minutes=talk.submission.get_duration())
         return super().save()

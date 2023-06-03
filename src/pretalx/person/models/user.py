@@ -4,7 +4,6 @@ from contextlib import suppress
 from hashlib import md5
 from urllib.parse import urljoin
 
-import pytz
 from django.conf import settings
 from django.contrib.auth.models import (
     AbstractBaseUser,
@@ -23,6 +22,7 @@ from django_scopes import scopes_disabled
 from rest_framework.authtoken.models import Token
 
 from pretalx.common.mixins.models import FileCleanupMixin, GenerateCode
+from pretalx.common.models import TIMEZONE_CHOICES
 from pretalx.common.urls import build_absolute_uri
 from pretalx.common.utils import path_with_hash
 

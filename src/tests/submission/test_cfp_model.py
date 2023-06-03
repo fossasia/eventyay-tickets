@@ -1,7 +1,6 @@
 import datetime as dt
 
 import pytest
-import pytz
 from django_scopes import scope
 
 from pretalx.submission.models import SubmissionType
@@ -57,8 +56,7 @@ from pretalx.submission.models import SubmissionType
 )
 def test_cfp_model_is_open(event, deadline, deadlines, is_open):
     with scope(event=event):
-        tz = pytz.timezone(event.timezone)
-        event.cfp.deadline = tz.localize(deadline) if deadline else deadline
+        event.cfp.deadline = deadline.replace(tzinfo=event.tz) if deadline else deadline
         event.cfp.save()
         assert event.slug in str(event.cfp)
 
@@ -66,7 +64,7 @@ def test_cfp_model_is_open(event, deadline, deadlines, is_open):
 
         for dline in deadlines:
             SubmissionType.objects.create(
-                event=event, name=str(dline), deadline=tz.localize(dline)
+                event=event, name=str(dline), deadline=dline.astimezone(event.tz)
             )
 
         assert event.cfp.is_open == is_open

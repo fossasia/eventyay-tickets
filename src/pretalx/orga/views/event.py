@@ -29,7 +29,6 @@ from django.views.generic import (
 from django_context_decorator import context
 from django_scopes import scope, scopes_disabled
 from formtools.wizard.views import SessionWizardView
-from pytz import timezone
 from rest_framework.authtoken.models import Token
 
 from pretalx.common.forms import I18nEventFormSet, I18nFormSet
@@ -677,8 +676,7 @@ class EventWizard(PermissionRequired, SensibleBackWizardMixin, SessionWizardView
         with scope(event=event):
             deadline = steps["timeline"].get("deadline")
             if deadline:
-                zone = timezone(event.timezone)
-                event.cfp.deadline = zone.localize(deadline.replace(tzinfo=None))
+                event.cfp.deadline = deadline.replace(tzinfo=event.tz)
                 event.cfp.save()
             for setting in ("display_header_data",):
                 value = steps["display"].get(setting)

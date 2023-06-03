@@ -1,8 +1,8 @@
 import datetime as dt
 import json
+from zoneinfo import ZoneInfo
 
 import pytest
-import pytz
 from django.forms import ModelForm, ValidationError
 from django.utils import timezone
 from django_scopes import scope
@@ -11,7 +11,7 @@ from pretalx.person.models import SpeakerProfile
 from pretalx.schedule.forms import AvailabilitiesFormMixin
 from pretalx.schedule.models import Availability, Room
 
-timezone.activate(pytz.utc)
+timezone.activate(ZoneInfo("UTC"))
 
 
 class AvailabilitiesForm(AvailabilitiesFormMixin, ModelForm):
@@ -258,14 +258,14 @@ def test_replace_availabilities(availabilitiesform):
                 Availability(
                     room_id=instance.id,
                     event_id=availabilitiesform.event.id,
-                    start=dt.datetime(2017, 1, 1, 10, tzinfo=pytz.utc),
-                    end=dt.datetime(2017, 1, 1, 12, tzinfo=pytz.utc),
+                    start=dt.datetime(2017, 1, 1, 10, tzinfo=ZoneInfo("UTC")),
+                    end=dt.datetime(2017, 1, 1, 12, tzinfo=ZoneInfo("UTC")),
                 ),
                 Availability(
                     room_id=instance.id,
                     event_id=availabilitiesform.event.id,
-                    start=dt.datetime(2017, 1, 2, 10, tzinfo=pytz.utc),
-                    end=dt.datetime(2017, 1, 2, 15, tzinfo=pytz.utc),
+                    start=dt.datetime(2017, 1, 2, 10, tzinfo=ZoneInfo("UTC")),
+                    end=dt.datetime(2017, 1, 2, 15, tzinfo=ZoneInfo("UTC")),
                 ),
             ]
         )
@@ -274,14 +274,14 @@ def test_replace_availabilities(availabilitiesform):
             Availability(
                 room_id=instance.id,
                 event_id=availabilitiesform.event.id,
-                start=dt.datetime(2017, 1, 1, 12, tzinfo=pytz.utc),
-                end=dt.datetime(2017, 1, 1, 12, tzinfo=pytz.utc),
+                start=dt.datetime(2017, 1, 1, 12, tzinfo=ZoneInfo("UTC")),
+                end=dt.datetime(2017, 1, 1, 12, tzinfo=ZoneInfo("UTC")),
             ),
             Availability(
                 room_id=instance.id,
                 event_id=availabilitiesform.event.id,
-                start=dt.datetime(2017, 1, 2, 12, tzinfo=pytz.utc),
-                end=dt.datetime(2017, 1, 2, 15, tzinfo=pytz.utc),
+                start=dt.datetime(2017, 1, 2, 12, tzinfo=ZoneInfo("UTC")),
+                end=dt.datetime(2017, 1, 2, 15, tzinfo=ZoneInfo("UTC")),
             ),
         ]
 
@@ -298,8 +298,8 @@ def test_replace_availabilities(availabilitiesform):
     (
         (
             Availability(
-                start=dt.datetime(2017, 1, 1, 10, tzinfo=pytz.utc),
-                end=dt.datetime(2017, 1, 1, 12, tzinfo=pytz.utc),
+                start=dt.datetime(2017, 1, 1, 10, tzinfo=ZoneInfo("UTC")),
+                end=dt.datetime(2017, 1, 1, 12, tzinfo=ZoneInfo("UTC")),
             ),
             {
                 "start": "2017-01-01T10:00:00Z",
@@ -309,8 +309,8 @@ def test_replace_availabilities(availabilitiesform):
         ),
         (
             Availability(
-                start=dt.datetime(2017, 1, 1, 10, tzinfo=pytz.utc),
-                end=dt.datetime(2017, 1, 2, tzinfo=pytz.utc),
+                start=dt.datetime(2017, 1, 1, 10, tzinfo=ZoneInfo("UTC")),
+                end=dt.datetime(2017, 1, 2, tzinfo=ZoneInfo("UTC")),
             ),
             {
                 "start": "2017-01-01T10:00:00Z",
@@ -320,8 +320,8 @@ def test_replace_availabilities(availabilitiesform):
         ),
         (
             Availability(
-                start=dt.datetime(2017, 1, 1, tzinfo=pytz.utc),
-                end=dt.datetime(2017, 1, 1, 10, tzinfo=pytz.utc),
+                start=dt.datetime(2017, 1, 1, tzinfo=ZoneInfo("UTC")),
+                end=dt.datetime(2017, 1, 1, 10, tzinfo=ZoneInfo("UTC")),
             ),
             {
                 "start": "2017-01-01T00:00:00Z",
@@ -331,8 +331,8 @@ def test_replace_availabilities(availabilitiesform):
         ),
         (
             Availability(
-                start=dt.datetime(2017, 1, 1, 10, tzinfo=pytz.utc),
-                end=dt.datetime(2017, 1, 2, tzinfo=pytz.utc),
+                start=dt.datetime(2017, 1, 1, 10, tzinfo=ZoneInfo("UTC")),
+                end=dt.datetime(2017, 1, 2, tzinfo=ZoneInfo("UTC")),
             ),
             {
                 "start": "2017-01-01T10:00:00Z",
@@ -342,8 +342,8 @@ def test_replace_availabilities(availabilitiesform):
         ),
         (
             Availability(
-                start=dt.datetime(2017, 1, 1, tzinfo=pytz.utc),
-                end=dt.datetime(2017, 1, 2, tzinfo=pytz.utc),
+                start=dt.datetime(2017, 1, 1, tzinfo=ZoneInfo("UTC")),
+                end=dt.datetime(2017, 1, 2, tzinfo=ZoneInfo("UTC")),
             ),
             {
                 "start": "2017-01-01T00:00:00Z",
@@ -354,7 +354,7 @@ def test_replace_availabilities(availabilitiesform):
     ),
 )
 def test_serialize_availability(availabilitiesform, avail, expected):
-    with timezone.override(pytz.utc):
+    with timezone.override(ZoneInfo("UTC")):
         actual = avail.serialize()
     del actual["id"]
     assert actual == expected
@@ -367,8 +367,8 @@ def test_serialize_availability(availabilitiesform, avail, expected):
         (
             [
                 Availability(
-                    start=dt.datetime(2017, 1, 1, 10, tzinfo=pytz.utc),
-                    end=dt.datetime(2017, 1, 1, 12, tzinfo=pytz.utc),
+                    start=dt.datetime(2017, 1, 1, 10, tzinfo=ZoneInfo("UTC")),
+                    end=dt.datetime(2017, 1, 1, 12, tzinfo=ZoneInfo("UTC")),
                 )
             ],
             '{"availabilities": [{"id": 1, "start": "2017-01-01T10:00:00Z", "end": "2017-01-01T12:00:00Z", "allDay": false}], "event": {"timezone": "UTC", "date_from": "2017-01-01", "date_to": "2017-01-02"}}',
@@ -392,7 +392,7 @@ def test_serialize_availability(availabilitiesform, avail, expected):
     ),
 )
 def test_serialize(availabilitiesform, avails, expected, tzname):
-    with scope(event=availabilitiesform.event), timezone.override(pytz.utc):
+    with scope(event=availabilitiesform.event), timezone.override(ZoneInfo("UTC")):
         availabilitiesform.event.timezone = tzname
         availabilitiesform.event.save()
 
@@ -420,7 +420,6 @@ def test_chained(availabilitiesform, room):
     """make sure the Mixin can actually deserialize the data it serialized."""
     with scope(event=room.event):
         room.event.timezone = "America/New_York"
-        tz = pytz.timezone(room.event.timezone)
         room.event.save()
         del room.event.tz
         room.save()
@@ -428,15 +427,15 @@ def test_chained(availabilitiesform, room):
         Availability.objects.create(
             event=availabilitiesform.event,
             room=room,
-            start=tz.localize(dt.datetime(2017, 1, 1, 10)),
-            end=tz.localize(dt.datetime(2017, 1, 1, 12)),
+            start=dt.datetime(2017, 1, 1, 10, tzinfo=room.event.tz),
+            end=dt.datetime(2017, 1, 1, 12, tzinfo=room.event.tz),
         )
         # all day
         Availability.objects.create(
             event=availabilitiesform.event,
             room=room,
-            start=tz.localize(dt.datetime(2017, 1, 1)),
-            end=tz.localize(dt.datetime(2017, 1, 3)),
+            start=dt.datetime(2017, 1, 1, tzinfo=room.event.tz),
+            end=dt.datetime(2017, 1, 3, tzinfo=room.event.tz),
         )
 
         form = AvailabilitiesForm(
@@ -450,7 +449,7 @@ def test_chained(availabilitiesform, room):
 
         avails = Room.objects.first().availabilities.order_by("-start")
         assert len(avails) == 2
-        assert avails[0].start == dt.datetime(2017, 1, 1, 15, tzinfo=pytz.utc)
-        assert avails[0].end == dt.datetime(2017, 1, 1, 17, tzinfo=pytz.utc)
-        assert avails[1].start == dt.datetime(2017, 1, 1, 5, tzinfo=pytz.utc)
-        assert avails[1].end == dt.datetime(2017, 1, 3, 5, tzinfo=pytz.utc)
+        assert avails[0].start == dt.datetime(2017, 1, 1, 15, tzinfo=ZoneInfo("UTC"))
+        assert avails[0].end == dt.datetime(2017, 1, 1, 17, tzinfo=ZoneInfo("UTC"))
+        assert avails[1].start == dt.datetime(2017, 1, 1, 5, tzinfo=ZoneInfo("UTC"))
+        assert avails[1].end == dt.datetime(2017, 1, 3, 5, tzinfo=ZoneInfo("UTC"))
