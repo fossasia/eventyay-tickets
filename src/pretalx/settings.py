@@ -65,7 +65,6 @@ DJANGO_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "django.forms",
 ]
 EXTERNAL_APPS = [
     "compressor",
@@ -308,15 +307,13 @@ if HAS_MEMCACHED:
 HAS_REDIS = config.get("redis", "location") != "False"
 if HAS_REDIS:
     CACHES["redis"] = {
-        "BACKEND": "django_redis.cache.RedisCache",
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
         "LOCATION": config.get("redis", "location"),
-        "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
     }
     CACHES["redis_sessions"] = {
-        "BACKEND": "django_redis.cache.RedisCache",
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
         "LOCATION": config.get("redis", "location"),
         "TIMEOUT": 3600 * 24 * 30,
-        "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
     }
     if not HAS_MEMCACHED:
         CACHES["default"] = CACHES["redis"]
