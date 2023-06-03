@@ -724,7 +724,7 @@ class EventDelete(PermissionRequired, DeleteView):
     def get_object(self):
         return self.request.event
 
-    def delete(self, request, *args, **kwargs):
+    def form_valid(self, request, *args, **kwargs):
         self.get_object().shred()
         return redirect("/orga/")
 
