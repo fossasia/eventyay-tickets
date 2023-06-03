@@ -151,7 +151,7 @@ CSP_BASE_URI = ("'none'",)
 CSP_FORM_ACTION = merge_csp("'self'", config=config.get("site", "csp_form"))
 
 CSRF_COOKIE_NAME = "pretalx_csrftoken"
-CSRF_TRUSTED_ORIGINS = [urlparse(SITE_URL).hostname]
+CSRF_TRUSTED_ORIGINS = [SITE_URL]
 SESSION_COOKIE_NAME = "pretalx_session"
 SESSION_COOKIE_HTTPONLY = True
 if config.get("site", "cookie_domain"):
