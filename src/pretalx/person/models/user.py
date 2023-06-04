@@ -109,7 +109,9 @@ class User(PermissionsMixin, GenerateCode, FileCleanupMixin, AbstractBaseUser):
         verbose_name=_("Preferred language"),
     )
     timezone = models.CharField(
-        choices=[(tz, tz) for tz in pytz.common_timezones], max_length=30, default="UTC"
+        choices=[(tz, tz) for tz in TIMEZONE_CHOICES],
+        max_length=32,
+        default="UTC",
     )
     avatar = models.ImageField(
         null=True,

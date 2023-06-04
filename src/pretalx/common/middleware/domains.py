@@ -9,6 +9,7 @@ from django.contrib.sessions.middleware import (
 from django.core.exceptions import DisallowedHost
 from django.db.models import Q
 from django.http.request import split_domain_port
+from django.middleware.csrf import CSRF_SESSION_KEY
 from django.middleware.csrf import CsrfViewMiddleware as BaseCsrfMiddleware
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import resolve

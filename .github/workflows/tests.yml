@@ -47,7 +47,7 @@ jobs:
         if: matrix.database == 'mysql'
       - uses: harmon758/postgresql-action@v1
         with:
-          postgresql version: '11'
+          postgresql version: '14'
           postgresql db: 'pretalx'
           postgresql user: 'postgres'
           postgresql password: 'postgres'

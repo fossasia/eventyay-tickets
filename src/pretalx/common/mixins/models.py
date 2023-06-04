@@ -61,9 +61,10 @@ class GenerateCode:
     _code_charset = list("ABCDEFGHJKLMNPQRSTUVWXYZ3789")
     _code_property = "code"
 
-    def generate_code(self, length=None):
-        length = length or self._code_length
-        return get_random_string(length=length, allowed_chars=self._code_charset)
+    @classmethod
+    def generate_code(cls, length=None):
+        length = length or cls._code_length
+        return get_random_string(length=length, allowed_chars=cls._code_charset)
 
     def assign_code(self, length=None):
         length = length or self._code_length

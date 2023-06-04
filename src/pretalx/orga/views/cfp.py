@@ -616,12 +616,12 @@ class AccessCodeDetail(PermissionRequired, CreateOrUpdateView):
         return self.get_object() or self.request.event
 
     def form_valid(self, form):
-        messages.success(self.request, _("The access code has been saved."))
         form.instance.event = self.request.event
         result = super().form_valid(form)
         if form.has_changed():
             action = "pretalx.access_code." + ("update" if self.object else "create")
             form.instance.log_action(action, person=self.request.user, orga=True)
+        messages.success(self.request, _("The access code has been saved."))
         return result
 
 

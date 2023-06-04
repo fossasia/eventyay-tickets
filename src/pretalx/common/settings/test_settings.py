@@ -79,4 +79,5 @@ LANGUAGES_INFORMATION["en-mozilla"] = {
     "official": False,
     "code": "testlocale",
     "natural_name": "Testlocale",
+    "percentage": 94,
 }

@@ -178,8 +178,8 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
     date_from = models.DateField(verbose_name=_("Event start date"))
     date_to = models.DateField(verbose_name=_("Event end date"))
     timezone = models.CharField(
-        choices=[(tz, tz) for tz in pytz.common_timezones],
-        max_length=30,
+        choices=[(tz, tz) for tz in TIMEZONE_CHOICES],
+        max_length=32,
         default="UTC",
         help_text=_(
             "All event dates will be localised and interpreted to be in this timezone."

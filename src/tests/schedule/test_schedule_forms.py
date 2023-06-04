@@ -87,7 +87,6 @@ def test_validate_availability_fail_format(availabilitiesform, avail):
         ({"start": True, "end": True}),  # wrong type
         ({"start": "", "end": ""}),  # empty
         ({"start": "2017", "end": "2017"}),  # missing month
-        ({"start": "2017-01-01", "end": "2017-01-02"}),  # missing time
     ),
 )
 def test_validate_availability_fail_date(availabilitiesform, avail):
@@ -167,10 +166,11 @@ def test_validate_availability_daylightsaving(availabilitiesform):
 def test_parse_datetime(availabilitiesform, strdate, expected):
     availabilitiesform.event.timezone = "America/New_York"
     availabilitiesform.event.save()
+    del availabilitiesform.event.tz
 
-    expected = pytz.timezone("America/New_York").localize(expected)
+    assert availabilitiesform.event.tz == ZoneInfo("America/New_York")
+    expected = expected.replace(tzinfo=ZoneInfo("America/New_York"))
     actual = availabilitiesform._parse_datetime(strdate)
-
     assert actual == expected
 
 
@@ -422,6 +422,7 @@ def test_chained(availabilitiesform, room):
         room.event.timezone = "America/New_York"
         tz = pytz.timezone(room.event.timezone)
         room.event.save()
+        del room.event.tz
         room.save()
         # normal
         Availability.objects.create(

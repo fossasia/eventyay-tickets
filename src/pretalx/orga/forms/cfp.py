@@ -298,7 +298,7 @@ class SubmitterAccessCodeForm(forms.ModelForm):
         self.event = event
         initial = kwargs.get("initial", {})
         if not kwargs.get("instance"):
-            initial["code"] = SubmitterAccessCode().generate_code()
+            initial["code"] = SubmitterAccessCode.generate_code()
         kwargs["initial"] = initial
         super().__init__(*args, **kwargs)
         self.fields["submission_type"].queryset = SubmissionType.objects.filter(

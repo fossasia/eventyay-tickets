@@ -21,7 +21,7 @@
             {% translate "New access code" %}
         {% endif %}
     </h2>
-    {% if form.instance.submissions.exists %}
+    {% if form.instance.pk and form.instance.submissions.exists %}
         <div class="alert alert-info">
             <span>
                 {% blocktranslate trimmed %}
