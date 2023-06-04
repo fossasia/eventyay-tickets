@@ -33,12 +33,12 @@ class LocaleSet(View):
                 request.user.locale = locale
                 request.user.save()
 
-            max_age = 10 * 365 * 24 * 60 * 60
+            max_age = dt.timedelta(seconds=10 * 365 * 24 * 60 * 60)
             resp.set_cookie(
                 settings.LANGUAGE_COOKIE_NAME,
                 locale,
                 max_age=max_age,
-                expires=(dt.datetime.utcnow() + dt.timedelta(seconds=max_age)).strftime(
+                expires=(dt.datetime.utcnow() + max_age).strftime(
                     "%a, %d-%b-%Y %H:%M:%S GMT"
                 ),
                 domain=settings.SESSION_COOKIE_DOMAIN,
