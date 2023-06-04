@@ -7,7 +7,7 @@ from rest_framework.authtoken.models import Token
 @pytest.mark.django_db
 def test_can_see_schedule_with_bearer_token(event, schedule, slot, orga_user):
     Token.objects.create(user=orga_user)
-    client = Client(HTTP_AUTHORIZATION="Token " + orga_user.auth_token.key)
+    client = Client(headers={"authorization": "Token " + orga_user.auth_token.key})
     event.feature_flags["show_schedule"] = False
     event.save()
     response = client.get(f"/{event.slug}/schedule.xml")
