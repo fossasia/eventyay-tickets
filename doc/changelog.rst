@@ -3,6 +3,8 @@
 Release Notes
 =============
 
+- :feature:`1347` The submission type and track lists now include links to the pre-filtered list of proposals.
+- :feature:`889` A talk's duration is now listed on the talk acceptance site to avoid misunderstandings early on.
 - :support:`-` Due to database versions going EOL, please make sure to use PostgreSQL 12+, MySQL 8+, MariaDB 10.4+, or SQLite 3.21.
 - :support:`-` As Python 3.6 and 3.7 are now EOL, and we are using new Python features, pretalx supports Python versions 3.9+.
 - :feature:`-` The review dashboard can now be filtered by question answers, just like the submission list.

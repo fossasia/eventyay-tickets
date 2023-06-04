@@ -32,7 +32,9 @@
                             </a>
                         </td>
                         <td class="pl-4">
-                            {{ type.submissions.all.count }}
+                            <a href="{{ request.event.orga_urls.submissions }}?submission_type={{ type.id }}">
+                                {{ type.submissions.all.count }}
+                            </a>
                         </td>
                         <td>{{ type.default_duration }}</td>
                         <td class="action-column">

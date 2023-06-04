@@ -32,7 +32,9 @@
                             </a>
                         </td>
                         <td class="pl-4">
-                            {{ track.submissions.all.count }}
+                            <a href="{{ request.event.orga_urls.submissions }}?track={{ track.id }}">
+                                {{ track.submissions.all.count }}
+                            </a>
                         </td>
                         <td><div class="color-square" style="background: {{ track.color }}"></div></td>
                         <td class="action-column">
