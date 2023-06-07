@@ -314,6 +314,7 @@ class SubmissionSpeakers(ReviewerSubmissionFilter, SubmissionViewMixin, Template
         return [
             {
                 "id": speaker.id,
+                "code": speaker.code,
                 "name": speaker.get_display_name(),
                 "biography": speaker.profiles.get_or_create(event=submission.event)[
                     0
