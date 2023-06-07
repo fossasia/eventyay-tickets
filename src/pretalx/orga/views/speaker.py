@@ -136,7 +136,6 @@ class SpeakerList(EventPermissionRequired, Sortable, Filterable, ListView):
 
 
 class SpeakerViewMixin(PermissionRequired):
-
     def get_object(self):
         return get_object_or_404(
             User.objects.filter(

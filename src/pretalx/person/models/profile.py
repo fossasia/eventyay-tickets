@@ -48,7 +48,9 @@ class SpeakerProfile(LogMixin, models.Model):
     class orga_urls(EventUrls):
         base = "{self.event.orga_urls.speakers}{self.user.code}/"
         password_reset = "{self.event.orga_urls.speakers}{self.user.code}/reset"
-        toggle_arrived = "{self.event.orga_urls.speakers}{self.user.code}/toggle-arrived"
+        toggle_arrived = (
+            "{self.event.orga_urls.speakers}{self.user.code}/toggle-arrived"
+        )
 
     def __str__(self):
         """Help when debugging."""
