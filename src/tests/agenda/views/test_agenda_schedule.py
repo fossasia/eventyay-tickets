@@ -118,15 +118,58 @@ def test_speaker_list(
 
 @pytest.mark.django_db
 def test_speaker_page(
-    client, django_assert_num_queries, event, speaker, slot, other_slot
+    client,
+    django_assert_num_queries,
+    event,
+    speaker,
+    slot,
+    other_slot,
+    other_submission,
 ):
+    with scope(event=event):
+        other_submission.speakers.add(speaker)
+        slot.submission.accept(force=True)
+        slot.submission.save()
+        event.wip_schedule.freeze("testversion 2")
+        other_submission.slots.all().update(is_visible=True)
     url = reverse("agenda:speaker", kwargs={"code": speaker.code, "event": event.slug})
-    with django_assert_num_queries(18):
+    with django_assert_num_queries(23):
         response = client.get(url, follow=True)
     assert response.status_code == 200
+    assert len(response.context["talks"]) == 2
+    assert response.context["talks"].filter(submission=other_submission)
     with scope(event=event):
         assert speaker.profiles.get(event=event).biography in response.content.decode()
         assert slot.submission.title in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_speaker_page_other_submissions_only_if_visible(
+    client,
+    django_assert_num_queries,
+    event,
+    speaker,
+    slot,
+    other_slot,
+    other_submission,
+):
+    with scope(event=event):
+        other_submission.speakers.add(speaker)
+        slot.submission.accept(force=True)
+        slot.submission.save()
+        event.wip_schedule.freeze("testversion 2")
+        other_submission.slots.all().update(is_visible=True)
+        slot.submission.slots.filter(schedule=event.current_schedule).update(
+            is_visible=False
+        )
+
+    url = reverse("agenda:speaker", kwargs={"code": speaker.code, "event": event.slug})
+    with django_assert_num_queries(23):
+        response = client.get(url, follow=True)
+
+    assert response.status_code == 200
+    assert len(response.context["talks"]) == 1
+    assert not response.context["talks"].filter(submission=other_submission)
 
 
 @pytest.mark.django_db

@@ -225,9 +225,12 @@ def test_talk_speaker_other_submissions_only_if_visible(
     with scope(event=event):
         other_submission.speakers.add(speaker)
         slot.submission.accept(force=True)
-        slot.is_visible = False
-        slot.save()
         slot.submission.save()
+        event.wip_schedule.freeze("testversion 2")
+        other_submission.slots.all().update(is_visible=True)
+        slot.submission.slots.filter(schedule=event.current_schedule).update(
+            is_visible=False
+        )
 
     with django_assert_num_queries(21):
         response = client.get(other_submission.urls.public, follow=True)
