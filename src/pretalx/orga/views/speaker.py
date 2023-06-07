@@ -135,13 +135,7 @@ class SpeakerList(EventPermissionRequired, Sortable, Filterable, ListView):
         return qs
 
 
-@method_decorator(csp_update(IMG_SRC="https://www.gravatar.com"), name="dispatch")
-class SpeakerDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
-    template_name = "orga/speaker/form.html"
-    form_class = SpeakerProfileForm
-    model = User
-    permission_required = "orga.view_speaker"
-    write_permission_required = "orga.change_speaker"
+class SpeakerViewMixin(PermissionRequired):
 
     def get_object(self):
         return get_object_or_404(
@@ -152,25 +146,36 @@ class SpeakerDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
             )
             .order_by("id")
             .distinct(),
-            pk=self.kwargs["pk"],
+            code=self.kwargs["code"],
         )
 
     @cached_property
     def object(self):
         return self.get_object()
 
-    def get_permission_object(self):
+    @context
+    @cached_property
+    def profile(self):
         return self.object.event_profile(self.request.event)
+
+    def get_permission_object(self):
+        return self.profile
 
     @cached_property
     def permission_object(self):
         return self.get_permission_object()
 
+
+@method_decorator(csp_update(IMG_SRC="https://www.gravatar.com"), name="dispatch")
+class SpeakerDetail(SpeakerViewMixin, ActionFromUrl, CreateOrUpdateView):
+    template_name = "orga/speaker/form.html"
+    form_class = SpeakerProfileForm
+    model = User
+    permission_required = "orga.view_speaker"
+    write_permission_required = "orga.change_speaker"
+
     def get_success_url(self) -> str:
-        return reverse(
-            "orga:speakers.view",
-            kwargs={"event": self.request.event.slug, "pk": self.kwargs["pk"]},
-        )
+        return self.profile.orga_urls.base
 
     @context
     @cached_property
@@ -229,15 +234,11 @@ class SpeakerDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         return kwargs
 
 
-class SpeakerPasswordReset(EventPermissionRequired, DetailView):
+class SpeakerPasswordReset(SpeakerViewMixin, DetailView):
     permission_required = "orga.change_speaker"
     template_name = "orga/speaker/reset_password.html"
     model = User
     context_object_name = "speaker"
-
-    @context
-    def profile(self):
-        return self.get_object().event_profile(self.request.event)
 
     def post(self, request, *args, **kwargs):
         user = self.get_object()
@@ -261,28 +262,18 @@ class SpeakerPasswordReset(EventPermissionRequired, DetailView):
         return redirect(user.event_profile(self.request.event).orga_urls.base)
 
 
-class SpeakerToggleArrived(PermissionRequired, View):
+class SpeakerToggleArrived(SpeakerViewMixin, View):
     permission_required = "orga.change_speaker"
 
-    def get_object(self):
-        return get_object_or_404(
-            SpeakerProfile, event=self.request.event, user_id=self.kwargs["pk"]
-        )
-
-    @cached_property
-    def object(self):
-        return self.get_object()
-
-    def dispatch(self, request, event, pk):
-        profile = self.object
-        profile.has_arrived = not profile.has_arrived
-        profile.save()
+    def dispatch(self, request, event, code):
+        self.profile.has_arrived = not self.profile.has_arrived
+        self.profile.save()
         action = (
             "pretalx.speaker.arrived"
-            if profile.has_arrived
+            if self.profile.has_arrived
             else "pretalx.speaker.unarrived"
         )
-        profile.user.log_action(
+        self.object.log_action(
             action,
             data={"event": self.request.event.slug},
             person=self.request.user,
@@ -292,7 +283,7 @@ class SpeakerToggleArrived(PermissionRequired, View):
             return redirect(
                 reverse("orga:speakers.list", kwargs={"event": self.kwargs["event"]})
             )
-        return redirect(reverse("orga:speakers.view", kwargs=self.kwargs))
+        return redirect(self.profile.orga_urls.base)
 
 
 class InformationList(EventPermissionRequired, ListView):

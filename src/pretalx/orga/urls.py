@@ -510,7 +510,7 @@ urlpatterns = [
                     name="speakers.export",
                 ),
                 path(
-                    "speakers/<int:pk>/",
+                    "speakers/<code>/",
                     include(
                         [
                             path(

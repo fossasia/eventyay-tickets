@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` Organiser pages for speakers now use their alphanumeric ``code`` identifier in the URL rather than the numeric ID, matching the public and API pages.
 - :feature:`1347` The submission type and track lists now include links to the pre-filtered list of proposals.
 - :feature:`889` A talk's duration is now listed on the talk acceptance site to avoid misunderstandings early on.
 - :support:`-` Due to database versions going EOL, please make sure to use PostgreSQL 12+, MySQL 8+, MariaDB 10.4+, or SQLite 3.21.
