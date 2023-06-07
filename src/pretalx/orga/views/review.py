@@ -368,6 +368,13 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
             can_see_speaker_names=False
         ).exists()
 
+    @context
+    @cached_property
+    def anonymise_review(self):
+        return not getattr(
+            self.request.event.active_review_phase, "can_see_speaker_names", True
+        )
+
     def get_object(self):
         return self.object
 
