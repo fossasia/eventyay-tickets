@@ -131,7 +131,7 @@
                         {% if can_view_speakers %}
                             <td>
                                 {% for speaker in submission.speakers.all %}
-                                    <a href="{% url "orga:speakers.view" event=request.event.slug pk=speaker.id %}">
+                                    <a href="{% url "orga:speakers.view" event=request.event.slug code=speaker.code %}">
                                         {{ speaker.get_display_name }}
                                     </a><br>
                                 {% endfor %}

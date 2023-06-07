@@ -24,7 +24,7 @@
     {% for speaker in speakers %}
         <div class="card"><div class="card-body">
             <h3 class="card-title">
-                <a href="{% url "orga:speakers.view" event=request.event.slug pk=speaker.id %}">
+                <a href="{% url "orga:speakers.view" event=request.event.slug code=speaker.code %}">
                     {{ speaker.name }}
                 </a>
             </h3>
@@ -47,7 +47,7 @@
                 {% endif %}
             </p>
             {% if can_edit_speakers %}
-                <a href="{% url "orga:speakers.view" event=request.event.slug pk=speaker.id %}"
+                <a href="{% url "orga:speakers.view" event=request.event.slug code=speaker.code %}"
                    class="btn btn-info">
                     <i class="fa fa-edit"></i> {% translate "Edit" %}
                 </a>
