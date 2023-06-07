@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` pretalx always showed the anonymised version of proposals if there was one. Now it reverts to the non-anonymised one once the anonymisation period is over.
 - :feature:`-` Organiser pages for speakers now use their alphanumeric ``code`` identifier in the URL rather than the numeric ID, matching the public and API pages.
 - :feature:`1347` The submission type and track lists now include links to the pre-filtered list of proposals.
 - :feature:`889` A talk's duration is now listed on the talk acceptance site to avoid misunderstandings early on.
