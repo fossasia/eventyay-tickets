@@ -132,11 +132,12 @@ def test_speaker_page(
         slot.submission.save()
         event.wip_schedule.freeze("testversion 2")
         other_submission.slots.all().update(is_visible=True)
+        slot.submission.slots.all().update(is_visible=True)
     url = reverse("agenda:speaker", kwargs={"code": speaker.code, "event": event.slug})
     with django_assert_num_queries(23):
         response = client.get(url, follow=True)
     assert response.status_code == 200
-    assert len(response.context["talks"]) == 2
+    assert len(response.context["talks"]) == 2, response.context["talks"]
     assert response.context["talks"].filter(submission=other_submission)
     with scope(event=event):
         assert speaker.profiles.get(event=event).biography in response.content.decode()
@@ -158,13 +159,13 @@ def test_speaker_page_other_submissions_only_if_visible(
         slot.submission.accept(force=True)
         slot.submission.save()
         event.wip_schedule.freeze("testversion 2")
-        other_submission.slots.all().update(is_visible=True)
+        other_submission.slots.all().update(is_visible=False)
         slot.submission.slots.filter(schedule=event.current_schedule).update(
-            is_visible=False
+            is_visible=True
         )
 
     url = reverse("agenda:speaker", kwargs={"code": speaker.code, "event": event.slug})
-    with django_assert_num_queries(23):
+    with django_assert_num_queries(18):
         response = client.get(url, follow=True)
 
     assert response.status_code == 200
