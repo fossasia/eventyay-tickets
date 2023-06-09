@@ -58,7 +58,7 @@ class DashboardEventListView(TemplateView):
                     submissions__state__in=[
                         state
                         for state in SubmissionStates.display_values.keys()
-                        if state != SubmissionStates.DELETED
+                        if state not in [SubmissionStates.DELETED, SubmissionStates.DRAFT]
                     ]
                 ),
             )
