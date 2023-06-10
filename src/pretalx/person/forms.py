@@ -111,6 +111,19 @@ class UserForm(CfPFormMixin, forms.Form):
         if data.get("login_email") and data.get("login_password"):
             return data["user_id"]
 
+        # We already checked that all fields are filled, but sometimes
+        # they end up empty regardless. No idea why and how.
+        if not (
+            data.get("register_email")
+            and data.get("register_password")
+            and data.get("register_name")
+        ):
+            raise ValidationError(
+                _(
+                    "Please fill all fields of either the login or the registration form."
+                )
+            )
+
         user = User.objects.create_user(
             name=data.get("register_name").strip(),
             email=data.get("register_email").lower().strip(),
