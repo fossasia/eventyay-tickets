@@ -111,7 +111,7 @@ setup(
         "django-hierarkey~=1.1.0",  # no changelog, https://github.com/raphaelm/django-hierarkey
         "django-i18nfield~=1.9.0",  # 2020-06, no changelog, https://github.com/raphaelm/django-i18nfield/
         "django-libsass~=0.8",  # inactive, https://github.com/torchbox/django-libsass/blob/main/CHANGELOG.txt
-        "django-scopes~=1.2.0",  # https://github.com/raphaelm/django-scopes/releases
+        "django-scopes~=2.0.0",  # https://github.com/raphaelm/django-scopes/releases
         "djangorestframework~=3.14.0",  # http://www.django-rest-framework.org/community/release-notes/
         "inlinestyler~=0.2.0",  # https://github.com/dlanger/inlinestyler/blob/master/CHANGELOG
         "libsass~=0.22.0",  # https://sass.github.io/libsass-python/changes.html
