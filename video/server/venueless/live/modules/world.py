@@ -37,6 +37,7 @@ class WorldModule(BaseModule):
 
     @event("update", refresh_user=True)
     async def push_world_update(self, body):
+        self.consumer.room_cache.clear()
         await self.consumer.world.refresh_from_db_if_outdated(allowed_age=0)
         world_config = await database_sync_to_async(get_world_config_for_user)(
             self.consumer.world,
