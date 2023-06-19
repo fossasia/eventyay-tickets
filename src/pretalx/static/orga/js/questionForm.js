@@ -1,4 +1,5 @@
 function question_page_toggle_view() {
+  console.log("yeah")
   const variant = document.querySelector("#id_variant").value
   setVisibility(
     "#answer-options",
@@ -15,7 +16,7 @@ function question_page_toggle_view() {
 }
 
 function question_page_toggle_target_view() {
-  if ($(".limit-submission").length) {
+  if (document.querySelector(".limit-submission")) {
     setVisibility(
       ".limit-submission",
       document.querySelector("#id_target").value === "submission"
@@ -29,21 +30,21 @@ function question_page_toggle_target_view() {
 
 function setVisibility(element, value) {
   if (typeof element === "string") {
-    element = $(element);
+    element = document.querySelector(element);
   }
   if (element) {
     if (value) {
-      element.show();
+      element.classList.remove("d-none");
     } else {
-      element.hide();
+      element.classList.add("d-none");
     }
   }
 }
 document.addEventListener("DOMContentLoaded", function() {
-    $("#id_variant").change(question_page_toggle_view)
-    $("#id_required").change(question_page_toggle_view)
+    document.querySelector("#id_variant").addEventListener("change", question_page_toggle_view)
+    document.querySelectorAll("#id_question_required input").forEach(e => e.addEventListener("change", question_page_toggle_view))
     question_page_toggle_view()
-    $("#id_target").change(question_page_toggle_target_view)
+    document.querySelector("#id_target").addEventListener("change", question_page_toggle_target_view)
     question_page_toggle_target_view()
 
     let deadline = $("#id_deadline")
