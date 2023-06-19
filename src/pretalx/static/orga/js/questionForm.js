@@ -6,7 +6,7 @@ function question_page_toggle_view() {
   )
   setVisibility(
     "#alert-required-boolean",
-    variant === "boolean" && document.querySelector("#id_required").checked
+    variant === "boolean" && document.querySelector("#id_question_required input[value=required]").checked
   )
   setVisibility("#limit-length", variant === "text" || variant === "string")
   setVisibility("#limit-number", variant === "number")
