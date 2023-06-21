@@ -75,7 +75,7 @@ Data directory
     want to back up. If you did not specify a secret in your config file, back
     up the ``.secret`` text file in the data directory. If you lose the secret,
     all active user sessions, password reset links will be invalid. You should
-    backup backup the ``media`` subdirectory of the data directory. It contains
+    backup the ``media`` subdirectory of the data directory. It contains
     all user-uploaded and generated files. This includes files you could in
     theory regenerate (talk and speaker images for social media, html exports),
     but also files that you or your users would need to re-upload (event logos,
