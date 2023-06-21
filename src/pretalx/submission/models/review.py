@@ -51,7 +51,7 @@ class ReviewScore(models.Model):
         to=ReviewScoreCategory, related_name="scores", on_delete=models.CASCADE
     )
     value = models.DecimalField(max_digits=7, decimal_places=2)
-    label = models.CharField(null=True, blank=True, max_length=100)
+    label = models.CharField(null=True, blank=True, max_length=200)
 
     objects = ScopedManager(event="category__event")
 
