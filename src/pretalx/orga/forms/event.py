@@ -147,14 +147,15 @@ class EventForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
         self.fields["name"].widget.attrs["placeholder"] = (
             _("The name of your conference, e.g. My Conference") + " " + year
         )
-        self.fields["slug"].help_text = _(
-            "Please contact your administrator if you need to change the short name of your event."
-        )
+        if not self.is_administrator:
+            self.fields["slug"].disabled = True
+            self.fields["slug"].help_text = _(
+                "Please contact your administrator if you need to change the short name of your event."
+            )
         self.fields["primary_color"].widget.attrs["placeholder"] = _(
             "A color hex value, e.g. #ab01de"
         )
         self.fields["primary_color"].widget.attrs["class"] = "colorpickerfield"
-        self.fields["slug"].disabled = not self.is_administrator
         self.fields["date_to"].help_text = _(
             "Any sessions you have scheduled already will be moved if you change the event dates. You will have to release a new schedule version to notify all speakers."
         )
