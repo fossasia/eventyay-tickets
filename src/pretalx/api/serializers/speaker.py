@@ -39,7 +39,7 @@ class SpeakerSerializer(ModelSerializer):
     def __init__(self, *args, **kwargs):
         questions = kwargs.pop("questions", [])
         self.questions = (
-            questions if questions == "all" else [q for q in questions if q]
+            questions if questions == "all" else [q for q in questions if q.isnumeric()]
         )
         super().__init__(*args, **kwargs)
 
