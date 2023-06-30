@@ -12,7 +12,7 @@ from pretalx.orga.signals import (
 
 @receiver(register_locales)
 def register_locales_test(sender, **kwargs):
-    return ["testlocale"]
+    return [("testlocale", "Test")]
 
 
 @receiver(footer_link)

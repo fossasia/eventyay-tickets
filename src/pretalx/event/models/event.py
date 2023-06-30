@@ -434,24 +434,26 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
 
     @cached_property
     def named_content_locales(self) -> list:
-        locale_names = dict(global_settings.LANGUAGES)
-        locale_names.update(self.named_locales)
         return [(a, locale_names[a]) for a in self.content_locales]
 
     @cached_property
-    def plugin_locales(self) -> list:
+    def named_plugin_locales(self) -> list:
         from pretalx.common.signals import register_locales
 
-        result = []
+        locale_names = dict(global_settings.LANGUAGES)
+        locale_names.update(self.named_locales)
+        result = {}
         for _receiver, locales in register_locales.send(sender=self):
-            result += locales
+            for locale in locales:
+                if isinstance(locale, tuple):
+                    result[locale[0]] = locale[1]
+                else:
+                    result[locale] = locale_names.get(locale, locale)
         return result
 
     @cached_property
-    def named_plugin_locales(self) -> list:
-        locale_names = dict(global_settings.LANGUAGES)
-        locale_names.update(self.named_locales)
-        return [(a, locale_names.get(a, a)) for a in self.plugin_locales]
+    def plugin_locales(self) -> list:
+        return sorted(list(self.named_plugin_locales.keys()))
 
     @cached_property
     def cache(self):

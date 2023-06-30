@@ -34,6 +34,9 @@ class Command(Parent):
             module = import_module(receiver.__module__.split(".")[0])
             path = Path(module.__path__[0])
             for locale in response:
+                # if it's a tuple, use the first part
+                if isinstance(locale, tuple):
+                    locale = locale[0]
                 if "-" in locale:
                     locale_parts = locale.split("-")
                     locale = (
