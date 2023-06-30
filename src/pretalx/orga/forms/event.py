@@ -4,7 +4,7 @@ from decimal import Decimal
 from urllib.parse import urlparse
 
 from django import forms
-from django.conf import global_settings, settings
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.files.base import ContentFile
 from django.db.models import F, Q
@@ -44,7 +44,7 @@ class EventForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
     )
     content_locales = forms.MultipleChoiceField(
         label=_("Content languages"),
-        choices=global_settings.LANGUAGES,
+        choices=[],
         widget=forms.SelectMultiple(attrs={"class": "select2"}),
         help_text=_("Users will be able to submit proposals in these languages."),
     )
@@ -165,7 +165,7 @@ class EventForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
             if settings.LANGUAGES_INFORMATION[choice[0]].get("visible", True)
             or choice[0] in self.instance.plugin_locales
         ]
-        self.fields["content_locales"].choices += self.instance.named_plugin_locales
+        self.fields["content_locales"].choices = self.instance.available_content_locales
 
     def clean_custom_domain(self):
         data = self.cleaned_data["custom_domain"]

@@ -433,7 +433,20 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
         ]
 
     @cached_property
+    def available_content_locales(self) -> list:
+        # Content locales can be anything Django knows as a language, merged with
+        # our own list of locales plus this event's plugin locales.
+        locale_names = dict(global_settings.LANGUAGES)
+        locale_names.update(
+            (language["code"], language["natural_name"])
+            for language in settings.LANGUAGES_INFORMATION.values()
+        )
+        locale_names.update(self.named_plugin_locales)
+        return sorted([(key, value) for key, value in locale_names.items()])
+
+    @cached_property
     def named_content_locales(self) -> list:
+        locale_names = dict(self.available_content_locales)
         return [(a, locale_names[a]) for a in self.content_locales]
 
     @cached_property
