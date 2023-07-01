@@ -99,6 +99,7 @@ class TeamInviteForm(ReadOnlyFlag, forms.ModelForm):
 
 class OrganiserForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
     def __init__(self, *args, **kwargs):
+        kwargs["locales"] = "en"
         super().__init__(*args, **kwargs)
 
         if kwargs.get("instance"):
