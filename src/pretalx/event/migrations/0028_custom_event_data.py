@@ -36,7 +36,6 @@ def update_custom_domain(apps, schema_editor):
                     "show_widget_if_not_public",
                     "export_html_on_schedule_release",
                     "use_tracks",
-                    "use_gravatar",
                     "present_multiple_times",
                 ),
                 {"export_html_on_schedule_release": "export_html_on_release"},
