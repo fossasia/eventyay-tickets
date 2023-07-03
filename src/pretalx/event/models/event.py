@@ -74,7 +74,6 @@ def default_feature_flags():
         "export_html_on_release": False,
         "use_tracks": True,
         "use_feedback": True,
-        "use_gravatar": True,
         "present_multiple_times": False,
     }
 

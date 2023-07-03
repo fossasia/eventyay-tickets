@@ -26,13 +26,6 @@ class CfPSettingsForm(
         required=False,
         help_text=_("Do you organise your sessions by tracks?"),
     )
-    use_gravatar = forms.BooleanField(
-        label=_("Use Gravatar"),
-        required=False,
-        help_text=_(
-            "Allow speakers to automatically include their gravatar profile image."
-        ),
-    )
     present_multiple_times = forms.BooleanField(
         label=_("Slot Count"),
         required=False,
@@ -123,7 +116,6 @@ class CfPSettingsForm(
         # These are JSON fields on event.settings
         json_fields = {
             "use_tracks": "feature_flags",
-            "use_gravatar": "feature_flags",
             "present_multiple_times": "feature_flags",
             "mail_on_new_submission": "mail_settings",
         }
