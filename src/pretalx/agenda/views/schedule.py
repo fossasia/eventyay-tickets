@@ -3,7 +3,6 @@ import logging
 import textwrap
 from urllib.parse import unquote
 
-from csp.decorators import csp_update
 from django.contrib import messages
 from django.http import (
     Http404,
@@ -13,6 +12,7 @@ from django.http import (
     HttpResponseRedirect,
 )
 from django.urls import resolve, reverse
+from django.utils.functional import cached_property
 from django.utils.translation import activate
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import TemplateView
