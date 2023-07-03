@@ -32,8 +32,6 @@
                 <div class="speaker-avatar">
                     {% if profile.user.avatar %}
                         <img width="100%" src="{{ profile.user.avatar.url }}" alt="{% translate "The speaker's profile picture" %}">
-                    {% elif profile.user.get_gravatar and request.event.feature_flags.use_gravatar %}
-                        <img width="100%" src="https://www.gravatar.com/avatar/{{ profile.user.gravatar_parameter }}?s=200" alt="{% translate "The speaker's profile picture" %}">
                     {% endif %}
                 </div>
             </section>

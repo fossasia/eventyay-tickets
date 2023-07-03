@@ -14,10 +14,6 @@
                 alt="{% translate "Your avatar" %}"
                 {% if user.avatar %}
                     src="{{ user.avatar.url }}"
-                {% elif user.get_gravatar %}
-                    {% if request.event.feature_flags.use_gravatar %}
-                        src="https://www.gravatar.com/avatar/{{ user.gravatar_parameter }}?s=512"
-                    {% endif %}
                 {% endif %}
             />
 

@@ -275,24 +275,18 @@ class User(PermissionsMixin, GenerateCode, FileCleanupMixin, AbstractBaseUser):
 
     @cached_property
     def has_avatar(self) -> bool:
-        return self.get_gravatar or self.has_local_avatar
-
-    @cached_property
-    def has_local_avatar(self) -> bool:
         return self.avatar and self.avatar != "False"
 
     @cached_property
     def avatar_url(self) -> str:
-        if self.get_gravatar:
-            return "https://www.gravatar.com/avatar/" + self.gravatar_parameter
-        if self.has_local_avatar:
+        if self.has_avatar:
             return self.avatar.url
 
     def get_avatar_url(self, event=None):
         """Returns the full avatar URL, where user.avatar_url returns the
         absolute URL."""
-        if not self.avatar_url or "gravatar" in self.avatar_url:
-            return self.avatar_url
+        if not self.avatar_url:
+            return ""
         if event and event.custom_domain:
             return urljoin(event.custom_domain, self.avatar_url)
         return urljoin(settings.SITE_URL, self.avatar_url)

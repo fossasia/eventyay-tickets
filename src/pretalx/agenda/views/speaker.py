@@ -25,7 +25,6 @@ from pretalx.person.models import SpeakerProfile, User
 from pretalx.submission.models import QuestionTarget
 
 
-@method_decorator(csp_update(IMG_SRC="https://www.gravatar.com"), name="dispatch")
 class SpeakerList(EventPermissionRequired, Filterable, ListView):
     context_object_name = "speakers"
     template_name = "agenda/speakers.html"
@@ -52,7 +51,6 @@ class SpeakerList(EventPermissionRequired, Filterable, ListView):
         return qs
 
 
-@method_decorator(csp_update(IMG_SRC="https://www.gravatar.com"), name="dispatch")
 class SpeakerView(PermissionRequired, TemplateView):
     template_name = "agenda/speaker.html"
     permission_required = "agenda.view_speaker"
@@ -141,7 +139,6 @@ class SpeakerSocialMediaCard(SocialMediaCardMixin, SpeakerView):
         user = self.profile.user
         if user.avatar:
             return user.avatar
-        # TODO implement gravatar caching
 
 
 @cache_page(60 * 60)

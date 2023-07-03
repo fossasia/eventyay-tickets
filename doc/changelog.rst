@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`399` pretalx will now locally cache gravatar avatars to avoid GDPR issues when using gravatar.
 - :bug:`1498` Talks that were scheduled, but not confirmed by the speaker yet would be shown in the public speaker profile.
 - :feature:`-` pretalx always showed the anonymised version of proposals if there was one. Now it reverts to the non-anonymised one once the anonymisation period is over.
 - :feature:`-` Organiser pages for speakers now use their alphanumeric ``code`` identifier in the URL rather than the numeric ID, matching the public and API pages.
