@@ -3,12 +3,10 @@ from collections import defaultdict
 from urllib.parse import urlparse
 
 import vobject
-from csp.decorators import csp_update
 from django.conf import settings
 from django.core.files.storage import Storage
 from django.http import FileResponse, Http404, HttpResponse
 from django.shortcuts import redirect
-from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
 from django.views.decorators.cache import cache_page
 from django.views.generic import DetailView, ListView, TemplateView

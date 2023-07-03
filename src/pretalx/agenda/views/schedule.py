@@ -13,8 +13,6 @@ from django.http import (
     HttpResponseRedirect,
 )
 from django.urls import resolve, reverse
-from django.utils.decorators import method_decorator
-from django.utils.functional import cached_property
 from django.utils.translation import activate
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import TemplateView
@@ -134,7 +132,6 @@ class ExporterView(EventPermissionRequired, ScheduleMixin, TemplateView):
         return HttpResponse(data, content_type=file_type, headers=headers)
 
 
-@method_decorator(csp_update(IMG_SRC="https://www.gravatar.com"), name="dispatch")
 class ScheduleView(EventPermissionRequired, ScheduleMixin, TemplateView):
     template_name = "agenda/schedule.html"
 

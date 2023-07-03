@@ -103,7 +103,6 @@ def test_unsaved_event_profile(event):
 @pytest.mark.django_db
 def test_user_attributes(orga_user):
     assert not orga_user.has_avatar
-    assert not orga_user.has_local_avatar
 
 
 @pytest.mark.django_db
