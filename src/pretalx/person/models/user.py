@@ -167,7 +167,7 @@ class User(PermissionsMixin, GenerateCode, FileCleanupMixin, AbstractBaseUser):
         if self.get_gravatar and update_gravatar:
             from pretalx.person.tasks import gravatar_cache
 
-            gravatar_cache.apply_async(args=(self.user.pk,))
+            gravatar_cache.apply_async(args=(self.pk,))
         return result
 
     def event_profile(self, event):
