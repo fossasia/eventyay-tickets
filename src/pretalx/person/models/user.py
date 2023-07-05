@@ -163,6 +163,7 @@ class User(PermissionsMixin, GenerateCode, FileCleanupMixin, AbstractBaseUser):
         # Check if we need to get the profile picture from gravatar
         if not kwargs.get("update_fields") or "get_gravatar" in kwargs["update_fields"]:
             from pretalx.person.tasks import gravatar_cache
+
             if self.get_gravatar:
                 gravatar_cache.apply_async(args=(self.user.pk,))
         return result
