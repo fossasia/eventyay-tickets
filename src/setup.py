@@ -119,7 +119,7 @@ setup(
         # We can upgrade markdown again once django-bootstrap4 upgrades or once we drop Python 3.6 and 3.7
         # 3.3.5 requires importlib-metadata>=4.4, but django-bootstrap3 requires importlib-metadata<3.
         # see also https://github.com/zostera/django-bootstrap4/issues/380
-        "Pillow~=9.4.0",  # https://github.com/python-pillow/Pillow/blob/main/CHANGES.rst
+        "Pillow~=10.0.0",  # https://github.com/python-pillow/Pillow/blob/main/CHANGES.rst
         "publicsuffixlist~=0.10.0",
         "python-dateutil~=2.8.0",  # https://dateutil.readthedocs.io/en/stable/changelog.html
         "qrcode~=7.0",
