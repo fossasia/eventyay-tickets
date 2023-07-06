@@ -14,8 +14,8 @@ document.addEventListener("DOMContentLoaded", function() {
         availabilities: calendar.getEvents().map(function(e) {
           if (e.allDay) {
             return {
-              start: e.start.format("YYYY-MM-DD HH:mm:ss"),
-              end: e.end.format("YYYY-MM-DD HH:mm:ss"),
+              start: moment(e.start).format("YYYY-MM-DD HH:mm:ss"),
+              end: moment(e.end).format("YYYY-MM-DD HH:mm:ss"),
             }
           } else {
             return {
