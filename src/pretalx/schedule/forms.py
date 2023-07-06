@@ -54,42 +54,12 @@ class AvailabilitiesFormMixin(forms.Form):
                 for avail in merged_avails:
                     start = avail.start.astimezone(self.event.tz)
                     end = avail.end.astimezone(self.event.tz)
-                    if start.date() == end.date():
-                        result["constraints"].append(
-                            {
-                                "daysOfWeek": [(start.weekday() + 1) % 7],
-                                "startTime": start.time().isoformat(),
-                                "endTime": end.time().isoformat(),
-                            }
-                        )
-                    else:
-                        start_day = start.weekday()
-                        end_day = end.weekday()
-                        result["constraints"].append(
-                            {
-                                "daysOfWeek": [(start_day + 1) % 7],
-                                "startTime": start.time().isoformat(),
-                                "endTime": "23:59",
-                            }
-                        )
-                        result["constraints"].append(
-                            {
-                                "daysOfWeek": [(end_day + 1) % 7],
-                                "startTime": "00:00",
-                                "endTime": end.time().isoformat(),
-                            }
-                        )
-                        end_day = end_day + 7 if end_day < start_day else end_day
-                        days_between = range(start_day + 1, end_day)
-                        for day in days_between:
-                            result["constraints"].append(
-                                {
-                                    "daysOfWeek": [(day + 1) % 7],
-                                    "startTime": "00:00",
-                                    "endTime": "23:59",
-                                }
-                            )
-
+                    result["constraints"].append(
+                        {
+                            "start": start.isoformat(),
+                            "end": end.isoformat(),
+                        }
+                    )
         return json.dumps(result)
 
     def __init__(self, *args, event=None, limit_to_rooms=False, **kwargs):
@@ -203,6 +173,8 @@ class AvailabilitiesFormMixin(forms.Form):
             availabilities.append(Availability(event_id=self.event.id, **rawavail))
         if not availabilities and required:
             raise forms.ValidationError(_("Please fill in your availability!"))
+        # Remove overlaps by merging availabilities
+        availabilities = Availability.union(availabilities)
         return availabilities
 
     def _set_foreignkeys(self, instance, availabilities):

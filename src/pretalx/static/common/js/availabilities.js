@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", function() {
     function save_events() {
       const data = {
         availabilities: calendar.getEvents().map(function(e) {
+          if (e.groupId) return
           if (e.allDay) {
             return {
               start: moment(e.start).format("YYYY-MM-DD HH:mm:ss"),
@@ -23,7 +24,7 @@ document.addEventListener("DOMContentLoaded", function() {
               end: e.end.toISOString(),
             }
           }
-        }),
+        }).filter(a => !!a),
       }
       data_field.attr("value", JSON.stringify(data))
     }
@@ -40,15 +41,28 @@ document.addEventListener("DOMContentLoaded", function() {
       }
       e.start = start.toISOString()
       e.end = end.toISOString()
+      if (constraints) {
+        e.constraint = "mainConstraint"
+      }
       return e
     })
+    if (constraints) {
+      for (constraint of constraints) {
+        events.push({
+          start: constraint.start,
+          end: constraint.end,
+          groupId: "mainConstraint",
+          display: "background",
+        })
+      }
+    }
+    console.log(events)
     let localeData = document.querySelector("#calendar-locale")
     const locale = localeData ? localeData.dataset.locale : "en"
     const calendar = new FullCalendar.Calendar(editor[0], {
       timeZone: data.event.timezone,
       locale: locale,
       initialView: 'timeGrid',
-      headerToolbar: {},
       initialDate: data.event.date_from,
       duration: {
         days: moment(data.event.date_to).diff(moment(data.event.date_from), 'days') + 1,
@@ -73,14 +87,13 @@ document.addEventListener("DOMContentLoaded", function() {
       editable: editable,
       eventStartEditable: editable,
       eventDurationEditable: editable,
-      selectOverlap: false,
-      eventOverlap: false,
       allDayMaintainDuration: true,
       eventsSet: save_events,
       eventColor: "#3aa57c",
-      eventConstraint: constraints,
-      selectConstraint: constraints,
-      businessHours: constraints,
+      eventConstraint: constraints ? "mainConstraint" : null,
+      eventOverlap: !!constraints,  // we can't use this with constraints, because those are also only background events
+      selectOverlap: !!constraints,  // we have to set this, otherwise events can only be created *outside* our available times
+      selectConstraint: constraints ? "mainConstraint" : null,
       select: function(info) {
         if (document.querySelector(".availabilities-editor .fc-event.delete")) {
           document.querySelectorAll(".availabilities-editor .fc-event.delete").forEach(function(e) { e.classList.remove("delete") })
@@ -89,12 +102,13 @@ document.addEventListener("DOMContentLoaded", function() {
         const eventData = {
           start: info.start,
           end: info.end,
+          constraint: constraints ? "mainConstraint" : null,
         }
         calendar.addEvent(eventData)
         calendar.unselect()
       },
       eventClick: function(info) {
-        if (!editable) {
+        if (!editable || info.el.classList.contains("fc-bg-event")) {
           return
         }
         if (info.el.classList.contains("delete")) {
