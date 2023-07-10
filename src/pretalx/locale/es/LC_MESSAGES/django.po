@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-02-19 15:38+0000\n"
-"PO-Revision-Date: 2022-02-24 19:37+0000\n"
-"Last-Translator: Manuel Martin <draxus@gmail.com>\n"
+"PO-Revision-Date: 2023-07-09 12:54+0000\n"
+"Last-Translator: Daniel Carranza <chino@data.org.uy>\n"
 "Language-Team: none\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.4.2\n"
+"X-Generator: Weblate 4.18.2\n"
 
 #: pretalx/agenda/phrases.py:8
 msgid "Thank you for your feedback!"
@@ -300,6 +300,8 @@ msgstr ""
 msgid ""
 "Your draft was saved. You can continue to edit it as long as the CfP is open."
 msgstr ""
+"Su borrador fue guardado. Puede continuar editando mientras esté abierto el "
+"llamado a propuestas."
 
 #: pretalx/cfp/flow.py:363
 msgid ""
@@ -578,10 +580,8 @@ msgid "submitted"
 msgstr "enviado"
 
 #: pretalx/cfp/templates/cfp/event/fragment_state.html:5
-#, fuzzy
-#| msgid "Send review"
 msgid "in review"
-msgstr "Enviar evaluación"
+msgstr "en evaluación"
 
 #: pretalx/cfp/templates/cfp/event/fragment_state.html:7
 msgid "not accepted"
@@ -712,24 +712,20 @@ msgid "Done!"
 msgstr "¡Hecho!"
 
 #: pretalx/cfp/templates/cfp/event/submission_base.html:45
-#, fuzzy
-#| msgid "Saved!"
 msgid "Save as draft"
-msgstr "¡Guardado!"
+msgstr "Guardar como borrador"
 
 #: pretalx/cfp/templates/cfp/event/submission_base.html:50
 msgid "Continue"
 msgstr "Continuar"
 
 #: pretalx/cfp/templates/cfp/event/submission_base.html:52
-#, fuzzy
-#| msgid "Submit a proposal"
 msgid "Submit proposal!"
-msgstr "Enviar una propuesta"
+msgstr "¡Enviar propuesta!"
 
 #: pretalx/cfp/templates/cfp/event/submission_base.html:56
 msgid "or save as draft for now"
-msgstr ""
+msgstr "o guardar como borrador por ahora"
 
 #: pretalx/cfp/templates/cfp/event/submission_base.html:57
 msgid ""
@@ -737,6 +733,9 @@ msgid ""
 "not be able to see your proposal, though they will be able to send you "
 "reminder emails about the upcoming deadline."
 msgstr ""
+"Puedes guardar tu propuesta como borrador y enviarla más tarde. La "
+"organización no podrá ver tu propuesta, pero podrán enviarte correos "
+"recordatorios sobre la fecha límite."
 
 #: pretalx/cfp/templates/cfp/event/submission_base.html:64
 #: pretalx/orga/templates/orga/cfp/access_code_delete.html:11
@@ -770,7 +769,7 @@ msgstr "… acerca de ti mismo:"
 
 #: pretalx/cfp/templates/cfp/event/submission_user.html:8
 msgid "Sign in or register to save your draft"
-msgstr ""
+msgstr "Ingresar o registrarse para guardar borrador"
 
 #: pretalx/cfp/templates/cfp/event/submission_user.html:14
 msgid ""
@@ -778,6 +777,8 @@ msgid ""
 "will be able to send you reminders about your pending proposal draft closer "
 "to the deadline."
 msgstr ""
+"La organización no podrá ver tu borrador o correo electrónico. Podrán "
+"enviarte recordatorios de tu borrador pendiente sobre la fecha de cierre."
 
 #: pretalx/cfp/templates/cfp/event/user_mails.html:4
 #: pretalx/cfp/templates/cfp/event/user_mails.html:7
@@ -956,10 +957,8 @@ msgstr "Confirmar"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm_error.html:7
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm_error.html:11
-#, fuzzy
-#| msgid "Proposal information"
 msgid "Proposal not found"
-msgstr "Información de la propuesta"
+msgstr "Propuesta no encontrada"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm_error.html:13
 msgid ""
