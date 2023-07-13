@@ -6,6 +6,7 @@ from csp.decorators import csp_update
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login
+from django.core.exceptions import ValidationError
 from django.core.files.storage import FileSystemStorage
 from django.db import transaction
 from django.db.models import Q
@@ -247,8 +248,12 @@ class EventReviewSettings(EventSettingsPermission, ActionFromUrl, FormView):
 
     @transaction.atomic
     def form_valid(self, form):
-        phases = self.save_phases()
-        scores = self.save_scores()
+        try:
+            phases = self.save_phases()
+            scores = self.save_scores()
+        except ValidationError as e:
+            messages.error(self.request, str(e))
+            return self.get(self.request, *self.args, **self.kwargs)
         if not phases or not scores:
             return self.get(self.request, *self.args, **self.kwargs)
         form.save()

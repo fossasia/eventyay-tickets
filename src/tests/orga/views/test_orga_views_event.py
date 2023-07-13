@@ -548,6 +548,69 @@ def test_edit_review_settings(orga_client, event):
             "scores-0-name_0": str(category.name) + "xxx",
             "scores-0-id": category.id,
             "scores-0-weight": "1",
+            "scores-0-is_independent": "on",
+            f"scores-0-value_{scores[0].id}": scores[0].value,
+            f"scores-0-label_{scores[0].id}": scores[0].label,
+            f"scores-0-value_{scores[1].id}": scores[1].value,
+            f"scores-0-label_{scores[1].id}": scores[1].label,
+            f"scores-0-value_{scores[2].id}": scores[2].value,
+            f"scores-0-label_{scores[2].id}": scores[2].label,
+            "aggregate_method": event.review_settings["aggregate_method"],
+            "score_format": event.review_settings["score_format"],
+        },
+        follow=True,
+    )
+    assert response.status_code == 200
+    event = Event.objects.get(slug=event.slug)
+    with scope(event=event):
+        # Did not save
+        assert event.score_categories.filter(is_independent=False).exists()
+        assert "non-independent" in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_edit_review_settings_no_independent_category(orga_client, event):
+    with scope(event=event):
+        assert event.review_phases.count() == 2
+        assert event.score_categories.count() == 1
+        active_phase = event.active_review_phase
+        category = event.score_categories.first()
+        scores = list(category.scores.all())
+
+    response = orga_client.post(
+        event.orga_urls.review_settings,
+        {
+            "phase-TOTAL_FORMS": 3,
+            "phase-INITIAL_FORMS": 2,
+            "phase-MIN_NUM_FORMS": 0,
+            "phase-MAX_NUM_FORMS": 1000,
+            "phase-0-name": active_phase.name + "xxx",
+            "phase-0-id": active_phase.id,
+            "phase-0-start": "",
+            "phase-0-end": "",
+            "phase-0-can_see_other_reviews": "after_review",
+            "phase-0-can_tag_submissions": "use_tags",
+            "phase-0-proposal_visibility": "all",
+            "phase-1-name": active_phase.name + "xxxy",
+            "phase-1-id": active_phase.id + 1,
+            "phase-1-start": "",
+            "phase-1-end": "",
+            "phase-1-can_see_other_reviews": "after_review",
+            "phase-1-can_tag_submissions": "use_tags",
+            "phase-1-proposal_visibility": "all",
+            "phase-2-name": active_phase.name + "xxxyz",
+            "phase-2-start": "",
+            "phase-2-end": "",
+            "phase-2-can_see_other_reviews": "after_review",
+            "phase-2-can_tag_submissions": "use_tags",
+            "phase-2-proposal_visibility": "all",
+            "scores-TOTAL_FORMS": "1",
+            "scores-INITIAL_FORMS": "1",
+            "scores-MIN_NUM_FORMS": "0",
+            "scores-MAX_NUM_FORMS": "1000",
+            "scores-0-name_0": str(category.name) + "xxx",
+            "scores-0-id": category.id,
+            "scores-0-weight": "1",
             f"scores-0-value_{scores[0].id}": scores[0].value,
             f"scores-0-label_{scores[0].id}": scores[0].label,
             f"scores-0-value_{scores[1].id}": scores[1].value,
