@@ -96,6 +96,7 @@ setup(
         "beautifulsoup4~=4.12.0",  # https://git.launchpad.net/beautifulsoup/tree/CHANGELOG
         "bleach~=6.0.0",  # https://bleach.readthedocs.io/en/latest/changes.html
         "celery~=5.3.0",  # search for "what's new" on http://docs.celeryproject.org/en/latest/
+        "css_inline~=0.10.0",  # https://github.com/Stranger6667/css-inline/blob/master/bindings/python/CHANGELOG.md
         "csscompressor~=0.9.0",  # 2017-11, no changelog, https://github.com/sprymix/csscompressor
         "cssutils~=2.7.0",
         "defusedcsv~=2.0.0",  # https://github.com/raphaelm/defusedcsv
@@ -113,7 +114,6 @@ setup(
         "django-libsass~=0.8",  # inactive, https://github.com/torchbox/django-libsass/blob/main/CHANGELOG.txt
         "django-scopes~=2.0.0",  # https://github.com/raphaelm/django-scopes/releases
         "djangorestframework~=3.14.0",  # http://www.django-rest-framework.org/community/release-notes/
-        "inlinestyler~=0.2.0",  # https://github.com/dlanger/inlinestyler/blob/master/CHANGELOG
         "libsass~=0.22.0",  # https://sass.github.io/libsass-python/changes.html
         "Markdown~=3.4.0",  # https://python-markdown.github.io/change_log/
         # We can upgrade markdown again once django-bootstrap4 upgrades or once we drop Python 3.6 and 3.7

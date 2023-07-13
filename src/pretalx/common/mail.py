@@ -100,9 +100,12 @@ def mail_send_task(
         reply_to=reply_to,
     )
     if html is not None:
-        from inlinestyler.utils import inline_css
+        import css_inline
 
-        email.attach_alternative(inline_css(html), "text/html")
+        inliner = css_inline.CSSInliner(keep_style_tags=False)
+        body_html = inliner.inline(html)
+
+        email.attach_alternative(body_html, "text/html")
 
     if attachments:
         for attachment in attachments:
