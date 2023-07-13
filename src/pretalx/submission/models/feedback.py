@@ -32,7 +32,7 @@ class Feedback(LogMixin, models.Model):
     )
     rating = models.IntegerField(null=True, blank=True, verbose_name=_("Rating"))
     review = models.TextField(
-        verbose_name=_("Review"), help_text=phrases.base.use_markdown
+        verbose_name=_("Feedback"), help_text=phrases.base.use_markdown
     )
 
     objects = ScopedManager(event="talk__event")

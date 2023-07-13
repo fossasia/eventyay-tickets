@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-02-19 15:38+0000\n"
+"POT-Creation-Date: 2023-07-13 16:26+0000\n"
 "PO-Revision-Date: 2023-05-27 12:16+0000\n"
 "Last-Translator: Joel (Jiawei) Wang <joel.bradley.w@gmail.com>\n"
 "Language-Team: none\n"
@@ -83,7 +83,9 @@ msgstr "我们很遗憾不得不取消一个会话："
 msgid ""
 "We had to move some sessions, so if you were planning on seeing them, check "
 "their new dates or locations:"
-msgstr "我们不得不调整一些会议时间和地点。如果你原本计划参加这些会议，请检查它们的新日期或地点："
+msgstr ""
+"我们不得不调整一些会议时间和地点。如果你原本计划参加这些会议，请检查它们的新"
+"日期或地点："
 
 #: pretalx/agenda/templates/agenda/changelog_block.html:83
 msgid "We have moved a session around: "
@@ -99,13 +101,16 @@ msgid ""
 "conference. Please keep in mind that this is not our full schedule. We will "
 "follow up with the full schedule in time, stay tuned!"
 msgstr ""
-"我们准备了一份令人兴奋的会议议程，让您能够感受到我们的会议。请记住，这不是我们的完整日程安排。我们会及时跟进发布完整的日程安排，请保持关注！"
+"我们准备了一份令人兴奋的会议议程，让您能够感受到我们的会议。请记住，这不是我"
+"们的完整日程安排。我们会及时跟进发布完整的日程安排，请保持关注！"
 
 #: pretalx/agenda/templates/agenda/featured.html:20
 msgid ""
-"In the near future you will see a curated list of sessions we'd like to show"
-" off here. Right now we are busy reviewing proposals.<br> Check back later!"
-msgstr "在不久的将来，您将看到我们在此展示的一系列策划好的会话。目前我们正忙于审查建议书。请稍后再来查看！"
+"In the near future you will see a curated list of sessions we'd like to show "
+"off here. Right now we are busy reviewing proposals.<br> Check back later!"
+msgstr ""
+"在不久的将来，您将看到我们在此展示的一系列策划好的会话。目前我们正忙于审查建"
+"议书。请稍后再来查看！"
 
 #: pretalx/agenda/templates/agenda/feed/description.html:5
 #, python-format
@@ -137,19 +142,21 @@ msgid ""
 "Reviews are a valuable tool for speakers to improve their content and "
 "presentation. Even a short review can prove valuable to a speaker! Please "
 "take the time and communicate your feedback in a constructive way."
-msgstr "评论是演讲者改善他们的内容和演讲的有用工具。即使是一个简短的评论也可能对演讲者有所帮助！请花时间以建设性的方式传达您的反馈。"
+msgstr ""
+"评论是演讲者改善他们的内容和演讲的有用工具。即使是一个简短的评论也可能对演讲"
+"者有所帮助！请花时间以建设性的方式传达您的反馈。"
 
 #: pretalx/agenda/templates/agenda/feedback_form.html:26
 msgid "You can't give feedback for this session at this time."
 msgstr "您目前无法针对此会话提供反馈。"
 
-#: pretalx/agenda/templates/agenda/header_row.html:6
-#: pretalx/event/stages.py:81 pretalx/orga/templates/orga/base.html:352
+#: pretalx/agenda/templates/agenda/header_row.html:6 pretalx/event/stages.py:81
+#: pretalx/orga/templates/orga/base.html:351
 msgid "Schedule"
 msgstr "日程表"
 
 #: pretalx/agenda/templates/agenda/header_row.html:9
-#: pretalx/agenda/templates/agenda/speaker.html:51
+#: pretalx/agenda/templates/agenda/speaker.html:49
 #: pretalx/orga/templates/orga/submission/stats.html:21
 #: pretalx/orga/templates/orga/submission/stats.html:33
 msgid "Sessions"
@@ -159,18 +166,18 @@ msgstr "会议"
 #: pretalx/orga/templates/orga/base.html:324
 #: pretalx/orga/templates/orga/base.html:332
 #: pretalx/orga/templates/orga/review/dashboard.html:87
-#: pretalx/orga/templates/orga/review/dashboard.html:198
+#: pretalx/orga/templates/orga/review/dashboard.html:210
 #: pretalx/orga/templates/orga/submission/base.html:43
-#: pretalx/orga/templates/orga/submission/list.html:90
-#: pretalx/person/forms.py:345
+#: pretalx/orga/templates/orga/submission/list.html:88
+#: pretalx/person/forms.py:360
 msgid "Speakers"
 msgstr "演讲者"
 
 #: pretalx/agenda/templates/agenda/schedule.html:19
 #: pretalx/agenda/templates/agenda/schedule_nojs.html:22
 msgid ""
-"You are currently viewing the editable schedule version, which is unreleased"
-" and may change at any time."
+"You are currently viewing the editable schedule version, which is unreleased "
+"and may change at any time."
 msgstr "您当前正在查看可编辑版本的日程安排，这是未发布的，可能随时更改。"
 
 #: pretalx/agenda/templates/agenda/schedule.html:21
@@ -189,7 +196,9 @@ msgstr "你可以在<a href=\"%(current_url)s\">这里</a>找到当前版本。"
 msgid ""
 "To see our schedule, please either enable JavaScript or go <a "
 "href=\"%(href)s\">here</a> for our NoJS schedule."
-msgstr "要查看我们的日程安排，请启用JavaScript或者前往<a href=\"%(href)s\">这里</a>查看我们的无JS日程安排。"
+msgstr ""
+"要查看我们的日程安排，请启用JavaScript或者前往<a href=\"%(href)s\">这里</a>查"
+"看我们的无JS日程安排。"
 
 #: pretalx/agenda/templates/agenda/schedule_nojs.html:14
 #, python-format
@@ -198,7 +207,8 @@ msgid ""
 "personal scheduling, please enable JavaScript and go <a "
 "href=\"%(href)s\">here</a>."
 msgstr ""
-"为了查看我们带有完整功能的日程安排，如时区转换和个人排程，请启用 JavaScript 并前往<a href=\"%(href)s\">此处</a>。"
+"为了查看我们带有完整功能的日程安排，如时区转换和个人排程，请启用 JavaScript "
+"并前往<a href=\"%(href)s\">此处</a>。"
 
 #: pretalx/agenda/templates/agenda/schedule_nojs.html:67
 #, python-format
@@ -217,17 +227,16 @@ msgid "deleted"
 msgstr "删除"
 
 #: pretalx/agenda/templates/agenda/speaker.html:34
-#: pretalx/agenda/templates/agenda/speaker.html:36
 msgid "The speaker's profile picture"
 msgstr "演讲者的个人资料照片"
 
 #: pretalx/agenda/templates/agenda/talk.html:50
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:18
 #: pretalx/orga/forms/submission.py:15
-#: pretalx/orga/templates/orga/cfp/text.html:92
+#: pretalx/orga/templates/orga/cfp/text.html:91
 #: pretalx/submission/forms/submission.py:28
-#: pretalx/submission/forms/submission.py:262
-#: pretalx/submission/models/submission.py:209
+#: pretalx/submission/forms/submission.py:261
+#: pretalx/submission/models/submission.py:207
 msgid "Language"
 msgstr "语言"
 
@@ -253,7 +262,7 @@ msgstr "这个演讲者也出现在："
 msgid "Our schedule is not live yet."
 msgstr "我们的时间表还未公布。"
 
-#: pretalx/agenda/views/talk.py:121
+#: pretalx/agenda/views/talk.py:119
 #, python-brace-format
 msgid "The session “{title}” at {event}"
 msgstr "{event} 会议上主题为 {title} 的研讨会"
@@ -274,18 +283,19 @@ msgstr "我们很高兴您想为我们的活动提供建议。让我们开始吧
 
 #: pretalx/cfp/flow.py:355
 msgid ""
-"Your draft was saved. You can continue to edit it as long as the CfP is "
-"open."
+"Your draft was saved. You can continue to edit it as long as the CfP is open."
 msgstr "你的草稿已保存。只要审稿人征集稿件的通知还有效，你就可以继续编辑它。"
 
 #: pretalx/cfp/flow.py:363
 msgid ""
 "Congratulations, you've submitted your proposal! You can continue to make "
-"changes to it up to the submission deadline, and you will be notified of any"
-" changes or questions."
-msgstr "祝贺您，您已经提交了您的提案！您可以在提交截止日期之前继续对其进行更改，并将收到任何更改或问题的通知。"
+"changes to it up to the submission deadline, and you will be notified of any "
+"changes or questions."
+msgstr ""
+"祝贺您，您已经提交了您的提案！您可以在提交截止日期之前继续对其进行更改，并将"
+"收到任何更改或问题的通知。"
 
-#: pretalx/cfp/flow.py:397 pretalx/orga/forms/cfp.py:483
+#: pretalx/cfp/flow.py:397 pretalx/orga/forms/cfp.py:475
 #: pretalx/orga/templates/orga/base.html:242
 #: pretalx/orga/templates/orga/submission/content.html:148
 msgid "Questions"
@@ -312,12 +322,14 @@ msgid ""
 "To create your proposal, you need an account on this page. This not only "
 "gives us a way to contact you, it also gives you the possibility to edit "
 "your proposal or to view its current state."
-msgstr "要创建您的建议，您需要在该页面上拥有一个帐户。这不仅为我们提供了一种与您联系的方式，还为您提供了编辑您的建议或查看其当前状态的可能性。"
+msgstr ""
+"要创建您的建议，您需要在该页面上拥有一个帐户。这不仅为我们提供了一种与您联系"
+"的方式，还为您提供了编辑您的建议或查看其当前状态的可能性。"
 
 #: pretalx/cfp/flow.py:488
 msgid ""
-"There was an error when logging in. Please contact the organiser for further"
-" help."
+"There was an error when logging in. Please contact the organiser for further "
+"help."
 msgstr "登录时出现错误，请联系组织者寻求进一步帮助。"
 
 #: pretalx/cfp/flow.py:505
@@ -332,9 +344,10 @@ msgstr "告诉我们一些关于你自己的事情！"
 msgid ""
 "This information will be publicly displayed next to your session - you can "
 "always edit for as long as proposals are still open."
-msgstr "这些信息将会公开显示在你的会话旁边 - 只要建议还未关闭，你随时可以进行编辑。"
+msgstr ""
+"这些信息将会公开显示在你的会话旁边 - 只要建议还未关闭，你随时可以进行编辑。"
 
-#: pretalx/cfp/forms/auth.py:30 pretalx/person/forms.py:261
+#: pretalx/cfp/forms/auth.py:30 pretalx/person/forms.py:276
 msgid "New password"
 msgstr "新密码"
 
@@ -343,7 +356,7 @@ msgid "Speaker E-Mail"
 msgstr "演讲者电子邮件"
 
 #: pretalx/cfp/forms/submissions.py:7 pretalx/mail/models.py:37
-#: pretalx/mail/models.py:228 pretalx/orga/forms/cfp.py:334
+#: pretalx/mail/models.py:228 pretalx/orga/forms/cfp.py:326
 #: pretalx/orga/templates/orga/mails/outbox_list.html:39
 #: pretalx/orga/templates/orga/mails/sent_list.html:17
 #: pretalx/person/models/information.py:44
@@ -351,19 +364,19 @@ msgid "Subject"
 msgstr "主题"
 
 #: pretalx/cfp/forms/submissions.py:8 pretalx/mail/models.py:40
-#: pretalx/mail/models.py:229 pretalx/orga/forms/cfp.py:335
+#: pretalx/mail/models.py:229 pretalx/orga/forms/cfp.py:327
 #: pretalx/orga/forms/review.py:242 pretalx/person/models/information.py:45
 msgid "Text"
 msgstr "文本"
 
 #: pretalx/cfp/forms/submissions.py:13
-#: pretalx/submission/models/submission.py:871
+#: pretalx/submission/models/submission.py:872
 #, python-brace-format
 msgid "{speaker} invites you to join their session!"
 msgstr "{speaker} 邀请您加入他们的会话！"
 
 #: pretalx/cfp/forms/submissions.py:18
-#: pretalx/submission/models/submission.py:878
+#: pretalx/submission/models/submission.py:879
 #, python-brace-format
 msgid ""
 "Hi!\n"
@@ -392,17 +405,20 @@ msgstr ""
 msgid ""
 "If we know a user by this email address (who has not requested a password "
 "reset in the last 24 hours), we will send you an e-mail containing further "
-"instructions. If you don't see the email within the next minutes, check your"
-" spam inbox!"
+"instructions. If you don't see the email within the next minutes, check your "
+"spam inbox!"
 msgstr ""
-"如果我们通过这个电子邮件地址（最近24小时没有请求密码重置的用户）确认了用户，我们将向您发送包含进一步说明的电子邮件。 "
-"如果在接下来的几分钟内您没有收到电子邮件，请检查您的垃圾邮件收件箱！"
+"如果我们通过这个电子邮件地址（最近24小时没有请求密码重置的用户）确认了用户，"
+"我们将向您发送包含进一步说明的电子邮件。 如果在接下来的几分钟内您没有收到电子"
+"邮件，请检查您的垃圾邮件收件箱！"
 
 #: pretalx/cfp/phrases.py:12
 msgid ""
 "This link was not valid. Make sure you copied the complete URL from the "
 "email and that the email is no more than 24 hours old."
-msgstr "这个链接无效。请确保您从电子邮件中复制了完整的URL，并且该电子邮件不超过24小时。"
+msgstr ""
+"这个链接无效。请确保您从电子邮件中复制了完整的URL，并且该电子邮件不超过24小"
+"时。"
 
 #: pretalx/cfp/phrases.py:15
 msgid "Awesome! You can now log in using your new password."
@@ -484,7 +500,8 @@ msgstr "我们在发送邮件时遇到了困难，但您的会话已成功提交
 msgid ""
 "You can enter proposals until %(deadline)s (%(timezone)s), %(until_string)s "
 "from now."
-msgstr "你可以在%(deadline)s (%(timezone)s)之前提交提案，距离现在还%(until_string)s。"
+msgstr ""
+"你可以在%(deadline)s (%(timezone)s)之前提交提案，距离现在还%(until_string)s。"
 
 #: pretalx/cfp/templates/cfp/event/cfp.html:24
 #, python-format
@@ -515,7 +532,7 @@ msgid "Proposals are closed"
 msgstr "提案已关闭"
 
 #: pretalx/cfp/templates/cfp/event/fragment_state.html:3
-#: pretalx/orga/views/dashboard.py:300 pretalx/orga/views/dashboard.py:331
+#: pretalx/orga/views/dashboard.py:301 pretalx/orga/views/dashboard.py:332
 #: pretalx/submission/models/submission.py:49
 msgid "submitted"
 msgstr "已提交"
@@ -549,7 +566,7 @@ msgid "withdrawn"
 msgstr "撤回"
 
 #: pretalx/cfp/templates/cfp/event/index.html:31
-#: pretalx/orga/views/dashboard.py:131
+#: pretalx/orga/views/dashboard.py:132
 msgid "Go to CfP"
 msgstr "前往CfP"
 
@@ -561,24 +578,25 @@ msgstr "接受邀请？"
 #: pretalx/cfp/templates/cfp/event/invitation.html:9
 #, python-format
 msgid ""
-"You, %(name)s, have been invited to be a speaker for the session “%(talk)s”."
-" Do you accept the invitation?"
-msgstr "%(name)s 您好，您已被邀请成为“%(talk)s”议程的演讲人。请问您是否接受邀请？"
+"You, %(name)s, have been invited to be a speaker for the session “%(talk)s”. "
+"Do you accept the invitation?"
+msgstr ""
+"%(name)s 您好，您已被邀请成为“%(talk)s”议程的演讲人。请问您是否接受邀请？"
 
 #: pretalx/cfp/templates/cfp/event/invitation.html:17
 msgid "Abstract:"
 msgstr "抽象："
 
 #: pretalx/cfp/templates/cfp/event/invitation.html:30
-#: pretalx/event/models/event.py:623 pretalx/orga/forms/review.py:336
+#: pretalx/event/models/event.py:638 pretalx/orga/forms/review.py:336
 #: pretalx/submission/models/question.py:416
-#: pretalx/submission/models/submission.py:859
+#: pretalx/submission/models/submission.py:860
 msgid "No"
 msgstr "不。"
 
 #: pretalx/cfp/templates/cfp/event/invitation.html:33
-#: pretalx/orga/templates/orga/review/dashboard.html:294
-#: pretalx/orga/templates/orga/review/dashboard.html:319
+#: pretalx/orga/templates/orga/review/dashboard.html:306
+#: pretalx/orga/templates/orga/review/dashboard.html:331
 msgid "Accept"
 msgstr "接受"
 
@@ -592,16 +610,20 @@ msgstr "欢迎回来！"
 
 #: pretalx/cfp/templates/cfp/event/login.html:10
 msgid ""
-"You do not need an account to view the event, or submit feedback, or receive"
-" schedule updates. You'll only need an account if you participate in the "
+"You do not need an account to view the event, or submit feedback, or receive "
+"schedule updates. You'll only need an account if you participate in the "
 "event as speaker or as an organiser."
-msgstr "您无需帐户即可查看活动、提交反馈或接收日程更新。只有当您作为演讲者或组织者参与活动时，才需要账户。"
+msgstr ""
+"您无需帐户即可查看活动、提交反馈或接收日程更新。只有当您作为演讲者或组织者参"
+"与活动时，才需要账户。"
 
 #: pretalx/cfp/templates/cfp/event/login.html:17
 msgid ""
 "If you already created a proposal for a different event on this server, you "
 "can re-use your account to log in for this event."
-msgstr "如果您已经在此服务器上为另一个活动创建了建议书，则可以重复使用您的帐户登录此活动。"
+msgstr ""
+"如果您已经在此服务器上为另一个活动创建了建议书，则可以重复使用您的帐户登录此"
+"活动。"
 
 #: pretalx/cfp/templates/cfp/event/recover.html:5
 #: pretalx/cfp/templates/cfp/event/reset.html:5
@@ -665,7 +687,9 @@ msgid ""
 "You can save your proposal as a draft and submit it later. Organisers will "
 "not be able to see your proposal, though they will be able to send you "
 "reminder emails about the upcoming deadline."
-msgstr "您可以将您的提案保存为草稿并稍后提交。组织者无法查看您的提案，但他们可以向您发送关于即将到期的提醒电子邮件。"
+msgstr ""
+"您可以将您的提案保存为草稿并稍后提交。组织者无法查看您的提案，但他们可以向您"
+"发送关于即将到期的提醒电子邮件。"
 
 #: pretalx/cfp/templates/cfp/event/submission_base.html:64
 #: pretalx/orga/templates/orga/cfp/access_code_delete.html:11
@@ -706,7 +730,9 @@ msgid ""
 "Organisers will not be able to see your draft or your email address. They "
 "will be able to send you reminders about your pending proposal draft closer "
 "to the deadline."
-msgstr "组织者将无法看到您的草稿或电子邮件地址。他们将能够在截止日期更接近时向您发送有关待处理提案草稿的提醒。"
+msgstr ""
+"组织者将无法看到您的草稿或电子邮件地址。他们将能够在截止日期更接近时向您发送"
+"有关待处理提案草稿的提醒。"
 
 #: pretalx/cfp/templates/cfp/event/user_mails.html:4
 #: pretalx/cfp/templates/cfp/event/user_mails.html:7
@@ -719,7 +745,8 @@ msgid ""
 "them in your email inbox, but this page serves as a helper in case your "
 "email address was unavailable or the emails got lost in some way."
 msgstr ""
-"这些是组织者发给你的电子邮件，所以你应该能够在你的电子邮箱中找到它们，但是这个页面作为一个辅助工具，以防你的邮箱地址不可用或者邮件以某种方式丢失。"
+"这些是组织者发给你的电子邮件，所以你应该能够在你的电子邮箱中找到它们，但是这"
+"个页面作为一个辅助工具，以防你的邮箱地址不可用或者邮件以某种方式丢失。"
 
 #: pretalx/cfp/templates/cfp/event/user_profile.html:8
 #: pretalx/cfp/templates/cfp/event/user_profile.html:24
@@ -751,7 +778,7 @@ msgstr "如果您的提案被接受，此数据将公开显示。审核人员也
 #: pretalx/orga/templates/orga/speaker/form.html:76
 #: pretalx/orga/templates/orga/submission/anonymise.html:43
 #: pretalx/orga/templates/orga/submission/content.html:165
-#: pretalx/orga/templates/orga/submission/review.html:187
+#: pretalx/orga/templates/orga/submission/review.html:202
 #: pretalx/orga/templates/orga/submit_row.html:11
 #: pretalx/orga/templates/orga/update.html:91
 msgid "Save"
@@ -776,15 +803,19 @@ msgstr "账户删除"
 #: pretalx/cfp/templates/cfp/event/user_profile.html:93
 msgid ""
 "You can delete your account here – all names, emails, and other personal "
-"information will be overwritten. <strong>This action is "
-"irreversible.</strong>"
-msgstr "您可以在此删除您的帐户 - 所有的姓名、电子邮件和其他个人信息都将被覆盖。此操作是不可逆的。"
+"information will be overwritten. <strong>This action is irreversible.</"
+"strong>"
+msgstr ""
+"您可以在此删除您的帐户 - 所有的姓名、电子邮件和其他个人信息都将被覆盖。此操作"
+"是不可逆的。"
 
 #: pretalx/cfp/templates/cfp/event/user_profile.html:97
 msgid ""
 "I really do want to delete my account, losing access to my proposals and "
 "sessions, and overriding my public and private data."
-msgstr "我真的想删除我的账户，失去我的建议和会话的访问权限，以及覆盖我的公共和私人数据。"
+msgstr ""
+"我真的想删除我的账户，失去我的建议和会话的访问权限，以及覆盖我的公共和私人数"
+"据。"
 
 #: pretalx/cfp/templates/cfp/event/user_profile.html:102
 msgid "Delete my account"
@@ -820,48 +851,57 @@ msgstr "会议类型"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:17
 #: pretalx/orga/templates/orga/cfp/access_code_view.html:32
-#: pretalx/orga/templates/orga/cfp/text.html:85
+#: pretalx/orga/templates/orga/cfp/text.html:84
 #: pretalx/orga/templates/orga/cfp/track_form.html:22
 #: pretalx/orga/templates/orga/cfp/track_view.html:17
 #: pretalx/orga/templates/orga/review/dashboard.html:98
-#: pretalx/orga/templates/orga/review/dashboard.html:202
-#: pretalx/orga/templates/orga/submission/review.html:63
+#: pretalx/orga/templates/orga/review/dashboard.html:214
+#: pretalx/orga/templates/orga/submission/review.html:66
 #: pretalx/submission/models/access_code.py:26
 #: pretalx/submission/models/submission.py:141
 msgid "Track"
 msgstr "分支"
 
-#: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:20
+#: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:19
+#: pretalx/orga/templates/orga/cfp/text.html:140
+#: pretalx/orga/templates/orga/review/dashboard.html:102
+#: pretalx/orga/templates/orga/review/dashboard.html:215
+#: pretalx/submission/models/submission.py:195
+msgid "Duration"
+msgstr "持续时间"
+
+#: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:21
 msgid "Congratulations on your acceptance!"
 msgstr "恭喜，你已入选！"
 
-#: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:24
+#: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:25
 msgid ""
-"Please provide us with your available hours during the event, so that we can"
-" schedule your event accordingly:"
+"Please provide us with your available hours during the event, so that we can "
+"schedule your event accordingly:"
 msgstr "请提供您在活动期间的可用时间，以便我们相应安排您的活动:"
 
-#: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:42
+#: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:39
 msgid ""
 "By confirming your proposal, you agree that you are able and willing to "
 "participate in this event and present the content of this proposal. The "
 "proposal data, such as title, abstract, description, and any uploads you "
 "provided, can be made publicly available once the proposal is confirmed."
 msgstr ""
-"通过确认您的提案，您同意您有能力和意愿参加此活动并呈现此提案的内容。一旦提案被确认，提案数据（如标题，摘要，描述和任何提供的上传）可以公开发布。"
+"通过确认您的提案，您同意您有能力和意愿参加此活动并呈现此提案的内容。一旦提案"
+"被确认，提案数据（如标题，摘要，描述和任何提供的上传）可以公开发布。"
 
-#: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:52
+#: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:49
 #: pretalx/cfp/templates/cfp/event/user_submission_withdraw.html:27
 msgid "Go back"
 msgstr "回去"
 
-#: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:56
+#: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:53
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:212
 #: pretalx/cfp/templates/cfp/event/user_submission_withdraw.html:23
 msgid "Withdraw"
 msgstr "取回"
 
-#: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:62
+#: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:59
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:112
 msgid "Confirm"
 msgstr "确认"
@@ -874,9 +914,11 @@ msgstr "提案未找到"
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm_error.html:13
 msgid ""
 "The proposal you're trying to confirm either does not exist or does not "
-"belong to the account you're currently logged in with. Try logging in with a"
-" different account, or contact the event organisers for further information."
-msgstr "您正在尝试确认的提案可能不存在或不属于您当前登录的帐户。请尝试使用其他帐户登录，或联系活动组织者获取更多信息。"
+"belong to the account you're currently logged in with. Try logging in with a "
+"different account, or contact the event organisers for further information."
+msgstr ""
+"您正在尝试确认的提案可能不存在或不属于您当前登录的帐户。请尝试使用其他帐户登"
+"录，或联系活动组织者获取更多信息。"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:25
 msgid "Your draft:"
@@ -947,8 +989,8 @@ msgstr "分享提案"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:195
 msgid ""
-"If you need a review from a colleague or a friend here's a link that you can"
-" send out for viewing your proposal:"
+"If you need a review from a colleague or a friend here's a link that you can "
+"send out for viewing your proposal:"
 msgstr "如果您需要同事或朋友的评论，这里有一个链接，您可以发送以查看您的提案："
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:201
@@ -961,7 +1003,9 @@ msgid ""
 "You can withdraw your proposal from the selection process here. You cannot "
 "undo this - if you are just uncertain if you can or should hold your "
 "session, please contact the organiser instead."
-msgstr "您可以在此处撤回您的申请，但此操作不可撤销。如果您只是不确定是否可以或应该举行会议，请联系组织者。"
+msgstr ""
+"您可以在此处撤回您的申请，但此操作不可撤销。如果您只是不确定是否可以或应该举"
+"行会议，请联系组织者。"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:217
 msgid "Cancel proposal"
@@ -979,7 +1023,9 @@ msgid ""
 "Invite another speaker to your proposal here. Instead of letting us send an "
 "email, (which might get caught by spam filters) you can also give them this "
 "link:"
-msgstr "请在此处邀请另一个发言人参加您的提案。您可以给他们这个链接，而不是让我们发送电子邮件（可能会被归类为垃圾邮件）。"
+msgstr ""
+"请在此处邀请另一个发言人参加您的提案。您可以给他们这个链接，而不是让我们发送"
+"电子邮件（可能会被归类为垃圾邮件）。"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_invitation.html:31
 #: pretalx/common/phrases.py:45
@@ -1017,11 +1063,11 @@ msgstr "你的草稿"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:30
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:69
-#: pretalx/orga/templates/orga/cfp/text.html:67
-#: pretalx/orga/templates/orga/review/dashboard.html:197
+#: pretalx/orga/templates/orga/cfp/text.html:66
+#: pretalx/orga/templates/orga/review/dashboard.html:209
 #: pretalx/orga/templates/orga/speaker/information_list.html:23
-#: pretalx/orga/templates/orga/submission/list.html:86
-#: pretalx/orga/templates/orga/submission/review.html:50
+#: pretalx/orga/templates/orga/submission/list.html:84
+#: pretalx/orga/templates/orga/submission/review.html:49
 msgid "Title"
 msgstr "标题"
 
@@ -1032,14 +1078,15 @@ msgstr "复制代码以供审核"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:70
 #: pretalx/orga/templates/orga/review/dashboard.html:116
-#: pretalx/orga/templates/orga/review/dashboard.html:206
-#: pretalx/orga/templates/orga/submission/list.html:97
+#: pretalx/orga/templates/orga/review/dashboard.html:218
+#: pretalx/orga/templates/orga/submission/list.html:95
 msgid "State"
 msgstr "状态"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:118
 #: pretalx/orga/templates/orga/base.html:282
 #: pretalx/orga/templates/orga/submission/base.html:63
+#: pretalx/submission/models/feedback.py:35
 msgid "Feedback"
 msgstr "反馈"
 
@@ -1069,7 +1116,7 @@ msgstr "提交一些信息"
 #: pretalx/cfp/templates/cfp/index.html:8
 #: pretalx/orga/templates/orga/base.html:73
 #: pretalx/orga/templates/orga/base.html:94
-#: pretalx/orga/templates/orga/base.html:414
+#: pretalx/orga/templates/orga/base.html:413
 msgid "Events"
 msgstr "事件"
 
@@ -1103,13 +1150,13 @@ msgstr "关闭"
 msgid "Please go back and try again."
 msgstr "请返回并再试一次。"
 
-#: pretalx/cfp/views/user.py:94 pretalx/orga/views/event.py:569
+#: pretalx/cfp/views/user.py:94 pretalx/orga/views/event.py:568
 msgid ""
 "Your API token has been regenerated. The previous token will not be usable "
 "any longer."
 msgstr "您的API令牌已经重新生成。之前的令牌将不再可用。"
 
-#: pretalx/cfp/views/user.py:390
+#: pretalx/cfp/views/user.py:391
 msgid "Your proposal has been submitted."
 msgstr "你的提案已经被提交。"
 
@@ -1206,8 +1253,7 @@ msgstr "你写了{count}个单词。"
 
 #: pretalx/common/forms/widgets.py:29
 msgid ""
-"This password would take <em class=\"password_strength_time\"></em> to "
-"crack."
+"This password would take <em class=\"password_strength_time\"></em> to crack."
 msgstr "这个密码需要 <em class=\"password_strength_time\"></em> 才能破解。"
 
 #: pretalx/common/forms/widgets.py:58
@@ -1481,7 +1527,8 @@ msgstr "此值是必需的，请输入一些值以继续："
 #: pretalx/common/management/commands/init.py:31
 msgid ""
 "\n"
-"Welcome to pretalx! This is my initialization command, please use it only once."
+"Welcome to pretalx! This is my initialization command, please use it only "
+"once."
 msgstr ""
 "\n"
 "欢迎来到prealx！这是我的初始化命令，请仅使用一次。"
@@ -1494,7 +1541,8 @@ msgstr "你可以随时使用C-c终止该命令，且不会保存任何数据。
 #: pretalx/common/management/commands/init.py:43
 msgid ""
 "\n"
-"Let's get you a user with the right to create new events and access every event on this pretalx instance."
+"Let's get you a user with the right to create new events and access every "
+"event on this pretalx instance."
 msgstr ""
 "\n"
 "让我们为您创建一个具有创建新事件和访问此 pretalx 实例中的每个事件权限的用户。"
@@ -1502,7 +1550,8 @@ msgstr ""
 #: pretalx/common/management/commands/init.py:52
 msgid ""
 "\n"
-"Let's also create a first organiser: This will allow you to invite further people and create events."
+"Let's also create a first organiser: This will allow you to invite further "
+"people and create events."
 msgstr ""
 "\n"
 "让我们创建第一个组织者：这将允许您邀请更多的人并创建事件。"
@@ -1541,7 +1590,8 @@ msgstr "- 邀请某人加入组织者团队，让他们创建活动 {team_url}�
 msgid ""
 " - Use the command \"import_schedule /path/to/schedule.xml\" if you want to "
 "import an event."
-msgstr "- 如果你想要导入一个事件，请使用命令“import_schedule /path/to/schedule.xml”。"
+msgstr ""
+"- 如果你想要导入一个事件，请使用命令“import_schedule /path/to/schedule.xml”。"
 
 #: pretalx/common/mixins/forms.py:40
 msgid "You are trying to change read-only data."
@@ -1555,7 +1605,8 @@ msgstr "管理表单数据缺失或已被篡改。"
 msgid ""
 "Please give a fair review on why you'd like to see this proposal at the "
 "conference, or why you think it would not be a good fit."
-msgstr "请公正地评价为什么您想在这个会议上看到这个提案，或者为什么您认为它不适合。"
+msgstr ""
+"请公正地评价为什么您想在这个会议上看到这个提案，或者为什么您认为它不适合。"
 
 #: pretalx/common/models/settings.py:61
 #, python-brace-format
@@ -1607,7 +1658,8 @@ msgstr ""
 "- 提案列表：{event_submissions}\n"
 "- 日程编辑器：{event_schedule}\n"
 "\n"
-"如果你有任何疑问，请通过 https://github.com/pretalx/pretalx/issues/new 或发送电子邮件至 support@pretalx.com 告诉我们！\n"
+"如果你有任何疑问，请通过 https://github.com/pretalx/pretalx/issues/new 或发送"
+"电子邮件至 support@pretalx.com 告诉我们！\n"
 
 #: pretalx/common/models/settings.py:101
 #, python-brace-format
@@ -1655,7 +1707,8 @@ msgid ""
 msgstr ""
 "您好，\n"
 "\n"
-"祝贺您，活动已经结束了！希望一切顺利。以下是一些可能会让您感到有趣的统计数据：\n"
+"祝贺您，活动已经结束了！希望一切顺利。以下是一些可能会让您感到有趣的统计数"
+"据：\n"
 "\n"
 "- 您有 {submission_count} 份议题提案，\n"
 "- 其中您选择了 {talk_count} 场演讲。\n"
@@ -1663,7 +1716,8 @@ msgstr ""
 "- 您总共发布了 {schedule_count} 个日程安排。\n"
 "- 活动期间，您共发送了 {mail_count} 封电子邮件。\n"
 "\n"
-"如果您有任何遗漏的地方，请在https://github.com/pretalx/pretalx/issues/new 或通过支持电子邮件（support@pretalx.com）与我们联系！\n"
+"如果您有任何遗漏的地方，请在https://github.com/pretalx/pretalx/issues/new 或"
+"通过支持电子邮件（support@pretalx.com）与我们联系！\n"
 
 #: pretalx/common/phrases.py:46
 #: pretalx/orga/templates/orga/cfp/question_view.html:76
@@ -1674,7 +1728,7 @@ msgid "Edit"
 msgstr "编辑"
 
 #: pretalx/common/phrases.py:48 pretalx/orga/views/admin.py:50
-#: pretalx/orga/views/event.py:558 pretalx/orga/views/event.py:562
+#: pretalx/orga/views/event.py:557 pretalx/orga/views/event.py:561
 #: pretalx/orga/views/plugins.py:56
 msgid "Your changes have been saved."
 msgstr "您的更改已保存。"
@@ -1782,9 +1836,11 @@ msgstr "验证失败。"
 #: pretalx/common/templates/403_csrf.html:8
 msgid ""
 "We could not verify that this request really was sent by you. For security "
-"reasons, we cannot process it.<br> Please go back to the last page, refresh,"
-" and then try again."
-msgstr "我们无法验证这个请求真的是由您发送的。出于安全原因，我们无法处理它。<br> 请返回上一页，刷新页面，然后再次尝试。"
+"reasons, we cannot process it.<br> Please go back to the last page, refresh, "
+"and then try again."
+msgstr ""
+"我们无法验证这个请求真的是由您发送的。出于安全原因，我们无法处理它。<br> 请返"
+"回上一页，刷新页面，然后再次尝试。"
 
 #: pretalx/common/templates/500.html:4
 msgid "Internal server error."
@@ -1797,9 +1853,11 @@ msgstr "我们遇到了一个错误。"
 #: pretalx/common/templates/500.html:9
 #, python-format
 msgid ""
-"Please help us to fix this by submitting <a href=\"%(link)s\" rel=noopener>a"
-" bug report</a>!"
-msgstr "请通过提交<a href=\"%(link)s\" rel=noopener>错误报告</a>来帮助我们修复这个问题！"
+"Please help us to fix this by submitting <a href=\"%(link)s\" rel=noopener>a "
+"bug report</a>!"
+msgstr ""
+"请通过提交<a href=\"%(link)s\" rel=noopener>错误报告</a>来帮助我们修复这个问"
+"题！"
 
 #: pretalx/common/templates/common/auth.html:20
 msgid "I already have an account"
@@ -1824,8 +1882,8 @@ msgid "Register"
 msgstr "注册"
 
 #: pretalx/common/templates/common/avatar.html:6
-#: pretalx/orga/templates/orga/cfp/text.html:105
-#: pretalx/person/models/user.py:117
+#: pretalx/orga/templates/orga/cfp/text.html:104
+#: pretalx/person/models/user.py:119
 msgid "Profile picture"
 msgstr "头像"
 
@@ -1913,8 +1971,8 @@ msgid ""
 "generate a new token, which will invalidate the old one. To find out more, "
 "please have a look at the <a %(docurl)s> API documentation</a>."
 msgstr ""
-"此令牌可用于访问<a %(apiurl)s>pretalx API</a>。您可以生成一个新令牌，旧的令牌将会失效。欲了解更多信息，请查看<a "
-"%(docurl)s>API文档</a>。"
+"此令牌可用于访问<a %(apiurl)s>pretalx API</a>。您可以生成一个新令牌，旧的令牌"
+"将会失效。欲了解更多信息，请查看<a %(docurl)s>API文档</a>。"
 
 #: pretalx/common/templates/common/user_api_token.html:17
 msgid "API Token"
@@ -1958,7 +2016,8 @@ msgstr "pretalx 更新可用"
 msgid ""
 "Hi!\n"
 "\n"
-"An update is available for pretalx or for one of the plugins you installed in your pretalx installation at {base_url}.\n"
+"An update is available for pretalx or for one of the plugins you installed "
+"in your pretalx installation at {base_url}.\n"
 "Please follow this link for more information:\n"
 "\n"
 " {url} \n"
@@ -1967,7 +2026,8 @@ msgid ""
 "\n"
 "  https://docs.pretalx.org/changelog.html\n"
 "\n"
-"Larger updates are also announced with upgrade notes on the pretalx.com blog:\n"
+"Larger updates are also announced with upgrade notes on the pretalx.com "
+"blog:\n"
 "\n"
 "  https://pretalx.com/p/news\n"
 "\n"
@@ -1994,108 +2054,115 @@ msgstr "请为这个团队选择一些事件，或授权所有事件的访问权
 msgid "Please pick at least one permission for this team!"
 msgstr "请为此团队选择至少一项权限！"
 
-#: pretalx/event/forms.py:115
+#: pretalx/event/forms.py:116
 msgid "Use languages"
 msgstr "使用语言"
 
-#: pretalx/event/forms.py:116
+#: pretalx/event/forms.py:117
 msgid "Choose all languages that your event should be available in."
 msgstr "选择您的活动应该提供的所有语言。"
 
-#: pretalx/event/forms.py:123
+#: pretalx/event/forms.py:124
 msgid "Organiser"
 msgstr "组织者"
 
-#: pretalx/event/forms.py:135
+#: pretalx/event/forms.py:136
 msgid ""
 "The organiser running the event can copy settings from previous events and "
 "share team permissions across all or multiple events."
 msgstr "组织者可以从先前的活动中复制设置，并在所有或多个活动中共享团队权限。"
 
-#: pretalx/event/forms.py:151
+#: pretalx/event/forms.py:152
 msgid ""
 "This is the address your event will be available at. Should be short, only "
-"contain lowercase letters and numbers, and must be unique. We recommend some"
-" kind of abbreviation with less than 10 characters that can be easily "
+"contain lowercase letters and numbers, and must be unique. We recommend some "
+"kind of abbreviation with less than 10 characters that can be easily "
 "remembered."
-msgstr "这是您的活动可供访问的地址。应该是短的、只包含小写字母和数字，并且必须是唯一的。我们建议使用不到10个字符的缩写，可以轻松记忆。"
+msgstr ""
+"这是您的活动可供访问的地址。应该是短的、只包含小写字母和数字，并且必须是唯一"
+"的。我们建议使用不到10个字符的缩写，可以轻松记忆。"
 
-#: pretalx/event/forms.py:157
+#: pretalx/event/forms.py:158
 msgid "You cannot change the slug later on!"
 msgstr "你不能稍后更改这个Slug！"
 
-#: pretalx/event/forms.py:167
+#: pretalx/event/forms.py:168
 msgid ""
 "This short name is already taken, please choose another one (or ask the "
 "owner of that event to add you to their team)."
-msgstr "这个短名称已经被使用，请选择另一个（或者请该活动的所有者将您添加到他们的团队中）。"
+msgstr ""
+"这个短名称已经被使用，请选择另一个（或者请该活动的所有者将您添加到他们的团队"
+"中）。"
 
-#: pretalx/event/forms.py:182
+#: pretalx/event/forms.py:183
 msgid ""
 "The default deadline for your Call for Papers. You can assign additional "
 "deadlines to individual session types, which will take precedence over this "
 "deadline."
-msgstr "您的征文默认截稿日期。您可以分配给各个会议类型额外的截稿日期，这些日期将优先于默认截稿日期。"
+msgstr ""
+"您的征文默认截稿日期。您可以分配给各个会议类型额外的截稿日期，这些日期将优先"
+"于默认截稿日期。"
 
-#: pretalx/event/forms.py:196 pretalx/orga/forms/event.py:221
+#: pretalx/event/forms.py:197 pretalx/orga/forms/event.py:222
 msgid "The event end cannot be before the start."
 msgstr "事件结束时间不能早于开始时间。"
 
-#: pretalx/event/forms.py:213 pretalx/event/models/event.py:209
+#: pretalx/event/forms.py:214 pretalx/event/models/event.py:209
 msgid "Main event colour"
 msgstr "主要活动颜色"
 
-#: pretalx/event/forms.py:215 pretalx/event/models/event.py:211
+#: pretalx/event/forms.py:216 pretalx/event/models/event.py:211
 msgid ""
 "Provide a hex value like #00ff00 if you want to style pretalx in your "
 "event's colour scheme."
-msgstr "如果您想要使用活动颜色方案样式化Pretalx，请提供类似#00ff00的十六进制值。"
+msgstr ""
+"如果您想要使用活动颜色方案样式化Pretalx，请提供类似#00ff00的十六进制值。"
 
-#: pretalx/event/forms.py:220 pretalx/orga/forms/event.py:114
+#: pretalx/event/forms.py:221 pretalx/orga/forms/event.py:114
 msgid "Frontpage header pattern"
 msgstr "首页标题图案"
 
-#: pretalx/event/forms.py:222
+#: pretalx/event/forms.py:223
 msgid ""
 "Choose how the frontpage header banner will be styled. Pattern source: <a "
 "href=\"http://www.heropatterns.com/\">heropatterns.com</a>, CC BY 4.0."
 msgstr ""
-"选择前页面头部横幅的样式。图案来源：<a "
-"href=\"http://www.heropatterns.com/\">heropatterns.com</a>，采用CC BY 4.0许可。"
+"选择前页面头部横幅的样式。图案来源：<a href=\"http://www.heropatterns.com/"
+"\">heropatterns.com</a>，采用CC BY 4.0许可。"
 
-#: pretalx/event/forms.py:225 pretalx/orga/forms/event.py:120
+#: pretalx/event/forms.py:226 pretalx/orga/forms/event.py:120
 msgid "Plain"
 msgstr "Plain"
 
-#: pretalx/event/forms.py:226 pretalx/orga/forms/event.py:121
+#: pretalx/event/forms.py:227 pretalx/orga/forms/event.py:121
 msgid "Circuits"
 msgstr "Circuits"
 
-#: pretalx/event/forms.py:227 pretalx/orga/forms/event.py:122
+#: pretalx/event/forms.py:228 pretalx/orga/forms/event.py:122
 msgid "Circles"
 msgstr "Circles"
 
-#: pretalx/event/forms.py:228 pretalx/orga/forms/event.py:123
+#: pretalx/event/forms.py:229 pretalx/orga/forms/event.py:123
 msgid "Signal"
 msgstr "Signal"
 
-#: pretalx/event/forms.py:229 pretalx/orga/forms/event.py:124
+#: pretalx/event/forms.py:230 pretalx/orga/forms/event.py:124
 msgid "Topography"
 msgstr "Topography"
 
-#: pretalx/event/forms.py:230 pretalx/orga/forms/event.py:125
+#: pretalx/event/forms.py:231 pretalx/orga/forms/event.py:125
 msgid "Graph Paper"
 msgstr "Graph Paper"
 
-#: pretalx/event/forms.py:264
+#: pretalx/event/forms.py:265
 msgid "Copy configuration from"
 msgstr "复制配置从"
 
-#: pretalx/event/forms.py:267
+#: pretalx/event/forms.py:268
 msgid "Do not copy"
 msgstr "不要复制"
 
-#: pretalx/event/models/event.py:52
+#: pretalx/event/models/event.py:53
 #, python-brace-format
 msgid "Invalid event slug – this slug is reserved: {value}."
 msgstr "无效的事件代码 - 此代码已被保留：{value}。"
@@ -2172,7 +2239,9 @@ msgstr "标志"
 msgid ""
 "If you provide a logo image, your event's name will not be shown in the "
 "event header. The logo will be scaled down to a height of 150px."
-msgstr "如果您提供了一个标志图像，您的活动名称将不会显示在活动页眉中。该标志将缩小到高度为150px。"
+msgstr ""
+"如果您提供了一个标志图像，您的活动名称将不会显示在活动页眉中。该标志将缩小到"
+"高度为150px。"
 
 #: pretalx/event/models/event.py:237
 msgid "Header image"
@@ -2181,11 +2250,13 @@ msgstr "标题图片 (Biaoti tupian)"
 #: pretalx/event/models/event.py:239
 msgid ""
 "If you provide a header image, it will be displayed instead of your event's "
-"color and/or header pattern at the top of all event pages. It will be "
-"center-aligned, so when the window shrinks, the center parts will continue "
-"to be displayed, and not stretched."
+"color and/or header pattern at the top of all event pages. It will be center-"
+"aligned, so when the window shrinks, the center parts will continue to be "
+"displayed, and not stretched."
 msgstr ""
-"如果您提供了一个标题图片，它将显示在所有活动页面顶部，而不是您活动页面的颜色和/或标题样式。它将居中对齐，因此当窗口缩小时，中心部分将继续显示，而不会被拉伸。"
+"如果您提供了一个标题图片，它将显示在所有活动页面顶部，而不是您活动页面的颜色"
+"和/或标题样式。它将居中对齐，因此当窗口缩小时，中心部分将继续显示，而不会被拉"
+"伸。"
 
 #: pretalx/event/models/event.py:250
 msgid "Default language"
@@ -2197,8 +2268,8 @@ msgstr "登陆页面文本"
 
 #: pretalx/event/models/event.py:290
 msgid ""
-"This text will be shown on the landing page, alongside with links to the CfP"
-" and schedule, if appropriate."
+"This text will be shown on the landing page, alongside with links to the CfP "
+"and schedule, if appropriate."
 msgstr "如果可用，此文本将与CfP和日程链接一起显示在登录页面上。"
 
 #: pretalx/event/models/event.py:298
@@ -2218,32 +2289,31 @@ msgstr "此文本将显示在特色会议环节页面的顶部，而不是默认
 msgid "Plugins"
 msgstr "插件"
 
-#: pretalx/event/models/event.py:597 pretalx/event/models/event.py:884
+#: pretalx/event/models/event.py:612 pretalx/event/models/event.py:899
 #: pretalx/event/stages.py:68 pretalx/orga/templates/orga/base.html:206
 #: pretalx/orga/templates/orga/base.html:295
 #: pretalx/orga/templates/orga/base.html:303
 #: pretalx/orga/templates/orga/base.html:316
-#: pretalx/orga/templates/orga/submission/review.html:160
-#: pretalx/submission/models/feedback.py:35
+#: pretalx/orga/templates/orga/submission/review.html:175
 msgid "Review"
 msgstr "审查"
 
-#: pretalx/event/models/event.py:605
+#: pretalx/event/models/event.py:620
 msgid "Selection"
 msgstr "选择"
 
-#: pretalx/event/models/event.py:618
+#: pretalx/event/models/event.py:633
 #: pretalx/orga/templates/orga/review/dashboard.html:69
-#: pretalx/orga/templates/orga/submission/review.html:151
+#: pretalx/orga/templates/orga/submission/review.html:166
 #: pretalx/submission/models/review.py:116
 msgid "Score"
 msgstr "得分"
 
-#: pretalx/event/models/event.py:628
+#: pretalx/event/models/event.py:643
 msgid "Maybe"
 msgstr "可能"
 
-#: pretalx/event/models/event.py:633 pretalx/orga/forms/review.py:336
+#: pretalx/event/models/event.py:648 pretalx/orga/forms/review.py:336
 #: pretalx/orga/templates/orga/cfp/access_code_delete.html:15
 #: pretalx/orga/templates/orga/cfp/question_delete.html:15
 #: pretalx/orga/templates/orga/cfp/submission_type_delete.html:15
@@ -2259,11 +2329,11 @@ msgstr "可能"
 #: pretalx/orga/templates/orga/speaker/reset_password.html:16
 #: pretalx/orga/templates/orga/submission/tag_delete.html:15
 #: pretalx/submission/models/question.py:414
-#: pretalx/submission/models/submission.py:859
+#: pretalx/submission/models/submission.py:860
 msgid "Yes"
 msgstr "是"
 
-#: pretalx/event/models/event.py:1024
+#: pretalx/event/models/event.py:1039
 msgid "News from your content system"
 msgstr "来自您内容系统的新闻"
 
@@ -2291,8 +2361,7 @@ msgstr "将权限应用于该组织者创建的所有活动（包括新创建的
 msgid "Limit permissions to these events"
 msgstr "限制这些事件的权限"
 
-#: pretalx/event/models/organiser.py:94
-#: pretalx/person/models/information.py:34
+#: pretalx/event/models/organiser.py:94 pretalx/person/models/information.py:34
 #: pretalx/submission/models/review.py:20
 msgid "Limit to tracks"
 msgstr "限制为轨道"
@@ -2330,7 +2399,9 @@ msgid ""
 "Normally, anonymisation is configured in the event review settings. This "
 "setting will <b>override the event settings</b> and always hide speaker "
 "names for this team."
-msgstr "通常，匿名化是在事件回顾设置中配置的。此设置将<b>覆盖事件设置</b>，并始终隐藏此团队的发言者姓名。"
+msgstr ""
+"通常，匿名化是在事件回顾设置中配置的。此设置将<b>覆盖事件设置</b>，并始终隐藏"
+"此团队的发言者姓名。"
 
 #: pretalx/event/models/organiser.py:123
 #, python-brace-format
@@ -2351,7 +2422,8 @@ msgstr "邀请 {email} 加入团队 {team}"
 #, python-brace-format
 msgid ""
 "Hi!\n"
-"You have been invited to the {name} event organiser team - Please click here to accept:\n"
+"You have been invited to the {name} event organiser team - Please click here "
+"to accept:\n"
 "\n"
 "{invitation_link}\n"
 "\n"
@@ -2604,7 +2676,9 @@ msgid ""
 msgstr ""
 "你好！\n"
 "\n"
-"我们已收到你的提交 \"{submission_title}\" ，以参加 {event_name}。在我们有时间考虑所有的提案后，我们将会通知你，但在此之前，你可以在 {submission_url} 查看和编辑你的提案。\n"
+"我们已收到你的提交 \"{submission_title}\" ，以参加 {event_name}。在我们有时间"
+"考虑所有的提案后，我们将会通知你，但在此之前，你可以在 {submission_url} 查看"
+"和编辑你的提案。\n"
 "\n"
 "如果你有任何问题，请随时联系我们！\n"
 "\n"
@@ -2615,13 +2689,16 @@ msgstr ""
 msgid ""
 "Hi!\n"
 "\n"
-"We are happy to tell you that we accept your proposal \"{submission_title}\"\n"
+"We are happy to tell you that we accept your proposal "
+"\"{submission_title}\"\n"
 "to {event_name}. Please click this link to confirm your attendance:\n"
 "\n"
 "    {confirmation_link}\n"
 "\n"
-"We look forward to seeing you at {event_name} - Please contact us if you have any\n"
-"questions! We will reach out again before the conference to tell you details\n"
+"We look forward to seeing you at {event_name} - Please contact us if you "
+"have any\n"
+"questions! We will reach out again before the conference to tell you "
+"details\n"
 "about your slot in the schedule and technical details concerning the room\n"
 "and presentation tech.\n"
 "\n"
@@ -2630,11 +2707,13 @@ msgid ""
 msgstr ""
 "您好！\n"
 "\n"
-"我们很高兴地告诉您，我们接受了您提交的 \"{submission_title}\" 提案参加 {event_name} 活动。请点击此链接确认您的出席：\n"
+"我们很高兴地告诉您，我们接受了您提交的 \"{submission_title}\" 提案参加 "
+"{event_name} 活动。请点击此链接确认您的出席：\n"
 "\n"
 "{confirmation_link}\n"
 "\n"
-"我们期待在 {event_name} 见到您 - 如果您有任何问题，请联系我们！我们会在会议之前再与您联系，告知您日程安排和有关房间和演示技术的技术细节。\n"
+"我们期待在 {event_name} 见到您 - 如果您有任何问题，请联系我们！我们会在会议之"
+"前再与您联系，告知您日程安排和有关房间和演示技术的技术细节。\n"
 "\n"
 "到时候见！\n"
 "{event_name} 组织者"
@@ -2653,7 +2732,9 @@ msgid ""
 msgstr ""
 "你好！\n"
 "\n"
-"很抱歉地告诉你，我们不能接受你的提案 \"{submission_title}\"，参加 {event_name}。因为有太多优秀的提案，我们希望你能以参会者的身份来参加 {event_name}！\n"
+"很抱歉地告诉你，我们不能接受你的提案 \"{submission_title}\"，参加 "
+"{event_name}。因为有太多优秀的提案，我们希望你能以参会者的身份来参加 "
+"{event_name}！\n"
 "\n"
 "{event_name}的组织者"
 
@@ -2670,7 +2751,8 @@ msgid ""
 "\n"
 "{notifications}\n"
 "\n"
-"We look forward to seeing you, and please contact us if there is any problem with your session or assigned slot.\n"
+"We look forward to seeing you, and please contact us if there is any problem "
+"with your session or assigned slot.\n"
 "\n"
 "The {event_name} organisers"
 msgstr ""
@@ -2734,7 +2816,8 @@ msgstr "BCC"
 msgid ""
 "Enter comma separated addresses. Will receive a blind copy of every mail "
 "sent from this template. This may be a LOT!"
-msgstr "输入逗号分隔的地址。将会收到此模板发送的每一封邮件的密送副本。这可能会很多！"
+msgstr ""
+"输入逗号分隔的地址。将会收到此模板发送的每一封邮件的密送副本。这可能会很多！"
 
 #: pretalx/mail/models.py:136
 msgid ""
@@ -2742,7 +2825,7 @@ msgid ""
 "\n"
 msgstr "完整的提案内容：\n"
 
-#: pretalx/mail/models.py:198 pretalx/orga/forms/cfp.py:333
+#: pretalx/mail/models.py:198 pretalx/orga/forms/cfp.py:325
 #: pretalx/orga/templates/orga/mails/outbox_list.html:44
 #: pretalx/orga/templates/orga/mails/sent_list.html:22
 msgid "To"
@@ -2777,12 +2860,15 @@ msgstr "执行更新检查"
 msgid ""
 "During the update check, pretalx will report an anonymous, unique "
 "installation ID, the current version of pretalx and your installed plugins "
-"and the number of active and inactive events in your installation to servers"
-" operated by the pretalx developers. We will only store anonymous data, "
-"never any IP addresses and we will not know who you are or where to find "
-"your instance. You can disable this behavior here at any time."
+"and the number of active and inactive events in your installation to servers "
+"operated by the pretalx developers. We will only store anonymous data, never "
+"any IP addresses and we will not know who you are or where to find your "
+"instance. You can disable this behavior here at any time."
 msgstr ""
-"在更新检查期间，pretalx将向由pretalx开发人员操作的服务器报告一个匿名、唯一的安装ID、当前版本的pretalx和您安装的插件以及您安装中活动和不活动的事件数量。我们仅存储匿名数据，从不记录任何IP地址，我们也不知道您是谁或者在哪里找到您的实例。您可以随时在此处禁用此行为。"
+"在更新检查期间，pretalx将向由pretalx开发人员操作的服务器报告一个匿名、唯一的"
+"安装ID、当前版本的pretalx和您安装的插件以及您安装中活动和不活动的事件数量。我"
+"们仅存储匿名数据，从不记录任何IP地址，我们也不知道您是谁或者在哪里找到您的实"
+"例。您可以随时在此处禁用此行为。"
 
 #: pretalx/orga/forms/admin.py:28
 msgid "E-mail notifications"
@@ -2793,7 +2879,9 @@ msgid ""
 "We will notify you at this address if we detect that a new update is "
 "available. This address will not be transmitted to pretalx.com, the emails "
 "will be sent by your server locally."
-msgstr "如果我们检测到新的更新可用，我们将在此地址通知您。这个地址不会被传输到 pretalx.com，电子邮件将由您的服务器本地发送。"
+msgstr ""
+"如果我们检测到新的更新可用，我们将在此地址通知您。这个地址不会被传输到 "
+"pretalx.com，电子邮件将由您的服务器本地发送。"
 
 #: pretalx/orga/forms/cfp.py:25
 msgid "Use tracks"
@@ -2803,84 +2891,75 @@ msgstr "使用轨道"
 msgid "Do you organise your sessions by tracks?"
 msgstr "你会按照赛道来组织你的会议吗？"
 
-#: pretalx/orga/forms/cfp.py:30
-msgid "Use Gravatar"
-msgstr "使用 Gravatar"
-
-#: pretalx/orga/forms/cfp.py:33
-msgid "Allow speakers to automatically include their gravatar profile image."
-msgstr "允许演讲者自动包含他们的Gravatar个人资料图片。"
-
-#: pretalx/orga/forms/cfp.py:37 pretalx/submission/models/submission.py:202
+#: pretalx/orga/forms/cfp.py:30 pretalx/submission/models/submission.py:200
 msgid "Slot Count"
 msgstr "可用时间区间数量"
 
-#: pretalx/orga/forms/cfp.py:39
+#: pretalx/orga/forms/cfp.py:32
 msgid "Can sessions be held multiple times?"
 msgstr "会话可以多次举行吗？"
 
-#: pretalx/orga/forms/cfp.py:42
+#: pretalx/orga/forms/cfp.py:35
 msgid "Send mail on new proposal"
 msgstr "发送邮件关于新提案"
 
-#: pretalx/orga/forms/cfp.py:44
+#: pretalx/orga/forms/cfp.py:37
 msgid ""
 "If this setting is checked, you will receive an email to the organiser "
 "address for every received proposal."
 msgstr "如果勾选了此设置，您将收到每个收到提案的组织者地址的电子邮件。"
 
-#: pretalx/orga/forms/cfp.py:97
+#: pretalx/orga/forms/cfp.py:90
 msgid "Do not ask"
 msgstr "无需填写"
 
-#: pretalx/orga/forms/cfp.py:98
+#: pretalx/orga/forms/cfp.py:91
 msgid "Ask, but do not require input"
 msgstr "选填"
 
-#: pretalx/orga/forms/cfp.py:99
+#: pretalx/orga/forms/cfp.py:92
 msgid "Ask and require input"
-msgstr ""
-"必填"
+msgstr "必填"
 
-#: pretalx/orga/forms/cfp.py:134
+#: pretalx/orga/forms/cfp.py:126
 msgid "Display deadline publicly"
 msgstr "公开展示截止日期"
 
-#: pretalx/orga/forms/cfp.py:136
+#: pretalx/orga/forms/cfp.py:128
 msgid "Show the time and date the CfP ends to potential speakers."
 msgstr "向潜在演讲者展示CfP截止时间和日期。"
 
-#: pretalx/orga/forms/cfp.py:139
+#: pretalx/orga/forms/cfp.py:131
 msgid "Count text length in"
 msgstr "计算文本长度。"
 
-#: pretalx/orga/forms/cfp.py:140
+#: pretalx/orga/forms/cfp.py:132
 msgid "Characters"
 msgstr "角色"
 
-#: pretalx/orga/forms/cfp.py:140
+#: pretalx/orga/forms/cfp.py:132
 msgid "Words"
 msgstr "文字"
 
-#: pretalx/orga/forms/cfp.py:189
+#: pretalx/orga/forms/cfp.py:181
 msgid ""
 "Please select a deadline after which the question should become mandatory."
 msgstr "请在问题变为必答之前选择一个截止日期。"
 
-#: pretalx/orga/forms/cfp.py:259
+#: pretalx/orga/forms/cfp.py:251
 msgid "You already have a session type by this name!"
 msgstr "您已经有一个同名的会话类型！"
 
-#: pretalx/orga/forms/cfp.py:288
+#: pretalx/orga/forms/cfp.py:280
 msgid "You already have a track by this name!"
 msgstr "你已经有一个同名的曲目了！"
 
-#: pretalx/orga/forms/cfp.py:339
+#: pretalx/orga/forms/cfp.py:331
 #, python-brace-format
 msgid "Access code for the {event} CfP"
 msgstr "{event} 征稿的访问代码"
 
-#: pretalx/orga/forms/cfp.py:343
+#: pretalx/orga/forms/cfp.py:335
 #, python-brace-format
 msgid ""
 "Hi!\n"
@@ -2891,26 +2970,26 @@ msgstr ""
 "\n"
 "这是{event} CfP的访问代码。"
 
-#: pretalx/orga/forms/cfp.py:354
+#: pretalx/orga/forms/cfp.py:346
 #, python-brace-format
 msgid "It will allow you to submit a proposal to the “{track}” track."
 msgstr "它将允许您向“{track}”路线提交提案。"
 
-#: pretalx/orga/forms/cfp.py:360
+#: pretalx/orga/forms/cfp.py:352
 msgid "It will allow you to submit a proposal to our CfP."
 msgstr "它将允许您向我们的CfP提交提案。"
 
-#: pretalx/orga/forms/cfp.py:364
+#: pretalx/orga/forms/cfp.py:356
 #, python-brace-format
 msgid "This access code is valid until {date}."
 msgstr "此访问代码有效直至 {date}。"
 
-#: pretalx/orga/forms/cfp.py:376
+#: pretalx/orga/forms/cfp.py:368
 #, python-brace-format
 msgid "The code can be redeemed multiple times ({num})."
 msgstr "该代码可以被多次兑换 ({num})."
 
-#: pretalx/orga/forms/cfp.py:381
+#: pretalx/orga/forms/cfp.py:373
 #, python-brace-format
 msgid ""
 "\n"
@@ -2930,23 +3009,23 @@ msgstr ""
 "\n"
 "{name}"
 
-#: pretalx/orga/forms/cfp.py:409 pretalx/person/forms.py:344
+#: pretalx/orga/forms/cfp.py:401 pretalx/person/forms.py:359
 msgid "all"
 msgstr "所有"
 
-#: pretalx/orga/forms/cfp.py:410
+#: pretalx/orga/forms/cfp.py:402
 msgid "Accepted or confirmed speakers"
 msgstr "接受或确认的发言人"
 
-#: pretalx/orga/forms/cfp.py:411
+#: pretalx/orga/forms/cfp.py:403
 msgid "Confirmed speakers"
 msgstr "确认的演讲者"
 
-#: pretalx/orga/forms/cfp.py:414
+#: pretalx/orga/forms/cfp.py:406
 msgid "Recipients"
 msgstr "收件人"
 
-#: pretalx/orga/forms/cfp.py:482
+#: pretalx/orga/forms/cfp.py:474
 msgid "If you select no question, all questions will be used."
 msgstr "如果您不选择问题，系统将使用所有问题。"
 
@@ -2961,7 +3040,8 @@ msgid ""
 "language a user selects, it will be shown in your event's default language "
 "instead."
 msgstr ""
-"用户将能够在这些语言中使用pretalx，您将能够提供这些语言中的所有文本。如果您没有提供用户选择的语言的文本，那么将显示在您的事件的默认语言中。"
+"用户将能够在这些语言中使用pretalx，您将能够提供这些语言中的所有文本。如果您没"
+"有提供用户选择的语言的文本，那么将显示在您的事件的默认语言中。"
 
 #: pretalx/orga/forms/event.py:46
 msgid "Content languages"
@@ -2995,15 +3075,15 @@ msgid ""
 "exclusively."
 msgstr "未设置隐藏日程安排，例如如果您想要专门使用HTML导出。"
 
-#: pretalx/orga/forms/event.py:72 pretalx/orga/forms/event.py:568
+#: pretalx/orga/forms/event.py:72 pretalx/orga/forms/event.py:569
 msgid "Schedule display format"
 msgstr "日程展示格式"
 
-#: pretalx/orga/forms/event.py:74 pretalx/orga/forms/event.py:570
+#: pretalx/orga/forms/event.py:74 pretalx/orga/forms/event.py:571
 msgid "Grid"
 msgstr "网格"
 
-#: pretalx/orga/forms/event.py:75 pretalx/orga/forms/event.py:571
+#: pretalx/orga/forms/event.py:75 pretalx/orga/forms/event.py:572
 msgid "List"
 msgstr "列表"
 
@@ -3028,7 +3108,9 @@ msgstr "总是"
 msgid ""
 "Marking sessions as 'featured' is a good way to show them before the first "
 "schedule release, or to highlight them once the schedule is visible."
-msgstr "将某些会话标记为“特色”是在首次发布日程之前展示它们或在日程可见后突出显示它们的好方法。"
+msgstr ""
+"将某些会话标记为“特色”是在首次发布日程之前展示它们或在日程可见后突出显示它们"
+"的好方法。"
 
 #: pretalx/orga/forms/event.py:92
 msgid "Enable anonymous feedback"
@@ -3057,16 +3139,18 @@ msgid ""
 "If you publish your schedule via the HTML export, you will want the correct "
 "absolute URL to be set in various places. Please only set this value once "
 "you have published your schedule. Should end with a slash."
-msgstr "如果您通过HTML导出发布您的计划表，您需要在各个位置设置正确的绝对URL。请在发布计划表后仅设置此值一次。应以斜杠结尾。"
+msgstr ""
+"如果您通过HTML导出发布您的计划表，您需要在各个位置设置正确的绝对URL。请在发布"
+"计划表后仅设置此值一次。应以斜杠结尾。"
 
 #: pretalx/orga/forms/event.py:116
 msgid ""
-"Choose how the frontpage header banner will be styled if you don't upload an"
-" image. Pattern source: <a "
-"href=\"http://www.heropatterns.com/\">heropatterns.com</a>, CC BY 4.0."
+"Choose how the frontpage header banner will be styled if you don't upload an "
+"image. Pattern source: <a href=\"http://www.heropatterns.com/\">heropatterns."
+"com</a>, CC BY 4.0."
 msgstr ""
-"如果您没有上传图像，请选择如何设计主页标题横幅。图案来源：<a "
-"href=\"http://www.heropatterns.com/\">heropatterns.com</a>，CC BY 4.0。"
+"如果您没有上传图像，请选择如何设计主页标题横幅。图案来源：<a href=\"http://"
+"www.heropatterns.com/\">heropatterns.com</a>，CC BY 4.0。"
 
 #: pretalx/orga/forms/event.py:131
 msgid "Ask search engines not to index the event pages"
@@ -3081,206 +3165,214 @@ msgstr "你可以在<a {href}>这里</a>找到该页面。"
 msgid "The name of your conference, e.g. My Conference"
 msgstr "您的会议名称，例如“我的会议”"
 
-#: pretalx/orga/forms/event.py:151
+#: pretalx/orga/forms/event.py:153
 msgid ""
 "Please contact your administrator if you need to change the short name of "
 "your event."
 msgstr "如果您需要更改活动的简称，请联系您的管理员。"
 
-#: pretalx/orga/forms/event.py:154
+#: pretalx/orga/forms/event.py:156
 msgid "A color hex value, e.g. #ab01de"
 msgstr "一个颜色十六进制值，例如 #ab01de"
 
-#: pretalx/orga/forms/event.py:159
+#: pretalx/orga/forms/event.py:160
 msgid ""
 "Any sessions you have scheduled already will be moved if you change the "
 "event dates. You will have to release a new schedule version to notify all "
 "speakers."
-msgstr "如果您更改活动日期，已安排的任何会议时间都将被移动。您需要发布新的日程版本以通知所有演讲者。"
+msgstr ""
+"如果您更改活动日期，已安排的任何会议时间都将被移动。您需要发布新的日程版本以"
+"通知所有演讲者。"
 
-#: pretalx/orga/forms/event.py:176
+#: pretalx/orga/forms/event.py:177
 msgid "Please do not choose the default domain as custom event domain."
 msgstr "请不要选择默认域名作为自定义事件域名。"
 
-#: pretalx/orga/forms/event.py:187
+#: pretalx/orga/forms/event.py:188
 #, python-brace-format
 msgid ""
 "The domain \"{domain}\" does not have a name server entry at this time. "
 "Please make sure the domain is working before configuring it here."
-msgstr "该域名 \"{domain}\" 目前没有名称服务器条目。在此进行配置之前，请确保该域名正在工作。"
+msgstr ""
+"该域名 \"{domain}\" 目前没有名称服务器条目。在此进行配置之前，请确保该域名正"
+"在工作。"
 
-#: pretalx/orga/forms/event.py:226
+#: pretalx/orga/forms/event.py:227
 msgid "Your default language needs to be one of your active languages."
 msgstr "你的默认语言必须是你的活跃语言之一。"
 
-#: pretalx/orga/forms/event.py:368
+#: pretalx/orga/forms/event.py:369
 msgid "Contact address"
 msgstr "联系地址"
 
-#: pretalx/orga/forms/event.py:370
+#: pretalx/orga/forms/event.py:371
 msgid ""
 "Reply-To address. If this setting is empty and you have no custom sender, "
 "your event email address will be used as Reply-To address."
-msgstr "回复地址。如果此设置为空且您没有自定义发件人，则您的活动电子邮件地址将用作回复地址。"
+msgstr ""
+"回复地址。如果此设置为空且您没有自定义发件人，则您的活动电子邮件地址将用作回"
+"复地址。"
 
-#: pretalx/orga/forms/event.py:375
+#: pretalx/orga/forms/event.py:376
 msgid "Mail subject prefix"
 msgstr "邮件主题前缀"
 
-#: pretalx/orga/forms/event.py:377
+#: pretalx/orga/forms/event.py:378
 msgid "The prefix will be prepended to outgoing mail subjects in [brackets]."
 msgstr "前缀将被添加到[方括号]中的发件箱主题中。"
 
-#: pretalx/orga/forms/event.py:382
+#: pretalx/orga/forms/event.py:383
 msgid "Mail signature"
 msgstr "邮件签名"
 
-#: pretalx/orga/forms/event.py:384
+#: pretalx/orga/forms/event.py:385
 msgid "The signature will be added to outgoing mails, preceded by \"-- \"."
 msgstr "该签名将添加在发送的邮件中，并以\"-- \"作为前缀。"
 
-#: pretalx/orga/forms/event.py:390
+#: pretalx/orga/forms/event.py:391
 msgid "Use custom SMTP server"
 msgstr "使用自定义的SMTP服务器"
 
-#: pretalx/orga/forms/event.py:392
+#: pretalx/orga/forms/event.py:393
 msgid ""
 "All mail related to your event will be sent over the SMTP server specified "
 "by you."
 msgstr "所有与您的活动有关的邮件将通过您指定的SMTP服务器发送。"
 
-#: pretalx/orga/forms/event.py:397
+#: pretalx/orga/forms/event.py:398
 msgid "Sender address"
 msgstr "发件人地址"
 
-#: pretalx/orga/forms/event.py:398
+#: pretalx/orga/forms/event.py:399
 msgid "Sender address for outgoing emails."
 msgstr "发送邮件的发件人地址。"
 
-#: pretalx/orga/forms/event.py:401
+#: pretalx/orga/forms/event.py:402
 msgid "Hostname"
 msgstr "主机名"
 
-#: pretalx/orga/forms/event.py:402 pretalx/orga/templates/orga/admin.html:54
+#: pretalx/orga/forms/event.py:403 pretalx/orga/templates/orga/admin.html:54
 msgid "Port"
 msgstr "港口"
 
-#: pretalx/orga/forms/event.py:403
+#: pretalx/orga/forms/event.py:404
 msgid "Username"
 msgstr "用户名"
 
-#: pretalx/orga/forms/event.py:405 pretalx/orga/templates/orga/admin.html:56
+#: pretalx/orga/forms/event.py:406 pretalx/orga/templates/orga/admin.html:56
 #: pretalx/person/forms.py:36 pretalx/person/forms.py:40
 msgid "Password"
 msgstr "密码"
 
-#: pretalx/orga/forms/event.py:414
+#: pretalx/orga/forms/event.py:415
 msgid "Use STARTTLS"
 msgstr "使用STARTTLS"
 
-#: pretalx/orga/forms/event.py:415
+#: pretalx/orga/forms/event.py:416
 msgid "Commonly enabled on port 587."
 msgstr "通常在端口587上启用。"
 
-#: pretalx/orga/forms/event.py:419
+#: pretalx/orga/forms/event.py:420
 msgid "Use SSL"
 msgstr "使用SSL"
 
-#: pretalx/orga/forms/event.py:419
+#: pretalx/orga/forms/event.py:420
 msgid "Commonly enabled on port 465."
 msgstr "通常启用在端口465上。"
 
-#: pretalx/orga/forms/event.py:449
+#: pretalx/orga/forms/event.py:450
 msgid "You have to provide a sender address if you use a custom SMTP server."
 msgstr "如果您使用自定义的SMTP服务器，则必须提供发件人地址。"
 
-#: pretalx/orga/forms/event.py:458
+#: pretalx/orga/forms/event.py:459
 msgid ""
 "You can activate either SSL or STARTTLS security, but not both at the same "
 "time."
 msgstr "您可以激活SSL或STARTTLS安全性之一，但不能同时激活两者。"
 
-#: pretalx/orga/forms/event.py:475
+#: pretalx/orga/forms/event.py:476
 msgid ""
 "You have to activate either SSL or STARTTLS security if you use a non-local "
 "mailserver due to data protection reasons. Your administrator can add an "
 "instance-wide bypass. If you use this bypass, please also adjust your "
 "Privacy Policy."
 msgstr ""
-"如果您使用非本地邮件服务器，出于数据保护原因，您必须激活SSL或STARTTLS安全性。您的管理员可以添加一个全局的绕过实例。如果您使用了此绕过实例，请也调整您的隐私政策。"
+"如果您使用非本地邮件服务器，出于数据保护原因，您必须激活SSL或STARTTLS安全性。"
+"您的管理员可以添加一个全局的绕过实例。如果您使用了此绕过实例，请也调整您的隐"
+"私政策。"
 
-#: pretalx/orga/forms/event.py:506
+#: pretalx/orga/forms/event.py:507
 msgid "Require a review score"
 msgstr "必须提交审查分数"
 
-#: pretalx/orga/forms/event.py:509
+#: pretalx/orga/forms/event.py:510
 msgid "Require a review text"
 msgstr "必须提交审查报告"
 
-#: pretalx/orga/forms/event.py:512
+#: pretalx/orga/forms/event.py:513
 msgid "Score display"
 msgstr "得分显示"
 
-#: pretalx/orga/forms/event.py:515
+#: pretalx/orga/forms/event.py:516
 msgid "Text and score, e.g “Good (3)”"
 msgstr "文本和分数，例如“好（3）”。"
 
-#: pretalx/orga/forms/event.py:516
+#: pretalx/orga/forms/event.py:517
 msgid "Score and text, e.g “3 (good)”"
 msgstr "得分和文本，例如“3（好）”。"
 
-#: pretalx/orga/forms/event.py:517
+#: pretalx/orga/forms/event.py:518
 msgid "Just scores"
 msgstr "只有分数"
 
-#: pretalx/orga/forms/event.py:518
+#: pretalx/orga/forms/event.py:519
 msgid "Just text"
 msgstr "只是文本"
 
-#: pretalx/orga/forms/event.py:522
+#: pretalx/orga/forms/event.py:523
 msgid ""
 "This is how the score will look like on the review interface. The dashboard "
 "will always show numerical scores."
 msgstr "这就是审核界面上得分的样子。仪表板始终会显示数值分数。"
 
-#: pretalx/orga/forms/event.py:527
+#: pretalx/orga/forms/event.py:528
 msgid "Score aggregation method"
 msgstr "得分汇总方法"
 
-#: pretalx/orga/forms/event.py:529
-#: pretalx/orga/templates/orga/review/dashboard.html:167
+#: pretalx/orga/forms/event.py:530
+#: pretalx/orga/templates/orga/review/dashboard.html:179
 msgid "Median"
 msgstr "中位数"
 
-#: pretalx/orga/forms/event.py:529
+#: pretalx/orga/forms/event.py:530
 msgid "Average (mean)"
 msgstr "平均值 (均值)"
 
-#: pretalx/orga/forms/event.py:533
+#: pretalx/orga/forms/event.py:534
 msgid "Help text for reviewers"
 msgstr "审核人员的帮助文本"
 
-#: pretalx/orga/forms/event.py:535
+#: pretalx/orga/forms/event.py:536
 msgid ""
 "This text will be shown at the top of every review, as long as reviews can "
 "be created or edited."
 msgstr "只要还可以创建或编辑评论，这段文本将显示在每一篇评论的顶部。"
 
-#: pretalx/orga/forms/event.py:555
+#: pretalx/orga/forms/event.py:556
 msgid "Show the widget even if the schedule is not public"
 msgstr "即使日程不公开也显示小部件。"
 
-#: pretalx/orga/forms/event.py:557
+#: pretalx/orga/forms/event.py:558
 msgid ""
 "Set to allow external pages to show the schedule widget, even if the "
 "schedule is not shown here using pretalx."
 msgstr "设置允许外部页面显示日程小部件，即使在此处未使用 pretalx 显示日程。"
 
-#: pretalx/orga/forms/event.py:578
+#: pretalx/orga/forms/event.py:579
 msgid "Widget language"
 msgstr "部件语言"
 
-#: pretalx/orga/forms/event.py:596
+#: pretalx/orga/forms/event.py:597
 msgid "The end of a phase has to be after its start."
 msgstr "一个阶段的结束必须在它的开始之后。"
 
@@ -3306,8 +3398,8 @@ msgstr "数据分隔符"
 
 #: pretalx/orga/forms/export.py:29
 msgid ""
-"How do you want to separate data within a single cell (for example, multiple"
-" speakers in one session)?"
+"How do you want to separate data within a single cell (for example, multiple "
+"speakers in one session)?"
 msgstr "你想如何分离单个单元格中的数据（例如，一个会话中的多个讲话者）？"
 
 #: pretalx/orga/forms/export.py:32
@@ -3331,82 +3423,84 @@ msgstr "请为您的 CSV 导出文件选择分隔符。"
 msgid "Available placeholders:"
 msgstr "可用的占位符："
 
-#: pretalx/orga/forms/mails.py:100
+#: pretalx/orga/forms/mails.py:105
 msgid ""
 "Invalid email template! Please check that you don't have stray { or } "
 "somewhere, and that there are no spaces inside the {} blocks."
-msgstr "无效的邮件模板！请检查您是否在某处使用了杂散的 { 或 }，并且在 {} 块内是否没有空格。"
+msgstr ""
+"无效的邮件模板！请检查您是否在某处使用了杂散的 { 或 }，并且在 {} 块内是否没有"
+"空格。"
 
-#: pretalx/orga/forms/mails.py:108
+#: pretalx/orga/forms/mails.py:113
 msgid "Unknown template key!"
 msgstr "未知的模板键！"
 
-#: pretalx/orga/forms/mails.py:162
+#: pretalx/orga/forms/mails.py:167
 msgid "An email needs to have at least one recipient."
 msgstr "一封电子邮件至少需要一个收件人。"
 
-#: pretalx/orga/forms/mails.py:191 pretalx/orga/forms/mails.py:209
+#: pretalx/orga/forms/mails.py:196 pretalx/orga/forms/mails.py:214
 msgid "Recipient groups"
 msgstr "受方群体"
 
-#: pretalx/orga/forms/mails.py:195
+#: pretalx/orga/forms/mails.py:200
 msgid "Everyone with proposal(s) that have not been accepted/rejected yet"
 msgstr "所有还未被接受或拒绝提案的人"
 
-#: pretalx/orga/forms/mails.py:199
+#: pretalx/orga/forms/mails.py:204
 msgid "All accepted speakers (who have not confirmed their session yet)"
 msgstr "所有已被接受的演讲者（尚未确认其会话的）"
 
-#: pretalx/orga/forms/mails.py:201
+#: pretalx/orga/forms/mails.py:206
 msgid "All confirmed speakers"
 msgstr "所有确认的演讲者"
 
-#: pretalx/orga/forms/mails.py:202
+#: pretalx/orga/forms/mails.py:207
 msgid "All rejected speakers"
 msgstr "所有遭到拒绝的演讲者"
 
-#: pretalx/orga/forms/mails.py:203
+#: pretalx/orga/forms/mails.py:208
 msgid "All canceled speakers"
 msgstr "所有被取消的演讲者"
 
-#: pretalx/orga/forms/mails.py:204
+#: pretalx/orga/forms/mails.py:209
 msgid "All reviewers in your team"
 msgstr "你的团队中的所有审阅者"
 
-#: pretalx/orga/forms/mails.py:205
+#: pretalx/orga/forms/mails.py:210
 msgid "All confirmed speakers who have not uploaded slides"
 msgstr "所有已确认的演讲者如果还没有上传幻灯片"
 
-#: pretalx/orga/forms/mails.py:213
+#: pretalx/orga/forms/mails.py:218
 msgid "All proposals in these tracks"
 msgstr "所有在这些轨道中的提案"
 
-#: pretalx/orga/forms/mails.py:215 pretalx/orga/templates/orga/base.html:246
+#: pretalx/orga/forms/mails.py:220 pretalx/orga/templates/orga/base.html:246
 #: pretalx/orga/templates/orga/cfp/track_view.html:5
 #: pretalx/orga/templates/orga/settings/team_tracks.html:8
-#: pretalx/submission/forms/submission.py:268
+#: pretalx/submission/forms/submission.py:267
 #: pretalx/submission/models/question.py:154
 msgid "Tracks"
 msgstr "分支"
 
-#: pretalx/orga/forms/mails.py:216
+#: pretalx/orga/forms/mails.py:221
 msgid "Leave empty to include proposals from all tracks."
 msgstr "留空包括所有赛道的建议。"
 
-#: pretalx/orga/forms/mails.py:219
+#: pretalx/orga/forms/mails.py:224
 msgid "All proposals of these types"
 msgstr "所有这类建议"
 
-#: pretalx/orga/forms/mails.py:222 pretalx/orga/templates/orga/base.html:250
-#: pretalx/submission/forms/submission.py:252
+#: pretalx/orga/forms/mails.py:227 pretalx/orga/templates/orga/base.html:250
+#: pretalx/submission/forms/submission.py:251
 msgid "Session types"
 msgstr "会话类型"
 
-#: pretalx/orga/forms/mails.py:224
+#: pretalx/orga/forms/mails.py:229
 msgid "Leave empty to include proposals of all session types."
 msgstr "留空包括所有类型的提案。"
 
-#: pretalx/orga/forms/mails.py:228 pretalx/orga/forms/mails.py:230
+#: pretalx/orga/forms/mails.py:233 pretalx/orga/forms/mails.py:235
 #: pretalx/orga/templates/orga/base.html:264
 #: pretalx/orga/templates/orga/base.html:272
 #: pretalx/orga/templates/orga/cfp/submission_type_view.html:18
@@ -3418,18 +3512,20 @@ msgstr "留空包括所有类型的提案。"
 msgid "Proposals"
 msgstr "提案"
 
-#: pretalx/orga/forms/mails.py:233
+#: pretalx/orga/forms/mails.py:238
 msgid ""
 "Select proposals that should receive the email regardless of the other "
 "filters."
 msgstr "选择应该收到电子邮件的提议，而不考虑其它过滤器。"
 
-#: pretalx/orga/forms/mails.py:257
+#: pretalx/orga/forms/mails.py:262
 msgid ""
-"If you provide only one language, that language will be used for all emails."
-" If you provide multiple languages, the best fit for each speaker will be "
+"If you provide only one language, that language will be used for all emails. "
+"If you provide multiple languages, the best fit for each speaker will be "
 "used."
-msgstr "如果您只提供一种语言，那么所有的邮件都将使用该语言。如果您提供多种语言，将会根据每位收件人的最佳语言进行使用。"
+msgstr ""
+"如果您只提供一种语言，那么所有的邮件都将使用该语言。如果您提供多种语言，将会"
+"根据每位收件人的最佳语言进行使用。"
 
 #: pretalx/orga/forms/review.py:80
 msgid "No score"
@@ -3462,7 +3558,7 @@ msgstr[1] ""
 msgid "All proposals"
 msgstr "所有提议"
 
-#: pretalx/orga/forms/review.py:211 pretalx/orga/views/dashboard.py:326
+#: pretalx/orga/forms/review.py:211 pretalx/orga/views/dashboard.py:327
 #: pretalx/submission/models/submission.py:52
 msgid "rejected"
 msgstr "拒绝"
@@ -3475,8 +3571,7 @@ msgstr "提议ID"
 msgid "The unique ID of a proposal is used in the proposal URL and in exports"
 msgstr "一个提案的唯一ID用于提案的URL和导出中。"
 
-#: pretalx/orga/forms/review.py:224
-#: pretalx/submission/models/submission.py:130
+#: pretalx/orga/forms/review.py:224 pretalx/submission/models/submission.py:130
 msgid "Proposal title"
 msgstr "提案标题"
 
@@ -3505,7 +3600,9 @@ msgstr "更换当前的任务"
 msgid ""
 "Select to remove all current assignments and replace them with the import. "
 "Otherwise, the import will be an addition to the current assignments."
-msgstr "选择移除所有当前的任务，并用导入的任务取而代之。否则，导入的任务将会添加到当前的任务中。"
+msgstr ""
+"选择移除所有当前的任务，并用导入的任务取而代之。否则，导入的任务将会添加到当"
+"前的任务中。"
 
 #: pretalx/orga/forms/review.py:359
 msgid "Unknown user: {}"
@@ -3589,12 +3686,11 @@ msgid "Average review score, if there have been reviews yet"
 msgstr "如果已经有评论，平均评分。"
 
 #: pretalx/orga/forms/schedule.py:118
-msgid ""
-"Resources provided by the speaker, either as links or as uploaded files"
+msgid "Resources provided by the speaker, either as links or as uploaded files"
 msgstr "演讲者提供的资源，可以是链接或上传的文件。"
 
 #: pretalx/orga/forms/schedule.py:205 pretalx/orga/forms/schedule.py:209
-#: pretalx/orga/templates/orga/base.html:363
+#: pretalx/orga/templates/orga/base.html:362
 msgid "Rooms"
 msgstr "房间"
 
@@ -3623,8 +3719,8 @@ msgid "Proposal titles"
 msgstr "提案标题"
 
 #: pretalx/orga/forms/speaker.py:41
-#: pretalx/orga/templates/orga/cfp/text.html:99
-#: pretalx/orga/templates/orga/submission/review.html:104
+#: pretalx/orga/templates/orga/cfp/text.html:98
+#: pretalx/orga/templates/orga/submission/review.html:119
 #: pretalx/orga/templates/orga/submission/speakers.html:33
 #: pretalx/person/models/profile.py:32
 msgid "Biography"
@@ -3670,12 +3766,14 @@ msgid "Mark the new state as 'pending'?"
 msgstr "将新状态标记为“待处理”？"
 
 #: pretalx/orga/forms/submission.py:263
-#: pretalx/orga/templates/orga/review/dashboard.html:317
+#: pretalx/orga/templates/orga/review/dashboard.html:329
 msgid ""
 "If you mark state changes as pending, they won't be visible to speakers "
 "right away. You can always apply pending changes for some or all proposals "
 "in one go once you're ready to make your decisions public."
-msgstr "如果您将状态更改标记为待处理，即使完成了更改，演讲者也无法立即看到。一旦您准备好公开您的决定，您可以一次性为某些或所有提案应用挂起的更改。"
+msgstr ""
+"如果您将状态更改标记为待处理，即使完成了更改，演讲者也无法立即看到。一旦您准"
+"备好公开您的决定，您可以一次性为某些或所有提案应用挂起的更改。"
 
 #: pretalx/orga/phrases.py:15
 msgid "I think this session is well-suited to this conference, because ..."
@@ -3715,7 +3813,8 @@ msgid ""
 "and set the DEBUG variable to False if this page is in any way reachable "
 "from the internet."
 msgstr ""
-"你正在开发模式下运行 pretalx。如果这个页面可以通过互联网访问，请<strong>停止</strong>并将 DEBUG 变量设置为 False。"
+"你正在开发模式下运行 pretalx。如果这个页面可以通过互联网访问，请<strong>停止"
+"</strong>并将 DEBUG 变量设置为 False。"
 
 #: pretalx/orga/templates/orga/admin.html:28
 #: pretalx/orga/templates/orga/base.html:190
@@ -3759,7 +3858,7 @@ msgid "Media files"
 msgstr "媒体文件"
 
 #: pretalx/orga/templates/orga/admin.html:51
-#: pretalx/orga/templates/orga/base.html:376
+#: pretalx/orga/templates/orga/base.html:375
 msgid "Mails"
 msgstr "邮件"
 
@@ -3875,17 +3974,18 @@ msgstr "请点击这里切换到管理员账户。"
 
 #: pretalx/orga/templates/orga/base.html:160
 msgid ""
-"Starting with version 1.1.0, pretalx automatically checks for updates in the"
-" background. During this check, anonymous data is transmitted to servers "
+"Starting with version 1.1.0, pretalx automatically checks for updates in the "
+"background. During this check, anonymous data is transmitted to servers "
 "operated by the pretalx developers. Click on this message to find out more, "
 "disable this feature or enter your email address to get notified via email "
 "if a new update arrives. This message will disappear once you clicked it."
 msgstr ""
-"从版本1.1.0开始，Pretalx会在后台自动检查更新。在此检查期间，匿名数据将被传输到Pretalx开发者操作的服务器。点击此消息以了解更多信息，禁用此功能或输入您的电子邮件地址，以通过电子邮件收到新的更新通知。此消息将在您点击后消失。"
+"从版本1.1.0开始，Pretalx会在后台自动检查更新。在此检查期间，匿名数据将被传输"
+"到Pretalx开发者操作的服务器。点击此消息以了解更多信息，禁用此功能或输入您的电"
+"子邮件地址，以通过电子邮件收到新的更新通知。此消息将在您点击后消失。"
 
 #: pretalx/orga/templates/orga/base.html:181
 #: pretalx/orga/templates/orga/event_list.html:5
-#: pretalx/orga/templates/orga/start.html:4
 msgid "Dashboard"
 msgstr "仪表盘"
 
@@ -3912,7 +4012,7 @@ msgid "Content"
 msgstr "内容"
 
 #: pretalx/orga/templates/orga/base.html:239
-#: pretalx/orga/templates/orga/base.html:360
+#: pretalx/orga/templates/orga/base.html:359
 msgid "Editor"
 msgstr "编辑"
 
@@ -3923,9 +4023,9 @@ msgstr "访问代码"
 
 #: pretalx/orga/templates/orga/base.html:275
 #: pretalx/orga/templates/orga/review/dashboard.html:111
-#: pretalx/orga/templates/orga/review/dashboard.html:205
+#: pretalx/orga/templates/orga/review/dashboard.html:217
 #: pretalx/orga/templates/orga/submission/tag_list.html:6
-#: pretalx/submission/forms/submission.py:273
+#: pretalx/submission/forms/submission.py:272
 #: pretalx/submission/models/submission.py:148
 msgid "Tags"
 msgstr "标签"
@@ -3936,7 +4036,7 @@ msgstr "统计"
 
 #: pretalx/orga/templates/orga/base.html:286
 #: pretalx/orga/templates/orga/base.html:340
-#: pretalx/orga/templates/orga/base.html:366
+#: pretalx/orga/templates/orga/base.html:365
 msgid "Export"
 msgstr "导出"
 
@@ -3950,36 +4050,35 @@ msgstr "分配审稿人"
 msgid "Export reviews"
 msgstr "导出评论"
 
-#: pretalx/orga/templates/orga/base.html:336
-#: pretalx/schedule/models/room.py:40
+#: pretalx/orga/templates/orga/base.html:336 pretalx/schedule/models/room.py:40
 msgid "Speaker Information"
 msgstr "演讲者信息"
 
-#: pretalx/orga/templates/orga/base.html:386
+#: pretalx/orga/templates/orga/base.html:385
 msgid "Outbox"
 msgstr "发件箱"
 
-#: pretalx/orga/templates/orga/base.html:389
+#: pretalx/orga/templates/orga/base.html:388
 msgid "Templates"
 msgstr "模板"
 
-#: pretalx/orga/templates/orga/base.html:392
+#: pretalx/orga/templates/orga/base.html:391
 msgid "Compose E-mails"
 msgstr "撰写电子邮件"
 
-#: pretalx/orga/templates/orga/base.html:395
+#: pretalx/orga/templates/orga/base.html:394
 msgid "Sent E-mails"
 msgstr "发送的电子邮件"
 
-#: pretalx/orga/templates/orga/base.html:421
+#: pretalx/orga/templates/orga/base.html:420
 msgid "Organisers"
 msgstr "组织者"
 
-#: pretalx/orga/templates/orga/base.html:427
+#: pretalx/orga/templates/orga/base.html:426
 msgid "Admin information"
 msgstr "管理员信息"
 
-#: pretalx/orga/templates/orga/base.html:458
+#: pretalx/orga/templates/orga/base.html:457
 msgid "running in development mode"
 msgstr "运行在开发模式下"
 
@@ -4017,14 +4116,18 @@ msgid ""
 "Access codes can allow access to your CfP beyond its deadline for one or "
 "multiple proposals. If the code is circulated more widely than you'd like, "
 "you can always delete or invalidate it."
-msgstr "访问码可以允许访问您的 CfP，超过一个或多个建议的截止日期。如果访问码的使用范围超出您的意愿，您可以随时将其删除或作废。"
+msgstr ""
+"访问码可以允许访问您的 CfP，超过一个或多个建议的截止日期。如果访问码的使用范"
+"围超出您的意愿，您可以随时将其删除或作废。"
 
 #: pretalx/orga/templates/orga/cfp/access_code_view.html:14
 msgid ""
 "Access codes can be used to allow proposals even when the CfP is over. You "
 "can also use them for hidden tracks or hidden session types, which can only "
 "be seen with a matching access code."
-msgstr "访问代码可用于允许提案，即使CfP已经结束。您还可以使用它们进行隐藏的论坛或隐藏的会话类型，这些类型只能通过匹配的访问代码才能看到。"
+msgstr ""
+"访问代码可用于允许提案，即使CfP已经结束。您还可以使用它们进行隐藏的论坛或隐藏"
+"的会话类型，这些类型只能通过匹配的访问代码才能看到。"
 
 #: pretalx/orga/templates/orga/cfp/access_code_view.html:31
 msgid "Code"
@@ -4032,7 +4135,7 @@ msgstr "代码"
 
 #: pretalx/orga/templates/orga/cfp/access_code_view.html:33
 #: pretalx/orga/templates/orga/cfp/submission_type_form.html:19
-#: pretalx/orga/templates/orga/submission/review.html:56
+#: pretalx/orga/templates/orga/submission/review.html:59
 #: pretalx/submission/models/access_code.py:37
 msgid "Session Type"
 msgstr "会话类型"
@@ -4060,7 +4163,8 @@ msgid ""
 "custom help text to individual fields. Just click on the item you want to "
 "change!"
 msgstr ""
-"这是Pretalx的CfP编辑器。这个页面允许您更改所有单独CfP步骤上的标题和信息文本。您还可以为单个字段添加自定义帮助文本。只需单击您要更改的项目即可！"
+"这是Pretalx的CfP编辑器。这个页面允许您更改所有单独CfP步骤上的标题和信息文本。"
+"您还可以为单个字段添加自定义帮助文本。只需单击您要更改的项目即可！"
 
 #: pretalx/orga/templates/orga/cfp/question_delete.html:5
 msgid "Do you really want to delete this question?"
@@ -4083,8 +4187,7 @@ msgstr "隐藏问题"
 #: pretalx/orga/templates/orga/cfp/question_detail.html:42
 #: pretalx/orga/templates/orga/cfp/question_form.html:46
 msgid ""
-"This question is currently inactive, and will not be asked during "
-"submission."
+"This question is currently inactive, and will not be asked during submission."
 msgstr "此问题目前处于未激活状态，将在提交过程中不会被询问。"
 
 #: pretalx/orga/templates/orga/cfp/question_detail.html:43
@@ -4100,11 +4203,14 @@ msgstr "目前还没有人回答这个问题。"
 #, python-format
 msgid ""
 "\n"
-"                    This question has been answered <strong>%(count)s</strong>, <strong>%(missing)s</strong> answers <a href=\"%(base_search_url)sunanswered=1\">are still missing</a>.\n"
+"                    This question has been answered <strong>%(count)s</"
+"strong>, <strong>%(missing)s</strong> answers <a "
+"href=\"%(base_search_url)sunanswered=1\">are still missing</a>.\n"
 "                "
 msgstr ""
 "\n"
-"该问题已经被回答<strong>%(count)s</strong>次，<strong>%(missing)s</strong>个答案仍然缺失，<a href=\"%(base_search_url)sunanswered=1\">请帮助解答</a>。"
+"该问题已经被回答<strong>%(count)s</strong>次，<strong>%(missing)s</strong>个"
+"答案仍然缺失，<a href=\"%(base_search_url)sunanswered=1\">请帮助解答</a>。"
 
 #: pretalx/orga/templates/orga/cfp/question_detail.html:56
 #, python-format
@@ -4142,14 +4248,18 @@ msgid ""
 "This question has already been answered by some speakers – please consider "
 "carefully if modifying it would render those answers obsolete. You could "
 "also deactivate this question and start a new one instead."
-msgstr "这个问题已经被部分演讲者回答了 - 请仔细考虑，如果修改它是否会使这些答案过时。您也可以停用这个问题，改为开始一个新的问题。"
+msgstr ""
+"这个问题已经被部分演讲者回答了 - 请仔细考虑，如果修改它是否会使这些答案过时。"
+"您也可以停用这个问题，改为开始一个新的问题。"
 
 #: pretalx/orga/templates/orga/cfp/question_form.html:59
 msgid ""
 "If you mark a Yes/No question as required, it means that the user has to "
-"select Yes and No is not accepted. If you want to allow both options, do not"
-" make this field required."
-msgstr "如果您将一个是/否问题标记为必填，这意味着用户必须选择“是”，不接受“否”。如果您希望允许两个选项，则不要将此字段设为必填。"
+"select Yes and No is not accepted. If you want to allow both options, do not "
+"make this field required."
+msgstr ""
+"如果您将一个是/否问题标记为必填，这意味着用户必须选择“是”，不接受“否”。如果您"
+"希望允许两个选项，则不要将此字段设为必填。"
 
 #: pretalx/orga/templates/orga/cfp/question_form.html:100
 msgid "Answer options"
@@ -4167,15 +4277,19 @@ msgstr "发送提醒"
 msgid ""
 "Here you can limit who will receive reminder emails. You will be able to "
 "review emails before they are sent out."
-msgstr "在这里，您可以限制谁可以收到提醒邮件。在邮件发送出去之前，您将有机会审核这些邮件。"
+msgstr ""
+"在这里，您可以限制谁可以收到提醒邮件。在邮件发送出去之前，您将有机会审核这些"
+"邮件。"
 
 #: pretalx/orga/templates/orga/cfp/question_view.html:6
 msgid ""
 "Questions can help you sort out additional details with speakers, such as "
 "clothing sizes, special requirements such as dietary needs, or "
-"accommodation. Questions can be asked either on a per-proposal level, or per"
-" speaker, as you see fit."
-msgstr "问题可以帮助您与演讲者澄清其他细节，比如服装尺码、特殊要求（如饮食需求）或住宿。问题可以根据您的需要在每个提案或每个演讲者级别上提出。"
+"accommodation. Questions can be asked either on a per-proposal level, or per "
+"speaker, as you see fit."
+msgstr ""
+"问题可以帮助您与演讲者澄清其他细节，比如服装尺码、特殊要求（如饮食需求）或住"
+"宿。问题可以根据您的需要在每个提案或每个演讲者级别上提出。"
 
 #: pretalx/orga/templates/orga/cfp/question_view.html:17
 msgid "Send out reminders for unanswered questions"
@@ -4211,7 +4325,7 @@ msgid "Move question up"
 msgstr "将问题上移"
 
 #: pretalx/orga/templates/orga/cfp/question_view.html:89
-#: pretalx/orga/views/event.py:169
+#: pretalx/orga/views/event.py:168
 msgid "You have configured no questions yet."
 msgstr "您还没有配置任何问题"
 
@@ -4233,7 +4347,9 @@ msgid ""
 "Different session types may help to guide speakers into different slot "
 "lengths (short sessions vs long sessions) or different presentation formats "
 "(talk vs workshop vs metal concert)."
-msgstr "不同的会议类型可以帮助引导演讲者选择不同的时间长度（短时间 vs 长时间）或不同的演示形式（讲座 vs 研讨会 vs 金属音乐会）。"
+msgstr ""
+"不同的会议类型可以帮助引导演讲者选择不同的时间长度（短时间 vs 长时间）或不同"
+"的演示形式（讲座 vs 研讨会 vs 金属音乐会）。"
 
 #: pretalx/orga/templates/orga/cfp/submission_type_view.html:19
 msgid "Default duration"
@@ -4245,16 +4361,16 @@ msgstr "默认持续时间"
 msgid "Requires access code"
 msgstr "需要访问代码"
 
-#: pretalx/orga/templates/orga/cfp/submission_type_view.html:40
+#: pretalx/orga/templates/orga/cfp/submission_type_view.html:42
 msgid "Default"
 msgstr "默认"
 
-#: pretalx/orga/templates/orga/cfp/submission_type_view.html:48
-#: pretalx/orga/templates/orga/cfp/track_view.html:40
+#: pretalx/orga/templates/orga/cfp/submission_type_view.html:50
+#: pretalx/orga/templates/orga/cfp/track_view.html:42
 msgid "Go to pre-filled CfP form"
 msgstr "前往填好的论文征集表格。"
 
-#: pretalx/orga/templates/orga/cfp/submission_type_view.html:69
+#: pretalx/orga/templates/orga/cfp/submission_type_view.html:71
 msgid "New type"
 msgstr "新型"
 
@@ -4298,79 +4414,72 @@ msgstr "日期和地点"
 msgid "Text and deadline"
 msgstr "文本和截止日期"
 
-#: pretalx/orga/templates/orga/cfp/text.html:51
+#: pretalx/orga/templates/orga/cfp/text.html:50
 msgid "Proposal information"
 msgstr "提案信息"
 
-#: pretalx/orga/templates/orga/cfp/text.html:53
+#: pretalx/orga/templates/orga/cfp/text.html:52
 msgid ""
 "Select which information should be requested and/or required during CfP "
 "proposal."
 msgstr "选择在CfP提议期间应请求和/或需要的信息。"
 
-#: pretalx/orga/templates/orga/cfp/text.html:54
+#: pretalx/orga/templates/orga/cfp/text.html:53
 msgid "Click here to view the proposal form."
 msgstr "点击此处查看建议表格。"
 
-#: pretalx/orga/templates/orga/cfp/text.html:61
+#: pretalx/orga/templates/orga/cfp/text.html:60
 msgid "Minimum length"
 msgstr "最小长度"
 
-#: pretalx/orga/templates/orga/cfp/text.html:62
+#: pretalx/orga/templates/orga/cfp/text.html:61
 msgid "Maximum length"
 msgstr "最大长度"
 
-#: pretalx/orga/templates/orga/cfp/text.html:73
-#: pretalx/orga/templates/orga/submission/review.html:71
+#: pretalx/orga/templates/orga/cfp/text.html:72
+#: pretalx/orga/templates/orga/submission/review.html:74
 #: pretalx/submission/models/submission.py:167
 msgid "Abstract"
 msgstr "摘要"
 
-#: pretalx/orga/templates/orga/cfp/text.html:79
-#: pretalx/orga/templates/orga/submission/review.html:79
+#: pretalx/orga/templates/orga/cfp/text.html:78
+#: pretalx/orga/templates/orga/submission/review.html:86
 #: pretalx/schedule/models/room.py:33
 #: pretalx/submission/models/submission.py:173
 #: pretalx/submission/models/tag.py:19 pretalx/submission/models/track.py:28
 msgid "Description"
 msgstr "描述"
 
-#: pretalx/orga/templates/orga/cfp/text.html:111
+#: pretalx/orga/templates/orga/cfp/text.html:110
 msgid "Additional speakers"
 msgstr "附加演讲者"
 
-#: pretalx/orga/templates/orga/cfp/text.html:117 pretalx/schedule/forms.py:19
+#: pretalx/orga/templates/orga/cfp/text.html:116 pretalx/schedule/forms.py:18
 msgid "Availability"
 msgstr "可用时间"
 
-#: pretalx/orga/templates/orga/cfp/text.html:123
-#: pretalx/orga/templates/orga/submission/review.html:87
+#: pretalx/orga/templates/orga/cfp/text.html:122
+#: pretalx/orga/templates/orga/submission/review.html:98
 #: pretalx/submission/models/submission.py:179
 msgid "Notes"
 msgstr "注释"
 
-#: pretalx/orga/templates/orga/cfp/text.html:129
+#: pretalx/orga/templates/orga/cfp/text.html:128
 msgid "Recording opt-out"
 msgstr "取消录音"
 
-#: pretalx/orga/templates/orga/cfp/text.html:135
+#: pretalx/orga/templates/orga/cfp/text.html:134
 #: pretalx/submission/forms/submission.py:25
-#: pretalx/submission/models/submission.py:222
+#: pretalx/submission/models/submission.py:220
 msgid "Session image"
 msgstr "会话图片"
-
-#: pretalx/orga/templates/orga/cfp/text.html:141
-#: pretalx/orga/templates/orga/review/dashboard.html:102
-#: pretalx/orga/templates/orga/review/dashboard.html:203
-#: pretalx/submission/models/submission.py:195
-msgid "Duration"
-msgstr "持续时间"
 
 #: pretalx/orga/templates/orga/cfp/track_delete.html:5
 msgid "Do you really want to delete this track?"
 msgstr "你真的想要删除这个曲目吗？"
 
 #: pretalx/orga/templates/orga/cfp/track_form.html:24
-#: pretalx/orga/templates/orga/cfp/track_view.html:61
+#: pretalx/orga/templates/orga/cfp/track_view.html:63
 msgid "New track"
 msgstr "新曲目"
 
@@ -4381,7 +4490,8 @@ msgid ""
 "themselves. Track colors are helpful to help attendees navigate your "
 "schedule."
 msgstr ""
-"Track是用来将您的会话分成不同类别的。您可以使用CfP设置来确定演讲者是否可以自己选择会话的跟踪。跟踪颜色有助于帮助参会者浏览您的时间表。"
+"Track是用来将您的会话分成不同类别的。您可以使用CfP设置来确定演讲者是否可以自"
+"己选择会话的跟踪。跟踪颜色有助于帮助参会者浏览您的时间表。"
 
 #: pretalx/orga/templates/orga/cfp/track_view.html:19
 #: pretalx/orga/templates/orga/submission/tag_list.html:13
@@ -4394,7 +4504,9 @@ msgid ""
 "Your event has been created and you're ready to go! Check out the event "
 "settings, set up your Call for Papers with session types and questions, and "
 "you're ready to go!"
-msgstr "您的活动已创建完成！在发布前，请检查活动设置，设置演讲征集和议程类型以及问题。"
+msgstr ""
+"您的活动已创建完成！在发布前，请检查活动设置，设置演讲征集和议程类型以及问"
+"题。"
 
 #: pretalx/orga/templates/orga/event/dashboard.html:53
 msgid "Your event is currently"
@@ -4422,8 +4534,8 @@ msgstr "你真的想要删除这个事件吗？"
 
 #: pretalx/orga/templates/orga/event/delete.html:7
 msgid ""
-"ALL related data, such as proposals, and speaker profiles, and uploads, will"
-" also be deleted and cannot be restored."
+"ALL related data, such as proposals, and speaker profiles, and uploads, will "
+"also be deleted and cannot be restored."
 msgstr "所有相关资料，如提案、演讲者简介和上传内容，也将被删除，无法恢复。"
 
 #: pretalx/orga/templates/orga/event/history.html:5
@@ -4443,12 +4555,14 @@ msgstr "直播"
 msgid ""
 "Your event is currently live and publicly visible. If you take it down, it "
 "will only be visible to you and your team."
-msgstr "你的活动目前正在进行中并且是公共可见的。如果你把它取下，它将只对你和你的团队可见。"
+msgstr ""
+"你的活动目前正在进行中并且是公共可见的。如果你把它取下，它将只对你和你的团队"
+"可见。"
 
 #: pretalx/orga/templates/orga/event/live.html:13
 msgid ""
-"Your event is currently only visible to you and your team. By going live, it"
-" will be publicly visible."
+"Your event is currently only visible to you and your team. By going live, it "
+"will be publicly visible."
 msgstr "您的活动目前只对您和您的团队可见。通过直播，它将公开可见。"
 
 #: pretalx/orga/templates/orga/event/live.html:20
@@ -4494,13 +4608,16 @@ msgid ""
 "You can copy settings from previous events here, such as mail settings, "
 "session types, and email templates. Please check those settings once the "
 "event has been created!"
-msgstr "你可以在这里从先前的活动中复制设置，例如邮件设置、会话类型和电子邮件模板。请在创建活动后检查这些设置！"
+msgstr ""
+"你可以在这里从先前的活动中复制设置，例如邮件设置、会话类型和电子邮件模板。请"
+"在创建活动后检查这些设置！"
 
 #: pretalx/orga/templates/orga/event/wizard/display.html:19
 msgid ""
 "Choose your inital customisations here – you can always change them later, "
 "or enhance them with custom CSS."
-msgstr "在这里选择您的初始自定义 - 您始终可以稍后更改它们，或使用自定义CSS进行增强。"
+msgstr ""
+"在这里选择您的初始自定义 - 您始终可以稍后更改它们，或使用自定义CSS进行增强。"
 
 #: pretalx/orga/templates/orga/event/wizard/initial.html:6
 msgid ""
@@ -4512,7 +4629,9 @@ msgid ""
 "What's your timeline like? You can later add session types with different "
 "deadlines (e.g. if you accept workshop proposals later than your talk "
 "proposals)."
-msgstr "你的时间表是怎样的？你随后可以添加不同截止期限的会话类型（例如，如果你比演讲提案晚接受研讨会提案）。"
+msgstr ""
+"你的时间表是怎样的？你随后可以添加不同截止期限的会话类型（例如，如果你比演讲"
+"提案晚接受研讨会提案）。"
 
 #: pretalx/orga/templates/orga/event_list.html:12
 msgid "Your upcoming events"
@@ -4522,7 +4641,7 @@ msgstr "你即将到来的事件"
 #: pretalx/orga/templates/orga/event_list.html:60
 #: pretalx/orga/templates/orga/speaker/form.html:21
 #: pretalx/orga/templates/orga/submission/list.html:28
-#: pretalx/orga/views/dashboard.py:311
+#: pretalx/orga/views/dashboard.py:312
 msgid "proposal"
 msgid_plural "proposals"
 msgstr[0] ""
@@ -4573,24 +4692,25 @@ msgstr "你已被邀请加入组织者团队%(name)s。"
 #: pretalx/orga/templates/orga/invitation.html:21
 #, python-format
 msgid ""
-"If you already have an account – either as a speaker or an organiser – at <a"
-" href=\"%(domain)s\">%(domain)s</a>, please log in now. Otherwise, create a "
+"If you already have an account – either as a speaker or an organiser – at <a "
+"href=\"%(domain)s\">%(domain)s</a>, please log in now. Otherwise, create a "
 "new account to join the team!"
 msgstr ""
-"如果你已经在<a "
-"href=\"%(domain)s\">%(domain)s</a>拥有演讲者或组织者账户，请立即登录。否则，请创建一个新账户加入我们的团队！"
+"如果你已经在<a href=\"%(domain)s\">%(domain)s</a>拥有演讲者或组织者账户，请立"
+"即登录。否则，请创建一个新账户加入我们的团队！"
 
 #: pretalx/orga/templates/orga/invitation.html:36
 #, python-format
 msgid ""
 "To accept the invitation with the account you're currently active, please "
 "use the button below. If you want to accept the invitation with a different "
-"account, you can <a href=\"/orga/logout/?next=%(link)s\">log out</a> and log"
-" in with the other account. </p><p> If you believe to have received this "
+"account, you can <a href=\"/orga/logout/?next=%(link)s\">log out</a> and log "
+"in with the other account. </p><p> If you believe to have received this "
 "invitation by mistake, please contact the organiser directly."
 msgstr ""
-"若要使用当前活跃帐户接受邀请，请使用下面的按钮。如果您想使用其他帐户接受邀请，则可以<a "
-"href=\"/orga/logout/?next=%(link)s\">注销</a>并使用其他帐户登录。如果您认为收到此邀请是错误的，请直接联系组织者。"
+"若要使用当前活跃帐户接受邀请，请使用下面的按钮。如果您想使用其他帐户接受邀"
+"请，则可以<a href=\"/orga/logout/?next=%(link)s\">注销</a>并使用其他帐户登"
+"录。如果您认为收到此邀请是错误的，请直接联系组织者。"
 
 #: pretalx/orga/templates/orga/invitation.html:44
 msgid "Join the team!"
@@ -4695,12 +4815,12 @@ msgid "send"
 msgstr "发送"
 
 #: pretalx/orga/templates/orga/mails/outbox_list.html:94
-#: pretalx/orga/templates/orga/submission/list.html:162
+#: pretalx/orga/templates/orga/submission/list.html:166
 msgid "edit"
 msgstr "编辑"
 
 #: pretalx/orga/templates/orga/mails/outbox_list.html:99
-#: pretalx/orga/templates/orga/submission/list.html:167
+#: pretalx/orga/templates/orga/submission/list.html:171
 msgid "delete"
 msgstr "删除"
 
@@ -4712,7 +4832,9 @@ msgstr "发送提醒未提交的提案草稿"
 msgid ""
 "These emails will be sent out immediately! They will not be saved to the "
 "outbox or logged first, to protect the privacy of the draft authors."
-msgstr "这些邮件将立即发送！它们不会被保存到发件箱或先进行日志记录，以保护草稿作者的隐私。"
+msgstr ""
+"这些邮件将立即发送！它们不会被保存到发件箱或先进行日志记录，以保护草稿作者的"
+"隐私。"
 
 #: pretalx/orga/templates/orga/mails/send_form.html:20
 msgid "E-mail preview"
@@ -4736,7 +4858,8 @@ msgid ""
 "example, if you are using {session_room}, but some proposals don't have a "
 "room yet, only emails for proposals with a scheduled room will be created."
 msgstr ""
-"如果占位符无效，将不会创建邮件！例如，如果您正在使用{session_room}，但某些提案尚未确定房间，则只会为已安排房间的提案创建电子邮件。"
+"如果占位符无效，将不会创建邮件！例如，如果您正在使用{session_room}，但某些提"
+"案尚未确定房间，则只会为已安排房间的提案创建电子邮件。"
 
 #: pretalx/orga/templates/orga/mails/send_form.html:45
 #, python-format
@@ -4784,13 +4907,15 @@ msgid ""
 "to the \"Send Emails\" tab. Mails queued for sending are in the \"Outbox\" "
 "tab."
 msgstr ""
-"您可以在此处编辑默认模板和自定义电子邮件模板。如果您想发送电子邮件给某些或所有演讲者，请前往“发送电子邮件”标签。队列中待发送的邮件在“发件箱”标签中。"
+"您可以在此处编辑默认模板和自定义电子邮件模板。如果您想发送电子邮件给某些或所"
+"有演讲者，请前往“发送电子邮件”标签。队列中待发送的邮件在“发件箱”标签中。"
 
 #: pretalx/orga/templates/orga/mails/template_list.html:16
 msgid ""
 "There are different placeholders available depending on the template type. "
 "They are explained in detail once you start editing a template."
-msgstr "根据模板类型，有不同的占位符可用。一旦您开始编辑模板，它们将被详细解释。"
+msgstr ""
+"根据模板类型，有不同的占位符可用。一旦您开始编辑模板，它们将被详细解释。"
 
 #: pretalx/orga/templates/orga/mails/template_list.html:27
 msgid "New custom template"
@@ -4841,7 +4966,9 @@ msgstr "你真的想要删除这个组织者吗？"
 msgid ""
 "ALL related data for ALL events, such as proposals, and speaker profiles, "
 "and uploads, will also be deleted and cannot be restored."
-msgstr "所有与所有活动相关的数据，如提案、演讲者简介和文件上传，也将被删除，无法恢复。"
+msgstr ""
+"所有与所有活动相关的数据，如提案、演讲者简介和文件上传，也将被删除，无法恢"
+"复。"
 
 #: pretalx/orga/templates/orga/organiser/detail.html:18
 msgid "Delete organiser"
@@ -4878,19 +5005,19 @@ msgstr "你是这个团队的成员。"
 msgid "New team"
 msgstr "新团队"
 
-#: pretalx/orga/templates/orga/organiser/list.html:28
+#: pretalx/orga/templates/orga/organiser/list.html:25
 msgid "event"
 msgid_plural "events"
 msgstr[0] ""
 msgstr[1] ""
 
-#: pretalx/orga/templates/orga/organiser/list.html:36
+#: pretalx/orga/templates/orga/organiser/list.html:33
 msgid "team"
 msgid_plural "teams"
 msgstr[0] ""
 msgstr[1] ""
 
-#: pretalx/orga/templates/orga/organiser/list.html:48
+#: pretalx/orga/templates/orga/organiser/list.html:45
 msgid "There are no organisers you can edit."
 msgstr "没有你可以编辑的组织者。"
 
@@ -4937,8 +5064,10 @@ msgid ""
 "be either the reviewer's email address or their user code (e.g. \"34KJN\"). "
 "You can find an example file <a href=\"%(href)s\">here</a>."
 msgstr ""
-"您可以在此处从JSON文件上传您的审稿人任务分配。你可以将建议书代码（例如“UX3N1”）作为键，并将用户识别作为值，或者反之亦然。用户识别可以是审稿人的电子邮件地址或用户代码（例如“34KJN”）。您可以在<a"
-" href=\"%(href)s\">这里</a>找到一个示例文件。"
+"您可以在此处从JSON文件上传您的审稿人任务分配。你可以将建议书代码（例"
+"如“UX3N1”）作为键，并将用户识别作为值，或者反之亦然。用户识别可以是审稿人的电"
+"子邮件地址或用户代码（例如“34KJN”）。您可以在<a href=\"%(href)s\">这里</a>找"
+"到一个示例文件。"
 
 #: pretalx/orga/templates/orga/review/assignment-import.html:24
 msgid "Import"
@@ -4958,9 +5087,11 @@ msgstr "导入"
 #, python-format
 msgid ""
 "Reviewers will be able to see and review <b>only their assigned</b> "
-"proposals. You can change this in your <a href=\"%(href)s\">review "
-"settings</a>."
-msgstr "审稿人只能看到和审查<b>分配给他们的</b>提案。您可以在您的<a href=\"%(href)s\">审查设置</a>中更改此设置。"
+"proposals. You can change this in your <a href=\"%(href)s\">review settings</"
+"a>."
+msgstr ""
+"审稿人只能看到和审查<b>分配给他们的</b>提案。您可以在您的<a "
+"href=\"%(href)s\">审查设置</a>中更改此设置。"
 
 #: pretalx/orga/templates/orga/review/assignment.html:35
 #, python-format
@@ -4968,14 +5099,18 @@ msgid ""
 "Reviewers will be able to see and review <b>all proposals</b>, but their "
 "assigned reviews will appear highlighted, and they will be directed to them "
 "first. You can change this in your <a href=\"%(href)s\">review settings</a>."
-msgstr "审稿人将能够查看和审查所有提案，但他们的指定审查将会被突出显示，并且他们将被导向首先审查它们。您可以在您的<a href=\"%(href)s\">审查偏好</a>中更改此设置。"
+msgstr ""
+"审稿人将能够查看和审查所有提案，但他们的指定审查将会被突出显示，并且他们将被"
+"导向首先审查它们。您可以在您的<a href=\"%(href)s\">审查偏好</a>中更改此设置。"
 
 #: pretalx/orga/templates/orga/review/assignment.html:44
 msgid ""
 "This is where you can assign reviewers to specific proposals! Please use "
 "this drop-down to switch between the two assignment modes (assigning "
 "reviewers to proposals or proposals to reviewers)."
-msgstr "这是您可以指派评审人员到特定提案的地方！请使用此下拉菜单在两个指派模式（将评审人员分配给提案或提案分配给评审人员）之间切换。"
+msgstr ""
+"这是您可以指派评审人员到特定提案的地方！请使用此下拉菜单在两个指派模式（将评"
+"审人员分配给提案或提案分配给评审人员）之间切换。"
 
 #: pretalx/orga/templates/orga/review/assignment.html:48
 msgid ""
@@ -4984,7 +5119,7 @@ msgid ""
 msgstr "您也可以使用上面的“操作”菜单，从准备好的文件中导入您的任务。"
 
 #: pretalx/orga/templates/orga/review/dashboard.html:26
-#: pretalx/orga/views/dashboard.py:205
+#: pretalx/orga/views/dashboard.py:206
 msgid "proposal is waiting for your review."
 msgid_plural "proposals are waiting for your review."
 msgstr[0] ""
@@ -5011,15 +5146,15 @@ msgid "Columns"
 msgstr "栏目"
 
 #: pretalx/orga/templates/orga/review/dashboard.html:75
-#: pretalx/orga/templates/orga/review/dashboard.html:182
+#: pretalx/orga/templates/orga/review/dashboard.html:194
 msgid "Your score"
 msgstr "你的分数"
 
 #: pretalx/orga/templates/orga/review/dashboard.html:81
-#: pretalx/orga/templates/orga/review/dashboard.html:193
+#: pretalx/orga/templates/orga/review/dashboard.html:205
 #: pretalx/orga/templates/orga/submission/base.html:73
 #: pretalx/orga/templates/orga/submission/content.html:55
-#: pretalx/orga/views/dashboard.py:181
+#: pretalx/orga/views/dashboard.py:182
 msgid "Reviews"
 msgstr "评论"
 
@@ -5032,80 +5167,93 @@ msgstr "重新生成决定邮件"
 msgid "Apply pending changes"
 msgstr "应用待定更改"
 
-#: pretalx/orga/templates/orga/review/dashboard.html:169
+#: pretalx/orga/templates/orga/review/dashboard.html:138
+#: pretalx/orga/templates/orga/speaker/list.html:27
+#: pretalx/orga/templates/orga/submission/list.html:67
+#, python-format
+msgid "List filtered by answers to question \"%(question)s\"."
+msgstr "根据问题 \"%(question)s\" 的答案过滤的列表。"
+
+#: pretalx/orga/templates/orga/review/dashboard.html:143
+#: pretalx/orga/templates/orga/speaker/list.html:32
+#: pretalx/orga/templates/orga/submission/list.html:72
+msgid "Remove filter"
+msgstr "移除过滤器"
+
+#: pretalx/orga/templates/orga/review/dashboard.html:181
 msgid "Average"
 msgstr "平均"
 
-#: pretalx/orga/templates/orga/review/dashboard.html:171
 #: pretalx/orga/templates/orga/review/dashboard.html:183
+#: pretalx/orga/templates/orga/review/dashboard.html:195
 msgid "Sort by score (highest first)"
 msgstr "按分数排序（从高到低）"
 
-#: pretalx/orga/templates/orga/review/dashboard.html:172
 #: pretalx/orga/templates/orga/review/dashboard.html:184
+#: pretalx/orga/templates/orga/review/dashboard.html:196
 msgid "Sort by score (lowest first)"
 msgstr "按照分数排序（从低到高）"
 
-#: pretalx/orga/templates/orga/review/dashboard.html:194
+#: pretalx/orga/templates/orga/review/dashboard.html:206
 msgid "Sort by review count (highest first)"
 msgstr "按评论数排序（从高到低）"
 
-#: pretalx/orga/templates/orga/review/dashboard.html:195
+#: pretalx/orga/templates/orga/review/dashboard.html:207
 msgid "Sort by review count (lowest first)"
 msgstr "按评论数量排序（从低到高）"
 
-#: pretalx/orga/templates/orga/review/dashboard.html:204
-#: pretalx/orga/templates/orga/submission/list.html:93
+#: pretalx/orga/templates/orga/review/dashboard.html:216
+#: pretalx/orga/templates/orga/submission/list.html:91
 msgid "Type"
 msgstr "类型"
 
-#: pretalx/orga/templates/orga/review/dashboard.html:211
+#: pretalx/orga/templates/orga/review/dashboard.html:223
 msgid "Accept all"
 msgstr "接受全部"
 
-#: pretalx/orga/templates/orga/review/dashboard.html:215
+#: pretalx/orga/templates/orga/review/dashboard.html:227
 msgid "Reject all"
 msgstr "拒绝全部"
 
-#: pretalx/orga/templates/orga/review/dashboard.html:217
+#: pretalx/orga/templates/orga/review/dashboard.html:229
 msgid "Unset accept/reject vote for all"
 msgstr "取消所有的接受/拒绝投票"
 
-#: pretalx/orga/templates/orga/review/dashboard.html:249
+#: pretalx/orga/templates/orga/review/dashboard.html:261
 msgid "You have reviewed this proposal"
 msgstr "您已经审核了这份提案"
 
-#: pretalx/orga/templates/orga/review/dashboard.html:251
+#: pretalx/orga/templates/orga/review/dashboard.html:263
 msgid "You cannot review this proposal"
 msgstr "您不能评审此提案"
 
-#: pretalx/orga/templates/orga/review/dashboard.html:254
+#: pretalx/orga/templates/orga/review/dashboard.html:266
 msgid "You have been assigned to this proposal"
 msgstr "你已被分配到这个提案"
 
-#: pretalx/orga/templates/orga/review/dashboard.html:287
+#: pretalx/orga/templates/orga/review/dashboard.html:299
 #: pretalx/orga/templates/orga/speaker/form.html:41
 msgid "pending"
 msgstr "等待中"
 
-#: pretalx/orga/templates/orga/review/dashboard.html:298
-#: pretalx/orga/templates/orga/review/dashboard.html:320
+#: pretalx/orga/templates/orga/review/dashboard.html:310
+#: pretalx/orga/templates/orga/review/dashboard.html:332
 msgid "Reject"
 msgstr "拒绝"
 
-#: pretalx/orga/templates/orga/review/dashboard.html:300
+#: pretalx/orga/templates/orga/review/dashboard.html:312
 msgid "Unset accept/reject vote"
 msgstr "取消接受/拒绝投票"
 
-#: pretalx/orga/templates/orga/review/dashboard.html:306
+#: pretalx/orga/templates/orga/review/dashboard.html:318
 msgid "You don't seem to have any proposals yet."
 msgstr "你似乎还没有任何建议。"
 
-#: pretalx/orga/templates/orga/review/dashboard.html:315
+#: pretalx/orga/templates/orga/review/dashboard.html:327
 msgid "Mark new states as 'pending'"
 msgstr "将新状态标记为“待处理”。"
 
-#: pretalx/orga/templates/orga/review/dashboard.html:322
+#: pretalx/orga/templates/orga/review/dashboard.html:334
 msgid "Go!"
 msgstr "Go!"
 
@@ -5134,7 +5282,8 @@ msgid ""
 "applications, while JSON exports are often used for integration with other "
 "tools."
 msgstr ""
-"在这里构建您自己的自定义导出，通过选择您所需的所有数据和导出格式。CSV导出可在Excel和类似应用程序中打开，而JSON导出通常用于与其他工具集成。"
+"在这里构建您自己的自定义导出，通过选择您所需的所有数据和导出格式。CSV导出可在"
+"Excel和类似应用程序中打开，而JSON导出通常用于与其他工具集成。"
 
 #: pretalx/orga/templates/orga/review/export.html:33
 #: pretalx/orga/templates/orga/schedule/export.html:36
@@ -5175,7 +5324,9 @@ msgid ""
 "access the organiser version in automatic integrations, you'll have to "
 "provide your authentication token just like in the API, like this:"
 msgstr ""
-"一些普通的出口仅对组织者可用，或在使用组织者帐户访问时包含更多信息。如果您想在自动集成中访问组织者版本，则必须提供您的身份验证令牌，就像在API中一样，如下所示："
+"一些普通的出口仅对组织者可用，或在使用组织者帐户访问时包含更多信息。如果您想"
+"在自动集成中访问组织者版本，则必须提供您的身份验证令牌，就像在API中一样，如下"
+"所示："
 
 #: pretalx/orga/templates/orga/review/export.html:79
 #: pretalx/orga/templates/orga/schedule/export.html:147
@@ -5198,7 +5349,9 @@ msgstr "重新生成通知电子邮件"
 msgid ""
 "Do you really want to regenerate %(count)s acceptance and rejection emails? "
 "They will be placed in the outbox and not sent out directly."
-msgstr "你真的想要重新产生%(count)s份接受和拒绝的电子邮件吗？它们会被放置在发件箱而不是直接发送出去。"
+msgstr ""
+"你真的想要重新产生%(count)s份接受和拒绝的电子邮件吗？它们会被放置在发件箱而不"
+"是直接发送出去。"
 
 #: pretalx/orga/templates/orga/schedule/export.html:8
 msgid "Export schedule data"
@@ -5215,7 +5368,9 @@ msgid ""
 "pretalx provides a range of exports. If none of these match what you are "
 "looking for, you can also provide a custom plugin to export the data – "
 "please ask your administrator to install the plugin."
-msgstr "pretalx提供了各种导出选项。如果没有符合您需要的选项，您也可以提供一个自定义插件来导出数据 - 请向您的管理员请求安装该插件。"
+msgstr ""
+"pretalx提供了各种导出选项。如果没有符合您需要的选项，您也可以提供一个自定义插"
+"件来导出数据 - 请向您的管理员请求安装该插件。"
 
 #: pretalx/orga/templates/orga/schedule/export.html:65
 #: pretalx/orga/templates/orga/speaker/export.html:75
@@ -5230,8 +5385,8 @@ msgstr "演讲者导出"
 
 #: pretalx/orga/templates/orga/schedule/export.html:72
 msgid ""
-"You haven't released a schedule yet – many of these data exporters only work"
-" on a released schedule."
+"You haven't released a schedule yet – many of these data exporters only work "
+"on a released schedule."
 msgstr "您还没有发布时间表 - 这些数据导出器中许多只能在发布时间表上运行。"
 
 #: pretalx/orga/templates/orga/schedule/export.html:101
@@ -5242,10 +5397,10 @@ msgstr "HTML导出"
 msgid ""
 "The event schedule can be exported to a static HTML dump, so you can upload "
 "it to a normal file-serving web server like nginx. This is done "
-"automatically on schedule release, but you can also trigger that action "
-"here."
+"automatically on schedule release, but you can also trigger that action here."
 msgstr ""
-"事件日程表可以导出为静态HTML转储，因此您可以将其上传到像nginx这样的普通文件服务Web服务器上。这在时间表发布时会自动完成，但您也可以在此处触发该操作。"
+"事件日程表可以导出为静态HTML转储，因此您可以将其上传到像nginx这样的普通文件服"
+"务Web服务器上。这在时间表发布时会自动完成，但您也可以在此处触发该操作。"
 
 #: pretalx/orga/templates/orga/schedule/export.html:114
 msgid "Download ZIP"
@@ -5262,9 +5417,11 @@ msgstr "导入 XML"
 #: pretalx/orga/templates/orga/schedule/import.html:11
 msgid ""
 "Submit an XML file here to release a new schedule, containing exactly the "
-"sessions specified in the XML file. The format is expected to be the same as"
-" the XML export provided."
-msgstr "在此提交一个XML文件以发布新日程，其中包含XML文件中指定的会话。预期格式与提供的XML导出相同。"
+"sessions specified in the XML file. The format is expected to be the same as "
+"the XML export provided."
+msgstr ""
+"在此提交一个XML文件以发布新日程，其中包含XML文件中指定的会话。预期格式与提供"
+"的XML导出相同。"
 
 #: pretalx/orga/templates/orga/schedule/import.html:20
 msgid "Upload"
@@ -5306,8 +5463,8 @@ msgstr "重新发送演讲者通知"
 
 #: pretalx/orga/templates/orga/schedule/index.html:87
 msgid ""
-"You can start planning your schedule once you have configured some rooms for"
-" sessions to take place in."
+"You can start planning your schedule once you have configured some rooms for "
+"sessions to take place in."
 msgstr "一旦您设置了要进行课程的一些房间，您就可以开始规划您的时间表了。"
 
 #: pretalx/orga/templates/orga/schedule/index.html:88
@@ -5344,19 +5501,20 @@ msgid ""
 "emails </strong> will be generated and placed in the outbox, to tell "
 "speakers about their session slots."
 msgstr ""
-"发布这个新日程时，将生成 <strong>%(notifications)s 封通知邮件</strong> 并放置在发件箱中，告知演讲者他们的会话时间。"
+"发布这个新日程时，将生成 <strong>%(notifications)s 封通知邮件</strong> 并放置"
+"在发件箱中，告知演讲者他们的会话时间。"
 
 #: pretalx/orga/templates/orga/schedule/release.html:32
 msgid ""
-"This schedule release would result in <strong>no notification "
-"emails</strong> for speakers."
+"This schedule release would result in <strong>no notification emails</"
+"strong> for speakers."
 msgstr "这个时间表发布将不会为演讲者产生任何通知邮件。"
 
 #: pretalx/orga/templates/orga/schedule/release.html:39
 #, python-format
 msgid ""
-"%(unconfirmed)s sessions are still <strong>unconfirmed</strong> and will not"
-" show up on the public schedule."
+"%(unconfirmed)s sessions are still <strong>unconfirmed</strong> and will not "
+"show up on the public schedule."
 msgstr "%(unconfirmed)s个会话仍未确认，将不会在公开日程表中显示。"
 
 #: pretalx/orga/templates/orga/schedule/release.html:42
@@ -5384,8 +5542,8 @@ msgstr "公共变更日志"
 
 #: pretalx/orga/templates/orga/schedule/release.html:74
 msgid ""
-"This is how the new schedule version will appear in the public changelog and"
-" in the RSS feed."
+"This is how the new schedule version will appear in the public changelog and "
+"in the RSS feed."
 msgstr "这就是新时间表版本将出现在公共变更日志和RSS订阅中的样子。"
 
 #: pretalx/orga/templates/orga/schedule/release.html:95
@@ -5458,7 +5616,9 @@ msgid ""
 "If you don't configure custom email settings, the global configuration for "
 "this server will be used (ask your administrator for details).<br> We "
 "recommend that you add email settings here explicitly."
-msgstr "如果您没有配置自定义的电子邮件设置，则将使用此服务器的全局配置（请向管理员询问详细信息）。我们建议您在此明确添加电子邮件设置。"
+msgstr ""
+"如果您没有配置自定义的电子邮件设置，则将使用此服务器的全局配置（请向管理员询"
+"问详细信息）。我们建议您在此明确添加电子邮件设置。"
 
 #: pretalx/orga/templates/orga/settings/mail.html:30
 msgid "Save and test custom SMTP connection"
@@ -5476,7 +5636,8 @@ msgid ""
 "offered an additional %(quotation_open)sAbstain%(quotation_close)s button "
 "when reviewing proposals."
 msgstr ""
-"如果您不需要评审分数或评审文本，评审人在评审提案时将可选择添加额外的%(quotation_open)s放弃%(quotation_close)s按键。"
+"如果您不需要评审分数或评审文本，评审人在评审提案时将可选择添加额外"
+"的%(quotation_open)s放弃%(quotation_close)s按键。"
 
 #: pretalx/orga/templates/orga/settings/review.html:39
 msgid "Review scoring"
@@ -5489,7 +5650,8 @@ msgid ""
 "this total score can be weighted. Currently, the total score is calculated "
 "as:"
 msgstr ""
-"你可以要求评审人提供一个或多个分数。如果您要求多个分数，则它们将加起来形成最终总分。如果您愿意，可以对总分进行加权。当前，总分的计算方式如下："
+"你可以要求评审人提供一个或多个分数。如果您要求多个分数，则它们将加起来形成最"
+"终总分。如果您愿意，可以对总分进行加权。当前，总分的计算方式如下："
 
 #: pretalx/orga/templates/orga/settings/review.html:60
 msgid "Review Score category"
@@ -5520,11 +5682,13 @@ msgstr "审查阶段"
 #: pretalx/orga/templates/orga/settings/review.html:161
 msgid ""
 "Review phases allow you to structure your review process. By default, there "
-"are two review phases: The review itself, and the selection process once the"
-" review phase is over. But you could for example add another review and "
+"are two review phases: The review itself, and the selection process once the "
+"review phase is over. But you could for example add another review and "
 "selection phase after that, if you require additional review rounds."
 msgstr ""
-"审核阶段可以帮助您组织审核过程。默认情况下，有两种审核阶段：审核本身和审核阶段结束后的选择过程。但是，如果您需要额外的审核轮次，例如，您可以在此之后添加另一个审核和选择阶段。"
+"审核阶段可以帮助您组织审核过程。默认情况下，有两种审核阶段：审核本身和审核阶"
+"段结束后的选择过程。但是，如果您需要额外的审核轮次，例如，您可以在此之后添加"
+"另一个审核和选择阶段。"
 
 #: pretalx/orga/templates/orga/settings/review.html:176
 #: pretalx/orga/templates/orga/settings/review.html:226
@@ -5593,7 +5757,9 @@ msgstr "重置密码："
 msgid ""
 "Do you really want to reset this user's password? They won't be able to log "
 "in until they set a new password. The email will go to: "
-msgstr "你真的想要重置这个用户的密码吗？在他们设置新密码之前，他们将无法登录。该电子邮件将发送至："
+msgstr ""
+"你真的想要重置这个用户的密码吗？在他们设置新密码之前，他们将无法登录。该电子"
+"邮件将发送至："
 
 #: pretalx/orga/templates/orga/settings/team_tracks.html:11
 msgid ""
@@ -5602,12 +5768,14 @@ msgid ""
 "additional access rights (e.g. due to being member in another team) will "
 "still be able to see all proposals."
 msgstr ""
-"审核团队可以被限制在特定轨道上，这样审阅者只能看到来自该轨道的审核。请注意，具有其他访问权限（例如，因为是另一个团队的成员）的审阅者仍然可以看到所有建议。"
+"审核团队可以被限制在特定轨道上，这样审阅者只能看到来自该轨道的审核。请注意，"
+"具有其他访问权限（例如，因为是另一个团队的成员）的审阅者仍然可以看到所有建"
+"议。"
 
 #: pretalx/orga/templates/orga/settings/team_tracks.html:23
 msgid ""
-"None of the events this team has access to has any tracks configured at this"
-" time."
+"None of the events this team has access to has any tracks configured at this "
+"time."
 msgstr "该团队可以访问的所有事件目前都没有任何配置好的轨迹。"
 
 #: pretalx/orga/templates/orga/settings/widget.html:14
@@ -5619,7 +5787,9 @@ msgid ""
 "You can configure a pretalx schedule widget to show your event schedule on "
 "your homepage, instead of using this page. If you want to disable the "
 "schedule on here entirely, please activate the setting below."
-msgstr "您可以配置一个 Pretalx 日程小部件，在您的主页上展示活动日程，而不是使用此页面。如果您想完全禁用此页面上的日程，请激活下面的设置。"
+msgstr ""
+"您可以配置一个 Pretalx 日程小部件，在您的主页上展示活动日程，而不是使用此页"
+"面。如果您想完全禁用此页面上的日程，请激活下面的设置。"
 
 #: pretalx/orga/templates/orga/settings/widget.html:31
 msgid "Widget generation"
@@ -5628,10 +5798,12 @@ msgstr "小部件生成"
 #: pretalx/orga/templates/orga/settings/widget.html:33
 msgid ""
 "The pretalx schedule widget is a way to embed your schedule into your event "
-"website. This way, your attendees can see your schedule without leaving your"
-" website, and you can style the schedule to fit right in with your website."
+"website. This way, your attendees can see your schedule without leaving your "
+"website, and you can style the schedule to fit right in with your website."
 msgstr ""
-"Pretalx日程小部件是一种将您的日程嵌入到活动网站上的方式。这样，您的参会者可以在不离开您的网站的情况下看到您的日程，您也可以样式化日程，使其与您的网站完美融合。"
+"Pretalx日程小部件是一种将您的日程嵌入到活动网站上的方式。这样，您的参会者可以"
+"在不离开您的网站的情况下看到您的日程，您也可以样式化日程，使其与您的网站完美"
+"融合。"
 
 #: pretalx/orga/templates/orga/settings/widget.html:40
 msgid ""
@@ -5647,7 +5819,8 @@ msgstr "生成小部件"
 msgid ""
 "To embed the widget into your website, copy the following code to the "
 "<code>&lt;head></code> section of your website:"
-msgstr "将小部件嵌入您的网站，将以下代码复制到您网站的<code>&lt;head></code>部分："
+msgstr ""
+"将小部件嵌入您的网站，将以下代码复制到您网站的<code>&lt;head></code>部分："
 
 #: pretalx/orga/templates/orga/settings/widget.html:63
 msgid ""
@@ -5710,29 +5883,20 @@ msgid ""
 "Add important messages (e.g. \"Please bring an HDMI adapter if required.\") "
 "or files (e.g. a conference styleguide).<br> They are shown to the selected "
 "speakers above the list of their submitted sessions."
-msgstr "添加重要信息（例如：“如有需要请携带HDMI转接器”）或文件（例如会议风格指南）。它们会显示在已选演讲者的已提交议程列表之上。"
+msgstr ""
+"添加重要信息（例如：“如有需要请携带HDMI转接器”）或文件（例如会议风格指南）。"
+"它们会显示在已选演讲者的已提交议程列表之上。"
 
 #: pretalx/orga/templates/orga/speaker/information_list.html:50
 msgid "Add a new note"
 msgstr "添加一条新的注释"
 
 #: pretalx/orga/templates/orga/speaker/list.html:10
-#: pretalx/orga/views/dashboard.py:341
+#: pretalx/orga/views/dashboard.py:342
 msgid "submitter"
 msgid_plural "submitters"
 msgstr[0] ""
 msgstr[1] ""
-
-#: pretalx/orga/templates/orga/speaker/list.html:27
-#: pretalx/orga/templates/orga/submission/list.html:67
-#, python-format
-msgid "List filtered by answers to question \"%(question)s\"."
-msgstr "根据问题 \"%(question)s\" 的答案过滤的列表。"
-
-#: pretalx/orga/templates/orga/speaker/list.html:32
-#: pretalx/orga/templates/orga/submission/list.html:72
-msgid "Remove filter"
-msgstr "移除过滤器"
 
 #: pretalx/orga/templates/orga/speaker/list.html:43
 msgid "Accepted Proposals"
@@ -5759,7 +5923,9 @@ msgid ""
 "If a review phase with anonymisation is currently active, all reviewers who "
 "have no permissions to change this proposal will be shown the anonymised "
 "proposal content."
-msgstr "如果当前处于带有匿名处理的审查阶段，所有没有更改此提案权限的审阅者将看到已匿名处理的提案内容。"
+msgstr ""
+"如果当前处于带有匿名处理的审查阶段，所有没有更改此提案权限的审阅者将看到已匿"
+"名处理的提案内容。"
 
 #: pretalx/orga/templates/orga/submission/anonymise.html:24
 msgid "Original"
@@ -5847,82 +6013,89 @@ msgstr "建议供稿"
 msgid "Add new proposal"
 msgstr "添加新提案。"
 
-#: pretalx/orga/templates/orga/submission/list.html:87
+#: pretalx/orga/templates/orga/submission/list.html:85
 msgid "Sort by title (a-z)"
 msgstr "按标题排序（A-Z）"
 
-#: pretalx/orga/templates/orga/submission/list.html:88
+#: pretalx/orga/templates/orga/submission/list.html:86
 msgid "Sort by title (z-a)"
 msgstr "按标题排序（Z-A）"
 
-#: pretalx/orga/templates/orga/submission/list.html:98
+#: pretalx/orga/templates/orga/submission/list.html:96
 msgid "Sort by state (a-z)"
 msgstr "按州排序（A-Z）"
 
-#: pretalx/orga/templates/orga/submission/list.html:99
+#: pretalx/orga/templates/orga/submission/list.html:97
 msgid "Sort by state (z-a)"
 msgstr "按州排序（Z-A）"
 
-#: pretalx/orga/templates/orga/submission/list.html:103
+#: pretalx/orga/templates/orga/submission/list.html:101
 msgid "Featured"
 msgstr "特色的"
 
-#: pretalx/orga/templates/orga/submission/list.html:103
+#: pretalx/orga/templates/orga/submission/list.html:101
 msgid ""
 "Show this session on the list of featured sessions, once it was accepted"
 msgstr "一旦接受，请在特色会话列表上显示此会话。"
 
-#: pretalx/orga/templates/orga/submission/list.html:104
+#: pretalx/orga/templates/orga/submission/list.html:102
 msgid "Sort by featured first"
 msgstr "按精选排序"
 
-#: pretalx/orga/templates/orga/submission/list.html:105
+#: pretalx/orga/templates/orga/submission/list.html:103
 msgid "Sort featured last"
 msgstr "将特色项目放在最后排序"
 
-#: pretalx/orga/templates/orga/submission/list.html:146
+#: pretalx/orga/templates/orga/submission/list.html:118
+#: pretalx/orga/templates/orga/submission/list.html:122
+#, fuzzy
+#| msgid "Anonymised"
+msgid "anonymised"
+msgstr "匿名的"
+
+#: pretalx/orga/templates/orga/submission/list.html:150
 msgid "Show this proposal in the list of featured sessions."
 msgstr "将此提案显示在特色会话列表中。"
 
-#: pretalx/orga/templates/orga/submission/review.html:19
+#: pretalx/orga/templates/orga/submission/review.html:18
 msgid "You're not allowed to review or see reviews for your own proposals."
 msgstr "你不允许审查或查看自己的提议的评论。"
 
-#: pretalx/orga/templates/orga/submission/review.html:36
+#: pretalx/orga/templates/orga/submission/review.html:35
 msgid "You will be able to see other reviews once you have given yours."
 msgstr "一旦您发表评论，您就可以看到其他评论。"
 
-#: pretalx/orga/templates/orga/submission/review.html:109
+#: pretalx/orga/templates/orga/submission/review.html:124
 msgid "Other proposals"
 msgstr "其他提议"
 
-#: pretalx/orga/templates/orga/submission/review.html:171
+#: pretalx/orga/templates/orga/submission/review.html:186
 msgid "Nobody else has submitted a review yet."
 msgstr "目前还没有其他人提交评论。"
 
-#: pretalx/orga/templates/orga/submission/review.html:180
-#: pretalx/orga/templates/orga/submission/review.html:181
+#: pretalx/orga/templates/orga/submission/review.html:195
+#: pretalx/orga/templates/orga/submission/review.html:196
 msgid "Review progress"
 msgstr "审查进展"
 
-#: pretalx/orga/templates/orga/submission/review.html:190
+#: pretalx/orga/templates/orga/submission/review.html:205
 msgid "Go to random next unreviewed proposal, mark this one as skipped"
 msgstr "前往随机的下一个未经审核的建议，将此建议标记为跳过。"
 
-#: pretalx/orga/templates/orga/submission/review.html:190
+#: pretalx/orga/templates/orga/submission/review.html:205
 msgid "Skip for now"
 msgstr "现在跳过"
 
-#: pretalx/orga/templates/orga/submission/review.html:192
-#: pretalx/orga/templates/orga/submission/review.html:194
+#: pretalx/orga/templates/orga/submission/review.html:207
+#: pretalx/orga/templates/orga/submission/review.html:209
 msgid "Go to random next unreviewed proposal"
 msgstr "前往随机的下一个未审核的提案。"
 
-#: pretalx/orga/templates/orga/submission/review.html:192
+#: pretalx/orga/templates/orga/submission/review.html:207
 msgid "Abstain"
 msgstr "\"戒绝\""
 
-#: pretalx/orga/templates/orga/submission/review.html:194
+#: pretalx/orga/templates/orga/submission/review.html:209
 msgid "Save and next"
 msgstr "保存并下一个"
 
@@ -5930,7 +6103,8 @@ msgstr "保存并下一个"
 msgid ""
 "Add a speaker – if the email address isn't registered yet, an account will "
 "be created for them and an invitation sent."
-msgstr "添加一个扬声器- 如果电子邮件地址尚未注册，则将为他们创建一个帐户并发送邀请。"
+msgstr ""
+"添加一个扬声器- 如果电子邮件地址尚未注册，则将为他们创建一个帐户并发送邀请。"
 
 #: pretalx/orga/templates/orga/submission/speakers.html:17
 msgid "E-mail address"
@@ -6020,7 +6194,9 @@ msgid ""
 "No update check has been performed yet since the last update of this "
 "installation. Update checks are performed on a daily basis if your cronjob "
 "is set up properly."
-msgstr "自上一次更新安装之后，尚未进行任何更新检查。如果您的定时任务设置正确，每天将执行更新检查。"
+msgstr ""
+"自上一次更新安装之后，尚未进行任何更新检查。如果您的定时任务设置正确，每天将"
+"执行更新检查。"
 
 #: pretalx/orga/templates/orga/update.html:22
 #: pretalx/orga/templates/orga/update.html:42
@@ -6082,11 +6258,12 @@ msgstr "%(percentage)s %% 翻译完成"
 #: pretalx/orga/templates/orga/widgets/multi_languages_widget.html:9
 msgid ""
 "This translation is not maintained by the pretalx team. We cannot vouch for "
-"its correctness and new or recently changed features might not be translated"
-" and will show in English instead. You can help translating at "
-"github.com/pretalx/pretalx."
+"its correctness and new or recently changed features might not be translated "
+"and will show in English instead. You can help translating at github.com/"
+"pretalx/pretalx."
 msgstr ""
-"这个翻译不由pretalx团队维护。我们无法保证它的正确性，新的或最近更改的功能可能没有翻译，而会直接显示为英文。你可以在github.com/pretalx/pretalx上帮助翻译。"
+"这个翻译不由pretalx团队维护。我们无法保证它的正确性，新的或最近更改的功能可能"
+"没有翻译，而会直接显示为英文。你可以在github.com/pretalx/pretalx上帮助翻译。"
 
 #: pretalx/orga/templates/orga/widgets/multi_languages_widget.html:10
 msgid "Unofficial translation"
@@ -6168,7 +6345,7 @@ msgstr "这个轨迹已经被删除了。"
 msgid "This track is in use in a proposal and cannot be deleted."
 msgstr "这个轨迹正在方案中使用，无法删除。"
 
-#: pretalx/orga/views/cfp.py:619
+#: pretalx/orga/views/cfp.py:624
 msgid "The access code has been saved."
 msgstr "访问代码已保存。"
 
@@ -6184,177 +6361,182 @@ msgstr "访问代码已被删除。"
 msgid ""
 "This access code has been used for a proposal and cannot be deleted. To "
 "disable it, you can set its validity date to the past."
-msgstr "此访问代码已用于提案，无法删除。要禁用它，您可以将其有效日期设置为过去。"
+msgstr ""
+"此访问代码已用于提案，无法删除。要禁用它，您可以将其有效日期设置为过去。"
 
-#: pretalx/orga/views/dashboard.py:140
+#: pretalx/orga/views/dashboard.py:141
 msgid "until the CfP ends"
 msgstr "直到CfP结束"
 
-#: pretalx/orga/views/dashboard.py:152
+#: pretalx/orga/views/dashboard.py:153
 msgid "unsubmitted proposal draft"
 msgid_plural "unsubmitted proposal drafts"
 msgstr[0] ""
 msgstr[1] ""
 
-#: pretalx/orga/views/dashboard.py:159
+#: pretalx/orga/views/dashboard.py:160
 msgid "Send reminder"
 msgstr "发送提醒"
 
-#: pretalx/orga/views/dashboard.py:186
+#: pretalx/orga/views/dashboard.py:187
 msgid "Active reviewers"
 msgstr "活跃的审查者"
 
-#: pretalx/orga/views/dashboard.py:244
+#: pretalx/orga/views/dashboard.py:245
 msgid "day until event start"
 msgid_plural "days until event start"
 msgstr[0] ""
 msgstr[1] ""
 
-#: pretalx/orga/views/dashboard.py:255
+#: pretalx/orga/views/dashboard.py:256
 msgid "day since event end"
 msgid_plural "days since event end"
 msgstr[0] ""
 msgstr[1] ""
 
-#: pretalx/orga/views/dashboard.py:264
+#: pretalx/orga/views/dashboard.py:265
 #, python-brace-format
 msgid "Day {number}"
 msgstr "第 {number} 天"
 
-#: pretalx/orga/views/dashboard.py:265
+#: pretalx/orga/views/dashboard.py:266
 #, python-brace-format
 msgid "of {total_days} days"
 msgstr "共{total_days}天"
 
-#: pretalx/orga/views/dashboard.py:276
+#: pretalx/orga/views/dashboard.py:277
 msgid "current schedule"
 msgstr "当前日程"
 
-#: pretalx/orga/views/dashboard.py:289
+#: pretalx/orga/views/dashboard.py:290
 msgid "session"
 msgid_plural "sessions"
 msgstr[0] ""
 msgstr[1] ""
 
-#: pretalx/orga/views/dashboard.py:294
+#: pretalx/orga/views/dashboard.py:295
 msgid "unconfirmed"
 msgstr "未确认"
 
-#: pretalx/orga/views/dashboard.py:322
+#: pretalx/orga/views/dashboard.py:323
 msgid "speaker"
 msgid_plural "speakers"
 msgstr[0] ""
 msgstr[1] ""
 
-#: pretalx/orga/views/dashboard.py:350
+#: pretalx/orga/views/dashboard.py:351
 msgid "sent email"
 msgid_plural "sent emails"
 msgstr[0] ""
 msgstr[1] ""
 
-#: pretalx/orga/views/event.py:111
+#: pretalx/orga/views/event.py:110
 msgid "The event settings have been saved."
 msgstr "事件设置已保存。"
 
-#: pretalx/orga/views/event.py:131
+#: pretalx/orga/views/event.py:130
 msgid "The CfP doesn't have a full text yet."
 msgstr "CfP还没有完整的文本。"
 
-#: pretalx/orga/views/event.py:141
+#: pretalx/orga/views/event.py:140
 msgid "The event doesn't have a landing page text yet."
 msgstr "这个活动还没有着陆页面的文本。"
 
-#: pretalx/orga/views/event.py:154
+#: pretalx/orga/views/event.py:153
 msgid ""
-"You want submitters to choose the tracks for their proposals, but you do not"
-" offer tracks for selection. Add at least one track!"
-msgstr "你希望提交者为他们的提案选择分支，但你并没有提供可供选择的分支。请至少添加一个分支！"
+"You want submitters to choose the tracks for their proposals, but you do not "
+"offer tracks for selection. Add at least one track!"
+msgstr ""
+"你希望提交者为他们的提案选择分支，但你并没有提供可供选择的分支。请至少添加一"
+"个分支！"
 
-#: pretalx/orga/views/event.py:162
+#: pretalx/orga/views/event.py:161
 msgid "You have configured only one session type so far."
 msgstr "你迄今为止只配置了一种会话类型。"
 
-#: pretalx/orga/views/event.py:182
+#: pretalx/orga/views/event.py:181
 msgid "This event was already live."
 msgstr "这个事件已经在直播了。"
 
-#: pretalx/orga/views/event.py:204
+#: pretalx/orga/views/event.py:203
 msgid "This event is now public."
 msgstr "这个事件现在是公开的。"
 
-#: pretalx/orga/views/event.py:210
+#: pretalx/orga/views/event.py:209
 msgid "This event was already hidden."
 msgstr "这个事件已经被隐藏了。"
 
-#: pretalx/orga/views/event.py:220
+#: pretalx/orga/views/event.py:219
 msgid "This event is now hidden."
 msgstr "这个事件现在已隐藏。"
 
-#: pretalx/orga/views/event.py:366
+#: pretalx/orga/views/event.py:365
 msgid "The selected review phase does not exist."
 msgstr "所选的评论阶段不存在。"
 
-#: pretalx/orga/views/event.py:369
+#: pretalx/orga/views/event.py:368
 msgid "Sorry, you are not allowed to reorder review phases."
 msgstr "抱歉，您无法重新排列审查阶段。"
 
-#: pretalx/orga/views/event.py:384
+#: pretalx/orga/views/event.py:383
 msgid "The order of review phases has been updated."
 msgstr "审查阶段的顺序已更新。"
 
-#: pretalx/orga/views/event.py:451
+#: pretalx/orga/views/event.py:450
 #, python-format
 msgid "An error occurred while contacting the SMTP server: %s"
 msgstr "在联系SMTP服务器时发生错误：%s"
 
-#: pretalx/orga/views/event.py:460
+#: pretalx/orga/views/event.py:459
 msgid ""
 "Yay, your changes have been saved and the connection attempt to your SMTP "
 "server was successful."
 msgstr "耶，您的更改已保存成功，且与您的 SMTP 服务器连接尝试成功。"
 
-#: pretalx/orga/views/event.py:468
+#: pretalx/orga/views/event.py:467
 msgid ""
-"We've been able to contact the SMTP server you configured. Remember to check"
-" the \"use custom SMTP server\" checkbox, otherwise your SMTP server will "
-"not be used."
-msgstr "我们已经成功联系上您配置的SMTP服务器。请记得勾选“使用自定义SMTP服务器”复选框，否则您的SMTP服务器将不会被使用。"
+"We've been able to contact the SMTP server you configured. Remember to check "
+"the \"use custom SMTP server\" checkbox, otherwise your SMTP server will not "
+"be used."
+msgstr ""
+"我们已经成功联系上您配置的SMTP服务器。请记得勾选“使用自定义SMTP服务器”复选"
+"框，否则您的SMTP服务器将不会被使用。"
 
-#: pretalx/orga/views/event.py:474
+#: pretalx/orga/views/event.py:473
 msgid "Yay! We saved your changes."
 msgstr "耶！我们保存了您的更改。"
 
-#: pretalx/orga/views/event.py:505
+#: pretalx/orga/views/event.py:504
 msgid ""
 "There was a problem with your authentication. Please contact the organiser "
 "for further help."
 msgstr "您的身份验证出现问题，请联系主办方以获取进一步帮助。"
 
-#: pretalx/orga/views/event.py:522
+#: pretalx/orga/views/event.py:521
 msgid "You are now part of the team!"
 msgstr "你现在已经成为团队的一员了！"
 
-#: pretalx/orga/views/event.py:575
+#: pretalx/orga/views/event.py:574
 msgid "Oh :( We had trouble saving your input. See below for details."
 msgstr "我们在保存您的输入时遇到问题。请查看下面的细节。"
 
-#: pretalx/orga/views/event.py:635
+#: pretalx/orga/views/event.py:634
 #, python-brace-format
 msgid ""
 "Please consider including your event's year in the slug, e.g. "
 "myevent{number}."
 msgstr "请考虑在slug中包括您的活动年份，例如我的活动{number}。"
 
-#: pretalx/orga/views/event.py:644
+#: pretalx/orga/views/event.py:643
 msgid "Did you really mean to make your event take place in the past?"
 msgstr "你真的有意将你的活动安排在过去吗？"
 
-#: pretalx/orga/views/event.py:697
+#: pretalx/orga/views/event.py:695
 #, python-brace-format
 msgid "Team {event.name}"
 msgstr "团队 {event.name}"
 
-#: pretalx/orga/views/event.py:779
+#: pretalx/orga/views/event.py:777
 msgid "The widget settings have been saved."
 msgstr "小部件设置已保存。"
 
@@ -6437,7 +6619,8 @@ msgstr "主题: {subject}"
 msgid ""
 "{count} emails have been saved to the outbox – you can make individual "
 "changes there or just send them all."
-msgstr "“{count}封电子邮件已保存到发件箱 - 您可以在发件箱中进行个别更改或全部发送。”"
+msgstr ""
+"“{count}封电子邮件已保存到发件箱 - 您可以在发件箱中进行个别更改或全部发送。”"
 
 #: pretalx/orga/views/mails.py:403
 #, python-brace-format
@@ -6456,45 +6639,45 @@ msgstr "用户方案清单的链接"
 msgid "The list of questions that the user has not answered, as bullet points"
 msgstr "用户未回答的问题清单，作为项目符号列出。"
 
-#: pretalx/orga/views/organiser.py:73
+#: pretalx/orga/views/organiser.py:80
 msgid "The invitation has been sent."
 msgstr "邀请已发送。"
 
-#: pretalx/orga/views/organiser.py:83
+#: pretalx/orga/views/organiser.py:90
 msgid "The team has been created."
 msgstr "团队已经创建。"
 
-#: pretalx/orga/views/organiser.py:85
+#: pretalx/orga/views/organiser.py:92
 msgid "The settings have been saved."
 msgstr "设置已保存。"
 
-#: pretalx/orga/views/organiser.py:113
+#: pretalx/orga/views/organiser.py:120
 msgid "The member was removed from the team."
 msgstr "该成员被从团队中移除。"
 
-#: pretalx/orga/views/organiser.py:116
+#: pretalx/orga/views/organiser.py:123
 msgid "The team was removed."
 msgstr "团队已被移除。"
 
-#: pretalx/orga/views/organiser.py:146
+#: pretalx/orga/views/organiser.py:153
 msgid "The team invitation was retracted."
 msgstr "团队邀请被撤销。"
 
-#: pretalx/orga/views/organiser.py:157
+#: pretalx/orga/views/organiser.py:164
 msgid "The team invitation was sent again."
 msgstr "团队邀请已再次发送。"
 
-#: pretalx/orga/views/organiser.py:185 pretalx/orga/views/speaker.py:252
+#: pretalx/orga/views/organiser.py:192 pretalx/orga/views/speaker.py:252
 msgid "The password was reset and the user was notified."
 msgstr "密码已重置，用户已被通知。"
 
-#: pretalx/orga/views/organiser.py:191 pretalx/orga/views/speaker.py:258
+#: pretalx/orga/views/organiser.py:198 pretalx/orga/views/speaker.py:258
 msgid ""
 "The password reset email could not be sent, so the password was not reset."
 msgstr "密码重置邮件无法发送，因此密码未被重置。"
 
-#: pretalx/orga/views/organiser.py:218 pretalx/orga/views/review.py:679
-#: pretalx/orga/views/schedule.py:524
+#: pretalx/orga/views/organiser.py:225 pretalx/orga/views/review.py:650
+#: pretalx/orga/views/schedule.py:525
 msgid "Saved!"
 msgstr "\"已保存！\""
 
@@ -6502,42 +6685,42 @@ msgstr "\"已保存！\""
 msgid "You are now an administrator instead of a superuser."
 msgstr "您现在是管理员，不再是超级用户。"
 
-#: pretalx/orga/views/review.py:342
+#: pretalx/orga/views/review.py:306
 #, python-brace-format
 msgid ""
 "Success! {accepted} proposals were accepted, {rejected} proposals were "
 "rejected."
 msgstr "成功！{accepted} 提案被接受，{rejected} 提案被拒绝。"
 
-#: pretalx/orga/views/review.py:347
+#: pretalx/orga/views/review.py:311
 #, python-brace-format
 msgid "We were unable to change the state of {count} proposals."
 msgstr "我们无法更改 {count} 个提案的状态。"
 
-#: pretalx/orga/views/review.py:354
+#: pretalx/orga/views/review.py:318
 #, python-brace-format
 msgid "We were unable to change the state of all {count} proposals."
 msgstr "我们无法改变所有 {count} 提案的状态。"
 
-#: pretalx/orga/views/review.py:518 pretalx/orga/views/review.py:521
+#: pretalx/orga/views/review.py:489 pretalx/orga/views/review.py:492
 msgid "There have been errors with your input."
 msgstr "您的输入存在错误。"
 
-#: pretalx/orga/views/review.py:572
+#: pretalx/orga/views/review.py:543
 msgid "Nice, you have no proposals left to review!"
 msgstr "好的，您没有留下任何待审核的提案了！"
 
-#: pretalx/orga/views/review.py:605
+#: pretalx/orga/views/review.py:576
 #, python-brace-format
 msgid "{count} emails were generated and placed in the outbox."
 msgstr "\"{count} 封电子邮件已生成并放置在发件箱中。\""
 
-#: pretalx/orga/views/review.py:696
+#: pretalx/orga/views/review.py:667
 msgid "The reviewers were assigned successfully"
 msgstr "评论人员已成功分配。"
 
-#: pretalx/orga/views/review.py:714 pretalx/orga/views/schedule.py:91
-#: pretalx/orga/views/speaker.py:369
+#: pretalx/orga/views/review.py:685 pretalx/orga/views/schedule.py:91
+#: pretalx/orga/views/speaker.py:359
 msgid "No data to be exported"
 msgstr "没有数据可以导出。"
 
@@ -6587,23 +6770,22 @@ msgid "Room deleted. Hopefully nobody was still in there …"
 msgstr "房间已删除。希望没有人还在里面..."
 
 #: pretalx/orga/views/schedule.py:485
-msgid ""
-"There is or was a session scheduled in this room. It cannot be deleted."
+msgid "There is or was a session scheduled in this room. It cannot be deleted."
 msgstr "这个房间安排了一次会议。它不能被删除。"
 
-#: pretalx/orga/views/schedule.py:540
+#: pretalx/orga/views/schedule.py:541
 msgid "The selected room does not exist."
 msgstr "所选房间不存在。"
 
-#: pretalx/orga/views/schedule.py:542
+#: pretalx/orga/views/schedule.py:543
 msgid "Sorry, you are not allowed to reorder rooms."
 msgstr "抱歉，您无权重新订购房间。"
 
-#: pretalx/orga/views/schedule.py:556
+#: pretalx/orga/views/schedule.py:557
 msgid "The order of rooms has been updated."
 msgstr "房间的顺序已经更新。"
 
-#: pretalx/orga/views/speaker.py:344
+#: pretalx/orga/views/speaker.py:334
 msgid "The information has been deleted."
 msgstr "信息已被删除。"
 
@@ -6612,19 +6794,23 @@ msgstr "信息已被删除。"
 msgid ""
 "Hi!\n"
 "\n"
-"You have been set as the speaker of a proposal to the Call for Participation\n"
-"of {event}, titled “{title}”. An account has been created for you – please follow\n"
+"You have been set as the speaker of a proposal to the Call for "
+"Participation\n"
+"of {event}, titled “{title}”. An account has been created for you – please "
+"follow\n"
 "this link to set your account password.\n"
 "\n"
 "{invitation_link}\n"
 "\n"
-"Afterwards, you can edit your user profile and see the state of your proposal.\n"
+"Afterwards, you can edit your user profile and see the state of your "
+"proposal.\n"
 "\n"
 "The {event} orga crew"
 msgstr ""
 "你好！ \n"
 "\n"
-"你已被设定为{event}的一项名为“{title}”的参与呼叫意见的讲者。为你创建了一个账户，请点击以下链接进行设置密码。 \n"
+"你已被设定为{event}的一项名为“{title}”的参与呼叫意见的讲者。为你创建了一个账"
+"户，请点击以下链接进行设置密码。 \n"
 "\n"
 "{invitation_link}\n"
 "\n"
@@ -6663,58 +6849,58 @@ msgstr "发言人已被从提案中移除。"
 msgid "The speaker was not part of this proposal."
 msgstr "这位演讲者不是这个提案的一部分。"
 
-#: pretalx/orga/views/submission.py:481
+#: pretalx/orga/views/submission.py:482
 msgid ""
 "The proposal has been created; the speaker already had an account on this "
 "system."
 msgstr "提案已创建；发言者已在该系统上拥有帐户。"
 
-#: pretalx/orga/views/submission.py:493
+#: pretalx/orga/views/submission.py:494
 msgid ""
 "The proposal has been created and the speaker has been invited to add an "
 "account!"
 msgstr "提案已创建，演讲者已被邀请添加账户！"
 
-#: pretalx/orga/views/submission.py:502
+#: pretalx/orga/views/submission.py:503
 msgid "The proposal has been updated!"
 msgstr "提议已经更新！"
 
-#: pretalx/orga/views/submission.py:655
+#: pretalx/orga/views/submission.py:661
 msgid "The anonymisation has been updated."
 msgstr "匿名化已更新。"
 
-#: pretalx/orga/views/submission.py:657
+#: pretalx/orga/views/submission.py:663
 msgid "This proposal is now marked as anonymised."
 msgstr "这个提案现在已被标记为匿名化了。"
 
-#: pretalx/orga/views/submission.py:673
+#: pretalx/orga/views/submission.py:679
 #, python-brace-format
 msgid "{name} proposal feed"
 msgstr "{name} 提案动态"
 
-#: pretalx/orga/views/submission.py:685
+#: pretalx/orga/views/submission.py:691
 #, python-brace-format
 msgid "Updates to the {name} schedule."
 msgstr "{name}日程表的更新。"
 
-#: pretalx/orga/views/submission.py:691
+#: pretalx/orga/views/submission.py:697
 #, python-brace-format
 msgid "New {event} proposal: {title}"
 msgstr "新的 {event} 提案：{title}"
 
-#: pretalx/orga/views/submission.py:746 pretalx/orga/views/submission.py:758
+#: pretalx/orga/views/submission.py:752 pretalx/orga/views/submission.py:764
 msgid "Deadline"
 msgstr "截止日期"
 
-#: pretalx/orga/views/submission.py:991
+#: pretalx/orga/views/submission.py:997
 msgid "The tag has been saved."
 msgstr "标签已保存。"
 
-#: pretalx/orga/views/submission.py:1012
+#: pretalx/orga/views/submission.py:1018
 msgid "The tag has been deleted."
 msgstr "标签已被删除。"
 
-#: pretalx/orga/views/submission.py:1037
+#: pretalx/orga/views/submission.py:1043
 #, python-brace-format
 msgid "Changed {count} proposal states."
 msgstr "更改了{count}个提议状态。"
@@ -6729,8 +6915,8 @@ msgstr "密码（再次输入）"
 
 #: pretalx/person/forms.py:61
 msgid ""
-"No user account matches the entered credentials. Are you sure that you typed"
-" your password correctly?"
+"No user account matches the entered credentials. Are you sure that you typed "
+"your password correctly?"
 msgstr "未找到与输入的凭据相匹配的用户帐户。您确定输入的密码正确吗？"
 
 #: pretalx/person/forms.py:67
@@ -6741,31 +6927,32 @@ msgstr "抱歉，您的帐户目前已被停用。"
 msgid ""
 "We already have a user with that email address. Did you already register "
 "before and just need to log in?"
-msgstr "我们已经有一个使用该电子邮件地址的用户了。您之前已经注册过了，只需要登录吗？"
+msgstr ""
+"我们已经有一个使用该电子邮件地址的用户了。您之前已经注册过了，只需要登录吗？"
 
-#: pretalx/person/forms.py:103
+#: pretalx/person/forms.py:103 pretalx/person/forms.py:123
 msgid "Please fill all fields of either the login or the registration form."
 msgstr "请填写登录或注册表格中的所有字段。"
 
-#: pretalx/person/forms.py:188 pretalx/person/forms.py:277
+#: pretalx/person/forms.py:203 pretalx/person/forms.py:292
 msgid "Please choose a different email address."
 msgstr "请选择另一个电子邮件地址。"
 
-#: pretalx/person/forms.py:203
+#: pretalx/person/forms.py:218
 msgid ""
 "Please provide a profile picture or allow us to load your picture from "
 "gravatar!"
 msgstr "请提供您的个人资料照片或允许我们从 gravatar 载入您的照片！"
 
-#: pretalx/person/forms.py:255
+#: pretalx/person/forms.py:270
 msgid "The current password you entered was not correct."
 msgstr "您输入的当前密码不正确。"
 
-#: pretalx/person/forms.py:259
+#: pretalx/person/forms.py:274
 msgid "Password (current)"
 msgstr "密码（当前）"
 
-#: pretalx/person/forms.py:346
+#: pretalx/person/forms.py:361
 msgid "Non-accepted submitters"
 msgstr "未被接受的提交者"
 
@@ -6806,7 +6993,8 @@ msgstr "发言人已经到了。"
 msgid ""
 "Please enter the name you wish to be displayed publicly. This name will be "
 "used for all events you are participating in on this server."
-msgstr "请键入您希望公开展示的姓名。此姓名将用于您在此服务器上参加的所有活动中。"
+msgstr ""
+"请键入您希望公开展示的姓名。此姓名将用于您在此服务器上参加的所有活动中。"
 
 #: pretalx/person/models/user.py:86
 msgid "E-Mail"
@@ -6822,25 +7010,27 @@ msgstr "你的电子邮件地址将用于密码重置和关于活动/提案的�
 msgid "Preferred language"
 msgstr "首选语言"
 
-#: pretalx/person/models/user.py:118
+#: pretalx/person/models/user.py:120
 msgid "If possible, upload an image that is least 120 pixels wide."
 msgstr "如果可能，请上传至少120像素宽的图像。"
 
-#: pretalx/person/models/user.py:123
+#: pretalx/person/models/user.py:125
 msgid "Retrieve profile picture via gravatar"
 msgstr "通过 gravatar 检索个人头像"
 
-#: pretalx/person/models/user.py:125
+#: pretalx/person/models/user.py:127
 msgid ""
-"If you have registered with an email address that has a gravatar account, we"
-" can retrieve your profile picture from there."
-msgstr "如果您使用一个已经注册了 gravatar 账户的电子邮件地址，我们可以从那里获取您的个人资料图片。"
+"If you have registered with an email address that has a gravatar account, we "
+"can retrieve your profile picture from there."
+msgstr ""
+"如果您使用一个已经注册了 gravatar 账户的电子邮件地址，我们可以从那里获取您的"
+"个人资料图片。"
 
-#: pretalx/person/models/user.py:136 pretalx/person/models/user.py:155
+#: pretalx/person/models/user.py:138 pretalx/person/models/user.py:157
 msgid "Unnamed user"
 msgstr "未命名用户"
 
-#: pretalx/person/models/user.py:392
+#: pretalx/person/models/user.py:398
 #, python-brace-format
 msgid ""
 "Hi {name},\n"
@@ -6867,7 +7057,7 @@ msgstr ""
 "祝好，\n"
 "pretalx 机器人"
 
-#: pretalx/person/models/user.py:407
+#: pretalx/person/models/user.py:413
 msgid "Password recovery"
 msgstr "密码恢复"
 
@@ -6875,40 +7065,48 @@ msgstr "密码恢复"
 msgid "No speakers"
 msgstr "没有扬声器"
 
-#: pretalx/schedule/forms.py:21
+#: pretalx/schedule/forms.py:20
 msgid ""
 "Please click and drag to mark your availability during the conference with "
 "green blocks. We will try to schedule your slot during these times. You can "
 "click a block twice to remove it."
-msgstr "请点击并拖动绿色方块标记您在会议期间的可用时间。我们将尽力安排您的时间段在这些时间内。您可以双击一个方块以删除它。"
+msgstr ""
+"请点击并拖动绿色方块标记您在会议期间的可用时间。我们将尽力安排您的时间段在这"
+"些时间内。您可以双击一个方块以删除它。"
 
-#: pretalx/schedule/forms.py:65
+#: pretalx/schedule/forms.py:112
 #, python-brace-format
 msgid "Please note that all times are in the event timezone, {tz}."
 msgstr "请注意，所有时间均为活动所在时区 {tz}。"
 
-#: pretalx/schedule/forms.py:99
+#: pretalx/schedule/forms.py:117
+msgid ""
+"If you set room availabilities, speakers will only be able to set their "
+"availability for when any room is available."
+msgstr ""
+
+#: pretalx/schedule/forms.py:151
 msgid "The submitted availability does not comply with the required format."
 msgstr "提交的可用性不符合所要求的格式。"
 
-#: pretalx/schedule/forms.py:115
+#: pretalx/schedule/forms.py:167
 msgid "The submitted availability contains an invalid date."
 msgstr "提交的可用性包含无效日期。"
 
-#: pretalx/schedule/forms.py:140 pretalx/schedule/forms.py:154
+#: pretalx/schedule/forms.py:191 pretalx/schedule/forms.py:205
 msgid "Please fill in your availability!"
 msgstr "请填写您的可用时间！"
 
-#: pretalx/schedule/forms.py:192
+#: pretalx/schedule/forms.py:243
 msgid "Room I"
 msgstr "房间一"
 
-#: pretalx/schedule/forms.py:194
+#: pretalx/schedule/forms.py:245
 msgid ""
 "Description, e.g.: Our main meeting place, Room I, enter from the right."
 msgstr "描述，例如：我们的主要会议地点，I室，从右边进入。"
 
-#: pretalx/schedule/forms.py:197
+#: pretalx/schedule/forms.py:248
 msgid "Information for speakers, e.g.: Projector has only HDMI input."
 msgstr "发言人信息，例如：投影仪只有HDMI输入。"
 
@@ -6940,31 +7138,30 @@ msgstr "位置"
 
 #: pretalx/schedule/models/room.py:56
 msgid ""
-"This is the order that rooms are displayed in in the schedule (lower = "
-"left)."
+"This is the order that rooms are displayed in in the schedule (lower = left)."
 msgstr "这是房间在时间表中显示的顺序（更低 = 左侧）。"
 
-#: pretalx/schedule/models/schedule.py:42
+#: pretalx/schedule/models/schedule.py:41
 msgid "version"
 msgstr "版本"
 
-#: pretalx/schedule/models/schedule.py:48
+#: pretalx/schedule/models/schedule.py:47
 msgid "This text will be shown in the public changelog and the RSS feed."
 msgstr "此文字将显示在公开的变更日志和 RSS 预订源上。"
 
-#: pretalx/schedule/models/schedule.py:376
+#: pretalx/schedule/models/schedule.py:371
 msgid "The room is not available at the scheduled time."
 msgstr "房间在预定时间不可用。"
 
-#: pretalx/schedule/models/schedule.py:397
+#: pretalx/schedule/models/schedule.py:392
 msgid "There's an overlapping session scheduled in this room."
 msgstr "这个房间安排了一个重叠的会议。"
 
-#: pretalx/schedule/models/schedule.py:429
+#: pretalx/schedule/models/schedule.py:424
 msgid "A speaker is not available at the scheduled time."
 msgstr "预定的时间无有效的演讲者。"
 
-#: pretalx/schedule/models/schedule.py:454
+#: pretalx/schedule/models/schedule.py:449
 msgid "A speaker is holding another session at the scheduled time."
 msgstr "演讲者将在预定时间举行另一次讲座。"
 
@@ -6986,41 +7183,55 @@ msgstr ""
 "\n"
 "您的“%(title)s”会话已经被移动到%(start)s在%(location)s。"
 
-#: pretalx/settings.py:355
+#: pretalx/settings.py:352
 msgid "English"
 msgstr "英语"
 
-#: pretalx/settings.py:361
+#: pretalx/settings.py:358
 msgid "German"
 msgstr "德国"
 
-#: pretalx/settings.py:367
+#: pretalx/settings.py:364
 msgid "German (formal)"
 msgstr "德语（正式）"
 
-#: pretalx/settings.py:374
-msgid "Spanish"
-msgstr "西班牙语"
-
-#: pretalx/settings.py:380
-msgid "Brasilian Portuguese"
-msgstr "巴西葡萄牙语"
-
-#: pretalx/settings.py:387
-msgid "French"
-msgstr "法语"
-
-#: pretalx/settings.py:393
+#: pretalx/settings.py:371
 msgid "Arabic"
 msgstr "阿拉伯语"
 
-#: pretalx/settings.py:399
+#: pretalx/settings.py:377
+msgid "Czech"
+msgstr ""
+
+#: pretalx/settings.py:383
+msgid "Spanish"
+msgstr "西班牙语"
+
+#: pretalx/settings.py:389
+msgid "French"
+msgstr "法语"
+
+#: pretalx/settings.py:395
 msgid "Japanese"
 msgstr "日语"
 
-#: pretalx/settings.py:406
+#: pretalx/settings.py:402
+msgid "Brasilian Portuguese"
+msgstr "巴西葡萄牙语"
+
+#: pretalx/settings.py:409
+#, fuzzy
+#| msgid "Brasilian Portuguese"
+msgid "Portuguese"
+msgstr "巴西葡萄牙语"
+
+#: pretalx/settings.py:416
 msgid "Traditional Chinese (Taiwan)"
 msgstr "繁體中文（台灣）"
+
+#: pretalx/settings.py:423
+msgid "Simplified Chinese"
+msgstr ""
 
 #: pretalx/submission/exporters.py:18
 msgid "Answered speaker questions"
@@ -7051,28 +7262,30 @@ msgid ""
 "If you have a co-speaker, please add their email address here, and we will "
 "invite them to create an account. If you have more than one co-speaker, you "
 "can add more speakers after finishing the proposal process."
-msgstr "如果您有共同演讲者，请在此处添加他们的电子邮件地址，我们将邀请他们创建账户。如果您有多个共同演讲者，在提交提案后，您可以添加更多演讲者。"
+msgstr ""
+"如果您有共同演讲者，请在此处添加他们的电子邮件地址，我们将邀请他们创建账户。"
+"如果您有多个共同演讲者，在提交提案后，您可以添加更多演讲者。"
 
 #: pretalx/submission/forms/submission.py:26
-#: pretalx/submission/models/submission.py:223
+#: pretalx/submission/models/submission.py:221
 msgid "Use this if you want an illustration to go with your proposal."
 msgstr "如果您希望您的提案配有插图，可以使用这个。"
 
-#: pretalx/submission/forms/submission.py:152
+#: pretalx/submission/forms/submission.py:150
 msgid ""
 "Please contact the organisers if you want to change how often you're "
 "presenting this proposal."
 msgstr "如果您想更改演示此提案的频率，请联系组织者。"
 
-#: pretalx/submission/forms/submission.py:245
+#: pretalx/submission/forms/submission.py:244
 msgid "Proposal states"
 msgstr "提案状态"
 
-#: pretalx/submission/forms/submission.py:257
+#: pretalx/submission/forms/submission.py:256
 msgid "exclude pending"
 msgstr "排除待定"
 
-#: pretalx/submission/forms/submission.py:368
+#: pretalx/submission/forms/submission.py:367
 #, python-brace-format
 msgid "Pending {state}"
 msgstr "待定 {state}"
@@ -7087,8 +7300,8 @@ msgstr "访问代码"
 
 #: pretalx/submission/models/access_code.py:28
 msgid ""
-"You can restrict the access code to a single track, or leave it open for all"
-" tracks."
+"You can restrict the access code to a single track, or leave it open for all "
+"tracks."
 msgstr "您可以将访问代码限制为一条曲目，也可以对所有曲目开放。"
 
 #: pretalx/submission/models/access_code.py:39
@@ -7242,13 +7455,15 @@ msgstr "问题必填"
 msgid ""
 "You can limit this question to some tracks. Leave this field empty to apply "
 "to all tracks."
-msgstr "你可以将这个问题限制在某些曲目上。如果要适用于所有曲目，请将此字段留空。"
+msgstr ""
+"你可以将这个问题限制在某些曲目上。如果要适用于所有曲目，请将此字段留空。"
 
 #: pretalx/submission/models/question.py:161
 msgid ""
-"You can limit this question to some session types. Leave this field empty to"
-" apply to all session types."
-msgstr "您可以将此问题限制为某些会话类型。如果要应用于所有会话类型，请将此字段留空。"
+"You can limit this question to some session types. Leave this field empty to "
+"apply to all session types."
+msgstr ""
+"您可以将此问题限制为某些会话类型。如果要应用于所有会话类型，请将此字段留空。"
 
 #: pretalx/submission/models/question.py:166
 msgid "question"
@@ -7280,8 +7495,8 @@ msgstr "答案包含个人数据"
 
 #: pretalx/submission/models/question.py:189
 msgid ""
-"If a user deletes their account, answers of questions for personal data will"
-" be removed, too."
+"If a user deletes their account, answers of questions for personal data will "
+"be removed, too."
 msgstr "如果用户删除他们的账户，与个人数据相关的问题的答案也会被删除。"
 
 #: pretalx/submission/models/question.py:195
@@ -7321,9 +7536,10 @@ msgstr "发布答案"
 msgid ""
 "Answers will be shown on session or speaker pages as appropriate. Please "
 "note that you cannot make a question public after the first answers have "
-"been given, to allow speakers explicit consent before publishing "
-"information."
-msgstr "答案将适当地显示在会议或演讲者页面上。请注意，在第一个答案被给出后，您不能公开提问，以允许演讲者在发布信息前进行明确同意。"
+"been given, to allow speakers explicit consent before publishing information."
+msgstr ""
+"答案将适当地显示在会议或演讲者页面上。请注意，在第一个答案被给出后，您不能公"
+"开提问，以允许演讲者在发布信息前进行明确同意。"
 
 #: pretalx/submission/models/question.py:249
 msgid "Show answers to reviewers"
@@ -7333,7 +7549,9 @@ msgstr "展示答复给审稿人。"
 msgid ""
 "Should answers to this question be shown to reviewers? This is helpful if "
 "you want to collect personal information, but use anonymous reviews."
-msgstr "这个问题的答案应该展示给审核者吗？如果你想收集个人信息，那么这很有帮助，但如果使用匿名评论则不需要。"
+msgstr ""
+"这个问题的答案应该展示给审核者吗？如果你想收集个人信息，那么这很有帮助，但如"
+"果使用匿名评论则不需要。"
 
 #: pretalx/submission/models/resource.py:32
 msgid "description"
@@ -7388,7 +7606,9 @@ msgid ""
 "proposals will be highlighted and will be shown first in the review "
 "workflow. "
 msgstr ""
-"如果您选择“全部”，评审人员可以审核他们所在团队可以访问的所有提案（无论是全部或特定的跟踪）。在此模式下，指定的提案将被突出显示，并将首先显示在审核工作流中。"
+"如果您选择“全部”，评审人员可以审核他们所在团队可以访问的所有提案（无论是全部"
+"或特定的跟踪）。在此模式下，指定的提案将被突出显示，并将首先显示在审核工作流"
+"中。"
 
 #: pretalx/submission/models/review.py:261
 msgid "Reviewers can see other reviews"
@@ -7430,7 +7650,9 @@ msgstr "演讲人可以在接受之前修改他们的建议。"
 msgid ""
 "By default, modification of proposals is locked after the CfP ends, and is "
 "re-enabled once the proposal was accepted."
-msgstr "默认情况下，在征集提案截止日期之后，修改提案是被锁定的，一旦提案被接受，就会重新启用。"
+msgstr ""
+"默认情况下，在征集提案截止日期之后，修改提案是被锁定的，一旦提案被接受，就会"
+"重新启用。"
 
 #: pretalx/submission/models/submission.py:56
 msgid "draft"
@@ -7454,41 +7676,41 @@ msgid ""
 "or the public."
 msgstr "其他组织者/审稿人的内部注释。不对演讲者或公众可见。"
 
-#: pretalx/submission/models/submission.py:197
-msgid ""
-"The duration in minutes. Leave empty for default duration for this session "
-"type."
-msgstr "持续时间（以分钟为单位）。如需使用此类型的默认持续时间，请勿填写。"
+#: pretalx/submission/models/submission.py:196
+#, fuzzy
+#| msgid "Default duration in minutes"
+msgid "The duration in minutes."
+msgstr "默认时长（分钟）"
 
-#: pretalx/submission/models/submission.py:203
+#: pretalx/submission/models/submission.py:201
 msgid "How many times this session will take place."
 msgstr "本次会议将会进行几次？"
 
-#: pretalx/submission/models/submission.py:213
+#: pretalx/submission/models/submission.py:211
 msgid "Show this session in public list of featured sessions."
 msgstr "在公开的特色会话列表中显示此会话。"
 
-#: pretalx/submission/models/submission.py:216
+#: pretalx/submission/models/submission.py:214
 msgid "Don't record this session."
 msgstr "不要记录此次会议。"
 
-#: pretalx/submission/models/submission.py:238
+#: pretalx/submission/models/submission.py:236
 msgid "Assigned reviewers"
 msgstr "指定的评审人员"
 
-#: pretalx/submission/models/submission.py:400
+#: pretalx/submission/models/submission.py:398
 msgctxt ""
 "used in talk confirm/accept/reject/...-errors, like \"... must be accepted "
 "OR foo OR bar ...\""
 msgid " or "
 msgstr "或者"
 
-#: pretalx/submission/models/submission.py:408
+#: pretalx/submission/models/submission.py:406
 #, python-brace-format
 msgid "Proposal must be {src_states} not {state} to be {new_state}."
 msgstr "提案必须是 {src_states} 而非 {state} 才能成为 {new_state}。"
 
-#: pretalx/submission/models/submission.py:477
+#: pretalx/submission/models/submission.py:475
 #, python-brace-format
 msgid "New proposal: {title}"
 msgstr "新方案：{title}"
@@ -7546,3 +7768,15 @@ msgstr "{name} ({duration} 小时)"
 #, python-brace-format
 msgid "{name} ({duration} minutes)"
 msgstr "{name}（{duration}分钟）"
+
+#~ msgid "Use Gravatar"
+#~ msgstr "使用 Gravatar"
+
+#~ msgid ""
+#~ "Allow speakers to automatically include their gravatar profile image."
+#~ msgstr "允许演讲者自动包含他们的Gravatar个人资料图片。"
+
+#~ msgid ""
+#~ "The duration in minutes. Leave empty for default duration for this "
+#~ "session type."
+#~ msgstr "持续时间（以分钟为单位）。如需使用此类型的默认持续时间，请勿填写。"
