@@ -6,32 +6,44 @@
 
 {% block content %}
     <h2>{% translate "Accept invitation?" %}</h2>
-    <p>{% blocktranslate with name=request.user.get_display_name talk=submission.title trimmed %}
-        You, {{ name }}, have been invited to be a speaker for the session
-        “{{ talk }}”. Do you accept the invitation?
-    {% endblocktranslate %}</p>
+    {% if not can_accept_invite %}
 
-    {% if submission.abstract %}
-        <div class="card submission-abstract">
-            <div class="card-header">
-                {% translate "Abstract:" %} {{ submission.title }}
+        <p>{% blocktranslate %}
+            Unfortunately, you cannot accept this invitation at the moment.
+            This may be because the invitation has expired, or because the
+            proposal cannot be edited any more.
+        {% endblocktranslate %}</p>
+        <p>{% blocktranslate %}
+            Please contact the conference organizers for more information.
+        {% endblocktranslate %}</p>
+    {% else %}
+        <p>{% blocktranslate with name=request.user.get_display_name talk=submission.title trimmed %}
+            You, {{ name }}, have been invited to be a speaker for the session
+            “{{ talk }}”. Do you accept the invitation?
+        {% endblocktranslate %}</p>
+
+        {% if submission.abstract %}
+            <div class="card submission-abstract">
+                <div class="card-header">
+                    {% translate "Abstract:" %} {{ submission.title }}
+                </div>
+                <div class="card-body">
+                    <p class="card-text">
+                        {{ submission.abstract|rich_text }}
+                    </p>
+                </div>
             </div>
-            <div class="card-body">
-                <p class="card-text">
-                    {{ submission.abstract|rich_text }}
-                </p>
+        {% endif %}
+        <form method="post" class="form">
+            {% csrf_token %}
+            <div class="row url-links">
+                <a href="/" class="btn btn-danger btn-lg btn-block">
+                    {% translate "No" %}
+                </a>
+                <button type="submit" class="btn btn-success btn-lg btn-block">
+                    {% translate "Accept" %}
+                </button>
             </div>
-        </div>
+        </form>
     {% endif %}
-    <form method="post" class="form">
-        {% csrf_token %}
-        <div class="row url-links">
-            <a href="/" class="btn btn-danger btn-lg btn-block">
-                {% translate "No" %}
-            </a>
-            <button type="submit" class="btn btn-success btn-lg btn-block">
-                {% translate "Accept" %}
-            </button>
-        </div>
-    </form>
 {% endblock %}

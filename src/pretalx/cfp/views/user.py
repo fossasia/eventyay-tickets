@@ -452,7 +452,6 @@ class SubmissionInviteView(LoggedInEventPageMixin, SubmissionViewMixin, FormView
 class SubmissionInviteAcceptView(LoggedInEventPageMixin, DetailView):
     template_name = "cfp/event/invitation.html"
     context_object_name = "submission"
-    permission_required = "cfp.add_speakers"
 
     def get_object(self, queryset=None):
         return get_object_or_404(
@@ -461,10 +460,15 @@ class SubmissionInviteAcceptView(LoggedInEventPageMixin, DetailView):
             invitation_token__iexact=self.kwargs["invitation"],
         )
 
-    def get_permission_object(self):
-        return self.get_object()
+    @context
+    @cached_property
+    def can_accept_invite(self):
+        return self.request.user.has_perm("cfp.add_speakers", self.get_object())
 
     def post(self, request, *args, **kwargs):
+        if not self.can_accept_invite:
+            messages.error(self.request, _("You cannot accept this invitation."))
+            return redirect(self.request.event.urls.user)
         submission = self.get_object()
         submission.speakers.add(self.request.user)
         submission.log_action(
