@@ -62,7 +62,7 @@
             <div class="navbar-collapse event-dropdown" id="navbartoggle">
                 <ul class="navbar-nav mr-auto flip">
                     <li class="nav-item dropdown active" id="event-navigation">
-                        {% if request.orga_events.count > 1 %}
+                        {% if request.orga_events|length > 1 %}
                             <a class="nav-link dropdown-toggle" id="eventDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fa fa-calendar"></i>
                                 <div class="event-text">
@@ -407,7 +407,7 @@
                         {% endfor %}
                     {% endif %}
                 {% else %}  {# if request.event #}
-                    {% if request.orga_events.count > 1 %}
+                    {% if request.orga_events|length > 1 %}
                         <a class="nav-link {% if request.path == "/orga/event/" %} active{% endif %}" href="/orga/">
                             <i class="fa fa-calendar-o"></i>
                             <span>{% translate "Events" %}</span>
