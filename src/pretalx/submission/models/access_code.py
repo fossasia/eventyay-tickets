@@ -1,5 +1,6 @@
 import math
 
+from django.core import validators
 from django.db import models
 from django.utils.timezone import now
 from django.utils.translation import get_language
@@ -19,6 +20,7 @@ class SubmitterAccessCode(LogMixin, GenerateCode, models.Model):
         verbose_name=_("Access code"),
         max_length=255,
         db_index=True,
+        validators=[validators.RegexValidator(r"^[a-zA-Z0-9]+$")],
     )
     track = models.ForeignKey(
         to="submission.Track",
