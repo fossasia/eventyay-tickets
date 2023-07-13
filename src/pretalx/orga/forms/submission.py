@@ -127,6 +127,18 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
                 self.fields.pop("content_locale")
             else:
                 self.fields["content_locale"].choices = self.event.named_content_locales
+        # If duration is not required, point out that the default is the session type's duration,
+        # but only if there is more than one session type, because otherwise users will be
+        # confused what that is.
+        if (
+            "duration" in self.fields
+            and not self.fields["duration"].required
+            and "submission_type" in self.fields
+            and len(self.fields["submission_type"].queryset) > 1
+        ):
+            self.fields["duration"].help_text += " " + str(
+                _("Leave empty to use the default duration for the session type.")
+            )
 
     def clean(self):
         data = super().clean()

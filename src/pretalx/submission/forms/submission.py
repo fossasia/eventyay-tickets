@@ -87,6 +87,7 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
 
     def _set_submission_types(self, instance=None):
         _now = now()
+        submission_types = self.event.submission_types
         if (
             instance
             and instance.pk
@@ -95,37 +96,39 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
                 or not self.event.cfp.is_open
             )
         ):
-            self.fields[
-                "submission_type"
-            ].queryset = self.event.submission_types.filter(
+            self.fields["submission_type"].queryset = submission_types.filter(
                 pk=instance.submission_type_id
             )
             self.fields["submission_type"].disabled = True
             return
         access_code = self.access_code or getattr(instance, "access_code", None)
         if access_code and not access_code.submission_type:
-            pks = set(self.event.submission_types.values_list("pk", flat=True))
+            pks = set(submission_types.values_list("pk", flat=True))
         elif access_code:
             pks = {access_code.submission_type.pk}
         else:
-            queryset = self.event.submission_types.filter(requires_access_code=False)
-            if (
-                not self.event.cfp.deadline or self.event.cfp.deadline >= _now
-            ):  # No global deadline or still open
+            queryset = submission_types.filter(requires_access_code=False)
+            if not self.event.cfp.deadline or self.event.cfp.deadline >= _now:
+                # No global deadline or still open
                 types = queryset.exclude(deadline__lt=_now)
             else:
                 types = queryset.filter(deadline__gte=_now)
             pks = set(types.values_list("pk", flat=True))
         if instance and instance.pk:
             pks |= {instance.submission_type.pk}
-        self.fields["submission_type"].queryset = self.event.submission_types.filter(
-            pk__in=pks
-        )
         if len(pks) == 1:
-            self.default_values["submission_type"] = self.event.submission_types.get(
+            self.default_values["submission_type"] = submission_types.get(
                 pk=list(pks)[0]
             )
             self.fields.pop("submission_type")
+        else:
+            self.fields["submission_type"].queryset = submission_types.filter(
+                pk__in=pks
+            )
+            if "duration" in self.fields and not self.fields["duration"].required:
+                self.fields["duration"].help_text += " " + str(
+                    _("Leave empty to use the default duration for the session type.")
+                )
 
     def _set_locales(self):
         if "content_locale" in self.fields:
