@@ -112,3 +112,7 @@ for (const [key, value] of Object.entries(colors)) {
 
 export default themeConfig
 export { themeVariables, colors, DEFAULT_COLORS, DEFAULT_LOGO, DEFAULT_IDENTICONS }
+
+export function computeForegroundColor (bgColor) {
+	return firstReadable([CLR_PRIMARY_TEXT.LIGHT, CLR_PRIMARY_TEXT.DARK], bgColor)
+}

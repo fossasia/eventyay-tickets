@@ -17,6 +17,7 @@
 						.copy-success(v-if="urlCopied", v-tooltip="{text: 'Copied!', show: true, placement: 'top', fixed: true}")
 				bunt-input(name="name", v-model="kiosk.profile.display_name", label="Name", :validation="$v.kiosk.profile.display_name")
 				bunt-select(v-model="kiosk.profile.room_id", label="Room", name="room", :options="rooms", option-label="name", :validation="$v.kiosk.profile.room_id")
+				color-picker(name="background_color", v-model="kiosk.profile.background_color", label="Background color", :validation="$v.kiosk.profile.background_color")
 		.ui-form-actions
 			bunt-button.btn-save(@click="save", :loading="saving", :error-message="saveError") Save
 			.errors {{ validationErrors.join(', ') }}
@@ -34,14 +35,15 @@
 </template>
 <script>
 import api from 'lib/api'
-import { required } from 'lib/validators'
+import { color, required } from 'lib/validators'
 import { inferRoomType } from 'lib/room-types'
+import ColorPicker from 'components/ColorPicker'
 import Prompt from 'components/Prompt'
 import ValidationErrorsMixin from 'components/mixins/validation-errors'
 
 export default {
 	name: 'AdminKiosk',
-	components: { Prompt },
+	components: { ColorPicker, Prompt },
 	mixins: [ValidationErrorsMixin],
 	props: {
 		kioskId: String
@@ -75,7 +77,10 @@ export default {
 				},
 				room_id: {
 					required: required('Room is required')
-				}
+				},
+				background_color: {
+					color: color('color must be in 3 or 6 digit hex format')
+				},
 			}
 		}
 	},
