@@ -2,10 +2,10 @@
 #standalone-app(:class="{fullscreen, 'themed-bg': themedBackground}", :style="[style, themeVariables]")
 	.fatal-indicator.mdi.mdi-alert-octagon(v-if="fatalError || fatalConnectionError", :title="errorMessage")
 	.content(v-else-if="world")
-		router-view(:room="room")
-	//- hoist reactions to escale scaling
-	ReactionsOverlay(v-if="$route.name === 'standalone:kiosk'")
+		router-view(:room="room", :config="config")
 	bunt-progress-circular(v-else, size="small")
+	//- hoist reactions to escale scaling
+	ReactionsOverlay(v-if="$route.name === 'standalone:kiosk' && config.show_reactions")
 </template>
 <script>
 // TODO

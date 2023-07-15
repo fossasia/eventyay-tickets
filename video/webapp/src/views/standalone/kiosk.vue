@@ -15,10 +15,10 @@ import ViewersSlide from './Viewers'
 const SLIDES = [{
 	id: 'poll',
 	condition () {
-		return !!this.$store.getters['poll/pinnedPoll']
+		return this.config.slides.pinned_poll && !!this.$store.getters['poll/pinnedPoll']
 	},
 	watch () {
-		return this.$store.getters['poll/pinnedPoll']
+		return this.config.slides.pinned_poll && this.$store.getters['poll/pinnedPoll']
 	},
 	priority: 10,
 	component: PollSlide
@@ -31,39 +31,44 @@ const SLIDES = [{
 }, {
 	id: 'question',
 	condition () {
-		return !!this.$store.getters['question/pinnedQuestion']
+		return this.config.slides.pinned_question && !!this.$store.getters['question/pinnedQuestion']
 	},
 	watch () {
-		return this.$store.getters['question/pinnedQuestion']
+		return this.config.slides.pinned_question && this.$store.getters['question/pinnedQuestion']
 	},
 	priority: 10,
 	component: QuestionSlide
 }, {
 	id: 'nextSession',
 	condition () {
+		if (!this.config.slides.next_session) return false
 		const currentSession = this.$store.getters['schedule/currentSessionPerRoom']?.[this.room.id]?.session
 		const nextSession = this.$store.getters['schedule/sessions']?.find(session => session.room === this.room && session.start.isAfter(this.now))
 		return !!nextSession && (!currentSession || currentSession.end.isBefore(moment().add(10, 'minutes')))
 	},
 	watch () {
-		return this.$store.getters['schedule/sessions']
+		return this.config.slides.next_session && this.$store.getters['schedule/sessions']
 	},
 	priority: 1,
 	component: NextSessionSlide
 }, {
 	id: 'viewers',
 	condition () {
-		return this.$store.state.roomViewers?.length > 0
+		return this.config.slides.viewers && this.$store.state.roomViewers?.length > 0
+	},
+	watch () {
+		return this.config.slides.viewers && this.$store.state.roomViewers
 	},
 	priority: 1,
 	component: ViewersSlide
 }]
 
-const SLIDE_INTERVAL = 20000
+const SLIDE_INTERVAL = 2000
 
 export default {
 	props: {
-		room: Object
+		room: Object,
+		config: Object
 	},
 	data () {
 		return {
