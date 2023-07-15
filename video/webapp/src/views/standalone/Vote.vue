@@ -47,5 +47,5 @@ export default {
 	.themed-bg &
 		svg
 			path
-					stroke: var(--clr-input-primary-fg)
+					stroke: var(--clr-standalone-fg)
 </style>
