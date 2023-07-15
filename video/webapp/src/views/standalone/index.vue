@@ -8,8 +8,11 @@
 	bunt-progress-circular(v-else, size="small")
 </template>
 <script>
+// TODO
+// - logo
+// - sponsor bar
 import { mapState } from 'vuex'
-import { themeVariables } from 'theme'
+import { themeVariables, computeForegroundColor } from 'theme'
 import ReactionsOverlay from 'components/ReactionsOverlay.vue'
 
 const SLIDE_WIDTH = 960
@@ -29,16 +32,21 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['fatalConnectionError', 'fatalError', 'connected', 'world', 'rooms']),
+		...mapState(['fatalConnectionError', 'fatalError', 'connected', 'user', 'world', 'rooms']),
 		errorMessage () {
 			return this.fatalConnectionError?.code || this.fatalError?.message
 		},
 		room () {
 			return this.rooms?.find(room => room.id === this.$route.params.roomId) || this.rooms?.[0]
 		},
+		config () {
+			return this.user?.profile ?? {}
+		},
 		style () {
 			return {
-				'--scale': this.scale.toFixed(1)
+				'--scale': this.scale.toFixed(1),
+				'--clr-standalone-bg': this.config.background_color ?? 'var(--clr-primary)',
+				'--clr-standalone-fg': this.config.background_color ? computeForegroundColor(this.config.background_color) : 'var(--clr-input-primary-fg)'
 			}
 		}
 	},
@@ -102,8 +110,8 @@ export default {
 			height: 700px
 			flex: none
 	&.themed-bg
-		background-color: var(--clr-primary)
-		color: var(--clr-input-primary-fg)
+		background-color: var(--clr-standalone-bg)
+		color: var(--clr-standalone-fg)
 	.c-reactions-overlay
 		bottom: 0
 		right: 0

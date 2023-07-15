@@ -60,7 +60,7 @@ export default {
 				border-radius: 8px
 		&.most-votes
 			.votes::before
-				background-color: var(--clr-primary)
+				background-color: var(--clr-standalone-bg)
 				.themed-bg &
-					background-color: var(--clr-input-primary-fg)
+					background-color: var(--clr-standalone-fg)
 </style>
