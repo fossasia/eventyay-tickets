@@ -123,6 +123,8 @@ def test_periodic_event_services_schedule_export(
     event, schedule, should_rebuild_schedule
 ):
     ActivityLog.objects.create(event=event, content_object=event, action_type="test")
+    event.feature_flags["export_html_on_release"] = True
+    event.save()
     event.cache.set("rebuild_schedule_export", should_rebuild_schedule)
     assert event.cache.get("rebuild_schedule_export") is should_rebuild_schedule
     periodic_event_services(event.slug)
