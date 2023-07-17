@@ -85,10 +85,18 @@ jobs:
         working-directory: ./src
       - name: Run tests
         working-directory: ./src
-        run: PRETALX_CONFIG_FILE=tests/ci_${{ matrix.database }}.cfg py.test -nauto -p no:sugar --cov=./ --cov-report=xml --reruns 3 tests --maxfail=100
-      - name: Upload coverage
-        uses: codecov/codecov-action@v1
+        run: PRETALX_CONFIG_FILE=tests/ci_${{ matrix.database }}.cfg python -m pytest -nauto -p no:sugar --reruns 3 tests
+      - name: Show coverage as build info
+        working-directory: ./src
+        run: |
+          python -m coverage report html --skip-covered --skip-empty
+          echo '## Coverage Report' >> $GITHUB_STEP_SUMMARY
+          python -m coverage report --skip-covered --skip-empty --show-missing --format=markdown >> $GITHUB_STEP_SUMMARY
+          python -m coverage report --fail-under=95
+        if: matrix.database == 'postgres' && matrix.python-version == '3.10'
+      - name: Upload HTML report if check failed.
+        uses: actions/upload-artifact@v3
         with:
-          file: src/coverage.xml
-          fail_ci_if_error: true
-        if: matrix.database == 'postgres' && matrix.python-version == '3.9'
+          name: html-report
+          path: htmlcov
+        if: ${{ failure() }}
