@@ -31,10 +31,10 @@ jobs:
         exclude:
           - database: mysql
             python-version: 3.9
-          - database: sqlite
-            python-version: 3.9
           - database: mysql
             python-version: 3.11
+          - database: sqlite
+            python-version: 3.9
           - database: sqlite
             python-version: 3.11
     steps:
@@ -89,20 +89,24 @@ jobs:
       - name: Show coverage as build info
         working-directory: ./src
         run: |
-          python -m coverage html --skip-covered --skip-empty
+          python -m coverage html
           python -m coverage json
+
           export TOTAL_COV=$(python -c "import json;print(json.load(open('coverage.json'))['totals']['percent_covered_display'])")
           echo "TOTAL_COV=$TOTAL_COV" >> $GITHUB_ENV
           echo "## Test coverage: $TOTAL_COV%" >> $GITHUB_STEP_SUMMARY
           python -m coverage report --skip-covered --skip-empty --show-missing --format=markdown >> $GITHUB_STEP_SUMMARY
+
           python -m coverage report --fail-under=95
         if: matrix.database == 'postgres' && matrix.python-version == '3.10'
+
       - name: Upload HTML report if check failed.
         uses: actions/upload-artifact@v3
         with:
           name: html-report
-          path: htmlcov
-        if: matrix.database == 'postgres' && matrix.python-version == '3.10' && ${{ failure() }}
+          path: ./src/htmlcov
+        if: ${{ failure() }} && matrix.database == 'postgres' && matrix.python-version == '3.10'
+
       - name: "Make badge"
         uses: schneegans/dynamic-badges-action@v1.6.0
         with:
