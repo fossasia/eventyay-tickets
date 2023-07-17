@@ -4,8 +4,7 @@
    :target: https://github.com/pretalx/pretalx/actions?query=workflow%3ATests
    :alt: Continuous integration
 
-.. image:: https://img.shields.io/codecov/c/github/pretalx/pretalx.svg?colorB=3aa57c
-   :target: https://codecov.io/gh/pretalx/pretalx
+.. image:: https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/rixx/0ac3e4314d780e809c0164c8c329f36f/raw/153db0072177f8b3b34e3ce895b12fcbc9dc65c5/covbadge.json
    :alt: Coverage
 
 .. image:: https://img.shields.io/pypi/v/pretalx.svg?colorB=3aa57c
