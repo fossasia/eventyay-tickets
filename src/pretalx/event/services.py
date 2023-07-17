@@ -81,12 +81,11 @@ def task_periodic_schedule_export(event_slug):
             .first()
         )
     with scope(event=event):
+        if not event.feature_flags["export_html_on_release"]:
+            return
         zip_path = get_export_zip_path(event)
         last_time = event.cache.get("last_schedule_rebuild")
         _now = now()
-        if not event.feature_flags["export_html_on_release"]:
-            event.cache.delete("rebuild_schedule_export")
-            return
         if last_time and _now - last_time < dt.timedelta(hours=1):
             return
         should_rebuild_schedule = (
@@ -103,6 +102,6 @@ def periodic_event_services(sender, **kwargs):
     for event in Event.objects.all():
         with scope(event=event):
             task_periodic_event_services.apply_async(args=(event.slug,))
-            if event.current_schedule:
+            if event.current_schedule and event.feature_flags["export_html_on_release"]:
                 task_periodic_schedule_export.apply_async(args=(event.slug,))
             event.update_review_phase()
