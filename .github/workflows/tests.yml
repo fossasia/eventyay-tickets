@@ -89,8 +89,10 @@ jobs:
       - name: Show coverage as build info
         working-directory: ./src
         run: |
-          python -m coverage report html --skip-covered --skip-empty
-          echo '## Coverage Report' >> $GITHUB_STEP_SUMMARY
+          python -m coverage html --skip-covered --skip-empty
+          python -m coverage json
+          export TOTAL_COV=$(python -c "import json;print(json.load(open('coverage.json'))['totals']['percent_covered_display'])")
+          echo "## Test coverage: $TOTAL_COV%" >> $GITHUB_STEP_SUMMARY
           python -m coverage report --skip-covered --skip-empty --show-missing --format=markdown >> $GITHUB_STEP_SUMMARY
           python -m coverage report --fail-under=95
         if: matrix.database == 'postgres' && matrix.python-version == '3.10'
@@ -100,3 +102,13 @@ jobs:
           name: html-report
           path: htmlcov
         if: ${{ failure() }}
+      - name: "Make badge"
+        uses: schneegans/dynamic-badges-action@v1.6.0
+        with:
+          # GIST_TOKEN is a GitHub personal access token with scope "gist".
+          auth: ${{ secrets.GIST_TOKEN }}
+          gistID: 0ac3e4314d780e809c0164c8c329f36f
+          filename: covbadge.json
+          label: coverage
+          message: ${{ env.TOTAL_COV }}%
+          color: "#3aa57c"
