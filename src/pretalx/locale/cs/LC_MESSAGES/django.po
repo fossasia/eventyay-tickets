@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-07-13 16:26+0000\n"
-"PO-Revision-Date: 2023-07-09 12:54+0000\n"
-"Last-Translator: Jozef Mlich <jmlich83@gmail.com>\n"
+"PO-Revision-Date: 2023-07-17 09:41+0000\n"
+"Last-Translator: Michal Stanke <michal@stanke.cz>\n"
 "Language-Team: none\n"
 "Language: cs\n"
 "MIME-Version: 1.0\n"
@@ -6326,10 +6326,8 @@ msgstr "Zařadit vybrané na konec"
 
 #: pretalx/orga/templates/orga/submission/list.html:118
 #: pretalx/orga/templates/orga/submission/list.html:122
-#, fuzzy
-#| msgid "Anonymised"
 msgid "anonymised"
-msgstr "Anonymizováno"
+msgstr "anonymizováno"
 
 #: pretalx/orga/templates/orga/submission/list.html:150
 msgid "Show this proposal in the list of featured sessions."
@@ -7531,7 +7529,7 @@ msgstr "arabština"
 
 #: pretalx/settings.py:377
 msgid "Czech"
-msgstr ""
+msgstr "čeština"
 
 #: pretalx/settings.py:383
 msgid "Spanish"
@@ -7550,10 +7548,8 @@ msgid "Brasilian Portuguese"
 msgstr "brazilská portugalština"
 
 #: pretalx/settings.py:409
-#, fuzzy
-#| msgid "Brasilian Portuguese"
 msgid "Portuguese"
-msgstr "brazilská portugalština"
+msgstr "portugalština"
 
 #: pretalx/settings.py:416
 msgid "Traditional Chinese (Taiwan)"
@@ -7561,7 +7557,7 @@ msgstr "tradiční čínština (Tchaj-wan)"
 
 #: pretalx/settings.py:423
 msgid "Simplified Chinese"
-msgstr ""
+msgstr "zjednodušená čínština"
 
 #: pretalx/submission/exporters.py:18
 msgid "Answered speaker questions"
@@ -8032,10 +8028,8 @@ msgstr ""
 "ani přednášející, ani veřejnost."
 
 #: pretalx/submission/models/submission.py:196
-#, fuzzy
-#| msgid "Default duration in minutes"
 msgid "The duration in minutes."
-msgstr "Výchozí doba trvání v minutách"
+msgstr "Doba trvání v minutách."
 
 #: pretalx/submission/models/submission.py:201
 msgid "How many times this session will take place."
