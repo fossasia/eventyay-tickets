@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-13 16:26+0000\n"
+"POT-Creation-Date: 2023-07-17 11:46+0000\n"
 "PO-Revision-Date: 2023-05-13 03:03+0000\n"
 "Last-Translator: Vangelis Zacharioudakis <sugarvag@gmail.com>\n"
 "Language-Team: none\n"
@@ -248,7 +248,7 @@ msgstr "Η εικόνα προφίλ του ομιλητή"
 #: pretalx/orga/forms/submission.py:15
 #: pretalx/orga/templates/orga/cfp/text.html:91
 #: pretalx/submission/forms/submission.py:28
-#: pretalx/submission/forms/submission.py:261
+#: pretalx/submission/forms/submission.py:264
 #: pretalx/submission/models/submission.py:207
 msgid "Language"
 msgstr "Γλώσσα"
@@ -636,7 +636,18 @@ msgstr "Πηγαίνετε στο CfP"
 msgid "Accept invitation?"
 msgstr "Αποδοχή πρόσκλησης;"
 
-#: pretalx/cfp/templates/cfp/event/invitation.html:9
+#: pretalx/cfp/templates/cfp/event/invitation.html:11
+msgid ""
+"Unfortunately, you cannot accept this invitation at the moment. This may be "
+"because the invitation has expired, or because the proposal cannot be edited "
+"any more."
+msgstr ""
+
+#: pretalx/cfp/templates/cfp/event/invitation.html:16
+msgid "Please contact the conference organizers for more information."
+msgstr ""
+
+#: pretalx/cfp/templates/cfp/event/invitation.html:20
 #, python-format
 msgid ""
 "You, %(name)s, have been invited to be a speaker for the session “%(talk)s”. "
@@ -645,18 +656,18 @@ msgstr ""
 "Εσείς, %(name)s, έχετε προσκληθεί να γίνετε ομιλητής για την περίοδο "
 "λειτουργίας \"%(talk)s\". Αποδέχεστε την πρόσκληση;"
 
-#: pretalx/cfp/templates/cfp/event/invitation.html:17
+#: pretalx/cfp/templates/cfp/event/invitation.html:28
 msgid "Abstract:"
 msgstr "Περίληψη:"
 
-#: pretalx/cfp/templates/cfp/event/invitation.html:30
+#: pretalx/cfp/templates/cfp/event/invitation.html:41
 #: pretalx/event/models/event.py:638 pretalx/orga/forms/review.py:336
 #: pretalx/submission/models/question.py:416
 #: pretalx/submission/models/submission.py:860
 msgid "No"
 msgstr "Όχι"
 
-#: pretalx/cfp/templates/cfp/event/invitation.html:33
+#: pretalx/cfp/templates/cfp/event/invitation.html:44
 #: pretalx/orga/templates/orga/review/dashboard.html:306
 #: pretalx/orga/templates/orga/review/dashboard.html:331
 msgid "Accept"
@@ -933,7 +944,7 @@ msgstr "Τύπος συνεδρίας"
 #: pretalx/orga/templates/orga/review/dashboard.html:98
 #: pretalx/orga/templates/orga/review/dashboard.html:214
 #: pretalx/orga/templates/orga/submission/review.html:66
-#: pretalx/submission/models/access_code.py:26
+#: pretalx/submission/models/access_code.py:28
 #: pretalx/submission/models/submission.py:141
 msgid "Track"
 msgstr "Πίστα"
@@ -1249,7 +1260,7 @@ msgstr "Κλείσε"
 msgid "Please go back and try again."
 msgstr "Επιστρέψτε και δοκιμάστε ξανά."
 
-#: pretalx/cfp/views/user.py:94 pretalx/orga/views/event.py:568
+#: pretalx/cfp/views/user.py:94 pretalx/orga/views/event.py:573
 msgid ""
 "Your API token has been regenerated. The previous token will not be usable "
 "any longer."
@@ -1260,6 +1271,12 @@ msgstr ""
 #: pretalx/cfp/views/user.py:391
 msgid "Your proposal has been submitted."
 msgstr "Η πρόταση σας έχει υποβληθεί."
+
+#: pretalx/cfp/views/user.py:470
+#, fuzzy
+#| msgid "You cannot change the slug later on!"
+msgid "You cannot accept this invitation."
+msgstr "Δεν μπορείτε να αλλάξετε τη γυμνοσάλιαγκα αργότερα!"
 
 #: pretalx/common/context_processors.py:42
 msgid "“"
@@ -1862,7 +1879,7 @@ msgid "Edit"
 msgstr "Επεξεργασία"
 
 #: pretalx/common/phrases.py:48 pretalx/orga/views/admin.py:50
-#: pretalx/orga/views/event.py:557 pretalx/orga/views/event.py:561
+#: pretalx/orga/views/event.py:562 pretalx/orga/views/event.py:566
 #: pretalx/orga/views/plugins.py:56
 msgid "Your changes have been saved."
 msgstr "Οι αλλαγές σας έχουν αποθηκευτεί."
@@ -2366,7 +2383,7 @@ msgstr ""
 #: pretalx/orga/templates/orga/speaker/list.html:42
 #: pretalx/orga/templates/orga/submission/speakers.html:18
 #: pretalx/person/forms.py:38 pretalx/person/models/user.py:79
-#: pretalx/schedule/models/room.py:20 pretalx/submission/models/review.py:237
+#: pretalx/schedule/models/room.py:20 pretalx/submission/models/review.py:255
 #: pretalx/submission/models/track.py:25
 msgid "Name"
 msgstr "Όνομα"
@@ -2510,7 +2527,7 @@ msgstr "Επιλογή"
 #: pretalx/event/models/event.py:633
 #: pretalx/orga/templates/orga/review/dashboard.html:69
 #: pretalx/orga/templates/orga/submission/review.html:166
-#: pretalx/submission/models/review.py:116
+#: pretalx/submission/models/review.py:134
 msgid "Score"
 msgstr "Βαθμολογία"
 
@@ -2571,7 +2588,7 @@ msgid "Limit permissions to these events"
 msgstr "Περιορίστε τα δικαιώματα σε αυτά τα συμβάντα"
 
 #: pretalx/event/models/organiser.py:94 pretalx/person/models/information.py:34
-#: pretalx/submission/models/review.py:20
+#: pretalx/submission/models/review.py:21
 msgid "Limit to tracks"
 msgstr "Όριο στα κομμάτια"
 
@@ -3375,8 +3392,8 @@ msgstr "Λίστα"
 msgid "Show featured sessions"
 msgstr "Εμφάνιση επιλεγμένων συνεδριών"
 
-#: pretalx/orga/forms/event.py:82 pretalx/submission/models/review.py:265
-#: pretalx/submission/models/review.py:286
+#: pretalx/orga/forms/event.py:82 pretalx/submission/models/review.py:283
+#: pretalx/submission/models/review.py:304
 msgid "Never"
 msgstr "Ποτέ"
 
@@ -3384,7 +3401,7 @@ msgstr "Ποτέ"
 msgid "Until the first schedule is released"
 msgstr "Μέχρι να κυκλοφορήσει το πρώτο πρόγραμμα"
 
-#: pretalx/orga/forms/event.py:84 pretalx/submission/models/review.py:264
+#: pretalx/orga/forms/event.py:84 pretalx/submission/models/review.py:282
 msgid "Always"
 msgstr "Πάντα"
 
@@ -3797,7 +3814,7 @@ msgstr "Όλες οι προτάσεις σε αυτά τα κομμάτια"
 #: pretalx/orga/forms/mails.py:220 pretalx/orga/templates/orga/base.html:246
 #: pretalx/orga/templates/orga/cfp/track_view.html:5
 #: pretalx/orga/templates/orga/settings/team_tracks.html:8
-#: pretalx/submission/forms/submission.py:267
+#: pretalx/submission/forms/submission.py:270
 #: pretalx/submission/models/question.py:154
 msgid "Tracks"
 msgstr "Κομμάτια"
@@ -3811,7 +3828,7 @@ msgid "All proposals of these types"
 msgstr "Όλες οι προτάσεις αυτού του τύπου"
 
 #: pretalx/orga/forms/mails.py:227 pretalx/orga/templates/orga/base.html:250
-#: pretalx/submission/forms/submission.py:251
+#: pretalx/submission/forms/submission.py:254
 msgid "Session types"
 msgstr "Τύποι συνεδριών"
 
@@ -4090,15 +4107,26 @@ msgstr "Το όνομα του ομιλητή που πρέπει να εμφα�
 msgid "Proposal state"
 msgstr "Κατάσταση πρότασης"
 
-#: pretalx/orga/forms/submission.py:139
+#: pretalx/orga/forms/submission.py:140
+#: pretalx/submission/forms/submission.py:130
+#, fuzzy
+#| msgid ""
+#| "The duration in minutes. Leave empty for default duration for this "
+#| "session type."
+msgid "Leave empty to use the default duration for the session type."
+msgstr ""
+"Η διάρκεια σε λεπτά. Αφήστε κενό για την προεπιλεγμένη διάρκεια για αυτόν "
+"τον τύπο συνεδρίας."
+
+#: pretalx/orga/forms/submission.py:151
 msgid "The end time has to be after the start time."
 msgstr "Η ώρα λήξης πρέπει να είναι μετά την ώρα έναρξης."
 
-#: pretalx/orga/forms/submission.py:261
+#: pretalx/orga/forms/submission.py:273
 msgid "Mark the new state as 'pending'?"
 msgstr "Επισήμανση της νέας κατάστασης ως \"σε εκκρεμότητα\";"
 
-#: pretalx/orga/forms/submission.py:263
+#: pretalx/orga/forms/submission.py:275
 #: pretalx/orga/templates/orga/review/dashboard.html:329
 msgid ""
 "If you mark state changes as pending, they won't be visible to speakers "
@@ -4375,7 +4403,7 @@ msgstr "Κωδικοί πρόσβασης"
 #: pretalx/orga/templates/orga/review/dashboard.html:111
 #: pretalx/orga/templates/orga/review/dashboard.html:217
 #: pretalx/orga/templates/orga/submission/tag_list.html:6
-#: pretalx/submission/forms/submission.py:272
+#: pretalx/submission/forms/submission.py:275
 #: pretalx/submission/models/submission.py:148
 msgid "Tags"
 msgstr "Ετικέτες"
@@ -4491,7 +4519,7 @@ msgstr "Κώδικας"
 #: pretalx/orga/templates/orga/cfp/access_code_view.html:33
 #: pretalx/orga/templates/orga/cfp/submission_type_form.html:19
 #: pretalx/orga/templates/orga/submission/review.html:59
-#: pretalx/submission/models/access_code.py:37
+#: pretalx/submission/models/access_code.py:39
 msgid "Session Type"
 msgstr "Τύπος συνεδρίας"
 
@@ -4697,7 +4725,7 @@ msgid "Move question up"
 msgstr "Μετακίνηση ερώτησης προς τα πάνω"
 
 #: pretalx/orga/templates/orga/cfp/question_view.html:89
-#: pretalx/orga/views/event.py:168
+#: pretalx/orga/views/event.py:169
 msgid "You have configured no questions yet."
 msgstr "Δεν έχετε ακόμη δημιουργήσει ερωτήσεις."
 
@@ -6011,6 +6039,12 @@ msgctxt "Room information"
 msgid "Room"
 msgstr "Αίθουσα"
 
+#: pretalx/orga/templates/orga/schedule/room_form.html:23
+#, fuzzy
+#| msgid "Review settings"
+msgid "Advanced settings"
+msgstr "Ανασκόπηση Ρυθμίσεων"
+
 #: pretalx/orga/templates/orga/schedule/room_list.html:8
 msgctxt "Number of rooms"
 msgid "Room"
@@ -6949,19 +6983,19 @@ msgid_plural "sent emails"
 msgstr[0] "απεσταλμένο email"
 msgstr[1] "απεσταλμένα emails"
 
-#: pretalx/orga/views/event.py:110
+#: pretalx/orga/views/event.py:111
 msgid "The event settings have been saved."
 msgstr "Οι ρυθμίσεις της εκδήλωσης αποθηκεύτηκαν."
 
-#: pretalx/orga/views/event.py:130
+#: pretalx/orga/views/event.py:131
 msgid "The CfP doesn't have a full text yet."
 msgstr "Η CfP δεν έχει ακόμη πλήρες κείμενο."
 
-#: pretalx/orga/views/event.py:140
+#: pretalx/orga/views/event.py:141
 msgid "The event doesn't have a landing page text yet."
 msgstr "Το συμβάν δεν έχει ακόμα κείμενο σελίδας προορισμού."
 
-#: pretalx/orga/views/event.py:153
+#: pretalx/orga/views/event.py:154
 msgid ""
 "You want submitters to choose the tracks for their proposals, but you do not "
 "offer tracks for selection. Add at least one track!"
@@ -6969,44 +7003,44 @@ msgstr ""
 "Θέλετε οι υποβάλλοντες να επιλέξουν τα κομμάτια για τις προτάσεις τους, αλλά "
 "δεν προσφέρετε κομμάτια για επιλογή. Προσθέστε τουλάχιστον ένα κομμάτι!"
 
-#: pretalx/orga/views/event.py:161
+#: pretalx/orga/views/event.py:162
 msgid "You have configured only one session type so far."
 msgstr "Έχετε διαμορφώσει μόνο έναν τύπο συνεδρίας μέχρι στιγμής."
 
-#: pretalx/orga/views/event.py:181
+#: pretalx/orga/views/event.py:182
 msgid "This event was already live."
 msgstr "Αυτή η εκδήλωση ήταν ήδη ζωντανή."
 
-#: pretalx/orga/views/event.py:203
+#: pretalx/orga/views/event.py:204
 msgid "This event is now public."
 msgstr "Αυτή η εκδήλωση είναι πλέον δημόσια."
 
-#: pretalx/orga/views/event.py:209
+#: pretalx/orga/views/event.py:210
 msgid "This event was already hidden."
 msgstr "Αυτό το συμβάν ήταν ήδη κρυφό."
 
-#: pretalx/orga/views/event.py:219
+#: pretalx/orga/views/event.py:220
 msgid "This event is now hidden."
 msgstr "Αυτό το συμβάν είναι πλέον κρυφό."
 
-#: pretalx/orga/views/event.py:365
+#: pretalx/orga/views/event.py:370
 msgid "The selected review phase does not exist."
 msgstr "Η επιλεγμένη φάση αναθεώρησης δεν υπάρχει."
 
-#: pretalx/orga/views/event.py:368
+#: pretalx/orga/views/event.py:373
 msgid "Sorry, you are not allowed to reorder review phases."
 msgstr "Λυπούμαστε, δεν επιτρέπεται να αναδιατάξετε τις φάσεις ελέγχου."
 
-#: pretalx/orga/views/event.py:383
+#: pretalx/orga/views/event.py:388
 msgid "The order of review phases has been updated."
 msgstr "Η σειρά των φάσεων αναθεώρησης έχει ενημερωθεί."
 
-#: pretalx/orga/views/event.py:450
+#: pretalx/orga/views/event.py:455
 #, python-format
 msgid "An error occurred while contacting the SMTP server: %s"
 msgstr "Παρουσιάστηκε σφάλμα κατά την επικοινωνία με τον διακομιστή SMTP: %s"
 
-#: pretalx/orga/views/event.py:459
+#: pretalx/orga/views/event.py:464
 msgid ""
 "Yay, your changes have been saved and the connection attempt to your SMTP "
 "server was successful."
@@ -7014,7 +7048,7 @@ msgstr ""
 "Ωραία, οι αλλαγές σας έχουν αποθηκευτεί και η απόπειρα σύνδεσης στον SMTP "
 "server σας ήταν επιτυχής."
 
-#: pretalx/orga/views/event.py:467
+#: pretalx/orga/views/event.py:472
 msgid ""
 "We've been able to contact the SMTP server you configured. Remember to check "
 "the \"use custom SMTP server\" checkbox, otherwise your SMTP server will not "
@@ -7024,11 +7058,11 @@ msgstr ""
 "κουτάκι \"use custom SMTP server\", αλλιώς ο SMTP server σας δε θα "
 "χρησιμοποιηθεί."
 
-#: pretalx/orga/views/event.py:473
+#: pretalx/orga/views/event.py:478
 msgid "Yay! We saved your changes."
 msgstr "Ναιιι! Αποθηκεύσαμε τις αλλαγές σας."
 
-#: pretalx/orga/views/event.py:504
+#: pretalx/orga/views/event.py:509
 msgid ""
 "There was a problem with your authentication. Please contact the organiser "
 "for further help."
@@ -7036,17 +7070,17 @@ msgstr ""
 "Υπήρξε ένα πρόβλημα με την επικύρωσή σας. Παρακαλώ επικοινωνήστε με τον "
 "διοργανωτή για περαιτέρω βοήθεια."
 
-#: pretalx/orga/views/event.py:521
+#: pretalx/orga/views/event.py:526
 msgid "You are now part of the team!"
 msgstr "Είστε πλέον μέλος της ομάδας!"
 
-#: pretalx/orga/views/event.py:574
+#: pretalx/orga/views/event.py:579
 msgid "Oh :( We had trouble saving your input. See below for details."
 msgstr ""
 "Ωχ :( Αντιμετωπίσαμε πρόβλημα με την αποθήκευση του input σας. Δείτε "
 "παρακάτω για λεπτομέρειες."
 
-#: pretalx/orga/views/event.py:634
+#: pretalx/orga/views/event.py:639
 #, python-brace-format
 msgid ""
 "Please consider including your event's year in the slug, e.g. "
@@ -7055,18 +7089,18 @@ msgstr ""
 "Σκεφτείτε να συμπεριλάβετε το έτος της εκδήλωσής σας στο γυμνοσάλιαγκο, π.χ. "
 "myevent{number}."
 
-#: pretalx/orga/views/event.py:643
+#: pretalx/orga/views/event.py:648
 msgid "Did you really mean to make your event take place in the past?"
 msgstr ""
 "Σκοπεύατε πραγματικά να κάνετε την εκδήλωσή σας να πραγματοποιηθεί στο "
 "παρελθόν;"
 
-#: pretalx/orga/views/event.py:695
+#: pretalx/orga/views/event.py:700
 #, python-brace-format
 msgid "Team {event.name}"
 msgstr "Ομάδα {event.name}"
 
-#: pretalx/orga/views/event.py:777
+#: pretalx/orga/views/event.py:782
 msgid "The widget settings have been saved."
 msgstr "Οι ρυθμίσεις του widget έχουν αποθηκευτεί."
 
@@ -7875,7 +7909,7 @@ msgid "Use this if you want an illustration to go with your proposal."
 msgstr ""
 "Χρησιμοποιήστε το εάν θέλετε μια απεικόνιση να ταιριάζει με την πρότασή σας."
 
-#: pretalx/submission/forms/submission.py:150
+#: pretalx/submission/forms/submission.py:153
 msgid ""
 "Please contact the organisers if you want to change how often you're "
 "presenting this proposal."
@@ -7883,15 +7917,15 @@ msgstr ""
 "Επικοινωνήστε με τους διοργανωτές εάν θέλετε να αλλάξετε τη συχνότητα που "
 "παρουσιάζετε αυτήν την πρόταση."
 
-#: pretalx/submission/forms/submission.py:244
+#: pretalx/submission/forms/submission.py:247
 msgid "Proposal states"
 msgstr "δηλώνει η πρόταση"
 
-#: pretalx/submission/forms/submission.py:256
+#: pretalx/submission/forms/submission.py:259
 msgid "exclude pending"
 msgstr "εξαίρεση εκκρεμών"
 
-#: pretalx/submission/forms/submission.py:367
+#: pretalx/submission/forms/submission.py:370
 #, python-brace-format
 msgid "Pending {state}"
 msgstr "Σε εκκρεμότητα {state}"
@@ -7900,11 +7934,11 @@ msgstr "Σε εκκρεμότητα {state}"
 msgid "You already have a tag by this name!"
 msgstr "Έχετε ήδη μια ετικέτα με αυτό το όνομα!"
 
-#: pretalx/submission/models/access_code.py:19
+#: pretalx/submission/models/access_code.py:20
 msgid "Access code"
 msgstr "Κωδικός πρόσβασης"
 
-#: pretalx/submission/models/access_code.py:28
+#: pretalx/submission/models/access_code.py:30
 msgid ""
 "You can restrict the access code to a single track, or leave it open for all "
 "tracks."
@@ -7912,7 +7946,7 @@ msgstr ""
 "Μπορείτε να περιορίσετε τον κωδικό πρόσβασης σε ένα μόνο κομμάτι ή να τον "
 "αφήσετε ανοιχτό για όλα τα κομμάτια."
 
-#: pretalx/submission/models/access_code.py:39
+#: pretalx/submission/models/access_code.py:41
 msgid ""
 "You can restrict the access code to a single session type, or leave it open "
 "for all session types."
@@ -7921,21 +7955,21 @@ msgstr ""
 "περιόδου σύνδεσης ή να τον αφήσετε ανοιχτό για όλους τους τύπους περιόδου "
 "σύνδεσης."
 
-#: pretalx/submission/models/access_code.py:46
+#: pretalx/submission/models/access_code.py:48
 msgid "Valid until"
 msgstr "Εγκυρο μέχρι"
 
-#: pretalx/submission/models/access_code.py:48
+#: pretalx/submission/models/access_code.py:50
 msgid "You can set or change this date later to invalidate the access code."
 msgstr ""
 "Μπορείτε να ορίσετε ή να αλλάξετε αυτήν την ημερομηνία αργότερα για να "
 "ακυρώσετε τον κωδικό πρόσβασης."
 
-#: pretalx/submission/models/access_code.py:54
+#: pretalx/submission/models/access_code.py:56
 msgid "Maximum uses"
 msgstr "Μέγιστες χρήσεις"
 
-#: pretalx/submission/models/access_code.py:56
+#: pretalx/submission/models/access_code.py:58
 msgid ""
 "Numbers of times this access code can be used to submit a proposal. Leave "
 "empty for no limit."
@@ -8191,16 +8225,16 @@ msgstr ""
 msgid "description"
 msgstr "περιγραφή"
 
-#: pretalx/submission/models/review.py:22
+#: pretalx/submission/models/review.py:23
 msgid "Leave empty to use this category for all tracks."
 msgstr ""
 "Αφήστε κενό για να χρησιμοποιήσετε αυτήν την κατηγορία για όλα τα κομμάτια."
 
-#: pretalx/submission/models/review.py:26
+#: pretalx/submission/models/review.py:27
 msgid "Independent score"
 msgstr "Ανεξάρτητη βαθμολογία"
 
-#: pretalx/submission/models/review.py:28
+#: pretalx/submission/models/review.py:29
 msgid ""
 "Independent scores are not part of the total score. Instead they are shown "
 "in a separate column in the review dashboard."
@@ -8208,35 +8242,39 @@ msgstr ""
 "Οι ανεξάρτητες βαθμολογίες δεν αποτελούν μέρος της συνολικής βαθμολογίας. "
 "Αντίθετα, εμφανίζονται σε ξεχωριστή στήλη στον πίνακα ελέγχου."
 
-#: pretalx/submission/models/review.py:114
+#: pretalx/submission/models/review.py:51
+msgid "You need to keep at least one non-independent score category!"
+msgstr ""
+
+#: pretalx/submission/models/review.py:132
 msgid "What do you think?"
 msgstr "Ποιά η γνώμη σας?"
 
-#: pretalx/submission/models/review.py:238
+#: pretalx/submission/models/review.py:256
 msgid "Phase start"
 msgstr "Έναρξη φάσης"
 
-#: pretalx/submission/models/review.py:239
+#: pretalx/submission/models/review.py:257
 msgid "Phase end"
 msgstr "Τέλος φάσης"
 
-#: pretalx/submission/models/review.py:244
+#: pretalx/submission/models/review.py:262
 msgid "Reviewers can write and edit reviews"
 msgstr "Οι αναθεωρητές μπορούν να γράφουν και να επεξεργάζονται κριτικές"
 
-#: pretalx/submission/models/review.py:248
+#: pretalx/submission/models/review.py:266
 msgid "Reviewers may see these proposals"
 msgstr "Οι αναθεωρητές ενδέχεται να δουν αυτές τις προτάσεις"
 
-#: pretalx/submission/models/review.py:250
+#: pretalx/submission/models/review.py:268
 msgid "All"
 msgstr "όλα"
 
-#: pretalx/submission/models/review.py:251
+#: pretalx/submission/models/review.py:269
 msgid "Only assigned proposals"
 msgstr "Μόνο ανατεθειμένες προτάσεις"
 
-#: pretalx/submission/models/review.py:256
+#: pretalx/submission/models/review.py:274
 msgid ""
 "If you select 'all', reviewers can review all proposals that their teams "
 "have access to (so either all, or specific tracks). In this mode, assigned "
@@ -8248,44 +8286,44 @@ msgstr ""
 "κομμάτια). Σε αυτήν τη λειτουργία, οι προτάσεις που έχουν εκχωρηθεί θα "
 "επισημαίνονται και θα εμφανίζονται πρώτα στη ροή εργασιών αναθεώρησης. "
 
-#: pretalx/submission/models/review.py:261
+#: pretalx/submission/models/review.py:279
 msgid "Reviewers can see other reviews"
 msgstr "Οι αναθεωρητές μπορούν να δουν άλλες κριτικές"
 
-#: pretalx/submission/models/review.py:266
+#: pretalx/submission/models/review.py:284
 msgid "After reviewing the proposal"
 msgstr "Μετά την εξέταση της πρότασης"
 
-#: pretalx/submission/models/review.py:271
+#: pretalx/submission/models/review.py:289
 msgid "Reviewers can see speaker names"
 msgstr "Οι αναθεωρητές μπορούν να δουν τα ονόματα των ομιλητών"
 
-#: pretalx/submission/models/review.py:275
+#: pretalx/submission/models/review.py:293
 msgid "Reviewers can see the names of other reviewers"
 msgstr "Οι αναθεωρητές μπορούν να δουν τα ονόματα άλλων κριτικών"
 
-#: pretalx/submission/models/review.py:279
+#: pretalx/submission/models/review.py:297
 msgid "Reviewers can accept and reject proposals"
 msgstr "Οι αξιολογητές μπορούν να αποδεχτούν και να απορρίψουν προτάσεις"
 
-#: pretalx/submission/models/review.py:283
+#: pretalx/submission/models/review.py:301
 msgid "Reviewers can tag proposals"
 msgstr "Οι αναθεωρητές μπορούν να προσθέσουν ετικέτες σε προτάσεις"
 
-#: pretalx/submission/models/review.py:287
+#: pretalx/submission/models/review.py:305
 msgid "Add and remove existing tags"
 msgstr "Προσθέστε και αφαιρέστε υπάρχουσες ετικέτες"
 
-#: pretalx/submission/models/review.py:288
+#: pretalx/submission/models/review.py:306
 msgid "Add, remove and create tags"
 msgstr "Προσθήκη, αφαίρεση και δημιουργία ετικετών"
 
-#: pretalx/submission/models/review.py:293
+#: pretalx/submission/models/review.py:311
 msgid "Speakers can modify their proposals before acceptance"
 msgstr ""
 "Οι ομιλητές μπορούν να τροποποιήσουν τις προτάσεις τους πριν από την αποδοχή"
 
-#: pretalx/submission/models/review.py:295
+#: pretalx/submission/models/review.py:313
 msgid ""
 "By default, modification of proposals is locked after the CfP ends, and is "
 "re-enabled once the proposal was accepted."
@@ -8431,10 +8469,3 @@ msgstr "{name} ({duration} λεπτά)"
 #~ msgstr ""
 #~ "Επιτρέψτε στα ηχεία να περιλαμβάνουν αυτόματα την εικόνα προφίλ gravatar "
 #~ "τους."
-
-#~ msgid ""
-#~ "The duration in minutes. Leave empty for default duration for this "
-#~ "session type."
-#~ msgstr ""
-#~ "Η διάρκεια σε λεπτά. Αφήστε κενό για την προεπιλεγμένη διάρκεια για αυτόν "
-#~ "τον τύπο συνεδρίας."

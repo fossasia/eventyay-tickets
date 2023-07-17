@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-13 16:26+0000\n"
+"POT-Creation-Date: 2023-07-17 11:46+0000\n"
 "PO-Revision-Date: 2023-01-23 16:02+0000\n"
 "Last-Translator: Stéphane Parunakian <parunakian.stephane@gmail.com>\n"
 "Language-Team: \n"
@@ -249,7 +249,7 @@ msgstr "L'image de profil de l'intervenant"
 #: pretalx/orga/forms/submission.py:15
 #: pretalx/orga/templates/orga/cfp/text.html:91
 #: pretalx/submission/forms/submission.py:28
-#: pretalx/submission/forms/submission.py:261
+#: pretalx/submission/forms/submission.py:264
 #: pretalx/submission/models/submission.py:207
 msgid "Language"
 msgstr "Langue"
@@ -624,7 +624,18 @@ msgstr "Aller à l'appel à participation"
 msgid "Accept invitation?"
 msgstr "Accepter l'invitation ?"
 
-#: pretalx/cfp/templates/cfp/event/invitation.html:9
+#: pretalx/cfp/templates/cfp/event/invitation.html:11
+msgid ""
+"Unfortunately, you cannot accept this invitation at the moment. This may be "
+"because the invitation has expired, or because the proposal cannot be edited "
+"any more."
+msgstr ""
+
+#: pretalx/cfp/templates/cfp/event/invitation.html:16
+msgid "Please contact the conference organizers for more information."
+msgstr ""
+
+#: pretalx/cfp/templates/cfp/event/invitation.html:20
 #, python-format
 msgid ""
 "You, %(name)s, have been invited to be a speaker for the session “%(talk)s”. "
@@ -633,18 +644,18 @@ msgstr ""
 "Vous, %(name)s, avez été invité à être intervenant pour la proposition "
 "\"%(talk)s\". Acceptez-vous l'invitation ?"
 
-#: pretalx/cfp/templates/cfp/event/invitation.html:17
+#: pretalx/cfp/templates/cfp/event/invitation.html:28
 msgid "Abstract:"
 msgstr "Résumé :"
 
-#: pretalx/cfp/templates/cfp/event/invitation.html:30
+#: pretalx/cfp/templates/cfp/event/invitation.html:41
 #: pretalx/event/models/event.py:638 pretalx/orga/forms/review.py:336
 #: pretalx/submission/models/question.py:416
 #: pretalx/submission/models/submission.py:860
 msgid "No"
 msgstr "Non"
 
-#: pretalx/cfp/templates/cfp/event/invitation.html:33
+#: pretalx/cfp/templates/cfp/event/invitation.html:44
 #: pretalx/orga/templates/orga/review/dashboard.html:306
 #: pretalx/orga/templates/orga/review/dashboard.html:331
 msgid "Accept"
@@ -915,7 +926,7 @@ msgstr "Type de proposition"
 #: pretalx/orga/templates/orga/review/dashboard.html:98
 #: pretalx/orga/templates/orga/review/dashboard.html:214
 #: pretalx/orga/templates/orga/submission/review.html:66
-#: pretalx/submission/models/access_code.py:26
+#: pretalx/submission/models/access_code.py:28
 #: pretalx/submission/models/submission.py:141
 msgid "Track"
 msgstr "Parcours"
@@ -1239,7 +1250,7 @@ msgstr "Fermer"
 msgid "Please go back and try again."
 msgstr "Veuillez revenir en arrière et réessayer."
 
-#: pretalx/cfp/views/user.py:94 pretalx/orga/views/event.py:568
+#: pretalx/cfp/views/user.py:94 pretalx/orga/views/event.py:573
 msgid ""
 "Your API token has been regenerated. The previous token will not be usable "
 "any longer."
@@ -1251,6 +1262,12 @@ msgstr ""
 #| msgid "Your proposal has been withdrawn."
 msgid "Your proposal has been submitted."
 msgstr "Votre proposition a été retirée."
+
+#: pretalx/cfp/views/user.py:470
+#, fuzzy
+#| msgid "You cannot choose the base domain of this installation."
+msgid "You cannot accept this invitation."
+msgstr "Vous ne pouvez pas utiliser le domaine de base de cette installation."
 
 #: pretalx/common/context_processors.py:42
 msgid "“"
@@ -1849,7 +1866,7 @@ msgid "Edit"
 msgstr "Éditer"
 
 #: pretalx/common/phrases.py:48 pretalx/orga/views/admin.py:50
-#: pretalx/orga/views/event.py:557 pretalx/orga/views/event.py:561
+#: pretalx/orga/views/event.py:562 pretalx/orga/views/event.py:566
 #: pretalx/orga/views/plugins.py:56
 msgid "Your changes have been saved."
 msgstr "Vos changements ont été sauvés."
@@ -2352,7 +2369,7 @@ msgstr ""
 #: pretalx/orga/templates/orga/speaker/list.html:42
 #: pretalx/orga/templates/orga/submission/speakers.html:18
 #: pretalx/person/forms.py:38 pretalx/person/models/user.py:79
-#: pretalx/schedule/models/room.py:20 pretalx/submission/models/review.py:237
+#: pretalx/schedule/models/room.py:20 pretalx/submission/models/review.py:255
 #: pretalx/submission/models/track.py:25
 msgid "Name"
 msgstr "Nom"
@@ -2495,7 +2512,7 @@ msgstr "Sélection"
 #: pretalx/event/models/event.py:633
 #: pretalx/orga/templates/orga/review/dashboard.html:69
 #: pretalx/orga/templates/orga/submission/review.html:166
-#: pretalx/submission/models/review.py:116
+#: pretalx/submission/models/review.py:134
 msgid "Score"
 msgstr "Score"
 
@@ -2556,7 +2573,7 @@ msgid "Limit permissions to these events"
 msgstr "Limiter les permissions à ces évènements"
 
 #: pretalx/event/models/organiser.py:94 pretalx/person/models/information.py:34
-#: pretalx/submission/models/review.py:20
+#: pretalx/submission/models/review.py:21
 msgid "Limit to tracks"
 msgstr "Limiter à des parcours"
 
@@ -3351,8 +3368,8 @@ msgstr "Liste"
 msgid "Show featured sessions"
 msgstr "Montrer les interventions mises en vedette"
 
-#: pretalx/orga/forms/event.py:82 pretalx/submission/models/review.py:265
-#: pretalx/submission/models/review.py:286
+#: pretalx/orga/forms/event.py:82 pretalx/submission/models/review.py:283
+#: pretalx/submission/models/review.py:304
 msgid "Never"
 msgstr "Jamais"
 
@@ -3360,7 +3377,7 @@ msgstr "Jamais"
 msgid "Until the first schedule is released"
 msgstr "Jusqu'à la publication du premier planning"
 
-#: pretalx/orga/forms/event.py:84 pretalx/submission/models/review.py:264
+#: pretalx/orga/forms/event.py:84 pretalx/submission/models/review.py:282
 msgid "Always"
 msgstr "Toujours"
 
@@ -3777,7 +3794,7 @@ msgstr "Toutes les propositions de ces parcours"
 #: pretalx/orga/forms/mails.py:220 pretalx/orga/templates/orga/base.html:246
 #: pretalx/orga/templates/orga/cfp/track_view.html:5
 #: pretalx/orga/templates/orga/settings/team_tracks.html:8
-#: pretalx/submission/forms/submission.py:267
+#: pretalx/submission/forms/submission.py:270
 #: pretalx/submission/models/question.py:154
 msgid "Tracks"
 msgstr "Parcours"
@@ -3794,7 +3811,7 @@ msgid "All proposals of these types"
 msgstr "Toutes les propositions de ces types"
 
 #: pretalx/orga/forms/mails.py:227 pretalx/orga/templates/orga/base.html:250
-#: pretalx/submission/forms/submission.py:251
+#: pretalx/submission/forms/submission.py:254
 msgid "Session types"
 msgstr "Types de proposition"
 
@@ -4084,17 +4101,28 @@ msgstr "Le nom de l'intervenant qui sera affiché publiquement."
 msgid "Proposal state"
 msgstr "Statut de la proposition"
 
-#: pretalx/orga/forms/submission.py:139
+#: pretalx/orga/forms/submission.py:140
+#: pretalx/submission/forms/submission.py:130
+#, fuzzy
+#| msgid ""
+#| "The duration in minutes. Leave empty for default duration for this "
+#| "session type."
+msgid "Leave empty to use the default duration for the session type."
+msgstr ""
+"La durée en minutes. Laisser vide pour utiliser la durée par défaut pour ce "
+"type de proposition."
+
+#: pretalx/orga/forms/submission.py:151
 #, fuzzy
 #| msgid "The end of a phase has to be after its start."
 msgid "The end time has to be after the start time."
 msgstr "La fin d'une phase doit être après son début."
 
-#: pretalx/orga/forms/submission.py:261
+#: pretalx/orga/forms/submission.py:273
 msgid "Mark the new state as 'pending'?"
 msgstr ""
 
-#: pretalx/orga/forms/submission.py:263
+#: pretalx/orga/forms/submission.py:275
 #: pretalx/orga/templates/orga/review/dashboard.html:329
 msgid ""
 "If you mark state changes as pending, they won't be visible to speakers "
@@ -4367,7 +4395,7 @@ msgstr "Codes d'accès"
 #: pretalx/orga/templates/orga/review/dashboard.html:111
 #: pretalx/orga/templates/orga/review/dashboard.html:217
 #: pretalx/orga/templates/orga/submission/tag_list.html:6
-#: pretalx/submission/forms/submission.py:272
+#: pretalx/submission/forms/submission.py:275
 #: pretalx/submission/models/submission.py:148
 msgid "Tags"
 msgstr "Étiquettes"
@@ -4488,7 +4516,7 @@ msgstr "Code"
 #: pretalx/orga/templates/orga/cfp/access_code_view.html:33
 #: pretalx/orga/templates/orga/cfp/submission_type_form.html:19
 #: pretalx/orga/templates/orga/submission/review.html:59
-#: pretalx/submission/models/access_code.py:37
+#: pretalx/submission/models/access_code.py:39
 msgid "Session Type"
 msgstr "Type de proposition"
 
@@ -4695,7 +4723,7 @@ msgid "Move question up"
 msgstr "Remonter la question"
 
 #: pretalx/orga/templates/orga/cfp/question_view.html:89
-#: pretalx/orga/views/event.py:168
+#: pretalx/orga/views/event.py:169
 msgid "You have configured no questions yet."
 msgstr "Vous n'avez pas encore configuré de questions."
 
@@ -6028,6 +6056,12 @@ msgctxt "Room information"
 msgid "Room"
 msgstr "Salle"
 
+#: pretalx/orga/templates/orga/schedule/room_form.html:23
+#, fuzzy
+#| msgid "Change settings"
+msgid "Advanced settings"
+msgstr "Changer les paramètres"
+
 #: pretalx/orga/templates/orga/schedule/room_list.html:8
 msgctxt "Number of rooms"
 msgid "Room"
@@ -6986,19 +7020,19 @@ msgid_plural "sent emails"
 msgstr[0] "courriel envoyé"
 msgstr[1] "courriels envoyés"
 
-#: pretalx/orga/views/event.py:110
+#: pretalx/orga/views/event.py:111
 msgid "The event settings have been saved."
 msgstr "Les paramètres de l'évènement ont été sauvegardés."
 
-#: pretalx/orga/views/event.py:130
+#: pretalx/orga/views/event.py:131
 msgid "The CfP doesn't have a full text yet."
 msgstr "L'appel à participation n'a pas encore de texte."
 
-#: pretalx/orga/views/event.py:140
+#: pretalx/orga/views/event.py:141
 msgid "The event doesn't have a landing page text yet."
 msgstr "L'évènement n'a pas encore de texte pour la page d'accueil."
 
-#: pretalx/orga/views/event.py:153
+#: pretalx/orga/views/event.py:154
 msgid ""
 "You want submitters to choose the tracks for their proposals, but you do not "
 "offer tracks for selection. Add at least one track!"
@@ -7007,45 +7041,45 @@ msgstr ""
 "propositions, mais vous ne proposez pas de parcours à choisir. Ajoutez au "
 "moins un parcours !"
 
-#: pretalx/orga/views/event.py:161
+#: pretalx/orga/views/event.py:162
 msgid "You have configured only one session type so far."
 msgstr "Vous n'avez configuré qu'un seul type de proposition pour l'instant."
 
-#: pretalx/orga/views/event.py:181
+#: pretalx/orga/views/event.py:182
 msgid "This event was already live."
 msgstr "L'évènement était déjà actif."
 
-#: pretalx/orga/views/event.py:203
+#: pretalx/orga/views/event.py:204
 msgid "This event is now public."
 msgstr "Cet évènement est maintenant public."
 
-#: pretalx/orga/views/event.py:209
+#: pretalx/orga/views/event.py:210
 msgid "This event was already hidden."
 msgstr "L'évènement était déjà caché."
 
-#: pretalx/orga/views/event.py:219
+#: pretalx/orga/views/event.py:220
 msgid "This event is now hidden."
 msgstr "Cet évènement est maintenant caché."
 
-#: pretalx/orga/views/event.py:365
+#: pretalx/orga/views/event.py:370
 msgid "The selected review phase does not exist."
 msgstr "La phase d'évaluation sélectionnée n'existe pas."
 
-#: pretalx/orga/views/event.py:368
+#: pretalx/orga/views/event.py:373
 msgid "Sorry, you are not allowed to reorder review phases."
 msgstr ""
 "Désolé, vous n'êtes pas autorisé à réorganiser les phases d'évaluation."
 
-#: pretalx/orga/views/event.py:383
+#: pretalx/orga/views/event.py:388
 msgid "The order of review phases has been updated."
 msgstr "L'ordre des phases d'évaluation a été mis à jour."
 
-#: pretalx/orga/views/event.py:450
+#: pretalx/orga/views/event.py:455
 #, python-format
 msgid "An error occurred while contacting the SMTP server: %s"
 msgstr "Une erreur est survenue lors de la connexion au serveur SMTP : %s"
 
-#: pretalx/orga/views/event.py:459
+#: pretalx/orga/views/event.py:464
 msgid ""
 "Yay, your changes have been saved and the connection attempt to your SMTP "
 "server was successful."
@@ -7053,7 +7087,7 @@ msgstr ""
 "Yay, nous avons sauvé vos changements et le test de connexion vers votre "
 "serveur SMTP a réussi."
 
-#: pretalx/orga/views/event.py:467
+#: pretalx/orga/views/event.py:472
 msgid ""
 "We've been able to contact the SMTP server you configured. Remember to check "
 "the \"use custom SMTP server\" checkbox, otherwise your SMTP server will not "
@@ -7063,11 +7097,11 @@ msgstr ""
 "Pensez à cocher la case \"Utiliser un serveur SMTP personnalisé\", sinon "
 "votre serveur SMTP ne sera pas utilisé."
 
-#: pretalx/orga/views/event.py:473
+#: pretalx/orga/views/event.py:478
 msgid "Yay! We saved your changes."
 msgstr "Yay ! Nous avons sauvé vos changements."
 
-#: pretalx/orga/views/event.py:504
+#: pretalx/orga/views/event.py:509
 msgid ""
 "There was a problem with your authentication. Please contact the organiser "
 "for further help."
@@ -7075,17 +7109,17 @@ msgstr ""
 "Il y a eu un problème avec votre authentification. Veuillez contacter "
 "l'équipe d'organisation pour obtenir de l'aide supplémentaire."
 
-#: pretalx/orga/views/event.py:521
+#: pretalx/orga/views/event.py:526
 msgid "You are now part of the team!"
 msgstr "Vous faites maintenant partie de l'équipe !"
 
-#: pretalx/orga/views/event.py:574
+#: pretalx/orga/views/event.py:579
 msgid "Oh :( We had trouble saving your input. See below for details."
 msgstr ""
 "Oh :( Nous avons eu des difficultés pour sauvegarder vos modifications. "
 "Regardez ci-dessous pour les détails."
 
-#: pretalx/orga/views/event.py:634
+#: pretalx/orga/views/event.py:639
 #, python-brace-format
 msgid ""
 "Please consider including your event's year in the slug, e.g. "
@@ -7094,16 +7128,16 @@ msgstr ""
 "Veuillez envisager d'inclure l'année de votre évènement dans le nom court, e."
 "g. monevenement{number}."
 
-#: pretalx/orga/views/event.py:643
+#: pretalx/orga/views/event.py:648
 msgid "Did you really mean to make your event take place in the past?"
 msgstr "Voulez-vous vraiment que votre évènement ait lieu dans le passé ?"
 
-#: pretalx/orga/views/event.py:695
+#: pretalx/orga/views/event.py:700
 #, python-brace-format
 msgid "Team {event.name}"
 msgstr "Équipe {event.name}"
 
-#: pretalx/orga/views/event.py:777
+#: pretalx/orga/views/event.py:782
 msgid "The widget settings have been saved."
 msgstr "Les paramètres du widget ont été sauvegardés."
 
@@ -7918,7 +7952,7 @@ msgstr ""
 msgid "Use this if you want an illustration to go with your proposal."
 msgstr "Si vous souhaitez utiliser une image pour illustrer votre proposition."
 
-#: pretalx/submission/forms/submission.py:150
+#: pretalx/submission/forms/submission.py:153
 msgid ""
 "Please contact the organisers if you want to change how often you're "
 "presenting this proposal."
@@ -7926,18 +7960,18 @@ msgstr ""
 "Veuillez contacter l'équipe d'organisation si vous souhaitez modifier le "
 "nombre de fois que présenterez cette intervention."
 
-#: pretalx/submission/forms/submission.py:244
+#: pretalx/submission/forms/submission.py:247
 msgid "Proposal states"
 msgstr "Statuts de proposition"
 
-#: pretalx/submission/forms/submission.py:256
+#: pretalx/submission/forms/submission.py:259
 #, fuzzy
 #| msgid "pending mail"
 #| msgid_plural "pending mails"
 msgid "exclude pending"
 msgstr "courriel en attente"
 
-#: pretalx/submission/forms/submission.py:367
+#: pretalx/submission/forms/submission.py:370
 #, fuzzy, python-brace-format
 #| msgid "pending Invitation"
 msgid "Pending {state}"
@@ -7947,11 +7981,11 @@ msgstr "invitation en attente"
 msgid "You already have a tag by this name!"
 msgstr "Une étiquette avec ce nom là existe déjà !"
 
-#: pretalx/submission/models/access_code.py:19
+#: pretalx/submission/models/access_code.py:20
 msgid "Access code"
 msgstr "Code d'accès"
 
-#: pretalx/submission/models/access_code.py:28
+#: pretalx/submission/models/access_code.py:30
 msgid ""
 "You can restrict the access code to a single track, or leave it open for all "
 "tracks."
@@ -7959,7 +7993,7 @@ msgstr ""
 "Vous pouvez restreindre ce code d'accès à certains parcours ou ne pas mettre "
 "de restriction."
 
-#: pretalx/submission/models/access_code.py:39
+#: pretalx/submission/models/access_code.py:41
 msgid ""
 "You can restrict the access code to a single session type, or leave it open "
 "for all session types."
@@ -7967,21 +8001,21 @@ msgstr ""
 "Vous pouvez restreindre ce code d'accès à un type de proposition ou ne pas "
 "mettre de restriction."
 
-#: pretalx/submission/models/access_code.py:46
+#: pretalx/submission/models/access_code.py:48
 msgid "Valid until"
 msgstr "Valide jusqu'au"
 
-#: pretalx/submission/models/access_code.py:48
+#: pretalx/submission/models/access_code.py:50
 msgid "You can set or change this date later to invalidate the access code."
 msgstr ""
 "Vous pouvez configurer ou changer cette date plus tard pour révoquer le code "
 "d'accès."
 
-#: pretalx/submission/models/access_code.py:54
+#: pretalx/submission/models/access_code.py:56
 msgid "Maximum uses"
 msgstr "Utilisations maximales"
 
-#: pretalx/submission/models/access_code.py:56
+#: pretalx/submission/models/access_code.py:58
 msgid ""
 "Numbers of times this access code can be used to submit a proposal. Leave "
 "empty for no limit."
@@ -8244,16 +8278,16 @@ msgstr ""
 msgid "description"
 msgstr "description"
 
-#: pretalx/submission/models/review.py:22
+#: pretalx/submission/models/review.py:23
 msgid "Leave empty to use this category for all tracks."
 msgstr ""
 "Laisser vide pour utiliser l'adresse par défaut pour chaque itinéraire."
 
-#: pretalx/submission/models/review.py:26
+#: pretalx/submission/models/review.py:27
 msgid "Independent score"
 msgstr "Score indépendant"
 
-#: pretalx/submission/models/review.py:28
+#: pretalx/submission/models/review.py:29
 msgid ""
 "Independent scores are not part of the total score. Instead they are shown "
 "in a separate column in the review dashboard."
@@ -8261,41 +8295,45 @@ msgstr ""
 "Les scores indépendants ne sont pas inclus dans le score total. Ils "
 "apparaissent dans une autre colonne du tableau de bord d'évaluation."
 
-#: pretalx/submission/models/review.py:114
+#: pretalx/submission/models/review.py:51
+msgid "You need to keep at least one non-independent score category!"
+msgstr ""
+
+#: pretalx/submission/models/review.py:132
 msgid "What do you think?"
 msgstr "Qu'en pensez-vous ?"
 
-#: pretalx/submission/models/review.py:238
+#: pretalx/submission/models/review.py:256
 msgid "Phase start"
 msgstr "Début de la phase"
 
-#: pretalx/submission/models/review.py:239
+#: pretalx/submission/models/review.py:257
 msgid "Phase end"
 msgstr "Fin de la phase"
 
-#: pretalx/submission/models/review.py:244
+#: pretalx/submission/models/review.py:262
 msgid "Reviewers can write and edit reviews"
 msgstr "Les évaluateurs peuvent écrire et éditer des évaluations"
 
-#: pretalx/submission/models/review.py:248
+#: pretalx/submission/models/review.py:266
 #, fuzzy
 #| msgid "Reviewers can tag proposals"
 msgid "Reviewers may see these proposals"
 msgstr "Les évaluateurs peuvent étiqueter les propositions"
 
-#: pretalx/submission/models/review.py:250
+#: pretalx/submission/models/review.py:268
 #, fuzzy
 #| msgid "all"
 msgid "All"
 msgstr "tous"
 
-#: pretalx/submission/models/review.py:251
+#: pretalx/submission/models/review.py:269
 #, fuzzy
 #| msgid "Other proposals"
 msgid "Only assigned proposals"
 msgstr "Autres propositions"
 
-#: pretalx/submission/models/review.py:256
+#: pretalx/submission/models/review.py:274
 msgid ""
 "If you select 'all', reviewers can review all proposals that their teams "
 "have access to (so either all, or specific tracks). In this mode, assigned "
@@ -8303,44 +8341,44 @@ msgid ""
 "workflow. "
 msgstr ""
 
-#: pretalx/submission/models/review.py:261
+#: pretalx/submission/models/review.py:279
 msgid "Reviewers can see other reviews"
 msgstr "Les évaluateurs peuvent voir les autres évaluations"
 
-#: pretalx/submission/models/review.py:266
+#: pretalx/submission/models/review.py:284
 msgid "After reviewing the proposal"
 msgstr "Après avoir évalué la proposition"
 
-#: pretalx/submission/models/review.py:271
+#: pretalx/submission/models/review.py:289
 msgid "Reviewers can see speaker names"
 msgstr "Les évaluateurs peuvent voir le nom des intervenants"
 
-#: pretalx/submission/models/review.py:275
+#: pretalx/submission/models/review.py:293
 msgid "Reviewers can see the names of other reviewers"
 msgstr "Les évaluateurs peuvent voir les noms des autres évaluateurs"
 
-#: pretalx/submission/models/review.py:279
+#: pretalx/submission/models/review.py:297
 msgid "Reviewers can accept and reject proposals"
 msgstr "Les évaluateurs peuvent accepter ou rejeter les propositions"
 
-#: pretalx/submission/models/review.py:283
+#: pretalx/submission/models/review.py:301
 msgid "Reviewers can tag proposals"
 msgstr "Les évaluateurs peuvent étiqueter les propositions"
 
-#: pretalx/submission/models/review.py:287
+#: pretalx/submission/models/review.py:305
 msgid "Add and remove existing tags"
 msgstr "Ajouter ou éliminer des étiquettes existantes"
 
-#: pretalx/submission/models/review.py:288
+#: pretalx/submission/models/review.py:306
 msgid "Add, remove and create tags"
 msgstr "Ajouter, éliminer et créer des étiquettes"
 
-#: pretalx/submission/models/review.py:293
+#: pretalx/submission/models/review.py:311
 msgid "Speakers can modify their proposals before acceptance"
 msgstr ""
 "Les intervenants peuvent modifier leurs propositions avant leur acceptation"
 
-#: pretalx/submission/models/review.py:295
+#: pretalx/submission/models/review.py:313
 msgid ""
 "By default, modification of proposals is locked after the CfP ends, and is "
 "re-enabled once the proposal was accepted."
@@ -8487,13 +8525,6 @@ msgstr "{name} ({duration} minutes)"
 #~| msgid "Your avatar"
 #~ msgid "Use Gravatar"
 #~ msgstr "Votre avatar"
-
-#~ msgid ""
-#~ "The duration in minutes. Leave empty for default duration for this "
-#~ "session type."
-#~ msgstr ""
-#~ "La durée en minutes. Laisser vide pour utiliser la durée par défaut pour "
-#~ "ce type de proposition."
 
 #~ msgid "Should the sessions marked as featured be shown publicly?"
 #~ msgstr ""
@@ -8984,10 +9015,6 @@ msgstr "{name} ({duration} minutes)"
 #~ msgid "New organiser"
 #~ msgstr "Nouvel organisateur"
 
-#~ msgid "You cannot choose the base domain of this installation."
-#~ msgstr ""
-#~ "Vous ne pouvez pas utiliser le domaine de base de cette installation."
-
 #, python-brace-format
 #~ msgid "Unknown template key: \"{key}\", locale: {locale}"
 #~ msgstr "Variable de modèle inconnue : \"{key}\", localisation: {locale}"
@@ -9158,9 +9185,6 @@ msgstr "{name} ({duration} minutes)"
 
 #~ msgid "%(count)s total"
 #~ msgstr "%(count)s au total"
-
-#~ msgid "Change settings"
-#~ msgstr "Changer les paramètres"
 
 #~ msgid "Set a review deadline"
 #~ msgstr "Configurer une date butoir pour les évaluations"
