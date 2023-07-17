@@ -8,12 +8,12 @@
     <h2>{% translate "Accept invitation?" %}</h2>
     {% if not can_accept_invite %}
 
-        <p>{% blocktranslate %}
+        <p>{% blocktranslate trimmed %}
             Unfortunately, you cannot accept this invitation at the moment.
             This may be because the invitation has expired, or because the
             proposal cannot be edited any more.
         {% endblocktranslate %}</p>
-        <p>{% blocktranslate %}
+        <p>{% blocktranslate trimmed %}
             Please contact the conference organizers for more information.
         {% endblocktranslate %}</p>
     {% else %}
