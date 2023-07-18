@@ -11,6 +11,14 @@
     </form>
     <h2>{% translate "Your upcoming events" %}</h2>
     <div class="event-blocks dashboard-list">
+        {% if not current_orga_events and not past_orga_events and not can_create_event %}
+            <div class="event-block dashboard-block">
+                <h2>{% translate "No events" %}</h2>
+                <div class="dashboard-description">
+                    {% translate "Please ask an organiser to invite you to an event." %}
+                </div>
+            </div>
+        {% endif %}
         {% for event in current_orga_events %}
             <a class="event-block dashboard-block" href="{{ event.orga_urls.base }}">
                 <h2 class="name">{{ event.name }}</h2>
