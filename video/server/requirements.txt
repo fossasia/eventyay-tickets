@@ -40,7 +40,7 @@ Twisted==20.3.0  # see https://github.com/django/daphne/pull/359 and https://git
 
 # deploy
 psycopg2-binary==2.9.6
-gunicorn==20.1.0
+gunicorn==21.0.1
 uvicorn[standard]==0.23.0
 
 # dev
