@@ -143,6 +143,17 @@ class ScheduleViewSet(viewsets.ReadOnlyModelViewSet):
     def list(self, *args, **kwargs):
         return super().list(*args, **kwargs)
 
+    # Cache for 2 minutes
+    @method_decorator(cache_page(120))
+    @method_decorator(vary_on_cookie)
+    @method_decorator(
+        vary_on_headers(
+            "Authorization",
+        )
+    )
+    def retrieve(self, *args, **kwargs):
+        return super().list(*args, **kwargs)
+
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = TagSerializer
