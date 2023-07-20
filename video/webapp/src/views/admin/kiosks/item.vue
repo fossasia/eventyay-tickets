@@ -94,14 +94,14 @@ export default {
 	async created () {
 		try {
 			this.kiosk = await api.call('user.kiosk.fetch', {id: this.kioskId})
-			if (!this.kiosk.profile.show_reactions) this.kiosk.profile.show_reactions = true
-			if (!this.kiosk.profile.slides) this.kiosk.profile.slides = {
+			if (!this.kiosk.profile.show_reactions) this.$set(this.kiosk.profile, 'show_reactions', true)
+			if (!this.kiosk.profile.slides) this.$set(this.kiosk.profile, 'slides', {
 				pinned_poll: true,
 				pinned_question: true,
 				next_session: true,
 				viewers: true,
 				reactions: true
-			}
+			})
 		} catch (error) {
 			this.error = error
 			console.error(error)
