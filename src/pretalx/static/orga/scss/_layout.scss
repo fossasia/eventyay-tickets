@@ -27,6 +27,9 @@ body {
   height: calc(100vh - 50px);
   overflow-x: hidden;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 
   .flex-content {
     max-width: 100%;
