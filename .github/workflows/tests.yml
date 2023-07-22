@@ -91,7 +91,6 @@ jobs:
       - name: Show coverage as build info
         working-directory: ./src
         run: |
-          python -m coverage html
           python -m coverage json
 
           export TOTAL_COV=$(python -c "import json;print(json.load(open('coverage.json'))['totals']['percent_covered_display'])")
@@ -102,12 +101,18 @@ jobs:
           python -m coverage report --fail-under=95
         if: matrix.database == 'postgres' && matrix.python-version == '3.10'
 
-      - name: Upload HTML report if check failed.
+      - name: Create HTML report if tests failed.
+        id: html_report
+        working-directory: ./src
+        run: python -m coverage html
+        if: ${{ failure() }} && matrix.database == 'postgres' && matrix.python-version == '3.10'
+
+      - name: Upload HTML report if tests failed.
         uses: actions/upload-artifact@v3
         with:
           name: html-report
           path: ./src/htmlcov
-        if: ${{ failure() }} && matrix.database == 'postgres' && matrix.python-version == '3.10'
+        if: ${{ failure() }} && steps.html_report.conclusion != "skipped"
 
       - name: "Make badge"
         uses: schneegans/dynamic-badges-action@v1.6.0
@@ -119,4 +124,4 @@ jobs:
           label: coverage
           message: ${{ env.TOTAL_COV }}%
           color: "#3aa57c"
-        if: matrix.database == 'postgres' && matrix.python-version == '3.10' && env.TOTAL_COV
+        if: env.TOTAL_COV && github.ref == 'refs/heads/main'
