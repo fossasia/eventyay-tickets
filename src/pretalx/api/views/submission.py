@@ -1,8 +1,5 @@
 from django.http import Http404
-from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
-from django.views.decorators.cache import cache_page
-from django.views.decorators.vary import vary_on_cookie, vary_on_headers
 from django_filters import rest_framework as filters
 from django_scopes import scopes_disabled
 from rest_framework import viewsets
@@ -80,17 +77,6 @@ class SubmissionViewSet(viewsets.ReadOnlyModelViewSet):
             **kwargs
         )
 
-    # Cache for 2 minutes
-    @method_decorator(cache_page(120))
-    @method_decorator(vary_on_cookie)
-    @method_decorator(
-        vary_on_headers(
-            "Authorization",
-        )
-    )
-    def list(self, *args, **kwargs):
-        return super().list(*args, **kwargs)
-
 
 class ScheduleViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = ScheduleSerializer
@@ -131,28 +117,6 @@ class ScheduleViewSet(viewsets.ReadOnlyModelViewSet):
         if is_public:
             return self.request.event.schedules.filter(pk=current_schedule)
         return qs
-
-    # Cache for 2 minutes
-    @method_decorator(cache_page(120))
-    @method_decorator(vary_on_cookie)
-    @method_decorator(
-        vary_on_headers(
-            "Authorization",
-        )
-    )
-    def list(self, *args, **kwargs):
-        return super().list(*args, **kwargs)
-
-    # Cache for 2 minutes
-    @method_decorator(cache_page(120))
-    @method_decorator(vary_on_cookie)
-    @method_decorator(
-        vary_on_headers(
-            "Authorization",
-        )
-    )
-    def retrieve(self, *args, **kwargs):
-        return super().list(*args, **kwargs)
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
