@@ -70,7 +70,6 @@ jobs:
       - name: Build coverage info
         working-directory: ./server
         run: |
-          python -m coverage html
           python -m coverage json
 
           export TOTAL_COV=$(python -c "import json;print(json.load(open('coverage.json'))['totals']['percent_covered_display'])")
@@ -93,4 +92,4 @@ jobs:
           valColorRange: ${{ env.TOTAL_COV }}
           maxColorRange: 90
           minColorRange: 50
-        if: matrix.pubsub == 'no' && matrix.experimental == false && env.TOTAL_COV
+        if: env.TOTAL_COV && github.ref == 'refs/heads/dev'
