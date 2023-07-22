@@ -86,7 +86,8 @@ jobs:
       - name: Run tests
         working-directory: ./src
         run: python -m pytest -nauto -p no:sugar --reruns 3 tests
-        env: PRETALX_CONFIG_FILE: 'tests/ci_${{ matrix.database }}.cfg'
+        env:
+          PRETALX_CONFIG_FILE: 'tests/ci_${{ matrix.database }}.cfg'
       - name: Show coverage as build info
         working-directory: ./src
         run: |
