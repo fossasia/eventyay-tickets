@@ -9,7 +9,7 @@ venueless
    :target: https://github.com/venueless/venueless/actions
    :alt: Server tests
 
-.. image:: https://codecov.io/gh/venueless/venueless/branch/master/graph/badge.svg
+.. image:: https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/rixx/f7aede37157ab0a7e1fb2a5beaf78abc/raw/covbadge.json
   :target: https://codecov.io/gh/venueless/venueless
 
 venueless allows you to run events fully online. You can make use of different modules including live video streams, interactive video calls, group chats and more.

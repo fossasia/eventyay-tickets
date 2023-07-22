@@ -90,4 +90,7 @@ jobs:
           filename: covbadge.json
           label: coverage
           message: ${{ env.TOTAL_COV }}%
+          valColorRange: ${{ env.TOTAL_COV }}
+          maxColorRange: 90
+          minColorRange: 50
         if: matrix.pubsub == 'no' && matrix.experimental == false && env.TOTAL_COV
