@@ -7,7 +7,11 @@ document.addEventListener("DOMContentLoaded", function() {
     return state.text
   }
   document.querySelectorAll(".select2").forEach(select => {
-    $(select).select2({placeholder: select.title, templateResult: hideOptions})
+    $(select).select2({
+      placeholder: select.title,
+      templateResult: hideOptions,
+      allowClear: !select.required && !select.multiple,
+    })
   })
 
   $("input.submission_featured").change(function() {

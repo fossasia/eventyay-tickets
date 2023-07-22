@@ -51,6 +51,12 @@
         border-color: #89d6b8;
       }
     }
+    .select2-selection--clearable {
+      button.select2-selection__clear {
+        margin-top: 4px;
+        color: $brand-danger;
+      }
+    }
   }
   .select2-container {
     .select2-search--inline {
