@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-07-17 11:46+0000\n"
-"PO-Revision-Date: 2023-07-17 09:41+0000\n"
-"Last-Translator: Michal Stanke <michal@stanke.cz>\n"
+"PO-Revision-Date: 2023-07-24 19:11+0000\n"
+"Last-Translator: Jozef Mlich <jmlich83@gmail.com>\n"
 "Language-Team: none\n"
 "Language: cs\n"
 "MIME-Version: 1.0\n"
@@ -611,10 +611,12 @@ msgid ""
 "because the invitation has expired, or because the proposal cannot be edited "
 "any more."
 msgstr ""
+"Bohužel tuto pozvánku nyní nemůžete přijmout. Je možné, že platnost pozvánka "
+"vypršela, nebo už návrh nelze upravovat."
 
 #: pretalx/cfp/templates/cfp/event/invitation.html:16
 msgid "Please contact the conference organizers for more information."
-msgstr ""
+msgstr "Pro více informací kontaktujte organizátory konference."
 
 #: pretalx/cfp/templates/cfp/event/invitation.html:20
 #, python-format
@@ -1230,10 +1232,8 @@ msgid "Your proposal has been submitted."
 msgstr "Vaše přihláška byla odeslána."
 
 #: pretalx/cfp/views/user.py:470
-#, fuzzy
-#| msgid "You cannot change the slug later on!"
 msgid "You cannot accept this invitation."
-msgstr "Slug už později nebudete moci změnit."
+msgstr "Tuto pozvánku nelze přijmout."
 
 #: pretalx/common/context_processors.py:42
 msgid "“"
@@ -3953,14 +3953,8 @@ msgstr "Stav přihlášky"
 
 #: pretalx/orga/forms/submission.py:140
 #: pretalx/submission/forms/submission.py:130
-#, fuzzy
-#| msgid ""
-#| "The duration in minutes. Leave empty for default duration for this "
-#| "session type."
 msgid "Leave empty to use the default duration for the session type."
-msgstr ""
-"Délka trvání v minutách. Ponechte prázdné pro výchozí dobu trvání tohoto "
-"typu přednášky."
+msgstr "Ponechte prázdné pro výchozí dobu trvání typu přednášky."
 
 #: pretalx/orga/forms/submission.py:151
 msgid "The end time has to be after the start time."
@@ -5844,10 +5838,8 @@ msgid "Room"
 msgstr "Místnost"
 
 #: pretalx/orga/templates/orga/schedule/room_form.html:23
-#, fuzzy
-#| msgid "Review settings"
 msgid "Advanced settings"
-msgstr "Nastavení kontroly"
+msgstr "Pokročilá nastavení"
 
 #: pretalx/orga/templates/orga/schedule/room_list.html:8
 msgctxt "Number of rooms"
@@ -7440,6 +7432,8 @@ msgid ""
 "If you set room availabilities, speakers will only be able to set their "
 "availability for when any room is available."
 msgstr ""
+"Pokud nastavíte dostupnost místností, budou moci přednášející uvést svou "
+"dostupnost jen v době dostupnosti některé z místností."
 
 #: pretalx/schedule/forms.py:151
 msgid "The submitted availability does not comply with the required format."
@@ -7955,7 +7949,7 @@ msgstr ""
 
 #: pretalx/submission/models/review.py:51
 msgid "You need to keep at least one non-independent score category!"
-msgstr ""
+msgstr "Musíte ponechat nejméně jednu nezávislou hodnotící kategorii!"
 
 #: pretalx/submission/models/review.py:132
 msgid "What do you think?"
