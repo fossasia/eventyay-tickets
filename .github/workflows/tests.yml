@@ -74,12 +74,12 @@ jobs:
         run: sudo apt update && sudo apt install mariadb-client-10.6
         if: matrix.database == 'mysql'
       - name: Install Python dependencies
-        run: python -m pip install -Ue "src[dev]"
+        run: python -m pip install -Ue ".[dev]"
       - name: Install MySQL dependencies
-        run: python -m pip install -Ue "src[mysql]"
+        run: python -m pip install -Ue ".[mysql]"
         if: matrix.database == 'mysql'
       - name: Install Postgres dependencies
-        run: python -m pip install -Ue "src[postgres]"
+        run: python -m pip install -Ue ".[postgres]"
         if: matrix.database == 'postgres'
       - name: Install frontend dependencies
         run: npm ci

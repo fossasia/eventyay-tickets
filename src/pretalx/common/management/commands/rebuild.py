@@ -29,6 +29,12 @@ class Command(BaseCommand):
             dest="silent",
             help="Silence most of the build output.",
         )
+        parser.add_argument(
+            "--npm-install",
+            action="store_true",
+            dest="npm_install",
+            help="Update npm dependencies before building.",
+        )
 
     def handle(self, *args, **options):
         silent = 0 if options.get("silent") else 1
@@ -44,11 +50,13 @@ class Command(BaseCommand):
             env = os.environ.copy()
             env["OUT_DIR"] = str(settings.STATIC_ROOT)
             env["BASE_URL"] = settings.STATIC_URL
-            subprocess.call(["npm", "run", "build"], cwd=frontend_dir, env=env)
+            if options["npm_install"]:
+                subprocess.check_call(["npm", "install"], cwd=frontend_dir)
+            subprocess.check_call(["npm", "run", "build"], cwd=frontend_dir, env=env)
         call_command("compress", verbosity=silent)
-        with suppress(
-            Exception
-        ):  # This fails if we don't have db access, which is fine
+
+        # This fails if we don't have db access, which is fine
+        with suppress(Exception):
             gs = GlobalSettings()
             del gs.settings.update_check_last
             del gs.settings.update_check_result

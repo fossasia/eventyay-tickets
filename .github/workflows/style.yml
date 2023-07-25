@@ -35,7 +35,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
       - name: Install Dependencies
-        run: python -m pip install -Ue "src[dev]"
+        run: python -m pip install -Ue ".[dev]"
       - name: Run isort
         run: isort -c .
         working-directory: ./src
@@ -55,7 +55,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
       - name: Install Dependencies
-        run: python -m pip install -Ue "src[dev]"
+        run: python -m pip install -Ue ".[dev]"
       - name: Run flake8
         run: flake8 .
         working-directory: ./src
@@ -75,7 +75,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
       - name: Install Dependencies
-        run: python -m pip install -Ue "src[dev]"
+        run: python -m pip install -Ue ".[dev]"
       - name: Run black
         run: black --check .
         working-directory: ./src
@@ -95,7 +95,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
       - name: Install Dependencies
-        run: python -m pip install -Ue "src[dev]"
+        run: python -m pip install -Ue ".[dev]"
       - name: Run djhtml
         run: 'djhtml pretalx/'
         working-directory: ./src
@@ -115,20 +115,14 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
       - name: Install Dependencies
-        run: python -m pip install twine wheel -Ue "src[dev]"
+        run: python -m pip install twine wheel -Ue ".[dev]"
       - name: Install system dependencies
         run: |
           sudo apt update
           sudo apt install gettext
       - name: Run check-manifest
         run: check-manifest .
-        working-directory: ./src
-      - name: Build package sdist
-        run: python -m build -ns
-        working-directory: ./src
-      - name: Build package wheels
-        run: python -m build -nw
-        working-directory: ./src
+      - name: Build package
+        run: python -m build -n
       - name: Check package
         run: twine check dist/*
-        working-directory: ./src

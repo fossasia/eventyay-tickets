@@ -1,0 +1,132 @@
+[project]
+name = "pretalx"
+dynamic = ["version"]
+description = "Conference organisation: CfPs, scheduling, much more"
+readme = "README.rst"
+requires-python = ">=3.9"
+keywords = ["conference", "event", "schedule", "talk", "cfp"]
+authors = [
+  {name = "Tobias Kunze", email = "r@rixx.de"},
+]
+maintainers = [
+  {name = "Tobias Kunze", email = "r@rixx.de"},
+]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Environment :: Web Environment",
+  "Framework :: Django :: 4.2",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Other Audience",
+  "License :: OSI Approved :: Apache Software License",
+  "License :: OSI Approved",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.9",
+  "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+]
+
+dependencies = [
+  "beautifulsoup4[lxml]~=4.12.0",
+  "bleach~=6.0.0",
+  "celery~=5.3.0",
+  "css_inline~=0.10.0",
+  "csscompressor~=0.9.0",
+  "cssutils~=2.7.0",
+  "defusedcsv~=2.0.0",
+  "Django~=4.2.0",
+  "django-bootstrap4~=3.0.0",
+  "django-compressor~=4.4.0",
+  "django-context-decorator",
+  "django-countries~=7.0",
+  "django-csp~=3.7.0",
+  "django-filter==23.2",
+  "django-formset-js-improved==0.5.0.3",
+  "django-formtools~=2.3.0",
+  "django-hierarkey~=1.1.0",
+  "django-i18nfield~=1.9.0",
+  "django-libsass~=0.8",
+  "django-scopes~=2.0.0",
+  "djangorestframework~=3.14.0",
+  "libsass~=0.22.0",
+  "Markdown~=3.4.0",  # https://python-markdown.github.io/change_log/
+  # We can upgrade markdown again once django-bootstrap4 upgrades or once we drop Python 3.6 and 3.7
+  # 3.3.5 requires importlib-metadata>=4.4, but django-bootstrap3 requires importlib-metadata<3.
+  # see also https://github.com/zostera/django-bootstrap4/issues/380
+  "Pillow~=10.0.0",
+  "publicsuffixlist~=0.10.0",
+  "python-dateutil~=2.8.0",
+  "qrcode~=7.0",
+  "reportlab~=4.0.0",
+  "requests~=2.31.0",
+  "rules~=3.3.0",
+  "urlman~=2.0.1",
+  "vobject~=0.9.0",
+  "whitenoise~=6.5.0",
+  "zxcvbn~=4.4.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "black",
+  "build",
+  "check-manifest",
+  "coverage",
+  "djhtml",
+  "Faker",
+  "flake8",
+  "flake8-bugbear",
+  "freezegun",
+  "isort",
+  "lxml",
+  "pytest",
+  "pytest-cov",
+  "pytest-django",
+  "pytest-mock",
+  "pytest-rerunfailures",
+  "pytest-sugar",
+  "pytest-xdist",
+  "pywatchman",
+  "responses",
+  "rich",
+  "urllib3",
+]
+mysql = ["mysqlclient"]
+postgres = ["psycopg2-binary"]
+redis = ["redis~=4.5.0"]
+
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = ["setuptools", "wheel"]
+
+[project.urls]
+homepage = "https://pretalx.com"
+documentation = "https://docs.pretalx.org"
+repository = "https://github.com/pretalx/pretalx.git"
+Changelog = "https://docs.pretalx.org/en/latest/changelog.html"
+Issues = "https://github.com/pretalx/pretalx/issues"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.dynamic]
+version = {attr = "pretalx.__version__"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["pretalx*"]
+namespaces = false
+
+[tool.check-manifest]
+ignore = [
+  ".*",
+  "assets/*",
+  "CODE_OF_CONDUCT.md",
+  "CONTRIBUTORS",
+  "docs/*",
+  "src/.watchmanconfig",
+  "src/local/*",
+  "src/tests",
+  "src/tests/*",
+  "SECURITY.md",
+]

@@ -149,11 +149,19 @@ database driver (unless you use SQLite, which has its driver built in):
 
 Now we will install pretalx itself::
 
-    $ pip install --user --upgrade-strategy eager -U pretalx
++-----------------+------------------------------------------------------------------------+
+| Database        | Command                                                                |
++=================+========================================================================+
+| SQLite          | ``pip install --user --upgrade-strategy eager -U pretalx``             |
++-----------------+------------------------------------------------------------------------+
+| PostgreSQL      | ``pip install --user --upgrade-strategy eager -U "pretalx[postgres]"`` |
++-----------------+------------------------------------------------------------------------+
+| MySQL / MariaDB | ``pip install --user --upgrade-strategy eager -U "pretalx[mysql]"``    |
++-----------------+------------------------------------------------------------------------+
 
 If you intend to run pretalx with asynchronous task runners or with redis as
-cache server, you can install ``pretalx[redis]`` instead, which will pull in
-the appropriate dependencies. Please note that you should also use
+cache server, you can add ``[redis]`` to the installation command, which will
+pull in the appropriate dependencies. Please note that you should also use
 ``pretalx[redis]`` when you upgrade pretalx in this case.
 
 We also need to create a data directory::

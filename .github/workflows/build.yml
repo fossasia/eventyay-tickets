@@ -1,0 +1,71 @@
+name: Build
+
+on:
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - 'src/pretalx/locale/**'
+      - 'doc/**'
+  pull_request:
+    branches: [ main ]
+    paths-ignore:
+      - 'src/pretalx/locale/**'
+      - 'doc/**'
+
+permissions:
+  contents: read  #  to fetch code (actions/checkout)
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+env:
+  FORCE_COLOR: 1
+
+jobs:
+  packaging:
+    runs-on: ubuntu-latest
+    name: Packaging
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.10", "3.11"]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      - name: Set up node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 'latest'
+      - name: Install frontend dependencies
+        run: npm ci
+        working-directory: ./src/frontend/schedule-editor
+      - name: Install system dependencies
+        run: sudo apt update && sudo apt install gettext unzip
+      - name: Install Python dependencies
+        run: python -m pip install twine wheel -Ue ".[dev]"
+      - name: Run check-manifest
+        run: check-manifest
+      - name: Run build
+        run: python -m build
+      - name: Check package
+        run: twine check dist/*
+      - name: Check files to make sure we ship our frontend
+        run: unzip -l dist/pretalx*whl | grep frontend || exit 1
+      - name: Install the created wheel package with pip
+        run: |
+          # Switch to a new virtualenv
+          mkdir test_venv
+          python -m venv test_venv
+          . test_venv/bin/activate
+
+          python -m pip install dist/pretalx*whl
+          python -m pretalx help

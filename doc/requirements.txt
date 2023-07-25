@@ -8,4 +8,4 @@ sphinxcontrib-django
 sphinxcontrib-httpdomain
 sphinxcontrib-spelling
 
--e src/
+-e .

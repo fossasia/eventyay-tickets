@@ -1,0 +1,28 @@
+include _build/backend.py
+include LICENSE
+include README.rst
+include src/pretalx.example.cfg
+
+exclude src/pretalx/override_settings.py
+exclude src/pretalx.cfg
+
+recursive-exclude doc *
+recursive-exclude src/data *
+recursive-exclude src/frontend *
+recursive-exclude src/local *
+
+recursive-include src/pretalx/static *
+recursive-include src/static.dist *
+recursive-include src/pretalx/locale *
+recursive-include src/pretalx/agenda/templates *
+recursive-include src/pretalx/api/templates *
+recursive-include src/pretalx/common/templates *
+recursive-include src/pretalx/cfp/templates *
+recursive-include src/pretalx/mail/templates *
+recursive-include src/pretalx/orga/templates *
+recursive-include src/pretalx/schedule/templates *
+recursive-exclude src/tests *
+recursive-include src *.py
+
+global-exclude *.py[co]
+global-exclude __pycache__

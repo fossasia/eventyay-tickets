@@ -136,3 +136,5 @@ override_settings.py
 
 # Screenshots
 screens/
+
+src/frontend
