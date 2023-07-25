@@ -21,14 +21,14 @@ concurrency:
 jobs:
   isort:
     name: isort
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python 3.9
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.10
         uses: actions/setup-python@v4
         with:
-          python-version: 3.9
-      - uses: actions/cache@v1
+          python-version: "3.10"
+      - uses: actions/cache@v3
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('src/setup.py') }}
@@ -41,13 +41,13 @@ jobs:
         working-directory: ./src
   flake:
     name: flake8
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python 3.9
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.10
         uses: actions/setup-python@v4
         with:
-          python-version: 3.9
+          python-version: "3.10"
       - uses: actions/cache@v1
         with:
           path: ~/.cache/pip
@@ -61,13 +61,13 @@ jobs:
         working-directory: ./src
   black:
     name: black
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python 3.9
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.10
         uses: actions/setup-python@v4
         with:
-          python-version: 3.9
+          python-version: "3.10"
       - uses: actions/cache@v1
         with:
           path: ~/.cache/pip
@@ -83,12 +83,12 @@ jobs:
     name: djhtml
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python 3.9
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.10
         uses: actions/setup-python@v4
         with:
-          python-version: 3.9
-      - uses: actions/cache@v1
+          python-version: "3.10"
+      - uses: actions/cache@v3
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('src/setup.py') }}
@@ -97,18 +97,18 @@ jobs:
       - name: Install Dependencies
         run: python -m pip install -Ue "src[dev]"
       - name: Run djhtml
-        run: 'find -name "*.html" | xargs djhtml -c'
+        run: 'djhtml pretalx/'
         working-directory: ./src
   packaging:
     name: packaging
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python 3.9
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.10
         uses: actions/setup-python@v4
         with:
-          python-version: 3.9
-      - uses: actions/cache@v1
+          python-version: "3.10"
+      - uses: actions/cache@v3
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('src/setup.py') }}
