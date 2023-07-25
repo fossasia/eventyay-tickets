@@ -74,7 +74,7 @@ class SubmissionViewSet(viewsets.ReadOnlyModelViewSet):
             can_view_speakers=can_view_speakers,
             event=self.request.event,
             questions=self.serializer_questions,
-            **kwargs
+            **kwargs,
         )
 
 
