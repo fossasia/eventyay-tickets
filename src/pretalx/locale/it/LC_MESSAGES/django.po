@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-17 11:46+0000\n"
+"POT-Creation-Date: 2023-07-25 07:29+0000\n"
 "PO-Revision-Date: 2023-03-22 22:31+0000\n"
 "Last-Translator: Stefano Campus <skampus@gmail.com>\n"
 "Language-Team: none\n"
@@ -17,6 +17,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 4.4.2\n"
+
+#: htmlcov/d_9155819316f40b96_views_py.html:155
+#: pretalx/cfp/templates/cfp/event/user_submissions.html:30
+#: pretalx/cfp/templates/cfp/event/user_submissions.html:69
+#: pretalx/orga/templates/orga/cfp/text.html:66
+#: pretalx/orga/templates/orga/review/dashboard.html:209
+#: pretalx/orga/templates/orga/speaker/information_list.html:23
+#: pretalx/orga/templates/orga/submission/list.html:84
+#: pretalx/orga/templates/orga/submission/review.html:49
+msgid "Title"
+msgstr "Titolo"
 
 #: pretalx/agenda/phrases.py:8
 msgid "Thank you for your feedback!"
@@ -1138,16 +1149,6 @@ msgstr "Informazioni importanti"
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:25
 msgid "Your drafts"
 msgstr "Le tue bozze"
-
-#: pretalx/cfp/templates/cfp/event/user_submissions.html:30
-#: pretalx/cfp/templates/cfp/event/user_submissions.html:69
-#: pretalx/orga/templates/orga/cfp/text.html:66
-#: pretalx/orga/templates/orga/review/dashboard.html:209
-#: pretalx/orga/templates/orga/speaker/information_list.html:23
-#: pretalx/orga/templates/orga/submission/list.html:84
-#: pretalx/orga/templates/orga/submission/review.html:49
-msgid "Title"
-msgstr "Titolo"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:48
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:101
@@ -4654,8 +4655,18 @@ msgstr ""
 msgid "Your upcoming events"
 msgstr ""
 
-#: pretalx/orga/templates/orga/event_list.html:24
-#: pretalx/orga/templates/orga/event_list.html:60
+#: pretalx/orga/templates/orga/event_list.html:16
+#, fuzzy
+#| msgid "Past events"
+msgid "No events"
+msgstr "Eventi passati"
+
+#: pretalx/orga/templates/orga/event_list.html:18
+msgid "Please ask an organiser to invite you to an event."
+msgstr ""
+
+#: pretalx/orga/templates/orga/event_list.html:32
+#: pretalx/orga/templates/orga/event_list.html:68
 #: pretalx/orga/templates/orga/speaker/form.html:21
 #: pretalx/orga/templates/orga/submission/list.html:28
 #: pretalx/orga/views/dashboard.py:312
@@ -4664,30 +4675,30 @@ msgid_plural "proposals"
 msgstr[0] ""
 msgstr[1] ""
 
-#: pretalx/orga/templates/orga/event_list.html:30
-#: pretalx/orga/templates/orga/event_list.html:66
+#: pretalx/orga/templates/orga/event_list.html:38
+#: pretalx/orga/templates/orga/event_list.html:74
 msgid "No proposals yet"
 msgstr ""
 
-#: pretalx/orga/templates/orga/event_list.html:34
-#: pretalx/orga/templates/orga/event_list.html:71
+#: pretalx/orga/templates/orga/event_list.html:42
+#: pretalx/orga/templates/orga/event_list.html:79
 msgid "Live"
 msgstr ""
 
-#: pretalx/orga/templates/orga/event_list.html:36
-#: pretalx/orga/templates/orga/event_list.html:74
+#: pretalx/orga/templates/orga/event_list.html:44
+#: pretalx/orga/templates/orga/event_list.html:82
 msgid "Not public"
 msgstr ""
 
-#: pretalx/orga/templates/orga/event_list.html:43
+#: pretalx/orga/templates/orga/event_list.html:51
 msgid "Create a new event"
 msgstr ""
 
-#: pretalx/orga/templates/orga/event_list.html:48
+#: pretalx/orga/templates/orga/event_list.html:56
 msgid "Your most recent events"
 msgstr ""
 
-#: pretalx/orga/templates/orga/event_list.html:71
+#: pretalx/orga/templates/orga/event_list.html:79
 msgid "CfP open"
 msgstr ""
 
