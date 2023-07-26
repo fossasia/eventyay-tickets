@@ -958,7 +958,7 @@ msgid ""
 msgstr ""
 "提案を送信することで、このイベントに参加し、提案内容について発表を行うことを"
 "受諾したものとみなします。タイトルや概要、詳細、アップロード資料などの提出済"
-"のデータは、提案内奥が確定した時点で一般に公開されます。"
+"のデータは、提案内容が確定した時点で一般に公開されます。"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:49
 #: pretalx/cfp/templates/cfp/event/user_submission_withdraw.html:27
