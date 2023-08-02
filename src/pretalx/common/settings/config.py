@@ -25,7 +25,7 @@ CONFIG = {
     },
     "site": {
         "debug": {
-            "default": "runserver" in sys.argv,
+            "default": "runserver" in sys.argv or "devserver" in sys.argv,
             "env": os.getenv("PRETALX_DEBUG"),
         },
         "url": {

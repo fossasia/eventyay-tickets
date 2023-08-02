@@ -17,7 +17,7 @@ Please make sure you have the following dependencies installed:
 +----------------------------------+------------------+
 | Tool                             | Debian package   |
 +==================================+==================+
-| Python 3.6(!) or newer           |                  |
+| Python 3.9(!) or newer           |                  |
 +----------------------------------+------------------+
 | pip for Python 3                 | ``python3-pip``  |
 +----------------------------------+------------------+
@@ -32,7 +32,7 @@ Please make sure you have the following dependencies installed:
 | git                              | ``git``          |
 +----------------------------------+------------------+
 
-If your operating system does not provide Python 3.6 or newer, you might need
+If your operating system does not provide Python 3.9 or newer, you might need
 to `compile it yourself`_ or install it from the `unstable` or `experimental`
 repositories.
 
@@ -43,7 +43,7 @@ Some Python dependencies might also need a compiler during installation, the Deb
 Local Python environment
 ------------------------
 
-Please execute ``python -V`` or ``python3 -V`` to make sure you have Python 3.6
+Please execute ``python -V`` or ``python3 -V`` to make sure you have Python 3.9
 (or newer) installed. Also make sure you have pip for Python 3 installed, by
 running ``pip3 -V``. Then use Python’s internal tools to create a virtual
 environment and activate it for your current session::
@@ -114,8 +114,24 @@ To run the local development server, execute::
 
     (env)$ python manage.py runserver
 
-Now point your browser to http://127.0.0.1:8000/orga/ – You should be able to log in and play
-around!
+Now point your browser to http://127.0.0.1:8000/orga/ – You should be able to log in and use
+all sites except those that use big custom JavaScript components, like the schedule editor.
+In order to use those, you have two options – in any case, you will need to have ``node`` and
+``npm`` installed on your system.
+
+Then go to the ``src/frontend/schedule-editor`` folder and run::
+
+    (env)$ npm install
+
+If you just need to use the JavaScript component, but don't need to change it,
+compile the JavaScript files::
+
+    (env)$ python manage.py rebuild
+
+If you want to change the JavaScript code, you can run the following command, which combines
+the Python and the JavaScript dev servers::
+
+    (env)$ python manage.py devserver --dev
 
 .. _`checksandtests`:
 
