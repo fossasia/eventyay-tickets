@@ -19,14 +19,15 @@
   "main": "dist/schedule-editor.common.js",
   "dependencies": {
     "buntpapier": "^2.0.0-alpha.25",
-    "i18next": "^23.4.1",
+    "i18next": "^22.4.8",
     "lodash": "^4.17.20",
     "markdown-it": "^12.1.0",
     "moment": "^2.27.0",
     "moment-locales-webpack-plugin": "^1.2.0",
     "moment-timezone": "^0.5.31",
     "moment-timezone-data-webpack-plugin": "^1.3.0",
-    "vue": "^3.3.4"
+    "vue": "^3.3.4",
+    "vue-template-compiler": "^2.7.14"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.2.3",
@@ -34,7 +35,7 @@
     "eslint-plugin-vue": "^9.2.0",
     "eslint-plugin-vue-pug": "^0.5.4",
     "i18next-conv": "^14.0.0",
-    "i18next-parser": "^8.3.0",
+    "i18next-parser": "^5.4.0",
     "pug": "^3.0.0",
     "stylelint-config-standard": "^26.0.0",
     "stylelint-plugin-stylus": "^0.16.1",
