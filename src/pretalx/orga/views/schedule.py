@@ -310,7 +310,10 @@ class TalkList(EventPermissionRequired, View):
             schedule = request.event.wip_schedule
 
         filter_updated = request.GET.get("since")
-        result = schedule.build_data(all_talks=True, filter_updated=filter_updated)
+        result = schedule.build_data(
+            all_talks=True, all_rooms=not bool(filter_updated),
+            filter_updated=filter_updated
+        )
 
         if request.GET.get("warnings"):
             result["warnings"] = {

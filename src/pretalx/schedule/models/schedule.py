@@ -630,7 +630,8 @@ class Schedule(LogMixin, models.Model):
         return self != self.event.current_schedule
 
     def build_data(
-        self, all_talks=False, filter_updated=None, with_availabilities=False
+        self, all_talks=False, filter_updated=None, with_availabilities=False,
+        all_rooms=False,
     ):
         talks = self.talks.all()
         if not all_talks:
@@ -649,7 +650,7 @@ class Schedule(LogMixin, models.Model):
                 "submission__speakers__availabilities"
             )
         talks = talks.order_by("start")
-        rooms = set()
+        rooms = set() if not all_rooms else set(self.event.rooms.all())
         tracks = set()
         speakers = set()
         result = {

@@ -248,11 +248,16 @@ export default {
 		stopDragging (session) {
 			try {
 				if (this.isUnassigning && this.draggedSession) {
-					const movedSession = this.schedule.talks.find(s => s.id === this.draggedSession.id)
-					movedSession.start = null
-					movedSession.end = null
-					movedSession.room = null
-					// TODO push to server
+					if (this.draggedSession.code) {
+						const movedSession = this.schedule.talks.find(s => s.id === this.draggedSession.id)
+						movedSession.start = null
+						movedSession.end = null
+						movedSession.room = null
+						api.saveTalk(movedSession)
+					} else {
+						this.schedule.talks = this.schedule.talks.filter(s => s.id !== this.draggedSession.id)
+						api.deleteTalk(this.draggedSession)
+					}
 				}
 			} finally {
 				this.draggedSession = null
@@ -347,6 +352,8 @@ export default {
 			text-align: center
 			background-color: $clr-white
 			border-bottom: 4px solid $clr-dividers-light
+	#schedule-wrapper
+		width: 100%
   #session-editor-wrapper
 		position: absolute
 		z-index: 1000

@@ -61,7 +61,7 @@ export default {
 			const end = this.hoverSlice.time.clone().add(this.draggedSession.duration, 'm')
 			const sessionId = this.draggedSession.id
 			const roomId = this.hoverSlice.room.id
-			for (const session of this.sessions) {
+			for (const session of this.sessions.filter(s => s.start)) {
 				if (session.room.id === roomId && session.id !== sessionId) {
 					// Test all same-room sessions for overlap with our new session:
 					// Overlap exists if this session's start or end falls within our session
