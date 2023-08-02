@@ -1,5 +1,5 @@
 <template lang="pug">
-.c-linear-schedule-session(:style="style", :target="linkTarget", @pointerdown.stop="$emit('startDragging', {session: session, event: $event})", :class="classes")
+.c-linear-schedule-session(:style="style", @pointerdown.stop="$emit('startDragging', {session: session, event: $event})", :class="classes")
 	.time-box(v-if="!isBreak")
 		.start(:class="{'has-ampm': startTime.ampm}", v-if="startTime")
 			.time {{ startTime.time }}
@@ -33,7 +33,6 @@ export default {
 	},
 	inject: {
 		eventUrl: { default: null },
-		linkTarget: { default: '_self' },
 		generateSessionLinkUrl: {
 			default () {
 				return ({eventUrl, session}) => `${eventUrl}talk/${session.id}/`

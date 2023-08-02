@@ -16,7 +16,8 @@
 				:isDragged="draggedSession && (session.id === draggedSession.id)",
 				:style="getSessionStyle(session)",
 				:showRoom="false",
-				@startDragging="$emit('startDragging', $event)"
+				@startDragging="$emit('startDragging', $event)",
+				@click="$emit('editSession', session)"
 			)
 		.availability(v-for="availability of availabilities", :style="getSessionStyle(availability)")
 </template>
@@ -40,8 +41,7 @@ export default {
 		end: Object,
 		rooms: Array,
 		currentDay: Object,
-		draggedSession: Object,
-		scrollParent: Element
+		draggedSession: Object
 	},
 	data () {
 		return {
@@ -51,6 +51,7 @@ export default {
 			hoverSlice: null,
 			expandedTimes: [],
 			gridOffset: 0,
+			dragScrollTimer: null,
 		}
 	},
 	computed: {
@@ -247,7 +248,14 @@ export default {
 				}
 			}
 			return avails
-		}
+		},
+		staticOffsetTop () {
+			const rect = this.$parent.$el.getBoundingClientRect()
+			return rect.top
+		},
+		scrollParent () {
+			return this.$refs.grid.parentElement.parentElement
+		},
 	},
 	watch: {
 		currentDay: 'changeDay'
@@ -255,7 +263,7 @@ export default {
 	async mounted () {
 		await this.$nextTick()
 		this.observer = new IntersectionObserver(this.onIntersect, {
-			root: this.scrollParent,
+			root: this.$refs.grid.parentElement.parentElement,
 			rootMargin: '-45% 0px'
 		})
 		for (const [ref, el] of Object.entries(this.$refs)) {
@@ -300,7 +308,11 @@ export default {
 		},
 		updateHoverSlice (e) {
 			if (!this.draggedSession) { this.hoverSlice = null; return }
+			if (!this.dragScrollTimer) {
+				this.dragScrollTimer = setInterval(this.dragOnScroll, 100)
+			}
 			let hoverSlice = null
+			this.draggedSession.event = e
 			// We're grabbing the leftmost point of our y position and searching for the slice element there
 		    // to determine our hover slice's attributes (y axis)
 			for (const element of document.elementsFromPoint(this.gridOffset, e.clientY)) {
@@ -313,7 +325,6 @@ export default {
 			// For the x axis, we need to know which room we are in, so we divide our position by
 			const roomWidth = document.querySelectorAll('.grid .room')[1].getBoundingClientRect().width
 			const roomIndex = Math.floor((e.clientX - this.gridOffset - 80) / roomWidth) // remove the timeline offset to the left
-			console.log(roomIndex)
 			this.hoverSlice = { time: moment(hoverSlice.dataset.slice), roomIndex: roomIndex, room: this.rooms[roomIndex], duration: this.draggedSession.duration }
 		},
 		getHoverSliceStyle () {
@@ -329,8 +340,7 @@ export default {
 			}
 		},
 		getOffsetTop () {
-			const rect = this.$parent.$el.getBoundingClientRect()
-			return rect.top + window.scrollY
+			return this.staticOffsetTop() + window.scrollY
 		},
 		getSliceClasses (slice) {
 			const classes = {
@@ -365,10 +375,34 @@ export default {
 			const el = this.$refs[getSliceName(day)]?.[0]
 			if (!el) return
 			const offset = el.offsetTop + this.getOffsetTop()
-			if (this.scrollParent) {
-				this.scrollParent.scrollTop = offset
-			} else {
-				window.scroll({top: offset})
+			this.scrollTo(offset)
+		},
+		scrollTo (offset) {
+			this.scrollParent.scroll({top: offset, behavior: "smooth"})
+		},
+		scrollBy (offset) {
+			this.scrollParent.scrollBy({top: offset, behavior: "smooth"})
+		},
+		dragOnScroll () {
+			if (!this.draggedSession) {
+				clearInterval(this.dragScrollTimer)
+				this.dragScrollTimer = null;
+				return
+			}
+			// get current mouse y position
+			const event = this.draggedSession.event
+			if (event.clientY - this.staticOffsetTop < 160) {
+				if (event.clientY - this.staticOffsetTop < 90) {
+					this.scrollBy(-200)
+				} else {
+					this.scrollBy(-75)
+				}
+			} else if (event.clientY > this.scrollParent.clientHeight + this.staticOffsetTop - 100) {
+				if (event.clientY > this.scrollParent.clientHeight + this.staticOffsetTop - 40) {
+					this.scrollBy(200)
+				} else {
+					this.scrollBy(75)
+				}
 			}
 		},
 		onIntersect (entries) {

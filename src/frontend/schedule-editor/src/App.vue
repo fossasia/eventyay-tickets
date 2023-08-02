@@ -8,7 +8,7 @@
 				session(v-for="un in unscheduled", :session="un", @startDragging="startDragging", :isDragged="draggedSession && un.id === draggedSession.id")
 			#schedule-wrapper(v-scrollbar.x.y="")
 				bunt-tabs.days(v-if="days && days.length > 1", :active-tab="currentDay && currentDay.format()", ref="tabs" :class="['grid-tabs']")
-					bunt-tab(v-for="day in days", :id="day.format()", :header="day.format(dateFormat)", @selected="changeDay(day)")
+					bunt-tab(v-for="day of days", :id="day.format()", :header="day.format(dateFormat)", @selected="changeDay(day)")
 				grid-schedule(:sessions="sessions",
 					:rooms="schedule.rooms",
 					:start="days[0]",
@@ -18,8 +18,37 @@
 					@changeDay="currentDay = $event",
 					@startDragging="startDragging",
 					@rescheduleSession="rescheduleSession",
-					@createSession="createSession")
-			editor(v-scrollbar.y="", :session="editorSession")
+					@createSession="createSession",
+					@editSession="editorStart($event)")
+			#session-editor-wrapper(v-if="editorSession", @click="editorSession = null")
+				form#session-editor(@click.stop="", @submit.prevent="editorSave")
+					h3.session-editor-title(v-if="editorSession.code") {{editorSession.title }}
+					.data
+						.data-row(v-if="editorSession.code")
+							.data-label(v-if="editorSession.speakers && editorSession.speakers.length == 1") {{ $t('Speaker') }}
+							.data-label(v-else) {{ $t('Speakers') }}
+							.data-value
+								span(v-for="speaker, index of editorSession.speakers")
+									a(:href="`/orga/event/${eventSlug}/speakers/${speaker.code}/`") {{speaker.name}}
+									span(v-if="index != editorSession.speakers.length - 1") {{', '}}
+						.data-row(v-else)
+							.data-label {{ $t('Title') }}
+							.data-value
+								input(v-model="editorSession.title", :required="true")
+						.data-row(v-if="editorSession.track")
+							.data-label {{ $t('Track') }}
+							.data-value {{ getLocalizedString(editorSession.track.name) }}
+						.data-row(v-if="editorSession.room")
+							.data-label {{ $t('Room') }}
+							.data-value {{ getLocalizedString(editorSession.room.name) }}
+						.data-row
+							.data-label {{ $t('Duration') }}
+							.data-value.number
+								input(v-model="editorSession.duration", type="number", min="1", max="1440", step="1", :required="true")
+								span {{ $t('minutes') }}
+					.button-row
+						bunt-button#btn-delete(v-if="!editorSession.code", @click="editorDelete", :loading="editorSessionWaiting") {{ $t('Delete') }}
+						bunt-button#btn-save(@click="editorSave", :loading="editorSessionWaiting") {{ $t('Save') }}
 	bunt-progress-circular(v-else, size="huge", :page="true")
 </template>
 <script>
@@ -34,7 +63,6 @@ export default {
 	name: 'PretalxSchedule',
 	components: { Editor, GridSchedule, Session },
 	props: {
-		eventUrl: String,
 		locale: String,
 		version: {
 			type: String,
@@ -44,12 +72,15 @@ export default {
 	data () {
 		return {
 			moment,
+			eventSlug: null,
 			scrollParentWidth: Infinity,
 			schedule: null,
 			currentDay: null,
 			draggedSession: null,
 			editorSession: null,
+			editorSessionWaiting: false,
 			isUnassigning: false,
+			getLocalizedString
 		}
 	},
 	computed: {
@@ -131,6 +162,7 @@ export default {
 		this.schedule = await this.fetchSchedule()
 		this.currentDay = this.days[0]
 		this.eventTimezone = this.schedule.timezone
+		this.eventSlug = window.location.pathname.split("/")[3]
 		moment.tz.setDefault(this.eventTimezone)
 		window.setTimeout(this.pollUpdates, 10 * 1000)
 		await new Promise((resolve) => {
@@ -165,16 +197,39 @@ export default {
 			// TODO show the resulting warnings in response.warnings
 		},
 		createSession (e) {
-			console.log(e.session)
 			this.schedule.talks.push(e.session)
-			// TODO push to server
+			api.createTalk(e.session)
+			this.editorStart(e.session)
+			// TODO show the resulting warnings in response.warnings
+		},
+		editorStart (session) {
+			this.editorSession = session
+		},
+		editorSave () {
+			this.editorSessionWaiting = true
+			this.editorSession.end = moment(this.editorSession.start).clone().add(this.editorSession.duration, 'm')
+			api.saveTalk(this.editorSession)
+
+			const session = this.schedule.talks.find(s => s.id === this.editorSession.id)
+			session.end = this.editorSession.end
+			if (!session.submission) {
+				session.title = this.editorSession.title
+			}
+			this.editorSessionWaiting = false
+			this.editorSession = null
+		},
+		editorDelete () {
+			this.editorSessionWaiting = true
+			api.deleteTalk(this.editorSession)
+			this.schedule.talks = this.schedule.talks.filter(s => s.id !== this.editorSession.id)
+			this.editorSessionWaiting = false
+			this.editorSession = null
 		},
 		startNewBreak({event}) {
 		  this.startDragging({event, session: {title: "New Break", duration: "30", uncreated: true}})
 		},
 		startDragging ({event, session}) {
 			this.draggedSession = session
-			this.editorSession = session
 			// TODO: capture the pointer with setPointerCapture(event)
 			// This allows us to call stopDragging() even when the mouse is released
 			// outside the browser.
@@ -207,8 +262,8 @@ export default {
 		  return schedule
 		},
 		async pollUpdates () {
-			this.schedule = await this.fetchSchedule({since: this.since, warnings: true})
-			window.setTimeout(this.pollUpdates, 10 * 1000)
+			//this.schedule = await this.fetchSchedule({since: this.since, warnings: true})
+			//window.setTimeout(this.pollUpdates, 10 * 1000)
 		}
 	}
 }
@@ -221,10 +276,13 @@ export default {
 	flex-direction: column
 	min-height: 0
 	min-width: 0
-	height: 100vh
+	height: calc(100vh - 160px)
 	width: 100%
 	font-size: 14px
 	margin-left: 24px
+	font-family: inherit
+	h1, h2, h3, h4, h5, h6, legend, button, .btn
+		font-family: "Titillium Web", "Open Sans", "OpenSans", "Helvetica Neue", Helvetica, Arial, sans-serif
 	&.is-dragging
 		user-select: none
 		cursor: grabbing
@@ -279,4 +337,68 @@ export default {
 			text-align: center
 			background-color: $clr-white
 			border-bottom: 4px solid $clr-dividers-light
+  #session-editor-wrapper
+		position: absolute
+		z-index: 1000
+		top: 0
+		left: 0
+		width: 100%
+		height: 100%
+		background-color: rgba(0, 0, 0, 0.5)
+
+		#session-editor
+			background-color: $clr-white
+			border-radius: 4px
+			padding: 32px 40px
+			position: absolute
+			top: 50%
+			left: 50%
+			transform: translate(-50%, -50%)
+			width: 680px
+
+			.session-editor-title
+				font-size: 22px
+				margin-bottom: 16px
+			.button-row
+				display: flex
+				width: 100%
+				margin-top: 24px
+
+				.bunt-button-content
+					font-size: 16px !important
+				#btn-delete
+					button-style(color: $clr-danger, text-color: $clr-white)
+					font-weight: bold;
+				#btn-save
+					margin-left: auto
+					font-weight: bold;
+					button-style(color: #3aa57c)
+			.data
+				display: flex
+				flex-direction: column
+				font-size: 16px
+				.data-row
+					display: flex
+					margin: 4px 0
+					height: 32px
+					.data-label
+						width: 130px
+						font-weight: bold
+					.data-value
+						input
+							padding: 0.375rem 0.75rem
+							border: 1px solid #ced4da
+							width: 100%
+							border-radius: 0.25rem
+							padding: 4px
+							font-size: 16px
+							height: 30px
+							&:focus, &:active, &:focus-visible
+								border-color: #89d6b8
+								box-shadow: 0 0 0 1px rgba(58, 165, 124, 0.25)
+							&[type=number]
+								width: 60px
+								text-align: right
+								padding-right: 8px
+								margin-right: 8px
 </style>

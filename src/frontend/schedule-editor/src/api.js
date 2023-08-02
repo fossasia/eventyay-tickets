@@ -1,6 +1,7 @@
 const api = {
 	eventSlug: window.location.pathname.split("/")[3],
 	http (verb, url, body) {
+		console.log(body)
 		var fullHeaders = {}
 		fullHeaders['Content-Type'] = 'application/json'
 

@@ -255,8 +255,8 @@ class ScheduleResendMailsView(EventPermissionRequired, View):
 def serialize_break(slot):
     return {
         "id": slot.pk,
-        "title": "",
-        "description": slot.description.data if slot.description else "",
+        "title": slot.description.data if slot.description else "",
+        "description": "",
         "room": slot.room.pk if slot.room else None,
         "start": slot.start.isoformat() if slot.start else None,
         "end": slot.end.isoformat() if slot.end else None,
@@ -322,6 +322,10 @@ class TalkList(EventPermissionRequired, View):
         result["now"] = now().strftime("%Y-%m-%d %H:%M:%S%z")
         return JsonResponse(result, encoder=I18nJSONEncoder)
 
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
     def post(self, request, event):
         data = json.loads(request.body.decode())
         start = (
@@ -341,7 +345,7 @@ class TalkList(EventPermissionRequired, View):
             room=request.event.rooms.get(pk=room)
             if room
             else request.event.rooms.first(),
-            description=LazyI18nString(data.get("description")),
+            description=LazyI18nString(data.get("title")),
             start=start,
             end=end,
         )
@@ -385,7 +389,7 @@ class TalkUpdate(PermissionRequired, View):
                 pk=data["room"] or getattr(talk.room, "pk", None)
             )
             if not talk.submission:
-                new_description = LazyI18nString(data.get("description", ""))
+                new_description = LazyI18nString(data.get("title", ""))
                 talk.description = new_description if str(new_description) else talk.description
             talk.save(update_fields=["start", "end", "room", "description", "updated"])
             talk.refresh_from_db()
