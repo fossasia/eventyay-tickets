@@ -246,7 +246,6 @@ export default {
 					}
 				}
 			}
-			console.log(avails)
 			return avails
 		}
 	},
@@ -311,7 +310,7 @@ export default {
 				}
 			}
 			if (!hoverSlice) return
-			// For the x axis, we need to know which room we are in, so we divide our position by 
+			// For the x axis, we need to know which room we are in, so we divide our position by
 			const roomWidth = document.querySelectorAll('.grid .room')[1].getBoundingClientRect().width
 			const roomIndex = Math.floor((e.clientX - this.gridOffset - 80) / roomWidth) // remove the timeline offset to the left
 			console.log(roomIndex)

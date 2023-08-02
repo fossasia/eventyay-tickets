@@ -18,7 +18,7 @@
   "type": "module",
   "main": "dist/schedule-editor.common.js",
   "dependencies": {
-    "buntpapier": "^2.0.0-alpha.20",
+    "buntpapier": "^2.0.0-alpha.24",
     "i18next": "^22.4.8",
     "lodash": "^4.17.20",
     "markdown-it": "^12.1.0",
@@ -26,10 +26,10 @@
     "moment-locales-webpack-plugin": "^1.2.0",
     "moment-timezone": "^0.5.31",
     "moment-timezone-data-webpack-plugin": "^1.3.0",
-    "vue": "^3.2.37"
+    "vue": "^3.3.4"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^3.0.1",
+    "@vitejs/plugin-vue": "^4.2.3",
     "eslint": "^8.20.0",
     "eslint-plugin-vue": "^9.2.0",
     "eslint-plugin-vue-pug": "^0.5.4",
@@ -39,7 +39,7 @@
     "stylelint-config-standard": "^26.0.0",
     "stylelint-plugin-stylus": "^0.16.1",
     "stylus": "^0.54.7",
-    "vite": "^3.1.8"
+    "vite": "^4.4.8"
   },
   "bugs": {
     "url": "https://github.com/pretalx/schedule-editor/issues"

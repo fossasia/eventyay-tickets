@@ -3,8 +3,8 @@
 	template(v-if="schedule")
 		#main-wrapper
 			#unassigned(v-scrollbar.y="", @pointerenter="isUnassigning = true", @pointerleave="isUnassigning = false")
-				h1 {{$t('Unassigned')}}
-				session(:session="{title: 'New break'}", :isDragged="false", @startDragging="startNewBreak")
+				.title {{$t('Unassigned')}}
+				session(:session="{title: '+ ' + $t('New break')}", :isDragged="false", @startDragging="startNewBreak")
 				session(v-for="un in unscheduled", :session="un", @startDragging="startDragging", :isDragged="draggedSession && un.id === draggedSession.id")
 			#schedule-wrapper(v-scrollbar.x.y="")
 				bunt-tabs.days(v-if="days && days.length > 1", :active-tab="currentDay && currentDay.format()", ref="tabs" :class="['grid-tabs']")
@@ -161,7 +161,8 @@ export default {
 			movedSession.start = e.start
 			movedSession.end = e.end
 			movedSession.room = e.room.id
-			// TODO push to server
+			api.saveTalk(movedSession)
+			// TODO show the resulting warnings in response.warnings
 		},
 		createSession (e) {
 			console.log(e.session)
@@ -268,6 +269,14 @@ export default {
 			.bunt-tab-header-item-text
 				white-space: nowrap
 	#unassigned
+		margin-top: 64px
 		width: 350px
 		flex: none
+		> .title
+			margin 0 8px
+			padding 4px 0
+			font-size: 18px
+			text-align: center
+			background-color: $clr-white
+			border-bottom: 4px solid $clr-dividers-light
 </style>

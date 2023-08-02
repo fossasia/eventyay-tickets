@@ -74,8 +74,9 @@ const api = {
 		return api.http(action, url, {
 			room: (talk.room && talk.room.id) ? talk.room.id : talk.room,
 			start: talk.start,
-			action: talk.action,
+			end: talk.end,
 			duration: talk.duration,
+			title: talk.title,
 			description: talk.description,
 		})
 	},

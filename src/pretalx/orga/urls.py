@@ -721,14 +721,14 @@ urlpatterns = [
                     ),
                 ),
                 path(
-                    "schedule/api/talks/",
-                    schedule.TalkList.as_view(),
-                    name="schedule.api.talks",
-                ),
-                path(
                     "schedule/api/talks/<int:pk>/",
                     schedule.TalkUpdate.as_view(),
                     name="schedule.api.update",
+                ),
+                path(
+                    "schedule/api/talks/",
+                    schedule.TalkList.as_view(),
+                    name="schedule.api.talks",
                 ),
                 path(
                     "schedule/api/availabilities/<int:talkid>/<int:roomid>/",

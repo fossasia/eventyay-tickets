@@ -13,6 +13,7 @@ from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import FormView, TemplateView, UpdateView, View
 from django_context_decorator import context
 from i18nfield.strings import LazyI18nString
@@ -358,6 +359,10 @@ class TalkUpdate(PermissionRequired, View):
             pk=self.kwargs.get("pk")
         ).first()
 
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
     def patch(self, request, event, pk):
         talk = self.get_object()
         if not talk:
@@ -380,7 +385,8 @@ class TalkUpdate(PermissionRequired, View):
                 pk=data["room"] or getattr(talk.room, "pk", None)
             )
             if not talk.submission:
-                talk.description = LazyI18nString(data.get("description", ""))
+                new_description = LazyI18nString(data.get("description", ""))
+                talk.description = new_description if str(new_description) else talk.description
             talk.save(update_fields=["start", "end", "room", "description", "updated"])
             talk.refresh_from_db()
         else:
