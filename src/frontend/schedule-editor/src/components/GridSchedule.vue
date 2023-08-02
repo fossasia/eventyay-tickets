@@ -1,6 +1,6 @@
 <template lang="pug">
 .c-grid-schedule()
-	.grid(ref="grid", :style="gridStyle", :class="gridClasses", @pointermove="updateHoverSlice($event)", @pointerup="stopDragging()")
+	.grid(ref="grid", :style="gridStyle", :class="gridClasses", @pointermove="updateHoverSlice($event)", @pointerup="stopDragging($event)")
 		template(v-for="slice of visibleTimeslices")
 			.timeslice(:ref="slice.name", :class="getSliceClasses(slice)", :data-slice="slice.date.format()", :style="getSliceStyle(slice)", @click="expandTimeslice(slice)") {{ getSliceLabel(slice) }}
 				svg(viewBox="0 0 10 10", v-if="isSliceExpandable(slice)").expand
@@ -16,8 +16,7 @@
 				:isDragged="draggedSession && (session.id === draggedSession.id)",
 				:style="getSessionStyle(session)",
 				:showRoom="false",
-				@startDragging="$emit('startDragging', $event)",
-				@click="$emit('editSession', session)"
+				@startDragging="startDragging($event)",
 			)
 		.availability(v-for="availability of availabilities", :style="getSessionStyle(availability)")
 </template>
@@ -52,6 +51,7 @@ export default {
 			expandedTimes: [],
 			gridOffset: 0,
 			dragScrollTimer: null,
+			dragStart: null,
 		}
 	},
 	computed: {
@@ -273,7 +273,27 @@ export default {
 		this.gridOffset = this.$refs.grid.getBoundingClientRect().left
 	},
 	methods: {
-		stopDragging () {
+		startDragging({session, event}) {
+			this.dragStart = {
+				x: event.clientX,
+				y: event.clientY,
+				session: session,
+				now: moment(),
+			}
+			this.$emit('startDragging', {event, session})
+		},
+		stopDragging (event) {
+			if (this.dragStart && this.draggedSession) {
+				const distance = this.dragStart.x - event.clientX + this.dragStart.y - event.clientY
+				const timeDiff = moment().diff(this.dragStart.now, 'ms')
+				const session = this.dragStart.session
+				this.dragStart = null
+				// if this looks like a click, emit a click event
+				if (distance < 5 && distance > -5 && timeDiff < 500) {
+					this.$emit('editSession', session)
+					return
+				}
+			}
 			if (!this.draggedSession || !this.hoverSlice || !this.hoverSliceLegal) return
 			const start = this.hoverSlice.time
 			const end = this.hoverSlice.time.clone().add(this.draggedSession.duration, 'm')

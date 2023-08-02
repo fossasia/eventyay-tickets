@@ -7,7 +7,7 @@
 				session(:session="{title: '+ ' + $t('New break')}", :isDragged="false", @startDragging="startNewBreak")
 				session(v-for="un in unscheduled", :session="un", @startDragging="startDragging", :isDragged="draggedSession && un.id === draggedSession.id")
 			#schedule-wrapper(v-scrollbar.x.y="")
-				bunt-tabs.days(v-if="days && days.length > 1", :active-tab="currentDay && currentDay.format()", ref="tabs" :class="['grid-tabs']")
+				bunt-tabs.days(v-if="days", :active-tab="currentDay && currentDay.format()", ref="tabs" :class="['grid-tabs']")
 					bunt-tab(v-for="day of days", :id="day.format()", :header="day.format(dateFormat)", @selected="changeDay(day)")
 				grid-schedule(:sessions="sessions",
 					:rooms="schedule.rooms",
@@ -48,6 +48,7 @@
 								input(v-model="editorSession.duration", type="number", min="1", max="1440", step="1", :required="true")
 								span {{ $t('minutes') }}
 					.button-row
+						input(type="submit")
 						bunt-button#btn-delete(v-if="!editorSession.code", @click="editorDelete", :loading="editorSessionWaiting") {{ $t('Delete') }}
 						bunt-button#btn-save(@click="editorSave", :loading="editorSessionWaiting") {{ $t('Save') }}
 	bunt-progress-circular(v-else, size="huge", :page="true")
@@ -390,6 +391,8 @@ export default {
 					margin-left: auto
 					font-weight: bold;
 					button-style(color: #3aa57c)
+				[type=submit]
+					display: none
 			.data
 				display: flex
 				flex-direction: column
