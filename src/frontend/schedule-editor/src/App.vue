@@ -7,7 +7,7 @@
 				session(:session="{title: '+ ' + $t('New break')}", :isDragged="false", @startDragging="startNewBreak")
 				session(v-for="un in unscheduled", :session="un", @startDragging="startDragging", :isDragged="draggedSession && un.id === draggedSession.id")
 			#schedule-wrapper(v-scrollbar.x.y="")
-				bunt-tabs.days(v-if="days", :active-tab="currentDay && currentDay.format()", ref="tabs" :class="['grid-tabs']")
+				bunt-tabs.days(v-if="days", :modelValue="currentDay.format()", ref="tabs" :class="['grid-tabs']")
 					bunt-tab(v-for="day of days", :id="day.format()", :header="day.format(dateFormat)", @selected="changeDay(day)")
 				grid-schedule(:sessions="sessions",
 					:rooms="schedule.rooms",

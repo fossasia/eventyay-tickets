@@ -9,5 +9,6 @@ const app = createApp(App, {
 	locale: 'en-ie'
 })
 app.use(Buntpapier)
-app.use(await i18n('de_DE'))
+const lang = document.querySelector("#app").dataset.gettext
+app.use(await i18n(lang))
 app.mount('#app')

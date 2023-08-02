@@ -1,14 +1,24 @@
 import { gettextToI18next } from 'i18next-conv'
-const fileRegex = /locale\/(.*)\/LC_MESSAGES\/.*\.po$/
+import {readFileSync} from 'fs'
+
+const fileRegex = /locale\/(.*)\/LC_MESSAGES\/django.po$/
+const relevantKeys = Object.keys(JSON.parse(readFileSync('./locales/en/translation.json', 'utf8')))
 
 export default function loadGettext () {
   return {
     name: 'load-gettext',
     async transform (src, id) {
       if (fileRegex.test(id)) {
-		const lang = id.match(fileRegex)[1]
+				// Load known keys from ./locales/en/translation.json
+				// and use them to replace the keys in the source code
+				// with the corresponding values
+				const lang = id.match(fileRegex)[1]
+				const mapped = await gettextToI18next(lang, src)
+				const mappedJSON = JSON.parse(mapped)
+				// filter the object by relevant keys
+				const filteredTranslation = Object.fromEntries(Object.entries(mappedJSON).filter(([key, value]) => relevantKeys.includes(key)))
         return {
-          code: 'export default ' + await gettextToI18next(lang, src), // TODO first param should be locale
+          code: 'export default ' + JSON.stringify(filteredTranslation),
           map: { mappings: '' } // provide source map if available
         }
       }

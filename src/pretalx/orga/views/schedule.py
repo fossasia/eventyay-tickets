@@ -12,6 +12,7 @@ from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
 from django.utils.timezone import now
+from django.utils.translation import get_language
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import FormView, TemplateView, UpdateView, View
@@ -61,6 +62,12 @@ class ScheduleView(EventPermissionRequired, TemplateView):
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)
         version = self.request.GET.get("version")
+
+        # get current translations language from django
+        language = get_language()
+        path = settings.LANGUAGES_INFORMATION[language].get("path", language)
+        result["gettext_language"] = path.replace("-", "_")
+
         result["schedule_version"] = version
         result["schedule_version_form"] = ScheduleVersionForm(
             {"version": version} if version else None,

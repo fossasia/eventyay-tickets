@@ -359,6 +359,7 @@ LANGUAGES_INFORMATION = {
         "natural_name": "Deutsch",
         "official": True,
         "percentage": 100,
+        "path": "de_DE",
     },
     "de-formal": {
         "name": _("German (formal)"),
@@ -366,6 +367,7 @@ LANGUAGES_INFORMATION = {
         "official": True,
         "percentage": 100,
         "public_code": "de",
+        "path": "de_Formal",
     },
     "ar": {
         "name": _("Arabic"),
@@ -390,6 +392,7 @@ LANGUAGES_INFORMATION = {
         "natural_name": "Français",
         "official": False,
         "percentage": 89,
+        "path": "fr_FR",
     },
     "ja-JP": {
         "name": _("Japanese"),
@@ -412,7 +415,7 @@ LANGUAGES_INFORMATION = {
         "percentage": 99,
         "public_code": "pt",
     },
-    "zh-tw": {
+    "zh-TW": {
         "name": _("Traditional Chinese (Taiwan)"),
         "natural_name": "漢語",
         "official": False,

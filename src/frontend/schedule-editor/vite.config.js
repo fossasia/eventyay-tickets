@@ -35,6 +35,7 @@ export default {
 		manifest: 'pretalx-manifest.json',
 		assetsDir: '',
 		rollupOptions: {input: 'src/main.js'},
+		target: 'es2022',
 	},
 	server: {
 	  port: '8080'

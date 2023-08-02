@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-25 07:29+0000\n"
+"POT-Creation-Date: 2023-08-02 20:44+0000\n"
 "PO-Revision-Date: 2023-05-13 03:03+0000\n"
 "Last-Translator: Vangelis Zacharioudakis <sugarvag@gmail.com>\n"
 "Language-Team: none\n"
@@ -12,17 +12,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 4.4.2\n"
-
-#: htmlcov/d_9155819316f40b96_views_py.html:155
-#: pretalx/cfp/templates/cfp/event/user_submissions.html:30
-#: pretalx/cfp/templates/cfp/event/user_submissions.html:69
-#: pretalx/orga/templates/orga/cfp/text.html:66
-#: pretalx/orga/templates/orga/review/dashboard.html:209
-#: pretalx/orga/templates/orga/speaker/information_list.html:23
-#: pretalx/orga/templates/orga/submission/list.html:84
-#: pretalx/orga/templates/orga/submission/review.html:49
-msgid "Title"
-msgstr "Τίτλος"
 
 #: pretalx/agenda/phrases.py:8
 msgid "Thank you for your feedback!"
@@ -170,7 +159,7 @@ msgstr ""
 "Δεν μπορείτε να υποβάλετε σχόλια για αυτήν τη συνεδρία αυτήν τη στιγμή."
 
 #: pretalx/agenda/templates/agenda/header_row.html:6 pretalx/event/stages.py:81
-#: pretalx/orga/templates/orga/base.html:351
+#: pretalx/orga/templates/orga/base.html:353
 msgid "Schedule"
 msgstr "Πρόγραμμα"
 
@@ -182,8 +171,8 @@ msgid "Sessions"
 msgstr "Συνεδρίες"
 
 #: pretalx/agenda/templates/agenda/header_row.html:12
-#: pretalx/orga/templates/orga/base.html:324
-#: pretalx/orga/templates/orga/base.html:332
+#: pretalx/orga/templates/orga/base.html:326
+#: pretalx/orga/templates/orga/base.html:334
 #: pretalx/orga/templates/orga/review/dashboard.html:87
 #: pretalx/orga/templates/orga/review/dashboard.html:210
 #: pretalx/orga/templates/orga/submission/base.html:43
@@ -269,7 +258,7 @@ msgid "This session's header image"
 msgstr "Η εικόνα κεφαλίδας αυτής της συνεδρίας"
 
 #: pretalx/agenda/templates/agenda/talk.html:82
-#: pretalx/orga/templates/orga/schedule/index.html:25
+#: pretalx/orga/templates/orga/schedule/index.html:16
 #, python-format
 msgid "All times in %(tz)s"
 msgstr "Όλοι οι χρόνοι σε %(tz)s"
@@ -291,7 +280,7 @@ msgstr "Το πρόγραμμά μας δεν είναι ακόμα ζωνταν
 msgid "The session “{title}” at {event}"
 msgstr "Η συνεδρία \"{title}\" στο {event}"
 
-#: pretalx/cfp/flow.py:313 pretalx/orga/templates/orga/base.html:198
+#: pretalx/cfp/flow.py:313 pretalx/orga/templates/orga/base.html:200
 msgid "General"
 msgstr "Γενικά"
 
@@ -325,7 +314,7 @@ msgstr ""
 "αλλαγές ή ερωτήσεις."
 
 #: pretalx/cfp/flow.py:397 pretalx/orga/forms/cfp.py:475
-#: pretalx/orga/templates/orga/base.html:242
+#: pretalx/orga/templates/orga/base.html:244
 #: pretalx/orga/templates/orga/submission/content.html:148
 msgid "Questions"
 msgstr "Ερωτήσεις"
@@ -1179,6 +1168,16 @@ msgstr "Σημαντικές πληροφορίες"
 msgid "Your drafts"
 msgstr "Τα πρόχειρα σας"
 
+#: pretalx/cfp/templates/cfp/event/user_submissions.html:30
+#: pretalx/cfp/templates/cfp/event/user_submissions.html:69
+#: pretalx/orga/templates/orga/cfp/text.html:66
+#: pretalx/orga/templates/orga/review/dashboard.html:209
+#: pretalx/orga/templates/orga/speaker/information_list.html:23
+#: pretalx/orga/templates/orga/submission/list.html:84
+#: pretalx/orga/templates/orga/submission/review.html:49
+msgid "Title"
+msgstr "Τίτλος"
+
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:48
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:101
 msgid "Copy code for review"
@@ -1192,7 +1191,7 @@ msgid "State"
 msgstr "Κατάσταση"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:118
-#: pretalx/orga/templates/orga/base.html:282
+#: pretalx/orga/templates/orga/base.html:284
 #: pretalx/orga/templates/orga/submission/base.html:63
 #: pretalx/submission/models/feedback.py:35
 msgid "Feedback"
@@ -1225,9 +1224,9 @@ msgstr "Υποβάλετε κάτι τώρα!"
 
 #: pretalx/cfp/templates/cfp/index.html:4
 #: pretalx/cfp/templates/cfp/index.html:8
-#: pretalx/orga/templates/orga/base.html:73
-#: pretalx/orga/templates/orga/base.html:94
-#: pretalx/orga/templates/orga/base.html:413
+#: pretalx/orga/templates/orga/base.html:75
+#: pretalx/orga/templates/orga/base.html:96
+#: pretalx/orga/templates/orga/base.html:415
 msgid "Events"
 msgstr "Εκδηλώσεις"
 
@@ -1740,7 +1739,7 @@ msgstr "Προσπαθείτε να αλλάξετε δεδομένα μόνο �
 msgid "ManagementForm data is missing or has been tampered with."
 msgstr "Τα δεδομένα ManagementForm λείπουν ή έχουν παραβιαστεί."
 
-#: pretalx/common/models/settings.py:52
+#: pretalx/common/models/settings.py:60
 msgid ""
 "Please give a fair review on why you'd like to see this proposal at the "
 "conference, or why you think it would not be a good fit."
@@ -1748,7 +1747,7 @@ msgstr ""
 "Δώστε μια δίκαιη κριτική σχετικά με το γιατί θέλετε να δείτε αυτήν την "
 "πρόταση στο συνέδριο ή γιατί πιστεύετε ότι δεν θα ταίριαζε."
 
-#: pretalx/common/models/settings.py:61
+#: pretalx/common/models/settings.py:69
 #, python-brace-format
 msgid ""
 "Hi,\n"
@@ -1773,7 +1772,7 @@ msgstr ""
 "Τα καλύτερα,\n"
 "το σύστημά σας CfP {event_name}.\n"
 
-#: pretalx/common/models/settings.py:80
+#: pretalx/common/models/settings.py:88
 #, python-brace-format
 msgid ""
 "Hi,\n"
@@ -1804,7 +1803,7 @@ msgstr ""
 "στη διεύθυνση https://github.com/pretalx/pretalx/issues/new ή μέσω ενός\n"
 "email στη διεύθυνση support@pretalx.com!\n"
 
-#: pretalx/common/models/settings.py:101
+#: pretalx/common/models/settings.py:109
 #, python-brace-format
 msgid ""
 "Hi,\n"
@@ -1837,7 +1836,7 @@ msgstr ""
 "- Και δημιουργήστε το πρόγραμμά σας εδώ, αφού αποδεχτείτε προτάσεις:\n"
 "  {event_schedule}\n"
 
-#: pretalx/common/models/settings.py:123
+#: pretalx/common/models/settings.py:131
 #, python-brace-format
 msgid ""
 "Hi,\n"
@@ -2506,17 +2505,17 @@ msgstr ""
 "περιόδων σύνδεσης αντί για το προεπιλεγμένο κείμενο."
 
 #: pretalx/event/models/event.py:307 pretalx/orga/templates/orga/admin.html:63
-#: pretalx/orga/templates/orga/base.html:215
+#: pretalx/orga/templates/orga/base.html:217
 #: pretalx/orga/templates/orga/plugins.html:4
 #: pretalx/orga/templates/orga/plugins.html:6
 msgid "Plugins"
 msgstr "Πρόσθετα"
 
 #: pretalx/event/models/event.py:612 pretalx/event/models/event.py:899
-#: pretalx/event/stages.py:68 pretalx/orga/templates/orga/base.html:206
-#: pretalx/orga/templates/orga/base.html:295
-#: pretalx/orga/templates/orga/base.html:303
-#: pretalx/orga/templates/orga/base.html:316
+#: pretalx/event/stages.py:68 pretalx/orga/templates/orga/base.html:208
+#: pretalx/orga/templates/orga/base.html:297
+#: pretalx/orga/templates/orga/base.html:305
+#: pretalx/orga/templates/orga/base.html:318
 #: pretalx/orga/templates/orga/submission/review.html:175
 msgid "Review"
 msgstr "Αξιολόγηση"
@@ -3812,7 +3811,7 @@ msgstr "Όλοι οι επιβεβαιωμένοι ομιλητές που δε�
 msgid "All proposals in these tracks"
 msgstr "Όλες οι προτάσεις σε αυτά τα κομμάτια"
 
-#: pretalx/orga/forms/mails.py:220 pretalx/orga/templates/orga/base.html:246
+#: pretalx/orga/forms/mails.py:220 pretalx/orga/templates/orga/base.html:248
 #: pretalx/orga/templates/orga/cfp/track_view.html:5
 #: pretalx/orga/templates/orga/settings/team_tracks.html:8
 #: pretalx/submission/forms/submission.py:270
@@ -3828,7 +3827,7 @@ msgstr "Αφήστε κενό για να συμπεριλάβετε προτά�
 msgid "All proposals of these types"
 msgstr "Όλες οι προτάσεις αυτού του τύπου"
 
-#: pretalx/orga/forms/mails.py:227 pretalx/orga/templates/orga/base.html:250
+#: pretalx/orga/forms/mails.py:227 pretalx/orga/templates/orga/base.html:252
 #: pretalx/submission/forms/submission.py:254
 msgid "Session types"
 msgstr "Τύποι συνεδριών"
@@ -3838,8 +3837,8 @@ msgid "Leave empty to include proposals of all session types."
 msgstr "Αφήστε κενό για να συμπεριλάβετε προτάσεις όλων των τύπων συνεδρίας."
 
 #: pretalx/orga/forms/mails.py:233 pretalx/orga/forms/mails.py:235
-#: pretalx/orga/templates/orga/base.html:264
-#: pretalx/orga/templates/orga/base.html:272
+#: pretalx/orga/templates/orga/base.html:266
+#: pretalx/orga/templates/orga/base.html:274
 #: pretalx/orga/templates/orga/cfp/submission_type_view.html:18
 #: pretalx/orga/templates/orga/cfp/track_view.html:18
 #: pretalx/orga/templates/orga/speaker/list.html:44
@@ -4039,7 +4038,7 @@ msgstr ""
 "μεταφορτωμένα αρχεία"
 
 #: pretalx/orga/forms/schedule.py:205 pretalx/orga/forms/schedule.py:209
-#: pretalx/orga/templates/orga/base.html:362
+#: pretalx/orga/templates/orga/base.html:364
 msgid "Rooms"
 msgstr "Δωμάτια"
 
@@ -4186,7 +4185,7 @@ msgstr ""
 "οποιονδήποτε τρόπο προσβάσιμη από το Διαδίκτυο."
 
 #: pretalx/orga/templates/orga/admin.html:28
-#: pretalx/orga/templates/orga/base.html:190
+#: pretalx/orga/templates/orga/base.html:192
 #: pretalx/orga/templates/orga/organiser/detail.html:10
 #: pretalx/orga/templates/orga/settings/form.html:24
 msgid "Settings"
@@ -4229,7 +4228,7 @@ msgid "Media files"
 msgstr "Αρχεία πολυμέσων"
 
 #: pretalx/orga/templates/orga/admin.html:51
-#: pretalx/orga/templates/orga/base.html:375
+#: pretalx/orga/templates/orga/base.html:377
 msgid "Mails"
 msgstr "Αλληλογραφία"
 
@@ -4326,7 +4325,7 @@ msgid "pretalx blog (release announcements, features)"
 msgstr "blog pretalx (ανακοινώσεις κυκλοφορίας, χαρακτηριστικά)"
 
 #: pretalx/orga/templates/orga/auth/base.html:29
-#: pretalx/orga/templates/orga/base.html:60
+#: pretalx/orga/templates/orga/base.html:62
 msgid "The pretalx logo"
 msgstr "Το λογότυπο pretalx"
 
@@ -4334,20 +4333,20 @@ msgstr "Το λογότυπο pretalx"
 msgid "Sign in"
 msgstr "Συνδεθείτε"
 
-#: pretalx/orga/templates/orga/base.html:81
+#: pretalx/orga/templates/orga/base.html:83
 msgid "Search for events"
 msgstr "Αναζήτηση για συμβάντα"
 
-#: pretalx/orga/templates/orga/base.html:149
+#: pretalx/orga/templates/orga/base.html:151
 msgid "You're using pretalx as a superuser. This is not recommended."
 msgstr ""
 "Χρησιμοποιείτε το pretalx ως διαχειριστής. Κάτι τέτοιο δεν προτείνεται."
 
-#: pretalx/orga/templates/orga/base.html:153
+#: pretalx/orga/templates/orga/base.html:155
 msgid "Please click here to switch to an administrator account."
 msgstr "Παρακαλώ πατήστε εδώ για να αλλάξετε σε λογαριασμό διαχειριστή."
 
-#: pretalx/orga/templates/orga/base.html:160
+#: pretalx/orga/templates/orga/base.html:162
 msgid ""
 "Starting with version 1.1.0, pretalx automatically checks for updates in the "
 "background. During this check, anonymous data is transmitted to servers "
@@ -4363,44 +4362,44 @@ msgstr ""
 "να λαμβάνετε ειδοποίηση μέσω email εάν φτάσει μια νέα ενημέρωση. Αυτό το "
 "μήνυμα θα εξαφανιστεί μόλις κάνετε κλικ σε αυτό."
 
-#: pretalx/orga/templates/orga/base.html:181
+#: pretalx/orga/templates/orga/base.html:183
 #: pretalx/orga/templates/orga/event_list.html:5
 msgid "Dashboard"
 msgstr "Ταμπλό"
 
-#: pretalx/orga/templates/orga/base.html:202
+#: pretalx/orga/templates/orga/base.html:204
 #: pretalx/orga/templates/orga/organiser/detail.html:34
 msgid "Teams"
 msgstr "Ομάδες"
 
-#: pretalx/orga/templates/orga/base.html:209
+#: pretalx/orga/templates/orga/base.html:211
 msgid "E-mail"
 msgstr "Ηλ. Ταχυδρομείο"
 
-#: pretalx/orga/templates/orga/base.html:212
+#: pretalx/orga/templates/orga/base.html:214
 msgid "Widget"
 msgstr "Γραφικό στοιχείο"
 
-#: pretalx/orga/templates/orga/base.html:228
+#: pretalx/orga/templates/orga/base.html:230
 msgid "CfP"
 msgstr "Κάλεσμα για Υποβολή Προτάσεων"
 
-#: pretalx/orga/templates/orga/base.html:236
+#: pretalx/orga/templates/orga/base.html:238
 #: pretalx/orga/templates/orga/submission/base.html:34
 msgid "Content"
 msgstr "Περιεχόμενο"
 
-#: pretalx/orga/templates/orga/base.html:239
-#: pretalx/orga/templates/orga/base.html:359
+#: pretalx/orga/templates/orga/base.html:241
+#: pretalx/orga/templates/orga/base.html:361
 msgid "Editor"
 msgstr "Εκδότης"
 
-#: pretalx/orga/templates/orga/base.html:253
+#: pretalx/orga/templates/orga/base.html:255
 #: pretalx/orga/templates/orga/cfp/access_code_view.html:12
 msgid "Access codes"
 msgstr "Κωδικοί πρόσβασης"
 
-#: pretalx/orga/templates/orga/base.html:275
+#: pretalx/orga/templates/orga/base.html:277
 #: pretalx/orga/templates/orga/review/dashboard.html:111
 #: pretalx/orga/templates/orga/review/dashboard.html:217
 #: pretalx/orga/templates/orga/submission/tag_list.html:6
@@ -4409,55 +4408,55 @@ msgstr "Κωδικοί πρόσβασης"
 msgid "Tags"
 msgstr "Ετικέτες"
 
-#: pretalx/orga/templates/orga/base.html:278
+#: pretalx/orga/templates/orga/base.html:280
 msgid "Statistics"
 msgstr "Στατιστική"
 
-#: pretalx/orga/templates/orga/base.html:286
-#: pretalx/orga/templates/orga/base.html:340
-#: pretalx/orga/templates/orga/base.html:365
+#: pretalx/orga/templates/orga/base.html:288
+#: pretalx/orga/templates/orga/base.html:342
+#: pretalx/orga/templates/orga/base.html:367
 msgid "Export"
 msgstr "Εξαγωγή"
 
-#: pretalx/orga/templates/orga/base.html:306
+#: pretalx/orga/templates/orga/base.html:308
 #: pretalx/orga/templates/orga/review/assignment-import.html:9
 #: pretalx/orga/templates/orga/review/assignment.html:27
 msgid "Assign reviewers"
 msgstr "Ορίστε αναθεωρητές"
 
-#: pretalx/orga/templates/orga/base.html:309
+#: pretalx/orga/templates/orga/base.html:311
 msgid "Export reviews"
 msgstr "Εξαγωγή αξιολογήσεων"
 
-#: pretalx/orga/templates/orga/base.html:336 pretalx/schedule/models/room.py:40
+#: pretalx/orga/templates/orga/base.html:338 pretalx/schedule/models/room.py:40
 msgid "Speaker Information"
 msgstr "Πληροφορίες για τον Ομιλητή"
 
-#: pretalx/orga/templates/orga/base.html:385
+#: pretalx/orga/templates/orga/base.html:387
 msgid "Outbox"
 msgstr "Εξερχόμενα"
 
-#: pretalx/orga/templates/orga/base.html:388
+#: pretalx/orga/templates/orga/base.html:390
 msgid "Templates"
 msgstr "Πρότυπο"
 
-#: pretalx/orga/templates/orga/base.html:391
+#: pretalx/orga/templates/orga/base.html:393
 msgid "Compose E-mails"
 msgstr "Σύνταξη e-mail"
 
-#: pretalx/orga/templates/orga/base.html:394
+#: pretalx/orga/templates/orga/base.html:396
 msgid "Sent E-mails"
 msgstr "Απεσταλμένη Αλληλογραφία"
 
-#: pretalx/orga/templates/orga/base.html:420
+#: pretalx/orga/templates/orga/base.html:422
 msgid "Organisers"
 msgstr "Οργανωτές"
 
-#: pretalx/orga/templates/orga/base.html:426
+#: pretalx/orga/templates/orga/base.html:428
 msgid "Admin information"
 msgstr "Πληροφορίες διαχειριστή"
 
-#: pretalx/orga/templates/orga/base.html:457
+#: pretalx/orga/templates/orga/base.html:459
 msgid "running in development mode"
 msgstr "εκτέλεση σε περιβάλλον ανάπτυξης"
 
@@ -5531,7 +5530,7 @@ msgstr "Εισαγωγή"
 
 #: pretalx/orga/templates/orga/review/assignment.html:17
 #: pretalx/orga/templates/orga/review/dashboard.html:122
-#: pretalx/orga/templates/orga/schedule/index.html:58
+#: pretalx/orga/templates/orga/schedule/index.html:49
 msgid "Actions"
 msgstr "Ενέργειες"
 
@@ -5906,7 +5905,7 @@ msgstr ""
 msgid "Upload"
 msgstr "Μεταφόρτωση"
 
-#: pretalx/orga/templates/orga/schedule/index.html:34
+#: pretalx/orga/templates/orga/schedule/index.html:25
 msgid ""
 "You're currently viewing a released schedule version. Released versions "
 "cannot be edited directly."
@@ -5914,35 +5913,35 @@ msgstr ""
 "Προς το παρόν βλέπετε μια δημοσιευμένη έκδοση του προγράμματος. Δε μπορείτε "
 "να επεξεργαστείτε άμεσα τις δημοσιευμένες εκδόσεις."
 
-#: pretalx/orga/templates/orga/schedule/index.html:49
+#: pretalx/orga/templates/orga/schedule/index.html:40
 msgid "New release"
 msgstr "Νέα έκδοση"
 
-#: pretalx/orga/templates/orga/schedule/index.html:53
+#: pretalx/orga/templates/orga/schedule/index.html:44
 msgid "Override WIP schedule with this version"
 msgstr "Αντικαταστήστε το πρόγραμμα WIP με αυτήν την έκδοση"
 
-#: pretalx/orga/templates/orga/schedule/index.html:63
+#: pretalx/orga/templates/orga/schedule/index.html:54
 msgid "View in frontend"
 msgstr "Προβολή frontend"
 
-#: pretalx/orga/templates/orga/schedule/index.html:67
+#: pretalx/orga/templates/orga/schedule/index.html:58
 msgid "Hide schedule"
 msgstr "Κρύψτε το πρόγραμμα"
 
-#: pretalx/orga/templates/orga/schedule/index.html:71
+#: pretalx/orga/templates/orga/schedule/index.html:62
 msgid "Make schedule public"
 msgstr "Κάντε το πρόγραμμα δημόσιο"
 
-#: pretalx/orga/templates/orga/schedule/index.html:75
+#: pretalx/orga/templates/orga/schedule/index.html:66
 msgid "Print cards"
 msgstr "Εκτύπωση καρτελών"
 
-#: pretalx/orga/templates/orga/schedule/index.html:78
+#: pretalx/orga/templates/orga/schedule/index.html:69
 msgid "Resend speaker notifications"
 msgstr "Επανάληψη αποστολής ειδοποιήσεων ηχείων"
 
-#: pretalx/orga/templates/orga/schedule/index.html:87
+#: pretalx/orga/templates/orga/schedule/index.html:78
 msgid ""
 "You can start planning your schedule once you have configured some rooms for "
 "sessions to take place in."
@@ -5950,7 +5949,7 @@ msgstr ""
 "Μπορείτε να ξεκινήσετε να σχεδιάζετε το πρόγραμμά σας αφού διαμορφώσετε "
 "ορισμένες αίθουσες για να πραγματοποιούνται οι συνεδρίες."
 
-#: pretalx/orga/templates/orga/schedule/index.html:88
+#: pretalx/orga/templates/orga/schedule/index.html:79
 msgid "Configure rooms"
 msgstr "Διαρρύθμιση"
 
@@ -7198,7 +7197,7 @@ msgstr "Αυτή η τιμή θα αντικατασταθεί με βάση δ�
 msgid "Subject: {subject}"
 msgstr "Θέμα: {subject}"
 
-#: pretalx/orga/views/mails.py:380 pretalx/orga/views/schedule.py:229
+#: pretalx/orga/views/mails.py:380 pretalx/orga/views/schedule.py:249
 #, python-brace-format
 msgid ""
 "{count} emails have been saved to the outbox – you can make individual "
@@ -7264,7 +7263,7 @@ msgstr ""
 "δεν έγινε επαναφορά του κωδικού πρόσβασης."
 
 #: pretalx/orga/views/organiser.py:225 pretalx/orga/views/review.py:650
-#: pretalx/orga/views/schedule.py:525
+#: pretalx/orga/views/schedule.py:536
 msgid "Saved!"
 msgstr "Αποθηκεύτηκε!"
 
@@ -7313,16 +7312,16 @@ msgstr ""
 msgid "The reviewers were assigned successfully"
 msgstr "Οι αναθεωρητές ανατέθηκαν με επιτυχία"
 
-#: pretalx/orga/views/review.py:685 pretalx/orga/views/schedule.py:91
+#: pretalx/orga/views/review.py:685 pretalx/orga/views/schedule.py:111
 #: pretalx/orga/views/speaker.py:359
 msgid "No data to be exported"
 msgstr "Δεν υπάρχουν δεδομένα προς εξαγωγή"
 
-#: pretalx/orga/views/schedule.py:104
+#: pretalx/orga/views/schedule.py:124
 msgid "A new export is being generated and will be available soon."
 msgstr "Μια νέα εξαγωγή δημιουργείται και θα είναι σύντομα διαθέσιμη."
 
-#: pretalx/orga/views/schedule.py:111
+#: pretalx/orga/views/schedule.py:131
 msgid ""
 "A new export will be generated on the next scheduled opportunity – please "
 "contact your administrator for details."
@@ -7330,7 +7329,7 @@ msgstr ""
 "Μια νέα εξαγωγή θα δημιουργηθεί στην επόμενη προγραμματισμένη ευκαιρία – "
 "επικοινωνήστε με τον διαχειριστή σας για λεπτομέρειες."
 
-#: pretalx/orga/views/schedule.py:129
+#: pretalx/orga/views/schedule.py:149
 #, fuzzy, python-brace-format
 #| msgid ""
 #| "Could not find the current export, please try to regenerate it. ({error})"
@@ -7340,54 +7339,54 @@ msgstr ""
 "Δεν ήταν δυνατή η εύρεση της τρέχουσας εξαγωγής, δοκιμάστε να την "
 "αναδημιουργήσετε. ({λάθος})"
 
-#: pretalx/orga/views/schedule.py:168
+#: pretalx/orga/views/schedule.py:188
 msgid "You have to provide a new, unique schedule version!"
 msgstr "Πρέπει να παρέχετε μια νέα, μοναδική έκδοση προγράμματος!"
 
-#: pretalx/orga/views/schedule.py:179
+#: pretalx/orga/views/schedule.py:199
 msgid "Nice, your schedule has been released!"
 msgstr "Ωραία, το πρόγραμμα έχει εκδοθεί!"
 
-#: pretalx/orga/views/schedule.py:195
+#: pretalx/orga/views/schedule.py:215
 msgid ""
 "Reset successful – start editing the schedule from your selected version!"
 msgstr ""
 "Επιτυχής επαναφορά - ξεκινήστε την επεξεργασία του προγράμματος από την "
 "επιλεγμένη έκδοση!"
 
-#: pretalx/orga/views/schedule.py:200
+#: pretalx/orga/views/schedule.py:220
 msgid "Error retrieving the schedule version to reset to."
 msgstr "Πρόβλημα κατά την ανάκτηση του προγράμματος επαναφοράς."
 
-#: pretalx/orga/views/schedule.py:236
+#: pretalx/orga/views/schedule.py:256
 msgid "You can only regenerate mails after the first schedule was released."
 msgstr ""
 "Μπορείτε να αναδημιουργήσετε μηνύματα αλληλογραφίας μόνο μετά την κυκλοφορία "
 "του πρώτου προγράμματος."
 
-#: pretalx/orga/views/schedule.py:434
+#: pretalx/orga/views/schedule.py:445
 msgid "The session has been scheduled."
 msgstr "Η συνεδρίαση έχει προγραμματιστεί."
 
-#: pretalx/orga/views/schedule.py:479
+#: pretalx/orga/views/schedule.py:490
 msgid "Room deleted. Hopefully nobody was still in there …"
 msgstr "Η αίθουσα διαγράφηκε. Ευχόμαστε να μην είχε μείνει κανείς εκεί …"
 
-#: pretalx/orga/views/schedule.py:485
+#: pretalx/orga/views/schedule.py:496
 msgid "There is or was a session scheduled in this room. It cannot be deleted."
 msgstr ""
 "Υπάρχει ή ήταν προγραμματισμένη μια συνεδρία σε αυτήν την αίθουσα. Δεν "
 "μπορεί να διαγραφεί."
 
-#: pretalx/orga/views/schedule.py:541
+#: pretalx/orga/views/schedule.py:552
 msgid "The selected room does not exist."
 msgstr "Το επιλεγμένο δωμάτιο δεν υπάρχει."
 
-#: pretalx/orga/views/schedule.py:543
+#: pretalx/orga/views/schedule.py:554
 msgid "Sorry, you are not allowed to reorder rooms."
 msgstr "Λυπούμαστε, δεν επιτρέπεται να παραγγείλετε ξανά δωμάτια."
 
-#: pretalx/orga/views/schedule.py:557
+#: pretalx/orga/views/schedule.py:568
 msgid "The order of rooms has been updated."
 msgstr "Η σειρά των δωματίων έχει ενημερωθεί."
 
@@ -7838,45 +7837,45 @@ msgstr "Αγγλικά"
 msgid "German"
 msgstr "Γερμανικά"
 
-#: pretalx/settings.py:364
+#: pretalx/settings.py:365
 msgid "German (formal)"
 msgstr "Γερμανικά (επίσημα)"
 
-#: pretalx/settings.py:371
+#: pretalx/settings.py:373
 msgid "Arabic"
 msgstr "αραβικός"
 
-#: pretalx/settings.py:377
+#: pretalx/settings.py:379
 msgid "Czech"
 msgstr ""
 
-#: pretalx/settings.py:383
+#: pretalx/settings.py:385
 msgid "Spanish"
 msgstr "Ισπανικά"
 
-#: pretalx/settings.py:389
+#: pretalx/settings.py:391
 msgid "French"
 msgstr "γαλλική γλώσσα"
 
-#: pretalx/settings.py:395
+#: pretalx/settings.py:398
 msgid "Japanese"
 msgstr "Ιαπωνικά"
 
-#: pretalx/settings.py:402
+#: pretalx/settings.py:405
 msgid "Brasilian Portuguese"
 msgstr "Πορτογαλικά Βραζιλίας"
 
-#: pretalx/settings.py:409
+#: pretalx/settings.py:412
 #, fuzzy
 #| msgid "Brasilian Portuguese"
 msgid "Portuguese"
 msgstr "Πορτογαλικά Βραζιλίας"
 
-#: pretalx/settings.py:416
+#: pretalx/settings.py:419
 msgid "Traditional Chinese (Taiwan)"
 msgstr "Παραδοσιακά κινέζικα (Ταϊβάν)"
 
-#: pretalx/settings.py:423
+#: pretalx/settings.py:426
 msgid "Simplified Chinese"
 msgstr ""
 

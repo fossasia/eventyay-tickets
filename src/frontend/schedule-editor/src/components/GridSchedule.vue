@@ -263,7 +263,7 @@ export default {
 	async mounted () {
 		await this.$nextTick()
 		this.observer = new IntersectionObserver(this.onIntersect, {
-			root: this.$refs.grid.parentElement.parentElement,
+			root: this.scrollParent,
 			rootMargin: '-45% 0px'
 		})
 		for (const [ref, el] of Object.entries(this.$refs)) {
@@ -360,7 +360,7 @@ export default {
 			}
 		},
 		getOffsetTop () {
-			return this.staticOffsetTop() + window.scrollY
+			return this.staticOffsetTop + window.scrollY
 		},
 		getSliceClasses (slice) {
 			const classes = {
@@ -431,6 +431,7 @@ export default {
 			if (!entry) return
 			const day = moment.parseZone(entry.target.dataset.slice).startOf('day')
 			this.scrolledDay = day
+			console.log(day)
 			this.$emit('changeDay', this.scrolledDay)
 		}
 	}

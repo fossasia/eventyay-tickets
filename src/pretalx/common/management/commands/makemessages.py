@@ -9,9 +9,13 @@ This management command copies all plugin-provided languages to the core
 locales directory, then moves them back once the translations have been
 generated and cleans up empty directories.
 
+This command also handles frontend translations.
+
 Yes, it's hacky, but have you tried managing symlinks instead?
 """
+import os
 import shutil
+import subprocess
 from importlib import import_module
 from pathlib import Path
 
@@ -66,6 +70,31 @@ class Command(Parent):
             translation_path.replace(new_dir)
 
         super().handle(*args, **options)
+
+        # Create frontend translations
+        base_path = locale_path.parent.parent
+        frontend_path = base_path / "frontend/schedule-editor"
+        locales = [locale.name for locale in locale_path.iterdir() if locale.is_dir()]
+
+        # env = os.environ.copy()
+        # env["PRETALX_LOCALES"] = ",".join(locales)
+        subprocess.run("npm run i18n:extract", check=True, shell=True, cwd=frontend_path)
+        # We only need the one language, as the file will always be empty
+        # We just merge the same file with all the languages
+        subprocess.run("npm run i18n:convert2gettext", check=True, shell=True, cwd=frontend_path)
+
+        # Merge 
+        for locale in locales:
+            # Now merge the js file with the django file
+            command = f"msgcat -o pretalx/locale/{locale}/LC_MESSAGES/django.po --use-first pretalx/locale/{locale}/LC_MESSAGES/django.po frontend/schedule-editor/locales/en/translation.po"
+            subprocess.run(
+                command, check=True, shell=True, cwd=base_path
+            )
+
+        # As per https://github.com/smhg/gettext-parser/issues/79, our
+        # frontend doesn't support the #~#| syntax, so we need to replace it
+        command = "git grep -l '#~|' | xargs sed -i 's/#~|/#~#|/'"
+        subprocess.run(command, shell=True, check=True, cwd=locale_path)
 
         for move in moves:
             pathreplace(move[1], move[0])

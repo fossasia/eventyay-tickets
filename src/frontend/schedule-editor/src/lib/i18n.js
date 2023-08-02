@@ -6,15 +6,18 @@ import i18next from 'i18next'
 const localeModules = import.meta.glob('../../../../pretalx/locale/*/LC_MESSAGES/django.po')
 
 export default async function (locale) {
-  const localeModule = await localeModules[`../../../../pretalx/locale/${locale}/LC_MESSAGES/django.po`]()
+  const localeModule = await localeModules[`../../../../pretalx/locale/${locale}/LC_MESSAGES/django.po`]?.()
   return {
     install (app) {
       i18next.init({
         lng: locale,
-        debug: true,
+				returnEmptyString: false,
+        debug: false,
+				nsSeparator: false,
+				keySeparator: false,
         resources: {
           [locale]: {
-            translation: localeModule.default
+            translation: localeModule?.default
           }
         },
         interpolation: {
