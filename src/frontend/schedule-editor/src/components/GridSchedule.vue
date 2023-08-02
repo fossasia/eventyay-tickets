@@ -65,7 +65,7 @@ export default {
 				if (session.room.id === roomId && session.id !== sessionId) {
 					// Test all same-room sessions for overlap with our new session:
 					// Overlap exists if this session's start or end falls within our session
-					if (session.start === start || session.end === end) return false
+					if (session.start.isSame(start) || session.end.isSame(end)) return false
 					if (session.start.isBetween(start, end) || session.end.isBetween(start, end)) return false
 					// or the other way around (to take care of either session containing the other completely)
 					if (start.isBetween(session.start, session.end) || end.isBetween(session.start, session.end)) return false

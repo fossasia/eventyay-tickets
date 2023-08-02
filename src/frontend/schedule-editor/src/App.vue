@@ -170,11 +170,12 @@ export default {
 		moment.locale(this.locale)
 		const version = ''
 		this.schedule = await this.fetchSchedule()
-		this.currentDay = this.days[0]
+		// needs to be as early as possible
 		this.eventTimezone = this.schedule.timezone
+		moment.tz.setDefault(this.eventTimezone)
 		this.locales = this.schedule.locales
 		this.eventSlug = window.location.pathname.split("/")[3]
-		moment.tz.setDefault(this.eventTimezone)
+		this.currentDay = this.days[0]
 		window.setTimeout(this.pollUpdates, 10 * 1000)
 		await new Promise((resolve) => {
 			const poll = () => {
