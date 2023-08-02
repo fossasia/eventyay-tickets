@@ -31,10 +31,11 @@
 								span(v-for="speaker, index of editorSession.speakers")
 									a(:href="`/orga/event/${eventSlug}/speakers/${speaker.code}/`") {{speaker.name}}
 									span(v-if="index != editorSession.speakers.length - 1") {{', '}}
-						.data-row(v-else)
+						.data-row(v-else).form-group
 							.data-label {{ $t('Title') }}
-							.data-value
-								input(v-model="editorSession.title", :required="true")
+							.data-value.i18n-form-group
+								template(v-for="locale of locales")
+									input(v-model="editorSession.title[locale]", :required="true" :lang="locale")
 						.data-row(v-if="editorSession.track")
 							.data-label {{ $t('Track') }}
 							.data-value {{ getLocalizedString(editorSession.track.name) }}
@@ -80,6 +81,7 @@ export default {
 			editorSession: null,
 			editorSessionWaiting: false,
 			isUnassigning: false,
+			locales: ["en"],
 			getLocalizedString
 		}
 	},
@@ -112,6 +114,13 @@ export default {
 			}
 			sessions.sort((a, b) => getLocalizedString(a.title).toUpperCase().localeCompare(getLocalizedString(b.title).toUpperCase()))
 			return sessions
+		},
+		newBreakTitle () {
+			const title = {"en": "New break"}
+			for (const locale of this.locales.filter(l => l != "en")) {
+				title[locale] = this.$t('New break')
+			}
+			return title
 		},
 		sessions () {
 			if (!this.schedule) return
@@ -162,6 +171,7 @@ export default {
 		this.schedule = await this.fetchSchedule()
 		this.currentDay = this.days[0]
 		this.eventTimezone = this.schedule.timezone
+		this.locales = this.schedule.locales
 		this.eventSlug = window.location.pathname.split("/")[3]
 		moment.tz.setDefault(this.eventTimezone)
 		window.setTimeout(this.pollUpdates, 10 * 1000)
@@ -226,7 +236,7 @@ export default {
 			this.editorSession = null
 		},
 		startNewBreak({event}) {
-		  this.startDragging({event, session: {title: "New Break", duration: "30", uncreated: true}})
+		  this.startDragging({event, session: {title: this.newBreakTitle, duration: "30", uncreated: true}})
 		},
 		startDragging ({event, session}) {
 			this.draggedSession = session
@@ -380,17 +390,14 @@ export default {
 				.data-row
 					display: flex
 					margin: 4px 0
-					height: 32px
 					.data-label
 						width: 130px
 						font-weight: bold
 					.data-value
 						input
-							padding: 0.375rem 0.75rem
 							border: 1px solid #ced4da
 							width: 100%
 							border-radius: 0.25rem
-							padding: 4px
 							font-size: 16px
 							height: 30px
 							&:focus, &:active, &:focus-visible

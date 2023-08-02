@@ -320,6 +320,7 @@ class TalkList(EventPermissionRequired, View):
                 ).items()
             }
         result["now"] = now().strftime("%Y-%m-%d %H:%M:%S%z")
+        result["locales"] = request.event.locales
         return JsonResponse(result, encoder=I18nJSONEncoder)
 
     @method_decorator(csrf_exempt)
