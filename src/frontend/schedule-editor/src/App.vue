@@ -167,7 +167,6 @@ export default {
 		}
 	},
 	async created () {
-		moment.locale(this.locale)
 		const version = ''
 		this.schedule = await this.fetchSchedule()
 		// needs to be as early as possible

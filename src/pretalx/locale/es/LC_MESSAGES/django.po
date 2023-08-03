@@ -8425,6 +8425,12 @@ msgstr "{name} ({duration} horas)"
 msgid "{name} ({duration} minutes)"
 msgstr "{name} ({duration} minutos)"
 
+msgid "Unassigned"
+msgstr ""
+
+msgid "minutes"
+msgstr ""
+
 #~ msgid "Use Gravatar"
 #~ msgstr "Usa un avatar"
 
@@ -8440,8 +8446,8 @@ msgstr "{name} ({duration} minutos)"
 #~ msgstr "Desconocido"
 
 #, fuzzy
-#~#| msgid "proposal is waiting for your review."
-#~#| msgid_plural "proposals are waiting for your review."
+#~| msgid "proposal is waiting for your review."
+#~| msgid_plural "proposals are waiting for your review."
 #~ msgid "proposals are waiting for your review."
 #~ msgstr "La propuesta está esperando su revisión."
 
@@ -8457,7 +8463,7 @@ msgstr "{name} ({duration} minutos)"
 #~ msgstr "Déjelo en blanco para usar la dirección predeterminada: {}"
 
 #, fuzzy
-#~#| msgid "Other proposals by this speaker:"
+#~| msgid "Other proposals by this speaker:"
 #~ msgid "Files uploaded by the speakers"
 #~ msgstr "Otras propuestas por este/a ponente:"
 
@@ -8465,8 +8471,8 @@ msgstr "{name} ({duration} minutos)"
 #~ msgstr "El correo electrónico ha sido eliminado."
 
 #, fuzzy
-#~#| msgid "proposal is waiting for your review."
-#~#| msgid_plural "proposals are waiting for your review."
+#~| msgid "proposal is waiting for your review."
+#~| msgid_plural "proposals are waiting for your review."
 #~ msgid "Proposals available for review"
 #~ msgstr "La propuesta está esperando su revisión."
 

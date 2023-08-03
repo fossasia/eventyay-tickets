@@ -7707,11 +7707,17 @@ msgstr "{name} ({duration} ore)"
 msgid "{name} ({duration} minutes)"
 msgstr "{name} ({duration} minuti)"
 
+msgid "Unassigned"
+msgstr ""
+
+msgid "minutes"
+msgstr ""
+
 #~ msgid "John Doe"
 #~ msgstr "John Doe"
 
 #, fuzzy
-#~#| msgid "Copy code for review"
+#~| msgid "Copy code for review"
 #~ msgid "proposals are waiting for your review."
 #~ msgstr "Copia il codice per le revisioni"
 

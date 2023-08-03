@@ -8533,8 +8533,14 @@ msgstr "{name} ({duration} heures)"
 msgid "{name} ({duration} minutes)"
 msgstr "{name} ({duration} minutes)"
 
+msgid "Unassigned"
+msgstr ""
+
+msgid "minutes"
+msgstr ""
+
 #, fuzzy
-#~#| msgid "Your avatar"
+#~| msgid "Your avatar"
 #~ msgid "Use Gravatar"
 #~ msgstr "Votre avatar"
 
@@ -8547,8 +8553,8 @@ msgstr "{name} ({duration} minutes)"
 #~ msgstr "John Doe"
 
 #, fuzzy
-#~#| msgid "proposal is waiting for your review."
-#~#| msgid_plural "proposals are waiting for your review."
+#~| msgid "proposal is waiting for your review."
+#~| msgid_plural "proposals are waiting for your review."
 #~ msgid "proposals are waiting for your review."
 #~ msgstr "proposition est en attente de votre évaluation."
 
@@ -8564,7 +8570,7 @@ msgstr "{name} ({duration} minutes)"
 #~ msgstr "Laisser vide pour utiliser l'adresse par défaut : {}"
 
 #, fuzzy
-#~#| msgid "Other proposals by this speaker:"
+#~| msgid "Other proposals by this speaker:"
 #~ msgid "Files uploaded by the speakers"
 #~ msgstr "Autres propositions de l'intervenant :"
 
@@ -8572,8 +8578,8 @@ msgstr "{name} ({duration} minutes)"
 #~ msgstr "Le courriel a été supprimé."
 
 #, fuzzy
-#~#| msgid "proposal is waiting for your review."
-#~#| msgid_plural "proposals are waiting for your review."
+#~| msgid "proposal is waiting for your review."
+#~| msgid_plural "proposals are waiting for your review."
 #~ msgid "Proposals available for review"
 #~ msgstr "proposition est en attente de votre évaluation."
 
@@ -8581,7 +8587,7 @@ msgstr "{name} ({duration} minutes)"
 #~ msgstr "Personnalisé"
 
 #, fuzzy
-#~#| msgid "Review settings"
+#~| msgid "Review settings"
 #~ msgid "Additional review team settings"
 #~ msgstr "Paramètres des évalutations"
 
@@ -8592,12 +8598,12 @@ msgstr "{name} ({duration} minutes)"
 #~ msgstr "Cette proposition ne peut pas être évaluée pour l'instant."
 
 #, fuzzy
-#~#| msgid "Please provide a valid email address!"
+#~| msgid "Please provide a valid email address!"
 #~ msgid "Please provide an email subject!"
 #~ msgstr "Veuillez fournir une adresse électronique valide !"
 
 #, fuzzy
-#~#| msgid "Please provide a valid email address!"
+#~| msgid "Please provide a valid email address!"
 #~ msgid "Please provide an email text!"
 #~ msgstr "Veuillez fournir une adresse électronique valide !"
 

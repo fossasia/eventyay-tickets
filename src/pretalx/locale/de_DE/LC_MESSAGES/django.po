@@ -8382,6 +8382,12 @@ msgstr "{name} ({duration} Stunden)"
 msgid "{name} ({duration} minutes)"
 msgstr "{name} ({duration} Minuten)"
 
+msgid "Unassigned"
+msgstr ""
+
+msgid "minutes"
+msgstr ""
+
 #~ msgid "Use Gravatar"
 #~ msgstr "Gravatar einbinden"
 

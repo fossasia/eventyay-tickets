@@ -8277,6 +8277,12 @@ msgstr "{name} (عدد الساعات {duration} )"
 msgid "{name} ({duration} minutes)"
 msgstr "{name} ({duration} دقيقة)"
 
+msgid "Unassigned"
+msgstr ""
+
+msgid "minutes"
+msgstr ""
+
 #~ msgid "Use Gravatar"
 #~ msgstr "استخدم Gravatar"
 
@@ -8291,8 +8297,8 @@ msgstr "{name} ({duration} دقيقة)"
 #~ msgstr "جوان دو"
 
 #, fuzzy
-#~#| msgid "proposal is waiting for your review."
-#~#| msgid_plural "proposals are waiting for your review."
+#~| msgid "proposal is waiting for your review."
+#~| msgid_plural "proposals are waiting for your review."
 #~ msgid "proposals are waiting for your review."
 #~ msgstr "المقترح ينتظر تقييمك."
 
@@ -8303,13 +8309,13 @@ msgstr "{name} ({duration} دقيقة)"
 #~ msgstr "اتركه فارغًا لاستخدام العنوان الأساسي: {}"
 
 #, fuzzy
-#~#| msgid "Other proposals by this speaker:"
+#~| msgid "Other proposals by this speaker:"
 #~ msgid "Files uploaded by the speakers"
 #~ msgstr "مقترحات أخرى لهذا المتحدث:"
 
 #, fuzzy
-#~#| msgid "proposal is waiting for your review."
-#~#| msgid_plural "proposals are waiting for your review."
+#~| msgid "proposal is waiting for your review."
+#~| msgid_plural "proposals are waiting for your review."
 #~ msgid "Proposals available for review"
 #~ msgstr "المقترح ينتظر تقييمك."
 
@@ -8326,7 +8332,7 @@ msgstr "{name} ({duration} دقيقة)"
 #~ msgstr "لا يمكن مراجعة هذا الاقتراح في الوقت الحالي."
 
 #, fuzzy
-#~#| msgid "Please provide a valid email address."
+#~| msgid "Please provide a valid email address."
 #~ msgid "Please provide an email subject!"
 #~ msgstr "يرجى تقديم عنوان بريد إلكتروني فعال."
 

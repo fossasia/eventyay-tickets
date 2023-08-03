@@ -7817,6 +7817,12 @@ msgstr "{name} ({duration} 小时)"
 msgid "{name} ({duration} minutes)"
 msgstr "{name}（{duration}分钟）"
 
+msgid "Unassigned"
+msgstr ""
+
+msgid "minutes"
+msgstr ""
+
 #~ msgid "Use Gravatar"
 #~ msgstr "使用 Gravatar"
 

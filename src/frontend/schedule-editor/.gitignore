@@ -22,4 +22,4 @@ pnpm-debug.log*
 *.sln
 *.sw?
 
-locales/*.po
+locales/en/*.po

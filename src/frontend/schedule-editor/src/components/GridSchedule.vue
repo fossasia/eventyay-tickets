@@ -431,7 +431,6 @@ export default {
 			if (!entry) return
 			const day = moment.parseZone(entry.target.dataset.slice).startOf('day')
 			this.scrolledDay = day
-			console.log(day)
 			this.$emit('changeDay', this.scrolledDay)
 		}
 	}

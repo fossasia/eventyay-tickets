@@ -13,6 +13,11 @@ export default function loadGettext () {
 				// and use them to replace the keys in the source code
 				// with the corresponding values
 				const lang = id.match(fileRegex)[1]
+
+				// As per https://github.com/smhg/gettext-parser/issues/79, our
+				// frontend doesn't support the #~#| syntax, so we need to replace it
+				src = src.replaceAll(/^#~|/gm, '#~#|')
+
 				const mapped = await gettextToI18next(lang, src)
 				const mappedJSON = JSON.parse(mapped)
 				// filter the object by relevant keys

@@ -8270,6 +8270,12 @@ msgstr "{name} ({duration} horas)"
 msgid "{name} ({duration} minutes)"
 msgstr "{name} ({duration} minutos)"
 
+msgid "Unassigned"
+msgstr ""
+
+msgid "minutes"
+msgstr ""
+
 #~ msgid "Use Gravatar"
 #~ msgstr "Usar Gravatar"
 

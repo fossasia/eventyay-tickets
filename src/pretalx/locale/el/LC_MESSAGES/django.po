@@ -8473,6 +8473,12 @@ msgstr "{name} ({duration} ώρες)"
 msgid "{name} ({duration} minutes)"
 msgstr "{name} ({duration} λεπτά)"
 
+msgid "Unassigned"
+msgstr ""
+
+msgid "minutes"
+msgstr ""
+
 #~ msgid "Use Gravatar"
 #~ msgstr "Χρησιμοποιήστε το Gravatar"
 

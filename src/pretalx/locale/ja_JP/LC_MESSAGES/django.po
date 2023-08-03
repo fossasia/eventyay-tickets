@@ -8471,13 +8471,19 @@ msgstr "{name} ({duration} 時間)"
 msgid "{name} ({duration} minutes)"
 msgstr "{name} ({duration} 分)"
 
+msgid "Unassigned"
+msgstr ""
+
+msgid "minutes"
+msgstr ""
+
 #, fuzzy
-#~#| msgid "Your avatar"
+#~| msgid "Your avatar"
 #~ msgid "Use Gravatar"
 #~ msgstr "あなたのアバター"
 
 #, fuzzy
-#~#| msgid "Should the talks marked as featured shown publicly?"
+#~| msgid "Should the talks marked as featured shown publicly?"
 #~ msgid "Should the sessions marked as featured be shown publicly?"
 #~ msgstr "特集としてマークされた講演は公開されるべきか？"
 
@@ -8485,14 +8491,14 @@ msgstr "{name} ({duration} 分)"
 #~ msgstr "John Doe"
 
 #, fuzzy
-#~#| msgid "proposal is waiting for your review."
-#~#| msgid_plural "submissions are waiting for your review."
+#~| msgid "proposal is waiting for your review."
+#~| msgid_plural "submissions are waiting for your review."
 #~ msgid "proposals are waiting for your review."
 #~ msgstr "投稿は審査待ちです。"
 
 #, fuzzy
-#~#| msgid "unconfirmed session"
-#~#| msgid_plural "unconfirmed talks"
+#~| msgid "unconfirmed session"
+#~| msgid_plural "unconfirmed talks"
 #~ msgid "unconfirmed session"
 #~ msgid_plural "unconfirmed sessions"
 #~ msgstr[0] "未確認の講演"
@@ -8505,7 +8511,7 @@ msgstr "{name} ({duration} 分)"
 #~ msgstr "デフォルトのアドレスを使用するには空のままにします。{}"
 
 #, fuzzy
-#~#| msgid "Other proposals by this speaker:"
+#~| msgid "Other proposals by this speaker:"
 #~ msgid "Files uploaded by the speakers"
 #~ msgstr "この講演者の他の投稿: "
 
@@ -8513,18 +8519,18 @@ msgstr "{name} ({duration} 分)"
 #~ msgstr "メールが削除されました。"
 
 #, fuzzy
-#~#| msgid "proposal is waiting for your review."
-#~#| msgid_plural "submissions are waiting for your review."
+#~| msgid "proposal is waiting for your review."
+#~| msgid_plural "submissions are waiting for your review."
 #~ msgid "Proposals available for review"
 #~ msgstr "投稿は審査待ちです。"
 
 #, fuzzy
-#~#| msgid "Custom Mail"
+#~| msgid "Custom Mail"
 #~ msgid "Custom"
 #~ msgstr "カスタムメール"
 
 #, fuzzy
-#~#| msgid "Review settings"
+#~| msgid "Review settings"
 #~ msgid "Additional review team settings"
 #~ msgstr "レビュー設定"
 
@@ -8535,12 +8541,12 @@ msgstr "{name} ({duration} 分)"
 #~ msgstr "この投稿はまだレビューできません。"
 
 #, fuzzy
-#~#| msgid "Please provide a valid email address!"
+#~| msgid "Please provide a valid email address!"
 #~ msgid "Please provide an email subject!"
 #~ msgstr "正しいメールアドレスを入力してください！"
 
 #, fuzzy
-#~#| msgid "Please provide a valid email address!"
+#~| msgid "Please provide a valid email address!"
 #~ msgid "Please provide an email text!"
 #~ msgstr "正しいメールアドレスを入力してください！"
 
@@ -8570,7 +8576,7 @@ msgstr "{name} ({duration} 分)"
 #~ msgstr "投稿へのリンク。デフォルトのテンプレートでのみ使用可能です。"
 
 #, fuzzy
-#~#| msgid "The link to a proposal. Only usable in default templates."
+#~| msgid "The link to a proposal. Only usable in default templates."
 #~ msgid "The proposal type. Only usable in default templates."
 #~ msgstr "投稿へのリンク。デフォルトのテンプレートでのみ使用可能です。"
 

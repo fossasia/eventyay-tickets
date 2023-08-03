@@ -71,6 +71,9 @@ class Command(Parent):
 
         super().handle(*args, **options)
 
+        for move in moves:
+            pathreplace(move[1], move[0])
+
         # Create frontend translations
         base_path = locale_path.parent.parent
         frontend_path = base_path / "frontend/schedule-editor"
@@ -78,23 +81,16 @@ class Command(Parent):
 
         # env = os.environ.copy()
         # env["PRETALX_LOCALES"] = ",".join(locales)
-        subprocess.run("npm run i18n:extract", check=True, shell=True, cwd=frontend_path)
-        # We only need the one language, as the file will always be empty
-        # We just merge the same file with all the languages
-        subprocess.run("npm run i18n:convert2gettext", check=True, shell=True, cwd=frontend_path)
+        subprocess.run(
+            "npm run i18n:extract", check=True, shell=True, cwd=frontend_path
+        )
+        # We only need one file, as it's empty anyway
+        # (and we don't use numbers or other fancy features.)
+        subprocess.run(
+            "npm run i18n:convert2gettext", check=True, shell=True, cwd=frontend_path
+        )
 
-        # Merge 
+        # Now merge the js file with the django file in each language
         for locale in locales:
-            # Now merge the js file with the django file
             command = f"msgcat -o pretalx/locale/{locale}/LC_MESSAGES/django.po --use-first pretalx/locale/{locale}/LC_MESSAGES/django.po frontend/schedule-editor/locales/en/translation.po"
-            subprocess.run(
-                command, check=True, shell=True, cwd=base_path
-            )
-
-        # As per https://github.com/smhg/gettext-parser/issues/79, our
-        # frontend doesn't support the #~#| syntax, so we need to replace it
-        command = "git grep -l '#~|' | xargs sed -i 's/#~|/#~#|/'"
-        subprocess.run(command, shell=True, check=True, cwd=locale_path)
-
-        for move in moves:
-            pathreplace(move[1], move[0])
+            subprocess.run(command, check=True, shell=True, cwd=base_path)

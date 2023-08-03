@@ -7730,11 +7730,17 @@ msgstr ""
 msgid "{name} ({duration} minutes)"
 msgstr ""
 
+msgid "Unassigned"
+msgstr ""
+
+msgid "minutes"
+msgstr ""
+
 #~ msgid "John Doe"
 #~ msgstr "Fulano de Tal"
 
 #, fuzzy
-#~#| msgid "Copy code for review"
+#~| msgid "Copy code for review"
 #~ msgid "proposals are waiting for your review."
 #~ msgstr "Copiar código para reseña"
 
@@ -7742,7 +7748,7 @@ msgstr ""
 #~ msgstr "Tu búsqueda no empata con ningún conferencista."
 
 #, fuzzy
-#~#| msgid "Please provide a valid email address."
+#~| msgid "Please provide a valid email address."
 #~ msgid "Please provide an email subject!"
 #~ msgstr "Por favor indica una cuenta de correo válida."
 

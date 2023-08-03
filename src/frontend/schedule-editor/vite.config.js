@@ -27,15 +27,21 @@ export default {
 	resolve: {
 		mainFields: ['browser', 'module', 'jsnext:main', 'jsnext'],
 		extensions: ['.js', '.json', '.vue'],
-		alias: {'~': path.resolve(__dirname, './src')}
+		alias: {
+			'~': path.resolve(__dirname, './src'),
+			'moment-timezone': 'moment-timezone/builds/moment-timezone-with-data-10-year-range.js'
+		}
 	},
 	build: {
 		outDir: process.env.OUT_DIR,
 		emptyOutDir: false,
 		manifest: 'pretalx-manifest.json',
 		assetsDir: '',
-		rollupOptions: {input: 'src/main.js'},
+		rollupOptions: {input: 'src/main.js', output: {manualChunks: {moment: ['moment-timezone', 'moment']}}},
 		target: 'es2022',
+	},
+	optimizeDeps: {
+		exclude: ['moment']
 	},
 	server: {
 	  port: '8080'

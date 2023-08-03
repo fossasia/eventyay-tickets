@@ -8172,6 +8172,12 @@ msgstr "{name} ({duration} hodin)"
 msgid "{name} ({duration} minutes)"
 msgstr "{name} ({duration} minut)"
 
+msgid "Unassigned"
+msgstr ""
+
+msgid "minutes"
+msgstr ""
+
 #~ msgid "Use Gravatar"
 #~ msgstr "Použít Gravatar"
 
@@ -8184,7 +8190,7 @@ msgstr "{name} ({duration} minut)"
 #~ msgstr "Jan Novák"
 
 #, fuzzy
-#~#| msgid "Proposals are closed"
+#~| msgid "Proposals are closed"
 #~ msgid "proposals are waiting for your review."
 #~ msgstr "Příspěvky byly uzavřeny"
 

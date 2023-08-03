@@ -7396,3 +7396,9 @@ msgstr ""
 #, python-brace-format
 msgid "{name} ({duration} minutes)"
 msgstr ""
+
+msgid "Unassigned"
+msgstr ""
+
+msgid "minutes"
+msgstr ""

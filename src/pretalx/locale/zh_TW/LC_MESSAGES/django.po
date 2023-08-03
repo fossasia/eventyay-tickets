@@ -8093,8 +8093,14 @@ msgstr ""
 msgid "{name} ({duration} minutes)"
 msgstr ""
 
+msgid "Unassigned"
+msgstr ""
+
+msgid "minutes"
+msgstr ""
+
 #, fuzzy
-#~#| msgid "Your avatar"
+#~| msgid "Your avatar"
 #~ msgid "Use Gravatar"
 #~ msgstr "您的頭像"
 
@@ -8102,14 +8108,14 @@ msgstr ""
 #~ msgstr "John Doe"
 
 #, fuzzy
-#~#| msgid "proposal is waiting for your review."
-#~#| msgid_plural "submissions are waiting for your review."
+#~| msgid "proposal is waiting for your review."
+#~| msgid_plural "submissions are waiting for your review."
 #~ msgid "proposals are waiting for your review."
 #~ msgstr "有議程投稿制在等待您的檢閱。"
 
 #, fuzzy
-#~#| msgid "unconfirmed session"
-#~#| msgid_plural "unconfirmed talks"
+#~| msgid "unconfirmed session"
+#~| msgid_plural "unconfirmed talks"
 #~ msgid "unconfirmed session"
 #~ msgid_plural "unconfirmed sessions"
 #~ msgstr[0] "個未確認的議程"
@@ -8118,7 +8124,7 @@ msgstr ""
 #~ msgstr "找不到符合的講者。"
 
 #, fuzzy
-#~#| msgid "Other proposals by this speaker:"
+#~| msgid "Other proposals by this speaker:"
 #~ msgid "Files uploaded by the speakers"
 #~ msgstr "此講者的其他議程投稿："
 
@@ -8126,18 +8132,18 @@ msgstr ""
 #~ msgstr "郵件已被刪除。"
 
 #, fuzzy
-#~#| msgid "proposal is waiting for your review."
-#~#| msgid_plural "submissions are waiting for your review."
+#~| msgid "proposal is waiting for your review."
+#~| msgid_plural "submissions are waiting for your review."
 #~ msgid "Proposals available for review"
 #~ msgstr "有議程投稿制在等待您的檢閱。"
 
 #, fuzzy
-#~#| msgid "Custom Mail"
+#~| msgid "Custom Mail"
 #~ msgid "Custom"
 #~ msgstr "自訂郵件"
 
 #, fuzzy
-#~#| msgid "Review settings"
+#~| msgid "Review settings"
 #~ msgid "Additional review team settings"
 #~ msgstr "檢閱設定"
 
@@ -8145,12 +8151,12 @@ msgstr ""
 #~ msgstr "已安排的議程"
 
 #, fuzzy
-#~#| msgid "Please provide a valid email address!"
+#~| msgid "Please provide a valid email address!"
 #~ msgid "Please provide an email subject!"
 #~ msgstr "請輸入正確的電子郵件地址。"
 
 #, fuzzy
-#~#| msgid "Please provide a valid email address!"
+#~| msgid "Please provide a valid email address!"
 #~ msgid "Please provide an email text!"
 #~ msgstr "請輸入正確的電子郵件地址。"
 
@@ -8180,7 +8186,7 @@ msgstr ""
 #~ msgstr "議程投稿的連結。只會用於預設範本。"
 
 #, fuzzy
-#~#| msgid "The link to a proposal. Only usable in default templates."
+#~| msgid "The link to a proposal. Only usable in default templates."
 #~ msgid "The proposal type. Only usable in default templates."
 #~ msgstr "議程投稿的連結。只會用於預設範本。"
 
