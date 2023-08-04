@@ -8,9 +8,12 @@
 					path(d="M 0 6 L 5 10 L 10 6 z")
 			.timeseparator(:class="getSliceClasses(slice)", :style="getSliceStyle(slice)")
 		.room(:style="{'grid-area': `1 / 1 / auto / auto`}")
-		.room(v-for="(room, index) of rooms", :style="{'grid-area': `1 / ${index + 2 } / auto / auto`}") {{ getLocalizedString(room.name) }}
+		.room(v-for="(room, index) of visibleRooms", :style="{'grid-area': `1 / ${index + 2 } / auto / auto`}")
+			span {{ getLocalizedString(room.name) }}
+			.hide-room(v-if="visibleRooms.length > 1", @click="hiddenRooms = rooms.filter(r => hiddenRooms.includes(r) || r === room)")
+				i.fa.fa-eye-slash
 		session(v-if="draggedSession && hoverSlice", :style="getHoverSliceStyle()", :session="draggedSession", :isDragClone="true")
-		template(v-for="session of sessions")
+		template(v-for="session of visibleSessions")
 			session(
 				:session="session",
 				:isDragged="draggedSession && (session.id === draggedSession.id)",
@@ -19,6 +22,14 @@
 				@startDragging="startDragging($event)",
 			)
 		.availability(v-for="availability of availabilities", :style="getSessionStyle(availability)")
+	#hiddenRooms(v-if="hiddenRooms.length")
+		h4 {{ $t('Hidden rooms') }} ({{ hiddenRooms.length }})
+		.room-list
+			.room-entry(v-for="room of hiddenRooms", @click="hiddenRooms.splice(hiddenRooms.indexOf(room), 1)")
+				.span {{ getLocalizedString(room.name) }}
+				.show-room(@click.stop="hiddenRooms.splice(hiddenRooms.indexOf(room), 1)")
+					i.fa.fa-eye
+
 </template>
 <script>
 // TODO
@@ -52,6 +63,7 @@ export default {
 			gridOffset: 0,
 			dragScrollTimer: null,
 			dragStart: null,
+			hiddenRooms: [],
 		}
 	},
 	computed: {
@@ -220,7 +232,7 @@ export default {
 				return `[${slice.name}] minmax(${height}px, auto)`
 			}).join(' ')
 			return {
-				'--total-rooms': this.rooms.length,
+				'--total-rooms': this.visibleRooms.length,
 				'grid-template-rows': rows
 			}
 		},
@@ -235,7 +247,7 @@ export default {
 			if (!this.visibleTimeslices?.length) return avails
 			const earliestStart = this.visibleTimeslices[0].date
 			const latestEnd = this.visibleTimeslices.at(-1).date
-			for (const room of this.rooms) {
+			for (const room of this.visibleRooms) {
 				if (!room.availabilities || !room.availabilities.length) avails.push({room: room, start: earliestStart, end: latestEnd})
 				else {
 					for (const avail of room.availabilities) {
@@ -256,6 +268,13 @@ export default {
 		scrollParent () {
 			return this.$refs.grid.parentElement.parentElement
 		},
+		visibleRooms () {
+			return this.rooms.filter(room => !this.hiddenRooms.includes(room))
+		},
+		visibleSessions () {
+			// only show sessions whose rooms are not in this.hiddenRooms
+			return this.sessions.filter(session => !this.hiddenRooms.includes(session.room))
+		}
 	},
 	watch: {
 		currentDay: 'changeDay'
@@ -344,8 +363,10 @@ export default {
 			if (!hoverSlice) return
 			// For the x axis, we need to know which room we are in, so we divide our position by
 			const roomWidth = document.querySelectorAll('.grid .room')[1].getBoundingClientRect().width
-			const roomIndex = Math.floor((e.clientX - this.gridOffset - 80) / roomWidth) // remove the timeline offset to the left
-			this.hoverSlice = { time: moment(hoverSlice.dataset.slice), roomIndex: roomIndex, room: this.rooms[roomIndex], duration: this.draggedSession.duration }
+			// We need to know if our container is scrolled to the right
+			const scrollOffset = this.scrollParent.scrollLeft
+			const roomIndex = Math.floor((e.clientX + scrollOffset - this.gridOffset - 80) / roomWidth) // remove the timeline offset to the left
+			this.hoverSlice = { time: moment(hoverSlice.dataset.slice), roomIndex: roomIndex, room: this.visibleRooms[roomIndex], duration: this.draggedSession.duration }
 		},
 		getHoverSliceStyle () {
 			if (!this.hoverSlice || !this.draggedSession) return
@@ -353,7 +374,7 @@ export default {
 		},
 		getSessionStyle (session) {
 			if (!session.room || !session.start) return {}
-			const roomIndex = this.rooms.indexOf(session.room)
+			const roomIndex = this.visibleRooms.indexOf(session.room)
 			return {
 				'grid-row': `${getSliceName(session.start)} / ${getSliceName(session.end)}`,
 				'grid-column': roomIndex > -1 ? roomIndex + 2 : null
@@ -458,6 +479,15 @@ export default {
 			background-color: $clr-white
 			border-bottom: border-separator()
 			z-index: 20
+			.hide-room
+				color: $clr-secondary-text-light
+				font-size: 14px
+				margin-left: 16px
+				cursor: pointer
+				padding: 4px 8px
+				border-radius: 4px
+				&:hover
+					background-color: $clr-grey-200
 		.c-linear-schedule-session
 			z-index: 10
 	.timeslice
@@ -494,9 +524,44 @@ export default {
 		width: 100%
 		&.datebreak
 			height: 3px
-	.bunt-scrollbar-rail-wrapper-x, .bunt-scrollbar-rail-wrapper-y
-		z-index: 30
+.bunt-scrollbar-rail-wrapper-x, .bunt-scrollbar-rail-wrapper-y
+	z-index: 30
 .availability
 	background-color: white
 	pointer-events: none
+#hiddenRooms
+	position: fixed
+	z-index: 500
+	bottom: 0
+	right: 0
+	width: 300px;
+	background-color: $clr-white
+	padding: 8px 16px
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.3)
+	border-top-left-radius: 8px
+	font-size: 16px
+
+	.room-list
+		display: none
+
+	&:hover
+		.room-list
+			display: block
+
+	.room-entry
+		border-bottom: border-separator()
+		display: flex
+		justify-content: space-between
+		align-items: center
+		height: 28px
+		padding: 4px 0
+		cursor: pointer
+		.show-room
+			color: $clr-secondary-text-light
+			font-size: 14px
+			margin-left: 16px
+			padding: 4px 8px
+			border-radius: 4px
+		&:hover
+			background-color: $clr-grey-100
 </style>

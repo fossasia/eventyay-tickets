@@ -20,22 +20,8 @@
 
 {% block schedule_content %}
 
-    {% if schedule_version %}
-        <div class="alert alert-warning schedule-alert">
-            {% translate "You're currently viewing a released schedule version. Released versions cannot be edited directly." %}
-        </div>
-    {% endif %}
-    <div class="schedule-header d-flex">
-        <div id="schedule-choice" class="d-flex align-items-center mt-3">
-            <form id="schedule-version" class="ml-4 mr-2">
-                {% bootstrap_form schedule_version_form layout="inline" %}
-            </form>
-            <form id="schedule-rooms">
-                {% bootstrap_form schedule_room_form layout="inline" %}
-            </form>
-        </div>
-
-        <div id="schedule-action-wrapper" class="d-flex align-items-center">
+    <div class="schedule-header d-flex m-3">
+        <div id="schedule-action-wrapper" class="d-flex align-items-center ml-auto">
             {% if not schedule_version %}
                 <a id="schedule-release" href="{{ request.event.orga_urls.release_schedule }}" class="btn ml-2 btn-success"><i class="fa fa-plus"></i> {% translate "New release" %}</a>
             {% else %}
