@@ -269,6 +269,7 @@ def serialize_break(slot):
         "start": slot.start.isoformat() if slot.start else None,
         "end": slot.end.isoformat() if slot.end else None,
         "duration": slot.duration,
+        "updated": slot.updated.isoformat(),
     }
 
 

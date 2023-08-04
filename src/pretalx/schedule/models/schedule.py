@@ -678,6 +678,7 @@ class Schedule(LogMixin, models.Model):
                         "end": talk.local_end,
                         "room": talk.room_id,
                         "duration": talk.submission.get_duration(),
+                        "updated": talk.updated.isoformat(),
                     }
                 )
             else:

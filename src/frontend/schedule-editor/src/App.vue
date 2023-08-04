@@ -50,7 +50,7 @@
 								input(v-model="editorSession.duration", type="number", min="1", max="1440", step="1", :required="true")
 								span {{ $t('minutes') }}
 
-						.data-row(v-if="editorSession.code && warnings[editorSession.code]")
+						.data-row(v-if="editorSession.code && warnings[editorSession.code] && warnings[editorSession.code].length")
 							.data-label
 								i.fa.fa-exclamation-triangle.warning
 								span {{ $t('Warnings') }}
@@ -212,17 +212,19 @@ export default {
 			this.currentDay = moment(day, this.eventTimezone).startOf('day')
 			window.location.hash = day.format('YYYY-MM-DD')
 		},
+		saveTalk (session) {
+			api.saveTalk(session).then(response => {
+				this.warnings[session.code] = response.warnings
+				this.schedule.talks.find(s => s.id === session.id).updated = response.updated
+			})
+		},
 		rescheduleSession (e) {
 			const movedSession = this.schedule.talks.find(s => s.id === e.session.id)
 			this.stopDragging()
 			movedSession.start = e.start
 			movedSession.end = e.end
 			movedSession.room = e.room.id
-			api.saveTalk(movedSession).then(response => {
-				if (response.warnings && movedSession.code) {
-					this.warnings[movedSession.code] = response.warnings
-				}
-			})
+			this.saveTalk(movedSession)
 		},
 		createSession (e) {
 			this.schedule.talks.push(e.session)
@@ -235,7 +237,7 @@ export default {
 		editorSave () {
 			this.editorSessionWaiting = true
 			this.editorSession.end = moment(this.editorSession.start).clone().add(this.editorSession.duration, 'm')
-			api.saveTalk(this.editorSession)
+			this.saveTalk(this.editorSession)
 
 			const session = this.schedule.talks.find(s => s.id === this.editorSession.id)
 			session.end = this.editorSession.end
@@ -273,7 +275,7 @@ export default {
 						movedSession.start = null
 						movedSession.end = null
 						movedSession.room = null
-						api.saveTalk(movedSession)
+						this.saveTalk(movedSession)
 					} else {
 						this.schedule.talks = this.schedule.talks.filter(s => s.id !== this.draggedSession.id)
 						api.deleteTalk(this.draggedSession)
@@ -296,8 +298,25 @@ export default {
 			this.warnings = await api.fetchWarnings()
 		},
 		async pollUpdates () {
-			this.schedule = await this.fetchSchedule({since: this.since, warnings: true})
-			window.setTimeout(this.pollUpdates, 10 * 1000)
+			this.fetchSchedule({since: this.since, warnings: true}).then(schedule => {
+				if (schedule.version !== this.schedule.version) {
+					// we need to reload if a new schedule version is available
+					window.location.reload()
+				}
+				// For each talk in the schedule, we check if it has changed and if our update date is newer than the last change
+				schedule.talks.forEach(talk => {
+					const oldTalk = this.schedule.talks.find(t => t.id === talk.id)
+					if (!oldTalk) {
+						this.schedule.talks.push(talk)
+					} else {
+						if (moment(talk.updated).isAfter(moment(oldTalk.updated))) {
+							Object.assign(oldTalk, talk)
+						}
+					}
+				})
+				this.since = schedule.now
+				window.setTimeout(this.pollUpdates, 10 * 1000)
+			})
 		}
 	}
 }
@@ -373,6 +392,7 @@ export default {
 			border-bottom: 4px solid $clr-dividers-light
 	#schedule-wrapper
 		width: 100%
+		margin-right: 40px
   #session-editor-wrapper
 		position: absolute
 		z-index: 1000
@@ -421,6 +441,8 @@ export default {
 					.data-label
 						width: 130px
 						font-weight: bold
+						display: flex
+						align-items: baseline
 					.data-value
 						input
 							border: 1px solid #ced4da

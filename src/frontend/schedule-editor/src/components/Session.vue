@@ -115,6 +115,7 @@ export default {
 		z-index: 200
 	&.dragging
 		filter: opacity(0.3)
+		cursor: inherit
 	&.isbreak
 		// border: border-separator()
 		background-color: $clr-grey-200

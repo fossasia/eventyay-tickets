@@ -503,6 +503,8 @@ export default {
 		min-width: min-content
 		&.illegal-hover
 			cursor: not-allowed !important
+			.c-linear-schedule-session
+				cursor: not-allowed !important
 		> .room
 			position: sticky
 			top: calc(48px)

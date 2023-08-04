@@ -68,6 +68,7 @@ const api = {
 		return api.getList(`/api/events/${api.eventSlug}/rooms`)
 	},
 	saveTalk (talk) {
+		// Only call from App.saveTalk, which knows which data to update
 		var url = [
 			window.location.protocol,
 			'//',
