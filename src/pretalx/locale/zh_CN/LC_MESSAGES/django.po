@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-02 20:44+0000\n"
+"POT-Creation-Date: 2023-08-04 20:21+0000\n"
 "PO-Revision-Date: 2023-05-27 12:16+0000\n"
 "Last-Translator: Joel (Jiawei) Wang <joel.bradley.w@gmail.com>\n"
 "Language-Team: none\n"
@@ -1178,10 +1178,12 @@ msgid "You cannot accept this invitation."
 msgstr "你不能稍后更改这个Slug！"
 
 #: pretalx/common/context_processors.py:42
+#: pretalx/schedule/models/schedule.py:372
 msgid "“"
 msgstr "“"
 
 #: pretalx/common/context_processors.py:43
+#: pretalx/schedule/models/schedule.py:372
 msgid "”"
 msgstr "”"
 
@@ -5113,7 +5115,7 @@ msgstr "导入"
 
 #: pretalx/orga/templates/orga/review/assignment.html:17
 #: pretalx/orga/templates/orga/review/dashboard.html:122
-#: pretalx/orga/templates/orga/schedule/index.html:49
+#: pretalx/orga/templates/orga/schedule/index.html:35
 msgid "Actions"
 msgstr "操作"
 
@@ -5465,47 +5467,41 @@ msgstr ""
 msgid "Upload"
 msgstr "上传"
 
-#: pretalx/orga/templates/orga/schedule/index.html:25
-msgid ""
-"You're currently viewing a released schedule version. Released versions "
-"cannot be edited directly."
-msgstr "您目前正在查看已发布的时间表版本。已发布的版本不能直接进行编辑。"
-
-#: pretalx/orga/templates/orga/schedule/index.html:40
+#: pretalx/orga/templates/orga/schedule/index.html:26
 msgid "New release"
 msgstr "发布日程"
 
-#: pretalx/orga/templates/orga/schedule/index.html:44
+#: pretalx/orga/templates/orga/schedule/index.html:30
 msgid "Override WIP schedule with this version"
 msgstr "覆盖WIP计划以使用此版本。"
 
-#: pretalx/orga/templates/orga/schedule/index.html:54
+#: pretalx/orga/templates/orga/schedule/index.html:40
 msgid "View in frontend"
 msgstr "在前端查看"
 
-#: pretalx/orga/templates/orga/schedule/index.html:58
+#: pretalx/orga/templates/orga/schedule/index.html:44
 msgid "Hide schedule"
 msgstr "隐藏日程表"
 
-#: pretalx/orga/templates/orga/schedule/index.html:62
+#: pretalx/orga/templates/orga/schedule/index.html:48
 msgid "Make schedule public"
 msgstr "公开日程安排"
 
-#: pretalx/orga/templates/orga/schedule/index.html:66
+#: pretalx/orga/templates/orga/schedule/index.html:52
 msgid "Print cards"
 msgstr "打印卡片"
 
-#: pretalx/orga/templates/orga/schedule/index.html:69
+#: pretalx/orga/templates/orga/schedule/index.html:55
 msgid "Resend speaker notifications"
 msgstr "重新发送演讲者通知"
 
-#: pretalx/orga/templates/orga/schedule/index.html:78
+#: pretalx/orga/templates/orga/schedule/index.html:64
 msgid ""
 "You can start planning your schedule once you have configured some rooms for "
 "sessions to take place in."
 msgstr "一旦您设置了要进行课程的一些房间，您就可以开始规划您的时间表了。"
 
-#: pretalx/orga/templates/orga/schedule/index.html:79
+#: pretalx/orga/templates/orga/schedule/index.html:65
 msgid "Configure rooms"
 msgstr "配置房间"
 
@@ -6658,7 +6654,7 @@ msgstr "该值将根据动态参数进行替换。"
 msgid "Subject: {subject}"
 msgstr "主题: {subject}"
 
-#: pretalx/orga/views/mails.py:380 pretalx/orga/views/schedule.py:249
+#: pretalx/orga/views/mails.py:380 pretalx/orga/views/schedule.py:250
 #, python-brace-format
 msgid ""
 "{count} emails have been saved to the outbox – you can make individual "
@@ -6721,7 +6717,7 @@ msgid ""
 msgstr "密码重置邮件无法发送，因此密码未被重置。"
 
 #: pretalx/orga/views/organiser.py:225 pretalx/orga/views/review.py:650
-#: pretalx/orga/views/schedule.py:536
+#: pretalx/orga/views/schedule.py:598
 msgid "Saved!"
 msgstr "\"已保存！\""
 
@@ -6763,69 +6759,69 @@ msgstr "\"{count} 封电子邮件已生成并放置在发件箱中。\""
 msgid "The reviewers were assigned successfully"
 msgstr "评论人员已成功分配。"
 
-#: pretalx/orga/views/review.py:685 pretalx/orga/views/schedule.py:111
+#: pretalx/orga/views/review.py:685 pretalx/orga/views/schedule.py:112
 #: pretalx/orga/views/speaker.py:359
 msgid "No data to be exported"
 msgstr "没有数据可以导出。"
 
-#: pretalx/orga/views/schedule.py:124
+#: pretalx/orga/views/schedule.py:125
 msgid "A new export is being generated and will be available soon."
 msgstr "一个新的出口正在生成，很快就会可用。"
 
-#: pretalx/orga/views/schedule.py:131
+#: pretalx/orga/views/schedule.py:132
 msgid ""
 "A new export will be generated on the next scheduled opportunity – please "
 "contact your administrator for details."
 msgstr "下一个计划时间将生成新的导出 - 请联系管理员了解详情。"
 
-#: pretalx/orga/views/schedule.py:149
+#: pretalx/orga/views/schedule.py:150
 #, python-brace-format
 msgid ""
 "Could not find the current export, please try to regenerate it. ({error})"
 msgstr "无法找到当前的导出，请尝试重新生成它。 ({error})"
 
-#: pretalx/orga/views/schedule.py:188
+#: pretalx/orga/views/schedule.py:189
 msgid "You have to provide a new, unique schedule version!"
 msgstr "您必须提供一个新的、独特的时间表版本！"
 
-#: pretalx/orga/views/schedule.py:199
+#: pretalx/orga/views/schedule.py:200
 msgid "Nice, your schedule has been released!"
 msgstr "好的，你的时间表已经发布了！"
 
-#: pretalx/orga/views/schedule.py:215
+#: pretalx/orga/views/schedule.py:216
 msgid ""
 "Reset successful – start editing the schedule from your selected version!"
 msgstr "重置成功-从您选择的版本开始编辑时间表！"
 
-#: pretalx/orga/views/schedule.py:220
+#: pretalx/orga/views/schedule.py:221
 msgid "Error retrieving the schedule version to reset to."
 msgstr "无法检索日程版本以进行重置。"
 
-#: pretalx/orga/views/schedule.py:256
+#: pretalx/orga/views/schedule.py:257
 msgid "You can only regenerate mails after the first schedule was released."
 msgstr "你只能在第一个时间表发布后重新生成邮件。"
 
-#: pretalx/orga/views/schedule.py:445
+#: pretalx/orga/views/schedule.py:528
 msgid "The session has been scheduled."
 msgstr "本次会议已经安排好。"
 
-#: pretalx/orga/views/schedule.py:490
+#: pretalx/orga/views/schedule.py:552
 msgid "Room deleted. Hopefully nobody was still in there …"
 msgstr "房间已删除。希望没有人还在里面..."
 
-#: pretalx/orga/views/schedule.py:496
+#: pretalx/orga/views/schedule.py:558
 msgid "There is or was a session scheduled in this room. It cannot be deleted."
 msgstr "这个房间安排了一次会议。它不能被删除。"
 
-#: pretalx/orga/views/schedule.py:552
+#: pretalx/orga/views/schedule.py:614
 msgid "The selected room does not exist."
 msgstr "所选房间不存在。"
 
-#: pretalx/orga/views/schedule.py:554
+#: pretalx/orga/views/schedule.py:616
 msgid "Sorry, you are not allowed to reorder rooms."
 msgstr "抱歉，您无权重新订购房间。"
 
-#: pretalx/orga/views/schedule.py:568
+#: pretalx/orga/views/schedule.py:630
 msgid "The order of rooms has been updated."
 msgstr "房间的顺序已经更新。"
 
@@ -7194,19 +7190,25 @@ msgid "This text will be shown in the public changelog and the RSS feed."
 msgstr "此文字将显示在公开的变更日志和 RSS 预订源上。"
 
 #: pretalx/schedule/models/schedule.py:371
-msgid "The room is not available at the scheduled time."
+#, fuzzy, python-brace-format
+#| msgid "The room is not available at the scheduled time."
+msgid "Room {room_name} is not available at the scheduled time."
 msgstr "房间在预定时间不可用。"
 
 #: pretalx/schedule/models/schedule.py:392
-msgid "There's an overlapping session scheduled in this room."
-msgstr "这个房间安排了一个重叠的会议。"
+msgid "Another session in the same room overlaps with this one."
+msgstr ""
 
 #: pretalx/schedule/models/schedule.py:424
-msgid "A speaker is not available at the scheduled time."
+#, fuzzy, python-brace-format
+#| msgid "A speaker is not available at the scheduled time."
+msgid "{speaker} is not available at the scheduled time."
 msgstr "预定的时间无有效的演讲者。"
 
 #: pretalx/schedule/models/schedule.py:449
-msgid "A speaker is holding another session at the scheduled time."
+#, fuzzy, python-brace-format
+#| msgid "A speaker is holding another session at the scheduled time."
+msgid "{speaker} is scheduled for another session at the same time."
 msgstr "演讲者将在预定时间举行另一次讲座。"
 
 #: pretalx/schedule/templates/schedule/speaker_notification.txt:1
@@ -7822,6 +7824,17 @@ msgstr ""
 
 msgid "minutes"
 msgstr ""
+
+msgid "Hidden rooms"
+msgstr ""
+
+#~ msgid ""
+#~ "You're currently viewing a released schedule version. Released versions "
+#~ "cannot be edited directly."
+#~ msgstr "您目前正在查看已发布的时间表版本。已发布的版本不能直接进行编辑。"
+
+#~ msgid "There's an overlapping session scheduled in this room."
+#~ msgstr "这个房间安排了一个重叠的会议。"
 
 #~ msgid "Use Gravatar"
 #~ msgstr "使用 Gravatar"

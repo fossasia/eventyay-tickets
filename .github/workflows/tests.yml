@@ -56,6 +56,10 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
+      - name: Set up node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 'latest'
       - uses: actions/cache@v3
         with:
           path: ~/.cache/pip
@@ -77,6 +81,9 @@ jobs:
       - name: Install Postgres dependencies
         run: python -m pip install -Ue "src[postgres]"
         if: matrix.database == 'postgres'
+      - name: Install frontend dependencies
+        run: npm ci
+        working-directory: ./src/frontend/schedule-editor
       - name: Run checks
         run: python manage.py check --deploy
         working-directory: ./src

@@ -15,8 +15,9 @@ export default function loadGettext () {
 				const lang = id.match(fileRegex)[1]
 
 				// As per https://github.com/smhg/gettext-parser/issues/79, our
-				// frontend doesn't support the #~#| syntax, so we need to replace it
-				src = src.replaceAll(/^#~|/gm, '#~#|')
+				// frontend doesn't support the #~| syntax, so we need to replace it
+				// with #~#|, which is a comment in gettext
+				src = src.replaceAll('#~|', '#~#|')
 
 				const mapped = await gettextToI18next(lang, src)
 				const mappedJSON = JSON.parse(mapped)

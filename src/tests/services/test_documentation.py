@@ -47,5 +47,5 @@ def test_documentation_includes_management_commands(app):
         path = base_dir / app.partition(".")[-1] / "management/commands"
         for python_file in path.glob("*.py"):
             file_name = python_file.name
-            if file_name not in ["__init__.py", "makemigrations.py"]:
+            if file_name not in ["__init__.py", "makemigrations.py", "devserver.py"]:
                 assert f"python -m pretalx {file_name[:-3]}``" in command_docs

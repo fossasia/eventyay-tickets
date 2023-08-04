@@ -123,8 +123,11 @@ jobs:
       - name: Run check-manifest
         run: check-manifest .
         working-directory: ./src
-      - name: Build package
-        run: python -m build -n
+      - name: Build package sdist
+        run: python -m build -ns
+        working-directory: ./src
+      - name: Build package wheels
+        run: python -m build -nw
         working-directory: ./src
       - name: Check package
         run: twine check dist/*

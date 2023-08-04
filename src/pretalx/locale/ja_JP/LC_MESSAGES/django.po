@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-02 20:44+0000\n"
+"POT-Creation-Date: 2023-08-04 20:21+0000\n"
 "PO-Revision-Date: 2020-09-28 02:42+0000\n"
 "Last-Translator: Satoshi IIDA <nyampire@gmail.com>\n"
 "Language-Team: \n"
@@ -1252,10 +1252,12 @@ msgid "You cannot accept this invitation."
 msgstr "インストールの際に、ドメインのベース部分を指定することはできません。"
 
 #: pretalx/common/context_processors.py:42
+#: pretalx/schedule/models/schedule.py:372
 msgid "“"
 msgstr "“"
 
 #: pretalx/common/context_processors.py:43
+#: pretalx/schedule/models/schedule.py:372
 msgid "”"
 msgstr "”"
 
@@ -5524,7 +5526,7 @@ msgstr "インポート"
 
 #: pretalx/orga/templates/orga/review/assignment.html:17
 #: pretalx/orga/templates/orga/review/dashboard.html:122
-#: pretalx/orga/templates/orga/schedule/index.html:49
+#: pretalx/orga/templates/orga/schedule/index.html:35
 msgid "Actions"
 msgstr "アクション"
 
@@ -5914,45 +5916,37 @@ msgstr ""
 msgid "Upload"
 msgstr "アップロード"
 
-#: pretalx/orga/templates/orga/schedule/index.html:25
-msgid ""
-"You're currently viewing a released schedule version. Released versions "
-"cannot be edited directly."
-msgstr ""
-"現在表示されているのは、リリースされているバージョンのスケジュールです。リ"
-"リースされているバージョンを直接表示することはできません。"
-
-#: pretalx/orga/templates/orga/schedule/index.html:40
+#: pretalx/orga/templates/orga/schedule/index.html:26
 msgid "New release"
 msgstr "新規リリース"
 
-#: pretalx/orga/templates/orga/schedule/index.html:44
+#: pretalx/orga/templates/orga/schedule/index.html:30
 #, fuzzy
 #| msgid "New schedule version"
 msgid "Override WIP schedule with this version"
 msgstr "新しいスケジュールのバージョン"
 
-#: pretalx/orga/templates/orga/schedule/index.html:54
+#: pretalx/orga/templates/orga/schedule/index.html:40
 msgid "View in frontend"
 msgstr "フロントエンドで表示"
 
-#: pretalx/orga/templates/orga/schedule/index.html:58
+#: pretalx/orga/templates/orga/schedule/index.html:44
 msgid "Hide schedule"
 msgstr "スケジュールを非表示"
 
-#: pretalx/orga/templates/orga/schedule/index.html:62
+#: pretalx/orga/templates/orga/schedule/index.html:48
 msgid "Make schedule public"
 msgstr "スケジュールを公開"
 
-#: pretalx/orga/templates/orga/schedule/index.html:66
+#: pretalx/orga/templates/orga/schedule/index.html:52
 msgid "Print cards"
 msgstr "カードの印刷"
 
-#: pretalx/orga/templates/orga/schedule/index.html:69
+#: pretalx/orga/templates/orga/schedule/index.html:55
 msgid "Resend speaker notifications"
 msgstr "講演者への通知を再実施"
 
-#: pretalx/orga/templates/orga/schedule/index.html:78
+#: pretalx/orga/templates/orga/schedule/index.html:64
 msgid ""
 "You can start planning your schedule once you have configured some rooms for "
 "sessions to take place in."
@@ -5960,7 +5954,7 @@ msgstr ""
 "スケジュールの計画を始める第一歩として、まずはどの部屋で講演が行われるかを設"
 "定しましょう。"
 
-#: pretalx/orga/templates/orga/schedule/index.html:79
+#: pretalx/orga/templates/orga/schedule/index.html:65
 msgid "Configure rooms"
 msgstr "部屋の設定"
 
@@ -7198,7 +7192,7 @@ msgstr ""
 msgid "Subject: {subject}"
 msgstr ""
 
-#: pretalx/orga/views/mails.py:380 pretalx/orga/views/schedule.py:249
+#: pretalx/orga/views/mails.py:380 pretalx/orga/views/schedule.py:250
 #, python-brace-format
 msgid ""
 "{count} emails have been saved to the outbox – you can make individual "
@@ -7271,7 +7265,7 @@ msgstr ""
 "れません。"
 
 #: pretalx/orga/views/organiser.py:225 pretalx/orga/views/review.py:650
-#: pretalx/orga/views/schedule.py:536
+#: pretalx/orga/views/schedule.py:598
 msgid "Saved!"
 msgstr "保存しました！"
 
@@ -7315,16 +7309,16 @@ msgstr "{count} 個のメールアドレスが生成され、送信箱に置か�
 msgid "The reviewers were assigned successfully"
 msgstr ""
 
-#: pretalx/orga/views/review.py:685 pretalx/orga/views/schedule.py:111
+#: pretalx/orga/views/review.py:685 pretalx/orga/views/schedule.py:112
 #: pretalx/orga/views/speaker.py:359
 msgid "No data to be exported"
 msgstr ""
 
-#: pretalx/orga/views/schedule.py:124
+#: pretalx/orga/views/schedule.py:125
 msgid "A new export is being generated and will be available soon."
 msgstr "新しいエクスポートは生成中です、少々お待ちください。"
 
-#: pretalx/orga/views/schedule.py:131
+#: pretalx/orga/views/schedule.py:132
 msgid ""
 "A new export will be generated on the next scheduled opportunity – please "
 "contact your administrator for details."
@@ -7332,58 +7326,58 @@ msgstr ""
 "次のスケジュールされた日時に新しいエクスポートが生成されます - 詳細は管理者に"
 "問い合わせください。"
 
-#: pretalx/orga/views/schedule.py:149
+#: pretalx/orga/views/schedule.py:150
 #, python-brace-format
 msgid ""
 "Could not find the current export, please try to regenerate it. ({error})"
 msgstr "現在のエクスポートがありません、再生成してください。({error})"
 
-#: pretalx/orga/views/schedule.py:188
+#: pretalx/orga/views/schedule.py:189
 msgid "You have to provide a new, unique schedule version!"
 msgstr "新しい、ユニークなスケジュールバージョンを提供しなければなりません！"
 
-#: pretalx/orga/views/schedule.py:199
+#: pretalx/orga/views/schedule.py:200
 msgid "Nice, your schedule has been released!"
 msgstr "やりました、あなたのスケジュールがリリースされました！"
 
-#: pretalx/orga/views/schedule.py:215
+#: pretalx/orga/views/schedule.py:216
 msgid ""
 "Reset successful – start editing the schedule from your selected version!"
 msgstr ""
 "リセットに成功しました - 選択したバージョンからスケジュールの編集を開始しま"
 "す！"
 
-#: pretalx/orga/views/schedule.py:220
+#: pretalx/orga/views/schedule.py:221
 msgid "Error retrieving the schedule version to reset to."
 msgstr ""
 "リセットするスケジュールのバージョンを取得する際にエラーが発生しました。"
 
-#: pretalx/orga/views/schedule.py:256
+#: pretalx/orga/views/schedule.py:257
 msgid "You can only regenerate mails after the first schedule was released."
 msgstr "メールの再生成は最初のスケジュールがリリースされてからのみ可能です。"
 
-#: pretalx/orga/views/schedule.py:445
+#: pretalx/orga/views/schedule.py:528
 msgid "The session has been scheduled."
 msgstr "講演がスケジューリングされました。"
 
-#: pretalx/orga/views/schedule.py:490
+#: pretalx/orga/views/schedule.py:552
 msgid "Room deleted. Hopefully nobody was still in there …"
 msgstr "部屋を削除しました。部屋に誰もいなかったことを祈ります…"
 
-#: pretalx/orga/views/schedule.py:496
+#: pretalx/orga/views/schedule.py:558
 msgid "There is or was a session scheduled in this room. It cannot be deleted."
 msgstr ""
 "この部屋に割り当てられた講演があります（ました）。削除することはできません。"
 
-#: pretalx/orga/views/schedule.py:552
+#: pretalx/orga/views/schedule.py:614
 msgid "The selected room does not exist."
 msgstr "選択した部屋が存在しません。"
 
-#: pretalx/orga/views/schedule.py:554
+#: pretalx/orga/views/schedule.py:616
 msgid "Sorry, you are not allowed to reorder rooms."
 msgstr "すみません、部屋の並び替えはできません。"
 
-#: pretalx/orga/views/schedule.py:568
+#: pretalx/orga/views/schedule.py:630
 msgid "The order of rooms has been updated."
 msgstr "部屋の並びが更新されました。"
 
@@ -7786,23 +7780,25 @@ msgid "This text will be shown in the public changelog and the RSS feed."
 msgstr "このテキストは公開の変更ログとRSSフィードで表示されます。"
 
 #: pretalx/schedule/models/schedule.py:371
-msgid "The room is not available at the scheduled time."
+#, fuzzy, python-brace-format
+#| msgid "The room is not available at the scheduled time."
+msgid "Room {room_name} is not available at the scheduled time."
 msgstr "予定された時間は部屋が使えません。"
 
 #: pretalx/schedule/models/schedule.py:392
-#, fuzzy
-#| msgid ""
-#| "There is or was a session scheduled in this room. It cannot be deleted."
-msgid "There's an overlapping session scheduled in this room."
+msgid "Another session in the same room overlaps with this one."
 msgstr ""
-"この部屋に割り当てられた講演があります（ました）。削除することはできません。"
 
 #: pretalx/schedule/models/schedule.py:424
-msgid "A speaker is not available at the scheduled time."
+#, fuzzy, python-brace-format
+#| msgid "A speaker is not available at the scheduled time."
+msgid "{speaker} is not available at the scheduled time."
 msgstr "予定された時間は発表者の都合がつかない時間児です。"
 
 #: pretalx/schedule/models/schedule.py:449
-msgid "A speaker is holding another session at the scheduled time."
+#, fuzzy, python-brace-format
+#| msgid "A speaker is holding another session at the scheduled time."
+msgid "{speaker} is scheduled for another session at the same time."
 msgstr "予定された時間に発表者が別の講演を行っています。"
 
 #: pretalx/schedule/templates/schedule/speaker_notification.txt:1
@@ -8476,6 +8472,24 @@ msgstr ""
 
 msgid "minutes"
 msgstr ""
+
+msgid "Hidden rooms"
+msgstr ""
+
+#~ msgid ""
+#~ "You're currently viewing a released schedule version. Released versions "
+#~ "cannot be edited directly."
+#~ msgstr ""
+#~ "現在表示されているのは、リリースされているバージョンのスケジュールです。リ"
+#~ "リースされているバージョンを直接表示することはできません。"
+
+#, fuzzy
+#~| msgid ""
+#~| "There is or was a session scheduled in this room. It cannot be deleted."
+#~ msgid "There's an overlapping session scheduled in this room."
+#~ msgstr ""
+#~ "この部屋に割り当てられた講演があります（ました）。削除することはできませ"
+#~ "ん。"
 
 #, fuzzy
 #~| msgid "Your avatar"

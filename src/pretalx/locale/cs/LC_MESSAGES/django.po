@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-02 20:44+0000\n"
+"POT-Creation-Date: 2023-08-04 20:21+0000\n"
 "PO-Revision-Date: 2023-07-24 19:11+0000\n"
 "Last-Translator: Jozef Mlich <jmlich83@gmail.com>\n"
 "Language-Team: none\n"
@@ -1236,10 +1236,12 @@ msgid "You cannot accept this invitation."
 msgstr "Tuto pozvánku nelze přijmout."
 
 #: pretalx/common/context_processors.py:42
+#: pretalx/schedule/models/schedule.py:372
 msgid "“"
 msgstr "„"
 
 #: pretalx/common/context_processors.py:43
+#: pretalx/schedule/models/schedule.py:372
 msgid "”"
 msgstr "“"
 
@@ -5341,7 +5343,7 @@ msgstr "Importovat"
 
 #: pretalx/orga/templates/orga/review/assignment.html:17
 #: pretalx/orga/templates/orga/review/dashboard.html:122
-#: pretalx/orga/templates/orga/schedule/index.html:49
+#: pretalx/orga/templates/orga/schedule/index.html:35
 msgid "Actions"
 msgstr "Akce"
 
@@ -5707,43 +5709,35 @@ msgstr ""
 msgid "Upload"
 msgstr "Nahrát"
 
-#: pretalx/orga/templates/orga/schedule/index.html:25
-msgid ""
-"You're currently viewing a released schedule version. Released versions "
-"cannot be edited directly."
-msgstr ""
-"Prohlížíte se zveřejněnou verzi programu. Zveřejněné verze nelze přímo "
-"upravovat."
-
-#: pretalx/orga/templates/orga/schedule/index.html:40
+#: pretalx/orga/templates/orga/schedule/index.html:26
 msgid "New release"
 msgstr "Zveřejnit nový"
 
-#: pretalx/orga/templates/orga/schedule/index.html:44
+#: pretalx/orga/templates/orga/schedule/index.html:30
 msgid "Override WIP schedule with this version"
 msgstr "Přepsat rozpracovaný program touto verzí"
 
-#: pretalx/orga/templates/orga/schedule/index.html:54
+#: pretalx/orga/templates/orga/schedule/index.html:40
 msgid "View in frontend"
 msgstr "Zobrazit"
 
-#: pretalx/orga/templates/orga/schedule/index.html:58
+#: pretalx/orga/templates/orga/schedule/index.html:44
 msgid "Hide schedule"
 msgstr "Skrýt program"
 
-#: pretalx/orga/templates/orga/schedule/index.html:62
+#: pretalx/orga/templates/orga/schedule/index.html:48
 msgid "Make schedule public"
 msgstr "Zveřejnit program"
 
-#: pretalx/orga/templates/orga/schedule/index.html:66
+#: pretalx/orga/templates/orga/schedule/index.html:52
 msgid "Print cards"
 msgstr "Tisk karet"
 
-#: pretalx/orga/templates/orga/schedule/index.html:69
+#: pretalx/orga/templates/orga/schedule/index.html:55
 msgid "Resend speaker notifications"
 msgstr "Znovu poslat oznámení přednášejícím"
 
-#: pretalx/orga/templates/orga/schedule/index.html:78
+#: pretalx/orga/templates/orga/schedule/index.html:64
 msgid ""
 "You can start planning your schedule once you have configured some rooms for "
 "sessions to take place in."
@@ -5751,7 +5745,7 @@ msgstr ""
 "Program můžete začít plánovat po nastavení místností, ve kterých se budou "
 "přednášky konat."
 
-#: pretalx/orga/templates/orga/schedule/index.html:79
+#: pretalx/orga/templates/orga/schedule/index.html:65
 msgid "Configure rooms"
 msgstr "Nastavit místnosti"
 
@@ -6952,7 +6946,7 @@ msgstr "Tato hodnota bude nahrazena podle dynamických parametrů."
 msgid "Subject: {subject}"
 msgstr "Předmět: {subject}"
 
-#: pretalx/orga/views/mails.py:380 pretalx/orga/views/schedule.py:249
+#: pretalx/orga/views/mails.py:380 pretalx/orga/views/schedule.py:250
 #, python-brace-format
 msgid ""
 "{count} emails have been saved to the outbox – you can make individual "
@@ -7017,7 +7011,7 @@ msgstr ""
 "E-mail o obnovení hesla nemohl být odeslán, proto heslo nebylo obnoveno."
 
 #: pretalx/orga/views/organiser.py:225 pretalx/orga/views/review.py:650
-#: pretalx/orga/views/schedule.py:536
+#: pretalx/orga/views/schedule.py:598
 msgid "Saved!"
 msgstr "Uloženo"
 
@@ -7061,16 +7055,16 @@ msgstr "{count} bylo znovu vygenerováno a zařazeno k odeslání."
 msgid "The reviewers were assigned successfully"
 msgstr "Přihlášky byly úspěšně přiřazeny ke kontrole"
 
-#: pretalx/orga/views/review.py:685 pretalx/orga/views/schedule.py:111
+#: pretalx/orga/views/review.py:685 pretalx/orga/views/schedule.py:112
 #: pretalx/orga/views/speaker.py:359
 msgid "No data to be exported"
 msgstr "Žádná data k exportování"
 
-#: pretalx/orga/views/schedule.py:124
+#: pretalx/orga/views/schedule.py:125
 msgid "A new export is being generated and will be available soon."
 msgstr "Nový export je právě generován a bude brzy dostupný."
 
-#: pretalx/orga/views/schedule.py:131
+#: pretalx/orga/views/schedule.py:132
 msgid ""
 "A new export will be generated on the next scheduled opportunity – please "
 "contact your administrator for details."
@@ -7078,56 +7072,56 @@ msgstr ""
 "Nový export bude vygenerován při nejbližší příležitosti – podrobnosti vám "
 "sdělí váš správce."
 
-#: pretalx/orga/views/schedule.py:149
+#: pretalx/orga/views/schedule.py:150
 #, python-brace-format
 msgid ""
 "Could not find the current export, please try to regenerate it. ({error})"
 msgstr "Stávající export nelze najít, zkuste ho vygenerovat znovu. ({error})"
 
-#: pretalx/orga/views/schedule.py:188
+#: pretalx/orga/views/schedule.py:189
 msgid "You have to provide a new, unique schedule version!"
 msgstr "Musíte vybrat novou a jedinečnou verzi programu!"
 
-#: pretalx/orga/views/schedule.py:199
+#: pretalx/orga/views/schedule.py:200
 msgid "Nice, your schedule has been released!"
 msgstr "Váš program byl zveřejněn!"
 
-#: pretalx/orga/views/schedule.py:215
+#: pretalx/orga/views/schedule.py:216
 msgid ""
 "Reset successful – start editing the schedule from your selected version!"
 msgstr ""
 "Obnovení bylo úspěšné – program začněte upravovat o vámi zvolené verze!"
 
-#: pretalx/orga/views/schedule.py:220
+#: pretalx/orga/views/schedule.py:221
 msgid "Error retrieving the schedule version to reset to."
 msgstr "Nepodařilo se získat verzi programu pro obnovení."
 
-#: pretalx/orga/views/schedule.py:256
+#: pretalx/orga/views/schedule.py:257
 msgid "You can only regenerate mails after the first schedule was released."
 msgstr "E-maily můžete znovu vygenerovat pro zveřejnění prvního programu."
 
-#: pretalx/orga/views/schedule.py:445
+#: pretalx/orga/views/schedule.py:528
 msgid "The session has been scheduled."
 msgstr "Přihláška byla naplánována."
 
-#: pretalx/orga/views/schedule.py:490
+#: pretalx/orga/views/schedule.py:552
 msgid "Room deleted. Hopefully nobody was still in there …"
 msgstr "Místnost smazána. Snad v ní nikdo nebyl …"
 
-#: pretalx/orga/views/schedule.py:496
+#: pretalx/orga/views/schedule.py:558
 msgid "There is or was a session scheduled in this room. It cannot be deleted."
 msgstr ""
 "V této místnosti je nebo byla naplánovaná přednáška. Místnost nelze smazat."
 
-#: pretalx/orga/views/schedule.py:552
+#: pretalx/orga/views/schedule.py:614
 msgid "The selected room does not exist."
 msgstr "Vybraná místnost neexistuje."
 
-#: pretalx/orga/views/schedule.py:554
+#: pretalx/orga/views/schedule.py:616
 msgid "Sorry, you are not allowed to reorder rooms."
 msgstr "Je nám líto, ale nemůžete měnit pořadí místností."
 
-#: pretalx/orga/views/schedule.py:568
+#: pretalx/orga/views/schedule.py:630
 msgid "The order of rooms has been updated."
 msgstr "Pořadí místností bylo upraveno."
 
@@ -7518,19 +7512,25 @@ msgid "This text will be shown in the public changelog and the RSS feed."
 msgstr "Tento text se zobrazí ve veřejném seznamu změn a v RSS kanálu."
 
 #: pretalx/schedule/models/schedule.py:371
-msgid "The room is not available at the scheduled time."
+#, fuzzy, python-brace-format
+#| msgid "The room is not available at the scheduled time."
+msgid "Room {room_name} is not available at the scheduled time."
 msgstr "Tato místnost není v naplánovaném čase dostupná."
 
 #: pretalx/schedule/models/schedule.py:392
-msgid "There's an overlapping session scheduled in this room."
-msgstr "V této místnosti je naplánovaná jiná překrývající se přednáška."
+msgid "Another session in the same room overlaps with this one."
+msgstr ""
 
 #: pretalx/schedule/models/schedule.py:424
-msgid "A speaker is not available at the scheduled time."
+#, fuzzy, python-brace-format
+#| msgid "A speaker is not available at the scheduled time."
+msgid "{speaker} is not available at the scheduled time."
 msgstr "V naplánovaném čase není přednášející dostupný."
 
 #: pretalx/schedule/models/schedule.py:449
-msgid "A speaker is holding another session at the scheduled time."
+#, fuzzy, python-brace-format
+#| msgid "A speaker is holding another session at the scheduled time."
+msgid "{speaker} is scheduled for another session at the same time."
 msgstr "V naplánovaném čase má přednášející jinou přednášku."
 
 #: pretalx/schedule/templates/schedule/speaker_notification.txt:1
@@ -8177,6 +8177,19 @@ msgstr ""
 
 msgid "minutes"
 msgstr ""
+
+msgid "Hidden rooms"
+msgstr ""
+
+#~ msgid ""
+#~ "You're currently viewing a released schedule version. Released versions "
+#~ "cannot be edited directly."
+#~ msgstr ""
+#~ "Prohlížíte se zveřejněnou verzi programu. Zveřejněné verze nelze přímo "
+#~ "upravovat."
+
+#~ msgid "There's an overlapping session scheduled in this room."
+#~ msgstr "V této místnosti je naplánovaná jiná překrývající se přednáška."
 
 #~ msgid "Use Gravatar"
 #~ msgstr "Použít Gravatar"

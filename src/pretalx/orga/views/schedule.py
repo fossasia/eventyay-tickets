@@ -23,7 +23,6 @@ from i18nfield.utils import I18nJSONEncoder
 
 from pretalx.agenda.management.commands.export_schedule_html import get_export_zip_path
 from pretalx.agenda.tasks import export_schedule_html
-from pretalx.api.serializers.room import AvailabilitySerializer
 from pretalx.common.mixins.views import (
     ActionFromUrl,
     EventPermissionRequired,
@@ -390,6 +389,8 @@ class ScheduleAvailabilities(EventPermissionRequired, View):
         )
 
     def _get_room_availabilities(self):
+        # Serializing by hand because it's faster and we don't need
+        # IDs or allDay
         return {
             room.pk: [
                 {
@@ -404,6 +405,8 @@ class ScheduleAvailabilities(EventPermissionRequired, View):
         }
 
     def _get_speaker_availabilities(self):
+        # Serializing by hand because it's faster and we don't need
+        # IDs or allDay
         speaker_avails = collections.defaultdict(list)
         for avail in self.request.event.availabilities.filter(
             person__isnull=False

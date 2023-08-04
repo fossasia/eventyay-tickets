@@ -41,6 +41,8 @@ TEMPLATES[0]["OPTIONS"]["loaders"] = (  # NOQA
 )
 
 DEBUG = False
+VITE_DEV_MODE = True
+_VITE_IGNORE = False
 DEBUG_PROPAGATE_EXCEPTIONS = True
 
 PASSWORD_HASHERS = ["django.contrib.auth.hashers.MD5PasswordHasher"]

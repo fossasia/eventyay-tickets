@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-02 20:44+0000\n"
+"POT-Creation-Date: 2023-08-04 20:21+0000\n"
 "PO-Revision-Date: 2023-05-13 03:03+0000\n"
 "Last-Translator: Vangelis Zacharioudakis <sugarvag@gmail.com>\n"
 "Language-Team: none\n"
@@ -1279,10 +1279,12 @@ msgid "You cannot accept this invitation."
 msgstr "Δεν μπορείτε να αλλάξετε τη γυμνοσάλιαγκα αργότερα!"
 
 #: pretalx/common/context_processors.py:42
+#: pretalx/schedule/models/schedule.py:372
 msgid "“"
 msgstr "\""
 
 #: pretalx/common/context_processors.py:43
+#: pretalx/schedule/models/schedule.py:372
 msgid "”"
 msgstr "”"
 
@@ -5530,7 +5532,7 @@ msgstr "Εισαγωγή"
 
 #: pretalx/orga/templates/orga/review/assignment.html:17
 #: pretalx/orga/templates/orga/review/dashboard.html:122
-#: pretalx/orga/templates/orga/schedule/index.html:49
+#: pretalx/orga/templates/orga/schedule/index.html:35
 msgid "Actions"
 msgstr "Ενέργειες"
 
@@ -5905,43 +5907,35 @@ msgstr ""
 msgid "Upload"
 msgstr "Μεταφόρτωση"
 
-#: pretalx/orga/templates/orga/schedule/index.html:25
-msgid ""
-"You're currently viewing a released schedule version. Released versions "
-"cannot be edited directly."
-msgstr ""
-"Προς το παρόν βλέπετε μια δημοσιευμένη έκδοση του προγράμματος. Δε μπορείτε "
-"να επεξεργαστείτε άμεσα τις δημοσιευμένες εκδόσεις."
-
-#: pretalx/orga/templates/orga/schedule/index.html:40
+#: pretalx/orga/templates/orga/schedule/index.html:26
 msgid "New release"
 msgstr "Νέα έκδοση"
 
-#: pretalx/orga/templates/orga/schedule/index.html:44
+#: pretalx/orga/templates/orga/schedule/index.html:30
 msgid "Override WIP schedule with this version"
 msgstr "Αντικαταστήστε το πρόγραμμα WIP με αυτήν την έκδοση"
 
-#: pretalx/orga/templates/orga/schedule/index.html:54
+#: pretalx/orga/templates/orga/schedule/index.html:40
 msgid "View in frontend"
 msgstr "Προβολή frontend"
 
-#: pretalx/orga/templates/orga/schedule/index.html:58
+#: pretalx/orga/templates/orga/schedule/index.html:44
 msgid "Hide schedule"
 msgstr "Κρύψτε το πρόγραμμα"
 
-#: pretalx/orga/templates/orga/schedule/index.html:62
+#: pretalx/orga/templates/orga/schedule/index.html:48
 msgid "Make schedule public"
 msgstr "Κάντε το πρόγραμμα δημόσιο"
 
-#: pretalx/orga/templates/orga/schedule/index.html:66
+#: pretalx/orga/templates/orga/schedule/index.html:52
 msgid "Print cards"
 msgstr "Εκτύπωση καρτελών"
 
-#: pretalx/orga/templates/orga/schedule/index.html:69
+#: pretalx/orga/templates/orga/schedule/index.html:55
 msgid "Resend speaker notifications"
 msgstr "Επανάληψη αποστολής ειδοποιήσεων ηχείων"
 
-#: pretalx/orga/templates/orga/schedule/index.html:78
+#: pretalx/orga/templates/orga/schedule/index.html:64
 msgid ""
 "You can start planning your schedule once you have configured some rooms for "
 "sessions to take place in."
@@ -5949,7 +5943,7 @@ msgstr ""
 "Μπορείτε να ξεκινήσετε να σχεδιάζετε το πρόγραμμά σας αφού διαμορφώσετε "
 "ορισμένες αίθουσες για να πραγματοποιούνται οι συνεδρίες."
 
-#: pretalx/orga/templates/orga/schedule/index.html:79
+#: pretalx/orga/templates/orga/schedule/index.html:65
 msgid "Configure rooms"
 msgstr "Διαρρύθμιση"
 
@@ -7197,7 +7191,7 @@ msgstr "Αυτή η τιμή θα αντικατασταθεί με βάση δ�
 msgid "Subject: {subject}"
 msgstr "Θέμα: {subject}"
 
-#: pretalx/orga/views/mails.py:380 pretalx/orga/views/schedule.py:249
+#: pretalx/orga/views/mails.py:380 pretalx/orga/views/schedule.py:250
 #, python-brace-format
 msgid ""
 "{count} emails have been saved to the outbox – you can make individual "
@@ -7263,7 +7257,7 @@ msgstr ""
 "δεν έγινε επαναφορά του κωδικού πρόσβασης."
 
 #: pretalx/orga/views/organiser.py:225 pretalx/orga/views/review.py:650
-#: pretalx/orga/views/schedule.py:536
+#: pretalx/orga/views/schedule.py:598
 msgid "Saved!"
 msgstr "Αποθηκεύτηκε!"
 
@@ -7312,16 +7306,16 @@ msgstr ""
 msgid "The reviewers were assigned successfully"
 msgstr "Οι αναθεωρητές ανατέθηκαν με επιτυχία"
 
-#: pretalx/orga/views/review.py:685 pretalx/orga/views/schedule.py:111
+#: pretalx/orga/views/review.py:685 pretalx/orga/views/schedule.py:112
 #: pretalx/orga/views/speaker.py:359
 msgid "No data to be exported"
 msgstr "Δεν υπάρχουν δεδομένα προς εξαγωγή"
 
-#: pretalx/orga/views/schedule.py:124
+#: pretalx/orga/views/schedule.py:125
 msgid "A new export is being generated and will be available soon."
 msgstr "Μια νέα εξαγωγή δημιουργείται και θα είναι σύντομα διαθέσιμη."
 
-#: pretalx/orga/views/schedule.py:131
+#: pretalx/orga/views/schedule.py:132
 msgid ""
 "A new export will be generated on the next scheduled opportunity – please "
 "contact your administrator for details."
@@ -7329,7 +7323,7 @@ msgstr ""
 "Μια νέα εξαγωγή θα δημιουργηθεί στην επόμενη προγραμματισμένη ευκαιρία – "
 "επικοινωνήστε με τον διαχειριστή σας για λεπτομέρειες."
 
-#: pretalx/orga/views/schedule.py:149
+#: pretalx/orga/views/schedule.py:150
 #, fuzzy, python-brace-format
 #| msgid ""
 #| "Could not find the current export, please try to regenerate it. ({error})"
@@ -7339,54 +7333,54 @@ msgstr ""
 "Δεν ήταν δυνατή η εύρεση της τρέχουσας εξαγωγής, δοκιμάστε να την "
 "αναδημιουργήσετε. ({λάθος})"
 
-#: pretalx/orga/views/schedule.py:188
+#: pretalx/orga/views/schedule.py:189
 msgid "You have to provide a new, unique schedule version!"
 msgstr "Πρέπει να παρέχετε μια νέα, μοναδική έκδοση προγράμματος!"
 
-#: pretalx/orga/views/schedule.py:199
+#: pretalx/orga/views/schedule.py:200
 msgid "Nice, your schedule has been released!"
 msgstr "Ωραία, το πρόγραμμα έχει εκδοθεί!"
 
-#: pretalx/orga/views/schedule.py:215
+#: pretalx/orga/views/schedule.py:216
 msgid ""
 "Reset successful – start editing the schedule from your selected version!"
 msgstr ""
 "Επιτυχής επαναφορά - ξεκινήστε την επεξεργασία του προγράμματος από την "
 "επιλεγμένη έκδοση!"
 
-#: pretalx/orga/views/schedule.py:220
+#: pretalx/orga/views/schedule.py:221
 msgid "Error retrieving the schedule version to reset to."
 msgstr "Πρόβλημα κατά την ανάκτηση του προγράμματος επαναφοράς."
 
-#: pretalx/orga/views/schedule.py:256
+#: pretalx/orga/views/schedule.py:257
 msgid "You can only regenerate mails after the first schedule was released."
 msgstr ""
 "Μπορείτε να αναδημιουργήσετε μηνύματα αλληλογραφίας μόνο μετά την κυκλοφορία "
 "του πρώτου προγράμματος."
 
-#: pretalx/orga/views/schedule.py:445
+#: pretalx/orga/views/schedule.py:528
 msgid "The session has been scheduled."
 msgstr "Η συνεδρίαση έχει προγραμματιστεί."
 
-#: pretalx/orga/views/schedule.py:490
+#: pretalx/orga/views/schedule.py:552
 msgid "Room deleted. Hopefully nobody was still in there …"
 msgstr "Η αίθουσα διαγράφηκε. Ευχόμαστε να μην είχε μείνει κανείς εκεί …"
 
-#: pretalx/orga/views/schedule.py:496
+#: pretalx/orga/views/schedule.py:558
 msgid "There is or was a session scheduled in this room. It cannot be deleted."
 msgstr ""
 "Υπάρχει ή ήταν προγραμματισμένη μια συνεδρία σε αυτήν την αίθουσα. Δεν "
 "μπορεί να διαγραφεί."
 
-#: pretalx/orga/views/schedule.py:552
+#: pretalx/orga/views/schedule.py:614
 msgid "The selected room does not exist."
 msgstr "Το επιλεγμένο δωμάτιο δεν υπάρχει."
 
-#: pretalx/orga/views/schedule.py:554
+#: pretalx/orga/views/schedule.py:616
 msgid "Sorry, you are not allowed to reorder rooms."
 msgstr "Λυπούμαστε, δεν επιτρέπεται να παραγγείλετε ξανά δωμάτια."
 
-#: pretalx/orga/views/schedule.py:568
+#: pretalx/orga/views/schedule.py:630
 msgid "The order of rooms has been updated."
 msgstr "Η σειρά των δωματίων έχει ενημερωθεί."
 
@@ -7794,19 +7788,25 @@ msgstr ""
 "ροή RSS."
 
 #: pretalx/schedule/models/schedule.py:371
-msgid "The room is not available at the scheduled time."
+#, fuzzy, python-brace-format
+#| msgid "The room is not available at the scheduled time."
+msgid "Room {room_name} is not available at the scheduled time."
 msgstr "Το δωμάτιο δεν είναι διαθέσιμο την προγραμματισμένη ώρα."
 
 #: pretalx/schedule/models/schedule.py:392
-msgid "There's an overlapping session scheduled in this room."
-msgstr "Έχει προγραμματιστεί μια επικαλυπτόμενη συνεδρία σε αυτό το δωμάτιο."
+msgid "Another session in the same room overlaps with this one."
+msgstr ""
 
 #: pretalx/schedule/models/schedule.py:424
-msgid "A speaker is not available at the scheduled time."
+#, fuzzy, python-brace-format
+#| msgid "A speaker is not available at the scheduled time."
+msgid "{speaker} is not available at the scheduled time."
 msgstr "Ένα ηχείο δεν είναι διαθέσιμο την προγραμματισμένη ώρα."
 
 #: pretalx/schedule/models/schedule.py:449
-msgid "A speaker is holding another session at the scheduled time."
+#, fuzzy, python-brace-format
+#| msgid "A speaker is holding another session at the scheduled time."
+msgid "{speaker} is scheduled for another session at the same time."
 msgstr ""
 "Ένας ομιλητής πραγματοποιεί μια άλλη συνεδρία την προγραμματισμένη ώρα."
 
@@ -8478,6 +8478,20 @@ msgstr ""
 
 msgid "minutes"
 msgstr ""
+
+msgid "Hidden rooms"
+msgstr ""
+
+#~ msgid ""
+#~ "You're currently viewing a released schedule version. Released versions "
+#~ "cannot be edited directly."
+#~ msgstr ""
+#~ "Προς το παρόν βλέπετε μια δημοσιευμένη έκδοση του προγράμματος. Δε "
+#~ "μπορείτε να επεξεργαστείτε άμεσα τις δημοσιευμένες εκδόσεις."
+
+#~ msgid "There's an overlapping session scheduled in this room."
+#~ msgstr ""
+#~ "Έχει προγραμματιστεί μια επικαλυπτόμενη συνεδρία σε αυτό το δωμάτιο."
 
 #~ msgid "Use Gravatar"
 #~ msgstr "Χρησιμοποιήστε το Gravatar"

@@ -322,4 +322,4 @@ If you want to read about updates, backups, and monitoring, head over to our
 .. _strong encryption settings: https://mozilla.github.io/server-side-tls/ssl-config-generator/
 .. _docker-compose setup: https://github.com/pretalx/pretalx-docker
 .. _pretalx.com: https://pretalx.com
-.. _nodejs: https://github.com/nodesource/distributions/blob/master/README.md#deb
+.. _nodejs: https://github.com/nodesource/distributions/blob/master/README.md

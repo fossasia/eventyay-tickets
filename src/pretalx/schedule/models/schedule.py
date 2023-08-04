@@ -367,9 +367,13 @@ class Schedule(LogMixin, models.Model):
                 warnings.append(
                     {
                         "type": "room",
-                        "message": str(_(
-                            "Room {room_name} is not available at the scheduled time."
-                        )).format(room_name=str(_("“")) + str(talk.room.name) + str(_("”"))),
+                        "message": str(
+                            _(
+                                "Room {room_name} is not available at the scheduled time."
+                            )
+                        ).format(
+                            room_name=str(_("“")) + str(talk.room.name) + str(_("”"))
+                        ),
                         "url": url,
                     }
                 )
@@ -420,9 +424,9 @@ class Schedule(LogMixin, models.Model):
                                 "name": speaker.get_display_name(),
                                 "code": speaker.code,
                             },
-                            "message": str(_(
-                                "{speaker} is not available at the scheduled time."
-                            )).format(speaker=speaker.get_display_name()),
+                            "message": str(
+                                _("{speaker} is not available at the scheduled time.")
+                            ).format(speaker=speaker.get_display_name()),
                             "url": url,
                         }
                     )
@@ -445,9 +449,11 @@ class Schedule(LogMixin, models.Model):
                             "name": speaker.get_display_name(),
                             "id": speaker.pk,
                         },
-                        "message": str(_(
-                            "{speaker} is scheduled for another session at the same time."
-                        )).format(speaker=speaker.get_display_name()),
+                        "message": str(
+                            _(
+                                "{speaker} is scheduled for another session at the same time."
+                            )
+                        ).format(speaker=speaker.get_display_name()),
                         "url": url,
                     }
                 )

@@ -14,8 +14,12 @@ class Command(Parent):
         if settings.VITE_DEV_MODE:
             # Start the vite server in the background
             from subprocess import Popen
+
             # run "npm start" in the frontend directory
-            frontend_dir = Path(__file__).parent.parent.parent.parent.parent / "frontend/schedule-editor"
+            frontend_dir = (
+                Path(__file__).parent.parent.parent.parent.parent
+                / "frontend/schedule-editor"
+            )
             vite_server = Popen(["npm", "start"], cwd=frontend_dir)
 
         try:

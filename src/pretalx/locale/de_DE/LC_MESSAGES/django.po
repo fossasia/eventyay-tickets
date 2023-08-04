@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-02 20:44+0000\n"
+"POT-Creation-Date: 2023-08-04 20:44+0000\n"
 "PO-Revision-Date: 2023-01-23 16:02+0000\n"
 "Last-Translator: Michael Lutonsky <m@luto.at>\n"
 "Language-Team: \n"
@@ -1268,10 +1268,12 @@ msgstr ""
 "schon angeboten."
 
 #: pretalx/common/context_processors.py:42
+#: pretalx/schedule/models/schedule.py:375
 msgid "“"
 msgstr "„"
 
 #: pretalx/common/context_processors.py:43
+#: pretalx/schedule/models/schedule.py:375
 msgid "”"
 msgstr "“"
 
@@ -5463,7 +5465,7 @@ msgstr "Import"
 
 #: pretalx/orga/templates/orga/review/assignment.html:17
 #: pretalx/orga/templates/orga/review/dashboard.html:122
-#: pretalx/orga/templates/orga/schedule/index.html:49
+#: pretalx/orga/templates/orga/schedule/index.html:35
 msgid "Actions"
 msgstr "Aktionen"
 
@@ -5833,50 +5835,42 @@ msgstr ""
 msgid "Upload"
 msgstr "Upload"
 
-#: pretalx/orga/templates/orga/schedule/index.html:25
-msgid ""
-"You're currently viewing a released schedule version. Released versions "
-"cannot be edited directly."
-msgstr ""
-"Das ist eine veröffentlichte Programmversion. Sie kann nicht mehr direkt "
-"editiert werden."
-
-#: pretalx/orga/templates/orga/schedule/index.html:40
+#: pretalx/orga/templates/orga/schedule/index.html:26
 msgid "New release"
 msgstr "Neue Programmversion"
 
-#: pretalx/orga/templates/orga/schedule/index.html:44
+#: pretalx/orga/templates/orga/schedule/index.html:30
 msgid "Override WIP schedule with this version"
 msgstr "Die aktuelle Arbeitsversion durch diese Programmversion übersetzen"
 
-#: pretalx/orga/templates/orga/schedule/index.html:54
+#: pretalx/orga/templates/orga/schedule/index.html:40
 msgid "View in frontend"
 msgstr "Im Frontend ansehen"
 
-#: pretalx/orga/templates/orga/schedule/index.html:58
+#: pretalx/orga/templates/orga/schedule/index.html:44
 msgid "Hide schedule"
 msgstr "Programm verstecken"
 
-#: pretalx/orga/templates/orga/schedule/index.html:62
+#: pretalx/orga/templates/orga/schedule/index.html:48
 msgid "Make schedule public"
 msgstr "Programm veröffentlichen"
 
-#: pretalx/orga/templates/orga/schedule/index.html:66
+#: pretalx/orga/templates/orga/schedule/index.html:52
 msgid "Print cards"
 msgstr "Karten drucken"
 
-#: pretalx/orga/templates/orga/schedule/index.html:69
+#: pretalx/orga/templates/orga/schedule/index.html:55
 msgid "Resend speaker notifications"
 msgstr "Benachrichtigungen an Vortragende erneut verschicken"
 
-#: pretalx/orga/templates/orga/schedule/index.html:78
+#: pretalx/orga/templates/orga/schedule/index.html:64
 msgid ""
 "You can start planning your schedule once you have configured some rooms for "
 "sessions to take place in."
 msgstr ""
 "Du kannst anfangen, das Programm zu erstellen, sobald du Räume erstellt hast."
 
-#: pretalx/orga/templates/orga/schedule/index.html:79
+#: pretalx/orga/templates/orga/schedule/index.html:65
 msgid "Configure rooms"
 msgstr "Räume konfigurieren"
 
@@ -7184,7 +7178,7 @@ msgstr ""
 "Passwort nicht zurückgesetzt."
 
 #: pretalx/orga/views/organiser.py:225 pretalx/orga/views/review.py:650
-#: pretalx/orga/views/schedule.py:536
+#: pretalx/orga/views/schedule.py:601
 msgid "Saved!"
 msgstr "Gespeichert!"
 
@@ -7278,29 +7272,29 @@ msgstr ""
 "E-Mails können erst neu erstellt werden, nachdem die erste Programmversion "
 "fertiggestellt wurde."
 
-#: pretalx/orga/views/schedule.py:445
+#: pretalx/orga/views/schedule.py:531
 msgid "The session has been scheduled."
 msgstr "Der Beitrag wurde ins Programm gesetzt."
 
-#: pretalx/orga/views/schedule.py:490
+#: pretalx/orga/views/schedule.py:555
 msgid "Room deleted. Hopefully nobody was still in there …"
 msgstr "Der Raum wurde gelöscht. Hoffentlich war da niemand mehr drin …"
 
-#: pretalx/orga/views/schedule.py:496
+#: pretalx/orga/views/schedule.py:561
 msgid "There is or was a session scheduled in this room. It cannot be deleted."
 msgstr ""
 "Es findet oder fand ein Talk in diesem Raum statt, deshalb kann er nicht "
 "gelöscht werden."
 
-#: pretalx/orga/views/schedule.py:552
+#: pretalx/orga/views/schedule.py:617
 msgid "The selected room does not exist."
 msgstr "Diesen Raum gibt es nicht."
 
-#: pretalx/orga/views/schedule.py:554
+#: pretalx/orga/views/schedule.py:619
 msgid "Sorry, you are not allowed to reorder rooms."
 msgstr "Du darfst Räume leider nicht verschieben."
 
-#: pretalx/orga/views/schedule.py:568
+#: pretalx/orga/views/schedule.py:633
 msgid "The order of rooms has been updated."
 msgstr "Die Abfolge der Räume wurde gespeichert."
 
@@ -7701,21 +7695,26 @@ msgstr ""
 "So wird die neue Programmversion im öffentlichen Changelog und im RSS-Feed "
 "erscheinen."
 
-#: pretalx/schedule/models/schedule.py:371
-msgid "The room is not available at the scheduled time."
+#: pretalx/schedule/models/schedule.py:372
+#, fuzzy, python-brace-format
+#| msgid "The room is not available at the scheduled time."
+msgid "Room {room_name} is not available at the scheduled time."
 msgstr "Der Raum steht zur gewählten Zeit nicht zur Verfügung."
 
-#: pretalx/schedule/models/schedule.py:392
-msgid "There's an overlapping session scheduled in this room."
+#: pretalx/schedule/models/schedule.py:396
+msgid "Another session in the same room overlaps with this one."
 msgstr ""
-"Es findet gleichzeitig schon ein anderer Programmpunkt in diesem Raum statt."
 
-#: pretalx/schedule/models/schedule.py:424
-msgid "A speaker is not available at the scheduled time."
+#: pretalx/schedule/models/schedule.py:428
+#, fuzzy, python-brace-format
+#| msgid "A speaker is not available at the scheduled time."
+msgid "{speaker} is not available at the scheduled time."
 msgstr "Ein Vortragender steht zum gewählten Zeitpunkt nicht zur Verfügung."
 
-#: pretalx/schedule/models/schedule.py:449
-msgid "A speaker is holding another session at the scheduled time."
+#: pretalx/schedule/models/schedule.py:454
+#, fuzzy, python-brace-format
+#| msgid "A speaker is holding another session at the scheduled time."
+msgid "{speaker} is scheduled for another session at the same time."
 msgstr "Ein Vortragender hält zu diesem Zeitpunkt schon einen anderen Vortrag."
 
 #: pretalx/schedule/templates/schedule/speaker_notification.txt:1
@@ -8387,6 +8386,21 @@ msgstr ""
 
 msgid "minutes"
 msgstr ""
+
+msgid "Hidden rooms"
+msgstr ""
+
+#~ msgid ""
+#~ "You're currently viewing a released schedule version. Released versions "
+#~ "cannot be edited directly."
+#~ msgstr ""
+#~ "Das ist eine veröffentlichte Programmversion. Sie kann nicht mehr direkt "
+#~ "editiert werden."
+
+#~ msgid "There's an overlapping session scheduled in this room."
+#~ msgstr ""
+#~ "Es findet gleichzeitig schon ein anderer Programmpunkt in diesem Raum "
+#~ "statt."
 
 #~ msgid "Use Gravatar"
 #~ msgstr "Gravatar einbinden"

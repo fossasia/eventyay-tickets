@@ -44,7 +44,7 @@ class Command(BaseCommand):
             env = os.environ.copy()
             env["OUT_DIR"] = str(settings.STATIC_ROOT)
             env["BASE_URL"] = settings.STATIC_URL
-            subprocess.call(["/usr/bin/npm", "run", "build"], cwd=frontend_dir, env=env)
+            subprocess.call(["npm", "run", "build"], cwd=frontend_dir, env=env)
         call_command("compress", verbosity=silent)
         with suppress(
             Exception
