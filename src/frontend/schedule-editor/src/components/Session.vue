@@ -10,7 +10,10 @@
 		.speakers(v-if="session.speakers") {{ session.speakers.map(s => s.name).join(', ') }}
 		.bottom-info
 			.track(v-if="session.track") {{ getLocalizedString(session.track.name) }}
-
+	.warning(v-if="warnings?.length")
+		.warning-icon.text-danger
+			span(v-if="warnings.length > 1") {{ warnings.length }}
+			i.fa.fa-exclamation-triangle
 </template>
 <script>
 import moment from 'moment-timezone'
@@ -25,6 +28,7 @@ const markdownIt = MarkdownIt({
 export default {
 	props: {
 		session: Object,
+		warnings: Array,
 		isDragged: Boolean,
 		isDragClone: {
 			type: Boolean,
@@ -181,4 +185,14 @@ export default {
 					color: var(--pretalx-clr-primary)
 		// +below('m')
 		//	min-width: 0
+	.warning
+		position: absolute
+		top: 0
+		right: 0
+		padding: 4px 4px
+		margin: 4px
+		color: #b23e65
+		font-size: 16px
+		.warning-icon span
+			padding-right: 4px
 </style>

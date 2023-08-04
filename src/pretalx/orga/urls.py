@@ -733,7 +733,12 @@ urlpatterns = [
                 path(
                     "schedule/api/availabilities/",
                     schedule.ScheduleAvailabilities.as_view(),
-                    name="schedule.api.talks",
+                    name="schedule.api.availabilities",
+                ),
+                path(
+                    "schedule/api/warnings/",
+                    schedule.ScheduleWarnings.as_view(),
+                    name="schedule.api.warnings",
                 ),
             ]
         ),

@@ -60,6 +60,10 @@ const api = {
 		const url = `/orga/event/${api.eventSlug}/schedule/api/availabilities/`
 		return api.http('GET', url, null)
 	},
+	fetchWarnings () {
+		const url = `/orga/event/${api.eventSlug}/schedule/api/warnings/`
+		return api.http('GET', url, null)
+	},
 	fetchRooms () {
 		return api.getList(`/api/events/${api.eventSlug}/rooms`)
 	},

@@ -360,16 +360,16 @@ class Schedule(LogMixin, models.Model):
         if self.use_room_availabilities:
             if room_avails is None:
                 room_avails = talk.room.availabilities.all()
-            if not any(
+            if room_avails and not any(
                 room_availability.contains(availability)
                 for room_availability in Availability.union(room_avails)
             ):
                 warnings.append(
                     {
                         "type": "room",
-                        "message": _(
-                            "The room is not available at the scheduled time."
-                        ),
+                        "message": str(_(
+                            "Room {room_name} is not available at the scheduled time."
+                        )).format(room_name=str(_("“")) + str(talk.room.name) + str(_("”"))),
                         "url": url,
                     }
                 )
@@ -389,7 +389,7 @@ class Schedule(LogMixin, models.Model):
                 {
                     "type": "room_overlap",
                     "message": _(
-                        "There's an overlapping session scheduled in this room."
+                        "Another session in the same room overlaps with this one."
                     ),
                     "url": url,
                 }
@@ -418,11 +418,11 @@ class Schedule(LogMixin, models.Model):
                             "type": "speaker",
                             "speaker": {
                                 "name": speaker.get_display_name(),
-                                "id": speaker.pk,
+                                "code": speaker.code,
                             },
-                            "message": _(
-                                "A speaker is not available at the scheduled time."
-                            ),
+                            "message": str(_(
+                                "{speaker} is not available at the scheduled time."
+                            )).format(speaker=speaker.get_display_name()),
                             "url": url,
                         }
                     )
@@ -445,9 +445,9 @@ class Schedule(LogMixin, models.Model):
                             "name": speaker.get_display_name(),
                             "id": speaker.pk,
                         },
-                        "message": _(
-                            "A speaker is holding another session at the scheduled time."
-                        ),
+                        "message": str(_(
+                            "{speaker} is scheduled for another session at the same time."
+                        )).format(speaker=speaker.get_display_name()),
                         "url": url,
                     }
                 )
@@ -469,7 +469,6 @@ class Schedule(LogMixin, models.Model):
         )
         if filter_updated:
             talks = talks.filter(updated__gte=filter_updated)
-        result = {}
         with_speakers = self.event.cfp.request_availabilities
         room_avails = defaultdict(
             list,
@@ -496,6 +495,7 @@ class Schedule(LogMixin, models.Model):
                     ).prefetch_related("availabilities")
                 },
             )
+        result = {}
         for talk in talks:
             talk_warnings = self.get_talk_warnings(
                 talk=talk,

@@ -12,6 +12,7 @@
 				grid-schedule(:sessions="sessions",
 					:rooms="schedule.rooms",
 					:availabilities="availabilities",
+					:warnings="warnings",
 					:start="days[0]",
 					:end="days.at(-1).clone().endOf('day')",
 					:currentDay="currentDay",
@@ -48,6 +49,15 @@
 							.data-value.number
 								input(v-model="editorSession.duration", type="number", min="1", max="1440", step="1", :required="true")
 								span {{ $t('minutes') }}
+
+						.data-row(v-if="editorSession.code && warnings[editorSession.code]")
+							.data-label
+								i.fa.fa-exclamation-triangle.warning
+								span {{ $t('Warnings') }}
+							.data-value
+								ul(v-if="warnings[editorSession.code].length > 1")
+									li.warning(v-for="warning of warnings[editorSession.code]") {{ warning.message }}
+								span(v-else) {{ warnings[editorSession.code][0].message }}
 					.button-row
 						input(type="submit")
 						bunt-button#btn-delete(v-if="!editorSession.code", @click="editorDelete", :loading="editorSessionWaiting") {{ $t('Delete') }}
@@ -79,6 +89,7 @@ export default {
 			scrollParentWidth: Infinity,
 			schedule: null,
 			availabilities: {rooms: {}, talks: {}},
+			warnings: {},
 			currentDay: null,
 			draggedSession: null,
 			editorSession: null,
@@ -207,14 +218,16 @@ export default {
 			movedSession.start = e.start
 			movedSession.end = e.end
 			movedSession.room = e.room.id
-			api.saveTalk(movedSession)
-			// TODO show the resulting warnings in response.warnings
+			api.saveTalk(movedSession).then(response => {
+				if (response.warnings && movedSession.code) {
+					this.warnings[movedSession.code] = response.warnings
+				}
+			})
 		},
 		createSession (e) {
 			this.schedule.talks.push(e.session)
 			api.createTalk(e.session)
 			this.editorStart(e.session)
-			// TODO show the resulting warnings in response.warnings
 		},
 		editorStart (session) {
 			this.editorSession = session
@@ -280,6 +293,7 @@ export default {
 		},
 		async fetchAdditionalScheduleData() {
 			this.availabilities = await api.fetchAvailabilities()
+			this.warnings = await api.fetchWarnings()
 		},
 		async pollUpdates () {
 			this.schedule = await this.fetchSchedule({since: this.since, warnings: true})
@@ -422,4 +436,9 @@ export default {
 								text-align: right
 								padding-right: 8px
 								margin-right: 8px
+						ul
+							list-style: none
+							padding: 0
+		.warning
+			color: #b23e65
 </style>

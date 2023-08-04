@@ -365,14 +365,28 @@ class TalkList(EventPermissionRequired, View):
         return JsonResponse(serialize_break(slot))
 
 
+class ScheduleWarnings(EventPermissionRequired, View):
+    permission_required = "orga.edit_schedule"
+
+    def get(self, request, event):
+        return JsonResponse(
+            {
+                talk.submission.code: warnings
+                for talk, warnings in self.request.event.wip_schedule.get_all_talk_warnings().items()
+            }
+        )
+
+
 class ScheduleAvailabilities(EventPermissionRequired, View):
     permission_required = "orga.edit_schedule"
 
     def get(self, request, event):
-        return JsonResponse({
-            "talks": self._get_speaker_availabilities(),
-            "rooms": self._get_room_availabilities(),
-        })
+        return JsonResponse(
+            {
+                "talks": self._get_speaker_availabilities(),
+                "rooms": self._get_room_availabilities(),
+            }
+        )
 
     def _get_room_availabilities(self):
         return {
@@ -383,20 +397,25 @@ class ScheduleAvailabilities(EventPermissionRequired, View):
                 }
                 for av in room.availabilities.all()
             ]
-                for room in self.request.event.rooms.all().prefetch_related("availabilities")
+            for room in self.request.event.rooms.all().prefetch_related(
+                "availabilities"
+            )
         }
 
     def _get_speaker_availabilities(self):
         speaker_avails = collections.defaultdict(list)
-        for avail in self.request.event.availabilities.filter(person__isnull=False).select_related("person__user"):
+        for avail in self.request.event.availabilities.filter(
+            person__isnull=False
+        ).select_related("person__user"):
             speaker_avails[avail.person.user.pk].append(avail)
 
         result = {}
 
-        for talk in self.request.event.wip_schedule.talks.filter(
-                submission__isnull=False
-            ).select_related("submission").prefetch_related("submission__speakers"):
-
+        for talk in (
+            self.request.event.wip_schedule.talks.filter(submission__isnull=False)
+            .select_related("submission")
+            .prefetch_related("submission__speakers")
+        ):
             if talk.submission.speakers.count() == 1:
                 result[talk.id] = [
                     {

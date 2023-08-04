@@ -16,6 +16,7 @@
 		template(v-for="session of visibleSessions")
 			session(
 				:session="session",
+				:warnings="session.code ? warnings[session.code] : []",
 				:isDragged="draggedSession && (session.id === draggedSession.id)",
 				:style="getSessionStyle(session)",
 				:showRoom="false",
@@ -45,6 +46,7 @@ export default {
 	props: {
 		sessions: Array,
 		availabilities: Object,
+		warnings: Object,
 		start: Object,
 		end: Object,
 		rooms: Array,
