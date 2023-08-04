@@ -40,7 +40,8 @@
     "stylelint-config-standard": "^26.0.0",
     "stylelint-plugin-stylus": "^0.16.1",
     "stylus": "^0.54.7",
-    "vite": "^4.4.8"
+    "vite": "^4.4.8",
+    "vite-bundle-visualizer": "^0.10.0"
   },
   "bugs": {
     "url": "https://github.com/pretalx/schedule-editor/issues"
