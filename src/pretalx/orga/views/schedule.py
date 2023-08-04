@@ -1,3 +1,4 @@
+import collections
 import datetime as dt
 import json
 from contextlib import suppress
@@ -318,8 +319,9 @@ class TalkList(EventPermissionRequired, View):
 
         filter_updated = request.GET.get("since")
         result = schedule.build_data(
-            all_talks=True, all_rooms=not bool(filter_updated),
-            filter_updated=filter_updated
+            all_talks=True,
+            all_rooms=not bool(filter_updated),
+            filter_updated=filter_updated,
         )
 
         if request.GET.get("warnings"):
@@ -363,6 +365,65 @@ class TalkList(EventPermissionRequired, View):
         return JsonResponse(serialize_break(slot))
 
 
+class ScheduleAvailabilities(EventPermissionRequired, View):
+    permission_required = "orga.edit_schedule"
+
+    def get(self, request, event):
+        return JsonResponse({
+            "talks": self._get_speaker_availabilities(),
+            "rooms": self._get_room_availabilities(),
+        })
+
+    def _get_room_availabilities(self):
+        return {
+            room.pk: [
+                {
+                    "start": av.start.isoformat(),
+                    "end": av.end.isoformat(),
+                }
+                for av in room.availabilities.all()
+            ]
+                for room in self.request.event.rooms.all().prefetch_related("availabilities")
+        }
+
+    def _get_speaker_availabilities(self):
+        speaker_avails = collections.defaultdict(list)
+        for avail in self.request.event.availabilities.filter(person__isnull=False).select_related("person__user"):
+            speaker_avails[avail.person.user.pk].append(avail)
+
+        result = {}
+
+        for talk in self.request.event.wip_schedule.talks.filter(
+                submission__isnull=False
+            ).select_related("submission").prefetch_related("submission__speakers"):
+
+            if talk.submission.speakers.count() == 1:
+                result[talk.id] = [
+                    {
+                        "start": av.start.isoformat(),
+                        "end": av.end.isoformat(),
+                    }
+                    for av in speaker_avails[talk.submission.speakers.first().pk]
+                ]
+            else:
+                all_speaker_avails = [
+                    speaker_avails[speaker.pk]
+                    for speaker in talk.submission.speakers.all()
+                    if speaker_avails[speaker.pk]
+                ]
+                if not all_speaker_avails:
+                    result[talk.id] = []
+                else:
+                    result[talk.id] = [
+                        {
+                            "start": av.start.isoformat(),
+                            "end": av.end.isoformat(),
+                        }
+                        for av in Availability.intersection(*all_speaker_avails)
+                    ]
+        return result
+
+
 class TalkUpdate(PermissionRequired, View):
     permission_required = "orga.schedule_talk"
 
@@ -401,7 +462,9 @@ class TalkUpdate(PermissionRequired, View):
             )
             if not talk.submission:
                 new_description = LazyI18nString(data.get("title", ""))
-                talk.description = new_description if str(new_description) else talk.description
+                talk.description = (
+                    new_description if str(new_description) else talk.description
+                )
             talk.save(update_fields=["start", "end", "room", "description", "updated"])
             talk.refresh_from_db()
         else:
@@ -447,27 +510,6 @@ class QuickScheduleView(PermissionRequired, UpdateView):
 
     def get_success_url(self):
         return self.request.path
-
-
-class RoomTalkAvailabilities(EventPermissionRequired, View):
-    permission_required = "orga.edit_room"
-
-    def get(self, request, event, talkid, roomid):
-        talk = request.event.wip_schedule.talks.filter(pk=talkid).first()
-        room = request.event.rooms.filter(pk=roomid).first()
-        if not (talk and room):
-            return JsonResponse({"results": []})
-        if talk.submission and talk.submission.availabilities:
-            availabilitysets = [
-                room.availabilities.all(),
-                talk.submission.availabilities,
-            ]
-            availabilities = Availability.intersection(*availabilitysets)
-        else:
-            availabilities = room.availabilities.all()
-        return JsonResponse(
-            {"results": AvailabilitySerializer(availabilities, many=True).data}
-        )
 
 
 class RoomList(EventPermissionRequired, TemplateView):

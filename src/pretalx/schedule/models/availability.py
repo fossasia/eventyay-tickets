@@ -143,6 +143,7 @@ class Availability(LogMixin, models.Model):
     def union(cls, availabilities: List["Availability"]) -> List["Availability"]:
         """Return the minimal list of Availability objects which are covered by
         at least one given Availability."""
+        availabilities = list(availabilities)
         if not availabilities:
             return []
 

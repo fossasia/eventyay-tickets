@@ -27,15 +27,22 @@ const api = {
 				return Promise.reject(error)
 			})
 	},
+	getList (url) {
+		// The API returns a paginated list of results, but we want to return a
+		// single list of all results. The results are returned in the `results`
+		// property of the response and the next page URL is in the `next` property.
+		return api.http('GET', url, null).then(response => {
+			if (response.next) {
+				return api.getList(response.next).then(nextPage => {
+					return response.results.concat(nextPage)
+				})
+			}
+			return response.results
+		})
+	},
 	fetchTalks (options) {
 		options = options || {}
-		var url = [
-			// window.location.protocol,
-			// "//",
-			// window.location.host,
-			// window.location.pathname,
-			`/orga/event/${api.eventSlug}/schedule/api/talks/`
-		].join('')
+		let url = `/orga/event/${api.eventSlug}/schedule/api/talks/`
 		if (window.location.search) {
 			url += window.location.search + '&'
 		} else {
@@ -49,16 +56,12 @@ const api = {
 		}
 		return api.http('GET', url, null)
 	},
-	fetchRooms () {
-		const url = [
-			// window.location.protocol,
-			// "//",
-			// window.location.host,
-			// "/api/events/",
-			// eventSlug,
-			`/api/events/${api.eventSlug}/rooms`,
-		].join('')
+	fetchAvailabilities () {
+		const url = `/orga/event/${api.eventSlug}/schedule/api/availabilities/`
 		return api.http('GET', url, null)
+	},
+	fetchRooms () {
+		return api.getList(`/api/events/${api.eventSlug}/rooms`)
 	},
 	saveTalk (talk) {
 		var url = [

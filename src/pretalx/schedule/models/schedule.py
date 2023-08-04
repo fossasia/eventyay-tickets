@@ -629,10 +629,7 @@ class Schedule(LogMixin, models.Model):
 
         return self != self.event.current_schedule
 
-    def build_data(
-        self, all_talks=False, filter_updated=None, with_availabilities=False,
-        all_rooms=False,
-    ):
+    def build_data(self, all_talks=False, filter_updated=None, all_rooms=False):
         talks = self.talks.all()
         if not all_talks:
             talks = self.talks.filter(is_visible=True)
@@ -645,10 +642,6 @@ class Schedule(LogMixin, models.Model):
             "submission__event",
             "submission__submission_type",
         ).prefetch_related("submission__speakers")
-        if with_availabilities:
-            talks = talks.select_related("room__availabilities").prefetch_related(
-                "submission__speakers__availabilities"
-            )
         talks = talks.order_by("start")
         rooms = set() if not all_rooms else set(self.event.rooms.all())
         tracks = set()
@@ -725,27 +718,6 @@ class Schedule(LogMixin, models.Model):
             }
             for user in speakers
         ]
-        if with_availabilities:
-            result["availabilities"] = {
-                "rooms": [
-                    {
-                        "start": availability.start,
-                        "end": availability.end,
-                        "room": availability.room_id,
-                    }
-                    for availability in self.event.availabilities.filter(room__in=rooms)
-                ],
-                "speakers": [
-                    {
-                        "start": availability.start,
-                        "end": availability.end,
-                        "user": availability.person.user.code,
-                    }
-                    for availability in self.event.availabilities.filter(
-                        person__isnull=False
-                    ).select_related("person", "person__user")
-                ],
-            }
         return result
 
     def __str__(self) -> str:

@@ -11,6 +11,7 @@
 					bunt-tab(v-for="day of days", :id="day.format()", :header="day.format(dateFormat)", @selected="changeDay(day)")
 				grid-schedule(:sessions="sessions",
 					:rooms="schedule.rooms",
+					:availabilities="availabilities",
 					:start="days[0]",
 					:end="days.at(-1).clone().endOf('day')",
 					:currentDay="currentDay",
@@ -77,6 +78,7 @@ export default {
 			eventSlug: null,
 			scrollParentWidth: Infinity,
 			schedule: null,
+			availabilities: {rooms: {}, talks: {}},
 			currentDay: null,
 			draggedSession: null,
 			editorSession: null,
@@ -176,6 +178,7 @@ export default {
 		this.eventSlug = window.location.pathname.split("/")[3]
 		this.currentDay = this.days[0]
 		window.setTimeout(this.pollUpdates, 10 * 1000)
+		await this.fetchAdditionalScheduleData()
 		await new Promise((resolve) => {
 			const poll = () => {
 				if (this.$el.parentElement || this.$el.getRootNode().host) return resolve()
@@ -240,11 +243,14 @@ export default {
 		  this.startDragging({event, session: {title: this.newBreakTitle, duration: "30", uncreated: true}})
 		},
 		startDragging ({event, session}) {
-			this.draggedSession = session
+			if (this.availabilities && this.availabilities.talks[session.id] && this.availabilities.talks[session.id].length !== 0) {
+				session.availabilities = this.availabilities.talks[session.id]
+			}
 			// TODO: capture the pointer with setPointerCapture(event)
 			// This allows us to call stopDragging() even when the mouse is released
 			// outside the browser.
 			// https://developer.mozilla.org/en-US/docs/Web/API/Element/setPointerCapture
+			this.draggedSession = session
 		},
 		stopDragging (session) {
 			try {
@@ -270,16 +276,14 @@ export default {
 		},
 		async fetchSchedule(options) {
 		  const schedule = await (api.fetchTalks(options))
-		  const apiRooms = (await api.fetchRooms()).results.reduce((acc, room) => {
-			  acc[room.id] = room
-			  return acc
-		  }, {})
-		  schedule.rooms = schedule.rooms.map(room => apiRooms[room.id])
 		  return schedule
 		},
+		async fetchAdditionalScheduleData() {
+			this.availabilities = await api.fetchAvailabilities()
+		},
 		async pollUpdates () {
-			//this.schedule = await this.fetchSchedule({since: this.since, warnings: true})
-			//window.setTimeout(this.pollUpdates, 10 * 1000)
+			this.schedule = await this.fetchSchedule({since: this.since, warnings: true})
+			window.setTimeout(this.pollUpdates, 10 * 1000)
 		}
 	}
 }

@@ -731,9 +731,9 @@ urlpatterns = [
                     name="schedule.api.talks",
                 ),
                 path(
-                    "schedule/api/availabilities/<int:talkid>/<int:roomid>/",
-                    schedule.RoomTalkAvailabilities.as_view(),
-                    name="schedule.api.availabilities",
+                    "schedule/api/availabilities/",
+                    schedule.ScheduleAvailabilities.as_view(),
+                    name="schedule.api.talks",
                 ),
             ]
         ),

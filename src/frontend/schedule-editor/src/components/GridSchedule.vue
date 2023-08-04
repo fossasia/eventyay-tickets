@@ -21,7 +21,7 @@
 				:showRoom="false",
 				@startDragging="startDragging($event)",
 			)
-		.availability(v-for="availability of availabilities", :style="getSessionStyle(availability)")
+		.availability(v-for="availability of visibleAvailabilities", :style="getSessionStyle(availability)", :class="availability.active ? ['active'] : []")
 	#hiddenRooms(v-if="hiddenRooms.length")
 		h4 {{ $t('Hidden rooms') }} ({{ hiddenRooms.length }})
 		.room-list
@@ -32,9 +32,6 @@
 
 </template>
 <script>
-// TODO
-// - handle click on already selected day (needs some buntpapier hacking)
-// - optionally only show venueless rooms
 import moment from 'moment-timezone'
 import Session from './Session'
 import { getLocalizedString } from '~/utils'
@@ -47,6 +44,7 @@ export default {
 	components: { Session },
 	props: {
 		sessions: Array,
+		availabilities: Object,
 		start: Object,
 		end: Object,
 		rooms: Array,
@@ -242,21 +240,38 @@ export default {
 			if (this.hoverSlice && this.draggedSession && !this.hoverSliceLegal) result.push('illegal-hover')
 			return result
 		},
-		availabilities () {
+		availabilitySlices () {
 			const avails = []
 			if (!this.visibleTimeslices?.length) return avails
 			const earliestStart = this.visibleTimeslices[0].date
 			const latestEnd = this.visibleTimeslices.at(-1).date
+			const draggedAvails = []
+			if (this.draggedSession && this.availabilities.talks[this.draggedSession.id]?.length) {
+				for (const avail of this.availabilities.talks[this.draggedSession.id]) {
+					draggedAvails.push({
+						start: moment(avail.start),
+						end: moment(avail.end),
+					})
+				}
+			}
 			for (const room of this.visibleRooms) {
-				if (!room.availabilities || !room.availabilities.length) avails.push({room: room, start: earliestStart, end: latestEnd})
+				if (!this.availabilities.rooms[room.id] || !this.availabilities.rooms[room.id].length) avails.push({room: room, start: earliestStart, end: latestEnd})
 				else {
-					for (const avail of room.availabilities) {
+					for (const avail of this.availabilities.rooms[room.id]) {
 						avails.push({
 							room: room,
 							start: moment(avail.start),
 							end: moment(avail.end)
 						})
 					}
+				}
+				for (const avail of draggedAvails) {
+					avails.push({
+						room: room,
+						start: avail.start,
+						end: avail.end,
+						active: true
+					})
 				}
 			}
 			return avails
@@ -274,7 +289,25 @@ export default {
 		visibleSessions () {
 			// only show sessions whose rooms are not in this.hiddenRooms
 			return this.sessions.filter(session => !this.hiddenRooms.includes(session.room))
-		}
+		},
+		visibleAvailabilities () {
+			// Filter out availabilities for hidden rooms
+			// and shorten all availabilities to the visible timeslices
+			const result = []
+			for (const avail of this.availabilitySlices) {
+				if (this.hiddenRooms.includes(avail.room)) continue
+				const start = this.visibleTimeslices.find(slice => slice.date.isSameOrAfter(avail.start))
+				const end = this.visibleTimeslices.find(slice => slice.date.isSameOrAfter(avail.end))
+				if (!start || !end) continue
+				result.push({
+					room: avail.room,
+					start: start.date,
+					end: end.date,
+					active: avail.active
+				})
+			}
+			return result
+		},
 	},
 	watch: {
 		currentDay: 'changeDay'
@@ -447,7 +480,6 @@ export default {
 			}
 		},
 		onIntersect (entries) {
-			// TODO still gets stuck when scrolling fast above threshold and back
 			const entry = entries.sort((a, b) => b.time - a.time).find(entry => entry.isIntersecting)
 			if (!entry) return
 			const day = moment.parseZone(entry.target.dataset.slice).startOf('day')
@@ -529,6 +561,8 @@ export default {
 .availability
 	background-color: white
 	pointer-events: none
+	&.active
+		background-color: rgba(56, 158, 119, 0.1)
 #hiddenRooms
 	position: fixed
 	z-index: 500
