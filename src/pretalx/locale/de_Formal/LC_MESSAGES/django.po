@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-04 20:21+0000\n"
+"POT-Creation-Date: 2023-08-04 23:32+0000\n"
 "PO-Revision-Date: 2022-03-17 03:38+0000\n"
 "Last-Translator: Tobias Kunze <r@rixx.de>\n"
 "Language-Team: \n"
@@ -17,6 +17,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 4.4.2\n"
+
+#: htmlcov/d_9155819316f40b96_views_py.html:155
+#: pretalx/cfp/templates/cfp/event/user_submissions.html:30
+#: pretalx/cfp/templates/cfp/event/user_submissions.html:69
+#: pretalx/orga/templates/orga/cfp/text.html:66
+#: pretalx/orga/templates/orga/review/dashboard.html:209
+#: pretalx/orga/templates/orga/speaker/information_list.html:23
+#: pretalx/orga/templates/orga/submission/list.html:84
+#: pretalx/orga/templates/orga/submission/review.html:49
+msgid "Title"
+msgstr "Titel"
 
 #: pretalx/agenda/phrases.py:8
 msgid "Thank you for your feedback!"
@@ -1151,16 +1162,6 @@ msgstr "Wichtige Informationen"
 msgid "Your drafts"
 msgstr "Aktueller Entwurf"
 
-#: pretalx/cfp/templates/cfp/event/user_submissions.html:30
-#: pretalx/cfp/templates/cfp/event/user_submissions.html:69
-#: pretalx/orga/templates/orga/cfp/text.html:66
-#: pretalx/orga/templates/orga/review/dashboard.html:209
-#: pretalx/orga/templates/orga/speaker/information_list.html:23
-#: pretalx/orga/templates/orga/submission/list.html:84
-#: pretalx/orga/templates/orga/submission/review.html:49
-msgid "Title"
-msgstr "Titel"
-
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:48
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:101
 msgid "Copy code for review"
@@ -1268,12 +1269,12 @@ msgstr ""
 "schon angeboten."
 
 #: pretalx/common/context_processors.py:42
-#: pretalx/schedule/models/schedule.py:372
+#: pretalx/schedule/models/schedule.py:375
 msgid "“"
 msgstr "„"
 
 #: pretalx/common/context_processors.py:43
-#: pretalx/schedule/models/schedule.py:372
+#: pretalx/schedule/models/schedule.py:375
 msgid "”"
 msgstr "“"
 
@@ -7125,7 +7126,7 @@ msgstr "Dieser Wert wird ersetzt."
 msgid "Subject: {subject}"
 msgstr "Betreff: {subject}"
 
-#: pretalx/orga/views/mails.py:380 pretalx/orga/views/schedule.py:250
+#: pretalx/orga/views/mails.py:380 pretalx/orga/views/schedule.py:249
 #, python-brace-format
 msgid ""
 "{count} emails have been saved to the outbox – you can make individual "
@@ -7195,7 +7196,7 @@ msgstr ""
 "Passwort nicht zurückgesetzt."
 
 #: pretalx/orga/views/organiser.py:225 pretalx/orga/views/review.py:650
-#: pretalx/orga/views/schedule.py:598
+#: pretalx/orga/views/schedule.py:601
 msgid "Saved!"
 msgstr "Gespeichert!"
 
@@ -7240,16 +7241,16 @@ msgstr "{count} E-Mails wurden erstellt und liegen jetzt im Postausgang."
 msgid "The reviewers were assigned successfully"
 msgstr ""
 
-#: pretalx/orga/views/review.py:685 pretalx/orga/views/schedule.py:112
+#: pretalx/orga/views/review.py:685 pretalx/orga/views/schedule.py:111
 #: pretalx/orga/views/speaker.py:359
 msgid "No data to be exported"
 msgstr "Keine Daten zum Export gefunden"
 
-#: pretalx/orga/views/schedule.py:125
+#: pretalx/orga/views/schedule.py:124
 msgid "A new export is being generated and will be available soon."
 msgstr "Ein neuer Export wird generiert und steht bald zur Verfügung."
 
-#: pretalx/orga/views/schedule.py:132
+#: pretalx/orga/views/schedule.py:131
 msgid ""
 "A new export will be generated on the next scheduled opportunity – please "
 "contact your administrator for details."
@@ -7257,7 +7258,7 @@ msgstr ""
 "Ein neuer Export wird bei der nächsten Gelegenheit generiert werden – bitte "
 "kontaktieren Sie die Administration, wenn Sie Details benötigen."
 
-#: pretalx/orga/views/schedule.py:150
+#: pretalx/orga/views/schedule.py:149
 #, python-brace-format
 msgid ""
 "Could not find the current export, please try to regenerate it. ({error})"
@@ -7265,54 +7266,54 @@ msgstr ""
 "Der Export konnte nicht gefunden werden, bitte erstellen Sie ihn erneut. "
 "({error})"
 
-#: pretalx/orga/views/schedule.py:189
+#: pretalx/orga/views/schedule.py:188
 msgid "You have to provide a new, unique schedule version!"
 msgstr "Sie müssen eine neue, noch nicht verwendete Version eingeben."
 
-#: pretalx/orga/views/schedule.py:200
+#: pretalx/orga/views/schedule.py:199
 msgid "Nice, your schedule has been released!"
 msgstr "Ui, das Programm wurde veröffentlicht!"
 
-#: pretalx/orga/views/schedule.py:216
+#: pretalx/orga/views/schedule.py:215
 msgid ""
 "Reset successful – start editing the schedule from your selected version!"
 msgstr ""
 "Das Zurücksetzen war erfolgreich – Sie können das Programm jetzt von dieser "
 "Version aus editieren."
 
-#: pretalx/orga/views/schedule.py:221
+#: pretalx/orga/views/schedule.py:220
 msgid "Error retrieving the schedule version to reset to."
 msgstr "Die Programmversion konnte nicht gefunden werden."
 
-#: pretalx/orga/views/schedule.py:257
+#: pretalx/orga/views/schedule.py:256
 msgid "You can only regenerate mails after the first schedule was released."
 msgstr ""
 "E-Mails können erst neu erstellt werden, nachdem die erste Programmversion "
 "fertiggestellt wurde."
 
-#: pretalx/orga/views/schedule.py:528
+#: pretalx/orga/views/schedule.py:531
 msgid "The session has been scheduled."
 msgstr "Der Beitrag wurde ins Programm gesetzt."
 
-#: pretalx/orga/views/schedule.py:552
+#: pretalx/orga/views/schedule.py:555
 msgid "Room deleted. Hopefully nobody was still in there …"
 msgstr "Der Raum wurde gelöscht. Hoffentlich war da niemand mehr drin …"
 
-#: pretalx/orga/views/schedule.py:558
+#: pretalx/orga/views/schedule.py:561
 msgid "There is or was a session scheduled in this room. It cannot be deleted."
 msgstr ""
 "Es findet oder fand ein Talk in diesem Raum statt, deshalb kann er nicht "
 "gelöscht werden."
 
-#: pretalx/orga/views/schedule.py:614
+#: pretalx/orga/views/schedule.py:617
 msgid "The selected room does not exist."
 msgstr "Diesen Raum gibt es nicht."
 
-#: pretalx/orga/views/schedule.py:616
+#: pretalx/orga/views/schedule.py:619
 msgid "Sorry, you are not allowed to reorder rooms."
 msgstr "Sie dürfen Räume leider nicht verschieben."
 
-#: pretalx/orga/views/schedule.py:630
+#: pretalx/orga/views/schedule.py:633
 msgid "The order of rooms has been updated."
 msgstr "Die Abfolge der Räume wurde gespeichert."
 
@@ -7715,23 +7716,23 @@ msgstr ""
 "So wird die neue Programmversion im öffentlichen Changelog und im RSS-Feed "
 "erscheinen."
 
-#: pretalx/schedule/models/schedule.py:371
+#: pretalx/schedule/models/schedule.py:372
 #, fuzzy, python-brace-format
 #| msgid "The room is not available at the scheduled time."
 msgid "Room {room_name} is not available at the scheduled time."
 msgstr "Der Raum steht zur gewählten Zeit nicht zur Verfügung."
 
-#: pretalx/schedule/models/schedule.py:392
+#: pretalx/schedule/models/schedule.py:396
 msgid "Another session in the same room overlaps with this one."
 msgstr ""
 
-#: pretalx/schedule/models/schedule.py:424
+#: pretalx/schedule/models/schedule.py:428
 #, fuzzy, python-brace-format
 #| msgid "A speaker is not available at the scheduled time."
 msgid "{speaker} is not available at the scheduled time."
 msgstr "Ein Vortragender steht zum gewählten Zeitpunkt nicht zur Verfügung."
 
-#: pretalx/schedule/models/schedule.py:449
+#: pretalx/schedule/models/schedule.py:454
 #, fuzzy, python-brace-format
 #| msgid "A speaker is holding another session at the scheduled time."
 msgid "{speaker} is scheduled for another session at the same time."
