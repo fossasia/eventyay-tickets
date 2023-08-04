@@ -118,6 +118,43 @@ def test_add_custom_css(event, orga_client, path, allowed):
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
+    "path,allowed",
+    (
+        ("tests/fixtures/custom.css", True),
+        ("tests/fixtures/malicious.css", False),
+        ("tests/conftest.py", False),
+    ),
+)
+def test_add_custom_css_as_text(event, orga_client, path, allowed):
+    assert not event.custom_css
+    with open(path) as custom_css:
+        response = orga_client.post(
+            event.orga_urls.edit_settings,
+            {
+                "name_0": event.name,
+                "slug": "csstest",
+                "locales": ",".join(event.locales),
+                "content_locales": ",".join(event.content_locales),
+                "locale": event.locale,
+                "date_from": event.date_from,
+                "date_to": event.date_to,
+                "timezone": event.timezone,
+                "email": event.email or "",
+                "primary_color": event.primary_color or "",
+                "custom_css_text": custom_css.read(),
+                "schedule": event.display_settings["schedule"],
+                "show_featured": event.feature_flags["show_featured"],
+                "use_feedback": event.feature_flags["use_feedback"],
+            },
+            follow=True,
+        )
+    event.refresh_from_db()
+    assert response.status_code == 200
+    assert bool(event.custom_css) == allowed
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
     "path",
     (
         "tests/fixtures/custom.css",
@@ -172,7 +209,6 @@ def test_add_logo(event, orga_client):
                 "timezone": event.timezone,
                 "email": event.email,
                 "primary_color": "#00ff00",
-                "custom_css": "",
                 "logo": logo,
                 "schedule": event.display_settings["schedule"],
                 "show_featured": event.feature_flags["show_featured"],
@@ -189,7 +225,16 @@ def test_add_logo(event, orga_client):
 
 
 @pytest.mark.django_db
-def test_change_custom_domain(event, orga_client, monkeypatch):
+@pytest.mark.parametrize(
+    "domain,result",
+    (
+        ("example.org", "https://example.org"),
+        ("http://example.org", "https://example.org"),
+        ("https://example.org", "https://example.org"),
+        (settings.SITE_URL, None),
+    ),
+)
+def test_change_custom_domain(event, orga_client, monkeypatch, domain, result):
     from pretalx.orga.forms.event import socket
 
     yessocket = lambda x: True  # noqa
@@ -208,9 +253,8 @@ def test_change_custom_domain(event, orga_client, monkeypatch):
             "timezone": event.timezone,
             "email": event.email,
             "primary_color": "",
-            "custom_css": "",
             "logo": "",
-            "custom_domain": "https://myevent.com",
+            "custom_domain": domain,
             "schedule": event.display_settings["schedule"],
             "show_featured": event.feature_flags["show_featured"],
             "use_feedback": event.feature_flags["use_feedback"],
@@ -219,37 +263,7 @@ def test_change_custom_domain(event, orga_client, monkeypatch):
     )
     event = Event.objects.get(pk=event.pk)
     assert response.status_code == 200
-    assert event.custom_domain == "https://myevent.com"
-
-
-@pytest.mark.django_db
-def test_change_custom_domain_to_site_url(event, orga_client):
-    assert not event.custom_domain
-    response = orga_client.post(
-        event.orga_urls.edit_settings,
-        {
-            "name_0": event.name,
-            "slug": event.slug,
-            "locales": event.locales,
-            "content_locales": ",".join(event.content_locales),
-            "locale": event.locale,
-            "date_from": event.date_from,
-            "date_to": event.date_to,
-            "timezone": event.timezone,
-            "email": event.email,
-            "primary_color": "",
-            "custom_css": "",
-            "logo": "",
-            "custom_domain": settings.SITE_URL,
-            "schedule": event.display_settings["schedule"],
-            "show_featured": event.feature_flags["show_featured"],
-            "use_feedback": event.feature_flags["use_feedback"],
-        },
-        follow=True,
-    )
-    event = Event.objects.get(pk=event.pk)
-    assert response.status_code == 200
-    assert not event.custom_domain
+    assert event.custom_domain == result
 
 
 @pytest.mark.django_db
@@ -276,8 +290,6 @@ def test_change_custom_domain_to_unavailable_domain(
             "timezone": event.timezone,
             "email": event.email,
             "primary_color": "",
-            "custom_css": "",
-            "logo": "",
             "custom_domain": "https://example.org",
             "schedule": event.display_settings["schedule"],
             "show_featured": event.feature_flags["show_featured"],
@@ -288,6 +300,127 @@ def test_change_custom_domain_to_unavailable_domain(
     event = Event.objects.get(pk=event.pk)
     assert response.status_code == 200
     assert not event.custom_domain
+
+
+@pytest.mark.django_db
+def test_event_end_before_start(event, orga_client):
+    start = "2022-10-10"
+    end = "2022-10-09"
+    response = orga_client.post(
+        event.orga_urls.edit_settings,
+        {
+            "name_0": event.name,
+            "slug": "csstest",
+            "locales": ",".join(event.locales),
+            "content_locales": ",".join(event.content_locales),
+            "locale": event.locale,
+            "date_from": start,
+            "date_to": end,
+            "timezone": event.timezone,
+            "email": event.email or "",
+            "primary_color": event.primary_color or "",
+            "schedule": event.display_settings["schedule"],
+            "show_featured": event.feature_flags["show_featured"],
+            "use_feedback": event.feature_flags["use_feedback"],
+        },
+        follow=True,
+    )
+    event.refresh_from_db()
+    assert response.status_code == 200
+    assert event.date_from.isoformat() != start
+    assert event.date_to.isoformat() != end
+
+
+@pytest.mark.django_db
+def test_event_change_date(event, orga_client, slot):
+    with scope(event=event):
+        wip_slot = (
+            event.wip_schedule.talks.all().filter(submission=slot.submission).first()
+        )
+    old_slot_start = slot.start
+    old_wip_slot_start = wip_slot.start
+    delta = dt.timedelta(days=17)
+
+    response = orga_client.post(
+        event.orga_urls.edit_settings,
+        {
+            "name_0": event.name,
+            "slug": "csstest",
+            "locales": ",".join(event.locales),
+            "content_locales": ",".join(event.content_locales),
+            "locale": event.locale,
+            "date_from": (event.date_from + delta).isoformat(),
+            "date_to": (event.date_to + delta).isoformat(),
+            "timezone": event.timezone,
+            "email": event.email or "",
+            "primary_color": event.primary_color or "",
+            "schedule": event.display_settings["schedule"],
+            "show_featured": event.feature_flags["show_featured"],
+            "use_feedback": event.feature_flags["use_feedback"],
+        },
+        follow=True,
+    )
+    assert response.status_code == 200
+    slot.refresh_from_db()
+    wip_slot.refresh_from_db()
+    assert slot.start == old_slot_start
+    assert wip_slot.start == old_wip_slot_start + delta
+
+
+@pytest.mark.django_db
+def test_event_change_timezone(event, orga_client, slot):
+    old_slot_start = slot.start
+
+    response = orga_client.post(
+        event.orga_urls.edit_settings,
+        {
+            "name_0": event.name,
+            "slug": "csstest",
+            "locales": ",".join(event.locales),
+            "content_locales": ",".join(event.content_locales),
+            "locale": event.locale,
+            "date_from": event.date_from,
+            "date_to": event.date_to,
+            "timezone": "Europe/Moscow",
+            "email": event.email or "",
+            "primary_color": event.primary_color or "",
+            "schedule": event.display_settings["schedule"],
+            "show_featured": event.feature_flags["show_featured"],
+            "use_feedback": event.feature_flags["use_feedback"],
+        },
+        follow=True,
+    )
+    assert response.status_code == 200
+    slot.refresh_from_db()
+    assert slot.start != old_slot_start
+
+
+@pytest.mark.django_db
+def test_event_remove_relevant_locales(multilingual_event, orga_client):
+    event = multilingual_event
+    assert len(event.locales) == 2
+    response = orga_client.post(
+        event.orga_urls.edit_settings,
+        {
+            "name_0": event.name,
+            "slug": "csstest",
+            "locales": "en",
+            "content_locales": "en",
+            "locale": "de",
+            "date_from": event.date_from,
+            "date_to": event.date_to,
+            "timezone": event.timezone,
+            "email": event.email or "",
+            "primary_color": event.primary_color or "",
+            "schedule": event.display_settings["schedule"],
+            "show_featured": event.feature_flags["show_featured"],
+            "use_feedback": event.feature_flags["use_feedback"],
+        },
+        follow=True,
+    )
+    event.refresh_from_db()
+    assert response.status_code == 200
+    assert len(event.locales) == 2
 
 
 @pytest.mark.django_db
