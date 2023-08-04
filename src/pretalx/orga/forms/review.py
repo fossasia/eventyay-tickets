@@ -409,7 +409,7 @@ class ReviewAssignImportForm(DirectionForm):
         if direction == "reviewer":
             # keys should be users, values should be lists of proposals
             for user, proposals in uploaded_data.items():
-                user.assigned_reviews.set(proposals)
+                user.assigned_reviews.add(*proposals)
         else:
             for proposal, users in uploaded_data.items():
-                proposal.assigned_reviewers.set(users)
+                proposal.assigned_reviewers.add(*users)

@@ -1,3 +1,6 @@
+import json
+import tempfile
+
 import pytest
 from django_scopes import scope
 
@@ -498,6 +501,60 @@ def test_orga_can_assign_reviewer_to_submission(orga_client, review_user, submis
     )
     with scope(event=submission.event):
         assert submission.assigned_reviewers.all().count() == 1
+
+
+@pytest.mark.django_db
+def test_orga_can_assign_reviewer_to_submission_via_import(
+    orga_client, review_user, submission, other_submission
+):
+    with tempfile.NamedTemporaryFile(mode="w+", encoding="utf-8") as f:
+        f.write(json.dumps({review_user.email: [submission.code]}))
+        f.seek(0)
+        with scope(event=submission.event):
+            other_submission.assigned_reviewers.add(review_user)
+            assert submission.assigned_reviewers.all().count() == 0
+            assert other_submission.assigned_reviewers.all().count() == 1
+            assert review_user.assigned_reviews.all().count() == 1
+        response = orga_client.post(
+            submission.event.orga_urls.reviews + "assign/import",
+            {
+                "import_file": f,
+                "replace_assignments": 0,
+                "direction": "reviewer",
+            },
+        )
+        assert response.status_code == 302
+    with scope(event=submission.event):
+        assert submission.assigned_reviewers.all().count() == 1
+        assert other_submission.assigned_reviewers.all().count() == 1
+        assert review_user.assigned_reviews.all().count() == 2
+
+
+@pytest.mark.django_db
+def test_orga_can_assign_submission_to_reviewer_via_import_and_replace(
+    orga_client, review_user, submission, other_submission
+):
+    with tempfile.NamedTemporaryFile(mode="w+", encoding="utf-8") as f:
+        f.write(json.dumps({submission.code: [review_user.code]}))
+        f.seek(0)
+        with scope(event=submission.event):
+            other_submission.assigned_reviewers.add(review_user)
+            assert submission.assigned_reviewers.all().count() == 0
+            assert other_submission.assigned_reviewers.all().count() == 1
+            assert review_user.assigned_reviews.all().count() == 1
+        response = orga_client.post(
+            submission.event.orga_urls.reviews + "assign/import",
+            {
+                "import_file": f,
+                "replace_assignments": 1,
+                "direction": "submission",
+            },
+        )
+        assert response.status_code == 302
+    with scope(event=submission.event):
+        assert submission.assigned_reviewers.all().count() == 1
+        assert other_submission.assigned_reviewers.all().count() == 0
+        assert review_user.assigned_reviews.all().count() == 1
 
 
 @pytest.mark.django_db
