@@ -3,8 +3,18 @@
 	template(v-if="schedule")
 		#main-wrapper
 			#unassigned(v-scrollbar.y="", @pointerenter="isUnassigning = true", @pointerleave="isUnassigning = false")
-				.title {{$t('Unassigned')}}
-				session(:session="{title: '+ ' + $t('New break')}", :isDragged="false", @startDragging="startNewBreak")
+				.title
+					span {{$t('Unassigned')}}
+					#unassigned-sort(@click="showUnassignedSortMenu = !showUnassignedSortMenu", :class="{'active': showUnassignedSortMenu}")
+						i.fa.fa-sort
+					#unassigned-sort-menu(v-if="showUnassignedSortMenu")
+						.sort-method(v-for="method of unassignedSortMethods", @click="unassignedSort === method.name ? unassignedSortDirection = unassignedSortDirection * -1 : unassignedSort = method.name; showUnassignedSortMenu = false")
+							span {{ method.label }}
+							i.fa.fa-sort-amount-asc(v-if="unassignedSort === method.name && unassignedSortDirection === 1")
+							i.fa.fa-sort-amount-desc(v-if="unassignedSort === method.name && unassignedSortDirection === -1")
+				.filter-bar
+					bunt-input#filter-input(v-model="unassignedFilterString", :placeholder="$t('Filter sessions')", icon="search")
+				session.new-break(:session="{title: '+ ' + $t('New break')}", :isDragged="false", @startDragging="startNewBreak")
 				session(v-for="un in unscheduled", :session="un", @startDragging="startDragging", :isDragged="draggedSession && un.id === draggedSession.id")
 			#schedule-wrapper(v-scrollbar.x.y="")
 				bunt-tabs.days(v-if="days", :modelValue="currentDay.format()", ref="tabs" :class="['grid-tabs']")
@@ -96,6 +106,10 @@ export default {
 			editorSessionWaiting: false,
 			isUnassigning: false,
 			locales: ["en"],
+			unassignedFilterString: '',
+			unassignedSort: 'title',
+			unassignedSortDirection: 1,  // asc
+			showUnassignedSortMenu: false,
 			getLocalizedString
 		}
 	},
@@ -108,13 +122,24 @@ export default {
 			if (!this.schedule) return {}
 			return this.schedule.tracks.reduce((acc, t) => { acc[t.id] = t; return acc }, {})
 		},
+		unassignedSortMethods () {
+			const sortMethods = [
+				{label: this.$t('Title'), name: 'title'},
+				{label: this.$t('Speakers'), name: 'speakers'},
+			]
+			if (this.schedule && this.schedule.tracks.length > 1) {
+				sortMethods.push({label: this.$t('Track'), name: 'track'})
+			}
+			sortMethods.push({label: this.$t('Duration'), name: 'duration' })
+			return sortMethods
+		},
 		speakersLookup () {
 			if (!this.schedule) return {}
 			return this.schedule.speakers.reduce((acc, s) => { acc[s.code] = s; return acc }, {})
 		},
 		unscheduled () {
 			if (!this.schedule) return
-			const sessions = []
+			let sessions = []
 			for (const session of this.schedule.talks.filter(s => !s.start || !s.room)) {
 				sessions.push({
 					id: session.id,
@@ -126,7 +151,27 @@ export default {
 					duration: session.duration,
 				})
 			}
-			sessions.sort((a, b) => getLocalizedString(a.title).toUpperCase().localeCompare(getLocalizedString(b.title).toUpperCase()))
+			if (this.unassignedFilterString.length) {
+				sessions = sessions.filter(s => {
+					const title = getLocalizedString(s.title)
+					const speakers = s.speakers?.map(s => s.name).join(', ') || ''
+					return title.toLowerCase().includes(this.unassignedFilterString.toLowerCase()) || speakers.toLowerCase().includes(this.unassignedFilterString.toLowerCase())
+				})
+			}
+			// Sort by this.unassignedSort, this.unassignedSortDirection (1 or -1)
+			sessions = sessions.sort((a, b) => {
+				if (this.unassignedSort == 'title') {
+					return getLocalizedString(a.title).toUpperCase().localeCompare(getLocalizedString(b.title).toUpperCase()) * this.unassignedSortDirection
+				} else if (this.unassignedSort == 'speakers') {
+					const aSpeakers = a.speakers?.map(s => s.name).join(', ') || ''
+					const bSpeakers = b.speakers?.map(s => s.name).join(', ') || ''
+					return aSpeakers.toUpperCase().localeCompare(bSpeakers.toUpperCase()) * this.unassignedSortDirection
+				} else if (this.unassignedSort == 'track') {
+					return getLocalizedString(a.track ? a.track.name : '').toUpperCase().localeCompare(getLocalizedString(b.track? b.track.name : '').toUpperCase()) * this.unassignedSortDirection
+				} else if (this.unassignedSort == 'duration') {
+					return (a.duration - b.duration) * this.unassignedSortDirection
+				}
+			})
 			return sessions
 		},
 		newBreakTitle () {
@@ -383,13 +428,54 @@ export default {
 		margin-top: 64px
 		width: 350px
 		flex: none
+		> *
+			margin-right: 12px
+		> .bunt-scrollbar-rail-y
+			margin: 0
+		.filter-bar
+			margin-left: 8px
 		> .title
-			margin 0 8px
 			padding 4px 0
 			font-size: 18px
 			text-align: center
 			background-color: $clr-white
 			border-bottom: 4px solid $clr-dividers-light
+		.new-break.c-linear-schedule-session
+			min-height: 48px
+		#unassigned-sort
+			position: absolute
+			top: 5px
+			right: 20px
+			width: 28px
+			height: 28px
+			text-align: center
+			cursor: pointer
+			border-radius: 4px
+			color: $clr-secondary-text-light
+			&:hover, &.active
+				opacity: 0.8
+				background-color: $clr-dividers-light
+		#unassigned-sort-menu
+			color: $clr-primary-text-light
+			display: flex
+			flex-direction: column
+			background-color: white
+			position: absolute
+			top: 34px
+			right: 25px
+			width: 130px
+			font-size: 16px
+			cursor: pointer
+			z-index: 1000
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5)
+			text-align: left;
+			.sort-method
+				padding: 8px 16px
+				display: flex
+				justify-content: space-between
+				align-items: center
+				&:hover
+					background-color: $clr-dividers-light
 	#schedule-wrapper
 		width: 100%
 		margin-right: 40px
