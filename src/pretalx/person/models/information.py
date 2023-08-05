@@ -44,7 +44,7 @@ class SpeakerInformation(LogMixin, FileCleanupMixin, models.Model):
     title = I18nCharField(verbose_name=_("Subject"), max_length=200)
     text = I18nTextField(verbose_name=_("Text"), help_text=phrases.base.use_markdown)
     resource = models.FileField(
-        verbose_name=_("file"),
+        verbose_name=_("File"),
         null=True,
         blank=True,
         help_text=_("Please try to keep your upload small, preferably below 16 MB."),

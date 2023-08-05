@@ -36,7 +36,7 @@ class SubmissionType(LogMixin, models.Model):
     deadline = models.DateTimeField(
         null=True,
         blank=True,
-        verbose_name=_("deadline"),
+        verbose_name=_("Deadline"),
         help_text=_(
             "If you want a different deadline than the global deadline for this session type, enter it here."
         ),

@@ -83,7 +83,7 @@ class User(PermissionsMixin, GenerateCode, FileCleanupMixin, AbstractBaseUser):
     )
     email = models.EmailField(
         unique=True,
-        verbose_name=_("E-Mail"),
+        verbose_name=_("E-mail"),
         help_text=_(
             "Your email address will be used for password resets and notification about your event/proposals."
         ),

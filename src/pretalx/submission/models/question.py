@@ -128,7 +128,7 @@ class Question(LogMixin, models.Model):
     deadline = models.DateTimeField(
         null=True,
         blank=True,
-        verbose_name=_("deadline"),
+        verbose_name=_("Deadline"),
         help_text=_(
             "Set a deadline to make this question required after the given date."
         ),

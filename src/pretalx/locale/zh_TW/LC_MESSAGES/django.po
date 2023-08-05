@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-04 23:32+0000\n"
+"POT-Creation-Date: 2023-08-05 02:05+0000\n"
 "PO-Revision-Date: 2023-05-12 12:16+0000\n"
 "Last-Translator: Li-Heng Yu <007seadog@gmail.com>\n"
 "Language-Team: none\n"
@@ -58,6 +58,7 @@ msgstr "這個跟議程表相關的頁面尚未公開。只有主辦者可以查
 #: pretalx/orga/forms/schedule.py:221 pretalx/orga/forms/schedule.py:225
 #: pretalx/orga/templates/orga/schedule/release.html:80
 #: pretalx/orga/templates/orga/schedule/release.html:81
+#: pretalx/schedule/models/schedule.py:41
 msgid "Version"
 msgstr "版本"
 
@@ -244,6 +245,7 @@ msgstr "講者的頭像"
 
 #: pretalx/agenda/templates/agenda/talk.html:50
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:18
+#: pretalx/cfp/templates/cfp/event/user_submission_discard.html:14
 #: pretalx/orga/forms/submission.py:15
 #: pretalx/orga/templates/orga/cfp/text.html:91
 #: pretalx/submission/forms/submission.py:28
@@ -363,8 +365,8 @@ msgstr ""
 msgid "New password"
 msgstr "新密碼"
 
-#: pretalx/cfp/forms/submissions.py:6
-msgid "Speaker E-Mail"
+#: pretalx/cfp/forms/submissions.py:6 pretalx/orga/forms/submission.py:68
+msgid "Speaker email"
 msgstr "講者電子郵件地址"
 
 #: pretalx/cfp/forms/submissions.py:7 pretalx/mail/models.py:37
@@ -382,13 +384,13 @@ msgid "Text"
 msgstr "文字"
 
 #: pretalx/cfp/forms/submissions.py:13
-#: pretalx/submission/models/submission.py:872
+#: pretalx/submission/models/submission.py:873
 #, python-brace-format
 msgid "{speaker} invites you to join their session!"
 msgstr "{speaker} 邀請您參加他們的議程！"
 
 #: pretalx/cfp/forms/submissions.py:18
-#: pretalx/submission/models/submission.py:879
+#: pretalx/submission/models/submission.py:880
 #, python-brace-format
 msgid ""
 "Hi!\n"
@@ -621,7 +623,7 @@ msgstr "摘要："
 #: pretalx/cfp/templates/cfp/event/invitation.html:41
 #: pretalx/event/models/event.py:638 pretalx/orga/forms/review.py:336
 #: pretalx/submission/models/question.py:416
-#: pretalx/submission/models/submission.py:860
+#: pretalx/submission/models/submission.py:861
 msgid "No"
 msgstr "不要"
 
@@ -794,7 +796,7 @@ msgstr ""
 #: pretalx/cfp/templates/cfp/event/user_profile.html:47
 #: pretalx/cfp/templates/cfp/event/user_profile.html:61
 #: pretalx/cfp/templates/cfp/event/user_profile.html:82
-#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:186
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:185
 #: pretalx/common/phrases.py:44
 #: pretalx/orga/templates/orga/cfp/access_code_form.html:53
 #: pretalx/orga/templates/orga/mails/outbox_form.html:109
@@ -875,6 +877,7 @@ msgid "Current state of your proposal:"
 msgstr "您的議程投稿目前的狀態："
 
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:16
+#: pretalx/cfp/templates/cfp/event/user_submission_discard.html:12
 #: pretalx/orga/templates/orga/cfp/submission_type_view.html:17
 #: pretalx/orga/templates/orga/review/dashboard.html:106
 #: pretalx/submission/models/submission.py:135
@@ -882,6 +885,7 @@ msgid "Session type"
 msgstr "提交型態"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:17
+#: pretalx/cfp/templates/cfp/event/user_submission_discard.html:13
 #: pretalx/orga/templates/orga/cfp/access_code_view.html:32
 #: pretalx/orga/templates/orga/cfp/text.html:84
 #: pretalx/orga/templates/orga/cfp/track_form.html:22
@@ -895,6 +899,7 @@ msgid "Track"
 msgstr "議程軌"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:19
+#: pretalx/cfp/templates/cfp/event/user_submission_discard.html:15
 #: pretalx/orga/templates/orga/cfp/text.html:140
 #: pretalx/orga/templates/orga/review/dashboard.html:102
 #: pretalx/orga/templates/orga/review/dashboard.html:215
@@ -924,12 +929,13 @@ msgstr ""
 "您確認提交之後都可以被公開。"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:49
+#: pretalx/cfp/templates/cfp/event/user_submission_discard.html:26
 #: pretalx/cfp/templates/cfp/event/user_submission_withdraw.html:27
 msgid "Go back"
 msgstr "返回"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:53
-#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:212
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:211
 #: pretalx/cfp/templates/cfp/event/user_submission_withdraw.html:23
 msgid "Withdraw"
 msgstr "撤回"
@@ -953,83 +959,119 @@ msgstr ""
 "你嘗試確認的提案不存在，或不屬於你目前登錄的帳戶。請你嘗試使用其他帳戶登錄，"
 "或聯絡活動召集人，以獲取更多資訊。"
 
+#: pretalx/cfp/templates/cfp/event/user_submission_discard.html:7
+#: pretalx/cfp/templates/cfp/event/user_submission_discard.html:11
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:216
+#, fuzzy
+#| msgid "Withdraw proposal"
+msgid "Discard draft proposal"
+msgstr "撤回投稿"
+
+#: pretalx/cfp/templates/cfp/event/user_submission_discard.html:17
+#, fuzzy
+#| msgid "Do you really want to withdraw your proposal?"
+msgid ""
+"Do you really want to discard your draft proposal? All data will be lost."
+msgstr "您確定要撤回您的議程投稿嗎？"
+
+#: pretalx/cfp/templates/cfp/event/user_submission_discard.html:30
+#: pretalx/orga/templates/orga/cfp/access_code_form.html:46
+#: pretalx/orga/templates/orga/cfp/question_view.html:81
+#: pretalx/orga/templates/orga/mails/outbox_list.html:99
+#: pretalx/orga/templates/orga/organiser/detail.html:72
+#: pretalx/orga/templates/orga/submission/list.html:171
+msgid "Delete"
+msgstr "刪除"
+
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:25
 msgid "Your draft:"
 msgstr "您的草稿："
 
-#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:42
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:41
+msgid ""
+"\n"
+"                    This is a draft proposal.\n"
+"                    It will never be visible to anybody else, unless you "
+"submit it or explicitly share it.\n"
+"                "
+msgstr ""
+
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:49
 msgid "Confirm your attendance"
 msgstr "確認您可以參加"
 
-#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:47
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:54
 msgid "Audience feedback"
 msgstr "聽眾的回饋"
 
-#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:49
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:56
 msgid "Attendees can leave feedback here after your session has taken place."
 msgstr "參加者在您的演講結束後可以在此留下回饋意見。"
 
-#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:58
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:65
 msgid "Speaker:"
 msgid_plural "Speakers:"
 msgstr[0] "講者："
 
-#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:64
-msgid "Submitter:"
-msgid_plural "Submitters:"
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:67
+#, fuzzy
+#| msgid "Submitter:"
+#| msgid_plural "Submitters:"
+msgid "Submitter"
+msgid_plural "Submitters"
 msgstr[0] "名提交者："
 
-#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:93
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:92
 #: pretalx/orga/forms/schedule.py:116
 #: pretalx/orga/templates/orga/submission/content.html:81
 msgid "Resources"
 msgstr "資源"
 
-#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:97
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:96
 msgid ""
 "Resources will be publicly visible. Please try to keep your uploads below "
 "16MB."
 msgstr "資源將可以公開檢視。請盡量將您上傳的資源保持在 16MB 以下。"
 
-#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:149
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:148
 #: pretalx/orga/templates/orga/submission/content.html:132
 msgid "You can either provide a URL or upload a file."
 msgstr "你可以提供 URL 或上傳檔。"
 
-#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:150
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:149
 #: pretalx/orga/templates/orga/submission/content.html:133
 msgid "Max file size:"
 msgstr "最大文件大小："
 
-#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:165
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:164
 #: pretalx/orga/templates/orga/submission/content.html:141
 msgid "Add another resource"
 msgstr "新增其他資源"
 
-#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:177
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:176
 msgid "Save draft"
 msgstr "儲存草稿"
 
-#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:180
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:179
 msgid "Submit proposal"
 msgstr "提交提案"
 
-#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:193
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:192
 msgid "Share proposal"
 msgstr "分享議程投稿"
 
-#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:195
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:194
 msgid ""
 "If you need a review from a colleague or a friend here's a link that you can "
 "send out for viewing your proposal:"
 msgstr "如果您需要朋友或同事幫您檢閱，您可以將此連結傳送給他們："
 
-#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:201
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:200
 #: pretalx/cfp/templates/cfp/event/user_submission_withdraw.html:14
 msgid "Withdraw proposal"
 msgstr "撤回投稿"
 
-#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:203
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:202
 msgid ""
 "You can withdraw your proposal from the selection process here. You cannot "
 "undo this - if you are just uncertain if you can or should hold your "
@@ -1038,11 +1080,30 @@ msgstr ""
 "您可以依照這裡的流程撤回您的投稿。但請留意，您撤回了就無法再恢復—如果您只是不"
 "確定是否可以或需要保留您的投稿，請先跟主辦單位聯繫。"
 
-#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:217
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:218
+#, fuzzy
+#| msgid ""
+#| "You can withdraw your proposal from the selection process here. You "
+#| "cannot undo this - if you are just uncertain if you can or should hold "
+#| "your session, please contact the organiser instead."
+msgid ""
+"You can discard your draft proposal here. You cannot undo this - if you are "
+"just uncertain if you can or should submit your proposal, please contact the "
+"organiser instead."
+msgstr ""
+"您可以依照這裡的流程撤回您的投稿。但請留意，您撤回了就無法再恢復—如果您只是不"
+"確定是否可以或需要保留您的投稿，請先跟主辦單位聯繫。"
+
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:227
+#: pretalx/orga/templates/orga/mails/outbox_form.html:106
+msgid "Discard"
+msgstr "丟棄"
+
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:232
 msgid "Cancel proposal"
 msgstr "取消投稿"
 
-#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:219
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:234
 msgid ""
 "As your proposal has been accepted already, please contact the event's "
 "organising team to cancel it. The best way to reach out would be an answer "
@@ -1069,6 +1130,7 @@ msgstr "取消"
 #: pretalx/common/phrases.py:43
 #: pretalx/orga/templates/orga/cfp/access_code_send.html:26
 #: pretalx/orga/templates/orga/cfp/question_remind.html:22
+#: pretalx/orga/templates/orga/mails/outbox_list.html:89
 #: pretalx/orga/templates/orga/mails/send_draft_reminders.html:21
 msgid "Send"
 msgstr "傳送"
@@ -1174,17 +1236,23 @@ msgstr "關閉"
 msgid "Please go back and try again."
 msgstr "請返回後再試一次。"
 
-#: pretalx/cfp/views/user.py:94 pretalx/orga/views/event.py:573
+#: pretalx/cfp/views/user.py:95 pretalx/orga/views/event.py:573
 msgid ""
 "Your API token has been regenerated. The previous token will not be usable "
 "any longer."
 msgstr "您的 API token 已重新產生。先前的 token 將無法再使用。"
 
-#: pretalx/cfp/views/user.py:391
+#: pretalx/cfp/views/user.py:274
+#, fuzzy
+#| msgid "Your drafts"
+msgid "Your draft was discarded."
+msgstr "您的草稿"
+
+#: pretalx/cfp/views/user.py:410
 msgid "Your proposal has been submitted."
 msgstr "您投稿的議程已送出。"
 
-#: pretalx/cfp/views/user.py:470
+#: pretalx/cfp/views/user.py:484
 #, fuzzy
 msgid "You cannot accept this invitation."
 msgstr "您不能再變更短名稱了！"
@@ -2390,7 +2458,7 @@ msgstr "可能"
 #: pretalx/orga/templates/orga/speaker/reset_password.html:16
 #: pretalx/orga/templates/orga/submission/tag_delete.html:15
 #: pretalx/submission/models/question.py:414
-#: pretalx/submission/models/submission.py:860
+#: pretalx/submission/models/submission.py:861
 msgid "Yes"
 msgstr "是"
 
@@ -3706,9 +3774,8 @@ msgid "Score in '{score_category}'"
 msgstr "刪除主辦者"
 
 #: pretalx/orga/forms/review.py:333
-#, fuzzy
-msgid "File"
-msgstr "檔案"
+msgid "file"
+msgstr ""
 
 #: pretalx/orga/forms/review.py:335
 msgid "Replace current assignments"
@@ -3864,10 +3931,6 @@ msgstr "個人頭像"
 #, fuzzy
 msgid "The link to the speaker's profile picture"
 msgstr "講者的頭像"
-
-#: pretalx/orga/forms/submission.py:68
-msgid "Speaker email"
-msgstr "講者電子郵件地址"
 
 #: pretalx/orga/forms/submission.py:70
 msgid ""
@@ -4127,7 +4190,7 @@ msgstr "資訊看板"
 msgid "Teams"
 msgstr "團隊"
 
-#: pretalx/orga/templates/orga/base.html:211
+#: pretalx/orga/templates/orga/base.html:211 pretalx/person/models/user.py:86
 msgid "E-mail"
 msgstr "電子郵件"
 
@@ -4235,12 +4298,6 @@ msgid ""
 "This access code has already been used. You can't delete it, but you can "
 "disable it by setting an expiration date."
 msgstr "此存取代碼已被使用。您不能刪除它，但是可以設定到期日。"
-
-#: pretalx/orga/templates/orga/cfp/access_code_form.html:46
-#: pretalx/orga/templates/orga/cfp/question_view.html:81
-#: pretalx/orga/templates/orga/organiser/detail.html:72
-msgid "Delete"
-msgstr "刪除"
 
 #: pretalx/orga/templates/orga/cfp/access_code_send.html:9
 msgid "Send access code"
@@ -4566,7 +4623,7 @@ msgstr "摘要"
 
 #: pretalx/orga/templates/orga/cfp/text.html:78
 #: pretalx/orga/templates/orga/submission/review.html:86
-#: pretalx/schedule/models/room.py:33
+#: pretalx/schedule/models/room.py:33 pretalx/submission/models/resource.py:32
 #: pretalx/submission/models/submission.py:173
 #: pretalx/submission/models/tag.py:19 pretalx/submission/models/track.py:28
 msgid "Description"
@@ -4856,10 +4913,6 @@ msgstr "電子郵件已於 %(timestamp)s 傳送。"
 msgid "Mail Editor"
 msgstr "郵件編輯器"
 
-#: pretalx/orga/templates/orga/mails/outbox_form.html:106
-msgid "Discard"
-msgstr "丟棄"
-
 #: pretalx/orga/templates/orga/mails/outbox_form.html:107
 #, fuzzy
 msgid "Discard all from this template"
@@ -4940,19 +4993,10 @@ msgstr "已安排的議程"
 msgid "Unanswered questions reminder"
 msgstr ""
 
-#: pretalx/orga/templates/orga/mails/outbox_list.html:89
-msgid "send"
-msgstr "傳送"
-
 #: pretalx/orga/templates/orga/mails/outbox_list.html:94
 #: pretalx/orga/templates/orga/submission/list.html:166
 msgid "edit"
 msgstr "編輯"
-
-#: pretalx/orga/templates/orga/mails/outbox_list.html:99
-#: pretalx/orga/templates/orga/submission/list.html:171
-msgid "delete"
-msgstr "刪除"
 
 #: pretalx/orga/templates/orga/mails/send_draft_reminders.html:8
 #, fuzzy
@@ -6834,7 +6878,7 @@ msgid "{count} emails were generated and placed in the outbox."
 msgstr ""
 
 #: pretalx/orga/views/review.py:667
-msgid "The reviewers were assigned successfully"
+msgid "The reviewers were assigned successfully."
 msgstr ""
 
 #: pretalx/orga/views/review.py:685 pretalx/orga/views/schedule.py:111
@@ -6999,6 +7043,9 @@ msgid "New {event} proposal: {title}"
 msgstr ""
 
 #: pretalx/orga/views/submission.py:752 pretalx/orga/views/submission.py:764
+#: pretalx/submission/models/cfp.py:107
+#: pretalx/submission/models/question.py:131
+#: pretalx/submission/models/type.py:39
 msgid "Deadline"
 msgstr ""
 
@@ -7094,8 +7141,9 @@ msgstr "留白則使用預設地址：{}"
 
 #: pretalx/person/models/information.py:47
 #: pretalx/submission/models/resource.py:25
-msgid "file"
-msgstr ""
+#, fuzzy
+msgid "File"
+msgstr "檔案"
 
 #: pretalx/person/models/information.py:50
 msgid "Please try to keep your upload small, preferably below 16 MB."
@@ -7110,10 +7158,6 @@ msgid ""
 "Please enter the name you wish to be displayed publicly. This name will be "
 "used for all events you are participating in on this server."
 msgstr ""
-
-#: pretalx/person/models/user.py:86
-msgid "E-Mail"
-msgstr "電子郵件"
 
 #: pretalx/person/models/user.py:88
 msgid ""
@@ -7240,10 +7284,6 @@ msgstr "位置"
 msgid ""
 "This is the order that rooms are displayed in in the schedule (lower = left)."
 msgstr ""
-
-#: pretalx/schedule/models/schedule.py:41
-msgid "version"
-msgstr "版本"
 
 #: pretalx/schedule/models/schedule.py:47
 #, fuzzy
@@ -7438,12 +7478,6 @@ msgstr ""
 
 #: pretalx/submission/models/cfp.py:102
 msgid "Default session type"
-msgstr ""
-
-#: pretalx/submission/models/cfp.py:107
-#: pretalx/submission/models/question.py:131
-#: pretalx/submission/models/type.py:39
-msgid "deadline"
 msgstr ""
 
 #: pretalx/submission/models/cfp.py:109
@@ -7654,10 +7688,6 @@ msgid ""
 "you want to collect personal information, but use anonymous reviews."
 msgstr ""
 
-#: pretalx/submission/models/resource.py:32
-msgid "description"
-msgstr ""
-
 #: pretalx/submission/models/review.py:23
 #, fuzzy
 msgid "Leave empty to use this category for all tracks."
@@ -7804,19 +7834,19 @@ msgstr ""
 msgid "Assigned reviewers"
 msgstr "邀請檢閱者"
 
-#: pretalx/submission/models/submission.py:398
+#: pretalx/submission/models/submission.py:399
 msgctxt ""
 "used in talk confirm/accept/reject/...-errors, like \"... must be accepted "
 "OR foo OR bar ...\""
 msgid " or "
 msgstr ""
 
-#: pretalx/submission/models/submission.py:406
+#: pretalx/submission/models/submission.py:407
 #, python-brace-format
 msgid "Proposal must be {src_states} not {state} to be {new_state}."
 msgstr ""
 
-#: pretalx/submission/models/submission.py:475
+#: pretalx/submission/models/submission.py:476
 #, python-brace-format
 msgid "New proposal: {title}"
 msgstr ""
@@ -7876,14 +7906,26 @@ msgstr ""
 msgid "{name} ({duration} minutes)"
 msgstr ""
 
-msgid "Unassigned"
-msgstr ""
-
 msgid "minutes"
 msgstr ""
 
 msgid "Hidden rooms"
 msgstr ""
+
+#~ msgid "Speaker E-Mail"
+#~ msgstr "講者電子郵件地址"
+
+#~ msgid "send"
+#~ msgstr "傳送"
+
+#~ msgid "delete"
+#~ msgstr "刪除"
+
+#~ msgid "E-Mail"
+#~ msgstr "電子郵件"
+
+#~ msgid "version"
+#~ msgstr "版本"
 
 #, fuzzy
 #~ msgid "Use Gravatar"

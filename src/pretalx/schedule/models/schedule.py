@@ -38,7 +38,7 @@ class Schedule(LogMixin, models.Model):
         to="event.Event", on_delete=models.PROTECT, related_name="schedules"
     )
     version = models.CharField(
-        max_length=190, null=True, blank=True, verbose_name=_("version")
+        max_length=190, null=True, blank=True, verbose_name=_("Version")
     )
     published = models.DateTimeField(null=True, blank=True)
     comment = I18nTextField(

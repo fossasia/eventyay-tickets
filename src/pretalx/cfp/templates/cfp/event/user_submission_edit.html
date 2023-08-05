@@ -62,17 +62,9 @@
         <form class="add-speaker" action="{{ submission.urls.invite }}">
             <div class="form-group form-inline">
                 {% if submission.state == "confirmed" %}
-                    {% blocktranslate trimmed count count=submission.speakers.count %}
-                        Speaker:
-                    {% plural %}
-                        Speakers:
-                    {% endblocktranslate %}
+                    {% blocktranslate trimmed count count=submission.speakers.count %}Speaker:{% plural %}Speakers:{% endblocktranslate %}:
                 {% else %}
-                    {% blocktranslate trimmed count count=submission.speakers.count %}
-                        Submitter:
-                    {% plural %}
-                        Submitters:
-                    {% endblocktranslate %}
+                    {% blocktranslate trimmed count count=submission.speakers.count %}Submitter{% plural %}Submitters{% endblocktranslate %}:
                 {% endif %}
                 {{ submission.display_speaker_names }}{% if can_invite_speakers %},
                     <div class="input-group">

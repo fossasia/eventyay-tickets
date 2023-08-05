@@ -104,7 +104,7 @@ class CfP(LogMixin, models.Model):
     deadline = models.DateTimeField(
         null=True,
         blank=True,
-        verbose_name=_("deadline"),
+        verbose_name=_("Deadline"),
         help_text=_(
             "Please put in the last date you want to accept proposals from users."
         ),

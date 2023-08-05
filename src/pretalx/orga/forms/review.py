@@ -330,7 +330,7 @@ class ReviewExportForm(ExportForm):
 
 
 class ReviewAssignImportForm(DirectionForm):
-    import_file = forms.FileField(label=_("File"))
+    import_file = forms.FileField(label=_("file"))
     replace_assignments = forms.ChoiceField(
         label=_("Replace current assignments"),
         choices=((0, _("No")), (1, _("Yes"))),

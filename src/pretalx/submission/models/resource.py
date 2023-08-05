@@ -22,14 +22,14 @@ class Resource(LogMixin, FileCleanupMixin, models.Model):
         to="submission.Submission", related_name="resources", on_delete=models.PROTECT
     )
     resource = models.FileField(
-        verbose_name=_("file"),
+        verbose_name=_("File"),
         upload_to=resource_path,
         null=True,
         blank=True,
     )
     link = models.URLField(verbose_name=_("URL"), null=True, blank=True)
     description = models.CharField(
-        null=True, blank=True, max_length=1000, verbose_name=_("description")
+        null=True, blank=True, max_length=1000, verbose_name=_("Description")
     )
 
     objects = ScopedManager(event="submission__event")

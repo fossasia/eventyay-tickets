@@ -664,7 +664,7 @@ class ReviewAssignmentImport(EventPermissionRequired, FormView):
     @transaction.atomic
     def form_valid(self, form):
         form.save()
-        messages.success(self.request, _("The reviewers were assigned successfully"))
+        messages.success(self.request, _("The reviewers were assigned successfully."))
         return redirect(self.request.event.orga_urls.review_assignments)
 
 
