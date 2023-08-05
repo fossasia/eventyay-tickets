@@ -36,6 +36,13 @@
         {% if submission.state != "draft" %}
             {% translate "Current state of your proposal:" %}
             {% include "cfp/event/fragment_state.html" with state=submission.user_state %}
+        {% else %}
+            <div class="alert alert-info">
+                {% blocktranslate %}
+                    This is a draft proposal.
+                    It will never be visible to anybody else, unless you submit it or explicitly share it.
+                {% endblocktranslate %}
+            </div>
         {% endif %}
         {% if submission.state == 'accepted' %}
             <a href="{{ submission.urls.confirm }}" class="btn btn-sm btn-success">
@@ -210,6 +217,22 @@
                 <a href="{{ submission.urls.withdraw }}"
                    class="btn float-right btn-danger btn-block">
                     {% translate "Withdraw" %}
+                </a>
+            </div>
+        </div>
+    {% elif submission.state == "draft" %}
+        <h3>{% translate "Discard draft proposal" %}</h3>
+        <p>
+            {% blocktranslate trimmed %}
+                You can discard your draft proposal here. You cannot undo this - if you are
+                just uncertain if you can or should submit your proposal, please contact the organiser instead.
+            {% endblocktranslate %}
+        </p>
+        <div class="row">
+            <div class="col-md-3 flip ml-auto">
+                <a href="{{ submission.urls.discard }}"
+                   class="btn float-right btn-danger btn-block">
+                    {% translate "Discard" %}
                 </a>
             </div>
         </div>

@@ -1,0 +1,35 @@
+{% extends "cfp/event/base.html" %}
+{% load bootstrap4 %}
+{% load compress %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}{% translate "Discard draft proposal" %} :: {% endblock %}
+
+{% block content %}
+    <div class="col-md-10 ml-auto mr-auto">
+        <h2>{% translate "Discard draft proposal" %} {{ quotation_open }}{{ submission.title }}{{ quotation_close }}</h2>
+        {% if submission.submission_type and request.event.submission_types.all|length > 1 %}<p><strong>{% translate "Session type" %}</strong>: {{ submission.submission_type.name }}</p>{% endif %}
+        {% if submission.track and request.event.tracks.all|length > 1 %}<p><strong>{% translate "Track" %}</strong> {{ submission.track.name }}</p>{% endif %}
+        {% if request.event.is_multilingual and request.event.cfp.request_content_locale %}<p><strong>{% translate "Language" %}</strong> {{ submission.get_content_locale_display }}</p>{% endif %}
+        <p><strong>{% translate "Duration" %}</strong> {{ submission.export_duration }}</p>
+        <div class="alert alert-danger">
+            {% blocktranslate trimmed %}
+                Do you really want to discard your draft proposal? All data will be lost.
+            {% endblocktranslate %}
+        </div>
+        <form method="post" class="availability-form">
+            {% csrf_token %}
+            <div class="submit-group">
+                <a href="{{ submission.urls.user_base }}"
+                   class="btn btn-lg btn-info">
+                    {% translate "Go back" %}
+                </a>
+                <button type="submit"
+                        class="btn btn-lg btn-danger">
+                    {% translate "Delete" %}
+                </button>
+            </div>
+        </form>
+    </div>
+{% endblock %}

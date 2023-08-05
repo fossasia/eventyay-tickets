@@ -7,6 +7,7 @@ from django.contrib.auth import logout
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from django.forms.models import BaseModelFormSet, inlineformset_factory
+from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
@@ -131,6 +132,11 @@ class SubmissionViewMixin:
             code__iexact=self.kwargs.get("code"),
         )
 
+    @context
+    @cached_property
+    def submission(self, **kwargs):
+        return self.get_object()
+
 
 class SubmissionsListView(LoggedInEventPageMixin, ListView):
     template_name = "cfp/event/user_submissions.html"
@@ -217,11 +223,6 @@ class SubmissionConfirmView(LoggedInEventPageMixin, SubmissionViewMixin, FormVie
             self.template_name = "cfp/event/user_submission_confirm_error.html"
         return super().dispatch(request, *args, **kwargs)
 
-    @context
-    @cached_property
-    def submission(self, **kwargs):
-        return self.get_object()
-
     @cached_property
     def speaker_profile(self):
         return self.request.user.event_profile(self.request.event)
@@ -253,6 +254,24 @@ class SubmissionConfirmView(LoggedInEventPageMixin, SubmissionViewMixin, FormVie
             messages.success(self.request, phrases.cfp.submission_was_confirmed)
         else:
             messages.error(self.request, phrases.cfp.submission_not_confirmed)
+        return redirect("cfp:event.user.submissions", event=self.request.event.slug)
+
+
+class SubmissionDraftDiscardView(
+    LoggedInEventPageMixin, SubmissionViewMixin, TemplateView
+):
+    template_name = "cfp/event/user_submission_discard.html"
+    form_class = AvailabilitiesFormMixin
+
+    def get_object(self):
+        submission = super().get_object()
+        if not submission.state == SubmissionStates.DRAFT:
+            raise Http404()
+        return submission
+
+    def post(self, request, *args, **kwargs):
+        self.submission.delete()
+        messages.success(self.request, _("Your draft was discarded."))
         return redirect("cfp:event.user.submissions", event=self.request.event.slug)
 
 
@@ -415,11 +434,6 @@ class SubmissionInviteView(LoggedInEventPageMixin, SubmissionViewMixin, FormView
     permission_required = "cfp.add_speakers"
 
     def get_permission_object(self):
-        return self.get_object()
-
-    @context
-    @cached_property
-    def submission(self, **kwargs):
         return self.get_object()
 
     def get_form_kwargs(self):

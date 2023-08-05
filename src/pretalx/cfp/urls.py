@@ -67,6 +67,11 @@ urlpatterns = [
                                 name="event.user.submission.confirm",
                             ),
                             path(
+                                "discard",
+                                user.SubmissionDraftDiscardView.as_view(),
+                                name="event.user.submission.discard",
+                            ),
+                            path(
                                 "invite",
                                 user.SubmissionInviteView.as_view(),
                                 name="event.user.submission.invite",

@@ -106,6 +106,29 @@ def test_cannot_withdraw_accepted_submission(speaker_client, accepted_submission
 
 
 @pytest.mark.django_db
+def test_can_discard_draft_proposal(speaker_client, submission):
+    with scope(event=submission.event):
+        submission.state = SubmissionStates.DRAFT
+        submission.save()
+    response = speaker_client.get(submission.urls.discard, follow=True)
+    assert response.status_code == 200
+    response = speaker_client.post(submission.urls.discard, follow=True)
+    assert response.status_code == 200
+    with scope(event=submission.event):
+        assert not submission.event.submissions.filter(pk=submission.pk).exists()
+
+
+@pytest.mark.django_db
+def test_cannot_discard_non_draft_proposal(speaker_client, submission):
+    response = speaker_client.get(submission.urls.discard, follow=True)
+    assert response.status_code == 404
+    response = speaker_client.post(submission.urls.discard, follow=True)
+    assert response.status_code == 404
+    with scope(event=submission.event):
+        assert submission.event.submissions.filter(pk=submission.pk).exists()
+
+
+@pytest.mark.django_db
 def test_can_edit_submission(speaker_client, submission, resource, other_resource):
     with scope(event=submission.event):
         assert submission.resources.count() == 2

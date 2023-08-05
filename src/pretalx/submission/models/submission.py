@@ -248,6 +248,7 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
     class urls(EventUrls):
         user_base = "{self.event.urls.user_submissions}{self.code}/"
         withdraw = "{user_base}withdraw"
+        discard = "{user_base}discard"
         confirm = "{user_base}confirm"
         public_base = "{self.event.urls.base}talk/{self.code}"
         public = "{public_base}/"
