@@ -4,7 +4,7 @@
 		#main-wrapper
 			#unassigned(v-scrollbar.y="", @pointerenter="isUnassigning = true", @pointerleave="isUnassigning = false")
 				.title
-					span {{$t('Unassigned')}}
+					bunt-input#filter-input(v-model="unassignedFilterString", :placeholder="$t('Filter sessions')", icon="search")
 					#unassigned-sort(@click="showUnassignedSortMenu = !showUnassignedSortMenu", :class="{'active': showUnassignedSortMenu}")
 						i.fa.fa-sort
 					#unassigned-sort-menu(v-if="showUnassignedSortMenu")
@@ -12,8 +12,6 @@
 							span {{ method.label }}
 							i.fa.fa-sort-amount-asc(v-if="unassignedSort === method.name && unassignedSortDirection === 1")
 							i.fa.fa-sort-amount-desc(v-if="unassignedSort === method.name && unassignedSortDirection === -1")
-				.filter-bar
-					bunt-input#filter-input(v-model="unassignedFilterString", :placeholder="$t('Filter sessions')", icon="search")
 				session.new-break(:session="{title: '+ ' + $t('New break')}", :isDragged="false", @startDragging="startNewBreak")
 				session(v-for="un in unscheduled", :session="un", @startDragging="startDragging", :isDragged="draggedSession && un.id === draggedSession.id")
 			#schedule-wrapper(v-scrollbar.x.y="")
@@ -425,44 +423,46 @@ export default {
 			.bunt-tab-header-item-text
 				white-space: nowrap
 	#unassigned
-		margin-top: 64px
+		margin-top: 35px
 		width: 350px
 		flex: none
 		> *
 			margin-right: 12px
 		> .bunt-scrollbar-rail-y
 			margin: 0
-		.filter-bar
-			margin-left: 8px
 		> .title
 			padding 4px 0
 			font-size: 18px
 			text-align: center
 			background-color: $clr-white
 			border-bottom: 4px solid $clr-dividers-light
+			display: flex
+			align-items: flex-end
+			margin-left: 8px
+			#filter-input
+				width: calc(100% - 36px)
+			#unassigned-sort
+				width: 28px
+				height: 28px
+				text-align: center
+				cursor: pointer
+				border-radius: 4px
+				margin-bottom: 8px
+				margin-left: 4px
+				color: $clr-secondary-text-light
+				&:hover, &.active
+					opacity: 0.8
+					background-color: $clr-dividers-light
 		.new-break.c-linear-schedule-session
 			min-height: 48px
-		#unassigned-sort
-			position: absolute
-			top: 5px
-			right: 20px
-			width: 28px
-			height: 28px
-			text-align: center
-			cursor: pointer
-			border-radius: 4px
-			color: $clr-secondary-text-light
-			&:hover, &.active
-				opacity: 0.8
-				background-color: $clr-dividers-light
 		#unassigned-sort-menu
 			color: $clr-primary-text-light
 			display: flex
 			flex-direction: column
 			background-color: white
 			position: absolute
-			top: 34px
-			right: 25px
+			top: 53px
+			right: 15px
 			width: 130px
 			font-size: 16px
 			cursor: pointer
