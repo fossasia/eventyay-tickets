@@ -31,7 +31,7 @@ jobs:
       - uses: actions/cache@v3
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('src/setup.py') }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('pyproject.toml') }}
           restore-keys: |
             ${{ runner.os }}-pip-
       - name: Install Dependencies
@@ -51,7 +51,7 @@ jobs:
       - uses: actions/cache@v3
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('src/setup.py') }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('pyproject.toml') }}
           restore-keys: |
             ${{ runner.os }}-pip-
       - name: Install Dependencies
@@ -71,7 +71,7 @@ jobs:
       - uses: actions/cache@v3
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('src/setup.py') }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('pyproject.toml') }}
           restore-keys: |
             ${{ runner.os }}-pip-
       - name: Install Dependencies
@@ -81,7 +81,7 @@ jobs:
         working-directory: ./src
   djhtml:
     name: djhtml
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python 3.10
@@ -91,7 +91,7 @@ jobs:
       - uses: actions/cache@v3
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('src/setup.py') }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('pyproject.toml') }}
           restore-keys: |
             ${{ runner.os }}-pip-
       - name: Install Dependencies
@@ -99,30 +99,3 @@ jobs:
       - name: Run djhtml
         run: 'djhtml pretalx/'
         working-directory: ./src
-  packaging:
-    name: packaging
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v3
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.10"
-      - uses: actions/cache@v3
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('src/setup.py') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-      - name: Install Dependencies
-        run: python -m pip install twine wheel -Ue ".[dev]"
-      - name: Install system dependencies
-        run: |
-          sudo apt update
-          sudo apt install gettext
-      - name: Run check-manifest
-        run: check-manifest .
-      - name: Build package
-        run: python -m build -n
-      - name: Check package
-        run: twine check dist/*

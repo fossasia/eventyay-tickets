@@ -47,7 +47,7 @@ jobs:
           node-version: 'latest'
       - name: Install frontend dependencies
         run: npm ci
-        working-directory: ./src/frontend/schedule-editor
+        working-directory: ./src/pretalx/frontend/schedule-editor
       - name: Install system dependencies
         run: sudo apt update && sudo apt install gettext unzip
       - name: Install Python dependencies
@@ -60,6 +60,8 @@ jobs:
         run: twine check dist/*
       - name: Check files to make sure we ship our frontend
         run: unzip -l dist/pretalx*whl | grep frontend || exit 1
+      - name: Check files to make sure we ship our frontend but not our node_modules
+        run: unzip -l dist/pretalx*whl | grep node_modules && exit 1 || exit 0
       - name: Install the created wheel package with pip
         run: |
           # Switch to a new virtualenv

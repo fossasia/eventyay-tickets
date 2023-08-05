@@ -27,7 +27,7 @@ jobs:
       - uses: actions/cache@v3
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('src/setup.py', 'doc/requirements.txt') }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('pyproject.toml', 'doc/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
       - name: Install system packages
@@ -55,7 +55,7 @@ jobs:
       - uses: actions/cache@v3
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('src/setup.py', 'doc/requirements.txt') }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('pyproject.toml', 'doc/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
       - name: Install Dependencies
