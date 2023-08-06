@@ -270,9 +270,13 @@ export default {
 			this.saveTalk(movedSession)
 		},
 		createSession (e) {
-			this.schedule.talks.push(e.session)
-			api.createTalk(e.session)
-			this.editorStart(e.session)
+			api.createTalk(e.session).then(response => {
+				this.warnings[e.session.code] = response.warnings
+				const newSession = Object.assign({}, e.session)
+				newSession.id = response.id
+				this.schedule.talks.push(newSession)
+				this.editorStart(newSession)
+			})
 		},
 		editorStart (session) {
 			this.editorSession = session
