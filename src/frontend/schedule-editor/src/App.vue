@@ -45,7 +45,7 @@
 							.data-label {{ $t('Title') }}
 							.data-value.i18n-form-group
 								template(v-for="locale of locales")
-									input(v-model="editorSession.title", :required="true" :lang="locale")
+									input(v-model="editorSession.title[locale]", :required="true" :lang="locale")
 						.data-row(v-if="editorSession.track")
 							.data-label {{ $t('Track') }}
 							.data-value {{ getLocalizedString(editorSession.track.name) }}
@@ -295,7 +295,11 @@ export default {
 			this.editorSession = null
 		},
 		startNewBreak({event}) {
-		  this.startDragging({event, session: {title: this.$t("New Break"), duration: "30", uncreated: true}})
+			const title = this.locales.reduce((obj, locale) => {
+				obj[locale] = this.$t("New Break")
+				return obj
+			}, {})
+			this.startDragging({event, session: {title, duration: "30", uncreated: true}})
 		},
 		startDragging ({event, session}) {
 			if (this.availabilities && this.availabilities.talks[session.id] && this.availabilities.talks[session.id].length !== 0) {
