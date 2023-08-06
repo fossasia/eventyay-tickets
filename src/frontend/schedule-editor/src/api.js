@@ -67,7 +67,7 @@ const api = {
 	fetchRooms () {
 		return api.getList(`/api/events/${api.eventSlug}/rooms`)
 	},
-	saveTalk (talk) {
+	saveTalk (talk, {action = 'PATCH'} = {}) {
 		// Only call from App.saveTalk, which knows which data to update
 		var url = [
 			window.location.protocol,
@@ -78,7 +78,6 @@ const api = {
 			talk.id ? (talk.id + '/') : '',
 			window.location.search,
 		].join('')
-		const action = talk.action || 'PATCH'
 		return api.http(action, url, {
 			room: (talk.room && talk.room.id) ? talk.room.id : talk.room,
 			start: talk.start,
@@ -89,11 +88,10 @@ const api = {
 		})
 	},
 	deleteTalk (talk) {
-		return api.saveTalk({id: talk.id, action: 'DELETE'})
+		return api.saveTalk({id: talk.id}, {action: 'DELETE'})
 	},
 	createTalk (talk) {
-		talk.action = 'POST'
-		return api.saveTalk(talk)
+		return api.saveTalk(talk, {action: 'POST'})
 	}
 }
 export default api
