@@ -93,7 +93,7 @@ setup(
     keywords="conference cfp event schedule",
     python_requires=">={}.{}".format(*REQUIRED_PYTHON),
     install_requires=[
-        "beautifulsoup4~=4.12.0",  # https://git.launchpad.net/beautifulsoup/tree/CHANGELOG
+        "beautifulsoup4[lxml]~=4.12.0",  # https://git.launchpad.net/beautifulsoup/tree/CHANGELOG
         "bleach~=6.0.0",  # https://bleach.readthedocs.io/en/latest/changes.html
         "celery~=5.3.0",  # search for "what's new" on http://docs.celeryproject.org/en/latest/
         "css_inline~=0.10.0",  # https://github.com/Stranger6667/css-inline/blob/master/bindings/python/CHANGELOG.md
