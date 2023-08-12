@@ -1,3 +1,4 @@
+from os import environ
 from urllib.parse import urljoin
 
 from django.conf import settings
@@ -11,7 +12,18 @@ from pretalx.event.utils import create_organiser_with_team
 from pretalx.person.models import User
 
 
-def get_nonempty(prompt):  # pragma: no cover
+varname_prefix = "PRETALX_INIT_ORGANISER_"
+
+
+organiser_name_varname = varname_prefix + "NAME"
+organiser_name_default = "The Conference Organiser"
+
+
+organiser_slug_varname = varname_prefix + "SLUG"
+organiser_slug_default = "conforg"
+
+
+def prompt_nonempty(prompt):  # pragma: no cover
     result = input(prompt).strip()
     while not result:
         result = input(
@@ -23,8 +35,25 @@ def get_nonempty(prompt):  # pragma: no cover
 class Command(BaseCommand):  # pragma: no cover
     help = "Initializes your pretalx instance. Only to be used once."
 
+    def add_arguments(self, parser):
+        parser.add_argument(
+            "--noinput",
+            "--no-input",
+            action="store_true",
+            help="Suppresses all user prompts. "\
+                 "Calls Django's `createsuperuser` command with `--no-input` and consumes environment variables. " \
+                 "If a suppressed prompt cannot be resolved automatically because a variable is unset, the command will fail." \
+                 "You will want to set (with examples): " \
+                 "DJANGO_SUPERUSER_EMAIL=\"root@pretalx.invalid\" " \
+                 "DJANGO_SUPERUSER_PASSWORD=\"[SECRET]\" " \
+                 f"{organiser_name_varname}=\"{organiser_name_default}\" " \
+                 f"{organiser_slug_varname}=\"{organiser_slug_default}\"",
+        )
+
     @transaction.atomic
     def handle(self, *args, **options):
+        self.stdout.write(f"{args}")
+
         self.stdout.write(
             self.style.SUCCESS(
                 _(
@@ -44,7 +73,7 @@ class Command(BaseCommand):  # pragma: no cover
             )
         )
 
-        call_command("createsuperuser")
+        call_command("createsuperuser", noinput=options["noinput"])
         user = User.objects.order_by("-id").filter(is_administrator=True).first()
 
         self.stdout.write(
@@ -53,8 +82,17 @@ class Command(BaseCommand):  # pragma: no cover
             )
         )
 
-        organiser_name = get_nonempty(_('\nName (e.g. "The Conference Organiser"): '))
-        organiser_slug = get_nonempty(_('Slug (e.g. "conforg", used in urls): '))
+        self.stdout.write("\n")
+
+        organiser_name = self.get_nonempty(
+            _(f"Name (e.g. \"{organiser_name_default}\"): "),
+            organiser_name_varname if options["noinput"] else None,
+        )
+
+        organiser_slug = self.get_nonempty(
+            _(f"Slug (e.g. \"{organiser_slug_default}\", used in urls): "),
+            organiser_slug_varname if options["noinput"] else None,
+        )
 
         organiser, team = create_organiser_with_team(
             name=organiser_name, slug=organiser_slug, users=[user]
@@ -82,3 +120,13 @@ class Command(BaseCommand):  # pragma: no cover
                 ' - Use the command "import_schedule /path/to/schedule.xml" if you want to import an event.'
             )
         )
+
+    def get_nonempty(self, prompt, varname):
+        if not varname:
+            return prompt_nonempty(prompt)
+
+        if varname not in environ:
+            raise ValueError(f"Environment variable {varname} is required but undefined.")
+
+        self.stdout.write(f"{prompt}[{_('used environment variable:')} {varname}]")
+        return environ[varname]

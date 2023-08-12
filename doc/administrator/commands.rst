@@ -108,6 +108,16 @@ The ``init`` command allows you to create a superuser and an organiser. It is
 useful to give you all the tools to start configuring pretalx in the web
 interface. Please run this command once in the beginning. You can abort the
 command at any time, and it will not write anything to the database.
+With the ``--noinput`` flag, this command will *not* prompt you interactively
+on standard input, but will instead read from the environment.
+This is especially useful for automating invocations of this command.
+For the first phase (creation of a superuser), set the environment variables
+``DJANGO_SUPERUSER_EMAIL`` and ``DJANGO_SUPERUSER_PASSWORD``
+(`see also the documentation of the non-interactive mode of the corresponding
+Django command
+<https://docs.djangoproject.com/en/4.2/ref/django-admin/#createsuperuser>`_).
+For the second phase (creation of an organiser), set the environment variables
+``PRETALX_INIT_ORGANISER_NAME`` and ``PRETALX_INIT_ORGANISER_SLUG``.
 
 ``python -m pretalx createsuperuser``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
