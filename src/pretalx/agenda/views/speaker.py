@@ -163,5 +163,5 @@ def empty_avatar_view(request, event):
     return FileResponse(
         io.BytesIO(avatar_template.encode()),
         as_attachment=True,
-        headers={"content-type": "image/svg+xml"},
+        content_type="image/svg+xml",
     )
