@@ -7,11 +7,11 @@
 import i18next from 'i18next'
 import moment from 'moment-timezone'
 
-const localeModules = import.meta.glob('../../../../pretalx/locale/*/LC_MESSAGES/django.po')
+const localeModules = import.meta.glob('../../../locale/*/LC_MESSAGES/django.po')
 const momentLocaleModules = import.meta.glob('../../node_modules/moment/dist/locale/*.js')
 
 export default async function (locale) {
-  const localeModule = await localeModules[`../../../../pretalx/locale/${locale}/LC_MESSAGES/django.po`]?.()
+  const localeModule = await localeModules[`../../../locale/${locale}/LC_MESSAGES/django.po`]?.()
 	const momentLocale = locale.split("_")[0]
 	const momentLocaleModule = await momentLocaleModules[`../../node_modules/moment/dist/locale/${momentLocale}.js`]?.()
 	moment.locale(momentLocale)

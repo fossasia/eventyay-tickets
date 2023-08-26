@@ -17,8 +17,7 @@ class Command(Parent):
 
             # run "npm start" in the frontend directory
             frontend_dir = (
-                Path(__file__).parent.parent.parent.parent.parent
-                / "frontend/schedule-editor"
+                Path(__file__).parent.parent.parent.parent / "frontend/schedule-editor"
             )
             vite_server = Popen(["npm", "start"], cwd=frontend_dir)
 

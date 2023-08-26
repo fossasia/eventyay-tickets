@@ -115,6 +115,7 @@ version = {attr = "pretalx.__version__"}
 [tool.setuptools.packages.find]
 where = ["src"]
 include = ["pretalx*"]
+exclude = ["pretalx/frontend/node_modules"]
 namespaces = false
 
 [tool.check-manifest]

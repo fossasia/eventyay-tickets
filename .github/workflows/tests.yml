@@ -83,7 +83,7 @@ jobs:
         if: matrix.database == 'postgres'
       - name: Install frontend dependencies
         run: npm ci
-        working-directory: ./src/frontend/schedule-editor
+        working-directory: ./src/pretalx/frontend/schedule-editor
       - name: Run checks
         run: python manage.py check --deploy
         working-directory: ./src

@@ -74,7 +74,7 @@ class Command(Parent):
             pathreplace(move[1], move[0])
 
         # Create frontend translations
-        base_path = locale_path.parent.parent
+        base_path = locale_path.parent
         frontend_path = base_path / "frontend/schedule-editor"
         locales = [locale.name for locale in locale_path.iterdir() if locale.is_dir()]
 
@@ -91,5 +91,5 @@ class Command(Parent):
 
         # Now merge the js file with the django file in each language
         for locale in locales:
-            command = f"msgcat -o pretalx/locale/{locale}/LC_MESSAGES/django.po --use-first pretalx/locale/{locale}/LC_MESSAGES/django.po frontend/schedule-editor/locales/en/translation.po"
+            command = f"msgcat -o locale/{locale}/LC_MESSAGES/django.po --use-first locale/{locale}/LC_MESSAGES/django.po frontend/schedule-editor/locales/en/translation.po"
             subprocess.run(command, check=True, shell=True, cwd=base_path)

@@ -44,8 +44,7 @@ class Command(BaseCommand):
         )
         with override_settings(_VITE_IGNORE=True):
             frontend_dir = (
-                Path(__file__).parent.parent.parent.parent.parent
-                / "frontend/schedule-editor/"
+                Path(__file__).parent.parent.parent.parent / "frontend/schedule-editor/"
             )
             env = os.environ.copy()
             env["OUT_DIR"] = str(settings.STATIC_ROOT)

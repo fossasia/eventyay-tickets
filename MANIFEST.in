@@ -9,11 +9,13 @@ exclude src/pretalx.cfg
 recursive-exclude doc *
 recursive-exclude src/data *
 recursive-exclude src/local *
+recursive-exclude src/static.dist *
 
-recursive-exclude src/frontend/schedule-editor/node_modules *
-recursive-include src/frontend *
+recursive-include src/pretalx/frontend *
+recursive-exclude src/pretalx/frontend/schedule-editor/dist *
+recursive-exclude src/pretalx/frontend/schedule-editor/node_modules *
+
 recursive-include src/pretalx/static *
-recursive-include src/static.dist *
 recursive-include src/pretalx/locale *
 recursive-include src/pretalx/agenda/templates *
 recursive-include src/pretalx/api/templates *
