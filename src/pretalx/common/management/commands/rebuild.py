@@ -49,8 +49,8 @@ class Command(BaseCommand):
             env = os.environ.copy()
             env["OUT_DIR"] = str(settings.STATIC_ROOT)
             env["BASE_URL"] = settings.STATIC_URL
-            if options["npm_install"]:
-                subprocess.check_call(["npm", "install"], cwd=frontend_dir)
+            if options["npm_install"] or not (frontend_dir / "node_modules").exists():
+                subprocess.check_call(["npm", "ci"], cwd=frontend_dir)
             subprocess.check_call(["npm", "run", "build"], cwd=frontend_dir, env=env)
         call_command("compress", verbosity=silent)
 
