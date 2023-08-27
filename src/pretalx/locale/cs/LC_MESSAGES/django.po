@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-08-05 02:05+0000\n"
-"PO-Revision-Date: 2023-07-24 19:11+0000\n"
-"Last-Translator: Jozef Mlich <jmlich83@gmail.com>\n"
+"PO-Revision-Date: 2023-08-27 11:54+0000\n"
+"Last-Translator: Michal Stanke <michal@stanke.cz>\n"
 "Language-Team: none\n"
 "Language: cs\n"
 "MIME-Version: 1.0\n"
@@ -994,17 +994,15 @@ msgstr ""
 #: pretalx/cfp/templates/cfp/event/user_submission_discard.html:7
 #: pretalx/cfp/templates/cfp/event/user_submission_discard.html:11
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:216
-#, fuzzy
-#| msgid "Withdraw proposal"
 msgid "Discard draft proposal"
-msgstr "Stáhnout přihlášku"
+msgstr "Zahodit koncept přihlášku"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_discard.html:17
-#, fuzzy
-#| msgid "Do you really want to withdraw your proposal?"
 msgid ""
 "Do you really want to discard your draft proposal? All data will be lost."
-msgstr "Opravdu chcete stáhnout vaší přihlášku?"
+msgstr ""
+"Opravdu chcete zahodit koncept své přihlášky? Všechna její data budou "
+"ztracena."
 
 #: pretalx/cfp/templates/cfp/event/user_submission_discard.html:30
 #: pretalx/orga/templates/orga/cfp/access_code_form.html:46
@@ -1027,6 +1025,11 @@ msgid ""
 "submit it or explicitly share it.\n"
 "                "
 msgstr ""
+"\n"
+"                    Toto je koncept přihlášky.\n"
+"                    Pokud ho neodešlete nebo s někým nenasdílíte, nikdo ho "
+"neuvidí.\n"
+"                "
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:49
 msgid "Confirm your attendance"
@@ -1050,14 +1053,11 @@ msgstr[1] "Přednášející:"
 msgstr[2] "Přednášející:"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:67
-#, fuzzy
-#| msgid "Submitter:"
-#| msgid_plural "Submitters:"
 msgid "Submitter"
 msgid_plural "Submitters"
-msgstr[0] "Odesilatel:"
-msgstr[1] "Odesilatelé:"
-msgstr[2] "Odesilatelů:"
+msgstr[0] "Odesilatel"
+msgstr[1] "Odesilatelé"
+msgstr[2] "Odesilatelů"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:92
 #: pretalx/orga/forms/schedule.py:116
@@ -1124,19 +1124,14 @@ msgstr ""
 "nejdříve organizátory."
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:218
-#, fuzzy
-#| msgid ""
-#| "You can withdraw your proposal from the selection process here. You "
-#| "cannot undo this - if you are just uncertain if you can or should hold "
-#| "your session, please contact the organiser instead."
 msgid ""
 "You can discard your draft proposal here. You cannot undo this - if you are "
 "just uncertain if you can or should submit your proposal, please contact the "
 "organiser instead."
 msgstr ""
-"Zde můžete stáhnout přihlášku z výběrového procesu. Tento krok ze nedá "
-"vrátit - pokud se jen neumíte rozhodnout, zda přednášet či ne, kontaktujte "
-"nejdříve organizátory."
+"Zde můžete zahodit koncept své přihlášky. Tento krok ze nedá vrátit - pokud "
+"se jen neumíte rozhodnout, zda můžete nebo byste měli přihlášku odeslat, "
+"kontaktujte nejdříve organizátory."
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:227
 #: pretalx/orga/templates/orga/mails/outbox_form.html:106
@@ -1292,10 +1287,8 @@ msgid ""
 msgstr "Váš API token byl přegenerován. Předchozí token již nelze použít."
 
 #: pretalx/cfp/views/user.py:274
-#, fuzzy
-#| msgid "Your drafts"
 msgid "Your draft was discarded."
-msgstr "Vaše koncepty"
+msgstr "Váš koncept byl zahozen."
 
 #: pretalx/cfp/views/user.py:410
 msgid "Your proposal has been submitted."
@@ -4963,12 +4956,12 @@ msgstr "Zatím žádné přihlášky"
 #: pretalx/orga/templates/orga/event_list.html:42
 #: pretalx/orga/templates/orga/event_list.html:79
 msgid "Live"
-msgstr "Veřejná"
+msgstr "Živě"
 
 #: pretalx/orga/templates/orga/event_list.html:44
 #: pretalx/orga/templates/orga/event_list.html:82
 msgid "Not public"
-msgstr "Nezveřejněno"
+msgstr "Neveřejné"
 
 #: pretalx/orga/templates/orga/event_list.html:51
 msgid "Create a new event"
@@ -5392,7 +5385,7 @@ msgstr "Akce"
 
 #: pretalx/orga/templates/orga/review/assignment.html:22
 msgid "Import assignments"
-msgstr "Import přiřazení"
+msgstr "Importovat přiřazení"
 
 #: pretalx/orga/templates/orga/review/assignment.html:30
 #, python-format
@@ -5459,7 +5452,7 @@ msgstr "Počet kontrol"
 
 #: pretalx/orga/templates/orga/review/dashboard.html:63
 msgid "Columns"
-msgstr "Sloupce"
+msgstr "Slupce"
 
 #: pretalx/orga/templates/orga/review/dashboard.html:75
 #: pretalx/orga/templates/orga/review/dashboard.html:194
@@ -5550,7 +5543,7 @@ msgstr "Tato přihláška vám byla přiřazena ke kontrole"
 #: pretalx/orga/templates/orga/review/dashboard.html:299
 #: pretalx/orga/templates/orga/speaker/form.html:41
 msgid "pending"
-msgstr "čeká"
+msgstr "čekající"
 
 #: pretalx/orga/templates/orga/review/dashboard.html:310
 #: pretalx/orga/templates/orga/review/dashboard.html:332
@@ -6071,7 +6064,7 @@ msgstr "čekající pozvánka"
 
 #: pretalx/orga/templates/orga/settings/team_detail.html:61
 msgid "Resend invite"
-msgstr "Znovu odeslat pozvánku"
+msgstr "Znovu poslat pozvánku"
 
 #: pretalx/orga/templates/orga/settings/team_detail.html:73
 msgid "Add member"
@@ -7095,10 +7088,8 @@ msgid "{count} emails were generated and placed in the outbox."
 msgstr "{count} bylo znovu vygenerováno a zařazeno k odeslání."
 
 #: pretalx/orga/views/review.py:667
-#, fuzzy
-#| msgid "The reviewers were assigned successfully"
 msgid "The reviewers were assigned successfully."
-msgstr "Přihlášky byly úspěšně přiřazeny ke kontrole"
+msgstr "Přihlášky byly úspěšně přiřazeny ke kontrole."
 
 #: pretalx/orga/views/review.py:685 pretalx/orga/views/schedule.py:111
 #: pretalx/orga/views/speaker.py:359
@@ -7552,23 +7543,23 @@ msgid "This text will be shown in the public changelog and the RSS feed."
 msgstr "Tento text se zobrazí ve veřejném seznamu změn a v RSS kanálu."
 
 #: pretalx/schedule/models/schedule.py:372
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "Room {room_name} is not available at the scheduled time."
-msgstr "Tato místnost není v naplánovaném čase dostupná."
+msgstr "Místnost {room_name} není v naplánovaném čase dostupná."
 
 #: pretalx/schedule/models/schedule.py:396
 msgid "Another session in the same room overlaps with this one."
-msgstr ""
+msgstr "S touto přednáškou se v této místnosti překrývá jiná přednáška."
 
 #: pretalx/schedule/models/schedule.py:428
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "{speaker} is not available at the scheduled time."
-msgstr "V naplánovaném čase není přednášející dostupný."
+msgstr "V naplánovaném čase není přednášející {speaker} dostupný."
 
 #: pretalx/schedule/models/schedule.py:454
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "{speaker} is scheduled for another session at the same time."
-msgstr "V naplánovaném čase má přednášející jinou přednášku."
+msgstr "V naplánovaném čase má přednášející {speaker} jinou přednášku."
 
 #: pretalx/schedule/templates/schedule/speaker_notification.txt:1
 #, python-format
@@ -8203,7 +8194,7 @@ msgid "minutes"
 msgstr ""
 
 msgid "Hidden rooms"
-msgstr ""
+msgstr "Skryté místnosti"
 
 #~ msgid "Speaker E-Mail"
 #~ msgstr "E-mail přednášejícího"
