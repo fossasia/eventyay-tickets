@@ -119,14 +119,10 @@ all sites except those that use big custom JavaScript components, like the sched
 In order to use those, you have two options – in any case, you will need to have ``node`` and
 ``npm`` installed on your system.
 
-Then go to the ``src/pretalx/frontend/schedule-editor`` folder and run::
-
-    (env)$ npm install
-
 If you just need to use the JavaScript component, but don't need to change it,
 compile the JavaScript files::
 
-    (env)$ python manage.py rebuild
+    (env)$ python manage.py rebuild --npm-install
 
 If you want to change the JavaScript code, you can run the following command, which combines
 the Python and the JavaScript dev servers::

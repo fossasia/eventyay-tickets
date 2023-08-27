@@ -31,7 +31,7 @@ restart your service(s)::
 
     $ pip3 install --user --upgrade-strategy eager -U pretalx
     $ python -m pretalx migrate
-    $ python -m pretalx rebuild
+    $ python -m pretalx rebuild --npm-install
     $ python -m pretalx regenerate_css
     # systemctl restart pretalx-web
     # systemctl restart pretalx-worker  # If you're running celery

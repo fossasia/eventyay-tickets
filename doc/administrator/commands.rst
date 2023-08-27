@@ -89,7 +89,9 @@ Core pretalx commands
 
 The ``rebuild`` command regenerates all static files. With the ``--clear``
 flag, it replaces all static files with ones compiled from scratch. Run this
-command after every upgrade.
+command after every upgrade. Run it with ``--npm-install`` to install or update
+all frontend dependencies. (This option will automatically be used the first time
+when pretalx detects that you don't have a ``node_modules`` directory.
 
 ``python -m pretalx regenerate_css``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
