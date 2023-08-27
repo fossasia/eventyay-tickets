@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-08-05 01:53+0000\n"
-"PO-Revision-Date: 2023-08-05 01:52+0000\n"
-"Last-Translator: Tobias Kunze <r@rixx.de>\n"
+"PO-Revision-Date: 2023-08-07 07:54+0000\n"
+"Last-Translator: Jannik Beyerstedt <service-translatepretalx@jtbx.de>\n"
 "Language-Team: \n"
 "Language: de_DE\n"
 "MIME-Version: 1.0\n"
@@ -591,10 +591,8 @@ msgid "submitted"
 msgstr "eingereicht"
 
 #: pretalx/cfp/templates/cfp/event/fragment_state.html:5
-#, fuzzy
-#| msgid "Send review"
 msgid "in review"
-msgstr "Review abschicken"
+msgstr "Review läuft"
 
 #: pretalx/cfp/templates/cfp/event/fragment_state.html:7
 msgid "not accepted"
@@ -1016,17 +1014,15 @@ msgstr ""
 #: pretalx/cfp/templates/cfp/event/user_submission_discard.html:7
 #: pretalx/cfp/templates/cfp/event/user_submission_discard.html:11
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:216
-#, fuzzy
-#| msgid "Withdraw proposal"
 msgid "Discard draft proposal"
-msgstr "Einreichung zurückziehen"
+msgstr "Einreichung löschen"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_discard.html:17
-#, fuzzy
-#| msgid "Do you really want to withdraw your proposal?"
 msgid ""
 "Do you really want to discard your draft proposal? All data will be lost."
-msgstr "Möchtest du deine Einreichung wirklich zurückziehen?"
+msgstr ""
+"Möchtest du deine Einreichung wirklich zurückziehen? Alle Eingaben werden "
+"gelöscht."
 
 #: pretalx/cfp/templates/cfp/event/user_submission_discard.html:30
 #: pretalx/orga/templates/orga/cfp/access_code_form.html:46
@@ -1049,6 +1045,11 @@ msgid ""
 "submit it or explicitly share it.\n"
 "                "
 msgstr ""
+"\n"
+"                    Dies ist ein Einreichungsentwurf.\n"
+"                    Er ist für niemanden sichtbar, wenn er nicht eingereicht "
+"oder von dir geteilt wird.\n"
+"                "
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:49
 msgid "Confirm your attendance"
@@ -1071,11 +1072,9 @@ msgstr[0] "Vortragende:"
 msgstr[1] "Vortragende:"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:67
-#, fuzzy
-#| msgid "Submitters"
 msgid "Submitter"
 msgid_plural "Submitters"
-msgstr[0] "Einreichende"
+msgstr[0] "Einreichende*r"
 msgstr[1] "Einreichende"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:92
@@ -1145,20 +1144,14 @@ msgstr ""
 "Veranstalter."
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:218
-#, fuzzy
-#| msgid ""
-#| "You can withdraw your proposal from the selection process here. You "
-#| "cannot undo this - if you are just uncertain if you can or should hold "
-#| "your session, please contact the organiser instead."
 msgid ""
 "You can discard your draft proposal here. You cannot undo this - if you are "
 "just uncertain if you can or should submit your proposal, please contact the "
 "organiser instead."
 msgstr ""
-"Du kannst hier klicken, um deine Einreichung zurückzuziehen. Dies kann nicht "
+"Du kannst hier klicken, um deine Einreichung zu löschen. Dies kann nicht "
 "rückgängig gemacht werden - wenn du dir nur unsicher bist, ob du deine "
-"Veranstaltung abhalten kannst oder sollst, kontaktiere bitte lieber die "
-"Veranstalter."
+"Veranstaltung einreichen sollst, kontaktiere bitte lieber die Veranstalter."
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:227
 #: pretalx/orga/templates/orga/mails/outbox_form.html:106
@@ -1316,10 +1309,8 @@ msgstr ""
 "verwendet werden."
 
 #: pretalx/cfp/views/user.py:274
-#, fuzzy
-#| msgid "Your drafts"
 msgid "Your draft was discarded."
-msgstr "Deine Entwürfe"
+msgstr "Dein Entwurf wurde gelöscht."
 
 #: pretalx/cfp/views/user.py:410
 msgid "Your proposal has been submitted."
@@ -1877,15 +1868,15 @@ msgstr ""
 "in den nächsten Tagen nützlich sein sollten:\n"
 "\n"
 "- Ihr findet eine Liste aller {submission_count} Einreichungen hier:\n"
-"  {event_submissions}\n"
+"   {event_submissions}\n"
 "- Hier könnt ihr Reviewer hinzufügen:\n"
-"  {event_team}\n"
+"   {event_team}\n"
 "- Übersicht über Reviews gibt es hier:\n"
-"  {event_review}\n"
+"   {event_review}\n"
 "- Und hier könnt ihr ein Programm erstellen, wenn ihr die ersten "
 "Einreichungen\n"
 "angenommen habt:\n"
-"  {event_schedule}\n"
+"   {event_schedule}\n"
 
 #: pretalx/common/models/settings.py:131
 #, python-brace-format
@@ -2188,8 +2179,8 @@ msgid ""
 "please have a look at the <a %(docurl)s> API documentation</a>."
 msgstr ""
 "Dieses Token kannst du zum Zugang zur <a %(apiurl)s>pretalx-API</a> nutzen. "
-"Du kannst hier ein neues Token erstellen, das das alte invalidieren wird. "
-"Für Details sieh dir bitte die <a %(docurl)s>API-Dokumentation</a> an."
+"Du kannst hier ein neues Token erstellen, wodurch das alte Token ungültig "
+"wird. Für Details sieh dir bitte die <a %(docurl)s>API-Dokumentation</a> an."
 
 #: pretalx/common/templates/common/user_api_token.html:17
 msgid "API Token"
@@ -2207,7 +2198,7 @@ msgstr ""
 
 #: pretalx/common/templates/common/user_api_token.html:31
 msgid "Invalidate and regenerate"
-msgstr "Zurücksetzen und regenerieren"
+msgstr "Zurücksetzen und neu generieren"
 
 #: pretalx/common/templatetags/copyable.py:13
 msgid "Copy"
@@ -3137,7 +3128,7 @@ msgstr "CC"
 
 #: pretalx/mail/models.py:230
 msgid "Sent at"
-msgstr "Verschickt"
+msgstr "Verschickt am"
 
 #: pretalx/mail/models.py:297
 msgid "This mail has been sent already. It cannot be sent again."
@@ -5494,7 +5485,7 @@ msgid ""
 "a>."
 msgstr ""
 "Reviewer werden <b>nur die ihnen zugeteilten</b> Einreichungen sehen und "
-"bewerten können. Du kansnt das in deinen <a href=\"%(href)s\">Review-"
+"bewerten können. Du kannst das in deinen <a href=\"%(href)s\">Review-"
 "Einstellungen</a> anpassen."
 
 #: pretalx/orga/templates/orga/review/assignment.html:35
@@ -5633,7 +5624,7 @@ msgstr "Du hast diese Einreichung schon bewertet"
 
 #: pretalx/orga/templates/orga/review/dashboard.html:263
 msgid "You cannot review this proposal"
-msgstr "Du kannst diese Einreichung nicht bewerten"
+msgstr "Du darfst diese Einreichung nicht bewerten"
 
 #: pretalx/orga/templates/orga/review/dashboard.html:266
 msgid "You have been assigned to this proposal"
@@ -6670,7 +6661,7 @@ msgstr ""
 #: pretalx/orga/templates/orga/update.html:42
 #: pretalx/orga/templates/orga/update.html:55
 msgid "Check for updates now"
-msgstr "Update-Prüfung starten"
+msgstr "Nach Updates suchen"
 
 #: pretalx/orga/templates/orga/update.html:28
 msgid "The last update check was not successful."
@@ -7219,10 +7210,8 @@ msgid "{count} emails were generated and placed in the outbox."
 msgstr "{count} E-Mails wurden erstellt und liegen jetzt im Postausgang."
 
 #: pretalx/orga/views/review.py:667
-#, fuzzy
-#| msgid "The reviewers were assigned successfully"
 msgid "The reviewers were assigned successfully."
-msgstr "Die Reviewer wurden erfolgreich eingeteilt"
+msgstr "Die Reviewer wurden erfolgreich eingeteilt."
 
 #: pretalx/orga/views/review.py:685 pretalx/orga/views/schedule.py:111
 #: pretalx/orga/views/speaker.py:359
@@ -8144,7 +8133,7 @@ msgstr ""
 
 #: pretalx/submission/models/review.py:51
 msgid "You need to keep at least one non-independent score category!"
-msgstr "Du musst mindestens eine nicht-unabhängige Kategorie behalten!"
+msgstr "Du musst mindestens eine nicht-unabhängige Kategorie beibehalten!"
 
 #: pretalx/submission/models/review.py:132
 msgid "What do you think?"
