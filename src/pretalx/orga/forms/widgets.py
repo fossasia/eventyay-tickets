@@ -9,6 +9,13 @@ class HeaderSelect(RadioSelect):
 class MultipleLanguagesWidget(CheckboxSelectMultiple):
     option_template_name = "orga/widgets/multi_languages_widget.html"
 
+    def __init__(self, *args, **kwargs):
+        kwargs["attrs"] = kwargs.get("attrs", {})
+        kwargs["attrs"]["class"] = (
+            kwargs["attrs"].get("class", "") + " form-check form-check-languages"
+        )
+        super().__init__(*args, **kwargs)
+
     def sort(self):
         self.choices = sorted(
             self.choices,

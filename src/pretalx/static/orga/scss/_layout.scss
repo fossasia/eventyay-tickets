@@ -436,6 +436,10 @@ footer {
   border-bottom: 1px solid rgba(0, 0, 0, 0.125);
 }
 
+.form-check-languages label {
+  display: inline-flex !important;
+}
+
 .dashboard-history {
   overflow-y: none;
   max-height: none;
