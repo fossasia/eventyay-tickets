@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-28 14:53+0000\n"
+"POT-Creation-Date: 2023-08-28 15:40+0000\n"
 "PO-Revision-Date: 2023-08-15 01:54+0000\n"
 "Last-Translator: Yucheng Lin <yuchenglinedu@gmail.com>\n"
 "Language-Team: none\n"
@@ -989,11 +989,8 @@ msgstr "您的草稿："
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:41
 msgid ""
-"\n"
-"                    This is a draft proposal.\n"
-"                    It will never be visible to anybody else, unless you "
-"submit it or explicitly share it.\n"
-"                "
+"This is a draft proposal. It will never be visible to anybody else, unless "
+"you submit it or explicitly share it."
 msgstr ""
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:49
@@ -4388,11 +4385,9 @@ msgstr "目前尚無人回答此問題。"
 #: pretalx/orga/templates/orga/cfp/question_detail.html:52
 #, fuzzy, python-format
 msgid ""
-"\n"
-"                    This question has been answered <strong>%(count)s</"
-"strong>, <strong>%(missing)s</strong> answers <a "
-"href=\"%(base_search_url)sunanswered=1\">are still missing</a>.\n"
-"                "
+"This question has been answered <strong>%(count)s</strong>, "
+"<strong>%(missing)s</strong> answers <a "
+"href=\"%(base_search_url)sunanswered=1\">are still missing</a>."
 msgstr ""
 "\n"
 "                    此問題已被回答 <strong>%(count)s</strong> 次，還<a "
@@ -6174,9 +6169,9 @@ msgstr ""
 #: pretalx/orga/templates/orga/submission/apply_pending.html:11
 #, python-format
 msgid ""
-" Please confirm that you really want to change the state of these %(count)s "
+"Please confirm that you really want to change the state of these %(count)s "
 "proposals."
-msgstr " 您確定要改變這 %(count)s 個議程投稿的狀態嗎？"
+msgstr "您確定要改變這 %(count)s 個議程投稿的狀態嗎？"
 
 #: pretalx/orga/templates/orga/submission/apply_pending.html:25
 #: pretalx/orga/templates/orga/submission/state_change.html:30
@@ -7371,18 +7366,14 @@ msgstr ""
 msgid "{speaker} is scheduled for another session at the same time."
 msgstr "此刻您還不能對此議程發表回饋。"
 
-#: pretalx/schedule/templates/schedule/speaker_notification.txt:1
-#, python-format
-msgid ""
-"\n"
-"- Your session “%(title)s” will take place at %(start)s in %(location)s"
-msgstr ""
-
 #: pretalx/schedule/templates/schedule/speaker_notification.txt:2
 #, python-format
-msgid ""
-"\n"
-"- Your session “%(title)s” has been moved to %(start)s in %(location)s"
+msgid "- Your session “%(title)s” will take place at %(start)s in %(location)s"
+msgstr ""
+
+#: pretalx/schedule/templates/schedule/speaker_notification.txt:3
+#, python-format
+msgid "- Your session “%(title)s” has been moved to %(start)s in %(location)s"
 msgstr ""
 
 #: pretalx/settings.py:352

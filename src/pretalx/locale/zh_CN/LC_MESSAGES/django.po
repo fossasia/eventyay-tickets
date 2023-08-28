@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-28 14:53+0000\n"
+"POT-Creation-Date: 2023-08-28 15:40+0000\n"
 "PO-Revision-Date: 2023-05-27 12:16+0000\n"
 "Last-Translator: Joel (Jiawei) Wang <joel.bradley.w@gmail.com>\n"
 "Language-Team: none\n"
@@ -978,11 +978,8 @@ msgstr "草稿："
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:41
 msgid ""
-"\n"
-"                    This is a draft proposal.\n"
-"                    It will never be visible to anybody else, unless you "
-"submit it or explicitly share it.\n"
-"                "
+"This is a draft proposal. It will never be visible to anybody else, unless "
+"you submit it or explicitly share it."
 msgstr ""
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:49
@@ -4288,13 +4285,10 @@ msgstr "目前还没有人回答这个问题。"
 #: pretalx/orga/templates/orga/cfp/question_detail.html:52
 #, python-format
 msgid ""
-"\n"
-"                    This question has been answered <strong>%(count)s</"
-"strong>, <strong>%(missing)s</strong> answers <a "
-"href=\"%(base_search_url)sunanswered=1\">are still missing</a>.\n"
-"                "
+"This question has been answered <strong>%(count)s</strong>, "
+"<strong>%(missing)s</strong> answers <a "
+"href=\"%(base_search_url)sunanswered=1\">are still missing</a>."
 msgstr ""
-"\n"
 "该问题已经被回答<strong>%(count)s</strong>次，<strong>%(missing)s</strong>个"
 "答案仍然缺失，<a href=\"%(base_search_url)sunanswered=1\">请帮助解答</a>。"
 
@@ -6040,7 +6034,7 @@ msgstr "应用 %(count)s 个待定的更改吗？"
 #: pretalx/orga/templates/orga/submission/apply_pending.html:11
 #, python-format
 msgid ""
-" Please confirm that you really want to change the state of these %(count)s "
+"Please confirm that you really want to change the state of these %(count)s "
 "proposals."
 msgstr "请确认您是否真的想要改变这些 %(count)s 个提案的状态。"
 
@@ -7253,23 +7247,15 @@ msgstr "预定的时间无有效的演讲者。"
 msgid "{speaker} is scheduled for another session at the same time."
 msgstr "演讲者将在预定时间举行另一次讲座。"
 
-#: pretalx/schedule/templates/schedule/speaker_notification.txt:1
-#, python-format
-msgid ""
-"\n"
-"- Your session “%(title)s” will take place at %(start)s in %(location)s"
-msgstr ""
-"\n"
-"您的“%(title)s”会话将于%(start)s在%(location)s举行。"
-
 #: pretalx/schedule/templates/schedule/speaker_notification.txt:2
 #, python-format
-msgid ""
-"\n"
-"- Your session “%(title)s” has been moved to %(start)s in %(location)s"
-msgstr ""
-"\n"
-"您的“%(title)s”会话已经被移动到%(start)s在%(location)s。"
+msgid "- Your session “%(title)s” will take place at %(start)s in %(location)s"
+msgstr "您的“%(title)s”会话将于%(start)s在%(location)s举行。"
+
+#: pretalx/schedule/templates/schedule/speaker_notification.txt:3
+#, python-format
+msgid "- Your session “%(title)s” has been moved to %(start)s in %(location)s"
+msgstr "您的“%(title)s”会话已经被移动到%(start)s在%(location)s。"
 
 #: pretalx/settings.py:352
 msgid "English"

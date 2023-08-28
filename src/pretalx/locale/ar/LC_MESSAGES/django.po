@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-28 14:53+0000\n"
+"POT-Creation-Date: 2023-08-28 15:40+0000\n"
 "PO-Revision-Date: 2023-05-22 13:26+0000\n"
 "Last-Translator: malek chalak <malek@smex.org>\n"
 "Language-Team: none\n"
@@ -1018,11 +1018,8 @@ msgstr "المسودة الحالية"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:41
 msgid ""
-"\n"
-"                    This is a draft proposal.\n"
-"                    It will never be visible to anybody else, unless you "
-"submit it or explicitly share it.\n"
-"                "
+"This is a draft proposal. It will never be visible to anybody else, unless "
+"you submit it or explicitly share it."
 msgstr ""
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:49
@@ -4519,17 +4516,13 @@ msgstr "لم يجيب أحد على هذا السؤال في الوقت الحا
 #: pretalx/orga/templates/orga/cfp/question_detail.html:52
 #, python-format
 msgid ""
-"\n"
-"                    This question has been answered <strong>%(count)s</"
-"strong>, <strong>%(missing)s</strong> answers <a "
-"href=\"%(base_search_url)sunanswered=1\">are still missing</a>.\n"
-"                "
-msgstr ""
-"\n"
-"                    تمت الإجابة على هذا السؤال <strong>%(count)s</strong>, "
+"This question has been answered <strong>%(count)s</strong>, "
 "<strong>%(missing)s</strong> answers <a "
-"href=\"%(base_search_url)sunanswered=1\"> ماتزال مفقودة </a>.\n"
-"                "
+"href=\"%(base_search_url)sunanswered=1\">are still missing</a>."
+msgstr ""
+"تمت الإجابة على هذا السؤال <strong>%(count)s</strong>, <strong>%(missing)s</"
+"strong> answers <a href=\"%(base_search_url)sunanswered=1\"> ماتزال مفقودة </"
+"a>."
 
 #: pretalx/orga/templates/orga/cfp/question_detail.html:56
 #, python-format
@@ -6398,7 +6391,7 @@ msgstr ""
 #, fuzzy, python-format
 #| msgid "Do you really want to change the state of this proposal?"
 msgid ""
-" Please confirm that you really want to change the state of these %(count)s "
+"Please confirm that you really want to change the state of these %(count)s "
 "proposals."
 msgstr "هل تريد حقًا تغيير حالة هذا الاقتراح؟"
 
@@ -7666,23 +7659,15 @@ msgstr "المتحدث غير متوفر في الوقت المحدد."
 msgid "{speaker} is scheduled for another session at the same time."
 msgstr "المتحدث يعقد جلسة أخرى في الوقت المحدد."
 
-#: pretalx/schedule/templates/schedule/speaker_notification.txt:1
-#, python-format
-msgid ""
-"\n"
-"- Your session “%(title)s” will take place at %(start)s in %(location)s"
-msgstr ""
-"\n"
-"جلستك“%(title)s”ستعقد %(start)s في%(location)s"
-
 #: pretalx/schedule/templates/schedule/speaker_notification.txt:2
 #, python-format
-msgid ""
-"\n"
-"- Your session “%(title)s” has been moved to %(start)s in %(location)s"
-msgstr ""
-"\n"
-"جلستك %(title)s” نقلت الى %(start)s في %(location)s"
+msgid "- Your session “%(title)s” will take place at %(start)s in %(location)s"
+msgstr "جلستك“%(title)s”ستعقد %(start)s في%(location)s"
+
+#: pretalx/schedule/templates/schedule/speaker_notification.txt:3
+#, python-format
+msgid "- Your session “%(title)s” has been moved to %(start)s in %(location)s"
+msgstr "جلستك %(title)s” نقلت الى %(start)s في %(location)s"
 
 #: pretalx/settings.py:352
 msgid "English"

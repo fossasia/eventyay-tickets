@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-28 14:53+0000\n"
+"POT-Creation-Date: 2023-08-28 15:27+0000\n"
 "PO-Revision-Date: 2023-08-07 07:54+0000\n"
 "Last-Translator: Jannik Beyerstedt <service-translatepretalx@jtbx.de>\n"
 "Language-Team: \n"
@@ -1040,17 +1040,11 @@ msgstr "Ihr Entwurf:"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:41
 msgid ""
-"\n"
-"                    This is a draft proposal.\n"
-"                    It will never be visible to anybody else, unless you "
-"submit it or explicitly share it.\n"
-"                "
+"This is a draft proposal. It will never be visible to anybody else, unless "
+"you submit it or explicitly share it."
 msgstr ""
-"\n"
-"                    Dies ist ein Einreichungsentwurf.\n"
-"                    Er ist für niemanden sichtbar, wenn er nicht eingereicht "
-"oder von Ihnen explizit geteilt wird.\n"
-"                "
+"Dies ist ein Einreichungsentwurf. Er ist für niemanden sichtbar, wenn er "
+"nicht eingereicht oder von Ihnen explizit geteilt wird."
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:49
 msgid "Confirm your attendance"
@@ -4570,17 +4564,13 @@ msgstr "Niemand hat diese Frage beantwortet."
 #: pretalx/orga/templates/orga/cfp/question_detail.html:52
 #, python-format
 msgid ""
-"\n"
-"                    This question has been answered <strong>%(count)s</"
-"strong>, <strong>%(missing)s</strong> answers <a "
-"href=\"%(base_search_url)sunanswered=1\">are still missing</a>.\n"
-"                "
+"This question has been answered <strong>%(count)s</strong>, "
+"<strong>%(missing)s</strong> answers <a "
+"href=\"%(base_search_url)sunanswered=1\">are still missing</a>."
 msgstr ""
-"\n"
-"                    Diese Frage wurde <strong>%(count)s</strong> mal "
-"beantwortet, <strong>%(missing)s</strong> Antworten <a "
-"href=\"%(base_search_url)sunanswered=1\">fehlen noch</a>.\n"
-"                "
+"Diese Frage wurde <strong>%(count)s</strong> mal beantwortet, "
+"<strong>%(missing)s</strong> Antworten <a "
+"href=\"%(base_search_url)sunanswered=1\">fehlen noch</a>."
 
 #: pretalx/orga/templates/orga/cfp/question_detail.html:56
 #, python-format
@@ -6424,10 +6414,10 @@ msgstr "Alle %(count)s vorgemerkten Änderungen freischalten?"
 #: pretalx/orga/templates/orga/submission/apply_pending.html:11
 #, python-format
 msgid ""
-" Please confirm that you really want to change the state of these %(count)s "
+"Please confirm that you really want to change the state of these %(count)s "
 "proposals."
 msgstr ""
-" Bitte bestätigen Sie, dass Sie wirklich den Status dieser %(count)s "
+"Bitte bestätigen Sie, dass Sie wirklich den Status dieser %(count)s "
 "Einreichungen ändern wollen."
 
 #: pretalx/orga/templates/orga/submission/apply_pending.html:25
@@ -7729,22 +7719,16 @@ msgstr ""
 "{speaker} ist zu diesem Zeitpunkt schon für einen anderen Programmpunkt "
 "verplant."
 
-#: pretalx/schedule/templates/schedule/speaker_notification.txt:1
-#, python-format
-msgid ""
-"\n"
-"- Your session “%(title)s” will take place at %(start)s in %(location)s"
-msgstr ""
-"\n"
-"- Ihr Beitrag „%(title)s“ wird um %(start)s in %(location)s stattfinden"
-
 #: pretalx/schedule/templates/schedule/speaker_notification.txt:2
 #, python-format
-msgid ""
-"\n"
-"- Your session “%(title)s” has been moved to %(start)s in %(location)s"
+msgid "- Your session “%(title)s” will take place at %(start)s in %(location)s"
 msgstr ""
-"\n"
+"- Ihr Beitrag „%(title)s“ wird um %(start)s in %(location)s stattfinden"
+
+#: pretalx/schedule/templates/schedule/speaker_notification.txt:3
+#, python-format
+msgid "- Your session “%(title)s” has been moved to %(start)s in %(location)s"
+msgstr ""
 "- Ihr Beitrag „%(title)s“ wurde auf %(start)s in %(location)s verschoben"
 
 #: pretalx/settings.py:352

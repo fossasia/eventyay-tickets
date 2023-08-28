@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-28 14:53+0000\n"
+"POT-Creation-Date: 2023-08-28 15:40+0000\n"
 "PO-Revision-Date: 2023-05-13 03:03+0000\n"
 "Last-Translator: Vangelis Zacharioudakis <sugarvag@gmail.com>\n"
 "Language-Team: none\n"
@@ -1061,11 +1061,8 @@ msgstr "Το προσχέδιο σας:"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:41
 msgid ""
-"\n"
-"                    This is a draft proposal.\n"
-"                    It will never be visible to anybody else, unless you "
-"submit it or explicitly share it.\n"
-"                "
+"This is a draft proposal. It will never be visible to anybody else, unless "
+"you submit it or explicitly share it."
 msgstr ""
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:49
@@ -4654,17 +4651,13 @@ msgstr "Κανείς δεν έχει απαντήσει για την ώρα α�
 #: pretalx/orga/templates/orga/cfp/question_detail.html:52
 #, python-format
 msgid ""
-"\n"
-"                    This question has been answered <strong>%(count)s</"
-"strong>, <strong>%(missing)s</strong> answers <a "
-"href=\"%(base_search_url)sunanswered=1\">are still missing</a>.\n"
-"                "
+"This question has been answered <strong>%(count)s</strong>, "
+"<strong>%(missing)s</strong> answers <a "
+"href=\"%(base_search_url)sunanswered=1\">are still missing</a>."
 msgstr ""
-"\n"
-"                    Αυτή η ερώτηση έχει απαντηθεί <strong>%(count)s</"
-"strong>, <strong>%(missing)s</strong> απαντήσεις <a "
-"href=\"%(base_search_url)sunanswered=1\">λείπουν ακόμα</a>.\n"
-"                "
+"Αυτή η ερώτηση έχει απαντηθεί <strong>%(count)s</strong>, "
+"<strong>%(missing)s</strong> απαντήσεις <a "
+"href=\"%(base_search_url)sunanswered=1\">λείπουν ακόμα</a>."
 
 #: pretalx/orga/templates/orga/cfp/question_detail.html:56
 #, python-format
@@ -6532,10 +6525,10 @@ msgstr "Εφαρμογή %(count)s εκκρεμών αλλαγών;"
 #: pretalx/orga/templates/orga/submission/apply_pending.html:11
 #, python-format
 msgid ""
-" Please confirm that you really want to change the state of these %(count)s "
+"Please confirm that you really want to change the state of these %(count)s "
 "proposals."
 msgstr ""
-" Επιβεβαιώστε ότι θέλετε πραγματικά να αλλάξετε την κατάσταση αυτών των "
+"Επιβεβαιώστε ότι θέλετε πραγματικά να αλλάξετε την κατάσταση αυτών των "
 "%(count)s προτάσεων."
 
 #: pretalx/orga/templates/orga/submission/apply_pending.html:25
@@ -7854,23 +7847,17 @@ msgid "{speaker} is scheduled for another session at the same time."
 msgstr ""
 "Ένας ομιλητής πραγματοποιεί μια άλλη συνεδρία την προγραμματισμένη ώρα."
 
-#: pretalx/schedule/templates/schedule/speaker_notification.txt:1
+#: pretalx/schedule/templates/schedule/speaker_notification.txt:2
 #, python-format
-msgid ""
-"\n"
-"- Your session “%(title)s” will take place at %(start)s in %(location)s"
+msgid "- Your session “%(title)s” will take place at %(start)s in %(location)s"
 msgstr ""
-"\n"
 "- Η συνεδρία σας \"%(title)s\" θα πραγματοποιηθεί στο %(start)s σε "
 "%(location)s"
 
-#: pretalx/schedule/templates/schedule/speaker_notification.txt:2
+#: pretalx/schedule/templates/schedule/speaker_notification.txt:3
 #, python-format
-msgid ""
-"\n"
-"- Your session “%(title)s” has been moved to %(start)s in %(location)s"
+msgid "- Your session “%(title)s” has been moved to %(start)s in %(location)s"
 msgstr ""
-"\n"
 "- Η συνεδρία σας \"%(title)s\" έχει μετακινηθεί στο %(start)s σε %(location)s"
 
 #: pretalx/settings.py:352

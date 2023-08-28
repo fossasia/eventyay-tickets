@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-28 14:53+0000\n"
+"POT-Creation-Date: 2023-08-28 15:40+0000\n"
 "PO-Revision-Date: 2023-08-27 11:54+0000\n"
 "Last-Translator: Michal Stanke <michal@stanke.cz>\n"
 "Language-Team: none\n"
@@ -1019,17 +1019,11 @@ msgstr "Vaše koncepty:"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:41
 msgid ""
-"\n"
-"                    This is a draft proposal.\n"
-"                    It will never be visible to anybody else, unless you "
-"submit it or explicitly share it.\n"
-"                "
+"This is a draft proposal. It will never be visible to anybody else, unless "
+"you submit it or explicitly share it."
 msgstr ""
-"\n"
-"                    Toto je koncept přihlášky.\n"
-"                    Pokud ho neodešlete nebo s někým nenasdílíte, nikdo ho "
-"neuvidí.\n"
-"                "
+"Toto je koncept přihlášky. Pokud ho neodešlete nebo s někým nenasdílíte, "
+"nikdo ho neuvidí."
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:49
 msgid "Confirm your attendance"
@@ -4470,17 +4464,13 @@ msgstr "Na tuto otázku zatím nikdo neodpověděl."
 #: pretalx/orga/templates/orga/cfp/question_detail.html:52
 #, python-format
 msgid ""
-"\n"
-"                    This question has been answered <strong>%(count)s</"
-"strong>, <strong>%(missing)s</strong> answers <a "
-"href=\"%(base_search_url)sunanswered=1\">are still missing</a>.\n"
-"                "
+"This question has been answered <strong>%(count)s</strong>, "
+"<strong>%(missing)s</strong> answers <a "
+"href=\"%(base_search_url)sunanswered=1\">are still missing</a>."
 msgstr ""
-"\n"
-"                    Tato otázka byla zatím odpovězena <strong>%(count)skrát</"
-"strong>, <strong>%(missing)s</strong> odpovědí <a "
-"href=\"%(base_search_url)sunanswered=1\">stále chybí</a>.\n"
-"                "
+"Tato otázka byla zatím odpovězena <strong>%(count)skrát</strong>, "
+"<strong>%(missing)s</strong> odpovědí <a "
+"href=\"%(base_search_url)sunanswered=1\">stále chybí</a>."
 
 #: pretalx/orga/templates/orga/cfp/question_detail.html:56
 #, python-format
@@ -6301,9 +6291,9 @@ msgstr "Použít %(count)s čekajících změn?"
 #: pretalx/orga/templates/orga/submission/apply_pending.html:11
 #, python-format
 msgid ""
-" Please confirm that you really want to change the state of these %(count)s "
+"Please confirm that you really want to change the state of these %(count)s "
 "proposals."
-msgstr " Potvrďte, že opravdu chcete změnit stav těchto %(count)s přihlášek."
+msgstr "Potvrďte, že opravdu chcete změnit stav těchto %(count)s přihlášek."
 
 #: pretalx/orga/templates/orga/submission/apply_pending.html:25
 #: pretalx/orga/templates/orga/submission/state_change.html:30
@@ -7561,22 +7551,15 @@ msgstr "V naplánovaném čase není přednášející {speaker} dostupný."
 msgid "{speaker} is scheduled for another session at the same time."
 msgstr "V naplánovaném čase má přednášející {speaker} jinou přednášku."
 
-#: pretalx/schedule/templates/schedule/speaker_notification.txt:1
-#, python-format
-msgid ""
-"\n"
-"- Your session “%(title)s” will take place at %(start)s in %(location)s"
-msgstr ""
-"\n"
-"- Vaše přednáška „%(title)s“ se bude konat od %(start)s v %(location)s"
-
 #: pretalx/schedule/templates/schedule/speaker_notification.txt:2
 #, python-format
-msgid ""
-"\n"
-"- Your session “%(title)s” has been moved to %(start)s in %(location)s"
+msgid "- Your session “%(title)s” will take place at %(start)s in %(location)s"
+msgstr "- Vaše přednáška „%(title)s“ se bude konat od %(start)s v %(location)s"
+
+#: pretalx/schedule/templates/schedule/speaker_notification.txt:3
+#, python-format
+msgid "- Your session “%(title)s” has been moved to %(start)s in %(location)s"
 msgstr ""
-"\n"
 "- Vaše přednáška „%(title)s“ byla přesunuta na %(start)s v %(location)s"
 
 #: pretalx/settings.py:352

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-28 14:53+0000\n"
+"POT-Creation-Date: 2023-08-28 15:40+0000\n"
 "PO-Revision-Date: 2020-09-28 02:42+0000\n"
 "Last-Translator: Satoshi IIDA <nyampire@gmail.com>\n"
 "Language-Team: \n"
@@ -1028,11 +1028,8 @@ msgstr "現状のドラフト"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:41
 msgid ""
-"\n"
-"                    This is a draft proposal.\n"
-"                    It will never be visible to anybody else, unless you "
-"submit it or explicitly share it.\n"
-"                "
+"This is a draft proposal. It will never be visible to anybody else, unless "
+"you submit it or explicitly share it."
 msgstr ""
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:49
@@ -4656,11 +4653,9 @@ msgstr "この質問には今のところ誰も答えていません。"
 #| "This question has been answered <strong>%(count)s</strong>, "
 #| "<strong>%(missing)s</strong> answers are still missing."
 msgid ""
-"\n"
-"                    This question has been answered <strong>%(count)s</"
-"strong>, <strong>%(missing)s</strong> answers <a "
-"href=\"%(base_search_url)sunanswered=1\">are still missing</a>.\n"
-"                "
+"This question has been answered <strong>%(count)s</strong>, "
+"<strong>%(missing)s</strong> answers <a "
+"href=\"%(base_search_url)sunanswered=1\">are still missing</a>."
 msgstr ""
 "この質問は<strong>%(count)s</strong> 個回答され、<strong>%(missing)s</strong>"
 "の回答がまだありません。"
@@ -6534,7 +6529,7 @@ msgstr ""
 #, fuzzy, python-format
 #| msgid "Do you really want to change the state of this proposal?"
 msgid ""
-" Please confirm that you really want to change the state of these %(count)s "
+"Please confirm that you really want to change the state of these %(count)s "
 "proposals."
 msgstr "この投稿の状態を変更して良いでしょうか？"
 
@@ -7840,23 +7835,15 @@ msgstr "予定された時間は発表者の都合がつかない時間児です
 msgid "{speaker} is scheduled for another session at the same time."
 msgstr "予定された時間に発表者が別の講演を行っています。"
 
-#: pretalx/schedule/templates/schedule/speaker_notification.txt:1
-#, python-format
-msgid ""
-"\n"
-"- Your session “%(title)s” will take place at %(start)s in %(location)s"
-msgstr ""
-"\n"
-"- あなたの講演 “%(title)s” は %(location)s の %(start)s で行われます。"
-
 #: pretalx/schedule/templates/schedule/speaker_notification.txt:2
 #, python-format
-msgid ""
-"\n"
-"- Your session “%(title)s” has been moved to %(start)s in %(location)s"
-msgstr ""
-"\n"
-"- あなたの講演 “%(title)s” は %(location)s の %(start)s に移動しました"
+msgid "- Your session “%(title)s” will take place at %(start)s in %(location)s"
+msgstr "- あなたの講演 “%(title)s” は %(location)s の %(start)s で行われます。"
+
+#: pretalx/schedule/templates/schedule/speaker_notification.txt:3
+#, python-format
+msgid "- Your session “%(title)s” has been moved to %(start)s in %(location)s"
+msgstr "- あなたの講演 “%(title)s” は %(location)s の %(start)s に移動しました"
 
 #: pretalx/settings.py:352
 msgid "English"

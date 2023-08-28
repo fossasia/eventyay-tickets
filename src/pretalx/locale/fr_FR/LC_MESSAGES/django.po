@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-28 14:53+0000\n"
+"POT-Creation-Date: 2023-08-28 15:40+0000\n"
 "PO-Revision-Date: 2023-08-13 16:15+0000\n"
 "Last-Translator: Joachim Jablon <ewjoachim@gmail.com>\n"
 "Language-Team: \n"
@@ -1051,11 +1051,8 @@ msgstr "Brouillon actuel"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:41
 msgid ""
-"\n"
-"                    This is a draft proposal.\n"
-"                    It will never be visible to anybody else, unless you "
-"submit it or explicitly share it.\n"
-"                "
+"This is a draft proposal. It will never be visible to anybody else, unless "
+"you submit it or explicitly share it."
 msgstr ""
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:49
@@ -4655,17 +4652,13 @@ msgstr "Personne n'a répondu à cette question pour le moment."
 #: pretalx/orga/templates/orga/cfp/question_detail.html:52
 #, python-format
 msgid ""
-"\n"
-"                    This question has been answered <strong>%(count)s</"
-"strong>, <strong>%(missing)s</strong> answers <a "
-"href=\"%(base_search_url)sunanswered=1\">are still missing</a>.\n"
-"                "
+"This question has been answered <strong>%(count)s</strong>, "
+"<strong>%(missing)s</strong> answers <a "
+"href=\"%(base_search_url)sunanswered=1\">are still missing</a>."
 msgstr ""
-"\n"
-"                    Cette question a été répondue <strong>%(count)s</"
-"strong>, <strong>%(missing)s</strong> réponses <a "
-"href=\"%(base_search_url)sunanswered=1\">sont toujours manquantes</a>.\n"
-"                "
+"Cette question a été répondue <strong>%(count)s</strong>, "
+"<strong>%(missing)s</strong> réponses <a "
+"href=\"%(base_search_url)sunanswered=1\">sont toujours manquantes</a>."
 
 #: pretalx/orga/templates/orga/cfp/question_detail.html:56
 #, python-format
@@ -6554,7 +6547,7 @@ msgstr ""
 #, fuzzy, python-format
 #| msgid "Do you really want to change the state of this proposal?"
 msgid ""
-" Please confirm that you really want to change the state of these %(count)s "
+"Please confirm that you really want to change the state of these %(count)s "
 "proposals."
 msgstr "Est-ce que vous voulez vraiment changer l'état de la proposition ?"
 
@@ -7897,22 +7890,16 @@ msgstr ""
 "Un intervenant présente une autre intervention pendant le créneau "
 "sélectionné."
 
-#: pretalx/schedule/templates/schedule/speaker_notification.txt:1
-#, python-format
-msgid ""
-"\n"
-"- Your session “%(title)s” will take place at %(start)s in %(location)s"
-msgstr ""
-"\n"
-"- Votre intervention \"%(title)s\" aura lieu le %(start)s dans %(location)s"
-
 #: pretalx/schedule/templates/schedule/speaker_notification.txt:2
 #, python-format
-msgid ""
-"\n"
-"- Your session “%(title)s” has been moved to %(start)s in %(location)s"
+msgid "- Your session “%(title)s” will take place at %(start)s in %(location)s"
 msgstr ""
-"\n"
+"- Votre intervention \"%(title)s\" aura lieu le %(start)s dans %(location)s"
+
+#: pretalx/schedule/templates/schedule/speaker_notification.txt:3
+#, python-format
+msgid "- Your session “%(title)s” has been moved to %(start)s in %(location)s"
+msgstr ""
 "- Votre intervention \"%(title)s\" a été déplacée à %(start)s dans "
 "%(location)s"
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-28 14:53+0000\n"
+"POT-Creation-Date: 2023-08-28 15:40+0000\n"
 "PO-Revision-Date: 2022-11-18 18:03+0000\n"
 "Last-Translator: João Lucas Pires <jlucasp25@gmail.com>\n"
 "Language-Team: none\n"
@@ -1032,11 +1032,8 @@ msgstr "Seu rascunho:"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:41
 msgid ""
-"\n"
-"                    This is a draft proposal.\n"
-"                    It will never be visible to anybody else, unless you "
-"submit it or explicitly share it.\n"
-"                "
+"This is a draft proposal. It will never be visible to anybody else, unless "
+"you submit it or explicitly share it."
 msgstr ""
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:49
@@ -4529,17 +4526,13 @@ msgstr "Ninguém respondeu a esta pergunta no momento."
 #: pretalx/orga/templates/orga/cfp/question_detail.html:52
 #, python-format
 msgid ""
-"\n"
-"                    This question has been answered <strong>%(count)s</"
-"strong>, <strong>%(missing)s</strong> answers <a "
-"href=\"%(base_search_url)sunanswered=1\">are still missing</a>.\n"
-"                "
+"This question has been answered <strong>%(count)s</strong>, "
+"<strong>%(missing)s</strong> answers <a "
+"href=\"%(base_search_url)sunanswered=1\">are still missing</a>."
 msgstr ""
-"\n"
-"                    Esta pergunta foi respondida <strong>%(count)s</strong>, "
+"Esta pergunta foi respondida <strong>%(count)s</strong>, "
 "<strong>%(missing)s</strong> respostas <a "
-"href=\"%(base_search_url)sunanswered=1\"> ainda estão ausentes</a>.\n"
-"                "
+"href=\"%(base_search_url)sunanswered=1\"> ainda estão ausentes</a>."
 
 #: pretalx/orga/templates/orga/cfp/question_detail.html:56
 #, python-format
@@ -6384,10 +6377,10 @@ msgstr "Aplicar %(count)s alterações pendentes?"
 #: pretalx/orga/templates/orga/submission/apply_pending.html:11
 #, python-format
 msgid ""
-" Please confirm that you really want to change the state of these %(count)s "
+"Please confirm that you really want to change the state of these %(count)s "
 "proposals."
 msgstr ""
-" Confirmar que realmente deseja alterar o estado das %(count)s propostas."
+"Confirmar que realmente deseja alterar o estado das %(count)s propostas."
 
 #: pretalx/orga/templates/orga/submission/apply_pending.html:25
 #: pretalx/orga/templates/orga/submission/state_change.html:30
@@ -7665,22 +7658,16 @@ msgstr "Um orador não está disponível no horário agendado."
 msgid "{speaker} is scheduled for another session at the same time."
 msgstr "Um orador está a realizar outra sessão no horário agendado."
 
-#: pretalx/schedule/templates/schedule/speaker_notification.txt:1
-#, python-format
-msgid ""
-"\n"
-"- Your session “%(title)s” will take place at %(start)s in %(location)s"
-msgstr ""
-"\n"
-"- A sua sessão \"%(title)s\" será realizada às %(start)s em %(location)s"
-
 #: pretalx/schedule/templates/schedule/speaker_notification.txt:2
 #, python-format
-msgid ""
-"\n"
-"- Your session “%(title)s” has been moved to %(start)s in %(location)s"
+msgid "- Your session “%(title)s” will take place at %(start)s in %(location)s"
 msgstr ""
-"\n"
+"- A sua sessão \"%(title)s\" será realizada às %(start)s em %(location)s"
+
+#: pretalx/schedule/templates/schedule/speaker_notification.txt:3
+#, python-format
+msgid "- Your session “%(title)s” has been moved to %(start)s in %(location)s"
+msgstr ""
 "- A sua sessão \" %(title)s\" foi movida para %(start)s em %(location)s"
 
 #: pretalx/settings.py:352
