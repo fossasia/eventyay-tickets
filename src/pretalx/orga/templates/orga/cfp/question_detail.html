@@ -49,7 +49,7 @@
     {% else %}
         <p>
             {% if missing_answers %}
-                {% blocktranslate with count=answer_count|times missing=missing_answers href=base_search_url %}
+                {% blocktranslate with count=answer_count|times missing=missing_answers href=base_search_url trimmed %}
                     This question has been answered <strong>{{ count }}</strong>, <strong>{{ missing }}</strong> answers <a href="{{ base_search_url }}unanswered=1">are still missing</a>.
                 {% endblocktranslate %}
             {% else %}

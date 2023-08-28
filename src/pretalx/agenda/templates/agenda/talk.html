@@ -79,7 +79,7 @@
                             </li>
                         {% endfor %}
                     </ul>
-                    <p><i>{% blocktranslate with tz=request.event.timezone %}All times in {{ tz }}{% endblocktranslate %}</i></p>
+                    <p><i>{% blocktranslate trimmed with tz=request.event.timezone %}All times in {{ tz }}{% endblocktranslate %}</i></p>
                 {% endif %}
                 <section class="abstract">
                     {{ submission.abstract|rich_text }}

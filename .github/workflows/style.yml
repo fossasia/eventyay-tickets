@@ -79,8 +79,8 @@ jobs:
       - name: Run black
         run: black --check .
         working-directory: ./src
-  djhtml:
-    name: djhtml
+  html:
+    name: HTML checks
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -99,3 +99,5 @@ jobs:
       - name: Run djhtml
         run: 'djhtml pretalx/'
         working-directory: ./src
+      - name: Make sure we always use trimmed translation strings
+        run: ! git grep " blocktranslate " | grep -v trimmed

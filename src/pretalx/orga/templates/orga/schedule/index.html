@@ -13,7 +13,7 @@
     <li class="nav-item">
         <a class="nav-link text-danger">
             <i class="fa fa-clock-o"></i>
-            {% blocktranslate with tz=request.event.timezone %}All times in {{ tz }}{% endblocktranslate %}
+            {% blocktranslate with tz=request.event.timezone trimmed %}All times in {{ tz }}{% endblocktranslate %}
         </a>
     </li>
 {% endblock %}

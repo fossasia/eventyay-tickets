@@ -5,10 +5,10 @@
 {% block content %}
     <form method="post">
         {% if submission_count %}
-            <h3>{% blocktranslate with count=submission_count %}Apply {{ count }} pending changes?{% endblocktranslate %}</h3>
+            <h3>{% blocktranslate with count=submission_count trimmed %}Apply {{ count }} pending changes?{% endblocktranslate %}</h3>
 
             <p>
-                {% blocktranslate %} Please confirm that you really want to change the state of these {{ count }} proposals.{% endblocktranslate %}
+                {% blocktranslate trimmed %} Please confirm that you really want to change the state of these {{ count }} proposals.{% endblocktranslate %}
             </p>
 
             {% csrf_token %}

@@ -38,7 +38,7 @@
             {% include "cfp/event/fragment_state.html" with state=submission.user_state %}
         {% else %}
             <div class="alert alert-info">
-                {% blocktranslate %}
+                {% blocktranslate trimmed %}
                     This is a draft proposal.
                     It will never be visible to anybody else, unless you submit it or explicitly share it.
                 {% endblocktranslate %}
