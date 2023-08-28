@@ -316,6 +316,11 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
             )
         submitter_count = event.submitters.count()
         speaker_count = event.speakers.count()
+        rejected_count = (
+            event.speakers.filter(submissions__state=SubmissionStates.REJECTED)
+            .distinct()
+            .count()
+        )
         if speaker_count:
             result["tiles"].append(
                 {
@@ -324,7 +329,7 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
                     "url": event.orga_urls.speakers + "?role=true",
                     "priority": 56,
                     "right": {
-                        "text": _("rejected") + f": {submitter_count - speaker_count}",
+                        "text": _("rejected") + f": {rejected_count}",
                         "url": event.orga_urls.speakers + "?role=false",
                         "color": "error",
                     },
