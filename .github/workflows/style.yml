@@ -100,4 +100,4 @@ jobs:
         run: 'djhtml pretalx/'
         working-directory: ./src
       - name: Make sure we always use trimmed translation strings
-        run: ! git grep " blocktranslate " | grep -v trimmed
+        run: "! git grep ' blocktranslate ' | grep -v trimmed"
