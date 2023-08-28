@@ -50,7 +50,7 @@
             {% if filter_form.tags %}{% bootstrap_field filter_form.tags %}{% endif %}
             {% if max_review_count and max_review_count > 1 %}
                 <div id="range-wrapper">
-                    <label for="review-count">{% trans "Number of reviews" %}</label>
+                    <label for="review-count">{% translate "Number of reviews" %}</label>
                     <input type="text" id="review-count" name="review-count" data-max="{{ max_review_count }}"/>
                 </div>
             {% endif %}

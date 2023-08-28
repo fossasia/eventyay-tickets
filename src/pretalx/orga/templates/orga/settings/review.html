@@ -85,7 +85,7 @@
                                 <div class="row">
                                     {% if forloop.first %}
                                         <label class="col-md-3 col-form-label">
-                                            {% trans "Scores" %}
+                                            {% translate "Scores" %}
                                         </label>
                                     {% endif %}
                                     <div class="col-md-9 flip ml-auto d-flex">
@@ -99,7 +99,7 @@
                             {% empty %}
                                 <div class="row">
                                     <label class="col-md-3 col-form-label">
-                                        {% trans "Scores" %}
+                                        {% translate "Scores" %}
                                     </label>
                                     <div class="col-md-9 flip ml-auto d-flex">
                                         <div class="new-score btn btn-info flip ml-auto"><i class="fa fa-plus"></i></div>
@@ -135,7 +135,7 @@
                         {% bootstrap_field scores_formset.empty_form.active layout="event" form_group_class="" %}
                         <div class="row">
                         <label class="col-md-3 col-form-label">
-                        {% trans "Scores" %}
+                        {% translate "Scores" %}
                         </label>
                         <div class="col-md-9 d-flex">
                         <div class="new-score btn btn-info flip ml-auto"><i class="fa fa-plus"></i></div>

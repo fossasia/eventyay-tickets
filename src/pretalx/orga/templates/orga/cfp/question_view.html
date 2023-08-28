@@ -49,7 +49,7 @@
                             <i class="fa fa-{{ question.required|yesno:'check-circle text-success,times-circle text-danger' }}">
                             </i>
                             {% if question.question_required == "require after" or question.freeze_after%}
-                                <i class="fa fa-clock-o" title="{% trans "This question's availability depends on a deadline." %}"> </i>
+                                <i class="fa fa-clock-o" title="{% translate "This question's availability depends on a deadline." %}"> </i>
                             {% endif %}
                         </td>
                         <td>

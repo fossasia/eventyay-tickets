@@ -17,7 +17,7 @@
         {% bootstrap_field form.text layout='event' %}
         {% if request.method == "POST" %}
             <fieldset class="mt-4">
-                <legend>{% trans "E-mail preview" %}</legend>
+                <legend>{% translate "E-mail preview" %}</legend>
                 <div class="alert alert-info">
                     {% blocktranslate trimmed with count=mail_count %}
                         Roughly {{ count }} emails will be generated.
@@ -63,7 +63,7 @@
         <div class="submit-group mt-3"><span></span>
             <span>
                 <button type="submit" class="btn btn-lg btn-outline-info btn-save mr-2" name="action" value="preview">
-                    {% trans "Preview email" %}
+                    {% translate "Preview email" %}
                 </button>
                 {% if request.method == "POST" %}
                     <button type="submit" class="btn btn-lg btn-success">{% translate "Send to outbox" %}</button>

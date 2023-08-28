@@ -9,13 +9,13 @@
     </h2>
     <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item" role="presentation">
-            <a class="nav-link active" id="custom-tab" data-toggle="tab" href="#custom" role="tab" aria-controls="custom" aria-selected="true">{% trans "CSV/JSON exports" %}</a>
+            <a class="nav-link active" id="custom-tab" data-toggle="tab" href="#custom" role="tab" aria-controls="custom" aria-selected="true">{% translate "CSV/JSON exports" %}</a>
         </li>
         <li class="nav-item" role="presentation">
-            <a class="nav-link" id="general-tab" data-toggle="tab" href="#general" role="tab" aria-controls="general" aria-selected="false">{% trans "More exports" %}</a>
+            <a class="nav-link" id="general-tab" data-toggle="tab" href="#general" role="tab" aria-controls="general" aria-selected="false">{% translate "More exports" %}</a>
         </li>
         <li class="nav-item" role="presentation">
-            <a class="nav-link" id="api-tab" data-toggle="tab" href="#api" role="tab" aria-controls="api" aria-selected="false">{% trans "API" %}</a>
+            <a class="nav-link" id="api-tab" data-toggle="tab" href="#api" role="tab" aria-controls="api" aria-selected="false">{% translate "API" %}</a>
         </li>
     </ul>
     <div class="tab-content" id="myTabContent">
@@ -66,7 +66,7 @@
                 If you are looking for exports of proposals, sessions or schedule data, please head
                 here:
             {% endblocktranslate %}
-            <a class="btn btn-outline-info btn-sm" href="{{ request.event.orga_urls.speakers }}export/">{% trans "Speaker exports" %}</a>
+            <a class="btn btn-outline-info btn-sm" href="{{ request.event.orga_urls.speakers }}export/">{% translate "Speaker exports" %}</a>
             {% if not request.event.current_schedule %}
                 <div class="alert alert-warning">
                     {% blocktranslate trimmed %}
