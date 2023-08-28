@@ -1242,7 +1242,7 @@ msgstr "Poslat přihlášku!"
 #: pretalx/orga/templates/orga/base.html:96
 #: pretalx/orga/templates/orga/base.html:415
 msgid "Events"
-msgstr "Událost"
+msgstr "Události"
 
 #: pretalx/cfp/templates/cfp/index.html:20
 msgid "No events are currently ongoing."
@@ -4281,7 +4281,7 @@ msgstr "Editor"
 #: pretalx/orga/templates/orga/base.html:255
 #: pretalx/orga/templates/orga/cfp/access_code_view.html:12
 msgid "Access codes"
-msgstr "Přístupový kód"
+msgstr "Přístupové kódy"
 
 #: pretalx/orga/templates/orga/base.html:277
 #: pretalx/orga/templates/orga/review/dashboard.html:111
@@ -8176,8 +8176,62 @@ msgstr "{name} ({duration} minut)"
 msgid "minutes"
 msgstr ""
 
-#~ msgid "Hidden rooms"
-#~ msgstr "Skryté místnosti"
+msgid "Hidden rooms"
+msgstr "Skryté místnosti"
+
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:41
+msgid ""
+"\n"
+"                    This is a draft proposal.\n"
+"                    It will never be visible to anybody else, unless you "
+"submit it or explicitly share it.\n"
+"                "
+msgstr ""
+"\n"
+"                    Toto je koncept přihlášky.\n"
+"                    Pokud ho neodešlete nebo s někým nenasdílíte, nikdo ho "
+"neuvidí.\n"
+"                "
+
+#: pretalx/orga/templates/orga/cfp/question_detail.html:52
+#, python-format
+msgid ""
+"\n"
+"                    This question has been answered <strong>%(count)s</"
+"strong>, <strong>%(missing)s</strong> answers <a "
+"href=\"%(base_search_url)sunanswered=1\">are still missing</a>.\n"
+"                "
+msgstr ""
+"\n"
+"                    Tato otázka byla zatím odpovězena <strong>%(count)skrát</"
+"strong>, <strong>%(missing)s</strong> odpovědí <a "
+"href=\"%(base_search_url)sunanswered=1\">stále chybí</a>.\n"
+"                "
+
+#: pretalx/orga/templates/orga/submission/apply_pending.html:11
+#, python-format
+msgid ""
+" Please confirm that you really want to change the state of these %(count)s "
+"proposals."
+msgstr " Potvrďte, že opravdu chcete změnit stav těchto %(count)s přihlášek."
+
+#: pretalx/schedule/templates/schedule/speaker_notification.txt:1
+#, python-format
+msgid ""
+"\n"
+"- Your session “%(title)s” will take place at %(start)s in %(location)s"
+msgstr ""
+"\n"
+"- Vaše přednáška „%(title)s“ se bude konat od %(start)s v %(location)s"
+
+#: pretalx/schedule/templates/schedule/speaker_notification.txt:2
+#, python-format
+msgid ""
+"\n"
+"- Your session “%(title)s” has been moved to %(start)s in %(location)s"
+msgstr ""
+"\n"
+"- Vaše přednáška „%(title)s“ byla přesunuta na %(start)s v %(location)s"
 
 #~ msgid "Speaker E-Mail"
 #~ msgstr "E-mail přednášejícího"
