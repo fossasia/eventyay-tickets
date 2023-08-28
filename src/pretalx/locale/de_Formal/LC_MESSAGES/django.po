@@ -8,15 +8,14 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-08-28 15:27+0000\n"
-"PO-Revision-Date: 2023-08-07 07:54+0000\n"
+"PO-Revision-Date: 2023-08-28 17:58+0200\n"
 "Last-Translator: Jannik Beyerstedt <service-translatepretalx@jtbx.de>\n"
 "Language-Team: \n"
-"Language: de_Formal\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.18.2\n"
+"X-Generator: Poedit 3.3.2\n"
 
 #: htmlcov/d_9155819316f40b96_views_py.html:155
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:30
@@ -900,7 +899,7 @@ msgstr ""
 
 #: pretalx/cfp/templates/cfp/event/user_profile.html:102
 msgid "Delete my account"
-msgstr "Eigenen Account löschen"
+msgstr "Account löschen"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:7
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:10
@@ -1069,7 +1068,7 @@ msgstr[1] "Vortragende:"
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:67
 msgid "Submitter"
 msgid_plural "Submitters"
-msgstr[0] "Einreichende*r"
+msgstr[0] "Einreichende"
 msgstr[1] "Einreichende"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:92
@@ -2180,9 +2179,9 @@ msgid ""
 "please have a look at the <a %(docurl)s> API documentation</a>."
 msgstr ""
 "Dieses Token können Sie zum Zugang zur <a %(apiurl)s>pretalx-API</a> nutzen. "
-"Sie können hier ein neues Token erstellen, wodurch das alte Token ungültig "
-"wird. Für Details sehen Sie sich bitte die <a %(docurl)s>API-Dokumentation</"
-"a> an."
+"Sie können hier ein neues Token erstellen, wodurch das bisherige Token "
+"ungültig wird. Für Details sehen Sie sich bitte die <a %(docurl)s>API-"
+"Dokumentation</a> an."
 
 #: pretalx/common/templates/common/user_api_token.html:17
 msgid "API Token"
@@ -3130,7 +3129,7 @@ msgstr "CC"
 
 #: pretalx/mail/models.py:230
 msgid "Sent at"
-msgstr "Verschickt am"
+msgstr "Verschickt"
 
 #: pretalx/mail/models.py:297
 msgid "This mail has been sent already. It cannot be sent again."
@@ -8144,7 +8143,7 @@ msgstr ""
 
 #: pretalx/submission/models/review.py:51
 msgid "You need to keep at least one non-independent score category!"
-msgstr "Sie müssen mindestens eine nicht-unabhängige Kategorie beibehalten!"
+msgstr "Sie müssen mindestens eine nicht-unabhängige Kategorie behalten!"
 
 #: pretalx/submission/models/review.py:132
 msgid "What do you think?"
