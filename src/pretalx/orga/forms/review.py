@@ -378,6 +378,8 @@ class ReviewAssignImportForm(DirectionForm):
         super().clean()
         uploaded_data = self.cleaned_data.get("import_file")
         direction = self.cleaned_data.get("direction")
+        if not uploaded_data:
+            raise forms.ValidationError(_("Cannot parse JSON file."))
         if direction == "reviewer":
             # keys should be users, values should be lists of proposals
             new_uploaded_data = {
