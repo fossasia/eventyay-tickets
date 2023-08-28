@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-05 02:05+0000\n"
+"POT-Creation-Date: 2023-08-28 14:53+0000\n"
 "PO-Revision-Date: 2023-05-13 03:03+0000\n"
 "Last-Translator: Vangelis Zacharioudakis <sugarvag@gmail.com>\n"
 "Language-Team: none\n"
@@ -4026,7 +4026,7 @@ msgstr "Αγνωστος χρήστης: {}"
 msgid "Unknown proposal: {}"
 msgstr "Άγνωστη πρόταση: {}"
 
-#: pretalx/orga/forms/review.py:374
+#: pretalx/orga/forms/review.py:374 pretalx/orga/forms/review.py:382
 msgid "Cannot parse JSON file."
 msgstr "Δεν είναι δυνατή η ανάλυση του αρχείου JSON."
 

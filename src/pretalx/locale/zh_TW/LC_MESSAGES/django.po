@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-05 02:05+0000\n"
+"POT-Creation-Date: 2023-08-28 14:53+0000\n"
 "PO-Revision-Date: 2023-08-15 01:54+0000\n"
 "Last-Translator: Yucheng Lin <yuchenglinedu@gmail.com>\n"
 "Language-Team: none\n"
@@ -3796,7 +3796,7 @@ msgstr ""
 msgid "Unknown proposal: {}"
 msgstr "您的投稿："
 
-#: pretalx/orga/forms/review.py:374
+#: pretalx/orga/forms/review.py:374 pretalx/orga/forms/review.py:382
 msgid "Cannot parse JSON file."
 msgstr ""
 
@@ -4528,7 +4528,8 @@ msgid ""
 "Different session types may help to guide speakers into different slot "
 "lengths (short sessions vs long sessions) or different presentation formats "
 "(talk vs workshop vs metal concert)."
-msgstr "不同的會議類型可能有助於引導演講者進入不同的時間長度（短或長）或不同的演講類"
+msgstr ""
+"不同的會議類型可能有助於引導演講者進入不同的時間長度（短或長）或不同的演講類"
 "型（演講與研討會或金屬音樂會）。"
 
 #: pretalx/orga/templates/orga/cfp/submission_type_view.html:19
@@ -4792,15 +4793,17 @@ msgid ""
 "You can copy settings from previous events here, such as mail settings, "
 "session types, and email templates. Please check those settings once the "
 "event has been created!"
-msgstr "你可以在此處複製以前活動的設定，例如郵件設定、工作階段類型和電子郵件範本。建"
+msgstr ""
+"你可以在此處複製以前活動的設定，例如郵件設定、工作階段類型和電子郵件範本。建"
 "立活動後，請檢查這些設定！"
 
 #: pretalx/orga/templates/orga/event/wizard/display.html:19
 msgid ""
 "Choose your inital customisations here – you can always change them later, "
 "or enhance them with custom CSS."
-msgstr "在此處選擇你的初始自定選項 - 您可以隨時稍後更改它們，或使用自訂 CSS "
-"對其進行增強。"
+msgstr ""
+"在此處選擇你的初始自定選項 - 您可以隨時稍後更改它們，或使用自訂 CSS 對其進行"
+"增強。"
 
 #: pretalx/orga/templates/orga/event/wizard/initial.html:6
 msgid ""
@@ -4812,7 +4815,8 @@ msgid ""
 "What's your timeline like? You can later add session types with different "
 "deadlines (e.g. if you accept workshop proposals later than your talk "
 "proposals)."
-msgstr "你的時程表是什麼樣的？你可以稍後添加具有不同截止日期的會議類型（例如，如果你"
+msgstr ""
+"你的時程表是什麼樣的？你可以稍後添加具有不同截止日期的會議類型（例如，如果你"
 "接受研討會提案，晚於你的演講提案）。"
 
 #: pretalx/orga/templates/orga/event_list.html:12
@@ -4888,8 +4892,9 @@ msgid ""
 "href=\"%(domain)s\">%(domain)s</a>, please log in now. Otherwise, create a "
 "new account to join the team!"
 msgstr ""
-"如果你已經有一個帳戶 - 作為演講者或召集人 -at <a href=\"%(domain)s\""
-">%(domain)s</a>, ，請立即登錄。否則，建立一個新帳戶加入團隊！"
+"如果你已經有一個帳戶 - 作為演講者或召集人 -at <a "
+"href=\"%(domain)s\">%(domain)s</a>, ，請立即登錄。否則，建立一個新帳戶加入團"
+"隊！"
 
 #: pretalx/orga/templates/orga/invitation.html:36
 #, python-format
@@ -4900,8 +4905,8 @@ msgid ""
 "in with the other account. </p><p> If you believe to have received this "
 "invitation by mistake, please contact the organiser directly."
 msgstr ""
-"要使用你當前活躍的帳戶接受邀請，請使用下面的按鈕。如果要使用其他帳戶接受邀請"
-"，可以<a href=\"/orga/logout/?next=%(link)s\">log out</a> and log in with "
+"要使用你當前活躍的帳戶接受邀請，請使用下面的按鈕。如果要使用其他帳戶接受邀"
+"請，可以<a href=\"/orga/logout/?next=%(link)s\">log out</a> and log in with "
 "the other account. </p><p> 如果你認為錯誤地收到了此邀請，請直接與主辦方聯繫。"
 
 #: pretalx/orga/templates/orga/invitation.html:44
@@ -5016,7 +5021,8 @@ msgstr "提交一份議程投稿"
 msgid ""
 "These emails will be sent out immediately! They will not be saved to the "
 "outbox or logged first, to protect the privacy of the draft authors."
-msgstr "這些電子郵件將立即發送出去！電子信件不會保存到寄件匣或預先保留，這是為了保護"
+msgstr ""
+"這些電子郵件將立即發送出去！電子信件不會保存到寄件匣或預先保留，這是為了保護"
 "作者的草稿隱私。"
 
 #: pretalx/orga/templates/orga/mails/send_form.html:20
@@ -5033,7 +5039,8 @@ msgstr "將產生大約%(count)s的電子郵件。"
 msgid ""
 "You have placeholders in your email that are either not valid or not valid "
 "for every email!"
-msgstr "你的電子郵件中有佔位元（或預留位置），這些佔位元（或預留位置）對每封電子郵件"
+msgstr ""
+"你的電子郵件中有佔位元（或預留位置），這些佔位元（或預留位置）對每封電子郵件"
 "都無效或無效！"
 
 #: pretalx/orga/templates/orga/mails/send_form.html:33
@@ -5043,9 +5050,9 @@ msgid ""
 "example, if you are using {session_room}, but some proposals don't have a "
 "room yet, only emails for proposals with a scheduled room will be created."
 msgstr ""
-"不會建立佔位元（或預留位置）無效的電子郵件！<b></b>例如，如果你使用的是 {sess"
-"ion_room}，但某些提案還沒有聊天室，則只會建立包含已安排聊天室的提案的電子郵件"
-"。"
+"不會建立佔位元（或預留位置）無效的電子郵件！<b></b>例如，如果你使用的是 "
+"{session_room}，但某些提案還沒有聊天室，則只會建立包含已安排聊天室的提案的電"
+"子郵件。"
 
 #: pretalx/orga/templates/orga/mails/send_form.html:45
 #, python-format
@@ -5082,7 +5089,8 @@ msgstr "依傳送時間排序（最舊優先）"
 msgid ""
 "You have some variables available that will be rendered into the mails (in "
 "the appropriate language) before sending:"
-msgstr "你有一些可用的變數，這些變數將在發送之前，（以適當的語言）出現到郵件中："
+msgstr ""
+"你有一些可用的變數，這些變數將在發送之前，（以適當的語言）出現到郵件中："
 
 #: pretalx/orga/templates/orga/mails/template_form.html:21
 msgid "Mail Template Editor"
@@ -5103,7 +5111,8 @@ msgstr ""
 msgid ""
 "There are different placeholders available depending on the template type. "
 "They are explained in detail once you start editing a template."
-msgstr "根據範本類型，可以使用不同的佔位元（或預留位置）。你開始編輯範本後，將可以詳"
+msgstr ""
+"根據範本類型，可以使用不同的佔位元（或預留位置）。你開始編輯範本後，將可以詳"
 "細解釋。"
 
 #: pretalx/orga/templates/orga/mails/template_list.html:27
@@ -5277,8 +5286,9 @@ msgid ""
 "Reviewers will be able to see and review <b>only their assigned</b> "
 "proposals. You can change this in your <a href=\"%(href)s\">review settings</"
 "a>."
-msgstr "審閱者將只能查看和審閱<b>其分配</b>的提案。你可以在<a href=\"%(href)s\""
-">>審閱設定中更改此設定</a>。"
+msgstr ""
+"審閱者將只能查看和審閱<b>其分配</b>的提案。你可以在<a href=\"%(href)s\">>審閱"
+"設定中更改此設定</a>。"
 
 #: pretalx/orga/templates/orga/review/assignment.html:35
 #, python-format
@@ -5295,7 +5305,8 @@ msgid ""
 "This is where you can assign reviewers to specific proposals! Please use "
 "this drop-down to switch between the two assignment modes (assigning "
 "reviewers to proposals or proposals to reviewers)."
-msgstr "在這裡，你可以將審閱者分配給特定提案！請使用此下拉清單，在兩種分配模式之間切"
+msgstr ""
+"在這裡，你可以將審閱者分配給特定提案！請使用此下拉清單，在兩種分配模式之間切"
 "換（將審閱者分配給提案，或將提案分配給審閱者）。"
 
 #: pretalx/orga/templates/orga/review/assignment.html:48
@@ -5521,8 +5532,8 @@ msgid ""
 "provide your authentication token just like in the API, like this:"
 msgstr ""
 "某些常規導出內容僅供召集人檢視，或者在使用召集人帳號訪問時，包含更多資訊。如"
-"果要在自動集成中檢視召集人版本，則必須像在API中一樣提供身份驗證代幣，如下所示"
-"："
+"果要在自動集成中檢視召集人版本，則必須像在API中一樣提供身份驗證代幣，如下所"
+"示："
 
 #: pretalx/orga/templates/orga/review/export.html:79
 #: pretalx/orga/templates/orga/schedule/export.html:147
@@ -5545,8 +5556,9 @@ msgstr "傳新產生通知電子郵件"
 msgid ""
 "Do you really want to regenerate %(count)s acceptance and rejection emails? "
 "They will be placed in the outbox and not sent out directly."
-msgstr "是否確實要重新生成%(count)s "
-"的接受和拒絕電子郵件？郵件將被放置在寄件匣中，而不是直接發送出去。"
+msgstr ""
+"是否確實要重新生成%(count)s 的接受和拒絕電子郵件？郵件將被放置在寄件匣中，而"
+"不是直接發送出去。"
 
 #: pretalx/orga/templates/orga/schedule/export.html:8
 #, fuzzy
@@ -5565,7 +5577,8 @@ msgid ""
 "pretalx provides a range of exports. If none of these match what you are "
 "looking for, you can also provide a custom plugin to export the data – "
 "please ask your administrator to install the plugin."
-msgstr "Pretalx提供一系列出口產品。如果這些都不符合你要查找的內容，你還可以提供一個自"
+msgstr ""
+"Pretalx提供一系列出口產品。如果這些都不符合你要查找的內容，你還可以提供一個自"
 "定義外掛程式來匯出數據——請讓你的管理員安裝該外掛程式。"
 
 #: pretalx/orga/templates/orga/schedule/export.html:65
@@ -5596,8 +5609,8 @@ msgid ""
 "it to a normal file-serving web server like nginx. This is done "
 "automatically on schedule release, but you can also trigger that action here."
 msgstr ""
-"事件計劃可以匯出到靜態 HTML 儲存，因此你可以將其上傳到普通的檔服務 Web "
-"伺服器，如 nginx。此操作在計劃發佈時自動完成，但你也可以在此處觸發該操作。"
+"事件計劃可以匯出到靜態 HTML 儲存，因此你可以將其上傳到普通的檔服務 Web 伺服"
+"器，如 nginx。此操作在計劃發佈時自動完成，但你也可以在此處觸發該操作。"
 
 #: pretalx/orga/templates/orga/schedule/export.html:114
 msgid "Download ZIP"
@@ -5616,8 +5629,9 @@ msgid ""
 "Submit an XML file here to release a new schedule, containing exactly the "
 "sessions specified in the XML file. The format is expected to be the same as "
 "the XML export provided."
-msgstr "在此處提交 XML 檔以發佈新計劃，該計劃完全包含 XML 檔中指定的工作階段。"
-"格式應與提供的 XML 匯出相同。"
+msgstr ""
+"在此處提交 XML 檔以發佈新計劃，該計劃完全包含 XML 檔中指定的工作階段。格式應"
+"與提供的 XML 匯出相同。"
 
 #: pretalx/orga/templates/orga/schedule/import.html:20
 msgid "Upload"
@@ -5850,7 +5864,8 @@ msgid ""
 "multiple scores, they will be added up to a final total score. If you want, "
 "this total score can be weighted. Currently, the total score is calculated "
 "as:"
-msgstr "你可以要求審閱者提供一項或多項分數。如果你要求多項分數，分數將加起來成為最終"
+msgstr ""
+"你可以要求審閱者提供一項或多項分數。如果你要求多項分數，分數將加起來成為最終"
 "總分。如果需要，可以加權此總分。目前，總分的計算公式為："
 
 #: pretalx/orga/templates/orga/settings/review.html:60
@@ -5990,7 +6005,8 @@ msgid ""
 "You can configure a pretalx schedule widget to show your event schedule on "
 "your homepage, instead of using this page. If you want to disable the "
 "schedule on here entirely, please activate the setting below."
-msgstr "你可以設定一項pretalx時程表小部件，以在你的主頁上顯示你的啟用議程表，而不是使"
+msgstr ""
+"你可以設定一項pretalx時程表小部件，以在你的主頁上顯示你的啟用議程表，而不是使"
 "用此頁面。如果你想完全禁用此處的時程表，請啟動以下設定。"
 
 #: pretalx/orga/templates/orga/settings/widget.html:31
@@ -6063,7 +6079,8 @@ msgstr "已安排的議程"
 msgid ""
 "You can either create exactly the export you need in the \"Custom\" tab, or "
 "use these pre-built exports:"
-msgstr "你可以在「自訂」選項卡中準確建立所需的匯出，也可以使用這些預設建立的匯出："
+msgstr ""
+"你可以在「自訂」選項卡中準確建立所需的匯出，也可以使用這些預設建立的匯出："
 
 #: pretalx/orga/templates/orga/speaker/form.html:83
 msgid "Emails"

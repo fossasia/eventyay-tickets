@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-05 02:05+0000\n"
+"POT-Creation-Date: 2023-08-28 14:53+0000\n"
 "PO-Revision-Date: 2021-02-03 16:17+0000\n"
 "Last-Translator: Bryan Hernandez <bryan27hr@protonmail.ch>\n"
 "Language-Team: none\n"
@@ -3690,7 +3690,7 @@ msgstr ""
 msgid "Unknown proposal: {}"
 msgstr "Nueva propuesta: {title}"
 
-#: pretalx/orga/forms/review.py:374
+#: pretalx/orga/forms/review.py:374 pretalx/orga/forms/review.py:382
 msgid "Cannot parse JSON file."
 msgstr ""
 
