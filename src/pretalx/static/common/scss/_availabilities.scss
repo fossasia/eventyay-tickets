@@ -7,6 +7,10 @@ input.availabilities-editor-data {
 .availability-form .form-group {
   flex-direction: column;
 }
+.fc .fc-timegrid-col-bg .fc-highlight {
+  opacity: 0.7;
+  background: rgb(70, 151, 201);
+}
 .availabilities-editor {
   max-width: 100%;
 }
