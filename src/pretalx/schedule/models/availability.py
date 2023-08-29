@@ -114,8 +114,11 @@ class Availability(LogMixin, models.Model):
             raise Exception("Only overlapping Availabilities can be merged.")
 
         return Availability(
-            start=min(self.start, other.start), end=max(self.end, other.end),
-            event=self.event, person=self.person, room=self.room,
+            start=min(self.start, other.start),
+            end=max(self.end, other.end),
+            event=self.event,
+            person=self.person,
+            room=self.room,
         )
 
     def __or__(self, other: "Availability") -> "Availability":
@@ -132,8 +135,11 @@ class Availability(LogMixin, models.Model):
             raise Exception("Only overlapping Availabilities can be intersected.")
 
         return Availability(
-            start=max(self.start, other.start), end=min(self.end, other.end),
-            event=self.event, person=self.person, room=self.room,
+            start=max(self.start, other.start),
+            end=min(self.end, other.end),
+            event=self.event,
+            person=self.person,
+            room=self.room,
         )
 
     def __and__(self, other: "Availability") -> "Availability":
