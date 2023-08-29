@@ -317,7 +317,7 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
         submitter_count = event.submitters.count()
         speaker_count = event.speakers.count()
         rejected_count = (
-            event.speakers.filter(submissions__state=SubmissionStates.REJECTED)
+            event.submitters.filter(submissions__state=SubmissionStates.REJECTED)
             .distinct()
             .count()
         )
