@@ -1,3 +1,4 @@
+from argparse import RawTextHelpFormatter
 from os import environ
 from urllib.parse import urljoin
 
@@ -11,15 +12,10 @@ from django.utils.translation import gettext as _
 from pretalx.event.utils import create_organiser_with_team
 from pretalx.person.models import User
 
-
-varname_prefix = "PRETALX_INIT_ORGANISER_"
-
-
-organiser_name_varname = varname_prefix + "NAME"
+env_prefix = "PRETALX_INIT_ORGANISER_"
+organiser_name_env = f"{env_prefix}NAME"
 organiser_name_default = "The Conference Organiser"
-
-
-organiser_slug_varname = varname_prefix + "SLUG"
+organiser_slug_env = f"{env_prefix}SLUG"
 organiser_slug_default = "conforg"
 
 
@@ -36,18 +32,18 @@ class Command(BaseCommand):  # pragma: no cover
     help = "Initializes your pretalx instance. Only to be used once."
 
     def add_arguments(self, parser):
+        parser.formatter_class = RawTextHelpFormatter
         parser.add_argument(
             "--noinput",
             "--no-input",
             action="store_true",
-            help="Suppresses all user prompts. "\
-                 "Calls Django's `createsuperuser` command with `--no-input` and consumes environment variables. " \
-                 "If a suppressed prompt cannot be resolved automatically because a variable is unset, the command will fail." \
-                 "You will want to set (with examples): " \
-                 "DJANGO_SUPERUSER_EMAIL=\"root@pretalx.invalid\" " \
-                 "DJANGO_SUPERUSER_PASSWORD=\"[SECRET]\" " \
-                 f"{organiser_name_varname}=\"{organiser_name_default}\" " \
-                 f"{organiser_slug_varname}=\"{organiser_slug_default}\"",
+            help="Suppresses all interactive prompts and uses environment variables instead. "
+            "If environment variables are missing, the command will fail. "
+            "Required environment variables:\n"
+            'DJANGO_SUPERUSER_EMAIL="new-superuser-email@example.org"\n'
+            'DJANGO_SUPERUSER_PASSWORD="[SECRET]"\n'
+            f'{organiser_name_env}="{organiser_name_default}"\n'
+            f'{organiser_slug_env}="{organiser_slug_default}"',
         )
 
     @transaction.atomic
@@ -81,17 +77,15 @@ class Command(BaseCommand):  # pragma: no cover
                 """\nLet\'s also create a first organiser: This will allow you to invite further people and create events."""
             )
         )
-
         self.stdout.write("\n")
 
         organiser_name = self.get_nonempty(
-            _(f"Name (e.g. \"{organiser_name_default}\"): "),
-            organiser_name_varname if options["noinput"] else None,
+            _(f'Name (e.g. "{organiser_name_default}"): '),
+            organiser_name_env if options["noinput"] else None,
         )
-
         organiser_slug = self.get_nonempty(
-            _(f"Slug (e.g. \"{organiser_slug_default}\", used in urls): "),
-            organiser_slug_varname if options["noinput"] else None,
+            _(f'Slug (e.g. "{organiser_slug_default}", used in urls): '),
+            organiser_slug_env if options["noinput"] else None,
         )
 
         organiser, team = create_organiser_with_team(
@@ -121,12 +115,14 @@ class Command(BaseCommand):  # pragma: no cover
             )
         )
 
-    def get_nonempty(self, prompt, varname):
-        if not varname:
+    def get_nonempty(self, prompt, env_varname=None):
+        if not env_varname:
             return prompt_nonempty(prompt)
 
-        if varname not in environ:
-            raise ValueError(f"Environment variable {varname} is required but undefined.")
+        if env_varname not in environ:
+            raise ValueError(
+                f"Environment variable {env_varname} is required but undefined."
+            )
 
-        self.stdout.write(f"{prompt}[{_('used environment variable:')} {varname}]")
-        return environ[varname]
+        self.stdout.write(f"{prompt}[{_('used environment variable:')} {env_varname}]")
+        return environ[env_varname]
