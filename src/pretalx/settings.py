@@ -246,7 +246,7 @@ LOGGING = {
         "": {"handlers": ["file", "console"], "level": loglevel, "propagate": True},
         "django.request": {
             "handlers": ["file", "console"],
-            "level": loglevel,
+            "level": "ERROR",  # Otherwise, we log 404s at WARNING/whatever, which sucks
             "propagate": False,
         },
         "django.security": {
