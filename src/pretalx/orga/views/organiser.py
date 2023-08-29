@@ -92,7 +92,8 @@ class TeamDetail(PermissionRequired, TeamMixin, CreateOrUpdateView):
             messages.success(self.request, _("The settings have been saved."))
         if created:
             return redirect(self.request.organiser.orga_urls.base)
-        return redirect(self.request.path)
+        success_url = self.request.GET.get("next", self.request.path)
+        return redirect(success_url)
 
 
 class TeamDelete(PermissionRequired, TeamMixin, DetailView):

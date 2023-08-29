@@ -597,6 +597,11 @@ class ReviewAssignment(EventPermissionRequired, FormView):
 
     @context
     @cached_property
+    def review_teams(self):
+        return self.request.event.teams.filter(is_reviewer=True)
+
+    @context
+    @cached_property
     def formset(self):
         proposals = self.request.event.submissions.order_by("title")
         reviewers = (

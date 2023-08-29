@@ -11,80 +11,165 @@
         <script defer src="{% static "cfp/js/animateFormset.js" %}"></script>
         <script defer src="{% static "orga/js/reviewAssignment.js" %}"></script>
     {% endcompress %}
-    <div class="float-right">
-        <details class="dropdown">
-            <summary class="btn btn-info" id="review-actions">
-                {% translate "Actions" %} <i class="fa fa-caret-down"></i>
-            </summary>
-
-            <ul class="dropdown-content dropdown-front dropdown-content-s{% if rtl %}e{% else %}w{% endif %}">
-                <li><a class="dropdown-item" href="{{ request.path }}import" target="_blank" rel="noopener">
-                    <i class="fa fa-link"></i> {% translate "Import assignments" %}
-                </a></li>
-            </ul>
-        </details>
-    </div>
     <h2>{% translate "Assign reviewers" %}</h2>
-    <div class="alert alert-info"><p>
-        {% if request.event.active_review_phase.proposal_visibility == "assigned" %}
-            {% blocktranslate trimmed with href=request.event.orga_urls.review_settings %}
-                Reviewers will be able to see and review <b>only their assigned</b> proposals.
-                You can change this in your <a href="{{ href }}">review settings</a>.
-            {% endblocktranslate %}
-        {% else %}
-            {% blocktranslate trimmed with href=request.event.orga_urls.review_settings %}
-                Reviewers will be able to see and review <b>all proposals</b>,
-                but their assigned reviews will appear highlighted, and they
-                will be directed to them first. You can change this in your <a
-                    href="{{ href }}">review settings</a>.
-            {% endblocktranslate %}
-        {% endif %}
-    </p></div>
-    <p>
-        {% blocktranslate trimmed %}
-            This is where you can assign reviewers to specific proposals! Please use this drop-down to
-            switch between the two assignment modes (assigning reviewers to proposals or proposals to reviewers).
-        {% endblocktranslate %}
-        {% blocktranslate trimmed %}
-            You can also use the Actions menu above to import your assignments from a prepared file.
-        {% endblocktranslate %}
-    </p>
-    <div class="ml-auto mr-auto col-md-4">
-        <form id="direction">
-            {% bootstrap_form form layout='inline' %}
-        </form>
-    </div>
-    <form method="post" class="d-flex flex-column select2-textbox">
-        {% csrf_token %}
 
-        <div class="formset" data-formset data-formset-prefix="{{ formset.prefix }}">
-            {{ formset.management_form }}
-            {% bootstrap_formset_errors formset %}
-            <div data-formset-body>
-                {% for form in formset %}
-                    <div data-formset-form>
-                        <div class="sr-only">
-                            {{ form.id }}
-                        </div>
-                        <div class="reviewer-formset">
-                            {% bootstrap_form_errors form %}
-                            {% for field in form %}{% if field.label %}
-                                {% bootstrap_field field layout='event' %}
-                            {% endif %}{% endfor %}
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <a class="nav-link active" id="group-tab" data-toggle="tab" href="#group" role="tab" aria-controls="group" aria-selected="true">{% translate "Assign reviewer groups" %}</a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" id="individual-tab" data-toggle="tab" href="#individual" role="tab" aria-controls="individual" aria-selected="false">{% translate "Assign reviewers individually" %}</a>
+        </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="group" role="tabpanel" aria-labelledby="group-tab">
+            <p>
+                {% blocktranslate trimmed %}
+                    Reviewers can be assigned to tracks by way of review teams. If you require more
+                    granular assignments, you can also assign reviewers to proposals directly.
+                {% endblocktranslate %}
+            </p>
+            <div class="alert alert-info">
+                {% blocktranslate trimmed %}
+                    As teams can belong to multiple events, teams are managed in your organiser settings.
+                {% endblocktranslate %}
+            </div>
+            <div class="d-flex justify-content-end mb-2">
+                <a href="{{ request.event.organiser.orga_urls.new_team }}" class="btn btn-info">
+                    <i class="fa fa-plus"></i> {% translate "New team" %}
+                </a>
+            </div>
+            <table class="table table-sm table-hover table-flip">
+                <thead>
+                    <tr>
+                        <th class="col col-md-4">{% translate "Team" %}</th>
+                        <th class="col col-md-3">{% translate "Members" %}</th>
+                        {% if request.event.feature_flags.use_tracks %}<th class="col col-md-3">{% translate "Tracks" %}</th>{% endif %}
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for team in review_teams %}
+                        <tr>
+                            <td>
+                                <a href="{{ team.orga_urls.base }}?next={{ request.path }}">
+                                    {{ team.name }}
+                                    {% if request.user in team.members.all %}
+                                        <i class="fa fa-star text-warning" title="{% translate "You are a member of this team" %}"></i>
+                                    {% endif %}
+                                </a>
+                            </td>
+                            <td>
+                                <details>
+                                    <summary> {{ team.members.count }} </summary>
+                                    <ul>
+                                        {% for member in team.members.all %}
+                                            <li>{{ member.get_display_name }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </details>
+                            </td>
+                            {% if request.event.feature_flags.use_tracks %}
+                                <td>
+                                    {% for track in team.limit_tracks.all %}
+                                        <span class="badge badge-secondary">{{ track.name }}</span>
+                                    {% endfor %}
+                                </td>
+                            {% endif %}
+                        </td>
+                        <td class="text-right">
+                            <a href="{{ team.orga_urls.base }}?next={{ request.path }}"
+                               class="btn btn-sm btn-info"
+                               title="{% translate "Edit" %}">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                            <a href="{{ team.orga_urls.delete }}?next={{ request.path }}"
+                               class="btn btn-sm btn-danger"
+                               title="{% translate "Delete" %}">
+                                <i class="fa fa-trash"></i>
+                            </a>
+                        </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div class="tab-pane fade show" id="individual" role="tabpanel" aria-labelledby="individual-tab">
+
+                <div class="alert alert-info"><p>
+                    {% if request.event.active_review_phase.proposal_visibility == "assigned" %}
+                        {% blocktranslate trimmed with href=request.event.orga_urls.review_settings %}
+                            Reviewers will be able to see and review <b>only their assigned</b> proposals.
+                            You can change this in your <a href="{{ href }}">review settings</a>.
+                        {% endblocktranslate %}
+                    {% else %}
+                        {% blocktranslate trimmed with href=request.event.orga_urls.review_settings %}
+                            Reviewers will be able to see and review <b>all proposals</b>,
+                            but their assigned reviews will appear highlighted, and they
+                            will be directed to them first. You can change this in your <a
+                                href="{{ href }}">review settings</a>.
+                        {% endblocktranslate %}
+                    {% endif %}
+                </p></div>
+                <p>
+                    {% blocktranslate trimmed %}
+                        This is where you can assign reviewers to specific proposals! Please use this drop-down to
+                        switch between the two assignment modes (assigning reviewers to proposals or proposals to reviewers).
+                    {% endblocktranslate %}
+                    {% blocktranslate trimmed %}
+                        You can also use the Actions menu above to import your assignments from a prepared file.
+                    {% endblocktranslate %}
+                </p>
+                <div class="float-right">
+                    <details class="dropdown">
+                        <summary class="btn btn-info" id="review-actions">
+                            {% translate "Actions" %} <i class="fa fa-caret-down"></i>
+                        </summary>
+
+                        <ul class="dropdown-content dropdown-front dropdown-content-s{% if rtl %}e{% else %}w{% endif %}">
+                            <li><a class="dropdown-item" href="{{ request.path }}import" target="_blank" rel="noopener">
+                                <i class="fa fa-link"></i> {% translate "Import assignments" %}
+                            </a></li>
+                        </ul>
+                    </details>
+                </div>
+                <div class="ml-auto mr-auto col-md-4">
+                    <form id="direction">
+                        {% bootstrap_form form layout='inline' %}
+                    </form>
+                </div>
+                <form method="post" class="d-flex flex-column select2-textbox">
+                    {% csrf_token %}
+
+                    <div class="formset" data-formset data-formset-prefix="{{ formset.prefix }}">
+                        {{ formset.management_form }}
+                        {% bootstrap_formset_errors formset %}
+                        <div data-formset-body>
+                            {% for form in formset %}
+                                <div data-formset-form>
+                                    <div class="sr-only">
+                                        {{ form.id }}
+                                    </div>
+                                    <div class="reviewer-formset">
+                                        {% bootstrap_form_errors form %}
+                                        {% for field in form %}{% if field.label %}
+                                            {% bootstrap_field field layout='event' %}
+                                        {% endif %}{% endfor %}
+                                    </div>
+                                </div>
+                            {% endfor %}
                         </div>
                     </div>
-                {% endfor %}
+                    <div class="submit-group panel">
+                        <span></span>
+                        <span>
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fa fa-check"></i>
+                                {% translate "Save" %}
+                            </button>
+                        </span>
+                    </div>
+                </form>
             </div>
         </div>
-        <div class="submit-group panel">
-            <span></span>
-            <span>
-                <button type="submit" class="btn btn-success btn-lg">
-                    <i class="fa fa-check"></i>
-                    {% translate "Save" %}
-                </button>
-            </span>
-        </div>
-    </form>
 {% endblock %}
 
