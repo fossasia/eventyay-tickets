@@ -43,7 +43,7 @@ const drawTimeline = () => {
       xaxis: deadlines,
     },
     chart: {
-      width: element.parentElement.clientWidth - 50,
+      redrawOnParentResize: true,
       height: 250,
       type: 'area',
       toolbar: {
@@ -114,6 +114,7 @@ const drawPieChart = (data, scope, type) => {
     labels: data.labels,
     chart: {
       width: element.clientWidth - 50,
+      redrawOnParentResize: true,
       type: 'donut',
       events: {
         dataPointSelection: (event, chartContext, config) => {
@@ -196,8 +197,8 @@ let talkChartData = chartTypes.reduce(
   },
   {}
 )
-/* generate timeline data */
-timeline = drawTimeline()
+/* generate timeline data. delay to draw the correct size immediately */
+setTimeout(drawTimeline, 10)
 
 let charts = []
 for (const [key, data] of Object.entries(submissionChartData)) {
