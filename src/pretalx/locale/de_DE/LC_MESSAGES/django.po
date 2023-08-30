@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-08-30 13:22+0000\n"
-"PO-Revision-Date: 2023-08-28 17:52+0200\n"
-"Last-Translator: Jannik Beyerstedt <service-translatepretalx@jtbx.de>\n"
+"PO-Revision-Date: 2023-08-30 13:26+0000\n"
+"Last-Translator: Tobias Kunze <r@rixx.de>\n"
 "Language-Team: \n"
 "Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Poedit 3.3.2\n"
+"X-Generator: Weblate 4.18.2\n"
 
 #: htmlcov/d_9155819316f40b96_views_py.html:155
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:30
@@ -3572,7 +3572,7 @@ msgstr "Median"
 
 #: pretalx/orga/forms/event.py:530
 msgid "Average (mean)"
-msgstr "Wertung (Durchschnitt)"
+msgstr "Durchschnitt"
 
 #: pretalx/orga/forms/event.py:534
 msgid "Help text for reviewers"
@@ -4190,7 +4190,7 @@ msgstr "pretalx-Website"
 
 #: pretalx/orga/templates/orga/admin.html:93
 msgid "pretalx documentation"
-msgstr "Dokumentation"
+msgstr "pretalx-Dokumentation"
 
 #: pretalx/orga/templates/orga/admin.html:95
 msgid "Configuration reference"
@@ -5381,16 +5381,12 @@ msgid "Import"
 msgstr "Import"
 
 #: pretalx/orga/templates/orga/review/assignment.html:18
-#, fuzzy
-#| msgid "Assign reviewers"
 msgid "Assign reviewer teams"
-msgstr "Reviewer einteilen"
+msgstr "Reviewerteams einteilen"
 
 #: pretalx/orga/templates/orga/review/assignment.html:21
-#, fuzzy
-#| msgid "Assign reviewers"
 msgid "Assign reviewers individually"
-msgstr "Reviewer einteilen"
+msgstr "Reviewer einzeln einteilen"
 
 #: pretalx/orga/templates/orga/review/assignment.html:27
 msgid ""
@@ -5398,12 +5394,17 @@ msgid ""
 "more granular assignments, you can also assign reviewers to proposals "
 "individually."
 msgstr ""
+"Reviewer können in Teams und zu bestimmten Tracks zugewiesen werden. Wenn "
+"ihr kleinteiligere Zuweisungen braucht, könnt ihr aber auch Reviewern "
+"individuell Einreichungen zuweisen."
 
 #: pretalx/orga/templates/orga/review/assignment.html:33
 msgid ""
 "As teams can belong to multiple events, teams are managed in your organiser "
 "settings."
 msgstr ""
+"Da Teams veranstaltungsübergreifend sein können, werden Teams in den "
+"Veranstalter-Einstellungen konfiguriert."
 
 #: pretalx/orga/templates/orga/review/assignment.html:100
 #, python-format
@@ -8276,10 +8277,9 @@ msgstr "{name} ({duration} Stunden)"
 msgid "{name} ({duration} minutes)"
 msgstr "{name} ({duration} Minuten)"
 
-#, fuzzy
-#~| msgid "Assign reviewers"
-#~ msgid "Assign reviewer groups"
-#~ msgstr "Reviewer einteilen"
+#: pretalx/orga/templates/orga/review/assignment.html:18
+msgid "Assign reviewer groups"
+msgstr "Reviewergruppen einteilen"
 
 #~ msgid "This value is required, please enter some value to proceed: "
 #~ msgstr ""
