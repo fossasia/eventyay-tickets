@@ -116,9 +116,9 @@ class Availability(LogMixin, models.Model):
         return Availability(
             start=min(self.start, other.start),
             end=max(self.end, other.end),
-            event = getattr(self, "event", None),
-            person = getattr(self, "person", None),
-            room = getattr(self, "room", None),
+            event=getattr(self, "event", None),
+            person=getattr(self, "person", None),
+            room=getattr(self, "room", None),
         )
 
     def __or__(self, other: "Availability") -> "Availability":
@@ -137,9 +137,9 @@ class Availability(LogMixin, models.Model):
         return Availability(
             start=max(self.start, other.start),
             end=min(self.end, other.end),
-            event = getattr(self, "event", None),
-            person = getattr(self, "person", None),
-            room = getattr(self, "room", None),
+            event=getattr(self, "event", None),
+            person=getattr(self, "person", None),
+            room=getattr(self, "room", None),
         )
 
     def __and__(self, other: "Availability") -> "Availability":
