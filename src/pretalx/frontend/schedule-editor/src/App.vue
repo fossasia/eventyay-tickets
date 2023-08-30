@@ -32,7 +32,9 @@
 					@editSession="editorStart($event)")
 			#session-editor-wrapper(v-if="editorSession", @click="editorSession = null")
 				form#session-editor(@click.stop="", @submit.prevent="editorSave")
-					h3.session-editor-title(v-if="editorSession.code") {{editorSession.title }}
+					h3.session-editor-title(v-if="editorSession.code")
+						a(v-if="editorSession.code", :href="`/orga/event/${eventSlug}/submissions/${editorSession.code}/`") {{editorSession.title }}
+						span(v-else) {{editorSession.title }}
 					.data
 						.data-row(v-if="editorSession.code")
 							.data-label(v-if="editorSession.speakers && editorSession.speakers.length == 1") {{ $t('Speaker') }}
@@ -147,6 +149,7 @@ export default {
 					speakers: session.speakers?.map(s => this.speakersLookup[s]),
 					track: this.tracksLookup[session.track],
 					duration: session.duration,
+					state: session.state,
 				})
 			}
 			if (this.unassignedFilterString.length) {
@@ -186,6 +189,7 @@ export default {
 					duration: moment(session.end).diff(session.start, 'm'),
 					speakers: session.speakers?.map(s => this.speakersLookup[s]),
 					track: this.tracksLookup[session.track],
+					state: session.state,
 					room: this.roomsLookup[session.room]
 				})
 			}

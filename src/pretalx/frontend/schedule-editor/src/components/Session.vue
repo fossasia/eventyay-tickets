@@ -58,7 +58,10 @@ export default {
 		classes () {
 			let classes = []
 			if (this.isBreak) classes.push('isbreak')
-			else classes.push('istalk')
+			else {
+				classes.push('istalk')
+				if (this.session.state !== "confirmed") classes.push('unconfirmed')
+			}
 			if (this.isDragged) classes.push('dragging')
 			if (this.isDragClone) classes.push('clone')
 			return classes
@@ -128,6 +131,11 @@ export default {
 			font-weight: 500
 			color: $clr-secondary-text-light
 			align: center
+	&.unconfirmed
+		.time-box
+			opacity: 0.5
+		.info
+			background-image: repeating-linear-gradient(-38deg, $clr-grey-100, $clr-grey-100 10px, $clr-white 10px, $clr-white 20px)
 	&.istalk
 		.time-box
 			width: 69px

@@ -685,6 +685,7 @@ class Schedule(LogMixin, models.Model):
                         "room": talk.room_id,
                         "duration": talk.submission.get_duration(),
                         "updated": talk.updated.isoformat(),
+                        "state": talk.submission.state if all_talks else None,
                     }
                 )
             else:
