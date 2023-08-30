@@ -5,3 +5,4 @@ static.dist/
 build/
 *.egg-info/
 *.bak
+tests/locale/

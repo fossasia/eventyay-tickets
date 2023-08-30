@@ -448,8 +448,7 @@ def test_chained(availabilitiesform, room):
         form.save()
 
         avails = Room.objects.first().availabilities.order_by("-start")
-        assert len(avails) == 2
-        assert avails[0].start == dt.datetime(2017, 1, 1, 15, tzinfo=ZoneInfo("UTC"))
-        assert avails[0].end == dt.datetime(2017, 1, 1, 17, tzinfo=ZoneInfo("UTC"))
-        assert avails[1].start == dt.datetime(2017, 1, 1, 5, tzinfo=ZoneInfo("UTC"))
-        assert avails[1].end == dt.datetime(2017, 1, 3, 5, tzinfo=ZoneInfo("UTC"))
+        # One of these is contained in the other!
+        assert len(avails) == 1
+        assert avails[0].start == dt.datetime(2017, 1, 1, 5, tzinfo=ZoneInfo("UTC"))
+        assert avails[0].end == dt.datetime(2017, 1, 3, 5, tzinfo=ZoneInfo("UTC"))

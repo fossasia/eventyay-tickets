@@ -2,7 +2,7 @@ import datetime as dt
 
 import pytest
 import responses
-from django.core.management import call_command
+from django.core.management import CommandError, call_command
 from django_scopes import scope
 
 from pretalx.event.models import Event
@@ -61,7 +61,7 @@ def test_common_test_regenerate_css_wrong_slug(event):
 
 @pytest.mark.django_db
 def test_common_uncallable(event):
-    with pytest.raises(OSError):
+    with pytest.raises(CommandError):
         call_command("init")
     with pytest.raises(Exception):  # noqa
         call_command("shell_scoped")

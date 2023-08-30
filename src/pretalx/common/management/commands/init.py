@@ -60,7 +60,7 @@ class Command(BaseCommand):  # pragma: no cover
             """\nLet\'s get you a user with the right to create new events and access every event on this pretalx instance."""
         )
 
-        call_command("createsuperuser", noinput=options["noinput"])
+        call_command("createsuperuser", no_input=options["noinput"])
         user = User.objects.order_by("-id").filter(is_administrator=True).first()
 
         self.stdout.write(
