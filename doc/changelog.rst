@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` Completely rewrote the schedule editor, making it look like the actual schedule, and added some powerful features like hiding rooms, easy duration changes, and more.
 - :support:`-` The ``pretalx init`` command now has a ``--no-input`` flag for all your automation needs.
 - :support:`-` pretalx no longer logs 404 responses, as you can get those equally from your webserver logs.
 - :feature:`399` pretalx will now locally cache gravatar avatars to avoid GDPR issues when using gravatar.
