@@ -303,7 +303,7 @@ export default {
 				obj[locale] = this.$t("New Break")
 				return obj
 			}, {})
-			this.startDragging({event, session: {title, duration: "30", uncreated: true}})
+			this.startDragging({event, session: {title, duration: "5", uncreated: true}})
 		},
 		startDragging ({event, session}) {
 			if (this.availabilities && this.availabilities.talks[session.id] && this.availabilities.talks[session.id].length !== 0) {
