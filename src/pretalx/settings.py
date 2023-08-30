@@ -381,6 +381,12 @@ LANGUAGES_INFORMATION = {
         "official": False,
         "percentage": 99,
     },
+    "el": {
+        "name": _("Greek"),
+        "natural_name": "Ελληνικά",
+        "official": False,
+        "percentage": 97,
+    },
     "es": {
         "name": _("Spanish"),
         "natural_name": "Español",
