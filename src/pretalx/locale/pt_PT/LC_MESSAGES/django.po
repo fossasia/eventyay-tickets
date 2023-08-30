@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-30 13:14+0000\n"
+"POT-Creation-Date: 2023-08-30 13:22+0000\n"
 "PO-Revision-Date: 2022-11-18 18:03+0000\n"
 "Last-Translator: João Lucas Pires <jlucasp25@gmail.com>\n"
 "Language-Team: none\n"
@@ -5363,7 +5363,7 @@ msgstr "Importar"
 #: pretalx/orga/templates/orga/review/assignment.html:18
 #, fuzzy
 #| msgid "Assign reviewers"
-msgid "Assign reviewer groups"
+msgid "Assign reviewer teams"
 msgstr "Atribuir revisores"
 
 #: pretalx/orga/templates/orga/review/assignment.html:21
@@ -8244,6 +8244,11 @@ msgstr ""
 
 msgid "Hidden rooms"
 msgstr ""
+
+#, fuzzy
+#~| msgid "Assign reviewers"
+#~ msgid "Assign reviewer groups"
+#~ msgstr "Atribuir revisores"
 
 #~ msgid "This value is required, please enter some value to proceed: "
 #~ msgstr ""

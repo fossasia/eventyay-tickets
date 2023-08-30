@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-30 13:14+0000\n"
+"POT-Creation-Date: 2023-08-30 13:22+0000\n"
 "PO-Revision-Date: 2020-09-28 02:42+0000\n"
 "Last-Translator: Satoshi IIDA <nyampire@gmail.com>\n"
 "Language-Team: \n"
@@ -5491,7 +5491,7 @@ msgstr "インポート"
 #: pretalx/orga/templates/orga/review/assignment.html:18
 #, fuzzy
 #| msgid "Active reviewers"
-msgid "Assign reviewer groups"
+msgid "Assign reviewer teams"
 msgstr "活動中のレビュアー"
 
 #: pretalx/orga/templates/orga/review/assignment.html:21
@@ -8440,6 +8440,11 @@ msgstr ""
 
 msgid "Hidden rooms"
 msgstr ""
+
+#, fuzzy
+#~| msgid "Active reviewers"
+#~ msgid "Assign reviewer groups"
+#~ msgstr "活動中のレビュアー"
 
 #~ msgid "This value is required, please enter some value to proceed: "
 #~ msgstr "この項目は必須です。何かを入力してください。: "

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-30 13:14+0000\n"
+"POT-Creation-Date: 2023-08-30 13:22+0000\n"
 "PO-Revision-Date: 2022-05-09 09:22+0000\n"
 "Last-Translator: Víctor <vfc@uber.space>\n"
 "Language-Team: none\n"
@@ -4819,8 +4819,10 @@ msgid "Import"
 msgstr ""
 
 #: pretalx/orga/templates/orga/review/assignment.html:18
-msgid "Assign reviewer groups"
-msgstr ""
+#, fuzzy
+#| msgid "Send review"
+msgid "Assign reviewer teams"
+msgstr "Envia la revisió"
 
 #: pretalx/orga/templates/orga/review/assignment.html:21
 msgid "Assign reviewers individually"

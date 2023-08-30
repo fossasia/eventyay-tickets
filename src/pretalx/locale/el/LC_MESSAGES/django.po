@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-30 13:14+0000\n"
+"POT-Creation-Date: 2023-08-30 13:22+0000\n"
 "PO-Revision-Date: 2023-05-13 03:03+0000\n"
 "Last-Translator: Vangelis Zacharioudakis <sugarvag@gmail.com>\n"
 "Language-Team: none\n"
@@ -5497,7 +5497,7 @@ msgstr "Εισαγωγή"
 #: pretalx/orga/templates/orga/review/assignment.html:18
 #, fuzzy
 #| msgid "Assign reviewers"
-msgid "Assign reviewer groups"
+msgid "Assign reviewer teams"
 msgstr "Ορίστε αναθεωρητές"
 
 #: pretalx/orga/templates/orga/review/assignment.html:21
@@ -8448,6 +8448,11 @@ msgstr ""
 
 msgid "Hidden rooms"
 msgstr ""
+
+#, fuzzy
+#~| msgid "Assign reviewers"
+#~ msgid "Assign reviewer groups"
+#~ msgstr "Ορίστε αναθεωρητές"
 
 #~ msgid "This value is required, please enter some value to proceed: "
 #~ msgstr "Αυτή η τιμή απαιτείται. Εισαγάγετε κάποια τιμή για να συνεχίσετε: "

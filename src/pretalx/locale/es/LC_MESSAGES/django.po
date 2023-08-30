@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-30 13:14+0000\n"
+"POT-Creation-Date: 2023-08-30 13:22+0000\n"
 "PO-Revision-Date: 2023-07-09 12:54+0000\n"
 "Last-Translator: Daniel Carranza <chino@data.org.uy>\n"
 "Language-Team: none\n"
@@ -5434,7 +5434,7 @@ msgstr "Importar XML"
 #: pretalx/orga/templates/orga/review/assignment.html:18
 #, fuzzy
 #| msgid "Active reviewers"
-msgid "Assign reviewer groups"
+msgid "Assign reviewer teams"
 msgstr "Revisadores activos"
 
 #: pretalx/orga/templates/orga/review/assignment.html:21
@@ -8391,6 +8391,11 @@ msgstr ""
 
 msgid "Hidden rooms"
 msgstr ""
+
+#, fuzzy
+#~| msgid "Active reviewers"
+#~ msgid "Assign reviewer groups"
+#~ msgstr "Revisadores activos"
 
 #~ msgid "This value is required, please enter some value to proceed: "
 #~ msgstr "Este valor es obligatorio, ingrese algún valor para continuar: "

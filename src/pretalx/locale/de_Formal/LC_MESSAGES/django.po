@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-30 13:14+0000\n"
+"POT-Creation-Date: 2023-08-30 13:22+0000\n"
 "PO-Revision-Date: 2023-08-28 17:58+0200\n"
 "Last-Translator: Jannik Beyerstedt <service-translatepretalx@jtbx.de>\n"
 "Language-Team: \n"
@@ -5398,7 +5398,7 @@ msgstr "Import"
 #: pretalx/orga/templates/orga/review/assignment.html:18
 #, fuzzy
 #| msgid "Assign reviewers"
-msgid "Assign reviewer groups"
+msgid "Assign reviewer teams"
 msgstr "Reviewer einteilen"
 
 #: pretalx/orga/templates/orga/review/assignment.html:21
@@ -8300,6 +8300,11 @@ msgstr "{name} ({duration} Stunden)"
 #, python-brace-format
 msgid "{name} ({duration} minutes)"
 msgstr "{name} ({duration} Minuten)"
+
+#, fuzzy
+#~| msgid "Assign reviewers"
+#~ msgid "Assign reviewer groups"
+#~ msgstr "Reviewer einteilen"
 
 #~ msgid "This value is required, please enter some value to proceed: "
 #~ msgstr ""

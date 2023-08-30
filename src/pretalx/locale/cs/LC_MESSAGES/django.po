@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-30 13:14+0000\n"
+"POT-Creation-Date: 2023-08-30 13:22+0000\n"
 "PO-Revision-Date: 2023-08-27 11:54+0000\n"
 "Last-Translator: Michal Stanke <michal@stanke.cz>\n"
 "Language-Team: none\n"
@@ -5295,7 +5295,7 @@ msgstr "Importovat"
 #: pretalx/orga/templates/orga/review/assignment.html:18
 #, fuzzy
 #| msgid "Assign reviewers"
-msgid "Assign reviewer groups"
+msgid "Assign reviewer teams"
 msgstr "Přiřadit ke kontrole"
 
 #: pretalx/orga/templates/orga/review/assignment.html:21
@@ -8125,6 +8125,11 @@ msgstr "{name} ({duration} minut)"
 
 msgid "minutes"
 msgstr ""
+
+#, fuzzy
+#~| msgid "Assign reviewers"
+#~ msgid "Assign reviewer groups"
+#~ msgstr "Přiřadit ke kontrole"
 
 #~ msgid "This value is required, please enter some value to proceed: "
 #~ msgstr "Tato hodnota je povinná, pro pokračování ji prosím zadejte: "
