@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-28 15:40+0000\n"
+"POT-Creation-Date: 2023-08-30 13:14+0000\n"
 "PO-Revision-Date: 2023-07-09 12:54+0000\n"
 "Last-Translator: Daniel Carranza <chino@data.org.uy>\n"
 "Language-Team: none\n"
@@ -586,7 +586,7 @@ msgid "Proposals are closed"
 msgstr "El envío de propuestas esta cerrado"
 
 #: pretalx/cfp/templates/cfp/event/fragment_state.html:3
-#: pretalx/orga/views/dashboard.py:301 pretalx/orga/views/dashboard.py:332
+#: pretalx/orga/views/dashboard.py:301 pretalx/orga/views/dashboard.py:337
 #: pretalx/submission/models/submission.py:49
 msgid "submitted"
 msgstr "enviado"
@@ -841,7 +841,7 @@ msgstr ""
 #: pretalx/orga/templates/orga/cfp/access_code_form.html:53
 #: pretalx/orga/templates/orga/mails/outbox_form.html:109
 #: pretalx/orga/templates/orga/organiser/detail.html:25
-#: pretalx/orga/templates/orga/review/assignment.html:84
+#: pretalx/orga/templates/orga/review/assignment.html:167
 #: pretalx/orga/templates/orga/schedule/quick.html:18
 #: pretalx/orga/templates/orga/settings/form.html:112
 #: pretalx/orga/templates/orga/settings/mail.html:32
@@ -1022,6 +1022,7 @@ msgstr "¿De verdad quieres retirar tu propuesta?"
 #: pretalx/orga/templates/orga/cfp/question_view.html:81
 #: pretalx/orga/templates/orga/mails/outbox_list.html:99
 #: pretalx/orga/templates/orga/organiser/detail.html:72
+#: pretalx/orga/templates/orga/review/assignment.html:88
 #: pretalx/orga/templates/orga/submission/list.html:171
 msgid "Delete"
 msgstr "Borrar"
@@ -1694,89 +1695,6 @@ msgstr "Se modificó la contraseña."
 msgid "The profile was modified."
 msgstr "El perfil fue modificado."
 
-#: pretalx/common/management/commands/init.py:18
-msgid "This value is required, please enter some value to proceed: "
-msgstr "Este valor es obligatorio, ingrese algún valor para continuar: "
-
-#: pretalx/common/management/commands/init.py:31
-msgid ""
-"\n"
-"Welcome to pretalx! This is my initialization command, please use it only "
-"once."
-msgstr ""
-"\n"
-"¡Bienvenido a Pretalx! Este es mi comando de inicialización, utilícelo solo "
-"una vez."
-
-#: pretalx/common/management/commands/init.py:37
-msgid ""
-"You can abort this command at any time using C-c, and it will save no data."
-msgstr ""
-"Puede cancelar este comando en cualquier momento usando C-c, y no guardará "
-"datos."
-
-#: pretalx/common/management/commands/init.py:43
-msgid ""
-"\n"
-"Let's get you a user with the right to create new events and access every "
-"event on this pretalx instance."
-msgstr ""
-"\n"
-"Vamos a conseguirte un usuario con derecho a crear nuevos eventos y acceder "
-"a todos los eventos en esta instancia de pretalx."
-
-#: pretalx/common/management/commands/init.py:52
-msgid ""
-"\n"
-"Let's also create a first organiser: This will allow you to invite further "
-"people and create events."
-msgstr ""
-"\n"
-"Creemos también un primer organizador: esto te permitirá invitar a más "
-"personas y crear eventos."
-
-#: pretalx/common/management/commands/init.py:56
-msgid ""
-"\n"
-"Name (e.g. \"The Conference Organiser\"): "
-msgstr ""
-"\n"
-"Nombre (por ejemplo, \"El organizador de la conferencia\"): "
-
-#: pretalx/common/management/commands/init.py:57
-msgid "Slug (e.g. \"conforg\", used in urls): "
-msgstr "Slug (p. Ej., \"Conforg\", utilizado en las URLS) "
-
-#: pretalx/common/management/commands/init.py:71
-msgid ""
-"\n"
-"Now that this is done, you can:"
-msgstr ""
-"\n"
-"Ahora que está hecho, puede:"
-
-#: pretalx/common/management/commands/init.py:73
-#, python-brace-format
-msgid " - Create your first event at {event_url}"
-msgstr " - Crea tu primer evento en {event_url}"
-
-#: pretalx/common/management/commands/init.py:77
-#, python-brace-format
-msgid ""
-" - Invite somebody to the organiser team at {team_url} and let them create "
-"the event"
-msgstr ""
-" - Invite a alguien al equipo organizador de {team_url} y permítelo crear el "
-"evento"
-
-#: pretalx/common/management/commands/init.py:82
-msgid ""
-" - Use the command \"import_schedule /path/to/schedule.xml\" if you want to "
-"import an event."
-msgstr ""
-" - Utilice el comando \"import_schedule /path/to/schedule.xml\" si desea "
-"importar un evento."
-
 #: pretalx/common/mixins/forms.py:40
 msgid "You are trying to change read-only data."
 msgstr "Está intentando cambiar el solo lectura datos."
@@ -1926,6 +1844,7 @@ msgstr ""
 #: pretalx/common/phrases.py:46
 #: pretalx/orga/templates/orga/cfp/question_view.html:76
 #: pretalx/orga/templates/orga/organiser/detail.html:67
+#: pretalx/orga/templates/orga/review/assignment.html:83
 #: pretalx/orga/templates/orga/submission/review_fragment.html:26
 #: pretalx/orga/templates/orga/submission/speakers.html:52
 msgid "Edit"
@@ -3812,6 +3731,7 @@ msgstr "Todas las propuestas en estas pistas"
 
 #: pretalx/orga/forms/mails.py:220 pretalx/orga/templates/orga/base.html:248
 #: pretalx/orga/templates/orga/cfp/track_view.html:5
+#: pretalx/orga/templates/orga/review/assignment.html:47
 #: pretalx/orga/templates/orga/settings/team_tracks.html:8
 #: pretalx/submission/forms/submission.py:270
 #: pretalx/submission/models/question.py:154
@@ -3904,7 +3824,7 @@ msgstr[1] "Propuestas"
 msgid "All proposals"
 msgstr "Todas las propuestas"
 
-#: pretalx/orga/forms/review.py:211 pretalx/orga/views/dashboard.py:327
+#: pretalx/orga/forms/review.py:211 pretalx/orga/views/dashboard.py:332
 #: pretalx/submission/models/submission.py:52
 msgid "rejected"
 msgstr "rechazada"
@@ -4420,7 +4340,7 @@ msgstr "Exportar"
 
 #: pretalx/orga/templates/orga/base.html:308
 #: pretalx/orga/templates/orga/review/assignment-import.html:9
-#: pretalx/orga/templates/orga/review/assignment.html:27
+#: pretalx/orga/templates/orga/review/assignment.html:14
 #, fuzzy
 #| msgid "Active reviewers"
 msgid "Assign reviewers"
@@ -5411,6 +5331,7 @@ msgid "Delete organiser"
 msgstr "Eliminar organizador"
 
 #: pretalx/orga/templates/orga/organiser/detail.html:39
+#: pretalx/orga/templates/orga/review/assignment.html:45
 #: pretalx/orga/templates/orga/settings/team_delete.html:7
 #: pretalx/orga/templates/orga/settings/team_detail.html:11
 #: pretalx/orga/templates/orga/settings/team_detail.html:84
@@ -5420,6 +5341,7 @@ msgid "Team"
 msgstr "Equipo"
 
 #: pretalx/orga/templates/orga/organiser/detail.html:40
+#: pretalx/orga/templates/orga/review/assignment.html:46
 #: pretalx/orga/templates/orga/settings/team_detail.html:11
 msgid "Members"
 msgstr "Miembros"
@@ -5433,10 +5355,12 @@ msgid "Reviewer"
 msgstr "Crítico"
 
 #: pretalx/orga/templates/orga/organiser/detail.html:53
+#: pretalx/orga/templates/orga/review/assignment.html:58
 msgid "You are a member of this team"
 msgstr "Eres miembro de este equipo"
 
 #: pretalx/orga/templates/orga/organiser/detail.html:86
+#: pretalx/orga/templates/orga/review/assignment.html:39
 #: pretalx/orga/templates/orga/settings/team_detail.html:87
 msgid "New team"
 msgstr "Nuevo equipo"
@@ -5507,17 +5431,32 @@ msgstr ""
 msgid "Import"
 msgstr "Importar XML"
 
-#: pretalx/orga/templates/orga/review/assignment.html:17
-#: pretalx/orga/templates/orga/review/dashboard.html:122
-#: pretalx/orga/templates/orga/schedule/index.html:35
-msgid "Actions"
-msgstr "Acciones"
+#: pretalx/orga/templates/orga/review/assignment.html:18
+#, fuzzy
+#| msgid "Active reviewers"
+msgid "Assign reviewer groups"
+msgstr "Revisadores activos"
 
-#: pretalx/orga/templates/orga/review/assignment.html:22
-msgid "Import assignments"
+#: pretalx/orga/templates/orga/review/assignment.html:21
+#, fuzzy
+#| msgid "Active reviewers"
+msgid "Assign reviewers individually"
+msgstr "Revisadores activos"
+
+#: pretalx/orga/templates/orga/review/assignment.html:27
+msgid ""
+"Reviewers can be assigned to tracks by way of review teams. If you require "
+"more granular assignments, you can also assign reviewers to proposals "
+"individually."
 msgstr ""
 
-#: pretalx/orga/templates/orga/review/assignment.html:30
+#: pretalx/orga/templates/orga/review/assignment.html:33
+msgid ""
+"As teams can belong to multiple events, teams are managed in your organiser "
+"settings."
+msgstr ""
+
+#: pretalx/orga/templates/orga/review/assignment.html:100
 #, fuzzy, python-format
 #| msgid ""
 #| "According to your current review settings, reviewers will be able to see "
@@ -5532,7 +5471,7 @@ msgstr ""
 "revisar <b>solo sus propuestas asignadas</b>. Puedes cambiar esto en tus <a "
 "href=\"%(href)s\">ajustes de revisión</a>."
 
-#: pretalx/orga/templates/orga/review/assignment.html:35
+#: pretalx/orga/templates/orga/review/assignment.html:105
 #, fuzzy, python-format
 #| msgid ""
 #| "According to your current review settings, reviewers will be able to see "
@@ -5547,17 +5486,27 @@ msgstr ""
 "revisar <b>solo sus propuestas asignadas</b>. Puedes cambiar esto en tus <a "
 "href=\"%(href)s\">ajustes de revisión</a>."
 
-#: pretalx/orga/templates/orga/review/assignment.html:44
+#: pretalx/orga/templates/orga/review/assignment.html:114
 msgid ""
 "This is where you can assign reviewers to specific proposals! Please use "
 "this drop-down to switch between the two assignment modes (assigning "
 "reviewers to proposals or proposals to reviewers)."
 msgstr ""
 
-#: pretalx/orga/templates/orga/review/assignment.html:48
+#: pretalx/orga/templates/orga/review/assignment.html:118
 msgid ""
 "You can also use the Actions menu above to import your assignments from a "
 "prepared file."
+msgstr ""
+
+#: pretalx/orga/templates/orga/review/assignment.html:125
+#: pretalx/orga/templates/orga/review/dashboard.html:122
+#: pretalx/orga/templates/orga/schedule/index.html:35
+msgid "Actions"
+msgstr "Acciones"
+
+#: pretalx/orga/templates/orga/review/assignment.html:130
+msgid "Import assignments"
 msgstr ""
 
 #: pretalx/orga/templates/orga/review/dashboard.html:26
@@ -6411,7 +6360,7 @@ msgid "Add a new note"
 msgstr "Agregar una nueva nota"
 
 #: pretalx/orga/templates/orga/speaker/list.html:10
-#: pretalx/orga/views/dashboard.py:342
+#: pretalx/orga/views/dashboard.py:347
 msgid "submitter"
 msgid_plural "submitters"
 msgstr[0] "remitente"
@@ -6963,13 +6912,13 @@ msgstr[1] "sesiones"
 msgid "unconfirmed"
 msgstr "confirmado"
 
-#: pretalx/orga/views/dashboard.py:323
+#: pretalx/orga/views/dashboard.py:328
 msgid "speaker"
 msgid_plural "speakers"
 msgstr[0] "orador/a"
 msgstr[1] "oradores/as"
 
-#: pretalx/orga/views/dashboard.py:351
+#: pretalx/orga/views/dashboard.py:356
 msgid "sent email"
 msgid_plural "sent emails"
 msgstr[0] "correo electrónico enviado"
@@ -7214,34 +7163,34 @@ msgstr "La etiqueta ha sido eliminada."
 msgid "The settings have been saved."
 msgstr "Los ajustes se han guardado."
 
-#: pretalx/orga/views/organiser.py:120
+#: pretalx/orga/views/organiser.py:121
 msgid "The member was removed from the team."
 msgstr "El miembro fue eliminado del equipo."
 
-#: pretalx/orga/views/organiser.py:123
+#: pretalx/orga/views/organiser.py:124
 msgid "The team was removed."
 msgstr "El equipo fue eliminado."
 
-#: pretalx/orga/views/organiser.py:153
+#: pretalx/orga/views/organiser.py:154
 msgid "The team invitation was retracted."
 msgstr "Se canceló la invitación a sumarse al equipo."
 
-#: pretalx/orga/views/organiser.py:164
+#: pretalx/orga/views/organiser.py:165
 msgid "The team invitation was sent again."
 msgstr "Se ha enviado de nuevo la invitación a sumarse al equipo."
 
-#: pretalx/orga/views/organiser.py:192 pretalx/orga/views/speaker.py:252
+#: pretalx/orga/views/organiser.py:193 pretalx/orga/views/speaker.py:252
 msgid "The password was reset and the user was notified."
 msgstr "La contraseña ha sido cambiada y el usuario ha sido notificado."
 
-#: pretalx/orga/views/organiser.py:198 pretalx/orga/views/speaker.py:258
+#: pretalx/orga/views/organiser.py:199 pretalx/orga/views/speaker.py:258
 msgid ""
 "The password reset email could not be sent, so the password was not reset."
 msgstr ""
 "El correo electrónico de cambio de contraseña no pudo ser enviado, por lo "
 "que la contraseña no fue cambiada."
 
-#: pretalx/orga/views/organiser.py:225 pretalx/orga/views/review.py:650
+#: pretalx/orga/views/organiser.py:226 pretalx/orga/views/review.py:655
 #: pretalx/orga/views/schedule.py:601
 msgid "Saved!"
 msgstr "¡Guardado!"
@@ -7284,11 +7233,11 @@ msgstr ""
 "{count} correos electrónicos han sido generado y posicionado en su bandeja "
 "de salida."
 
-#: pretalx/orga/views/review.py:667
+#: pretalx/orga/views/review.py:672
 msgid "The reviewers were assigned successfully."
 msgstr ""
 
-#: pretalx/orga/views/review.py:685 pretalx/orga/views/schedule.py:111
+#: pretalx/orga/views/review.py:690 pretalx/orga/views/schedule.py:111
 #: pretalx/orga/views/speaker.py:359
 msgid "No data to be exported"
 msgstr "No se han exporado ningúnos datos"
@@ -7678,43 +7627,43 @@ msgstr ""
 "conferencia con bloques verdes. Intentaremos programar su espacio durante "
 "estos horarios. Puede hacer clic dos veces en un bloque para eliminarlo."
 
-#: pretalx/schedule/forms.py:112
+#: pretalx/schedule/forms.py:82
 #, python-brace-format
 msgid "Please note that all times are in the event timezone, {tz}."
 msgstr ""
 "Tenga en cuenta que todas las horas están en la zona horaria del evento, "
 "{tz}."
 
-#: pretalx/schedule/forms.py:117
+#: pretalx/schedule/forms.py:87
 msgid ""
 "If you set room availabilities, speakers will only be able to set their "
 "availability for when any room is available."
 msgstr ""
 
-#: pretalx/schedule/forms.py:151
+#: pretalx/schedule/forms.py:121
 msgid "The submitted availability does not comply with the required format."
 msgstr "La disponibilidad entrada no cumple con el formato requerido."
 
-#: pretalx/schedule/forms.py:167
+#: pretalx/schedule/forms.py:137
 msgid "The submitted availability contains an invalid date."
 msgstr "La disponibilidad entrada contiene una fecha no válida."
 
-#: pretalx/schedule/forms.py:191 pretalx/schedule/forms.py:205
+#: pretalx/schedule/forms.py:161 pretalx/schedule/forms.py:175
 msgid "Please fill in your availability!"
 msgstr "Por favor, ¡rellene su disponibilidad!"
 
-#: pretalx/schedule/forms.py:243
+#: pretalx/schedule/forms.py:215
 msgid "Room I"
 msgstr "Sala I"
 
-#: pretalx/schedule/forms.py:245
+#: pretalx/schedule/forms.py:217
 msgid ""
 "Description, e.g.: Our main meeting place, Room I, enter from the right."
 msgstr ""
 "Descripción, por ejemplo: Nuestro principal lugar de reunión, la Sala I, "
 "entrar por la derecha."
 
-#: pretalx/schedule/forms.py:248
+#: pretalx/schedule/forms.py:220
 msgid "Information for speakers, e.g.: Projector has only HDMI input."
 msgstr ""
 "Información para los oradores, por ejemplo: El proyector sólo tiene entrada "
@@ -8442,6 +8391,79 @@ msgstr ""
 
 msgid "Hidden rooms"
 msgstr ""
+
+#~ msgid "This value is required, please enter some value to proceed: "
+#~ msgstr "Este valor es obligatorio, ingrese algún valor para continuar: "
+
+#~ msgid ""
+#~ "\n"
+#~ "Welcome to pretalx! This is my initialization command, please use it only "
+#~ "once."
+#~ msgstr ""
+#~ "\n"
+#~ "¡Bienvenido a Pretalx! Este es mi comando de inicialización, utilícelo "
+#~ "solo una vez."
+
+#~ msgid ""
+#~ "You can abort this command at any time using C-c, and it will save no "
+#~ "data."
+#~ msgstr ""
+#~ "Puede cancelar este comando en cualquier momento usando C-c, y no "
+#~ "guardará datos."
+
+#~ msgid ""
+#~ "\n"
+#~ "Let's get you a user with the right to create new events and access every "
+#~ "event on this pretalx instance."
+#~ msgstr ""
+#~ "\n"
+#~ "Vamos a conseguirte un usuario con derecho a crear nuevos eventos y "
+#~ "acceder a todos los eventos en esta instancia de pretalx."
+
+#~ msgid ""
+#~ "\n"
+#~ "Let's also create a first organiser: This will allow you to invite "
+#~ "further people and create events."
+#~ msgstr ""
+#~ "\n"
+#~ "Creemos también un primer organizador: esto te permitirá invitar a más "
+#~ "personas y crear eventos."
+
+#~ msgid ""
+#~ "\n"
+#~ "Name (e.g. \"The Conference Organiser\"): "
+#~ msgstr ""
+#~ "\n"
+#~ "Nombre (por ejemplo, \"El organizador de la conferencia\"): "
+
+#~ msgid "Slug (e.g. \"conforg\", used in urls): "
+#~ msgstr "Slug (p. Ej., \"Conforg\", utilizado en las URLS) "
+
+#~ msgid ""
+#~ "\n"
+#~ "Now that this is done, you can:"
+#~ msgstr ""
+#~ "\n"
+#~ "Ahora que está hecho, puede:"
+
+#, python-brace-format
+#~ msgid " - Create your first event at {event_url}"
+#~ msgstr " - Crea tu primer evento en {event_url}"
+
+#, python-brace-format
+#~ msgid ""
+#~ " - Invite somebody to the organiser team at {team_url} and let them "
+#~ "create the event"
+#~ msgstr ""
+#~ " - Invite a alguien al equipo organizador de {team_url} y permítelo crear "
+#~ "el evento"
+
+#~ msgid ""
+#~ " - Use the command \"import_schedule /path/to/schedule.xml\" if you want "
+#~ "to import an event."
+#~ msgstr ""
+#~ " - Utilice el comando \"import_schedule /path/to/schedule.xml\" si desea "
+#~ "importar un evento."
 
 #~ msgid "Speaker E-Mail"
 #~ msgstr "Correo electrónico del ponente"
