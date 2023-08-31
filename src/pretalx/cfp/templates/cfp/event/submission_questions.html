@@ -23,14 +23,18 @@
     <p>
         {{ text|rich_text }}
     </p>
-    {% if form.submission_fields and form.speaker_fields %}
-        <h4>{% translate "… about your proposal:" %}</h4>
+    {% if form.submission_fields %}
+        {% if form.speaker_fields and form.submission_fields %}
+            <h4>{% translate "… about your proposal:" %}</h4>
+        {% endif %}
         {% for field in form.submission_fields %}
             {% bootstrap_field field layout='event' %}
         {% endfor %}
     {% endif %}
-    {% if form.speaker_fields and form.submission_fields %}
-        <h4>{% translate "… about yourself:" %}</h4>
+    {% if form.speaker_fields %}
+        {% if form.speaker_fields and form.submission_fields %}
+            <h4>{% translate "… about yourself:" %}</h4>
+        {% endif %}
         {% for field in form.speaker_fields %}
             {% bootstrap_field field layout='event' %}
         {% endfor %}
