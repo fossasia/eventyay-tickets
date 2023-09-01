@@ -214,6 +214,7 @@ export default {
 			const result = []
 			this.sessions.forEach(session => {
 				if (session.start.minute() % 30 !== 0) result.push(session.start)
+				if (session.end.minute() % 30 !== 0) result.push(session.end)
 			})
 			return [...new Set(result)]
 		},
