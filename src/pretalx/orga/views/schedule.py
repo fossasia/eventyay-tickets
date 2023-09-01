@@ -13,7 +13,6 @@ from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
 from django.utils.timezone import now
-from django.utils.translation import get_language
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import FormView, TemplateView, UpdateView, View
@@ -23,6 +22,7 @@ from i18nfield.utils import I18nJSONEncoder
 
 from pretalx.agenda.management.commands.export_schedule_html import get_export_zip_path
 from pretalx.agenda.tasks import export_schedule_html
+from pretalx.common.language import get_current_language_information
 from pretalx.common.mixins.views import (
     ActionFromUrl,
     EventPermissionRequired,
@@ -64,8 +64,8 @@ class ScheduleView(EventPermissionRequired, TemplateView):
         version = self.request.GET.get("version")
 
         # get current translations language from django
-        language = get_language()
-        path = settings.LANGUAGES_INFORMATION[language].get("path", language)
+        language_information = get_current_language_information()
+        path = language_information.get("path", language_information.get("code"))
         result["gettext_language"] = path.replace("-", "_")
 
         result["schedule_version"] = version
