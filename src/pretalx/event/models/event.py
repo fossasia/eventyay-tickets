@@ -1,9 +1,10 @@
+import copy
 import datetime as dt
 import zoneinfo
 from contextlib import suppress
 
 from dateutil.relativedelta import relativedelta
-from django.conf import global_settings, settings
+from django.conf import settings
 from django.core.exceptions import MultipleObjectsReturned, ValidationError
 from django.core.mail import get_connection
 from django.core.mail.backends.base import BaseEmailBackend
@@ -16,6 +17,7 @@ from django_scopes import scopes_disabled
 from i18nfield.fields import I18nCharField, I18nTextField
 
 from pretalx.common.cache import ObjectRelatedCache
+from pretalx.common.language import LANGUAGE_NAMES
 from pretalx.common.mixins.models import FileCleanupMixin, LogMixin
 from pretalx.common.models import TIMEZONE_CHOICES
 from pretalx.common.models.settings import hierarkey
@@ -433,13 +435,10 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
 
     @cached_property
     def available_content_locales(self) -> list:
-        # Content locales can be anything Django knows as a language, merged with
-        # our own list of locales plus this event's plugin locales.
-        locale_names = dict(global_settings.LANGUAGES)
-        locale_names.update(
-            (language["code"], language["natural_name"])
-            for language in settings.LANGUAGES_INFORMATION.values()
-        )
+        # Content locales can be anything pretalx knows as a language, merged with
+        # this event's plugin locales.
+
+        locale_names = copy.copy(LANGUAGE_NAMES)
         locale_names.update(self.named_plugin_locales)
         return sorted([(key, value) for key, value in locale_names.items()])
 
@@ -452,7 +451,7 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
     def named_plugin_locales(self) -> list:
         from pretalx.common.signals import register_locales
 
-        locale_names = dict(global_settings.LANGUAGES)
+        locale_names = copy.copy(LANGUAGE_NAMES)
         locale_names.update(self.named_locales)
         result = {}
         for _receiver, locales in register_locales.send(sender=self):

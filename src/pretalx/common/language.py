@@ -1,9 +1,14 @@
-from django.conf import settings
+from django.conf import global_settings, settings
 from django.utils.translation import get_language
 
 LANGUAGE_CODES_MAPPING = {
     language.lower(): language for language in settings.LANGUAGES_INFORMATION
 }
+LANGUAGE_NAMES = dict(global_settings.LANGUAGES)
+LANGUAGE_NAMES.update(
+    (language["code"], language["natural_name"])
+    for language in settings.LANGUAGES_INFORMATION.values()
+)
 
 
 def get_language_information(lang: str):
