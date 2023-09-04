@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-08-30 13:22+0000\n"
-"PO-Revision-Date: 2023-08-27 11:54+0000\n"
+"PO-Revision-Date: 2023-09-03 07:54+0000\n"
 "Last-Translator: Michal Stanke <michal@stanke.cz>\n"
 "Language-Team: none\n"
 "Language: cs\n"
@@ -5293,16 +5293,12 @@ msgid "Import"
 msgstr "Importovat"
 
 #: pretalx/orga/templates/orga/review/assignment.html:18
-#, fuzzy
-#| msgid "Assign reviewers"
 msgid "Assign reviewer teams"
-msgstr "Přiřadit ke kontrole"
+msgstr "Přiřadit ke kontrole týmu"
 
 #: pretalx/orga/templates/orga/review/assignment.html:21
-#, fuzzy
-#| msgid "Assign reviewers"
 msgid "Assign reviewers individually"
-msgstr "Přiřadit ke kontrole"
+msgstr "Přiřadit ke kontrole jednotlivci"
 
 #: pretalx/orga/templates/orga/review/assignment.html:27
 msgid ""
@@ -5310,12 +5306,17 @@ msgid ""
 "more granular assignments, you can also assign reviewers to proposals "
 "individually."
 msgstr ""
+"Přihlášky mohou kontrolovat všichni ve vybraném týmu. Pokud potřebujete "
+"kontroly přiřadit jinak, můžete přihlášky přiřadit ke kontrole konkrétnímu "
+"člověku."
 
 #: pretalx/orga/templates/orga/review/assignment.html:33
 msgid ""
 "As teams can belong to multiple events, teams are managed in your organiser "
 "settings."
 msgstr ""
+"Týmy mohou příslušet k více událostem, a proto jsou spravovány v nastevení "
+"organizátorů."
 
 #: pretalx/orga/templates/orga/review/assignment.html:100
 #, python-format
