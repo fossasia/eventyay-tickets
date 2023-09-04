@@ -93,7 +93,7 @@ dev = [
 ]
 mysql = ["mysqlclient"]
 postgres = ["psycopg2-binary"]
-redis = ["redis~=4.5.0"]
+redis = ["redis~=5.0.0"]
 
 [build-system]
 build-backend = "setuptools.build_meta"
