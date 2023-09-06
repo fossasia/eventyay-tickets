@@ -10,18 +10,24 @@ from pretalx.api.serializers.question import (
 from pretalx.submission.models import Answer, Question
 
 
-def get_questions_for_user(event, user):
+def get_questions_for_user(event, user, include_inactive=False):
+    if include_inactive:
+        base_queryset = event.questions(manager="all_objects").all()
+    else:
+        base_queryset = event.questions.all()
     if user.has_perm("orga.change_submissions", event):
-        return event.questions.all()
+        return base_queryset
+    # Anybody else cannot see inactive questions at the moment
+    base_queryset = base_queryset.filter(is_active=True)
     if user.has_perm("orga.view_submissions", event) and user.has_perm(
         "orga.view_speakers", event
     ):
         # This is a bit hacky: During anonymous review, reviewers can't use the API
         # to retrieve questions and answers. We can fix that with a bit of work,
         # but for now, it's an edge case. Leaving it as TODO.
-        return event.questions.filter(is_visible_to_reviewers=True)
+        return base_queryset.filter(is_visible_to_reviewers=True)
     if user.has_perm("agenda.view_schedule", event):
-        return event.questions.filter(is_public=True)
+        return base_queryset.filter(is_public=True)
     return event.questions.none()
 
 
@@ -33,7 +39,9 @@ class QuestionViewSet(viewsets.ModelViewSet):
     search_fields = ("question",)
 
     def get_queryset(self):
-        return get_questions_for_user(self.request.event, self.request.user)
+        return get_questions_for_user(
+            self.request.event, self.request.user, include_inactive=True
+        )
 
     def perform_create(self, serializer):
         serializer.save(event=self.request.event)
