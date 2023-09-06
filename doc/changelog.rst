@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`-` pretalx wasn't able to filter out pending state changes from the organiser proposal list.
 - :bug:`-` The schedule editor was not operational with some languages, particularly with different language code versions (pt-BR vs pt_br).
 - :bug:`-` The schedule editor would not show some specific time selectors when people expanded the timeline to see five-minute steps.
 - :release:`2023.1.0 <2023-08-30>`
