@@ -300,16 +300,15 @@ def question_move(request, pk, up=True):
     It takes a question and a direction and then tries to bring all
     items for this question in a new order.
     """
+    queryset = request.event.questions(manager="all_objects")
     try:
-        question = request.event.questions.get(pk=pk)
+        question = queryset.get(pk=pk)
     except Question.DoesNotExist:
         raise Http404(_("The selected question does not exist."))
     if not request.user.has_perm("orga.edit_question", question):
         messages.error(request, _("Sorry, you are not allowed to reorder questions."))
         return
-    questions = list(
-        request.event.questions(manager="all_objects").order_by("position")
-    )
+    questions = list(queryset.order_by("position"))
 
     index = questions.index(question)
     if index != 0 and up:
