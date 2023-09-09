@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-08-30 13:22+0000\n"
-"PO-Revision-Date: 2023-08-30 13:26+0000\n"
+"PO-Revision-Date: 2023-09-09 10:28+0000\n"
 "Last-Translator: Tobias Kunze <r@rixx.de>\n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -3572,7 +3572,7 @@ msgstr "Median"
 
 #: pretalx/orga/forms/event.py:530
 msgid "Average (mean)"
-msgstr "Durchschnitt"
+msgstr "Mittelwert"
 
 #: pretalx/orga/forms/event.py:534
 msgid "Help text for reviewers"
@@ -3925,7 +3925,7 @@ msgstr "Der Median aller Wertungen, wenn es schon welche gibt"
 
 #: pretalx/orga/forms/schedule.py:111
 msgid "Average (mean) score"
-msgstr "Wertung (Durchschnitt)"
+msgstr "Wertung (Mittelwert)"
 
 #: pretalx/orga/forms/schedule.py:112
 msgid "Average review score, if there have been reviews yet"
@@ -4965,7 +4965,7 @@ msgstr "Nicht öffentlich"
 
 #: pretalx/orga/templates/orga/event_list.html:51
 msgid "Create a new event"
-msgstr "Darf neue Veranstaltung erstellen"
+msgstr "Neue Veranstaltung anlegen"
 
 #: pretalx/orga/templates/orga/event_list.html:56
 msgid "Your most recent events"
@@ -5454,7 +5454,7 @@ msgstr "Aktionen"
 
 #: pretalx/orga/templates/orga/review/assignment.html:130
 msgid "Import assignments"
-msgstr "Einteilung importieren"
+msgstr "Zuweisungen importieren"
 
 #: pretalx/orga/templates/orga/review/dashboard.html:26
 #: pretalx/orga/views/dashboard.py:206
