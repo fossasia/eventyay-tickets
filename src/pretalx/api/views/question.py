@@ -18,7 +18,7 @@ def get_questions_for_user(event, user, include_inactive=False):
     if user.has_perm("orga.change_submissions", event):
         return base_queryset
     # Anybody else cannot see inactive questions at the moment
-    base_queryset = base_queryset.filter(is_active=True)
+    base_queryset = base_queryset.filter(active=True)
     if user.has_perm("orga.view_submissions", event) and user.has_perm(
         "orga.view_speakers", event
     ):
