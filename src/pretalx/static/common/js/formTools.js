@@ -1,22 +1,12 @@
 /* Handle Markdown */
 let dirtyInputs = []
 const options = {
-  baseUrl: null,
   breaks: true,
   gfm: true,
-  headerIds: true,
-  headerPrefix: "",
-  highlight: null,
-  langPrefix: "language-",
-  mangle: true,
-  pedantic: false,
-  sanitize: false,
-  sanitizer: null,
+  pedantic: false,  // Drawback: will render lists without blank lines correctly
   silent: false,
   smartLists: true,
-  smartypants: false,
   tables: true,
-  xhtml: false,
 }
 
 function checkForChanges() {
@@ -24,7 +14,7 @@ function checkForChanges() {
     dirtyInputs.forEach(element => {
       const inputElement = element.querySelector("textarea")
       const outputElement = element.querySelector(".preview")
-      outputElement.innerHTML = marked(inputElement.value)
+      outputElement.innerHTML = marked.parse(inputElement.value, options)
     })
     dirtyInputs = []
   }
@@ -49,7 +39,7 @@ window.onload = () => {
   document.querySelectorAll(".markdown-wrapper").forEach(element => {
     const inputElement = element.querySelector("textarea")
     const outputElement = element.querySelector(".preview")
-    outputElement.innerHTML = marked(inputElement.value)
+    outputElement.innerHTML = marked.parse(inputElement.value, options)
     const handleInput = () => {
       dirtyInputs.push(element)
     }
