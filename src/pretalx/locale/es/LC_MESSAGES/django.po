@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-08-30 13:22+0000\n"
-"PO-Revision-Date: 2023-07-09 12:54+0000\n"
-"Last-Translator: Daniel Carranza <chino@data.org.uy>\n"
+"PO-Revision-Date: 2023-09-08 12:47+0000\n"
+"Last-Translator: Pedro Galvan <pedro@sg.com.mx>\n"
 "Language-Team: none\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
@@ -1665,11 +1665,11 @@ msgstr "Se agregó una sala."
 
 #: pretalx/common/log_display.py:86
 msgid "A track was deleted."
-msgstr "Se eliminó un seguimiento."
+msgstr "Se eliminó un track."
 
 #: pretalx/common/log_display.py:87
 msgid "A track was modified."
-msgstr "Se modificó un seguimiento."
+msgstr "Se modificó un track."
 
 #: pretalx/common/log_display.py:88
 msgid "A speaker has been marked as arrived."
@@ -2547,7 +2547,7 @@ msgstr "Limite los permisos a estos eventos"
 #: pretalx/event/models/organiser.py:94 pretalx/person/models/information.py:34
 #: pretalx/submission/models/review.py:21
 msgid "Limit to tracks"
-msgstr "Limitar a seguimientos"
+msgstr "Limitar a tracks"
 
 #: pretalx/event/models/organiser.py:97
 msgid "Can create events"
@@ -2791,7 +2791,7 @@ msgstr "Sala"
 
 #: pretalx/mail/context.py:186
 msgid "The track the proposal belongs to"
-msgstr "El seguimiento al que pertenece la propuesta"
+msgstr "El track al que pertenece la propuesta"
 
 #: pretalx/mail/context.py:193
 msgid ""
@@ -3094,7 +3094,7 @@ msgstr ""
 
 #: pretalx/orga/forms/cfp.py:25
 msgid "Use tracks"
-msgstr "Usar seguimientos"
+msgstr "Usar tracks"
 
 #: pretalx/orga/forms/cfp.py:27
 msgid "Do you organise your sessions by tracks?"
@@ -3166,7 +3166,7 @@ msgstr "¡Ya tiene un tipo de sesión con este nombre!"
 
 #: pretalx/orga/forms/cfp.py:280
 msgid "You already have a track by this name!"
-msgstr "¡Ya tienes una seguimiento con este nombre!"
+msgstr "¡Ya tienes un track con este nombre!"
 
 #: pretalx/orga/forms/cfp.py:331
 #, python-brace-format
@@ -3187,7 +3187,7 @@ msgstr ""
 #: pretalx/orga/forms/cfp.py:346
 #, python-brace-format
 msgid "It will allow you to submit a proposal to the “{track}” track."
-msgstr "Le permitirá enviar una propuesta al seguimiento \"{track}\"."
+msgstr "Le permitirá enviar una propuesta al track \"{track}\"."
 
 #: pretalx/orga/forms/cfp.py:352
 msgid "It will allow you to submit a proposal to our CfP."
@@ -5962,8 +5962,7 @@ msgstr ""
 msgid ""
 "%(no_track)s sessions have <strong>not yet been assigned a track</strong>."
 msgstr ""
-"%(no_track)s las sesiones <strong>aún no se le ha asignado una seguimiento</"
-"strong>."
+"%(no_track)s sesiones <strong>aún no han sido asignadas a un track</strong>."
 
 #: pretalx/orga/templates/orga/schedule/release.html:62
 msgid "Warnings"
