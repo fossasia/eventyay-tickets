@@ -74,12 +74,12 @@ Working with the code
 
 First up, install all the main application dependencies::
 
-    (env)$ cd src
     (env)$ pip3 install --upgrade-strategy eager -Ue ".[dev]"
 
 Next, you will have to copy the static files from the source folder to the
 STATIC_ROOT directory, and create the local database::
 
+    (env)$ cd src
     (env)$ python manage.py collectstatic --noinput
     (env)$ python manage.py migrate
 
