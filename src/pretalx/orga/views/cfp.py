@@ -727,3 +727,33 @@ class CfPFlowEditor(EventPermissionRequired, TemplateView):
         else:
             flow.save_config(data)
         return JsonResponse({"success": True})
+
+def track_move(request, pk, up=True):
+    try:
+        track = request.event.tracks.get(pk=pk)
+    except Track.DoesNotExist:
+        raise Http404(_("The selected track does not exist."))
+    if not request.user.has_perm("orga.edit_track", track):
+        messages.error(request, _("Sorry, you are not allowed to reorder tracks."))
+        return
+    tracks = list(request.event.tracks.order_by("position"))
+
+    index = tracks.index(track)
+    if index != 0 and up:
+        tracks[index - 1], tracks[index] = tracks[index], tracks[index - 1]
+    elif index != len(tracks) - 1 and not up:
+        tracks[index + 1], tracks[index] = tracks[index], tracks[index + 1]
+
+    for i, qt in enumerate(tracks):
+        if qt.position != i:
+            qt.position = i
+            qt.save()
+    messages.success(request, _("The order of tracks has been updated."))
+
+def track_move_up(request, event, pk):
+    track_move(request, pk, up=True)
+    return redirect(request.event.cfp.urls.tracks)
+
+def track_move_down(request, event, pk):
+    track_move(request, pk, up=False)
+    return redirect(request.event.cfp.urls.tracks)

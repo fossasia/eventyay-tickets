@@ -234,6 +234,16 @@ urlpatterns = [
                                 cfp.TrackDelete.as_view(),
                                 name="cfp.track.delete",
                             ),
+                            path(
+                                "up",
+                                cfp.track_move_up,
+                                name="schedule.track.up",
+                            ),
+                            path(
+                                "down",
+                                cfp.track_move_down,
+                                name="schedule.track.down",
+                            ),
                         ]
                     ),
                 ),

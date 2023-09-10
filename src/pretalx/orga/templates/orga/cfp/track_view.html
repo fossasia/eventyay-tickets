@@ -43,6 +43,20 @@
                                class="btn btn-sm btn-info">
                                 <i class="fa fa-link"></i>
                             </a>
+                            {% if not forloop.last %}
+                                <a href="{{ track.urls.down }}"
+                                   class="btn btn-sm btn-outline-info"
+                                   title="{% translate "Move track down" %}">
+                                    <i class="fa fa-arrow-down"></i>
+                                </a>
+                            {% endif %}
+                            {% if not forloop.first %}
+                                <a href="{{ track.urls.up }}"
+                                   class="btn btn-sm btn-outline-info"
+                                   title="{% translate "Move track up" %}">
+                                    <i class="fa fa-arrow-up"></i>
+                                </a>
+                            {% endif %}
                             <a href="{{ track.urls.edit }}"
                                class="btn btn-sm btn-info">
                                 <i class="fa fa-edit"></i>
