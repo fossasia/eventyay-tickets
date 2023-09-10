@@ -39,9 +39,7 @@ class Track(LogMixin, models.Model):
         null=True,
         blank=True,
         verbose_name=_("Position"),
-        help_text=_(
-            "This is the order that tracks are displayed in in the schedule."
-        )
+        help_text=_("This is the order that tracks are displayed in in the schedule."),
     )
     requires_access_code = models.BooleanField(
         verbose_name=_("Requires access code"),
@@ -50,7 +48,6 @@ class Track(LogMixin, models.Model):
         ),
         default=False,
     )
-
 
     objects = ScopedManager(event="event")
 

@@ -728,6 +728,7 @@ class CfPFlowEditor(EventPermissionRequired, TemplateView):
             flow.save_config(data)
         return JsonResponse({"success": True})
 
+
 def track_move(request, pk, up=True):
     try:
         track = request.event.tracks.get(pk=pk)
@@ -750,9 +751,11 @@ def track_move(request, pk, up=True):
             qt.save()
     messages.success(request, _("The order of tracks has been updated."))
 
+
 def track_move_up(request, event, pk):
     track_move(request, pk, up=True)
     return redirect(request.event.cfp.urls.tracks)
+
 
 def track_move_down(request, event, pk):
     track_move(request, pk, up=False)
