@@ -28,6 +28,7 @@ DEBUG = config.getboolean("site", "debug")
 
 
 ## DIRECTORY SETTINGS
+PACKAGE_DIR = Path(__file__).resolve().parent
 BASE_DIR = Path(config.get("filesystem", "base"))
 DATA_DIR = Path(
     config.get(

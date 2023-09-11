@@ -1,5 +1,7 @@
 import tempfile
 
+import reportlab.rl_config
+from django.conf import settings
 from django.contrib import messages
 from django.http import HttpResponse
 from django.shortcuts import redirect
@@ -12,10 +14,17 @@ from reportlab.graphics.shapes import Drawing
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle, StyleSheet1
 from reportlab.lib.units import mm
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import BaseDocTemplate, Flowable, Frame, PageTemplate, Paragraph
 
 from pretalx.common.mixins.views import EventPermissionRequired
 from pretalx.submission.models import SubmissionStates
+
+reportlab.rl_config.TTFSearchPath.append(str(settings.PACKAGE_DIR / "static/fonts"))
+pdfmetrics.registerFont(TTFont("Muli", "mulish-v12-latin-ext-regular.ttf"))
+pdfmetrics.registerFont(TTFont("Muli-Italic", "mulish-v12-latin-ext-italic.ttf"))
+pdfmetrics.registerFont(TTFont("Titillium-Bold", "titillium-web-v17-latin-ext-600.ttf"))
 
 
 def ellipsize(text, length=200):
@@ -49,7 +58,7 @@ class SubmissionCard(Flowable):
         self.canv.rect(0, 0, self.width, self.height)
 
         self.canv.rotate(90)
-        self.canv.setFont("Helvetica", 16)
+        self.canv.setFont("Titillium-Bold", 16)
         self.canv.drawString(
             25 * mm, -12 * mm, str(self.submission.submission_type.name)
         )
@@ -175,20 +184,20 @@ class SubmissionCards(EventPermissionRequired, View):
     def get_style(self):
         stylesheet = StyleSheet1()
         stylesheet.add(
-            ParagraphStyle(name="Normal", fontName="Helvetica", fontSize=12, leading=14)
+            ParagraphStyle(name="Normal", fontName="Muli", fontSize=12, leading=14)
         )
         stylesheet.add(
             ParagraphStyle(
-                name="Title", fontName="Helvetica-Bold", fontSize=14, leading=16
+                name="Title", fontName="Titillium-Bold", fontSize=14, leading=16
             )
         )
         stylesheet.add(
             ParagraphStyle(
-                name="Speaker", fontName="Helvetica-Oblique", fontSize=12, leading=14
+                name="Speaker", fontName="Muli-Italic", fontSize=12, leading=14
             )
         )
         stylesheet.add(
-            ParagraphStyle(name="Meta", fontName="Helvetica", fontSize=10, leading=12)
+            ParagraphStyle(name="Meta", fontName="Muli", fontSize=10, leading=12)
         )
         return stylesheet
 
