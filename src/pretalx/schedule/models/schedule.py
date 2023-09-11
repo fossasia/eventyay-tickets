@@ -698,7 +698,7 @@ class Schedule(LogMixin, models.Model):
                         "room": talk.room_id,
                     }
                 )
-
+        tracks.discard(None)
         tracks = sorted(list(tracks), key=lambda x: x.position)
         result["tracks"] = [
             {
@@ -708,7 +708,6 @@ class Schedule(LogMixin, models.Model):
                 "color": track.color,
             }
             for track in tracks
-            if track
         ]
         result["rooms"] = [
             {
