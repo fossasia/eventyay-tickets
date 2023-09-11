@@ -790,6 +790,107 @@ def test_cannot_delete_used_track(orga_client, track, event, submission):
 
 
 @pytest.mark.django_db
+def test_move_tracks_in_list_down(orga_client, track, other_track, event):
+    with scope(event=event):
+        assert event.tracks.count() == 2
+        track.position = 0
+        track.save()
+        other_track.position = 1
+        other_track.save()
+    orga_client.post(track.urls.down, follow=True)
+    with scope(event=event):
+        track.refresh_from_db()
+        other_track.refresh_from_db()
+        assert track.position == 1
+        assert other_track.position == 0
+
+
+@pytest.mark.django_db
+def test_move_tracks_in_list_up(orga_client, track, other_track, event):
+    with scope(event=event):
+        assert event.tracks.count() == 2
+        track.position = 1
+        track.save()
+        other_track.position = 0
+        other_track.save()
+    orga_client.post(track.urls.up, follow=True)
+    with scope(event=event):
+        track.refresh_from_db()
+        other_track.refresh_from_db()
+        assert track.position == 0
+        assert other_track.position == 1
+
+
+@pytest.mark.django_db
+def test_move_tracks_in_list_up_out_of_bounds(orga_client, track, other_track, event):
+    with scope(event=event):
+        assert event.tracks.count() == 2
+        track.position = 0
+        track.save()
+        other_track.position = 1
+        other_track.save()
+    orga_client.post(track.urls.up, follow=True)
+    with scope(event=event):
+        track.refresh_from_db()
+        other_track.refresh_from_db()
+        assert track.position == 0
+        assert other_track.position == 1
+
+
+@pytest.mark.django_db
+def test_move_tracks_in_list_down_out_of_bounds(orga_client, track, other_track, event):
+    with scope(event=event):
+        assert event.tracks.count() == 2
+        track.position = 0
+        track.save()
+        other_track.position = 1
+        other_track.save()
+    orga_client.post(other_track.urls.down, follow=True)
+    with scope(event=event):
+        track.refresh_from_db()
+        other_track.refresh_from_db()
+        assert track.position == 0
+        assert other_track.position == 1
+
+
+@pytest.mark.django_db
+def test_move_tracks_in_list_without_track(orga_client, track, other_track, event):
+    with scope(event=event):
+        assert event.tracks.count() == 2
+        track.position = 0
+        track.save()
+        other_track.position = 1
+        other_track.save()
+    orga_client.post(
+        other_track.urls.down.replace(str(other_track.pk), str(other_track.pk + 100)),
+        follow=True,
+    )
+    with scope(event=event):
+        track.refresh_from_db()
+        other_track.refresh_from_db()
+        assert track.position == 0
+        assert other_track.position == 1
+
+
+@pytest.mark.django_db
+def test_reviewer_cannot_move_tracks_in_list_down(
+    review_client, track, other_track, event
+):
+    with scope(event=event):
+        assert event.tracks.count() == 2
+        track.position = 0
+        track.save()
+        other_track.position = 1
+        other_track.save()
+    review_client.post(track.urls.down, follow=True)
+    with scope(event=event):
+        track.refresh_from_db()
+        other_track.refresh_from_db()
+        assert track.position == 0
+        assert other_track.position == 1
+
+
+@pytest.mark.django_db
 def test_can_see_access_codes(orga_client, access_code):
     response = orga_client.get(access_code.event.cfp.urls.access_codes)
     assert response.status_code == 200
