@@ -699,6 +699,7 @@ class Schedule(LogMixin, models.Model):
                     }
                 )
 
+        tracks = sorted(list(tracks), key=lambda x: x.position)
         result["tracks"] = [
             {
                 "id": track.id,
