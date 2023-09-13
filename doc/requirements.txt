@@ -1,4 +1,3 @@
-rotki-releases
 sphinx
 sphinx-autobuild
 sphinx-autodoc-typehints

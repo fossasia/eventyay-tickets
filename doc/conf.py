@@ -8,6 +8,7 @@ import sys
 from datetime import date
 
 sys.path.insert(0, os.path.abspath('../src'))
+sys.path.insert(0, os.path.abspath('./_extensions'))
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "pretalx.settings")
 import django
@@ -36,7 +37,7 @@ extensions = [
     'sphinx_copybutton',
     'sphinxcontrib.httpdomain',
     'sphinxcontrib_django',
-    'releases',
+    'changelog',
 ]
 if HAS_PYENCHANT:
     extensions.append('sphinxcontrib.spelling')
@@ -123,11 +124,6 @@ linkcheck_ignore = [
     'http://127.0.0.1',
     r'https://github.com/pretalx/pretalx/issues/\d+',  # The release notes are auto generated and contain a LOT of issue links
 ]
-
-# Configure releases
-releases_release_uri = 'https://pypi.org/project/pretalx/%s/'
-releases_issue_uri = 'https://github.com/pretalx/pretalx/issues/%s'
-releases_unstable_prehistory = True
 
 # GitHub integration
 html_context = {

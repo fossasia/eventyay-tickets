@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :release:`unreleased <????-??-??>`
 - :feature:`-` Organisers can now change the pagination size of all list pages, with a choice of 25, 50 or 100.
 - :feature:`1576` Tracks can now be ordered, and the order is used both in drop-down and in the schedule.
 - :bug:`1577` The printable proposal cards showed broken characters for anything outside latin1.
@@ -463,7 +464,7 @@ Release Notes
 - :bug:`-` The organiser login page did not strip white-space from login credentials.
 - :bug:`524` Review settings contained the setting "Force data entry" twice, referring to the score and text, respectively.
 - :bug:`522` If a speaker did not check a mandatory checkbox, they could not submit the form (as intended), but could see no feedback explaining the issue.
-- :feature:`` The ``rebuild`` command now comes with a lot more build output for ease of debugging. You can disable the build output with the new ``--silent/-s`` flag.
+- :feature:`-` The ``rebuild`` command now comes with a lot more build output for ease of debugging. You can disable the build output with the new ``--silent/-s`` flag.
 - :feature:`476` Administrators can now delete both events and organisers.
 - :feature:`493` Speaker email addresses are now available via the API for users with access permissions.
 - :bug:`515` Under rare circumstances, the pretalx database could reach a state pretalx couldn't cope with due to duplicate schedule versions.
