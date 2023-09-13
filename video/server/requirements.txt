@@ -30,7 +30,7 @@ pytz
 redis==4.6.*
 reportlab==4.0.*
 requests==2.31.*
-sentry-sdk==1.5.*
+sentry-sdk==1.30.*
 tqdm==4.66.*
 websockets==11.*
 xlrd~=1.2.0  # do not update, 2.x does not support .xlsx, only .xls
