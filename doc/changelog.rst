@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`1576` Tracks can now be ordered, and the order is used both in drop-down and in the schedule.
 - :bug:`1577` The printable proposal cards showed broken characters for anything outside latin1.
 - :bug:`-` Reordering questions while some of them were inactive could lead to 404 errors.
 - :bug:`-` pretalx wasn't able to filter out pending state changes from the organiser proposal list.
