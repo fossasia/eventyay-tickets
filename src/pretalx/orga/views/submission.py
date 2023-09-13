@@ -519,7 +519,9 @@ class SubmissionContent(
         return kwargs
 
 
-class BaseSubmissionList(Sortable, Filterable, ReviewerSubmissionFilter, PaginationMixin, ListView):
+class BaseSubmissionList(
+    Sortable, Filterable, ReviewerSubmissionFilter, PaginationMixin, ListView
+):
     model = Submission
     context_object_name = "submissions"
     filter_fields = (

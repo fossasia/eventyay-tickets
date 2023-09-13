@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from django_scopes import ScopedManager
 from i18nfield.fields import I18nCharField
 
+from pretalx.common.mixins.models import OrderedModel
 from pretalx.common.urls import EventUrls
 
 
@@ -238,7 +239,7 @@ class Review(models.Model):
         delete = "{base}{self.pk}/delete"
 
 
-class ReviewPhase(models.Model):
+class ReviewPhase(OrderedModel, models.Model):
     """ReviewPhases determine reviewer access rights during a (potentially
     open) time frame.
 
@@ -335,3 +336,7 @@ class ReviewPhase(models.Model):
         self.save()
 
     activate.alters_data = True
+
+    @staticmethod
+    def get_order_queryset(event):
+        return event.review_phases.all()

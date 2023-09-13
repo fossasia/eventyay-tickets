@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.db import transaction
 from django.db.models.deletion import ProtectedError
 from django.forms.models import inlineformset_factory
-from django.http import Http404, JsonResponse
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
@@ -22,7 +22,7 @@ from pretalx.common.mixins.views import (
     PermissionRequired,
 )
 from pretalx.common.utils import I18nStrJSONEncoder
-from pretalx.common.views import CreateOrUpdateView
+from pretalx.common.views import CreateOrUpdateView, OrderModelView
 from pretalx.orga.forms import CfPForm, QuestionForm, SubmissionTypeForm, TrackForm
 from pretalx.orga.forms.cfp import (
     AccessCodeSendForm,
@@ -294,44 +294,12 @@ class CfPQuestionDelete(PermissionRequired, DetailView):
         return redirect(self.request.event.cfp.urls.questions)
 
 
-def question_move(request, pk, up=True):
-    """This is a helper function to avoid duplicating code in question_move_up
-    and question_move_down.
+class QuestionOrderView(OrderModelView):
+    permission_required = "orga.edit_question"
+    model = Question
 
-    It takes a question and a direction and then tries to bring all
-    items for this question in a new order.
-    """
-    queryset = request.event.questions(manager="all_objects")
-    try:
-        question = queryset.get(pk=pk)
-    except Question.DoesNotExist:
-        raise Http404(_("The selected question does not exist."))
-    if not request.user.has_perm("orga.edit_question", question):
-        messages.error(request, _("Sorry, you are not allowed to reorder questions."))
-        return
-    questions = list(queryset.order_by("position"))
-
-    index = questions.index(question)
-    if index != 0 and up:
-        questions[index - 1], questions[index] = questions[index], questions[index - 1]
-    elif index != len(questions) - 1 and not up:
-        questions[index + 1], questions[index] = questions[index], questions[index + 1]
-
-    for i, qt in enumerate(questions):
-        if qt.position != i:
-            qt.position = i
-            qt.save()
-    messages.success(request, _("The order of questions has been updated."))
-
-
-def question_move_up(request, event, pk):
-    question_move(request, pk, up=True)
-    return redirect(request.event.cfp.urls.questions)
-
-
-def question_move_down(request, event, pk):
-    question_move(request, pk, up=False)
-    return redirect(request.event.cfp.urls.questions)
+    def get_success_url(self):
+        return self.request.event.cfp.urls.questions
 
 
 class CfPQuestionToggle(PermissionRequired, View):
@@ -730,34 +698,9 @@ class CfPFlowEditor(EventPermissionRequired, TemplateView):
         return JsonResponse({"success": True})
 
 
-def track_move(request, pk, up=True):
-    try:
-        track = request.event.tracks.get(pk=pk)
-    except Track.DoesNotExist:
-        raise Http404(_("The selected track does not exist."))
-    if not request.user.has_perm("orga.edit_track", track):
-        messages.error(request, _("Sorry, you are not allowed to reorder tracks."))
-        return
-    tracks = list(request.event.tracks.order_by("position"))
+class TrackOrderView(OrderModelView):
+    permission_required = "orga.edit_track"
+    model = Track
 
-    index = tracks.index(track)
-    if index != 0 and up:
-        tracks[index - 1], tracks[index] = tracks[index], tracks[index - 1]
-    elif index != len(tracks) - 1 and not up:
-        tracks[index + 1], tracks[index] = tracks[index], tracks[index + 1]
-
-    for i, qt in enumerate(tracks):
-        if qt.position != i:
-            qt.position = i
-            qt.save()
-    messages.success(request, _("The order of tracks has been updated."))
-
-
-def track_move_up(request, event, pk):
-    track_move(request, pk, up=True)
-    return redirect(request.event.cfp.urls.tracks)
-
-
-def track_move_down(request, event, pk):
-    track_move(request, pk, up=False)
-    return redirect(request.event.cfp.urls.tracks)
+    def get_success_url(self):
+        return self.request.event.cfp.urls.tracks

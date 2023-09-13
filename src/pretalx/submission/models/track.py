@@ -5,11 +5,11 @@ from django.utils.translation import gettext_lazy as _
 from django_scopes import ScopedManager
 from i18nfield.fields import I18nCharField, I18nTextField
 
-from pretalx.common.mixins.models import LogMixin
+from pretalx.common.mixins.models import LogMixin, OrderedModel
 from pretalx.common.urls import EventUrls
 
 
-class Track(LogMixin, models.Model):
+class Track(LogMixin, OrderedModel, models.Model):
     """A track groups :class:`~pretalx.submission.models.submission.Submission`
     objects within an :class:`~pretalx.event.models.event.Event`, e.g. by
     topic.
@@ -58,6 +58,10 @@ class Track(LogMixin, models.Model):
 
     def __str__(self) -> str:
         return str(self.name)
+
+    @staticmethod
+    def get_order_queryset(event):
+        return event.tracks.all()
 
     @property
     def slug(self) -> str:

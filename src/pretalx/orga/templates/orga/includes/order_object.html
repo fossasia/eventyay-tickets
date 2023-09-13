@@ -1,0 +1,15 @@
+{% load i18n %}
+{% if not forloop.last %}
+    <a href="{{ object.get_down_url }}"
+       class="btn btn-sm btn-outline-info {{ attrs }}"
+       title="{% translate "Move down" %}">
+        <i class="fa fa-arrow-down"></i>
+    </a>
+{% endif %}
+{% if not forloop.first %}
+    <a href="{{ object.get_up_url }}"
+       class="btn btn-sm btn-outline-info {{ attrs }}"
+       title="{% translate "Move up" %}">
+        <i class="fa fa-arrow-up"></i>
+    </a>
+{% endif %}

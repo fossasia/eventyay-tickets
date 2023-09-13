@@ -11,7 +11,7 @@ from django.core.files.storage import FileSystemStorage
 from django.db import transaction
 from django.db.models import Q
 from django.forms.models import inlineformset_factory
-from django.http import Http404, JsonResponse
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.decorators import method_decorator
@@ -42,7 +42,7 @@ from pretalx.common.mixins.views import (
 from pretalx.common.models import ActivityLog
 from pretalx.common.tasks import regenerate_css
 from pretalx.common.templatetags.rich_text import rich_text
-from pretalx.common.views import is_form_bound
+from pretalx.common.views import OrderModelView, is_form_bound
 from pretalx.event.forms import (
     EventWizardBasicsForm,
     EventWizardCopyForm,
@@ -363,39 +363,12 @@ class ScoreCategoryDelete(PermissionRequired, View):
         return redirect(self.request.event.orga_urls.review_settings)
 
 
-def phase_move(request, pk, up=True):
-    try:
-        phase = request.event.review_phases.get(pk=pk)
-    except ReviewPhase.DoesNotExist:
-        raise Http404(_("The selected review phase does not exist."))
-    if not request.user.has_perm("orga.change_settings", phase):
-        messages.error(
-            request, _("Sorry, you are not allowed to reorder review phases.")
-        )
-        return
-    phases = list(request.event.review_phases.order_by("position"))
+class ReviewPhaseOrderView(OrderModelView):
+    permission_required = "orga.change_settings"
+    model = ReviewPhase
 
-    index = phases.index(phase)
-    if index != 0 and up:
-        phases[index - 1], phases[index] = phases[index], phases[index - 1]
-    elif index != len(phases) - 1 and not up:
-        phases[index + 1], phases[index] = phases[index], phases[index + 1]
-
-    for i, phase in enumerate(phases):
-        if phase.position != i:
-            phase.position = i
-            phase.save()
-    messages.success(request, _("The order of review phases has been updated."))
-
-
-def phase_move_up(request, event, pk):
-    phase_move(request, pk, up=True)
-    return redirect(request.event.orga_urls.review_settings)
-
-
-def phase_move_down(request, event, pk):
-    phase_move(request, pk, up=False)
-    return redirect(request.event.orga_urls.review_settings)
+    def get_success_url(self):
+        return self.request.event.orga_urls.review_settings
 
 
 class PhaseDelete(PermissionRequired, View):

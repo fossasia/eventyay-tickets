@@ -153,16 +153,7 @@ urlpatterns = [
                                 cfp.CfPQuestionDetail.as_view(),
                                 name="cfp.question.view",
                             ),
-                            path(
-                                "up",
-                                cfp.question_move_up,
-                                name="cfp.questions.up",
-                            ),
-                            path(
-                                "down",
-                                cfp.question_move_down,
-                                name="cfp.questions.down",
-                            ),
+                            *cfp.QuestionOrderView.get_urls(),
                             path(
                                 "delete",
                                 cfp.CfPQuestionDelete.as_view(),
@@ -234,16 +225,7 @@ urlpatterns = [
                                 cfp.TrackDelete.as_view(),
                                 name="cfp.track.delete",
                             ),
-                            path(
-                                "up",
-                                cfp.track_move_up,
-                                name="schedule.track.up",
-                            ),
-                            path(
-                                "down",
-                                cfp.track_move_down,
-                                name="schedule.track.down",
-                            ),
+                            *cfp.TrackOrderView.get_urls(),
                         ]
                     ),
                 ),
@@ -622,16 +604,7 @@ urlpatterns = [
                     "settings/review/phase/<int:pk>/",
                     include(
                         [
-                            path(
-                                "up",
-                                event.phase_move_up,
-                                name="settings.review.phase.up",
-                            ),
-                            path(
-                                "down",
-                                event.phase_move_down,
-                                name="settings.review.phase.down",
-                            ),
+                            *event.ReviewPhaseOrderView.get_urls(),
                             path(
                                 "delete",
                                 event.PhaseDelete.as_view(),
@@ -717,16 +690,7 @@ urlpatterns = [
                                 schedule.RoomDelete.as_view(),
                                 name="schedule.rooms.delete",
                             ),
-                            path(
-                                "up",
-                                schedule.room_move_up,
-                                name="schedule.rooms.up",
-                            ),
-                            path(
-                                "down",
-                                schedule.room_move_down,
-                                name="schedule.rooms.down",
-                            ),
+                            *schedule.RoomOrderView.get_urls(),
                         ]
                     ),
                 ),

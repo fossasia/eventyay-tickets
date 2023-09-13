@@ -101,3 +101,57 @@ class FileCleanupMixin:
     def delete(self, *args, **kwargs):
         self._delete_files()
         return super().delete(*args, **kwargs)
+
+
+class OrderedModel:
+    """Provides methods to move a model up and down in a queryset.
+
+    Used with OrderModelView to provide a view to move models up and down.
+    Implement the `get_order_queryset` method as a classmethod or staticmethod
+    to provide the queryset to order.
+    """
+
+    order_field = "position"
+    order_up_url = "urls.up"
+    order_down_url = "urls.down"
+
+    @staticmethod
+    def get_order_queryset(**kwargs):
+        raise NotImplementedError
+
+    def _get_attribute(self, attribute):
+        result = self
+        for part in attribute.split("."):
+            result = getattr(result, part)
+        return result
+
+    def get_down_url(self):
+        return self._get_attribute(self.order_down_url)
+
+    def get_up_url(self):
+        return self._get_attribute(self.order_up_url)
+
+    def up(self):
+        return self._move(up=True)
+
+    def down(self):
+        return self._move(up=False)
+
+    @property
+    def order_queryset(self):
+        return self.get_order_queryset(event=self.event)
+
+    def move(self, up=True):
+        queryset = list(self.order_queryset.order_by(self.order_field))
+        index = queryset.index(self)
+        if index != 0 and up:
+            queryset[index - 1], queryset[index] = queryset[index], queryset[index - 1]
+        elif index != len(queryset) - 1 and not up:
+            queryset[index + 1], queryset[index] = queryset[index], queryset[index + 1]
+
+        for index, element in enumerate(queryset):
+            if element.position != index:
+                element.position = index
+                element.save()
+
+    move.alters_data = True

@@ -6,7 +6,7 @@ from django_scopes import ScopedManager
 from i18nfield.fields import I18nCharField
 
 from pretalx.common.choices import Choices
-from pretalx.common.mixins.models import FileCleanupMixin, LogMixin
+from pretalx.common.mixins.models import FileCleanupMixin, LogMixin, OrderedModel
 from pretalx.common.phrases import phrases
 from pretalx.common.urls import EventUrls
 from pretalx.common.utils import path_with_hash
@@ -80,7 +80,7 @@ class QuestionRequired(Choices):
     ]
 
 
-class Question(LogMixin, models.Model):
+class Question(LogMixin, OrderedModel, models.Model):
     """Questions can be asked per.
 
     :class:`~pretalx.submission.models.submission.Submission`, per speaker, or
@@ -280,6 +280,10 @@ class Question(LogMixin, models.Model):
 
     def __str__(self):
         return str(self.question)
+
+    @staticmethod
+    def get_order_queryset(event):
+        return event.questions(manager="all_objects").all()
 
     def missing_answers(
         self, filter_speakers: list = False, filter_talks: list = False

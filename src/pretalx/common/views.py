@@ -6,11 +6,12 @@ from django.contrib import messages
 from django.contrib.auth import login
 from django.core.exceptions import PermissionDenied, SuspiciousOperation
 from django.http import FileResponse, Http404, HttpResponseServerError
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.template import TemplateDoesNotExist, loader
-from django.urls import NoReverseMatch, get_callable
+from django.urls import NoReverseMatch, get_callable, path
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils.timezone import now
+from django.utils.translation import gettext_lazy as _
 from django.views.decorators.cache import cache_page
 from django.views.generic import FormView, View
 from django.views.generic.detail import SingleObjectTemplateResponseMixin
@@ -195,3 +196,58 @@ def conditional_cache_page(
         return wrapper
 
     return decorator
+
+
+class OrderModelView(View):
+    """
+    Use with OrderedModels to provide up and down links in the list view.
+
+    You need to implement/override
+    - model
+    - permission_required
+    - get_success_url
+
+    In urls.py, use MyOrderModelView.get_urls() to get the urls for this view.
+    """
+
+    model = None
+    permission_required = None
+    direction_up = True
+
+    def __init__(self, *args, direction_up=True, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.direction_up = direction_up
+
+    def get_queryset(self):
+        return self.model.get_order_queryset(event=self.request.event)
+
+    def dispatch(self, request, *args, direction=None, pk=None, **kwargs):
+        obj = get_object_or_404(self.get_queryset(), pk=pk)
+        if not request.user.has_perm(self.permission_required, obj):
+            messages.error(
+                request, _("Sorry, you are not allowed to reorder this list.")
+            )
+            raise Http404()
+        obj.move(up=self.direction_up)
+        messages.success(request, _("The order has been updated."))
+        return redirect(self.get_success_url())
+
+    def get_success_url(self):
+        return self.request.event.orga_urls.base
+
+    @classmethod
+    def get_urls(cls, base_url=""):
+        # Return the two patterns for moving up and down
+        url_name = f"settings.{cls.model._meta.app_label}.{cls.model._meta.model_name}."
+        return [
+            path(
+                f"{base_url}up",
+                cls.as_view(direction_up=True),
+                name=f"{url_name}.up",
+            ),
+            path(
+                f"{base_url}down",
+                cls.as_view(direction_up=False),
+                name=f"{url_name}.down",
+            ),
+        ]

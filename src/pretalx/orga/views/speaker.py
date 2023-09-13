@@ -56,7 +56,9 @@ def get_speaker_profiles_for_user(user, event):
     return SpeakerProfile.objects.filter(event=event, user__in=users)
 
 
-class SpeakerList(EventPermissionRequired, Sortable, Filterable, PaginationMixin, ListView):
+class SpeakerList(
+    EventPermissionRequired, Sortable, Filterable, PaginationMixin, ListView
+):
     model = SpeakerProfile
     template_name = "orga/speaker/list.html"
     context_object_name = "speakers"

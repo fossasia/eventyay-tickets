@@ -30,7 +30,9 @@ from pretalx.orga.forms.mails import (
 )
 
 
-class OutboxList(EventPermissionRequired, Sortable, Filterable, PaginationMixin, ListView):
+class OutboxList(
+    EventPermissionRequired, Sortable, Filterable, PaginationMixin, ListView
+):
     model = QueuedMail
     context_object_name = "mails"
     template_name = "orga/mails/outbox_list.html"
@@ -55,7 +57,9 @@ class OutboxList(EventPermissionRequired, Sortable, Filterable, PaginationMixin,
         return qs
 
 
-class SentMail(EventPermissionRequired, Sortable, Filterable, PaginationMixin, ListView):
+class SentMail(
+    EventPermissionRequired, Sortable, Filterable, PaginationMixin, ListView
+):
     model = QueuedMail
     context_object_name = "mails"
     template_name = "orga/mails/sent_list.html"

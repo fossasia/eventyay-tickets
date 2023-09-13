@@ -3,11 +3,11 @@ from django.utils.translation import gettext_lazy as _
 from django_scopes import ScopedManager
 from i18nfield.fields import I18nCharField
 
-from pretalx.common.mixins.models import LogMixin
+from pretalx.common.mixins.models import LogMixin, OrderedModel
 from pretalx.common.urls import EventUrls
 
 
-class Room(LogMixin, models.Model):
+class Room(LogMixin, OrderedModel, models.Model):
     """A Room is an actual place where talks will be scheduled.
 
     The Room object stores some meta information. Most, like capacity,
@@ -64,3 +64,7 @@ class Room(LogMixin, models.Model):
 
     def __str__(self) -> str:
         return str(self.name)
+
+    @staticmethod
+    def get_order_queryset(event):
+        return event.rooms.all()

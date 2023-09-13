@@ -57,20 +57,7 @@
                             </i>
                         </td>
                         <td class="action-column">
-                            {% if not forloop.last %}
-                                <a href="{{ question.urls.down }}"
-                                   class="btn btn-sm btn-outline-info"
-                                   title="{% translate "Move down" %}">
-                                    <i class="fa fa-arrow-down"></i>
-                                </a>
-                            {% endif %}
-                            {% if not forloop.first %}
-                                <a href="{{ question.urls.up }}"
-                                   class="btn btn-sm btn-outline-info"
-                                   title="{% translate "Move up" %}">
-                                    <i class="fa fa-arrow-up"></i>
-                                </a>
-                            {% endif %}
+                            {% include "orga/includes/order_object.html" with object=question %}
                             <a href="{{ question.urls.edit }}"
                                class="btn btn-sm btn-info"
                                title="{% translate "Edit" %}">
