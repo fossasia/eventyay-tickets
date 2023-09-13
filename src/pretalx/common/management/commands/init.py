@@ -33,7 +33,8 @@ class Command(BaseCommand):  # pragma: no cover
         parser.add_argument(
             "--noinput",
             "--no-input",
-            action="store_true",
+            action="store_false",
+            dest="interactive",
             help="Suppresses all interactive prompts and uses environment variables instead. "
             "If environment variables are missing, the command will fail. "
             "Required environment variables:\n"
@@ -60,7 +61,8 @@ class Command(BaseCommand):  # pragma: no cover
             """\nLet\'s get you a user with the right to create new events and access every event on this pretalx instance."""
         )
 
-        call_command("createsuperuser", no_input=options["noinput"])
+        call_command("createsuperuser", interactive=options["interactive"])
+
         user = User.objects.order_by("-id").filter(is_administrator=True).first()
 
         self.stdout.write(
@@ -70,11 +72,11 @@ class Command(BaseCommand):  # pragma: no cover
 
         organiser_name = self.get_nonempty(
             f'Name (e.g. "{organiser_name_default}"): ',
-            organiser_name_env if options["noinput"] else None,
+            organiser_name_env if not options["interactive"] else None,
         )
         organiser_slug = self.get_nonempty(
             f'Slug (e.g. "{organiser_slug_default}", used in urls): ',
-            organiser_slug_env if options["noinput"] else None,
+            organiser_slug_env if not options["interactive"] else None,
         )
 
         organiser, team = create_organiser_with_team(
@@ -90,8 +92,8 @@ class Command(BaseCommand):  # pragma: no cover
             ),
         )
         self.stdout.write(self.style.SUCCESS("\nNow that this is done, you can:"))
-        self.stdout.write(" - Create your first event at {event_url}").format(
-            event_url=event_url
+        self.stdout.write(
+            " - Create your first event at {event_url}".format(event_url=event_url)
         )
         self.stdout.write(
             " - Invite somebody to the organiser team at {team_url} and let them create the event".format(
