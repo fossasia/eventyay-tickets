@@ -10,6 +10,12 @@
             themselves. Track colors are helpful to help attendees navigate your schedule.
         {% endblocktranslate %}
     </div>
+    <div class="d-flex justify-content-end mb-3">
+        <a class="btn btn-info" href="{{ request.event.cfp.urls.new_track }}">
+            <i class="fa fa-plus"></i>
+            {% translate "New track" %}
+        </a>
+    </div>
     <div class="table-responsive">
         <table class="table table-sm table-hover table-flip">
             <thead>
@@ -71,10 +77,5 @@
             </tbody>
         </table>
     </div>
-    <div class="submit-group"><span></span>
-        <a class="btn btn-info" href="{{ request.event.cfp.urls.new_track }}">
-            <i class="fa fa-plus"></i>
-            {% translate "New track" %}
-        </a>
-    </div>
+    {% include "orga/includes/pagination.html" %}
 {% endblock %}

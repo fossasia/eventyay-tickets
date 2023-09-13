@@ -17,7 +17,7 @@
             types, which can only be seen with a matching access code.
         {% endblocktranslate %}
     </div>
-    <div class="submit-group"><span></span>
+    <div class="d-flex justify-content-end mb-3"><span></span>
         <a class="btn btn-info" href="{{ request.event.cfp.urls.new_access_code }}">
             <i class="fa fa-plus"></i>
             {% translate "New access code" %}
@@ -82,5 +82,5 @@
             </table>
         </div>
     {% endif %}
-
+    {% include "orga/includes/pagination.html" %}
 {% endblock %}

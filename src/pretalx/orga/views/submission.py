@@ -34,6 +34,7 @@ from pretalx.common.mixins.views import (
     ActionFromUrl,
     EventPermissionRequired,
     Filterable,
+    PaginationMixin,
     PermissionRequired,
     Sortable,
 )
@@ -518,7 +519,7 @@ class SubmissionContent(
         return kwargs
 
 
-class BaseSubmissionList(Sortable, Filterable, ReviewerSubmissionFilter, ListView):
+class BaseSubmissionList(Sortable, Filterable, ReviewerSubmissionFilter, PaginationMixin, ListView):
     model = Submission
     context_object_name = "submissions"
     filter_fields = (
@@ -608,7 +609,7 @@ class SubmissionList(EventPermissionRequired, BaseSubmissionList):
             return self.request.event.tracks.all().count() > 1
 
 
-class FeedbackList(SubmissionViewMixin, ListView):
+class FeedbackList(SubmissionViewMixin, PaginationMixin, ListView):
     template_name = "orga/submission/feedback_list.html"
     context_object_name = "feedback"
     paginate_by = 25
@@ -943,7 +944,7 @@ class SubmissionStats(PermissionRequired, TemplateView):
         return ""
 
 
-class AllFeedbacksList(EventPermissionRequired, ListView):
+class AllFeedbacksList(EventPermissionRequired, PaginationMixin, ListView):
     model = Feedback
     context_object_name = "feedback"
     template_name = "orga/submission/feedbacks_list.html"
@@ -960,7 +961,7 @@ class AllFeedbacksList(EventPermissionRequired, ListView):
         return qs
 
 
-class TagList(EventPermissionRequired, ListView):
+class TagList(EventPermissionRequired, PaginationMixin, ListView):
     template_name = "orga/submission/tag_list.html"
     context_object_name = "tags"
     permission_required = "orga.view_submissions"

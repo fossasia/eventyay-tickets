@@ -10,6 +10,12 @@
             (talk vs workshop vs metal concert).
         {% endblocktranslate %}
     </div>
+    <div class="d-flex justify-content-end mb-3">
+        <a class="btn btn-info" href="{{ request.event.cfp.urls.new_type }}">
+            <i class="fa fa-plus"></i>
+            {% translate "New type" %}
+        </a>
+    </div>
     <div class="table-responsive">
         <table class="table table-sm table-hover table-flip">
             <thead>
@@ -65,10 +71,5 @@
             </tbody>
         </table>
     </div>
-    <div class="submit-group"><span></span>
-        <a class="btn btn-info" href="{{ request.event.cfp.urls.new_type }}">
-            <i class="fa fa-plus"></i>
-            {% translate "New type" %}
-        </a>
-    </div>
+    {% include "orga/includes/pagination.html" %}
 {% endblock %}

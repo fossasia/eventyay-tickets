@@ -15,6 +15,7 @@ from pretalx.common.mixins.views import (
     ActionFromUrl,
     EventPermissionRequired,
     Filterable,
+    PaginationMixin,
     PermissionRequired,
     Sortable,
 )
@@ -55,7 +56,7 @@ def get_speaker_profiles_for_user(user, event):
     return SpeakerProfile.objects.filter(event=event, user__in=users)
 
 
-class SpeakerList(EventPermissionRequired, Sortable, Filterable, ListView):
+class SpeakerList(EventPermissionRequired, Sortable, Filterable, PaginationMixin, ListView):
     model = SpeakerProfile
     template_name = "orga/speaker/list.html"
     context_object_name = "speakers"
@@ -285,7 +286,7 @@ class SpeakerToggleArrived(SpeakerViewMixin, View):
         return redirect(self.profile.orga_urls.base)
 
 
-class InformationList(EventPermissionRequired, ListView):
+class InformationList(EventPermissionRequired, PaginationMixin, ListView):
     queryset = SpeakerInformation.objects.none()
     template_name = "orga/speaker/information_list.html"
     context_object_name = "information"

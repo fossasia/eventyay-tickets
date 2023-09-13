@@ -14,6 +14,7 @@ from pretalx.common.mixins.views import (
     ActionFromUrl,
     EventPermissionRequired,
     Filterable,
+    PaginationMixin,
     PermissionRequired,
     Sortable,
 )
@@ -29,7 +30,7 @@ from pretalx.orga.forms.mails import (
 )
 
 
-class OutboxList(EventPermissionRequired, Sortable, Filterable, ListView):
+class OutboxList(EventPermissionRequired, Sortable, Filterable, PaginationMixin, ListView):
     model = QueuedMail
     context_object_name = "mails"
     template_name = "orga/mails/outbox_list.html"
@@ -54,7 +55,7 @@ class OutboxList(EventPermissionRequired, Sortable, Filterable, ListView):
         return qs
 
 
-class SentMail(EventPermissionRequired, Sortable, Filterable, ListView):
+class SentMail(EventPermissionRequired, Sortable, Filterable, PaginationMixin, ListView):
     model = QueuedMail
     context_object_name = "mails"
     template_name = "orga/mails/sent_list.html"

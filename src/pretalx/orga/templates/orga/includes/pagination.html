@@ -1,8 +1,9 @@
+{% load humanize %}
 {% load i18n %}
 {% load url_replace %}
 {% if is_paginated or page_obj.paginator.count > 1 %}
     <nav class="text-center">
-        <ul class="pagination justify-content-center">
+        <ul class="pagination justify-content-center mb-0">
             {% if is_paginated %}
                 {% if page_obj.has_previous %}
                     <li class="page-item">
@@ -33,5 +34,21 @@
                 {% endif %}
             {% endif %}
         </ul>
+        {% if page_size and page_obj.paginator.count > 25 %}
+            <div>
+                <small>
+                    {% trans "Show per page:" context "Allows users to select how many lines/elements are shown in lists." %}
+                </small>
+                <a href="?{% url_replace request "page_size" "25" "page" "1" %}">
+                    {% if page_size == 25 %}<strong>{% endif %}25{% if page_size == 25 %}</strong>{% endif %}
+                </a> |
+                <a href="?{% url_replace request "page_size" "50" "page" "1" %}">
+                    {% if page_size == 50 %}<strong>{% endif %}50{% if page_size == 50 %}</strong>{% endif %}
+                </a> |
+                <a href="?{% url_replace request "page_size" "100" "page" "1" %}">
+                    {% if page_size == 100 %}<strong>{% endif %}100{% if page_size == 100 %}</strong>{% endif %}
+                </a>
+            </div>
+        {% endif %}
     </nav>
 {% endif %}

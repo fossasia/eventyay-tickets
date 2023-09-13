@@ -297,3 +297,31 @@ class SocialMediaCardMixin:
         if self.request.event.header_image:
             return FileResponse(self.request.event.header_image)
         raise Http404()
+
+
+class PaginationMixin:
+    # TODO: possible make this into a PretalxListView, to make things easier for
+    # plugin developers
+
+    DEFAULT_PAGINATION = 25
+
+    def get_paginate_by(self, queryset):
+        skey = "stored_page_size_" + self.request.resolver_match.url_name
+        default = (
+            self.request.session.get(skey)
+            or self.paginate_by
+            or self.DEFAULT_PAGINATION
+        )
+        if self.request.GET.get("page_size"):
+            try:
+                size = min(250, int(self.request.GET.get("page_size")))
+                self.request.session[skey] = size
+                return size
+            except ValueError:
+                return default
+        return default
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx["page_size"] = self.get_paginate_by(None)
+        return ctx

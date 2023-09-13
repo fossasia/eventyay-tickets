@@ -18,6 +18,7 @@ from pretalx.common.forms import I18nFormSet
 from pretalx.common.mixins.views import (
     ActionFromUrl,
     EventPermissionRequired,
+    PaginationMixin,
     PermissionRequired,
 )
 from pretalx.common.utils import I18nStrJSONEncoder
@@ -409,7 +410,7 @@ class CfPQuestionRemind(EventPermissionRequired, TemplateView):
         return redirect(request.event.orga_urls.outbox)
 
 
-class SubmissionTypeList(EventPermissionRequired, ListView):
+class SubmissionTypeList(EventPermissionRequired, PaginationMixin, ListView):
     template_name = "orga/cfp/submission_type_view.html"
     context_object_name = "types"
     permission_required = "orga.view_submission_type"
@@ -520,7 +521,7 @@ class SubmissionTypeDelete(PermissionRequired, DetailView):
         return redirect(self.request.event.cfp.urls.types)
 
 
-class TrackList(EventPermissionRequired, ListView):
+class TrackList(EventPermissionRequired, PaginationMixin, ListView):
     template_name = "orga/cfp/track_view.html"
     context_object_name = "tracks"
     permission_required = "orga.view_tracks"
@@ -584,7 +585,7 @@ class TrackDelete(PermissionRequired, DetailView):
         return redirect(self.request.event.cfp.urls.tracks)
 
 
-class AccessCodeList(EventPermissionRequired, ListView):
+class AccessCodeList(EventPermissionRequired, PaginationMixin, ListView):
     template_name = "orga/cfp/access_code_view.html"
     context_object_name = "access_codes"
     permission_required = "orga.view_access_codes"
