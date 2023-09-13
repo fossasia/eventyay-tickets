@@ -14,7 +14,7 @@ django-formset-js-improved
 django-multifactor==0.5.*
 djangorestframework==3.14.*
 emoji==2.8.*
-icalendar==4.1.*
+icalendar==5.0.*
 lxml==4.9.*
 matplotlib==3.7.*
 numpy==1.24.*
