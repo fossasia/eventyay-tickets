@@ -28,6 +28,13 @@ With a token, it works just the same way::
     => ["authenticate", {"token": "JWTTOKEN"}]
     <- ["authenticated", {"user.config": {…}, "world.config": {…}, "chat.channels": [], "chat.read_pointers": {}}]
 
+There is the special case of an "anonymous user" who was invited to join the Q&A or polls of a specific room.
+An anonymous user always has access to one room only. We therefore recommend to store the ``client_id`` in the frontend
+only for that room::
+
+    => ["authenticate", {"client_id": "UUID4", "invite_token": "a2C2j5"}]
+    <- ["authenticated", {"user.config": {…}, "world.config": {…}, "chat.channels": [], "chat.read_pointers": {}}]
+
 ``chat.channels`` contains a list of **non-volatile** chat rooms the user is a member of. See chat module
 documentation for membership semantics.
 

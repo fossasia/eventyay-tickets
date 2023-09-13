@@ -71,6 +71,8 @@ class AuthModule(BaseModule):
                 await self.consumer.send_error(code="auth.missing_id_or_token")
                 return
             kwargs["client_id"] = client_id
+            if "invite_token" in body:
+                kwargs["invite_token"] = body.get("invite_token")
         else:
             try:
                 token = self.consumer.world.decode_token(

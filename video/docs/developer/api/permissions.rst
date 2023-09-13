@@ -3,9 +3,24 @@
 Permission model
 ================
 
+User types
+----------
+
+There are multiple user types:
+
+- **Person** - A user account representing a regular attendee (or moderator, or admin) with access to the regular
+  Venueless interface.
+
+- **Anonymous user** - A "light-weight" user account representing an attendee of an in-person event with temporary
+  access to specific features in specific rooms of the event.
+
+- **Kiosk** – A user account only used internally to enable authentication for a kiosk-type display in an event venue.
+
+The user type is relevant for some of the permission logic (see below), but also for other purposes (will determine if
+a user's actions are relevant for statistical purposes, if the user shows up in lists, …).
+
 Permissions
 -----------
-
 
 Permissions are static, hard-coded identifiers that identify specific actions. Currently, the following permissions
 are defined::
@@ -72,7 +87,7 @@ Explicit grants
 
 A role can be granted to a user explicitly, either on the world as a whole or on a specific room.
 Currently, this feature is mostly used to implement private rooms and invitations, but it could be the basis of more
-dynamic permission assignments in the future. Exmaple grants look like this::
+dynamic permission assignments in the future. Example grants look like this::
 
     User 1234 is granted
       - role room_creator on private room 1, because they created it
@@ -96,8 +111,25 @@ the configuration would look like this::
       "participant": ["pretix-product-1234", "pretix-product-5678"]
     }
 
+In the configuration frontend, this would be shown as::
+
+    pretix-product-1234, pretix-product-5678
+
 It's also possible to have "OR"-type grants::
 
     "trait_grants": {
       "participant": ["pretix-event-foo", ["pretix-product-1234", "pretix-product-5678"]]
     }
+
+In the configuration frontend, this would be shown as::
+
+    pretix-event-foo, pretix-product-1234|pretix-product-5678
+
+The "empty" grant applies to *all* users, regardless of their traits::
+
+    "trait_grants": {
+      "participant": []
+    }
+
+However, one exception is made here: The "empty" grant will **not** be respected for users with a user type other than
+"person".

@@ -18,7 +18,7 @@ from django.views import View
 from matplotlib import cbook, dates, pyplot
 from matplotlib.figure import Figure
 
-from venueless.core.models import Room, World
+from venueless.core.models import Room, User, World
 from venueless.core.models.room import RoomView
 from venueless.core.permissions import Permission
 
@@ -96,6 +96,7 @@ def build_room_view_fig(fig, room, begin, end, tz):
             else RoomView.objects.filter(room__world=room)
         )
         .filter(Q(Q(end__isnull=True) | Q(end__gte=begin)) & Q(start__lte=end))
+        .filter(user__type=User.UserType.PERSON)
         .order_by()
         .values("user", "start", "end")
     )
@@ -136,6 +137,7 @@ def build_room_view_fig(fig, room, begin, end, tz):
                 datetime__gte=begin,
                 datetime__lte=end,
             )
+            .filter(user__type=User.UserType.PERSON)
             .annotate(min=TruncMinute("datetime"))
             .order_by()
             .values("datetime", "reaction")

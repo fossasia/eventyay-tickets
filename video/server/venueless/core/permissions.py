@@ -27,6 +27,7 @@ class Permission(Enum):
     ROOM_CHAT_SEND = "room:chat.send"
     ROOM_VIEWERS = "room:viewers"
     ROOM_INVITE = "room:invite"
+    ROOM_INVITE_ANONYMOUS = "room:invite.anonymous"
     ROOM_CHAT_MODERATE = "room:chat.moderate"
     ROOM_JANUSCALL_JOIN = "room:januscall.join"
     ROOM_JANUSCALL_MODERATE = "room:januscall.moderate"
@@ -62,5 +63,17 @@ SYSTEM_ROLES = {
         Permission.ROOM_POLL_READ.value,
         Permission.ROOM_POLL_EARLY_RESULTS.value,
         Permission.ROOM_VIEWERS.value,
-    ]
+        Permission.ROOM_INVITE_ANONYMOUS.value,
+    ],
+    "__anonymous_world": [
+        Permission.WORLD_VIEW.value,
+    ],
+    "__anonymous_room": [
+        Permission.ROOM_QUESTION_READ.value,
+        Permission.ROOM_QUESTION_ASK.value,
+        Permission.ROOM_QUESTION_VOTE.value,
+        Permission.ROOM_POLL_READ.value,
+        Permission.ROOM_POLL_VOTE.value,
+        Permission.ROOM_VIEW.value,
+    ],
 }

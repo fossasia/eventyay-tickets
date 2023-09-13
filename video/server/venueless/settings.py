@@ -172,6 +172,10 @@ SITE_URL = os.getenv(
 )
 ALLOWED_HOSTS = ["*"]
 
+SHORT_URL = os.getenv(
+    "VENUELESS_SHORT_URL", config.get("venueless", "short_url", fallback=SITE_URL)
+)
+
 if os.getenv("VENUELESS_COOKIE_DOMAIN", ""):
     CSRF_COOKIE_DOMAIN = os.getenv("VENUELESS_COOKIE_DOMAIN", "")
 

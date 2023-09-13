@@ -5,7 +5,7 @@
 		router-view(:room="room", :config="config")
 	bunt-progress-circular(v-else, size="small")
 	//- hoist reactions to escale scaling
-	ReactionsOverlay(v-if="$route.name === 'standalone:kiosk' && config.show_reactions")
+	ReactionsOverlay(v-if="$route.name === 'standalone:kiosk' && config.show_reactions !== false")
 </template>
 <script>
 // TODO
@@ -51,13 +51,14 @@ export default {
 		}
 	},
 	watch: {
-		room () {
+		room (newRoom, oldRoom) {
+			if (newRoom === oldRoom) return
 			this.$store.dispatch('changeRoom', this.room)
 		}
 	},
 	created () {
 		this.$store.dispatch('changeRoom', this.room)
-		this.fullscreen = this.$route.query.fullscreen ?? !this.$route.name.endsWith('chat')
+		this.fullscreen = this.$route.query.fullscreen ?? (!this.$route.name.endsWith('chat') && !this.$route.name.endsWith('anonymous'))
 	},
 	mounted () {
 		window.addEventListener('resize', this.computeScale)

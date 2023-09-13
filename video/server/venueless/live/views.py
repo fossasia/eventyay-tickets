@@ -1,16 +1,18 @@
 import json
 import os
 import re
+from urllib.parse import urljoin, urlparse
 
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.conf import settings
 from django.db import OperationalError
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
+from django.utils.timezone import now
 from django.views import View
 from django.views.decorators.cache import cache_page
 from django.views.decorators.csrf import csrf_exempt
@@ -18,6 +20,7 @@ from django.views.generic import TemplateView
 
 from venueless.core.models import Feedback, World
 from venueless.core.models.auth import ShortToken
+from venueless.core.models.room import AnonymousInvite
 
 
 class SourceCache:
@@ -69,7 +72,55 @@ class AppView(View):
     This view renders the main HTML. It is not used during development but only during production usage.
     """
 
+    @cached_property
+    def _has_separate_short_domain(self):
+        shorturl_host = urlparse(settings.SHORT_URL).hostname
+        siteurl_host = urlparse(settings.SITE_URL).hostname
+        if shorturl_host != siteurl_host:
+            return shorturl_host
+        return False
+
     def get(self, request, *args, **kwargs):
+        # Is this an anonymous invite to a room?
+        short_host = self._has_separate_short_domain
+        if short_host and request.headers["Host"] == short_host:
+            # The sysadmin has set up a separate domain for short URLs
+            if request.path == "/":
+                # This must be a 200, not a 302 or 404, so the domain is considered "active"
+                # by our auto-SSL setup in the venueless.events production deployment
+                return render(request, "live/short_domain_index.html")
+            else:
+                try:
+                    invite = AnonymousInvite.objects.get(
+                        expires__gte=now(),
+                        short_token=request.path[1:],
+                    )
+                except AnonymousInvite.DoesNotExist:
+                    return render(request, "live/short_domain_invalid.html", status=404)
+                return redirect(
+                    urljoin(
+                        request.scheme + "://" + invite.world.domain,
+                        f"/standalone/{invite.room_id}/anonymous#invite={invite.short_token}",
+                    )
+                )
+        elif not short_host and len(request.path) == 7:
+            # The sysadmin has not set up a separate domain for short URLs
+            try:
+                invite = AnonymousInvite.objects.get(
+                    expires__gte=now(),
+                    short_token=request.path[1:],
+                )
+                return redirect(
+                    urljoin(
+                        request.scheme + "://" + invite.world.domain,
+                        f"/standalone/{invite.room_id}/anonymous#invite={invite.short_token}",
+                    )
+                )
+            except AnonymousInvite.DoesNotExist:
+                # We do not show a 404 since theoretically this could be a vlaid path recognized by
+                # the frontend router.
+                pass
+
         try:
             world = get_object_or_404(World, domain=request.headers["Host"])
         except OperationalError:

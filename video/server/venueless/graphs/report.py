@@ -169,9 +169,9 @@ class ReportGenerator:
 
     @cached_property
     def date_begin(self):
-        begin = RoomView.objects.filter(room__world=self.world).aggregate(
-            min=Min("start")
-        )["min"]
+        begin = RoomView.objects.filter(
+            room__world=self.world, user__type=User.UserType.PERSON
+        ).aggregate(min=Min("start"))["min"]
 
         if "begin" in self.input:
             try:
@@ -184,9 +184,9 @@ class ReportGenerator:
 
     @cached_property
     def date_end(self):
-        end = RoomView.objects.filter(room__world=self.world).aggregate(
-            max=Greatest(Max("start"), Max("end"))
-        )["max"]
+        end = RoomView.objects.filter(
+            room__world=self.world, user__type=User.UserType.PERSON
+        ).aggregate(max=Greatest(Max("start"), Max("end")))["max"]
 
         if "end" in self.input:
             try:
@@ -247,9 +247,10 @@ class ReportGenerator:
             Q(end__lt=self.date_begin) | Q(start__gt=self.date_end)
         )
 
-        unique_users = rvqs.filter(room=room).values("user")
+        unique_users = rvqs.filter(room=room, type=User.UserType.PERSON).values("user")
         users_with_duration = User.objects.filter(
             id__in=unique_users,
+            type=User.UserType.PERSON,
         ).annotate(
             total_duration=Subquery(
                 rvqs.filter(
@@ -360,7 +361,7 @@ class ReportGenerator:
                     continue
 
                 viewers = (
-                    RoomView.objects.filter(room=room)
+                    RoomView.objects.filter(room=room, user__type=User.UserType.PERSON)
                     .exclude(Q(end__lt=talk_start) | Q(start__gt=talk_end))
                     .values("user")
                     .distinct()
@@ -503,7 +504,11 @@ class ReportGenerator:
             [_("Number of users (total)"), str(self.world.user_set.count())],
             [
                 _("Users with authenticated access (total)"),
-                str(self.world.user_set.filter(token_id__isnull=False).count()),
+                str(
+                    self.world.user_set.filter(
+                        token_id__isnull=False, user__type=User.UserType.PERSON
+                    ).count()
+                ),
             ],
             [
                 _("Exhibitors (total)"),

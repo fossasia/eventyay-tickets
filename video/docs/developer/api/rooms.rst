@@ -102,3 +102,11 @@ Permitted session data keys are ``session`` and ``title``.
 When the schedule data is updated, a broadcast to all users in the room is sent::
 
     => ["room.schedule", {"room": "room_1", "schedule_data": {"session": 1}}]
+
+Anonymous invites
+-----------------
+
+Admins (or kiosk users) can retrieve an invite link that can be used by in-person attendees of the event to join the Q&A or polls for a specific room without needing to create a full user profile::
+
+    => ["room.invite.anonymous.link", 123, {"room": "room_1"}]
+    <- ["success", 123, {"url": "https://vnls.io/kLeNv6"}]

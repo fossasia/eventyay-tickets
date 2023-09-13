@@ -1,0 +1,26 @@
+{% load i18n %}
+<html>
+<head>
+    <title>{% trans "Invalid link" %}</title>
+    <style>
+			body {
+				text-align: center;
+				font-family: 'Roboto', "Helvetica Neue", HelveticaNeue, Helvetica, Arial, "Microsoft Yahei", "微软雅黑", STXihei, "华文细黑", sans-serif;
+			}
+
+			a, a:visited {
+				color: #0058DE;
+				font-weight: bold;
+			}
+
+			h1 {
+				color: #E2007E;
+			}
+    </style>
+</head>
+<body>
+<h1>{% trans "Invalid link" %}</h1>
+<p>{% trans "This invite link is not valid. Please check carefully that you copied it correctly." %}</p>
+<p>powered by <strong><a href="https://venueless.org">Venueless</a></strong></p>
+</body>
+</html>

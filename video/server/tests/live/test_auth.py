@@ -6,9 +6,11 @@ import jwt
 import pytest
 from channels.db import database_sync_to_async
 from channels.testing import WebsocketCommunicator
+from django.utils.timezone import now
 
 from tests.utils import get_token
 from venueless.core.models import User
+from venueless.core.models.room import AnonymousInvite
 from venueless.core.services.user import get_user_by_token_id
 from venueless.routing import application
 
@@ -1028,3 +1030,35 @@ async def test_online_status(world):
             assert (await c_admin.receive_json_from())[2] == {user_id: True}
         await c_admin.send_json_to(["user.online_status", 123, {"ids": [user_id]}])
         assert (await c_admin.receive_json_from())[2] == {user_id: False}
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_anonymous_invite(client, world, stream_room, bbb_room):
+    # Disable uninvited anonymous access
+    world.trait_grants["attendee"] = ["ticket-holder"]
+    await database_sync_to_async(world.save)()
+    ai = await database_sync_to_async(AnonymousInvite.objects.create)(
+        world=world,
+        room=stream_room,
+        expires=now() + datetime.timedelta(days=1),
+    )
+    async with world_communicator() as c:
+        await c.send_json_to(
+            ["authenticate", {"client_id": 4, "invite_token": ai.short_token}]
+        )
+        response = await c.receive_json_from()
+        assert response[0] == "authenticated"
+        assert len(response[1]["world.config"]["rooms"]) == 1
+        assert response[1]["world.config"]["rooms"][0]["id"] == str(stream_room.id)
+        assert set(response[1]["world.config"]["permissions"]) == {
+            "world:view",
+        }
+        assert set(response[1]["world.config"]["rooms"][0]["permissions"]) == {
+            "room:view",
+            "room:question.vote",
+            "room:question.read",
+            "room:question.ask",
+            "room:poll.vote",
+            "room:poll.read",
+        }

@@ -107,6 +107,7 @@ Fill the configuration file ``/etc/venueless/venueless.cfg`` with the following 
 
     [venueless]
     url=https://venueless.mydomain.com
+    short_url=https://shorturl.com
 
     [database]
     backend=postgresql

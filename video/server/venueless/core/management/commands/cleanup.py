@@ -6,7 +6,8 @@ from django.db.models import F
 from django.utils.timezone import now
 
 from venueless.core.models import RouletteRequest
-from venueless.core.models.room import RoomView
+from venueless.core.models.auth import ShortToken
+from venueless.core.models.room import AnonymousInvite, RoomView
 from venueless.core.models.world import WorldView
 from venueless.storage.models import StoredFile
 
@@ -19,6 +20,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self._cleanup_views()
         self._cleanup_files()
+        self._cleanup_tokens()
 
     def _cleanup_files(self):
         for f in StoredFile.objects.filter(expires__isnull=False, expires__lt=now()):
@@ -45,3 +47,7 @@ class Command(BaseCommand):
         ).delete()
 
         RouletteRequest.objects.filter(expiry__lte=now() - timedelta(hours=1)).delete()
+
+    def _cleanup_tokens(self):
+        ShortToken.objects.filter(expires__lte=now() - timedelta(days=90)).delete()
+        AnonymousInvite.objects.filter(expires__lte=now() - timedelta(days=90)).delete()

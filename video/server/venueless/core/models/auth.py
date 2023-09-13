@@ -20,6 +20,7 @@ class User(VersionedModel):
     class UserType(models.TextChoices):
         PERSON = "person"
         KIOSK = "kiosk"
+        ANONYMOUS = "anon"
 
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     client_id = models.CharField(max_length=200, db_index=True, null=True, blank=True)

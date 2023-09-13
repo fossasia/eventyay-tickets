@@ -3,9 +3,11 @@ import uuid
 from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.db.models import Exists, OuterRef, Q
-from django.db.models.expressions import RawSQL
+from django.db.models.expressions import RawSQL, Value
+from django.utils.crypto import get_random_string
 from rest_framework import serializers
 
+from venueless.core.models import User
 from venueless.core.models.cache import VersionedModel
 from venueless.core.permissions import SYSTEM_ROLES, Permission
 
@@ -27,7 +29,12 @@ class RoomQuerySet(models.QuerySet):
         from .auth import RoomGrant, WorldGrant
 
         traits = traits or user.traits
-        if world.has_permission_implicit(traits=traits, permissions=[permission]):
+        allow_empty_traits = not user or user.type == User.UserType.PERSON
+        if world.has_permission_implicit(
+            traits=traits,
+            permissions=[permission],
+            allow_empty_traits=allow_empty_traits,
+        ):
             # User has the permission globally, nothing to do
             return self.all()
 
@@ -65,10 +72,17 @@ class RoomQuerySet(models.QuerySet):
         # check the trait_grants["moderator"] value of the room, which always is an array. All values inside the
         # array are connected as AND restrictions. However, the value may either be strings (user must have that trait)
         # or arrays (user must have one of the traits -- OR). We therefore need to do In-SQL type checks.
-        # In case it is an empty array, everyone is permitted. When our user has traits, this is automatically ensured
-        # by the ALL() statement, but when traits=[] we need to do a special case check since "IN ()" is not valid SQL
+        # In case it is an empty array, everyone is permitted, unless allow_empty_traits is set to False.
+        # When our user has traits, this is automatically ensured by the ALL() statement, but when traits=[] we
+        # need to do a special case check since "IN ()" is not valid SQL
         for i, role in enumerate(roles):
             if traits:
+                ext = ""
+                ext_args = []
+                if not allow_empty_traits:
+                    ext = " AND jsonb_array_length(trait_grants->%s) > 0"
+                    ext_args.append(role)
+
                 qs = qs.annotate(
                     **{
                         f"has_role_{i}": RawSQL(
@@ -82,7 +96,7 @@ class RoomQuerySet(models.QuerySet):
                                         ELSE d{i}.elem#>>'{"{}"}' IN %s
                                     END
                                 ) FROM jsonb_array_elements( trait_grants->%s ) AS d{i}(elem)
-                            )
+                            ) {ext}
                         )""",
                             (
                                 role,  # ? check
@@ -90,10 +104,13 @@ class RoomQuerySet(models.QuerySet):
                                 tuple(traits),  # IN check
                                 tuple(traits),  # IN check
                                 role,  # jsonb_array_elements
+                                *ext_args,
                             ),
                         )
                     }
                 )
+            elif not allow_empty_traits:
+                qs = qs.annotate(**{f"has_role_{i}": Value(False)})
             else:
                 qs = qs.annotate(
                     **{
@@ -192,3 +209,21 @@ def approximate_view_number(actual_number):
         return "many"
     else:
         return "few"
+
+
+def generate_short_token():
+    chars = "abcdefghijklmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ123456789"
+    return get_random_string(6, chars)
+
+
+class AnonymousInvite(models.Model):
+    short_token = models.CharField(
+        db_index=True, unique=True, default=generate_short_token, max_length=150
+    )
+    world = models.ForeignKey(
+        "World", related_name="anonymous_invites", on_delete=models.CASCADE
+    )
+    room = models.ForeignKey(
+        "Room", related_name="anonymous_invites", on_delete=models.CASCADE
+    )
+    expires = models.DateTimeField()

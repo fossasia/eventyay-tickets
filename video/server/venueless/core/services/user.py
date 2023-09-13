@@ -13,6 +13,7 @@ from django.utils.timezone import now
 from ...live.channels import GROUP_USER
 from ..models import AuditLog
 from ..models.auth import User
+from ..models.room import AnonymousInvite
 from ..models.world import WorldView
 from ..permissions import Permission
 
@@ -130,17 +131,28 @@ def get_user(
     with_id=None,
     with_token=None,
     with_client_id=None,
+    with_invite_token=None,
 ):
     if with_id:
         user = get_user_by_id(world.id, with_id)
         return user
 
     token_id = None
+    anonymous_invite = None
     if with_token:
         token_id = with_token["uid"]
         user = get_user_by_token_id(world.id, token_id)
     elif with_client_id:
         user = get_user_by_client_id(world.id, with_client_id)
+        if not user and with_invite_token:
+            try:
+                anonymous_invite = AnonymousInvite.objects.get(
+                    short_token=with_invite_token,
+                    world=world,
+                    expires__gte=now(),
+                )
+            except AnonymousInvite.DoesNotExist:
+                return None
     else:
         raise Exception(
             "get_user was called without valid with_token, with_id or with_client_id"
@@ -154,8 +166,9 @@ def get_user(
         return user
 
     traits = with_token.get("traits") if with_token else None
-    if not world.has_permission_implicit(
-        traits=traits or [], permissions=[Permission.WORLD_VIEW]
+    if not anonymous_invite and not world.has_permission_implicit(
+        traits=traits or [],
+        permissions=[Permission.WORLD_VIEW],
     ):
         # There is no chance this user gets in, we want to do an early out to prevent empty
         # user profiles from being created
@@ -173,6 +186,7 @@ def get_user(
         user = create_user(
             world_id=world.id,
             client_id=with_client_id,
+            anonymous_invite=anonymous_invite,
             traits=traits,
         )
     return user
@@ -186,15 +200,31 @@ def create_user(
     traits=None,
     profile=None,
     pretalx_id=None,
+    anonymous_invite=None,
 ):
-    return User.objects.create(
+    kwargs = {}
+    if anonymous_invite:
+        kwargs.update(
+            {
+                "type": User.UserType.ANONYMOUS,
+                "show_publicly": False,
+            }
+        )
+    user = User.objects.create(
         world_id=world_id,
         token_id=token_id,
         client_id=client_id,
         pretalx_id=pretalx_id,
         traits=traits or [],
         profile=profile or {},
+        **kwargs,
     )
+    if anonymous_invite:
+        user.world_grants.create(world_id=world_id, role="__anonymous_world")
+        user.room_grants.create(
+            world_id=world_id, room_id=anonymous_invite.room_id, role="__anonymous_room"
+        )
+    return user
 
 
 @atomic
@@ -325,12 +355,18 @@ def login(
     world=None,
     token=None,
     client_id=None,
+    invite_token=None,
 ) -> LoginResult:
     from .chat import ChatService
     from .exhibition import ExhibitionService
     from .world import get_world_config_for_user
 
-    user = get_user(world=world, with_client_id=client_id, with_token=token)
+    user = get_user(
+        world=world,
+        with_client_id=client_id,
+        with_token=token,
+        with_invite_token=invite_token,
+    )
 
     if user and user.is_banned:
         raise AuthError("auth.denied")

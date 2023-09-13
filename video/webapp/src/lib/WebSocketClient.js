@@ -19,7 +19,8 @@ class WebSocketClient extends EventEmitter {
 			joinTimeout: 60000,
 			reconnectDelay: 1000,
 			token: null,
-			clientId: null
+			clientId: null,
+			inviteToken: null
 		}
 		this._config = Object.assign(defaultConfig, config)
 		this._url = url
@@ -106,6 +107,9 @@ class WebSocketClient extends EventEmitter {
 		}
 		if (this._config.clientId) {
 			payload.client_id = this._config.clientId
+			if (this._config.inviteToken) {
+				payload.invite_token = this._config.inviteToken
+			}
 		}
 		this._send(JSON.stringify(['authenticate', payload]))
 	}

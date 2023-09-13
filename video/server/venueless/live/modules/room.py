@@ -1,14 +1,21 @@
 import asyncio
 import logging
 import time
+from datetime import timedelta
+from urllib.parse import urljoin
 
 from channels.db import database_sync_to_async
 from channels.layers import get_channel_layer
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.utils.timezone import now
 from sentry_sdk import add_breadcrumb, configure_scope
 
-from venueless.core.models.room import RoomConfigSerializer, approximate_view_number
+from venueless.core.models.room import (
+    AnonymousInvite,
+    RoomConfigSerializer,
+    approximate_view_number,
+)
 from venueless.core.permissions import Permission
 from venueless.core.services.poll import get_polls, get_voted_polls
 from venueless.core.services.reactions import store_reaction
@@ -430,4 +437,26 @@ class RoomModule(BaseModule):
                 body["type"],
                 {"room": config["id"], "schedule_data": config.get("schedule_data")},
             ]
+        )
+
+    @command("invite.anonymous.link")
+    @room_action(
+        permission_required=[
+            Permission.ROOM_UPDATE,
+            Permission.ROOM_INVITE_ANONYMOUS,
+        ]
+    )
+    async def invite_anonymous_link(self, body):
+        invite, created = await database_sync_to_async(
+            AnonymousInvite.objects.get_or_create
+        )(
+            world=self.consumer.world,
+            room=self.room,
+            expires__gte=now() + timedelta(days=10),
+            defaults=dict(
+                expires=now() + timedelta(days=90),
+            ),
+        )
+        await self.consumer.send_success(
+            {"url": urljoin(settings.SHORT_URL, "/" + invite.short_token)}
         )

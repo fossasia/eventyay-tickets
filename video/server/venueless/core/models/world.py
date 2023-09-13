@@ -11,6 +11,7 @@ from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.crypto import get_random_string
 
+from venueless.core.models import User
 from venueless.core.models.cache import VersionedModel
 from venueless.core.permissions import (
     MAX_PERMISSIONS_IF_SILENCED,
@@ -180,12 +181,21 @@ class World(VersionedModel):
             raise exc
 
     def has_permission_implicit(
-        self, *, traits, permissions: List[Permission], room=None
+        self,
+        *,
+        traits,
+        permissions: List[Permission],
+        room=None,
+        allow_empty_traits=True,
     ):
         for role, required_traits in self.trait_grants.items():
-            if isinstance(required_traits, list) and all(
-                any(x in traits for x in (r if isinstance(r, list) else [r]))
-                for r in required_traits
+            if (
+                isinstance(required_traits, list)
+                and all(
+                    any(x in traits for x in (r if isinstance(r, list) else [r]))
+                    for r in required_traits
+                )
+                and (required_traits or allow_empty_traits)
             ):
                 if any(
                     p.value in self.roles.get(role, SYSTEM_ROLES.get(role, []))
@@ -195,9 +205,13 @@ class World(VersionedModel):
 
         if room:
             for role, required_traits in room.trait_grants.items():
-                if isinstance(required_traits, list) and all(
-                    any(x in traits for x in (r if isinstance(r, list) else [r]))
-                    for r in required_traits
+                if (
+                    isinstance(required_traits, list)
+                    and all(
+                        any(x in traits for x in (r if isinstance(r, list) else [r]))
+                        for r in required_traits
+                    )
+                    and (required_traits or allow_empty_traits)
                 ):
                     if any(
                         p.value in self.roles.get(role, SYSTEM_ROLES.get(role, []))
@@ -223,7 +237,10 @@ class World(VersionedModel):
             return False
 
         if self.has_permission_implicit(
-            traits=user.traits, permissions=permission, room=room
+            traits=user.traits,
+            permissions=permission,
+            room=room,
+            allow_empty_traits=user.type == User.UserType.PERSON,
         ):
             return True
 
@@ -253,7 +270,10 @@ class World(VersionedModel):
             return False
 
         if self.has_permission_implicit(
-            traits=user.traits, permissions=permission, room=room
+            traits=user.traits,
+            permissions=permission,
+            room=room,
+            allow_empty_traits=user.type == User.UserType.PERSON,
         ):
             return True
 
@@ -271,10 +291,16 @@ class World(VersionedModel):
             # safeguard only
             return result
 
+        allow_empty_traits = user.type == User.UserType.PERSON
+
         for role, required_traits in self.trait_grants.items():
-            if isinstance(required_traits, list) and all(
-                any(x in user.traits for x in (r if isinstance(r, list) else [r]))
-                for r in required_traits
+            if (
+                isinstance(required_traits, list)
+                and all(
+                    any(x in user.traits for x in (r if isinstance(r, list) else [r]))
+                    for r in required_traits
+                )
+                and (required_traits or allow_empty_traits)
             ):
                 result[self].update(self.roles.get(role, SYSTEM_ROLES.get(role, [])))
 
@@ -285,9 +311,16 @@ class World(VersionedModel):
 
         for room in self.rooms.all():
             for role, required_traits in room.trait_grants.items():
-                if isinstance(required_traits, list) and all(
-                    any(x in user.traits for x in (r if isinstance(r, list) else [r]))
-                    for r in required_traits
+                if (
+                    isinstance(required_traits, list)
+                    and all(
+                        any(
+                            x in user.traits
+                            for x in (r if isinstance(r, list) else [r])
+                        )
+                        for r in required_traits
+                    )
+                    and (required_traits or allow_empty_traits)
                 ):
                     result[room].update(
                         self.roles.get(role, SYSTEM_ROLES.get(role, []))

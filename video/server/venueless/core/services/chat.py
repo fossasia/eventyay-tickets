@@ -331,7 +331,7 @@ class ChatService:
                 or any(
                     any(v in u.blocked_users.all() for v in users if v != u)
                     or u.deleted
-                    or u.type == User.UserType.KIOSK
+                    or u.type in (User.UserType.KIOSK, User.UserType.ANONYMOUS)
                     for u in users
                 )
             ):

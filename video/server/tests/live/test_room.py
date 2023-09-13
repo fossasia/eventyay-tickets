@@ -4,6 +4,7 @@ from contextlib import asynccontextmanager
 
 import pytest
 from channels.db import database_sync_to_async
+from django.test import override_settings
 
 from tests.utils import LoggingCommunicator, get_token
 from venueless.core.models import User
@@ -437,3 +438,23 @@ async def test_viewers(world, stream_room):
 
         with pytest.raises(asyncio.TimeoutError):
             await c1.receive_json_from()
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+@override_settings(SHORT_URL="https://vnls.io")
+async def test_invite_anonymous_link(world, stream_room):
+    async with world_communicator(token=get_token(world, ["admin"])) as c1:
+        await c1.send_json_to(
+            ["room.invite.anonymous.link", 123, {"room": str(stream_room.pk)}]
+        )
+        response = await c1.receive_json_from()
+        assert response[0] == "success"
+        url = response[2]["url"]
+        assert url.startswith("https://vnls.io/")
+
+        await c1.send_json_to(
+            ["room.invite.anonymous.link", 123, {"room": str(stream_room.pk)}]
+        )
+        response = await c1.receive_json_from()
+        assert url == response[2]["url"]

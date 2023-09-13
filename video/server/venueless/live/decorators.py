@@ -1,4 +1,5 @@
 import functools
+from typing import List, Union
 
 from venueless.core.permissions import Permission
 from venueless.core.services.chat import get_channel
@@ -42,7 +43,10 @@ def event(event_name, refresh_user=False):
     return wrapper
 
 
-def room_action(permission_required: Permission = None, module_required=None):
+def room_action(
+    permission_required: Union[Permission, List[Permission]] = None,
+    module_required=None,
+):
     """
     Wraps a command on a live module. Requires either ``room`` or ``channel`` to be set in the request body.
 
