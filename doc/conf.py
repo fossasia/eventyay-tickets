@@ -123,6 +123,7 @@ linkcheck_ignore = [
     'http://localhost',
     'http://127.0.0.1',
     r'https://github.com/pretalx/pretalx/issues/\d+',  # The release notes are auto generated and contain a LOT of issue links
+    "https://translate.pretalx.com/projects/pretalx/pretalx/#repository",  # Only accessible by admins
 ]
 
 # GitHub integration
