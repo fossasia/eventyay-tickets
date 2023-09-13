@@ -35,12 +35,7 @@ class Track(LogMixin, models.Model):
             RegexValidator(r"#([0-9A-Fa-f]{3}){1,2}"),
         ],
     )
-    position = models.PositiveIntegerField(
-        null=True,
-        blank=True,
-        verbose_name=_("Position"),
-        help_text=_("This is the order that tracks are displayed in in the schedule."),
-    )
+    position = models.PositiveIntegerField(null=True, blank=True)
     requires_access_code = models.BooleanField(
         verbose_name=_("Requires access code"),
         help_text=_(

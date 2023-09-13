@@ -48,14 +48,7 @@ class Room(LogMixin, models.Model):
         verbose_name=_("Capacity"),
         help_text=_("How many people can fit in the room?"),
     )
-    position = models.PositiveIntegerField(
-        null=True,
-        blank=True,
-        verbose_name=_("Position"),
-        help_text=_(
-            "This is the order that rooms are displayed in in the schedule (lower = left)."
-        ),
-    )
+    position = models.PositiveIntegerField(null=True, blank=True)
 
     objects = ScopedManager(event="event")
 

@@ -60,14 +60,14 @@
                             {% if not forloop.last %}
                                 <a href="{{ question.urls.down }}"
                                    class="btn btn-sm btn-outline-info"
-                                   title="{% translate "Move question down" %}">
+                                   title="{% translate "Move down" %}">
                                     <i class="fa fa-arrow-down"></i>
                                 </a>
                             {% endif %}
                             {% if not forloop.first %}
                                 <a href="{{ question.urls.up }}"
                                    class="btn btn-sm btn-outline-info"
-                                   title="{% translate "Move question up" %}">
+                                   title="{% translate "Move up" %}">
                                     <i class="fa fa-arrow-up"></i>
                                 </a>
                             {% endif %}
