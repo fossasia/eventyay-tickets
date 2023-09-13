@@ -5,6 +5,6 @@
     <h2>{% translate "Event History" %}</h2>
     <div class="dashboard-history">
         {% include "common/logs.html" with entries=log_entries hide_title=True %}
-        {% include "orga/pagination.html" %}
+        {% include "orga/includes/pagination.html" %}
     </div>
 {% endblock %}

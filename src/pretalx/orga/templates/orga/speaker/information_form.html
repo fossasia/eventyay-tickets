@@ -9,6 +9,6 @@
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {% bootstrap_form form layout='event' %}
-        {% include "orga/submit_row.html" %}
+        {% include "orga/includes/submit_row.html" %}
     </form>
 {% endblock %}

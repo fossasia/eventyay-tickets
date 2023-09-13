@@ -16,7 +16,7 @@
             <form method="post">
                 {% csrf_token %}
                 {% bootstrap_form form layout='event' %}
-                {% include "orga/submit_row.html" with submit_value="team" submit_name="form" %}
+                {% include "orga/includes/submit_row.html" with submit_value="team" submit_name="form" %}
             </form>
         {% else %}
             <div class="alert alert-danger">

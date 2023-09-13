@@ -10,7 +10,7 @@
         <fieldset class="m-2">
             <legend>{% translate "User settings" %}</legend>
             {% bootstrap_form profile_form layout='event' %}
-            {% include "orga/submit_row.html" with submit_name="form" submit_value="profile" %}
+            {% include "orga/includes/submit_row.html" with submit_name="form" submit_value="profile" %}
         </fieldset>
     </form>
     <form method="post" class="password-input-form">
@@ -19,7 +19,7 @@
             <legend>{% translate "Login settings" %}</legend>
             {{ login_form.media }}
             {% bootstrap_form login_form layout='event' %}
-            {% include "orga/submit_row.html" with submit_name="form" submit_value="login" %}
+            {% include "orga/includes/submit_row.html" with submit_name="form" submit_value="login" %}
         </fieldset>
     </form>
     {% include "common/user_api_token.html" with orga="true" %}
