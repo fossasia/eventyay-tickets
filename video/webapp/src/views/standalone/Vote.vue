@@ -1,11 +1,13 @@
 <template lang="pug">
-.c-standalone-vote
+.c-standalone-vote(v-if="linkCache")
 	h1 Vote now here:
-	.svg(v-html="qrcode")
-	.url {{ url }}
+	.svg(v-html="linkCache.qrcode")
+	.url {{ linkCache.shortUrl }}
 </template>
 <script>
 import QRCode from 'qrcode'
+import api from 'lib/api'
+let linkCache
 
 export default {
 	components: {},
@@ -14,19 +16,19 @@ export default {
 	},
 	data () {
 		return {
-			qrcode: null
+			linkCache
 		}
 	},
-	computed: {
-		url () {
-			return 'vle.ss/AB12'
-		},
-		fullUrl () {
-			return `https://${this.url}`
+	async created () {
+		if (!linkCache || linkCache.room !== this.room) {
+			const { url } = await api.call('room.invite.anonymous.link', {room: this.room.id})
+			linkCache = {
+				room: this.room,
+				url,
+				shortUrl: url.replace(/^https?:\/\//, ''),
+				qrcode: await QRCode.toString(url, {type: 'svg'})
+			}
 		}
-	},
-	async mounted () {
-		this.qrcode = await QRCode.toString(this.url, {type: 'svg'})
 	}
 }
 </script>

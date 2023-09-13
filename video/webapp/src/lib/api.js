@@ -4,11 +4,11 @@ import store from 'store'
 import WebSocketClient from './WebSocketClient'
 
 const api = Object.create(WebSocketClient.prototype)
-api.connect = function ({token, clientId}) {
+api.connect = function ({token, clientId, inviteToken}) {
 	if (api._socket) {
 		api.close()
 	}
-	Object.assign(api, WebSocketClient.call(api, `${config.api.socket}`, {token, clientId}))
+	Object.assign(api, WebSocketClient.call(api, `${config.api.socket}`, {token, clientId, inviteToken}))
 	WebSocketClient.prototype.connect.call(api)
 	api.on('closed', () => {
 		console.warn('socket closed')

@@ -25,7 +25,7 @@ import { emojiPlugin } from 'lib/emoji'
 import features from 'features'
 import config from 'config'
 
-async function init (token) {
+async function init ({token, inviteToken}) {
 	Vue.config.productionTip = false
 	Vue.use(Buntpapier)
 	Vue.use(Vuelidate)
@@ -47,12 +47,22 @@ async function init (token) {
 	store.commit('setUserLocale', i18n.resolvedLanguage)
 	store.dispatch('updateUserTimezone', localStorage.userTimezone || moment.tz.guess())
 
+	const { route } = router.resolve(location.pathname)
+	const anonymousRoomId = route.name === 'standalone:anonymous' ? route.params.roomId : null
 	if (token) {
 		localStorage.token = token
-		router.replace(router.currentRoute.path)
+		router.replace(location.pathname)
 		store.dispatch('login', {token})
 	} else if (localStorage.token) {
 		store.dispatch('login', {token: localStorage.token})
+	} else if (inviteToken && anonymousRoomId) {
+		const clientId = uuid()
+		localStorage[`clientId:room:${anonymousRoomId}`] = clientId
+		router.replace(location.pathname)
+		store.dispatch('login', {clientId, inviteToken})
+	} else if (anonymousRoomId && localStorage[`clientId:room:${anonymousRoomId}`]) {
+		const clientId = localStorage[`clientId:room:${anonymousRoomId}`]
+		store.dispatch('login', {clientId})
 	} else {
 		console.warn('no token found, login in anonymously')
 		let clientId = localStorage.clientId
@@ -83,12 +93,15 @@ async function init (token) {
 	})
 }
 
-const token = new URLSearchParams(window.location.hash.substring(1)).get('token')
+const hashParams = new URLSearchParams(window.location.hash.substring(1))
+
+const token = hashParams.get('token')
+const inviteToken = hashParams.get('invite')
 
 if (config.externalAuthUrl && !token) {
 	window.location = config.externalAuthUrl
 } else {
-	init(token)
+	init({token, inviteToken})
 }
 
 // remove all old service workers

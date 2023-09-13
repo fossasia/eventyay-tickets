@@ -7,6 +7,7 @@
 		//- bunt-icon-button(v-if="$features.enabled('schedule-control')", @click="showEditSchedule = true") calendar_edit
 		.actions
 			bunt-icon-button(v-if="modules['call.bigbluebutton'] && hasPermission('room:bbb.recordings')", :tooltip="$t('Room:recordings:tooltip')", tooltipPlacement="bottom-end", @click="showRecordingsPrompt = true") file-video-outline
+			bunt-icon-button(v-if="hasPermission('room:update') || hasPermission('room:invite.anonymous')", :tooltip="$t('Room:anonymous-qrcode:tooltip')", @click="showQRCodePrompt = true") qrcode
 			.button-group(v-if="['stage', 'channel-bbb', 'channel-janus', 'channel-zoom'].includes(roomType) && canManage")
 				// TODO buntpapier does not support replace
 				// hardlink params so home page alias works
@@ -14,7 +15,8 @@
 				bunt-link-button(:to="{name: 'room'}", replace) view
 	router-view(:room="room", :modules="modules")
 	transition(name="prompt")
-		recordings-prompt(:room="room", v-if="showRecordingsPrompt", @close="showRecordingsPrompt = false")
+		recordings-prompt(v-if="showRecordingsPrompt", :room="room", @close="showRecordingsPrompt = false")
+		QRCodePrompt(v-if="showQRCodePrompt", :room="room", @close="showQRCodePrompt = false")
 </template>
 <script>
 // TODO
@@ -22,6 +24,7 @@
 import {mapGetters, mapState} from 'vuex'
 import { inferRoomType } from 'lib/room-types'
 import RecordingsPrompt from 'components/RecordingsPrompt'
+import QRCodePrompt from 'components/QRCodePrompt'
 
 const PERMISSIONS_TO_MANAGE = [
 	'room:chat.moderate',
@@ -30,13 +33,14 @@ const PERMISSIONS_TO_MANAGE = [
 ]
 
 export default {
-	components: { RecordingsPrompt },
+	components: { RecordingsPrompt, QRCodePrompt },
 	props: {
 		roomId: String
 	},
 	data () {
 		return {
 			showRecordingsPrompt: false,
+			showQRCodePrompt: false
 		}
 	},
 	computed: {
@@ -110,6 +114,9 @@ export default {
 		.actions
 			flex: none
 			display: flex
+			gap: 8px
+			.bunt-icon-button
+				icon-button-style(style: clear)
 			.button-group
 				> .bunt-link-button
 					box-sizing: border-box

@@ -86,12 +86,13 @@ export default new Vuex.Store({
 		}
 	},
 	actions: {
-		login ({state}, {token, clientId}) {
+		login ({state}, {token, clientId, inviteToken}) {
 			state.token = token
 			state.clientId = clientId
+			state.inviteToken = inviteToken
 		},
 		connect ({state, dispatch, commit}) {
-			api.connect({token: state.token, clientId: state.clientId})
+			api.connect({token: state.token, clientId: state.clientId, inviteToken: state.inviteToken})
 			api.on('joined', (serverState) => {
 				state.connected = true
 				state.socketCloseCode = null
