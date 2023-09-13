@@ -1,37 +1,37 @@
 {% load i18n %}
 {% load url_replace %}
-<nav class="text-center">
-    <ul class="pagination justify-content-center">
-        {% if is_paginated %}
-            {% if page_obj.has_previous %}
-                <li class="page-item">
-                    <a rel="prev" href="?{% url_replace request 'page' page_obj.previous_page_number %}" class="page-link">
-                        <span>&laquo;</span>
-                    </a>
-                </li>
-            {% endif %}
-            <li class="page-current page-item disabled"><a class="page-link">
-                {% blocktranslate trimmed with page=page_obj.number of=page_obj.paginator.num_pages count=page_obj.paginator.count %}
-                    Page {{ page }} of {{ of }} ({{ count }} elements)
-                {% endblocktranslate %}
-            </a></li>
-            {% if page_obj.has_next %}
-                <li class="page-item">
-                    <a rel="next" href="?{% url_replace request 'page' page_obj.next_page_number %}" class="page-link">
-                        <span>&raquo;</span>
-                    </a>
-                </li>
-            {% endif %}
-        {% else %}
-            {% if page_obj.paginator.count > 1 %}
-                <li class="page-current page-item"><a class="page-link">
-                    {% blocktranslate trimmed count count=page_obj.paginator.count %}
-                        {{ count }} element
-                    {% plural %}
-                        {{ count }} elements
+{% if is_paginated or page_obj.paginator.count > 1 %}
+    <nav class="text-center">
+        <ul class="pagination justify-content-center">
+            {% if is_paginated %}
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a rel="prev" href="?{% url_replace request 'page' page_obj.previous_page_number %}" class="page-link">
+                            <span>&laquo;</span>
+                        </a>
+                    </li>
+                {% endif %}
+                <li class="page-current page-item disabled"><a class="page-link">
+                    {% blocktranslate trimmed with page=page_obj.number of=page_obj.paginator.num_pages count=page_obj.paginator.count %}
+                        Page {{ page }} of {{ of }} ({{ count }} elements)
                     {% endblocktranslate %}
                 </a></li>
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a rel="next" href="?{% url_replace request 'page' page_obj.next_page_number %}" class="page-link">
+                            <span>&raquo;</span>
+                        </a>
+                    </li>
+                {% endif %}
+            {% else %}
+                {% if page_obj.paginator.count > 1 %}
+                    <li class="page-current page-item"><a class="page-link">
+                        {% blocktranslate trimmed with count=page_obj.paginator.count|intcomma context "Shown at the bottom of lists, always > 1 elements." %}
+                            {{ count }} elements
+                        {% endblocktranslate %}
+                    </a></li>
+                {% endif %}
             {% endif %}
-        {% endif %}
-    </ul>
-</nav>
+        </ul>
+    </nav>
+{% endif %}
