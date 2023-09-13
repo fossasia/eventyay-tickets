@@ -408,5 +408,16 @@
   "LandingPage:speakers:header": "Unsere {{speakers}} Referenten",
   "LandingPage:speakers:link": "zur vollständigen Liste",
   "LandingPage:speakers:more": "und {{additional_speakers}} weitere",
-  "poster-manager/poster:delete-prompt:warning": "Diese Aktion kann NICHT rückgängig gemacht werden. Das Poster wird permanent gelöscht"
+  "poster-manager/poster:delete-prompt:warning": "Diese Aktion kann NICHT rückgängig gemacht werden. Das Poster wird permanent gelöscht",
+  "ChatMessage:poll-message:header": "Neue Umfrage:",
+  "standalone/NextSession:header": "Neue Session",
+  "standalone/Viewers:header_zero": "Niemand nimmt online teil",
+  "standalone/Viewers:header_one": "Eine Person nimmt online teil",
+  "RoomsSidebar:admin-kiosks:label": "Kioske",
+  "standalone/Viewers:header_other": "{{ count }} Personen nehmen online teil",
+  "standalone/Anonymous:header_room": "Raum",
+  "standalone/Anonymous:tabs-header:schedule": "Zeitplan",
+  "standalone/Anonymous:schedule:current-session": "Aktuelle Session",
+  "standalone/Anonymous:schedule:next-sessions": "Nächste Sessions",
+  "standalone/Anonymous:footer-anonymously": "Du stimmst anonym ab"
 }
