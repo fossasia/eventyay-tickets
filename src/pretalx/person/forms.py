@@ -30,16 +30,36 @@ from pretalx.submission.models import Question
 
 class UserForm(CfPFormMixin, forms.Form):
     login_email = forms.EmailField(
-        max_length=60, label=phrases.base.enter_email, required=False
+        max_length=60,
+        label=phrases.base.enter_email,
+        required=False,
+        widget=forms.EmailInput(attrs={"autocomplete": "username"}),
     )
     login_password = forms.CharField(
-        widget=forms.PasswordInput, label=_("Password"), required=False
+        label=_("Password"),
+        required=False,
+        widget=forms.PasswordInput(attrs={"autocomplete": "current-password"}),
     )
-    register_name = forms.CharField(label=_("Name"), required=False)
-    register_email = forms.EmailField(label=_("Email address"), required=False)
-    register_password = PasswordField(label=_("Password"), required=False)
+    register_name = forms.CharField(
+        label=_("Name"),
+        required=False,
+        widget=forms.TextInput(attrs={"autocomplete": "name"}),
+    )
+    register_email = forms.EmailField(
+        label=_("Email address"),
+        required=False,
+        widget=forms.EmailInput(attrs={"autocomplete": "email"}),
+    )
+    register_password = PasswordField(
+        label=_("Password"),
+        required=False,
+        widget=forms.PasswordInput(attrs={"autocomplete": "new-password"}),
+    )
     register_password_repeat = PasswordConfirmationField(
-        label=_("Password (again)"), required=False, confirm_with="register_password"
+        label=_("Password (again)"),
+        required=False,
+        confirm_with="register_password",
+        widget=forms.PasswordInput(attrs={"autocomplete": "new-password"}),
     )
 
     def __init__(self, *args, **kwargs):
