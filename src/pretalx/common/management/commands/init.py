@@ -46,8 +46,6 @@ class Command(BaseCommand):  # pragma: no cover
 
     @transaction.atomic
     def handle(self, *args, **options):
-        self.stdout.write(f"{args}")
-
         self.stdout.write(
             self.style.SUCCESS(
                 "\nWelcome to pretalx! This is my initialization command, please use it only once."
@@ -92,13 +90,9 @@ class Command(BaseCommand):  # pragma: no cover
             ),
         )
         self.stdout.write(self.style.SUCCESS("\nNow that this is done, you can:"))
+        self.stdout.write(f" - Create your first event at {event_url}")
         self.stdout.write(
-            " - Create your first event at {event_url}".format(event_url=event_url)
-        )
-        self.stdout.write(
-            " - Invite somebody to the organiser team at {team_url} and let them create the event".format(
-                team_url=team_url
-            )
+            f" - Invite somebody to the organiser team at {team_url} and let them create the event"
         )
         self.stdout.write(
             ' - Use the command "import_schedule /path/to/schedule.xml" if you want to import an event.'

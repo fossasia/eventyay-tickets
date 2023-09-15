@@ -4,6 +4,7 @@ Release Notes
 =============
 
 - :release:`unreleased <????-??-??>`
+- :bug:`1579` There was a bug in the `pretalx init` command, and also too verbose output.
 - :feature:`1534` pretalx now adds hints for password managers to make the dual login/registration form easier to navigate.
 - :feature:`-` Organisers can now change the pagination size of all list pages, with a choice of 25, 50 or 100.
 - :feature:`1576` Tracks can now be ordered, and the order is used both in drop-down and in the schedule.
