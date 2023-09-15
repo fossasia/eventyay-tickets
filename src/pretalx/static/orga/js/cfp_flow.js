@@ -35,7 +35,7 @@ let currentModal = Vue.observable({
   data: null,
   show: false,
 })
-marked.setOptions({
+const markedOptions = {
   baseUrl: null,
   breaks: false,
   gfm: true,
@@ -52,7 +52,7 @@ marked.setOptions({
   smartypants: false,
   tables: true,
   xhtml: false,
-})
+}
 document.onclick = (event) => {
   if (currentModal.data) {
     currentModal.data = null;
@@ -201,8 +201,8 @@ Vue.component("field", {
       return !currentModal.data
     },
     display_help_text () {
-      if (this.isQuestion) return marked(this.fixed_help_text)
-      return marked(this.field.help_text[currentLanguage] + " " + this.fixed_help_text)
+      if (this.isQuestion) return marked.parse(this.fixed_help_text, markedOptions)
+      return marked.parse(this.field.help_text[currentLanguage] + " " + this.fixed_help_text, markedOptions)
     },
     isQuestion () {
       return this.field.key.startsWith("question_")
@@ -313,7 +313,7 @@ Vue.component("step", {
       if (this.editable) this.editingText = true
     },
     marked (value) {
-      return marked(value)
+      return marked.parse(value, markedOptions)
     },
   },
   computed: {
