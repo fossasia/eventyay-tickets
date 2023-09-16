@@ -699,7 +699,7 @@ class Schedule(LogMixin, models.Model):
                     }
                 )
         tracks.discard(None)
-        tracks = sorted(list(tracks), key=lambda x: x.position)
+        tracks = sorted(list(tracks), key=lambda x: x.position or 0)
         result["tracks"] = [
             {
                 "id": track.id,
