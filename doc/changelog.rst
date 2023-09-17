@@ -4,6 +4,7 @@ Release Notes
 =============
 
 - :release:`unreleased <????-??-??>`
+- :bug:`-` When using non-standard languages, pretalx would only show those languages as available sometimes.
 - :bug:`1579` There was a bug in the `pretalx init` command, and also too verbose output.
 - :feature:`1534` pretalx now adds hints for password managers to make the dual login/registration form easier to navigate.
 - :feature:`-` Organisers can now change the pagination size of all list pages, with a choice of 25, 50 or 100.
