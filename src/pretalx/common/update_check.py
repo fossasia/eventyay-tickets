@@ -17,11 +17,12 @@ from pretalx.celery_app import app
 from pretalx.common.mail import mail_send_task
 from pretalx.common.models.settings import GlobalSettings
 from pretalx.common.plugins import get_all_plugins
-from pretalx.common.signals import periodic_task
+from pretalx.common.signals import periodic_task, minimum_interval
 from pretalx.event.models import Event
 
 
 @receiver(signal=periodic_task)
+@minimum_interval(minutes_after_success=60 * 23)
 def run_update_check(sender, **kwargs):
     gs = GlobalSettings()
     if not gs.settings.update_check_enabled:

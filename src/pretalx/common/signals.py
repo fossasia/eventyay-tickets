@@ -1,13 +1,18 @@
+import logging
+import uuid
+from functools import wraps
 from typing import Any, Callable, List, Tuple
 
 import django.dispatch
 from django.apps import apps
 from django.conf import settings
+from django.core.cache import cache
 from django.dispatch.dispatcher import NO_RECEIVERS
 
 from pretalx.event.models import Event
 
 app_cache = {}
+logger = logging.getLogger(__name__)
 
 
 def _populate_app_cache():
@@ -136,6 +141,55 @@ class EventPluginSignal(django.dispatch.Signal):
                 named[chain_kwarg_name] = response
                 response = receiver(signal=self, sender=sender, **named)
         return response
+
+
+def minimum_interval(
+    minutes_after_success, minutes_after_error=0, minutes_running_timeout=30
+):
+    """
+    Use this decorator on receivers of the ``periodic_task`` signal to ensure the receiver
+    function has at least ``minutes_after_success`` minutes between two successful runs and
+    at least ``minutes_after_error`` minutes between two failed runs.
+    You also get a simple locking mechanism making sure the function is not called a second
+    time while it is running, unless ``minutes_running_timeout`` have passed. This locking
+    is naive and should not be completely relied upon.
+    """
+
+    def decorate(f):
+        @wraps(f)
+        def wrapper(*args, **kwargs):
+            key_running = f"pretalx_periodic_{f.__module__}.{f.__name__}_running"
+            key_result = f"pretalx_periodic_{f.__module__}.{f.__name__}_result"
+
+            if cache.get(key_running) or cache.get(key_result):
+                return
+
+            uniqid = str(uuid.uuid4())
+            cache.set(key_running, uniqid, timeout=minutes_running_timeout * 60)
+            try:
+                retval = f(*args, **kwargs)
+            except Exception as e:
+                try:
+                    cache.set(key_result, "error", timeout=minutes_after_error * 60)
+                except Exception:
+                    logger.exception("Could not store result")
+                raise e
+            else:
+                try:
+                    cache.set(key_result, "success", timeout=minutes_after_success * 60)
+                except Exception:
+                    logger.exception("Could not store result")
+                return retval
+            finally:
+                try:
+                    if cache.get(key_running) == uniqid:
+                        cache.delete(key_running)
+                except Exception:
+                    logger.exception("Could not release lock")
+
+        return wrapper
+
+    return decorate
 
 
 periodic_task = django.dispatch.Signal()
