@@ -4,6 +4,15 @@ from django.db import migrations
 from django.db.models import Q
 
 
+def replace_wrong_values(locale_string):
+    return (
+        locale_string.replace("zh-TW", "zh-Hant")
+        .replace("zh-CN", "zh-Hans")
+        .replace("zh-tw", "zh-hant")
+        .replace("zh-cn", "zh-hans")
+    )
+
+
 def fix_locale_codes(apps, schema_editor):
     Event = apps.get_model("event", "Event")
     for event in Event.objects.filter(
@@ -12,13 +21,13 @@ def fix_locale_codes(apps, schema_editor):
         | Q(locale__contains="zh")
     ):
         for attr in ["locale", "locale_array", "content_locale_array"]:
-            locale_attr = getattr(event, attr)
-            if "zh-TW" in locale_attr:
-                locale_attr = locale_attr.replace("zh-TW", "zh-Hant")
-            if "zh-CN" in locale_attr:
-                locale_attr = locale_attr.replace("zh-CN", "zh-Hans")
-            setattr(event, attr, locale_attr)
+            setattr(event, attr, replace_wrong_values(getattr(event, attr)))
         event.save()
+
+    User = apps.get_model("person", "User")
+    for user in User.objects.filter(locale__contains="zh"):
+        user.locale = replace_wrong_values(user.locale)
+        user.save()
 
 
 class Migration(migrations.Migration):

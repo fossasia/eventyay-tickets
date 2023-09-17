@@ -3,7 +3,6 @@ from copy import copy
 from django.conf import global_settings, settings
 from django.utils.translation import get_language
 
-
 LANGUAGE_CODES_MAPPING = {
     language.lower(): language for language in settings.LANGUAGES_INFORMATION
 }
