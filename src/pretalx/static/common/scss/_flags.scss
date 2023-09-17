@@ -3,12 +3,6 @@ input[lang] {
   padding-left: 34px;
 }
 
-.checkbox > input[lang] + label {
-  background: no-repeat 10px center;
-  padding-left: 32px;
-  margin-left: -8px;
-}
-
 div[lang], textarea[lang] {
   background: no-repeat 10px 10px;
   padding-left: 34px;
@@ -21,969 +15,246 @@ div[lang], textarea[lang] {
   }
 }
 
-div[lang=ad], input[lang=ad], textarea[lang=ad], .checkbox > input[lang=ad] + label {
-  background-image: url(static("vendored/flags/ad.png"));
-}
-
-div[lang=ae], input[lang=ae], textarea[lang=ae] {
-  background-image: url(static("vendored/flags/ae.png"));
-}
-
-div[lang=af], input[lang=af], textarea[lang=af] {
-  background-image: url(static("vendored/flags/af.png"));
-}
-
-div[lang=ag], input[lang=ag], textarea[lang=ag] {
-  background-image: url(static("vendored/flags/ag.png"));
-}
-
-div[lang=ai], input[lang=ai], textarea[lang=ai] {
-  background-image: url(static("vendored/flags/ai.png"));
-}
-
-div[lang=al], input[lang=al], textarea[lang=al] {
-  background-image: url(static("vendored/flags/al.png"));
-}
-
-div[lang=am], input[lang=am], textarea[lang=am] {
-  background-image: url(static("vendored/flags/am.png"));
-}
-
-div[lang=an], input[lang=an], textarea[lang=an] {
-  background-image: url(static("vendored/flags/an.png"));
-}
-
-div[lang=ao], input[lang=ao], textarea[lang=ao] {
-  background-image: url(static("vendored/flags/ao.png"));
-}
-
-div[lang=ar], input[lang=ar], textarea[lang=ar] {
-  background-image: url(static("vendored/flags/arab-league.png"));
-}
-
-div[lang=as], input[lang=as], textarea[lang=as] {
-  background-image: url(static("vendored/flags/as.png"));
-}
-
-div[lang=at], input[lang=at], textarea[lang=at] {
-  background-image: url(static("vendored/flags/at.png"));
-}
-
-div[lang=au], input[lang=au], textarea[lang=au] {
-  background-image: url(static("vendored/flags/au.png"));
-}
-
-div[lang=aw], input[lang=aw], textarea[lang=aw] {
-  background-image: url(static("vendored/flags/aw.png"));
-}
-
-div[lang=ax], input[lang=ax], textarea[lang=ax] {
-  background-image: url(static("vendored/flags/ax.png"));
-}
-
-div[lang=az], input[lang=az], textarea[lang=az] {
-  background-image: url(static("vendored/flags/az.png"));
-}
-
-div[lang=ba], input[lang=ba], textarea[lang=ba] {
-  background-image: url(static("vendored/flags/ba.png"));
-}
-
-div[lang=bb], input[lang=bb], textarea[lang=bb] {
-  background-image: url(static("vendored/flags/bb.png"));
-}
-
-div[lang=bd], input[lang=bd], textarea[lang=bd] {
-  background-image: url(static("vendored/flags/bd.png"));
-}
-
-div[lang=be], input[lang=be], textarea[lang=be] {
-  background-image: url(static("vendored/flags/be.png"));
-}
-
-div[lang=bf], input[lang=bf], textarea[lang=bf] {
-  background-image: url(static("vendored/flags/bf.png"));
-}
-
-div[lang=bg], input[lang=bg], textarea[lang=bg] {
-  background-image: url(static("vendored/flags/bg.png"));
-}
-
-div[lang=bh], input[lang=bh], textarea[lang=bh] {
-  background-image: url(static("vendored/flags/bh.png"));
-}
-
-div[lang=bi], input[lang=bi], textarea[lang=bi] {
-  background-image: url(static("vendored/flags/bi.png"));
-}
-
-div[lang=bj], input[lang=bj], textarea[lang=bj] {
-  background-image: url(static("vendored/flags/bj.png"));
-}
-
-div[lang=bm], input[lang=bm], textarea[lang=bm] {
-  background-image: url(static("vendored/flags/bm.png"));
-}
-
-div[lang=bn], input[lang=bn], textarea[lang=bn] {
-  background-image: url(static("vendored/flags/bn.png"));
-}
-
-div[lang=bo], input[lang=bo], textarea[lang=bo] {
-  background-image: url(static("vendored/flags/bo.png"));
-}
-
-div[lang="pt-BR"], input[lang="pt-BR"], textarea[lang="pt-BR"] {
-  background-image: url(static("vendored/flags/br.png"));
-}
-
-div[lang=bs], input[lang=bs], textarea[lang=bs] {
-  background-image: url(static("vendored/flags/bs.png"));
-}
-
-div[lang=bt], input[lang=bt], textarea[lang=bt] {
-  background-image: url(static("vendored/flags/bt.png"));
-}
-
-div[lang=bv], input[lang=bv], textarea[lang=bv] {
-  background-image: url(static("vendored/flags/bv.png"));
-}
-
-div[lang=bw], input[lang=bw], textarea[lang=bw] {
-  background-image: url(static("vendored/flags/bw.png"));
-}
-
-div[lang=by], input[lang=by], textarea[lang=by] {
-  background-image: url(static("vendored/flags/by.png"));
-}
-
-div[lang=bz], input[lang=bz], textarea[lang=bz] {
-  background-image: url(static("vendored/flags/bz.png"));
-}
-
-div[lang=ca], input[lang=ca], textarea[lang=ca] {
-  background-image: url(static("vendored/flags/ca.png"));
-}
-
-div[lang=cc], input[lang=cc], textarea[lang=cc] {
-  background-image: url(static("vendored/flags/cc.png"));
-}
-
-div[lang=cd], input[lang=cd], textarea[lang=cd] {
-  background-image: url(static("vendored/flags/cd.png"));
-}
-
-div[lang=cf], input[lang=cf], textarea[lang=cf] {
-  background-image: url(static("vendored/flags/cf.png"));
-}
-
-div[lang=cg], input[lang=cg], textarea[lang=cg] {
-  background-image: url(static("vendored/flags/cg.png"));
-}
-
-div[lang=ch], input[lang=ch], textarea[lang=ch] {
-  background-image: url(static("vendored/flags/ch.png"));
-}
-
-div[lang=ci], input[lang=ci], textarea[lang=ci] {
-  background-image: url(static("vendored/flags/ci.png"));
-}
-
-div[lang=ck], input[lang=ck], textarea[lang=ck] {
-  background-image: url(static("vendored/flags/ck.png"));
-}
-
-div[lang=cl], input[lang=cl], textarea[lang=cl] {
-  background-image: url(static("vendored/flags/cl.png"));
-}
-
-div[lang=cm], input[lang=cm], textarea[lang=cm] {
-  background-image: url(static("vendored/flags/cm.png"));
-}
-
-div[lang=cn], input[lang=cn], textarea[lang=cn] {
-  background-image: url(static("vendored/flags/cn.png"));
-}
-
-div[lang=co], input[lang=co], textarea[lang=co] {
-  background-image: url(static("vendored/flags/co.png"));
-}
-
-div[lang=cr], input[lang=cr], textarea[lang=cr] {
-  background-image: url(static("vendored/flags/cr.png"));
-}
-
-div[lang=cs], input[lang=cs], textarea[lang=cs] {
-  background-image: url(static("vendored/flags/cz.png"));
-}
-
-div[lang=cu], input[lang=cu], textarea[lang=cu] {
-  background-image: url(static("vendored/flags/cu.png"));
-}
-
-div[lang=cv], input[lang=cv], textarea[lang=cv] {
-  background-image: url(static("vendored/flags/cv.png"));
-}
-
-div[lang=cx], input[lang=cx], textarea[lang=cx] {
-  background-image: url(static("vendored/flags/cx.png"));
-}
-
-div[lang=cy], input[lang=cy], textarea[lang=cy] {
-  background-image: url(static("vendored/flags/cy.png"));
-}
-
-div[lang=de], input[lang=de], textarea[lang=de], .checkbox > input[lang=de] + label,
-input[lang=de-formal], textarea[lang=de-formal], .checkbox > input[lang=de-formal] + label {
-  background-image: url(static("vendored/flags/de.png"));
-}
-
-div[lang=dj], input[lang=dj], textarea[lang=dj], .checkbox > input[lang=dj] + label {
-  background-image: url(static("vendored/flags/dj.png"));
-}
-
-div[lang=dk], input[lang=dk], textarea[lang=dk] {
-  background-image: url(static("vendored/flags/dk.png"));
-}
-
-div[lang=dm], input[lang=dm], textarea[lang=dm] {
-  background-image: url(static("vendored/flags/dm.png"));
-}
-
-div[lang=do], input[lang=do], textarea[lang=do] {
-  background-image: url(static("vendored/flags/do.png"));
-}
-
-div[lang=dz], input[lang=dz], textarea[lang=dz] {
-  background-image: url(static("vendored/flags/dz.png"));
-}
-
-div[lang=ec], input[lang=ec], textarea[lang=ec] {
-  background-image: url(static("vendored/flags/ec.png"));
-}
-
-div[lang=ee], input[lang=ee], textarea[lang=ee] {
-  background-image: url(static("vendored/flags/ee.png"));
-}
-
-div[lang=eg], input[lang=eg], textarea[lang=eg] {
-  background-image: url(static("vendored/flags/eg.png"));
-}
-
-div[lang=eh], input[lang=eh], textarea[lang=eh] {
-  background-image: url(static("vendored/flags/eh.png"));
-}
-
-div[lang=er], input[lang=er], textarea[lang=er] {
-  background-image: url(static("vendored/flags/er.png"));
-}
-
-div[lang=es], input[lang=es], textarea[lang=es] {
-  background-image: url(static("vendored/flags/es.png"));
-}
-
-div[lang=et], input[lang=et], textarea[lang=et] {
-  background-image: url(static("vendored/flags/et.png"));
-}
-
-div[lang=fi], input[lang=fi], textarea[lang=fi] {
-  background-image: url(static("vendored/flags/fi.png"));
-}
-
-div[lang=fj], input[lang=fj], textarea[lang=fj] {
-  background-image: url(static("vendored/flags/fj.png"));
-}
-
-div[lang=fk], input[lang=fk], textarea[lang=fk] {
-  background-image: url(static("vendored/flags/fk.png"));
-}
-
-div[lang=fm], input[lang=fm], textarea[lang=fm] {
-  background-image: url(static("vendored/flags/fm.png"));
-}
-
-div[lang=fo], input[lang=fo], textarea[lang=fo] {
-  background-image: url(static("vendored/flags/fo.png"));
-}
-
-div[lang=fr], input[lang=fr], textarea[lang=fr], .checkbox > input[lang=fr] + label {
-  background-image: url(static("vendored/flags/fr.png"));
-}
-
-div[lang=ga], input[lang=ga], textarea[lang=ga] {
-  background-image: url(static("vendored/flags/ga.png"));
-}
-
-div[lang=gb], input[lang=gb], textarea[lang=gb] {
-  background-image: url(static("vendored/flags/gb.png"));
-}
-
-div[lang=gd], input[lang=gd], textarea[lang=gd] {
-  background-image: url(static("vendored/flags/gd.png"));
-}
-
-div[lang=ge], input[lang=ge], textarea[lang=ge] {
-  background-image: url(static("vendored/flags/ge.png"));
-}
-
-div[lang=gf], input[lang=gf], textarea[lang=gf] {
-  background-image: url(static("vendored/flags/gf.png"));
-}
-
-div[lang=gh], input[lang=gh], textarea[lang=gh] {
-  background-image: url(static("vendored/flags/gh.png"));
-}
-
-div[lang=gi], input[lang=gi], textarea[lang=gi] {
-  background-image: url(static("vendored/flags/gi.png"));
-}
-
-div[lang=gl], input[lang=gl], textarea[lang=gl] {
-  background-image: url(static("vendored/flags/gl.png"));
-}
-
-div[lang=gm], input[lang=gm], textarea[lang=gm] {
-  background-image: url(static("vendored/flags/gm.png"));
-}
-
-div[lang=gn], input[lang=gn], textarea[lang=gn] {
-  background-image: url(static("vendored/flags/gn.png"));
-}
-
-div[lang=gp], input[lang=gp], textarea[lang=gp] {
-  background-image: url(static("vendored/flags/gp.png"));
-}
-
-div[lang=gq], input[lang=gq], textarea[lang=gq] {
-  background-image: url(static("vendored/flags/gq.png"));
-}
-
-div[lang=gr], input[lang=gr], textarea[lang=gr] {
-  background-image: url(static("vendored/flags/gr.png"));
-}
-
-div[lang=gs], input[lang=gs], textarea[lang=gs] {
-  background-image: url(static("vendored/flags/gs.png"));
-}
-
-div[lang=gt], input[lang=gt], textarea[lang=gt] {
-  background-image: url(static("vendored/flags/gt.png"));
-}
-
-div[lang=gu], input[lang=gu], textarea[lang=gu] {
-  background-image: url(static("vendored/flags/gu.png"));
-}
-
-div[lang=gw], input[lang=gw], textarea[lang=gw] {
-  background-image: url(static("vendored/flags/gw.png"));
-}
-
-div[lang=gy], input[lang=gy], textarea[lang=gy] {
-  background-image: url(static("vendored/flags/gy.png"));
-}
-
-div[lang=hk], input[lang=hk], textarea[lang=hk] {
-  background-image: url(static("vendored/flags/hk.png"));
-}
-
-div[lang=hm], input[lang=hm], textarea[lang=hm] {
-  background-image: url(static("vendored/flags/hm.png"));
-}
-
-div[lang=hn], input[lang=hn], textarea[lang=hn] {
-  background-image: url(static("vendored/flags/hn.png"));
-}
-
-div[lang=hr], input[lang=hr], textarea[lang=hr] {
-  background-image: url(static("vendored/flags/hr.png"));
-}
-
-div[lang=ht], input[lang=ht], textarea[lang=ht] {
-  background-image: url(static("vendored/flags/ht.png"));
-}
-
-div[lang=hu], input[lang=hu], textarea[lang=hu] {
-  background-image: url(static("vendored/flags/hu.png"));
-}
-
-div[lang=id], input[lang=id], textarea[lang=id] {
-  background-image: url(static("vendored/flags/id.png"));
-}
-
-div[lang=ie], input[lang=ie], textarea[lang=ie] {
-  background-image: url(static("vendored/flags/ie.png"));
-}
-
-div[lang=il], input[lang=il], textarea[lang=il] {
-  background-image: url(static("vendored/flags/il.png"));
-}
-
-div[lang=in], input[lang=in], textarea[lang=in] {
-  background-image: url(static("vendored/flags/in.png"));
-}
-
-div[lang=io], input[lang=io], textarea[lang=io] {
-  background-image: url(static("vendored/flags/io.png"));
-}
-
-div[lang=iq], input[lang=iq], textarea[lang=iq] {
-  background-image: url(static("vendored/flags/iq.png"));
-}
-
-div[lang=ir], input[lang=ir], textarea[lang=ir] {
-  background-image: url(static("vendored/flags/ir.png"));
-}
-
-div[lang=is], input[lang=is], textarea[lang=is] {
-  background-image: url(static("vendored/flags/is.png"));
-}
-
-div[lang=it], input[lang=it], textarea[lang=it] {
-  background-image: url(static("vendored/flags/it.png"));
-}
-
-div[lang=jm], input[lang=jm], textarea[lang=jm] {
-  background-image: url(static("vendored/flags/jm.png"));
-}
-
-div[lang=jo], input[lang=jo], textarea[lang=jo] {
-  background-image: url(static("vendored/flags/jo.png"));
-}
-
-div[lang=jp], input[lang=jp], textarea[lang=jp], .checkbox > input[lang=jp] + label,
-input[lang=ja-jp], textarea[lang=ja-jp], .checkbox > input[lang=ja-jp] + label {
-  background-image: url(static("vendored/flags/jp.png"));
-}
-
-div[lang=k], input[lang=ke], textarea[lang=ke] {
-  background-image: url(static("vendored/flags/ke.png"));
-}
-
-div[lang=kg], input[lang=kg], textarea[lang=kg] {
-  background-image: url(static("vendored/flags/kg.png"));
-}
-
-div[lang=kh], input[lang=kh], textarea[lang=kh] {
-  background-image: url(static("vendored/flags/kh.png"));
-}
-
-div[lang=ki], input[lang=ki], textarea[lang=ki] {
-  background-image: url(static("vendored/flags/ki.png"));
-}
-
-div[lang=km], input[lang=km], textarea[lang=km] {
-  background-image: url(static("vendored/flags/km.png"));
-}
-
-div[lang=kn], input[lang=kn], textarea[lang=kn] {
-  background-image: url(static("vendored/flags/kn.png"));
-}
-
-div[lang=kp], input[lang=kp], textarea[lang=kp] {
-  background-image: url(static("vendored/flags/kp.png"));
-}
-
-div[lang=kr], input[lang=kr], textarea[lang=kr] {
-  background-image: url(static("vendored/flags/kr.png"));
-}
-
-div[lang=kw], input[lang=kw], textarea[lang=kw] {
-  background-image: url(static("vendored/flags/kw.png"));
-}
-
-div[lang=ky], input[lang=ky], textarea[lang=ky] {
-  background-image: url(static("vendored/flags/ky.png"));
-}
-
-div[lang=kz], input[lang=kz], textarea[lang=kz] {
-  background-image: url(static("vendored/flags/kz.png"));
-}
-
-div[lang=la], input[lang=la], textarea[lang=la] {
-  background-image: url(static("vendored/flags/la.png"));
-}
-
-div[lang=lb], input[lang=lb], textarea[lang=lb] {
-  background-image: url(static("vendored/flags/lb.png"));
-}
-
-div[lang=lc], input[lang=lc], textarea[lang=lc] {
-  background-image: url(static("vendored/flags/lc.png"));
-}
-
-div[lang=li], input[lang=li], textarea[lang=li] {
-  background-image: url(static("vendored/flags/li.png"));
-}
-
-div[lang=lk], input[lang=lk], textarea[lang=lk] {
-  background-image: url(static("vendored/flags/lk.png"));
-}
-
-div[lang=lr], input[lang=lr], textarea[lang=lr] {
-  background-image: url(static("vendored/flags/lr.png"));
-}
-
-div[lang=ls], input[lang=ls], textarea[lang=ls] {
-  background-image: url(static("vendored/flags/ls.png"));
-}
-
-div[lang=lt], input[lang=lt], textarea[lang=lt] {
-  background-image: url(static("vendored/flags/lt.png"));
-}
-
-div[lang=lu], input[lang=lu], textarea[lang=lu] {
-  background-image: url(static("vendored/flags/lu.png"));
-}
-
-div[lang=lv], input[lang=lv], textarea[lang=lv] {
-  background-image: url(static("vendored/flags/lv.png"));
-}
-
-div[lang=ly], input[lang=ly], textarea[lang=ly] {
-  background-image: url(static("vendored/flags/ly.png"));
-}
-
-div[lang=ma], input[lang=ma], textarea[lang=ma] {
-  background-image: url(static("vendored/flags/ma.png"));
-}
-
-div[lang=mc], input[lang=mc], textarea[lang=mc] {
-  background-image: url(static("vendored/flags/mc.png"));
-}
-
-div[lang=md], input[lang=md], textarea[lang=md] {
-  background-image: url(static("vendored/flags/md.png"));
-}
-
-div[lang=me], input[lang=me], textarea[lang=me] {
-  background-image: url(static("vendored/flags/me.png"));
-}
-
-div[lang=mg], input[lang=mg], textarea[lang=mg] {
-  background-image: url(static("vendored/flags/mg.png"));
-}
-
-div[lang=mh], input[lang=mh], textarea[lang=mh] {
-  background-image: url(static("vendored/flags/mh.png"));
-}
-
-div[lang=mk], input[lang=mk], textarea[lang=mk] {
-  background-image: url(static("vendored/flags/mk.png"));
-}
-
-div[lang=ml], input[lang=ml], textarea[lang=ml] {
-  background-image: url(static("vendored/flags/ml.png"));
-}
-
-div[lang=mm], input[lang=mm], textarea[lang=mm] {
-  background-image: url(static("vendored/flags/mm.png"));
-}
-
-div[lang=mn], input[lang=mn], textarea[lang=mn] {
-  background-image: url(static("vendored/flags/mn.png"));
-}
-
-div[lang=mo], input[lang=mo], textarea[lang=mo] {
-  background-image: url(static("vendored/flags/mo.png"));
-}
-
-div[lang=mp], input[lang=mp], textarea[lang=mp] {
-  background-image: url(static("vendored/flags/mp.png"));
-}
-
-div[lang=mq], input[lang=mq], textarea[lang=mq] {
-  background-image: url(static("vendored/flags/mq.png"));
-}
-
-div[lang=mr], input[lang=mr], textarea[lang=mr] {
-  background-image: url(static("vendored/flags/mr.png"));
-}
-
-div[lang=ms], input[lang=ms], textarea[lang=ms] {
-  background-image: url(static("vendored/flags/ms.png"));
-}
-
-div[lang=mt], input[lang=mt], textarea[lang=mt] {
-  background-image: url(static("vendored/flags/mt.png"));
-}
-
-div[lang=mu], input[lang=mu], textarea[lang=mu] {
-  background-image: url(static("vendored/flags/mu.png"));
-}
-
-div[lang=mv], input[lang=mv], textarea[lang=mv] {
-  background-image: url(static("vendored/flags/mv.png"));
-}
-
-div[lang=mw], input[lang=mw], textarea[lang=mw] {
-  background-image: url(static("vendored/flags/mw.png"));
-}
-
-div[lang=mx], input[lang=mx], textarea[lang=mx] {
-  background-image: url(static("vendored/flags/mx.png"));
-}
-
-div[lang=my], input[lang=my], textarea[lang=my] {
-  background-image: url(static("vendored/flags/my.png"));
-}
-
-div[lang=mz], input[lang=mz], textarea[lang=mz] {
-  background-image: url(static("vendored/flags/mz.png"));
-}
-
-div[lang=na], input[lang=na], textarea[lang=na] {
-  background-image: url(static("vendored/flags/na.png"));
-}
-
-div[lang=nc], input[lang=nc], textarea[lang=nc] {
-  background-image: url(static("vendored/flags/nc.png"));
-}
-
-div[lang=ne], input[lang=ne], textarea[lang=ne] {
-  background-image: url(static("vendored/flags/ne.png"));
-}
-
-div[lang=nf], input[lang=nf], textarea[lang=nf] {
-  background-image: url(static("vendored/flags/nf.png"));
-}
-
-div[lang=ng], input[lang=ng], textarea[lang=ng] {
-  background-image: url(static("vendored/flags/ng.png"));
-}
-
-div[lang=ni], input[lang=ni], textarea[lang=ni] {
-  background-image: url(static("vendored/flags/ni.png"));
-}
-
-div[lang=nl], input[lang=nl], textarea[lang=nl] {
-  background-image: url(static("vendored/flags/nl.png"));
-}
-
-div[lang=no], input[lang=no], textarea[lang=no] {
-  background-image: url(static("vendored/flags/no.png"));
-}
-
-div[lang=np], input[lang=np], textarea[lang=np] {
-  background-image: url(static("vendored/flags/np.png"));
-}
-
-div[lang=nr], input[lang=nr], textarea[lang=nr] {
-  background-image: url(static("vendored/flags/nr.png"));
-}
-
-div[lang=nu], input[lang=nu], textarea[lang=nu] {
-  background-image: url(static("vendored/flags/nu.png"));
-}
-
-div[lang=nz], input[lang=nz], textarea[lang=nz] {
-  background-image: url(static("vendored/flags/nz.png"));
-}
-
-div[lang=om], input[lang=om], textarea[lang=om] {
-  background-image: url(static("vendored/flags/om.png"));
-}
-
-div[lang=pa], input[lang=pa], textarea[lang=pa] {
-  background-image: url(static("vendored/flags/pa.png"));
-}
-
-div[lang=pe], input[lang=pe], textarea[lang=pe] {
-  background-image: url(static("vendored/flags/pe.png"));
-}
-
-div[lang=pf], input[lang=pf], textarea[lang=pf] {
-  background-image: url(static("vendored/flags/pf.png"));
-}
-
-div[lang=pg], input[lang=pg], textarea[lang=pg] {
-  background-image: url(static("vendored/flags/pg.png"));
-}
-
-div[lang=ph], input[lang=ph], textarea[lang=ph] {
-  background-image: url(static("vendored/flags/ph.png"));
-}
-
-div[lang=pk], input[lang=pk], textarea[lang=pk] {
-  background-image: url(static("vendored/flags/pk.png"));
-}
-
-div[lang=pl], input[lang=pl], textarea[lang=pl] {
-  background-image: url(static("vendored/flags/pl.png"));
-}
-
-div[lang=pm], input[lang=pm], textarea[lang=pm] {
-  background-image: url(static("vendored/flags/pm.png"));
-}
-
-div[lang=pn], input[lang=pn], textarea[lang=pn] {
-  background-image: url(static("vendored/flags/pn.png"));
-}
-
-div[lang=pr], input[lang=pr], textarea[lang=pr] {
-  background-image: url(static("vendored/flags/pr.png"));
-}
-
-div[lang=ps], input[lang=ps], textarea[lang=ps] {
-  background-image: url(static("vendored/flags/ps.png"));
-}
-
-div[lang=pt], input[lang=pt], textarea[lang=pt] {
-  background-image: url(static("vendored/flags/pt.png"));
-}
-
-div[lang=pw], input[lang=pw], textarea[lang=pw] {
-  background-image: url(static("vendored/flags/pw.png"));
-}
-
-div[lang=py], input[lang=py], textarea[lang=py] {
-  background-image: url(static("vendored/flags/py.png"));
-}
-
-div[lang=qa], input[lang=qa], textarea[lang=qa] {
-  background-image: url(static("vendored/flags/qa.png"));
-}
-
-div[lang=re], input[lang=re], textarea[lang=re] {
-  background-image: url(static("vendored/flags/re.png"));
-}
-
-div[lang=ro], input[lang=ro], textarea[lang=ro] {
-  background-image: url(static("vendored/flags/ro.png"));
-}
-
-div[lang=rs], input[lang=rs], textarea[lang=rs] {
-  background-image: url(static("vendored/flags/rs.png"));
-}
-
-div[lang=ru], input[lang=ru], textarea[lang=ru] {
-  background-image: url(static("vendored/flags/ru.png"));
-}
-
-div[lang=rw], input[lang=rw], textarea[lang=rw] {
-  background-image: url(static("vendored/flags/rw.png"));
-}
-
-div[lang=sa], input[lang=sa], textarea[lang=sa] {
-  background-image: url(static("vendored/flags/sa.png"));
-}
-
-div[lang=sb], input[lang=sb], textarea[lang=sb] {
-  background-image: url(static("vendored/flags/sb.png"));
-}
-
-div[lang=sc], input[lang=sc], textarea[lang=sc] {
-  background-image: url(static("vendored/flags/sc.png"));
-}
-
-div[lang=sd], input[lang=sd], textarea[lang=sd] {
-  background-image: url(static("vendored/flags/sd.png"));
-}
-
-div[lang=se], input[lang=se], textarea[lang=se] {
-  background-image: url(static("vendored/flags/se.png"));
-}
-
-div[lang=sg], input[lang=sg], textarea[lang=sg] {
-  background-image: url(static("vendored/flags/sg.png"));
-}
-
-div[lang=sh], input[lang=sh], textarea[lang=sh] {
-  background-image: url(static("vendored/flags/sh.png"));
-}
-
-div[lang=si], input[lang=si], textarea[lang=si] {
-  background-image: url(static("vendored/flags/si.png"));
-}
-
-div[lang=sj], input[lang=sj], textarea[lang=sj] {
-  background-image: url(static("vendored/flags/sj.png"));
-}
-
-div[lang=sk], input[lang=sk], textarea[lang=sk] {
-  background-image: url(static("vendored/flags/sk.png"));
-}
-
-div[lang=sl], input[lang=sl], textarea[lang=sl] {
-  background-image: url(static("vendored/flags/sl.png"));
-}
-
-div[lang=sm], input[lang=sm], textarea[lang=sm] {
-  background-image: url(static("vendored/flags/sm.png"));
-}
-
-div[lang=sn], input[lang=sn], textarea[lang=sn] {
-  background-image: url(static("vendored/flags/sn.png"));
-}
-
-div[lang=so], input[lang=so], textarea[lang=so] {
-  background-image: url(static("vendored/flags/so.png"));
-}
-
-div[lang=sr], input[lang=sr], textarea[lang=sr] {
-  background-image: url(static("vendored/flags/sr.png"));
-}
-
-div[lang=st], input[lang=st], textarea[lang=st] {
-  background-image: url(static("vendored/flags/st.png"));
-}
-
-div[lang=sv], input[lang=sv], textarea[lang=sv] {
-  background-image: url(static("vendored/flags/sv.png"));
-}
-
-div[lang=sy], input[lang=sy], textarea[lang=sy] {
-  background-image: url(static("vendored/flags/sy.png"));
-}
-
-div[lang=sz], input[lang=sz], textarea[lang=sz] {
-  background-image: url(static("vendored/flags/sz.png"));
-}
-
-div[lang=tc], input[lang=tc], textarea[lang=tc] {
-  background-image: url(static("vendored/flags/tc.png"));
-}
-
-div[lang=td], input[lang=td], textarea[lang=td] {
-  background-image: url(static("vendored/flags/td.png"));
-}
-
-div[lang=tf], input[lang=tf], textarea[lang=tf] {
-  background-image: url(static("vendored/flags/tf.png"));
-}
-
-div[lang=tg], input[lang=tg], textarea[lang=tg] {
-  background-image: url(static("vendored/flags/tg.png"));
-}
-
-div[lang=th], input[lang=th], textarea[lang=th] {
-  background-image: url(static("vendored/flags/th.png"));
-}
-
-div[lang=tj], input[lang=tj], textarea[lang=tj] {
-  background-image: url(static("vendored/flags/tj.png"));
-}
-
-div[lang=tk], input[lang=tk], textarea[lang=tk] {
-  background-image: url(static("vendored/flags/tk.png"));
-}
-
-div[lang=tl], input[lang=tl], textarea[lang=tl] {
-  background-image: url(static("vendored/flags/tl.png"));
-}
-
-div[lang=tm], input[lang=tm], textarea[lang=tm] {
-  background-image: url(static("vendored/flags/tm.png"));
-}
-
-div[lang=tn], input[lang=tn], textarea[lang=tn] {
-  background-image: url(static("vendored/flags/tn.png"));
-}
-
-div[lang=to], input[lang=to], textarea[lang=to] {
-  background-image: url(static("vendored/flags/to.png"));
-}
-
-div[lang=tr], input[lang=tr], textarea[lang=tr] {
-  background-image: url(static("vendored/flags/tr.png"));
-}
-
-div[lang=tt], input[lang=tt], textarea[lang=tt] {
-  background-image: url(static("vendored/flags/tt.png"));
-}
-
-div[lang=tv], input[lang=tv], textarea[lang=tv] {
-  background-image: url(static("vendored/flags/tv.png"));
-}
-
-div[lang=tw], input[lang=tw], textarea[lang=tw], .checkbox > input[lang=tw] + label,
-input[lang=zh-tw], textarea[lang=zh-tw], .checkbox > input[lang=zh-tw] + label {
-  background-image: url(static("vendored/flags/tw.png"));
-}
-
-div[lang=t], input[lang=tz], textarea[lang=tz] {
-  background-image: url(static("vendored/flags/tz.png"));
-}
-
-div[lang=ua], input[lang=ua], textarea[lang=ua] {
-  background-image: url(static("vendored/flags/ua.png"));
-}
-
-div[lang=ug], input[lang=ug], textarea[lang=ug] {
-  background-image: url(static("vendored/flags/ug.png"));
-}
-
-div[lang=um], input[lang=um], textarea[lang=um] {
-  background-image: url(static("vendored/flags/um.png"));
-}
-
-div[lang=us], input[lang=us], textarea[lang=us] {
-  background-image: url(static("vendored/flags/us.png"));
-}
-
-div[lang=uy], input[lang=uy], textarea[lang=uy] {
-  background-image: url(static("vendored/flags/uy.png"));
-}
-
-div[lang=uz], input[lang=uz], textarea[lang=uz] {
-  background-image: url(static("vendored/flags/uz.png"));
-}
-
-div[lang=va], input[lang=va], textarea[lang=va] {
-  background-image: url(static("vendored/flags/va.png"));
-}
-
-div[lang=vc], input[lang=vc], textarea[lang=vc] {
-  background-image: url(static("vendored/flags/vc.png"));
-}
-
-div[lang=ve], input[lang=ve], textarea[lang=ve] {
-  background-image: url(static("vendored/flags/ve.png"));
-}
-
-div[lang=vg], input[lang=vg], textarea[lang=vg] {
-  background-image: url(static("vendored/flags/vg.png"));
-}
-
-div[lang=vi], input[lang=vi], textarea[lang=vi] {
-  background-image: url(static("vendored/flags/vi.png"));
-}
-
-div[lang=vn], input[lang=vn], textarea[lang=vn] {
-  background-image: url(static("vendored/flags/vn.png"));
-}
-
-div[lang=vu], input[lang=vu], textarea[lang=vu] {
-  background-image: url(static("vendored/flags/vu.png"));
-}
-
-div[lang=wf], input[lang=wf], textarea[lang=wf] {
-  background-image: url(static("vendored/flags/wf.png"));
-}
-
-div[lang=ws], input[lang=ws], textarea[lang=ws] {
-  background-image: url(static("vendored/flags/ws.png"));
-}
-
-div[lang=ye], input[lang=ye], textarea[lang=ye] {
-  background-image: url(static("vendored/flags/ye.png"));
-}
-
-div[lang=yt], input[lang=yt], textarea[lang=yt] {
-  background-image: url(static("vendored/flags/yt.png"));
-}
-
-div[lang=za], input[lang=za], textarea[lang=za] {
-  background-image: url(static("vendored/flags/za.png"));
-}
-
-div[lang=zm], input[lang=zm], textarea[lang=zm] {
-  background-image: url(static("vendored/flags/zm.png"));
-}
-
-div[lang=zw], input[lang=zw], textarea[lang=zw] {
-  background-image: url(static("vendored/flags/zw.png"));
-}
-
-div[lang=en], input[lang=en], textarea[lang=en], .checkbox > input[lang=en] + label {
-  background-image: url(static("vendored/flags/gb.png"));
-}
+div[lang=ad], input[lang=ad], textarea[lang=ad] { background-image: url(static("vendored/flags/ad.png")); }
+div[lang=ae], input[lang=ae], textarea[lang=ae] { background-image: url(static("vendored/flags/ae.png")); }
+div[lang=af], input[lang=af], textarea[lang=af] { background-image: url(static("vendored/flags/af.png")); }
+div[lang=ag], input[lang=ag], textarea[lang=ag] { background-image: url(static("vendored/flags/ag.png")); }
+div[lang=ai], input[lang=ai], textarea[lang=ai] { background-image: url(static("vendored/flags/ai.png")); }
+div[lang=al], input[lang=al], textarea[lang=al] { background-image: url(static("vendored/flags/al.png")); }
+div[lang=am], input[lang=am], textarea[lang=am] { background-image: url(static("vendored/flags/am.png")); }
+div[lang=an], input[lang=an], textarea[lang=an] { background-image: url(static("vendored/flags/an.png")); }
+div[lang=ao], input[lang=ao], textarea[lang=ao] { background-image: url(static("vendored/flags/ao.png")); }
+div[lang=ar], input[lang=ar], textarea[lang=ar] { background-image: url(static("vendored/flags/arab-league.png")); }
+div[lang=as], input[lang=as], textarea[lang=as] { background-image: url(static("vendored/flags/as.png")); }
+div[lang=at], input[lang=at], textarea[lang=at] { background-image: url(static("vendored/flags/at.png")); }
+div[lang=au], input[lang=au], textarea[lang=au] { background-image: url(static("vendored/flags/au.png")); }
+div[lang=aw], input[lang=aw], textarea[lang=aw] { background-image: url(static("vendored/flags/aw.png")); }
+div[lang=ax], input[lang=ax], textarea[lang=ax] { background-image: url(static("vendored/flags/ax.png")); }
+div[lang=az], input[lang=az], textarea[lang=az] { background-image: url(static("vendored/flags/az.png")); }
+div[lang=ba], input[lang=ba], textarea[lang=ba] { background-image: url(static("vendored/flags/ba.png")); }
+div[lang=bb], input[lang=bb], textarea[lang=bb] { background-image: url(static("vendored/flags/bb.png")); }
+div[lang=bd], input[lang=bd], textarea[lang=bd] { background-image: url(static("vendored/flags/bd.png")); }
+div[lang=be], input[lang=be], textarea[lang=be] { background-image: url(static("vendored/flags/be.png")); }
+div[lang=bf], input[lang=bf], textarea[lang=bf] { background-image: url(static("vendored/flags/bf.png")); }
+div[lang=bg], input[lang=bg], textarea[lang=bg] { background-image: url(static("vendored/flags/bg.png")); }
+div[lang=bh], input[lang=bh], textarea[lang=bh] { background-image: url(static("vendored/flags/bh.png")); }
+div[lang=bi], input[lang=bi], textarea[lang=bi] { background-image: url(static("vendored/flags/bi.png")); }
+div[lang=bj], input[lang=bj], textarea[lang=bj] { background-image: url(static("vendored/flags/bj.png")); }
+div[lang=bm], input[lang=bm], textarea[lang=bm] { background-image: url(static("vendored/flags/bm.png")); }
+div[lang=bn], input[lang=bn], textarea[lang=bn] { background-image: url(static("vendored/flags/bn.png")); }
+div[lang=bo], input[lang=bo], textarea[lang=bo] { background-image: url(static("vendored/flags/bo.png")); }
+div[lang="pt-BR"], input[lang="pt-BR"], textarea[lang="pt-BR"] { background-image: url(static("vendored/flags/br.png")); }
+div[lang=bs], input[lang=bs], textarea[lang=bs] { background-image: url(static("vendored/flags/bs.png")); }
+div[lang=bt], input[lang=bt], textarea[lang=bt] { background-image: url(static("vendored/flags/bt.png")); }
+div[lang=bv], input[lang=bv], textarea[lang=bv] { background-image: url(static("vendored/flags/bv.png")); }
+div[lang=bw], input[lang=bw], textarea[lang=bw] { background-image: url(static("vendored/flags/bw.png")); }
+div[lang=by], input[lang=by], textarea[lang=by] { background-image: url(static("vendored/flags/by.png")); }
+div[lang=bz], input[lang=bz], textarea[lang=bz] { background-image: url(static("vendored/flags/bz.png")); }
+div[lang=ca], input[lang=ca], textarea[lang=ca] { background-image: url(static("vendored/flags/ca.png")); }
+div[lang=cc], input[lang=cc], textarea[lang=cc] { background-image: url(static("vendored/flags/cc.png")); }
+div[lang=cd], input[lang=cd], textarea[lang=cd] { background-image: url(static("vendored/flags/cd.png")); }
+div[lang=cf], input[lang=cf], textarea[lang=cf] { background-image: url(static("vendored/flags/cf.png")); }
+div[lang=cg], input[lang=cg], textarea[lang=cg] { background-image: url(static("vendored/flags/cg.png")); }
+div[lang=ch], input[lang=ch], textarea[lang=ch] { background-image: url(static("vendored/flags/ch.png")); }
+div[lang=ci], input[lang=ci], textarea[lang=ci] { background-image: url(static("vendored/flags/ci.png")); }
+div[lang=ck], input[lang=ck], textarea[lang=ck] { background-image: url(static("vendored/flags/ck.png")); }
+div[lang=cl], input[lang=cl], textarea[lang=cl] { background-image: url(static("vendored/flags/cl.png")); }
+div[lang=cm], input[lang=cm], textarea[lang=cm] { background-image: url(static("vendored/flags/cm.png")); }
+div[lang=cn], input[lang=cn], textarea[lang=cn] { background-image: url(static("vendored/flags/cn.png")); }
+div[lang=zh-hans], input[lang=zh-hans], textarea[lang=zh-hans] { background-image: url(static("vendored/flags/cn.png")); }
+div[lang=co], input[lang=co], textarea[lang=co] { background-image: url(static("vendored/flags/co.png")); }
+div[lang=cr], input[lang=cr], textarea[lang=cr] { background-image: url(static("vendored/flags/cr.png")); }
+div[lang=cs], input[lang=cs], textarea[lang=cs] { background-image: url(static("vendored/flags/cz.png")); }
+div[lang=cu], input[lang=cu], textarea[lang=cu] { background-image: url(static("vendored/flags/cu.png")); }
+div[lang=cv], input[lang=cv], textarea[lang=cv] { background-image: url(static("vendored/flags/cv.png")); }
+div[lang=cx], input[lang=cx], textarea[lang=cx] { background-image: url(static("vendored/flags/cx.png")); }
+div[lang=cy], input[lang=cy], textarea[lang=cy] { background-image: url(static("vendored/flags/cy.png")); }
+div[lang=de], input[lang=de], textarea[lang=de], input[lang=de-formal], textarea[lang=de-formal] { background-image: url(static("vendored/flags/de.png")); }
+div[lang=dj], input[lang=dj], textarea[lang=dj] { background-image: url(static("vendored/flags/dj.png")); }
+div[lang=dk], input[lang=dk], textarea[lang=dk] { background-image: url(static("vendored/flags/dk.png")); }
+div[lang=dm], input[lang=dm], textarea[lang=dm] { background-image: url(static("vendored/flags/dm.png")); }
+div[lang=do], input[lang=do], textarea[lang=do] { background-image: url(static("vendored/flags/do.png")); }
+div[lang=dz], input[lang=dz], textarea[lang=dz] { background-image: url(static("vendored/flags/dz.png")); }
+div[lang=ec], input[lang=ec], textarea[lang=ec] { background-image: url(static("vendored/flags/ec.png")); }
+div[lang=ee], input[lang=ee], textarea[lang=ee] { background-image: url(static("vendored/flags/ee.png")); }
+div[lang=eg], input[lang=eg], textarea[lang=eg] { background-image: url(static("vendored/flags/eg.png")); }
+div[lang=eh], input[lang=eh], textarea[lang=eh] { background-image: url(static("vendored/flags/eh.png")); }
+div[lang=er], input[lang=er], textarea[lang=er] { background-image: url(static("vendored/flags/er.png")); }
+div[lang=es], input[lang=es], textarea[lang=es] { background-image: url(static("vendored/flags/es.png")); }
+div[lang=et], input[lang=et], textarea[lang=et] { background-image: url(static("vendored/flags/et.png")); }
+div[lang=fi], input[lang=fi], textarea[lang=fi] { background-image: url(static("vendored/flags/fi.png")); }
+div[lang=fj], input[lang=fj], textarea[lang=fj] { background-image: url(static("vendored/flags/fj.png")); }
+div[lang=fk], input[lang=fk], textarea[lang=fk] { background-image: url(static("vendored/flags/fk.png")); }
+div[lang=fm], input[lang=fm], textarea[lang=fm] { background-image: url(static("vendored/flags/fm.png")); }
+div[lang=fo], input[lang=fo], textarea[lang=fo] { background-image: url(static("vendored/flags/fo.png")); }
+div[lang=fr], input[lang=fr], textarea[lang=fr] { background-image: url(static("vendored/flags/fr.png")); }
+div[lang=ga], input[lang=ga], textarea[lang=ga] { background-image: url(static("vendored/flags/ga.png")); }
+div[lang=gb], input[lang=gb], textarea[lang=gb] { background-image: url(static("vendored/flags/gb.png")); }
+div[lang=gd], input[lang=gd], textarea[lang=gd] { background-image: url(static("vendored/flags/gd.png")); }
+div[lang=ge], input[lang=ge], textarea[lang=ge] { background-image: url(static("vendored/flags/ge.png")); }
+div[lang=gf], input[lang=gf], textarea[lang=gf] { background-image: url(static("vendored/flags/gf.png")); }
+div[lang=gh], input[lang=gh], textarea[lang=gh] { background-image: url(static("vendored/flags/gh.png")); }
+div[lang=gi], input[lang=gi], textarea[lang=gi] { background-image: url(static("vendored/flags/gi.png")); }
+div[lang=gl], input[lang=gl], textarea[lang=gl] { background-image: url(static("vendored/flags/gl.png")); }
+div[lang=gm], input[lang=gm], textarea[lang=gm] { background-image: url(static("vendored/flags/gm.png")); }
+div[lang=gn], input[lang=gn], textarea[lang=gn] { background-image: url(static("vendored/flags/gn.png")); }
+div[lang=gp], input[lang=gp], textarea[lang=gp] { background-image: url(static("vendored/flags/gp.png")); }
+div[lang=gq], input[lang=gq], textarea[lang=gq] { background-image: url(static("vendored/flags/gq.png")); }
+div[lang=el], input[lang=el], textarea[lang=el] { background-image: url(static("vendored/flags/gr.png")); }
+div[lang=gs], input[lang=gs], textarea[lang=gs] { background-image: url(static("vendored/flags/gs.png")); }
+div[lang=gt], input[lang=gt], textarea[lang=gt] { background-image: url(static("vendored/flags/gt.png")); }
+div[lang=gu], input[lang=gu], textarea[lang=gu] { background-image: url(static("vendored/flags/gu.png")); }
+div[lang=gw], input[lang=gw], textarea[lang=gw] { background-image: url(static("vendored/flags/gw.png")); }
+div[lang=gy], input[lang=gy], textarea[lang=gy] { background-image: url(static("vendored/flags/gy.png")); }
+div[lang=hk], input[lang=hk], textarea[lang=hk] { background-image: url(static("vendored/flags/hk.png")); }
+div[lang=hm], input[lang=hm], textarea[lang=hm] { background-image: url(static("vendored/flags/hm.png")); }
+div[lang=hn], input[lang=hn], textarea[lang=hn] { background-image: url(static("vendored/flags/hn.png")); }
+div[lang=hr], input[lang=hr], textarea[lang=hr] { background-image: url(static("vendored/flags/hr.png")); }
+div[lang=ht], input[lang=ht], textarea[lang=ht] { background-image: url(static("vendored/flags/ht.png")); }
+div[lang=hu], input[lang=hu], textarea[lang=hu] { background-image: url(static("vendored/flags/hu.png")); }
+div[lang=id], input[lang=id], textarea[lang=id] { background-image: url(static("vendored/flags/id.png")); }
+div[lang=ie], input[lang=ie], textarea[lang=ie] { background-image: url(static("vendored/flags/ie.png")); }
+div[lang=il], input[lang=il], textarea[lang=il] { background-image: url(static("vendored/flags/il.png")); }
+div[lang=in], input[lang=in], textarea[lang=in] { background-image: url(static("vendored/flags/in.png")); }
+div[lang=io], input[lang=io], textarea[lang=io] { background-image: url(static("vendored/flags/io.png")); }
+div[lang=iq], input[lang=iq], textarea[lang=iq] { background-image: url(static("vendored/flags/iq.png")); }
+div[lang=ir], input[lang=ir], textarea[lang=ir] { background-image: url(static("vendored/flags/ir.png")); }
+div[lang=is], input[lang=is], textarea[lang=is] { background-image: url(static("vendored/flags/is.png")); }
+div[lang=it], input[lang=it], textarea[lang=it] { background-image: url(static("vendored/flags/it.png")); }
+div[lang=jm], input[lang=jm], textarea[lang=jm] { background-image: url(static("vendored/flags/jm.png")); }
+div[lang=jo], input[lang=jo], textarea[lang=jo] { background-image: url(static("vendored/flags/jo.png")); }
+div[lang=jp], input[lang=jp], textarea[lang=jp], input[lang=ja-jp], textarea[lang=ja-jp] { background-image: url(static("vendored/flags/jp.png")); }
+div[lang=ke], input[lang=ke], textarea[lang=ke] { background-image: url(static("vendored/flags/ke.png")); }
+div[lang=kg], input[lang=kg], textarea[lang=kg] { background-image: url(static("vendored/flags/kg.png")); }
+div[lang=kh], input[lang=kh], textarea[lang=kh] { background-image: url(static("vendored/flags/kh.png")); }
+div[lang=ki], input[lang=ki], textarea[lang=ki] { background-image: url(static("vendored/flags/ki.png")); }
+div[lang=km], input[lang=km], textarea[lang=km] { background-image: url(static("vendored/flags/km.png")); }
+div[lang=kn], input[lang=kn], textarea[lang=kn] { background-image: url(static("vendored/flags/kn.png")); }
+div[lang=kp], input[lang=kp], textarea[lang=kp] { background-image: url(static("vendored/flags/kp.png")); }
+div[lang=kr], input[lang=kr], textarea[lang=kr] { background-image: url(static("vendored/flags/kr.png")); }
+div[lang=kw], input[lang=kw], textarea[lang=kw] { background-image: url(static("vendored/flags/kw.png")); }
+div[lang=ky], input[lang=ky], textarea[lang=ky] { background-image: url(static("vendored/flags/ky.png")); }
+div[lang=kz], input[lang=kz], textarea[lang=kz] { background-image: url(static("vendored/flags/kz.png")); }
+div[lang=la], input[lang=la], textarea[lang=la] { background-image: url(static("vendored/flags/la.png")); }
+div[lang=lb], input[lang=lb], textarea[lang=lb] { background-image: url(static("vendored/flags/lb.png")); }
+div[lang=lc], input[lang=lc], textarea[lang=lc] { background-image: url(static("vendored/flags/lc.png")); }
+div[lang=li], input[lang=li], textarea[lang=li] { background-image: url(static("vendored/flags/li.png")); }
+div[lang=lk], input[lang=lk], textarea[lang=lk] { background-image: url(static("vendored/flags/lk.png")); }
+div[lang=lr], input[lang=lr], textarea[lang=lr] { background-image: url(static("vendored/flags/lr.png")); }
+div[lang=ls], input[lang=ls], textarea[lang=ls] { background-image: url(static("vendored/flags/ls.png")); }
+div[lang=lt], input[lang=lt], textarea[lang=lt] { background-image: url(static("vendored/flags/lt.png")); }
+div[lang=lu], input[lang=lu], textarea[lang=lu] { background-image: url(static("vendored/flags/lu.png")); }
+div[lang=lv], input[lang=lv], textarea[lang=lv] { background-image: url(static("vendored/flags/lv.png")); }
+div[lang=ly], input[lang=ly], textarea[lang=ly] { background-image: url(static("vendored/flags/ly.png")); }
+div[lang=ma], input[lang=ma], textarea[lang=ma] { background-image: url(static("vendored/flags/ma.png")); }
+div[lang=mc], input[lang=mc], textarea[lang=mc] { background-image: url(static("vendored/flags/mc.png")); }
+div[lang=md], input[lang=md], textarea[lang=md] { background-image: url(static("vendored/flags/md.png")); }
+div[lang=me], input[lang=me], textarea[lang=me] { background-image: url(static("vendored/flags/me.png")); }
+div[lang=mg], input[lang=mg], textarea[lang=mg] { background-image: url(static("vendored/flags/mg.png")); }
+div[lang=mh], input[lang=mh], textarea[lang=mh] { background-image: url(static("vendored/flags/mh.png")); }
+div[lang=mk], input[lang=mk], textarea[lang=mk] { background-image: url(static("vendored/flags/mk.png")); }
+div[lang=ml], input[lang=ml], textarea[lang=ml] { background-image: url(static("vendored/flags/ml.png")); }
+div[lang=mm], input[lang=mm], textarea[lang=mm] { background-image: url(static("vendored/flags/mm.png")); }
+div[lang=mn], input[lang=mn], textarea[lang=mn] { background-image: url(static("vendored/flags/mn.png")); }
+div[lang=mo], input[lang=mo], textarea[lang=mo] { background-image: url(static("vendored/flags/mo.png")); }
+div[lang=mp], input[lang=mp], textarea[lang=mp] { background-image: url(static("vendored/flags/mp.png")); }
+div[lang=mq], input[lang=mq], textarea[lang=mq] { background-image: url(static("vendored/flags/mq.png")); }
+div[lang=mr], input[lang=mr], textarea[lang=mr] { background-image: url(static("vendored/flags/mr.png")); }
+div[lang=ms], input[lang=ms], textarea[lang=ms] { background-image: url(static("vendored/flags/ms.png")); }
+div[lang=mt], input[lang=mt], textarea[lang=mt] { background-image: url(static("vendored/flags/mt.png")); }
+div[lang=mu], input[lang=mu], textarea[lang=mu] { background-image: url(static("vendored/flags/mu.png")); }
+div[lang=mv], input[lang=mv], textarea[lang=mv] { background-image: url(static("vendored/flags/mv.png")); }
+div[lang=mw], input[lang=mw], textarea[lang=mw] { background-image: url(static("vendored/flags/mw.png")); }
+div[lang=mx], input[lang=mx], textarea[lang=mx] { background-image: url(static("vendored/flags/mx.png")); }
+div[lang=my], input[lang=my], textarea[lang=my] { background-image: url(static("vendored/flags/my.png")); }
+div[lang=mz], input[lang=mz], textarea[lang=mz] { background-image: url(static("vendored/flags/mz.png")); }
+div[lang=na], input[lang=na], textarea[lang=na] { background-image: url(static("vendored/flags/na.png")); }
+div[lang=nc], input[lang=nc], textarea[lang=nc] { background-image: url(static("vendored/flags/nc.png")); }
+div[lang=ne], input[lang=ne], textarea[lang=ne] { background-image: url(static("vendored/flags/ne.png")); }
+div[lang=nf], input[lang=nf], textarea[lang=nf] { background-image: url(static("vendored/flags/nf.png")); }
+div[lang=ng], input[lang=ng], textarea[lang=ng] { background-image: url(static("vendored/flags/ng.png")); }
+div[lang=ni], input[lang=ni], textarea[lang=ni] { background-image: url(static("vendored/flags/ni.png")); }
+div[lang=nl], input[lang=nl], textarea[lang=nl] { background-image: url(static("vendored/flags/nl.png")); }
+div[lang=no], input[lang=no], textarea[lang=no] { background-image: url(static("vendored/flags/no.png")); }
+div[lang=np], input[lang=np], textarea[lang=np] { background-image: url(static("vendored/flags/np.png")); }
+div[lang=nr], input[lang=nr], textarea[lang=nr] { background-image: url(static("vendored/flags/nr.png")); }
+div[lang=nu], input[lang=nu], textarea[lang=nu] { background-image: url(static("vendored/flags/nu.png")); }
+div[lang=nz], input[lang=nz], textarea[lang=nz] { background-image: url(static("vendored/flags/nz.png")); }
+div[lang=om], input[lang=om], textarea[lang=om] { background-image: url(static("vendored/flags/om.png")); }
+div[lang=pa], input[lang=pa], textarea[lang=pa] { background-image: url(static("vendored/flags/pa.png")); }
+div[lang=pe], input[lang=pe], textarea[lang=pe] { background-image: url(static("vendored/flags/pe.png")); }
+div[lang=pf], input[lang=pf], textarea[lang=pf] { background-image: url(static("vendored/flags/pf.png")); }
+div[lang=pg], input[lang=pg], textarea[lang=pg] { background-image: url(static("vendored/flags/pg.png")); }
+div[lang=ph], input[lang=ph], textarea[lang=ph] { background-image: url(static("vendored/flags/ph.png")); }
+div[lang=pk], input[lang=pk], textarea[lang=pk] { background-image: url(static("vendored/flags/pk.png")); }
+div[lang=pl], input[lang=pl], textarea[lang=pl] { background-image: url(static("vendored/flags/pl.png")); }
+div[lang=pm], input[lang=pm], textarea[lang=pm] { background-image: url(static("vendored/flags/pm.png")); }
+div[lang=pn], input[lang=pn], textarea[lang=pn] { background-image: url(static("vendored/flags/pn.png")); }
+div[lang=pr], input[lang=pr], textarea[lang=pr] { background-image: url(static("vendored/flags/pr.png")); }
+div[lang=ps], input[lang=ps], textarea[lang=ps] { background-image: url(static("vendored/flags/ps.png")); }
+div[lang=pt], input[lang=pt], textarea[lang=pt] { background-image: url(static("vendored/flags/pt.png")); }
+div[lang=pt-pt], input[lang=pt-pt], textarea[lang=pt-pt] { background-image: url(static("vendored/flags/pt.png")); }
+div[lang=pw], input[lang=pw], textarea[lang=pw] { background-image: url(static("vendored/flags/pw.png")); }
+div[lang=py], input[lang=py], textarea[lang=py] { background-image: url(static("vendored/flags/py.png")); }
+div[lang=qa], input[lang=qa], textarea[lang=qa] { background-image: url(static("vendored/flags/qa.png")); }
+div[lang=re], input[lang=re], textarea[lang=re] { background-image: url(static("vendored/flags/re.png")); }
+div[lang=ro], input[lang=ro], textarea[lang=ro] { background-image: url(static("vendored/flags/ro.png")); }
+div[lang=rs], input[lang=rs], textarea[lang=rs] { background-image: url(static("vendored/flags/rs.png")); }
+div[lang=ru], input[lang=ru], textarea[lang=ru] { background-image: url(static("vendored/flags/ru.png")); }
+div[lang=rw], input[lang=rw], textarea[lang=rw] { background-image: url(static("vendored/flags/rw.png")); }
+div[lang=sa], input[lang=sa], textarea[lang=sa] { background-image: url(static("vendored/flags/sa.png")); }
+div[lang=sb], input[lang=sb], textarea[lang=sb] { background-image: url(static("vendored/flags/sb.png")); }
+div[lang=sc], input[lang=sc], textarea[lang=sc] { background-image: url(static("vendored/flags/sc.png")); }
+div[lang=sd], input[lang=sd], textarea[lang=sd] { background-image: url(static("vendored/flags/sd.png")); }
+div[lang=se], input[lang=se], textarea[lang=se] { background-image: url(static("vendored/flags/se.png")); }
+div[lang=sg], input[lang=sg], textarea[lang=sg] { background-image: url(static("vendored/flags/sg.png")); }
+div[lang=sh], input[lang=sh], textarea[lang=sh] { background-image: url(static("vendored/flags/sh.png")); }
+div[lang=si], input[lang=si], textarea[lang=si] { background-image: url(static("vendored/flags/si.png")); }
+div[lang=sj], input[lang=sj], textarea[lang=sj] { background-image: url(static("vendored/flags/sj.png")); }
+div[lang=sk], input[lang=sk], textarea[lang=sk] { background-image: url(static("vendored/flags/sk.png")); }
+div[lang=sl], input[lang=sl], textarea[lang=sl] { background-image: url(static("vendored/flags/sl.png")); }
+div[lang=sm], input[lang=sm], textarea[lang=sm] { background-image: url(static("vendored/flags/sm.png")); }
+div[lang=sn], input[lang=sn], textarea[lang=sn] { background-image: url(static("vendored/flags/sn.png")); }
+div[lang=so], input[lang=so], textarea[lang=so] { background-image: url(static("vendored/flags/so.png")); }
+div[lang=sr], input[lang=sr], textarea[lang=sr] { background-image: url(static("vendored/flags/sr.png")); }
+div[lang=st], input[lang=st], textarea[lang=st] { background-image: url(static("vendored/flags/st.png")); }
+div[lang=sv], input[lang=sv], textarea[lang=sv] { background-image: url(static("vendored/flags/sv.png")); }
+div[lang=sy], input[lang=sy], textarea[lang=sy] { background-image: url(static("vendored/flags/sy.png")); }
+div[lang=sz], input[lang=sz], textarea[lang=sz] { background-image: url(static("vendored/flags/sz.png")); }
+div[lang=tc], input[lang=tc], textarea[lang=tc] { background-image: url(static("vendored/flags/tc.png")); }
+div[lang=td], input[lang=td], textarea[lang=td] { background-image: url(static("vendored/flags/td.png")); }
+div[lang=tf], input[lang=tf], textarea[lang=tf] { background-image: url(static("vendored/flags/tf.png")); }
+div[lang=tg], input[lang=tg], textarea[lang=tg] { background-image: url(static("vendored/flags/tg.png")); }
+div[lang=th], input[lang=th], textarea[lang=th] { background-image: url(static("vendored/flags/th.png")); }
+div[lang=tj], input[lang=tj], textarea[lang=tj] { background-image: url(static("vendored/flags/tj.png")); }
+div[lang=tk], input[lang=tk], textarea[lang=tk] { background-image: url(static("vendored/flags/tk.png")); }
+div[lang=tl], input[lang=tl], textarea[lang=tl] { background-image: url(static("vendored/flags/tl.png")); }
+div[lang=tm], input[lang=tm], textarea[lang=tm] { background-image: url(static("vendored/flags/tm.png")); }
+div[lang=tn], input[lang=tn], textarea[lang=tn] { background-image: url(static("vendored/flags/tn.png")); }
+div[lang=to], input[lang=to], textarea[lang=to] { background-image: url(static("vendored/flags/to.png")); }
+div[lang=tr], input[lang=tr], textarea[lang=tr] { background-image: url(static("vendored/flags/tr.png")); }
+div[lang=tt], input[lang=tt], textarea[lang=tt] { background-image: url(static("vendored/flags/tt.png")); }
+div[lang=tv], input[lang=tv], textarea[lang=tv] { background-image: url(static("vendored/flags/tv.png")); }
+div[lang=tw], input[lang=tw], textarea[lang=tw], input[lang=zh-hant], textarea[lang=zh-hant] { background-image: url(static("vendored/flags/tw.png")); }
+div[lang=tz], input[lang=tz], textarea[lang=tz] { background-image: url(static("vendored/flags/tz.png")); }
+div[lang=ua], input[lang=ua], textarea[lang=ua] { background-image: url(static("vendored/flags/ua.png")); }
+div[lang=ug], input[lang=ug], textarea[lang=ug] { background-image: url(static("vendored/flags/ug.png")); }
+div[lang=um], input[lang=um], textarea[lang=um] { background-image: url(static("vendored/flags/um.png")); }
+div[lang=us], input[lang=us], textarea[lang=us] { background-image: url(static("vendored/flags/us.png")); }
+div[lang=uy], input[lang=uy], textarea[lang=uy] { background-image: url(static("vendored/flags/uy.png")); }
+div[lang=uz], input[lang=uz], textarea[lang=uz] { background-image: url(static("vendored/flags/uz.png")); }
+div[lang=va], input[lang=va], textarea[lang=va] { background-image: url(static("vendored/flags/va.png")); }
+div[lang=vc], input[lang=vc], textarea[lang=vc] { background-image: url(static("vendored/flags/vc.png")); }
+div[lang=ve], input[lang=ve], textarea[lang=ve] { background-image: url(static("vendored/flags/ve.png")); }
+div[lang=vg], input[lang=vg], textarea[lang=vg] { background-image: url(static("vendored/flags/vg.png")); }
+div[lang=vi], input[lang=vi], textarea[lang=vi] { background-image: url(static("vendored/flags/vi.png")); }
+div[lang=vn], input[lang=vn], textarea[lang=vn] { background-image: url(static("vendored/flags/vn.png")); }
+div[lang=vu], input[lang=vu], textarea[lang=vu] { background-image: url(static("vendored/flags/vu.png")); }
+div[lang=wf], input[lang=wf], textarea[lang=wf] { background-image: url(static("vendored/flags/wf.png")); }
+div[lang=ws], input[lang=ws], textarea[lang=ws] { background-image: url(static("vendored/flags/ws.png")); }
+div[lang=ye], input[lang=ye], textarea[lang=ye] { background-image: url(static("vendored/flags/ye.png")); }
+div[lang=yt], input[lang=yt], textarea[lang=yt] { background-image: url(static("vendored/flags/yt.png")); }
+div[lang=za], input[lang=za], textarea[lang=za] { background-image: url(static("vendored/flags/za.png")); }
+div[lang=zm], input[lang=zm], textarea[lang=zm] { background-image: url(static("vendored/flags/zm.png")); }
+div[lang=zw], input[lang=zw], textarea[lang=zw] { background-image: url(static("vendored/flags/zw.png")); }
+div[lang=en], input[lang=en], textarea[lang=en] { background-image: url(static("vendored/flags/gb.png")); }
