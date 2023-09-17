@@ -423,14 +423,14 @@ LANGUAGES_INFORMATION = {
         "percentage": 97,
         "public_code": "pt",
     },
-    "zh-TW": {
+    "zh-Hant": {
         "name": _("Traditional Chinese (Taiwan)"),
         "natural_name": "漢語",
         "official": False,
         "percentage": 70,
         "public_code": "zh",
     },
-    "zh-CN": {
+    "zh-Hans": {
         "name": _("Simplified Chinese"),
         "natural_name": "简体中文",
         "official": False,
