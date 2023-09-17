@@ -4,10 +4,11 @@ Release Notes
 =============
 
 - :release:`unreleased <????-??-??>`
-- :bug:`-` Flags for some languages were not being displayed in the organiser area.
 - :feature:`1534` pretalx now adds hints for password managers to make the dual login/registration form easier to navigate.
 - :feature:`-` Organisers can now change the pagination size of all list pages, with a choice of 25, 50 or 100.
 - :feature:`1576` Tracks can now be ordered, and the order is used both in drop-down and in the schedule.
+- :release:`2023.1.3 <2023-09-16>`
+- :bug:`-` Flags for some languages were not being displayed in the organiser area.
 - :release:`2023.1.1 <2023-09-16>`
 - :bug:`-` For users without a pretalx account, their browser's choice of language took precedence over their own language selection.
 - :bug:`-` When using non-standard languages, pretalx would only show those languages as available sometimes.
