@@ -153,12 +153,12 @@ class EventPermissionMiddleware:
         )
         language = (
             self._language_from_request(request, supported)
+            or self._language_from_cookie(request, supported)
             or self._language_from_user(request, supported)
             or self._language_from_browser(request, supported)
+            or self._language_from_event(request, supported)
+            or settings.LANGUAGE_CODE
         )
-        if hasattr(request, "event") and request.event:
-            language = language or request.event.locale
-
         translation.activate(language)
         request.LANGUAGE_CODE = translation.get_language()
 
@@ -172,8 +172,7 @@ class EventPermissionMiddleware:
             timezone.activate(zoneinfo.ZoneInfo(tzname))
             request.timezone = tzname
 
-    @staticmethod
-    def _language_from_browser(request, supported):
+    def _language_from_browser(self, request, supported):
         accept_value = request.headers.get("Accept-Language", "")
         for accept_lang, _ in parse_accept_lang_header(accept_value):
             if accept_lang == "*":
@@ -182,29 +181,33 @@ class EventPermissionMiddleware:
             if not language_code_re.search(accept_lang):
                 continue
 
-            with suppress(LookupError):
-                val = get_supported_language_variant(accept_lang)
-                if val and val in supported:
-                    return val
+            accept_lang = self._validate_language(accept_lang, supported)
+            if accept_lang:
+                return accept_lang
 
+    def _language_from_cookie(self, request, supported):
         cookie_value = request.COOKIES.get(settings.LANGUAGE_COOKIE_NAME)
-        with suppress(LookupError):
-            cookie_value = get_supported_language_variant(cookie_value)
-            return cookie_value if cookie_value in supported else None
+        return self._validate_language(cookie_value, supported)
 
-    @staticmethod
-    def _language_from_user(request, supported):
+    def _language_from_user(self, request, supported):
         if request.user.is_authenticated:
-            with suppress(LookupError):
-                value = get_supported_language_variant(request.user.locale)
-                return value if value in supported else None
+            return self._validate_language(request.user.locale, supported)
 
-    @staticmethod
-    def _language_from_request(request, supported):
+    def _language_from_request(self, request, supported):
         lang = request.GET.get("lang")
         if lang:
-            with suppress(LookupError):
-                value = get_supported_language_variant(lang)
-                if value in supported:
-                    request.COOKIES[settings.LANGUAGE_COOKIE_NAME] = value
-                    return value
+            lang = self._validate_language(lang, supported)
+            if lang:
+                request.COOKIES[settings.LANGUAGE_COOKIE_NAME] = lang
+                return lang
+
+    def _language_from_event(self, request, supported):
+        if hasattr(request, "event") and request.event:
+            return self._validate_language(request.event.locale, supported)
+
+    @staticmethod
+    def _validate_language(value, supported):
+        with suppress(LookupError):
+            value = get_supported_language_variant(value)
+            if value in supported:
+                return value
