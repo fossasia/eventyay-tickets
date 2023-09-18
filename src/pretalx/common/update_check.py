@@ -17,7 +17,7 @@ from pretalx.celery_app import app
 from pretalx.common.mail import mail_send_task
 from pretalx.common.models.settings import GlobalSettings
 from pretalx.common.plugins import get_all_plugins
-from pretalx.common.signals import periodic_task, minimum_interval
+from pretalx.common.signals import minimum_interval, periodic_task
 from pretalx.event.models import Event
 
 
