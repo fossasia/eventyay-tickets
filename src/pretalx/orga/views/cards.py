@@ -1,8 +1,8 @@
 import tempfile
 
 import reportlab.rl_config
-from django.conf import settings
 from django.contrib import messages
+from django.contrib.staticfiles import finders
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.utils.timezone import now
@@ -21,7 +21,7 @@ from reportlab.platypus import BaseDocTemplate, Flowable, Frame, PageTemplate, P
 from pretalx.common.mixins.views import EventPermissionRequired
 from pretalx.submission.models import SubmissionStates
 
-reportlab.rl_config.TTFSearchPath.append(str(settings.PACKAGE_DIR / "static/fonts"))
+reportlab.rl_config.TTFSearchPath.append(finders.find("fonts"))
 pdfmetrics.registerFont(TTFont("Muli", "mulish-v12-latin-ext-regular.ttf"))
 pdfmetrics.registerFont(TTFont("Muli-Italic", "mulish-v12-latin-ext-italic.ttf"))
 pdfmetrics.registerFont(TTFont("Titillium-Bold", "titillium-web-v17-latin-ext-600.ttf"))
