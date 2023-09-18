@@ -600,7 +600,6 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
         self.question_template = self.question_template or MailTemplate.objects.create(
             event=self, subject=QUESTION_SUBJECT, text=QUESTION_TEXT
         )
-        # TODO clone other mail templates, but **not** the is_auto_created=True ones.
 
         if not self.review_phases.all().exists():
             from pretalx.submission.models import ReviewPhase
@@ -666,12 +665,23 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
 
         self._delete_mail_templates()
         self.submission_types.exclude(pk=self.cfp.default_type_id).delete()
+        copied_templates = []
         for template in self.template_names:
             new_template = getattr(other_event, template)
+            copied_templates.append(new_template.pk)
             new_template.pk = None
             new_template.event = self
             new_template.save()
             setattr(self, template, new_template)
+        # We copy non-default templates separately
+        for template in (
+            other_event.mail_templates.all()
+            .filter(is_auto_created=False)
+            .exclude(pk__in=copied_templates)
+        ):
+            template.pk = None
+            template.event = self
+            template.save()
         submission_type_map = {}
         for submission_type in other_event.submission_types.all():
             submission_type_map[submission_type.pk] = submission_type

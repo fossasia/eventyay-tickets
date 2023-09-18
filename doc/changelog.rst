@@ -4,6 +4,7 @@ Release Notes
 =============
 
 - :release:`unreleased <????-??-??>`
+- :feature:`-` When creating an event with copied event settings, custom email templates are now included.
 - :feature:`1534` pretalx now adds hints for password managers to make the dual login/registration form easier to navigate.
 - :feature:`-` Organisers can now change the pagination size of all list pages, with a choice of 25, 50 or 100.
 - :feature:`1576` Tracks can now be ordered, and the order is used both in drop-down and in the schedule.
