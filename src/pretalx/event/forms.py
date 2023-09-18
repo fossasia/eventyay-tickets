@@ -174,6 +174,10 @@ class EventWizardBasicsForm(I18nHelpText, I18nModelForm):
     class Meta:
         model = Event
         fields = ("name", "slug", "timezone", "email", "locale")
+        widgets = {
+            "locale": forms.Select(attrs={"class": "select2"}),
+            "timezone": forms.Select(attrs={"class": "select2"}),
+        }
 
 
 class EventWizardTimelineForm(forms.ModelForm):
