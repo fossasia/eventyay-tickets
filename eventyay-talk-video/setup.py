@@ -24,7 +24,7 @@ cmdclass = {"build": CustomBuild}
 
 setup(
     name="pretalx-venueless",
-    version="1.2.2",
+    version="1.3.0",
     description="Venueless integration in pretalx: Notify venueless about new schedule releases!",
     long_description=long_description,
     url="https://github.com/pretalx/pretalx-venueless",
