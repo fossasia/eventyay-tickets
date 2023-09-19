@@ -3,7 +3,7 @@
 	AppBar(:showActions="false", :showUser="true")
 	.content-wrapper
 		h2.room
-			| Room:&nbsp;
+			| {{ $t('standalone/Anonymous:header_room') }}:&nbsp;
 			span.room-name(v-html="$emojify(room.name)")
 		.session(v-if="session")
 			.title {{ $localize(session.title) }}
@@ -12,16 +12,16 @@
 			bunt-tabs(v-if="(!!modules['question'] + !!modules['poll']) > 1 && activeSidebarTab", :active-tab="activeSidebarTab")
 				bunt-tab(v-if="modules['poll']", id="polls", :header="$t('Room:sidebar:tabs-header:polls')", @selected="activeSidebarTab = 'polls'")
 				bunt-tab(v-if="modules['question']", id="questions", :header="$t('Room:sidebar:tabs-header:questions')", @selected="activeSidebarTab = 'questions'")
-				bunt-tab(v-if="sessions", id="schedule", header="Schedule", @selected="activeSidebarTab = 'schedule'")
+				bunt-tab(v-if="sessions", id="schedule", :header="$t('standalone/Anonymous:tabs-header:schedule')", @selected="activeSidebarTab = 'schedule'")
 			Scrollbars(y="")
 				questions(v-if="modules['question']", v-show="activeSidebarTab === 'questions'", :module="modules['question']", @change="changedTabContent('questions')")
 				polls(v-if="modules['poll']", v-show="activeSidebarTab === 'polls'", :module="modules['poll']", @change="changedTabContent('polls')")
 				.schedule(v-if="activeSidebarTab === 'schedule'")
-					h3 Current Session
+					h3 {{ $t('standalone/Anonymous:schedule:current-session') }}
 					Session(:session="session")
-					h3 Next Sessions
+					h3 {{ $t('standalone/Anonymous:schedule:next-sessions') }}
 					Session(v-for="session of nextSessions", :session="session")
-		.hint(v-if="activeSidebarTab !== 'schedule' && isAnonymous") You're voting anonymously
+		.hint(v-if="activeSidebarTab !== 'schedule' && isAnonymous") {{ $t('standalone/Anonymous:footer-anonymously') }}
 </template>
 <script>
 // TODO
