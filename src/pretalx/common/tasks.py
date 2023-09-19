@@ -35,14 +35,26 @@ def generate_widget_css(event, save=True):
         checksum = hashlib.sha1(css).hexdigest()
         if event.settings.widget_css_checksum != checksum:
             old_path = event.settings.get("widget_css")
-            if old_path:
-                default_storage.delete(old_path.replace("file://", ""))
+            delete_media_file(old_path)
             file_name = default_storage.save(
                 f"widget/widget.{checksum}.css", ContentFile(css)
             )
             event.settings.set("widget_css", "file://" + file_name)
             event.settings.set("widget_css_checksum", checksum)
     return css
+
+
+def delete_media_file(path):
+    if not path:
+        return
+    if path.startswith("file://"):
+        path = path.replace("file://", "")
+    media_dir = settings.MEDIA_ROOT
+    if path.startswith(media_dir.name + "/"):
+        path = path[len(media_dir.name) + 1 :]
+    path = media_dir / path
+    if path.exists():
+        default_storage.delete(str(path))
 
 
 def generate_widget_js(event, locale, save=True, version=2):
@@ -65,8 +77,7 @@ def generate_widget_js(event, locale, save=True, version=2):
 
         if checksum != event.settings.get(checksum_setting):
             old_path = event.settings.get(path_setting)
-            if old_path:
-                default_storage.delete(old_path.replace("file://", ""))
+            delete_media_file(old_path)
             file_name = default_storage.save(path, ContentFile(data))
             event.settings.set(path_setting, "file://" + file_name)
             event.settings.set(checksum_setting, checksum)
@@ -90,8 +101,7 @@ def regenerate_css(event_id: int):
     if not event.primary_color:
         for local_app in local_apps:
             old_path = event.settings.get(f"{local_app}_css_file", "")
-            if old_path:
-                default_storage.delete(old_path.replace("file://", ""))
+            delete_media_file(old_path)
             event.settings.delete(f"{local_app}_css_file")
             event.settings.delete(f"{local_app}_css_checksum")
         return
@@ -115,8 +125,7 @@ def regenerate_css(event_id: int):
 
         if event.settings.get(f"{local_app}_css_checksum", "") != checksum:
             old_path = event.settings.get(f"{local_app}_css_file", "")
-            if old_path:
-                default_storage.delete(old_path.replace("file://", ""))
+            delete_media_file(old_path)
             newname = default_storage.save(fname, ContentFile(css))
             event.settings.set(
                 f"{local_app}_css_file", f"{settings.MEDIA_URL}{newname}"

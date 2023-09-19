@@ -4,6 +4,7 @@ Release Notes
 =============
 
 - :release:`unreleased <????-??-??>`
+- :bug:`-` CSS regeneration of event styles was broken and left events stuck on their last selected colour.
 - :feature:`-` When creating an event with copied event settings, custom email templates are now included.
 - :feature:`1534` pretalx now adds hints for password managers to make the dual login/registration form easier to navigate.
 - :feature:`-` Organisers can now change the pagination size of all list pages, with a choice of 25, 50 or 100.
