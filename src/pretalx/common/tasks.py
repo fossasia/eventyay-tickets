@@ -47,6 +47,11 @@ def generate_widget_css(event, save=True):
 def delete_media_file(path):
     if not path:
         return
+    # path might be a File object
+    if hasattr(path, "path"):
+        path = path.path
+    if not isinstance(path, str):
+        path = str(path)
     if path.startswith("file://"):
         path = path.replace("file://", "")
     media_dir = settings.MEDIA_ROOT
