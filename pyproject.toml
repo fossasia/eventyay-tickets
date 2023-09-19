@@ -40,7 +40,7 @@ dependencies = [
   "django-context-decorator",
   "django-countries~=7.0",
   "django-csp~=3.7.0",
-  "django-filter==23.2",
+  "django-filter==23.3",
   "django-formset-js-improved==0.5.0.3",
   "django-formtools~=2.3.0",
   "django-hierarkey~=1.1.0",
