@@ -137,7 +137,6 @@ def build_room_view_fig(fig, room, begin, end, tz):
                 datetime__gte=begin,
                 datetime__lte=end,
             )
-            .filter(user__type=User.UserType.PERSON)
             .annotate(min=TruncMinute("datetime"))
             .order_by()
             .values("datetime", "reaction")
