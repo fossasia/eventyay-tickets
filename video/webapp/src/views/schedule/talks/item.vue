@@ -6,7 +6,12 @@
 			//- TODO choose locale
 			.info {{ datetime }} {{ roomName }}
 			markdown-content.abstract(:markdown="talk.abstract")
-			markdown-content.biography(:markdown="talk.description")
+			markdown-content.description(:markdown="talk.description")
+			.downloads(v-if="talk.resources && talk.resources.length > 0")
+				h2 {{ $t("schedule/talks:downloads-headline:text") }}
+				a.download(v-for="{resource, description} of talk.resources", :href="resource", target="_blank")
+					.mdi(:class="`mdi-${getIconByFileEnding(resource)}`")
+					.filename {{ description }}
 		.speakers(v-if="talk.speakers.length > 0")
 			.header {{ $t('schedule/talks/item:speakers:header', {count: talk.speakers.length})}}
 			.speakers-list
@@ -22,6 +27,7 @@
 import { mapGetters } from 'vuex'
 import moment from 'lib/timetravelMoment'
 import MarkdownContent from 'components/MarkdownContent'
+import { getIconByFileEnding } from 'lib/filetypes'
 
 export default {
 	components: {MarkdownContent},
@@ -61,7 +67,9 @@ export default {
 		this.$nextTick(() => {
 		})
 	},
-	methods: {}
+	methods: {
+		getIconByFileEnding
+	}
 }
 </script>
 <style lang="stylus">
@@ -87,6 +95,27 @@ export default {
 			margin: 16px 0 0 0
 			font-size: 16px
 			font-weight: 600
+	.downloads
+		border: border-separator()
+		border-radius: 4px
+		display: flex
+		flex-direction: column
+		margin-top: 16px
+		h2
+			margin: 4px 8px
+		.download
+			display: flex
+			align-items: center
+			height: 56px
+			font-weight: 600
+			font-size: 16px
+			border-top: border-separator()
+			&:hover
+				background-color: $clr-grey-100
+				text-decoration: underline
+			.mdi
+				font-size: 36px
+				margin: 0 4px
 	.speakers
 		width: 280px
 		margin: 32px 16px
