@@ -506,7 +506,7 @@ class ReportGenerator:
                 _("Users with authenticated access (total)"),
                 str(
                     self.world.user_set.filter(
-                        token_id__isnull=False, user__type=User.UserType.PERSON
+                        token_id__isnull=False, type=User.UserType.PERSON
                     ).count()
                 ),
             ],
