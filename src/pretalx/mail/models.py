@@ -258,7 +258,8 @@ class QueuedMail(LogMixin, models.Model):
         html_context = {
             "body": body_md,
             "event": event,
-            "color": (event.primary_color if event else "") or "#3aa57c",
+            "color": (event.primary_color if event else "")
+            or settings.DEFAULT_EVENT_PRIMARY_COLOR,
             "locale": self.locale,
             "rtl": self.locale in settings.LANGUAGES_RTL,
             "subject": self.subject,

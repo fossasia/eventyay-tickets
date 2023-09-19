@@ -65,7 +65,7 @@
             {% endblocktranslate %}
         </p>
         <pre id="widget-body">
-&lt;pretalx-schedule event-url="{{ request.event.urls.base.full }}" locale="LOCALE" format="FORMAT" style="--pretalx-clr-primary: {{ request.event.primary_color|default:'#3aa57c' }}">&lt;/pretalx-schedule>
+&lt;pretalx-schedule event-url="{{ request.event.urls.base.full }}" locale="LOCALE" format="FORMAT" style="--pretalx-clr-primary: {{ request.event.get_primary_color }}">&lt;/pretalx-schedule>
 &lt;noscript>
    &lt;div class="pretalx-widget">
         &lt;div class="pretalx-widget-info-message">

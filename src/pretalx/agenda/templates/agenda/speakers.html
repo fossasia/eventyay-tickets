@@ -8,7 +8,7 @@
     {% include "agenda/header_row.html" %}
     <p></p>
     <article>
-        <section style="--track-color: {{ request.event.primary_color|default:'#3aa57c' }}" class="pretalx-list-day">
+        <section style="--track-color: {{ request.event.get_primary_color }}" class="pretalx-list-day">
             {% for speaker in speakers %}
                 <a href="{{ speaker.urls.public }}">
                     <div class="pretalx-session">

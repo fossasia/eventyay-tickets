@@ -464,6 +464,10 @@ LANGUAGES = [
     (language["code"], language["name"]) for language in LANGUAGES_INFORMATION.values()
 ]
 
+# Only used in Python code. Changing this value will still leave most of the
+# frontend using the default colour, but this makes sure that the backend
+# uses one consistent value.
+DEFAULT_EVENT_PRIMARY_COLOR = "#3aa57c"
 
 ## AUTHENTICATION SETTINGS
 AUTH_USER_MODEL = "person.User"

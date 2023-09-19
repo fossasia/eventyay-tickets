@@ -142,7 +142,7 @@ class SpeakerSocialMediaCard(SocialMediaCardMixin, SpeakerView):
 @cache_page(60 * 60)
 def empty_avatar_view(request, event):
     # cached for an hour
-    color = request.event.primary_color or "#3aa57c"
+    color = request.event.primary_color or settings.DEFAULT_EVENT_PRIMARY_COLOR
     avatar_template = f"""<svg
    xmlns="http://www.w3.org/2000/svg"
    viewBox="0 0 100 100">

@@ -323,7 +323,7 @@ Vue.component("step", {
     headerStyle () {
       // logo_image, header_image, header_pattern
       return {
-        "background-color": this.eventConfiguration.primary_color || "#3aa57c",
+        "background-color": this.eventConfiguration.primary_color,
       }
     },
     editable () {

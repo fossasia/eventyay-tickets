@@ -543,6 +543,9 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
             plugins_active.remove(module)
             self.plugin_list = plugins_active
 
+    def get_primary_color(self):
+        return self.primary_color or settings.DEFAULT_EVENT_PRIMARY_COLOR
+
     def _get_default_submission_type(self):
         from pretalx.submission.models import SubmissionType
 
