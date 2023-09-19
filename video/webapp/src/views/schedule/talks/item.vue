@@ -9,7 +9,7 @@
 			markdown-content.description(:markdown="talk.description")
 			.downloads(v-if="talk.resources && talk.resources.length > 0")
 				h2 {{ $t("schedule/talks:downloads-headline:text") }}
-				a.download(v-for="{resource, description} of talk.resources", :href="resource", target="_blank")
+				a.download(v-for="{resource, description} of talk.resources", :href="getAbsoluteResourceUrl(resource)", target="_blank")
 					.mdi(:class="`mdi-${getIconByFileEnding(resource)}`")
 					.filename {{ description }}
 		.speakers(v-if="talk.speakers.length > 0")
@@ -68,7 +68,12 @@ export default {
 		})
 	},
 	methods: {
-		getIconByFileEnding
+		getIconByFileEnding,
+		getAbsoluteResourceUrl (resource) {
+			if (!this.pretalxApiBaseUrl) return resource
+			const base = (new URL(this.pretalxApiBaseUrl)).origin
+			return new URL(resource, base)
+		}
 	}
 }
 </script>
