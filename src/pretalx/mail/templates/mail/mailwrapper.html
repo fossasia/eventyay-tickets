@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load rich_text %}
 <!DOCTYPE html>
 <html>
     <head>
@@ -100,6 +101,8 @@
         }
         table.layout tr.signature td {
             padding: 0 28px;
+            text-align: center;
+            padding-top: 20px;
         }
         table.layout tr.last {
             height: 40px;
@@ -129,12 +132,13 @@
                     </div>
                 </td>
             </tr>
-            {% if signature %}
+            {% if signature and signature.strip %}
                 <tr class="signature">
-                    <td>{{ signature }}</td>
+                    <td>{{ signature|rich_text }}</td>
                 </tr>
+            {% else %}
+                <tr class="last"></tr>
             {% endif %}
-            <tr class="last"></tr>
         </table>
         <div class="footer">
             {% include "common/powered_by.html" %}

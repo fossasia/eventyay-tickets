@@ -4,6 +4,7 @@ Release Notes
 =============
 
 - :release:`unreleased <????-??-??>`
+- :feature:`-` Email signatures are now also parsed as markdown, so line breaks will show up in HTML email signatures as expected.
 - :bug:`-` CSS regeneration of event styles was broken and left events stuck on their last selected colour.
 - :feature:`-` When creating an event with copied event settings, custom email templates are now included.
 - :feature:`1534` pretalx now adds hints for password managers to make the dual login/registration form easier to navigate.
