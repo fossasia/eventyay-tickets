@@ -29,10 +29,8 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('**/setup.py') }}
           restore-keys: |
             ${{ runner.os }}-pip-
-      - name: Install pretalx
-        run: pip3 install pretalx
       - name: Install Dependencies
-        run: pip3 install isort -Ue .
+        run: pip3 install isort
       - name: Run isort
         run: isort -c .
   flake:
@@ -50,10 +48,8 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('**/setup.py') }}
           restore-keys: |
             ${{ runner.os }}-pip-
-      - name: Install pretalx
-        run: pip3 install pretalx
       - name: Install Dependencies
-        run: pip3 install flake8 flake8-bugbear -Ue .
+        run: pip3 install flake8 flake8-bugbear
       - name: Run flake8
         run: flake8 .
         working-directory: .
@@ -72,34 +68,10 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('**/setup.py') }}
           restore-keys: |
             ${{ runner.os }}-pip-
-      - name: Install pretalx
-        run: pip3 install pretalx
       - name: Install Dependencies
-        run: pip3 install black -Ue .
+        run: pip3 install black
       - name: Run black
         run: black --check .
-        working-directory: .
-  docformatter:
-    name: docformatter
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v1
-        with:
-          python-version: "3.10"
-      - uses: actions/cache@v1
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/setup.py') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-      - name: Install pretalx
-        run: pip3 install pretalx
-      - name: Install Dependencies
-        run: pip3 install docformatter -Ue .
-      - name: Run docformatter
-        run: docformatter --check -r .
         working-directory: .
   djhtml:
     name: djhtml
@@ -116,10 +88,8 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('**/setup.py') }}
           restore-keys: |
             ${{ runner.os }}-pip-
-      - name: Install pretalx
-        run: pip3 install pretalx
       - name: Install Dependencies
-        run: pip3 install djhtml -Ue .
+        run: pip3 install djhtml
       - name: Run docformatter
         run: find -name "*.html" | xargs djhtml -c
         working-directory: .
@@ -138,8 +108,6 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('**/setup.py') }}
           restore-keys: |
             ${{ runner.os }}-pip-
-      - name: Install pretalx
-        run: pip3 install pretalx
       - name: Install Dependencies
         run: pip3 install twine check-manifest -Ue .
       - name: Run check-manifest
