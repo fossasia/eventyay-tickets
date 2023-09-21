@@ -14,7 +14,6 @@ from django_scopes.forms import SafeModelMultipleChoiceField
 from i18nfield.fields import I18nFormField, I18nTextarea
 from i18nfield.forms import I18nFormMixin, I18nModelForm
 
-from pretalx.common.phrases import phrases
 from pretalx.common.css import validate_css
 from pretalx.common.forms.fields import ImageField
 from pretalx.common.mixins.forms import (
@@ -382,9 +381,11 @@ class MailSettingsForm(
     )
     signature = forms.CharField(
         label=_("Mail signature"),
-        help_text=str(_(
-            'The signature will be added to outgoing mails, preceded by "-- ".'
-        )) + " " + phrases.base.use_markdown,
+        help_text=str(
+            _('The signature will be added to outgoing mails, preceded by "-- ".')
+        )
+        + " "
+        + phrases.base.use_markdown,
         required=False,
         widget=forms.Textarea,
     )
