@@ -401,35 +401,35 @@ LANGUAGES_INFORMATION = {
         "percentage": 88,
         "path": "fr_FR",
     },
-    "ja-JP": {
+    "ja-jp": {
         "name": _("Japanese"),
         "natural_name": "日本語",
         "official": False,
         "percentage": 78,
         "public_code": "jp",
     },
-    "pt-BR": {
+    "pt-br": {
         "name": _("Brasilian Portuguese"),
         "natural_name": "Português brasileiro",
         "official": False,
         "percentage": 89,
         "public_code": "pt",
     },
-    "pt-PT": {
+    "pt-pt": {
         "name": _("Portuguese"),
         "natural_name": "Português",
         "official": False,
         "percentage": 97,
         "public_code": "pt",
     },
-    "zh-Hant": {
+    "zh-hant": {
         "name": _("Traditional Chinese (Taiwan)"),
         "natural_name": "漢語",
         "official": False,
         "percentage": 70,
         "public_code": "zh",
     },
-    "zh-Hans": {
+    "zh-hans": {
         "name": _("Simplified Chinese"),
         "natural_name": "简体中文",
         "official": False,
