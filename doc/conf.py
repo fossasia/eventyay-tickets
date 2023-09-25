@@ -95,6 +95,7 @@ todo_include_todos = False
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = [
     '_static',
+    '_themes/pretalx_theme/static',
     os.path.abspath('../src/pretalx/static/vendored/forkawesome/fonts/'),
 ]
 html_additional_pages = {
