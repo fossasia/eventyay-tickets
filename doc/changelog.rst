@@ -4,6 +4,7 @@ Release Notes
 =============
 
 - :release:`unreleased <????-??-??>`
+- :bug:`-` RSS feeds for new releases would sometimes fail to load if control characters were used in the schedule version or event name.
 - :bug:`-` Draft proposals could not be discarded if they included answered questions.
 - :bug:`-` When using two variants of the same language in the same event, pretalx would not reliably switch between the two variants.
 - :feature:`-` Email signatures are now also parsed as markdown, so line breaks will show up in HTML email signatures as expected.

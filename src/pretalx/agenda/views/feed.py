@@ -1,6 +1,22 @@
+import urllib.parse
+
 from django.contrib.syndication.views import Feed
 from django.http import Http404
 from django.utils import feedgenerator
+
+XML_REPLACE = str.maketrans(
+    {
+        "<": "&lt;",
+        ">": "&gt;",
+        "&": "&amp;",
+        "'": "&apos;",
+        '"': "&quot;",
+    }
+)
+
+
+def sanitize_xml(text):
+    return text.translate(XML_REPLACE)
 
 
 class ScheduleFeed(Feed):
@@ -13,7 +29,7 @@ class ScheduleFeed(Feed):
         return request.event
 
     def title(self, obj):
-        return f"{obj.name} schedule updates"
+        return f"{sanitize_xml(obj.name)} schedule updates"
 
     def link(self, obj):
         return obj.urls.schedule.full()
@@ -25,17 +41,17 @@ class ScheduleFeed(Feed):
         return obj.urls.feed.full()
 
     def description(self, obj):
-        return f"Updates to the {obj.name} schedule."
+        return f"Updates to the {sanitize_xml(obj.name)} schedule."
 
     def items(self, obj):
         return obj.schedules.filter(version__isnull=False).order_by("-published")
 
     def item_title(self, item):
-        return f"New {item.event.name} schedule released ({item.version})"
+        return f"New {sanitize_xml(item.event.name)} schedule released ({sanitize_xml(item.version)})"
 
     def item_link(self, item):
         url = item.event.urls.changelog.full()
-        return f"{url}#{item.version}"
+        return f"{url}#{urllib.parse.quote(item.version, safe='')}"
 
     def item_pubdate(self, item):
         return item.published
