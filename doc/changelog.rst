@@ -4,6 +4,7 @@ Release Notes
 =============
 
 - :release:`unreleased <????-??-??>`
+- :bug:`-` Draft proposals could not be discarded if they included answered questions.
 - :bug:`-` When using two variants of the same language in the same event, pretalx would not reliably switch between the two variants.
 - :feature:`-` Email signatures are now also parsed as markdown, so line breaks will show up in HTML email signatures as expected.
 - :bug:`-` CSS regeneration of event styles was broken and left events stuck on their last selected colour.

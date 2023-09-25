@@ -682,6 +682,15 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
 
     remove.alters_data = True
 
+    def delete(self, force: bool = False, **kwargs):
+        if self.state != SubmissionStates.DRAFT and not force:
+            raise SubmissionError(
+                "Submission is not in draft mode and cannot be deleted completely. Set the deleted flag instead."
+            )
+        for answer in self.answers.all():
+            answer.delete()
+        super().delete(**kwargs)
+
     @cached_property
     def integer_uuid(self):
         # For import into Engelsystem, we need to somehow convert our submission code into an unique integer. Luckily,
