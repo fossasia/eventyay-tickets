@@ -1,17 +1,17 @@
 # prod
 aiofile==3.8.*
 aiohttp==3.8.5
-aioredis-lock==0.1.*
 beautifulsoup4==4.12.*
 celery==5.3.*
-channels>=3.0.3,<3.1.0
-channels_redis==3.3.*
-Django==3.2.*
+channels==4.0.*
+channels_redis==4.1.*
+Django==4.2.*
 django-cors-headers==4.2.*
 django-decorator-include==3.0
 django-extensions==3.2.*
 django-formset-js-improved
-django-multifactor==0.5.*
+git+https://github.com/oliwarner/django-multifactor.git@9d08f222830d3513e88e42f68ff570d74be53948#egg=django-multifactor
+django-multifactor==0.5.5
 djangorestframework==3.14.*
 emoji==2.8.*
 icalendar==5.0.*
@@ -35,16 +35,14 @@ tqdm==4.66.*
 websockets==11.*
 xlrd~=1.2.0  # do not update, 2.x does not support .xlsx, only .xls
 
-# temporary
-Twisted==20.3.0  # see https://github.com/django/daphne/pull/359 and https://github.com/django/channels/issues/1639
-
 # deploy
-psycopg2-binary==2.9.7
+psycopg2==2.9.7
 gunicorn==21.2.0
 uvicorn[standard]==0.23.2
 
 # dev
-black==21.12b0  # 22.1 depends on a click version that conflicts with celery and uvicorn
+daphne==4.0.*
+black==23.7
 isort==5.12.0
 flake8==6.1.0
 pytest==7.4.2

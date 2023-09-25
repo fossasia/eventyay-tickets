@@ -10,7 +10,7 @@ from sentry_sdk import configure_scope
 from venueless.core.permissions import Permission
 from venueless.core.services.chat import ChatService, get_channel
 from venueless.core.services.user import get_public_users
-from venueless.core.utils.redis import aioredis
+from venueless.core.utils.redis import aredis
 from venueless.live.channels import GROUP_CHAT, GROUP_USER
 from venueless.live.decorators import (
     command,
@@ -214,7 +214,7 @@ class ChatModule(BaseModule):
                 self.consumer.user, self.consumer.socket_id
             )
             if not volatile_config:
-                async with aioredis() as redis:
+                async with aredis() as redis:
                     await redis.sadd(
                         f"chat:unread.notify:{self.channel_id}",
                         str(self.consumer.user.id),
@@ -253,13 +253,13 @@ class ChatModule(BaseModule):
         await self._unsubscribe(clean_volatile_membership=False)
         if self.channel.room:
             await self._leave(self.module_config.get("volatile", False))
-            async with aioredis() as redis:
+            async with aredis() as redis:
                 await redis.srem(
                     f"chat:unread.notify:{self.channel_id}", str(self.consumer.user.id)
                 )
         else:
             await self.service.hide_channel_user(self.channel_id, self.consumer.user.id)
-            async with aioredis() as redis:
+            async with aredis() as redis:
                 await redis.delete(f"chat:direct:shownall:{self.channel_id}")
             await self.service.broadcast_channel_list(
                 self.consumer.user, self.consumer.socket_id
@@ -304,8 +304,8 @@ class ChatModule(BaseModule):
     async def mark_read(self, body):
         if not body.get("id"):
             raise ConsumerException("chat.invalid_body")
-        async with aioredis() as redis:
-            tr = redis.multi_exec()
+        async with aredis() as redis:
+            tr = redis.pipeline(transaction=False)
             tr.hset(
                 f"chat:read:{self.consumer.user.id}", self.channel_id, body.get("id")
             )
@@ -323,7 +323,7 @@ class ChatModule(BaseModule):
     @event("read_pointers")
     async def publish_read_pointers(self, body):
         if self.consumer.socket_id != body["socket"]:
-            async with aioredis() as redis:
+            async with aredis() as redis:
                 redis_read = await redis.hgetall(f"chat:read:{self.consumer.user.id}")
                 read_pointers = {
                     k.decode(): int(v.decode()) for k, v in redis_read.items()
@@ -390,7 +390,7 @@ class ChatModule(BaseModule):
 
         # Re-open direct messages. If a user hid a direct message channel, it should re-appear once they get a message
         if not self.channel.room:
-            async with aioredis() as redis:
+            async with aredis() as redis:
                 all_visible = await redis.exists(
                     f"chat:direct:shownall:{self.channel_id}"
                 )
@@ -402,12 +402,12 @@ class ChatModule(BaseModule):
                     await self.service.broadcast_channel_list(
                         user, self.consumer.socket_id
                     )
-                    async with aioredis() as redis:
+                    async with aredis() as redis:
                         await redis.sadd(
                             f"chat:unread.notify:{self.channel_id}",
                             str(user.id),
                         )
-            async with aioredis() as redis:
+            async with aredis() as redis:
                 await redis.setex(
                     f"chat:direct:shownall:{self.channel_id}", 3600 * 24 * 7, "true"
                 )
@@ -427,7 +427,7 @@ class ChatModule(BaseModule):
         )
 
         # Unread notifications
-        async with aioredis() as redis:
+        async with aredis() as redis:
 
             async def _notify_users(users):
                 for user in users:
@@ -582,13 +582,13 @@ class ChatModule(BaseModule):
                     await self.service.broadcast_channel_list(
                         user=user, socket_id=self.consumer.socket_id
                     )
-                    async with aioredis() as redis:
+                    async with aredis() as redis:
                         await redis.sadd(
                             f"chat:unread.notify:{self.channel_id}",
                             str(user.id),
                         )
             if not hide:
-                async with aioredis() as redis:
+                async with aredis() as redis:
                     await redis.setex(
                         f"chat:direct:shownall:{self.channel_id}", 3600 * 24 * 7, "true"
                     )

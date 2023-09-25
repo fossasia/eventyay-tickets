@@ -20,7 +20,7 @@ from venueless.core.services.connections import (
 from venueless.core.services.world import get_world
 from venueless.live.exceptions import ConsumerException
 
-from ..core.utils.redis import aioredis
+from ..core.utils.redis import aredis
 from ..core.utils.statsd import statsd
 from .channels import GROUP_VERSION
 from .modules.announcement import AnnouncementModule
@@ -62,11 +62,10 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
         world_id = self.scope["url_route"]["kwargs"]["world"]
         await self.accept()
         if settings.REDIS_USE_PUBSUB:
-            async with aioredis() as redis:
+            async with aredis() as redis:
                 await redis.zadd(
                     f"version.{settings.VENUELESS_COMMIT}.{settings.VENUELESS_ENVIRONMENT}",
-                    int(time.time()),
-                    self.channel_name,
+                    dict([(self.channel_name, int(time.time()))]),
                 )
                 await redis.expire(
                     f"version.{settings.VENUELESS_COMMIT}.{settings.VENUELESS_ENVIRONMENT}",
@@ -125,7 +124,7 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
                 await c.dispatch_disconnect(close_code)
 
         if settings.REDIS_USE_PUBSUB:
-            async with aioredis() as redis:
+            async with aredis() as redis:
                 await redis.zrem(
                     f"version.{settings.VENUELESS_COMMIT}.{settings.VENUELESS_ENVIRONMENT}",
                     self.channel_name,

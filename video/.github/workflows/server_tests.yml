@@ -14,7 +14,7 @@ jobs:
   test:
     name: Tests
     runs-on: ubuntu-latest
-    container: python:3.8
+    container: python:3.11
     continue-on-error: ${{ matrix.experimental }}
     strategy:
       fail-fast: false
@@ -28,7 +28,7 @@ jobs:
       redis:
         image: redis:latest
       postgres:
-        image: postgres:11
+        image: postgres:15
         env:
           POSTGRES_PASSWORD: venueless
           POSTGRES_DB: venueless

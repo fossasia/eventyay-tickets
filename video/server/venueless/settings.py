@@ -151,7 +151,7 @@ REDIS_USE_PUBSUB = os.getenv(
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": (
-            "venueless.platforms.channels.pubsub.ChannelLayer"
+            "channels_redis.pubsub.RedisPubSubChannelLayer"
             if REDIS_USE_PUBSUB
             else "channels_redis.core.RedisChannelLayer"
         ),
@@ -190,10 +190,19 @@ WEBSOCKET_PROTOCOL = os.getenv(
     "VENUELESS_WEBSOCKET_PROTOCOL", config.get("websocket", "protocol", fallback="wss")
 )
 
+STORAGES = {
+    "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.ManifestStaticFilesStorage",
+    },
+}
+
 nanocdn = os.getenv("VENUELESS_NANOCDN", config.get("urls", "nanocdn", fallback=""))
 if nanocdn:
     NANOCDN_URL = nanocdn
-    DEFAULT_FILE_STORAGE = "venueless.platforms.storage.nanocdn.NanoCDNStorage"
+    STORAGES["default"][
+        "BACKEND"
+    ] = "venueless.platforms.storage.nanocdn.NanoCDNStorage"
 
 ZOOM_KEY = os.getenv("VENUELESS_ZOOM_KEY", config.get("zoom", "key", fallback=""))
 ZOOM_SECRET = os.getenv(
@@ -240,6 +249,7 @@ CACHES = {
 }
 
 INSTALLED_APPS = [
+    "daphne",
     "django.contrib.contenttypes",
     "django.contrib.auth",
     "django.contrib.sessions",
@@ -332,7 +342,6 @@ ASGI_APPLICATION = "venueless.routing.application"
 LANGUAGE_CODE = "en"
 TIME_ZONE = "Europe/Berlin"
 USE_I18N = True
-USE_L10N = True
 USE_TZ = True
 
 LANGUAGES = [
@@ -425,8 +434,6 @@ STATICFILES_DIRS = (
 )
 
 STATICI18N_ROOT = os.path.join(BASE_DIR, "venueless/static")
-
-STATICFILES_STORAGE = "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"
 
 LOGIN_URL = LOGOUT_REDIRECT_URL = "control:login"
 LOGIN_REDIRECT_URL = "/control/"

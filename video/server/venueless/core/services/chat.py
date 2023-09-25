@@ -27,7 +27,7 @@ from ..models import (
     User,
 )
 from ..permissions import Permission
-from ..utils.redis import aioredis
+from ..utils.redis import aredis
 from .bbb import choose_server
 from .user import get_public_users, user_broadcast
 
@@ -122,14 +122,14 @@ class ChatService:
         return users
 
     async def track_subscription(self, channel, uid, socket_id):
-        async with aioredis(f"chat:subscriptions:{uid}:{channel}") as redis:
-            tr = redis.multi_exec()
+        async with aredis(f"chat:subscriptions:{uid}:{channel}") as redis:
+            tr = redis.pipeline(transaction=False)
             tr.sadd(f"chat:subscriptions:{uid}:{channel}", socket_id)
             tr.expire(f"chat:subscriptions:{uid}:{channel}", 3600 * 24 * 2)
             await tr.execute()
 
     async def track_unsubscription(self, channel, uid, socket_id):
-        async with aioredis(f"chat:subscriptions:{uid}:{channel}") as redis:
+        async with aredis(f"chat:subscriptions:{uid}:{channel}") as redis:
             await redis.srem(f"chat:subscriptions:{uid}:{channel}", socket_id)
             return await redis.scard(f"chat:subscriptions:{uid}:{channel}")
 
@@ -266,20 +266,20 @@ class ChatService:
         return ChatEvent.objects.aggregate(m=Max("id"))["m"] or 0
 
     async def get_last_id(self):
-        async with aioredis() as redis:
-            rval = await redis.get("chat.event_id", encoding="utf-8")
+        async with aredis() as redis:
+            rval = await redis.get("chat.event_id")
             if rval:
-                return int(rval)
+                return int(rval.decode())
             return await self._get_highest_id()
 
     async def create_event(
         self, channel, event_type, content, sender, replaces=None, _retry=False
     ):
-        async with aioredis() as redis:
+        async with aredis() as redis:
             event_id = await redis.incr("chat.event_id")
         if event_id < 2:  # Safety if redis is cleared out
             current_max = await self._get_highest_id()
-            async with aioredis() as redis:
+            async with aredis() as redis:
                 await redis.set("chat.event_id", current_max + 1)
         event = await self._store_event(
             channel=channel,
@@ -294,7 +294,7 @@ class ChatService:
         elif not _retry:
             # Ooops! Probably our redis cleared out / failed over. Let's try to self-heal
             current_max = await self._get_highest_id()
-            async with aioredis() as redis:
+            async with aredis() as redis:
                 await redis.set("chat.event_id", current_max + 1)
             return await self.create_event(
                 channel, event_type, content, sender, _retry=True
@@ -470,7 +470,7 @@ class ChatService:
                     event,
                 )
                 await self.broadcast_channel_list(user, "dummysocket")
-                async with aioredis() as redis:
+                async with aredis() as redis:
                     await redis.sadd(
                         f"chat:unread.notify:{channel.id}",
                         str(user.id),

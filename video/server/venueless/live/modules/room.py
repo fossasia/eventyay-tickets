@@ -33,7 +33,7 @@ from venueless.core.services.world import (
     get_rooms,
     notify_world_change,
 )
-from venueless.core.utils.redis import aioredis
+from venueless.core.utils.redis import aredis
 from venueless.live.channels import (
     GROUP_ROOM,
     GROUP_ROOM_POLL_ALL_RESULTS,
@@ -183,7 +183,7 @@ class RoomModule(BaseModule):
                 )
 
     async def _update_view_count(self, room, actual_view_count):
-        async with aioredis(f"room:approxcount:known:{room.pk}") as redis:
+        async with aredis(f"room:approxcount:known:{room.pk}") as redis:
             next_value = approximate_view_number(actual_view_count)
             prev_value = await redis.getset(
                 f"room:approxcount:known:{room.pk}", next_value
@@ -231,18 +231,21 @@ class RoomModule(BaseModule):
 
         # We want to send reactions out to anyone, but we want to aggregate them over short time frames ("ticks") to
         # make sure we do not send 500 messages if 500 people react in the same second, but just one.
-        async with aioredis(redis_debounce_key) as redis:
+        async with aredis(redis_debounce_key) as redis:
             debounce = await redis.set(
-                redis_debounce_key, "1", expire=2, exist=redis.SET_IF_NOT_EXIST
+                redis_debounce_key,
+                "1",
+                ex=2,
+                nx=True,
             )
             if not debounce:
                 # User reacted in the 2 seconds, let's ignore this.
                 await self.consumer.send_success({})
                 return
 
-        async with aioredis(redis_key) as redis:
+        async with aredis(redis_key) as redis:
             # First, increase the number of reactions
-            tr = redis.multi_exec()
+            tr = redis.pipeline(transaction=True)
             tr.hsetnx(redis_key, "tick", int(time.time()))
             tr.hget(redis_key, "tick")
             tr.hincrby(redis_key, reaction, 1)
@@ -255,7 +258,7 @@ class RoomModule(BaseModule):
                 # distribute the value to everyone.
                 await asyncio.sleep(1)
 
-                tr = redis.multi_exec()
+                tr = redis.pipeline(transaction=True)
                 tr.hgetall(redis_key)
                 tr.delete(redis_key)
                 val, _ = await tr.execute()

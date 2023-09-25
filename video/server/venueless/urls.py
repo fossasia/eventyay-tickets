@@ -3,7 +3,7 @@ from urllib.parse import urlsplit
 
 from decorator_include import decorator_include
 from django.conf import settings
-from django.urls import include, re_path
+from django.urls import include, path, re_path
 from django.views.generic import RedirectView
 from django.views.static import serve
 from multifactor.decorators import multifactor_protected
@@ -33,16 +33,16 @@ def static(prefix, view=serve, **kwargs):
 
 urlpatterns = (
     [
-        re_path(r"^api/v1/", include((api_patterns, "api"), namespace="api")),
-        re_path(r"^healthcheck/", views.HealthcheckView.as_view()),
-        re_path(r"^manifest.json", views.ManifestView.as_view()),
-        re_path(r"graphs/", include(graphs)),
-        re_path(r"zoom/", include((zoom, "zoom"), namespace="zoom")),
-        re_path(r"storage/", include((storage, "storage"), namespace="storage")),
-        re_path(r"social/", include((social, "social"), namespace="social")),
-        re_path("control$", RedirectView.as_view(url="/control/")),
-        re_path("control/multifactor/", include("multifactor.urls")),
-        re_path(
+        path("api/v1/", include((api_patterns, "api"), namespace="api")),
+        path("healthcheck/", views.HealthcheckView.as_view()),
+        path("manifest.json", views.ManifestView.as_view()),
+        path("graphs/", include(graphs)),
+        path("zoom/", include((zoom, "zoom"), namespace="zoom")),
+        path("storage/", include((storage, "storage"), namespace="storage")),
+        path("social/", include((social, "social"), namespace="social")),
+        path("control", RedirectView.as_view(url="/control/")),
+        path("control/multifactor/", include("multifactor.urls")),
+        path(
             "control/",
             decorator_include(
                 multifactor_protected(
@@ -52,7 +52,7 @@ urlpatterns = (
                 namespace="control",
             ),
         ),
-        re_path(r"", include((live, "live"), namespace="live")),
+        path("", include((live, "live"), namespace="live")),
     ]
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     + [

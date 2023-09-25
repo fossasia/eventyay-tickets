@@ -3,8 +3,9 @@ import uuid
 from datetime import timedelta
 
 from channels.db import database_sync_to_async
-from django.contrib.postgres.fields import ArrayField, JSONField
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
+from django.db.models import JSONField
 from django.utils.crypto import get_random_string
 from django.utils.timezone import now
 

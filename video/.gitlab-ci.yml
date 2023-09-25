@@ -19,7 +19,7 @@ py_test:
   retry: 2
   services:
     - redis:latest
-    - postgres:11
+    - postgres:15
   script:
     - cd server
     - python -m venv env

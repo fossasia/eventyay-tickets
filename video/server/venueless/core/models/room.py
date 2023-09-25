@@ -1,8 +1,7 @@
 import uuid
 
-from django.contrib.postgres.fields import JSONField
 from django.db import models
-from django.db.models import Exists, OuterRef, Q
+from django.db.models import Exists, JSONField, OuterRef, Q
 from django.db.models.expressions import RawSQL, Value
 from django.utils.crypto import get_random_string
 from rest_framework import serializers

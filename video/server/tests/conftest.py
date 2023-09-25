@@ -22,7 +22,7 @@ from venueless.core.models.world import PlannedUsage
 
 @pytest.fixture(autouse=True)
 async def clear_redis():
-    from venueless.core.utils.redis import aioredis
+    from venueless.core.utils.redis import aredis
 
     if settings.REDIS_USE_PUBSUB:
         try:
@@ -30,7 +30,7 @@ async def clear_redis():
         except:  # noqa
             channel_layers._reset_backends("CHANNEL_LAYERS")
 
-    async with aioredis() as redis:
+    async with aredis() as redis:
         await redis.flushall()
 
 

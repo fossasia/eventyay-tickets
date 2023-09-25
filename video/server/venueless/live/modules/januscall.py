@@ -2,9 +2,9 @@ import hashlib
 import json
 import uuid
 
-from aioredis_lock import RedisLock
 from channels.db import database_sync_to_async
 from django.conf import settings
+from redis.asyncio.lock import Lock
 from sentry_sdk import capture_exception
 
 from venueless.core.models import JanusServer
@@ -18,7 +18,7 @@ from venueless.core.services.janus import (
 )
 from venueless.core.services.roulette import is_member_of_roulette_call
 from venueless.core.services.user import get_public_user
-from venueless.core.utils.redis import aioredis
+from venueless.core.utils.redis import aredis
 from venueless.live.decorators import command, require_world_permission, room_action
 from venueless.live.exceptions import ConsumerException
 from venueless.live.modules.base import BaseModule
@@ -73,12 +73,12 @@ class JanusCallModule(BaseModule):
         user_secret_token = hashlib.sha256(
             f"januscall:usersecret:{settings.SECRET_KEY}:{self.consumer.user.pk}".encode()
         ).hexdigest()
-        async with aioredis() as redis:
-            async with RedisLock(
+        async with aredis() as redis:
+            async with Lock(
                 redis,
-                key=f"januscall:lock:{redis_key}",
+                name=f"januscall:lock:{redis_key}",
                 timeout=90,
-                wait_timeout=90,
+                blocking_timeout=90,
             ):
                 room_data = await redis.get(f"januscall:{redis_key}")
 
@@ -159,7 +159,7 @@ class JanusCallModule(BaseModule):
     @command("identify")
     @require_world_permission(Permission.WORLD_VIEW)
     async def identify(self, body):
-        async with aioredis() as redis:
+        async with aredis() as redis:
             sessionid = body.get("id", "").split("_")[0]
             userid = await redis.get(f"januscall:user:{sessionid}")
             if userid:

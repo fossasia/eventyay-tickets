@@ -40,7 +40,7 @@ from venueless.core.services.user import (
     update_user,
     user_broadcast,
 )
-from venueless.core.utils.redis import aioredis
+from venueless.core.utils.redis import aredis
 from venueless.core.utils.statsd import statsd
 from venueless.importers.tasks import conftool_update_schedule
 from venueless.live.channels import GROUP_USER, GROUP_WORLD
@@ -110,7 +110,7 @@ class AuthModule(BaseModule):
             with configure_scope() as scope:
                 scope.user = {"id": str(self.consumer.user.id)}
 
-        async with aioredis() as redis:
+        async with aredis() as redis:
             redis_read = await redis.hgetall(f"chat:read:{self.consumer.user.id}")
             read_pointers = {k.decode(): int(v.decode()) for k, v in redis_read.items()}
 
@@ -159,14 +159,14 @@ class AuthModule(BaseModule):
             s.increment(f"authentication.completed,world={self.consumer.world.pk}")
 
         if self.consumer.world.config.get("pretalx", {}).get("conftool"):
-            async with aioredis() as redis:
+            async with aredis() as redis:
                 # This is a very hacky replacement of a cronjob. The main advantage is that it will only run while
                 # the world is in use and stop running after the event. Let's see how it works out in the real world.
                 if await redis.set(
                     f"conftool:update.triggered:{self.consumer.world.pk}",
                     "yes",
-                    expire=300,
-                    exist=redis.SET_IF_NOT_EXIST,
+                    ex=300,
+                    nx=True,
                 ):
                     await sync_to_async(conftool_update_schedule.apply_async)(
                         kwargs={"world": str(self.consumer.world.id)}
@@ -180,7 +180,7 @@ class AuthModule(BaseModule):
         message = {"type": "connection.replaced"}
 
         if settings.REDIS_USE_PUBSUB:
-            async with aioredis() as redis:
+            async with aredis() as redis:
                 channels_to_drop = await redis.lrange(
                     f"connections.list.user:{self.consumer.user.id}",
                     0,
@@ -236,7 +236,10 @@ class AuthModule(BaseModule):
                 args += [int(time.time()), cl.expiry]
                 async with cl.connection(connection_index) as connection:
                     await connection.eval(
-                        group_send_lua, keys=channel_redis_keys, args=args
+                        group_send_lua,
+                        len(channel_redis_keys),
+                        *channel_redis_keys,
+                        *args,
                     )
 
     @command("update")

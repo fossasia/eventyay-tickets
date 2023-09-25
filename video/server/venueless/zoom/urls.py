@@ -1,9 +1,9 @@
-from django.urls import re_path
+from django.urls import path
 
 from . import views
 
 urlpatterns = [
-    re_path("meeting/$", views.MeetingView.as_view(), name="meeting"),
-    re_path("iframetest/$", views.IframeTestView.as_view(), name="iframetest"),
-    re_path("ended/$", views.MeetingEndedView.as_view(), name="ended"),
+    path("meeting/", views.MeetingView.as_view(), name="meeting"),
+    path("iframetest/", views.IframeTestView.as_view(), name="iframetest"),
+    path("ended/", views.MeetingEndedView.as_view(), name="ended"),
 ]

@@ -5,10 +5,10 @@ from urllib.parse import urljoin
 import icalendar
 import jwt
 from django.conf import settings
-from django.contrib.postgres.fields import JSONField
 from django.core.files import File
 from django.core.validators import RegexValidator
 from django.db import models
+from django.db.models import JSONField
 from django.utils.crypto import get_random_string
 
 from venueless.core.models import User

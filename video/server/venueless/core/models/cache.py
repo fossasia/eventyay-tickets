@@ -8,7 +8,7 @@ from channels.db import database_sync_to_async
 from django.core.cache import caches
 from django.db import models, transaction
 
-from venueless.core.utils.redis import aioredis
+from venueless.core.utils.redis import aredis
 
 SETIFHIGHER = """local c = tonumber(redis.call('get', KEYS[1]));
 if c then
@@ -71,7 +71,7 @@ class VersionedModel(models.Model):
             ):
                 return
 
-        async with aioredis(self._cachekey) as redis:
+        async with aredis(self._cachekey) as redis:
             latest_version = await redis.get(f"{self._cachekey}:version")
         if latest_version:
             if latest_version == b"deleted":
@@ -126,11 +126,12 @@ class VersionedModel(models.Model):
         self.__refresh_time = time.time()
 
     async def _set_cache_version(self):
-        async with aioredis(self._cachekey) as redis:
+        async with aredis(self._cachekey) as redis:
             await redis.eval(
                 SETIFHIGHER,
-                [f"{self._cachekey}:version"],
-                [self.version],
+                1,
+                f"{self._cachekey}:version",
+                self.version,
             )
 
         cache = caches["process"]
@@ -138,7 +139,7 @@ class VersionedModel(models.Model):
         self.__refresh_time = time.time()
 
     async def _set_cache_deleted(self):
-        async with aioredis(self._cachekey) as redis:
+        async with aredis(self._cachekey) as redis:
             await redis.set(
                 f"{self._cachekey}:version",
                 "deleted",

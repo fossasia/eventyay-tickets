@@ -9,7 +9,7 @@ from django.core.management.base import BaseCommand
 from tqdm import tqdm
 
 from venueless.core.services.connections import get_connections
-from venueless.core.utils.redis import aioredis
+from venueless.core.utils.redis import aredis
 from venueless.live.channels import GROUP_VERSION
 
 
@@ -139,7 +139,7 @@ class Command(BaseCommand):
         if settings.REDIS_USE_PUBSUB:
             channel_names = []
 
-            async with aioredis() as redis:
+            async with aredis() as redis:
                 for v in conns:
                     await redis.zremrangebyscore(
                         f"version.{v}", min=0, max=int(time.time()) - 24 * 3600
@@ -176,7 +176,9 @@ class Command(BaseCommand):
                 ) in connection_to_channel_keys.items():
                     async with cl.connection(connection_index) as connection:
                         for key, message in channel_redis_keys:
-                            await connection.zadd(key, int(time.time()), message)
+                            await connection.zadd(
+                                key, dict([(message, int(time.time()))])
+                            )
                             await connection.expire(key, cl.expiry)
                             time.sleep(float(interval) / 1000.0)
                             pbar.update(1)

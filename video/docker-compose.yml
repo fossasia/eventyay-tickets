@@ -59,12 +59,14 @@ services:
     redis1:
         image: "redis:latest"
     db:
-        image: "postgres:11"
+        image: "postgres:15"
         ports:
             - "5438:5432"
         volumes:
             - postgres_data:/var/lib/postgresql/data/
         environment:
+            - POSTGRES_INITDB_ARGS=--auth-host=md5
+            - POSTGRES_HOST_AUTH_METHOD=md5
             - POSTGRES_USER=venueless
             - POSTGRES_PASSWORD=venueless
 volumes:

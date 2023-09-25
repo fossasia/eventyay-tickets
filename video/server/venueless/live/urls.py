@@ -1,4 +1,4 @@
-from django.urls import re_path
+from django.urls import path, re_path
 
 from . import views
 
@@ -8,8 +8,8 @@ urlpatterns = [
         views.ShortTokenView.as_view(),
         name="token.short",
     ),
-    re_path(
-        "_feedback/$",
+    path(
+        "_feedback/",
         views.FeedbackView.as_view(),
         name="feedback",
     ),

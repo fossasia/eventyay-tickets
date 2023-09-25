@@ -2,12 +2,12 @@ import time
 
 from django.conf import settings
 
-from venueless.core.utils.redis import aioredis
+from venueless.core.utils.redis import aredis
 
 
 async def register_connection():
-    async with aioredis() as redis:
-        tr = redis.multi_exec()
+    async with aredis() as redis:
+        tr = redis.pipeline(transaction=False)
         tr.hincrby(
             "connections",
             f"{settings.VENUELESS_COMMIT}.{settings.VENUELESS_ENVIRONMENT}",
@@ -22,7 +22,7 @@ async def register_connection():
 
 
 async def unregister_connection():
-    async with aioredis() as redis:
+    async with aredis() as redis:
         await redis.hincrby(
             "connections",
             f"{settings.VENUELESS_COMMIT}.{settings.VENUELESS_ENVIRONMENT}",
@@ -31,8 +31,8 @@ async def unregister_connection():
 
 
 async def register_user_connection(user_id, channel_name):
-    async with aioredis() as redis:
-        tr = redis.multi_exec()
+    async with aredis() as redis:
+        tr = redis.pipeline(transaction=False)
         tr.rpush(
             f"connections.list.user:{user_id}",
             channel_name,
@@ -45,7 +45,7 @@ async def register_user_connection(user_id, channel_name):
 
 
 async def unregister_user_connection(user_id, channel_name):
-    async with aioredis() as redis:
+    async with aredis() as redis:
         await redis.lrem(
             f"connections.list.user:{user_id}",
             0,
@@ -54,7 +54,7 @@ async def unregister_user_connection(user_id, channel_name):
 
 
 async def get_user_connection_count(user_id):
-    async with aioredis() as redis:
+    async with aredis() as redis:
         print(
             f"connections.list.user:{user_id}",
             await redis.llen(
@@ -70,8 +70,8 @@ async def ping_connection(last_ping, user=None):
     n = time.time()
     if n - last_ping < 50:
         return last_ping
-    async with aioredis() as redis:
-        tr = redis.multi_exec()
+    async with aredis() as redis:
+        tr = redis.pipeline(transaction=False)
         if user:
             tr.expire(
                 f"connections.list.user:{user.id}",
@@ -87,7 +87,7 @@ async def ping_connection(last_ping, user=None):
 
 
 async def get_connections():
-    async with aioredis() as redis:
+    async with aredis() as redis:
         conns = await redis.hgetall("connections")
         ret = {}
         for k, v in conns.items():
