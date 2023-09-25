@@ -16,7 +16,9 @@ XML_REPLACE = str.maketrans(
 
 
 def sanitize_xml(text):
-    return text.translate(XML_REPLACE)
+    if not text:
+        return ""
+    return str(text).translate(XML_REPLACE)
 
 
 class ScheduleFeed(Feed):
