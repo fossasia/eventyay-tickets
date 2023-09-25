@@ -303,6 +303,8 @@ SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 CSP_DEFAULT_SRC = ("'self'", "'unsafe-eval'")
 
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
 MESSAGE_STORAGE = "django.contrib.messages.storage.session.SessionStorage"
 
 template_loaders = (
