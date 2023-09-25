@@ -1096,7 +1096,10 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
         for entry, detail in deletion_order:
             if detail:
                 for obj in entry:
-                    obj.delete()
+                    if isinstance(obj, Submission):
+                        obj.delete(force=True)
+                    else:
+                        obj.delete()
             else:
                 entry.delete()
 
