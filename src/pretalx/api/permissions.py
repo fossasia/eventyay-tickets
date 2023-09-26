@@ -7,16 +7,23 @@ class ApiPermission(BasePermission):
         if not event:  # Only true for root API view
             return True
 
+        permission_object = self.get_permission_object(view, obj, request)
+
         if request.method in SAFE_METHODS:
             read_permission = getattr(view, "read_permission_required", None)
             if read_permission:
-                return request.user.has_perm(read_permission, obj)
+                return request.user.has_perm(read_permission, permission_object)
             return True
 
         write_permission = getattr(view, "write_permission_required", None)
         if write_permission:
-            return request.user.has_perm(write_permission, obj)
+            return request.user.has_perm(write_permission, permission_object)
         return False
+
+    def get_permission_object(self, view, obj, request, detail=False):
+        if hasattr(view, "get_permission_object"):
+            return view.get_permission_object()
+        return obj or self.request.event
 
     def has_permission(self, request, view):
         return self._has_permission(view, getattr(request, "event", None), request)
