@@ -30,3 +30,26 @@ class ApiPermission(BasePermission):
 
     def has_object_permission(self, request, view, obj):
         return self._has_permission(view, obj, request)
+
+
+class PluginPermission(ApiPermission):
+    """Use this class to restrict access to views based on active plugins.
+
+    Set PluginPermission.plugin_required to the name of the plugin that is required to access the endpoint.
+    """
+
+    def _has_permission(self, view, request):
+        event = getattr(request, "event", None)
+        if not event:
+            # Only events can have plugins
+            return False
+        plugin_name = getattr(view, "plugin_required", None)
+        if not plugin_name:
+            return True
+        return plugin_name in event.plugin_list
+
+    def has_permission(self, request, view):
+        return self._has_permission(view, request)
+
+    def has_object_permission(self, request, view, obj):
+        return self._has_permission(view, request)
