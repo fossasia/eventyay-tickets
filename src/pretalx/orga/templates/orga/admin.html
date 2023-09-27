@@ -25,15 +25,25 @@
         </div>
     {% endif %}
 
+    <p>
+        {% translate "Your pretalx version is:" %} <strong>{{ pretalx_version|copyable }}</strong>.
+        {% blocktranslate trimmed with url="/orga/admin/update/" %}
+            You can check for updates <a href="{{ url }}">here</a>.
+        {% endblocktranslate %}
+    </p>
+
     <h2>{% translate "Settings" %}</h2>
 
-    <div class="alert alert-info">
+    <p>
         {% if settings.CONFIG_FILES %}
-            {% translate "Settings have been loaded from:" %} {{ settings.CONFIG_FILES|join:', ' }}
+            {% translate "Settings have been loaded from:" %}
+            {% for config_file in settings.CONFIG_FILES %}
+                <code>{{ config_file|copyable }}</code>{% if not forloop.last %},{% endif %}
+            {% endfor %}
         {% else %}
             {% translate "No settings files were found, all settings are either set to their default value or have been read from environment variables." %}
         {% endif %}
-    </div>
+    </p>
     <ul>
         <li>{% translate "Database" %}
             <ul>

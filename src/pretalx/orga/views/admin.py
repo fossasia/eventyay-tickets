@@ -33,6 +33,10 @@ class AdminDashboard(PermissionRequired, TemplateView):
     def executable(self):
         return sys.executable
 
+    @context
+    def pretalx_version(self):
+        return settings.PRETALX_VERSION
+
 
 class UpdateCheckView(PermissionRequired, FormView):
     template_name = "orga/update.html"

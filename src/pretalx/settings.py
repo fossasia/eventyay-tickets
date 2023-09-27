@@ -640,7 +640,7 @@ if DEBUG:
         import subprocess
 
         PRETALX_VERSION = (
-            subprocess.check_output(["/usr/bin/git", "describe", "--always"])
+            subprocess.check_output(["/usr/bin/git", "describe", "--always", "--tags"])
             .decode()
             .strip()
         )
