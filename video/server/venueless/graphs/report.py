@@ -247,7 +247,9 @@ class ReportGenerator:
             Q(end__lt=self.date_begin) | Q(start__gt=self.date_end)
         )
 
-        unique_users = rvqs.filter(room=room, user__type=User.UserType.PERSON).values("user")
+        unique_users = rvqs.filter(room=room, user__type=User.UserType.PERSON).values(
+            "user"
+        )
         users_with_duration = User.objects.filter(
             id__in=unique_users,
             type=User.UserType.PERSON,

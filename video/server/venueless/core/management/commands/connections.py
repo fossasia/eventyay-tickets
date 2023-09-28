@@ -9,7 +9,7 @@ from django.core.management.base import BaseCommand
 from tqdm import tqdm
 
 from venueless.core.services.connections import get_connections
-from venueless.core.utils.redis import aredis
+from venueless.core.utils.redis import _pool, aredis
 from venueless.live.channels import GROUP_VERSION
 
 
@@ -65,14 +65,17 @@ class Command(BaseCommand):
         elif options["subcommand"] == "force_reload":
             self._force_reload(*args, **options)
 
-    def _list(self, *args, **options):
-        rc = async_to_sync(get_connections)()
+    @async_to_sync
+    async def _list(self, *args, **options):
+        rc = await get_connections()
         print("{:60} {}".format("filter", "est. number of connections"))
         for k, v in rc.items():
             print(f"{k:60} {v}")
+        await self._close()
 
-    def _drop(self, *args, **options):
-        rc = async_to_sync(get_connections)()
+    @async_to_sync
+    async def _drop(self, *args, **options):
+        rc = await get_connections()
         filters = options["filter"] or ("*",)
 
         conns = []
@@ -81,14 +84,16 @@ class Command(BaseCommand):
                 if fnmatch.fnmatch(key, fil):
                     conns.append(key)
 
-        self._staggered_group_send(
+        await self._staggered_group_send(
             conns,
             {"type": "connection.drop"},
             interval=options["interval"],
         )
+        await self._close()
 
-    def _force_reload(self, *args, **options):
-        rc = async_to_sync(get_connections)()
+    @async_to_sync
+    async def _force_reload(self, *args, **options):
+        rc = await get_connections()
         filters = options["filter"] or ("*",)
 
         conns = []
@@ -97,11 +102,18 @@ class Command(BaseCommand):
                 if fnmatch.fnmatch(key, fil):
                     conns.append(key)
 
-        self._staggered_group_send(
+        await self._staggered_group_send(
             conns,
             {"type": "connection.reload"},
             interval=options["interval"],
         )
+        await self._close()
+
+    async def _close(self):
+        await get_channel_layer().flush()
+        if settings.REDIS_USE_PUBSUB:
+            for v in _pool.values():
+                await v.aclose()
 
     def _group_messages(self, channel_names, message):
         cl = get_channel_layer()
@@ -122,7 +134,6 @@ class Command(BaseCommand):
 
         return (connection_to_channel_keys,)
 
-    @async_to_sync
     async def _staggered_group_send(self, conns, message, interval):
         """
         Sends a message to the entire group, but wait for `interval` between every message.
