@@ -23,7 +23,7 @@ jobs:
       - name: Set up Python 3.9
         uses: actions/setup-python@v4
         with:
-          python-version: 3.9
+          python-version-file: ".github/workflows/python-version.txt"
           cache: "pip"
       - name: Install system packages
         run: |
@@ -46,7 +46,7 @@ jobs:
       - name: Set up Python 3.9
         uses: actions/setup-python@v4
         with:
-          python-version: 3.9
+          python-version-file: ".github/workflows/python-version.txt"
           cache: "pip"
       - name: Install Dependencies
         run: pip3 install -Ur doc/requirements.txt
