@@ -1,5 +1,4 @@
 import binascii
-import os
 from contextlib import asynccontextmanager
 
 from channels.layers import get_channel_layer
