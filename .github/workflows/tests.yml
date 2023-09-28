@@ -56,16 +56,11 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
+          cache: "pip"
       - name: Set up node
         uses: actions/setup-node@v3
         with:
           node-version: 'latest'
-      - uses: actions/cache@v3
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('pyproject.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
       - name: Install system dependencies
         run: |
           sudo apt update
