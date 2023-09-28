@@ -3,7 +3,6 @@ import os
 import re
 from urllib.parse import urljoin, urlparse
 
-from asgiref.sync import async_to_sync
 from channels.db import database_sync_to_async
 from channels.layers import get_channel_layer
 from django.conf import settings
