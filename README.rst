@@ -1,7 +1,7 @@
 |logo|
 
-.. image:: https://img.shields.io/github/workflow/status/pretalx/pretalx/Tests.svg
-   :target: https://github.com/pretalx/pretalx/actions?query=workflow%3ATests
+.. image:: https://img.shields.io/github/actions/workflow/status/pretalx/pretalx/tests.yml?branch=main
+   :target: https://github.com/pretalx/pretalx/actions/workflows/tests.yml?query=workflow%3ATests
    :alt: Continuous integration
 
 .. image:: https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/rixx/0ac3e4314d780e809c0164c8c329f36f/raw/covbadge.json
@@ -18,10 +18,6 @@
 .. image:: https://img.shields.io/badge/news-blog-3aa57c
    :target: https://pretalx.com/p/news/
    :alt: Website
-
-.. image:: https://img.shields.io/twitter/url?label=Twitter&logoColor=%234aa57c&style=social&url=https%3A%2F%2Ftwitter.com%2Fpretalx
-   :target: https://twitter.com/pretalx
-   :alt: Twitter account
 
 ``pretalx`` is a conference planning tool focused on providing the best
 experience for organisers, speakers, reviewers, and attendees alike.  It
