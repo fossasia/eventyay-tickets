@@ -65,4 +65,7 @@ jobs:
           . test_venv/bin/activate
 
           python -m pip install dist/pretalx*whl
-          python -m pretalx help
+      - name: Make sure we can run pretalx commands
+        run: python -m pretalx help
+      - name: Make sure we can run through all migrations
+        run: python -m pretalx migrate
