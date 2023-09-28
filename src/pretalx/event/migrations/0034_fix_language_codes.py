@@ -126,6 +126,10 @@ def fix_language_codes(apps, schema_editor):
 class Migration(migrations.Migration):
     dependencies = [
         ("event", "0033_chinese_locale_codes"),
+        ("person", "0014_speakerinformation"),
+        ("schedule", "0013_auto_20191107_1748"),
+        ("submission", "0052_auto_20201010_1307"),
+        ("mail", "0009_queuedmail_locale"),
     ]
 
     operations = [
