@@ -1,5 +1,6 @@
 import collections
 import fnmatch
+import os
 import time
 
 from asgiref.sync import async_to_sync
@@ -9,7 +10,7 @@ from django.core.management.base import BaseCommand
 from tqdm import tqdm
 
 from venueless.core.services.connections import get_connections
-from venueless.core.utils.redis import _pool, aredis
+from venueless.core.utils.redis import aredis, flush_aredis_pool
 from venueless.live.channels import GROUP_VERSION
 
 
@@ -110,10 +111,9 @@ class Command(BaseCommand):
         await self._close()
 
     async def _close(self):
-        await get_channel_layer().flush()
-        if settings.REDIS_USE_PUBSUB:
-            for v in _pool.values():
-                await v.aclose()
+        if "PYTEST_CURRENT_TEST" not in os.environ:
+            await get_channel_layer().flush()
+            await flush_aredis_pool()
 
     def _group_messages(self, channel_names, message):
         cl = get_channel_layer()

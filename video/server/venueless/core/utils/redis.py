@@ -1,4 +1,5 @@
 import binascii
+import os
 from contextlib import asynccontextmanager
 
 from channels.layers import get_channel_layer
@@ -25,10 +26,19 @@ if settings.REDIS_USE_PUBSUB:
     @asynccontextmanager
     async def aredis(shard_key=None):
         global _pool
+
         if shard_key:
             shard_index = consistent_hash(shard_key)
         else:
             shard_index = 0
+
+        if "PYTEST_CURRENT_TEST" in os.environ:
+            # During tests, async is... different.
+            shard = get_channel_layer()._shards[shard_index]
+            async with shard._lock:
+                shard._ensure_redis()
+            yield shard._redis
+            return
 
         if shard_index not in _pool:
             shard = get_channel_layer()._shards[shard_index]
@@ -38,7 +48,7 @@ if settings.REDIS_USE_PUBSUB:
         try:
             yield conn
         finally:
-            await conn.close()
+            await conn.aclose()
 
 else:
 
@@ -48,6 +58,15 @@ else:
         else:
             shard_index = 0
         return get_channel_layer().connection(shard_index)
+
+
+async def flush_aredis_pool():
+    global _pool
+
+    if settings.REDIS_USE_PUBSUB:
+        for v in _pool.values():
+            await v.aclose()
+        _pool.clear()
 
 
 """

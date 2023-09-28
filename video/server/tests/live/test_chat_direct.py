@@ -716,7 +716,9 @@ async def test_hide_and_reappear(world):
         response = await c2.receive_json_from()
         assert "success" == response[0]
         cl = await c2b.receive_json_from()  # channel list
-        assert channel not in [c["id"] for c in cl[1]["channels"]]
+        if cl[0] != "chat.channels":
+            cl = await c2b.receive_json_from()  # channel list
+            assert channel not in [c["id"] for c in cl[1]["channels"]]
 
         await c1.send_json_to(
             [

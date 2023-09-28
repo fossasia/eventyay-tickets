@@ -18,6 +18,7 @@ from venueless.core.models import (
     World,
 )
 from venueless.core.models.world import PlannedUsage
+from venueless.core.utils.redis import flush_aredis_pool
 
 
 @pytest.fixture(autouse=True)
@@ -32,6 +33,8 @@ async def clear_redis():
 
     async with aredis() as redis:
         await redis.flushall()
+
+    await flush_aredis_pool()
 
 
 @pytest.fixture(autouse=True)

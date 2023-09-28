@@ -995,6 +995,8 @@ async def test_last_disconnect_is_leave_in_volatile_channel(world, volatile_chat
                 assert len(response[2]["members"]) == 0
 
                 response = await c3.receive_json_from()
+                if response[0] == "user.updated":
+                    response = await c3.receive_json_from()
                 assert response == ["chat.channels", {"channels": []}]
 
                 await c3.send_json_to(

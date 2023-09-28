@@ -4,6 +4,7 @@ import re
 from urllib.parse import urljoin, urlparse
 
 from asgiref.sync import async_to_sync
+from channels.db import database_sync_to_async
 from channels.layers import get_channel_layer
 from django.conf import settings
 from django.db import OperationalError
@@ -185,13 +186,9 @@ class HealthcheckView(View):
     This view renders the main HTML. It is not used during development but only during production usage.
     """
 
-    @async_to_sync
-    async def _check_redis(self):
+    async def get(self, request, *args, **kwargs):
         await get_channel_layer().send("healthcheck_channel", {"type": "healthcheck"})
-
-    def get(self, request, *args, **kwargs):
-        self._check_redis()
-        World.objects.count()
+        await database_sync_to_async(World.objects.count)()
         return HttpResponse("OK")
 
 

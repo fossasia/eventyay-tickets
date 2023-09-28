@@ -3,9 +3,10 @@ from django.conf import settings
 
 
 @pytest.mark.django_db
+@pytest.mark.asyncio
 @pytest.mark.skipif(
     settings.REDIS_USE_PUBSUB, reason="asyncio weirdness makes this fail"
 )
-def test_healthcheck_valid(client, world):
-    r = client.get("/healthcheck/", HTTP_HOST="foobar.com")
+async def test_healthcheck_valid(async_client, world):
+    r = await async_client.get("/healthcheck/", HTTP_HOST="foobar.com")
     assert r.status_code == 200
