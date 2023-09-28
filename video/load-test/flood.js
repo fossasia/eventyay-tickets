@@ -24,8 +24,8 @@ export const options = {
 	},
 	thresholds: {
 		'checks{ping:no-timeout}': [{threshold: 'rate>0.90', abortOnFail: true}],
-		chat_message: [{threshold: 'p(90)<10000', abortOnFail: true}],
-		request_response: [{threshold: 'p(90)<10000', abortOnFail: true}],
+		chat_message_time: [{threshold: 'p(90)<10000', abortOnFail: true}],
+		request_response_time: [{threshold: 'p(90)<10000', abortOnFail: true}],
 		connection_errors: [{threshold: 'rate<0.05', abortOnFail: true}],
 		message_errors: [{threshold: 'rate<0.05', abortOnFail: true}]
 	}
