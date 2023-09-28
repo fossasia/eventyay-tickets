@@ -3,7 +3,9 @@ import os
 from contextlib import asynccontextmanager
 
 from channels.layers import get_channel_layer
+from channels_redis.utils import create_pool
 from django.conf import settings
+from redis import asyncio as aioredis
 
 
 def consistent_hash(value):
@@ -19,25 +21,25 @@ def consistent_hash(value):
 
 
 if settings.REDIS_USE_PUBSUB:
+    _pool = {}
 
     @asynccontextmanager
     async def aredis(shard_key=None):
+        global _pool
         if shard_key:
             shard_index = consistent_hash(shard_key)
         else:
             shard_index = 0
 
-        shard = get_channel_layer()._shards[shard_index]
-        if "PYTEST_CURRENT_TEST" in os.environ:
-            # During tests, release the lock before we yield. Otherwise, we easily have deadlocks when running multiple
-            # communicators in on test.
-            async with shard._lock:
-                shard._ensure_redis()
-            yield shard._redis
-        else:
-            async with shard._lock:
-                shard._ensure_redis()
-                yield shard._redis
+        if shard_index not in _pool:
+            shard = get_channel_layer()._shards[shard_index]
+            _pool[shard_index] = create_pool(shard.host)
+
+        conn = aioredis.Redis(connection_pool=_pool[shard_index])
+        try:
+            yield conn
+        finally:
+            await conn.close()
 
 else:
 
