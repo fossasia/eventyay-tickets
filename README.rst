@@ -5,6 +5,7 @@
    :alt: Continuous integration
 
 .. image:: https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/rixx/0ac3e4314d780e809c0164c8c329f36f/raw/covbadge.json
+   :target: https://github.com/pretalx/pretalx/actions/workflows/tests.yml?query=workflow%3ATests
    :alt: Coverage
 
 .. image:: https://img.shields.io/pypi/v/pretalx.svg?colorB=3aa57c
@@ -93,7 +94,7 @@ If you want to look at conferences using pretalx, head over to the wiki for a
 `list of events`_. And if you use pretalx for your event, please add it to the
 list (or tell us about it, and we'll add it)!
 
-.. |logo| image:: https://raw.githubusercontent.com/pretalx/pretalx/main/assets/logo.png
+.. |logo| image:: https://raw.githubusercontent.com/pretalx/pretalx/main/assets/logo.svg
    :alt: pretalx logo
    :target: https://pretalx.com
 .. |screenshots| image:: https://raw.githubusercontent.com/pretalx/pretalx/main/assets/screenshots.png
