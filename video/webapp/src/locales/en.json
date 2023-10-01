@@ -375,6 +375,8 @@
   "standalone/Anonymous:schedule:current-session": "Current Session",
   "standalone/Anonymous:schedule:next-sessions": "Next Sessions",
   "standalone/Anonymous:footer-anonymously": "You're voting anonymously",
+  "standalone/Anonymous:no-content": "Sorry, no polls or questions currently active in this room!",
+  "standalone/Anonymous:no-sessions": "No sessions happening soon in this room.",
   "User:label:deleted": "Deleted User",
   "User:state:banned": "banned",
   "User:state:blocked": "blocked",
