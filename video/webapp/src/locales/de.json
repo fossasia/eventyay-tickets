@@ -419,5 +419,7 @@
   "standalone/Anonymous:tabs-header:schedule": "Zeitplan",
   "standalone/Anonymous:schedule:current-session": "Aktuelle Session",
   "standalone/Anonymous:schedule:next-sessions": "Nächste Sessions",
-  "standalone/Anonymous:footer-anonymously": "Du stimmst anonym ab"
+  "standalone/Anonymous:footer-anonymously": "Du stimmst anonym ab",
+  "standalone/Anonymous:no-content": "Zur Zeit keine aktiven Umfragen oder Fragen für diesen Raum.",
+  "standalone/Anonymous:no-sessions": "Zur Zeit keine aktiven Sessions für diesen Raum."
 }

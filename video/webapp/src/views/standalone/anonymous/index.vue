@@ -17,11 +17,15 @@
 				questions(v-if="modules['question']", v-show="activeSidebarTab === 'questions'", :module="modules['question']", @change="changedTabContent('questions')")
 				polls(v-if="modules['poll']", v-show="activeSidebarTab === 'polls'", :module="modules['poll']", @change="changedTabContent('polls')")
 				.schedule(v-if="activeSidebarTab === 'schedule'")
-					h3 {{ $t('standalone/Anonymous:schedule:current-session') }}
-					Session(:session="session")
-					h3 {{ $t('standalone/Anonymous:schedule:next-sessions') }}
-					Session(v-for="session of nextSessions", :session="session")
-		.hint(v-if="activeSidebarTab !== 'schedule' && isAnonymous") {{ $t('standalone/Anonymous:footer-anonymously') }}
+					template(v-if="session")
+						h3 {{ $t('standalone/Anonymous:schedule:current-session') }}
+						Session(:session="session")
+					template(v-if="nextSessions.length")
+						h3 {{ $t('standalone/Anonymous:schedule:next-sessions') }}
+						Session(v-for="session of nextSessions", :session="session")
+					.no-sessions(v-if="!session && !nextSessions.length") {{ $t('standalone/Anonymous:no-sessions') }}
+			.hint(v-if="activeSidebarTab !== 'schedule' && isAnonymous") {{ $t('standalone/Anonymous:footer-anonymously') }}
+		.no-content(v-else) {{ $t('standalone/Anonymous:no-content') }}
 </template>
 <script>
 // TODO
@@ -171,4 +175,8 @@ export default {
 		text-align: center
 		color: $clr-secondary-text-light
 		margin: 16px
+	.no-content, .no-sessions
+		text-align: center
+		margin: 16px
+		font-size: 20px
 </style>
