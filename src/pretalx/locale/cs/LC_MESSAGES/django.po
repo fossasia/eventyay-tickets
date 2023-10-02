@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-08-30 13:22+0000\n"
-"PO-Revision-Date: 2023-09-03 07:54+0000\n"
+"PO-Revision-Date: 2023-10-01 16:43+0000\n"
 "Last-Translator: Michal Stanke <michal@stanke.cz>\n"
 "Language-Team: none\n"
 "Language: cs\n"
@@ -5133,7 +5133,7 @@ msgstr "Nová vlastní šablona"
 
 #: pretalx/orga/templates/orga/mails/template_list.html:35
 msgid "Acknowledge Mail"
-msgstr "Potvrdit e-mail"
+msgstr "Potvrdit přijetí e-mailu"
 
 #: pretalx/orga/templates/orga/mails/template_list.html:44
 #: pretalx/orga/templates/orga/mails/template_list.html:64
@@ -5927,7 +5927,7 @@ msgstr ""
 
 #: pretalx/orga/templates/orga/settings/review.html:60
 msgid "Review Score category"
-msgstr "Kategorie skóre"
+msgstr "Kategorie hodnocení kontroly"
 
 #: pretalx/orga/templates/orga/settings/review.html:65
 msgid "Delete score category"
@@ -8125,7 +8125,7 @@ msgid "{name} ({duration} minutes)"
 msgstr "{name} ({duration} minut)"
 
 msgid "minutes"
-msgstr ""
+msgstr "minut"
 
 #, fuzzy
 #~| msgid "Assign reviewers"
