@@ -40,6 +40,10 @@ class ReviewDashboard(EventPermissionRequired, BaseSubmissionList):
         SubmissionStates.REJECTED,
         SubmissionStates.CONFIRMED,
     )
+    DEFAULT_PAGINATION = None
+
+    def get_paginage_by(self, queryset):
+        return None
 
     def filter_range(self, queryset):
         review_count = self.request.GET.get("review-count") or ","
