@@ -5,10 +5,9 @@ from django.db import models
 from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
-from django_scopes import ScopedManager
 from i18nfield.fields import I18nCharField, I18nTextField
 
-from pretalx.common.mixins.models import LogMixin
+from pretalx.common.mixins.models import PretalxModel
 from pretalx.common.phrases import phrases
 from pretalx.common.urls import EventUrls
 
@@ -78,7 +77,7 @@ def field_helper(cls):
 
 
 @field_helper
-class CfP(LogMixin, models.Model):
+class CfP(PretalxModel):
     """Every :class:`~pretalx.event.models.event.Event` has one Call for
     Papers/Participation/Proposals.
 
@@ -111,8 +110,6 @@ class CfP(LogMixin, models.Model):
     )
     settings = models.JSONField(default=default_settings)
     fields = models.JSONField(default=default_fields)
-
-    objects = ScopedManager(event="event")
 
     class urls(EventUrls):
         base = "{self.event.orga_urls.cfp}"

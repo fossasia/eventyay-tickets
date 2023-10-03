@@ -2,14 +2,13 @@ from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
-from django_scopes import ScopedManager
 from i18nfield.fields import I18nCharField, I18nTextField
 
-from pretalx.common.mixins.models import LogMixin, OrderedModel
+from pretalx.common.mixins.models import OrderedModel, PretalxModel
 from pretalx.common.urls import EventUrls
 
 
-class Track(LogMixin, OrderedModel, models.Model):
+class Track(OrderedModel, PretalxModel):
     """A track groups :class:`~pretalx.submission.models.submission.Submission`
     objects within an :class:`~pretalx.event.models.event.Event`, e.g. by
     topic.
@@ -43,8 +42,6 @@ class Track(LogMixin, OrderedModel, models.Model):
         ),
         default=False,
     )
-
-    objects = ScopedManager(event="event")
 
     class Meta:
         ordering = ("position",)

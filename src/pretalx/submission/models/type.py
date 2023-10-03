@@ -1,10 +1,9 @@
 from django.db import models
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
-from django_scopes import ScopedManager
 from i18nfield.fields import I18nCharField
 
-from pretalx.common.mixins.models import LogMixin
+from pretalx.common.mixins.models import PretalxModel
 from pretalx.common.urls import EventUrls
 
 
@@ -14,7 +13,7 @@ def pleasing_number(number):
     return number
 
 
-class SubmissionType(LogMixin, models.Model):
+class SubmissionType(PretalxModel):
     """Each :class:`~pretalx.submission.models.submission.Submission` has one
     SubmissionType.
 
@@ -48,8 +47,6 @@ class SubmissionType(LogMixin, models.Model):
         ),
         default=False,
     )
-
-    objects = ScopedManager(event="event")
 
     class urls(EventUrls):
         base = edit = "{self.event.cfp.urls.types}{self.pk}/"

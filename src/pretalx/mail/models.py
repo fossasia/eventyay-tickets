@@ -8,18 +8,17 @@ from django.template.loader import get_template
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import override
-from django_scopes import ScopedManager
 from i18nfield.fields import I18nCharField, I18nTextField
 
 from pretalx.common.exceptions import SendMailException
-from pretalx.common.mixins.models import LogMixin
+from pretalx.common.mixins.models import PretalxModel
 from pretalx.common.templatetags.rich_text import ALLOWED_TAGS
 from pretalx.common.urls import EventUrls
 from pretalx.mail.context import get_mail_context
 from pretalx.mail.signals import queuedmail_post_send
 
 
-class MailTemplate(LogMixin, models.Model):
+class MailTemplate(PretalxModel):
     """MailTemplates can be used to create.
 
     :class:`~pretalx.mail.models.QueuedMail` objects.
@@ -61,8 +60,6 @@ class MailTemplate(LogMixin, models.Model):
     # Auto-created templates are created when mass emails are sent out. They are only used to re-create similar
     # emails, and are never shown in a list of email templates or anywhere else.
     is_auto_created = models.BooleanField(default=False)
-
-    objects = ScopedManager(event="event")
 
     class urls(EventUrls):
         base = edit = "{self.event.orga_urls.mail_templates}{self.pk}/"
@@ -167,7 +164,7 @@ class MailTemplate(LogMixin, models.Model):
     to_mail.alters_data = True
 
 
-class QueuedMail(LogMixin, models.Model):
+class QueuedMail(PretalxModel):
     """Emails in pretalx are rarely sent directly, hence the name QueuedMail.
 
     This mechanism allows organisers to make sure they send out the right
@@ -231,8 +228,6 @@ class QueuedMail(LogMixin, models.Model):
     sent = models.DateTimeField(null=True, blank=True, verbose_name=_("Sent at"))
     locale = models.CharField(max_length=32, null=True, blank=True)
     attachments = models.JSONField(default=None, null=True, blank=True)
-
-    objects = ScopedManager(event="event")
 
     class urls(EventUrls):
         base = edit = "{self.event.orga_urls.mail}{self.pk}/"

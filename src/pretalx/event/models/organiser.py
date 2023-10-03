@@ -9,14 +9,14 @@ from django.utils.translation import gettext_lazy as _
 from django_scopes import scope, scopes_disabled
 from i18nfield.fields import I18nCharField
 
-from pretalx.common.mixins.models import LogMixin
+from pretalx.common.mixins.models import PretalxModel
 from pretalx.common.urls import EventUrls, build_absolute_uri
 from pretalx.person.models import User
 
 SLUG_CHARS = "a-zA-Z0-9-"
 
 
-class Organiser(LogMixin, models.Model):
+class Organiser(PretalxModel):
     """The Organiser model represents the entity responsible for at least one.
 
     :class:`~pretalx.event.models.event.Event`.
@@ -40,6 +40,8 @@ class Organiser(LogMixin, models.Model):
             "Should be short, only contain lowercase letters and numbers, and must be unique, as it is used in URLs."
         ),
     )
+
+    objects = models.Manager()
 
     def __str__(self) -> str:
         """Used in generated forms."""
@@ -65,7 +67,7 @@ class Organiser(LogMixin, models.Model):
     shred.alters_data = True
 
 
-class Team(LogMixin, models.Model):
+class Team(PretalxModel):
     """A team is a group of people working for the same organiser.
 
     Team members (of type :class:`~pretalx.person.models.user.User`) share
@@ -118,6 +120,8 @@ class Team(LogMixin, models.Model):
         default=False,
     )
 
+    objects = models.Manager()
+
     def __str__(self) -> str:
         """Help with debugging."""
         return _("{name} on {orga}").format(
@@ -146,7 +150,7 @@ def generate_invite_token():
     )
 
 
-class TeamInvite(models.Model):
+class TeamInvite(PretalxModel):
     """A TeamInvite is someone who has been invited to a team but hasn't accept
     the invitation yet."""
 
@@ -155,6 +159,8 @@ class TeamInvite(models.Model):
     token = models.CharField(
         default=generate_invite_token, max_length=64, null=True, blank=True
     )
+
+    objects = models.Manager()
 
     def __str__(self) -> str:
         """Help with debugging."""

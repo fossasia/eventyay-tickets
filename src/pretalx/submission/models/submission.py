@@ -17,7 +17,7 @@ from django_scopes import ScopedManager
 
 from pretalx.common.choices import Choices
 from pretalx.common.exceptions import SubmissionError
-from pretalx.common.mixins.models import FileCleanupMixin, GenerateCode, LogMixin
+from pretalx.common.mixins.models import GenerateCode, PretalxModel
 from pretalx.common.phrases import phrases
 from pretalx.common.urls import EventUrls
 from pretalx.common.utils import path_with_hash
@@ -98,7 +98,7 @@ class AllSubmissionManager(models.Manager):
     pass
 
 
-class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
+class Submission(GenerateCode, PretalxModel):
     """Submissions are, next to :class:`~pretalx.event.models.event.Event`, the
     central model in pretalx.
 
@@ -119,7 +119,6 @@ class Submission(LogMixin, GenerateCode, FileCleanupMixin, models.Model):
         submission.
     """
 
-    created = models.DateTimeField(null=True, auto_now_add=True)
     code = models.CharField(max_length=16, unique=True)
     speakers = models.ManyToManyField(
         to="person.User", related_name="submissions", blank=True

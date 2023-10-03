@@ -1,9 +1,8 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from django_scopes import ScopedManager
 from i18nfield.fields import I18nCharField, I18nTextField
 
-from pretalx.common.mixins.models import FileCleanupMixin, LogMixin
+from pretalx.common.mixins.models import PretalxModel
 from pretalx.common.phrases import phrases
 from pretalx.common.urls import EventUrls
 from pretalx.common.utils import path_with_hash
@@ -13,7 +12,7 @@ def resource_path(instance, filename):
     return f"{instance.event.slug}/speaker_information/{path_with_hash(filename)}"
 
 
-class SpeakerInformation(LogMixin, FileCleanupMixin, models.Model):
+class SpeakerInformation(PretalxModel):
     """Represents any information organisers want to show all or some
     submitters or speakers."""
 
@@ -50,8 +49,6 @@ class SpeakerInformation(LogMixin, FileCleanupMixin, models.Model):
         help_text=_("Please try to keep your upload small, preferably below 16 MB."),
         upload_to=resource_path,
     )
-
-    objects = ScopedManager(event="event")
 
     class orga_urls(EventUrls):
         base = edit = "{self.event.orga_urls.information}{self.pk}/"

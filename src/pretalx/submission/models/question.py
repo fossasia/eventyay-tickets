@@ -6,7 +6,7 @@ from django_scopes import ScopedManager
 from i18nfield.fields import I18nCharField
 
 from pretalx.common.choices import Choices
-from pretalx.common.mixins.models import FileCleanupMixin, LogMixin, OrderedModel
+from pretalx.common.mixins.models import OrderedModel, PretalxModel
 from pretalx.common.phrases import phrases
 from pretalx.common.urls import EventUrls
 from pretalx.common.utils import path_with_hash
@@ -80,7 +80,7 @@ class QuestionRequired(Choices):
     ]
 
 
-class Question(LogMixin, OrderedModel, models.Model):
+class Question(OrderedModel, PretalxModel):
     """Questions can be asked per.
 
     :class:`~pretalx.submission.models.submission.Submission`, per speaker, or
@@ -322,7 +322,7 @@ class Question(LogMixin, OrderedModel, models.Model):
         ordering = ("position", "id")
 
 
-class AnswerOption(LogMixin, models.Model):
+class AnswerOption(PretalxModel):
     """Provides the possible answers for.
 
     :class:`~pretalx.submission.models.question.Question` objects of variant
@@ -345,7 +345,7 @@ class AnswerOption(LogMixin, models.Model):
         return str(self.answer)
 
 
-class Answer(LogMixin, FileCleanupMixin, models.Model):
+class Answer(PretalxModel):
     """Answers are connected to a.
 
     :class:`~pretalx.submission.models.question.Question`, and, depending on

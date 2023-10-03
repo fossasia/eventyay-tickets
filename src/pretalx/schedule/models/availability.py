@@ -3,14 +3,13 @@ from typing import List
 
 from django.db import models
 from django.utils.functional import cached_property
-from django_scopes import ScopedManager
 
-from pretalx.common.mixins.models import LogMixin
+from pretalx.common.mixins.models import PretalxModel
 
 zerotime = dt.time(0, 0)
 
 
-class Availability(LogMixin, models.Model):
+class Availability(PretalxModel):
     """The Availability class models when people or rooms are available for.
 
     :class:`~pretalx.schedule.models.slot.TalkSlot` objects.
@@ -40,8 +39,6 @@ class Availability(LogMixin, models.Model):
     )
     start = models.DateTimeField()
     end = models.DateTimeField()
-
-    objects = ScopedManager(event="event")
 
     def __str__(self) -> str:
         person = self.person.user.get_display_name() if self.person else None

@@ -5,11 +5,11 @@ from django.utils.translation import gettext_lazy as _
 from django_scopes import ScopedManager
 from i18nfield.fields import I18nCharField
 
-from pretalx.common.mixins.models import OrderedModel
+from pretalx.common.mixins.models import OrderedModel, PretalxModel
 from pretalx.common.urls import EventUrls
 
 
-class ReviewScoreCategory(models.Model):
+class ReviewScoreCategory(PretalxModel):
     event = models.ForeignKey(
         to="event.Event", related_name="score_categories", on_delete=models.CASCADE
     )
@@ -30,8 +30,6 @@ class ReviewScoreCategory(models.Model):
             "Independent scores are not part of the total score. Instead they are shown in a separate column in the review dashboard."
         ),
     )
-
-    objects = ScopedManager(event="event")
 
     class urls(EventUrls):
         base = "{self.event.orga_urls.review_settings}category/{self.pk}/"
@@ -65,7 +63,7 @@ class ReviewScoreCategory(models.Model):
         return super().delete(*args, **kwargs)
 
 
-class ReviewScore(models.Model):
+class ReviewScore(PretalxModel):
     category = models.ForeignKey(
         to=ReviewScoreCategory, related_name="scores", on_delete=models.CASCADE
     )
@@ -111,7 +109,7 @@ class AllReviewManager(models.Manager):
     pass
 
 
-class Review(models.Model):
+class Review(PretalxModel):
     """Reviews model the opinion of reviewers of a.
 
     :class:`~pretalx.submission.models.submission.Submission`.
@@ -135,8 +133,6 @@ class Review(models.Model):
         max_digits=10, decimal_places=2, verbose_name=_("Score"), null=True, blank=True
     )
     scores = models.ManyToManyField(to=ReviewScore, related_name="reviews")
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
 
     objects = ScopedManager(event="submission__event", _manager_class=ReviewManager)
     all_objects = ScopedManager(
@@ -239,7 +235,7 @@ class Review(models.Model):
         delete = "{base}{self.pk}/delete"
 
 
-class ReviewPhase(OrderedModel, models.Model):
+class ReviewPhase(OrderedModel, PretalxModel):
     """ReviewPhases determine reviewer access rights during a (potentially
     open) time frame.
 
@@ -315,8 +311,6 @@ class ReviewPhase(OrderedModel, models.Model):
         ),
         default=False,
     )
-
-    objects = ScopedManager(event="event")
 
     class Meta:
         ordering = ("position",)

@@ -1,14 +1,13 @@
 from django.db import models
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
-from django_scopes import ScopedManager
 
-from pretalx.common.mixins.models import LogMixin
+from pretalx.common.mixins.models import PretalxModel
 from pretalx.common.phrases import phrases
 from pretalx.common.urls import EventUrls
 
 
-class SpeakerProfile(LogMixin, models.Model):
+class SpeakerProfile(PretalxModel):
     """All :class:`~pretalx.event.models.event.Event` related data concerning
     a.
 
@@ -37,8 +36,6 @@ class SpeakerProfile(LogMixin, models.Model):
     has_arrived = models.BooleanField(
         default=False, verbose_name=_("The speaker has arrived")
     )
-
-    objects = ScopedManager(event="event")
 
     class urls(EventUrls):
         public = "{self.event.urls.base}speaker/{self.user.code}/"

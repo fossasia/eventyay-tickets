@@ -4,10 +4,18 @@ from contextlib import suppress
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils.crypto import get_random_string
-from django_scopes import scopes_disabled
+from django_scopes import ScopedManager, scopes_disabled
 from i18nfield.utils import I18nJSONEncoder
 
 SENSITIVE_KEYS = ["password", "secret", "api_key"]
+
+
+class TimestampedModel(models.Model):
+    created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    updated = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+    class Meta:
+        abstract = True
 
 
 class LogMixin:
@@ -50,6 +58,37 @@ class LogMixin:
         )
 
 
+class FileCleanupMixin:
+    """Deletes all uploaded files when object is deleted."""
+
+    def _delete_files(self):
+        file_attributes = [
+            field.name
+            for field in self._meta.fields
+            if isinstance(field, models.FileField)
+        ]
+        for field in file_attributes:
+            value = getattr(self, field, None)
+            if value:
+                with suppress(Exception):
+                    value.delete(save=False)
+
+    def delete(self, *args, **kwargs):
+        self._delete_files()
+        return super().delete(*args, **kwargs)
+
+
+class PretalxModel(LogMixin, TimestampedModel, FileCleanupMixin, models.Model):
+    """
+    Base model for most pretalx models. Suitable for plugins.
+    """
+
+    objects = ScopedManager(event="event")
+
+    class Meta:
+        abstract = True
+
+
 class GenerateCode:
     """Generates a random code on first save.
 
@@ -81,26 +120,6 @@ class GenerateCode:
         if not getattr(self, self._code_property, None):
             self.assign_code()
         return super().save(*args, **kwargs)
-
-
-class FileCleanupMixin:
-    """Deletes all uploaded files when object is deleted."""
-
-    def _delete_files(self):
-        file_attributes = [
-            field.name
-            for field in self._meta.fields
-            if isinstance(field, models.FileField)
-        ]
-        for field in file_attributes:
-            value = getattr(self, field, None)
-            if value:
-                with suppress(Exception):
-                    value.delete(save=False)
-
-    def delete(self, *args, **kwargs):
-        self._delete_files()
-        return super().delete(*args, **kwargs)
 
 
 class OrderedModel:

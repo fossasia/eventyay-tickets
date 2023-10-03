@@ -6,7 +6,7 @@ from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from django_scopes import ScopedManager
 
-from pretalx.common.mixins.models import FileCleanupMixin, LogMixin
+from pretalx.common.mixins.models import PretalxModel
 from pretalx.common.urls import get_base_url
 from pretalx.common.utils import path_with_hash
 
@@ -15,7 +15,7 @@ def resource_path(instance, filename):
     return f"{instance.submission.event.slug}/submissions/{instance.submission.code}/resources/{path_with_hash(filename)}"
 
 
-class Resource(LogMixin, FileCleanupMixin, models.Model):
+class Resource(PretalxModel):
     """Resources are file uploads belonging to a :class:`~pretalx.submission.models.submission.Submission`."""
 
     submission = models.ForeignKey(

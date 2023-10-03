@@ -12,12 +12,11 @@ from django.utils.timezone import now
 from django.utils.timezone import override as tzoverride
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import override
-from django_scopes import ScopedManager
 from i18nfield.fields import I18nTextField
 
 from pretalx.agenda.tasks import export_schedule_html
 from pretalx.common.context_processors import get_day_month_date_format
-from pretalx.common.mixins.models import LogMixin
+from pretalx.common.mixins.models import PretalxModel
 from pretalx.common.phrases import phrases
 from pretalx.common.urls import EventUrls
 from pretalx.person.models import SpeakerProfile, User
@@ -25,7 +24,7 @@ from pretalx.schedule.signals import schedule_release
 from pretalx.submission.models import SubmissionStates
 
 
-class Schedule(LogMixin, models.Model):
+class Schedule(PretalxModel):
     """The Schedule model contains all scheduled.
 
     :class:`~pretalx.schedule.models.slot.TalkSlot` objects (visible or not)
@@ -48,8 +47,6 @@ class Schedule(LogMixin, models.Model):
         + " "
         + phrases.base.use_markdown,
     )
-
-    objects = ScopedManager(event="event")
 
     class Meta:
         ordering = ("-published",)

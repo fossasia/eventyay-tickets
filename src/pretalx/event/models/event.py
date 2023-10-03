@@ -18,7 +18,7 @@ from i18nfield.fields import I18nCharField, I18nTextField
 
 from pretalx.common.cache import ObjectRelatedCache
 from pretalx.common.language import LANGUAGE_NAMES
-from pretalx.common.mixins.models import FileCleanupMixin, LogMixin
+from pretalx.common.mixins.models import PretalxModel
 from pretalx.common.models import TIMEZONE_CHOICES
 from pretalx.common.models.settings import hierarkey
 from pretalx.common.phrases import phrases
@@ -118,7 +118,7 @@ def default_mail_settings():
 
 
 @hierarkey.add()
-class Event(LogMixin, FileCleanupMixin, models.Model):
+class Event(PretalxModel):
     """The Event class has direct or indirect relations to all other models.
 
     Since most models depend on the Event model in some way, they should
@@ -311,6 +311,8 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
     template_names = [
         f"{t}_template" for t in ("accept", "ack", "reject", "update", "question")
     ]
+
+    objects = models.Manager()
 
     class urls(EventUrls):
         base = "/{self.slug}/"

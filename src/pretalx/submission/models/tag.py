@@ -1,15 +1,13 @@
 from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from django_scopes import ScopedManager
 from i18nfield.fields import I18nTextField
 
-from pretalx.common.mixins.models import LogMixin
+from pretalx.common.mixins.models import PretalxModel
 from pretalx.common.urls import EventUrls
 
 
-class Tag(LogMixin, models.Model):
-    created = models.DateTimeField(null=True, auto_now_add=True)
+class Tag(PretalxModel):
     event = models.ForeignKey(
         to="event.Event", on_delete=models.PROTECT, related_name="tags"
     )
@@ -33,7 +31,6 @@ class Tag(LogMixin, models.Model):
             "Tags are currently only in use for organisers and reviewers. They will be visible publicly in a future release of pretalx."
         ),
     )
-    objects = ScopedManager(event="event")
 
     class urls(EventUrls):
         base = edit = "{self.event.orga_urls.tags}{self.pk}/"

@@ -2,11 +2,11 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django_scopes import ScopedManager
 
-from pretalx.common.mixins.models import LogMixin
+from pretalx.common.mixins.models import PretalxModel
 from pretalx.common.phrases import phrases
 
 
-class Feedback(LogMixin, models.Model):
+class Feedback(PretalxModel):
     """The Feedback model allows for anonymous feedback by attendees to one or
     all speakers of a.
 

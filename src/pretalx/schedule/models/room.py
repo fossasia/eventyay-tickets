@@ -1,13 +1,12 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from django_scopes import ScopedManager
 from i18nfield.fields import I18nCharField
 
-from pretalx.common.mixins.models import LogMixin, OrderedModel
+from pretalx.common.mixins.models import OrderedModel, PretalxModel
 from pretalx.common.urls import EventUrls
 
 
-class Room(LogMixin, OrderedModel, models.Model):
+class Room(OrderedModel, PretalxModel):
     """A Room is an actual place where talks will be scheduled.
 
     The Room object stores some meta information. Most, like capacity,
@@ -49,8 +48,6 @@ class Room(LogMixin, OrderedModel, models.Model):
         help_text=_("How many people can fit in the room?"),
     )
     position = models.PositiveIntegerField(null=True, blank=True)
-
-    objects = ScopedManager(event="event")
 
     class Meta:
         ordering = ("position",)

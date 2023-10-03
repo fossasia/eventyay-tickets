@@ -13,7 +13,7 @@ from django.utils.functional import cached_property
 from django_scopes import ScopedManager
 from i18nfield.fields import I18nCharField
 
-from pretalx.common.mixins.models import LogMixin
+from pretalx.common.mixins.models import PretalxModel
 from pretalx.common.urls import get_base_url
 
 INSTANCE_IDENTIFIER = None
@@ -23,7 +23,7 @@ with suppress(Exception):
     INSTANCE_IDENTIFIER = GlobalSettings().get_instance_identifier()
 
 
-class TalkSlot(LogMixin, models.Model):
+class TalkSlot(PretalxModel):
     """The TalkSlot object is the scheduled version of a.
 
     :class:`~pretalx.submission.models.submission.Submission`.
@@ -54,8 +54,6 @@ class TalkSlot(LogMixin, models.Model):
     start = models.DateTimeField(null=True)
     end = models.DateTimeField(null=True)
     description = I18nCharField(null=True)
-
-    updated = models.DateTimeField(auto_now=True)
 
     objects = ScopedManager(event="schedule__event")
 
