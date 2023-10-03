@@ -53,7 +53,7 @@ def get_all_plugins_grouped(event=None, filter_visible=True):
             if not p.name.startswith(".") and getattr(p, "visible", True)
         ]
     plugins_grouped = groupby(
-        plugins,
+        sorted(plugins, key=lambda p: getattr(p, "category", "OTHER")),
         lambda p: str(getattr(p, "category", "OTHER")),
     )
     # Only keep categories with at least one plugin and sort the plugins by name.
