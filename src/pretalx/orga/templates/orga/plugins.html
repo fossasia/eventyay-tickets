@@ -5,36 +5,52 @@
 {% block content %}
     <h2>{% translate "Plugins" %}</h2>
 
-    <form method="post" class="form-horizontal form-plugins">
-        {% csrf_token %}
-        {% for plugin in plugins %}
-            <div class="card plugin-card">
-                <div class="card-header">
-                    {{ plugin.name }}
-                    {% if plugin.module in plugins_active %}
-                        <button class="btn btn-outline-danger btn-block" name="plugin:{{ plugin.module }}" value="disable">{% translate "Disable" %}</button>
-                    {% else %}
-                        <button class="btn btn-success btn-block" name="plugin:{{ plugin.module }}" value="enable">{% translate "Enable" %}</button>
-                    {% endif %}
-                </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">
-                        {% if plugin.author %}
-                            <p class="meta">{% blocktranslate trimmed with v=plugin.version a=plugin.author %}
-                                Version {{ v }} by <em>{{ a }}</em>
-                            {% endblocktranslate %}</p>
-                        {% else %}
-                            <p class="meta">{% blocktranslate trimmed with v=plugin.version a=plugin.author %}
-                                Version {{ v }}
-                            {% endblocktranslate %}</p>
-                        {% endif %}
-                        {{ plugin.description }}
+    {% if grouped_plugins %}
+        <form method="post" class="form-horizontal">
+            {% csrf_token %}
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                {% for category in grouped_plugins %}
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link active" id="{{ category }}-tab" data-toggle="tab" href="#{{ category }}" role="tab" aria-controls="{{ category }}" aria-selected="true">{{ category }}</a>
                     </li>
-                </ul>
-            </div>
-        {% endfor %}
-    </form>
-    {% if not plugins %}
+                {% endfor %}
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                {% for category, plugins in grouped_plugins.items %}
+                    <div class="tab-pane fade show active" id="{{ category }}" role="tabpanel" aria-labelledby="{{ category }}-tab">
+                        <div class="form-plugins">
+
+                            {% for plugin in plugins %}
+                                <div class="card plugin-card">
+                                    <div class="card-header">
+                                        {{ plugin.name }}
+                                        {% if plugin.module in plugins_active %}
+                                            <button class="btn btn-outline-danger btn-block" name="plugin:{{ plugin.module }}" value="disable">{% translate "Disable" %}</button>
+                                        {% else %}
+                                            <button class="btn btn-success btn-block" name="plugin:{{ plugin.module }}" value="enable">{% translate "Enable" %}</button>
+                                        {% endif %}
+                                    </div>
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item">
+                                            {% if plugin.author %}
+                                                <p class="meta">{% blocktranslate trimmed with v=plugin.version a=plugin.author %}
+                                                    Version {{ v }} by <em>{{ a }}</em>
+                                                {% endblocktranslate %}</p>
+                                            {% else %}
+                                                <p class="meta">{% blocktranslate trimmed with v=plugin.version a=plugin.author %}
+                                                    Version {{ v }}
+                                                {% endblocktranslate %}</p>
+                                            {% endif %}
+                                            {{ plugin.description }}
+                                        </li>
+                                    </ul>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </form>
+    {% else %}
         <div class="alert alert-info">
             {% translate "This instance does currently not have any plugins installed." %}
         </div>

@@ -1,12 +1,13 @@
 from django.contrib import messages
 from django.db import transaction
 from django.shortcuts import redirect
+from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import TemplateView
 from django_context_decorator import context
 
 from pretalx.common.mixins.views import EventPermissionRequired
-from pretalx.common.plugins import get_all_plugins
+from pretalx.common.plugins import get_all_plugins, get_all_plugins_grouped
 
 
 class EventPluginsView(EventPermissionRequired, TemplateView):
@@ -14,14 +15,12 @@ class EventPluginsView(EventPermissionRequired, TemplateView):
     permission_required = "orga.change_plugins"
 
     @context
-    def plugins(self):
-        return [
-            p
-            for p in get_all_plugins(self.request.event)
-            if not p.name.startswith(".") and getattr(p, "visible", True)
-        ]
+    @cached_property
+    def grouped_plugins(self):
+        return get_all_plugins_grouped(self.request.event)
 
     @context
+    @cached_property
     def plugins_active(self):
         return self.request.event.plugin_list
 

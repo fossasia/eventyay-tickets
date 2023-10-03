@@ -54,6 +54,9 @@ name               string               The human-readable name of your plugin
 author             string               Your name
 version            string               A human-readable version code of your plugin
 description        string               A more verbose description of what your plugin does.
+category           string               A category for your plugin, used to group it in the plugin list.
+                                        Supported categories are ``FEATURE``, ``INTEGRATION``, ``CUSTOMIZATION``,
+                                        ``EXPORTER``, ``RECORDING PROVIDER``, ``LANGUAGE``, ``OTHER`` (default).
 ================== ==================== ===========================================================
 
 A working example would be::
@@ -73,6 +76,7 @@ A working example would be::
             visible = True
             restricted = False
             description = _("This plugin allows you to post talks to facebook.")
+            category = 'INTEGRATION'
 
 
     default_app_config = 'pretalx_facebook.FacebookApp'
