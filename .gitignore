@@ -57,31 +57,12 @@ local_settings.py
 _static/
 .secret
 
-# Flask stuff:
-instance/
-.webassets-cache
-
-# Scrapy stuff:
-.scrapy
-
 # Sphinx documentation
 doc/_build/
 *.toc
 
-# PyBuilder
-target/
-
-# Jupyter Notebook
-.ipynb_checkpoints
-
 # pyenv
 .python-version
-
-# celery beat schedule file
-celerybeat-schedule
-
-# SageMath parsed files
-*.sage.py
 
 # Environments
 .env
@@ -89,19 +70,6 @@ celerybeat-schedule
 env/
 venv/
 ENV/
-
-# Spyder project settings
-.spyderproject
-.spyproject
-
-# Rope project settings
-.ropeproject
-
-# mkdocs documentation
-/site
-
-# mypy
-.mypy_cache/
 
 # editors
 *.swp
@@ -119,6 +87,7 @@ atlassian-ide-plugin.xml
 local/
 *.xml
 pretalx.cfg
+override_settings.py
 
 # OS X
 .DS_Store
@@ -128,11 +97,6 @@ pretalx.cfg
 
 # django-perf-rec
 src/tests/**/*.yml
-
-# Python packaging
-src/LICENSE
-src/README.rst
-override_settings.py
 
 # Screenshots
 screens/
