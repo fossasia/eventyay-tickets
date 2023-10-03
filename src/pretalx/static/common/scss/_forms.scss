@@ -299,6 +299,9 @@ table .action-column {
     border: 1px solid #ced4da;
   }
 }
+textarea {
+    form-sizing: auto;
+}
 @include media-breakpoint-down(md) {
   .submit-group {
     flex-direction: column;
