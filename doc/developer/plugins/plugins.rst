@@ -86,20 +86,16 @@ Plugin registration
 
 Somehow, pretalx needs to know that your plugin exists at all. For this purpose, we
 make use of the `entry point`_ feature of setuptools. To register a plugin that lives
-in a separate python package, your ``setup.py`` should contain something like this::
+in a separate python package, your ``pyproject.toml`` should contain something like this::
 
-    setup(
-        args...,
-        entry_points="""
-    [pretalx.plugin]
-    pretalx_paypal=pretalx_paypal:PretalxPluginMeta
-    """
-    )
+
+    [project.entry-points."pretalx.plugin"]
+    pretalx_facebook = "pretalx_facebook:PretalxPluginMeta"
 
 
 This will automatically make pretalx discover this plugin as soon as you have
-installed it e.g.  through ``pip``. During development, you can run ``python
-setup.py develop`` inside your plugin source directory to make it discoverable.
+installed it e.g.  through ``pip``. During development, you can run ``pip
+install -e .`` inside your plugin source directory to make it discoverable.
 
 Signals
 -------
