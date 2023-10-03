@@ -63,3 +63,24 @@ window.onload = () => {
     element.addEventListener("change", checkFileSize, false)
   })
 }
+
+// Make sure the main form doesn't have unsaved changes before leaving
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.querySelector('form[method="post"]')
+    if (!form) return
+
+    const originalData = {}
+    new FormData(form).forEach((value, key) => originalData[key] = value)
+
+    const isDirty = () => {
+        const currentData = {}
+        new FormData(form).forEach((value, key) => currentData[key] = value)
+        return JSON.stringify(originalData) !== JSON.stringify(currentData)
+    }
+
+    window.addEventListener('beforeunload', (e) => {
+        if (isDirty()) {
+            e.preventDefault()
+        }
+    });
+});
