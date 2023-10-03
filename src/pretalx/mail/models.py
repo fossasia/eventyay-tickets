@@ -16,6 +16,7 @@ from pretalx.common.mixins.models import LogMixin
 from pretalx.common.templatetags.rich_text import ALLOWED_TAGS
 from pretalx.common.urls import EventUrls
 from pretalx.mail.context import get_mail_context
+from pretalx.mail.signals import queuedmail_post_send
 
 
 class MailTemplate(LogMixin, models.Model):
@@ -332,6 +333,10 @@ class QueuedMail(LogMixin, models.Model):
                 },
             )
             self.save()
+            queuedmail_post_send.send(
+                sender=self.event,
+                mail=self,
+            )
 
     send.alters_data = True
 

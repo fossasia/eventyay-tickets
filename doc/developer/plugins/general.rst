@@ -22,7 +22,7 @@ Core
    :members: schedule_release
 
 .. automodule:: pretalx.mail.signals
-   :members: register_mail_placeholders
+   :members: register_mail_placeholders, queuedmail_post_send
 
 Exporters
 ---------
