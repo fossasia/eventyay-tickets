@@ -9,7 +9,7 @@ CATEGORY_LABELS = {
     "INTEGRATION": _("Integrations"),
     "CUSTOMIZATION": _("Customizations"),
     "EXPORTER": _("Exporters"),
-    "RECORDING PROVIDER": _("Recording integrations"),
+    "RECORDING": _("Recording integrations"),
     "LANGUAGE": _("Languages"),
     "OTHER": _("Other"),
 }
@@ -43,7 +43,8 @@ def get_all_plugins(event=None):
 def get_all_plugins_grouped(event=None, filter_visible=True):
     """Return a dict of all plugins found in the installed Django apps,
     grouped by category. If an event is provided, only plugins active for
-    that event are returned."""
+    that event are returned.
+    The key is a tuple of the category name and the human-readable label."""
     plugins = get_all_plugins(event)
     if filter_visible:
         plugins = [
@@ -67,7 +68,7 @@ def get_all_plugins_grouped(event=None, filter_visible=True):
     # Now replace the category keys with the translated labels and sort the
     # categories by the order defined in CATEGORY_ORDER.
     return {
-        category_label: plugins_grouped[category]
+        (category, category_label): plugins_grouped[category]
         for category, category_label in CATEGORY_LABELS.items()
         if category in plugins_grouped
     }

@@ -56,7 +56,7 @@ version            string               A human-readable version code of your pl
 description        string               A more verbose description of what your plugin does.
 category           string               A category for your plugin, used to group it in the plugin list.
                                         Supported categories are ``FEATURE``, ``INTEGRATION``, ``CUSTOMIZATION``,
-                                        ``EXPORTER``, ``RECORDING PROVIDER``, ``LANGUAGE``, ``OTHER`` (default).
+                                        ``EXPORTER``, ``RECORDING``, ``LANGUAGE``, ``OTHER`` (default).
 ================== ==================== ===========================================================
 
 A working example would be::
