@@ -4,6 +4,7 @@ Release Notes
 =============
 
 - :release:`unreleased <????-??-??>`
+- :feature:`1041` Talks can now be faved (added to the list of favourited talks) from the talk page, not just from the schedule page.
 - :feature:`-` Plugins can now declare their category, which is used to group them in the plugin list. Available categories are "Feature", "Integration", "Customization", "Exporter", "Recording", "Language" and "Other". Plugins without a set category will be grouped as "Other". If you're a plugin developer, please update your plugin to declare a category!
 - :feature:`1588` Administrators can now see their pretalx version in the admin dashboard.
 - :bug:`-` RSS feeds for new releases would sometimes fail to load if control characters were used in the schedule version or event name.

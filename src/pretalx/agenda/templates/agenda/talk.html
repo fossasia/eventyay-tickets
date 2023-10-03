@@ -1,5 +1,6 @@
 {% extends "agenda/base.html" %}
 {% load compress %}
+{% load static %}
 {% load html_signal %}
 {% load i18n %}
 {% load rich_text %}
@@ -15,12 +16,24 @@
     <link rel="alternate" type="application/json" title="{{ request.event.name }} API" href="{{ request.event.api_urls.talks.full }}{{ submission.code }}" />
 {% endblock %}
 
+{% block agenda_custom_header %}
+    {% compress js %}
+    <script src="{% static "agenda/js/favourite.js" %}" async></script>
+    {% endcompress %}
+{% endblock %}
+
 {% block agenda_content %}
     <article>
         {% html_signal "pretalx.agenda.signals.html_above_session_pages" sender=request.event request=request submission=submission %}
         <h3 class="talk-title">
             <div class="heading-with-buttons">
-                {{ submission.title }}
+                <span>
+                    {{ submission.title }}
+                    <button class="btn btn-xs btn-link d-none" id="fav-button">
+                      <i class="fa fa-star-o d-none" title="{% translate "Favourite this session" %}"></i>
+                      <i class="fa fa-star d-none" title="{% translate "Remove this session from your favourites" %}"></i>
+                    </button>
+                </span>
                 <div class="buttons" id="talk-buttons">
                     {% if submission.state == 'confirmed' %}
                         <a class="btn btn-outline-primary" href="{{ submission.urls.ical }}">

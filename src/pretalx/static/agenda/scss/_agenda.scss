@@ -358,6 +358,19 @@ article .pretalx-session .pretalx-session-info .abstract {
   & > :last-child {
     margin-left: auto;
   }
+  #fav-button {
+      color: rgb(255, 160, 0);
+      padding: 0;
+      width: 30px;
+      height: 30px;
+      border-radius: 100%;
+      font-size: 20px;
+      background-color: $gray-lightest;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+  }
 }
 #fahrplan.list {
   .pretalx-tab-content {
