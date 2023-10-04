@@ -1,4 +1,4 @@
-﻿* {
+* {
     -webkit-font-smoothing: antialiased;
     box-sizing: border-box;
 }
@@ -3264,17 +3264,6 @@ input:focus:invalid:focus, textarea:focus:invalid:focus, select:focus:invalid:fo
     border-color: #E74C3C
 }
 
-@media screen and (max-width: 768px) {
-    .tablet-hide {
-        display: none
-    }
-}
-
-@media screen and (max-width: 480px) {
-    .mobile-hide {
-        display: none
-    }
-}
 
 .float-left {
     float: left
@@ -3883,21 +3872,6 @@ footer span.commit code, footer span.commit .rst-content tt, .rst-content footer
     font-size: 90%
 }
 
-@media screen and (max-width: 768px) {
-    .nav-top {
-        display: block
-    }
-
-    .nav-side {
-        left: -400px
-    }
-
-    .nav-side.shift {
-        width: 85%;
-        left: 0
-    }
-}
-
 @media print {
     .rst-versions, footer, .nav-side {
         display: none
@@ -4057,16 +4031,6 @@ footer span.commit code, footer span.commit .rst-content tt, .rst-content footer
     text-align: center
 }
 
-@media screen and (max-width: 768px) {
-    .rst-versions {
-        width: 85%;
-        display: none
-    }
-
-    .rst-versions.shift {
-        display: block
-    }
-}
 
 .rst-content img {
     max-width: 100%;
@@ -4414,12 +4378,6 @@ footer span.commit code, footer span.commit .rst-content tt, .rst-content footer
     margin-right: 4px
 }
 
-@media screen and (max-width: 480px) {
-    .rst-content .sidebar {
-        width: 100%
-    }
-}
-
 .math {
     text-align: center
 }
@@ -4466,12 +4424,6 @@ a {
 .sectionbox .text p {
     color: black;
     margin: 4px 0;
-}
-
-@media screen and (max-width: 480px) {
-    .sectionbox {
-        width: 100%;
-    }
 }
 
 img.screenshot, a.screenshot img {
@@ -4568,4 +4520,50 @@ dl.field-list.simple {
 }
 dl.method > dt, dl.class > dt, dl.attribute > dt {
     width: 100%;
+}
+
+@media screen and (max-width: 768px) {
+    .tablet-hide {
+        display: none !important
+    }
+    main {
+        margin-left: 0;
+    }
+
+    .nav-top {
+        display: block
+    }
+
+    .nav-side {
+        left: -400px
+    }
+
+    .nav-side.shift {
+        width: 85%;
+        left: 0
+    }
+    .rst-versions {
+        width: 85%;
+        display: none
+    }
+
+    .rst-versions.shift {
+        display: block
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .mobile-hide {
+        display: none !important;
+    }
+    .sectionbox {
+        width: 100%;
+    }
+    .nav-content {
+        margin: 2em 2.5em !important;
+    }
+
+    .rst-content .sidebar {
+        width: 100%
+    }
 }

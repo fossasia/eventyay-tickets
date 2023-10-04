@@ -1,19 +1,19 @@
 <header>
   {% if logo and theme_logo_only %}
-    <a id="logourl" href="/">
+    <a id="logourl" href="/" class="mobile-hide">
   {% else %}
-    <a id="logourl" href="/" class="icon icon-home"> {{ project }}
+    <a id="logourl" href="/" class="icon icon-home mobile-hide"> {{ project }}
   {% endif %}
 
   {% if logo %}
     {# Not strictly valid HTML, but it's the only way to display/scale it properly, without weird scripting or heaps of work #}
-    <img src="{{ pathto('_static/' + logo, 1) }}" class="logo" />
+    <img src="{{ pathto('_static/' + logo, 1) }}" class="logo mobile-hide" />
   {% endif %}
   </a>
 
   {% include "searchbox.html" %}
 
-  <div id="related">
+  <div id="related" class="mobile-hide">
     <div class="dropdown">
       <div class="dropdown-title">Support us</div>
       <div class="dropdown-body">
