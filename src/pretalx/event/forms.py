@@ -151,7 +151,7 @@ class EventWizardBasicsForm(I18nHelpText, I18nModelForm):
                 _(
                     "This is the address your event will be available at. "
                     "Should be short, only contain lowercase letters and numbers, and must be unique. "
-                    "We recommend some kind of abbreviation with less than 10 characters that can be easily remembered."
+                    "We recommend some kind of abbreviation with less than 30 characters that can be easily remembered."
                 )
             )
             + " <strong>"

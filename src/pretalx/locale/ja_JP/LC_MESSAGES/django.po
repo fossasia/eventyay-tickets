@@ -2445,11 +2445,11 @@ msgstr ""
 msgid ""
 "This is the address your event will be available at. Should be short, only "
 "contain lowercase letters and numbers, and must be unique. We recommend some "
-"kind of abbreviation with less than 10 characters that can be easily "
+"kind of abbreviation with less than 30 characters that can be easily "
 "remembered."
 msgstr ""
 "これは、あなたのイベントが利用可能になるアドレスです。短く、小文字と数字のみ"
-"を使用し、一意である必要があります。覚えやすいように10文字以内の略語をお勧め"
+"を使用し、一意である必要があります。覚えやすいように30文字以内の略語をお勧め"
 "します。"
 
 #: pretalx/event/forms.py:158
