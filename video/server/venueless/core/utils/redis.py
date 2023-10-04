@@ -2,10 +2,13 @@ import binascii
 import os
 from contextlib import asynccontextmanager
 
+import redis
 from channels.layers import get_channel_layer
 from channels_redis.utils import create_pool
 from django.conf import settings
 from redis import asyncio as aioredis
+from redis.asyncio.retry import Retry
+from redis.backoff import ExponentialBackoff
 
 
 def consistent_hash(value):
@@ -44,7 +47,21 @@ if settings.REDIS_USE_PUBSUB:
             shard = get_channel_layer()._shards[shard_index]
             _pool[shard_index] = create_pool(shard.host)
 
-        conn = aioredis.Redis(connection_pool=_pool[shard_index])
+        def _make_conn():
+            return aioredis.Redis(
+                connection_pool=_pool[shard_index],
+                retry=Retry(ExponentialBackoff(), 3),
+                retry_on_error=[redis.exceptions.ConnectionError],
+                retry_on_timeout=True,
+            )
+
+        try:
+            conn = _make_conn()
+            await conn.ping()
+        except redis.exceptions.ConnectionError:  # retry once
+            conn = _make_conn()
+            await conn.ping()
+
         try:
             yield conn
         finally:
