@@ -6,6 +6,7 @@
 {% load vite %}
 
 {% block scripts %}
+    {% vite_hmr %}
     {% vite_asset "src/main.js" %}
 {% endblock %}
 

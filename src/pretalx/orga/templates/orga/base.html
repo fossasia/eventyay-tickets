@@ -32,7 +32,6 @@
             <link rel="stylesheet" type="text/x-scss" href="{% static "orga/scss/main.scss" %}"/>
         {% endcompress %}
         {% block stylesheets %}{% endblock %}
-        {% vite_hmr %}
         {% compress js %}
             <script defer src="{% static "vendored/jquery-3.1.1.js" %}"></script>
             <script defer src="{% static "vendored/tether/tether.min.js" %}"></script>
@@ -74,7 +73,7 @@
                             <ul class="dropdown-menu event-dropdown" role="menu" data-event-typeahead aria-labelledby="eventDropdown" data-source="{% url "orga:event.typeahead" %}">
                                 <li class="query-holder">
                                     <div class="form-box">
-                                        <input type="text" class="form-control"
+                                        <input type="text" class="form-control" id="event-search"
                                                placeholder="{% translate "Search for events" %}"
                                                data-typeahead-query>
                                     </div>
