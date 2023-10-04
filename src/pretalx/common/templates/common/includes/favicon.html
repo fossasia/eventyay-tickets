@@ -1,0 +1,9 @@
+{% load static %}
+
+{% if development_mode %}
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static "common/img/icons/favicon_debug.ico" %}">
+    <link rel="apple-touch-icon" href="{% static "common/img/icons/apple-touch-icon-180x180_debug.png" %}">
+{% else %}
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static "common/img/icons/favicon.ico" %}">
+    <link rel="apple-touch-icon" href="{% static "common/img/icons/apple-touch-icon-180x180.png" %}">
+{% endif %}
