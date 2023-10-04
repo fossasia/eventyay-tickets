@@ -77,10 +77,14 @@ document.addEventListener('DOMContentLoaded', () => {
         new FormData(form).forEach((value, key) => currentData[key] = value)
         return JSON.stringify(originalData) !== JSON.stringify(currentData)
     }
-
-    window.addEventListener('beforeunload', (e) => {
+    const handleUnload = (e) => {
         if (isDirty()) {
             e.preventDefault()
         }
+    };
+
+    form.addEventListener('submit', () => {
+        window.removeEventListener('beforeunload', handleUnload)
     });
+    window.addEventListener('beforeunload', handleUnload)
 });
