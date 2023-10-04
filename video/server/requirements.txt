@@ -36,7 +36,7 @@ websockets==11.*
 xlrd~=1.2.0  # do not update, 2.x does not support .xlsx, only .xls
 
 # deploy
-psycopg2==2.9.8
+psycopg2==2.9.9
 gunicorn==21.2.0
 uvicorn[standard]==0.23.2
 
