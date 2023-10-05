@@ -1,6 +1,7 @@
 import datetime as dt
 from urllib.parse import unquote
 
+from csp.decorators import csp_exempt
 from django.conf import settings
 from django.http import Http404, HttpResponse, JsonResponse
 from django.utils.timezone import now
@@ -28,6 +29,7 @@ def widget_data_etag(request, **kwargs):
 
 
 class WidgetData(ScheduleView):
+
     def dispatch(self, request, *args, **kwargs):
         if not request.user.has_perm("agenda.view_widget", request.event):
             raise Http404()
@@ -62,6 +64,7 @@ class WidgetData(ScheduleView):
                         talk.is_active = talk.start <= now() <= talk.real_end
         return {"data": list(data), "max_rooms": max_rooms}
 
+    @csp_exempt
     def get(self, request, *args, **kwargs):
         locale = request.GET.get("locale", "en")
         with language(locale):
@@ -157,6 +160,7 @@ def version_prefix(request, event, version=None):
 @conditional_cache_page(
     60, cache_version, cache_control=cache_control, key_prefix=version_prefix
 )
+@csp_exempt
 def widget_data_v2(request, event, version=None):
     event = request.event
     if request.method == "OPTIONS":
@@ -189,6 +193,7 @@ def widget_data_v2(request, event, version=None):
 
 @condition(etag_func=widget_js_etag)
 @cache_page(60)
+@csp_exempt
 def widget_script(request, event, locale=None, version=2):
     """The locale parameter is only relevant to the deprecated v1 version of
     the widget."""
@@ -212,6 +217,7 @@ def widget_script(request, event, locale=None, version=2):
 
 @condition(etag_func=widget_css_etag)
 @cache_page(60)
+@csp_exempt
 def widget_style(request, event, version):
     if not request.user.has_perm("agenda.view_widget", request.event):
         raise Http404()
