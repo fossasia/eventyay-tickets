@@ -446,7 +446,7 @@ def test_html_export_full(
         call_command("export_schedule_html", event.slug, "--zip")
 
     paths = [
-        "static/common/img/icons/favicon-32x32.png",
+        "static/common/img/icons/favicon.ico",
         f'media/test/{event.settings.agenda_css_file.split("/")[-1]}',
         "test/schedule/index.html",
         "test/schedule/export/schedule.json",

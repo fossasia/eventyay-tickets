@@ -906,26 +906,30 @@ def test_can_see_single_access_code(orga_client, access_code):
 
 @pytest.mark.django_db
 def test_can_create_access_code(orga_client, event):
-    assert event.submitter_access_codes.all().count() == 0
+    with scope(event=event):
+        assert event.submitter_access_codes.all().count() == 0
     response = orga_client.get(event.cfp.urls.new_access_code, follow=True)
     assert response.status_code == 200
     response = orga_client.post(
         event.cfp.urls.new_access_code, {"code": "LOLCODE"}, follow=True
     )
     assert response.status_code == 200
-    assert event.submitter_access_codes.get(code="LOLCODE")
+    with scope(event=event):
+        assert event.submitter_access_codes.get(code="LOLCODE")
 
 
 @pytest.mark.django_db
 def test_cannot_create_access_code_with_forbidden_characters(orga_client, event):
-    assert event.submitter_access_codes.all().count() == 0
+    with scope(event=event):
+        assert event.submitter_access_codes.all().count() == 0
     response = orga_client.get(event.cfp.urls.new_access_code, follow=True)
     assert response.status_code == 200
     response = orga_client.post(
         event.cfp.urls.new_access_code, {"code": "LOL %CODE"}, follow=True
     )
     assert response.status_code == 200
-    assert event.submitter_access_codes.all().count() == 0
+    with scope(event=event):
+        assert event.submitter_access_codes.all().count() == 0
 
 
 @pytest.mark.django_db
