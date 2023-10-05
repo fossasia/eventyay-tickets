@@ -129,7 +129,7 @@ class EventWizardInitialForm(forms.Form):
             )
             if not user.is_administrator
             else Organiser.objects.all(),
-            widget=forms.RadioSelect,
+            widget=forms.Select(attrs={"class": "select2"}),
             empty_label=None,
             required=True,
             help_text=_(
