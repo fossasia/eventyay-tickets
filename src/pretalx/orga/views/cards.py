@@ -1,10 +1,12 @@
 import tempfile
+import unicodedata
 
 import reportlab.rl_config
 from django.contrib import messages
 from django.contrib.staticfiles import finders
 from django.http import HttpResponse
 from django.shortcuts import redirect
+from django.utils.html import conditional_escape
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from django.views.generic import View
@@ -27,9 +29,17 @@ pdfmetrics.registerFont(TTFont("Muli-Italic", "mulish-v12-latin-ext-italic.ttf")
 pdfmetrics.registerFont(TTFont("Titillium-Bold", "titillium-web-v17-latin-ext-600.ttf"))
 
 
-def ellipsize(text, length=200):
-    if len(text) > length:
-        return text[: length - 1] + "…"
+def _text(text, max_length=None):
+    if not text:
+        return ""
+
+    # add an almost-invisible space &hairsp; after hyphens as word-wrap in ReportLab only works on space chars
+    text = conditional_escape(text).replace("-", "-&hairsp;")
+    # Reportlab does not support unicode combination characters
+    text = unicodedata.normalize("NFC", text)
+
+    if max_length and len(text) > max_length:
+        return text[: max_length - 1] + "…"
     return text
 
 
@@ -60,7 +70,7 @@ class SubmissionCard(Flowable):
         self.canv.rotate(90)
         self.canv.setFont("Titillium-Bold", 16)
         self.canv.drawString(
-            25 * mm, -12 * mm, str(self.submission.submission_type.name)
+            25 * mm, -12 * mm, _text(self.submission.submission_type.name)
         )
         self.canv.rotate(-90)
 
@@ -73,11 +83,15 @@ class SubmissionCard(Flowable):
         renderPDF.draw(drawing, self.canv, 15, 10)
 
         self.render_paragraph(
-            Paragraph(self.submission.title, style=self.styles["Title"]), gap=10
+            Paragraph(_text(self.submission.title), style=self.styles["Title"]), gap=10
         )
         self.render_paragraph(
             Paragraph(
-                ", ".join(s.get_display_name() for s in self.submission.speakers.all()),
+                _text(
+                    ", ".join(
+                        s.get_display_name() for s in self.submission.speakers.all()
+                    )
+                ),
                 style=self.styles["Speaker"],
             )
         )
@@ -96,15 +110,13 @@ class SubmissionCard(Flowable):
         if self.submission.abstract:
             self.render_paragraph(
                 Paragraph(
-                    ellipsize(self.submission.abstract, 140), style=self.styles["Meta"]
+                    _text(self.submission.abstract, 140), style=self.styles["Meta"]
                 )
             )
 
         if self.submission.notes:
             self.render_paragraph(
-                Paragraph(
-                    ellipsize(self.submission.notes, 140), style=self.styles["Meta"]
-                )
+                Paragraph(_text(self.submission.notes, 140), style=self.styles["Meta"])
             )
 
 

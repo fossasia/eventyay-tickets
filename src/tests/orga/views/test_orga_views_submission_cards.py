@@ -1,7 +1,7 @@
 import pytest
 from django_scopes import scope
 
-from pretalx.orga.views.cards import ellipsize
+from pretalx.orga.views.cards import _text
 
 
 @pytest.mark.parametrize(
@@ -12,7 +12,7 @@ from pretalx.orga.views.cards import ellipsize
     ),
 )
 def test_ellipsize(text, length, expected):
-    assert ellipsize(text, length) == expected
+    assert _text(text, length) == expected
 
 
 @pytest.mark.django_db
