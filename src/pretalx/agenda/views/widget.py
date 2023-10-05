@@ -29,7 +29,6 @@ def widget_data_etag(request, **kwargs):
 
 
 class WidgetData(ScheduleView):
-
     def dispatch(self, request, *args, **kwargs):
         if not request.user.has_perm("agenda.view_widget", request.event):
             raise Http404()

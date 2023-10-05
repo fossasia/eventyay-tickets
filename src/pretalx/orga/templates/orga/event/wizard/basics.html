@@ -25,7 +25,7 @@
         {% bootstrap_form_errors wizard.form %}
         <span id="event-name">{% bootstrap_field wizard.form.name layout='event' %}</span>
         <div id="slug-length-warning" class="d-none help-text text-danger col-md-9 offset-md-3 pl-1 mb-3">
-          {% translate "We recommend a short form of at most 30 characters." %}
+            {% translate "We recommend a short form of at most 30 characters." %}
         </div>
         {% bootstrap_field wizard.form.slug layout='event' addon_before=url_placeholder addon_before_class="input-group-prepend input-group-text" %}
         {% bootstrap_field wizard.form.timezone layout='event' %}

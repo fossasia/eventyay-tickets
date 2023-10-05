@@ -18,7 +18,7 @@
 
 {% block agenda_custom_header %}
     {% compress js %}
-    <script src="{% static "agenda/js/favourite.js" %}" async></script>
+        <script src="{% static "agenda/js/favourite.js" %}" async></script>
     {% endcompress %}
 {% endblock %}
 
@@ -30,8 +30,8 @@
                 <span>
                     {{ submission.title }}
                     <button class="btn btn-xs btn-link d-none" id="fav-button">
-                      <i class="fa fa-star-o d-none" title="{% translate "Favourite this session" %}"></i>
-                      <i class="fa fa-star d-none" title="{% translate "Remove this session from your favourites" %}"></i>
+                        <i class="fa fa-star-o d-none" title="{% translate "Favourite this session" %}"></i>
+                        <i class="fa fa-star d-none" title="{% translate "Remove this session from your favourites" %}"></i>
                     </button>
                 </span>
                 <div class="buttons" id="talk-buttons">

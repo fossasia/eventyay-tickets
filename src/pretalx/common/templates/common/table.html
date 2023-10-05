@@ -1,35 +1,35 @@
 {% load i18n %}
 <div class="table-container table-responsive">
-        <table {{ attrs.table }}>
-            {% if show_header %}
-                <thead {{ attrs.thead }}>
+    <table {{ attrs.table }}>
+        {% if show_header %}
+            <thead {{ attrs.thead }}>
                 <tr>
-                {% for column in columns %}
-                    <th {{ column.attrs.th }}>
-                        {% if column.orderable %}
-                            <a href="{% url_replace request order_by=column.order_by_alias.next %}">{{ column.header }}</a>
-                        {% else %}
-                            {{ column.header }}
-                        {% endif %}
-                    </th>
-                {% endfor %}
+                    {% for column in columns %}
+                        <th {{ column.attrs.th }}>
+                            {% if column.orderable %}
+                                <a href="{% url_replace request order_by=column.order_by_alias.next %}">{{ column.header }}</a>
+                            {% else %}
+                                {{ column.header }}
+                            {% endif %}
+                        </th>
+                    {% endfor %}
                 </tr>
-                </thead>
-            {% endif %}
-              <tbody {{ attrs.tbody }}>
-              {% for row in table.rows %}
-                  <tr>
-                      {% for column, cell in row.items %}
-                          <td {{ column.attrs.td.as_html }}>{{ cell }}</td>
-                      {% endfor %}
-                  </tr>
-              {% empty %}
-                  {% if table.empty_text %}
-                      <tr><td colspan="{{ table.columns|length }}">{{ table.empty_text }}</td></tr>
-                  {% endif %}
-              {% endfor %}
-              </tbody>
-        </table>
+            </thead>
+        {% endif %}
+        <tbody {{ attrs.tbody }}>
+            {% for row in table.rows %}
+                <tr>
+                    {% for column, cell in row.items %}
+                        <td {{ column.attrs.td.as_html }}>{{ cell }}</td>
+                    {% endfor %}
+                </tr>
+            {% empty %}
+                {% if table.empty_text %}
+                    <tr><td colspan="{{ table.columns|length }}">{{ table.empty_text }}</td></tr>
+                {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
 
-        {% include "orga/includes/pagination.html" %"}
+    {% include "orga/includes/pagination.html" %"}
 </div>
