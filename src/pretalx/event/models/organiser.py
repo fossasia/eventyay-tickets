@@ -11,9 +11,8 @@ from i18nfield.fields import I18nCharField
 
 from pretalx.common.mixins.models import PretalxModel
 from pretalx.common.urls import EventUrls, build_absolute_uri
+from pretalx.event.models.event import FULL_SLUG_REGEX
 from pretalx.person.models import User
-
-SLUG_CHARS = "a-zA-Z0-9-"
 
 
 class Organiser(PretalxModel):
@@ -29,7 +28,7 @@ class Organiser(PretalxModel):
         unique=True,
         validators=[
             RegexValidator(
-                regex=f"^[{SLUG_CHARS}]+$",
+                regex=FULL_SLUG_REGEX,
                 message=_(
                     "The slug may only contain letters, numbers, dots and dashes."
                 ),

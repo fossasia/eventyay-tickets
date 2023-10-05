@@ -25,7 +25,11 @@ from pretalx.common.phrases import phrases
 from pretalx.common.urls import EventUrls
 from pretalx.common.utils import daterange, path_with_hash
 
+# Slugs need to start and end with an alphanumeric character,
+# but may contain dashes and dots in between.
 SLUG_CHARS = "a-zA-Z0-9.-"
+SLUG_REGEX = rf"[a-zA-Z0-9]([{SLUG_CHARS}]*[a-zA-Z0-9])?"
+FULL_SLUG_REGEX = rf"^{SLUG_REGEX}$"
 
 
 def validate_event_slug_permitted(value):
@@ -160,7 +164,7 @@ class Event(PretalxModel):
         unique=True,
         validators=[
             RegexValidator(
-                regex=f"^[{SLUG_CHARS}]+$",
+                regex=FULL_SLUG_REGEX,
                 message=_(
                     "The slug may only contain letters, numbers, dots and dashes."
                 ),
