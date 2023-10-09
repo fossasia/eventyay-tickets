@@ -84,12 +84,12 @@ class Sortable:
     secondary_sort = {}
     default_sort_field = None
 
-    def _get_secondary_sort(self, key):
+    def _get_secondary_sort(self, key, model):
         secondary_sort_config = getattr(self, "secondary_sort", None) or {}
         secondary_sort = list(secondary_sort_config.get(key)) or []
         # If the model does not have a Meta.ordering, we need to add a
         # final sort key to make sure the sorting is stable.
-        if not qs.model._meta.ordering:
+        if not model._meta.ordering:
             secondary_sort += ["pk"]
         return secondary_sort
 
@@ -99,7 +99,7 @@ class Sortable:
             sort_key = getattr(self, "default_sort_field", None) or ""
         plain_key = sort_key[1:] if sort_key.startswith("-") else sort_key
         if plain_key not in self.sortable_fields:
-            return qs.order_by(*self._get_secondary_sort(""))
+            return qs.order_by(*self._get_secondary_sort("", qs.model))
 
         is_text = False
         if "__" not in plain_key:
@@ -121,7 +121,7 @@ class Sortable:
             qs = qs.annotate(key=Lower(plain_key))
             sort_key = "-key" if plain_key != sort_key else "key"
 
-        secondary_sort = self._get_secondary_sort(plain_key)
+        secondary_sort = self._get_secondary_sort(plain_key, qs.model)
         qs = qs.order_by(sort_key, *secondary_sort)
         return qs
 
