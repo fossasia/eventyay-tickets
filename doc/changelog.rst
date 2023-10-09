@@ -4,6 +4,7 @@ Release Notes
 =============
 
 - :release:`unreleased <????-??-??>`
+- :feature:`-` Plugins can now also render nested menu entries in the sidebar navigation.
 - :feature:`1107` pretalx now warns users when they try to leave a page with unsaved changes.
 - :feature:`1041` Talks can now be faved (added to the list of favourited talks) from the talk page, not just from the schedule page.
 - :feature:`-` Plugins can now declare their category, which is used to group them in the plugin list. Available categories are "Feature", "Integration", "Customization", "Exporter", "Recording", "Language" and "Other". Plugins without a set category will be grouped as "Other". If you're a plugin developer, please update your plugin to declare a category!

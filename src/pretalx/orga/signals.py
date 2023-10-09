@@ -10,8 +10,9 @@ Receivers are expected to return a list of dictionaries. The dictionaries
 should contain at least the keys ``label`` and ``url``. You can also return
 a ForkAwesome icon name with the key ``icon``, it will  be respected depending
 on the type of navigation. You should also return an ``active`` key with a boolean
-set to ``True``, when this item should be marked as active. The ``request`` object
-will have an attribute ``event``.
+set to ``True``, when this item should be marked as active. If the ``children``
+key is present, the entries will be rendered as a dropdown menu.
+The ``request`` object will have an attribute ``event``.
 
 If you use this, you should read the documentation on :ref:`how to deal with URLs <urlconf>`
 in pretalx.
@@ -26,7 +27,8 @@ Receivers are expected to return a list of dictionaries. The dictionaries
 should contain at least the keys ``label`` and ``url``. You can also return
 a ForkAwesome icon name with the key ``icon``, it will  be respected depending
 on the type of navigation. You should also return an ``active`` key with a boolean
-set to ``True``, when this item should be marked as active.
+set to ``True``, when this item should be marked as active. If the ``children``
+key is present, the entries will be rendered as a dropdown menu.
 
 If you use this, you should read the documentation on :ref:`how to deal with URLs <urlconf>`
 in pretalx.

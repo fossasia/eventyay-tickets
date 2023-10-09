@@ -1,0 +1,34 @@
+{% load static %}
+{% if nav_element.children %}
+    <div class="nav-fold">
+        <span class="has-children">
+            <a class="nav-link nav-link-inner" href="{{ nav_element.url }}">
+                {% if nav_element.icon and "." in nav_element.icon %}
+                    <img src="{% static nav_element.icon %}" class="fa-img" alt="{{ nav_element.label }}">
+                {% elif nav_element.icon %}
+                    <i class="fa fa-{{ nav_element.icon }}"></i>
+                {% endif %}
+                <span class="sidebar-text">{{ nav_element.label }}</span>
+            </a>
+            <a class="arrow nav-link" data-toggle="collapse" href="#collapseSidebar{{ forloop.counter }}" aria-controls="collapse{{ forloop.counter }}">
+                <i class="fa fa-angle-down"></i>
+            </a>
+        </span>
+        <div class="collapse in{% if nav_element.active %} show{% endif %}" aria-expand="true" id="collapseSidebar{{ forloop.counter }}">
+            {% for child in nav_element.children %}
+                <a href="{{ child.url }}" class="nav-link nav-link-second-level{% if child.active %} active{% endif %}">
+                    <span>{{ child.label }}</span>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+{% else %}
+    <a class="nav-link {% if nav_element.active %} active{% endif %}" href="{{ nav_element.url }}">
+        {% if nav_element.icon and "." in nav_element.icon %}
+            <img src="{% static nav_element.icon %}" class="fa-img" alt="{{ nav_element.label }}">
+        {% elif nav_element.icon %}
+            <i class="fa fa-{{ nav_element.icon }}"></i>
+        {% endif %}
+        <span class="sidebar-text">{{ nav_element.label }}</span>
+    </a>
+{% endif %}
