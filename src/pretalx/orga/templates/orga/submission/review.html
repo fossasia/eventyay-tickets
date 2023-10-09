@@ -198,6 +198,9 @@
                 {% endif %}
                 <div class="submit-group">
                     <div>
+                        {% if form.instance.pk %}
+                            <a href="{{ form.instance.urls.delete }}" class="btn btn-lg btn-outline-danger">{% translate "Delete review" %}</a>
+                        {% endif %}
                         <button type="submit" class="btn btn-lg btn-outline-success" name="review_submit" value="save">{% translate "Save" %}</button>
                     </div>
                     <div>

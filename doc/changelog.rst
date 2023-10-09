@@ -4,6 +4,7 @@ Release Notes
 =============
 
 - :release:`unreleased <????-??-??>`
+- :feature:`1462` Reviewers can now remove their reviews (while they can still be edited).
 - :feature:`-` Plugins can now also render nested menu entries in the sidebar navigation.
 - :feature:`1107` pretalx now warns users when they try to leave a page with unsaved changes.
 - :feature:`1041` Talks can now be faved (added to the list of favourited talks) from the talk page, not just from the schedule page.

@@ -325,13 +325,7 @@ class ReviewDashboard(EventPermissionRequired, BaseSubmissionList):
         return super().get(request, *args, **kwargs)
 
 
-class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
-    form_class = ReviewForm
-    model = Review
-    template_name = "orga/submission/review.html"
-    permission_required = "submission.view_reviews"
-    write_permission_required = "submission.review_submission"
-
+class ReviewViewMixin:
     @context
     @cached_property
     def submission(self):
@@ -348,6 +342,33 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
             .first()
         )
         return review
+
+    def get_object(self):
+        return self.object
+
+    def get_permission_object(self):
+        return self.submission
+
+    @context
+    @cached_property
+    def read_only(self):
+        if self.request.user in self.submission.speakers.all():
+            return True
+        if self.object and self.object.pk:
+            return not self.request.user.has_perm(
+                "submission.edit_review", self.get_object()
+            )
+        return not self.request.user.has_perm(
+            "submission.review_submission", self.get_object() or self.submission
+        )
+
+
+class ReviewSubmission(ReviewViewMixin, PermissionRequired, CreateOrUpdateView):
+    form_class = ReviewForm
+    model = Review
+    template_name = "orga/submission/review.html"
+    permission_required = "submission.view_reviews"
+    write_permission_required = "submission.review_submission"
 
     @context
     @cached_property
@@ -377,25 +398,6 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
     def anonymise_review(self):
         return not getattr(
             self.request.event.active_review_phase, "can_see_speaker_names", True
-        )
-
-    def get_object(self):
-        return self.object
-
-    def get_permission_object(self):
-        return self.submission
-
-    @context
-    @cached_property
-    def read_only(self):
-        if self.request.user in self.submission.speakers.all():
-            return True
-        if self.object and self.object.pk:
-            return not self.request.user.has_perm(
-                "submission.edit_review", self.get_object()
-            )
-        return not self.request.user.has_perm(
-            "submission.review_submission", self.get_object() or self.submission
         )
 
     @context
@@ -548,9 +550,17 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
         return self.request.event.orga_urls.reviews
 
 
-class ReviewSubmissionDelete(EventPermissionRequired, TemplateView):
-    template_name = "orga/review/submission_delete.html"
+class ReviewSubmissionDelete(EventPermissionRequired, ReviewViewMixin, TemplateView):
+    template_name = "orga/submission/review_delete.html"
     permission_required = "orga.remove_review"
+
+    def get_permission_object(self):
+        return self.object
+
+    def post(self, request, *args, **kwargs):
+        self.object.delete()
+        messages.success(request, _("The review has been deleted."))
+        return redirect(self.submission.orga_urls.review)
 
 
 class RegenerateDecisionMails(EventPermissionRequired, TemplateView):
