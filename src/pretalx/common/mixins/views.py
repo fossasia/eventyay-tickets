@@ -65,50 +65,64 @@ class ActionFromUrl:
 
 
 class Sortable:
-    """In the main class, you'll have to call sort_queryset() in get_queryset.
+    """
+    Handles queryset sorting. Will figure out if a field is a text field and sort by
+    Lower() if so.
+
+    In the main class, you'll have to call sort_queryset() in get_queryset.
     In the template, do this:
 
-    {% load url_replace %} <th>     {% trans "Title" %}     <a href="?{%
-    url_replace request 'sort' '-title' %}"><i class="fa fa-caret-
-    down"></i></a>     <a href="?{% url_replace request 'sort' 'title'
-    %}"><i class="fa fa-caret-up"></i></a> </th>
+    {% load url_replace %}
+    <th>
+        {% trans "Title" %}
+        <a href="?{% url_replace request 'sort' '-title' %}"><i class="fa fa-caret-down"></i></a>
+        <a href="?{% url_replace request 'sort' 'title' %}"><i class="fa fa-caret-up"></i></a>
+    </th>
     """
 
     sortable_fields = []
+    secondary_sort = {}
+    default_sort_field = None
+
+    def _get_secondary_sort(self, key):
+        secondary_sort_config = getattr(self, "secondary_sort", None) or {}
+        secondary_sort = list(secondary_sort_config.get(key)) or []
+        # If the model does not have a Meta.ordering, we need to add a
+        # final sort key to make sure the sorting is stable.
+        if not qs.model._meta.ordering:
+            secondary_sort += ["pk"]
+        return secondary_sort
 
     def sort_queryset(self, qs):
-        sort_key = self.request.GET.get("sort")
+        sort_key = self.request.GET.get("sort") or ""
         if not sort_key or sort_key == "default":
-            sort_key = getattr(self, "default_sort_field", "")
-        if sort_key:
-            plain_key = sort_key[1:] if sort_key.startswith("-") else sort_key
-            reverse = not plain_key == sort_key
-            if plain_key in self.sortable_fields:
-                is_text = False
-                if "__" not in plain_key:
-                    with suppress(FieldDoesNotExist):
-                        is_text = isinstance(
-                            qs.model._meta.get_field(plain_key), CharField
-                        )
-                else:
-                    split_key = plain_key.split("__")
-                    if len(split_key) == 2:
-                        is_text = isinstance(
-                            qs.model._meta.get_field(
-                                split_key[0]
-                            ).related_model._meta.get_field(split_key[1]),
-                            CharField,
-                        )
+            sort_key = getattr(self, "default_sort_field", None) or ""
+        plain_key = sort_key[1:] if sort_key.startswith("-") else sort_key
+        if plain_key not in self.sortable_fields:
+            return qs.order_by(*self._get_secondary_sort(""))
 
-                if is_text:
-                    # TODO: this only sorts direct lookups case insensitively
-                    # A sorting field like 'speaker__name' will not be found
-                    qs = qs.annotate(key=Lower(plain_key))
-                    sort_key = "-key" if reverse else "key"
-                secondary_sort = (
-                    getattr(self, "secondary_sort", {}).get(plain_key) or []
+        is_text = False
+        if "__" not in plain_key:
+            with suppress(FieldDoesNotExist):
+                is_text = isinstance(qs.model._meta.get_field(plain_key), CharField)
+        else:
+            split_key = plain_key.split("__")
+            if len(split_key) == 2:
+                is_text = isinstance(
+                    qs.model._meta.get_field(
+                        split_key[0]
+                    ).related_model._meta.get_field(split_key[1]),
+                    CharField,
                 )
-                qs = qs.order_by(sort_key, *secondary_sort)
+
+        if is_text:
+            # TODO: this only sorts direct lookups case insensitively
+            # A sorting field like 'speaker__name' will not be found
+            qs = qs.annotate(key=Lower(plain_key))
+            sort_key = "-key" if plain_key != sort_key else "key"
+
+        secondary_sort = self._get_secondary_sort(plain_key)
+        qs = qs.order_by(sort_key, *secondary_sort)
         return qs
 
 
