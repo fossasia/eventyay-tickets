@@ -368,8 +368,8 @@ class SpeakerInformationForm(I18nHelpText, I18nModelForm):
             "resource": SizeFileField,
         }
         widgets = {
-            "limit_tracks": forms.CheckboxSelectMultiple,
-            "limit_types": forms.CheckboxSelectMultiple,
+            "limit_tracks": forms.SelectMultiple(attrs={"class": "select2"}),
+            "limit_types": forms.SelectMultiple(attrs={"class": "select2"}),
         }
 
 
