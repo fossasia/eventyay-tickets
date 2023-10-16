@@ -4168,7 +4168,7 @@ msgstr "Vaše verze pretalxu je:"
 #: pretalx/orga/templates/orga/admin.html:30
 #, python-format
 msgid "You can check for updates <a href=\"%(url)s\">here</a>."
-msgstr "Aktualizace můžete zkontrolovat <a href=\"%(current_url)s\">zde</a>."
+msgstr "Aktualizace můžete zkontrolovat <a href=\"%(url)s\">zde</a>."
 
 #: pretalx/orga/templates/orga/admin.html:35
 #: pretalx/orga/templates/orga/base.html:193
