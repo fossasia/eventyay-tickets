@@ -7,7 +7,7 @@
     </label>
     <div class="avatar-form-fields col-md-9">
         <div class="d-flex align-items-start">
-            <img
+            <img loading="lazy"
                 class="avatar {% if not user.avatar and not user.get_gravatar %}d-none{% endif %} order-1"
                 data-gravatar="{{ user.gravatar_parameter }}"
                 data-avatar="{% if user.avatar %}{{ user.avatar.url }}{% endif %}"

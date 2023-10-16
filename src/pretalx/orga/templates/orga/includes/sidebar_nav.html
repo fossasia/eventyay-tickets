@@ -4,7 +4,7 @@
         <span class="has-children">
             <a class="nav-link nav-link-inner" href="{{ nav_element.url }}">
                 {% if nav_element.icon and "." in nav_element.icon %}
-                    <img src="{% static nav_element.icon %}" class="fa-img" alt="{{ nav_element.label }}">
+                    <img loading="lazy" src="{% static nav_element.icon %}" class="fa-img" alt="{{ nav_element.label }}">
                 {% elif nav_element.icon %}
                     <i class="fa fa-{{ nav_element.icon }}"></i>
                 {% endif %}
@@ -25,7 +25,7 @@
 {% else %}
     <a class="nav-link {% if nav_element.active %} active{% endif %}" href="{{ nav_element.url }}">
         {% if nav_element.icon and "." in nav_element.icon %}
-            <img src="{% static nav_element.icon %}" class="fa-img" alt="{{ nav_element.label }}">
+            <img loading="lazy" src="{% static nav_element.icon %}" class="fa-img" alt="{{ nav_element.label }}">
         {% elif nav_element.icon %}
             <i class="fa fa-{{ nav_element.icon }}"></i>
         {% endif %}

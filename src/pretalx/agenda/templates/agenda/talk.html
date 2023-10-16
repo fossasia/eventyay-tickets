@@ -80,7 +80,7 @@
                 {% if submission.image %}
                     <div class="talk-image">
                         <a href="{{ submission.image.url }}" target="_blank">
-                            <img src="{{ submission.image.url }}" alt="{% translate "This session's header image" %}">
+                            <img loading="lazy" src="{{ submission.image.url }}" alt="{% translate "This session's header image" %}">
                         </a>
                     </div>
                 {% endif %}
@@ -148,9 +148,9 @@
                     <a href="{{ speaker.talk_profile.urls.public }}">
                         <div class="avatar-wrapper">
                             {% if speaker.avatar_url and request.event.cfp.request_avatar %}
-                                <img src="{{ speaker.avatar_url }}">
+                                <img loading="lazy" src="{{ speaker.avatar_url }}">
                             {% else %}
-                                <img src="{{ request.event.urls.speakers }}avatar.svg">
+                                <img loading="lazy" src="{{ request.event.urls.speakers }}avatar.svg">
                             {% endif %}
                         </div>
                     </a>

@@ -52,6 +52,7 @@
     <body data-datetimeformat="{{ js_datetime_format }}" data-dateformat="{{ js_date_format }}" data-datetimelocale="{{ js_locale }}">
         <div id="top-bg" class="header {{ request.event.display_settings.header_pattern|default:"bg-primary" }}">
             {% if request.event and request.event.header_image %}
+                {# we're not lazy-loading the header image, even though it can be large, because it's a bit jarring to see it flash in 100ms after the page load #}
                 <img src="{{ request.event.header_image.url }}" id="header-image">
             {% endif %}
         </div>
@@ -68,7 +69,7 @@
                 <h1>
                     <a href="{% block nav_link %}{% endblock %}">
                         {% if request.event and request.event.logo %}
-                            <img src="{{ request.event.logo.url }}" id="event-logo" alt="{% translate "The event's logo" %}">
+                            <img loading="lazy" src="{{ request.event.logo.url }}" id="event-logo" alt="{% translate "The event's logo" %}">
                         {% elif request.event %}
                             {{ request.event.name }}
                         {% endif %}

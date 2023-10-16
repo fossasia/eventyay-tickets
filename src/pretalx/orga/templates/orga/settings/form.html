@@ -71,7 +71,7 @@
                     <label class="col-md-3 col-form-label" for="id_logo">{% translate "Event logo" %}<br><span class="optional">Optional</span></label>
                     <div class="event-logo-form-fields col-md-9">
                         {% if request.event.logo %}
-                            <img class="event-logo-display"
+                            <img loading="lazy" class="event-logo-display"
                                  src="{{ request.event.logo.url }}"
                                  alt="{% translate "The event's logo" %}"
                             />
@@ -84,7 +84,7 @@
                     <label class="col-md-3 col-form-label" for="id_custom_css">{% translate "Event header image" %}<br><span class="optional">Optional</span></label>
                     <div class="event-logo-form-fields col-md-9">
                         {% if request.event.header_image %}
-                            <img class="event-logo-display"
+                            <img loading="lazy" class="event-logo-display"
                                  src="{{ request.event.header_image.url }}"
                                  alt="{% translate "The event's header_image" %}"
                             />
