@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-10-03 12:59+0000\n"
-"PO-Revision-Date: 2023-10-01 16:43+0000\n"
-"Last-Translator: Michal Stanke <michal@stanke.cz>\n"
+"PO-Revision-Date: 2023-10-16 09:26+0000\n"
+"Last-Translator: Jozef Mlich <jmlich83@gmail.com>\n"
 "Language-Team: none\n"
 "Language: cs\n"
 "MIME-Version: 1.0\n"
@@ -34,17 +34,19 @@ msgstr "Název"
 #: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/index.html:5
 #: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/index.html:7
 msgid "Pages"
-msgstr ""
+msgstr "Stránky"
 
 #: local/pretalx-pages/pretalx_pages/apps.py:13
 msgid ""
 "Add static pages to your event site, for example Terms of Service, venue "
 "listings, a code of conduct, etc."
 msgstr ""
+"Přidat statické stránky na stránku s Vaší událostí. Například podmínky "
+"služby, popis místa, kodex chování, atd."
 
 #: local/pretalx-pages/pretalx_pages/models.py:15
 msgid "URL to static page"
-msgstr ""
+msgstr "Adresa statické stránky"
 
 #: local/pretalx-pages/pretalx_pages/models.py:20
 #: pretalx/event/models/event.py:165 pretalx/event/models/event.py:171
@@ -57,55 +59,45 @@ msgid ""
 "This will be used to generate the URL of the page. Please only use latin "
 "letters, numbers, dots and dashes. You cannot change this afterwards."
 msgstr ""
+"Toto bude použito na vygenerování adresy stránky. Prosím používejte pouze "
+"latinku (písmena bez diakritiky), čísla, tečky a pomlčky. Potom už to "
+"nepůjde změnit."
 
 #: local/pretalx-pages/pretalx_pages/models.py:30
 #: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/index.html:28
-#, fuzzy
-#| msgid "Proposal title"
 msgid "Page title"
-msgstr "Název přihlášky"
+msgstr "Název stránky"
 
 #: local/pretalx-pages/pretalx_pages/models.py:32
 #: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/form.html:20
-#, fuzzy
-#| msgid "Content"
 msgid "Page content"
-msgstr "Obsah"
+msgstr "Obsah stránky"
 
 #: local/pretalx-pages/pretalx_pages/models.py:35
 msgid "Show link in the event footer"
-msgstr ""
+msgstr "Zobrazit odkaz v patičce události"
 
 #: local/pretalx-pages/pretalx_pages/signals.py:41
-#, fuzzy
-#| msgid "The team has been created."
 msgid "The page has been created."
-msgstr "Tým byl vytvořen."
+msgstr "Stránka byla vytvořena."
 
 #: local/pretalx-pages/pretalx_pages/signals.py:42
-#, fuzzy
-#| msgid "The CfP has been modified."
 msgid "The page has been modified."
-msgstr "CfP bylo upraveno."
+msgstr "Stránka byla upravena."
 
 #: local/pretalx-pages/pretalx_pages/signals.py:43
-#, fuzzy
-#| msgid "The tag has been deleted."
 msgid "The page has been deleted."
-msgstr "Štítek byl smazán."
+msgstr "Stránka byla smazána."
 
 #: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/delete.html:3
 #: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/delete.html:5
-#, fuzzy
-#| msgid "Delete phase"
 msgid "Delete a page"
-msgstr "Smazat fázi"
+msgstr "Smazat stránku"
 
 #: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/delete.html:8
-#, fuzzy, python-format
-#| msgid "Do you really want to delete this question?"
+#, python-format
 msgid "Are you sure you want to delete the page <strong>%(name)s</strong>?"
-msgstr "Opravdu chcete smazat tuto otázku?"
+msgstr "Opravdu chcete smazat stránku <strong>%(name)s</strong>?"
 
 #: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/delete.html:13
 #: pretalx/cfp/templates/cfp/event/user_submission_invitation.html:31
@@ -127,7 +119,7 @@ msgstr "Smazat"
 #: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/form.html:5
 #: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/form.html:7
 msgid "Page"
-msgstr ""
+msgstr "Stránka"
 
 #: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/form.html:14
 #: pretalx/orga/templates/orga/settings/form.html:30
@@ -135,54 +127,40 @@ msgid "General information"
 msgstr "Obecné informace"
 
 #: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/form.html:31
-#, fuzzy
-#| msgid "Full history"
 msgid "Page history"
-msgstr "Celá historie"
+msgstr "Historie stránky"
 
 #: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/index.html:11
-#, fuzzy
-#| msgid "You don't have any proposals yet."
 msgid "You haven't created any pages yet."
-msgstr "Nemáte zatím žádné přihlášky."
+msgstr "Zatím nebyli vytvořeny žádné stránky."
 
 #: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/index.html:17
 #: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/index.html:21
-#, fuzzy
-#| msgid "Create a new event"
 msgid "Create a new page"
-msgstr "Vytvořit novou událost"
+msgstr "Vytvořit novou stránku"
 
 #: local/pretalx-pages/pretalx_pages/views.py:50
 #: local/pretalx-pages/pretalx_pages/views.py:55
 #: local/pretalx-pages/pretalx_pages/views.py:120
 #: local/pretalx-pages/pretalx_pages/views.py:235
-#, fuzzy
-#| msgid "This page does not exist."
 msgid "The requested page does not exist."
-msgstr "Tato stránka neexistuje."
+msgstr "Požadovaná stránka neexistuje."
 
 #: local/pretalx-pages/pretalx_pages/views.py:69
-#, fuzzy
-#| msgid "The order of rooms has been updated."
 msgid "The order of pages has been updated."
-msgstr "Pořadí místností bylo upraveno."
+msgstr "Pořadí stránek bylo upraveno."
 
 #: local/pretalx-pages/pretalx_pages/views.py:100
-#, fuzzy
-#| msgid "You already have a tag by this name!"
 msgid "You already have a page on that URL."
-msgstr "Štítek s tímto názvem už máte!"
+msgstr "Stránku s touto adresou názvem už máte."
 
 #: local/pretalx-pages/pretalx_pages/views.py:107
 msgid "URL form"
-msgstr ""
+msgstr "URL formuláře"
 
 #: local/pretalx-pages/pretalx_pages/views.py:145
-#, fuzzy
-#| msgid "The tag has been deleted."
 msgid "The selected page has been deleted."
-msgstr "Štítek byl smazán."
+msgstr "Zvolená stránka byla smazána."
 
 #: local/pretalx-pages/pretalx_pages/views.py:171 pretalx/common/phrases.py:48
 #: pretalx/orga/views/admin.py:54 pretalx/orga/views/event.py:535
@@ -192,16 +170,12 @@ msgstr "Vaše změny byly uloženy."
 
 #: local/pretalx-pages/pretalx_pages/views.py:183
 #: local/pretalx-pages/pretalx_pages/views.py:220
-#, fuzzy
-#| msgid "Oh :( We had trouble saving your input. See below for details."
 msgid "We could not save your changes. See below for details."
-msgstr "Jejda :( Nepodařilo se uložit váš vstup. Podrobnosti najdete níže."
+msgstr "Jejda :( Nepodařilo se uložit vaše změny. Podrobnosti najdete níže."
 
 #: local/pretalx-pages/pretalx_pages/views.py:208
-#, fuzzy
-#| msgid "The team has been created."
 msgid "The new page has been created."
-msgstr "Tým byl vytvořen."
+msgstr "Nová stránka byla vytvořena."
 
 #: pretalx/agenda/phrases.py:8
 msgid "Thank you for your feedback!"
@@ -427,16 +401,12 @@ msgid "The speaker's profile picture"
 msgstr "Profilový obrázek přednášejícího"
 
 #: pretalx/agenda/templates/agenda/talk.html:33
-#, fuzzy
-#| msgid "Don't record this session."
 msgid "Favourite this session"
-msgstr "Nepřeji si nahrávání mé přednášky."
+msgstr "Přido přednášku do oblíbených"
 
 #: pretalx/agenda/templates/agenda/talk.html:34
-#, fuzzy
-#| msgid "Submit sessions for your speakers"
 msgid "Remove this session from your favourites"
-msgstr "Odešlete přednášky pro své přednášející"
+msgstr "Odstranit přednášku z oblíbených"
 
 #: pretalx/agenda/templates/agenda/talk.html:63
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:18
@@ -2063,44 +2033,32 @@ msgid "This content will be shown publicly."
 msgstr "Tato informace bude veřejně zobrazena."
 
 #: pretalx/common/plugins.py:8
-#, fuzzy
-#| msgid "Featured"
 msgid "Features"
 msgstr "Vybrané"
 
 #: pretalx/common/plugins.py:9
-#, fuzzy
-#| msgid "Invitation"
 msgid "Integrations"
-msgstr "Pozvánka"
+msgstr "Propojení"
 
 #: pretalx/common/plugins.py:10
-#, fuzzy
-#| msgid "Custom domain"
 msgid "Customizations"
-msgstr "Vlastní doména"
+msgstr "Přizpůsobení"
 
 #: pretalx/common/plugins.py:11
-#, fuzzy
-#| msgid "Export"
 msgid "Exporters"
-msgstr "Export"
+msgstr "Exporty"
 
 #: pretalx/common/plugins.py:12
-#, fuzzy
-#| msgid "pending Invitation"
 msgid "Recording integrations"
-msgstr "čekající pozvánka"
+msgstr "Propojení s nahráváním"
 
 #: pretalx/common/plugins.py:13
-#, fuzzy
-#| msgid "Language"
 msgid "Languages"
-msgstr "Jazyk"
+msgstr "Jazyky"
 
 #: pretalx/common/plugins.py:14
 msgid "Other"
-msgstr ""
+msgstr "Ostatní"
 
 #: pretalx/common/templates/400.html:5 pretalx/common/templates/400.html:8
 msgid "Bad request."
@@ -2352,16 +2310,12 @@ msgid "{date_from} – {date_to}"
 msgstr "{date_from} – {date_to}"
 
 #: pretalx/common/views.py:228
-#, fuzzy
-#| msgid "Sorry, you are not allowed to reorder questions."
 msgid "Sorry, you are not allowed to reorder this list."
-msgstr "Je nám líto, ale nemůžete měnit pořadí otázek."
+msgstr "Je nám líto, ale nemůžete měnit pořadí v seznamu."
 
 #: pretalx/common/views.py:232
-#, fuzzy
-#| msgid "The order of rooms has been updated."
 msgid "The order has been updated."
-msgstr "Pořadí místností bylo upraveno."
+msgstr "Pořadí bylo upraveno."
 
 #: pretalx/event/forms.py:47
 msgid ""
@@ -4209,14 +4163,12 @@ msgstr ""
 
 #: pretalx/orga/templates/orga/admin.html:29
 msgid "Your pretalx version is:"
-msgstr ""
+msgstr "Vaše verze pretalxu je:"
 
 #: pretalx/orga/templates/orga/admin.html:30
-#, fuzzy, python-format
-#| msgid ""
-#| "You can find the current version <a href=\"%(current_url)s\">here</a>."
+#, python-format
 msgid "You can check for updates <a href=\"%(url)s\">here</a>."
-msgstr "Aktuální verze se nachází <a href=\"%(current_url)s\">zde</a>."
+msgstr "Aktualizace můžete zkontrolovat <a href=\"%(current_url)s\">zde</a>."
 
 #: pretalx/orga/templates/orga/admin.html:35
 #: pretalx/orga/templates/orga/base.html:193
@@ -4470,7 +4422,7 @@ msgstr "Šablony"
 
 #: pretalx/orga/templates/orga/base.html:394
 msgid "Compose E-mails"
-msgstr "Psaní e-mailů"
+msgstr "Poslání e-mailu"
 
 #: pretalx/orga/templates/orga/base.html:397
 msgid "Sent E-mails"
@@ -5102,34 +5054,28 @@ msgid "CfP open"
 msgstr "CfP otevřeno"
 
 #: pretalx/orga/templates/orga/includes/order_object.html:5
-#, fuzzy
-#| msgid "Move room down"
 msgid "Move down"
-msgstr "Přesunout místnost níže"
+msgstr "Přesunout dolů"
 
 #: pretalx/orga/templates/orga/includes/order_object.html:12
-#, fuzzy
-#| msgid "Move room up"
 msgid "Move up"
-msgstr "Přesunout místnost výše"
+msgstr "Přesunout nahoru"
 
 #: pretalx/orga/templates/orga/includes/pagination.html:16
 #, python-format
 msgid "Page %(page)s of %(of)s (%(count)s elements)"
-msgstr "Stránka %(page)s z %(of)s (%(count)s prvků)"
+msgstr "Stránka %(page)s z %(of)s (%(count)s položek)"
 
 #: pretalx/orga/templates/orga/includes/pagination.html:30
-#, fuzzy, python-format
-#| msgid "%(count)s element"
-#| msgid_plural "%(count)s elements"
+#, python-format
 msgctxt "Shown at the bottom of lists, always > 1 elements."
 msgid "%(count)s elements"
-msgstr "%(count)s prvek"
+msgstr "%(count)s položek"
 
 #: pretalx/orga/templates/orga/includes/pagination.html:40
 msgctxt "Allows users to select how many lines/elements are shown in lists."
 msgid "Show per page:"
-msgstr ""
+msgstr "Položek na stránku:"
 
 #: pretalx/orga/templates/orga/invitation.html:5
 msgid "Invitation"
@@ -5249,12 +5195,12 @@ msgstr "Obsahuje přílohu"
 #: pretalx/orga/templates/orga/mails/outbox_list.html:77
 #: pretalx/orga/templates/orga/mails/sent_list.html:59
 msgid "Accept email"
-msgstr "Přijmout e-mail"
+msgstr "Přijetí přihlášky"
 
 #: pretalx/orga/templates/orga/mails/outbox_list.html:79
 #: pretalx/orga/templates/orga/mails/sent_list.html:61
 msgid "Reject email"
-msgstr "Odmítnout e-mail"
+msgstr "Nepřijetí přihlášky"
 
 #: pretalx/orga/templates/orga/mails/outbox_list.html:81
 #: pretalx/orga/templates/orga/mails/sent_list.html:63
@@ -5265,7 +5211,7 @@ msgstr "Aktualizace programu"
 #: pretalx/orga/templates/orga/mails/sent_list.html:65
 #: pretalx/orga/templates/orga/mails/template_list.html:117
 msgid "Unanswered questions reminder"
-msgstr "Připomínka na nezodpovězené otázky"
+msgstr "Připomínka nezodpovězených otázek"
 
 #: pretalx/orga/templates/orga/mails/outbox_list.html:94
 #: pretalx/orga/templates/orga/submission/list.html:166
@@ -5378,7 +5324,7 @@ msgstr "Nová vlastní šablona"
 
 #: pretalx/orga/templates/orga/mails/template_list.html:35
 msgid "Acknowledge Mail"
-msgstr "Potvrdit přijetí e-mailu"
+msgstr "Potvrzení obdržení přihlášky"
 
 #: pretalx/orga/templates/orga/mails/template_list.html:44
 #: pretalx/orga/templates/orga/mails/template_list.html:64
@@ -5391,11 +5337,11 @@ msgstr "Upravit šablonu"
 
 #: pretalx/orga/templates/orga/mails/template_list.html:55
 msgid "Accept Mail"
-msgstr "Přijmout e-mail"
+msgstr "Přijetí přihlášky"
 
 #: pretalx/orga/templates/orga/mails/template_list.html:75
 msgid "Reject Mail"
-msgstr "Odmítnout e-mail"
+msgstr "Nepřijetí přihlášky"
 
 #: pretalx/orga/templates/orga/mails/template_list.html:96
 msgid "New schedule version"
@@ -5920,7 +5866,7 @@ msgstr "Nahrát"
 
 #: pretalx/orga/templates/orga/schedule/index.html:26
 msgid "New release"
-msgstr "Zveřejnit nový"
+msgstr "Zveřejnit"
 
 #: pretalx/orga/templates/orga/schedule/index.html:30
 msgid "Override WIP schedule with this version"
@@ -7700,7 +7646,7 @@ msgstr "čeština"
 
 #: pretalx/settings.py:386
 msgid "Greek"
-msgstr ""
+msgstr "řečtina"
 
 #: pretalx/settings.py:392
 msgid "Spanish"
