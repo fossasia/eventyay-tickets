@@ -411,7 +411,7 @@ class Answer(PretalxModel):
 
     @property
     def answer_string(self):
-        if self.question.variant in ("number", "string", "text"):
+        if self.question.variant in ("number", "string", "text", "url"):
             return self.answer or ""
         if self.question.variant == "boolean":
             if self.boolean_answer is True:

@@ -123,7 +123,9 @@ class ScheduleExportForm(ExportForm):
     def questions(self):
         return self.event.questions.filter(
             target="submission",
-        ).prefetch_related("answers", "answers__submission", "options")
+        ).prefetch_related(
+            "answers", "answers__submission", "options", "answers__options"
+        )
 
     @cached_property
     def filename(self):
