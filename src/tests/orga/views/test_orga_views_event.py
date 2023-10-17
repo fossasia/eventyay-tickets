@@ -221,7 +221,9 @@ def test_add_logo(event, orga_client):
     assert response.status_code == 200
     assert event.logo
     response = orga_client.get(event.urls.base, follow=True)
-    assert '<img loading="lazy" src="/media' in response.content.decode(), response.content.decode()
+    assert (
+        '<img loading="lazy" src="/media' in response.content.decode()
+    ), response.content.decode()
 
 
 @pytest.mark.django_db

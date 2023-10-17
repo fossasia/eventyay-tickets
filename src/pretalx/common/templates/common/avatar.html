@@ -8,13 +8,13 @@
     <div class="avatar-form-fields col-md-9">
         <div class="d-flex align-items-start">
             <img loading="lazy"
-                class="avatar {% if not user.avatar and not user.get_gravatar %}d-none{% endif %} order-1"
-                data-gravatar="{{ user.gravatar_parameter }}"
-                data-avatar="{% if user.avatar %}{{ user.avatar.url }}{% endif %}"
-                alt="{% translate "Your avatar" %}"
-                {% if user.avatar %}
-                    src="{{ user.avatar.url }}"
-                {% endif %}
+                 class="avatar {% if not user.avatar and not user.get_gravatar %}d-none{% endif %} order-1"
+                 data-gravatar="{{ user.gravatar_parameter }}"
+                 data-avatar="{% if user.avatar %}{{ user.avatar.url }}{% endif %}"
+                 alt="{% translate "Your avatar" %}"
+                 {% if user.avatar %}
+                     src="{{ user.avatar.url }}"
+                 {% endif %}
             />
 
             {% bootstrap_field form.get_gravatar layout='event-inline' %}
