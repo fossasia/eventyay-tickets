@@ -3,6 +3,7 @@ from urllib.parse import unquote
 
 from csp.decorators import csp_exempt
 from django.conf import settings
+from django.contrib.staticfiles import finders
 from django.http import Http404, HttpResponse, JsonResponse
 from django.utils.timezone import now
 from django.views.decorators.cache import cache_page
@@ -10,18 +11,13 @@ from django.views.decorators.http import condition
 from i18nfield.utils import I18nJSONEncoder
 
 from pretalx.agenda.views.schedule import ScheduleView
-from pretalx.common.tasks import generate_widget_css, generate_widget_js
 from pretalx.common.utils import language
 from pretalx.common.views import conditional_cache_page
 from pretalx.schedule.exporters import ScheduleData
 
 
-def widget_css_etag(request, **kwargs):
-    return request.event.settings.widget_css_checksum
-
-
-def widget_js_etag(request, event, version, locale="en", **kwargs):
-    return request.event.settings.get(f"widget_checksum_{version}_{locale}")
+def widget_js_etag(request, event, **kwargs):
+    return request.event.settings.widget_checksum
 
 
 def widget_data_etag(request, **kwargs):
@@ -160,7 +156,7 @@ def version_prefix(request, event, version=None):
     60, cache_version, cache_control=cache_control, key_prefix=version_prefix
 )
 @csp_exempt
-def widget_data_v2(request, event, version=None):
+def widget_data(request, event, version=None):
     event = request.event
     if request.method == "OPTIONS":
         response = JsonResponse({})
@@ -193,36 +189,16 @@ def widget_data_v2(request, event, version=None):
 @condition(etag_func=widget_js_etag)
 @cache_page(60)
 @csp_exempt
-def widget_script(request, event, locale=None, version=2):
-    """The locale parameter is only relevant to the deprecated v1 version of
-    the widget."""
+def widget_script(request, event):
     if not request.user.has_perm("agenda.view_widget", request.event):
         raise Http404()
-    if locale and locale not in [lc[:2] for lc, ll in settings.LANGUAGES]:
-        raise Http404()
 
-    fname = f"widget_file_{version}"
-    if locale:
-        fname = "{fname}_{locale}"
-    existing_file = request.event.settings.get(fname)
-    if existing_file and not settings.DEBUG:  # pragma: no cover
-        return HttpResponse(existing_file.read(), content_type="text/javascript")
-
-    data = generate_widget_js(
-        request.event, locale=locale, save=not settings.DEBUG, version=version
-    )
+    if settings.DEBUG:
+        widget_file = "agenda/js/pretalx-schedule.js"
+    else:
+        widget_file = "agenda/js/pretalx-schedule.min.js"
+    f = finders.find(widget_file)
+    with open(f, encoding="utf-8") as fp:
+        code = fp.read()
+    data = code.encode()
     return HttpResponse(data, content_type="text/javascript")
-
-
-@condition(etag_func=widget_css_etag)
-@cache_page(60)
-@csp_exempt
-def widget_style(request, event, version):
-    if not request.user.has_perm("agenda.view_widget", request.event):
-        raise Http404()
-    existing_file = request.event.settings.widget_css
-    if existing_file and not settings.DEBUG:  # pragma: no cover
-        return HttpResponse(existing_file.read(), content_type="text/css")
-
-    data = generate_widget_css(request.event, save=not settings.DEBUG)
-    return HttpResponse(data, content_type="text/css")

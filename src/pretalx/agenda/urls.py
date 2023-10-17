@@ -23,8 +23,11 @@ def get_schedule_urls(regex_prefix, name_prefix=""):
             (".xcal", schedule.ExporterView.as_view(), "export.schedule.xcal"),
             (".json", schedule.ExporterView.as_view(), "export.schedule.json"),
             (".ics", schedule.ExporterView.as_view(), "export.schedule.ics"),
-            ("/widget/v2.json", widget.widget_data_v2, "widget.data.2"),
             ("/export/<name>", schedule.ExporterView.as_view(), "export"),
+            ("/widget.json", widget.widget_data, "widget.data"),
+            # Legacy widget data URL, but expected in old widget code.
+            # Keep at least until end of 2024, reconsider afterwards.
+            ("/widget/v2.json", widget.widget_data, "widget.data.legacy"),
         ]
     ]
 
@@ -36,30 +39,22 @@ urlpatterns = [
         include(
             [
                 path(
+                    "widgets/schedule.js",
+                    widget.widget_script,
+                    name="widget.script",
+                ),
+                path(
                     "schedule/changelog/",
                     schedule.ChangelogView.as_view(),
                     name="schedule.changelog",
                 ),
                 path("schedule/feed.xml", feed.ScheduleFeed(), name="feed"),
+                # Old widget URL. Keep at least until end of 2024. Will still be used in
+                # a lot of old websites, so possibly just keep it forever.
                 re_path(
-                    r"^schedule/widget/v(?P<version>[0-9]+).(?P<locale>[a-z]{2}).js$",
+                    r"^schedule/widget/v2.[a-z]{2}.js$",
                     widget.widget_script,
-                    name="widget.script",
-                ),
-                path(
-                    "schedule/widget/v<int:version>.js",
-                    widget.widget_script,
-                    name="widget.script",
-                ),
-                path(
-                    "schedule/widget/v<int:version>.css",
-                    widget.widget_style,
-                    name="widget.style",
-                ),
-                path(
-                    "schedule/widget/v1.json",
-                    widget.WidgetData.as_view(),
-                    name="widget.data",
+                    name="widget.script.legacy",
                 ),
                 *get_schedule_urls("schedule"),
                 *get_schedule_urls("schedule/v/<version>", "versioned-"),

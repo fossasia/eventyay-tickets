@@ -4,6 +4,8 @@ Release Notes
 =============
 
 - :release:`unreleased <????-??-??>`
+- :support:`-` The primary URL of widget scripts and widget data has changed. The old URLs will continue until at least the last 2024 release.
+- :support:`-` The old v1 schedule widget, which has been deprecated for a long time, has been removed.
 - :feature:`-` Tracks and session types in speaker information notes have a better interface, helpful for events with many of either of them.
 - :feature:`1462` Reviewers can now remove their reviews (while they can still be edited).
 - :feature:`-` Plugins can now also render nested menu entries in the sidebar navigation.

@@ -58,7 +58,7 @@
             {% endblocktranslate %}
         </p>
         <pre id="widget-head">
-&lt;script type="text/javascript" src="{{ request.event.urls.schedule.full }}widget/v2.en.js">&lt;/script></pre>
+&lt;script type="text/javascript" src="{{ request.event.urls.schedule_widget_script.full }}">&lt;/script></pre>
         <p>
             {% blocktranslate trimmed %}
                 Then, copy the following code to the place of your website where you want the widget to show up:
@@ -95,7 +95,7 @@
             </p>
             <pretalx-schedule event-url="{{ request.event.urls.base }}" locale="{{ request.event.locale }}" style="--pretalx-clr-primary: {{ request.event.primary_color|default:'#3aa57c' }}"></pretalx-schedule>
       </div>
-   <script type="text/javascript" src="{{ request.event.urls.schedule }}widget/v2.{{ request.event.locale }}.js" async></script>
+   <script type="text/javascript" src="{{ request.event.urls.schedule_widget_script }}" async></script>
         <noscript>
            <div class="pretalx-widget">
                 <div class="pretalx-widget-info-message">
