@@ -560,7 +560,7 @@ class ReviewSubmissionDelete(EventPermissionRequired, ReviewViewMixin, TemplateV
     def post(self, request, *args, **kwargs):
         self.object.delete()
         messages.success(request, _("The review has been deleted."))
-        return redirect(self.submission.orga_urls.review)
+        return redirect(self.submission.orga_urls.reviews)
 
 
 class RegenerateDecisionMails(EventPermissionRequired, TemplateView):
