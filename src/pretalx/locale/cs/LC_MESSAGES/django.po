@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-10-03 12:59+0000\n"
-"PO-Revision-Date: 2023-10-16 09:26+0000\n"
-"Last-Translator: Jozef Mlich <jmlich83@gmail.com>\n"
+"PO-Revision-Date: 2023-10-22 14:04+0000\n"
+"Last-Translator: Michal Stanke <michal@stanke.cz>\n"
 "Language-Team: none\n"
 "Language: cs\n"
 "MIME-Version: 1.0\n"
@@ -41,7 +41,7 @@ msgid ""
 "Add static pages to your event site, for example Terms of Service, venue "
 "listings, a code of conduct, etc."
 msgstr ""
-"Přidat statické stránky na stránku s Vaší událostí. Například podmínky "
+"Přidat statické stránky na stránku s vaší událostí. Například podmínky "
 "služby, popis místa, kodex chování, atd."
 
 #: local/pretalx-pages/pretalx_pages/models.py:15
@@ -152,7 +152,7 @@ msgstr "Pořadí stránek bylo upraveno."
 
 #: local/pretalx-pages/pretalx_pages/views.py:100
 msgid "You already have a page on that URL."
-msgstr "Stránku s touto adresou názvem už máte."
+msgstr "Stránka s touto URL adresou už existuje."
 
 #: local/pretalx-pages/pretalx_pages/views.py:107
 msgid "URL form"
@@ -171,7 +171,7 @@ msgstr "Vaše změny byly uloženy."
 #: local/pretalx-pages/pretalx_pages/views.py:183
 #: local/pretalx-pages/pretalx_pages/views.py:220
 msgid "We could not save your changes. See below for details."
-msgstr "Jejda :( Nepodařilo se uložit vaše změny. Podrobnosti najdete níže."
+msgstr "Vaše změny se nepodařilo uložit. Podrobnosti najdete níže."
 
 #: local/pretalx-pages/pretalx_pages/views.py:208
 msgid "The new page has been created."
@@ -402,7 +402,7 @@ msgstr "Profilový obrázek přednášejícího"
 
 #: pretalx/agenda/templates/agenda/talk.html:33
 msgid "Favourite this session"
-msgstr "Přido přednášku do oblíbených"
+msgstr "Přidat přednášku do oblíbených"
 
 #: pretalx/agenda/templates/agenda/talk.html:34
 msgid "Remove this session from your favourites"
@@ -4163,7 +4163,7 @@ msgstr ""
 
 #: pretalx/orga/templates/orga/admin.html:29
 msgid "Your pretalx version is:"
-msgstr "Vaše verze pretalxu je:"
+msgstr "Verze vašeho pretalxu je:"
 
 #: pretalx/orga/templates/orga/admin.html:30
 #, python-format

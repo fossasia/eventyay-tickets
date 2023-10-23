@@ -8,10 +8,10 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-10-03 12:59+0000\n"
-"PO-Revision-Date: 2023-08-15 01:54+0000\n"
-"Last-Translator: Yucheng Lin <yuchenglinedu@gmail.com>\n"
+"PO-Revision-Date: 2023-10-22 14:04+0000\n"
+"Last-Translator: Chin-Cheng Huang <katy881115@gmail.com>\n"
 "Language-Team: none\n"
-"Language: zh_TW\n"
+"Language: zh_Hant\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -34,7 +34,7 @@ msgstr "標題"
 #: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/index.html:5
 #: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/index.html:7
 msgid "Pages"
-msgstr ""
+msgstr "頁面"
 
 #: local/pretalx-pages/pretalx_pages/apps.py:13
 msgid ""
@@ -60,49 +60,39 @@ msgstr ""
 
 #: local/pretalx-pages/pretalx_pages/models.py:30
 #: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/index.html:28
-#, fuzzy
 msgid "Page title"
-msgstr "議程投稿統計資料"
+msgstr "頁面標題"
 
 #: local/pretalx-pages/pretalx_pages/models.py:32
 #: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/form.html:20
-#, fuzzy
-#| msgid "Content"
 msgid "Page content"
-msgstr "內容"
+msgstr "頁面內容"
 
 #: local/pretalx-pages/pretalx_pages/models.py:35
 msgid "Show link in the event footer"
 msgstr ""
 
 #: local/pretalx-pages/pretalx_pages/signals.py:41
-#, fuzzy
 msgid "The page has been created."
-msgstr "此議程軌已被刪除。"
+msgstr "此頁面已被建立。"
 
 #: local/pretalx-pages/pretalx_pages/signals.py:42
-#, fuzzy
-#| msgid "The CfP has been modified."
 msgid "The page has been modified."
-msgstr "徵求議程投稿頁面已變更。"
+msgstr "此頁面已變更。"
 
 #: local/pretalx-pages/pretalx_pages/signals.py:43
-#, fuzzy
 msgid "The page has been deleted."
-msgstr "此議程軌已被刪除。"
+msgstr "此頁面已被刪除。"
 
 #: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/delete.html:3
 #: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/delete.html:5
-#, fuzzy
-#| msgid "Delete phase"
 msgid "Delete a page"
-msgstr "刪除階段"
+msgstr "刪除頁面"
 
 #: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/delete.html:8
-#, fuzzy, python-format
-#| msgid "Do you really want to delete this question?"
+#, python-format
 msgid "Are you sure you want to delete the page <strong>%(name)s</strong>?"
-msgstr "您確定要刪除此問題嗎？"
+msgstr "您確定要刪除<strong>%(name)s</strong>頁面嗎？"
 
 #: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/delete.html:13
 #: pretalx/cfp/templates/cfp/event/user_submission_invitation.html:31
@@ -124,7 +114,7 @@ msgstr "刪除"
 #: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/form.html:5
 #: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/form.html:7
 msgid "Page"
-msgstr ""
+msgstr "頁面"
 
 #: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/form.html:14
 #: pretalx/orga/templates/orga/settings/form.html:30
@@ -132,51 +122,40 @@ msgid "General information"
 msgstr "一般資訊"
 
 #: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/form.html:31
-#, fuzzy
 msgid "Page history"
-msgstr "歷史"
+msgstr "頁面歷史紀錄"
 
 #: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/index.html:11
-#, fuzzy
-#| msgid "You don't have any proposals yet."
 msgid "You haven't created any pages yet."
-msgstr "您尚未投稿任何議程。"
+msgstr "您尚未建立任何頁面。"
 
 #: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/index.html:17
 #: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/index.html:21
-#, fuzzy
-#| msgid "Create a new event"
 msgid "Create a new page"
-msgstr "建立新事件"
+msgstr "建立新頁面"
 
 #: local/pretalx-pages/pretalx_pages/views.py:50
 #: local/pretalx-pages/pretalx_pages/views.py:55
 #: local/pretalx-pages/pretalx_pages/views.py:120
 #: local/pretalx-pages/pretalx_pages/views.py:235
-#, fuzzy
-#| msgid "This page does not exist."
 msgid "The requested page does not exist."
-msgstr "此頁面不存在。"
+msgstr "請求的頁面不存在。"
 
 #: local/pretalx-pages/pretalx_pages/views.py:69
-#, fuzzy
-#| msgid "The order of rooms has been updated."
 msgid "The order of pages has been updated."
-msgstr "會議室的順序已被更新。"
+msgstr "頁面的順序已被更新。"
 
 #: local/pretalx-pages/pretalx_pages/views.py:100
-#, fuzzy
 msgid "You already have a page on that URL."
-msgstr "我已經有帳號了"
+msgstr "您在該網址上已經有一個頁面。"
 
 #: local/pretalx-pages/pretalx_pages/views.py:107
 msgid "URL form"
-msgstr ""
+msgstr "網址格式"
 
 #: local/pretalx-pages/pretalx_pages/views.py:145
-#, fuzzy
 msgid "The selected page has been deleted."
-msgstr "此議程軌已被刪除。"
+msgstr "所選頁面已被刪除。"
 
 #: local/pretalx-pages/pretalx_pages/views.py:171 pretalx/common/phrases.py:48
 #: pretalx/orga/views/admin.py:54 pretalx/orga/views/event.py:535
@@ -186,15 +165,12 @@ msgstr "您的變更已儲存。"
 
 #: local/pretalx-pages/pretalx_pages/views.py:183
 #: local/pretalx-pages/pretalx_pages/views.py:220
-#, fuzzy
-#| msgid "Oh :( We had trouble saving your input. See below for details."
 msgid "We could not save your changes. See below for details."
-msgstr "嗯，那個... 儲存您輸入的資料時發生了一點點問題—詳情請見下方。"
+msgstr "尚未儲存您的修改。詳情請見下方。"
 
 #: local/pretalx-pages/pretalx_pages/views.py:208
-#, fuzzy
 msgid "The new page has been created."
-msgstr "此議程軌已被刪除。"
+msgstr "新頁面已被建立。"
 
 #: pretalx/agenda/phrases.py:8
 msgid "Thank you for your feedback!"
@@ -412,13 +388,11 @@ msgstr "講者的頭像"
 
 #: pretalx/agenda/templates/agenda/talk.html:33
 msgid "Favourite this session"
-msgstr ""
+msgstr "將此議程加入最愛"
 
 #: pretalx/agenda/templates/agenda/talk.html:34
-#, fuzzy
-#| msgid "Submit sessions for your speakers"
 msgid "Remove this session from your favourites"
-msgstr "幫您的講者提交議程"
+msgstr "將此議程從最愛移除"
 
 #: pretalx/agenda/templates/agenda/talk.html:63
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:18
@@ -1139,17 +1113,13 @@ msgstr ""
 #: pretalx/cfp/templates/cfp/event/user_submission_discard.html:7
 #: pretalx/cfp/templates/cfp/event/user_submission_discard.html:11
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:216
-#, fuzzy
-#| msgid "Withdraw proposal"
 msgid "Discard draft proposal"
-msgstr "撤回投稿"
+msgstr "捨棄投稿"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_discard.html:17
-#, fuzzy
-#| msgid "Do you really want to withdraw your proposal?"
 msgid ""
 "Do you really want to discard your draft proposal? All data will be lost."
-msgstr "您確定要撤回您的議程投稿嗎？"
+msgstr "您確定要捨棄您的議程投稿嗎？所有資料將會遺失。"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:25
 msgid "Your draft:"
@@ -1403,19 +1373,16 @@ msgid ""
 msgstr "您的 API token 已重新產生。先前的 token 將無法再使用。"
 
 #: pretalx/cfp/views/user.py:274
-#, fuzzy
-#| msgid "Your drafts"
 msgid "Your draft was discarded."
-msgstr "您的草稿"
+msgstr "您的草稿已被捨棄"
 
 #: pretalx/cfp/views/user.py:410
 msgid "Your proposal has been submitted."
 msgstr "您投稿的議程已送出。"
 
 #: pretalx/cfp/views/user.py:484
-#, fuzzy
 msgid "You cannot accept this invitation."
-msgstr "您不能再變更短名稱了！"
+msgstr "您無法接受此邀請"
 
 #: pretalx/common/context_processors.py:42
 #: pretalx/schedule/models/schedule.py:375
@@ -1974,9 +1941,8 @@ msgid "New password (again)"
 msgstr "再次輸入新密碼"
 
 #: pretalx/common/phrases.py:76
-#, fuzzy
 msgid "You entered two different passwords. Please enter the same one twice!"
-msgstr "您兩次輸入的密碼不符。"
+msgstr "您兩次輸入的密碼不符。請再次輸入相同的密碼！"
 
 #: pretalx/common/phrases.py:79
 msgid "Your password is too weak or too common, please choose another one."
@@ -2040,7 +2006,7 @@ msgstr "語言"
 
 #: pretalx/common/plugins.py:14
 msgid "Other"
-msgstr ""
+msgstr "其他"
 
 #: pretalx/common/templates/400.html:5 pretalx/common/templates/400.html:8
 msgid "Bad request."
@@ -2287,16 +2253,12 @@ msgid "{date_from} – {date_to}"
 msgstr "{date_from} – {date_to}"
 
 #: pretalx/common/views.py:228
-#, fuzzy
-#| msgid "Sorry, you are not allowed to reorder questions."
 msgid "Sorry, you are not allowed to reorder this list."
-msgstr "抱歉，您不能更改問題順序。"
+msgstr "抱歉，您不能更改清單順序。"
 
 #: pretalx/common/views.py:232
-#, fuzzy
-#| msgid "The order of rooms has been updated."
 msgid "The order has been updated."
-msgstr "會議室的順序已被更新。"
+msgstr "順序已被更新。"
 
 #: pretalx/event/forms.py:47
 msgid ""
@@ -2647,9 +2609,8 @@ msgid "Is a reviewer"
 msgstr "是名檢閱者"
 
 #: pretalx/event/models/organiser.py:113
-#, fuzzy
 msgid "Always hide speaker names"
-msgstr "講者姓名"
+msgstr "永久隱藏講者姓名"
 
 #: pretalx/event/models/organiser.py:115
 msgid ""
@@ -2792,14 +2753,12 @@ msgid "The event's short form, used in URLs"
 msgstr "用於網址事件的縮寫形式"
 
 #: pretalx/mail/context.py:87
-#, fuzzy
 msgid "The event's public base URL"
-msgstr "活動的全名"
+msgstr "活動的公開網址"
 
 #: pretalx/mail/context.py:94
-#, fuzzy
 msgid "The event's public schedule URL"
-msgstr "活動的全名"
+msgstr "活動的公開議程網址"
 
 #: pretalx/mail/context.py:101
 #, fuzzy
@@ -2822,14 +2781,12 @@ msgid "The proposal's unique ID"
 msgstr "此議程投稿尚未確認。"
 
 #: pretalx/mail/context.py:137
-#, fuzzy
 msgid "The proposal's public URL"
-msgstr "此議程投稿已被刪除。"
+msgstr "此提案的公開網址"
 
 #: pretalx/mail/context.py:144
-#, fuzzy
 msgid "The speaker's edit page for the proposal"
-msgstr "已邀請一名講者到此議程投稿。"
+msgstr "此提案講者的編輯頁面"
 
 #: pretalx/mail/context.py:151
 msgid "Link to confirm a proposal after it has been accepted."
@@ -2846,9 +2803,8 @@ msgid "This Is a Proposal Title"
 msgstr "議程投稿統計資料"
 
 #: pretalx/mail/context.py:165
-#, fuzzy
 msgid "The proposal's title"
-msgstr "議程投稿統計資料"
+msgstr "提案標題"
 
 #: pretalx/mail/context.py:172
 msgid "The name(s) of all speakers in this proposal."
@@ -2865,9 +2821,8 @@ msgid "The proposal's session type"
 msgstr "議程投稿（依提交型態）"
 
 #: pretalx/mail/context.py:185
-#, fuzzy
 msgid "Track A"
-msgstr "議程軌"
+msgstr "議程軌 A"
 
 #: pretalx/mail/context.py:186
 msgid "The track the proposal belongs to"
@@ -2893,34 +2848,28 @@ msgid "All review texts for this proposal"
 msgstr "您已經檢閱過此議程投稿"
 
 #: pretalx/mail/context.py:202
-#, fuzzy
 msgid "The session's start date"
-msgstr "此議程的標頭影像"
+msgstr "此議程的開始日期"
 
 #: pretalx/mail/context.py:209
-#, fuzzy
 msgid "The session's start time"
-msgstr "此議程的標頭影像"
+msgstr "此議程的開始時間"
 
 #: pretalx/mail/context.py:216
-#, fuzzy
 msgid "The session's end date"
-msgstr "此議程的標頭影像"
+msgstr "此議程的結束日期"
 
 #: pretalx/mail/context.py:223
-#, fuzzy
 msgid "The session's end time"
-msgstr "此議程的標頭影像"
+msgstr "此議程的結束時間"
 
 #: pretalx/mail/context.py:229
-#, fuzzy
 msgid "Room 101"
-msgstr "會議室 1"
+msgstr "會議室 101"
 
 #: pretalx/mail/context.py:230
-#, fuzzy
 msgid "The session's room"
-msgstr "此議程的標頭影像"
+msgstr "會議室"
 
 #: pretalx/mail/context.py:236
 msgid "Jane Doe"
@@ -3202,9 +3151,8 @@ msgstr ""
 "如果勾選此選項，當收到議程投稿時就會傳送一封郵件到主辦者的電子郵件地址。"
 
 #: pretalx/orga/forms/cfp.py:90
-#, fuzzy
 msgid "Do not ask"
-msgstr "不要複製"
+msgstr "不要詢問"
 
 #: pretalx/orga/forms/cfp.py:91
 msgid "Ask, but do not require input"
@@ -3240,14 +3188,12 @@ msgid ""
 msgstr "請選擇一個截止日期，在此截止日期之後，該問題應為強制性的。"
 
 #: pretalx/orga/forms/cfp.py:251
-#, fuzzy
 msgid "You already have a session type by this name!"
-msgstr "您尚未投稿任何議程。"
+msgstr "您已經有一個同名的議程類型！"
 
 #: pretalx/orga/forms/cfp.py:280
-#, fuzzy
 msgid "You already have a track by this name!"
-msgstr "我已經有帳號了"
+msgstr "您已經有一個同名的議程軌！"
 
 #: pretalx/orga/forms/cfp.py:331
 #, python-brace-format
@@ -3624,9 +3570,8 @@ msgid "Score and text, e.g “3 (good)”"
 msgstr "分數和文字，例如“3（好）”"
 
 #: pretalx/orga/forms/event.py:520
-#, fuzzy
 msgid "Just scores"
-msgstr "沒有分數"
+msgstr "只有分數"
 
 #: pretalx/orga/forms/event.py:521
 msgid "Just text"
@@ -3681,18 +3626,16 @@ msgid "The end of a phase has to be after its start."
 msgstr "階段的結束時間必須在開始時間之後。"
 
 #: pretalx/orga/forms/export.py:15
-#, fuzzy
 msgid "Export format"
-msgstr "短名稱"
+msgstr "匯出格式"
 
 #: pretalx/orga/forms/export.py:17
 msgid "A CSV export can be opened directly in Excel and similar applications."
 msgstr "打開可以直接用CSV導出在Excel和類似應用程式中。"
 
 #: pretalx/orga/forms/export.py:20
-#, fuzzy
 msgid "CSV export"
-msgstr "匯出"
+msgstr "匯出 CSV"
 
 #: pretalx/orga/forms/export.py:21
 msgid "JSON export"
@@ -3710,11 +3653,11 @@ msgstr ""
 
 #: pretalx/orga/forms/export.py:32
 msgid "Newline"
-msgstr ""
+msgstr "新的一行"
 
 #: pretalx/orga/forms/export.py:33
 msgid "Comma"
-msgstr ""
+msgstr "逗號"
 
 #: pretalx/orga/forms/export.py:75
 #, python-brace-format
@@ -3892,9 +3835,8 @@ msgid "Reviewer name"
 msgstr "檢閱者"
 
 #: pretalx/orga/forms/review.py:232
-#, fuzzy
 msgid "Reviewer email"
-msgstr "講者電子郵件地址"
+msgstr "檢閱者電子郵件"
 
 #: pretalx/orga/forms/review.py:290 pretalx/orga/forms/review.py:297
 #, fuzzy, python-brace-format
@@ -3903,7 +3845,7 @@ msgstr "刪除主辦者"
 
 #: pretalx/orga/forms/review.py:333
 msgid "file"
-msgstr ""
+msgstr "檔案"
 
 #: pretalx/orga/forms/review.py:335
 msgid "Replace current assignments"
@@ -3926,16 +3868,15 @@ msgstr "您的投稿："
 
 #: pretalx/orga/forms/review.py:374 pretalx/orga/forms/review.py:382
 msgid "Cannot parse JSON file."
-msgstr ""
+msgstr "無法解析 JSON 檔案。"
 
 #: pretalx/orga/forms/schedule.py:15
 msgid "Notify speakers of changes"
 msgstr "將所做變更通知講者"
 
 #: pretalx/orga/forms/schedule.py:26
-#, fuzzy
 msgid "We released a new schedule version!"
-msgstr "我們釋出了第一個議程表！"
+msgstr "我們釋出了新版議程表！"
 
 #: pretalx/orga/forms/schedule.py:33
 msgid "This schedule version was used already, please choose a different one."
@@ -3972,7 +3913,7 @@ msgstr ""
 
 #: pretalx/orga/forms/schedule.py:96 pretalx/orga/forms/submission.py:99
 msgid "Start"
-msgstr ""
+msgstr "開始"
 
 #: pretalx/orga/forms/schedule.py:97
 msgid "When the talk starts, if it is currently scheduled"
@@ -3980,7 +3921,7 @@ msgstr ""
 
 #: pretalx/orga/forms/schedule.py:101 pretalx/orga/forms/submission.py:109
 msgid "End"
-msgstr ""
+msgstr "結束"
 
 #: pretalx/orga/forms/schedule.py:102
 msgid "When the talk ends, if it is currently scheduled"
@@ -3997,7 +3938,7 @@ msgstr ""
 
 #: pretalx/orga/forms/schedule.py:111
 msgid "Average (mean) score"
-msgstr ""
+msgstr "平均分數"
 
 #: pretalx/orga/forms/schedule.py:112
 msgid "Average review score, if there have been reviews yet"
@@ -4023,14 +3964,12 @@ msgid "With accepted proposals"
 msgstr "已接受的議程投稿"
 
 #: pretalx/orga/forms/speaker.py:16
-#, fuzzy
 msgid "With confirmed proposals"
-msgstr "撤回投稿"
+msgstr "已確認的議程投稿"
 
 #: pretalx/orga/forms/speaker.py:17
-#, fuzzy
 msgid "With rejected proposals"
-msgstr "接受或拒絕議程投稿"
+msgstr "已拒絕的議程投稿"
 
 #: pretalx/orga/forms/speaker.py:30
 #, fuzzy
@@ -4038,9 +3977,8 @@ msgid "Proposal IDs"
 msgstr "議程投稿"
 
 #: pretalx/orga/forms/speaker.py:37
-#, fuzzy
 msgid "Proposal titles"
-msgstr "議程投稿統計資料"
+msgstr "議程投稿標題"
 
 #: pretalx/orga/forms/speaker.py:41
 #: pretalx/orga/templates/orga/cfp/text.html:98
@@ -4077,7 +4015,7 @@ msgstr "公開顯示的講者姓名。"
 #: pretalx/orga/forms/submission.py:83
 #: pretalx/submission/models/submission.py:154
 msgid "Proposal state"
-msgstr ""
+msgstr "議程投稿狀態"
 
 #: pretalx/orga/forms/submission.py:140
 #: pretalx/submission/forms/submission.py:130
@@ -4086,9 +4024,8 @@ msgid "Leave empty to use the default duration for the session type."
 msgstr "留白則使用預設地址：{}"
 
 #: pretalx/orga/forms/submission.py:151
-#, fuzzy
 msgid "The end time has to be after the start time."
-msgstr "階段的結束時間必須在開始時間之後。"
+msgstr "結束時間必須在開始時間之後。"
 
 #: pretalx/orga/forms/submission.py:273
 msgid "Mark the new state as 'pending'?"
@@ -4145,7 +4082,7 @@ msgstr ""
 
 #: pretalx/orga/templates/orga/admin.html:29
 msgid "Your pretalx version is:"
-msgstr ""
+msgstr "您的 pretalx 版本為："
 
 #: pretalx/orga/templates/orga/admin.html:30
 #, fuzzy, python-format
@@ -4210,11 +4147,11 @@ msgstr "使用者"
 
 #: pretalx/orga/templates/orga/admin.html:66
 msgid "An email password has been set."
-msgstr "已送出電子郵件密碼。"
+msgstr "已設定電子郵件密碼。"
 
 #: pretalx/orga/templates/orga/admin.html:66
 msgid "No email password has been set."
-msgstr "未送出電子郵件密碼。"
+msgstr "未設定電子郵件密碼。"
 
 #: pretalx/orga/templates/orga/admin.html:70
 msgid "System"
@@ -4222,7 +4159,7 @@ msgstr "系統"
 
 #: pretalx/orga/templates/orga/admin.html:72
 msgid "Executable"
-msgstr "執行檔"
+msgstr "可執行的"
 
 #: pretalx/orga/templates/orga/admin.html:74
 msgid "On errors, emails will be sent to:"
@@ -4525,17 +4462,14 @@ msgid "Nobody has answered this question at the moment."
 msgstr "目前尚無人回答此問題。"
 
 #: pretalx/orga/templates/orga/cfp/question_detail.html:52
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "This question has been answered <strong>%(count)s</strong>, "
 "<strong>%(missing)s</strong> answers <a "
 "href=\"%(base_search_url)sunanswered=1\">are still missing</a>."
 msgstr ""
-"\n"
-"                    此問題已被回答 <strong>%(count)s</strong> 次，還<a "
-"href=\"%(base_search_url)sunanswered=1\">缺 <strong>%(missing)s</strong> 次</"
-"a>。\n"
-"                "
+"此問題已被回答 <strong>%(count)s</strong> 次，還<a href=\""
+"%(base_search_url)sunanswered=1\">缺 <strong>%(missing)s</strong> 次</a>。"
 
 #: pretalx/orga/templates/orga/cfp/question_detail.html:56
 #, python-format
@@ -5224,9 +5158,8 @@ msgid "Preview email"
 msgstr "講者電子郵件地址"
 
 #: pretalx/orga/templates/orga/mails/send_form.html:69
-#, fuzzy
 msgid "Send to outbox"
-msgstr "傳送給 "
+msgstr "傳送給"
 
 #: pretalx/orga/templates/orga/mails/sent_list.html:9
 msgid "Sent Mails"
@@ -6117,9 +6050,8 @@ msgid "Permissions"
 msgstr "權限"
 
 #: pretalx/orga/templates/orga/settings/team_resend.html:10
-#, fuzzy
 msgid "Do you want to resend the email to:"
-msgstr "您確定要送出這 {count} 份電子郵件嗎？"
+msgstr "您是否要重新發送郵件至："
 
 #: pretalx/orga/templates/orga/settings/team_reset_password.html:7
 #: pretalx/orga/templates/orga/speaker/reset_password.html:7
@@ -6447,11 +6379,11 @@ msgstr ""
 
 #: pretalx/orga/templates/orga/submission/review.html:123
 msgid "Other proposals"
-msgstr ""
+msgstr "其他投稿議程"
 
 #: pretalx/orga/templates/orga/submission/review.html:185
 msgid "Nobody else has submitted a review yet."
-msgstr ""
+msgstr "尚未有人提交評論。"
 
 #: pretalx/orga/templates/orga/submission/review.html:194
 #: pretalx/orga/templates/orga/submission/review.html:195
@@ -6503,10 +6435,9 @@ msgid "Remove"
 msgstr "移除"
 
 #: pretalx/orga/templates/orga/submission/state_change.html:14
-#, fuzzy
 msgid ""
 "Please confirm that you really want to change the state of this proposal."
-msgstr "您確定要改變此議程投稿的狀態嗎？"
+msgstr "請確認您要修改此議程投稿的狀態。"
 
 #: pretalx/orga/templates/orga/submission/stats.html:20
 msgid "Proposal Statistics"
@@ -7776,7 +7707,7 @@ msgstr ""
 
 #: pretalx/submission/models/question.py:166
 msgid "question"
-msgstr ""
+msgstr "問題"
 
 #: pretalx/submission/models/question.py:171
 msgid "help text"
@@ -7788,7 +7719,7 @@ msgstr ""
 
 #: pretalx/submission/models/question.py:177
 msgid "default answer"
-msgstr ""
+msgstr "預設答案"
 
 #: pretalx/submission/models/question.py:183
 msgid "Inactive questions will no longer be asked."
@@ -7806,7 +7737,7 @@ msgstr ""
 
 #: pretalx/submission/models/question.py:195
 msgid "Minimum text length"
-msgstr ""
+msgstr "最小文字長度"
 
 #: pretalx/submission/models/question.py:197
 msgid "Minimum allowed text in characters or words (set in CfP settings)."
@@ -7814,7 +7745,7 @@ msgstr ""
 
 #: pretalx/submission/models/question.py:203
 msgid "Maximum text length"
-msgstr ""
+msgstr "最大文字長度"
 
 #: pretalx/submission/models/question.py:205
 msgid ""
@@ -7824,16 +7755,14 @@ msgstr ""
 #: pretalx/submission/models/question.py:213
 #: pretalx/submission/models/question.py:225
 #: pretalx/submission/models/question.py:235
-#, fuzzy
 msgid "Minimum value"
-msgstr "最小長度"
+msgstr "最小值"
 
 #: pretalx/submission/models/question.py:220
 #: pretalx/submission/models/question.py:230
 #: pretalx/submission/models/question.py:238
-#, fuzzy
 msgid "Maximum value"
-msgstr "最大長度"
+msgstr "最大值"
 
 #: pretalx/submission/models/question.py:242
 msgid "Publish answers"
@@ -7959,7 +7888,7 @@ msgstr ""
 
 #: pretalx/submission/models/submission.py:56
 msgid "draft"
-msgstr ""
+msgstr "草稿"
 
 #: pretalx/submission/models/submission.py:162
 #, fuzzy
@@ -8017,7 +7946,7 @@ msgstr ""
 #: pretalx/submission/models/submission.py:476
 #, python-brace-format
 msgid "New proposal: {title}"
-msgstr ""
+msgstr "新提案：{title}"
 
 #: pretalx/submission/models/tag.py:31
 #, fuzzy
@@ -8075,7 +8004,7 @@ msgid "{name} ({duration} minutes)"
 msgstr ""
 
 msgid "minutes"
-msgstr ""
+msgstr "分鐘"
 
 msgid "Hidden rooms"
 msgstr ""
