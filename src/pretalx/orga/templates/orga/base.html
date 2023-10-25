@@ -42,6 +42,7 @@
             <script src="{% static "common/js/formTools.js" %}" async></script>
         {% endcompress %}
         {% block scripts %}{% endblock %}
+        {{ html_head|safe }}
     </head>
     <body data-datetimeformat="{{ js_datetime_format }}" data-dateformat="{{ js_date_format }}" data-datetimelocale="{{ js_locale }}">
         <nav class="navbar navbar-expand-lg fixed-top">

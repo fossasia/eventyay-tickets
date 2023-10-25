@@ -58,6 +58,18 @@ as active.
 As with all plugin signals, the ``sender`` keyword argument will contain the event.
 A second keyword argument ``request`` will contain the request object.
 """
+
+html_head = EventPluginSignal()
+"""
+This signal allows you to put code inside the HTML ``<head>`` tag of every page in the
+organiser backend. You will get the request as the keyword argument ``request`` and are
+expected to return plain HTML.
+
+As with all plugin signals, the ``sender`` keyword argument will contain the event.
+Additionally, the signal will be called with the ``request`` it is processing.
+The receivers are expected to return HTML.
+"""
+
 event_copy_data = EventPluginSignal()
 """
 This signal is sent out when a new event is created as a clone of an existing event, i.e.

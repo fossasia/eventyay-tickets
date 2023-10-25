@@ -4,6 +4,7 @@ Release Notes
 =============
 
 - :release:`unreleased <????-??-??>`
+- :support:`-` Plugins can now inject content into a page's HTML ``<head>`` tag with the ``pretalx.orga.signals.html_head`` signal.
 - :bug:`-` Answers for URL questions were not included in JSON/CSV exports
 - :support:`-` The primary URL of widget scripts and widget data has changed. The old URLs will continue until at least the last 2024 release.
 - :support:`-` The old v1 schedule widget, which has been deprecated for a long time, has been removed.

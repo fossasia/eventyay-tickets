@@ -35,7 +35,7 @@ Organiser area
 --------------
 
 .. automodule:: pretalx.orga.signals
-   :members: nav_event, nav_global, activate_event, nav_event_settings, event_copy_data
+   :members: nav_event, nav_global, html_head, activate_event, nav_event_settings, event_copy_data
 
 .. automodule:: pretalx.common.signals
    :members: activitylog_display

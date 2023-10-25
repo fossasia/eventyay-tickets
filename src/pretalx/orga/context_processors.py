@@ -2,7 +2,7 @@ from importlib import import_module
 
 from django.conf import settings
 
-from pretalx.orga.signals import nav_event, nav_event_settings, nav_global
+from pretalx.orga.signals import html_head, nav_event, nav_event_settings, nav_global
 
 SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
 
@@ -44,6 +44,9 @@ def orga_events(request):
     context["nav_event"] = _nav_event
     context["nav_settings"] = collect_signal(
         nav_event_settings, {"sender": request.event, "request": request}
+    )
+    context["html_head"] = "".join(
+        collect_signal(html_head, {"sender": request.event, "request": request})
     )
 
     if (

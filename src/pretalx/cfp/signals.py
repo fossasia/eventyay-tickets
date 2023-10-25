@@ -27,7 +27,7 @@ submission list page, above the submission list.
 
 As with all plugin signals, the ``sender`` keyword argument will contain the event.
 Additionally, the signal will be called with the ``request`` it is processing.
-Thereceivers are expected to return HTML.
+The receivers are expected to return HTML.
 """
 
 html_above_profile_page = EventPluginSignal()
@@ -37,7 +37,7 @@ profile page, above the submission list.
 
 As with all plugin signals, the ``sender`` keyword argument will contain the event.
 Additionally, the signal will be called with the ``request`` it is processing.
-Thereceivers are expected to return HTML.
+The receivers are expected to return HTML.
 """
 html_head = EventPluginSignal()
 """
@@ -47,5 +47,5 @@ as the keyword argument ``request`` and are expected to return plain HTML.
 
 As with all plugin signals, the ``sender`` keyword argument will contain the event.
 Additionally, the signal will be called with the ``request`` it is processing.
-Thereceivers are expected to return HTML.
+The receivers are expected to return HTML.
 """
