@@ -10,7 +10,7 @@
 		.speakers(v-if="session.speakers") {{ session.speakers.map(s => s.name).join(', ') }}
 		.bottom-info
 			.track(v-if="session.track") {{ getLocalizedString(session.track.name) }}
-	.warning(v-if="warnings?.length")
+	.warning.no-print(v-if="warnings?.length")
 		.warning-icon.text-danger
 			span(v-if="warnings.length > 1") {{ warnings.length }}
 			i.fa.fa-exclamation-triangle
@@ -204,4 +204,13 @@ export default {
 		font-size: 16px
 		.warning-icon span
 			padding-right: 4px
+@media print
+	.c-linear-schedule-session.isbreak
+		border: 2px solid $clr-grey-300 !important
+	.c-linear-schedule-session.istalk .time-box
+		border: 2px solid var(--track-color) !important
+	.c-linear-schedule-session.istalk .info
+		border-right: 2px solid var(--track-color) !important
+		border-top: 2px solid var(--track-color) !important
+		border-bottom: 2px solid var(--track-color) !important
 </style>

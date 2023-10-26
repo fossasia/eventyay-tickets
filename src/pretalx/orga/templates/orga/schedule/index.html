@@ -21,7 +21,7 @@
 
 {% block schedule_content %}
 
-    <div class="schedule-header d-flex m-3">
+    <div class="schedule-header d-flex m-3 no-print">
         <div id="schedule-action-wrapper" class="d-flex align-items-center ml-auto">
             {% if not schedule_version %}
                 <a id="schedule-release" href="{{ request.event.orga_urls.release_schedule }}" class="btn ml-2 btn-success"><i class="fa fa-plus"></i> {% translate "New release" %}</a>

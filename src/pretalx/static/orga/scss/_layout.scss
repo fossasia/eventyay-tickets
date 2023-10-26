@@ -1211,3 +1211,11 @@ div.mail-preview {
     margin-bottom: 0;
   }
 }
+@media print {
+    body, #page-content, .pretalx-schedule {
+        height: 100% !important;
+    }
+    .no-print {
+        display: none !important;
+    }
+}

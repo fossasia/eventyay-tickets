@@ -10,7 +10,7 @@
 		.room(:style="{'grid-area': `1 / 1 / auto / auto`}")
 		.room(v-for="(room, index) of visibleRooms", :style="{'grid-area': `1 / ${index + 2 } / auto / auto`}")
 			span {{ getLocalizedString(room.name) }}
-			.hide-room(v-if="visibleRooms.length > 1", @click="hiddenRooms = rooms.filter(r => hiddenRooms.includes(r) || r === room)")
+			.hide-room.no-print(v-if="visibleRooms.length > 1", @click="hiddenRooms = rooms.filter(r => hiddenRooms.includes(r) || r === room)")
 				i.fa.fa-eye-slash
 		session(v-if="draggedSession && hoverSlice", :style="getHoverSliceStyle()", :session="draggedSession", :isDragClone="true")
 		template(v-for="session of visibleSessions")

@@ -434,7 +434,7 @@
                     {% block content %}
                     {% endblock %}
                 </main>
-                <footer>
+                <footer class="no-print">
                     {% include "common/powered_by.html" %}
                     {% if development_mode %}
                         <span class="text-warning">· {% translate "running in development mode" %}</span>

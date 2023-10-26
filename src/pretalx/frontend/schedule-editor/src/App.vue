@@ -2,7 +2,7 @@
 .pretalx-schedule(:style="{'--scrollparent-width': scrollParentWidth + 'px'}", :class="draggedSession ? ['is-dragging'] : []", @pointerup="stopDragging")
 	template(v-if="schedule")
 		#main-wrapper
-			#unassigned(v-scrollbar.y="", @pointerenter="isUnassigning = true", @pointerleave="isUnassigning = false")
+			#unassigned.no-print(v-scrollbar.y="", @pointerenter="isUnassigning = true", @pointerleave="isUnassigning = false")
 				.title
 					bunt-input#filter-input(v-model="unassignedFilterString", :placeholder="$t('Filter sessions')", icon="search")
 					#unassigned-sort(@click="showUnassignedSortMenu = !showUnassignedSortMenu", :class="{'active': showUnassignedSortMenu}")
