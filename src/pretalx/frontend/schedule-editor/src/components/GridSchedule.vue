@@ -23,7 +23,7 @@
 				@startDragging="startDragging($event)",
 			)
 		.availability(v-for="availability of visibleAvailabilities", :style="getSessionStyle(availability)", :class="availability.active ? ['active'] : []")
-	#hiddenRooms(v-if="hiddenRooms.length")
+	#hiddenRooms.no-print(v-if="hiddenRooms.length")
 		h4 {{ $t('Hidden rooms') }} ({{ hiddenRooms.length }})
 		.room-list
 			.room-entry(v-for="room of hiddenRooms", @click="hiddenRooms.splice(hiddenRooms.indexOf(room), 1)")
