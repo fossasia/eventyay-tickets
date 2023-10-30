@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-10-03 12:59+0000\n"
-"PO-Revision-Date: 2023-10-22 14:04+0000\n"
+"PO-Revision-Date: 2023-10-30 00:27+0000\n"
 "Last-Translator: Chin-Cheng Huang <katy881115@gmail.com>\n"
 "Language-Team: none\n"
 "Language: zh_Hant\n"
@@ -1374,7 +1374,7 @@ msgstr "您的 API token 已重新產生。先前的 token 將無法再使用。
 
 #: pretalx/cfp/views/user.py:274
 msgid "Your draft was discarded."
-msgstr "您的草稿已被捨棄"
+msgstr "您的草稿已被捨棄。"
 
 #: pretalx/cfp/views/user.py:410
 msgid "Your proposal has been submitted."
@@ -1382,7 +1382,7 @@ msgstr "您投稿的議程已送出。"
 
 #: pretalx/cfp/views/user.py:484
 msgid "You cannot accept this invitation."
-msgstr "您無法接受此邀請"
+msgstr "您無法接受此邀請。"
 
 #: pretalx/common/context_processors.py:42
 #: pretalx/schedule/models/schedule.py:375
@@ -2320,9 +2320,8 @@ msgstr ""
 "「徵求議程投稿」階段的預設期限。您另外可以針對不同的提交型態給定不同的期限。"
 
 #: pretalx/event/forms.py:201 pretalx/orga/forms/event.py:222
-#, fuzzy
 msgid "The event end cannot be before the start."
-msgstr "階段的結束時間必須在開始時間之後。"
+msgstr "活動的結束時間必須在開始時間之後。"
 
 #: pretalx/event/forms.py:218 pretalx/event/models/event.py:211
 msgid "Main event colour"
@@ -2749,6 +2748,7 @@ msgid "The event's full name"
 msgstr "活動的全名"
 
 #: pretalx/mail/context.py:80
+#, fuzzy
 msgid "The event's short form, used in URLs"
 msgstr "用於網址事件的縮寫形式"
 
@@ -2776,9 +2776,8 @@ msgid "The general CfP deadline"
 msgstr "文字與期限"
 
 #: pretalx/mail/context.py:130
-#, fuzzy
 msgid "The proposal's unique ID"
-msgstr "此議程投稿尚未確認。"
+msgstr "此提案的唯一編號"
 
 #: pretalx/mail/context.py:137
 msgid "The proposal's public URL"
@@ -2798,9 +2797,8 @@ msgid "Link to withdraw the proposal"
 msgstr "撤回投稿"
 
 #: pretalx/mail/context.py:164
-#, fuzzy
 msgid "This Is a Proposal Title"
-msgstr "議程投稿統計資料"
+msgstr "這是一個提案的標題"
 
 #: pretalx/mail/context.py:165
 msgid "The proposal's title"
@@ -3707,9 +3705,8 @@ msgid "All rejected speakers"
 msgstr "所有被拒絕的講者"
 
 #: pretalx/orga/forms/mails.py:208
-#, fuzzy
 msgid "All canceled speakers"
-msgstr "所有被拒絕的講者"
+msgstr "所有被取消的講者"
 
 #: pretalx/orga/forms/mails.py:209
 msgid "All reviewers in your team"
@@ -3807,14 +3804,13 @@ msgid_plural "Proposals"
 msgstr[0] "份議程投稿"
 
 #: pretalx/orga/forms/review.py:208 pretalx/orga/forms/schedule.py:50
-#, fuzzy
 msgid "All proposals"
-msgstr "我提交的議程稿件"
+msgstr "我提交的所有議程投稿"
 
 #: pretalx/orga/forms/review.py:211 pretalx/orga/views/dashboard.py:332
 #: pretalx/submission/models/submission.py:52
 msgid "rejected"
-msgstr ""
+msgstr "拒絕"
 
 #: pretalx/orga/forms/review.py:217
 #, fuzzy
@@ -3827,12 +3823,11 @@ msgstr ""
 
 #: pretalx/orga/forms/review.py:224 pretalx/submission/models/submission.py:130
 msgid "Proposal title"
-msgstr ""
+msgstr "議程投稿標題"
 
 #: pretalx/orga/forms/review.py:228
-#, fuzzy
 msgid "Reviewer name"
-msgstr "檢閱者"
+msgstr "檢閱者名稱"
 
 #: pretalx/orga/forms/review.py:232
 msgid "Reviewer email"
@@ -3884,9 +3879,8 @@ msgstr "這個議程表版號已被使用過，請修改版號。"
 
 #: pretalx/orga/forms/schedule.py:49 pretalx/orga/forms/speaker.py:12
 #: pretalx/orga/templates/orga/speaker/information_list.html:30
-#, fuzzy
 msgid "Target group"
-msgstr "目標"
+msgstr "目標族群"
 
 #: pretalx/orga/forms/schedule.py:80
 #, fuzzy
@@ -3954,9 +3948,8 @@ msgid "Rooms"
 msgstr "會議室"
 
 #: pretalx/orga/forms/speaker.py:14 pretalx/person/models/information.py:25
-#, fuzzy
 msgid "All submitters"
-msgstr "名提交者"
+msgstr "所有提交者"
 
 #: pretalx/orga/forms/speaker.py:15
 #, fuzzy
