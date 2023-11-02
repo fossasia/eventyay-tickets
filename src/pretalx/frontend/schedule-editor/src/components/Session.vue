@@ -33,6 +33,10 @@ export default {
 		isDragClone: {
 			type: Boolean,
 			default: false
+		},
+		overrideStart: {
+			type: Object,
+			default: null
 		}
 	},
 	inject: {
@@ -73,15 +77,16 @@ export default {
 		},
 		startTime () {
 			// check if 12h or 24h locale
-			if (!this.session.start) return
+			const time = this.overrideStart  || this.session.start
+			if (!time) return
 			if (moment.localeData().longDateFormat('LT').endsWith(' A')) {
 				return {
-					time: this.session.start.format('h:mm'),
-					ampm: this.session.start.format('A')
+					time: time.format('h:mm'),
+					ampm: time.format('A')
 				}
 			} else {
 				return {
-					time: moment(this.session.start).format('LT')
+					time: moment(time).format('LT')
 				}
 			}
 		},
