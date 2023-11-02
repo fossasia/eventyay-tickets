@@ -4,6 +4,7 @@ Release Notes
 =============
 
 - :release:`unreleased <????-??-??>`
+- :bug:`-` Sessions could not be scheduled for midnight via drag'n'drop (though scheduling via the session form still worked as a workaround).
 - :feature:`-` The schedule editor page can now be printed – page breaks can still occur in odd places, but it's otherwise a very readable schedule (with your selection of rooms).
 - :support:`-` Plugins can now inject content into a page's HTML ``<head>`` tag with the ``pretalx.orga.signals.html_head`` signal.
 - :bug:`-` Answers for URL questions were not included in JSON/CSV exports
