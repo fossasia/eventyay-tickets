@@ -1,7 +1,6 @@
 import copy
 import datetime as dt
 import zoneinfo
-from contextlib import suppress
 
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
@@ -22,6 +21,7 @@ from pretalx.common.mixins.models import PretalxModel
 from pretalx.common.models import TIMEZONE_CHOICES
 from pretalx.common.models.settings import hierarkey
 from pretalx.common.phrases import phrases
+from pretalx.common.plugins import get_all_plugins
 from pretalx.common.urls import EventUrls
 from pretalx.common.utils import daterange, path_with_hash
 
@@ -492,16 +492,16 @@ class Event(PretalxModel):
 
     @property
     def plugin_list(self) -> list:
-        """Provides a list of active plugins as strings, and is also an
-        attribute setter."""
         if not self.plugins:
             return []
         return self.plugins.split(",")
 
-    @plugin_list.setter
-    def plugin_list(self, modules: list) -> None:
-        from pretalx.common.plugins import get_all_plugins
-
+    def set_plugins(self, modules: list) -> None:
+        """
+        This method is not @plugin_list.setter to make the side effects more visible.
+        It will call installed() on all plugins that were not active before, and
+        uninstalled() on all plugins that are not active anymore.
+        """
         plugins_active = set(self.plugin_list)
         plugins_available = {
             p.module: p
@@ -513,42 +513,29 @@ class Event(PretalxModel):
         disable = plugins_active - set(modules)
 
         for module in enable:
-            with suppress(Exception):
+            if hasattr(plugins_available[module].app, "installed"):
                 plugins_available[module].app.installed(self)
         for module in disable:
-            with suppress(Exception):
+            if hasattr(plugins_available[module].app, "uninstalled"):
                 plugins_available[module].app.uninstalled(self)
 
         self.plugins = ",".join(modules)
 
     def enable_plugin(self, module: str) -> None:
-        """Enables a named plugin.
-
-        Caution, no validation is performed at this point. No exception is
-        raised if the module is unknown. An already active module will not
-        be added to the plugin list again.
-
-        :param module: The module to be activated.
-        """
+        """Enables a plugin. If the given plugin is available and was not in the list of
+        active plugins, it will be added and installed() will be called."""
         plugins_active = self.plugin_list
-
         if module not in plugins_active:
             plugins_active.append(module)
-            self.plugin_list = plugins_active
+            self.set_plugins(plugins_active)
 
     def disable_plugin(self, module: str) -> None:
-        """Disables a named plugin.
-
-        Caution, no validation is performed at this point. No exception is
-        raised if the module was not part of the active plugins.
-
-        :param module: The module to be deactivated.
-        """
+        """Disables a plugin. If the given plugin is in the list of active
+        plugins, it will be removed and uninstall() will be called."""
         plugins_active = self.plugin_list
-
         if module in plugins_active:
             plugins_active.remove(module)
-            self.plugin_list = plugins_active
+            self.set_plugins(plugins_active)
 
     def get_primary_color(self):
         return self.primary_color or settings.DEFAULT_EVENT_PRIMARY_COLOR
