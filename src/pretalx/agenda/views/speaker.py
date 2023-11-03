@@ -108,6 +108,8 @@ class SpeakerTalksIcalView(PermissionRequired, DetailView):
         ).first()
 
     def get(self, request, event, *args, **kwargs):
+        if not self.request.event.current_schedule:
+            raise Http404()
         netloc = urlparse(settings.SITE_URL).netloc
         speaker = self.get_object()
         slots = self.request.event.current_schedule.talks.filter(

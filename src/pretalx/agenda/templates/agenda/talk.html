@@ -35,7 +35,7 @@
                     </button>
                 </span>
                 <div class="buttons" id="talk-buttons">
-                    {% if submission.state == 'confirmed' %}
+                    {% if submission.state == 'confirmed' and request.event.current_schedule %}
                         <a class="btn btn-outline-primary" href="{{ submission.urls.ical }}">
                             <i class="fa fa-calendar"></i> .ical
                         </a>
