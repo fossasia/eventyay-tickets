@@ -671,7 +671,7 @@ class Event(PretalxModel):
     def copy_data_from(self, other_event):
         from pretalx.orga.signals import event_copy_data
 
-        delta = other_event.date_from - self.date_from
+        delta = self.date_from - other_event.date_from
 
         self._delete_mail_templates()
         self.submission_types.exclude(pk=self.cfp.default_type_id).delete()
@@ -745,6 +745,7 @@ class Event(PretalxModel):
             for stype in types:
                 information.limit_types.add(submission_type_map.get(stype))
 
+        self.review_phases.all().delete()
         for review_phase in other_event.review_phases.all():
             review_phase.pk = None
             review_phase.event = self
@@ -755,9 +756,10 @@ class Event(PretalxModel):
                 review_phase.end += delta
             review_phase.save()
 
+        self.score_categories.all().delete()
         for score_category in other_event.score_categories.all():
-            scores = score_category.scores.all()
-            tracks = score_category.limit_tracks.all()
+            scores = list(score_category.scores.all())
+            tracks = list(score_category.limit_tracks.all())
             score_category.pk = None
             score_category.event = self
             score_category.save()
