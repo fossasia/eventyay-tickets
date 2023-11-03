@@ -689,7 +689,17 @@ class EventWizard(PermissionRequired, SensibleBackWizardMixin, SessionWizardView
             )
 
             if steps["copy"] and steps["copy"]["copy_from_event"]:
-                event.copy_data_from(steps["copy"]["copy_from_event"])
+                event.copy_data_from(
+                    steps["copy"]["copy_from_event"],
+                    skip_attributes=[
+                        "locale",
+                        "locales",
+                        "primary_color",
+                        "timezone",
+                        "email",
+                        "deadline",
+                    ],
+                )
 
         return redirect(event.orga_urls.base + "?congratulations")
 

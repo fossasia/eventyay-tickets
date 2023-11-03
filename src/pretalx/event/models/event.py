@@ -655,10 +655,32 @@ class Event(PretalxModel):
     _delete_mail_templates.alters_data = True
 
     @scopes_disabled()
-    def copy_data_from(self, other_event):
+    def copy_data_from(self, other_event, skip_attributes=None):
         from pretalx.orga.signals import event_copy_data
 
         delta = self.date_from - other_event.date_from
+
+        clonable_attributes = [
+            "locale",
+            "locale_array",
+            "primary_color",
+            "timezone",
+            "email",
+            "plugins",
+            "feature_flags",
+            "display_settings",
+            "review_settings",
+            "content_locale_array",
+            "landing_page_text",
+            "featured_sessions_text",
+        ]
+        if skip_attributes:
+            clonable_attributes = [
+                a for a in clonable_attributes if a not in skip_attributes
+            ]
+        for attribute in clonable_attributes:
+            setattr(self, attribute, getattr(other_event, attribute))
+        self.save()
 
         self._delete_mail_templates()
         self.submission_types.exclude(pk=self.cfp.default_type_id).delete()
@@ -765,7 +787,7 @@ class Event(PretalxModel):
             s.pk = None
             s.save()
         self.settings.flush()
-        self.cfp.copy_data_from(other_event.cfp)
+        self.cfp.copy_data_from(other_event.cfp, skip_attributes=skip_attributes)
         event_copy_data.send(
             sender=self,
             other=other_event.slug,

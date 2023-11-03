@@ -123,15 +123,17 @@ def test_event_model_slug_uniqueness():
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize("with_url", (True, False))
-def test_event_copy_settings(event, submission_type, with_url, choice_question, track):
+def test_event_copy_settings(event, submission_type, choice_question, track):
     with scope(event=event):
-        if with_url:
-            event.custom_domain = "https://testeventcopysettings.example.org"
+        event.custom_domain = "https://testeventcopysettings.example.org"
         event.settings.random_value = "testcopysettings"
         event.accept_template.text = "testtemplate"
         event.accept_template.save()
+        event.feature_flags = {"testing": "working"}
         choice_question.tracks.add(track)
+        event.cfp.deadline = now().date()
+        event.cfp.save()
+        assert event.submission_types.count() == 2
     with scopes_disabled():
         new_event = Event.objects.create(
             organiser=event.organiser,
@@ -144,19 +146,42 @@ def test_event_copy_settings(event, submission_type, with_url, choice_question, 
             date_from=dt.date.today(),
             date_to=dt.date.today(),
         )
-    with scope(event=new_event):
-        assert new_event.accept_template
-        assert new_event.submission_types.count() == 1
-    with scope(event=event):
-        assert event.submission_types.count() == 2
     with scopes_disabled():
+        assert new_event.submission_types.count() == 1
         new_event.copy_data_from(event)
         assert new_event.submission_types.count() == event.submission_types.count()
     with scope(event=new_event):
+        assert new_event.submission_types.count() == 2
         assert new_event.accept_template
         assert new_event.accept_template.text == "testtemplate"
         assert new_event.settings.random_value == "testcopysettings"
         assert not new_event.custom_domain
+        assert new_event.feature_flags == {"testing": "working"}
+        assert new_event.cfp.deadline == event.cfp.deadline
+
+
+@pytest.mark.django_db
+def test_event_copy_settings_with_exceptions(event):
+    with scope(event=event):
+        event.feature_flags = {"testing": "working"}
+        event.cfp.deadline = now().date()
+        event.cfp.save()
+    with scopes_disabled():
+        new_event = Event.objects.create(
+            organiser=event.organiser,
+            locale_array="de,en",
+            name="Teh Name",
+            slug="tn",
+            timezone="Europe/Berlin",
+            email="tehname@example.org",
+            locale="de",
+            date_from=dt.date.today(),
+            date_to=dt.date.today(),
+        )
+        new_event.copy_data_from(event, skip_attributes=["feature_flags", "deadline"])
+    with scope(event=new_event):
+        assert new_event.feature_flags != {"testing": "working"}
+        assert not new_event.cfp.deadline
 
 
 @pytest.mark.django_db

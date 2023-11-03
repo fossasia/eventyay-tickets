@@ -131,9 +131,20 @@ class CfP(PretalxModel):
         """Help with debugging."""
         return f"CfP(event={self.event.slug})"
 
-    def copy_data_from(self, other_cfp):
+    def copy_data_from(self, other_cfp, skip_attributes=None):
         # default_type gets set by event.copy_data_from
-        for field in ("headline", "text", "settings", "fields"):
+        clonable_attributes = [
+            "headline",
+            "text",
+            "deadline",
+            "settings",
+            "fields",
+        ]
+        if skip_attributes:
+            clonable_attributes = [
+                a for a in clonable_attributes if a not in skip_attributes
+            ]
+        for field in clonable_attributes:
             setattr(self, field, getattr(other_cfp, field))
         self.save()
 
