@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-30 00:28+0000\n"
+"POT-Creation-Date: 2023-11-03 08:44+0000\n"
 "PO-Revision-Date: 2023-10-30 00:27+0000\n"
 "Last-Translator: Chin-Cheng Huang <katy881115@gmail.com>\n"
 "Language-Team: none\n"
@@ -18,14 +18,14 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 4.18.2\n"
 
-#: local/pretalx-pages/pretalx_pages/apps.py:10
+#: local/pretalx-pages/pretalx_pages/apps.py:12
 #: local/pretalx-pages/pretalx_pages/signals.py:19
 #: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/index.html:5
 #: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/index.html:7
 msgid "Pages"
 msgstr "頁面"
 
-#: local/pretalx-pages/pretalx_pages/apps.py:13
+#: local/pretalx-pages/pretalx_pages/apps.py:15
 msgid ""
 "Add static pages to your event site, for example Terms of Service, venue "
 "listings, a code of conduct, etc."
@@ -301,6 +301,8 @@ msgstr "議程表"
 
 #: pretalx/agenda/templates/agenda/header_row.html:9
 #: pretalx/agenda/templates/agenda/speaker.html:49
+#: pretalx/orga/templates/orga/base.html:261
+#: pretalx/orga/templates/orga/base.html:269
 #: pretalx/orga/templates/orga/submission/stats.html:21
 #: pretalx/orga/templates/orga/submission/stats.html:33
 msgid "Sessions"
@@ -3761,8 +3763,6 @@ msgid "Leave empty to include proposals of all session types."
 msgstr ""
 
 #: pretalx/orga/forms/mails.py:233 pretalx/orga/forms/mails.py:235
-#: pretalx/orga/templates/orga/base.html:261
-#: pretalx/orga/templates/orga/base.html:269
 #: pretalx/orga/templates/orga/cfp/submission_type_view.html:24
 #: pretalx/orga/templates/orga/cfp/track_view.html:24
 #: pretalx/orga/templates/orga/speaker/list.html:44
@@ -4910,7 +4910,6 @@ msgstr "沒有您可以編輯的主辦者。"
 #: pretalx/orga/templates/orga/event_list.html:32
 #: pretalx/orga/templates/orga/event_list.html:68
 #: pretalx/orga/templates/orga/speaker/form.html:20
-#: pretalx/orga/templates/orga/submission/list.html:28
 #: pretalx/orga/views/dashboard.py:312
 #, fuzzy
 msgid "proposal"
@@ -6329,8 +6328,17 @@ msgstr "目前這場活動還沒有任何回饋。"
 msgid "Proposal feed"
 msgstr ""
 
+#: pretalx/orga/templates/orga/submission/list.html:28
+#: pretalx/orga/views/dashboard.py:290
+#, fuzzy
+msgid "session"
+msgid_plural "sessions"
+msgstr[0] "個議程"
+
 #: pretalx/orga/templates/orga/submission/list.html:42
-msgid "Add new proposal"
+#, fuzzy
+#| msgid "Add new proposal"
+msgid "Add new session or proposal"
 msgstr "新增議程投稿"
 
 #: pretalx/orga/templates/orga/submission/list.html:85
@@ -6731,12 +6739,6 @@ msgstr "，共 {total_days} 天"
 #: pretalx/orga/views/dashboard.py:277
 msgid "current schedule"
 msgstr "目前的議程表"
-
-#: pretalx/orga/views/dashboard.py:290
-#, fuzzy
-msgid "session"
-msgid_plural "sessions"
-msgstr[0] "個議程"
 
 #: pretalx/orga/views/dashboard.py:295
 #, fuzzy

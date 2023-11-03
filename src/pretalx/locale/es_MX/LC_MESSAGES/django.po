@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-30 00:28+0000\n"
+"POT-Creation-Date: 2023-11-03 08:44+0000\n"
 "PO-Revision-Date: 2021-02-03 16:17+0000\n"
 "Last-Translator: Bryan Hernandez <bryan27hr@protonmail.ch>\n"
 "Language-Team: none\n"
@@ -18,14 +18,14 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 4.1\n"
 
-#: local/pretalx-pages/pretalx_pages/apps.py:10
+#: local/pretalx-pages/pretalx_pages/apps.py:12
 #: local/pretalx-pages/pretalx_pages/signals.py:19
 #: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/index.html:5
 #: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/index.html:7
 msgid "Pages"
 msgstr ""
 
-#: local/pretalx-pages/pretalx_pages/apps.py:13
+#: local/pretalx-pages/pretalx_pages/apps.py:15
 msgid ""
 "Add static pages to your event site, for example Terms of Service, venue "
 "listings, a code of conduct, etc."
@@ -330,6 +330,8 @@ msgstr "Agenda"
 
 #: pretalx/agenda/templates/agenda/header_row.html:9
 #: pretalx/agenda/templates/agenda/speaker.html:49
+#: pretalx/orga/templates/orga/base.html:261
+#: pretalx/orga/templates/orga/base.html:269
 #: pretalx/orga/templates/orga/submission/stats.html:21
 #: pretalx/orga/templates/orga/submission/stats.html:33
 msgid "Sessions"
@@ -3702,8 +3704,6 @@ msgid "Leave empty to include proposals of all session types."
 msgstr ""
 
 #: pretalx/orga/forms/mails.py:233 pretalx/orga/forms/mails.py:235
-#: pretalx/orga/templates/orga/base.html:261
-#: pretalx/orga/templates/orga/base.html:269
 #: pretalx/orga/templates/orga/cfp/submission_type_view.html:24
 #: pretalx/orga/templates/orga/cfp/track_view.html:24
 #: pretalx/orga/templates/orga/speaker/list.html:44
@@ -4850,7 +4850,6 @@ msgstr ""
 #: pretalx/orga/templates/orga/event_list.html:32
 #: pretalx/orga/templates/orga/event_list.html:68
 #: pretalx/orga/templates/orga/speaker/form.html:20
-#: pretalx/orga/templates/orga/submission/list.html:28
 #: pretalx/orga/views/dashboard.py:312
 msgid "proposal"
 msgid_plural "proposals"
@@ -6188,9 +6187,18 @@ msgstr ""
 msgid "Proposal feed"
 msgstr ""
 
+#: pretalx/orga/templates/orga/submission/list.html:28
+#: pretalx/orga/views/dashboard.py:290
+msgid "session"
+msgid_plural "sessions"
+msgstr[0] ""
+msgstr[1] ""
+
 #: pretalx/orga/templates/orga/submission/list.html:42
-msgid "Add new proposal"
-msgstr ""
+#, fuzzy
+#| msgid "Reviewers can tag proposals"
+msgid "Add new session or proposal"
+msgstr "Los revisores pueden etiquetar propuestas"
 
 #: pretalx/orga/templates/orga/submission/list.html:85
 msgid "Sort by title (a-z)"
@@ -6584,12 +6592,6 @@ msgstr ""
 #: pretalx/orga/views/dashboard.py:277
 msgid "current schedule"
 msgstr ""
-
-#: pretalx/orga/views/dashboard.py:290
-msgid "session"
-msgid_plural "sessions"
-msgstr[0] ""
-msgstr[1] ""
 
 #: pretalx/orga/views/dashboard.py:295
 #, fuzzy
