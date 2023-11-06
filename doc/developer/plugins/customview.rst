@@ -25,12 +25,21 @@ If you want to add a custom view to the organiser area of an event, register an 
     from . import views
 
     urlpatterns = [
-        re_path(rf"^orga/event/(?P<event>{SLUG_REGEX})/p/myplugin/$",
-            views.admin_view, name='backend'),
-        re_path(rf"^(?P<event>{SLUG_REGEX})/p/myplugin/$",
-            views.frontend_view, name='frontend'),
-        re_path(rf"^p/myplugin/$",
-            views.global_view, name='global-frontend'),
+        re_path(
+            rf"^orga/event/(?P<event>{SLUG_REGEX})/p/myplugin/$",
+            views.admin_view,
+            name="backend",
+        ),
+        re_path(
+            rf"^(?P<event>{SLUG_REGEX})/p/myplugin/$",
+            views.frontend_view,
+            name="frontend",
+        ),
+        re_path(
+            rf"^p/myplugin/$",
+            views.global_view,
+            name="global-frontend",
+        ),
     ]
 
 If you just created your `urls.py` file and you already had the dev-server running, you'll
@@ -54,7 +63,7 @@ your views::
     from pretalx.common.mixins.views import PermissionRequired
 
     class AdminView(PermissionRequired, View):
-        permission_required = 'orga.view_submissions'
+        permission_required = "orga.view_submissions"
 
         ...
 
@@ -65,30 +74,32 @@ There is also a signal that allows you to add the view to the event sidebar navi
     from django.dispatch import receiver
     from django.urls import resolve, reverse
     from django.utils.translation import ugettext_lazy as _
+
     from pretalx.orga.signals import nav_event
 
 
-    @receiver(nav_event, dispatch_uid='friends_tickets_nav')
+    @receiver(nav_event, dispatch_uid="friends_tickets_nav")
     def navbar_info(sender, request, **kwargs):
         url = resolve(request.path_info)
-        if not request.user.has_perm('orga.view_orga_area', request.event):
+        if not request.user.has_perm("orga.view_orga_area", request.event):
             return []
         return [{
-            'label': _('My plugin view'),
-            'icon': 'heart',
-            'url': reverse('plugins:myplugin:index', kwargs={
-                'event': request.event.slug,
+            "label": _("My plugin view"),
+            "icon": "heart",
+            "url": reverse("plugins:myplugin:index", kwargs={
+                "event": request.event.slug,
             }),
-            'active': url.namespace == 'plugins:myplugin' and url.url_name == 'view',
+            "active": url.namespace == "plugins:myplugin" and url.url_name == "view",
         }]
 
 
 Frontend views
 --------------
 
-Frontend views work pretty much like organiser area views. Take care that your URL starts
-with ``f'^(?P<event>[{SLUG_CHARS}]+)/p/mypluginname`` for event related urls or ``f'^p/mypluginname``
-for global views. You can then write a regular view. It will be automatically ensured that:
+Frontend views work pretty much like organiser area views. Take care that your
+URL starts with ``fr"^(?P<event>[{SLUG_REGEX}]+)/p/mypluginname"`` for event
+related urls or ``f"^p/mypluginname"`` for global views. You can then write a
+regular view. It will be automatically ensured that:
 
 * The requested event exists
 * The requested event is visible (either by being public, or if an organiser looks at it)
