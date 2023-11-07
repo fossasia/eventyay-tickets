@@ -14,36 +14,45 @@ def activity_log(event, submission):
 
 @pytest.mark.django_db
 def test_activity_log_display(activity_log):
-    assert activity_log.display() == LOG_NAMES.get(activity_log.action_type)
+    assert activity_log.display == LOG_NAMES.get(activity_log.action_type)
 
 
 @pytest.mark.django_db
 def test_activity_log_display_incorrect(activity_log):
     activity_log.action_type = "foo"
-    assert activity_log.display() == "foo"
+    assert activity_log.display == "foo"
 
 
 @pytest.mark.django_db
-def test_log_urls(activity_log, submission, choice_question, answer, mail_template):
+def test_log_urls(
+    activity_log, submission, choice_question, answer, mail_template, mail
+):
     with scope(event=submission.event):
-        assert activity_log.get_public_url() == submission.urls.public
-        assert activity_log.get_orga_url() == submission.orga_urls.base
+        assert submission.orga_urls.base in activity_log.display_object
 
         activity_log.content_object = submission.event.cfp
-        assert activity_log.get_public_url() == submission.event.cfp.urls.public
-        assert activity_log.get_orga_url() == submission.event.cfp.urls.text
+        del activity_log.display_object
+        assert submission.event.cfp.urls.text in activity_log.display_object
 
         activity_log.content_object = choice_question
-        assert activity_log.get_public_url() == ""
-        assert activity_log.get_orga_url() == choice_question.urls.base
+        del activity_log.display_object
+        assert choice_question.urls.base in activity_log.display_object
 
         activity_log.content_object = choice_question.options.first()
-        assert activity_log.get_orga_url() == choice_question.urls.base
+        del activity_log.display_object
+        assert choice_question.urls.base in activity_log.display_object
 
         activity_log.content_object = answer
-        assert activity_log.get_orga_url() == answer.submission.orga_urls.base
+        del activity_log.display_object
+        assert answer.submission.orga_urls.base in activity_log.display_object
         answer.submission = None
-        assert activity_log.get_orga_url() == answer.question.urls.base
+        del activity_log.display_object
+        assert answer.question.urls.base in activity_log.display_object
 
         activity_log.content_object = mail_template
-        assert activity_log.get_orga_url() == mail_template.urls.base
+        del activity_log.display_object
+        assert mail_template.urls.base in activity_log.display_object
+
+        activity_log.content_object = mail
+        del activity_log.display_object
+        assert mail.urls.base in activity_log.display_object

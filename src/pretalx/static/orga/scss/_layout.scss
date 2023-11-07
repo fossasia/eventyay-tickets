@@ -447,31 +447,24 @@ footer {
 
   .list-group {
     .logentry {
-      border: none;
       display: flex;
-      padding: 0;
-      margin: 0;
-      padding-right: 8px;
 
-      p {
-        br {
-          display: none;
-        }
-      }
-
-      .meta {
-        display: flex;
-        flex-direction: row;
-        align-content: baseline;
+      > span {
         padding-right: 8px;
         width: 350px;
 
-        .time {
+        &.time, &.person {
           width: 200px;
         }
 
-        .person {
-          width: 150px;
+        &.log-object {
+          width: 250px;
+        }
+        br {
+          display: none;
+        }
+        i.fa {
+          padding-right: 4px;
         }
       }
     }

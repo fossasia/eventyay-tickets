@@ -5,6 +5,8 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils.functional import cached_property
+from django.utils.html import escape
+from django.utils.translation import gettext_lazy as _
 from django_scopes import ScopedManager
 
 
@@ -56,6 +58,7 @@ class ActivityLog(models.Model):
             return json.loads(self.data)
         return {}
 
+    @cached_property
     def display(self):
         from pretalx.common.signals import activitylog_display
 
@@ -69,19 +72,10 @@ class ActivityLog(models.Model):
         logger.warning(f'Unknown log action "{self.action_type}".')
         return self.action_type
 
-    def get_public_url(self) -> str:
-        """Returns a public URL to the object in question (if any)."""
-        from pretalx.submission.models import CfP, Submission
-
-        if isinstance(self.content_object, Submission):
-            return self.content_object.urls.public
-        if isinstance(self.content_object, CfP):
-            return self.content_object.urls.public
-        return ""
-
-    def get_orga_url(self) -> str:
-        """Returns an organiser backend URL to the object in question (if
-        any)."""
+    @cached_property
+    def display_object(self) -> str:
+        """Returns an organiser backend URL to the object in question (if any)."""
+        from pretalx.common.signals import activitylog_object_link
         from pretalx.mail.models import MailTemplate, QueuedMail
         from pretalx.submission.models import (
             Answer,
@@ -89,20 +83,57 @@ class ActivityLog(models.Model):
             CfP,
             Question,
             Submission,
+            SubmissionStates,
         )
 
+        url = ""
+        text = ""
+        link_text = ""
         if isinstance(self.content_object, Submission):
-            return self.content_object.orga_urls.base
+            url = self.content_object.orga_urls.base
+            link_text = escape(self.content_object.title)
+            if self.content_object.state in [
+                SubmissionStates.ACCEPTED,
+                SubmissionStates.CONFIRMED,
+            ]:
+                text = _("Session")
+            else:
+                text = _("Proposal")
         if isinstance(self.content_object, Question):
-            return self.content_object.urls.base
+            url = self.content_object.urls.base
+            link_text = escape(self.content_object.question)
+            text = _("Question")
         if isinstance(self.content_object, AnswerOption):
-            return self.content_object.question.urls.base
+            url = self.content_object.question.urls.base
+            link_text = escape(self.content_object.question.question)
+            text = _("Question")
         if isinstance(self.content_object, Answer):
             if self.content_object.submission:
-                return self.content_object.submission.orga_urls.base
-            return self.content_object.question.urls.base
+                url = self.content_object.submission.orga_urls.base
+            else:
+                url = self.content_object.question.urls.base
+            link_text = escape(self.content_object.question.question)
+            text = _("Answer to question")
         if isinstance(self.content_object, CfP):
-            return self.content_object.urls.text
-        if isinstance(self.content_object, (MailTemplate, QueuedMail)):
-            return self.content_object.urls.base
+            url = self.content_object.urls.text
+            link_text = _("CfP")
+        if isinstance(self.content_object, MailTemplate):
+            url = self.content_object.urls.base
+            text = _("Mail template")
+            link_text = escape(self.content_object.subject)
+        if isinstance(self.content_object, QueuedMail):
+            url = self.content_object.urls.base
+            text = _("Email")
+            link_text = escape(self.content_object.subject)
+        if url:
+            if not link_text:
+                link_text = url
+            return f'{text} <a href="{url}">{link_text}</a>'
+        if text or link_text:
+            return f"{text} {link_text}"
+        responses = activitylog_object_link.send(sender=self.event, activitylog=self)
+        if responses:
+            for _receiver, response in responses:
+                if response:
+                    return response
         return ""

@@ -211,7 +211,7 @@ As with all event plugin signals, the ``sender`` keyword argument will contain t
 activitylog_display = EventPluginSignal()
 """
 To display an instance of the ``ActivityLog`` model to a human user,
-``pretalx.common.signals.activitylog_display`` will be sent out with a ``activitylog``
+``pretalx.common.signals.activitylog_display`` will be sent out with an ``activitylog``
 argument.
 
 The first received response that is not ``None`` will be used to display the log entry
@@ -221,9 +221,9 @@ As with all event plugin signals, the ``sender`` keyword argument will contain t
 """
 activitylog_object_link = EventPluginSignal()
 """
-To display the relationship of an instance of the ``LogEntry`` model to another model
-to a human user, ``pretalx.common.signals.activitylog_object_link`` will be sent out with a
-``logentry`` argument.
+To display the relationship of an instance of the ``ActivityLog`` model to another model
+to a human user, ``pretalx.common.signals.activitylog_object_link`` will be sent out
+with an ``activitylog`` argument.
 
 The first received response that is not ``None`` will be used to display the related object
 to the user. The receivers are expected to return an HTML link as a string.
