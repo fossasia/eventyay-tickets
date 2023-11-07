@@ -76,18 +76,15 @@ class AvailabilitiesFormMixin(forms.Form):
         if not hasattr(self, "instance"):
             self.instance = initial_instance
         if self.event and "availabilities" in self.fields:
-            self.fields["availabilities"].help_text += (
-                " "
-                + str(
-                    _("Please note that all times are in the event timezone, {tz}.")
-                ).format(tz=self.event.timezone)
-                + " "
-                + str(
+            self.fields["availabilities"].help_text += " " + str(
+                _("Please note that all times are in the event timezone, {tz}.")
+            ).format(tz=self.event.timezone)
+            if isinstance(self.instance, Room):
+                self.fields["availabilities"].help_text += " " + str(
                     _(
                         "If you set room availabilities, speakers will only be able to set their availability for when any room is available."
                     )
                 )
-            )
 
     def _parse_availabilities_json(self, jsonavailabilities):
         try:

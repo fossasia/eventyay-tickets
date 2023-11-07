@@ -4,6 +4,7 @@ Release Notes
 =============
 
 - :release:`unreleased <????-??-??>`
+- :bug:`-` An organiser-specific help text on room availability forms would show up for speaker availabilities, too.
 - :bug:`-` Review scores and phases were not copied correctly when copying event settings.
 - :bug:`-` Sessions could not be scheduled for midnight via drag'n'drop (though scheduling via the session form still worked as a workaround).
 - :feature:`-` The schedule editor page can now be printed – page breaks can still occur in odd places, but it's otherwise a very readable schedule (with your selection of rooms).
