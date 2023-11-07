@@ -234,6 +234,17 @@ footer {
     margin-bottom: -10px;
     padding: 8px;
   }
+  .logentry {
+    .time {
+      color: $text-muted;
+    }
+    .person {
+      font-style: italic;
+    }
+    span i.fa {
+      padding-right: 4px;
+    }
+  }
 }
 
 .resource-option-row,

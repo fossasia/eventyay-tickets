@@ -430,26 +430,20 @@ footer {
   margin: auto;
 }
 
-.history-sidebar {
-  max-height: 90vh;
-  overflow-y: scroll;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
-}
-
 .form-check-languages label {
   display: inline-flex !important;
 }
 
 .logentry {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 
-    span i.fa {
-        padding-right: 4px;
-    }
-    .time {
-    color: #858585;
-    }
+  span i.fa {
+    padding-right: 4px;
+  }
+  .time {
+    color: $text-muted;
+  }
 }
 
 .dashboard-history {
@@ -526,10 +520,6 @@ footer {
 
   fieldset .alert.col-md-9.offset-md-3 {
     margin: 0;
-  }
-
-  .history-sidebar {
-    display: none;
   }
 
   #page-content {
