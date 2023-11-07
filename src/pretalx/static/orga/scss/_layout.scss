@@ -440,8 +440,16 @@ footer {
   display: inline-flex !important;
 }
 
-.logentry span i.fa {
-    padding-right: 4px;
+.logentry {
+    display: flex;
+    flex-direction: column;
+
+    span i.fa {
+        padding-right: 4px;
+    }
+    .time {
+    color: #858585;
+    }
 }
 
 .dashboard-history {
@@ -451,7 +459,7 @@ footer {
 
   .list-group {
     .logentry {
-      display: flex;
+      flex-direction: row;
 
       > span {
         padding-right: 8px;
