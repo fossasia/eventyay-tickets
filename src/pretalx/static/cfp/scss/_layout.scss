@@ -229,12 +229,9 @@ footer {
   width: 200px;
   z-index: -1;
 
-  .panel-heading {
-    background-color: $gray-lightest;
-    margin-bottom: -10px;
-    padding: 8px;
-  }
   .logentry {
+    display: flex;
+    flex-direction: column;
     .time {
       color: $text-muted;
     }
