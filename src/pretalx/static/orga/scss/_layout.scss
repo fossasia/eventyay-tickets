@@ -440,6 +440,10 @@ footer {
   display: inline-flex !important;
 }
 
+.logentry span i.fa {
+    padding-right: 4px;
+}
+
 .dashboard-history {
   overflow-y: none;
   max-height: none;
@@ -462,9 +466,6 @@ footer {
         }
         br {
           display: none;
-        }
-        i.fa {
-          padding-right: 4px;
         }
       }
     }

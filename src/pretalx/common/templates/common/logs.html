@@ -2,12 +2,6 @@
 
 {% if entries|length %}
     <div class="card">
-        {% if not hide_title %}
-            <div class="card-title"><h3>
-                {% translate "History" %}
-            </h3></div>
-        {% endif %}
-
         <ul class="list-group list-group-flush">
             {% for log in entries %}
                 <li class="list-group-item logentry">

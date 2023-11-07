@@ -99,7 +99,7 @@
     {% if history and can_view_speakers %}
         <div class="dashboard-history">
             <div class="d-flex"><h2>{% translate "History" %}<h2> {% if can_change_settings %}<small><a href="{{ request.event.orga_urls.history }}" class="text-muted ml-2">({% translate "Full history" %})</a></small>{% endif %}</div>
-                {% include "common/logs.html" with entries=history hide_title=True %}
+                {% include "common/logs.html" with entries=history %}
             </div>
     {% endif %}
 {% endblock %}
