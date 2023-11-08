@@ -18,7 +18,7 @@ Organiser panel views
 If you want to add a custom view to the organiser area of an event, register an URL in your
 ``urls.py`` that lives in the ``/orga/`` subpath::
 
-    from django.conf.urls import re_path
+    from django.urls import re_path
 
     from pretalx.event.models.event import SLUG_REGEX
 
