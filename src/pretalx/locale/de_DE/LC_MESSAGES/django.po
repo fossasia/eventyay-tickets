@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-11-10 00:11+0000\n"
-"PO-Revision-Date: 2023-09-09 10:28+0000\n"
+"PO-Revision-Date: 2023-11-10 00:14+0000\n"
 "Last-Translator: Tobias Kunze <r@rixx.de>\n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -172,6 +172,7 @@ msgstr "Programm"
 #: pretalx/orga/templates/orga/base.html:269
 #: pretalx/orga/templates/orga/submission/stats.html:21
 #: pretalx/orga/templates/orga/submission/stats.html:33
+#: pretalx/agenda/templates/agenda/speaker.html:49
 msgid "Sessions"
 msgstr "Vorträge"
 
@@ -243,18 +244,17 @@ msgid "deleted"
 msgstr "gelöscht"
 
 #: pretalx/agenda/templates/agenda/speaker.html:36
+#: pretalx/agenda/templates/agenda/speaker.html:34
 msgid "The speaker's profile picture"
 msgstr "Das Profilbild der Vortragenden"
 
 #: pretalx/agenda/templates/agenda/talk.html:33
 #, fuzzy
-#| msgid "Don't record this session."
 msgid "Favourite this session"
 msgstr "Zeichnet meine Veranstaltung nicht auf."
 
 #: pretalx/agenda/templates/agenda/talk.html:34
 #, fuzzy
-#| msgid "Submit sessions for your speakers"
 msgid "Remove this session from your favourites"
 msgstr "Reich selber für die Vortragenden ein"
 
@@ -662,6 +662,7 @@ msgstr "Zusammenfassung:"
 #: pretalx/event/models/event.py:633 pretalx/orga/forms/review.py:336
 #: pretalx/submission/models/question.py:420
 #: pretalx/submission/models/submission.py:869
+#: pretalx/event/models/event.py:646
 msgid "No"
 msgstr "Nein"
 
@@ -1035,6 +1036,7 @@ msgstr ""
 #: pretalx/orga/templates/orga/organiser/detail.html:72
 #: pretalx/orga/templates/orga/review/assignment.html:88
 #: pretalx/orga/templates/orga/submission/list.html:171
+#: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/delete.html:16
 msgid "Delete"
 msgstr "Löschen"
 
@@ -1183,6 +1185,7 @@ msgstr ""
 
 #: pretalx/cfp/templates/cfp/event/user_submission_invitation.html:31
 #: pretalx/common/phrases.py:45
+#: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/delete.html:13
 msgid "Cancel"
 msgstr "Abbrechen"
 
@@ -1725,7 +1728,6 @@ msgstr "Frage"
 
 #: pretalx/common/models/log.py:116
 #, fuzzy
-#| msgid "Answer to the question '{q}'"
 msgid "Answer to question"
 msgstr "Antwort auf die Frage '{q}'"
 
@@ -1735,7 +1737,6 @@ msgstr "CfP"
 
 #: pretalx/common/models/log.py:122
 #, fuzzy
-#| msgid "Mail templates"
 msgid "Mail template"
 msgstr "E-Mail-Vorlagen"
 
@@ -1887,6 +1888,7 @@ msgstr "Bearbeiten"
 #: pretalx/common/phrases.py:48 pretalx/orga/views/admin.py:54
 #: pretalx/orga/views/event.py:535 pretalx/orga/views/event.py:539
 #: pretalx/orga/views/plugins.py:55
+#: local/pretalx-pages/pretalx_pages/views.py:171
 msgid "Your changes have been saved."
 msgstr "Deine Änderungen wurden gespeichert."
 
@@ -1985,37 +1987,31 @@ msgstr "Diese Eingabe wird öffentlich sein."
 
 #: pretalx/common/plugins.py:8
 #, fuzzy
-#| msgid "Featured"
 msgid "Features"
 msgstr "Highlight"
 
 #: pretalx/common/plugins.py:9
 #, fuzzy
-#| msgid "Invitation"
 msgid "Integrations"
 msgstr "Einladung"
 
 #: pretalx/common/plugins.py:10
 #, fuzzy
-#| msgid "Custom domain"
 msgid "Customizations"
 msgstr "Eigene Domain"
 
 #: pretalx/common/plugins.py:11
 #, fuzzy
-#| msgid "Export"
 msgid "Exporters"
 msgstr "Export"
 
 #: pretalx/common/plugins.py:12
 #, fuzzy
-#| msgid "pending Invitation"
 msgid "Recording integrations"
 msgstr "ausstehende Einladung"
 
 #: pretalx/common/plugins.py:13
 #, fuzzy
-#| msgid "Language"
 msgid "Languages"
 msgstr "Sprache"
 
@@ -2146,12 +2142,12 @@ msgid "Imprint"
 msgstr "Impressum"
 
 #: pretalx/common/templates/common/logs.html:17
+#: pretalx/common/templates/common/logs.html:24
 msgid "This change was performed by a member of the event orga."
 msgstr "Diese Aktion wurde von einem Veranstalter durchgeführt."
 
 #: pretalx/common/templates/common/logs.html:23
 #, fuzzy
-#| msgid "New organiser"
 msgid "An organiser"
 msgstr "Neuer Veranstalter"
 
@@ -2278,13 +2274,11 @@ msgstr "{date_from} – {date_to}"
 
 #: pretalx/common/views.py:228
 #, fuzzy
-#| msgid "Sorry, you are not allowed to reorder questions."
 msgid "Sorry, you are not allowed to reorder this list."
 msgstr "Du darfst Fragen leider nicht verschieben."
 
 #: pretalx/common/views.py:232
 #, fuzzy
-#| msgid "The order of rooms has been updated."
 msgid "The order has been updated."
 msgstr "Die Abfolge der Räume wurde gespeichert."
 
@@ -2434,6 +2428,7 @@ msgstr "Name"
 
 #: pretalx/event/models/event.py:169 pretalx/event/models/event.py:175
 #: pretalx/event/models/organiser.py:33
+#: local/pretalx-pages/pretalx_pages/models.py:20
 msgid "The slug may only contain letters, numbers, dots and dashes."
 msgstr ""
 "Die Kurzform darf nur Buchstaben, Zahlen, Punkte und Bindestriche enthalten."
@@ -2557,21 +2552,22 @@ msgstr "Plugins"
 #: pretalx/orga/templates/orga/base.html:300
 #: pretalx/orga/templates/orga/base.html:313
 #: pretalx/orga/templates/orga/submission/review.html:174
+#: pretalx/event/models/event.py:620 pretalx/event/models/event.py:918
 msgid "Review"
 msgstr "Review"
 
-#: pretalx/event/models/event.py:615
+#: pretalx/event/models/event.py:615 pretalx/event/models/event.py:628
 msgid "Selection"
 msgstr "Auswahl"
 
 #: pretalx/event/models/event.py:628
 #: pretalx/orga/templates/orga/review/dashboard.html:69
 #: pretalx/orga/templates/orga/submission/review.html:165
-#: pretalx/submission/models/review.py:133
+#: pretalx/submission/models/review.py:133 pretalx/event/models/event.py:641
 msgid "Score"
 msgstr "Wertung"
 
-#: pretalx/event/models/event.py:638
+#: pretalx/event/models/event.py:638 pretalx/event/models/event.py:651
 msgid "Maybe"
 msgstr "Vielleicht"
 
@@ -2593,10 +2589,11 @@ msgstr "Vielleicht"
 #: pretalx/orga/templates/orga/submission/tag_delete.html:15
 #: pretalx/submission/models/question.py:418
 #: pretalx/submission/models/submission.py:869
+#: pretalx/event/models/event.py:656
 msgid "Yes"
 msgstr "Ja"
 
-#: pretalx/event/models/event.py:1069
+#: pretalx/event/models/event.py:1069 pretalx/event/models/event.py:1058
 msgid "News from your content system"
 msgstr "Nachricht von deinem Vortrags-System"
 
@@ -4170,8 +4167,6 @@ msgstr ""
 
 #: pretalx/orga/templates/orga/admin.html:30
 #, fuzzy, python-format
-#| msgid ""
-#| "You can find the current version <a href=\"%(current_url)s\">here</a>."
 msgid "You can check for updates <a href=\"%(url)s\">here</a>."
 msgstr "<a href=\"%(current_url)s\">Hier</a> findest du die aktuelle Version."
 
@@ -4890,6 +4885,7 @@ msgid "Click here to change"
 msgstr "Klick hier, um das zu ändern"
 
 #: pretalx/orga/templates/orga/event/dashboard.html:101
+#: pretalx/common/templates/common/logs.html:7
 msgid "History"
 msgstr "Verlauf"
 
@@ -5066,13 +5062,11 @@ msgstr "CfP läuft"
 
 #: pretalx/orga/templates/orga/includes/order_object.html:5
 #, fuzzy
-#| msgid "Move room down"
 msgid "Move down"
 msgstr "Raum nach unten verschieben"
 
 #: pretalx/orga/templates/orga/includes/order_object.html:12
 #, fuzzy
-#| msgid "Move room up"
 msgid "Move up"
 msgstr "Raum nach oben verschieben"
 
@@ -5083,8 +5077,6 @@ msgstr "Seite %(page)s von %(of)s (%(count)s Elemente)"
 
 #: pretalx/orga/templates/orga/includes/pagination.html:30
 #, fuzzy, python-format
-#| msgid "%(count)s element"
-#| msgid_plural "%(count)s elements"
 msgctxt "Shown at the bottom of lists, always > 1 elements."
 msgid "%(count)s elements"
 msgstr "%(count)s Element"
@@ -6047,6 +6039,7 @@ msgid "New room"
 msgstr "Neuer Raum"
 
 #: pretalx/orga/templates/orga/settings/form.html:30
+#: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/form.html:14
 msgid "General information"
 msgstr "Allgemeine Informationen"
 
@@ -6499,7 +6492,6 @@ msgstr[1] "Sessions"
 
 #: pretalx/orga/templates/orga/submission/list.html:42
 #, fuzzy
-#| msgid "Add new proposal"
 msgid "Add new session or proposal"
 msgstr "Einreichung hinzufügen"
 
@@ -6573,7 +6565,6 @@ msgstr "Review-Fortschritt"
 
 #: pretalx/orga/templates/orga/submission/review.html:202
 #, fuzzy
-#| msgid "Delete event"
 msgid "Delete review"
 msgstr "Veranstaltung löschen"
 
@@ -6601,7 +6592,6 @@ msgstr "Speichern und zur nächsten"
 
 #: pretalx/orga/templates/orga/submission/review_delete.html:5
 #, fuzzy
-#| msgid "Do you really want to delete this event?"
 msgid "Do you really want to delete your review?"
 msgstr "Möchtest du diese Veranstaltung wirklich löschen?"
 
@@ -7037,7 +7027,7 @@ msgstr "Soll die Veranstaltung wirklich in der Vergangenheit stattfinden?"
 msgid "Team {event.name}"
 msgstr "Team {event.name}"
 
-#: pretalx/orga/views/event.py:765
+#: pretalx/orga/views/event.py:765 pretalx/orga/views/event.py:755
 msgid "The widget settings have been saved."
 msgstr "Deine Änderungen an den Widget-Einstellungen wurden gespeichert."
 
@@ -7227,7 +7217,6 @@ msgstr "Yay, du hast keine Einreichungen mehr zu bewerten!"
 
 #: pretalx/orga/views/review.py:562
 #, fuzzy
-#| msgid "The tag has been deleted."
 msgid "The review has been deleted."
 msgstr "Der Tag wurde gelöscht."
 
@@ -7614,13 +7603,13 @@ msgstr ""
 "verfügbar bist. Wir versuchen, deinen Beitrag dann passend zu legen. Um "
 "einen Zeitraum wieder zu löschen, klick ihn zweimal an."
 
-#: pretalx/schedule/forms.py:80
+#: pretalx/schedule/forms.py:80 pretalx/schedule/forms.py:82
 #, python-brace-format
 msgid "Please note that all times are in the event timezone, {tz}."
 msgstr ""
 "Bitte beachte, dass alle Zeiten in der Veranstaltungs-Zeitzone, {tz}, sind."
 
-#: pretalx/schedule/forms.py:85
+#: pretalx/schedule/forms.py:85 pretalx/schedule/forms.py:87
 msgid ""
 "If you set room availabilities, speakers will only be able to set their "
 "availability for when any room is available."
@@ -7629,29 +7618,30 @@ msgstr ""
 "Verfügbarkeit nur für Zeiten setzen, zu denen mindestens ein Raum verfügbar "
 "ist."
 
-#: pretalx/schedule/forms.py:118
+#: pretalx/schedule/forms.py:118 pretalx/schedule/forms.py:121
 msgid "The submitted availability does not comply with the required format."
 msgstr "Die Verfügbarkeit wurde im falschen Format eingereicht."
 
-#: pretalx/schedule/forms.py:134
+#: pretalx/schedule/forms.py:134 pretalx/schedule/forms.py:137
 msgid "The submitted availability contains an invalid date."
 msgstr "Die Verfügbarkeit enthält ein falsches Datum."
 
 #: pretalx/schedule/forms.py:158 pretalx/schedule/forms.py:172
+#: pretalx/schedule/forms.py:161 pretalx/schedule/forms.py:175
 msgid "Please fill in your availability!"
 msgstr "Bitte gib deine Verfügbarkeit an!"
 
-#: pretalx/schedule/forms.py:212
+#: pretalx/schedule/forms.py:212 pretalx/schedule/forms.py:215
 msgid "Room I"
 msgstr "Raum I"
 
-#: pretalx/schedule/forms.py:214
+#: pretalx/schedule/forms.py:214 pretalx/schedule/forms.py:217
 msgid ""
 "Description, e.g.: Our main meeting place, Room I, enter from the right."
 msgstr ""
 "Beschreibung, z.B.: Unser Hauptraum, Raum I, bitte die rechte Tür nutzen."
 
-#: pretalx/schedule/forms.py:217
+#: pretalx/schedule/forms.py:217 pretalx/schedule/forms.py:220
 msgid "Information for speakers, e.g.: Projector has only HDMI input."
 msgstr ""
 "Informationen für Vortragende, z.B.: Der Beamer hat nur einen HDMI-Anschluss."
@@ -7744,7 +7734,7 @@ msgstr "Tschechisch"
 
 #: pretalx/settings.py:386
 msgid "Greek"
-msgstr ""
+msgstr "Griechisch"
 
 #: pretalx/settings.py:392
 msgid "Spanish"
@@ -8339,94 +8329,139 @@ msgstr "{name} ({duration} Stunden)"
 msgid "{name} ({duration} minutes)"
 msgstr "{name} ({duration} Minuten)"
 
+#: local/pretalx-pages/pretalx_pages/models.py:30
+#: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/index.html:28
 #, fuzzy
-#~| msgid "Proposal title"
-#~ msgid "Page title"
-#~ msgstr "Titel"
+msgid "Page title"
+msgstr "Titel"
 
+#: local/pretalx-pages/pretalx_pages/models.py:32
+#: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/form.html:20
 #, fuzzy
-#~| msgid "Content"
-#~ msgid "Page content"
-#~ msgstr "Inhalt"
+msgid "Page content"
+msgstr "Inhalt"
 
+#: local/pretalx-pages/pretalx_pages/signals.py:41
 #, fuzzy
-#~| msgid "The team has been created."
-#~ msgid "The page has been created."
-#~ msgstr "Das Team wurde erstellt."
+msgid "The page has been created."
+msgstr "Das Team wurde erstellt."
 
+#: local/pretalx-pages/pretalx_pages/signals.py:42
 #, fuzzy
-#~| msgid "The CfP has been modified."
-#~ msgid "The page has been modified."
-#~ msgstr "Der CfP wurde geändert."
+msgid "The page has been modified."
+msgstr "Der CfP wurde geändert."
 
+#: local/pretalx-pages/pretalx_pages/signals.py:43
 #, fuzzy
-#~| msgid "The tag has been deleted."
-#~ msgid "The page has been deleted."
-#~ msgstr "Der Tag wurde gelöscht."
+msgid "The page has been deleted."
+msgstr "Der Tag wurde gelöscht."
 
+#: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/delete.html:3
+#: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/delete.html:5
 #, fuzzy
-#~| msgid "Delete phase"
-#~ msgid "Delete a page"
-#~ msgstr "Phase löschen"
+msgid "Delete a page"
+msgstr "Phase löschen"
 
+#: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/delete.html:8
 #, fuzzy, python-format
-#~| msgid "Do you really want to delete this question?"
-#~ msgid "Are you sure you want to delete the page <strong>%(name)s</strong>?"
-#~ msgstr "Möchtest du diese Frage wirklich löschen?"
+msgid "Are you sure you want to delete the page <strong>%(name)s</strong>?"
+msgstr "Möchtest du diese Frage wirklich löschen?"
 
+#: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/form.html:31
 #, fuzzy
-#~| msgid "Full history"
-#~ msgid "Page history"
-#~ msgstr "Kompletter Verlauf"
+msgid "Page history"
+msgstr "Kompletter Verlauf"
 
+#: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/index.html:11
 #, fuzzy
-#~| msgid "You don't have any proposals yet."
-#~ msgid "You haven't created any pages yet."
-#~ msgstr "Ihr habt noch keine Einreichungen."
+msgid "You haven't created any pages yet."
+msgstr "Ihr habt noch keine Einreichungen."
 
+#: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/index.html:17
+#: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/index.html:21
 #, fuzzy
-#~| msgid "Create a new event"
-#~ msgid "Create a new page"
-#~ msgstr "Neue Veranstaltung anlegen"
+msgid "Create a new page"
+msgstr "Neue Veranstaltung anlegen"
 
+#: local/pretalx-pages/pretalx_pages/views.py:50
+#: local/pretalx-pages/pretalx_pages/views.py:55
+#: local/pretalx-pages/pretalx_pages/views.py:120
+#: local/pretalx-pages/pretalx_pages/views.py:235
 #, fuzzy
-#~| msgid "This page does not exist."
-#~ msgid "The requested page does not exist."
-#~ msgstr "Diese Seite gibt es nicht."
+msgid "The requested page does not exist."
+msgstr "Diese Seite gibt es nicht."
 
+#: local/pretalx-pages/pretalx_pages/views.py:69
 #, fuzzy
-#~| msgid "The order of rooms has been updated."
-#~ msgid "The order of pages has been updated."
-#~ msgstr "Die Abfolge der Räume wurde gespeichert."
+msgid "The order of pages has been updated."
+msgstr "Die Abfolge der Räume wurde gespeichert."
 
+#: local/pretalx-pages/pretalx_pages/views.py:100
 #, fuzzy
-#~| msgid "You already have a tag by this name!"
-#~ msgid "You already have a page on that URL."
-#~ msgstr "Ein Tag mit diesem Namen liegt bereits vor!"
+msgid "You already have a page on that URL."
+msgstr "Ein Tag mit diesem Namen liegt bereits vor!"
 
+#: local/pretalx-pages/pretalx_pages/views.py:145
 #, fuzzy
-#~| msgid "The tag has been deleted."
-#~ msgid "The selected page has been deleted."
-#~ msgstr "Der Tag wurde gelöscht."
+msgid "The selected page has been deleted."
+msgstr "Der Tag wurde gelöscht."
 
+#: local/pretalx-pages/pretalx_pages/views.py:183
+#: local/pretalx-pages/pretalx_pages/views.py:220
 #, fuzzy
-#~| msgid "Oh :( We had trouble saving your input. See below for details."
-#~ msgid "We could not save your changes. See below for details."
-#~ msgstr ""
-#~ "Oh :( Wir konnten deine Änderungen leider nicht speichern - unten mehr."
+msgid "We could not save your changes. See below for details."
+msgstr ""
+"Oh :( Wir konnten deine Änderungen leider nicht speichern - unten mehr."
 
+#: local/pretalx-pages/pretalx_pages/views.py:208
 #, fuzzy
-#~| msgid "The team has been created."
-#~ msgid "The new page has been created."
-#~ msgstr "Das Team wurde erstellt."
+msgid "The new page has been created."
+msgstr "Das Team wurde erstellt."
 
+#: pretalx/common/tables.py:45
 #, fuzzy
-#~| msgid "pretalx update available"
-#~ msgid "No data available."
-#~ msgstr "pretalx-Update verfügbar"
+msgid "No data available."
+msgstr "pretalx-Update verfügbar"
 
-#~ msgid "An orga member"
-#~ msgstr "Ein Veranstalter"
+#: pretalx/common/templates/common/logs.html:30
+msgid "An orga member"
+msgstr "Ein Veranstalter"
+
+#: local/pretalx-pages/pretalx_pages/apps.py:12
+#: local/pretalx-pages/pretalx_pages/signals.py:19
+#: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/index.html:5
+#: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/index.html:7
+msgid "Pages"
+msgstr "Seiten"
+
+#: local/pretalx-pages/pretalx_pages/apps.py:15
+msgid ""
+"Add static pages to your event site, for example Terms of Service, venue "
+"listings, a code of conduct, etc."
+msgstr ""
+
+#: local/pretalx-pages/pretalx_pages/models.py:15
+msgid "URL to static page"
+msgstr ""
+
+#: local/pretalx-pages/pretalx_pages/models.py:25
+msgid ""
+"This will be used to generate the URL of the page. Please only use latin "
+"letters, numbers, dots and dashes. You cannot change this afterwards."
+msgstr ""
+
+#: local/pretalx-pages/pretalx_pages/models.py:35
+msgid "Show link in the event footer"
+msgstr ""
+
+#: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/form.html:5
+#: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/form.html:7
+msgid "Page"
+msgstr ""
+
+#: local/pretalx-pages/pretalx_pages/views.py:107
+msgid "URL form"
+msgstr ""
 
 #~ msgid "Move question down"
 #~ msgstr "Frage nach unten verschieben"
@@ -9359,3 +9394,9 @@ msgstr "{name} ({duration} Minuten)"
 
 #~ msgid "No user account matches the entered credentials."
 #~ msgstr "Die eingegebenen Benutzerdaten sind nicht bekannt."
+
+#~ msgid "New organiser"
+#~ msgstr "Neuer Veranstalter"
+
+#~ msgid "Mail templates"
+#~ msgstr "E-Mail-Vorlagen"
