@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-10 00:15+0000\n"
+"POT-Creation-Date: 2023-11-10 00:21+0000\n"
 "PO-Revision-Date: 2023-05-27 12:16+0000\n"
 "Last-Translator: Joel (Jiawei) Wang <joel.bradley.w@gmail.com>\n"
 "Language-Team: none\n"
@@ -1884,43 +1884,47 @@ msgstr "你可以在这里使用{link_start}Markdown{link_end}。"
 msgid "This content will be shown publicly."
 msgstr "该内容将公开展示。"
 
-#: pretalx/common/plugins.py:8
+#: pretalx/common/plugins.py:9
 #, fuzzy
 #| msgid "Featured"
+msgctxt "Type of plugin"
 msgid "Features"
 msgstr "特色的"
 
-#: pretalx/common/plugins.py:9
+#: pretalx/common/plugins.py:10
 #, fuzzy
 #| msgid "Invitation"
+msgctxt "Type of plugin"
 msgid "Integrations"
 msgstr "邀请"
 
-#: pretalx/common/plugins.py:10
+#: pretalx/common/plugins.py:11
 #, fuzzy
 #| msgid "Custom domain"
+msgctxt "Type of plugin"
 msgid "Customizations"
 msgstr "自定义域名"
 
-#: pretalx/common/plugins.py:11
+#: pretalx/common/plugins.py:12
 #, fuzzy
 #| msgid "Export"
 msgid "Exporters"
 msgstr "导出"
 
-#: pretalx/common/plugins.py:12
+#: pretalx/common/plugins.py:13
 #, fuzzy
 #| msgid "pending Invitation"
 msgid "Recording integrations"
 msgstr "待处理的邀请"
 
-#: pretalx/common/plugins.py:13
+#: pretalx/common/plugins.py:14
 #, fuzzy
 #| msgid "Language"
 msgid "Languages"
 msgstr "语言"
 
-#: pretalx/common/plugins.py:14
+#: pretalx/common/plugins.py:15
+msgctxt "Type of plugin"
 msgid "Other"
 msgstr ""
 

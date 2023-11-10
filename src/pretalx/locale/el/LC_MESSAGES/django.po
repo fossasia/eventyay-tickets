@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-10 00:11+0000\n"
+"POT-Creation-Date: 2023-11-10 00:21+0000\n"
 "PO-Revision-Date: 2023-10-14 10:38+0000\n"
 "Last-Translator: Vangelis Zacharioudakis <sugarvag@gmail.com>\n"
 "Language-Team: none\n"
@@ -1994,31 +1994,43 @@ msgstr "Μπορείτε να χρησιμοποιήσετε το {link_start}Ma
 msgid "This content will be shown publicly."
 msgstr "Αυτό το περιεχόμενο θα εμφανίζεται δημόσια."
 
-#: pretalx/common/plugins.py:8
+#: pretalx/common/plugins.py:9
+#, fuzzy
+#| msgid "Features"
+msgctxt "Type of plugin"
 msgid "Features"
 msgstr "Χαρακτηριστικά"
 
-#: pretalx/common/plugins.py:9
+#: pretalx/common/plugins.py:10
+#, fuzzy
+#| msgid "Integrations"
+msgctxt "Type of plugin"
 msgid "Integrations"
 msgstr "Ενσωματώσεις"
 
-#: pretalx/common/plugins.py:10
+#: pretalx/common/plugins.py:11
+#, fuzzy
+#| msgid "Customizations"
+msgctxt "Type of plugin"
 msgid "Customizations"
 msgstr "Προσαρμογές"
 
-#: pretalx/common/plugins.py:11
+#: pretalx/common/plugins.py:12
 msgid "Exporters"
 msgstr "Εξαγωγείς"
 
-#: pretalx/common/plugins.py:12
+#: pretalx/common/plugins.py:13
 msgid "Recording integrations"
 msgstr "Ενσωματώσεις εγγραφής"
 
-#: pretalx/common/plugins.py:13
+#: pretalx/common/plugins.py:14
 msgid "Languages"
 msgstr "Γλώσσες"
 
-#: pretalx/common/plugins.py:14
+#: pretalx/common/plugins.py:15
+#, fuzzy
+#| msgid "Other"
+msgctxt "Type of plugin"
 msgid "Other"
 msgstr "Λοιπά"
 

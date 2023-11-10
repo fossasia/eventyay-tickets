@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-10 00:15+0000\n"
+"POT-Creation-Date: 2023-11-10 00:21+0000\n"
 "PO-Revision-Date: 2023-03-22 22:31+0000\n"
 "Last-Translator: Stefano Campus <skampus@gmail.com>\n"
 "Language-Team: none\n"
@@ -1967,37 +1967,41 @@ msgstr "Qui puoi usare {link_start}Markdown{link_end}."
 msgid "This content will be shown publicly."
 msgstr "Questo contenuto verrà mostrato pubblicamente."
 
-#: pretalx/common/plugins.py:8
+#: pretalx/common/plugins.py:9
+msgctxt "Type of plugin"
 msgid "Features"
 msgstr ""
 
-#: pretalx/common/plugins.py:9
+#: pretalx/common/plugins.py:10
 #, fuzzy
 #| msgid "Answer options"
+msgctxt "Type of plugin"
 msgid "Integrations"
 msgstr "Opzioni risposta"
 
-#: pretalx/common/plugins.py:10
+#: pretalx/common/plugins.py:11
 #, fuzzy
 #| msgid "Custom domain"
+msgctxt "Type of plugin"
 msgid "Customizations"
 msgstr "Dominio personalizzato"
 
-#: pretalx/common/plugins.py:11
+#: pretalx/common/plugins.py:12
 msgid "Exporters"
 msgstr ""
 
-#: pretalx/common/plugins.py:12
+#: pretalx/common/plugins.py:13
 msgid "Recording integrations"
 msgstr ""
 
-#: pretalx/common/plugins.py:13
+#: pretalx/common/plugins.py:14
 #, fuzzy
 #| msgid "Language"
 msgid "Languages"
 msgstr "Linguaggio"
 
-#: pretalx/common/plugins.py:14
+#: pretalx/common/plugins.py:15
+msgctxt "Type of plugin"
 msgid "Other"
 msgstr ""
 

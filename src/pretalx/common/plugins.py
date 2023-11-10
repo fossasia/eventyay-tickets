@@ -2,16 +2,17 @@ from itertools import groupby
 
 from django.apps import apps
 from django.utils.translation import gettext_lazy as _
+from django.utils.translation import pgettext_lazy
 
 # This is also the order in which the categories are displayed.
 CATEGORY_LABELS = {
-    "FEATURE": _("Features"),
-    "INTEGRATION": _("Integrations"),
-    "CUSTOMIZATION": _("Customizations"),
+    "FEATURE": pgettext_lazy("Type of plugin", "Features"),
+    "INTEGRATION": pgettext_lazy("Type of plugin", "Integrations"),
+    "CUSTOMIZATION": pgettext_lazy("Type of plugin", "Customizations"),
     "EXPORTER": _("Exporters"),
     "RECORDING": _("Recording integrations"),
     "LANGUAGE": _("Languages"),
-    "OTHER": _("Other"),
+    "OTHER": pgettext_lazy("Type of plugin", "Other"),
 }
 
 
