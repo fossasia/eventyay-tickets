@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-03 08:44+0000\n"
+"POT-Creation-Date: 2023-11-10 00:11+0000\n"
 "PO-Revision-Date: 2023-10-14 10:38+0000\n"
 "Last-Translator: Vangelis Zacharioudakis <sugarvag@gmail.com>\n"
 "Language-Team: none\n"
@@ -12,159 +12,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 4.18.2\n"
-
-#: local/pretalx-pages/pretalx_pages/apps.py:12
-#: local/pretalx-pages/pretalx_pages/signals.py:19
-#: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/index.html:5
-#: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/index.html:7
-msgid "Pages"
-msgstr "Σελίδες"
-
-#: local/pretalx-pages/pretalx_pages/apps.py:15
-msgid ""
-"Add static pages to your event site, for example Terms of Service, venue "
-"listings, a code of conduct, etc."
-msgstr ""
-"Προσθέστε στατικές σελίδες στον ιστότοπο της εκδήλωσης σας, για παράδειγμα "
-"Όρους Παροχής Υπηρεσιών, καταχωρίσεις χώρων, κώδικα δεοντολογίας κλπ."
-
-#: local/pretalx-pages/pretalx_pages/models.py:15
-msgid "URL to static page"
-msgstr "URL σε στατική σελίδα"
-
-#: local/pretalx-pages/pretalx_pages/models.py:20
-#: pretalx/event/models/event.py:169 pretalx/event/models/event.py:175
-#: pretalx/event/models/organiser.py:33
-msgid "The slug may only contain letters, numbers, dots and dashes."
-msgstr ""
-"Η συντομογραφία μπορεί να περιέχει μόνο γράμματα, αριθμούς, τελείες και "
-"παύλες."
-
-#: local/pretalx-pages/pretalx_pages/models.py:25
-msgid ""
-"This will be used to generate the URL of the page. Please only use latin "
-"letters, numbers, dots and dashes. You cannot change this afterwards."
-msgstr ""
-"Αυτό θα χρησιμοποιηθεί για τη δημιουργία της διεύθυνσης URL της σελίδας. "
-"Χρησιμοποιήστε μόνο λατινικά γράμματα, αριθμούς, τελείες και παύλες. Δεν "
-"μπορείτε να το αλλάξετε αυτό μετέπειτα."
-
-#: local/pretalx-pages/pretalx_pages/models.py:30
-#: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/index.html:28
-msgid "Page title"
-msgstr "Τίτλος σελίδας"
-
-#: local/pretalx-pages/pretalx_pages/models.py:32
-#: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/form.html:20
-msgid "Page content"
-msgstr "Περιεχόμενο σελίδας"
-
-#: local/pretalx-pages/pretalx_pages/models.py:35
-msgid "Show link in the event footer"
-msgstr "Εμφάνιση συνδέσμου στο footer της διοργάνωσης"
-
-#: local/pretalx-pages/pretalx_pages/signals.py:41
-msgid "The page has been created."
-msgstr "Η σελίδα έχει δημιουργηθεί."
-
-#: local/pretalx-pages/pretalx_pages/signals.py:42
-msgid "The page has been modified."
-msgstr "Η σελίδα έχει τροποποιηθεί ."
-
-#: local/pretalx-pages/pretalx_pages/signals.py:43
-msgid "The page has been deleted."
-msgstr "Η σελίδα έχει διαγραφεί."
-
-#: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/delete.html:3
-#: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/delete.html:5
-msgid "Delete a page"
-msgstr "Διαγραφή σελίδας"
-
-#: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/delete.html:8
-#, python-format
-msgid "Are you sure you want to delete the page <strong>%(name)s</strong>?"
-msgstr ""
-"Θέλετε πραγματικά να διαγράψετε αυτήν τη σελίδα <strong>%(name)s</strong>;"
-
-#: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/delete.html:13
-#: pretalx/cfp/templates/cfp/event/user_submission_invitation.html:31
-#: pretalx/common/phrases.py:45
-msgid "Cancel"
-msgstr "Ακύρωση"
-
-#: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/delete.html:16
-#: pretalx/cfp/templates/cfp/event/user_submission_discard.html:30
-#: pretalx/orga/templates/orga/cfp/access_code_form.html:46
-#: pretalx/orga/templates/orga/cfp/question_view.html:68
-#: pretalx/orga/templates/orga/mails/outbox_list.html:99
-#: pretalx/orga/templates/orga/organiser/detail.html:72
-#: pretalx/orga/templates/orga/review/assignment.html:88
-#: pretalx/orga/templates/orga/submission/list.html:171
-msgid "Delete"
-msgstr "διαγραφή"
-
-#: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/form.html:5
-#: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/form.html:7
-msgid "Page"
-msgstr "Σελίδα"
-
-#: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/form.html:14
-#: pretalx/orga/templates/orga/settings/form.html:30
-msgid "General information"
-msgstr "Γενικές πληροφορίες"
-
-#: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/form.html:31
-msgid "Page history"
-msgstr "Ιστορικό σελίδας"
-
-#: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/index.html:11
-msgid "You haven't created any pages yet."
-msgstr "Δεν έχετε δημιουργήσει ακόμη σελίδες."
-
-#: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/index.html:17
-#: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/index.html:21
-msgid "Create a new page"
-msgstr "Δημιουργήστε μια νέα σελίδα"
-
-#: local/pretalx-pages/pretalx_pages/views.py:50
-#: local/pretalx-pages/pretalx_pages/views.py:55
-#: local/pretalx-pages/pretalx_pages/views.py:120
-#: local/pretalx-pages/pretalx_pages/views.py:235
-msgid "The requested page does not exist."
-msgstr "Η σελίδα που ζητήθηκε δεν υπάρχει."
-
-#: local/pretalx-pages/pretalx_pages/views.py:69
-msgid "The order of pages has been updated."
-msgstr "Η σειρά των σελίδων έχει ενημερωθεί."
-
-#: local/pretalx-pages/pretalx_pages/views.py:100
-msgid "You already have a page on that URL."
-msgstr "Έχετε ήδη μια σελίδα σε αυτό το URL."
-
-#: local/pretalx-pages/pretalx_pages/views.py:107
-msgid "URL form"
-msgstr "Φόρμα URL"
-
-#: local/pretalx-pages/pretalx_pages/views.py:145
-msgid "The selected page has been deleted."
-msgstr "Η επιλεγμένη σελίδα έχει διαγραφεί."
-
-#: local/pretalx-pages/pretalx_pages/views.py:171 pretalx/common/phrases.py:48
-#: pretalx/orga/views/admin.py:54 pretalx/orga/views/event.py:535
-#: pretalx/orga/views/event.py:539 pretalx/orga/views/plugins.py:55
-msgid "Your changes have been saved."
-msgstr "Οι αλλαγές σας έχουν αποθηκευτεί."
-
-#: local/pretalx-pages/pretalx_pages/views.py:183
-#: local/pretalx-pages/pretalx_pages/views.py:220
-msgid "We could not save your changes. See below for details."
-msgstr ""
-"Δεν ήταν δυνατή η αποθήκευση των αλλαγών σας. Δείτε παρακάτω για "
-"λεπτομέρειες."
-
-#: local/pretalx-pages/pretalx_pages/views.py:208
-msgid "The new page has been created."
-msgstr "Η νέα σελίδα έχει δημιουργηθεί."
 
 #: pretalx/agenda/phrases.py:8
 msgid "Thank you for your feedback!"
@@ -318,7 +165,7 @@ msgid "Schedule"
 msgstr "Πρόγραμμα"
 
 #: pretalx/agenda/templates/agenda/header_row.html:9
-#: pretalx/agenda/templates/agenda/speaker.html:49
+#: pretalx/agenda/templates/agenda/speaker.html:51
 #: pretalx/orga/templates/orga/base.html:261
 #: pretalx/orga/templates/orga/base.html:269
 #: pretalx/orga/templates/orga/submission/stats.html:21
@@ -394,7 +241,7 @@ msgstr "%(minutes)sλεπτά"
 msgid "deleted"
 msgstr "διαγράφηκε"
 
-#: pretalx/agenda/templates/agenda/speaker.html:34
+#: pretalx/agenda/templates/agenda/speaker.html:36
 msgid "The speaker's profile picture"
 msgstr "Η εικόνα προφίλ του ομιλητή"
 
@@ -817,7 +664,7 @@ msgid "Abstract:"
 msgstr "Περίληψη:"
 
 #: pretalx/cfp/templates/cfp/event/invitation.html:41
-#: pretalx/event/models/event.py:646 pretalx/orga/forms/review.py:336
+#: pretalx/event/models/event.py:633 pretalx/orga/forms/review.py:336
 #: pretalx/submission/models/question.py:420
 #: pretalx/submission/models/submission.py:869
 msgid "No"
@@ -1187,6 +1034,16 @@ msgid ""
 msgstr ""
 "Θέλετε πραγματικά να απορρίψετε την πρότασή σας; Όλα τα δεδομένα θα χαθούν."
 
+#: pretalx/cfp/templates/cfp/event/user_submission_discard.html:30
+#: pretalx/orga/templates/orga/cfp/access_code_form.html:46
+#: pretalx/orga/templates/orga/cfp/question_view.html:68
+#: pretalx/orga/templates/orga/mails/outbox_list.html:99
+#: pretalx/orga/templates/orga/organiser/detail.html:72
+#: pretalx/orga/templates/orga/review/assignment.html:88
+#: pretalx/orga/templates/orga/submission/list.html:171
+msgid "Delete"
+msgstr "διαγραφή"
+
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:25
 msgid "Your draft:"
 msgstr "Το προσχέδιο σας:"
@@ -1329,6 +1186,11 @@ msgstr ""
 "να στείλουμε ένα μήνυμα ηλεκτρονικού ταχυδρομείου (το οποίο μπορεί να "
 "παγιδευτεί από φίλτρα ανεπιθύμητης αλληλογραφίας), μπορείτε επίσης να τους "
 "δώσετε αυτόν τον σύνδεσμο:"
+
+#: pretalx/cfp/templates/cfp/event/user_submission_invitation.html:31
+#: pretalx/common/phrases.py:45
+msgid "Cancel"
+msgstr "Ακύρωση"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_invitation.html:34
 #: pretalx/common/phrases.py:43
@@ -1849,6 +1711,45 @@ msgstr "Προσπαθείτε να αλλάξετε δεδομένα μόνο �
 msgid "ManagementForm data is missing or has been tampered with."
 msgstr "Τα δεδομένα ManagementForm λείπουν ή έχουν παραβιαστεί."
 
+#: pretalx/common/models/log.py:99 pretalx/submission/models/feedback.py:23
+msgid "Session"
+msgstr "Συνεδρία"
+
+#: pretalx/common/models/log.py:101 pretalx/orga/forms/review.py:206
+#: pretalx/orga/templates/orga/speaker/form.html:29
+msgid "Proposal"
+msgid_plural "Proposals"
+msgstr[0] "Πρόταση"
+msgstr[1] "Προτάσεις"
+
+#: pretalx/common/models/log.py:105 pretalx/common/models/log.py:109
+#: pretalx/orga/templates/orga/cfp/question_form.html:19
+#: pretalx/orga/templates/orga/cfp/question_view.html:30
+#: pretalx/orga/templates/orga/review/dashboard.html:93
+msgid "Question"
+msgstr "ερώτηση"
+
+#: pretalx/common/models/log.py:116
+#, fuzzy
+#| msgid "Answer to the question '{q}'"
+msgid "Answer to question"
+msgstr "Απάντηση στην ερώτηση \"{q}\""
+
+#: pretalx/common/models/log.py:119 pretalx/orga/templates/orga/base.html:225
+msgid "CfP"
+msgstr "Κάλεσμα για Υποβολή Προτάσεων"
+
+#: pretalx/common/models/log.py:122
+#, fuzzy
+#| msgid "Edit template"
+msgid "Mail template"
+msgstr "Επεξεργαστείτε το πρότυπο"
+
+#: pretalx/common/models/log.py:126 pretalx/event/models/organiser.py:157
+#: pretalx/orga/templates/orga/settings/team_detail.html:20
+msgid "Email"
+msgstr "Email"
+
 #: pretalx/common/models/settings.py:60
 msgid ""
 "Please give a fair review on why you'd like to see this proposal at the "
@@ -1989,6 +1890,12 @@ msgstr ""
 msgid "Edit"
 msgstr "Επεξεργασία"
 
+#: pretalx/common/phrases.py:48 pretalx/orga/views/admin.py:54
+#: pretalx/orga/views/event.py:535 pretalx/orga/views/event.py:539
+#: pretalx/orga/views/plugins.py:55
+msgid "Your changes have been saved."
+msgstr "Οι αλλαγές σας έχουν αποθηκευτεί."
+
 #: pretalx/common/phrases.py:51
 msgid "There was an error sending the mail. Please try again later."
 msgstr ""
@@ -2115,12 +2022,6 @@ msgstr "Γλώσσες"
 msgid "Other"
 msgstr "Λοιπά"
 
-#: pretalx/common/tables.py:45
-#, fuzzy
-#| msgid "pretalx update available"
-msgid "No data available."
-msgstr "διαθέσιμη ενημέρωση pretalx"
-
 #: pretalx/common/templates/400.html:5 pretalx/common/templates/400.html:8
 msgid "Bad request."
 msgstr "Κακό αίτημα."
@@ -2243,19 +2144,16 @@ msgstr "Επικοινωνήστε μαζί μας"
 msgid "Imprint"
 msgstr "Αποτύπωμα"
 
-#: pretalx/common/templates/common/logs.html:7
-#: pretalx/orga/templates/orga/event/dashboard.html:101
-msgid "History"
-msgstr "Ιστορικό"
-
-#: pretalx/common/templates/common/logs.html:24
+#: pretalx/common/templates/common/logs.html:17
 msgid "This change was performed by a member of the event orga."
 msgstr ""
 "Αυτή η αλλαγή πραγματοποιήθηκε από ένα μέλος της οργανωτικής επιτροπής."
 
-#: pretalx/common/templates/common/logs.html:30
-msgid "An orga member"
-msgstr "Ένα μέλος της οργανωτικής επιτροπής"
+#: pretalx/common/templates/common/logs.html:23
+#, fuzzy
+#| msgid "Organiser"
+msgid "An organiser"
+msgstr "Διοργανωτής"
 
 #: pretalx/common/templates/common/powered_by.html:33
 #, python-format
@@ -2535,6 +2433,13 @@ msgstr ""
 msgid "Name"
 msgstr "Όνομα"
 
+#: pretalx/event/models/event.py:169 pretalx/event/models/event.py:175
+#: pretalx/event/models/organiser.py:33
+msgid "The slug may only contain letters, numbers, dots and dashes."
+msgstr ""
+"Η συντομογραφία μπορεί να περιέχει μόνο γράμματα, αριθμούς, τελείες και "
+"παύλες."
+
 #: pretalx/event/models/event.py:174 pretalx/event/models/organiser.py:37
 msgid "Short form"
 msgstr "Σύντομη μορφή"
@@ -2651,7 +2556,7 @@ msgstr ""
 msgid "Plugins"
 msgstr "Πρόσθετα"
 
-#: pretalx/event/models/event.py:620 pretalx/event/models/event.py:918
+#: pretalx/event/models/event.py:607 pretalx/event/models/event.py:929
 #: pretalx/event/stages.py:68 pretalx/orga/templates/orga/base.html:203
 #: pretalx/orga/templates/orga/base.html:292
 #: pretalx/orga/templates/orga/base.html:300
@@ -2660,22 +2565,22 @@ msgstr "Πρόσθετα"
 msgid "Review"
 msgstr "Αξιολόγηση"
 
-#: pretalx/event/models/event.py:628
+#: pretalx/event/models/event.py:615
 msgid "Selection"
 msgstr "Επιλογή"
 
-#: pretalx/event/models/event.py:641
+#: pretalx/event/models/event.py:628
 #: pretalx/orga/templates/orga/review/dashboard.html:69
 #: pretalx/orga/templates/orga/submission/review.html:165
 #: pretalx/submission/models/review.py:133
 msgid "Score"
 msgstr "Βαθμολογία"
 
-#: pretalx/event/models/event.py:651
+#: pretalx/event/models/event.py:638
 msgid "Maybe"
 msgstr "Μπορεί"
 
-#: pretalx/event/models/event.py:656 pretalx/orga/forms/review.py:336
+#: pretalx/event/models/event.py:643 pretalx/orga/forms/review.py:336
 #: pretalx/orga/templates/orga/cfp/access_code_delete.html:15
 #: pretalx/orga/templates/orga/cfp/question_delete.html:15
 #: pretalx/orga/templates/orga/cfp/submission_type_delete.html:15
@@ -2696,7 +2601,7 @@ msgstr "Μπορεί"
 msgid "Yes"
 msgstr "Ναι"
 
-#: pretalx/event/models/event.py:1058
+#: pretalx/event/models/event.py:1069
 msgid "News from your content system"
 msgstr "Ειδήσεις από το σύστημα περιεχομένου σας"
 
@@ -2775,11 +2680,6 @@ msgstr ""
 #, python-brace-format
 msgid "{name} on {orga}"
 msgstr "{name} στο {orga}"
-
-#: pretalx/event/models/organiser.py:157
-#: pretalx/orga/templates/orga/settings/team_detail.html:20
-msgid "Email"
-msgstr "Email"
 
 #: pretalx/event/models/organiser.py:166
 #, python-brace-format
@@ -3984,13 +3884,6 @@ msgstr "Αναθέστε προτάσεις σε αξιολογητές"
 msgid "Assign reviewers to proposals"
 msgstr "Αναθέστε αξιολογητές σε προτάσεις"
 
-#: pretalx/orga/forms/review.py:206
-#: pretalx/orga/templates/orga/speaker/form.html:29
-msgid "Proposal"
-msgid_plural "Proposals"
-msgstr[0] "Πρόταση"
-msgstr[1] "Προτάσεις"
-
 #: pretalx/orga/forms/review.py:208 pretalx/orga/forms/schedule.py:50
 msgid "All proposals"
 msgstr "Όλες οι προτάσεις"
@@ -4478,10 +4371,6 @@ msgstr "Ηλ. Ταχυδρομείο"
 msgid "Widget"
 msgstr "Γραφικό στοιχείο"
 
-#: pretalx/orga/templates/orga/base.html:225
-msgid "CfP"
-msgstr "Κάλεσμα για Υποβολή Προτάσεων"
-
 #: pretalx/orga/templates/orga/base.html:233
 #: pretalx/orga/templates/orga/submission/base.html:34
 msgid "Content"
@@ -4714,12 +4603,6 @@ msgstr "μετρώ"
 #, python-format
 msgid "%%"
 msgstr "%%"
-
-#: pretalx/orga/templates/orga/cfp/question_form.html:19
-#: pretalx/orga/templates/orga/cfp/question_view.html:30
-#: pretalx/orga/templates/orga/review/dashboard.html:93
-msgid "Question"
-msgstr "ερώτηση"
 
 #: pretalx/orga/templates/orga/cfp/question_form.html:19
 msgid "New question"
@@ -5015,6 +4898,10 @@ msgstr "όχι ενεργό"
 #: pretalx/orga/templates/orga/event/dashboard.html:67
 msgid "Click here to change"
 msgstr "Κάντε κλικ εδώ για αλλαγή"
+
+#: pretalx/orga/templates/orga/event/dashboard.html:101
+msgid "History"
+msgstr "Ιστορικό"
 
 #: pretalx/orga/templates/orga/event/dashboard.html:101
 msgid "Full history"
@@ -6176,6 +6063,10 @@ msgstr ""
 msgid "New room"
 msgstr "Νέα αίθουσα"
 
+#: pretalx/orga/templates/orga/settings/form.html:30
+msgid "General information"
+msgstr "Γενικές πληροφορίες"
+
 #: pretalx/orga/templates/orga/settings/form.html:56
 msgid "Display settings"
 msgstr "Ρυθμίσεις απεικόνισης"
@@ -7178,7 +7069,7 @@ msgstr ""
 msgid "Team {event.name}"
 msgstr "Ομάδα {event.name}"
 
-#: pretalx/orga/views/event.py:755
+#: pretalx/orga/views/event.py:765
 msgid "The widget settings have been saved."
 msgstr "Οι ρυθμίσεις του widget έχουν αποθηκευτεί."
 
@@ -7758,12 +7649,12 @@ msgstr ""
 "προγραμματίσουμε τη θέση σας κατά τη διάρκεια αυτών των ωρών. Μπορείτε να "
 "κάνετε κλικ σε ένα μπλοκ δύο φορές για να το αφαιρέσετε."
 
-#: pretalx/schedule/forms.py:82
+#: pretalx/schedule/forms.py:80
 #, python-brace-format
 msgid "Please note that all times are in the event timezone, {tz}."
 msgstr "Λάβετε υπόψη ότι όλες οι ώρες είναι στη ζώνη ώρας συμβάντος, {tz}."
 
-#: pretalx/schedule/forms.py:87
+#: pretalx/schedule/forms.py:85
 msgid ""
 "If you set room availabilities, speakers will only be able to set their "
 "availability for when any room is available."
@@ -7771,31 +7662,31 @@ msgstr ""
 "Εάν ορίσετε τη διαθεσιμότητα των δωματίων, οι ομιλητές θα μπορούν να ορίσουν "
 "τη διαθεσιμότητά τους μόνο όταν είναι διαθέσιμο οποιοδήποτε δωμάτιο."
 
-#: pretalx/schedule/forms.py:121
+#: pretalx/schedule/forms.py:118
 msgid "The submitted availability does not comply with the required format."
 msgstr ""
 "Η υποβληθείσα διαθεσιμότητα δεν συμμορφώνεται με την απαιτούμενη μορφή."
 
-#: pretalx/schedule/forms.py:137
+#: pretalx/schedule/forms.py:134
 msgid "The submitted availability contains an invalid date."
 msgstr "Η υποβληθείσα διαθεσιμότητα περιέχει μια μη έγκυρη ημερομηνία."
 
-#: pretalx/schedule/forms.py:161 pretalx/schedule/forms.py:175
+#: pretalx/schedule/forms.py:158 pretalx/schedule/forms.py:172
 msgid "Please fill in your availability!"
 msgstr "Συμπληρώστε τη διαθεσιμότητά σας!"
 
-#: pretalx/schedule/forms.py:215
+#: pretalx/schedule/forms.py:212
 msgid "Room I"
 msgstr "Αίθουσα Ι"
 
-#: pretalx/schedule/forms.py:217
+#: pretalx/schedule/forms.py:214
 msgid ""
 "Description, e.g.: Our main meeting place, Room I, enter from the right."
 msgstr ""
 "Περιγραφή, π.χ.: Το κύριο σημείο συνάντησής μας, Αίθουσα Ι, είσοδος από "
 "αριστερά."
 
-#: pretalx/schedule/forms.py:220
+#: pretalx/schedule/forms.py:217
 msgid "Information for speakers, e.g.: Projector has only HDMI input."
 msgstr "Πληροφορίες για ομιλητές, π.χ.: Ο προτζέκτορας έχει μόνο είσοδο HDMI."
 
@@ -8044,10 +7935,6 @@ msgid "Please put in the last date you want to accept proposals from users."
 msgstr ""
 "Σημειώστε την τελευταία ημερομηνία που θέλετε να δεχτείτε προτάσεις από "
 "χρήστες."
-
-#: pretalx/submission/models/feedback.py:23
-msgid "Session"
-msgstr "Συνεδρία"
 
 #: pretalx/submission/models/feedback.py:31
 msgid "Speaker"
@@ -8495,6 +8382,97 @@ msgstr "{name} ({duration} ώρες)"
 #, python-brace-format
 msgid "{name} ({duration} minutes)"
 msgstr "{name} ({duration} λεπτά)"
+
+#~ msgid "Pages"
+#~ msgstr "Σελίδες"
+
+#~ msgid ""
+#~ "Add static pages to your event site, for example Terms of Service, venue "
+#~ "listings, a code of conduct, etc."
+#~ msgstr ""
+#~ "Προσθέστε στατικές σελίδες στον ιστότοπο της εκδήλωσης σας, για "
+#~ "παράδειγμα Όρους Παροχής Υπηρεσιών, καταχωρίσεις χώρων, κώδικα "
+#~ "δεοντολογίας κλπ."
+
+#~ msgid "URL to static page"
+#~ msgstr "URL σε στατική σελίδα"
+
+#~ msgid ""
+#~ "This will be used to generate the URL of the page. Please only use latin "
+#~ "letters, numbers, dots and dashes. You cannot change this afterwards."
+#~ msgstr ""
+#~ "Αυτό θα χρησιμοποιηθεί για τη δημιουργία της διεύθυνσης URL της σελίδας. "
+#~ "Χρησιμοποιήστε μόνο λατινικά γράμματα, αριθμούς, τελείες και παύλες. Δεν "
+#~ "μπορείτε να το αλλάξετε αυτό μετέπειτα."
+
+#~ msgid "Page title"
+#~ msgstr "Τίτλος σελίδας"
+
+#~ msgid "Page content"
+#~ msgstr "Περιεχόμενο σελίδας"
+
+#~ msgid "Show link in the event footer"
+#~ msgstr "Εμφάνιση συνδέσμου στο footer της διοργάνωσης"
+
+#~ msgid "The page has been created."
+#~ msgstr "Η σελίδα έχει δημιουργηθεί."
+
+#~ msgid "The page has been modified."
+#~ msgstr "Η σελίδα έχει τροποποιηθεί ."
+
+#~ msgid "The page has been deleted."
+#~ msgstr "Η σελίδα έχει διαγραφεί."
+
+#~ msgid "Delete a page"
+#~ msgstr "Διαγραφή σελίδας"
+
+#, python-format
+#~ msgid "Are you sure you want to delete the page <strong>%(name)s</strong>?"
+#~ msgstr ""
+#~ "Θέλετε πραγματικά να διαγράψετε αυτήν τη σελίδα <strong>%(name)s</strong>;"
+
+#~ msgid "Page"
+#~ msgstr "Σελίδα"
+
+#~ msgid "Page history"
+#~ msgstr "Ιστορικό σελίδας"
+
+#~ msgid "You haven't created any pages yet."
+#~ msgstr "Δεν έχετε δημιουργήσει ακόμη σελίδες."
+
+#~ msgid "Create a new page"
+#~ msgstr "Δημιουργήστε μια νέα σελίδα"
+
+#~ msgid "The requested page does not exist."
+#~ msgstr "Η σελίδα που ζητήθηκε δεν υπάρχει."
+
+#~ msgid "The order of pages has been updated."
+#~ msgstr "Η σειρά των σελίδων έχει ενημερωθεί."
+
+#~ msgid "You already have a page on that URL."
+#~ msgstr "Έχετε ήδη μια σελίδα σε αυτό το URL."
+
+#~ msgid "URL form"
+#~ msgstr "Φόρμα URL"
+
+#~ msgid "The selected page has been deleted."
+#~ msgstr "Η επιλεγμένη σελίδα έχει διαγραφεί."
+
+#~ msgid "We could not save your changes. See below for details."
+#~ msgstr ""
+#~ "Δεν ήταν δυνατή η αποθήκευση των αλλαγών σας. Δείτε παρακάτω για "
+#~ "λεπτομέρειες."
+
+#~ msgid "The new page has been created."
+#~ msgstr "Η νέα σελίδα έχει δημιουργηθεί."
+
+#, fuzzy
+#~| msgid "pretalx update available"
+#~ msgid "No data available."
+#~ msgstr "διαθέσιμη ενημέρωση pretalx"
+
+#~ msgid "An orga member"
+#~ msgstr "Ένα μέλος της οργανωτικής επιτροπής"
 
 #~ msgid "Move question down"
 #~ msgstr "Μετακίνηση ερώτησης προς τα κάτω"

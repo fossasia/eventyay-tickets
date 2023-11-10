@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-03 08:44+0000\n"
+"POT-Creation-Date: 2023-11-10 00:11+0000\n"
 "PO-Revision-Date: 2020-09-28 02:42+0000\n"
 "Last-Translator: Satoshi IIDA <nyampire@gmail.com>\n"
 "Language-Team: \n"
@@ -17,181 +17,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 4.1\n"
-
-#: local/pretalx-pages/pretalx_pages/apps.py:12
-#: local/pretalx-pages/pretalx_pages/signals.py:19
-#: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/index.html:5
-#: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/index.html:7
-msgid "Pages"
-msgstr ""
-
-#: local/pretalx-pages/pretalx_pages/apps.py:15
-msgid ""
-"Add static pages to your event site, for example Terms of Service, venue "
-"listings, a code of conduct, etc."
-msgstr ""
-
-#: local/pretalx-pages/pretalx_pages/models.py:15
-msgid "URL to static page"
-msgstr ""
-
-#: local/pretalx-pages/pretalx_pages/models.py:20
-#: pretalx/event/models/event.py:169 pretalx/event/models/event.py:175
-#: pretalx/event/models/organiser.py:33
-msgid "The slug may only contain letters, numbers, dots and dashes."
-msgstr ""
-"スラグには、文字、数字、ドット(.)、ダッシュ(-)のみを含めることができます。"
-
-#: local/pretalx-pages/pretalx_pages/models.py:25
-msgid ""
-"This will be used to generate the URL of the page. Please only use latin "
-"letters, numbers, dots and dashes. You cannot change this afterwards."
-msgstr ""
-
-#: local/pretalx-pages/pretalx_pages/models.py:30
-#: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/index.html:28
-#, fuzzy
-#| msgid "Proposal title"
-msgid "Page title"
-msgstr "投稿タイトル"
-
-#: local/pretalx-pages/pretalx_pages/models.py:32
-#: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/form.html:20
-#, fuzzy
-#| msgid "Content"
-msgid "Page content"
-msgstr "コンテンツ"
-
-#: local/pretalx-pages/pretalx_pages/models.py:35
-msgid "Show link in the event footer"
-msgstr ""
-
-#: local/pretalx-pages/pretalx_pages/signals.py:41
-#, fuzzy
-#| msgid "The track has been deleted."
-msgid "The page has been created."
-msgstr "トラックが削除されました。"
-
-#: local/pretalx-pages/pretalx_pages/signals.py:42
-#, fuzzy
-#| msgid "The CfP has been modified."
-msgid "The page has been modified."
-msgstr "提案受付処理が変更されました。"
-
-#: local/pretalx-pages/pretalx_pages/signals.py:43
-#, fuzzy
-#| msgid "The track has been deleted."
-msgid "The page has been deleted."
-msgstr "トラックが削除されました。"
-
-#: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/delete.html:3
-#: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/delete.html:5
-#, fuzzy
-#| msgid "Delete phase"
-msgid "Delete a page"
-msgstr "フェーズを削除"
-
-#: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/delete.html:8
-#, fuzzy, python-format
-#| msgid "Do you really want to delete this question?"
-msgid "Are you sure you want to delete the page <strong>%(name)s</strong>?"
-msgstr "本当にこの質問を削除してよろしいですか？"
-
-#: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/delete.html:13
-#: pretalx/cfp/templates/cfp/event/user_submission_invitation.html:31
-#: pretalx/common/phrases.py:45
-msgid "Cancel"
-msgstr "取り消し"
-
-#: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/delete.html:16
-#: pretalx/cfp/templates/cfp/event/user_submission_discard.html:30
-#: pretalx/orga/templates/orga/cfp/access_code_form.html:46
-#: pretalx/orga/templates/orga/cfp/question_view.html:68
-#: pretalx/orga/templates/orga/mails/outbox_list.html:99
-#: pretalx/orga/templates/orga/organiser/detail.html:72
-#: pretalx/orga/templates/orga/review/assignment.html:88
-#: pretalx/orga/templates/orga/submission/list.html:171
-msgid "Delete"
-msgstr "削除"
-
-#: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/form.html:5
-#: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/form.html:7
-msgid "Page"
-msgstr ""
-
-#: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/form.html:14
-#: pretalx/orga/templates/orga/settings/form.html:30
-msgid "General information"
-msgstr "全体情報"
-
-#: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/form.html:31
-#, fuzzy
-#| msgid "Full history"
-msgid "Page history"
-msgstr "全ての履歴"
-
-#: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/index.html:11
-#, fuzzy
-#| msgid "You don't have any proposals yet."
-msgid "You haven't created any pages yet."
-msgstr "まだ投稿が行われていません。"
-
-#: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/index.html:17
-#: local/pretalx-pages/pretalx_pages/templates/pretalx_pages/index.html:21
-#, fuzzy
-#| msgid "Create a new event"
-msgid "Create a new page"
-msgstr "新しいイベントを作成"
-
-#: local/pretalx-pages/pretalx_pages/views.py:50
-#: local/pretalx-pages/pretalx_pages/views.py:55
-#: local/pretalx-pages/pretalx_pages/views.py:120
-#: local/pretalx-pages/pretalx_pages/views.py:235
-#, fuzzy
-#| msgid "This page does not exist."
-msgid "The requested page does not exist."
-msgstr "このページは存在しません。"
-
-#: local/pretalx-pages/pretalx_pages/views.py:69
-#, fuzzy
-#| msgid "The order of rooms has been updated."
-msgid "The order of pages has been updated."
-msgstr "部屋の並びが更新されました。"
-
-#: local/pretalx-pages/pretalx_pages/views.py:100
-#, fuzzy
-#| msgid "You already have a track by this name!"
-msgid "You already have a page on that URL."
-msgstr "すでにこの名前のトラックがあります"
-
-#: local/pretalx-pages/pretalx_pages/views.py:107
-msgid "URL form"
-msgstr ""
-
-#: local/pretalx-pages/pretalx_pages/views.py:145
-#, fuzzy
-#| msgid "The track has been deleted."
-msgid "The selected page has been deleted."
-msgstr "トラックが削除されました。"
-
-#: local/pretalx-pages/pretalx_pages/views.py:171 pretalx/common/phrases.py:48
-#: pretalx/orga/views/admin.py:54 pretalx/orga/views/event.py:535
-#: pretalx/orga/views/event.py:539 pretalx/orga/views/plugins.py:55
-msgid "Your changes have been saved."
-msgstr "変更が保存されました。"
-
-#: local/pretalx-pages/pretalx_pages/views.py:183
-#: local/pretalx-pages/pretalx_pages/views.py:220
-#, fuzzy
-#| msgid "Oh :( We had trouble saving your input. See below for details."
-msgid "We could not save your changes. See below for details."
-msgstr "おおう :( 入力した情報を保存できません。詳細は以下のとおりです。"
-
-#: local/pretalx-pages/pretalx_pages/views.py:208
-#, fuzzy
-#| msgid "The track has been deleted."
-msgid "The new page has been created."
-msgstr "トラックが削除されました。"
 
 #: pretalx/agenda/phrases.py:8
 msgid "Thank you for your feedback!"
@@ -346,7 +171,7 @@ msgid "Schedule"
 msgstr "スケジュール"
 
 #: pretalx/agenda/templates/agenda/header_row.html:9
-#: pretalx/agenda/templates/agenda/speaker.html:49
+#: pretalx/agenda/templates/agenda/speaker.html:51
 #: pretalx/orga/templates/orga/base.html:261
 #: pretalx/orga/templates/orga/base.html:269
 #: pretalx/orga/templates/orga/submission/stats.html:21
@@ -417,7 +242,7 @@ msgstr ""
 msgid "deleted"
 msgstr "削除済"
 
-#: pretalx/agenda/templates/agenda/speaker.html:34
+#: pretalx/agenda/templates/agenda/speaker.html:36
 msgid "The speaker's profile picture"
 msgstr "登壇者のプロフィール写真"
 
@@ -826,7 +651,7 @@ msgid "Abstract:"
 msgstr "概要: "
 
 #: pretalx/cfp/templates/cfp/event/invitation.html:41
-#: pretalx/event/models/event.py:646 pretalx/orga/forms/review.py:336
+#: pretalx/event/models/event.py:633 pretalx/orga/forms/review.py:336
 #: pretalx/submission/models/question.py:420
 #: pretalx/submission/models/submission.py:869
 msgid "No"
@@ -1190,6 +1015,16 @@ msgid ""
 "Do you really want to discard your draft proposal? All data will be lost."
 msgstr "本当に提案を撤回しますか？"
 
+#: pretalx/cfp/templates/cfp/event/user_submission_discard.html:30
+#: pretalx/orga/templates/orga/cfp/access_code_form.html:46
+#: pretalx/orga/templates/orga/cfp/question_view.html:68
+#: pretalx/orga/templates/orga/mails/outbox_list.html:99
+#: pretalx/orga/templates/orga/organiser/detail.html:72
+#: pretalx/orga/templates/orga/review/assignment.html:88
+#: pretalx/orga/templates/orga/submission/list.html:171
+msgid "Delete"
+msgstr "削除"
+
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:25
 #, fuzzy
 #| msgid "Current draft"
@@ -1339,6 +1174,11 @@ msgstr ""
 "こちらから別の登壇者をあなたの提案に招待します。メールを我々経由で送るのでは"
 "なく（スパムフィルタに捕まる可能性が髙いです）、直接このリンクを相手に伝えて"
 "ください。"
+
+#: pretalx/cfp/templates/cfp/event/user_submission_invitation.html:31
+#: pretalx/common/phrases.py:45
+msgid "Cancel"
+msgstr "取り消し"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_invitation.html:34
 #: pretalx/common/phrases.py:43
@@ -1868,6 +1708,48 @@ msgstr "読み取り専用データを変更しようとしています。"
 msgid "ManagementForm data is missing or has been tampered with."
 msgstr "ManagementForm データが無いか、改ざんされています。"
 
+#: pretalx/common/models/log.py:99 pretalx/submission/models/feedback.py:23
+msgid "Session"
+msgstr "講演"
+
+#: pretalx/common/models/log.py:101 pretalx/orga/forms/review.py:206
+#: pretalx/orga/templates/orga/speaker/form.html:29
+#, fuzzy
+#| msgid "Proposal"
+#| msgid_plural "Submissions"
+msgid "Proposal"
+msgid_plural "Proposals"
+msgstr[0] "投稿"
+msgstr[1] "投稿"
+
+#: pretalx/common/models/log.py:105 pretalx/common/models/log.py:109
+#: pretalx/orga/templates/orga/cfp/question_form.html:19
+#: pretalx/orga/templates/orga/cfp/question_view.html:30
+#: pretalx/orga/templates/orga/review/dashboard.html:93
+msgid "Question"
+msgstr "質問"
+
+#: pretalx/common/models/log.py:116
+#, fuzzy
+#| msgid "Answered session questions"
+msgid "Answer to question"
+msgstr "投稿に関する質問への回答"
+
+#: pretalx/common/models/log.py:119 pretalx/orga/templates/orga/base.html:225
+msgid "CfP"
+msgstr "CfP"
+
+#: pretalx/common/models/log.py:122
+#, fuzzy
+#| msgid "Mail templates"
+msgid "Mail template"
+msgstr "メールテンプレート"
+
+#: pretalx/common/models/log.py:126 pretalx/event/models/organiser.py:157
+#: pretalx/orga/templates/orga/settings/team_detail.html:20
+msgid "Email"
+msgstr "Eメール"
+
 #: pretalx/common/models/settings.py:60
 msgid ""
 "Please give a fair review on why you'd like to see this proposal at the "
@@ -2014,6 +1896,12 @@ msgstr ""
 msgid "Edit"
 msgstr "編集"
 
+#: pretalx/common/phrases.py:48 pretalx/orga/views/admin.py:54
+#: pretalx/orga/views/event.py:535 pretalx/orga/views/event.py:539
+#: pretalx/orga/views/plugins.py:55
+msgid "Your changes have been saved."
+msgstr "変更が保存されました。"
+
 #: pretalx/common/phrases.py:51
 msgid "There was an error sending the mail. Please try again later."
 msgstr "メール送信中にエラーが発生しました。後ほどやり直してください。"
@@ -2151,12 +2039,6 @@ msgstr "言語"
 msgid "Other"
 msgstr ""
 
-#: pretalx/common/tables.py:45
-#, fuzzy
-#| msgid "pretalx update available"
-msgid "No data available."
-msgstr "pretalx のアップデート版が利用できます"
-
 #: pretalx/common/templates/400.html:5 pretalx/common/templates/400.html:8
 msgid "Bad request."
 msgstr "Bad Request."
@@ -2276,18 +2158,15 @@ msgstr "お問い合わせ"
 msgid "Imprint"
 msgstr "免責事項"
 
-#: pretalx/common/templates/common/logs.html:7
-#: pretalx/orga/templates/orga/event/dashboard.html:101
-msgid "History"
-msgstr "履歴"
-
-#: pretalx/common/templates/common/logs.html:24
+#: pretalx/common/templates/common/logs.html:17
 msgid "This change was performed by a member of the event orga."
 msgstr "この変更は、イベント主催者のメンバーによって行われました。"
 
-#: pretalx/common/templates/common/logs.html:30
-msgid "An orga member"
-msgstr "主催者メンバー"
+#: pretalx/common/templates/common/logs.html:23
+#, fuzzy
+#| msgid "New organiser"
+msgid "An organiser"
+msgstr "新規主催者"
 
 #: pretalx/common/templates/common/powered_by.html:33
 #, python-format
@@ -2561,6 +2440,12 @@ msgstr "無効なイベント Slug - この Slug は予約されています: {v
 msgid "Name"
 msgstr "名前"
 
+#: pretalx/event/models/event.py:169 pretalx/event/models/event.py:175
+#: pretalx/event/models/organiser.py:33
+msgid "The slug may only contain letters, numbers, dots and dashes."
+msgstr ""
+"スラグには、文字、数字、ドット(.)、ダッシュ(-)のみを含めることができます。"
+
 #: pretalx/event/models/event.py:174 pretalx/event/models/organiser.py:37
 msgid "Short form"
 msgstr "短いフォーム"
@@ -2685,7 +2570,7 @@ msgstr ""
 msgid "Plugins"
 msgstr "プラグイン"
 
-#: pretalx/event/models/event.py:620 pretalx/event/models/event.py:918
+#: pretalx/event/models/event.py:607 pretalx/event/models/event.py:929
 #: pretalx/event/stages.py:68 pretalx/orga/templates/orga/base.html:203
 #: pretalx/orga/templates/orga/base.html:292
 #: pretalx/orga/templates/orga/base.html:300
@@ -2694,22 +2579,22 @@ msgstr "プラグイン"
 msgid "Review"
 msgstr "レビュー"
 
-#: pretalx/event/models/event.py:628
+#: pretalx/event/models/event.py:615
 msgid "Selection"
 msgstr "セレクション"
 
-#: pretalx/event/models/event.py:641
+#: pretalx/event/models/event.py:628
 #: pretalx/orga/templates/orga/review/dashboard.html:69
 #: pretalx/orga/templates/orga/submission/review.html:165
 #: pretalx/submission/models/review.py:133
 msgid "Score"
 msgstr "スコア"
 
-#: pretalx/event/models/event.py:651
+#: pretalx/event/models/event.py:638
 msgid "Maybe"
 msgstr ""
 
-#: pretalx/event/models/event.py:656 pretalx/orga/forms/review.py:336
+#: pretalx/event/models/event.py:643 pretalx/orga/forms/review.py:336
 #: pretalx/orga/templates/orga/cfp/access_code_delete.html:15
 #: pretalx/orga/templates/orga/cfp/question_delete.html:15
 #: pretalx/orga/templates/orga/cfp/submission_type_delete.html:15
@@ -2730,7 +2615,7 @@ msgstr ""
 msgid "Yes"
 msgstr "はい"
 
-#: pretalx/event/models/event.py:1058
+#: pretalx/event/models/event.py:1069
 msgid "News from your content system"
 msgstr "コンテンツシステムからのニュース"
 
@@ -2807,11 +2692,6 @@ msgstr ""
 #, python-brace-format
 msgid "{name} on {orga}"
 msgstr "{name} on {orga}"
-
-#: pretalx/event/models/organiser.py:157
-#: pretalx/orga/templates/orga/settings/team_detail.html:20
-msgid "Email"
-msgstr "Eメール"
 
 #: pretalx/event/models/organiser.py:166
 #, python-brace-format
@@ -4073,16 +3953,6 @@ msgstr "すべてレビュー完了です。残りの投稿はありません！
 msgid "Assign reviewers to proposals"
 msgstr "レビュアーは投稿をアクセプトしたりリジェクトしたりできます"
 
-#: pretalx/orga/forms/review.py:206
-#: pretalx/orga/templates/orga/speaker/form.html:29
-#, fuzzy
-#| msgid "Proposal"
-#| msgid_plural "Submissions"
-msgid "Proposal"
-msgid_plural "Proposals"
-msgstr[0] "投稿"
-msgstr[1] "投稿"
-
 #: pretalx/orga/forms/review.py:208 pretalx/orga/forms/schedule.py:50
 #, fuzzy
 #| msgid "My proposals"
@@ -4599,10 +4469,6 @@ msgstr "Eメール"
 msgid "Widget"
 msgstr "ウィジェット"
 
-#: pretalx/orga/templates/orga/base.html:225
-msgid "CfP"
-msgstr "CfP"
-
 #: pretalx/orga/templates/orga/base.html:233
 #: pretalx/orga/templates/orga/submission/base.html:34
 msgid "Content"
@@ -4834,12 +4700,6 @@ msgstr "カウント"
 #, python-format
 msgid "%%"
 msgstr "%%"
-
-#: pretalx/orga/templates/orga/cfp/question_form.html:19
-#: pretalx/orga/templates/orga/cfp/question_view.html:30
-#: pretalx/orga/templates/orga/review/dashboard.html:93
-msgid "Question"
-msgstr "質問"
 
 #: pretalx/orga/templates/orga/cfp/question_form.html:19
 msgid "New question"
@@ -5124,6 +4984,10 @@ msgstr "未公開"
 #: pretalx/orga/templates/orga/event/dashboard.html:67
 msgid "Click here to change"
 msgstr "こちらをクリックして変更"
+
+#: pretalx/orga/templates/orga/event/dashboard.html:101
+msgid "History"
+msgstr "履歴"
 
 #: pretalx/orga/templates/orga/event/dashboard.html:101
 msgid "Full history"
@@ -6313,6 +6177,10 @@ msgstr "講演が行われる場所は、最低でも1つ以上入力してく�
 msgid "New room"
 msgstr "新しい部屋"
 
+#: pretalx/orga/templates/orga/settings/form.html:30
+msgid "General information"
+msgstr "全体情報"
+
 #: pretalx/orga/templates/orga/settings/form.html:56
 msgid "Display settings"
 msgstr "表示設定"
@@ -7312,7 +7180,7 @@ msgstr "本当に、過去に開催されたイベントにしてしまって良
 msgid "Team {event.name}"
 msgstr "{event.name} チーム"
 
-#: pretalx/orga/views/event.py:755
+#: pretalx/orga/views/event.py:765
 msgid "The widget settings have been saved."
 msgstr "ウィジェット設定が保存されました。"
 
@@ -7898,41 +7766,41 @@ msgstr ""
 "い。これらの時間帯にあなたの講演をスケジューリングするようにします。ブロック"
 "はダブルクリックすると削除することができます。"
 
-#: pretalx/schedule/forms.py:82
+#: pretalx/schedule/forms.py:80
 #, python-brace-format
 msgid "Please note that all times are in the event timezone, {tz}."
 msgstr ""
 "すべての時間表記はイベントのタイムゾーン {tz} であることに注意してください。"
 
-#: pretalx/schedule/forms.py:87
+#: pretalx/schedule/forms.py:85
 msgid ""
 "If you set room availabilities, speakers will only be able to set their "
 "availability for when any room is available."
 msgstr ""
 
-#: pretalx/schedule/forms.py:121
+#: pretalx/schedule/forms.py:118
 msgid "The submitted availability does not comply with the required format."
 msgstr "入力した情報が必要なフォーマットを満たしていません。"
 
-#: pretalx/schedule/forms.py:137
+#: pretalx/schedule/forms.py:134
 msgid "The submitted availability contains an invalid date."
 msgstr "入力した情報に範囲外の日時が含まれています。"
 
-#: pretalx/schedule/forms.py:161 pretalx/schedule/forms.py:175
+#: pretalx/schedule/forms.py:158 pretalx/schedule/forms.py:172
 msgid "Please fill in your availability!"
 msgstr "都合のつく場所を入力ください！"
 
-#: pretalx/schedule/forms.py:215
+#: pretalx/schedule/forms.py:212
 msgid "Room I"
 msgstr "ルーム1"
 
-#: pretalx/schedule/forms.py:217
+#: pretalx/schedule/forms.py:214
 msgid ""
 "Description, e.g.: Our main meeting place, Room I, enter from the right."
 msgstr ""
 "情報、例: メインのミーティングスペース、ルーム1、右側から入ります、など"
 
-#: pretalx/schedule/forms.py:220
+#: pretalx/schedule/forms.py:217
 msgid "Information for speakers, e.g.: Projector has only HDMI input."
 msgstr "発表者向け情報、例: プロジェクタがHDMI入力端子しかない、など"
 
@@ -8175,10 +8043,6 @@ msgstr "標準の投稿タイプ"
 #: pretalx/submission/models/cfp.py:108
 msgid "Please put in the last date you want to accept proposals from users."
 msgstr "ユーザから投稿を受け付ける最終日を入力してください。"
-
-#: pretalx/submission/models/feedback.py:23
-msgid "Session"
-msgstr "講演"
 
 #: pretalx/submission/models/feedback.py:31
 msgid "Speaker"
@@ -8639,6 +8503,94 @@ msgstr ""
 
 msgid "Hidden rooms"
 msgstr ""
+
+#, fuzzy
+#~| msgid "Proposal title"
+#~ msgid "Page title"
+#~ msgstr "投稿タイトル"
+
+#, fuzzy
+#~| msgid "Content"
+#~ msgid "Page content"
+#~ msgstr "コンテンツ"
+
+#, fuzzy
+#~| msgid "The track has been deleted."
+#~ msgid "The page has been created."
+#~ msgstr "トラックが削除されました。"
+
+#, fuzzy
+#~| msgid "The CfP has been modified."
+#~ msgid "The page has been modified."
+#~ msgstr "提案受付処理が変更されました。"
+
+#, fuzzy
+#~| msgid "The track has been deleted."
+#~ msgid "The page has been deleted."
+#~ msgstr "トラックが削除されました。"
+
+#, fuzzy
+#~| msgid "Delete phase"
+#~ msgid "Delete a page"
+#~ msgstr "フェーズを削除"
+
+#, fuzzy, python-format
+#~| msgid "Do you really want to delete this question?"
+#~ msgid "Are you sure you want to delete the page <strong>%(name)s</strong>?"
+#~ msgstr "本当にこの質問を削除してよろしいですか？"
+
+#, fuzzy
+#~| msgid "Full history"
+#~ msgid "Page history"
+#~ msgstr "全ての履歴"
+
+#, fuzzy
+#~| msgid "You don't have any proposals yet."
+#~ msgid "You haven't created any pages yet."
+#~ msgstr "まだ投稿が行われていません。"
+
+#, fuzzy
+#~| msgid "Create a new event"
+#~ msgid "Create a new page"
+#~ msgstr "新しいイベントを作成"
+
+#, fuzzy
+#~| msgid "This page does not exist."
+#~ msgid "The requested page does not exist."
+#~ msgstr "このページは存在しません。"
+
+#, fuzzy
+#~| msgid "The order of rooms has been updated."
+#~ msgid "The order of pages has been updated."
+#~ msgstr "部屋の並びが更新されました。"
+
+#, fuzzy
+#~| msgid "You already have a track by this name!"
+#~ msgid "You already have a page on that URL."
+#~ msgstr "すでにこの名前のトラックがあります"
+
+#, fuzzy
+#~| msgid "The track has been deleted."
+#~ msgid "The selected page has been deleted."
+#~ msgstr "トラックが削除されました。"
+
+#, fuzzy
+#~| msgid "Oh :( We had trouble saving your input. See below for details."
+#~ msgid "We could not save your changes. See below for details."
+#~ msgstr "おおう :( 入力した情報を保存できません。詳細は以下のとおりです。"
+
+#, fuzzy
+#~| msgid "The track has been deleted."
+#~ msgid "The new page has been created."
+#~ msgstr "トラックが削除されました。"
+
+#, fuzzy
+#~| msgid "pretalx update available"
+#~ msgid "No data available."
+#~ msgstr "pretalx のアップデート版が利用できます"
+
+#~ msgid "An orga member"
+#~ msgstr "主催者メンバー"
 
 #~ msgid "Move question down"
 #~ msgstr "質問を下に移動"
@@ -9274,9 +9226,6 @@ msgstr ""
 #~ msgid "A short version of your conference name, e.g. mycon"
 #~ msgstr "カンファレンスの略称, e.g. マイコン"
 
-#~ msgid "New organiser"
-#~ msgstr "新規主催者"
-
 #, python-brace-format
 #~ msgid "Unknown template key: \"{key}\", locale: {locale}"
 #~ msgstr "未知のテンプレートキー: \"{key}\"、ロケールは \"{locale}\")"
@@ -9292,9 +9241,6 @@ msgstr ""
 
 #~ msgid "Mail outbox"
 #~ msgstr "送信箱"
-
-#~ msgid "Mail templates"
-#~ msgstr "メールテンプレート"
 
 #~ msgid "Sent mails"
 #~ msgstr "送信済みメール"
