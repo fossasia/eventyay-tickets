@@ -57,6 +57,9 @@ class SimpleFunctionalMailTextPlaceholder(BaseMailTextPlaceholder):
         self._explanation = explanation
         self._is_visible = is_visible
 
+    def __repr__(self):
+        return f"SimpleFunctionalMailTextPlaceholder({self._identifier})"
+
     @property
     def identifier(self):
         return self._identifier
