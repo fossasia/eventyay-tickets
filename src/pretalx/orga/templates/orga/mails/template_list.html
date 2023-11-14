@@ -146,7 +146,7 @@
                                 <div class="row mt-2 mb-4 mr-1">
                                     <a href="{{ template.instance.urls.delete }}" class="btn btn-danger flip ml-auto mr-2">{% translate "Delete template" %}</a>
                                     <a href="{{ template.instance.urls.edit }}" class="btn btn-info mr-2">{% translate "Edit template" %}</a>
-                                    <a href="{{ request.event.orga_urls.compose_mails }}?template={{ template.instance.pk }}" class="btn btn-success">{% translate "Send mails" %}</a>
+                                    <a href="{{ request.event.orga_urls.compose_mails_sessions }}?template={{ template.instance.pk }}" class="btn btn-success">{% translate "Send mails" %}</a>
                                 </div>
                                 {% bootstrap_form template layout='event' %}
                             </div>

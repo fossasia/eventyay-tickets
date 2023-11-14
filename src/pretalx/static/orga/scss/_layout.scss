@@ -277,7 +277,6 @@ legend {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  font-size: 28px;
 }
 
 footer {
@@ -1202,6 +1201,22 @@ div.mail-preview {
   p:last-child {
     margin-bottom: 0;
   }
+}
+.list-group {
+    .list-group-item-action {
+        h4 {
+            color: $brand-primary;
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            .fa-chevron-right {
+                position: absolute;
+                right: 24px;
+                height: 24px;
+                top: calc(50% - 12px);
+            }
+        }
+    }
 }
 @media print {
     body, #page-content, .pretalx-schedule {

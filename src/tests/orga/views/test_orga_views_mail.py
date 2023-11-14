@@ -351,11 +351,64 @@ def test_orga_can_delete_template(orga_client, event, mail_template):
 
 
 @pytest.mark.django_db
+def test_orga_can_compose_single_mail_team(orga_client, review_user, event):
+    response = orga_client.get(
+        event.orga_urls.compose_mails_teams,
+        follow=True,
+    )
+    assert response.status_code == 200
+    with scope(event=event):
+        assert QueuedMail.objects.filter(sent__isnull=False).count() == 0
+    response = orga_client.post(
+        event.orga_urls.compose_mails_teams,
+        follow=True,
+        data={
+            "recipients": "reviewers",
+            "subject_0": "foo {name}",
+            "text_0": "bar {name}",
+        },
+    )
+    assert response.status_code == 200
+    with scope(event=event):
+        mails = QueuedMail.objects.filter(sent__isnull=False)
+        assert mails.count() == 1  # one of them is the accept mail!
+        mail = mails[0]
+        assert mail.subject == f"foo {review_user.name}"
+        assert mail.text == f"bar {review_user.name}"
+
+
+@pytest.mark.django_db
+def test_orga_can_compose_single_mail_team_by_pk(
+    orga_user, orga_client, review_user, event
+):
+    team = orga_user.teams.first()
+    assert team in event.teams.all()
+    with scope(event=event):
+        assert QueuedMail.objects.filter(sent__isnull=False).count() == 0
+    response = orga_client.post(
+        event.orga_urls.compose_mails_teams,
+        follow=True,
+        data={
+            "recipients": ["reviewers", str(team.pk)],
+            "subject_0": "foo {name}",
+            "text_0": "bar {email}",
+        },
+    )
+    assert response.status_code == 200
+    with scope(event=event):
+        mails = QueuedMail.objects.filter(sent__isnull=False)
+        assert mails.count() == 2
+        for user in [orga_user, review_user]:
+            mail = [m for m in mails if m.subject == f"foo {user.name}"][0]
+            assert mail.text == f"bar {user.email}"
+
+
+@pytest.mark.django_db
 def test_orga_can_compose_single_mail(
     orga_client, speaker, event, submission, other_submission
 ):
     response = orga_client.get(
-        event.orga_urls.compose_mails,
+        event.orga_urls.compose_mails_sessions,
         follow=True,
     )
     assert response.status_code == 200
@@ -363,7 +416,7 @@ def test_orga_can_compose_single_mail(
         assert QueuedMail.objects.filter(sent__isnull=True).count() == 0
         other_submission.accept()
     response = orga_client.post(
-        event.orga_urls.compose_mails,
+        event.orga_urls.compose_mails_sessions,
         follow=True,
         data={
             "recipients": "submitted",
@@ -389,7 +442,7 @@ def test_orga_can_compose_single_mail_multiple_states_and_failing_placeholders(
     with scope(event=event):
         QueuedMail.objects.filter(sent__isnull=True).delete()
     response = orga_client.post(
-        event.orga_urls.compose_mails,
+        event.orga_urls.compose_mails_sessions,
         follow=True,
         data={
             "recipients": ["submitted", "confirmed"],
@@ -418,7 +471,7 @@ def test_orga_can_compose_single_mail_with_specific_submission(
     with scope(event=event):
         assert QueuedMail.objects.filter(sent__isnull=True).delete()
     response = orga_client.post(
-        event.orga_urls.compose_mails,
+        event.orga_urls.compose_mails_sessions,
         follow=True,
         data={
             "recipients": "submitted",
@@ -447,7 +500,7 @@ def test_orga_can_compose_mail_for_track(orga_client, event, submission, track):
     with scope(event=event):
         assert QueuedMail.objects.filter(sent__isnull=True).count() == 0
     response = orga_client.post(
-        event.orga_urls.compose_mails,
+        event.orga_urls.compose_mails_sessions,
         follow=True,
         data={
             "bcc": "",
@@ -466,14 +519,14 @@ def test_orga_can_compose_mail_for_track(orga_client, event, submission, track):
 @pytest.mark.django_db
 def test_orga_can_compose_mail_for_submission_type(orga_client, event, submission):
     response = orga_client.get(
-        event.orga_urls.compose_mails,
+        event.orga_urls.compose_mails_sessions,
         follow=True,
     )
     assert response.status_code == 200
     with scope(event=event):
         assert QueuedMail.objects.filter(sent__isnull=True).count() == 0
     response = orga_client.post(
-        event.orga_urls.compose_mails,
+        event.orga_urls.compose_mails_sessions,
         follow=True,
         data={
             "bcc": "",
@@ -497,14 +550,14 @@ def test_orga_can_compose_mail_for_track_and_type_no_doubles(
         submission.track = track
         submission.save()
     response = orga_client.get(
-        event.orga_urls.compose_mails,
+        event.orga_urls.compose_mails_sessions,
         follow=True,
     )
     assert response.status_code == 200
     with scope(event=event):
         assert QueuedMail.objects.filter(sent__isnull=True).count() == 0
     response = orga_client.post(
-        event.orga_urls.compose_mails,
+        event.orga_urls.compose_mails_sessions,
         follow=True,
         data={
             "bcc": "",
@@ -528,7 +581,7 @@ def test_orga_can_compose_single_mail_selected_submissions(
     with scope(event=event):
         assert QueuedMail.objects.filter(sent__isnull=True).count() == 0
     response = orga_client.post(
-        event.orga_urls.compose_mails,
+        event.orga_urls.compose_mails_sessions,
         follow=True,
         data={
             "submissions": [other_submission.code],
@@ -558,7 +611,7 @@ def test_orga_can_compose_single_mail_to_additional_recipients(
     with scope(event=event):
         assert QueuedMail.objects.filter(sent__isnull=True).count() == 0
     response = orga_client.post(
-        event.orga_urls.compose_mails,
+        event.orga_urls.compose_mails_sessions,
         follow=True,
         data={
             "additional_recipients": f"foot@example.com,{orga_user.email}",
@@ -582,7 +635,7 @@ def test_orga_can_compose_mail_to_speakers_with_no_slides(
     with scope(event=event):
         assert QueuedMail.objects.filter(sent__isnull=True).count() == 1
     response = orga_client.post(
-        event.orga_urls.compose_mails,
+        event.orga_urls.compose_mails_sessions,
         follow=True,
         data={
             "recipients": "no_slides",
@@ -606,7 +659,7 @@ def test_orga_can_compose_single_mail_from_template(
     orga_client, event, submission, orga_user
 ):
     response = orga_client.get(
-        event.orga_urls.compose_mails
+        event.orga_urls.compose_mails_sessions
         + f"?template={event.ack_template.pk}&submission={submission.code}&email={orga_user.email}",
         follow=True,
     )
@@ -620,7 +673,7 @@ def test_orga_can_compose_single_mail_from_wrong_template(
     orga_client, event, submission
 ):
     response = orga_client.get(
-        event.orga_urls.compose_mails
+        event.orga_urls.compose_mails_sessions
         + f"?template={event.ack_template.pk}000&submission={submission.code}EEE&email=r",
         follow=True,
     )

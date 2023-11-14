@@ -88,7 +88,7 @@ STAGES = {
             },
             {
                 "title": _("Inform your speakers about the infrastructure"),
-                "url": ["orga_urls", "compose_mails"],
+                "url": ["orga_urls", "compose_mails_sessions"],
             },
         ],
     },

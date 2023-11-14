@@ -191,7 +191,105 @@ class MailDetailForm(ReadOnlyFlag, forms.ModelForm):
         widgets = {"to_users": forms.SelectMultiple(attrs={"class": "select2"})}
 
 
-class WriteMailForm(MailTemplateBase):
+class WriteMailBaseForm(MailTemplateBase):
+    skip_queue = forms.BooleanField(
+        label=_("Send immediately"),
+        required=False,
+        help_text=_(
+            "If you check this, the emails will be sent immediately, instead of being put in the outbox."
+        ),
+    )
+
+    def __init__(self, *args, event=None, **kwargs):
+        self.event = event
+        if event:
+            kwargs["locales"] = event.locales
+        super().__init__(*args, **kwargs)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        valid_placeholders = self.get_valid_placeholders().keys()
+        self.warnings = self._clean_for_placeholders(
+            cleaned_data.get("subject", ""), valid_placeholders
+        ) | self._clean_for_placeholders(
+            cleaned_data.get("text", ""), valid_placeholders
+        )
+        return cleaned_data
+
+    class Meta:
+        model = MailTemplate
+        fields = ["subject", "text", "reply_to", "bcc", "skip_queue"]
+
+
+class WriteTeamsMailForm(WriteMailBaseForm):
+    recipients = forms.MultipleChoiceField(
+        label=_("Teams"),
+        required=False,
+        widget=forms.SelectMultiple(
+            attrs={"class": "select2", "title": _("Recipient groups")}
+        ),
+    )
+
+    class Meta(MailTemplateBase.Meta):
+        pass
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Placing reviewer emails in the outbox would lead to a **ton** of permission
+        # issues: who is allowed to see them, who to edit/send them, etc.
+        self.fields.pop("skip_queue")
+
+        reviewer_teams = self.event.teams.filter(is_reviewer=True)
+        other_teams = self.event.teams.exclude(is_reviewer=True)
+        if reviewer_teams and other_teams:
+            self.fields["recipients"].choices = [
+                (
+                    _("Reviewers"),
+                    [(team.pk, team.name) for team in reviewer_teams],
+                ),
+                (
+                    _("Other teams"),
+                    [(team.pk, team.name) for team in other_teams],
+                ),
+            ]
+        else:
+            self.fields["recipients"].choices = [
+                (team.pk, team.name) for team in self.event.teams.all()
+            ]
+
+    def get_valid_placeholders(self):
+        return get_available_placeholders(event=self.event, kwargs=["event", "user"])
+
+    def get_recipients(self):
+        recipients = self.cleaned_data.get("recipients")
+        teams = self.event.teams.all().filter(pk__in=recipients)
+        return User.objects.filter(is_active=True, teams__in=teams)
+
+    @transaction.atomic
+    def save(self):
+        self.instance.event = self.event
+        self.instance.is_auto_created = True
+        template = super().save()
+        result = []
+        users = self.get_recipients()
+        for user in users:
+            # This happens when there are template errors
+            with suppress(SendMailException):
+                result.append(
+                    template.to_mail(
+                        user=user,
+                        event=self.event,
+                        locale=user.locale,
+                        context_kwargs={"user": user, "event": self.event},
+                        skip_queue=True,
+                        commit=False,
+                    )
+                )
+        return result
+
+
+class WriteSessionMailForm(WriteMailBaseForm):
     recipients = forms.MultipleChoiceField(
         label=_("Recipient groups"),
         choices=(
@@ -206,7 +304,6 @@ class WriteMailForm(MailTemplateBase):
             ("confirmed", _("All confirmed speakers")),
             ("rejected", _("All rejected speakers")),
             ("canceled", _("All canceled speakers")),
-            ("reviewers", _("All reviewers in your team")),
             ("no_slides", _("All confirmed speakers who have not uploaded slides")),
         ),
         required=False,
@@ -239,23 +336,20 @@ class WriteMailForm(MailTemplateBase):
         ),
     )
 
-    def __init__(self, event, **kwargs):
-        self.event = event
-        if event:
-            kwargs["locales"] = event.locales
+    def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.fields["submissions"].choices = [
-            (sub.code, sub.title) for sub in event.submissions.all()
+            (sub.code, sub.title) for sub in self.event.submissions.all()
         ]
-        if event.feature_flags["use_tracks"] and event.tracks.all().exists():
+        if self.event.feature_flags["use_tracks"] and self.event.tracks.all().exists():
             self.fields["tracks"].choices = [
-                (track.pk, track.name) for track in event.tracks.all()
+                (track.pk, track.name) for track in self.event.tracks.all()
             ]
         else:
             del self.fields["tracks"]
         self.fields["submission_types"].choices = [
             (submission_type.pk, submission_type.name)
-            for submission_type in event.submission_types.all()
+            for submission_type in self.event.submission_types.all()
         ]
         if len(self.event.locales) > 1:
             self.fields["subject"].help_text = _(
@@ -273,7 +367,7 @@ class WriteMailForm(MailTemplateBase):
             kwargs.append("slot")
         return get_available_placeholders(event=self.event, kwargs=kwargs)
 
-    def get_recipient_submissions(self):
+    def get_recipients(self):
         # If no recipient base groups are selected,
         submissions = self.event.submissions.all()
         submission_states = [
@@ -327,23 +421,13 @@ class WriteMailForm(MailTemplateBase):
                 submissions = specific_submissions
         return submissions
 
-    def clean(self):
-        cleaned_data = super().clean()
-        valid_placeholders = self.get_valid_placeholders().keys()
-        self.warnings = self._clean_for_placeholders(
-            cleaned_data.get("subject", ""), valid_placeholders
-        ) | self._clean_for_placeholders(
-            cleaned_data.get("text", ""), valid_placeholders
-        )
-        return cleaned_data
-
     @transaction.atomic
     def save(self):
         self.instance.event = self.event
         self.instance.is_auto_created = True
         template = super().save()
 
-        submissions = self.get_recipient_submissions()
+        submissions = self.get_recipients()
         mails_by_user = defaultdict(list)
         result = []
         # First, render all emails

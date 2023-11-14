@@ -26,7 +26,8 @@ from pretalx.orga.forms.mails import (
     DraftRemindersForm,
     MailDetailForm,
     MailTemplateForm,
-    WriteMailForm,
+    WriteSessionMailForm,
+    WriteTeamsMailForm,
 )
 
 
@@ -295,9 +296,12 @@ def check_markdown(text):
     return result
 
 
-class ComposeMail(EventPermissionRequired, FormView):
-    form_class = WriteMailForm
-    template_name = "orga/mails/send_form.html"
+class ComposeMailChoice(EventPermissionRequired, TemplateView):
+    template_name = "orga/mails/compose_choice.html"
+    permission_required = "orga.send_mails"
+
+
+class ComposeMailBaseView(EventPermissionRequired, FormView):
     permission_required = "orga.send_mails"
 
     def get_form_kwargs(self):
@@ -312,19 +316,11 @@ class ComposeMail(EventPermissionRequired, FormView):
                 initial["subject"] = template.subject
                 initial["text"] = template.text
                 initial["reply_to"] = template.reply_to
-        if "submission" in self.request.GET:
-            submission = self.request.event.submissions.filter(
-                code=self.request.GET.get("submission")
-            ).first()
-            if submission:
-                initial["submissions"] = submission.code
-        if "email" in self.request.GET:
-            initial["additional_recipients"] = self.request.GET.get("email")
         kwargs["initial"] = initial
         return kwargs
 
     def get_success_url(self):
-        return self.request.event.orga_urls.compose_mails
+        return getattr(self, "success_url", self.request.event.orga_urls.outbox)
 
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
@@ -339,11 +335,11 @@ class ComposeMail(EventPermissionRequired, FormView):
             self.output = {}
             # Only approximate, good enough. Doesn't run deduplication, so it doesn't have to
             # run rendering for all placeholders for all people, either.
-            result = form.get_recipient_submissions()
+            result = form.get_recipients()
             if not len(result):
                 messages.error(
                     self.request,
-                    _("There are no proposals or sessions matching this selection."),
+                    _("There are no recipients matching this selection."),
                 )
                 return self.get(self.request, *self.args, **self.kwargs)
             self.output_warnings = {}
@@ -379,13 +375,47 @@ class ComposeMail(EventPermissionRequired, FormView):
             return self.get(self.request, *self.args, **self.kwargs)
 
         result = form.save()
-        messages.success(
-            self.request,
-            _(
-                "{count} emails have been saved to the outbox – you can make individual changes there or just send them all."
-            ).format(count=len(result)),
-        )
+        if len(result) and result[0].sent:
+            self.success_url = self.request.event.orga_urls.sent_mails
+            messages.success(
+                self.request,
+                _("{count} emails have been sent.").format(count=len(result)),
+            )
+        else:
+            self.success_url = self.request.event.orga_urls.outbox
+            messages.success(
+                self.request,
+                _(
+                    "{count} emails have been saved to the outbox – you can make individual changes there or just send them all."
+                ).format(count=len(result)),
+            )
         return super().form_valid(form)
+
+
+class ComposeTeamsMail(ComposeMailBaseView):
+    form_class = WriteTeamsMailForm
+    template_name = "orga/mails/compose_reviewer_mail_form.html"
+    permission_required = "orga.send_reviewer_mails"
+
+    def get_success_url(self):
+        return self.request.event.orga_urls.outbox
+
+
+class ComposeSessionMail(ComposeMailBaseView):
+    form_class = WriteSessionMailForm
+    template_name = "orga/mails/compose_session_mail_form.html"
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        initial = kwargs.get("initial", {})
+        if "submission" in self.request.GET:
+            submission = self.request.event.submissions.filter(
+                code=self.request.GET.get("submission")
+            ).first()
+            if submission:
+                initial["submissions"] = submission.code
+        kwargs["initial"] = initial
+        return kwargs
 
 
 class ComposeDraftReminders(EventPermissionRequired, FormView):

@@ -170,7 +170,7 @@ class QueuedMail(PretalxModel):
     This mechanism allows organisers to make sure they send out the right
     content, and to include personal changes in emails.
 
-    :param sent_at: ``None`` if the mail has not been sent yet.
+    :param sent: ``None`` if the mail has not been sent yet.
     :param to_users: All known users to whom this email is addressed.
     :param to: A comma-separated list of email addresses to whom this email
         is addressed. Does not contain any email addresses known to belong

@@ -327,8 +327,18 @@ urlpatterns = [
                 ),
                 path(
                     "mails/compose",
-                    mails.ComposeMail.as_view(),
-                    name="mails.compose",
+                    mails.ComposeMailChoice.as_view(),
+                    name="mails.compose.choose",
+                ),
+                path(
+                    "mails/compose/teams/",
+                    mails.ComposeTeamsMail.as_view(),
+                    name="mails.compose.teams",
+                ),
+                path(
+                    "mails/compose/sessions/",
+                    mails.ComposeSessionMail.as_view(),
+                    name="mails.compose.sessions",
                 ),
                 path("mails/sent", mails.SentMail.as_view(), name="mails.sent"),
                 path(

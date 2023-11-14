@@ -2,19 +2,36 @@
 {% load bootstrap4 %}
 {% load i18n %}
 
+{% block title %}{% translate "Email editor" %}{% endblock %}
+
 {% block mail_content %}
     <form method="post">
         {% csrf_token %}
-        <h2>{% translate "Mail Editor" %}</h2>
+        <div class="mb-2">
+          <h2 class="d-inline">{% translate "Email editor" %}
+          </h2>
+          <h3 class="d-inline ml-1"><small class="text-muted">{% block email_editor_title %}{% endblock %}</small></h3>
+        </div>
         {% bootstrap_form_errors form %}
+        <fieldset>
+          <legend>
+            {% translate "Recipients" %}
+          </legend>
         {% bootstrap_field form.recipients layout='event' %}
         {% if form.tracks %}{% bootstrap_field form.tracks layout='event' %}{% endif %}
-        {% bootstrap_field form.submission_types layout='event' %}
-        {% bootstrap_field form.submissions layout='event' %}
-        {% bootstrap_field form.reply_to layout='event' %}
-        {% bootstrap_field form.bcc layout='event' %}
+        {% if form.submission_types %}{% bootstrap_field form.submission_types layout='event' %}{% endif %}
+        {% if form.submission_types %}{% bootstrap_field form.submissions layout='event' %}{% endif %}
+        {% if form.submission_types %}{% bootstrap_field form.reply_to layout='event' %}{% endif %}
+        {% if form.submission_types %}{% bootstrap_field form.bcc layout='event' %}{% endif %}
+        </fieldset>
+        <fieldset>
+          <legend>
+            {% translate "Content" %}
+          </legend>
         {% bootstrap_field form.subject layout='event' %}
         {% bootstrap_field form.text layout='event' %}
+        {% block skip_queue %}{% bootstrap_field form.skip_queue layout='event' %}{% endblock %}
+        </fieldset>
         {% if request.method == "POST" %}
             <fieldset class="mt-4">
                 <legend>{% translate "E-mail preview" %}</legend>
@@ -66,7 +83,7 @@
                     {% translate "Preview email" %}
                 </button>
                 {% if request.method == "POST" %}
-                    <button type="submit" class="btn btn-lg btn-success">{% translate "Send to outbox" %}</button>
+                  <button type="submit" class="btn btn-lg btn-success">{% block send_button_label %}{% translate "Send to outbox" %}{% endblock %}</button>
                 {% endif %}
             </span>
         </div>

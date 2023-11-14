@@ -110,7 +110,7 @@
                     <button class="btn btn-lg btn-info" name="form" value="send">{% translate "Save and send" %}</button>
             {% elif action == "view" %}
                 {% if form.instance.sent %}
-                    <a class="btn btn-lg btn-success ml-auto flip" href="{% if form.instance.template %}{{ request.event.orga_urls.compose_mails }}?template={{ form.instance.template.pk }}{% else %}{{ form.instance.urls.copy }}{% endif %}">
+                    <a class="btn btn-lg btn-success ml-auto flip" href="{% if form.instance.template %}{{ request.event.orga_urls.compose_mails_sessions }}?template={{ form.instance.template.pk }}{% else %}{{ form.instance.urls.copy }}{% endif %}">
                         {% translate "Copy to draft" %}
                     </a>
                 {% endif %}

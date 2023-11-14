@@ -70,6 +70,18 @@ def organiser():
 
 
 @pytest.fixture
+def team(organiser):
+    return organiser.teams.filter(is_reviewer=False).first()
+
+
+@pytest.fixture
+def reviewer_team(organiser):
+    return organiser.teams.filter(
+        is_reviewer=True, can_change_event_settings=False
+    ).first()
+
+
+@pytest.fixture
 def other_organiser():
     with scopes_disabled():
         o = Organiser.objects.create(name="Different Organiser", slug="diffo")
@@ -574,7 +586,9 @@ def administrator():
 def orga_user(event):
     with scopes_disabled():
         user = User.objects.create_user(
-            password="orgapassw0rd", email="orgauser@orga.org"
+            password="orgapassw0rd",
+            email="orgauser@orga.org",
+            name="Orga User",
         )
         team = event.organiser.teams.filter(
             can_change_organiser_settings=True, is_reviewer=False
@@ -602,7 +616,9 @@ def other_orga_user(event):
 def review_user(organiser, event):
     with scopes_disabled():
         user = User.objects.create_user(
-            password="reviewpassw0rd", email="reviewuser@orga.org"
+            password="reviewpassw0rd",
+            email="reviewuser@orga.org",
+            name="Review User",
         )
         if not event.organiser:
             event.organiser = organiser

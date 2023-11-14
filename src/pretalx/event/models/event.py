@@ -357,6 +357,8 @@ class Event(PretalxModel):
         users = "{base}api/users"
         mail = "{base}mails/"
         compose_mails = "{mail}compose"
+        compose_mails_sessions = "{compose_mails}/sessions/"
+        compose_mails_teams = "{compose_mails}/teams/"
         send_drafts_reminder = "{compose_mails}/reminders"
         mail_templates = "{mail}templates/"
         new_template = "{mail_templates}new"
