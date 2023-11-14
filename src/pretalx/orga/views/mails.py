@@ -70,6 +70,7 @@ class SentMail(
         "to_users__name__icontains",
         "to_users__email__icontains",
     )
+    default_sort_field = "-sent"
     sortable_fields = ("to", "subject", "sent")
     paginate_by = 25
     permission_required = "orga.view_mails"

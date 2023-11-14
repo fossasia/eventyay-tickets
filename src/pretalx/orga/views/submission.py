@@ -590,6 +590,7 @@ class SubmissionList(EventPermissionRequired, BaseSubmissionList):
     template_name = "orga/submission/list.html"
     permission_required = "orga.view_submissions"
     paginate_by = 25
+    default_sort_field = "state"
     secondary_sort = {"state": ("pending_state",)}
 
     @context
