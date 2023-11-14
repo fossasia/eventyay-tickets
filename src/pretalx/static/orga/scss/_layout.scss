@@ -1218,6 +1218,53 @@ div.mail-preview {
         }
     }
 }
+
+.form-with-placeholder {
+    margin-right: 300px;
+}
+#placeholder-column {
+  width: 270px;
+  max-height: calc(100vh - 55px);
+  overflow-y: auto;
+  position: absolute;
+  right: 0;
+  padding: 0 28px 0 16px;
+  top: 50px;
+  border-left: 1px solid $gray-light;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+
+  legend {
+    background: white;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    padding: 16px 0 8px 0;
+  }
+
+  .list-group-item.placeholder {
+    cursor: pointer;
+
+    .placeholder-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      .placeholder-text {
+        white-space: nowrap;
+      }
+    }
+
+    i {
+      padding: 8px;
+      width: 30px;
+      border-radius: 50%;
+      text-align: center;
+    }
+    i:hover {
+      background: $gray-lighter;
+    }
+  }
+}
+
 @media print {
     body, #page-content, .pretalx-schedule {
         height: 100% !important;

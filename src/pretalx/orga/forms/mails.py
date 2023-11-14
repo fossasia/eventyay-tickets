@@ -5,6 +5,7 @@ from contextlib import suppress
 from django import forms
 from django.db import transaction
 from django.db.models import Q
+from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from i18nfield.forms import I18nModelForm
 
@@ -17,33 +18,6 @@ from pretalx.submission.models.submission import Submission, SubmissionStates
 
 
 class MailTemplateBase(I18nHelpText, I18nModelForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        def display_placeholder(key, placeholder):
-            result = "{" + f"{key}" + "}"
-            if not placeholder or not placeholder.explanation:
-                return result
-            title = placeholder.explanation
-            sample = placeholder.render_sample(self.event)
-            if sample:
-                title += f"; '{sample}'"
-            return f'<span data-toggle="tooltip" title="{title}">{result}</span>'
-
-        available_placeholders = ", ".join(
-            [
-                display_placeholder(key, placeholder)
-                for key, placeholder in self.get_valid_placeholders().items()
-                if (not placeholder or placeholder.is_visible)
-            ]
-        )
-        self.fields["text"].help_text = (
-            _("Available placeholders:") + " " + available_placeholders
-        )
-        self.fields["subject"].help_text = (
-            _("Available placeholders:") + " " + available_placeholders
-        )
-
     def _clean_for_placeholders(self, text, valid_placeholders):
         cleaned_data = super().clean()
         valid_placeholders = set(valid_placeholders)
@@ -215,6 +189,21 @@ class WriteMailBaseForm(MailTemplateBase):
             cleaned_data.get("text", ""), valid_placeholders
         )
         return cleaned_data
+
+    @cached_property
+    def grouped_placeholders(self):
+        placeholders = self.get_valid_placeholders()
+        grouped = defaultdict(list)
+        specificity = ["slot", "submission", "user", "event"]
+        for placeholder in placeholders.values():
+            if not placeholder.is_visible:
+                continue
+            placeholder.rendered_sample = placeholder.render_sample(self.event)
+            for arg in specificity:
+                if arg in placeholder.required_context:
+                    grouped[arg].append(placeholder)
+                    break
+        return grouped
 
     class Meta:
         model = MailTemplate

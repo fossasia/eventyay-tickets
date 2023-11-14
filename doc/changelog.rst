@@ -4,6 +4,7 @@ Release Notes
 =============
 
 - :release:`unreleased <????-??-??>`
+- :feature:`-` Improved email editor: Placeholders are now listed in the sidebar and inserted on click.
 - :feature:`1254` Organisers can now also send emails to reviewers or other team members.
 - :bug:`-` An organiser-specific help text on room availability forms would show up for speaker availabilities, too.
 - :bug:`-` Review scores and phases were not copied correctly when copying event settings.
