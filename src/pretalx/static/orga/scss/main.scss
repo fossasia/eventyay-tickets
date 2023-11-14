@@ -149,13 +149,27 @@ h3 {
 }
 
 
-#template-accordion [data-toggle="collapse"] .fa, #template-accordion button {
-  align-items: center;
+.accordion .card {
+  h2 {
+    margin-bottom: 0;
+  }
+  button {
+    align-items: baseline;
+  }
 }
-#template-accordion [data-toggle="collapse"][aria-expanded="false"] .fa:before {   
+.accordion .card button[data-toggle="collapse"]::before {
   content: "\f106";
+  position: absolute;
+  left: 16px;
+  top: 24px;
+  width: 1em;
+  height: 1em;
+  font-size: 16px;
+  font-family: ForkAwesome;
+  text-align: center;
+  transform: rotate(90deg);
+  transition: transform 150ms ease-in 0s;
 }
-
-#template-accordion [data-toggle="collapse"][aria-expanded="true"] .fa:before {
-  content: "\f107";
+#template-accordion button[data-toggle="collapse"][aria-expanded="true"]::before {
+  transform: rotate(180deg);
 }
