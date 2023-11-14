@@ -160,13 +160,15 @@ h3 {
 .accordion .card button[data-toggle="collapse"]::before {
   content: "\f106";
   position: absolute;
-  left: 16px;
+  left: 14px;
   top: 24px;
   width: 1em;
   height: 1em;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
   font-size: 16px;
   font-family: ForkAwesome;
-  text-align: center;
   transform: rotate(90deg);
   transition: transform 150ms ease-in 0s;
 }
