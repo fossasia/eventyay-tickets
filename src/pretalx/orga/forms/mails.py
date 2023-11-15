@@ -39,7 +39,7 @@ class MailTemplateForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
                 }
         return used_placeholders - valid_placeholders
 
-    def get_valid_placeholders(self):
+    def get_valid_placeholders(self, **kwargs):
         kwargs = ["event", "submission", "user", "slot"]
         valid_placeholders = {}
 
@@ -180,7 +180,7 @@ class WriteMailBaseForm(MailTemplateForm):
 
     @cached_property
     def grouped_placeholders(self):
-        placeholders = self.get_valid_placeholders()
+        placeholders = self.get_valid_placeholders(ignore_data=True)
         grouped = defaultdict(list)
         specificity = ["slot", "submission", "user", "event"]
         for placeholder in placeholders.values():
@@ -228,7 +228,7 @@ class WriteTeamsMailForm(WriteMailBaseForm):
                 (team.pk, team.name) for team in self.event.teams.all()
             ]
 
-    def get_valid_placeholders(self):
+    def get_valid_placeholders(self, **kwargs):
         return get_available_placeholders(event=self.event, kwargs=["event", "user"])
 
     def get_recipients(self):
@@ -302,14 +302,12 @@ class WriteSessionMailForm(SubmissionFilterForm, WriteMailBaseForm):
             )
         self.warnings = []
 
-    def get_valid_placeholders(self):
-        kwargs = ["event", "submission", "user"]
-        if getattr(self, "cleaned_data", None):
-            recipients = self.cleaned_data.get("recipients")
-            if recipients and not set(recipients) - {"accepted", "confirmed"}:
-                kwargs.append("slot")
-        else:  # Not cleaned yet, we only need this for the help text
-            kwargs.append("slot")
+    def get_valid_placeholders(self, ignore_data=False):
+        kwargs = ["event", "user", "submission", "slot"]
+        if getattr(self, "cleaned_data", None) and not ignore_data:
+            if self.cleaned_data.get("speakers"):
+                kwargs.remove("submission")
+                kwargs.remove("slot")
         return get_available_placeholders(event=self.event, kwargs=kwargs)
 
     def get_recipients(self):
