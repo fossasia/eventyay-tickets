@@ -729,6 +729,12 @@ class Submission(GenerateCode, PretalxModel):
         )
 
     @cached_property
+    def current_slots(self):
+        return self.event.current_schedule.talks.filter(
+            submission=self, is_visible=True
+        ).select_related("room")
+
+    @cached_property
     def public_slots(self):
         """All publicly visible :class:`~pretalx.schedule.models.slot.TalkSlot`
         objects of this submission in the current.
@@ -739,9 +745,7 @@ class Submission(GenerateCode, PretalxModel):
 
         if not is_agenda_visible(None, self.event):
             return []
-        return self.event.current_schedule.talks.filter(
-            submission=self, is_visible=True
-        ).select_related("room")
+        return self.current_slots
 
     @cached_property
     def display_speaker_names(self):

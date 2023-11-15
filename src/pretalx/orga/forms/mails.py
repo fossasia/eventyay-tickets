@@ -368,23 +368,25 @@ class WriteSessionMailForm(SubmissionFilterForm, WriteMailBaseForm):
         template = super().save()
 
         mails_by_user = defaultdict(list)
-        result = []
-        # First, render all emails
-        for submission in submissions:
-            for speaker in submission.speakers.all():
-                with suppress(
-                    SendMailException
-                ):  # This happens when there are template errors
-                    mail = template.to_mail(
-                        user=None,
-                        event=self.event,
-                        locale=submission.get_email_locale(speaker.locale),
-                        context_kwargs={"submission": submission, "user": speaker},
-                        commit=False,
-                        allow_empty_address=True,
-                    )
-                    mails_by_user[speaker].append(mail)
+        contexts = self.get_recipients()
+        for context in contexts:
+            with suppress(
+                SendMailException
+            ):  # This happens when there are template errors
+                locale = context["user"].locale
+                if submission := context.get("submission"):
+                    locale = submission.get_email_locale(context["user"].locale)
+                mail = template.to_mail(
+                    user=None,
+                    event=self.event,
+                    locale=locale,
+                    context_kwargs=context,
+                    commit=False,
+                    allow_empty_address=True,
+                )
+                mails_by_user[context["user"]].append(mail)
 
+        result = []
         for user, user_mails in mails_by_user.items():
             # Deduplicate emails: we don't want speakers to receive the same
             # email twice, just because they have multiple submissions.
