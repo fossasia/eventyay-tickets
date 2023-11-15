@@ -33,7 +33,6 @@ from pretalx.common.exceptions import SubmissionError
 from pretalx.common.mixins.views import (
     ActionFromUrl,
     EventPermissionRequired,
-    Filterable,
     PaginationMixin,
     PermissionRequired,
     Sortable,
@@ -518,9 +517,7 @@ class SubmissionContent(
         return kwargs
 
 
-class BaseSubmissionList(
-    Sortable, Filterable, ReviewerSubmissionFilter, PaginationMixin, ListView
-):
+class BaseSubmissionList(Sortable, ReviewerSubmissionFilter, PaginationMixin, ListView):
     model = Submission
     context_object_name = "submissions"
     filter_fields = ()
@@ -533,7 +530,13 @@ class BaseSubmissionList(
             event=self.request.event,
             usable_states=self.usable_states,
             limit_tracks=self.limit_tracks,
+            search_fields=self.get_default_filters(),
         )
+
+    @context
+    @cached_property
+    def filter_form(self):
+        return self.get_filter_form()
 
     def get_default_filters(self, *args, **kwargs):
         default_filters = {"code__icontains", "title__icontains"}
@@ -545,10 +548,9 @@ class BaseSubmissionList(
         # If somebody has *only* reviewer permissions for this event, they can only
         # see the proposals they can review.
         qs = super().get_queryset(for_review=for_review).order_by("-id")
-        filter_form = self.get_filter_form()
-        if not filter_form.is_valid():
+        if not self.filter_form.is_valid():
             return qs
-        return filter_form.filter_queryset(qs)
+        return self.filter_form.filter_queryset(qs)
 
     def get_queryset(self):
         return self.sort_queryset(self._get_base_queryset()).distinct()

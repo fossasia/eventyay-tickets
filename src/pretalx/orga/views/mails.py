@@ -375,7 +375,8 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
                         ),
                         "html": preview_text,
                     }
-                    self.mail_count = len(result)
+                    # Very rough method to deduplicate recipients, but good enough for a preview
+                    self.mail_count = len(set(str(r) for r in result))
             return self.get(self.request, *self.args, **self.kwargs)
 
         result = form.save()

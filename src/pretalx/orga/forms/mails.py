@@ -280,17 +280,19 @@ class WriteSessionMailForm(SubmissionFilterForm, WriteMailBaseForm):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        question = kwargs.get("initial", {}).get("question")
+        initial = kwargs.get("initial", {})
+        self.filter_search = initial.get("q")
+        question = initial.get("question")
         if question:
             self.filter_question = (
                 self.event.questions.all().filter(pk=question).first()
             )
-        if question and self.filter_question:
-            self.filter_option = self.filter_question.options.filter(
-                pk=kwargs.get("initial", {}).get("option")
-            ).first()
-            self.filter_answer = kwargs.get("initial", {}).get("answer")
-            self.filter_unanswered = kwargs.get("initial", {}).get("unanswered")
+            if self.filter_question:
+                self.filter_option = self.filter_question.options.filter(
+                    pk=initial.get("option")
+                ).first()
+                self.filter_answer = initial.get("answer")
+                self.filter_unanswered = initial.get("unanswered")
         self.fields["submissions"].choices = [
             (sub.code, sub.title)
             for sub in self.event.submissions.all().order_by("title")
@@ -378,6 +380,9 @@ class WriteSessionMailForm(SubmissionFilterForm, WriteMailBaseForm):
 
     def clean_unanswered(self):
         return getattr(self, "filter_unanswered", None)
+
+    def clean_q(self):
+        return getattr(self, "filter_search", None)
 
     @transaction.atomic
     def save(self):

@@ -9,18 +9,32 @@
 
 {% block recipient_form %}
 
-  {% if form.filter_question %}
+  {% if form.filter_question or form.filter_search %}
     <div class="offset-md-3 col-md-9 pt-0">
-      <p class="text-muted">
-        <span class="fa fa-filter"></span>
-        {% blocktranslate trimmed with question=form.filter_question %}
-          Recipients filtered by answers to question “{{ question }}”.
-        {% endblocktranslate %}
-        <a href="?{% url_replace request 'question' '' 'answer' '' 'answer__options' '' %}" class="text-muted">
-          <span class="fa fa-times ml-2"></span>
-          {% translate "Remove filter" %}
-        </a>
-      </p>
+      {% if form.filter_question %}
+        <p class="text-muted">
+          <span class="fa fa-filter"></span>
+          {% blocktranslate trimmed with question=form.filter_question %}
+            Recipients filtered by answers to question “{{ question }}”.
+          {% endblocktranslate %}
+          <a href="?{% url_replace request 'question' '' 'answer' '' 'answer__options' '' %}" class="text-muted">
+            <span class="fa fa-times ml-2"></span>
+            {% translate "Remove filter" %}
+          </a>
+        </p>
+      {% endif %}
+      {% if form.filter_search %}
+        <p class="text-muted">
+          <span class="fa fa-filter"></span>
+          {% blocktranslate trimmed with search=form.filter_search %}
+            Recipients filtered by search “{{ search }}”.
+          {% endblocktranslate %}
+          <a href="?{% url_replace request 'q' '' %}" class="text-muted">
+            <span class="fa fa-times ml-2"></span>
+            {% translate "Remove filter" %}
+          </a>
+        </p>
+      {% endif %}
     </div>
   {% endif %}
   <div class="form-group row">

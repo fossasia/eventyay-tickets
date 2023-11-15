@@ -70,14 +70,15 @@ class ReviewDashboard(EventPermissionRequired, BaseSubmissionList):
             if aggregate_method == "median"
             else (statistics.fmean if hasattr(statistics, "fmean") else statistics.mean)
         )
-        queryset = self._get_base_queryset(for_review=True).filter(
-            state__in=self.usable_states
-        )
-        queryset = self.filter_queryset(queryset).annotate(
-            review_count=Count("reviews", distinct=True),
-            review_nonnull_count=Count(
-                "reviews", distinct=True, filter=Q(reviews__score__isnull=False)
-            ),
+        queryset = (
+            self._get_base_queryset(for_review=True)
+            .filter(state__in=self.usable_states)
+            .annotate(
+                review_count=Count("reviews", distinct=True),
+                review_nonnull_count=Count(
+                    "reviews", distinct=True, filter=Q(reviews__score__isnull=False)
+                ),
+            )
         )
         queryset = self.filter_range(queryset)
 

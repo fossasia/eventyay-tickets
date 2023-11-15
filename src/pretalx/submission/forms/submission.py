@@ -8,6 +8,7 @@ from pretalx.cfp.forms.cfp import CfPFormMixin
 from pretalx.common.forms.fields import ImageField
 from pretalx.common.forms.widgets import MarkdownWidget
 from pretalx.common.mixins.forms import PublicContent, RequestRequire
+from pretalx.common.mixins.views import Filterable
 from pretalx.submission.forms.track_select_widget import TrackSelectWidget
 from pretalx.submission.models import Answer, Question, Submission, SubmissionStates
 
@@ -278,9 +279,15 @@ class SubmissionFilterForm(forms.Form):
     unanswered = forms.BooleanField(required=False)
     answer = forms.CharField(required=False)
     option = forms.IntegerField(required=False)
+    q = forms.CharField(required=False, label=_("Search"))
 
-    def __init__(self, event, *args, limit_tracks=False, **kwargs):
+    def __init__(self, event, *args, limit_tracks=False, search_fields=None, **kwargs):
         self.event = event
+        self.search_fields = search_fields or (
+            "code__icontains",
+            "title__icontains",
+            "speakers__name__icontains",
+        )
         usable_states = kwargs.pop("usable_states", None)
         initial = kwargs.pop("initial", {}) or {}
         initial["exclude_pending"] = False
@@ -415,6 +422,10 @@ class SubmissionFilterForm(forms.Form):
 
         if self.cleaned_data.get("pending_state__isnull"):
             qs = qs.filter(pending_state__isnull=True)
+
+        search = self.cleaned_data.get("q")
+        if search:
+            qs = Filterable.handle_search(qs, search, self.search_fields)
 
         qs = self._filter_question(
             qs,

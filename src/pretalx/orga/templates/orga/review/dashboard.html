@@ -39,7 +39,7 @@
 
     <div class="submit-group search-submit-group">
         <form class="search-form" id="review-filter-form">
-            {% bootstrap_form search_form %}
+            {% bootstrap_field filter_form.q %}
             {% if show_submission_types and filter_form.submission_type %}{% bootstrap_field filter_form.submission_type %}{% endif %}
             <div class="d-flex flex-column form-group">
                 {% bootstrap_field filter_form.state layout='inline' %}
