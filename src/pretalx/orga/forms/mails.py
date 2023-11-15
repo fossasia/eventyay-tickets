@@ -396,4 +396,7 @@ class WriteSessionMailForm(SubmissionFilterForm, WriteMailBaseForm):
                 mail.save()
                 mail.to_users.add(user)
                 result.append(mail)
+        if self.cleaned_data.get("skip_queue"):
+            for mail in result:
+                mail.send()
         return result
