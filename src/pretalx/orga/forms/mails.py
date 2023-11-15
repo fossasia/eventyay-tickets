@@ -84,7 +84,7 @@ class MailTemplateForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
 
     class Meta:
         model = MailTemplate
-        fields = ["subject", "text"]
+        fields = ["subject", "text", "reply_to", "bcc"]
 
 
 class DraftRemindersForm(MailTemplateForm):

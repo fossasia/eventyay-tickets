@@ -317,6 +317,8 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
             if template:
                 initial["subject"] = template.subject
                 initial["text"] = template.text
+                initial["reply_to"] = template.reply_to
+                initial["bcc"] = template.bcc
         for key in self.form_class.base_fields.keys():
             if key in self.request.GET:
                 initial[key] = self.request.GET.get(key)

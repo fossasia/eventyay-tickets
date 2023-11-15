@@ -21,6 +21,15 @@
                 </legend>
                 {% block recipient_form %}
                 {% endblock %}
+                <details class="card card-default">
+                    <summary class="card-header">{% translate "Advanced settings" %}</summary>
+                    <div class="card-body">
+                        {% block advanced_recipient_form %}
+                            {% bootstrap_field form.reply_to layout='event' %}
+                            {% bootstrap_field form.bcc layout='event' %}
+                        {% endblock %}
+                    </div>
+                </details>
             </fieldset>
             <fieldset>
                 <legend>
