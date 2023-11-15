@@ -311,12 +311,30 @@ class WriteSessionMailForm(SubmissionFilterForm, WriteMailBaseForm):
         return get_available_placeholders(event=self.event, kwargs=kwargs)
 
     def get_recipients(self):
-        submissions = (
-            self.filter_queryset(self.event.submissions(manager="all_objects"))
-            .select_related("track", "submission_type", "event")
-            .prefetch_related("speakers")
-        )
         added_submissions = self.cleaned_data.get("submissions")
+        added_speakers = self.cleaned_data.get("speakers")
+        if (added_submissions or added_speakers) and all(
+            not self.cleaned_data.get(key)
+            for key in (
+                "state",
+                "submission_type",
+                "content_locale",
+                "track",
+                "tags",
+                "question",
+            )
+        ):
+            # If no filters have been selected, but specific submissions or speakers,
+            # we will assume the users meant to send emails to only those selected,
+            # not to all proposals.
+            submissions = self.event.submissions.none()
+        else:
+            submissions = (
+                self.filter_queryset(self.event.submissions)
+                .select_related("track", "submission_type", "event")
+                .prefetch_related("speakers")
+            )
+
         if added_submissions:
             specific_submissions = (
                 self.event.submissions.filter(code__in=added_submissions)
@@ -344,7 +362,7 @@ class WriteSessionMailForm(SubmissionFilterForm, WriteMailBaseForm):
                             "user": speaker,
                         }
                     )
-        if added_speakers := self.cleaned_data.get("speakers"):
+        if added_speakers:
             for user in added_speakers:
                 result.append({"user": user})
         return result
