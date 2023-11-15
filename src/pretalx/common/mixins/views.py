@@ -92,7 +92,7 @@ class Sortable:
         fields = [k for k in fields if k]
         # If the model does not have a Meta.ordering, we need to add a
         # final sort key to make sure the sorting is stable.
-        if not qs.model._meta.ordering:
+        if not qs.model._meta.ordering and "pk" not in fields and "-pk" not in fields:
             fields += ["pk"]
         if fields:
             qs = qs.order_by(*fields)

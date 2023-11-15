@@ -37,13 +37,14 @@ class OutboxList(
     model = QueuedMail
     context_object_name = "mails"
     template_name = "orga/mails/outbox_list.html"
+    default_sort_field = "-pk"
     default_filters = (
         "to__icontains",
         "subject__icontains",
         "to_users__name__icontains",
         "to_users__email__icontains",
     )
-    sortable_fields = ("to", "subject")
+    sortable_fields = ("to", "subject", "pk")
     paginate_by = 25
     permission_required = "orga.view_mails"
 
