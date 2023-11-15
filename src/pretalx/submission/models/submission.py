@@ -730,6 +730,8 @@ class Submission(GenerateCode, PretalxModel):
 
     @cached_property
     def current_slots(self):
+        if not self.event.current_schedule:
+            return None
         return self.event.current_schedule.talks.filter(
             submission=self, is_visible=True
         ).select_related("room")

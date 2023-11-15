@@ -345,7 +345,7 @@ class WriteSessionMailForm(SubmissionFilterForm, WriteMailBaseForm):
 
         result = []
         for submission in submissions:
-            for slot in submission.current_slots:
+            for slot in submission.current_slots or []:
                 for speaker in submission.speakers.all():
                     result.append(
                         {

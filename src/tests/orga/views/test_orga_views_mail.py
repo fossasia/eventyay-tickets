@@ -357,24 +357,25 @@ def test_orga_can_compose_single_mail_team(orga_client, review_user, event):
         follow=True,
     )
     assert response.status_code == 200
+    djmail.outbox = []
     with scope(event=event):
         assert QueuedMail.objects.filter(sent__isnull=False).count() == 0
     response = orga_client.post(
         event.orga_urls.compose_mails_teams,
         follow=True,
         data={
-            "recipients": "reviewers",
+            "recipients": f"{review_user.teams.first().pk}",
             "subject_0": "foo {name}",
             "text_0": "bar {name}",
         },
     )
     assert response.status_code == 200
     with scope(event=event):
-        mails = QueuedMail.objects.filter(sent__isnull=False)
-        assert mails.count() == 1  # one of them is the accept mail!
-        mail = mails[0]
+        assert QueuedMail.objects.filter(sent__isnull=False).count() == 0
+        assert len(djmail.outbox) == 1
+        mail = djmail.outbox[0]
         assert mail.subject == f"foo {review_user.name}"
-        assert mail.text == f"bar {review_user.name}"
+        assert mail.body == f"bar {review_user.name}"
 
 
 @pytest.mark.django_db
@@ -383,24 +384,25 @@ def test_orga_can_compose_single_mail_team_by_pk(
 ):
     team = orga_user.teams.first()
     assert team in event.teams.all()
+    djmail.outbox = []
     with scope(event=event):
         assert QueuedMail.objects.filter(sent__isnull=False).count() == 0
     response = orga_client.post(
         event.orga_urls.compose_mails_teams,
         follow=True,
         data={
-            "recipients": ["reviewers", str(team.pk)],
+            "recipients": [f"{review_user.teams.first().pk}", str(team.pk)],
             "subject_0": "foo {name}",
             "text_0": "bar {email}",
         },
     )
     assert response.status_code == 200
     with scope(event=event):
-        mails = QueuedMail.objects.filter(sent__isnull=False)
-        assert mails.count() == 2
+        assert QueuedMail.objects.filter(sent__isnull=False).count() == 0
+        assert len(djmail.outbox) == 2
         for user in [orga_user, review_user]:
-            mail = [m for m in mails if m.subject == f"foo {user.name}"][0]
-            assert mail.text == f"bar {user.email}"
+            mail = [m for m in djmail.outbox if m.subject == f"foo {user.name}"][0]
+            assert mail.body == f"bar {user.email}"
 
 
 @pytest.mark.django_db
@@ -419,7 +421,7 @@ def test_orga_can_compose_single_mail(
         event.orga_urls.compose_mails_sessions,
         follow=True,
         data={
-            "recipients": "submitted",
+            "state": "submitted",
             "bcc": "",
             "cc": "",
             "reply_to": "",
@@ -474,7 +476,7 @@ def test_orga_can_compose_single_mail_with_specific_submission(
         event.orga_urls.compose_mails_sessions,
         follow=True,
         data={
-            "recipients": "submitted",
+            "state": "submitted",
             "submissions": slot.submission.code,
             "bcc": "",
             "cc": "",
@@ -486,9 +488,40 @@ def test_orga_can_compose_single_mail_with_specific_submission(
     assert response.status_code == 200
     with scope(event=event):
         mails = QueuedMail.objects.filter(sent__isnull=True)
-        assert mails.count() == 2  # one of them is the accept mail!
+        assert mails.count() == 2
         for title in [slot.submission.title, other_submission.title]:
             mail = [m for m in mails if m.text == f"bar {title}"][0]
+            assert mail
+
+
+@pytest.mark.django_db
+def test_orga_can_compose_single_mail_with_specific_submission_immediately(
+    orga_client, speaker, event, slot, other_submission
+):
+    with scope(event=event):
+        QueuedMail.objects.all().delete()
+    djmail.outbox = []
+    response = orga_client.post(
+        event.orga_urls.compose_mails_sessions,
+        follow=True,
+        data={
+            "state": "submitted",
+            "submissions": slot.submission.code,
+            "bcc": "",
+            "cc": "",
+            "reply_to": "",
+            "subject_0": "foo {name}",
+            "text_0": "bar {submission_title}",
+            "skip_queue": "on",
+        },
+    )
+    assert response.status_code == 200
+    with scope(event=event):
+        assert QueuedMail.objects.filter(sent__isnull=True).count() == 0
+        assert QueuedMail.objects.filter(sent__isnull=False).count() == 2
+        assert len(djmail.outbox) == 2
+        for title in [slot.submission.title, other_submission.title]:
+            mail = [m for m in djmail.outbox if m.body == f"bar {title}"][0]
             assert mail
 
 
