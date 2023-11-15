@@ -317,6 +317,9 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
             if template:
                 initial["subject"] = template.subject
                 initial["text"] = template.text
+        for key in self.form_class.base_fields.keys():
+            if key in self.request.GET:
+                initial[key] = self.request.GET.get(key)
         kwargs["initial"] = initial
         return kwargs
 
@@ -409,12 +412,16 @@ class ComposeSessionMail(ComposeMailBaseView):
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         initial = kwargs.get("initial", {})
-        if "submission" in self.request.GET:
-            submission = self.request.event.submissions.filter(
-                code=self.request.GET.get("submission")
-            ).first()
-            if submission:
-                initial["submissions"] = submission.code
+        if "submissions" in self.request.GET:
+            submissions = self.request.event.submissions.filter(
+                code__in=self.request.GET.get("submission").split(",")
+            )
+            if submissions:
+                initial["submissions"] = submissions.value_list("pk", flat=True)
+        if "speakers" in self.request.GET:
+            initial["speakers"] = self.request.event.submitters.filter(
+                code__in=self.request.GET.get("speakers").split(",")
+            )
         kwargs["initial"] = initial
         return kwargs
 

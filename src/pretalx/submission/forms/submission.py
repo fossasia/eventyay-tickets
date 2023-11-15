@@ -1,5 +1,5 @@
 from django import forms
-from django.db.models import Count
+from django.db.models import Count, Exists, OuterRef
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django_scopes.forms import SafeModelChoiceField
@@ -9,7 +9,7 @@ from pretalx.common.forms.fields import ImageField
 from pretalx.common.forms.widgets import MarkdownWidget
 from pretalx.common.mixins.forms import PublicContent, RequestRequire
 from pretalx.submission.forms.track_select_widget import TrackSelectWidget
-from pretalx.submission.models import Question, Submission, SubmissionStates
+from pretalx.submission.models import Answer, Question, Submission, SubmissionStates
 
 
 class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
@@ -275,6 +275,9 @@ class SubmissionFilterForm(forms.Form):
         widget=SelectMultipleWithCount(attrs={"class": "select2", "title": _("Tags")}),
     )
     question = SafeModelChoiceField(queryset=Question.objects.none(), required=False)
+    unanswered = forms.BooleanField(required=False)
+    answer = forms.CharField(required=False)
+    option = forms.IntegerField(required=False)
 
     def __init__(self, event, *args, limit_tracks=False, **kwargs):
         self.event = event
@@ -379,3 +382,47 @@ class SubmissionFilterForm(forms.Form):
             for choice in usable_states
         ]
         self.fields["question"].queryset = event.questions.all()
+
+    def _filter_question(
+        self, qs, question=None, answer=None, option=None, unanswered=False
+    ):
+        if question and (answer or option):
+            if option:
+                answers = Answer.objects.filter(
+                    submission_id=OuterRef("pk"),
+                    question_id=question,
+                    options__pk=option,
+                )
+            elif answer:
+                answers = Answer.objects.filter(
+                    submission_id=OuterRef("pk"),
+                    question_id=question,
+                    answer__exact=answer,
+                )
+            qs = qs.annotate(has_answer=Exists(answers)).filter(has_answer=True)
+        elif question and unanswered:
+            answers = Answer.objects.filter(
+                question_id=question, submission_id=OuterRef("pk")
+            )
+            qs = qs.annotate(has_answer=Exists(answers)).filter(has_answer=False)
+        return qs
+
+    def filter_queryset(self, qs):
+        for field in ("state", "submission_type", "content_locale", "track", "tags"):
+            value = self.cleaned_data.get(field)
+            if value:
+                qs = qs.filter(**{f"{field}__in": value})
+
+        if self.cleaned_data.get("pending_state__isnull"):
+            qs = qs.filter(pending_state__isnull=True)
+
+        qs = self._filter_question(
+            qs,
+            question=self.cleaned_data.get("question"),
+            answer=self.cleaned_data.get("answer"),
+            option=self.cleaned_data.get("option"),
+            unanswered=self.cleaned_data.get("unanswered"),
+        )
+        if not self.cleaned_data.get("state"):
+            qs = qs.exclude(state="deleted")
+        return qs

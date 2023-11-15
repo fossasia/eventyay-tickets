@@ -4,7 +4,6 @@ from contextlib import suppress
 
 from django import forms
 from django.db import transaction
-from django.db.models import Q
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from i18nfield.forms import I18nModelForm
@@ -281,6 +280,17 @@ class WriteSessionMailForm(SubmissionFilterForm, WriteMailBaseForm):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        question = kwargs.get("initial", {}).get("question")
+        if question:
+            self.filter_question = (
+                self.event.questions.all().filter(pk=question).first()
+            )
+        if question and self.filter_question:
+            self.filter_option = self.filter_question.options.filter(
+                pk=kwargs.get("initial", {}).get("option")
+            ).first()
+            self.filter_answer = kwargs.get("initial", {}).get("answer")
+            self.filter_unanswered = kwargs.get("initial", {}).get("unanswered")
         self.fields["submissions"].choices = [
             (sub.code, sub.title)
             for sub in self.event.submissions.all().order_by("title")
@@ -303,58 +313,55 @@ class WriteSessionMailForm(SubmissionFilterForm, WriteMailBaseForm):
         return get_available_placeholders(event=self.event, kwargs=kwargs)
 
     def get_recipients(self):
-        # If no recipient base groups are selected,
-        submissions = self.event.submissions.all()
-        submission_states = [
-            s
-            for s in ["submitted", "accepted", "confirmed", "rejected", "canceled"]
-            if s in self.cleaned_data["recipients"]
-        ]
-        if submission_states:
-            query = Q(state__in=submission_states)
-        elif "no_slides" in self.cleaned_data["recipients"]:
-            query = Q(state__isnull=False)
-        else:
-            query = Q()
-        if "no_slides" in self.cleaned_data["recipients"]:
-            if submission_states:
-                query = query | Q(resources__isnull=True)
-            else:
-                query = Q(resources__isnull=True)
-
-        submissions = submissions.filter(query)
-
-        tracks = self.cleaned_data.get("tracks")
-        if tracks:
-            submissions = submissions.filter(track__in=tracks)
-
-        submission_types = self.cleaned_data.get("submission_types")
-        if submission_types:
-            submissions = submissions.filter(submission_type__in=submission_types)
-
-        submissions = submissions.select_related(
-            "track", "submission_type", "event"
-        ).prefetch_related("speakers")
-
-        # Specifically filtered-for submissions need to come last, so they can't be excluded
-        filter_submissions = self.cleaned_data.get("submissions")
-        if filter_submissions:
-            filtered = any(
-                self.cleaned_data.get(key)
-                for key in ["recipients", "tracks", "submission_types"]
-            )
+        submissions = (
+            self.filter_queryset(self.event.submissions(manager="all_objects"))
+            .select_related("track", "submission_type", "event")
+            .prefetch_related("speakers")
+        )
+        added_submissions = self.cleaned_data.get("submissions")
+        if added_submissions:
             specific_submissions = (
-                self.event.submissions.filter(code__in=filter_submissions)
+                self.event.submissions.filter(code__in=added_submissions)
                 .select_related("track", "submission_type", "event")
                 .prefetch_related("speakers")
             )
-            if filtered:
-                # If we have filtered on things already, we add our specific sessions to the existing set
-                submissions = submissions.union(specific_submissions)
+            submissions = submissions | specific_submissions
+
+        result = []
+        for submission in submissions:
+            for slot in submission.current_slots:
+                for speaker in submission.speakers.all():
+                    result.append(
+                        {
+                            "submission": submission,
+                            "slot": slot,
+                            "user": speaker,
+                        }
+                    )
             else:
-                # Otherwise, we assume that the user wanted *only* the specific sessions
-                submissions = specific_submissions
-        return submissions
+                for speaker in submission.speakers.all():
+                    result.append(
+                        {
+                            "submission": submission,
+                            "user": speaker,
+                        }
+                    )
+        if added_speakers := self.cleaned_data.get("speakers"):
+            for user in added_speakers:
+                result.append({"user": user})
+        return result
+
+    def clean_question(self):
+        return getattr(self, "filter_question", None)
+
+    def clean_option(self):
+        return getattr(self, "filter_option", None)
+
+    def clean_answer(self):
+        return getattr(self, "filter_answer", None)
+
+    def clean_unanswered(self):
+        return getattr(self, "filter_unanswered", None)
 
     @transaction.atomic
     def save(self):
@@ -362,7 +369,6 @@ class WriteSessionMailForm(SubmissionFilterForm, WriteMailBaseForm):
         self.instance.is_auto_created = True
         template = super().save()
 
-        submissions = self.get_recipients()
         mails_by_user = defaultdict(list)
         result = []
         # First, render all emails
@@ -382,7 +388,7 @@ class WriteSessionMailForm(SubmissionFilterForm, WriteMailBaseForm):
                     mails_by_user[speaker].append(mail)
 
         for user, user_mails in mails_by_user.items():
-            # Second, deduplicate mails: we don't want speakers to receive the same
+            # Deduplicate emails: we don't want speakers to receive the same
             # email twice, just because they have multiple submissions.
             mail_dict = {m.subject + m.text: m for m in user_mails}
             # Now we can create the emails and add the speakers to them

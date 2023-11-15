@@ -1,12 +1,28 @@
 {% extends "orga/mails/_mail_editor.html" %}
 {% load bootstrap4 %}
 {% load i18n %}
+{% load url_replace %}
 
 {% block email_editor_title %}
   {% translate "Sessions, proposals, speakers" %}
 {% endblock %}
 
 {% block recipient_form %}
+
+  {% if form.filter_question %}
+    <div class="offset-md-3 col-md-9 pt-0">
+      <p class="text-muted">
+        <span class="fa fa-filter"></span>
+        {% blocktranslate trimmed with question=form.filter_question %}
+          Recipients filtered by answers to question “{{ question }}”.
+        {% endblocktranslate %}
+        <a href="?{% url_replace request 'question' '' 'answer' '' 'answer__options' '' %}" class="text-muted">
+          <span class="fa fa-times ml-2"></span>
+          {% translate "Remove filter" %}
+        </a>
+      </p>
+    </div>
+  {% endif %}
   <div class="form-group row">
     <label for="id_state" class="col-md-3 col-form-label">{{ form.state.label }}
       <br>
@@ -20,7 +36,7 @@
   {% if form.submission_type %}{% bootstrap_field form.submission_type layout='event' %}{% endif %}
   {% if form.track %}{% bootstrap_field form.track layout='event' %}{% endif %}
   {% if form.content_locale %}{% bootstrap_field form.content_locale layout='event' %}{% endif %}
-  {% if form.tag %}{% bootstrap_field form.tag layout='event' %}{% endif %}
+  {% if form.tags %}{% bootstrap_field form.tags layout='event' %}{% endif %}
 
   {% bootstrap_field form.submissions layout='event' %}
   {% bootstrap_field form.speakers layout='event' %}

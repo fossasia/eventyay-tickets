@@ -56,7 +56,6 @@ from pretalx.submission.forms import (
     TagForm,
 )
 from pretalx.submission.models import (
-    Answer,
     Feedback,
     Resource,
     Submission,
@@ -524,15 +523,7 @@ class BaseSubmissionList(
 ):
     model = Submission
     context_object_name = "submissions"
-    filter_fields = (
-        "submission_type",
-        "state",
-        "track",
-        "tags",
-        "content_locale",
-        "pending_state",
-        "pending_state__isnull",
-    )
+    filter_fields = ()
     sortable_fields = ("code", "title", "state", "is_featured")
     usable_states = None
 
@@ -554,33 +545,10 @@ class BaseSubmissionList(
         # If somebody has *only* reviewer permissions for this event, they can only
         # see the proposals they can review.
         qs = super().get_queryset(for_review=for_review).order_by("-id")
-        qs = self.filter_queryset(qs)
-        question = self.request.GET.get("question")
-        unanswered = self.request.GET.get("unanswered")
-        answer = self.request.GET.get("answer")
-        option = self.request.GET.get("answer__options")
-        if question and (answer or option):
-            if option:
-                answers = Answer.objects.filter(
-                    submission_id=OuterRef("pk"),
-                    question_id=question,
-                    options__pk=option,
-                )
-            elif answer:
-                answers = Answer.objects.filter(
-                    submission_id=OuterRef("pk"),
-                    question_id=question,
-                    answer__exact=answer,
-                )
-            qs = qs.annotate(has_answer=Exists(answers)).filter(has_answer=True)
-        elif question and unanswered:
-            answers = Answer.objects.filter(
-                question_id=question, submission_id=OuterRef("pk")
-            )
-            qs = qs.annotate(has_answer=Exists(answers)).filter(has_answer=False)
-        if "state" not in self.request.GET:
-            qs = qs.exclude(state="deleted")
-        return qs
+        filter_form = self.get_filter_form()
+        if not filter_form.is_valid():
+            return qs
+        return filter_form.filter_queryset(qs)
 
     def get_queryset(self):
         return self.sort_queryset(self._get_base_queryset()).distinct()
