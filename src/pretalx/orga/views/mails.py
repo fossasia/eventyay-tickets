@@ -316,7 +316,6 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
             if template:
                 initial["subject"] = template.subject
                 initial["text"] = template.text
-                initial["reply_to"] = template.reply_to
         kwargs["initial"] = initial
         return kwargs
 

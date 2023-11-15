@@ -14,10 +14,17 @@ from pretalx.common.mixins.forms import I18nHelpText, ReadOnlyFlag
 from pretalx.mail.context import get_available_placeholders
 from pretalx.mail.models import MailTemplate, QueuedMail
 from pretalx.person.models import User
+from pretalx.submission.forms import SubmissionFilterForm
 from pretalx.submission.models.submission import Submission, SubmissionStates
 
 
-class MailTemplateBase(I18nHelpText, I18nModelForm):
+class MailTemplateForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
+    def __init__(self, *args, event=None, **kwargs):
+        self.event = getattr(self, "event", None) or event
+        if self.event:
+            kwargs["locales"] = self.event.locales
+        super().__init__(*args, **kwargs)
+
     def _clean_for_placeholders(self, text, valid_placeholders):
         cleaned_data = super().clean()
         valid_placeholders = set(valid_placeholders)
@@ -32,18 +39,6 @@ class MailTemplateBase(I18nHelpText, I18nModelForm):
                     v[1] for v in string.Formatter().parse(lang) if v[1]
                 }
         return used_placeholders - valid_placeholders
-
-    class Meta:
-        model = MailTemplate
-        fields = ["subject", "text"]
-
-
-class MailTemplateForm(ReadOnlyFlag, MailTemplateBase):
-    def __init__(self, *args, event=None, **kwargs):
-        self.event = event
-        if event:
-            kwargs["locales"] = event.locales
-        super().__init__(*args, **kwargs)
 
     def get_valid_placeholders(self):
         kwargs = ["event", "submission", "user", "slot"]
@@ -90,7 +85,7 @@ class MailTemplateForm(ReadOnlyFlag, MailTemplateBase):
 
     class Meta:
         model = MailTemplate
-        fields = ["subject", "text", "reply_to", "bcc"]
+        fields = ["subject", "text"]
 
 
 class DraftRemindersForm(MailTemplateForm):
@@ -165,7 +160,7 @@ class MailDetailForm(ReadOnlyFlag, forms.ModelForm):
         widgets = {"to_users": forms.SelectMultiple(attrs={"class": "select2"})}
 
 
-class WriteMailBaseForm(MailTemplateBase):
+class WriteMailBaseForm(MailTemplateForm):
     skip_queue = forms.BooleanField(
         label=_("Send immediately"),
         required=False,
@@ -173,12 +168,6 @@ class WriteMailBaseForm(MailTemplateBase):
             "If you check this, the emails will be sent immediately, instead of being put in the outbox."
         ),
     )
-
-    def __init__(self, *args, event=None, **kwargs):
-        self.event = event
-        if event:
-            kwargs["locales"] = event.locales
-        super().__init__(*args, **kwargs)
 
     def clean(self):
         cleaned_data = super().clean()
@@ -205,10 +194,6 @@ class WriteMailBaseForm(MailTemplateBase):
                     break
         return grouped
 
-    class Meta:
-        model = MailTemplate
-        fields = ["subject", "text", "reply_to", "bcc", "skip_queue"]
-
 
 class WriteTeamsMailForm(WriteMailBaseForm):
     recipients = forms.MultipleChoiceField(
@@ -218,9 +203,6 @@ class WriteTeamsMailForm(WriteMailBaseForm):
             attrs={"class": "select2", "title": _("Recipient groups")}
         ),
     )
-
-    class Meta(MailTemplateBase.Meta):
-        pass
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -445,7 +427,3 @@ class WriteSessionMailForm(WriteMailBaseForm):
                 mail.to_users.add(user)
                 result.append(mail)
         return result
-
-    class Meta:
-        model = MailTemplate
-        fields = ["subject", "text", "bcc", "reply_to"]
