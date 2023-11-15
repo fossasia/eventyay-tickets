@@ -413,11 +413,11 @@ class ComposeSessionMail(ComposeMailBaseView):
         kwargs = super().get_form_kwargs()
         initial = kwargs.get("initial", {})
         if "submissions" in self.request.GET:
-            submissions = self.request.event.submissions.filter(
-                code__in=self.request.GET.get("submission").split(",")
+            initial["submissions"] = list(
+                self.request.event.submissions.filter(
+                    code__in=self.request.GET.get("submissions").split(",")
+                ).values_list("code", flat=True)
             )
-            if submissions:
-                initial["submissions"] = submissions.value_list("pk", flat=True)
         if "speakers" in self.request.GET:
             initial["speakers"] = self.request.event.submitters.filter(
                 code__in=self.request.GET.get("speakers").split(",")

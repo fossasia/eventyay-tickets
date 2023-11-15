@@ -15,13 +15,20 @@
     {% endblock %}
 
     {% has_perm 'orga.change_speaker' request.user form.instance as can_edit_speaker %}
-    <h2>
+    {% has_perm 'orga.send_mails' request.user request.event as can_send_mails %}
+    <h2 class="d-flex justify-content-space-between">
         {{ form.instance.user.get_display_name }} ({{ submissions.count }}
         {% blocktranslate trimmed count count=submissions.count %}
             proposal
         {% plural %}
             proposals
         {% endblocktranslate %})
+        {% if can_send_mails %}
+            <a class="btn btn-outline-info ml-auto mb-1" href="{{ request.event.orga_urls.compose_mails_sessions }}?speakers={{ form.instance.user.code }}">
+                <i class="fa fa-envelope"></i>
+                {% translate "Send email" %}
+            </a>
+        {% endif %}
     </h2>
     <div class="alert alert-info col-md-9 flip offset-md-3">
         <span>
