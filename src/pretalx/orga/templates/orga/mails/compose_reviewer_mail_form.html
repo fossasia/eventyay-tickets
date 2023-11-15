@@ -1,5 +1,6 @@
 {% extends "orga/mails/_mail_editor.html" %}
 {% load i18n %}
+{% load bootstrap4 %}
 
 {% block email_editor_title %}
   {% translate "Reviewers and team members" %}
@@ -13,6 +14,10 @@
       They also do not show up in the list of sent mails.
     {% endblocktranslate %}
   </div>
+{% endblock %}
+
+{% block recipient_form %}
+  {% bootstrap_field form.recipients layout='event' %}
 {% endblock %}
 
 {% block send_button_label %}

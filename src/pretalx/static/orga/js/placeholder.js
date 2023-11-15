@@ -1,5 +1,28 @@
 let lastFocusedInput = null;
 
+const makePlaceholderActive = (placeholder) => {
+    placeholder.querySelector('.unavailable').classList.add('d-none');
+    placeholder.querySelector('.list-group').classList.remove('d-none');
+}
+
+const makePlaceholderInactive = (placeholder) => {
+    placeholder.querySelector('.unavailable').classList.remove('d-none');
+    placeholder.querySelector('.list-group').classList.add('d-none');
+}
+
+const updateVisiblePlaceholders = () => {
+    const speakerCount = $('#id_speakers').val().length;
+    console.log('speakerCount', speakerCount);
+    if (speakerCount === 0) {
+        makePlaceholderActive(document.querySelector('#placeholder-submission'))
+        makePlaceholderActive(document.querySelector('#placeholder-slot'))
+    } else {
+        makePlaceholderInactive(document.querySelector('#placeholder-submission'))
+        makePlaceholderInactive(document.querySelector('#placeholder-slot'))
+    }
+}
+
+
 document.addEventListener('DOMContentLoaded', function() {
     lastFocusedInput = document.querySelector('#id_text_0');
 
@@ -39,4 +62,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     })
 
+    // When an individual speaker is added, hide all placeholders that are proposal-specific
+    $('#id_speakers').on('change', () => updateVisiblePlaceholders())
+    updateVisiblePlaceholders()
 })

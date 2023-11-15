@@ -260,68 +260,32 @@ class WriteTeamsMailForm(WriteMailBaseForm):
         return result
 
 
-class WriteSessionMailForm(WriteMailBaseForm):
-    recipients = forms.MultipleChoiceField(
-        label=_("Recipient groups"),
-        choices=(
-            (
-                "submitted",
-                _("Everyone with proposal(s) that have not been accepted/rejected yet"),
-            ),
-            (
-                "accepted",
-                _("All accepted speakers (who have not confirmed their session yet)"),
-            ),
-            ("confirmed", _("All confirmed speakers")),
-            ("rejected", _("All rejected speakers")),
-            ("canceled", _("All canceled speakers")),
-            ("no_slides", _("All confirmed speakers who have not uploaded slides")),
-        ),
-        required=False,
-        widget=forms.SelectMultiple(
-            attrs={"class": "select2", "title": _("Recipient groups")}
-        ),
-    )
-    tracks = forms.MultipleChoiceField(
-        label=_("All proposals in these tracks"),
-        required=False,
-        widget=forms.SelectMultiple(attrs={"class": "select2", "title": _("Tracks")}),
-        help_text=_("Leave empty to include proposals from all tracks."),
-    )
-    submission_types = forms.MultipleChoiceField(
-        label=_("All proposals of these types"),
-        required=False,
-        widget=forms.SelectMultiple(
-            attrs={"class": "select2", "title": _("Session types")}
-        ),
-        help_text=_("Leave empty to include proposals of all session types."),
-    )
+class WriteSessionMailForm(SubmissionFilterForm, WriteMailBaseForm):
     submissions = forms.MultipleChoiceField(
         required=False,
         label=_("Proposals"),
-        widget=forms.SelectMultiple(
-            attrs={"class": "select2", "title": _("Proposals")}
-        ),
         help_text=_(
             "Select proposals that should receive the email regardless of the other filters."
         ),
+        widget=forms.SelectMultiple(attrs={"class": "select2"}),
+    )
+    speakers = forms.ModelMultipleChoiceField(
+        queryset=User.objects.none(),
+        required=False,
+        label=_("Speakers"),
+        help_text=_(
+            "Select speakers that should receive the email regardless of the other filters."
+        ),
+        widget=forms.SelectMultiple(attrs={"class": "select2"}),
     )
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.fields["submissions"].choices = [
-            (sub.code, sub.title) for sub in self.event.submissions.all()
+            (sub.code, sub.title)
+            for sub in self.event.submissions.all().order_by("title")
         ]
-        if self.event.feature_flags["use_tracks"] and self.event.tracks.all().exists():
-            self.fields["tracks"].choices = [
-                (track.pk, track.name) for track in self.event.tracks.all()
-            ]
-        else:
-            del self.fields["tracks"]
-        self.fields["submission_types"].choices = [
-            (submission_type.pk, submission_type.name)
-            for submission_type in self.event.submission_types.all()
-        ]
+        self.fields["speakers"].queryset = self.event.submitters.all().order_by("name")
         if len(self.event.locales) > 1:
             self.fields["subject"].help_text = _(
                 "If you provide only one language, that language will be used for all emails. If you provide multiple languages, the best fit for each speaker will be used."

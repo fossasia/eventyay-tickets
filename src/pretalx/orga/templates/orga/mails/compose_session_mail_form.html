@@ -5,3 +5,24 @@
 {% block email_editor_title %}
   {% translate "Sessions, proposals, speakers" %}
 {% endblock %}
+
+{% block recipient_form %}
+  <div class="form-group row">
+    <label for="id_state" class="col-md-3 col-form-label">{{ form.state.label }}
+      <br>
+      <span class="optional">{% translate "Optional" %}</span>
+    </label>
+    <div class="col-md-9 d-flex align-items-center">
+      {% bootstrap_field form.state layout='inline' form_group_class='d-inline-flex col-md-6 pl-0 mr-3' %}
+      {% bootstrap_field form.pending_state__isnull layout='inline' form_group_class='d-inline-flex' %}
+    </div>
+  </div>
+  {% if form.submission_type %}{% bootstrap_field form.submission_type layout='event' %}{% endif %}
+  {% if form.track %}{% bootstrap_field form.track layout='event' %}{% endif %}
+  {% if form.content_locale %}{% bootstrap_field form.content_locale layout='event' %}{% endif %}
+  {% if form.tag %}{% bootstrap_field form.tag layout='event' %}{% endif %}
+
+  {% bootstrap_field form.submissions layout='event' %}
+  {% bootstrap_field form.speakers layout='event' %}
+
+{% endblock %}

@@ -19,12 +19,8 @@
                 <legend>
                     {% translate "Recipients" %}
                 </legend>
-                {% bootstrap_field form.recipients layout='event' %}
-                {% if form.tracks %}{% bootstrap_field form.tracks layout='event' %}{% endif %}
-                {% if form.submission_types %}{% bootstrap_field form.submission_types layout='event' %}{% endif %}
-                {% if form.submission_types %}{% bootstrap_field form.submissions layout='event' %}{% endif %}
-                {% if form.submission_types %}{% bootstrap_field form.reply_to layout='event' %}{% endif %}
-                {% if form.submission_types %}{% bootstrap_field form.bcc layout='event' %}{% endif %}
+                {% block recipient_form %}
+                {% endblock %}
             </fieldset>
             <fieldset>
                 <legend>
@@ -41,6 +37,9 @@
                 <div class="card mb-2" id="placeholder-submission">
                     <div class="card-header">
                         <strong>{% translate "Session" %}</strong>
+                        <span class="text-muted d-none unavailable">
+                            {% translate "Unavailable" %}
+                        </span>
                     </div>
                     <ul class="list-group list-group-flush">
                         {% for placeholder in form.grouped_placeholders.submission %}{% if placeholder.is_visible %}
@@ -53,6 +52,9 @@
                 <div class="card mb-2" id="placeholder-slot">
                     <div class="card-header">
                         <strong>{% translate "Scheduling" %}</strong>
+                        <span class="text-muted d-none unavailable">
+                            {% translate "Unavailable" %}
+                        </span>
                     </div>
                     <ul class="list-group list-group-flush">
                         {% for placeholder in form.grouped_placeholders.slot %}{% if placeholder.is_visible %}
