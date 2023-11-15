@@ -233,7 +233,7 @@ def test_add_logo(event, orga_client):
         ("example.org", "https://example.org"),
         ("http://example.org", "https://example.org"),
         ("https://example.org", "https://example.org"),
-        (settings.SITE_URL, None),
+        (None, None),
     ),
 )
 def test_change_custom_domain(event, orga_client, monkeypatch, domain, result):
@@ -241,6 +241,7 @@ def test_change_custom_domain(event, orga_client, monkeypatch, domain, result):
 
     yessocket = lambda x: True  # noqa
     monkeypatch.setattr(socket, "gethostbyname", yessocket)
+    domain = domain or settings.SITE_URL
     assert not event.custom_domain
     response = orga_client.post(
         event.orga_urls.edit_settings,
