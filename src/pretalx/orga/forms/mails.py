@@ -5,6 +5,7 @@ from contextlib import suppress
 from django import forms
 from django.db import transaction
 from django.utils.functional import cached_property
+from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from i18nfield.forms import I18nModelForm
 
@@ -12,6 +13,7 @@ from pretalx.common.exceptions import SendMailException
 from pretalx.common.mixins.forms import I18nHelpText, ReadOnlyFlag
 from pretalx.mail.context import get_available_placeholders
 from pretalx.mail.models import MailTemplate, QueuedMail
+from pretalx.mail.placeholders import SimpleFunctionalMailTextPlaceholder
 from pretalx.person.models import User
 from pretalx.submission.forms import SubmissionFilterForm
 from pretalx.submission.models.submission import Submission, SubmissionStates
@@ -45,11 +47,37 @@ class MailTemplateForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
 
         if self.instance and self.instance.id:
             if self.instance == self.event.update_template:
-                valid_placeholders["notifications"] = []
+                time = now().replace(hour=9, minute=0).strftime("%Y-%m-%d %H:%M")
+                time2 = now().replace(hour=11, minute=0).strftime("%Y-%m-%d %H:%M")
+                valid_placeholders[
+                    "notifications"
+                ] = SimpleFunctionalMailTextPlaceholder(
+                    "notifications",
+                    ["slot"],
+                    None,
+                    _(
+                        "- Your session “Title” will take place at {time} in Room 101.\n"
+                        "- Your session “Other Title” has been moved to {time2} in Room 102."
+                    ).format(time=time, time2=time2),
+                    _(
+                        "Changes to this speaker's sessions in the new schedule version."
+                    ),
+                )
                 kwargs = ["event", "user"]
             elif self.instance == self.event.question_template:
-                valid_placeholders["questions"] = []
-                valid_placeholders["url"] = []
+                valid_placeholders["questions"] = SimpleFunctionalMailTextPlaceholder(
+                    "questions",
+                    ["user"],
+                    None,
+                    _("- First missing question\n- Second missing question"),
+                )
+                valid_placeholders["url"] = SimpleFunctionalMailTextPlaceholder(
+                    "url",
+                    ["event", "user"],
+                    None,
+                    "https://pretalx.example.com/democon/me/submissions/",
+                    is_visible=False,
+                )
                 kwargs = ["event", "user"]
             elif self.instance in (
                 self.event.accept_template,
