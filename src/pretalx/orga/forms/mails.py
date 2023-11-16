@@ -62,6 +62,23 @@ class MailTemplateForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
         )
         return valid_placeholders
 
+    @cached_property
+    def grouped_placeholders(self):
+        placeholders = self.get_valid_placeholders(ignore_data=True)
+        grouped = defaultdict(list)
+        specificity = ["slot", "submission", "user", "event", "other"]
+        for placeholder in placeholders.values():
+            if not placeholder.is_visible:
+                continue
+            placeholder.rendered_sample = placeholder.render_sample(self.event)
+            for arg in specificity:
+                if arg in placeholder.required_context:
+                    grouped[arg].append(placeholder)
+                    break
+            else:
+                grouped["other"].append(placeholder)
+        return grouped
+
     def clean_text(self):
         text = self.cleaned_data["text"]
         valid_placeholders = self.get_valid_placeholders().keys()
@@ -77,9 +94,7 @@ class MailTemplateForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
             )
         if warnings:
             warnings = ", ".join("{" + w + "}" for w in warnings)
-            raise forms.ValidationError(
-                str(_("Unknown template key!")) + " " + warnings
-            )
+            raise forms.ValidationError(str(_("Unknown placeholder!")) + " " + warnings)
         return text
 
     class Meta:
@@ -177,21 +192,6 @@ class WriteMailBaseForm(MailTemplateForm):
             cleaned_data.get("text", ""), valid_placeholders
         )
         return cleaned_data
-
-    @cached_property
-    def grouped_placeholders(self):
-        placeholders = self.get_valid_placeholders(ignore_data=True)
-        grouped = defaultdict(list)
-        specificity = ["slot", "submission", "user", "event"]
-        for placeholder in placeholders.values():
-            if not placeholder.is_visible:
-                continue
-            placeholder.rendered_sample = placeholder.render_sample(self.event)
-            for arg in specificity:
-                if arg in placeholder.required_context:
-                    grouped[arg].append(placeholder)
-                    break
-        return grouped
 
 
 class WriteTeamsMailForm(WriteMailBaseForm):

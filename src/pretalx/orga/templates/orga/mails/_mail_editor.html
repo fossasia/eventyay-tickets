@@ -9,9 +9,10 @@
     <form method="post" class="form-with-placeholder">
         {% csrf_token %}
         <div class="mb-2">
-            <h2 class="d-inline">{% translate "Email editor" %}
+            <h2 class="d-inline">
+                {% block email_editor_title %}{% translate "Email editor" %}{% endblock %}
             </h2>
-            <h3 class="d-inline ml-1"><small class="text-muted">{% block email_editor_title %}{% endblock %}</small></h3>
+            <h3 class="d-inline ml-1"><small class="text-muted">{% block email_editor_title_detail %}{% endblock %}</small></h3>
         </div>
         <div id="placeholder-neighbour">
             {% bootstrap_form_errors form %}
@@ -37,121 +38,80 @@
                 </legend>
                 {% bootstrap_field form.subject layout='event' %}
                 {% bootstrap_field form.text layout='event' %}
-                {% block skip_queue %}{% bootstrap_field form.skip_queue layout='event' %}{% endblock %}
+                {% block skip_queue %}
+                    {% if form.skip_queue %}
+                        {% bootstrap_field form.skip_queue layout='event' %}
+                    {% endif %}
+                {% endblock %}
             </fieldset>
         </div>
         <div class="col col-md-2" id="placeholder-column">
             <legend>{% translate "Placeholders" %}</legend>
-            {% if form.grouped_placeholders.submission %}
-                <div class="card mb-2" id="placeholder-submission">
-                    <div class="card-header">
-                        <strong>{% translate "Session" %}</strong>
-                        <span class="text-muted d-none unavailable">
-                            {% translate "Unavailable" %}
-                        </span>
-                    </div>
-                    <ul class="list-group list-group-flush">
-                        {% for placeholder in form.grouped_placeholders.submission %}{% if placeholder.is_visible %}
-                            {% include "orga/mails/_placeholder.html" with tag="submission" %}
-                        {% endif %}{% endfor %}
-                    </ul>
-                </div>
-            {% endif %}
-            {% if form.grouped_placeholders.slot %}
-                <div class="card mb-2" id="placeholder-slot">
-                    <div class="card-header">
-                        <strong>{% translate "Scheduling" %}</strong>
-                        <span class="text-muted d-none unavailable">
-                            {% translate "Unavailable" %}
-                        </span>
-                    </div>
-                    <ul class="list-group list-group-flush">
-                        {% for placeholder in form.grouped_placeholders.slot %}{% if placeholder.is_visible %}
-                            {% include "orga/mails/_placeholder.html" with tag="slot" %}
-                        {% endif %}{% endfor %}
-                    </ul>
-                </div>
-            {% endif %}
-            {% if form.grouped_placeholders.user %}
-                <div class="card mb-2" id="placeholder-user">
-                    <div class="card-header">
-                        <strong>{% translate "User" %}</strong>
-                    </div>
-                    <ul class="list-group list-group-flush">
-                        {% for placeholder in form.grouped_placeholders.user %}{% if placeholder.is_visible %}
-                            {% include "orga/mails/_placeholder.html" with tag="user" %}
-                        {% endif %}{% endfor %}
-                    </ul>
-                </div>
-            {% endif %}
-            {% if form.grouped_placeholders.event %}
-                <div class="card mb-2" id="placeholder-event">
-                    <div class="card-header">
-                        <strong>{% translate "Event" %}</strong>
-                    </div>
-                    <ul class="list-group list-group-flush">
-                        {% for placeholder in form.grouped_placeholders.event %}{% if placeholder.is_visible %}
-                            {% include "orga/mails/_placeholder.html" with tag="event" %}
-                        {% endif %}{% endfor %}
-                    </ul>
-                </div>
-            {% endif %}
+            {% include "orga/mails/_placeholder_group.html" with placeholders=form.grouped_placeholders.submission tag="submission" %}
+            {% include "orga/mails/_placeholder_group.html" with placeholders=form.grouped_placeholders.slot tag="slot" %}
+            {% include "orga/mails/_placeholder_group.html" with placeholders=form.grouped_placeholders.user tag="user" %}
+            {% include "orga/mails/_placeholder_group.html" with placeholders=form.grouped_placeholders.event tag="event" %}
+            {% include "orga/mails/_placeholder_group.html" with placeholders=form.grouped_placeholders.other tag="other" %}
         </div>
-        {% if request.method == "POST" %}
-            <fieldset class="mt-4">
-                <legend>{% translate "E-mail preview" %}</legend>
-                <div class="alert alert-info">
-                    {% blocktranslate trimmed with count=mail_count %}
-                        Roughly {{ count }} emails will be generated.
-                    {% endblocktranslate %}
-                </div>
-                {% if form.warnings %}
-                    <div class="alert alert-warning">
-                        <span>
-                            {% blocktranslate trimmed %}
-                                You have placeholders in your email that are either not valid or not valid for every email!
-                            {% endblocktranslate %}
-                            <ul>{% for w in form.warnings %}<li>&#123;{{w}}}</li>{% endfor %}</ul>
-                            {% blocktranslate trimmed %}
-                                Emails where placeholders are invalid will <b>not</b> be created!
-                                For example, if you are using {session_room}, but some proposals don't have a room yet, only emails for proposals with a scheduled room will be created.
-                            {% endblocktranslate %}
-                        </span>
+        {% block email_editor_preview %}
+            {% if request.method == "POST" %}
+                <fieldset class="mt-4">
+                    <legend>{% translate "E-mail preview" %}</legend>
+                    <div class="alert alert-info">
+                        {% blocktranslate trimmed with count=mail_count %}
+                            Roughly {{ count }} emails will be generated.
+                        {% endblocktranslate %}
                     </div>
-                {% endif %}
-                {% if output_warnings %}
-                    <div class="alert alert-warning">
-                        <span>
-                            {% for key, value in output_warnings.items %}
-                                {% if key == "empty_link" %}
-                                    {% blocktranslate trimmed with titled=value %}
-                                        You have an empty link in your email, labeled “{{ value }}”!
-                                    {% endblocktranslate %}
-                                {% endif %}
-                            {% endfor %}
-                        </span>
-                    </div>
-                {% endif %}
-                <div class="tab-pane mail-preview-group">
-                    {% for locale, out in output.items %}
-                        <div lang="{{ locale }}" class="mail-preview">
-                            <strong>{{ out.subject|safe }}</strong><br><br>
-                            {{ out.html|safe }}
+                    {% if form.warnings %}
+                        <div class="alert alert-warning">
+                            <span>
+                                {% blocktranslate trimmed %}
+                                    You have placeholders in your email that are either not valid or not valid for every email!
+                                {% endblocktranslate %}
+                                <ul>{% for w in form.warnings %}<li>&#123;{{w}}}</li>{% endfor %}</ul>
+                                {% blocktranslate trimmed %}
+                                    Emails where placeholders are invalid will <b>not</b> be created!
+                                    For example, if you are using {session_room}, but some proposals don't have a room yet, only emails for proposals with a scheduled room will be created.
+                                {% endblocktranslate %}
+                            </span>
                         </div>
-                    {% endfor %}
-                </div>
-            </fieldset>
-        {% endif %}
-        <div class="submit-group mt-3"><span></span>
-            <span>
-                <button type="submit" class="btn btn-lg btn-outline-info btn-save mr-2" name="action" value="preview">
-                    {% translate "Preview email" %}
-                </button>
-                {% if request.method == "POST" %}
-                    <button type="submit" class="btn btn-lg btn-success">{% block send_button_label %}{% translate "Send to outbox" %}{% endblock %}</button>
-                {% endif %}
-            </span>
-        </div>
+                    {% endif %}
+                    {% if output_warnings %}
+                        <div class="alert alert-warning">
+                            <span>
+                                {% for key, value in output_warnings.items %}
+                                    {% if key == "empty_link" %}
+                                        {% blocktranslate trimmed with titled=value %}
+                                            You have an empty link in your email, labeled “{{ value }}”!
+                                        {% endblocktranslate %}
+                                    {% endif %}
+                                {% endfor %}
+                            </span>
+                        </div>
+                    {% endif %}
+                    <div class="tab-pane mail-preview-group">
+                        {% for locale, out in output.items %}
+                            <div lang="{{ locale }}" class="mail-preview">
+                                <strong>{{ out.subject|safe }}</strong><br><br>
+                                {{ out.html|safe }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </fieldset>
+            {% endif %}
+        {% endblock %}
+        {% block email_editor_actions %}
+            <div class="submit-group mt-3"><span></span>
+                <span>
+                    <button type="submit" class="btn btn-lg btn-outline-info btn-save mr-2" name="action" value="preview">
+                        {% translate "Preview email" %}
+                    </button>
+                    {% if request.method == "POST" %}
+                        <button type="submit" class="btn btn-lg btn-success">{% block send_button_label %}{% translate "Send to outbox" %}{% endblock %}</button>
+                    {% endif %}
+                </span>
+            </div>
+        {% endblock %}
     </form>
 
     <script src="{% static 'orga/js/placeholder.js' %}" defer></script>
