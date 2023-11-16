@@ -4,6 +4,7 @@ Release Notes
 =============
 
 - :release:`unreleased <????-??-??>`
+- :bug:`848` When looking at an email, the sidebar now correctly indicates if it is a sent or queued email (rather than always highlighting the "Outbox" menu entry).
 - :feature:`1402` When you accept a previously rejected proposal (or vice versa), pretalx will warn you if there is a conflicting email waiting in the outbox, to prevent you from accidentally sending both an acceptance and a rejection email.
 - :feature:`1336` In the CfP settings, a warning will be shown next to the deadline setting if some session types have different deadlines.
 - :feature:`1324` Session and speaker images will now be shown in an overlay on click, instead of opening a new page.
