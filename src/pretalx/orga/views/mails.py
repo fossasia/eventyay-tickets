@@ -499,38 +499,6 @@ class TemplateDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     permission_required = "orga.view_mail_templates"
     write_permission_required = "orga.edit_mail_templates"
 
-    @context
-    def placeholders(self):
-        template = self.object
-        if template and template in template.event.fixed_templates:
-            result = {}
-            if template == template.event.update_template:
-                result = [item for item in result if item["name"] == "event_name"]
-                result.append(
-                    {
-                        "name": "notifications",
-                        "explanation": _("A list of notifications for this speaker"),
-                    }
-                )
-            elif template == template.event.question_template:
-                result = [item for item in result if item["name"] in ["event_name"]]
-                result.append(
-                    {
-                        "name": "url",
-                        "explanation": _("The link to the user's list of proposals"),
-                    }
-                )
-                result.append(
-                    {
-                        "name": "questions",
-                        "explanation": _(
-                            "The list of questions that the user has not answered, as bullet points"
-                        ),
-                    }
-                )
-            return result
-        return None
-
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs["event"] = self.request.event
