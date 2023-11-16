@@ -70,9 +70,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!form) return
 
     const originalData = {}
-    new FormData(form).forEach((value, key) => originalData[key] = value)
+    // Populate original data after a short delay to make sure the form is fully loaded
+    // and that any script interactions have run
+    setTimeout(() => {
+        new FormData(form).forEach((value, key) => originalData[key] = value)
+    }, 1000)
 
     const isDirty = () => {
+        if (Object.keys(originalData).length === 0) return false
         const currentData = {}
         new FormData(form).forEach((value, key) => currentData[key] = value)
         return JSON.stringify(originalData) !== JSON.stringify(currentData)
