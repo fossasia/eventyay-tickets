@@ -93,12 +93,6 @@ def can_mark_speakers_arrived(user, obj):
 
 
 @rules.predicate
-def is_event_over(user, obj):
-    event = obj.event
-    return event.date_to < now().date()
-
-
-@rules.predicate
 def can_view_speaker_names(user, obj):
     """ONLY in use with users who don't have change permissions."""
     event = obj.event
@@ -221,4 +215,4 @@ rules.add_perm("orga.change_plugins", can_change_event_settings)
 rules.add_perm(
     "orga.mark_speakers_arrived", can_change_submissions & can_mark_speakers_arrived
 )
-rules.add_perm("orga.see_speakers_arrival", can_change_submissions & is_event_over)
+rules.add_perm("orga.see_speakers_arrival", can_change_submissions)
