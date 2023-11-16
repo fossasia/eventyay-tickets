@@ -4,6 +4,7 @@ Release Notes
 =============
 
 - :release:`unreleased <????-??-??>`
+- :feature:`1324` Session and speaker images will now be shown in an overlay on click, instead of opening a new page.
 - :feature:`1350` pretalx will now warn you if you have empty URLs in email templates (which can easily happen with Markdown by accident).
 - :feature:`1244` Emails can now be sent both per-speaker and per-proposal, though some placeholders are not available in per-speaker emails (such as the proposal title).
 - :feature:`-` Improved email editor: Placeholders are now listed in the sidebar and inserted on click.

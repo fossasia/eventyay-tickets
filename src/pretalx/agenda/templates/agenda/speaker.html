@@ -1,6 +1,8 @@
 {% extends "agenda/base.html" %}
+{% load compress %}
 {% load i18n %}
 {% load rich_text %}
+{% load static %}
 
 {% block title %}{{ profile.user.get_display_name }} ::{% endblock %}
 {% block meta_title %}{{ profile.user.get_display_name }}{% endblock %}
@@ -10,6 +12,15 @@
 {% endblock %}
 {% block alternate_link %}
     <link rel="alternate" type="application/json" title="{{ request.event.name }} API" href="{{ request.event.api_urls.speakers.full }}{{ profile.code }}" />
+{% endblock %}
+
+{% block agenda_custom_header %}
+    {% compress js %}
+        <script src="{% static "common/js/lightbox.js" %}"></script>
+    {% endcompress %}
+    {% compress css %}
+        <link rel="stylesheet" type="text/x-scss" href="{% static "common/scss/lightbox.scss" %}">
+    {% endcompress %}
 {% endblock %}
 
 {% block agenda_content %}
@@ -33,7 +44,9 @@
                 </div>
                 <div class="speaker-avatar">
                     {% if profile.user.avatar %}
-                        <img loading="lazy" width="100%" src="{{ profile.user.avatar.url }}" alt="{% translate "The speaker's profile picture" %}">
+                        <a href="{{ profile.user.avatar.url }}" data-lightbox="{{ profile.user.avatar.url }}">
+                            <img loading="lazy" width="100%" src="{{ profile.user.avatar.url }}" alt="{% translate "The speaker's profile picture" %}">
+                        </a>
                     {% endif %}
                 </div>
             </section>

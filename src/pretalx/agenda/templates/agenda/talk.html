@@ -19,6 +19,10 @@
 {% block agenda_custom_header %}
     {% compress js %}
         <script src="{% static "agenda/js/favourite.js" %}" async></script>
+        <script src="{% static "common/js/lightbox.js" %}"></script>
+    {% endcompress %}
+    {% compress css %}
+        <link rel="stylesheet" type="text/x-scss" href="{% static "common/scss/lightbox.scss" %}">
     {% endcompress %}
 {% endblock %}
 
@@ -79,7 +83,7 @@
                 {% endif %}
                 {% if submission.image %}
                     <div class="talk-image">
-                        <a href="{{ submission.image.url }}" target="_blank">
+                        <a href="{{ submission.image.url }}" data-lightbox="{{ submission.image.url }}">
                             <img loading="lazy" src="{{ submission.image.url }}" alt="{% translate "This session's header image" %}">
                         </a>
                     </div>
