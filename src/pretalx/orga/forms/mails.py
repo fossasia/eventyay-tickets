@@ -2,6 +2,7 @@ import string
 from collections import defaultdict
 from contextlib import suppress
 
+from bs4 import BeautifulSoup
 from django import forms
 from django.db import transaction
 from django.utils.functional import cached_property
@@ -11,6 +12,8 @@ from i18nfield.forms import I18nModelForm
 
 from pretalx.common.exceptions import SendMailException
 from pretalx.common.mixins.forms import I18nHelpText, ReadOnlyFlag
+from pretalx.common.templatetags.rich_text import rich_text
+from pretalx.common.utils import language
 from pretalx.mail.context import get_available_placeholders
 from pretalx.mail.models import MailTemplate, QueuedMail
 from pretalx.mail.placeholders import SimpleFunctionalMailTextPlaceholder
@@ -110,9 +113,9 @@ class MailTemplateForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
 
     def clean_text(self):
         text = self.cleaned_data["text"]
-        valid_placeholders = self.get_valid_placeholders().keys()
+        valid_placeholders = self.get_valid_placeholders()
         try:
-            warnings = self._clean_for_placeholders(text, valid_placeholders)
+            warnings = self._clean_for_placeholders(text, valid_placeholders.keys())
         except Exception:
             raise forms.ValidationError(
                 _(
@@ -124,6 +127,26 @@ class MailTemplateForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
         if warnings:
             warnings = ", ".join("{" + w + "}" for w in warnings)
             raise forms.ValidationError(str(_("Unknown placeholder!")) + " " + warnings)
+
+        for locale in self.event.locales:
+            with language(locale):
+                message = text.localize(locale)
+                preview_text = rich_text(
+                    message.format_map(
+                        {
+                            key: value.render_sample(self.event)
+                            for key, value in valid_placeholders.items()
+                        }
+                    )
+                )
+                doc = BeautifulSoup(preview_text, "lxml")
+                for link in doc.findAll("a"):
+                    if link.attrs.get("href") in [None, "", "http://", "https://"]:
+                        raise forms.ValidationError(
+                            _(
+                                "You have an empty link in your email, labeled “{text}”!"
+                            ).format(text=link.text)
+                        )
         return text
 
     class Meta:

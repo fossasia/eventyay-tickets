@@ -1,5 +1,4 @@
 import bleach
-from bs4 import BeautifulSoup
 from django.contrib import messages
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
@@ -284,20 +283,6 @@ class MailPreview(PermissionRequired, View):
         return HttpResponse(mail.make_html())
 
 
-def check_markdown(text):
-    """Returns a dictionary of warnings.
-
-    Currently only one warning type, hush.
-    """
-
-    result = {}
-    doc = BeautifulSoup(text, "lxml")
-    for link in doc.findAll("a"):
-        if link.attrs.get("href") in [None, "", "http://", "https://"]:
-            result["empty_link"] = link.text
-    return result
-
-
 class ComposeMailChoice(EventPermissionRequired, TemplateView):
     template_name = "orga/mails/compose_choice.html"
     permission_required = "orga.send_mails"
@@ -331,7 +316,6 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
         ctx["output"] = getattr(self, "output", None)
-        ctx["output_warnings"] = getattr(self, "output_warnings", None)
         ctx["mail_count"] = getattr(self, "mail_count", None)
         return ctx
 
@@ -348,7 +332,6 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
                     _("There are no recipients matching this selection."),
                 )
                 return self.get(self.request, *self.args, **self.kwargs)
-            self.output_warnings = {}
             for locale in self.request.event.locales:
                 with language(locale):
                     context_dict = TolerantDict()
@@ -368,9 +351,6 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
                     preview_subject = subject.format_map(context_dict)
                     message = form.cleaned_data["text"].localize(locale)
                     preview_text = rich_text(message.format_map(context_dict))
-
-                    self.output_warnings.update(check_markdown(preview_text))
-
                     self.output[locale] = {
                         "subject": _("Subject: {subject}").format(
                             subject=preview_subject
