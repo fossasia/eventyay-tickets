@@ -40,6 +40,23 @@
                         {% bootstrap_field form.headline layout='event' %}
                         {% bootstrap_field form.text layout='event' %}
                         {% bootstrap_field form.deadline layout='event' %}
+                        {% if different_deadlines %}
+                            <div class="offset-md-3 alert alert-info">
+                                <div>
+                                    {% translate "Some of your session types have different deadlines:" %}
+                                    <ul class="mb-0">
+                                        {% for deadline, session_types in different_deadlines.items %}
+                                            <li>
+                                                {% for session_type in session_types %}
+                                                    <a href="{{ session_type.urls.base }}">{{ session_type.name }}</a>{% if not forloop.last %},{% else %}:{% endif %}
+                                                {% endfor %}
+                                                {{ deadline }}
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        {% endif %}
                         {% bootstrap_field form.show_deadline layout='event' %}
                         {% bootstrap_field sform.use_tracks layout='event' %}
                         {% bootstrap_field sform.present_multiple_times layout='event' %}

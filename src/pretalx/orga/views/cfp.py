@@ -1,4 +1,5 @@
 import json
+from collections import defaultdict
 
 from csp.decorators import csp_update
 from django.contrib import messages
@@ -60,6 +61,18 @@ class CfPTextDetail(PermissionRequired, ActionFromUrl, UpdateView):
             data=self.request.POST if self.request.method == "POST" else None,
             prefix="settings",
         )
+
+    @context
+    @cached_property
+    def different_deadlines(self):
+        deadlines = defaultdict(list)
+        for session_type in self.request.event.submission_types.filter(
+            deadline__isnull=False
+        ):
+            deadlines[session_type.deadline].append(session_type)
+        deadlines.pop(self.request.event.cfp.deadline, None)
+        if len(deadlines):
+            return dict(deadlines)
 
     def get_object(self):
         return self.request.event.cfp
