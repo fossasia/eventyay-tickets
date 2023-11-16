@@ -229,19 +229,52 @@ class SubmissionStateChange(SubmissionViewMixin, FormView):
                     "Somebody else was faster than you: this proposal was already in the state you wanted to change it to."
                 ),
             )
-        else:
-            try:
-                self.do(pending=form.cleaned_data.get("pending"))
-            except SubmissionError:
-                self.do(force=True)
+            return redirect(self.get_success_url())
+
+        current = self.object.state
+        pending = form.cleaned_data.get("pending")
+        try:
+            self.do(pending=pending)
+        except SubmissionError:
+            self.do(force=True, pending=pending)
+
+        if pending:
+            return redirect(self.get_success_url())
+
+        check_mail_template = {
+            (
+                SubmissionStates.ACCEPTED,
+                SubmissionStates.REJECTED,
+            ): self.request.event.accept_template,
+            (
+                SubmissionStates.REJECTED,
+                SubmissionStates.ACCEPTED,
+            ): self.request.event.reject_template,
+        }
+        if template := check_mail_template.get((current, self.object.state)):
+            pending_emails = self.request.event.queued_mails.filter(
+                template=template,
+                sent__isnull=True,
+                to_users__in=self.object.speakers.all(),
+            )
+            if pending_emails.exists():
+                messages.warning(
+                    self.request,
+                    _(
+                        "There may be pending emails for this proposal that are now incorrect or outdated."
+                    ),
+                )
+        return redirect(self.get_success_url())
+
+    def get_success_url(self):
         url = self.request.GET.get("next")
         if self.object.state == SubmissionStates.DELETED and (
             not url or self.object.code in url
         ):
-            return redirect(self.request.event.orga_urls.submissions)
+            return self.request.event.orga_urls.submissions
         elif url and url_has_allowed_host_and_scheme(url, allowed_hosts=None):
-            return redirect(url)
-        return redirect(self.object.orga_urls.base)
+            return url
+        return self.object.orga_urls.submissions
 
     @context
     def next(self):
