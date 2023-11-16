@@ -59,9 +59,7 @@ class MailTemplateForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
                         "- Your session “Title” will take place at {time} in Room 101.\n"
                         "- Your session “Other Title” has been moved to {time2} in Room 102."
                     ).format(time=time, time2=time2),
-                    _(
-                        "Changes to this speaker's sessions in the new schedule version."
-                    ),
+                    _("A list of notifications for this speaker"),
                 )
                 kwargs = ["event", "user"]
             elif self.instance == self.event.question_template:
@@ -70,6 +68,9 @@ class MailTemplateForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
                     ["user"],
                     None,
                     _("- First missing question\n- Second missing question"),
+                    _(
+                        "The list of questions that the user has not answered, as bullet points"
+                    ),
                 )
                 valid_placeholders["url"] = SimpleFunctionalMailTextPlaceholder(
                     "url",
