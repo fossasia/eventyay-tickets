@@ -1,55 +1,39 @@
-// start when DOM is ready
+// Add a lightbox to images and links with data-lightbox attribute.
+// Can't do multi-image lightboxes yet.
 
-const removeLightbox = () => {
-    const lightboxWrapper = document.querySelector('.lightbox-wrapper')
-    if (lightboxWrapper) {
-        lightboxWrapper.parentNode.removeChild(lightboxWrapper)
-    }
+const getLightboxDialog = () => {
+    const element = document.querySelector('dialog#lightbox-dialog')
+    if (element) return element
+
+    const lightboxDialog = document.createElement('dialog')
+    lightboxDialog.id = 'lightbox-dialog'
+    lightboxDialog.innerHTML = '<div class="lightbox"><a target="_blank"><img /></a><button class="lightbox-close"><i class="fa fa-times"></i></button></div>'
+    document.body.appendChild(lightboxDialog)
+
+    // close lightbox if clicking outside the visible part, but not the inside, except for the close button
+    lightboxDialog.addEventListener('click', () => { lightboxDialog.close() } )
+    lightboxDialog.querySelector('.lightbox').addEventListener('click', (event) => { event.stopPropagation() })
+    // the button would close a dialog automatically, but we overloaded that with the .lightbox click handler
+    lightboxDialog.querySelector('button').addEventListener('click', () => { lightboxDialog.close() } )
+    return lightboxDialog
 }
 
 const buildLightbox = (url) => {
-    const lightboxWrapper = document.createElement('div')
-    lightboxWrapper.className = 'lightbox-wrapper'
-
-    const lightbox = document.createElement('div')
-    lightbox.className = 'lightbox'
-    lightboxWrapper.appendChild(lightbox)
-    lightbox.addEventListener('click', (event) => {
-        event.stopPropagation()
-    })
-    // put image into lightbox with link to original image
-    lightbox.innerHTML = `
-        <a href="${url}" target="_blank">
-          <img src="${url}" />
-        </a>
-        <div class="lightbox-close"><i class="fa fa-times"></i></div>
-    `
-    document.body.appendChild(lightboxWrapper)
-    lightboxWrapper.addEventListener('click', removeLightbox)
-    document.querySelector('.lightbox-close').addEventListener('click', removeLightbox)
+    const lightboxDialog = getLightboxDialog()
+    lightboxDialog.querySelector('img').src = url
+    lightboxDialog.querySelector('a').href = url
+    lightboxDialog.showModal()
 }
 
 const setupLightbox = () => {
-    // work with images or links with attribute data-lightbox
-
-    if (document.querySelectorAll('a[data-lightbox], img[data-lightbox]').length) {
-        window.addEventListener('keyup', (event) => {
-            if (event.key === 'Escape') {
-                removeLightbox()
-            }
+    document.querySelectorAll('a[data-lightbox], img[data-lightbox]').forEach((element) => {
+        element.addEventListener("click", function(event) {
+            const imageUrl = element.dataset.lightbox || element.src || element.href
+            if (!imageUrl) { return }
+            event.preventDefault()
+            buildLightbox(imageUrl)
         })
-        document.querySelectorAll('a[data-lightbox], img[data-lightbox]').forEach((element) => {
-            element.addEventListener("click", function(event) {
-                removeLightbox()  // just to be safe
-                const imageUrl = element.dataset.lightbox || element.src || element.href
-                if (!imageUrl) {
-                    return;
-                }
-                event.preventDefault()
-                buildLightbox(imageUrl)
-            })
-        })
-    }
+    })
 }
 document.addEventListener("DOMContentLoaded", setupLightbox)
 if (document.readyState === 'complete' || document.readyState === 'loaded') {

@@ -1,59 +1,47 @@
-a[data-lightbox] {
-    display: inline-block;
-
-    img {
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-
-        &:hover {
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25), 0 3px 5px rgba(0, 0, 0, 0.22);
-        }
-    }
+a[data-lightbox] img, img[data-lightbox], dialog#lightbox-dialog img {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+}
+a[data-lightbox] img:hover, img[data-lightbox]:hover {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25), 0 3px 5px rgba(0, 0, 0, 0.22);
 }
 
-.lightbox-wrapper {
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    z-index: 2000;
-    background: rgba(0, 0, 0, 0.7);
+@keyframes fadein {
+  0% { opacity:0 }
+  100% { opacity:1 }
+}
+
+dialog#lightbox-dialog {
+    border: none;
+    background: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    padding: 0;
+
+    &::backdrop {
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(2px);
+    }
+    &[open] {
+        animation: fadein 0.2s ease-in forwards;
+    }
 
     .lightbox {
-        position: absolute;
-        text-align: center;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        position: relative;
-        background: #fff;
         padding: 20px;
-        border-radius: 5px;
-        display: inline-block;
-
-        // make sure the link containing the image does not adjust the size
-        a {
-            display: inline-block;
-            max-width: 100%;
-            max-height: 100%;
-        }
 
         img {
             object-fit: contain;
-            margin: 0 auto;
-            height: auto;
-            width: auto;
-            max-height: calc(100vh - 100px);
-            max-width: calc(100vw - 100px);
+            max-height: 80vh;
+            max-width: 80vw;
         }
         .lightbox-close {
             position: absolute;
             top: -4px;
             right: 0;
             cursor: pointer;
-            padding: 0 5px;
             color: rgba(0, 0, 0, 0.7);
             font-size: 20px;
+            border: none;
+            background: transparent;
         }
 
     }
