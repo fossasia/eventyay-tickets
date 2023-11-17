@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`orga:schedule` Breaks now also show their start time and duration in the schedule editor.
 - :feature:`schedule` Breaks now also show their start time and duration in the schedule.
 - :bug:`orga:speaker` The buttons to mark speakers as arrived would only show up once an event was over.
 - :bug:`orga:email,848` When looking at an email, the sidebar now correctly indicates if it is a sent or queued email (rather than always highlighting the "Outbox" menu entry).
