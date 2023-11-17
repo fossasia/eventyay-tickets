@@ -1,7 +1,10 @@
 """
 This is a radically pared-down and partially rewritten version of the `releases` Sphinx extension
-by Jeff 'bitprophet' Forcier. I stripped out all the good features relating to versioning and kept
-only a linear changelog. Since it's not a package anymore, I also hardcoded the settings.
+by Jeff 'bitprophet' Forcier. Changes:
+
+- Stripped out all the features relating to semantic versioning, keeping only a linear changelog
+- Hardcoded settings
+- Changed available categories
 
 The original code is released under the BSD license, and so is this:
 
@@ -34,8 +37,11 @@ import re
 from docutils import nodes, utils
 
 
-ISSUE_TYPES = {"bug": "A04040", "feature": "40A056", "support": "4070A0"}
-DEBUG = True
+ISSUE_TYPES = {
+    "bug": "A04040",
+    "feature": "40A056",
+    "announcement": "4070A0",
+}
 
 
 class Issue(nodes.Element):
@@ -61,15 +67,15 @@ class Release(nodes.Element):
 
 
 def issues_role(name, rawtext, text, lineno, inliner, options={}, content=[]):
-    parts = utils.unescape(text).split()
-    issue_no = parts.pop(0)
-    # Lol @ access back to Sphinx
-    if issue_no not in ("-", "0"):
-        ref = f"https://github.com/pretalx/pretalx/issues/{issue_no}"
-        identifier = nodes.reference(rawtext, "#" + issue_no, refuri=ref, **options)
-    else:
-        identifier = None
-        issue_no = None
+    categories = [c for c in utils.unescape(text).split(",") if c not in ["-", "0", ""]]
+
+    issue_no = None
+    identifier = None
+    if categories and categories[-1].isdigit():
+        issue_no = categories.pop(-1)
+        if issue_no not in ("-", "0"):
+            ref = f"https://github.com/pretalx/pretalx/issues/{issue_no}"
+            identifier = nodes.reference(rawtext, "#" + issue_no, refuri=ref, **options)
 
     type_label_str = (
         f'[<span style="color: #{ISSUE_TYPES[name]};">{name.capitalize()}</span>]'
@@ -79,11 +85,23 @@ def issues_role(name, rawtext, text, lineno, inliner, options={}, content=[]):
     final_space = [] if identifier else [nodes.inline(text=" ")]
     nodelist = type_label + github_link + [nodes.inline(text=":")] + final_space
 
-    node = Issue(number=issue_no, type_=name, nodelist=nodelist)
+    node = Issue(number=issue_no, type_=name, nodelist=nodelist, category=category)
     return [node], []
 
 
 year_arg_re = re.compile(r"^(.+?)\s*(?<!\x00)<(.*?)>$", re.DOTALL)
+
+
+def _build_release_node(number, url, date=None, text=None):
+    text = text or number
+    datespan = f' <span style="font-size: 75%;">{date}</span>' if date else ""
+    link = f'<a class="reference external" href="{url}">{text}</a>'
+    header = f'<h2 style="margin-bottom: 0.3em;">{link}{datespan}</h2>'
+    node = nodes.section(
+        "", nodes.raw(rawtext="", text=header, format="html"), ids=[number]
+    )
+    release_node = Release(number=number, date=date, nodelist=[node])
+    return release_node
 
 
 def release_role(name, rawtext, text, lineno, inliner, options={}, content=[]):
@@ -92,24 +110,9 @@ def release_role(name, rawtext, text, lineno, inliner, options={}, content=[]):
         msg = inliner.reporter.error("Must specify release date!")
         return [inliner.problematic(rawtext, rawtext, msg)], [msg]
     number, date = match.group(1), match.group(2)
-
-    if number == "unreleased":
-        text = "Next Release"
-        uri = "https://github.com/pretalx/pretalx/commits/main"
-        date = None
-    else:
-        text = number
-        uri = f"https://pypi.org/project/pretalx/{number.strip('v')}/"
-
-    datespan = f' <span style="font-size: 75%;">{date}</span>' if date else ""
-    link = f'<a class="reference external" href="{uri}">{text}</a>'
-    header = f'<h2 style="margin-bottom: 0.3em;">{link}{datespan}</h2>'
-    node = nodes.section(
-        "", nodes.raw(rawtext="", text=header, format="html"), ids=[text]
-    )
-
-    release_node = Release(number=number, date=date, nodelist=[node])
-    return [release_node], []
+    text = number
+    url = f"https://pypi.org/project/pretalx/{number.strip('v')}/"
+    return [_build_release_node(number, url=url, date=date)], []
 
 
 def collect_releases(entries):
@@ -131,7 +134,17 @@ def collect_releases(entries):
             }
         else:
             if not current_release:
-                raise ValueError("Found issue node before release node!")
+                current_release = "next"
+
+                releases[current_release] = {
+                    "release": _build_release_node(
+                        "next",
+                        "https://github.com/pretalx/pretalx/commits/main/",
+                        text="Next Release",
+                    ),
+                    "version": "next",
+                    "entries": [],
+                }
             if not isinstance(obj, Issue):
                 msg = f"Found issue node ({obj}) which is not an Issue! Please double-check your ReST syntax!"
                 msg += f"Context: {str(obj.parent)}"
@@ -146,7 +159,7 @@ def collect_releases(entries):
                 }
             )
 
-    order = {"feature": 0, "bug": 1, "support": 2}
+    order = {"feature": 0, "bug": 1, "announcement": 2}
     for release in releases.values():
         release["entries"] = sorted(release["entries"], key=lambda x: order[x["type"]])
     return releases
