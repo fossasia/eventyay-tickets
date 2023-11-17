@@ -378,7 +378,7 @@
                                 </a>
                             </span>
                             <div class="collapse in{% if "mails." in url_name %} show{% endif %}" aria-expand="true" id="collapseMails">
-                              <a href="{{ request.event.orga_urls.outbox }}" class="nav-link nav-link-second-level{% if "mails.outbox" in url_name %} {% if not form or not form.instance.sent %}active{% endif %}{% endif %}">
+                                <a href="{{ request.event.orga_urls.outbox }}" class="nav-link nav-link-second-level{% if "mails.outbox" in url_name %} {% if not form or not form.instance.sent %}active{% endif %}{% endif %}">
                                     <span>{% translate "Outbox" %}</span>
                                 </a>
                                 <a href="{{ request.event.orga_urls.mail_templates }}" class="nav-link nav-link-second-level{% if "mails.templates" in url_name %} active{% endif %}">
