@@ -1,46 +1,55 @@
 """
-This is a radically pared-down and partially rewritten version of the `releases` Sphinx extension
-by Jeff 'bitprophet' Forcier. Changes:
+Sphinx extension to build a useful, pretty changelog.
 
-- Stripped out all the features relating to semantic versioning, keeping only a linear changelog
-- Hardcoded settings
-- Changed available categories
+Usage in ReST files:
+    - :release:`v1 <yyyy-mm-dd>`
+    - :bug:`admin,123` Descriptive text
+    - :feature:`admin` More text
+    - :announcement:`123` Even more text
 
-The original code is released under the BSD license, and so is this:
+Numbers will be replaced with links to the corresponding GitHub issues, other tags
+will refer to the categories defined below for grouping.
 
-Copyright (c) 2020, Jeff Forcier & 2023, Tobias Kunze
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-
-    * Redistributions of source code must retain the above copyright notice,
-      this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright notice,
-      this list of conditions and the following disclaimer in the documentation
-      and/or other materials provided with the distribution.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+This Sphinx extension is heavily inspired by the `releases` Sphinx extension by Jeff
+'bitprophet' Forcier.
 """
-from collections import defaultdict
 import re
+from collections import defaultdict
 
 from docutils import nodes, utils
 
-
 ISSUE_TYPES = {
-    "bug": "A04040",
-    "feature": "40A056",
-    "announcement": "4070A0",
+    "bug": {
+        "color": "A04040",
+        "label": "Fixed bug",
+        "order": 1,
+    },
+    "feature": {
+        "color": "40A056",
+        "label": "Feature",
+        "order": 0,
+    },
+    "announcement": {
+        "color": "4070A0",
+        "label": "Announcement",
+        "order": 2,
+    },
+}
+
+CATEGORIES = {
+    "schedule": "Schedule",
+    "cfp": "Call for Papers",
+    "orga": "Organiser backend",
+    "orga:email": "Organiser backend: E-Mails",
+    "orga:speaker": "Organiser backend: Speaker management",
+    "orga:submission": "Organiser backend: Session management",
+    "orga:review": "Organiser backend: Review process",
+    "orga:schedule": "Organiser backend: Scheduling",
+    "api": "API",
+    "lang": "Languages and translations",
+    "": "General",
+    "admin": "Administrators",
+    "dev": "Developers and plugins",
 }
 
 
@@ -52,6 +61,10 @@ class Issue(nodes.Element):
     @property
     def number(self):
         return self.get("number", None)
+
+    @property
+    def category(self):
+        return self.get("category", None) or ""
 
     def __repr__(self):
         return f"<{self.type} #{self.number}>"
@@ -66,26 +79,24 @@ class Release(nodes.Element):
         return "<release {}>".format(self.number)
 
 
-def issues_role(name, rawtext, text, lineno, inliner, options={}, content=[]):
-    categories = [c for c in utils.unescape(text).split(",") if c not in ["-", "0", ""]]
+def issues_role(name, rawtext, text, *args, **kwargs):
+    attrs = [
+        attr.strip()
+        for attr in utils.unescape(text).split(",")
+        if attr not in ("", "-", "0")
+    ]
 
-    issue_no = None
-    identifier = None
-    if categories and categories[-1].isdigit():
-        issue_no = categories.pop(-1)
-        if issue_no not in ("-", "0"):
-            ref = f"https://github.com/pretalx/pretalx/issues/{issue_no}"
-            identifier = nodes.reference(rawtext, "#" + issue_no, refuri=ref, **options)
+    categories = [c for c in attrs if c in CATEGORIES.keys()]
+    category = categories[0] if categories else None
 
-    type_label_str = (
-        f'[<span style="color: #{ISSUE_TYPES[name]};">{name.capitalize()}</span>]'
-    )
+    issues = [i for i in attrs if i.isdigit()]
+    issue = issues[0] if issues else None
+
+    type_label_str = f'[<span style="color: #{ISSUE_TYPES[name]["color"]};">{ISSUE_TYPES[name]["label"]}</span>]'
     type_label = [nodes.raw(text=type_label_str, format="html")]
-    github_link = [nodes.inline(text=" "), identifier] if identifier else []
-    final_space = [] if identifier else [nodes.inline(text=" ")]
-    nodelist = type_label + github_link + [nodes.inline(text=":")] + final_space
 
-    node = Issue(number=issue_no, type_=name, nodelist=nodelist, category=category)
+    nodelist = type_label + [nodes.inline(text=" ")]
+    node = Issue(number=issue, type_=name, nodelist=nodelist, category=category)
     return [node], []
 
 
@@ -104,7 +115,7 @@ def _build_release_node(number, url, date=None, text=None):
     return release_node
 
 
-def release_role(name, rawtext, text, lineno, inliner, options={}, content=[]):
+def release_role(name, rawtext, text, lineno, inliner, *args, **kwargs):
     match = year_arg_re.match(text)
     if not match:
         msg = inliner.reporter.error("Must specify release date!")
@@ -116,8 +127,16 @@ def release_role(name, rawtext, text, lineno, inliner, options={}, content=[]):
 
 
 def collect_releases(entries):
-    releases = defaultdict(list)
-    current_release = None
+    releases = [
+        {
+            "release": _build_release_node(
+                "next",
+                "https://github.com/pretalx/pretalx/commits/main/",
+                text="Next Release",
+            ),
+            "entries": defaultdict(list),
+        }
+    ]
 
     for entry in entries:
         # Issue object is always found in obj (LI) index 0 (first, often only
@@ -126,70 +145,77 @@ def collect_releases(entries):
         obj = entry[0].pop(0)
         rest = entry
         if isinstance(obj, Release):
-            current_release = obj.number
-            releases[obj.number] = {
-                "release": obj,
-                "version": obj.number,
-                "entries": [],
-            }
-        else:
-            if not current_release:
-                current_release = "next"
+            # If the last release was empty, remove it
+            if not releases[-1]["entries"]:
+                releases.pop()
+            releases.append({"release": obj, "entries": defaultdict(list)})
+            continue
+        elif not isinstance(obj, Issue):
+            msg = f"Found issue node ({obj}) which is not an Issue! Please double-check your ReST syntax!"
+            msg += f"Context: {str(obj.parent)}"
+            raise ValueError(msg)
 
-                releases[current_release] = {
-                    "release": _build_release_node(
-                        "next",
-                        "https://github.com/pretalx/pretalx/commits/main/",
-                        text="Next Release",
-                    ),
-                    "version": "next",
-                    "entries": [],
-                }
-            if not isinstance(obj, Issue):
-                msg = f"Found issue node ({obj}) which is not an Issue! Please double-check your ReST syntax!"
-                msg += f"Context: {str(obj.parent)}"
-                raise ValueError(msg)
-
-            releases[current_release]["entries"].append(
-                {
-                    "issue": obj,
-                    "description": rest,
-                    "number": obj.number,
-                    "type": obj.type,
-                }
-            )
-
-    order = {"feature": 0, "bug": 1, "announcement": 2}
-    for release in releases.values():
-        release["entries"] = sorted(release["entries"], key=lambda x: order[x["type"]])
+        releases[-1]["entries"][obj.category].append(
+            {"issue": obj, "description": rest}
+        )
     return releases
+
+
+def construct_issue_nodes(issue, description):
+    description = description.deepcopy()
+    # Expand any other issue roles found in the description - sometimes we refer to related issues inline.
+    # (They can't be left as issue() objects at render time since that's undefined.)
+    # Use [:] slicing (even under modern Python; the objects here are docutils Nodes whose .copy() is weird)
+    # to avoid mutation during the loops.
+    for index, node in enumerate(description[:]):
+        for subindex, subnode in enumerate(node[:]):
+            if isinstance(subnode, Issue):
+                lst = subnode["nodelist"]
+                description[index][subindex : subindex + 1] = lst
+
+    if issue.number:
+        ref = f"https://github.com/pretalx/pretalx/issues/{issue.number}"
+        identifier = nodes.reference("", "#" + issue.number, refuri=ref)
+        github_link = [nodes.inline(text=" ("), identifier, nodes.inline(text=")")]
+        description[0].extend(github_link)
+
+    for node in reversed(issue["nodelist"]):
+        description[0].insert(0, node)
+
+    return description
+
+
+def construct_release_nodes(release, entries):
+    show_category_headers = len(entries) > 1
+    for category in CATEGORIES.keys():
+        issues = entries.get(category)
+        if not issues:
+            continue
+        # add a sub-header for the category
+        if show_category_headers:
+            release["nodelist"][0].append(
+                nodes.raw(
+                    rawtext="",
+                    text=f'<h4 style="margin-bottom: 0.3em;">{CATEGORIES[category]}</h4>',
+                    format="html",
+                )
+            )
+        issues = sorted(issues, key=lambda i: ISSUE_TYPES[i["issue"].type]["order"])
+        issue_nodes = [
+            construct_issue_nodes(issue["issue"], issue["description"])
+            for issue in issues
+        ]
+        issue_ul = nodes.bullet_list("", *issue_nodes)
+        release["nodelist"][0].append(issue_ul)
+
+    result = nodes.paragraph("", "", *release["nodelist"])
+    return result
 
 
 def construct_nodes(releases):
     result = []
-    for d in releases.values():
-        if not d["entries"]:
-            continue
-        obj = d["release"]
-        entries = []
-        for entry in d["entries"]:
-            desc = entry["description"].deepcopy()
-            # Expand any other issue roles found in the description - sometimes we refer to related issues inline.
-            # (They can't be left as issue() objects at render time since that's undefined.)
-            # Use [:] slicing (even under modern Python; the objects here are docutils Nodes whose .copy() is weird)
-            # to avoid mutation during the loops.
-            for index, node in enumerate(desc[:]):
-                for subindex, subnode in enumerate(node[:]):
-                    if isinstance(subnode, Issue):
-                        lst = subnode["nodelist"]
-                        desc[index][subindex : subindex + 1] = lst
-            for node in reversed(entry["issue"]["nodelist"]):
-                desc[0].insert(0, node)
-            entries.append(desc)
-        ul = nodes.bullet_list("", *entries)
-        obj["nodelist"][0].append(ul)
-        header = nodes.paragraph("", "", *obj["nodelist"])
-        result.extend(header)
+    for release in releases:
+        result.extend(construct_release_nodes(release["release"], release["entries"]))
     return result
 
 
@@ -215,7 +241,7 @@ def generate_changelog(app, doctree, docname):
 
 def setup(app):
     # Register intermediate roles
-    for name in list(ISSUE_TYPES):
+    for name in ISSUE_TYPES.keys():
         app.add_role(name, issues_role)
     app.add_role("release", release_role)
     # Hook in our changelog transmutation at appropriate step
