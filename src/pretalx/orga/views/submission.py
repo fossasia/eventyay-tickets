@@ -274,7 +274,7 @@ class SubmissionStateChange(SubmissionViewMixin, FormView):
             return self.request.event.orga_urls.submissions
         elif url and url_has_allowed_host_and_scheme(url, allowed_hosts=None):
             return url
-        return self.object.orga_urls.submissions
+        return self.request.event.orga_urls.submissions
 
     @context
     def next(self):
