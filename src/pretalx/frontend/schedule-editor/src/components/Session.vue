@@ -174,7 +174,7 @@ export default {
 		border-radius: 6px 0 0 6px
 		display: flex
 		flex-direction: column
-		align-items: flex-end
+		align-items: center
 		.start
 			font-size: 16px
 			font-weight: 600
@@ -187,8 +187,6 @@ export default {
 			.ampm
 				font-weight: 400
 				font-size: 13px
-		.duration
-			text-align: right
 	.info
 		flex: auto
 		display: flex
