@@ -12,7 +12,7 @@
 							span {{ method.label }}
 							i.fa.fa-sort-amount-asc(v-if="unassignedSort === method.name && unassignedSortDirection === 1")
 							i.fa.fa-sort-amount-desc(v-if="unassignedSort === method.name && unassignedSortDirection === -1")
-				session.new-break(:session="{title: '+ ' + $t('New break')}", :isDragged="false", @startDragging="startNewBreak")
+				session.new-break(:session="{title: '+ ' + $t('New break')}", :isDragged="false", @startDragging="startNewBreak", @click="showNewBreakHint", v-tooltip.fixed="{text: newBreakTooltip, show: newBreakTooltip}", @pointerleave="removeNewBreakHint")
 				session(v-for="un in unscheduled", :session="un", @startDragging="startDragging", :isDragged="draggedSession && un.id === draggedSession.id")
 			#schedule-wrapper(v-scrollbar.x.y="")
 				bunt-tabs.days(v-if="days", :modelValue="currentDay.format()", ref="tabs" :class="['grid-tabs']")
@@ -110,7 +110,8 @@ export default {
 			unassignedSort: 'title',
 			unassignedSortDirection: 1,  // asc
 			showUnassignedSortMenu: false,
-			getLocalizedString
+			newBreakTooltip: '',
+			getLocalizedString,
 		}
 	},
 	computed: {
@@ -297,6 +298,14 @@ export default {
 			this.schedule.talks = this.schedule.talks.filter(s => s.id !== this.editorSession.id)
 			this.editorSessionWaiting = false
 			this.editorSession = null
+		},
+		showNewBreakHint () {
+			// Users try to click the "+ New Break" box instead of dragging it to the schedule
+			// so we show a hint on-click
+			this.newBreakTooltip = this.$t('Drag the box to the schedule to create a new break.')
+		},
+		removeNewBreakHint () {
+			this.newBreakTooltip = ''
 		},
 		startNewBreak({event}) {
 			const title = this.locales.reduce((obj, locale) => {

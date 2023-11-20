@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`orga:schedule,1587` A hint now shows when users click the "New break" box, informing them that they have to drag it to the schedule instead.
 - :feature:`orga:schedule` Breaks now also show their start time and duration in the schedule editor.
 - :feature:`schedule` Breaks now also show their start time and duration in the schedule.
 - :bug:`orga:speaker` The buttons to mark speakers as arrived would only show up once an event was over.
