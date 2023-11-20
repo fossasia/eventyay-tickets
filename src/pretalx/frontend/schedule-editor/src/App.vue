@@ -333,7 +333,7 @@ export default {
 						movedSession.end = null
 						movedSession.room = null
 						this.saveTalk(movedSession)
-					} else {
+					} else if (this.schedule.talks.find(s => s.id === this.draggedSession.id)) {
 						this.schedule.talks = this.schedule.talks.filter(s => s.id !== this.draggedSession.id)
 						api.deleteTalk(this.draggedSession)
 					}
