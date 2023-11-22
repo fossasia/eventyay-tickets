@@ -144,7 +144,7 @@ class EventWizardBasicsForm(I18nHelpText, I18nModelForm):
         self.locales = locales or []
         super().__init__(*args, **kwargs, locales=locales)
         self.fields["locale"].choices = [
-            (a, b) for a, b in settings.LANGUAGES if a in locales
+            (a, b) for a, b in settings.LANGUAGES if a in self.locales
         ]
         self.fields["slug"].help_text = (
             str(
