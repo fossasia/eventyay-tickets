@@ -521,7 +521,7 @@ def test_invite_orga_member(orga_client, event):
     assert team.invites.count() == 0
     response = orga_client.post(
         team.orga_urls.base,
-        {"email": "other@user.org", "form": "invite"},
+        {"invite-email": "other@user.org", "form": "invite"},
         follow=True,
     )
     assert response.status_code == 200
@@ -535,7 +535,7 @@ def test_retract_invitation(orga_client, event):
     team = event.organiser.teams.get(can_change_submissions=True, is_reviewer=False)
     response = orga_client.post(
         team.orga_urls.base,
-        {"email": "other@user.org", "form": "invite"},
+        {"invite-email": "other@user.org", "form": "invite"},
         follow=True,
     )
     assert response.status_code == 200
