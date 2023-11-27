@@ -1,5 +1,6 @@
 from django import forms
 from django.conf import settings
+from django.core.validators import validate_email
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 from django_scopes import scopes_disabled
@@ -88,9 +89,54 @@ class TeamForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
 
 
 class TeamInviteForm(ReadOnlyFlag, forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields["email"].required = True
+    bulk_email = forms.CharField(
+        label=_("Email addresses"),
+        help_text=_("Enter one email address per line."),
+        widget=forms.Textarea(attrs={"rows": 5}),
+        required=False,
+    )
+
+    def clean_bulk_email(self):
+        data = self.cleaned_data["bulk_email"]
+        if not data:
+            return []
+        result = []
+        for email in data.split("\n"):
+            email = email.strip()
+            try:
+                validate_email(email)
+                result.append(email)
+            except forms.ValidationError:
+                self.add_error(
+                    "bulk_email",
+                    forms.ValidationError(
+                        _("“%(email)s” is not a valid email address."),
+                        params={"email": email},
+                    ),
+                )
+        return result
+
+    def clean(self):
+        data = super().clean()
+        if not self.errors:
+            # if we already have found errors, no need to add another one
+            if not data.get("email") and not data.get("bulk_email"):
+                raise forms.ValidationError(
+                    _("Please enter at least one email address!")
+                )
+        return data
+
+    def save(self, team):
+        if emails := self.cleaned_data.get("bulk_email"):
+            invites = TeamInvite.objects.bulk_create(
+                [TeamInvite(team=team, email=email) for email in emails]
+            )
+        else:
+            self.instance.team = team
+            invites = [super().save()]
+        for invite in invites:
+            invite.send()
+        return invites
 
     class Meta:
         model = TeamInvite

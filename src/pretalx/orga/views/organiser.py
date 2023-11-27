@@ -60,7 +60,7 @@ class TeamDetail(PermissionRequired, TeamMixin, CreateOrUpdateView):
         is_bound = (
             self.request.method == "POST" and self.request.POST.get("form") == "invite"
         )
-        return TeamInviteForm(self.request.POST if is_bound else None)
+        return TeamInviteForm(self.request.POST if is_bound else None, prefix="invite")
 
     @context
     @cached_property
@@ -72,14 +72,14 @@ class TeamDetail(PermissionRequired, TeamMixin, CreateOrUpdateView):
     def post(self, *args, **kwargs):
         if self.invite_form.is_bound:
             if self.invite_form.is_valid():
-                invite = TeamInvite.objects.create(
-                    team=self.get_object(),
-                    email=self.invite_form.cleaned_data["email"].lower().strip(),
-                )
-                invite.send()
-                messages.success(self.request, _("The invitation has been sent."))
+                invites = self.invite_form.save(team=self.team)
+                if len(invites) == 1:
+                    messages.success(self.request, _("The invitation has been sent."))
+                else:
+                    messages.success(self.request, _("The invitations have been sent."))
             else:
-                return self.form_invalid(self.invite_form)
+                for error in self.invite_form.errors.values():
+                    messages.error(self.request, "\n".join(error))
             return redirect(self.request.path)
         return super().post(*args, **kwargs)
 
@@ -88,10 +88,9 @@ class TeamDetail(PermissionRequired, TeamMixin, CreateOrUpdateView):
         form.save()
         if created:
             messages.success(self.request, _("The team has been created."))
-        else:
-            messages.success(self.request, _("The settings have been saved."))
-        if created:
             return redirect(self.request.organiser.orga_urls.base)
+        if form.has_changed():
+            messages.success(self.request, _("The settings have been saved."))
         success_url = self.request.GET.get("next", self.request.path)
         return redirect(success_url)
 

@@ -13,3 +13,11 @@ const updateVisibility = () => {
 }
 document.querySelector("input#id_is_reviewer").addEventListener("change", (event) => {updateVisibility()})
 updateVisibility()
+
+
+document.querySelector("a#bulk-email").addEventListener("click", (event) => {
+    event.preventDefault()
+    document.querySelector(".single-email-group").classList.add("d-none")
+    document.querySelector(".bulk-email-group").classList.remove("d-none")
+    document.querySelector(".bulk-email-help-text").classList.remove("d-none")
+})
