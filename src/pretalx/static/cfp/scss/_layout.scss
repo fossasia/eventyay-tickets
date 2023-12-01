@@ -70,7 +70,8 @@ header {
 }
 
 #user-dropdown-label .dropdown-content {
-  a, a:hover {
+  a,
+  a:hover {
     color: $brand-primary;
   }
 }

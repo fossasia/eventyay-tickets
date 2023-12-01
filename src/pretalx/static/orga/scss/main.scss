@@ -148,7 +148,6 @@ h3 {
   }
 }
 
-
 .accordion .card {
   h2 {
     margin-bottom: 0;
@@ -157,7 +156,8 @@ h3 {
     align-items: baseline;
   }
 }
-.accordion .card button[data-toggle="collapse"]::before, details summary.card-header::before {
+.accordion .card button[data-toggle="collapse"]::before,
+details summary.card-header::before {
   content: "\f106";
   position: absolute;
   left: 14px;
@@ -172,18 +172,20 @@ h3 {
   transform: rotate(90deg);
   transition: transform 150ms ease-in 0s;
 }
-#template-accordion button[data-toggle="collapse"][aria-expanded="true"]::before, details[open] summary::before {
+#template-accordion
+  button[data-toggle="collapse"][aria-expanded="true"]::before,
+details[open] summary::before {
   transform: rotate(180deg);
 }
 
 details.card {
-    margin-bottom: 18px;
-    summary.card-header {
-        list-style: none;
-        padding-left: 36px;
-        font-weight: bold;
-        &::before {
-            top: 18px;
-        }
+  margin-bottom: 18px;
+  summary.card-header {
+    list-style: none;
+    padding-left: 36px;
+    font-weight: bold;
+    &::before {
+      top: 18px;
     }
+  }
 }

@@ -13,7 +13,8 @@ html.rtl {
     text-align: left;
   }
 
-  .table-flip th, .table-flip td {
+  .table-flip th,
+  .table-flip td {
     text-align: right;
   }
 
@@ -100,7 +101,8 @@ html.rtl {
     left: auto;
   }
 
-  .help-text, .form-text {
+  .help-text,
+  .form-text {
     text-align: right;
   }
   .mr-auto.flip {
@@ -117,7 +119,8 @@ html.rtl {
   .flip-row {
     flex-direction: row-reverse;
   }
-  input[lang], textarea[lang] {
+  input[lang],
+  textarea[lang] {
     background-position: right 10px top 12px;
     padding-right: 34px;
   }
@@ -127,7 +130,11 @@ html.rtl {
       margin-right: -16px;
     }
   }
-  ul, h2, h3, p, .avatar-upload {
+  ul,
+  h2,
+  h3,
+  p,
+  .avatar-upload {
     text-align: right;
   }
   .dropdown-content-se {

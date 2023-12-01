@@ -48,13 +48,14 @@ aside.sidebar {
   margin-top: 50px;
   overflow-y: auto;
 
-  &.sidebar-uncollapsed, &:hover {
+  &.sidebar-uncollapsed,
+  &:hover {
     width: 250px;
     a.nav-link i + span {
-      display: inline-block
+      display: inline-block;
     }
     .nav-fold div > a {
-      display: block
+      display: block;
     }
   }
 
@@ -138,7 +139,9 @@ aside.sidebar {
   background-color: $offwhite;
   border-bottom: 4px $brand-primary solid;
   padding: 0.25rem;
-  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.12), 1px 1px 2px rgba(0, 0, 0, 0.24);
+  box-shadow:
+    1px 1px 3px rgba(0, 0, 0, 0.12),
+    1px 1px 2px rgba(0, 0, 0, 0.24);
   z-index: 200;
 
   .twitter-typeahead {
@@ -155,7 +158,9 @@ aside.sidebar {
     position: absolute;
     top: 49px;
     padding: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.12),
+      0 1px 2px rgba(0, 0, 0, 0.24);
     border-radius: 0;
     width: 300px;
     z-index: 0;
@@ -350,7 +355,8 @@ footer {
     }
   }
 
-  .btn, details {
+  .btn,
+  details {
     align-self: flex-start;
     margin-top: auto;
     margin-bottom: 16px;
@@ -360,7 +366,7 @@ footer {
     margin-left: auto;
   }
   #pending .form-group {
-    margin-bottom: 0
+    margin-bottom: 0;
   }
   #pending label {
     color: #6c757d;
@@ -420,8 +426,25 @@ footer {
     border: 1px solid $gray-light;
     max-width: 180px;
     background-size: 21px 21px;
-    background-position: 0 0, 10px 10px;
-    background-image: linear-gradient(45deg,#efefef 25%,rgba(239,239,239,0) 25%,rgba(239,239,239,0) 75%,#efefef 75%,#efefef),linear-gradient(45deg,#efefef 25%,rgba(239,239,239,0) 25%,rgba(239,239,239,0) 75%,#efefef 75%,#efefef)
+    background-position:
+      0 0,
+      10px 10px;
+    background-image: linear-gradient(
+        45deg,
+        #efefef 25%,
+        rgba(239, 239, 239, 0) 25%,
+        rgba(239, 239, 239, 0) 75%,
+        #efefef 75%,
+        #efefef
+      ),
+      linear-gradient(
+        45deg,
+        #efefef 25%,
+        rgba(239, 239, 239, 0) 25%,
+        rgba(239, 239, 239, 0) 75%,
+        #efefef 75%,
+        #efefef
+      );
   }
 }
 
@@ -458,7 +481,8 @@ footer {
         padding-right: 8px;
         width: 350px;
 
-        &.time, &.person {
+        &.time,
+        &.person {
           width: 200px;
         }
 
@@ -633,7 +657,13 @@ h2 .submission-state-dropdown {
 .submission-state-dropdown {
   display: inline-block;
   border-radius: 6px;
-  background-image: repeating-linear-gradient(315deg, var(--submission-color-primary), var(--submission-color-primary) 8px, var(--submission-color-secondary) 8px, var(--submission-color-secondary) 16px);
+  background-image: repeating-linear-gradient(
+    315deg,
+    var(--submission-color-primary),
+    var(--submission-color-primary) 8px,
+    var(--submission-color-secondary) 8px,
+    var(--submission-color-secondary) 16px
+  );
   padding: 3px;
 
   summary {
@@ -660,7 +690,7 @@ h2 .submission-state-dropdown {
     }
   }
   &:hover summary {
-    background-color:inherit;
+    background-color: inherit;
     color: inherit;
   }
 
@@ -779,7 +809,7 @@ h2 .submission-state-dropdown {
     line-height: 2.5;
   }
   tr th:first-child {
-    max-width: 200px
+    max-width: 200px;
   }
 }
 #id_locales.checkbox,
@@ -833,7 +863,9 @@ h2 .submission-state-dropdown {
 .colorpicker-2x .colorpicker-alpha,
 .colorpicker-2x .colorpicker-preview {
   background-size: 20px 20px;
-  background-position: 0 0, 10px 10px;
+  background-position:
+    0 0,
+    10px 10px;
 }
 
 .colorpicker-2x .colorpicker-preview,
@@ -857,7 +889,8 @@ h2 .submission-state-dropdown {
   border: 2px solid $gray-light;
   margin-right: 2px;
 }
-.phase-option-row .row, .score-row .row {
+.phase-option-row .row,
+.score-row .row {
   margin-bottom: 8px;
   .text-right input {
     text-align: right;
@@ -986,12 +1019,11 @@ h2 .submission-state-dropdown {
       margin-top: 8px;
     }
   }
-
 }
 .review-table.table {
   thead th {
     position: sticky;
-    top: 0;  // can't be sticky due to scroll containers, but we keep the sticky to make the &:after work
+    top: 0; // can't be sticky due to scroll containers, but we keep the sticky to make the &:after work
     background-color: white;
     border-bottom: none;
     z-index: 50;
@@ -1175,7 +1207,8 @@ div.mail-preview {
     @include border-bottom-radius($input-border-radius);
     margin-bottom: 20px;
   }
-  h2, h3 {
+  h2,
+  h3 {
     margin-bottom: 20px;
     margin-top: 10px;
   }
@@ -1203,24 +1236,24 @@ div.mail-preview {
   }
 }
 .list-group {
-    .list-group-item-action {
-        h4 {
-            color: $brand-primary;
-            display: flex;
-            justify-content: space-between;
-            margin-top: 8px;
-            .fa-chevron-right {
-                position: absolute;
-                right: 24px;
-                height: 24px;
-                top: calc(50% - 12px);
-            }
-        }
+  .list-group-item-action {
+    h4 {
+      color: $brand-primary;
+      display: flex;
+      justify-content: space-between;
+      margin-top: 8px;
+      .fa-chevron-right {
+        position: absolute;
+        right: 24px;
+        height: 24px;
+        top: calc(50% - 12px);
+      }
     }
+  }
 }
 
 .form-with-placeholder {
-    margin-right: 300px;
+  margin-right: 300px;
 }
 #placeholder-column {
   width: 270px;
@@ -1266,10 +1299,12 @@ div.mail-preview {
 }
 
 @media print {
-    body, #page-content, .pretalx-schedule {
-        height: 100% !important;
-    }
-    .no-print {
-        display: none !important;
-    }
+  body,
+  #page-content,
+  .pretalx-schedule {
+    height: 100% !important;
+  }
+  .no-print {
+    display: none !important;
+  }
 }

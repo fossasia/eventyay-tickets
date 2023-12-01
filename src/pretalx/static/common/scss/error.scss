@@ -5,7 +5,8 @@
 
 body {
   background: darken($brand-primary, 12%);
-  a, a:hover {
+  a,
+  a:hover {
     font-weight: bold;
     color: white;
     text-decoration: underline;

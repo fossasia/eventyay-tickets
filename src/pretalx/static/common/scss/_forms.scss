@@ -144,7 +144,8 @@ table .form-check,
 table .radio .form-check {
   line-height: 1.4;
   margin-top: 2px;
-  label:before, label:after {
+  label:before,
+  label:after {
     margin-left: -35px;
   }
 }
@@ -215,13 +216,14 @@ table .radio .form-check {
   }
 }
 .inline-group {
-  .radio, .form-check, .checkbox {
+  .radio,
+  .form-check,
+  .checkbox {
     display: flex;
     padding: 0 16px;
     margin-right: 18px;
   }
 }
-
 
 table .form-check label,
 table .checkbox label,
@@ -261,7 +263,8 @@ table .action-column {
   }
 }
 /* fix input group prepend look */
-.input-group-text.input-group-prepend, .input-group-text.input-group-append {
+.input-group-text.input-group-prepend,
+.input-group-text.input-group-append {
   font-size: inherit;
 }
 
@@ -300,12 +303,13 @@ table .action-column {
   }
 }
 textarea {
-    form-sizing: auto;
+  form-sizing: auto;
 }
 @include media-breakpoint-down(md) {
   .submit-group {
     flex-direction: column;
-    button, .btn {
+    button,
+    .btn {
       width: 100%;
       margin-bottom: 8px;
     }

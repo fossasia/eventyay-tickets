@@ -12,7 +12,9 @@
       width: 100%;
     }
   }
-  header, #fahrplan.grid #schedule-nav { // keep these left while scrolling sideways
+  header,
+  #fahrplan.grid #schedule-nav {
+    // keep these left while scrolling sideways
     margin: 0;
     padding: 0;
     position: sticky;
@@ -76,7 +78,8 @@ header {
   }
 }
 
-#fahrplan noscript, .pretalx-tabbed {
+#fahrplan noscript,
+.pretalx-tabbed {
   max-width: 80vw;
   min-width: 360px;
   margin: 0 auto;
@@ -89,7 +92,7 @@ header {
 .pretalx-tabbed {
   display: flex;
   flex-direction: column-reverse;
-  input[name=tabs] {
+  input[name="tabs"] {
     display: none;
 
     &:not(:checked) + .pretalx-tab-content {
@@ -109,7 +112,11 @@ header {
   background-color: $white;
   z-index: 200;
 
-  h4, h3, h2, h1, .pretalx-tab {
+  h4,
+  h3,
+  h2,
+  h1,
+  .pretalx-tab {
     padding: 8px 24px;
     font-size: 14pt;
     overflow: hidden;
@@ -156,29 +163,32 @@ header {
 
 .pretalx-list-day {
   .bucket-time {
-    color: rgba(0,0,0,.54);
+    color: rgba(0, 0, 0, 0.54);
     font-size: 14px;
     font-weight: 500;
   }
   a:hover {
     text-decoration: none;
-    .title { color: $brand-primary }
+    .title {
+      color: $brand-primary;
+    }
   }
 }
 .pretalx-session {
   display: flex;
-      min-width: 360px;
-      min-height: 96px;
-      margin: 8px;
-      overflow: hidden;
+  min-width: 360px;
+  min-height: 96px;
+  margin: 8px;
+  overflow: hidden;
   font-size: 14px;
   &.break {
     .pretalx-session-info .title {
-      color: rgba(0,0,0,.54);
+      color: rgba(0, 0, 0, 0.54);
     }
   }
   &:hover {
-    .pretalx-session-info, .pretalx-session-time-box.avatar {
+    .pretalx-session-info,
+    .pretalx-session-time-box.avatar {
       border-color: var(--track-color);
     }
   }
@@ -195,7 +205,7 @@ header {
       width: auto;
       background-color: white;
       border: 1px solid;
-      border-color: rgba(0,0,0,.12);
+      border-color: rgba(0, 0, 0, 0.12);
       border-right: none;
       .avatar-wrapper {
         width: 100px;
@@ -223,7 +233,7 @@ header {
       align-self: stretch;
     }
     .duration {
-      color: hsla(0,0%,100%,.7);
+      color: hsla(0, 0%, 100%, 0.7);
     }
   }
   .pretalx-session-info {
@@ -231,19 +241,19 @@ header {
     display: flex;
     flex-direction: column;
     padding: 8px;
-    border: 1px solid rgba(0,0,0,.12);
+    border: 1px solid rgba(0, 0, 0, 0.12);
     border-left: none;
     border-radius: 0 6px 6px 0;
     background-color: #fff;
     min-width: 0;
-    color: rgba(0,0,0,.87);
+    color: rgba(0, 0, 0, 0.87);
     .title {
       font-size: 16px;
       font-weight: 500;
       margin-bottom: 4px;
     }
     .speakers {
-      color: rgba(0,0,0,.54);
+      color: rgba(0, 0, 0, 0.54);
     }
     .abstract {
       margin: 8px 0 12px 0;
@@ -256,7 +266,8 @@ header {
       flex: auto;
       display: flex;
       align-items: flex-end;
-      .room, .track {
+      .room,
+      .track {
         flex: 1;
         white-space: nowrap;
         display: inline-block;
@@ -271,7 +282,7 @@ header {
       }
       .room {
         text-align: right;
-        color: rgba(0,0,0,.54);
+        color: rgba(0, 0, 0, 0.54);
       }
     }
   }
@@ -294,7 +305,7 @@ article .pretalx-session .pretalx-session-info .abstract {
     #schedule-nav {
       align-items: baseline;
 
-      &>.navigation {
+      & > .navigation {
         margin-bottom: 16px;
         display: flex;
         justify-content: stretch;
@@ -359,22 +370,22 @@ article .pretalx-session .pretalx-session-info .abstract {
     margin-left: auto;
   }
   #fav-button {
-      color: rgb(255, 160, 0);
-      padding: 0;
-      width: 30px;
-      height: 30px;
-      border-radius: 100%;
-      font-size: 20px;
-      background-color: $gray-lightest;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      text-decoration: none;
+    color: rgb(255, 160, 0);
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    border-radius: 100%;
+    font-size: 20px;
+    background-color: $gray-lightest;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
   }
 }
 #fahrplan.list {
   .pretalx-tab-content {
-    margin : 20px;
+    margin: 20px;
     margin-top: 8px;
   }
 }

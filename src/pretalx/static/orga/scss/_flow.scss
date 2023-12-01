@@ -13,7 +13,9 @@
     padding-left: 0;
     flex-direction: column;
     > .step {
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+      box-shadow:
+        0 1px 3px rgba(0, 0, 0, 0.12),
+        0 1px 2px rgba(0, 0, 0, 0.24);
       margin: 18px;
       margin-bottom: 24px;
 
@@ -48,7 +50,8 @@
             background-color: $gray-light;
             transition: all 0.5s ease;
           }
-          &:hover, & *:hover {
+          &:hover,
+          & *:hover {
             cursor: pointer;
           }
         }
@@ -70,7 +73,9 @@
               margin: 20px;
               font-weight: bold;
               font-size: 22px;
-              box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.18), 3px 1px 4px rgba(0, 0, 0, 0.30);
+              box-shadow:
+                3px 3px 5px rgba(0, 0, 0, 0.18),
+                3px 1px 4px rgba(0, 0, 0, 0.3);
               border: $brand-danger 4px solid;
               background-color: white;
             }
@@ -101,7 +106,9 @@
   bottom: 1px;
   left: 250px;
   right: 0;
-  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.12), 1px 1px 5px rgba(0, 0, 0, 0.24);
+  box-shadow:
+    1px 1px 3px rgba(0, 0, 0, 0.12),
+    1px 1px 5px rgba(0, 0, 0, 0.24);
   button {
     margin-left: auto;
   }
@@ -118,7 +125,9 @@
   padding: 16px 32px;
   background: white;
   z-index: 50;
-  box-shadow: 0 5px 11px 0 rgba(0,0,0,.18),0 4px 15px 0 rgba(0,0,0,.15);
+  box-shadow:
+    0 5px 11px 0 rgba(0, 0, 0, 0.18),
+    0 4px 15px 0 rgba(0, 0, 0, 0.15);
   .i18n-form-group {
     margin-top: 8px;
   }

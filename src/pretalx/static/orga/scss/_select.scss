@@ -16,8 +16,9 @@
     }
   }
 }
-.form-group, .score-group {
-  .select2-container--default  {
+.form-group,
+.score-group {
+  .select2-container--default {
     width: 100% !important;
     .select2-selection--multiple,
     .select2-selection {
@@ -88,7 +89,6 @@
           border-right: 5px solid transparent;
         }
       }
-
     }
     .select2-selection--single .select2-selection__rendered {
       padding-left: 18px;
@@ -104,7 +104,9 @@
 }
 .select2-search input[type="search"] {
   border-radius: 4px;
-  &:focus, &:focus-visible {  /* on search fields, focus-visible applies when on other fields focus applies, so we copy :focus rules here */
+  &:focus,
+  &:focus-visible {
+    /* on search fields, focus-visible applies when on other fields focus applies, so we copy :focus rules here */
     box-shadow: 0 0 0 1px rgba(58, 165, 124, 0.25);
     border-color: #89d6b8;
     outline: 0;
