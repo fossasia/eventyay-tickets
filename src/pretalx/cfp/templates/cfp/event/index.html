@@ -31,6 +31,11 @@
                     {{ phrases.cfp.go_to_cfp }}
                 </a>
             {% endif %}
+          {% if can_see_orga_area %}
+            <a class="btn btn-info btn-lg btn-block" href="{{ request.event.orga_urls.base }}">
+                    {% translate "Go To Organiser Area" %}
+            </a>
+          {% endif %}
         </div>
     {% endwith %}
 {% endblock content %}
