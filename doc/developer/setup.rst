@@ -127,7 +127,7 @@ compile the JavaScript files::
 If you want to change the JavaScript code, you can run the following command, which combines
 the Python and the JavaScript dev servers::
 
-    (env)$ python manage.py devserver --dev
+    (env)$ python manage.py devserver
 
 .. _`checksandtests`:
 
