@@ -56,6 +56,7 @@ class SubmissionSerializer(I18nAwareModelSerializer):
     title = SerializerMethodField()
     abstract = SerializerMethodField()
     description = SerializerMethodField()
+    answers = SerializerMethodField()
 
     speaker_serializer_class = SubmitterSerializer
 
@@ -81,6 +82,21 @@ class SubmissionSerializer(I18nAwareModelSerializer):
         if self.can_view_speakers:
             return getattr(obj, attribute, None)
         return obj.anonymised.get(attribute) or getattr(obj, attribute, None)
+
+    def answers_queryset(self, obj):
+        return obj.answers.all().filter(
+            question__is_public=True,
+            question__active=True,
+            question__target="submission",
+        )
+
+    def get_answers(self, obj):
+        if not self.questions:
+            return []
+        queryset = self.answers_queryset(obj)
+        if self.questions not in ["all", ["all"]]:
+            queryset = queryset.filter(question__in=self.questions)
+        return AnswerSerializer(queryset, many=True).data
 
     def __init__(self, *args, **kwargs):
         self.can_view_speakers = kwargs.pop("can_view_speakers", False)
@@ -114,6 +130,7 @@ class SubmissionSerializer(I18nAwareModelSerializer):
             "slot",
             "image",
             "resources",
+            "answers",
         ]
 
 
@@ -124,7 +141,6 @@ class TagSerializer(I18nAwareModelSerializer):
 
 
 class SubmissionOrgaSerializer(SubmissionSerializer):
-    answers = SerializerMethodField()
     tags = SerializerMethodField()
     tag_ids = SerializerMethodField()
     created = SerializerMethodField()
@@ -133,14 +149,6 @@ class SubmissionOrgaSerializer(SubmissionSerializer):
 
     def answers_queryset(self, obj):
         return obj.answers.all()
-
-    def get_answers(self, obj):
-        if not self.questions:
-            return []
-        queryset = self.answers_queryset(obj)
-        if self.questions not in ["all", ["all"]]:
-            queryset = queryset.filter(question__in=self.questions)
-        return AnswerSerializer(queryset, many=True).data
 
     def get_created(self, obj):
         return obj.created.astimezone(obj.event.tz).isoformat()
