@@ -35,6 +35,7 @@ class SpeakerSerializer(ModelSerializer):
     name = CharField(source="user.name")
     avatar = SerializerMethodField()
     submissions = SerializerMethodField()
+    answers = SerializerMethodField()
 
     def __init__(self, *args, **kwargs):
         questions = kwargs.pop("questions", [])
@@ -58,20 +59,10 @@ class SpeakerSerializer(ModelSerializer):
             event=obj.event, slots__in=talks
         ).values_list("code", flat=True)
 
-    class Meta:
-        model = SpeakerProfile
-        fields = ("code", "name", "biography", "submissions", "avatar")
-
-
-class SpeakerOrgaSerializer(SpeakerSerializer):
-    email = CharField(source="user.email")
-    answers = SerializerMethodField()
-    availabilities = AvailabilitySerializer(
-        Availability.objects.none(), many=True, read_only=True
-    )
-
     def answers_queryset(self, obj):
-        return obj.answers.all()
+        return obj.answers.all().filter(
+            question__is_public=True, question__active=True, question__target="speaker"
+        )
 
     def get_answers(self, obj):
         if not self.questions:
@@ -81,13 +72,27 @@ class SpeakerOrgaSerializer(SpeakerSerializer):
             queryset = queryset.filter(question__in=self.questions)
         return AnswerSerializer(queryset, many=True).data
 
+    class Meta:
+        model = SpeakerProfile
+        fields = ("code", "name", "biography", "submissions", "avatar", "answers")
+
+
+class SpeakerOrgaSerializer(SpeakerSerializer):
+    email = CharField(source="user.email")
+    availabilities = AvailabilitySerializer(
+        Availability.objects.none(), many=True, read_only=True
+    )
+
+    def answers_queryset(self, obj):
+        return obj.answers.all()
+
     def get_submissions(self, obj):
         return obj.user.submissions.filter(event=obj.event).values_list(
             "code", flat=True
         )
 
     class Meta(SpeakerSerializer.Meta):
-        fields = SpeakerSerializer.Meta.fields + ("answers", "email", "availabilities")
+        fields = SpeakerSerializer.Meta.fields + ("email", "availabilities")
 
 
 class SpeakerReviewerSerializer(SpeakerOrgaSerializer):
