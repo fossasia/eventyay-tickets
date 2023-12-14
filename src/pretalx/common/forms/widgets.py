@@ -36,7 +36,7 @@ class PasswordStrengthInput(PasswordInput):
         return mark_safe(super().render(name, value, self.attrs) + markup)
 
     class Media:  # Note: we don't use {{ form.media }}, since it doesn't allow us to load media async, and the zxcvbn scripts are horribly slow
-        js = ("common/js/zxcvbn.js", "common/js/password_strength.js")
+        js = ("vendored/zxcvbn.js", "common/js/password_strength.js")
 
 
 class PasswordConfirmationInput(PasswordInput):
