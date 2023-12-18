@@ -110,7 +110,7 @@ jobs:
         if: ${{ failure() }} && matrix.database == 'postgres' && matrix.python-version == '3.10'
 
       - name: Upload HTML report if tests failed.
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: html-report
           path: ./src/htmlcov
