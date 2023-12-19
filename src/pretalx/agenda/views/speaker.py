@@ -124,7 +124,9 @@ class SpeakerTalksIcalView(PermissionRequired, DetailView):
         for slot in slots:
             slot.build_ical(cal)
 
-        speaker_name = Storage().get_valid_name(name=speaker.user.name)
+        speaker_name = Storage().get_valid_name(
+            name=speaker.user.name or speaker.user.code
+        )
         return HttpResponse(
             cal.serialize(),
             content_type="text/calendar",
