@@ -1,5 +1,5 @@
 from django import forms
-from django.db.models import Count, Exists, OuterRef
+from django.db.models import Count, Exists, OuterRef, Q
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django_scopes.forms import SafeModelChoiceField
@@ -72,9 +72,14 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
 
             access_code = self.access_code or getattr(instance, "access_code", None)
             if not access_code or not access_code.track:
-                self.fields["track"].queryset = self.event.tracks.filter(
+                track_filter = self.event.tracks.filter(
                     requires_access_code=False
                 )
+                # ensure current track selection can be preserved
+                if instance and instance.track and instance.track.requires_access_code:
+                    track_filter = self.event.tracks.filter(Q(requires_access_code=False)|Q(pk=instance.track.pk))
+
+                self.fields["track"].queryset = track_filter
             else:
                 self.fields["track"].queryset = self.event.tracks.filter(
                     pk=access_code.track.pk
