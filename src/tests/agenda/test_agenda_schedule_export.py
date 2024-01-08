@@ -45,7 +45,7 @@ def test_schedule_frab_xml_export(
     schedule_schema,
     break_slot,
 ):
-    with django_assert_max_num_queries(9):
+    with django_assert_max_num_queries(11):
         response = client.get(
             reverse(
                 "agenda:export.schedule.xml",
@@ -64,7 +64,7 @@ def test_schedule_frab_xml_export(
     etree.fromstring(
         response.content, parser
     )  # Will raise if the schedule does not match the schema
-    with django_assert_max_num_queries(7):
+    with django_assert_max_num_queries(9):
         response = client.get(
             reverse(
                 "agenda:export.schedule.xml",
@@ -83,7 +83,7 @@ def test_schedule_frab_xml_export_control_char(
     slot.submission.description = "control char: \a"
     slot.submission.save()
 
-    with django_assert_max_num_queries(8):
+    with django_assert_max_num_queries(10):
         response = client.get(
             reverse(
                 "agenda:export.schedule.xml",
