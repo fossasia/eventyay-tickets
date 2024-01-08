@@ -39,7 +39,14 @@ def test_speaker_serializer(slot):
         user = user_profile.user
         data = SpeakerSerializer(user_profile).data
         assert slot.submission.code in data["submissions"]
-    assert data.keys() == {"name", "code", "biography", "submissions", "avatar"}
+    assert data.keys() == {
+        "name",
+        "code",
+        "biography",
+        "submissions",
+        "avatar",
+        "answers",
+    }
     assert data["name"] == user.name
     assert data["code"] == user.code
 
@@ -133,7 +140,9 @@ def test_can_only_see_public_speakers(
         "biography",
         "submissions",
         "avatar",
+        "answers",
     }
+    assert not content["results"][0]["answers"]
 
 
 @pytest.mark.django_db

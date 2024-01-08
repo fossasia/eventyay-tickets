@@ -35,6 +35,7 @@ def test_submission_slot_serializer(slot):
             "track",
             "track_id",
             "resources",
+            "answers",
         }
         assert set(data["slot"].keys()) == {"start", "end", "room", "room_id"}
         assert data["slot"]["room"] == slot.room.name
@@ -139,6 +140,7 @@ def test_submission_serializer(submission, resource):
             "track",
             "track_id",
             "resources",
+            "answers",
         }
         assert isinstance(data["speakers"], list)
         assert data["speakers"] == []
