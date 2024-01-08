@@ -13,17 +13,25 @@
         <xs:element type="xs:string" name="version"/>
         <xs:element name="conference">
           <xs:complexType>
-            <xs:all>
-              <xs:element type="xs:string"  name="title"/>
-              <xs:element type="acronym"  name="acronym"/>
+            <xs:sequence>
+              <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element type="xs:string"  name="title" maxOccurs="1"/>
+                <xs:element type="acronym"  name="acronym" maxOccurs="1"/>
 
-              <xs:element type="dateOrDateTimeTZ" name="start" minOccurs="0"/>
-              <xs:element type="dateOrDateTimeTZ" name="end" minOccurs="0"/>
-              <xs:element type="xs:integer"       name="days" minOccurs="0"/>
-              <xs:element type="duration"         name="timeslot_duration" minOccurs="0"/>
-              <xs:element type="httpURI"          name="base_url" minOccurs="0"/>
-              <xs:element type="xs:string"        name="time_zone_name" minOccurs="0" maxOccurs="1"/>
-            </xs:all>
+                <xs:element type="dateOrDateTimeTZ" name="start" minOccurs="0" maxOccurs="1"/>
+                <xs:element type="dateOrDateTimeTZ" name="end" minOccurs="0" maxOccurs="1"/>
+                <xs:element type="xs:integer"       name="days" minOccurs="0" maxOccurs="1"/>
+                <xs:element type="duration"         name="timeslot_duration" minOccurs="0"/>
+                <xs:element type="httpURI"          name="base_url" minOccurs="0" maxOccurs="1"/>
+                <xs:element type="httpURI"          name="logo" minOccurs="0" maxOccurs="1"/>
+                <xs:element type="httpURI"          name="url" minOccurs="0" maxOccurs="1"/>
+                <xs:element type="xs:string"        name="time_zone_name" minOccurs="0" maxOccurs="1"/>
+                <xs:element type="color"            name="color" minOccurs="0"/>
+
+                <xs:element type="track" name="track" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:choice>
+
+            </xs:sequence>
           </xs:complexType>
         </xs:element>
         <xs:element type="day" name="day" maxOccurs="unbounded"/>
@@ -79,10 +87,10 @@
       <xs:element type="start" name="start"/>
       <xs:element type="duration" name="duration"/>
       <xs:element type="xs:string" name="abstract"/>
-      <xs:element type="slug" name="slug"/>
+      <xs:element type="voc-slug" name="slug"/>
       <xs:element type="xs:string" name="track"/>
-
-      <xs:element type="xs:string" name="logo" minOccurs="0"/>
+      <!-- logo is the path or URL to an image, we use httpURI as type here as apps prefer full URLs now -->
+      <xs:element type="httpURI" name="logo" minOccurs="0"/>
       <xs:element type="persons" name="persons" minOccurs="0"/>
       <xs:element type="xs:string" name="language" minOccurs="0"/>
       <xs:element type="xs:string" name="description" minOccurs="0"/>
@@ -91,6 +99,7 @@
       <xs:element type="attachments" name="attachments" minOccurs="0"/>
       <xs:element type="httpURI" name="video_download_url" minOccurs="0"/>
       <xs:element type="httpURI" name="url" minOccurs="0"/>
+      <xs:element type="httpURI" name="feedback_url" minOccurs="0"/>
     </xs:all>
     <xs:attribute name="id" type="xs:positiveInteger" use="required"/>
     <xs:attribute name="guid" type="uuid" use="required"/>
@@ -129,10 +138,16 @@
       <xs:pattern value="[a-z0-9_-]{4,}"/>
     </xs:restriction>
   </xs:simpleType>
-  
-  <xs:simpleType name="slug">
+
+  <xs:simpleType name="voc-slug">
     <xs:restriction base="xs:string">
       <xs:pattern value="[a-z0-9_]{4,}-[0-9]{1,6}-[a-z0-9\-_]{4,}"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="slug">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[a-z0-9-]{2,}"/>
     </xs:restriction>
   </xs:simpleType>
 
@@ -145,6 +160,13 @@
   <xs:simpleType name="string-nonempty">
     <xs:restriction base="xs:string">
       <xs:pattern value=".+"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="hexColor">
+    <xs:restriction base="xs:string">
+      <!-- Pattern for hexadecimal color code: # followed by exactly 6 hexadecimal digits, prefered in lower case -->
+      <xs:pattern value="#[0-9a-f]{6}"/>
     </xs:restriction>
   </xs:simpleType>
 
@@ -162,8 +184,9 @@
       <xs:element name="person" minOccurs="0" maxOccurs="unbounded">
         <xs:complexType>
           <xs:simpleContent>
-            <xs:extension base="string-nonempty">
-              <xs:attribute type="xs:positiveInteger" name="id"/>
+            <xs:extension base="xs:string">
+              <xs:attribute type="xs:positiveInteger" name="id" />
+              <xs:attribute type="uuid" name="guid"/>
             </xs:extension>
           </xs:simpleContent>
         </xs:complexType>
@@ -198,4 +221,25 @@
       </xs:element>
     </xs:sequence>
   </xs:complexType>
+
+  <xs:complexType name="track">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="name"  use="required"/>
+        <xs:attribute type="hexColor"  name="color" use="optional"/>
+        <xs:attribute type="slug"      name="slug"  use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="color">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="hexColor" name="primary" use="required"/>
+        <xs:attribute type="hexColor" name="background" use="optional"/>
+        <xs:anyAttribute processContents="lax"/> <!-- Allows for additional, unspecified attributes -->
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
 </xs:schema>
