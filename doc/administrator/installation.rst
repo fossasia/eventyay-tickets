@@ -147,7 +147,7 @@ database driver (unless you use SQLite, which has its driver built in):
 | MySQL / MariaDB | ``pip install --user -U mysqlclient``     |
 +-----------------+-------------------------------------------+
 
-Now we will install pretalx itself::
+Now we will install pretalx itself:
 
 +-----------------+------------------------------------------------------------------------+
 | Database        | Command                                                                |
