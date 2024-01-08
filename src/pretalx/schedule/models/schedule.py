@@ -444,7 +444,7 @@ class Schedule(PretalxModel):
                         "type": "speaker",
                         "speaker": {
                             "name": speaker.get_display_name(),
-                            "id": speaker.pk,
+                            "code": speaker.code,
                         },
                         "message": str(
                             _(
