@@ -407,7 +407,9 @@ class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateVie
                 and self.request.POST.get("action", "submit") == "dedraft"
             ):
                 form.instance.make_submitted(person=self.request.user)
-                form.instance.log_action("pretalx.submission.create", person=self.request.user)
+                form.instance.log_action(
+                    "pretalx.submission.create", person=self.request.user
+                )
                 messages.success(self.request, _("Your proposal has been submitted."))
                 return redirect(self.request.event.urls.user_submissions)
             else:
