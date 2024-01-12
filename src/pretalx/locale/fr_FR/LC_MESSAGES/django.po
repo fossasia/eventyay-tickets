@@ -3828,16 +3828,9 @@ msgid ""
 "somewhere, and that there are no spaces inside the {} blocks."
 msgstr ""
 
-#: pretalx/orga/forms/mails.py:129
-#, fuzzy
-#| msgid "Unknown template key!"
-msgid "Unknown placeholder!"
+#: pretalx/orga/forms/mails.py:81 pretalx/orga/forms/mails.py:113
+msgid "Unknown template key!"
 msgstr "Clé du modèle inconnue !"
-
-#: pretalx/orga/forms/mails.py:147
-#, python-brace-format
-msgid "You have an empty link in your email, labeled “{text}”!"
-msgstr ""
 
 #: pretalx/orga/forms/mails.py:202
 msgid "An email needs to have at least one recipient."
@@ -8533,15 +8526,12 @@ msgstr "{name} ({duration} heures)"
 msgid "{name} ({duration} minutes)"
 msgstr "{name} ({duration} minutes)"
 
-#~ msgid ""
-#~ "You have some variables available that will be rendered into the mails "
-#~ "(in the appropriate language) before sending:"
-#~ msgstr ""
-#~ "Vous avez plusieurs variables à votre disposition qui seront interprétées "
-#~ "dans les courriels (dans le langage approprié) avant envoi :"
+#, fuzzy
+msgid "minutes"
+msgstr "minutes"
 
-#~ msgid "Mail Template Editor"
-#~ msgstr "Éditeur de modèles de courriels"
+msgid "Hidden rooms"
+msgstr "Salles cachées"
 
 #~ msgid "The link to the user's list of proposals"
 #~ msgstr "Le lien vers les propositions de l'intervenant"
@@ -8597,6 +8587,19 @@ msgstr "{name} ({duration} minutes)"
 #~ msgid "Integrations"
 #~ msgstr "Invitation"
 
+#: pretalx/common/plugins.py:14
+msgid "Other"
+msgstr "Autre"
+
+#: pretalx/orga/forms/mails.py:41 pretalx/orga/forms/mails.py:44
+msgid "Available placeholders:"
+msgstr ""
+
+#: pretalx/orga/forms/mails.py:229
+msgid "Leave empty to include proposals of all session types."
+msgstr ""
+
+#: pretalx/orga/views/mails.py:346
 #, fuzzy
 #~ msgid "Customizations"
 #~ msgstr "Domaine personnalisé"
