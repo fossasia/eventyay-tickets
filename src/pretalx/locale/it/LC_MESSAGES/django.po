@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-15 10:35+0000\n"
+"POT-Creation-Date: 2024-01-15 10:53+0000\n"
 "PO-Revision-Date: 2024-01-01 15:12+0000\n"
 "Last-Translator: Floriana Sciumbata <flo.metis@gmail.com>\n"
 "Language-Team: none\n"
@@ -7342,7 +7342,7 @@ msgid ""
 "proposal.\n"
 "\n"
 "The {event} orga crew"
-msgstr "Sei stato aggiunto a una proposta per l'evento"
+msgstr ""
 
 #: pretalx/orga/views/submission.py:104
 #, python-brace-format
