@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-12-19 02:08+0000\n"
+"POT-Creation-Date: 2024-01-15 10:35+0000\n"
 "PO-Revision-Date: 2023-05-27 12:16+0000\n"
 "Last-Translator: Joel (Jiawei) Wang <joel.bradley.w@gmail.com>\n"
 "Language-Team: none\n"
@@ -251,7 +251,7 @@ msgstr "为您的演讲者提交会议议程"
 #: pretalx/orga/forms/submission.py:15
 #: pretalx/orga/templates/orga/cfp/text.html:108
 #: pretalx/submission/forms/submission.py:29
-#: pretalx/submission/forms/submission.py:265
+#: pretalx/submission/forms/submission.py:270
 #: pretalx/submission/models/submission.py:206
 msgid "Language"
 msgstr "语言"
@@ -1248,11 +1248,11 @@ msgstr "您的API令牌已经重新生成。之前的令牌将不再可用。"
 msgid "Your draft was discarded."
 msgstr "你的草稿"
 
-#: pretalx/cfp/views/user.py:410
+#: pretalx/cfp/views/user.py:413
 msgid "Your proposal has been submitted."
 msgstr "你的提案已经被提交。"
 
-#: pretalx/cfp/views/user.py:484
+#: pretalx/cfp/views/user.py:487
 #, fuzzy
 #| msgid "You cannot change the slug later on!"
 msgid "You cannot accept this invitation."
@@ -1303,7 +1303,7 @@ msgstr "上传有效的图片。你上传的文件不是一张图片或者图片
 #: pretalx/orga/templates/orga/review/dashboard.html:58
 #: pretalx/orga/templates/orga/speaker/list.html:21
 #: pretalx/orga/templates/orga/submission/list.html:69
-#: pretalx/submission/forms/submission.py:282
+#: pretalx/submission/forms/submission.py:287
 msgid "Search"
 msgstr "搜索"
 
@@ -3903,7 +3903,7 @@ msgid "Proposal state"
 msgstr "提案状态"
 
 #: pretalx/orga/forms/submission.py:140
-#: pretalx/submission/forms/submission.py:131
+#: pretalx/submission/forms/submission.py:136
 #, fuzzy
 #| msgid ""
 #| "The duration in minutes. Leave empty for default duration for this "
@@ -4178,13 +4178,13 @@ msgstr "编辑"
 #: pretalx/orga/templates/orga/cfp/track_view.html:5
 #: pretalx/orga/templates/orga/review/assignment.html:47
 #: pretalx/orga/templates/orga/settings/team_tracks.html:8
-#: pretalx/submission/forms/submission.py:271
+#: pretalx/submission/forms/submission.py:276
 #: pretalx/submission/models/question.py:154
 msgid "Tracks"
 msgstr "分支"
 
 #: pretalx/orga/templates/orga/base.html:247
-#: pretalx/submission/forms/submission.py:255
+#: pretalx/submission/forms/submission.py:260
 msgid "Session types"
 msgstr "会话类型"
 
@@ -4197,7 +4197,7 @@ msgstr "访问代码"
 #: pretalx/orga/templates/orga/review/dashboard.html:111
 #: pretalx/orga/templates/orga/review/dashboard.html:217
 #: pretalx/orga/templates/orga/submission/tag_list.html:6
-#: pretalx/submission/forms/submission.py:276
+#: pretalx/submission/forms/submission.py:281
 #: pretalx/submission/models/submission.py:147
 msgid "Tags"
 msgstr "标签"
@@ -7534,21 +7534,21 @@ msgstr ""
 msgid "Use this if you want an illustration to go with your proposal."
 msgstr "如果您希望您的提案配有插图，可以使用这个。"
 
-#: pretalx/submission/forms/submission.py:154
+#: pretalx/submission/forms/submission.py:159
 msgid ""
 "Please contact the organisers if you want to change how often you're "
 "presenting this proposal."
 msgstr "如果您想更改演示此提案的频率，请联系组织者。"
 
-#: pretalx/submission/forms/submission.py:248
+#: pretalx/submission/forms/submission.py:253
 msgid "Proposal states"
 msgstr "提案状态"
 
-#: pretalx/submission/forms/submission.py:260
+#: pretalx/submission/forms/submission.py:265
 msgid "exclude pending"
 msgstr "排除待定"
 
-#: pretalx/submission/forms/submission.py:380
+#: pretalx/submission/forms/submission.py:385
 #, python-brace-format
 msgid "Pending {state}"
 msgstr "待定 {state}"

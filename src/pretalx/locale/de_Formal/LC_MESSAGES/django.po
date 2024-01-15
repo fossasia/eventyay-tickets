@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-12-19 02:08+0000\n"
+"POT-Creation-Date: 2024-01-15 10:35+0000\n"
 "PO-Revision-Date: 2023-08-30 13:26+0000\n"
 "Last-Translator: Tobias Kunze <r@rixx.de>\n"
 "Language-Team: \n"
@@ -263,7 +263,7 @@ msgstr "Reichen Sie selber für die Vortragenden ein"
 #: pretalx/orga/forms/submission.py:15
 #: pretalx/orga/templates/orga/cfp/text.html:108
 #: pretalx/submission/forms/submission.py:29
-#: pretalx/submission/forms/submission.py:265
+#: pretalx/submission/forms/submission.py:270
 #: pretalx/submission/models/submission.py:206
 msgid "Language"
 msgstr "Sprache"
@@ -1325,11 +1325,11 @@ msgstr ""
 msgid "Your draft was discarded."
 msgstr "Ihr Entwurf wurde gelöscht."
 
-#: pretalx/cfp/views/user.py:410
+#: pretalx/cfp/views/user.py:413
 msgid "Your proposal has been submitted."
 msgstr "Ihre Einreichung wurde abgeschickt."
 
-#: pretalx/cfp/views/user.py:484
+#: pretalx/cfp/views/user.py:487
 msgid "You cannot accept this invitation."
 msgstr "Sie dürfen diese Einladung nicht annehmen."
 
@@ -1382,7 +1382,7 @@ msgstr ""
 #: pretalx/orga/templates/orga/review/dashboard.html:58
 #: pretalx/orga/templates/orga/speaker/list.html:21
 #: pretalx/orga/templates/orga/submission/list.html:69
-#: pretalx/submission/forms/submission.py:282
+#: pretalx/submission/forms/submission.py:287
 msgid "Search"
 msgstr "Suche"
 
@@ -4143,7 +4143,7 @@ msgid "Proposal state"
 msgstr "Einreichungsstatus"
 
 #: pretalx/orga/forms/submission.py:140
-#: pretalx/submission/forms/submission.py:131
+#: pretalx/submission/forms/submission.py:136
 msgid "Leave empty to use the default duration for the session type."
 msgstr ""
 "Leer lassen, um die Standard-Dauer für diesen Einreichungstypen zu nehmen."
@@ -4431,13 +4431,13 @@ msgstr "Editor"
 #: pretalx/orga/templates/orga/cfp/track_view.html:5
 #: pretalx/orga/templates/orga/review/assignment.html:47
 #: pretalx/orga/templates/orga/settings/team_tracks.html:8
-#: pretalx/submission/forms/submission.py:271
+#: pretalx/submission/forms/submission.py:276
 #: pretalx/submission/models/question.py:154
 msgid "Tracks"
 msgstr "Tracks"
 
 #: pretalx/orga/templates/orga/base.html:247
-#: pretalx/submission/forms/submission.py:255
+#: pretalx/submission/forms/submission.py:260
 msgid "Session types"
 msgstr "Einreichungsarten"
 
@@ -4450,7 +4450,7 @@ msgstr "Zugangscodes"
 #: pretalx/orga/templates/orga/review/dashboard.html:111
 #: pretalx/orga/templates/orga/review/dashboard.html:217
 #: pretalx/orga/templates/orga/submission/tag_list.html:6
-#: pretalx/submission/forms/submission.py:276
+#: pretalx/submission/forms/submission.py:281
 #: pretalx/submission/models/submission.py:147
 msgid "Tags"
 msgstr "Tags"
@@ -7993,7 +7993,7 @@ msgstr ""
 "Laden Sie hier ein Bild hoch, wenn Sie Ihre Einreichung illustrieren "
 "möchtest."
 
-#: pretalx/submission/forms/submission.py:154
+#: pretalx/submission/forms/submission.py:159
 msgid ""
 "Please contact the organisers if you want to change how often you're "
 "presenting this proposal."
@@ -8001,15 +8001,15 @@ msgstr ""
 "Bitte nehmen Sie Kontakt mit den Veranstaltern auf, wenn Sie die Anzahl "
 "Ihrer Auftritte verändern möchten."
 
-#: pretalx/submission/forms/submission.py:248
+#: pretalx/submission/forms/submission.py:253
 msgid "Proposal states"
 msgstr "Einreichungsstatus"
 
-#: pretalx/submission/forms/submission.py:260
+#: pretalx/submission/forms/submission.py:265
 msgid "exclude pending"
 msgstr "vorgemerkte ausblenden"
 
-#: pretalx/submission/forms/submission.py:380
+#: pretalx/submission/forms/submission.py:385
 #, python-brace-format
 msgid "Pending {state}"
 msgstr "Als {state} vorgemerkt"
