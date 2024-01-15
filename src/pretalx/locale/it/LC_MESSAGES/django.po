@@ -3741,18 +3741,10 @@ msgid ""
 "- Your session “Other Title” has been moved to {time2} in Room 102."
 msgstr ""
 
-#: pretalx/orga/forms/mails.py:65
-msgid "A list of notifications for this speaker"
-msgstr ""
-
 #: pretalx/orga/forms/mails.py:73
 msgid ""
 "- First missing question\n"
 "- Second missing question"
-msgstr ""
-
-#: pretalx/orga/forms/mails.py:75
-msgid "The list of questions that the user has not answered, as bullet points"
 msgstr ""
 
 #: pretalx/orga/forms/mails.py:122
@@ -4139,7 +4131,7 @@ msgstr "La tua versione di pretalx è:"
 #, python-format
 msgid "You can check for updates <a href=\"%(url)s\">here</a>."
 msgstr ""
-"Puoi controllare se ci sono aggiornamenti <a href=\"%(current_url)s\""
+"Puoi controllare se ci sono aggiornamenti <a href=\"%(url)s\""
 ">qui</a>."
 
 #: pretalx/orga/templates/orga/admin.html:35
@@ -5173,23 +5165,11 @@ msgstr "Email di anteprima"
 msgid "Send to outbox"
 msgstr "Invia a posta in uscita"
 
-#: pretalx/orga/templates/orga/mails/_placeholder_group.html:10
-#, fuzzy
-#| msgid "Schedule"
-msgid "Scheduling"
-msgstr "Programma"
-
 #: pretalx/orga/templates/orga/mails/_placeholder_group.html:16
 #, fuzzy
 #| msgid "Gather your team"
 msgid "Other"
 msgstr "Metti insieme la squadra"
-
-#: pretalx/orga/templates/orga/mails/_placeholder_group.html:22
-#, fuzzy
-#| msgid "pretalx update available"
-msgid "Unavailable"
-msgstr "Disponibile l'aggiornamento di pretalx"
 
 #: pretalx/orga/templates/orga/mails/_placeholder_group.html:37
 msgid "e.g."
@@ -7393,18 +7373,6 @@ msgstr "Il relatore è stato aggiunto alla proposta."
 #: pretalx/orga/views/submission.py:278
 msgid "The speaker was already part of the proposal."
 msgstr "Il relatore faceva già parte di questa proposta."
-
-#: pretalx/orga/views/submission.py:299
-msgid "Please provide a valid email address!"
-msgstr ""
-
-#: pretalx/orga/views/submission.py:307
-msgid "The speaker has been added to the proposal."
-msgstr ""
-
-#: pretalx/orga/views/submission.py:311
-msgid "The speaker was already part of the proposal."
-msgstr ""
 
 #: pretalx/orga/views/submission.py:332
 msgid "The speaker has been removed from the proposal."

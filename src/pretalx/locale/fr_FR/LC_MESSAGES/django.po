@@ -8536,13 +8536,6 @@ msgstr "Salles cachées"
 #~ msgid "The link to the user's list of proposals"
 #~ msgstr "Le lien vers les propositions de l'intervenant"
 
-#, fuzzy
-#~ msgid "minutes"
-#~ msgstr "minutes"
-
-#~ msgid "Hidden rooms"
-#~ msgstr "Salles cachées"
-
 #~ msgid "Everyone with proposal(s) that have not been accepted/rejected yet"
 #~ msgstr ""
 #~ "Tous ceux avec des propositions qui n'ont été ni acceptées, ni rejetées"
@@ -8586,10 +8579,6 @@ msgstr "Salles cachées"
 #, fuzzy
 #~ msgid "Integrations"
 #~ msgstr "Invitation"
-
-#: pretalx/common/plugins.py:14
-msgid "Other"
-msgstr "Autre"
 
 #: pretalx/orga/forms/mails.py:41 pretalx/orga/forms/mails.py:44
 msgid "Available placeholders:"
