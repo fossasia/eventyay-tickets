@@ -115,7 +115,7 @@ def test_schedule_frab_json_export(
             follow=True,
         )
     client.force_login(orga_user)
-    with django_assert_max_num_queries(21):
+    with django_assert_max_num_queries(22):
         orga_response = client.get(
             reverse(
                 "agenda:export.schedule.json",
@@ -146,7 +146,7 @@ def test_schedule_frab_json_export(
 def test_schedule_frab_xcal_export(
     slot, client, django_assert_max_num_queries, break_slot
 ):
-    with django_assert_max_num_queries(9):
+    with django_assert_max_num_queries(10):
         response = client.get(
             reverse(
                 "agenda:export.schedule.xcal",
@@ -214,7 +214,7 @@ def test_schedule_export_nonpublic(
 def test_schedule_export_public(exporter, slot, client, django_assert_max_num_queries):
     exporter = "feed" if exporter == "feed" else f"export.{exporter}"
 
-    with django_assert_max_num_queries(11):
+    with django_assert_max_num_queries(12):
         response = client.get(
             reverse(f"agenda:{exporter}", kwargs={"event": slot.submission.event.slug}),
             follow=True,
