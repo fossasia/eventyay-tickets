@@ -5,7 +5,7 @@ updates:
   #   directory: "/webapp"
   #   schedule:
   #     interval: daily
-  #   open-pull-requests-limit: 10
+  #   open-pull-requests-limit: 50
   #   dependency-type: production  # don't update dev dependencies – do we want that?
   #   ignore:
   #   - dependency-name: "@babel*"
@@ -15,4 +15,4 @@ updates:
     directory: "/server"
     schedule:
       interval: daily
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 50
