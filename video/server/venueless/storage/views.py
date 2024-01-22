@@ -15,7 +15,6 @@ from django.views.decorators.csrf import csrf_exempt
 from PIL import Image, ImageOps
 from PIL.Image import Resampling
 from rest_framework.authentication import get_authorization_header
-from xlrd import XLRDError
 
 from venueless.core.models import World
 from venueless.core.permissions import Permission
@@ -243,8 +242,6 @@ class ScheduleImportView(UploadMixin, View):
             jsondata = convert(request.FILES["file"], timezone=self.world.timezone)
         except ValidationError as e:
             return JsonResponse({"error": ", ".join(e)}, status=400)
-        except XLRDError as e:
-            return JsonResponse({"error": str(e)}, status=400)
         except ValueError as e:
             return JsonResponse({"error": str(e)}, status=400)
 
