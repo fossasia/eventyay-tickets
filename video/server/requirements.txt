@@ -11,7 +11,7 @@ django-decorator-include==3.0
 django-extensions==3.2.*
 django-formset-js-improved
 git+https://github.com/oliwarner/django-multifactor.git@9d08f222830d3513e88e42f68ff570d74be53948#egg=django-multifactor
-django-multifactor==0.5.5
+django-multifactor==0.6.1
 djangorestframework==3.14.*
 emoji==2.8.*
 icalendar==5.0.*
