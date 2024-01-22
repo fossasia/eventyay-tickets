@@ -29,7 +29,7 @@ def load_sheet(io):
     }
     return {
         title: pandas.read_excel(
-            io, sheet_name=title, header=0, engine="xlrd", **config
+            io, sheet_name=title, header=0, engine="openpyxl", **config
         )
         for title, config in sheets.items()
     }
