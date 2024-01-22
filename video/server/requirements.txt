@@ -12,7 +12,7 @@ django-extensions==3.2.*
 django-formset-js-improved
 django-multifactor==0.6.1
 djangorestframework==3.14.*
-emoji==2.8.*
+emoji==2.10.*
 icalendar==5.0.*
 lxml==4.9.*
 matplotlib==3.7.*
