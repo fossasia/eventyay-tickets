@@ -42,7 +42,7 @@ uvicorn[standard]==0.26.0
 daphne==4.0.*
 black==23.7
 isort==5.13.2
-flake8==6.1.0
+flake8==7.0.0
 pytest==7.4.4
 pytest-django==4.7.0
 pytest-asyncio==0.23.3
