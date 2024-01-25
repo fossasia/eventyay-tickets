@@ -210,11 +210,13 @@ class MailDetailForm(ReadOnlyFlag, forms.ModelForm):
             addresses = list(
                 {a.strip().lower() for a in (obj.to or "").split(",") if a.strip()}
             )
+            found_addresses = []
             for address in addresses:
                 user = User.objects.filter(email__iexact=address).first()
                 if user:
-                    addresses.remove(address)
                     obj.to_users.add(user)
+                    found_addresses.append(address)
+            addresses = set(addresses) - set(found_addresses)
             addresses = ",".join(addresses) if addresses else ""
             obj.to = addresses
             obj.save()
