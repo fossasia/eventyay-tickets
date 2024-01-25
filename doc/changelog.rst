@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`cfp` When rendering email addresses in Markdown, shorter TLDs won out against longer ones (e.g. .co instead of .com, or .ro instead of .rocks). This was already fixed for normal links, just not for email addresses. Until you update to include this fix, you can instead turn emails into a link yourself: ``[test@example.co](mailto:test@example.co)``.
 - :feature:`orga,1619` Organisers can now add new team members in bulk instead of one by one.
 - :feature:`orga:schedule,1587` A hint now shows when users click the "New break" box, informing them that they have to drag it to the schedule instead.
 - :feature:`orga:schedule` Breaks now also show their start time and duration in the schedule editor.
