@@ -103,19 +103,6 @@ jobs:
           python -m coverage report
         if: matrix.database == 'postgres' && matrix.python-version == '3.10'
 
-      - name: Create HTML report if tests failed.
-        id: html_report
-        working-directory: ./src
-        run: python -m coverage html
-        if: ${{ failure() }} && matrix.database == 'postgres' && matrix.python-version == '3.10'
-
-      - name: Upload HTML report if tests failed.
-        uses: actions/upload-artifact@v4
-        with:
-          name: html-report
-          path: ./src/htmlcov
-        if: ${{ failure() }} && steps.html_report.conclusion != "skipped"
-
       - name: "Make badge"
         uses: schneegans/dynamic-badges-action@v1.7.0
         with:
