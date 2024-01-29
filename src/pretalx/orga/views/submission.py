@@ -29,6 +29,7 @@ from django.views.generic import (
     View,
 )
 
+from pretalx.agenda.permissions import is_submission_visible
 from pretalx.common.exceptions import SubmissionError
 from pretalx.common.mixins.views import (
     ActionFromUrl,
@@ -139,6 +140,12 @@ class SubmissionViewMixin(PermissionRequired):
         return self.request.event.review_phases.filter(
             can_see_speaker_names=False
         ).exists()
+
+    @context
+    @cached_property
+    def is_publicly_visible(self):
+        # check if the anonymous user could see this submission's page
+        return is_submission_visible(None, self.object)
 
 
 class ReviewerSubmissionFilter:

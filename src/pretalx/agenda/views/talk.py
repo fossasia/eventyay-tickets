@@ -24,7 +24,7 @@ class TalkView(PermissionRequired, TemplateView):
     model = Submission
     slug_field = "code"
     template_name = "agenda/talk.html"
-    permission_required = "agenda.view_slot"
+    permission_required = "agenda.view_submission"
 
     def get_object(self, queryset=None):
         talk = (
@@ -188,7 +188,7 @@ class SingleICalView(EventPageMixin, DetailView):
 class FeedbackView(PermissionRequired, FormView):
     form_class = FeedbackForm
     template_name = "agenda/feedback_form.html"
-    permission_required = "agenda.view_slot"
+    permission_required = "agenda.view_submission"
 
     def get_object(self):
         return self.request.event.talks.filter(code__iexact=self.kwargs["slug"]).first()
