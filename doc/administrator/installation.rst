@@ -33,8 +33,8 @@ and configuration here, but please have a look at the linked pages.
   production. Given the choice, we'd recommend to use PostgreSQL.
 * A `redis`_ server, if you want to use pretalx with an asynchronous task
   runner or improved caching.
-* If you are installing pretalx from source rather than from a pre-built
-  wheel on PyPI, you will also need `nodejs`_.
+* `nodejs`_ and npm (usually bundled with nodejs). You'll need a currently
+  `supported version of nodejs`_.
 
 We assume that you also have the usual security measures in place, such as a
 firewall. If you're new to Linux and firewalls, we recommend that you start
@@ -331,3 +331,4 @@ If you want to read about updates, backups, and monitoring, head over to our
 .. _docker-compose setup: https://github.com/pretalx/pretalx-docker
 .. _pretalx.com: https://pretalx.com
 .. _nodejs: https://github.com/nodesource/distributions/blob/master/README.md
+.. _supported version of nodejs: https://nodejs.org/en/about/previous-releases
