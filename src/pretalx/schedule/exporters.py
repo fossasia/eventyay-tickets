@@ -99,9 +99,9 @@ class ScheduleData(BaseExporter):
         for d in data.values():
             d["rooms"] = sorted(
                 d["rooms"].values(),
-                key=lambda room: room["position"]
-                if room["position"] is not None
-                else room["id"],
+                key=lambda room: (
+                    room["position"] if room["position"] is not None else room["id"]
+                ),
             )
         return data.values()
 
@@ -190,9 +190,11 @@ class FrabJsonExporter(ScheduleData):
                                     "url": talk.submission.urls.public.full(),
                                     "title": talk.submission.title,
                                     "subtitle": "",
-                                    "track": str(talk.submission.track.name)
-                                    if talk.submission.track
-                                    else None,
+                                    "track": (
+                                        str(talk.submission.track.name)
+                                        if talk.submission.track
+                                        else None
+                                    ),
                                     "type": str(talk.submission.submission_type.name),
                                     "language": talk.submission.content_locale,
                                     "abstract": talk.submission.abstract,
@@ -211,37 +213,41 @@ class FrabJsonExporter(ScheduleData):
                                                 "biography",
                                                 "",
                                             ),
-                                            "answers": [
-                                                {
-                                                    "question": answer.question.id,
-                                                    "answer": answer.answer,
-                                                    "options": [
-                                                        option.answer
-                                                        for option in answer.options.all()
-                                                    ],
-                                                }
-                                                for answer in person.answers.all()
-                                            ]
-                                            if getattr(self, "is_orga", False)
-                                            else [],
+                                            "answers": (
+                                                [
+                                                    {
+                                                        "question": answer.question.id,
+                                                        "answer": answer.answer,
+                                                        "options": [
+                                                            option.answer
+                                                            for option in answer.options.all()
+                                                        ],
+                                                    }
+                                                    for answer in person.answers.all()
+                                                ]
+                                                if getattr(self, "is_orga", False)
+                                                else []
+                                            ),
                                         }
                                         for person in talk.submission.speakers.all()
                                     ],
                                     "links": [],
                                     "attachments": [],
-                                    "answers": [
-                                        {
-                                            "question": answer.question.id,
-                                            "answer": answer.answer,
-                                            "options": [
-                                                option.answer
-                                                for option in answer.options.all()
-                                            ],
-                                        }
-                                        for answer in talk.submission.answers.all()
-                                    ]
-                                    if getattr(self, "is_orga", False)
-                                    else [],
+                                    "answers": (
+                                        [
+                                            {
+                                                "question": answer.question.id,
+                                                "answer": answer.answer,
+                                                "options": [
+                                                    option.answer
+                                                    for option in answer.options.all()
+                                                ],
+                                            }
+                                            for answer in talk.submission.answers.all()
+                                        ]
+                                        if getattr(self, "is_orga", False)
+                                        else []
+                                    ),
                                 }
                                 for talk in room["talks"]
                             ]

@@ -174,9 +174,11 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         )
         return formset_class(
             self.request.POST if self.request.method == "POST" else None,
-            queryset=AnswerOption.objects.filter(question=self.object)
-            if self.object
-            else AnswerOption.objects.none(),
+            queryset=(
+                AnswerOption.objects.filter(question=self.object)
+                if self.object
+                else AnswerOption.objects.none()
+            ),
             event=self.request.event,
         )
 
@@ -680,18 +682,20 @@ class CfPFlowEditor(EventPermissionRequired, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context[
-            "current_configuration"
-        ] = self.request.event.cfp_flow.get_editor_config(json_compat=True)
+        context["current_configuration"] = (
+            self.request.event.cfp_flow.get_editor_config(json_compat=True)
+        )
         context["event_configuration"] = {
             "header_pattern": self.request.event.display_settings["header_pattern"]
             or "bg-primary",
-            "header_image": self.request.event.header_image.url
-            if self.request.event.header_image
-            else None,
-            "logo_image": self.request.event.logo.url
-            if self.request.event.logo
-            else None,
+            "header_image": (
+                self.request.event.header_image.url
+                if self.request.event.header_image
+                else None
+            ),
+            "logo_image": (
+                self.request.event.logo.url if self.request.event.logo else None
+            ),
             "primary_color": self.request.event.get_primary_color(),
             "locales": self.request.event.locales,
         }

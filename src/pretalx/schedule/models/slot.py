@@ -186,9 +186,9 @@ class TalkSlot(PretalxModel):
         netloc = netloc or urlparse(get_base_url(self.event)).netloc
 
         vevent = calendar.add("vevent")
-        vevent.add(
-            "summary"
-        ).value = f"{self.submission.title} - {self.submission.display_speaker_names}"
+        vevent.add("summary").value = (
+            f"{self.submission.title} - {self.submission.display_speaker_names}"
+        )
         vevent.add("dtstamp").value = creation_time
         vevent.add("location").value = str(self.room.name)
         vevent.add("uid").value = "pretalx-{}-{}{}@{}".format(

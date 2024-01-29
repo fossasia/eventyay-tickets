@@ -11,6 +11,7 @@ less update headaches and a more readable git history, so that's what we are goi
 for, even though the code is somewhat hacky. Props for this improved version
 to the pretix project.
 """
+
 from django.core.management.commands.makemigrations import Command as Parent
 from django.db import models
 from django.db.migrations.operations import models as modelops

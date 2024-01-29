@@ -74,9 +74,11 @@ class ScheduleView(EventPermissionRequired, TemplateView):
             event=self.request.event,
         )
         result["schedule_room_form"] = ScheduleRoomForm(
-            {"room": self.request.GET.getlist("room")}
-            if "room" in self.request.GET
-            else None,
+            (
+                {"room": self.request.GET.getlist("room")}
+                if "room" in self.request.GET
+                else None
+            ),
             event=self.request.event,
         )
         result["active_schedule"] = (
@@ -227,9 +229,9 @@ class ScheduleToggleView(EventPermissionRequired, View):
 
     def dispatch(self, request, event):
         super().dispatch(request, event)
-        self.request.event.feature_flags[
-            "show_schedule"
-        ] = not self.request.event.feature_flags["show_schedule"]
+        self.request.event.feature_flags["show_schedule"] = (
+            not self.request.event.feature_flags["show_schedule"]
+        )
         self.request.event.save()
         return redirect(self.request.event.orga_urls.schedule)
 
@@ -282,12 +284,14 @@ def serialize_slot(slot, warnings=None):
                 {"name": speaker.name} for speaker in slot.submission.speakers.all()
             ],
             "submission_type": str(slot.submission.submission_type.name),
-            "track": {
-                "name": str(slot.submission.track.name),
-                "color": slot.submission.track.color,
-            }
-            if slot.submission.track
-            else None,
+            "track": (
+                {
+                    "name": str(slot.submission.track.name),
+                    "color": slot.submission.track.color,
+                }
+                if slot.submission.track
+                else None
+            ),
             "state": slot.submission.state,
             "description": str(slot.submission.description),
             "abstract": str(slot.submission.abstract),
@@ -355,9 +359,11 @@ class TalkList(EventPermissionRequired, View):
         room = room.get("id") if isinstance(room, dict) else room
         slot = TalkSlot.objects.create(
             schedule=request.event.wip_schedule,
-            room=request.event.rooms.get(pk=room)
-            if room
-            else request.event.rooms.first(),
+            room=(
+                request.event.rooms.get(pk=room)
+                if room
+                else request.event.rooms.first()
+            ),
             description=LazyI18nString(data.get("title")),
             start=start,
             end=end,

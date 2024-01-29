@@ -3,6 +3,7 @@
 It runs the local frontend server, if node is installed and the setting
 is set.
 """
+
 from pathlib import Path
 
 from django.conf import settings

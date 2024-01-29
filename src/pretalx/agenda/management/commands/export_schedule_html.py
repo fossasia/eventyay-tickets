@@ -146,9 +146,10 @@ def get_mediastatic_content(url):
 
 
 def export_event(event, destination):
-    with override_settings(
-        COMPRESS_ENABLED=True, COMPRESS_OFFLINE=True
-    ), override_timezone(event.timezone):
+    with (
+        override_settings(COMPRESS_ENABLED=True, COMPRESS_OFFLINE=True),
+        override_timezone(event.timezone),
+    ):
         with fake_admin(event) as get:
             logging.info("Collecting URLs for export")
             urls = [*event_urls(event)]

@@ -117,9 +117,9 @@ class SpeakerTalksIcalView(PermissionRequired, DetailView):
         ).select_related("room", "submission")
 
         cal = vobject.iCalendar()
-        cal.add(
-            "prodid"
-        ).value = f"-//pretalx//{netloc}//{request.event.slug}//{speaker.code}"
+        cal.add("prodid").value = (
+            f"-//pretalx//{netloc}//{request.event.slug}//{speaker.code}"
+        )
 
         for slot in slots:
             slot.build_ical(cal)

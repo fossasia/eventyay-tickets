@@ -239,9 +239,9 @@ class SubmissionConfirmView(LoggedInEventPageMixin, SubmissionViewMixin, FormVie
         if not self.request.event.cfp.request_availabilities:
             form.fields.pop("availabilities")
         else:
-            form.fields[
-                "availabilities"
-            ].required = self.request.event.cfp.require_availabilities
+            form.fields["availabilities"].required = (
+                self.request.event.cfp.require_availabilities
+            )
         return form
 
     def form_valid(self, form):
@@ -301,9 +301,9 @@ class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateVie
         return formset_class(
             self.request.POST if self.request.method == "POST" else None,
             files=self.request.FILES if self.request.method == "POST" else None,
-            queryset=submission.resources.all()
-            if submission
-            else Resource.objects.none(),
+            queryset=(
+                submission.resources.all() if submission else Resource.objects.none()
+            ),
             prefix="resource",
         )
 

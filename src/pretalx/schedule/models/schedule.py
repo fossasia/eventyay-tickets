@@ -665,17 +665,19 @@ class Schedule(PretalxModel):
                     {
                         "code": talk.submission.code if talk.submission else None,
                         "id": talk.id,
-                        "title": talk.submission.title
-                        if talk.submission
-                        else talk.description,
-                        "abstract": talk.submission.abstract
-                        if talk.submission
-                        else None,
-                        "speakers": [
-                            speaker.code for speaker in talk.submission.speakers.all()
-                        ]
-                        if talk.submission
-                        else None,
+                        "title": (
+                            talk.submission.title
+                            if talk.submission
+                            else talk.description
+                        ),
+                        "abstract": (
+                            talk.submission.abstract if talk.submission else None
+                        ),
+                        "speakers": (
+                            [speaker.code for speaker in talk.submission.speakers.all()]
+                            if talk.submission
+                            else None
+                        ),
                         "track": talk.submission.track_id if talk.submission else None,
                         "start": talk.local_start,
                         "end": talk.local_end,

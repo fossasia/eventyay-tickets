@@ -399,9 +399,9 @@ class SubmissionContent(
         return formset_class(
             self.request.POST if self.request.method == "POST" else None,
             files=self.request.FILES if self.request.method == "POST" else None,
-            queryset=submission.resources.all()
-            if submission
-            else Resource.objects.none(),
+            queryset=(
+                submission.resources.all() if submission else Resource.objects.none()
+            ),
             prefix="resource",
         )
 

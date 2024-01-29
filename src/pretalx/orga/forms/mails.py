@@ -52,17 +52,17 @@ class MailTemplateForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
             if self.instance == self.event.update_template:
                 time = now().replace(hour=9, minute=0).strftime("%Y-%m-%d %H:%M")
                 time2 = now().replace(hour=11, minute=0).strftime("%Y-%m-%d %H:%M")
-                valid_placeholders[
-                    "notifications"
-                ] = SimpleFunctionalMailTextPlaceholder(
-                    "notifications",
-                    ["slot"],
-                    None,
-                    _(
-                        "- Your session “Title” will take place at {time} in Room 101.\n"
-                        "- Your session “Other Title” has been moved to {time2} in Room 102."
-                    ).format(time=time, time2=time2),
-                    _("A list of notifications for this speaker"),
+                valid_placeholders["notifications"] = (
+                    SimpleFunctionalMailTextPlaceholder(
+                        "notifications",
+                        ["slot"],
+                        None,
+                        _(
+                            "- Your session “Title” will take place at {time} in Room 101.\n"
+                            "- Your session “Other Title” has been moved to {time2} in Room 102."
+                        ).format(time=time, time2=time2),
+                        _("A list of notifications for this speaker"),
+                    )
                 )
                 kwargs = ["event", "user"]
             elif self.instance == self.event.question_template:
