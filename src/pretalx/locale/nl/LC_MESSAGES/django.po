@@ -8,8 +8,9 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-01-15 10:35+0000\n"
-"PO-Revision-Date: 2023-12-22 21:17+0000\n"
-"Last-Translator: Paul Krischer <paul@krischer.nl>\n"
+"PO-Revision-Date: 2024-01-28 16:24+0000\n"
+"Last-Translator: Remco Poortinga - van Wijnen <remco.poortinga+github@surfnet"
+".nl>\n"
 "Language-Team: none\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
@@ -2002,6 +2003,8 @@ msgid ""
 "Please help us to fix this by submitting <a href=\"%(link)s\" rel=noopener>a "
 "bug report</a>!"
 msgstr ""
+"Help ons dit op te lossen door het insturen van <a href=\"%(link)s\" "
+"rel=noopener>een foutmeldingformulier</a>!"
 
 #: pretalx/common/templates/common/auth.html:20
 msgid "I already have an account"
@@ -2044,36 +2047,36 @@ msgstr ""
 #: pretalx/orga/templates/orga/auth/base.html:25
 #: pretalx/orga/templates/orga/settings/form.html:76
 msgid "The event's logo"
-msgstr ""
+msgstr "Het event logo"
 
 #: pretalx/common/templates/common/base.html:97
 msgid "My proposals"
-msgstr ""
+msgstr "Mijn voorstellen"
 
 #: pretalx/common/templates/common/base.html:101
 msgid "My E-mails"
-msgstr ""
+msgstr "Mijn E-mails"
 
 #: pretalx/common/templates/common/base.html:105
 msgid "My profile"
-msgstr ""
+msgstr "Mijn profiel"
 
 #: pretalx/common/templates/common/base.html:111
 msgid "Organiser area"
-msgstr ""
+msgstr "Organisatie ruimte"
 
 #: pretalx/common/templates/common/base.html:117
 msgid "Logout"
-msgstr ""
+msgstr "Uitloggen"
 
 #: pretalx/common/templates/common/base.html:144
 #, python-format
 msgid "This is a static export generated at %(timestamp)s"
-msgstr ""
+msgstr "Dit is een statische uitvoer gegenereerd op %(timestamp)s"
 
 #: pretalx/common/templates/common/base.html:152
 msgid "Contact us"
-msgstr ""
+msgstr "Neem contact op"
 
 #: pretalx/common/templates/common/base.html:156
 msgid "Imprint"
@@ -2081,28 +2084,28 @@ msgstr ""
 
 #: pretalx/common/templates/common/logs.html:17
 msgid "This change was performed by a member of the event orga."
-msgstr ""
+msgstr "Deze verandering is doorgevoerd door een lid van de eventorganisatie."
 
 #: pretalx/common/templates/common/logs.html:23
 msgid "An organiser"
-msgstr ""
+msgstr "Een lid van de organisatie"
 
 #: pretalx/common/templates/common/powered_by.html:33
 #, python-format
 msgid "powered by <a %(a_attr)s>pretalx</a>"
-msgstr ""
+msgstr "Mogelijk gemaakt door <a %(a_attr)s>pretalx</a>"
 
 #: pretalx/common/templates/common/question_answer.html:8
 msgid "No file provided"
-msgstr ""
+msgstr "Geen bestand aangeboden"
 
 #: pretalx/common/templates/common/question_answer.html:15
 msgid "Not answered"
-msgstr ""
+msgstr "Onbeantwoord"
 
 #: pretalx/common/templates/common/user_api_token.html:8
 msgid "API Access"
-msgstr ""
+msgstr "API toegang"
 
 #: pretalx/common/templates/common/user_api_token.html:9
 #, python-format
@@ -2111,43 +2114,48 @@ msgid ""
 "generate a new token, which will invalidate the old one. To find out more, "
 "please have a look at the <a %(docurl)s> API documentation</a>."
 msgstr ""
+"Dit token kan gebruikt worden voor toegang tot de <a %(apiurl)s>pretalx API</"
+"a>. Je kan een nieuw token aanmaken, de oude wordt daarmee ongeldig. "
+"Raadpleeg voor meer informatie de <a %(docurl)s> API documentatie</a>."
 
 #: pretalx/common/templates/common/user_api_token.html:17
 msgid "API Token"
-msgstr ""
+msgstr "API Token"
 
 #: pretalx/common/templates/common/user_api_token.html:23
 msgid "Use for authentication when accessing the API."
-msgstr ""
+msgstr "Gebruik voor authenticatie bij het aanroepen van de API."
 
 #: pretalx/common/templates/common/user_api_token.html:30
 msgid "Generate a new token. The current token will not be usable any longer."
 msgstr ""
+"Maak een nieuw token aan. Het huidige token kan daarna niet meer gebruikt "
+"worden."
 
 #: pretalx/common/templates/common/user_api_token.html:31
 msgid "Invalidate and regenerate"
-msgstr ""
+msgstr "Maak ongeldig en creeer een nieuwe"
 
 #: pretalx/common/templatetags/copyable.py:13
 msgid "Copy"
-msgstr ""
+msgstr "Kopieer"
 
 #: pretalx/common/templatetags/times.py:14
 msgid "once"
-msgstr ""
+msgstr "eenmalig"
 
 #: pretalx/common/templatetags/times.py:16
 msgid "twice"
-msgstr ""
+msgstr "tweemalig"
 
 #: pretalx/common/templatetags/times.py:17
 #, python-brace-format
 msgid "{number} times"
-msgstr ""
+msgstr "{number} keer"
 
 #: pretalx/common/update_check.py:98
 msgid "pretalx update available"
-msgstr ""
+msgstr "pretalx update beschikbaar"
 
 #: pretalx/common/update_check.py:102
 #, python-brace-format
@@ -2175,20 +2183,20 @@ msgstr ""
 
 #: pretalx/common/update_check.py:143 pretalx/common/update_check.py:150
 msgid "Plugin: {}"
-msgstr ""
+msgstr "Plugin: {}"
 
 #: pretalx/common/utils.py:77
 #, python-brace-format
 msgid "{date_from} – {date_to}"
-msgstr ""
+msgstr "{date_from} – {date_to}"
 
 #: pretalx/common/views.py:228
 msgid "Sorry, you are not allowed to reorder this list."
-msgstr ""
+msgstr "Sorry, jij mag deze lijst niet herordenen."
 
 #: pretalx/common/views.py:232
 msgid "The order has been updated."
-msgstr ""
+msgstr "De ordening is aangepast."
 
 #: pretalx/event/forms.py:48
 msgid ""
