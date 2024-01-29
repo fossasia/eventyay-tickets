@@ -36,9 +36,7 @@ def are_featured_submissions_visible(user, event):
     return (not is_agenda_visible(user, event)) or (not has_agenda(user, event))
 
 
-@rules.predicate
-def is_submission_visible(user, submission):
-    submission = getattr(submission, "submission", submission)
+def is_submission_visible_via_schedule(user, submission):
     return bool(
         submission
         and is_agenda_visible(user, submission.event)
@@ -46,6 +44,24 @@ def is_submission_visible(user, submission):
             schedule=submission.event.current_schedule, is_visible=True
         ).exists()
     )
+
+
+def is_submission_visible_via_featured(user, submission):
+    return bool(
+        submission
+        and submission.is_featured
+        and are_featured_submissions_visible(user, submission.event)
+    )
+
+
+@rules.predicate
+def is_submission_visible(user, submission):
+    submission = getattr(submission, "submission", submission)
+    if not submission:
+        return False
+    return is_submission_visible_via_schedule(
+        user, submission
+    ) or is_submission_visible_via_featured(user, submission)
 
 
 @rules.predicate
@@ -74,7 +90,7 @@ rules.add_perm(
     "agenda.view_featured_submissions",
     are_featured_submissions_visible | can_change_submissions,
 )
-rules.add_perm("agenda.view_slot", is_submission_visible | can_change_submissions)
+rules.add_perm("agenda.view_submission", is_submission_visible | can_change_submissions)
 rules.add_perm("agenda.view_speaker", is_speaker_viewable | can_change_submissions)
 rules.add_perm("agenda.give_feedback", is_feedback_ready)
 rules.add_perm(
