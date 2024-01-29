@@ -628,16 +628,18 @@ class FeedbackList(SubmissionViewMixin, PaginationMixin, ListView):
     paginate_by = 25
     permission_required = "submission.view_feedback"
 
-    @context
-    @cached_property
-    def submission(self):
+    def get_queryset(self):
+        return self.submission.feedback.all().order_by("pk")
+
+    def get_object(self):
         return get_object_or_404(
             Submission.objects.filter(event=self.request.event),
             code__iexact=self.kwargs.get("code"),
         )
 
-    def get_queryset(self):
-        return self.submission.feedback.all().order_by("pk")
+    @cached_property
+    def submission(self):
+        return self.get_object()
 
     def get_permission_object(self):
         return self.submission
