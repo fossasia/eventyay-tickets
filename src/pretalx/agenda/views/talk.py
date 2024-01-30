@@ -114,8 +114,8 @@ class TalkView(PermissionRequired, TemplateView):
     @cached_property
     def submission_description(self):
         return (
-            self.submission.description
-            or self.submission.abstract
+            self.submission.abstract
+            or self.submission.description
             or _("The session “{title}” at {event}").format(
                 title=self.submission.title, event=self.request.event.name
             )
