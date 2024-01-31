@@ -982,7 +982,7 @@ class TagList(EventPermissionRequired, PaginationMixin, ListView):
     permission_required = "orga.view_submissions"
 
     def get_queryset(self):
-        return self.request.event.tags.all()
+        return self.request.event.tags.all().order_by("tag")
 
 
 class TagDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):

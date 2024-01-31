@@ -399,7 +399,7 @@ class SubmissionTypeList(EventPermissionRequired, PaginationMixin, ListView):
     permission_required = "orga.view_submission_type"
 
     def get_queryset(self):
-        return self.request.event.submission_types.all()
+        return self.request.event.submission_types.all().order_by("default_duration")
 
 
 class SubmissionTypeDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
@@ -574,7 +574,7 @@ class AccessCodeList(EventPermissionRequired, PaginationMixin, ListView):
     permission_required = "orga.view_access_codes"
 
     def get_queryset(self):
-        return self.request.event.submitter_access_codes.all()
+        return self.request.event.submitter_access_codes.all().order_by("valid_until")
 
 
 class AccessCodeDetail(PermissionRequired, CreateOrUpdateView):
