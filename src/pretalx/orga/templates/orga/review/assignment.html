@@ -60,19 +60,25 @@
                                 </a>
                             </td>
                             <td>
-                                <details>
-                                    <summary> {{ team.members.count }} </summary>
-                                    <ul>
-                                        {% for member in team.members.all %}
-                                            <li>{{ member.get_display_name }}</li>
-                                        {% endfor %}
-                                    </ul>
-                                </details>
+                                {% if team.members.count %}
+                                    <details>
+                                        <summary> {{ team.members.count }} </summary>
+                                        <ul>
+                                            {% for member in team.members.all %}
+                                                <li>{{ member.get_display_name }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </details>
+                                {% else %}
+                                    -
+                                {% endif %}
                             </td>
                             {% if request.event.feature_flags.use_tracks %}
                                 <td>
                                     {% for track in team.limit_tracks.all %}
                                         <span class="badge badge-secondary">{{ track.name }}</span>
+                                    {% empty %}
+                                        -
                                     {% endfor %}
                                 </td>
                             {% endif %}
