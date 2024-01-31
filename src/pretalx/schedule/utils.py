@@ -3,13 +3,8 @@ from contextlib import suppress
 
 from dateutil.parser import parse
 from django.db import transaction
-from django.template.loader import get_template
-from django.utils.formats import get_format
-from django.utils.timezone import override as tzoverride
-from django.utils.translation import override
 from django_scopes import scope
 
-from pretalx.common.context_processors import get_day_month_date_format
 from pretalx.person.models import SpeakerProfile, User
 from pretalx.schedule.models import Room, TalkSlot
 from pretalx.submission.models import (
@@ -148,17 +143,3 @@ def _create_talk(*, talk, room, event):
     slot.start = start
     slot.end = end
     slot.save()
-
-
-def render_notifications(data, event, speaker=None):
-    """Renders the schedule notifications sent to speakers, in the form of a
-    Markdown list.
-
-    The data format is expected to be a dict with the keys ``create`` and ``update``,
-    each containing a list of TalkSlot objects, as returned by the values of the
-    Schedule.speakers.concerned return value."""
-    template = get_template("schedule/speaker_notification.txt")
-    locale = speaker.get_locale_for_event(event) if speaker else event.locale
-    with override(locale), tzoverride(event.tz):
-        date_format = get_day_month_date_format() + ", " + get_format("TIME_FORMAT")
-        return template.render({"START_DATE_FORMAT": date_format, **data})

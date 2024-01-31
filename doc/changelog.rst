@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`orga:email,1351` pretalx now provides two new email placeholders, ``speaker_schedule_new`` (all talks changed in the current schedule, like in the notification email generated on schedule release) and ``speaker_schedule_full`` (a list of **all** scheduled sessions for that user).
 - :bug:`schedule,1666` When building the social media preview card, pretalx would display a session's description rather than its abstract.
 - :bug:`cfp,1660` When setting character limits on text questions, pretalx would count line breaks as two characters.
 - :bug:`orga:submission,1613` The session page dropdown would sometimes include the "public link" even though it wasn't public yet. This has been fixed, and in the case of accepted or confirmed proposals that don't have a public page yet (e.g. because they're not scheduled yet), the link is marked as "public link (not public yet)".

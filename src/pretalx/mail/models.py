@@ -90,8 +90,9 @@ class MailTemplate(PretalxModel):
         :param event: The event to which this email belongs. May be ``None``.
         :param locale: The locale will be set via the event and the recipient,
             but can be overridden with this parameter.
-        :param context: Context to be used when rendering the template.
-        :param context_kwargs: Passed to get_email_context to retrieve the correct
+        :param context: Context to be used when rendering the template. Merged with
+            all context available via get_mail_context.
+        :param context_kwargs: Passed to get_mail_context to retrieve the correct
             context when rendering the template.
         :param skip_queue: Send directly. If combined with commit=False, this will
             remove any logging and traces.

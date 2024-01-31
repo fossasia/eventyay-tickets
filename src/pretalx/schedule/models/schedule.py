@@ -15,8 +15,8 @@ from pretalx.common.mixins.models import PretalxModel
 from pretalx.common.phrases import phrases
 from pretalx.common.urls import EventUrls
 from pretalx.person.models import SpeakerProfile, User
+from pretalx.schedule.notifications import render_notifications
 from pretalx.schedule.signals import schedule_release
-from pretalx.schedule.utils import render_notifications
 from pretalx.submission.models import SubmissionStates
 
 
@@ -158,7 +158,8 @@ class Schedule(PretalxModel):
     @cached_property
     def scheduled_talks(self):
         """Returns all :class:`~pretalx.schedule.models.slot.TalkSlot` objects
-        that have been scheduled."""
+        that have been scheduled and are visible in the schedule (that is, have
+        been confirmed at the time of release)."""
         return (
             self.talks.select_related(
                 "submission",

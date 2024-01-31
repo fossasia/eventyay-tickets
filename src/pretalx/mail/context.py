@@ -2,9 +2,16 @@ from django.dispatch import receiver
 from django.template.defaultfilters import date as _date
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
+from django.utils.translation import override
 
 from pretalx.mail.placeholders import SimpleFunctionalMailTextPlaceholder
 from pretalx.mail.signals import register_mail_placeholders
+from pretalx.schedule.notifications import (
+    get_current_notifications,
+    get_full_notifications,
+    get_notification_date_format,
+    render_notifications,
+)
 
 
 def get_mail_context(**kwargs):
@@ -64,6 +71,10 @@ def placeholder_aliases(identifiers, args, func, sample, explanation=None):
 
 @receiver(register_mail_placeholders, dispatch_uid="pretalx_register_base_placeholders")
 def base_placeholders(sender, **kwargs):
+    with override(sender.locale):
+        date_format = get_notification_date_format()
+        time = _date(now().replace(hour=9, minute=0), date_format)
+        time2 = _date(now().replace(hour=11, minute=0), date_format)
     placeholders = [
         *placeholder_aliases(
             ["event_name", "event"],
@@ -242,6 +253,37 @@ def base_placeholders(sender, **kwargs):
             lambda user: user.email,
             "jane@example.org",
             _("The addressed user's email address"),
+        ),
+        *placeholder_aliases(
+            [
+                "speaker_schedule_new",
+                "notifications",
+            ],  # TODO: remove alias in 2026, maybe
+            ["user", "event"],
+            lambda user, event: render_notifications(
+                get_current_notifications(user, event),
+                event,
+            ),
+            _(
+                "- Your session “Title” will take place at {time} in Room 101.\n"
+                "- Your session “Other Title” has been moved to {time2} in Room 102."
+            ).format(time=time, time2=time2),
+            _(
+                "A list of all changes to the user's schedule in the current schedule version."
+            ),
+        ),
+        SimpleFunctionalMailTextPlaceholder(
+            "speaker_schedule_full",
+            ["user", "event"],
+            lambda user, event: render_notifications(
+                get_full_notifications(user, event),
+                event,
+            ),
+            _(
+                "- Your session “Title” will take place at {time} in Room 101.\n"
+                "- Your session “Other Title” has been moved to {time2} in Room 102."
+            ).format(time=time, time2=time2),
+            _("A list of time and place for this user's publicly visible sessions."),
         ),
     ]
 

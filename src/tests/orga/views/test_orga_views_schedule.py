@@ -543,6 +543,9 @@ def test_regenerate_speaker_notifications(orga_client, event, slot):
     assert response.status_code == 200
     with scope(event=event):
         assert event.queued_mails.count() > queue_count
+        mail = event.queued_mails.last()
+        assert slot.submission.title in mail.text
+        assert str(slot.room.name) in mail.text
 
 
 @pytest.mark.django_db

@@ -57,7 +57,7 @@ UPDATE_TEXT = LazyI18nString.from_gettext(
 
 We have released a new schedule version, and wanted to tell you:
 
-{notifications}
+{speaker_schedule_new}
 
 We look forward to seeing you, and please contact us if there is any problem with your session or assigned slot.
 
