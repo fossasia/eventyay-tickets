@@ -188,6 +188,11 @@ class User(PermissionsMixin, GenerateCode, FileCleanupMixin, AbstractBaseUser):
                 profile.save()
             return profile
 
+    def get_locale_for_event(self, event):
+        if self.locale in event.locales:
+            return self.locale
+        return event.locale
+
     def log_action(
         self, action: str, data: dict = None, person=None, orga: bool = False
     ):

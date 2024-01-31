@@ -5,22 +5,18 @@ from urllib.parse import quote
 from django.conf import settings
 from django.db import models, transaction
 from django.db.utils import DatabaseError
-from django.template.loader import get_template
-from django.utils.formats import get_format
 from django.utils.functional import cached_property
 from django.utils.timezone import now
-from django.utils.timezone import override as tzoverride
 from django.utils.translation import gettext_lazy as _
-from django.utils.translation import override
 from i18nfield.fields import I18nTextField
 
 from pretalx.agenda.tasks import export_schedule_html
-from pretalx.common.context_processors import get_day_month_date_format
 from pretalx.common.mixins.models import PretalxModel
 from pretalx.common.phrases import phrases
 from pretalx.common.urls import EventUrls
 from pretalx.person.models import SpeakerProfile, User
 from pretalx.schedule.signals import schedule_release
+from pretalx.schedule.utils import render_notifications
 from pretalx.submission.models import SubmissionStates
 
 
@@ -573,29 +569,11 @@ class Schedule(PretalxModel):
         """A list of unsaved :class:`~pretalx.mail.models.QueuedMail` objects
         to be sent on schedule release."""
         mails = []
-        date_formats = {}
         for speaker, data in self.speakers_concerned.items():
-            locale = (
-                speaker.locale
-                if speaker.locale in self.event.locales
-                else self.event.locale
+            locale = speaker.get_locale_for_event(self.event)
+            notifications = render_notifications(
+                data, event=self.event, speaker=speaker
             )
-            with override(locale), tzoverride(self.event.tz):
-                date_format = date_formats.get(locale)
-                if not date_format:
-                    date_format = (
-                        get_day_month_date_format() + ", " + get_format("TIME_FORMAT")
-                    )
-                    date_formats[locale] = date_format
-                notifications = get_template(
-                    "schedule/speaker_notification.txt"
-                ).render(
-                    {
-                        "speaker": speaker,
-                        "START_DATE_FORMAT": date_format,
-                        **data,
-                    }
-                )
             slots = list(data.get("create") or []) + [
                 talk["new_slot"] for talk in (data.get("update") or [])
             ]
