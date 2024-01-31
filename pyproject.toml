@@ -48,7 +48,7 @@ dependencies = [
   "django-libsass~=0.8",
   "django-scopes~=2.0.0",
   "djangorestframework~=3.14.0",
-  "libsass~=0.22.0",
+  "libsass~=0.23.0",
   "Markdown~=3.5.0",  # https://python-markdown.github.io/change_log/
   # We can upgrade markdown again once django-bootstrap4 upgrades or once we drop Python 3.6 and 3.7
   # 3.3.5 requires importlib-metadata>=4.4, but django-bootstrap3 requires importlib-metadata<3.
