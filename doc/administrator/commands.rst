@@ -172,7 +172,7 @@ in the slug, otherwise you won't be able to see the event in the web interface.
 
 This command will move a given event (with the ``--event <event_slug>``
 parameter) event. By default, the event start date will be set to the current
-day, but youc can configure any date using the ``--date 2021-12-26`` argument.
+day, but you can configure any date using the ``--date 2021-12-26`` argument.
 
 Data moved includes event start and end dates and the dates of all talks, both
 current and historical. No new schedule versions will need to be created.

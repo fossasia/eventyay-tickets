@@ -108,8 +108,8 @@ Endpoints
    :param event: The ``slug`` field of the event to fetch
    :query page: The page number in case of a multi-page result set, default is 1
    :query q: Search for a string in the questions
-   :query target: Filter for questions of a specific target kind, eg reviewer questions
-   :query variant: Filter for questions of a specific variant, eg number questions
+   :query target: Filter for questions of a specific target kind, e.g. reviewer questions
+   :query variant: Filter for questions of a specific variant, e.g. number questions
    :query is_public: Filter for questions that are or are not public
    :query is_visible_to_reviewers: Filter for questions that are or are not visible to reviewers
 
