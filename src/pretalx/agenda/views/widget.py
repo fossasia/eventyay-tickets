@@ -157,9 +157,9 @@ def cache_version(request, event, version=None):
 
 def version_prefix(request, event, version=None):
     """On non-versioned pages, we want cache-invalidation on schedule
-    relese."""
+    release."""
     if not version and request.event.current_schedule:
-        return request.event.current_schedule.version
+        return request.event.current_schedule.published.isoformat()
 
 
 @conditional_cache_page(
