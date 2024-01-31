@@ -70,8 +70,8 @@
                     <table class="table table-flip">
                         <thead>
                             <th>{% translate "Answer" %}</th>
-                            <th>{% translate "Count" %}</th>
-                            <th class="text-center">{% translate "%" %}</th>
+                            <th class="numeric">{% translate "Count" %}</th>
+                            <th class="numeric">{% translate "%" %}</th>
                         </thead>
                         <tbody>
                             {% for answer in grouped_answers %}
@@ -85,10 +85,10 @@
                                             </a>
                                         {% endif %}
                                     </td>
-                                    <td class="text-center">
+                                    <td class="numeric">
                                         {{ answer.count }}
                                     </td>
-                                    <td class="flip text-right">
+                                    <td class="numeric">
                                         {% widthratio answer.count answer_count 100 %}&nbsp;%
                                     </td>
                                 </tr>

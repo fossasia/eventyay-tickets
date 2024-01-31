@@ -61,16 +61,16 @@
                 <thead>
                     <tr>
                         <th>{% translate "Component" %}</th>
-                        <th>{% translate "Installed version" %}</th>
-                        <th>{% translate "Latest version" %}</th>
+                        <th class="numeric">{% translate "Installed version" %}</th>
+                        <th class="numeric">{% translate "Latest version" %}</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for row in result_table %}
                         <tr class="table-{% if row.3 %}danger{% elif row.2 == "?" %}warning{% else %}success{% endif %}">
                             <td>{{ row.0 }}</td>
-                            <td>{{ row.1 }}</td>
-                            <td>{{ row.2 }}</td>
+                            <td class="numeric">{{ row.1 }}</td>
+                            <td class="numeric">{{ row.2 }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>

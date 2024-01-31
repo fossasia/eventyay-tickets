@@ -1,12 +1,12 @@
 {% load i18n %}
 {% load rich_text %}
 <tr>
-    <td>
+    <td class="numeric-left">
         {{ review.score }}
     </td>
     {% if score_categories|length > 1 %}
         {% for score in review.scores %}
-            <td>
+            <td class="numeric-left">
                 {{ score }}
             </td>
         {% endfor %}

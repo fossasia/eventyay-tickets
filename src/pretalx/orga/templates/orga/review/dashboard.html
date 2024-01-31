@@ -151,17 +151,17 @@
             <table class="table review-table table-hover table-flip">
                 <colgroup>
                     {% if can_see_all_reviews %}
-                        <col class="col-score-avg nowrap">
-                        {% for category in independent_categories %}<col class="col-score-avg nowrap">{% endfor %}
+                        <col class="col-score-avg nowrap numeric">
+                        {% for category in independent_categories %}<col class="col-score-avg nowrap numeric">{% endfor %}
                     {% endif %}
                     {% if can_review or submissions_reviewed %}
-                        <col class="nowrap col-score-user">
+                        <col class="nowrap col-score-user numeric">
                         {% if independent_categories and not can_see_all_reviews %}
-                            {% for category in independent_categories %}<col class="col-score-avg nowrap">{% endfor %}
+                            {% for category in independent_categories %}<col class="col-score-avg nowrap numeric">{% endfor %}
                         {% endif %}
                     {% endif %}
-                    <col class="nowrap col-review-count">
-                    <col class="w-75">
+                    <col class="nowrap col-review-count numeric">
+                    <col class="w-75">{# Title #}
                     {% if can_view_speakers %}<col class="w-25 col-speakers">{% endif %}
                     {% for question in short_questions %}<col class="col-question-{{ question.id }} d-none">{% endfor %}
                     {% if filter_form.track %}<col class="nowrap col-track">{% endif %}
@@ -174,7 +174,7 @@
                 <thead>
                     <tr>
                         {% if can_see_all_reviews %}
-                            <th class="col-score-avg">
+                            <th class="col-score-avg numeric">
                                 {% if request.event.review_settings.aggregate_method == "median" %}
                                     {% translate "Median" %}
                                 {% else %}
@@ -185,23 +185,23 @@
                             </th>
                             {% if independent_categories %}
                                 {% for category in independent_categories %}
-                                    <th class="col-score-avg"> {{ category.name }}</th>
+                                    <th class="col-score-avg numeric"> {{ category.name }}</th>
                                 {% endfor %}
                             {% endif %}
                         {% endif %}
                         {% if can_review or submissions_reviewed %}
-                            <th class="col-score-user">
+                            <th class="col-score-user numeric">
                                 {% translate "Your score" %}
                                 <a href="?{% url_replace request 'sort' 'my_score' %}"><i class="fa fa-caret-down" title="{% translate "Sort by score (highest first)" %}"></i></a>
                                 <a href="?{% url_replace request 'sort' '-my_score' %}"><i class="fa fa-caret-up" title="{% translate "Sort by score (lowest first)" %}"></i></a>
                             </th>
                             {% if independent_categories and not can_see_all_reviews %}
                                 {% for category in independent_categories %}
-                                    <th class="col-score-user"> {{ category.name }}</th>
+                                    <th class="col-score-user numeric"> {{ category.name }}</th>
                                 {% endfor %}
                             {% endif %}
                         {% endif %}
-                        <th class="col-review-count">
+                        <th class="col-review-count numeric">
                             {% translate "Reviews" %}
                             <a href="?{% url_replace request 'sort' 'count' %}"><i class="fa fa-caret-down" title="{% translate "Sort by review count (highest first)" %}"></i></a>
                             <a href="?{% url_replace request 'sort' '-count' %}"><i class="fa fa-caret-up" title="{% translate "Sort by review count (lowest first)" %}"></i></a>
@@ -235,26 +235,26 @@
                     {% for submission in submissions %}
                         <tr class="{{ submission.state }}">
                             {% if can_see_all_reviews %}
-                                <td class="text-center col-score-avg">
+                                <td class="text-center col-score-avg numeric">
                                     {% review_score submission %}
                                 </td>
                                 {% if independent_categories %}
                                     {% for score in submission.independent_scores %}
-                                        <td class="col-score-avg"> {% if score is None %}-{% else %}{{ score }}{% endif %}</td>
+                                        <td class="col-score-avg numeric"> {% if score is None %}-{% else %}{{ score }}{% endif %}</td>
                                     {% endfor %}
                                 {% endif %}
                             {% endif %}
                             {% if can_review or submissions_reviewed %}
-                                <td class="text-center col-score-user">
+                                <td class="text-center col-score-user numeric">
                                     {% review_score submission True %}
                                 </td>
                                 {% if not can_see_all_reviews and independent_categories %}
                                     {% for score in submission.independent_scores %}
-                                        <td class="col-score-user"> {% if score is None %}-{% else %}{{ score }}{% endif %}</td>
+                                        <td class="col-score-user numeric"> {% if score is None %}-{% else %}{{ score }}{% endif %}</td>
                                     {% endfor %}
                                 {% endif %}
                             {% endif %}
-                            <td class="text-center col-review-count">
+                            <td class="text-center col-review-count numeric">
                                 {{ submission.review_nonnull_count|default:'-' }}
                                 {% if submission.review_count != submission.review_nonnull_count %}({{ submission.review_count|default:'-' }}){% endif %}
                                 {% if submission.pk in submissions_reviewed %}

@@ -4,6 +4,7 @@ from collections import defaultdict
 from csp.decorators import csp_update
 from django.contrib import messages
 from django.db import transaction
+from django.db.models import Count
 from django.db.models.deletion import ProtectedError
 from django.forms.models import inlineformset_factory
 from django.http import JsonResponse
@@ -102,7 +103,9 @@ class CfPQuestionList(EventPermissionRequired, TemplateView):
 
     @context
     def questions(self):
-        return Question.all_objects.filter(event=self.request.event)
+        return Question.all_objects.filter(event=self.request.event).annotate(
+            answer_count=Count("answers")
+        )
 
 
 class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
