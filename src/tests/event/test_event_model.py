@@ -131,7 +131,7 @@ def test_event_copy_settings(event, submission_type, choice_question, track):
         event.accept_template.save()
         event.feature_flags = {"testing": "working"}
         choice_question.tracks.add(track)
-        event.cfp.deadline = now().date()
+        event.cfp.deadline = now()
         event.cfp.save()
         assert event.submission_types.count() == 2
     with scopes_disabled():
@@ -164,7 +164,7 @@ def test_event_copy_settings(event, submission_type, choice_question, track):
 def test_event_copy_settings_with_exceptions(event):
     with scope(event=event):
         event.feature_flags = {"testing": "working"}
-        event.cfp.deadline = now().date()
+        event.cfp.deadline = now()
         event.cfp.save()
     with scopes_disabled():
         new_event = Event.objects.create(
