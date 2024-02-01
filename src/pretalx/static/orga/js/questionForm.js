@@ -1,5 +1,4 @@
 function question_page_toggle_view() {
-  console.log("yeah")
   const variant = document.querySelector("#id_variant").value
   setVisibility(
     "#answer-options",

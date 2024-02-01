@@ -265,8 +265,25 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     def form_valid(self, form):
         form.instance.event = self.request.event
         self.instance = form.instance
-        result = super().form_valid(form)
+        # Last-ditch validation: We can't allow both a question option upload
+        # AND changes in the question option formset.
         if form.cleaned_data.get("variant") in ("choices", "multiple_choice"):
+            changed_options = [
+                form.changed_data for form in self.formset if form.has_changed()
+            ]
+            if form.cleaned_data.get("options") and changed_options:
+                messages.error(
+                    self.request,
+                    _(
+                        "You cannot change the question options and upload a question option file at the same time."
+                    ),
+                )
+                return self.form_invalid(form)
+        result = super().form_valid(form)
+        if form.cleaned_data.get("variant") in (
+            "choices",
+            "multiple_choice",
+        ) and not form.cleaned_data.get("options"):
             formset = self.save_formset(self.instance)
             if not formset:
                 return self.get(self.request, *self.args, **self.kwargs)

@@ -18,7 +18,7 @@
     <h2>
         {% if form.instance.question %}{% translate "Question" %}: {{ form.instance.question }}{% else %}{% translate "New question" %}{% endif %}
     </h2>
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {% bootstrap_form_errors form %}
         {% if action == "edit" and question.answers.count %}
@@ -104,6 +104,12 @@
 
         <fieldset id="answer-options">
             <legend>{% translate "Answer options" %}</legend>
+            <details class="col-md-9 offset-md-3 mb-3" {% if form.errors.options or form.errors.options_replace %}open{% endif %}>
+                <summary>{% translate "Upload answer options" %}</summary>
+                <div class="pt-3"></div>
+                {% bootstrap_field form.options layout='event' %}
+                {% bootstrap_field form.options_replace layout='event' %}
+            </details>
             <div class="formset" data-formset data-formset-prefix="{{ formset.prefix }}">
                 {{ formset.management_form }}
                 {% bootstrap_formset_errors formset %}

@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`orga` Organisers can now upload question options in bulk, which is particularly handy for questions with many options, like country lists.
 - :feature:`orga:email,1351` pretalx now provides two new email placeholders, ``speaker_schedule_new`` (all talks changed in the current schedule, like in the notification email generated on schedule release) and ``speaker_schedule_full`` (a list of **all** scheduled sessions for that user).
 - :bug:`schedule,1666` When building the social media preview card, pretalx would display a session's description rather than its abstract.
 - :bug:`cfp,1660` When setting character limits on text questions, pretalx would count line breaks as two characters.
