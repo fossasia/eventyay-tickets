@@ -485,6 +485,7 @@ class ReviewSubmission(ReviewViewMixin, PermissionRequired, CreateOrUpdateView):
         kwargs = super().get_form_kwargs()
         kwargs["event"] = self.request.event
         kwargs["user"] = self.request.user
+        kwargs["submission"] = self.submission
         kwargs["read_only"] = self.read_only
         kwargs["categories"] = self.score_categories
         return kwargs
@@ -496,8 +497,6 @@ class ReviewSubmission(ReviewViewMixin, PermissionRequired, CreateOrUpdateView):
         if self.tags_form and not self.tags_form.is_valid():
             messages.error(self.request, _("There have been errors with your input."))
             return redirect(self.get_success_url())
-        form.instance.submission = self.submission
-        form.instance.user = self.request.user
         form.save()
         self.qform.review = form.instance
         self.qform.save()
