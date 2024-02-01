@@ -631,10 +631,12 @@ class EventWizard(PermissionRequired, SensibleBackWizardMixin, SessionWizardView
 
     @transaction.atomic()
     def done(self, form_list, *args, **kwargs):
-        steps = {
-            step: self.get_cleaned_data_for_step(step)
-            for step in ("initial", "basics", "timeline", "display", "copy")
-        }
+        steps = {}
+        for step in ("initial", "basics", "timeline", "display", "copy"):
+            try:
+                steps[step] = self.get_cleaned_data_for_step(step)
+            except KeyError:
+                steps[step] = {}
 
         with scopes_disabled():
             event = Event.objects.create(
