@@ -420,10 +420,23 @@ class SubmissionFilterForm(forms.Form):
         return qs
 
     def filter_queryset(self, qs):
-        for field in ("state", "submission_type", "content_locale", "track", "tags"):
+        for field in ("submission_type", "content_locale", "track", "tags"):
             value = self.cleaned_data.get(field)
             if value:
                 qs = qs.filter(**{f"{field}__in": value})
+
+        state_filter = self.cleaned_data.get("state")
+        if state_filter:
+            states = [s for s in state_filter if not s.startswith("pending_state__")]
+            pending_states = [s.split("__")[1] for s in state_filter if s not in states]
+            if states and not pending_states:
+                qs = qs.filter(state__in=states)
+            elif pending_states and not states:
+                qs = qs.filter(pending_state__in=pending_states)
+            else:
+                qs = qs.filter(
+                    Q(state__in=states) | Q(pending_state__in=pending_states)
+                )
 
         if self.cleaned_data.get("pending_state__isnull"):
             qs = qs.filter(pending_state__isnull=True)
