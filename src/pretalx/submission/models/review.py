@@ -146,12 +146,10 @@ class Review(PretalxModel):
         return f"Review(event={self.submission.event.slug}, submission={self.submission.title}, user={self.user.get_display_name}, score={self.score})"
 
     @classmethod
-    def find_missing_reviews(cls, event, user, ignore=None):
-        """Returns all.
-
-        :class:`~pretalx.submission.models.submission.Submission` objects this
-        :class:`~pretalx.person.models.user.User` still has to review for the
-        given :class:`~pretalx.event.models.event.Event`.
+    def find_reviewable_submissions(cls, event, user, ignore=None):
+        """Returns all :class:`~pretalx.submission.models.submission.Submission`
+        objects this :class:`~pretalx.person.models.user.User` is allowed to review,
+        regardless of whether they have already reviewed them.
 
         Excludes submissions this user has submitted, and takes track
         :class:`~pretalx.event.models.organiser.Team` permissions into account,
@@ -166,7 +164,6 @@ class Review(PretalxModel):
 
         queryset = (
             event.submissions.filter(state=SubmissionStates.SUBMITTED)
-            .exclude(reviews__user=user)
             .exclude(speakers__in=[user])
             .annotate(review_count=models.Count("reviews"))
             .annotate(
@@ -197,6 +194,21 @@ class Review(PretalxModel):
         # This is not randomised, because order_by("review_count", "?") sets all annotated
         # review_count values to 1.
         return queryset.order_by("-is_assigned", "review_count")
+
+    @classmethod
+    def find_missing_reviews(cls, event, user, ignore=None):
+        """Returns all :class:`~pretalx.submission.models.submission.Submission`
+        objects this :class:`~pretalx.person.models.user.User` still has to review
+        for the given :class:`~pretalx.event.models.event.Event`. A subset of
+        ``find_reviewable_submissions``.
+
+        :type event: :class:`~pretalx.event.models.event.Event`
+        :type user: :class:`~pretalx.person.models.user.User`
+        :rtype: Queryset of :class:`~pretalx.submission.models.submission.Submission` objects
+        """
+        return cls.find_reviewable_submissions(event, user, ignore).exclude(
+            reviews__user=user
+        )
 
     @classmethod
     def calculate_score(cls, scores):

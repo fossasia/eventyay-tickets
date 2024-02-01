@@ -566,6 +566,11 @@ urlpatterns = [
                     name="reviews.dashboard",
                 ),
                 path(
+                    "reviews/bulk/",
+                    review.BulkReview.as_view(),
+                    name="reviews.bulk",
+                ),
+                path(
                     "reviews/regenerate/",
                     review.RegenerateDecisionMails.as_view(),
                     name="reviews.regenerate",

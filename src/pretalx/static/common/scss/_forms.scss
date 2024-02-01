@@ -187,7 +187,8 @@ input[type="radio"] + label {
   }
 }
 
-.form-check input, input[type=radio] {
+.form-check input,
+input[type="radio"] {
   position: absolute;
   left: 0px;
   opacity: 0;

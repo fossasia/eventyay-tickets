@@ -1,4 +1,5 @@
 import json
+from contextlib import suppress
 from functools import partial
 
 from django import forms
@@ -115,6 +116,10 @@ class ReviewForm(ReadOnlyFlag, forms.ModelForm):
     def get_score_fields(self):
         for category in self.categories:
             yield self[f"score_{category.id}"]
+
+    def get_score_field(self, category):
+        with suppress(KeyError):
+            return self[f"score_{category.id}"]
 
     def clean_text(self):
         text = self.cleaned_data.get("text")

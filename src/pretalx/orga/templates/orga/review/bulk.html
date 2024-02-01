@@ -1,0 +1,110 @@
+{% extends "orga/base.html" %}
+{% load bootstrap4 %}
+{% load compress %}
+{% load i18n %}
+{% load review_score %}
+{% load rules %}
+{% load url_replace %}
+{% load static %}
+
+{% block scripts %}
+    {% compress js %}
+        <script src="{% static "orga/js/submission_filter.js" %}"></script>
+    {% endcompress %}
+{% endblock %}
+
+{% block content %}
+    {% has_perm 'orga.view_speakers' request.user request.event as can_view_speakers %}
+    <div class="alert alert-info">
+        {% if next_submission %}
+            {% blocktranslate trimmed count count=missing_reviews %}
+                Or review the missing proposal here.
+            {% plural %}
+                Or review the missing {{ count }} proposals one-by-one.
+            {% endblocktranslate %}
+            <a href="{{ next_submission.orga_urls.reviews }}" class="btn btn-outline-info btn-xs ml-2">
+                <i class="fa fa-arrow-right"></i>
+            </a>
+        {% else %}
+            {% translate "You've got no proposals left to review!" %}
+        {% endif %}
+    </div>
+
+    <div class="submit-group search-submit-group">
+        <form class="search-form" id="review-filter-form">
+            {% bootstrap_field filter_form.q %}
+            {% if show_submission_types and filter_form.submission_type %}{% bootstrap_field filter_form.submission_type %}{% endif %}
+            <div class="d-none form-group">
+                {% bootstrap_field filter_form.state layout='inline' %}
+                <div id="pending">{% bootstrap_field filter_form.pending_state__isnull layout='inline' %}</div>
+            </div>
+            {% if filter_form.track %}{% bootstrap_field filter_form.track %}{% endif %}
+            {% if filter_form.content_locale %}{% bootstrap_field filter_form.content_locale %}{% endif %}
+            {% if filter_form.tags %}{% bootstrap_field filter_form.tags %}{% endif %}
+            <div class="form-group w-auto">
+                <button class="btn btn-success" type="submit">{% translate "Search" %}</button>
+            </div>
+        </form>
+        {% if filter_form.is_valid and filter_form.cleaned_data.question %}
+            <p class="text-muted ml-2">
+                <span class="fa fa-filter"></span>
+                {% blocktranslate trimmed with question=filter_form.cleaned_data.question.question %}
+                    List filtered by answers to question "{{ question }}".
+                {% endblocktranslate %}
+                <a href="?{% url_replace request 'question' '' 'answer' '' 'answer__options' '' %}" class="text-muted">
+                    <span class="fa fa-times"></span>
+                    {% translate "Remove filter" %}
+                </a>
+            </p>
+        {% endif %}
+    </div>
+
+    <form method="post">{% csrf_token %}
+        <div class="table-responsive">
+            <table class="table table-hover table-flip">
+                <thead>
+                    <tr>
+                        <th>{% translate "Title" %}</th>
+                        {% if can_view_speakers %}<th>{% translate "Speakers" %}</th>{% endif %}
+                        {% for category in categories %}
+                            <th>{{ category.name }}</th>
+                        {% endfor %}
+                        <th class="">{% translate "Comment" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in table %}
+                        <tr>
+                            <td>
+                                <a href="{{ row.submission.orga_urls.base }}">{{ row.submission.title }}</a></td>
+                            {% if can_view_speakers %}
+                                <td>
+                                    {% for speaker in row.submission.speakers.all %}
+                                        {{ speaker.get_display_name }}{% if not forloop.last %},{% endif %}<br>
+                                    {% endfor %}
+                                </td>
+                            {% endif %}
+                            {% for score in row.score_fields %}
+                                <td>
+                                    {% if score %}
+                                        {% bootstrap_field score layout="inline" %}
+                                    {% endif %}
+                                </td>
+                            {% endfor %}
+                            <td>
+                                {% bootstrap_field row.form.text layout="inline" form_group_class="flex-direction-column" %}
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan=10>{% translate "You don't seem to have any proposals yet." %}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div id="submitBar">
+            <button type="submit" class="btn btn-success">{% translate "Save" %}</button>
+        </div>
+    </form>
+{% endblock %}
