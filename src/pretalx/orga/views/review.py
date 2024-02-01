@@ -42,9 +42,6 @@ class ReviewDashboard(EventPermissionRequired, BaseSubmissionList):
     )
     DEFAULT_PAGINATION = None
 
-    def get_paginage_by(self, queryset):
-        return None
-
     def filter_range(self, queryset):
         review_count = self.request.GET.get("review-count") or ","
         if "," not in review_count:
@@ -66,9 +63,7 @@ class ReviewDashboard(EventPermissionRequired, BaseSubmissionList):
         aggregate_method = self.request.event.review_settings["aggregate_method"]
         # TODO remove mean fallback once we drop Python 3.7
         statistics_method = (
-            statistics.median
-            if aggregate_method == "median"
-            else (statistics.fmean if hasattr(statistics, "fmean") else statistics.mean)
+            statistics.median if aggregate_method == "median" else statistics.fmean
         )
         queryset = (
             self._get_base_queryset(for_review=True)
@@ -262,9 +257,8 @@ class ReviewDashboard(EventPermissionRequired, BaseSubmissionList):
         missing_reviews = Review.find_missing_reviews(
             self.request.event, self.request.user
         )
-        result["missing_reviews"] = (
-            missing_reviews.count()
-        )  # Do NOT use len() here! It yields a different result.
+        # Do NOT use len() here! It yields a different result.
+        result["missing_reviews"] = missing_reviews.count()
         result["next_submission"] = missing_reviews[0] if missing_reviews else None
         return result
 
