@@ -8,17 +8,17 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-03-30 16:15+0000\n"
-"PO-Revision-Date: 2020-09-23 17:00+0000\n"
-"Last-Translator: Svyatoslav <slava@digitalarthouse.eu>\n"
-"Language-Team: Russian <https://translate.pretix.eu/projects/pretix/pretix/"
-"ru/>\n"
+"PO-Revision-Date: 2024-02-05 02:01+0000\n"
+"Last-Translator: Axus Wizix <axus.wizix@mail.ru>\n"
+"Language-Team: Russian <https://hosted.weblate.org/projects/open-event/"
+"eventyay-tickets/ru/>\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 3.10.3\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Weblate 5.4-dev\n"
 
 #: pretix/api/auth/devicesecurity.py:6
 msgid ""
@@ -67,7 +67,7 @@ msgstr "Включить вебхук"
 #: pretix/api/models.py:77
 #: pretix/control/templates/pretixcontrol/organizers/webhooks.html:36
 msgid "Target URL"
-msgstr ""
+msgstr "Целевой URL-адрес"
 
 #: pretix/api/models.py:78 pretix/base/models/devices.py:100
 #: pretix/base/models/organizer.py:187
@@ -128,7 +128,7 @@ msgstr ""
 #: pretix/api/serializers/event.py:225
 #, python-brace-format
 msgid "Unknown plugin: '{name}'."
-msgstr ""
+msgstr "Неизвестный плагин: '{name}'."
 
 #: pretix/api/serializers/item.py:69 pretix/control/forms/item.py:796
 msgid "The bundled item must not be the same item as the bundling one."
@@ -225,6 +225,7 @@ msgstr "Счёт для данного заказа уже существует.
 #: pretix/control/views/users.py:97
 msgid "There was an error sending the mail. Please try again later."
 msgstr ""
+"Произошла ошибка при отправке письма. Пожалуйста, повторите попытку позже."
 
 #: pretix/api/views/order.py:573 pretix/base/services/cart.py:109
 #: pretix/base/services/orders.py:94 pretix/presale/views/order.py:712
@@ -249,21 +250,19 @@ msgstr "Заказ помечен как оплаченный"
 #: pretix/control/templates/pretixcontrol/event/mail.html:68
 #: pretix/control/views/orders.py:1161
 msgid "Order canceled"
-msgstr ""
+msgstr "Заявка отменена"
 
 #: pretix/api/webhooks.py:195 pretix/base/notifications.py:248
-#, fuzzy
-#| msgid "Order expired"
 msgid "Order reactivated"
-msgstr "Срок действия заказа истёк"
+msgstr "Заявка повторно активирована"
 
 #: pretix/api/webhooks.py:199 pretix/base/notifications.py:254
 msgid "Order expired"
-msgstr "Срок действия заказа истёк"
+msgstr "Срок действия заявки истёк"
 
 #: pretix/api/webhooks.py:203 pretix/base/notifications.py:260
 msgid "Order information changed"
-msgstr "Информация в заказе изменена"
+msgstr "Информация в заявке изменена"
 
 #: pretix/api/webhooks.py:207 pretix/base/notifications.py:266
 msgid "Order contact address changed"
@@ -272,7 +271,7 @@ msgstr "Контактный адрес заказа изменён"
 #: pretix/api/webhooks.py:211 pretix/base/notifications.py:272
 #: pretix/control/templates/pretixcontrol/event/mail.html:59
 msgid "Order changed"
-msgstr ""
+msgstr "Заявка изменена"
 
 #: pretix/api/webhooks.py:215 pretix/base/notifications.py:284
 msgid "External refund of payment"
@@ -280,11 +279,11 @@ msgstr "Внешний возврат оплаты"
 
 #: pretix/api/webhooks.py:219
 msgid "Order approved"
-msgstr ""
+msgstr "Заявка утверждена"
 
 #: pretix/api/webhooks.py:223
 msgid "Order denied"
-msgstr ""
+msgstr "Заявка отклонена"
 
 #: pretix/api/webhooks.py:227
 msgid "Ticket checked in"
@@ -295,42 +294,32 @@ msgid "Ticket check-in reverted"
 msgstr ""
 
 #: pretix/api/webhooks.py:235
-#, fuzzy
-#| msgid "Event date"
 msgid "Event created"
-msgstr "Дата мероприятия"
+msgstr "Событие создано"
 
 #: pretix/api/webhooks.py:239 pretix/api/webhooks.py:243
-#, fuzzy
-#| msgid "Event date range"
 msgid "Event details changed"
-msgstr "Диапазон дат мероприятия"
+msgstr "Детали события изменены"
 
 #: pretix/api/webhooks.py:247
-#, fuzzy
-#| msgid "Event begin date and time"
 msgctxt "subevent"
 msgid "Event series date added"
-msgstr "Дата и время начала мероприятия"
+msgstr "Добавлена дата серии событий"
 
 #: pretix/api/webhooks.py:251
-#, fuzzy
-#| msgid "Event date range"
 msgctxt "subevent"
 msgid "Event series date changed"
-msgstr "Диапазон дат мероприятия"
+msgstr "Дата проведения серии событий изменена"
 
 #: pretix/api/webhooks.py:255
-#, fuzzy
-#| msgid "Event begin date and time"
 msgctxt "subevent"
 msgid "Event series date deleted"
-msgstr "Дата и время начала мероприятия"
+msgstr "Дата серии событий удалена"
 
 #: pretix/base/auth.py:104
 #, python-brace-format
 msgid "{system} User"
-msgstr ""
+msgstr "{system} User"
 
 #: pretix/base/auth.py:113 pretix/base/forms/auth.py:207
 #: pretix/base/models/auth.py:90 pretix/base/models/notifications.py:25
@@ -346,7 +335,7 @@ msgstr "Электронная почта"
 #: pretix/base/auth.py:115 pretix/base/forms/auth.py:118
 #: pretix/base/forms/auth.py:170 pretix/control/forms/event.py:1008
 msgid "Password"
-msgstr ""
+msgstr "Пароль"
 
 #: pretix/base/channels.py:84
 msgid "Online shop"
@@ -360,11 +349,11 @@ msgstr "Интернет-магазин"
 #: pretix/plugins/ticketoutputpdf/templates/pretixplugins/ticketoutputpdf/index.html:33
 #: pretix/plugins/ticketoutputpdf/templates/pretixplugins/ticketoutputpdf/index.html:53
 msgid "Default"
-msgstr ""
+msgstr "По умолчанию"
 
 #: pretix/base/email.py:162
 msgid "Simple with logo"
-msgstr ""
+msgstr "Простой с логотипом"
 
 #: pretix/base/email.py:436 pretix/base/email.py:502 pretix/base/email.py:518
 #: pretix/base/email.py:523 pretix/base/pdf.py:113 pretix/base/pdf.py:246
@@ -451,7 +440,7 @@ msgstr "Билет на мероприятие {event}-{code}"
 #: pretix/plugins/checkinlists/exporters.py:421
 #: pretix/plugins/ticketoutputpdf/exporters.py:41
 msgid "Start date"
-msgstr ""
+msgstr "Дата начала"
 
 #: pretix/base/exporters/dekodi.py:205 pretix/base/exporters/invoices.py:39
 msgid ""
@@ -474,7 +463,7 @@ msgstr ""
 #: pretix/plugins/checkinlists/exporters.py:422
 #: pretix/plugins/ticketoutputpdf/exporters.py:48
 msgid "End date"
-msgstr ""
+msgstr "Дата окончания"
 
 #: pretix/base/exporters/dekodi.py:213 pretix/base/exporters/invoices.py:47
 msgid ""
@@ -578,7 +567,7 @@ msgstr ""
 #: pretix/control/templates/pretixcontrol/users/index.html:37
 #: pretix/control/views/waitinglist.py:214
 msgid "E-mail address"
-msgstr ""
+msgstr "Адрес эл. почты"
 
 #: pretix/base/exporters/invoices.py:169 pretix/base/exporters/invoices.py:297
 msgid "Invoice type"
@@ -669,7 +658,7 @@ msgstr "Адрес"
 #: pretix/plugins/checkinlists/exporters.py:440
 #: pretix/plugins/reports/exporters.py:718
 msgid "ZIP code"
-msgstr ""
+msgstr "Почтовый индекс"
 
 #: pretix/base/exporters/invoices.py:175 pretix/base/exporters/invoices.py:183
 #: pretix/base/exporters/invoices.py:302 pretix/base/exporters/invoices.py:310
@@ -684,7 +673,7 @@ msgstr ""
 #: pretix/plugins/checkinlists/exporters.py:441
 #: pretix/plugins/reports/exporters.py:719
 msgid "City"
-msgstr ""
+msgstr "Город"
 
 #: pretix/base/exporters/invoices.py:176 pretix/base/exporters/invoices.py:184
 #: pretix/base/exporters/invoices.py:303 pretix/base/exporters/invoices.py:311
