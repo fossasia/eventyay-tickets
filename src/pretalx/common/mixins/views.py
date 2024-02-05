@@ -1,7 +1,6 @@
 import urllib
 from collections import defaultdict
 from contextlib import suppress
-from importlib import import_module
 from urllib.parse import quote
 
 from csp.decorators import csp_exempt
@@ -14,6 +13,7 @@ from django.forms import ValidationError
 from django.http import FileResponse, Http404
 from django.shortcuts import redirect
 from django.utils.functional import cached_property
+from django.utils.module_loading import import_string
 from django.utils.translation import gettext_lazy as _
 from django_context_decorator import context
 from formtools.wizard.forms import ManagementForm
@@ -22,7 +22,7 @@ from rules.contrib.views import PermissionRequiredMixin
 
 from pretalx.common.forms import SearchForm
 
-SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
+SessionStore = import_string(f"{settings.SESSION_ENGINE}.SessionStore")
 
 
 class ActionFromUrl:

@@ -1,13 +1,12 @@
-import importlib
-
 from django import template
+from django.utils.module_loading import import_string
 from django.utils.safestring import mark_safe
 
 register = template.Library()
 
 
 @register.simple_tag
-def html_signal(signame: str, **kwargs):
+def html_signal(signal_name: str, **kwargs):
     """Send a signal and return the concatenated return values of all
     responses.
 
@@ -15,9 +14,7 @@ def html_signal(signame: str, **kwargs):
 
         {% html_signal event "path.to.signal" argument="value" ... %}
     """
-    sigstr = signame.rsplit(".", 1)
-    sigmod = importlib.import_module(sigstr[0])
-    signal = getattr(sigmod, sigstr[1])
+    signal = import_string(signal_name)
     _html = []
     for _receiver, response in signal.send(**kwargs):
         if response:

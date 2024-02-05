@@ -1,25 +1,20 @@
-import importlib
 from contextlib import suppress
 
 from django.apps import apps
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import include, path
+from django.utils.module_loading import import_string
 
 from pretalx.common.views import error_view
 
 plugin_patterns = []
 for app in apps.get_app_configs():
     if getattr(app, "PretalxPluginMeta", None):
-        if importlib.util.find_spec(app.name + ".urls"):
-            urlmod = importlib.import_module(app.name + ".urls")
-            single_plugin_patterns = []
-            urlpatterns = getattr(urlmod, "urlpatterns", None)
+        with suppress(ImportError):
+            urlpatterns = import_string(f"{app.name}.urls.urlpatterns")
             if urlpatterns:
-                single_plugin_patterns += urlpatterns
-            plugin_patterns.append(
-                path("", include((single_plugin_patterns, app.label)))
-            )
+                plugin_patterns.append(path("", include((urlpatterns, app.label))))
 
 urlpatterns = [
     path("400", error_view(400)),
