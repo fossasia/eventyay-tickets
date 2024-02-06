@@ -1052,11 +1052,19 @@ h2 .submission-state-dropdown {
       cursor: pointer;
     }
     .radio {
-      label::before {
-        font-family: ForkAwesome;
-        font-weight: bold;
-        color: rgba(0, 0, 0, 0.3);
-        text-align: center;
+      width: 40px;
+      padding: 4px;
+      padding-top: 0;
+      label {
+        margin-left: 0;
+        height: 24px;
+        width: 24px;
+        &::before {
+          font-family: ForkAwesome;
+          font-weight: bold;
+          color: rgba(0, 0, 0, 0.3);
+          text-align: center;
+        }
       }
       &.reject {
         label::after {
@@ -1078,11 +1086,6 @@ h2 .submission-state-dropdown {
     }
     &:first-child td {
       border-top: none;
-    }
-    .form-check {
-      width: 40px;
-      padding: 4px;
-      padding-top: 0;
     }
   }
 }
