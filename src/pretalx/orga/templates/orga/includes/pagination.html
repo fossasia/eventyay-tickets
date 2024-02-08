@@ -39,15 +39,10 @@
                 <small>
                     {% trans "Show per page:" context "Allows users to select how many lines/elements are shown in lists." %}
                 </small>
-                <a href="?{% url_replace request "page_size" "25" "page" "1" %}">
-                    {% if page_size == 25 %}<strong>{% endif %}25{% if page_size == 25 %}</strong>{% endif %}
-                </a> |
-                <a href="?{% url_replace request "page_size" "50" "page" "1" %}">
-                    {% if page_size == 50 %}<strong>{% endif %}50{% if page_size == 50 %}</strong>{% endif %}
-                </a> |
-                <a href="?{% url_replace request "page_size" "100" "page" "1" %}">
-                    {% if page_size == 100 %}<strong>{% endif %}100{% if page_size == 100 %}</strong>{% endif %}
-                </a>
+                {% for pagination_size in pagination_sizes %}
+                    {% include "orga/includes/pagination_size.html" %}
+                    {% if not forloop.last %} | {% endif %}
+                {% endfor %}
             </div>
         {% endif %}
     </nav>
