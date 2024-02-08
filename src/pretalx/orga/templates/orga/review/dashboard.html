@@ -337,4 +337,7 @@
             <button type="submit" class="btn btn-success">{% translate "Go!" %}</button>
         </div>
     </form>
+    {% if page_obj.paginator.count > 50 %}
+        {% include "orga/includes/pagination.html" %}
+    {% endif %}
 {% endblock %}

@@ -33,14 +33,14 @@ from pretalx.submission.models import Review, Submission, SubmissionStates
 class ReviewDashboard(EventPermissionRequired, BaseSubmissionList):
     template_name = "orga/review/dashboard.html"
     permission_required = "orga.view_review_dashboard"
-    paginate_by = None
+    paginate_by = 100
+    max_page_size = 100_000
     usable_states = (
         SubmissionStates.SUBMITTED,
         SubmissionStates.ACCEPTED,
         SubmissionStates.REJECTED,
         SubmissionStates.CONFIRMED,
     )
-    DEFAULT_PAGINATION = None
 
     def filter_range(self, queryset):
         review_count = self.request.GET.get("review-count") or ","
@@ -260,6 +260,7 @@ class ReviewDashboard(EventPermissionRequired, BaseSubmissionList):
         # Do NOT use len() here! It yields a different result.
         result["missing_reviews"] = missing_reviews.count()
         result["next_submission"] = missing_reviews[0] if missing_reviews else None
+        result["pagination_sizes"] = [50, 100, 250, 100_000]
         return result
 
     def get_pending(self, request):
