@@ -991,8 +991,25 @@ h2 .submission-state-dropdown {
     margin-right: 32px;
   }
 }
-#release #id_version {
-  height: auto;
+#fake-changelog {
+  margin: 0 42px 24px 42px;
+  border-top: 1px solid $gray-light;
+  padding: 16px 24px;
+  position: relative;
+  border-radius: 3px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  .i18n-form-group {
+    width: 100%;
+  }
+}
+#release #notify-speakers-check {
+  small {
+    margin-top: 0;
+    font-size: 80%;
+    a {
+      color: $gray;
+    }
+  }
 }
 #review-filter-form {
   #range-wrapper {
