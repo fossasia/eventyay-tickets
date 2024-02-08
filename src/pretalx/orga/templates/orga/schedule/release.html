@@ -5,95 +5,123 @@
 {% load static %}
 
 {% block schedule_content %}
-    <h2>{% translate "Release new schedule" %}</h2>
-    <div class="alert alert-warning"><span></span><span>
-        {% blocktranslate  trimmed %}
-            There are still warnings about the release of this schedule. Please review them carefully!
-        {% endblocktranslate %}
-    </span></div>
+    <form method="post">
+        {% csrf_token %}
+        <h2>
+            {% translate "Release new schedule" %}
+            <input id="id_version" class="form-control d-inline-flex w-auto" name="version" maxlength="200" title="" type="text" placeholder="{% translate "Version" %}" value="{{ suggested_version }}" required>
+        </h2>
+        <div class="alert alert-warning"><span></span><span>
+            {% blocktranslate  trimmed %}
+                There are still warnings about the release of this schedule. Please review them carefully!
+            {% endblocktranslate %}
+        </span></div>
 
-    <ul>
-        <li>
-            {% if request.event.wip_schedule.previous_schedule.version %}
-                {% blocktranslate with prev=request.event.wip_schedule.previous_schedule.version since=request.event.wip_schedule.previous_schedule.published|timesince trimmed %}
-                    The previous schedule ({{ prev }}) was released {{ since }} ago.
-                {% endblocktranslate %}
-            {% else %}
-                {% translate "This will be the very first schedule release." %}
-            {% endif %}
+        <ul>
             <li>
-                {% if notifications %}
-                    {% blocktranslate with notifications=notifications trimmed %}
-                        When releasing this new schedule, <strong>{{ notifications }} notifications emails
-                        </strong> will be generated and placed in the outbox, to tell speakers about their
-                        session slots.
+                {% if request.event.wip_schedule.previous_schedule.version %}
+                    {% blocktranslate with prev=request.event.wip_schedule.previous_schedule.version since=request.event.wip_schedule.previous_schedule.published|timesince trimmed %}
+                        The previous schedule ({{ prev }}) was released {{ since }} ago.
                     {% endblocktranslate %}
                 {% else %}
-                    {% blocktranslate trimmed %}
-                        This schedule release would result in <strong>no notification emails</strong> for
-                        speakers.
-                    {% endblocktranslate %}
+                    {% translate "This will be the very first schedule release." %}
                 {% endif %}
-            </li>
-            {% if warnings.unconfirmed %}
-                <li>{% blocktranslate with unconfirmed=warnings.unconfirmed trimmed %}
-                    {{ unconfirmed }} sessions are still <strong>unconfirmed</strong> and will not show up
-                    on the public schedule.
-                {% endblocktranslate %} <a href="{{ request.event.orga_urls.submissions }}?state=accepted">{% translate "See all unconfirmed sessions." %}</a></li>
-            {% endif %}
-            {% if warnings.unscheduled %}
-                <li>{% blocktranslate with unscheduled=warnings.unscheduled trimmed %}
-                    {{ unscheduled }} sessions have <strong>not yet been scheduled</strong>.
-                {% endblocktranslate %}</li>
-            {% endif %}
-            {% if warnings.no_track %}
-                <li>{% blocktranslate with no_track=warnings.no_track|length trimmed %}
-                    {{ no_track }} sessions have <strong>not yet been assigned a track</strong>.
-                {% endblocktranslate %}
+                <li>
+                    {% if notifications %}
+                        {% blocktranslate trimmed count count=notifications %}
+                            When releasing this new schedule, <strong>one notifications email
+                            </strong> can be generated and placed in the outbox, to tell speakers about their
+                            session slots.
+                        {% plural %}
+                            When releasing this new schedule, <strong>{{ count }} notifications emails
+                            </strong> can be generated and placed in the outbox, to tell speakers about their
+                            session slots.
+                        {% endblocktranslate %}
+                        <br>
+                        {% translate "Email template" %}: <a href="{{ notification_template.urls.base }}">{% translate "New schedule version" %}</a>
+                    {% else %}
+                        {% blocktranslate trimmed %}
+                            This schedule release would result in <strong>no notification emails</strong> for
+                            speakers.
+                        {% endblocktranslate %}
+                    {% endif %}
+                </li>
+                {% if warnings.unconfirmed %}
+                    <li>{% blocktranslate trimmed count count=warnings.unconfirmed %}
+                        One session is still <strong>unconfirmed</strong> and will not show up
+                        on the public schedule.
+                    {% plural %}
+                        {{ count }} sessions are still <strong>unconfirmed</strong> and will not show up
+                        on the public schedule.
+                    {% endblocktranslate %} <a href="{{ request.event.orga_urls.submissions }}?state=accepted">{% translate "See all unconfirmed sessions." %}</a></li>
+                {% endif %}
+                {% if warnings.unscheduled %}
+                    <li>{% blocktranslate trimmed count count=warnings.unscheduled %}
+                        One session has <strong>not yet been scheduled</strong>.
+                    {% plural %}
+                        {{ count }} sessions have <strong>not yet been scheduled</strong>.
+                    {% endblocktranslate %}</li>
+                {% endif %}
+                {% if warnings.no_track %}
+                    <li>{% blocktranslate trimmed count count=warnings.no_track|length %}
+                        One session has <strong>not yet been assigned a track</strong>.
+                    {% plural %}
+                        {{ count }} sessions have <strong>not yet been assigned a track</strong>.
+                    {% endblocktranslate %}
+                        <ul>
+                            {% for talk in warnings.no_track %}
+                                <li><a href="{{ talk.submission.orga_url }}">{{ quotation_open }}{{ talk.submission.title }}{{ quotation_close }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                {% endif %}
+            </ul>
+            {% if warnings.talk_warnings %}
+                <details>
+                    <summary class="pb-1">
+                        <h4 class="d-inline-flex">{{ warnings.talk_warnings|length }} {% translate "Warnings" %}</h4>
+                        <hr class="ml-3 mr-3 mt-0 mr-0">
+                    </summary>
                     <ul>
-                        {% for talk in warnings.no_track %}
-                            <li><a href="{{ talk.submission.orga_url }}">{{ quotation_open }}{{ talk.submission.title }}{{ quotation_close }}</a></li>
+                        {% for talk in warnings.talk_warnings %}
+                            {% for warning in talk.warnings %}
+                                <li><a href="{{ warning.url }}">{{ quotation_open }}{{ talk.talk.submission.title }}{{ quotation_close }}</a>: {{ warning.message }}</li>
+                            {% endfor %}
                         {% endfor %}
                     </ul>
-                </li>
+                </details>
+
             {% endif %}
-        </ul>
-        {% if warnings.talk_warnings %}
-            <h4>{% translate "Warnings" %}</h4>
-            <ul>
-                {% for talk in warnings.talk_warnings %}
-                    {% for warning in talk.warnings %}
-                        <li><a href="{{ warning.url }}">{{ quotation_open }}{{ talk.talk.submission.title }}{{ quotation_close }}</a>: {{ warning.message }}</li>
-                    {% endfor %}
-                {% endfor %}
-            </ul>
 
-        {% endif %}
+            <details>
+                <summary class="pb-3">
+                    <div class="d-inline-flex flex-column">
+                        <h4>{% translate "Public changelog" %}</h4>
+                        {% translate "This is how the new schedule version will appear in the public changelog and in the RSS feed." %}
+                        {% translate "You can include a comment here." %}
+                    </div>
+                    <hr class="ml-3 mr-3 mt-0 mr-0">
+                </summary>
 
-        <h4>{% translate "Public changelog" %}</h4>
-        <p>{% translate "This is how the new schedule version will appear in the public changelog and in the RSS feed." %}</p>
-
-        <form method="post">
-            {% csrf_token %}
-            <div id="fake-changelog">
-                <h4>
-                    {% translate "Version" %}
-                    <input id="id_version" class="form-control d-inline-flex w-auto" name="version" maxlength="200" title="" type="text" placeholder="{% translate "Version" %}" value="{{ suggested_version }}" required>
-                </h4>
-                <div class="flex-next-column">
-                    {% bootstrap_field form.comment layout='event-inline' %}
+                <div id="fake-changelog">
+                    <h4>
+                        {% translate "Version" %} {{ suggested_version }}
+                    </h4>
+                    <div class="flex-next-column">
+                        {% bootstrap_field form.comment layout='inline' %}
+                    </div>
+                    {% include "agenda/changelog_block.html" with schedule=request.event.wip_schedule %}
                 </div>
-                {% include "agenda/changelog_block.html" with schedule=request.event.wip_schedule %}
-            </div>
+            </details>
 
 
             <div class="submit-group" id="release">
-                <a href="{{ request.event.orga_urls.schedule }}" class="btn btn-info btn-lg">{% translate "Back" %}</a>
                 <div class="d-flex align-items-center">
-                    {% bootstrap_field form.notify_speakers layout='event-inline' %}
-                    <div class="input-group">
-                        <button type="submit" class="btn btn-success btn-lg">{% translate "Release" %}</button>
-                    </div>
+                    <a href="{{ request.event.orga_urls.schedule }}" class="btn btn-info btn-lg">{% translate "Back" %}</a>
+                </div>
+                <div class="d-flex align-items-center justify-content-end" id="notify-speakers-check">
+                    {% bootstrap_field form.notify_speakers layout='event-inline' form_group_class="mr-3" %}
+                    <button type="submit" class="btn btn-success btn-lg">{% translate "Release" %}</button>
                 </div>
             </div>
         </form>
