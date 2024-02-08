@@ -436,7 +436,7 @@ class ReviewViewMixin:
     @cached_property
     def submission(self):
         return get_object_or_404(
-            self.request.event.submissions.prefetch_related("speakers"),
+            self.request.event.submissions.prefetch_related("speakers", "resources"),
             code__iexact=self.kwargs["code"],
         )
 

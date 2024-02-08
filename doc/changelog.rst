@@ -3,7 +3,8 @@
 Release Notes
 =============
 
-- :feature:`orga,1675` In order to make large events more manageable, the review dashboard is now by default paginated to 100 sessions per page. The page size can be adjusted up to showing all sessions as before (and the page size is remembered on a per-user basis).
+- :feature:`orga:review,1633` Resources uploaded or linked by speakers are now shown in the review view (unless anonymous reviews are used, as resources can currently not be anonymised).
+- :feature:`orga:review,1675` In order to make large events more manageable, the review dashboard is now by default paginated to 100 sessions per page. The page size can be adjusted up to showing all sessions as before (and the page size is remembered on a per-user basis).
 - :feature:`orga` The default page size for paginated pages has been increased to 50.
 - :feature:`orga:review` Reviewers can now review all proposals at the same time in bulk, as an alternative to reviewing them one by one.
 - :feature:`orga` Organisers can now upload question options in bulk, which is particularly handy for questions with many options, like country lists.

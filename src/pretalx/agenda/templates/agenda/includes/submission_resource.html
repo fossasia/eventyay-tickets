@@ -1,0 +1,5 @@
+<a href="{{ resource.url }}">
+    <i class="fa fa-{% if resource.link %}link{% else %}file-o{% endif %}"></i>
+    {{ resource.description }}
+    {% if resource.resource %}({{ resource.resource.size|filesizeformat }}){% endif %}
+</a>
