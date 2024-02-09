@@ -1,7 +1,7 @@
 import importlib
 
 from django.apps import apps
-from django.conf.urls import include, url
+from django.conf.urls import include, re_path
 from rest_framework import routers
 
 from pretix.api.views import cart
@@ -65,37 +65,37 @@ order_router.register(r'refunds', order.RefundViewSet)
 giftcard_router = routers.DefaultRouter()
 giftcard_router.register(r'transactions', organizer.GiftCardTransactionViewSet)
 
-# Force import of all plugins to give them a chance to register URLs with the router
+# Force import of all plugins to give them a chance to register s with the router
 for app in apps.get_app_configs():
     if hasattr(app, 'PretixPluginMeta'):
         if importlib.util.find_spec(app.name + '.urls'):
             importlib.import_module(app.name + '.urls')
 
 urlpatterns = [
-    url(r'^', include(router.urls)),
-    url(r'^organizers/(?P<organizer>[^/]+)/', include(orga_router.urls)),
-    url(r'^organizers/(?P<organizer>[^/]+)/settings/$', organizer.OrganizerSettingsView.as_view(),
+    re_path(r'^', include(router.urls)),
+    re_path(r'^organizers/(?P<organizer>[^/]+)/', include(orga_router.urls)),
+    re_path(r'^organizers/(?P<organizer>[^/]+)/settings/$', organizer.OrganizerSettingsView.as_view(),
         name="organizer.settings"),
-    url(r'^organizers/(?P<organizer>[^/]+)/giftcards/(?P<giftcard>[^/]+)/', include(giftcard_router.urls)),
-    url(r'^organizers/(?P<organizer>[^/]+)/events/(?P<event>[^/]+)/settings/$', event.EventSettingsView.as_view(),
+    re_path(r'^organizers/(?P<organizer>[^/]+)/giftcards/(?P<giftcard>[^/]+)/', include(giftcard_router.urls)),
+    re_path(r'^organizers/(?P<organizer>[^/]+)/events/(?P<event>[^/]+)/settings/$', event.EventSettingsView.as_view(),
         name="event.settings"),
-    url(r'^organizers/(?P<organizer>[^/]+)/events/(?P<event>[^/]+)/', include(event_router.urls)),
-    url(r'^organizers/(?P<organizer>[^/]+)/teams/(?P<team>[^/]+)/', include(team_router.urls)),
-    url(r'^organizers/(?P<organizer>[^/]+)/events/(?P<event>[^/]+)/items/(?P<item>[^/]+)/', include(item_router.urls)),
-    url(r'^organizers/(?P<organizer>[^/]+)/events/(?P<event>[^/]+)/questions/(?P<question>[^/]+)/',
+    re_path(r'^organizers/(?P<organizer>[^/]+)/events/(?P<event>[^/]+)/', include(event_router.urls)),
+    re_path(r'^organizers/(?P<organizer>[^/]+)/teams/(?P<team>[^/]+)/', include(team_router.urls)),
+    re_path(r'^organizers/(?P<organizer>[^/]+)/events/(?P<event>[^/]+)/items/(?P<item>[^/]+)/', include(item_router.urls)),
+    re_path(r'^organizers/(?P<organizer>[^/]+)/events/(?P<event>[^/]+)/questions/(?P<question>[^/]+)/',
         include(question_router.urls)),
-    url(r'^organizers/(?P<organizer>[^/]+)/events/(?P<event>[^/]+)/checkinlists/(?P<list>[^/]+)/',
+    re_path(r'^organizers/(?P<organizer>[^/]+)/events/(?P<event>[^/]+)/checkinlists/(?P<list>[^/]+)/',
         include(checkinlist_router.urls)),
-    url(r'^organizers/(?P<organizer>[^/]+)/events/(?P<event>[^/]+)/orders/(?P<order>[^/]+)/', include(order_router.urls)),
-    url(r"^oauth/authorize$", oauth.AuthorizationView.as_view(), name="authorize"),
-    url(r"^oauth/token$", oauth.TokenView.as_view(), name="token"),
-    url(r"^oauth/revoke_token$", oauth.RevokeTokenView.as_view(), name="revoke-token"),
-    url(r"^device/initialize$", device.InitializeView.as_view(), name="device.initialize"),
-    url(r"^device/update$", device.UpdateView.as_view(), name="device.update"),
-    url(r"^device/roll$", device.RollKeyView.as_view(), name="device.roll"),
-    url(r"^device/revoke$", device.RevokeKeyView.as_view(), name="device.revoke"),
-    url(r"^device/eventselection$", device.EventSelectionView.as_view(), name="device.eventselection"),
-    url(r"^upload$", upload.UploadView.as_view(), name="upload"),
-    url(r"^me$", user.MeView.as_view(), name="user.me"),
-    url(r"^version$", version.VersionView.as_view(), name="version"),
+    re_path(r'^organizers/(?P<organizer>[^/]+)/events/(?P<event>[^/]+)/orders/(?P<order>[^/]+)/', include(order_router.urls)),
+    re_path(r"^oauth/authorize$", oauth.AuthorizationView.as_view(), name="authorize"),
+    re_path(r"^oauth/token$", oauth.TokenView.as_view(), name="token"),
+    re_path(r"^oauth/revoke_token$", oauth.RevokeTokenView.as_view(), name="revoke-token"),
+    re_path(r"^device/initialize$", device.InitializeView.as_view(), name="device.initialize"),
+    re_path(r"^device/update$", device.UpdateView.as_view(), name="device.update"),
+    re_path(r"^device/roll$", device.RollKeyView.as_view(), name="device.roll"),
+    re_path(r"^device/revoke$", device.RevokeKeyView.as_view(), name="device.revoke"),
+    re_path(r"^device/eventselection$", device.EventSelectionView.as_view(), name="device.eventselection"),
+    re_path(r"^upload$", upload.UploadView.as_view(), name="upload"),
+    re_path(r"^me$", user.MeView.as_view(), name="user.me"),
+    re_path(r"^version$", version.VersionView.as_view(), name="version"),
 ]

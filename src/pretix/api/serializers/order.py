@@ -1,4 +1,6 @@
 import json
+import logging
+import os
 from collections import Counter, defaultdict
 from decimal import Decimal
 
@@ -22,7 +24,7 @@ from pretix.base.channels import get_all_sales_channels
 from pretix.base.decimal import round_decimal
 from pretix.base.i18n import language
 from pretix.base.models import (
-    CachedFile, Checkin, Invoice, InvoiceAddress, InvoiceLine, Item,
+    CachedFile, Checkin, Customer, Invoice, InvoiceAddress, InvoiceLine, Item,
     ItemVariation, Order, OrderPosition, Question, QuestionAnswer, Seat,
     SubEvent, TaxRule, Voucher,
 )
@@ -36,6 +38,7 @@ from pretix.base.services.pricing import get_price
 from pretix.base.settings import COUNTRIES_WITH_STATE_IN_ADDRESS
 from pretix.base.signals import register_ticket_outputs
 from pretix.multidomain.urlreverse import build_absolute_uri
+logger = logging.getLogger(__name__)
 
 
 class CompatibleCountryField(serializers.Field):
@@ -147,6 +150,8 @@ class AnswerSerializer(I18nAwareModelSerializer):
         return q
 
     def _handle_file_upload(self, data):
+        if data['answer'] == 'file:keep':
+            return data
         try:
             ao = self.context["request"].user or self.context["request"].auth
             cf = CachedFile.objects.get(
@@ -292,8 +297,11 @@ class PdfDataSerializer(serializers.Field):
                 self.context['vars_images'] = get_images(self.context['request'].event)
 
             for k, f in self.context['vars'].items():
-                res[k] = f['evaluate'](instance, instance.order, ev)
-
+                try:
+                    res[k] = f['evaluate'](instance, instance.order, ev)
+                except:
+                    logger.exception('Evaluating PDF variable failed')
+                    res[k] = '(error)'
             if not hasattr(ev, '_cached_meta_data'):
                 ev._cached_meta_data = ev.meta_data
 
@@ -309,10 +317,20 @@ class PdfDataSerializer(serializers.Field):
 
             for k, f in self.context['vars_images'].items():
                 if 'etag' in f:
-                    has_image = etag = f['etag'](instance, instance.order, ev)
-                else:
-                    has_image = f['etag'](instance, instance.order, ev)
-                    etag = None
+                    try:
+                        has_image = etag = f['etag'](instance, instance.order, ev)
+                    except:
+                        has_image = False
+                        etag = None
+                        logger.exception('Evaluating PDF variable failed')
+                else:                    
+                    try:
+                        has_image = f['valuate'](instance, instance.order, ev)
+                        etag = None
+                    except:
+                        has_image = False
+                        logger.exception('Evaluating PDF variable failed')
+ 
                 if has_image:
                     url = reverse('api-v1:orderposition-pdf_image', kwargs={
                         'organizer': instance.order.event.organizer.slug,
@@ -354,7 +372,7 @@ class OrderPositionSerializer(I18nAwareModelSerializer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         request = self.context.get('request')
-        if not request or not self.context['request'].query_params.get('pdf_data', 'false') == 'true' or 'can_view_orders' not in request.eventpermset:
+        if request and (not request.query_params.get('pdf_data', 'false') == 'true' or 'can_view_orders' not in request.eventpermset):
             self.fields.pop('pdf_data', None)
 
     def validate(self, data):
@@ -418,6 +436,8 @@ class OrderPositionSerializer(I18nAwareModelSerializer):
                     if isinstance(answ_data['answer'], File):
                         a.file.save(answ_data['answer'].name, answ_data['answer'], save=False)
                         a.answer = 'file://' + a.file.name
+                    elif a.answer.startswith('file://') and answ_data['answer'] == "file:keep":
+                        pass  # keep current file
                     else:
                         for attr, value in answ_data.items():
                             setattr(a, attr, value)
@@ -426,7 +446,7 @@ class OrderPositionSerializer(I18nAwareModelSerializer):
                     if isinstance(answ_data['answer'], File):
                         an = answ_data.pop('answer')
                         a = instance.answers.create(**answ_data, answer='')
-                        a.file.save(an.name, an, save=False)
+                        a.file.save(os.path.basename(an.name), an, save=False)
                         a.answer = 'file://' + a.file.name
                         a.save()
                     else:
@@ -496,7 +516,7 @@ class CheckinListOrderPositionSerializer(OrderPositionSerializer):
             self.fields['subevent'] = SubEventSerializer(read_only=True)
 
         if 'item' in self.context['request'].query_params.getlist('expand'):
-            self.fields['item'] = ItemSerializer(read_only=True)
+            self.fields['item'] = ItemSerializer(read_only=True, context=self.context)
 
         if 'variation' in self.context['request'].query_params.getlist('expand'):
             self.fields['variation'] = InlineItemVariationSerializer(read_only=True)
@@ -583,6 +603,7 @@ class OrderSerializer(I18nAwareModelSerializer):
     payment_date = OrderPaymentDateField(source='*', read_only=True)
     payment_provider = OrderPaymentTypeField(source='*', read_only=True)
     url = OrderURLField(source='*', read_only=True)
+    customer = serializers.SlugRelatedField(slug_field='identifier', read_only=True)
 
     class Meta:
         model = Order
@@ -590,11 +611,11 @@ class OrderSerializer(I18nAwareModelSerializer):
             'code', 'status', 'testmode', 'secret', 'email', 'phone', 'locale', 'datetime', 'expires', 'payment_date',
             'payment_provider', 'fees', 'total', 'comment', 'invoice_address', 'positions', 'downloads',
             'checkin_attention', 'last_modified', 'payments', 'refunds', 'require_approval', 'sales_channel',
-            'url'
+            'url', 'customer'
         )
         read_only_fields = (
             'code', 'status', 'testmode', 'secret', 'datetime', 'expires', 'payment_date',
-            'payment_provider', 'fees', 'total', 'positions', 'downloads',
+            'payment_provider', 'fees', 'total', 'positions', 'downloads', 'customer',
             'last_modified', 'payments', 'refunds', 'require_approval', 'sales_channel'
         )
 
@@ -866,16 +887,18 @@ class OrderCreateSerializer(I18nAwareModelSerializer):
     payment_date = serializers.DateTimeField(required=False, allow_null=True)
     send_email = serializers.BooleanField(default=False, required=False)
     simulate = serializers.BooleanField(default=False, required=False)
+    customer = serializers.SlugRelatedField(slug_field='identifier', queryset=Customer.objects.none(), required=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['positions'].child.fields['voucher'].queryset = self.context['event'].vouchers.all()
+        self.fields['customer'].queryset = self.context['event'].organizer.customers.all()
 
     class Meta:
         model = Order
         fields = ('code', 'status', 'testmode', 'email', 'phone', 'locale', 'payment_provider', 'fees', 'comment', 'sales_channel',
                   'invoice_address', 'positions', 'checkin_attention', 'payment_info', 'payment_date', 'consume_carts',
-                  'force', 'send_email', 'simulate')
+                  'force', 'send_email', 'simulate', 'customer')
 
     def validate_payment_provider(self, pp):
         if pp is None:
@@ -1230,7 +1253,7 @@ class OrderCreateSerializer(I18nAwareModelSerializer):
                         if isinstance(answ_data['answer'], File):
                             an = answ_data.pop('answer')
                             answ = pos.answers.create(**answ_data, answer='')
-                            answ.file.save(an.name, an, save=False)
+                            answ.file.save(os.path.basename(an.name), an, save=False)
                             answ.answer = 'file://' + answ.file.name
                             answ.save()
                         else:

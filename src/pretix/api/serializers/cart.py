@@ -1,3 +1,4 @@
+import os
 from datetime import timedelta
 
 from django.core.files import File
@@ -104,9 +105,10 @@ class CartPositionCreateSerializer(I18nAwareModelSerializer):
             if isinstance(answ_data['answer'], File):
                 an = answ_data.pop('answer')
                 answ = cp.answers.create(**answ_data, answer='')
-                answ.file.save(an.name, an, save=False)
+                answ.file.save(os.path.basename(an.name), an, save=False)
                 answ.answer = 'file://' + answ.file.name
                 answ.save()
+                an.close()
             else:
                 answ = cp.answers.create(**answ_data)
                 answ.options.add(*options)

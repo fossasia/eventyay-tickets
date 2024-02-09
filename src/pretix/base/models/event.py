@@ -15,6 +15,7 @@ from django.core.validators import (
 )
 from django.db import models
 from django.db.models import Exists, OuterRef, Prefetch, Q, Subquery, Value
+from django.db.models.functions import Coalesce
 from django.template.defaultfilters import date as _date
 from django.urls import reverse
 from django.utils.crypto import get_random_string
@@ -245,6 +246,14 @@ class EventMixin:
         vars_reserved = set()
         items_gone = set()
         vars_gone = set()
+        items_disabled = set()
+        vars_disabled = set()
+
+        if hasattr(self, 'disabled_items'):  # SubEventItem
+            items_disabled = set(self.disabled_items.split(","))
+
+        if hasattr(self, 'disabled_vars'):  # SubEventItemVariation
+            vars_disabled = set(self.disabled_vars.split(","))
 
         r = getattr(self, '_quota_cache', {})
         for q in self.active_quotas:
@@ -265,7 +274,17 @@ class EventMixin:
                     items_gone.update(q.active_items.split(","))
                 if q.active_variations:
                     vars_gone.update(q.active_variations.split(","))
-        if not self.active_quotas:
+        items_available -= items_disabled
+        items_reserved -= items_disabled
+        items_gone -= items_disabled
+        vars_available -= vars_disabled
+        vars_reserved -= vars_disabled
+        vars_gone -= vars_gone
+
+        if not self.active_quotas or (
+            not items_available and not items_reserved and not items_gone and not vars_gone and not vars_available and not vars_reserved
+        ):
+                  
             return None
         if items_available - items_reserved - items_gone or vars_available - vars_reserved - vars_gone:
             return Quota.AVAILABILITY_OK
@@ -615,6 +634,7 @@ class Event(EventMixin, LoggedModel):
         variation_map = {}
         for i in Item.objects.filter(event=other).prefetch_related('variations'):
             vars = list(i.variations.all())
+            require_membership_types = list(i.require_membership_types.all())
             item_map[i.pk] = i
             i.pk = None
             i.event = self
@@ -624,8 +644,14 @@ class Event(EventMixin, LoggedModel):
                 i.category = category_map[i.category_id]
             if i.tax_rule_id:
                 i.tax_rule = tax_map[i.tax_rule_id]
+            if i.grant_membership_type and other.organizer_id != self.organizer_id:
+                i.grant_membership_type = None
+
             i.save()
             i.log_action('pretix.object.cloned')
+            if require_membership_types and other.organizer_id == self.organizer_id:
+                i.require_membership_types.set(require_membership_types)
+
             for v in vars:
                 variation_map[v.pk] = v
                 v.pk = None
@@ -1191,6 +1217,38 @@ class SubEvent(EventMixin, LoggedModel):
                                       minimal_distance=self.settings.seating_minimal_distance,
                                       distance_only_within_row=self.settings.seating_distance_within_row)
         return qs_annotated
+
+    @classmethod
+    def annotated(cls, qs, channel='web'):
+        from .items import SubEventItem, SubEventItemVariation
+
+        qs = super().annotated(qs, channel)
+        qs = qs.annotate(
+            disabled_items=Coalesce(
+                Subquery(
+                    SubEventItem.objects.filter(
+                        Q(disabled=True) | Q(available_from__gt=now()) | Q(available_until__lt=now()),
+                        subevent=OuterRef('pk'),
+                    ).order_by().values('subevent').annotate(items=GroupConcat('item_id', delimiter=',')).values('items'),
+                    output_field=models.TextField(),
+                ),
+                Value(''),
+                output_field=models.TextField()
+            ),
+            disabled_vars=Coalesce(
+                Subquery(
+                    SubEventItemVariation.objects.filter(
+                        Q(disabled=True) | Q(available_from__gt=now()) | Q(available_until__lt=now()),
+                        subevent=OuterRef('pk'),
+                    ).order_by().values('subevent').annotate(items=GroupConcat('variation_id', delimiter=',')).values('items'),
+                    output_field=models.TextField(),
+                ),
+                Value(''),
+                output_field=models.TextField()
+            )
+        )
+
+        return qs
 
     @cached_property
     def settings(self):

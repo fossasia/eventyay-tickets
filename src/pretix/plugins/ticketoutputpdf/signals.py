@@ -7,7 +7,7 @@ from django.utils.html import escape
 from django.utils.translation import gettext_lazy as _
 
 from pretix.base.channels import get_all_sales_channels
-from pretix.base.signals import (  # NOQA: legacy import
+from pretix.base.signals import (
     EventPluginSignal, event_copy_data, item_copy_data, layout_text_variables,
     logentry_display, logentry_object_link, register_data_exporters,
     register_multievent_data_exporters, register_ticket_outputs,
@@ -17,7 +17,7 @@ from pretix.plugins.ticketoutputpdf.forms import TicketLayoutItemForm
 from pretix.plugins.ticketoutputpdf.models import (
     TicketLayout, TicketLayoutItem,
 )
-from pretix.presale.style import (  # NOQA: legacy import
+from pretix.presale.style import (
     get_fonts, register_fonts,
 )
 
@@ -66,7 +66,7 @@ def copy_item(sender, source, target, **kwargs):
 
 @receiver(signal=event_copy_data, dispatch_uid="pretix_ticketoutputpdf_copy_data")
 def pdf_event_copy_data_receiver(sender, other, item_map, question_map, **kwargs):
-    if sender.ticket_layouts.exists():  # idempotency
+    if sender.ticket_layouts.exists():  
         return
     layout_map = {}
     for bl in other.ticket_layouts.all():
@@ -131,9 +131,7 @@ def pdf_logentry_object_link(sender, logentry, **kwargs):
     return a_text.format_map(a_map)
 
 
-override_layout = EventPluginSignal(
-    providing_args=["layout", "orderposition"]
-)
+override_layout = EventPluginSignal()
 """
 This signal allows you to forcefully override the ticket layout that is being used to create the ticket PDF. Use with
 care, as this will render any specifically by the organizer selected templates useless.

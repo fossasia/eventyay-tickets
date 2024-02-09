@@ -1,4 +1,4 @@
-import pytest
+SessionMiddleware(NotImplementedError).process_request(r)import pytest
 from django.test import RequestFactory
 from django.utils.timezone import now
 from django_scopes import scope

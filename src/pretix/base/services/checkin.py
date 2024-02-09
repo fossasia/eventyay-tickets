@@ -1,4 +1,5 @@
-from datetime import timedelta
+import os
+from datetime import datetime, timedelta
 from functools import partial, reduce
 
 import dateutil
@@ -321,7 +322,7 @@ def _save_answers(op, answers, given_answers):
                 qa = answers[q]
             else:
                 qa = op.answers.create(question=q, answer=str(a))
-            qa.file.save(a.name, a, save=False)
+            qa.file.save(os.path.basename(a.name), a, save=False)
             qa.answer = 'file://' + qa.file.name
             qa.save()
             written = True
