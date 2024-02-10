@@ -1,17 +1,9 @@
-/*global $,u2f */
-$(function() {
-  $("ul.navbar-nav .dropdown, .navbar-events-collapse").on(
+$(() => {
+  $("#nav-search-wrapper").on(
     "shown.bs.collapse shown.bs.dropdown",
-    function() {
-      $(this)
-        .parent()
-        .find("input")
-        .val("")
-        .change()
-        .focus()
-    }
+    () => $("#nav-search-dropdown input").val("").change().focus()
   )
-  $(".dropdown-menu input").click(function(e) {
+  $("#nav-search-dropdown input").click(function(e) {
     e.stopPropagation()
   })
 
@@ -20,12 +12,12 @@ $(function() {
     var $query = $(this).find("[data-typeahead-query]").length
       ? $(this).find("[data-typeahead-query]")
       : $($(this).attr("data-typeahead-field"))
-    $container.find("li:not(.query-holder)").remove()
+    $container.find("li").remove()
 
     $query.on("change", function() {
       if ($container.attr("data-typeahead-field") && $query.val() === "") {
         $container.removeClass("focused")
-        $container.find("li:not(.query-holder)").remove()
+        $container.find("li").remove()
         return
       }
       $.getJSON(
@@ -33,9 +25,9 @@ $(function() {
           "?query=" +
           encodeURIComponent($query.val()),
         function(data) {
-          $container.find("li:not(.query-holder)").remove()
+          $container.find("li").remove()
           $.each(data.results, function(i, res) {
-            $container.append(
+            $container.find("ul").append(
               $("<li>").append(
                 $("<a>")
                   .attr("href", res.url)
