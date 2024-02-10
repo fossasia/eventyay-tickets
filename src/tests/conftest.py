@@ -1,4 +1,5 @@
 import datetime as dt
+import json
 from zoneinfo import ZoneInfo
 
 import pytest
@@ -6,6 +7,7 @@ from django.core import management
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.utils.timezone import now
 from django_scopes import scope, scopes_disabled
+from lxml import etree
 
 from pretalx.event.models import Event, Organiser, Team, TeamInvite
 from pretalx.mail.models import MailTemplate
@@ -1042,13 +1044,18 @@ def other_slot(other_confirmed_submission, room, schedule):
 
 
 @pytest.fixture
-def schedule_schema():
-    from lxml import etree
-
+def schedule_schema_xml():
     with open("tests/fixtures/schedule.xsd") as xsd:
         source = xsd.read()
     schema = etree.XML(source)
     return etree.XMLSchema(schema)
+
+
+@pytest.fixture
+def schedule_schema_json():
+    with open("tests/fixtures/schedule.json") as js:
+        source = json.load(js)
+    return source
 
 
 @pytest.fixture
