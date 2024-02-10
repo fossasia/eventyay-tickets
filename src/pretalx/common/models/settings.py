@@ -21,9 +21,13 @@ class GlobalSettings(GlobalSettingsBase):
             return INSTANCE_IDENTIFIER
 
         instance_identifier = self.settings.get("instance_identifier")
-        if not instance_identifier:
+        # Due to a mishap in f77dbce1dabc4098c2fad449096de754bab7f47f,
+        # the instance identifier could get set to `str(None)`, which
+        # is why we need to check if the instance identifier is "None"
+        # here.
+        if not instance_identifier or instance_identifier == "None":
             INSTANCE_IDENTIFIER = uuid.uuid4()
-            self.settings.set("instance_identifier", str(instance_identifier))
+            self.settings.set("instance_identifier", str(INSTANCE_IDENTIFIER))
         else:
             INSTANCE_IDENTIFIER = uuid.UUID(instance_identifier)
         return INSTANCE_IDENTIFIER
