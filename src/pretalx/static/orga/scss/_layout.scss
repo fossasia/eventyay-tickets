@@ -160,18 +160,15 @@ aside.sidebar {
     }
 
     #search-context-icon {
-      .fa-stack-2x {
-        margin-left: 3px;
-      }
-      .fa-stack-1x {
-        margin-left: 10px;
-      }
+      min-width: 38px;
     }
 
     #search-context-text {
       display: none;
       flex-direction: column;
       flex-grow: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
       margin-left: 6px;
       .context-name,
       .context-meta {
