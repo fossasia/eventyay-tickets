@@ -18,7 +18,7 @@ $(() => {
 
     function showLoadIndicator() {
         $container.find("li").remove();
-        $container.append("<li class='loading'><span class='fa fa-4x fa-cog fa-spin'></span></li>");
+        $container.find("ul").append("<li class='loading'><span class='fa fa-4x fa-cog fa-spin'></span></li>");
         $container.toggleClass('focused', $query.is(":focus") && $container.children().length > 0);
     }
 
