@@ -22,8 +22,7 @@ class GlobalSettings(GlobalSettingsBase):
 
         try:
             INSTANCE_IDENTIFIER = uuid.UUID(self.settings.get("instance_identifier"))
-        except ValueError:
-            # A ValueError is raised if the instance identifier is empty or not a valid UUID.
+        except (TypeError, ValueError):
             INSTANCE_IDENTIFIER = uuid.uuid4()
             self.settings.set("instance_identifier", str(INSTANCE_IDENTIFIER))
         return INSTANCE_IDENTIFIER
