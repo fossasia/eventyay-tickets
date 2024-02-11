@@ -216,42 +216,43 @@ aside.sidebar {
     ul#search-results {
       padding: 0;
       margin: 0;
+      list-style: none;
 
-      li {
-        margin: 0;
-        border-top: 1px solid $gray-light;
-        &:hover,
-        &.active {
-          background: $gray-lightest;
-        }
-        a {
-          font-weight: normal;
-        }
-        .event-text {
+      li.loading {
+        text-align: center;
+        padding: 8px;
+      }
+
+      li > a {
+        text-decoration: none;
+        & > div {
+          display: flex;
+          flex-direction: column;
+          margin: 0;
+          border-top: 1px solid $gray-light;
           padding: 8px;
           font-size: 14px;
           line-height: 15px;
-          display: flex;
-          flex-direction: column;
-          text-decoration: none;
-
-          span {
-            display: inline-block;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            overflow: hidden;
-          }
-
-          .event-name {
-            font-family: "Titillium Web";
-            padding-bottom: 4px;
+          &:hover,
+          &.active {
+            background: $gray-lightest;
           }
         }
-
-        .event-date,
-        .event-organiser {
+        .search-title,
+        .search-detail {
+          display: inline-block;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
+        }
+        .search-title {
+          font-family: "Titillium Web";
+          padding-bottom: 4px;
+        }
+        .search-detail {
           font-size: 11px;
           color: $body-color-light;
+          font-weight: normal;
         }
       }
     }
