@@ -245,6 +245,8 @@ aside.sidebar {
         .search-title {
           font-family: "Titillium Web";
           padding-bottom: 4px;
+          display: flex;
+          align-items: center;
         }
         .search-detail {
           font-size: 11px;

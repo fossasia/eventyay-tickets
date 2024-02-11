@@ -94,8 +94,6 @@ def nav_typeahead(request):
             qs_orga = qs_orga.filter(
                 Q(name__icontains=query) | Q(slug__icontains=query)
             )
-    elif organiser:
-        qs_orga = qs_orga.filter(pk=organiser)
 
     if organiser:
         organiser = qs_orga.filter(pk=organiser).first()
