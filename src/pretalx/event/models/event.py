@@ -343,7 +343,7 @@ class Event(PretalxModel):
         frab_json = "{export}schedule.json"
         frab_xcal = "{export}schedule.xcal"
         ical = "{export}schedule.ics"
-        schedule_widget_data = "{schedule}widget.json"
+        schedule_widget_data = "{schedule}widgets/schedule.json"
         schedule_widget_script = "{base}widgets/schedule.js"
 
     class orga_urls(EventUrls):

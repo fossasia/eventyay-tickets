@@ -50,7 +50,7 @@ class Schedule(PretalxModel):
 
     class urls(EventUrls):
         public = "{self.event.urls.schedule}v/{self.url_version}/"
-        widget_data = "{public}widget.json"
+        widget_data = "{public}widgets/schedule.json"
         nojs = "{public}nojs"
 
     @transaction.atomic
