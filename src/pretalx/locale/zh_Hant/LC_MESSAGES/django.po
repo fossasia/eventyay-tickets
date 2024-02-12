@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-01 15:16+0000\n"
+"POT-Creation-Date: 2024-02-12 08:00+0000\n"
 "PO-Revision-Date: 2023-10-30 00:27+0000\n"
 "Last-Translator: Chin-Cheng Huang <katy881115@gmail.com>\n"
 "Language-Team: none\n"
@@ -44,15 +44,15 @@ msgstr "這個跟議程表相關的頁面尚未公開。只有主辦者可以查
 
 #: pretalx/agenda/templates/agenda/changelog.html:11
 #: pretalx/agenda/templates/agenda/header_row.html:16
-#: pretalx/orga/forms/schedule.py:223 pretalx/orga/forms/schedule.py:227
-#: pretalx/orga/templates/orga/schedule/release.html:80
-#: pretalx/orga/templates/orga/schedule/release.html:81
+#: pretalx/orga/forms/schedule.py:227 pretalx/orga/forms/schedule.py:231
+#: pretalx/orga/templates/orga/schedule/release.html:12
+#: pretalx/orga/templates/orga/schedule/release.html:108
 #: pretalx/schedule/models/schedule.py:36
 msgid "Version"
 msgstr "版本"
 
 #: pretalx/agenda/templates/agenda/changelog_block.html:6
-#: pretalx/orga/forms/schedule.py:24
+#: pretalx/orga/forms/schedule.py:28
 msgid "We released our first schedule!"
 msgstr "我們釋出了第一個議程表！"
 
@@ -152,22 +152,22 @@ msgid "You can't give feedback for this session at this time."
 msgstr "此刻您還不能對此議程發表回饋。"
 
 #: pretalx/agenda/templates/agenda/header_row.html:6 pretalx/event/stages.py:81
-#: pretalx/orga/templates/orga/base.html:348
+#: pretalx/orga/templates/orga/base.html:342
 msgid "Schedule"
 msgstr "議程表"
 
 #: pretalx/agenda/templates/agenda/header_row.html:9
 #: pretalx/agenda/templates/agenda/speaker.html:64
-#: pretalx/orga/templates/orga/base.html:261
-#: pretalx/orga/templates/orga/base.html:269
+#: pretalx/orga/templates/orga/base.html:255
+#: pretalx/orga/templates/orga/base.html:263
 #: pretalx/orga/templates/orga/submission/stats.html:21
 #: pretalx/orga/templates/orga/submission/stats.html:33
 msgid "Sessions"
 msgstr "議程"
 
 #: pretalx/agenda/templates/agenda/header_row.html:12
-#: pretalx/orga/forms/mails.py:313 pretalx/orga/templates/orga/base.html:321
-#: pretalx/orga/templates/orga/base.html:329
+#: pretalx/orga/forms/mails.py:313 pretalx/orga/templates/orga/base.html:315
+#: pretalx/orga/templates/orga/base.html:323
 #: pretalx/orga/templates/orga/review/bulk.html:68
 #: pretalx/orga/templates/orga/review/dashboard.html:90
 #: pretalx/orga/templates/orga/review/dashboard.html:213
@@ -268,7 +268,7 @@ msgstr "所有時間均以%(tz)s顯示"
 msgid "See also:"
 msgstr "您也可參考："
 
-#: pretalx/agenda/templates/agenda/talk.html:168
+#: pretalx/agenda/templates/agenda/talk.html:158
 msgid "This speaker also appears in:"
 msgstr "此講者還出現在："
 
@@ -281,7 +281,7 @@ msgstr "我們的議程表尚未上線。"
 msgid "The session “{title}” at {event}"
 msgstr "{event}的議程：「{title}」"
 
-#: pretalx/cfp/flow.py:313 pretalx/orga/templates/orga/base.html:195
+#: pretalx/cfp/flow.py:313 pretalx/orga/templates/orga/base.html:189
 msgid "General"
 msgstr "一般"
 
@@ -310,7 +310,7 @@ msgstr ""
 "何更改或問題的通知。"
 
 #: pretalx/cfp/flow.py:397 pretalx/orga/forms/cfp.py:561
-#: pretalx/orga/templates/orga/base.html:239
+#: pretalx/orga/templates/orga/base.html:233
 #: pretalx/orga/templates/orga/submission/content.html:147
 msgid "Questions"
 msgstr "問題"
@@ -733,7 +733,7 @@ msgstr ""
 #: pretalx/orga/templates/orga/mails/confirm.html:12
 #: pretalx/orga/templates/orga/organiser/delete.html:14
 #: pretalx/orga/templates/orga/review/regenerate_decision_mails.html:16
-#: pretalx/orga/templates/orga/schedule/release.html:91
+#: pretalx/orga/templates/orga/schedule/release.html:120
 #: pretalx/orga/templates/orga/settings/team_delete.html:15
 #: pretalx/orga/templates/orga/settings/team_resend.html:15
 #: pretalx/orga/templates/orga/settings/team_reset_password.html:15
@@ -815,7 +815,7 @@ msgstr ""
 #: pretalx/orga/templates/orga/speaker/form.html:82
 #: pretalx/orga/templates/orga/submission/anonymise.html:43
 #: pretalx/orga/templates/orga/submission/content.html:164
-#: pretalx/orga/templates/orga/submission/review.html:204
+#: pretalx/orga/templates/orga/submission/review.html:215
 #: pretalx/orga/templates/orga/update.html:91
 msgid "Save"
 msgstr "儲存"
@@ -1018,8 +1018,9 @@ msgid_plural "Submitters"
 msgstr[0] "名提交者："
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:92
-#: pretalx/orga/forms/schedule.py:116
+#: pretalx/orga/forms/schedule.py:120
 #: pretalx/orga/templates/orga/submission/content.html:80
+#: pretalx/orga/templates/orga/submission/review.html:117
 msgid "Resources"
 msgstr "資源"
 
@@ -1177,7 +1178,7 @@ msgid "State"
 msgstr "狀態"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:118
-#: pretalx/orga/templates/orga/base.html:279
+#: pretalx/orga/templates/orga/base.html:273
 #: pretalx/orga/templates/orga/submission/base.html:64
 #: pretalx/submission/models/feedback.py:35
 msgid "Feedback"
@@ -1207,9 +1208,7 @@ msgstr "現在就投稿！"
 
 #: pretalx/cfp/templates/cfp/index.html:4
 #: pretalx/cfp/templates/cfp/index.html:8
-#: pretalx/orga/templates/orga/base.html:70
-#: pretalx/orga/templates/orga/base.html:91
-#: pretalx/orga/templates/orga/base.html:403
+#: pretalx/orga/templates/orga/base.html:397
 msgid "Events"
 msgstr "活動"
 
@@ -1244,7 +1243,7 @@ msgstr "關閉"
 msgid "Please go back and try again."
 msgstr "請返回後再試一次。"
 
-#: pretalx/cfp/views/user.py:95 pretalx/orga/views/event.py:546
+#: pretalx/cfp/views/user.py:95 pretalx/orga/views/event.py:542
 msgid ""
 "Your API token has been regenerated. The previous token will not be usable "
 "any longer."
@@ -1302,6 +1301,7 @@ msgstr "上傳有效圖片。你上傳的檔案不是圖像，或已經損壞的
 
 #: pretalx/common/forms/forms.py:7
 #: pretalx/common/templates/common/search_form.html:6
+#: pretalx/orga/templates/orga/base.html:155
 #: pretalx/orga/templates/orga/event_list.html:10
 #: pretalx/orga/templates/orga/organiser/list.html:10
 #: pretalx/orga/templates/orga/review/bulk.html:45
@@ -1637,7 +1637,7 @@ msgstr "ManagementForm 資料遺失或已被篡改。"
 
 #: pretalx/common/models/log.py:99
 #: pretalx/orga/templates/orga/mails/_placeholder_group.html:8
-#: pretalx/submission/models/feedback.py:23
+#: pretalx/orga/views/typeahead.py:43 pretalx/submission/models/feedback.py:23
 msgid "Session"
 msgstr "議程"
 
@@ -1661,7 +1661,7 @@ msgstr "問題"
 msgid "Answer to question"
 msgstr "回答選項"
 
-#: pretalx/common/models/log.py:119 pretalx/orga/templates/orga/base.html:225
+#: pretalx/common/models/log.py:119 pretalx/orga/templates/orga/base.html:219
 msgid "CfP"
 msgstr "徵求議程投稿"
 
@@ -1676,13 +1676,13 @@ msgstr "編輯範本"
 msgid "Email"
 msgstr "電子郵件"
 
-#: pretalx/common/models/settings.py:60
+#: pretalx/common/models/settings.py:59
 msgid ""
 "Please give a fair review on why you'd like to see this proposal at the "
 "conference, or why you think it would not be a good fit."
 msgstr "請留下您的檢閱意見，為何您認為這份稿件可以被接受，或是不能被接受。"
 
-#: pretalx/common/models/settings.py:69
+#: pretalx/common/models/settings.py:68
 #, python-brace-format
 msgid ""
 "Hi,\n"
@@ -1706,7 +1706,7 @@ msgstr ""
 "\n"
 "{event_name} 議程組敬上。\n"
 
-#: pretalx/common/models/settings.py:88
+#: pretalx/common/models/settings.py:87
 #, python-brace-format
 msgid ""
 "Hi,\n"
@@ -1735,7 +1735,7 @@ msgstr ""
 "https://github.com/pretalx/pretalx/issues/new\n"
 "或是發電子郵件到 support@pretalx.com \n"
 
-#: pretalx/common/models/settings.py:109
+#: pretalx/common/models/settings.py:108
 #, fuzzy, python-brace-format
 msgid ""
 "Hi,\n"
@@ -1762,7 +1762,7 @@ msgstr ""
 "您可以在此檢閱提交的議程稿件：{event_review}\n"
 "當您接受某個議程稿件後，可以在此修改您的活動議程表：{event_schedule}\n"
 
-#: pretalx/common/models/settings.py:131
+#: pretalx/common/models/settings.py:130
 #, python-brace-format
 msgid ""
 "Hi,\n"
@@ -1804,7 +1804,7 @@ msgid "Edit"
 msgstr "編輯"
 
 #: pretalx/common/phrases.py:48 pretalx/orga/views/admin.py:54
-#: pretalx/orga/views/event.py:535 pretalx/orga/views/event.py:539
+#: pretalx/orga/views/event.py:531 pretalx/orga/views/event.py:535
 #: pretalx/orga/views/plugins.py:55
 msgid "Your changes have been saved."
 msgstr "您的變更已儲存。"
@@ -2465,18 +2465,18 @@ msgid ""
 msgstr "這些文字會在每份可編輯或建立的檢閱上方顯示。"
 
 #: pretalx/event/models/event.py:313 pretalx/orga/templates/orga/admin.html:73
-#: pretalx/orga/templates/orga/base.html:212
+#: pretalx/orga/templates/orga/base.html:206
 #: pretalx/orga/templates/orga/plugins.html:4
 #: pretalx/orga/templates/orga/plugins.html:6
 msgid "Plugins"
 msgstr "外掛程式"
 
 #: pretalx/event/models/event.py:609 pretalx/event/models/event.py:931
-#: pretalx/event/stages.py:68 pretalx/orga/templates/orga/base.html:203
-#: pretalx/orga/templates/orga/base.html:292
-#: pretalx/orga/templates/orga/base.html:300
-#: pretalx/orga/templates/orga/base.html:313
-#: pretalx/orga/templates/orga/submission/review.html:174
+#: pretalx/event/stages.py:68 pretalx/orga/templates/orga/base.html:197
+#: pretalx/orga/templates/orga/base.html:286
+#: pretalx/orga/templates/orga/base.html:294
+#: pretalx/orga/templates/orga/base.html:307
+#: pretalx/orga/templates/orga/submission/review.html:185
 msgid "Review"
 msgstr "檢閱"
 
@@ -2486,7 +2486,7 @@ msgstr "選擇"
 
 #: pretalx/event/models/event.py:630
 #: pretalx/orga/templates/orga/review/dashboard.html:72
-#: pretalx/orga/templates/orga/submission/review.html:165
+#: pretalx/orga/templates/orga/submission/review.html:176
 #: pretalx/submission/models/review.py:133
 msgid "Score"
 msgstr "分數"
@@ -3740,7 +3740,7 @@ msgid ""
 "in the outbox."
 msgstr ""
 
-#: pretalx/orga/forms/mails.py:238 pretalx/orga/templates/orga/base.html:199
+#: pretalx/orga/forms/mails.py:238 pretalx/orga/templates/orga/base.html:193
 #: pretalx/orga/templates/orga/organiser/detail.html:34
 msgid "Teams"
 msgstr "團隊"
@@ -3814,7 +3814,7 @@ msgstr "您沒有需要檢閱的議程投稿了。"
 msgid "Assign reviewers to proposals"
 msgstr "可以檢閱與變更議程投稿"
 
-#: pretalx/orga/forms/review.py:226 pretalx/orga/forms/schedule.py:50
+#: pretalx/orga/forms/review.py:226 pretalx/orga/forms/schedule.py:54
 msgid "All proposals"
 msgstr "我提交的所有議程投稿"
 
@@ -3880,81 +3880,81 @@ msgstr "無法解析 JSON 檔案。"
 msgid "Notify speakers of changes"
 msgstr "將所做變更通知講者"
 
-#: pretalx/orga/forms/schedule.py:26
+#: pretalx/orga/forms/schedule.py:30
 msgid "We released a new schedule version!"
 msgstr "我們釋出了新版議程表！"
 
-#: pretalx/orga/forms/schedule.py:33
+#: pretalx/orga/forms/schedule.py:37
 msgid "This schedule version was used already, please choose a different one."
 msgstr "這個議程表版號已被使用過，請修改版號。"
 
-#: pretalx/orga/forms/schedule.py:49 pretalx/orga/forms/speaker.py:12
+#: pretalx/orga/forms/schedule.py:53 pretalx/orga/forms/speaker.py:12
 #: pretalx/orga/templates/orga/speaker/information_list.html:30
 msgid "Target group"
 msgstr "目標族群"
 
-#: pretalx/orga/forms/schedule.py:80
+#: pretalx/orga/forms/schedule.py:84
 #, fuzzy
 msgid "Speaker IDs"
 msgstr "講者"
 
-#: pretalx/orga/forms/schedule.py:82
+#: pretalx/orga/forms/schedule.py:86
 msgid "The unique ID of a speaker is used in the speaker URL and in exports"
 msgstr ""
 
-#: pretalx/orga/forms/schedule.py:87
+#: pretalx/orga/forms/schedule.py:91
 #, fuzzy
 msgid "Speaker names"
 msgstr "講者姓名"
 
-#: pretalx/orga/forms/schedule.py:91 pretalx/orga/forms/submission.py:98
+#: pretalx/orga/forms/schedule.py:95 pretalx/orga/forms/submission.py:98
 #, fuzzy
 msgid "Room"
 msgstr "會議室"
 
-#: pretalx/orga/forms/schedule.py:92
+#: pretalx/orga/forms/schedule.py:96
 msgid "The room this talk is scheduled in, if any"
 msgstr ""
 
-#: pretalx/orga/forms/schedule.py:96 pretalx/orga/forms/submission.py:103
+#: pretalx/orga/forms/schedule.py:100 pretalx/orga/forms/submission.py:103
 msgid "Start"
 msgstr "開始"
 
-#: pretalx/orga/forms/schedule.py:97
+#: pretalx/orga/forms/schedule.py:101
 msgid "When the talk starts, if it is currently scheduled"
 msgstr ""
 
-#: pretalx/orga/forms/schedule.py:101 pretalx/orga/forms/submission.py:113
+#: pretalx/orga/forms/schedule.py:105 pretalx/orga/forms/submission.py:113
 msgid "End"
 msgstr "結束"
 
-#: pretalx/orga/forms/schedule.py:102
+#: pretalx/orga/forms/schedule.py:106
 msgid "When the talk ends, if it is currently scheduled"
 msgstr ""
 
-#: pretalx/orga/forms/schedule.py:106
+#: pretalx/orga/forms/schedule.py:110
 #, fuzzy
 msgid "Median score"
 msgstr "最小分數"
 
-#: pretalx/orga/forms/schedule.py:107
+#: pretalx/orga/forms/schedule.py:111
 msgid "Median review score, if there have been reviews yet"
 msgstr ""
 
-#: pretalx/orga/forms/schedule.py:111
+#: pretalx/orga/forms/schedule.py:115
 msgid "Average (mean) score"
 msgstr "平均分數"
 
-#: pretalx/orga/forms/schedule.py:112
+#: pretalx/orga/forms/schedule.py:116
 msgid "Average review score, if there have been reviews yet"
 msgstr ""
 
-#: pretalx/orga/forms/schedule.py:118
+#: pretalx/orga/forms/schedule.py:122
 msgid "Resources provided by the speaker, either as links or as uploaded files"
 msgstr ""
 
-#: pretalx/orga/forms/schedule.py:207 pretalx/orga/forms/schedule.py:211
-#: pretalx/orga/templates/orga/base.html:359
+#: pretalx/orga/forms/schedule.py:211 pretalx/orga/forms/schedule.py:215
+#: pretalx/orga/templates/orga/base.html:353
 msgid "Rooms"
 msgstr "會議室"
 
@@ -3986,7 +3986,7 @@ msgstr "議程投稿標題"
 
 #: pretalx/orga/forms/speaker.py:41
 #: pretalx/orga/templates/orga/cfp/text.html:115
-#: pretalx/orga/templates/orga/submission/review.html:118
+#: pretalx/orga/templates/orga/submission/review.html:129
 #: pretalx/orga/templates/orga/submission/speakers.html:33
 #: pretalx/person/models/profile.py:31
 msgid "Biography"
@@ -4096,7 +4096,7 @@ msgid "You can check for updates <a href=\"%(url)s\">here</a>."
 msgstr "您可以在<a href=\"%(current_url)s\">這裡</a>查看最新版本。"
 
 #: pretalx/orga/templates/orga/admin.html:35
-#: pretalx/orga/templates/orga/base.html:187
+#: pretalx/orga/templates/orga/base.html:181
 #: pretalx/orga/templates/orga/organiser/detail.html:10
 #: pretalx/orga/templates/orga/settings/form.html:24
 msgid "Settings"
@@ -4137,7 +4137,7 @@ msgid "Media files"
 msgstr "媒體檔案"
 
 #: pretalx/orga/templates/orga/admin.html:61
-#: pretalx/orga/templates/orga/base.html:372
+#: pretalx/orga/templates/orga/base.html:366
 msgid "Mails"
 msgstr "郵件"
 
@@ -4240,19 +4240,22 @@ msgstr "Pretalx 圖標"
 msgid "Sign in"
 msgstr "登入"
 
-#: pretalx/orga/templates/orga/base.html:78
-msgid "Search for events"
-msgstr "搜尋活動"
+#: pretalx/orga/templates/orga/base.html:70
+#: pretalx/orga/templates/orga/base.html:79
+#, fuzzy
+#| msgid "New event"
+msgid "View event"
+msgstr "新活動"
 
-#: pretalx/orga/templates/orga/base.html:146
+#: pretalx/orga/templates/orga/base.html:112
 msgid "You're using pretalx as a superuser. This is not recommended."
 msgstr "您正以管理者身份使用 Pretalx。這樣做不推。"
 
-#: pretalx/orga/templates/orga/base.html:150
+#: pretalx/orga/templates/orga/base.html:116
 msgid "Please click here to switch to an administrator account."
 msgstr "請點擊這裡切換到管理者帳號。"
 
-#: pretalx/orga/templates/orga/base.html:157
+#: pretalx/orga/templates/orga/base.html:123
 msgid ""
 "Starting with version 1.1.0, pretalx automatically checks for updates in the "
 "background. During this check, anonymous data is transmitted to servers "
@@ -4261,31 +4264,36 @@ msgid ""
 "if a new update arrives. This message will disappear once you clicked it."
 msgstr ""
 
-#: pretalx/orga/templates/orga/base.html:178
+#: pretalx/orga/templates/orga/base.html:147
+#, fuzzy
+msgid "Organiser account"
+msgstr "主辦者"
+
+#: pretalx/orga/templates/orga/base.html:172
 #: pretalx/orga/templates/orga/event_list.html:5
 msgid "Dashboard"
 msgstr "資訊看板"
 
-#: pretalx/orga/templates/orga/base.html:206 pretalx/person/models/user.py:86
+#: pretalx/orga/templates/orga/base.html:200 pretalx/person/models/user.py:86
 msgid "E-mail"
 msgstr "電子郵件"
 
-#: pretalx/orga/templates/orga/base.html:209
+#: pretalx/orga/templates/orga/base.html:203
 msgid "Widget"
 msgstr "元件"
 
-#: pretalx/orga/templates/orga/base.html:233
+#: pretalx/orga/templates/orga/base.html:227
 #: pretalx/orga/templates/orga/mails/_mail_editor.html:37
 #: pretalx/orga/templates/orga/submission/base.html:35
 msgid "Content"
 msgstr "內容"
 
-#: pretalx/orga/templates/orga/base.html:236
-#: pretalx/orga/templates/orga/base.html:356
+#: pretalx/orga/templates/orga/base.html:230
+#: pretalx/orga/templates/orga/base.html:350
 msgid "Editor"
 msgstr "編輯器"
 
-#: pretalx/orga/templates/orga/base.html:243
+#: pretalx/orga/templates/orga/base.html:237
 #: pretalx/orga/templates/orga/cfp/track_view.html:5
 #: pretalx/orga/templates/orga/settings/team_tracks.html:8
 #: pretalx/submission/forms/submission.py:276
@@ -4293,17 +4301,17 @@ msgstr "編輯器"
 msgid "Tracks"
 msgstr "議程軌"
 
-#: pretalx/orga/templates/orga/base.html:247
+#: pretalx/orga/templates/orga/base.html:241
 #: pretalx/submission/forms/submission.py:260
 msgid "Session types"
 msgstr "提交型態"
 
-#: pretalx/orga/templates/orga/base.html:250
+#: pretalx/orga/templates/orga/base.html:244
 #: pretalx/orga/templates/orga/cfp/access_code_view.html:12
 msgid "Access codes"
 msgstr "存取代碼"
 
-#: pretalx/orga/templates/orga/base.html:272
+#: pretalx/orga/templates/orga/base.html:266
 #: pretalx/orga/templates/orga/review/dashboard.html:114
 #: pretalx/orga/templates/orga/review/dashboard.html:220
 #: pretalx/orga/templates/orga/submission/tag_list.html:6
@@ -4312,57 +4320,57 @@ msgstr "存取代碼"
 msgid "Tags"
 msgstr "標籤"
 
-#: pretalx/orga/templates/orga/base.html:275
+#: pretalx/orga/templates/orga/base.html:269
 msgid "Statistics"
 msgstr "統計資料"
 
-#: pretalx/orga/templates/orga/base.html:283
-#: pretalx/orga/templates/orga/base.html:337
-#: pretalx/orga/templates/orga/base.html:362
+#: pretalx/orga/templates/orga/base.html:277
+#: pretalx/orga/templates/orga/base.html:331
+#: pretalx/orga/templates/orga/base.html:356
 msgid "Export"
 msgstr "匯出"
 
-#: pretalx/orga/templates/orga/base.html:303
+#: pretalx/orga/templates/orga/base.html:297
 #: pretalx/orga/templates/orga/review/assignment-import.html:9
 #: pretalx/orga/templates/orga/review/assignment.html:14
 #, fuzzy
 msgid "Assign reviewers"
 msgstr "是名檢閱者"
 
-#: pretalx/orga/templates/orga/base.html:306
+#: pretalx/orga/templates/orga/base.html:300
 #, fuzzy
 msgid "Export reviews"
 msgstr "使用者設定"
 
-#: pretalx/orga/templates/orga/base.html:333 pretalx/schedule/models/room.py:39
+#: pretalx/orga/templates/orga/base.html:327 pretalx/schedule/models/room.py:39
 msgid "Speaker Information"
 msgstr "講者資訊"
 
-#: pretalx/orga/templates/orga/base.html:382
+#: pretalx/orga/templates/orga/base.html:376
 msgid "Outbox"
 msgstr ""
 
-#: pretalx/orga/templates/orga/base.html:385
+#: pretalx/orga/templates/orga/base.html:379
 msgid "Templates"
 msgstr "範本"
 
-#: pretalx/orga/templates/orga/base.html:388
+#: pretalx/orga/templates/orga/base.html:382
 msgid "Compose E-mails"
 msgstr "撰寫電子郵件"
 
-#: pretalx/orga/templates/orga/base.html:391
+#: pretalx/orga/templates/orga/base.html:385
 msgid "Sent E-mails"
 msgstr "傳送電子郵件"
 
-#: pretalx/orga/templates/orga/base.html:410
+#: pretalx/orga/templates/orga/base.html:404
 msgid "Organisers"
 msgstr "主辦者"
 
-#: pretalx/orga/templates/orga/base.html:416
+#: pretalx/orga/templates/orga/base.html:410
 msgid "Admin information"
 msgstr "管理資訊"
 
-#: pretalx/orga/templates/orga/base.html:440
+#: pretalx/orga/templates/orga/base.html:434
 msgid "running in development mode"
 msgstr "以開發模式執行"
 
@@ -4595,7 +4603,7 @@ msgid "This question's availability depends on a deadline."
 msgstr ""
 
 #: pretalx/orga/templates/orga/cfp/question_view.html:80
-#: pretalx/orga/views/event.py:169
+#: pretalx/orga/views/event.py:165
 msgid "You have configured no questions yet."
 msgstr "您尚未設定任何問題。"
 
@@ -5000,6 +5008,12 @@ msgctxt "Allows users to select how many lines/elements are shown in lists."
 msgid "Show per page:"
 msgstr ""
 
+#: pretalx/orga/templates/orga/includes/pagination_size.html:8
+#: pretalx/submission/models/review.py:277
+#, fuzzy
+msgid "All"
+msgstr "全部"
+
 #: pretalx/orga/templates/orga/invitation.html:5
 msgid "Invitation"
 msgstr "邀請函"
@@ -5313,6 +5327,7 @@ msgstr "依傳送時間排序（最舊優先）"
 
 #: pretalx/orga/templates/orga/mails/template_form.html:5
 #: pretalx/orga/templates/orga/mails/template_form.html:6
+#: pretalx/orga/templates/orga/schedule/release.html:41
 #, fuzzy
 #| msgid "Edit template"
 msgid "Email template"
@@ -5364,6 +5379,7 @@ msgid "Reject Mail"
 msgstr "拒絕郵件"
 
 #: pretalx/orga/templates/orga/mails/template_list.html:97
+#: pretalx/orga/templates/orga/schedule/release.html:41
 #, fuzzy
 msgid "New schedule version"
 msgstr "新的議程表發布了"
@@ -5601,7 +5617,7 @@ msgid "Click here to get started!"
 msgstr "點擊此處以開始！"
 
 #: pretalx/orga/templates/orga/review/dashboard.html:34
-#: pretalx/orga/templates/orga/submission/review.html:216
+#: pretalx/orga/templates/orga/submission/review.html:227
 msgid "Or review all proposals at once."
 msgstr ""
 
@@ -5937,81 +5953,107 @@ msgstr "設定會議室"
 msgid "Schedule session"
 msgstr "安排議程時間"
 
-#: pretalx/orga/templates/orga/schedule/release.html:8
+#: pretalx/orga/templates/orga/schedule/release.html:11
 msgid "Release new schedule"
 msgstr "釋出新的議程表"
 
-#: pretalx/orga/templates/orga/schedule/release.html:10
+#: pretalx/orga/templates/orga/schedule/release.html:15
 msgid ""
 "There are still warnings about the release of this schedule. Please review "
 "them carefully!"
 msgstr "此議程表的發布仍有警告訊息。請仔細檢視一下！"
 
-#: pretalx/orga/templates/orga/schedule/release.html:18
+#: pretalx/orga/templates/orga/schedule/release.html:23
 #, python-format
 msgid "The previous schedule (%(prev)s) was released %(since)s ago."
 msgstr "前一版的議程表 (%(prev)s) 發布於 %(since)s 前。"
 
-#: pretalx/orga/templates/orga/schedule/release.html:22
+#: pretalx/orga/templates/orga/schedule/release.html:27
 msgid "This will be the very first schedule release."
 msgstr "這是最初版的議程表。"
 
-#: pretalx/orga/templates/orga/schedule/release.html:26
-#, python-format
+#: pretalx/orga/templates/orga/schedule/release.html:31
+#, fuzzy, python-format
+#| msgid ""
+#| "When releasing this new schedule, <strong>%(notifications)s notifications "
+#| "emails </strong> will be generated and placed in the outbox, to tell "
+#| "speakers about their session slots."
 msgid ""
-"When releasing this new schedule, <strong>%(notifications)s notifications "
-"emails </strong> will be generated and placed in the outbox, to tell "
-"speakers about their session slots."
-msgstr ""
+"When releasing this new schedule, <strong>one notifications email </strong> "
+"can be generated and placed in the outbox, to tell speakers about their "
+"session slots."
+msgid_plural ""
+"When releasing this new schedule, <strong>%(count)s notifications emails </"
+"strong> can be generated and placed in the outbox, to tell speakers about "
+"their session slots."
+msgstr[0] ""
 "發布這個新的議程表時，將會產生並送出 <strong>%(notifications)s 份電子郵件通知"
 "</strong>以便告訴講者他們的議程時間。"
 
-#: pretalx/orga/templates/orga/schedule/release.html:32
+#: pretalx/orga/templates/orga/schedule/release.html:43
 msgid ""
 "This schedule release would result in <strong>no notification emails</"
 "strong> for speakers."
 msgstr "發布這個議程表將<strong>不會送出任何電子郵件通知</strong>給講者。"
 
-#: pretalx/orga/templates/orga/schedule/release.html:39
-#, python-format
+#: pretalx/orga/templates/orga/schedule/release.html:50
+#, fuzzy, python-format
+#| msgid ""
+#| "%(unconfirmed)s sessions are still <strong>unconfirmed</strong> and will "
+#| "not show up on the public schedule."
 msgid ""
-"%(unconfirmed)s sessions are still <strong>unconfirmed</strong> and will not "
-"show up on the public schedule."
-msgstr ""
+"One session is still <strong>unconfirmed</strong> and will not show up on "
+"the public schedule."
+msgid_plural ""
+"%(count)s sessions are still <strong>unconfirmed</strong> and will not show "
+"up on the public schedule."
+msgstr[0] ""
 "還有 %(unconfirmed)s 個議程<strong>尚未確認</strong>，因此無法顯示在公開的議"
 "程表中。"
 
-#: pretalx/orga/templates/orga/schedule/release.html:42
+#: pretalx/orga/templates/orga/schedule/release.html:56
 #, fuzzy
 msgid "See all unconfirmed sessions."
 msgstr "個未確認的議程"
 
-#: pretalx/orga/templates/orga/schedule/release.html:45
-#, python-format
-msgid "%(unscheduled)s sessions have <strong>not yet been scheduled</strong>."
-msgstr "還有 %(unscheduled)s 個議程<strong>還沒安排時間</strong>。"
+#: pretalx/orga/templates/orga/schedule/release.html:59
+#, fuzzy, python-format
+#| msgid ""
+#| "%(unscheduled)s sessions have <strong>not yet been scheduled</strong>."
+msgid "One session has <strong>not yet been scheduled</strong>."
+msgid_plural "%(count)s sessions have <strong>not yet been scheduled</strong>."
+msgstr[0] "還有 %(unscheduled)s 個議程<strong>還沒安排時間</strong>。"
 
-#: pretalx/orga/templates/orga/schedule/release.html:50
-#, python-format
-msgid ""
-"%(no_track)s sessions have <strong>not yet been assigned a track</strong>."
-msgstr "還有 %(no_track)s 個議程<strong>並未指定給任何議程軌</strong>。"
+#: pretalx/orga/templates/orga/schedule/release.html:66
+#, fuzzy, python-format
+#| msgid ""
+#| "%(no_track)s sessions have <strong>not yet been assigned a track</strong>."
+msgid "One session has <strong>not yet been assigned a track</strong>."
+msgid_plural ""
+"%(count)s sessions have <strong>not yet been assigned a track</strong>."
+msgstr[0] "還有 %(no_track)s 個議程<strong>並未指定給任何議程軌</strong>。"
 
-#: pretalx/orga/templates/orga/schedule/release.html:62
+#: pretalx/orga/templates/orga/schedule/release.html:82
 msgid "Warnings"
 msgstr "警告"
 
-#: pretalx/orga/templates/orga/schedule/release.html:73
+#: pretalx/orga/templates/orga/schedule/release.html:99
 msgid "Public changelog"
 msgstr "公開的變更紀錄"
 
-#: pretalx/orga/templates/orga/schedule/release.html:74
+#: pretalx/orga/templates/orga/schedule/release.html:100
 msgid ""
 "This is how the new schedule version will appear in the public changelog and "
 "in the RSS feed."
 msgstr "這就是新的計劃版本在公共更改議程表在 RSS 源中的顯示方式。"
 
-#: pretalx/orga/templates/orga/schedule/release.html:95
+#: pretalx/orga/templates/orga/schedule/release.html:101
+#, fuzzy
+#| msgid "You can change your log in data here."
+msgid "You can include a comment here."
+msgstr "您可以在此變更您的登入資料。"
+
+#: pretalx/orga/templates/orga/schedule/release.html:124
 msgid "Release"
 msgstr "發布"
 
@@ -6554,44 +6596,44 @@ msgstr ""
 msgid "You will be able to see other reviews once you have given yours."
 msgstr ""
 
-#: pretalx/orga/templates/orga/submission/review.html:123
+#: pretalx/orga/templates/orga/submission/review.html:134
 msgid "Other proposals"
 msgstr "其他投稿議程"
 
-#: pretalx/orga/templates/orga/submission/review.html:185
+#: pretalx/orga/templates/orga/submission/review.html:196
 msgid "Nobody else has submitted a review yet."
 msgstr "尚未有人提交評論。"
 
-#: pretalx/orga/templates/orga/submission/review.html:194
-#: pretalx/orga/templates/orga/submission/review.html:195
+#: pretalx/orga/templates/orga/submission/review.html:205
+#: pretalx/orga/templates/orga/submission/review.html:206
 msgid "Review progress"
 msgstr "檢閱進度"
 
-#: pretalx/orga/templates/orga/submission/review.html:202
+#: pretalx/orga/templates/orga/submission/review.html:213
 #, fuzzy
 #| msgid "Delete event"
 msgid "Delete review"
 msgstr "刪除活動"
 
-#: pretalx/orga/templates/orga/submission/review.html:208
+#: pretalx/orga/templates/orga/submission/review.html:219
 #, fuzzy
 msgid "Go to random next unreviewed proposal, mark this one as skipped"
 msgstr "隨機前往任一份未檢閱的議程投稿"
 
-#: pretalx/orga/templates/orga/submission/review.html:208
+#: pretalx/orga/templates/orga/submission/review.html:219
 msgid "Skip for now"
 msgstr "現在先跳過"
 
-#: pretalx/orga/templates/orga/submission/review.html:210
-#: pretalx/orga/templates/orga/submission/review.html:212
+#: pretalx/orga/templates/orga/submission/review.html:221
+#: pretalx/orga/templates/orga/submission/review.html:223
 msgid "Go to random next unreviewed proposal"
 msgstr "隨機前往任一份未檢閱的議程投稿"
 
-#: pretalx/orga/templates/orga/submission/review.html:210
+#: pretalx/orga/templates/orga/submission/review.html:221
 msgid "Abstain"
 msgstr "棄權"
 
-#: pretalx/orga/templates/orga/submission/review.html:212
+#: pretalx/orga/templates/orga/submission/review.html:223
 msgid "Save and next"
 msgstr "儲存並處理下一份"
 
@@ -6925,97 +6967,97 @@ msgid "sent email"
 msgid_plural "sent emails"
 msgstr[0] "份已傳送的電子郵件"
 
-#: pretalx/orga/views/event.py:111
+#: pretalx/orga/views/event.py:107
 msgid "The event settings have been saved."
 msgstr "活動設定已被儲存。"
 
-#: pretalx/orga/views/event.py:131
+#: pretalx/orga/views/event.py:127
 msgid "The CfP doesn't have a full text yet."
 msgstr "徵求議程投稿還沒有完整的文字說明。"
 
-#: pretalx/orga/views/event.py:141
+#: pretalx/orga/views/event.py:137
 msgid "The event doesn't have a landing page text yet."
 msgstr "此活動還沒設定到達頁面的文字。"
 
-#: pretalx/orga/views/event.py:154
+#: pretalx/orga/views/event.py:150
 msgid ""
 "You want submitters to choose the tracks for their proposals, but you do not "
 "offer tracks for selection. Add at least one track!"
 msgstr ""
 
-#: pretalx/orga/views/event.py:162
+#: pretalx/orga/views/event.py:158
 msgid "You have configured only one session type so far."
 msgstr ""
 
-#: pretalx/orga/views/event.py:182
+#: pretalx/orga/views/event.py:178
 msgid "This event was already live."
 msgstr "此活動已上線。"
 
-#: pretalx/orga/views/event.py:204
+#: pretalx/orga/views/event.py:200
 msgid "This event is now public."
 msgstr "此活動已公開。"
 
-#: pretalx/orga/views/event.py:210
+#: pretalx/orga/views/event.py:206
 msgid "This event was already hidden."
 msgstr "此活動已隱藏。"
 
-#: pretalx/orga/views/event.py:220
+#: pretalx/orga/views/event.py:216
 msgid "This event is now hidden."
 msgstr "此活動現在已被隱藏。"
 
-#: pretalx/orga/views/event.py:428
+#: pretalx/orga/views/event.py:424
 #, python-format
 msgid "An error occurred while contacting the SMTP server: %s"
 msgstr ""
 
-#: pretalx/orga/views/event.py:437
+#: pretalx/orga/views/event.py:433
 msgid ""
 "Yay, your changes have been saved and the connection attempt to your SMTP "
 "server was successful."
 msgstr ""
 
-#: pretalx/orga/views/event.py:445
+#: pretalx/orga/views/event.py:441
 msgid ""
 "We've been able to contact the SMTP server you configured. Remember to check "
 "the \"use custom SMTP server\" checkbox, otherwise your SMTP server will not "
 "be used."
 msgstr ""
 
-#: pretalx/orga/views/event.py:451
+#: pretalx/orga/views/event.py:447
 msgid "Yay! We saved your changes."
 msgstr "耶！我們保存了您的更改。"
 
-#: pretalx/orga/views/event.py:482
+#: pretalx/orga/views/event.py:478
 msgid ""
 "There was a problem with your authentication. Please contact the organiser "
 "for further help."
 msgstr ""
 
-#: pretalx/orga/views/event.py:499
+#: pretalx/orga/views/event.py:495
 msgid "You are now part of the team!"
 msgstr ""
 
-#: pretalx/orga/views/event.py:552
+#: pretalx/orga/views/event.py:548
 msgid "Oh :( We had trouble saving your input. See below for details."
 msgstr "嗯，那個... 儲存您輸入的資料時發生了一點點問題—詳情請見下方。"
 
-#: pretalx/orga/views/event.py:612
+#: pretalx/orga/views/event.py:608
 #, python-brace-format
 msgid ""
 "Please consider including your event's year in the slug, e.g. "
 "myevent{number}."
 msgstr ""
 
-#: pretalx/orga/views/event.py:621
+#: pretalx/orga/views/event.py:617
 msgid "Did you really mean to make your event take place in the past?"
 msgstr "您真的要把活動辦在過去嗎？"
 
-#: pretalx/orga/views/event.py:675
+#: pretalx/orga/views/event.py:671
 #, python-brace-format
 msgid "Team {event.name}"
 msgstr "{event.name} 主辦團隊"
 
-#: pretalx/orga/views/event.py:767
+#: pretalx/orga/views/event.py:726
 msgid "The widget settings have been saved."
 msgstr "元件設定已儲存。"
 
@@ -7149,7 +7191,7 @@ msgid ""
 "The password reset email could not be sent, so the password was not reset."
 msgstr ""
 
-#: pretalx/orga/views/organiser.py:225 pretalx/orga/views/review.py:773
+#: pretalx/orga/views/organiser.py:225 pretalx/orga/views/review.py:774
 #: pretalx/orga/views/schedule.py:607
 msgid "Saved!"
 msgstr "已儲存！"
@@ -7158,54 +7200,54 @@ msgstr "已儲存！"
 msgid "You are now an administrator instead of a superuser."
 msgstr ""
 
-#: pretalx/orga/views/review.py:303
+#: pretalx/orga/views/review.py:304
 #, python-brace-format
 msgid ""
 "Success! {accepted} proposals were accepted, {rejected} proposals were "
 "rejected."
 msgstr ""
 
-#: pretalx/orga/views/review.py:308
+#: pretalx/orga/views/review.py:309
 #, python-brace-format
 msgid "We were unable to change the state of {count} proposals."
 msgstr ""
 
-#: pretalx/orga/views/review.py:315
+#: pretalx/orga/views/review.py:316
 #, python-brace-format
 msgid "We were unable to change the state of all {count} proposals."
 msgstr ""
 
-#: pretalx/orga/views/review.py:424 pretalx/orga/views/review.py:601
-#: pretalx/orga/views/review.py:604
+#: pretalx/orga/views/review.py:425 pretalx/orga/views/review.py:602
+#: pretalx/orga/views/review.py:605
 msgid "There have been errors with your input."
 msgstr ""
 
-#: pretalx/orga/views/review.py:429
+#: pretalx/orga/views/review.py:430
 #, fuzzy
 #| msgid "Your changes have been saved."
 msgid "Your reviews have been saved."
 msgstr "您的變更已儲存。"
 
-#: pretalx/orga/views/review.py:653
+#: pretalx/orga/views/review.py:654
 msgid "Nice, you have no proposals left to review!"
 msgstr ""
 
-#: pretalx/orga/views/review.py:666
+#: pretalx/orga/views/review.py:667
 #, fuzzy
 #| msgid "The page has been deleted."
 msgid "The review has been deleted."
 msgstr "此頁面已被刪除。"
 
-#: pretalx/orga/views/review.py:694
+#: pretalx/orga/views/review.py:695
 #, python-brace-format
 msgid "{count} emails were generated and placed in the outbox."
 msgstr ""
 
-#: pretalx/orga/views/review.py:790
+#: pretalx/orga/views/review.py:791
 msgid "The reviewers were assigned successfully."
 msgstr ""
 
-#: pretalx/orga/views/review.py:808 pretalx/orga/views/schedule.py:113
+#: pretalx/orga/views/review.py:809 pretalx/orga/views/schedule.py:113
 #: pretalx/orga/views/speaker.py:362
 msgid "No data to be exported"
 msgstr ""
@@ -7381,6 +7423,10 @@ msgstr "此議程軌已被刪除。"
 #, python-brace-format
 msgid "Changed {count} proposal states."
 msgstr ""
+
+#: pretalx/orga/views/typeahead.py:52 pretalx/submission/models/feedback.py:31
+msgid "Speaker"
+msgstr "講者"
 
 #: pretalx/person/exporters.py:16
 msgid "Speaker CSV"
@@ -7793,10 +7839,6 @@ msgstr ""
 msgid "Please put in the last date you want to accept proposals from users."
 msgstr ""
 
-#: pretalx/submission/models/feedback.py:31
-msgid "Speaker"
-msgstr "講者"
-
 #: pretalx/submission/models/feedback.py:33
 msgid "Rating"
 msgstr "評分"
@@ -8027,11 +8069,6 @@ msgstr ""
 msgid "Reviewers may see these proposals"
 msgstr "可以檢閱與變更議程投稿"
 
-#: pretalx/submission/models/review.py:277
-#, fuzzy
-msgid "All"
-msgstr "全部"
-
 #: pretalx/submission/models/review.py:278
 #, fuzzy
 msgid "Only assigned proposals"
@@ -8207,6 +8244,9 @@ msgstr ""
 
 msgid "Hidden rooms"
 msgstr ""
+
+#~ msgid "Search for events"
+#~ msgstr "搜尋活動"
 
 #~ msgid ""
 #~ "You have some variables available that will be rendered into the mails "
