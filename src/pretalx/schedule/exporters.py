@@ -83,7 +83,7 @@ class ScheduleData(BaseExporter):
             if str(talk.room.name) not in day_data["rooms"]:
                 day_data["rooms"][str(talk.room.name)] = {
                     "id": talk.room.id,
-                    "guid": talk.room.guid,
+                    "guid": talk.room.uuid,
                     "name": talk.room.name,
                     "description": talk.room.description,
                     "position": talk.room.position,
@@ -164,7 +164,7 @@ class FrabJsonExporter(ScheduleData):
                 "rooms": [
                     {
                         "name": str(room.name),
-                        "guid": room.guid,
+                        "guid": room.uuid,
                         "description": str(room.description) or None,
                         "capacity": room.capacity,
                     }
