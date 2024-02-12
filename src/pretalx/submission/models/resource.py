@@ -27,7 +27,7 @@ class Resource(PretalxModel):
         null=True,
         blank=True,
     )
-    link = models.URLField(verbose_name=_("URL"), null=True, blank=True)
+    link = models.URLField(max_length=400, verbose_name=_("URL"), null=True, blank=True)
     description = models.CharField(
         null=True, blank=True, max_length=1000, verbose_name=_("Description")
     )
