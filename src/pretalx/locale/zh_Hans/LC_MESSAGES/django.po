@@ -3657,10 +3657,9 @@ msgid "Unknown placeholder!"
 msgstr "未知的模板键！"
 
 #: pretalx/orga/forms/mails.py:132
-#, fuzzy, python-brace-format
-#| msgid "You have an empty link in your email, labeled “%(value)s”!"
+#, python-brace-format
 msgid "You have an empty link in your email, labeled “{text}”!"
-msgstr "你的电子邮件中有一个空链接，标注为\"%(value)s\"！"
+msgstr "你的电子邮件中有一个空链接，标注为\"%(text)s\"！"
 
 #: pretalx/orga/forms/mails.py:187
 msgid "An email needs to have at least one recipient."

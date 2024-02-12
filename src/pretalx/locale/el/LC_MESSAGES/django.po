@@ -3882,10 +3882,9 @@ msgid "Unknown placeholder!"
 msgstr "Άγνωστο κλειδί προτύπου!"
 
 #: pretalx/orga/forms/mails.py:132
-#, fuzzy, python-brace-format
-#| msgid "You have an empty link in your email, labeled “%(value)s”!"
+#, python-brace-format
 msgid "You have an empty link in your email, labeled “{text}”!"
-msgstr "Έχετε έναν κενό σύνδεσμο στο email σας, με την ετικέτα \"%(value)s\"!"
+msgstr "Έχετε έναν κενό σύνδεσμο στο email σας, με την ετικέτα \"%(text)s\"!"
 
 #: pretalx/orga/forms/mails.py:187
 msgid "An email needs to have at least one recipient."

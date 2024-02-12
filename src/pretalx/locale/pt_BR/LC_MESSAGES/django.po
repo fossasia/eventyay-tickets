@@ -3815,11 +3815,10 @@ msgid "Unknown placeholder!"
 msgstr "Chave de template desconhecida!"
 
 #: pretalx/orga/forms/mails.py:132
-#, fuzzy, python-brace-format
-#| msgid "You have an empty link in your email, labeled “%(value)s”!"
+#, python-brace-format
 msgid "You have an empty link in your email, labeled “{text}”!"
 msgstr ""
-"Você possui um link vazio no seu e-mail, etiquetado como \"%(value)s\"!"
+"Você possui um link vazio no seu e-mail, etiquetado como \"%(text)s\"!"
 
 #: pretalx/orga/forms/mails.py:187
 msgid "An email needs to have at least one recipient."
