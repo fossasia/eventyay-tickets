@@ -3062,6 +3062,7 @@ msgstr "جدول جديد!"
 
 #: pretalx/mail/default_templates.py:56
 #, python-brace-format
+msgid ""
 "Hi!\n"
 "\n"
 "We have released a new schedule version, and wanted to tell you:\n"
