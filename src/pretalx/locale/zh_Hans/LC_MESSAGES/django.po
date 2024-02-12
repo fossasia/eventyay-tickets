@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-12 13:11+0000\n"
+"POT-Creation-Date: 2024-02-12 13:40+0000\n"
 "PO-Revision-Date: 2023-05-27 12:16+0000\n"
 "Last-Translator: Joel (Jiawei) Wang <joel.bradley.w@gmail.com>\n"
 "Language-Team: none\n"
@@ -3667,7 +3667,7 @@ msgstr "未知的模板键！"
 #: pretalx/orga/forms/mails.py:132
 #, python-brace-format
 msgid "You have an empty link in your email, labeled “{text}”!"
-msgstr "你的电子邮件中有一个空链接，标注为\"%(text)s\"！"
+msgstr "你的电子邮件中有一个空链接，标注为\"{text}\"！"
 
 #: pretalx/orga/forms/mails.py:187
 msgid "An email needs to have at least one recipient."

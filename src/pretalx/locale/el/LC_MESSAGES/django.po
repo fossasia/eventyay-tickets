@@ -3891,7 +3891,7 @@ msgstr "Άγνωστο κλειδί προτύπου!"
 #: pretalx/orga/forms/mails.py:132
 #, python-brace-format
 msgid "You have an empty link in your email, labeled “{text}”!"
-msgstr "Έχετε έναν κενό σύνδεσμο στο email σας, με την ετικέτα \"%(text)s\"!"
+msgstr "Έχετε έναν κενό σύνδεσμο στο email σας, με την ετικέτα \"{text}\"!"
 
 #: pretalx/orga/forms/mails.py:187
 msgid "An email needs to have at least one recipient."

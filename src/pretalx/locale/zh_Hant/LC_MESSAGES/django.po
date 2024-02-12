@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-12 13:11+0000\n"
+"POT-Creation-Date: 2024-02-12 13:40+0000\n"
 "PO-Revision-Date: 2023-10-30 00:27+0000\n"
 "Last-Translator: Chin-Cheng Huang <katy881115@gmail.com>\n"
 "Language-Team: none\n"
@@ -3718,7 +3718,7 @@ msgstr ""
 #: pretalx/orga/forms/mails.py:132
 #, python-brace-format
 msgid "You have an empty link in your email, labeled “{text}”!"
-msgstr "你的電子郵件中有一個空連結，標記為「%(text)s！"
+msgstr "你的電子郵件中有一個空連結，標記為「{text}！"
 
 #: pretalx/orga/forms/mails.py:187
 msgid "An email needs to have at least one recipient."
