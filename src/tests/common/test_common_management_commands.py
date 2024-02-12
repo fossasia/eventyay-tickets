@@ -1,6 +1,6 @@
-from contextlib import suppress
-import subprocess
 import datetime as dt
+import subprocess
+from contextlib import suppress
 
 import pytest
 import responses
