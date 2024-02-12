@@ -14,9 +14,6 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
-env:
-  FORCE_COLOR: 1
-
 jobs:
   compile:
     runs-on: ubuntu-latest
@@ -26,14 +23,14 @@ jobs:
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version-file: ".github/workflows/python-version.txt"
           cache: "pip"
       - name: Install system dependencies
         run: |
           sudo apt update
           sudo apt install gettext
       - name: Install Python dependencies
-        run: python -m pip install ".[dev]"
+        run: python -m pip install -e ".[dev]"
       - name: Compile locales
         run: python manage.py compilemessages
         working-directory: ./src
