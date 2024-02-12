@@ -166,7 +166,7 @@ class FrabJsonExporter(ScheduleData):
                 "daysCount": self.event.duration,
                 "timeslot_duration": "00:05",
                 "time_zone_name": self.event.timezone,
-                "colors": {"primary": self.event.primary_color},
+                "colors": {"primary": self.event.primary_color or "#3aa57c"},
                 # "url": self.event.urls.base.full(),  # TODO this should be the URL of the conference website itself, but we do not have a field for this value yet
                 "rooms": [
                     {

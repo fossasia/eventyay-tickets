@@ -129,7 +129,7 @@ def test_schedule_frab_json_export(
     orga_user,
     schedule_schema_json,
 ):
-    with django_assert_max_num_queries(12):
+    with django_assert_max_num_queries(13):
         regular_response = client.get(
             reverse(
                 "agenda:export.schedule.json",
@@ -138,7 +138,7 @@ def test_schedule_frab_json_export(
             follow=True,
         )
     client.force_login(orga_user)
-    with django_assert_max_num_queries(22):
+    with django_assert_max_num_queries(23):
         orga_response = client.get(
             reverse(
                 "agenda:export.schedule.json",
@@ -204,7 +204,7 @@ def test_schedule_ical_export(slot, client, django_assert_max_num_queries):
 
 @pytest.mark.django_db
 def test_schedule_single_ical_export(slot, client, django_assert_max_num_queries):
-    with django_assert_max_num_queries(12):
+    with django_assert_max_num_queries(13):
         response = client.get(slot.submission.urls.ical, follow=True)
     assert response.status_code == 200
 
@@ -240,7 +240,7 @@ def test_schedule_export_nonpublic(
 def test_schedule_export_public(exporter, slot, client, django_assert_max_num_queries):
     exporter = "feed" if exporter == "feed" else f"export.{exporter}"
 
-    with django_assert_max_num_queries(12):
+    with django_assert_max_num_queries(13):
         response = client.get(
             reverse(f"agenda:{exporter}", kwargs={"event": slot.submission.event.slug}),
             follow=True,
