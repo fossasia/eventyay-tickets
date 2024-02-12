@@ -615,6 +615,12 @@ class AccessCodeDetail(PermissionRequired, CreateOrUpdateView):
     def get_form_kwargs(self):
         result = super().get_form_kwargs()
         result["event"] = self.request.event
+        if result.get("instance"):
+            return result
+        if track := self.request.GET.get("track"):
+            track = self.request.event.tracks.filter(pk=track).first()
+            if track:
+                result["initial"]["track"] = track
         return result
 
     def get_permission_object(self):

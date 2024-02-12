@@ -356,6 +356,11 @@ class TrackForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
         self.event = event
         super().__init__(*args, **kwargs)
         self.fields["color"].widget.attrs["class"] = "colorpickerfield"
+        if self.instance.pk:
+            url = f"{event.cfp.urls.new_access_code}?track={self.instance.pk}"
+            self.fields["requires_access_code"].help_text += " " + _(
+                'You can create an access code <a href="{url}">here</a>.'
+            ).format(url=url)
 
     def clean_name(self):
         name = self.cleaned_data["name"]

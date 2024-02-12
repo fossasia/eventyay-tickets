@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`orga,820` Restricted tracks now link to the page where you can create access codes for that track.
 - :announcement`admin,1678` Due to its incomplete and complex nature, the ``import_schedule`` admin command has been removed. If you want to import a schedule, despite all the complexities, please use the pretalx-downstream plugin instead.
 - :feature:`orga,1672` The organiser area now has a search box located in the side bar, opened after clicking the event name. It searches all events the current user has full access to (that is, not a limited reviewer account) for events, sessions and speakers.
 - :feature:`orga:review,1633` Resources uploaded or linked by speakers are now shown in the review view (unless anonymous reviews are used, as resources can currently not be anonymised).
