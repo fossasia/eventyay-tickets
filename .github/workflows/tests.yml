@@ -82,9 +82,6 @@ jobs:
       - name: Run checks
         run: python manage.py check --deploy
         working-directory: ./src
-      - name: Compile locales
-        run: python manage.py compilemessages
-        working-directory: ./src
       - name: Run tests
         working-directory: ./src
         run: python -m pytest -nauto -p no:sugar --reruns 3 --cov-report=term-missing:skip-covered tests
