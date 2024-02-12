@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-12 08:00+0000\n"
+"POT-Creation-Date: 2024-02-12 13:11+0000\n"
 "PO-Revision-Date: 2023-10-22 14:04+0000\n"
 "Last-Translator: Michal Stanke <michal@stanke.cz>\n"
 "Language-Team: none\n"
@@ -160,6 +160,7 @@ msgstr "Aktuálně nemůžete přidávat zpětnou vazbu k této přednášce."
 
 #: pretalx/agenda/templates/agenda/header_row.html:6 pretalx/event/stages.py:81
 #: pretalx/orga/templates/orga/base.html:342
+#: pretalx/orga/templates/orga/mails/_placeholder_group.html:10
 msgid "Schedule"
 msgstr "Program"
 
@@ -321,7 +322,7 @@ msgstr ""
 "Gratulujeme, podali jste svou přihlášku. Až do uzávěrky můžete vaši "
 "přihlášku upravovat. V případě změn nebo dalších otázek vám dáme vědět."
 
-#: pretalx/cfp/flow.py:397 pretalx/orga/forms/cfp.py:561
+#: pretalx/cfp/flow.py:397 pretalx/orga/forms/cfp.py:566
 #: pretalx/orga/templates/orga/base.html:233
 #: pretalx/orga/templates/orga/submission/content.html:147
 msgid "Questions"
@@ -384,7 +385,7 @@ msgid "Speaker email"
 msgstr "E-mail přednášejícího"
 
 #: pretalx/cfp/forms/submissions.py:7 pretalx/mail/models.py:37
-#: pretalx/mail/models.py:227 pretalx/orga/forms/cfp.py:412
+#: pretalx/mail/models.py:227 pretalx/orga/forms/cfp.py:417
 #: pretalx/orga/templates/orga/mails/outbox_list.html:39
 #: pretalx/orga/templates/orga/mails/sent_list.html:17
 #: pretalx/person/models/information.py:43
@@ -392,7 +393,7 @@ msgid "Subject"
 msgstr "Předmět"
 
 #: pretalx/cfp/forms/submissions.py:8 pretalx/mail/models.py:40
-#: pretalx/mail/models.py:228 pretalx/orga/forms/cfp.py:413
+#: pretalx/mail/models.py:228 pretalx/orga/forms/cfp.py:418
 #: pretalx/orga/forms/review.py:260 pretalx/person/models/information.py:44
 msgid "Text"
 msgstr "Text"
@@ -2063,7 +2064,7 @@ msgstr "Registrovat"
 
 #: pretalx/common/templates/common/avatar.html:6
 #: pretalx/orga/templates/orga/cfp/text.html:121
-#: pretalx/person/models/user.py:119
+#: pretalx/person/models/user.py:120
 msgid "Profile picture"
 msgstr "Profilový obrázek"
 
@@ -2409,8 +2410,8 @@ msgstr "Neplatný slug události – tento slug je rezervovaný: {value}."
 #: pretalx/orga/templates/orga/settings/team_detail.html:19
 #: pretalx/orga/templates/orga/speaker/list.html:42
 #: pretalx/orga/templates/orga/submission/speakers.html:18
-#: pretalx/person/forms.py:44 pretalx/person/models/user.py:79
-#: pretalx/schedule/models/room.py:19 pretalx/submission/models/review.py:264
+#: pretalx/person/forms.py:44 pretalx/person/models/user.py:80
+#: pretalx/schedule/models/room.py:23 pretalx/submission/models/review.py:264
 #: pretalx/submission/models/track.py:24
 msgid "Name"
 msgstr "Jméno"
@@ -3098,7 +3099,7 @@ msgstr ""
 "Celý obsah přihlášky:\n"
 "\n"
 
-#: pretalx/mail/models.py:197 pretalx/orga/forms/cfp.py:411
+#: pretalx/mail/models.py:197 pretalx/orga/forms/cfp.py:416
 #: pretalx/orga/templates/orga/mails/outbox_list.html:44
 #: pretalx/orga/templates/orga/mails/sent_list.html:22
 msgid "To"
@@ -3270,16 +3271,22 @@ msgstr ""
 msgid "You already have a session type by this name!"
 msgstr "Typ přednášky s tímto názvem už máte!"
 
-#: pretalx/orga/forms/cfp.py:366
+#: pretalx/orga/forms/cfp.py:362
+#, fuzzy, python-brace-format
+#| msgid "You can check for updates <a href=\"%(url)s\">here</a>."
+msgid "You can create an access code <a href=\"{url}\">here</a>."
+msgstr "Aktualizace můžete zkontrolovat <a href=\"%(url)s\">zde</a>."
+
+#: pretalx/orga/forms/cfp.py:371
 msgid "You already have a track by this name!"
 msgstr "Track s tímto názvem už máte!"
 
-#: pretalx/orga/forms/cfp.py:417
+#: pretalx/orga/forms/cfp.py:422
 #, python-brace-format
 msgid "Access code for the {event} CfP"
 msgstr "Přístupový kód pro CfP události {event}"
 
-#: pretalx/orga/forms/cfp.py:421
+#: pretalx/orga/forms/cfp.py:426
 #, python-brace-format
 msgid ""
 "Hi!\n"
@@ -3290,26 +3297,26 @@ msgstr ""
 "\n"
 "Toto je přístupový kód pro CfP události {event}."
 
-#: pretalx/orga/forms/cfp.py:432
+#: pretalx/orga/forms/cfp.py:437
 #, python-brace-format
 msgid "It will allow you to submit a proposal to the “{track}” track."
 msgstr "Dovolí vám odeslat přihlášku do tracku „{track}“."
 
-#: pretalx/orga/forms/cfp.py:438
+#: pretalx/orga/forms/cfp.py:443
 msgid "It will allow you to submit a proposal to our CfP."
 msgstr "Dovolí vám odeslat přihlášku do našeho CfP."
 
-#: pretalx/orga/forms/cfp.py:442
+#: pretalx/orga/forms/cfp.py:447
 #, python-brace-format
 msgid "This access code is valid until {date}."
 msgstr "Tento přístupový kód je platný do {date}."
 
-#: pretalx/orga/forms/cfp.py:454
+#: pretalx/orga/forms/cfp.py:459
 #, python-brace-format
 msgid "The code can be redeemed multiple times ({num})."
 msgstr "Tento kód je možné použít několikrát ({num})."
 
-#: pretalx/orga/forms/cfp.py:459
+#: pretalx/orga/forms/cfp.py:464
 #, python-brace-format
 msgid ""
 "\n"
@@ -3328,24 +3335,24 @@ msgstr ""
 "Těšíme se na vaši přihlášku.\n"
 "{name}"
 
-#: pretalx/orga/forms/cfp.py:487 pretalx/person/forms.py:379
+#: pretalx/orga/forms/cfp.py:492 pretalx/person/forms.py:379
 msgid "all"
 msgstr "vše"
 
-#: pretalx/orga/forms/cfp.py:488
+#: pretalx/orga/forms/cfp.py:493
 msgid "Accepted or confirmed speakers"
 msgstr "Přijatí a potvrzení přednášející"
 
-#: pretalx/orga/forms/cfp.py:489
+#: pretalx/orga/forms/cfp.py:494
 msgid "Confirmed speakers"
 msgstr "Potvrzení přednášející"
 
-#: pretalx/orga/forms/cfp.py:492
+#: pretalx/orga/forms/cfp.py:497
 #: pretalx/orga/templates/orga/mails/_mail_editor.html:21
 msgid "Recipients"
 msgstr "Příjemci"
 
-#: pretalx/orga/forms/cfp.py:560
+#: pretalx/orga/forms/cfp.py:565
 msgid "If you select no question, all questions will be used."
 msgstr "Pokud nevyberete žádnou otázku, budou použity všechny."
 
@@ -4360,7 +4367,7 @@ msgstr "Rozhraní organizátorů"
 msgid "Dashboard"
 msgstr "Nástěnka"
 
-#: pretalx/orga/templates/orga/base.html:200 pretalx/person/models/user.py:86
+#: pretalx/orga/templates/orga/base.html:200 pretalx/person/models/user.py:87
 msgid "E-mail"
 msgstr "E-mail"
 
@@ -4426,7 +4433,7 @@ msgstr "Přiřadit ke kontrole"
 msgid "Export reviews"
 msgstr "Export informace o kontrole"
 
-#: pretalx/orga/templates/orga/base.html:327 pretalx/schedule/models/room.py:39
+#: pretalx/orga/templates/orga/base.html:327 pretalx/schedule/models/room.py:43
 msgid "Speaker Information"
 msgstr "Informace pro přednášející"
 
@@ -4751,7 +4758,7 @@ msgid "Default duration"
 msgstr "Výchozí doba trvání"
 
 #: pretalx/orga/templates/orga/cfp/submission_type_view.html:34
-#: pretalx/orga/templates/orga/cfp/track_view.html:34
+#: pretalx/orga/templates/orga/cfp/track_view.html:37
 #: pretalx/submission/models/track.py:39 pretalx/submission/models/type.py:44
 msgid "Requires access code"
 msgstr "Vyžaduje přístupový kód"
@@ -4845,7 +4852,7 @@ msgstr "Abstrakt"
 
 #: pretalx/orga/templates/orga/cfp/text.html:95
 #: pretalx/orga/templates/orga/submission/review.html:85
-#: pretalx/schedule/models/room.py:32 pretalx/submission/models/resource.py:32
+#: pretalx/schedule/models/room.py:36 pretalx/submission/models/resource.py:32
 #: pretalx/submission/models/submission.py:172
 #: pretalx/submission/models/tag.py:17 pretalx/submission/models/track.py:27
 msgid "Description"
@@ -5227,12 +5234,6 @@ msgstr "Náhled e-mailu"
 #: pretalx/orga/templates/orga/mails/_mail_editor.html:97
 msgid "Send to outbox"
 msgstr "Zařadit k odeslání"
-
-#: pretalx/orga/templates/orga/mails/_placeholder_group.html:10
-#, fuzzy
-#| msgid "Schedule"
-msgid "Scheduling"
-msgstr "Program"
 
 #: pretalx/orga/templates/orga/mails/_placeholder_group.html:16
 #, fuzzy
@@ -6229,7 +6230,7 @@ msgstr[1] "Místnosti"
 msgstr[2] "Místností"
 
 #: pretalx/orga/templates/orga/schedule/room_list.html:20
-#: pretalx/schedule/models/room.py:47
+#: pretalx/schedule/models/room.py:51
 msgid "Capacity"
 msgstr "Kapacita"
 
@@ -7058,19 +7059,19 @@ msgstr "Track byl smazán."
 msgid "This track is in use in a proposal and cannot be deleted."
 msgstr "Tento track je použit v přihlášce a nemůže být smazán."
 
-#: pretalx/orga/views/cfp.py:629
+#: pretalx/orga/views/cfp.py:635
 msgid "The access code has been saved."
 msgstr "Přístupový kód byl uložen."
 
-#: pretalx/orga/views/cfp.py:658
+#: pretalx/orga/views/cfp.py:664
 msgid "The access code has been sent."
 msgstr "Přístupový kód byl odeslán."
 
-#: pretalx/orga/views/cfp.py:687
+#: pretalx/orga/views/cfp.py:693
 msgid "The access code has been deleted."
 msgstr "Přístupový kód byl smazán."
 
-#: pretalx/orga/views/cfp.py:692
+#: pretalx/orga/views/cfp.py:698
 msgid ""
 "This access code has been used for a proposal and cannot be deleted. To "
 "disable it, you can set its validity date to the past."
@@ -7730,7 +7731,7 @@ msgstr "Snažte se prosím nahrávat menší soubory, nejlépe do 16 MB."
 msgid "The speaker has arrived"
 msgstr "Přednášející přijel(a)"
 
-#: pretalx/person/models/user.py:81
+#: pretalx/person/models/user.py:82
 msgid ""
 "Please enter the name you wish to be displayed publicly. This name will be "
 "used for all events you are participating in on this server."
@@ -7738,7 +7739,7 @@ msgstr ""
 "Zadejte jméno, které si přejete, aby bylo veřejně zobrazeno. Toto jméno bude "
 "použito pro všechny události, kterých se budete na tomto serveru účastnit."
 
-#: pretalx/person/models/user.py:88
+#: pretalx/person/models/user.py:89
 msgid ""
 "Your email address will be used for password resets and notification about "
 "your event/proposals."
@@ -7746,19 +7747,19 @@ msgstr ""
 "Vaše e-mailová adresa bude použita pro obnovení hesla a pro oznámení o "
 "vašich událostech a přihláškách."
 
-#: pretalx/person/models/user.py:109
+#: pretalx/person/models/user.py:110
 msgid "Preferred language"
 msgstr "Preferovaný jazyk"
 
-#: pretalx/person/models/user.py:120
+#: pretalx/person/models/user.py:121
 msgid "If possible, upload an image that is least 120 pixels wide."
 msgstr "Pokud možno vložte obrázek, který je alespoň 120 pixelů široký."
 
-#: pretalx/person/models/user.py:125
+#: pretalx/person/models/user.py:126
 msgid "Retrieve profile picture via gravatar"
 msgstr "Získat profilový obrázek ze služby gravatar"
 
-#: pretalx/person/models/user.py:127
+#: pretalx/person/models/user.py:128
 msgid ""
 "If you have registered with an email address that has a gravatar account, we "
 "can retrieve your profile picture from there."
@@ -7766,11 +7767,11 @@ msgstr ""
 "Pokud jste zaregistrováni se stejnou e-mailovou adresou i ve službě "
 "gravatar, jsme schopni stáhnout váš profilový obrázek odtamtud."
 
-#: pretalx/person/models/user.py:138 pretalx/person/models/user.py:157
+#: pretalx/person/models/user.py:139 pretalx/person/models/user.py:158
 msgid "Unnamed user"
 msgstr "Bezejmenný uživatel"
 
-#: pretalx/person/models/user.py:403
+#: pretalx/person/models/user.py:408
 #, python-brace-format
 msgid ""
 "Hi {name},\n"
@@ -7797,7 +7798,7 @@ msgstr ""
 "S pozdravem\n"
 "Pretalx robot"
 
-#: pretalx/person/models/user.py:418
+#: pretalx/person/models/user.py:423
 msgid "Password recovery"
 msgstr "Obnova hesla"
 
@@ -7853,21 +7854,26 @@ msgstr "Popis, např. „Naše hlavní místnost, vstupujte vchodem napravo.“"
 msgid "Information for speakers, e.g.: Projector has only HDMI input."
 msgstr "Informace pro přednášející, např. „Projektor má jen HDMI vstup.“"
 
-#: pretalx/schedule/models/room.py:23
+#: pretalx/schedule/forms.py:222
+#, python-brace-format
+msgid "The current, automatically generated GUID is: {guid}."
+msgstr ""
+
+#: pretalx/schedule/models/room.py:27
 msgid "GUID"
 msgstr "GUID"
 
-#: pretalx/schedule/models/room.py:25
+#: pretalx/schedule/models/room.py:29
 msgid "Unique identifier (UUID) to help external tools identify the room."
 msgstr ""
 "Jedinečný identifikátor (UUID), aby mohli externí nástroje identifikovat "
 "místnost."
 
-#: pretalx/schedule/models/room.py:33
+#: pretalx/schedule/models/room.py:37
 msgid "A description for attendees, for example directions."
 msgstr "Popis pro návštěvníky, např. navigace."
 
-#: pretalx/schedule/models/room.py:41
+#: pretalx/schedule/models/room.py:45
 msgid ""
 "Information relevant for speakers scheduled in this room, for example room "
 "size, special directions, available adaptors for video input …"
@@ -7875,7 +7881,7 @@ msgstr ""
 "Důležité informace pro přednášející v této místnosti, například její "
 "kapacita, zvláštní pokyny nebo dostupné adaptéry pro obrazový výstup …"
 
-#: pretalx/schedule/models/room.py:48
+#: pretalx/schedule/models/room.py:52
 msgid "How many people can fit in the room?"
 msgstr "Kolik lidí se do místnosti vejde?"
 
@@ -8511,6 +8517,11 @@ msgstr "{name} ({duration} hodin)"
 #, python-brace-format
 msgid "{name} ({duration} minutes)"
 msgstr "{name} ({duration} minut)"
+
+#, fuzzy
+#~| msgid "Schedule"
+#~ msgid "Scheduling"
+#~ msgstr "Program"
 
 #~ msgid "Search for events"
 #~ msgstr "Vyhledávání událostí"

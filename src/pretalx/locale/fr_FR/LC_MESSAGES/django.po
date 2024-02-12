@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-12 08:00+0000\n"
+"POT-Creation-Date: 2024-02-12 13:11+0000\n"
 "PO-Revision-Date: 2023-09-26 12:04+0000\n"
 "Last-Translator: btreguier <github@treguier.org>\n"
 "Language-Team: \n"
@@ -163,6 +163,7 @@ msgstr "Vous ne pouvez actuellement pas commenter cette intervention."
 
 #: pretalx/agenda/templates/agenda/header_row.html:6 pretalx/event/stages.py:81
 #: pretalx/orga/templates/orga/base.html:342
+#: pretalx/orga/templates/orga/mails/_placeholder_group.html:10
 msgid "Schedule"
 msgstr "Planning"
 
@@ -327,7 +328,7 @@ msgstr ""
 "la modifier jusqu'à la date butoir de dépôt et vous serez notifié de tout "
 "changement ou de toute question."
 
-#: pretalx/cfp/flow.py:397 pretalx/orga/forms/cfp.py:561
+#: pretalx/cfp/flow.py:397 pretalx/orga/forms/cfp.py:566
 #: pretalx/orga/templates/orga/base.html:233
 #: pretalx/orga/templates/orga/submission/content.html:147
 msgid "Questions"
@@ -397,7 +398,7 @@ msgid "Speaker email"
 msgstr "Adresse électronique de l'intervenant"
 
 #: pretalx/cfp/forms/submissions.py:7 pretalx/mail/models.py:37
-#: pretalx/mail/models.py:227 pretalx/orga/forms/cfp.py:412
+#: pretalx/mail/models.py:227 pretalx/orga/forms/cfp.py:417
 #: pretalx/orga/templates/orga/mails/outbox_list.html:39
 #: pretalx/orga/templates/orga/mails/sent_list.html:17
 #: pretalx/person/models/information.py:43
@@ -405,7 +406,7 @@ msgid "Subject"
 msgstr "Sujet"
 
 #: pretalx/cfp/forms/submissions.py:8 pretalx/mail/models.py:40
-#: pretalx/mail/models.py:228 pretalx/orga/forms/cfp.py:413
+#: pretalx/mail/models.py:228 pretalx/orga/forms/cfp.py:418
 #: pretalx/orga/forms/review.py:260 pretalx/person/models/information.py:44
 msgid "Text"
 msgstr "Texte"
@@ -2099,7 +2100,7 @@ msgstr "S'inscrire"
 
 #: pretalx/common/templates/common/avatar.html:6
 #: pretalx/orga/templates/orga/cfp/text.html:121
-#: pretalx/person/models/user.py:119
+#: pretalx/person/models/user.py:120
 msgid "Profile picture"
 msgstr "Image de profil"
 
@@ -2457,8 +2458,8 @@ msgstr ""
 #: pretalx/orga/templates/orga/settings/team_detail.html:19
 #: pretalx/orga/templates/orga/speaker/list.html:42
 #: pretalx/orga/templates/orga/submission/speakers.html:18
-#: pretalx/person/forms.py:44 pretalx/person/models/user.py:79
-#: pretalx/schedule/models/room.py:19 pretalx/submission/models/review.py:264
+#: pretalx/person/forms.py:44 pretalx/person/models/user.py:80
+#: pretalx/schedule/models/room.py:23 pretalx/submission/models/review.py:264
 #: pretalx/submission/models/track.py:24
 msgid "Name"
 msgstr "Nom"
@@ -3167,7 +3168,7 @@ msgstr ""
 "Contenu complet de la proposition :\n"
 "\n"
 
-#: pretalx/mail/models.py:197 pretalx/orga/forms/cfp.py:411
+#: pretalx/mail/models.py:197 pretalx/orga/forms/cfp.py:416
 #: pretalx/orga/templates/orga/mails/outbox_list.html:44
 #: pretalx/orga/templates/orga/mails/sent_list.html:22
 msgid "To"
@@ -3344,16 +3345,22 @@ msgstr ""
 msgid "You already have a session type by this name!"
 msgstr "Vous avez déjà un type de session portant ce nom!"
 
-#: pretalx/orga/forms/cfp.py:366
+#: pretalx/orga/forms/cfp.py:362
+#, fuzzy, python-brace-format
+msgid "You can create an access code <a href=\"{url}\">here</a>."
+msgstr ""
+"Vous pouvez trouver la version actuelle <a href=\"%(current_url)s\">ici</a>."
+
+#: pretalx/orga/forms/cfp.py:371
 msgid "You already have a track by this name!"
 msgstr "Vous avez déjà un itinéraire portant ce nom!"
 
-#: pretalx/orga/forms/cfp.py:417
+#: pretalx/orga/forms/cfp.py:422
 #, python-brace-format
 msgid "Access code for the {event} CfP"
 msgstr "Code d'accès pour l'appel à participation de l'évènement \"{event}\""
 
-#: pretalx/orga/forms/cfp.py:421
+#: pretalx/orga/forms/cfp.py:426
 #, python-brace-format
 msgid ""
 "Hi!\n"
@@ -3365,29 +3372,29 @@ msgstr ""
 "Ceci est un code d'accès pour l'appel à participation de l’évènement "
 "\"{event}\"."
 
-#: pretalx/orga/forms/cfp.py:432
+#: pretalx/orga/forms/cfp.py:437
 #, python-brace-format
 msgid "It will allow you to submit a proposal to the “{track}” track."
 msgstr ""
 "Il vous permettra de déposer une proposition pour le parcours \"{track}\"."
 
-#: pretalx/orga/forms/cfp.py:438
+#: pretalx/orga/forms/cfp.py:443
 msgid "It will allow you to submit a proposal to our CfP."
 msgstr ""
 "Il vous permettra de déposer une proposition pour notre appel à "
 "participation."
 
-#: pretalx/orga/forms/cfp.py:442
+#: pretalx/orga/forms/cfp.py:447
 #, python-brace-format
 msgid "This access code is valid until {date}."
 msgstr "Ce code d'accès est valide jusqu'au {date}."
 
-#: pretalx/orga/forms/cfp.py:454
+#: pretalx/orga/forms/cfp.py:459
 #, python-brace-format
 msgid "The code can be redeemed multiple times ({num})."
 msgstr "Ce code peut être utilisé plusieurs fois ({num})."
 
-#: pretalx/orga/forms/cfp.py:459
+#: pretalx/orga/forms/cfp.py:464
 #, python-brace-format
 msgid ""
 "\n"
@@ -3406,24 +3413,24 @@ msgstr ""
 "J'attends avec impatience votre proposition !\n"
 "{name}"
 
-#: pretalx/orga/forms/cfp.py:487 pretalx/person/forms.py:379
+#: pretalx/orga/forms/cfp.py:492 pretalx/person/forms.py:379
 msgid "all"
 msgstr "tous"
 
-#: pretalx/orga/forms/cfp.py:488
+#: pretalx/orga/forms/cfp.py:493
 msgid "Accepted or confirmed speakers"
 msgstr "Intervenants acceptés et confirmés"
 
-#: pretalx/orga/forms/cfp.py:489
+#: pretalx/orga/forms/cfp.py:494
 msgid "Confirmed speakers"
 msgstr "Intervenants confirmés"
 
-#: pretalx/orga/forms/cfp.py:492
+#: pretalx/orga/forms/cfp.py:497
 #: pretalx/orga/templates/orga/mails/_mail_editor.html:21
 msgid "Recipients"
 msgstr "Desinataires"
 
-#: pretalx/orga/forms/cfp.py:560
+#: pretalx/orga/forms/cfp.py:565
 msgid "If you select no question, all questions will be used."
 msgstr ""
 "Si vous ne sélectionnez pas de question, toutes les questions seront "
@@ -4459,7 +4466,7 @@ msgstr "Zone d'organisation"
 msgid "Dashboard"
 msgstr "Tableau de bord"
 
-#: pretalx/orga/templates/orga/base.html:200 pretalx/person/models/user.py:86
+#: pretalx/orga/templates/orga/base.html:200 pretalx/person/models/user.py:87
 msgid "E-mail"
 msgstr "Courriel"
 
@@ -4527,7 +4534,7 @@ msgstr "Évaluateurs actif"
 msgid "Export reviews"
 msgstr "pour les évaluateurs"
 
-#: pretalx/orga/templates/orga/base.html:327 pretalx/schedule/models/room.py:39
+#: pretalx/orga/templates/orga/base.html:327 pretalx/schedule/models/room.py:43
 msgid "Speaker Information"
 msgstr "Informations pour les intervenants"
 
@@ -4859,7 +4866,7 @@ msgid "Default duration"
 msgstr "Durée par défaut"
 
 #: pretalx/orga/templates/orga/cfp/submission_type_view.html:34
-#: pretalx/orga/templates/orga/cfp/track_view.html:34
+#: pretalx/orga/templates/orga/cfp/track_view.html:37
 #: pretalx/submission/models/track.py:39 pretalx/submission/models/type.py:44
 msgid "Requires access code"
 msgstr "Nécessite un code d'accès"
@@ -4959,7 +4966,7 @@ msgstr "Résumé"
 
 #: pretalx/orga/templates/orga/cfp/text.html:95
 #: pretalx/orga/templates/orga/submission/review.html:85
-#: pretalx/schedule/models/room.py:32 pretalx/submission/models/resource.py:32
+#: pretalx/schedule/models/room.py:36 pretalx/submission/models/resource.py:32
 #: pretalx/submission/models/submission.py:172
 #: pretalx/submission/models/tag.py:17 pretalx/submission/models/track.py:27
 msgid "Description"
@@ -5350,11 +5357,6 @@ msgstr "Date butoir des évaluations"
 #, fuzzy
 msgid "Send to outbox"
 msgstr "Envoyer à "
-
-#: pretalx/orga/templates/orga/mails/_placeholder_group.html:10
-#, fuzzy
-msgid "Scheduling"
-msgstr "Planning"
 
 #: pretalx/orga/templates/orga/mails/_placeholder_group.html:16
 msgid "Other"
@@ -6336,7 +6338,7 @@ msgstr[0] "Salle"
 msgstr[1] "Salles"
 
 #: pretalx/orga/templates/orga/schedule/room_list.html:20
-#: pretalx/schedule/models/room.py:47
+#: pretalx/schedule/models/room.py:51
 msgid "Capacity"
 msgstr "Capacité"
 
@@ -7198,19 +7200,19 @@ msgstr ""
 "Ce parcours est utilisé dans une proposition et ne peut donc pas être "
 "supprimé."
 
-#: pretalx/orga/views/cfp.py:629
+#: pretalx/orga/views/cfp.py:635
 msgid "The access code has been saved."
 msgstr "Le code d'accès a été sauvé."
 
-#: pretalx/orga/views/cfp.py:658
+#: pretalx/orga/views/cfp.py:664
 msgid "The access code has been sent."
 msgstr "Le code d'accès a été envoyé."
 
-#: pretalx/orga/views/cfp.py:687
+#: pretalx/orga/views/cfp.py:693
 msgid "The access code has been deleted."
 msgstr "Le code d'accès a été supprimé."
 
-#: pretalx/orga/views/cfp.py:692
+#: pretalx/orga/views/cfp.py:698
 msgid ""
 "This access code has been used for a proposal and cannot be deleted. To "
 "disable it, you can set its validity date to the past."
@@ -7897,7 +7899,7 @@ msgstr ""
 msgid "The speaker has arrived"
 msgstr "L'intervenant est arrivé"
 
-#: pretalx/person/models/user.py:81
+#: pretalx/person/models/user.py:82
 msgid ""
 "Please enter the name you wish to be displayed publicly. This name will be "
 "used for all events you are participating in on this server."
@@ -7905,7 +7907,7 @@ msgstr ""
 "Veuillez entrer le nom qui sera visible publiquement. Ce nom sera utilisé "
 "pour tous les évènements auxquels vous participerez sur ce serveur."
 
-#: pretalx/person/models/user.py:88
+#: pretalx/person/models/user.py:89
 msgid ""
 "Your email address will be used for password resets and notification about "
 "your event/proposals."
@@ -7913,19 +7915,19 @@ msgstr ""
 "Votre adresse électronique sera utilisée pour les réinitialisations de mots "
 "de passe et les notifications concernant vos évènements et propositions."
 
-#: pretalx/person/models/user.py:109
+#: pretalx/person/models/user.py:110
 msgid "Preferred language"
 msgstr "Langue préférée"
 
-#: pretalx/person/models/user.py:120
+#: pretalx/person/models/user.py:121
 msgid "If possible, upload an image that is least 120 pixels wide."
 msgstr "Si possible, téléversez une image d'au moins 120 pixels de large."
 
-#: pretalx/person/models/user.py:125
+#: pretalx/person/models/user.py:126
 msgid "Retrieve profile picture via gravatar"
 msgstr "Récupérer l'image de profil via gravatar"
 
-#: pretalx/person/models/user.py:127
+#: pretalx/person/models/user.py:128
 msgid ""
 "If you have registered with an email address that has a gravatar account, we "
 "can retrieve your profile picture from there."
@@ -7933,11 +7935,11 @@ msgstr ""
 "Si vous avez créé votre compte avec une adresse électronique liée à un "
 "compte gravatar, nous pouvons récupérer votre image de profil dessus."
 
-#: pretalx/person/models/user.py:138 pretalx/person/models/user.py:157
+#: pretalx/person/models/user.py:139 pretalx/person/models/user.py:158
 msgid "Unnamed user"
 msgstr "Utilisateur sans nom"
 
-#: pretalx/person/models/user.py:403
+#: pretalx/person/models/user.py:408
 #, python-brace-format
 msgid ""
 "Hi {name},\n"
@@ -7966,7 +7968,7 @@ msgstr ""
 "\n"
 "Le robot pretalx"
 
-#: pretalx/person/models/user.py:418
+#: pretalx/person/models/user.py:423
 msgid "Password recovery"
 msgstr "Récupération du mot de passe"
 
@@ -8025,19 +8027,24 @@ msgstr ""
 "Informations pour les intervenants, e.g. : Le vidéo-projecteur n'a qu'une "
 "entrée HDMI."
 
-#: pretalx/schedule/models/room.py:23
+#: pretalx/schedule/forms.py:222
+#, python-brace-format
+msgid "The current, automatically generated GUID is: {guid}."
+msgstr ""
+
+#: pretalx/schedule/models/room.py:27
 msgid "GUID"
 msgstr ""
 
-#: pretalx/schedule/models/room.py:25
+#: pretalx/schedule/models/room.py:29
 msgid "Unique identifier (UUID) to help external tools identify the room."
 msgstr ""
 
-#: pretalx/schedule/models/room.py:33
+#: pretalx/schedule/models/room.py:37
 msgid "A description for attendees, for example directions."
 msgstr "Une description pour les visiteurs, le chemin par exemple."
 
-#: pretalx/schedule/models/room.py:41
+#: pretalx/schedule/models/room.py:45
 msgid ""
 "Information relevant for speakers scheduled in this room, for example room "
 "size, special directions, available adaptors for video input …"
@@ -8046,7 +8053,7 @@ msgstr ""
 "la taille de la salle, les directives particulières, les adaptateurs "
 "disponibles pour la sortie vidéo, …"
 
-#: pretalx/schedule/models/room.py:48
+#: pretalx/schedule/models/room.py:52
 msgid "How many people can fit in the room?"
 msgstr "Combien de personnes peuvent rentrer dans la salle ?"
 
@@ -8711,6 +8718,10 @@ msgstr "{name} ({duration} heures)"
 #, python-brace-format
 msgid "{name} ({duration} minutes)"
 msgstr "{name} ({duration} minutes)"
+
+#, fuzzy
+#~ msgid "Scheduling"
+#~ msgstr "Planning"
 
 #~ msgid "Search for events"
 #~ msgstr "Chercher des évènements"

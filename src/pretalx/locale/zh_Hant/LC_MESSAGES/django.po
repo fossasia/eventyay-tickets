@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-12 08:00+0000\n"
+"POT-Creation-Date: 2024-02-12 13:11+0000\n"
 "PO-Revision-Date: 2023-10-30 00:27+0000\n"
 "Last-Translator: Chin-Cheng Huang <katy881115@gmail.com>\n"
 "Language-Team: none\n"
@@ -153,6 +153,7 @@ msgstr "此刻您還不能對此議程發表回饋。"
 
 #: pretalx/agenda/templates/agenda/header_row.html:6 pretalx/event/stages.py:81
 #: pretalx/orga/templates/orga/base.html:342
+#: pretalx/orga/templates/orga/mails/_placeholder_group.html:10
 msgid "Schedule"
 msgstr "議程表"
 
@@ -309,7 +310,7 @@ msgstr ""
 "恭喜，您已提交提案！ 您可以在提交截止日期之前繼續對其進行更改，並且您會收到任"
 "何更改或問題的通知。"
 
-#: pretalx/cfp/flow.py:397 pretalx/orga/forms/cfp.py:561
+#: pretalx/cfp/flow.py:397 pretalx/orga/forms/cfp.py:566
 #: pretalx/orga/templates/orga/base.html:233
 #: pretalx/orga/templates/orga/submission/content.html:147
 msgid "Questions"
@@ -370,7 +371,7 @@ msgid "Speaker email"
 msgstr "講者電子郵件地址"
 
 #: pretalx/cfp/forms/submissions.py:7 pretalx/mail/models.py:37
-#: pretalx/mail/models.py:227 pretalx/orga/forms/cfp.py:412
+#: pretalx/mail/models.py:227 pretalx/orga/forms/cfp.py:417
 #: pretalx/orga/templates/orga/mails/outbox_list.html:39
 #: pretalx/orga/templates/orga/mails/sent_list.html:17
 #: pretalx/person/models/information.py:43
@@ -378,7 +379,7 @@ msgid "Subject"
 msgstr "主題"
 
 #: pretalx/cfp/forms/submissions.py:8 pretalx/mail/models.py:40
-#: pretalx/mail/models.py:228 pretalx/orga/forms/cfp.py:413
+#: pretalx/mail/models.py:228 pretalx/orga/forms/cfp.py:418
 #: pretalx/orga/forms/review.py:260 pretalx/person/models/information.py:44
 msgid "Text"
 msgstr "文字"
@@ -2006,7 +2007,7 @@ msgstr "註冊"
 
 #: pretalx/common/templates/common/avatar.html:6
 #: pretalx/orga/templates/orga/cfp/text.html:121
-#: pretalx/person/models/user.py:119
+#: pretalx/person/models/user.py:120
 msgid "Profile picture"
 msgstr "個人頭像"
 
@@ -2350,8 +2351,8 @@ msgstr "活動短名稱有誤—這個字是保留字：{value}。"
 #: pretalx/orga/templates/orga/settings/team_detail.html:19
 #: pretalx/orga/templates/orga/speaker/list.html:42
 #: pretalx/orga/templates/orga/submission/speakers.html:18
-#: pretalx/person/forms.py:44 pretalx/person/models/user.py:79
-#: pretalx/schedule/models/room.py:19 pretalx/submission/models/review.py:264
+#: pretalx/person/forms.py:44 pretalx/person/models/user.py:80
+#: pretalx/schedule/models/room.py:23 pretalx/submission/models/review.py:264
 #: pretalx/submission/models/track.py:24
 msgid "Name"
 msgstr "名稱"
@@ -3043,7 +3044,7 @@ msgstr ""
 "完整議程投稿內容：\n"
 "\n"
 
-#: pretalx/mail/models.py:197 pretalx/orga/forms/cfp.py:411
+#: pretalx/mail/models.py:197 pretalx/orga/forms/cfp.py:416
 #: pretalx/orga/templates/orga/mails/outbox_list.html:44
 #: pretalx/orga/templates/orga/mails/sent_list.html:22
 msgid "To"
@@ -3208,16 +3209,23 @@ msgstr ""
 msgid "You already have a session type by this name!"
 msgstr "您已經有一個同名的議程類型！"
 
-#: pretalx/orga/forms/cfp.py:366
+#: pretalx/orga/forms/cfp.py:362
+#, fuzzy, python-brace-format
+#| msgid ""
+#| "You can find the current version <a href=\"%(current_url)s\">here</a>."
+msgid "You can create an access code <a href=\"{url}\">here</a>."
+msgstr "您可以在<a href=\"%(current_url)s\">這裡</a>查看最新版本。"
+
+#: pretalx/orga/forms/cfp.py:371
 msgid "You already have a track by this name!"
 msgstr "您已經有一個同名的議程軌！"
 
-#: pretalx/orga/forms/cfp.py:417
+#: pretalx/orga/forms/cfp.py:422
 #, python-brace-format
 msgid "Access code for the {event} CfP"
 msgstr "{event} 徵求議程投稿的存取代碼"
 
-#: pretalx/orga/forms/cfp.py:421
+#: pretalx/orga/forms/cfp.py:426
 #, python-brace-format
 msgid ""
 "Hi!\n"
@@ -3228,26 +3236,26 @@ msgstr ""
 "\n"
 "這是 {event} 徵求議程投稿的存取代碼。"
 
-#: pretalx/orga/forms/cfp.py:432
+#: pretalx/orga/forms/cfp.py:437
 #, python-brace-format
 msgid "It will allow you to submit a proposal to the “{track}” track."
 msgstr "您可以用這個代碼投稿到「{track}」議程軌。"
 
-#: pretalx/orga/forms/cfp.py:438
+#: pretalx/orga/forms/cfp.py:443
 msgid "It will allow you to submit a proposal to our CfP."
 msgstr "您可以用這個代碼投稿給我們。"
 
-#: pretalx/orga/forms/cfp.py:442
+#: pretalx/orga/forms/cfp.py:447
 #, python-brace-format
 msgid "This access code is valid until {date}."
 msgstr "這個存取代碼可以用到 {date}。"
 
-#: pretalx/orga/forms/cfp.py:454
+#: pretalx/orga/forms/cfp.py:459
 #, python-brace-format
 msgid "The code can be redeemed multiple times ({num})."
 msgstr "此代碼可以重複使用多次（{num}）。"
 
-#: pretalx/orga/forms/cfp.py:459
+#: pretalx/orga/forms/cfp.py:464
 #, python-brace-format
 msgid ""
 "\n"
@@ -3266,26 +3274,26 @@ msgstr ""
 "歡迎您的投稿！\n"
 "{name}"
 
-#: pretalx/orga/forms/cfp.py:487 pretalx/person/forms.py:379
+#: pretalx/orga/forms/cfp.py:492 pretalx/person/forms.py:379
 msgid "all"
 msgstr "全部"
 
-#: pretalx/orga/forms/cfp.py:488
+#: pretalx/orga/forms/cfp.py:493
 #, fuzzy
 msgid "Accepted or confirmed speakers"
 msgstr "所有已確認的講者"
 
-#: pretalx/orga/forms/cfp.py:489
+#: pretalx/orga/forms/cfp.py:494
 #, fuzzy
 msgid "Confirmed speakers"
 msgstr "所有已確認的講者"
 
-#: pretalx/orga/forms/cfp.py:492
+#: pretalx/orga/forms/cfp.py:497
 #: pretalx/orga/templates/orga/mails/_mail_editor.html:21
 msgid "Recipients"
 msgstr "收件者"
 
-#: pretalx/orga/forms/cfp.py:560
+#: pretalx/orga/forms/cfp.py:565
 msgid "If you select no question, all questions will be used."
 msgstr "如果你選擇沒有問題，則將使用所有問題。"
 
@@ -4262,7 +4270,7 @@ msgstr "主辦者"
 msgid "Dashboard"
 msgstr "資訊看板"
 
-#: pretalx/orga/templates/orga/base.html:200 pretalx/person/models/user.py:86
+#: pretalx/orga/templates/orga/base.html:200 pretalx/person/models/user.py:87
 msgid "E-mail"
 msgstr "電子郵件"
 
@@ -4330,7 +4338,7 @@ msgstr "是名檢閱者"
 msgid "Export reviews"
 msgstr "使用者設定"
 
-#: pretalx/orga/templates/orga/base.html:327 pretalx/schedule/models/room.py:39
+#: pretalx/orga/templates/orga/base.html:327 pretalx/schedule/models/room.py:43
 msgid "Speaker Information"
 msgstr "講者資訊"
 
@@ -4626,7 +4634,7 @@ msgid "Default duration"
 msgstr "預設的議程內容期間"
 
 #: pretalx/orga/templates/orga/cfp/submission_type_view.html:34
-#: pretalx/orga/templates/orga/cfp/track_view.html:34
+#: pretalx/orga/templates/orga/cfp/track_view.html:37
 #: pretalx/submission/models/track.py:39 pretalx/submission/models/type.py:44
 msgid "Requires access code"
 msgstr "需要存取代碼"
@@ -4714,7 +4722,7 @@ msgstr "摘要"
 
 #: pretalx/orga/templates/orga/cfp/text.html:95
 #: pretalx/orga/templates/orga/submission/review.html:85
-#: pretalx/schedule/models/room.py:32 pretalx/submission/models/resource.py:32
+#: pretalx/schedule/models/room.py:36 pretalx/submission/models/resource.py:32
 #: pretalx/submission/models/submission.py:172
 #: pretalx/submission/models/tag.py:17 pretalx/submission/models/track.py:27
 msgid "Description"
@@ -5099,12 +5107,6 @@ msgstr "講者電子郵件地址"
 #: pretalx/orga/templates/orga/mails/_mail_editor.html:97
 msgid "Send to outbox"
 msgstr "傳送給"
-
-#: pretalx/orga/templates/orga/mails/_placeholder_group.html:10
-#, fuzzy
-#| msgid "Schedule"
-msgid "Scheduling"
-msgstr "議程表"
 
 #: pretalx/orga/templates/orga/mails/_placeholder_group.html:16
 #, fuzzy
@@ -6059,7 +6061,7 @@ msgid_plural "Rooms"
 msgstr[0] "會議室"
 
 #: pretalx/orga/templates/orga/schedule/room_list.html:20
-#: pretalx/schedule/models/room.py:47
+#: pretalx/schedule/models/room.py:51
 msgid "Capacity"
 msgstr "容量"
 
@@ -6873,19 +6875,19 @@ msgstr "此議程軌已被刪除。"
 msgid "This track is in use in a proposal and cannot be deleted."
 msgstr ""
 
-#: pretalx/orga/views/cfp.py:629
+#: pretalx/orga/views/cfp.py:635
 msgid "The access code has been saved."
 msgstr "此存取代碼已被儲存。"
 
-#: pretalx/orga/views/cfp.py:658
+#: pretalx/orga/views/cfp.py:664
 msgid "The access code has been sent."
 msgstr "此存取代碼已被傳送。"
 
-#: pretalx/orga/views/cfp.py:687
+#: pretalx/orga/views/cfp.py:693
 msgid "The access code has been deleted."
 msgstr "此存取代碼已被刪除。"
 
-#: pretalx/orga/views/cfp.py:692
+#: pretalx/orga/views/cfp.py:698
 msgid ""
 "This access code has been used for a proposal and cannot be deleted. To "
 "disable it, you can set its validity date to the past."
@@ -7505,41 +7507,41 @@ msgstr ""
 msgid "The speaker has arrived"
 msgstr ""
 
-#: pretalx/person/models/user.py:81
+#: pretalx/person/models/user.py:82
 msgid ""
 "Please enter the name you wish to be displayed publicly. This name will be "
 "used for all events you are participating in on this server."
 msgstr ""
 
-#: pretalx/person/models/user.py:88
+#: pretalx/person/models/user.py:89
 msgid ""
 "Your email address will be used for password resets and notification about "
 "your event/proposals."
 msgstr ""
 
-#: pretalx/person/models/user.py:109
+#: pretalx/person/models/user.py:110
 msgid "Preferred language"
 msgstr "預設語言"
 
-#: pretalx/person/models/user.py:120
+#: pretalx/person/models/user.py:121
 msgid "If possible, upload an image that is least 120 pixels wide."
 msgstr ""
 
-#: pretalx/person/models/user.py:125
+#: pretalx/person/models/user.py:126
 msgid "Retrieve profile picture via gravatar"
 msgstr ""
 
-#: pretalx/person/models/user.py:127
+#: pretalx/person/models/user.py:128
 msgid ""
 "If you have registered with an email address that has a gravatar account, we "
 "can retrieve your profile picture from there."
 msgstr ""
 
-#: pretalx/person/models/user.py:138 pretalx/person/models/user.py:157
+#: pretalx/person/models/user.py:139 pretalx/person/models/user.py:158
 msgid "Unnamed user"
 msgstr "未命名使用者"
 
-#: pretalx/person/models/user.py:403
+#: pretalx/person/models/user.py:408
 #, python-brace-format
 msgid ""
 "Hi {name},\n"
@@ -7555,7 +7557,7 @@ msgid ""
 "the pretalx robot"
 msgstr ""
 
-#: pretalx/person/models/user.py:418
+#: pretalx/person/models/user.py:423
 msgid "Password recovery"
 msgstr "回復密碼"
 
@@ -7606,25 +7608,30 @@ msgstr ""
 msgid "Information for speakers, e.g.: Projector has only HDMI input."
 msgstr ""
 
-#: pretalx/schedule/models/room.py:23
+#: pretalx/schedule/forms.py:222
+#, python-brace-format
+msgid "The current, automatically generated GUID is: {guid}."
+msgstr ""
+
+#: pretalx/schedule/models/room.py:27
 msgid "GUID"
 msgstr ""
 
-#: pretalx/schedule/models/room.py:25
+#: pretalx/schedule/models/room.py:29
 msgid "Unique identifier (UUID) to help external tools identify the room."
 msgstr ""
 
-#: pretalx/schedule/models/room.py:33
+#: pretalx/schedule/models/room.py:37
 msgid "A description for attendees, for example directions."
 msgstr ""
 
-#: pretalx/schedule/models/room.py:41
+#: pretalx/schedule/models/room.py:45
 msgid ""
 "Information relevant for speakers scheduled in this room, for example room "
 "size, special directions, available adaptors for video input …"
 msgstr ""
 
-#: pretalx/schedule/models/room.py:48
+#: pretalx/schedule/models/room.py:52
 msgid "How many people can fit in the room?"
 msgstr ""
 
@@ -8232,6 +8239,11 @@ msgstr ""
 
 msgid "Hidden rooms"
 msgstr ""
+
+#, fuzzy
+#~| msgid "Schedule"
+#~ msgid "Scheduling"
+#~ msgstr "議程表"
 
 #~ msgid "Search for events"
 #~ msgstr "搜尋活動"
