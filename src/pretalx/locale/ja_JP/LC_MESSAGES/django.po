@@ -9069,13 +9069,6 @@ msgstr ""
 #~ msgstr ""
 #~ " - {team_url} から、誰かを主催者チームに招待し、イベントを作成してもらう"
 
-#~ msgid ""
-#~ " - Use the command \"import_schedule /path/to/schedule.xml\" if you want "
-#~ "to import an event."
-#~ msgstr ""
-#~ " - \"import_schedule /path/to/schedule.xml\" コマンドを使って、イベント情"
-#~ "報をインポートする"
-
 #~ msgid "Speaker E-Mail"
 #~ msgstr "講演者の E-Mail"
 

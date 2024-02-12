@@ -8962,13 +8962,6 @@ msgstr "{name} ({duration} Minuten)"
 #~ " - Jemanden unter {team_url} in das Team einladen und die Veranstaltung "
 #~ "erstellen lassen"
 
-#~ msgid ""
-#~ " - Use the command \"import_schedule /path/to/schedule.xml\" if you want "
-#~ "to import an event."
-#~ msgstr ""
-#~ " - Den Befehl \"import_schedule /path/to/schedule.xml\" nutzen, wenn Sie "
-#~ "mit einem importierten Event beginnen möchten."
-
 #~ msgid "minutes"
 #~ msgstr "Minuten"
 

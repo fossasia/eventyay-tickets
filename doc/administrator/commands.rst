@@ -140,16 +140,6 @@ This command requires an event slug as an argument. You can provide the
 ``--zip`` flag to produce a zip archive instead of a directory structure. The
 command will print the location of the HTML export upon successful exit.
 
-``python -m pretalx import_schedule``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The ``import_schedule`` allows you to import a conference schedule xml file.
-It takes the path to the xml file as its argument. If pretalx can find no event
-with the specified slug in the database, it will create a new event and a new
-organiser.
-
-For existing events, pretalx will release a new schedule version instead.
-
 ``python -m pretalx create_test_event``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

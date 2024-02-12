@@ -8438,12 +8438,6 @@ msgstr ""
 #~ "create the event"
 #~ msgstr " - 邀請其他人透過 {team_url} 加入主辦團隊，並讓他們建立新的活動"
 
-#, fuzzy
-#~ msgid ""
-#~ " - Use the command \"import_schedule /path/to/schedule.xml\" if you want "
-#~ "to import an event."
-#~ msgstr " - 用以下指令匯入活動：\"import_schedule /path/to/schedule.xml\""
-
 #~ msgid "Speaker E-Mail"
 #~ msgstr "講者電子郵件地址"
 

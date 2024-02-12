@@ -8768,13 +8768,6 @@ msgstr "{name} ({duration} minut)"
 #~ " - Pozvěte lidi do organizačního týmu na adrese {team_url} a nechte je "
 #~ "vytvářet události"
 
-#~ msgid ""
-#~ " - Use the command \"import_schedule /path/to/schedule.xml\" if you want "
-#~ "to import an event."
-#~ msgstr ""
-#~ " - Pro import události použijte příkaz \"import_schedule /path/to/"
-#~ "schedule.xml\"."
-
 #~ msgid "Hidden rooms"
 #~ msgstr "Skryté místnosti"
 

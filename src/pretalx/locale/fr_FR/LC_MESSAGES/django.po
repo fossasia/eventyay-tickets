@@ -8970,13 +8970,6 @@ msgstr "{name} ({duration} minutes)"
 #~ " - Inviter quelqu'un dans l'équipe d'organisation à l'adresse {team_url} "
 #~ "et le laisser créer l'évènement"
 
-#~ msgid ""
-#~ " - Use the command \"import_schedule /path/to/schedule.xml\" if you want "
-#~ "to import an event."
-#~ msgstr ""
-#~ " - Utiliser la commande \"import_schedule /chemin/vers/le/planning.xml\" "
-#~ "si vous souhaitez importer un évènement."
-
 #~ msgid "Speaker E-Mail"
 #~ msgstr "Courriel de l'intervenant"
 

@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :announcement`admin,1678` Due to its incomplete and complex nature, the ``import_schedule`` admin command has been removed. If you want to import a schedule, despite all the complexities, please use the pretalx-downstream plugin instead.
 - :feature:`orga,1672` The organiser area now has a search box located in the side bar, opened after clicking the event name. It searches all events the current user has full access to (that is, not a limited reviewer account) for events, sessions and speakers.
 - :feature:`orga:review,1633` Resources uploaded or linked by speakers are now shown in the review view (unless anonymous reviews are used, as resources can currently not be anonymised).
 - :feature:`orga:review,1675` In order to make large events more manageable, the review dashboard is now by default paginated to 100 sessions per page. The page size can be adjusted up to showing all sessions as before (and the page size is remembered on a per-user basis).

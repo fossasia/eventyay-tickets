@@ -8898,13 +8898,6 @@ msgstr ""
 #~ " - Convide alguém para a equipa do organizador {team_url} e deixe-o criar "
 #~ "o evento"
 
-#~ msgid ""
-#~ " - Use the command \"import_schedule /path/to/schedule.xml\" if you want "
-#~ "to import an event."
-#~ msgstr ""
-#~ " - Utilize o comando \"import_schedule /path/to/schedule.xml\" se deseja "
-#~ "importar um evento."
-
 #~ msgid "Speaker E-Mail"
 #~ msgstr "E-mail do Orador"
 

@@ -8993,13 +8993,6 @@ msgstr "{name} ({duration} λεπτά)"
 #~ " - Να προσκαλέσετε κάποιον στην ομάδα διοργάνωσης στο {team_url} και να "
 #~ "τους δώσετε την δυνατότητα να δημιουργήσουν εκδηλώσεις"
 
-#~ msgid ""
-#~ " - Use the command \"import_schedule /path/to/schedule.xml\" if you want "
-#~ "to import an event."
-#~ msgstr ""
-#~ " - Χρησιμοποιήστε την εντολή \"import_schedule /path/to/schedule.xml\" "
-#~ "εάν θέλετε να εισαγάγετε ένα συμβάν."
-
 #~ msgid "Speaker E-Mail"
 #~ msgstr "Ε-Μail Ομιλητή"
 

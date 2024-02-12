@@ -8433,13 +8433,6 @@ msgstr ""
 #~ "create the event"
 #~ msgstr "- 邀请某人加入组织者团队，让他们创建活动 {team_url}。"
 
-#~ msgid ""
-#~ " - Use the command \"import_schedule /path/to/schedule.xml\" if you want "
-#~ "to import an event."
-#~ msgstr ""
-#~ "- 如果你想要导入一个事件，请使用命令“import_schedule /path/to/schedule."
-#~ "xml”。"
-
 #~ msgid "Speaker E-Mail"
 #~ msgstr "演讲者电子邮件"
 
