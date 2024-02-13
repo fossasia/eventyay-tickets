@@ -2169,8 +2169,8 @@ msgstr "المنظمين"
 
 #: pretalx/common/templates/common/powered_by.html:33
 #, python-format
-msgid "powered by <a %(a_attr)s>pretalx</a>"
-msgstr "مدعوم من قبل <a %(a_attr)s>pretalx</a>"
+msgid "powered by <a %(a_attr)s>eventyay</a>"
+msgstr "مدعوم من قبل <a %(a_attr)s>eventyay</a>"
 
 #: pretalx/common/templates/common/question_answer.html:8
 msgid "No file provided"

@@ -2060,7 +2060,7 @@ msgstr "组织者"
 
 #: pretalx/common/templates/common/powered_by.html:33
 #, python-format
-msgid "powered by <a %(a_attr)s>pretalx</a>"
+msgid "powered by <a %(a_attr)s>eventyay</a>"
 msgstr "由<a %(a_attr)s>pretalx</a>提供支持"
 
 #: pretalx/common/templates/common/question_answer.html:8

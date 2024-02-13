@@ -2155,7 +2155,7 @@ msgstr "Organizador"
 
 #: pretalx/common/templates/common/powered_by.html:33
 #, python-format
-msgid "powered by <a %(a_attr)s>pretalx</a>"
+msgid "powered by <a %(a_attr)s>eventyay</a>"
 msgstr "Powered by <a %(a_attr)s> pretalx </a>"
 
 #: pretalx/common/templates/common/question_answer.html:8
