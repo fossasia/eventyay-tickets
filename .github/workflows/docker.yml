@@ -3,11 +3,9 @@ name: Docker
 on:
   workflow_dispatch: # allows to be run manually
   push:
-    tags:
-      - '*'
-  pull_request:
     branches:
       - 'main'
+      - 'development'
 jobs:
   docker:
     if: ${{ github.repository_owner == 'fossasia' }}
@@ -16,8 +14,6 @@ jobs:
       -
         name: Checkout
         uses: actions/checkout@v4
-        with:
-          submodules: true
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v2

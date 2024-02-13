@@ -2160,7 +2160,7 @@ msgstr "Nouvel organisateur"
 #: pretalx/common/templates/common/powered_by.html:33
 #, python-format
 msgid "powered by <a %(a_attr)s>eventyay</a>"
-msgstr "propulsé par <a %(a_attr)s>pretalx</a>"
+msgstr "propulsé par <a %(a_attr)s>eventyay</a>"
 
 #: pretalx/common/templates/common/question_answer.html:8
 msgid "No file provided"
