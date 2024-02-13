@@ -4366,7 +4366,7 @@ msgstr "pretalx-Blog (Update-Benachrichtigungen, neue Features)"
 
 #: pretalx/orga/templates/orga/auth/base.html:23
 #: pretalx/orga/templates/orga/base.html:57
-msgid "The pretalx logo"
+msgid "The eventyay logo"
 msgstr "Das pretalx-Logo"
 
 #: pretalx/orga/templates/orga/auth/login.html:4

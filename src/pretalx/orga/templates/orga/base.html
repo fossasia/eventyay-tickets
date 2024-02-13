@@ -7,8 +7,8 @@
 <html lang="{{ html_locale }}"{% if rtl %} dir="rtl" class="rtl"{% endif %}>
     <head>
         <meta charset="utf-8">
-        <title>{% block title %}{% if request.event %}{{ request.event.name }}{% endif %}{% endblock %} :: pretalx</title>
-        <meta name="title" content="{% block meta_title %}{% endblock %} {% if request.event %} - {{ request.event.name }} {% endif %}pretalx">
+        <title>{% block title %}{% if request.event %}{{ request.event.name }}{% endif %}{% endblock %} :: eventyay</title>
+        <meta name="title" content="{% block meta_title %}{% endblock %} {% if request.event %} - {{ request.event.name }} {% endif %}eventyay">
         <meta name="description" content="{% block meta_description %}{% if request.event %}Schedule, talks and talk submissions for {{ reqeuest.event.name }}{% else %}Talks and talk submissions by pretalx{% endif %}{% endblock %}">
         <meta name="application-name" content="pretalx">
         <meta name="generator" content="pretalx">
@@ -54,7 +54,7 @@
                 </li>
             </ul>
             <a class="navbar-brand d-none d-md-block" href="/orga/">
-                <img loading="lazy" src="{% static "common/img/icons/icon.svg" %}" alt="{% translate "The pretalx logo" %}"> pretalx
+                <img loading="lazy" src="{% static "common/img/icons/icon.svg" %}" alt="{% translate "The eventyay logo" %}"> eventyay
             </a>
             <div class="navbar-collapse event-dropdown" id="navbartoggle">
                 <ul class="navbar-nav mr-auto flip">

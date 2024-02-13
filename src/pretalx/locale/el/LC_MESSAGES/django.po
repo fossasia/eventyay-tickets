@@ -4367,7 +4367,7 @@ msgstr "Το blog του pretalx (ανακοινώσεις κυκλοφορία�
 
 #: pretalx/orga/templates/orga/auth/base.html:23
 #: pretalx/orga/templates/orga/base.html:57
-msgid "The pretalx logo"
+msgid "The eventyay logo"
 msgstr "Το λογότυπο του pretalx"
 
 #: pretalx/orga/templates/orga/auth/login.html:4

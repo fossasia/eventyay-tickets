@@ -4172,7 +4172,7 @@ msgstr "pretalx 部落格（新版本釋出宣告、新功能宣告）"
 
 #: pretalx/orga/templates/orga/auth/base.html:23
 #: pretalx/orga/templates/orga/base.html:57
-msgid "The pretalx logo"
+msgid "The eventyay logo"
 msgstr "Pretalx 圖標"
 
 #: pretalx/orga/templates/orga/auth/login.html:4
