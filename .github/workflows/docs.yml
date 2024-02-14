@@ -2,11 +2,11 @@ name: Documentation
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
     paths:
       - 'doc/**'
   pull_request:
-    branches: [ main ]
+    branches: [ master ]
     paths-ignore:
       - 'doc/**'
 

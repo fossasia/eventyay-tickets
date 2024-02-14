@@ -4,7 +4,7 @@ on:
   workflow_dispatch: # allows to be run manually
   push:
     branches:
-      - 'main'
+      - 'master'
       - 'development'
 jobs:
   docker:
