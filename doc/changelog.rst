@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`orga:sidebar` Renamed CfP to Call for Speakers for clarity
 - :feature:`orga,1619` Organisers can now add new team members in bulk instead of one by one.
 - :feature:`orga:schedule,1587` A hint now shows when users click the "New break" box, informing them that they have to drag it to the schedule instead.
 - :feature:`orga:schedule` Breaks now also show their start time and duration in the schedule editor.
