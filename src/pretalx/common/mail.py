@@ -91,7 +91,7 @@ def mail_send_task(
         sender = formataddr((str(event.name), sender or settings.MAIL_FROM))
 
     else:
-        sender = formataddr(("pretalx", settings.MAIL_FROM))
+        sender = formataddr(("eventyay", settings.MAIL_FROM))
         backend = get_connection(fail_silently=False)
 
     email = EmailMultiAlternatives(
