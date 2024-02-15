@@ -7,6 +7,7 @@ project that you intend to continue to install from PyPI will lead to no
 end of headaches, so by this very dirty hack, we're removing the
 warnigns from user-facing output.
 """
+
 import sys
 
 from django.core.management.base import OutputWrapper

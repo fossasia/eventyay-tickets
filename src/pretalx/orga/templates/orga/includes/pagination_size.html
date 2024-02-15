@@ -1,0 +1,12 @@
+{% load url_replace %}
+{% load i18n %}
+
+<a
+  href="?{% url_replace request "page_size" pagination_size "page" "1" %}"
+  {% if page_size == pagination_size %}class="font-weight-bold"{% endif %}>
+  {% if pagination_size == 100_000 %}
+    {% translate "All" %}
+  {% else %}
+    {{ pagination_size }}
+  {% endif %}
+</a>

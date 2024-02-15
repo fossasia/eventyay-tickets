@@ -21,8 +21,8 @@
             <thead>
                 <tr>
                     <th>{% translate "Track" %}</th>
-                    <th>{% translate "Proposals" %}</th>
                     <th>{% translate "Color" %}</th>
+                    <th class="numeric">{% translate "Proposals" %}</th>
                     <th></th>
                 </tr>
             </thead>
@@ -30,19 +30,19 @@
                 {% for track in tracks %}
                     <tr>
                         <td>
-                            {% if track.requires_access_code %}
-                                <i class="fa fa-lock" title="{% translate "Requires access code" %}"></i>
-                            {% endif %}
                             <a href="{{ track.urls.edit }}">
                                 {{ track.name }}
                             </a>
+                            {% if track.requires_access_code %}
+                                <i class="fa fa-lock ml-1" title="{% translate "Requires access code" %}"></i>
+                            {% endif %}
                         </td>
-                        <td class="pl-4">
+                        <td><div class="color-square" style="background: {{ track.color }}"></div></td>
+                        <td class="numeric">
                             <a href="{{ request.event.orga_urls.submissions }}?track={{ track.id }}">
                                 {{ track.submissions.all.count }}
                             </a>
                         </td>
-                        <td><div class="color-square" style="background: {{ track.color }}"></div></td>
                         <td class="action-column">
                             <a href="{{ track.urls.prefilled_cfp.full }}"
                                title="{% translate 'Go to pre-filled CfP form' %}"

@@ -185,9 +185,11 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
                 {
                     "large": active_reviewers,
                     "small": _("Active reviewers"),
-                    "url": self.request.event.organiser.orga_urls.teams
-                    if can_change_settings
-                    else None,
+                    "url": (
+                        self.request.event.organiser.orga_urls.teams
+                        if can_change_settings
+                        else None
+                    ),
                     "priority": 60,
                 }
             )

@@ -13,6 +13,7 @@ This command also handles frontend translations.
 
 Yes, it's hacky, but have you tried managing symlinks instead?
 """
+
 import shutil
 import subprocess
 from importlib import import_module

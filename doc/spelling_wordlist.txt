@@ -1,3 +1,4 @@
+anonymisation
 anonymise
 anonymised
 Ansible
@@ -52,6 +53,7 @@ middleware
 mixin
 namespace
 nginx
+npm
 plugin
 plugins
 prepend

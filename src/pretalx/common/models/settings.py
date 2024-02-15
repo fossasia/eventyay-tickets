@@ -20,12 +20,11 @@ class GlobalSettings(GlobalSettingsBase):
         if INSTANCE_IDENTIFIER:
             return INSTANCE_IDENTIFIER
 
-        instance_identifier = self.settings.get("instance_identifier")
-        if not instance_identifier:
+        try:
+            INSTANCE_IDENTIFIER = uuid.UUID(self.settings.get("instance_identifier"))
+        except (TypeError, ValueError):
             INSTANCE_IDENTIFIER = uuid.uuid4()
-            self.settings.set("instance_identifier", str(instance_identifier))
-        else:
-            INSTANCE_IDENTIFIER = uuid.UUID(instance_identifier)
+            self.settings.set("instance_identifier", str(INSTANCE_IDENTIFIER))
         return INSTANCE_IDENTIFIER
 
 

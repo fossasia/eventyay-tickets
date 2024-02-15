@@ -24,11 +24,15 @@ def render_label(
         builder,
         tag="label",
         attrs=mark_safe(flatatt(attrs)) if attrs else "",
-        opt=mark_safe(
-            '<br><span class="optional">{}</span>'.format(pgettext("form", "Optional"))
-        )
-        if optional
-        else "",
+        opt=(
+            mark_safe(
+                '<br><span class="optional">{}</span>'.format(
+                    pgettext("form", "Optional")
+                )
+            )
+            if optional
+            else ""
+        ),
         content=text_value(content),
     )
 

@@ -24,7 +24,7 @@ variant                               string                     The kind of que
 target                                string                     The question scope. Can be ``speaker`` (each speaker is asked once), ``submission`` (speakers are asked per submission), or ``reviewer`` (the question is used in the review process).
 question                              multi-lingual string       The question
 help_text                             multi-lingual string       Additional text shown to help with the question. Can be Markdown.
-question_required                     string					 Can be any of ``optional``, ``required``, ``after_deadline``, in which case the deadline field will be filled. 
+question_required                     string					 Can be any of ``optional``, ``required``, ``after_deadline``, in which case the deadline field will be filled.
 deadline                              datetime                   The deadline after which speakers are required to answer the question.
 required                              boolean					 Is the question required to be answered at the moment (based on ``question_required`` and the deadline)?
 read_only                              boolean					 Is the question read-only at the moment (based on ``freeze_after``)?
@@ -108,10 +108,11 @@ Endpoints
    :param event: The ``slug`` field of the event to fetch
    :query page: The page number in case of a multi-page result set, default is 1
    :query q: Search for a string in the questions
-   :query target: Filter for questions of a specific target kind, eg reviewer questions
-   :query variant: Filter for questions of a specific variant, eg number questions
+   :query target: Filter for questions of a specific target kind, e.g. reviewer questions
+   :query variant: Filter for questions of a specific variant, e.g. number questions
    :query is_public: Filter for questions that are or are not public
    :query is_visible_to_reviewers: Filter for questions that are or are not visible to reviewers
+
    The page number in case of a multi-page result set, default is 1
 
 .. http:get:: /api/events/(event)/questions/{id}/

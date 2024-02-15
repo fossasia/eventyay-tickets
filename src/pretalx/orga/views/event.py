@@ -1,5 +1,3 @@
-import json
-from contextlib import suppress
 from pathlib import Path
 
 from csp.decorators import csp_update
@@ -9,9 +7,7 @@ from django.contrib.auth import login
 from django.core.exceptions import ValidationError
 from django.core.files.storage import FileSystemStorage
 from django.db import transaction
-from django.db.models import Q
 from django.forms.models import inlineformset_factory
-from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.decorators import method_decorator
@@ -631,10 +627,12 @@ class EventWizard(PermissionRequired, SensibleBackWizardMixin, SessionWizardView
 
     @transaction.atomic()
     def done(self, form_list, *args, **kwargs):
-        steps = {
-            step: self.get_cleaned_data_for_step(step)
-            for step in ("initial", "basics", "timeline", "display", "copy")
-        }
+        steps = {}
+        for step in ("initial", "basics", "timeline", "display", "copy"):
+            try:
+                steps[step] = self.get_cleaned_data_for_step(step)
+            except KeyError:
+                steps[step] = {}
 
         with scopes_disabled():
             event = Event.objects.create(
@@ -715,43 +713,6 @@ class EventDelete(PermissionRequired, DeleteView):
     def form_valid(self, request, *args, **kwargs):
         self.get_object().shred()
         return redirect("/orga/")
-
-
-def event_list(request):
-    query = json.dumps(str(request.GET.get("query", "")))[1:-1]
-    page = 1
-    with suppress(ValueError):
-        page = int(request.GET.get("page", "1"))
-    qs = (
-        request.user.get_events_with_any_permission()
-        .filter(
-            Q(name__icontains=query)
-            | Q(slug__icontains=query)
-            | Q(organiser__name__icontains=query)
-            | Q(organiser__slug__icontains=query)
-        )
-        .order_by("-date_from")
-    )
-
-    total = qs.count()
-    pagesize = 20
-    offset = (page - 1) * pagesize
-    doc = {
-        "results": [
-            {
-                "id": event.pk,
-                "slug": event.slug,
-                "organiser": str(event.organiser.name),
-                "name": str(event.name),
-                "text": str(event.name),
-                "date_range": event.get_date_range_display(),
-                "url": event.orga_urls.base,
-            }
-            for event in qs.select_related("organiser")[offset : offset + pagesize]
-        ],
-        "pagination": {"more": total >= (offset + pagesize)},
-    }
-    return JsonResponse(doc)
 
 
 @method_decorator(csp_update(SCRIPT_SRC="'self' 'unsafe-eval'"), name="dispatch")

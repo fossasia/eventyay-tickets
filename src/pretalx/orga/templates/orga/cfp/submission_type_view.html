@@ -21,8 +21,8 @@
             <thead>
                 <tr>
                     <th>{% translate "Session type" %}</th>
-                    <th>{% translate "Proposals" %}</th>
-                    <th>{% translate "Default duration" %}</th>
+                    <th class="numeric">{% translate "Proposals" %}</th>
+                    <th class="numeric">{% translate "Default duration" %}</th>
                     <th></th>
                 </tr>
             </thead>
@@ -37,12 +37,12 @@
                                 {{ type.name }}
                             </a>
                         </td>
-                        <td class="pl-4">
+                        <td class="pl-4 numeric">
                             <a href="{{ request.event.orga_urls.submissions }}?submission_type={{ type.id }}">
                                 {{ type.submissions.all.count }}
                             </a>
                         </td>
-                        <td>{{ type.default_duration }}</td>
+                        <td class="numeric">{{ type.default_duration }}</td>
                         <td class="action-column">
                             {% if request.event.cfp.default_type == type %}
                                 <a><i class="fa fa-check"></i> {% translate "Default" %}</a>

@@ -4,6 +4,7 @@ from collections import defaultdict
 from csp.decorators import csp_update
 from django.contrib import messages
 from django.db import transaction
+from django.db.models import Count
 from django.db.models.deletion import ProtectedError
 from django.forms.models import inlineformset_factory
 from django.http import JsonResponse
@@ -102,7 +103,9 @@ class CfPQuestionList(EventPermissionRequired, TemplateView):
 
     @context
     def questions(self):
-        return Question.all_objects.filter(event=self.request.event)
+        return Question.all_objects.filter(event=self.request.event).annotate(
+            answer_count=Count("answers")
+        )
 
 
 class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
@@ -174,9 +177,11 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         )
         return formset_class(
             self.request.POST if self.request.method == "POST" else None,
-            queryset=AnswerOption.objects.filter(question=self.object)
-            if self.object
-            else AnswerOption.objects.none(),
+            queryset=(
+                AnswerOption.objects.filter(question=self.object)
+                if self.object
+                else AnswerOption.objects.none()
+            ),
             event=self.request.event,
         )
 
@@ -260,8 +265,25 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     def form_valid(self, form):
         form.instance.event = self.request.event
         self.instance = form.instance
-        result = super().form_valid(form)
+        # Last-ditch validation: We can't allow both a question option upload
+        # AND changes in the question option formset.
         if form.cleaned_data.get("variant") in ("choices", "multiple_choice"):
+            changed_options = [
+                form.changed_data for form in self.formset if form.has_changed()
+            ]
+            if form.cleaned_data.get("options") and changed_options:
+                messages.error(
+                    self.request,
+                    _(
+                        "You cannot change the question options and upload a question option file at the same time."
+                    ),
+                )
+                return self.form_invalid(form)
+        result = super().form_valid(form)
+        if form.cleaned_data.get("variant") in (
+            "choices",
+            "multiple_choice",
+        ) and not form.cleaned_data.get("options"):
             formset = self.save_formset(self.instance)
             if not formset:
                 return self.get(self.request, *self.args, **self.kwargs)
@@ -397,7 +419,7 @@ class SubmissionTypeList(EventPermissionRequired, PaginationMixin, ListView):
     permission_required = "orga.view_submission_type"
 
     def get_queryset(self):
-        return self.request.event.submission_types.all()
+        return self.request.event.submission_types.all().order_by("default_duration")
 
 
 class SubmissionTypeDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
@@ -572,7 +594,7 @@ class AccessCodeList(EventPermissionRequired, PaginationMixin, ListView):
     permission_required = "orga.view_access_codes"
 
     def get_queryset(self):
-        return self.request.event.submitter_access_codes.all()
+        return self.request.event.submitter_access_codes.all().order_by("valid_until")
 
 
 class AccessCodeDetail(PermissionRequired, CreateOrUpdateView):
@@ -593,6 +615,12 @@ class AccessCodeDetail(PermissionRequired, CreateOrUpdateView):
     def get_form_kwargs(self):
         result = super().get_form_kwargs()
         result["event"] = self.request.event
+        if result.get("instance"):
+            return result
+        if track := self.request.GET.get("track"):
+            track = self.request.event.tracks.filter(pk=track).first()
+            if track:
+                result["initial"]["track"] = track
         return result
 
     def get_permission_object(self):
@@ -680,18 +708,20 @@ class CfPFlowEditor(EventPermissionRequired, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context[
-            "current_configuration"
-        ] = self.request.event.cfp_flow.get_editor_config(json_compat=True)
+        context["current_configuration"] = (
+            self.request.event.cfp_flow.get_editor_config(json_compat=True)
+        )
         context["event_configuration"] = {
             "header_pattern": self.request.event.display_settings["header_pattern"]
             or "bg-primary",
-            "header_image": self.request.event.header_image.url
-            if self.request.event.header_image
-            else None,
-            "logo_image": self.request.event.logo.url
-            if self.request.event.logo
-            else None,
+            "header_image": (
+                self.request.event.header_image.url
+                if self.request.event.header_image
+                else None
+            ),
+            "logo_image": (
+                self.request.event.logo.url if self.request.event.logo else None
+            ),
             "primary_color": self.request.event.get_primary_color(),
             "locales": self.request.event.locales,
         }

@@ -18,8 +18,8 @@
             <thead>
                 <tr>
                     <th>{% translate "Tag" %}</th>
-                    <th>{% translate "Proposals" %}</th>
                     <th>{% translate "Color" %}</th>
+                    <th class="numeric">{% translate "Proposals" %}</th>
                     <th></th>
                 </tr>
             </thead>
@@ -31,10 +31,10 @@
                                 {{ tag.tag }}
                             </a>
                         </td>
-                        <td class="pl-4">
+                        <td><div class="color-square" style="background: {{ tag.color }}"></div></td>
+                        <td class="numeric">
                             {{ tag.submissions.all.count }}
                         </td>
-                        <td><div class="color-square" style="background: {{ tag.color }}"></div></td>
                         <td class="action-column">
                             <a href="{{ tag.urls.edit }}"
                                class="btn btn-sm btn-info">

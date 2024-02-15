@@ -28,6 +28,7 @@ Exporters
 ---------
 
 .. automodule:: pretalx.common.signals
+   :no-index:
    :members: register_data_exporters
 
 
@@ -38,6 +39,7 @@ Organiser area
    :members: nav_event, nav_global, html_head, activate_event, nav_event_settings, event_copy_data
 
 .. automodule:: pretalx.common.signals
+   :no-index:
    :members: activitylog_display, activitylog_object_link
 
 Display

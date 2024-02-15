@@ -1,5 +1,4 @@
 import datetime as dt
-from importlib import import_module
 
 from django.conf import settings
 from django.contrib import messages
@@ -9,6 +8,7 @@ from django.http import HttpRequest, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.decorators import method_decorator
+from django.utils.module_loading import import_string
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
@@ -20,7 +20,7 @@ from pretalx.common.phrases import phrases
 from pretalx.common.views import GenericLoginView, GenericResetView
 from pretalx.person.models import User
 
-SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
+SessionStore = import_string(f"{settings.SESSION_ENGINE}.SessionStore")
 
 
 class LogoutView(View):

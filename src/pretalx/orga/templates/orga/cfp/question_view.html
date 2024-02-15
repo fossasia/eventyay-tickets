@@ -29,8 +29,9 @@
                 <tr>
                     <th>{% translate "Question" %}</th>
                     <th>{% translate "Target" %}</th>
-                    <th>{% translate "required" %}</th>
-                    <th>{% translate "active" %}</th>
+                    <th class="text-center">{% translate "required" %}</th>
+                    <th class="text-center">{% translate "active" %}</th>
+                    <th class="numeric">{% translate "Answers" %}</th>
                     <th></th>
                 </tr>
             </thead>
@@ -45,16 +46,19 @@
                         <td>
                             {{ question.get_target_display }}
                         </td>
-                        <td>
+                        <td class="text-center">
                             <i class="fa fa-{{ question.required|yesno:'check-circle text-success,times-circle text-danger' }}">
                             </i>
                             {% if question.question_required == "require after" or question.freeze_after%}
                                 <i class="fa fa-clock-o" title="{% translate "This question's availability depends on a deadline." %}"> </i>
                             {% endif %}
                         </td>
-                        <td>
+                        <td class="text-center">
                             <i class="fa fa-{{ question.active|yesno:'check-circle text-success,times-circle text-danger' }}">
                             </i>
+                        </td>
+                        <td class="numeric">
+                            {{ question.answer_count }}
                         </td>
                         <td class="action-column">
                             {% include "orga/includes/order_object.html" with object=question %}

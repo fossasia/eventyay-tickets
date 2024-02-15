@@ -1,5 +1,6 @@
 import json
 import random
+import uuid
 from contextlib import suppress
 from hashlib import md5
 from urllib.parse import urljoin
@@ -188,6 +189,11 @@ class User(PermissionsMixin, GenerateCode, FileCleanupMixin, AbstractBaseUser):
                 profile.save()
             return profile
 
+    def get_locale_for_event(self, event):
+        if self.locale in event.locales:
+            return self.locale
+        return event.locale
+
     def log_action(
         self, action: str, data: dict = None, person=None, orga: bool = False
     ):
@@ -278,6 +284,10 @@ class User(PermissionsMixin, GenerateCode, FileCleanupMixin, AbstractBaseUser):
             self.delete()
 
     shred.alters_data = True
+
+    @cached_property
+    def guid(self) -> str:
+        return uuid.uuid5(uuid.NAMESPACE_URL, f"acct:{self.email.strip()}").__str__()
 
     @cached_property
     def gravatar_parameter(self) -> str:

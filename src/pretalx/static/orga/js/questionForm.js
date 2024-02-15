@@ -1,5 +1,4 @@
 function question_page_toggle_view() {
-  console.log("yeah")
   const variant = document.querySelector("#id_variant").value
   setVisibility(
     "#answer-options",
@@ -28,9 +27,25 @@ function question_page_toggle_target_view() {
   )
 }
 
+function question_page_toggle_deadline() {
+    const deadline = document.querySelector("#id_deadline");
+    const deadlineWrapper = deadline.closest(".form-group");
+    const deadlineRequired = document.querySelector("#id_question_required_2");
+
+    if (deadlineRequired.checked) {
+        setVisibility(deadlineWrapper, true)
+        deadline.setAttribute("required", "required")
+    }
+    else {
+        setVisibility(deadlineWrapper, false)
+        deadline.removeAttribute("required")
+    }
+}
+
 function setVisibility(element, value) {
   if (typeof element === "string") {
-    element = document.querySelector(element);
+    document.querySelectorAll(element).forEach(e => setVisibility(e, value))
+    return
   }
   if (element) {
     if (value) {
@@ -47,25 +62,6 @@ document.addEventListener("DOMContentLoaded", function() {
     document.querySelector("#id_target").addEventListener("change", question_page_toggle_target_view)
     question_page_toggle_target_view()
 
-    let deadline = $("#id_deadline")
-    /* require after deadline case */
-    if ($("#id_question_required_0, #id_question_required_1").is(':checked')) {
-        deadline.attr("disabled", true);
-        deadline.attr("required", false);
-    }
-    $("#id_question_required_0, #id_question_required_1").click(function () {
-        deadline.val("");
-        deadline.attr("disabled", true);
-        deadline.attr("required", false);
-    });
-    /* always required and always optional cases */
-    if ($("#id_question_required_2").is(':checked')) {
-        deadline.attr("disabled", false);
-        deadline.attr("required", true);
-    }
-
-    $("#id_question_required_2").click(function () {
-        deadline.attr("disabled", false);
-        deadline.attr("required", true);
-    });
+    document.querySelectorAll("#id_question_required input").forEach(e => e.addEventListener("change", question_page_toggle_deadline))
+    question_page_toggle_deadline()
 })

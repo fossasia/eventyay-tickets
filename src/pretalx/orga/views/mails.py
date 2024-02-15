@@ -336,13 +336,13 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
                 with language(locale):
                     context_dict = TolerantDict()
                     for k, v in form.get_valid_placeholders().items():
-                        context_dict[
-                            k
-                        ] = '<span class="placeholder" title="{}">{}</span>'.format(
-                            _(
-                                "This value will be replaced based on dynamic parameters."
-                            ),
-                            v.render_sample(self.request.event),
+                        context_dict[k] = (
+                            '<span class="placeholder" title="{}">{}</span>'.format(
+                                _(
+                                    "This value will be replaced based on dynamic parameters."
+                                ),
+                                v.render_sample(self.request.event),
+                            )
                         )
 
                     subject = bleach.clean(

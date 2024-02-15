@@ -5,21 +5,17 @@ from urllib.parse import quote
 from django.conf import settings
 from django.db import models, transaction
 from django.db.utils import DatabaseError
-from django.template.loader import get_template
-from django.utils.formats import get_format
 from django.utils.functional import cached_property
 from django.utils.timezone import now
-from django.utils.timezone import override as tzoverride
 from django.utils.translation import gettext_lazy as _
-from django.utils.translation import override
 from i18nfield.fields import I18nTextField
 
 from pretalx.agenda.tasks import export_schedule_html
-from pretalx.common.context_processors import get_day_month_date_format
 from pretalx.common.mixins.models import PretalxModel
 from pretalx.common.phrases import phrases
 from pretalx.common.urls import EventUrls
 from pretalx.person.models import SpeakerProfile, User
+from pretalx.schedule.notifications import render_notifications
 from pretalx.schedule.signals import schedule_release
 from pretalx.submission.models import SubmissionStates
 
@@ -54,7 +50,7 @@ class Schedule(PretalxModel):
 
     class urls(EventUrls):
         public = "{self.event.urls.schedule}v/{self.url_version}/"
-        widget_data = "{public}widget.json"
+        widget_data = "{public}widgets/schedule.json"
         nojs = "{public}nojs"
 
     @transaction.atomic
@@ -162,7 +158,8 @@ class Schedule(PretalxModel):
     @cached_property
     def scheduled_talks(self):
         """Returns all :class:`~pretalx.schedule.models.slot.TalkSlot` objects
-        that have been scheduled."""
+        that have been scheduled and are visible in the schedule (that is, have
+        been confirmed at the time of release)."""
         return (
             self.talks.select_related(
                 "submission",
@@ -573,29 +570,11 @@ class Schedule(PretalxModel):
         """A list of unsaved :class:`~pretalx.mail.models.QueuedMail` objects
         to be sent on schedule release."""
         mails = []
-        date_formats = {}
         for speaker, data in self.speakers_concerned.items():
-            locale = (
-                speaker.locale
-                if speaker.locale in self.event.locales
-                else self.event.locale
+            locale = speaker.get_locale_for_event(self.event)
+            notifications = render_notifications(
+                data, event=self.event, speaker=speaker
             )
-            with override(locale), tzoverride(self.event.tz):
-                date_format = date_formats.get(locale)
-                if not date_format:
-                    date_format = (
-                        get_day_month_date_format() + ", " + get_format("TIME_FORMAT")
-                    )
-                    date_formats[locale] = date_format
-                notifications = get_template(
-                    "schedule/speaker_notification.txt"
-                ).render(
-                    {
-                        "speaker": speaker,
-                        "START_DATE_FORMAT": date_format,
-                        **data,
-                    }
-                )
             slots = list(data.get("create") or []) + [
                 talk["new_slot"] for talk in (data.get("update") or [])
             ]
@@ -665,17 +644,19 @@ class Schedule(PretalxModel):
                     {
                         "code": talk.submission.code if talk.submission else None,
                         "id": talk.id,
-                        "title": talk.submission.title
-                        if talk.submission
-                        else talk.description,
-                        "abstract": talk.submission.abstract
-                        if talk.submission
-                        else None,
-                        "speakers": [
-                            speaker.code for speaker in talk.submission.speakers.all()
-                        ]
-                        if talk.submission
-                        else None,
+                        "title": (
+                            talk.submission.title
+                            if talk.submission
+                            else talk.description
+                        ),
+                        "abstract": (
+                            talk.submission.abstract if talk.submission else None
+                        ),
+                        "speakers": (
+                            [speaker.code for speaker in talk.submission.speakers.all()]
+                            if talk.submission
+                            else None
+                        ),
                         "track": talk.submission.track_id if talk.submission else None,
                         "start": talk.local_start,
                         "end": talk.local_end,

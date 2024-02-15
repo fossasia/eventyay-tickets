@@ -66,9 +66,9 @@ class EventPermissionMiddleware:
                     request.is_reviewer = event.teams.filter(
                         members__in=[request.user], is_reviewer=True
                     ).exists()
-                    request.user.team_permissions[
-                        event.slug
-                    ] = request.user.get_permissions_for_event(event)
+                    request.user.team_permissions[event.slug] = (
+                        request.user.get_permissions_for_event(event)
+                    )
 
     def _handle_orga_url(self, request, url):
         if request.uses_custom_domain:

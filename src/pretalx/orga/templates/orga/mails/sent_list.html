@@ -24,7 +24,7 @@
                         <a href="?{% url_replace request 'sort' '-to' %}"><i class="fa fa-caret-up" title="{% translate "Sort by recipient (z-a)" %}"></i></a>
                     </th>
                     <th></th>
-                    <th>
+                    <th class="numeric">
                         {% translate "Sent" %}
                         <a href="?{% url_replace request 'sort' '-sent' %}"><i class="fa fa-caret-down" title="{% translate "Sort by sending time (most recent first)" %}"></i></a>
                         <a href="?{% url_replace request 'sort' 'sent' %}"><i class="fa fa-caret-up" title="{% translate "Sort by sending time (earliest first)" %}"></i></a>
@@ -66,7 +66,7 @@
                                 {% endif %}
                             {% endif %}
                         </td>
-                        <td>
+                        <td class="numeric">
                             {{ mail.sent }}
                         </td>
                     </tr>

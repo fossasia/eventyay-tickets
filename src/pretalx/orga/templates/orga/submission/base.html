@@ -86,7 +86,16 @@
                     <details class="dropdown">
                         <summary class="btn btn-primary">{% translate "Links" %} <i class="fa fa-caret-down"></i></summary>
                         <ul class="dropdown-content dropdown-content-s{% if rtl %}e{% else %}w{% endif %}">
-                            {% if submission.state == "confirmed" %}<li><a href="{{ submission.urls.public.full }}" class="dropdown-item" target=_blank>{% translate "Public link" %}</a></li>{% endif %}
+                            {% if is_publicly_visible or submission.state == "accepted" or submission.state == "confirmed" %}
+                                <li>
+                                    <a href="{{ submission.urls.public.full }}" class="dropdown-item" target=_blank>
+                                        {% translate "Public link" %}
+                                        {% if not is_publicly_visible %}
+                                            ({% translate "not public yet" %})
+                                        {% endif %}
+                                    </a>
+                                </li>
+                            {% endif %}
                             {% if can_view_speakers %}<li><a href="{{ submission.urls.review.full }}" class="dropdown-item" target=_blank>{% translate "Secret public link" %}</a></li>{% endif %}
                         </ul>
                     </details>

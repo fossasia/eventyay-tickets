@@ -9,6 +9,7 @@ from django.core.management.base import CommandError
 from django.test import override_settings
 from django.urls import reverse
 from django_scopes import scope
+from jsonschema import validate
 from lxml import etree
 
 from pretalx.agenda.tasks import export_schedule_html
@@ -37,12 +38,33 @@ def test_schedule_xsd_is_up_to_date():
     assert response.data.decode() == schema_content
 
 
+@pytest.mark.skipif(
+    "CI" not in os.environ or not os.environ["CI"],
+    reason="No need to bother with this outside of CI.",
+)
+def test_schedule_json_schema_is_up_to_date():
+    """If this test fails:
+
+    http -d https://raw.githubusercontent.com/voc/schedule/master/validator/json/schema.json >! tests/fixtures/schedule.json
+    """
+    http = urllib3.PoolManager()
+    response = http.request(
+        "GET",
+        "https://raw.githubusercontent.com/voc/schedule/master/validator/json/schema.json",
+    )
+    assert response.status == 200
+    path = Path(__file__).parent / "../fixtures/schedule.json"
+    with open(path) as schema:
+        schema_content = schema.read()
+    assert response.data.decode() == schema_content
+
+
 @pytest.mark.django_db
 def test_schedule_frab_xml_export(
     slot,
     client,
     django_assert_max_num_queries,
-    schedule_schema,
+    schedule_schema_xml,
     break_slot,
 ):
     with django_assert_max_num_queries(11):
@@ -60,7 +82,7 @@ def test_schedule_frab_xml_export(
     assert slot.submission.title in content
     assert slot.submission.urls.public.full() in content
 
-    parser = etree.XMLParser(schema=schedule_schema)
+    parser = etree.XMLParser(schema=schedule_schema_xml)
     etree.fromstring(
         response.content, parser
     )  # Will raise if the schedule does not match the schema
@@ -105,8 +127,9 @@ def test_schedule_frab_json_export(
     client,
     django_assert_max_num_queries,
     orga_user,
+    schedule_schema_json,
 ):
-    with django_assert_max_num_queries(12):
+    with django_assert_max_num_queries(13):
         regular_response = client.get(
             reverse(
                 "agenda:export.schedule.json",
@@ -115,7 +138,7 @@ def test_schedule_frab_json_export(
             follow=True,
         )
     client.force_login(orga_user)
-    with django_assert_max_num_queries(22):
+    with django_assert_max_num_queries(23):
         orga_response = client.get(
             reverse(
                 "agenda:export.schedule.json",
@@ -140,6 +163,9 @@ def test_schedule_frab_json_export(
     assert orga_content["schedule"]
 
     assert regular_content != orga_content
+
+    validate(instance=regular_content, schema=schedule_schema_json)
+    validate(instance=orga_content, schema=schedule_schema_json)
 
 
 @pytest.mark.django_db
@@ -178,7 +204,7 @@ def test_schedule_ical_export(slot, client, django_assert_max_num_queries):
 
 @pytest.mark.django_db
 def test_schedule_single_ical_export(slot, client, django_assert_max_num_queries):
-    with django_assert_max_num_queries(12):
+    with django_assert_max_num_queries(13):
         response = client.get(slot.submission.urls.ical, follow=True)
     assert response.status_code == 200
 
@@ -214,7 +240,7 @@ def test_schedule_export_nonpublic(
 def test_schedule_export_public(exporter, slot, client, django_assert_max_num_queries):
     exporter = "feed" if exporter == "feed" else f"export.{exporter}"
 
-    with django_assert_max_num_queries(12):
+    with django_assert_max_num_queries(13):
         response = client.get(
             reverse(f"agenda:{exporter}", kwargs={"event": slot.submission.event.slug}),
             follow=True,

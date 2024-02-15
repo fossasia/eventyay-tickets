@@ -82,12 +82,12 @@ jobs:
       - name: Run checks
         run: python manage.py check --deploy
         working-directory: ./src
-      - name: Compile locales
+      - name: Run checks
         run: python manage.py compilemessages
         working-directory: ./src
       - name: Run tests
         working-directory: ./src
-        run: python -m pytest -nauto -p no:sugar --reruns 3 tests
+        run: python -m pytest -nauto -p no:sugar --reruns 3 --cov-report=term-missing:skip-covered tests
         env:
           PRETALX_CONFIG_FILE: 'tests/ci_${{ matrix.database }}.cfg'
       - name: Show coverage as build info
@@ -102,19 +102,6 @@ jobs:
 
           python -m coverage report
         if: matrix.database == 'postgres' && matrix.python-version == '3.10'
-
-      - name: Create HTML report if tests failed.
-        id: html_report
-        working-directory: ./src
-        run: python -m coverage html
-        if: ${{ failure() }} && matrix.database == 'postgres' && matrix.python-version == '3.10'
-
-      - name: Upload HTML report if tests failed.
-        uses: actions/upload-artifact@v4
-        with:
-          name: html-report
-          path: ./src/htmlcov
-        if: ${{ failure() }} && steps.html_report.conclusion != "skipped"
 
       - name: "Make badge"
         uses: schneegans/dynamic-badges-action@v1.7.0

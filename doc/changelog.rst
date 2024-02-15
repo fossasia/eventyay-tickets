@@ -4,6 +4,19 @@ Release Notes
 =============
 
 - :feature:`orga:sidebar` Renamed CfP to Call for Speakers for clarity
+- :feature:`orga,820` Restricted tracks now link to the page where you can create access codes for that track.
+- :announcement:`admin,1678` Due to its incomplete and complex nature, the ``import_schedule`` admin command has been removed. If you want to import a schedule, despite all the complexities, please use the pretalx-downstream plugin instead.
+- :feature:`orga,1672` The organiser area now has a search box located in the side bar, opened after clicking the event name. It searches all events the current user has full access to (that is, not a limited reviewer account) for events, sessions and speakers.
+- :feature:`orga:review,1633` Resources uploaded or linked by speakers are now shown in the review view (unless anonymous reviews are used, as resources can currently not be anonymised).
+- :feature:`orga:review,1675` In order to make large events more manageable, the review dashboard is now by default paginated to 100 sessions per page. The page size can be adjusted up to showing all sessions as before (and the page size is remembered on a per-user basis).
+- :feature:`orga` The default page size for paginated pages has been increased to 50.
+- :feature:`orga:review` Reviewers can now review all proposals at the same time in bulk, as an alternative to reviewing them one by one.
+- :feature:`orga` Organisers can now upload question options in bulk, which is particularly handy for questions with many options, like country lists.
+- :feature:`orga:email,1351` pretalx now provides two new email placeholders, ``speaker_schedule_new`` (all talks changed in the current schedule, like in the notification email generated on schedule release) and ``speaker_schedule_full`` (a list of **all** scheduled sessions for that user).
+- :bug:`schedule,1666` When building the social media preview card, pretalx would display a session's description rather than its abstract.
+- :bug:`cfp,1660` When setting character limits on text questions, pretalx would count line breaks as two characters.
+- :bug:`orga:submission,1613` The session page dropdown would sometimes include the "public link" even though it wasn't public yet. This has been fixed, and in the case of accepted or confirmed proposals that don't have a public page yet (e.g. because they're not scheduled yet), the link is marked as "public link (not public yet)".
+- :bug:`cfp` When rendering email addresses in Markdown, shorter TLDs won out against longer ones (e.g. .co instead of .com, or .ro instead of .rocks). This was already fixed for normal links, just not for email addresses. Until you update to include this fix, you can instead turn emails into a link yourself: ``[test@example.co](mailto:test@example.co)``.
 - :feature:`orga,1619` Organisers can now add new team members in bulk instead of one by one.
 - :feature:`orga:schedule,1587` A hint now shows when users click the "New break" box, informing them that they have to drag it to the schedule instead.
 - :feature:`orga:schedule` Breaks now also show their start time and duration in the schedule editor.
@@ -50,7 +63,7 @@ Release Notes
 - :bug:`admin,1579` There was a bug in the `pretalx init` command, and also too verbose output.
 - :bug:`orga,1577` The printable proposal cards showed broken characters for anything outside latin1.
 - :bug:`orga` Reordering questions while some of them were inactive could lead to 404 errors.
-- :bug:`orga:submission` pretalx wasn't able to filter out pending state changes from the organiser proposal list.
+- :bug:`orga:submission` pretalx wasn't able to filter pending state changes from the organiser proposal list.
 - :bug:`lang` The schedule editor was not operational with some languages, particularly with different language code versions (pt-BR vs pt_br).
 - :bug:`orga:schedule` The schedule editor would not show some specific time selectors when people expanded the timeline to see five-minute steps.
 - :release:`2023.1.0 <2023-08-30>`

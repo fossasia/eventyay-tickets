@@ -24,7 +24,7 @@ def get_schedule_urls(regex_prefix, name_prefix=""):
             (".json", schedule.ExporterView.as_view(), "export.schedule.json"),
             (".ics", schedule.ExporterView.as_view(), "export.schedule.ics"),
             ("/export/<name>", schedule.ExporterView.as_view(), "export"),
-            ("/widget.json", widget.widget_data, "widget.data"),
+            ("/widgets/schedule.json", widget.widget_data, "widget.data"),
             # Legacy widget data URL, but expected in old widget code.
             # Keep at least until end of 2024, reconsider afterwards.
             ("/widget/v2.json", widget.widget_data, "widget.data.legacy"),

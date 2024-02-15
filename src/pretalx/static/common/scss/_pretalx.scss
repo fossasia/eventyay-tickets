@@ -79,6 +79,15 @@ table tr {
 .table th {
   white-space: nowrap;
 }
+table th.numeric,
+table td.numeric {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+table th.numeric-left,
+table td.numeric-left {
+  font-variant-numeric: tabular-nums;
+}
 .nowrap {
   white-space: nowrap;
 }

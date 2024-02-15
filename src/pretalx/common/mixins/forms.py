@@ -124,9 +124,9 @@ class QuestionFieldsMixin:
                 label=question.question,
                 required=question.required,
                 widget=widget,
-                initial=(initial == "True")
-                if initial
-                else bool(question.default_answer),
+                initial=(
+                    (initial == "True") if initial else bool(question.default_answer)
+                ),
             )
             field.original_help_text = original_help_text
             return field
@@ -245,9 +245,11 @@ class QuestionFieldsMixin:
                 label=question.question,
                 required=question.required,
                 empty_label=None,
-                initial=initial_object.options.first()
-                if initial_object
-                else question.default_answer,
+                initial=(
+                    initial_object.options.first()
+                    if initial_object
+                    else question.default_answer
+                ),
                 disabled=read_only,
                 help_text=help_text,
                 widget=forms.RadioSelect if len(choices) < 4 else None,
@@ -261,9 +263,11 @@ class QuestionFieldsMixin:
                 label=question.question,
                 required=question.required,
                 widget=forms.CheckboxSelectMultiple,
-                initial=initial_object.options.all()
-                if initial_object
-                else question.default_answer,
+                initial=(
+                    initial_object.options.all()
+                    if initial_object
+                    else question.default_answer
+                ),
                 disabled=read_only,
                 help_text=help_text,
             )
@@ -302,9 +306,11 @@ class QuestionFieldsMixin:
                 required=question.required,
                 disabled=read_only,
                 help_text=help_text,
-                initial=dateutil.parser.parse(initial).astimezone(self.event.tz)
-                if initial
-                else None,
+                initial=(
+                    dateutil.parser.parse(initial).astimezone(self.event.tz)
+                    if initial
+                    else None
+                ),
                 widget=forms.DateTimeInput(attrs=attrs),
             )
             field.original_help_text = original_help_text
@@ -331,15 +337,21 @@ class QuestionFieldsMixin:
                 field.answer.save()
         elif v != "" and v is not None and v is not False:
             answer = Answer(
-                review=self.review
-                if field.question.target == QuestionTarget.REVIEWER
-                else None,
-                submission=self.submission
-                if field.question.target == QuestionTarget.SUBMISSION
-                else None,
-                person=self.speaker
-                if field.question.target == QuestionTarget.SPEAKER
-                else None,
+                review=(
+                    self.review
+                    if field.question.target == QuestionTarget.REVIEWER
+                    else None
+                ),
+                submission=(
+                    self.submission
+                    if field.question.target == QuestionTarget.SUBMISSION
+                    else None
+                ),
+                person=(
+                    self.speaker
+                    if field.question.target == QuestionTarget.SPEAKER
+                    else None
+                ),
                 question=field.question,
             )
             self._save_to_answer(field, answer, v)

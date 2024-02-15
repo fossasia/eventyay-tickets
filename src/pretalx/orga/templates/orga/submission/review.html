@@ -112,6 +112,17 @@
                     </div>
                 </div>
             {% endfor %}
+            {% if not anonymise_review and submission.active_resources %}
+                <div class="form-group row">
+                    <label class="col-md-3 col-form-label">{% translate "Resources" %}</label>
+                    <div class="col-md-9 mt-1">
+                        {% for resource in submission.active_resources %}
+                            {% include "agenda/includes/submission_resource.html" %}
+                            {% if not forloop.last %}<br>{% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
             {% if not anonymise_review %}
                 {% for speaker in profiles %}
                     <div class="form-group row">
@@ -196,7 +207,7 @@
                         </div>
                     </div>
                 {% endif %}
-                <div class="submit-group">
+                <div class="submit-group pb-0">
                     <div>
                         {% if form.instance.pk %}
                             <a href="{{ form.instance.urls.delete }}" class="btn btn-lg btn-outline-danger">{% translate "Delete review" %}</a>
@@ -204,11 +215,18 @@
                         <button type="submit" class="btn btn-lg btn-outline-success" name="review_submit" value="save">{% translate "Save" %}</button>
                     </div>
                     <div>
-                        <button type="submit" class="btn btn-lg btn-info" name="review_submit" value="skip_for_now" data-toggle="tooltip" data-placement="bottom" title="{% translate "Go to random next unreviewed proposal, mark this one as skipped" %}">{% translate "Skip for now" %}</button>
-                        {% if not request.event.review_settings.score_mandatory and not request.event.review_settings.text_mandatory %}
-                            <button type="submit" class="btn btn-lg btn-info" name="review_submit" value="abstain" data-toggle="tooltip" data-placement="bottom" title="{% translate "Go to random next unreviewed proposal" %}">{% translate "Abstain" %}</button>
-                        {% endif %}
-                        <button type="submit" class="btn btn-lg btn-success" name="review_submit" value="save_and_next" data-toggle="tooltip" data-placement="bottom" title="{% translate "Go to random next unreviewed proposal" %}">{% translate "Save and next" %}</button>
+                        <div>
+                            <button type="submit" class="btn btn-lg btn-info" name="review_submit" value="skip_for_now" data-toggle="tooltip" data-placement="bottom" title="{% translate "Go to random next unreviewed proposal, mark this one as skipped" %}">{% translate "Skip for now" %}</button>
+                            {% if not request.event.review_settings.score_mandatory and not request.event.review_settings.text_mandatory %}
+                                <button type="submit" class="btn btn-lg btn-info" name="review_submit" value="abstain" data-toggle="tooltip" data-placement="bottom" title="{% translate "Go to random next unreviewed proposal" %}">{% translate "Abstain" %}</button>
+                            {% endif %}
+                            <button type="submit" class="btn btn-lg btn-success" name="review_submit" value="save_and_next" data-toggle="tooltip" data-placement="bottom" title="{% translate "Go to random next unreviewed proposal" %}">{% translate "Save and next" %}</button>
+                        </div>
+                        <div class="text-right">
+                            <small><a href="{{ request.event.orga_urls.reviews }}bulk/">
+                                {% translate "Or review all proposals at once." %}
+                            </a></small>
+                        </div>
                     </div>
                 </div>
             {% endif %}

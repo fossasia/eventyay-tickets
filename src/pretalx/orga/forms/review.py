@@ -1,4 +1,5 @@
 import json
+from contextlib import suppress
 from functools import partial
 
 from django import forms
@@ -39,9 +40,20 @@ class TagsForm(ReadOnlyFlag, forms.ModelForm):
 
 
 class ReviewForm(ReadOnlyFlag, forms.ModelForm):
-    def __init__(self, event, user, *args, instance=None, categories=None, **kwargs):
+    def __init__(
+        self,
+        event,
+        user,
+        *args,
+        instance=None,
+        categories=None,
+        submission=None,
+        **kwargs,
+    ):
         self.event = event
+        self.user = user
         self.categories = categories
+        self.submission = submission
 
         super().__init__(*args, instance=instance, **kwargs)
 
@@ -105,6 +117,10 @@ class ReviewForm(ReadOnlyFlag, forms.ModelForm):
         for category in self.categories:
             yield self[f"score_{category.id}"]
 
+    def get_score_field(self, category):
+        with suppress(KeyError):
+            return self[f"score_{category.id}"]
+
     def clean_text(self):
         text = self.cleaned_data.get("text")
         if not text and self.event.review_settings["text_mandatory"]:
@@ -118,6 +134,8 @@ class ReviewForm(ReadOnlyFlag, forms.ModelForm):
         return score
 
     def save(self, *args, **kwargs):
+        self.instance.submission = self.submission
+        self.instance.user = self.user
         instance = super().save(*args, **kwargs)
         current_scores = []
         for category in self.categories:

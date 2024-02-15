@@ -7,7 +7,7 @@ Answers
 Resource description
 --------------------
 
-The answers resource represents all data collected by organizers via the flexible questions model, that
+The answers resource represents all data collected by organisers via the flexible questions model, that
 allows for nearly arbitrary data collection from speakers or reviewers. The answers endpoint includes
 minimal information on the question answered: just the ID and the question. For further details, please
 refer to the ``questions/`` endpoint.

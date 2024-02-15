@@ -139,9 +139,7 @@ input.password_strength {
   background-color: $brand-primary;
 }
 
-table .form-radio,
-table .form-check,
-table .radio .form-check {
+table .form-check {
   line-height: 1.4;
   margin-top: 2px;
   label:before,
@@ -153,65 +151,67 @@ table .radio .form-check {
 .form-check {
   position: relative;
   padding: 4px 0 4px 36px;
+}
+.form-check label,
+input[type="radio"] + label {
+  cursor: pointer;
+  display: inherit !important;
+  position: relative;
 
-  label {
-    cursor: pointer;
-    display: inherit !important;
-    position: relative;
-
-    &:before,
-    &:after {
-      content: "";
-      position: absolute;
-    }
-
-    &:before {
-      left: 0;
-      width: 24px;
-      height: 24px;
-      background: $offwhite;
-      box-shadow: 0 0 2px $gray-500;
-      margin-left: -34px;
-      border-radius: 4px;
-    }
-
-    &:after {
-      top: 0;
-      left: 4px;
-      width: 16px;
-      height: 16px;
-      margin: 4px 0px 0;
-      opacity: 0;
-      background: $brand-success;
-      margin-left: -34px;
-      border-radius: 2px;
-    }
+  &:before,
+  &:after {
+    content: "";
+    position: absolute;
   }
 
-  input {
-    position: absolute;
-    left: 0px;
+  &:before {
+    left: 0;
+    width: 24px;
+    height: 24px;
+    background: $offwhite;
+    box-shadow: 0 0 2px $gray-500;
+    margin-left: -34px;
+    border-radius: 4px;
+  }
+
+  &:after {
+    top: 0;
+    left: 4px;
+    width: 16px;
+    height: 16px;
+    margin: 4px 0px 0;
     opacity: 0;
-
-    &:checked + label {
-      &:before {
-      }
-
-      &:after {
-        opacity: 1;
-      }
-    }
-    &:focus + label:before {
-      box-shadow: 0 0 0 2px rgba(58, 165, 124, 0.4);
-    }
+    background: $brand-success;
+    margin-left: -34px;
+    border-radius: 2px;
   }
 }
 
-.radio {
-  input {
-    + label:before,
-    + label:after {
-      border-radius: 50% !important;
+.form-check input,
+input[type="radio"] {
+  position: absolute;
+  left: 0px;
+  opacity: 0;
+
+  &:checked + label {
+    &:before {
+    }
+
+    &:after {
+      opacity: 1;
+    }
+  }
+  &:focus + label:before {
+    box-shadow: 0 0 0 2px rgba(58, 165, 124, 0.4);
+  }
+}
+
+input[type="radio"] {
+  + label {
+    margin-left: 36px;
+    &:before,
+    &:after {
+      border-radius: 50%;
     }
   }
 }
@@ -256,11 +256,7 @@ table .form-check .radio label {
   flex-direction: row-reverse;
 }
 table .action-column {
-  display: flex;
-  justify-content: flex-end;
-  .btn {
-    margin-left: 8px;
-  }
+  text-align: right;
 }
 /* fix input group prepend look */
 .input-group-text.input-group-prepend,

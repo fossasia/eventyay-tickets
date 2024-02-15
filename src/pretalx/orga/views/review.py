@@ -26,24 +26,21 @@ from pretalx.orga.forms.review import (
 from pretalx.orga.forms.submission import SubmissionStateChangeForm
 from pretalx.orga.views.submission import BaseSubmissionList
 from pretalx.person.models import User
-from pretalx.submission.forms import QuestionsForm
+from pretalx.submission.forms import QuestionsForm, SubmissionFilterForm
 from pretalx.submission.models import Review, Submission, SubmissionStates
 
 
 class ReviewDashboard(EventPermissionRequired, BaseSubmissionList):
     template_name = "orga/review/dashboard.html"
     permission_required = "orga.view_review_dashboard"
-    paginate_by = None
+    paginate_by = 100
+    max_page_size = 100_000
     usable_states = (
         SubmissionStates.SUBMITTED,
         SubmissionStates.ACCEPTED,
         SubmissionStates.REJECTED,
         SubmissionStates.CONFIRMED,
     )
-    DEFAULT_PAGINATION = None
-
-    def get_paginage_by(self, queryset):
-        return None
 
     def filter_range(self, queryset):
         review_count = self.request.GET.get("review-count") or ","
@@ -66,9 +63,7 @@ class ReviewDashboard(EventPermissionRequired, BaseSubmissionList):
         aggregate_method = self.request.event.review_settings["aggregate_method"]
         # TODO remove mean fallback once we drop Python 3.7
         statistics_method = (
-            statistics.median
-            if aggregate_method == "median"
-            else (statistics.fmean if hasattr(statistics, "fmean") else statistics.mean)
+            statistics.median if aggregate_method == "median" else statistics.fmean
         )
         queryset = (
             self._get_base_queryset(for_review=True)
@@ -262,12 +257,10 @@ class ReviewDashboard(EventPermissionRequired, BaseSubmissionList):
         missing_reviews = Review.find_missing_reviews(
             self.request.event, self.request.user
         )
-        result[
-            "missing_reviews"
-        ] = (
-            missing_reviews.count()
-        )  # Do NOT use len() here! It yields a different result.
+        # Do NOT use len() here! It yields a different result.
+        result["missing_reviews"] = missing_reviews.count()
         result["next_submission"] = missing_reviews[0] if missing_reviews else None
+        result["pagination_sizes"] = [50, 100, 250, 100_000]
         return result
 
     def get_pending(self, request):
@@ -326,12 +319,124 @@ class ReviewDashboard(EventPermissionRequired, BaseSubmissionList):
         return super().get(request, *args, **kwargs)
 
 
+class BulkReview(EventPermissionRequired, TemplateView):
+    template_name = "orga/review/bulk.html"
+    permission_required = "orga.perform_reviews"
+    paginate_by = None
+
+    @context
+    @cached_property
+    def filter_form(self):
+        return SubmissionFilterForm(
+            data=self.request.GET,
+            event=self.request.event,
+            prefix="filter",
+        )
+
+    @context
+    @cached_property
+    def submissions(self):
+        submissions = Review.find_reviewable_submissions(
+            event=self.request.event, user=self.request.user
+        ).prefetch_related("speakers")
+        if self.filter_form.is_valid():
+            submissions = self.filter_form.filter_queryset(submissions)
+        return submissions
+
+    @context
+    @cached_property
+    def show_tracks(self):
+        return (
+            self.request.event.feature_flags["use_tracks"]
+            and self.request.event.tracks.all().count() > 1
+        )
+
+    def get_context_data(self, **kwargs):
+        result = super().get_context_data(**kwargs)
+        missing_reviews = Review.find_missing_reviews(
+            self.request.event, self.request.user
+        )
+        # Do NOT use len() here! It yields a different result.
+        result["missing_reviews"] = missing_reviews.count()
+        result["next_submission"] = missing_reviews[0] if missing_reviews else None
+        return result
+
+    @context
+    @cached_property
+    def categories(self):
+        return (
+            self.request.event.score_categories.all()
+            .filter(active=True)
+            .prefetch_related("limit_tracks", "scores")
+        )
+
+    @context
+    @cached_property
+    def forms(self):
+        own_reviews = {
+            review.submission_id: review
+            for review in self.request.event.reviews.filter(
+                user=self.request.user, submission__in=self.submissions
+            )
+            .select_related("submission")
+            .prefetch_related("scores", "scores__category")
+        }
+        categories = defaultdict(list)
+        for category in self.categories:
+            for track in category.limit_tracks.all():
+                categories[track.pk].append(category)
+            else:
+                categories[None].append(category)
+        return {
+            submission.code: ReviewForm(
+                event=self.request.event,
+                user=self.request.user,
+                submission=submission,
+                read_only=False,
+                instance=own_reviews.get(submission.pk),
+                prefix=f"{submission.code}",
+                categories=(
+                    categories[submission.track_id] if submission.track_id else []
+                )
+                + categories[None],
+                data=(self.request.POST if self.request.method == "POST" else None),
+            )
+            for submission in self.submissions
+        }
+
+    @context
+    @cached_property
+    def table(self):
+        return [
+            {
+                "submission": submission,
+                "form": self.forms[submission.code],
+                "score_fields": [
+                    self.forms[submission.code].get_score_field(category)
+                    for category in self.categories
+                ],
+            }
+            for submission in self.submissions
+        ]
+
+    @transaction.atomic
+    def post(self, request, *args, **kwargs):
+        if not all(form.is_valid() for form in self.forms.values()):
+            messages.error(request, _("There have been errors with your input."))
+            return super().get(request, *args, **kwargs)
+        for form in self.forms.values():
+            if form.has_changed():
+                form.save()
+        messages.success(request, _("Your reviews have been saved."))
+        return super().get(request, *args, **kwargs)
+
+
 class ReviewViewMixin:
     @context
     @cached_property
     def submission(self):
         return get_object_or_404(
-            self.request.event.submissions.prefetch_related("speakers"),
+            self.request.event.submissions.prefetch_related("speakers", "resources"),
             code__iexact=self.kwargs["code"],
         )
 
@@ -487,6 +592,7 @@ class ReviewSubmission(ReviewViewMixin, PermissionRequired, CreateOrUpdateView):
         kwargs = super().get_form_kwargs()
         kwargs["event"] = self.request.event
         kwargs["user"] = self.request.user
+        kwargs["submission"] = self.submission
         kwargs["read_only"] = self.read_only
         kwargs["categories"] = self.score_categories
         return kwargs
@@ -498,8 +604,6 @@ class ReviewSubmission(ReviewViewMixin, PermissionRequired, CreateOrUpdateView):
         if self.tags_form and not self.tags_form.is_valid():
             messages.error(self.request, _("There have been errors with your input."))
             return redirect(self.get_success_url())
-        form.instance.submission = self.submission
-        form.instance.user = self.request.user
         form.save()
         self.qform.review = form.instance
         self.qform.save()

@@ -17,7 +17,7 @@
                 <thead>
                     <tr>
                         <th>{% translate "Name" %}</th>
-                        <th>{% translate "Capacity" %}</th>
+                        <th class="numeric">{% translate "Capacity" %}</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -29,7 +29,7 @@
                                     {{ room.name }}
                                 </a>
                             </td>
-                            <td>{% if room.capacity %}{{ room.capacity }}{% endif %}</td>
+                            <td class="numeric">{% if room.capacity %}{{ room.capacity }}{% endif %}</td>
                             <td class="action-column">
                                 {% include "orga/includes/order_object.html" with object=room %}
                                 <a href="{{ room.urls.edit }}"

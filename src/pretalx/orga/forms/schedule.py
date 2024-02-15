@@ -20,6 +20,10 @@ class ScheduleReleaseForm(I18nHelpText, I18nModelForm):
         self.event = event
         self.fields["version"].required = True
         self.fields["comment"].widget.attrs["rows"] = 4
+        url = self.event.update_template.urls.base
+        self.fields["notify_speakers"].help_text = (
+            f"<a href='{url}'>{_('Email template')}</a>"
+        )
         if not self.event.current_schedule:
             self.fields["comment"].initial = _("We released our first schedule!")
         else:

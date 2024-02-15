@@ -1,0 +1,408 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "$id": "https://c3voc.de/schedule/schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schedule": {
+      "$ref": "#/definitions/Schedule"
+    },
+    "$schema": {
+      "type": "string"
+    },
+    "generator": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        }
+      }
+    }
+  },
+  "required": ["schedule"],
+  "definitions": {
+    "Schedule": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "version": {
+          "type": "string"
+        },
+        "base_url": {
+          "description": "base for relative media URIs in this document",
+          "type": "string",
+          "format": "uri"
+        },
+        "conference": {
+          "$ref": "#/definitions/Conference"
+        },
+        "rooms": false
+      },
+      "required": ["conference", "version"]
+    },
+    "Conference": {
+      "type": "object",
+      "title": "Conference",
+      "required": [
+        "title",
+        "acronym",
+        "days",
+        "daysCount",
+        "start",
+        "end",
+        "timeslot_duration"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "acronym": {
+          "type": "string",
+          "examples": ["36c3", "rc3", "divoc-ptt"],
+          "pattern": "^[a-z0-9_-][a-z0-9_]{3,}(-2[0-9]{3}-[a-z]+)?$"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "start": {
+          "type": "string",
+          "$oneOf": [
+            { "format": "date" },
+            { "format": "date-time" }
+          ]
+        },
+        "end": {
+          "type": "string",
+          "format": "date"
+        },
+        "daysCount": {
+          "type": "integer"
+        },
+        "timeslot_duration": {
+          "type": "string"
+        },
+        "time_zone_name": {
+          "type": "string",
+          "examples": ["Europe/Amsterdam", "Europe/Berlin", "UTC"],
+          "pattern": "^([A-Z][a-z]+/[A-Z][a-z]+)|UTC$"
+        },
+        "logo": {
+          "type": "string",
+          "format": "uri",
+          "$comment": "absolute URL, or relative to base_url"
+        },
+        "colors": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "primary": {
+              "type": "string",
+              "format": "color"
+            },
+            "background": {
+              "type": "string",
+              "format": "color"
+            }
+          }
+        },
+        "keywords" :{
+          "type":"array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "url": {
+          "description": "URL to the conference schedule or public website",
+          "type": "string",
+          "format": "uri"
+        },
+        "tracks" :{
+          "type":"array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "color": {
+                "type": "string",
+                "format": "color"
+              }
+            }
+          }
+        },
+        "rooms": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Room"
+          }
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "days": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Day"
+          }
+        }
+      }
+    },
+    "Day": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "index": {
+          "type": "integer"
+        },
+        "date": {
+          "type": "string",
+          "format": "date"
+        },
+        "day_start": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "day_end": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "rooms": {
+          "type": "object",
+          "patternProperties": {
+            ".*": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Event"
+              }
+            }
+          }
+        }
+      },
+      "required": ["date", "day_end", "day_start", "index", "rooms"]
+    },
+    "Event": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "guid": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "logo": {
+          "type": ["string", "null"],
+          "format": "uri",
+          "description": "absolute URL, or relative to base_url"
+        },
+        "date": {
+          "type": "string",
+          "format": "date-time",
+          "examples": ["2020-12-14T09:00:00+01:00"]
+        },
+        "start": {
+          "type": "string",
+          "pattern": "^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$",
+          "examples": ["09:00"]
+        },
+        "duration": {
+          "$ref": "#/definitions/Duration"
+        },
+        "room": {
+          "$ref": "#/definitions/RoomName"
+        },
+        "slug": {
+          "type": "string",
+          "pattern": "^[a-z0-9_-]+[a-z0-9]$"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "title": {
+          "type": "string"
+        },
+        "subtitle": {
+          "type": ["string", "null"]
+        },
+        "track": {
+          "type":  ["string", "null"]
+        },
+        "type": {
+          "type": "string",
+          "examples": [
+            "talk",
+            "workshop",
+            "hands-on",
+            "meeting",
+            "discussion",
+            "game",
+            "other"
+          ]
+        },
+        "language": {
+          "type": "string",
+          "examples": ["en", "de", "cs", "ab"]
+        },
+        "abstract": {
+          "type":  ["string", "null"]
+        },
+        "description": {
+          "type":  ["string", "null"]
+        },
+        "recording_license": {
+          "type": "string"
+        },
+        "do_not_record": {
+          "type":  ["boolean", "null"]
+        },
+        "do_not_stream": {
+          "type":  ["string", "null"]
+        },
+        "persons": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Person"
+          }
+        },
+        "links": {
+          "type": "array",
+          "items": {},
+          "$comment": "// TODO: string vs object"
+        },
+        "feedback_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "attachments": {
+          "type": "array",
+          "items": {},
+          "$comment": "// TODO: string vs object"
+        },
+        "answers": {
+          "type": "array",
+          "items": {}
+        }
+      },
+      "required": [
+        "abstract",
+        "date",
+        "duration",
+        "guid",
+        "id",
+        "language",
+        "links",
+        "persons",
+        "room",
+        "slug",
+        "start",
+        "subtitle",
+        "title",
+        "track",
+        "type",
+        "url"
+      ]
+    },
+    "Person": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "guid": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Person UUID generated from email address via uuid5(NS_URL, 'acct:user@domain.tld') or random uuid4() if email not available"
+        },
+        "id": {
+          "type": "integer",
+          "description": "deprecated integer person id, use guid with uuid5(NS_URL, 'acct:user@domain.tld') instead"
+        }
+      },
+      "oneOf": [
+        { "$ref": "#/definitions/FrabPerson" },
+        { "$ref": "#/definitions/PretalxPerson" }
+      ]
+    },
+    "FrabPerson": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "public_name": {
+          "type": "string",
+          "deprecated": true,
+          "$comment": "use name instead"
+        }
+      },
+      "required": ["public_name", "id"]
+    },
+    "PretalxPerson": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "pattern": "^[A-Z0-9]+$"
+        },
+        "name": {
+          "type": "string"
+        },
+        "avatar": {
+          "type": ["string", "null"],
+          "format": "uri",
+          "description": "absolute URL, or relative to base_url"
+        },
+        "biography": {
+          "type": "string"
+        },
+        "answers": {
+          "type": "array",
+          "items": {}
+        }
+      },
+      "required": ["name"]
+    },
+    "Room": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "guid": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "description": {
+          "type": ["string", "null"]
+        },
+        "capacity": {
+          "type": ["number", "null"]
+        }
+      },
+      "required": ["name"]
+    },
+    "RoomName": {
+      "type": "string"
+    },
+    "Duration": {
+      "title": "Duration (hh:mm)",
+      "type": "string",
+      "examples": ["00:30", "01:30"],
+      "pattern": "^[0-9]+:[0-9]{2}$"
+    }
+  }
+}

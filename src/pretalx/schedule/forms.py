@@ -217,6 +217,10 @@ class RoomForm(AvailabilitiesFormMixin, ReadOnlyFlag, I18nModelForm):
             "Information for speakers, e.g.: Projector has only HDMI input."
         )
         self.fields["capacity"].widget.attrs["placeholder"] = "300"
+        if self.instance.pk and not self.instance.guid:
+            self.fields["guid"].help_text = _(
+                "The current, automatically generated GUID is: {guid}."
+            ).format(guid=self.instance.uuid)
 
     class Meta:
         model = Room

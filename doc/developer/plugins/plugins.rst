@@ -26,7 +26,7 @@ This will ask you some questions and then create a project folder for your plugi
 Afterwards install your plugin into pretalx:
 
    (env)$ cd pretalx-pluginname
-   (env)$ python setup.py develop
+   (env)$ python -m pip install -e .
 
 If you already had it running, you'll now have to restart your pretalx dev-server
 for it to recognize the new plugin.

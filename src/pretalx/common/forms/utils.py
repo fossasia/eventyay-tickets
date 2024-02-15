@@ -33,7 +33,8 @@ def get_help_text(text, min_length, max_length, count_in="chars"):
 
 def validate_field_length(value, min_length, max_length, count_in):
     if count_in == "chars":
-        length = len(value)
+        # Line breaks should only be counted as one character
+        length = len(value.replace("\r\n", "\n"))
     else:
         length = len(re.findall(r"\b\w+\b", value))
     if (min_length and min_length > length) or (max_length and max_length < length):

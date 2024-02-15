@@ -206,12 +206,14 @@ DATABASES = {
         "PORT": config.get("database", "port"),
         "CONN_MAX_AGE": 0 if db_backend == "sqlite3" or HAS_CELERY else 120,
         "OPTIONS": db_opts,
-        "TEST": {
-            "CHARSET": "utf8mb4",
-            "COLLATION": "utf8mb4_unicode_ci",
-        }
-        if "mysql" in db_backend
-        else {},
+        "TEST": (
+            {
+                "CHARSET": "utf8mb4",
+                "COLLATION": "utf8mb4_unicode_ci",
+            }
+            if "mysql" in db_backend
+            else {}
+        ),
     }
 }
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"

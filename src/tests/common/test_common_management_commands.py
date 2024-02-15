@@ -1,4 +1,6 @@
 import datetime as dt
+import subprocess
+from contextlib import suppress
 
 import pytest
 import responses
@@ -75,6 +77,16 @@ def test_common_custom_migrate_does_not_blow_up():
 @pytest.mark.django_db
 def test_common_custom_makemessages_does_not_blow_up():
     call_command("makemessages", "--keep-pot", locale=["de_DE"])
+    with suppress(Exception):
+        subprocess.run(
+            [
+                "git",
+                "checkout",
+                "--",
+                "pretalx/locale/de_DE",
+                "pretalx/locale/django.pot",
+            ]
+        )
 
 
 @pytest.mark.django_db

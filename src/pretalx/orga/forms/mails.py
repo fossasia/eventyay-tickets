@@ -6,7 +6,6 @@ from bs4 import BeautifulSoup
 from django import forms
 from django.db import transaction
 from django.utils.functional import cached_property
-from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from i18nfield.forms import I18nModelForm
 
@@ -50,20 +49,6 @@ class MailTemplateForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
 
         if self.instance and self.instance.id:
             if self.instance == self.event.update_template:
-                time = now().replace(hour=9, minute=0).strftime("%Y-%m-%d %H:%M")
-                time2 = now().replace(hour=11, minute=0).strftime("%Y-%m-%d %H:%M")
-                valid_placeholders[
-                    "notifications"
-                ] = SimpleFunctionalMailTextPlaceholder(
-                    "notifications",
-                    ["slot"],
-                    None,
-                    _(
-                        "- Your session “Title” will take place at {time} in Room 101.\n"
-                        "- Your session “Other Title” has been moved to {time2} in Room 102."
-                    ).format(time=time, time2=time2),
-                    _("A list of notifications for this speaker"),
-                )
                 kwargs = ["event", "user"]
             elif self.instance == self.event.question_template:
                 valid_placeholders["questions"] = SimpleFunctionalMailTextPlaceholder(
@@ -210,11 +195,13 @@ class MailDetailForm(ReadOnlyFlag, forms.ModelForm):
             addresses = list(
                 {a.strip().lower() for a in (obj.to or "").split(",") if a.strip()}
             )
+            found_addresses = []
             for address in addresses:
                 user = User.objects.filter(email__iexact=address).first()
                 if user:
-                    addresses.remove(address)
                     obj.to_users.add(user)
+                    found_addresses.append(address)
+            addresses = set(addresses) - set(found_addresses)
             addresses = ",".join(addresses) if addresses else ""
             obj.to = addresses
             obj.save()

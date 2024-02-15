@@ -124,9 +124,9 @@ class ExporterView(EventPermissionRequired, ScheduleMixin, TemplateView):
                 return HttpResponseNotModified()
         headers = {"ETag": etag}
         if file_type not in ["application/json", "text/xml"]:
-            headers[
-                "Content-Disposition"
-            ] = f'attachment; filename="{safe_filename(file_name)}"'
+            headers["Content-Disposition"] = (
+                f'attachment; filename="{safe_filename(file_name)}"'
+            )
         if exporter.cors:
             headers["Access-Control-Allow-Origin"] = exporter.cors
         return HttpResponse(data, content_type=file_type, headers=headers)

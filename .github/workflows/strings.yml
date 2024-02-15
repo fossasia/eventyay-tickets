@@ -1,0 +1,36 @@
+name: Strings
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'src/pretalx/locale/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'src/pretalx/locale/**'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    name: Check that translation files compile
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: ".github/workflows/python-version.txt"
+          cache: "pip"
+      - name: Install system dependencies
+        run: |
+          sudo apt update
+          sudo apt install gettext
+      - name: Install Python dependencies
+        run: python -m pip install -e ".[dev]"
+      - name: Compile locales
+        run: python manage.py compilemessages
+        working-directory: ./src

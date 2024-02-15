@@ -18,7 +18,7 @@
     <h2>
         {% if form.instance.question %}{% translate "Question" %}: {{ form.instance.question }}{% else %}{% translate "New question" %}{% endif %}
     </h2>
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {% bootstrap_form_errors form %}
         {% if action == "edit" and question.answers.count %}
@@ -61,43 +61,55 @@
                 accepted. If you want to allow both options, do not make this field required.
             {% endblocktranslate %}
         </div>
-        {% bootstrap_field form.question_required layout='event' %}
-        {% bootstrap_field form.deadline layout='event' %}
-        {% bootstrap_field form.freeze_after layout='event' %}
         {% bootstrap_field form.is_public layout='event' %}
+        {% bootstrap_field form.contains_personal_data layout='event' %}
         <span id="is-visible-to-reviewers">
             {% bootstrap_field form.is_visible_to_reviewers layout='event' %}
         </span>
-        {% if form.tracks %}
-            <span class="limit-submission">
-                {% bootstrap_field form.tracks layout='event' %}
+        <fieldset class="limit-submission">
+            <legend>{% translate "Limit to specific proposals" %}</legend>
+            {% if form.tracks %}
+                <span class="limit-submission">
+                    {% bootstrap_field form.tracks layout='event' %}
+                </span>
+            {% endif %}
+            {% if form.submission_types %}
+                <span class="limit-submission">
+                    {% bootstrap_field form.submission_types layout='event' %}
+                </span>
+            {% endif %}
+        </fieldset>
+        <fieldset>
+            <legend>{% translate "Input validation" %}</legend>
+            {% bootstrap_field form.question_required layout='event' %}
+            {% bootstrap_field form.deadline layout='event' %}
+            {% bootstrap_field form.freeze_after layout='event' %}
+            <span id="limit-length">
+                {% bootstrap_field form.min_length layout='event' %}
+                {% bootstrap_field form.max_length layout='event' %}
             </span>
-        {% endif %}
-        {% if form.submission_types %}
-            <span class="limit-submission">
-                {% bootstrap_field form.submission_types layout='event' %}
+            <span id="limit-number">
+                {% bootstrap_field form.min_number layout='event' %}
+                {% bootstrap_field form.max_number layout='event' %}
             </span>
-        {% endif %}
-        <span id="limit-length">
-            {% bootstrap_field form.min_length layout='event' %}
-            {% bootstrap_field form.max_length layout='event' %}
-        </span>
-        <span id="limit-number">
-            {% bootstrap_field form.min_number layout='event' %}
-            {% bootstrap_field form.max_number layout='event' %}
-        </span>
-        <span id="limit-date">
-            {% bootstrap_field form.min_date layout='event' %}
-            {% bootstrap_field form.max_date layout='event' %}
-        </span>
-        <span id="limit-datetime">
-            {% bootstrap_field form.min_datetime layout='event' %}
-            {% bootstrap_field form.max_datetime layout='event' %}
-        </span>
-        {% bootstrap_field form.contains_personal_data layout='event' %}
+            <span id="limit-date">
+                {% bootstrap_field form.min_date layout='event' %}
+                {% bootstrap_field form.max_date layout='event' %}
+            </span>
+            <span id="limit-datetime">
+                {% bootstrap_field form.min_datetime layout='event' %}
+                {% bootstrap_field form.max_datetime layout='event' %}
+            </span>
+        </fieldset>
 
         <fieldset id="answer-options">
             <legend>{% translate "Answer options" %}</legend>
+            <details class="col-md-9 offset-md-3 mb-3" {% if form.errors.options or form.errors.options_replace %}open{% endif %}>
+                <summary>{% translate "Upload answer options" %}</summary>
+                <div class="pt-3"></div>
+                {% bootstrap_field form.options layout='event' %}
+                {% bootstrap_field form.options_replace layout='event' %}
+            </details>
             <div class="formset" data-formset data-formset-prefix="{{ formset.prefix }}">
                 {{ formset.management_form }}
                 {% bootstrap_formset_errors formset %}

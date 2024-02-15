@@ -1,7 +1,6 @@
 import urllib
 from collections import defaultdict
 from contextlib import suppress
-from importlib import import_module
 from urllib.parse import quote
 
 from csp.decorators import csp_exempt
@@ -14,6 +13,7 @@ from django.forms import ValidationError
 from django.http import FileResponse, Http404
 from django.shortcuts import redirect
 from django.utils.functional import cached_property
+from django.utils.module_loading import import_string
 from django.utils.translation import gettext_lazy as _
 from django_context_decorator import context
 from formtools.wizard.forms import ManagementForm
@@ -22,7 +22,7 @@ from rules.contrib.views import PermissionRequiredMixin
 
 from pretalx.common.forms import SearchForm
 
-SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
+SessionStore = import_string(f"{settings.SESSION_ENGINE}.SessionStore")
 
 
 class ActionFromUrl:
@@ -321,7 +321,7 @@ class PaginationMixin:
     # TODO: possible make this into a PretalxListView, to make things easier for
     # plugin developers
 
-    DEFAULT_PAGINATION = 25
+    DEFAULT_PAGINATION = 50
 
     def get_paginate_by(self, queryset):
         skey = "stored_page_size_" + self.request.resolver_match.url_name
@@ -332,7 +332,8 @@ class PaginationMixin:
         )
         if self.request.GET.get("page_size"):
             try:
-                size = min(250, int(self.request.GET.get("page_size")))
+                max_page_size = getattr(self, "max_page_size", 250)
+                size = min(max_page_size, int(self.request.GET.get("page_size")))
                 self.request.session[skey] = size
                 return size
             except ValueError:
@@ -342,4 +343,5 @@ class PaginationMixin:
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx["page_size"] = self.get_paginate_by(None)
+        ctx["pagination_sizes"] = [50, 100, 250]
         return ctx

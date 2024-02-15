@@ -62,6 +62,7 @@ ALLOWED_TLDS = sorted(  # Sorting this list makes sure that shorter substring TL
 TLD_REGEX = bleach.linkifier.build_url_re(
     tlds=ALLOWED_TLDS, protocols=ALLOWED_PROTOCOLS
 )
+EMAIL_REGEX = bleach.linkifier.build_email_re(tlds=ALLOWED_TLDS)
 
 
 def link_callback(attrs, new=False):
@@ -78,6 +79,7 @@ CLEANER = bleach.Cleaner(
             bleach.linkifier.LinkifyFilter,
             url_re=TLD_REGEX,
             parse_email=True,
+            email_re=EMAIL_REGEX,
             skip_tags={"pre", "code"},
             callbacks=bleach.linkifier.DEFAULT_CALLBACKS + [link_callback],
         )

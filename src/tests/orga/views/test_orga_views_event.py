@@ -1091,19 +1091,24 @@ def test_edit_review_settings_reviewer_cannot_move_review_phase(review_client, e
 
 @pytest.mark.django_db
 def test_organiser_can_see_event_suggestions(orga_client, event):
-    response = orga_client.get("/orga/event/typeahead/")
+    response = orga_client.get("/orga/nav/typeahead/")
     assert response.status_code == 200
     content = json.loads(response.content.decode())["results"]
-    assert len(content) == 1
-    assert content[0]["id"] == event.id
+    assert len(content) == 3
+    assert content[0]["type"] == "user"
+    assert content[1]["type"] == "organiser"
+    assert content[1]["name"] == str(event.organiser)
+    assert content[2]["type"] == "event"
+    assert content[2]["name"] == str(event.name)
 
 
 @pytest.mark.django_db
 def test_speaker_cannot_see_event_suggestions(speaker_client, event):
-    response = speaker_client.get("/orga/event/typeahead/")
+    response = speaker_client.get("/orga/nav/typeahead/")
     assert response.status_code == 200
     content = json.loads(response.content.decode())["results"]
-    assert len(content) == 0
+    assert len(content) == 1
+    assert content[0]["type"] == "user"
 
 
 @pytest.mark.django_db

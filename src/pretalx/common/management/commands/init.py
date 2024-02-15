@@ -91,12 +91,7 @@ class Command(BaseCommand):  # pragma: no cover
         )
         self.stdout.write(self.style.SUCCESS("\nNow that this is done, you can:"))
         self.stdout.write(f" - Create your first event at {event_url}")
-        self.stdout.write(
-            f" - Invite somebody to the organiser team at {team_url} and let them create the event"
-        )
-        self.stdout.write(
-            ' - Use the command "import_schedule /path/to/schedule.xml" if you want to import an event.'
-        )
+        self.stdout.write(f" - Invite somebody to the organiser team at {team_url}")
 
     def get_nonempty(self, prompt, env_varname=None):
         if not env_varname:

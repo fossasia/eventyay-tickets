@@ -29,6 +29,7 @@ from django.views.generic import (
     View,
 )
 
+from pretalx.agenda.permissions import is_submission_visible
 from pretalx.common.exceptions import SubmissionError
 from pretalx.common.mixins.views import (
     ActionFromUrl,
@@ -139,6 +140,12 @@ class SubmissionViewMixin(PermissionRequired):
         return self.request.event.review_phases.filter(
             can_see_speaker_names=False
         ).exists()
+
+    @context
+    @cached_property
+    def is_publicly_visible(self):
+        # check if the anonymous user could see this submission's page
+        return is_submission_visible(None, self.object)
 
 
 class ReviewerSubmissionFilter:
@@ -399,9 +406,9 @@ class SubmissionContent(
         return formset_class(
             self.request.POST if self.request.method == "POST" else None,
             files=self.request.FILES if self.request.method == "POST" else None,
-            queryset=submission.resources.all()
-            if submission
-            else Resource.objects.none(),
+            queryset=(
+                submission.resources.all() if submission else Resource.objects.none()
+            ),
             prefix="resource",
         )
 
@@ -621,16 +628,18 @@ class FeedbackList(SubmissionViewMixin, PaginationMixin, ListView):
     paginate_by = 25
     permission_required = "submission.view_feedback"
 
-    @context
-    @cached_property
-    def submission(self):
+    def get_queryset(self):
+        return self.submission.feedback.all().order_by("pk")
+
+    def get_object(self):
         return get_object_or_404(
             Submission.objects.filter(event=self.request.event),
             code__iexact=self.kwargs.get("code"),
         )
 
-    def get_queryset(self):
-        return self.submission.feedback.all().order_by("pk")
+    @cached_property
+    def submission(self):
+        return self.get_object()
 
     def get_permission_object(self):
         return self.submission
@@ -973,7 +982,7 @@ class TagList(EventPermissionRequired, PaginationMixin, ListView):
     permission_required = "orga.view_submissions"
 
     def get_queryset(self):
-        return self.request.event.tags.all()
+        return self.request.event.tags.all().order_by("tag")
 
 
 class TagDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):

@@ -4,6 +4,7 @@ from urllib.parse import urlparse
 
 import vobject
 from django.conf import settings
+from django.core.exceptions import SuspiciousFileOperation
 from django.core.files.storage import Storage
 from django.http import FileResponse, Http404, HttpResponse
 from django.shortcuts import redirect
@@ -117,16 +118,19 @@ class SpeakerTalksIcalView(PermissionRequired, DetailView):
         ).select_related("room", "submission")
 
         cal = vobject.iCalendar()
-        cal.add(
-            "prodid"
-        ).value = f"-//pretalx//{netloc}//{request.event.slug}//{speaker.code}"
+        cal.add("prodid").value = (
+            f"-//pretalx//{netloc}//{request.event.slug}//{speaker.code}"
+        )
 
         for slot in slots:
             slot.build_ical(cal)
 
-        speaker_name = Storage().get_valid_name(
-            name=speaker.user.name or speaker.user.code
-        )
+        try:
+            speaker_name = Storage().get_valid_name(
+                name=speaker.user.name or speaker.user.code
+            )
+        except SuspiciousFileOperation:
+            speaker_name = Storage().get_valid_name(name=speaker.user.code)
         return HttpResponse(
             cal.serialize(),
             content_type="text/calendar",

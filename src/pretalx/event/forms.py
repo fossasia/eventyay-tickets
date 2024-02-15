@@ -168,13 +168,15 @@ class EventWizardInitialForm(forms.Form):
         super().__init__(*args, **kwargs)
         self.fields["organiser"] = forms.ModelChoiceField(
             label=_("Organiser"),
-            queryset=Organiser.objects.filter(
-                id__in=user.teams.filter(can_create_events=True).values_list(
-                    "organiser", flat=True
+            queryset=(
+                Organiser.objects.filter(
+                    id__in=user.teams.filter(can_create_events=True).values_list(
+                        "organiser", flat=True
+                    )
                 )
-            )
-            if not user.is_administrator
-            else Organiser.objects.all(),
+                if not user.is_administrator
+                else Organiser.objects.all()
+            ),
             widget=forms.Select(attrs={"class": "select2"}),
             empty_label=None,
             required=True,

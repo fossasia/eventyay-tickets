@@ -17,6 +17,7 @@ from .views import (
     schedule,
     speaker,
     submission,
+    typeahead,
 )
 
 app_name = "orga"
@@ -102,8 +103,8 @@ urlpatterns = [
             ]
         ),
     ),
+    path("nav/typeahead/", typeahead.nav_typeahead, name="nav.typeahead"),
     path("event/new/", event.EventWizard.as_view(), name="event.create"),
-    path("event/typeahead/", event.event_list, name="event.typeahead"),
     path("event/", dashboard.DashboardEventListView.as_view(), name="event.list"),
     path(
         "event/<slug:event>/",
@@ -564,6 +565,11 @@ urlpatterns = [
                     "reviews/",
                     review.ReviewDashboard.as_view(),
                     name="reviews.dashboard",
+                ),
+                path(
+                    "reviews/bulk/",
+                    review.BulkReview.as_view(),
+                    name="reviews.bulk",
                 ),
                 path(
                     "reviews/regenerate/",
