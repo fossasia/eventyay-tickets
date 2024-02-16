@@ -235,7 +235,7 @@ aside.sidebar {
             background: $gray-lightest;
           }
         }
-        .search-title,
+        .search-title > span,
         .search-detail {
           display: inline-block;
           text-overflow: ellipsis;
