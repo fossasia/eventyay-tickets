@@ -560,7 +560,7 @@ class RoomDelete(EventPermissionRequired, View):
             messages.success(
                 self.request, _("Room deleted. Hopefully nobody was still in there …")
             )
-        except ProtectedError:  # TODO: show which/how many talks are concerned
+        except ProtectedError:
             messages.error(
                 request,
                 _(

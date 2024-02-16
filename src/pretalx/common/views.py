@@ -47,9 +47,6 @@ def is_form_bound(request, form_name, form_param="form"):
 
 
 def get_static(request, path, content_type):  # pragma: no cover
-    """TODO: move to staticfiles usage as per https://gist.github.com/SmileyChris/8d472f2a67526e36f39f3c33520182bc
-    This would avoid potential directory traversal by … a malicious urlconfig, so not a huge attack vector.
-    """
     path = settings.BASE_DIR / "pretalx/static" / path
     if not path.exists():
         raise Http404()

@@ -69,7 +69,7 @@ class EventForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
         required=False,
     )
     schedule = forms.ChoiceField(
-        label=_("Schedule display format"),  # TODO show small preview / icons
+        label=_("Schedule display format"),
         choices=(
             ("grid", _("Grid")),
             ("list", _("List")),
