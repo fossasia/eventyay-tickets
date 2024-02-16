@@ -23,7 +23,7 @@ If you are not familiar with GitHub, the workflow is basically this: You
 register an account on GitHub, then you “fork” pretalx, and work on your copy
 of it until you're done. Then, you submit your changes as a Pull Request. We'll
 review the PR and help you make any changes required to get it merged.  Have a
-look at the `GitHub guides`_ and other documentation on git for further
+look at the `GitHub documentation`_ and other documentation on git for further
 information.
 
 We have tagged some issues as small_, and they are probably a good place to
@@ -136,7 +136,7 @@ you do, please note that these are the meanings we ascribe to them:
 
 .. _open an issue: https://github.com/pretalx/pretalx/issues/new
 .. _GitHub: https://github.com/pretalx/pretalx
-.. _GitHub guides: https://guides.github.com/
+.. _GitHub documentation: https://docs.github.com/en/pull-requests
 .. _small: https://github.com/pretalx/pretalx/issues?q=is%3Aissue+is%3Aopen+label%3Asize%3Asmall
 .. _PEP8: https://legacy.python.org/dev/peps/pep-0008/
 .. _Django project style guide: https://docs.djangoproject.com/en/dev/internals/contributing/writing-code/coding-style/

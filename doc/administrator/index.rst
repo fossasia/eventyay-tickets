@@ -24,4 +24,4 @@ note that the docker setup is not officially supported.
 
 .. _ansible role: https://github.com/pretalx/ansible-pretalx
 .. _docker-compose setup: https://github.com/pretalx/pretalx-docker
-.. _pretalx.com: https://pretalx.com
+.. _pretalx.com: https://pretalx.com/p/about/

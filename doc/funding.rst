@@ -62,5 +62,5 @@ And, of course, if you'd rather :ref:`contribute <contributing>` your time, we'r
 .. _pretalx.com: https://pretalx.com
 .. _sponsorship: https://github.com/pretalx/pretalx/labels/sponsorship
 .. _long list: https://github.com/pretalx/pretalx/wiki/Events
-.. _Patreon: https://patreon.com/rixx
+.. _Patreon: https://www.patreon.com/rixx
 .. _other donation options: https://rixx.de/funding/
