@@ -403,12 +403,24 @@ LANGUAGES_INFORMATION = {
         "percentage": 86,
         "path": "fr_FR",
     },
+    "it": {
+        "name": _("Italian"),
+        "natural_name": "Italiano",
+        "official": False,
+        "percentage": 96,
+    },
     "ja-jp": {
         "name": _("Japanese"),
         "natural_name": "日本語",
         "official": False,
         "percentage": 76,
         "public_code": "jp",
+    },
+    "nl": {
+        "name": _("Dutch"),
+        "natural_name": "Nederlands",
+        "official": False,
+        "percentage": 92,
     },
     "pt-br": {
         "name": _("Brasilian Portuguese"),
