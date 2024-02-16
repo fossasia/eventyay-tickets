@@ -18,34 +18,32 @@ Boarding checks
 10. Are there any ``@pytest.mark.xfail`` that you have to resolve?
 11. Are the :ref:`changelog` well-phrased and complete?
 12. Are there `open pull requests <https://github.com/pretalx/pretalx/pulls>`_ that you should merge?
+13. Are all tests passing in CI?
+14. Have you written (and not pushed) a blog post? It should contain at least major features and all contributors involved in the release.
 
 System checks
 -------------
 
-1. Are you in the branch and commit you think you are in?
-2. Are all tests passing?
-3. Have you deployed the release-ready commit to an instance? Did the upgrade work?
-4. Have you written (and not pushed) a blog post? It should contain at least major features and all contributors involved in the release.
-5. Have you told people who may need to know about the release ahead of time? (Plugin developers, clients, self-hosting instances, etc.)
+1. Deploy the release-ready commit to an instance. Check if the upgrade and the instance works.
+2. Clone pretalx into a clean repo: ``git clone git@github.com:pretalx/pretalx pretalx-release && mkvirtualenv pretalx-release && pip install -e .[dev]``
+3. Run ``pytest`` **locally**.
+5. Run ``check-manifest`` **locally**.
 
 Take-off and landing
 --------------------
 
-1. Clone pretalx into a clean repo: ``git clone git@github.com:pretalx/pretalx pretalx-release && mkvirtualenv pretalx-release && pip install -e .[dev]``
-2. Run ``check-manifest`` **locally**.
-3. Bump version in ``src/pretalx/__init__.py``.
-4. Add the release to the :ref:`changelog`.
-5. Make a commit with the message ``Release vx.y.z``
-6. Tag the commit: ``git tag vx.y.z -m``
-7. Remove old build artefacts: ``rm -rf dist/ build/ pretalx.egg-info``
-8. Build a new release: ``python -m build -n``
-9. Upload the release: ``twine upload dist/pretalx-x.y.z.tar.gz``
-10. Push the release: ``git push && git push --tags``
-11. Install/update the package somewhere.
-12. Add the release on `GitHub <https://github.com/pretalx/pretalx/releases>`_ (upload the archive you uploaded to PyPI, and add a link to the correct section of the :ref:`changelog`)
-13. Push the blog post.
-14. Upgrade `the docker repository <https://github.com/pretalx/pretalx-docker>`_ to the current commit **and tag the commit as vx.y.z**.
-15. Increment version number to version+1.dev0 in ``src/pretalx/__init__.py``.
-16. Update version numbers in update checker and deploy.
-17. ``rm -rf pretalx-release && deactivate && rmvirtualenv pretalx-release``
-18. Update any plugins waiting for the new release.
+1. Bump version in ``src/pretalx/__init__.py``.
+2. Add the release to the :ref:`changelog`.
+3. Make a release commit: ``RELEASE=vx.y.z && git commit -am "Release $RELEASE" && git tag $RELEASE -m "Release $RELEASE"``
+4. Build a new release: ``rm -rf dist/ build/ pretalx.egg-info && python -m build -n``
+5. Upload the release: ``twine upload dist/pretalx-x.y.z.tar.gz``
+6. Push the release: ``git push && git push --tags``
+7. Install/update the package somewhere.
+8. Add the release on `GitHub <https://github.com/pretalx/pretalx/releases>`_ (upload the archive you uploaded to PyPI, and add a link to the correct section of the :ref:`changelog`)
+9. Publish the blog post.
+10. Upgrade `the docker repository <https://github.com/pretalx/pretalx-docker>`_ to the current commit **and tag the commit as vx.y.z**.
+11. Increment version number to version+1.dev0 in ``src/pretalx/__init__.py``.
+12. Update version numbers in update checker and deploy.
+13. ``rm -rf pretalx-release && deactivate && rmvirtualenv pretalx-release``
+14. Update any plugins waiting for the new release.
+15. Check if the docker image build was successful.
