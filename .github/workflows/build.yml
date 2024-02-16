@@ -2,12 +2,12 @@ name: Build
 
 on:
   push:
-    branches: [ main ]
+    branches: [ development ]
     paths-ignore:
       - 'src/pretalx/locale/**'
       - 'doc/**'
   pull_request:
-    branches: [ main ]
+    branches: [ development ]
     paths-ignore:
       - 'src/pretalx/locale/**'
       - 'doc/**'

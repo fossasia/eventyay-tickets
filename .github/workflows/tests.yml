@@ -2,12 +2,12 @@ name: Tests
 
 on:
   push:
-    branches: [ main ]
+    branches: [ development ]
     paths-ignore:
       - 'doc/**'
       - 'src/pretalx/locale/**'
   pull_request:
-    branches: [ main ]
+    branches: [ development ]
     paths-ignore:
       - 'doc/**'
       - 'src/pretalx/locale/**'
@@ -113,4 +113,4 @@ jobs:
           label: coverage
           message: ${{ env.TOTAL_COV }}%
           color: "#3aa57c"
-        if: env.TOTAL_COV && github.ref == 'refs/heads/main'
+        if: env.TOTAL_COV && github.ref == 'refs/heads/development'
