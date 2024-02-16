@@ -2,6 +2,10 @@ include _build/backend.py
 include LICENSE
 include README.rst
 include src/pretalx.example.cfg
+include Dockerfile
+
+recursive-include deployment *.bash
+recursive-include deployment *.conf
 
 exclude src/pretalx/override_settings.py
 exclude src/pretalx.cfg
