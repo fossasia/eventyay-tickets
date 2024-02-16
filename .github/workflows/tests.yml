@@ -19,24 +19,14 @@ jobs:
     strategy:
       matrix:
         python-version: [3.6, 3.7, 3.8]
-        database: [sqlite, postgres, mysql]
+        database: [sqlite, postgres]
         exclude:
-          - database: mysql
-            python-version: 3.7
           - database: sqlite
             python-version: 3.7
-          - database: mysql
-            python-version: 3.6
           - database: sqlite
             python-version: 3.6
     steps:
       - uses: actions/checkout@v2
-      - uses: getong/mariadb-action@v1.1
-        with:
-          mariadb version: '10.4'
-          mysql database: 'pretix'
-          mysql root password: ''
-        if: matrix.database == 'mysql'
       - uses: harmon758/postgresql-action@v1
         with:
           postgresql version: '11'
@@ -55,9 +45,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
       - name: Install system dependencies
-        run: sudo apt update && sudo apt install gettext mysql-client
+        run: sudo apt update && sudo apt install gettext
       - name: Install Python dependencies
-        run: pip3 install -r src/requirements.txt -Ur src/requirements/dev.txt mysqlclient psycopg2-binary
+        run: pip3 install -r src/requirements.txt -Ur src/requirements/dev.txt psycopg2-binary
       - name: Run checks
         run: python manage.py check
         working-directory: ./src

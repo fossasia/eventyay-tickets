@@ -23,7 +23,7 @@ installation guides):
 
 * A SMTP server to send out mails, e.g. `Postfix`_ on your machine or some third-party server you have credentials for
 * A HTTP reverse proxy, e.g. `nginx`_ or Apache to allow HTTPS connections
-* A `PostgreSQL`_ 9.5+, `MySQL`_ 5.7+, or MariaDB 10.2.7+ database server
+* A `PostgreSQL`_ 9.5+ database server
 * A `redis`_ server
 * A `nodejs_` installation
 
@@ -34,8 +34,7 @@ Linux and firewalls, we recommend that you start with `ufw`_.
           SSL certificates can be obtained for free these days. We also *do not* provide support for HTTP-only
           installations except for evaluation purposes.
 
-.. warning:: We recommend **PostgreSQL**. If you go for MySQL, make sure you run **MySQL 5.7 or newer** or
-             **MariaDB 10.2.7 or newer**.
+.. warning:: We recommend **PostgreSQL**.
 
 Unix user
 ---------
@@ -67,7 +66,7 @@ To build and run pretix, you will need the following debian packages::
 
     # apt-get install git build-essential python-dev python3-venv python3 python3-pip \
                       python3-dev libxml2-dev libxslt1-dev libffi-dev zlib1g-dev libssl-dev \
-                      gettext libpq-dev libmariadbclient-dev libjpeg-dev libopenjp2-7-dev
+                      gettext libpq-dev libjpeg-dev libopenjp2-7-dev
 
 Config file
 -----------
