@@ -1053,10 +1053,10 @@ msgid "Attendees can leave feedback here after your session has taken place."
 msgstr "あなたの講演実施後、参加者がここに感想を残すことができます"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:65
-msgid "Speaker:"
-msgid_plural "Speakers:"
-msgstr[0] "登壇者: "
-msgstr[1] "Vortragende:"
+msgid "Speaker"
+msgid_plural "Speakers"
+msgstr[0] "登壇者"
+msgstr[1] ""
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:67
 #, fuzzy

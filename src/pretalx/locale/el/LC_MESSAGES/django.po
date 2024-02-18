@@ -1074,10 +1074,10 @@ msgstr ""
 "συνεδρίας σας."
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:65
-msgid "Speaker:"
-msgid_plural "Speakers:"
-msgstr[0] "Ομιλητής:"
-msgstr[1] "Ομιλητές:"
+msgid "Speaker"
+msgid_plural "Speakers"
+msgstr[0] "Ομιλητής"
+msgstr[1] "Ομιλητές"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:67
 msgid "Submitter"

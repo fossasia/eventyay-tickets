@@ -1074,10 +1074,10 @@ msgstr ""
 "Les visiteurs peuvent laisser des commentaires ici après votre intervention."
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:65
-msgid "Speaker:"
-msgid_plural "Speakers:"
-msgstr[0] "Intervenant :"
-msgstr[1] "Intervenants :"
+msgid "Speaker"
+msgid_plural "Speakers"
+msgstr[0] "Intervenant"
+msgstr[1] "Intervenants"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:67
 msgid "Submitter"

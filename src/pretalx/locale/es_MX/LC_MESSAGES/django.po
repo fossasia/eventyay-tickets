@@ -1042,10 +1042,10 @@ msgstr ""
 "Los participantes pueden dejar retroalimentación aquí después de tu charla."
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:65
-msgid "Speaker:"
-msgid_plural "Speakers:"
-msgstr[0] "Conferencista:"
-msgstr[1] "Conferencistas:"
+msgid "Speaker"
+msgid_plural "Speakers"
+msgstr[0] "Conferencista"
+msgstr[1] "Conferencistas"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:67
 #, fuzzy

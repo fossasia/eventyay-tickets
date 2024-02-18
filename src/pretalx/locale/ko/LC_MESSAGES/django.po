@@ -1018,8 +1018,8 @@ msgid "Attendees can leave feedback here after your session has taken place."
 msgstr "참석자는 세션이 진행된 후 여기에서 피드백을 남길 수 있습니다."
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:65
-msgid "Speaker:"
-msgid_plural "Speakers:"
+msgid "Speaker"
+msgid_plural "Speakers"
 msgstr[0] ""
 msgstr[1] ""
 

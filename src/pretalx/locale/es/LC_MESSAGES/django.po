@@ -1061,10 +1061,10 @@ msgstr ""
 "realizado la sesión."
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:65
-msgid "Speaker:"
-msgid_plural "Speakers:"
-msgstr[0] "Ponente:"
-msgstr[1] "Ponentes:"
+msgid "Speaker"
+msgid_plural "Speakers"
+msgstr[0] "Ponente"
+msgstr[1] "Ponentes"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:67
 #, fuzzy

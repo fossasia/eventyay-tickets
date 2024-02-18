@@ -1059,10 +1059,10 @@ msgstr ""
 "tua sessione."
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:65
-msgid "Speaker:"
-msgid_plural "Speakers:"
-msgstr[0] "Relatore:"
-msgstr[1] "Relatori:"
+msgid "Speaker"
+msgid_plural "Speakers"
+msgstr[0] "Relatore"
+msgstr[1] "Relatori"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:67
 msgid "Submitter"
