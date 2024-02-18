@@ -1,9 +1,8 @@
 .. _changelog:
 
 Release Notes
-=============
-
 - :feature:`orga:sidebar` Renamed CfP to Call for Speakers for clarity
+- :feature:`lang` pretalx now comes with new translations, in Dutch and Italian!
 - :feature:`orga,820` Restricted tracks now link to the page where you can create access codes for that track.
 - :announcement:`admin,1678` Due to its incomplete and complex nature, the ``import_schedule`` admin command has been removed. If you want to import a schedule, despite all the complexities, please use the pretalx-downstream plugin instead.
 - :feature:`orga,1672` The organiser area now has a search box located in the side bar, opened after clicking the event name. It searches all events the current user has full access to (that is, not a limited reviewer account) for events, sessions and speakers.
@@ -36,7 +35,7 @@ Release Notes
 - :feature:`orga:schedule` The schedule editor page can now be printed – page breaks can still occur in odd places, but it's otherwise a very readable schedule (with your selection of rooms).
 - :feature:`dev` Plugins can now inject content into a page's HTML ``<head>`` tag with the ``pretalx.orga.signals.html_head`` signal.
 - :bug:`orga` Answers for URL questions were not included in JSON/CSV exports
-- :announcement:`schedule` The primary URL of widget scripts and widget data has changed. The old URLs will continue until at least the last 2024 release.
+- :announcement:`schedule` The primary URL of widget scripts and widget data has changed. The old URLs will continue to work until at least the last 2024 release.
 - :announcement:`schedule` The old v1 schedule widget, which has been deprecated for a long time, has been removed.
 - :feature:`orga` Tracks and session types in speaker information notes have a better interface, helpful for events with many of either of them.
 - :feature:`orga:review,1462` Reviewers can now remove their reviews (while they can still be edited).

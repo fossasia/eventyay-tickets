@@ -32,10 +32,6 @@ Please make sure you have the following dependencies installed:
 | git                              | ``git``          |
 +----------------------------------+------------------+
 
-If your operating system does not provide Python 3.9 or newer, you might need
-to `compile it yourself`_ or install it from the `unstable` or `experimental`
-repositories.
-
 Some Python dependencies might also need a compiler during installation, the Debian package
 ``build-essential`` or something similar should suffice.
 
@@ -210,5 +206,3 @@ Then, go to http://localhost:8081 for a version of the documentation that
 automatically re-builds when you save a changed source file.
 Please note that changes in the static files (stylesheets and JavaScript) will only be reflected
 after a restart.
-
-.. _compile it yourself: https://unix.stackexchange.com/a/332658/2013

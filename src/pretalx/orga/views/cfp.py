@@ -512,9 +512,7 @@ class SubmissionTypeDelete(PermissionRequired, DetailView):
                     orga=True,
                 )
                 messages.success(request, _("The Session Type has been deleted."))
-            except (
-                ProtectedError
-            ):  # TODO: show which/how many submissions are concerned
+            except ProtectedError:
                 messages.error(
                     request,
                     _(
@@ -580,7 +578,7 @@ class TrackDelete(PermissionRequired, DetailView):
                 "pretalx.track.delete", person=self.request.user, orga=True
             )
             messages.success(request, _("The track has been deleted."))
-        except ProtectedError:  # TODO: show which/how many submissions are concerned
+        except ProtectedError:
             messages.error(
                 request,
                 _("This track is in use in a proposal and cannot be deleted."),

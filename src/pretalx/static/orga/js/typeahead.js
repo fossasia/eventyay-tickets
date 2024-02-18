@@ -49,11 +49,11 @@ $(() => {
                 $content.append(
                     $("<span>").addClass("search-title").append(
                         $("<i>").addClass("fa fa-fw " + icon)
-                    ).append(" ").append($("<span>").text(res.name).html())
+                    ).append(" ").append($("<span>").text(res.name))
                 )
             } else if (res.type === "submission" || res.type === "speaker") {
                 $content.append(
-                    $("<span>").addClass("search-title").append($("<div>").text(res.name).html())
+                    $("<span>").addClass("search-title").append($("<span>").text(res.name))
                 ).append(
                     $("<span>").addClass("search-detail").append(
                         $("<span>").addClass("fa fa-calendar fa-fw")
@@ -61,7 +61,7 @@ $(() => {
                 )
             } else if (res.type === "event") {
                 $content.append(
-                    $("<span>").addClass("search-title").append($("<div>").text(res.name).html())
+                    $("<span>").addClass("search-title").append($("<span>").text(res.name))
                 ).append(
                     $("<span>").addClass("search-detail").append(
                         $("<span>").addClass("fa fa-users fa-fw")

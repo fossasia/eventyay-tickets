@@ -105,7 +105,6 @@ class ExtensionFileField(ExtensionFileInput, SizeFileInput, FileField):
 
 
 class ImageField(ExtensionFileInput, SizeFileInput, FileField):
-    # TODO: add better image field widget
     widget = ImageInput
 
     def __init__(self, *args, **kwargs):
