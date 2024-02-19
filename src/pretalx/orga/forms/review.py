@@ -6,6 +6,7 @@ from django import forms
 from django.db.models import Q
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ngettext as _n
 from django_scopes.forms import SafeModelMultipleChoiceField
 
 from pretalx.common.forms.widgets import MarkdownWidget
@@ -221,7 +222,7 @@ class ReviewExportForm(ExportForm):
     data_delimiter = None
     target = forms.ChoiceField(
         required=True,
-        label=_("Proposal"),
+        label=_n("Proposal", "Proposals", 1),
         choices=(
             ("all", _("All proposals")),
             ("accepted", _("accepted")),

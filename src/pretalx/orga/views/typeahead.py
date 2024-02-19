@@ -3,7 +3,7 @@ from contextlib import suppress
 
 from django.db.models import Exists, OuterRef, Q
 from django.http import JsonResponse
-from django.utils.translation import gettext as _
+from django.utils.translation import ngettext_lazy as _n
 from django_scopes import scopes_disabled
 
 from pretalx.event.models import Organiser
@@ -40,7 +40,7 @@ def serialize_event(event):
 def serialize_submission(submission):
     return {
         "type": "submission",
-        "name": _("Session") + f" {submission.title}",
+        "name": _n("Session", "Sessions", 1) + f" {submission.title}",
         "url": submission.orga_urls.base,
         "event": str(submission.event.name),
     }
@@ -49,7 +49,7 @@ def serialize_submission(submission):
 def serialize_speaker(speaker):
     return {
         "type": "speaker",
-        "name": _("Speaker") + f" {speaker.user.name}",
+        "name": _n("Speaker", "Speakers", 1) + f" {speaker.user.name}",
         "url": speaker.orga_urls.base,
         "event": str(speaker.event.name),
     }

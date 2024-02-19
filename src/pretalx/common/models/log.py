@@ -7,6 +7,7 @@ from django.db import models
 from django.utils.functional import cached_property
 from django.utils.html import escape
 from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ngettext_lazy as _n
 from django_scopes import ScopedManager
 
 
@@ -96,9 +97,9 @@ class ActivityLog(models.Model):
                 SubmissionStates.ACCEPTED,
                 SubmissionStates.CONFIRMED,
             ]:
-                text = _("Session")
+                text = _n("Session", "Sessions", 1)
             else:
-                text = _("Proposal")
+                text = _n("Proposal", "Proposals", 1)
         if isinstance(self.content_object, Question):
             url = self.content_object.urls.base
             link_text = escape(self.content_object.question)
