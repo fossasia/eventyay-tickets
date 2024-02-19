@@ -165,7 +165,10 @@ class SingleICalView(EventPageMixin, DetailView):
     slug_field = "code"
 
     def get(self, request, event, **kwargs):
-        submission = self.get_object()
+        try:
+            submission = self.get_object()
+        except Exception:
+            raise Http404()
         code = submission.code
         talk_slots = submission.slots.filter(
             schedule=self.request.event.current_schedule, is_visible=True
