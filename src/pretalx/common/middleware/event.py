@@ -112,7 +112,7 @@ class EventPermissionMiddleware:
                     )
                 except ValueError:
                     # Happens mostly on malformed or malicious input
-                    return Http404()
+                    raise Http404()
         event = getattr(request, "event", None)
 
         self._set_orga_events(request)
