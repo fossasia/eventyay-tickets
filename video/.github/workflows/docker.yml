@@ -1,7 +1,8 @@
 name: Docker
 on:
+  workflow_dispatch:
   push:
-    branches: [ dev, stable ]
+    branches: [ development, main ]
     tags: [ "*" ]
 
 jobs:
@@ -22,7 +23,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
         with:
-          images: venueless/venueless
+          images: eventyay/eventyay-video
       
       - name: Build and push Docker image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
