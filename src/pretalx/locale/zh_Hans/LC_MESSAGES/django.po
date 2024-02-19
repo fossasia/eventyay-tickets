@@ -7362,10 +7362,6 @@ msgstr "标签已被删除。"
 msgid "Changed {count} proposal states."
 msgstr "更改了{count}个提议状态。"
 
-#: pretalx/orga/views/typeahead.py:52 pretalx/submission/models/feedback.py:31
-msgid "Speaker"
-msgstr "演讲者"
-
 #: pretalx/person/exporters.py:16
 msgid "Speaker CSV"
 msgstr "说话者CSV"

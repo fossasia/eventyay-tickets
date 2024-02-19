@@ -7634,10 +7634,6 @@ msgstr "Il tag è stato cancellato."
 msgid "Changed {count} proposal states."
 msgstr "Lo stato di {count} proposte è stato modificato."
 
-#: pretalx/orga/views/typeahead.py:52 pretalx/submission/models/feedback.py:31
-msgid "Speaker"
-msgstr "Relatore"
-
 #: pretalx/person/exporters.py:16
 msgid "Speaker CSV"
 msgstr "CSV dei relatori"

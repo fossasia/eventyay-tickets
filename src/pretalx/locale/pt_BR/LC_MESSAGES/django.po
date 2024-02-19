@@ -7648,10 +7648,6 @@ msgstr "A tag foi excluída."
 msgid "Changed {count} proposal states."
 msgstr "Alterados {count} estados da proposta."
 
-#: pretalx/orga/views/typeahead.py:52 pretalx/submission/models/feedback.py:31
-msgid "Speaker"
-msgstr "Palestrante"
-
 #: pretalx/person/exporters.py:16
 msgid "Speaker CSV"
 msgstr "CSV dos palestrantes"

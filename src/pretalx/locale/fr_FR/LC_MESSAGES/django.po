@@ -7800,10 +7800,6 @@ msgstr "L'étiquette a été supprimée."
 msgid "Changed {count} proposal states."
 msgstr "Nouvelle proposition pour {event} : {title}"
 
-#: pretalx/orga/views/typeahead.py:52 pretalx/submission/models/feedback.py:31
-msgid "Speaker"
-msgstr "Intervenant"
-
 #: pretalx/person/exporters.py:16
 msgid "Speaker CSV"
 msgstr "CSV des intervenants"

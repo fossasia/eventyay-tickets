@@ -7902,10 +7902,6 @@ msgstr "トラックが削除されました。"
 msgid "Changed {count} proposal states."
 msgstr "新しいイベント {event} への投稿: {title}"
 
-#: pretalx/orga/views/typeahead.py:52 pretalx/submission/models/feedback.py:31
-msgid "Speaker"
-msgstr "登壇者"
-
 #: pretalx/person/exporters.py:16
 msgid "Speaker CSV"
 msgstr "発表者CSV"

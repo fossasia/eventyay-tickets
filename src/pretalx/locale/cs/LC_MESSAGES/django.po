@@ -7637,10 +7637,6 @@ msgstr "Štítek byl smazán."
 msgid "Changed {count} proposal states."
 msgstr "Změněny stavy {count} přihlášek."
 
-#: pretalx/orga/views/typeahead.py:52 pretalx/submission/models/feedback.py:31
-msgid "Speaker"
-msgstr "Přednášející"
-
 #: pretalx/person/exporters.py:16
 msgid "Speaker CSV"
 msgstr "CSV přednášejících"

@@ -7226,10 +7226,6 @@ msgstr "Esta etiqueta ha sido eliminada."
 msgid "Changed {count} proposal states."
 msgstr "Nueva propuesta \"{title}\" para evento {event}"
 
-#: pretalx/orga/views/typeahead.py:52 pretalx/submission/models/feedback.py:31
-msgid "Speaker"
-msgstr "Conferencista"
-
 #: pretalx/person/exporters.py:16
 msgid "Speaker CSV"
 msgstr ""

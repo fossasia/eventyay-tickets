@@ -7814,10 +7814,6 @@ msgstr "Η ετικέτα έχει διαγραφεί."
 msgid "Changed {count} proposal states."
 msgstr "Άλλαξε {count} καταστάσεις πρότασης."
 
-#: pretalx/orga/views/typeahead.py:52 pretalx/submission/models/feedback.py:31
-msgid "Speaker"
-msgstr "Ομιλητής"
-
 #: pretalx/person/exporters.py:16
 msgid "Speaker CSV"
 msgstr "Ηχείο CSV"

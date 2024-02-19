@@ -1063,13 +1063,10 @@ msgstr[0] "Orador"
 msgstr[1] "Oradores"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:67
-#, fuzzy
-#| msgid "Submitter:"
-#| msgid_plural "Submitters:"
 msgid "Submitter"
 msgid_plural "Submitters"
-msgstr[0] "Proponente:"
-msgstr[1] "Proponentes:"
+msgstr[0] "Proponente"
+msgstr[1] "Proponentes"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:92
 #: pretalx/orga/forms/schedule.py:120
@@ -7743,10 +7740,6 @@ msgstr "A etiqueta foi eliminada."
 #, python-brace-format
 msgid "Changed {count} proposal states."
 msgstr "Alterados {count} estados da proposta."
-
-#: pretalx/orga/views/typeahead.py:52 pretalx/submission/models/feedback.py:31
-msgid "Speaker"
-msgstr "Orador"
 
 #: pretalx/person/exporters.py:16
 msgid "Speaker CSV"

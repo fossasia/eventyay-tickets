@@ -1053,9 +1053,6 @@ msgstr[4] "المتحدثين"
 msgstr[5] "المتحدثين"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:67
-#, fuzzy
-#| msgid "submitter"
-#| msgid_plural "submitters"
 msgid "Submitter"
 msgid_plural "Submitters"
 msgstr[0] "مقدم الطلب"
@@ -7780,10 +7777,6 @@ msgstr ""
 #, python-brace-format
 msgid "Changed {count} proposal states."
 msgstr ""
-
-#: pretalx/orga/views/typeahead.py:52 pretalx/submission/models/feedback.py:31
-msgid "Speaker"
-msgstr "المتحدث"
 
 #: pretalx/person/exporters.py:16
 msgid "Speaker CSV"

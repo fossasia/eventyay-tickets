@@ -1008,15 +1008,12 @@ msgstr "參加者在您的演講結束後可以在此留下回饋意見。"
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:65
 msgid "Speaker"
 msgid_plural "Speakers"
-msgstr[0] "講者："
+msgstr[0] "講者"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:67
-#, fuzzy
-#| msgid "Submitter:"
-#| msgid_plural "Submitters:"
 msgid "Submitter"
 msgid_plural "Submitters"
-msgstr[0] "名提交者："
+msgstr[0] "名提交者"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:92
 #: pretalx/orga/forms/schedule.py:120
@@ -7413,10 +7410,6 @@ msgstr "此議程軌已被刪除。"
 #, python-brace-format
 msgid "Changed {count} proposal states."
 msgstr ""
-
-#: pretalx/orga/views/typeahead.py:52 pretalx/submission/models/feedback.py:31
-msgid "Speaker"
-msgstr "講者"
 
 #: pretalx/person/exporters.py:16
 msgid "Speaker CSV"

@@ -1067,9 +1067,6 @@ msgstr[0] "Ponente"
 msgstr[1] "Ponentes"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:67
-#, fuzzy
-#| msgid "submitter"
-#| msgid_plural "submitters"
 msgid "Submitter"
 msgid_plural "Submitters"
 msgstr[0] "remitente"
@@ -7861,10 +7858,6 @@ msgstr "La etiqueta ha sido eliminada."
 #| msgid "New {event} proposal: {title}"
 msgid "Changed {count} proposal states."
 msgstr "Nueva propuesta {event}: {title}"
-
-#: pretalx/orga/views/typeahead.py:52 pretalx/submission/models/feedback.py:31
-msgid "Speaker"
-msgstr "Orador/a"
 
 #: pretalx/person/exporters.py:16
 msgid "Speaker CSV"

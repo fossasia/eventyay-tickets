@@ -6829,10 +6829,6 @@ msgstr ""
 msgid "Changed {count} proposal states."
 msgstr ""
 
-#: pretalx/orga/views/typeahead.py:52 pretalx/submission/models/feedback.py:31
-msgid "Speaker"
-msgstr ""
-
 #: pretalx/person/exporters.py:16
 msgid "Speaker CSV"
 msgstr ""

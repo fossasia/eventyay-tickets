@@ -7671,10 +7671,6 @@ msgstr "Der Tag wurde gelöscht."
 msgid "Changed {count} proposal states."
 msgstr "{count} Einreichungen wurden angepasst."
 
-#: pretalx/orga/views/typeahead.py:52 pretalx/submission/models/feedback.py:31
-msgid "Speaker"
-msgstr "Vortragende"
-
 #: pretalx/person/exporters.py:16
 msgid "Speaker CSV"
 msgstr "Vortragenden-CSV"
