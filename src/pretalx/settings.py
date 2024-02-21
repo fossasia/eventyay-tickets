@@ -436,6 +436,18 @@ LANGUAGES_INFORMATION = {
         "percentage": 91,
         "public_code": "pt",
     },
+    "ru": {
+        "name": _("Russian"),
+        "natural_name": "Русский",
+        "official": True,
+        "percentage": 0,
+    },
+    "ua": {
+        "name": _("Ukrainian"),
+        "natural_name": "Українська",
+        "official": True,
+        "percentage": 0,
+    },
     "zh-hant": {
         "name": _("Traditional Chinese (Taiwan)"),
         "natural_name": "漢語",
