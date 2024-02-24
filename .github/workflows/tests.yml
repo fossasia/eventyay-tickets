@@ -33,7 +33,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: getong/mariadb-action@v1.1
         with:
-          mariadb version: '10.4'
+          mariadb version: '10.10'
           mysql database: 'pretix'
           mysql root password: ''
         if: matrix.database == 'mysql'
@@ -75,4 +75,4 @@ jobs:
         with:
           file: src/coverage.xml
           fail_ci_if_error: true
-        if: matrix.database == 'postgres' && matrix.python-version == '3.8'
+        if: matrix.database == 'postgres' && matrix.python-version == '3.11'
