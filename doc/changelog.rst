@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :release:`2024.1.0 <2024-02-16>`
 - :feature:`lang` pretalx now comes with new translations, in Dutch and Italian!
 - :feature:`orga,820` Restricted tracks now link to the page where you can create access codes for that track.
 - :announcement:`admin,1678` Due to its incomplete and complex nature, the ``import_schedule`` admin command has been removed. If you want to import a schedule, despite all the complexities, please use the pretalx-downstream plugin instead.
