@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`orga:schedule,1698` The HTML export failed to render the schedule page due to an incorrect URL.
 - :bug:`schedule,1694` The XML schedule export was missing all speaker information.
 - :release:`2024.1.0 <2024-02-16>`
 - :feature:`lang` pretalx now comes with new translations, in Dutch and Italian!
