@@ -776,7 +776,8 @@ class Event(PretalxModel):
             score_category.save()
             score_category.limit_tracks.set([])
             for track in tracks:
-                score_category.limit_tracks.add(track_map.get(track))
+                if track in track_map:
+                    score_category.limit_tracks.add(track_map.get(track))
             for score in scores:
                 score.pk = None
                 score.category = score_category
