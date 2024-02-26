@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-02-19 08:44+0000\n"
-"PO-Revision-Date: 2023-10-22 14:04+0000\n"
-"Last-Translator: Michal Stanke <michal@stanke.cz>\n"
+"PO-Revision-Date: 2024-02-20 17:05+0000\n"
+"Last-Translator: Jozef Mlich <jmlich83@gmail.com>\n"
 "Language-Team: none\n"
 "Language: cs\n"
 "MIME-Version: 1.0\n"
@@ -1214,16 +1214,12 @@ msgid "Copy code for review"
 msgstr "Zkopírovat kód pro hodnocení"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:55
-#, fuzzy
-#| msgid "draft"
 msgid "Edit draft"
-msgstr "koncept"
+msgstr "Upravit koncept"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:57
-#, fuzzy
-#| msgid "Save draft"
 msgid "Open draft"
-msgstr "Uložit koncept"
+msgstr "Otevřít koncept"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:74
 #: pretalx/orga/templates/orga/review/dashboard.html:119
@@ -1233,16 +1229,12 @@ msgid "State"
 msgstr "Stav"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:112
-#, fuzzy
-#| msgid "Submit proposal"
 msgid "Edit proposal"
-msgstr "Odeslat přihlášku"
+msgstr "Upravit přihlášku"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:114
-#, fuzzy
-#| msgid "per proposal"
 msgid "Open proposal"
-msgstr "pro přihlášku"
+msgstr "Otevřít přihlášku"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:126
 #: pretalx/orga/templates/orga/base.html:273
@@ -1716,20 +1708,16 @@ msgid "Question"
 msgstr "Otázka"
 
 #: pretalx/common/models/log.py:117
-#, fuzzy
-#| msgid "Answer to the question '{q}'"
 msgid "Answer to question"
-msgstr "Odpověď na otázku „{q}“"
+msgstr "Odpověď na otázku"
 
 #: pretalx/common/models/log.py:120 pretalx/orga/templates/orga/base.html:219
 msgid "CfP"
 msgstr "CfP"
 
 #: pretalx/common/models/log.py:123
-#, fuzzy
-#| msgid "Edit template"
 msgid "Mail template"
-msgstr "Upravit šablonu"
+msgstr "Šablona mailu"
 
 #: pretalx/common/models/log.py:127 pretalx/event/models/organiser.py:157
 #: pretalx/orga/templates/orga/settings/team_detail.html:20
@@ -2131,8 +2119,6 @@ msgid "This change was performed by a member of the event orga."
 msgstr "Tuto změnu provedl člen organizačního týmu."
 
 #: pretalx/common/templates/common/logs.html:23
-#, fuzzy
-#| msgid "Organiser"
 msgid "An organiser"
 msgstr "Organizátor"
 
@@ -2273,28 +2259,21 @@ msgid "Please pick at least one permission for this team!"
 msgstr "Vyberte pro tento tým alespoň jedno oprávnění."
 
 #: pretalx/event/forms.py:93
-#, fuzzy
-#| msgid "Email address"
 msgid "Email addresses"
-msgstr "E-mailová adresa"
+msgstr "E-mailové adresy"
 
 #: pretalx/event/forms.py:94
-#, fuzzy
-#| msgid "Organiser email address"
 msgid "Enter one email address per line."
-msgstr "E-mail organizátora"
+msgstr "Zadejte jednu emailovou adresu na řádek."
 
 #: pretalx/event/forms.py:113
-#, fuzzy, python-format
-#| msgid "Please provide a valid email address."
+#, python-format
 msgid "“%(email)s” is not a valid email address."
-msgstr "Uveďte prosím platnou e-mailovou adresu."
+msgstr "Emailové adresy “%(email)s” nejsou platné."
 
 #: pretalx/event/forms.py:125
-#, fuzzy
-#| msgid "Please provide a valid email address!"
 msgid "Please enter at least one email address!"
-msgstr "Zadejte prosím platnou e-mailovou adresu!"
+msgstr "Zadejte prosím alespoň jednu e-mailovou adresu!"
 
 #: pretalx/event/forms.py:162
 msgid "Use languages"
@@ -2916,15 +2895,17 @@ msgid ""
 "- Your session “Title” will take place at {time} in Room 101.\n"
 "- Your session “Other Title” has been moved to {time2} in Room 102."
 msgstr ""
+"- Vaše přednáška \"Název\" bude v {time} v místnosti 101.\n"
+"- Vaše přednáška \"Jiný název\" byla přesunuta na {time2} do místnosti 102."
 
 #: pretalx/mail/context.py:270
 msgid ""
 "A list of all changes to the user's schedule in the current schedule version."
-msgstr ""
+msgstr "Seznam všech změn programu uživatele v současné verzi programu."
 
 #: pretalx/mail/context.py:284
 msgid "A list of time and place for this user's publicly visible sessions."
-msgstr ""
+msgstr "Seznam časů a míst pro veřejně viditelné přednášky uživatele."
 
 #: pretalx/mail/default_templates.py:4
 #, python-brace-format
@@ -3231,10 +3212,8 @@ msgid "Words"
 msgstr "slova"
 
 #: pretalx/orga/forms/cfp.py:155
-#, fuzzy
-#| msgid "always optional"
 msgid "Upload options"
-msgstr "vždy volitelné"
+msgstr "Možnosti nahrávání"
 
 #: pretalx/orga/forms/cfp.py:157
 msgid ""
@@ -3244,7 +3223,7 @@ msgstr ""
 
 #: pretalx/orga/forms/cfp.py:165
 msgid "Replace existing options"
-msgstr ""
+msgstr "Přepsat existující možnosti"
 
 #: pretalx/orga/forms/cfp.py:167
 msgid ""
@@ -3255,18 +3234,16 @@ msgid ""
 msgstr ""
 
 #: pretalx/orga/forms/cfp.py:206
-#, fuzzy
-#| msgid "Cannot parse JSON file."
 msgid "Could not read file."
-msgstr "Soubor JSON nelze přečíst."
+msgstr "Soubor nelze přečíst."
 
 #: pretalx/orga/forms/cfp.py:211
 msgid "JSON file does not contain a list."
-msgstr ""
+msgstr "JSON soubor neobsahuje seznam."
 
 #: pretalx/orga/forms/cfp.py:213
 msgid "JSON file does not contain a list of objects."
-msgstr ""
+msgstr "JSON soubor neobsahuje seznam objektů."
 
 #: pretalx/orga/forms/cfp.py:228
 msgid ""
@@ -3275,17 +3252,16 @@ msgstr "Vyberte prosím termín po kterém bude otázka povinná."
 
 #: pretalx/orga/forms/cfp.py:243
 msgid "You cannot replace answer options without uploading new ones."
-msgstr ""
+msgstr "Nelze přepsat možné odpovědi bez nahrání nových."
 
 #: pretalx/orga/forms/cfp.py:337
 msgid "You already have a session type by this name!"
 msgstr "Typ přednášky s tímto názvem už máte!"
 
 #: pretalx/orga/forms/cfp.py:362
-#, fuzzy, python-brace-format
-#| msgid "You can check for updates <a href=\"%(url)s\">here</a>."
+#, python-brace-format
 msgid "You can create an access code <a href=\"{url}\">here</a>."
-msgstr "Aktualizace můžete zkontrolovat <a href=\"%(url)s\">zde</a>."
+msgstr "Přístupový kód můžete vytvořit <a href=\"{url}\">zde</a>."
 
 #: pretalx/orga/forms/cfp.py:371
 msgid "You already have a track by this name!"

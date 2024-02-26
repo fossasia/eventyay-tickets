@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-02-19 08:44+0000\n"
-"PO-Revision-Date: 2024-02-16 10:47+0000\n"
-"Last-Translator: Tobias Kunze <r@rixx.de>\n"
+"PO-Revision-Date: 2024-02-20 12:24+0000\n"
+"Last-Translator: Carole_Grootenboer <carole.grootenboer@surf.nl>\n"
 "Language-Team: none\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
@@ -1222,16 +1222,12 @@ msgid "Copy code for review"
 msgstr "Kopieer code voor recentie"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:55
-#, fuzzy
-#| msgid "draft"
 msgid "Edit draft"
-msgstr "concept"
+msgstr "Bewerkt concept"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:57
-#, fuzzy
-#| msgid "Save draft"
 msgid "Open draft"
-msgstr "Concept opslaan"
+msgstr "Concept openen"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:74
 #: pretalx/orga/templates/orga/review/dashboard.html:119
@@ -1241,16 +1237,12 @@ msgid "State"
 msgstr "Status"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:112
-#, fuzzy
-#| msgid "Submit proposal"
 msgid "Edit proposal"
-msgstr "Stuur voorstel in"
+msgstr "Bewerk voorstel"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:114
-#, fuzzy
-#| msgid "Other proposals"
 msgid "Open proposal"
-msgstr "Andere voorstellen"
+msgstr "Open voorstel"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:126
 #: pretalx/orga/templates/orga/base.html:273
@@ -2286,7 +2278,7 @@ msgstr "Vul één e-mailadres in per regel."
 #: pretalx/event/forms.py:113
 #, python-format
 msgid "“%(email)s” is not a valid email address."
-msgstr ""
+msgstr "“%(email)s” is geen geldig e-mailadres."
 
 #: pretalx/event/forms.py:125
 msgid "Please enter at least one email address!"
@@ -5269,12 +5261,10 @@ msgid "Send to outbox"
 msgstr "Verstuur naar outbox"
 
 #: pretalx/orga/templates/orga/mails/_placeholder_group.html:8
-#, fuzzy
-#| msgid "Session"
 msgid "Session"
 msgid_plural "Sessions"
 msgstr[0] "Sessie"
-msgstr[1] "Sessie"
+msgstr[1] "Sessies"
 
 #: pretalx/orga/templates/orga/mails/_placeholder_group.html:20
 msgid "Other"
@@ -5734,8 +5724,8 @@ msgstr "Toewijzingen importeren"
 #, python-format
 msgid "Or review the missing proposal here."
 msgid_plural "Or review the missing %(count)s proposals one-by-one."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Of beoordeel het ontbrekende voorstel hier."
+msgstr[1] "Of beoordeel de %(count)s ontbrekende voorstellen hier."
 
 #: pretalx/orga/templates/orga/review/bulk.html:29
 #: pretalx/orga/templates/orga/review/dashboard.html:36
@@ -5763,8 +5753,8 @@ msgstr "Je hebt nog geen voorstellen."
 #, python-format
 msgid "%(count)s proposal is waiting for your review."
 msgid_plural "%(count)s proposals are waiting for your review."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(count)s voorstel wacht op je beoordeling."
+msgstr[1] "%(count)s voorstellen wachten op je beoordeling."
 
 #: pretalx/orga/templates/orga/review/dashboard.html:31
 msgid "Click here to get started!"
@@ -7552,39 +7542,43 @@ msgstr ""
 #: pretalx/orga/views/submission.py:105
 #, python-brace-format
 msgid "You have been added to a proposal for {event}"
-msgstr ""
+msgstr "Je bent toegevoegd aan een voorstel voor {event}"
 
 #: pretalx/orga/views/submission.py:236
 msgid ""
 "Somebody else was faster than you: this proposal was already in the state "
 "you wanted to change it to."
 msgstr ""
+"Iemand anders was sneller dan jij: dit voorstel was al in de staat waarin "
+"jij het wilde veranderen."
 
 #: pretalx/orga/views/submission.py:271
 msgid ""
 "There may be pending emails for this proposal that are now incorrect or "
 "outdated."
 msgstr ""
+"Er kunnen e-mails voor dit voorstel in behandeling zijn die nu onjuist of "
+"verouderd zijn."
 
 #: pretalx/orga/views/submission.py:306
 msgid "Please provide a valid email address!"
-msgstr ""
+msgstr "Geef een geldig e-mailadres op!"
 
 #: pretalx/orga/views/submission.py:314
 msgid "The speaker has been added to the proposal."
-msgstr ""
+msgstr "De spreker is toegevoegd aan het voorstel."
 
 #: pretalx/orga/views/submission.py:318
 msgid "The speaker was already part of the proposal."
-msgstr ""
+msgstr "De spreker maakte al deel uit van het voorstel."
 
 #: pretalx/orga/views/submission.py:339
 msgid "The speaker has been removed from the proposal."
-msgstr ""
+msgstr "De spreker is verwijderd van het voorstel."
 
 #: pretalx/orga/views/submission.py:342
 msgid "The speaker was not part of this proposal."
-msgstr ""
+msgstr "De spreker maakte geen deel uit van het voorstel."
 
 #: pretalx/orga/views/submission.py:521
 msgid ""
