@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`cfp,1700` When using the new Dutch locale, users were unable to use the availability picker, as the locale was missing from the calendar.
 - :bug:`orga:review` In the new bulk review feature, reviewers had to review all proposals at once if the event's settings required review scores or comments to be set. Now, the bulk review feature permits partial reviews.
 - :bug:`orga:schedule,1698` The HTML export failed to render the schedule page due to an incorrect URL.
 - :bug:`schedule,1694` The XML schedule export was missing all speaker information.
