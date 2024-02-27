@@ -110,7 +110,7 @@
                     {% for gca in request.organizer.gift_card_issuer_acceptance.all %}
                         <li>
                             <strong>{{ gca.issuer }}</strong>
-                            <button type="submit" name="del" value="{{ gca.issuer.slug }}" class="btn btn-xs btn-danger">
+                            <button type="submit" name="del" value="{{ gca.issuer.slug }}" class="btn btn-xs btn-delete btn-danger">
                                 <span class="fa fa-trash"></span>
                             </button>
                         </li>

@@ -33,7 +33,7 @@
                     <a href="{% url "control:organizer.property.edit" organizer=request.organizer.slug property=p.id %}"
                             class="btn btn-default btn-sm"><i class="fa fa-edit"></i></a>
                     <a href="{% url "control:organizer.property.delete" organizer=request.organizer.slug property=p.id %}"
-                            class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></a>
+                            class="btn btn-delete btn-danger btn-sm"><i class="fa fa-trash"></i></a>
                 </td>
             </tr>
         {% endfor %}

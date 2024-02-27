@@ -115,7 +115,7 @@
                 <form action="" method="post" class="flip text-right">
                     {% csrf_token %}
                     <input type="hidden" name="testmode" value="true">
-                    <button type="submit" class="btn btn-danger btn-lg btn-save">
+                    <button type="submit" class="btn btn-lg btn-default btn-save">
                         {% trans "Enable test mode" %}
                     </button>
                 </form>
@@ -126,7 +126,7 @@
     </div>
     <div class="text-right">
         <a href="{% url "control:event.dangerzone" organizer=request.organizer.slug event=request.event.slug %}"
-                class="btn btn-default btn-lg">
+                class="btn btn-delete btn-danger btn-default btn-lg">
             <span class="fa fa-trash"></span>
             {% trans "Cancel or delete event" %}
         </a>

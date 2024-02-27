@@ -72,7 +72,7 @@
         <ul class="list-group">
             {% for d in devices %}
                 <li class="list-group-item">
-                    <a class="btn btn-danger btn-xs pull-right flip"
+                    <a class="btn btn-delete btn-danger btn-xs pull-right flip"
                             href="{% url "control:user.settings.2fa.delete" devicetype=d.devicetype device=d.pk %}">
                         Delete
                     </a>
