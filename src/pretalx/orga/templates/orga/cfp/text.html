@@ -112,18 +112,6 @@
                                     </tr>
                                 {% endif %}
                                 <tr>
-                                    <th>{% translate "Biography" %}</th>
-                                    <td class="hide-label">{% bootstrap_field sform.cfp_ask_biography layout='event-inline' %}</td>
-                                    <td>{% bootstrap_field sform.cfp_biography_min_length use_label=False layout='inline' %}</td>
-                                    <td>{% bootstrap_field sform.cfp_biography_max_length use_label=False layout='inline' %}</td>
-                                </tr>
-                                <tr>
-                                    <th>{% translate "Profile picture" %}</th>
-                                    <td class="hide-label">{% bootstrap_field sform.cfp_ask_avatar layout='event-inline' %}</td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
                                     <th>{% translate "Additional speakers" %}</th>
                                     <td class="hide-label">{% bootstrap_field sform.cfp_ask_additional_speaker layout='event-inline' %}</td>
                                     <td></td>
@@ -166,6 +154,26 @@
                         </div>
                     </fieldset>
 
+                    <fieldset>
+                        <legend id="profile">{% translate "Speaker Profile" %}</legend>
+                        <div class="offset-md-3 alert alert-info"><span>
+                            {% translate "Speaker Profile" %}
+                        </span></div>
+                        <div class="table-responsive-md"><table class="table offset-md-3 table-sm table-hover table-flip" id="cfp-option-table">
+                                <tr>
+                                    <th>{% translate "Biography" %}</th>
+                                    <td class="hide-label">{% bootstrap_field sform.cfp_ask_biography layout='event-inline' %}</td>
+                                    <td>{% bootstrap_field sform.cfp_biography_min_length use_label=False layout='inline' %}</td>
+                                    <td>{% bootstrap_field sform.cfp_biography_max_length use_label=False layout='inline' %}</td>
+                                </tr>
+                                <tr>
+                                    <th>{% translate "Profile picture" %}</th>
+                                    <td class="hide-label">{% bootstrap_field sform.cfp_ask_avatar layout='event-inline' %}</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+		        </table></div>
+                    </fieldset>
                     {% include "orga/includes/submit_row.html" %}
                 </form>
             </div>
