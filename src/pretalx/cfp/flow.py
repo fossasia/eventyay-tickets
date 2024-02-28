@@ -385,16 +385,16 @@ class InfoStep(GenericFlowStep, FormFlowStep):
         request.submission = submission
 
 
-class QuestionsStep(GenericFlowStep, FormFlowStep):
+class SubmissionQuestionsStep(GenericFlowStep, FormFlowStep):
     identifier = "questions"
     icon = "question-circle-o"
     form_class = QuestionsForm
-    template_name = "cfp/event/submission_questions.html"
+    template_name = "cfp/event/submission_submission_questions.html"
     priority = 25
 
     @property
     def label(self):
-        return _("Questions")
+        return _("Submission Questions")
 
     @property
     def _title(self):
@@ -412,21 +412,27 @@ class QuestionsStep(GenericFlowStep, FormFlowStep):
         track = info_data.get("track")
         if track:
             questions = self.event.questions.exclude(
-                Q(target=QuestionTarget.SUBMISSION)
-                & (
-                    (~Q(tracks__in=[info_data.get("track")]) & Q(tracks__isnull=False))
-                    | (
-                        ~Q(submission_types__in=[info_data.get("submission_type")])
-                        & Q(submission_types__isnull=False)
+                Q(target=QuestionTarget.SPEAKER)
+                | (
+                    Q(target=QuestionTarget.SUBMISSION)
+                    & (
+                        (~Q(tracks__in=[info_data.get("track")]) & Q(tracks__isnull=False))
+                        | (
+                            ~Q(submission_types__in=[info_data.get("submission_type")])
+                            & Q(submission_types__isnull=False)
+                        )
                     )
                 )
             )
         else:
             questions = self.event.questions.exclude(
-                Q(target=QuestionTarget.SUBMISSION)
-                & (
-                    ~Q(submission_types__in=[info_data.get("submission_type")])
-                    & Q(submission_types__isnull=False)
+                Q(target=QuestionTarget.SPEAKER)
+                | (
+                    Q(target=QuestionTarget.SUBMISSION)
+                    & (
+                        ~Q(submission_types__in=[info_data.get("submission_type")])
+                        & Q(submission_types__isnull=False)
+                    )
                 )
             )
         return questions.exists()
@@ -448,6 +454,50 @@ class QuestionsStep(GenericFlowStep, FormFlowStep):
         form.is_valid()
         form.save()
 
+class SpeakerQuestionsStep(GenericFlowStep, FormFlowStep):
+    identifier = "speakerquestions"
+    icon = "question-circle-o"
+    form_class = QuestionsForm
+    template_name = "cfp/event/submission_speaker_questions.html"
+    priority = 80
+
+    @property
+    def label(self):
+        return _("Speaker Questions")
+
+    @property
+    def _title(self):
+        return _("Tell us more!")
+
+    @property
+    def _text(self):
+        return _(
+            "Before we can save your proposal, we have some more questions for you."
+        )
+
+    def is_applicable(self, request):
+        self.request = request
+        questions = self.event.questions.filter(
+            Q(target=QuestionTarget.SPEAKER)
+        )
+        return questions.exists()
+
+    def get_form_kwargs(self):
+        result = super().get_form_kwargs()
+        info_data = self.cfp_session.get("data", {}).get("info", {})
+        result["target"] = ""
+        result["track"] = info_data.get("track")
+        result["submission_type"] = info_data.get("submission_type")
+        if not self.request.user.is_anonymous:
+            result["speaker"] = self.request.user
+        return result
+
+    def done(self, request, draft=False):
+        form = self.get_form(from_storage=True)
+        form.speaker = request.user
+        form.submission = request.submission
+        form.is_valid()
+        form.save()
 
 class UserStep(GenericFlowStep, FormFlowStep):
     identifier = "user"
@@ -546,8 +596,9 @@ class ProfileStep(GenericFlowStep, FormFlowStep):
 
 DEFAULT_STEPS = (
     InfoStep,
-    QuestionsStep,
+    SubmissionQuestionsStep,
     UserStep,
+    SpeakerQuestionsStep,
     ProfileStep,
 )
 
