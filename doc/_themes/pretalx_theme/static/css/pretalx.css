@@ -142,16 +142,20 @@ header {
     display: flex;
     justify-content: space-between;
 }
-header img {
+header #logourl {
+    max-width: 200px;
+}
+header #logourl img {
     height: 100%;
     box-shadow: none;
 }
+header #spacer {
+    flex-grow: 1;
+}
 #header-search {
-    position: fixed;
-    width: 100%;
+    margin: 0 24px;
 }
 #header-search form {
-    width: 100%;
     height: 70px;
     margin-left: auto;
     margin-right: auto;
