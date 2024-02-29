@@ -45,6 +45,8 @@ install line above like this::
 
     $ pip3 install --user --upgrade-strategy eager pretalx==1.2.3
 
+.. _installing-a-commit:
+
 Installing a commit or a branch version
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
