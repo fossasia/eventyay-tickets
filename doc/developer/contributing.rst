@@ -6,9 +6,9 @@ Contributing to pretalx
 You want to contribute? That's great! Being an open source project, pretalx
 thrives if it receives regular contributions from the community. Everyone is
 able to contribute, and contributions can come in many forms: Code,
-Documentation, Translations, Graphics, Feedback ….  We appreciate them highly!
-If you're not sure how to make something work, feel free to `open an issue`_
-about it.
+Documentation, :ref:`Translations<translating>`, Graphics, Feedback ….  We
+appreciate them highly! If you're not sure how to make something work, feel
+free to `open a GitHub Discussion`_ about it.
 
 Don't forget to head over to :ref:`devsetup` to read about how to set up your
 local copy of pretalx for development and testing.
@@ -58,22 +58,24 @@ how to format something. They are configured via the ``setup.cfg`` file in the
     isort .
     black .
     flake8 .
-    find -name "*.html" | xargs djhtml -i
+    djhtml -i .
 
 While we enforce no strict line length, please try to keep your lines **below
 120 characters**. Other than that, we generally subscribe to the `Django
 project style guide`_.
 
 For JavaScript and (S)CSS files we follow the conventions established by
-prettier_, although it doesn't run automatically on commit. These flags should
-do the right thing::
+prettier_, with 2 spaces for indentation in (S)CSS files and 4 spaces in
+JavaScript files.
 
-    prettier --trailing-comma es5 --no-semi --write "path/to/file"
+    prettier --no-semi --write "path/to/file"
 
-Our tests run with pytest, so please use their ``assert`` statement
-conventions.
+Changes should be covered by tests. Our tests run with pytest, so please use
+their ``assert`` statement conventions.
 
-Remember to mark all user-facing strings for **translation**.
+Remember to mark all user-facing strings for **translation**, and please avoid
+unnecessary changes to existing translations, as they require manual
+re-translation in all languages.
 
 Documentation
 ~~~~~~~~~~~~~
@@ -94,47 +96,9 @@ second line should be empty, and the remainder should be text.
 
 If you want to address or close issues, please do so in the commit message
 body. ``Closes #123`` or ``Refs #123`` will close the issue or show the
-reference in the issue log.
+reference in the issue log on GitHub.
 
-To make our unpaid, for-fun development process less dreary and more fun, we
-tend to include emoji in our commit messages. You don't have to do so, but if
-you do, please note that these are the meanings we ascribe to them:
-
-+----+--------------------+
-| ✨ | Feature            |
-+----+--------------------+
-| 🐛 | Bug                |
-+----+--------------------+
-| 🎀 | UI improvement     |
-+----+--------------------+
-| 📚 | Documentation      |
-+----+--------------------+
-| 🐎 | Performance        |
-+----+--------------------+
-| 🎨 | Code style         |
-+----+--------------------+
-| 🔥 | Code removal       |
-+----+--------------------+
-| 🔨 | Refactoring        |
-+----+--------------------+
-| ☔ | Tests              |
-+----+--------------------+
-| 🔒 | Security issue     |
-+----+--------------------+
-| ⬆  | Dependency upgrade |
-+----+--------------------+
-| 🚨 | Fix CI build       |
-+----+--------------------+
-| 🧹 | Housekeeping       |
-+----+--------------------+
-| 📦 | Packaging          |
-+----+--------------------+
-| 🚀 | Release            |
-+----+--------------------+
-| 🗺  | Translations       |
-+----+--------------------+
-
-.. _open an issue: https://github.com/pretalx/pretalx/issues/new
+.. _open a GitHub discussion: https://github.com/pretalx/pretalx/discussions/new
 .. _GitHub: https://github.com/pretalx/pretalx
 .. _GitHub documentation: https://docs.github.com/en/pull-requests
 .. _small: https://github.com/pretalx/pretalx/issues?q=is%3Aissue+is%3Aopen+label%3Asize%3Asmall
