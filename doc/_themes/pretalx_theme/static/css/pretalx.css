@@ -3818,6 +3818,7 @@ div.version {
     margin: 3.5em 6em;
     height: 100%;
     max-width: 800px;
+    line-height: 1.5;
 }
 
 footer {
