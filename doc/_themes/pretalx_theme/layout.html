@@ -10,68 +10,37 @@
 <!DOCTYPE html>
 <head>
   <meta charset="utf-8">
-  {{ metatags }}
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   {% block htmltitle %}
   <title>{{ title|striptags|e }}{{ titlesuffix }}</title>
   {% endblock %}
   <link rel="shortcut icon" href="{{ pathto('_static/images/favicon.png', 1) }}"/>
-  {# CANONICAL URL #}
-  {% if theme_canonical_url %}
-    <link rel="canonical" href="{{ theme_canonical_url }}{{ pagename }}.html"/>
-  {% endif %}
 
-  {# OPENSEARCH #}
-  {% if not embedded %}
-    {% if use_opensearch %}
-      <link rel="search" type="application/opensearchdescription+xml" title="{% trans docstitle=docstitle|e %}Search within {{ docstitle }}{% endtrans %}" href="{{ pathto('_static/opensearch.xml', 1) }}"/>
-    {% endif %}
-  {% endif %}
   <link rel="stylesheet" href="{{ pathto('_static/pretalx.css', 1) }}" type="text/css" />
-
   {% for cssfile in css_files %}
     <link rel="stylesheet" href="{{ pathto(cssfile, 1) }}" type="text/css" />
   {% endfor %}
-
   {% for cssfile in extra_css_files %}
     <link rel="stylesheet" href="{{ pathto(cssfile, 1) }}" type="text/css" />
   {% endfor %}
 
   {%- block linktags %}
-    {%- if hasdoc('about') %}
-        <link rel="author" title="{{ _('About these documents') }}"
-              href="{{ pathto('about') }}"/>
-    {%- endif %}
-    {%- if hasdoc('genindex') %}
-        <link rel="index" title="{{ _('Index') }}"
-              href="{{ pathto('genindex') }}"/>
-    {%- endif %}
-    {%- if hasdoc('search') %}
-        <link rel="search" title="{{ _('Search') }}" href="{{ pathto('search') }}"/>
-    {%- endif %}
-    {%- if hasdoc('copyright') %}
-        <link rel="copyright" title="{{ _('Copyright') }}" href="{{ pathto('copyright') }}"/>
-    {%- endif %}
-    <link rel="top" title="{{ docstitle|e }}" href="{{ pathto('index') }}"/>
-    {%- if parents %}
-        <link rel="up" title="{{ parents[-1].title|striptags|e }}" href="{{ parents[-1].link|e }}"/>
-    {%- endif %}
-    {%- if next %}
-        <link rel="next" title="{{ next.title|striptags|e }}" href="{{ next.link|e }}"/>
-    {%- endif %}
-    {%- if prev %}
-        <link rel="prev" title="{{ prev.title|striptags|e }}" href="{{ prev.link|e }}"/>
-    {%- endif %}
+    <link rel="index" title="Index" href="{{ pathto('genindex') }}"/>
+    <link rel="search" title="Search" href="{{ pathto('search') }}"/>
   {%- endblock %}
+
+  {{ metatags }}
+
   {%- block extrahead %} {% endblock %}
 
   {# Keep modernizr in head - http://modernizr.com/docs/#installing #}
   <script src="{{ pathto('_static/js/modernizr.min.js', 1) }}"></script>
-
 </head>
 
 <body role="document">
+
   {% block extrabody %} {% endblock %}
+
   {% include "header.html" %}
     {# SIDE NAV, TOGGLES ON MOBILE #}
     <nav data-toggle="nav-shift" class="nav-side">
@@ -109,7 +78,6 @@
         {% endblock %}
       </nav>
 
-
       {# PAGE CONTENT #}
       <div class="nav-content">
         <div class="rst-content">
@@ -117,40 +85,25 @@
            <div itemprop="articleBody">
             {% block body %}{% endblock %}
            </div>
-           <div class="articleComments">
-            {% block comments %}{% endblock %}
-           </div>
           </div>
           {% include "footer.html" %}
         </div>
       </div>
     </main>
 
-  {% if not embedded %}
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'{{ url_root }}',
-            VERSION:'{{ release|e }}',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'{{ '' if no_search_suffix else file_suffix }}',
-            HAS_SOURCE:  {{ has_source|lower }},
-            SOURCELINK_SUFFIX: '{{ sourcelink_suffix }}'
-        };
-    </script>
-    {%- for scriptfile in script_files %}
-      <script type="text/javascript" src="{{ pathto(scriptfile, 1) }}"></script>
-    {%- endfor %}
-
-  {% endif %}
-
-  {# STICKY NAVIGATION #}
-  {% if theme_sticky_navigation %}
   <script type="text/javascript">
-      jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
-      });
+      var DOCUMENTATION_OPTIONS = {
+          URL_ROOT:'{{ url_root }}',
+          VERSION:'{{ release|e }}',
+          COLLAPSE_INDEX:false,
+          FILE_SUFFIX:'{{ '' if no_search_suffix else file_suffix }}',
+          HAS_SOURCE:  {{ has_source|lower }},
+          SOURCELINK_SUFFIX: '{{ sourcelink_suffix }}'
+      };
   </script>
-  {% endif %}
+  {%- for scriptfile in script_files %}
+    <script type="text/javascript" src="{{ pathto(scriptfile, 1) }}"></script>
+  {%- endfor %}
 
   {%- block footer %} {% endblock %}
 
