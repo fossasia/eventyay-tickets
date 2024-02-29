@@ -20,7 +20,7 @@ body {
     font-family: "Open Sans", Helvetica, "Helvetica Neue", Arial, sans-serif;
     font-weight: normal;
     color: #404040;
-    min-height: 100%;
+    height: 100vh;
     display: flex;
     flex-direction: column;
     background-color: white;
@@ -32,7 +32,10 @@ main {
     margin-left: 360px;
     margin-top: 70px;
     background: white;
-    min-height: 100%
+    height: calc(100vh - 70px);
+    overflow: auto;
+    scroll-padding-top: 28px;
+    scroll-behavior: smooth;
 }
 
 header {
