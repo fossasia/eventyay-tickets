@@ -118,12 +118,6 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <th>{% translate "Availability" %}</th>
-                                    <td class="hide-label">{% bootstrap_field sform.cfp_ask_availabilities layout='event-inline' %}</td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
                                     <th>{% translate "Notes" %}</th>
                                     <td class="hide-label">{% bootstrap_field sform.cfp_ask_notes layout='event-inline' %}</td>
                                     <td></td>
@@ -161,14 +155,20 @@
                         </span></div>
                         <div class="table-responsive-md"><table class="table offset-md-3 table-sm table-hover table-flip" id="cfp-option-table">
                                 <tr>
+                                    <th>{% translate "Profile picture" %}</th>
+                                    <td class="hide-label">{% bootstrap_field sform.cfp_ask_avatar layout='event-inline' %}</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
                                     <th>{% translate "Biography" %}</th>
                                     <td class="hide-label">{% bootstrap_field sform.cfp_ask_biography layout='event-inline' %}</td>
                                     <td>{% bootstrap_field sform.cfp_biography_min_length use_label=False layout='inline' %}</td>
                                     <td>{% bootstrap_field sform.cfp_biography_max_length use_label=False layout='inline' %}</td>
                                 </tr>
                                 <tr>
-                                    <th>{% translate "Profile picture" %}</th>
-                                    <td class="hide-label">{% bootstrap_field sform.cfp_ask_avatar layout='event-inline' %}</td>
+                                    <th>{% translate "Availability" %}</th>
+                                    <td class="hide-label">{% bootstrap_field sform.cfp_ask_availabilities layout='event-inline' %}</td>
                                     <td></td>
                                     <td></td>
                                 </tr>
