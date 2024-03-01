@@ -1,5 +1,6 @@
 from django import forms
 from django.db.models import Count, Exists, OuterRef, Q
+from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django_scopes.forms import SafeModelChoiceField
@@ -7,13 +8,13 @@ from django_scopes.forms import SafeModelChoiceField
 from pretalx.cfp.forms.cfp import CfPFormMixin
 from pretalx.common.forms.fields import ImageField
 from pretalx.common.forms.widgets import MarkdownWidget
-from pretalx.common.mixins.forms import PublicContent, RequestRequire
+from pretalx.common.mixins.forms import PublicContent, RequestRequire, QuestionFieldsMixin
 from pretalx.common.mixins.views import Filterable
 from pretalx.submission.forms.track_select_widget import TrackSelectWidget
-from pretalx.submission.models import Answer, Question, Submission, SubmissionStates
+from pretalx.submission.models import Answer, Question, Submission, SubmissionStates, QuestionTarget, QuestionVariant
 
 
-class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
+class InfoForm(CfPFormMixin, RequestRequire, PublicContent, QuestionFieldsMixin, forms.ModelForm):
     additional_speaker = forms.EmailField(
         label=_("Additional Speaker"),
         help_text=_(
@@ -30,6 +31,13 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
 
     def __init__(self, event, **kwargs):
         self.event = event
+        self.submission = kwargs.pop("submission", None)
+        self.track = kwargs.pop("track", None) or getattr(
+            self.submission, "track", None
+        )
+        self.submission_type = kwargs.pop("submission_type", None) or getattr(
+            self.submission, "submission_type", None
+        )
         self.readonly = kwargs.pop("readonly", False)
         self.access_code = kwargs.pop("access_code", None)
         self.default_values = {}
@@ -59,6 +67,55 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
         if self.readonly:
             for f in self.fields.values():
                 f.disabled = True
+
+        self.target_type = kwargs.pop("target", QuestionTarget.SUBMISSION)
+        self.for_reviewers = kwargs.pop("for_reviewers", False)
+        if self.target_type == QuestionTarget.SUBMISSION:
+            target_object = self.submission
+        elif self.target_type == QuestionTarget.SPEAKER:
+            target_object = self.speaker
+
+        self.queryset = Question.all_objects.filter(event=self.event, active=True)
+        if self.target_type:
+            self.queryset = self.queryset.filter(target=self.target_type)
+        else:
+            self.queryset = self.queryset.exclude(target=QuestionTarget.REVIEWER)
+        if self.track:
+            self.queryset = self.queryset.filter(
+                Q(tracks__in=[self.track]) | Q(tracks__isnull=True)
+            )
+        if self.submission_type:
+            self.queryset = self.queryset.filter(
+                Q(submission_types__in=[self.submission_type])
+                | Q(submission_types__isnull=True)
+            )
+
+        for question in self.queryset.prefetch_related("options"):
+            initial_object = None
+            initial = question.default_answer
+            if target_object:
+                answers = [
+                    a
+                    for a in target_object.answers.all()
+                    if a.question_id == question.id
+                ]
+                if answers:
+                    initial_object = answers[0]
+                    initial = (
+                        answers[0].answer_file
+                        if question.variant == QuestionVariant.FILE
+                        else answers[0].answer
+                    )
+
+            field = self.get_field(
+                question=question,
+                initial=initial,
+                initial_object=initial_object,
+                readonly=self.readonly,
+            )
+            field.question = question
+            field.answer = initial_object
+            self.fields[f"question_{question.pk}"] = field
 
     def _set_track(self, instance=None):
         if "track" in self.fields:
@@ -159,6 +216,14 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
                     "Please contact the organisers if you want to change how often you’re presenting this proposal."
                 )
             )
+
+    @cached_property
+    def submission_fields(self):
+        return [
+            forms.BoundField(self, field, name)
+            for name, field in self.fields.items()
+            if hasattr(field, "question") and field.question.target == QuestionTarget.SUBMISSION
+        ]
 
     def save(self, *args, **kwargs):
         for key, value in self.default_values.items():
