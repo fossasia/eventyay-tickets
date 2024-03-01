@@ -150,8 +150,8 @@
     </div>
 
     <form method="post">{% csrf_token %}
-        <div class="table-responsive">
-            <table class="table review-table table-hover table-flip">
+        <div class="table-responsive-sm">
+            <table class="table table-sm review-table table-hover table-flip table-sticky">
                 <colgroup>
                     {% if can_see_all_reviews %}
                         <col class="col-score-avg nowrap numeric">
@@ -302,7 +302,7 @@
                                     ({% translate "pending" %} {% include "cfp/event/fragment_state.html" with state=submission.pending_state %})
                                 {% endif %}
                             </td>
-                            <td class="action-row d-flex justify-space-around">
+                            <td><div class="action-row d-flex justify-space-around">
                                 {% if submission.state == 'submitted' and can_accept_submissions %}
                                     <div class="radio form-check accept">
                                         <input type="radio" id="a-{{ submission.code }}" name="s-{{ submission.code }}" value="accept">
@@ -314,7 +314,7 @@
                                     </div>
                                     <div class="unmark-radio" title="{% translate "Unset accept/reject vote" %}"><i class="fa fa-ban"></i></div>
                                 {% endif %}
-                            </td>
+                            </div></td>
                         </tr>
                     {% empty %}
                         <tr>
