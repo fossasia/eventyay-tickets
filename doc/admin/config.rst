@@ -141,6 +141,10 @@ Example::
     password=abcd
     host=localhost
     port=3306
+    sslmode=require
+    sslrootcert=/etc/pretix/postgresql-ca.crt
+    sslcert=/etc/pretix/postgresql-client-crt.crt
+    sslkey=/etc/pretix/postgresql-client-key.key
 
 ``backend``
     One of ``mysql``, ``sqlite3``, ``oracle`` and ``postgresql``.
@@ -156,6 +160,11 @@ Example::
 ``user``, ``password``, ``host``, ``port``
     Connection details for the database connection. Empty by default.
 
+``sslmode``, ``sslrootcert``
+    Connection TLS details for the PostgreSQL database connection. Possible values of ``sslmode`` are ``disable``, ``allow``, ``prefer``, ``require``, ``verify-ca``, and ``verify-full``. ``sslrootcert`` should be the accessible path of the ca certificate. Both values are empty by default.
+
+``sslcert``, ``sslkey``
+    Connection mTLS details for the PostgreSQL database connection. It's also necessary to specify ``sslmode`` and ``sslrootcert`` parameters, please check the correct values from the TLS part. ``sslcert`` should be the accessible path of the client certificate.  ``sslkey`` should be the accessible path of the client key. All values are empty by default.
 ``galera``
     Indicates if the database backend is a MySQL/MariaDB Galera cluster and
     turns on some optimizations/special case handlers. Default: ``False``
@@ -304,6 +313,21 @@ to speed up various operations::
 
 ``session``
     When this is set to ``True``, redis will be used as the session storage.
+``ssl_cert_reqs``
+    If this is set it will be passed to redis as the connection option ``SSL_CERT_REQS``.
+    Possible values are ``none``, ``optional``, and ``required``.
+
+``ssl_ca_certs``
+    If your redis setup doesn't require TLS you can omit this option.
+    If this is set it will be passed to redis as the connection option ``SSL_CA_CERTS``. Possible value is the ca path.
+
+``ssl_keyfile``
+    If your redis setup doesn't require mTLS you can omit this option.
+    If this is set it will be passed to redis as the connection option ``SSL_KEYFILE``. Possible value is the keyfile path.
+
+``ssl_certfile``
+    If your redis setup doesn't require mTLS you can omit this option.
+    If this is set it will be passed to redis as the connection option ``SSL_CERTFILE``. Possible value is the certfile path.
 
 If redis is not configured, pretix will store sessions and locks in the database. If memcached
 is configured, memcached will be used for caching instead of redis.
@@ -342,6 +366,8 @@ RabbitMQ might be the better choice if you have a complex, multi-server, high-pe
 but as you already should have a redis instance ready for session and lock storage, we recommend
 redis for convenience. See the `Celery documentation`_ for more details.
 
+
+It is possible the use Redis with TLS/mTLS for the broker or the backend. To do so, it is necessary to specify the TLS identifier ``rediss``, the ssl mode ``ssl_cert_reqs`` and optionally specify the CA (TLS) ``ssl_ca_certs``, cert ``ssl_certfile`` and key ``ssl_keyfile`` (mTLS) path as encoded string. the following uri describes the format and possible parameters ``rediss://0.0.0.0:6379/1?ssl_cert_reqs=required&ssl_ca_certs=%2Fetc%2Fpretix%2Fredis-ca.pem&ssl_certfile=%2Fetc%2Fpretix%2Fredis-client-crt.pem&ssl_keyfile=%2Fetc%2Fpretix%2Fredis-client-key.key``
 Sentry
 ------
 

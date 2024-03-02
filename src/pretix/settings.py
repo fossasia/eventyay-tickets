@@ -83,6 +83,29 @@ if 'mysql' in db_backend:
     db_options['charset'] = 'utf8mb4'
 JSON_FIELD_AVAILABLE = db_backend in ('mysql', 'postgresql')
 
+postgresql_sslmode = config.get('database', 'sslmode', fallback='disable')
+USE_DATABASE_TLS = postgresql_sslmode != 'disable'
+USE_DATABASE_MTLS = USE_DATABASE_TLS and config.has_option('database', 'sslcert')
+
+if USE_DATABASE_TLS or USE_DATABASE_MTLS:
+    tls_config = {}
+    if not USE_DATABASE_MTLS:
+        if 'postgresql' in db_backend:
+            tls_config = {
+                'sslmode': config.get('database', 'sslmode'),
+                'sslrootcert': config.get('database', 'sslrootcert'),
+            }
+    else:
+        if 'postgresql' in db_backend:
+            tls_config = {
+                'sslmode': config.get('database', 'sslmode'),
+                'sslrootcert': config.get('database', 'sslrootcert'),
+                'sslcert': config.get('database', 'sslcert'),
+                'sslkey': config.get('database', 'sslkey'),
+            }
+
+    db_options.update(tls_config)
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.' + db_backend,
@@ -208,6 +231,9 @@ if HAS_MEMCACHED:
     }
 
 HAS_REDIS = config.has_option('redis', 'location')
+redis_ssl_cert_reqs = config.get('redis', 'ssl_cert_reqs', fallback='none')
+USE_REDIS_TLS = redis_ssl_cert_reqs != 'none'
+USE_REDIS_MTLS = USE_REDIS_TLS and config.has_option('redis', 'ssl_certfile')
 if HAS_REDIS:
     CACHES['redis'] = {
         "BACKEND": "django_redis.cache.RedisCache",
