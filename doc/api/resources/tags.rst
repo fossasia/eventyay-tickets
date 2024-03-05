@@ -16,7 +16,7 @@ Field                                 Type                       Description
 ===================================== ========================== =======================================================
 tag                                   string                     The actual tag name.
 description                           multi-lingual string       The description of the tag.
-color                                 string                     The tag's color as hex string.
+color                                 string                     The tag’s color as hex string.
 ===================================== ========================== =======================================================
 
 Endpoints

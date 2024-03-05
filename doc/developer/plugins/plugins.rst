@@ -10,7 +10,7 @@ You can extend pretalx with custom Python code using the official plugin API.
 Think of every plugin as an independent Django application living in its own
 python package installed like any other python module.
 
-The communication between pretalx and the plugins happens using Django's
+The communication between pretalx and the plugins happens using Django’s
 `signal dispatcher`_ feature. The core modules of pretalx expose signals which
 you can read about on the next pages.
 
@@ -28,14 +28,14 @@ Afterwards install your plugin into pretalx:
    (env)$ cd pretalx-pluginname
    (env)$ python -m pip install -e .
 
-If you already had it running, you'll now have to restart your pretalx dev-server
+If you already had it running, you’ll now have to restart your pretalx dev-server
 for it to recognize the new plugin.
 
 About this Documentation
 ------------------------
 
 The following pages go into detail about the types of plugins
-supported. While these instructions don't assume that you know a lot about
+supported. While these instructions don’t assume that you know a lot about
 pretalx, they do assume that you have prior knowledge about Django (e.g. its
 view layer, how its ORM works, topics covered in the Django tutorial.).
 
@@ -66,20 +66,20 @@ A working example would be::
 
 
     class FacebookApp(AppConfig):
-        name = 'pretalx_facebook'
+        name = "pretalx_facebook"
         verbose_name = _("Facebook")
 
         class PretalxPluginMeta:
             name = _("Facebook")
             author = _("the pretalx team")
-            version = '1.0.0'
+            version = "1.0.0"
             visible = True
             restricted = False
             description = _("This plugin allows you to post talks to facebook.")
-            category = 'INTEGRATION'
+            category = "INTEGRATION"
 
 
-    default_app_config = 'pretalx_facebook.FacebookApp'
+    default_app_config = "pretalx_facebook.FacebookApp"
 
 Plugin registration
 -------------------
@@ -107,7 +107,6 @@ should extend your ``AppConfig`` (see above) by the following method to make
 your receivers available::
 
     class PaypalApp(AppConfig):
-        ...
 
         def ready(self):
             from . import signals  # noqa
@@ -117,7 +116,6 @@ activates your plugin for an event in the ``installed`` method, and code to
 execute upon removal in the ``uninstalled`` method::
 
     class PaypalApp(AppConfig):
-        ...
 
         def installed(self, event):
             pass  # Your code here
@@ -147,7 +145,7 @@ your Django application label.
 Configuration
 -------------
 
-Occasionally, your plugin may need system-level configuration that doesn't need
+Occasionally, your plugin may need system-level configuration that doesn’t need
 its own API. In this case, you can ask users to provide this configuration via
 their ``pretalx.cfg`` file. Ask them to put their configuration in a section
 with the title ``[plugin:your_plugin_name]``, which pretalx will then provide

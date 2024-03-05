@@ -58,7 +58,7 @@ configuration and environment. You can use it to import pretalx modules and
 execute methods. For a better environment, install ``django_extensions`` and
 ``ipython``.
 
-You'll have to provide the event you want to interact with to provide proper
+You’ll have to provide the event you want to interact with to provide proper
 database isolation::
 
     $ python -m pretalx shell_scoped --event__slug=myevent
@@ -76,7 +76,7 @@ passwords, so sanitise it before pasting it anywhere.
 
 .. highlight:: python
 
-If you don't want to install a library for debugging, you can run these
+If you don’t want to install a library for debugging, you can run these
 commands in the pretalx ``shell`` command::
 
     >>> from django.conf import settings
@@ -93,10 +93,11 @@ The ``rebuild`` command regenerates all static files. With the ``--clear``
 flag, it replaces all static files with ones compiled from scratch. Run this
 command after every upgrade.
 
-Run this command with ``--npm-install`` to install or update
-all frontend dependencies. This option will automatically be used the first time
-when pretalx detects that you don't have a ``node_modules`` directory, but it's your responsibility
-to use it during updates. It's not the default as running ``npm install`` can take a long time.
+Run this command with ``--npm-install`` to install or update all frontend
+dependencies. This option will automatically be used the first time when
+pretalx detects that you don’t have a ``node_modules`` directory, but it’s your
+responsibility to use it during updates. It’s not the default as running ``npm
+install`` can take a long time.
 
 ``regenerate_css``
 ~~~~~~~~~~~~~~~~~~
@@ -159,7 +160,7 @@ currently running), and ``over``. ``schedule`` is the default value.
 
 The ``--slug`` flag allows you to specify the slug of the event to be created.
 It defaults to ``democon``. Please only use alphanumerical characters and ``-``
-in the slug, otherwise you won't be able to see the event in the web interface.
+in the slug, otherwise you won’t be able to see the event in the web interface.
 
 ``move_event``
 ~~~~~~~~~~~~~~

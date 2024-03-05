@@ -3,7 +3,7 @@
 Translating pretalx
 ===================
 
-pretalx has been translated to other languages, and what's more – you can use
+pretalx has been translated to other languages, and what’s more – you can use
 pretalx in several languages for your event, which helps you to be accessible
 to a diverse range of people. To make this work, the pretalx interfaces need to
 be translated, too.
@@ -26,7 +26,7 @@ Official languages
 Unofficial languages
     are contributed and maintained by the community. We ship them with pretalx so you can use them, but we cannot
     guarantee that new or changed features in pretalx will be translated in time for a new release. Since we
-    probably don't speak the language in question, we cannot guarantee that the translations are correct.
+    probably don’t speak the language in question, we cannot guarantee that the translations are correct.
 
 All translations marked as unofficial community translations will offered with
 a note of how many percent of pretalx they cover. You can see the current
@@ -37,7 +37,7 @@ status that will be included in the next release here:
    :align: center
 
 New languages will be included in the next release if they cover at least 75%
-of pretalx, though we won't immediately remove languages that fall below this
+of pretalx, though we won’t immediately remove languages that fall below this
 threshold.
 
 Translating pretalx
@@ -45,10 +45,10 @@ Translating pretalx
 
 If you visit `translate.pretalx.com`_ for the first time, it will look a bit bare.
 
-Once you create an account – please do this by signing in with GitHub, as we're
+Once you create an account – please do this by signing in with GitHub, as we’re
 planning to deprecate email login – you can look at and edit translations.
 
-First off, take care to change your preferences so that you'll be presented
+First off, take care to change your preferences so that you’ll be presented
 with the languages you want to translate. You can do this in your profile
 settings, which you can find when clicking your profile picture in the upper
 right.
@@ -67,7 +67,7 @@ to help with unofficial languages).
 Updating translations
 ---------------------
 
-New or changed translations aren't visible in pretalx immediately. We update
+New or changed translations aren’t visible in pretalx immediately. We update
 the translations in the development version of pretalx regularly (roughly
 weekly), and also before every new release.
 

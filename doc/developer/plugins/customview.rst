@@ -42,8 +42,8 @@ If you want to add a custom view to the organiser area of an event, register an 
         ),
     ]
 
-If you just created your `urls.py` file and you already had the dev-server running, you'll
-now have to restart it for the new file to be recognized.
+If you just created your `urls.py` file and you already had the dev-server
+running, you’ll now have to restart it for the new file to be recognized.
 
 If your view is event-specific, you have to name one parameter in your URL
 ``event``. By convention, all plugin URLs except for backend URLs start with
@@ -64,8 +64,6 @@ your views::
 
     class AdminView(PermissionRequired, View):
         permission_required = "orga.view_submissions"
-
-        ...
 
 
 There is also a signal that allows you to add the view to the event sidebar navigation like this::

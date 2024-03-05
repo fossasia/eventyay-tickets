@@ -17,10 +17,10 @@ Field                                 Type                       Description
 id                                    number                     The unique ID of the review object
 submission                            string                     The unique code of the submission the review relates to
 user                                  string                     The ``name`` of the reviewing user.
-text                                  string                     The review's text
-score                                 number                     The review's score
-created                               datetime                   The review's creation timestamp
-updated                               datetime                   The review's last change timestamp
+text                                  string                     The review’s text
+score                                 number                     The review’s score
+created                               datetime                   The review’s creation timestamp
+updated                               datetime                   The review’s last change timestamp
 answers                               list                       The question answers given by the reviewer.
 ===================================== ========================== =======================================================
 

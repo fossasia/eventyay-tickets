@@ -10,7 +10,7 @@ tuning or customisation options beyond the standard settings.
 .. warning:: While we try to make it straightforward to run pretalx, it still
              requires some Linux experience to get it right, particularly to
              make sure that standard security practices are followed. If
-             you're not feeling comfortable managing a Linux server, check
+             you’re not feeling comfortable managing a Linux server, check
              out our hosting and service offers at `pretalx.com`_.
 
 For the more automation-savvy, we also provide an `Ansible role`_ that follows
@@ -21,17 +21,17 @@ supported.
 Step 0: Prerequisites
 ---------------------
 
-Please set up the following systems beforehand. We can't go into their use
+Please set up the following systems beforehand. We can’t go into their use
 and configuration here, but please have a look at the linked pages.
 
 * **Python 3.9 or newer**
 * An SMTP server to send out mails
 * An HTTP reverse proxy like `nginx`_ to allow HTTPS connections
 * A database server: `MySQL`_ 8+, MariaDB 10.4+ or `PostgreSQL`_ 12+, or SQLite
-  3. Given the choice, we'd recommend to use PostgreSQL.
+  3. Given the choice, we’d recommend to use PostgreSQL.
 * A `redis`_ server, if you want to use pretalx with an asynchronous task
   runner or improved caching.
-* `nodejs`_ and npm (usually bundled with nodejs). You'll need a `supported
+* `nodejs`_ and npm (usually bundled with nodejs). You’ll need a `supported
   version of nodejs`_.
 
 .. highlight:: console
@@ -58,7 +58,7 @@ As we do not want to run pretalx as root, we first create a new unprivileged use
 Step 2: Database setup
 ----------------------
 
-pretalx runs with PostgreSQL, MySQL, MariaDB, or SQLite. If you're using
+pretalx runs with PostgreSQL, MySQL, MariaDB, or SQLite. If you’re using
 SQLite, you can skip this step, as there is no need to set up the database.
 
 We recommend using PostgreSQL. This is how you can set up a database for your
@@ -99,7 +99,7 @@ Step 4: Configuration
 
 .. highlight:: console
 
-Now we'll create a configuration directory and configuration file for pretalx::
+Now we’ll create a configuration directory and configuration file for pretalx::
 
     # mkdir /etc/pretalx
     # touch /etc/pretalx/pretalx.cfg
@@ -113,21 +113,21 @@ This snippet can get you started with a basic configuration in your
    :language: ini
 
 Refer to :ref:`configure` for a full list of configuration options – the
-options above are only the ones you'll likely need to get started.
+options above are only the ones you’ll likely need to get started.
 
 Step 5: Installation
 --------------------
 
-For your Python installation, you'll want to use a virtual environment to
+For your Python installation, you’ll want to use a virtual environment to
 isolate the installation from system packages. Set up your virtual environment
-like this – you'll only have to run this command once (that is, only once per
-Python version – when you upgrade from Python 3.13 to 3.14, you'll need to
+like this – you’ll only have to run this command once (that is, only once per
+Python version – when you upgrade from Python 3.13 to 3.14, you’ll need to
 remove the old ``venv`` directory and create it again the same way)::
 
     $ python -m venv /var/pretalx/venv
 
-Now, activate the virtual environment – you'll have to run this command once
-per session whenever you're interacting with ``python``, ``pip`` or
+Now, activate the virtual environment – you’ll have to run this command once
+per session whenever you’re interacting with ``python``, ``pip`` or
 ``pretalx``::
 
     $ source /var/pretalx/venv/bin/activate
@@ -193,7 +193,7 @@ adjust the content to fit your system::
     WantedBy=multi-user.target
 
 If you decide to use Celery (giving you asynchronous execution for long-running
-tasks), you'll also need a second service
+tasks), you’ll also need a second service
 ``/etc/systemd/system/pretalx-worker.service`` with the following content::
 
     [Unit]
@@ -223,7 +223,7 @@ Step 7: SSL
 
 .. highlight:: nginx
 
-You'll need to set up an HTTP reverse proxy to handle HTTPS connections. It doesn't
+You’ll need to set up an HTTP reverse proxy to handle HTTPS connections. It doesn’t
 particularly matter which one you use, as long as you make sure to use `strong
 encryption settings`_. Your proxy should
 
@@ -294,7 +294,7 @@ case the emails are not sent)::
 
     # journalctl -u pretalx-worker
 
-If you're looking for errors, check the pretalx log. You can find the logging
+If you’re looking for errors, check the pretalx log. You can find the logging
 directory in the start-up output.
 
 Once pretalx is up and running, you can also find up to date administrator information
@@ -304,7 +304,7 @@ Step 9: Provide periodic tasks
 ------------------------------
 
 There are a couple of things in pretalx that should be run periodically. It
-doesn't matter how you run them, so you can go with your choice of periodic
+doesn’t matter how you run them, so you can go with your choice of periodic
 tasks, be they systemd timers, cron, or something else entirely.
 
 In the same environment as you ran the previous pretalx commands (e.g. the
@@ -333,7 +333,7 @@ If you want to read about updates, backups, and monitoring, head over to our
 
 .. _Ansible role: https://github.com/pretalx/ansible-pretalx
 .. _nginx: https://botleg.com/stories/https-with-lets-encrypt-and-nginx/
-.. _Let's Encrypt: https://letsencrypt.org/
+.. _Let’s Encrypt: https://letsencrypt.org/
 .. _MySQL: https://dev.mysql.com/doc/refman/5.7/en/linux-installation-apt-repo.html
 .. _PostgreSQL: https://www.postgresql.org/docs/
 .. _redis: https://redis.io/documentation
