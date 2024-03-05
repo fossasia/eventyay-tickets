@@ -185,7 +185,7 @@ class EventForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
         except OSError:
             raise forms.ValidationError(
                 _(
-                    'The domain “{domain}” does not have a name server entry at this time. Please make sure the domain is working before configuring it here.'
+                    "The domain “{domain}” does not have a name server entry at this time. Please make sure the domain is working before configuring it here."
                 ).format(domain=data)
             )
         return data
@@ -382,7 +382,7 @@ class MailSettingsForm(
     signature = forms.CharField(
         label=_("Mail signature"),
         help_text=str(
-            _('The signature will be added to outgoing mails, preceded by “-- ”.')
+            _("The signature will be added to outgoing mails, preceded by “-- ”.")
         )
         + " "
         + phrases.base.use_markdown,

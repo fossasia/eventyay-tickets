@@ -439,7 +439,7 @@ class EventMailSettings(EventSettingsPermission, ActionFromUrl, FormView):
                         self.request,
                         _(
                             "We’ve been able to contact the SMTP server you configured. "
-                            'Remember to check the “use custom SMTP server” checkbox, '
+                            "Remember to check the “use custom SMTP server” checkbox, "
                             "otherwise your SMTP server will not be used."
                         ),
                     )
