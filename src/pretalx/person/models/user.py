@@ -128,6 +128,12 @@ class User(PermissionsMixin, GenerateCode, FileCleanupMixin, AbstractBaseUser):
             "If you have registered with an email address that has a gravatar account, we can retrieve your profile picture from there."
         ),
     )
+    avatar_license = models.CharField(
+        null=True,
+        blank=True,
+        max_length=32,
+        verbose_name=_("Profile Picture License")
+    )
     pw_reset_token = models.CharField(
         null=True, max_length=160, verbose_name="Password reset token"
     )

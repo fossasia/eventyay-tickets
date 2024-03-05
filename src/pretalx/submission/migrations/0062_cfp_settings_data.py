@@ -70,6 +70,7 @@ def update_custom_domain(apps, schema_editor):
             "availabilities",
             "biography",
             "avatar",
+            "avatar_license",
             "notes",
             "do_not_record",
             "image",
