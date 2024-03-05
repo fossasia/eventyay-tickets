@@ -43,7 +43,7 @@ class SpeakerExportForm(ExportForm):
         self.fields["avatar"] = forms.BooleanField(
             required=False,
             label=_("Picture"),
-            help_text=_("The link to the speaker's profile picture"),
+            help_text=_("The link to the speaker’s profile picture"),
         )
 
     @cached_property

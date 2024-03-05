@@ -319,7 +319,7 @@ class InfoStep(GenericFlowStep, FormFlowStep):
     @property
     def _text(self):
         return _(
-            "We're glad that you want to contribute to our event with your proposal. Let's get started, this won't take long."
+            "We’re glad that you want to contribute to our event with your proposal. Let’s get started, this won’t take long."
         )
 
     def get_form_kwargs(self):
@@ -360,7 +360,7 @@ class InfoStep(GenericFlowStep, FormFlowStep):
             messages.success(
                 self.request,
                 _(
-                    "Congratulations, you've submitted your proposal! You can continue to make changes to it "
+                    "Congratulations, you’ve submitted your proposal! You can continue to make changes to it "
                     "up to the submission deadline, and you will be notified of any changes or questions."
                 ),
             )
@@ -463,7 +463,7 @@ class UserStep(GenericFlowStep, FormFlowStep):
     @property
     def _title(self):
         return _(
-            "That's it about your proposal! We now just need a way to contact you."
+            "That’s it about your proposal! We now just need a way to contact you."
         )
 
     @property

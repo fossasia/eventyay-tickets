@@ -56,7 +56,7 @@ hierarkey.add_default(
     "review_help_text",
     LazyI18nString.from_gettext(
         gettext_noop(
-            "Please give a fair review on why you'd like to see this proposal at the conference, or why you think it would not be a good fit."
+            "Please give a fair review on why you’d like to see this proposal at the conference, or why you think it would not be a good fit."
         )
     ),
     LazyI18nString,
@@ -86,14 +86,14 @@ hierarkey.add_default(
         gettext_noop(
             """Hi,
 
-we hope you're happy with pretalx as your event's CfP system.
+we hope you’re happy with pretalx as your event’s CfP system.
 These links may be helpful in the coming days and weeks:
 
-- Your event's dashboard: {event_dashboard}
+- Your event’s dashboard: {event_dashboard}
 - A list of proposals: {event_submissions}
 - Your schedule editor: {event_schedule}
 
-If there is anything you're missing, come tell us about it
+If there is anything you’re missing, come tell us about it
 at https://github.com/pretalx/pretalx/issues/new or via an
 email to support@pretalx.com!
 """
@@ -110,7 +110,7 @@ hierarkey.add_default(
 just writing you to let you know that your Call for Participation is now
 closed. Here is a list of links that should be useful in the next days:
 
-- You'll find a list of all your {submission_count} proposals here:
+- You’ll find a list of all your {submission_count} proposals here:
   {event_submissions}
 - You can add reviewers here:
   {event_team}
@@ -138,7 +138,7 @@ statistics you might find interesting:
 - You released {schedule_count} schedules in total.
 - Over the course of the event, you sent {mail_count} mails.
 
-If there is anything you're missing, come tell us about it
+If there is anything you’re missing, come tell us about it
 at https://github.com/pretalx/pretalx/issues/new or via an
 email to support@pretalx.com!
 """

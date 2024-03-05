@@ -26,7 +26,7 @@
                 <i class="fa fa-arrow-right"></i>
             </a>
         {% else %}
-            {% translate "You've got no proposals left to review!" %}
+            {% translate "You’ve got no proposals left to review!" %}
         {% endif %}
     </div>
 
@@ -49,7 +49,7 @@
             <p class="text-muted ml-2">
                 <span class="fa fa-filter"></span>
                 {% blocktranslate trimmed with question=filter_form.cleaned_data.question.question %}
-                    List filtered by answers to question "{{ question }}".
+                    List filtered by answers to question “{{ question }}”.
                 {% endblocktranslate %}
                 <a href="?{% url_replace request 'question' '' 'answer' '' 'answer__options' '' %}" class="text-muted">
                     <span class="fa fa-times"></span>
@@ -97,7 +97,7 @@
                         </tr>
                     {% empty %}
                         <tr>
-                            <td colspan=10>{% translate "You don't seem to have any proposals yet." %}</td>
+                            <td colspan=10>{% translate "You don’t seem to have any proposals yet." %}</td>
                         </tr>
                     {% endfor %}
                 </tbody>

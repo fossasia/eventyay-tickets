@@ -156,7 +156,7 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
             self.fields["slot_count"].disabled = True
             self.fields["slot_count"].help_text += " " + str(
                 _(
-                    "Please contact the organisers if you want to change how often you're presenting this proposal."
+                    "Please contact the organisers if you want to change how often you’re presenting this proposal."
                 )
             )
 

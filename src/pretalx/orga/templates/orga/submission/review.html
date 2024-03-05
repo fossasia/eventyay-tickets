@@ -15,7 +15,7 @@
     {% if request.user in submission.speakers.all %}
         <div class="alert alert-error"><span>
             {% blocktranslate trimmed %}
-                You're not allowed to review or see reviews for your own proposals.
+                You’re not allowed to review or see reviews for your own proposals.
             {% endblocktranslate %}</span>
         </div>
     {% else %}
