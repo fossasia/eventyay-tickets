@@ -131,8 +131,11 @@ class User(PermissionsMixin, GenerateCode, FileCleanupMixin, AbstractBaseUser):
     avatar_license = models.CharField(
         null=True,
         blank=True,
-        max_length=32,
-        verbose_name=_("Profile Picture License")
+        max_length=999,
+        verbose_name=_("Profile Picture License"),
+        help_text=_(
+            "Please enter the name of the license of the photo and link to it if applicable."
+        ),
     )
     pw_reset_token = models.CharField(
         null=True, max_length=160, verbose_name="Password reset token"
