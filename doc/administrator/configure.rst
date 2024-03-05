@@ -29,7 +29,8 @@ file looks like this:
 The configuration format is the INI file format as understood by `Python`_.
 It's worth mentioning that you can use any of 'yes'/'no', 'on'/'off',
 'true'/'false' and '1'/'0' to set boolean settings. You can add add comments by
-starting a line with ';' or '#'. Also strings don't need to be quoted as every value is already a string.
+starting a line with ';' or '#'. Also strings don't need to be quoted as every
+value is already a string.
 
 The filesystem section
 ----------------------
@@ -133,21 +134,19 @@ The database section
 ~~~~~~~~~~~
 
 - pretalx supports most SQL databases. You'll need to install the appropriate
-  Python library for each of them, as described in the table below. The default
-  is SQLite, which is *not* a production database. Please use a database like
-  PostgresQL or MySQL.
+  Python library for each of them, as described in the table below.
 - **Environment variable:** ``PRETALX_DB_TYPE``
 - **Default:** ``sqlite3``
 
-+------------+----------------------+---------------------+
-| Database   | Configuration string | pip package         |
-+============+======================+=====================+
-| PostgresQL | ``postgresql``       | ``psycopg2-binary`` |
-+------------+----------------------+---------------------+
-| MySQL      | ``mysql``            | ``mysqlclient``     |
-+------------+----------------------+---------------------+
-| SQLite     | ``sqlite3``          | –                   |
-+------------+----------------------+---------------------+
++------------+----------------------+-----------------------+
+| Database   | Configuration string | pip packag  e         |
++============+======================+=======================+
+| PostgresQL | ``postgresql``       | ``pretalx[postgres]`` |
++------------+----------------------+-----------------------+
+| MySQL      | ``mysql``            | ``pretalx[mysql]``    |
++------------+----------------------+-----------------------+
+| SQLite     | ``sqlite3``          | ``pretalx``           |
++------------+----------------------+-----------------------+
 
 ``name``
 ~~~~~~~~
@@ -166,7 +165,7 @@ The database section
 ``password``
 ~~~~~~~~~~~~
 
-- The database password, if applicable. If you use PostgreSQL, consider using its peer authentication and not setting a password.
+- The database password, if applicable.
 - **Environment variable:** ``PRETALX_DB_PASS``
 - **Default:** ``''``
 
