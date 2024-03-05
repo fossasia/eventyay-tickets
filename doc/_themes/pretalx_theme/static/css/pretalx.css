@@ -741,6 +741,8 @@ div[class^='highlight'] pre {
 }
 #toctree li {
     margin-top: 0.5em;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
 }
 #toctree a {
     font-weight: normal;
