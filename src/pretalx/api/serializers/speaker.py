@@ -22,7 +22,7 @@ class SubmitterSerializer(ModelSerializer):
 
     class Meta:
         model = User
-        fields = ("code", "name", "biography", "avatar")
+        fields = ("code", "name", "biography", "avatar", "avatar_license")
 
 
 class SubmitterOrgaSerializer(SubmitterSerializer):
@@ -34,6 +34,7 @@ class SpeakerSerializer(ModelSerializer):
     code = CharField(source="user.code")
     name = CharField(source="user.name")
     avatar = SerializerMethodField()
+    avatar_license = SerializerMethodField()
     submissions = SerializerMethodField()
     answers = SerializerMethodField()
 
@@ -74,7 +75,7 @@ class SpeakerSerializer(ModelSerializer):
 
     class Meta:
         model = SpeakerProfile
-        fields = ("code", "name", "biography", "submissions", "avatar", "answers")
+        fields = ("code", "name", "biography", "submissions", "avatar", "avatar_license", "answers")
 
 
 class SpeakerOrgaSerializer(SpeakerSerializer):

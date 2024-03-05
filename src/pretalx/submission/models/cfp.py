@@ -43,6 +43,7 @@ def default_fields():
             "max_length": None,
         },
         "avatar": {"visibility": "optional"},
+        "avatar_license": {"visibility": "optional"},
         "availabilities": {"visibility": "optional"},
         "notes": {"visibility": "optional"},
         "do_not_record": {"visibility": "optional"},
