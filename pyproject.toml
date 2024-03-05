@@ -55,7 +55,7 @@ dependencies = [
   # see also https://github.com/zostera/django-bootstrap4/issues/380
   "Pillow~=10.2.0",
   "publicsuffixlist~=0.10.0",
-  "python-dateutil~=2.8.0",
+  "python-dateutil~=2.9.0",
   "qrcode~=7.0",
   "reportlab~=4.1.0",
   "requests~=2.31.0",
