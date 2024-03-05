@@ -1,5 +1,4 @@
 from io import StringIO
-from typing import Tuple
 from urllib.parse import quote
 from xml.etree import ElementTree as ET
 
@@ -81,7 +80,7 @@ class BaseExporter:
         """
         return "submission"
 
-    def render(self, **kwargs) -> Tuple[str, str, str]:
+    def render(self, **kwargs) -> tuple[str, str, str]:
         """Render the exported file and return a tuple consisting of a file
         name, a file type and file content."""
         raise NotImplementedError()  # NOQA
