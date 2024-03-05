@@ -571,46 +571,46 @@ code, tt, code {
     overflow-x: auto
 }
 
-.section ul, .toctree-wrapper ul, article ul {
+.section ul, .toctree-wrapper ul, article ul, section ul {
     list-style: disc;
     line-height: 24px;
     margin-bottom: 24px
 }
-.section ul li, .toctree-wrapper ul li, article ul li {
+.section ul li, .toctree-wrapper ul li, article ul li, section ul li {
     list-style: disc;
     margin-left: 24px
 }
-.section ul li p:last-child, .toctree-wrapper ul li p:last-child, article ul li p:last-child {
+.section ul li p:last-child, .toctree-wrapper ul li p:last-child, article ul li p:last-child, section ul li p:last-child {
     margin-bottom: 0
 }
-.section ul li ul, .toctree-wrapper ul li ul, article ul li ul {
+.section ul li ul, .toctree-wrapper ul li ul, article ul li ul, section ul li ul {
     margin-bottom: 0
 }
-.section ul li li, .toctree-wrapper ul li li, article ul li li {
+.section ul li li, .toctree-wrapper ul li li, article ul li li, section ul li li {
     list-style: circle
 }
-.section ul li li li, .toctree-wrapper ul li li li, article ul li li li {
+.section ul li li li, .toctree-wrapper ul li li li, article ul li li li, section ul li li li {
     list-style: square
 }
-.section ul li ol li, .toctree-wrapper ul li ol li, article ul li ol li {
+.section ul li ol li, .toctree-wrapper ul li ol li, article ul li ol li, section ul li ol li {
     list-style: decimal
 }
-.section ol, ol.arabic, article ol {
+.section ol, ol.arabic, article ol, section ol {
     list-style: decimal;
     line-height: 24px;
     margin-bottom: 24px
 }
-.section ol li, ol.arabic li, article ol li {
+.section ol li, ol.arabic li, article ol li, section ol li {
     list-style: decimal;
     margin-left: 24px
 }
-.section ol li p:last-child, ol.arabic li p:last-child, article ol li p:last-child {
+.section ol li p:last-child, ol.arabic li p:last-child, article ol li p:last-child, section ol li p:last-child {
     margin-bottom: 0
 }
-.section ol li ul, ol.arabic li ul, article ol li ul {
+.section ol li ul, ol.arabic li ul, article ol li ul, section ol li ul {
     margin-bottom: 0
 }
-.section ol li ul li, ol.arabic li ul li, article ol li ul li {
+.section ol li ul li, ol.arabic li ul li, article ol li ul li, section ol li ul li {
     list-style: disc
 }
 
