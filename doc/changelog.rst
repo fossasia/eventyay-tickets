@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`orga` While organisers could reorder questions, and the order was saved and used in the frontend, the new order was not shown in the organiser backend.
 - :feature:`orga` All tables in the organiser area now come with sticky headers, to accommodate the possible increased length of the tables.
 - :bug:`orga:submission,1704` The proposal list could not be filtered by answers to questions of the type choice/multiple choice.
 - :bug:`cfp,1700` When using the new Dutch locale, users were unable to use the availability picker, as the locale was missing from the calendar.
