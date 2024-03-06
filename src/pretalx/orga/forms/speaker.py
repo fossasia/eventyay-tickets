@@ -61,6 +61,8 @@ class SpeakerExportForm(ExportForm):
         return self.Meta.model_fields + [
             "biography",
             "avatar",
+            "avatar_source",
+            "avatar_license",
             "submission_ids",
             "submission_titles",
         ]

@@ -58,6 +58,7 @@
         {% if form.avatar %}
             {% include "common/avatar.html" with user=form.instance.user form=form %}
         {% endif %}
+        {% if form.avatar_source %}{% bootstrap_field form.avatar_source layout='event' %}{% endif %}
         {% if form.avatar_license %}{% bootstrap_field form.avatar_license layout='event' %}{% endif %}
         {% bootstrap_field form.name layout='event' %}
         {% bootstrap_field form.email layout='event' %}
