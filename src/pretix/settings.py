@@ -3,7 +3,7 @@ import logging
 import os
 import sys
 from urllib.parse import urlparse
-
+from .tls_settings import *
 import django.conf.locale
 from django.utils.crypto import get_random_string
 from kombu import Queue
@@ -82,6 +82,11 @@ else:
 if 'mysql' in db_backend:
     db_options['charset'] = 'utf8mb4'
 JSON_FIELD_AVAILABLE = db_backend in ('mysql', 'postgresql')
+
+db_tls_config = build_db_tls_config(config, db_backend)
+if(db_tls_config is not None):
+    db_options.update(db_tls_config)
+
 
 DATABASES = {
     'default': {
@@ -209,22 +214,28 @@ if HAS_MEMCACHED:
 
 HAS_REDIS = config.has_option('redis', 'location')
 if HAS_REDIS:
-    CACHES['redis'] = {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": config.get('redis', 'location'),
-        "OPTIONS": {
+    OPTIONS = {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
             "REDIS_CLIENT_KWARGS": {"health_check_interval": 30}
         }
+    redis_tls_config = build_redis_tls_config(config)
+    if(redis_tls_config is not None):
+        OPTIONS["CONNECTION_POOL_KWARGS"] = redis_tls_config
+        OPTIONS["REDIS_CLIENT_KWARGS"].update(redis_tls_config)
+
+    if config.has_option('redis', 'password'):
+        OPTIONS["PASSWORD"] = config.get('redis', 'password')
+
+    CACHES['redis'] = {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": config.get('redis', 'location'),
+        "OPTIONS": OPTIONS
     }
     CACHES['redis_sessions'] = {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": config.get('redis', 'location'),
         "TIMEOUT": 3600 * 24 * 30,
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            "REDIS_CLIENT_KWARGS": {"health_check_interval": 30}
-        }
+        "OPTIONS": OPTIONS
     }
     if not HAS_MEMCACHED:
         CACHES['default'] = CACHES['redis']
