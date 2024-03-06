@@ -26,6 +26,7 @@ from pretalx.common.mixins.models import FileCleanupMixin, GenerateCode
 from pretalx.common.models import TIMEZONE_CHOICES
 from pretalx.common.urls import build_absolute_uri
 from pretalx.common.utils import path_with_hash
+from pretalx.common.phrases import phrases
 
 
 def avatar_path(instance, filename):
@@ -126,6 +127,15 @@ class User(PermissionsMixin, GenerateCode, FileCleanupMixin, AbstractBaseUser):
         verbose_name=_("Retrieve profile picture via gravatar"),
         help_text=_(
             "If you have registered with an email address that has a gravatar account, we can retrieve your profile picture from there."
+        ),
+    )
+    avatar_source = models.CharField(
+        null=True,
+        blank=True,
+        max_length=999,
+        verbose_name=_("Profile Picture Source"),
+        help_text=_(
+            "Please enter the name of the author or source of image and a link if applicable."
         ),
     )
     avatar_license = models.CharField(
