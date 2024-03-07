@@ -3,7 +3,7 @@ import logging
 import os
 import sys
 from urllib.parse import urlparse
-from .tls_settings import *
+from .settings_helpers import *
 import django.conf.locale
 from django.utils.crypto import get_random_string
 from kombu import Queue
