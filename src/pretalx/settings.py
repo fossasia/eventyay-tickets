@@ -71,6 +71,7 @@ EXTERNAL_APPS = [
     "compressor",
     "djangoformsetjs",
     "django_filters",
+    "django_pdb",
     "jquery",
     "rest_framework.authtoken",
     "rules",
@@ -493,7 +494,7 @@ LANGUAGES = [
 # Only used in Python code. Changing this value will still leave most of the
 # frontend using the default colour, but this makes sure that the backend
 # uses one consistent value.
-DEFAULT_EVENT_PRIMARY_COLOR = "#3aa57c"
+DEFAULT_EVENT_PRIMARY_COLOR = "#2185d0"
 
 ## AUTHENTICATION SETTINGS
 AUTH_USER_MODEL = "person.User"

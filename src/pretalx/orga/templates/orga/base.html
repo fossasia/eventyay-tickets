@@ -7,15 +7,15 @@
 <html lang="{{ html_locale }}"{% if rtl %} dir="rtl" class="rtl"{% endif %}>
     <head>
         <meta charset="utf-8">
-        <title>{% block title %}{% if request.event %}{{ request.event.name }}{% endif %}{% endblock %} :: eventyay</title>
-        <meta name="title" content="{% block meta_title %}{% endblock %} {% if request.event %} - {{ request.event.name }} {% endif %}eventyay">
-        <meta name="description" content="{% block meta_description %}{% if request.event %}Schedule, talks and talk submissions for {{ reqeuest.event.name }}{% else %}Talks and talk submissions by pretalx{% endif %}{% endblock %}">
-        <meta name="application-name" content="pretalx">
-        <meta name="generator" content="pretalx">
+        <title>{% block title %}{% if request.event %}{{ request.event.name }}{% endif %}{% endblock %} :: {{ site_config.name }}</title>
+        <meta name="title" content="{% block meta_title %}{% endblock %} {% if request.event %} - {{ request.event.name }} {% endif %} {{ site_config.name }}">
+        <meta name="description" content="{% block meta_description %}{% if request.event %}Schedule, talks and talk submissions for {{ request.event.name }}{% else %}Talks and talk submissions by {{ site_config.name }} {% endif %}{% endblock %}">
+        <meta name="application-name" content={{ site_config.name }}>
+        <meta name="generator" content={{ site_config.name }}>
         <meta name="keywords" content="{% if request.event %}{{ request.event.name }}, {{ request.event.slug }}, {% if request.event.date_from %}{{ request.event.date_from.year }}, {% endif %}{% endif %}schedule, talks, cfp, call for papers, conference, submissions, organizer">
         <meta name="robots" content="nofollow">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="theme-color" content="#3aa57c">
+        <meta name="theme-color" content="#2185d0">
         <meta name="HandheldFriendly" content="True"/>
         {% if request.event and request.event.logo %}<meta property="thumbnail" content="{{ request.event.urls.logo.full }}">{% endif %}
         {% block alternate_link %}
@@ -54,7 +54,7 @@
                 </li>
             </ul>
             <a class="navbar-brand d-none d-md-block" href="/orga/">
-                <img loading="lazy" src="{% static "common/img/icons/icon.svg" %}" alt="{% translate "The eventyay logo" %}"> eventyay
+                <img loading="lazy" src="{% static "common/img/icons/icon.svg" %}" alt="{% translate "The {{ site_config.name }} logo" %}"> {{ site_config.name }}
             </a>
             <div class="navbar-collapse" id="navbartoggle">
                 <ul class="navbar-nav mr-auto flip">

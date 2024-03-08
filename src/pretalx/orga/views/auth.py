@@ -1,5 +1,6 @@
 import datetime as dt
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import logout
 from django.http import HttpRequest, HttpResponseRedirect
@@ -17,6 +18,11 @@ from pretalx.person.models import User
 
 class LoginView(GenericLoginView):
     template_name = "orga/auth/login.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["site_name"] = dict(settings.CONFIG.items("site")).get("name")
+        return context
 
     @cached_property
     def event(self):

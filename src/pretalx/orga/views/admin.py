@@ -19,6 +19,12 @@ class AdminDashboard(PermissionRequired, TemplateView):
     template_name = "orga/admin.html"
     permission_required = "person.is_administrator"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        site_name = dict(settings.CONFIG.items("site")).get("name")
+        context["site_name"] = site_name
+        return context
+
     @context
     def queue_length(self):
         if not settings.HAS_CELERY:

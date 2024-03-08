@@ -2,6 +2,7 @@ import json
 from collections import defaultdict
 
 from csp.decorators import csp_update
+from django.conf import settings
 from django.contrib import messages
 from django.db import transaction
 from django.db.models import Count
@@ -723,6 +724,8 @@ class CfPFlowEditor(EventPermissionRequired, TemplateView):
             "primary_color": self.request.event.get_primary_color(),
             "locales": self.request.event.locales,
         }
+        site_name = dict(settings.CONFIG.items("site")).get("name")
+        context["site_name"] = site_name
         return context
 
     def post(self, request, *args, **kwargs):

@@ -24,6 +24,10 @@ CONFIG = {
         },
     },
     "site": {
+        "name": {
+            "default": "Eventyay",
+            "env": os.getenv("PRETALX_SITE_NAME"),
+        },
         "debug": {
             "default": "runserver" in sys.argv or "devserver" in sys.argv,
             "env": os.getenv("PRETALX_DEBUG"),

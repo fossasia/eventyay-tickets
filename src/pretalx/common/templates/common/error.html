@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>{% block title %}{% endblock %} :: pretalx</title>
+        <title>{% block title %}{% endblock %} {{site_name}}</title>
         {% compress css %}
             <link rel="stylesheet" type="text/x-scss" href="{% static "common/scss/error.scss" %}"/>
         {% endcompress %}

@@ -1,62 +1,66 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-
 <svg
+   id="svg8"
    version="1.1"
-   id="svg2"
-   width="300"
-   height="300"
-   viewBox="0 0 300 300"
-   sodipodi:docname="eventyay.svg"
-   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
-   inkscape:export-filename="/home/opntec/Downloads/eventyay.png"
-   inkscape:export-xdpi="100"
-   inkscape:export-ydpi="100"
+   viewBox="0 0 100 99.999997"
+   height="100mm"
+   width="100mm"
+   sodipodi:docname="icon.svg"
+   inkscape:version="1.3.2 (091e20ef0f, 2023-11-25, custom)"
+   inkscape:export-filename="icon.png"
+   inkscape:export-xdpi="96.012001"
+   inkscape:export-ydpi="96.012001"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg">
-  <defs
-     id="defs6" />
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
   <sodipodi:namedview
-     id="namedview4"
+     id="namedview1"
      pagecolor="#ffffff"
      bordercolor="#666666"
      borderopacity="1.0"
-     inkscape:pageshadow="2"
+     inkscape:showpageshadow="2"
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
-     showgrid="false"
-     inkscape:zoom="0.65126712"
-     inkscape:cx="244.90719"
-     inkscape:cy="17.657885"
-     inkscape:window-width="1280"
-     inkscape:window-height="683"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="4.7810208"
+     inkscape:cx="188.97638"
+     inkscape:cy="171.09317"
+     inkscape:window-width="1920"
+     inkscape:window-height="1130"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
-     inkscape:current-layer="g8" />
-  <g
-     inkscape:groupmode="layer"
-     inkscape:label="Image"
-     id="g8">
-    <g
-       id="g11301"
-       transform="matrix(9.4783527,0,0,9.4783527,-1.6536432,-1.6536432)">
-      <ellipse
-         style="fill:#3498db;fill-opacity:1;stroke:none;stroke-width:8.94491;stroke-miterlimit:0"
-         id="path849-9"
-         cx="16"
-         cy="16"
-         rx="15.825535"
-         ry="15.825529" />
-      <ellipse
-         style="fill:#256b9b;fill-opacity:1;stroke:#ffffff;stroke-width:5.19614;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1"
-         id="path849"
-         cx="16"
-         cy="16"
-         rx="8.4038029"
-         ry="8.403801" />
-    </g>
-  </g>
+     inkscape:current-layer="svg8" />
+  <metadata
+     id="metadata8">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs8" />
+  <path
+     style="color:#000000;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:medium;line-height:normal;font-family:sans-serif;font-variant-ligatures:normal;font-variant-position:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-feature-settings:normal;text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;letter-spacing:normal;word-spacing:normal;text-transform:none;writing-mode:lr-tb;direction:ltr;text-orientation:mixed;dominant-baseline:auto;baseline-shift:baseline;text-anchor:start;white-space:normal;shape-padding:0;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;vector-effect:none;fill:#2185d0;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1.44562;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+     d="m 44.723019,89.871882 c -2.203458,0 -4.000791,1.796293 -4.000791,3.999753 v 1.23249 c 0,2.20345 1.797333,3.99924 4.000791,3.99924 h 0.900203 v 62.524355 c 3.9e-5,0.39918 0.323773,0.72291 0.722952,0.72295 h 31.491104 c 0.413229,4.19365 3.959503,7.48481 8.259445,7.48481 4.299929,0 7.847076,-3.29116 8.260477,-7.48481 h 30.94436 c 0.39918,-4e-5 0.72291,-0.32377 0.72295,-0.72295 V 99.103365 h 0.91778 c 2.20346,0 4.00079,-1.79579 4.00079,-3.99924 v -1.23249 c 0,-2.20346 -1.79733,-3.999753 -4.00079,-3.999753 z m 0,1.445903 h 82.219271 c 1.4276,0 2.5554,1.12626 2.5554,2.55385 v 1.23249 c 0,1.42758 -1.1278,2.55385 -2.5554,2.55385 h -1.64073 -78.955386 -1.623155 c -1.427591,0 -2.555399,-1.12627 -2.555399,-2.55385 v -1.23249 c 0,-1.42759 1.127808,-2.55385 2.555399,-2.55385 z m 34.770487,71.032885 h 13.207463 c -0.401838,3.29625 -3.196537,5.83633 -6.604246,5.83633 -3.407722,0 -6.201566,-2.54008 -6.603217,-5.83633 z"
+     id="rect4550"
+     sodipodi:nodetypes="ssssccccsccccssssssssssccssssccsc"
+     inkscape:label="screen"
+     transform="translate(-36.097242,-79.853679)" />
+  <path
+     style="font-weight:600;font-size:45.8611px;line-height:125%;font-family:'Francker Pro';-inkscape-font-specification:'Francker Pro, Semi-Bold';letter-spacing:0px;word-spacing:0px;fill:#ffffff;stroke-width:0.264583px"
+     d="m 98.256955,132.64676 v -1.60514 c 0,-10.63978 -1.651,-12.19905 -12.657663,-12.19905 -11.006664,0 -12.703525,1.55927 -12.703525,12.19905 0,10.22702 1.146528,11.83216 12.290775,11.83216 7.567081,0 12.199052,-1.00894 12.199052,-1.00894 v -3.57717 c 0,0 -4.631971,0.55034 -11.511136,0.45861 -4.952999,-0.0459 -5.044721,-0.13758 -5.044721,-6.09952 z m -7.93397,-3.71475 h -9.493248 c 0,-6.05367 0.41275,-6.05367 4.769555,-6.05367 4.402665,0 4.723693,0 4.723693,6.05367 z"
+     id="text1"
+     inkscape:label="e"
+     transform="translate(-36.097242,-79.853679)"
+     aria-label="e" />
 </svg>

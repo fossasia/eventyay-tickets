@@ -29,10 +29,10 @@
      inkscape:document-units="mm"
      inkscape:zoom="4.7810208"
      inkscape:cx="189.18554"
-     inkscape:cy="171.30233"
-     inkscape:window-width="1920"
-     inkscape:window-height="1130"
-     inkscape:window-x="0"
+     inkscape:cy="171.19775"
+     inkscape:window-width="3840"
+     inkscape:window-height="2057"
+     inkscape:window-x="22"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
      inkscape:current-layer="svg8" />
@@ -56,11 +56,17 @@
      sodipodi:nodetypes="ssssccccsccccssssssssssccssssccsc"
      inkscape:label="screen"
      transform="translate(-36.097242,-79.853679)" />
-  <path
-     style="font-weight:600;font-size:45.8611px;line-height:125%;font-family:'Francker Pro';-inkscape-font-specification:'Francker Pro, Semi-Bold';letter-spacing:0px;word-spacing:0px;fill:#ffffff;stroke-width:0.264583px"
-     d="m 98.256955,132.64676 v -1.60514 c 0,-10.63978 -1.651,-12.19905 -12.657663,-12.19905 -11.006664,0 -12.703525,1.55927 -12.703525,12.19905 0,10.22702 1.146528,11.83216 12.290775,11.83216 7.567081,0 12.199052,-1.00894 12.199052,-1.00894 v -3.57717 c 0,0 -4.631971,0.55034 -11.511136,0.45861 -4.952999,-0.0459 -5.044721,-0.13758 -5.044721,-6.09952 z m -7.93397,-3.71475 h -9.493248 c 0,-6.05367 0.41275,-6.05367 4.769555,-6.05367 4.402665,0 4.723693,0 4.723693,6.05367 z"
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-weight:normal;font-size:4.23333px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     x="70.740295"
+     y="142.27759"
      id="text1"
      inkscape:label="e"
-     transform="translate(-36.097242,-79.853679)"
-     aria-label="e" />
+     transform="translate(-36.097242,-79.853679)"><tspan
+       sodipodi:role="line"
+       id="tspan1"
+       style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:45.8611px;font-family:'Francker Pro';-inkscape-font-specification:'Francker Pro, Semi-Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;fill-opacity:1;stroke-width:0.264583px"
+       x="70.740295"
+       y="142.27759">e</tspan></text>
 </svg>

@@ -7,9 +7,6 @@
    id="svg8"
    sodipodi:docname="logo.svg"
    inkscape:version="1.3.2 (091e20ef0f, 2023-11-25, custom)"
-   inkscape:export-filename="logo.png"
-   inkscape:export-xdpi="95.885086"
-   inkscape:export-ydpi="95.885086"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -29,8 +26,8 @@
      inkscape:document-units="mm"
      showgrid="false"
      inkscape:zoom="1.3902192"
-     inkscape:cx="469.35044"
-     inkscape:cy="226.58297"
+     inkscape:cx="468.9908"
+     inkscape:cy="226.58298"
      inkscape:window-width="1920"
      inkscape:window-height="1130"
      inkscape:window-x="0"
@@ -65,16 +62,32 @@
      sodipodi:nodetypes="ssssccccsccccssssssssssccsssscscc"
      inkscape:label="screen"
      transform="translate(50.712433,-79.908707)" />
-  <path
-     style="font-size:35.2778px;line-height:125%;font-family:'Francker Pro';-inkscape-font-specification:'Francker Pro, Normal';letter-spacing:0px;word-spacing:0px;fill:#2185d0;stroke-width:0.264583px"
-     d="m 170.13689,49.720802 h -4.09222 l -5.22112,15.063621 -5.25639,-15.063621 h -4.1275 l 6.24417,17.603623 h 2.36361 l -0.77611,2.116668 c -1.27,3.633613 -1.48167,3.739447 -3.70417,3.739447 -2.75167,0 -4.445,-0.352778 -4.445,-0.352778 v 2.151946 c 0,0 2.25778,0.776111 5.92667,0.776111 3.13972,0 4.23333,-1.023056 5.92667,-5.856115 z m 19.43804,17.286123 V 55.576917 c 0,-5.856115 -2.99861,-6.279449 -8.00806,-6.279449 -4.90362,0 -7.97278,0.740834 -7.97278,0.740834 v 2.116668 c 0,0 2.89278,-0.458611 7.33778,-0.423334 3.4925,0.03528 4.65667,0.105834 4.65667,3.845281 v 1.234723 h -5.99723 c -4.19806,0 -7.02028,0 -7.02028,5.29167 0,5.644448 4.05695,5.644448 8.46667,5.644448 5.29167,0 8.53723,-0.740833 8.53723,-0.740833 z m -3.98639,-1.94028 c 0,0 -1.72861,0.246945 -4.48028,0.246945 -3.175,0 -4.44501,0 -4.44501,-3.21028 0,-3.033891 0.77612,-3.033891 3.88056,-3.033891 h 5.04473 z m 25.68221,-15.345843 h -4.09222 l -5.22112,15.063621 -5.25639,-15.063621 h -4.1275 l 6.24417,17.603623 h 2.36361 l -0.77611,2.116668 c -1.27,3.633613 -1.48167,3.739447 -3.70417,3.739447 -2.75167,0 -4.445,-0.352778 -4.445,-0.352778 v 2.151946 c 0,0 2.25778,0.776111 5.92667,0.776111 3.13972,0 4.23333,-1.023056 5.92667,-5.856115 z"
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-weight:normal;font-size:4.23333px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     x="150.7341"
+     y="67.324425"
      id="text1"
-     inkscape:label="yay"
-     aria-label="yay" />
-  <path
-     style="font-size:35.2778px;line-height:125%;font-family:'Francker Pro';-inkscape-font-specification:'Francker Pro, Normal';letter-spacing:0px;word-spacing:0px;fill:#ffffff;stroke-width:0.264583px"
-     d="m 50.474962,59.528031 v -0.846668 c 0,-8.18445 -1.12889,-9.383895 -8.713617,-9.383895 -7.584727,0 -8.678339,1.199445 -8.678339,9.383895 0,7.86695 0.776112,9.066395 8.360839,9.066395 5.185837,0 8.360839,-0.740833 8.360839,-0.740833 v -2.116669 c 0,0 -3.033891,0.388056 -7.725839,0.388056 -4.797781,0 -4.903614,-0.03528 -4.903614,-5.750281 z m -4.092225,-2.293057 h -9.207506 c 0,-5.503338 0.388056,-5.503338 4.586114,-5.503338 4.198059,0 4.621392,0 4.621392,5.503338 z M 71.535784,49.720802 H 67.478837 L 62.257723,64.784423 57.036608,49.720802 h -4.127503 l 6.208893,17.603623 h 6.244171 z m 19.861423,9.807229 v -0.846668 c 0,-8.18445 -1.128889,-9.383895 -8.713617,-9.383895 -7.584727,0 -8.678339,1.199445 -8.678339,9.383895 0,7.86695 0.776112,9.066395 8.360839,9.066395 5.185837,0 8.360839,-0.740833 8.360839,-0.740833 v -2.116669 c 0,0 -3.033891,0.388056 -7.725839,0.388056 -4.797781,0 -4.903614,-0.03528 -4.903614,-5.750281 z m -4.092225,-2.293057 h -9.207506 c 0,-5.503338 0.388056,-5.503338 4.586114,-5.503338 4.198059,0 4.621392,0 4.621392,5.503338 z M 112.24636,67.324425 V 55.576917 c 0,-5.856115 -2.89278,-6.279449 -8.32556,-6.279449 -5.15056,0 -8.290284,0.740834 -8.290284,0.740834 V 67.324425 H 99.58163 V 52.119692 c 0,0 1.69333,-0.246944 4.33917,-0.246944 3.03389,0 4.33917,0 4.33917,3.704169 v 11.747508 z m 18.66193,-0.3175 v -2.187224 c 0,0 -1.65805,0.388056 -4.30389,0.388056 -3.52778,0 -3.59833,-0.564445 -3.59833,-3.739447 v -9.172229 h 6.63222 v -2.575279 h -6.63222 v -5.997226 h -3.98639 v 5.997226 h -3.73945 v 2.575279 h 3.73945 v 9.172229 c 0,4.198058 0.81138,6.279448 5.92667,6.279448 3.66889,0 5.96194,-0.740833 5.96194,-0.740833 z"
+     inkscape:label="yay"><tspan
+       sodipodi:role="line"
+       id="tspan1"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:35.2778px;font-family:'Francker Pro';-inkscape-font-specification:'Francker Pro, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.264583px"
+       x="150.7341"
+       y="67.324425"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:35.2778px;font-family:'Francker Pro';-inkscape-font-specification:'Francker Pro, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#2185d0;fill-opacity:1"
+         id="tspan3">yay</tspan></tspan></text>
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-weight:normal;font-size:4.23333px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     x="31.142727"
+     y="67.324425"
      id="text6"
-     inkscape:label="event"
-     aria-label="event" />
+     inkscape:label="event"><tspan
+       sodipodi:role="line"
+       id="tspan6"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:35.2778px;font-family:'Francker Pro';-inkscape-font-specification:'Francker Pro, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.264583px"
+       x="31.142727"
+       y="67.324425"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:35.2778px;font-family:'Francker Pro';-inkscape-font-specification:'Francker Pro, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;fill-opacity:1"
+         id="tspan4">event</tspan></tspan></text>
 </svg>

@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.contrib.auth import login
 from django.core.exceptions import PermissionDenied, SuspiciousOperation
 from django.http import FileResponse, Http404, HttpResponseServerError
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.template import TemplateDoesNotExist, loader
 from django.urls import NoReverseMatch, get_callable, path
 from django.utils.http import url_has_allowed_host_and_scheme
@@ -141,6 +141,8 @@ def handle_500(request):
     context = {}
     try:  # This should never fail, but can't be too cautious in error views
         context["request_path"] = urllib.parse.quote(request.path)
+        site_name = dict(settings.CONFIG.items("site")).get("name")
+        context["site_name"] = site_name
     except Exception:  # pragma: no cover
         pass
     return HttpResponseServerError(template.render(context))
@@ -159,7 +161,11 @@ def error_view(status_code):
     exception = exceptions[status_code]
 
     def error_view(request, *args, **kwargs):
-        raise exception
+        context = {"site_name": dict(settings.CONFIG.items("site")).get("name")}
+        if status_code in exceptions:
+            raise exception
+        else:
+            return render(request, f"{status_code}.html", context, status=status_code)
 
     return error_view
 

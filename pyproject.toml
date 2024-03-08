@@ -47,6 +47,7 @@ dependencies = [
   "django-i18nfield~=1.9.0",
   "django-libsass~=0.8",
   "django-scopes~=2.0.0",
+  "django-pdb~=0.6.2",
   "djangorestframework~=3.14.0",
   "libsass~=0.23.0",
   "Markdown~=3.5.0",  # https://python-markdown.github.io/change_log/

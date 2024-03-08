@@ -163,7 +163,14 @@ class SpeakerProfileForm(
     RequestRequire,
     forms.ModelForm,
 ):
-    USER_FIELDS = ["name", "email", "avatar", "avatar_source", "avatar_license", "get_gravatar"]
+    USER_FIELDS = [
+        "name",
+        "email",
+        "avatar",
+        "avatar_source",
+        "avatar_license",
+        "get_gravatar",
+    ]
     FIRST_TIME_EXCLUDE = ["email"]
 
     def __init__(self, *args, name=None, **kwargs):

@@ -20,6 +20,12 @@ def orga_events(request):
     """Add data to all template contexts."""
     context = {"settings": settings}
 
+    # Extract site specific values from settings.CONFIG.items('site') and add them to the context
+    # This is a bit of a hack, but it's the only way to get the site specific values into the context
+    # rather than using the settings object directly in the template
+    site_config = dict(settings.CONFIG.items("site"))
+    context["site_config"] = site_config
+
     if not request.path.startswith("/orga/"):
         return {}
 
