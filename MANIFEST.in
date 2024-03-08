@@ -31,5 +31,7 @@ recursive-include src/pretalx/schedule/templates *
 recursive-exclude src/tests *
 recursive-include src *.py
 
+recursive-include assets/svg-font *.svg
+
 global-exclude *.py[co]
 global-exclude __pycache__
