@@ -331,9 +331,7 @@ class ReviewExportForm(ExportForm):
 
     def get_additional_data(self, obj):
         return {
-            str(_("Score in “{score_category}”")).format(
-                score_category=sc.name
-            ): getattr(obj.scores.filter(category=sc).first(), "value", None)
+            sc.name: getattr(obj.scores.filter(category=sc).first(), "value", None)
             for sc in self.score_categories
         }
 
