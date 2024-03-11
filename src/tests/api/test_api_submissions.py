@@ -98,6 +98,8 @@ def test_submission_serializer_for_organiser(submission, orga_user, resource, ta
             .event_profile(submission.event)
             .biography,
             "avatar": None,
+            "avatar_source": None,
+            "avatar_license": None,
         }
         assert data["tags"] == [tag.tag]
         assert data["tag_ids"] == [tag.id]

@@ -15,7 +15,7 @@ def test_submitter_serializer(submission):
     with scope(event=submission.event):
         user = submission.speakers.first()
         data = SubmitterSerializer(user, event=submission.event).data
-    assert data.keys() == {"name", "code", "biography", "avatar"}
+    assert data.keys() == {"name", "code", "biography", "avatar", "avatar_source", "avatar_license"}
     assert data["name"] == user.name
     assert data["code"] == user.code
 
@@ -26,7 +26,7 @@ def test_submitter_serializer_without_profile(submission):
         user = submission.speakers.first()
         user.profiles.all().delete()
         data = SubmitterSerializer(user, event=submission.event).data
-    assert data.keys() == {"name", "code", "biography", "avatar"}
+    assert data.keys() == {"name", "code", "biography", "avatar", "avatar_source", "avatar_license"}
     assert data["name"] == user.name
     assert data["code"] == user.code
     assert data["biography"] == ""
@@ -45,6 +45,8 @@ def test_speaker_serializer(slot):
         "biography",
         "submissions",
         "avatar",
+        "avatar_source",
+        "avatar_license",
         "answers",
     }
     assert data["name"] == user.name
@@ -63,6 +65,8 @@ def test_speaker_orga_serializer(slot):
         "biography",
         "submissions",
         "avatar",
+        "avatar_source",
+        "avatar_license",
         "answers",
         "email",
         "availabilities",
@@ -140,6 +144,8 @@ def test_can_only_see_public_speakers(
         "biography",
         "submissions",
         "avatar",
+        "avatar_source",
+        "avatar_license",
         "answers",
     }
     assert not content["results"][0]["answers"]
@@ -184,6 +190,8 @@ def test_orga_can_see_all_speakers(
         "submissions",
         "answers",
         "avatar",
+        "avatar_source",
+        "avatar_license",
         "availabilities",
     }
     assert set(content["results"][0]["answers"][0].keys()) == {
