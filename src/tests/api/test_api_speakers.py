@@ -15,7 +15,14 @@ def test_submitter_serializer(submission):
     with scope(event=submission.event):
         user = submission.speakers.first()
         data = SubmitterSerializer(user, event=submission.event).data
-    assert data.keys() == {"name", "code", "biography", "avatar", "avatar_source", "avatar_license"}
+    assert data.keys() == {
+        "name",
+        "code",
+        "biography",
+        "avatar",
+        "avatar_source",
+        "avatar_license",
+    }
     assert data["name"] == user.name
     assert data["code"] == user.code
 
@@ -26,7 +33,14 @@ def test_submitter_serializer_without_profile(submission):
         user = submission.speakers.first()
         user.profiles.all().delete()
         data = SubmitterSerializer(user, event=submission.event).data
-    assert data.keys() == {"name", "code", "biography", "avatar", "avatar_source", "avatar_license"}
+    assert data.keys() == {
+        "name",
+        "code",
+        "biography",
+        "avatar",
+        "avatar_source",
+        "avatar_license",
+    }
     assert data["name"] == user.name
     assert data["code"] == user.code
     assert data["biography"] == ""
