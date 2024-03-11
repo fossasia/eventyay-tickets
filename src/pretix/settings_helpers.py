@@ -8,12 +8,8 @@ def build_db_tls_config(config, db_backend):
         }
         # add postgresql mTLS options
         if config.has_option("database", "sslcert"):
-            db_tls_config.update(
-                {
-                    "sslcert": config.get("database", "sslcert"),
-                    "sslkey": config.get("database", "sslkey"),
-                }
-            )
+            db_tls_config["sslcert"] = config.get("database", "sslcert")
+            db_tls_config["sslkey"] = config.get("database", "sslkey")
         return db_tls_config
     return None
 
@@ -28,11 +24,7 @@ def build_redis_tls_config(config):
         }
         # add redis mTLS options
         if config.has_option("redis", "ssl_certfile"):
-            redis_tls_config.update(
-                {
-                    "ssl_keyfile": config.get("redis", "ssl_keyfile"),
-                    "ssl_certfile": config.get("redis", "ssl_certfile"),
-                }
-            )
+            redis_tls_config["ssl_keyfile"] = config.get("redis", "ssl_keyfile")
+            redis_tls_config["ssl_certfile"] = config.get("redis", "ssl_certfile")
         return redis_tls_config
     return None

@@ -3,7 +3,7 @@ import logging
 import os
 import sys
 from urllib.parse import urlparse
-from .settings_helpers import *
+from .settings_helpers import build_db_tls_config, build_redis_tls_config
 import django.conf.locale
 from django.utils.crypto import get_random_string
 from kombu import Queue
@@ -84,7 +84,7 @@ if 'mysql' in db_backend:
 JSON_FIELD_AVAILABLE = db_backend in ('mysql', 'postgresql')
 
 db_tls_config = build_db_tls_config(config, db_backend)
-if(db_tls_config is not None):
+if (db_tls_config is not None):
     db_options.update(db_tls_config)
 
 
@@ -215,11 +215,11 @@ if HAS_MEMCACHED:
 HAS_REDIS = config.has_option('redis', 'location')
 if HAS_REDIS:
     OPTIONS = {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            "REDIS_CLIENT_KWARGS": {"health_check_interval": 30}
-        }
+        "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        "REDIS_CLIENT_KWARGS": {"health_check_interval": 30}
+    }
     redis_tls_config = build_redis_tls_config(config)
-    if(redis_tls_config is not None):
+    if (redis_tls_config is not None):
         OPTIONS["CONNECTION_POOL_KWARGS"] = redis_tls_config
         OPTIONS["REDIS_CLIENT_KWARGS"].update(redis_tls_config)
 
