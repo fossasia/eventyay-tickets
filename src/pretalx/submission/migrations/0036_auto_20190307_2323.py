@@ -9,7 +9,7 @@ def remove_review_phases(apps, schema_editor):
 
 
 def create_review_phases(apps, schema_editor):
-    import dateutil
+    import dateutil.parser
 
     ReviewPhase = apps.get_model("submission", "ReviewPhase")
     Event = apps.get_model("event", "Event")

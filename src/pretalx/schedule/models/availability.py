@@ -1,5 +1,4 @@
 import datetime as dt
-from typing import List
 
 from django.db import models
 from django.utils.functional import cached_property
@@ -145,7 +144,7 @@ class Availability(PretalxModel):
         return self.intersect_with(other)
 
     @classmethod
-    def union(cls, availabilities: List["Availability"]) -> List["Availability"]:
+    def union(cls, availabilities: list["Availability"]) -> list["Availability"]:
         """Return the minimal list of Availability objects which are covered by
         at least one given Availability."""
         availabilities = list(availabilities)
@@ -167,9 +166,9 @@ class Availability(PretalxModel):
     @classmethod
     def _pair_intersection(
         cls,
-        availabilities_a: List["Availability"],
-        availabilities_b: List["Availability"],
-    ) -> List["Availability"]:
+        availabilities_a: list["Availability"],
+        availabilities_b: list["Availability"],
+    ) -> list["Availability"]:
         """return the list of Availabilities, which are covered by each of the
         given sets."""
         result = []
@@ -185,8 +184,8 @@ class Availability(PretalxModel):
 
     @classmethod
     def intersection(
-        cls, *availabilitysets: List["Availability"]
-    ) -> List["Availability"]:
+        cls, *availabilitysets: list["Availability"]
+    ) -> list["Availability"]:
         """Return the list of Availabilities which are covered by all of the
         given sets."""
 

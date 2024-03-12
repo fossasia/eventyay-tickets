@@ -6,10 +6,10 @@ Markdown Guide
 What is Markdown?
 -----------------
 
-pretalx often allows you to write `Markdown`_ instead of plain text, like in talk
-descriptions, the Call for Papers, and email texts. Markdown is helpful if
+pretalx often allows you to write `Markdown`_ instead of plain text, like in
+talk descriptions, the Call for Papers, and email texts. Markdown is helpful if
 you want to write text including links, bold text, and other formatted content.
-Markdown is a common option since it's way easier to learn than languages like
+Markdown is a common option since it’s way easier to learn than languages like
 HTML but allows all basic formatting options required for text in those places.
 
 Formatting rules

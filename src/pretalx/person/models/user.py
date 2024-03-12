@@ -430,7 +430,7 @@ To reset your password, click on the following link:
 
   {url}
 
-If this wasn\'t you, you can just ignore this email.
+If this wasn’t you, you can just ignore this email.
 
 All the best,
 the pretalx robot"""

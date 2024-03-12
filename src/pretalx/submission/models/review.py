@@ -280,7 +280,7 @@ class ReviewPhase(OrderedModel, PretalxModel):
         max_length=8,
         default="all",
         help_text=_(
-            "If you select 'all', reviewers can review all proposals that their teams have access to (so either all, or specific tracks). "
+            "If you select “all”, reviewers can review all proposals that their teams have access to (so either all, or specific tracks). "
             "In this mode, assigned proposals will be highlighted and will be shown first in the review workflow. "
         ),
     )

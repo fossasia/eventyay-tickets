@@ -1,7 +1,7 @@
 import logging
 import uuid
 from functools import wraps
-from typing import Any, Callable, List, Tuple
+from typing import Any, Callable
 
 import django.dispatch
 from django.apps import apps
@@ -49,7 +49,7 @@ class EventPluginSignal(django.dispatch.Signal):
             return app and app.name in sender.plugin_list
         return False
 
-    def send(self, sender: Event, **named) -> List[Tuple[Callable, Any]]:
+    def send(self, sender: Event, **named) -> list[tuple[Callable, Any]]:
         """Send signal from sender to all connected receivers that belong to
         plugins enabled for the given Event.
 
@@ -78,7 +78,7 @@ class EventPluginSignal(django.dispatch.Signal):
             key=lambda response: (response[0].__module__, response[0].__name__),
         )
 
-    def send_robust(self, sender: Event, **named) -> List[Tuple[Callable, Any]]:
+    def send_robust(self, sender: Event, **named) -> list[tuple[Callable, Any]]:
         """Send signal from sender to all connected receivers that belong to
         plugins enabled for the given Event. If a receiver raises an Exception,
         it is returned as the response instead of propagating.
@@ -114,7 +114,7 @@ class EventPluginSignal(django.dispatch.Signal):
 
     def send_chained(
         self, sender: Event, chain_kwarg_name, **named
-    ) -> List[Tuple[Callable, Any]]:
+    ) -> list[tuple[Callable, Any]]:
         """Send signal from sender to all connected receivers. The return value
         of the first receiver will be used as the keyword argument specified by
         ``chain_kwarg_name`` in the input to the second receiver and so on. The

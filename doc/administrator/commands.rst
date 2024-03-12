@@ -3,7 +3,13 @@ Management commands
 
 pretalx comes with commands that you can execute from the command line. Run
 them in the same environment you installed pretalx in. If you followed the
-installation guide, you can run the following as your pretalx user::
+installation guide, you should run them as the ``pretalx`` user, and either
+use the ``/var/pretax/venv/bin/python`` executable, or activate the virtual
+environment by running ``source /var/pretalx/venv/bin/activate``.
+
+.. highlight:: console
+
+All commands are run with the ``python -m pretalx`` prefix::
 
   python -m pretalx <command> [<flags>] [<options>]
 
@@ -13,8 +19,8 @@ to suppress the printing of the pretalx debug startup header.
 Database commands
 -----------------
 
-``python -m pretalx migrate``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+``migrate``
+~~~~~~~~~~~
 
 The ``migrate`` command updates the database tables to conform to what pretalx
 expects. Please execute it once upon installation and then on every update. As
@@ -24,18 +30,18 @@ Running ``migrate`` if pretalx has no pending database changes  is harmless. It
 will result in no changes to the database.
 
 If migrations touch upon large populated tables, they may run for some time.
-The release notes will include a warning if an upgrade can trigger this
+The :ref:`changelog` will include a warning if an upgrade can trigger this
 behaviour.
 
-``python -m pretalx showmigrations``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+``showmigrations``
+~~~~~~~~~~~~~~~~~~
 
 If you ran into trouble during ``migrate``, run ``showmigrations``. It will
 show you the current state of all pretalx migrations. It may be useful debug
 output to include in bug reports about database problems.
 
-``python -m pretalx clearsessions``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+``clearsessions``
+~~~~~~~~~~~~~~~~~
 
 This command will remove old and unusable sessions from the database. We
 recommend that you run it about once a month to keep your database at a
@@ -44,104 +50,103 @@ reasonable size.
 Debug commands
 --------------
 
-``python -m pretalx shell_scoped``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+``shell_scoped``
+~~~~~~~~~~~~~~~~
 
 The ``shell_scoped`` command opens a Python shell with the pretalx
 configuration and environment. You can use it to import pretalx modules and
 execute methods. For a better environment, install ``django_extensions`` and
-``ipython``, and execute ``shell_plus`` instead. This shell gives you tab
-completion, and a range of useful initial imports.
+``ipython``.
 
-You'll have to provide the event you want to interact with to provide proper
+You’ll have to provide the event you want to interact with to provide proper
 database isolation::
 
-    python -m pretalx shell_scoped --event__slug=myevent
+    $ python -m pretalx shell_scoped --event__slug=myevent
 
 Alternatively, you can specify that you want to be able to access all events::
 
-    python -m pretalx shell_scoped --override
+    $ python -m pretalx shell_scoped --override
 
-``python -m pretalx print_settings``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+``print_settings``
+~~~~~~~~~~~~~~~~~~
 
 If other debugging fails, install the ``django_extensions`` package. Run
 ``print_settings`` to receive full settings output. The output will contain
 passwords, so sanitise it before pasting it anywhere.
 
-If you don't want to install a library for debugging, you can run these
-commands instead::
+.. highlight:: python
 
-    python -m pretalx shell
+If you don’t want to install a library for debugging, you can run these
+commands in the pretalx ``shell`` command::
+
     >>> from django.conf import settings
     >>> from pprint import pprint
     >>> pprint(settings.__dict__)
 
-The warning about included passwords and secrets in the output goes for this
-version as well.
-
 Core pretalx commands
 ---------------------
 
-``python -m pretalx rebuild``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+``rebuild``
+~~~~~~~~~~~
 
 The ``rebuild`` command regenerates all static files. With the ``--clear``
 flag, it replaces all static files with ones compiled from scratch. Run this
-command after every upgrade. Run it with ``--npm-install`` to install or update
-all frontend dependencies. (This option will automatically be used the first time
-when pretalx detects that you don't have a ``node_modules`` directory.
+command after every upgrade.
 
-``python -m pretalx regenerate_css``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Run this command with ``--npm-install`` to install or update all frontend
+dependencies. This option will automatically be used the first time when
+pretalx detects that you don’t have a ``node_modules`` directory, but it’s your
+responsibility to use it during updates. It’s not the default as running ``npm
+install`` can take a long time.
+
+``regenerate_css``
+~~~~~~~~~~~~~~~~~~
 
 The ``regenerate_css`` command regenerates only the custom CSS for events. It
 only runs for events with a specified custom colour, or custom uploaded styles.
 You can specify an event slug with ``--event``. If no event is specified, the
 files for all relevant events will be rebuilt.
 
-``python -m pretalx init``
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+``init``
+~~~~~~~~
 
 The ``init`` command allows you to create a superuser and an organiser. It is
 useful to give you all the tools to start configuring pretalx in the web
 interface. Please run this command once in the beginning. You can abort the
 command at any time, and it will not write anything to the database.
+
 With the ``--noinput`` flag, this command will *not* prompt you interactively
-on standard input, but will instead read from the environment.
-This is especially useful for automating invocations of this command.
-For the first phase (creation of a superuser), set the environment variables
-``DJANGO_SUPERUSER_EMAIL`` and ``DJANGO_SUPERUSER_PASSWORD``
-(`see also the documentation of the non-interactive mode of the corresponding
-Django command
+on standard input, but will instead read from the environment. This is
+especially useful for automating invocations of this command. For the first
+phase (creation of a superuser), set the environment variables
+``DJANGO_SUPERUSER_EMAIL`` and ``DJANGO_SUPERUSER_PASSWORD`` (`see also the
+documentation of the non-interactive mode of the corresponding Django command
 <https://docs.djangoproject.com/en/4.2/ref/django-admin/#createsuperuser>`_).
 For the second phase (creation of an organiser), set the environment variables
 ``PRETALX_INIT_ORGANISER_NAME`` and ``PRETALX_INIT_ORGANISER_SLUG``.
 
-``python -m pretalx createsuperuser``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+``createsuperuser``
+~~~~~~~~~~~~~~~~~~~
 
 If you need more users after generating your initial administration user,
 use ``createsuperuser``. Please note that superusers have access to all areas
 of all events.
 
-``python -m pretalx runperiodic``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+``runperiodic``
+~~~~~~~~~~~~~~~
 
-Please run the ``runperiodic`` command via a cronjob in regular intervals. You
-can also trigger it if you think that something went wrong with the regular
-task execution.
+Please run the ``runperiodic`` command in regular intervals, e.g. every 5-10
+minutes.
 
-``python -m pretalx export_schedule_html``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+``export_schedule_html``
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 This command requires an event slug as an argument. You can provide the
 ``--zip`` flag to produce a zip archive instead of a directory structure. The
 command will print the location of the HTML export upon successful exit.
 
-``python -m pretalx create_test_event``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+``create_test_event``
+~~~~~~~~~~~~~~~~~~~~~
 
 This command will create a test event for you, with a set of test submissions,
 and speakers, and the like. You will need to install the ``freezegun`` and
@@ -155,10 +160,10 @@ currently running), and ``over``. ``schedule`` is the default value.
 
 The ``--slug`` flag allows you to specify the slug of the event to be created.
 It defaults to ``democon``. Please only use alphanumerical characters and ``-``
-in the slug, otherwise you won't be able to see the event in the web interface.
+in the slug, otherwise you won’t be able to see the event in the web interface.
 
-``python -m pretalx move_event``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+``move_event``
+~~~~~~~~~~~~~~
 
 This command will move a given event (with the ``--event <event_slug>``
 parameter) event. By default, the event start date will be set to the current
@@ -174,8 +179,16 @@ new schedule version to make sure external tools can process the changes.
 Development commands
 --------------------
 
-``python -m pretalx makemessages``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+``makemessages``
+~~~~~~~~~~~~~~~~
 
 This command regenerates translation files. It should only be used during
 pretalx development.
+
+``makemigrations``
+~~~~~~~~~~~~~~~~~~
+
+This command generates new migration files for database changed. It should ONLY
+be used during pretalx development, even if you are running a custom
+installation, or if the console output of pretalx tells you to run it in case
+of changes to database models.

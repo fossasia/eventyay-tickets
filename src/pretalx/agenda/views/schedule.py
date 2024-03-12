@@ -1,6 +1,7 @@
 import hashlib
 import logging
 import textwrap
+from contextlib import suppress
 from urllib.parse import unquote
 
 from django.contrib import messages
@@ -36,9 +37,10 @@ class ScheduleMixin:
 
     def get_object(self):
         if self.version:
-            return self.request.event.schedules.filter(
-                version__iexact=self.version
-            ).first()
+            with suppress(Exception):
+                return self.request.event.schedules.filter(
+                    version__iexact=self.version
+                ).first()
         return self.request.event.current_schedule
 
     @context

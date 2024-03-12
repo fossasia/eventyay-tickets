@@ -113,13 +113,13 @@ def validate_key(*, key, style):
                 value
             ):
                 raise ValidationError(
-                    _('"{value}" is not allowed as attribute of "{key}"').format(
+                    _("“{value}” is not allowed as attribute of “{key}”").format(
                         key=key, value=value
                     )
                 )
     else:
         raise ValidationError(
-            _('You are not allowed to include "{key}" keys in your CSS.').format(
+            _("You are not allowed to include “{key}” keys in your CSS.").format(
                 key=key
             )
         )

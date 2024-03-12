@@ -72,7 +72,7 @@ class ExportForm(forms.Form):
         for question in self.questions:
             self.fields[f"question_{question.pk}"] = forms.BooleanField(
                 required=False,
-                label=str(_("Answer to the question '{q}'")).format(
+                label=str(_("Answer to the question “{q}”")).format(
                     q=question.question
                 ),
             )
@@ -162,7 +162,7 @@ class ExportForm(forms.Form):
         content = output.getvalue()
         return HttpResponse(
             content,
-            content_type="text/plain",
+            content_type="text/plain; charset=utf-8",
             headers={
                 "Content-Disposition": f'attachment; filename="{self.filename}.csv"',
                 "Access-Control-Allow-Origin": "*",
@@ -173,7 +173,7 @@ class ExportForm(forms.Form):
         content = json.dumps(data, cls=I18nJSONEncoder, indent=2)
         return HttpResponse(
             content,
-            content_type="application/json",
+            content_type="application/json; charset=utf-8",
             headers={
                 "Content-Disposition": f'attachment; filename="{self.filename}.json"',
                 "Access-Control-Allow-Origin": "*",

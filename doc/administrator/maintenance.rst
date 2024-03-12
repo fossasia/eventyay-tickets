@@ -34,7 +34,7 @@ restart your service(s)::
     $ python -m pretalx rebuild --npm-install
     $ python -m pretalx regenerate_css
     # systemctl restart pretalx-web
-    # systemctl restart pretalx-worker  # If you're running celery
+    # systemctl restart pretalx-worker  # If you’re running celery
 
 Installing a fixed release
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -45,10 +45,12 @@ install line above like this::
 
     $ pip3 install --user --upgrade-strategy eager pretalx==1.2.3
 
+.. _installing-a-commit:
+
 Installing a commit or a branch version
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If you're sure that you know what you're doing, you can also install a specific
+If you’re sure that you know what you’re doing, you can also install a specific
 commit or branch of pretalx. You can replace ``main`` with a short or long
 commit ID for a specific commit::
 

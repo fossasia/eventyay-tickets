@@ -15,7 +15,7 @@
     {% if request.user in submission.speakers.all %}
         <div class="alert alert-error"><span>
             {% blocktranslate trimmed %}
-                You're not allowed to review or see reviews for your own proposals.
+                You’re not allowed to review or see reviews for your own proposals.
             {% endblocktranslate %}</span>
         </div>
     {% else %}
@@ -170,8 +170,8 @@
             {% endif %}
 
             {% if can_view_other_reviews or form.instance.pk %}
-                <div class="table-responsive">
-                    <table class="table review-table table-hover table-flip">
+                <div class="table-responsive-sm">
+                    <table class="table review-table table-hover table-flip table-sticky">
                         <tr>
                             <th>{% translate "Score" %}</th>
                             {% if score_categories|length > 1 %}

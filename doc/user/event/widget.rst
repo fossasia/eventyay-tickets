@@ -7,9 +7,9 @@ at the schedule in most cases. The widget will still open a new tab when the
 user clicks on a talk to see the details.
 
 To obtain the correct HTML code for embedding your event into your website, we
-recommend that you go to the "Widget" tab of your event's settings. You can
+recommend that you go to the “Widget” tab of your event’s settings. You can
 specify some optional settings there (for example the language of the widget)
-and then click "Generate widget code".
+and then click “Generate widget code”.
 
 You will obtain two code snippets that look *roughly* like the following. The
 first should be embedded into the ``<head>`` part of your website, if possible.

@@ -177,7 +177,7 @@ class Submission(GenerateCode, PretalxModel):
         blank=True,
         verbose_name=_("Notes"),
         help_text=_(
-            "These notes are meant for the organiser and won't be made public."
+            "These notes are meant for the organiser and won’t be made public."
         ),
     )
     internal_notes = models.TextField(
@@ -210,7 +210,7 @@ class Submission(GenerateCode, PretalxModel):
         verbose_name=_("Show this session in public list of featured sessions."),
     )
     do_not_record = models.BooleanField(
-        default=False, verbose_name=_("Don't record this session.")
+        default=False, verbose_name=_("Don’t record this session.")
     )
     image = models.ImageField(
         null=True,
@@ -889,7 +889,7 @@ class Submission(GenerateCode, PretalxModel):
             or _(
                 """Hi!
 
-I'd like to invite you to be a speaker in the session
+I’d like to invite you to be a speaker in the session
 
   “{title}”
 
@@ -897,7 +897,7 @@ at {event}. Please follow this link to join:
 
   {url}
 
-I'm looking forward to it!
+I’m looking forward to it!
 {speaker}"""
             ).format(
                 event=self.event.name,

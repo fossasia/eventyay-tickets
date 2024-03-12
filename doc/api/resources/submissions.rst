@@ -17,16 +17,16 @@ Field                                 Type                       Description
 code                                  string                     A unique, alphanumeric identifier, also used in URLs
 speakers                              list                       A list of speaker objects, e.g. ``[{"name": "Jane", "code": "ABCDEF", "biography": "", "avatar": ""}]``. Organisers can also see email addresses.
 created                               datetime                   The time of submission creation as an ISO-8601 formatted datetime. Available if the requesting user has organiser permission.
-title                                 string                     The submission's title
+title                                 string                     The submission’s title
 submission_type                       multi-lingual string       The submission type
 submission_type_id                    number                     ID of the submission type
 track                                 multi-lingual string       The track this talk belongs to (e.g. "security", "design", or ``null``)
 track_id                              number                     ID of the track this talk belongs to (e.g. "security", "design", or ``null``)
-state                                 string                     The submission's state, one of "submitted", "accepted", "rejected", "confirmed"
+state                                 string                     The submission’s state, one of "submitted", "accepted", "rejected", "confirmed"
 pending_state                         string                     Only present for organisers, this field signals the next ``state`` a submission is planned to have.
-abstract                              string                     The abstract, a short note of the submission's content
-description                           string                     The description, a more expansive description of the submission's content
-duration                              number                     The talk's duration in minutes, or ``null``
+abstract                              string                     The abstract, a short note of the submission’s content
+description                           string                     The description, a more expansive description of the submission’s content
+duration                              number                     The talk’s duration in minutes, or ``null``
 do_not_record                         boolean                    Indicates if the speaker consent to recordings of their talk
 is_featured                           boolean                    Indicates if the talk is show in the schedule preview / sneak peek
 content_locale                        string                     The language the submission is in, e.g. "en" or "de"
@@ -129,7 +129,7 @@ Endpoints
    :query anon: Send the ``anon`` parameter with any value to receive anonymised data even when you have permissions to see the full data set.
    :query submission_type: Filter submissions by submission type
    :query state: Filter submission by state. Will filter by multiple states if you provide multiple state arguments.
-   :query questions: Pass a comma separated list of question IDs to load, or the string 'all' to return all answers.
+   :query questions: Pass a comma separated list of question IDs to load, or the string "all" to return all answers.
 
 .. http:get:: /api/events/(event)/submissions/{code}
 
@@ -190,7 +190,7 @@ Endpoints
    :param event: The ``slug`` field of the event to fetch
    :param code: The ``code`` field of the submission to fetch
    :query anon: Send the ``anon`` parameter with any value to receive anonymised data even when you have permissions to see the full data set.
-   :query questions: Pass a comma separated list of question IDs to load, or the string 'all' to return all answers.
+   :query questions: Pass a comma separated list of question IDs to load, or the string "all" to return all answers.
    :statuscode 200: no error
    :statuscode 401: Authentication failure
    :statuscode 403: The requested event does not exist **or** you have no permission to view it.

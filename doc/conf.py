@@ -103,12 +103,6 @@ html_additional_pages = {
 }
 html_theme = 'pretalx_theme'
 html_theme_path = [os.path.abspath('_themes')]
-html_theme_options = {
-    'logo_only': True,
-    'display_version': False,
-}
-html_logo = 'images/logo.svg'
-html_favicon = os.path.abspath('../src/pretalx/static/common/img/favicon-32x32.png')
 # html_link_suffix = ''
 
 # -- Options for HTMLHelp output ------------------------------------------

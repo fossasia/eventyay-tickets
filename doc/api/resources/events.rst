@@ -11,12 +11,12 @@ The event resource contains the following public fields:
 ===================================== ========================== =======================================================
 Field                                 Type                       Description
 ===================================== ========================== =======================================================
-`name`                                multi-lingual string       The event's full name
+`name`                                multi-lingual string       The event’s full name
 `slug`                                string                     A short form of the name, used e.g. in URLs.
 `is_public`                           boolean                    If ``true``, the event is publicly visible.
-`date_from`                           datetime                   The event's start date
-`date_to`                             datetime                   The event's end date (or ``null``)
-`timezone`                            string                     The event's chosen time zone
+`date_from`                           datetime                   The event’s start date
+`date_to`                             datetime                   The event’s end date (or ``null``)
+`timezone`                            string                     The event’s chosen time zone
 `urls`                                object                     Contains URLs to relevant event pages. ``"base"``, ``"schedule"``, ``"login"``, and ``"feed"`` are guaranteed to be present.
 ===================================== ========================== =======================================================
 

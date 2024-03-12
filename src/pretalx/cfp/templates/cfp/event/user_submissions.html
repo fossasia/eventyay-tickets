@@ -51,7 +51,11 @@
                                     </button>
                                 {% endif %}
                                 <a href="{{ submission.urls.user_base }}" class="btn btn-sm btn-success">
-                                    <i class="fa fa-{{ submission.editable|yesno:'edit,eye' }}"></i>
+                                    {% if submission.editable %}
+                                        <i class="fa fa-edit" title="{% translate "Edit draft" %}"></i>
+                                    {% else %}
+                                        <i class="fa fa-edit" title="{% translate "Open draft" %}"></i>
+                                    {% endif %}
                                 </a>
                             </td>
                         </tr>
@@ -104,7 +108,11 @@
                                     </button>
                                 {% endif %}
                                 <a href="{{ submission.urls.user_base }}" class="btn btn-sm btn-info">
-                                    <i class="fa fa-{{ submission.editable|yesno:'edit,eye' }}"></i>
+                                    {% if submission.editable %}
+                                        <i class="fa fa-edit" title="{% translate "Edit proposal" %}"></i>
+                                    {% else %}
+                                        <i class="fa fa-edit" title="{% translate "Open proposal" %}"></i>
+                                    {% endif %}
                                 </a>
                                 {% if submission.state == 'accepted' %}
                                     <a href="{{ submission.urls.confirm }}"
@@ -134,14 +142,14 @@
         </p>
     {% else %}
         <p class="text-center">
-            {% translate "It seems like you haven't submitted anything to this event yet." %}
+            {% translate "It seems like you haven’t submitted anything to this event yet." %}
         </p>
         <p class="text-center">
             {% translate "If you did, maybe you used a different account? Check your emails!" %}
         </p>
         {% if request.event.cfp.is_open %}
             <p class="text-center">
-                {% translate "If you did not, why not go ahead and create a proposal now? We'd love to hear from you!" %}
+                {% translate "If you did not, why not go ahead and create a proposal now? We’d love to hear from you!" %}
             </p>
             <p class="text-center">
                 <a class="btn btn-success btn-lg btn-block"

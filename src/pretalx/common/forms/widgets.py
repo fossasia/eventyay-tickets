@@ -55,7 +55,7 @@ class PasswordConfirmationInput(PasswordInput):
             </p>
         </div>
         """.format(
-            warning=_("Warning"), content=_("Your passwords don't match.")
+            warning=_("Warning"), content=_("Your passwords don’t match.")
         )
 
         self.attrs["class"] = " ".join(

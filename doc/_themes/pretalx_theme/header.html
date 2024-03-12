@@ -1,17 +1,19 @@
 <header>
-  {% if logo and theme_logo_only %}
-    <a id="logourl" href="/" class="mobile-hide">
-  {% else %}
-    <a id="logourl" href="/" class="icon icon-home mobile-hide"> {{ project }}
-  {% endif %}
-
-  {% if logo %}
-    {# Not strictly valid HTML, but it's the only way to display/scale it properly, without weird scripting or heaps of work #}
-    <img src="{{ pathto('_static/' + logo, 1) }}" class="logo mobile-hide" />
-  {% endif %}
+  <a id="logourl" href="/" class="mobile-hide">
+    <img src="/_static/images/logo.svg" />
   </a>
 
-  {% include "searchbox.html" %}
+  <div id="spacer"></div>
+
+  {%- if builder != 'singlehtml' %}
+  <div role="search" id="header-search">
+    <form id="rtd-search-form" action="{{ pathto('search') }}" method="get">
+      <input type="text" name="q" placeholder="Search docs" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+  </div>
+  {%- endif %}
 
   <div id="related" class="mobile-hide">
     <div class="dropdown">
@@ -19,16 +21,16 @@
       <div class="dropdown-body">
         <div class="dropdown-item"><a href="https://pretalx.com/p/pricing">Hosted pretalx</a></div>
         <div class="dropdown-item"><a href="https://pretalx.com/p/pricing">pretalx support</a></div>
-        <div class="dropdown-item"><a href="https://patreon.com/rixx">Developer patreon</a></div>
-        <div class="dropdown-item"><a href="https://liberapay.com/rixx">Developer liberapay</a></div>
+        <div class="dropdown-item"><a href="https://rixx.de/funding">Developer support</a></div>
       </div>
     </div>
     <div class="dropdown">
       <div class="dropdown-title">Resources</div>
       <div class="dropdown-body">
+        <div class="dropdown-item"><a href="https://pretalx.com/p/about/">Website</a></div>
         <div class="dropdown-item"><a href="https://pretalx.com/p/news/">Blog</a></div>
+        <div class="dropdown-item"><a href="https://pretalx.com/p/try/">Try pretalx</a></div>
         <div class="dropdown-item"><a href="https://github.com/pretalx/pretalx/">Source code</a></div>
-        <div class="dropdown-item"><a href="https://twitter.com/pretalx">Twitter</a></div>
       </div>
     </div>
   </div>

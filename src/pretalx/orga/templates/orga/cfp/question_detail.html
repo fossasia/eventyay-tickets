@@ -66,8 +66,8 @@
         <div id="question-stats" class="d-flex mt-4 pt-4">
             {% if question.variant != "file" and grouped_answers|length < 50 %}
                 <div id="question-answers"></div>
-                <div class="table-responsive">
-                    <table class="table table-flip">
+                <div class="table-responsive-sm">
+                    <table class="table table-flip table-sticky">
                         <thead>
                             <th>{% translate "Answer" %}</th>
                             <th class="numeric">{% translate "Count" %}</th>

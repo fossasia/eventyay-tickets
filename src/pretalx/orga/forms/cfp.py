@@ -468,7 +468,7 @@ Please follow this URL to use the code:
 
   {url}
 
-I'm looking forward to your proposal!
+I’m looking forward to your proposal!
 {name}"""
         ).format(
             url=instance.urls.cfp_url.full(),

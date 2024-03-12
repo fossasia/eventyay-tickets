@@ -33,7 +33,7 @@
                 <br>
                 <small><a href="{{ request.event.orga_urls.reviews }}bulk/"> {% translate "Or review all proposals at once." %}</a></small>
             {% elif can_review %}
-                {% translate "You've got no proposals left to review!" %}
+                {% translate "You’ve got no proposals left to review!" %}
             {% else %}
                 {% translate "Reviews are currently closed." %}
             {% endif %}
@@ -139,7 +139,7 @@
             <p class="text-muted ml-2">
                 <span class="fa fa-filter"></span>
                 {% blocktranslate trimmed with question=filter_form.cleaned_data.question.question %}
-                    List filtered by answers to question "{{ question }}".
+                    List filtered by answers to question “{{ question }}”.
                 {% endblocktranslate %}
                 <a href="?{% url_replace request 'question' '' 'answer' '' 'answer__options' '' %}" class="text-muted">
                     <span class="fa fa-times"></span>
@@ -150,8 +150,8 @@
     </div>
 
     <form method="post">{% csrf_token %}
-        <div class="table-responsive">
-            <table class="table review-table table-hover table-flip">
+        <div class="table-responsive-sm">
+            <table class="table table-sm review-table table-hover table-flip table-sticky">
                 <colgroup>
                     {% if can_see_all_reviews %}
                         <col class="col-score-avg nowrap numeric">
@@ -302,7 +302,7 @@
                                     ({% translate "pending" %} {% include "cfp/event/fragment_state.html" with state=submission.pending_state %})
                                 {% endif %}
                             </td>
-                            <td class="action-row d-flex justify-space-around">
+                            <td><div class="action-row d-flex justify-space-around">
                                 {% if submission.state == 'submitted' and can_accept_submissions %}
                                     <div class="radio form-check accept">
                                         <input type="radio" id="a-{{ submission.code }}" name="s-{{ submission.code }}" value="accept">
@@ -314,11 +314,11 @@
                                     </div>
                                     <div class="unmark-radio" title="{% translate "Unset accept/reject vote" %}"><i class="fa fa-ban"></i></div>
                                 {% endif %}
-                            </td>
+                            </div></td>
                         </tr>
                     {% empty %}
                         <tr>
-                            <td colspan=10>{% translate "You don't seem to have any proposals yet." %}</td>
+                            <td colspan=10>{% translate "You don’t seem to have any proposals yet." %}</td>
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -327,9 +327,9 @@
         <div id="submitBar">
             <div id="pending" class="form-check mr-2">
                 <input type="checkbox" id="id_pending" name="pending">
-                <label for="id_pending">{% translate "Mark new states as 'pending'" %}</label>
+                <label for="id_pending">{% translate "Mark the new state as “pending”" %}</label>
             </div>
-            <i class="fa fa-question-circle mr-4" data-toggle="tooltip" data-placement="top" title="{% translate "If you mark state changes as pending, they won't be visible to speakers right away. You can always apply pending changes for some or all proposals in one go once you're ready to make your decisions public." %}"></i>
+            <i class="fa fa-question-circle mr-4" data-toggle="tooltip" data-placement="top" title="{% translate "If you mark state changes as pending, they won’t be visible to speakers right away. You can always apply pending changes for some or all proposals in one go once you’re ready to make your decisions public." %}"></i>
             <span id="submitText" class="d-none ml-2">
                 {% translate "Accept" %}: <span id="acceptCount" class="text-success"></span>
                 {% translate "Reject" %}: <span id="rejectCount" class="text-danger"></span>

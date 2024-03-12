@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ngettext_lazy as _n
 from django_scopes import ScopedManager
 
 from pretalx.common.mixins.models import PretalxModel
@@ -20,7 +21,7 @@ class Feedback(PretalxModel):
         to="submission.Submission",
         related_name="feedback",
         on_delete=models.PROTECT,
-        verbose_name=_("Session"),
+        verbose_name=_n("Session", "Sessions", 1),
     )
     speaker = models.ForeignKey(
         to="person.User",
@@ -28,7 +29,7 @@ class Feedback(PretalxModel):
         null=True,
         blank=True,
         on_delete=models.PROTECT,
-        verbose_name=_("Speaker"),
+        verbose_name=_n("Speaker", "Speakers", 1),
     )
     rating = models.IntegerField(null=True, blank=True, verbose_name=_("Rating"))
     review = models.TextField(

@@ -22,7 +22,7 @@
             {% if not request.event.logo %}
                 <img src="{% static "common/img/logo_white.svg" %}" class="logo" alt="{% translate "The eventyay logo" %}">
             {% else %}
-                <img height="150" width="auto" src="{{ request.event.logo.url }}" id="event-logo" alt="{% translate "The event's logo" %}">
+                <img height="150" width="auto" src="{{ request.event.logo.url }}" id="event-logo" alt="{% translate "The event’s logo" %}">
             {% endif %}
             <p>
                 {% if messages %}

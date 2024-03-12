@@ -105,7 +105,7 @@ class MailTemplateForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
             raise forms.ValidationError(
                 _(
                     "Invalid email template! "
-                    "Please check that you don't have stray { or } somewhere, "
+                    "Please check that you don’t have stray { or } somewhere, "
                     "and that there are no spaces inside the {} blocks."
                 )
             )

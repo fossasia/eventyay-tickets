@@ -104,8 +104,10 @@ class CfPQuestionList(EventPermissionRequired, TemplateView):
 
     @context
     def questions(self):
-        return Question.all_objects.filter(event=self.request.event).annotate(
-            answer_count=Count("answers")
+        return (
+            Question.all_objects.filter(event=self.request.event)
+            .annotate(answer_count=Count("answers"))
+            .order_by("position")
         )
 
 

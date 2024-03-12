@@ -389,6 +389,7 @@ class BulkReview(EventPermissionRequired, TemplateView):
                 user=self.request.user,
                 submission=submission,
                 read_only=False,
+                allow_empty=True,
                 instance=own_reviews.get(submission.pk),
                 prefix=f"{submission.code}",
                 categories=(
