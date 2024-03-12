@@ -214,28 +214,28 @@ if HAS_MEMCACHED:
 
 HAS_REDIS = config.has_option('redis', 'location')
 if HAS_REDIS:
-    OPTIONS = {
+    redis_options = {
         "CLIENT_CLASS": "django_redis.client.DefaultClient",
         "REDIS_CLIENT_KWARGS": {"health_check_interval": 30}
     }
     redis_tls_config = build_redis_tls_config(config)
     if (redis_tls_config is not None):
-        OPTIONS["CONNECTION_POOL_KWARGS"] = redis_tls_config
-        OPTIONS["REDIS_CLIENT_KWARGS"].update(redis_tls_config)
+        redis_options["CONNECTION_POOL_KWARGS"] = redis_tls_config
+        redis_options["REDIS_CLIENT_KWARGS"].update(redis_tls_config)
 
     if config.has_option('redis', 'password'):
-        OPTIONS["PASSWORD"] = config.get('redis', 'password')
+        redis_options["PASSWORD"] = config.get('redis', 'password')
 
     CACHES['redis'] = {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": config.get('redis', 'location'),
-        "OPTIONS": OPTIONS
+        "OPTIONS": redis_options
     }
     CACHES['redis_sessions'] = {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": config.get('redis', 'location'),
         "TIMEOUT": 3600 * 24 * 30,
-        "OPTIONS": OPTIONS
+        "OPTIONS": redis_options
     }
     if not HAS_MEMCACHED:
         CACHES['default'] = CACHES['redis']
