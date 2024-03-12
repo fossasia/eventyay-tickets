@@ -4,7 +4,6 @@ import jsonfallback.fields
 from django.core.exceptions import ImproperlyConfigured
 from django.db import migrations
 from django_mysql.checks import mysql_connections
-from django_mysql.utils import connection_is_mariadb
 
 
 def set_attendee_name_parts(apps, schema_editor):
@@ -31,12 +30,7 @@ def check_mysqlversion(apps, schema_editor):
     conns = list(mysql_connections())
     found = 'Unknown version'
     for alias, conn in conns:
-        if connection_is_mariadb(conn) and hasattr(conn, 'mysql_version'):
-            if conn.mysql_version >= (10, 2, 7):
-                any_conn_works = True
-            else:
-                found = 'MariaDB ' + '.'.join(str(v) for v in conn.mysql_version)
-        elif hasattr(conn, 'mysql_version'):
+        if hasattr(conn, 'mysql_version'):
             if conn.mysql_version >= (5, 7):
                 any_conn_works = True
             else:
@@ -44,7 +38,7 @@ def check_mysqlversion(apps, schema_editor):
 
     if conns and not any_conn_works:
         raise ImproperlyConfigured(
-            'As of pretix 2.2, you need MySQL 5.7+ or MariaDB 10.2.7+ to run pretix. However, we detected a '
+            'As of pretix 2.2, you need MySQL 5.7+ to run pretix. However, we detected a '
             'database connection to {}'.format(found)
         )
     return errors
