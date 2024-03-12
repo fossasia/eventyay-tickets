@@ -5,13 +5,13 @@ A Recording Provider is a way to provide iframes of videos that will be
 displayed on the public talk pages of a talk.
 
 In this document, we will walk through the creation of a plugin for a new
-recording provider step by step. If you'd like to look at a completed working
+recording provider step by step. If you’d like to look at a completed working
 recording provider, take a look at our `plugin for Vimeo
 <https://github.com/pretalx/pretalx-vimeo>`_ (manual embedding) or our `plugin
 for media.ccc.de <https://github.com/pretalx/pretalx-media-ccc-de>`_ (using an
 API).
 
-Please read :ref:`Creating a plugin <pluginsetup>` first, if you haven't
+Please read :ref:`Creating a plugin <pluginsetup>` first, if you haven’t
 already.
 
 Recording Provider registration
@@ -45,7 +45,7 @@ The recording provider class
 
       This is an abstract method, you **must** override this!
       The method receives the submission and should return a dictionary
-      containing an 'iframe' and a 'csp_header', if a recording iframe
+      containing an "iframe" and a "csp_header", if a recording iframe
       should be shown.
 
 Hints and considerations
@@ -59,7 +59,7 @@ you want to find new recordings automatically – but take care not to do this
 overly much. Looking for new recordings once an hour while the event is running
 and in the week afterwards should be sufficient.
 
-If you're able to gather recording URLs automatically, your users will still
+If you’re able to gather recording URLs automatically, your users will still
 want an interface to see and potentially edit said recording URLs.
 
 If you wrap your ``iframe`` in a ``<div class="embed-responsive

@@ -19,7 +19,7 @@ combine those two options, and their precedence is in this order:
 
 3. Sensible defaults
 
-This page explains the options grouped by configuration file sections. You'll
+This page explains the options grouped by configuration file sections. You’ll
 find the environment variable next to their corresponding settings.  A config
 file looks like this:
 
@@ -27,9 +27,10 @@ file looks like this:
    :language: ini
 
 The configuration format is the INI file format as understood by `Python`_.
-It's worth mentioning that you can use any of 'yes'/'no', 'on'/'off',
-'true'/'false' and '1'/'0' to set boolean settings. You can add add comments by
-starting a line with ';' or '#'. Also strings don't need to be quoted as every value is already a string.
+It’s worth mentioning that you can use any of ``yes``/``no``, ``on``/``off``,
+``true``/``false`` and ``1``/``0`` to set boolean settings. You can add add
+comments by starting a line with ``;`` or ``#``. Also strings don’t need to be
+quoted as every value is already a string.
 
 The filesystem section
 ----------------------
@@ -42,7 +43,7 @@ The filesystem section
   compelling reason to keep other files apart, setting the ``data`` option is
   the easiest way to configure file storage.
 - **Environment variable:** ``PRETALX_DATA_DIR``
-- **Default:** A directory called ``data`` next to pretalx's ``manage.py``.
+- **Default:** A directory called ``data`` next to pretalx’s ``manage.py``.
 
 ``media``
 ~~~~~~~~~
@@ -67,7 +68,7 @@ The filesystem section
   be writable by the pretalx process. pretalx will put files there during the ``rebuild`` and
   ``collectstatic`` commands.
 - **Environment variable:** ``PRETALX_FILESYSTEM_STATIC``
-- **Default:** A directory called ``static.dist`` next to pretalx's ``manage.py``.
+- **Default:** A directory called ``static.dist`` next to pretalx’s ``manage.py``.
 
 The site section
 ----------------
@@ -78,7 +79,7 @@ The site section
 - Decides if pretalx runs in debug mode. Please use this mode for development and debugging, not
   for live usage.
 - **Environment variable:** ``PRETALX_DEBUG``
-- **Default:** ``True`` if you're executing ``runserver``, ``False`` otherwise. **Never run a
+- **Default:** ``True`` if you’re executing ``runserver``, ``False`` otherwise. **Never run a
   production server in debug mode.**
 
 ``url``
@@ -118,12 +119,12 @@ The site section
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Use any of these settings to update the matching CSP security headers. Your
-  configuration values will be *added* to the default headers, they won't replace
+  configuration values will be *added* to the default headers, they won’t replace
   them completely!
   If you need to include special values like ``self``, remember to use single tick
   quotation marks: ``csp=https://rixx.de,'self'``
 - **Environment variables:** ``PRETALX_SITE_CSP``, ``PRETALX_SITE_CSP_SCRIPT`` etc.
-- **Default**: ``""``
+- **Default**: ``''``
 
 
 The database section
@@ -132,27 +133,25 @@ The database section
 ``backend``
 ~~~~~~~~~~~
 
-- pretalx supports most SQL databases. You'll need to install the appropriate
-  Python library for each of them, as described in the table below. The default
-  is SQLite, which is *not* a production database. Please use a database like
-  PostgresQL or MySQL.
+- pretalx supports most SQL databases. You’ll need to install the appropriate
+  Python library for each of them, as described in the table below.
 - **Environment variable:** ``PRETALX_DB_TYPE``
 - **Default:** ``sqlite3``
 
-+------------+----------------------+---------------------+
-| Database   | Configuration string | pip package         |
-+============+======================+=====================+
-| PostgresQL | ``postgresql``       | ``psycopg2-binary`` |
-+------------+----------------------+---------------------+
-| MySQL      | ``mysql``            | ``mysqlclient``     |
-+------------+----------------------+---------------------+
-| SQLite     | ``sqlite3``          | –                   |
-+------------+----------------------+---------------------+
++------------+----------------------+-----------------------+
+| Database   | Configuration string | pip packag  e         |
++============+======================+=======================+
+| PostgresQL | ``postgresql``       | ``pretalx[postgres]`` |
++------------+----------------------+-----------------------+
+| MySQL      | ``mysql``            | ``pretalx[mysql]``    |
++------------+----------------------+-----------------------+
+| SQLite     | ``sqlite3``          | ``pretalx``           |
++------------+----------------------+-----------------------+
 
 ``name``
 ~~~~~~~~
 
-- The database's name.
+- The database’s name.
 - **Environment variable:** ``PRETALX_DB_NAME``
 - **Default:** ``''``
 
@@ -166,7 +165,7 @@ The database section
 ``password``
 ~~~~~~~~~~~~
 
-- The database password, if applicable. If you use PostgreSQL, consider using its peer authentication and not setting a password.
+- The database password, if applicable.
 - **Environment variable:** ``PRETALX_DB_PASS``
 - **Default:** ``''``
 
@@ -310,14 +309,14 @@ The locale section
 ``language_code``
 ~~~~~~~~~~~~~~~~~
 
-- The system's default locale.
+- The system’s default locale.
 - **Environment variable:** ``PRETALX_LANGUAGE_CODE``
 - **Default:** ``en``
 
 ``time_zone``
 ~~~~~~~~~~~~~
 
-- The system's default time zone as a ``pytz`` name.
+- The system’s default time zone as a ``pytz`` name.
 - **Environment variable:** ``PRETALX_TIME_ZONE``
 - **Default:** ``UTC``
 

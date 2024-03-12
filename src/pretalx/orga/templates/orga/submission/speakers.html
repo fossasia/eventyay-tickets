@@ -10,7 +10,7 @@
     {% if can_edit_speakers %}<div class="alert">
         <form method="POST" action="{{ submission.orga_urls.new_speaker }}" class="form flex-row">
             <label>
-                {% translate "Add a speaker – if the email address isn't registered yet, an account will be created for them and an invitation sent." %}:<br>
+                {% translate "Add a speaker – if the email address isn’t registered yet, an account will be created for them and an invitation sent." %}:<br>
             </label>
             {% csrf_token %}
             <div class="input-group" id="speaker-typeahead">

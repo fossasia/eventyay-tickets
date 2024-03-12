@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-12 13:40+0000\n"
+"POT-Creation-Date: 2024-03-05 15:47+0000\n"
 "PO-Revision-Date: 2022-11-18 18:03+0000\n"
 "Last-Translator: João Lucas Pires <jlucasp25@gmail.com>\n"
 "Language-Team: none\n"
@@ -111,7 +111,7 @@ msgstr ""
 
 #: pretalx/agenda/templates/agenda/featured.html:20
 msgid ""
-"In the near future you will see a curated list of sessions we'd like to show "
+"In the near future you will see a curated list of sessions we’d like to show "
 "off here. Right now we are busy reviewing proposals.<br> Check back later!"
 msgstr ""
 "Num futuro próximo, verá uma lista com curadoria de sessões que gostaríamos "
@@ -156,12 +156,12 @@ msgstr ""
 "maneira construtiva."
 
 #: pretalx/agenda/templates/agenda/feedback_form.html:26
-msgid "You can't give feedback for this session at this time."
+msgid "You can’t give feedback for this session at this time."
 msgstr "Não pode dar feedback para esta sessão neste momento."
 
 #: pretalx/agenda/templates/agenda/header_row.html:6 pretalx/event/stages.py:81
 #: pretalx/orga/templates/orga/base.html:342
-#: pretalx/orga/templates/orga/mails/_placeholder_group.html:10
+#: pretalx/orga/templates/orga/mails/_placeholder_group.html:14
 msgid "Schedule"
 msgstr "Agenda"
 
@@ -243,12 +243,12 @@ msgid "deleted"
 msgstr "removido"
 
 #: pretalx/agenda/templates/agenda/speaker.html:48
-msgid "The speaker's profile picture"
+msgid "The speaker’s profile picture"
 msgstr "A foto de perfil do orador"
 
 #: pretalx/agenda/templates/agenda/talk.html:37
 #, fuzzy
-#| msgid "Don't record this session."
+#| msgid "Don’t record this session."
 msgid "Favourite this session"
 msgstr "Não gravar esta sessão."
 
@@ -270,7 +270,7 @@ msgid "Language"
 msgstr "Linguagem"
 
 #: pretalx/agenda/templates/agenda/talk.html:87
-msgid "This session's header image"
+msgid "This session’s header image"
 msgstr "Imagem de cabeçalho desta sessão"
 
 #: pretalx/agenda/templates/agenda/talk.html:99
@@ -287,7 +287,7 @@ msgstr "Veja também:"
 msgid "This speaker also appears in:"
 msgstr "Este orador também aparece em:"
 
-#: pretalx/agenda/views/schedule.py:172
+#: pretalx/agenda/views/schedule.py:174
 msgid "Our schedule is not live yet."
 msgstr "O nosso cronograma ainda não está público."
 
@@ -306,8 +306,8 @@ msgstr "Olá, prazer em conhecê-lo!"
 
 #: pretalx/cfp/flow.py:322
 msgid ""
-"We're glad that you want to contribute to our event with your proposal. "
-"Let's get started, this won't take long."
+"We’re glad that you want to contribute to our event with your proposal. "
+"Let’s get started, this won’t take long."
 msgstr ""
 "Estamos gratos por contribuir para o nosso evento com a sua proposta. Vamos "
 "começar, isto não demorará muito."
@@ -321,7 +321,7 @@ msgstr ""
 
 #: pretalx/cfp/flow.py:363
 msgid ""
-"Congratulations, you've submitted your proposal! You can continue to make "
+"Congratulations, you’ve submitted your proposal! You can continue to make "
 "changes to it up to the submission deadline, and you will be notified of any "
 "changes or questions."
 msgstr ""
@@ -349,7 +349,7 @@ msgid "Account"
 msgstr "Conta"
 
 #: pretalx/cfp/flow.py:466
-msgid "That's it about your proposal! We now just need a way to contact you."
+msgid "That’s it about your proposal! We now just need a way to contact you."
 msgstr ""
 "A sua proposta encontra-se finalizada! Agora só precisamos de uma maneira de "
 "entrar em contato consigo."
@@ -406,23 +406,23 @@ msgstr "Assunto"
 
 #: pretalx/cfp/forms/submissions.py:8 pretalx/mail/models.py:40
 #: pretalx/mail/models.py:228 pretalx/orga/forms/cfp.py:418
-#: pretalx/orga/forms/review.py:260 pretalx/person/models/information.py:44
+#: pretalx/orga/forms/review.py:279 pretalx/person/models/information.py:44
 msgid "Text"
 msgstr "Texto"
 
 #: pretalx/cfp/forms/submissions.py:13
-#: pretalx/submission/models/submission.py:887
+#: pretalx/submission/models/submission.py:883
 #, python-brace-format
 msgid "{speaker} invites you to join their session!"
 msgstr "{speaker} convida a participar da sessão dele(s)!"
 
 #: pretalx/cfp/forms/submissions.py:18
-#: pretalx/submission/models/submission.py:894
+#: pretalx/submission/models/submission.py:890
 #, python-brace-format
 msgid ""
 "Hi!\n"
 "\n"
-"I'd like to invite you to be a speaker in the session\n"
+"I’d like to invite you to be a speaker in the session\n"
 "\n"
 "  “{title}”\n"
 "\n"
@@ -430,7 +430,7 @@ msgid ""
 "\n"
 "  {url}\n"
 "\n"
-"I'm looking forward to it!\n"
+"I’m looking forward to it!\n"
 "{speaker}"
 msgstr ""
 "Olá!\n"
@@ -450,7 +450,7 @@ msgstr ""
 msgid ""
 "If we know a user by this email address (who has not requested a password "
 "reset in the last 24 hours), we will send you an e-mail containing further "
-"instructions. If you don't see the email within the next minutes, check your "
+"instructions. If you don’t see the email within the next minutes, check your "
 "spam inbox!"
 msgstr ""
 "Se conhecermos um utilizador por este endereço de e-mail (que não solicitou "
@@ -486,19 +486,19 @@ msgstr "A sua proposta foi retirada."
 
 #: pretalx/cfp/phrases.py:24
 msgid ""
-"Your proposal can't be withdrawn at this time – please contact us if you "
+"Your proposal can’t be withdrawn at this time – please contact us if you "
 "need to withdraw your proposal!"
 msgstr ""
 "A sua proposta não pode ser retirada neste momento - entre em contato "
 "connosco se necessita de retirar a sua proposta!"
 
 #: pretalx/cfp/phrases.py:27
-msgid "Your session has been confirmed – we're looking forward to seeing you!"
+msgid "Your session has been confirmed – we’re looking forward to seeing you!"
 msgstr "A sua sessão foi confirmada - estamos ansiosos para vê -lo!"
 
 #: pretalx/cfp/phrases.py:30
 msgid ""
-"This proposal has already been confirmed – we're looking forward to seeing "
+"This proposal has already been confirmed – we’re looking forward to seeing "
 "you!"
 msgstr "Esta proposta já foi confirmada - estamos ansiosos para vê-lo!"
 
@@ -604,12 +604,12 @@ msgid "not accepted"
 msgstr "não aceite"
 
 #: pretalx/cfp/templates/cfp/event/fragment_state.html:9
-#: pretalx/orga/forms/review.py:227 pretalx/submission/models/submission.py:50
+#: pretalx/orga/forms/review.py:246 pretalx/submission/models/submission.py:50
 msgid "accepted"
 msgstr "aceite"
 
 #: pretalx/cfp/templates/cfp/event/fragment_state.html:11
-#: pretalx/orga/forms/review.py:228 pretalx/submission/models/submission.py:51
+#: pretalx/orga/forms/review.py:247 pretalx/submission/models/submission.py:51
 msgid "confirmed"
 msgstr "confirmado"
 
@@ -658,9 +658,9 @@ msgid "Abstract:"
 msgstr "Resumo:"
 
 #: pretalx/cfp/templates/cfp/event/invitation.html:41
-#: pretalx/event/models/event.py:635 pretalx/orga/forms/review.py:354
+#: pretalx/event/models/event.py:635 pretalx/orga/forms/review.py:373
 #: pretalx/submission/models/question.py:420
-#: pretalx/submission/models/submission.py:875
+#: pretalx/submission/models/submission.py:871
 msgid "No"
 msgstr "Não"
 
@@ -681,7 +681,7 @@ msgstr "Bem vindo de volta!"
 #: pretalx/cfp/templates/cfp/event/login.html:10
 msgid ""
 "You do not need an account to view the event, or submit feedback, or receive "
-"schedule updates. You'll only need an account if you participate in the "
+"schedule updates. You’ll only need an account if you participate in the "
 "event as speaker or as an organiser."
 msgstr ""
 "Não precisa de uma conta para visualizar o evento ou enviar feedback ou "
@@ -989,7 +989,7 @@ msgid "Withdraw"
 msgstr "Retirar"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:59
-#: pretalx/cfp/templates/cfp/event/user_submissions.html:112
+#: pretalx/cfp/templates/cfp/event/user_submissions.html:120
 msgid "Confirm"
 msgstr "Confirme"
 
@@ -1000,8 +1000,8 @@ msgstr "Proposta não encontrada"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm_error.html:13
 msgid ""
-"The proposal you're trying to confirm either does not exist or does not "
-"belong to the account you're currently logged in with. Try logging in with a "
+"The proposal you’re trying to confirm either does not exist or does not "
+"belong to the account you’re currently logged in with. Try logging in with a "
 "different account, or contact the event organisers for further information."
 msgstr ""
 "A proposta que está a tentar confirmar não existe ou não pertence à conta "
@@ -1057,19 +1057,16 @@ msgid "Attendees can leave feedback here after your session has taken place."
 msgstr "Os participantes podem deixar feedback aqui após a sua sessão."
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:65
-msgid "Speaker:"
-msgid_plural "Speakers:"
-msgstr[0] "Orador:"
-msgstr[1] "Oradores:"
+msgid "Speaker"
+msgid_plural "Speakers"
+msgstr[0] "Orador"
+msgstr[1] "Oradores"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:67
-#, fuzzy
-#| msgid "Submitter:"
-#| msgid_plural "Submitters:"
 msgid "Submitter"
 msgid_plural "Submitters"
-msgstr[0] "Proponente:"
-msgstr[1] "Proponentes:"
+msgstr[0] "Proponente"
+msgstr[1] "Proponentes"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:92
 #: pretalx/orga/forms/schedule.py:120
@@ -1117,7 +1114,7 @@ msgstr "Compartilhar proposta"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:194
 msgid ""
-"If you need a review from a colleague or a friend here's a link that you can "
+"If you need a review from a colleague or a friend here’s a link that you can "
 "send out for viewing your proposal:"
 msgstr ""
 "Se precisa de uma revisão de um colega ou amigo, aqui está um link que pode "
@@ -1164,7 +1161,7 @@ msgstr "Cancelar proposta"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:234
 msgid ""
-"As your proposal has been accepted already, please contact the event's "
+"As your proposal has been accepted already, please contact the event’s "
 "organising team to cancel it. The best way to reach out would be an answer "
 "to your acceptance mail."
 msgstr ""
@@ -1205,7 +1202,7 @@ msgid "You will not be able to revert this action."
 msgstr "Não vai poder reverter esta ação."
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:9
-#: pretalx/cfp/templates/cfp/event/user_submissions.html:63
+#: pretalx/cfp/templates/cfp/event/user_submissions.html:67
 msgid "Your proposals"
 msgstr "Suas propostas"
 
@@ -1218,7 +1215,7 @@ msgid "Your drafts"
 msgstr "Seus rascunhos"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:30
-#: pretalx/cfp/templates/cfp/event/user_submissions.html:69
+#: pretalx/cfp/templates/cfp/event/user_submissions.html:73
 #: pretalx/orga/templates/orga/cfp/text.html:83
 #: pretalx/orga/templates/orga/review/bulk.html:67
 #: pretalx/orga/templates/orga/review/dashboard.html:212
@@ -1229,47 +1226,71 @@ msgid "Title"
 msgstr "Título"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:48
-#: pretalx/cfp/templates/cfp/event/user_submissions.html:101
+#: pretalx/cfp/templates/cfp/event/user_submissions.html:105
 msgid "Copy code for review"
 msgstr "Copiar código para revisão"
 
-#: pretalx/cfp/templates/cfp/event/user_submissions.html:70
+#: pretalx/cfp/templates/cfp/event/user_submissions.html:55
+#, fuzzy
+#| msgid "draft"
+msgid "Edit draft"
+msgstr "rascunho"
+
+#: pretalx/cfp/templates/cfp/event/user_submissions.html:57
+#, fuzzy
+#| msgid "Save draft"
+msgid "Open draft"
+msgstr "Salvar o rascunho"
+
+#: pretalx/cfp/templates/cfp/event/user_submissions.html:74
 #: pretalx/orga/templates/orga/review/dashboard.html:119
 #: pretalx/orga/templates/orga/review/dashboard.html:221
 #: pretalx/orga/templates/orga/submission/list.html:102
 msgid "State"
 msgstr "Estado"
 
-#: pretalx/cfp/templates/cfp/event/user_submissions.html:118
+#: pretalx/cfp/templates/cfp/event/user_submissions.html:112
+#, fuzzy
+#| msgid "Submit proposal"
+msgid "Edit proposal"
+msgstr "Enviar proposta"
+
+#: pretalx/cfp/templates/cfp/event/user_submissions.html:114
+#, fuzzy
+#| msgid "per proposal"
+msgid "Open proposal"
+msgstr "por proposta"
+
+#: pretalx/cfp/templates/cfp/event/user_submissions.html:126
 #: pretalx/orga/templates/orga/base.html:273
 #: pretalx/orga/templates/orga/submission/base.html:64
-#: pretalx/submission/models/feedback.py:35
+#: pretalx/submission/models/feedback.py:36
 msgid "Feedback"
 msgstr "Comentários"
 
-#: pretalx/cfp/templates/cfp/event/user_submissions.html:131
+#: pretalx/cfp/templates/cfp/event/user_submissions.html:139
 msgid "Create a new proposal"
 msgstr "Criar uma nova proposta"
 
-#: pretalx/cfp/templates/cfp/event/user_submissions.html:137
-msgid "It seems like you haven't submitted anything to this event yet."
+#: pretalx/cfp/templates/cfp/event/user_submissions.html:145
+msgid "It seems like you haven’t submitted anything to this event yet."
 msgstr "Parece que ainda não submeteu nada para este evento."
 
-#: pretalx/cfp/templates/cfp/event/user_submissions.html:140
+#: pretalx/cfp/templates/cfp/event/user_submissions.html:148
 msgid "If you did, maybe you used a different account? Check your emails!"
 msgstr ""
 "Se o fez, talvez tenha utilizado uma conta diferente. Verifique os seus e-"
 "mails!"
 
-#: pretalx/cfp/templates/cfp/event/user_submissions.html:144
+#: pretalx/cfp/templates/cfp/event/user_submissions.html:152
 msgid ""
-"If you did not, why not go ahead and create a proposal now? We'd love to "
+"If you did not, why not go ahead and create a proposal now? We’d love to "
 "hear from you!"
 msgstr ""
 "Se não o fez, por que não criar uma proposta agora? Gostaríamos muito de "
 "ouvir da sua parte!"
 
-#: pretalx/cfp/templates/cfp/event/user_submissions.html:149
+#: pretalx/cfp/templates/cfp/event/user_submissions.html:157
 msgid "Submit something now!"
 msgstr "Submeta algo agora!"
 
@@ -1344,13 +1365,13 @@ msgstr "”"
 
 #: pretalx/common/css.py:116
 #, python-brace-format
-msgid "\"{value}\" is not allowed as attribute of \"{key}\""
-msgstr "\"{value}\" não é permitido como atributo de \"{key}\""
+msgid "“{value}” is not allowed as attribute of “{key}”"
+msgstr "{value}” não é permitido como atributo de “{key}”"
 
 #: pretalx/common/css.py:122
 #, python-brace-format
-msgid "You are not allowed to include \"{key}\" keys in your CSS."
-msgstr "Não tem permissão para incluir teclas \"{key}\" no seu CSS."
+msgid "You are not allowed to include “{key}” keys in your CSS."
+msgstr "Não tem permissão para incluir teclas “{key}” no seu CSS."
 
 #: pretalx/common/forms/fields.py:56
 #, python-brace-format
@@ -1366,7 +1387,7 @@ msgstr ""
 "Este tipo de ficheiro ({extension}) não é permitido, deve ser um dos "
 "seguintes: "
 
-#: pretalx/common/forms/fields.py:159
+#: pretalx/common/forms/fields.py:158
 msgid ""
 "Upload a valid image. The file you uploaded was either not an image or a "
 "corrupted image."
@@ -1443,7 +1464,7 @@ msgid "Warning"
 msgstr "Aviso"
 
 #: pretalx/common/forms/widgets.py:58
-msgid "Your passwords don't match."
+msgid "Your passwords don’t match."
 msgstr "As senhas não correspondem."
 
 #: pretalx/common/log_display.py:9
@@ -1706,54 +1727,41 @@ msgstr "O perfil foi modificado."
 msgid "You are trying to change read-only data."
 msgstr "Está a tentar alterar dados só de leitura."
 
-#: pretalx/common/mixins/views.py:267
+#: pretalx/common/mixins/views.py:269
 msgid "ManagementForm data is missing or has been tampered with."
 msgstr "Os dados do ManagementForm estão ausentes ou foram interferidos."
 
-#: pretalx/common/models/log.py:99
-#: pretalx/orga/templates/orga/mails/_placeholder_group.html:8
-#: pretalx/orga/views/typeahead.py:43 pretalx/submission/models/feedback.py:23
-msgid "Session"
-msgstr "Sessão"
-
-#: pretalx/common/models/log.py:101 pretalx/orga/forms/review.py:224
-#: pretalx/orga/templates/orga/speaker/form.html:36
-msgid "Proposal"
-msgid_plural "Proposals"
-msgstr[0] "Proposta"
-msgstr[1] "Propostas"
-
-#: pretalx/common/models/log.py:105 pretalx/common/models/log.py:109
+#: pretalx/common/models/log.py:106 pretalx/common/models/log.py:110
 #: pretalx/orga/templates/orga/cfp/question_form.html:19
 #: pretalx/orga/templates/orga/cfp/question_view.html:30
 #: pretalx/orga/templates/orga/review/dashboard.html:96
 msgid "Question"
 msgstr "Pergunta"
 
-#: pretalx/common/models/log.py:116
+#: pretalx/common/models/log.py:117
 #, fuzzy
-#| msgid "Answer to the question '{q}'"
+#| msgid "Answer to the question “{q}”"
 msgid "Answer to question"
-msgstr "Responda à pergunta '{q}'"
+msgstr "Responda à pergunta “{q}”"
 
-#: pretalx/common/models/log.py:119 pretalx/orga/templates/orga/base.html:219
+#: pretalx/common/models/log.py:120 pretalx/orga/templates/orga/base.html:219
 msgid "CfP"
 msgstr "CFP"
 
-#: pretalx/common/models/log.py:122
+#: pretalx/common/models/log.py:123
 #, fuzzy
 #| msgid "Edit template"
 msgid "Mail template"
 msgstr "Editar modelo"
 
-#: pretalx/common/models/log.py:126 pretalx/event/models/organiser.py:157
+#: pretalx/common/models/log.py:127 pretalx/event/models/organiser.py:157
 #: pretalx/orga/templates/orga/settings/team_detail.html:20
 msgid "Email"
 msgstr "E-mail"
 
 #: pretalx/common/models/settings.py:59
 msgid ""
-"Please give a fair review on why you'd like to see this proposal at the "
+"Please give a fair review on why you’d like to see this proposal at the "
 "conference, or why you think it would not be a good fit."
 msgstr ""
 "Por favor, faça uma revisão justa sobre por que gostaria de ver esta "
@@ -1789,14 +1797,14 @@ msgstr ""
 msgid ""
 "Hi,\n"
 "\n"
-"we hope you're happy with pretalx as your event's CfP system.\n"
+"we hope you’re happy with pretalx as your event’s CfP system.\n"
 "These links may be helpful in the coming days and weeks:\n"
 "\n"
-"- Your event's dashboard: {event_dashboard}\n"
+"- Your event’s dashboard: {event_dashboard}\n"
 "- A list of proposals: {event_submissions}\n"
 "- Your schedule editor: {event_schedule}\n"
 "\n"
-"If there is anything you're missing, come tell us about it\n"
+"If there is anything you’re missing, come tell us about it\n"
 "at https://github.com/pretalx/pretalx/issues/new or via an\n"
 "email to support@pretalx.com!\n"
 msgstr ""
@@ -1821,7 +1829,7 @@ msgid ""
 "just writing you to let you know that your Call for Participation is now\n"
 "closed. Here is a list of links that should be useful in the next days:\n"
 "\n"
-"- You'll find a list of all your {submission_count} proposals here:\n"
+"- You’ll find a list of all your {submission_count} proposals here:\n"
 "  {event_submissions}\n"
 "- You can add reviewers here:\n"
 "  {event_team}\n"
@@ -1859,7 +1867,7 @@ msgid ""
 "- You released {schedule_count} schedules in total.\n"
 "- Over the course of the event, you sent {mail_count} mails.\n"
 "\n"
-"If there is anything you're missing, come tell us about it\n"
+"If there is anything you’re missing, come tell us about it\n"
 "at https://github.com/pretalx/pretalx/issues/new or via an\n"
 "email to support@pretalx.com!\n"
 msgstr ""
@@ -2112,7 +2120,7 @@ msgstr ""
 #: pretalx/common/templates/common/base.html:72
 #: pretalx/orga/templates/orga/auth/base.html:25
 #: pretalx/orga/templates/orga/settings/form.html:76
-msgid "The event's logo"
+msgid "The event’s logo"
 msgstr "O logotipo do evento"
 
 #: pretalx/common/templates/common/base.html:97
@@ -2276,13 +2284,13 @@ msgstr "Extensão: {}"
 msgid "{date_from} – {date_to}"
 msgstr "{date_from} - {date_to}"
 
-#: pretalx/common/views.py:228
+#: pretalx/common/views.py:225
 #, fuzzy
 #| msgid "Sorry, you are not allowed to reorder questions."
 msgid "Sorry, you are not allowed to reorder this list."
 msgstr "Desculpe, não tem permissão para reordenar perguntas."
 
-#: pretalx/common/views.py:232
+#: pretalx/common/views.py:229
 #, fuzzy
 #| msgid "The order of rooms has been updated."
 msgid "The order has been updated."
@@ -2392,7 +2400,7 @@ msgstr "Cor principal do evento"
 #: pretalx/event/forms.py:268 pretalx/event/models/event.py:217
 msgid ""
 "Provide a hex value like #00ff00 if you want to style pretalx in your "
-"event's colour scheme."
+"event’s colour scheme."
 msgstr ""
 "Forneça um valor hexadecimal como #00FF00 se deseja atribuir estilos ao "
 "pretalx no esquema de cores do seu evento."
@@ -2522,7 +2530,7 @@ msgstr "Logotipo"
 
 #: pretalx/event/models/event.py:235
 msgid ""
-"If you provide a logo image, your event's name will not be shown in the "
+"If you provide a logo image, your event’s name will not be shown in the "
 "event header. The logo will be scaled down to a height of 150px."
 msgstr ""
 "Se fornecer uma imagem de logotipo, o nome do seu evento não será mostrado "
@@ -2534,7 +2542,7 @@ msgstr "Imagem de cabeçalho"
 
 #: pretalx/event/models/event.py:245
 msgid ""
-"If you provide a header image, it will be displayed instead of your event's "
+"If you provide a header image, it will be displayed instead of your event’s "
 "color and/or header pattern at the top of all event pages. It will be center-"
 "aligned, so when the window shrinks, the center parts will continue to be "
 "displayed, and not stretched."
@@ -2579,7 +2587,7 @@ msgstr ""
 msgid "Plugins"
 msgstr "Plugins"
 
-#: pretalx/event/models/event.py:609 pretalx/event/models/event.py:931
+#: pretalx/event/models/event.py:609 pretalx/event/models/event.py:932
 #: pretalx/event/stages.py:68 pretalx/orga/templates/orga/base.html:197
 #: pretalx/orga/templates/orga/base.html:286
 #: pretalx/orga/templates/orga/base.html:294
@@ -2603,7 +2611,7 @@ msgstr "Pontuação"
 msgid "Maybe"
 msgstr "Talvez"
 
-#: pretalx/event/models/event.py:645 pretalx/orga/forms/review.py:354
+#: pretalx/event/models/event.py:645 pretalx/orga/forms/review.py:373
 #: pretalx/orga/templates/orga/cfp/access_code_delete.html:15
 #: pretalx/orga/templates/orga/cfp/question_delete.html:15
 #: pretalx/orga/templates/orga/cfp/submission_type_delete.html:15
@@ -2620,11 +2628,11 @@ msgstr "Talvez"
 #: pretalx/orga/templates/orga/submission/review_delete.html:15
 #: pretalx/orga/templates/orga/submission/tag_delete.html:15
 #: pretalx/submission/models/question.py:418
-#: pretalx/submission/models/submission.py:875
+#: pretalx/submission/models/submission.py:871
 msgid "Yes"
 msgstr "Sim"
 
-#: pretalx/event/models/event.py:1071
+#: pretalx/event/models/event.py:1072
 msgid "News from your content system"
 msgstr "Notícias do seu sistema de conteúdo"
 
@@ -2791,7 +2799,7 @@ msgid "Inform your speakers about the infrastructure"
 msgstr "Informar os oradores sobre a infraestrutura"
 
 #: pretalx/event/stages.py:96
-#: pretalx/orga/templates/orga/mails/_placeholder_group.html:14
+#: pretalx/orga/templates/orga/mails/_placeholder_group.html:18
 msgid "Event"
 msgstr "Evento"
 
@@ -2820,27 +2828,27 @@ msgid "Release next event date?"
 msgstr "Lançar a próxima data do evento?"
 
 #: pretalx/mail/context.py:84
-msgid "The event's full name"
+msgid "The event’s full name"
 msgstr "O nome completo do evento"
 
 #: pretalx/mail/context.py:91
-msgid "The event's short form, used in URLs"
+msgid "The event’s short form, used in URLs"
 msgstr "A forma curta do evento, utilizada em URLs"
 
 #: pretalx/mail/context.py:98
-msgid "The event's public base URL"
+msgid "The event’s public base URL"
 msgstr "O URL base público do evento"
 
 #: pretalx/mail/context.py:105
-msgid "The event's public schedule URL"
+msgid "The event’s public schedule URL"
 msgstr "O URL do cronograma público do evento"
 
 #: pretalx/mail/context.py:112
-msgid "The event's public CfP URL"
+msgid "The event’s public CfP URL"
 msgstr "O URL público do CFP do evento"
 
 #: pretalx/mail/context.py:119
-msgid "URL to a user's list of proposals"
+msgid "URL to a user’s list of proposals"
 msgstr "URL para a lista de propostas de um utilizador"
 
 #: pretalx/mail/context.py:134
@@ -2848,15 +2856,15 @@ msgid "The general CfP deadline"
 msgstr "O prazo geral do CFP"
 
 #: pretalx/mail/context.py:141
-msgid "The proposal's unique ID"
+msgid "The proposal’s unique ID"
 msgstr "O identificador único da proposta"
 
 #: pretalx/mail/context.py:148
-msgid "The proposal's public URL"
+msgid "The proposal’s public URL"
 msgstr "O URL público da proposta"
 
 #: pretalx/mail/context.py:155
-msgid "The speaker's edit page for the proposal"
+msgid "The speaker’s edit page for the proposal"
 msgstr "A página de edição do orador para a proposta"
 
 #: pretalx/mail/context.py:162
@@ -2872,7 +2880,7 @@ msgid "This Is a Proposal Title"
 msgstr "Este é um Título de Proposta"
 
 #: pretalx/mail/context.py:176
-msgid "The proposal's title"
+msgid "The proposal’s title"
 msgstr "O título da proposta"
 
 #: pretalx/mail/context.py:183
@@ -2884,7 +2892,7 @@ msgid "Session Type A"
 msgstr "Tipo de Sessão A"
 
 #: pretalx/mail/context.py:190
-msgid "The proposal's session type"
+msgid "The proposal’s session type"
 msgstr "O tipo de sessão da proposta"
 
 #: pretalx/mail/context.py:196
@@ -2914,19 +2922,19 @@ msgid "All review texts for this proposal"
 msgstr "Todos os textos de revisão para esta proposta"
 
 #: pretalx/mail/context.py:213
-msgid "The session's start date"
+msgid "The session’s start date"
 msgstr "A data de início da sessão"
 
 #: pretalx/mail/context.py:220
-msgid "The session's start time"
+msgid "The session’s start time"
 msgstr "A hora de início da sessão"
 
 #: pretalx/mail/context.py:227
-msgid "The session's end date"
+msgid "The session’s end date"
 msgstr "A data final da sessão"
 
 #: pretalx/mail/context.py:234
-msgid "The session's end time"
+msgid "The session’s end time"
 msgstr "A hora de fim da sessão"
 
 #: pretalx/mail/context.py:240
@@ -2934,7 +2942,7 @@ msgid "Room 101"
 msgstr "Sala 101"
 
 #: pretalx/mail/context.py:241
-msgid "The session's room"
+msgid "The session’s room"
 msgstr "A sala da sessão"
 
 #: pretalx/mail/context.py:247
@@ -2942,27 +2950,27 @@ msgid "Jane Doe"
 msgstr "Maria Ninguém"
 
 #: pretalx/mail/context.py:248
-msgid "The addressed user's full name"
+msgid "The addressed user’s full name"
 msgstr "O nome completo do utilizador endereçado"
 
 #: pretalx/mail/context.py:255
-msgid "The addressed user's email address"
+msgid "The addressed user’s email address"
 msgstr "O endereço de e -mail do utilizador endereçado"
 
-#: pretalx/mail/context.py:268 pretalx/mail/context.py:283
+#: pretalx/mail/context.py:266 pretalx/mail/context.py:281
 #, python-brace-format
 msgid ""
 "- Your session “Title” will take place at {time} in Room 101.\n"
 "- Your session “Other Title” has been moved to {time2} in Room 102."
 msgstr ""
 
-#: pretalx/mail/context.py:272
+#: pretalx/mail/context.py:270
 msgid ""
-"A list of all changes to the user's schedule in the current schedule version."
+"A list of all changes to the user’s schedule in the current schedule version."
 msgstr ""
 
-#: pretalx/mail/context.py:286
-msgid "A list of time and place for this user's publicly visible sessions."
+#: pretalx/mail/context.py:284
+msgid "A list of time and place for this user’s publicly visible sessions."
 msgstr ""
 
 #: pretalx/mail/default_templates.py:4
@@ -2975,7 +2983,7 @@ msgstr "A sua proposta: {submission_title}"
 msgid ""
 "Hi!\n"
 "\n"
-"We have received your proposal \"{submission_title}\" to\n"
+"We have received your proposal “{submission_title}” to\n"
 "{event_name}. We will notify you once we have had time to consider all\n"
 "proposals, but until then you can see and edit your proposal at\n"
 "{submission_url}.\n"
@@ -2986,7 +2994,7 @@ msgid ""
 msgstr ""
 "Olá!\n"
 "\n"
-"Recebemos a sua proposta \"{submission_title}\" para o\n"
+"Recebemos a sua proposta “{submission_title}” para o\n"
 "{event_name}. Iremos notificá-lo assim que tivermos tempo para considerar "
 "todas as\n"
 "propostas, mas até lá pode visualizar e editar a sua proposta em\n"
@@ -3001,8 +3009,7 @@ msgstr ""
 msgid ""
 "Hi!\n"
 "\n"
-"We are happy to tell you that we accept your proposal "
-"\"{submission_title}\"\n"
+"We are happy to tell you that we accept your proposal “{submission_title}”\n"
 "to {event_name}. Please click this link to confirm your attendance:\n"
 "\n"
 "    {confirmation_link}\n"
@@ -3019,8 +3026,7 @@ msgid ""
 msgstr ""
 "Olá!\n"
 "\n"
-"Estamos felizes em dizer que aceitamos a sua proposta "
-"\"{submission_title}\"\n"
+"Estamos felizes em dizer que aceitamos a sua proposta “{submission_title}”\n"
 "para {event_name}. Clique neste link para confirmar a sua participação:\n"
 "\n"
 " {confirmation_link}\n"
@@ -3041,7 +3047,7 @@ msgid ""
 "Hi!\n"
 "\n"
 "We are sorry to tell you that we cannot accept your proposal\n"
-"\"{submission_title}\" to {event_name}. There were just too many great\n"
+"“{submission_title}” to {event_name}. There were just too many great\n"
 "proposals - we hope to see you at {event_name} as an attendee instead\n"
 "of a speaker!\n"
 "\n"
@@ -3050,7 +3056,7 @@ msgstr ""
 "Olá!\n"
 "\n"
 "Lamentamos informar que não podemos aceitar a sua proposta\n"
-"\"{submission_title}\" para {event_name}. Havia muitas propostas "
+"“{submission_title}” para {event_name}. Havia muitas propostas "
 "excepcionais!\n"
 "Esperamos vê-lo em {event_name} como um participante\n"
 "em vez de orador!\n"
@@ -3095,7 +3101,7 @@ msgstr "Temos algumas perguntas sobre a sua proposta"
 msgid ""
 "Hi!\n"
 "\n"
-"We have some open questions about yourself and your proposal that we'd\n"
+"We have some open questions about yourself and your proposal that we’d\n"
 "like to ask you to answer:\n"
 "\n"
 "{questions}\n"
@@ -3379,7 +3385,7 @@ msgid ""
 "\n"
 "  {url}\n"
 "\n"
-"I'm looking forward to your proposal!\n"
+"I’m looking forward to your proposal!\n"
 "{name}"
 msgstr ""
 "\n"
@@ -3418,8 +3424,8 @@ msgstr "Línguas ativos"
 #: pretalx/orga/forms/event.py:40
 msgid ""
 "Users will be able to use pretalx in these languages, and you will be able "
-"to provide all texts in these languages. If you don't provide a text in the "
-"language a user selects, it will be shown in your event's default language "
+"to provide all texts in these languages. If you don’t provide a text in the "
+"language a user selects, it will be shown in your event’s default language "
 "instead."
 msgstr ""
 "Os utilizadores poderão utilizar o pretalx nestas línguas e pode fornecer "
@@ -3495,7 +3501,7 @@ msgstr "Sempre"
 
 #: pretalx/orga/forms/event.py:87
 msgid ""
-"Marking sessions as 'featured' is a good way to show them before the first "
+"Marking sessions as “featured” is a good way to show them before the first "
 "schedule release, or to highlight them once the schedule is visible."
 msgstr ""
 
@@ -3535,7 +3541,7 @@ msgstr ""
 
 #: pretalx/orga/forms/event.py:116
 msgid ""
-"Choose how the frontpage header banner will be styled if you don't upload an "
+"Choose how the frontpage header banner will be styled if you don’t upload an "
 "image. Pattern source: <a href=\"http://www.heropatterns.com/\">heropatterns."
 "com</a>, CC BY 4.0."
 msgstr ""
@@ -3587,11 +3593,11 @@ msgstr "Não escolha o domínio padrão como domínio de evento personalizado."
 #: pretalx/orga/forms/event.py:188
 #, python-brace-format
 msgid ""
-"The domain \"{domain}\" does not have a name server entry at this time. "
-"Please make sure the domain is working before configuring it here."
+"The domain “{domain}” does not have a name server entry at this time. Please "
+"make sure the domain is working before configuring it here."
 msgstr ""
-"O domínio \"{domain}\" não possui uma entrada no servidor de nomes no "
-"momento. Verifique se o domínio está a funcionar antes de configurá-lo aqui."
+"O domínio “{domain}” não possui uma entrada no servidor de nomes no momento. "
+"Verifique se o domínio está a funcionar antes de configurá-lo aqui."
 
 #: pretalx/orga/forms/event.py:227
 msgid "Your default language needs to be one of your active languages."
@@ -3625,7 +3631,7 @@ msgid "Mail signature"
 msgstr "Assinatura de e-mail"
 
 #: pretalx/orga/forms/event.py:385
-msgid "The signature will be added to outgoing mails, preceded by \"-- \"."
+msgid "The signature will be added to outgoing mails, preceded by “-- ”."
 msgstr ""
 "A assinatura será adicionada aos e-mails de saída, precedidos por \"-\"."
 
@@ -3828,8 +3834,8 @@ msgstr "Vírgula"
 
 #: pretalx/orga/forms/export.py:75
 #, python-brace-format
-msgid "Answer to the question '{q}'"
-msgstr "Responda à pergunta '{q}'"
+msgid "Answer to the question “{q}”"
+msgstr "Responda à pergunta “{q}”"
 
 #: pretalx/orga/forms/export.py:90
 msgid "Please select a delimiter for your CSV export."
@@ -3848,7 +3854,7 @@ msgstr ""
 
 #: pretalx/orga/forms/mails.py:107
 msgid ""
-"Invalid email template! Please check that you don't have stray { or } "
+"Invalid email template! Please check that you don’t have stray { or } "
 "somewhere, and that there are no spaces inside the {} blocks."
 msgstr ""
 "Modelo de email inválido! Verifique se não tem { ou } por abrir ou fechar em "
@@ -3942,70 +3948,70 @@ msgstr ""
 "mails. Se fornecer várias línguas, a língua mais adequada para cada orador "
 "será utilizada."
 
-#: pretalx/orga/forms/review.py:92
+#: pretalx/orga/forms/review.py:90
 msgid "No score"
 msgstr "Nenhuma pontuação"
 
-#: pretalx/orga/forms/review.py:127
+#: pretalx/orga/forms/review.py:144
 msgid "Please provide a review text!"
 msgstr "Por favor, forneça um texto de revisão!"
 
-#: pretalx/orga/forms/review.py:133
+#: pretalx/orga/forms/review.py:151
 msgid "Please provide a review score!"
 msgstr "Por favor, forneça uma pontuação de revisão!"
 
-#: pretalx/orga/forms/review.py:160
+#: pretalx/orga/forms/review.py:179
 msgid "Assign proposals to reviewers"
 msgstr "Atribuir propostas aos revisores"
 
-#: pretalx/orga/forms/review.py:161
+#: pretalx/orga/forms/review.py:180
 msgid "Assign reviewers to proposals"
 msgstr "Atribuir revisores a propostas"
 
-#: pretalx/orga/forms/review.py:226 pretalx/orga/forms/schedule.py:54
+#: pretalx/orga/forms/review.py:245 pretalx/orga/forms/schedule.py:54
 msgid "All proposals"
 msgstr "Todas as propostas"
 
-#: pretalx/orga/forms/review.py:229 pretalx/orga/views/dashboard.py:334
+#: pretalx/orga/forms/review.py:248 pretalx/orga/views/dashboard.py:334
 #: pretalx/submission/models/submission.py:52
 msgid "rejected"
 msgstr "rejeitado"
 
-#: pretalx/orga/forms/review.py:235
+#: pretalx/orga/forms/review.py:254
 msgid "Proposal ID"
 msgstr "ID da proposta"
 
-#: pretalx/orga/forms/review.py:237 pretalx/orga/forms/speaker.py:32
+#: pretalx/orga/forms/review.py:256 pretalx/orga/forms/speaker.py:32
 msgid "The unique ID of a proposal is used in the proposal URL and in exports"
 msgstr ""
 "O ID exclusivo de uma proposta é usado no URL da proposta e nas exportações"
 
-#: pretalx/orga/forms/review.py:242 pretalx/submission/models/submission.py:129
+#: pretalx/orga/forms/review.py:261 pretalx/submission/models/submission.py:129
 msgid "Proposal title"
 msgstr "Título da proposta"
 
-#: pretalx/orga/forms/review.py:246
+#: pretalx/orga/forms/review.py:265
 msgid "Reviewer name"
 msgstr "Nome do revisor"
 
-#: pretalx/orga/forms/review.py:250
+#: pretalx/orga/forms/review.py:269
 msgid "Reviewer email"
 msgstr "E-mail do revisor"
 
-#: pretalx/orga/forms/review.py:308 pretalx/orga/forms/review.py:315
+#: pretalx/orga/forms/review.py:327 pretalx/orga/forms/review.py:334
 #, python-brace-format
-msgid "Score in '{score_category}'"
-msgstr "Pontuação em '{score_category}'"
+msgid "Score in “{score_category}”"
+msgstr "Pontuação em “{score_category}”"
 
-#: pretalx/orga/forms/review.py:351
+#: pretalx/orga/forms/review.py:370
 msgid "file"
 msgstr "ficheiro"
 
-#: pretalx/orga/forms/review.py:353
+#: pretalx/orga/forms/review.py:372
 msgid "Replace current assignments"
 msgstr "Substituir as atribuições atuais"
 
-#: pretalx/orga/forms/review.py:356
+#: pretalx/orga/forms/review.py:375
 msgid ""
 "Select to remove all current assignments and replace them with the import. "
 "Otherwise, the import will be an addition to the current assignments."
@@ -4013,15 +4019,15 @@ msgstr ""
 "Selecione para remover todas as atribuições atuais e substituí-las pela "
 "importação. Caso contrário, a importação será uma adição às tarefas atuais."
 
-#: pretalx/orga/forms/review.py:377
+#: pretalx/orga/forms/review.py:396
 msgid "Unknown user: {}"
 msgstr "Utilizador desconhecido: {}"
 
-#: pretalx/orga/forms/review.py:385
+#: pretalx/orga/forms/review.py:404
 msgid "Unknown proposal: {}"
 msgstr "Proposta desconhecida: {}"
 
-#: pretalx/orga/forms/review.py:392 pretalx/orga/forms/review.py:400
+#: pretalx/orga/forms/review.py:411 pretalx/orga/forms/review.py:419
 msgid "Cannot parse JSON file."
 msgstr "Não é possível interpretar o ficheiro JSON."
 
@@ -4140,7 +4146,7 @@ msgid "Picture"
 msgstr "Foto"
 
 #: pretalx/orga/forms/speaker.py:46
-msgid "The link to the speaker's profile picture"
+msgid "The link to the speaker’s profile picture"
 msgstr "O link para a foto de perfil do orador"
 
 #: pretalx/orga/forms/submission.py:74
@@ -4180,15 +4186,18 @@ msgid "The end time has to be after the start time."
 msgstr "A hora de fim deve estar após a hora de início."
 
 #: pretalx/orga/forms/submission.py:277
-msgid "Mark the new state as 'pending'?"
+#: pretalx/orga/templates/orga/review/dashboard.html:330
+#, fuzzy
+#| msgid "Mark the new state as “pending”?"
+msgid "Mark the new state as “pending”"
 msgstr "Marcar o novo estado como 'pendente'?"
 
 #: pretalx/orga/forms/submission.py:279
 #: pretalx/orga/templates/orga/review/dashboard.html:332
 msgid ""
-"If you mark state changes as pending, they won't be visible to speakers "
+"If you mark state changes as pending, they won’t be visible to speakers "
 "right away. You can always apply pending changes for some or all proposals "
-"in one go once you're ready to make your decisions public."
+"in one go once you’re ready to make your decisions public."
 msgstr ""
 "Se marcar as mudanças no estado como pendente, elas não serão visíveis para "
 "os oradores imediatamente. Sempre pode aplicar alterações pendentes para "
@@ -4304,7 +4313,7 @@ msgid "Host"
 msgstr "Host"
 
 #: pretalx/orga/templates/orga/admin.html:65
-#: pretalx/orga/templates/orga/mails/_placeholder_group.html:12
+#: pretalx/orga/templates/orga/mails/_placeholder_group.html:16
 msgid "User"
 msgstr "Utilizador"
 
@@ -4406,7 +4415,7 @@ msgid "View event"
 msgstr "Novo evento"
 
 #: pretalx/orga/templates/orga/base.html:112
-msgid "You're using pretalx as a superuser. This is not recommended."
+msgid "You’re using pretalx as a superuser. This is not recommended."
 msgstr ""
 "Está a utilizar o pretalx como superutilizador. Isto não é recomendado."
 
@@ -4553,7 +4562,7 @@ msgstr "Novo código de acesso"
 
 #: pretalx/orga/templates/orga/cfp/access_code_form.html:27
 msgid ""
-"This access code has already been used. You can't delete it, but you can "
+"This access code has already been used. You can’t delete it, but you can "
 "disable it by setting an expiration date."
 msgstr ""
 "Este código de acesso já foi utilizado. Não pode eliminá-lo, mas pode "
@@ -4566,7 +4575,7 @@ msgstr "Enviar código de acesso"
 #: pretalx/orga/templates/orga/cfp/access_code_send.html:12
 msgid ""
 "Access codes can allow access to your CfP beyond its deadline for one or "
-"multiple proposals. If the code is circulated more widely than you'd like, "
+"multiple proposals. If the code is circulated more widely than you’d like, "
 "you can always delete or invalidate it."
 msgstr ""
 "Os códigos de acesso podem permitir o acesso ao seu CFP além do prazo para "
@@ -4794,7 +4803,7 @@ msgid "Answers"
 msgstr "Resposta"
 
 #: pretalx/orga/templates/orga/cfp/question_view.html:53
-msgid "This question's availability depends on a deadline."
+msgid "This question’s availability depends on a deadline."
 msgstr "A disponibilidade desta pergunta depende de um prazo."
 
 #: pretalx/orga/templates/orga/cfp/question_view.html:80
@@ -4988,9 +4997,9 @@ msgstr "Cor"
 
 #: pretalx/orga/templates/orga/event/dashboard.html:10
 msgid ""
-"Your event has been created and you're ready to go! Check out the event "
+"Your event has been created and you’re ready to go! Check out the event "
 "settings, set up your Call for Papers with session types and questions, and "
-"you're ready to go!"
+"you’re ready to go!"
 msgstr ""
 "O seu evento foi criado e está pronto para ir! Confira as configurações do "
 "evento, configure a sua chamada para papéis (CFP) com tipos de sessão e "
@@ -5130,7 +5139,7 @@ msgstr ""
 
 #: pretalx/orga/templates/orga/event/wizard/timeline.html:17
 msgid ""
-"What's your timeline like? You can later add session types with different "
+"What’s your timeline like? You can later add session types with different "
 "deadlines (e.g. if you accept workshop proposals later than your talk "
 "proposals)."
 msgstr ""
@@ -5231,8 +5240,8 @@ msgstr "Convite"
 
 #: pretalx/orga/templates/orga/invitation.html:8
 #, python-format
-msgid "Invitation to the %(organiser)s team \"%(name)s\""
-msgstr "Convite para a equipe do %(organiser)s \"%(name)s\""
+msgid "Invitation to the %(organiser)s team “%(name)s”"
+msgstr "Convite para a equipe do %(organiser)s “%(name)s”"
 
 #: pretalx/orga/templates/orga/invitation.html:16
 #: pretalx/orga/templates/orga/invitation.html:33
@@ -5254,7 +5263,7 @@ msgstr ""
 #: pretalx/orga/templates/orga/invitation.html:36
 #, python-format
 msgid ""
-"To accept the invitation with the account you're currently active, please "
+"To accept the invitation with the account you’re currently active, please "
 "use the button below. If you want to accept the invitation with a different "
 "account, you can <a href=\"/orga/logout/?next=%(link)s\">log out</a> and log "
 "in with the other account. </p><p> If you believe to have received this "
@@ -5311,7 +5320,7 @@ msgstr ""
 #, python-brace-format
 msgid ""
 "Emails where placeholders are invalid will <b>not</b> be created! For "
-"example, if you are using {session_room}, but some proposals don't have a "
+"example, if you are using {session_room}, but some proposals don’t have a "
 "room yet, only emails for proposals with a scheduled room will be created."
 msgstr ""
 "Os e -mails onde existam placeholders inválidos <b>não</b> serão criados! "
@@ -5327,19 +5336,27 @@ msgstr "E -mail de pré-visualização"
 msgid "Send to outbox"
 msgstr ""
 
-#: pretalx/orga/templates/orga/mails/_placeholder_group.html:16
+#: pretalx/orga/templates/orga/mails/_placeholder_group.html:8
+#, fuzzy
+#| msgid "Session"
+msgid "Session"
+msgid_plural "Sessions"
+msgstr[0] "Sessão"
+msgstr[1] "Sessão"
+
+#: pretalx/orga/templates/orga/mails/_placeholder_group.html:20
 #, fuzzy
 #| msgid "Gather your team"
 msgid "Other"
 msgstr "Reúna a sua equipa"
 
-#: pretalx/orga/templates/orga/mails/_placeholder_group.html:22
+#: pretalx/orga/templates/orga/mails/_placeholder_group.html:26
 #, fuzzy
 #| msgid "pretalx update available"
 msgid "Unavailable"
 msgstr "Atualização para o pretalx disponível"
 
-#: pretalx/orga/templates/orga/mails/_placeholder_group.html:37
+#: pretalx/orga/templates/orga/mails/_placeholder_group.html:41
 msgid "e.g."
 msgstr ""
 
@@ -5382,9 +5399,9 @@ msgstr ""
 
 #: pretalx/orga/templates/orga/mails/compose_session_mail_form.html:17
 #, fuzzy, python-format
-#| msgid "List filtered by answers to question \"%(question)s\"."
+#| msgid "List filtered by answers to question “%(question)s”."
 msgid "Recipients filtered by answers to question “%(question)s”."
-msgstr "Lista filtrada por respostas para a pergunta \"%(question)s\"."
+msgstr "Lista filtrada por respostas para a pergunta “%(question)s”."
 
 #: pretalx/orga/templates/orga/mails/compose_session_mail_form.html:22
 #: pretalx/orga/templates/orga/mails/compose_session_mail_form.html:34
@@ -5542,13 +5559,12 @@ msgstr "Editar modelo"
 msgid ""
 "You can edit the default templates and your custom templates for emails "
 "here. If you want to send emails to some or all of your speakers, head over "
-"to the \"Send Emails\" tab. Mails queued for sending are in the \"Outbox\" "
-"tab."
+"to the “Send Emails” tab. Mails queued for sending are in the “Outbox” tab."
 msgstr ""
 "Pode editar os modelos padrão e os seus modelos personalizados para e-mails "
 "aqui. Se deseja enviar e-mails para alguns ou todos os seus oradores, acesse "
 "a guia \"E-mails enviados\". Os e-mails na fila para enviar estão na guia "
-"\"Outbox\"."
+"“Outbox”."
 
 #: pretalx/orga/templates/orga/mails/template_list.html:16
 msgid ""
@@ -5695,17 +5711,17 @@ msgstr "Atualmente, esta instância não possui extensões instaladas."
 #, python-format
 msgid ""
 "You can upload your reviewer assignments from a JSON file here. You can "
-"either have the proposal codes (e.g. \"UX3N1\") as keys, and user "
+"either have the proposal codes (e.g. “UX3N1”) as keys, and user "
 "identification as values, or the other way around. User identification can "
-"be either the reviewer's email address or their user code (e.g. \"34KJN\"). "
+"be either the reviewer’s email address or their user code (e.g. “34KJN”). "
 "You can find an example file <a href=\"%(href)s\">here</a>."
 msgstr ""
 "Pode fazer o upload das submissões de um revisor de um arquivo JSON aqui. "
-"Pode ter os códigos de proposta (por exemplo, \"UX3N1\") como chaves e "
+"Pode ter os códigos de proposta (por exemplo, “UX3N1”) como chaves e "
 "identificação do utilizador como valores, ou o contrário. A identificação do "
 "utilizador pode ser o endereço de email do revisor ou o seu código de "
-"utilizador (por exemplo, \"34KJN\"). Pode encontrar um exemplo de ficheiro "
-"<a href=\"%(href)s\">aqui </a>."
+"utilizador (por exemplo, “34KJN”). Pode encontrar um exemplo de ficheiro <a "
+"href=\"%(href)s\">aqui </a>."
 
 #: pretalx/orga/templates/orga/review/assignment-import.html:24
 msgid "Import"
@@ -5802,7 +5818,7 @@ msgstr[1] "Depois de rever a proposta"
 
 #: pretalx/orga/templates/orga/review/bulk.html:29
 #: pretalx/orga/templates/orga/review/dashboard.html:36
-msgid "You've got no proposals left to review!"
+msgid "You’ve got no proposals left to review!"
 msgstr "Não tem nenhuma proposta para rever!"
 
 #: pretalx/orga/templates/orga/review/bulk.html:51
@@ -5810,8 +5826,8 @@ msgstr "Não tem nenhuma proposta para rever!"
 #: pretalx/orga/templates/orga/speaker/list.html:27
 #: pretalx/orga/templates/orga/submission/list.html:74
 #, python-format
-msgid "List filtered by answers to question \"%(question)s\"."
-msgstr "Lista filtrada por respostas para a pergunta \"%(question)s\"."
+msgid "List filtered by answers to question “%(question)s”."
+msgstr "Lista filtrada por respostas para a pergunta “%(question)s”."
 
 #: pretalx/orga/templates/orga/review/bulk.html:72
 #, fuzzy
@@ -5821,7 +5837,8 @@ msgstr "Vírgula"
 
 #: pretalx/orga/templates/orga/review/bulk.html:100
 #: pretalx/orga/templates/orga/review/dashboard.html:321
-msgid "You don't seem to have any proposals yet."
+#: pretalx/orga/views/cards.py:141
+msgid "You don’t seem to have any proposals yet."
 msgstr "Ainda não tem propostas."
 
 #: pretalx/orga/templates/orga/review/dashboard.html:25
@@ -5945,10 +5962,6 @@ msgstr "Rejeitar"
 msgid "Unset accept/reject vote"
 msgstr "Desativar voto de aceitação/rejeição"
 
-#: pretalx/orga/templates/orga/review/dashboard.html:330
-msgid "Mark new states as 'pending'"
-msgstr "Marque novos estados como 'pendentes'"
-
 #: pretalx/orga/templates/orga/review/dashboard.html:337
 msgid "Go!"
 msgstr "Vai!"
@@ -6019,7 +6032,7 @@ msgstr "Também pode utilizar a API para exportar ou usar dados."
 msgid ""
 "Some of the general exports are only accessible for organisers, or include "
 "more information when accessed with your organiser account. If you want to "
-"access the organiser version in automatic integrations, you'll have to "
+"access the organiser version in automatic integrations, you’ll have to "
 "provide your authentication token just like in the API, like this:"
 msgstr ""
 "Algumas das exportações gerais são acessíveis apenas para os organizadores "
@@ -6087,7 +6100,7 @@ msgstr "Exportações de oradores"
 
 #: pretalx/orga/templates/orga/schedule/export.html:72
 msgid ""
-"You haven't released a schedule yet – many of these data exporters only work "
+"You haven’t released a schedule yet – many of these data exporters only work "
 "on a released schedule."
 msgstr ""
 "Ainda não divulgou um cronograma - muitos exportadores de dados só funcionam "
@@ -6344,7 +6357,7 @@ msgid "Event header image"
 msgstr "Imagem do cabeçalho do evento"
 
 #: pretalx/orga/templates/orga/settings/form.html:89
-msgid "The event's header_image"
+msgid "The event’s header_image"
 msgstr "O header_image do evento"
 
 #: pretalx/orga/templates/orga/settings/form.html:105
@@ -6357,7 +6370,7 @@ msgstr "Configurações de e-mail"
 
 #: pretalx/orga/templates/orga/settings/mail.html:18
 msgid ""
-"If you don't configure custom email settings, the global configuration for "
+"If you don’t configure custom email settings, the global configuration for "
 "this server will be used (ask your administrator for details).<br> We "
 "recommend that you add email settings here explicitly."
 msgstr ""
@@ -6504,7 +6517,7 @@ msgstr "Redefinição de senha:"
 #: pretalx/orga/templates/orga/settings/team_reset_password.html:10
 #: pretalx/orga/templates/orga/speaker/reset_password.html:10
 msgid ""
-"Do you really want to reset this user's password? They won't be able to log "
+"Do you really want to reset this user’s password? They won’t be able to log "
 "in until they set a new password. The email will go to: "
 msgstr ""
 "Realmente deseja redefinir a senha deste utilizador? Eles não poderão fazer "
@@ -6619,7 +6632,7 @@ msgstr "Agendar exportações"
 
 #: pretalx/orga/templates/orga/speaker/export.html:82
 msgid ""
-"You can either create exactly the export you need in the \"Custom\" tab, or "
+"You can either create exactly the export you need in the “Custom” tab, or "
 "use these pre-built exports:"
 msgstr ""
 "Pode criar exatamente a exportação necessária na guia \"Personalizada\" ou "
@@ -6632,6 +6645,12 @@ msgstr ""
 #| msgid "Send mails"
 msgid "Send email"
 msgstr "Enviar e-mails"
+
+#: pretalx/orga/templates/orga/speaker/form.html:36
+msgid "Proposal"
+msgid_plural "Proposals"
+msgstr[0] "Proposta"
+msgstr[1] "Propostas"
 
 #: pretalx/orga/templates/orga/speaker/form.html:89
 msgid "Emails"
@@ -6654,8 +6673,8 @@ msgstr[1] "Notas de informação do orador"
 
 #: pretalx/orga/templates/orga/speaker/information_list.html:14
 msgid ""
-"Add important messages (e.g. \"Please bring an HDMI adapter if required.\") "
-"or files (e.g. a conference styleguide).<br> They are shown to the selected "
+"Add important messages (e.g. “Please bring an HDMI adapter if required.”) or "
+"files (e.g. a conference styleguide).<br> They are shown to the selected "
 "speakers above the list of their submitted sessions."
 msgstr ""
 "Adicione mensagens importantes (por ex., \"Por favor, traga um adaptador "
@@ -6852,7 +6871,7 @@ msgid "Show this proposal in the list of featured sessions."
 msgstr "Mostrar esta proposta na lista de sessões em destaque."
 
 #: pretalx/orga/templates/orga/submission/review.html:17
-msgid "You're not allowed to review or see reviews for your own proposals."
+msgid "You’re not allowed to review or see reviews for your own proposals."
 msgstr ""
 "Não tem permissão para rever ou ver críticas para as suas próprias propostas."
 
@@ -6908,7 +6927,7 @@ msgstr "Realmente quer eliminar este evento?"
 
 #: pretalx/orga/templates/orga/submission/speakers.html:13
 msgid ""
-"Add a speaker – if the email address isn't registered yet, an account will "
+"Add a speaker – if the email address isn’t registered yet, an account will "
 "be created for them and an invitation sent."
 msgstr ""
 "Adicionar um orador - Se o endereço de email ainda não estiver registado, "
@@ -7088,25 +7107,21 @@ msgstr "As suas alterações não foram guardadas, veja abaixo os erros."
 msgid "{} minutes, #{}, {}, {}"
 msgstr "{} minutos, #{}, {}, {}"
 
-#: pretalx/orga/views/cards.py:141
-msgid "You don't have any proposals yet."
-msgstr "Ainda não tem nenhuma proposta."
-
 #: pretalx/orga/views/cfp.py:87
 msgid "We had trouble saving your input."
 msgstr "Encontramos problemas ao guardar a sua opinião."
 
-#: pretalx/orga/views/cfp.py:278
+#: pretalx/orga/views/cfp.py:280
 msgid ""
 "You cannot change the question options and upload a question option file at "
 "the same time."
 msgstr ""
 
-#: pretalx/orga/views/cfp.py:319
+#: pretalx/orga/views/cfp.py:321
 msgid "The question has been deleted."
 msgstr "A pergunta foi eliminada."
 
-#: pretalx/orga/views/cfp.py:326
+#: pretalx/orga/views/cfp.py:328
 msgid ""
 "You cannot delete a question that has already been answered. We have "
 "deactivated the question instead."
@@ -7114,27 +7129,27 @@ msgstr ""
 "Não pode eliminar uma pergunta que já foi respondida. Em vez disso, "
 "desativamos a questão."
 
-#: pretalx/orga/views/cfp.py:386
+#: pretalx/orga/views/cfp.py:388
 msgid "Could not send mails, error in configuration."
 msgstr "Não foi possível enviar e-mails, erro na configuração."
 
-#: pretalx/orga/views/cfp.py:476
+#: pretalx/orga/views/cfp.py:478
 msgid "The Session Type has been made default."
 msgstr "O tipo de sessão foi definido como padrão."
 
-#: pretalx/orga/views/cfp.py:496
+#: pretalx/orga/views/cfp.py:498
 msgid ""
 "You cannot delete the only session type. Try creating another one first!"
 msgstr "Não pode eliminar o único tipo de sessão. Tente criar outro primeiro!"
 
-#: pretalx/orga/views/cfp.py:503
+#: pretalx/orga/views/cfp.py:505
 msgid ""
 "You cannot delete the default session type. Make another type default first!"
 msgstr ""
 "Não pode eliminar o tipo de sessão padrão. Faça outro tipo como padrão "
 "primeiro!"
 
-#: pretalx/orga/views/cfp.py:514
+#: pretalx/orga/views/cfp.py:516
 msgid "The Session Type has been deleted."
 msgstr "O tipo de sessão foi eliminado."
 
@@ -7250,11 +7265,11 @@ msgid "The event settings have been saved."
 msgstr "As configurações do evento foram guardados."
 
 #: pretalx/orga/views/event.py:127
-msgid "The CfP doesn't have a full text yet."
+msgid "The CfP doesn’t have a full text yet."
 msgstr "O CFP ainda não tem um texto completo."
 
 #: pretalx/orga/views/event.py:137
-msgid "The event doesn't have a landing page text yet."
+msgid "The event doesn’t have a landing page text yet."
 msgstr "O evento ainda não tem um texto da página principal."
 
 #: pretalx/orga/views/event.py:150
@@ -7300,8 +7315,8 @@ msgstr ""
 
 #: pretalx/orga/views/event.py:441
 msgid ""
-"We've been able to contact the SMTP server you configured. Remember to check "
-"the \"use custom SMTP server\" checkbox, otherwise your SMTP server will not "
+"We’ve been able to contact the SMTP server you configured. Remember to check "
+"the “use custom SMTP server” checkbox, otherwise your SMTP server will not "
 "be used."
 msgstr ""
 "Conseguimos entrar em contato com o servidor SMTP que configurou. Lembre-se "
@@ -7333,7 +7348,7 @@ msgstr ""
 #: pretalx/orga/views/event.py:608
 #, python-brace-format
 msgid ""
-"Please consider including your event's year in the slug, e.g. "
+"Please consider including your event’s year in the slug, e.g. "
 "myevent{number}."
 msgstr ""
 "Por favor, considere incluir o ano do seu evento na forma curta, por ex. "
@@ -7490,7 +7505,7 @@ msgstr ""
 "O email de redefinição de senha não pode ser enviado, portanto a senha não "
 "foi redefinida."
 
-#: pretalx/orga/views/organiser.py:225 pretalx/orga/views/review.py:774
+#: pretalx/orga/views/organiser.py:225 pretalx/orga/views/review.py:771
 #: pretalx/orga/views/schedule.py:607
 msgid "Saved!"
 msgstr "Guardado!"
@@ -7499,7 +7514,7 @@ msgstr "Guardado!"
 msgid "You are now an administrator instead of a superuser."
 msgstr "Agora é um administrador em vez de um superutilizador."
 
-#: pretalx/orga/views/review.py:304
+#: pretalx/orga/views/review.py:300
 #, python-brace-format
 msgid ""
 "Success! {accepted} proposals were accepted, {rejected} proposals were "
@@ -7508,49 +7523,49 @@ msgstr ""
 "Sucesso! {accepted} propostas foram aceites. {rejected} propostas foram "
 "rejeitadas."
 
-#: pretalx/orga/views/review.py:309
+#: pretalx/orga/views/review.py:305
 #, python-brace-format
 msgid "We were unable to change the state of {count} proposals."
 msgstr "Não foi possível mudar o estado de {count} propostas."
 
-#: pretalx/orga/views/review.py:316
+#: pretalx/orga/views/review.py:312
 #, python-brace-format
 msgid "We were unable to change the state of all {count} proposals."
 msgstr "Não foi possível mudar o estado de todas as {count} propostas."
 
-#: pretalx/orga/views/review.py:425 pretalx/orga/views/review.py:602
-#: pretalx/orga/views/review.py:605
+#: pretalx/orga/views/review.py:422 pretalx/orga/views/review.py:599
+#: pretalx/orga/views/review.py:602
 msgid "There have been errors with your input."
 msgstr "Existem erros com os dados introduzidos."
 
-#: pretalx/orga/views/review.py:430
+#: pretalx/orga/views/review.py:427
 #, fuzzy
 #| msgid "Your changes have been saved."
 msgid "Your reviews have been saved."
 msgstr "As suas alterações foram guardadas."
 
-#: pretalx/orga/views/review.py:654
+#: pretalx/orga/views/review.py:651
 msgid "Nice, you have no proposals left to review!"
 msgstr "Fixe, não tem propostas para rever!"
 
-#: pretalx/orga/views/review.py:667
+#: pretalx/orga/views/review.py:664
 #, fuzzy
 #| msgid "The tag has been deleted."
 msgid "The review has been deleted."
 msgstr "A etiqueta foi eliminada."
 
-#: pretalx/orga/views/review.py:695
+#: pretalx/orga/views/review.py:692
 #, python-brace-format
 msgid "{count} emails were generated and placed in the outbox."
 msgstr "{count} e-mails foram gerados e colocados na caixa de saída."
 
-#: pretalx/orga/views/review.py:791
+#: pretalx/orga/views/review.py:788
 #, fuzzy
 #| msgid "The reviewers were assigned successfully"
 msgid "The reviewers were assigned successfully."
 msgstr "Os revisores foram atribuídos com sucesso"
 
-#: pretalx/orga/views/review.py:809 pretalx/orga/views/schedule.py:113
+#: pretalx/orga/views/review.py:806 pretalx/orga/views/schedule.py:113
 #: pretalx/orga/views/speaker.py:362
 msgid "No data to be exported"
 msgstr "Nenhuns dados para serem exportados"
@@ -7744,10 +7759,6 @@ msgstr "A etiqueta foi eliminada."
 msgid "Changed {count} proposal states."
 msgstr "Alterados {count} estados da proposta."
 
-#: pretalx/orga/views/typeahead.py:52 pretalx/submission/models/feedback.py:31
-msgid "Speaker"
-msgstr "Orador"
-
 #: pretalx/person/exporters.py:16
 msgid "Speaker CSV"
 msgstr "CSV do Orador"
@@ -7889,7 +7900,7 @@ msgid ""
 "\n"
 "  {url}\n"
 "\n"
-"If this wasn't you, you can just ignore this email.\n"
+"If this wasn’t you, you can just ignore this email.\n"
 "\n"
 "All the best,\n"
 "the pretalx robot"
@@ -8067,24 +8078,32 @@ msgid "French"
 msgstr "Francês"
 
 #: pretalx/settings.py:407
+msgid "Italian"
+msgstr ""
+
+#: pretalx/settings.py:413
 msgid "Japanese"
 msgstr "Japonês"
 
-#: pretalx/settings.py:414
+#: pretalx/settings.py:420
+msgid "Dutch"
+msgstr ""
+
+#: pretalx/settings.py:426
 msgid "Brasilian Portuguese"
 msgstr "Português (Brasil)"
 
-#: pretalx/settings.py:421
+#: pretalx/settings.py:433
 #, fuzzy
 #| msgid "Brasilian Portuguese"
 msgid "Portuguese"
 msgstr "Português (Brasil)"
 
-#: pretalx/settings.py:428
+#: pretalx/settings.py:440
 msgid "Traditional Chinese (Taiwan)"
 msgstr "Chinês tradicional (Taiwan)"
 
-#: pretalx/settings.py:435
+#: pretalx/settings.py:447
 msgid "Simplified Chinese"
 msgstr ""
 
@@ -8131,7 +8150,7 @@ msgstr "Utilize isto se quiser uma ilustração para acompanhar sua proposta."
 
 #: pretalx/submission/forms/submission.py:159
 msgid ""
-"Please contact the organisers if you want to change how often you're "
+"Please contact the organisers if you want to change how often you’re "
 "presenting this proposal."
 msgstr ""
 "Entre em contato com os organizadores se deseja alterar com que frequência "
@@ -8212,7 +8231,7 @@ msgstr "Tipo de sessão padrão"
 msgid "Please put in the last date you want to accept proposals from users."
 msgstr "Coloque na última data que deseja aceitar propostas de utilizadores."
 
-#: pretalx/submission/models/feedback.py:33
+#: pretalx/submission/models/feedback.py:34
 msgid "Rating"
 msgstr "Avaliação"
 
@@ -8463,7 +8482,7 @@ msgstr "Apenas propostas atribuídas"
 
 #: pretalx/submission/models/review.py:283
 msgid ""
-"If you select 'all', reviewers can review all proposals that their teams "
+"If you select “all”, reviewers can review all proposals that their teams "
 "have access to (so either all, or specific tracks). In this mode, assigned "
 "proposals will be highlighted and will be shown first in the review "
 "workflow. "
@@ -8526,7 +8545,7 @@ msgid "Pending proposal state"
 msgstr "Estado da proposta pendente"
 
 #: pretalx/submission/models/submission.py:180
-msgid "These notes are meant for the organiser and won't be made public."
+msgid "These notes are meant for the organiser and won’t be made public."
 msgstr ""
 "Estas notas são destinadas ao organizador e não serão tornadas públicas."
 
@@ -8557,7 +8576,7 @@ msgid "Show this session in public list of featured sessions."
 msgstr "Mostre esta sessão na lista pública de sessões em destaque."
 
 #: pretalx/submission/models/submission.py:213
-msgid "Don't record this session."
+msgid "Don’t record this session."
 msgstr "Não gravar esta sessão."
 
 #: pretalx/submission/models/submission.py:235
@@ -8649,6 +8668,12 @@ msgstr ""
 msgid "Hidden rooms"
 msgstr ""
 
+#~ msgid "Mark new states as “pending”"
+#~ msgstr "Marque novos estados como 'pendentes'"
+
+#~ msgid "You don’t have any proposals yet."
+#~ msgstr "Ainda não tem nenhuma proposta."
+
 #, fuzzy
 #~| msgid "Schedule"
 #~ msgid "Scheduling"
@@ -8670,7 +8695,7 @@ msgstr ""
 #~ msgid "Mail Template Editor"
 #~ msgstr "Editor de modelos de email"
 
-#~ msgid "The link to the user's list of proposals"
+#~ msgid "The link to the user’s list of proposals"
 #~ msgstr "O link para a lista de propostas do utilizador"
 
 #~ msgid "Everyone with proposal(s) that have not been accepted/rejected yet"
@@ -8747,8 +8772,8 @@ msgstr ""
 #~ msgstr "Histórico completo"
 
 #, fuzzy
-#~| msgid "You don't have any proposals yet."
-#~ msgid "You haven't created any pages yet."
+#~| msgid "You don’t have any proposals yet."
+#~ msgid "You haven’t created any pages yet."
 #~ msgstr "Ainda não tem nenhuma proposta."
 
 #, fuzzy
@@ -8931,13 +8956,13 @@ msgstr ""
 #~ msgstr "descrição"
 
 #~ msgid ""
-#~ "You're currently viewing a released schedule version. Released versions "
+#~ "You’re currently viewing a released schedule version. Released versions "
 #~ "cannot be edited directly."
 #~ msgstr ""
 #~ "Está atualmente a visualizar uma versão do cronograma que foi lançada. As "
 #~ "versões lançadas não podem ser editadas diretamente."
 
-#~ msgid "There's an overlapping session scheduled in this room."
+#~ msgid "There’s an overlapping session scheduled in this room."
 #~ msgstr "Há uma sessão sobreposta agendada nesta sala."
 
 #~ msgid "Use Gravatar"

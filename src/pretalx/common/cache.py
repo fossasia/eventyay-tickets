@@ -1,6 +1,6 @@
 import hashlib
 import time
-from typing import Callable, Dict, List
+from typing import Callable
 
 from django.core.cache import caches
 from django.db.models import Model
@@ -53,14 +53,14 @@ class NamespacedCache:
             timeout=timeout,
         )
 
-    def get_many(self, keys: List[str]) -> Dict[str, str]:
+    def get_many(self, keys: list[str]) -> dict[str, str]:
         values = self.cache.get_many([self._prefix_key(key) for key in keys])
         newvalues = {}
         for k, v in values.items():
             newvalues[self._strip_prefix(k)] = v
         return newvalues
 
-    def set_many(self, values: Dict[str, str], timeout=300):
+    def set_many(self, values: dict[str, str], timeout=300):
         newvalues = {}
         for k, v in values.items():
             newvalues[self._prefix_key(k)] = v
@@ -69,7 +69,7 @@ class NamespacedCache:
     def delete(self, key: str):  # NOQA
         return self.cache.delete(self._prefix_key(key))
 
-    def delete_many(self, keys: List[str]):  # NOQA
+    def delete_many(self, keys: list[str]):  # NOQA
         return self.cache.delete_many([self._prefix_key(key) for key in keys])
 
     def incr(self, key: str, by: int = 1):  # NOQA

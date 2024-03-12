@@ -23,9 +23,9 @@ id                                    number                     The unique ID o
 answer                                string                     The kind of question asked. Can be any of ``number``, ``string``, ``text``, ``boolean``, ``file``, ``choices``, ``multiple_choice``.
 answer_file                           string                     The URL of the uploaded file
 question                              object                     An object with two fields: ``id`` (a number) and ``question`` (a multi-lingual string)
-submission                            string                     If the answer is tied to a submission, the submission's code
-review                                number                     If the answer is tied to a review, the review's ID
-person                                string                     If the answer is tied to a speaker, the speaker's ID
+submission                            string                     If the answer is tied to a submission, the submission’s code
+review                                number                     If the answer is tied to a review, the review’s ID
+person                                string                     If the answer is tied to a speaker, the speaker’s ID
 options                               list                       If the answer consists of one or several options, the options in an object, containing the keys ``id`` and ``option``.
 ===================================== ========================== =======================================================
 

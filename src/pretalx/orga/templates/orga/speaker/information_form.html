@@ -4,7 +4,11 @@
 
 {% block content %}
     <h2>
-        {% translate "Speaker Information Note" %}
+        {% blocktranslate trimmed count count=1 %}
+            Speaker Information Note
+        {% plural %}
+            Speaker Information Notes
+        {% endblocktranslate %}
     </h2>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}

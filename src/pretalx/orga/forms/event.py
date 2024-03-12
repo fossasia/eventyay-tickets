@@ -38,7 +38,7 @@ class EventForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
         widget=MultipleLanguagesWidget,
         help_text=_(
             "Users will be able to use pretalx in these languages, and you will be able to provide all texts in these"
-            " languages. If you don't provide a text in the language a user selects, it will be shown in your event's"
+            " languages. If you don’t provide a text in the language a user selects, it will be shown in your event’s"
             " default language instead."
         ),
     )
@@ -84,7 +84,7 @@ class EventForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
             ("always", _("Always")),
         ),
         help_text=_(
-            "Marking sessions as 'featured' is a good way to show them before the first schedule release, or to highlight them once the schedule is visible."
+            "Marking sessions as “featured” is a good way to show them before the first schedule release, or to highlight them once the schedule is visible."
         ),
         required=True,
     )
@@ -113,7 +113,7 @@ class EventForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
     header_pattern = forms.ChoiceField(
         label=_("Frontpage header pattern"),
         help_text=_(
-            "Choose how the frontpage header banner will be styled if you don't upload an image. Pattern source: "
+            "Choose how the frontpage header banner will be styled if you don’t upload an image. Pattern source: "
             '<a href="http://www.heropatterns.com/">heropatterns.com</a>, CC BY 4.0.'
         ),
         choices=(
@@ -185,7 +185,7 @@ class EventForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
         except OSError:
             raise forms.ValidationError(
                 _(
-                    'The domain "{domain}" does not have a name server entry at this time. Please make sure the domain is working before configuring it here.'
+                    "The domain “{domain}” does not have a name server entry at this time. Please make sure the domain is working before configuring it here."
                 ).format(domain=data)
             )
         return data
@@ -382,7 +382,7 @@ class MailSettingsForm(
     signature = forms.CharField(
         label=_("Mail signature"),
         help_text=str(
-            _('The signature will be added to outgoing mails, preceded by "-- ".')
+            _("The signature will be added to outgoing mails, preceded by “-- ”.")
         )
         + " "
         + phrases.base.use_markdown,

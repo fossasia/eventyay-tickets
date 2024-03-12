@@ -216,7 +216,9 @@ class PermissionRequired(PermissionRequiredMixin):
                     self.get_permission_object = lambda self: getattr(self, key)  # noqa
 
     def has_permission(self):
-        result = super().has_permission()
+        result = None
+        with suppress(Exception):
+            result = super().has_permission()
         if not result:
             request = getattr(self, "request", None)
             if request and hasattr(request, "event"):

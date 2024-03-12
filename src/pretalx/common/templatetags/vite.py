@@ -15,7 +15,7 @@ MANIFEST_PATH = settings.STATIC_ROOT / "pretalx-manifest.json"
 # not currently running `rebuild` (which creates the manifest in the first place).
 if not settings.VITE_DEV_MODE and not settings._VITE_IGNORE:
     try:
-        with open(MANIFEST_PATH, "r") as fp:
+        with open(MANIFEST_PATH) as fp:
             _MANIFEST = json.load(fp)
     except Exception as e:
         LOGGER.warning(f"Error reading vite manifest at {MANIFEST_PATH}: {str(e)}")

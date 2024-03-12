@@ -124,7 +124,7 @@ class EventLive(EventSettingsPermission, TemplateView):
         ):
             warnings.append(
                 {
-                    "text": _("The CfP doesn't have a full text yet."),
+                    "text": _("The CfP doesn’t have a full text yet."),
                     "url": self.request.event.cfp.urls.text,
                 }
             )
@@ -134,7 +134,7 @@ class EventLive(EventSettingsPermission, TemplateView):
         ):
             warnings.append(
                 {
-                    "text": _("The event doesn't have a landing page text yet."),
+                    "text": _("The event doesn’t have a landing page text yet."),
                     "url": self.request.event.orga_urls.settings,
                 }
             )
@@ -438,8 +438,8 @@ class EventMailSettings(EventSettingsPermission, ActionFromUrl, FormView):
                     messages.success(
                         self.request,
                         _(
-                            "We've been able to contact the SMTP server you configured. "
-                            'Remember to check the "use custom SMTP server" checkbox, '
+                            "We’ve been able to contact the SMTP server you configured. "
+                            "Remember to check the “use custom SMTP server” checkbox, "
                             "otherwise your SMTP server will not be used."
                         ),
                     )
@@ -605,7 +605,7 @@ class EventWizard(PermissionRequired, SensibleBackWizardMixin, SessionWizardView
                     self.request,
                     str(
                         _(
-                            "Please consider including your event's year in the slug, e.g. myevent{number}."
+                            "Please consider including your event’s year in the slug, e.g. myevent{number}."
                         )
                     ).format(number=year),
                 )

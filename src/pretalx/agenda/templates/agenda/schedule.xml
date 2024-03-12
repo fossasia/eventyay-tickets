@@ -32,9 +32,9 @@
                 <slug>{{ talk.frab_slug }}</slug>
                 <track>{% if talk.submission.track %}{{ talk.submission.track.name }}{% endif %}</track>
                 {% if talk.submission.urls.image %}<logo>{{ talk.submission.urls.image }}</logo>{% endif %}
-                    {% if talk.speakers.all %}<persons>
+                <persons>
                     {% for person in talk.submission.speakers.all %}<person id='{{ person.id }}'>{{ person.get_display_name|xmlescape }}</person>{% endfor %}
-                </persons>{% endif %}
+                </persons>
                 {% if talk.submission.content_locale %}<language>{{ talk.submission.content_locale }}</language>{% endif %}
                 {% if talk.submission.description %}<description>{{ talk.submission.description|xmlescape }}</description>{% endif %}
                 <recording>

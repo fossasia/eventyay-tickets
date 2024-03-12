@@ -1,11 +1,11 @@
 import json
 from contextlib import suppress
-from functools import partial
 
 from django import forms
 from django.db.models import Q
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ngettext as _n
 from django_scopes.forms import SafeModelMultipleChoiceField
 
 from pretalx.common.forms.widgets import MarkdownWidget
@@ -48,12 +48,14 @@ class ReviewForm(ReadOnlyFlag, forms.ModelForm):
         instance=None,
         categories=None,
         submission=None,
+        allow_empty=False,
         **kwargs,
     ):
         self.event = event
         self.user = user
         self.categories = categories
         self.submission = submission
+        self.allow_empty = allow_empty
 
         super().__init__(*args, instance=instance, **kwargs)
 
@@ -77,11 +79,6 @@ class ReviewForm(ReadOnlyFlag, forms.ModelForm):
                 initial=self.scores.get(category),
                 hide_optional=self.event.review_settings["score_mandatory"],
             )
-            setattr(
-                self,
-                f"clean_score_{category.id}",
-                partial(self._clean_score_category, category),
-            )
         self.fields["text"].widget.attrs["rows"] = 2
         self.fields["text"].widget.attrs["placeholder"] = phrases.orga.example_review
         self.fields["text"].help_text += " " + phrases.base.use_markdown
@@ -89,7 +86,11 @@ class ReviewForm(ReadOnlyFlag, forms.ModelForm):
     def build_score_field(
         self, category, read_only=False, initial=None, hide_optional=False
     ):
-        choices = [(None, _("No score"))] if not category.required else []
+        choices = (
+            [(None, _("No score"))]
+            if (not category.required or self.allow_empty)
+            else []
+        )
         for score in category.scores.all():
             choices.append(
                 (
@@ -121,17 +122,35 @@ class ReviewForm(ReadOnlyFlag, forms.ModelForm):
         with suppress(KeyError):
             return self[f"score_{category.id}"]
 
-    def clean_text(self):
-        text = self.cleaned_data.get("text")
-        if not text and self.event.review_settings["text_mandatory"]:
-            raise forms.ValidationError(_("Please provide a review text!"))
-        return text
+    def clean(self):
+        # We have to run all validation in the clean method rather than in the
+        # clean_* methods, because we want to allow completely empty forms if
+        # allow_empty is True, but we still need to validate **all** fields if
+        # the form is not empty.
 
-    def _clean_score_category(self, category):
-        score = self.cleaned_data.get(f"score_{category.id}")
-        if score in ("", None) and category.required:
-            raise forms.ValidationError(_("Please provide a review score!"))
-        return score
+        cleaned_data = super().clean()
+
+        # Early exit if the form is completely empty
+        missing_data = [key for key, value in cleaned_data.items() if not value]
+        if len(missing_data) == len(self.fields) and self.allow_empty:
+            return cleaned_data
+
+        # This validation would normally run in the clean_text method
+        if (
+            not cleaned_data.get("text")
+            and self.event.review_settings["text_mandatory"]
+            and not self.allow_empty
+        ):
+            self.add_error("text", _("Please provide a review text!"))
+
+        # This validation would normally run in the clean_score_category_{pk} method
+        for category in self.categories:
+            score = cleaned_data.get(f"score_{category.id}")
+            if score in ("", None) and category.required and not self.allow_empty:
+                self.add_error(
+                    f"score_{category.id}", _("Please provide a review score!")
+                )
+        return cleaned_data
 
     def save(self, *args, **kwargs):
         self.instance.submission = self.submission
@@ -221,7 +240,7 @@ class ReviewExportForm(ExportForm):
     data_delimiter = None
     target = forms.ChoiceField(
         required=True,
-        label=_("Proposal"),
+        label=_n("Proposal", "Proposals", 1),
         choices=(
             ("all", _("All proposals")),
             ("accepted", _("accepted")),
@@ -305,16 +324,14 @@ class ReviewExportForm(ExportForm):
         for score_category in self.score_categories:
             self.fields[f"score_{score_category.pk}"] = forms.BooleanField(
                 required=False,
-                label=str(_("Score in '{score_category}'")).format(
+                label=str(_("Score in “{score_category}”")).format(
                     score_category=score_category.name
                 ),
             )
 
     def get_additional_data(self, obj):
         return {
-            str(_("Score in '{score_category}'")).format(
-                score_category=sc.name
-            ): getattr(obj.scores.filter(category=sc).first(), "value", None)
+            sc.name: getattr(obj.scores.filter(category=sc).first(), "value", None)
             for sc in self.score_categories
         }
 

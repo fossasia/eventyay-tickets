@@ -79,7 +79,7 @@ with them.
 Submissions and Reviews
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-**Submissions** (or: proposals) are a cornerstone of how pretalx's
+**Submissions** (or: proposals) are a cornerstone of how pretalx’s
 understanding of the world. A submission will have at least a title and as many
 other fields as the organisers have specified, either by requiring or removing
 the built-in fields, or by adding questions of their own. A submission will

@@ -6,7 +6,7 @@
 {% block content %}
     <h2 class="col-sm-6 ml-auto mr-auto">
         {% blocktranslate with organiser=invitation.team.organiser.name name=invitation.team.name trimmed %}
-            Invitation to the {{ organiser }} team "{{ name }}"
+            Invitation to the {{ organiser }} team “{{ name }}”
         {% endblocktranslate %}
     </h2>
 
@@ -34,7 +34,7 @@
                     You have been invited to join the organiser team {{ name }}.
                 {% endblocktranslate %}
                 {% blocktranslate trimmed with link=request.path %}
-                    To accept the invitation with the account you're currently active, please use the button below. If you want to accept the invitation with a different account, you can <a href="/orga/logout/?next={{ link }}">log out</a> and log in with the other account.
+                    To accept the invitation with the account you’re currently active, please use the button below. If you want to accept the invitation with a different account, you can <a href="/orga/logout/?next={{ link }}">log out</a> and log in with the other account.
                     </p><p>
                         If you believe to have received this invitation by mistake, please contact the organiser directly.
                 {% endblocktranslate %}

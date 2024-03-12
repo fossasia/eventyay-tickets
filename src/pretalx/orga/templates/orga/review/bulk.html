@@ -26,7 +26,7 @@
                 <i class="fa fa-arrow-right"></i>
             </a>
         {% else %}
-            {% translate "You've got no proposals left to review!" %}
+            {% translate "You’ve got no proposals left to review!" %}
         {% endif %}
     </div>
 
@@ -49,7 +49,7 @@
             <p class="text-muted ml-2">
                 <span class="fa fa-filter"></span>
                 {% blocktranslate trimmed with question=filter_form.cleaned_data.question.question %}
-                    List filtered by answers to question "{{ question }}".
+                    List filtered by answers to question “{{ question }}”.
                 {% endblocktranslate %}
                 <a href="?{% url_replace request 'question' '' 'answer' '' 'answer__options' '' %}" class="text-muted">
                     <span class="fa fa-times"></span>
@@ -60,8 +60,8 @@
     </div>
 
     <form method="post">{% csrf_token %}
-        <div class="table-responsive">
-            <table class="table table-hover table-flip">
+        <div class="table-responsive-sm">
+            <table class="table table-sm table-hover table-flip table-sticky">
                 <thead>
                     <tr>
                         <th>{% translate "Title" %}</th>
@@ -85,19 +85,19 @@
                                 </td>
                             {% endif %}
                             {% for score in row.score_fields %}
-                                <td>
+                                <td class="pt-2">
                                     {% if score %}
                                         {% bootstrap_field score layout="inline" %}
                                     {% endif %}
                                 </td>
                             {% endfor %}
-                            <td>
+                            <td class="pt-2">
                                 {% bootstrap_field row.form.text layout="inline" form_group_class="flex-direction-column" %}
                             </td>
                         </tr>
                     {% empty %}
                         <tr>
-                            <td colspan=10>{% translate "You don't seem to have any proposals yet." %}</td>
+                            <td colspan=10>{% translate "You don’t seem to have any proposals yet." %}</td>
                         </tr>
                     {% endfor %}
                 </tbody>

@@ -62,7 +62,7 @@
         <form class="add-speaker" action="{{ submission.urls.invite }}">
             <div class="form-group form-inline">
                 {% if submission.state == "confirmed" %}
-                    {% blocktranslate trimmed count count=submission.speakers.count %}Speaker:{% plural %}Speakers:{% endblocktranslate %}:
+                    {% blocktranslate trimmed count count=submission.speakers.count %}Speaker{% plural %}Speakers{% endblocktranslate %}:
                 {% else %}
                     {% blocktranslate trimmed count count=submission.speakers.count %}Submitter{% plural %}Submitters{% endblocktranslate %}:
                 {% endif %}
@@ -192,7 +192,7 @@
     <h3 id="share-proposal">{% translate "Share proposal" %}</h3>
     <p>
         {% blocktranslate trimmed %}
-            If you need a review from a colleague or a friend here's a link that you can send out for viewing your proposal:
+            If you need a review from a colleague or a friend here’s a link that you can send out for viewing your proposal:
         {% endblocktranslate %}
         <a target="_blank" rel="noopener" href="{{ submission.urls.review.full }}">{{ submission.urls.review.full }}</a>
     </p>
@@ -232,7 +232,7 @@
         <h3>{% translate "Cancel proposal" %}</h3>
         <p>
             {% blocktranslate trimmed %}
-                As your proposal has been accepted already, please contact the event's organising team to cancel
+                As your proposal has been accepted already, please contact the event’s organising team to cancel
                 it. The best way to reach out would be an answer to your acceptance mail.
             {% endblocktranslate %}
         </p>

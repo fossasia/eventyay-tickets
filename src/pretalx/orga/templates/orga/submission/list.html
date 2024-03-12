@@ -72,7 +72,7 @@
             <p class="text-muted ml-2">
                 <span class="fa fa-filter"></span>
                 {% blocktranslate trimmed with question=filter_form.cleaned_data.question.question %}
-                    List filtered by answers to question "{{ question }}".
+                    List filtered by answers to question “{{ question }}”.
                 {% endblocktranslate %}
                 <a href="?{% url_replace request 'question' '' 'answer' '' 'answer__options' '' %}" class="text-muted">
                     <span class="fa fa-times"></span>
@@ -82,8 +82,8 @@
         {% endif %}
     </div>
 
-    <div class="table-responsive">
-        <table class="table table-sm table-hover table-flip">
+    <div class="table-responsive-sm">
+        <table class="table table-sm table-hover table-flip table-sticky">
             <thead>
                 <tr>
                     <th></th>

@@ -156,7 +156,7 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
             self.fields["slot_count"].disabled = True
             self.fields["slot_count"].help_text += " " + str(
                 _(
-                    "Please contact the organisers if you want to change how often you're presenting this proposal."
+                    "Please contact the organisers if you want to change how often you’re presenting this proposal."
                 )
             )
 
@@ -283,7 +283,7 @@ class SubmissionFilterForm(forms.Form):
     question = SafeModelChoiceField(queryset=Question.objects.none(), required=False)
     unanswered = forms.BooleanField(required=False)
     answer = forms.CharField(required=False)
-    option = forms.IntegerField(required=False)
+    answer__options = forms.IntegerField(required=False)
     q = forms.CharField(required=False, label=_("Search"))
 
     def __init__(self, event, *args, limit_tracks=False, search_fields=None, **kwargs):
@@ -449,7 +449,7 @@ class SubmissionFilterForm(forms.Form):
             qs,
             question=self.cleaned_data.get("question"),
             answer=self.cleaned_data.get("answer"),
-            option=self.cleaned_data.get("option"),
+            option=self.cleaned_data.get("answer__options"),
             unanswered=self.cleaned_data.get("unanswered"),
         )
         if not self.cleaned_data.get("state"):

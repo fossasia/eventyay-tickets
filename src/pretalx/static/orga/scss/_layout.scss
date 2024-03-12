@@ -27,15 +27,24 @@ body {
   height: calc(100vh - 50px);
   overflow-x: hidden;
   overflow-y: auto;
+  scroll-offset-top: 50px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  position: relative;
 
   .flex-content {
     max-width: 100%;
   }
 }
-
+table.table-sticky thead {
+  position: sticky;
+  top: -20px;
+  background-color: $white;
+  /* 100 is in between the z-index of some page content and the navbar */
+  z-index: 100;
+  box-shadow: 0 2px $border-color;
+}
 aside.sidebar {
   background-color: $gray-lightest;
   border-right: 1px solid $gray-lighter;
@@ -1088,29 +1097,12 @@ h2 .submission-state-dropdown {
   }
 }
 .review-table.table {
-  thead th {
-    position: sticky;
-    top: 0; // can't be sticky due to scroll containers, but we keep the sticky to make the &:after work
-    background-color: white;
-    border-bottom: none;
-    z-index: 50;
-    &:after {
-      border-bottom: 2px solid #c7d1d3;
-      content: " ";
-      position: absolute;
-      width: 100%;
-      bottom: 0px;
-      left: 0px;
-    }
-  }
-  td {
-    margin-top: -1px;
-  }
   tbody tr,
   thead tr {
     .unmark-radio {
       opacity: 0;
-      margin-top: 1px;
+      margin-top: 2px;
+      margin: 6px 4px 0 8px;
       color: $gray-500;
       font-size: 16px;
     }
@@ -1119,11 +1111,10 @@ h2 .submission-state-dropdown {
       cursor: pointer;
     }
     .radio {
-      width: 40px;
       padding: 4px;
-      padding-top: 0;
       label {
-        margin-left: 0;
+        margin-left: 6px;
+        margin-bottom: 0;
         height: 24px;
         width: 24px;
         &::before {
@@ -1331,7 +1322,7 @@ div.mail-preview {
   overflow-y: auto;
   position: absolute;
   right: 0;
-  padding: 0 28px 0 16px;
+  padding: 0 12px;
   top: 50px;
   border-left: 1px solid $gray-light;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);

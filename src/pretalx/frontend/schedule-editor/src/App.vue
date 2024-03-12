@@ -36,9 +36,8 @@
 						a(v-if="editorSession.code", :href="`/orga/event/${eventSlug}/submissions/${editorSession.code}/`") {{editorSession.title }}
 						span(v-else) {{editorSession.title }}
 					.data
-						.data-row(v-if="editorSession.code")
-							.data-label(v-if="editorSession.speakers && editorSession.speakers.length == 1") {{ $t('Speaker') }}
-							.data-label(v-else) {{ $t('Speakers') }}
+						.data-row(v-if="editorSession.code && editorSession.speakers && editorSession.speakers.length > 0")
+							.data-label {{ $t('Speakers') }}
 							.data-value
 								span(v-for="speaker, index of editorSession.speakers")
 									a(:href="`/orga/event/${eventSlug}/speakers/${speaker.code}/`") {{speaker.name}}

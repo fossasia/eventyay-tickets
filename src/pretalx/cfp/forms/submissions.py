@@ -17,7 +17,7 @@ class SubmissionInvitationForm(forms.Form):
         initial["text"] = _(
             """Hi!
 
-I'd like to invite you to be a speaker in the session
+I’d like to invite you to be a speaker in the session
 
   “{title}”
 
@@ -25,7 +25,7 @@ at {event}. Please follow this link to join:
 
   {url}
 
-I'm looking forward to it!
+I’m looking forward to it!
 {speaker}"""
         ).format(
             event=submission.event.name,

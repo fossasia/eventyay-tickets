@@ -132,7 +132,7 @@ class Event(PretalxModel):
     :param is_public: Is this event public yet? Should only be set via the
         ``pretalx.orga.views.EventLive`` view after the warnings have been
         acknowledged.
-    :param locale_array: Contains the event's active locales as a comma
+    :param locale_array: Contains the event’s active locales as a comma
         separated string. Please use the ``locales`` property to interact
         with this information.
     :param accept_template: Templates for emails sent when accepting a talk.
@@ -176,7 +176,7 @@ class Event(PretalxModel):
     )
     organiser = models.ForeignKey(
         to="Organiser",
-        null=True,  # backwards compatibility, won't ever be empty
+        null=True,  # backwards compatibility, won’t ever be empty
         related_name="events",
         on_delete=models.PROTECT,
     )
@@ -214,7 +214,7 @@ class Event(PretalxModel):
         ],
         verbose_name=_("Main event colour"),
         help_text=_(
-            "Provide a hex value like #00ff00 if you want to style pretalx in your event's colour scheme."
+            "Provide a hex value like #00ff00 if you want to style pretalx in your event’s colour scheme."
         ),
     )
     custom_css = models.FileField(
@@ -232,7 +232,7 @@ class Event(PretalxModel):
         blank=True,
         verbose_name=_("Logo"),
         help_text=_(
-            "If you provide a logo image, your event's name will not be shown in the event header. "
+            "If you provide a logo image, your event’s name will not be shown in the event header. "
             "The logo will be scaled down to a height of 150px."
         ),
     )
@@ -242,7 +242,7 @@ class Event(PretalxModel):
         blank=True,
         verbose_name=_("Header image"),
         help_text=_(
-            "If you provide a header image, it will be displayed instead of your event's color and/or header pattern "
+            "If you provide a header image, it will be displayed instead of your event’s color and/or header pattern "
             "at the top of all event pages. It will be center-aligned, so when the window shrinks, the center parts will "
             "continue to be displayed, and not stretched."
         ),
@@ -776,7 +776,8 @@ class Event(PretalxModel):
             score_category.save()
             score_category.limit_tracks.set([])
             for track in tracks:
-                score_category.limit_tracks.add(track_map.get(track))
+                if track in track_map:
+                    score_category.limit_tracks.add(track_map.get(track))
             for score in scores:
                 score.pk = None
                 score.category = score_category

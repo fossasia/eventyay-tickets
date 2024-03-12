@@ -25,25 +25,26 @@ System checks
 -------------
 
 1. Deploy the release-ready commit to an instance. Check if the upgrade and the instance works.
-2. Clone pretalx into a clean repo: ``git clone git@github.com:pretalx/pretalx pretalx-release && mkvirtualenv pretalx-release && pip install -e .[dev]``
-3. Run ``pytest`` **locally**.
-5. Run ``check-manifest`` **locally**.
+2. Clone pretalx into a clean repo: ``git clone git@github.com:pretalx/pretalx pretalx-release && cd pretalx-release``
+3. Set up your environment: ``mkvirtualenv pretalx-release && pip install -e . check-manifest twine``
+4. Run ``check-manifest`` **locally**.
 
 Take-off and landing
 --------------------
 
 1. Bump version in ``src/pretalx/__init__.py``.
 2. Add the release to the :ref:`changelog`.
-3. Make a release commit: ``RELEASE=vx.y.z && git commit -am "Release $RELEASE" && git tag $RELEASE -m "Release $RELEASE"``
+3. Make a release commit: ``RELEASE=vx.y.z; git commit -am "Release $RELEASE" && git tag -m "Release $RELEASE" $RELEASE``
 4. Build a new release: ``rm -rf dist/ build/ pretalx.egg-info && python -m build -n``
-5. Upload the release: ``twine upload dist/pretalx-x.y.z.tar.gz``
+5. Upload the release: ``twine upload dist/pretalx-*``
 6. Push the release: ``git push && git push --tags``
 7. Install/update the package somewhere.
-8. Add the release on `GitHub <https://github.com/pretalx/pretalx/releases>`_ (upload the archive you uploaded to PyPI, and add a link to the correct section of the :ref:`changelog`)
-9. Publish the blog post.
+8. Publish the blog post.
+9. Add the release on `GitHub <https://github.com/pretalx/pretalx/releases>`_ (upload the archive you uploaded to PyPI, and add a link to the correct section of the :ref:`changelog`)
 10. Upgrade `the docker repository <https://github.com/pretalx/pretalx-docker>`_ to the current commit **and tag the commit as vx.y.z**.
 11. Increment version number to version+1.dev0 in ``src/pretalx/__init__.py``.
-12. Update version numbers in update checker and deploy.
-13. ``rm -rf pretalx-release && deactivate && rmvirtualenv pretalx-release``
+12. ``rm -rf pretalx-release && deactivate && rmvirtualenv pretalx-release``
+13. Update version numbers in update checker (``versions.py``) and deploy.
 14. Update any plugins waiting for the new release.
 15. Check if the docker image build was successful.
+16. Post about the release on Fedi, Twitter and LinkedIn.

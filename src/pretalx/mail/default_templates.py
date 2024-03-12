@@ -7,7 +7,7 @@ ACK_TEXT = LazyI18nString.from_gettext(
     _(
         """Hi!
 
-We have received your proposal "{submission_title}" to
+We have received your proposal “{submission_title}” to
 {event_name}. We will notify you once we have had time to consider all
 proposals, but until then you can see and edit your proposal at
 {submission_url}.
@@ -22,7 +22,7 @@ ACCEPT_TEXT = LazyI18nString.from_gettext(
     _(
         """Hi!
 
-We are happy to tell you that we accept your proposal "{submission_title}"
+We are happy to tell you that we accept your proposal “{submission_title}”
 to {event_name}. Please click this link to confirm your attendance:
 
     {confirmation_link}
@@ -42,7 +42,7 @@ REJECT_TEXT = LazyI18nString.from_gettext(
         """Hi!
 
 We are sorry to tell you that we cannot accept your proposal
-"{submission_title}" to {event_name}. There were just too many great
+“{submission_title}” to {event_name}. There were just too many great
 proposals - we hope to see you at {event_name} as an attendee instead
 of a speaker!
 
@@ -72,7 +72,7 @@ QUESTION_TEXT = LazyI18nString.from_gettext(
     _(
         """Hi!
 
-We have some open questions about yourself and your proposal that we'd
+We have some open questions about yourself and your proposal that we’d
 like to ask you to answer:
 
 {questions}

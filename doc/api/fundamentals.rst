@@ -36,12 +36,12 @@ It returns an object with your ``name``, ``email``, ``locale`` and ``timezone``.
           browser interface.  Using this authentication is *not*
           officially supported for use by third-party clients and we may change
           or remove it at any time. If you want to use session authentication,
-          be sure to follow Django's `CSRF policies`_.
+          be sure to follow Django’s `CSRF policies`_.
 
 Compatibility
 -------------
 
-The API is under heavy development – please don't rely on its format to remain
+The API is under heavy development – please don’t rely on its format to remain
 the same. We will document changes in our :ref:`changelog` as always.
 
 We may always add fields or endpoints, or support new methods or query
