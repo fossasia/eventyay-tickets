@@ -618,7 +618,7 @@ Release Notes
 - :bug:`-` There was no possibility to reset a user’s API token.
 - :bug:`-` If an organiser changed a speaker’s email address, they could assign an address already in use in the pretalx instance, resulting in buggy behaviour all around.
 - :release:`0.5.0 <2018-03-07>`
-- :feature:`-` pretalx now features a Plugin API, allowing to install custom plugins. Plugins can add their own exporters, and hook into plugin hooks. You can enable or disable plugins per event. You can find the plugin developer documentation: https://docs.pretalx.org/en/latest/developer/plugins/index.html
+- :feature:`-` pretalx now features a Plugin API, allowing to install custom plugins. Plugins can add their own exporters, and hook into plugin hooks. You can enable or disable plugins per event. You can find the plugin developer documentation :ref:`here<plugin-index>`.
 - :feature:`340` Organisers can now decide if reviewers should have to submit a score or a text with their review.
 - :feature:`93` Organisers can provide room-based information for speakers, and send it automatically in the emails about talk scheduling.
 - :feature:`318` The list of submissions is now better searchable.
