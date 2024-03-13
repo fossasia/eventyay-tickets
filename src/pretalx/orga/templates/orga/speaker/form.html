@@ -5,6 +5,18 @@
 {% load rules %}
 {% load static %}
 
+{% block stylesheets %}
+    {% compress css %}
+        <link rel="stylesheet" type="text/x-scss" href="{% static "common/scss/lightbox.scss" %}">
+    {% endcompress %}
+{% endblock %}
+
+{% block scripts %}
+    {% compress js %}
+        <script defer src="{% static "common/js/lightbox.js" %}"></script>
+    {% endcompress %}
+{% endblock %}
+
 {% block title %}{{ form.instance.user.get_display_name }} :: {{ request.event.name }}{% endblock %}
 {% block content %}
     {% if form.biography %}

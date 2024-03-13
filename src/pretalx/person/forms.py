@@ -10,7 +10,6 @@ from i18nfield.forms import I18nModelForm
 
 from pretalx.cfp.forms.cfp import CfPFormMixin
 from pretalx.common.forms.fields import (
-    ImageField,
     PasswordConfirmationField,
     PasswordField,
     SizeFileField,
@@ -278,9 +277,6 @@ class SpeakerProfileForm(
         model = SpeakerProfile
         fields = ("biography",)
         public_fields = ["name", "biography", "avatar"]
-        field_classes = {
-            "avatar": ImageField,
-        }
         widgets = {
             "biography": MarkdownWidget,
             "avatar_source": MarkdownWidget,

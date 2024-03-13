@@ -7,6 +7,9 @@
 
 {% block stylesheets %}
     <link rel="stylesheet" type="text/css" href="{% static "vendored/colorpicker/css/bootstrap-colorpicker.min.css" %}"/>
+    {% compress css %}
+        <link rel="stylesheet" type="text/x-scss" href="{% static "common/scss/lightbox.scss" %}">
+    {% endcompress %}
 {% endblock %}
 
 {% block scripts %}
@@ -17,6 +20,7 @@
         <script defer src="{% static "orga/js/datetimepicker.js" %}"></script>
         <script defer src="{% static "vendored/colorpicker/js/bootstrap-colorpicker.min.js" %}"></script>
         <script defer src="{% static "orga/js/colorpicker.js" %}"></script>
+        <script defer src="{% static "common/js/lightbox.js" %}"></script>
     {% endcompress %}
 {% endblock %}
 
@@ -69,32 +73,8 @@
                 <div class="collapse" id="collapseCSSBox">
                     {% bootstrap_field form.custom_css_text layout='event' %}
                 </div>
-                <div class="event-logo-field form-group row">
-                    <label class="col-md-3 col-form-label" for="id_logo">{% translate "Event logo" %}<br><span class="optional">Optional</span></label>
-                    <div class="event-logo-form-fields col-md-9">
-                        {% if request.event.logo %}
-                            <img loading="lazy" class="event-logo-display"
-                                 src="{{ request.event.logo.url }}"
-                                 alt="{% translate "The event’s logo" %}"
-                            />
-                        {% endif %}
-                        <br>
-                        {% bootstrap_field form.logo layout="inline" %}
-                    </div>
-                </div>
-                <div class="event-logo-field form-group row">
-                    <label class="col-md-3 col-form-label" for="id_custom_css">{% translate "Event header image" %}<br><span class="optional">Optional</span></label>
-                    <div class="event-logo-form-fields col-md-9">
-                        {% if request.event.header_image %}
-                            <img loading="lazy" class="event-logo-display"
-                                 src="{{ request.event.header_image.url }}"
-                                 alt="{% translate "The event’s header_image" %}"
-                            />
-                        {% endif %}
-                        <br>
-                        {% bootstrap_field form.header_image layout="inline" %}
-                    </div>
-                </div>
+                {% bootstrap_field form.logo layout="event" %}
+                {% bootstrap_field form.header_image layout="event" %}
                 <div {% if request.event.primary_color %}style="--color: {{ request.event.primary_color }}"{% endif %} class="colorpicker-update">
                     {% bootstrap_field form.header_pattern layout='event' %}
                 </div>
