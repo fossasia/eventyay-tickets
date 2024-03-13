@@ -7,6 +7,18 @@
 {% load static %}
 {% load rules %}
 
+{% block stylesheets %}
+    {% compress css %}
+        <link rel="stylesheet" type="text/x-scss" href="{% static "common/scss/lightbox.scss" %}">
+    {% endcompress %}
+{% endblock %}
+
+{% block scripts %}
+    {% compress js %}
+        <script defer src="{% static "common/js/lightbox.js" %}"></script>
+    {% endcompress %}
+{% endblock %}
+
 {% block submission_content %}
     {% has_perm 'orga.send_mails' request.user request.event as can_send_mails %}
     {% has_perm 'orga.view_all_reviews' request.user request.event as can_view_all_reviews %}

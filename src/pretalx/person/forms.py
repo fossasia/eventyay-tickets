@@ -10,7 +10,6 @@ from i18nfield.forms import I18nModelForm
 
 from pretalx.cfp.forms.cfp import CfPFormMixin
 from pretalx.common.forms.fields import (
-    ImageField,
     PasswordConfirmationField,
     PasswordField,
     SizeFileField,
@@ -184,10 +183,7 @@ class SpeakerProfileForm(
                 {field: getattr(self.user, field) for field in self.user_fields}
             )
         for field in self.user_fields:
-            field_class = (
-                self.Meta.field_classes.get(field)
-                or User._meta.get_field(field).formfield
-            )
+            field_class = User._meta.get_field(field).formfield
             self.fields[field] = field_class(
                 initial=initial.get(field), disabled=read_only
             )
@@ -264,9 +260,6 @@ class SpeakerProfileForm(
         model = SpeakerProfile
         fields = ("biography",)
         public_fields = ["name", "biography", "avatar"]
-        field_classes = {
-            "avatar": ImageField,
-        }
         widgets = {
             "biography": MarkdownWidget,
         }
