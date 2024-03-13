@@ -1,3 +1,5 @@
+.. _plugin-inde:
+
 Plugin development
 ==================
 
