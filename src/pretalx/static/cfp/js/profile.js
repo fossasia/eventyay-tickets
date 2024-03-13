@@ -1,4 +1,15 @@
+function setImage(url) {
+    const image = document.querySelector('.avatar-form img');
+    const imageWrapper = document.querySelector('.avatar-form .form-image-preview');
+    const imageLink = imageWrapper.querySelector('a');
+    image.src = url;
+    imageLink.href = url;
+    imageLink.dataset.lightbox = url;
+    imageWrapper.classList.remove('d-none');
+}
+
 $(function () {
+    const $imageLink = $(".avatar-form .form-image-preview a");
     const $image = $(".avatar-form img");
     const $fileInput = $(".avatar-form .avatar-upload input[type=file]");
     const $resetCheckbox = $(".avatar-form .avatar-upload input[type=checkbox]");
@@ -13,24 +24,20 @@ $(function () {
             let files = $fileInput.prop('files');
             if (files) {
                 const reader = new FileReader();
-                reader.onload = function (e) {
-                    $image.attr('src', e.target.result);
-                    $image.removeClass('d-none');
-                };
+                reader.onload = function (e) { setImage(e.target.result); };
                 reader.readAsDataURL(files[0]);
                 $resetCheckbox.prop('checked', false);
             } else if ($image.data('avatar')) {
-                $image.attr('src', $image.data('avatar'));
+                setImage($image.data('avatar'));
                 $resetCheckbox.prop('checked', false);
             } else {
-                $image.addClass('d-none');
+                $imageWrapper.addClass('d-none');
             }
         } else if ($image.data('avatar')) {
-            $image.attr('src', $image.data('avatar'));
-            $image.removeClass('d-none');
+            setImage($image.data('avatar'));
             $resetCheckbox.prop('checked', false);
         } else {
-            $image.addClass('d-none');
+            $imageWrapper.addClass('d-none');
         }
     });
 
@@ -39,15 +46,14 @@ $(function () {
 
         if (gravatarSelected) {
             $fileInput.val('');
-            $image.removeClass('d-none');
-            $image.attr('src', "https://www.gravatar.com/avatar/" + $image.data('gravatar') + '?s=512');
+            console.log($image.data('gravatar'));
+            setImage("https://www.gravatar.com/avatar/" + $image.data('gravatar') + '?s=512');
             $resetCheckbox.prop('checked', true);
         } else if ($image.data('avatar')) {
-            $image.attr('src', $image.data('avatar'));
-            $image.removeClass('d-none');
+            setImage($image.data('avatar'));
             $resetCheckbox.prop('checked', false);
         } else {
-            $image.addClass('d-none');
+            $imageWrapper.addClass('d-none');
         }
     });
 
@@ -55,12 +61,11 @@ $(function () {
         let isResetSelected = $resetCheckbox.prop('checked');
         if (isResetSelected) {
             $fileInput.val('');
-            $image.addClass('d-none');
+            $imageWrapper.addClass('d-none');
         } else if ($image.data('avatar')) {
-            $image.attr('src', $image.data('avatar'));
-            $image.removeClass('d-none');
+            setImage($image.data('avatar'));
         } else {
-            $image.addClass('d-none');
+            $imageWrapper.addClass('d-none');
         }
     })
 });
