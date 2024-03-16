@@ -53,7 +53,7 @@ class CfPSettingsForm(
             self.fields[
                 "mail_on_new_submission"
             ].help_text += f' (<a href="mailto:{obj.email}">{obj.email}</a>)'
-        self.length_fields = ["title", "abstract", "description", "biography"]
+        self.length_fields = ["title", "abstract", "description", "biography", "avatar_source", "avatar_license"]
         self.request_require_fields = [
             "abstract",
             "description",

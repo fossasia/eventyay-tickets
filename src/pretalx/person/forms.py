@@ -198,6 +198,8 @@ class SpeakerProfileForm(
             self.fields[field] = field_class(
                 initial=initial.get(field), disabled=read_only
             )
+            if self.Meta.widgets.get(field):
+                self.fields[field].widget = self.Meta.widgets.get(field)()
             self._update_cfp_texts(field)
 
         if not self.event.cfp.request_avatar:
@@ -276,6 +278,8 @@ class SpeakerProfileForm(
         }
         widgets = {
             "biography": MarkdownWidget,
+            "avatar_source": MarkdownWidget,
+            "avatar_license": MarkdownWidget,
         }
         request_require = {"biography", "availabilities"}
 
