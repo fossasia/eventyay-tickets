@@ -5,6 +5,7 @@ import sys
 from urllib.parse import urlparse
 from .settings_helpers import build_db_tls_config, build_redis_tls_config
 import django.conf.locale
+from django.core.exceptions import ImproperlyConfigured
 from django.utils.crypto import get_random_string
 from kombu import Queue
 from pkg_resources import iter_entry_points
@@ -72,8 +73,7 @@ db_backend = config.get('database', 'backend', fallback='sqlite3')
 if db_backend == 'postgresql_psycopg2':
     db_backend = 'postgresql'
 if db_backend == 'mysql':
-    print("MySQL/MariaDB is not supported")
-    sys.exit(1)
+    raise ImproperlyConfigured("MySQL/MariaDB is not supported")
 
 JSON_FIELD_AVAILABLE = db_backend == 'postgresql'
 db_options = {}
