@@ -5,17 +5,6 @@ import copy
 from django.db import NotSupportedError
 from django.db.models import Expression, JSONField
 
-def mysql_compile_json_path(key_transforms):
-    path = ['$']
-    for key_transform in key_transforms:
-        try:
-            num = int(key_transform)
-            path.append('[{}]'.format(num))
-        except ValueError:  # non-integer
-            path.append('.')
-            path.append(key_transform)
-    return ''.join(path)
-
 def postgres_compile_json_path(key_transforms):
     return "{" + ','.join(key_transforms) + "}"
 
@@ -41,17 +30,9 @@ class JSONExtract(Expression):
             params.append(json_path)
             template = '{} #> %s'.format(arg_sql)
             return template, params
-        elif '.mysql' in connection.settings_dict['ENGINE']:
-            params = []
-            arg_sql, arg_params = compiler.compile(self.source_expression)
-            params.extend(arg_params)
-            json_path = mysql_compile_json_path(self.path)
-            params.append(json_path)
-            template = 'JSON_EXTRACT({}, %s)'.format(arg_sql)
-            return template, params
         else:
             raise NotSupportedError(
-                'Functions on JSONFields are only supported on PostgreSQL and MySQL at the moment.'
+                'Functions on JSONFields are only supported on PostgreSQL.'
             )
 
     def copy(self):
