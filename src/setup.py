@@ -108,7 +108,7 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
-        'Framework :: Django :: 3.0'
+        'Framework :: Django :: 3.2'
     ],
 
     keywords='tickets web shop ecommerce',
@@ -125,8 +125,9 @@ setup(
         'django-hierarkey==1.0.*,>=1.0.4',
         'django-filter==2.4.*',
         'django-scopes==1.2.*',
+        'django-localflavor==3.0.*',
         'reportlab>=3.5.65',
-        'Pillow=8.*',
+        'Pillow==8.*',
         'PyPDF2==1.26.*',
         'django-libsass==0.8',
         'libsass==0.20.*',
@@ -158,7 +159,6 @@ setup(
         'mt-940==3.2',
         'django-i18nfield==1.9.*,>=1.9.1',
         'psycopg2-binary',
-        'django-mysql',
         'tqdm==4.*',
         'vobject==0.9.*',
         'pycountry',
