@@ -203,7 +203,6 @@ setup(
             'freezegun',
         ],
         'memcached': ['pylibmc'],
-        'mysql': ['mysqlclient'],
     },
 
     packages=find_packages(exclude=['tests', 'tests.*']),

@@ -3,7 +3,6 @@ FROM python:3.8-bookworm
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
             build-essential \
-            default-libmysqlclient-dev \
             gettext \
             git \
             libffi-dev \
@@ -48,7 +47,6 @@ RUN pip3 install -U \
     pip3 install \
         -r requirements.txt \
         -r requirements/memcached.txt \
-        -r requirements/mysql.txt \
         gunicorn django-extensions ipython && \
     rm -rf ~/.cache/pip
 
