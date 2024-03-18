@@ -42,7 +42,7 @@
             </div>
             <div class="col-sm-12 col-md-3">
                 <a href="{% url "control:event.cancel" organizer=request.organizer.slug event=request.event.slug %}"
-                        class="btn btn-danger btn-block btn-lg">
+                        class="btn btn-delete btn-danger btn-block btn-lg">
                     <span class="fa fa-ban"></span>
                     {% trans "Cancel event" %}
                 </a>
@@ -63,7 +63,7 @@
             </div>
             <div class="col-sm-12 col-md-3">
                 <a href="
-{% url "control:event.shredder.start" event=request.event.slug organizer=request.organizer.slug %}" class="btn btn-danger btn-lg btn-block">
+{% url "control:event.shredder.start" event=request.event.slug organizer=request.organizer.slug %}" class="btn btn-delete btn-danger btn-lg btn-block">
                     <span class="fa fa-eraser"></span>
                     {% trans "Delete personal data" %}
                 </a>
@@ -84,7 +84,7 @@
             </div>
             <div class="col-sm-12 col-md-3">
                 <a href="{% url "control:event.delete" organizer=request.organizer.slug event=request.event.slug %}"
-                        class="btn btn-danger btn-block btn-lg {% if not request.event.allow_delete %}disabled{% endif %}">
+                        class="btn btn-delete btn-danger btn-block btn-lg {% if not request.event.allow_delete %}disabled{% endif %}">
                     <span class="fa fa-trash"></span>
                     {% trans "Delete event" %}
                 </a>

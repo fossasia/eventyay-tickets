@@ -37,7 +37,7 @@
                 <a href="{% url "control:event.items" organizer=request.event.organizer.slug event=request.event.slug %}" class="btn btn-default btn-cancel">
                     {% trans "Cancel" %}
                 </a>
-                <button type="submit" class="btn btn-danger btn-save">
+                <button type="submit" class="btn btn-delete btn-danger btn-save">
                     {% if possible %}{% trans "Delete" %}{% else %}{% trans "Deactivate" %}{% endif %}
                 </button>
             </div>

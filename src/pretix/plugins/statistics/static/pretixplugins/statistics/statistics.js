@@ -13,7 +13,7 @@ $(function () {
         xkey: 'date',
         ykeys: ['ordered', 'paid'],
         labels: [gettext('Placed orders'), gettext('Paid orders')],
-        lineColors: ['#3b1c4a', '#50a167'],
+        lineColors: ['#2185d0', '#50a167'],
         smooth: false,
         resize: true,
         fillOpacity: 0.3,
@@ -27,7 +27,7 @@ $(function () {
         labels: [gettext('Total revenue')],
         smooth: false,
         resize: true,
-        lineColors: ['#3b1c4a'],
+        lineColors: ['#2185d0'],
         fillOpacity: 0.3,
         preUnits: $.trim($("#currency").html()) + ' '
     });
@@ -37,7 +37,7 @@ $(function () {
         xkey: 'item_short',
         ykeys: ['ordered', 'paid'],
         labels: [gettext('Placed orders'), gettext('Paid orders')],
-        barColors: ['#3b1c4a', '#50a167'],
+        barColors: ['#2185d0', '#50a167'],
         hoverCallback: function (index, options, content, row) {
             console.log(content);
             var $c = $("<div>" + content + "</div>");
