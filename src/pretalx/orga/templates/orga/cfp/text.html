@@ -169,14 +169,14 @@
                                 <tr>
                                     <th>{% translate "Profile picture source" %}</th>
                                     <td class="hide-label">{% bootstrap_field sform.cfp_ask_avatar_source layout='event-inline' %}</td>
-                                    <td></td>
-                                    <td></td>
+                                    <td>{% bootstrap_field sform.cfp_avatar_source_min_length use_label=False layout='inline' %}</td>
+                                    <td>{% bootstrap_field sform.cfp_avatar_source_max_length use_label=False layout='inline' %}</td>
                                 </tr>
                                 <tr>
                                     <th>{% translate "Profile picture license" %}</th>
                                     <td class="hide-label">{% bootstrap_field sform.cfp_ask_avatar_license layout='event-inline' %}</td>
-                                    <td></td>
-                                    <td></td>
+                                    <td>{% bootstrap_field sform.cfp_avatar_license_min_length use_label=False layout='inline' %}</td>
+                                    <td>{% bootstrap_field sform.cfp_avatar_license_max_length use_label=False layout='inline' %}</td>
                                 </tr>
                                 <tr>
                                     <th>{% translate "Biography" %}</th>
