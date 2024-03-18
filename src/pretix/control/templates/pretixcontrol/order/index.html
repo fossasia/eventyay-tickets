@@ -32,7 +32,7 @@
                 <div class="btn-group" role="group">
                     {% if order.testmode %}
                         <a href="{% url "control:event.order.delete" event=request.event.slug organizer=request.event.organizer.slug code=order.code %}"
-                                class="btn btn-danger">
+                                class="btn btn-delete btn-danger">
                             <span class="fa fa-trash"></span>
                             {% trans "Delete" %}
                         </a>
@@ -637,7 +637,7 @@
                                                 {{ p.payment_provider.verbose_name }}
                                                 {% if p.state == "pending" or p.state == "created" %}
                                                     <a href="{% url "control:event.order.payments.cancel" event=request.event.slug organizer=request.event.organizer.slug code=order.code payment=p.pk %}"
-                                                            class="btn btn-danger btn-xs" data-toggle="tooltip"
+                                                            class="btn btn-delete btn-danger btn-xs" data-toggle="tooltip"
                                                             title="{% trans "Cancel payment" %}">
                                                         <span class="fa fa-times"></span>
                                                     </a>
@@ -739,7 +739,7 @@
                                                 <td class="text-right flip">
                                                     {% if r.state == "transit" or r.state == "created" %}
                                                         <a href="{% url "control:event.order.refunds.cancel" event=request.event.slug organizer=request.event.organizer.slug code=order.code refund=r.pk %}"
-                                                                class="btn btn-danger btn-xs" data-toggle="tooltip"
+                                                                class="btn btn-delete btn-danger btn-xs" data-toggle="tooltip"
                                                                 title="{% trans "Cancel transfer" %}">
                                                             <span class="fa fa-times"></span>
                                                         </a>

@@ -99,7 +99,7 @@
                         <td class="text-right flip">
                             {% if r.state == "transit" or r.state == "created" %}
                                 <a href="{% url "control:event.order.refunds.cancel" event=request.event.slug organizer=request.event.organizer.slug code=r.order.code refund=r.pk %}?next={{ request.get_full_path|urlencode }}"
-                                   class="btn btn-danger btn-xs" data-toggle="tooltip">
+                                   class="btn btn-delete btn-danger btn-xs" data-toggle="tooltip">
                                     <span class="fa fa-times"></span>
                                     {% trans "Cancel" %}
                                 </a>
