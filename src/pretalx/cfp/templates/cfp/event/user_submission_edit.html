@@ -16,11 +16,15 @@
         <script defer src="{% static "vendored/datetimepicker/bootstrap-datetimepicker.js" %}"></script>
         <script defer src="{% static "orga/js/datetimepicker.js" %}"></script>
         <script defer src="{% static "common/js/lightbox.js" %}"></script>
+        <script defer src="{% static 'vendored/select2.min.js' %}"></script>
+        <script defer src="{% static 'cfp/js/formTools.js' %}"></script>
     {% endcompress %}
     <script src="{% static "vendored/marked.min.js" %}" defer></script> {# do not compress #}
     <script src="{% static "common/js/formTools.js" %}" defer></script>
     {% compress css %}
         <link rel="stylesheet" type="text/x-scss" href="{% static "common/scss/lightbox.scss" %}">
+        <link rel="stylesheet" type="text/css" href="{% static "vendored/select2.min.css" %}"/>
+        <link rel="stylesheet" type="text/x-scss" href="{% static "common/scss/_select2.scss" %}"/>
     {% endcompress %}
 {% endblock %}
 

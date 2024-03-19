@@ -55,7 +55,7 @@
     .select2-selection--clearable {
       button.select2-selection__clear {
         margin-top: 4px;
-        color: $brand-danger;
+        color: var(--color-danger);
       }
     }
   }

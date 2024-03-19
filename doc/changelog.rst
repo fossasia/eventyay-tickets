@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`cfp` Choice and multiple choice questions now use a drop-down with typeahead (search for options) when they have a lot of options.
 - :feature:`orga,1079` All images in forms in the organiser area now include a preview of the saved image, and open a lightbox instead of the image file when clicked.
 - :announcement:`admin` We now recommend that you use a virtualenv instead of the ``pip --user`` installation method, and have updated our install and upgrade documentation accordingly.
 - :bug:`orga` While organisers could reorder questions, and the order was saved and used in the frontend, the new order was not shown in the organiser backend.
