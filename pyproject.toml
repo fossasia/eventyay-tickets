@@ -48,10 +48,7 @@ dependencies = [
   "django-pdb~=0.6.2",
   "djangorestframework~=3.15.0",
   "libsass~=0.23.0",
-  "Markdown~=3.5.0",  # https://python-markdown.github.io/change_log/
-  # We can upgrade markdown again once django-bootstrap4 upgrades or once we drop Python 3.6 and 3.7
-  # 3.3.5 requires importlib-metadata>=4.4, but django-bootstrap3 requires importlib-metadata<3.
-  # see also https://github.com/zostera/django-bootstrap4/issues/380
+  "Markdown~=3.6.0",
   "Pillow~=10.2.0",
   "publicsuffixlist~=0.10.0",
   "python-dateutil~=2.9.0",
