@@ -262,8 +262,9 @@ class QuestionFieldsMixin:
             field.widget.attrs["placeholder"] = ""  # XSS
             return field
         if question.variant == QuestionVariant.MULTIPLE:
+            choices = question.options.all()
             field = forms.ModelMultipleChoiceField(
-                queryset=question.options.all(),
+                queryset=choices,
                 label=question.question,
                 required=question.required,
                 widget=(
