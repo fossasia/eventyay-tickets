@@ -251,7 +251,11 @@ class QuestionFieldsMixin:
                 ),
                 disabled=read_only,
                 help_text=help_text,
-                widget=forms.RadioSelect if len(choices) < 4 else None,
+                widget=(
+                    forms.RadioSelect
+                    if len(choices) < 4
+                    else forms.Select(attrs={"class": "select2"})
+                ),
             )
             field.original_help_text = original_help_text
             field.widget.attrs["placeholder"] = ""  # XSS
@@ -261,7 +265,11 @@ class QuestionFieldsMixin:
                 queryset=question.options.all(),
                 label=question.question,
                 required=question.required,
-                widget=forms.CheckboxSelectMultiple,
+                widget=(
+                    forms.CheckboxSelectMultiple
+                    if len(choices) < 8
+                    else forms.SelectMultiple(attrs={"class": "select2"})
+                ),
                 initial=(
                     initial_object.options.all()
                     if initial_object

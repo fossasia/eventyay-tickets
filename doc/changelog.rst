@@ -4,6 +4,7 @@ Release Notes
 =============
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 - :feature:`schedule,1794` The iCal schedule export has been made private (available only to organisers) as the utility of importing a conference's entire schedule is limited, and people were frustrated that the iCal export did not reflect any applied schedule filters.
 - :bug:`schedule,1803` The QR code for schedule exporter links was not showing up when hovering on the QR code symbol.
 - :release:`2024.2.1 <2024-08-07>`
@@ -22,6 +23,9 @@ Release Notes
 - :feature:`cfp` Choice and multiple choice questions now use a drop-down with typeahead (search for options) when they have a lot of options.
 =======
 >>>>>>> 2f90329a3 (Show image preview to organisers)
+=======
+- :feature:`cfp` Choice and multiple choice questions now use a drop-down with typeahead (search for options) when they have a lot of options.
+>>>>>>> c326d2761 (Add typeahead to questions with many options)
 - :feature:`orga,1079` All images in forms in the organiser area now include a preview of the saved image, and open a lightbox instead of the image file when clicked.
 - :announcement:`admin` We now recommend that you use a virtualenv instead of the ``pip --user`` installation method, and have updated our install and upgrade documentation accordingly.
 - :bug:`orga` While organisers could reorder questions, and the order was saved and used in the frontend, the new order was not shown in the organiser backend.
