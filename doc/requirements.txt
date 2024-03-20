@@ -1,4 +1,4 @@
--r ../src/requirements.txt
+-e ../
 sphinx==2.3.*
 sphinx-rtd-theme
 sphinxcontrib-httpdomain
