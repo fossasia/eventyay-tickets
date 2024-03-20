@@ -1,4 +1,5 @@
 FROM python:3.8-bookworm
+working-directory: ./src
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -37,17 +38,14 @@ ENV LC_ALL=C.UTF-8 \
     DJANGO_SETTINGS_MODULE=production_settings
 
 # To copy only the requirements files needed to install from PIP
-COPY src/requirements /pretix/src/requirements
-COPY src/requirements.txt /pretix/src
+COPY src/setup.py /pretix/src/setup.py
 RUN pip3 install -U \
         pip \
         setuptools \
         wheel && \
     cd /pretix/src && \
-    pip3 install \
-        -r requirements.txt \
-        -r requirements/memcached.txt \
-        gunicorn django-extensions ipython && \
+    PRETIX_DOCKER_BUILD=TRUE pip3 install \
+        -e ".[memcached]" \
     rm -rf ~/.cache/pip
 
 COPY deployment/docker/pretix.bash /usr/local/bin/pretix
