@@ -22,13 +22,13 @@ _config = configparser.RawConfigParser()
 if 'PRETIX_CONFIG_FILE' in os.environ:
     _config.read_file(open(os.environ.get('PRETIX_CONFIG_FILE'), encoding='utf-8'))
 else:
-    _config.read(['/etc/pretix/pretix.cfg', os.path.expanduser('~/.pretix.cfg'), 'pretix.cfg'],
+    _config.read(['/etc/eventyay/pretix.cfg', os.path.expanduser('~/.pretix.cfg'), 'pretix.cfg'],
                  encoding='utf-8')
 config = EnvOrParserConfig(_config)
 
 CONFIG_FILE = config
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-DATA_DIR = config.get('pretix', 'datadir', fallback=os.environ.get('DATA_DIR', 'data'))
+DATA_DIR = config.get('eventyay', 'datadir', fallback=os.environ.get('DATA_DIR', 'data'))
 LOG_DIR = os.path.join(DATA_DIR, 'logs')
 MEDIA_ROOT = os.path.join(DATA_DIR, 'media')
 PROFILE_DIR = os.path.join(DATA_DIR, 'profiles')
@@ -62,12 +62,12 @@ else:
 
 debug_fallback = "runserver" in sys.argv
 DEBUG = config.getboolean('django', 'debug', fallback=debug_fallback)
-LOG_CSP = config.getboolean('pretix', 'csp_log', fallback=True)
-CSP_ADDITIONAL_HEADER = config.get('pretix', 'csp_additional_header', fallback='')
+LOG_CSP = config.getboolean('eventyay', 'csp_log', fallback=True)
+CSP_ADDITIONAL_HEADER = config.get('eventyay', 'csp_additional_header', fallback='')
 
 PDFTK = config.get('tools', 'pdftk', fallback=None)
 
-PRETIX_AUTH_BACKENDS = config.get('pretix', 'auth_backends', fallback='pretix.base.auth.NativeAuthBackend').split(',')
+PRETIX_AUTH_BACKENDS = config.get('eventyay', 'auth_backends', fallback='eventyay.base.auth.NativeAuthBackend').split(',')
 
 db_backend = config.get('database', 'backend', fallback='sqlite3')
 if db_backend == 'postgresql_psycopg2':
@@ -110,40 +110,40 @@ if config.has_section('replica'):
         'OPTIONS': db_options,
         'TEST': {}
     }
-    DATABASE_ROUTERS = ['pretix.helpers.database.ReplicaRouter']
+    DATABASE_ROUTERS = ['eventyay.helpers.database.ReplicaRouter']
 
 STATIC_URL = config.get('urls', 'static', fallback='/static/')
 
 MEDIA_URL = config.get('urls', 'media', fallback='/media/')
 
-PRETIX_INSTANCE_NAME = config.get('pretix', 'instance_name', fallback='pretix.de')
-PRETIX_REGISTRATION = config.getboolean('pretix', 'registration', fallback=True)
-PRETIX_PASSWORD_RESET = config.getboolean('pretix', 'password_reset', fallback=True)
-PRETIX_LONG_SESSIONS = config.getboolean('pretix', 'long_sessions', fallback=True)
-PRETIX_ADMIN_AUDIT_COMMENTS = config.getboolean('pretix', 'audit_comments', fallback=False)
-PRETIX_OBLIGATORY_2FA = config.getboolean('pretix', 'obligatory_2fa', fallback=False)
+PRETIX_INSTANCE_NAME = config.get('eventyay', 'instance_name', fallback='eventyay.de')
+PRETIX_REGISTRATION = config.getboolean('eventyay', 'registration', fallback=True)
+PRETIX_PASSWORD_RESET = config.getboolean('eventyay', 'password_reset', fallback=True)
+PRETIX_LONG_SESSIONS = config.getboolean('eventyay', 'long_sessions', fallback=True)
+PRETIX_ADMIN_AUDIT_COMMENTS = config.getboolean('eventyay', 'audit_comments', fallback=False)
+PRETIX_OBLIGATORY_2FA = config.getboolean('eventyay', 'obligatory_2fa', fallback=False)
 PRETIX_SESSION_TIMEOUT_RELATIVE = 3600 * 3
 PRETIX_SESSION_TIMEOUT_ABSOLUTE = 3600 * 12
 PRETIX_PRIMARY_COLOR = '#8E44B3'
 
-SITE_URL = config.get('pretix', 'url', fallback='http://localhost')
+SITE_URL = config.get('eventyay', 'url', fallback='http://localhost')
 if SITE_URL.endswith('/'):
     SITE_URL = SITE_URL[:-1]
 
 CSRF_TRUSTED_ORIGINS = [urlparse(SITE_URL).hostname]
 
-TRUST_X_FORWARDED_FOR = config.get('pretix', 'trust_x_forwarded_for', fallback=False)
+TRUST_X_FORWARDED_FOR = config.get('eventyay', 'trust_x_forwarded_for', fallback=False)
 
-if config.get('pretix', 'trust_x_forwarded_proto', fallback=False):
+if config.get('eventyay', 'trust_x_forwarded_proto', fallback=False):
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-PRETIX_PLUGINS_DEFAULT = config.get('pretix', 'plugins_default',
-                                    fallback='pretix.plugins.sendmail,pretix.plugins.statistics,pretix.plugins.checkinlists,pretix.plugins.autocheckin')
-PRETIX_PLUGINS_EXCLUDE = config.get('pretix', 'plugins_exclude', fallback='').split(',')
+PRETIX_PLUGINS_DEFAULT = config.get('eventyay', 'plugins_default',
+                                    fallback='eventyay.plugins.sendmail,eventyay.plugins.statistics,eventyay.plugins.checkinlists,eventyay.plugins.autocheckin')
+PRETIX_PLUGINS_EXCLUDE = config.get('eventyay', 'plugins_exclude', fallback='').split(',')
 
-FETCH_ECB_RATES = config.getboolean('pretix', 'ecb_rates', fallback=True)
+FETCH_ECB_RATES = config.getboolean('eventyay', 'ecb_rates', fallback=True)
 
-DEFAULT_CURRENCY = config.get('pretix', 'currency', fallback='EUR')
+DEFAULT_CURRENCY = config.get('eventyay', 'currency', fallback='EUR')
 CURRENCIES = list(currencies)
 CURRENCY_PLACES = {
     # default is 2
@@ -170,14 +170,14 @@ LANGUAGE_CODE = config.get('locale', 'default', fallback='en')
 TIME_ZONE = config.get('locale', 'timezone', fallback='UTC')
 
 MAIL_FROM = SERVER_EMAIL = DEFAULT_FROM_EMAIL = config.get(
-    'mail', 'from', fallback='pretix@localhost')
+    'mail', 'from', fallback='eventyay@localhost')
 EMAIL_HOST = config.get('mail', 'host', fallback='localhost')
 EMAIL_PORT = config.getint('mail', 'port', fallback=25)
 EMAIL_HOST_USER = config.get('mail', 'user', fallback='')
 EMAIL_HOST_PASSWORD = config.get('mail', 'password', fallback='')
 EMAIL_USE_TLS = config.getboolean('mail', 'tls', fallback=False)
 EMAIL_USE_SSL = config.getboolean('mail', 'ssl', fallback=False)
-EMAIL_SUBJECT_PREFIX = '[pretix] '
+EMAIL_SUBJECT_PREFIX = '[eventyay] '
 
 ADMINS = [('Admin', n) for n in config.get('mail', 'admins', fallback='').split(",") if n]
 
@@ -246,7 +246,7 @@ if HAS_CELERY:
 else:
     CELERY_TASK_ALWAYS_EAGER = True
 
-SESSION_COOKIE_DOMAIN = config.get('pretix', 'cookie_domain', fallback=None)
+SESSION_COOKIE_DOMAIN = config.get('eventyay', 'cookie_domain', fallback=None)
 
 CACHE_TICKETS_HOURS = config.getint('cache', 'tickets', fallback=24 * 3)
 
@@ -397,24 +397,24 @@ except ImportError:
 
 
 if METRICS_ENABLED:
-    MIDDLEWARE.insert(MIDDLEWARE.index('pretix.base.middleware.CustomCommonMiddleware') + 1,
-                      'pretix.helpers.metrics.middleware.MetricsMiddleware')
+    MIDDLEWARE.insert(MIDDLEWARE.index('eventyay.base.middleware.CustomCommonMiddleware') + 1,
+                      'eventyay.helpers.metrics.middleware.MetricsMiddleware')
 
 
 PROFILING_RATE = config.getfloat('django', 'profile', fallback=0)  # Percentage of requests to profile
 if PROFILING_RATE > 0:
     if not os.path.exists(PROFILE_DIR):
         os.mkdir(PROFILE_DIR)
-    MIDDLEWARE.insert(0, 'pretix.helpers.profile.middleware.CProfileMiddleware')
+    MIDDLEWARE.insert(0, 'eventyay.helpers.profile.middleware.CProfileMiddleware')
 
 
 # Security settings
 X_FRAME_OPTIONS = 'DENY'
 
 # URL settings
-ROOT_URLCONF = 'pretix.multidomain.maindomain_urlconf'
+ROOT_URLCONF = 'eventyay.multidomain.maindomain_urlconf'
 
-WSGI_APPLICATION = 'pretix.wsgi.application'
+WSGI_APPLICATION = 'eventyay.wsgi.application'
 
 USE_I18N = True
 USE_L10N = True
@@ -536,9 +536,9 @@ TEMPLATES = [
                 'django.template.context_processors.static',
                 'django.template.context_processors.tz',
                 'django.contrib.messages.context_processors.messages',
-                'pretix.base.context.contextprocessor',
-                'pretix.control.context.contextprocessor',
-                'pretix.presale.context.contextprocessor',
+                'eventyay.base.context.contextprocessor',
+                'eventyay.control.context.contextprocessor',
+                'eventyay.presale.context.contextprocessor',
             ],
             'loaders': template_loaders
         },
@@ -552,10 +552,10 @@ STATICFILES_FINDERS = (
 )
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'pretix/static')
-] if os.path.exists(os.path.join(BASE_DIR, 'pretix/static')) else []
+    os.path.join(BASE_DIR, 'eventyay/static')
+] if os.path.exists(os.path.join(BASE_DIR, 'eventyay/static')) else []
 
-STATICI18N_ROOT = os.path.join(BASE_DIR, "pretix/static")
+STATICI18N_ROOT = os.path.join(BASE_DIR, "eventyay/static")
 
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 
@@ -586,7 +586,7 @@ MESSAGE_TAGS = {
 }
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
-loglevel = 'DEBUG' if DEBUG else config.get('pretix', 'loglevel', fallback='INFO')
+loglevel = 'DEBUG' if DEBUG else config.get('eventyay', 'loglevel', fallback='INFO')
 
 LOGGING = {
     'version': 1,
@@ -690,7 +690,7 @@ if config.has_option('sentry', 'dsn') and not any(c in sys.argv for c in ('shell
         release=__version__,
         send_default_pii=False,
     )
-    ignore_logger('pretix.base.tasks')
+    ignore_logger('eventyay.base.tasks')
     ignore_logger('django.security.DisallowedHost')
     setup_custom_filters()
 
@@ -705,16 +705,16 @@ CELERY_TASK_QUEUES = (
     Queue('notifications', routing_key='notifications.#'),
 )
 CELERY_TASK_ROUTES = ([
-    ('pretix.base.services.cart.*', {'queue': 'checkout'}),
-    ('pretix.base.services.orders.*', {'queue': 'checkout'}),
-    ('pretix.base.services.mail.*', {'queue': 'mail'}),
-    ('pretix.base.services.update_check.*', {'queue': 'background'}),
-    ('pretix.base.services.quotas.*', {'queue': 'background'}),
-    ('pretix.base.services.waitinglist.*', {'queue': 'background'}),
-    ('pretix.base.services.notifications.*', {'queue': 'notifications'}),
-    ('pretix.api.webhooks.*', {'queue': 'notifications'}),
-    ('pretix.presale.style.*', {'queue': 'background'}),
-    ('pretix.plugins.banktransfer.*', {'queue': 'background'}),
+    ('eventyay.base.services.cart.*', {'queue': 'checkout'}),
+    ('eventyay.base.services.orders.*', {'queue': 'checkout'}),
+    ('eventyay.base.services.mail.*', {'queue': 'mail'}),
+    ('eventyay.base.services.update_check.*', {'queue': 'background'}),
+    ('eventyay.base.services.quotas.*', {'queue': 'background'}),
+    ('eventyay.base.services.waitinglist.*', {'queue': 'background'}),
+    ('eventyay.base.services.notifications.*', {'queue': 'notifications'}),
+    ('eventyay.api.webhooks.*', {'queue': 'notifications'}),
+    ('eventyay.presale.style.*', {'queue': 'background'}),
+    ('eventyay.plugins.banktransfer.*', {'queue': 'background'}),
 ],)
 
 BOOTSTRAP3 = {
@@ -722,10 +722,10 @@ BOOTSTRAP3 = {
     'field_renderers': {
         'default': 'bootstrap3.renderers.FieldRenderer',
         'inline': 'bootstrap3.renderers.InlineFieldRenderer',
-        'control': 'pretix.control.forms.renderers.ControlFieldRenderer',
-        'bulkedit': 'pretix.control.forms.renderers.BulkEditFieldRenderer',
-        'bulkedit_inline': 'pretix.control.forms.renderers.InlineBulkEditFieldRenderer',
-        'checkout': 'pretix.presale.forms.renderers.CheckoutFieldRenderer',
+        'control': 'eventyay.control.forms.renderers.ControlFieldRenderer',
+        'bulkedit': 'eventyay.control.forms.renderers.BulkEditFieldRenderer',
+        'bulkedit_inline': 'eventyay.control.forms.renderers.InlineBulkEditFieldRenderer',
+        'checkout': 'eventyay.presale.forms.renderers.CheckoutFieldRenderer',
     },
 }
 
