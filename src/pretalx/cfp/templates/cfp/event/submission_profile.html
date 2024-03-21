@@ -24,6 +24,7 @@
 
     {% bootstrap_field form.name layout='event' %}
     {% if form.biography %}{% bootstrap_field form.biography layout='event' %}{% endif %}
+    {% if questions_form %}{% bootstrap_form questions_form layout='event' %}{% endif %}
     {% if form.availabilities %}
         {% compress js %}
             <script defer src="{% static "vendored/moment-with-locales.js" %}"></script>
