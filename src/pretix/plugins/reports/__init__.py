@@ -29,4 +29,3 @@ class ReportsApp(AppConfig):
         return errs
 
 
-default_app_config = 'pretix.plugins.reports.ReportsApp'

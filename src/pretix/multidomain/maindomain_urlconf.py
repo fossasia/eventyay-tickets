@@ -1,7 +1,7 @@
 import importlib.util
 
 from django.apps import apps
-from django.conf.urls import include, url
+from django.urls import include, path
 from django.views.generic import TemplateView
 
 from pretix.multidomain.plugin_handler import plugin_event_urls
@@ -11,10 +11,10 @@ from pretix.presale.urls import (
 from pretix.urls import common_patterns
 
 presale_patterns_main = [
-    url(r'', include((locale_patterns + [
-        url(r'^(?P<organizer>[^/]+)/', include(organizer_patterns)),
-        url(r'^(?P<organizer>[^/]+)/(?P<event>[^/]+)/', include(event_patterns)),
-        url(r'^$', TemplateView.as_view(template_name='pretixpresale/index.html'), name="index")
+    path('', include((locale_patterns + [
+        path('<str:organizer>/', include(organizer_patterns)),
+        path('<str:organizer>/<str:event>/', include(event_patterns)),
+        path('', TemplateView.as_view(template_name='pretixpresale/index.html'), name="index")
     ], 'presale')))
 ]
 
@@ -28,18 +28,18 @@ for app in apps.get_app_configs():
                 single_plugin_patterns += urlmod.urlpatterns
             if hasattr(urlmod, 'event_patterns'):
                 patterns = plugin_event_urls(urlmod.event_patterns, plugin=app.name)
-                single_plugin_patterns.append(url(r'^(?P<organizer>[^/]+)/(?P<event>[^/]+)/',
+                single_plugin_patterns.append(path('<str:organizer>/<str:event>/',
                                                   include(patterns)))
             if hasattr(urlmod, 'organizer_patterns'):
                 patterns = urlmod.organizer_patterns
-                single_plugin_patterns.append(url(r'^(?P<organizer>[^/]+)/',
+                single_plugin_patterns.append(path('<str:organizer>/',
                                                   include(patterns)))
             raw_plugin_patterns.append(
-                url(r'', include((single_plugin_patterns, app.label)))
+                path('', include((single_plugin_patterns, app.label)))
             )
 
 plugin_patterns = [
-    url(r'', include((raw_plugin_patterns, 'plugins')))
+    path('', include((raw_plugin_patterns, 'plugins')))
 ]
 
 # The presale namespace comes last, because it contains a wildcard catch

@@ -1,7 +1,7 @@
 import importlib
 
 from django.apps import apps
-from django.conf.urls import include, url
+from django.urls import include, path
 from rest_framework import routers
 
 from pretix.api.views import cart
@@ -72,30 +72,30 @@ for app in apps.get_app_configs():
             importlib.import_module(app.name + '.urls')
 
 urlpatterns = [
-    url(r'^', include(router.urls)),
-    url(r'^organizers/(?P<organizer>[^/]+)/', include(orga_router.urls)),
-    url(r'^organizers/(?P<organizer>[^/]+)/settings/$', organizer.OrganizerSettingsView.as_view(),
+    path('', include(router.urls)),
+    path('organizers/<str:organizer>/', include(orga_router.urls)),
+    path('organizers/<str:organizer>/settings/', organizer.OrganizerSettingsView.as_view(),
         name="organizer.settings"),
-    url(r'^organizers/(?P<organizer>[^/]+)/giftcards/(?P<giftcard>[^/]+)/', include(giftcard_router.urls)),
-    url(r'^organizers/(?P<organizer>[^/]+)/events/(?P<event>[^/]+)/settings/$', event.EventSettingsView.as_view(),
+    path('organizers/<str:organizer>/giftcards/<str:giftcard>/', include(giftcard_router.urls)),
+    path('organizers/<str:organizer>/events/<str:event>/settings/', event.EventSettingsView.as_view(),
         name="event.settings"),
-    url(r'^organizers/(?P<organizer>[^/]+)/events/(?P<event>[^/]+)/', include(event_router.urls)),
-    url(r'^organizers/(?P<organizer>[^/]+)/teams/(?P<team>[^/]+)/', include(team_router.urls)),
-    url(r'^organizers/(?P<organizer>[^/]+)/events/(?P<event>[^/]+)/items/(?P<item>[^/]+)/', include(item_router.urls)),
-    url(r'^organizers/(?P<organizer>[^/]+)/events/(?P<event>[^/]+)/questions/(?P<question>[^/]+)/',
+    path('organizers/<str:organizer>/events/<str:event>/', include(event_router.urls)),
+    path('organizers/<str:organizer>/teams/<str:team>/', include(team_router.urls)),
+    path('organizers/<str:organizer>/events/<str:event>/items/<str:item>/', include(item_router.urls)),
+    path('organizers/<str:organizer>/events/<str:event>/questions/<str:question>/',
         include(question_router.urls)),
-    url(r'^organizers/(?P<organizer>[^/]+)/events/(?P<event>[^/]+)/checkinlists/(?P<list>[^/]+)/',
+    path('organizers/<str:organizer>/events/<str:event>/checkinlists/<str:list>/',
         include(checkinlist_router.urls)),
-    url(r'^organizers/(?P<organizer>[^/]+)/events/(?P<event>[^/]+)/orders/(?P<order>[^/]+)/', include(order_router.urls)),
-    url(r"^oauth/authorize$", oauth.AuthorizationView.as_view(), name="authorize"),
-    url(r"^oauth/token$", oauth.TokenView.as_view(), name="token"),
-    url(r"^oauth/revoke_token$", oauth.RevokeTokenView.as_view(), name="revoke-token"),
-    url(r"^device/initialize$", device.InitializeView.as_view(), name="device.initialize"),
-    url(r"^device/update$", device.UpdateView.as_view(), name="device.update"),
-    url(r"^device/roll$", device.RollKeyView.as_view(), name="device.roll"),
-    url(r"^device/revoke$", device.RevokeKeyView.as_view(), name="device.revoke"),
-    url(r"^device/eventselection$", device.EventSelectionView.as_view(), name="device.eventselection"),
-    url(r"^upload$", upload.UploadView.as_view(), name="upload"),
-    url(r"^me$", user.MeView.as_view(), name="user.me"),
-    url(r"^version$", version.VersionView.as_view(), name="version"),
+    path('organizers/<str:organizer>/events/<str:event>/orders/<str:order>/', include(order_router.urls)),
+    path("oauth/authorize", oauth.AuthorizationView.as_view(), name="authorize"),
+    path("oauth/token", oauth.TokenView.as_view(), name="token"),
+    path("oauth/revoke_token", oauth.RevokeTokenView.as_view(), name="revoke-token"),
+    path("device/initialize", device.InitializeView.as_view(), name="device.initialize"),
+    path("device/update", device.UpdateView.as_view(), name="device.update"),
+    path("device/roll", device.RollKeyView.as_view(), name="device.roll"),
+    path("device/revoke", device.RevokeKeyView.as_view(), name="device.revoke"),
+    path("device/eventselection", device.EventSelectionView.as_view(), name="device.eventselection"),
+    path("upload", upload.UploadView.as_view(), name="upload"),
+    path("me", user.MeView.as_view(), name="user.me"),
+    path("version", version.VersionView.as_view(), name="version"),
 ]

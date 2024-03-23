@@ -29,4 +29,3 @@ class CheckinlistsApp(AppConfig):
         return errs
 
 
-default_app_config = 'pretix.plugins.checkinlists.CheckinlistsApp'

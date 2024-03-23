@@ -32,4 +32,3 @@ class BankTransferApp(AppConfig):
         return errs
 
 
-default_app_config = 'pretix.plugins.banktransfer.BankTransferApp'

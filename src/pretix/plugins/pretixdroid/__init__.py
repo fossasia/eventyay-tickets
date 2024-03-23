@@ -18,4 +18,3 @@ class PretixdroidApp(AppConfig):
         description = _("This plugin allows you to use the pretixdroid and pretixdesk apps for your event.")
 
 
-default_app_config = 'pretix.plugins.pretixdroid.PretixdroidApp'

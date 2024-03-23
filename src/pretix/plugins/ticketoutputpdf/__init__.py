@@ -29,4 +29,3 @@ class TicketOutputPdfApp(AppConfig):
         return errs
 
 
-default_app_config = 'pretix.plugins.ticketoutputpdf.TicketOutputPdfApp'

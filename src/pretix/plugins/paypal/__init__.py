@@ -29,4 +29,3 @@ class PaypalApp(AppConfig):
         return errs
 
 
-default_app_config = 'pretix.plugins.paypal.PaypalApp'

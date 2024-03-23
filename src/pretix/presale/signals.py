@@ -2,9 +2,7 @@ from django.dispatch import Signal
 
 from pretix.base.signals import EventPluginSignal
 
-global_html_head = Signal(
-    providing_args=["request"]
-)
+global_html_head = Signal()
 """
 This signal allows you to put code inside the HTML ``<head>`` tag
 of every page in the frontend. You will get the request as the keyword argument
@@ -13,9 +11,7 @@ of every page in the frontend. You will get the request as the keyword argument
 This signal is called regardless of whether your plugin is active for all pages of the system.
 """
 
-global_html_page_header = Signal(
-    providing_args=["request"]
-)
+global_html_page_header = Signal()
 """
 This signal allows you to put code right in the beginning of the HTML ``<body>`` tag
 of every page in the frontend. You will get the request as the keyword argument
@@ -24,9 +20,7 @@ of every page in the frontend. You will get the request as the keyword argument
 This signal is called regardless of whether your plugin is active for all pages of the system.
 """
 
-global_html_footer = Signal(
-    providing_args=["request"]
-)
+global_html_footer = Signal()
 """
 This signal allows you to put code before the end of the HTML ``<body>`` tag
 of every page in the frontend. You will get the request as the keyword argument
@@ -105,9 +99,7 @@ are expected to return a dictionary containing the keys ``label`` and ``url``.
 As with all plugin signals, the ``sender`` keyword argument will contain the event.
 """
 
-global_footer_link = Signal(
-    providing_args=["request"]
-)
+global_footer_link = Signal()
 """
 The signal ``pretix.presale.signals.global_footer_link`` allows you to add links to the footer of any page. You
 are expected to return a dictionary containing the keys ``label`` and ``url``.

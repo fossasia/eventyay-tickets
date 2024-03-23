@@ -1,15 +1,15 @@
 import importlib.util
 
 from django.apps import apps
-from django.conf.urls import include, url
+from django.urls import include, path
 
 from pretix.multidomain.plugin_handler import plugin_event_urls
 from pretix.presale.urls import event_patterns, locale_patterns
 from pretix.urls import common_patterns
 
 presale_patterns = [
-    url(r'', include((locale_patterns + [
-        url(r'', include(event_patterns)),
+    path('', include((locale_patterns + [
+        path('', include(event_patterns)),
     ], 'presale')))
 ]
 
@@ -21,11 +21,11 @@ for app in apps.get_app_configs():
             if hasattr(urlmod, 'event_patterns'):
                 patterns = plugin_event_urls(urlmod.event_patterns, plugin=app.name)
                 raw_plugin_patterns.append(
-                    url(r'', include((patterns, app.label)))
+                    path('', include((patterns, app.label)))
                 )
 
 plugin_patterns = [
-    url(r'', include((raw_plugin_patterns, 'plugins')))
+    path('', include((raw_plugin_patterns, 'plugins')))
 ]
 
 # The presale namespace comes last, because it contains a wildcard catch

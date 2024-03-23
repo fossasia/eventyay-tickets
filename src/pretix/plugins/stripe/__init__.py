@@ -30,4 +30,3 @@ class StripeApp(AppConfig):
         return errs
 
 
-default_app_config = 'pretix.plugins.stripe.StripeApp'

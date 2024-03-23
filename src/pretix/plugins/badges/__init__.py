@@ -26,4 +26,3 @@ class BadgesApp(AppConfig):
             )
 
 
-default_app_config = 'pretix.plugins.badges.BadgesApp'

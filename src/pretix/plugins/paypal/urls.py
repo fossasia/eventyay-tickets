@@ -1,4 +1,4 @@
-from django.conf.urls import include, url
+from django.urls import include, path, re_path
 
 from pretix.multidomain import event_url
 
@@ -7,13 +7,13 @@ from .views import (
 )
 
 event_patterns = [
-    url(r'^paypal/', include([
-        url(r'^abort/$', abort, name='abort'),
-        url(r'^return/$', success, name='return'),
-        url(r'^redirect/$', redirect_view, name='redirect'),
+    path('paypal/', include([
+        path('abort/', abort, name='abort'),
+        path('return/', success, name='return'),
+        path('redirect/', redirect_view, name='redirect'),
 
-        url(r'w/(?P<cart_namespace>[a-zA-Z0-9]{16})/abort/', abort, name='abort'),
-        url(r'w/(?P<cart_namespace>[a-zA-Z0-9]{16})/return/', success, name='return'),
+        re_path(r'w/(?P<cart_namespace>[a-zA-Z0-9]{16})/abort/', abort, name='abort'),
+        re_path(r'w/(?P<cart_namespace>[a-zA-Z0-9]{16})/return/', success, name='return'),
 
         event_url(r'^webhook/$', webhook, name='webhook', require_live=False),
     ])),
@@ -21,8 +21,8 @@ event_patterns = [
 
 
 urlpatterns = [
-    url(r'^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/paypal/disconnect/',
+    re_path(r'^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/paypal/disconnect/',
         oauth_disconnect, name='oauth.disconnect'),
-    url(r'^_paypal/webhook/$', webhook, name='webhook'),
-    url(r'^_paypal/oauth_return/$', oauth_return, name='oauth.return'),
+    path('_paypal/webhook/', webhook, name='webhook'),
+    path('_paypal/oauth_return/', oauth_return, name='oauth.return'),
 ]
