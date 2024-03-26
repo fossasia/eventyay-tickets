@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-03-30 16:15+0000\n"
 "PO-Revision-Date: 2024-03-26 20:06+0000\n"
-"Last-Translator: Quyên Trần Lê Thục <quyentlt256@gmail.com>\n"
+"Last-Translator: Quyên Trần <quyenjimin256@gmail.com>\n"
 "Language-Team: Vietnamese <https://hosted.weblate.org/projects/open-event/"
 "eventyay-tickets/vi/>\n"
 "Language: vi\n"
@@ -1088,24 +1088,24 @@ msgstr "Thuế ròng ở mức {rate} %"
 #: pretix/base/exporters/orderlist.py:250
 #, python-brace-format
 msgid "Tax value at {rate} % tax"
-msgstr ""
+msgstr "Gía trị thuế tại {rate} % thuế"
 
 #: pretix/base/exporters/orderlist.py:253
 msgid "Invoice numbers"
-msgstr ""
+msgstr "Số hóa đơn"
 
 #: pretix/base/exporters/orderlist.py:254
 #: pretix/base/exporters/orderlist.py:569 pretix/base/orderimport.py:574
 #: pretix/control/forms/filter.py:491
 #: pretix/control/templates/pretixcontrol/order/index.html:171
 msgid "Sales channel"
-msgstr ""
+msgstr "Kênh bán hàng"
 
 #: pretix/base/exporters/orderlist.py:255 pretix/base/models/items.py:402
 #: pretix/base/models/orders.py:177
 #: pretix/plugins/checkinlists/exporters.py:431
 msgid "Requires special attention"
-msgstr ""
+msgstr "Chú ý yêu cầu đặc biệt"
 
 #: pretix/base/exporters/orderlist.py:256
 #: pretix/base/exporters/orderlist.py:745 pretix/base/models/orders.py:172
@@ -1117,21 +1117,21 @@ msgstr ""
 #: pretix/plugins/banktransfer/refund_export.py:25
 #: pretix/plugins/checkinlists/exporters.py:432
 msgid "Comment"
-msgstr ""
+msgstr "Bình luận"
 
 #: pretix/base/exporters/orderlist.py:257
 #: pretix/control/templates/pretixcontrol/orders/index.html:119
 msgid "Positions"
-msgstr ""
+msgstr "Vị trí"
 
 #: pretix/base/exporters/orderlist.py:262
 #, python-brace-format
 msgid "Paid by {method}"
-msgstr ""
+msgstr "Trả bởi {method}"
 
 #: pretix/base/exporters/orderlist.py:404
 msgid "Fee type"
-msgstr ""
+msgstr "Loại phí"
 
 #: pretix/base/exporters/orderlist.py:406
 #: pretix/base/exporters/orderlist.py:515 pretix/base/models/orders.py:1130
@@ -1142,7 +1142,7 @@ msgstr ""
 #: pretix/plugins/checkinlists/exporters.py:296
 #: pretix/plugins/checkinlists/exporters.py:405
 msgid "Price"
-msgstr ""
+msgstr "Giá"
 
 #: pretix/base/exporters/orderlist.py:408
 #: pretix/base/exporters/orderlist.py:517
@@ -1150,19 +1150,19 @@ msgstr ""
 #: pretix/control/templates/pretixcontrol/event/tax_edit.html:16
 #: pretix/control/templates/pretixcontrol/order/change.html:145
 msgid "Tax rule"
-msgstr ""
+msgstr "Luật thuế"
 
 #: pretix/base/exporters/orderlist.py:411
 #: pretix/base/exporters/orderlist.py:416
 #: pretix/base/exporters/orderlist.py:560
 #: pretix/base/exporters/orderlist.py:564 pretix/base/pdf.py:245
 msgid "Invoice address name"
-msgstr ""
+msgstr "Tên địa chỉ hóa đơn"
 
 #: pretix/base/exporters/orderlist.py:501
 #: pretix/plugins/checkinlists/exporters.py:575
 msgid "Position ID"
-msgstr ""
+msgstr "ID Vị trí"
 
 #: pretix/base/exporters/orderlist.py:509
 #: pretix/base/exporters/orderlist.py:790 pretix/base/models/checkin.py:20
@@ -1188,7 +1188,7 @@ msgstr ""
 #: pretix/presale/templates/pretixpresale/event/order_change.html:29
 msgctxt "subevent"
 msgid "Date"
-msgstr ""
+msgstr "Ngày"
 
 #: pretix/base/exporters/orderlist.py:513 pretix/base/models/items.py:430
 #: pretix/base/models/vouchers.py:156 pretix/base/models/waitinglist.py:67
@@ -1208,12 +1208,12 @@ msgstr ""
 #: pretix/presale/forms/order.py:15
 #: pretix/presale/templates/pretixpresale/event/waitinglist.html:10
 msgid "Product"
-msgstr ""
+msgstr "Sản phẩm"
 
 #: pretix/base/exporters/orderlist.py:514
 #: pretix/base/exporters/waitinglist.py:89 pretix/base/models/orders.py:1122
 msgid "Variation"
-msgstr ""
+msgstr "Biến đổi"
 
 #: pretix/base/exporters/orderlist.py:519
 #: pretix/base/exporters/orderlist.py:524 pretix/base/forms/questions.py:387
@@ -1228,7 +1228,7 @@ msgstr ""
 #: pretix/presale/templates/pretixpresale/event/fragment_cart.html:53
 #: pretix/presale/templates/pretixpresale/event/order_change.html:51
 msgid "Attendee name"
-msgstr ""
+msgstr "Tên người tham dự"
 
 #: pretix/base/exporters/orderlist.py:526 pretix/base/forms/questions.py:393
 #: pretix/base/models/orders.py:1142
@@ -1237,7 +1237,7 @@ msgstr ""
 #: pretix/presale/templates/pretixpresale/event/fragment_cart.html:60
 #: pretix/presale/templates/pretixpresale/event/fragment_cart.html:63
 msgid "Attendee email"
-msgstr ""
+msgstr "Email người tham dự"
 
 #: pretix/base/exporters/orderlist.py:533 pretix/base/models/vouchers.py:209
 #: pretix/control/templates/pretixcontrol/vouchers/bulk.html:5
@@ -1245,52 +1245,52 @@ msgstr ""
 #: pretix/control/templates/pretixcontrol/vouchers/detail.html:8
 #: pretix/control/templates/pretixcontrol/waitinglist/index.html:148
 msgid "Voucher"
-msgstr ""
+msgstr "Mã giảm giá"
 
 #: pretix/base/exporters/orderlist.py:534
 msgid "Pseudonymization ID"
-msgstr ""
+msgstr "ID bút danh"
 
 #: pretix/base/exporters/orderlist.py:535 pretix/base/orderimport.py:594
 #: pretix/plugins/checkinlists/exporters.py:433
 msgid "Seat ID"
-msgstr ""
+msgstr "ID chỗ ngồi"
 
 #: pretix/base/exporters/orderlist.py:536
 #: pretix/plugins/checkinlists/exporters.py:434
 msgid "Seat name"
-msgstr ""
+msgstr "Tên chỗ ngồi"
 
 #: pretix/base/exporters/orderlist.py:537
 #: pretix/plugins/checkinlists/exporters.py:435
 msgid "Seat zone"
-msgstr ""
+msgstr "Khu vực chỗ ngồi"
 
 #: pretix/base/exporters/orderlist.py:538
 #: pretix/plugins/checkinlists/exporters.py:436
 msgid "Seat row"
-msgstr ""
+msgstr "Hàng ghế"
 
 #: pretix/base/exporters/orderlist.py:539
 #: pretix/plugins/checkinlists/exporters.py:437
 msgid "Seat number"
-msgstr ""
+msgstr "Số ghế"
 
 #: pretix/base/exporters/orderlist.py:540
 msgid "Order comment"
-msgstr ""
+msgstr "Bình luận đặt hàng"
 
 #: pretix/base/exporters/orderlist.py:703
 msgid "Order payments and refunds"
-msgstr ""
+msgstr "Thanh toán và hoàn trả đơn hàng"
 
 #: pretix/base/exporters/orderlist.py:711
 msgid "Payment states"
-msgstr ""
+msgstr "Trạng thái thanh toán"
 
 #: pretix/base/exporters/orderlist.py:719
 msgid "Refund states"
-msgstr ""
+msgstr "Trạng thái hoàn trả"
 
 #: pretix/base/exporters/orderlist.py:744
 #: pretix/base/exporters/orderlist.py:850 pretix/base/models/orders.py:209
@@ -1300,29 +1300,29 @@ msgstr ""
 #: pretix/plugins/banktransfer/templates/pretixplugins/banktransfer/transaction_list.html:15
 #: pretix/plugins/checkinlists/exporters.py:294
 msgid "Order"
-msgstr ""
+msgstr "Đơn hàng"
 
 #: pretix/base/exporters/orderlist.py:744
 #: pretix/base/exporters/orderlist.py:850
 #: pretix/plugins/paypal/templates/pretixplugins/paypal/control.html:5
 msgid "Payment ID"
-msgstr ""
+msgstr "ID Thanh toán"
 
 #: pretix/base/exporters/orderlist.py:744
 #: pretix/base/exporters/orderlist.py:943
 #: pretix/control/templates/pretixcontrol/organizers/giftcard.html:30
 #: pretix/control/templates/pretixcontrol/organizers/giftcards.html:54
 msgid "Creation date"
-msgstr ""
+msgstr "Tạo ngày"
 
 #: pretix/base/exporters/orderlist.py:744
 #: pretix/control/templates/pretixcontrol/order/index.html:709
 msgid "Completion date"
-msgstr ""
+msgstr "Ngày hoàn thành"
 
 #: pretix/base/exporters/orderlist.py:745
 msgid "Status code"
-msgstr ""
+msgstr "Mã trạng thái"
 
 #: pretix/base/exporters/orderlist.py:745
 #: pretix/base/exporters/orderlist.py:850 pretix/base/models/orders.py:1338
@@ -1334,7 +1334,7 @@ msgstr ""
 #: pretix/plugins/banktransfer/templates/pretixplugins/banktransfer/import_assign.html:25
 #: pretix/plugins/banktransfer/templates/pretixplugins/banktransfer/transaction_list.html:13
 msgid "Amount"
-msgstr ""
+msgstr "Số lượng"
 
 #: pretix/base/exporters/orderlist.py:745
 #: pretix/control/templates/pretixcontrol/order/index.html:616
@@ -1342,39 +1342,39 @@ msgstr ""
 #: pretix/control/templates/pretixcontrol/order/refund_choose.html:84
 #: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_confirm.html:19
 msgid "Payment method"
-msgstr ""
+msgstr "Phương thức thanh toán"
 
 #: pretix/base/exporters/orderlist.py:781
 msgid "Quota availabilities"
-msgstr ""
+msgstr "Hạn ngạch sẵn có"
 
 #: pretix/base/exporters/orderlist.py:786
 #: pretix/control/templates/pretixcontrol/items/quotas.html:45
 msgid "Quota name"
-msgstr ""
+msgstr "Tên hạn ngạch"
 
 #: pretix/base/exporters/orderlist.py:786
 #: pretix/control/templates/pretixcontrol/items/quota.html:56
 msgid "Total quota"
-msgstr ""
+msgstr "Tổng hạn ngạch"
 
 #: pretix/base/exporters/orderlist.py:786
 #: pretix/control/templates/pretixcontrol/event/cancel.html:16
 #: pretix/control/views/item.py:798
 msgid "Paid orders"
-msgstr ""
+msgstr "Đơn đã trả"
 
 #: pretix/base/exporters/orderlist.py:786 pretix/control/views/item.py:803
 msgid "Pending orders"
-msgstr ""
+msgstr "Đơn hàng chờ giải quyết"
 
 #: pretix/base/exporters/orderlist.py:786
 msgid "Blocking vouchers"
-msgstr ""
+msgstr "Chặn mã giảm giá"
 
 #: pretix/base/exporters/orderlist.py:787 pretix/control/views/item.py:822
 msgid "Current user's carts"
-msgstr ""
+msgstr "Giỏ hàng của người dùng hiện tại"
 
 #: pretix/base/exporters/orderlist.py:787
 #: pretix/base/exporters/waitinglist.py:20 pretix/base/shredder.py:204
@@ -1392,26 +1392,26 @@ msgstr ""
 #: pretix/presale/templates/pretixpresale/organizers/index.html:107
 #: pretix/presale/views/widget.py:321
 msgid "Waiting list"
-msgstr ""
+msgstr "Danh sách chờ"
 
 #: pretix/base/exporters/orderlist.py:787
 msgid "Exited orders"
-msgstr ""
+msgstr "Đơn hàng đã tồn tại"
 
 #: pretix/base/exporters/orderlist.py:787
 msgid "Current availability"
-msgstr ""
+msgstr "Tình trạng sẵn có hiện tại"
 
 #: pretix/base/exporters/orderlist.py:804
 #: pretix/base/exporters/orderlist.py:811
 #: pretix/control/templates/pretixcontrol/items/quota.html:58
 #: pretix/control/views/item.py:829
 msgid "Infinite"
-msgstr ""
+msgstr "Vô hạn"
 
 #: pretix/base/exporters/orderlist.py:833
 msgid "Gift card redemptions"
-msgstr ""
+msgstr "Đổi thẻ quà tặng"
 
 #: pretix/base/exporters/orderlist.py:850
 #: pretix/base/exporters/orderlist.py:941 pretix/base/models/giftcards.py:54
@@ -1422,28 +1422,28 @@ msgstr ""
 #: pretix/control/templates/pretixcontrol/organizers/giftcards.html:51
 #: pretix/presale/templates/pretixpresale/event/fragment_cart.html:41
 msgid "Gift card code"
-msgstr ""
+msgstr "Mã thẻ quà tặng"
 
 #: pretix/base/exporters/orderlist.py:850
 #: pretix/control/templates/pretixcontrol/giftcards/payment.html:10
 msgid "Issuer"
-msgstr ""
+msgstr "Tổ chức phát hành"
 
 #: pretix/base/exporters/orderlist.py:878 pretix/control/navigation.py:484
 #: pretix/control/templates/pretixcontrol/organizers/edit.html:71
 msgid "Gift cards"
-msgstr ""
+msgstr "Thẻ quà tặng"
 
 #: pretix/base/exporters/orderlist.py:885
 msgid "Show value at"
-msgstr ""
+msgstr "Hiển thị giá trị tại"
 
 #: pretix/base/exporters/orderlist.py:889
 #: pretix/base/exporters/orderlist.py:892 pretix/control/forms/filter.py:173
 #: pretix/control/forms/filter.py:928 pretix/control/forms/filter.py:931
 #: pretix/control/templates/pretixcontrol/event/live.html:75
 msgid "Test mode"
-msgstr ""
+msgstr "Chế độ kiểm tra"
 
 #: pretix/base/exporters/orderlist.py:891
 #: pretix/base/exporters/orderlist.py:901 pretix/control/forms/filter.py:425
@@ -1457,25 +1457,25 @@ msgstr ""
 #: pretix/control/templates/pretixcontrol/organizers/teams.html:40
 #: pretix/control/templates/pretixcontrol/organizers/webhooks.html:51
 msgid "All"
-msgstr ""
+msgstr "Tất cả"
 
 #: pretix/base/exporters/orderlist.py:893 pretix/control/forms/filter.py:932
 msgid "Live"
-msgstr ""
+msgstr "Trực tiếp"
 
 #: pretix/base/exporters/orderlist.py:902 pretix/control/forms/filter.py:937
 #: pretix/control/forms/filter.py:940
 #: pretix/control/templates/pretixcontrol/pdf/index.html:351
 msgid "Empty"
-msgstr ""
+msgstr "Rỗng"
 
 #: pretix/base/exporters/orderlist.py:903 pretix/control/forms/filter.py:941
 msgid "Valid and with value"
-msgstr ""
+msgstr "Hợp lệ và có giá trị"
 
 #: pretix/base/exporters/orderlist.py:904 pretix/control/forms/filter.py:942
 msgid "Expired and with value"
-msgstr ""
+msgstr "Đã hết hạn và có giá trị"
 
 #: pretix/base/exporters/orderlist.py:905 pretix/control/forms/filter.py:161
 #: pretix/control/forms/filter.py:943 pretix/control/forms/filter.py:1357
@@ -1486,21 +1486,21 @@ msgstr ""
 #: pretix/plugins/reports/exporters.py:255
 #: pretix/presale/templates/pretixpresale/event/fragment_order_status.html:22
 msgid "Expired"
-msgstr ""
+msgstr "Hết hạn"
 
 #: pretix/base/exporters/orderlist.py:942 pretix/base/models/giftcards.py:63
 msgid "Test mode card"
-msgstr ""
+msgstr "Thẻ chế độ kiểm tra"
 
 #: pretix/base/exporters/orderlist.py:944 pretix/base/models/giftcards.py:67
 #: pretix/control/templates/pretixcontrol/order/index.html:182
 #: pretix/control/templates/pretixcontrol/organizers/giftcards.html:57
 msgid "Expiry date"
-msgstr ""
+msgstr "Ngày hết hạn"
 
 #: pretix/base/exporters/orderlist.py:945 pretix/control/forms/orders.py:661
 msgid "Special terms and conditions"
-msgstr ""
+msgstr "Điều khoản và điều kiện đặc biệt"
 
 #: pretix/base/exporters/orderlist.py:946
 #: pretix/control/templates/pretixcontrol/boxoffice/payment.html:37
@@ -1509,7 +1509,7 @@ msgstr ""
 #: pretix/plugins/paypal/templates/pretixplugins/paypal/control.html:15
 #: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:57
 msgid "Currency"
-msgstr ""
+msgstr "Tiền tệ"
 
 #: pretix/base/exporters/orderlist.py:947
 #: pretix/control/templates/pretixcontrol/order/change.html:94
@@ -1517,60 +1517,60 @@ msgstr ""
 #: pretix/control/templates/pretixcontrol/organizers/giftcard.html:32
 #: pretix/control/templates/pretixcontrol/organizers/giftcards.html:60
 msgid "Current value"
-msgstr ""
+msgstr "Giá trị tiền tệ"
 
 #: pretix/base/exporters/orderlist.py:948
 msgid "Created in order"
-msgstr ""
+msgstr "Tạo đơn"
 
 #: pretix/base/exporters/orderlist.py:949
 msgid "Last invoice number of order"
-msgstr ""
+msgstr "Số cuối hóa đơn trong đơn hàng"
 
 #: pretix/base/exporters/orderlist.py:950
 msgid "Last invoice date of order"
-msgstr ""
+msgstr "Ngày hóa đơn cuối cùng trong đơn hàng"
 
 #: pretix/base/exporters/waitinglist.py:26
 #: pretix/control/templates/pretixcontrol/waitinglist/index.html:87
 msgid "All entries"
-msgstr ""
+msgstr "Tất cả các mục"
 
 #: pretix/base/exporters/waitinglist.py:31
 #: pretix/control/templates/pretixcontrol/waitinglist/index.html:90
 msgid "Waiting for a voucher"
-msgstr ""
+msgstr "Đợi mã giảm giá"
 
 #: pretix/base/exporters/waitinglist.py:36
 #: pretix/control/templates/pretixcontrol/waitinglist/index.html:92
 #: pretix/control/templates/pretixcontrol/waitinglist/index.html:187
 #: pretix/control/views/waitinglist.py:233
 msgid "Voucher assigned"
-msgstr ""
+msgstr "Đã chọn mã"
 
 #: pretix/base/exporters/waitinglist.py:41
 #: pretix/control/templates/pretixcontrol/waitinglist/index.html:95
 msgid "Waiting for redemption"
-msgstr ""
+msgstr "Chờ giao dịch"
 
 #: pretix/base/exporters/waitinglist.py:49
 #: pretix/control/templates/pretixcontrol/waitinglist/index.html:183
 #: pretix/control/views/waitinglist.py:229
 msgid "Voucher redeemed"
-msgstr ""
+msgstr "Mã giảm giá đã được áp dụng"
 
 #: pretix/base/exporters/waitinglist.py:57
 #: pretix/control/templates/pretixcontrol/waitinglist/index.html:101
 #: pretix/control/templates/pretixcontrol/waitinglist/index.html:185
 #: pretix/control/views/waitinglist.py:231
 msgid "Voucher expired"
-msgstr ""
+msgstr "Mã giảm giá đã hết hạn"
 
 #: pretix/base/exporters/waitinglist.py:88 pretix/base/pdf.py:68
 #: pretix/control/forms/event.py:1379
 #: pretix/control/templates/pretixcontrol/items/index.html:33
 msgid "Product name"
-msgstr ""
+msgstr "Tên sản phẩm"
 
 #: pretix/base/exporters/waitinglist.py:91 pretix/base/models/event.py:350
 #: pretix/base/pdf.py:154 pretix/control/forms/filter.py:809
@@ -1579,18 +1579,18 @@ msgstr ""
 #: pretix/control/templates/pretixcontrol/events/index.html:64
 #: pretix/control/templates/pretixcontrol/organizers/detail.html:52
 msgid "Event name"
-msgstr ""
+msgstr "Tên sự kiện"
 
 #: pretix/base/exporters/waitinglist.py:92 pretix/base/orderimport.py:139
 #: pretix/control/templates/pretixcontrol/checkin/index.html:70
 msgctxt "subevents"
 msgid "Date"
-msgstr ""
+msgstr "Ngày"
 
 #: pretix/base/exporters/waitinglist.py:96
 #: pretix/control/views/waitinglist.py:215
 msgid "Priority"
-msgstr ""
+msgstr "Sự ưu tiên"
 
 #: pretix/base/exporters/waitinglist.py:98 pretix/base/models/vouchers.py:104
 #: pretix/control/templates/pretixcontrol/vouchers/index.html:19
@@ -1602,64 +1602,65 @@ msgstr ""
 #: pretix/presale/templates/pretixpresale/event/index.html:307
 #: pretix/presale/templates/pretixpresale/event/index.html:311
 msgid "Voucher code"
-msgstr ""
+msgstr "Mã giảm giá"
 
 #: pretix/base/forms/auth.py:22 pretix/base/forms/auth.py:131
 msgid "Keep me logged in"
-msgstr ""
+msgstr "Để tôi luôn đăng nhập"
 
 #: pretix/base/forms/auth.py:25 pretix/base/forms/auth.py:222
 msgid "This combination of credentials is not known to our system."
 msgstr ""
+"Hệ thống của chúng tôi không biết về sự kết hợp của thông tin đăng nhập này."
 
 #: pretix/base/forms/auth.py:26 pretix/base/forms/user.py:23
 msgid "For security reasons, please wait 5 minutes before you try again."
-msgstr ""
+msgstr "Vì lí do bảo mật, vui lòng chờ 5 phút trước khi muốn thử lại."
 
 #: pretix/base/forms/auth.py:27 pretix/base/forms/auth.py:223
 msgid "This account is inactive."
-msgstr ""
+msgstr "Tài khoản này không hoạt động."
 
 #: pretix/base/forms/auth.py:110
 msgid ""
 "You already registered with that email address, please use the login form."
-msgstr ""
+msgstr "Bạn đã đăng ký với địa chỉ email này, vui lòng đăng nhập."
 
 #: pretix/base/forms/auth.py:111 pretix/base/forms/auth.py:167
 #: pretix/base/forms/user.py:22 pretix/control/forms/users.py:24
 msgid "Please enter the same password twice"
-msgstr ""
+msgstr "Vui lòng nhập mật khẩu giống nhau hai lần"
 
 #: pretix/base/forms/auth.py:114
 msgid "Email address"
-msgstr ""
+msgstr "Địa chỉ email"
 
 #: pretix/base/forms/auth.py:125 pretix/base/forms/auth.py:175
 msgid "Repeat password"
-msgstr ""
+msgstr "Nhập lại mật khẩu"
 
 #: pretix/base/forms/questions.py:205
 msgid "Please enter a shorter name."
-msgstr ""
+msgstr "Vui lòng nhập tên ngắn hơn."
 
 #: pretix/base/forms/questions.py:225
 msgctxt "phonenumber"
 msgid "International area code"
-msgstr ""
+msgstr "Mã khu vực quốc tế"
 
 #: pretix/base/forms/questions.py:249
 msgctxt "phonenumber"
 msgid "Phone number (without international area code)"
-msgstr ""
+msgstr "Số điện thoại (không kèm mã khu vực)"
 
 #: pretix/base/forms/questions.py:415 pretix/base/forms/questions.py:719
 msgid "Street and Number"
-msgstr ""
+msgstr "Đường và số"
 
 #: pretix/base/forms/questions.py:449 pretix/base/forms/questions.py:759
 msgctxt "address"
 msgid "Select state"
-msgstr ""
+msgstr "Chọn bang"
 
 #: pretix/base/forms/questions.py:672 pretix/base/forms/questions.py:703
 #: pretix/base/forms/questions.py:850 pretix/base/payment.py:51
@@ -1668,23 +1669,23 @@ msgstr ""
 #: pretix/plugins/banktransfer/payment.py:362
 #: pretix/plugins/banktransfer/payment.py:368
 msgid "This field is required."
-msgstr ""
+msgstr "Trường này là bắt buộc."
 
 #: pretix/base/forms/questions.py:841
 msgid "You need to provide a company name."
-msgstr ""
+msgstr "Bạn cần cung cấp tên công ty."
 
 #: pretix/base/forms/questions.py:843
 msgid "You need to provide your name."
-msgstr ""
+msgstr "Bạn cần cung cấp tên của mình."
 
 #: pretix/base/forms/questions.py:861 pretix/control/views/orders.py:1234
 msgid "Your VAT ID does not match the selected country."
-msgstr ""
+msgstr "ID VAT của bạn không trùng khớp với quốc gia được chọn."
 
 #: pretix/base/forms/questions.py:873
 msgid "This VAT ID is not valid. Please re-check your input."
-msgstr ""
+msgstr "ID VAT này không có hiệu lực. Vui lòng kiểm tra lại đầu vào."
 
 #: pretix/base/forms/questions.py:878
 msgid ""
@@ -1693,6 +1694,9 @@ msgid ""
 "your invoice. You can get the tax amount back via the VAT reimbursement "
 "process."
 msgstr ""
+"Không thể kiểm tra ID VAT của bạn vì dịch vụ kiểm tra VAT ở quốc gia của bạn "
+"hiện không khả dụng. Do đó, chúng tôi sẽ cần tính thuế VAT trên hóa đơn của "
+"bạn. Bạn có thể lấy lại số tiền thuế thông qua quy trình hoàn thuế VAT."
 
 #: pretix/base/forms/questions.py:886
 msgid ""
@@ -1700,141 +1704,151 @@ msgid ""
 "country returned an incorrect result. We will therefore need to charge VAT "
 "on your invoice. Please contact support to resolve this manually."
 msgstr ""
+"Không thể kiểm tra ID VAT của bạn vì dịch vụ kiểm tra VAT của quốc gia bạn "
+"trả về kết quả không chính xác. Do đó, chúng tôi sẽ cần tính thuế VAT trên "
+"hóa đơn của bạn. Vui lòng liên hệ với bộ phận hỗ trợ để giải quyết vấn đề "
+"này theo cách thủ công."
 
 #: pretix/base/forms/user.py:17 pretix/control/forms/users.py:22
 msgid ""
 "There already is an account associated with this e-mail address. Please "
 "choose a different one."
 msgstr ""
+"Có một tài khoản liên kết mới địa chỉ email này rồi. Vui lòng chọn địa chỉ "
+"khác."
 
 #: pretix/base/forms/user.py:19
 msgid ""
 "Please enter your current password if you want to change your e-mail address "
 "or password."
 msgstr ""
+"Vui lòng nhập mật khẩu hiện tại nếu bạn muốn đổi địa chỉ email hoặc mật khẩu."
 
 #: pretix/base/forms/user.py:21
 msgid "The current password you entered was not correct."
-msgstr ""
+msgstr "Mật khẩu hiện tại không được nhập đúng."
 
 #: pretix/base/forms/user.py:28
 msgid "Your current password"
-msgstr ""
+msgstr "Mật khẩu hiện tại của bạn"
 
 #: pretix/base/forms/user.py:32 pretix/control/forms/users.py:29
 msgid "New password"
-msgstr ""
+msgstr "Mật khẩu mới"
 
 #: pretix/base/forms/user.py:36 pretix/control/forms/users.py:33
 msgid "Repeat new password"
-msgstr ""
+msgstr "Nhập lại mật khẩu mới"
 
 #: pretix/base/forms/user.py:40 pretix/control/forms/users.py:37
 msgid "Default timezone"
-msgstr ""
+msgstr "Múi giờ mặc định"
 
 #: pretix/base/forms/user.py:41 pretix/control/forms/users.py:38
 msgid ""
 "Only used for views that are not bound to an event. For all event views, the "
 "event timezone is used instead."
 msgstr ""
+"Chỉ được sử dụng cho các chế độ xem không bị ràng buộc với một sự kiện. Đối "
+"với tất cả các chế độ xem sự kiện, múi giờ sự kiện sẽ được sử dụng thay thế."
 
 #: pretix/base/forms/user.py:134
 msgid "Device name"
-msgstr ""
+msgstr "Tên thiết bị"
 
 #: pretix/base/forms/user.py:135
 msgid "Device type"
-msgstr ""
+msgstr "Loại thiết bị"
 
 #: pretix/base/forms/user.py:136
 msgid "Smartphone with the Authenticator application"
-msgstr ""
+msgstr "Điện thoại với ứng dụng Trình xác thực"
 
 #: pretix/base/forms/user.py:137
 msgid "WebAuthn-compatible hardware token (e.g. Yubikey)"
-msgstr ""
+msgstr "Mã thông báo phần cứng thích ứng với WebAuthn (ví dụ. Yubikey)"
 
 #: pretix/base/forms/validators.py:28
 msgid ""
 "Invalid placeholder syntax: You used a different number of \"{\" than of "
 "\"}\"."
 msgstr ""
+"Cú pháp giữ chỗ không hợp lệ: Bạn đã sử dụng số \"{\" khác với số \"}\"."
 
 #: pretix/base/forms/validators.py:39
 #, python-format
 msgid "Invalid placeholder(s): %(value)s"
-msgstr ""
+msgstr "(Các) phần giữ chỗ không hợp lệ: %(value)s"
 
 #: pretix/base/forms/widgets.py:153 pretix/base/forms/widgets.py:158
 #: pretix/base/models/orders.py:2255
 msgid "Business customer"
-msgstr ""
+msgstr "Khách hàng doanh nghiệp"
 
 #: pretix/base/forms/widgets.py:157
 msgid "Individual customer"
-msgstr ""
+msgstr "Khách hàng cá nhân"
 
 #: pretix/base/invoice.py:58
 #, python-format
 msgctxt "invoice"
 msgid "Page %d of %d"
-msgstr ""
+msgstr "Trang %d của %d"
 
 #: pretix/base/invoice.py:225
 msgctxt "invoice"
 msgid "Classic renderer (pretix 1.0)"
-msgstr ""
+msgstr "Trình kết xuất cổ điển (pretix 1.0)"
 
 #: pretix/base/invoice.py:269
 msgctxt "invoice"
 msgid "Invoice from"
-msgstr ""
+msgstr "Hóa đơn từ"
 
 #: pretix/base/invoice.py:275
 msgctxt "invoice"
 msgid "Invoice to"
-msgstr ""
+msgstr "Hóa đơn đến"
 
 #: pretix/base/invoice.py:303 pretix/base/invoice.py:752
 msgctxt "invoice"
 msgid "Order code"
-msgstr ""
+msgstr "Mã đơn hàng"
 
 #: pretix/base/invoice.py:312 pretix/base/invoice.py:761
 msgctxt "invoice"
 msgid "Cancellation number"
-msgstr ""
+msgstr "Số hủy"
 
 #: pretix/base/invoice.py:318 pretix/base/invoice.py:769
 msgctxt "invoice"
 msgid "Original invoice"
-msgstr ""
+msgstr "Hóa đơn gốc"
 
 #: pretix/base/invoice.py:323 pretix/base/invoice.py:776
 msgctxt "invoice"
 msgid "Invoice number"
-msgstr ""
+msgstr "Số hóa đơn"
 
 #: pretix/base/invoice.py:331 pretix/base/invoice.py:791
 msgctxt "invoice"
 msgid "Cancellation date"
-msgstr ""
+msgstr "Ngày hủy"
 
 #: pretix/base/invoice.py:337
 msgctxt "invoice"
 msgid "Original invoice date"
-msgstr ""
+msgstr "Ngày hóa đơn gốc"
 
 #: pretix/base/invoice.py:344 pretix/base/invoice.py:793
 msgctxt "invoice"
 msgid "Invoice date"
-msgstr ""
+msgstr "Ngày hóa đơn"
 
 #: pretix/base/invoice.py:360
 msgctxt "invoice"
 msgid "Event"
-msgstr ""
+msgstr "Sự kiện"
 
 #: pretix/base/invoice.py:380
 #, python-brace-format
@@ -1843,6 +1857,8 @@ msgid ""
 "{from_date}\n"
 "until {to_date}"
 msgstr ""
+"{from_date}\n"
+"đến{to_date}"
 
 #: pretix/base/invoice.py:408
 #: pretix/control/templates/pretixcontrol/base.html:278
@@ -1858,111 +1874,111 @@ msgstr ""
 #: pretix/presale/templates/pretixpresale/event/order.html:67
 #: pretix/presale/templates/pretixpresale/event/position.html:14
 msgid "TEST MODE"
-msgstr ""
+msgstr "CHẾ ĐỘ KIỂM TRA"
 
 #: pretix/base/invoice.py:413 pretix/base/services/mail.py:367
 #, python-brace-format
 msgctxt "invoice"
 msgid "Invoice {num}"
-msgstr ""
+msgstr "Hóa đơn {num}"
 
 #: pretix/base/invoice.py:456
 #, python-brace-format
 msgctxt "invoice"
 msgid "Customer reference: {reference}"
-msgstr ""
+msgstr "Khách hàng tham khảo: {reference}"
 
 #: pretix/base/invoice.py:464
 msgctxt "invoice"
 msgid "Customer VAT ID"
-msgstr ""
+msgstr "ID VAT khách hàng"
 
 #: pretix/base/invoice.py:471
 msgctxt "invoice"
 msgid "Beneficiary"
-msgstr ""
+msgstr "Người thụ hưởng"
 
 #: pretix/base/invoice.py:492
 msgctxt "invoice"
 msgid "Tax Invoice"
-msgstr ""
+msgstr "Hóa đơn thuế"
 
 #: pretix/base/invoice.py:493
 msgctxt "invoice"
 msgid "Invoice"
-msgstr ""
+msgstr "Hóa đơn"
 
 #: pretix/base/invoice.py:494
 #: pretix/control/templates/pretixcontrol/order/index.html:223
 #: pretix/presale/templates/pretixpresale/event/order.html:238
 msgctxt "invoice"
 msgid "Cancellation"
-msgstr ""
+msgstr "Hủy"
 
 #: pretix/base/invoice.py:515 pretix/base/invoice.py:523
 msgctxt "invoice"
 msgid "Description"
-msgstr ""
+msgstr "Mô tả"
 
 #: pretix/base/invoice.py:516 pretix/base/invoice.py:524
 msgctxt "invoice"
 msgid "Qty"
-msgstr ""
+msgstr "Qty"
 
 #: pretix/base/invoice.py:517 pretix/base/invoice.py:600
 msgctxt "invoice"
 msgid "Tax rate"
-msgstr ""
+msgstr "Tỉ lệ thuế"
 
 #: pretix/base/invoice.py:518
 msgctxt "invoice"
 msgid "Net"
-msgstr ""
+msgstr "Ròng"
 
 #: pretix/base/invoice.py:519
 msgctxt "invoice"
 msgid "Gross"
-msgstr ""
+msgstr "Tăng"
 
 #: pretix/base/invoice.py:525
 msgctxt "invoice"
 msgid "Amount"
-msgstr ""
+msgstr "Số lượng"
 
 #: pretix/base/invoice.py:550 pretix/base/invoice.py:555
 msgctxt "invoice"
 msgid "Invoice total"
-msgstr ""
+msgstr "Tổng hóa đơn"
 
 #: pretix/base/invoice.py:563
 msgctxt "invoice"
 msgid "Received payments"
-msgstr ""
+msgstr "Thanh toán đã nhận"
 
 #: pretix/base/invoice.py:566
 msgctxt "invoice"
 msgid "Outstanding payments"
-msgstr ""
+msgstr "Khoản chưa thanh toán"
 
 #: pretix/base/invoice.py:601
 msgctxt "invoice"
 msgid "Net value"
-msgstr ""
+msgstr "Giá trị ròng"
 
 #: pretix/base/invoice.py:602
 msgctxt "invoice"
 msgid "Gross value"
-msgstr ""
+msgstr "Giá trị tăng trưởng"
 
 #: pretix/base/invoice.py:603
 msgctxt "invoice"
 msgid "Tax"
-msgstr ""
+msgstr "Thuế"
 
 #: pretix/base/invoice.py:633
 msgctxt "invoice"
 msgid "Included taxes"
-msgstr ""
+msgstr "Đã gồm thuế"
 
 #: pretix/base/invoice.py:661
 #, python-brace-format
@@ -1971,6 +1987,8 @@ msgid ""
 "Using the conversion rate of 1:{rate} as published by the European Central "
 "Bank on {date}, this corresponds to:"
 msgstr ""
+"Sử dụng tỷ giá chuyển đổi 1:{rate} do Ngân hàng Trung ương Châu Âu công bố "
+"vào {date}, tỷ lệ này tương ứng với:"
 
 #: pretix/base/invoice.py:675
 #, python-brace-format
@@ -1979,10 +1997,12 @@ msgid ""
 "Using the conversion rate of 1:{rate} as published by the European Central "
 "Bank on {date}, the invoice total corresponds to {total}."
 msgstr ""
+"Sử dụng tỷ giá chuyển đổi 1:{rate} do Ngân hàng Trung ương Châu Âu công bố "
+"vào {date}, tổng hóa đơn tương ứng với {total}."
 
 #: pretix/base/invoice.py:688
 msgid "Modern Invoice Renderer (pretix 2.7)"
-msgstr ""
+msgstr "Trình kết xuất hóa đơn hiện đại (tiền tố 2.7)"
 
 #: pretix/base/migrations/0077_auto_20171124_1629.py:33
 #: pretix/base/migrations/0077_auto_20171124_1629_squashed_0088_auto_20180328_1217.py:35
