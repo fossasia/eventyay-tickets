@@ -211,72 +211,28 @@ You can now run the following commands to enable and start the services::
     # systemctl enable pretalx-web pretalx-worker
     # systemctl start pretalx-web pretalx-worker
 
-Step 7: SSL
------------
-
-.. highlight:: nginx
+Step 7: Reverse proxy
+---------------------
 
 You’ll need to set up an HTTP reverse proxy to handle HTTPS connections. It doesn’t
 particularly matter which one you use, as long as you make sure to use `strong
 encryption settings`_. Your proxy should
 
-* serve all requests exclusively over HTTPS
-* set the ``X-Forwarded-For`` and ``X-Forwarded-Proto`` headers
-* set the ``Host`` header
+* serve all requests exclusively over HTTPS,
+* follow established security practices regarding protocols and ciphers.
+* optionally set best-practice headers like ``Referrer-Policy`` and
+  ``X-Content-Type-Options``,
+* set the ``X-Forwarded-For`` and ``X-Forwarded-Proto`` headers,
+* set the ``Host`` header,
 * serve all requests for the ``/static/`` and ``/media/`` paths from the
   directories you set up in the previous step, without permitting directory
-  listings or traversal
-* pass requests to the gunicorn server you set up in the previous step
-
-The following snippet is an example on how to configure an nginx proxy for pretalx::
-
-    server {
-        listen 80 default_server;
-        listen [::]:80 ipv6only=on default_server;
-        server_name pretalx.mydomain.com;
-    }
-    server {
-        listen 443 default_server;
-        listen [::]:443 ipv6only=on default_server;
-        server_name pretalx.mydomain.com;
-
-        ssl on;
-        ssl_certificate /path/to/cert.chain.pem;
-        ssl_certificate_key /path/to/key.pem;
-
-        gzip off;
-        add_header Referrer-Policy same-origin;
-        add_header X-Content-Type-Options nosniff;
-
-        location / {
-            proxy_pass http://localhost:8345/;
-            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Proto https;
-            proxy_set_header Host $http_host;
-        }
-
-        location /media/ {
-            gzip on;
-            alias /var/pretalx/data/media/;
-            add_header Content-Disposition 'attachment; filename="$1"';
-            expires 7d;
-            access_log off;
-        }
-
-        location /static/ {
-            gzip on;
-            alias /path/to/static.dist/;
-            access_log off;
-            expires 365d;
-            add_header Cache-Control "public";
-        }
-    }
+  listings or traversal. Files in the ``/media/`` directory should be served
+  as attachments. You can use fairly aggressive cache settings for these URLs, and
+* pass all other requests to the gunicorn server you set up in the previous step.
 
 
 Step 8: Check the installation
 -------------------------------
-
-.. highlight:: console
 
 You can make sure the web interface is up and look for any issues with::
 
