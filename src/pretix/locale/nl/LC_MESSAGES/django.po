@@ -7,16 +7,16 @@ msgstr ""
 "Project-Id-Version: 1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-03-30 16:15+0000\n"
-"PO-Revision-Date: 2021-03-14 17:33+0000\n"
-"Last-Translator: Raphael Michel <michel@rami.io>\n"
-"Language-Team: Dutch <https://translate.pretix.eu/projects/pretix/pretix/nl/"
-">\n"
+"PO-Revision-Date: 2024-02-01 11:01+0000\n"
+"Last-Translator: Heimen Stoffels <vistausss@fastmail.com>\n"
+"Language-Team: Dutch <https://hosted.weblate.org/projects/open-event/"
+"eventyay-tickets/nl/>\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.4.2\n"
+"X-Generator: Weblate 5.4-dev\n"
 
 #: pretix/api/auth/devicesecurity.py:6
 msgid ""
@@ -945,20 +945,14 @@ msgid "Show multiple choice answers grouped in one column"
 msgstr "Toon antwoorden voor meerkeuzevragen gegroepeerd in één kolom"
 
 #: pretix/base/exporters/orderlist.py:76
-#, fuzzy
-#| msgid "Only include tickets for dates on or after this date."
 msgid "Only include orders created on or after this date."
-msgstr "Alleen tickets voor subevenementen op of na deze datum."
+msgstr "Alleen aanvragen op of na deze datum."
 
 #: pretix/base/exporters/orderlist.py:83
-#, fuzzy
-#| msgid "Only include tickets for dates on or before this date."
 msgid "Only include orders issued on or before this date."
-msgstr "Alleen tickets voor subevenementen op of voor deze datum."
+msgstr "Alleen uitgegeven op of voor deze datum."
 
 #: pretix/base/exporters/orderlist.py:87
-#, fuzzy
-#| msgid "Start date"
 msgid "Start event date"
 msgstr "Begindatum"
 
