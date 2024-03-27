@@ -8,4 +8,3 @@ class PretixHelpersConfig(AppConfig):
     label = 'pretixhelpers'
 
 
-default_app_config = 'pretix.helpers.PretixHelpersConfig'

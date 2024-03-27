@@ -9,4 +9,3 @@ class PretixPresaleConfig(AppConfig):
         from . import style  # noqa
 
 
-default_app_config = 'pretix.presale.PretixPresaleConfig'

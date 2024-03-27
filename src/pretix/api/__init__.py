@@ -9,4 +9,3 @@ class PretixApiConfig(AppConfig):
         from . import signals, webhooks  # noqa
 
 
-default_app_config = 'pretix.api.PretixApiConfig'

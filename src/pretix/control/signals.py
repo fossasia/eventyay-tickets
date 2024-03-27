@@ -2,9 +2,7 @@ from django.dispatch import Signal
 
 from pretix.base.signals import DeprecatedSignal, EventPluginSignal
 
-html_page_start = Signal(
-    providing_args=[]
-)
+html_page_start = Signal()
 """
 This signal allows you to put code in the beginning of the main page for every
 page in the backend. You are expected to return HTML.
@@ -48,9 +46,7 @@ in pretix.
 As with all plugin signals, the ``sender`` keyword argument will contain the event.
 """
 
-nav_topbar = Signal(
-    providing_args=["request"]
-)
+nav_topbar = Signal()
 """
 This signal allows you to add additional views to the top navigation bar.
 You will get the request as a keyword argument ``request``.
@@ -67,9 +63,7 @@ This is no ``EventPluginSignal``, so you do not get the event in the ``sender`` 
 and you may get the signal regardless of whether your plugin is active.
 """
 
-nav_global = Signal(
-    providing_args=["request"]
-)
+nav_global = Signal()
 """
 This signal allows you to add additional views to the navigation bar when no event is
 selected. You will get the request as a keyword argument ``request``.
@@ -120,9 +114,7 @@ As with all plugin signals, the ``sender`` keyword argument will contain the eve
 An additional keyword argument ``subevent`` *can* contain a sub-event.
 """
 
-user_dashboard_widgets = Signal(
-    providing_args=['user']
-)
+user_dashboard_widgets = Signal()
 """
 This signal is sent out to include widgets in the personal user dashboard. Receivers
 should return a list of dictionaries, where each dictionary can have the keys:
@@ -191,9 +183,7 @@ Deprecated signal, no longer works. We just keep the definition so old plugins d
 break the installation.
 """
 
-nav_organizer = Signal(
-    providing_args=['organizer', 'request']
-)
+nav_organizer = Signal()
 """
 This signal is sent out to include tab links on the detail page of an organizer.
 Receivers are expected to return a list of dictionaries. The dictionaries
@@ -312,16 +302,12 @@ creation, ``copy_from`` can be a subevent that is being copied from.
 As with all plugin signals, the ``sender`` keyword argument will contain the event.
 """
 
-oauth_application_registered = Signal(
-    providing_args=["user", "application"]
-)
+oauth_application_registered = Signal()
 """
 This signal will be called whenever a user registers a new OAuth application.
 """
 
-order_search_filter_q = Signal(
-    providing_args=["query"]
-)
+order_search_filter_q = Signal()
 """
 This signal will be called whenever a free-text order search is performed. You are expected to return one
 Q object that will be OR-ed with existing search queries. As order search exists on a global level as well,

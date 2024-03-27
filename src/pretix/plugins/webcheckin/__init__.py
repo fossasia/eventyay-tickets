@@ -19,4 +19,3 @@ class WebCheckinApp(AppConfig):
         from . import signals  # NOQA
 
 
-default_app_config = 'pretix.plugins.webcheckin.WebCheckinApp'

@@ -1,8 +1,8 @@
-from django.conf.urls import url
+from django.urls import path
 
 from .views import ReturnSettings
 
 urlpatterns = [
-    url(r'^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/returnurl/settings$',
+    path('control/event/<str:organizer>/<str:event>/returnurl/settings',
         ReturnSettings.as_view(), name='settings'),
 ]

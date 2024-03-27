@@ -16,4 +16,3 @@ class ManualPaymentApp(AppConfig):
         description = _("This plugin adds a customizable payment method for manual processing.")
 
 
-default_app_config = 'pretix.plugins.manualpayment.ManualPaymentApp'

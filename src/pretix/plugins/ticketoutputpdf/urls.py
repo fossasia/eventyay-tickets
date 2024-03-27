@@ -1,4 +1,4 @@
-from django.conf.urls import url
+from django.urls import path, re_path
 
 from pretix.api.urls import event_router
 from pretix.plugins.ticketoutputpdf.api import (
@@ -10,17 +10,17 @@ from pretix.plugins.ticketoutputpdf.views import (
 )
 
 urlpatterns = [
-    url(r'^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/pdfoutput/$',
+    path('control/event/<str:organizer>/<str:event>/pdfoutput/',
         LayoutListView.as_view(), name='index'),
-    url(r'^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/pdfoutput/add$',
+    path('control/event/<str:organizer>/<str:event>/pdfoutput/add',
         LayoutCreate.as_view(), name='add'),
-    url(r'^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/pdfoutput/(?P<layout>\d+)/default$',
+    path('control/event/<str:organizer>/<str:event>/pdfoutput/<int:layout>/default',
         LayoutSetDefault.as_view(), name='default'),
-    url(r'^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/pdfoutput/default$',
+    path('control/event/<str:organizer>/<str:event>/pdfoutput/default',
         LayoutGetDefault.as_view(), name='getdefault'),
-    url(r'^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/pdfoutput/(?P<layout>\d+)/delete$',
+    path('control/event/<str:organizer>/<str:event>/pdfoutput/<int:layout>/delete',
         LayoutDelete.as_view(), name='delete'),
-    url(r'^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/pdfoutput/(?P<layout>\d+)/editor',
+    re_path(r'^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/pdfoutput/(?P<layout>\d+)/editor',
         LayoutEditorView.as_view(), name='edit'),
 ]
 event_router.register('ticketlayouts', TicketLayoutViewSet)

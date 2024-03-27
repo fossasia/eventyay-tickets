@@ -8,7 +8,6 @@ class PretixMultidomainConfig(AppConfig):
     label = 'pretixmultidomain'
 
 
-default_app_config = 'pretix.multidomain.PretixMultidomainConfig'
 
 
 def event_url(route, view, name=None, require_live=True):

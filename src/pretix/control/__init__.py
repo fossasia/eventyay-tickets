@@ -10,4 +10,3 @@ class PretixControlConfig(AppConfig):
         from . import logdisplay  # noqa
 
 
-default_app_config = 'pretix.control.PretixControlConfig'

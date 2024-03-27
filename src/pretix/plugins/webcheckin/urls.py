@@ -1,8 +1,8 @@
-from django.conf.urls import url
+from django.urls import path
 
 from .views import IndexView
 
 urlpatterns = [
-    url(r'^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/webcheckin/$',
+    path('control/event/<str:organizer>/<str:event>/webcheckin/',
         IndexView.as_view(), name='index'),
 ]

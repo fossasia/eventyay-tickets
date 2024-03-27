@@ -13,4 +13,3 @@ class TestDummyApp(AppConfig):
         from tests.testdummy import signals  # noqa
 
 
-default_app_config = 'tests.testdummy.TestDummyApp'

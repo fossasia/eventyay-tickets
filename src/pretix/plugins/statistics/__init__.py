@@ -19,4 +19,3 @@ class StatisticsApp(AppConfig):
         from . import signals  # NOQA
 
 
-default_app_config = 'pretix.plugins.statistics.StatisticsApp'
