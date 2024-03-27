@@ -75,14 +75,14 @@ class CfPSettingsForm(
             self.fields[field_name] = forms.IntegerField(
                 required=False,
                 min_value=0,
-                initial=obj.cfp.fields[attribute].get("min_length"),
+                initial=obj.cfp.fields.get(attribute,{"min_length":None}).get("min_length"),
             )
             self.fields[field_name].widget.attrs["placeholder"] = ""
             field_name = f"cfp_{attribute}_max_length"
             self.fields[field_name] = forms.IntegerField(
                 required=False,
                 min_value=0,
-                initial=obj.cfp.fields[attribute].get("max_length"),
+                initial=obj.cfp.fields.get(attribute,{"max_length":None}).get("max_length"),
             )
             self.fields[field_name].widget.attrs["placeholder"] = ""
         for attribute in self.request_require_fields:
