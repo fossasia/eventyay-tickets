@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-03-30 16:15+0000\n"
-"PO-Revision-Date: 2024-03-26 20:06+0000\n"
+"PO-Revision-Date: 2024-03-29 15:02+0000\n"
 "Last-Translator: Quyên Trần <quyenjimin256@gmail.com>\n"
 "Language-Team: Vietnamese <https://hosted.weblate.org/projects/open-event/"
 "eventyay-tickets/vi/>\n"
@@ -2417,61 +2417,68 @@ msgid ""
 "If you keep this empty, any value is allowed. Otherwise, enter one possible "
 "value per line."
 msgstr ""
+"Nếu bạn để trống, giá trị sẽ không được chấp nhận. Nếu không, hãy nhập một "
+"giá trị trong một dòng."
 
 #: pretix/base/models/event.py:1393
 msgid "A property can either be required or have a default value, not both."
 msgstr ""
+"Tài sản có thể được yêu cầu hoặc có một giá trị mặc định, không đồng thời cả "
+"hai."
 
 #: pretix/base/models/event.py:1395
 msgid "You cannot set a default value that is not a valid value."
 msgstr ""
+"Bạn không thể cài đặt giá trị mặc định là một giá trị không có hiệu lực."
 
 #: pretix/base/models/fields.py:12
 msgid "No value can contain the delimiter character."
-msgstr ""
+msgstr "Không giá trị nào được chứa dấu cách."
 
 #: pretix/base/models/giftcards.py:58
 msgid "The gift card code may only contain letters, numbers, dots and dashes."
-msgstr ""
+msgstr "Mã thẻ quà tặng có thể chứa chữ cái, số, chấm và dấu gạch ngang."
 
 #: pretix/base/models/giftcards.py:70
 #: pretix/control/templates/pretixcontrol/organizers/giftcard.html:39
 msgctxt "giftcard"
 msgid "Special terms and conditions"
-msgstr ""
+msgstr "Điều khoản và điều kiện đặc biệt."
 
 #: pretix/base/models/invoices.py:129
 #, python-format
 msgctxt "invoice"
 msgid "Tax ID: %s"
-msgstr ""
+msgstr "ID Thuế: %s"
 
 #: pretix/base/models/invoices.py:135 pretix/base/services/invoices.py:103
 #, python-format
 msgctxt "invoice"
 msgid "VAT-ID: %s"
-msgstr ""
+msgstr "ID VAT: %s"
 
 #: pretix/base/models/items.py:51
 msgid "Category name"
-msgstr ""
+msgstr "Tên loại"
 
 #: pretix/base/models/items.py:54 pretix/base/models/items.py:271
 msgid "Internal name"
-msgstr ""
+msgstr "Tên nội bộ"
 
 #: pretix/base/models/items.py:55 pretix/base/models/items.py:272
 msgid ""
 "If you set this, this will be used instead of the public name in the backend."
 msgstr ""
+"Nếu bạn cài đặt, điều này có thể sẽ được dùng thay tên công khai ở phần phụ "
+"trợ."
 
 #: pretix/base/models/items.py:59
 msgid "Category description"
-msgstr ""
+msgstr "Mô tả danh mục"
 
 #: pretix/base/models/items.py:66
 msgid "Products in this category are add-on products"
-msgstr ""
+msgstr "Sản phẩm trong danh mục này là sản phẩm bổ sung"
 
 #: pretix/base/models/items.py:67
 msgid ""
@@ -2479,51 +2486,56 @@ msgid ""
 "their own. They can only be bought in combination with a product that has "
 "this category configured as a possible source for add-ons."
 msgstr ""
+"Nếu được chọn, các sản phẩm thuộc danh mục này sẽ không được bán riêng lẻ. "
+"Bạn chỉ có thể mua chúng kết hợp với sản phẩm có danh mục này được định cấu "
+"hình làm nguồn khả thi cho các tiện ích bổ sung."
 
 #: pretix/base/models/items.py:73 pretix/base/pdf.py:91
 #: pretix/control/templates/pretixcontrol/items/category.html:4
 #: pretix/control/templates/pretixcontrol/items/category.html:6
 msgid "Product category"
-msgstr ""
+msgstr "Danh mục sản phẩm"
 
 #: pretix/base/models/items.py:74
 #: pretix/control/templates/pretixcontrol/items/categories.html:3
 #: pretix/control/templates/pretixcontrol/items/categories.html:5
 #: pretix/control/templates/pretixcontrol/items/categories.html:31
 msgid "Product categories"
-msgstr ""
+msgstr "Danh mục sản phẩm"
 
 #: pretix/base/models/items.py:80
 #, python-brace-format
 msgid "{category} (Add-On products)"
-msgstr ""
+msgstr "{category} (Sản phẩm bổ sung)"
 
 #: pretix/base/models/items.py:123
 msgid "Disable product for this date"
-msgstr ""
+msgstr "Tắt sản phẩm cho ngày này"
 
 #: pretix/base/models/items.py:263 pretix/base/models/items.py:829
 #: pretix/control/templates/pretixcontrol/items/index.html:38
 msgid "Category"
-msgstr ""
+msgstr "Danh mục"
 
 #: pretix/base/models/items.py:264
 msgid ""
 "If you have many products, you can optionally sort them into categories to "
 "keep things organized."
 msgstr ""
+"Nếu bạn có nhiều sản phẩm, bạn có thể lựa chọn sắp xếp chúng thành các danh "
+"mục để giữ chúng ngăn nắp."
 
 #: pretix/base/models/items.py:268
 msgid "Item name"
-msgstr ""
+msgstr "Tên mục"
 
 #: pretix/base/models/items.py:281
 msgid "This is shown below the product name in lists."
-msgstr ""
+msgstr "Điều này hiển thị dưới tên sản phẩm trong danh sách."
 
 #: pretix/base/models/items.py:285 pretix/base/models/items.py:663
 msgid "Default price"
-msgstr ""
+msgstr "Giá mặc định"
 
 #: pretix/base/models/items.py:286
 msgid ""
@@ -2531,10 +2543,13 @@ msgid ""
 "each of the variations. If a variation does not have a special price or if "
 "you do not have variations, this price will be used."
 msgstr ""
+"Nếu sản phẩm này có nhiều biến thể, bạn có thể đặt các mức giá khác nhau cho "
+"từng biến thể. Nếu một biến thể không có giá đặc biệt hoặc nếu bạn không có "
+"biến thể thì giá này sẽ được sử dụng."
 
 #: pretix/base/models/items.py:293
 msgid "Free price input"
-msgstr ""
+msgstr "Giá vé đầu vào miễn phí"
 
 #: pretix/base/models/items.py:294
 msgid ""
@@ -2544,63 +2559,70 @@ msgid ""
 "event. This is currently not supported for products that are bought as an "
 "add-on to other products."
 msgstr ""
+"Nếu tùy chọn này hoạt động, người dùng của bạn có thể tự chọn giá. Giá được "
+"định cấu hình ở trên sau đó được hiểu là giá tối thiểu mà người dùng phải "
+"nhập. Bạn có thể sử dụng cái này, ví dụ: để thu thập thêm quyên góp cho sự "
+"kiện của bạn. Tính năng này hiện không được hỗ trợ cho các sản phẩm được mua "
+"dưới dạng tiện ích bổ sung cho các sản phẩm khác."
 
 #: pretix/base/models/items.py:301
 msgid "Sales tax"
-msgstr ""
+msgstr "Thuế bán hàng"
 
 #: pretix/base/models/items.py:306
 msgid "Is an admission ticket"
-msgstr ""
+msgstr "Là vé vào cửa"
 
 #: pretix/base/models/items.py:308
 msgid "Whether or not buying this product allows a person to enter your event"
 msgstr ""
+"Việc có hay không mua sản phẩm này cho phép người tham gia có thể tham gia "
+"sự kiện hay không"
 
 #: pretix/base/models/items.py:314
 msgid "Generate tickets"
-msgstr ""
+msgstr "Tạo vé"
 
 #: pretix/base/models/items.py:318
 msgid "Show a waiting list for this ticket"
-msgstr ""
+msgstr "Hiển thị danh sách chờ cho vé này"
 
 #: pretix/base/models/items.py:319
 msgid "This will only work if waiting lists are enabled for this event."
-msgstr ""
+msgstr "Sẽ hoạt động nếu danh sách chờ có sẵn cho sự kiện này."
 
 #: pretix/base/models/items.py:323 pretix/base/settings.py:917
 #: pretix/control/forms/event.py:1292
 msgid "Show number of tickets left"
-msgstr ""
+msgstr "Hiển thị số vé còn lại"
 
 #: pretix/base/models/items.py:324
 msgid "Publicly show how many tickets are still available."
-msgstr ""
+msgstr "Hiển thị công khai số vé có sẵn."
 
 #: pretix/base/models/items.py:331
 msgid "Product picture"
-msgstr ""
+msgstr "Ảnh sản phẩm"
 
 #: pretix/base/models/items.py:336
 msgid "Available from"
-msgstr ""
+msgstr "Có sẵn từ"
 
 #: pretix/base/models/items.py:338
 msgid "This product will not be sold before the given date."
-msgstr ""
+msgstr "Sản phẩm này không được bán trước ngày nhất định."
 
 #: pretix/base/models/items.py:341 pretix/base/payment.py:236
 msgid "Available until"
-msgstr ""
+msgstr "Có sẵn đến"
 
 #: pretix/base/models/items.py:343
 msgid "This product will not be sold after the given date."
-msgstr ""
+msgstr "Sản phẩm này không được bán sau ngày nhất định."
 
 #: pretix/base/models/items.py:349
 msgid "Only show after sellout of"
-msgstr ""
+msgstr "Chỉ hiển thị sau khi bán hết"
 
 #: pretix/base/models/items.py:350
 msgid ""
@@ -2610,20 +2632,28 @@ msgid ""
 "out. There might be a short period in which both products are visible while "
 "all tickets in the referenced quota are reserved, but not yet sold."
 msgstr ""
+"Nếu bạn chọn hạn ngạch ở đây, sản phẩm này sẽ chỉ được hiển thị khi không có "
+"hạn ngạch đó. Nếu kết hợp với tùy chọn ẩn các sản phẩm đã bán hết, điều này "
+"cho phép bạn đổi sản phẩm lấy những sản phẩm đắt tiền hơn sau khi chúng được "
+"bán hết. Có thể có một khoảng thời gian ngắn mà cả hai sản phẩm đều hiển thị "
+"trong khi tất cả vé trong hạn ngạch tham chiếu đều được đặt trước nhưng chưa "
+"được bán."
 
 #: pretix/base/models/items.py:357
 msgid "This product can only be bought using a voucher."
-msgstr ""
+msgstr "Sản phẩm có thể được mua bằng mã giảm giá."
 
 #: pretix/base/models/items.py:359
 msgid ""
 "To buy this product, the user needs a voucher that applies to this product "
 "either directly or via a quota."
 msgstr ""
+"Để mua sản phẩm, người dùng cần áp mã giảm giá vào sản phẩm trực tiếp hoặc "
+"thông qua hạn ngạch."
 
 #: pretix/base/models/items.py:363
 msgid "Buying this product requires approval"
-msgstr ""
+msgstr "Sản phẩm mua cần được sự chấp thuận"
 
 #: pretix/base/models/items.py:365
 msgid ""
@@ -2632,22 +2662,27 @@ msgid ""
 "completed. You can use this e.g. for discounted tickets that are only "
 "available to specific groups."
 msgstr ""
+"Nếu sản phẩm là một phần trong đơn hàng, đơn hàng sẽ được cho vào trạng thái "
+"\"chấp thuận\" và sẽ cần được xác nhận bởi bạn trước khi thanh toán và hoàn "
+"tất. Bạn có thể sử dụng e.g để giảm giá vé với một số nhóm đặc biệt."
 
 #: pretix/base/models/items.py:370
 msgid ""
 "This product will only be shown if a voucher matching the product is "
 "redeemed."
-msgstr ""
+msgstr "Sản phẩm sẽ chỉ hiển thị nếu mã giảm giá trùng với sản phẩm được đổi."
 
 #: pretix/base/models/items.py:372
 msgid ""
 "This product will be hidden from the event page until the user enters a "
 "voucher that unlocks this product."
 msgstr ""
+"Sản phẩm này sẽ bị ẩn khỏi trang sự kiện cho đến khi người dùng nhập phiếu "
+"mua hàng để mở khóa sản phẩm này."
 
 #: pretix/base/models/items.py:376
 msgid "Only sell this product as part of a bundle"
-msgstr ""
+msgstr "Chỉ bán sản phẩm này như một phần của gói"
 
 #: pretix/base/models/items.py:378
 msgid ""
@@ -2655,10 +2690,14 @@ msgid ""
 "products. Do <strong>not</strong> check this option if you want to use this "
 "product as an add-on product, but only for fixed bundles!"
 msgstr ""
+"Nếu tùy chọn này được đặt, sản phẩm sẽ chỉ được bán dưới dạng một phần của "
+"sản phẩm đi kèm. Đừng <strong>không</strong> chọn tùy chọn này nếu bạn muốn "
+"sử dụng sản phẩm này làm sản phẩm bổ sung, nhưng chỉ dành cho các gói cố "
+"định!"
 
 #: pretix/base/models/items.py:383
 msgid "Allow product to be canceled or changed"
-msgstr ""
+msgstr "Cho phép sản phẩm hủy hoặc thay đổi"
 
 #: pretix/base/models/items.py:385
 msgid ""
@@ -2666,10 +2705,13 @@ msgid ""
 "event apply. If this is unchecked, orders containing this product can not be "
 "canceled by users but only by you."
 msgstr ""
+"Nếu điều này được chọn, cài đặt hủy và thay đổi đơn hàng thông thường của sự "
+"kiện này sẽ được áp dụng. Nếu tùy chọn này không được chọn, người dùng không "
+"thể hủy các đơn đặt hàng có sản phẩm này mà chỉ có bạn mới có thể hủy."
 
 #: pretix/base/models/items.py:389
 msgid "Minimum amount per order"
-msgstr ""
+msgstr "Số lượng tối thiểu trên một đơn"
 
 #: pretix/base/models/items.py:391
 msgid ""
@@ -2677,10 +2719,13 @@ msgid ""
 "many times. If you keep the field empty or set it to 0, there is no special "
 "limit for this product."
 msgstr ""
+"Sản phẩm này chỉ có thể được mua nếu nó được thêm vào giỏ hàng ít nhất nhiều "
+"lần. Nếu bạn để trống trường này hoặc đặt thành 0 thì không có giới hạn đặc "
+"biệt nào cho sản phẩm này."
 
 #: pretix/base/models/items.py:395
 msgid "Maximum amount per order"
-msgstr ""
+msgstr "Sản phẩm tối đa cho một đơn hàng"
 
 #: pretix/base/models/items.py:397
 msgid ""
@@ -2689,6 +2734,10 @@ msgid ""
 "product. The limit for the maximum number of items in the whole order "
 "applies regardless."
 msgstr ""
+"Sản phẩm này chỉ có thể được mua nhiều nhất nhiều lần trong một đơn hàng. "
+"Nếu bạn để trống trường này hoặc đặt thành 0 thì không có giới hạn đặc biệt "
+"nào cho sản phẩm này. Giới hạn số lượng mặt hàng tối đa trong toàn bộ đơn "
+"hàng sẽ được áp dụng bất kể."
 
 #: pretix/base/models/items.py:404
 msgid ""
@@ -2697,10 +2746,14 @@ msgid ""
 "tickets to indicate to the person at check-in that the student ID card still "
 "needs to be checked."
 msgstr ""
+"Nếu bạn đặt cài đặt này, ứng dụng đăng ký sẽ hiển thị cảnh báo rõ ràng rằng "
+"vé này cần được chú ý đặc biệt. Bạn có thể sử dụng điều này chẳng hạn đối "
+"với vé sinh viên để cho người nhận phòng biết rằng thẻ sinh viên vẫn cần "
+"được kiểm tra."
 
 #: pretix/base/models/items.py:409 pretix/base/models/items.py:666
 msgid "Original price"
-msgstr ""
+msgstr "Giá gốc"
 
 #: pretix/base/models/items.py:412 pretix/base/models/items.py:669
 msgid ""
@@ -2708,21 +2761,26 @@ msgid ""
 "current price is a discounted one. This is just a cosmetic setting and will "
 "not actually impact pricing."
 msgstr ""
+"Nếu được đặt, giá này sẽ được hiển thị bên cạnh giá hiện tại để cho biết giá "
+"hiện tại là giá đã chiết khấu. Đây chỉ là một thiết lập thẩm mỹ và sẽ không "
+"thực sự ảnh hưởng đến giá cả."
 
 #: pretix/base/models/items.py:416 pretix/control/forms/event.py:814
 #: pretix/control/forms/item.py:454
 msgid "Sales channels"
-msgstr ""
+msgstr "Kênh bán hàng"
 
 #: pretix/base/models/items.py:421
 msgid "This product is a gift card"
-msgstr ""
+msgstr "Sản phẩm này là một thẻ quà tặng"
 
 #: pretix/base/models/items.py:422
 msgid ""
 "When a customer buys this product, they will get a gift card with a value "
 "corresponding to the product price."
 msgstr ""
+"Khi người mua mua sản phẩm này, họ sẽ được một thẻ quà tặng với giá trị "
+"tương ứng giá sản phẩm."
 
 #: pretix/base/models/items.py:431 pretix/base/models/items.py:1064
 #: pretix/control/forms/filter.py:327 pretix/control/forms/filter.py:1199
@@ -2735,102 +2793,109 @@ msgstr ""
 #: pretix/control/templates/pretixcontrol/items/questions.html:26
 #: pretix/control/templates/pretixcontrol/items/quotas.html:49
 msgid "Products"
-msgstr ""
+msgstr "Sản phẩm"
 
 #: pretix/base/models/items.py:590
 msgid ""
 "The maximum number per order can not be lower than the minimum number per "
 "order."
 msgstr ""
+"Số lượng tối đa trên một đơn hàng không thể nhỏ hơn số lượng tối thiểu trên "
+"một đơn hàng."
 
 #: pretix/base/models/items.py:596
 msgid "The item's category must belong to the same event as the item."
-msgstr ""
+msgstr "Danh mục mặt hàng phải thuộc về sự kiện tương đồng với mặt hàng."
 
 #: pretix/base/models/items.py:601
 msgid "The item's tax rule must belong to the same event as the item."
-msgstr ""
+msgstr "Luật thuế của mặt hàng phải thuộc về sự kiện tương đồng với mặt hàng."
 
 #: pretix/base/models/items.py:607
 msgid "The item's availability cannot end before it starts."
 msgstr ""
+"Nếu được đặt, giá này sẽ được hiển thị bên cạnh giá hiện tại để biết giá "
+"hiện tại là giá đã chiết khấu. Đây chỉ là một thiết bị thẩm định mỹ và sẽ "
+"không thực sự ảnh hưởng đến giá cả."
 
 #: pretix/base/models/items.py:653
 msgid "This is shown below the variation name in lists."
-msgstr ""
+msgstr "Điều này được hiển thị dưới tên biến thể ở danh sách."
 
 #: pretix/base/models/items.py:658 pretix/base/models/items.py:852
 #: pretix/base/models/items.py:1070
 msgid "Position"
-msgstr ""
+msgstr "Vị trí"
 
 #: pretix/base/models/items.py:676 pretix/base/models/vouchers.py:168
 #: pretix/base/models/waitinglist.py:75 pretix/base/orderimport.py:207
 msgid "Product variation"
-msgstr ""
+msgstr "Biến thể sản phẩm"
 
 #: pretix/base/models/items.py:677
 #: pretix/control/templates/pretixcontrol/item/create.html:64
 msgid "Product variations"
-msgstr ""
+msgstr "Biến thể sản phẩm"
 
 #: pretix/base/models/items.py:834
 msgid "Minimum number"
-msgstr ""
+msgstr "Số lượng tối thiểu"
 
 #: pretix/base/models/items.py:838
 msgid "Maximum number"
-msgstr ""
+msgstr "Số lượng tối đa"
 
 #: pretix/base/models/items.py:842
 msgid "Add-Ons are included in the price"
-msgstr ""
+msgstr "Tiện ích bổ sung được bao gồm trong giá"
 
 #: pretix/base/models/items.py:843
 msgid ""
 "If selected, adding add-ons to this ticket is free, even if the add-ons "
 "would normally cost money individually."
 msgstr ""
+"Nếu được chọn, việc thêm các tiện ích bổ sung vào phiếu này là miễn phí, "
+"ngay cả khi các tiện ích bổ sung thường phải trả phí riêng lẻ."
 
 #: pretix/base/models/items.py:848
 msgid "Allow the same product to be selected multiple times"
-msgstr ""
+msgstr "Cho phép sản phẩm giống nhau được chọn nhiều lúc"
 
 #: pretix/base/models/items.py:867
 msgid "The add-on's category must belong to the same event as the item."
-msgstr ""
+msgstr "Danh mục bổ sung phải thuộc về sự kiện tương đồng với mặt hàng."
 
 #: pretix/base/models/items.py:872
 msgid "The item already has an add-on of this category."
-msgstr ""
+msgstr "Mặt hàng đã có tiện ích bổ sung của danh mục này."
 
 #: pretix/base/models/items.py:877
 msgid "The minimum count needs to be equal to or greater than zero."
-msgstr ""
+msgstr "Số lượng tối thiểu cần bằng hoặc lớn hơn 0."
 
 #: pretix/base/models/items.py:882
 msgid "The maximum count needs to be equal to or greater than zero."
-msgstr ""
+msgstr "Số lượng tối đa cần bằng hoặc lớn hơn 0."
 
 #: pretix/base/models/items.py:887
 msgid "The maximum count needs to be greater than the minimum count."
-msgstr ""
+msgstr "Số lượng tối đa cần lớn hơn số lượng tối thiểu."
 
 #: pretix/base/models/items.py:914
 msgid "Bundled item"
-msgstr ""
+msgstr "Mục đi kèm"
 
 #: pretix/base/models/items.py:920
 msgid "Bundled variation"
-msgstr ""
+msgstr "Biến thể đi kèm"
 
 #: pretix/base/models/items.py:926 pretix/base/models/items.py:1017
 msgid "Number"
-msgstr ""
+msgstr "Số"
 
 #: pretix/base/models/items.py:931
 msgid "Designated price part"
-msgstr ""
+msgstr "Phần giá chỉ định"
 
 #: pretix/base/models/items.py:932
 msgid ""
@@ -2839,59 +2904,63 @@ msgid ""
 "taxation, but can be kept blank otherwise. This value will NOT be added to "
 "the base item's price."
 msgstr ""
+"Nếu được đặt, nó sẽ hiển thị rằng mặt hàng đi kèm này chịu trách nhiệm về "
+"giá trị nhất định của tổng giá. Điều này có thể quan trọng trong trường hợp "
+"đánh thuế hỗn hợp, nhưng nếu không thì có thể để trống. Giá trị này sẽ KHÔNG "
+"được thêm vào giá của mặt hàng cơ bản."
 
 #: pretix/base/models/items.py:955
 msgid "The bundled item must belong to the same event as the item."
-msgstr ""
+msgstr "Mặt hàng đi kèm phải thuộc về sự kiện tương đồng với mặt hàng."
 
 #: pretix/base/models/items.py:957
 msgid "A variation needs to be set for this item."
-msgstr ""
+msgstr "Cần phải đặt một biến thể cho mặt hàng này."
 
 #: pretix/base/models/items.py:959
 msgid "The chosen variation does not belong to this item."
-msgstr ""
+msgstr "Biến thể được chọn không đi kèm mặt hàng này."
 
 #: pretix/base/models/items.py:964
 msgid "The count needs to be equal to or greater than zero."
-msgstr ""
+msgstr "Số lượng cần bằng hoặc lớn hơn 0."
 
 #: pretix/base/models/items.py:1018
 msgid "Text (one line)"
-msgstr ""
+msgstr "Văn bản (một dòng)"
 
 #: pretix/base/models/items.py:1019
 msgid "Multiline text"
-msgstr ""
+msgstr "Văn bản nhiều dòng"
 
 #: pretix/base/models/items.py:1020
 msgid "Yes/No"
-msgstr ""
+msgstr "Có/Không"
 
 #: pretix/base/models/items.py:1021
 msgid "Choose one from a list"
-msgstr ""
+msgstr "Chọn một từ danh sách"
 
 #: pretix/base/models/items.py:1022
 msgid "Choose multiple from a list"
-msgstr ""
+msgstr "Chọn nhiều từ danh sách"
 
 #: pretix/base/models/items.py:1023
 msgid "File upload"
-msgstr ""
+msgstr "Tải thư mục"
 
 #: pretix/base/models/items.py:1025 pretix/base/reldate.py:162
 #: pretix/plugins/checkinlists/exporters.py:571
 msgid "Time"
-msgstr ""
+msgstr "Thời gian"
 
 #: pretix/base/models/items.py:1026
 msgid "Date and time"
-msgstr ""
+msgstr "Ngày và giờ"
 
 #: pretix/base/models/items.py:1027
 msgid "Country code (ISO 3166-1 alpha-2)"
-msgstr ""
+msgstr "Mã quốc gia (ISO 3166-1 alpha-2)"
 
 #: pretix/base/models/items.py:1039 pretix/base/models/items.py:1112
 #: pretix/base/orderimport.py:652 pretix/control/forms/item.py:45
@@ -2899,123 +2968,125 @@ msgstr ""
 #: pretix/control/templates/pretixcontrol/items/question_edit.html:17
 #: pretix/control/templates/pretixcontrol/items/questions.html:21
 msgid "Question"
-msgstr ""
+msgstr "Câu hỏi"
 
 #: pretix/base/models/items.py:1048
 msgid "Help text"
-msgstr ""
+msgstr "Văn bản hỗ trợ"
 
 #: pretix/base/models/items.py:1049
 msgid "If the question needs to be explained or clarified, do it here!"
-msgstr ""
+msgstr "Nếu câu hỏi cần được giải thích hay làm rõ, làm tại đây!"
 
 #: pretix/base/models/items.py:1055
 msgid "Question type"
-msgstr ""
+msgstr "Loại câu hỏi"
 
 #: pretix/base/models/items.py:1059
 #: pretix/control/templates/pretixcontrol/items/questions.html:55
 msgid "Required question"
-msgstr ""
+msgstr "Câu hỏi được yêu cầu"
 
 #: pretix/base/models/items.py:1066
 msgid "This question will be asked to buyers of the selected products"
-msgstr ""
+msgstr "Câu hỏi sẽ được hỏi người mua chọn sản phẩm"
 
 #: pretix/base/models/items.py:1073
 msgid "Ask during check-in instead of in the ticket buying process"
-msgstr ""
+msgstr "Hỏi khi làm thủ tục thay vì trong quá trình mua vé"
 
 #: pretix/base/models/items.py:1074
 msgid "Not supported by all check-in apps for all question types."
-msgstr ""
+msgstr "Hỏi khi làm thủ tục thay vì trong quá trình mua vé."
 
 #: pretix/base/models/items.py:1078
 #: pretix/control/templates/pretixcontrol/items/questions.html:66
 msgid "Hidden question"
-msgstr ""
+msgstr "Câu hỏi ẩn"
 
 #: pretix/base/models/items.py:1079
 msgid "This question will only show up in the backend."
-msgstr ""
+msgstr "Câu hỏi hiển thị trong phần phụ trợ."
 
 #: pretix/base/models/items.py:1083
 msgid "Print answer on invoices"
-msgstr ""
+msgstr "In câu trả lời trên hóa đơn"
 
 #: pretix/base/models/items.py:1091 pretix/base/models/items.py:1097
 #: pretix/base/models/items.py:1103
 msgid "Minimum value"
-msgstr ""
+msgstr "Giá trị nhỏ nhất"
 
 #: pretix/base/models/items.py:1092 pretix/base/models/items.py:1095
 #: pretix/base/models/items.py:1098 pretix/base/models/items.py:1101
 #: pretix/base/models/items.py:1104 pretix/base/models/items.py:1107
 msgid "Currently not supported in our apps and during check-in"
 msgstr ""
+"Không hỗ trợ trên ứng dụng của chúng tôi và trong quá trình làm thủ tục thời "
+"điểm này"
 
 #: pretix/base/models/items.py:1094 pretix/base/models/items.py:1100
 #: pretix/base/models/items.py:1106
 msgid "Maximum value"
-msgstr ""
+msgstr "Giá trị lớn nhất"
 
 #: pretix/base/models/items.py:1157
 msgid "An answer to this question is required to proceed."
-msgstr ""
+msgstr "Câu trả lời cho câu hỏi này yêu cầu tiếp tục."
 
 #: pretix/base/models/items.py:1171 pretix/base/models/items.py:1189
 #: pretix/base/orderimport.py:662 pretix/base/orderimport.py:670
 msgid "Invalid option selected."
-msgstr ""
+msgstr "Đã chọn tùy chọn không hợp lệ."
 
 #: pretix/base/models/items.py:1199
 msgid "The number is to low."
-msgstr ""
+msgstr "Số quá bé."
 
 #: pretix/base/models/items.py:1201
 msgid "The number is to high."
-msgstr ""
+msgstr "Số quá lớn."
 
 #: pretix/base/models/items.py:1204
 msgid "Invalid number input."
-msgstr ""
+msgstr "Đầu vào số không hợp lệ."
 
 #: pretix/base/models/items.py:1211 pretix/base/models/items.py:1235
 msgid "Please choose a later date."
-msgstr ""
+msgstr "Vui lòng chọn một ngày muộn hơn."
 
 #: pretix/base/models/items.py:1213 pretix/base/models/items.py:1237
 msgid "Please choose an earlier date."
-msgstr ""
+msgstr "Vui lòng chọn một ngày sớm hơn."
 
 #: pretix/base/models/items.py:1216
 msgid "Invalid date input."
-msgstr ""
+msgstr "Ngày nhập không hợp lệ."
 
 #: pretix/base/models/items.py:1223
 msgid "Invalid time input."
-msgstr ""
+msgstr "Thời gian không hợp lệ."
 
 #: pretix/base/models/items.py:1232
 msgid "Invalid datetime input."
-msgstr ""
+msgstr "Đầu vào ngày giờ không hợp lệ."
 
 #: pretix/base/models/items.py:1244
 msgid "Unknown country code."
-msgstr ""
+msgstr "Chưa rõ mã quốc gia."
 
 #: pretix/base/models/items.py:1258
 #: pretix/control/templates/pretixcontrol/items/question.html:68
 msgid "Answer"
-msgstr ""
+msgstr "Câu trả lời"
 
 #: pretix/base/models/items.py:1280
 msgid "The identifier \"{}\" is already used for a different option."
-msgstr ""
+msgstr "Dấu \"{}\" đã được dùng cho lựa chọn khác."
 
 #: pretix/base/models/items.py:1283
 msgid "Question option"
-msgstr ""
+msgstr "Lựa chọn câu hỏi"
 
 #: pretix/base/models/items.py:1284
 msgid "Question options"
