@@ -19,9 +19,6 @@ from django.utils.functional import cached_property
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 from django.views.generic.base import TemplateResponseMixin
-
-from django_context_decorator import context
-
 from i18nfield.strings import LazyI18nString
 from i18nfield.utils import I18nJSONEncoder
 
@@ -29,7 +26,6 @@ from pretalx.cfp.signals import cfp_steps
 from pretalx.common.exceptions import SendMailException
 from pretalx.common.phrases import phrases
 from pretalx.common.utils import language
-from pretalx.common.views import is_form_bound
 from pretalx.person.forms import SpeakerProfileForm, UserForm
 from pretalx.person.models import User
 from pretalx.submission.forms import InfoForm, QuestionsForm
@@ -411,7 +407,29 @@ class QuestionsStep(GenericFlowStep, FormFlowStep):
         )
 
     def is_applicable(self, request):
-        return False
+        self.request = request
+        info_data = self.cfp_session.get("data", {}).get("info", {})
+        track = info_data.get("track")
+        if track:
+            questions = self.event.questions.exclude(
+                Q(target=QuestionTarget.SUBMISSION)
+                & (
+                    (~Q(tracks__in=[info_data.get("track")]) & Q(tracks__isnull=False))
+                    | (
+                        ~Q(submission_types__in=[info_data.get("submission_type")])
+                        & Q(submission_types__isnull=False)
+                    )
+                )
+            )
+        else:
+            questions = self.event.questions.exclude(
+                Q(target=QuestionTarget.SUBMISSION)
+                & (
+                    ~Q(submission_types__in=[info_data.get("submission_type")])
+                    & Q(submission_types__isnull=False)
+                )
+            )
+        return questions.exists()
 
     def get_form_kwargs(self):
         result = super().get_form_kwargs()
@@ -518,18 +536,6 @@ class ProfileStep(GenericFlowStep, FormFlowStep):
         if email:
             result["gravatar_parameter"] = User(email=email).gravatar_parameter
         return result
-
-    @context
-    @cached_property
-    def questions_form(self):
-        bind = is_form_bound(self.request, "questions")
-        return QuestionsForm(
-            data=self.request.POST if bind else None,
-            files=self.request.FILES if bind else None,
-            speaker=self.request.user,
-            event=self.request.event,
-            target="speaker",
-        )
 
     def done(self, request, draft=False):
         form = self.get_form(from_storage=True)
