@@ -81,10 +81,8 @@
     </h5>
     <form method="post" enctype="multipart/form-data">
         {% if form.errors %}{% bootstrap_form_errors form %}{% endif %}
-        {% if qform.errors %}{% bootstrap_form_errors qform %}{% endif %}
         {% csrf_token %}
         {% bootstrap_form form layout='event' %}
-        {% bootstrap_form qform layout='event' %}
         {% if can_edit or form.instance.resources.count %}
             <div class="formset form-group row" id="resource-upload" data-formset data-formset-prefix="{{ formset.prefix }}">
                 {{ formset.management_form }}
