@@ -15,6 +15,7 @@
     {% if submission %}
         {% has_perm 'submission.edit_submission' request.user submission as can_edit_submission %}
         {% has_perm 'orga.view_reviews' request.user request.event as can_view_reviews %}
+        {% has_perm 'submission.review_submission' request.user submission as can_review %}
         {% has_perm 'orga.view_speakers' request.user request.event as can_view_speakers %}
         {% has_perm 'orga.send_mails' request.user request.event as can_send_mails %}
         <h2>
@@ -65,7 +66,7 @@
                     </a>
                 </li>
             {% endif %}
-            {% if can_view_reviews %}
+            {% if can_view_reviews or can_review %}
                 <li class="nav-item">
                     <a
                         class="nav-link {% if "reviews" in url_name %}active{% endif %}"
