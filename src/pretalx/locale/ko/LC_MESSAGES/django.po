@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-03-05 15:47+0000\n"
-"PO-Revision-Date: 2023-09-04 14:54+0000\n"
-"Last-Translator: Bae KwonHan <darjeeling@gmail.com>\n"
+"PO-Revision-Date: 2024-04-01 17:24+0000\n"
+"Last-Translator: Han Lee | 이한결 <wyatt0216@gmail.com>\n"
 "Language-Team: none\n"
 "Language: ko\n"
 "MIME-Version: 1.0\n"
@@ -245,11 +245,11 @@ msgstr "발표자의 프로필 사진"
 
 #: pretalx/agenda/templates/agenda/talk.html:37
 msgid "Favourite this session"
-msgstr ""
+msgstr "즐겨찾기에 추가"
 
 #: pretalx/agenda/templates/agenda/talk.html:38
 msgid "Remove this session from your favourites"
-msgstr ""
+msgstr "즐겨찾기에서 제외"
 
 #: pretalx/agenda/templates/agenda/talk.html:67
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:18
@@ -418,6 +418,18 @@ msgid ""
 "I’m looking forward to it!\n"
 "{speaker}"
 msgstr ""
+"안녕하세요!\n"
+"\n"
+"귀하를 아래 세션의 발표자로 초대하고 싶습니다.\n"
+"\n"
+"세션명: “{title}”\n"
+"행사명: {event}\n"
+"\n"
+"아래 링크를 통해 초대를 수락하실 수 있습니다.\n"
+"{url}\n"
+"\n"
+"귀하를 만나 뵙기를 고대하고 있습니다!\n"
+"{speaker}"
 
 #: pretalx/cfp/phrases.py:8
 msgid ""
@@ -478,9 +490,7 @@ msgstr ""
 msgid ""
 "This proposal cannot be confirmed at this time – please contact us if you "
 "think this is an error."
-msgstr ""
-"현재로서는 이 발표 제안을 확인할 수 없으므로 오류라고 생각되면 문의해 주시기 "
-"바랍니다."
+msgstr "해당 제안이 거절되었습니다. 오류라고 생각된다면 문의 부탁드립니다."
 
 #: pretalx/cfp/phrases.py:35
 msgid "This proposal cannot be edited anymore."
@@ -620,7 +630,8 @@ msgstr "자세한 내용은 컨퍼런스 주최자에게 문의하시기 바랍�
 msgid ""
 "You, %(name)s, have been invited to be a speaker for the session “%(talk)s”. "
 "Do you accept the invitation?"
-msgstr ""
+msgstr "%(name)s님께서는 “%(talk)s” 발표의 발표자로 초대되셨습니다. 이 초대를 "
+"수락하시겠습니까?"
 
 #: pretalx/cfp/templates/cfp/event/invitation.html:28
 msgid "Abstract:"
@@ -752,11 +763,11 @@ msgstr ""
 #: pretalx/orga/templates/orga/submission/state_change.html:27
 #: pretalx/orga/templates/orga/submission/tag_delete.html:11
 msgid "Back"
-msgstr ""
+msgstr "뒤로"
 
 #: pretalx/cfp/templates/cfp/event/submission_questions.html:28
 msgid "… about your proposal:"
-msgstr ""
+msgstr "... 당신의 제안서에 대하여:"
 
 #: pretalx/cfp/templates/cfp/event/submission_questions.html:36
 msgid "… about yourself:"
@@ -772,8 +783,8 @@ msgid ""
 "will be able to send you reminders about your pending proposal draft closer "
 "to the deadline."
 msgstr ""
-"주최자는 초안이나 이메일 주소를 볼 수 없습니다. 마감일이 가까워지면 보류 중"
-"인 제안서 초안에 대한 독촉을 보낼 수 있습니다."
+"주최자는 초안이나 이메일 주소를 볼 수 없습니다. 마감일이 가까워지면 보류 "
+"중인 제안서 초안에 대한 독촉(리마인더)을 보낼 수 있습니다."
 
 #: pretalx/cfp/templates/cfp/event/user_mails.html:4
 #: pretalx/cfp/templates/cfp/event/user_mails.html:7
@@ -793,7 +804,7 @@ msgstr ""
 #: pretalx/cfp/templates/cfp/event/user_profile.html:8
 #: pretalx/cfp/templates/cfp/event/user_profile.html:24
 msgid "Your Profile"
-msgstr ""
+msgstr "귀하의 프로필"
 
 #: pretalx/cfp/templates/cfp/event/user_profile.html:26
 msgid ""
@@ -826,7 +837,7 @@ msgstr ""
 #: pretalx/orga/templates/orga/submission/review.html:215
 #: pretalx/orga/templates/orga/update.html:91
 msgid "Save"
-msgstr ""
+msgstr "저장"
 
 #: pretalx/cfp/templates/cfp/event/user_profile.html:54
 msgid "We have some questions"
@@ -834,11 +845,11 @@ msgstr "몇 가지 질문이 있습니다"
 
 #: pretalx/cfp/templates/cfp/event/user_profile.html:68
 msgid "Your Account"
-msgstr ""
+msgstr "귀하의 계정"
 
 #: pretalx/cfp/templates/cfp/event/user_profile.html:70
 msgid "You can change your log in data here."
-msgstr ""
+msgstr "여기에서 당신의 로그인 정보를 수정할 수 있습니다."
 
 #: pretalx/cfp/templates/cfp/event/user_profile.html:89
 msgid "Account deletion"
@@ -884,7 +895,7 @@ msgstr "귀하의 제안:"
 #: pretalx/cfp/templates/cfp/event/user_submission_invitation.html:14
 #: pretalx/cfp/templates/cfp/event/user_submission_withdraw.html:9
 msgid "Current state of your proposal:"
-msgstr "제안서의 현재 상태입니다:"
+msgstr "제안서의 현재 상태:"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:16
 #: pretalx/cfp/templates/cfp/event/user_submission_discard.html:12
@@ -944,18 +955,18 @@ msgstr ""
 #: pretalx/cfp/templates/cfp/event/user_submission_discard.html:26
 #: pretalx/cfp/templates/cfp/event/user_submission_withdraw.html:27
 msgid "Go back"
-msgstr ""
+msgstr "돌아가기"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:53
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:211
 #: pretalx/cfp/templates/cfp/event/user_submission_withdraw.html:23
 msgid "Withdraw"
-msgstr ""
+msgstr "철회하기"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:59
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:120
 msgid "Confirm"
-msgstr ""
+msgstr "확정"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm_error.html:7
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm_error.html:11
@@ -1007,7 +1018,7 @@ msgstr ""
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:49
 msgid "Confirm your attendance"
-msgstr "출석 확인"
+msgstr "수락 (참석을 확정합니다)"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:54
 msgid "Audience feedback"
@@ -1020,29 +1031,26 @@ msgstr "참석자는 세션이 진행된 후 여기에서 피드백을 남길 �
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:65
 msgid "Speaker"
 msgid_plural "Speakers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "발표자"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:67
 msgid "Submitter"
 msgid_plural "Submitters"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "제출자"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:92
 #: pretalx/orga/forms/schedule.py:120
 #: pretalx/orga/templates/orga/submission/content.html:80
 #: pretalx/orga/templates/orga/submission/review.html:117
 msgid "Resources"
-msgstr ""
+msgstr "자료"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:96
 msgid ""
 "Resources will be publicly visible. Please try to keep your uploads below "
 "16MB."
-msgstr ""
-"리소스가 공개적으로 표시됩니다. 업로드 용량을 16MB 미만으로 유지하시기 바랍니"
-"다."
+msgstr "자료가 공개적으로 표시됩니다. 업로드 용량을 16MB 미만으로 유지하시기 "
+"바랍니다."
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:148
 #: pretalx/orga/templates/orga/submission/content.html:131
@@ -1057,30 +1065,30 @@ msgstr "최대 파일 크기:"
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:164
 #: pretalx/orga/templates/orga/submission/content.html:140
 msgid "Add another resource"
-msgstr ""
+msgstr "다른 자료 추가"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:176
 msgid "Save draft"
-msgstr ""
+msgstr "초안 저장"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:179
 msgid "Submit proposal"
-msgstr ""
+msgstr "제안서 제출"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:192
 msgid "Share proposal"
-msgstr ""
+msgstr "제안서 공유"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:194
 msgid ""
 "If you need a review from a colleague or a friend here’s a link that you can "
 "send out for viewing your proposal:"
-msgstr ""
+msgstr "(동료나 친구의 검토가 필요한 경우) 제안서를 확인할 수 있는 공유용 링크:"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:200
 #: pretalx/cfp/templates/cfp/event/user_submission_withdraw.html:14
 msgid "Withdraw proposal"
-msgstr ""
+msgstr "발표 제안 철회(취소)"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:202
 msgid ""
@@ -1088,6 +1096,8 @@ msgid ""
 "undo this - if you are just uncertain if you can or should hold your "
 "session, please contact the organiser instead."
 msgstr ""
+"여기에서 제안서를 철회(취소)할 수 있습니다. 이 작업은 되돌릴 수 없습니다. "
+"만약 본인 제안에 확신이 없는 경우, 운영진에게 문의하는 것을 고려해 주세요."
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:218
 msgid ""
@@ -1095,34 +1105,38 @@ msgid ""
 "just uncertain if you can or should submit your proposal, please contact the "
 "organiser instead."
 msgstr ""
+"여기에서 제안서 초안을 삭제할 수 있습니다. 이 작업은 되돌릴 수 없습니다. "
+"만약 본인 제안에 확신이 없는 경우, 운영진에게 문의하는 것을 고려해 주세요."
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:227
 #: pretalx/orga/templates/orga/mails/outbox_form.html:106
 msgid "Discard"
-msgstr ""
+msgstr "삭제"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:232
 msgid "Cancel proposal"
-msgstr ""
+msgstr "발표 취소"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:234
 msgid ""
 "As your proposal has been accepted already, please contact the event’s "
 "organising team to cancel it. The best way to reach out would be an answer "
 "to your acceptance mail."
-msgstr ""
+msgstr "제안서가 이미 수락 되었습니다. 취소하려면 이벤트 주최 팀에 문의하시기 "
+"바랍니다."
 
 #: pretalx/cfp/templates/cfp/event/user_submission_invitation.html:18
 msgid ""
 "Invite another speaker to your proposal here. Instead of letting us send an "
 "email, (which might get caught by spam filters) you can also give them this "
 "link:"
-msgstr ""
+msgstr "여기에서 당신의 발표 제안에 다른 발표자를 초대하세요. 메일을 보내는(스팸 "
+"처리될 수 있음) 대신 다음 링크를 제공해도 됩니다:"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_invitation.html:31
 #: pretalx/common/phrases.py:45
 msgid "Cancel"
-msgstr ""
+msgstr "취소"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_invitation.html:34
 #: pretalx/common/phrases.py:43
@@ -1132,28 +1146,28 @@ msgstr ""
 #: pretalx/orga/templates/orga/mails/outbox_list.html:89
 #: pretalx/orga/templates/orga/mails/send_draft_reminders.html:21
 msgid "Send"
-msgstr ""
+msgstr "보내기"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_withdraw.html:16
 msgid "Do you really want to withdraw your proposal?"
-msgstr ""
+msgstr "정말로 발표 제안을 철회하시겠습니까?"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_withdraw.html:29
 msgid "You will not be able to revert this action."
-msgstr ""
+msgstr "이 작업은 되돌릴 수 없습니다."
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:9
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:67
 msgid "Your proposals"
-msgstr ""
+msgstr "당신의 (발표) 제안"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:13
 msgid "Important Information"
-msgstr ""
+msgstr "중요 정보"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:25
 msgid "Your drafts"
-msgstr ""
+msgstr "당신의 초안"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:30
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:73
@@ -1169,47 +1183,41 @@ msgstr "제목"
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:48
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:105
 msgid "Copy code for review"
-msgstr ""
+msgstr "리뷰를 위한 코드 복사"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:55
 msgid "Edit draft"
-msgstr ""
+msgstr "초안 수정하기"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:57
-#, fuzzy
-#| msgid "Save as draft"
 msgid "Open draft"
-msgstr "초안으로 저장"
+msgstr "초안 열기"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:74
 #: pretalx/orga/templates/orga/review/dashboard.html:119
 #: pretalx/orga/templates/orga/review/dashboard.html:221
 #: pretalx/orga/templates/orga/submission/list.html:102
 msgid "State"
-msgstr ""
+msgstr "상태"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:112
-#, fuzzy
-#| msgid "Submit proposal!"
 msgid "Edit proposal"
-msgstr "제안서를 제출하세요!"
+msgstr "제안서 수정하기"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:114
-#, fuzzy
-#| msgid "Create proposal"
 msgid "Open proposal"
-msgstr "발표 제안서 만들기"
+msgstr "발표 제안서 열기"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:126
 #: pretalx/orga/templates/orga/base.html:273
 #: pretalx/orga/templates/orga/submission/base.html:64
 #: pretalx/submission/models/feedback.py:36
 msgid "Feedback"
-msgstr ""
+msgstr "피드백"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:139
 msgid "Create a new proposal"
-msgstr ""
+msgstr "새로운 발표 제안 만들기"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:145
 msgid "It seems like you haven’t submitted anything to this event yet."
