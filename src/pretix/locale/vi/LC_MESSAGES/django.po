@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-03-30 16:15+0000\n"
-"PO-Revision-Date: 2024-04-04 07:01+0000\n"
+"PO-Revision-Date: 2024-04-05 14:01+0000\n"
 "Last-Translator: tduy5275e4aee269df94eb2 <tduy527@gmail.com>\n"
 "Language-Team: Vietnamese <https://hosted.weblate.org/projects/open-event/"
 "eventyay-tickets/vi/>\n"
@@ -2029,19 +2029,19 @@ msgstr "Ngày tham gia"
 
 #: pretix/base/models/auth.py:105
 msgid "Timezone"
-msgstr ""
+msgstr "Múi giờ"
 
 #: pretix/base/models/auth.py:108
 msgid "Two-factor authentication is required to log in"
-msgstr ""
+msgstr "Cần xác thực dùng hai yếu tố để đăng nhập"
 
 #: pretix/base/models/auth.py:112
 msgid "Receive notifications according to my settings below"
-msgstr ""
+msgstr "Nhận thông báo theo các cài đặt của tôi ở dưới"
 
 #: pretix/base/models/auth.py:113
 msgid "If turned off, you will not get any notifications."
-msgstr ""
+msgstr "Nếu tắt đi, bạn sẽ không nhận được bất cứ thông báo nào."
 
 #: pretix/base/models/auth.py:126
 #: pretix/control/templates/pretixcontrol/order/index.html:185
@@ -2053,7 +2053,7 @@ msgstr ""
 #: pretix/control/templates/pretixcontrol/users/form.html:6
 #: pretix/control/views/organizer.py:90 tests/base/test_mail.py:88
 msgid "User"
-msgstr ""
+msgstr "Người dùng"
 
 #: pretix/base/models/auth.py:127 pretix/control/navigation.py:358
 #: pretix/control/templates/pretixcontrol/users/index.html:5
@@ -2077,50 +2077,56 @@ msgstr "Tất cả sản phẩm (bao gồm sản phẩm vừa mới được t�
 #: pretix/base/models/checkin.py:18 pretix/plugins/badges/exporters.py:215
 #: pretix/plugins/checkinlists/exporters.py:638
 msgid "Limit to products"
-msgstr ""
+msgstr "Hạn chế các sản phẩm hiển thị"
 
 #: pretix/base/models/checkin.py:21
 msgctxt "checkin"
 msgid "Include pending orders"
-msgstr ""
+msgstr "Bao gồm những đơn hàng chưa được xử lý"
 
 #: pretix/base/models/checkin.py:23
 msgid ""
 "With this option, people will be able to check in even if the order has not "
 "been paid."
 msgstr ""
+"Với lựa chọn này, mọi người vẫn sẽ có thể đăng ký ngay cả khi đơn hàng chưa "
+"được thanh toán."
 
 #: pretix/base/models/checkin.py:26 pretix/control/navigation.py:474
 #: pretix/control/templates/pretixcontrol/organizers/gates.html:5
 msgid "Gates"
-msgstr ""
+msgstr "Cổng"
 
 #: pretix/base/models/checkin.py:27
 msgid ""
 "Does not have any effect for the validation of tickets, only for the "
 "automatic configuration of check-in devices."
 msgstr ""
+"Không có tác động đến việc xác nhận vé, chỉ dùng cho cấu hình tự động của "
+"thiết bị đăng ký."
 
 #: pretix/base/models/checkin.py:31
 msgid "Allow re-entering after an exit scan"
-msgstr ""
+msgstr "Cho phép vào lại sau khi quét lại"
 
 #: pretix/base/models/checkin.py:35
 msgid "Allow multiple entries per ticket"
-msgstr ""
+msgstr "Cho phép nhiều lượt vào với một vé"
 
 #: pretix/base/models/checkin.py:36
 msgid ""
 "Use this option to turn off warnings if a ticket is scanned a second time."
 msgstr ""
+"Dùng lựa chọn này để tắt đi cảnh báo nếu chiếc vé này đã được quét lần thứ "
+"hai."
 
 #: pretix/base/models/checkin.py:40
 msgid "Automatically check out everyone at"
-msgstr ""
+msgstr "Tự động thanh toán tại chỗ tất cả mọi người ở"
 
 #: pretix/base/models/checkin.py:46
 msgid "Sales channels to automatically check in"
-msgstr ""
+msgstr "Các kênh bán hàng tự động đăng ký"
 
 #: pretix/base/models/checkin.py:47
 msgid ""
