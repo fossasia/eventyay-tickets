@@ -53,7 +53,7 @@
                     {% plural %}
                         {{ count }} sessions are still <strong>unconfirmed</strong> and will not show up
                         on the public schedule.
-                    {% endblocktranslate %} <a href="{{ request.event.orga_urls.submissions }}?state=accepted">{% translate "See all unconfirmed sessions." %}</a></li>
+                    {% endblocktranslate %} <a href="{{ request.event.orga_urls.submissions }}?state=accepted&state=pending_state__accepted&state=pending_state__confirmed">{% translate "See all unconfirmed sessions." %}</a></li>
                 {% endif %}
                 {% if warnings.unscheduled %}
                     <li>{% blocktranslate trimmed count count=warnings.unscheduled %}

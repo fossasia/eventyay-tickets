@@ -223,6 +223,12 @@ class SubmissionStateChange(SubmissionViewMixin, FormView):
         if pending:
             self.object.pending_state = self._target
             self.object.save()
+            if self.object.pending_state in [
+                SubmissionStates.ACCEPTED,
+                SubmissionStates.CONFIRMED,
+            ]:
+                # allow configureability of pending accepted/confirmed talks
+                self.object.update_talk_slots()
         else:
             method = getattr(self.object, SubmissionStates.method_names[self._target])
             method(person=self.request.user, force=force, orga=True)

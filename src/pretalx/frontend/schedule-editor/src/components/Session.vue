@@ -8,6 +8,9 @@
 	.info
 		.title {{ getLocalizedString(session.title) }}
 		.speakers(v-if="session.speakers") {{ session.speakers.map(s => s.name).join(', ') }}
+		.pending-line(v-if="session.state && session.state !== 'confirmed' && session.state !== 'accepted'") 
+			i.fa.fa-exclamation-circle
+			span {{ $t('Pending acceptance/confirmation') }}			
 		.bottom-info(v-if="!isBreak")
 			.track(v-if="session.track") {{ getLocalizedString(session.track.name) }}
 	.warning.no-print(v-if="warnings?.length")
@@ -64,7 +67,8 @@ export default {
 			if (this.isBreak) classes.push('isbreak')
 			else {
 				classes.push('istalk')
-				if (this.session.state !== "confirmed") classes.push('unconfirmed')
+				if (this.session.state !== "confirmed" && this.session.state !== "accepted") classes.push('pending') 
+				else if (this.session.state !== "confirmed") classes.push('unconfirmed')	
 			}
 			if (this.isDragged) classes.push('dragging')
 			if (this.isDragClone) classes.push('clone')
@@ -167,6 +171,12 @@ export default {
 				border-left: none
 				.title
 					color: var(--pretalx-clr-primary)
+	&.pending
+		.time-box
+			opacity: 0.5
+		.info
+			background-image: repeating-linear-gradient(-38deg, $clr-grey-100, $clr-grey-100 10px, $clr-white 10px, $clr-white 20px)
+			border-style: dashed dashed dashed none
 	.time-box
 		width: 69px
 		box-sizing: border-box
@@ -206,6 +216,9 @@ export default {
 				color: var(--track-color)
 				ellipsis()
 				margin-right: 4px
+		.pending-line
+			span
+				margin-left: 1em
 	.warning
 		position: absolute
 		top: 0

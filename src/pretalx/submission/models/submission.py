@@ -420,7 +420,10 @@ class Submission(GenerateCode, PretalxModel):
         """
         from pretalx.schedule.models import TalkSlot
 
-        if self.state not in [SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED]:
+        # scheduling is only allowed (and therefore slots needed) for accepted and confirmed talks, or those pending counterparts
+        scheduling_allowed = self.state in [SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED] or self.pending_state in [SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED]
+
+        if not scheduling_allowed:
             TalkSlot.objects.filter(
                 submission=self, schedule=self.event.wip_schedule
             ).delete()
