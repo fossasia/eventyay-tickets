@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-03-05 15:47+0000\n"
-"PO-Revision-Date: 2024-01-20 21:45+0000\n"
-"Last-Translator: Matevž Špacapan <matevz.spacapan@gmail.com>\n"
+"PO-Revision-Date: 2024-04-08 12:39+0000\n"
+"Last-Translator: Tobias Kunze <r@rixx.de>\n"
 "Language-Team: none\n"
 "Language: sl\n"
 "MIME-Version: 1.0\n"
@@ -3046,12 +3046,9 @@ msgid "You already have a session type by this name!"
 msgstr ""
 
 #: pretalx/orga/forms/cfp.py:362
-#, fuzzy, python-brace-format
-#| msgid ""
-#| "You can find the current version <a href=\"%(current_url)s\">here</a>."
+#, python-brace-format
 msgid "You can create an access code <a href=\"{url}\">here</a>."
 msgstr ""
-"Trenutno različico lahko najdete <a href=\"%(current_url)s\">tukaj</a>."
 
 #: pretalx/orga/forms/cfp.py:371
 msgid "You already have a track by this name!"

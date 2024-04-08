@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-03-05 15:47+0000\n"
-"PO-Revision-Date: 2024-02-02 21:09+0000\n"
-"Last-Translator: jving <j.vingback@gmail.com>\n"
+"PO-Revision-Date: 2024-04-08 12:47+0000\n"
+"Last-Translator: Tobias Kunze <r@rixx.de>\n"
 "Language-Team: none\n"
 "Language: sv\n"
 "MIME-Version: 1.0\n"
@@ -41,6 +41,8 @@ msgstr "Sessionen kommer inte att spelas in."
 #: pretalx/agenda/templates/agenda/base.html:22
 msgid "This schedule-related page is non-public. Only organisers can see it."
 msgstr ""
+"Denna schema-relaterade sidan är inte offentligt. Endast arrangörer kan se "
+"den."
 
 #: pretalx/agenda/templates/agenda/changelog.html:11
 #: pretalx/agenda/templates/agenda/header_row.html:16
@@ -71,7 +73,7 @@ msgstr "av"
 
 #: pretalx/agenda/templates/agenda/changelog_block.html:25
 msgid "We have a new session: "
-msgstr "Vi har en ny session. "
+msgstr "Vi har en ny session: "
 
 #: pretalx/agenda/templates/agenda/changelog_block.html:39
 msgid "Sadly, we had to cancel sessions:"
@@ -103,27 +105,32 @@ msgid ""
 "conference. Please keep in mind that this is not our full schedule. We will "
 "follow up with the full schedule in time, stay tuned!"
 msgstr ""
+"Vi har sammanställt en lista över spännande sessioner så att du kan få en "
+"känsla för konferensen. Detta är dock inte det fulla schemat. Vi kommer att "
+"återkomma med det fulla schemat längre fram."
 
 #: pretalx/agenda/templates/agenda/featured.html:20
 msgid ""
 "In the near future you will see a curated list of sessions we’d like to show "
 "off here. Right now we are busy reviewing proposals.<br> Check back later!"
 msgstr ""
+"Inom en snar frantid kommer här att finnas en kurerad lista över sessioner. "
+"Vi är just nu upptagna med att granska förslag.<br>Återkom inom kort!"
 
 #: pretalx/agenda/templates/agenda/feed/description.html:5
 #, python-format
 msgid "A new %(event_name)s schedule has been released!"
-msgstr ""
+msgstr "Ett nytt schema för %(event_name)s har släppts!"
 
 #: pretalx/agenda/templates/agenda/feed/description.html:9
 #, python-format
 msgid "The first %(event_name)s schedule has been released!"
-msgstr ""
+msgstr "Det första schemat för %(event_name)s har nu släppts!"
 
 #: pretalx/agenda/templates/agenda/feedback.html:8
 #: pretalx/orga/templates/orga/submission/feedbacks_list.html:14
 msgid "Feedback for"
-msgstr ""
+msgstr "Återkoppling för"
 
 #: pretalx/agenda/templates/agenda/feedback.html:19
 msgid ""
@@ -171,7 +178,7 @@ msgstr ""
 #: pretalx/orga/templates/orga/submission/list.html:95
 #: pretalx/person/forms.py:380
 msgid "Speakers"
-msgstr ""
+msgstr "Talare"
 
 #: pretalx/agenda/templates/agenda/schedule.html:19
 #: pretalx/agenda/templates/agenda/schedule_nojs.html:22
@@ -179,17 +186,18 @@ msgid ""
 "You are currently viewing the editable schedule version, which is unreleased "
 "and may change at any time."
 msgstr ""
+"Detta är det editerbara schemat, det är osläppt och kan ändras när som helst."
 
 #: pretalx/agenda/templates/agenda/schedule.html:21
 #: pretalx/agenda/templates/agenda/schedule_nojs.html:24
 msgid "You are currently viewing an older schedule version."
-msgstr ""
+msgstr "Detta är en äldre version av schemat."
 
 #: pretalx/agenda/templates/agenda/schedule.html:26
 #: pretalx/agenda/templates/agenda/schedule_nojs.html:29
 #, python-format
 msgid "You can find the current version <a href=\"%(current_url)s\">here</a>."
-msgstr ""
+msgstr "Den senaste versionen finns <a href=\"%(current_url)s\">här</a>,"
 
 #: pretalx/agenda/templates/agenda/schedule.html:49
 #, python-format
@@ -197,6 +205,8 @@ msgid ""
 "To see our schedule, please either enable JavaScript or go <a "
 "href=\"%(href)s\">here</a> for our NoJS schedule."
 msgstr ""
+"För att se schemat behöver du aktiver JavaScript eller gå <a href=\"%(href)"
+"s\">hit</a> för ett statiskt schema."
 
 #: pretalx/agenda/templates/agenda/schedule_nojs.html:14
 #, python-format
@@ -205,22 +215,25 @@ msgid ""
 "personal scheduling, please enable JavaScript and go <a "
 "href=\"%(href)s\">here</a>."
 msgstr ""
+"För ett schema med full funktionalitet, såsom tidzonskonvertering och "
+"personligt program, var god aktivera JavaScript och gå <a href=\"%(href)s\""
+">hit</a>."
 
 #: pretalx/agenda/templates/agenda/schedule_nojs.html:67
 #, python-format
 msgid "No sessions on %(weekday)s, %(current_day)s."
-msgstr ""
+msgstr "Inga sessioner på %(weekday)s den %(current_day)s."
 
 #: pretalx/agenda/templates/agenda/session_block.html:17
 #, python-format
 msgid "%(minutes)smin"
-msgstr ""
+msgstr "%(minutes)s min"
 
 #: pretalx/agenda/templates/agenda/session_block.html:27
 #: pretalx/cfp/templates/cfp/event/fragment_state.html:17
 #: pretalx/submission/models/submission.py:55
 msgid "deleted"
-msgstr ""
+msgstr "raderad"
 
 #: pretalx/agenda/templates/agenda/speaker.html:48
 msgid "The speaker’s profile picture"
