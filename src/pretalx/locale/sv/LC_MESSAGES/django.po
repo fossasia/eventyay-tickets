@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-03-05 15:47+0000\n"
-"PO-Revision-Date: 2024-04-08 12:47+0000\n"
-"Last-Translator: Tobias Kunze <r@rixx.de>\n"
+"PO-Revision-Date: 2024-04-15 09:37+0000\n"
+"Last-Translator: jving <j.vingback@gmail.com>\n"
 "Language-Team: none\n"
 "Language: sv\n"
 "MIME-Version: 1.0\n"
@@ -97,7 +97,7 @@ msgstr "Vi har flyttat en session: "
 
 #: pretalx/agenda/templates/agenda/featured.html:13
 msgid "Welcome to our list of featured sessions!"
-msgstr ""
+msgstr "Välkommen till vår lista över utvalda sessioner!"
 
 #: pretalx/agenda/templates/agenda/featured.html:14
 msgid ""
@@ -136,11 +136,13 @@ msgstr "Återkoppling för"
 msgid ""
 "This review is for you personally, not for all speakers in this session."
 msgstr ""
+"Denna återkoppling är till dig personligen, inte till sessionens samtliga "
+"föreläsare."
 
 #: pretalx/agenda/templates/agenda/feedback.html:29
 #: pretalx/orga/templates/orga/submission/feedback_list.html:13
 msgid "There has been no feedback for this session yet."
-msgstr ""
+msgstr "Det finns ingen återkoppling för denna session än."
 
 #: pretalx/agenda/templates/agenda/feedback_form.html:19
 msgid ""
@@ -148,10 +150,14 @@ msgid ""
 "presentation. Even a short review can prove valuable to a speaker! Please "
 "take the time and communicate your feedback in a constructive way."
 msgstr ""
+"Ressensioner är ett värdefullt verktig för föreläsare att förbättra både "
+"inehåll och presentation. Även en kort ressension kan vara värdefull för en "
+"föreläsare! Vänligen ta en liten stund för att kommunicera din feedback på "
+"ett konstruktivt sätt."
 
 #: pretalx/agenda/templates/agenda/feedback_form.html:26
 msgid "You can’t give feedback for this session at this time."
-msgstr ""
+msgstr "Du kan inte återkoppla om den här sessionen just nu."
 
 #: pretalx/agenda/templates/agenda/header_row.html:6 pretalx/event/stages.py:81
 #: pretalx/orga/templates/orga/base.html:342
@@ -166,7 +172,7 @@ msgstr "Schema"
 #: pretalx/orga/templates/orga/submission/stats.html:21
 #: pretalx/orga/templates/orga/submission/stats.html:33
 msgid "Sessions"
-msgstr ""
+msgstr "Sessioner"
 
 #: pretalx/agenda/templates/agenda/header_row.html:12
 #: pretalx/orga/forms/mails.py:313 pretalx/orga/templates/orga/base.html:315
@@ -237,15 +243,15 @@ msgstr "raderad"
 
 #: pretalx/agenda/templates/agenda/speaker.html:48
 msgid "The speaker’s profile picture"
-msgstr ""
+msgstr "Föreläsarens profilbild"
 
 #: pretalx/agenda/templates/agenda/talk.html:37
 msgid "Favourite this session"
-msgstr ""
+msgstr "Favoritmarkera denna session"
 
 #: pretalx/agenda/templates/agenda/talk.html:38
 msgid "Remove this session from your favourites"
-msgstr ""
+msgstr "Ta bort session från favoriter"
 
 #: pretalx/agenda/templates/agenda/talk.html:67
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:18
@@ -256,53 +262,56 @@ msgstr ""
 #: pretalx/submission/forms/submission.py:270
 #: pretalx/submission/models/submission.py:206
 msgid "Language"
-msgstr ""
+msgstr "Språk"
 
 #: pretalx/agenda/templates/agenda/talk.html:87
 msgid "This session’s header image"
-msgstr ""
+msgstr "Sessionens huvudbild"
 
 #: pretalx/agenda/templates/agenda/talk.html:99
 #: pretalx/orga/templates/orga/schedule/index.html:17
 #, python-format
 msgid "All times in %(tz)s"
-msgstr ""
+msgstr "Alla tider i %(tz)s"
 
 #: pretalx/agenda/templates/agenda/talk.html:121
 msgid "See also:"
-msgstr ""
+msgstr "Se också:"
 
 #: pretalx/agenda/templates/agenda/talk.html:158
+#, fuzzy
 msgid "This speaker also appears in:"
-msgstr ""
+msgstr "Föreläsaren deltar också i:"
 
 #: pretalx/agenda/views/schedule.py:174
 msgid "Our schedule is not live yet."
-msgstr ""
+msgstr "Schemat är inte online än."
 
 #: pretalx/agenda/views/talk.py:119
 #, python-brace-format
 msgid "The session “{title}” at {event}"
-msgstr ""
+msgstr "Sessionen {title} på {event}"
 
 #: pretalx/cfp/flow.py:313 pretalx/orga/templates/orga/base.html:189
 msgid "General"
-msgstr ""
+msgstr "Allmän"
 
 #: pretalx/cfp/flow.py:317
 msgid "Hey, nice to meet you!"
-msgstr ""
+msgstr "Hej, trevligt att träffas!"
 
 #: pretalx/cfp/flow.py:322
 msgid ""
 "We’re glad that you want to contribute to our event with your proposal. "
 "Let’s get started, this won’t take long."
 msgstr ""
+"Vi är glada över att du vill bidra till vårt event med ditt förslag. Nu "
+"börjar vi, det tar inte så lång tid."
 
 #: pretalx/cfp/flow.py:355
 msgid ""
 "Your draft was saved. You can continue to edit it as long as the CfP is open."
-msgstr ""
+msgstr "Ditt utkast är sparat. Du kan editera det så länge KfM är öppen."
 
 #: pretalx/cfp/flow.py:363
 msgid ""
@@ -310,28 +319,32 @@ msgid ""
 "changes to it up to the submission deadline, and you will be notified of any "
 "changes or questions."
 msgstr ""
+"Grattis, du har skickat in ditt förslag! Du kan göra ändringar fram tills "
+"deadline för förslag passerats och kommer att bli notifierad om eventuella "
+"ändringar eller frågor."
 
 #: pretalx/cfp/flow.py:397 pretalx/orga/forms/cfp.py:566
 #: pretalx/orga/templates/orga/base.html:233
 #: pretalx/orga/templates/orga/submission/content.html:147
 msgid "Questions"
-msgstr ""
+msgstr "Frågor"
 
 #: pretalx/cfp/flow.py:401
 msgid "Tell us more!"
-msgstr ""
+msgstr "Berätta mer!"
 
 #: pretalx/cfp/flow.py:406
 msgid "Before we can save your proposal, we have some more questions for you."
-msgstr ""
+msgstr "Innan vi kan spara ditt förslag behöver vi svar på några frågor."
 
 #: pretalx/cfp/flow.py:461
 msgid "Account"
-msgstr ""
+msgstr "Konto"
 
 #: pretalx/cfp/flow.py:466
 msgid "That’s it about your proposal! We now just need a way to contact you."
 msgstr ""
+"Allt klart kring ditt förslag! Vi behöver nu bara ett sätt att kontakta dig."
 
 #: pretalx/cfp/flow.py:472
 msgid ""
@@ -339,34 +352,39 @@ msgid ""
 "gives us a way to contact you, it also gives you the possibility to edit "
 "your proposal or to view its current state."
 msgstr ""
+"För att skapa ett förslag behöver du ett konto på denna sida. Förutom att "
+"det ger oss ett sätt att kontakta dig, ger det dig ett sätt att editera ditt "
+"förslag och se dess status."
 
 #: pretalx/cfp/flow.py:488
 msgid ""
 "There was an error when logging in. Please contact the organiser for further "
 "help."
-msgstr ""
+msgstr "Något gick fel när du loggade in. Kontakta organisatören för mer hjälp."
 
 #: pretalx/cfp/flow.py:505
 msgid "Profile"
-msgstr ""
+msgstr "Profil"
 
 #: pretalx/cfp/flow.py:509
 msgid "Tell us something about yourself!"
-msgstr ""
+msgstr "Berätta lite om dig själv!"
 
 #: pretalx/cfp/flow.py:514
 msgid ""
 "This information will be publicly displayed next to your session - you can "
 "always edit for as long as proposals are still open."
 msgstr ""
+"Denna information kommer att visas publikt i anslutning till din session - "
+"du kan editera den så länge förslagen är öppna."
 
 #: pretalx/cfp/forms/auth.py:30 pretalx/person/forms.py:296
 msgid "New password"
-msgstr ""
+msgstr "Nytt lösenord"
 
 #: pretalx/cfp/forms/submissions.py:6 pretalx/orga/forms/submission.py:72
 msgid "Speaker email"
-msgstr ""
+msgstr "Föreläsarens epost"
 
 #: pretalx/cfp/forms/submissions.py:7 pretalx/mail/models.py:37
 #: pretalx/mail/models.py:227 pretalx/orga/forms/cfp.py:417
@@ -374,19 +392,19 @@ msgstr ""
 #: pretalx/orga/templates/orga/mails/sent_list.html:17
 #: pretalx/person/models/information.py:43
 msgid "Subject"
-msgstr ""
+msgstr "Ämne"
 
 #: pretalx/cfp/forms/submissions.py:8 pretalx/mail/models.py:40
 #: pretalx/mail/models.py:228 pretalx/orga/forms/cfp.py:418
 #: pretalx/orga/forms/review.py:279 pretalx/person/models/information.py:44
 msgid "Text"
-msgstr ""
+msgstr "Text"
 
 #: pretalx/cfp/forms/submissions.py:13
 #: pretalx/submission/models/submission.py:883
 #, python-brace-format
 msgid "{speaker} invites you to join their session!"
-msgstr ""
+msgstr "{speaker} bjuder in dig till att delta på sin session!"
 
 #: pretalx/cfp/forms/submissions.py:18
 #: pretalx/submission/models/submission.py:890
@@ -405,6 +423,18 @@ msgid ""
 "I’m looking forward to it!\n"
 "{speaker}"
 msgstr ""
+"Hej.\n"
+"\n"
+"Jag erbjuder dig härmed att föreläsa på denna session\n"
+"\n"
+"{title}\n"
+"\n"
+"på {event}. Följ denna länk för att acceptera:\n"
+"\n"
+"{url}\n"
+"\n"
+"Jag ser fram emot att hålla detta med dig.\n"
+"{speaker}"
 
 #: pretalx/cfp/phrases.py:8
 msgid ""
@@ -413,16 +443,22 @@ msgid ""
 "instructions. If you don’t see the email within the next minutes, check your "
 "spam inbox!"
 msgstr ""
+"Om vi har en användare med denna epostadress (som inte har begärt en "
+"lösenordsåtersällning de senaste 24 timmarna), kommer vi skicka ett mail med "
+"vidare instruktioner. Om du inte ser något i din inkorg inom de närmsta "
+"minutera, vänligen kolla i din skräppost!"
 
 #: pretalx/cfp/phrases.py:12
 msgid ""
 "This link was not valid. Make sure you copied the complete URL from the "
 "email and that the email is no more than 24 hours old."
 msgstr ""
+"Denna länk är inte tillgänglig. Säkerställ att du kopierade hela sökvägen "
+"från mailet och att mailet inte är mer än 24 timmar gammalt."
 
 #: pretalx/cfp/phrases.py:15
 msgid "Awesome! You can now log in using your new password."
-msgstr ""
+msgstr "Fantastiskt! Du kan nu logga in med ditt nya lösenord."
 
 #: pretalx/cfp/phrases.py:18
 msgid ""
@@ -430,70 +466,77 @@ msgid ""
 "excellent support for English in pretalx, but if you encounter issues or "
 "errors, please contact us!"
 msgstr ""
+"Dina lokala inställningar har sparats. We vill tro att vi har ett utmärkt "
+"stöd för Svenska i pretalx, men om du hittar något som inte stämmer, "
+"vänligen kontakta oss!"
 
 #: pretalx/cfp/phrases.py:22
 msgid "Your proposal has been withdrawn."
-msgstr ""
+msgstr "Ditt förslag har blivit tillbakadraget."
 
 #: pretalx/cfp/phrases.py:24
 msgid ""
 "Your proposal can’t be withdrawn at this time – please contact us if you "
 "need to withdraw your proposal!"
 msgstr ""
+"Det går inte att dra tillbaka ditt förslag just nu - vänligen kontakta oss "
+"om du behöver dra tillbaka det!"
 
 #: pretalx/cfp/phrases.py:27
 msgid "Your session has been confirmed – we’re looking forward to seeing you!"
-msgstr ""
+msgstr "Din session har bekräftats - vi ser fram emot att träffa dig!"
 
 #: pretalx/cfp/phrases.py:30
 msgid ""
 "This proposal has already been confirmed – we’re looking forward to seeing "
 "you!"
-msgstr ""
+msgstr "Detta förslag har redan bekräftats - vi ser fram emot att träffa dig!"
 
 #: pretalx/cfp/phrases.py:33
 msgid ""
 "This proposal cannot be confirmed at this time – please contact us if you "
 "think this is an error."
 msgstr ""
+"Detta förslag kan inte bekräftas just nu - kontakta oss om du tror att det "
+"kan vara fel."
 
 #: pretalx/cfp/phrases.py:35
 msgid "This proposal cannot be edited anymore."
-msgstr ""
+msgstr "Detta förslag går inte att redigera längre."
 
 #: pretalx/cfp/phrases.py:37
 msgid "Your account has now been deleted."
-msgstr ""
+msgstr "Ditt konto har raderats."
 
 #: pretalx/cfp/phrases.py:38
 msgid "Are you really sure? Please tick the box"
-msgstr ""
+msgstr "Är du säker? Markera rutan"
 
 #: pretalx/cfp/phrases.py:40
 msgid "Please provide a valid email address."
-msgstr ""
+msgstr "Vänligen fyll i en giltig epostadress."
 
 #: pretalx/cfp/phrases.py:41
 msgid "The invitation was sent!"
-msgstr ""
+msgstr "Inbjudan har skickats!"
 
 #: pretalx/cfp/phrases.py:43
 msgid "You are now part of this proposal! Please fill in your profile below."
-msgstr ""
+msgstr "Du är nu en del av detta förslag! Vänligen fyll i din profil nedan."
 
 #: pretalx/cfp/phrases.py:46
 msgid "This event currently does not accept new proposals, sorry!"
-msgstr ""
+msgstr "Detta event acceptera inte nya förslag just nu!"
 
 #: pretalx/cfp/phrases.py:47
 msgid "Your session has been submitted successfully!"
-msgstr ""
+msgstr "Din session har skickats in!"
 
 #: pretalx/cfp/phrases.py:49
 msgid ""
 "We are experiencing difficulties when sending mails, but your session was "
 "submitted successfully!"
-msgstr ""
+msgstr "Vi har problem med att skicka epost, men din session har skickats in!"
 
 #: pretalx/cfp/templates/cfp/event/cfp.html:20
 #, python-format
@@ -501,78 +544,80 @@ msgid ""
 "You can enter proposals until %(deadline)s (%(timezone)s), %(until_string)s "
 "from now."
 msgstr ""
+"Du kan skicka in förslag fram till %(deadline)s%(timezone)s, stänger om "
+"%(until_string)s."
 
 #: pretalx/cfp/templates/cfp/event/cfp.html:24
 #, python-format
 msgid "This Call for Papers closed on %(deadline)s (%(timezone)s)."
-msgstr ""
+msgstr "Denna Kallese för Deltagande stängde %(deadline)s (%(timezone)s)."
 
 #: pretalx/cfp/templates/cfp/event/cfp.html:34
 #: pretalx/cfp/templates/cfp/event/index.html:22
 msgid "View conference schedule"
-msgstr ""
+msgstr "Visa konferensens schema"
 
 #: pretalx/cfp/templates/cfp/event/cfp.html:38
 #: pretalx/cfp/templates/cfp/event/index.html:26
 msgid "View schedule preview"
-msgstr ""
+msgstr "Visa föhandsgranskning av schema"
 
 #: pretalx/cfp/templates/cfp/event/cfp.html:43
 #: pretalx/cfp/templates/cfp/event/index.html:16
 msgid "Edit or view your proposals"
-msgstr ""
+msgstr "Redigera och visa dina förslag"
 
 #: pretalx/cfp/templates/cfp/event/cfp.html:49
 msgid "Submit a proposal"
-msgstr ""
+msgstr "Skicka in ett förslag"
 
 #: pretalx/cfp/templates/cfp/event/cfp.html:51
 msgid "Proposals are closed"
-msgstr ""
+msgstr "Förslagslådan är stängd"
 
 #: pretalx/cfp/templates/cfp/event/fragment_state.html:3
 #: pretalx/orga/views/dashboard.py:303 pretalx/orga/views/dashboard.py:339
 #: pretalx/submission/models/submission.py:49
 msgid "submitted"
-msgstr ""
+msgstr "inskickat"
 
 #: pretalx/cfp/templates/cfp/event/fragment_state.html:5
 msgid "in review"
-msgstr ""
+msgstr "under granskning"
 
 #: pretalx/cfp/templates/cfp/event/fragment_state.html:7
 msgid "not accepted"
-msgstr ""
+msgstr "ej accepterat"
 
 #: pretalx/cfp/templates/cfp/event/fragment_state.html:9
 #: pretalx/orga/forms/review.py:246 pretalx/submission/models/submission.py:50
 msgid "accepted"
-msgstr ""
+msgstr "accepterat"
 
 #: pretalx/cfp/templates/cfp/event/fragment_state.html:11
 #: pretalx/orga/forms/review.py:247 pretalx/submission/models/submission.py:51
 msgid "confirmed"
-msgstr ""
+msgstr "bekräftat"
 
 #: pretalx/cfp/templates/cfp/event/fragment_state.html:13
 #: pretalx/submission/models/submission.py:53
 msgid "canceled"
-msgstr ""
+msgstr "inställt"
 
 #: pretalx/cfp/templates/cfp/event/fragment_state.html:15
 #: pretalx/submission/models/submission.py:54
 msgid "withdrawn"
-msgstr ""
+msgstr "tillbakadraget"
 
 #: pretalx/cfp/templates/cfp/event/index.html:31
 #: pretalx/orga/views/dashboard.py:132
 msgid "Go to CfP"
-msgstr ""
+msgstr "Gå till KfM"
 
 #: pretalx/cfp/templates/cfp/event/invitation.html:5
 #: pretalx/cfp/templates/cfp/event/invitation.html:8
 msgid "Accept invitation?"
-msgstr ""
+msgstr "Acceptera inbjudan?"
 
 #: pretalx/cfp/templates/cfp/event/invitation.html:11
 msgid ""
@@ -580,10 +625,12 @@ msgid ""
 "because the invitation has expired, or because the proposal cannot be edited "
 "any more."
 msgstr ""
+"Tyvärr kan du inte acceptera denna inbjudan just nu. Det kan vara för att "
+"inbjudan har gått ut eller för att förslaget inte kan redigeras längre."
 
 #: pretalx/cfp/templates/cfp/event/invitation.html:16
 msgid "Please contact the conference organizers for more information."
-msgstr ""
+msgstr "Vänligen kontakta organisatörerna för mer information."
 
 #: pretalx/cfp/templates/cfp/event/invitation.html:20
 #, python-format
@@ -591,31 +638,33 @@ msgid ""
 "You, %(name)s, have been invited to be a speaker for the session “%(talk)s”. "
 "Do you accept the invitation?"
 msgstr ""
+"Du, %(name)s, har blivit inbjuden till att bli föreläsare för sessionen "
+"%(talk)s. Accepterar du inbjudan?"
 
 #: pretalx/cfp/templates/cfp/event/invitation.html:28
 msgid "Abstract:"
-msgstr ""
+msgstr "Samanfattning:"
 
 #: pretalx/cfp/templates/cfp/event/invitation.html:41
 #: pretalx/event/models/event.py:635 pretalx/orga/forms/review.py:373
 #: pretalx/submission/models/question.py:420
 #: pretalx/submission/models/submission.py:871
 msgid "No"
-msgstr ""
+msgstr "Nej"
 
 #: pretalx/cfp/templates/cfp/event/invitation.html:44
 #: pretalx/orga/templates/orga/review/dashboard.html:309
 #: pretalx/orga/templates/orga/review/dashboard.html:334
 msgid "Accept"
-msgstr ""
+msgstr "Acceptera"
 
 #: pretalx/cfp/templates/cfp/event/login.html:5
 msgid "Login"
-msgstr ""
+msgstr "Användarnamn"
 
 #: pretalx/cfp/templates/cfp/event/login.html:8
 msgid "Welcome back!"
-msgstr ""
+msgstr "Välkommen tillbaka!"
 
 #: pretalx/cfp/templates/cfp/event/login.html:10
 msgid ""
@@ -623,69 +672,74 @@ msgid ""
 "schedule updates. You’ll only need an account if you participate in the "
 "event as speaker or as an organiser."
 msgstr ""
+"Du behöver inte ett konto för att visa detta event, skicka in återkoppling "
+"och för att få schemauppdateringar. Du behöver bara ett konto om du deltager "
+"som föreläsare eller organisatör."
 
 #: pretalx/cfp/templates/cfp/event/login.html:17
 msgid ""
 "If you already created a proposal for a different event on this server, you "
 "can re-use your account to log in for this event."
 msgstr ""
+"Om du redan lämnat in ett förslag för ett annat event på denna server så kan "
+"du återanvända det kontot för detta event."
 
 #: pretalx/cfp/templates/cfp/event/recover.html:5
 #: pretalx/cfp/templates/cfp/event/reset.html:5
 #: pretalx/orga/templates/orga/auth/recover.html:4
 #: pretalx/orga/templates/orga/auth/reset.html:4
 msgid "Password reset"
-msgstr ""
+msgstr "Återställ lösenord"
 
 #: pretalx/cfp/templates/cfp/event/recover.html:13
 #: pretalx/orga/templates/orga/auth/recover.html:12
 msgid "OK, this looks good!"
-msgstr ""
+msgstr "OK, det ser bra ut!"
 
 #: pretalx/cfp/templates/cfp/event/recover.html:15
 #: pretalx/orga/templates/orga/auth/recover.html:14
 msgid "Now you just need to choose your new password and you are ready to go."
-msgstr ""
+msgstr "Nu behöver du bara välja ditt nya lösenord och sen är det klart."
 
 #: pretalx/cfp/templates/cfp/event/recover.html:21
 #: pretalx/orga/templates/orga/auth/recover.html:20
 msgid "Save this!"
-msgstr ""
+msgstr "Spara detta!"
 
 #: pretalx/cfp/templates/cfp/event/reset.html:8
 #: pretalx/orga/templates/orga/auth/reset.html:7
 msgid "Forgot your password?"
-msgstr ""
+msgstr "Glömt ditt lösenord?"
 
 #: pretalx/cfp/templates/cfp/event/reset.html:14
 #: pretalx/orga/templates/orga/auth/reset.html:13
 msgid "Let me set a new one!"
-msgstr ""
+msgstr "Då skapar vi ett nytt!"
 
 #: pretalx/cfp/templates/cfp/event/submission_base.html:6
 #: pretalx/orga/templates/orga/submission/content.html:26
 msgid "Create proposal"
-msgstr ""
+msgstr "Skapa förslag"
 
 #: pretalx/cfp/templates/cfp/event/submission_base.html:31
 msgid "Done!"
-msgstr ""
+msgstr "Klart!"
 
 #: pretalx/cfp/templates/cfp/event/submission_base.html:45
 msgid "Save as draft"
-msgstr ""
+msgstr "Spara som utkast"
 
 #: pretalx/cfp/templates/cfp/event/submission_base.html:50
 msgid "Continue"
-msgstr ""
+msgstr "Fortsätt"
 
 #: pretalx/cfp/templates/cfp/event/submission_base.html:52
 msgid "Submit proposal!"
-msgstr ""
+msgstr "Skicka in förslag!"
 
 #: pretalx/cfp/templates/cfp/event/submission_base.html:56
 msgid "or save as draft for now"
-msgstr ""
+msgstr "eller spara som utkast"
 
 #: pretalx/cfp/templates/cfp/event/submission_base.html:57
 msgid ""
@@ -693,6 +747,9 @@ msgid ""
 "not be able to see your proposal, though they will be able to send you "
 "reminder emails about the upcoming deadline."
 msgstr ""
+"Du kan spara ditt förslag som ett utkast och skicka in det senare. "
+"Organisatörerna kan inte se ditt förslag men de kan skicka påminnelsemail om "
+"att deadline närmar sig."
 
 #: pretalx/cfp/templates/cfp/event/submission_base.html:64
 #: pretalx/orga/templates/orga/cfp/access_code_delete.html:11
@@ -715,19 +772,19 @@ msgstr ""
 #: pretalx/orga/templates/orga/submission/state_change.html:27
 #: pretalx/orga/templates/orga/submission/tag_delete.html:11
 msgid "Back"
-msgstr ""
+msgstr "Bakåt"
 
 #: pretalx/cfp/templates/cfp/event/submission_questions.html:28
 msgid "… about your proposal:"
-msgstr ""
+msgstr "....om ditt förslag:"
 
 #: pretalx/cfp/templates/cfp/event/submission_questions.html:36
 msgid "… about yourself:"
-msgstr ""
+msgstr "... om dig:"
 
 #: pretalx/cfp/templates/cfp/event/submission_user.html:8
 msgid "Sign in or register to save your draft"
-msgstr ""
+msgstr "Logga in eller registrera dig för att spara ditt utkast"
 
 #: pretalx/cfp/templates/cfp/event/submission_user.html:14
 msgid ""
@@ -735,11 +792,14 @@ msgid ""
 "will be able to send you reminders about your pending proposal draft closer "
 "to the deadline."
 msgstr ""
+"Organisatörerna kommer inte att kunna se din draft eller din epostadress. De "
+"kommer däremot att kunna skicka påminnelser om ditt väntande utkast när "
+"deadline närmar sig."
 
 #: pretalx/cfp/templates/cfp/event/user_mails.html:4
 #: pretalx/cfp/templates/cfp/event/user_mails.html:7
 msgid "Your E-mails"
-msgstr ""
+msgstr "Dina mail"
 
 #: pretalx/cfp/templates/cfp/event/user_mails.html:9
 msgid ""
@@ -747,17 +807,22 @@ msgid ""
 "them in your email inbox, but this page serves as a helper in case your "
 "email address was unavailable or the emails got lost in some way."
 msgstr ""
+"Dessa är mail som organisatörerna skickat till dig, så du borde kunna hitta "
+"dem i din mailkorg, denna sida är till hjälp ifall din epostadress inte var "
+"tillgänglig eller om mailen försvunnit på något sätt."
 
 #: pretalx/cfp/templates/cfp/event/user_profile.html:8
 #: pretalx/cfp/templates/cfp/event/user_profile.html:24
 msgid "Your Profile"
-msgstr ""
+msgstr "Din profil"
 
 #: pretalx/cfp/templates/cfp/event/user_profile.html:26
 msgid ""
 "This data will be displayed publicly if your proposal is accepted. It is "
 "also visible to reviewers."
 msgstr ""
+"Denna data kommer att visas publikt om ditt förslag accepteras. Det är också "
+"tillgängligt för granskare."
 
 #: pretalx/cfp/templates/cfp/event/user_profile.html:47
 #: pretalx/cfp/templates/cfp/event/user_profile.html:61
@@ -783,23 +848,23 @@ msgstr ""
 #: pretalx/orga/templates/orga/submission/review.html:215
 #: pretalx/orga/templates/orga/update.html:91
 msgid "Save"
-msgstr ""
+msgstr "Spara"
 
 #: pretalx/cfp/templates/cfp/event/user_profile.html:54
 msgid "We have some questions"
-msgstr ""
+msgstr "Vi har lite frågor"
 
 #: pretalx/cfp/templates/cfp/event/user_profile.html:68
 msgid "Your Account"
-msgstr ""
+msgstr "Ditt konto"
 
 #: pretalx/cfp/templates/cfp/event/user_profile.html:70
 msgid "You can change your log in data here."
-msgstr ""
+msgstr "Du kan ändra dina inloggningsuppgiter här,"
 
 #: pretalx/cfp/templates/cfp/event/user_profile.html:89
 msgid "Account deletion"
-msgstr ""
+msgstr "Radera konto"
 
 #: pretalx/cfp/templates/cfp/event/user_profile.html:93
 msgid ""
@@ -807,30 +872,35 @@ msgid ""
 "information will be overwritten. <strong>This action is irreversible.</"
 "strong>"
 msgstr ""
+"Du kan radera ditt konto här - alla namn, epostadresser, och annan personlig "
+"information kommer att skrivas över. <strong>Detta går inte att "
+"ångra.</strong>"
 
 #: pretalx/cfp/templates/cfp/event/user_profile.html:97
 msgid ""
 "I really do want to delete my account, losing access to my proposals and "
 "sessions, and overriding my public and private data."
 msgstr ""
+"Jag vill radera mitt konto, min åtkomst till mina förslag och sessioner "
+"kommer också försvinna, och all min publika och privata data."
 
 #: pretalx/cfp/templates/cfp/event/user_profile.html:102
 msgid "Delete my account"
-msgstr ""
+msgstr "Radera mitt konto"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:7
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:10
 #: pretalx/cfp/templates/cfp/event/user_submission_invitation.html:5
 #: pretalx/cfp/templates/cfp/event/user_submission_withdraw.html:4
 msgid "Your proposal"
-msgstr ""
+msgstr "Ditt förslag"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:11
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:25
 #: pretalx/cfp/templates/cfp/event/user_submission_invitation.html:10
 #: pretalx/cfp/templates/cfp/event/user_submission_withdraw.html:7
 msgid "Your proposal:"
-msgstr ""
+msgstr "Ditt förslag:"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:13
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:37
@@ -1193,7 +1263,7 @@ msgstr ""
 
 #: pretalx/cfp/templates/widgets/track-select-widget.html:40
 msgid "Close"
-msgstr ""
+msgstr "Stäng"
 
 #: pretalx/cfp/views/auth.py:102 pretalx/cfp/views/auth.py:111
 #: pretalx/cfp/views/auth.py:114
@@ -1604,7 +1674,7 @@ msgstr ""
 
 #: pretalx/common/models/log.py:120 pretalx/orga/templates/orga/base.html:219
 msgid "CfP"
-msgstr ""
+msgstr "KfM"
 
 #: pretalx/common/models/log.py:123
 msgid "Mail template"
@@ -3060,11 +3130,11 @@ msgstr ""
 
 #: pretalx/orga/forms/event.py:74 pretalx/orga/forms/event.py:573
 msgid "Grid"
-msgstr ""
+msgstr "Rutnät"
 
 #: pretalx/orga/forms/event.py:75 pretalx/orga/forms/event.py:574
 msgid "List"
-msgstr ""
+msgstr "Lista"
 
 #: pretalx/orga/forms/event.py:80
 msgid "Show featured sessions"
@@ -3306,11 +3376,11 @@ msgstr ""
 #: pretalx/orga/forms/event.py:532
 #: pretalx/orga/templates/orga/review/dashboard.html:182
 msgid "Median"
-msgstr ""
+msgstr "Median"
 
 #: pretalx/orga/forms/event.py:532
 msgid "Average (mean)"
-msgstr ""
+msgstr "Medel"
 
 #: pretalx/orga/forms/event.py:536
 msgid "Help text for reviewers"
@@ -3354,11 +3424,11 @@ msgstr ""
 
 #: pretalx/orga/forms/export.py:21
 msgid "JSON export"
-msgstr ""
+msgstr "JSON-export"
 
 #: pretalx/orga/forms/export.py:27
 msgid "Data delimiter"
-msgstr ""
+msgstr "Dataseparerare"
 
 #: pretalx/orga/forms/export.py:29
 msgid ""
@@ -3898,7 +3968,7 @@ msgstr ""
 
 #: pretalx/orga/templates/orga/auth/login.html:4
 msgid "Sign in"
-msgstr ""
+msgstr "Logga in"
 
 #: pretalx/orga/templates/orga/base.html:70
 #: pretalx/orga/templates/orga/base.html:79
@@ -4580,25 +4650,25 @@ msgstr[1] ""
 #: pretalx/orga/templates/orga/event_list.html:38
 #: pretalx/orga/templates/orga/event_list.html:74
 msgid "No proposals yet"
-msgstr ""
+msgstr "Inga förslag än"
 
 #: pretalx/orga/templates/orga/event_list.html:42
 #: pretalx/orga/templates/orga/event_list.html:79
 msgid "Live"
-msgstr ""
+msgstr "Online"
 
 #: pretalx/orga/templates/orga/event_list.html:44
 #: pretalx/orga/templates/orga/event_list.html:82
 msgid "Not public"
-msgstr ""
+msgstr "Ej offentligt"
 
 #: pretalx/orga/templates/orga/event_list.html:51
 msgid "Create a new event"
-msgstr ""
+msgstr "Skapa nytt event"
 
 #: pretalx/orga/templates/orga/event_list.html:56
 msgid "Your most recent events"
-msgstr ""
+msgstr "Dina senaste aktiviteter"
 
 #: pretalx/orga/templates/orga/event_list.html:79
 msgid "CfP open"
@@ -4855,7 +4925,7 @@ msgstr ""
 #: pretalx/orga/templates/orga/mails/outbox_list.html:73
 #: pretalx/orga/templates/orga/mails/sent_list.html:55
 msgid "Contains an attachment"
-msgstr ""
+msgstr "Inehåller bilaga"
 
 #: pretalx/orga/templates/orga/mails/outbox_list.html:77
 #: pretalx/orga/templates/orga/mails/sent_list.html:59
@@ -4934,7 +5004,7 @@ msgstr ""
 
 #: pretalx/orga/templates/orga/mails/template_list.html:36
 msgid "Acknowledge Mail"
-msgstr ""
+msgstr "bekräftelsemail"
 
 #: pretalx/orga/templates/orga/mails/template_list.html:45
 #: pretalx/orga/templates/orga/mails/template_list.html:65
@@ -5041,7 +5111,7 @@ msgstr ""
 
 #: pretalx/orga/templates/orga/plugins.html:30
 msgid "Enable"
-msgstr ""
+msgstr "Aktivera"
 
 #: pretalx/orga/templates/orga/plugins.html:36
 #, python-format
@@ -5133,7 +5203,7 @@ msgstr ""
 
 #: pretalx/orga/templates/orga/review/assignment.html:136
 msgid "Import assignments"
-msgstr ""
+msgstr "importera uppgifter"
 
 #: pretalx/orga/templates/orga/review/bulk.html:20
 #, python-format
@@ -5187,11 +5257,11 @@ msgstr ""
 
 #: pretalx/orga/templates/orga/review/dashboard.html:56
 msgid "Number of reviews"
-msgstr ""
+msgstr "Antal återkopplingar"
 
 #: pretalx/orga/templates/orga/review/dashboard.html:66
 msgid "Columns"
-msgstr ""
+msgstr "Kolumner"
 
 #: pretalx/orga/templates/orga/review/dashboard.html:78
 #: pretalx/orga/templates/orga/review/dashboard.html:197
@@ -5217,7 +5287,7 @@ msgstr ""
 
 #: pretalx/orga/templates/orga/review/dashboard.html:184
 msgid "Average"
-msgstr ""
+msgstr "Medel"
 
 #: pretalx/orga/templates/orga/review/dashboard.html:186
 #: pretalx/orga/templates/orga/review/dashboard.html:198
@@ -5269,7 +5339,7 @@ msgstr ""
 #: pretalx/orga/templates/orga/review/dashboard.html:302
 #: pretalx/orga/templates/orga/speaker/form.html:47
 msgid "pending"
-msgstr ""
+msgstr "väntande"
 
 #: pretalx/orga/templates/orga/review/dashboard.html:313
 #: pretalx/orga/templates/orga/review/dashboard.html:335
@@ -5320,7 +5390,7 @@ msgstr ""
 #: pretalx/orga/templates/orga/schedule/export.html:42
 #: pretalx/orga/templates/orga/speaker/export.html:42
 msgid "Data fields"
-msgstr ""
+msgstr "Datafält"
 
 #: pretalx/orga/templates/orga/review/export.html:44
 #: pretalx/orga/templates/orga/schedule/export.html:47
@@ -5664,7 +5734,7 @@ msgstr ""
 
 #: pretalx/orga/templates/orga/settings/review.html:60
 msgid "Review Score category"
-msgstr ""
+msgstr "Återkopplingspoängkategori"
 
 #: pretalx/orga/templates/orga/settings/review.html:65
 msgid "Delete score category"
@@ -5731,7 +5801,7 @@ msgstr ""
 
 #: pretalx/orga/templates/orga/settings/team_detail.html:61
 msgid "Resend invite"
-msgstr ""
+msgstr "Återsänd inbjudan"
 
 #: pretalx/orga/templates/orga/settings/team_detail.html:74
 msgid "Add member"
