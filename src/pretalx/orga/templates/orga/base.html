@@ -405,10 +405,27 @@
                         </a>
                     {% endif %}
                     {% if request.user.is_administrator %}
-                        <a class="nav-link {% if "/orga/admin/" in request.path %} active{% endif %}" href="/orga/admin/">
-                            <i class="fa fa-users"></i>
-                            <span>{% translate "Admin information" %}</span>
-                        </a>
+                        <div class="nav-fold">
+                            <span class="has-children">
+                                <a class="nav-link nav-link-inner" href="/orga/admin/">
+                                    <i class="fa fa-cogs"></i>
+                                    <span class="sidebar-text">
+                                        {% translate "Administration" %}
+                                    </span>
+                                </a>
+                                <a class="arrow nav-link" data-toggle="collapse" href="#collapseAdmin" aria-controls="collapseAdmin">
+                                    <i class="fa fa-angle-down"></i>
+                                </a>
+                            </span>
+                            <div class="collapse in{% if "/orga/admin/" in request.path %} show{% endif %}" aria-expand="true" id="collapseAdmin">
+                                <a class="nav-link nav-link-second-level {% if "/orga/admin/" == request.path %} active{% endif %}" href="/orga/admin/">
+                                    <span>{% translate "Admin information" %}</span>
+                                </a>
+                                <a href="/orga/admin/users/" class="nav-link nav-link-second-level{% if "/orga/admin/users" in request.path %} active{% endif %}">
+                                    <span>{% translate "Users" %}</span>
+                                </a>
+                            </div>
+                        </div>
                     {% endif %}
                     {% for nav_element in nav_global %}
                         {% include "orga/includes/sidebar_nav.html" %}

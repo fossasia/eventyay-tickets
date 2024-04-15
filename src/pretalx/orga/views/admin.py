@@ -1,22 +1,32 @@
 import sys
 
+from csp.decorators import csp_update
 from django.conf import settings
 from django.contrib import messages
+from django.db.models import Count, Q
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-from django.views.generic import FormView, TemplateView
+from django.views.generic import (
+    DeleteView,
+    DetailView,
+    FormView,
+    ListView,
+    TemplateView,
+)
 from django_context_decorator import context
+from django_scopes import scopes_disabled
 
 from pretalx.celery_app import app
 from pretalx.common.mixins.views import PermissionRequired
 from pretalx.common.models.settings import GlobalSettings
 from pretalx.common.update_check import check_result_table, update_check
 from pretalx.orga.forms.admin import UpdateSettingsForm
+from pretalx.person.models import User
 
 
 class AdminDashboard(PermissionRequired, TemplateView):
-    template_name = "orga/admin.html"
+    template_name = "orga/admin/admin.html"
     permission_required = "person.is_administrator"
 
     @context
@@ -39,7 +49,7 @@ class AdminDashboard(PermissionRequired, TemplateView):
 
 
 class UpdateCheckView(PermissionRequired, FormView):
-    template_name = "orga/update.html"
+    template_name = "orga/admin/update.html"
     permission_required = "person.is_administrator"
     form_class = UpdateSettingsForm
 
@@ -72,3 +82,96 @@ class UpdateCheckView(PermissionRequired, FormView):
 
     def get_success_url(self):
         return reverse("orga:admin.update")
+
+
+class AdminUserList(PermissionRequired, ListView):
+    template_name = "orga/admin/user_list.html"
+    permission_required = "person.is_administrator"
+    model = User
+    context_object_name = "users"
+    paginate_by = "250"
+
+    def dispatch(self, *args, **kwargs):
+        with scopes_disabled():
+            return super().dispatch(*args, **kwargs)
+
+    def get_queryset(self):
+        search = self.request.GET.get("q", "").strip()
+        if not search or len(search) < 3:
+            return User.objects.none()
+        return (
+            User.objects.filter(Q(name__icontains=search) | Q(email__icontains=search))
+            .prefetch_related(
+                "teams",
+                "teams__organiser",
+                "teams__organiser__events",
+                "teams__limit_events",
+            )
+            .annotate(
+                submission_count=Count("submissions", distinct=True),
+            )
+        )
+
+    def post(self, request, *args, **kwargs):
+        action = request.POST.get("action") or "-"
+        action, user_id = action.split("-")
+        user = User.objects.get(pk=user_id)
+        if action == "reset":
+            user.reset_password(event=None)
+            messages.success(request, _("The password was reset."))
+        elif action == "delete":
+            return redirect(reverse("orga:admin.user.delete", kwargs={"pk": user.pk}))
+        return super().get(request, *args, **kwargs)
+
+
+class AdminUserDetail(PermissionRequired, DetailView):
+    template_name = "orga/admin/user_detail.html"
+    permission_required = "person.is_administrator"
+    model = User
+    context_object_name = "user"
+    slug_url_kwarg = "code"
+    slug_field = "code"
+
+    @csp_update(IMG_SRC="https://www.gravatar.com")
+    def dispatch(self, *args, **kwargs):
+        with scopes_disabled():
+            return super().dispatch(*args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        action = request.POST.get("action") or "-"
+        if action == "pw-reset":
+            self.get_object().reset_password(event=None)
+            messages.success(request, _("The password was reset."))
+        return redirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse("orga:admin.user.list")
+
+    def get_context_data(self, **kwargs):
+        result = super().get_context_data(**kwargs)
+        result["teams"] = self.object.teams.all().prefetch_related(
+            "organiser", "limit_events", "organiser__events"
+        )
+        result["submissions"] = self.object.submissions.all()
+        return result
+
+
+class AdminUserDelete(PermissionRequired, DeleteView):
+    template_name = "orga/admin/user_delete.html"
+    permission_required = "person.is_administrator"
+    model = User
+    context_object_name = "user"
+    slug_url_kwarg = "code"
+    slug_field = "code"
+
+    def dispatch(self, *args, **kwargs):
+        with scopes_disabled():
+            return super().dispatch(*args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.get_object().shred()
+        messages.success(request, _("The user has been deleted."))
+        return redirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse("orga:admin.user.list")
