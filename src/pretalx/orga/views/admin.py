@@ -8,6 +8,13 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import DetailView, FormView, ListView, TemplateView
+from django.views.generic import (
+    DeleteView,
+    DetailView,
+    FormView,
+    ListView,
+    TemplateView,
+)
 from django_context_decorator import context
 from django_scopes import scopes_disabled
 
@@ -21,7 +28,7 @@ from pretalx.person.models import User
 
 
 class AdminDashboard(PermissionRequired, TemplateView):
-    template_name = "orga/admin.html"
+    template_name = "orga/admin/admin.html"
     permission_required = "person.is_administrator"
 
     def get_context_data(self, **kwargs):
@@ -51,7 +58,7 @@ class AdminDashboard(PermissionRequired, TemplateView):
 
 
 class UpdateCheckView(PermissionRequired, FormView):
-    template_name = "orga/update.html"
+    template_name = "orga/admin/update.html"
     permission_required = "person.is_administrator"
     form_class = UpdateSettingsForm
 
