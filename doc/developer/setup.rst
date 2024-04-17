@@ -54,7 +54,7 @@ do so automatically).
 If you are working on Ubuntu or Debian, we strongly recommend upgrading your pip and setuptools
 installation inside the virtual environment, otherwise some of the dependencies might fail::
 
-    sudo pip3 install -U pip setuptools wheel
+    (env)$ pip install -U pip setuptools wheel
 
 
 Get a copy of the source code
