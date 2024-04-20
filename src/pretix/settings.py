@@ -305,7 +305,6 @@ INSTALLED_APPS = [
     'statici18n',
     'django_countries',
     'hijack',
-    'compat',
     'oauth2_provider',
     'phonenumber_field'
 ]
