@@ -1,4 +1,5 @@
-from django.conf.urls import include, url
+from django.urls import include
+from django.urls import re_path as url
 from django.views.generic.base import RedirectView
 
 from pretix.control.views import (

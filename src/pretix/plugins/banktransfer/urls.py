@@ -1,4 +1,4 @@
-from django.conf.urls import url
+from django.urls import re_path as url
 
 from pretix.api.urls import orga_router
 from pretix.plugins.banktransfer.api import BankImportJobViewSet
