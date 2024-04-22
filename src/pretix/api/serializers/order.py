@@ -6,6 +6,7 @@ import pycountry
 from django.core.files import File
 from django.db.models import F, Q
 from django.utils.timezone import now
+from django.conf import settings
 from django.utils.translation import gettext_lazy
 from django_countries.fields import Country
 from rest_framework import serializers
@@ -164,7 +165,7 @@ class AnswerSerializer(I18nAwareModelSerializer):
         )
         if cf.type not in allowed_types:
             raise ValidationError('The submitted file "{fid}" has a file type that is not allowed in this field.'.format(fid=data))
-        if cf.file.size > 10 * 1024 * 1024:
+        if cf.file.size > settings.MAX_FILE_UPLOAD_SIZE_CONFIG["other"]:
             raise ValidationError('The submitted file "{fid}" is too large to be used in this field.'.format(fid=data))
 
         data['options'] = []

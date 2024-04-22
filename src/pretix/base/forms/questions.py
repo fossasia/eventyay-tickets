@@ -10,6 +10,7 @@ import pytz
 import vat_moss.errors
 import vat_moss.id
 from babel import Locale
+from django.conf import settings
 from django import forms
 from django.contrib import messages
 from django.core.exceptions import ValidationError
@@ -572,7 +573,7 @@ class BaseQuestionsForm(forms.Form):
                         ".pptx", ".ppt", ".doc", ".xlsx", ".xls", ".jfif", ".heic", ".heif", ".pages",
                         ".bmp", ".tif", ".tiff"
                     ),
-                    max_size=10 * 1024 * 1024,
+                    max_size=settings.MAX_FILE_UPLOAD_SIZE_CONFIG["other"],
                 )
             elif q.type == Question.TYPE_DATE:
                 attrs = {}

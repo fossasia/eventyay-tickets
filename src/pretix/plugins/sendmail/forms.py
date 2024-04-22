@@ -1,6 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from django.urls import reverse
+from django.conf import settings
 from django.utils.translation import gettext_lazy as _, pgettext_lazy
 from django_scopes.forms import SafeModelMultipleChoiceField
 from i18nfield.forms import I18nFormField, I18nTextarea, I18nTextInput
@@ -33,7 +34,7 @@ class MailForm(forms.Form):
         ),
         help_text=_('Sending an attachment increases the chance of your email not arriving or being sorted into spam folders. We recommend only using PDFs '
                     'of no more than 2 MB in size.'),
-        max_size=10 * 1024 * 1024
+        max_size=settings.MAX_FILE_UPLOAD_SIZE_CONFIG["email_attachment"]
     )  # TODO i18n
     items = forms.ModelMultipleChoiceField(
         widget=forms.CheckboxSelectMultiple(

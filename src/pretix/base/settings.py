@@ -1893,7 +1893,7 @@ Your {event} team"""))
         'form_kwargs': dict(
             label=_('Header image'),
             ext_whitelist=(".png", ".jpg", ".gif", ".jpeg"),
-            max_size=10 * 1024 * 1024,
+            max_size=settings.MAX_FILE_UPLOAD_SIZE_CONFIG["image"],
             help_text=_('If you provide a logo image, we will by default not show your event name and date '
                         'in the page header. By default, we show your logo with a size of up to 1140x120 pixels. You '
                         'can increase the size with the setting below. We recommend not using small details on the picture '
@@ -1904,7 +1904,7 @@ Your {event} team"""))
             allowed_types=[
                 'image/png', 'image/jpeg', 'image/gif'
             ],
-            max_size=10 * 1024 * 1024,
+            max_size=settings.MAX_FILE_UPLOAD_SIZE_CONFIG["image"],
         )
 
     },
@@ -1935,7 +1935,7 @@ Your {event} team"""))
         'form_kwargs': dict(
             label=_('Header image'),
             ext_whitelist=(".png", ".jpg", ".gif", ".jpeg"),
-            max_size=10 * 1024 * 1024,
+            max_size=settings.MAX_FILE_UPLOAD_SIZE_CONFIG["image"],
             help_text=_('If you provide a logo image, we will by default not show your organization name '
                         'in the page header. By default, we show your logo with a size of up to 1140x120 pixels. You '
                         'can increase the size with the setting below. We recommend not using small details on the picture '
@@ -1946,7 +1946,7 @@ Your {event} team"""))
             allowed_types=[
                 'image/png', 'image/jpeg', 'image/gif'
             ],
-            max_size=10 * 1024 * 1024,
+            max_size=settings.MAX_FILE_UPLOAD_SIZE_CONFIG["image"],
         )
     },
     'organizer_logo_image_large': {
@@ -1966,7 +1966,7 @@ Your {event} team"""))
         'form_kwargs': dict(
             label=_('Social media image'),
             ext_whitelist=(".png", ".jpg", ".gif", ".jpeg"),
-            max_size=10 * 1024 * 1024,
+            max_size=settings.MAX_FILE_UPLOAD_SIZE_CONFIG["image"],
             help_text=_('This picture will be used as a preview if you post links to your ticket shop on social media. '
                         'Facebook advises to use a picture size of 1200 x 630 pixels, however some platforms like '
                         'WhatsApp and Reddit only show a square preview, so we recommend to make sure it still looks good '
@@ -1977,7 +1977,7 @@ Your {event} team"""))
             allowed_types=[
                 'image/png', 'image/jpeg', 'image/gif'
             ],
-            max_size=10 * 1024 * 1024,
+            max_size=settings.MAX_FILE_UPLOAD_SIZE_CONFIG["image"],
         )
     },
     'invoice_logo_image': {
@@ -1988,7 +1988,7 @@ Your {event} team"""))
             label=_('Logo image'),
             ext_whitelist=(".png", ".jpg", ".gif", ".jpeg"),
             required=False,
-            max_size=10 * 1024 * 1024,
+            max_size=settings.MAX_FILE_UPLOAD_SIZE_CONFIG["image"],
             help_text=_('We will show your logo with a maximal height and width of 2.5 cm.')
         ),
         'serializer_class': UploadedFileField,
@@ -1996,7 +1996,7 @@ Your {event} team"""))
             allowed_types=[
                 'image/png', 'image/jpeg', 'image/gif'
             ],
-            max_size=10 * 1024 * 1024,
+            max_size=settings.MAX_FILE_UPLOAD_SIZE_CONFIG["image"],
         )
     },
     'frontpage_text': {

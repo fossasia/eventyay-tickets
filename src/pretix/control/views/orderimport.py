@@ -35,7 +35,7 @@ class ImportView(EventPermissionRequiredMixin, TemplateView):
                 'event': request.event.slug,
                 'organizer': request.organizer.slug,
             }))
-        if request.FILES['file'].size > 1024 * 1024 * 10:
+        if request.FILES['file'].size > settings.MAX_FILE_UPLOAD_SIZE_CONFIG["other"]:
             messages.error(request, _('Please do not upload files larger than 10 MB.'))
             return redirect(reverse('control:event.orders.import', kwargs={
                 'event': request.event.slug,

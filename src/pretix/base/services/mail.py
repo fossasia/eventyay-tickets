@@ -22,6 +22,7 @@ from django.core.mail import (
 )
 from django.core.mail.message import SafeMIMEText
 from django.db import transaction
+from django.conf import settings
 from django.template.loader import get_template
 from django.utils.timezone import override
 from django.utils.translation import gettext as _, pgettext
@@ -324,7 +325,7 @@ def mail_send_task(self, *args, to: List[str], subject: str, body: str, html: st
                                 args.append((name, content, ct.type))
                                 attach_size += len(content)
 
-                            if attach_size < 4 * 1024 * 1024:
+                            if attach_size < settings.MAX_FILE_UPLOAD_SIZE_CONFIG["email_attachment"]:
                                 # Do not attach more than 4MB, it will bounce way to often.
                                 for a in args:
                                     try:
