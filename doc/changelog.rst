@@ -6,6 +6,7 @@ Release Notes
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 - :feature:`schedule,1794` The iCal schedule export has been made private (available only to organisers) as the utility of importing a conference's entire schedule is limited, and people were frustrated that the iCal export did not reflect any applied schedule filters.
 - :bug:`schedule,1803` The QR code for schedule exporter links was not showing up when hovering on the QR code symbol.
 - :release:`2024.2.1 <2024-08-07>`
@@ -21,6 +22,9 @@ Release Notes
 - :feature:`orga:schedule,1730` The schedule editor now allows you to schedule talks that are only "pending accepted" (i.e. the speaker has not yet received the acceptance email), so that organisers can try out how their schedule would look with a given number of tentatively accepted proposals.
 =======
 >>>>>>> 06d76a0bd (Add new user list for administrators)
+=======
+- :feature:`orga:schedule` The schedule editor now allows you to schedule talks that are only "pending accepted" (i.e. the speaker has not yet received the acceptance email), so that organisers can try out how their schedule would look with a given number of tentatively accepted proposals.
+>>>>>>> febf47ce8 (Small fixes to #1732)
 - :feature:`orga` Administrators (i.e. instance owners) can now search a list of all users, which includes their teams and permissions, and links to trigger account deletion and password resets.
 - :bug:`orga:review` Assigning reviewers could lead to incorrect assignments when browsers cached the form, but new reviewers were added to the team, shifting the overall order of input fields.
 - :feature:`cfp` Choice and multiple choice questions now use a drop-down with typeahead (search for options) when they have a lot of options.

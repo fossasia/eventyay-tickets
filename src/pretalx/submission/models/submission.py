@@ -82,6 +82,8 @@ class SubmissionStates(Choices):
         DELETED: "remove",
     }
 
+    accepted_states = (ACCEPTED, CONFIRMED)
+
 
 class SubmissionManager(models.Manager):
     def get_queryset(self):
@@ -301,7 +303,7 @@ class Submission(GenerateCode, PretalxModel):
             )
         if self.state == SubmissionStates.DRAFT:
             return self.cfp_open
-        return self.state in (SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED)
+        return self.state in SubmissionStates.accepted_states
 
     @property
     def anonymised(self):
@@ -430,8 +432,10 @@ class Submission(GenerateCode, PretalxModel):
         """
         from pretalx.schedule.models import TalkSlot
 
-        # scheduling is only allowed (and therefore slots needed) for accepted and confirmed talks, or those pending counterparts
-        scheduling_allowed = self.state in [SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED] or self.pending_state in [SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED]
+        scheduling_allowed = (
+            self.state in SubmissionStates.accepted_states
+            or self.pending_state in SubmissionStates.accepted_states
+        )
 
         if not scheduling_allowed:
             TalkSlot.objects.filter(
