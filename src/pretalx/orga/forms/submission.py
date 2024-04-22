@@ -88,9 +88,9 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
                     choices=SubmissionStates.get_choices(),
                     initial=SubmissionStates.SUBMITTED,
                 )
-        if not self.instance.pk or self.instance.state in (
-            SubmissionStates.ACCEPTED,
-            SubmissionStates.CONFIRMED,
+        if (
+            not self.instance.pk
+            or self.instance.state in SubmissionStates.accepted_states
         ):
             self.fields["room"] = forms.ModelChoiceField(
                 required=False,
@@ -171,11 +171,7 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
             if "slot_count" in self.changed_data and "slot_count" in self.initial:
                 instance.update_talk_slots()
         if (
-            instance.state
-            in (
-                SubmissionStates.ACCEPTED,
-                SubmissionStates.CONFIRMED,
-            )
+            instance.state in SubmissionStates.accepted_states
             and self.cleaned_data.get("room")
             and self.cleaned_data.get("start")
             and any(field in self.changed_data for field in ("room", "start", "end"))

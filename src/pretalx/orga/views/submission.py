@@ -223,10 +223,7 @@ class SubmissionStateChange(SubmissionViewMixin, FormView):
         if pending:
             self.object.pending_state = self._target
             self.object.save()
-            if self.object.pending_state in [
-                SubmissionStates.ACCEPTED,
-                SubmissionStates.CONFIRMED,
-            ]:
+            if self.object.pending_state in SubmissionStates.accepted_states:
                 # allow configureability of pending accepted/confirmed talks
                 self.object.update_talk_slots()
         else:
@@ -890,7 +887,7 @@ class SubmissionStats(PermissionRequired, TemplateView):
     @context
     def talk_timeline_data(self):
         talk_ids = self.request.event.submissions.filter(
-            state__in=[SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED]
+            state__in=SubmissionStates.accepted_states
         ).values_list("id", flat=True)
         data = Counter(
             log.timestamp.astimezone(self.request.event.tz).date().isoformat()
@@ -915,7 +912,7 @@ class SubmissionStats(PermissionRequired, TemplateView):
         counter = Counter(
             submission.get_state_display()
             for submission in self.request.event.submissions.filter(
-                state__in=[SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED]
+                state__in=SubmissionStates.accepted_states
             )
         )
         return json.dumps(
@@ -932,7 +929,7 @@ class SubmissionStats(PermissionRequired, TemplateView):
         counter = Counter(
             str(submission.submission_type)
             for submission in self.request.event.submissions.filter(
-                state__in=[SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED]
+                state__in=SubmissionStates.accepted_states
             ).select_related("submission_type")
         )
         return json.dumps(
@@ -950,7 +947,7 @@ class SubmissionStats(PermissionRequired, TemplateView):
             counter = Counter(
                 str(submission.track)
                 for submission in self.request.event.submissions.filter(
-                    state__in=[SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED]
+                    state__in=SubmissionStates.accepted_states
                 ).select_related("track")
             )
             return json.dumps(

@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`orga:schedule` The schedule editor now allows you to schedule talks that are only "pending accepted" (i.e. the speaker has not yet received the acceptance email), so that organisers can try out how their schedule would look with a given number of tentatively accepted proposals.
 - :feature:`orga` Administrators (i.e. instance owners) can now search a list of all users, which includes their teams and permissions, and links to trigger account deletion and password resets.
 - :bug:`orga:review` Assigning reviewers could lead to incorrect assignments when browsers cached the form, but new reviewers were added to the team, shifting the overall order of input fields.
 - :feature:`cfp` Choice and multiple choice questions now use a drop-down with typeahead (search for options) when they have a lot of options.

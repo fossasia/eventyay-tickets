@@ -150,8 +150,7 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
         elif (
             "slot_count" in self.fields
             and instance
-            and instance.state
-            in [SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED]
+            and instance.state in SubmissionStates.accepted_states
         ):
             self.fields["slot_count"].disabled = True
             self.fields["slot_count"].help_text += " " + str(

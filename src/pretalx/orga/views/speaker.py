@@ -84,7 +84,7 @@ class SpeakerList(
                 accepted_submission_count=Count(
                     "user__submissions",
                     filter=Q(user__submissions__event=self.request.event)
-                    & Q(user__submissions__state__in=["accepted", "confirmed"]),
+                    & Q(user__submissions__state__in=SubmissionStates.accepted_states),
                 ),
             )
         )
@@ -94,19 +94,13 @@ class SpeakerList(
             if self.request.GET["role"] == "true":
                 qs = qs.filter(
                     user__submissions__in=self.request.event.submissions.filter(
-                        state__in=[
-                            SubmissionStates.ACCEPTED,
-                            SubmissionStates.CONFIRMED,
-                        ]
+                        state__in=SubmissionStates.accepted_states
                     )
                 )
             elif self.request.GET["role"] == "false":
                 qs = qs.exclude(
                     user__submissions__in=self.request.event.submissions.filter(
-                        state__in=[
-                            SubmissionStates.ACCEPTED,
-                            SubmissionStates.CONFIRMED,
-                        ]
+                        state__in=SubmissionStates.accepted_states
                     )
                 )
 
