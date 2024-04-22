@@ -178,7 +178,7 @@ export default {
 		sessions () {
 			if (!this.schedule) return
 			const sessions = []
-			for (const session of this.schedule.talks.filter(s => s.start && moment(s.start).isAfter(this.days[0]) && moment(s.start).isBefore(this.days.at(-1).clone().endOf('day')))) {
+			for (const session of this.schedule.talks.filter(s => s.start && moment(s.start).isSameOrAfter(this.days[0]) && moment(s.start).isSameOrBefore(this.days.at(-1).clone().endOf('day')))) {
 				sessions.push({
 					id: session.id,
 					code: session.code,
