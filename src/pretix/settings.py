@@ -766,3 +766,10 @@ COUNTRIES_OVERRIDE = {
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 25000
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10 MB
+
+MAX_FILE_UPLOAD_SIZE_CONFIG = {
+    'image': 1024 * 1024 * config.getint('file_upload_limits', 'image', fallback=10),
+    'favicon':1024 * 1024 * config.getint('file_upload_limits', 'favicon', fallback=1),
+    'email_attachment':1024 * 1024 * config.getint('file_upload_limits', 'email_attachment', fallback=10),
+    'other': 1024 * 1024 * config.getint('file_upload_limits', 'other', fallback=10)
+}

@@ -5,6 +5,7 @@ from django.db.models import (
 )
 from django.db.models.functions import Coalesce
 from django.http import Http404
+from django.conf import settings
 from django.shortcuts import get_object_or_404
 from django.utils.functional import cached_property
 from django.utils.timezone import now
@@ -433,7 +434,7 @@ class CheckinListPositionViewSet(viewsets.ReadOnlyModelViewSet):
         )
         if cf.type not in allowed_types:
             raise ValidationError('The submitted file "{fid}" has a file type that is not allowed in this field.'.format(fid=data))
-        if cf.file.size > 10 * 1024 * 1024:
+        if cf.file.size > settings.MAX_FILE_UPLOAD_SIZE_CONFIG["other"]:
             raise ValidationError('The submitted file "{fid}" is too large to be used in this field.'.format(fid=data))
 
         return cf.file
