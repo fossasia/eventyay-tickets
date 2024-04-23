@@ -11,9 +11,9 @@ from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _, gettext
 from django.views import View
 from django.views.decorators.clickjacking import xframe_options_exempt
-from i18nfield.forms import I18nFormField, I18nTextarea
+from i18nfield.forms import I18nFormField
 
-from pretix.base.forms import SettingsForm, SecretKeySettingsField
+from pretix.base.forms import SettingsForm, SecretKeySettingsField, I18nMarkdownTextarea
 from pretix.base.models import Event, Order, Item, Question, CheckinList
 from pretix.base.reldate import RelativeDateTimeField
 from pretix.base.services.checkin import perform_checkin
@@ -77,7 +77,7 @@ class VenuelessSettingsForm(SettingsForm):
     venueless_text = I18nFormField(
         label=_('Introductory text'),
         required=False,
-        widget=I18nTextarea,
+        widget=I18nMarkdownTextarea,
     )
 
     def __init__(self, *args, **kwargs):
