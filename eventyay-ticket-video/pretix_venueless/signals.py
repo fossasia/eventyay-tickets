@@ -3,8 +3,7 @@ from django.template.loader import get_template
 from django.urls import resolve, reverse
 from django.utils.timezone import now
 from i18nfield.strings import LazyI18nString
-
-from pretix.base.models import Order, Event
+from pretix.base.models import Event, Order
 from pretix.base.reldate import RelativeDateWrapper
 from pretix.base.settings import settings_hierarkey
 from pretix.base.signals import event_copy_data, item_copy_data

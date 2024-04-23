@@ -1,8 +1,6 @@
 from django.urls import path, re_path
 
-from .views import (
-    OrderPositionJoin, SettingsView
-)
+from .views import OrderPositionJoin, SettingsView
 
 urlpatterns = [
     path('control/event/<str:organizer>/<str:event>/settings/venueless/',

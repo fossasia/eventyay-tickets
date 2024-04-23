@@ -1,5 +1,4 @@
 import datetime
-
 import jwt
 from django import forms
 from django.core.exceptions import PermissionDenied
@@ -8,16 +7,19 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.utils.timezone import now
-from django.utils.translation import gettext_lazy as _, gettext
+from django.utils.translation import gettext, gettext_lazy as _
 from django.views import View
 from django.views.decorators.clickjacking import xframe_options_exempt
 from i18nfield.forms import I18nFormField
-
-from pretix.base.forms import SettingsForm, SecretKeySettingsField, I18nMarkdownTextarea
-from pretix.base.models import Event, Order, Item, Question, CheckinList
+from pretix.base.forms import (
+    I18nMarkdownTextarea, SecretKeySettingsField, SettingsForm,
+)
+from pretix.base.models import CheckinList, Event, Item, Order, Question
 from pretix.base.reldate import RelativeDateTimeField
 from pretix.base.services.checkin import perform_checkin
-from pretix.control.views.event import EventSettingsFormView, EventSettingsViewMixin
+from pretix.control.views.event import (
+    EventSettingsFormView, EventSettingsViewMixin,
+)
 from pretix.presale.views import EventViewMixin
 from pretix.presale.views.order import OrderPositionDetailMixin
 
