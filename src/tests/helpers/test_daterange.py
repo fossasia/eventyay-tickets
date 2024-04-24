@@ -20,7 +20,7 @@ def test_same_day_english():
 def test_same_day_spanish():
     with translation.override('es'):
         df = date(2003, 2, 1)
-        assert daterange(df, df) == "1 de Febrero de 2003"
+        assert daterange(df, df) == "1 de febrero de 2003"
 
 
 def test_same_month_german():
@@ -41,7 +41,7 @@ def test_same_month_spanish():
     with translation.override('es'):
         df = date(2003, 2, 1)
         dt = date(2003, 2, 3)
-        assert daterange(df, dt) == "1 - 3 de Febrero de 2003"
+        assert daterange(df, dt) == "1 - 3 de febrero de 2003"
 
 
 def test_same_year_german():
@@ -62,7 +62,7 @@ def test_same_year_spanish():
     with translation.override('es'):
         df = date(2003, 2, 1)
         dt = date(2003, 4, 3)
-        assert daterange(df, dt) == "1 de Febrero - 3 de Abril de 2003"
+        assert daterange(df, dt) == "1 de febrero - 3 de abril de 2003"
 
 
 def test_different_dates_german():
@@ -83,4 +83,4 @@ def test_different_dates_spanish():
     with translation.override('es'):
         df = date(2003, 2, 1)
         dt = date(2005, 4, 3)
-        assert daterange(df, dt) == "1 de Febrero de 2003 – 3 de Abril de 2005"
+        assert daterange(df, dt) == "1 de febrero de 2003 – 3 de abril de 2005"
