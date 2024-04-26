@@ -1076,7 +1076,7 @@ class Event(PretalxModel):
             ).send()
 
     @transaction.atomic
-    def shred(self):
+    def shred(self, person=None):
         """Irrevocably deletes an event and all related data."""
         from pretalx.common.models import ActivityLog
         from pretalx.person.models import SpeakerProfile
@@ -1090,6 +1090,19 @@ class Event(PretalxModel):
             Submission,
         )
 
+        ActivityLog.objects.create(
+            person=person,
+            action_type="pretalx.event.delete",
+            content_object=self.organiser,
+            is_orga_action=True,
+            data={
+                "slug": self.slug,
+                "name": str(self.name),
+                # We log the organiser because events and organisers are
+                # often deleted together.
+                "organiser": str(self.organiser.name),
+            },
+        )
         deletion_order = [
             (self.logged_actions(), False),
             (self.queued_mails.all(), False),

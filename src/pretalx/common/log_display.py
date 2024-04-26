@@ -1,9 +1,32 @@
+import string
+
 from django.dispatch import receiver
+from django.utils.html import escape
 from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ngettext_lazy as _n
 
 from pretalx.common.models.log import ActivityLog
-from pretalx.common.signals import activitylog_display
+from pretalx.common.signals import activitylog_display, activitylog_object_link
 from pretalx.event.models.event import Event
+from pretalx.mail.models import MailTemplate, QueuedMail
+from pretalx.submission.models import (
+    Answer,
+    AnswerOption,
+    CfP,
+    Question,
+    Submission,
+    SubmissionStates,
+)
+
+# Usually, we don't have to include the object name in activity log
+# strings, because we use ActivityLog.content_object to get the object
+# and display it above the message. However, in some cases, like when
+# we log the deletion of an object, we don't have the object anymore,
+# so we'll want to format the message instead.
+TEMPLATE_LOG_NAMES = {
+    "pretalx.event.delete": _("The event {name} ({slug}) by {organiser} was deleted."),
+    "pretalx.organiser.delete": _("The organiser {name} was deleted."),
+}
 
 LOG_NAMES = {
     "pretalx.cfp.update": _("The CfP has been modified."),
@@ -96,4 +119,61 @@ LOG_NAMES = {
 
 @receiver(activitylog_display)
 def default_activitylog_display(sender: Event, activitylog: ActivityLog, **kwargs):
+    if templated_entry := TEMPLATE_LOG_NAMES.get(activitylog.action_type):
+        message = str(templated_entry)
+        # Check if all placeholders are present in activitylog.data
+        placeholders = {v[1] for v in string.Formatter().parse(message) if v[1]}
+        if placeholders <= set(activitylog.data.keys()):
+            return message.format(**activitylog.data)
     return LOG_NAMES.get(activitylog.action_type)
+
+
+@receiver(activitylog_object_link)
+def default_activitylog_object_link(sender: Event, activitylog: ActivityLog, **kwargs):
+    if not activitylog.content_object:
+        return
+    url = ""
+    text = ""
+    link_text = ""
+    if isinstance(activitylog.content_object, Submission):
+        url = activitylog.content_object.orga_urls.base
+        link_text = escape(activitylog.content_object.title)
+        if activitylog.content_object.state in [
+            SubmissionStates.ACCEPTED,
+            SubmissionStates.CONFIRMED,
+        ]:
+            text = _n("Session", "Sessions", 1)
+        else:
+            text = _n("Proposal", "Proposals", 1)
+    if isinstance(activitylog.content_object, Question):
+        url = activitylog.content_object.urls.base
+        link_text = escape(activitylog.content_object.question)
+        text = _("Question")
+    if isinstance(activitylog.content_object, AnswerOption):
+        url = activitylog.content_object.question.urls.base
+        link_text = escape(activitylog.content_object.question.question)
+        text = _("Question")
+    if isinstance(activitylog.content_object, Answer):
+        if activitylog.content_object.submission:
+            url = activitylog.content_object.submission.orga_urls.base
+        else:
+            url = activitylog.content_object.question.urls.base
+        link_text = escape(activitylog.content_object.question.question)
+        text = _("Answer to question")
+    if isinstance(activitylog.content_object, CfP):
+        url = activitylog.content_object.urls.text
+        link_text = _("CfP")
+    if isinstance(activitylog.content_object, MailTemplate):
+        url = activitylog.content_object.urls.base
+        text = _("Mail template")
+        link_text = escape(activitylog.content_object.subject)
+    if isinstance(activitylog.content_object, QueuedMail):
+        url = activitylog.content_object.urls.base
+        text = _("Email")
+        link_text = escape(activitylog.content_object.subject)
+    if url:
+        if not link_text:
+            link_text = url
+        return f'{text} <a href="{url}">{link_text}</a>'
+    if text or link_text:
+        return f"{text} {link_text}"

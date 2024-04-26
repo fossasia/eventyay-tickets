@@ -6,7 +6,7 @@ from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
 from django.utils.translation import get_language
 from django.utils.translation import gettext_lazy as _
-from django_scopes import scope, scopes_disabled
+from django_scopes import scope
 from i18nfield.fields import I18nCharField
 
 from pretalx.common.mixins.models import PretalxModel
@@ -53,14 +53,25 @@ class Organiser(PretalxModel):
         new_team = "{teams}new"
 
     @transaction.atomic
-    def shred(self):
+    def shred(self, person=None):
         """Irrevocably deletes the organiser and all related events and their
         data."""
+        from pretalx.common.models import ActivityLog
+
+        ActivityLog.objects.create(
+            person=person,
+            action_type="pretalx.organiser.delete",
+            content_object=self,
+            is_orga_action=True,
+            data={
+                "slug": self.slug,
+                "name": str(self.name),
+            },
+        )
         for event in self.events.all():
             with scope(event=event):
-                event.shred()
-        with scopes_disabled():
-            self.logged_actions().delete()
+                event.shred(person=person)
+        # We keep our logged actions, even with the now-broken content type
         self.delete()
 
     shred.alters_data = True
