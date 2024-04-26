@@ -18,6 +18,11 @@ from pretalx.submission.models import (
     SubmissionStates,
 )
 
+# Usually, we don't have to include the object name in activity log
+# strings, because we use ActivityLog.content_object to get the object
+# and display it above the message. However, in some cases, like when
+# we log the deletion of an object, we don't have the object anymore,
+# so we'll want to format the message instead.
 TEMPLATE_LOG_NAMES = {
     "pretalx.event.delete": _("The event {name} ({slug}) by {organiser} was deleted."),
     "pretalx.organiser.delete": _("The organiser {name} was deleted."),
