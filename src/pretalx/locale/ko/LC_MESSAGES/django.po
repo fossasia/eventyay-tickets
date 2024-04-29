@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-04-22 10:14+0000\n"
-"PO-Revision-Date: 2024-04-06 10:24+0000\n"
+"PO-Revision-Date: 2024-04-25 21:24+0000\n"
 "Last-Translator: Han Lee | 이한결 <wyatt0216@gmail.com>\n"
 "Language-Team: none\n"
 "Language: ko\n"
@@ -272,7 +272,7 @@ msgstr "이 세션의 헤더 이미지"
 #: pretalx/orga/templates/orga/schedule/index.html:17
 #, python-format
 msgid "All times in %(tz)s"
-msgstr ""
+msgstr "기준 시간대: %(tz)s"
 
 #: pretalx/agenda/templates/agenda/talk.html:121
 msgid "See also:"
@@ -1454,15 +1454,15 @@ msgstr "플러그인이 비활성화되었습니다."
 
 #: pretalx/common/log_display.py:16 pretalx/common/log_display.py:24
 msgid "The invitation to the event orga was accepted."
-msgstr ""
+msgstr "이벤트 운영진에 대한 초대가 수락되었습니다."
 
 #: pretalx/common/log_display.py:17 pretalx/common/log_display.py:27
 msgid "An invitation to the event orga was retracted."
-msgstr ""
+msgstr "이벤트 운영진에 대한 초대가 철회되었습니다."
 
 #: pretalx/common/log_display.py:18 pretalx/common/log_display.py:30
 msgid "An invitation to the event orga was sent."
-msgstr ""
+msgstr "이벤트 운영진에 대한 초대가 보내졌습니다."
 
 #: pretalx/common/log_display.py:20 pretalx/common/log_display.py:33
 msgid "The invitation to the review team was retracted."
@@ -2088,7 +2088,7 @@ msgstr "나의 프로필"
 
 #: pretalx/common/templates/common/base.html:111
 msgid "Organiser area"
-msgstr ""
+msgstr "운영진 구역"
 
 #: pretalx/common/templates/common/base.html:117
 msgid "Logout"
@@ -2560,7 +2560,7 @@ msgstr "확인"
 
 #: pretalx/event/models/event.py:1072
 msgid "News from your content system"
-msgstr ""
+msgstr "콘텐츠 시스템의 소식"
 
 #: pretalx/event/models/organiser.py:39
 msgid ""
