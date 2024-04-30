@@ -14,11 +14,6 @@ class CfPPhrases(Phrases, app="cfp"):
     )
     auth_reset_success = _("Awesome! You can now log in using your new password.")
 
-    locale_change_success = _(
-        "Your locale preferences have been saved. We like to think that we have excellent support "
-        "for English in pretalx, but if you encounter issues or errors, please contact us!"
-    )
-
     submission_withdrawn = _("Your proposal has been withdrawn.")
     submission_not_withdrawn = _(
         "Your proposal can’t be withdrawn at this time – please contact us if you need to withdraw your proposal!"
@@ -34,17 +29,12 @@ class CfPPhrases(Phrases, app="cfp"):
     )
     submission_uneditable = _("This proposal cannot be edited anymore.")
 
-    account_deleted = _("Your account has now been deleted.")
-    account_delete_confirm = _("Are you really sure? Please tick the box")
-
     invite_invalid_email = _("Please provide a valid email address.")
     invite_sent = _("The invitation was sent!")
     invite_accepted = _(
         "You are now part of this proposal! Please fill in your profile below."
     )
 
-    submissions_closed = _("This event currently does not accept new proposals, sorry!")
-    submission_success = _("Your session has been submitted successfully!")
     submission_email_fail = _(
         "We are experiencing difficulties when sending mails, but your session was submitted successfully!"
     )

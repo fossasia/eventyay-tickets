@@ -5,10 +5,9 @@ from django.conf import settings
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.utils.http import url_has_allowed_host_and_scheme
+from django.utils.translation import gettext_lazy as _
 from django.utils.translation import override
 from django.views.generic import View
-
-from pretalx.common.text.phrases import phrases
 
 
 class LocaleSet(View):
@@ -44,6 +43,12 @@ class LocaleSet(View):
                 domain=settings.SESSION_COOKIE_DOMAIN,
             )
             with override(locale):
-                messages.success(request, str(phrases.cfp.locale_change_success))
+                messages.success(
+                    request,
+                    _(
+                        "Your locale preferences have been saved. We like to think that we have excellent support "
+                        "for English in pretalx, but if you encounter issues or errors, please contact us!"
+                    ),
+                )
 
         return resp

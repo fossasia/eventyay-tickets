@@ -75,13 +75,6 @@ class BasePhrases(Phrases, app="base"):
     passwords_differ = _(
         "You entered two different passwords. Please enter the same one twice!"
     )
-    password_too_weak = [
-        _("Your password is too weak or too common, please choose another one."),
-        _("Sorry, this password is too weak or too common, please choose another one."),
-        _(
-            "Your password is the only thing protecting your account, so please choose a strong one."
-        ),
-    ]
     use_markdown = _("You can use {link_start}Markdown{link_end} here.").format(
         link_start='<a href="https://docs.pretalx.org/en/latest/user/markdown.html" target="_blank" rel="noopener">',
         link_end="</a>",
