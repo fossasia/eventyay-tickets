@@ -3,8 +3,6 @@ import os
 import sys
 from pathlib import Path
 
-from pretalx.common.settings.utils import reduce_dict
-
 CONFIG = {
     "filesystem": {
         "base": {
@@ -167,6 +165,15 @@ def read_config_files(config):
         config,
         config_files or [],
     )  # .read() returns None if there are no config files
+
+
+def reduce_dict(data):
+    return {
+        section_name: {
+            key: value for key, value in section_content.items() if value is not None
+        }
+        for section_name, section_content in data.items()
+    }
 
 
 def read_layer(layer_name, config):
