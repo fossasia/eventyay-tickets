@@ -136,9 +136,9 @@ class LayoutDelete(EventPermissionRequiredMixin, DeleteView):
             raise Http404(_("The requested badge layout does not exist."))
 
     @transaction.atomic
-    def delete(self, request, *args, **kwargs):
+    def form_valid(self, form):
         self.object = self.get_object()
-        self.object.log_action(action='pretix.plugins.badges.layout.deleted', user=request.user)
+        self.object.log_action(action='pretix.plugins.badges.layout.deleted', user=self.request.user)
         self.object.delete()
         if not self.request.event.badge_layouts.filter(default=True).exists():
             f = self.request.event.badge_layouts.first()
