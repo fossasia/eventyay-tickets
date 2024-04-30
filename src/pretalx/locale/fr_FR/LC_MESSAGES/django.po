@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-04-22 10:14+0000\n"
-"PO-Revision-Date: 2024-04-29 04:10+0000\n"
+"PO-Revision-Date: 2024-04-29 16:55+0000\n"
 "Last-Translator: bristow <git@frayssinet.org>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -5344,7 +5344,7 @@ msgstr "Aucune proposition pour l'instant"
 #: pretalx/orga/templates/orga/event_list.html:42
 #: pretalx/orga/templates/orga/event_list.html:79
 msgid "Live"
-msgstr "Live"
+msgstr "Actif"
 
 #: pretalx/orga/templates/orga/event_list.html:44
 #: pretalx/orga/templates/orga/event_list.html:82
