@@ -22,6 +22,7 @@ from pretalx.common.mixins.views import (
     PermissionRequired,
     SocialMediaCardMixin,
 )
+from pretalx.common.mixins.views import PermissionRequired, SocialMediaCardMixin
 from pretalx.common.text.phrases import phrases
 from pretalx.schedule.models import Schedule, TalkSlot
 from pretalx.submission.forms import FeedbackForm

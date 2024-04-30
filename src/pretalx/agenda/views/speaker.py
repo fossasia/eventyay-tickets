@@ -19,7 +19,7 @@ from pretalx.common.mixins.views import (
     PermissionRequired,
     SocialMediaCardMixin,
 )
-from pretalx.common.utils import safe_filename
+from pretalx.common.text.path import safe_filename
 from pretalx.person.models import SpeakerProfile, User
 from pretalx.submission.models import QuestionTarget
 

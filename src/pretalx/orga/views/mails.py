@@ -8,6 +8,7 @@ from django.utils.translation import ngettext_lazy
 from django.views.generic import FormView, ListView, TemplateView, View
 from django_context_decorator import context
 
+from pretalx.common.language import language
 from pretalx.common.mail import TolerantDict
 from pretalx.common.mixins.views import (
     ActionFromUrl,
@@ -18,7 +19,6 @@ from pretalx.common.mixins.views import (
     Sortable,
 )
 from pretalx.common.templatetags.rich_text import rich_text
-from pretalx.common.utils import language
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.mail.models import MailTemplate, QueuedMail
 from pretalx.orga.forms.mails import (

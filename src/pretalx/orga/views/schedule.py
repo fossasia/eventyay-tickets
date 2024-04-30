@@ -29,7 +29,7 @@ from pretalx.common.mixins.views import (
     PermissionRequired,
 )
 from pretalx.common.signals import register_data_exporters
-from pretalx.common.utils import safe_filename
+from pretalx.common.text.path import safe_filename
 from pretalx.common.views import CreateOrUpdateView, OrderModelView
 from pretalx.orga.forms.schedule import (
     ScheduleExportForm,

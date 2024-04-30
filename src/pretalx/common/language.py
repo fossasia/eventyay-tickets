@@ -1,7 +1,8 @@
+import contextlib
 from copy import copy
 
 from django.conf import global_settings, settings
-from django.utils.translation import get_language
+from django.utils.translation import activate, get_language
 
 LANGUAGE_CODES_MAPPING = {
     language.lower(): language for language in settings.LANGUAGES_INFORMATION
@@ -23,3 +24,13 @@ def get_language_information(lang: str):
 def get_current_language_information():
     language_code = get_language()
     return get_language_information(language_code)
+
+
+@contextlib.contextmanager
+def language(language_code):
+    previous_language = get_language()
+    activate(language_code or settings.LANGUAGE_CODE)
+    try:
+        yield
+    finally:
+        activate(previous_language)

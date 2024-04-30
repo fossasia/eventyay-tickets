@@ -11,7 +11,7 @@ from django.views.decorators.http import condition
 from i18nfield.utils import I18nJSONEncoder
 
 from pretalx.agenda.views.schedule import ScheduleView
-from pretalx.common.utils import language
+from pretalx.common.language import language
 from pretalx.common.views import conditional_cache_page
 from pretalx.schedule.exporters import ScheduleData
 

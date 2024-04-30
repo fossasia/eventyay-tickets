@@ -23,7 +23,7 @@ from pretalx.common.mixins.views import (
     PaginationMixin,
     PermissionRequired,
 )
-from pretalx.common.utils import I18nStrJSONEncoder
+from pretalx.common.text.serialize import I18nStrJSONEncoder
 from pretalx.common.views import CreateOrUpdateView, OrderModelView
 from pretalx.orga.forms import CfPForm, QuestionForm, SubmissionTypeForm, TrackForm
 from pretalx.orga.forms.cfp import (
