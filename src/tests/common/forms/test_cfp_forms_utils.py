@@ -1,6 +1,6 @@
 import pytest
 
-from pretalx.common.forms.utils import get_help_text
+from pretalx.common.forms.mixins import RequestRequire
 
 
 @pytest.mark.parametrize(
@@ -17,4 +17,4 @@ from pretalx.common.forms.utils import get_help_text
     ),
 )
 def test_get_text_length_help_text(text, min_length, max_length, _type, warning):
-    assert get_help_text(text, min_length, max_length, _type) == warning
+    assert RequestRequire.get_help_text(text, min_length, max_length, _type) == warning

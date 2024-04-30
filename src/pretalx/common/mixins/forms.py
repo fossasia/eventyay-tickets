@@ -1,4 +1,5 @@
 import logging
+import re
 from functools import partial
 
 import dateutil.parser
@@ -12,13 +13,11 @@ from hierarkey.forms import HierarkeyForm
 from i18nfield.forms import I18nFormField
 
 from pretalx.common.forms.fields import ExtensionFileField
-from pretalx.common.forms.utils import (
+from pretalx.common.forms.validators import (
     MaxDateTimeValidator,
     MaxDateValidator,
     MinDateTimeValidator,
     MinDateValidator,
-    get_help_text,
-    validate_field_length,
 )
 from pretalx.common.phrases import phrases
 from pretalx.common.templatetags.rich_text import rich_text
@@ -81,14 +80,14 @@ class RequestRequire:
                         field.widget.attrs["maxlength"] = max_value
                     field.validators.append(
                         partial(
-                            validate_field_length,
+                            self.validate_field_length,
                             min_length=min_value,
                             max_length=max_value,
                             count_in=self.event.cfp.settings["count_length_in"],
                         )
                     )
                     field.original_help_text = getattr(field, "original_help_text", "")
-                    field.added_help_text = get_help_text(
+                    field.added_help_text = self.get_help_text(
                         "",
                         min_value,
                         max_value,
@@ -97,6 +96,48 @@ class RequestRequire:
                     field.help_text = (
                         field.original_help_text + " " + field.added_help_text
                     )
+
+    @staticmethod
+    def get_help_text(text, min_length, max_length, count_in="chars"):
+        if not min_length and not max_length:
+            return text
+        if text:
+            text = str(text) + " "
+        else:
+            text = ""
+        texts = {
+            "minmaxwords": _(
+                "Please write between {min_length} and {max_length} words."
+            ),
+            "minmaxchars": _(
+                "Please write between {min_length} and {max_length} characters."
+            ),
+            "minwords": _("Please write at least {min_length} words."),
+            "minchars": _("Please write at least {min_length} characters."),
+            "maxwords": _("Please write at most {max_length} words."),
+            "maxchars": _("Please write at most {max_length} characters."),
+        }
+        length = ("min" if min_length else "") + ("max" if max_length else "")
+        message = texts[length + count_in].format(
+            min_length=min_length, max_length=max_length
+        )
+        return (text + str(message)).strip()
+
+    @classmethod
+    def validate_field_length(cls, value, min_length, max_length, count_in):
+        if count_in == "chars":
+            # Line breaks should only be counted as one character
+            length = len(value.replace("\r\n", "\n"))
+        else:
+            length = len(re.findall(r"\b\w+\b", value))
+        if (min_length and min_length > length) or (max_length and max_length < length):
+            error_message = cls.get_help_text("", min_length, max_length, count_in)
+            errors = {
+                "chars": _("You wrote {count} characters."),
+                "words": _("You wrote {count} words."),
+            }
+            error_message += " " + str(errors[count_in]).format(count=length)
+            raise forms.ValidationError(error_message)
 
 
 class QuestionFieldsMixin:
@@ -146,7 +187,7 @@ class QuestionFieldsMixin:
         if question.variant == QuestionVariant.STRING:
             field = forms.CharField(
                 disabled=read_only,
-                help_text=get_help_text(
+                help_text=self.get_help_text(
                     help_text,
                     question.min_length,
                     question.max_length,
@@ -162,7 +203,7 @@ class QuestionFieldsMixin:
             field.widget.attrs["placeholder"] = ""  # XSS
             field.validators.append(
                 partial(
-                    validate_field_length,
+                    self.validate_field_length,
                     min_length=question.min_length,
                     max_length=question.max_length,
                     count_in=self.event.cfp.settings["count_length_in"],
@@ -186,7 +227,7 @@ class QuestionFieldsMixin:
                 required=question.required,
                 widget=forms.Textarea,
                 disabled=read_only,
-                help_text=get_help_text(
+                help_text=self.get_help_text(
                     help_text,
                     question.min_length,
                     question.max_length,
@@ -198,7 +239,7 @@ class QuestionFieldsMixin:
             )
             field.validators.append(
                 partial(
-                    validate_field_length,
+                    self.validate_field_length,
                     min_length=question.min_length,
                     max_length=question.max_length,
                     count_in=self.event.cfp.settings["count_length_in"],
