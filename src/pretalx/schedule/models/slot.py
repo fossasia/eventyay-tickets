@@ -14,6 +14,7 @@ from django_scopes import ScopedManager
 from i18nfield.fields import I18nCharField
 
 from pretalx.common.mixins.models import PretalxModel
+from pretalx.common.text.serialize import serialize_duration
 from pretalx.common.urls import get_base_url
 
 INSTANCE_IDENTIFIER = None
@@ -80,8 +81,6 @@ class TalkSlot(PretalxModel):
 
     @cached_property
     def export_duration(self):
-        from pretalx.common.serialize import serialize_duration
-
         return serialize_duration(minutes=self.duration)
 
     @cached_property

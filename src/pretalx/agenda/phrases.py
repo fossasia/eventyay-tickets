@@ -1,6 +1,6 @@
 from django.utils.translation import gettext as _
 
-from pretalx.common.phrases import BasePhrases, Phrases
+from pretalx.common.text.phrases import BasePhrases, Phrases
 
 
 class AgendaPhrases(Phrases, app="agenda"):

@@ -24,8 +24,8 @@ from rest_framework.authtoken.models import Token
 
 from pretalx.common.mixins.models import FileCleanupMixin, GenerateCode
 from pretalx.common.models import TIMEZONE_CHOICES
+from pretalx.common.text.path import path_with_hash
 from pretalx.common.urls import build_absolute_uri
-from pretalx.common.utils import path_with_hash
 
 
 def avatar_path(instance, filename):

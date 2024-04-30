@@ -19,8 +19,8 @@ from pretalx.common.forms.validators import (
     MinDateTimeValidator,
     MinDateValidator,
 )
-from pretalx.common.phrases import phrases
 from pretalx.common.templatetags.rich_text import rich_text
+from pretalx.common.text.phrases import phrases
 from pretalx.submission.models.cfp import default_fields
 
 logger = logging.getLogger(__name__)

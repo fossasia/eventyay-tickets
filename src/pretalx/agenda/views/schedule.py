@@ -21,7 +21,7 @@ from django_context_decorator import context
 
 from pretalx.common.mixins.views import EventPermissionRequired
 from pretalx.common.signals import register_data_exporters
-from pretalx.common.utils import safe_filename
+from pretalx.common.text.path import safe_filename
 from pretalx.schedule.ascii import draw_ascii_schedule
 from pretalx.schedule.exporters import ScheduleData
 

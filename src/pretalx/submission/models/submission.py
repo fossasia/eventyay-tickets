@@ -18,9 +18,10 @@ from django_scopes import ScopedManager
 from pretalx.common.exceptions import SubmissionError
 from pretalx.common.mixins.models import GenerateCode, PretalxModel
 from pretalx.common.models.choices import Choices
-from pretalx.common.phrases import phrases
+from pretalx.common.text.path import path_with_hash
+from pretalx.common.text.phrases import phrases
+from pretalx.common.text.serialize import serialize_duration
 from pretalx.common.urls import EventUrls
-from pretalx.common.utils import path_with_hash
 from pretalx.mail.models import MailTemplate, QueuedMail
 from pretalx.submission.signals import submission_state_change
 
@@ -813,8 +814,6 @@ class Submission(GenerateCode, PretalxModel):
 
     @cached_property
     def export_duration(self):
-        from pretalx.common.serialize import serialize_duration
-
         return serialize_duration(minutes=self.get_duration())
 
     @cached_property

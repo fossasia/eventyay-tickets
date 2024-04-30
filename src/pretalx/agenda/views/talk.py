@@ -14,7 +14,7 @@ from django_context_decorator import context
 from pretalx.agenda.signals import register_recording_provider
 from pretalx.cfp.views.event import EventPageMixin
 from pretalx.common.mixins.views import PermissionRequired, SocialMediaCardMixin
-from pretalx.common.phrases import phrases
+from pretalx.common.text.phrases import phrases
 from pretalx.schedule.models import Schedule, TalkSlot
 from pretalx.submission.forms import FeedbackForm
 from pretalx.submission.models import QuestionTarget, Submission, SubmissionStates

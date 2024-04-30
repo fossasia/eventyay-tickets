@@ -4,7 +4,7 @@ from django.utils.translation import ngettext_lazy as _n
 from django_scopes import ScopedManager
 
 from pretalx.common.mixins.models import PretalxModel
-from pretalx.common.phrases import phrases
+from pretalx.common.text.phrases import phrases
 
 
 class Feedback(PretalxModel):

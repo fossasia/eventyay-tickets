@@ -3,9 +3,9 @@ from django.utils.translation import gettext_lazy as _
 from i18nfield.fields import I18nCharField, I18nTextField
 
 from pretalx.common.mixins.models import PretalxModel
-from pretalx.common.phrases import phrases
+from pretalx.common.text.path import path_with_hash
+from pretalx.common.text.phrases import phrases
 from pretalx.common.urls import EventUrls
-from pretalx.common.utils import path_with_hash
 
 
 def resource_path(instance, filename):

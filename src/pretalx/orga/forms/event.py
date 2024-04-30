@@ -14,7 +14,6 @@ from django_scopes.forms import SafeModelMultipleChoiceField
 from i18nfield.fields import I18nFormField, I18nTextarea
 from i18nfield.forms import I18nFormMixin, I18nModelForm
 
-from pretalx.common.css import validate_css
 from pretalx.common.forms.fields import ImageField
 from pretalx.common.mixins.forms import (
     HierarkeyMixin,
@@ -22,7 +21,8 @@ from pretalx.common.mixins.forms import (
     JsonSubfieldMixin,
     ReadOnlyFlag,
 )
-from pretalx.common.phrases import phrases
+from pretalx.common.text.css import validate_css
+from pretalx.common.text.phrases import phrases
 from pretalx.event.models.event import Event
 from pretalx.orga.forms.widgets import HeaderSelect, MultipleLanguagesWidget
 from pretalx.schedule.models import Availability, TalkSlot

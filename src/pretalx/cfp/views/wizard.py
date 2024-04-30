@@ -12,7 +12,7 @@ from django.views import View
 
 from pretalx.cfp.views.event import EventPageMixin
 from pretalx.common.exceptions import SendMailException
-from pretalx.common.phrases import phrases
+from pretalx.common.text.phrases import phrases
 
 
 class SubmitStartView(EventPageMixin, View):

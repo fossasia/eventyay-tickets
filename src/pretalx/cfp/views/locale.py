@@ -8,7 +8,7 @@ from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils.translation import override
 from django.views.generic import View
 
-from pretalx.common.phrases import phrases
+from pretalx.common.text.phrases import phrases
 
 
 class LocaleSet(View):
