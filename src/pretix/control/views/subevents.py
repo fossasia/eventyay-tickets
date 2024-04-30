@@ -133,12 +133,12 @@ class SubEventDelete(EventPermissionRequiredMixin, DeleteView):
         return super().get(request, *args, **kwargs)
 
     @transaction.atomic
-    def delete(self, request, *args, **kwargs):
+    def form_valid(self, form):
         self.object = self.get_object()
         success_url = self.get_success_url()
 
         if not self.object.allow_delete():
-            messages.error(request, pgettext_lazy('subevent', 'A date can not be deleted if orders already have been '
+            messages.error(self.request, pgettext_lazy('subevent', 'A date can not be deleted if orders already have been '
                                                               'placed.'))
             return HttpResponseRedirect(self.get_success_url())
         else:
@@ -146,7 +146,7 @@ class SubEventDelete(EventPermissionRequiredMixin, DeleteView):
             CartPosition.objects.filter(addon_to__subevent=self.object).delete()
             self.object.cartposition_set.all().delete()
             self.object.delete()
-            messages.success(request, pgettext_lazy('subevent', 'The selected date has been deleted.'))
+            messages.success(self.request, pgettext_lazy('subevent', 'The selected date has been deleted.'))
         return HttpResponseRedirect(success_url)
 
     def get_success_url(self) -> str:
