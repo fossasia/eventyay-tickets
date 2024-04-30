@@ -10,8 +10,8 @@ from django.utils.translation import gettext_lazy as _
 from pkg_resources import iter_entry_points
 
 from pretalx import __version__
+from pretalx.common.console import log_initial
 from pretalx.common.settings.config import build_config
-from pretalx.common.settings.utils import log_initial
 
 config, CONFIG_FILES = build_config()
 CONFIG = config
