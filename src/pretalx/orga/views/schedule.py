@@ -23,14 +23,15 @@ from i18nfield.utils import I18nJSONEncoder
 from pretalx.agenda.management.commands.export_schedule_html import get_export_zip_path
 from pretalx.agenda.tasks import export_schedule_html
 from pretalx.common.language import get_current_language_information
-from pretalx.common.mixins.views import (
+from pretalx.common.signals import register_data_exporters
+from pretalx.common.text.path import safe_filename
+from pretalx.common.views import CreateOrUpdateView
+from pretalx.common.views.generic import OrderModelView
+from pretalx.common.views.mixins import (
     ActionFromUrl,
     EventPermissionRequired,
     PermissionRequired,
 )
-from pretalx.common.signals import register_data_exporters
-from pretalx.common.text.path import safe_filename
-from pretalx.common.views import CreateOrUpdateView, OrderModelView
 from pretalx.orga.forms.schedule import (
     ScheduleExportForm,
     ScheduleReleaseForm,

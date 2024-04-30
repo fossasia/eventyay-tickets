@@ -15,7 +15,7 @@ from i18nfield.fields import I18nFormField, I18nTextarea
 from i18nfield.forms import I18nFormMixin, I18nModelForm
 
 from pretalx.common.forms.fields import ImageField
-from pretalx.common.mixins.forms import (
+from pretalx.common.forms.mixins import (
     HierarkeyMixin,
     I18nHelpText,
     JsonSubfieldMixin,

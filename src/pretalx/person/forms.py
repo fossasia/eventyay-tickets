@@ -14,13 +14,13 @@ from pretalx.common.forms.fields import (
     PasswordField,
     SizeFileField,
 )
-from pretalx.common.forms.widgets import MarkdownWidget
-from pretalx.common.mixins.forms import (
+from pretalx.common.forms.mixins import (
     I18nHelpText,
     PublicContent,
     ReadOnlyFlag,
     RequestRequire,
 )
+from pretalx.common.forms.widgets import MarkdownWidget
 from pretalx.common.text.phrases import phrases
 from pretalx.person.models import SpeakerInformation, SpeakerProfile, User
 from pretalx.schedule.forms import AvailabilitiesFormMixin

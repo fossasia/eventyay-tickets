@@ -2,7 +2,7 @@
 
 from django.db import migrations, models
 import django.db.models.deletion
-import pretalx.common.mixins
+import pretalx.common.models.mixins
 
 
 class Migration(migrations.Migration):
@@ -34,6 +34,6 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            bases=(pretalx.common.mixins.models.LogMixin, models.Model),
+            bases=(pretalx.common.models.mixins.LogMixin, models.Model),
         ),
     ]

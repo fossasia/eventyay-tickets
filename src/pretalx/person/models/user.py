@@ -21,8 +21,8 @@ from django.utils.translation import override
 from django_scopes import scopes_disabled
 from rest_framework.authtoken.models import Token
 
-from pretalx.common.mixins.models import FileCleanupMixin, GenerateCode
 from pretalx.common.models import TIMEZONE_CHOICES
+from pretalx.common.models.mixins import FileCleanupMixin, GenerateCode
 from pretalx.common.text.path import path_with_hash
 from pretalx.common.urls import build_absolute_uri
 

@@ -11,8 +11,8 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import FormView, TemplateView
 from django_context_decorator import context
 
-from pretalx.common.mixins.views import EventPermissionRequired, PermissionRequired
 from pretalx.common.views import CreateOrUpdateView
+from pretalx.common.views.mixins import EventPermissionRequired, PermissionRequired
 from pretalx.orga.forms.review import (
     DirectionForm,
     ProposalForReviewerForm,

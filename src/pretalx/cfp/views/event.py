@@ -7,7 +7,7 @@ from django.utils.timezone import now
 from django.views.generic import TemplateView
 from django_context_decorator import context
 
-from pretalx.common.mixins.views import PermissionRequired
+from pretalx.common.views.mixins import PermissionRequired
 from pretalx.event.models import Event
 
 

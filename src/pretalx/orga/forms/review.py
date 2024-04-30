@@ -8,8 +8,8 @@ from django.utils.translation import gettext_lazy as _
 from django.utils.translation import ngettext as _n
 from django_scopes.forms import SafeModelMultipleChoiceField
 
+from pretalx.common.forms.mixins import ReadOnlyFlag
 from pretalx.common.forms.widgets import MarkdownWidget
-from pretalx.common.mixins.forms import ReadOnlyFlag
 from pretalx.common.text.phrases import phrases
 from pretalx.orga.forms.export import ExportForm
 from pretalx.person.models import User

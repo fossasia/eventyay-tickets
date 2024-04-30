@@ -6,9 +6,9 @@ from django_scopes.forms import SafeModelChoiceField
 
 from pretalx.cfp.forms.cfp import CfPFormMixin
 from pretalx.common.forms.fields import ImageField
+from pretalx.common.forms.mixins import PublicContent, RequestRequire
 from pretalx.common.forms.widgets import MarkdownWidget
-from pretalx.common.mixins.forms import PublicContent, RequestRequire
-from pretalx.common.mixins.views import Filterable
+from pretalx.common.views.mixins import Filterable
 from pretalx.submission.forms.track_select_widget import TrackSelectWidget
 from pretalx.submission.models import Answer, Question, Submission, SubmissionStates
 

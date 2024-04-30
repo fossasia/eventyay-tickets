@@ -4,7 +4,7 @@ import django.core.validators
 from django.db import migrations, models
 import django.db.models.deletion
 import i18nfield.fields
-import pretalx.common.mixins
+import pretalx.common.models.mixins
 
 
 class Migration(migrations.Migration):
@@ -49,7 +49,7 @@ class Migration(migrations.Migration):
                 ("locale_array", models.TextField(default="en")),
                 ("locale", models.CharField(default="en", max_length=32)),
             ],
-            bases=(pretalx.common.mixins.models.LogMixin, models.Model),
+            bases=(pretalx.common.models.mixins.LogMixin, models.Model),
         ),
         migrations.CreateModel(
             name="Event_SettingsStore",

@@ -11,7 +11,7 @@ from django.utils.translation import gettext_lazy as _
 from django_scopes import scope
 from i18nfield.fields import I18nCharField
 
-from pretalx.common.mixins.models import PretalxModel
+from pretalx.common.models.mixins import PretalxModel
 from pretalx.common.urls import EventUrls, build_absolute_uri
 from pretalx.event.models.event import FULL_SLUG_REGEX
 from pretalx.person.models import User

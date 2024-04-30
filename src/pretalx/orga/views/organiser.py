@@ -11,9 +11,10 @@ from django.views.generic import DeleteView, DetailView, TemplateView
 from django_context_decorator import context
 
 from pretalx.common.exceptions import SendMailException
-from pretalx.common.mixins.views import PermissionRequired
 from pretalx.common.text.phrases import phrases
-from pretalx.common.views import CreateOrUpdateView, is_form_bound
+from pretalx.common.views import CreateOrUpdateView
+from pretalx.common.views import is_form_bound
+from pretalx.common.views.mixins import PermissionRequired
 from pretalx.event.forms import OrganiserForm, TeamForm, TeamInviteForm
 from pretalx.event.models import Organiser, Team, TeamInvite
 from pretalx.orga.forms.sso_client_form import SSOClientForm

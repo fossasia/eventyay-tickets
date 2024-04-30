@@ -7,9 +7,7 @@ from django.db.models import Count, Q
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-from django.views.generic import DetailView, FormView, ListView, TemplateView
 from django.views.generic import (
-    DeleteView,
     DetailView,
     FormView,
     ListView,
@@ -19,10 +17,10 @@ from django_context_decorator import context
 from django_scopes import scopes_disabled
 
 from pretalx.celery_app import app
-from pretalx.common.mixins.views import ActionConfirmMixin, PermissionRequired
 from pretalx.common.models.settings import GlobalSettings
 from pretalx.common.text.phrases import phrases
 from pretalx.common.update_check import check_result_table, update_check
+from pretalx.common.views.mixins import PermissionRequired, ActionConfirmMixin
 from pretalx.orga.forms.admin import UpdateSettingsForm
 from pretalx.person.models import User
 

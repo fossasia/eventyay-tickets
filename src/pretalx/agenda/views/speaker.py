@@ -13,13 +13,13 @@ from django.views.decorators.cache import cache_page
 from django.views.generic import DetailView, ListView, TemplateView
 from django_context_decorator import context
 
-from pretalx.common.mixins.views import (
+from pretalx.common.text.path import safe_filename
+from pretalx.common.views.mixins import (
     EventPermissionRequired,
     Filterable,
     PermissionRequired,
     SocialMediaCardMixin,
 )
-from pretalx.common.text.path import safe_filename
 from pretalx.person.models import SpeakerProfile, User
 from pretalx.submission.models import QuestionTarget
 

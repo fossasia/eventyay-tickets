@@ -20,7 +20,7 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import BaseDocTemplate, Flowable, Frame, PageTemplate, Paragraph
 
-from pretalx.common.mixins.views import EventPermissionRequired
+from pretalx.common.views.mixins import EventPermissionRequired
 from pretalx.submission.models import SubmissionStates
 
 reportlab.rl_config.TTFSearchPath.append(finders.find("fonts"))

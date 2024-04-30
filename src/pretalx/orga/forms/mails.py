@@ -10,8 +10,8 @@ from django.utils.translation import gettext_lazy as _
 from i18nfield.forms import I18nModelForm
 
 from pretalx.common.exceptions import SendMailException
+from pretalx.common.forms.mixins import I18nHelpText, ReadOnlyFlag
 from pretalx.common.language import language
-from pretalx.common.mixins.forms import I18nHelpText, ReadOnlyFlag
 from pretalx.common.templatetags.rich_text import rich_text
 from pretalx.mail.context import get_available_placeholders
 from pretalx.mail.models import MailTemplate, QueuedMail
