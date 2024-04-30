@@ -51,7 +51,7 @@ def print_line(string, box=False, bold=False, color=None, size=None):
                 string += " " * (size - text_length - 2)
                 alt_string += " " * (size - text_length - 2)
         string = f"┃ {string} ┃"
-        alt_string = f"| {string} |"
+        alt_string = f"| {alt_string} |"
     try:
         print(string)
     except (UnicodeDecodeError, UnicodeEncodeError):  # pragma: no cover
