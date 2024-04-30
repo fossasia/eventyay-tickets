@@ -10,7 +10,9 @@ from django_context_decorator import context
 
 from pretalx.common.language import language
 from pretalx.common.mail import TolerantDict
-from pretalx.common.mixins.views import (
+from pretalx.common.templatetags.rich_text import rich_text
+from pretalx.common.views import CreateOrUpdateView
+from pretalx.common.views.mixins import (
     ActionFromUrl,
     EventPermissionRequired,
     Filterable,
@@ -18,8 +20,6 @@ from pretalx.common.mixins.views import (
     PermissionRequired,
     Sortable,
 )
-from pretalx.common.templatetags.rich_text import rich_text
-from pretalx.common.views import CreateOrUpdateView
 from pretalx.mail.models import MailTemplate, QueuedMail
 from pretalx.orga.forms.mails import (
     DraftRemindersForm,

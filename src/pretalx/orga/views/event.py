@@ -29,16 +29,16 @@ from formtools.wizard.views import SessionWizardView
 from rest_framework.authtoken.models import Token
 
 from pretalx.common.forms import I18nEventFormSet, I18nFormSet
-from pretalx.common.mixins.views import (
+from pretalx.common.models import ActivityLog
+from pretalx.common.tasks import regenerate_css
+from pretalx.common.templatetags.rich_text import rich_text
+from pretalx.common.views import OrderModelView, is_form_bound
+from pretalx.common.views.mixins import (
     ActionFromUrl,
     EventPermissionRequired,
     PermissionRequired,
     SensibleBackWizardMixin,
 )
-from pretalx.common.models import ActivityLog
-from pretalx.common.tasks import regenerate_css
-from pretalx.common.templatetags.rich_text import rich_text
-from pretalx.common.views import OrderModelView, is_form_bound
 from pretalx.event.forms import (
     EventWizardBasicsForm,
     EventWizardCopyForm,

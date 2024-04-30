@@ -3,7 +3,7 @@ from django.db.models import Q
 from django.utils.functional import cached_property
 
 from pretalx.cfp.forms.cfp import CfPFormMixin
-from pretalx.common.mixins.forms import QuestionFieldsMixin
+from pretalx.common.forms.mixins import QuestionFieldsMixin
 from pretalx.submission.models import Question, QuestionTarget, QuestionVariant
 
 

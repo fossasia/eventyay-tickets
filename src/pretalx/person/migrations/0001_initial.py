@@ -3,7 +3,7 @@
 from django.conf import settings
 from django.db import migrations, models
 import django.db.models.deletion
-import pretalx.common.mixins
+import pretalx.common.models.mixins
 import pretalx.person.models.user
 
 
@@ -79,7 +79,7 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            bases=(pretalx.common.mixins.models.LogMixin, models.Model),
+            bases=(pretalx.common.models.mixins.LogMixin, models.Model),
         ),
         migrations.CreateModel(
             name="SpeakerProfile",
@@ -110,6 +110,6 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            bases=(pretalx.common.mixins.models.LogMixin, models.Model),
+            bases=(pretalx.common.models.mixins.LogMixin, models.Model),
         ),
     ]

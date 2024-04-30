@@ -9,7 +9,7 @@ from django_scopes.forms import SafeModelChoiceField, SafeModelMultipleChoiceFie
 from i18nfield.forms import I18nFormMixin, I18nModelForm
 from i18nfield.strings import LazyI18nString
 
-from pretalx.common.mixins.forms import I18nHelpText, JsonSubfieldMixin, ReadOnlyFlag
+from pretalx.common.forms.mixins import I18nHelpText, JsonSubfieldMixin, ReadOnlyFlag
 from pretalx.submission.models import (
     AnswerOption,
     Question,

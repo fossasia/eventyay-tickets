@@ -16,8 +16,8 @@ from django.utils.translation import pgettext
 from django_scopes import ScopedManager
 
 from pretalx.common.exceptions import SubmissionError
-from pretalx.common.mixins.models import GenerateCode, PretalxModel
 from pretalx.common.models.choices import Choices
+from pretalx.common.models.mixins import GenerateCode, PretalxModel
 from pretalx.common.text.path import path_with_hash
 from pretalx.common.text.phrases import phrases
 from pretalx.common.text.serialize import serialize_duration

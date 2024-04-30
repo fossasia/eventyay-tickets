@@ -6,7 +6,7 @@ from django.utils.timezone import now
 from django.utils.translation import get_language
 from django.utils.translation import gettext_lazy as _
 
-from pretalx.common.mixins.models import GenerateCode, PretalxModel
+from pretalx.common.models.mixins import GenerateCode, PretalxModel
 from pretalx.common.urls import EventUrls
 
 

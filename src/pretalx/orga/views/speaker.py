@@ -11,7 +11,9 @@ from django.views.generic import DetailView, FormView, ListView, View
 from django_context_decorator import context
 
 from pretalx.common.exceptions import SendMailException
-from pretalx.common.mixins.views import (
+from pretalx.common.signals import register_data_exporters
+from pretalx.common.views import CreateOrUpdateView
+from pretalx.common.views.mixins import (
     ActionFromUrl,
     EventPermissionRequired,
     Filterable,
@@ -19,8 +21,6 @@ from pretalx.common.mixins.views import (
     PermissionRequired,
     Sortable,
 )
-from pretalx.common.signals import register_data_exporters
-from pretalx.common.views import CreateOrUpdateView
 from pretalx.orga.forms.speaker import SpeakerExportForm
 from pretalx.person.forms import (
     SpeakerFilterForm,

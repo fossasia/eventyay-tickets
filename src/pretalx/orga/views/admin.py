@@ -18,9 +18,9 @@ from django_context_decorator import context
 from django_scopes import scopes_disabled
 
 from pretalx.celery_app import app
-from pretalx.common.mixins.views import PermissionRequired
 from pretalx.common.models.settings import GlobalSettings
 from pretalx.common.update_check import check_result_table, update_check
+from pretalx.common.views.mixins import PermissionRequired
 from pretalx.orga.forms.admin import UpdateSettingsForm
 from pretalx.person.models import User
 

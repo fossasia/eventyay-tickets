@@ -4,7 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from django_scopes.forms import SafeModelMultipleChoiceField
 from i18nfield.forms import I18nFormMixin, I18nModelForm
 
-from pretalx.common.mixins.forms import I18nHelpText
+from pretalx.common.forms.mixins import I18nHelpText
 from pretalx.orga.forms.export import ExportForm
 from pretalx.schedule.models import Room, Schedule
 from pretalx.submission.models.submission import Submission, SubmissionStates

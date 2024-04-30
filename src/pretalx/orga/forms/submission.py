@@ -6,8 +6,8 @@ from django.utils.translation import gettext as _
 from django_scopes.forms import SafeModelChoiceField, SafeModelMultipleChoiceField
 
 from pretalx.common.forms.fields import ImageField
+from pretalx.common.forms.mixins import ReadOnlyFlag, RequestRequire
 from pretalx.common.forms.widgets import MarkdownWidget
-from pretalx.common.mixins.forms import ReadOnlyFlag, RequestRequire
 from pretalx.submission.models import Submission, SubmissionStates, SubmissionType
 
 

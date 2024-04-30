@@ -2,7 +2,7 @@ from django import forms
 from django.utils.translation import gettext_lazy as _
 from i18nfield.forms import I18nModelForm
 
-from pretalx.common.mixins.forms import I18nHelpText, ReadOnlyFlag
+from pretalx.common.forms.mixins import I18nHelpText, ReadOnlyFlag
 from pretalx.submission.models import Tag
 
 

@@ -5,8 +5,8 @@ from django.utils.translation import gettext_lazy as _
 from django_scopes import ScopedManager
 from i18nfield.fields import I18nCharField
 
-from pretalx.common.mixins.models import OrderedModel, PretalxModel
 from pretalx.common.models.choices import Choices
+from pretalx.common.models.mixins import OrderedModel, PretalxModel
 from pretalx.common.text.path import path_with_hash
 from pretalx.common.text.phrases import phrases
 from pretalx.common.urls import EventUrls

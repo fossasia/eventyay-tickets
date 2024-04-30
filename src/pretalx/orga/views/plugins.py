@@ -6,8 +6,8 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import TemplateView
 from django_context_decorator import context
 
-from pretalx.common.mixins.views import EventPermissionRequired
 from pretalx.common.plugins import get_all_plugins, get_all_plugins_grouped
+from pretalx.common.views.mixins import EventPermissionRequired
 
 
 class EventPluginsView(EventPermissionRequired, TemplateView):

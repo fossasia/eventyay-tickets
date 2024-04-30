@@ -17,14 +17,14 @@ from django_context_decorator import context
 
 from pretalx.cfp.flow import CfPFlow
 from pretalx.common.forms import I18nFormSet
-from pretalx.common.mixins.views import (
+from pretalx.common.text.serialize import I18nStrJSONEncoder
+from pretalx.common.views import CreateOrUpdateView, OrderModelView
+from pretalx.common.views.mixins import (
     ActionFromUrl,
     EventPermissionRequired,
     PaginationMixin,
     PermissionRequired,
 )
-from pretalx.common.text.serialize import I18nStrJSONEncoder
-from pretalx.common.views import CreateOrUpdateView, OrderModelView
 from pretalx.orga.forms import CfPForm, QuestionForm, SubmissionTypeForm, TrackForm
 from pretalx.orga.forms.cfp import (
     AccessCodeSendForm,

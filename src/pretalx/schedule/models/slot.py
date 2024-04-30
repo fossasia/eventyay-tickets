@@ -13,7 +13,7 @@ from django.utils.functional import cached_property
 from django_scopes import ScopedManager
 from i18nfield.fields import I18nCharField
 
-from pretalx.common.mixins.models import PretalxModel
+from pretalx.common.models.mixins import PretalxModel
 from pretalx.common.text.serialize import serialize_duration
 from pretalx.common.urls import get_base_url
 

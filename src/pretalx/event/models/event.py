@@ -17,8 +17,8 @@ from i18nfield.fields import I18nCharField, I18nTextField
 
 from pretalx.common.cache import ObjectRelatedCache
 from pretalx.common.language import LANGUAGE_NAMES
-from pretalx.common.mixins.models import PretalxModel
 from pretalx.common.models import TIMEZONE_CHOICES
+from pretalx.common.models.mixins import PretalxModel
 from pretalx.common.models.settings import hierarkey
 from pretalx.common.plugins import get_all_plugins
 from pretalx.common.text.daterange import daterange

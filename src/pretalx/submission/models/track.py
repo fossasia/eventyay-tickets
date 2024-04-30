@@ -4,7 +4,7 @@ from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from i18nfield.fields import I18nCharField, I18nTextField
 
-from pretalx.common.mixins.models import OrderedModel, PretalxModel
+from pretalx.common.models.mixins import OrderedModel, PretalxModel
 from pretalx.common.urls import EventUrls
 
 

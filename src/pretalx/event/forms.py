@@ -8,7 +8,7 @@ from django_scopes.forms import SafeModelMultipleChoiceField
 from i18nfield.forms import I18nModelForm
 
 from pretalx.common.forms.fields import ImageField
-from pretalx.common.mixins.forms import I18nHelpText, ReadOnlyFlag
+from pretalx.common.forms.mixins import I18nHelpText, ReadOnlyFlag
 from pretalx.event.models import Event, Organiser, Team, TeamInvite
 from pretalx.orga.forms.widgets import HeaderSelect, MultipleLanguagesWidget
 from pretalx.submission.models import Track

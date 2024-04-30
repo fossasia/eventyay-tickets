@@ -9,7 +9,7 @@ from django.utils.translation import override
 from i18nfield.fields import I18nCharField, I18nTextField
 
 from pretalx.common.exceptions import SendMailException
-from pretalx.common.mixins.models import PretalxModel
+from pretalx.common.models.mixins import PretalxModel
 from pretalx.common.templatetags.rich_text import render_markdown
 from pretalx.common.urls import EventUrls
 from pretalx.mail.context import get_mail_context
