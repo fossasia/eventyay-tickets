@@ -107,7 +107,7 @@ md = markdown.Markdown(
 )
 
 
-def _rich_text(text: str, cleaner):
+def render_markdown(text: str, cleaner=CLEANER):
     """Process markdown and cleans HTML in a text input."""
     if not text:
         return ""
@@ -117,10 +117,10 @@ def _rich_text(text: str, cleaner):
 
 @register.filter
 def rich_text(text: str):
-    return _rich_text(text, cleaner=CLEANER)
+    return render_markdown(text)
 
 
 @register.filter
 def rich_text_without_links(text: str):
     """Process markdown and cleans HTML in a text input, but without links."""
-    return _rich_text(text, cleaner=NO_LINKS_CLEANER)
+    return render_markdown(text, cleaner=NO_LINKS_CLEANER)

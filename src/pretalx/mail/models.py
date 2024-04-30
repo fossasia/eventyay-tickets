@@ -1,7 +1,5 @@
 from copy import deepcopy
 
-import bleach
-import markdown
 from django.conf import settings
 from django.db import models, transaction
 from django.template.loader import get_template
@@ -12,7 +10,7 @@ from i18nfield.fields import I18nCharField, I18nTextField
 
 from pretalx.common.exceptions import SendMailException
 from pretalx.common.mixins.models import PretalxModel
-from pretalx.common.templatetags.rich_text import ALLOWED_TAGS
+from pretalx.common.templatetags.rich_text import render_markdown
 from pretalx.common.urls import EventUrls
 from pretalx.mail.context import get_mail_context
 from pretalx.mail.signals import queuedmail_post_send
@@ -248,10 +246,7 @@ class QueuedMail(PretalxModel):
             sig = event.mail_settings["signature"]
             if sig.strip().startswith("-- "):
                 sig = sig.strip()[3:].strip()
-        body_md = bleach.linkify(
-            bleach.clean(markdown.markdown(self.text), tags=ALLOWED_TAGS),
-            parse_email=True,
-        )
+        body_md = render_markdown(self.text)
         html_context = {
             "body": body_md,
             "event": event,
