@@ -4,13 +4,6 @@ from pretalx.common.text.phrases import Phrases
 
 
 class OrgaPhrases(Phrases, app="orga"):
-    schedule_example_version = [
-        "v1",
-        "v2",
-        "v4.0",
-        "v0.1",
-        "♥",
-    ]
     example_review = [
         _("I think this session is well-suited to this conference, because ..."),
         _("I think this session might fit the conference better, if ..."),

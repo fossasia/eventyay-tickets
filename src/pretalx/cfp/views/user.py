@@ -442,9 +442,9 @@ class DeleteAccountView(LoggedInEventPageMixin, View):
         if request.POST.get("really"):
             request.user.deactivate()
             logout(request)
-            messages.success(request, phrases.cfp.account_deleted)
+            messages.success(request, _("Your account has now been deleted."))
             return redirect(request.event.urls.base)
-        messages.error(request, phrases.cfp.account_delete_confirm)
+        messages.error(request, _("Are you really sure? Please tick the box"))
         return redirect(request.event.urls.user + "?really")
 
 
