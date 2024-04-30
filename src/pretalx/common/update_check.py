@@ -46,7 +46,7 @@ def update_check():
     if not gs.settings.update_check_id:
         gs.settings.set("update_check_id", uuid.uuid4().hex)
 
-    if "runserver" in sys.argv:  # pragma: no cover
+    if "runserver" in sys.argv or "devserver" in sys.argv:  # pragma: no cover
         gs.settings.set("update_check_last", now())
         gs.settings.set("update_check_result", {"error": "development"})
         return
