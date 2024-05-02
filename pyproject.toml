@@ -20,7 +20,7 @@ classifiers = [
   "Framework :: Django :: 3.2",
 ]
 dependencies = [
-        'Django==4.1.*',
+        'Django==4.2.*',
         'djangorestframework==3.14.*',
         'python-dateutil==2.8.*',
         'isoweek',
