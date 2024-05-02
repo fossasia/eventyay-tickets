@@ -28,12 +28,13 @@ from django.views.generic import (
     UpdateView,
     View,
 )
+from django_context_decorator import context
 
 from pretalx.agenda.permissions import is_submission_visible
 from pretalx.common.exceptions import SubmissionError
 from pretalx.common.models import ActivityLog
 from pretalx.common.urls import build_absolute_uri
-from pretalx.common.views import CreateOrUpdateView, context
+from pretalx.common.views import CreateOrUpdateView
 from pretalx.common.views.mixins import (
     ActionFromUrl,
     EventPermissionRequired,

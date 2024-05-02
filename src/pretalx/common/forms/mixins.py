@@ -122,15 +122,17 @@ class RequestRequire:
         )
         return (text + str(message)).strip()
 
-    @classmethod
-    def validate_field_length(cls, value, min_length, max_length, count_in):
+    @staticmethod
+    def validate_field_length(value, min_length, max_length, count_in):
         if count_in == "chars":
             # Line breaks should only be counted as one character
             length = len(value.replace("\r\n", "\n"))
         else:
             length = len(re.findall(r"\b\w+\b", value))
         if (min_length and min_length > length) or (max_length and max_length < length):
-            error_message = cls.get_help_text("", min_length, max_length, count_in)
+            error_message = RequestRequire.get_help_text(
+                "", min_length, max_length, count_in
+            )
             errors = {
                 "chars": _("You wrote {count} characters."),
                 "words": _("You wrote {count} words."),
@@ -186,7 +188,7 @@ class QuestionFieldsMixin:
         if question.variant == QuestionVariant.STRING:
             field = forms.CharField(
                 disabled=read_only,
-                help_text=self.get_help_text(
+                help_text=RequestRequire.get_help_text(
                     help_text,
                     question.min_length,
                     question.max_length,
@@ -202,7 +204,7 @@ class QuestionFieldsMixin:
             field.widget.attrs["placeholder"] = ""  # XSS
             field.validators.append(
                 partial(
-                    self.validate_field_length,
+                    RequestRequire.validate_field_length,
                     min_length=question.min_length,
                     max_length=question.max_length,
                     count_in=self.event.cfp.settings["count_length_in"],
@@ -226,7 +228,7 @@ class QuestionFieldsMixin:
                 required=question.required,
                 widget=forms.Textarea,
                 disabled=read_only,
-                help_text=self.get_help_text(
+                help_text=RequestRequire.get_help_text(
                     help_text,
                     question.min_length,
                     question.max_length,
@@ -238,7 +240,7 @@ class QuestionFieldsMixin:
             )
             field.validators.append(
                 partial(
-                    self.validate_field_length,
+                    RequestRequire.validate_field_length,
                     min_length=question.min_length,
                     max_length=question.max_length,
                     count_in=self.event.cfp.settings["count_length_in"],
