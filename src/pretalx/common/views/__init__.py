@@ -5,7 +5,7 @@ from .generic import (
     EventSocialMediaCard,
     GenericLoginView,
     GenericResetView,
-    OrderedModelView,
+    OrderModelView,
 )
 from .helpers import get_static, is_form_bound
 
@@ -14,7 +14,7 @@ __all__ = [
     "EventSocialMediaCard",
     "GenericLoginView",
     "GenericResetView",
-    "OrderedModelView",
+    "OrderModelView",
     "conditional_cache_page",
     "error_view",
     "get_static",

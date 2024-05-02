@@ -8,6 +8,7 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.crypto import get_random_string
 from django.utils.decorators import method_decorator
+from django.utils.translation import gettext_lazy as _
 from django.views import View
 
 from pretalx.cfp.views.event import EventPageMixin
@@ -44,7 +45,7 @@ class SubmitWizard(EventPageMixin, View):
             if access_code and access_code.is_valid:
                 request.access_code = access_code
         if not request.event.cfp.is_open and not request.access_code:
-            messages.error(request, phrases.cfp.submissions_closed)
+            messages.error(request, _("Proposals are closed"))
             return redirect(
                 reverse("cfp:event.start", kwargs={"event": request.event.slug})
             )
