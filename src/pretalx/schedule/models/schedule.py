@@ -10,6 +10,7 @@ from django.db.utils import DatabaseError
 from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
+from django.utils.translation import pgettext_lazy
 from i18nfield.fields import I18nTextField
 
 from pretalx.agenda.tasks import export_schedule_html
@@ -36,7 +37,10 @@ class Schedule(PretalxModel):
         to="event.Event", on_delete=models.PROTECT, related_name="schedules"
     )
     version = models.CharField(
-        max_length=190, null=True, blank=True, verbose_name=_("Version")
+        max_length=190,
+        null=True,
+        blank=True,
+        verbose_name=pgettext_lazy("Version of the conference schedule", "Version"),
     )
     published = models.DateTimeField(null=True, blank=True)
     comment = I18nTextField(
@@ -371,7 +375,7 @@ class Schedule(PretalxModel):
                                 "Room {room_name} is not available at the scheduled time."
                             )
                         ).format(
-                            room_name=str(_("“")) + str(talk.room.name) + str(_("”"))
+                            room_name=f"{phrases.base.quotation_open}{talk.room.name}{phrases.base.quotation_close}"
                         ),
                         "url": url,
                     }

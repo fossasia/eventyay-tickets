@@ -13,7 +13,7 @@
         {% csrf_token %}
         <div class="submit-group">
             <a href="{{ request.event.orga_urls.reviews }}" class="btn btn-lg btn-danger">
-                {% translate "Back" %}
+                {{ phrases.base.back_button }}
             </a>
             <button type="submit" class="btn btn-lg btn-success">
                 {% translate "Yes" %}

@@ -14,7 +14,7 @@
             <thead>
                 <tr>
                     <th>
-                        {% translate "Subject" %}
+                        {{ phrases.base.email_subject }}
                         <a href="?{% url_replace request 'sort' 'subject' %}"><i class="fa fa-caret-down" title="{% translate "Sort by subject (a-z)" %}"></i></a>
                         <a href="?{% url_replace request 'sort' '-subject' %}"><i class="fa fa-caret-up" title="{% translate "Sort by subject (z-a)" %}"></i></a>
                     </th>

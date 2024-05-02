@@ -11,6 +11,7 @@ from django_context_decorator import context
 from pretalx.common.language import language
 from pretalx.common.mail import TolerantDict
 from pretalx.common.templatetags.rich_text import rich_text
+from pretalx.common.text.phrases import phrases
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.common.views.mixins import (
     ActionFromUrl,
@@ -112,7 +113,7 @@ class OutboxSend(EventPermissionRequired, TemplateView):
                 messages.error(
                     request,
                     _(
-                        "This mail either does not exist or cannot be discarded because it was sent already."
+                        "This mail either does not exist or cannot be sent because it was sent already."
                     ),
                 )
                 return redirect(self.request.event.orga_urls.outbox)
@@ -393,9 +394,7 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
             self.success_url = self.request.event.orga_urls.outbox
             messages.success(
                 self.request,
-                _(
-                    "{count} emails have been saved to the outbox – you can make individual changes there or just send them all."
-                ).format(count=len(result)),
+                phrases.orga.mails_in_outbox.format(count=len(result)),
             )
         return super().form_valid(form)
 

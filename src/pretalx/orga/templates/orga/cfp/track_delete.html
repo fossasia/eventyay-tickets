@@ -8,7 +8,7 @@
         {% csrf_token %}
         <div class="submit-group">
             <a href="{{ request.event.cfp.urls.tracks }}" class="btn btn-lg btn-outline-info">
-                {% translate "Back" %}
+                {{ phrases.base.back_button }}
             </a>
             <button type="submit" class="btn btn-lg btn-danger">
                 <i class="fa fa-trash"></i>

@@ -59,21 +59,6 @@ LOG_NAMES = {
         "The invitation to the review team was retracted."
     ),
     "pretalx.invite.reviewer.send": _("The invitation to the review team was sent."),
-    "pretalx.event.invite.orga.accept": _(
-        "The invitation to the event orga was accepted."
-    ),  # compat
-    "pretalx.event.invite.orga.retract": _(
-        "An invitation to the event orga was retracted."
-    ),  # compat
-    "pretalx.event.invite.orga.send": _(
-        "An invitation to the event orga was sent."
-    ),  # compat
-    "pretalx.event.invite.reviewer.retract": _(
-        "The invitation to the review team was retracted."
-    ),  # compat
-    "pretalx.event.invite.reviewer.send": _(
-        "The invitation to the review team was sent."
-    ),  # compat
     "pretalx.mail.create": _("An email was modified."),
     "pretalx.mail.delete": _("A pending email was deleted."),
     "pretalx.mail.delete_all": _("All pending emails were deleted."),
@@ -96,7 +81,6 @@ LOG_NAMES = {
     "pretalx.submission.accept": _("The proposal was accepted."),
     "pretalx.submission.cancel": _("The proposal was cancelled."),
     "pretalx.submission.confirm": _("The proposal was confirmed."),
-    "pretalx.submission.confirmation": _("The proposal was confirmed."),  # Legacy
     "pretalx.submission.create": _("The proposal was added."),
     "pretalx.submission.deleted": _("The proposal was deleted."),
     "pretalx.submission.reject": _("The proposal was rejected."),
@@ -109,10 +93,8 @@ LOG_NAMES = {
     "pretalx.submission.unconfirm": _("The proposal was unconfirmed."),
     "pretalx.submission.update": _("The proposal was modified."),
     "pretalx.submission.withdraw": _("The proposal was withdrawn."),
-    "pretalx.submission.answer.update": _("A proposal answer was modified."),  # Legacy
-    "pretalx.submission.answerupdate": _("A proposal answer was modified."),  # Legacy
-    "pretalx.submission.answer.create": _("A proposal answer was added."),  # Legacy
-    "pretalx.submission.answercreate": _("A proposal answer was added."),  # Legacy
+    "pretalx.submission.answer.update": _("A proposal answer was modified."),
+    "pretalx.submission.answer.create": _("A proposal answer was added."),
     "pretalx.submission_type.create": _("A session type was added."),
     "pretalx.submission_type.delete": _("A session type was deleted."),
     "pretalx.submission_type.make_default": _("The session type was made default."),

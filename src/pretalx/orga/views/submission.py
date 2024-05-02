@@ -564,6 +564,13 @@ class SubmissionContent(
         kwargs["read_only"] = kwargs["read_only"] or kwargs["anonymise"]
         return kwargs
 
+    @context
+    @cached_property
+    def can_edit(self):
+        return self.object and self.request.user.has_perm(
+            "orga.change_submissions", self.request.event
+        )
+
 
 class BaseSubmissionList(Sortable, ReviewerSubmissionFilter, PaginationMixin, ListView):
     model = Submission

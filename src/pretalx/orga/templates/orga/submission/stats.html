@@ -18,7 +18,7 @@
     <div id="stats">
         <h2 class="d-flex w-100 justify-content-between align-items-start">
             {% translate "Proposal Statistics" %}
-            <button id="toggle-button" type="button" class="btn btn-toggle" data-toggle="button" aria-pressed="false" autocomplete="off" data-left="{% translate 'Proposals' %}" data-right="{% translate 'Sessions' %}">
+            <button id="toggle-button" type="button" class="btn btn-toggle" data-toggle="button" aria-pressed="false" autocomplete="off" data-left="{% translate 'Proposals' %}" data-right="{{ phrases.schedule.sessions }}">
                 <div class="handle"></div>
             </button>
         </h2>
@@ -30,7 +30,7 @@
                 <div class="card-header submissions">{% translate "Proposals by submission date" %}</div>
                 <div class="card-header talks d-none">{% translate "Sessions by submission date" %}</div>
                 <div id="submission-timeline-data" class="d-none" data-timeline='{{ submission_timeline_data }}' data-label="{% translate "Proposals" %}"></div>
-                <div id="talk-timeline-data" class="d-none" data-timeline='{{ talk_timeline_data }}' data-label="{% translate "Sessions" %}"></div>
+                <div id="talk-timeline-data" class="d-none" data-timeline='{{ talk_timeline_data }}' data-label="{{ phrases.schedule.sessions }}"></div>
                 <div id="total-submission-timeline-data" class="d-none" data-timeline='{{ total_submission_timeline_data }}' data-label="{% translate "Total proposals" %}"></div>
                 <div id="timeline" class="card-body submissions"></div>
             </div>

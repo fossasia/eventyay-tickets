@@ -243,16 +243,9 @@ class TeamResetPassword(PermissionRequired, TemplateView):
     def post(self, request, *args, **kwargs):
         try:
             self.user.reset_password(event=None, user=self.request.user)
-            messages.success(
-                self.request, _("The password was reset and the user was notified.")
-            )
+            messages.success(self.request, phrases.orga.password_reset_success)
         except SendMailException:  # pragma: no cover
-            messages.error(
-                self.request,
-                _(
-                    "The password reset email could not be sent, so the password was not reset."
-                ),
-            )
+            messages.error(self.request, phrases.orga.password_reset_fail)
         return redirect(self.request.organiser.orga_urls.base)
 
 

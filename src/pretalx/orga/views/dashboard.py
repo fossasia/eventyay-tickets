@@ -11,6 +11,7 @@ from django_context_decorator import context
 from django_scopes import scopes_disabled
 
 from pretalx.common.models.log import ActivityLog
+from pretalx.common.text.phrases import phrases
 from pretalx.common.views.mixins import EventPermissionRequired, PermissionRequired
 from pretalx.event.models import Event, Organiser
 from pretalx.event.stages import get_stages
@@ -129,7 +130,7 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
             result.append(
                 {
                     "url": self.request.event.cfp.urls.public,
-                    "large": _("Go to CfP"),
+                    "large": phrases.cfp.go_to_cfp,
                     "priority": 20,
                 }
             )
@@ -300,7 +301,8 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
                         "color": "error" if accepted_count else "info",
                     },
                     "left": {
-                        "text": str(_("submitted")) + f": {submission_count}",
+                        "text": str(phrases.submission.submitted)
+                        + f": {submission_count}",
                         "url": event.orga_urls.submissions,
                         "color": "success",
                     },
@@ -336,7 +338,7 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
                         "color": "error",
                     },
                     "left": {
-                        "text": _("submitted") + f": {submitter_count}",
+                        "text": phrases.submission.submitted + f": {submitter_count}",
                         "url": event.orga_urls.speakers,
                         "color": "success",
                     },

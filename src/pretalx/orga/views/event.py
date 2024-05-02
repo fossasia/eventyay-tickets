@@ -33,8 +33,8 @@ from pretalx.common.forms import I18nEventFormSet, I18nFormSet
 from pretalx.common.models import ActivityLog
 from pretalx.common.tasks import regenerate_css
 from pretalx.common.templatetags.rich_text import render_markdown
-from pretalx.common.views import is_form_bound
-from pretalx.common.views.generic import OrderModelView
+from pretalx.common.text.phrases import phrases
+from pretalx.common.views import OrderModelView, is_form_bound
 from pretalx.common.views.mixins import (
     ActionFromUrl,
     EventPermissionRequired,
@@ -551,12 +551,7 @@ class UserSettings(TemplateView):
             request.user.log_action("pretalx.user.profile.update")
         elif request.POST.get("form") == "token":
             request.user.regenerate_token()
-            messages.success(
-                request,
-                _(
-                    "Your API token has been regenerated. The previous token will not be usable any longer."
-                ),
-            )
+            messages.success(request, phrases.cfp.token_regenerated)
         else:
             messages.error(
                 self.request,

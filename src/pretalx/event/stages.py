@@ -3,6 +3,7 @@ import copy
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 
+from pretalx.common.text.phrases import phrases
 from pretalx.submission.models import SubmissionStates
 
 
@@ -78,7 +79,7 @@ STAGES = {
         ],
     },
     "SCHEDULE": {
-        "name": _("Schedule"),
+        "name": phrases.schedule.schedule,
         "method": _is_in_scheduling_stage,
         "icon": "calendar-o",
         "links": [

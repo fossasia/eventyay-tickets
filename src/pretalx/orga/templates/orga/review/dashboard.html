@@ -87,7 +87,7 @@
                         {% if can_view_speakers %}
                             <li class="dropdown-item form-check">
                                 <input type="checkbox" id="col-speakers" checked autocomplete=off>
-                                <label for="col-speakers">{% translate "Speakers" %}</label>
+                                <label for="col-speakers">{{ phrases.schedule.speakers }}</label>
                             </li>
                         {% endif %}
                         {% for question in short_questions %}
@@ -210,7 +210,7 @@
                             <a href="?{% url_replace request 'sort' '-count' %}"><i class="fa fa-caret-up" title="{% translate "Sort by review count (lowest first)" %}"></i></a>
                         </th>
                         <th>{% translate "Title" %}</th>
-                        {% if can_view_speakers %}<th class="col-speakers">{% translate "Speakers" %}</th>{% endif %}
+                        {% if can_view_speakers %}<th class="col-speakers">{{ phrases.schedule.speakers }}</th>{% endif %}
                         {% for question in short_questions %}
                             <th class="col-question-{{ question.id }} d-none">{{ question.question }}</th>
                         {% endfor %}
@@ -306,10 +306,12 @@
                                 {% if submission.state == 'submitted' and can_accept_submissions %}
                                     <div class="radio form-check accept">
                                         <input type="radio" id="a-{{ submission.code }}" name="s-{{ submission.code }}" value="accept">
+                                        {% comment %}Translators: This is a button to mark a proposal as accepted{% endcomment %}
                                         <label for="a-{{ submission.code }}" title="{% translate "Accept" %}"></label>
                                     </div>
                                     <div class="radio form-check reject">
                                         <input type="radio" id="r-{{ submission.code }}" name="s-{{ submission.code }}" value="reject">
+                                        {% comment %}Translators: This is a button to mark a proposal as rejected{% endcomment %}
                                         <label for="r-{{ submission.code }}" title="{% translate "Reject" %}"></label>
                                     </div>
                                     <div class="unmark-radio" title="{% translate "Unset accept/reject vote" %}"><i class="fa fa-ban"></i></div>

@@ -1,14 +1,10 @@
 {% extends "cfp/event/base.html" %}
 {% load i18n %}
 
-{% block title %}{% translate "Your proposal" %} :: {% endblock %}
+{% block title %}{{ proposal.title }} :: {% endblock %}
 
 {% block content %}
-    <h2>{% translate "Your proposal:" %} {{ submission.title }}</h2>
-    <p>
-        {% translate "Current state of your proposal:" %}
-        {% include "cfp/event/fragment_state.html" with state=submission.user_state %}
-    </p>
+    {% include "cfp/includes/user_submission_header.html" %}
     <form method="post">
         {% csrf_token %}
         <h3>{% translate "Withdraw proposal" %}</h3>
@@ -22,9 +18,8 @@
                     class="btn float-right btn-danger">
                 {% translate "Withdraw" %}
             </button>
-            <a href="{{ submission.urls.user_base }}"
-               class="btn float-right btn-info">
-                {% translate "Go back" %}
+            <a href="{{ submission.urls.user_base }}" class="btn float-right btn-info">
+                {{ phrases.base.back_button }}
             </a>
             {% translate "You will not be able to revert this action." %}
             <div class="clearfix"></div>

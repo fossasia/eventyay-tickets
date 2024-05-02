@@ -2,10 +2,10 @@
 {% load i18n %}
 {% load static %}
 
-{% block error_image %}<img loading="lazy" src="{% static "common/img/error_5xx.svg" %}" class="img" alt="{% translate "Bad request." %}">{% endblock %}
+{% block error_image %}<img loading="lazy" src="{% static "common/img/error_5xx.svg" %}" class="img" alt="{{ phrases.base.bad_request }}">{% endblock %}
 
 {% block error_message %}
-    <p>{% translate "Bad request." %}<br></p>
+    <p>{{ phrases.base.bad_request }}<br></p>
     </h2>
     <h3>
         <p class="ml-auto mr-auto text-center">

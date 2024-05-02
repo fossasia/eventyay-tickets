@@ -20,6 +20,4 @@
   {% bootstrap_field form.recipients layout='event' %}
 {% endblock %}
 
-{% block send_button_label %}
-  {% translate "Send" %}
-{% endblock %}
+{% block send_button_label %}{{ phrases.base.send }}{% endblock %}

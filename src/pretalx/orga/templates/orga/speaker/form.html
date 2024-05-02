@@ -88,16 +88,7 @@
             {% bootstrap_field form.availabilities layout='event' %}
         {% endif %}
         {% bootstrap_form questions_form layout='event' %}
-        <div class="submit-group panel">
-            <span>
-            </span>
-            <span>
-                <button type="submit" class="btn btn-success btn-lg">
-                    <i class="fa fa-check"></i>
-                    {% translate "Save" %}
-                </button>
-            </span>
-        </div>
+        {% include "orga/includes/submit_row.html" %}
     </form>
 
 

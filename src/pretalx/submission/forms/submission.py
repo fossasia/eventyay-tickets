@@ -8,6 +8,7 @@ from pretalx.cfp.forms.cfp import CfPFormMixin
 from pretalx.common.forms.fields import ImageField
 from pretalx.common.forms.mixins import PublicContent, RequestRequire
 from pretalx.common.forms.widgets import MarkdownWidget
+from pretalx.common.text.phrases import phrases
 from pretalx.common.views.mixins import Filterable
 from pretalx.submission.forms.track_select_widget import TrackSelectWidget
 from pretalx.submission.models import Answer, Question, Submission, SubmissionStates
@@ -26,7 +27,7 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
         label=_("Session image"),
         help_text=_("Use this if you want an illustration to go with your proposal."),
     )
-    content_locale = forms.ChoiceField(label=_("Language"))
+    content_locale = forms.ChoiceField(label=phrases.base.language)
 
     def __init__(self, event, **kwargs):
         self.event = event
@@ -266,7 +267,7 @@ class SubmissionFilterForm(forms.Form):
     content_locale = forms.MultipleChoiceField(
         required=False,
         widget=SelectMultipleWithCount(
-            attrs={"class": "select2", "title": _("Language")}
+            attrs={"class": "select2", "title": phrases.base.language}
         ),
     )
     track = forms.MultipleChoiceField(

@@ -9,6 +9,7 @@ from i18nfield.forms import I18nModelForm
 
 from pretalx.common.forms.fields import ImageField
 from pretalx.common.forms.mixins import I18nHelpText, ReadOnlyFlag
+from pretalx.common.text.phrases import phrases
 from pretalx.event.models import Event, Organiser, Team, TeamInvite
 from pretalx.orga.forms.widgets import HeaderSelect, MultipleLanguagesWidget
 from pretalx.submission.models import Track
@@ -242,9 +243,7 @@ class EventWizardTimelineForm(forms.ModelForm):
         date_from = data.get("date_from")
         date_to = data.get("date_to")
         if date_from and date_to and date_from > date_to:
-            error = forms.ValidationError(
-                _("The event end cannot be before the start.")
-            )
+            error = forms.ValidationError(phrases.orga.event_date_start_invalid)
             self.add_error("date_from", error)
         return data
 
@@ -260,25 +259,14 @@ class EventWizardTimelineForm(forms.ModelForm):
 class EventWizardDisplayForm(forms.Form):
     primary_color = forms.CharField(
         max_length=7,
-        label=_("Main event colour"),
-        help_text=_(
-            "Provide a hex value like #00ff00 if you want to style pretalx in your event’s colour scheme."
-        ),
+        label=Event._meta.get_field("primary_color").verbose_name,
+        help_text=Event._meta.get_field("primary_color").help_text,
         required=False,
     )
     header_pattern = forms.ChoiceField(
-        label=_("Frontpage header pattern"),
-        help_text=_(
-            'Choose how the frontpage header banner will be styled. Pattern source: <a href="http://www.heropatterns.com/">heropatterns.com</a>, CC BY 4.0.'
-        ),
-        choices=(
-            ("", _("Plain")),
-            ("pcb", _("Circuits")),
-            ("bubbles", _("Circles")),
-            ("signal", _("Signal")),
-            ("topo", _("Topography")),
-            ("graph", _("Graph Paper")),
-        ),
+        label=phrases.orga.event_header_pattern_label,
+        help_text=phrases.orga.event_header_pattern_help_text,
+        choices=Event.HEADER_PATTERN_CHOICES,
         required=False,
         widget=HeaderSelect,
     )

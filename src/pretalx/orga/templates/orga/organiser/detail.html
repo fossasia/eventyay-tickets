@@ -22,7 +22,7 @@
             <span>
                 <button type="submit" class="btn btn-success btn-lg">
                     <i class="fa fa-check"></i>
-                    {% translate "Save" %}
+                    {{ phrases.base.save }}
                 </button>
             </span>
         </div>
@@ -62,14 +62,10 @@
                                             <i class="fa fa-{{ team.is_reviewer|yesno:"check-circle text-success,times-circle text-danger" }}">
                                             </td>
                                             <td>
-                                                <a href="{{ team.orga_urls.base }}"
-                                                   class="btn btn-sm btn-info"
-                                                   title="{% translate "Edit" %}">
+                                                <a href="{{ team.orga_urls.base }}" class="btn btn-sm btn-info" title="{% translate "Edit" %}">
                                                     <i class="fa fa-edit"></i>
                                                 </a>
-                                                <a href="{{ team.orga_urls.delete }}"
-                                                   class="btn btn-sm btn-danger"
-                                                   title="{% translate "Delete" %}">
+                                                <a href="{{ team.orga_urls.delete }}" class="btn btn-sm btn-danger" title="{{ phrases.base.delete_button }}">
                                                     <i class="fa fa-trash"></i>
                                                 </a>
                                             </td>

@@ -13,7 +13,7 @@ from pretalx.common.forms.widgets import MarkdownWidget
 from pretalx.common.text.phrases import phrases
 from pretalx.orga.forms.export import ExportForm
 from pretalx.person.models import User
-from pretalx.submission.models import Question, Review, Submission
+from pretalx.submission.models import Question, Review, Submission, SubmissionStates
 
 
 class TagsForm(ReadOnlyFlag, forms.ModelForm):
@@ -241,23 +241,21 @@ class ReviewExportForm(ExportForm):
         required=True,
         label=_n("Proposal", "Proposals", 1),
         choices=(
-            ("all", _("All proposals")),
-            ("accepted", _("accepted")),
-            ("confirmed", _("confirmed")),
-            ("rejected", _("rejected")),
+            ("all", phrases.base.all_choices),
+            ("accepted", SubmissionStates.display_values[SubmissionStates.ACCEPTED]),
+            ("confirmed", SubmissionStates.display_values[SubmissionStates.CONFIRMED]),
+            ("rejected", SubmissionStates.display_values[SubmissionStates.REJECTED]),
         ),
         widget=forms.RadioSelect,
     )
     submission_id = forms.BooleanField(
         required=False,
         label=_("Proposal ID"),
-        help_text=_(
-            "The unique ID of a proposal is used in the proposal URL and in exports"
-        ),
+        help_text=phrases.orga.proposal_id_help_text,
     )
     submission_title = forms.BooleanField(
         required=False,
-        label=_("Proposal title"),
+        label=Submission._meta.get_field("title").verbose_name,
     )
     user_name = forms.BooleanField(
         required=False,
@@ -275,7 +273,7 @@ class ReviewExportForm(ExportForm):
     def __init__(self, *args, user=None, **kwargs):
         self.user = user
         super().__init__(*args, **kwargs)
-        self.fields["text"].label = _("Text")
+        self.fields["text"].label = phrases.base.text_body
         self._build_score_fields()
 
     @cached_property
@@ -375,6 +373,8 @@ class ReviewAssignImportForm(DirectionForm):
         initial=False,
     )
 
+    JSON_ERROR_MESSAGE = _("Cannot parse JSON file.")
+
     def __init__(self, event, **kwargs):
         self.event = event
         self._user_cache = {}
@@ -407,7 +407,7 @@ class ReviewAssignImportForm(DirectionForm):
         try:
             data = json.load(uploaded_file)
         except Exception:
-            raise forms.ValidationError(_("Cannot parse JSON file."))
+            raise forms.ValidationError(self.JSON_ERROR_MESSAGE)
         return data
 
     def clean(self):
@@ -415,7 +415,7 @@ class ReviewAssignImportForm(DirectionForm):
         uploaded_data = self.cleaned_data.get("import_file")
         direction = self.cleaned_data.get("direction")
         if not uploaded_data:
-            raise forms.ValidationError(_("Cannot parse JSON file."))
+            raise forms.ValidationError(self.JSON_ERROR_MESSAGE)
         if direction == "reviewer":
             # keys should be users, values should be lists of proposals
             new_uploaded_data = {

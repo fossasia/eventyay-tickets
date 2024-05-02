@@ -12,7 +12,9 @@
             <span></span>
             <span>
                 <form class="float-right" method="post">{% csrf_token %}
-                    <a class="btn btn-info btn-lg" href={{ team.orga_urls.base }}>{% translate "Back" %}</a>
+                    <a class="btn btn-info btn-lg" href={{ team.orga_urls.base }}>
+                        {{ phrases.base.back_button }}
+                    </a>
                     <button class="btn btn-danger btn-lg" type="submit">{% translate "Yes" %}</button>
                 </form>
             </span>

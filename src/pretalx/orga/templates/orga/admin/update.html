@@ -84,13 +84,7 @@
         {% csrf_token %}
         {% bootstrap_form_errors form %}
         {% bootstrap_form form layout='event' %}
-        <div class="submit-group panel">
-            <span></span>
-            <button type="submit" class="btn btn-success btn-lg">
-                <i class="fa fa-check"></i>
-                {% translate "Save" %}
-            </button>
-        </div>
+        {% include "orga/includes/submit_row.html" %}
     </form>
 
 {% endblock %}

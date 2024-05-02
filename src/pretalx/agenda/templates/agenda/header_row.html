@@ -79,7 +79,7 @@
       </div>
       <div class="header-right">
         {% if with_extra %}
-            <span>{% translate "Version" %} <a href="{{ request.event.urls.changelog }}">{{ schedule.version|default:"–" }}</a></span>
+            <span>{{ phrases.schedule.version }} <a href="{{ request.event.urls.changelog }}">{{ schedule.version|default:"–" }}</a></span>
             <details class="dropdown">
                 <summary class="btn btn-sm btn-outline-info">
                     <i class="fa fa-calendar-plus-o"></i>
