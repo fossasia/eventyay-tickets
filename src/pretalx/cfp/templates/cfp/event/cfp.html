@@ -31,16 +31,16 @@
         <div class="row mb-4 url-links">
             {% if request.event.current_schedule and request.event.feature_flags.show_schedule %}
                 <a class="btn btn-info btn-lg btn-block" href="{{ request.event.urls.schedule }}">
-                    {% translate "View conference schedule" %}
+                    {{ phrases.agenda.view_schedule }}
                 </a>
             {% elif can_view_featured_submissions and has_featured %}
                 <a class="btn btn-info btn-lg btn-block" href="{{ request.event.urls.featured }}">
-                    {% translate "View schedule preview" %}
+                    {{ phrases.agenda.view_schedule_preview }}
                 </a>
             {% endif %}
             {% if has_submissions or request.user.is_anonymous %}
                 <a class="btn btn-info btn-lg btn-block" href="{{ request.event.urls.user_submissions }}">
-                    {% translate "Edit or view your proposals" %}
+                    {{ phrases.agenda.view_own_submissions }}
                 </a>
             {% endif %}
             <a class="btn btn-success btn-lg btn-block {% if not cfp.is_open and not access_code.is_valid %}disabled{% endif %}"

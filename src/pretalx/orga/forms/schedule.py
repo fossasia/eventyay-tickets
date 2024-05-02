@@ -5,8 +5,9 @@ from django_scopes.forms import SafeModelMultipleChoiceField
 from i18nfield.forms import I18nFormMixin, I18nModelForm
 
 from pretalx.common.forms.mixins import I18nHelpText
+from pretalx.common.text.phrases import phrases
 from pretalx.orga.forms.export import ExportForm
-from pretalx.schedule.models import Room, Schedule
+from pretalx.schedule.models import Room, Schedule, TalkSlot
 from pretalx.submission.models.submission import Submission, SubmissionStates
 
 
@@ -25,7 +26,7 @@ class ScheduleReleaseForm(I18nHelpText, I18nModelForm):
             f"<a href='{url}'>{_('Email template')}</a>"
         )
         if not self.event.current_schedule:
-            self.fields["comment"].initial = _("We released our first schedule!")
+            self.fields["comment"].initial = phrases.schedule.first_schedule
         else:
             self.fields["comment"].initial = _("We released a new schedule version!")
 
@@ -51,7 +52,7 @@ class ScheduleExportForm(ExportForm):
     target = forms.MultipleChoiceField(
         required=True,
         label=_("Target group"),
-        choices=[("all", _("All proposals"))] + SubmissionStates.valid_choices,
+        choices=[("all", phrases.base.all_choices)] + SubmissionStates.valid_choices,
         widget=forms.CheckboxSelectMultiple,
     )
 
@@ -92,18 +93,18 @@ class ScheduleExportForm(ExportForm):
         )
         self.fields["room"] = forms.BooleanField(
             required=False,
-            label=_("Room"),
-            help_text=_("The room this talk is scheduled in, if any"),
+            label=TalkSlot._meta.get_field("room").verbose_name,
+            help_text=TalkSlot._meta.get_field("room").help_text,
         )
         self.fields["start"] = forms.BooleanField(
             required=False,
-            label=_("Start"),
-            help_text=_("When the talk starts, if it is currently scheduled"),
+            label=TalkSlot._meta.get_field("start").verbose_name,
+            help_text=TalkSlot._meta.get_field("start").help_text,
         )
         self.fields["end"] = forms.BooleanField(
             required=False,
-            label=_("End"),
-            help_text=_("When the talk ends, if it is currently scheduled"),
+            label=TalkSlot._meta.get_field("end").verbose_name,
+            help_text=TalkSlot._meta.get_field("end").help_text,
         )
         self.fields["median_score"] = forms.BooleanField(
             required=False,
@@ -224,11 +225,11 @@ class ScheduleRoomForm(I18nFormMixin, forms.Form):
 
 class ScheduleVersionForm(forms.Form):
     version = forms.ChoiceField(
-        label=_("Version"),
+        label=phrases.schedule.version,
         required=False,
         choices=[],
         widget=forms.SelectMultiple(
-            attrs={"class": "select2", "data-placeholder": _("Version")}
+            attrs={"class": "select2", "data-placeholder": phrases.schedule.version}
         ),
     )
 

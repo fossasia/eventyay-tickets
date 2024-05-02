@@ -28,6 +28,23 @@ TEMPLATE_LOG_NAMES = {
     "pretalx.organiser.delete": _("The organiser {name} was deleted."),
 }
 
+# These log names were used in the past, and we still support them for display purposes
+LOG_ALIASES = {
+    "pretalx.event.invite.orga.accept": "pretalx.invite.orga.accept",
+    "pretalx.event.invite.orga.retract": "pretalx.invite.orga.retract",
+    "pretalx.event.invite.orga.send": "pretalx.invite.orga.send",
+    "pretalx.event.invite.reviewer.retract": "pretalx.invite.reviewer.retract",
+    "pretalx.event.invite.reviewer.send": "pretalx.invite.reviewer.send",
+    "pretalx.submission.confirmation": "pretalx.submission.confirm",
+    "pretalx.submission.answerupdate": "pretalx.submission.answer.update",
+    "pretalx.submission.answercreate": "pretalx.submission.answer.create",
+    # This isn't really the same thing, as the create takes place when the submission is
+    # created, e.g. as a draft proposal, and the make_submitted takes place when the submission
+    # is submitted to the CfP. But as we treat draft proposals as not existing at all
+    # yet, we can treat this as a create action.
+    "pretalx.submission.make_submitted": "pretalx.submission.create",
+}
+
 LOG_NAMES = {
     "pretalx.cfp.update": _("The CfP has been modified."),
     "pretalx.event.create": _("The event has been added."),
@@ -43,21 +60,6 @@ LOG_NAMES = {
         "The invitation to the review team was retracted."
     ),
     "pretalx.invite.reviewer.send": _("The invitation to the review team was sent."),
-    "pretalx.event.invite.orga.accept": _(
-        "The invitation to the event orga was accepted."
-    ),  # compat
-    "pretalx.event.invite.orga.retract": _(
-        "An invitation to the event orga was retracted."
-    ),  # compat
-    "pretalx.event.invite.orga.send": _(
-        "An invitation to the event orga was sent."
-    ),  # compat
-    "pretalx.event.invite.reviewer.retract": _(
-        "The invitation to the review team was retracted."
-    ),  # compat
-    "pretalx.event.invite.reviewer.send": _(
-        "The invitation to the review team was sent."
-    ),  # compat
     "pretalx.mail.create": _("An email was modified."),
     "pretalx.mail.delete": _("A pending email was deleted."),
     "pretalx.mail.delete_all": _("All pending emails were deleted."),
@@ -80,7 +82,6 @@ LOG_NAMES = {
     "pretalx.submission.accept": _("The proposal was accepted."),
     "pretalx.submission.cancel": _("The proposal was cancelled."),
     "pretalx.submission.confirm": _("The proposal was confirmed."),
-    "pretalx.submission.confirmation": _("The proposal was confirmed."),  # Legacy
     "pretalx.submission.create": _("The proposal was added."),
     "pretalx.submission.deleted": _("The proposal was deleted."),
     "pretalx.submission.reject": _("The proposal was rejected."),
@@ -93,10 +94,8 @@ LOG_NAMES = {
     "pretalx.submission.unconfirm": _("The proposal was unconfirmed."),
     "pretalx.submission.update": _("The proposal was modified."),
     "pretalx.submission.withdraw": _("The proposal was withdrawn."),
-    "pretalx.submission.answer.update": _("A proposal answer was modified."),  # Legacy
-    "pretalx.submission.answerupdate": _("A proposal answer was modified."),  # Legacy
-    "pretalx.submission.answer.create": _("A proposal answer was added."),  # Legacy
-    "pretalx.submission.answercreate": _("A proposal answer was added."),  # Legacy
+    "pretalx.submission.answer.update": _("A proposal answer was modified."),
+    "pretalx.submission.answer.create": _("A proposal answer was added."),
     "pretalx.submission_type.create": _("A session type was added."),
     "pretalx.submission_type.delete": _("A session type was deleted."),
     "pretalx.submission_type.make_default": _("The session type was made default."),
@@ -125,7 +124,8 @@ def default_activitylog_display(sender: Event, activitylog: ActivityLog, **kwarg
         placeholders = {v[1] for v in string.Formatter().parse(message) if v[1]}
         if placeholders <= set(activitylog.data.keys()):
             return message.format(**activitylog.data)
-    return LOG_NAMES.get(activitylog.action_type)
+    action_type = LOG_ALIASES.get(activitylog.action_type, activitylog.action_type)
+    return LOG_NAMES.get(action_type)
 
 
 @receiver(activitylog_object_link)
@@ -162,7 +162,7 @@ def default_activitylog_object_link(sender: Event, activitylog: ActivityLog, **k
         text = _("Answer to question")
     if isinstance(activitylog.content_object, CfP):
         url = activitylog.content_object.urls.text
-        link_text = _("CfP")
+        link_text = _("Call for Proposals")
     if isinstance(activitylog.content_object, MailTemplate):
         url = activitylog.content_object.urls.base
         text = _("Mail template")

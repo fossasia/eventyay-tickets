@@ -316,6 +316,14 @@ class Event(PretalxModel):
     template_names = [
         f"{t}_template" for t in ("accept", "ack", "reject", "update", "question")
     ]
+    HEADER_PATTERN_CHOICES = (
+        ("", _("Plain")),
+        ("pcb", _("Circuits")),
+        ("bubbles", _("Circles")),
+        ("signal", _("Signal")),
+        ("topo", _("Topography")),
+        ("graph", _("Graph Paper")),
+    )
 
     objects = models.Manager()
 

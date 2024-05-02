@@ -2,6 +2,7 @@ import random
 from abc import ABCMeta
 
 from django.utils.translation import gettext_lazy as _
+from django.utils.translation import pgettext_lazy
 
 _phrase_book = {}
 
@@ -40,28 +41,36 @@ class BasePhrases(Phrases, app="base"):
     them with new phrases in other classes.
     """
 
-    send = [_("Send")]
-    save = [_("Save")]
-    cancel = [_("Cancel")]
-    edit = [_("Edit")]
+    # Translators: This is the label on buttons that trigger the sending of emails.
+    send = _("Send")
+    # Translators: This is the label on save buttons.
+    save = _("Save")
+    cancel = _("Cancel")
+    edit = _("Edit")
+    all_choices = _("all")
+    # Translators: This is a label on navigation elements leading to the previous page.
+    back_button = _("Back")
+    # Translators: This is a label on delete buttons.
+    delete_button = _("Delete")
 
-    saved = [_("Your changes have been saved.")]
+    saved = _("Your changes have been saved.")
 
-    error_sending_mail = [
-        _("There was an error sending the mail. Please try again later.")
-    ]
-    error_saving_changes = [
-        _("We had trouble saving your input – Please see below for details. 🠯")
-    ]
-    error_permissions_action = [_("You do not have permission to perform this action.")]
+    # Translators: This is an established term in the context of software development.
+    bad_request = _("Bad request.")
+    error_sending_mail = _(
+        "There was an error sending the mail. Please try again later."
+    )
+    error_saving_changes = _(
+        "We had trouble saving your input – Please see below for details."
+    )
+    error_permissions_action = _("You do not have permission to perform this action.")
 
-    permission_denied = [
-        _("Permission denied."),
+    permission_denied = _("Permission denied.")
+    permission_denied_long = (
         _("Sorry, you do not have the required permissions to access this page."),
-        _("Access denied."),
-    ]
-    not_found = [
-        _("Page not found."),
+    )
+    not_found = _("Page not found.")
+    not_found_long = [
         _("This page does not exist."),
         _("Huh, I could have sworn there was something here."),
         "",
@@ -71,12 +80,36 @@ class BasePhrases(Phrases, app="base"):
     ]
 
     enter_email = _("Email address")
+    new_password = _("New password")
     password_repeat = _("New password (again)")
     passwords_differ = _(
         "You entered two different passwords. Please enter the same one twice!"
     )
+    password_reset_heading = pgettext_lazy("noun / heading", "Password reset")
+    password_reset_question = _("Forgot your password?")
+    password_reset_action = _("Let me set a new one!")
+    password_reset_nearly_done = _(
+        "Now you just need to choose your new password and you are ready to go."
+    )
+
     use_markdown = _("You can use {link_start}Markdown{link_end} here.").format(
         link_start='<a href="https://docs.pretalx.org/en/latest/user/markdown.html" target="_blank" rel="noopener">',
         link_end="</a>",
     )
     public_content = _("This content will be shown publicly.")
+
+    quotation_open = pgettext_lazy("opening quotation mark", "“")
+    quotation_close = pgettext_lazy("closing quotation mark", "”")
+
+    # Translators: Used both for language selection for users, and for the language
+    # attribute of events and sessions.
+    language = _("Language")
+
+    # Translators: Used as settings/section heading
+    general = _("General")
+
+    email_subject = pgettext_lazy("email subject", "Subject")
+    # Translators: Text is used to describe the main text body of an email, or of
+    # similar options like the main text of the CfP or a review. It's separate from
+    # the "text" input type used in questions.
+    text_body = _("Text")

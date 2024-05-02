@@ -6,10 +6,10 @@ from django.http import Http404
 from django.urls import resolve
 from django.utils import translation
 from django.utils.formats import get_format
-from django.utils.translation import gettext_lazy as _
 
 from pretalx.cfp.signals import footer_link, html_head
 from pretalx.common.models.settings import GlobalSettings
+from pretalx.common.text.phrases import phrases
 from pretalx.orga.utils.i18n import get_javascript_format, get_moment_locale
 
 
@@ -39,8 +39,8 @@ def locale_context(request):
     context["js_datetime_format"] = get_javascript_format("DATETIME_INPUT_FORMATS")
     context["js_date_format"] = get_javascript_format("DATE_INPUT_FORMATS")
     context["js_locale"] = get_moment_locale()
-    context["quotation_open"] = _("“")
-    context["quotation_close"] = _("”")
+    context["quotation_open"] = phrases.base.quotation_open
+    context["quotation_close"] = phrases.base.quotation_close
 
     context["DAY_MONTH_DATE_FORMAT"] = get_day_month_date_format()
     lang = translation.get_language()

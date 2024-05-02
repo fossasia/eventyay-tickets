@@ -12,6 +12,7 @@ from django_context_decorator import context
 
 from pretalx.common.exceptions import SendMailException
 from pretalx.common.signals import register_data_exporters
+from pretalx.common.text.phrases import phrases
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.common.views.mixins import (
     ActionFromUrl,
@@ -245,10 +246,9 @@ class SpeakerPasswordReset(SpeakerViewMixin, DetailView):
                     user=self.request.user,
                     orga=False,
                 )
-                messages.success(
-                    self.request, _("The password was reset and the user was notified.")
-                )
+                messages.success(self.request, phrases.orga.password_reset_success)
         except SendMailException:  # pragma: no cover
+            messages.error(self.request, phrases.orga.password_reset_fail)
             messages.error(
                 self.request,
                 _(

@@ -4,6 +4,7 @@
 {% load i18n %}
 {% load static %}
 {% load vite %}
+{% load phrases %}
 
 {% block scripts %}
     {% vite_hmr %}
@@ -14,7 +15,7 @@
     <li class="nav-item">
         <a class="nav-link text-danger">
             <i class="fa fa-clock-o"></i>
-            {% blocktranslate with tz=request.event.timezone trimmed %}All times in {{ tz }}{% endblocktranslate %}
+            {% phrase "phrases.schedule.timezone_hint" tz=request.event.timezone %}
         </a>
     </li>
 {% endblock %}

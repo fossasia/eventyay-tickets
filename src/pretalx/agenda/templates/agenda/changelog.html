@@ -8,7 +8,7 @@
                 <section>
                     <h4 id="{{ schedule.version }}">
                         <a href="{% url "agenda:versioned-schedule" event=request.event.slug version=schedule.version %}">
-                            {% translate "Version" %} {{ schedule.version }}
+                            {{ phrases.schedule.version }} {{ schedule.version }}
                             <small class="text-muted">{{ schedule.published|date }}</small>
                         </a>
                     </h4>

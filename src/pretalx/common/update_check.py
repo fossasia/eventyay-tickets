@@ -140,13 +140,13 @@ def check_result_table():
             pdata = res["plugins"][p.module]
             table.append(
                 (
-                    _("Plugin: {}").format(p.name),
+                    _("Plugin") + f": {p.name}",
                     p.version,
                     pdata["latest"],
                     pdata["updatable"],
                 )
             )
         else:
-            table.append((_("Plugin: {}").format(p.name), p.version, "?", False))
+            table.append((_("Plugin") + f": {p.name}", p.version, "?", False))
 
     return table

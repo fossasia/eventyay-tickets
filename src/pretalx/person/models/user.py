@@ -84,7 +84,7 @@ class User(PermissionsMixin, GenerateCode, FileCleanupMixin, AbstractBaseUser):
     )
     email = models.EmailField(
         unique=True,
-        verbose_name=_("E-mail"),
+        verbose_name=_("Email"),
         help_text=_(
             "Your email address will be used for password resets and notification about your event/proposals."
         ),
@@ -155,7 +155,7 @@ class User(PermissionsMixin, GenerateCode, FileCleanupMixin, AbstractBaseUser):
 
     def get_display_name(self) -> str:
         """Returns a user's name or 'Unnamed user'."""
-        return self.name if self.name else str(_("Unnamed user"))
+        return str(self)
 
     def save(self, *args, **kwargs):
         self.email = self.email.lower().strip()

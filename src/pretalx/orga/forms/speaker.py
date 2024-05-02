@@ -2,6 +2,7 @@ from django import forms
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 
+from pretalx.common.text.phrases import phrases
 from pretalx.orga.forms.export import ExportForm
 from pretalx.person.models import User
 
@@ -11,7 +12,7 @@ class SpeakerExportForm(ExportForm):
         required=True,
         label=_("Target group"),
         choices=(
-            ("all", _("All submitters")),
+            ("all", phrases.base.all_choices),
             ("accepted", _("With accepted proposals")),
             ("confirmed", _("With confirmed proposals")),
             ("rejected", _("With rejected proposals")),
@@ -28,9 +29,7 @@ class SpeakerExportForm(ExportForm):
         self.fields["submission_ids"] = forms.BooleanField(
             required=False,
             label=_("Proposal IDs"),
-            help_text=_(
-                "The unique ID of a proposal is used in the proposal URL and in exports"
-            ),
+            help_text=phrases.orga.proposal_id_help_text,
         )
         self.fields["submission_titles"] = forms.BooleanField(
             required=False,

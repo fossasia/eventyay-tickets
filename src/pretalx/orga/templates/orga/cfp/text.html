@@ -105,7 +105,7 @@
                                 </tr>
                                 {% if request.event.is_multilingual %}
                                     <tr>
-                                        <th>{% translate "Language" %}</th>
+                                        <th>{{ phrases.base.language }}</th>
                                         <td class="hide-label">{% bootstrap_field sform.cfp_ask_content_locale layout='event-inline' %}</td>
                                         <td></td>
                                         <td></td>

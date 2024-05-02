@@ -1,7 +1,7 @@
 {% extends "orga/auth/base.html" %}
 {% load bootstrap4 %}
 {% load i18n %}
-{% block title %}{% translate "Password reset" %} :: {% endblock %}
+{% block title %}{{ phrases.base.password_reset_heading }}{% endblock %}
 
 {% block content %}
     <form method="post">
@@ -9,15 +9,11 @@
         {% bootstrap_form_errors form %}
         {{ form.media }}
         <div class="labelless-password-input-form">
-            <h4>{% translate "OK, this looks good!" %}</h4>
-            <p>
-                {% blocktranslate trimmed %}
-                    Now you just need to choose your new password and you are ready to go.
-                {% endblocktranslate %}
-            </p>
+            <h4>{{ phrases.base.password_reset_heading }}</h4>
+            <p>{{ phrases.base.password_reset_nearly_done }}</p>
             {% bootstrap_field form.password layout='inline' %}
             {% bootstrap_field form.password_repeat layout='inline' %}
-            <button type="submit" class="btn btn-block btn-success">{% translate "Save this!" %}</button>
+            <button type="submit" class="btn btn-block btn-success">{{ phrases.base.save }}</button>
         </div>
     </form>
 {% endblock %}

@@ -24,7 +24,7 @@
                 class="btn btn-lg btn-outline-info"
                 href="{% if request.GET.next %}{{ request.GET.next }}{% else %}{{ submission.orga_urls.base }}{% endif %}"
             >
-                {% translate "Back" %}
+                {{ phrases.base.back_button }}
             </a>
             <button type="submit" class="btn btn-lg submission-state-{{ target }}">
                 {% translate "Do it" %}

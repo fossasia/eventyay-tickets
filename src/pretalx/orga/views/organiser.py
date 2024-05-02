@@ -7,6 +7,7 @@ from django.views.generic import DeleteView, DetailView, TemplateView
 from django_context_decorator import context
 
 from pretalx.common.exceptions import SendMailException
+from pretalx.common.text.phrases import phrases
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.common.views.mixins import PermissionRequired
 from pretalx.event.forms import OrganiserForm, TeamForm, TeamInviteForm
@@ -188,16 +189,9 @@ class TeamResetPassword(PermissionRequired, TemplateView):
     def post(self, request, *args, **kwargs):
         try:
             self.user.reset_password(event=None, user=self.request.user)
-            messages.success(
-                self.request, _("The password was reset and the user was notified.")
-            )
+            messages.success(self.request, phrases.orga.password_reset_success)
         except SendMailException:  # pragma: no cover
-            messages.error(
-                self.request,
-                _(
-                    "The password reset email could not be sent, so the password was not reset."
-                ),
-            )
+            messages.error(self.request, phrases.orga.password_reset_fail)
         return redirect(self.request.organiser.orga_urls.base)
 
 

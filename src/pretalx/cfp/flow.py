@@ -310,7 +310,7 @@ class InfoStep(GenericFlowStep, FormFlowStep):
 
     @property
     def label(self):
-        return _("General")
+        return phrases.base.general
 
     @property
     def _title(self):
@@ -394,7 +394,7 @@ class QuestionsStep(GenericFlowStep, FormFlowStep):
 
     @property
     def label(self):
-        return _("Questions")
+        return phrases.cfp.questions
 
     @property
     def _title(self):

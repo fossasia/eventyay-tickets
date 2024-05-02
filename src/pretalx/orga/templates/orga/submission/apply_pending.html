@@ -19,7 +19,7 @@
                     class="btn btn-lg btn-outline-info"
                     href="{% if request.GET.next %}{{ request.GET.next }}{% else %}{{ request.event.orga_urls.submissions }}{% endif %}"
                 >
-                    {% translate "Back" %}
+                    {{ phrases.base.back_button }}
                 </a>
                 <button type="submit" class="btn btn-lg btn-success">
                     {% translate "Do it" %}
@@ -34,7 +34,7 @@
                     class="btn btn-lg btn-outline-info"
                     href="{% if request.GET.next %}{{ request.GET.next }}{% else %}{{ request.event.orga_urls.submissions }}{% endif %}"
                 >
-                    {% translate "Back" %}
+                    {{ phrases.base.back_button }}
                 </a>
             </span></div>
         {% endif %}

@@ -2,6 +2,7 @@
 {% load compress %}
 {% load i18n %}
 {% load static %}
+{% load phrases %}
 
 {% block container_width %}{% if not show_talk_list %} main-schedule{% endif %}{% endblock %}
 
@@ -16,16 +17,12 @@
         {% if schedule != schedule.event.current_schedule %}
             <div class="alert alert-warning m-3"><span>
                 {% if not schedule.version %}
-                    {% translate "You are currently viewing the editable schedule version, which is unreleased and may change at any time." %}
+                    {{ phrases.schedule.wip_version }}
                 {% else %}
-                    {% blocktranslate trimmed with current_url=schedule.event.urls.schedule %}
-                        You are currently viewing an older schedule version.
-                    {% endblocktranslate %}
+                    {{ phrases.schedule.old_version }}
                 {% endif %}
                 {% if request.event.current_schedule %}
-                    {% blocktranslate trimmed with current_url=schedule.event.urls.schedule %}
-                        You can find the current version <a href="{{ current_url }}">here</a>.
-                    {% endblocktranslate %}
+                    {% phrase "phrases.schedule.current_version" current_url=schedule.event.urls.schedule %}
                 {% endif %}
             </span></div>
         {% endif %}

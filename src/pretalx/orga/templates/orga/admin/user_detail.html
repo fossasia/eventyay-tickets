@@ -33,7 +33,7 @@
         <td>{{ user.pw_reset_time|default:'-' }}</td>
       </tr>
       <tr>
-        <th>{% translate "Language" %}</th>
+        <th>{{ phrases.base.language }}</th>
         <td>{{ user.locale }}</td>
       </tr>
       <tr>
@@ -96,7 +96,7 @@
           <th>{% translate "Title" %}</th>
           <th>{% translate "Event" %}</th>
           <th>{% translate "State" %}</th>
-          <th>{% translate "Submitted" %}</th>
+          <th></th>
         </tr>
       </thead>
       <tbody>

@@ -25,6 +25,7 @@ from pretalx.agenda.tasks import export_schedule_html
 from pretalx.common.language import get_current_language_information
 from pretalx.common.signals import register_data_exporters
 from pretalx.common.text.path import safe_filename
+from pretalx.common.text.phrases import phrases
 from pretalx.common.views import CreateOrUpdateView, OrderModelView
 from pretalx.common.views.mixins import (
     ActionFromUrl,
@@ -247,9 +248,7 @@ class ScheduleResendMailsView(EventPermissionRequired, View):
             )
             messages.success(
                 self.request,
-                _(
-                    "{count} emails have been saved to the outbox – you can make individual changes there or just send them all."
-                ).format(count=len(mails)),
+                phrases.orga.mails_in_outbox.format(count=len(mails)),
             )
         else:
             messages.warning(

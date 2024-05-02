@@ -65,7 +65,7 @@
                 <thead>
                     <tr>
                         <th>{% translate "Title" %}</th>
-                        {% if can_view_speakers %}<th>{% translate "Speakers" %}</th>{% endif %}
+                        {% if can_view_speakers %}<th>{{ phrases.schedule.speakers }}</th>{% endif %}
                         {% for category in categories %}
                             <th>{{ category.name }}</th>
                         {% endfor %}
@@ -104,7 +104,9 @@
             </table>
         </div>
         <div id="submitBar">
-            <button type="submit" class="btn btn-success">{% translate "Save" %}</button>
+            <button type="submit" class="btn btn-success">
+                {{ phrases.base.save }}
+            </button>
         </div>
     </form>
 {% endblock %}

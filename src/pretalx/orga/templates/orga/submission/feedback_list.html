@@ -10,7 +10,7 @@
             </div>
         </div>
     {% empty %}
-        {% translate "There has been no feedback for this session yet." %}
+        {{ phrases.schedule.no_feedback }}
     {% endfor %}
     {% include "orga/includes/pagination.html" %}
 {% endblock %}

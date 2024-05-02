@@ -20,12 +20,7 @@
             {% endblocktranslate %}
         </div>
         {% bootstrap_form form layout='event' %}
-        <div class="submit-group panel">
-            <span></span>
-            <span>
-                <button type="submit" class="btn btn-lg btn-success">{% translate "Save" %}</button>
-            </span>
-        </div>
+        {% include "orga/includes/submit_row.html" %}
     </form>
 
     <h2>{% translate "Widget generation" %}</h2>

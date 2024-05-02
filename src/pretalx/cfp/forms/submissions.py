@@ -1,33 +1,19 @@
 from django import forms
-from django.utils.translation import gettext_lazy as _
+
+from pretalx.common.text.phrases import phrases
 
 
 class SubmissionInvitationForm(forms.Form):
-    speaker = forms.EmailField(label=_("Speaker email"))
-    subject = forms.CharField(label=_("Subject"))
-    text = forms.CharField(widget=forms.Textarea(), label=_("Text"))
+    speaker = forms.EmailField(label=phrases.cfp.speaker_email)
+    subject = forms.CharField(label=phrases.base.email_subject)
+    text = forms.CharField(widget=forms.Textarea(), label=phrases.base.text_body)
 
     def __init__(self, submission, speaker, *args, **kwargs):
         self.submission = submission
         initial = kwargs.get("initial", {})
-        subject = _("{speaker} invites you to join their session!").format(
-            speaker=speaker.get_display_name()
-        )
+        subject = phrases.cfp.invite_subject.format(speaker=speaker.get_display_name())
         initial["subject"] = f"[{submission.event.slug}] {subject}"
-        initial["text"] = _(
-            """Hi!
-
-I’d like to invite you to be a speaker in the session
-
-  “{title}”
-
-at {event}. Please follow this link to join:
-
-  {url}
-
-I’m looking forward to it!
-{speaker}"""
-        ).format(
+        initial["text"] = phrases.cfp.invite_text.format(
             event=submission.event.name,
             title=submission.title,
             url=submission.urls.accept_invitation.full(),

@@ -42,7 +42,7 @@
                         class="nav-link {% if "submissions.speakers" in url_name %}active{% endif %}"
                         href="{{ submission.orga_urls.speakers }}"
                     >
-                        {% translate "Speakers" %}
+                        {{ phrases.schedule.speakers }}
                     </a>
                 </li>
             {% endif %}

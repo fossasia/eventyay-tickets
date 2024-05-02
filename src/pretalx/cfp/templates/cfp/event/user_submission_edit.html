@@ -7,7 +7,7 @@
 {% load rules %}
 {% load static %}
 
-{% block title %}{% translate "Your proposal" %} :: {% endblock %}
+{% block title %}{{ submission.title }} :: {% endblock %}
 
 {% block cfp_header %}
     {% compress js %}
@@ -30,28 +30,8 @@
 
 {% block content %}
     {% has_perm 'cfp.add_speakers' request.user submission  as can_invite_speakers %}
-    <h2>{% if submission.state != "draft" %}{% translate "Your proposal:" %}{% else %}{% translate "Your draft:" %}{% endif %} {{ submission.title }}</h2>
-    {% if submission.public_slots %}
-        <h3>
-            <small>
-                {% for talk in submission.public_slots %}
-                    {{ talk.start|date:DAY_MONTH_DATE_FORMAT }}, {{ talk.start|date:"TIME_FORMAT" }}–{{ talk.end|date:"TIME_FORMAT" }}, {{ talk.room.name }} {% if not forloop.last %}·{% endif %}
-                {% endfor %}
-            </small>
-        </h3>
-    {% endif %}
+    {% include "cfp/includes/user_submission_header.html" %}
     <p>
-        {% if submission.state != "draft" %}
-            {% translate "Current state of your proposal:" %}
-            {% include "cfp/event/fragment_state.html" with state=submission.user_state %}
-        {% else %}
-            <div class="alert alert-info">
-                {% blocktranslate trimmed %}
-                    This is a draft proposal.
-                    It will never be visible to anybody else, unless you submit it or explicitly share it.
-                {% endblocktranslate %}
-            </div>
-        {% endif %}
         {% if submission.state == 'accepted' %}
             <a href="{{ submission.urls.confirm }}" class="btn btn-sm btn-success">
                 <i class="fa fa-check"></i> {% translate "Confirm your attendance" %}
@@ -94,86 +74,7 @@
         {% bootstrap_form form layout='event' %}
         {% bootstrap_form qform layout='event' %}
         {% if can_edit or form.instance.resources.count %}
-            <div class="formset form-group row" id="resource-upload" data-formset data-formset-prefix="{{ formset.prefix }}">
-                {{ formset.management_form }}
-                {% bootstrap_formset_errors formset %}
-                <label class="col-md-3 col-form-label">{% translate "Resources" %}</label>
-                <div data-formset-body class="col-md-9">
-                    {% if can_edit %}
-                        <div class="alert alert-info flip ml-auto">
-                            {% translate "Resources will be publicly visible. Please try to keep your uploads below 16MB." %}
-                        </div>
-                    {% endif %}
-                    {% for form in formset %}
-                        <div data-formset-form class="mb-2">
-                            <div class="sr-only">
-                                {{ form.id }}
-                                {% bootstrap_field form.DELETE form_group_class="" layout="inline" %}
-                            </div>
-                            {% bootstrap_form_errors form %}
-                            <div class="resource-option-row flip ml-auto">
-                                <div class="resource-option{% if not form.errors %}-input{% endif %}{% if action == 'view' %} disabled{% endif %}">
-                                    {% bootstrap_field form.description layout='inline' %}
-                                    {% if form.errors %}
-                                        <div class="resource-option-inline">
-                                            {% bootstrap_field form.link layout='inline'  %}
-                                            {% bootstrap_field form.resource layout='inline'  %}
-                                        </div>
-                                    {% else %}
-                                        {% if form.instance.link %}
-                                            {% bootstrap_field form.link layout='inline'  %}
-                                        {% else %}
-                                            <i class="fa fa-paperclip mr-1 ml-2 pt-1"></i> <a href="{{ form.instance.url }}">{{ form.instance.filename }}</a>
-                                        {% endif %}
-                                    {% endif %}
-                                </div>
-                                {% if can_edit %}
-                                    <div class="resource-option-delete">
-                                        <button type="button" class="btn btn-danger btn-sm" data-formset-delete-button>
-                                            <i class="fa fa-trash"></i></button>
-                                    </div>
-                                {% endif %}
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-                {% if can_edit %}
-                    <script type="form-template" data-formset-empty-form>
-                        {% escapescript %}
-                            <div data-formset-form class="formset-row">
-                            <div class="sr-only">
-                            {{ formset.empty_form.id }}
-                            {% bootstrap_field formset.empty_form.DELETE form_group_class="" layout="inline" %}
-                            </div>
-                            <div class="resource-option-row flip ml-auto">
-                            <div class="resource-option-fields">
-                            {% bootstrap_field formset.empty_form.description layout='inline' %}
-                            <div class="resource-option-inline">
-                            {% bootstrap_field formset.empty_form.link layout='inline'  %}
-                            {% bootstrap_field formset.empty_form.resource layout='inline'  %}
-                            </div>
-                            <div class="form-text text-muted mt-0 pt-0 mb-2">
-                            {% translate "You can either provide a URL or upload a file." %}
-                            {% translate "Max file size:" %}
-                            {{ settings.FILE_UPLOAD_DEFAULT_LIMIT | filesize }}
-                            </div>
-                            <div class="resource-option-delete">
-                            <button type="button" class="btn btn-danger btn-sm" data-formset-delete-button>
-                            <i class="fa fa-trash"></i></button>
-                            </div>
-                            </div>
-                            </div>
-                            </div>
-                        {% endescapescript %}
-                    </script>
-                    {% if action != 'view' %}
-                        <div class="d-flex flex-row-reverse w-100 mr-3">
-                            <button type="button" class="btn btn-info" data-formset-add>
-                                <i class="fa fa-plus"></i> {% translate "Add another resource" %}</button>
-                        </div>
-                    {% endif %}
-                {% endif %}
-            </div>
+            {% include "cfp/includes/submissioN_resources_form.html" %}
         {% endif %}
         {% if can_edit %}
             <div class="row mt-4">
@@ -190,7 +91,7 @@
                 {% else %}
                     <div class="col-md-3 flip ml-auto">
                         <button type="submit" class="btn btn-block btn-success btn-lg" name="action" value="submit">
-                            {% translate "Save" %}
+                            {{ phrases.base.save }}
                         </button>
                 {% endif %}
             </div>

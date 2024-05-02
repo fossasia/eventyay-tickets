@@ -27,14 +27,7 @@
             {% endblocktranslate %}
         </div>
         {% bootstrap_form form layout='event' %}
-        <div class="submit-group panel">
-            <span></span>
-            <span>
-                {% if action == "edit" or action == "create" %}
-                    <button type="submit" class="btn btn-lg btn-success">{% translate "Save" %}</button>
-                {% endif %}
-            </span>
-        </div>
+        {% include "orga/includes/submit_row.html" %}
 
         <h2>{% translate "Review scoring" %}</h2>
         <div class="alert alert-info">
@@ -151,7 +144,9 @@
                     <button type="button" id="score-add" class="btn btn-lg btn-info flip ml-auto mr-4" data-formset-add>
                         <i class="fa fa-plus"></i> {% translate "Add another score category" %}
                     </button>
-                    <button type="submit" class="btn btn-lg btn-success">{% translate "Save" %}</button>
+                    <button type="submit" class="btn btn-lg btn-success">
+                        {{ phrases.base.save }}
+                    </button>
                 </div>
             {% endif %}
         </div>
@@ -241,7 +236,9 @@
                     <button type="button" class="btn btn-lg btn-info flip ml-auto mr-4" data-formset-add>
                         <i class="fa fa-plus"></i> {% translate "Add another phase" %}
                     </button>
-                    <button type="submit" class="btn btn-lg btn-success">{% translate "Save" %}</button>
+                    <button type="submit" class="btn btn-lg btn-success">
+                        {{ phrases.base.save }}
+                    </button>
                 </div>
             {% endif %}
         </div>

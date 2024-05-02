@@ -13,6 +13,7 @@ from pretalx.common.exceptions import SendMailException
 from pretalx.common.forms.mixins import I18nHelpText, ReadOnlyFlag
 from pretalx.common.language import language
 from pretalx.common.templatetags.rich_text import rich_text
+from pretalx.common.text.phrases import phrases
 from pretalx.mail.context import get_available_placeholders
 from pretalx.mail.models import MailTemplate, QueuedMail
 from pretalx.mail.placeholders import SimpleFunctionalMailTextPlaceholder
@@ -310,7 +311,7 @@ class WriteSessionMailForm(SubmissionFilterForm, WriteMailBaseForm):
     speakers = forms.ModelMultipleChoiceField(
         queryset=User.objects.none(),
         required=False,
-        label=_("Speakers"),
+        label=phrases.schedule.speakers,
         help_text=_(
             "Select speakers that should receive the email regardless of the other filters."
         ),

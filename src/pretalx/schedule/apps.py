@@ -6,3 +6,4 @@ class ScheduleConfig(AppConfig):
 
     def ready(self):
         from . import signals  # noqa
+        from .phrases import SchedulePhrases  # noqa

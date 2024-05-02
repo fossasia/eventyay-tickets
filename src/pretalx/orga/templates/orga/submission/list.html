@@ -92,7 +92,7 @@
                         <a href="?{% url_replace request 'sort' 'title' %}"><i class="fa fa-caret-down" title="{% translate "Sort by title (a-z)" %}"></i></a>
                         <a href="?{% url_replace request 'sort' '-title' %}"><i class="fa fa-caret-up" title="{% translate "Sort by title (z-a)" %}"></i></a>
                     </th>
-                    {% if can_view_speakers %}<th>{% translate "Speakers" %}</th>{% endif %}
+                    {% if can_view_speakers %}<th>{{ phrases.schedule.speakers }}</th>{% endif %}
                     {% if show_submission_types  %}
                         <th>
                             {% translate "Type" %}
@@ -174,9 +174,7 @@
                                    class="btn btn-sm btn-info">
                                     <i class="fa fa-edit"></i>
                                 </a>
-                                <a href="{{ submission.orga_urls.delete }}?from=list"
-                                   title="{% translate "Delete" %}"
-                                   class="btn btn-sm btn-danger">
+                                <a href="{{ submission.orga_urls.delete }}?from=list" title="{{ phrases.base.delete_button }}" class="btn btn-sm btn-danger">
                                     <i class="fa fa-trash"></i>
                                 </a>
                             </td>

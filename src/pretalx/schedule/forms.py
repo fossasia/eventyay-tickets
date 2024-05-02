@@ -153,9 +153,10 @@ class AvailabilitiesFormMixin(forms.Form):
         required = (
             "availabilities" in self.fields and self.fields["availabilities"].required
         )
+        availability_required = _("Please fill in your availability!")
         if not data:
             if required:
-                raise forms.ValidationError(_("Please fill in your availability!"))
+                raise forms.ValidationError(availability_required)
             return None
 
         rawavailabilities = (
@@ -169,7 +170,7 @@ class AvailabilitiesFormMixin(forms.Form):
             self._validate_availability(rawavail)
             availabilities.append(Availability(event_id=self.event.id, **rawavail))
         if not availabilities and required:
-            raise forms.ValidationError(_("Please fill in your availability!"))
+            raise forms.ValidationError(availability_required)
         # Remove overlaps by merging availabilities
         availabilities = Availability.union(availabilities)
         return availabilities

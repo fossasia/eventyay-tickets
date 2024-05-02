@@ -24,7 +24,7 @@
             {% if not session.submission %}
                 {{ session.description }}
             {% elif session.submission.is_deleted %}
-                <span class="pretalx-session-title">[{% translate "deleted" %}]</span>
+                <span class="pretalx-session-title">[{{ phrases.submission.deleted }}]</span>
             {% else %}
                 {% if session.submission.do_not_record %}
                     <span class="fa-stack">
