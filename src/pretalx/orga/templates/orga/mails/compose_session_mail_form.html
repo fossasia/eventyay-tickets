@@ -40,7 +40,7 @@
   <div class="form-group row">
     <label for="id_state" class="col-md-3 col-form-label">{{ form.state.label }}
       <br>
-      <span class="optional">{% translate "Optional" %}</span>
+      <span class="optional">{% translate "Optional" context "form field" %}</span>
     </label>
     <div class="col-md-9 d-flex align-items-center">
       {% bootstrap_field form.state layout='inline' form_group_class='d-inline-flex col-md-6 pl-0 mr-3' %}

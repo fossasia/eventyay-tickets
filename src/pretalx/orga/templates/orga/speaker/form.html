@@ -31,11 +31,12 @@
     {% has_perm 'orga.send_mails' request.user request.event as can_send_mails %}
     <h2 class="d-flex justify-content-space-between">
         {{ form.instance.user.get_display_name }} ({{ submissions.count }}
-        {% blocktranslate trimmed count count=submissions.count %}
+        {% blocktranslate asvar proposal_title trimmed count count=submissions.count %}
             proposal
         {% plural %}
             proposals
-        {% endblocktranslate %})
+        {% endblocktranslate %}
+        {{ proposal_title }}
         {% if can_send_mails %}
             <a class="btn btn-outline-info ml-auto mb-1" href="{{ request.event.orga_urls.compose_mails_sessions }}?speakers={{ form.instance.user.code }}">
                 <i class="fa fa-envelope"></i>
@@ -46,11 +47,7 @@
     <div class="alert alert-info col-md-9 flip offset-md-3">
         <span>
             <h5>
-                {% blocktranslate trimmed count count=submissions.count %}
-                    Proposal
-                {% plural %}
-                    Proposals
-                {% endblocktranslate %})
+                {{ proposal_title|capfirst }}
             </h5>
             <ul>
                 {% for submission in submissions %}
