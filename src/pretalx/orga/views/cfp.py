@@ -21,6 +21,7 @@ from pretalx.common.text.serialize import I18nStrJSONEncoder
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.common.views.generic import OrderModelView
 from pretalx.common.views.mixins import (
+    ActionConfirmMixin,
     ActionFromUrl,
     EventPermissionRequired,
     PaginationMixin,
@@ -300,9 +301,8 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         return result
 
 
-class CfPQuestionDelete(PermissionRequired, DetailView):
+class CfPQuestionDelete(PermissionRequired, ActionConfirmMixin, DetailView):
     permission_required = "orga.remove_question"
-    template_name = "orga/cfp/question_delete.html"
 
     def get_object(self, queryset=None) -> Question:
         return get_object_or_404(
@@ -487,9 +487,8 @@ class SubmissionTypeDefault(PermissionRequired, View):
         return redirect(self.request.event.cfp.urls.types)
 
 
-class SubmissionTypeDelete(PermissionRequired, DetailView):
+class SubmissionTypeDelete(PermissionRequired, ActionConfirmMixin, DetailView):
     permission_required = "orga.remove_submission_type"
-    template_name = "orga/cfp/submission_type_delete.html"
 
     def get_object(self, queryset=None):
         return get_object_or_404(
@@ -579,9 +578,8 @@ class TrackDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         return result
 
 
-class TrackDelete(PermissionRequired, DetailView):
+class TrackDelete(PermissionRequired, ActionConfirmMixin, DetailView):
     permission_required = "orga.remove_track"
-    template_name = "orga/cfp/track_delete.html"
 
     def get_object(self, queryset=None):
         return get_object_or_404(self.request.event.tracks, pk=self.kwargs.get("pk"))
@@ -694,9 +692,8 @@ class AccessCodeSend(PermissionRequired, UpdateView):
         return result
 
 
-class AccessCodeDelete(PermissionRequired, DetailView):
+class AccessCodeDelete(PermissionRequired, ActionConfirmMixin, DetailView):
     permission_required = "orga.remove_access_code"
-    template_name = "orga/cfp/access_code_delete.html"
 
     def get_object(self, queryset=None):
         return get_object_or_404(

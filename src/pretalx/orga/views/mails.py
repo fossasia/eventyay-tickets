@@ -14,6 +14,7 @@ from pretalx.common.templatetags.rich_text import rich_text
 from pretalx.common.text.phrases import phrases
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.common.views.mixins import (
+    ActionConfirmMixin,
     ActionFromUrl,
     EventPermissionRequired,
     Filterable,
@@ -85,9 +86,12 @@ class SentMail(
         return self.sort_queryset(qs)
 
 
-class OutboxSend(EventPermissionRequired, TemplateView):
+class OutboxSend(EventPermissionRequired, ActionConfirmMixin, TemplateView):
     permission_required = "orga.send_mails"
-    template_name = "orga/mails/confirm.html"
+    action_object_name = ""
+    action_confirm_label = phrases.base.send
+    action_confirm_color = "success"
+    action_confirm_icon = "envelope"
 
     @context
     def question(self):
@@ -145,9 +149,9 @@ class OutboxSend(EventPermissionRequired, TemplateView):
         return redirect(self.request.event.orga_urls.outbox)
 
 
-class MailDelete(PermissionRequired, TemplateView):
+class MailDelete(PermissionRequired, ActionConfirmMixin, TemplateView):
     permission_required = "orga.purge_mails"
-    template_name = "orga/mails/confirm.html"
+    action_object_name = ""
 
     def get_permission_object(self):
         return self.request.event
@@ -210,9 +214,9 @@ class MailDelete(PermissionRequired, TemplateView):
         return redirect(request.event.orga_urls.outbox)
 
 
-class OutboxPurge(PermissionRequired, TemplateView):
+class OutboxPurge(PermissionRequired, ActionConfirmMixin, TemplateView):
     permission_required = "orga.purge_mails"
-    template_name = "orga/mails/confirm.html"
+    action_object_name = ""
 
     def get_permission_object(self):
         return self.request.event

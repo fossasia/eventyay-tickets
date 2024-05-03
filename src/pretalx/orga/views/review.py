@@ -12,7 +12,11 @@ from django.views.generic import FormView, TemplateView
 from django_context_decorator import context
 
 from pretalx.common.views import CreateOrUpdateView
-from pretalx.common.views.mixins import EventPermissionRequired, PermissionRequired
+from pretalx.common.views.mixins import (
+    ActionConfirmMixin,
+    EventPermissionRequired,
+    PermissionRequired,
+)
 from pretalx.orga.forms.review import (
     DirectionForm,
     ProposalForReviewerForm,
@@ -652,7 +656,9 @@ class ReviewSubmission(ReviewViewMixin, PermissionRequired, CreateOrUpdateView):
         return self.request.event.orga_urls.reviews
 
 
-class ReviewSubmissionDelete(EventPermissionRequired, ReviewViewMixin, TemplateView):
+class ReviewSubmissionDelete(
+    EventPermissionRequired, ReviewViewMixin, ActionConfirmMixin, TemplateView
+):
     template_name = "orga/submission/review_delete.html"
     permission_required = "orga.remove_review"
 
@@ -673,9 +679,15 @@ class ReviewSubmissionDelete(EventPermissionRequired, ReviewViewMixin, TemplateV
         return redirect(self.submission.orga_urls.reviews)
 
 
-class RegenerateDecisionMails(EventPermissionRequired, TemplateView):
-    template_name = "orga/review/regenerate_decision_mails.html"
+class RegenerateDecisionMails(
+    EventPermissionRequired, ActionConfirmMixin, TemplateView
+):
     permission_required = "orga.change_submissions"
+    action_title = _("Regenerate decision emails")
+    action_confirm_label = _("Regenerate decision emails")
+    action_confirm_color = "success"
+    action_confirm_icon = "envelope"
+    action_object_name = ""
 
     def get_queryset(self):
         return (

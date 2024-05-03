@@ -7,14 +7,14 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
-from django.views.generic import DeleteView, DetailView, TemplateView
+from django.views.generic import DetailView, TemplateView
 from django_context_decorator import context
 
 from pretalx.common.exceptions import SendMailException
 from pretalx.common.text.phrases import phrases
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.common.views import is_form_bound
-from pretalx.common.views.mixins import PermissionRequired
+from pretalx.common.views.mixins import ActionConfirmMixin, PermissionRequired
 from pretalx.event.forms import OrganiserForm, TeamForm, TeamInviteForm
 from pretalx.event.models import Organiser, Team, TeamInvite
 from pretalx.orga.forms.sso_client_form import SSOClientForm
@@ -107,9 +107,8 @@ class TeamDetail(PermissionRequired, TeamMixin, CreateOrUpdateView):
         return self.request.GET.get("next", self.request.path)
 
 
-class TeamDelete(PermissionRequired, TeamMixin, DetailView):
+class TeamDelete(PermissionRequired, TeamMixin, ActionConfirmMixin, DetailView):
     permission_required = "orga.change_teams"
-    template_name = "orga/settings/team_delete.html"
 
     def get_permission_object(self):
         return self._get_team()
@@ -184,9 +183,8 @@ class TeamUninvite(InviteMixin, PermissionRequired, DetailView):
         return redirect(self.request.organiser.orga_urls.base)
 
 
-class TeamResend(InviteMixin, PermissionRequired, DetailView):
+class TeamResend(InviteMixin, PermissionRequired, ActionConfirmMixin, DetailView):
     model = TeamInvite
-    template_name = "orga/settings/team_resend.html"
     permission_required = "orga.change_teams"
     action_title = _("Resend invitation")
     action_text = _("Are you sure you want to resend the invitation to this user?")
@@ -207,9 +205,8 @@ class TeamResend(InviteMixin, PermissionRequired, DetailView):
         return redirect(self.request.organiser.orga_urls.base)
 
 
-class TeamResetPassword(PermissionRequired, TemplateView):
+class TeamResetPassword(PermissionRequired, ActionConfirmMixin, TemplateView):
     model = Team
-    template_name = "orga/settings/team_reset_password.html"
     permission_required = "orga.change_teams"
     action_confirm_icon = "key"
     action_confirm_label = phrases.base.password_reset_heading
@@ -336,10 +333,17 @@ class OrganiserDetail(PermissionRequired, CreateOrUpdateView):
         return self.save_sso_client(request, *args, **kwargs)
 
 
-class OrganiserDelete(PermissionRequired, DeleteView):
-    template_name = "orga/organiser/delete.html"
+class OrganiserDelete(PermissionRequired, ActionConfirmMixin, DetailView):
     permission_required = "person.is_administrator"
     model = Organiser
+    action_text = (
+        _(
+            "ALL related data for ALL events, such as proposals, and speaker profiles, and uploads, "
+            "will also be deleted and cannot be restored."
+        )
+        + " "
+        + phrases.base.delete_warning
+    )
 
     def get_object(self, queryset=None):
         return getattr(self.request, "organiser", None)
