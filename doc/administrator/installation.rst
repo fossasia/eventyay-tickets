@@ -91,6 +91,7 @@ flavours – on Ubuntu-like systems, you will need packages like:
 - ``build-essential``
 - ``libssl-dev``
 - ``python3-dev``
+- ``python3-venv``
 - ``gettext``
 - ``libmysqlclient-dev`` if you use MariaDB
 
@@ -125,7 +126,7 @@ like this – you’ll only have to run this command once (that is, only once pe
 Python version – when you upgrade from Python 3.13 to 3.14, you’ll need to
 remove the old ``venv`` directory and create it again the same way)::
 
-    $ python -m venv /var/pretalx/venv
+    $ python3 -m venv /var/pretalx/venv
 
 Now, activate the virtual environment – you’ll have to run this command once
 per session whenever you’re interacting with ``python``, ``pip`` or
@@ -135,18 +136,18 @@ per session whenever you’re interacting with ``python``, ``pip`` or
 
 Now, upgrade your pip and then install the required Python packages::
 
-    (venv)$ pip install --user -U pip setuptools wheel gunicorn
+    (venv)$ pip install -U pip setuptools wheel gunicorn
 
 .. note:: You may need to replace all following mentions of ``pip`` with ``pip3``.
 
 +-----------------+------------------------------------------------------------------------+
 | Database        | Command                                                                |
 +=================+========================================================================+
-| SQLite          | ``pip install --user --upgrade-strategy eager -U pretalx``             |
+| SQLite          | ``pip install --upgrade-strategy eager -U pretalx``                    |
 +-----------------+------------------------------------------------------------------------+
-| PostgreSQL      | ``pip install --user --upgrade-strategy eager -U "pretalx[postgres]"`` |
+| PostgreSQL      | ``pip install --upgrade-strategy eager -U "pretalx[postgres]"``        |
 +-----------------+------------------------------------------------------------------------+
-| MySQL / MariaDB | ``pip install --user --upgrade-strategy eager -U "pretalx[mysql]"``    |
+| MySQL / MariaDB | ``pip install --upgrade-strategy eager -U "pretalx[mysql]"``           |
 +-----------------+------------------------------------------------------------------------+
 
 If you intend to run pretalx with asynchronous task runners or with redis as
@@ -184,7 +185,7 @@ adjust the content to fit your system::
     User=pretalx
     Group=pretalx
     WorkingDirectory=/var/pretalx
-    ExecStart=/var/pretalx/.local/bin/gunicorn pretalx.wsgi \
+    ExecStart=/var/pretalx/venv/bin/gunicorn pretalx.wsgi \
                           --name pretalx --workers 4 \
                           --max-requests 1200  --max-requests-jitter 50 \
                           --log-level=info --bind=127.0.0.1:8345
@@ -204,8 +205,8 @@ tasks), you’ll also need a second service
     [Service]
     User=pretalx
     Group=pretalx
-    ExecStart=/var/pretalx/venv/bin/celery -A pretalx.celery_app worker -l info
     WorkingDirectory=/var/pretalx
+    ExecStart=/var/pretalx/venv/bin/celery -A pretalx.celery_app worker -l info
     Restart=on-failure
 
     [Install]
