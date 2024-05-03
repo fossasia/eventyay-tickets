@@ -81,7 +81,7 @@
                             {% endif %}
                         </td>
                         <td class="text-right">
-                            <a href="{{ team.orga_urls.base }}?next={{ request.path }}" class="btn btn-sm btn-info" title="{% translate "Edit" %}">
+                            <a href="{{ team.orga_urls.base }}?next={{ request.path }}" class="btn btn-sm btn-info" title="{{ phrases.base.edit }}">
                                 <i class="fa fa-edit"></i>
                             </a>
                             <a href="{{ team.orga_urls.delete }}?next={{ request.path }}" class="btn btn-sm btn-danger" title="{{ phrases.base.delete_button }}">

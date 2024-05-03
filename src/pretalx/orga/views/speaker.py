@@ -248,12 +248,6 @@ class SpeakerPasswordReset(SpeakerViewMixin, DetailView):
                 messages.success(self.request, phrases.orga.password_reset_success)
         except SendMailException:  # pragma: no cover
             messages.error(self.request, phrases.orga.password_reset_fail)
-            messages.error(
-                self.request,
-                _(
-                    "The password reset email could not be sent, so the password was not reset."
-                ),
-            )
         return redirect(user.event_profile(self.request.event).orga_urls.base)
 
 

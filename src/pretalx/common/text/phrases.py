@@ -41,6 +41,7 @@ class BasePhrases(Phrases, app="base"):
     send = _("Send")
     save = _("Save")
     cancel = _("Cancel")
+    # Translators: This is the label on edit buttons.
     edit = _("Edit")
     all_choices = _("all")
     back_button = _("Back")

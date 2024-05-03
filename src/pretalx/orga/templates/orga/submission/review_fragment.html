@@ -23,7 +23,7 @@
         {% if show_reviewer_name %}
             {{ review.user }}
         {% elif not read_only %}
-            <div class="btn btn-success" id="edit-review">{% translate "Edit" %}</div>
+            <div class="btn btn-success" id="edit-review">{{ phrases.base.edit }}</div>
         {% endif %}
     </td>
 </tr>

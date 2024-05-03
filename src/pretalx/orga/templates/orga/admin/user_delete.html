@@ -8,11 +8,11 @@
         <form method="post">
             {% csrf_token %}
             <div class="submit-group">
-                <a href="/orga/admin/users/{{ object.code }}/" class="btn btn-lg btn-danger">
+                <a href="/orga/admin/users/{{ object.code }}/" class="btn btn-lg btn-outline-info">
                     {{ phrases.base.back_button }}
                 </a>
-                <button type="submit" class="btn btn-lg btn-success">
-                    {% translate "Yes" %}
+                <button type="submit" class="btn btn-lg btn-danger">
+                    {{ phrases.base.delete_button }}
                 </button>
             </div>
         </form>

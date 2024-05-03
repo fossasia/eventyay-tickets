@@ -68,7 +68,7 @@ class UpdateCheckView(PermissionRequired, FormView):
 
     def form_valid(self, form):
         form.save()
-        messages.success(self.request, _("Your changes have been saved."))
+        messages.success(self.request, phrases.base.saved)
         return super().form_valid(form)
 
     def form_invalid(self, form):

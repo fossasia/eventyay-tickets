@@ -49,7 +49,7 @@
             {% if can_edit_speakers %}
                 <a href="{% url "orga:speakers.view" event=request.event.slug code=speaker.code %}"
                    class="btn btn-info">
-                    <i class="fa fa-edit"></i> {% translate "Edit" %}
+                    <i class="fa fa-edit"></i> {{ phrases.base.edit }}
                 </a>
                 <a href="{{ submission.orga_urls.delete_speaker }}?id={{ speaker.id }}"
                    class="btn btn-danger">
