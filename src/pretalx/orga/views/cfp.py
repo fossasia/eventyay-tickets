@@ -20,6 +20,7 @@ from pretalx.common.forms import I18nFormSet
 from pretalx.common.text.serialize import I18nStrJSONEncoder
 from pretalx.common.views import CreateOrUpdateView, OrderModelView
 from pretalx.common.views.mixins import (
+    ActionConfirmMixin,
     ActionFromUrl,
     EventPermissionRequired,
     PaginationMixin,
@@ -298,14 +299,19 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         return result
 
 
-class CfPQuestionDelete(PermissionRequired, DetailView):
+class CfPQuestionDelete(PermissionRequired, ActionConfirmMixin, DetailView):
     permission_required = "orga.remove_question"
-    template_name = "orga/cfp/question_delete.html"
 
     def get_object(self) -> Question:
         return get_object_or_404(
             Question.all_objects, event=self.request.event, pk=self.kwargs.get("pk")
         )
+
+    def action_object_name(self):
+        return _("Question") + f": {self.get_object().question}"
+
+    def action_back_url(self):
+        return self.request.event.cfp.urls.questions
 
     def post(self, request, *args, **kwargs):
         question = self.get_object()
@@ -479,14 +485,19 @@ class SubmissionTypeDefault(PermissionRequired, View):
         return redirect(self.request.event.cfp.urls.types)
 
 
-class SubmissionTypeDelete(PermissionRequired, DetailView):
+class SubmissionTypeDelete(PermissionRequired, ActionConfirmMixin, DetailView):
     permission_required = "orga.remove_submission_type"
-    template_name = "orga/cfp/submission_type_delete.html"
 
     def get_object(self):
         return get_object_or_404(
             self.request.event.submission_types, pk=self.kwargs.get("pk")
         )
+
+    def action_object_name(self):
+        return _("Session Type") + f": {self.get_object().name}"
+
+    def action_back_url(self):
+        return self.request.event.cfp.urls.types
 
     def post(self, request, *args, **kwargs):
         submission_type = self.get_object()
@@ -564,12 +575,17 @@ class TrackDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         return result
 
 
-class TrackDelete(PermissionRequired, DetailView):
+class TrackDelete(PermissionRequired, ActionConfirmMixin, DetailView):
     permission_required = "orga.remove_track"
-    template_name = "orga/cfp/track_delete.html"
 
     def get_object(self):
         return get_object_or_404(self.request.event.tracks, pk=self.kwargs.get("pk"))
+
+    def action_object_name(self):
+        return _("Track") + f": {self.get_object().name}"
+
+    def action_back_url(self):
+        return self.request.event.cfp.urls.tracks
 
     def post(self, request, *args, **kwargs):
         track = self.get_object()
@@ -672,15 +688,20 @@ class AccessCodeSend(PermissionRequired, UpdateView):
         return result
 
 
-class AccessCodeDelete(PermissionRequired, DetailView):
+class AccessCodeDelete(PermissionRequired, ActionConfirmMixin, DetailView):
     permission_required = "orga.remove_access_code"
-    template_name = "orga/cfp/access_code_delete.html"
 
     def get_object(self):
         return get_object_or_404(
             self.request.event.submitter_access_codes,
             code__iexact=self.kwargs.get("code"),
         )
+
+    def action_object_name(self):
+        return _("Access code") + f": {self.get_object().code}"
+
+    def action_back_url(self):
+        return self.request.event.cfp.urls.access_codes
 
     def post(self, request, *args, **kwargs):
         access_code = self.get_object()

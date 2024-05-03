@@ -14,6 +14,7 @@ from pretalx.common.templatetags.rich_text import rich_text
 from pretalx.common.text.phrases import phrases
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.common.views.mixins import (
+    ActionConfirmMixin,
     ActionFromUrl,
     EventPermissionRequired,
     Filterable,
@@ -87,15 +88,27 @@ class SentMail(
         return qs
 
 
-class OutboxSend(EventPermissionRequired, TemplateView):
+class OutboxSend(EventPermissionRequired, ActionConfirmMixin, TemplateView):
     permission_required = "orga.send_mails"
-    template_name = "orga/mails/confirm.html"
+    action_object_name = ""
+    action_confirm_label = phrases.base.send
+    action_confirm_color = "success"
+    action_confirm_icon = "envelope"
 
     @context
     def question(self):
         return _("Do you really want to send {count} mails?").format(
             count=self.queryset.count()
         )
+
+    def action_title(self):
+        return _("Send emails")
+
+    def action_text(self):
+        return self.question()
+
+    def action_back_url(self):
+        return self.request.event.orga_urls.outbox
 
     def dispatch(self, request, *args, **kwargs):
         if "pk" in self.kwargs:
@@ -137,9 +150,9 @@ class OutboxSend(EventPermissionRequired, TemplateView):
         return redirect(self.request.event.orga_urls.outbox)
 
 
-class MailDelete(PermissionRequired, TemplateView):
+class MailDelete(PermissionRequired, ActionConfirmMixin, TemplateView):
     permission_required = "orga.purge_mails"
-    template_name = "orga/mails/confirm.html"
+    action_object_name = ""
 
     def get_permission_object(self):
         return self.request.event
@@ -154,6 +167,12 @@ class MailDelete(PermissionRequired, TemplateView):
                 sent__isnull=True, template=mail.first().template
             )
         return mail
+
+    def action_text(self):
+        return self.question()
+
+    def action_back_url(self):
+        return self.request.event.orga_urls.outbox
 
     @context
     def question(self):
@@ -195,9 +214,9 @@ class MailDelete(PermissionRequired, TemplateView):
         return redirect(request.event.orga_urls.outbox)
 
 
-class OutboxPurge(PermissionRequired, TemplateView):
+class OutboxPurge(PermissionRequired, ActionConfirmMixin, TemplateView):
     permission_required = "orga.purge_mails"
-    template_name = "orga/mails/confirm.html"
+    action_object_name = ""
 
     def get_permission_object(self):
         return self.request.event
@@ -207,6 +226,12 @@ class OutboxPurge(PermissionRequired, TemplateView):
         return _("Do you really want to purge {count} mails?").format(
             count=self.queryset.count()
         )
+
+    def action_text(self):
+        return self.question()
+
+    def action_back_url(self):
+        return self.request.event.orga_urls.outbox
 
     @cached_property
     def queryset(self):

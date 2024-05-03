@@ -54,6 +54,11 @@ class BasePhrases(Phrases, app="base"):
     # Translators: This is a label on delete buttons.
     delete_button = _("Delete")
 
+    delete_confirm_heading = _("Confirm deletion")
+    delete_warning = _(
+        "Please make sure that this is the item you want to delete. This action cannot be undone!"
+    )
+
     saved = _("Your changes have been saved.")
     back_try_again = _("Please go back and try again.")
 

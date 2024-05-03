@@ -12,7 +12,11 @@ from django.views.generic import FormView, TemplateView
 from django_context_decorator import context
 
 from pretalx.common.views import CreateOrUpdateView
-from pretalx.common.views.mixins import EventPermissionRequired, PermissionRequired
+from pretalx.common.views.mixins import (
+    ActionConfirmMixin,
+    EventPermissionRequired,
+    PermissionRequired,
+)
 from pretalx.orga.forms.review import (
     DirectionForm,
     ProposalForReviewerForm,
@@ -650,12 +654,20 @@ class ReviewSubmission(ReviewViewMixin, PermissionRequired, CreateOrUpdateView):
         return self.request.event.orga_urls.reviews
 
 
-class ReviewSubmissionDelete(EventPermissionRequired, ReviewViewMixin, TemplateView):
+class ReviewSubmissionDelete(
+    EventPermissionRequired, ReviewViewMixin, ActionConfirmMixin, TemplateView
+):
     template_name = "orga/submission/review_delete.html"
     permission_required = "orga.remove_review"
 
     def get_permission_object(self):
         return self.object
+
+    def action_object_name(self):
+        return _("Your review")
+
+    def action_back_url(self):
+        return self.submission.orga_urls.reviews
 
     def post(self, request, *args, **kwargs):
         self.object.delete()
@@ -663,9 +675,15 @@ class ReviewSubmissionDelete(EventPermissionRequired, ReviewViewMixin, TemplateV
         return redirect(self.submission.orga_urls.reviews)
 
 
-class RegenerateDecisionMails(EventPermissionRequired, TemplateView):
-    template_name = "orga/review/regenerate_decision_mails.html"
+class RegenerateDecisionMails(
+    EventPermissionRequired, ActionConfirmMixin, TemplateView
+):
     permission_required = "orga.change_submissions"
+    action_title = _("Regenerate decision emails")
+    action_confirm_label = _("Regenerate decision emails")
+    action_confirm_color = "success"
+    action_confirm_icon = "envelope"
+    action_object_name = ""
 
     def get_queryset(self):
         return (
@@ -681,6 +699,15 @@ class RegenerateDecisionMails(EventPermissionRequired, TemplateView):
     @cached_property
     def count(self):
         return sum(len(proposal.speakers.all()) for proposal in self.get_queryset())
+
+    def action_text(self):
+        return _(
+            "Do you really want to regenerate %(count)s acceptance and rejection emails? "
+            "They will be placed in the outbox and not sent out directly."
+        ) % {"count": self.count}
+
+    def action_back_url(self):
+        return self.request.event.orga_urls.reviews
 
     def post(self, request, **kwargs):
         for submission in self.get_queryset():

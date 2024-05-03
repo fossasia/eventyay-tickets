@@ -15,14 +15,7 @@ from django.utils.functional import cached_property
 from django.utils.safestring import mark_safe
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
-from django.views.generic import (
-    DeleteView,
-    FormView,
-    ListView,
-    TemplateView,
-    UpdateView,
-    View,
-)
+from django.views.generic import FormView, ListView, TemplateView, UpdateView, View
 from django_context_decorator import context
 from django_scopes import scope, scopes_disabled
 from formtools.wizard.views import SessionWizardView
@@ -35,6 +28,7 @@ from pretalx.common.templatetags.rich_text import rich_text
 from pretalx.common.text.phrases import phrases
 from pretalx.common.views import OrderModelView, is_form_bound
 from pretalx.common.views.mixins import (
+    ActionConfirmMixin,
     ActionFromUrl,
     EventPermissionRequired,
     PermissionRequired,
@@ -345,7 +339,7 @@ class EventReviewSettings(EventSettingsPermission, ActionFromUrl, FormView):
         return True
 
 
-class ScoreCategoryDelete(PermissionRequired, View):
+class ScoreCategoryDelete(PermissionRequired, ActionConfirmMixin, TemplateView):
     permission_required = "orga.change_settings"
 
     def get_object(self):
@@ -353,7 +347,13 @@ class ScoreCategoryDelete(PermissionRequired, View):
             ReviewScoreCategory, event=self.request.event, pk=self.kwargs.get("pk")
         )
 
-    def dispatch(self, request, *args, **kwargs):
+    def action_object_name(self):
+        return _("Score category") + f": {self.get_object().name}"
+
+    def action_back_url(self):
+        return self.request.event.orga_urls.review_settings
+
+    def post(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
         category = self.get_object()
         category.delete()
@@ -368,7 +368,7 @@ class ReviewPhaseOrderView(OrderModelView):
         return self.request.event.orga_urls.review_settings
 
 
-class PhaseDelete(PermissionRequired, View):
+class PhaseDelete(PermissionRequired, ActionConfirmMixin, TemplateView):
     permission_required = "orga.change_settings"
 
     def get_object(self):
@@ -376,7 +376,13 @@ class PhaseDelete(PermissionRequired, View):
             ReviewPhase, event=self.request.event, pk=self.kwargs.get("pk")
         )
 
-    def dispatch(self, request, *args, **kwargs):
+    def action_object_name(self):
+        return _("Review phase") + f": {self.get_object().name}"
+
+    def action_back_url(self):
+        return self.request.event.orga_urls.review_settings
+
+    def post(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
         phase = self.get_object()
         phase.delete()
@@ -698,13 +704,26 @@ class EventWizard(PermissionRequired, SensibleBackWizardMixin, SessionWizardView
         return redirect(event.orga_urls.base + "?congratulations")
 
 
-class EventDelete(PermissionRequired, DeleteView):
-    template_name = "orga/event/delete.html"
+class EventDelete(PermissionRequired, ActionConfirmMixin, TemplateView):
     permission_required = "person.is_administrator"
     model = Event
+    action_text = (
+        _(
+            "ALL related data, such as proposals, and speaker profiles, and "
+            "uploads, will also be deleted and cannot be restored."
+        )
+        + " "
+        + phrases.base.delete_warning
+    )
 
     def get_object(self):
         return self.request.event
+
+    def action_object_name(self):
+        return _("Event") + f": {self.get_object().name}"
+
+    def action_back_url(self):
+        return self.get_object().orga_urls.settings
 
     def form_valid(self, form, *args, **kwargs):
         self.get_object().shred(person=self.request.user)

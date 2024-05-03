@@ -111,7 +111,7 @@ LOG_NAMES = {
     "pretalx.speaker.arrived": _("A speaker has been marked as arrived."),
     "pretalx.speaker.unarrived": _("A speaker has been marked as not arrived."),
     "pretalx.user.token.reset": _("The API token was reset."),
-    "pretalx.user.password.reset": phrases.base.password_reset_sucess,
+    "pretalx.user.password.reset": phrases.base.password_reset_success,
     "pretalx.user.password.update": _("The password was modified."),
     "pretalx.user.profile.update": _("The profile was modified."),
 }

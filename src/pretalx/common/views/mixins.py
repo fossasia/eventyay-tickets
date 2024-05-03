@@ -21,6 +21,7 @@ from i18nfield.forms import I18nModelForm
 from rules.contrib.views import PermissionRequiredMixin
 
 from pretalx.common.forms import SearchForm
+from pretalx.common.text.phrases import phrases
 
 SessionStore = import_string(f"{settings.SESSION_ENGINE}.SessionStore")
 
@@ -346,4 +347,73 @@ class PaginationMixin:
         ctx = super().get_context_data(**kwargs)
         ctx["page_size"] = self.get_paginate_by(None)
         ctx["pagination_sizes"] = [50, 100, 250]
+        return ctx
+
+
+class ActionConfirmMixin:
+    """
+    Mixin providing all variables needed for the action_confirm.html template,
+    which you can either include via common/includes/action_confirm.html, or
+    use directly as common/action_confirm.html.
+
+    Implement at least:
+    - action_object_name
+
+    Implement probably:
+    - action_back_url
+
+    If the view is not a delete view, also implement:
+    - action_confirm_label
+    - action_confirm_color
+    - action_confirm_icon
+    - action_title
+    - action_text
+    """
+
+    template_name = "common/action_confirm.html"
+    action_object_name = None  # Shown between the title and the warning text
+    action_text = phrases.base.delete_warning  # Use this for context or warnings
+    action_title = phrases.base.delete_confirm_heading  # Shown as heading and as title
+    action_confirm_color = "danger"
+    action_confirm_icon = "trash"
+    action_confirm_label = phrases.base.delete_button
+    action_confirm_name = None
+    action_confirm_value = None
+    action_back_color = "outline-info"
+    action_back_icon = None
+    action_back_label = phrases.base.back_button
+
+    @property
+    def additional_actions(self):
+        # Actions can be links or buttons, and should be a list of dicts:
+        # label, color, icon (optional)
+        # links: href
+        # buttons: name, value
+        return []
+
+    @property
+    def action_back_url(self):
+        url_param = self.request.GET.get("next") or self.request.GET.get("back")
+        if url_param:
+            # decode
+            url_param = urllib.parse.unquote(url_param)
+            return url_param
+        # Fallback if we don't have a next parameter: go up one level
+        return self.request.path.rsplit("/", 2)[0]
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx["action_additional_actions"] = self.additional_actions
+        ctx["action_back_color"] = self.action_back_color
+        ctx["action_back_icon"] = self.action_back_icon
+        ctx["action_back_label"] = self.action_back_label
+        ctx["action_back_url"] = self.action_back_url
+        ctx["action_confirm_color"] = self.action_confirm_color
+        ctx["action_confirm_icon"] = self.action_confirm_icon
+        ctx["action_confirm_label"] = self.action_confirm_label
+        ctx["action_confirm_name"] = self.action_confirm_name
+        ctx["action_confirm_value"] = self.action_confirm_value
+        ctx["action_text"] = self.action_text
+        ctx["action_title"] = self.action_title
+        ctx["action_object_name"] = self.action_object_name
         return ctx

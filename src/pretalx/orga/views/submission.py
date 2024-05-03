@@ -20,14 +20,7 @@ from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from django.utils.translation import override
-from django.views.generic import (
-    DetailView,
-    FormView,
-    ListView,
-    TemplateView,
-    UpdateView,
-    View,
-)
+from django.views.generic import FormView, ListView, TemplateView, UpdateView, View
 from django_context_decorator import context
 
 from pretalx.agenda.permissions import is_submission_visible
@@ -36,6 +29,7 @@ from pretalx.common.models import ActivityLog
 from pretalx.common.urls import build_absolute_uri
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.common.views.mixins import (
+    ActionConfirmMixin,
     ActionFromUrl,
     EventPermissionRequired,
     PaginationMixin,
@@ -1028,12 +1022,17 @@ class TagDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         return result
 
 
-class TagDelete(PermissionRequired, DetailView):
+class TagDelete(PermissionRequired, ActionConfirmMixin, TemplateView):
     permission_required = "orga.remove_tags"
-    template_name = "orga/submission/tag_delete.html"
 
     def get_object(self):
         return get_object_or_404(self.request.event.tags, pk=self.kwargs.get("pk"))
+
+    def action_object_name(self):
+        return _("Tag") + f": {self.get_object().tag}"
+
+    def action_back_url(self):
+        return self.request.event.orga_urls.tags
 
     def post(self, request, *args, **kwargs):
         tag = self.get_object()
