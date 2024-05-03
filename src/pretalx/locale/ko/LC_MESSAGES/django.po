@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-02 19:01+0000\n"
+"POT-Creation-Date: 2024-05-03 13:52+0000\n"
 "PO-Revision-Date: 2024-04-25 21:24+0000\n"
 "Last-Translator: Han Lee | 이한결 <wyatt0216@gmail.com>\n"
 "Language-Team: none\n"
@@ -460,8 +460,7 @@ msgid "Abstract:"
 msgstr "초록:"
 
 #: pretalx/cfp/templates/cfp/event/invitation.html:41
-#: pretalx/event/models/event.py:644 pretalx/orga/forms/review.py:368
-#: pretalx/submission/models/question.py:420
+#: pretalx/event/models/event.py:644 pretalx/submission/models/question.py:420
 #: pretalx/submission/models/submission.py:889
 msgid "No"
 msgstr "아니요"
@@ -863,7 +862,7 @@ msgstr "세션 유형"
 #: pretalx/orga/templates/orga/review/dashboard.html:101
 #: pretalx/orga/templates/orga/review/dashboard.html:217
 #: pretalx/orga/templates/orga/submission/review.html:65
-#: pretalx/submission/models/access_code.py:28
+#: pretalx/orga/views/cfp.py:585 pretalx/submission/models/access_code.py:28
 #: pretalx/submission/models/submission.py:143
 msgid "Track"
 msgstr "트랙"
@@ -940,11 +939,6 @@ msgstr "설명이 제공되지 않았습니다."
 #: pretalx/cfp/templates/widgets/track-select-widget.html:40
 msgid "Close"
 msgstr "닫기"
-
-#: pretalx/cfp/views/auth.py:102 pretalx/cfp/views/auth.py:111
-#: pretalx/cfp/views/auth.py:114
-msgid "Please go back and try again."
-msgstr "뒤로 돌아가서 다시 시도해 주세요."
 
 #: pretalx/cfp/views/locale.py:49
 msgid ""
@@ -1069,298 +1063,300 @@ msgstr "경고"
 msgid "Your passwords don’t match."
 msgstr "비밀번호가 일치하지 않습니다."
 
-#: pretalx/common/log_display.py:27
+#: pretalx/common/log_display.py:28
 #, python-brace-format
 msgid "The event {name} ({slug}) by {organiser} was deleted."
 msgstr ""
 
-#: pretalx/common/log_display.py:28
+#: pretalx/common/log_display.py:29
 #, fuzzy, python-brace-format
 #| msgid "The proposal was deleted."
 msgid "The organiser {name} was deleted."
 msgstr "제안이 삭제되었습니다."
 
-#: pretalx/common/log_display.py:49
+#: pretalx/common/log_display.py:50
 msgid "The CfP has been modified."
 msgstr "CfP(발표 제안서)가 수정되었습니다."
 
-#: pretalx/common/log_display.py:50
+#: pretalx/common/log_display.py:51
 msgid "The event has been added."
 msgstr "이벤트가 추가되었습니다."
 
-#: pretalx/common/log_display.py:51
+#: pretalx/common/log_display.py:52
 msgid "The event was modified."
 msgstr "이벤트가 수정되었습니다."
 
-#: pretalx/common/log_display.py:52
+#: pretalx/common/log_display.py:53
 msgid "The event was made public."
 msgstr "이벤트가 공개로 설정되었습니다."
 
-#: pretalx/common/log_display.py:53
+#: pretalx/common/log_display.py:54
 msgid "The event was deactivated."
 msgstr "이벤트가 비활성화 되었습니다."
 
-#: pretalx/common/log_display.py:54
+#: pretalx/common/log_display.py:55
 msgid "A plugin was enabled."
 msgstr "플러그인이 활성화되었습니다."
 
-#: pretalx/common/log_display.py:55
+#: pretalx/common/log_display.py:56
 msgid "A plugin was disabled."
 msgstr "플러그인이 비활성화되었습니다."
 
-#: pretalx/common/log_display.py:56
+#: pretalx/common/log_display.py:57
 msgid "The invitation to the event orga was accepted."
 msgstr "이벤트 운영진에 대한 초대가 수락되었습니다."
 
-#: pretalx/common/log_display.py:57
+#: pretalx/common/log_display.py:58
 msgid "An invitation to the event orga was retracted."
 msgstr "이벤트 운영진에 대한 초대가 철회되었습니다."
 
-#: pretalx/common/log_display.py:58
+#: pretalx/common/log_display.py:59
 msgid "An invitation to the event orga was sent."
 msgstr "이벤트 운영진에 대한 초대가 보내졌습니다."
 
-#: pretalx/common/log_display.py:60
+#: pretalx/common/log_display.py:61
 msgid "The invitation to the review team was retracted."
 msgstr "검토팀 초대가 철회되었습니다."
 
-#: pretalx/common/log_display.py:62
+#: pretalx/common/log_display.py:63
 msgid "The invitation to the review team was sent."
 msgstr "검토 팀에 초대를 보냈습니다."
 
-#: pretalx/common/log_display.py:63 pretalx/common/log_display.py:67
-msgid "An email was modified."
-msgstr "이메일이 수정되었습니다."
-
 #: pretalx/common/log_display.py:64
+#, fuzzy
+#| msgid "An email was sent."
+msgid "An email was created."
+msgstr "이메일이 전송되었습니다."
+
+#: pretalx/common/log_display.py:65
 msgid "A pending email was deleted."
 msgstr "대기중인 이메일이 제거되었습니다."
 
-#: pretalx/common/log_display.py:65
+#: pretalx/common/log_display.py:66
 msgid "All pending emails were deleted."
 msgstr "모든 대기중인 이메일이 삭제되었습니다."
 
-#: pretalx/common/log_display.py:66
+#: pretalx/common/log_display.py:67
 msgid "An email was sent."
 msgstr "이메일이 전송되었습니다."
 
 #: pretalx/common/log_display.py:68
+msgid "An email was modified."
+msgstr "이메일이 수정되었습니다."
+
+#: pretalx/common/log_display.py:69
 msgid "A mail template was added."
 msgstr "이메일 템플릿이 추가되었습니다."
 
-#: pretalx/common/log_display.py:69
+#: pretalx/common/log_display.py:70
 msgid "A mail template was deleted."
 msgstr "이메일 템플릿이 삭제되었습니다."
 
-#: pretalx/common/log_display.py:70
+#: pretalx/common/log_display.py:71
 msgid "A mail template was modified."
 msgstr "이메일 템플릿이 수정되었습니다."
 
-#: pretalx/common/log_display.py:71
+#: pretalx/common/log_display.py:72
 msgid "A question was added."
 msgstr "질문이 추가되었습니다."
 
-#: pretalx/common/log_display.py:72
+#: pretalx/common/log_display.py:73
 msgid "A question was deleted."
 msgstr "질문이 삭제되었습니다."
 
-#: pretalx/common/log_display.py:73
+#: pretalx/common/log_display.py:74
 msgid "A question was modified."
 msgstr "질문이 수정되었습니다."
 
-#: pretalx/common/log_display.py:74
+#: pretalx/common/log_display.py:75
 msgid "A question option was added."
 msgstr "질문 옵션이 추가되었습니다."
 
-#: pretalx/common/log_display.py:75
+#: pretalx/common/log_display.py:76
 msgid "A question option was deleted."
 msgstr "질문 옵션이 삭제되었습니다."
 
-#: pretalx/common/log_display.py:76
+#: pretalx/common/log_display.py:77
 msgid "A question option was modified."
 msgstr "질문 옵션이 수정되었습니다."
 
-#: pretalx/common/log_display.py:77
+#: pretalx/common/log_display.py:78
 msgid "A tag was added."
 msgstr "태그가 추가되었습니다."
 
-#: pretalx/common/log_display.py:78
+#: pretalx/common/log_display.py:79
 msgid "A tag was deleted."
 msgstr "태그가 삭제되었습니다."
 
-#: pretalx/common/log_display.py:79
+#: pretalx/common/log_display.py:80
 msgid "A tag was modified."
 msgstr "태그가 수정되었습니다."
 
-#: pretalx/common/log_display.py:80
+#: pretalx/common/log_display.py:81
 msgid "A new room was added."
 msgstr "새로운 방이 추가되었습니다."
 
-#: pretalx/common/log_display.py:81
+#: pretalx/common/log_display.py:82
 msgid "A new schedule version was released."
 msgstr "새로운 스케줄 버전이 출시되었습니다."
 
-#: pretalx/common/log_display.py:82
+#: pretalx/common/log_display.py:83
 msgid "The proposal was accepted."
 msgstr "제안이 수락되었습니다."
 
-#: pretalx/common/log_display.py:83
+#: pretalx/common/log_display.py:84
 msgid "The proposal was cancelled."
 msgstr "제안이 취소되었습니다."
 
-#: pretalx/common/log_display.py:84
+#: pretalx/common/log_display.py:85
 msgid "The proposal was confirmed."
 msgstr "제안이 확정되었습니다."
 
-#: pretalx/common/log_display.py:85
+#: pretalx/common/log_display.py:86
 msgid "The proposal was added."
 msgstr "제안이 추가되었습니다."
 
-#: pretalx/common/log_display.py:86
+#: pretalx/common/log_display.py:87
 msgid "The proposal was deleted."
 msgstr "제안이 삭제되었습니다."
 
-#: pretalx/common/log_display.py:87
+#: pretalx/common/log_display.py:88
 msgid "The proposal was rejected."
 msgstr "제안이 거절되었습니다."
 
-#: pretalx/common/log_display.py:88
+#: pretalx/common/log_display.py:89
 msgid "A proposal resource was added."
 msgstr "제안 자료가 추가되었습니다."
 
-#: pretalx/common/log_display.py:89
+#: pretalx/common/log_display.py:90
 msgid "A proposal resource was deleted."
 msgstr "제안 자료가 삭제되었습니다."
 
-#: pretalx/common/log_display.py:90
+#: pretalx/common/log_display.py:91
 msgid "A proposal resource was modified."
 msgstr "제안 자료가 수정되었습니다."
 
-#: pretalx/common/log_display.py:91
+#: pretalx/common/log_display.py:92
 msgid "A speaker was added to the proposal."
 msgstr "제안서에 발표자가 추가되었습니다."
 
-#: pretalx/common/log_display.py:92
+#: pretalx/common/log_display.py:93
 msgid "A speaker was invited to the proposal."
 msgstr "제안서에 발표자가 초대되었습니다."
 
-#: pretalx/common/log_display.py:93
+#: pretalx/common/log_display.py:94
 msgid "A speaker was removed from the proposal."
 msgstr "제안서에 발표자가 삭제되었습니다."
 
-#: pretalx/common/log_display.py:94
+#: pretalx/common/log_display.py:95
 msgid "The proposal was unconfirmed."
 msgstr "이 제안은 확정되지 않았습니다."
 
-#: pretalx/common/log_display.py:95
+#: pretalx/common/log_display.py:96
 msgid "The proposal was modified."
 msgstr "이 제안은 수정되었습니다."
 
-#: pretalx/common/log_display.py:96
+#: pretalx/common/log_display.py:97
 msgid "The proposal was withdrawn."
 msgstr "이 제안은 철회되었습니다."
 
-#: pretalx/common/log_display.py:97
+#: pretalx/common/log_display.py:98
 msgid "A proposal answer was modified."
 msgstr "제안 답변이 수정되었습니다."
 
-#: pretalx/common/log_display.py:98
+#: pretalx/common/log_display.py:99
 msgid "A proposal answer was added."
 msgstr "제안 답변이 추가되었습니다."
 
-#: pretalx/common/log_display.py:99
+#: pretalx/common/log_display.py:100
 msgid "A session type was added."
 msgstr "세션 타입이 추가되었습니다."
 
-#: pretalx/common/log_display.py:100
+#: pretalx/common/log_display.py:101
 msgid "A session type was deleted."
 msgstr "세션 타입이 삭제되었습니다."
 
-#: pretalx/common/log_display.py:101
+#: pretalx/common/log_display.py:102
 msgid "The session type was made default."
 msgstr "이 세션 타입이 기본으로 설정되었습니다."
 
-#: pretalx/common/log_display.py:102
+#: pretalx/common/log_display.py:103
 msgid "A session type was modified."
 msgstr "세션 타입이 수정되었습니다."
 
-#: pretalx/common/log_display.py:103
+#: pretalx/common/log_display.py:104
 msgid "An access code was added."
 msgstr "엑세스 코드가 추가되었습니다."
 
-#: pretalx/common/log_display.py:104
+#: pretalx/common/log_display.py:105
 msgid "An access code was sent."
 msgstr "엑세스 코드가 전송되었습니다."
 
-#: pretalx/common/log_display.py:105
+#: pretalx/common/log_display.py:106
 msgid "An access code was modified."
 msgstr "엑세스 코드가 수정되었습니다."
 
-#: pretalx/common/log_display.py:106
+#: pretalx/common/log_display.py:107
 msgid "An access code was deleted."
 msgstr "엑세스 코드가 삭제되었습니다."
 
-#: pretalx/common/log_display.py:107
+#: pretalx/common/log_display.py:108
 msgid "A track was added."
 msgstr "트랙이 추가되었습니다."
 
-#: pretalx/common/log_display.py:108
+#: pretalx/common/log_display.py:109
 msgid "A track was deleted."
 msgstr "트랙이 삭제되었습니다."
 
-#: pretalx/common/log_display.py:109
+#: pretalx/common/log_display.py:110
 msgid "A track was modified."
 msgstr "트랙이 수정되었습니다."
 
-#: pretalx/common/log_display.py:110
+#: pretalx/common/log_display.py:111
 msgid "A speaker has been marked as arrived."
 msgstr "스피커가 도착한 것으로 표시되었습니다."
 
-#: pretalx/common/log_display.py:111
+#: pretalx/common/log_display.py:112
 msgid "A speaker has been marked as not arrived."
 msgstr "스피커가 도착하지 않은것으로 표시되었습니다."
 
-#: pretalx/common/log_display.py:112
+#: pretalx/common/log_display.py:113
 msgid "The API token was reset."
 msgstr "API token이 리셋되었습니다."
 
-#: pretalx/common/log_display.py:113 pretalx/orga/views/admin.py:121
-#: pretalx/orga/views/admin.py:144
-msgid "The password was reset."
-msgstr "비밀번호가 리셋되었습니다."
-
-#: pretalx/common/log_display.py:114
+#: pretalx/common/log_display.py:115
 msgid "The password was modified."
 msgstr "비밀번호가 수정되었습니다."
 
-#: pretalx/common/log_display.py:115
+#: pretalx/common/log_display.py:116
 msgid "The profile was modified."
 msgstr "프로필이 수정되었습니다."
 
-#: pretalx/common/log_display.py:151 pretalx/common/log_display.py:155
+#: pretalx/common/log_display.py:152 pretalx/common/log_display.py:156
 #: pretalx/orga/templates/orga/cfp/question_form.html:19
 #: pretalx/orga/templates/orga/cfp/question_view.html:30
 #: pretalx/orga/templates/orga/review/dashboard.html:96
+#: pretalx/orga/views/cfp.py:311
 msgid "Question"
 msgstr "질문"
 
-#: pretalx/common/log_display.py:162
+#: pretalx/common/log_display.py:163
 #, fuzzy
 #| msgid "We have some questions"
 msgid "Answer to question"
 msgstr "몇 가지 질문이 있습니다"
 
-#: pretalx/common/log_display.py:165 pretalx/orga/templates/orga/base.html:219
+#: pretalx/common/log_display.py:166 pretalx/orga/templates/orga/base.html:219
 #, fuzzy
 #| msgid "Your proposals"
 msgid "Call for Proposals"
 msgstr "당신의 (발표) 제안"
 
-#: pretalx/common/log_display.py:168
+#: pretalx/common/log_display.py:169
 msgid "Mail template"
 msgstr "메일 템플릿"
 
-#: pretalx/common/log_display.py:172 pretalx/event/models/organiser.py:168
+#: pretalx/common/log_display.py:173 pretalx/event/models/organiser.py:168
 #: pretalx/orga/templates/orga/admin/user_detail.html:24
 #: pretalx/orga/templates/orga/admin/user_list.html:25
 #: pretalx/orga/templates/orga/base.html:200
@@ -1574,14 +1570,6 @@ msgstr "이미 계정이 존재합니다"
 msgid "Log in"
 msgstr "로그인"
 
-#: pretalx/common/templates/common/auth.html:31
-#: pretalx/orga/templates/orga/admin/user_detail.html:15
-#: pretalx/orga/templates/orga/admin/user_list.html:78
-#: pretalx/orga/templates/orga/settings/team_detail.html:34
-#: pretalx/orga/templates/orga/speaker/form.html:76
-msgid "Reset password"
-msgstr "비밀번호 초기화"
-
 #: pretalx/common/templates/common/auth.html:39
 msgid "I need a new account"
 msgstr "새 계정 만들기"
@@ -1740,135 +1728,148 @@ msgstr "저장"
 msgid "Cancel"
 msgstr "취소"
 
-#: pretalx/common/text/phrases.py:49
-#: pretalx/orga/templates/orga/cfp/question_view.html:67
-#: pretalx/orga/templates/orga/organiser/detail.html:65
-#: pretalx/orga/templates/orga/review/assignment.html:86
-#: pretalx/orga/templates/orga/submission/review_fragment.html:26
-#: pretalx/orga/templates/orga/submission/speakers.html:52
+#. Translators: This is the label on edit buttons.
+#: pretalx/common/text/phrases.py:50
 msgid "Edit"
 msgstr "수정"
 
-#: pretalx/common/text/phrases.py:50
+#: pretalx/common/text/phrases.py:51
 msgid "all"
 msgstr ""
 
 #. Translators: This is a label on navigation elements leading to the previous
 #. page.
-#: pretalx/common/text/phrases.py:52
+#: pretalx/common/text/phrases.py:53
 msgid "Back"
 msgstr "뒤로"
 
 #. Translators: This is a label on delete buttons.
-#: pretalx/common/text/phrases.py:54
+#: pretalx/common/text/phrases.py:55
 msgid "Delete"
 msgstr "삭제"
 
-#: pretalx/common/text/phrases.py:56 pretalx/orga/views/admin.py:64
-#: pretalx/orga/views/event.py:532 pretalx/orga/views/event.py:536
-#: pretalx/orga/views/plugins.py:55
+#: pretalx/common/text/phrases.py:57
+#, fuzzy
+#| msgid "Account deletion"
+msgid "Confirm deletion"
+msgstr "계정 삭제"
+
+#: pretalx/common/text/phrases.py:59
+msgid ""
+"Please make sure that this is the item you want to delete. This action "
+"cannot be undone!"
+msgstr ""
+
+#: pretalx/common/text/phrases.py:62
 msgid "Your changes have been saved."
 msgstr "변경 사항이 저장되었습니다."
 
+#: pretalx/common/text/phrases.py:63
+msgid "Please go back and try again."
+msgstr "뒤로 돌아가서 다시 시도해 주세요."
+
 #. Translators: This is an established term in the context of software
 #. development.
-#: pretalx/common/text/phrases.py:59
+#: pretalx/common/text/phrases.py:66
 msgid "Bad request."
 msgstr "잘못된 요청."
 
-#: pretalx/common/text/phrases.py:61
+#: pretalx/common/text/phrases.py:68
 msgid "There was an error sending the mail. Please try again later."
 msgstr "메일을 보내는 동안 오류가 발생했습니다. 나중에 다시 시도해 주세요."
 
-#: pretalx/common/text/phrases.py:64
+#: pretalx/common/text/phrases.py:71
 msgid "We had trouble saving your input – Please see below for details."
 msgstr "입력 내용을 저장하는 데 문제가 발생했습니다. 자세한 내용은 아래를 참조하세요. 🠯"
 
-#: pretalx/common/text/phrases.py:66
+#: pretalx/common/text/phrases.py:73
 msgid "You do not have permission to perform this action."
 msgstr "이 작업을 수행할 수 있는 권한이 없습니다."
 
-#: pretalx/common/text/phrases.py:68
+#: pretalx/common/text/phrases.py:75
 msgid "Permission denied."
 msgstr "권한 없음."
 
-#: pretalx/common/text/phrases.py:70
+#: pretalx/common/text/phrases.py:77
 msgid "Sorry, you do not have the required permissions to access this page."
 msgstr "죄송합니다. 이 페이지에 액세스할 수 있는 권한이 없습니다."
 
-#: pretalx/common/text/phrases.py:72
+#: pretalx/common/text/phrases.py:79
 msgid "Page not found."
 msgstr "페이지를 찾을 수 없습니다."
 
-#: pretalx/common/text/phrases.py:74
+#: pretalx/common/text/phrases.py:81
 msgid "This page does not exist."
 msgstr "페이지가 존재하지 않습니다."
 
-#: pretalx/common/text/phrases.py:75
+#: pretalx/common/text/phrases.py:82
 msgid "Huh, I could have sworn there was something here."
 msgstr "어라..? 여기 뭔가 있을 줄 알았어요."
 
-#: pretalx/common/text/phrases.py:77
+#: pretalx/common/text/phrases.py:84
 msgid "This page is no more."
 msgstr "이 페이지는 더 이상 존재하지 않습니다."
 
-#: pretalx/common/text/phrases.py:78
+#: pretalx/common/text/phrases.py:85
 msgid "This page has ceased to be."
 msgstr "이 페이지는 더 이상 제공되지 않습니다."
 
-#: pretalx/common/text/phrases.py:79
+#: pretalx/common/text/phrases.py:86
 msgid "Huh."
 msgstr "어라?"
 
-#: pretalx/common/text/phrases.py:82 pretalx/person/forms.py:50
-#: pretalx/person/forms.py:73
+#: pretalx/common/text/phrases.py:89
 msgid "Email address"
 msgstr "이메일 주소"
 
-#: pretalx/common/text/phrases.py:83
+#: pretalx/common/text/phrases.py:90
 msgid "New password"
 msgstr "새 비밀번호"
 
-#: pretalx/common/text/phrases.py:84
+#: pretalx/common/text/phrases.py:91
 msgid "New password (again)"
 msgstr "새로운 비밀번호 (다시 입력하세요)"
 
-#: pretalx/common/text/phrases.py:86
+#: pretalx/common/text/phrases.py:93
 msgid "You entered two different passwords. Please enter the same one twice!"
 msgstr "입력된 두 비밀번호가 일치하지 않습니다. 동일하게 입력해주세요!"
 
-#: pretalx/common/text/phrases.py:88
+#: pretalx/common/text/phrases.py:95
 msgctxt "noun / heading"
-msgid "Password reset"
-msgstr "비밀번호 재설정"
+msgid "Reset password"
+msgstr "비밀번호 초기화"
 
-#: pretalx/common/text/phrases.py:89
+#: pretalx/common/text/phrases.py:96
 msgid "Forgot your password?"
 msgstr "비밀번호를 잊어버리셨나요?"
 
-#: pretalx/common/text/phrases.py:90
+#: pretalx/common/text/phrases.py:97
 msgid "Let me set a new one!"
 msgstr "새로 설정하겠습니다!"
 
-#: pretalx/common/text/phrases.py:92
+#: pretalx/common/text/phrases.py:99
 msgid "Now you just need to choose your new password and you are ready to go."
 msgstr "이제 새 비밀번호를 선택하기만 하면 모든 준비가 완료됩니다."
 
-#: pretalx/common/text/phrases.py:95
+#: pretalx/common/text/phrases.py:101
+msgid "The password was reset."
+msgstr "비밀번호가 리셋되었습니다."
+
+#: pretalx/common/text/phrases.py:103
 #, python-brace-format
 msgid "You can use {link_start}Markdown{link_end} here."
 msgstr "여기에서 {link_start}마크다운{link_end}을 사용할 수 있어요."
 
-#: pretalx/common/text/phrases.py:99
+#: pretalx/common/text/phrases.py:107
 msgid "This content will be shown publicly."
 msgstr "이 콘텐츠는 공개적으로 표시됩니다."
 
-#: pretalx/common/text/phrases.py:101
+#: pretalx/common/text/phrases.py:109
 msgctxt "opening quotation mark"
 msgid "“"
 msgstr "“"
 
-#: pretalx/common/text/phrases.py:102
+#: pretalx/common/text/phrases.py:110
 msgctxt "closing quotation mark"
 msgid "”"
 msgstr "”"
@@ -1876,17 +1877,17 @@ msgstr "”"
 #. Translators: Used both for language selection for users, and for the
 #. language
 #. attribute of events and sessions.
-#: pretalx/common/text/phrases.py:106
+#: pretalx/common/text/phrases.py:114
 #: pretalx/submission/models/submission.py:209
 msgid "Language"
 msgstr "언어"
 
 #. Translators: Used as settings/section heading
-#: pretalx/common/text/phrases.py:109
+#: pretalx/common/text/phrases.py:117
 msgid "General"
 msgstr "일반"
 
-#: pretalx/common/text/phrases.py:111 pretalx/mail/models.py:35
+#: pretalx/common/text/phrases.py:119 pretalx/mail/models.py:35
 #: pretalx/mail/models.py:226 pretalx/person/models/information.py:45
 msgctxt "email subject"
 msgid "Subject"
@@ -1896,7 +1897,7 @@ msgstr "제목"
 #. similar options like the main text of the CfP or a review. It's separate
 #. from
 #. the "text" input type used in questions.
-#: pretalx/common/text/phrases.py:115 pretalx/mail/models.py:38
+#: pretalx/common/text/phrases.py:123 pretalx/mail/models.py:38
 #: pretalx/mail/models.py:228 pretalx/person/models/information.py:47
 msgid "Text"
 msgstr "텍스트"
@@ -1958,7 +1959,7 @@ msgstr "죄송합니다. 이 목록은 순서를 변경할 수 없습니다."
 msgid "The order has been updated."
 msgstr "순서가 업데이트 되었습니다."
 
-#: pretalx/common/views/mixins.py:269
+#: pretalx/common/views/mixins.py:270
 msgid "ManagementForm data is missing or has been tampered with."
 msgstr "ManagementForm 데이터가 누락되었거나 변조되었습니다."
 
@@ -1999,6 +2000,7 @@ msgstr "이벤트에서 제공되어야 하는 모든 언어를 선택합니다.
 
 #: pretalx/event/forms.py:171
 #: pretalx/orga/templates/orga/admin/user_detail.html:55
+#: pretalx/orga/views/organiser.py:267
 msgid "Organiser"
 msgstr "주최자"
 
@@ -2228,24 +2230,7 @@ msgstr "점수"
 msgid "Maybe"
 msgstr "아마도"
 
-#: pretalx/event/models/event.py:654 pretalx/orga/forms/review.py:368
-#: pretalx/orga/templates/orga/admin/user_delete.html:15
-#: pretalx/orga/templates/orga/cfp/access_code_delete.html:15
-#: pretalx/orga/templates/orga/cfp/question_delete.html:15
-#: pretalx/orga/templates/orga/cfp/submission_type_delete.html:15
-#: pretalx/orga/templates/orga/cfp/track_delete.html:15
-#: pretalx/orga/templates/orga/event/delete.html:16
-#: pretalx/orga/templates/orga/mails/confirm.html:15
-#: pretalx/orga/templates/orga/organiser/delete.html:18
-#: pretalx/orga/templates/orga/review/regenerate_decision_mails.html:19
-#: pretalx/orga/templates/orga/settings/team_delete.html:18
-#: pretalx/orga/templates/orga/settings/team_resend.html:18
-#: pretalx/orga/templates/orga/settings/team_reset_password.html:18
-#: pretalx/orga/templates/orga/speaker/information_delete.html:15
-#: pretalx/orga/templates/orga/speaker/reset_password.html:18
-#: pretalx/orga/templates/orga/submission/review_delete.html:15
-#: pretalx/orga/templates/orga/submission/tag_delete.html:15
-#: pretalx/submission/models/question.py:418
+#: pretalx/event/models/event.py:654 pretalx/submission/models/question.py:418
 #: pretalx/submission/models/submission.py:889
 msgid "Yes"
 msgstr "확인"
@@ -2414,6 +2399,7 @@ msgstr ""
 #: pretalx/event/stages.py:97
 #: pretalx/orga/templates/orga/admin/user_detail.html:97
 #: pretalx/orga/templates/orga/mails/_placeholder_group.html:14
+#: pretalx/orga/views/event.py:723
 msgid "Event"
 msgstr "행사"
 
@@ -3428,25 +3414,29 @@ msgstr ""
 msgid "file"
 msgstr ""
 
-#: pretalx/orga/forms/review.py:367
+#: pretalx/orga/forms/review.py:367 pretalx/orga/forms/review.py:370
 msgid "Replace current assignments"
 msgstr ""
 
-#: pretalx/orga/forms/review.py:370
+#: pretalx/orga/forms/review.py:369
+msgid "Keep current assignments"
+msgstr ""
+
+#: pretalx/orga/forms/review.py:373
 msgid ""
 "Select to remove all current assignments and replace them with the import. "
 "Otherwise, the import will be an addition to the current assignments."
 msgstr ""
 
-#: pretalx/orga/forms/review.py:376
+#: pretalx/orga/forms/review.py:379
 msgid "Cannot parse JSON file."
 msgstr ""
 
-#: pretalx/orga/forms/review.py:393
+#: pretalx/orga/forms/review.py:396
 msgid "Unknown user: {}"
 msgstr ""
 
-#: pretalx/orga/forms/review.py:401
+#: pretalx/orga/forms/review.py:404
 msgid "Unknown proposal: {}"
 msgstr ""
 
@@ -3638,7 +3628,7 @@ msgstr ""
 msgid "The password was reset and the user was notified."
 msgstr ""
 
-#: pretalx/orga/phrases.py:29 pretalx/orga/views/speaker.py:255
+#: pretalx/orga/phrases.py:29
 msgid ""
 "The password reset email could not be sent, so the password was not reset."
 msgstr ""
@@ -3722,6 +3712,7 @@ msgstr ""
 
 #: pretalx/orga/templates/orga/admin/admin.html:65
 #: pretalx/orga/templates/orga/mails/_placeholder_group.html:12
+#: pretalx/orga/views/admin.py:160
 msgid "User"
 msgstr ""
 
@@ -3864,12 +3855,6 @@ msgstr ""
 msgid "Update check settings"
 msgstr ""
 
-#: pretalx/orga/templates/orga/admin/user_delete.html:5
-#, fuzzy
-#| msgid "Do you really want to withdraw your proposal?"
-msgid "Do you really want to delete this user?"
-msgstr "정말로 발표 제안을 철회하시겠습니까?"
-
 #: pretalx/orga/templates/orga/admin/user_detail.html:28
 #: pretalx/orga/templates/orga/admin/user_list.html:40
 #, fuzzy
@@ -3891,11 +3876,10 @@ msgstr ""
 #: pretalx/orga/templates/orga/admin/user_detail.html:54
 #: pretalx/orga/templates/orga/organiser/detail.html:39
 #: pretalx/orga/templates/orga/review/assignment.html:42
-#: pretalx/orga/templates/orga/settings/team_delete.html:7
 #: pretalx/orga/templates/orga/settings/team_detail.html:11
 #: pretalx/orga/templates/orga/settings/team_detail.html:94
-#: pretalx/orga/templates/orga/settings/team_resend.html:7
 #: pretalx/orga/templates/orga/settings/team_tracks.html:8
+#: pretalx/orga/views/organiser.py:114
 msgid "Team"
 msgstr ""
 
@@ -4072,10 +4056,6 @@ msgstr ""
 msgid "running in development mode"
 msgstr ""
 
-#: pretalx/orga/templates/orga/cfp/access_code_delete.html:5
-msgid "Do you really want to delete this access code?"
-msgstr ""
-
 #: pretalx/orga/templates/orga/cfp/access_code_form.html:19
 msgid "Edit access code"
 msgstr ""
@@ -4116,7 +4096,7 @@ msgstr ""
 #: pretalx/orga/templates/orga/cfp/access_code_view.html:33
 #: pretalx/orga/templates/orga/cfp/submission_type_form.html:19
 #: pretalx/orga/templates/orga/submission/review.html:58
-#: pretalx/submission/models/access_code.py:39
+#: pretalx/orga/views/cfp.py:497 pretalx/submission/models/access_code.py:39
 msgid "Session Type"
 msgstr ""
 
@@ -4142,10 +4122,6 @@ msgid ""
 "and information text on all of the individual CfP steps. You can also add a "
 "custom help text to individual fields. Just click on the item you want to "
 "change!"
-msgstr ""
-
-#: pretalx/orga/templates/orga/cfp/question_delete.html:5
-msgid "Do you really want to delete this question?"
 msgstr ""
 
 #: pretalx/orga/templates/orga/cfp/question_detail.html:32
@@ -4292,13 +4268,9 @@ msgstr ""
 msgid "This question’s availability depends on a deadline."
 msgstr ""
 
-#: pretalx/orga/templates/orga/cfp/question_view.html:78
-#: pretalx/orga/views/event.py:166
+#: pretalx/orga/templates/orga/cfp/question_view.html:76
+#: pretalx/orga/views/event.py:160
 msgid "You have configured no questions yet."
-msgstr ""
-
-#: pretalx/orga/templates/orga/cfp/submission_type_delete.html:5
-msgid "Do you really want to delete this session type?"
 msgstr ""
 
 #: pretalx/orga/templates/orga/cfp/submission_type_form.html:21
@@ -4444,10 +4416,6 @@ msgstr ""
 msgid "Session image"
 msgstr ""
 
-#: pretalx/orga/templates/orga/cfp/track_delete.html:5
-msgid "Do you really want to delete this track?"
-msgstr ""
-
 #: pretalx/orga/templates/orga/cfp/track_form.html:24
 #: pretalx/orga/templates/orga/cfp/track_view.html:16
 msgid "New track"
@@ -4496,16 +4464,6 @@ msgstr ""
 
 #: pretalx/orga/templates/orga/event/dashboard.html:101
 msgid "Full history"
-msgstr ""
-
-#: pretalx/orga/templates/orga/event/delete.html:5
-msgid "Do you really want to delete this event?"
-msgstr ""
-
-#: pretalx/orga/templates/orga/event/delete.html:7
-msgid ""
-"ALL related data, such as proposals, and speaker profiles, and uploads, will"
-" also be deleted and cannot be restored."
 msgstr ""
 
 #: pretalx/orga/templates/orga/event/history.html:5
@@ -4772,6 +4730,7 @@ msgid "e.g."
 msgstr ""
 
 #: pretalx/orga/templates/orga/mails/compose_choice.html:4
+#: pretalx/orga/views/mails.py:105
 #, fuzzy
 #| msgid "Speaker email"
 msgid "Send emails"
@@ -4825,10 +4784,6 @@ msgstr ""
 
 #: pretalx/orga/templates/orga/mails/compose_session_mail_form.html:43
 msgid "Optional"
-msgstr ""
-
-#: pretalx/orga/templates/orga/mails/confirm.html:5
-msgid "Please confirm:"
 msgstr ""
 
 #: pretalx/orga/templates/orga/mails/outbox_form.html:9
@@ -5008,16 +4963,6 @@ msgstr ""
 msgid "Send mails"
 msgstr ""
 
-#: pretalx/orga/templates/orga/organiser/delete.html:5
-msgid "Do you really want to delete this organiser?"
-msgstr ""
-
-#: pretalx/orga/templates/orga/organiser/delete.html:9
-msgid ""
-"ALL related data for ALL events, such as proposals, and speaker profiles, "
-"and uploads, will also be deleted and cannot be restored."
-msgstr ""
-
 #: pretalx/orga/templates/orga/organiser/detail.html:18
 msgid "Delete organiser"
 msgstr ""
@@ -5120,7 +5065,7 @@ msgstr ""
 msgid "Limited to tracks"
 msgstr ""
 
-#: pretalx/orga/templates/orga/review/assignment.html:101
+#: pretalx/orga/templates/orga/review/assignment.html:99
 #, python-format
 msgid ""
 "Reviewers will be able to see and review <b>only their assigned</b> "
@@ -5128,7 +5073,7 @@ msgid ""
 "settings</a>."
 msgstr ""
 
-#: pretalx/orga/templates/orga/review/assignment.html:106
+#: pretalx/orga/templates/orga/review/assignment.html:104
 #, python-format
 msgid ""
 "Reviewers will be able to see and review <b>all proposals</b>, but their "
@@ -5136,26 +5081,26 @@ msgid ""
 "first. You can change this in your <a href=\"%(href)s\">review settings</a>."
 msgstr ""
 
-#: pretalx/orga/templates/orga/review/assignment.html:115
+#: pretalx/orga/templates/orga/review/assignment.html:113
 msgid ""
 "This is where you can assign reviewers to specific proposals! Please use "
 "this drop-down to switch between the two assignment modes (assigning "
 "reviewers to proposals or proposals to reviewers)."
 msgstr ""
 
-#: pretalx/orga/templates/orga/review/assignment.html:119
+#: pretalx/orga/templates/orga/review/assignment.html:117
 msgid ""
 "You can also use the Actions menu above to import your assignments from a "
 "prepared file."
 msgstr ""
 
-#: pretalx/orga/templates/orga/review/assignment.html:126
+#: pretalx/orga/templates/orga/review/assignment.html:124
 #: pretalx/orga/templates/orga/review/dashboard.html:125
 #: pretalx/orga/templates/orga/schedule/index.html:37
 msgid "Actions"
 msgstr ""
 
-#: pretalx/orga/templates/orga/review/assignment.html:131
+#: pretalx/orga/templates/orga/review/assignment.html:129
 msgid "Import assignments"
 msgstr ""
 
@@ -5229,6 +5174,7 @@ msgid "Reviews"
 msgstr ""
 
 #: pretalx/orga/templates/orga/review/dashboard.html:129
+#: pretalx/orga/views/review.py:682 pretalx/orga/views/review.py:683
 msgid "Regenerate decision emails"
 msgstr ""
 
@@ -5389,17 +5335,6 @@ msgstr ""
 #: pretalx/orga/templates/orga/schedule/export.html:150
 #: pretalx/orga/templates/orga/speaker/export.html:129
 msgid "Go to API"
-msgstr ""
-
-#: pretalx/orga/templates/orga/review/regenerate_decision_mails.html:5
-msgid "Regenerate notification emails"
-msgstr ""
-
-#: pretalx/orga/templates/orga/review/regenerate_decision_mails.html:7
-#, python-format
-msgid ""
-"Do you really want to regenerate %(count)s acceptance and rejection emails? "
-"They will be placed in the outbox and not sent out directly."
 msgstr ""
 
 #: pretalx/orga/templates/orga/schedule/export.html:8
@@ -5732,10 +5667,6 @@ msgstr ""
 msgid "Add another phase"
 msgstr ""
 
-#: pretalx/orga/templates/orga/settings/team_delete.html:10
-msgid "Do you really want to go through with this deletion?"
-msgstr ""
-
 #: pretalx/orga/templates/orga/settings/team_detail.html:38
 msgid "Remove team member"
 msgstr ""
@@ -5754,17 +5685,6 @@ msgstr ""
 
 #: pretalx/orga/templates/orga/settings/team_detail.html:75
 msgid "Add multiple team members?"
-msgstr ""
-
-#: pretalx/orga/templates/orga/settings/team_resend.html:10
-msgid "Do you want to resend the email to:"
-msgstr ""
-
-#: pretalx/orga/templates/orga/settings/team_reset_password.html:10
-#: pretalx/orga/templates/orga/speaker/reset_password.html:10
-msgid ""
-"Do you really want to reset this user’s password? They won’t be able to log "
-"in until they set a new password. The email will go to: "
 msgstr ""
 
 #: pretalx/orga/templates/orga/settings/team_tracks.html:11
@@ -5876,10 +5796,6 @@ msgstr ""
 
 #: pretalx/orga/templates/orga/speaker/form.html:96
 msgid "No mails were sent to this speaker yet."
-msgstr ""
-
-#: pretalx/orga/templates/orga/speaker/information_delete.html:5
-msgid "Do you really want to delete this information?"
 msgstr ""
 
 #: pretalx/orga/templates/orga/speaker/information_form.html:7
@@ -6119,10 +6035,6 @@ msgstr ""
 msgid "Save and next"
 msgstr ""
 
-#: pretalx/orga/templates/orga/submission/review_delete.html:5
-msgid "Do you really want to delete your review?"
-msgstr ""
-
 #: pretalx/orga/templates/orga/submission/speakers.html:13
 msgid ""
 "Add a speaker – if the email address isn’t registered yet, an account will "
@@ -6190,12 +6102,9 @@ msgstr ""
 msgid "Sessions by state"
 msgstr ""
 
-#: pretalx/orga/templates/orga/submission/tag_delete.html:5
-msgid "Do you really want to delete this tag?"
-msgstr ""
-
 #: pretalx/orga/templates/orga/submission/tag_form.html:22
 #: pretalx/orga/templates/orga/submission/tag_list.html:20
+#: pretalx/orga/views/submission.py:1032
 msgid "Tag"
 msgstr ""
 
@@ -6230,11 +6139,11 @@ msgstr ""
 msgid "Unofficial translation"
 msgstr ""
 
-#: pretalx/orga/views/admin.py:69
+#: pretalx/orga/views/admin.py:64
 msgid "Your changes have not been saved, see below for errors."
 msgstr ""
 
-#: pretalx/orga/views/admin.py:173
+#: pretalx/orga/views/admin.py:175
 #, fuzzy
 #| msgid "Your account has now been deleted."
 msgid "The user has been deleted."
@@ -6244,77 +6153,81 @@ msgstr "이제 계정이 삭제되었습니다."
 msgid "{} minutes, #{}, {}, {}"
 msgstr ""
 
-#: pretalx/orga/views/cfp.py:87
+#: pretalx/orga/views/cfp.py:88
 msgid "We had trouble saving your input."
 msgstr ""
 
-#: pretalx/orga/views/cfp.py:280
+#: pretalx/orga/views/cfp.py:281
 msgid ""
 "You cannot change the question options and upload a question option file at "
 "the same time."
 msgstr ""
 
-#: pretalx/orga/views/cfp.py:321
+#: pretalx/orga/views/cfp.py:327
 msgid "The question has been deleted."
 msgstr ""
 
-#: pretalx/orga/views/cfp.py:328
+#: pretalx/orga/views/cfp.py:334
 msgid ""
 "You cannot delete a question that has already been answered. We have "
 "deactivated the question instead."
 msgstr ""
 
-#: pretalx/orga/views/cfp.py:388
+#: pretalx/orga/views/cfp.py:394
 msgid "Could not send mails, error in configuration."
 msgstr ""
 
-#: pretalx/orga/views/cfp.py:478
+#: pretalx/orga/views/cfp.py:484
 msgid "The Session Type has been made default."
 msgstr ""
 
-#: pretalx/orga/views/cfp.py:498
+#: pretalx/orga/views/cfp.py:509
 msgid ""
 "You cannot delete the only session type. Try creating another one first!"
 msgstr ""
 
-#: pretalx/orga/views/cfp.py:505
+#: pretalx/orga/views/cfp.py:516
 msgid ""
 "You cannot delete the default session type. Make another type default first!"
 msgstr ""
 
-#: pretalx/orga/views/cfp.py:516
+#: pretalx/orga/views/cfp.py:527
 msgid "The Session Type has been deleted."
 msgstr ""
 
-#: pretalx/orga/views/cfp.py:521
+#: pretalx/orga/views/cfp.py:532
 msgid "This Session Type is in use in a proposal and cannot be deleted."
 msgstr ""
 
-#: pretalx/orga/views/cfp.py:560
+#: pretalx/orga/views/cfp.py:571
 msgid "The track has been saved."
 msgstr ""
 
-#: pretalx/orga/views/cfp.py:582
+#: pretalx/orga/views/cfp.py:598
 msgid "The track has been deleted."
 msgstr ""
 
-#: pretalx/orga/views/cfp.py:586
+#: pretalx/orga/views/cfp.py:602
 msgid "This track is in use in a proposal and cannot be deleted."
 msgstr ""
 
-#: pretalx/orga/views/cfp.py:635
+#: pretalx/orga/views/cfp.py:651
 msgid "The access code has been saved."
 msgstr ""
 
-#: pretalx/orga/views/cfp.py:664
+#: pretalx/orga/views/cfp.py:680
 msgid "The access code has been sent."
 msgstr ""
 
-#: pretalx/orga/views/cfp.py:693
+#: pretalx/orga/views/cfp.py:701 pretalx/submission/models/access_code.py:20
+msgid "Access code"
+msgstr ""
+
+#: pretalx/orga/views/cfp.py:714
 msgid "The access code has been deleted."
 msgstr ""
 
-#: pretalx/orga/views/cfp.py:698
+#: pretalx/orga/views/cfp.py:719
 msgid ""
 "This access code has been used for a proposal and cannot be deleted. To "
 "disable it, you can set its validity date to the past."
@@ -6391,181 +6304,197 @@ msgid_plural "sent emails"
 msgstr[0] ""
 msgstr[1] ""
 
-#: pretalx/orga/views/event.py:108
+#: pretalx/orga/views/event.py:102
 msgid "The event settings have been saved."
 msgstr ""
 
-#: pretalx/orga/views/event.py:128
+#: pretalx/orga/views/event.py:122
 msgid "The CfP doesn’t have a full text yet."
 msgstr ""
 
-#: pretalx/orga/views/event.py:138
+#: pretalx/orga/views/event.py:132
 msgid "The event doesn’t have a landing page text yet."
 msgstr ""
 
-#: pretalx/orga/views/event.py:151
+#: pretalx/orga/views/event.py:145
 msgid ""
 "You want submitters to choose the tracks for their proposals, but you do not"
 " offer tracks for selection. Add at least one track!"
 msgstr ""
 
-#: pretalx/orga/views/event.py:159
+#: pretalx/orga/views/event.py:153
 msgid "You have configured only one session type so far."
 msgstr ""
 
-#: pretalx/orga/views/event.py:179
+#: pretalx/orga/views/event.py:173
 msgid "This event was already live."
 msgstr ""
 
-#: pretalx/orga/views/event.py:201
+#: pretalx/orga/views/event.py:195
 msgid "This event is now public."
 msgstr ""
 
-#: pretalx/orga/views/event.py:207
+#: pretalx/orga/views/event.py:201
 msgid "This event was already hidden."
 msgstr ""
 
-#: pretalx/orga/views/event.py:217
+#: pretalx/orga/views/event.py:211
 msgid "This event is now hidden."
 msgstr ""
 
-#: pretalx/orga/views/event.py:425
+#: pretalx/orga/views/event.py:351
+msgid "Score category"
+msgstr "리뷰 점수 카테고리"
+
+#: pretalx/orga/views/event.py:380
+#, fuzzy
+#| msgid "Review"
+msgid "Review phase"
+msgstr "리뷰"
+
+#: pretalx/orga/views/event.py:431
 #, python-format
 msgid "An error occurred while contacting the SMTP server: %s"
 msgstr ""
 
-#: pretalx/orga/views/event.py:434
+#: pretalx/orga/views/event.py:440
 msgid ""
 "Yay, your changes have been saved and the connection attempt to your SMTP "
 "server was successful."
 msgstr ""
 
-#: pretalx/orga/views/event.py:442
+#: pretalx/orga/views/event.py:448
 msgid ""
 "We’ve been able to contact the SMTP server you configured. Remember to check"
 " the “use custom SMTP server” checkbox, otherwise your SMTP server will not "
 "be used."
 msgstr ""
 
-#: pretalx/orga/views/event.py:448
+#: pretalx/orga/views/event.py:454
 msgid "Yay! We saved your changes."
 msgstr ""
 
-#: pretalx/orga/views/event.py:479
+#: pretalx/orga/views/event.py:485
 msgid ""
 "There was a problem with your authentication. Please contact the organiser "
 "for further help."
 msgstr ""
 
-#: pretalx/orga/views/event.py:496
+#: pretalx/orga/views/event.py:502
 msgid "You are now part of the team!"
 msgstr ""
 
-#: pretalx/orga/views/event.py:544
+#: pretalx/orga/views/event.py:550
 msgid "Oh :( We had trouble saving your input. See below for details."
 msgstr ""
 
-#: pretalx/orga/views/event.py:604
+#: pretalx/orga/views/event.py:610
 #, python-brace-format
 msgid ""
 "Please consider including your event’s year in the slug, e.g. "
 "myevent{number}."
 msgstr ""
 
-#: pretalx/orga/views/event.py:613
+#: pretalx/orga/views/event.py:619
 msgid "Did you really mean to make your event take place in the past?"
 msgstr ""
 
-#: pretalx/orga/views/event.py:667
+#: pretalx/orga/views/event.py:673
 #, python-brace-format
 msgid "Team {event.name}"
 msgstr ""
 
-#: pretalx/orga/views/event.py:722
+#: pretalx/orga/views/event.py:712
+msgid ""
+"ALL related data, such as proposals, and speaker profiles, and uploads, will"
+" also be deleted and cannot be restored."
+msgstr ""
+
+#: pretalx/orga/views/event.py:741
 msgid "The widget settings have been saved."
 msgstr ""
 
-#: pretalx/orga/views/mails.py:96
+#: pretalx/orga/views/mails.py:100
 #, python-brace-format
 msgid "Do you really want to send {count} mails?"
 msgstr ""
 
-#: pretalx/orga/views/mails.py:108
+#: pretalx/orga/views/mails.py:121
 msgid ""
 "This mail either does not exist or cannot be sent because it was sent "
 "already."
 msgstr ""
 
-#: pretalx/orga/views/mails.py:113
+#: pretalx/orga/views/mails.py:126
 msgid "This mail had been sent already."
 msgstr ""
 
-#: pretalx/orga/views/mails.py:116
+#: pretalx/orga/views/mails.py:129
 msgid "The mail has been sent."
 msgstr ""
 
-#: pretalx/orga/views/mails.py:135
+#: pretalx/orga/views/mails.py:148
 #, python-brace-format
 msgid "{count} mails have been sent."
 msgstr ""
 
-#: pretalx/orga/views/mails.py:163
+#: pretalx/orga/views/mails.py:182
 #, python-brace-format
 msgid "Do you really want to delete this mail?"
 msgid_plural "Do you really want to purge {count} mails?"
 msgstr[0] ""
 msgstr[1] ""
 
-#: pretalx/orga/views/mails.py:176
+#: pretalx/orga/views/mails.py:195
 msgid ""
 "This mail either does not exist or cannot be discarded because it was sent "
 "already."
 msgstr ""
 
-#: pretalx/orga/views/mails.py:188
+#: pretalx/orga/views/mails.py:207
 #, python-brace-format
 msgid "The mail has been discarded."
 msgid_plural "{count} mails have been discarded."
 msgstr[0] ""
 msgstr[1] ""
 
-#: pretalx/orga/views/mails.py:207
+#: pretalx/orga/views/mails.py:226
 #, python-brace-format
 msgid "Do you really want to purge {count} mails?"
 msgstr ""
 
-#: pretalx/orga/views/mails.py:221
+#: pretalx/orga/views/mails.py:246
 #, python-brace-format
 msgid "{count} mails have been purged."
 msgstr ""
 
-#: pretalx/orga/views/mails.py:248
+#: pretalx/orga/views/mails.py:273
 msgid "The email has been sent."
 msgstr ""
 
-#: pretalx/orga/views/mails.py:253
+#: pretalx/orga/views/mails.py:278
 msgid ""
 "The email has been saved. When you send it, the updated text will be used."
 msgstr ""
 
-#: pretalx/orga/views/mails.py:270
+#: pretalx/orga/views/mails.py:295
 msgid "The mail has been copied, you can edit it now."
 msgstr ""
 
-#: pretalx/orga/views/mails.py:333
+#: pretalx/orga/views/mails.py:358
 msgid "There are no recipients matching this selection."
 msgstr ""
 
-#: pretalx/orga/views/mails.py:343
+#: pretalx/orga/views/mails.py:368
 msgid "This value will be replaced based on dynamic parameters."
 msgstr ""
 
-#: pretalx/orga/views/mails.py:356
+#: pretalx/orga/views/mails.py:381
 #, python-brace-format
 msgid "Subject: {subject}"
 msgstr ""
 
-#: pretalx/orga/views/mails.py:370 pretalx/orga/views/mails.py:428
+#: pretalx/orga/views/mails.py:395 pretalx/orga/views/mails.py:453
 #, python-brace-format
 msgid "{count} emails have been sent."
 msgstr ""
@@ -6586,80 +6515,122 @@ msgstr ""
 msgid "The settings have been saved."
 msgstr ""
 
-#: pretalx/orga/views/organiser.py:121
+#: pretalx/orga/views/organiser.py:113
+#, fuzzy
+#| msgid "Team members"
+msgid "Team member"
+msgstr "팀 멤버"
+
+#: pretalx/orga/views/organiser.py:128
 msgid "The member was removed from the team."
 msgstr ""
 
-#: pretalx/orga/views/organiser.py:124
+#: pretalx/orga/views/organiser.py:131
 msgid "The team was removed."
 msgstr ""
 
-#: pretalx/orga/views/organiser.py:154
+#: pretalx/orga/views/organiser.py:161
 msgid "The team invitation was retracted."
 msgstr ""
 
-#: pretalx/orga/views/organiser.py:165
+#: pretalx/orga/views/organiser.py:168
+msgid "Resend invitation"
+msgstr "초대 다시 보내기"
+
+#: pretalx/orga/views/organiser.py:169
+#, fuzzy
+#| msgid "Do you really want to withdraw your proposal?"
+msgid "Are you sure you want to resend the invitation to this user?"
+msgstr "정말로 발표 제안을 철회하시겠습니까?"
+
+#: pretalx/orga/views/organiser.py:182
 msgid "The team invitation was sent again."
 msgstr ""
 
-#: pretalx/orga/views/organiser.py:219 pretalx/orga/views/review.py:732
+#: pretalx/orga/views/organiser.py:193 pretalx/orga/views/speaker.py:243
+msgid ""
+"Do your really want to reset this user’s password? They won’t be able to log"
+" in until they set a new password."
+msgstr ""
+
+#: pretalx/orga/views/organiser.py:247 pretalx/orga/views/review.py:759
 #: pretalx/orga/views/schedule.py:606
 msgid "Saved!"
+msgstr ""
+
+#: pretalx/orga/views/organiser.py:256
+msgid ""
+"ALL related data for ALL events, such as proposals, and speaker profiles, "
+"and uploads, will also be deleted and cannot be restored."
 msgstr ""
 
 #: pretalx/orga/views/person.py:66
 msgid "You are now an administrator instead of a superuser."
 msgstr ""
 
-#: pretalx/orga/views/review.py:298
+#: pretalx/orga/views/review.py:302
 #, python-brace-format
 msgid ""
 "Success! {accepted} proposals were accepted, {rejected} proposals were "
 "rejected."
 msgstr ""
 
-#: pretalx/orga/views/review.py:303
+#: pretalx/orga/views/review.py:307
 #, python-brace-format
 msgid "We were unable to change the state of {count} proposals."
 msgstr ""
 
-#: pretalx/orga/views/review.py:310
+#: pretalx/orga/views/review.py:314
 #, python-brace-format
 msgid "We were unable to change the state of all {count} proposals."
 msgstr ""
 
-#: pretalx/orga/views/review.py:420 pretalx/orga/views/review.py:597
-#: pretalx/orga/views/review.py:600
+#: pretalx/orga/views/review.py:424 pretalx/orga/views/review.py:601
+#: pretalx/orga/views/review.py:604
 msgid "There have been errors with your input."
 msgstr ""
 
-#: pretalx/orga/views/review.py:425
+#: pretalx/orga/views/review.py:429
 #, fuzzy
 #| msgid "Your account has now been deleted."
 msgid "Your reviews have been saved."
 msgstr "이제 계정이 삭제되었습니다."
 
-#: pretalx/orga/views/review.py:649
+#: pretalx/orga/views/review.py:653
 msgid "Nice, you have no proposals left to review!"
 msgstr ""
 
-#: pretalx/orga/views/review.py:662
+#: pretalx/orga/views/review.py:667
+#, fuzzy
+#| msgctxt "proposal status"
+#| msgid "in review"
+msgid "Your review"
+msgstr "검토 중"
+
+#: pretalx/orga/views/review.py:674
 #, fuzzy
 #| msgid "Your account has now been deleted."
 msgid "The review has been deleted."
 msgstr "이제 계정이 삭제되었습니다."
 
-#: pretalx/orga/views/review.py:690
+#: pretalx/orga/views/review.py:705
+#, python-format
+msgid ""
+"Do you really want to regenerate %(count)s acceptance and rejection emails? "
+"They will be placed in the outbox and not sent out directly."
+msgstr ""
+
+#: pretalx/orga/views/review.py:717
 #, python-brace-format
 msgid "{count} emails were generated and placed in the outbox."
 msgstr ""
 
-#: pretalx/orga/views/review.py:749
+#: pretalx/orga/views/review.py:776
 msgid "The reviewers were assigned successfully."
 msgstr ""
 
-#: pretalx/orga/views/review.py:767 pretalx/orga/views/schedule.py:114
-#: pretalx/orga/views/speaker.py:356
+#: pretalx/orga/views/review.py:794 pretalx/orga/views/schedule.py:114
+#: pretalx/orga/views/speaker.py:368
 msgid "No data to be exported"
 msgstr ""
 
@@ -6713,11 +6684,15 @@ msgid ""
 "There is or was a session scheduled in this room. It cannot be deleted."
 msgstr ""
 
-#: pretalx/orga/views/speaker.py:331
+#: pretalx/orga/views/speaker.py:332
+msgid "Speaker information note"
+msgstr ""
+
+#: pretalx/orga/views/speaker.py:343
 msgid "The information has been deleted."
 msgstr ""
 
-#: pretalx/orga/views/submission.py:86
+#: pretalx/orga/views/submission.py:80
 #, python-brace-format
 msgid ""
 "Hi!\n"
@@ -6733,98 +6708,98 @@ msgid ""
 "The {event} orga crew"
 msgstr ""
 
-#: pretalx/orga/views/submission.py:106
+#: pretalx/orga/views/submission.py:100
 #, python-brace-format
 msgid "You have been added to a proposal for {event}"
 msgstr ""
 
-#: pretalx/orga/views/submission.py:240
+#: pretalx/orga/views/submission.py:234
 msgid ""
 "Somebody else was faster than you: this proposal was already in the state "
 "you wanted to change it to."
 msgstr ""
 
-#: pretalx/orga/views/submission.py:275
+#: pretalx/orga/views/submission.py:269
 msgid ""
 "There may be pending emails for this proposal that are now incorrect or "
 "outdated."
 msgstr ""
 
-#: pretalx/orga/views/submission.py:310
+#: pretalx/orga/views/submission.py:304
 msgid "Please provide a valid email address!"
 msgstr ""
 
-#: pretalx/orga/views/submission.py:318
+#: pretalx/orga/views/submission.py:312
 msgid "The speaker has been added to the proposal."
 msgstr ""
 
-#: pretalx/orga/views/submission.py:322
+#: pretalx/orga/views/submission.py:316
 msgid "The speaker was already part of the proposal."
 msgstr ""
 
-#: pretalx/orga/views/submission.py:343
+#: pretalx/orga/views/submission.py:337
 msgid "The speaker has been removed from the proposal."
 msgstr ""
 
-#: pretalx/orga/views/submission.py:346
+#: pretalx/orga/views/submission.py:340
 msgid "The speaker was not part of this proposal."
 msgstr ""
 
-#: pretalx/orga/views/submission.py:525
+#: pretalx/orga/views/submission.py:519
 msgid ""
 "The proposal has been created; the speaker already had an account on this "
 "system."
 msgstr ""
 
-#: pretalx/orga/views/submission.py:537
+#: pretalx/orga/views/submission.py:531
 msgid ""
 "The proposal has been created and the speaker has been invited to add an "
 "account!"
 msgstr ""
 
-#: pretalx/orga/views/submission.py:546
+#: pretalx/orga/views/submission.py:540
 msgid "The proposal has been updated!"
 msgstr ""
 
-#: pretalx/orga/views/submission.py:688
+#: pretalx/orga/views/submission.py:682
 msgid "The anonymisation has been updated."
 msgstr ""
 
-#: pretalx/orga/views/submission.py:690
+#: pretalx/orga/views/submission.py:684
 msgid "This proposal is now marked as anonymised."
 msgstr ""
 
-#: pretalx/orga/views/submission.py:706
+#: pretalx/orga/views/submission.py:700
 #, python-brace-format
 msgid "{name} proposal feed"
 msgstr ""
 
-#: pretalx/orga/views/submission.py:718
+#: pretalx/orga/views/submission.py:712
 #, python-brace-format
 msgid "Updates to the {name} schedule."
 msgstr ""
 
-#: pretalx/orga/views/submission.py:724
+#: pretalx/orga/views/submission.py:718
 #, python-brace-format
 msgid "New {event} proposal: {title}"
 msgstr ""
 
-#: pretalx/orga/views/submission.py:779 pretalx/orga/views/submission.py:791
+#: pretalx/orga/views/submission.py:773 pretalx/orga/views/submission.py:785
 #: pretalx/submission/models/cfp.py:106
 #: pretalx/submission/models/question.py:131
 #: pretalx/submission/models/type.py:38
 msgid "Deadline"
 msgstr ""
 
-#: pretalx/orga/views/submission.py:1024
+#: pretalx/orga/views/submission.py:1018
 msgid "The tag has been saved."
 msgstr ""
 
-#: pretalx/orga/views/submission.py:1045
+#: pretalx/orga/views/submission.py:1044
 msgid "The tag has been deleted."
 msgstr ""
 
-#: pretalx/orga/views/submission.py:1070
+#: pretalx/orga/views/submission.py:1069
 #, python-brace-format
 msgid "Changed {count} proposal states."
 msgstr ""
@@ -6845,37 +6820,37 @@ msgstr ""
 msgid "Please fill all fields of either the login or the registration form."
 msgstr ""
 
-#: pretalx/person/forms.py:86
+#: pretalx/person/forms.py:88
 msgid ""
 "No user account matches the entered credentials. Are you sure that you typed"
 " your password correctly?"
 msgstr ""
 
-#: pretalx/person/forms.py:92
+#: pretalx/person/forms.py:94
 msgid "Sorry, your account is currently disabled."
 msgstr ""
 
-#: pretalx/person/forms.py:108
+#: pretalx/person/forms.py:110
 msgid ""
 "We already have a user with that email address. Did you already register "
 "before and just need to log in?"
 msgstr ""
 
-#: pretalx/person/forms.py:232
+#: pretalx/person/forms.py:234
 msgid ""
 "Please provide a profile picture or allow us to load your picture from "
 "gravatar!"
 msgstr ""
 
-#: pretalx/person/forms.py:281
+#: pretalx/person/forms.py:283
 msgid "The current password you entered was not correct."
 msgstr ""
 
-#: pretalx/person/forms.py:285
+#: pretalx/person/forms.py:287
 msgid "Password (current)"
 msgstr ""
 
-#: pretalx/person/forms.py:372
+#: pretalx/person/forms.py:374
 msgid "Non-accepted submitters"
 msgstr ""
 
@@ -7270,10 +7245,6 @@ msgstr ""
 
 #: pretalx/submission/forms/tag.py:21
 msgid "You already have a tag by this name!"
-msgstr ""
-
-#: pretalx/submission/models/access_code.py:20
-msgid "Access code"
 msgstr ""
 
 #: pretalx/submission/models/access_code.py:30
@@ -7752,6 +7723,10 @@ msgstr ""
 
 msgid "Hidden rooms"
 msgstr ""
+
+#~ msgctxt "noun / heading"
+#~ msgid "Password reset"
+#~ msgstr "비밀번호 재설정"
 
 #~ msgid "Send feedback"
 #~ msgstr "피드백 보내기"

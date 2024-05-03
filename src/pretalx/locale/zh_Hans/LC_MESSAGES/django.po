@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-02 19:01+0000\n"
+"POT-Creation-Date: 2024-05-03 13:52+0000\n"
 "PO-Revision-Date: 2023-05-27 12:16+0000\n"
 "Last-Translator: Joel (Jiawei) Wang <joel.bradley.w@gmail.com>\n"
 "Language-Team: none\n"
@@ -448,8 +448,7 @@ msgid "Abstract:"
 msgstr "抽象："
 
 #: pretalx/cfp/templates/cfp/event/invitation.html:41
-#: pretalx/event/models/event.py:644 pretalx/orga/forms/review.py:368
-#: pretalx/submission/models/question.py:420
+#: pretalx/event/models/event.py:644 pretalx/submission/models/question.py:420
 #: pretalx/submission/models/submission.py:889
 msgid "No"
 msgstr "不。"
@@ -856,7 +855,7 @@ msgstr "会议类型"
 #: pretalx/orga/templates/orga/review/dashboard.html:101
 #: pretalx/orga/templates/orga/review/dashboard.html:217
 #: pretalx/orga/templates/orga/submission/review.html:65
-#: pretalx/submission/models/access_code.py:28
+#: pretalx/orga/views/cfp.py:585 pretalx/submission/models/access_code.py:28
 #: pretalx/submission/models/submission.py:143
 msgid "Track"
 msgstr "分支"
@@ -933,11 +932,6 @@ msgstr "没有提供描述。"
 #: pretalx/cfp/templates/widgets/track-select-widget.html:40
 msgid "Close"
 msgstr "关闭"
-
-#: pretalx/cfp/views/auth.py:102 pretalx/cfp/views/auth.py:111
-#: pretalx/cfp/views/auth.py:114
-msgid "Please go back and try again."
-msgstr "请返回并再试一次。"
 
 #: pretalx/cfp/views/locale.py:49
 msgid ""
@@ -1064,300 +1058,302 @@ msgstr "警告"
 msgid "Your passwords don’t match."
 msgstr "您的密码不匹配。"
 
-#: pretalx/common/log_display.py:27
+#: pretalx/common/log_display.py:28
 #, python-brace-format
 msgid "The event {name} ({slug}) by {organiser} was deleted."
 msgstr ""
 
-#: pretalx/common/log_display.py:28
+#: pretalx/common/log_display.py:29
 #, fuzzy, python-brace-format
 #| msgid "The proposal was deleted."
 msgid "The organiser {name} was deleted."
 msgstr "这个提议被删除了。"
 
-#: pretalx/common/log_display.py:49
+#: pretalx/common/log_display.py:50
 msgid "The CfP has been modified."
 msgstr "\"征稿启事已经修改。\""
 
-#: pretalx/common/log_display.py:50
+#: pretalx/common/log_display.py:51
 msgid "The event has been added."
 msgstr "该事件已添加。"
 
-#: pretalx/common/log_display.py:51
+#: pretalx/common/log_display.py:52
 msgid "The event was modified."
 msgstr "该事件已被修改。"
 
-#: pretalx/common/log_display.py:52
+#: pretalx/common/log_display.py:53
 msgid "The event was made public."
 msgstr "这个事件已经被公开。"
 
-#: pretalx/common/log_display.py:53
+#: pretalx/common/log_display.py:54
 msgid "The event was deactivated."
 msgstr "该事件已被停用。"
 
-#: pretalx/common/log_display.py:54
+#: pretalx/common/log_display.py:55
 msgid "A plugin was enabled."
 msgstr "一个插件已启用。"
 
-#: pretalx/common/log_display.py:55
+#: pretalx/common/log_display.py:56
 msgid "A plugin was disabled."
 msgstr "一个插件已被禁用。"
 
-#: pretalx/common/log_display.py:56
+#: pretalx/common/log_display.py:57
 msgid "The invitation to the event orga was accepted."
 msgstr "活动orga的邀请被接受了。”"
 
-#: pretalx/common/log_display.py:57
+#: pretalx/common/log_display.py:58
 msgid "An invitation to the event orga was retracted."
 msgstr "\"活动 orga 的邀请被撤回了。\""
 
-#: pretalx/common/log_display.py:58
+#: pretalx/common/log_display.py:59
 msgid "An invitation to the event orga was sent."
 msgstr "一份邀请函已经发送至orga的活动。"
 
-#: pretalx/common/log_display.py:60
+#: pretalx/common/log_display.py:61
 msgid "The invitation to the review team was retracted."
 msgstr "邀请复核团队已被撤回。"
 
-#: pretalx/common/log_display.py:62
+#: pretalx/common/log_display.py:63
 msgid "The invitation to the review team was sent."
 msgstr "审核团队的邀请已发送。"
 
-#: pretalx/common/log_display.py:63 pretalx/common/log_display.py:67
-msgid "An email was modified."
-msgstr "一封电子邮件被修改了。"
-
 #: pretalx/common/log_display.py:64
+#, fuzzy
+#| msgid "An email was sent."
+msgid "An email was created."
+msgstr "一封电子邮件被发送了。"
+
+#: pretalx/common/log_display.py:65
 msgid "A pending email was deleted."
 msgstr "一封待处理的电子邮件被删除了。"
 
-#: pretalx/common/log_display.py:65
+#: pretalx/common/log_display.py:66
 msgid "All pending emails were deleted."
 msgstr "所有待处理的电子邮件都已被删除。"
 
-#: pretalx/common/log_display.py:66
+#: pretalx/common/log_display.py:67
 msgid "An email was sent."
 msgstr "一封电子邮件被发送了。"
 
 #: pretalx/common/log_display.py:68
+msgid "An email was modified."
+msgstr "一封电子邮件被修改了。"
+
+#: pretalx/common/log_display.py:69
 msgid "A mail template was added."
 msgstr "\"添加了一封邮件模板。\""
 
-#: pretalx/common/log_display.py:69
+#: pretalx/common/log_display.py:70
 msgid "A mail template was deleted."
 msgstr "一封邮件模板被删除了。"
 
-#: pretalx/common/log_display.py:70
+#: pretalx/common/log_display.py:71
 msgid "A mail template was modified."
 msgstr "邮件模板已修改。"
 
-#: pretalx/common/log_display.py:71
+#: pretalx/common/log_display.py:72
 msgid "A question was added."
 msgstr "一个问题被添加了。"
 
-#: pretalx/common/log_display.py:72
+#: pretalx/common/log_display.py:73
 msgid "A question was deleted."
 msgstr "一个问题被删除了。"
 
-#: pretalx/common/log_display.py:73
+#: pretalx/common/log_display.py:74
 msgid "A question was modified."
 msgstr "一个问题被修改了。"
 
-#: pretalx/common/log_display.py:74
+#: pretalx/common/log_display.py:75
 msgid "A question option was added."
 msgstr "添加了一个问题选项。"
 
-#: pretalx/common/log_display.py:75
+#: pretalx/common/log_display.py:76
 msgid "A question option was deleted."
 msgstr "一个问题选项被删除了。"
 
-#: pretalx/common/log_display.py:76
+#: pretalx/common/log_display.py:77
 msgid "A question option was modified."
 msgstr "一个问题选项被修改了。"
 
-#: pretalx/common/log_display.py:77
+#: pretalx/common/log_display.py:78
 msgid "A tag was added."
 msgstr "添加了一个标签。"
 
-#: pretalx/common/log_display.py:78
+#: pretalx/common/log_display.py:79
 msgid "A tag was deleted."
 msgstr "一个标签已被删除。"
 
-#: pretalx/common/log_display.py:79
+#: pretalx/common/log_display.py:80
 msgid "A tag was modified."
 msgstr "一个标签被修改了。"
 
-#: pretalx/common/log_display.py:80
+#: pretalx/common/log_display.py:81
 msgid "A new room was added."
 msgstr "新增了一个房间。"
 
-#: pretalx/common/log_display.py:81
+#: pretalx/common/log_display.py:82
 msgid "A new schedule version was released."
 msgstr "发布了新的时间表版本。"
 
-#: pretalx/common/log_display.py:82
+#: pretalx/common/log_display.py:83
 msgid "The proposal was accepted."
 msgstr "提议被接受了。"
 
-#: pretalx/common/log_display.py:83
+#: pretalx/common/log_display.py:84
 msgid "The proposal was cancelled."
 msgstr "这个提案被取消了。"
 
-#: pretalx/common/log_display.py:84
+#: pretalx/common/log_display.py:85
 msgid "The proposal was confirmed."
 msgstr "这个提议已经确认。"
 
-#: pretalx/common/log_display.py:85
+#: pretalx/common/log_display.py:86
 msgid "The proposal was added."
 msgstr "这个提案被添加了。"
 
-#: pretalx/common/log_display.py:86
+#: pretalx/common/log_display.py:87
 msgid "The proposal was deleted."
 msgstr "这个提议被删除了。"
 
-#: pretalx/common/log_display.py:87
+#: pretalx/common/log_display.py:88
 msgid "The proposal was rejected."
 msgstr "该提议被拒绝。"
 
-#: pretalx/common/log_display.py:88
+#: pretalx/common/log_display.py:89
 msgid "A proposal resource was added."
 msgstr "添加了一个提案资源。"
 
-#: pretalx/common/log_display.py:89
+#: pretalx/common/log_display.py:90
 msgid "A proposal resource was deleted."
 msgstr "一个提案资源被删除了。"
 
-#: pretalx/common/log_display.py:90
+#: pretalx/common/log_display.py:91
 msgid "A proposal resource was modified."
 msgstr "一个建议资源被修改了。"
 
-#: pretalx/common/log_display.py:91
+#: pretalx/common/log_display.py:92
 msgid "A speaker was added to the proposal."
 msgstr "提案增加了一个演讲者。"
 
-#: pretalx/common/log_display.py:92
+#: pretalx/common/log_display.py:93
 msgid "A speaker was invited to the proposal."
 msgstr "一位演讲者被邀请参加提案。"
 
-#: pretalx/common/log_display.py:93
+#: pretalx/common/log_display.py:94
 msgid "A speaker was removed from the proposal."
 msgstr "议案中的一个发言者被取消了。"
 
-#: pretalx/common/log_display.py:94
+#: pretalx/common/log_display.py:95
 msgid "The proposal was unconfirmed."
 msgstr "这个提议没有得到确认。"
 
-#: pretalx/common/log_display.py:95
+#: pretalx/common/log_display.py:96
 msgid "The proposal was modified."
 msgstr "这个提案被修改了。"
 
-#: pretalx/common/log_display.py:96
+#: pretalx/common/log_display.py:97
 msgid "The proposal was withdrawn."
 msgstr "这项提案被撤回了。"
 
-#: pretalx/common/log_display.py:97
+#: pretalx/common/log_display.py:98
 msgid "A proposal answer was modified."
 msgstr "一份提案答案被修改。"
 
-#: pretalx/common/log_display.py:98
+#: pretalx/common/log_display.py:99
 msgid "A proposal answer was added."
 msgstr "添加了一个提案答案。"
 
-#: pretalx/common/log_display.py:99
+#: pretalx/common/log_display.py:100
 msgid "A session type was added."
 msgstr "添加了会话类型。"
 
-#: pretalx/common/log_display.py:100
+#: pretalx/common/log_display.py:101
 msgid "A session type was deleted."
 msgstr "一个会话类型被删除了。"
 
-#: pretalx/common/log_display.py:101
+#: pretalx/common/log_display.py:102
 msgid "The session type was made default."
 msgstr "会话类型已默认设置。"
 
-#: pretalx/common/log_display.py:102
+#: pretalx/common/log_display.py:103
 msgid "A session type was modified."
 msgstr "一个会话类型被修改了。"
 
-#: pretalx/common/log_display.py:103
+#: pretalx/common/log_display.py:104
 msgid "An access code was added."
 msgstr "已添加访问代码。"
 
-#: pretalx/common/log_display.py:104
+#: pretalx/common/log_display.py:105
 msgid "An access code was sent."
 msgstr "一个访问代码已被发送。"
 
-#: pretalx/common/log_display.py:105
+#: pretalx/common/log_display.py:106
 msgid "An access code was modified."
 msgstr "一个访问代码已经修改。"
 
-#: pretalx/common/log_display.py:106
+#: pretalx/common/log_display.py:107
 msgid "An access code was deleted."
 msgstr "访问码已删除。"
 
-#: pretalx/common/log_display.py:107
+#: pretalx/common/log_display.py:108
 msgid "A track was added."
 msgstr "一条轨迹被添加了。"
 
-#: pretalx/common/log_display.py:108
+#: pretalx/common/log_display.py:109
 msgid "A track was deleted."
 msgstr "一条轨迹被删除。"
 
-#: pretalx/common/log_display.py:109
+#: pretalx/common/log_display.py:110
 msgid "A track was modified."
 msgstr "一条轨迹被修改了。"
 
-#: pretalx/common/log_display.py:110
+#: pretalx/common/log_display.py:111
 msgid "A speaker has been marked as arrived."
 msgstr "一个演讲者已被标记为已到达。"
 
-#: pretalx/common/log_display.py:111
+#: pretalx/common/log_display.py:112
 msgid "A speaker has been marked as not arrived."
 msgstr "演讲者已标记为未到达。"
 
-#: pretalx/common/log_display.py:112
+#: pretalx/common/log_display.py:113
 msgid "The API token was reset."
 msgstr "API令牌已重置。"
 
-#: pretalx/common/log_display.py:113 pretalx/orga/views/admin.py:121
-#: pretalx/orga/views/admin.py:144
-msgid "The password was reset."
-msgstr "密码已重置。"
-
-#: pretalx/common/log_display.py:114
+#: pretalx/common/log_display.py:115
 msgid "The password was modified."
 msgstr "密码已修改。"
 
-#: pretalx/common/log_display.py:115
+#: pretalx/common/log_display.py:116
 msgid "The profile was modified."
 msgstr "个人资料已修改。"
 
-#: pretalx/common/log_display.py:151 pretalx/common/log_display.py:155
+#: pretalx/common/log_display.py:152 pretalx/common/log_display.py:156
 #: pretalx/orga/templates/orga/cfp/question_form.html:19
 #: pretalx/orga/templates/orga/cfp/question_view.html:30
 #: pretalx/orga/templates/orga/review/dashboard.html:96
+#: pretalx/orga/views/cfp.py:311
 msgid "Question"
 msgstr "问题"
 
-#: pretalx/common/log_display.py:162
+#: pretalx/common/log_display.py:163
 #, fuzzy
 #| msgid "Answer to the question “{q}”"
 msgid "Answer to question"
 msgstr "\"回答问题 “{q}”\" (Huídá wèntí “{q}”)"
 
-#: pretalx/common/log_display.py:165 pretalx/orga/templates/orga/base.html:219
+#: pretalx/common/log_display.py:166 pretalx/orga/templates/orga/base.html:219
 #, fuzzy
 #| msgid "All proposals"
 msgid "Call for Proposals"
 msgstr "所有提议"
 
-#: pretalx/common/log_display.py:168
+#: pretalx/common/log_display.py:169
 #, fuzzy
 #| msgid "Edit template"
 msgid "Mail template"
 msgstr "编辑模板"
 
-#: pretalx/common/log_display.py:172 pretalx/event/models/organiser.py:168
+#: pretalx/common/log_display.py:173 pretalx/event/models/organiser.py:168
 #: pretalx/orga/templates/orga/admin/user_detail.html:24
 #: pretalx/orga/templates/orga/admin/user_list.html:25
 #: pretalx/orga/templates/orga/base.html:200
@@ -1565,14 +1561,6 @@ msgstr "我已经有一个账户。"
 msgid "Log in"
 msgstr "登录"
 
-#: pretalx/common/templates/common/auth.html:31
-#: pretalx/orga/templates/orga/admin/user_detail.html:15
-#: pretalx/orga/templates/orga/admin/user_list.html:78
-#: pretalx/orga/templates/orga/settings/team_detail.html:34
-#: pretalx/orga/templates/orga/speaker/form.html:76
-msgid "Reset password"
-msgstr "重置密码"
-
 #: pretalx/common/templates/common/auth.html:39
 msgid "I need a new account"
 msgstr "我需要一个新的账户。"
@@ -1733,135 +1721,148 @@ msgstr "保存"
 msgid "Cancel"
 msgstr "取消"
 
-#: pretalx/common/text/phrases.py:49
-#: pretalx/orga/templates/orga/cfp/question_view.html:67
-#: pretalx/orga/templates/orga/organiser/detail.html:65
-#: pretalx/orga/templates/orga/review/assignment.html:86
-#: pretalx/orga/templates/orga/submission/review_fragment.html:26
-#: pretalx/orga/templates/orga/submission/speakers.html:52
+#. Translators: This is the label on edit buttons.
+#: pretalx/common/text/phrases.py:50
 msgid "Edit"
 msgstr "编辑"
 
-#: pretalx/common/text/phrases.py:50
+#: pretalx/common/text/phrases.py:51
 msgid "all"
 msgstr "所有"
 
 #. Translators: This is a label on navigation elements leading to the previous
 #. page.
-#: pretalx/common/text/phrases.py:52
+#: pretalx/common/text/phrases.py:53
 msgid "Back"
 msgstr "返回"
 
 #. Translators: This is a label on delete buttons.
-#: pretalx/common/text/phrases.py:54
+#: pretalx/common/text/phrases.py:55
 msgid "Delete"
 msgstr "删除"
 
-#: pretalx/common/text/phrases.py:56 pretalx/orga/views/admin.py:64
-#: pretalx/orga/views/event.py:532 pretalx/orga/views/event.py:536
-#: pretalx/orga/views/plugins.py:55
+#: pretalx/common/text/phrases.py:57
+#, fuzzy
+#| msgid "Account deletion"
+msgid "Confirm deletion"
+msgstr "账户删除"
+
+#: pretalx/common/text/phrases.py:59
+msgid ""
+"Please make sure that this is the item you want to delete. This action "
+"cannot be undone!"
+msgstr ""
+
+#: pretalx/common/text/phrases.py:62
 msgid "Your changes have been saved."
 msgstr "您的更改已保存。"
 
+#: pretalx/common/text/phrases.py:63
+msgid "Please go back and try again."
+msgstr "请返回并再试一次。"
+
 #. Translators: This is an established term in the context of software
 #. development.
-#: pretalx/common/text/phrases.py:59
+#: pretalx/common/text/phrases.py:66
 msgid "Bad request."
 msgstr "无效请求。"
 
-#: pretalx/common/text/phrases.py:61
+#: pretalx/common/text/phrases.py:68
 msgid "There was an error sending the mail. Please try again later."
 msgstr "发送邮件时出现错误，请稍后再试。"
 
-#: pretalx/common/text/phrases.py:64
+#: pretalx/common/text/phrases.py:71
 msgid "We had trouble saving your input – Please see below for details."
 msgstr "我们保存您的输入时遇到了问题 - 请参见下面的详细信息。🠯"
 
-#: pretalx/common/text/phrases.py:66
+#: pretalx/common/text/phrases.py:73
 msgid "You do not have permission to perform this action."
 msgstr "你没有执行此操作的权限。"
 
-#: pretalx/common/text/phrases.py:68
+#: pretalx/common/text/phrases.py:75
 msgid "Permission denied."
 msgstr "权限被拒绝。"
 
-#: pretalx/common/text/phrases.py:70
+#: pretalx/common/text/phrases.py:77
 msgid "Sorry, you do not have the required permissions to access this page."
 msgstr "抱歉，您没有访问此页面所需的权限。"
 
-#: pretalx/common/text/phrases.py:72
+#: pretalx/common/text/phrases.py:79
 msgid "Page not found."
 msgstr "页面未找到。"
 
-#: pretalx/common/text/phrases.py:74
+#: pretalx/common/text/phrases.py:81
 msgid "This page does not exist."
 msgstr "该页面不存在。"
 
-#: pretalx/common/text/phrases.py:75
+#: pretalx/common/text/phrases.py:82
 msgid "Huh, I could have sworn there was something here."
 msgstr "嗯，我本来以为这里有什么东西。"
 
-#: pretalx/common/text/phrases.py:77
+#: pretalx/common/text/phrases.py:84
 msgid "This page is no more."
 msgstr "这个页面已经不存在了。"
 
-#: pretalx/common/text/phrases.py:78
+#: pretalx/common/text/phrases.py:85
 msgid "This page has ceased to be."
 msgstr "这个页面已经停止存在了。"
 
-#: pretalx/common/text/phrases.py:79
+#: pretalx/common/text/phrases.py:86
 msgid "Huh."
 msgstr "嗯。"
 
-#: pretalx/common/text/phrases.py:82 pretalx/person/forms.py:50
-#: pretalx/person/forms.py:73
+#: pretalx/common/text/phrases.py:89
 msgid "Email address"
 msgstr "电子邮件地址"
 
-#: pretalx/common/text/phrases.py:83
+#: pretalx/common/text/phrases.py:90
 msgid "New password"
 msgstr "新密码"
 
-#: pretalx/common/text/phrases.py:84
+#: pretalx/common/text/phrases.py:91
 msgid "New password (again)"
 msgstr "新密码（再次）"
 
-#: pretalx/common/text/phrases.py:86
+#: pretalx/common/text/phrases.py:93
 msgid "You entered two different passwords. Please enter the same one twice!"
 msgstr "您输入了两个不同的密码。请两次输入相同的密码！"
 
-#: pretalx/common/text/phrases.py:88
+#: pretalx/common/text/phrases.py:95
 msgctxt "noun / heading"
-msgid "Password reset"
-msgstr "密码重置"
+msgid "Reset password"
+msgstr "重置密码"
 
-#: pretalx/common/text/phrases.py:89
+#: pretalx/common/text/phrases.py:96
 msgid "Forgot your password?"
 msgstr "忘记密码"
 
-#: pretalx/common/text/phrases.py:90
+#: pretalx/common/text/phrases.py:97
 msgid "Let me set a new one!"
 msgstr "新的设定"
 
-#: pretalx/common/text/phrases.py:92
+#: pretalx/common/text/phrases.py:99
 msgid "Now you just need to choose your new password and you are ready to go."
 msgstr "现在您只需要选择您的新密码，就可以开始使用了。"
 
-#: pretalx/common/text/phrases.py:95
+#: pretalx/common/text/phrases.py:101
+msgid "The password was reset."
+msgstr "密码已重置。"
+
+#: pretalx/common/text/phrases.py:103
 #, python-brace-format
 msgid "You can use {link_start}Markdown{link_end} here."
 msgstr "你可以在这里使用{link_start}Markdown{link_end}。"
 
-#: pretalx/common/text/phrases.py:99
+#: pretalx/common/text/phrases.py:107
 msgid "This content will be shown publicly."
 msgstr "该内容将公开展示。"
 
-#: pretalx/common/text/phrases.py:101
+#: pretalx/common/text/phrases.py:109
 msgctxt "opening quotation mark"
 msgid "“"
 msgstr "“"
 
-#: pretalx/common/text/phrases.py:102
+#: pretalx/common/text/phrases.py:110
 msgctxt "closing quotation mark"
 msgid "”"
 msgstr "”"
@@ -1869,17 +1870,17 @@ msgstr "”"
 #. Translators: Used both for language selection for users, and for the
 #. language
 #. attribute of events and sessions.
-#: pretalx/common/text/phrases.py:106
+#: pretalx/common/text/phrases.py:114
 #: pretalx/submission/models/submission.py:209
 msgid "Language"
 msgstr "语言"
 
 #. Translators: Used as settings/section heading
-#: pretalx/common/text/phrases.py:109
+#: pretalx/common/text/phrases.py:117
 msgid "General"
 msgstr "通用"
 
-#: pretalx/common/text/phrases.py:111 pretalx/mail/models.py:35
+#: pretalx/common/text/phrases.py:119 pretalx/mail/models.py:35
 #: pretalx/mail/models.py:226 pretalx/person/models/information.py:45
 msgctxt "email subject"
 msgid "Subject"
@@ -1889,7 +1890,7 @@ msgstr "主题"
 #. similar options like the main text of the CfP or a review. It's separate
 #. from
 #. the "text" input type used in questions.
-#: pretalx/common/text/phrases.py:115 pretalx/mail/models.py:38
+#: pretalx/common/text/phrases.py:123 pretalx/mail/models.py:38
 #: pretalx/mail/models.py:228 pretalx/person/models/information.py:47
 msgid "Text"
 msgstr "文本"
@@ -1938,7 +1939,7 @@ msgstr "抱歉，您不被允许重新排序问题。"
 msgid "The order has been updated."
 msgstr "房间的顺序已经更新。"
 
-#: pretalx/common/views/mixins.py:269
+#: pretalx/common/views/mixins.py:270
 msgid "ManagementForm data is missing or has been tampered with."
 msgstr "管理表单数据缺失或已被篡改。"
 
@@ -1986,6 +1987,7 @@ msgstr "选择您的活动应该提供的所有语言。"
 
 #: pretalx/event/forms.py:171
 #: pretalx/orga/templates/orga/admin/user_detail.html:55
+#: pretalx/orga/views/organiser.py:267
 msgid "Organiser"
 msgstr "组织者"
 
@@ -2217,24 +2219,7 @@ msgstr "得分"
 msgid "Maybe"
 msgstr "可能"
 
-#: pretalx/event/models/event.py:654 pretalx/orga/forms/review.py:368
-#: pretalx/orga/templates/orga/admin/user_delete.html:15
-#: pretalx/orga/templates/orga/cfp/access_code_delete.html:15
-#: pretalx/orga/templates/orga/cfp/question_delete.html:15
-#: pretalx/orga/templates/orga/cfp/submission_type_delete.html:15
-#: pretalx/orga/templates/orga/cfp/track_delete.html:15
-#: pretalx/orga/templates/orga/event/delete.html:16
-#: pretalx/orga/templates/orga/mails/confirm.html:15
-#: pretalx/orga/templates/orga/organiser/delete.html:18
-#: pretalx/orga/templates/orga/review/regenerate_decision_mails.html:19
-#: pretalx/orga/templates/orga/settings/team_delete.html:18
-#: pretalx/orga/templates/orga/settings/team_resend.html:18
-#: pretalx/orga/templates/orga/settings/team_reset_password.html:18
-#: pretalx/orga/templates/orga/speaker/information_delete.html:15
-#: pretalx/orga/templates/orga/speaker/reset_password.html:18
-#: pretalx/orga/templates/orga/submission/review_delete.html:15
-#: pretalx/orga/templates/orga/submission/tag_delete.html:15
-#: pretalx/submission/models/question.py:418
+#: pretalx/event/models/event.py:654 pretalx/submission/models/question.py:418
 #: pretalx/submission/models/submission.py:889
 msgid "Yes"
 msgstr "是"
@@ -2399,6 +2384,7 @@ msgstr "通知您的演讲者有关基础设施的情况。"
 #: pretalx/event/stages.py:97
 #: pretalx/orga/templates/orga/admin/user_detail.html:97
 #: pretalx/orga/templates/orga/mails/_placeholder_group.html:14
+#: pretalx/orga/views/event.py:723
 msgid "Event"
 msgstr "事件"
 
@@ -3492,25 +3478,31 @@ msgstr "在 “{score_category}” 方面的得分"
 msgid "file"
 msgstr "文件"
 
-#: pretalx/orga/forms/review.py:367
+#: pretalx/orga/forms/review.py:367 pretalx/orga/forms/review.py:370
 msgid "Replace current assignments"
 msgstr "更换当前的任务"
 
-#: pretalx/orga/forms/review.py:370
+#: pretalx/orga/forms/review.py:369
+#, fuzzy
+#| msgid "Replace current assignments"
+msgid "Keep current assignments"
+msgstr "更换当前的任务"
+
+#: pretalx/orga/forms/review.py:373
 msgid ""
 "Select to remove all current assignments and replace them with the import. "
 "Otherwise, the import will be an addition to the current assignments."
 msgstr "选择移除所有当前的任务，并用导入的任务取而代之。否则，导入的任务将会添加到当前的任务中。"
 
-#: pretalx/orga/forms/review.py:376
+#: pretalx/orga/forms/review.py:379
 msgid "Cannot parse JSON file."
 msgstr "无法解析JSON文件。"
 
-#: pretalx/orga/forms/review.py:393
+#: pretalx/orga/forms/review.py:396
 msgid "Unknown user: {}"
 msgstr "未知用户: {}"
 
-#: pretalx/orga/forms/review.py:401
+#: pretalx/orga/forms/review.py:404
 msgid "Unknown proposal: {}"
 msgstr "未知提案：{}"
 
@@ -3708,7 +3700,7 @@ msgstr "一个提案的唯一ID用于提案的URL和导出中。"
 msgid "The password was reset and the user was notified."
 msgstr "密码已重置，用户已被通知。"
 
-#: pretalx/orga/phrases.py:29 pretalx/orga/views/speaker.py:255
+#: pretalx/orga/phrases.py:29
 msgid ""
 "The password reset email could not be sent, so the password was not reset."
 msgstr "密码重置邮件无法发送，因此密码未被重置。"
@@ -3795,6 +3787,7 @@ msgstr "主机/主持人"
 
 #: pretalx/orga/templates/orga/admin/admin.html:65
 #: pretalx/orga/templates/orga/mails/_placeholder_group.html:12
+#: pretalx/orga/views/admin.py:160
 msgid "User"
 msgstr "用户"
 
@@ -3937,12 +3930,6 @@ msgstr "最新版本"
 msgid "Update check settings"
 msgstr "更新检查设置"
 
-#: pretalx/orga/templates/orga/admin/user_delete.html:5
-#, fuzzy
-#| msgid "Do you really want to delete this organiser?"
-msgid "Do you really want to delete this user?"
-msgstr "你真的想要删除这个组织者吗？"
-
 #: pretalx/orga/templates/orga/admin/user_detail.html:28
 #: pretalx/orga/templates/orga/admin/user_list.html:40
 #, fuzzy
@@ -3964,11 +3951,10 @@ msgstr ""
 #: pretalx/orga/templates/orga/admin/user_detail.html:54
 #: pretalx/orga/templates/orga/organiser/detail.html:39
 #: pretalx/orga/templates/orga/review/assignment.html:42
-#: pretalx/orga/templates/orga/settings/team_delete.html:7
 #: pretalx/orga/templates/orga/settings/team_detail.html:11
 #: pretalx/orga/templates/orga/settings/team_detail.html:94
-#: pretalx/orga/templates/orga/settings/team_resend.html:7
 #: pretalx/orga/templates/orga/settings/team_tracks.html:8
+#: pretalx/orga/views/organiser.py:114
 msgid "Team"
 msgstr "团队"
 
@@ -4152,10 +4138,6 @@ msgstr "管理员信息"
 msgid "running in development mode"
 msgstr "运行在开发模式下"
 
-#: pretalx/orga/templates/orga/cfp/access_code_delete.html:5
-msgid "Do you really want to delete this access code?"
-msgstr "你真的想要删除这个访问代码吗？"
-
 #: pretalx/orga/templates/orga/cfp/access_code_form.html:19
 msgid "Edit access code"
 msgstr "编辑访问代码"
@@ -4196,7 +4178,7 @@ msgstr "代码"
 #: pretalx/orga/templates/orga/cfp/access_code_view.html:33
 #: pretalx/orga/templates/orga/cfp/submission_type_form.html:19
 #: pretalx/orga/templates/orga/submission/review.html:58
-#: pretalx/submission/models/access_code.py:39
+#: pretalx/orga/views/cfp.py:497 pretalx/submission/models/access_code.py:39
 msgid "Session Type"
 msgstr "会话类型"
 
@@ -4224,10 +4206,6 @@ msgid ""
 "change!"
 msgstr ""
 "这是Pretalx的CfP编辑器。这个页面允许您更改所有单独CfP步骤上的标题和信息文本。您还可以为单个字段添加自定义帮助文本。只需单击您要更改的项目即可！"
-
-#: pretalx/orga/templates/orga/cfp/question_delete.html:5
-msgid "Do you really want to delete this question?"
-msgstr "您真的要删除这个问题吗？"
 
 #: pretalx/orga/templates/orga/cfp/question_detail.html:32
 msgid "Filter"
@@ -4383,14 +4361,10 @@ msgstr "答案"
 msgid "This question’s availability depends on a deadline."
 msgstr "这个问题的可用性取决于截止日期。"
 
-#: pretalx/orga/templates/orga/cfp/question_view.html:78
-#: pretalx/orga/views/event.py:166
+#: pretalx/orga/templates/orga/cfp/question_view.html:76
+#: pretalx/orga/views/event.py:160
 msgid "You have configured no questions yet."
 msgstr "您还没有配置任何问题"
-
-#: pretalx/orga/templates/orga/cfp/submission_type_delete.html:5
-msgid "Do you really want to delete this session type?"
-msgstr "你真的想删除这种会话类型吗？"
 
 #: pretalx/orga/templates/orga/cfp/submission_type_form.html:21
 msgid "New Session Type"
@@ -4535,10 +4509,6 @@ msgstr "取消录音"
 msgid "Session image"
 msgstr "会话图片"
 
-#: pretalx/orga/templates/orga/cfp/track_delete.html:5
-msgid "Do you really want to delete this track?"
-msgstr "你真的想要删除这个曲目吗？"
-
 #: pretalx/orga/templates/orga/cfp/track_form.html:24
 #: pretalx/orga/templates/orga/cfp/track_view.html:16
 msgid "New track"
@@ -4589,16 +4559,6 @@ msgstr "历史"
 #: pretalx/orga/templates/orga/event/dashboard.html:101
 msgid "Full history"
 msgstr "完整历史"
-
-#: pretalx/orga/templates/orga/event/delete.html:5
-msgid "Do you really want to delete this event?"
-msgstr "你真的想要删除这个事件吗？"
-
-#: pretalx/orga/templates/orga/event/delete.html:7
-msgid ""
-"ALL related data, such as proposals, and speaker profiles, and uploads, will"
-" also be deleted and cannot be restored."
-msgstr "所有相关资料，如提案、演讲者简介和上传内容，也将被删除，无法恢复。"
 
 #: pretalx/orga/templates/orga/event/history.html:5
 msgid "Event History"
@@ -4887,6 +4847,7 @@ msgid "e.g."
 msgstr ""
 
 #: pretalx/orga/templates/orga/mails/compose_choice.html:4
+#: pretalx/orga/views/mails.py:105
 #, fuzzy
 #| msgid "Send mails"
 msgid "Send emails"
@@ -4949,10 +4910,6 @@ msgstr ""
 #| msgid "Optional"
 msgid "Optional"
 msgstr "可选的"
-
-#: pretalx/orga/templates/orga/mails/confirm.html:5
-msgid "Please confirm:"
-msgstr "请确认："
 
 #: pretalx/orga/templates/orga/mails/outbox_form.html:9
 #, python-format
@@ -5134,16 +5091,6 @@ msgstr "删除模板"
 msgid "Send mails"
 msgstr "发送邮件"
 
-#: pretalx/orga/templates/orga/organiser/delete.html:5
-msgid "Do you really want to delete this organiser?"
-msgstr "你真的想要删除这个组织者吗？"
-
-#: pretalx/orga/templates/orga/organiser/delete.html:9
-msgid ""
-"ALL related data for ALL events, such as proposals, and speaker profiles, "
-"and uploads, will also be deleted and cannot be restored."
-msgstr "所有与所有活动相关的数据，如提案、演讲者简介和文件上传，也将被删除，无法恢复。"
-
 #: pretalx/orga/templates/orga/organiser/detail.html:18
 msgid "Delete organiser"
 msgstr "删除组织者"
@@ -5254,7 +5201,7 @@ msgstr ""
 msgid "Limited to tracks"
 msgstr "限制为轨道"
 
-#: pretalx/orga/templates/orga/review/assignment.html:101
+#: pretalx/orga/templates/orga/review/assignment.html:99
 #, python-format
 msgid ""
 "Reviewers will be able to see and review <b>only their assigned</b> "
@@ -5262,7 +5209,7 @@ msgid ""
 "settings</a>."
 msgstr "审稿人只能看到和审查<b>分配给他们的</b>提案。您可以在您的<a href=\"%(href)s\">审查设置</a>中更改此设置。"
 
-#: pretalx/orga/templates/orga/review/assignment.html:106
+#: pretalx/orga/templates/orga/review/assignment.html:104
 #, python-format
 msgid ""
 "Reviewers will be able to see and review <b>all proposals</b>, but their "
@@ -5272,26 +5219,26 @@ msgstr ""
 "审稿人将能够查看和审查所有提案，但他们的指定审查将会被突出显示，并且他们将被导向首先审查它们。您可以在您的<a "
 "href=\"%(href)s\">审查偏好</a>中更改此设置。"
 
-#: pretalx/orga/templates/orga/review/assignment.html:115
+#: pretalx/orga/templates/orga/review/assignment.html:113
 msgid ""
 "This is where you can assign reviewers to specific proposals! Please use "
 "this drop-down to switch between the two assignment modes (assigning "
 "reviewers to proposals or proposals to reviewers)."
 msgstr "这是您可以指派评审人员到特定提案的地方！请使用此下拉菜单在两个指派模式（将评审人员分配给提案或提案分配给评审人员）之间切换。"
 
-#: pretalx/orga/templates/orga/review/assignment.html:119
+#: pretalx/orga/templates/orga/review/assignment.html:117
 msgid ""
 "You can also use the Actions menu above to import your assignments from a "
 "prepared file."
 msgstr "您也可以使用上面的“操作”菜单，从准备好的文件中导入您的任务。"
 
-#: pretalx/orga/templates/orga/review/assignment.html:126
+#: pretalx/orga/templates/orga/review/assignment.html:124
 #: pretalx/orga/templates/orga/review/dashboard.html:125
 #: pretalx/orga/templates/orga/schedule/index.html:37
 msgid "Actions"
 msgstr "操作"
 
-#: pretalx/orga/templates/orga/review/assignment.html:131
+#: pretalx/orga/templates/orga/review/assignment.html:129
 msgid "Import assignments"
 msgstr "导入"
 
@@ -5372,6 +5319,7 @@ msgid "Reviews"
 msgstr "评论"
 
 #: pretalx/orga/templates/orga/review/dashboard.html:129
+#: pretalx/orga/views/review.py:682 pretalx/orga/views/review.py:683
 msgid "Regenerate decision emails"
 msgstr "重新生成决定邮件"
 
@@ -5535,17 +5483,6 @@ msgstr "文档化"
 #: pretalx/orga/templates/orga/speaker/export.html:129
 msgid "Go to API"
 msgstr "去 API"
-
-#: pretalx/orga/templates/orga/review/regenerate_decision_mails.html:5
-msgid "Regenerate notification emails"
-msgstr "重新生成通知电子邮件"
-
-#: pretalx/orga/templates/orga/review/regenerate_decision_mails.html:7
-#, python-format
-msgid ""
-"Do you really want to regenerate %(count)s acceptance and rejection emails? "
-"They will be placed in the outbox and not sent out directly."
-msgstr "你真的想要重新产生%(count)s份接受和拒绝的电子邮件吗？它们会被放置在发件箱而不是直接发送出去。"
 
 #: pretalx/orga/templates/orga/schedule/export.html:8
 msgid "Export schedule data"
@@ -5900,10 +5837,6 @@ msgstr "删除阶段"
 msgid "Add another phase"
 msgstr "添加另一个阶段"
 
-#: pretalx/orga/templates/orga/settings/team_delete.html:10
-msgid "Do you really want to go through with this deletion?"
-msgstr "您真的想要执行此删除吗？"
-
 #: pretalx/orga/templates/orga/settings/team_detail.html:38
 msgid "Remove team member"
 msgstr "删除团队成员"
@@ -5925,17 +5858,6 @@ msgstr "添加成员"
 #| msgid "Remove team member"
 msgid "Add multiple team members?"
 msgstr "删除团队成员"
-
-#: pretalx/orga/templates/orga/settings/team_resend.html:10
-msgid "Do you want to resend the email to:"
-msgstr "你想要重新发送邮件给："
-
-#: pretalx/orga/templates/orga/settings/team_reset_password.html:10
-#: pretalx/orga/templates/orga/speaker/reset_password.html:10
-msgid ""
-"Do you really want to reset this user’s password? They won’t be able to log "
-"in until they set a new password. The email will go to: "
-msgstr "你真的想要重置这个用户的密码吗？在他们设置新密码之前，他们将无法登录。该电子邮件将发送至："
 
 #: pretalx/orga/templates/orga/settings/team_tracks.html:11
 msgid ""
@@ -6049,10 +5971,6 @@ msgstr "电子邮件"
 #: pretalx/orga/templates/orga/speaker/form.html:96
 msgid "No mails were sent to this speaker yet."
 msgstr "此发言人尚未收到任何邮件。"
-
-#: pretalx/orga/templates/orga/speaker/information_delete.html:5
-msgid "Do you really want to delete this information?"
-msgstr "你真的要删除这些信息吗？"
 
 #: pretalx/orga/templates/orga/speaker/information_form.html:7
 #: pretalx/orga/templates/orga/speaker/information_list.html:7
@@ -6295,12 +6213,6 @@ msgstr "\"戒绝\""
 msgid "Save and next"
 msgstr "保存并下一个"
 
-#: pretalx/orga/templates/orga/submission/review_delete.html:5
-#, fuzzy
-#| msgid "Do you really want to delete this event?"
-msgid "Do you really want to delete your review?"
-msgstr "你真的想要删除这个事件吗？"
-
 #: pretalx/orga/templates/orga/submission/speakers.html:13
 msgid ""
 "Add a speaker – if the email address isn’t registered yet, an account will "
@@ -6368,12 +6280,9 @@ msgstr "提案状态"
 msgid "Sessions by state"
 msgstr "按州分类的会议记录"
 
-#: pretalx/orga/templates/orga/submission/tag_delete.html:5
-msgid "Do you really want to delete this tag?"
-msgstr "你真的想删除这个标签吗？"
-
 #: pretalx/orga/templates/orga/submission/tag_form.html:22
 #: pretalx/orga/templates/orga/submission/tag_list.html:20
+#: pretalx/orga/views/submission.py:1032
 msgid "Tag"
 msgstr "标签"
 
@@ -6409,11 +6318,11 @@ msgstr ""
 msgid "Unofficial translation"
 msgstr "非官方翻译"
 
-#: pretalx/orga/views/admin.py:69
+#: pretalx/orga/views/admin.py:64
 msgid "Your changes have not been saved, see below for errors."
 msgstr "你的更改还没有保存，看下面的错误。"
 
-#: pretalx/orga/views/admin.py:173
+#: pretalx/orga/views/admin.py:175
 #, fuzzy
 #| msgid "The tag has been deleted."
 msgid "The user has been deleted."
@@ -6423,77 +6332,81 @@ msgstr "标签已被删除。"
 msgid "{} minutes, #{}, {}, {}"
 msgstr "{} 分钟，#{}, {}, {}"
 
-#: pretalx/orga/views/cfp.py:87
+#: pretalx/orga/views/cfp.py:88
 msgid "We had trouble saving your input."
 msgstr "我们保存你的输入时遇到了问题。"
 
-#: pretalx/orga/views/cfp.py:280
+#: pretalx/orga/views/cfp.py:281
 msgid ""
 "You cannot change the question options and upload a question option file at "
 "the same time."
 msgstr ""
 
-#: pretalx/orga/views/cfp.py:321
+#: pretalx/orga/views/cfp.py:327
 msgid "The question has been deleted."
 msgstr "这个问题已经被删除了。"
 
-#: pretalx/orga/views/cfp.py:328
+#: pretalx/orga/views/cfp.py:334
 msgid ""
 "You cannot delete a question that has already been answered. We have "
 "deactivated the question instead."
 msgstr "您无法删除已经被回答的问题。我们已将问题停用。"
 
-#: pretalx/orga/views/cfp.py:388
+#: pretalx/orga/views/cfp.py:394
 msgid "Could not send mails, error in configuration."
 msgstr "无法发送邮件，配置错误。"
 
-#: pretalx/orga/views/cfp.py:478
+#: pretalx/orga/views/cfp.py:484
 msgid "The Session Type has been made default."
 msgstr "会话类型已被设置为默认。"
 
-#: pretalx/orga/views/cfp.py:498
+#: pretalx/orga/views/cfp.py:509
 msgid ""
 "You cannot delete the only session type. Try creating another one first!"
 msgstr "您不能删除唯一的会话类型。请先尝试创建另一个！"
 
-#: pretalx/orga/views/cfp.py:505
+#: pretalx/orga/views/cfp.py:516
 msgid ""
 "You cannot delete the default session type. Make another type default first!"
 msgstr "您无法删除默认会话类型。请先将另一种类型设为默认！"
 
-#: pretalx/orga/views/cfp.py:516
+#: pretalx/orga/views/cfp.py:527
 msgid "The Session Type has been deleted."
 msgstr "会话类型已被删除。"
 
-#: pretalx/orga/views/cfp.py:521
+#: pretalx/orga/views/cfp.py:532
 msgid "This Session Type is in use in a proposal and cannot be deleted."
 msgstr "此会话类型正在一个提案中使用，不能被删除。"
 
-#: pretalx/orga/views/cfp.py:560
+#: pretalx/orga/views/cfp.py:571
 msgid "The track has been saved."
 msgstr "赛道已经被保存。"
 
-#: pretalx/orga/views/cfp.py:582
+#: pretalx/orga/views/cfp.py:598
 msgid "The track has been deleted."
 msgstr "这个轨迹已经被删除了。"
 
-#: pretalx/orga/views/cfp.py:586
+#: pretalx/orga/views/cfp.py:602
 msgid "This track is in use in a proposal and cannot be deleted."
 msgstr "这个轨迹正在方案中使用，无法删除。"
 
-#: pretalx/orga/views/cfp.py:635
+#: pretalx/orga/views/cfp.py:651
 msgid "The access code has been saved."
 msgstr "访问代码已保存。"
 
-#: pretalx/orga/views/cfp.py:664
+#: pretalx/orga/views/cfp.py:680
 msgid "The access code has been sent."
 msgstr "访问代码已发送。"
 
-#: pretalx/orga/views/cfp.py:693
+#: pretalx/orga/views/cfp.py:701 pretalx/submission/models/access_code.py:20
+msgid "Access code"
+msgstr "访问代码"
+
+#: pretalx/orga/views/cfp.py:714
 msgid "The access code has been deleted."
 msgstr "访问代码已被删除。"
 
-#: pretalx/orga/views/cfp.py:698
+#: pretalx/orga/views/cfp.py:719
 msgid ""
 "This access code has been used for a proposal and cannot be deleted. To "
 "disable it, you can set its validity date to the past."
@@ -6570,106 +6483,122 @@ msgid_plural "sent emails"
 msgstr[0] ""
 msgstr[1] ""
 
-#: pretalx/orga/views/event.py:108
+#: pretalx/orga/views/event.py:102
 msgid "The event settings have been saved."
 msgstr "事件设置已保存。"
 
-#: pretalx/orga/views/event.py:128
+#: pretalx/orga/views/event.py:122
 msgid "The CfP doesn’t have a full text yet."
 msgstr "CfP还没有完整的文本。"
 
-#: pretalx/orga/views/event.py:138
+#: pretalx/orga/views/event.py:132
 msgid "The event doesn’t have a landing page text yet."
 msgstr "这个活动还没有着陆页面的文本。"
 
-#: pretalx/orga/views/event.py:151
+#: pretalx/orga/views/event.py:145
 msgid ""
 "You want submitters to choose the tracks for their proposals, but you do not"
 " offer tracks for selection. Add at least one track!"
 msgstr "你希望提交者为他们的提案选择分支，但你并没有提供可供选择的分支。请至少添加一个分支！"
 
-#: pretalx/orga/views/event.py:159
+#: pretalx/orga/views/event.py:153
 msgid "You have configured only one session type so far."
 msgstr "你迄今为止只配置了一种会话类型。"
 
-#: pretalx/orga/views/event.py:179
+#: pretalx/orga/views/event.py:173
 msgid "This event was already live."
 msgstr "这个事件已经在直播了。"
 
-#: pretalx/orga/views/event.py:201
+#: pretalx/orga/views/event.py:195
 msgid "This event is now public."
 msgstr "这个事件现在是公开的。"
 
-#: pretalx/orga/views/event.py:207
+#: pretalx/orga/views/event.py:201
 msgid "This event was already hidden."
 msgstr "这个事件已经被隐藏了。"
 
-#: pretalx/orga/views/event.py:217
+#: pretalx/orga/views/event.py:211
 msgid "This event is now hidden."
 msgstr "这个事件现在已隐藏。"
 
-#: pretalx/orga/views/event.py:425
+#: pretalx/orga/views/event.py:351
+msgid "Score category"
+msgstr "得分类别"
+
+#: pretalx/orga/views/event.py:380
+#, fuzzy
+#| msgid "Review phases"
+msgid "Review phase"
+msgstr "审查阶段"
+
+#: pretalx/orga/views/event.py:431
 #, python-format
 msgid "An error occurred while contacting the SMTP server: %s"
 msgstr "在联系SMTP服务器时发生错误：%s"
 
-#: pretalx/orga/views/event.py:434
+#: pretalx/orga/views/event.py:440
 msgid ""
 "Yay, your changes have been saved and the connection attempt to your SMTP "
 "server was successful."
 msgstr "耶，您的更改已保存成功，且与您的 SMTP 服务器连接尝试成功。"
 
-#: pretalx/orga/views/event.py:442
+#: pretalx/orga/views/event.py:448
 msgid ""
 "We’ve been able to contact the SMTP server you configured. Remember to check"
 " the “use custom SMTP server” checkbox, otherwise your SMTP server will not "
 "be used."
 msgstr "我们已经成功联系上您配置的SMTP服务器。请记得勾选“使用自定义SMTP服务器”复选框，否则您的SMTP服务器将不会被使用。"
 
-#: pretalx/orga/views/event.py:448
+#: pretalx/orga/views/event.py:454
 msgid "Yay! We saved your changes."
 msgstr "耶！我们保存了您的更改。"
 
-#: pretalx/orga/views/event.py:479
+#: pretalx/orga/views/event.py:485
 msgid ""
 "There was a problem with your authentication. Please contact the organiser "
 "for further help."
 msgstr "您的身份验证出现问题，请联系主办方以获取进一步帮助。"
 
-#: pretalx/orga/views/event.py:496
+#: pretalx/orga/views/event.py:502
 msgid "You are now part of the team!"
 msgstr "你现在已经成为团队的一员了！"
 
-#: pretalx/orga/views/event.py:544
+#: pretalx/orga/views/event.py:550
 msgid "Oh :( We had trouble saving your input. See below for details."
 msgstr "我们在保存您的输入时遇到问题。请查看下面的细节。"
 
-#: pretalx/orga/views/event.py:604
+#: pretalx/orga/views/event.py:610
 #, python-brace-format
 msgid ""
 "Please consider including your event’s year in the slug, e.g. "
 "myevent{number}."
 msgstr "请考虑在slug中包括您的活动年份，例如我的活动{number}。"
 
-#: pretalx/orga/views/event.py:613
+#: pretalx/orga/views/event.py:619
 msgid "Did you really mean to make your event take place in the past?"
 msgstr "你真的有意将你的活动安排在过去吗？"
 
-#: pretalx/orga/views/event.py:667
+#: pretalx/orga/views/event.py:673
 #, python-brace-format
 msgid "Team {event.name}"
 msgstr "团队 {event.name}"
 
-#: pretalx/orga/views/event.py:722
+#: pretalx/orga/views/event.py:712
+msgid ""
+"ALL related data, such as proposals, and speaker profiles, and uploads, will"
+" also be deleted and cannot be restored."
+msgstr "所有相关资料，如提案、演讲者简介和上传内容，也将被删除，无法恢复。"
+
+#: pretalx/orga/views/event.py:741
 msgid "The widget settings have been saved."
 msgstr "小部件设置已保存。"
 
-#: pretalx/orga/views/mails.py:96
+#: pretalx/orga/views/mails.py:100
 #, python-brace-format
 msgid "Do you really want to send {count} mails?"
 msgstr "你真的想发送 {count} 封邮件吗？"
 
-#: pretalx/orga/views/mails.py:108
+#: pretalx/orga/views/mails.py:121
 #, fuzzy
 #| msgid ""
 #| "This mail either does not exist or cannot be discarded because it was sent "
@@ -6679,78 +6608,78 @@ msgid ""
 "already."
 msgstr "此邮件可能不存在，或者无法丢弃，因为它已经被发送。"
 
-#: pretalx/orga/views/mails.py:113
+#: pretalx/orga/views/mails.py:126
 msgid "This mail had been sent already."
 msgstr "这封邮件已经被发送了。"
 
-#: pretalx/orga/views/mails.py:116
+#: pretalx/orga/views/mails.py:129
 msgid "The mail has been sent."
 msgstr "邮件已经发送。"
 
-#: pretalx/orga/views/mails.py:135
+#: pretalx/orga/views/mails.py:148
 #, python-brace-format
 msgid "{count} mails have been sent."
 msgstr "{count} 封邮件已发送。"
 
-#: pretalx/orga/views/mails.py:163
+#: pretalx/orga/views/mails.py:182
 #, python-brace-format
 msgid "Do you really want to delete this mail?"
 msgid_plural "Do you really want to purge {count} mails?"
 msgstr[0] ""
 msgstr[1] ""
 
-#: pretalx/orga/views/mails.py:176
+#: pretalx/orga/views/mails.py:195
 msgid ""
 "This mail either does not exist or cannot be discarded because it was sent "
 "already."
 msgstr "此邮件可能不存在，或者无法丢弃，因为它已经被发送。"
 
-#: pretalx/orga/views/mails.py:188
+#: pretalx/orga/views/mails.py:207
 #, python-brace-format
 msgid "The mail has been discarded."
 msgid_plural "{count} mails have been discarded."
 msgstr[0] ""
 msgstr[1] ""
 
-#: pretalx/orga/views/mails.py:207
+#: pretalx/orga/views/mails.py:226
 #, python-brace-format
 msgid "Do you really want to purge {count} mails?"
 msgstr "你真的想清除 {count} 封邮件吗？"
 
-#: pretalx/orga/views/mails.py:221
+#: pretalx/orga/views/mails.py:246
 #, python-brace-format
 msgid "{count} mails have been purged."
 msgstr "{count}封邮件已被清除。"
 
-#: pretalx/orga/views/mails.py:248
+#: pretalx/orga/views/mails.py:273
 msgid "The email has been sent."
 msgstr "电子邮件已发送。"
 
-#: pretalx/orga/views/mails.py:253
+#: pretalx/orga/views/mails.py:278
 msgid ""
 "The email has been saved. When you send it, the updated text will be used."
 msgstr "邮件已保存。当您发送时，将使用更新后的文本。"
 
-#: pretalx/orga/views/mails.py:270
+#: pretalx/orga/views/mails.py:295
 msgid "The mail has been copied, you can edit it now."
 msgstr "信件已经复制，您现在可以进行编辑。"
 
-#: pretalx/orga/views/mails.py:333
+#: pretalx/orga/views/mails.py:358
 #, fuzzy
 #| msgid "There are no proposals or sessions matching this selection."
 msgid "There are no recipients matching this selection."
 msgstr "没有与此选择相匹配的提案或会议。"
 
-#: pretalx/orga/views/mails.py:343
+#: pretalx/orga/views/mails.py:368
 msgid "This value will be replaced based on dynamic parameters."
 msgstr "该值将根据动态参数进行替换。"
 
-#: pretalx/orga/views/mails.py:356
+#: pretalx/orga/views/mails.py:381
 #, python-brace-format
 msgid "Subject: {subject}"
 msgstr "主题: {subject}"
 
-#: pretalx/orga/views/mails.py:370 pretalx/orga/views/mails.py:428
+#: pretalx/orga/views/mails.py:395 pretalx/orga/views/mails.py:453
 #, python-brace-format
 msgid "{count} emails have been sent."
 msgstr "{count}封电子邮件已发送。"
@@ -6773,82 +6702,123 @@ msgstr "团队已经创建。"
 msgid "The settings have been saved."
 msgstr "设置已保存。"
 
-#: pretalx/orga/views/organiser.py:121
+#: pretalx/orga/views/organiser.py:113
+#, fuzzy
+#| msgid "Team members"
+msgid "Team member"
+msgstr "团队成员"
+
+#: pretalx/orga/views/organiser.py:128
 msgid "The member was removed from the team."
 msgstr "该成员被从团队中移除。"
 
-#: pretalx/orga/views/organiser.py:124
+#: pretalx/orga/views/organiser.py:131
 msgid "The team was removed."
 msgstr "团队已被移除。"
 
-#: pretalx/orga/views/organiser.py:154
+#: pretalx/orga/views/organiser.py:161
 msgid "The team invitation was retracted."
 msgstr "团队邀请被撤销。"
 
-#: pretalx/orga/views/organiser.py:165
+#: pretalx/orga/views/organiser.py:168
+msgid "Resend invitation"
+msgstr "重新发送邀请。"
+
+#: pretalx/orga/views/organiser.py:169
+#, fuzzy
+#| msgid "Do you really want to delete this organiser?"
+msgid "Are you sure you want to resend the invitation to this user?"
+msgstr "你真的想要删除这个组织者吗？"
+
+#: pretalx/orga/views/organiser.py:182
 msgid "The team invitation was sent again."
 msgstr "团队邀请已再次发送。"
 
-#: pretalx/orga/views/organiser.py:219 pretalx/orga/views/review.py:732
+#: pretalx/orga/views/organiser.py:193 pretalx/orga/views/speaker.py:243
+msgid ""
+"Do your really want to reset this user’s password? They won’t be able to log"
+" in until they set a new password."
+msgstr "你真的想要重置这个用户的密码吗？在他们设置新密码之前，他们将无法登录。该电子邮件将发送至：."
+
+#: pretalx/orga/views/organiser.py:247 pretalx/orga/views/review.py:759
 #: pretalx/orga/views/schedule.py:606
 msgid "Saved!"
 msgstr "\"已保存！\""
+
+#: pretalx/orga/views/organiser.py:256
+msgid ""
+"ALL related data for ALL events, such as proposals, and speaker profiles, "
+"and uploads, will also be deleted and cannot be restored."
+msgstr "所有与所有活动相关的数据，如提案、演讲者简介和文件上传，也将被删除，无法恢复。"
 
 #: pretalx/orga/views/person.py:66
 msgid "You are now an administrator instead of a superuser."
 msgstr "您现在是管理员，不再是超级用户。"
 
-#: pretalx/orga/views/review.py:298
+#: pretalx/orga/views/review.py:302
 #, python-brace-format
 msgid ""
 "Success! {accepted} proposals were accepted, {rejected} proposals were "
 "rejected."
 msgstr "成功！{accepted} 提案被接受，{rejected} 提案被拒绝。"
 
-#: pretalx/orga/views/review.py:303
+#: pretalx/orga/views/review.py:307
 #, python-brace-format
 msgid "We were unable to change the state of {count} proposals."
 msgstr "我们无法更改 {count} 个提案的状态。"
 
-#: pretalx/orga/views/review.py:310
+#: pretalx/orga/views/review.py:314
 #, python-brace-format
 msgid "We were unable to change the state of all {count} proposals."
 msgstr "我们无法改变所有 {count} 提案的状态。"
 
-#: pretalx/orga/views/review.py:420 pretalx/orga/views/review.py:597
-#: pretalx/orga/views/review.py:600
+#: pretalx/orga/views/review.py:424 pretalx/orga/views/review.py:601
+#: pretalx/orga/views/review.py:604
 msgid "There have been errors with your input."
 msgstr "您的输入存在错误。"
 
-#: pretalx/orga/views/review.py:425
+#: pretalx/orga/views/review.py:429
 #, fuzzy
 #| msgid "Your changes have been saved."
 msgid "Your reviews have been saved."
 msgstr "您的更改已保存。"
 
-#: pretalx/orga/views/review.py:649
+#: pretalx/orga/views/review.py:653
 msgid "Nice, you have no proposals left to review!"
 msgstr "好的，您没有留下任何待审核的提案了！"
 
-#: pretalx/orga/views/review.py:662
+#: pretalx/orga/views/review.py:667
+#, fuzzy
+#| msgid "for reviewers"
+msgid "Your review"
+msgstr "对于审阅者"
+
+#: pretalx/orga/views/review.py:674
 #, fuzzy
 #| msgid "The tag has been deleted."
 msgid "The review has been deleted."
 msgstr "标签已被删除。"
 
-#: pretalx/orga/views/review.py:690
+#: pretalx/orga/views/review.py:705
+#, python-format
+msgid ""
+"Do you really want to regenerate %(count)s acceptance and rejection emails? "
+"They will be placed in the outbox and not sent out directly."
+msgstr "你真的想要重新产生%(count)s份接受和拒绝的电子邮件吗？它们会被放置在发件箱而不是直接发送出去。"
+
+#: pretalx/orga/views/review.py:717
 #, python-brace-format
 msgid "{count} emails were generated and placed in the outbox."
 msgstr "\"{count} 封电子邮件已生成并放置在发件箱中。\""
 
-#: pretalx/orga/views/review.py:749
+#: pretalx/orga/views/review.py:776
 #, fuzzy
 #| msgid "The reviewers were assigned successfully"
 msgid "The reviewers were assigned successfully."
 msgstr "评论人员已成功分配。"
 
-#: pretalx/orga/views/review.py:767 pretalx/orga/views/schedule.py:114
-#: pretalx/orga/views/speaker.py:356
+#: pretalx/orga/views/review.py:794 pretalx/orga/views/schedule.py:114
+#: pretalx/orga/views/speaker.py:368
 msgid "No data to be exported"
 msgstr "没有数据可以导出。"
 
@@ -6902,11 +6872,15 @@ msgid ""
 "There is or was a session scheduled in this room. It cannot be deleted."
 msgstr "这个房间安排了一次会议。它不能被删除。"
 
-#: pretalx/orga/views/speaker.py:331
+#: pretalx/orga/views/speaker.py:332
+msgid "Speaker information note"
+msgstr "演讲者信息"
+
+#: pretalx/orga/views/speaker.py:343
 msgid "The information has been deleted."
 msgstr "信息已被删除。"
 
-#: pretalx/orga/views/submission.py:86
+#: pretalx/orga/views/submission.py:80
 #, python-brace-format
 msgid ""
 "Hi!\n"
@@ -6931,98 +6905,98 @@ msgstr ""
 "\n"
 "{event}组织团队"
 
-#: pretalx/orga/views/submission.py:106
+#: pretalx/orga/views/submission.py:100
 #, python-brace-format
 msgid "You have been added to a proposal for {event}"
 msgstr "你已被添加到一个有关 {event} 的提案中。"
 
-#: pretalx/orga/views/submission.py:240
+#: pretalx/orga/views/submission.py:234
 msgid ""
 "Somebody else was faster than you: this proposal was already in the state "
 "you wanted to change it to."
 msgstr "别人比你更快：这个提案已经处于你想要改变的状态。"
 
-#: pretalx/orga/views/submission.py:275
+#: pretalx/orga/views/submission.py:269
 msgid ""
 "There may be pending emails for this proposal that are now incorrect or "
 "outdated."
 msgstr ""
 
-#: pretalx/orga/views/submission.py:310
+#: pretalx/orga/views/submission.py:304
 msgid "Please provide a valid email address!"
 msgstr "请提供一个有效的电子邮件地址！"
 
-#: pretalx/orga/views/submission.py:318
+#: pretalx/orga/views/submission.py:312
 msgid "The speaker has been added to the proposal."
 msgstr "该发言者已被添加到提案中"
 
-#: pretalx/orga/views/submission.py:322
+#: pretalx/orga/views/submission.py:316
 msgid "The speaker was already part of the proposal."
 msgstr "演讲者已经是该提案的一部分。"
 
-#: pretalx/orga/views/submission.py:343
+#: pretalx/orga/views/submission.py:337
 msgid "The speaker has been removed from the proposal."
 msgstr "发言人已被从提案中移除。"
 
-#: pretalx/orga/views/submission.py:346
+#: pretalx/orga/views/submission.py:340
 msgid "The speaker was not part of this proposal."
 msgstr "这位演讲者不是这个提案的一部分。"
 
-#: pretalx/orga/views/submission.py:525
+#: pretalx/orga/views/submission.py:519
 msgid ""
 "The proposal has been created; the speaker already had an account on this "
 "system."
 msgstr "提案已创建；发言者已在该系统上拥有帐户。"
 
-#: pretalx/orga/views/submission.py:537
+#: pretalx/orga/views/submission.py:531
 msgid ""
 "The proposal has been created and the speaker has been invited to add an "
 "account!"
 msgstr "提案已创建，演讲者已被邀请添加账户！"
 
-#: pretalx/orga/views/submission.py:546
+#: pretalx/orga/views/submission.py:540
 msgid "The proposal has been updated!"
 msgstr "提议已经更新！"
 
-#: pretalx/orga/views/submission.py:688
+#: pretalx/orga/views/submission.py:682
 msgid "The anonymisation has been updated."
 msgstr "匿名化已更新。"
 
-#: pretalx/orga/views/submission.py:690
+#: pretalx/orga/views/submission.py:684
 msgid "This proposal is now marked as anonymised."
 msgstr "这个提案现在已被标记为匿名化了。"
 
-#: pretalx/orga/views/submission.py:706
+#: pretalx/orga/views/submission.py:700
 #, python-brace-format
 msgid "{name} proposal feed"
 msgstr "{name} 提案动态"
 
-#: pretalx/orga/views/submission.py:718
+#: pretalx/orga/views/submission.py:712
 #, python-brace-format
 msgid "Updates to the {name} schedule."
 msgstr "{name}日程表的更新。"
 
-#: pretalx/orga/views/submission.py:724
+#: pretalx/orga/views/submission.py:718
 #, python-brace-format
 msgid "New {event} proposal: {title}"
 msgstr "新的 {event} 提案：{title}"
 
-#: pretalx/orga/views/submission.py:779 pretalx/orga/views/submission.py:791
+#: pretalx/orga/views/submission.py:773 pretalx/orga/views/submission.py:785
 #: pretalx/submission/models/cfp.py:106
 #: pretalx/submission/models/question.py:131
 #: pretalx/submission/models/type.py:38
 msgid "Deadline"
 msgstr "截止日期"
 
-#: pretalx/orga/views/submission.py:1024
+#: pretalx/orga/views/submission.py:1018
 msgid "The tag has been saved."
 msgstr "标签已保存。"
 
-#: pretalx/orga/views/submission.py:1045
+#: pretalx/orga/views/submission.py:1044
 msgid "The tag has been deleted."
 msgstr "标签已被删除。"
 
-#: pretalx/orga/views/submission.py:1070
+#: pretalx/orga/views/submission.py:1069
 #, python-brace-format
 msgid "Changed {count} proposal states."
 msgstr "更改了{count}个提议状态。"
@@ -7043,37 +7017,37 @@ msgstr "密码（再次输入）"
 msgid "Please fill all fields of either the login or the registration form."
 msgstr "请填写登录或注册表格中的所有字段。"
 
-#: pretalx/person/forms.py:86
+#: pretalx/person/forms.py:88
 msgid ""
 "No user account matches the entered credentials. Are you sure that you typed"
 " your password correctly?"
 msgstr "未找到与输入的凭据相匹配的用户帐户。您确定输入的密码正确吗？"
 
-#: pretalx/person/forms.py:92
+#: pretalx/person/forms.py:94
 msgid "Sorry, your account is currently disabled."
 msgstr "抱歉，您的帐户目前已被停用。"
 
-#: pretalx/person/forms.py:108
+#: pretalx/person/forms.py:110
 msgid ""
 "We already have a user with that email address. Did you already register "
 "before and just need to log in?"
 msgstr "我们已经有一个使用该电子邮件地址的用户了。您之前已经注册过了，只需要登录吗？"
 
-#: pretalx/person/forms.py:232
+#: pretalx/person/forms.py:234
 msgid ""
 "Please provide a profile picture or allow us to load your picture from "
 "gravatar!"
 msgstr "请提供您的个人资料照片或允许我们从 gravatar 载入您的照片！"
 
-#: pretalx/person/forms.py:281
+#: pretalx/person/forms.py:283
 msgid "The current password you entered was not correct."
 msgstr "您输入的当前密码不正确。"
 
-#: pretalx/person/forms.py:285
+#: pretalx/person/forms.py:287
 msgid "Password (current)"
 msgstr "密码（当前）"
 
-#: pretalx/person/forms.py:372
+#: pretalx/person/forms.py:374
 msgid "Non-accepted submitters"
 msgstr "未被接受的提交者"
 
@@ -7485,10 +7459,6 @@ msgstr "待定 {state}"
 #: pretalx/submission/forms/tag.py:21
 msgid "You already have a tag by this name!"
 msgstr "您已经有了一个同名的标签！"
-
-#: pretalx/submission/models/access_code.py:20
-msgid "Access code"
-msgstr "访问代码"
 
 #: pretalx/submission/models/access_code.py:30
 msgid ""
@@ -7969,6 +7939,50 @@ msgstr ""
 
 msgid "Hidden rooms"
 msgstr ""
+
+#~ msgctxt "noun / heading"
+#~ msgid "Password reset"
+#~ msgstr "密码重置"
+
+#~ msgid "Do you really want to delete this access code?"
+#~ msgstr "你真的想要删除这个访问代码吗？"
+
+#~ msgid "Do you really want to delete this question?"
+#~ msgstr "您真的要删除这个问题吗？"
+
+#~ msgid "Do you really want to delete this session type?"
+#~ msgstr "你真的想删除这种会话类型吗？"
+
+#~ msgid "Do you really want to delete this track?"
+#~ msgstr "你真的想要删除这个曲目吗？"
+
+#~ msgid "Do you really want to delete this event?"
+#~ msgstr "你真的想要删除这个事件吗？"
+
+#~ msgid "Please confirm:"
+#~ msgstr "请确认："
+
+#~ msgid "Do you really want to delete this organiser?"
+#~ msgstr "你真的想要删除这个组织者吗？"
+
+#~ msgid "Regenerate notification emails"
+#~ msgstr "重新生成通知电子邮件"
+
+#~ msgid "Do you really want to go through with this deletion?"
+#~ msgstr "您真的想要执行此删除吗？"
+
+#~ msgid "Do you want to resend the email to:"
+#~ msgstr "你想要重新发送邮件给："
+
+#~ msgid "Do you really want to delete this information?"
+#~ msgstr "你真的要删除这些信息吗？"
+
+#, fuzzy
+#~ msgid "Do you really want to delete your review?"
+#~ msgstr "你真的想要删除这个事件吗？"
+
+#~ msgid "Do you really want to delete this tag?"
+#~ msgstr "你真的想删除这个标签吗？"
 
 #~ msgid "Send feedback"
 #~ msgstr "发送反馈"
