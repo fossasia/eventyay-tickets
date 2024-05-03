@@ -1,0 +1,2 @@
+[console_scripts]
+pipdeptree = pipdeptree.__main__:main

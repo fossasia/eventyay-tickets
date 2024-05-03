@@ -1,0 +1,7 @@
+<div class="document">
+<p>Some <strong>rST</strong> text.</p>
+<pre class="code python literal-block">
+<span class="keyword">def</span> <span class="name function">test</span><span class="punctuation">():</span><span class="whitespace">
+</span>  <span class="keyword">return</span> <span class="literal string single">'Hello World'</span>
+</pre>
+</div>

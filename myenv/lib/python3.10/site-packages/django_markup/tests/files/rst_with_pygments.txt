@@ -1,0 +1,6 @@
+Some **rST** text.
+
+.. code-block:: python
+
+    def test():
+      return 'Hello World'

@@ -1,0 +1,174 @@
+Metadata-Version: 2.1
+Name: django-otp
+Version: 1.5.0
+Summary: A pluggable framework for adding two-factor authentication to Django using one-time passwords.
+Project-URL: Homepage, https://github.com/django-otp/django-otp
+Project-URL: Documentation, https://django-otp-official.readthedocs.io/
+Author-email: Peter Sagerson <psagers@ignorare.net>
+License-Expression: Unlicense
+License-File: LICENSE
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Framework :: Django
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: The Unlicense (Unlicense)
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Topic :: Security
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.7
+Requires-Dist: django>=3.2
+Provides-Extra: qrcode
+Requires-Dist: qrcode; extra == 'qrcode'
+Provides-Extra: segno
+Requires-Dist: segno; extra == 'segno'
+Description-Content-Type: text/x-rst
+
+.. vim: tw=80 lbr
+
+django-otp
+==========
+
+.. image:: https://img.shields.io/pypi/v/django-otp?color=blue
+   :target: https://pypi.org/project/django-otp/
+   :alt: PyPI
+.. image:: https://img.shields.io/readthedocs/django-otp-official
+   :target: https://django-otp-official.readthedocs.io/
+   :alt: Documentation
+.. image:: https://img.shields.io/badge/github-django--otp-green
+   :target: https://github.com/django-otp/django-otp
+   :alt: Source
+
+This project makes it easy to add support for `one-time passwords
+<http://en.wikipedia.org/wiki/One-time_password>`_ (OTPs) to Django. It can be
+integrated at various levels, depending on how much customization is required.
+It integrates with ``django.contrib.auth``, although it is not a Django
+authentication backend. The primary target is developers wishing to incorporate
+OTPs into their Django projects as a form of `two-factor authentication
+<http://en.wikipedia.org/wiki/Two-factor_authentication>`_.
+
+Several simple OTP plugins are included and more are available separately. This
+package also includes an implementation of OATH `HOTP
+<http://tools.ietf.org/html/rfc4226>`_ and `TOTP
+<http://tools.ietf.org/html/rfc6238>`_ for convenience, as these are standard
+OTP algorithms used by multiple plugins.
+
+If you're looking for a higher-level or more opinionated solution, you might be
+interested in `django-two-factor-auth
+<https://github.com/Bouke/django-two-factor-auth>`_.
+
+Status
+------
+
+This project is stable and maintained, but is no longer actively used by the
+author and is not seeing much ongoing investment.
+
+Well-formed issues and pull requests are welcome, but please see
+CONTRIBUTING.rst first. General questions and ideas should be directed to the
+Discussions section; issues should be reserved for confirmed bugs.
+
+.. end-of-doc-intro
+
+
+Development
+-----------
+
+This project is built and managed with `hatch`_. If you don't have hatch, I
+recommend installing it with `pipx`_: ``pipx install hatch``.
+
+``pyproject.toml`` defines several useful scripts for development and testing.
+The default environment includes all dev and test dependencies for quickly
+running tests. The ``test`` environment defines the test matrix for running the
+full validation suite. Everything is executed in the context of the Django
+project in test/test\_project.
+
+As a quick primer, hatch scripts can be run with ``hatch run [<env>:]<script>``.
+To run linters and tests in the default environment, just run
+``hatch run check``. This should run tests with your default Python version and
+the latest Django. Other scripts include:
+
+* **manage**: Run a management command via the test project. This can be used to
+  generate migrations.
+* **lint**: Run all linters.
+* **fix**: Run all fixers to address linting issues. This may not fix every
+  issue reported by lint.
+* **test**: Run all tests.
+* **check**: Run linters and tests.
+* **warn**: Run tests with all warnings enabled. This is especially useful for
+  seeing deprecation warnings in new versions of Django.
+* **cov**: Run tests and print a code coverage report.
+
+To run the full test matrix, run ``hatch run test:run``. You will need multiple
+specific Python versions installed for this.
+
+You can clean up the hatch environments with ``hatch env prune``, for example to
+force dependency updates.
+
+The project under ``test`` can be run as a simple interactive test environment.
+Run ``hatch run manage runserver`` and open it in a browser. This has an
+implementation of the login form and views with different combinations of
+decorators, which you can experiment with or use to test changes.
+
+Configuration
+~~~~~~~~~~~~~
+
+By default, the test project uses SQLite. Because SQLite doesn't support row
+locking, some concurrency tests will be skipped. To test against PostgreSQL, you
+can add a local configuration file that points to your database.
+
+Configuration is taken from TOML files stored under ``test/config``. A config
+file named ``env-<env-name>.toml`` will be automatically applied when running
+inside a matching hatch environment. For example, ``env-default.toml`` applies
+to the default development environment and ``env-test.toml`` applies to the test
+matrix environments.
+
+With a wide-open PostgreSQL install, an ``env-test.toml`` might look like this:
+
+.. code-block:: toml
+
+   [database]
+   ENGINE = "django.db.backends.postgresql"
+   NAME = "django-otp"
+   USER = "postgres"
+
+For development, the config file can also be used to inject Django apps and
+middleware, or to override arbitrary Django settings. See
+``test/config/sample.toml`` for a full description.
+
+You can also force a specific config file by setting the environment variable
+``DJANGO_OTP_CONFIG`` to a path.
+
+
+The Future
+----------
+
+Once upon a time, everything was usernames and passwords. Or even in the case of
+other authentication mechanisms, a user was either authenticated or not
+(anonymous in Django's terminology). Then there was two-factor authentication,
+which could simply be an implementation detail in a binary authentication state,
+but could also imply levels or degrees of authentication.
+
+These days, it's increasingly common to see sites with more nuanced
+authentication state. A site might remember who you are forever—so you're not
+anonymous—but if you try to do anything private, you have to re-authenticate.
+You may be able to choose from among all of the authentication mechanisms you
+have configured, or only from some of them. Specific mechanisms may be required
+for specific actions, such as using your U2F device to access your U2F settings.
+
+In short, the world seems to be moving beyond the assumptions that originally
+informed Django's essential authentication design. If I were still investing in
+Django generally, I would probably start a new multi-factor authentication
+project that would reflect these changes. It would incorporate the idea that a
+user may be authenticated by various combinations of mechanisms at any time and
+that different combinations may be required to satisfy diverse authorization
+requirements across the site. It would most likely try to disentangle
+authentication persistence from sessions, at least to some extent. Many sites
+would not require all of this flexibility, but it would open up possibilities
+for better experiences by not asking users for more than we require at any
+point.
+
+If anyone has a mind to take on a project like this, I'd be happy to offer
+whatever advice or lessons learned that I can.
+
+
+.. _hatch: https://hatch.pypa.io/
+.. _pipx: https://pypa.github.io/pipx/

@@ -1,0 +1,9 @@
+{% spaceless %}
+
+{% compress 'js' file %}
+    <script type="text/javascript">
+        alert("{{ "testtemplateTAG"|lower }}");
+    </script>
+{% endcompress %}
+
+{% endspaceless %}

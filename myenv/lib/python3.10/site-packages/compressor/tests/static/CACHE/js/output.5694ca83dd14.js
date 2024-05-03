@@ -1,0 +1,1 @@
+alert("Hello world from jinja2 template");;

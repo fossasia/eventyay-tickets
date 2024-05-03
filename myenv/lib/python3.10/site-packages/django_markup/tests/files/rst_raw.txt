@@ -1,0 +1,5 @@
+.. raw:: html
+
+   <script>alert("Gotcha!"></script>
+
+Other text

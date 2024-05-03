@@ -1,0 +1,98 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <alex@fabricadigital.com.br>, 2023.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: django-otp master\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-04-10 09:57-0500\n"
+"PO-Revision-Date: 2023-05-24 12:34-0300\n"
+"Last-Translator: alex <alex@fabricadigital.com.br>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: pt_BR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: src/django_otp/forms.py:60
+msgid "Please enter your OTP token."
+msgstr "Por favor entre com seu código OTP."
+
+#: src/django_otp/forms.py:61
+#, python-brace-format
+msgid "Error generating challenge: {0}"
+msgstr "Erro ao gerar desafio: {0}"
+
+#: src/django_otp/forms.py:62
+msgid "The selected OTP device is not interactive"
+msgstr "O dispositivo OTP selecionado não é interativo"
+
+#: src/django_otp/forms.py:63
+#, python-brace-format
+msgid "OTP Challenge: {0}"
+msgstr "Desafio OTP: {0}"
+
+#: src/django_otp/forms.py:65
+msgid "Invalid token. Please make sure you have entered it correctly."
+msgstr "Código inválido. Por favor certifique-se de inseri-lo corretamente."
+
+#: src/django_otp/forms.py:68
+#, python-format
+msgid ""
+"Verification temporarily disabled because of %(failure_count)d failed "
+"attempt, please try again soon."
+msgid_plural ""
+"Verification temporarily disabled because of %(failure_count)d failed "
+"attempts, please try again soon."
+msgstr[0] ""
+"Verificação temporariamente desativada devido a %(failure_count)d "
+"tentativa(s) "
+msgstr[1] "falha(s), por favor tente novamente em breve."
+
+#: src/django_otp/forms.py:73
+msgid "Verification of the token is currently disabled"
+msgstr "A verificação de código está desativada no momento"
+
+#: src/django_otp/plugins/otp_email/models.py:105
+msgid "sent by email"
+msgstr ""
+
+#: src/django_otp/templates/otp/admin111/login.html:38
+msgid "Please correct the error below."
+msgstr "Por favor corrija o erro abaixo."
+
+#: src/django_otp/templates/otp/admin111/login.html:38
+msgid "Please correct the errors below."
+msgstr "Por favor corrija os erros abaixo."
+
+#: src/django_otp/templates/otp/admin111/login.html:54
+#, python-format
+msgid ""
+"You are authenticated as %(username)s, but are not authorized to access this "
+"page. Would you like to login to a different account?"
+msgstr ""
+"Você está autenticado como %(username)s, mas não está autorizado a acessar "
+"essa página. Gostaria de autenticar-se com uma conta diferente?"
+
+#: src/django_otp/templates/otp/admin111/login.html:74
+msgid "OTP Device:"
+msgstr "Dispositivo OTP:"
+
+#: src/django_otp/templates/otp/admin111/login.html:79
+msgid "OTP Token:"
+msgstr "Código OTP:"
+
+#: src/django_otp/templates/otp/admin111/login.html:84
+msgid "Forgotten your password or username?"
+msgstr "Esqueceu sua senha ou nome de usuário?"
+
+#: src/django_otp/templates/otp/admin111/login.html:88
+msgid "Log in"
+msgstr "Entrar"
+
+#: src/django_otp/templates/otp/admin111/login.html:90
+msgid "Get OTP Challenge"
+msgstr "Obter o desafio OTP"

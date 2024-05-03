@@ -1,0 +1,229 @@
+Metadata-Version: 2.1
+Name: django-markup
+Version: 1.8.1
+Summary: A generic Django application to convert text with specific markup to html.
+Home-page: https://github.com/bartTC/django-markup
+Author: Martin Mahner
+Author-email: martin@mahner.org
+License: MIT
+Keywords: django,markup,markdown,restructuredtext,format,text
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Environment :: Web Environment
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Framework :: Django
+Requires-Python: >=3.7
+License-File: LICENSE
+Requires-Dist: django >=3.2
+Provides-Extra: all_filter_dependencies
+Requires-Dist: textile >=2.3.16 ; extra == 'all_filter_dependencies'
+Requires-Dist: smartypants >=2.0.0 ; extra == 'all_filter_dependencies'
+Requires-Dist: docutils >=0.14 ; extra == 'all_filter_dependencies'
+Requires-Dist: pygments >=2.2.0 ; extra == 'all_filter_dependencies'
+Requires-Dist: markdown >=2.6.9 ; extra == 'all_filter_dependencies'
+Requires-Dist: bleach >=3.0 ; extra == 'all_filter_dependencies'
+Requires-Dist: python-creole >=1.3.1 ; extra == 'all_filter_dependencies'
+Requires-Dist: pygments >=2.10.0 ; extra == 'all_filter_dependencies'
+
+.. image:: https://img.shields.io/pypi/v/django-markup.svg
+    :target: https://pypi.org/project/django-markup/
+
+.. image:: https://github.com/bartTC/django-markup/actions/workflows/push.yml/badge.svg?branch=main
+    :target: https://github.com/bartTC/django-markup/actions
+
+----
+
+📖 Full documentation on https://django-markup.readthedocs.io/en/latest/
+
+=============
+django-markup
+=============
+
+This app is a generic way to provide filters that convert text into html.
+
+Compatibility Matrix:
+=====================
+
+========= === === ==== ==== ====
+Py/Dj     3.8 3.9 3.10 3.11 3.12
+========= === === ==== ==== ====
+3.2 (LTS)  ✓   ✓   ✓    ✓    ✓
+4.0        ✓   ✓   ✓    ✓    ✓
+4.1        ✓   ✓   ✓    ✓    ✓
+4.2 (LTS)  ✓   ✓   ✓    ✓    ✓
+5.0        —   —   ✓    ✓    ✓
+========= === === ==== ==== ====
+
+Quickstart
+==========
+
+Download and install the package from the python package index (pypi)::
+
+    $ pip install django-markup
+
+Note that `django-markup` ships with some filters ready to use, but the more
+complex packages such as Markdown or ReStructuredText are not part of the code.
+Please refer the docs which packages are used for the built-in filter.
+
+An alternative is to install django-markup with all filter dependencies
+right away. Do so with::
+
+    $ pip install django-markup[all_filter_dependencies]
+
+Then add it to the ``INSTALLED_APPS`` list::
+
+    INSTALLED_APPS = (
+        ...
+        'django_markup',
+    )
+
+Use it in the template::
+
+    {% load markup_tags %}
+    {{ the_text|apply_markup:"markdown" }}
+
+Or in Python code::
+
+    from django_markup.markup import formatter
+    formatter('Some *Markdown* text.', filter_name='markdown')
+
+Testsuite
+=========
+
+To run the testsuite install the project with pipenv and run it::
+
+    % pipenv install --dev
+    $ pipenv run test
+
+You can also test against a variation of Django and Python versions
+using tox::
+
+    $ tox
+
+
+Changelog
+=========
+
+v1.8.1 (2023-10-07):
+--------------------
+
+- Remove all annotations for "Self". It would require an additional dependency for
+  installations on Python <3.11 and that's not worth it.
+
+v1.8 (2023-10-07):
+------------------
+
+- Drop support for Python <3.8.
+- Added support for Python 3.12 and Django 5.0.
+- Type Annotations.
+
+v1.7.2 (2023-05-01):
+--------------------
+
+- Fixed a setup.cfg bug that defined the minimal Django version to be v3.7 which does
+  not exist. The correct version is 3.2.
+
+v1.7.1 (2023-04-25):
+--------------------
+
+- Fixed Python classifiers in setup.cfg.
+
+v1.7 (2023-04-25):
+------------------
+
+- Django 4.2 compatibility and tests.
+- Python 3.11 compatibility and tests.
+
+v1.6 (2022-08-14):
+------------------
+
+- Dropped support for Django <3.2 and Python <3.7.
+- Django 3.2 (LTS) compatibility and tests.
+- Django 4.0 compatibility and tests.
+- Django 4.1 compatibility and tests.
+- Python 3.9 compatibility and tests.
+- Python 3.10 compatibility and tests.
+
+
+v1.5 (2020-06-12):
+------------------
+
+- Dropped support for Django <=1.11 and Python <=3.5.
+- Python 3.8 compatibility and tests.
+- Django 3.0 compatibility and tests.
+- bleach-whitelist dependency is no longer necessary as tags are now shipped
+  with the built-in markdown filter.
+- Uses pytest for testing.
+
+v1.4 (2019-03-15):
+------------------
+
+- Markdown's safe_mode was deprecated and no longer functional, it's behavior
+  was replaced with bleach_.
+- Pipfile support for local development and general code cleanup.
+
+.. _bleach: https://github.com/mozilla/bleach
+
+v1.3 (2018-09-07):
+------------------
+
+- Python 3.6 and 3.7 compatibility and tests.
+- Django 2.0 and 2.1 compatibility and tests.
+- The package setup script now provides the ability to install all filter
+  dependencies automatically. See the installation Readme for details.
+
+v1.2 (2017-03-18):
+------------------
+
+- Django 1.10 compatibility and tests.
+- Updated all filter dependencies. most notably SmartyPants to v2.0
+  which changed it's API, so your project dependencies need to update it
+  as well.
+
+v1.1 (2016-05-02):
+------------------
+
+- The Markdown filter has the ``safe_mode`` option enabled by default.
+- The RestructuredText filter has the file and raw content inclusion
+  disabled by default.
+
+v1.0 (2016-01-02):
+------------------
+
+- Removed some 5 year old dust
+- Django 1.8+ compatible
+- Tests
+
+Backwards incompatible changes:
+
+- Removed Pygments highlighting in the Markdown and RestructuredText filter.
+- Removed CreoleParser library in favor of a pypi package.
+- Removed Lightbox filter.
+- The RestructuredText filter now renders level 1 and 2 headers.
+  See Github `Issue 14`_ for details and a backwards compatible workaround.
+
+v0.4 (2011-06-01):
+------------------
+
+- Added a widont filter
+- MarkupField is South compatible.
+- Tested with Django 1.3
+
+v0.3 (2009-07-29):
+------------------
+
+django-markup now ships with a builtin creole parser. Advantage is, that
+the recently used Creoleparser library needs the Genshi lib, which needs
+a c-compiler and so on. The builtin creole parser is a pure python library
+without any dependencies and follows the wikicreole.org specifications.
+django-markup uses the `WikiCreole library`_.
+
+.. _WikiCreole library: http://devel.sheep.art.pl/creole/
+.. _Issue 14: https://github.com/bartTC/django-markup/issues/14

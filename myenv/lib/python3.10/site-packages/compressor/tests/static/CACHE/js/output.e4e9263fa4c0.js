@@ -1,0 +1,1 @@
+alert("test using multiple inheritance and block.super");;
