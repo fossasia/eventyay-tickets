@@ -10,7 +10,6 @@ from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.utils.module_loading import import_string
 from django.utils.timezone import now
-from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import FormView, View
 
@@ -99,7 +98,7 @@ class EventAuth(View):
         try:
             data = store.load()
         except Exception:
-            raise PermissionDenied(_("Please go back and try again."))
+            raise PermissionDenied(phrases.base.back_try_again)
 
         key = f"pretalx_event_access_{request.event.pk}"
         parent = data.get(key)
@@ -108,10 +107,10 @@ class EventAuth(View):
         try:
             parentdata = sparent.load()
         except Exception:
-            raise PermissionDenied(_("Please go back and try again."))
+            raise PermissionDenied(phrases.base.back_try_again)
         else:
             if "event_access" not in parentdata:
-                raise PermissionDenied(_("Please go back and try again."))
+                raise PermissionDenied(phrases.base.back_try_again)
 
         request.session[key] = parent
         url = request.event.urls.base

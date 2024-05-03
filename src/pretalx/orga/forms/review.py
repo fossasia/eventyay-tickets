@@ -365,7 +365,10 @@ class ReviewAssignImportForm(DirectionForm):
     import_file = forms.FileField(label=_("file"))
     replace_assignments = forms.ChoiceField(
         label=_("Replace current assignments"),
-        choices=((0, _("No")), (1, _("Yes"))),
+        choices=(
+            (0, _("Keep current assignments")),
+            (1, _("Replace current assignments")),
+        ),
         help_text=_(
             "Select to remove all current assignments and replace them with the import. Otherwise, the import will be an addition to the current assignments."
         ),

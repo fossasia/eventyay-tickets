@@ -7,6 +7,7 @@ from django.utils.translation import ngettext_lazy as _n
 
 from pretalx.common.models.log import ActivityLog
 from pretalx.common.signals import activitylog_display, activitylog_object_link
+from pretalx.common.text.phrases import phrases
 from pretalx.event.models.event import Event
 from pretalx.mail.models import MailTemplate, QueuedMail
 from pretalx.submission.models import (
@@ -60,7 +61,7 @@ LOG_NAMES = {
         "The invitation to the review team was retracted."
     ),
     "pretalx.invite.reviewer.send": _("The invitation to the review team was sent."),
-    "pretalx.mail.create": _("An email was modified."),
+    "pretalx.mail.create": _("An email was created."),
     "pretalx.mail.delete": _("A pending email was deleted."),
     "pretalx.mail.delete_all": _("All pending emails were deleted."),
     "pretalx.mail.sent": _("An email was sent."),
@@ -110,7 +111,7 @@ LOG_NAMES = {
     "pretalx.speaker.arrived": _("A speaker has been marked as arrived."),
     "pretalx.speaker.unarrived": _("A speaker has been marked as not arrived."),
     "pretalx.user.token.reset": _("The API token was reset."),
-    "pretalx.user.password.reset": _("The password was reset."),
+    "pretalx.user.password.reset": phrases.base.password_reset_sucess,
     "pretalx.user.password.update": _("The password was modified."),
     "pretalx.user.profile.update": _("The profile was modified."),
 }

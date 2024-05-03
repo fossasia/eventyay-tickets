@@ -28,7 +28,7 @@
         {% endif %}
         {% if password_reset_link or request.event %}
             <a class="btn btn-block btn-link" href="{% if password_reset_link %}{{ password_reset_link }}{% else %}{{ request.event.urls.reset }}{% endif %}">
-                {% translate "Reset password" %}
+                {{ phrases.base.password_reset_heading }}
             </a>
         {% endif %}
     </div>

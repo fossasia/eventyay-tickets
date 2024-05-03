@@ -73,7 +73,7 @@
         {% bootstrap_field form.name layout='event' %}
         {% bootstrap_field form.email layout='event' %}
         <div class="d-flex mb-4">
-            <a href="{{ form.instance.orga_urls.password_reset }}" class="btn btn-info flip flip ml-auto">{% translate "Reset password" %}</a>
+            <a href="{{ form.instance.orga_urls.password_reset }}" class="btn btn-info flip flip ml-auto">{{ phrases.base.password_reset_heading }}</a>
         </div>
         {% if form.biography %}{% bootstrap_field form.biography layout='event' %}{% endif %}
         {% if form.availabilities %}

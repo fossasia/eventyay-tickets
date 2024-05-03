@@ -62,7 +62,7 @@
                                             <i class="fa fa-{{ team.is_reviewer|yesno:"check-circle text-success,times-circle text-danger" }}">
                                             </td>
                                             <td>
-                                                <a href="{{ team.orga_urls.base }}" class="btn btn-sm btn-info" title="{% translate "Edit" %}">
+                                                <a href="{{ team.orga_urls.base }}" class="btn btn-sm btn-info" title="{{ phrases.base.edit }}">
                                                     <i class="fa fa-edit"></i>
                                                 </a>
                                                 <a href="{{ team.orga_urls.delete }}" class="btn btn-sm btn-danger" title="{{ phrases.base.delete_button }}">

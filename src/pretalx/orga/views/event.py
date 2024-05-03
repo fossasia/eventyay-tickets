@@ -529,11 +529,11 @@ class UserSettings(TemplateView):
     def post(self, request, *args, **kwargs):
         if self.login_form.is_bound and self.login_form.is_valid():
             self.login_form.save()
-            messages.success(request, _("Your changes have been saved."))
+            messages.success(request, phrases.base.saved)
             request.user.log_action("pretalx.user.password.update")
         elif self.profile_form.is_bound and self.profile_form.is_valid():
             self.profile_form.save()
-            messages.success(request, _("Your changes have been saved."))
+            messages.success(request, phrases.base.saved)
             request.user.log_action("pretalx.user.profile.update")
         elif request.POST.get("form") == "token":
             request.user.regenerate_token()

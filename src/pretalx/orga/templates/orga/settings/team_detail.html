@@ -31,7 +31,7 @@
                                             href="{% if request.event %}{{ request.event.orga_urls.team_settings }}{% else %}{{ request.organiser.orga_urls.teams }}{% endif %}{{ team.id }}/reset/{{ member.id }}"
                                             class="btn btn-sm btn-warning"
                                         >
-                                            {% translate "Reset password" %}
+                                            {{ phrases.base.password_reset_heading }}
                                         </a>
                                         <a
                                             href="{% if request.event %}{{ request.event.orga_urls.team_settings }}{% else %}{{ request.organiser.orga_urls.teams }}{% endif %}{{ team.id }}/delete/{{ member.id }}"

@@ -12,7 +12,7 @@
       {% csrf_token %}
       <button class="btn btn-warning btn-sm ml-2 mr-2" type="submit" name="action" value="pw-reset">
         <i class="fa fa-key"></i>
-        {% translate "Reset password" %}
+        {{ phrases.base.password_reset_heading }}
       </button>
       <a href="delete" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></a>
     </form>

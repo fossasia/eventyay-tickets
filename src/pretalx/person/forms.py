@@ -47,7 +47,7 @@ class UserForm(CfPFormMixin, forms.Form):
         widget=forms.TextInput(attrs={"autocomplete": "name"}),
     )
     register_email = forms.EmailField(
-        label=_("Email address"),
+        label=phrases.base.enter_email,
         required=False,
         widget=forms.EmailInput(attrs={"autocomplete": "email"}),
     )
@@ -70,7 +70,9 @@ class UserForm(CfPFormMixin, forms.Form):
     def __init__(self, *args, **kwargs):
         kwargs.pop("event", None)
         super().__init__(*args, **kwargs)
-        self.fields["register_email"].widget.attrs = {"placeholder": _("Email address")}
+        self.fields["register_email"].widget.attrs = {
+            "placeholder": phrases.base.enter_email
+        }
 
     def _clean_login(self, data):
         try:

@@ -19,6 +19,7 @@ from django_scopes import scopes_disabled
 
 from pretalx.celery_app import app
 from pretalx.common.models.settings import GlobalSettings
+from pretalx.common.text.phrases import phrases
 from pretalx.common.update_check import check_result_table, update_check
 from pretalx.common.views.mixins import PermissionRequired
 from pretalx.orga.forms.admin import UpdateSettingsForm
@@ -61,7 +62,7 @@ class UpdateCheckView(PermissionRequired, FormView):
 
     def form_valid(self, form):
         form.save()
-        messages.success(self.request, _("Your changes have been saved."))
+        messages.success(self.request, phrases.base.saved)
         return super().form_valid(form)
 
     def form_invalid(self, form):
@@ -118,7 +119,7 @@ class AdminUserList(PermissionRequired, ListView):
         user = User.objects.get(pk=user_id)
         if action == "reset":
             user.reset_password(event=None)
-            messages.success(request, _("The password was reset."))
+            messages.success(request, phrases.base.password_reset_success)
         elif action == "delete":
             return redirect(reverse("orga:admin.user.delete", kwargs={"pk": user.pk}))
         return super().get(request, *args, **kwargs)
@@ -141,7 +142,7 @@ class AdminUserDetail(PermissionRequired, DetailView):
         action = request.POST.get("action") or "-"
         if action == "pw-reset":
             self.get_object().reset_password(event=None)
-            messages.success(request, _("The password was reset."))
+            messages.success(request, phrases.base.password_reset_success)
         return redirect(self.get_success_url())
 
     def get_success_url(self):
