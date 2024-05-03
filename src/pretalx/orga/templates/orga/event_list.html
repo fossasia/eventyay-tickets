@@ -39,7 +39,7 @@
                         {% endif %}
                     </div>
                     {% if event.is_public %}
-                        <div class="state active">{% translate "Live" %}</div>
+                        <div class="state active">{% translate "live" %}</div>
                     {% else %}
                         <div class="state inactive">{% translate "Not public" %}</div>
                     {% endif %}
@@ -76,7 +76,7 @@
                         </div>
                         {% if event.is_public %}
                             <div class="state active">
-                                {% if event.is_open %}{% translate "CfP open" %}{% else %}{% translate "Live" %}{% endif %}
+                                {% if event.is_open %}{% translate "CfP open" %}{% else %}{% translate "live" %}{% endif %}
                             </div>
                         {% else %}
                             <div class="state inactive">{% translate "Not public" %}</div>

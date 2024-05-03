@@ -15,6 +15,7 @@ from django.utils.functional import cached_property
 from django.utils.safestring import mark_safe
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ngettext_lazy
 from django.views.generic import FormView, ListView, TemplateView, UpdateView, View
 from django_context_decorator import context
 from django_scopes import scope, scopes_disabled
@@ -720,7 +721,7 @@ class EventDelete(PermissionRequired, ActionConfirmMixin, TemplateView):
         return self.request.event
 
     def action_object_name(self):
-        return _("Event") + f": {self.get_object().name}"
+        return ngettext_lazy("Event", "Events", 1) + f": {self.get_object().name}"
 
     def action_back_url(self):
         return self.get_object().orga_urls.settings

@@ -27,7 +27,7 @@ def render_label(
         opt=(
             mark_safe(
                 '<br><span class="optional">{}</span>'.format(
-                    pgettext("form", "Optional")
+                    pgettext("form field", "Optional")
                 )
             )
             if optional

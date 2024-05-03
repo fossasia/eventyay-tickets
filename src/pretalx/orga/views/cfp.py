@@ -494,7 +494,7 @@ class SubmissionTypeDelete(PermissionRequired, ActionConfirmMixin, DetailView):
         )
 
     def action_object_name(self):
-        return _("Session Type") + f": {self.get_object().name}"
+        return _("Session type") + f": {self.get_object().name}"
 
     def action_back_url(self):
         return self.request.event.cfp.urls.types

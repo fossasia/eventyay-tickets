@@ -2,6 +2,7 @@ import copy
 
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ngettext_lazy
 
 from pretalx.common.text.phrases import phrases
 from pretalx.submission.models import SubmissionStates
@@ -94,7 +95,7 @@ STAGES = {
         ],
     },
     "EVENT": {
-        "name": _("Event"),
+        "name": ngettext_lazy("Event", "Events", 1),
         "method": _is_running,
         "icon": "play",
         "links": [
