@@ -436,6 +436,7 @@ class Schedule(PretalxModel):
                     models.Q(start__lt=talk.start, end__gt=talk.start)
                     | models.Q(start__lt=talk.real_end, end__gt=talk.real_end)
                     | models.Q(start__gt=talk.start, end__lt=talk.real_end)
+                    | models.Q(start=talk.start, end=talk.real_end)
                 )
                 .exists()
             )
