@@ -726,7 +726,7 @@ class EventDelete(PermissionRequired, ActionConfirmMixin, TemplateView):
     def action_back_url(self):
         return self.get_object().orga_urls.settings
 
-    def form_valid(self, form, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         self.get_object().shred(person=self.request.user)
         return redirect("/orga/")
 

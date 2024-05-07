@@ -993,6 +993,11 @@ def test_edit_review_settings_delete_review_phase(orga_client, event):
     assert response.status_code == 200
     event = Event.objects.get(slug=event.slug)
     with scope(event=event):
+        assert event.review_phases.count() == 2
+    response = orga_client.post(phase.urls.delete, follow=True)
+    assert response.status_code == 200
+    event = Event.objects.get(slug=event.slug)
+    with scope(event=event):
         assert event.review_phases.count() == 1
 
 

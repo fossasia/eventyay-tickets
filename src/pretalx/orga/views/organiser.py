@@ -151,10 +151,17 @@ class InviteMixin:
         )
 
 
-class TeamUninvite(InviteMixin, PermissionRequired, DetailView):
+class TeamUninvite(InviteMixin, PermissionRequired, ActionConfirmMixin, DetailView):
     model = TeamInvite
-    template_name = "orga/settings/team_delete.html"
     permission_required = "orga.change_teams"
+    action_title = _("Retract invitation")
+    action_text = _("Are you sure you want to retract the invitation to this user?")
+
+    def action_object_name(self):
+        return self.get_object().email
+
+    def action_back_url(self):
+        return self.get_object().team.orga_urls.base
 
     def post(self, request, *args, **kwargs):
         self.get_object().delete()
@@ -269,7 +276,7 @@ class OrganiserDelete(PermissionRequired, ActionConfirmMixin, DetailView):
     def action_back_url(self):
         return self.get_object().orga_urls.base
 
-    def form_valid(self, form, *args, **kwargs):
+    def post(self, *args, **kwargs):
         organiser = self.get_object()
         organiser.shred(person=self.request.user)
         return HttpResponseRedirect("/orga/")
