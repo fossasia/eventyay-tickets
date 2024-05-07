@@ -1,5 +1,4 @@
 FROM python:3.8-bookworm
-working-directory: ./src
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -37,26 +36,24 @@ RUN apt-get update && \
 ENV LC_ALL=C.UTF-8 \
     DJANGO_SETTINGS_MODULE=production_settings
 
-# To copy only the requirements files needed to install from PIP
-COPY src/setup.py /pretix/src/setup.py
-RUN pip3 install -U \
-        pip \
-        setuptools \
-        wheel && \
-    cd /pretix/src && \
-    PRETIX_DOCKER_BUILD=TRUE pip3 install \
-        -e ".[memcached]" \
-    rm -rf ~/.cache/pip
-
 COPY deployment/docker/pretix.bash /usr/local/bin/pretix
 COPY deployment/docker/supervisord /etc/supervisord
 COPY deployment/docker/supervisord.all.conf /etc/supervisord.all.conf
 COPY deployment/docker/supervisord.web.conf /etc/supervisord.web.conf
 COPY deployment/docker/nginx.conf /etc/nginx/nginx.conf
 COPY deployment/docker/production_settings.py /pretix/src/production_settings.py
+COPY pyproject.toml /pretix/pyproject.toml
 COPY src /pretix/src
 
-RUN cd /pretix/src && pip3 install .
+RUN pip3 install -U \
+        pip \
+        setuptools \
+        wheel && \
+    cd /pretix && \
+    PRETIX_DOCKER_BUILD=TRUE pip3 install \
+        -e ".[memcached]" \
+        gunicorn django-extensions ipython && \
+    rm -rf ~/.cache/pip
 
 RUN chmod +x /usr/local/bin/pretix && \
     rm /etc/nginx/sites-enabled/default && \
