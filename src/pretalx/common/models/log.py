@@ -1,5 +1,6 @@
 import json
 import logging
+from contextlib import suppress
 
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
@@ -53,7 +54,8 @@ class ActivityLog(models.Model):
     @cached_property
     def json_data(self):
         if self.data:
-            return json.loads(self.data)
+            with suppress(json.JSONDecodeError):
+                return json.loads(self.data)
         return {}
 
     @cached_property
