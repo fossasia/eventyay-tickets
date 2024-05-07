@@ -86,6 +86,10 @@
         {% bootstrap_field form.duration addon_after='minutes' layout='event' addon_after_class="input-group-append input-group-text" %}
         {% if form.slot_count %}{% bootstrap_field form.slot_count layout='event' %}{% endif %}
         {% if form.image %}{% bootstrap_field form.image layout='event' %}{% endif %}
+        {% if questions_form and questions_form.fields %}
+            <div><legend>{% translate "Questions" %}</legend></div>
+            {% bootstrap_form questions_form layout='event' %}
+        {% endif %}
         {% if action != 'create' %}
             {% include "cfp/includes/submission_resources_form.html" %}
         {% endif %}
