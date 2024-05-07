@@ -432,6 +432,7 @@ class Schedule(PretalxModel):
                 TalkSlot.objects.filter(
                     schedule=self, submission__speakers__in=[speaker]
                 )
+                .exclude(pk=talk.pk)
                 .filter(
                     models.Q(start__lt=talk.start, end__gt=talk.start)
                     | models.Q(start__lt=talk.real_end, end__gt=talk.real_end)
