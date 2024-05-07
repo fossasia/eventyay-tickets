@@ -163,9 +163,8 @@ class InviteMixin:
         )
 
 
-class TeamUninvite(InviteMixin, PermissionRequired, DetailView):
+class TeamUninvite(InviteMixin, PermissionRequired, ActionConfirmMixin, DetailView):
     model = TeamInvite
-    template_name = "orga/settings/team_delete.html"
     permission_required = "orga.change_teams"
     action_title = _("Retract invitation")
     action_text = _("Are you sure you want to retract the invitation to this user?")
