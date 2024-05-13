@@ -1,11 +1,10 @@
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import Exists, F, Max, OuterRef, Q, Subquery
+from django.db.models import Exists, F, Max, OuterRef, Q, Subquery, JSONField
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _, pgettext_lazy
 from django_scopes import ScopedManager, scopes_disabled
-from jsonfallback.fields import FallbackJSONField
 
 from pretix.base.models import LoggedModel
 from pretix.base.models.fields import MultiStringField
@@ -48,7 +47,7 @@ class CheckinList(LoggedModel):
                     'any of the selected sales channels. This option can be useful when tickets sold at the box office '
                     'are not checked again before entry and should be considered validated directly upon purchase.')
     )
-    rules = FallbackJSONField(default=dict, blank=True)
+    rules = JSONField(default=dict, blank=True)
 
     objects = ScopedManager(organizer='event__organizer')
 

@@ -12,7 +12,7 @@ from django.dispatch import receiver
 from django.template.loader import get_template
 from django.utils.timezone import now
 from django.utils.translation import get_language, gettext_lazy as _
-from inlinestyler.utils import inline_css
+from css_inline import inline as inline_css
 
 from pretix.base.i18n import (
     LazyCurrencyNumber, LazyDate, LazyExpiresDate, LazyNumber,

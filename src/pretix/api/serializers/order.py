@@ -525,7 +525,7 @@ class OrderPaymentDateField(serializers.DateField):
 class OrderFeeSerializer(I18nAwareModelSerializer):
     class Meta:
         model = OrderFee
-        fields = ('fee_type', 'value', 'description', 'internal_type', 'tax_rate', 'tax_value', 'tax_rule', 'canceled')
+        fields = ('id', 'fee_type', 'value', 'description', 'internal_type', 'tax_rate', 'tax_value', 'tax_rule', 'canceled')
 
 
 class PaymentURLField(serializers.URLField):
@@ -1280,6 +1280,8 @@ class OrderCreateSerializer(I18nAwareModelSerializer):
                     fees.append(f)
                     if not simulate:
                         f.save()
+                    else:
+                        f.id = 0
             else:
                 f = OrderFee(**fee_data)
                 f.order = order._wrapped if simulate else order
@@ -1287,6 +1289,8 @@ class OrderCreateSerializer(I18nAwareModelSerializer):
                 fees.append(f)
                 if not simulate:
                     f.save()
+                else:
+                    f.id = 0
 
         order.total += sum([f.value for f in fees])
         if simulate:

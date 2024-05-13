@@ -18,17 +18,13 @@ jobs:
     name: Tests
     strategy:
       matrix:
-        python-version: [3.6, 3.7, 3.8]
+        python-version: [3.8]
         database: [sqlite, postgres, mysql]
         exclude:
           - database: mysql
-            python-version: 3.7
+            python-version: 3.8
           - database: sqlite
-            python-version: 3.7
-          - database: mysql
-            python-version: 3.6
-          - database: sqlite
-            python-version: 3.6
+            python-version: 3.8
     steps:
       - uses: actions/checkout@v2
       - uses: getong/mariadb-action@v1.1
@@ -57,7 +53,7 @@ jobs:
       - name: Install system dependencies
         run: sudo apt update && sudo apt install gettext mysql-client
       - name: Install Python dependencies
-        run: pip3 install -r src/requirements.txt -Ur src/requirements/dev.txt mysqlclient psycopg2-binary
+        run: pip3 install -e ".[dev]" psycopg2-binary
       - name: Run checks
         run: python manage.py check
         working-directory: ./src

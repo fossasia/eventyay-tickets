@@ -118,7 +118,6 @@ def item_move_down(request, organizer, event, item):
 
 class CategoryDelete(EventPermissionRequiredMixin, DeleteView):
     model = ItemCategory
-    form_class = CategoryForm
     template_name = 'pretixcontrol/items/category_delete.html'
     permission = 'can_change_items'
     context_object_name = 'category'
@@ -132,7 +131,7 @@ class CategoryDelete(EventPermissionRequiredMixin, DeleteView):
             raise Http404(_("The requested product category does not exist."))
 
     @transaction.atomic
-    def delete(self, request, *args, **kwargs):
+    def form_valid(self, form):
         self.object = self.get_object()
         for item in self.object.items.all():
             item.category = None
@@ -140,7 +139,7 @@ class CategoryDelete(EventPermissionRequiredMixin, DeleteView):
         success_url = self.get_success_url()
         self.object.log_action('pretix.event.category.deleted', user=self.request.user)
         self.object.delete()
-        messages.success(request, _('The selected category has been deleted.'))
+        messages.success(self.request, _('The selected category has been deleted.'))
         return HttpResponseRedirect(success_url)
 
     def get_success_url(self) -> str:
@@ -437,12 +436,12 @@ class QuestionDelete(EventPermissionRequiredMixin, DeleteView):
         return context
 
     @transaction.atomic
-    def delete(self, request, *args, **kwargs):
+    def form_valid(self, form):
         self.object = self.get_object()
         success_url = self.get_success_url()
-        self.object.log_action(action='pretix.event.question.deleted', user=request.user)
+        self.object.log_action(action='pretix.event.question.deleted', user=self.request.user)
         self.object.delete()
-        messages.success(request, _('The selected question has been deleted.'))
+        messages.success(self.request, _('The selected question has been deleted.'))
         return HttpResponseRedirect(success_url)
 
     def get_success_url(self) -> str:
@@ -1005,10 +1004,10 @@ class QuotaDelete(EventPermissionRequiredMixin, DeleteView):
         return context
 
     @transaction.atomic
-    def delete(self, request, *args, **kwargs):
+    def form_valid(self, form):
         self.object = self.get_object()
         success_url = self.get_success_url()
-        self.object.log_action(action='pretix.event.quota.deleted', user=request.user)
+        self.object.log_action(action='pretix.event.quota.deleted', user=self.request.user)
         self.object.delete()
         messages.success(self.request, _('The selected quota has been deleted.'))
         return HttpResponseRedirect(success_url)
@@ -1369,7 +1368,7 @@ class ItemDelete(EventPermissionRequiredMixin, DeleteView):
         return self.object
 
     @transaction.atomic
-    def delete(self, request, *args, **kwargs):
+    def form_valid(self, form):
         success_url = self.get_success_url()
         o = self.get_object()
         if o.allow_delete():
@@ -1377,7 +1376,7 @@ class ItemDelete(EventPermissionRequiredMixin, DeleteView):
             self.get_object().cartposition_set.all().delete()
             self.get_object().log_action('pretix.event.item.deleted', user=self.request.user)
             self.get_object().delete()
-            messages.success(request, _('The selected product has been deleted.'))
+            messages.success(self.request, _('The selected product has been deleted.'))
             return HttpResponseRedirect(success_url)
         else:
             o = self.get_object()
@@ -1386,7 +1385,7 @@ class ItemDelete(EventPermissionRequiredMixin, DeleteView):
             o.log_action('pretix.event.item.changed', user=self.request.user, data={
                 'active': False
             })
-            messages.success(request, _('The selected product has been deactivated.'))
+            messages.success(self.request, _('The selected product has been deactivated.'))
             return HttpResponseRedirect(success_url)
 
     def get_success_url(self) -> str:

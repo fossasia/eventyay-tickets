@@ -319,11 +319,11 @@ class CheckinListDelete(EventPermissionRequiredMixin, DeleteView):
             raise Http404(_("The requested list does not exist."))
 
     @transaction.atomic
-    def delete(self, request, *args, **kwargs):
+    def form_valid(self, form):
         self.object = self.get_object()
         success_url = self.get_success_url()
         self.object.checkins.all().delete()
-        self.object.log_action(action='pretix.event.checkinlists.deleted', user=request.user)
+        self.object.log_action(action='pretix.event.checkinlists.deleted', user=self.request.user)
         self.object.delete()
         messages.success(self.request, _('The selected list has been deleted.'))
         return HttpResponseRedirect(success_url)

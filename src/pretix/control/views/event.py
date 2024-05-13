@@ -1215,11 +1215,11 @@ class TaxDelete(EventSettingsViewMixin, EventPermissionRequiredMixin, DeleteView
             raise Http404(_("The requested tax rule does not exist."))
 
     @transaction.atomic
-    def delete(self, request, *args, **kwargs):
+    def form_valid(self, form):
         self.object = self.get_object()
         success_url = self.get_success_url()
         if self.object.allow_delete():
-            self.object.log_action(action='pretix.event.taxrule.deleted', user=request.user)
+            self.object.log_action(action='pretix.event.taxrule.deleted', user=self.request.user)
             self.object.delete()
             messages.success(self.request, _('The selected tax rule has been deleted.'))
         else:

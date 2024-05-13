@@ -28,7 +28,6 @@ simple_mappings = (
     (forms.EmailField, serializers.EmailField, ()),
     (forms.UUIDField, serializers.UUIDField, ()),
     (forms.URLField, serializers.URLField, ()),
-    (forms.NullBooleanField, serializers.NullBooleanField, ()),
     (forms.BooleanField, serializers.BooleanField, ()),
 )
 
