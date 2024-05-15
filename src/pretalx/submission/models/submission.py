@@ -707,6 +707,8 @@ class Submission(GenerateCode, PretalxModel):
             )
         for answer in self.answers.all():
             answer.delete()
+        for resource in self.resources.all():
+            resource.delete()
         super().delete(**kwargs)
 
     @cached_property
