@@ -705,10 +705,8 @@ class Submission(GenerateCode, PretalxModel):
             raise SubmissionError(
                 "Submission is not in draft mode and cannot be deleted completely. Set the deleted flag instead."
             )
-        for answer in self.answers.all():
-            answer.delete()
-        for resource in self.resources.all():
-            resource.delete()
+        self.answers.all().delete()
+        self.resources.all().delete()
         super().delete(**kwargs)
 
     @cached_property
