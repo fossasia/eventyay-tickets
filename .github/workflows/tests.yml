@@ -108,6 +108,7 @@ jobs:
         env:
           PRETALX_CONFIG_FILE: 'tests/ci_${{ matrix.database }}.cfg'
       - name: Coverage comment
+        id: coverageComment
         uses: MishaKav/pytest-coverage-comment@main
         with:
           pytest-coverage-path: ./src/pytest-coverage.txt
@@ -117,6 +118,7 @@ jobs:
           title: Full coverage report
         if: always() && matrix.database == 'postgres' && matrix.python-version == '3.12' && github.event_name == 'pull_request'
       - name: Coverage data (non-PR, do not comment)
+        id: coverageData
         uses: MishaKav/pytest-coverage-comment@main
         with:
           pytest-coverage-path: ./src/pytest-coverage.txt
@@ -134,6 +136,7 @@ jobs:
           export TOTAL_COV=$(python -c "import json;print(json.load(open('coverage.json'))['totals']['percent_covered_display'])")
           echo "TOTAL_COV=$TOTAL_COV" >> $GITHUB_ENV
           echo "## Test coverage: $TOTAL_COV%" >> $GITHUB_STEP_SUMMARY
+          echo "${{ steps.coverageData.outputs.summaryReport }}" >> $GITHUB_STEP_SUMMARY
           echo "${{ steps.coverageComment.outputs.summaryReport }}" >> $GITHUB_STEP_SUMMARY
           python -m coverage report --skip-covered --skip-empty --show-missing --format=markdown >> $GITHUB_STEP_SUMMARY
 
