@@ -118,7 +118,11 @@ linkcheck_ignore = [
     'http://localhost',
     'http://127.0.0.1',
     r'https://github.com/pretalx/pretalx/issues/\d+',  # The release notes are auto generated and contain a LOT of issue links
+    r'https://github.com/pretalx/pretalx/issues/new',  # Requires login
+    r'https://github.com/pretalx/pretalx/discussions/new',  # Requires login
     "https://translate.pretalx.com/projects/pretalx/pretalx/#repository",  # Only accessible by admins
+    "https://github.com/fullcalendar/fullcalendar/releases/download/v6.1.5/fullcalendar-6.1.5.zip", # redirects to cdn
+    "https://www.patreon.com/rixx",  # spurious errors, sigh
 ]
 
 # GitHub integration

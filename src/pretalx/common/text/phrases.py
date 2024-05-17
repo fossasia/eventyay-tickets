@@ -101,7 +101,7 @@ class BasePhrases(Phrases, app="base"):
     password_reset_success = _("The password was reset.")
 
     use_markdown = _("You can use {link_start}Markdown{link_end} here.").format(
-        link_start='<a href="https://docs.pretalx.org/en/latest/user/markdown.html" target="_blank" rel="noopener">',
+        link_start='<a href="https://docs.pretalx.org/user/markdown/" target="_blank" rel="noopener">',
         link_end="</a>",
     )
     public_content = _("This content will be shown publicly.")
