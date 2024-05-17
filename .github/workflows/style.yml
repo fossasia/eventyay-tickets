@@ -58,6 +58,8 @@ jobs:
         with:
           python-version-file: ".github/workflows/python-version.txt"
           cache: "pip"
+      - name: Add problem matcher for black
+        run: echo "::add-matcher::.github/workflows/matchers/black.json"
       - uses: psf/black@stable
         with:
           src: "./src"
