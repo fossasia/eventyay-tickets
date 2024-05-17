@@ -80,7 +80,7 @@
                 {% if can_send_mails %}
                     <a class="btn btn-outline-info mr-2 mb-1" href="{{ request.event.orga_urls.compose_mails_sessions }}?submissions={{ submission.code }}">
                         <i class="fa fa-envelope"></i>
-                        {% translate "Send email" %}
+                        {% translate "Send email to speakers" %}
                     </a>
                 {% endif %}
                 {% if submission.state == "confirmed" or can_view_speakers %}
