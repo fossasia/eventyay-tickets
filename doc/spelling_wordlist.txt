@@ -95,5 +95,6 @@ typeahead
 uncheck
 Venueless
 virtualenv
+Weblate
 wip
 Woltjer
