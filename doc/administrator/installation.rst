@@ -223,9 +223,9 @@ You can now run the following commands to enable and start the services::
 Step 7: Reverse proxy
 ---------------------
 
-You’ll need to set up an HTTP reverse proxy to handle HTTPS connections. It doesn’t
-particularly matter which one you use, as long as you make sure to use `strong
-encryption settings`_. Your proxy should
+You’ll need to set up an HTTP reverse proxy to handle HTTPS connections. It
+does not particularly matter which one you use, as long as you make sure to use
+`strong encryption settings`_. Your proxy should
 
 * serve all requests exclusively over HTTPS,
 * follow established security practices regarding protocols and ciphers.
@@ -262,7 +262,7 @@ Step 9: Provide periodic tasks
 ------------------------------
 
 There are a couple of things in pretalx that should be run periodically. It
-doesn’t matter how you run them, so you can go with your choice of periodic
+does not matter how you run them, so you can go with your choice of periodic
 tasks, be they systemd timers, cron, or something else entirely.
 
 In the same environment as you ran the previous pretalx commands (e.g. the

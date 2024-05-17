@@ -78,5 +78,6 @@ considerations, since the mixin takes care of all that.
 Access
 ------
 
-The export will now be available for organisers in the schedule related export view.
-If you’ve set ``public = True``, it will also show up in the drop down in the event agenda.
+The export will now be available for organisers in the schedule related export
+view. If you have set ``public = True``, it will also show up in the drop down
+in the event agenda.

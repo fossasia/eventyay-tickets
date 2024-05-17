@@ -121,7 +121,7 @@ compile the JavaScript files::
     (env)$ python manage.py rebuild --npm-install
 
 If you want to change the JavaScript code, you can run the following command, which combines
-the Python and the JavaScript dev servers::
+the Python and the JavaScript development servers::
 
     (env)$ python manage.py devserver
 
