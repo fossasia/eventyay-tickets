@@ -284,10 +284,10 @@ If you want to read about updates, backups, and monitoring, head over to our
 .. _nginx: https://botleg.com/stories/https-with-lets-encrypt-and-nginx/
 .. _Let’s Encrypt: https://letsencrypt.org/
 .. _PostgreSQL: https://www.postgresql.org/docs/
-.. _redis: https://redis.io/documentation
+.. _redis: https://redis.io/docs/latest/
 .. _ufw: https://en.wikipedia.org/wiki/Uncomplicated_Firewall
 .. _strong encryption settings: https://mozilla.github.io/server-side-tls/ssl-config-generator/
 .. _docker-compose setup: https://github.com/pretalx/pretalx-docker
-.. _pretalx.com: https://pretalx.com
+.. _pretalx.com: https://pretalx.com/p/about/
 .. _nodejs: https://github.com/nodesource/distributions/blob/master/README.md
 .. _supported version of nodejs: https://nodejs.org/en/about/previous-releases
