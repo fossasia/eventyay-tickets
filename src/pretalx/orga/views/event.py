@@ -387,7 +387,6 @@ class PhaseDelete(PermissionRequired, ActionConfirmMixin, TemplateView):
         return self.request.event.orga_urls.review_settings
 
     def post(self, request, *args, **kwargs):
-        super().dispatch(request, *args, **kwargs)
         phase = self.get_object()
         phase.delete()
         return redirect(self.request.event.orga_urls.review_settings)
