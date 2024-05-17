@@ -71,8 +71,9 @@ jobs:
         working-directory: ./src
         run: PRETIX_CONFIG_FILE=tests/travis_${{ matrix.database }}.cfg py.test -n 3 -p no:sugar --cov=./ --cov-report=xml --reruns 3 tests --maxfail=100
       - name: Upload coverage
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v4.0.1
         with:
+          token: ${{ secrets.CODECOV_TOKEN }}
           file: src/coverage.xml
           fail_ci_if_error: true
         if: matrix.database == 'postgres' && matrix.python-version == '3.8'
