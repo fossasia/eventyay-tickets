@@ -8,6 +8,7 @@ Release Notes
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 - :feature:`schedule,1794` The iCal schedule export has been made private (available only to organisers) as the utility of importing a conference's entire schedule is limited, and people were frustrated that the iCal export did not reflect any applied schedule filters.
 - :bug:`schedule,1803` The QR code for schedule exporter links was not showing up when hovering on the QR code symbol.
 - :release:`2024.2.1 <2024-08-07>`
@@ -17,6 +18,8 @@ Release Notes
 - :bug:`orga` The markdown preview posed a security vulnerability by allowing speakers and organisers to include unsafe JavaScript. This JavaScript would only be executed when accessing the preview, i.e. when a speaker or organiser opened to proposal page (not attendees or the public). Thanks to Jorian Woltjer for reporting this issue.
 - :feature:`api` The submission API now has a filter for the ``is_featured`` field.
 - :feature:`cfp,1761` In the CfP submission multi-step form, the tab title now reflects the proposal title, to make it easier to work on multiple proposal submissions at the same time.
+=======
+>>>>>>> f8d800d83 (Fix proposal count in filtered speaker list)
 - :bug:`orga:speaker,1768` When filtering the speaker list by only accepted/confirmed speakers, the listed proposal count would be incorrect (inflated).
 - :feature:`cfp,1574` pretalx now supports the ``~~`` strikethrough syntax in Markdown.
 - :bug:`orga:schedule,1702` Sessions starting at exactly midnight of the first day of the event would not show up in the schedule editor (but could be scheduled there by dropping them on the day heading).
