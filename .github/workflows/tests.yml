@@ -96,7 +96,7 @@ jobs:
           REPORT="$(mktemp)"
           echo "report-path=$REPORT" >> $GITHUB_OUTPUT
           echo "REPORT_FILE=${REPORT}" >> $GITHUB_ENV
-          python -m pytest -nauto -p no:sugar --reruns 3 --md-report --md-report-flavor gfm --md-report-output=$REPORT --md-report-exclude-outcomes passed skipped xpassed --cov-report=term-missing:skip-covered tests
+          python -m pytest -nauto -p no:sugar --reruns 3 --cov-report=term-missing:skip-covered tests
         env:
           PRETALX_CONFIG_FILE: 'tests/ci_${{ matrix.database }}.cfg'
       - name: Show test report in summary
