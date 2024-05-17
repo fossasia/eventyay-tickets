@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`orga:speaker,1768` When filtering the speaker list by only accepted/confirmed speakers, the listed proposal count would be incorrect (inflated).
 - :feature:`cfp,1574` pretalx now supports the ``~~`` strikethrough syntax in Markdown.
 - :bug:`orga:schedule,1702` Sessions starting at exactly midnight of the first day of the event would not show up in the schedule editor (but could be scheduled there by dropping them on the day heading).
 - :feature:`orga:schedule,1730` The schedule editor now allows you to schedule talks that are only "pending accepted" (i.e. the speaker has not yet received the acceptance email), so that organisers can try out how their schedule would look with a given number of tentatively accepted proposals.

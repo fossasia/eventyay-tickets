@@ -82,11 +82,13 @@ class SpeakerList(
                 submission_count=Count(
                     "user__submissions",
                     filter=Q(user__submissions__event=self.request.event),
+                    distinct=True,
                 ),
                 accepted_submission_count=Count(
                     "user__submissions",
                     filter=Q(user__submissions__event=self.request.event)
                     & Q(user__submissions__state__in=SubmissionStates.accepted_states),
+                    distinct=True,
                 ),
             )
         )
