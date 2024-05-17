@@ -158,7 +158,7 @@ setup(
         'mt-940==3.2',
         'django-i18nfield==1.9.*,>=1.9.1',
         'django-jsonfallback>=2.1.2',
-        'psycopg2-binary=2.8.6',
+        'psycopg2-binary==2.8.6',
         'tqdm==4.*',
         'vobject==0.9.*',
         'pycountry',
