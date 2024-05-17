@@ -113,7 +113,17 @@ jobs:
           junitxml-title: Test summary
           report-only-changed-files: true
           title: Full coverage report
-        if: always() && matrix.database == 'postgres' && matrix.python-version == '3.12'
+        if: always() && matrix.database == 'postgres' && matrix.python-version == '3.12' && github.event_name == 'pull_request'
+      - name: Coverage data (non-PR, do not comment)
+        uses: MishaKav/pytest-coverage-comment@main
+        with:
+          pytest-coverage-path: ./src/pytest-coverage.txt
+          junitxml-path: ./src/pytest.xml
+          junitxml-title: Test summary
+          report-only-changed-files: true
+          hide-comment: true
+          title: Full coverage report
+        if: always() && matrix.database == 'postgres' && matrix.python-version == '3.12' && github.event_name != 'pull_request'
       - name: Show coverage as build info
         working-directory: ./src
         run: |
