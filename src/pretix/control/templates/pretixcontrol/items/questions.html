@@ -85,7 +85,7 @@
                         {% if q.pk %}
                             <a href="{% url "control:event.items.questions.show" organizer=request.event.organizer.slug event=request.event.slug question=q.id %}" class="btn btn-default btn-sm"><i class="fa fa-bar-chart"></i></a>
                             <a href="{% url "control:event.items.questions.edit" organizer=request.event.organizer.slug event=request.event.slug question=q.id %}" class="btn btn-default btn-sm"><i class="fa fa-edit"></i></a>
-                            <a href="{% url "control:event.items.questions.delete" organizer=request.event.organizer.slug event=request.event.slug question=q.id %}" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></a>
+                            <a href="{% url "control:event.items.questions.delete" organizer=request.event.organizer.slug event=request.event.slug question=q.id %}" class="btn btn-delete btn-danger btn-sm"><i class="fa fa-trash"></i></a>
                         {% else %}
                             <a href="{% url "control:event.settings" organizer=request.event.organizer.slug event=request.event.slug %}#tab-0-2-open"
                                     class="btn btn-default btn-sm"><i class="fa fa-wrench"></i></a>

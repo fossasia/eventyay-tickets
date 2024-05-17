@@ -73,9 +73,13 @@ div[data-formset-body], div[data-formset-form], div[data-nested-formset-form], d
   }
   .btn-cancel {
     float: left !important;
+    background:  #ffffff;
+    color: #db2828;
+    border: 1px solid #db2828;
     // btn-lg
     @include button-size($padding-large-vertical, $padding-large-horizontal, $font-size-large, $line-height-large, $btn-border-radius-large);
   }
+  
 }
 
 .panel .form-group:last-child {

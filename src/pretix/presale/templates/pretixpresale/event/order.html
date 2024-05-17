@@ -421,7 +421,7 @@
                                 </p>
                             {% endif %}
                             <a href="{% eventurl event 'presale:event.order.cancel' secret=order.secret order=order.code %}"
-                                    class="btn btn-danger">
+                                    class="btn btn-delete btn-danger">
                                 <span class="fa fa-remove" aria-hidden="true"></span>
                                 {% trans "Cancel order" %}
                             </a>
@@ -433,7 +433,7 @@
                                 {% trans "This will invalidate all tickets in this order." %}
                             </p>
                             <a href="{% eventurl event 'presale:event.order.cancel' secret=order.secret order=order.code %}"
-                                    class="btn btn-danger">
+                                    class="btn btn-delete btn-danger">
                                 <span class="fa fa-remove" aria-hidden="true"></span>
                                 {% trans "Cancel order" %}
                             </a>

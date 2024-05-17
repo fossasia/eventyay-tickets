@@ -157,7 +157,7 @@
                                         </li>
                                     </ul>
                                 </div>
-                                <a href="{% url "control:event.subevent.delete" organizer=request.event.organizer.slug event=request.event.slug subevent=s.id %}?returnto={{ request.GET.urlencode|urlencode }}" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></a>
+                                <a href="{% url "control:event.subevent.delete" organizer=request.event.organizer.slug event=request.event.slug subevent=s.id %}?returnto={{ request.GET.urlencode|urlencode }}" class="btn btn-delete btn-danger btn-sm"><i class="fa fa-trash"></i></a>
                             </td>
                         </tr>
                     {% endfor %}
@@ -166,7 +166,7 @@
             </div>
             {% if "can_change_event_settings" in request.eventpermset %}
             <div class="batch-select-actions">
-                <button type="submit" class="btn btn-danger btn-save" name="action" value="delete">
+                <button type="submit" class="btn btn-delete btn-danger btn-save" name="action" value="delete">
                     <i class="fa fa-trash"></i>{% trans "Delete selected" %}
                 </button>
                 <button type="submit" class="btn btn-primary btn-save" name="action" value="disable"
