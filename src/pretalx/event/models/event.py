@@ -946,7 +946,6 @@ class Event(PretalxModel):
                 can_see_other_reviews="after_review",
                 can_see_speaker_names=True,
             )
-        return self.update_review_phase()
 
     def update_review_phase(self):
         """This method activates the next review phase if the current one is
