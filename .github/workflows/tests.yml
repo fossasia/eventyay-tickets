@@ -71,6 +71,7 @@ jobs:
           PRETALX_CONFIG_FILE: 'tests/ci_${{ matrix.database }}.cfg'
       - name: Show coverage as build info
         working-directory: ./src
+        shell: bash  # needed to make echo work as expected
         run: |
           python -m coverage json
 
