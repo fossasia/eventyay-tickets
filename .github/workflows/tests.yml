@@ -130,6 +130,7 @@ jobs:
         if: always() && matrix.database == 'postgres' && matrix.python-version == '3.12' && github.event_name != 'pull_request'
       - name: Show coverage as build info
         working-directory: ./src
+        shell: bash  # needed to make echo work as expected
         run: |
           python -m coverage json
 
