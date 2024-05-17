@@ -60,3 +60,10 @@ jobs:
       - name: Linkcheck docs
         run: make linkcheck
         working-directory: ./doc
+      - name: Put linkcheck result into summary
+        run: |
+          echo "## Linkcheck results" >> $GITHUB_STEP_SUMMARY
+          sed 's/^/- /' < _build/linkcheck/output.txt >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+        working-directory: ./doc
+        if: always()
