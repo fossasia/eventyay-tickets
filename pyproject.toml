@@ -80,6 +80,7 @@ dev = [
   "pytest",
   "pytest-cov",
   "pytest-django",
+  "pytest-md-report",
   "pytest-mock",
   "pytest-rerunfailures",
   "pytest-sugar",

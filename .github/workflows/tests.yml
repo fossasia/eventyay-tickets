@@ -95,10 +95,11 @@ jobs:
         run: |
           REPORT="$(mktemp)"
           echo "report-path=$REPORT" >> $GITHUB_OUTPUT
-          python -m pytest -nauto -p no:sugar --reruns 3 --md=$REPORT --cov-report=term-missing:skip-covered tests
+          echo "REPORT_FILE=${REPORT}" >> $GITHUB_ENV
+          python -m pytest -nauto -p no:sugar --reruns 3 --md-report --md-report-flavor gfm --md-report-output=$REPORT --md-report-exclude-outcomes passed skipped xpassed --cov-report=term-missing:skip-covered tests
         env:
           PRETALX_CONFIG_FILE: 'tests/ci_${{ matrix.database }}.cfg'
-      - name: Show failing tests
+      - name: Show test report in summary
         working-directory: ./src
         run: |
           echo "::group::..."
@@ -117,7 +118,7 @@ jobs:
           python -m coverage report --skip-covered --skip-empty --show-missing --format=markdown >> $GITHUB_STEP_SUMMARY
 
           python -m coverage report
-        if: always() && matrix.database == 'postgres' && matrix.python-version == '3.10'
+        if: always() && matrix.database == 'postgres' && matrix.python-version == '3.12'
 
       - name: "Make badge"
         uses: schneegans/dynamic-badges-action@v1.7.0
