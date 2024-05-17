@@ -23,13 +23,13 @@ time, we created a `cookiecutter`_ template that you can use like this::
    (env)$ cookiecutter https://github.com/pretalx/pretalx-plugin-cookiecutter
 
 This will ask you some questions and then create a project folder for your plugin.
-Afterwards install your plugin into pretalx:
+Afterwards install your plugin into pretalx::
 
    (env)$ cd pretalx-pluginname
    (env)$ python -m pip install -e .
 
-If you already had it running, you’ll now have to restart your pretalx dev-server
-for it to recognize the new plugin.
+If you already had it running, you’ll now have to restart your pretalx
+development server process for it to recognise the new plugin.
 
 About this Documentation
 ------------------------
@@ -145,11 +145,11 @@ your Django application label.
 Configuration
 -------------
 
-Occasionally, your plugin may need system-level configuration that doesn’t need
-its own API. In this case, you can ask users to provide this configuration via
-their ``pretalx.cfg`` file. Ask them to put their configuration in a section
-with the title ``[plugin:your_plugin_name]``, which pretalx will then provide
-in ``settings.PLUGIN_SETTINGS[your_plugin_name]``, like this::
+Occasionally, your plugin may need system-level configuration that does not
+need its own API. In this case, you can ask users to provide this configuration
+via their ``pretalx.cfg`` file. Ask them to put their configuration in a
+section with the title ``[plugin:your_plugin_name]``, which pretalx will then
+provide in ``settings.PLUGIN_SETTINGS[your_plugin_name]``, like this::
 
    [plugin:pretalx_soap]
    endpoint=https://example.com

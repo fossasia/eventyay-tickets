@@ -63,7 +63,7 @@ Release Notes
 - :feature:`orga:email,1351` pretalx now provides two new email placeholders, ``speaker_schedule_new`` (all talks changed in the current schedule, like in the notification email generated on schedule release) and ``speaker_schedule_full`` (a list of **all** scheduled sessions for that user).
 - :bug:`schedule,1666` When building the social media preview card, pretalx would display a session’s description rather than its abstract.
 - :bug:`cfp,1660` When setting character limits on text questions, pretalx would count line breaks as two characters.
-- :bug:`orga:submission,1613` The session page dropdown would sometimes include the "public link" even though it wasn’t public yet. This has been fixed, and in the case of accepted or confirmed proposals that don’t have a public page yet (e.g. because they’re not scheduled yet), the link is marked as "public link (not public yet)".
+- :bug:`orga:submission,1613` The session page drop-down would sometimes include the "public link" even though it was not public yet. This has been fixed, and in the case of accepted or confirmed proposals that don’t have a public page yet (e.g. because they’re not scheduled yet), the link is marked as "public link (not public yet)".
 - :bug:`cfp` When rendering email addresses in Markdown, shorter TLDs won out against longer ones (e.g. .co instead of .com, or .ro instead of .rocks). This was already fixed for normal links, just not for email addresses. Until you update to include this fix, you can instead turn emails into a link yourself: ``[test@example.co](mailto:test@example.co)``.
 - :feature:`orga,1619` Organisers can now add new team members in bulk instead of one by one.
 - :feature:`orga:schedule,1587` A hint now shows when users click the "New break" box, informing them that they have to drag it to the schedule instead.
@@ -91,8 +91,8 @@ Release Notes
 - :feature:`dev` Plugins can now also render nested menu entries in the sidebar navigation.
 - :feature:`orga,1107` pretalx now warns users when they try to leave a page with unsaved changes.
 - :feature:`cfp,1107` pretalx now warns users when they try to leave a page with unsaved changes.
-- :feature:`schedule,1041` Talks can now be faved (added to the list of favourited talks) from the talk page, not just from the schedule page.
-- :feature:`dev` Plugins can now declare their category, which is used to group them in the plugin list. Available categories are "Feature", "Integration", "Customization", "Exporter", "Recording", "Language" and "Other". Plugins without a set category will be grouped as "Other". If you’re a plugin developer, please update your plugin to declare a category!
+- :feature:`schedule,1041` Talks can now be starred (added to the list of favourite talks) from the talk page, not just from the schedule page.
+- :feature:`dev` Plugins can now declare their category, which is used to group them in the plugin list. Available categories are "Feature", "Integration", "Customisation", "Exporter", "Recording", "Language" and "Other". Plugins without a set category will be grouped as "Other". If you’re a plugin developer, please update your plugin to declare a category!
 - :feature:`admin,1588` Administrators can now see their pretalx version in the admin dashboard.
 - :bug:`schedule` RSS feeds for new releases would sometimes fail to load if control characters were used in the schedule version or event name.
 - :bug:`cfp` Draft proposals could not be discarded if they included answered questions.
@@ -109,30 +109,30 @@ Release Notes
 - :bug:`lang` For users without a pretalx account, their browser’s choice of language took precedence over their own language selection.
 - :bug:`lang` When using non-standard languages, pretalx would only show those languages as available sometimes.
 - :bug:`admin,1579` There was a bug in the `pretalx init` command, and also too verbose output.
-- :bug:`orga,1577` The printable proposal cards showed broken characters for anything outside latin1.
+- :bug:`orga,1577` The printable proposal cards showed broken characters for anything outside Latin1.
 - :bug:`orga` Reordering questions while some of them were inactive could lead to 404 errors.
-- :bug:`orga:submission` pretalx wasn’t able to filter pending state changes from the organiser proposal list.
-- :bug:`lang` The schedule editor was not operational with some languages, particularly with different language code versions (pt-BR vs pt_br).
+- :bug:`orga:submission` pretalx was not able to filter pending state changes from the organiser proposal list.
+- :bug:`lang` The schedule editor was not operational with some languages, particularly with different language code versions (e.g. Brazilian versus European Portuguese).
 - :bug:`orga:schedule` The schedule editor would not show some specific time selectors when people expanded the timeline to see five-minute steps.
 - :release:`2023.1.0 <2023-08-30>`
 - :feature:`orga:schedule` Completely rewrote the schedule editor, making it look like the actual schedule, and added some powerful features like hiding rooms, easy duration changes, and more.
 - :feature:`admin` The ``pretalx init`` command now has a ``--no-input`` flag for all your automation needs.
-- :announcement:`admin` pretalx no longer logs 404 responses, as you can get those equally from your webserver logs.
+- :announcement:`admin` pretalx no longer logs 404 responses, as you can get those equally from your web server logs.
 - :feature:`schedule,399` pretalx will now locally cache gravatar avatars to avoid GDPR issues when using gravatar.
 - :bug:`schedule,1498` Talks that were scheduled, but not confirmed by the speaker yet would be shown in the public speaker profile.
 - :feature:`orga:review` pretalx always showed the anonymised version of proposals if there was one. Now it reverts to the non-anonymised one once the anonymisation period is over.
 - :feature:`orga:speaker` Organiser pages for speakers now use their alphanumeric ``code`` identifier in the URL rather than the numeric ID, matching the public and API pages.
-- :feature:`orga:submission,1347` The submission type and track lists now include links to the pre-filtered list of proposals.
+- :feature:`orga:submission,1347` The submission type and track lists now include links to the filtered list of proposals.
 - :feature:`cfp,889` A talk’s duration is now listed on the talk acceptance site to avoid misunderstandings early on.
 - :announcement:`admin` Due to database versions going EOL, please make sure to use PostgreSQL 12+, MySQL 8+, MariaDB 10.4+, or SQLite 3.21.
 - :announcement:`admin` As Python 3.6 and 3.7 are now EOL, and we are using new Python features, pretalx supports Python versions 3.9+.
 - :feature:`orga:review` The review dashboard can now be filtered by question answers, just like the submission list.
 - :feature:`orga:submission` New anonymisation indicator in proposal list.
-- :feature:`cfp,1418` Speaker availabilities are now limited to the sum of all room availabilites.
+- :feature:`cfp,1418` Speaker availabilities are now limited to the sum of all room availabilities.
 - :feature:`orga,1440` The list of team members is now always sorted by name.
 - :announcement:`admin` Document that in nginx, gzip should be turned on only for static files.
 - :bug:`admin,1098` There was a very rare bug that could lock up pretalx instances due to a race condition in the review process, and required manual admin intervention to get fixed.
-- :feature:`orga,1061` Image previews (e.g. for event logos) now handle transparency by adding a checkered background, so even the white logo fans can still see their images.
+- :feature:`orga,1061` Image previews (e.g. for event logos) now handle transparency by adding a chequered background, so even the white logo fans can still see their images.
 - :feature:`orga,963` The featured talks page is now linked in the corresponding setting, making it easier for organisers to find.
 - :feature:`orga:submission,392` Our longest-standing feature request has finally been closed: You can now set the possible proposal/content languages independently from the available UI languages.
 - :bug:`cfp,1363` pretalx now shows the actual file upload limit to users uploading resources rather than a slightly too-large one.
@@ -141,7 +141,7 @@ Release Notes
 - :bug:`orga:email` The reject email template was missing on the template list.
 - :feature:`admin` Administrators can now change event short names in the frontend rather than having to dig into the database.
 - :feature:`schedule,699` In the emails sent to speakers when their talks change, they will now also receive calendar files for the changed talks.
-- :feature:`orga:review,1185` Reviewers will see a checkmark next to talks they have submitted, so they won’t appear like things they should review.
+- :feature:`orga:review,1185` Reviewers will see a tick next to talks they have submitted, so they won’t appear like things they should review.
 - :feature:`orga:review` In the review dashboards, users can now remove and add columns, including the track, session duration and shorter questions.
 - :feature:`api` The submission API now includes IDs for submission types, tracks and rooms, rather than just references by name.
 - :feature:`cfp,672` Speakers (or rather submitters) can now save a proposal as a draft while they are working on finishing the submission process.
@@ -158,7 +158,7 @@ Release Notes
 - :feature:`orga:email` To improve email template handling, the list of emails now shows just the subjects or use case, and you can click them to expand and see the details.
 - :feature:`schedule` Breaks are now also shown on the mobile/minimal/linear schedule.
 - :bug:`orga:review` Review pages were not working when pretalx was run with Python 3.7 and the aggregation method "mean" (as opposed to "median").
-- :feature:`orga` Teams are now sorted by the date of their accessible events, making it easier to manage organizers with many event-specific teams.
+- :feature:`orga` Teams are now sorted by the date of their accessible events, making it easier to manage organisers with many event-specific teams.
 - :bug:`schedule` The schedule widget was not showing up for some locales (particularly Chinese).
 - :feature:`schedule` On sessions that have both videos and images, videos now show up first, and the overall layout is improved.
 - :feature:`orga:schedule` Schedule release warnings are now more actionable, by linking to more problematic proposals directly, or to a page listing all affected proposals for less complex warnings.
@@ -166,7 +166,7 @@ Release Notes
 - :feature:`orga:review` If you limit reviewer teams to specific tracks, they won’t be able to see speaker profiles from outside their track(s) anymore.
 - :feature:`schedule` Not so much a feature as a change: Speaker images are now cropped to the centre in the speaker list squares instead of to the top.
 - :bug:`schedule` Fix social media preview images sometimes not showing up due to robots.txt constraints.
-- :feature:`schedule` Use speaker profile images as social media preview where possible (does not include gravatar support atm).
+- :feature:`schedule` Use speaker profile images as social media preview where possible (does not include gravatar support at the moment).
 - :feature:`schedule` Header images are now used as fallback for social media preview images if there’s no logo.
 - :bug:`cfp` Events with per-submission-type questions sometimes saw empty questions pages in the CfP flow.
 - :feature:`orga:review` Organisers can now assign reviewers to proposals in bulk, by uploading a JSON file.
@@ -175,8 +175,8 @@ Release Notes
 - :feature:`cfp,1301` Following a confirmation link to a proposal you don’t have access to now shows a helpful page prompting you to double-check your account is correct. Anonymous users will be directed to log in first.
 - :feature:`orga:review` When you sort the review dashboard by number of reviews, it will now only use real reviews, not abstentions. The number of reviews including abstentions will be shown in parentheses.
 - :bug:`cfp,1307` Availability times provided while confirming a proposal were not saved.
-- :feature:`orga:speaker,819` You can now turn off co-speakers – organsiers can still assign additional speakers, but speakers themselves will not be asked for additional speakers.
-- :announcement:`admin` Note to administrators of self-hosted instances: documentation for installation and upgrades now recommends that you use ``pip install --upgrade-strategy eager`` to make sure you get non-pinned bugfix updates.
+- :feature:`orga:speaker,819` You can now turn off co-speakers – organisers can still assign additional speakers, but speakers themselves will not be asked for additional speakers.
+- :announcement:`admin` Note to administrators of self-hosted instances: documentation for installation and upgrades now recommends that you use ``pip install --upgrade-strategy eager`` to make sure you get non-pinned updates.
 - :feature:`api` Organisers can see speaker email addresses in embedded API paths.
 - :feature:`orga:submission` Proposal attachments can be included in exports now.
 - :feature:`orga:review` Organisers can configure how the review score should be displayed to reviewers: only explanation, only score, explanation first, score first.
@@ -207,7 +207,7 @@ Release Notes
 - :feature:`orga:submission` You can now remove a pending state be re-selecting the current state of a proposal.
 - :feature:`orga:email` Email placeholders now explain their use when you hover over them.
 - :feature:`orga:email` New email placeholder: ``{all_reviews}`` allows you to send all review texts (though not scores!) to submitters.
-- :bug:`orga:schedule,1266` pretalx only recognised overlapping scheduled talks for a speaker when they didn’t start or end at the exact same time.
+- :bug:`orga:schedule,1266` pretalx only recognised overlapping scheduled talks for a speaker when they did not start or end at the exact same time.
 - :feature:`orga` The rendering speed of all backend pages has been improved.
 - :feature:`orga:schedule` The performance of the schedule editor and release pages was improved for large events.
 - :bug:`orga:review` The track filter was missing on the review dashboard page.
@@ -215,7 +215,7 @@ Release Notes
 - :feature:`orga` Reviewer team settings (like track assignments) are now on the same page as the general team settings, and will be shown only if the team is currently a reviewer team.
 - :feature:`orga:review,619` Reviewers can now be assigned to proposals directly. Depending on your settings, reviewers can only see their assigned proposals, or will just see them highlighted.
 - :feature:`schedule` Caching of schedule pages is reset the moment a new schedule version is released, so that integrations (for example with Venueless) that push notifications on new schedule releases will always see the actual new schedule.
-- :feature:`orga:schedule` Schedule pages showing the WIP schedule to organsiers aren’t cached anymore, so all changes show up immediately.
+- :feature:`orga:schedule` Schedule pages showing the WIP schedule to organisers are not cached anymore, so all changes show up immediately.
 - :feature:`orga:speaker,1261` Automatic confirmation emails of received proposals are now also shown in the list of a user’s emails, since the absence was confusing for organisers and speakers.
 - :bug:`orga,1260` It was possible to change teams so that they had access to no events – neither via the explicit list, nor via the "all events" flag, which was extremely confusing.
 - :bug:`orga,1259` The organiser dashboard included deleted proposals in the count on the event overview.
@@ -226,7 +226,7 @@ Release Notes
 - :bug:`orga:email,1257` The email editor started to require all languages to be filled in, instead of at least one language. This was unintended, the previous behaviour has been restored.
 - :feature:`orga:schedule,766` When you change an event’s timezone, all talks will now be moved to appear at the same *local* time.
 - :bug:`orga:schedule,1248` It was possible to set a talk’s end time before its start time.
-- :bug:`schedule,1247` In some cases, individual talk iCalendar files could be empty.
+- :bug:`schedule,1247` In some cases, individual talk iCal files could be empty.
 - :bug:`orga:email,1244` Removed incorrect link to email editor from speaker pages.
 - :announcement:`admin` With the new ``move_event`` command, you can move events to the current day (default) or any other date, like this: ``move_event --event <event_name> --date 2021-12-26``
 - :release:`2.3.1 <2021-12-26>`
@@ -237,14 +237,14 @@ Release Notes
 - :feature:`api,1232` You can filter submissions by multiple states in the API now.
 - :announcement:`admin` When updating, please take care to update your plugins, as some interfaces have changed. Plugin authors, please refer to PR 1230 to see changed settings access.
 - :feature:`orga:review` Tags are now shown in the reviewer dashboard and can be filtered for.
-- :feature:`schedule` Pretalx now remembers the timezone you’ve selected on the schedule page across reloads.
+- :feature:`schedule` Pretalx now remembers the timezone you have selected on the schedule page across reloads.
 - :feature:`orga:schedule` The schedule editor now polls changes, so if somebody else changes the schedule while you’re editing it, you will see the changes soon afterwards.
 - :feature:`orga:schedule` Pretalx will now highlight overlapping sessions on the schedule editor, and will also warn you before you release a new schedule if sessions overlap in the same room.
 - :bug:`orga:schedule` When you clicked a talk in the schedule editor, it would open in a new window, but also stay in dragging mode in the editor page.
 - :bug:`orga:email` Fixed an issue when rendering individual session times in emails.
 - :feature:`schedule` Schedules have better scroll behaviour on very wide and very narrow displays.
 - :feature:`admin` Media files are now excluded from crawlers via robots.txt.
-- :bug:`orga:review` Fixed a bug where abstaining during the review process wasn’t possible while review scores were mandatory.
+- :bug:`orga:review` Fixed a bug where abstaining during the review process was not possible while review scores were mandatory.
 - :feature:`cfp` If you run a multi-lingual event, you don’t have to request the content locale in your CfP anymore.
 - :feature:`lang` pretalx now comes with new translations, in Arabic, Spanish, and Brazilian Portuguese!
 - :feature:`orga:email` Email signatures now look a lot better in HTML emails
@@ -253,11 +253,11 @@ Release Notes
 - :feature:`dev` Plugin languages can now be either globally available or only for active events – plugin developers, please adjust your plugins!
 - :feature:`cfp` Organisers can now disable the optional inclusion of gravatar images.
 - :feature:`schedule` If you attach ``?lang=en`` to a request, pretalx will serve the page in the requested language (if active in the current event).
-- :bug:`orga,1157` When adding a new organisers to a team, email suggestions from known users didn’t work.
+- :bug:`orga,1157` When adding a new organisers to a team, email suggestions from known users did not work.
 - :bug:`orga:submission,1157` When adding a new speaker to a proposal, pretalx would suggest organiser accounts rather than speaker accounts.
 - :feature:`orga:email,412` pretalx finally supports sending of emails based on templates, with a full template placeholder system. Hello, {name}!
 - :feature:`orga:email,715` Email filters are now subtractive instead of additive, giving you more fine-grained control about your bulk emails.
-- :bug:`orga:email,1150` pretalx now doesn’t allow you to test your custom SMTP settings until you have actually configured them.
+- :bug:`orga:email,1150` pretalx now does not allow you to test your custom SMTP settings until you have actually configured them.
 - :feature:`orga:review,976` Improved the tagging interface to be still useful with a large number of tags.
 - :feature:`orga:schedule,933` You can now change a session’s room and time in the session form, allowing for minute-level accuracy instead of our usual 5-minute intervals.
 - :feature:`dev` Plugins can now perform actions on every schedule release (for example, to trigger an update in external consumers to avoid polling).
@@ -265,7 +265,7 @@ Release Notes
 - :feature:`orga:schedule` As a reminder, the event timezone will be shown at the top of the schedule editor page.
 - :feature:`orga:review` Anonymisation for reviewers can now be switched on on a team level, overriding the general event settings.
 - :feature:`orga` Plugin selection is now available for all organisers, not just administrators.
-- :bug:`schedule` Session detail pages didn’t use the full width of the page.
+- :bug:`schedule` Session detail pages did not use the full width of the page.
 - :feature:`dev` There is a new plugin hook that allows you to perform actions when a new schedule is released.
 - :release:`2.2.0 <2021-08-15>`
 - :feature:`schedule` To improve performance, the NoJS schedule is now located on a separate page.
@@ -279,15 +279,15 @@ Release Notes
 - :feature:`cfp,1069` You can freeze a question after a certain date, prohibiting users from changing their answers after the deadline.
 - :feature:`cfp,1069` You can now attach deadlines to questions, making them optional before the deadline and mandatory afterwards.
 - :feature:`api` With the ``anon`` query parameter, you can request anonymised proposal data from the API, even when you have permission to see the full data.
-- :bug:`cfp` In the CfP editor, when a step description was only given in a language that wasn’t currently active, you couldn’t change it any longer.
+- :bug:`cfp` In the CfP editor, when a step description was only given in a language that was not currently active, you could not change it any longer.
 - :bug:`orga:email,1111` pretalx would send multiple emails for proposals with multiple speakers.
 - :bug:`orga:review` Not all existing review scores were recalculated when review score weights were changed during a review phase.
-- :feature:`schedule,1082` Event header images are now scaled down to a height of 150px.
+- :feature:`schedule,1082` Event header images are now scaled down to a height of ``150px``.
 - :bug:`orga:email,1093` pretalx sometimes over-reported the number of emails generated when bulk-sending emails.
 - :feature:`orga:submission,1092` You can now get a list of proposals or speakers that are still missing the answer to a given question.
 - :bug:`schedule` The display of external videos in pretalx was broken due to a security header being set too strictly.
 - :feature:`schedule` pretalx has better rendering for multi-line code blocks (``\`\`\```) in markdown elements and supports code highlighting.
-- :bug:`cfp` When your default submission type had a deadline prior to the event-wide deadline, the CfP form wouldn’t accept new proposals past the earlier deadline.
+- :bug:`cfp` When your default submission type had a deadline prior to the event-wide deadline, the CfP form would not accept new proposals past the earlier deadline.
 - :bug:`orga:schedule,1087` pretalx would sometimes show unnecessary warnings in the talk editor when talks were scheduled across day breaks.
 - :feature:`orga:review` You can mark review score categories as independent. They won’t be part of the total calculation, and instead show up as their own column in the review dashboard.
 - :feature:`orga:speaker` You can now search speakers by specific given answers, as you could already search proposals and sessions.
@@ -298,7 +298,7 @@ Release Notes
 - :feature:`orga:submission,1047` The review statistics timeline chart now includes the total submitted proposals to the given date, in addition to the proposals submitted on the given date.
 - :bug:`orga:review,1049` Reviewers without further permissions could not create tags, even when they had the necessary permissions.
 - :feature:`schedule,1036` The talk feedback page is now available once a talk has started, not once it is over.
-- :bug:`cfp,1023` If you used links to pre-fill parts of the CfP form, you sometimes couldn’t get part the first page.
+- :bug:`cfp,1023` If you used links to fill in parts of the CfP form, you sometimes could not get part the first page.
 - :bug:`schedule` The display of large talk images was off, extending them too far to the right.
 - :feature:`cfp` The availability widget now shows day names in your locale instead of always using English.
 - :feature:`orga:email` To prevent emails getting recorded as spam, the custom sender address is now only used when you are using a custom email server. You can still set the reply-to address.
@@ -318,7 +318,7 @@ Release Notes
 - :feature:`admin` You can now use the ``--silent`` flag with the ``regenerate_css`` command to reduce build verbosity.
 - :feature:`orga:schedule,735` You can now filter talks by track and type in the schedule editor.
 - :feature:`orga:schedule` Room availabilities are now more fine-grained, you can set them on a 15-minute basis instead of 30-minutes as before.
-- :bug:`orga` The statistics page didn’t work for events with just a single submission type.
+- :bug:`orga` The statistics page did not work for events with just a single submission type.
 - :release:`2.1.1 <2021-01-16>`
 - :release:`2.1.0 <2021-01-16>`
 - :bug:`admin,1046` pretalx shipped an incorrect override settings file that broke email sending.
@@ -331,7 +331,7 @@ Release Notes
 - :feature:`orga:review` Reviewers can now be asked to rate a proposal in several categories, with a total score calculated automatically.
 - :announcement:`schedule` Pretalx has a new schedule, with a new widget. The old widget is deprecated and will be removed in the next release. Please migrate all of your widgets to the new widget code. You can generate it in your event’s settings.
 - :announcement:`admin` Remember to check your access logs before upgrading to v2.1 to warn users about failing widgets.
-- :feature:`api` There are two new API endpoints, ``/questions/`` and ``/answers/``, that incientally are our first writable API endpoints. The API docs have been updated.
+- :feature:`api` There are two new API endpoints, ``/questions/`` and ``/answers/``, that incidentally are our first writable API endpoints. The API docs have been updated.
 - :feature:`admin` Email error reporting (sent to instance administrators) now includes a short explanation and a link to the pretalx issue tracker.
 - :feature:`api` If a speaker has selected to show their gravatar, it is now also exposed in the API in the avatar field.
 - :feature:`orga:email` When you send out reminders about unanswered questions, you can now target specific questions, or tracks, or submission types.
@@ -372,7 +372,7 @@ Release Notes
 - :bug:`admin` Under specific circumstances, the ``django_sessions`` table could bloat a lot. This is fixed with the next release and the table will shrink over time as long as you regularly run the ``clearsessions`` command.
 - :feature:`orga:speaker,855` The filtered list of speakers in the organiser area now contains only people with confirmed *or accepted* talks, and is also better at showing the filter currently applied.
 - :feature:`orga:review` Organisers can now anonymise submission content for reviewers, if they choose to do anonymised reviews. They can redact or edit any part of the submission for the reviewers’ view of it to remove identifying information.
-- :bug:`cfp` It wasn’t possible to hide a submission type unless accessed with an access token. (Or, well, it was possible, but the possibility was hidden.)
+- :bug:`cfp` It was not possible to hide a submission type unless accessed with an access token. (Or, well, it was possible, but the possibility was hidden.)
 - :feature:`orga,880` The submission statistics now ignore deleted submissions.
 - :announcement:`admin` This version of pretalx has higher database version requirements. We now support PostgreSQL 9.6+, MariaDB 10.1+, MySQL 5.6+, and SQLite 3.8.3+.
 - :bug:`cfp,877` The frontend markdown preview would not render all line breaks as line breaks (only two line breaks in a row), but the server rendered version did.
@@ -412,7 +412,7 @@ Release Notes
 - :feature:`orga:review,638` You can now determine if the answers to talk questions should be visible to reviewers. This allows you to ask personal questions of your submitters, even when you are running an anonymous review process.
 - :feature:`orga,648` pretalx now comes with a CfP editor that allows you to change the headline, text, and help texts on each of the CfP step pages.
 - :feature:`api,760` Speakers can now see and reset their API token in their profile page.
-- :announcement:`dev` We have added a couple of pages to the pretalx wiki on GitHub, most importantly a list of events using pretalx, and a list of available plugins. The wiki is world-writable, so please add to it if you have an event or plugin that hasn’t been mentioned yet!
+- :announcement:`dev` We have added a couple of pages to the pretalx wiki on GitHub, most importantly a list of events using pretalx, and a list of available plugins. The wiki is world-writable, so please add to it if you have an event or plugin that has not been mentioned yet!
 - :feature:`orga:schedule,277` The static HTML export will now be triggered when talk or speaker data is changed (as long as it’s also generated on schedule release). To protect against high server load, it will still run at most once every hour.
 - :feature:`schedule` To reduce scroll wheel abrasions, pretalx schedules are now tabbed with one tab per event day.
 - :feature:`schedule,242` pretalx has learned what breaks are. Organisers can create those in the schedule editor, and they will be shown in an appropriately muted way in the schedule.
@@ -424,7 +424,7 @@ Release Notes
 - :release:`1.0.4 <2019-10-15>`
 - :bug:`schedule` In feedback pages for talks that contained multiple speakers, the email addresses of those speakers were shown next to their names.
 - :feature:`orga` Allow users to add an imprint URL that will be shown at the bottom of every public event page.
-- :bug:`schedule` On the sneak peek preview page, markdown wasn’t rendered correctly to HTML.
+- :bug:`schedule` On the sneak peek preview page, markdown was not rendered correctly to HTML.
 - :feature:`dev` If pretalx is running in development mode, its favicon will be red.
 - :feature:`dev` Plugin authors will now have access to all configuration sections starting with ``[plugin:*]``, to ease the integration of system level settings.
 - :feature:`api,787` Provide the file uploads a speaker added to their submission via the ``/talks`` and ``/submissions`` API endpoint.
@@ -505,7 +505,7 @@ Release Notes
 - :bug:`orga:schedule` Changing the order of rooms made the schedule break.
 - :feature:`orga:review,433` Organisers can now view all reviews, except for their own submissions.
 - :feature:`orga,589` Before setting a new custom domain for an event, pretalx now checks if the domain has any DNS records.
-- :bug:`cfp` A dependency of ours introduced an XSS vulnerability, which organisers could use to execute JavaScript during the CfP workflow of speakers via question texts. We have added a fix against this behaviour, and submitted a report including a patch to the upstream library. To prevent issues like this one in the future, we’ve moved all remaining JavaScript sources to files, and set the according CSP header, so that execution of inline JavaScript will be disabled.
+- :bug:`cfp` A dependency of ours introduced an XSS vulnerability, which organisers could use to execute JavaScript during the CfP workflow of speakers via question texts. We have added a fix against this behaviour, and submitted a report including a patch to the upstream library. To prevent issues like this one in the future, we have moved all remaining JavaScript sources to files, and set the according CSP header, so that execution of inline JavaScript will be disabled.
 - :feature:`cfp,364` Speakers can now invite a co-speaker while in the submission process.
 - :feature:`schedule,62` Exporters can now opt in to show a QR code to their location. The XML and iCal exporters show a QR code linking their location by default.
 - :feature:`orga:schedule,477` If you only noticed after releasing your schedule that you wanted to changes something in your speaker notifications, you can now generate those emails again from the schedule editor actions menu.
@@ -532,10 +532,10 @@ Release Notes
 - :bug:`schedule` The visual representation of a speaker’s avatar is now consistent across all image-sizes and bio-texts.
 - :bug:`cfp,583` When signing up with an email address with upper case letters included, pretalx only allowed to log in with a lower-cased email address.
 - :bug:`orga:speaker,572` People who had only deleted submissions in an event were still shown in the submitter list, which was unexpected and was since fixed.
-- :feature:`lang` If only one conference language is available, pretalx doesn’t as speakers to choose it from a drop-down, as this behaviour is rather silly.
-- :announcement:`admin` pretalx doesn’t run ``regenerate_css`` on startup automatically any longer. This reduces startup times. If for any reason an event does not look as it should, you can fix it by running ``python -m pretalx regenerate_css``. You will also need to execute this command on updates from now on.
+- :feature:`lang` If only one conference language is available, pretalx does not as speakers to choose it from a drop-down, as this behaviour is rather silly.
+- :announcement:`admin` pretalx does not run ``regenerate_css`` on startup automatically any longer. This reduces startup times. If for any reason an event does not look as it should, you can fix it by running ``python -m pretalx regenerate_css``. You will also need to execute this command on updates from now on.
 - :feature:`orga:schedule` You can now decide if you want to notify speakers about their changed talks when releasing a new schedule.
-- :announcement:`admin` To help make other pretalx installations more secure, we’ve updated our proposed nginx configuration to include an attachment header for all files under /media, to prevent user uploaded data to be delivered directly to other users. If you host a pretalx instance, please make use of this option.
+- :announcement:`admin` To help make other pretalx installations more secure, we have updated our proposed nginx configuration to include an attachment header for all files under /media, to prevent user uploaded data to be delivered directly to other users. If you host a pretalx instance, please make use of this option.
 - :feature:`orga` Since SVG files are nearly impossible to sanitise, pretalx has given up trying, and will no longer accept SVG files as image uploads.
 - :bug:`schedule` The iCal export for speakers who had both scheduled and not-yet-scheduled talks was broken.
 - :feature:`orga:speaker,559` Organisers can download a list of speakers as a CSV file.
@@ -549,7 +549,7 @@ Release Notes
 - :feature:`-` You can now set the default pretalx system wide time zone and locale (defaulting to ``UTC`` and English).
 - :bug:`544` Organisers could see the titles of speaker information notes of all events, not just the currently active one (they could not see the details or edit them).
 - :feature:`504` The schedule page is now better printable.
-- :bug:`-` A `bug <https://github.com/celery/celery/issues/4878>` in celery could make running pretalx with asynchronous workers impossible. We’ve pinned an earlier celery version that doesn’t show this problem.
+- :bug:`-` A `bug <https://github.com/celery/celery/issues/4878>` in celery could make running pretalx with asynchronous workers impossible. We have pinned an earlier celery version that does not show this problem.
 - :announcement:`-` A new pretalx plugin adds media.ccc.de as a recording provider – this plugin replaces the previously inbuilt capacity of pretalx to provide recording iframes. (This functionality was never directly exposed and only accessible via the pretalx shell. It is now deprecated and will be removed in a later version.)
 - :feature:`-` Plugins can now provide recording iframes (via the new ``register_recording_provider`` signal and other helpers).
 - :feature:`-` The new ``nav_event_settings`` plugin signal allows plugins to integrate their own settings pages next to the pretalx core pages.
@@ -569,7 +569,7 @@ Release Notes
 - :feature:`-` The ``rebuild`` command now comes with a lot more build output for ease of debugging. You can disable the build output with the new ``--silent/-s`` flag.
 - :feature:`476` Administrators can now delete both events and organisers.
 - :feature:`493` Speaker email addresses are now available via the API for users with access permissions.
-- :bug:`515` Under rare circumstances, the pretalx database could reach a state pretalx couldn’t cope with due to duplicate schedule versions.
+- :bug:`515` Under rare circumstances, the pretalx database could reach a state pretalx could not cope with due to duplicate schedule versions.
 - :feature:`512` You can now configure if speakers should provide their availability during talk submission.
 - :announcement:`admin` Due to an updated Django version, pretalx has dropped support for PostgreSQL 9.3 and MySQL 5.5.
 - :release:`0.8.0 <2018-09-23>`
@@ -597,7 +597,7 @@ Release Notes
 - :feature:`214` The schedule editor shows warnings on scheduling conflicts, including live feedback on where you can schedule a talk.
 - :feature:`474` The review dashboard now features the same search and filter options as the submission list.
 - :bug:`473` Following the revamp of team permissions, override votes were missing from the settings. We re-introduced the settings, and improved the general handling of override votes.
-- :announcement:`admin` pretalx now doesn’t support usernames any longer – as all users had to have email addresses already, you will now have to provide an email address to log in. This may confuse users – as an administrator, you can look up users’ email addresses if they don’t remember them, or change them, if necessary.
+- :announcement:`admin` pretalx now does not support usernames any longer – as all users had to have email addresses already, you will now have to provide an email address to log in. This may confuse users – as an administrator, you can look up users’ email addresses if they don’t remember them, or change them, if necessary.
 - :bug:`-` You could make questions inactive, but not delete them.
 - :feature:`408` You can now add length restrictions to abstracts, descriptions, speaker biographies, and all text-based questions.
 - :feature:`-` When linking to a talk on social media, those pages will show the talk image.
@@ -677,7 +677,7 @@ Release Notes
 - :bug:`-` The organiser view now always uses the event timezone.
 - :release:`0.4.1 <2018-02-05>`
 - :bug:`335` CfP was not editable due to missing "Save" button.
-- :bug:`336` Organisers couldn’t add new questions.
+- :bug:`336` Organisers could not add new questions.
 - :release:`0.4.0 <2018-02-04>`
 - :feature:`-` A page in the organiser area lists and links all possible data exports in one export page.
 - :feature:`322` You may now import XML files to release a new schedule.

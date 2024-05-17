@@ -67,7 +67,7 @@ to help with unofficial languages).
 Updating translations
 ---------------------
 
-New or changed translations aren’t visible in pretalx immediately. We update
+New or changed translations are not visible in pretalx immediately. We update
 the translations in the development version of pretalx regularly (roughly
 weekly), and also before every new release.
 

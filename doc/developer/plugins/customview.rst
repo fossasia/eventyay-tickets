@@ -42,8 +42,9 @@ If you want to add a custom view to the organiser area of an event, register an 
         ),
     ]
 
-If you just created your `urls.py` file and you already had the dev-server
-running, you’ll now have to restart it for the new file to be recognized.
+If you just created your `urls.py` file and you already had the development
+server running, you’ll now have to restart it for the new file to be
+recognised.
 
 If your view is event-specific, you have to name one parameter in your URL
 ``event``. By convention, all plugin URLs except for backend URLs start with
@@ -96,7 +97,7 @@ Frontend views
 
 Frontend views work pretty much like organiser area views. Take care that your
 URL starts with ``fr"^(?P<event>[{SLUG_REGEX}]+)/p/mypluginname"`` for event
-related urls or ``f"^p/mypluginname"`` for global views. You can then write a
+related URLs or ``f"^p/mypluginname"`` for global views. You can then write a
 regular view. It will be automatically ensured that:
 
 * The requested event exists
