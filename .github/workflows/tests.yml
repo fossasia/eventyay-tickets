@@ -12,6 +12,11 @@ on:
       - 'doc/**'
       - 'src/pretalx/locale/**'
 
+permissions:
+  contents: write
+  checks: write
+  pull-requests: write
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
@@ -90,23 +95,25 @@ jobs:
         run: python manage.py compilemessages
         working-directory: ./src
       - name: Run tests
-        id: pytest
         working-directory: ./src
         run: |
-          REPORT="$(mktemp)"
-          echo "report-path=$REPORT" >> $GITHUB_OUTPUT
-          echo "REPORT_FILE=${REPORT}" >> $GITHUB_ENV
-          python -m pytest -nauto -p no:sugar --reruns 3 --cov-report=term-missing:skip-covered tests
+          python -m pytest \
+            -nauto -p no:sugar \
+            --junitxml=pytest.xml \
+            --reruns 3 \
+            --cov-report=term-missing:skip-covered \
+            tests | tee pytest-coverage.txt
         env:
           PRETALX_CONFIG_FILE: 'tests/ci_${{ matrix.database }}.cfg'
-      - name: Show test report in summary
-        working-directory: ./src
-        run: |
-          echo "::group::..."
-          echo "## Test Report: Python ${{ matrix.python-version }} on ${{ matrix.database }}" >> $GITHUB_STEP_SUMMARY
-          tail -n+2 "${{ steps.pytest.outputs.report-path }}" >> $GITHUB_STEP_SUMMARY
-          echo "::endgroup::"
-        if: always()
+      - name: Coverage comment
+        uses: MishaKav/pytest-coverage-comment@main
+        with:
+          pytest-coverage-path: ./src/pytest-coverage.txt
+          junitxml-path: ./src/pytest.xml
+          junitxml-title: Test summary
+          report-only-changed-files: true
+          title: Full coverage report
+        if: always() && matrix.database == 'postgres' && matrix.python-version == '3.12'
       - name: Show coverage as build info
         working-directory: ./src
         run: |
@@ -115,6 +122,7 @@ jobs:
           export TOTAL_COV=$(python -c "import json;print(json.load(open('coverage.json'))['totals']['percent_covered_display'])")
           echo "TOTAL_COV=$TOTAL_COV" >> $GITHUB_ENV
           echo "## Test coverage: $TOTAL_COV%" >> $GITHUB_STEP_SUMMARY
+          echo "${{ steps.coverageComment.outputs.summaryReport }}" >> $GITHUB_STEP_SUMMARY
           python -m coverage report --skip-covered --skip-empty --show-missing --format=markdown >> $GITHUB_STEP_SUMMARY
 
           python -m coverage report
