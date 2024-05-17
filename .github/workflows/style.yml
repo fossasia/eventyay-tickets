@@ -44,6 +44,8 @@ jobs:
           cache: "pip"
       - name: Install Dependencies
         run: python -m pip install -Ue ".[dev]"
+      - name: Setup flake8 annotations
+        uses: rbialon/flake8-annotations@v1
       - name: Run flake8
         run: flake8 .
         working-directory: ./src
@@ -52,6 +54,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version-file: ".github/workflows/python-version.txt"
+          cache: "pip"
       - uses: psf/black@stable
         with:
           src: "./src"
