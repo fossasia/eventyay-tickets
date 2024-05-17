@@ -180,4 +180,4 @@ spelling:
 	$(SPHINXBUILD) -b spelling $(ALLSPHINXOPTS) $(BUILDDIR)/spelling
 	@echo
 	@echo "Spelling check finished, look at the results in " \
-		  "$(BUILDDIR)/spelling/output.txt."
+		  "$(BUILDDIR)/spelling/*."

@@ -137,7 +137,7 @@ autodoc_member_order = 'groupwise'
 if HAS_PYENCHANT:
     spelling_lang = 'en_GB'
     spelling_word_list_filename='spelling_wordlist.txt'
-    spelling_show_suggestions=True
+    spelling_show_suggestions=False
 
 # Copybutton options
 copybutton_prompt_text = r">>> |\.\.\. |\$ |In \[\d*\]: | {2,5}\.\.\.: | {5,8}: |# |\(env\)\$ "
