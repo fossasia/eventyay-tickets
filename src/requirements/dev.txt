@@ -15,7 +15,7 @@ pytest-mock==2.0.*
 responses
 potypo
 freezegun
-psycopg2-binary==2.8.6
+psycopg2-binary==2.9.9
 
 # Not really required, just nice to have
 pytest-xdist==1.31.*
