@@ -3,7 +3,7 @@ from pathlib import Path
 from django.core.files import File
 from django.forms import ClearableFileInput, PasswordInput, Textarea
 from django.utils.safestring import mark_safe
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 
 class PasswordStrengthInput(PasswordInput):
