@@ -26,9 +26,11 @@ Your should install the following on your system:
 * ``libssl`` (Debian package: ``libssl-dev``)
 * ``libxml2`` (Debian package ``libxml2-dev``)
 * ``libxslt`` (Debian package ``libxslt1-dev``)
-* ``libenchant1c2a`` (Debian package ``libenchant1c2a``)
+* ``libenchant1c2a`` (Debian package ``libenchant1c2a`` or ``libenchant2-2``)
 * ``msgfmt`` (Debian package ``gettext``)
+* ``freetype`` (Debian package ``libfreetype-dev``)
 * ``git``
+* for pillow: ``libjpeg`` (Debian Package ``libjpeg-dev``)
 
 Your local python environment
 -----------------------------
