@@ -4,7 +4,7 @@ import random
 import pytest
 from django.core.management import call_command
 from django.utils.timezone import now
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from django_scopes import scope
 
 SEED = random.randint(0, 100000)

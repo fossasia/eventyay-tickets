@@ -2,7 +2,7 @@ import json
 
 from django import forms
 from django.utils.formats import get_format
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from django_scopes.forms import SafeModelChoiceField, SafeModelMultipleChoiceField
 
 from pretalx.common.forms.fields import ImageField

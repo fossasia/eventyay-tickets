@@ -18,7 +18,7 @@ from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils.timezone import now
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from django.utils.translation import override
 from django.views.generic import FormView, ListView, TemplateView, UpdateView, View
 from django_context_decorator import context
