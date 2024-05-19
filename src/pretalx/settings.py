@@ -1,3 +1,4 @@
+import logging
 import os
 import sys
 from contextlib import suppress
@@ -10,8 +11,8 @@ from django.utils.translation import gettext_lazy as _
 from pkg_resources import iter_entry_points
 
 from pretalx import __version__
-from pretalx.common.text.console import log_initial
 from pretalx.common.settings.config import build_config
+from pretalx.common.text.console import log_initial
 
 config, CONFIG_FILES = build_config()
 CONFIG = config
@@ -265,6 +266,7 @@ LOGGING = {
         },
     },
 }
+logging.getLogger("MARKDOWN").setLevel(logging.WARNING)
 
 email_level = config.get("logging", "email_level", fallback="ERROR") or "ERROR"
 emails = config.get("logging", "email", fallback="").split(",")
