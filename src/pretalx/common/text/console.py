@@ -68,20 +68,21 @@ def print_line(string, box=False, bold=False, color=None, size=None):
             print("unprintable setting")
 
 
-def log_initial(*, debug, config_files, db_name, db_backend, LOG_DIR, plugins):
+def log_initial(*, debug, config_files, db_name, db_backend, log_dir, plugins):
     from pretalx import __version__
 
     with suppress(Exception):  # geteuid is not available on all OS
         if os.geteuid() == 0:
             print_line("You are running pretalx as root, why?", bold=True)
 
+    # (text, bold)
     lines = [
         (f"pretalx v{__version__}", True),
         (f'Settings:  {", ".join(config_files)}', False),
         (f"Database:  {db_name} ({db_backend})", False),
-        (f"Logging:   {LOG_DIR}", False),
-        (f"Root dir:  {Path(__file__).parent.parent.parent}", False),
+        (f"Logging:   {log_dir}", False),
         (f"Python:    {executable}", False),
+        (f"Source:    {Path(__file__).parent.parent.parent}", False),
     ]
     if plugins:
         plugin_lines = textwrap.wrap(", ".join(plugins), width=92)

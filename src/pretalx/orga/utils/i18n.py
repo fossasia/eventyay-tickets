@@ -139,14 +139,12 @@ moment_locales = {
     "zh-cn",
 }
 
-toJavascript_re = re.compile(
-    r"(?<!\w)(" + "|".join(date_conversion_to_moment.keys()) + r")\b"
-)
+JS_REGEX = re.compile(r"(?<!\w)(" + "|".join(date_conversion_to_moment.keys()) + r")\b")
 
 
 def get_javascript_format(format_name):
     f = get_format(format_name)[0]
-    return toJavascript_re.sub(lambda x: date_conversion_to_moment[x.group()], f)
+    return JS_REGEX.sub(lambda x: date_conversion_to_moment[x.group()], f)
 
 
 def get_moment_locale(locale=None):

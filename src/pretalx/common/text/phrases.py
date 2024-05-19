@@ -8,8 +8,8 @@ _phrase_book = {}
 
 
 class PhrasesMetaClass(ABCMeta):  # noqa
-    def __new__(mcs, class_name, bases, namespace, app):
-        new = super().__new__(mcs, class_name, bases, namespace)
+    def __new__(cls, class_name, bases, namespace, app):
+        new = super().__new__(cls, class_name, bases, namespace)
         _phrase_book[app] = new()
         return new
 

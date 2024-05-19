@@ -1,6 +1,6 @@
 from io import StringIO
 from urllib.parse import quote
-from xml.etree import ElementTree as ET
+from xml.etree import ElementTree
 
 import qrcode
 import qrcode.image.svg
@@ -97,7 +97,7 @@ class BaseExporter:
         image = qrcode.make(
             self.urls.base.full(), image_factory=qrcode.image.svg.SvgImage
         )
-        return mark_safe(ET.tostring(image.get_image()).decode())
+        return mark_safe(ElementTree.tostring(image.get_image()).decode())
 
 
 class CSVExporterMixin:
