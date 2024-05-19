@@ -85,6 +85,7 @@ dev = [
   "isort",
   "jsonschema",
   "lxml",
+  "pep8-naming",
   "pytest",
   "pytest-cov",
   "pytest-django",

@@ -689,7 +689,7 @@ else:
         config_files=CONFIG_FILES,
         db_name=db_name,
         db_backend=db_backend,
-        LOG_DIR=LOG_DIR,
+        log_dir=LOG_DIR,
         plugins=PLUGINS,
     )
 

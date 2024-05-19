@@ -16,14 +16,14 @@ def rolledback_transaction():
     frequently.
     """
 
-    class DummyRollbackException(Exception):
+    class DummyRollbackError(Exception):
         pass
 
     try:
         with transaction.atomic():
             yield
-            raise DummyRollbackException()
-    except DummyRollbackException:
+            raise DummyRollbackError()
+    except DummyRollbackError:
         pass
     else:  # pragma: no cover
         raise Exception("Invalid state, should have rolled back.")
