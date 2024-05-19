@@ -17,7 +17,7 @@ from django.utils.crypto import get_random_string
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from django.views.generic import TemplateView
-from PyPDF2 import PdfFileWriter
+from PyPDF2 import PdfReader, PdfWriter
 from reportlab.lib.units import mm
 
 from pretix.base.i18n import language
@@ -123,9 +123,9 @@ class BaseEditorView(EventPermissionRequiredMixin, TemplateView):
 
     def post(self, request, *args, **kwargs):
         if "emptybackground" in request.POST:
-            p = PdfFileWriter()
+            p = PdfWriter()
             try:
-                p.addBlankPage(
+                p.add_blank_page(
                     width=float(request.POST.get('width')) * mm,
                     height=float(request.POST.get('height')) * mm,
                 )
