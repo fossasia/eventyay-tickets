@@ -1,4 +1,4 @@
-FROM python:3.8
+FROM python:3.8-bookworm
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -15,12 +15,13 @@ RUN apt-get update && \
             libxslt1-dev \
             locales \
             nginx \
-            python-dev \
-            python-virtualenv \
+            python3-virtualenv \
             python3-dev \
             sudo \
             supervisor \
-            zlib1g-dev && \
+            zlib1g-dev \
+            npm \
+            nodejs && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
     dpkg-reconfigure locales && \
@@ -31,11 +32,7 @@ RUN apt-get update && \
     useradd -ms /bin/bash -d /pretix -u 15371 pretixuser && \
     echo 'pretixuser ALL=(ALL) NOPASSWD:SETENV: /usr/bin/supervisord' >> /etc/sudoers && \
     mkdir /static && \
-    mkdir /etc/supervisord && \
-	curl -fsSL https://deb.nodesource.com/setup_15.x | sudo -E bash - && \
-    apt-get install -y nodejs && \
-    curl -qL https://www.npmjs.com/install.sh | sh
-
+    mkdir /etc/supervisord
 
 ENV LC_ALL=C.UTF-8 \
     DJANGO_SETTINGS_MODULE=production_settings
