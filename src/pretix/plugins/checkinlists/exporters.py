@@ -12,7 +12,6 @@ from django.urls import reverse
 from django.utils.formats import date_format
 from django.utils.timezone import is_aware, make_aware
 from django.utils.translation import gettext as _, gettext_lazy, pgettext
-from jsonfallback.functions import JSONExtract
 from pytz import UTC
 from reportlab.lib.units import mm
 from reportlab.platypus import Flowable, Paragraph, Spacer, Table, TableStyle
@@ -25,6 +24,8 @@ from pretix.base.settings import PERSON_NAME_SCHEMES
 from pretix.base.templatetags.money import money_filter
 from pretix.control.forms.widgets import Select2
 from pretix.plugins.reports.exporters import ReportlabExportMixin
+
+from ...helpers.templatetags.jsonfield import JSONExtract
 
 
 class CheckInListMixin(BaseExporter):

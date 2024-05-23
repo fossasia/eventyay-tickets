@@ -15,7 +15,6 @@ from django.db.models import Exists, OuterRef, Q
 from django.db.models.functions import Coalesce
 from django.utils.timezone import make_aware
 from django.utils.translation import gettext as _, gettext_lazy
-from jsonfallback.functions import JSONExtract
 from reportlab.lib import pagesizes
 from reportlab.lib.units import mm
 from reportlab.pdfgen import canvas
@@ -28,6 +27,7 @@ from pretix.base.services.orders import OrderError
 from pretix.base.settings import PERSON_NAME_SCHEMES
 from pretix.plugins.badges.models import BadgeItem, BadgeLayout
 
+from ...helpers.templatetags.jsonfield import JSONExtract
 
 def _renderer(event, layout):
     if layout is None:
