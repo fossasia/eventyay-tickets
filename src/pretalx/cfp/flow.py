@@ -211,6 +211,8 @@ class FormFlowStep(TemplateFlowStep):
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)
         result["form"] = self.get_form()
+        previous_data = self.cfp_session.get("data")
+        result["submission_title"] = previous_data.get("info", {}).get("title")
         return result
 
     def post(self, request):
