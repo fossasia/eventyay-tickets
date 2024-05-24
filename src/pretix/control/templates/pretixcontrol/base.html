@@ -385,7 +385,7 @@
                         <div class="alert alert-info">
                             <a href="{% url "control:global.update" %}">
                                 {% blocktrans trimmed %}
-                                    Starting with version 1.2.0, pretix automatically checks for updates in the background.
+                                    Starting with version 1.2.0, system automatically checks for updates in the background.
                                     During this check, anonymous data is transmitted to servers operated by pretix'
                                     developers. Click on this message to find out more, disable this feature or enter your
                                     email address to get notified via email if a new update arrives. This message will
@@ -397,7 +397,7 @@
 
                     {% if debug_warning %}
                         <div class="alert alert-danger">
-                            {% trans "pretix is running in debug mode. For security reasons, please never run debug mode on a production instance." %}
+                            {% trans "system is running in debug mode. For security reasons, please never run debug mode on a production instance." %}
                         </div>
                     {% endif %}
 
@@ -410,9 +410,9 @@
                                 Times displayed in {{ tz }}
                             {% endblocktrans %} &middot;
                         {% endif %}
-                        {% with "href='http://pretix.eu'" as a_attr %}
+                        {% with "href='https://eventyay.com'" as a_attr %}
                             {% blocktrans trimmed %}
-                                powered by <a {{ a_attr }}>pretix</a>
+                                powered by <a {{ a_attr }}>eventyay</a>
                             {% endblocktrans %}
                         {% endwith %}
                         {% if development_warning %}

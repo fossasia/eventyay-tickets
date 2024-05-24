@@ -74,9 +74,9 @@ class UpdateSettingsForm(SettingsForm):
     update_check_perform = forms.BooleanField(
         required=False,
         label=_("Perform update checks"),
-        help_text=_("During the update check, pretix will report an anonymous, unique installation ID, "
-                    "the current version of pretix and your installed plugins and the number of active and "
-                    "inactive events in your installation to servers operated by the pretix developers. We "
+        help_text=_("During the update check, eventyay will report an anonymous, unique installation ID, "
+                    "the current version of the system and your installed plugins and the number of active and "
+                    "inactive events in your installation to servers operated by the eventyay developers. We "
                     "will only store anonymous data, never any IP addresses and we will not know who you are "
                     "or where to find your instance. You can disable this behavior here at any time.")
     )
@@ -84,7 +84,7 @@ class UpdateSettingsForm(SettingsForm):
         required=False,
         label=_("E-mail notifications"),
         help_text=_("We will notify you at this address if we detect that a new update is available. This "
-                    "address will not be transmitted to pretix.eu, the emails will be sent by this server "
+                    "address will not be transmitted to eventyay.com, the emails will be sent by this server "
                     "locally.")
     )
 
