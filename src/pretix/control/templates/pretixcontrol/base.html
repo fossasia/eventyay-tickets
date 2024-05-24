@@ -65,7 +65,7 @@
 
         <meta name="viewport" content="width=device-width, initial-scale=1">
         {% if development_warning or debug_warning %}
-            <link rel="shortcut icon" href="{% static "pretixbase/img/favicon-debug.ico" %}">
+            <link rel="shortcut icon" href="{% static "pretixbase/img/icon_debug.ico" %}">
         {% else %}
             <link rel="shortcut icon" href="{% static "pretixbase/img/favicon.ico" %}">
             <link rel="icon" type="image/png" sizes="32x32" href="{% static "pretixbase/img/icons/favicon-32x32.png" %}">
@@ -120,11 +120,13 @@
                             class="navbar-toggle mobile-navbar-view-link">
                             <i class="fa fa-eye"></i>
                         </a>
-                    {% endif %}
-                    <a class="navbar-brand" href="{% url "control:index" %}">
-                        <img src="{% static "pretixbase/img/pretix-icon.svg" %}" />
+                    {% endif %} 
+                      <a class="navbar-brand" href="{% url "control:index" %}">
+                        <img src="{% static "pretixbase/img/icon_white.svg" %}" />
                         {{ settings.PRETIX_INSTANCE_NAME }}
                     </a>
+                    
+
                 </div>
                 <ul class="nav navbar-nav navbar-top-links navbar-left flip hidden-xs">
                     {% if request.event %}
@@ -385,8 +387,8 @@
                         <div class="alert alert-info">
                             <a href="{% url "control:global.update" %}">
                                 {% blocktrans trimmed %}
-                                    Starting with version 1.2.0, pretix automatically checks for updates in the background.
-                                    During this check, anonymous data is transmitted to servers operated by pretix'
+                                    Starting with version 1.2.0, Eventyay automatically checks for updates in the background.
+                                    During this check, anonymous data is transmitted to servers operated by eventyay'
                                     developers. Click on this message to find out more, disable this feature or enter your
                                     email address to get notified via email if a new update arrives. This message will
                                     disappear once you clicked it.
@@ -397,7 +399,7 @@
 
                     {% if debug_warning %}
                         <div class="alert alert-danger">
-                            {% trans "pretix is running in debug mode. For security reasons, please never run debug mode on a production instance." %}
+                            {% trans "Eventyay is running in debug mode. For security reasons, please never run debug mode on a production instance." %}
                         </div>
                     {% endif %}
 
@@ -410,9 +412,9 @@
                                 Times displayed in {{ tz }}
                             {% endblocktrans %} &middot;
                         {% endif %}
-                        {% with "href='http://pretix.eu'" as a_attr %}
+                        {% with "href='https://eventyay.com/'" as a_attr %}
                             {% blocktrans trimmed %}
-                                powered by <a {{ a_attr }}>pretix</a>
+                                powered by <a {{ a_attr }}>Eventyay</a>
                             {% endblocktrans %}
                         {% endwith %}
                         {% if development_warning %}

@@ -37,15 +37,15 @@ pretix settings
 Example::
 
     [pretix]
-    instance_name=pretix.de
+    instance_name=Eventyay
     url=http://localhost
     currency=EUR
     datadir=/data
     plugins_default=pretix.plugins.sendmail,pretix.plugins.statistics
-    cookie_domain=.pretix.de
+    cookie_domain=.eventyay
 
 ``instance_name``
-    The name of this installation. Default: ``pretix.de``
+    The name of this installation. Default: ``Eventyay``
 
 ``url``
     The installation's full URL, without a trailing slash.
