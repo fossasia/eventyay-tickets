@@ -5,6 +5,7 @@ import sys
 from urllib.parse import urlparse
 from .settings_helpers import build_db_tls_config, build_redis_tls_config
 import django.conf.locale
+from django.core.exceptions import ImproperlyConfigured
 from django.utils.crypto import get_random_string
 from kombu import Queue
 from pkg_resources import iter_entry_points
@@ -71,17 +72,11 @@ PRETIX_AUTH_BACKENDS = config.get('pretix', 'auth_backends', fallback='pretix.ba
 db_backend = config.get('database', 'backend', fallback='sqlite3')
 if db_backend == 'postgresql_psycopg2':
     db_backend = 'postgresql'
-DATABASE_IS_GALERA = config.getboolean('database', 'galera', fallback=False)
-if DATABASE_IS_GALERA and 'mysql' in db_backend:
-    db_options = {
-        'init_command': 'SET SESSION wsrep_sync_wait = 1;'
-    }
-else:
-    db_options = {}
+if db_backend == 'mysql':
+    raise ImproperlyConfigured("MySQL/MariaDB is not supported")
 
-if 'mysql' in db_backend:
-    db_options['charset'] = 'utf8mb4'
-JSON_FIELD_AVAILABLE = db_backend in ('mysql', 'postgresql')
+JSON_FIELD_AVAILABLE = db_backend == 'postgresql'
+db_options = {}
 
 db_tls_config = build_db_tls_config(config, db_backend)
 if (db_tls_config is not None):
@@ -98,10 +93,7 @@ DATABASES = {
         'PORT': config.get('database', 'port', fallback=''),
         'CONN_MAX_AGE': 0 if db_backend == 'sqlite3' else 120,
         'OPTIONS': db_options,
-        'TEST': {
-            'CHARSET': 'utf8mb4',
-            'COLLATION': 'utf8mb4_unicode_ci',
-        } if 'mysql' in db_backend else {}
+        'TEST': {}
     }
 }
 DATABASE_REPLICA = 'default'
@@ -116,10 +108,7 @@ if config.has_section('replica'):
         'PORT': config.get('replica', 'port', fallback=DATABASES['default']['PORT']),
         'CONN_MAX_AGE': 0 if db_backend == 'sqlite3' else 120,
         'OPTIONS': db_options,
-        'TEST': {
-            'CHARSET': 'utf8mb4',
-            'COLLATION': 'utf8mb4_unicode_ci',
-        } if 'mysql' in db_backend else {}
+        'TEST': {}
     }
     DATABASE_ROUTERS = ['pretix.helpers.database.ReplicaRouter']
 

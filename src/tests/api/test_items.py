@@ -718,10 +718,7 @@ def test_item_create_with_addon(token_client, organizer, event, item, category, 
         format='json'
     )
     assert resp.status_code == 400
-    assert resp.content.decode() in [
-        '{"addons":["The minimum count needs to be equal to or greater than zero."]}',
-        '{"addons":[{"min_count":["Ensure this value is greater than or equal to 0."]}]}',  # mysql
-    ]
+    assert resp.content.decode() == '{"addons":["The minimum count needs to be equal to or greater than zero."]}'
     with scopes_disabled():
         assert 2 == Item.objects.all().count()
 

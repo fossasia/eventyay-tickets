@@ -1,0 +1,145 @@
+[project]
+name = "eventyay"
+dynamic = ["version"]
+description = "the open source event solution"
+readme = "README.rst"
+requires-python = ">=3.8"
+license = {file = "LICENSE"}
+keywords = ["tickets", "events", "web", "shop", "ecommerce"]
+authors = [ {name = "eventyay", email = "info@eventyay.com"}, ]
+maintainers = [ {name = "eventyay", email = "info@eventyay.com"}, ]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Other Audience",
+  "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+  "Environment :: Web Environment",
+  "License :: OSI Approved :: Apache License, Version 2.0",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Framework :: Django :: 3.2",
+]
+dependencies = [
+        'Django==3.2.*',
+        'djangorestframework==3.12.*',
+        'python-dateutil==2.8.*',
+        'isoweek',
+        'requests==2.25.0',
+        'pytz',
+        'django-bootstrap3==15.0.*',
+        'django-formset-js-improved==0.5.0.2',
+        'django-compressor==2.4.*',
+        'django-hierarkey==1.0.*,>=1.0.4',
+        'django-filter==2.4.*',
+        'django-scopes==1.2.*',
+        'django-localflavor==3.0.*',
+        'reportlab>=3.5.65',
+        'Pillow==8.*',
+        'PyPDF2==1.26.*',
+        'django-libsass==0.8',
+        'libsass==0.20.*',
+        'django-otp==0.7.*,>=0.7.5',
+        'webauthn==0.4.*',
+        'python-u2flib-server==4.*',
+        'django-formtools==2.3',
+        'celery==4.4.*',
+        'kombu==4.6.*',
+        'django-statici18n==1.9.*',
+        'inlinestyler==0.2.*',
+        'BeautifulSoup4==4.8.*',
+        'slimit',
+        'lxml',
+        'static3==0.7.*',
+        'dj-static',
+        'csscompressor',
+        'django-markup',
+        'markdown==3.3.*',
+        'bleach==3.3.*',
+        'sentry-sdk==0.14.*',
+        'babel',
+        'paypalrestsdk==1.13.*',
+        'pycparser==2.13', # https://github.com/eliben/pycparser/issues/147
+        'django-redis==4.11.*',
+        'redis==3.4.*',
+        'stripe==2.42.*',
+        'chardet<3.1.0,>=3.0.2',
+        'mt-940==3.2',
+        'django-i18nfield==1.9.*,>=1.9.1',
+        'psycopg2-binary',
+        'tqdm==4.*',
+        'vobject==0.9.*',
+        'pycountry',
+        'django-countries>=6.0',
+        'pyuca', # for better sorting of country names in django-countries
+        'defusedcsv>=1.1.0',
+        'vat_moss_forked==2020.3.20.0.11.0',
+        'jsonschema',
+        'django-hijack>=2.1.10,<2.2.0',
+        'openpyxl==3.0.*',
+        'django-oauth-toolkit==1.2.*',
+        'oauthlib==3.1.*',
+        'django-phonenumber-field==4.0.*',
+        'phonenumberslite==8.11.*',
+        'python-bidi==0.4.*',  # Support for Arabic in reportlab
+        'arabic-reshaper==2.0.15',  # Support for Arabic in reportlab
+        'packaging',
+        'tlds>=2020041600',
+        'text-unidecode==1.*',
+        'protobuf==3.15.*',
+        'cryptography>=3.4.2',
+        'sepaxml==2.4.*,>=2.4.1',
+]
+
+[project.optional-dependencies]
+memcached = ["pylibmc"]
+dev = [
+            'django-debug-toolbar==3.2',
+            'pycodestyle==2.5.*',
+            'pyflakes==2.1.*',
+            'flake8==3.7.*',
+            'pep8-naming',
+            'coveralls',
+            'coverage',
+            'pytest==6.*',
+            'pytest-django==4.*',
+            'pytest-xdist==1.31.*',
+            'isort',
+            'pytest-mock==2.0.*',
+            'pytest-rerunfailures==9.*',
+            'responses==0.23.0',
+            'potypo',
+            'freezegun',
+            'pytest-cache',
+            'pytest-cov',
+            'pytest-sugar',
+]
+
+[project.entry-points."distutils.commands"]
+build = "setup:CustomBuild"
+build_ext = "setup:CustomBuildExt"
+
+
+[build-system]
+requires = [
+  'setuptools',
+  'setuptools-rust',
+  'wheel',
+  'importlib_metadata',
+]
+
+[project.urls]
+homepage = "https://eventyay.com"
+repository = "https://github.com/fossasia/eventyay-tickets.git"
+documentation = "https://eventyay.com"
+changelog = "https://eventyay.com"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.dynamic]
+version = {attr = "pretix.__version__"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["pretix*"]
+namespaces = false
