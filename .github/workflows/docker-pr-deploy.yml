@@ -2,8 +2,10 @@ name: Docker-pr-deploy
 on:
   workflow_dispatch:
     inputs:
-      repository: "Repository name with owner. For example, actions/checkout"
-      ref: "The branch, tag or SHA to checkout."
+      repository: 
+        description: "Repository name with owner. For example, actions/checkout"
+      ref: 
+        description: "The branch, tag or SHA to checkout."
 
 jobs:
   push_to_registry:
