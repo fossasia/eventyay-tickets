@@ -29,5 +29,5 @@ jobs:
         with:
           context: .
           push: true
-          tags: deployment
+          tags: development
           labels: eventyay/eventyay-tickets
