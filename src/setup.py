@@ -108,7 +108,7 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
-        'Framework :: Django :: 3.0'
+        'Framework :: Django :: 3.2'
     ],
 
     keywords='tickets web shop ecommerce',
@@ -125,6 +125,7 @@ setup(
         'django-hierarkey==1.0.*,>=1.0.4',
         'django-filter==2.4.*',
         'django-scopes==1.2.*',
+        'django-localflavor==3.0.*',
         'reportlab>=3.5.65',
         'Pillow==8.*',
         'PyPDF2==1.26.*',
@@ -203,7 +204,6 @@ setup(
             'freezegun',
         ],
         'memcached': ['pylibmc'],
-        'mysql': ['mysqlclient'],
     },
 
     packages=find_packages(exclude=['tests', 'tests.*']),
