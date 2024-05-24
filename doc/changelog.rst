@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`cfp,1761` In the CfP submission multi-step form, the tab title now reflects the proposal title, to make it easier to work on multiple proposal submissions at the same time.
 - :bug:`orga:speaker,1768` When filtering the speaker list by only accepted/confirmed speakers, the listed proposal count would be incorrect (inflated).
 - :feature:`cfp,1574` pretalx now supports the ``~~`` strikethrough syntax in Markdown.
 - :bug:`orga:schedule,1702` Sessions starting at exactly midnight of the first day of the event would not show up in the schedule editor (but could be scheduled there by dropping them on the day heading).
