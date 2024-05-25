@@ -8,7 +8,7 @@ from django.db.models.functions import Coalesce
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse
-from django.utils.http import is_safe_url
+from django.utils.http import url_has_allowed_host_and_scheme as is_safe_url
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _, pgettext
 from django.views import View
