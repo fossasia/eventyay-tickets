@@ -217,7 +217,7 @@ class SubEventEditorMixin(MetaDataEditorMixin):
             form=SimpleCheckinListForm, formset=CheckinListFormSet,
             can_order=False, can_delete=True, extra=extra,
         )
-        if self.object:
+        if self.object and self.object.pk:
             kwargs['queryset'] = self.object.checkinlist_set.prefetch_related('limit_products')
 
         return formsetclass(self.request.POST if self.request.method == "POST" else None,
@@ -247,7 +247,7 @@ class SubEventEditorMixin(MetaDataEditorMixin):
             form=QuotaForm, formset=QuotaFormSet, min_num=1, validate_min=True,
             can_order=False, can_delete=True, extra=extra,
         )
-        if self.object:
+        if self.object and self.object.pk:
             kwargs['queryset'] = self.object.quotas.prefetch_related('items', 'variations')
 
         return formsetclass(
@@ -348,12 +348,16 @@ class SubEventEditorMixin(MetaDataEditorMixin):
 
     @cached_property
     def itemvar_forms(self):
-        se_item_instances = {
-            sei.item_id: sei for sei in SubEventItem.objects.filter(subevent=self.object)
-        }
-        se_var_instances = {
-            sei.variation_id: sei for sei in SubEventItemVariation.objects.filter(subevent=self.object)
-        }
+        if self.object and self.object.pk:
+            se_item_instances = {
+                sei.item_id: sei for sei in SubEventItem.objects.filter(subevent=self.object)
+            }
+            se_var_instances = {
+                sei.variation_id: sei for sei in SubEventItemVariation.objects.filter(subevent=self.object)
+            }
+        else:
+            se_item_instances = {}
+            se_var_instances = {}
 
         if self.copy_from:
             se_item_instances = {
@@ -1042,6 +1046,7 @@ class SubEventBulkEdit(SubEventQueryMixin, EventPermissionRequiredMixin, FormVie
         subevents = list(self.get_queryset().prefetch_related('checkinlist_set'))
         to_save_products = []
         to_save_gates = []
+        to_delete_list_ids = []
 
         for f in self.list_formset.forms:
             if self.list_formset._should_delete_form(f) and f in self.list_formset.extra_forms:
@@ -1053,7 +1058,7 @@ class SubEventBulkEdit(SubEventQueryMixin, EventPermissionRequiredMixin, FormVie
                     log_entries += [
                         q.log_action(action='pretix.event.checkinlist.deleted', user=self.request.user, save=False),
                     ]
-                    q.delete()
+                    to_delete_list_ids.append(q.pk)
             elif f in self.list_formset.extra_forms:
                 change_data = {k: f.cleaned_data.get(k) for k in f.changed_data}
                 for se in subevents:
@@ -1092,6 +1097,9 @@ class SubEventBulkEdit(SubEventQueryMixin, EventPermissionRequiredMixin, FormVie
             CheckinList.limit_products.through.objects.bulk_create(to_save_products)
         if to_save_gates:
             CheckinList.gates.through.objects.bulk_create(to_save_gates)
+        if to_delete_list_ids:
+            CheckinList.objects.filter(id__in=to_delete_list_ids).delete()
+
 
     def save_quota_formset(self, log_entries):
         if not self.quota_formset.has_changed():
@@ -1118,6 +1126,7 @@ class SubEventBulkEdit(SubEventQueryMixin, EventPermissionRequiredMixin, FormVie
 
                 if to_delete_quota_ids:
                     Quota.objects.filter(id__in=to_delete_quota_ids).delete()
+                    to_delete_quota_ids = []
 
         for f in self.quota_formset.forms:
             if self.quota_formset._should_delete_form(f) and f in self.quota_formset.extra_forms:
@@ -1139,7 +1148,7 @@ class SubEventBulkEdit(SubEventQueryMixin, EventPermissionRequiredMixin, FormVie
                             'id': q.pk
                         }, save=False)
                     ]
-                    q.delete()
+                    to_delete_quota_ids.append(q.pk)
             elif f in self.quota_formset.extra_forms:
                 change_data = {k: f.cleaned_data.get(k) for k in f.changed_data}
                 for se in subevents:
@@ -1182,6 +1191,9 @@ class SubEventBulkEdit(SubEventQueryMixin, EventPermissionRequiredMixin, FormVie
             Quota.items.through.objects.bulk_create(to_save_items)
         if to_save_variations:
             Quota.variations.through.objects.bulk_create(to_save_variations)
+        if to_delete_quota_ids:
+            Quota.objects.filter(id__in=to_delete_quota_ids).delete()
+
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)

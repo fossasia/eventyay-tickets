@@ -2556,6 +2556,9 @@ def test_autocheckin(clist_autocheckin, event):
     clist_autocheckin.auto_checkin_sales_channels = []
     clist_autocheckin.save()
 
+    cp1 = CartPosition.objects.create(
+        item=ticket, price=23, expires=now() + timedelta(days=1), event=event, cart_id="123"
+    )
     order = _create_order(event, email='dummy@example.org', positions=[cp1],
                           now_dt=today, payment_provider=FreeOrderProvider(event),
                           locale='de')[0]
@@ -2578,17 +2581,26 @@ def test_saleschannel_testmode_restriction(event):
                           locale='de', sales_channel='web')[0]
     assert not order.testmode
 
+    cp1 = CartPosition.objects.create(
+        item=ticket, price=23, expires=now() + timedelta(days=1), event=event, cart_id="123"
+    )
     order = _create_order(event, email='dummy@example.org', positions=[cp1],
                           now_dt=today, payment_provider=FreeOrderProvider(event),
                           locale='de', sales_channel=FoobazSalesChannel.identifier)[0]
     assert not order.testmode
 
     event.testmode = True
+    cp1 = CartPosition.objects.create(
+        item=ticket, price=23, expires=now() + timedelta(days=1), event=event, cart_id="123"
+    )
     order = _create_order(event, email='dummy@example.org', positions=[cp1],
                           now_dt=today, payment_provider=FreeOrderProvider(event),
                           locale='de', sales_channel='web')[0]
     assert order.testmode
 
+    cp1 = CartPosition.objects.create(
+        item=ticket, price=23, expires=now() + timedelta(days=1), event=event, cart_id="123"
+    )
     order = _create_order(event, email='dummy@example.org', positions=[cp1],
                           now_dt=today, payment_provider=FreeOrderProvider(event),
                           locale='de', sales_channel=FoobazSalesChannel.identifier)[0]
