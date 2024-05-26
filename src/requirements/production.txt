@@ -7,7 +7,8 @@ requests==2.24.0
 pytz
 django-bootstrap3==12.0.*
 django-formset-js-improved==0.5.0.2
-django-compressor==2.4.*
+# this needs to be upgraded to 4.4
+django-compressor==4.4.*
 django-hierarkey==1.0.*,>=1.0.4
 django-filter==2.2.*
 django-scopes==1.2.*
@@ -20,8 +21,11 @@ django-otp==0.7.*,>=0.7.5
 python-u2flib-server==4.*
 webauthn==0.4.*
 django-formtools==2.2
-celery==4.4.*
-kombu==4.6.*
+# this needs to be upgraded to latest version 
+# celery==4.4.*
+celery==5.2.7
+# ....
+kombu==5.2.3
 django-statici18n==1.9.*
 inlinestyler==0.2.*
 BeautifulSoup4==4.8.*
@@ -29,7 +33,9 @@ slimit
 lxml
 static3==0.7.*
 dj-static
-csscompressor
+# below line must be removed when we upgrade to latest version 
+# csscompressor
+# ..
 django-markup
 markdown==3.3.*
 bleach==3.3.*

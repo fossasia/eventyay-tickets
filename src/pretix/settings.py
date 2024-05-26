@@ -522,8 +522,12 @@ LOGIN_URL_CONTROL = 'control:auth.login'
 CSRF_FAILURE_VIEW = 'pretix.base.views.errors.csrf_failure'
 
 template_loaders = (
+    
     'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
+    # this need to be removed from the below line 
+    # 'django.template.loaders.app_directories.Loader',
+    # and this line should be added in the code instead
+    'pretix.helpers.template_loaders.AppLoader',
 )
 if not DEBUG:
     template_loaders = (
@@ -577,6 +581,12 @@ COMPRESS_PRECOMPILERS = (
     ('text/x-scss', 'django_libsass.SassCompiler'),
     ('text/vue', 'pretix.helpers.compressor.VueCompiler'),
 )
+
+COMPRESS_OFFLINE_CONTEXT = {
+    'basetpl': 'empty.html',
+}
+
+
 
 COMPRESS_ENABLED = COMPRESS_OFFLINE = not debug_fallback
 

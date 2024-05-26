@@ -5,7 +5,10 @@ from urllib.parse import urljoin, urlsplit
 
 import django_libsass
 import sass
-from compressor.filters.cssmin import CSSCompressorFilter
+# the line below this comment should be removed 
+# from compressor.filters.cssmin import CSSCompressorFilter
+#  and this below line should be added 
+from compressor.filters.cssmin import CSSMinFilter
 from django.conf import settings
 from django.core.cache import cache
 from django.core.files.base import ContentFile
@@ -94,7 +97,10 @@ def compile_scss(object, file="main.scss", fonts=True):
             include_paths=[sassdir], output_style='nested',
             custom_functions=cf
         )
-        cssf = CSSCompressorFilter(css)
+        # the below line should be remove as the older version of django-compressor
+        # cssf = CSSCompressorFilter(css)
+        # and this below line must be added in the project as the
+        cssf = CSSMinFilter(css)
         css = cssf.output()
         cache.set('sass_compile_{}_{}'.format(cp, srcchecksum), css, 600)
 
