@@ -8,7 +8,7 @@ from oauth2_provider.generators import (
     generate_client_id, generate_client_secret,
 )
 from oauth2_provider.models import (
-    AbstractAccessToken, AbstractApplication, AbstractGrant,
+    AbstractAccessToken, AbstractApplication, AbstractGrant, AbstractIDToken,
     AbstractRefreshToken,
 )
 from oauth2_provider.validators import URIValidator
@@ -45,12 +45,25 @@ class OAuthGrant(AbstractGrant):
     organizers = models.ManyToManyField('pretixbase.Organizer')
     redirect_uri = models.CharField(max_length=2500)  # Only 255 in AbstractGrant, which caused problems
 
+class OAuthIDToken(AbstractIDToken):
+    application = models.ForeignKey(
+        OAuthApplication, on_delete=models.CASCADE,
+    )
+    organizers = models.ManyToManyField('pretixbase.Organizer')
+
 
 class OAuthAccessToken(AbstractAccessToken):
     source_refresh_token = models.OneToOneField(
         # unique=True implied by the OneToOneField
         'OAuthRefreshToken', on_delete=models.SET_NULL, blank=True, null=True,
         related_name="refreshed_access_token"
+    )
+    id_token = models.OneToOneField(
+        OAuthIDToken,
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+        related_name="access_token",
     )
     application = models.ForeignKey(
         OAuthApplication, on_delete=models.CASCADE, blank=True, null=True,
