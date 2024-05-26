@@ -2,7 +2,7 @@ from django.conf import settings
 from django.template.loader import get_template
 from django.utils.timezone import override
 from django_scopes import scope, scopes_disabled
-from inlinestyler.utils import inline_css
+from css_inline import inline as inline_css
 
 from pretix.base.i18n import language
 from pretix.base.models import LogEntry, NotificationSetting, User
