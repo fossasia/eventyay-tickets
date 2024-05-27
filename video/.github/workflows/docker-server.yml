@@ -24,5 +24,5 @@ jobs:
           context: ./server
           dockerfile: Dockerfile-dev
           push: true
-          tags: eventyay/eventyay-video:development-webapp
+          tags: eventyay/eventyay-video:development-server
           labels: manual
