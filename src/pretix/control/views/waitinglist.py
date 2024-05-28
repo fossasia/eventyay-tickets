@@ -8,7 +8,7 @@ from django.db.models.functions import Coalesce
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse
-from django.utils.http import is_safe_url
+from django.utils.http import url_has_allowed_host_and_scheme as is_safe_url
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _, pgettext
 from django.views import View
@@ -270,7 +270,7 @@ class EntryDelete(EventPermissionRequiredMixin, DeleteView):
             raise Http404(_("The requested entry does not exist."))
 
     @transaction.atomic
-    def delete(self, request, *args, **kwargs):
+    def form_valid(self, form):
         self.object = self.get_object()
         success_url = self.get_success_url()
         self.object.log_action('pretix.event.orders.waitinglist.deleted', user=self.request.user)

@@ -172,9 +172,9 @@ class LayoutDelete(EventPermissionRequiredMixin, DeleteView):
             raise Http404(_("The requested layout does not exist."))
 
     @transaction.atomic
-    def delete(self, request, *args, **kwargs):
+    def form_valid(self, form):
         self.object = self.get_object()
-        self.object.log_action(action='pretix.plugins.ticketoutputpdf.layout.deleted', user=request.user)
+        self.object.log_action(action='pretix.plugins.ticketoutputpdf.layout.deleted', user=self.request.user)
         self.object.delete()
         if not self.request.event.ticket_layouts.filter(default=True).exists():
             f = self.request.event.ticket_layouts.first()

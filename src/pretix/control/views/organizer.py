@@ -466,16 +466,16 @@ class TeamDeleteView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin,
         ).exists()
 
     @transaction.atomic
-    def delete(self, request, *args, **kwargs):
+    def form_valid(self, form):
         success_url = self.get_success_url()
         self.object = self.get_object()
         if self.is_allowed():
             self.object.log_action('pretix.team.deleted', user=self.request.user)
             self.object.delete()
-            messages.success(request, _('The selected team has been deleted.'))
+            messages.success(self.request, _('The selected team has been deleted.'))
             return redirect(success_url)
         else:
-            messages.error(request, _('The selected team cannot be deleted.'))
+            messages.error(self.request, _('The selected team cannot be deleted.'))
             return redirect(success_url)
 
 
@@ -1338,12 +1338,12 @@ class GateDeleteView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin,
         })
 
     @transaction.atomic
-    def delete(self, request, *args, **kwargs):
+    def form_valid(self, form):
         success_url = self.get_success_url()
         self.object = self.get_object()
         self.object.log_action('pretix.gate.deleted', user=self.request.user)
         self.object.delete()
-        messages.success(request, _('The selected gate has been deleted.'))
+        messages.success(self.request, _('The selected gate has been deleted.'))
         return redirect(success_url)
 
 
@@ -1429,12 +1429,12 @@ class EventMetaPropertyDeleteView(OrganizerDetailViewMixin, OrganizerPermissionR
         })
 
     @transaction.atomic
-    def delete(self, request, *args, **kwargs):
+    def form_valid(self, form):
         success_url = self.get_success_url()
         self.object = self.get_object()
         self.object.log_action('pretix.property.deleted', user=self.request.user)
         self.object.delete()
-        messages.success(request, _('The selected property has been deleted.'))
+        messages.success(self.request, _('The selected property has been deleted.'))
         return redirect(success_url)
 
 

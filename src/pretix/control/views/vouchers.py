@@ -167,18 +167,18 @@ class VoucherDelete(EventPermissionRequiredMixin, DeleteView):
         return super().get(request, *args, **kwargs)
 
     @transaction.atomic
-    def delete(self, request, *args, **kwargs):
+    def form_valid(self, form):
         self.object = self.get_object()
         success_url = self.get_success_url()
 
         if not self.object.allow_delete():
-            messages.error(request, _('A voucher can not be deleted if it already has been redeemed.'))
+            messages.error(self.request, _('A voucher can not be deleted if it already has been redeemed.'))
         else:
             self.object.log_action('pretix.voucher.deleted', user=self.request.user)
             CartPosition.objects.filter(addon_to__voucher=self.object).delete()
             self.object.cartposition_set.all().delete()
             self.object.delete()
-            messages.success(request, _('The selected voucher has been deleted.'))
+            messages.success(self.request, _('The selected voucher has been deleted.'))
         return HttpResponseRedirect(success_url)
 
     def get_success_url(self) -> str:
