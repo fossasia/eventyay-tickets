@@ -116,7 +116,7 @@ STATIC_URL = config.get('urls', 'static', fallback='/static/')
 
 MEDIA_URL = config.get('urls', 'media', fallback='/media/')
 
-PRETIX_INSTANCE_NAME = config.get('pretix', 'instance_name', fallback='eventyay')
+INSTANCE_NAME = config.get('pretix', 'instance_name', fallback='eventyay')
 PRETIX_REGISTRATION = config.getboolean('pretix', 'registration', fallback=True)
 PRETIX_PASSWORD_RESET = config.getboolean('pretix', 'password_reset', fallback=True)
 PRETIX_LONG_SESSIONS = config.getboolean('pretix', 'long_sessions', fallback=True)

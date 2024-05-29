@@ -8,7 +8,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{{ request.event.name }} :: {% trans "Check-in" %} :: {{ settings.PRETIX_INSTANCE_NAME }}</title>
+    <title>{{ request.event.name }} :: {% trans "Check-in" %} :: {{ settings.INSTANCE_NAME }}</title>
     {% compress css %}
         <link rel="stylesheet" type="text/x-scss" href="{% static "pretixplugins/webcheckin/scss/main.scss" %}"/>
     {% endcompress %}

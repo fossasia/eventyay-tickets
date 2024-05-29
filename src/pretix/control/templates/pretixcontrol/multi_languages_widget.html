@@ -10,7 +10,7 @@
             {% trans "Translation in development" %}
         </span>
     {% elif not widget.official %}
-        <span class="label label-warning" data-toggle="tooltip" title="{% trans "This translation is not maintained by the eventyay team. We cannot vouch for its correctness and new or recently changed features might not be translated and will show in English instead. You can help translating at translate.pretix.eu." %}">
+        <span class="label label-warning" data-toggle="tooltip" title="{% trans "This translation is community-maintained and requires further verification by additional translators. New or recently updated features may not be translated yet and will appear in English." %}">
             {% trans "Unofficial translation" %}
         </span>
     {% endif %}

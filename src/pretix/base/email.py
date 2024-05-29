@@ -112,7 +112,7 @@ class TemplateBasedMailRenderer(BaseHTMLMailRenderer):
     def render(self, plain_body: str, plain_signature: str, subject: str, order, position) -> str:
         body_md = markdown_compile_email(plain_body)
         htmlctx = {
-            'site': settings.PRETIX_INSTANCE_NAME,
+            'site': settings.INSTANCE_NAME,
             'site_url': settings.SITE_URL,
             'body': body_md,
             'subject': str(subject),
