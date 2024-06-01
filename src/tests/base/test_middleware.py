@@ -27,18 +27,18 @@ class LocaleDeterminationTest(TestCase):
         self.assertEqual(language, settings.LANGUAGE_CODE)
 
     def test_browser_default(self):
-        c = Client(HTTP_ACCEPT_LANGUAGE=self.TEST_LOCALE)
+        c = Client(headers={"accept-language": self.TEST_LOCALE})
         response = c.get('/control/login')
         language = response['Content-Language']
         self.assertEqual(language, self.TEST_LOCALE)
 
-        c = Client(HTTP_ACCEPT_LANGUAGE=self.TEST_LOCALE_LONG)
+        c = Client(headers={"accept-language": self.TEST_LOCALE_LONG})
         response = c.get('/control/login')
         language = response['Content-Language']
         self.assertEqual(language, self.TEST_LOCALE)
 
     def test_unknown_browser_default(self):
-        c = Client(HTTP_ACCEPT_LANGUAGE='sjn')
+        c = Client(headers={"accept-language": 'sjn'})
         response = c.get('/control/login')
         language = response['Content-Language']
         self.assertEqual(language, settings.LANGUAGE_CODE)

@@ -416,7 +416,6 @@ ROOT_URLCONF = 'pretix.multidomain.maindomain_urlconf'
 WSGI_APPLICATION = 'pretix.wsgi.application'
 
 USE_I18N = True
-USE_L10N = True
 USE_TZ = True
 
 LOCALE_PATHS = [
@@ -556,7 +555,14 @@ STATICFILES_DIRS = [
 
 STATICI18N_ROOT = os.path.join(BASE_DIR, "pretix/static")
 
-STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage',
+    },
+}
 
 # if os.path.exists(os.path.join(DATA_DIR, 'static')):
 #     STATICFILES_DIRS.insert(0, os.path.join(DATA_DIR, 'static'))
