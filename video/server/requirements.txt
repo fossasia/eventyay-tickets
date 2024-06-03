@@ -15,7 +15,7 @@ djangorestframework==3.14.*
 emoji==2.12.*
 icalendar==5.0.*
 lxml==5.1.*
-matplotlib==3.7.*
+matplotlib==3.9.*
 numpy==1.26.*
 orjson==3.9.*
 openpyxl~=3.1.2
