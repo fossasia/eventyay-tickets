@@ -39,7 +39,7 @@ gunicorn==21.2.0
 uvicorn[standard]==0.26.0
 
 # dev
-daphne==4.0.*
+daphne==4.1.*
 black==23.7
 isort==5.13.2
 flake8==7.0.0
