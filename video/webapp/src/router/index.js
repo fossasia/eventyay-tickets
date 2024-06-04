@@ -21,7 +21,7 @@ const routes = [{
 	component: () => import(/* webpackChunkName: "standalone" */ 'views/standalone'),
 	children: [{
 		path: 'chat',
-		name: 'standaloneode:chat',
+		name: 'standalone:chat',
 		component: () => import(/* webpackChunkName: "standalone" */ 'views/standalone/Chat')
 	}, {
 		path: 'poll',
