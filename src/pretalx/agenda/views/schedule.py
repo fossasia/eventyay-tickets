@@ -173,7 +173,10 @@ class ScheduleView(EventPermissionRequired, ScheduleMixin, TemplateView):
         output_format = request.GET.get("format", "table")
         if output_format not in ["list", "table"]:
             output_format = "table"
-        result = draw_ascii_schedule(data, output_format=output_format)
+        try:
+            result = draw_ascii_schedule(data, output_format=output_format)
+        except StopIteration:
+            result = draw_ascii_schedule(data, output_format="list")
         return HttpResponse(
             response_start + result, content_type="text/plain; charset=utf-8"
         )
