@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-05 15:39+0000\n"
-"PO-Revision-Date: 2024-02-20 17:05+0000\n"
-"Last-Translator: Jozef Mlich <jmlich83@gmail.com>\n"
+"POT-Creation-Date: 2024-05-03 14:00+0000\n"
+"PO-Revision-Date: 2024-06-01 09:55+0000\n"
+"Last-Translator: Michal Stanke <michal@stanke.cz>\n"
 "Language-Team: none\n"
 "Language: cs\n"
 "MIME-Version: 1.0\n"
@@ -5303,7 +5303,7 @@ msgstr "Zrušit filtr"
 #: pretalx/orga/templates/orga/mails/compose_session_mail_form.html:29
 #, python-format
 msgid "Recipients filtered by search “%(search)s”."
-msgstr ""
+msgstr "Příjemci jsou vyfiltrováni vyhledáváním „%(search)s“."
 
 #: pretalx/orga/templates/orga/mails/compose_session_mail_form.html:43
 #, fuzzy
@@ -7002,6 +7002,8 @@ msgid ""
 "You cannot change the question options and upload a question option file at "
 "the same time."
 msgstr ""
+"Změnit možnosti odpovědí a zároveň nahrát soubor s možnostmi odpovědí není "
+"možné."
 
 #: pretalx/orga/views/cfp.py:321
 msgid "The question has been deleted."
@@ -7553,6 +7555,8 @@ msgid ""
 "There may be pending emails for this proposal that are now incorrect or "
 "outdated."
 msgstr ""
+"Pro tuto přihlášku mohou být připravené e-maily k odeslání, které jsou v "
+"tuto chvíli irelevantní nebo zastaralé."
 
 #: pretalx/orga/views/submission.py:306
 msgid "Please provide a valid email address!"
@@ -8455,6 +8459,8 @@ msgstr ""
 #, python-brace-format
 msgid "New proposal: {title}"
 msgstr "Nový návrh: {title}"
+msgid "{title_in_quotes} by {list_of_speakers}"
+msgstr "{title_in_quotes} od {list_of_speakers}"
 
 #: pretalx/submission/models/tag.py:29
 msgid "Show tag publicly"

@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-05 15:47+0000\n"
-"PO-Revision-Date: 2023-10-30 00:27+0000\n"
-"Last-Translator: Chin-Cheng Huang <katy881115@gmail.com>\n"
+"POT-Creation-Date: 2024-05-03 14:01+0000\n"
+"PO-Revision-Date: 2024-06-01 00:25+0000\n"
+"Last-Translator: Yucheng Lin <yuchenglinedu@gmail.com>\n"
 "Language-Team: none\n"
 "Language: zh_Hant\n"
 "MIME-Version: 1.0\n"
@@ -1075,19 +1075,17 @@ msgstr ""
 "您可以依照這裡的流程撤回您的投稿。但請留意，您撤回了就無法再恢復—如果您只是不"
 "確定是否可以或需要保留您的投稿，請先跟主辦單位聯繫。"
 
-#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:218
-#, fuzzy
-#| msgid ""
-#| "You can withdraw your proposal from the selection process here. You "
-#| "cannot undo this - if you are just uncertain if you can or should hold "
-#| "your session, please contact the organiser instead."
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:125
+msgid "Discard draft proposal"
+msgstr "捨棄投稿"
+
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:127
 msgid ""
 "You can discard your draft proposal here. You cannot undo this - if you are "
 "just uncertain if you can or should submit your proposal, please contact the "
 "organiser instead."
-msgstr ""
-"您可以依照這裡的流程撤回您的投稿。但請留意，您撤回了就無法再恢復—如果您只是不"
-"確定是否可以或需要保留您的投稿，請先跟主辦單位聯繫。"
+msgstr "您可以在此放棄您的提案草案。您無法撤銷此操作 - "
+"如果您不確定是否可以或應該提交提案，請聯絡組織者。"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:227
 #: pretalx/orga/templates/orga/mails/outbox_form.html:106
@@ -1175,10 +1173,8 @@ msgid "Edit draft"
 msgstr "草稿"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:57
-#, fuzzy
-#| msgid "Save draft"
 msgid "Open draft"
-msgstr "儲存草稿"
+msgstr "開放草稿"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:74
 #: pretalx/orga/templates/orga/review/dashboard.html:119
@@ -1188,16 +1184,12 @@ msgid "State"
 msgstr "狀態"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:112
-#, fuzzy
-#| msgid "Submit proposal"
 msgid "Edit proposal"
-msgstr "提交提案"
+msgstr "修改提案"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:114
-#, fuzzy
-#| msgid "Other proposals"
 msgid "Open proposal"
-msgstr "其他投稿議程"
+msgstr "開啟投稿議程"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:126
 #: pretalx/orga/templates/orga/base.html:273
