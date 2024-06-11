@@ -1,65 +1,31 @@
 eventyay-tickets
 ======
 
-.. image:: https://img.shields.io/pypi/v/pretix.svg
-   :target: https://pypi.python.org/pypi/pretix
-
-.. image:: https://github.com/pretix/pretix/workflows/Documentation/badge.svg
-   :target: https://docs.pretix.eu/en/latest/
-
-.. image:: https://github.com/pretix/pretix/workflows/Tests/badge.svg
-
-.. image:: https://codecov.io/gh/pretix/pretix/branch/master/graph/badge.svg
+.. image:: https://codecov.io/gh/fossasia/eventyay-tickets/branch/master/graph/badge.svg
    :target: https://codecov.io/gh/pretix/pretix
 
-
-
-Reinventing ticket presales, one ticket at a time.
 
 Project status & release cycle
 ------------------------------
 
-While there is always a lot to do and improve on, eventyay by now has been in use for thousands of events
-conferences that sold millions of tickets combined. We therefore think of eventyay as being stable and ready to use.
-
-If you want to use or extend eventyay, we strongly recommend to follow our `blog`_. We will announce all
-releases there. You can always find the latest stable version on PyPI or in the ``release/X.Y`` branch of
-this repository. The ``master`` branch contains a development version that we also try to keep stable in
-the sense that it does not break your data,  but its APIs might change without prior notice.
-
-To get started using eventyay on your own server, look at the `installation guide`_ in our documentation.
+Welcome to the eventyay project. The ticketing component of the system provides options for ticket sales and event related items such a Tshirts. Eventyay is developed since 2014. The ticketing component is based on a fork of pretix.
 
 Support
 -------
 
-This project is 100 percent free and open source software. You are welcome to ask questions in the GitHub
-repository. Private support via email or phone is only offered to customers of our eventyay Hosted or eventyay
-Enterprise offerings. If you are interested in commercial support, hosting services or supporting this project
-financially, please go to `eventyay.com`_ or contact us at support.eventyay.com.
+This project is free and open source software. Professional support is available to customers of the hosted eventyay service or eventyay enterprise offerings. If you are interested in commercial support, hosting services or supporting this project financially, please go to `eventyay.com`.
 
 Contributing
 ------------
-If you want to contribute to eventyay, please read the `developer documentation`_
-in our documentation. If you have any further questions, please do not hesitate to ask!
-
-.. image:: https://translate.pretix.eu/widgets/pretix/-/pretix/multi-blue.svg
-   :target: https://translate.pretix.eu/engage/pretix/
-
-Code of Conduct
----------------
-We have a `Code of Conduct`_ in place that applies to all project contributions,
-including issues, pull requests, etc.
+Please look through our issues and start contributing.
 
 License
 -------
-The code in this repository is published under the terms of the Apache License. 
+The code in this repository is published under the terms of the Apache 2 License. 
 See the LICENSE file for the complete license text.
 
-This project is maintained by FOSSASIA. See the AUTHORS file for a list of all
-the awesome folks who contributed to this project.
+This project is maintained by FOSSASIA. See the AUTHORS file for a list of all the awesome contributors of this project.
 
 .. _installation guide: https://docs.pretix.eu/en/latest/admin/installation/index.html
-.. _developer documentation: https://docs.pretix.eu/en/latest/development/index.html
-.. _Code of Conduct: https://docs.pretix.eu/en/latest/development/contribution/codeofconduct.html
-.. _pretix.eu: https://pretix.eu
-.. _blog: https://pretix.eu/about/en/blog/
+.. _eventyay.com: https://eventyay.com
+.. _blog: https://blog.eventyay.com
