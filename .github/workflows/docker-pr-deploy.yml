@@ -29,5 +29,5 @@ jobs:
         with:
           context: .
           push: true
-          tags: eventyay/eventyay-tickets:development
+          tags: eventyay/eventyay-ticket:development
           labels: manual
