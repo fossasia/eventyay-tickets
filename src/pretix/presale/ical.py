@@ -13,7 +13,7 @@ from pretix.multidomain.urlreverse import build_absolute_uri
 
 def get_ical(events):
     cal = vobject.iCalendar()
-    cal.add('prodid').value = '-//pretix//{}//'.format(settings.PRETIX_INSTANCE_NAME.replace(" ", "_"))
+    cal.add('prodid').value = '-//pretix//{}//'.format(settings.INSTANCE_NAME.replace(" ", "_"))
     creation_time = datetime.datetime.now(pytz.utc)
 
     for ev in events:

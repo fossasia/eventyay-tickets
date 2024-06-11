@@ -1153,7 +1153,7 @@ class EventIcalDownloadTest(EventTestMixin, SoupTest):
     def test_metadata(self):
         ical = self.client.get('/%s/%s/ical/' % (self.orga.slug, self.event.slug)).content.decode()
         self.assertIn('VERSION:2.0', ical, 'incorrect version tag - 2.0')
-        self.assertIn('-//pretix//%s//' % settings.PRETIX_INSTANCE_NAME, ical, 'incorrect PRODID')
+        self.assertIn('-//eventyay//%s//' % settings.INSTANCE_NAME, ical, 'incorrect PRODID')
 
     def test_event_info(self):
         ical = self.client.get('/%s/%s/ical/' % (self.orga.slug, self.event.slug)).content.decode()

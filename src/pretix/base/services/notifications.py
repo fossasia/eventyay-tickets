@@ -93,7 +93,7 @@ def send_notification(logentry_id: int, action_type: str, user_id: int, method: 
 
 def send_notification_mail(notification: Notification, user: User):
     ctx = {
-        'site': settings.PRETIX_INSTANCE_NAME,
+        'site': settings.INSTANCE_NAME,
         'site_url': settings.SITE_URL,
         'color': settings.PRETIX_PRIMARY_COLOR,
         'notification': notification,
@@ -117,7 +117,7 @@ def send_notification_mail(notification: Notification, user: User):
     mail_send_task.apply_async(kwargs={
         'to': [user.email],
         'subject': '[{}] {}: {}'.format(
-            settings.PRETIX_INSTANCE_NAME,
+            settings.INSTANCE_NAME,
             notification.event.settings.mail_prefix or notification.event.slug.upper(),
             notification.title
         ),
