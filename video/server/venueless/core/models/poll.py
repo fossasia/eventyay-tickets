@@ -50,11 +50,11 @@ class Poll(models.Model):
     objects = PollManager()
 
     def save(self, *args, **kwargs):
-        if (
-            self.state in (self.States.CLOSED, self.States.ARCHIVED)
-            and not self.cached_results
-        ):
-            self.cached_results = self.get_results()
+        if self.state in (self.States.CLOSED, self.States.ARCHIVED):
+            if not self.cached_results:
+                self.cached_results = self.get_results()
+        else:
+            self.cached_results = None
         return super().save(*args, **kwargs)
 
     def get_results(self):

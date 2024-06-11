@@ -140,7 +140,7 @@ export default {
 		},
 		getPresentationUrl (type) {
 			console.log(type)
-			return window.location.origin + this.$router.resolve({name: `presentation-mode:${type}`}).href + '#token=' + this.token
+			return window.location.origin + this.$router.resolve({name: `standalone:${type}`}).href + '#token=' + this.token
 		},
 		copyUrl () {
 			this.$refs.urlInput.$refs.input.select()
