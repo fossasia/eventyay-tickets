@@ -1,3 +1,4 @@
+import json
 import string
 
 from django.core.validators import RegexValidator
@@ -56,6 +57,20 @@ class Organiser(PretalxModel):
     def shred(self):
         """Irrevocably deletes the organiser and all related events and their
         data."""
+        from pretalx.common.models import ActivityLog
+
+        ActivityLog.objects.create(
+            person=person,
+            action_type="pretalx.organiser.delete",
+            content_object=self,
+            is_orga_action=True,
+            data=json.dumps(
+                {
+                    "slug": self.slug,
+                    "name": str(self.name),
+                }
+            ),
+        )
         for event in self.events.all():
             with scope(event=event):
                 event.shred()
