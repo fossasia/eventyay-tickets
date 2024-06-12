@@ -122,7 +122,7 @@
                         </a>
                     {% endif %}
                     <a class="navbar-brand" href="{% url "control:index" %}">
-                        <img src="{% static "pretixbase/img/pretix-icon.svg" %}" />
+                        <img src="{% static "pretixbase/img/icon_white.svg" %}" />
                         {{ settings.PRETIX_INSTANCE_NAME }}
                     </a>
                 </div>
@@ -385,8 +385,8 @@
                         <div class="alert alert-info">
                             <a href="{% url "control:global.update" %}">
                                 {% blocktrans trimmed %}
-                                    Starting with version 1.2.0, pretix automatically checks for updates in the background.
-                                    During this check, anonymous data is transmitted to servers operated by pretix'
+                                    Starting with version 1.2.0, eventyay automatically checks for updates in the background.
+                                    During this check, anonymous data is transmitted to servers operated by eventyay'
                                     developers. Click on this message to find out more, disable this feature or enter your
                                     email address to get notified via email if a new update arrives. This message will
                                     disappear once you clicked it.
@@ -397,7 +397,7 @@
 
                     {% if debug_warning %}
                         <div class="alert alert-danger">
-                            {% trans "pretix is running in debug mode. For security reasons, please never run debug mode on a production instance." %}
+                            {% trans "eventyay is running in debug mode. For security reasons, please never run debug mode on a production instance." %}
                         </div>
                     {% endif %}
 
@@ -410,9 +410,9 @@
                                 Times displayed in {{ tz }}
                             {% endblocktrans %} &middot;
                         {% endif %}
-                        {% with "href='http://pretix.eu'" as a_attr %}
+                        {% with "href='http://eventyay.com'" as a_attr %}
                             {% blocktrans trimmed %}
-                                powered by <a {{ a_attr }}>pretix</a>
+                                powered by <a {{ a_attr }}>eventyay</a>
                             {% endblocktrans %}
                         {% endwith %}
                         {% if development_warning %}

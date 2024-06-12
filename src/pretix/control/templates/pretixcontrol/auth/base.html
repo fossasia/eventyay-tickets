@@ -12,7 +12,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     {% if development_warning or debug_warning %}
-        <link rel="shortcut icon" href="{% static "pretixbase/img/favicon-debug.ico" %}">
+        <link rel="shortcut icon" href="{% static "pretixbase/img/icon_debug.ico" %}">
     {% else %}
         <link rel="shortcut icon" href="{% static "pretixbase/img/favicon.ico" %}">
         <link rel="icon" type="image/png" sizes="32x32" href="{% static "pretixbase/img/icons/favicon-32x32.png" %}">
@@ -30,7 +30,7 @@
 <body>
 <div class="container">
     <a href="{% url "control:auth.login" %}">
-        <img src="{% static "pretixbase/img/pretix-logo.svg" %}" class="logo"/>
+        <img src="{% static "pretixbase/img/logo.png" %}" class="logo"/>
     </a>
     {% if messages %}
         {% for message in messages %}
@@ -56,9 +56,9 @@
     {% block content %}
     {% endblock %}
     <footer>
-        {% with "href='http://pretix.eu'" as a_attr %}
+        {% with "href='http://eventyay.com'" as a_attr %}
             {% blocktrans trimmed %}
-                powered by <a {{ a_attr }}>pretix</a>
+                powered by <a {{ a_attr }}>eventyay</a>
             {% endblocktrans %}
         {% endwith %}
     </footer>
