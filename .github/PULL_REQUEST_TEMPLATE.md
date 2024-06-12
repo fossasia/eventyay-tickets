@@ -13,5 +13,3 @@ This PR closes/references issue #XX. It does so by …
 <!--- It is ok to not check all boxes! We just want to know if we need to do any work after merging the PR. -->
 
 - [ ] I have added tests to cover my changes.
-- [ ] I have updated the documentation.
-- [ ] My change is listed in the ``doc/changelog.rst``.
