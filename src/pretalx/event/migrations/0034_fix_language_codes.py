@@ -129,6 +129,7 @@ class Migration(migrations.Migration):
         ("person", "0014_speakerinformation"),
         ("schedule", "0013_auto_20191107_1748"),
         ("submission", "0052_auto_20201010_1307"),
+        ("submission", "0061_cfp_settings"),
         ("mail", "0009_queuedmail_locale"),
     ]
 
