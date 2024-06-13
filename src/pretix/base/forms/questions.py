@@ -11,7 +11,10 @@ import vat_moss.errors
 import vat_moss.id
 from babel import Locale
 from django import forms
+from django.conf import settings
 from django.contrib import messages
+from django.contrib.gis.geoip2 import GeoIP2
+from geoip2.errors import AddressNotFoundError
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db.models import QuerySet
@@ -49,6 +52,7 @@ from pretix.base.templatetags.rich_text import rich_text
 from pretix.control.forms import ExtFileField, SplitDateTimeField
 from pretix.helpers.countries import CachedCountries
 from pretix.helpers.escapejson import escapejson_attr
+from pretix.helpers.http import get_client_ip
 from pretix.helpers.i18n import get_format_without_seconds
 from pretix.presale.signals import question_form_fields
 
@@ -897,3 +901,15 @@ class BaseInvoiceNameForm(BaseInvoiceAddressForm):
         for f in list(self.fields.keys()):
             if f != 'name_parts':
                 del self.fields[f]
+
+
+def guess_country_from_request(request, event):
+    if settings.HAS_GEOIP:
+        g = GeoIP2()
+        try:
+            res = g.country(get_client_ip(request))
+            if res['country_code'] and len(res['country_code']) == 2:
+                return Country(res['country_code'])
+        except AddressNotFoundError:
+            pass
+    return guess_country(event)

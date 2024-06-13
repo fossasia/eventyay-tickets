@@ -33,13 +33,23 @@ def stripe_verify_domain(event, domain):
     prov = StripeCC(event)
     account = get_stripe_account_key(prov)
 
+    if prov.settings.connect_client_id and prov.settings.connect_user_id:
+        api_kwargs = {
+            'api_key': prov.settings.connect_secret_key or prov.settings.connect_test_secret_key,
+            'stripe_account': prov.settings.connect_user_id
+        }
+    else:
+        api_kwargs = {
+            'api_key': prov.settings.secret_key,
+        }
+
     if RegisteredApplePayDomain.objects.filter(account=account, domain=domain).exists():
         return
 
     try:
         resp = stripe.ApplePayDomain.create(
             domain_name=domain,
-            **prov.api_kwargs
+            **api_kwargs
         )
     except stripe.error.StripeError:
         logger.exception('Could not verify domain with Stripe')

@@ -1,8 +1,9 @@
 import contextlib
 
-from django.db import transaction
+from django.db import connection, transaction
 from django.db.models import Aggregate, Field, Lookup
 from django.db.models.expressions import OrderBy
+from django.utils.functional import lazy
 
 
 class DummyRollbackException(Exception):
@@ -105,3 +106,8 @@ class NotEqual(Lookup):
         rhs, rhs_params = self.process_rhs(compiler, connection)
         params = lhs_params + rhs_params
         return '%s <> %s' % (lhs, rhs), params
+
+
+# shorthand for .select_for_update(of=("self,")), that falls back gracefully on databases that don't support
+# the SELECT FOR UPDATE OF ... query.
+OF_SELF = lazy(lambda: ("self",) if connection.features.has_select_for_update_of else (), tuple)()

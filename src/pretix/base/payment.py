@@ -42,6 +42,16 @@ from pretix.presale.views.cart import cart_session, get_or_create_cart_id
 logger = logging.getLogger(__name__)
 
 
+class WalletQueries:
+    APPLEPAY = 'applepay'
+    GOOGLEPAY = 'googlepay'
+
+    WALLETS = (
+        (APPLEPAY, pgettext_lazy('payment', 'Apple Pay')),
+        (GOOGLEPAY, pgettext_lazy('payment', 'Google Pay')),
+    )
+
+
 class PaymentProviderForm(Form):
     def clean(self):
         cleaned_data = super().clean()

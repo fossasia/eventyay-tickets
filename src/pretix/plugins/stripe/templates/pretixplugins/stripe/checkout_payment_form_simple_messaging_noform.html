@@ -1,0 +1,24 @@
+{% load i18n %}
+{% load bootstrap3 %}
+{% if explanation %}
+    <p>{{ explanation }}</p>
+{% endif %}
+<div class="form-horizontal stripe-container">
+    <div id="stripe-{{ method }}">
+        <span class="fa fa-spinner fa-spin"></span>
+        <!-- a Stripe Element will be inserted here. -->
+    </div>
+
+    <p class="help-block">
+        {% blocktrans trimmed %}
+            After you submitted your order, we will redirect you to the payment service provider to complete your
+            payment. You will then be redirected back here to get your tickets.
+        {% endblocktrans %}
+    </p>
+
+    <input type="hidden" name="stripe_{{ method }}_total" value="{{ total }}" id="stripe_{{ method }}_total"/>
+    <input type="hidden" id="stripe_{{ method }}_currency" value="{{ event.currency }}"/>
+    {% if country %}
+        <input type="hidden" id="stripe_{{ method }}_country" value="{{ country }}"/>
+    {% endif %}
+</div>
