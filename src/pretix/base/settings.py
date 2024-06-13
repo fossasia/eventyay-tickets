@@ -1787,7 +1787,7 @@ Your {event} team"""))
         ),
     },
     'theme_color_success': {
-        'default': '#50A167',
+        'default': '#50a167',
         'type': str,
         'form_class': forms.CharField,
         'serializer_class': serializers.CharField,
@@ -1808,7 +1808,7 @@ Your {event} team"""))
         ),
     },
     'theme_color_danger': {
-        'default': '#C44F4F',
+        'default': '#c44f4f',
         'type': str,
         'form_class': forms.CharField,
         'serializer_class': serializers.CharField,
@@ -1829,7 +1829,7 @@ Your {event} team"""))
         ),
     },
     'theme_color_background': {
-        'default': '#FFFFFF',
+        'default': '#f5f5f5',
         'type': str,
         'form_class': forms.CharField,
         'serializer_class': serializers.CharField,
