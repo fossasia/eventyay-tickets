@@ -33,9 +33,46 @@ class GlobalSettingsView(AdministratorPermissionRequiredMixin, FormView):
         return reverse('control:global.settings')
 
 
+
+# here is the original code for the UpdateCheckView is implemented
 class UpdateCheckView(StaffMemberRequiredMixin, FormView):
     template_name = 'pretixcontrol/global_update.html'
     form_class = UpdateSettingsForm
+
+    def post(self, request, *args, **kwargs):
+        if 'trigger' in request.POST:
+            update_check.apply()
+            return redirect(self.get_success_url())
+        return super().post(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, _('Your changes have been saved.'))
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, _('Your changes have not been saved, see below for errors.'))
+        return super().form_invalid(form)
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data()
+        ctx['gs'] = GlobalSettingsObject()
+        ctx['gs'].settings.set('update_check_ack', True)
+        ctx['tbl'] = check_result_table()
+        return ctx
+
+    def get_success_url(self):
+        return reverse('control:global.update')
+    
+# here updated view for the latest disabled UpdateCheckView
+class UpdateCheckView(StaffMemberRequiredMixin, FormView):
+    template_name = 'pretixcontrol/global_update.html'
+    form_class = UpdateSettingsForm
+
+    def get_initial(self):
+        initial = super().get_initial()
+        initial['update_check_perform'] = self.request.POST.get('update_check_perform', 'false') == 'true' or False
+        return initial
 
     def post(self, request, *args, **kwargs):
         if 'trigger' in request.POST:

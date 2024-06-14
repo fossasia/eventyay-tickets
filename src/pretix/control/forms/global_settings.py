@@ -70,9 +70,12 @@ class GlobalSettingsForm(SettingsForm):
         self.fields['banner_message_detail'].widget.attrs['rows'] = '3'
 
 
+
+
 class UpdateSettingsForm(SettingsForm):
     update_check_perform = forms.BooleanField(
         required=False,
+        initial=False,  # Set the initial value to False
         label=_("Perform update checks"),
         help_text=_("During the update check, eventyay will report an anonymous, unique installation ID, "
                     "the current version of the system and your installed plugins and the number of active and "
@@ -91,3 +94,4 @@ class UpdateSettingsForm(SettingsForm):
     def __init__(self, *args, **kwargs):
         self.obj = GlobalSettingsObject()
         super().__init__(*args, obj=self.obj, **kwargs)
+
