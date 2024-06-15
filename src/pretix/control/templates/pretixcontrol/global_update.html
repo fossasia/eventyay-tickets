@@ -87,6 +87,7 @@
             </button>
         </div>
     </form>
+    
 
 <!--from here the administrator information is started displaying imported from TALK  -->
     <h1>{% translate "Administrator information" %}</h1>
@@ -102,12 +103,7 @@
         </div>
     {% endif %}
 
-    <p>
-        {% translate "Your pretalx version is:" %} <strong>{{ pretalx_version|copyable }}</strong>.
-        {% blocktranslate trimmed with url="/orga/admin/update/" %}
-            You can check for updates <a href="{{ url }}">here</a>.
-        {% endblocktranslate %}
-    </p>
+    
 
    
    
