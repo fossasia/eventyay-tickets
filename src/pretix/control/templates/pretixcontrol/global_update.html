@@ -88,6 +88,7 @@
         </div>
     </form>
 
+<!--from here the administrator information is started displaying imported from TALK  -->
     <h1>{% translate "Administrator information" %}</h1>
 
     {% if settings.DEBUG %}
@@ -109,17 +110,6 @@
     </p>
 
     <h2>{% translate "Settings" %}</h2>
-
-    <p>
-        {% if settings.CONFIG_FILES %}
-            {% translate "Settings have been loaded from:" %}
-            {% for config_file in settings.CONFIG_FILES %}
-                <code>{{ config_file|copyable }}</code>{% if not forloop.last %},{% endif %}
-            {% endfor %}
-        {% else %}
-            {% translate "No settings files were found, all settings are either set to their default value or have been read from environment variables." %}
-        {% endif %}
-    </p>
     <ul>
         <li>{% translate "Database" %}
             <ul>
@@ -155,23 +145,7 @@
         </li>
     </ul>
 
-    <h3 class="mt-4">redis</h3>
-    {% if not settings.HAS_REDIS %}
-        {% translate "No redis server has been configured." %}
-    {% else %}
-        {% translate "Redis is used as cache backend:" %} <code>{{ settings.CACHES.redis.LOCATION|copyable }}</code>
-    {% endif %}
-
-    <h3 class="mt-4">Celery</h3>
-    {% if not settings.HAS_CELERY %}
-        {% translate "No celery workers have been configured." %}
-    {% else %}
-        <ul>
-            <li>{% translate "Broker" %}: <code>{{ settings.CELERY_BROKER_URL|copyable }}</code></li>
-            <li>{% translate "Backend" %}: <code>{{ settings.CELERY_RESULT_BACKEND|copyable }}</code></li>
-            <li>{% translate "Current queue length" %}: <strong>{{ queue_length }}</strong></li>
-        </ul>
-    {% endif %}
+  
 
    
     <!-- Reference for adding the administrator information that should be displayed on the global settings of the eventyay-tickets  -->
