@@ -1,11 +1,11 @@
 name: Server tests
 on:
   push:
-    branches: [ dev, stable, prod ]
+    branches: [ development, master ]
     paths:
       - 'server/**'
   pull_request:
-    branches: [ dev, stable, prod ]
+    branches: [ development, master ]
     paths:
       - 'server/**'
   workflow_dispatch: {}
