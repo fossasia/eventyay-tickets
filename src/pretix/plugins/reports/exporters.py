@@ -122,7 +122,7 @@ class ReportlabExportMixin:
                                _("Created: %s") % now().astimezone(tz).strftime("%d.%m.%Y %H:%M:%S"))
 
     def get_right_header_string(self):
-        return settings.PRETIX_INSTANCE_NAME
+        return settings.INSTANCE_NAME
 
     def get_left_header_string(self):
         if self.event.has_subevents:

@@ -8,7 +8,7 @@
             {% csrf_token %}
             <p>{% blocktrans %}Are you sure you want to generate a new client secret for the application <strong>{{ application }}</strong>?{% endblocktrans %}</p>
             <div class="form-group submit-group">
-                <a href="{% url "control:user.settings.oauth.apps" %}" class="btn btn-default btn-cancel">
+                <a href="{% url "control:user.settings.oauth.apps" %}" class="btn btn-delete btn-default btn-cancel">
                     {% trans "Cancel" %}
                 </a>
                 <button type="submit" class="btn btn-danger btn-save">

@@ -101,7 +101,7 @@ class NativeAuthBackend(BaseAuthBackend):
 
     @property
     def verbose_name(self):
-        return _('{system} User').format(system=settings.PRETIX_INSTANCE_NAME)
+        return _('{system} User').format(system=settings.INSTANCE_NAME)
 
     @property
     def login_form_fields(self) -> dict:

@@ -87,10 +87,10 @@ To use it, you just need to implement some variables:
 The template is passed the following context variables:
 
 ``site``
-   Name of the pretix installation (``settings.PRETIX_INSTANCE_NAME``)
+   Name of the eventyay tickets installation (``settings.INSTANCE_NAME``)
 
 ``site_url``
-   Root URL of the pretix installation (``settings.SITE_URL``)
+   Root URL of the eventyay tickets installation (``settings.SITE_URL``)
 
 ``body``
    The body as markdown (render with ``{{ body|safe }}``)

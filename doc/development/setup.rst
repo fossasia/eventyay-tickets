@@ -26,9 +26,11 @@ Your should install the following on your system:
 * ``libssl`` (Debian package: ``libssl-dev``)
 * ``libxml2`` (Debian package ``libxml2-dev``)
 * ``libxslt`` (Debian package ``libxslt1-dev``)
-* ``libenchant1c2a`` (Debian package ``libenchant1c2a``)
+* ``libenchant1c2a`` (Debian package ``libenchant1c2a`` or ``libenchant2-2``)
 * ``msgfmt`` (Debian package ``gettext``)
+* ``freetype`` (Debian package ``libfreetype-dev``)
 * ``git``
+* for pillow: ``libjpeg`` (Debian Package ``libjpeg-dev``)
 
 Your local python environment
 -----------------------------
@@ -53,11 +55,11 @@ Working with the code
 ---------------------
 The first thing you need are all the main application's dependencies::
 
-    cd src/
-    pip3 install -r requirements.txt -r requirements/dev.txt
+    pip3 install -e ".[dev]"
 
 Next, you need to copy the SCSS files from the source folder to the STATIC_ROOT directory::
 
+    cd src/
     python manage.py collectstatic --noinput
 
 Then, create the local database::

@@ -3,8 +3,9 @@ import logging
 import os
 import sys
 from urllib.parse import urlparse
-
+from .settings_helpers import build_db_tls_config, build_redis_tls_config
 import django.conf.locale
+from django.core.exceptions import ImproperlyConfigured
 from django.utils.crypto import get_random_string
 from kombu import Queue
 from pkg_resources import iter_entry_points
@@ -71,17 +72,16 @@ PRETIX_AUTH_BACKENDS = config.get('pretix', 'auth_backends', fallback='pretix.ba
 db_backend = config.get('database', 'backend', fallback='sqlite3')
 if db_backend == 'postgresql_psycopg2':
     db_backend = 'postgresql'
-DATABASE_IS_GALERA = config.getboolean('database', 'galera', fallback=False)
-if DATABASE_IS_GALERA and 'mysql' in db_backend:
-    db_options = {
-        'init_command': 'SET SESSION wsrep_sync_wait = 1;'
-    }
-else:
-    db_options = {}
+if db_backend == 'mysql':
+    raise ImproperlyConfigured("MySQL/MariaDB is not supported")
 
-if 'mysql' in db_backend:
-    db_options['charset'] = 'utf8mb4'
-JSON_FIELD_AVAILABLE = db_backend in ('mysql', 'postgresql')
+JSON_FIELD_AVAILABLE = db_backend == 'postgresql'
+db_options = {}
+
+db_tls_config = build_db_tls_config(config, db_backend)
+if (db_tls_config is not None):
+    db_options.update(db_tls_config)
+
 
 DATABASES = {
     'default': {
@@ -93,10 +93,7 @@ DATABASES = {
         'PORT': config.get('database', 'port', fallback=''),
         'CONN_MAX_AGE': 0 if db_backend == 'sqlite3' else 120,
         'OPTIONS': db_options,
-        'TEST': {
-            'CHARSET': 'utf8mb4',
-            'COLLATION': 'utf8mb4_unicode_ci',
-        } if 'mysql' in db_backend else {}
+        'TEST': {}
     }
 }
 DATABASE_REPLICA = 'default'
@@ -111,10 +108,7 @@ if config.has_section('replica'):
         'PORT': config.get('replica', 'port', fallback=DATABASES['default']['PORT']),
         'CONN_MAX_AGE': 0 if db_backend == 'sqlite3' else 120,
         'OPTIONS': db_options,
-        'TEST': {
-            'CHARSET': 'utf8mb4',
-            'COLLATION': 'utf8mb4_unicode_ci',
-        } if 'mysql' in db_backend else {}
+        'TEST': {}
     }
     DATABASE_ROUTERS = ['pretix.helpers.database.ReplicaRouter']
 
@@ -122,7 +116,7 @@ STATIC_URL = config.get('urls', 'static', fallback='/static/')
 
 MEDIA_URL = config.get('urls', 'media', fallback='/media/')
 
-PRETIX_INSTANCE_NAME = config.get('pretix', 'instance_name', fallback='pretix.de')
+INSTANCE_NAME = config.get('pretix', 'instance_name', fallback='eventyay')
 PRETIX_REGISTRATION = config.getboolean('pretix', 'registration', fallback=True)
 PRETIX_PASSWORD_RESET = config.getboolean('pretix', 'password_reset', fallback=True)
 PRETIX_LONG_SESSIONS = config.getboolean('pretix', 'long_sessions', fallback=True)
@@ -136,7 +130,7 @@ SITE_URL = config.get('pretix', 'url', fallback='http://localhost')
 if SITE_URL.endswith('/'):
     SITE_URL = SITE_URL[:-1]
 
-CSRF_TRUSTED_ORIGINS = [urlparse(SITE_URL).hostname]
+CSRF_TRUSTED_ORIGINS = [urlparse(SITE_URL).scheme + '://' + urlparse(SITE_URL).hostname]
 
 TRUST_X_FORWARDED_FOR = config.get('pretix', 'trust_x_forwarded_for', fallback=False)
 
@@ -209,22 +203,28 @@ if HAS_MEMCACHED:
 
 HAS_REDIS = config.has_option('redis', 'location')
 if HAS_REDIS:
+    redis_options = {
+        "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        "REDIS_CLIENT_KWARGS": {"health_check_interval": 30}
+    }
+    redis_tls_config = build_redis_tls_config(config)
+    if (redis_tls_config is not None):
+        redis_options["CONNECTION_POOL_KWARGS"] = redis_tls_config
+        redis_options["REDIS_CLIENT_KWARGS"].update(redis_tls_config)
+
+    if config.has_option('redis', 'password'):
+        redis_options["PASSWORD"] = config.get('redis', 'password')
+
     CACHES['redis'] = {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": config.get('redis', 'location'),
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            "REDIS_CLIENT_KWARGS": {"health_check_interval": 30}
-        }
+        "OPTIONS": redis_options
     }
     CACHES['redis_sessions'] = {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": config.get('redis', 'location'),
         "TIMEOUT": 3600 * 24 * 30,
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            "REDIS_CLIENT_KWARGS": {"health_check_interval": 30}
-        }
+        "OPTIONS": redis_options
     }
     if not HAS_MEMCACHED:
         CACHES['default'] = CACHES['redis']
@@ -305,7 +305,6 @@ INSTALLED_APPS = [
     'statici18n',
     'django_countries',
     'hijack',
-    'compat',
     'oauth2_provider',
     'phonenumber_field'
 ]
@@ -746,6 +745,7 @@ AUTH_PASSWORD_VALIDATORS = [
 OAUTH2_PROVIDER_APPLICATION_MODEL = 'pretixapi.OAuthApplication'
 OAUTH2_PROVIDER_GRANT_MODEL = 'pretixapi.OAuthGrant'
 OAUTH2_PROVIDER_ACCESS_TOKEN_MODEL = 'pretixapi.OAuthAccessToken'
+OAUTH2_PROVIDER_ID_TOKEN_MODEL = 'pretixapi.OAuthIDToken'
 OAUTH2_PROVIDER_REFRESH_TOKEN_MODEL = 'pretixapi.OAuthRefreshToken'
 OAUTH2_PROVIDER = {
     'SCOPES': {
@@ -757,7 +757,8 @@ OAUTH2_PROVIDER = {
     'ALLOWED_REDIRECT_URI_SCHEMES': ['https'] if not DEBUG else ['http', 'https'],
     'ACCESS_TOKEN_EXPIRE_SECONDS': 3600 * 24,
     'ROTATE_REFRESH_TOKEN': False,
-
+    'PKCE_REQUIRED': False,
+    'OIDC_RESPONSE_TYPES_SUPPORTED': ["code"],  # We don't support proper OIDC for now
 }
 
 COUNTRIES_OVERRIDE = {
@@ -766,3 +767,5 @@ COUNTRIES_OVERRIDE = {
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 25000
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10 MB
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

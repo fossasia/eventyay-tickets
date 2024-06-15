@@ -1741,8 +1741,7 @@ class ItemCategoryTest(TestCase):
     This test case tests various methods around the category model.
     """
 
-    @classmethod
-    def setUpTestData(cls):
+    def setUp(cls):
         cls.o = Organizer.objects.create(name='Dummy', slug='dummy')
         cls.event = Event.objects.create(
             organizer=cls.o, name='Dummy', slug='dummy',
@@ -1770,8 +1769,7 @@ class ItemTest(TestCase):
     This test case tests various methods around the item model.
     """
 
-    @classmethod
-    def setUpTestData(cls):
+    def setUp(cls):
         cls.o = Organizer.objects.create(name='Dummy', slug='dummy')
         cls.event = Event.objects.create(
             organizer=cls.o, name='Dummy', slug='dummy',
@@ -1847,8 +1845,7 @@ class ItemTest(TestCase):
 
 
 class EventTest(TestCase):
-    @classmethod
-    def setUpTestData(cls):
+    def setUp(cls):
         cls.organizer = Organizer.objects.create(name='Dummy', slug='dummy')
 
     @classscope(attr='organizer')
@@ -1961,7 +1958,7 @@ class EventTest(TestCase):
 
     @classscope(attr='organizer')
     def test_presale_has_ended(self):
-        event = Event(
+        event = Event.objects.create(
             organizer=self.organizer, name='Download', slug='download',
             date_from=now()
         )
@@ -2094,8 +2091,7 @@ class EventTest(TestCase):
 
 
 class SubEventTest(TestCase):
-    @classmethod
-    def setUpTestData(cls):
+    def setUp(cls):
         cls.organizer = Organizer.objects.create(name='Dummy', slug='dummy')
         cls.event = Event.objects.create(
             organizer=cls.organizer, name='Dummy', slug='dummy',
@@ -2189,8 +2185,7 @@ class CachedFileTestCase(TestCase):
 
 
 class CheckinListTestCase(TestCase):
-    @classmethod
-    def setUpTestData(cls):
+    def setUp(cls):
         cls.organizer = Organizer.objects.create(name='Dummy', slug='dummy')
         with scope(organizer=cls.organizer):
             cls.event = Event.objects.create(

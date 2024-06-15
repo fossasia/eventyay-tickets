@@ -85,7 +85,7 @@
                         {% if not filter_form.is_valid %}
                             <form action="" method="post" class="helper-display-inline pull-right flip">
                                 {% csrf_token %}
-                                <button class="btn btn-danger" type="submit" name="discard" value="all">
+                                <button class="btn btn-delete btn-danger" type="submit" name="discard" value="all">
                                     <span class="fa fa-trash"></span>
                                     {% trans "Discard all" %}
                                 </button>

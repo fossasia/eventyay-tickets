@@ -2,12 +2,12 @@ name: Code Style
 
 on:
   push:
-    branches: [ master ]
+    branches: [ development, master ]
     paths-ignore:
       - 'src/pretix/locale/**'
       - 'src/pretix/static/**'
   pull_request:
-    branches: [ master ]
+    branches: [ development, master ]
     paths-ignore:
       - 'src/pretix/locale/**'
       - 'src/pretix/static/**'
@@ -29,7 +29,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
       - name: Install Dependencies
-        run: pip3 install -Ur src/requirements/dev.txt
+        run: pip3 install -e ".[dev]" psycopg2-binary
       - name: Run isort
         run: isort -c .
         working-directory: ./src
@@ -49,7 +49,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
       - name: Install Dependencies
-        run: pip3 install -r src/requirements.txt -Ur src/requirements/dev.txt
+        run: pip3 install -e ".[dev]" psycopg2-binary
       - name: Run flake8
         run: flake8 .
         working-directory: ./src

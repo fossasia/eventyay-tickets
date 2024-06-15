@@ -14,7 +14,7 @@ from django.utils import translation
 from django.utils.crypto import get_random_string
 from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
-from django.utils.http import is_safe_url
+from django.utils.http import url_has_allowed_host_and_scheme as is_safe_url
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from django.views.decorators.clickjacking import xframe_options_exempt

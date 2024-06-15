@@ -21,7 +21,7 @@ EMAIL_BACKEND = 'django.core.mail.outbox'
 COMPRESS_ENABLED = COMPRESS_OFFLINE = False
 COMPRESS_CACHE_BACKEND = 'testcache'
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
-PRETIX_INSTANCE_NAME = 'pretix.eu'
+INSTANCE_NAME = 'eventyay.com'
 
 COMPRESS_PRECOMPILERS_ORIGINAL = COMPRESS_PRECOMPILERS
 COMPRESS_PRECOMPILERS = ()

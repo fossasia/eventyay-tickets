@@ -1,15 +1,5 @@
-from django.apps import AppConfig
 from django.urls import URLPattern
 from django.urls.resolvers import RegexPattern
-
-
-class PretixMultidomainConfig(AppConfig):
-    name = 'pretix.multidomain'
-    label = 'pretixmultidomain'
-
-
-default_app_config = 'pretix.multidomain.PretixMultidomainConfig'
-
 
 def event_url(route, view, name=None, require_live=True):
     if callable(view):

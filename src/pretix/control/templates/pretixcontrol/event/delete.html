@@ -26,7 +26,7 @@
             {% bootstrap_field form.slug layout="inline" %}
 
             <div class="form-group submit-group">
-                <button type="submit" class="btn btn-danger btn-save">
+                <button type="submit" class="btn btn-delete btn-danger btn-save">
                     {% trans "Delete" %}
                 </button>
             </div>
@@ -37,8 +37,7 @@
         </p>
         <p>
             {% blocktrans trimmed %}
-                pretix does not allow deleting orders once they have been placed in order to be audit-proof and
-                trustable by financial authorities.
+            To ensure audit compliance and maintain trust with financial authorities, deleting orders once they have been placed is not permitted.
             {% endblocktrans %}
         </p>
         {% if request.event.live %}
@@ -51,7 +50,7 @@
                 <input type="hidden" name="live" value="false">
 
                 <div class="form-group submit-group">
-                    <a href="{% url "control:event.shredder.start" event=request.event.slug organizer=request.organizer.slug %}" class="btn btn-danger btn-save">
+                    <a href="{% url "control:event.shredder.start" event=request.event.slug organizer=request.organizer.slug %}" class="btn btn-delete btn-danger btn-save">
                         <span class="fa fa-eraser"></span>
                         {% trans "Delete personal data" %}
                     </a>
@@ -65,7 +64,7 @@
             <p>
                 {% trans "However, since your shop is offline, it is only visible to the organizing team according to the permissions you configured." %}
                 <div class="form-group submit-group">
-                    <a href="{% url "control:event.shredder.start" event=request.event.slug organizer=request.organizer.slug %}" class="btn btn-danger btn-save">
+                    <a href="{% url "control:event.shredder.start" event=request.event.slug organizer=request.organizer.slug %}" class="btn btn-delete btn-danger btn-save">
                         <span class="fa fa-eraser"></span>
                         {% trans "Delete personal data" %}
                     </a>

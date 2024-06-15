@@ -2,7 +2,7 @@ from django.conf import settings
 from django.template.loader import get_template
 from django.utils.timezone import override
 from django_scopes import scope, scopes_disabled
-from inlinestyler.utils import inline_css
+from css_inline import inline as inline_css
 
 from pretix.base.i18n import language
 from pretix.base.models import LogEntry, NotificationSetting, User
@@ -93,7 +93,7 @@ def send_notification(logentry_id: int, action_type: str, user_id: int, method: 
 
 def send_notification_mail(notification: Notification, user: User):
     ctx = {
-        'site': settings.PRETIX_INSTANCE_NAME,
+        'site': settings.INSTANCE_NAME,
         'site_url': settings.SITE_URL,
         'color': settings.PRETIX_PRIMARY_COLOR,
         'notification': notification,
@@ -117,7 +117,7 @@ def send_notification_mail(notification: Notification, user: User):
     mail_send_task.apply_async(kwargs={
         'to': [user.email],
         'subject': '[{}] {}: {}'.format(
-            settings.PRETIX_INSTANCE_NAME,
+            settings.INSTANCE_NAME,
             notification.event.settings.mail_prefix or notification.event.slug.upper(),
             notification.title
         ),
