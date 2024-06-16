@@ -69,9 +69,7 @@ class GlobalSettingsForm(SettingsForm):
         self.fields['banner_message'].widget.attrs['rows'] = '2'
         self.fields['banner_message_detail'].widget.attrs['rows'] = '3'
 
-
-
-
+        
 class UpdateSettingsForm(SettingsForm):
     update_check_perform = forms.BooleanField(
         required=False,
