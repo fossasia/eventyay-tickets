@@ -17,7 +17,7 @@ class VueCompiler(CompilerFilter):
         self.rollup_bin = os.path.join(node_path, 'rollup', 'dist', 'bin', 'rollup')
         rollup_config = os.path.join(config_dir, 'rollup.config.js')
         if not os.path.exists(self.rollup_bin) and not settings.DEBUG:
-            raise FilterError("Rollup not installed or pretix not built properly, please run 'make npminstall' in source root.")
+            raise FilterError("Rollup not installed or system not built properly, please run 'make npminstall' in source root.")
         command = (
             ' '.join((
                 'NODE_PATH=' + shlex.quote(node_path),

@@ -127,11 +127,11 @@ DEFAULTS = {
         'serializer_class': serializers.BooleanField,
         'form_kwargs': dict(
             label=_("Ask for email addresses per ticket"),
-            help_text=_("Normally, pretix asks for one email address per order and the order confirmation will be sent "
+            help_text=_("Normally, eventyay asks for one email address per order and the order confirmation will be sent "
                         "only to that email address. If you enable this option, the system will additionally ask for "
                         "individual email addresses for every admission ticket. This might be useful if you want to "
                         "obtain individual addresses for every attendee even in case of group orders. However, "
-                        "pretix will send the order confirmation by default only to the one primary email address, not to "
+                        "eventyay will send the order confirmation by default only to the primary email address, not to "
                         "the per-attendee addresses. You can however enable this in the E-mail settings."),
         )
     },
@@ -1787,7 +1787,7 @@ Your {event} team"""))
         ),
     },
     'theme_color_success': {
-        'default': '#50A167',
+        'default': '#50a167',
         'type': str,
         'form_class': forms.CharField,
         'serializer_class': serializers.CharField,
@@ -1808,7 +1808,7 @@ Your {event} team"""))
         ),
     },
     'theme_color_danger': {
-        'default': '#C44F4F',
+        'default': '#c44f4f',
         'type': str,
         'form_class': forms.CharField,
         'serializer_class': serializers.CharField,
@@ -1829,7 +1829,7 @@ Your {event} team"""))
         ),
     },
     'theme_color_background': {
-        'default': '#FFFFFF',
+        'default': '#f5f5f5',
         'type': str,
         'form_class': forms.CharField,
         'serializer_class': serializers.CharField,
@@ -2586,7 +2586,7 @@ class SettingsSandbox:
     """
     Transparently proxied access to event settings, handling your prefixes for you.
 
-    :param typestr: The first part of the pretix, e.g. ``plugin``
+    :param typestr: The first part of the eventyay, e.g. ``plugin``
     :param key: The prefix, e.g. the name of your plugin
     :param obj: The event or organizer that should be queried
     """
