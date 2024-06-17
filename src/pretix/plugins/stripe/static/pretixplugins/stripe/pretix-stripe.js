@@ -1,7 +1,7 @@
 /*global $, stripe_pubkey, stripe_loadingmessage, gettext */
 'use strict';
 
-var pretixstripe = {
+var stripeObj = {
     stripe: null,
     elements: null,
     card: null,
@@ -15,7 +15,7 @@ var pretixstripe = {
         waitingDialog.show(gettext("Contacting Stripe …"));
         $(".stripe-errors").hide();
 
-        pretixstripe.stripe.createPaymentMethod(method, element, kwargs).then(function (result) {
+        stripeObj.stripe.createPaymentMethod(method, element, kwargs).then(function (result) {
             waitingDialog.hide();
             if (result.error) {
                 $(".stripe-errors").stop().hide().removeClass("sr-only");
@@ -43,7 +43,7 @@ var pretixstripe = {
         });
     },
     'load': function () {
-        if (pretixstripe.stripe !== null) {
+        if (stripeObj.stripe !== null) {
             return;
         }
         $('.stripe-container').closest("form").find(".checkout-button-row .btn-primary").prop("disabled", true);
@@ -53,19 +53,19 @@ var pretixstripe = {
                 dataType: 'script',
                 success: function () {
                     if ($.trim($("#stripe_connectedAccountId").html())) {
-                        pretixstripe.stripe = Stripe($.trim($("#stripe_pubkey").html()), {
+                        stripeObj.stripe = Stripe($.trim($("#stripe_pubkey").html()), {
                             stripeAccount: $.trim($("#stripe_connectedAccountId").html()),
                             locale: $.trim($("body").attr("data-locale"))
                         });
                     } else {
-                        pretixstripe.stripe = Stripe($.trim($("#stripe_pubkey").html()), {
+                        stripeObj.stripe = Stripe($.trim($("#stripe_pubkey").html()), {
                             locale: $.trim($("body").attr("data-locale"))
                         });
                     }
-                    pretixstripe.elements = pretixstripe.stripe.elements();
+                    stripeObj.elements = stripeObj.stripe.elements();
                     if ($.trim($("#stripe_merchantcountry").html()) !== "") {
                         try {
-                            pretixstripe.paymentRequest = pretixstripe.stripe.paymentRequest({
+                            stripeObj.paymentRequest = stripeObj.stripe.paymentRequest({
                                 country: $("#stripe_merchantcountry").html(),
                                 currency: $("#stripe_card_currency").val().toLowerCase(),
                                 total: {
@@ -79,7 +79,7 @@ var pretixstripe = {
                                 requestShipping: false,
                             });
 
-                            pretixstripe.paymentRequest.on('paymentmethod', function (ev) {
+                            stripeObj.paymentRequest.on('paymentmethod', function (ev) {
                                 ev.complete('success');
 
                                 var $form = $("#stripe_card_payment_method_id").closest("form");
@@ -91,13 +91,13 @@ var pretixstripe = {
                                 $form.get(0).submit();
                             });
                         } catch (e) {
-                            pretixstripe.paymentRequest = null;
+                            stripeObj.paymentRequest = null;
                         }
                     } else {
-                        pretixstripe.paymentRequest = null;
+                        stripeObj.paymentRequest = null;
                     }
                     if ($("#stripe-card").length) {
-                        pretixstripe.card = pretixstripe.elements.create('card', {
+                        stripeObj.card = stripeObj.elements.create('card', {
                             'style': {
                                 'base': {
                                     'fontFamily': '"Open Sans","OpenSans","Helvetica Neue",Helvetica,Arial,sans-serif',
@@ -118,13 +118,13 @@ var pretixstripe = {
                                 invalid: 'has-error',
                             }
                         });
-                        pretixstripe.card.mount("#stripe-card");
-                        pretixstripe.card.on('ready', function () {
+                        stripeObj.card.mount("#stripe-card");
+                        stripeObj.card.on('ready', function () {
                             $('.stripe-container').closest("form").find(".checkout-button-row .btn-primary").prop("disabled", false);
                         });
                     }
                     if ($("#stripe-sepa").length) {
-                        pretixstripe.sepa = pretixstripe.elements.create('iban', {
+                        stripeObj.sepa = stripeObj.elements.create('iban', {
                             'style': {
                                 'base': {
                                     'fontFamily': '"Open Sans","OpenSans","Helvetica Neue",Helvetica,Arial,sans-serif',
@@ -146,7 +146,7 @@ var pretixstripe = {
                                 invalid: 'has-error',
                             }
                         });
-                        pretixstripe.sepa.on('change', function (event) {
+                        stripeObj.sepa.on('change', function (event) {
                             if (['AD', 'PF', 'TF', 'GI', 'GB', 'GG', 'VA', 'IM', 'JE', 'MC', 'NC', 'BL', 'PM', 'SM', 'CH', 'WF'].indexOf(event.country) > 0) {
                                 $("#stripe_sepa_debit_country").prop('checked', true);
                                 $("#stripe_sepa_debit_country").change();
@@ -158,42 +158,42 @@ var pretixstripe = {
                                 $("#stripe_sepa_debit_bank").val(event.bankName);
                             }
                         });
-                        pretixstripe.sepa.mount("#stripe-sepa");
-                        pretixstripe.sepa.on('ready', function () {
+                        stripeObj.sepa.mount("#stripe-sepa");
+                        stripeObj.sepa.on('ready', function () {
                             $('.stripe-container').closest("form").find(".checkout-button-row .btn-primary").prop("disabled", false);
                         });
                     }
                     if ($("#stripe-affirm").length) {
-                        pretixstripe.affirm = pretixstripe.elements.create('affirmMessage', {
+                        stripeObj.affirm = stripeObj.elements.create('affirmMessage', {
                             'amount': parseInt($("#stripe_affirm_total").val()),
                             'currency': $("#stripe_affirm_currency").val(),
                         });
 
-                        pretixstripe.affirm.mount('#stripe-affirm');
+                        stripeObj.affirm.mount('#stripe-affirm');
                     }
                     if ($("#stripe-klarna").length) {
                         try {
-                            pretixstripe.klarna = pretixstripe.elements.create('paymentMethodMessaging', {
+                            stripeObj.klarna = stripeObj.elements.create('paymentMethodMessaging', {
                                 'amount': parseInt($("#stripe_klarna_total").val()),
                                 'currency': $("#stripe_klarna_currency").val(),
                                 'countryCode': $("#stripe_klarna_country").val(),
                                 'paymentMethodTypes': ['klarna'],
                             });
 
-                            pretixstripe.klarna.mount('#stripe-klarna');
+                            stripeObj.klarna.mount('#stripe-klarna');
                         } catch (e) {
                             console.error(e);
                             $("#stripe-klarna").html("<div class='alert alert-danger'>Technical error, please contact support: " + e + "</div>");
                         }
                     }
-                    if ($("#stripe-payment-request-button").length && pretixstripe.paymentRequest != null) {
-                        pretixstripe.paymentRequestButton = pretixstripe.elements.create('paymentRequestButton', {
-                            paymentRequest: pretixstripe.paymentRequest,
+                    if ($("#stripe-payment-request-button").length && stripeObj.paymentRequest != null) {
+                        stripeObj.paymentRequestButton = stripeObj.elements.create('paymentRequestButton', {
+                            paymentRequest: stripeObj.paymentRequest,
                         });
 
-                        pretixstripe.paymentRequest.canMakePayment().then(function (result) {
+                        stripeObj.paymentRequest.canMakePayment().then(function (result) {
                             if (result) {
-                                pretixstripe.paymentRequestButton.mount('#stripe-payment-request-button');
+                                stripeObj.paymentRequestButton.mount('#stripe-payment-request-button');
                                 $('#stripe-card-elements .stripe-or').removeClass("hidden");
                                 $('#stripe-payment-request-button').parent().removeClass("hidden");
                             } else {
@@ -212,12 +212,12 @@ var pretixstripe = {
             dataType: 'script',
             success: function () {
                 if ($.trim($("#stripe_connectedAccountId").html())) {
-                    pretixstripe.stripe = Stripe($.trim($("#stripe_pubkey").html()), {
+                    stripeObj.stripe = Stripe($.trim($("#stripe_pubkey").html()), {
                         stripeAccount: $.trim($("#stripe_connectedAccountId").html()),
                         locale: $.trim($("body").attr("data-locale"))
                     });
                 } else {
-                    pretixstripe.stripe = Stripe($.trim($("#stripe_pubkey").html()), {
+                    stripeObj.stripe = Stripe($.trim($("#stripe_pubkey").html()), {
                         locale: $.trim($("body").attr("data-locale"))
                     });
                 }
@@ -226,8 +226,8 @@ var pretixstripe = {
         });
     },
     'handleAlipayAction': function (payment_intent_client_secret) {
-        pretixstripe.withStripe(function () {
-            pretixstripe.stripe.confirmAlipayPayment(
+        stripeObj.withStripe(function () {
+            stripeObj.stripe.confirmAlipayPayment(
                 payment_intent_client_secret,
                 {
                     return_url: window.location.href
@@ -245,8 +245,8 @@ var pretixstripe = {
         });
     },
     'handleWechatAction': function (payment_intent_client_secret) {
-        pretixstripe.withStripe(function () {
-            pretixstripe.stripe.confirmWechatPayPayment(
+        stripeObj.withStripe(function () {
+            stripeObj.stripe.confirmWechatPayPayment(
                 payment_intent_client_secret,
                 {
                     payment_method_options: {
@@ -269,8 +269,8 @@ var pretixstripe = {
         });
     },
     'handleCardAction': function (payment_intent_client_secret) {
-        pretixstripe.withStripe(function () {
-            pretixstripe.stripe.handleCardAction(
+        stripeObj.withStripe(function () {
+            stripeObj.stripe.handleCardAction(
                 payment_intent_client_secret
             ).then(function (result) {
                 if (result.error) {
@@ -322,16 +322,16 @@ $(function () {
         }
     } else if ($("#stripe_payment_intent_next_action_redirect_url").length) {
         let payment_intent_next_action_redirect_url = $.trim($("#stripe_payment_intent_next_action_redirect_url").html());
-        pretixstripe.handlePaymentRedirectAction(payment_intent_next_action_redirect_url);
+        stripeObj.handlePaymentRedirectAction(payment_intent_next_action_redirect_url);
     } else if ($.trim($("#stripe_payment_intent_action_type").html()) === "wechat_pay_display_qr_code") {
         let payment_intent_client_secret = $.trim($("#stripe_payment_intent_client_secret").html());
-        pretixstripe.handleWechatAction(payment_intent_client_secret);
+        stripeObj.handleWechatAction(payment_intent_client_secret);
     } else if ($.trim($("#stripe_payment_intent_action_type").html()) === "alipay_handle_redirect") {
         let payment_intent_client_secret = $.trim($("#stripe_payment_intent_client_secret").html());
-        pretixstripe.handleAlipayAction(payment_intent_client_secret);
+        stripeObj.handleAlipayAction(payment_intent_client_secret);
     } else if ($("#stripe_payment_intent_client_secret").length) {
         let payment_intent_client_secret = $.trim($("#stripe_payment_intent_client_secret").html());
-        pretixstripe.handleCardAction(payment_intent_client_secret);
+        stripeObj.handleCardAction(payment_intent_client_secret);
     }
 
     $(window).on("message onmessage", function (e) {
@@ -357,11 +357,11 @@ $(function () {
         || $("input[name=payment][value=stripe_affirm]").is(':checked')
         || $("input[name=payment][value=stripe_klarna]").is(':checked')
         || $(".payment-redo-form").length) {
-        pretixstripe.load();
+        stripeObj.load();
     } else {
         $("input[name=payment]").change(function () {
             if (['stripe', 'stripe_sepa_debit', 'stripe_affirm', 'stripe_klarna'].indexOf($(this).val()) > -1) {
-                pretixstripe.load();
+                stripeObj.load();
             }
         })
     }
@@ -403,12 +403,12 @@ $(function () {
             }
             if (($("input[name=payment][value=stripe]").prop('checked') || $("input[name=payment][type=radio]").length === 0)
                 && $("#stripe_card_payment_method_id").val() == "") {
-                pretixstripe.pm_request('card', pretixstripe.card);
+                stripeObj.pm_request('card', stripeObj.card);
                 return false;
             }
 
             if (($("input[name=payment][value=stripe_sepa_debit]").prop('checked')) && $("#stripe_sepa_debit_payment_method_id").val() == "") {
-                pretixstripe.pm_request('sepa_debit', pretixstripe.sepa, {
+                stripeObj.pm_request('sepa_debit', stripeObj.sepa, {
                     billing_details: {
                         name: $("#id_payment_stripe_sepa_debit-accountname").val(),
                         email: $("#stripe_sepa_debit_email").val(),
