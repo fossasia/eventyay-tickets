@@ -2,7 +2,7 @@ name: Docker-webapp-deploy
 on:
   workflow_dispatch:
   push:
-    branches: [ development, master ]
+    branches: [ development, main ]
 
 jobs:
   push_to_registry:

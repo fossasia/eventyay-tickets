@@ -2,11 +2,11 @@ name: Server style
 on:
   workflow_dispatch:
   push:
-    branches: [ development, master ]
+    branches: [ development, main ]
     paths:
       - 'server/**'
   pull_request:
-    branches: [ development, master ]
+    branches: [ development, main ]
     paths:
       - 'server/**'
 
