@@ -204,9 +204,7 @@ class StripeSettingsHolder(BasePaymentProvider):
                      )
                  ),
                  help_text=_(
-                     "We will check if the customer's browser supports wallet-based payment methods like Apple Pay or Google Pay. "
-                     "These options will be highlighted alongside the credit card payment method. Note that this check does not account "
-                     "for whether Google Pay/Apple Pay has been disabled in the Stripe Dashboard."
+                     "Eventyay will check if the customer's browser supports wallet-based payment methods like Apple Pay or Google Pay."
                  ),
                  initial=True,
                  required=False,
@@ -215,9 +213,7 @@ class StripeSettingsHolder(BasePaymentProvider):
              forms.CharField(
                  label=_('Statement descriptor postfix'),
                  help_text=_(
-                     "Any value entered here will appear on the customer's credit card bill or bank account transaction. The order code will "
-                     "automatically be added in front of it. Note that depending on the payment method, only a limited number of characters is allowed. "
-                     "We recommend not entering more than {} characters in this field."
+                     "The statement descriptor is the text that appears on the customer's credit card bill or bank account transaction."
                  ).format(22 - 1 - settings.ENTROPY['order_code']),
                  required=False,
              )),
@@ -266,8 +262,8 @@ class StripeSettingsHolder(BasePaymentProvider):
                      help_text=mark_safe(
                          '{}<div class="alert alert-warning">{}</div>'.format(
                              _('Certain payment methods may require activation in your Stripe account settings before they function correctly.'),
-                             _('SEPA Direct Debit payments through Stripe are <strong>not</strong> processed immediately and may take up to '
-                               '<strong>14 days</strong> to confirm. Activate this payment method only if your payment terms accommodate this delay.')
+                             _('SEPA Direct Debit can take up to <strong>14 business days</strong> to receive notification on the success or failure of a payment after '
+                             'you initiate a debit from the customer’s account, though the average is 7 to 8 business days.')
                          )
                      ),
                      required=False,
