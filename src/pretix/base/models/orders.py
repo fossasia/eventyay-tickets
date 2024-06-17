@@ -71,23 +71,25 @@ class SecureOrderQuerySet(models.QuerySet):
         @param secret_length: (default=64): The length of the secret to compare.
         @return: An Order object if the code and secret are verified.
         """
-        dummy_secret = "0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF"[:secret_length]
+        dummy_secret = "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"[:secret_length]
 
-        def compare_digests(a, b):
-            return hmac.compare_digest(a.lower(), b.lower())
-
-        def create_hmac(value, secret):
-            return salted_hmac(key_salt=b"", value=value, secret=secret, algorithm="sha256").hexdigest()[:secret_length]
-
+        def hash_compare(secret, received):
+            """
+            Compare two hash digests securely.
+            """
+            return hmac.compare_digest(
+                secret[:secret_length].lower(),
+                received[:secret_length].lower()
+            )
         try:
             order = self.get(code=code)
         except Order.DoesNotExist:
-            compare_digests(create_hmac(tag, dummy_secret), received_secret)
+            hash_compare(order.tagged_secret(tag, dummy_secret), received_secret)
             raise
 
         order_secret = order.tagged_secret(tag, secret_length) if tag else order.secret
-        valid_digest = compare_digests(order_secret, received_secret)
-        valid_sha1 = tag and compare_digests(hashlib.sha1(order.secret.encode()).hexdigest(), received_secret)
+        valid_digest = hash_compare(order_secret, received_secret)
+        valid_sha1 = tag and hash_compare(hashlib.sha1(order.secret.encode()).hexdigest(), received_secret)
 
         if not valid_digest and not valid_sha1:
             raise Order.DoesNotExist
@@ -970,7 +972,7 @@ class Order(LockModel, LoggedModel):
             yield op
 
     def tagged_secret(self, tag, secret_length=64):
-        return salted_hmac(key_salt="", value=tag, secret=self.secret, algorithm="sha256").hexdigest()[:secret_length]
+        return salted_hmac(key_salt=b"", value=tag, secret=self.secret, algorithm="sha256").hexdigest()[:secret_length]
 
 
 def answerfile_name(instance, filename: str) -> str:
