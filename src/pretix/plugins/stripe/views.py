@@ -56,7 +56,7 @@ def redirect_view(request, *args, **kwargs):
     else:
         params = request.GET.copy()
         params['go'] = '1'
-        r = render(request, 'pretixplugins/stripe/redirect.html', {
+        r = render(request, 'plugins/stripe/redirect.html', {
             'url': build_absolute_uri(request.event, 'plugins:stripe:redirect') + '?' + urllib.parse.urlencode(params),
         })
         r._csp_ignore = True
@@ -124,7 +124,7 @@ def oauth_return(request, *args, **kwargs):
             messages.error(request, _('Stripe returned an error: {}').format(testdata['error_description']))
         else:
             messages.success(request,
-                             _('Your Stripe account is now connected to pretix. You can change the settings in '
+                             _('Your Stripe account is now connected to eventyay. You can change the settings in '
                                'detail below.'))
             event.settings.payment_stripe_publishable_key = data['stripe_publishable_key']
             # event.settings.payment_stripe_connect_access_token = data['access_token'] we don't need it, right?
@@ -429,7 +429,7 @@ def paymentintent_webhook(event, event_json, paymentintent_id, rso):
 @event_permission_required('can_change_event_settings')
 def oauth_disconnect(request, **kwargs):
     if request.method != "POST":
-        return render(request, 'pretixplugins/stripe/oauth_disconnect.html', {})
+        return render(request, 'plugins/stripe/oauth_disconnect.html', {})
 
     del request.event.settings.payment_stripe_publishable_key
     del request.event.settings.payment_stripe_publishable_test_key
@@ -600,7 +600,7 @@ class ScaView(StripeOrderView, View):
             ctx['payment_intent_next_action_redirect_url'] = intent.next_action.swish_handle_redirect_or_display_qr_code['hosted_instructions_url']
             ctx['payment_intent_redirect_action_handling'] = 'iframe'
 
-        r = render(request, 'pretixplugins/stripe/sca.html', ctx)
+        r = render(request, 'plugins/stripe/sca.html', ctx)
         r._csp_ignore = True
         return r
 
@@ -634,14 +634,14 @@ class ScaReturnView(StripeOrderView, View):
             }),
         }
 
-        return render(request, 'pretixplugins/stripe/sca_return.html', ctx)
+        return render(request, 'plugins/stripe/sca_return.html', ctx)
 
 
 class OrganizerSettingsFormView(DecoupleMixin, OrganizerDetailViewMixin, AdministratorPermissionRequiredMixin, FormView):
     model = Organizer
     permission = 'can_change_organizer_settings'
     form_class = OrganizerStripeSettingsForm
-    template_name = 'pretixplugins/stripe/organizer_stripe.html'
+    template_name = 'plugins/stripe/organizer_stripe.html'
 
     def get_success_url(self):
         return reverse('plugins:stripe:settings.connect', kwargs={

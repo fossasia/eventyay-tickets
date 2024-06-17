@@ -1029,7 +1029,7 @@ msgstr "Totale ordine"
 #: pretix/control/views/waitinglist.py:214
 #: pretix/plugins/reports/exporters.py:422
 #: pretix/plugins/reports/exporters.py:763
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:61
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:61
 #: pretix/presale/templates/pretixpresale/organizers/index.html:67
 msgid "Status"
 msgstr "Stato"
@@ -1381,7 +1381,7 @@ msgstr "Totale"
 #: pretix/control/templates/pretixcontrol/order/index.html:616
 #: pretix/control/templates/pretixcontrol/order/index.html:711
 #: pretix/control/templates/pretixcontrol/order/refund_choose.html:84
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_confirm.html:19
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_confirm.html:19
 msgid "Payment method"
 msgstr "Metodo di pagamento"
 
@@ -1550,7 +1550,7 @@ msgstr ""
 #: pretix/control/templates/pretixcontrol/organizers/giftcard.html:34
 #: pretix/plugins/banktransfer/refund_export.py:25
 #: pretix/plugins/paypal/templates/pretixplugins/paypal/control.html:15
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:57
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:57
 msgid "Currency"
 msgstr ""
 
@@ -10762,7 +10762,7 @@ msgstr ""
 #: pretix/control/templates/pretixcontrol/user/reauth.html:32
 #: pretix/control/templates/pretixcontrol/user/reauth.html:36
 #: pretix/plugins/banktransfer/templates/pretixplugins/banktransfer/import_assign.html:11
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/sca.html:36
+#: pretix/plugins/stripe/templates/plugins/stripe/sca.html:36
 #: pretix/presale/templates/pretixpresale/event/checkout_addons.html:342
 #: pretix/presale/templates/pretixpresale/event/checkout_payment.html:77
 #: pretix/presale/templates/pretixpresale/event/checkout_questions.html:157
@@ -10851,7 +10851,7 @@ msgstr ""
 #: pretix/control/templates/pretixcontrol/vouchers/detail.html:98
 #: pretix/plugins/badges/templates/pretixplugins/badges/edit.html:35
 #: pretix/plugins/returnurl/templates/returnurl/settings.html:24
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/organizer_stripe.html:20
+#: pretix/plugins/stripe/templates/plugins/stripe/organizer_stripe.html:20
 #: pretix/plugins/ticketoutputpdf/templates/pretixplugins/ticketoutputpdf/edit.html:35
 msgid "Save"
 msgstr "Salva"
@@ -11044,10 +11044,10 @@ msgstr ""
 
 #: pretix/control/templates/pretixcontrol/boxoffice/payment.html:45
 #: pretix/control/templates/pretixcontrol/boxoffice/payment.html:65
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_confirm.html:10
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_form_cc.html:28
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:13
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:43
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_confirm.html:10
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_form_cc.html:28
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:13
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:43
 msgid "Card number"
 msgstr ""
 
@@ -11211,7 +11211,7 @@ msgstr ""
 #: pretix/control/templates/pretixcontrol/vouchers/delete_bulk.html:33
 #: pretix/control/templates/pretixcontrol/waitinglist/delete.html:12
 #: pretix/plugins/badges/templates/pretixplugins/badges/delete.html:13
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/sca.html:29
+#: pretix/plugins/stripe/templates/plugins/stripe/sca.html:29
 #: pretix/plugins/ticketoutputpdf/templates/pretixplugins/ticketoutputpdf/delete.html:12
 #: pretix/presale/templates/pretixpresale/event/order_change.html:69
 #: pretix/presale/templates/pretixpresale/event/order_modify.html:79
@@ -17932,17 +17932,17 @@ msgstr ""
 #: pretix/plugins/banktransfer/views.py:759
 #: pretix/plugins/stripe/payment.py:902 pretix/plugins/stripe/payment.py:1069
 #: pretix/plugins/stripe/payment.py:1221
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_confirm.html:22
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_confirm.html:25
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_confirm.html:22
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_confirm.html:25
 msgid "Account holder"
 msgstr ""
 
 #: pretix/plugins/banktransfer/payment.py:214
 #: pretix/plugins/banktransfer/templates/pretixplugins/banktransfer/checkout_payment_form.html:14
 #: pretix/plugins/banktransfer/templates/pretixplugins/banktransfer/pending.html:24
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:21
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:27
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:33
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:21
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:27
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:33
 msgid "Bank"
 msgstr ""
 
@@ -18768,7 +18768,7 @@ msgid "Last update"
 msgstr ""
 
 #: pretix/plugins/paypal/templates/pretixplugins/paypal/control.html:13
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:53
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:53
 msgid "Total value"
 msgstr ""
 
@@ -18789,18 +18789,18 @@ msgstr ""
 "contattaci se dovessero passare diversi giorni senza risposta."
 
 #: pretix/plugins/paypal/templates/pretixplugins/paypal/redirect.html:17
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/redirect.html:17
+#: pretix/plugins/stripe/templates/plugins/stripe/redirect.html:17
 msgid "The payment process has started in a new window."
 msgstr "Il processo di pagamento è stato inziato in una nuova finestra."
 
 #: pretix/plugins/paypal/templates/pretixplugins/paypal/redirect.html:20
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/redirect.html:20
+#: pretix/plugins/stripe/templates/plugins/stripe/redirect.html:20
 msgid "The window to enter your payment data was not opened or was closed?"
 msgstr ""
 "La finestra di inserimento dati di PayPal non è stata aperta o si è chiusa?"
 
 #: pretix/plugins/paypal/templates/pretixplugins/paypal/redirect.html:24
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/redirect.html:24
+#: pretix/plugins/stripe/templates/plugins/stripe/redirect.html:24
 msgid "Click here in order to open the window."
 msgstr ""
 
@@ -19601,12 +19601,12 @@ msgid "Stripe Connect: Publishable key (test)"
 msgstr ""
 
 #: pretix/plugins/stripe/signals.py:170
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/organizer_stripe.html:6
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/organizer_stripe.html:9
+#: pretix/plugins/stripe/templates/plugins/stripe/organizer_stripe.html:6
+#: pretix/plugins/stripe/templates/plugins/stripe/organizer_stripe.html:9
 msgid "Stripe Connect"
 msgstr ""
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/action_double.html:5
+#: pretix/plugins/stripe/templates/plugins/stripe/action_double.html:5
 #, python-format
 msgid ""
 "The Stripe transaction <a %(stripe_href)s>%(charge)s</a> has succeeded, but "
@@ -19614,7 +19614,7 @@ msgid ""
 "check and refund the money via Stripe's interface."
 msgstr ""
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/action_overpaid.html:5
+#: pretix/plugins/stripe/templates/plugins/stripe/action_overpaid.html:5
 #, python-format
 msgid ""
 "The Stripe transaction <a %(stripe_href)s>%(charge)s</a> has succeeded, but "
@@ -19627,7 +19627,7 @@ msgstr ""
 "frattempo. Il pagamento non può essere accettato. Contatta l'utente ed "
 "effettua un rimborso tramite l'interfaccia di Stripe."
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/action_refund.html:5
+#: pretix/plugins/stripe/templates/plugins/stripe/action_refund.html:5
 #, python-format
 msgid ""
 "Stripe reported that the transaction <a %(stripe_href)s>%(charge)s</a> has "
@@ -19635,37 +19635,37 @@ msgid ""
 "refunded?"
 msgstr ""
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_confirm.html:4
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_confirm.html:4
 msgid "The total amount will be withdrawn from your credit card."
 msgstr ""
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_confirm.html:8
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_form_cc.html:26
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:11
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:41
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_confirm.html:8
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_form_cc.html:26
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:11
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:41
 msgid "Card type"
 msgstr ""
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_confirm.html:14
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_form_simple.html:4
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_form_simple_noform.html:2
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_confirm.html:14
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_form_simple.html:4
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_form_simple_noform.html:2
 msgid ""
 "After you submitted your order, we will redirect you to the payment service "
 "provider to complete your payment. You will then be redirected back here to "
 "get your tickets."
 msgstr ""
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_form_cc.html:6
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_form_cc.html:6
 msgid ""
 "This transaction will be marked as Mail Order/Telephone Order, exempting it "
 "from Strong Customer Authentication (SCA) whenever possible"
 msgstr ""
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_form_cc.html:16
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_form_cc.html:16
 msgid "For a credit card payment, please turn on JavaScript."
 msgstr "Per il pagamento con carta ti preghiamo di attivare JavaScript."
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_form_cc.html:22
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_form_cc.html:22
 msgid ""
 "You already entered a card number that we will use to charge the payment "
 "amount."
@@ -19673,15 +19673,15 @@ msgstr ""
 "Hai già inserito un numero di carta che verrà usato per processare il "
 "pagamento."
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_form_cc.html:33
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_form_cc.html:33
 msgid "Use a different card"
 msgstr ""
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_form_cc.html:50
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_form_cc.html:50
 msgid "OR"
 msgstr ""
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_form_cc.html:63
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_form_cc.html:63
 msgid ""
 "Your payment will be processed by Stripe, Inc. Your credit card data will be "
 "transmitted directly to Stripe and never touches our servers."
@@ -19689,26 +19689,26 @@ msgstr ""
 "Il tuo pagamento verrà processato da Stripe, Inc. I dati della tua carta "
 "verranno trasmessi direttamente a Stripe e non passeranno dai nostri servers."
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:6
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:6
 msgid "Charge ID"
 msgstr ""
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:16
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:23
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:29
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:35
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:16
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:23
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:29
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:35
 msgid "Payer name"
 msgstr ""
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:47
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:47
 msgid "MOTO"
 msgstr ""
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:65
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:65
 msgid "Error message"
 msgstr ""
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/pending.html:4
+#: pretix/plugins/stripe/templates/plugins/stripe/pending.html:4
 msgid ""
 "We're waiting for an answer from the payment provider regarding your "
 "payment. Please contact us if this takes more than a few days."
@@ -19716,7 +19716,7 @@ msgstr ""
 "Siamo in attesa di risposta dal provider riguardo il tuo pagamento. "
 "Contattaci se dovessero passare alcuni giorni senza risposta."
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/pending.html:9
+#: pretix/plugins/stripe/templates/plugins/stripe/pending.html:9
 msgid ""
 "You need to confirm your payment. Please click the link below to do so or "
 "start a new payment."
@@ -19724,38 +19724,38 @@ msgstr ""
 "Devi confermare il tuo pagamento. Clicca il link sottostante o effettua un "
 "nuovo pagamento."
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/pending.html:15
+#: pretix/plugins/stripe/templates/plugins/stripe/pending.html:15
 msgid "Confirm payment"
 msgstr "Conferma pagamento"
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/pending.html:21
+#: pretix/plugins/stripe/templates/plugins/stripe/pending.html:21
 msgid ""
 "Please scan the barcode below to complete your WeChat payment. Once you have "
 "completed your payment, you can refresh this page."
 msgstr ""
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/pending.html:29
+#: pretix/plugins/stripe/templates/plugins/stripe/pending.html:29
 msgid ""
 "The payment transaction could not be completed for the following reason:"
 msgstr "Il pagamento non può essere completato per i seguenti motivi:"
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/pending.html:36
+#: pretix/plugins/stripe/templates/plugins/stripe/pending.html:36
 msgid "Unknown reason"
 msgstr ""
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/sca.html:5
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/sca_return.html:6
+#: pretix/plugins/stripe/templates/plugins/stripe/sca.html:5
+#: pretix/plugins/stripe/templates/plugins/stripe/sca_return.html:6
 #: pretix/presale/templates/pretixpresale/event/order_pay.html:4
 #: pretix/presale/templates/pretixpresale/event/order_pay_confirm.html:5
 msgid "Pay order"
 msgstr ""
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/sca.html:16
+#: pretix/plugins/stripe/templates/plugins/stripe/sca.html:16
 #, python-format
 msgid "Confirm payment: %(code)s"
 msgstr "Conferma pagamento: %(code)s"
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/sca_return.html:18
+#: pretix/plugins/stripe/templates/plugins/stripe/sca_return.html:18
 msgid "Confirming your payment…"
 msgstr "Stiamo confermando il tuo pagamento..."
 

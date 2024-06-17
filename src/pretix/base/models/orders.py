@@ -60,7 +60,7 @@ def generate_position_secret():
     raise TypeError("Function no longer exists, use secret generators")
 
 
-class OrderQuerySet(models.QuerySet):
+class SecureOrderQuerySet(models.QuerySet):
     def get_with_secret_check(self, code, received_secret, tag, secret_length=64):
         """
         Get an order by its code and check the secret against the received secret. If the secret is correct, the order
@@ -238,7 +238,7 @@ class Order(LockModel, LoggedModel):
         verbose_name=_('E-mail address verified')
     )
 
-    objects = ScopedManager(OrderQuerySet.as_manager().__class__, organizer='event__organizer')
+    objects = ScopedManager(SecureOrderQuerySet.as_manager().__class__, organizer='event__organizer')
 
     class Meta:
         verbose_name = _("Order")

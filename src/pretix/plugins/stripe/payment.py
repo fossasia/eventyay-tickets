@@ -32,7 +32,7 @@ from pretix.base.models import (
     Event, InvoiceAddress, Order, OrderPayment, OrderRefund, Quota,
 )
 from pretix.base.payment import (
-    BasePaymentProvider, PaymentException, WalletQueries,
+    BasePaymentProvider, PaymentException, WalletQueries, WalletType
 )
 from pretix.base.plugins import get_all_plugins
 from pretix.base.services.mail import SendMailException
@@ -86,7 +86,7 @@ class StripeSettingsHolder(BasePaymentProvider):
                     "<a href='{}' class='btn btn-primary btn-lg'>{}</a>"
                 ).format(
                     _('To accept payments via Stripe, you will need an account at Stripe. By clicking on the '
-                      'following button, you can either create a new Stripe account connect pretix to an existing '
+                      'following button, you can either create a new Stripe account connect eventyay to an existing '
                       'one.'),
                     self.get_connect_url(request),
                     _('Connect with Stripe')
@@ -171,12 +171,9 @@ class StripeSettingsHolder(BasePaymentProvider):
                 ('publishable_key',
                  forms.CharField(
                      label=_('Publishable key'),
-                     help_text='<a target="_blank" rel="noopener" href="{docs_url}" class="btn btn-primary">{text}</a><br>'
-                               '<p class="help-block">{help}</p>'.format(
-                         text=_('Generate API keys'),
-                         docs_url='https://marketplace.stripe.com/apps/install/link/eu.pretix.plugins.stripe.rak',
-                         help=_('The button above will install our Stripe app to your account and will generate you '
-                                'API keys with the recommended permission level for optimal usage with pretix.')
+                     help_text=_('<a target="_blank" rel="noopener" href="{docs_url}">{text}</a>').format(
+                         text=_('Click here for a tutorial on how to obtain the required keys'),
+                         docs_url='https://docs.stripe.com/keys'
                      ),
                      validators=(
                          StripeKeyValidator('pk_'),
@@ -488,14 +485,14 @@ class StripeMethod(BasePaymentProvider):
     def _init_api(self):
         stripe.api_version = '2023-10-16'
         stripe.set_app_info(
-            "pretix",
+            "eventyay",
             partner_id="pp_partner_FSaz4PpKIur7Ox",
             version=__version__,
-            url="https://pretix.eu"
+            url="https://tickets.eventyay.com"
         )
 
     def checkout_confirm_render(self, request, **kwargs) -> str:
-        template = get_template('pretixplugins/stripe/checkout_payment_confirm.html')
+        template = get_template('plugins/stripe/checkout_payment_confirm.html')
         ctx = {'request': request, 'event': self.event, 'settings': self.settings, 'provider': self}
         return template.render(ctx)
 
@@ -504,7 +501,7 @@ class StripeMethod(BasePaymentProvider):
             payment_info = json.loads(payment.info)
         else:
             payment_info = None
-        template = get_template('pretixplugins/stripe/pending.html')
+        template = get_template('plugins/stripe/pending.html')
         ctx = {
             'request': request,
             'event': self.event,
@@ -543,7 +540,7 @@ class StripeMethod(BasePaymentProvider):
 
         details.setdefault('owner', {})
 
-        template = get_template('pretixplugins/stripe/control.html')
+        template = get_template('plugins/stripe/control.html')
         ctx = {
             'request': request,
             'event': self.event,
@@ -1050,7 +1047,7 @@ class StripeRedirectMethod(StripeMethod):
         }
 
     def payment_form_render(self, request) -> str:
-        template = get_template('pretixplugins/stripe/checkout_payment_form_simple_noform.html')
+        template = get_template('plugins/stripe/checkout_payment_form_simple_noform.html')
         ctx = {
             'request': request,
             'event': self.event,
@@ -1068,14 +1065,14 @@ class StripeCC(StripeMethod):
 
     @property
     def walletqueries(self):
-        return [WalletQueries.APPLEPAY, WalletQueries.GOOGLEPAY] if self.settings.get("walletdetection", True, as_type=bool) else []
+        return [WalletType.APPLEPAY, WalletType.GOOGLEPAY] if self.settings.get("walletdetection", True, as_type=bool) else []
 
     def payment_form_render(self, request, total, order=None) -> str:
         account = get_stripe_account_key(self)
         if not RegisteredApplePayDomain.objects.filter(account=account, domain=request.host).exists():
             stripe_verify_domain.apply_async(args=(self.event.pk, request.host))
 
-        template = get_template('pretixplugins/stripe/checkout_payment_form_card.html')
+        template = get_template('plugins/stripe/checkout_payment_form_card.html')
         ctx = {
             'request': request,
             'event': self.event,
@@ -1165,7 +1162,7 @@ class StripeSEPADirectDebit(StripeMethod):
         cs = cart_session(request)
         self.ia = get_invoice_address()
 
-        template = get_template('pretixplugins/stripe/checkout_payment_form_sepadirectdebit.html')
+        template = get_template('plugins/stripe/checkout_payment_form_sepadirectdebit.html')
         ctx = {
             'request': request,
             'event': self.event,
@@ -1275,7 +1272,7 @@ class StripeAffirm(StripeMethod):
         }
 
     def payment_form_render(self, request, total, order=None) -> str:
-        template = get_template('pretixplugins/stripe/checkout_payment_form_simple_messaging_noform.html')
+        template = get_template('plugins/stripe/checkout_payment_form_simple_messaging_noform.html')
         ctx = {
             'request': request,
             'event': self.event,
@@ -1328,7 +1325,7 @@ class StripeKlarna(StripeRedirectMethod):
         }
 
     def payment_form_render(self, request, total, order=None) -> str:
-        template = get_template("pretixplugins/stripe/checkout_payment_form_simple_messaging_noform.html")
+        template = get_template("plugins/stripe/checkout_payment_form_simple_messaging_noform.html")
         ctx = {
             "request": request,
             "event": self.event,
@@ -1359,7 +1356,7 @@ class StripeKlarna(StripeRedirectMethod):
 class StripeRedirectWithAccountNamePaymentIntentMethod(StripeRedirectMethod):
 
     def payment_form_render(self, request) -> str:
-        template = get_template('pretixplugins/stripe/checkout_payment_form_simple.html')
+        template = get_template('plugins/stripe/checkout_payment_form_simple.html')
         ctx = {
             'request': request,
             'event': self.event,
@@ -1503,7 +1500,7 @@ class StripeSofort(StripeMethod):
     redirect_in_widget_allowed = False
 
     def payment_form_render(self, request) -> str:
-        template = get_template('pretixplugins/stripe/checkout_payment_form_simple.html')
+        template = get_template('plugins/stripe/checkout_payment_form_simple.html')
         ctx = {
             'request': request,
             'event': self.event,
@@ -1606,7 +1603,7 @@ class StripeMultibanco(StripeSourceMethod):
     redirect_in_widget_allowed = False
 
     def payment_form_render(self, request) -> str:
-        template = get_template('pretixplugins/stripe/checkout_payment_form_simple_noform.html')
+        template = get_template('plugins/stripe/checkout_payment_form_simple_noform.html')
         ctx = {
             'request': request,
             'event': self.event,
