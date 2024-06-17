@@ -903,13 +903,20 @@ class BaseInvoiceNameForm(BaseInvoiceAddressForm):
                 del self.fields[f]
 
 
-def guess_country_from_request(request, event):
+def get_country_from_request(request, event):
+    """
+    Guesses the country of the user based on the request IP address. This is used as a fallback
+    @param request: The HTTP request object containing metadata about the request, including the client's IP address.
+    @param event: The event object used as a fallback to guess the country if GeoIP2 lookup fails.
+    @return: A Country object representing the user's country.
+    """
     if settings.HAS_GEOIP:
         g = GeoIP2()
         try:
             res = g.country(get_client_ip(request))
-            if res['country_code'] and len(res['country_code']) == 2:
-                return Country(res['country_code'])
+            country_code = res.get('country_code')
+            if country_code and len(country_code) == 2:
+                return Country(country_code)
         except AddressNotFoundError:
             pass
     return guess_country(event)

@@ -170,27 +170,33 @@ def signal_process_response(sender, request: HttpRequest, response: HttpResponse
     provider = StripeMethod(sender)
     url = resolve(request.path_info)
 
-    if provider.settings.get('_enabled', as_type=bool) and (
-            url.url_name == "event.order.pay.change" or
-            url.url_name == "event.order.pay" or
-            (url.url_name == "event.checkout" and url.kwargs['step'] == "payment") or
-            (url.namespace == "plugins:stripe" and url.url_name in ["sca", "sca.return"])
+    enabled = provider.settings.get('_enabled', as_type=bool)
+    relevant_urls = {
+        "event.order.pay.change",
+        "event.order.pay",
+        "event.checkout",
+        "plugins:stripe:sca",
+        "plugins:stripe:sca.return"
+    }
+
+    if enabled and (
+        url.url_name in relevant_urls or
+        (url.namespace == "plugins:stripe" and url.url_name in ["sca", "sca.return"])
     ):
         if 'Content-Security-Policy' in response:
-            h = _parse_csp(response['Content-Security-Policy'])
+            csp_header = _parse_csp(response['Content-Security-Policy'])
         else:
-            h = {}
+            csp_header = {}
 
-        # https://stripe.com/docs/security/guide#content-security-policy
-        csps = {
+        stripe_csps = {
             'connect-src': ['https://api.stripe.com'],
             'frame-src': ['https://js.stripe.com', 'https://hooks.stripe.com'],
             'script-src': ['https://js.stripe.com'],
         }
 
-        _merge_csp(h, csps)
+        _merge_csp(csp_header, stripe_csps)
 
-        if h:
-            response['Content-Security-Policy'] = _render_csp(h)
+        if csp_header:
+            response['Content-Security-Policy'] = _render_csp(csp_header)
 
     return response

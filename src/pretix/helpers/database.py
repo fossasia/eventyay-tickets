@@ -107,7 +107,7 @@ class NotEqual(Lookup):
         params = lhs_params + rhs_params
         return '%s <> %s' % (lhs, rhs), params
 
+def _of_self():
+    return ("self",) if connection.features.has_select_for_update_of else ()
 
-# shorthand for .select_for_update(of=("self,")), that falls back gracefully on databases that don't support
-# the SELECT FOR UPDATE OF ... query.
-OF_SELF = lazy(lambda: ("self",) if connection.features.has_select_for_update_of else (), tuple)()
+OF_SELF = lazy(_of_self, tuple)()

@@ -36,6 +36,7 @@ from pretix.plugins.stripe.payment import StripeCC, StripeSettingsHolder
 from pretix.plugins.stripe.tasks import (
     get_domain_for_event, stripe_verify_domain,
 )
+from pretix.helpers.http import redirect_to_url
 
 logger = logging.getLogger('pretix.plugins.stripe')
 
@@ -446,32 +447,39 @@ def oauth_disconnect(request, **kwargs):
     }))
 
 
-class StripeOrderView:
+class StripeOrderView(View):
     def dispatch(self, request, *args, **kwargs):
+        # Retrieve the order with a secret check
         try:
             self.order = request.event.orders.get_with_secret_check(
                 code=kwargs['order'], received_secret=kwargs['hash'].lower(), tag='plugins:stripe'
             )
         except Order.DoesNotExist:
             raise Http404('Unknown order')
+
+        # Retrieve the payment object
         self.payment = get_object_or_404(
             self.order.payments,
-            pk=self.kwargs['payment'],
+            pk=kwargs['payment'],
             provider__startswith='stripe'
         )
+
         return super().dispatch(request, *args, **kwargs)
 
     @cached_property
     def pprov(self):
+        # Return the payment provider object
         return self.request.event.get_payment_providers()[self.payment.provider]
 
     def _redirect_to_order(self):
+        # Check if the session secret matches the order secret
         if self.request.session.get('payment_stripe_order_secret') != self.order.secret and not self.payment.provider.startswith('stripe'):
             messages.error(self.request, _('Sorry, there was an error in the payment process. Please check the link '
                                            'in your emails to continue.'))
-            return redirect_to_url(eventreverse(self.request.event, 'presale:event.index'))
+            return redirect(eventreverse(self.request.event, 'presale:event.index'))
 
-        return redirect_to_url(eventreverse(self.request.event, 'presale:event.order', kwargs={
+        # Redirect to the order page with payment status
+        return redirect(eventreverse(self.request.event, 'presale:event.order', kwargs={
             'order': self.order.code,
             'secret': self.order.secret
         }) + ('?paid=yes' if self.order.status == Order.STATUS_PAID else ''))
@@ -535,6 +543,7 @@ class ScaView(StripeOrderView, View):
         prov = self.pprov
         prov._init_api()
 
+        # Redirect if payment state is final
         if self.payment.state in (OrderPayment.PAYMENT_STATE_CONFIRMED,
                                   OrderPayment.PAYMENT_STATE_CANCELED,
                                   OrderPayment.PAYMENT_STATE_FAILED):
@@ -542,49 +551,67 @@ class ScaView(StripeOrderView, View):
 
         payment_info = json.loads(self.payment.info)
 
+        # Retrieve the PaymentIntent
+        intent = self._retrieve_payment_intent(prov, payment_info)
+        if not intent:
+            messages.error(self.request, _('Sorry, there was an error in the payment process.'))
+            return self._redirect_to_order()
+
+        # Handle PaymentIntent next actions
+        if self._requires_action(intent):
+            return self._render_sca_template(request, prov, intent)
+        else:
+            return self._handle_payment_intent(request, prov, intent)
+
+    def _retrieve_payment_intent(self, prov, payment_info):
+        """Retrieve the PaymentIntent from Stripe."""
         if 'id' in payment_info:
             try:
-                intent = stripe.PaymentIntent.retrieve(
+                return stripe.PaymentIntent.retrieve(
                     payment_info['id'],
                     expand=["latest_charge"],
                     **prov.api_kwargs
                 )
             except stripe.error.InvalidRequestError:
                 logger.exception('Could not retrieve payment intent')
-                messages.error(self.request, _('Sorry, there was an error in the payment process.'))
-                return self._redirect_to_order()
-        else:
-            messages.error(self.request, _('Sorry, there was an error in the payment process.'))
-            return self._redirect_to_order()
+        return None
 
-        if intent.status == 'requires_action' and intent.next_action.type in [
+    def _requires_action(self, intent):
+        """Check if the PaymentIntent requires further action."""
+        return intent.status == 'requires_action' and intent.next_action.type in [
             'use_stripe_sdk', 'redirect_to_url', 'alipay_handle_redirect', 'wechat_pay_display_qr_code',
-            'swish_handle_redirect_or_display_qr_code',
-        ]:
-            ctx = {
-                'order': self.order,
-                'stripe_settings': StripeSettingsHolder(self.order.event).settings,
-            }
-            ctx['payment_intent_action_type'] = intent.next_action.type
-            if intent.next_action.type in ('use_stripe_sdk', 'alipay_handle_redirect', 'wechat_pay_display_qr_code'):
-                ctx['payment_intent_client_secret'] = intent.client_secret
-            elif intent.next_action.type == 'redirect_to_url':
-                ctx['payment_intent_next_action_redirect_url'] = intent.next_action.redirect_to_url['url']
-                ctx['payment_intent_redirect_action_handling'] = prov.redirect_action_handling
-            elif intent.next_action.type == 'swish_handle_redirect_or_display_qr_code':
-                ctx['payment_intent_next_action_redirect_url'] = intent.next_action.swish_handle_redirect_or_display_qr_code['hosted_instructions_url']
-                ctx['payment_intent_redirect_action_handling'] = 'iframe'
+            'swish_handle_redirect_or_display_qr_code'
+        ]
 
-            r = render(request, 'pretixplugins/stripe/sca.html', ctx)
-            r._csp_ignore = True
-            return r
-        else:
-            try:
-                prov._handle_payment_intent(request, self.payment, intent)
-            except PaymentException as e:
-                messages.error(request, str(e))
+    def _render_sca_template(self, request, prov, intent):
+        """Render the SCA template with appropriate context."""
+        ctx = {
+            'order': self.order,
+            'stripe_settings': StripeSettingsHolder(self.order.event).settings,
+            'payment_intent_action_type': intent.next_action.type,
+        }
 
-            return self._redirect_to_order()
+        if intent.next_action.type in ('use_stripe_sdk', 'alipay_handle_redirect', 'wechat_pay_display_qr_code'):
+            ctx['payment_intent_client_secret'] = intent.client_secret
+        elif intent.next_action.type == 'redirect_to_url':
+            ctx['payment_intent_next_action_redirect_url'] = intent.next_action.redirect_to_url['url']
+            ctx['payment_intent_redirect_action_handling'] = prov.redirect_action_handling
+        elif intent.next_action.type == 'swish_handle_redirect_or_display_qr_code':
+            ctx['payment_intent_next_action_redirect_url'] = intent.next_action.swish_handle_redirect_or_display_qr_code['hosted_instructions_url']
+            ctx['payment_intent_redirect_action_handling'] = 'iframe'
+
+        r = render(request, 'pretixplugins/stripe/sca.html', ctx)
+        r._csp_ignore = True
+        return r
+
+    def _handle_payment_intent(self, request, prov, intent):
+        """Handle the PaymentIntent and redirect to the order."""
+        try:
+            prov._handle_payment_intent(request, self.payment, intent)
+        except PaymentException as e:
+            messages.error(request, str(e))
+
+        return self._redirect_to_order()
 
 
 @method_decorator(xframe_options_exempt, 'dispatch')

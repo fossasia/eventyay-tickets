@@ -13,16 +13,16 @@ event_patterns = [
         re_path(r'^redirect/$', redirect_view, name='redirect'),
         re_path(r'^return/(?P<order>[^/]+)/(?P<hash>[^/]+)/(?P<payment>[0-9]+)/$', ReturnView.as_view(), name='return'),
         re_path(r'^sca/(?P<order>[^/]+)/(?P<hash>[^/]+)/(?P<payment>[0-9]+)/$', ScaView.as_view(), name='sca'),
-        re_path(r'^sca/(?P<order>[^/]+)/(?P<hash>[^/]+)/(?P<payment>[0-9]+)/return/$',
-                ScaReturnView.as_view(), name='sca.return'),
+        re_path(r'^sca/(?P<order>[^/]+)/(?P<hash>[^/]+)/(?P<payment>[0-9]+)/return/$', ScaReturnView.as_view(),
+                name='sca.return'),
     ])),
 ]
 
 urlpatterns = [
-    re_path(r'^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/stripe/disconnect/',
-            oauth_disconnect, name='oauth.disconnect'),
-    re_path(r'^control/organizer/(?P<organizer>[^/]+)/stripeconnect/',
-            OrganizerSettingsFormView.as_view(), name='settings.connect'),
+    re_path(r'^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/stripe/disconnect/$', oauth_disconnect,
+            name='oauth.disconnect'),
+    re_path(r'^control/organizer/(?P<organizer>[^/]+)/stripeconnect/$', OrganizerSettingsFormView.as_view(),
+            name='settings.connect'),
     re_path(r'^_stripe/webhook/$', webhook, name='webhook'),
     re_path(r'^_stripe/oauth_return/$', oauth_return, name='oauth.return'),
 ]

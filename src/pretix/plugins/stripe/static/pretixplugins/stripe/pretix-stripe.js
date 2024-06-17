@@ -147,8 +147,6 @@ var pretixstripe = {
                             }
                         });
                         pretixstripe.sepa.on('change', function (event) {
-                            // List of IBAN-countries, that require the country as well as line1-property according to
-                            // https://stripe.com/docs/payments/sepa-debit/accept-a-payment?platform=web&ui=element#web-submit-payment
                             if (['AD', 'PF', 'TF', 'GI', 'GB', 'GG', 'VA', 'IM', 'JE', 'MC', 'NC', 'BL', 'PM', 'SM', 'CH', 'WF'].indexOf(event.country) > 0) {
                                 $("#stripe_sepa_debit_country").prop('checked', true);
                                 $("#stripe_sepa_debit_country").change();
@@ -387,8 +385,6 @@ $(function () {
         function (e) {
             $("#stripe_sepa_debit_payment_method_id").val("");
             $("#stripe-current-account").slideUp();
-            // We're using a css-selector here instead of the id-selector,
-            // as we're hiding Stripe Elements *and* Django form fields
             $('.stripe-sepa_debit-form').slideDown();
 
             e.preventDefault();
@@ -397,8 +393,6 @@ $(function () {
     );
 
     if ($("#stripe-current-account").length) {
-        // We're using a css-selector here instead of the id-selector,
-        // as we're hiding Stripe Elements *and* Django form fields
         $('.stripe-sepa_debit-form').hide();
     }
 

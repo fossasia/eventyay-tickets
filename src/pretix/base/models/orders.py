@@ -62,28 +62,36 @@ def generate_position_secret():
 
 class OrderQuerySet(models.QuerySet):
     def get_with_secret_check(self, code, received_secret, tag, secret_length=64):
-        dummy = "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"[:secret_length]
+        """
+        Get an order by its code and check the secret against the received secret. If the secret is correct, the order
+        is returned. If the secret is incorrect, a ``Order.DoesNotExist`` exception is raised.
+        @param code: The code of the order to retrieve.
+        @param received_secret: The secret provided for verification.
+        @param tag: An optional tag used for generating a tagged secret.
+        @param secret_length: (default=64): The length of the secret to compare.
+        @return: An Order object if the code and secret are verified.
+        """
+        dummy_secret = "0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF"[:secret_length]
+
+        def compare_digests(a, b):
+            return hmac.compare_digest(a.lower(), b.lower())
+
+        def create_hmac(value, secret):
+            return salted_hmac(key_salt=b"", value=value, secret=secret, algorithm="sha256").hexdigest()[:secret_length]
+
         try:
             order = self.get(code=code)
         except Order.DoesNotExist:
-            # Do a hash comparison as well to harden against timing attacks
-            hmac.compare_digest(
-                salted_hmac(key_salt=b"", value=tag, algorithm="sha256",
-                            secret=dummy).hexdigest()[:secret_length],
-                received_secret[:secret_length]
-            )
+            compare_digests(create_hmac(tag, dummy_secret), received_secret)
+            raise
+
+        order_secret = order.tagged_secret(tag, secret_length) if tag else order.secret
+        valid_digest = compare_digests(order_secret, received_secret)
+        valid_sha1 = tag and compare_digests(hashlib.sha1(order.secret.encode()).hexdigest(), received_secret)
+
+        if not valid_digest and not valid_sha1:
             raise Order.DoesNotExist
 
-        if not hmac.compare_digest(
-                order.tagged_secret(tag, secret_length) if tag else order.secret,
-                received_secret[:secret_length].lower() if tag else received_secret.lower()
-        ) and not (
-                # TODO: remove this clause after a while (compatibility with old secrets currently in flight)
-                tag and hmac.compare_digest(hashlib.sha1(order.secret.lower().encode()).hexdigest(),
-                                            received_secret.lower()
-                                            )
-        ):
-            raise Order.DoesNotExist
         return order
 
 
@@ -962,8 +970,7 @@ class Order(LockModel, LoggedModel):
             yield op
 
     def tagged_secret(self, tag, secret_length=64):
-        return salted_hmac(value=tag, key_salt=b"", algorithm="sha256",
-                           secret=self.secret).hexdigest()[:secret_length]
+        return salted_hmac(key_salt="", value=tag, secret=self.secret, algorithm="sha256").hexdigest()[:secret_length]
 
 
 def answerfile_name(instance, filename: str) -> str:
