@@ -31,8 +31,8 @@ class GlobalSettingsView(AdministratorPermissionRequiredMixin, FormView):
 
     def get_success_url(self):
         return reverse('control:global.settings')
-    
-    
+
+
 class UpdateCheckView(StaffMemberRequiredMixin, FormView):
     template_name = 'pretixcontrol/global_update.html'
     form_class = UpdateSettingsForm
@@ -60,7 +60,7 @@ class UpdateCheckView(StaffMemberRequiredMixin, FormView):
         return ctx
 
     def get_success_url(self):
-        return reverse('control:global.update')    
+        return reverse('control:global.update')
 
 
 class MessageView(TemplateView):
