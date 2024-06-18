@@ -82,7 +82,7 @@ def preview(event: int, provider: str):
 
         from pretix.base.models import Order
         order = event.orders.create(status=Order.STATUS_PENDING, datetime=now(),
-                                    email='sample@pretix.eu',
+                                    email='sample@eventyay.com',
                                     locale=event.settings.locale,
                                     expires=now(), code="PREVIEW1234", total=119)
 

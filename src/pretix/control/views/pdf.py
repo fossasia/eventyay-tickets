@@ -67,7 +67,7 @@ class BaseEditorView(EventPermissionRequiredMixin, TemplateView):
 
         from pretix.base.models import Order
         order = self.request.event.orders.create(status=Order.STATUS_PENDING, datetime=now(),
-                                                 email='sample@pretix.eu',
+                                                 email='sample@eventyay.com',
                                                  locale=self.request.event.settings.locale,
                                                  expires=now(), code="PREVIEW1234", total=119)
 

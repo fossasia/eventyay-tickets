@@ -258,7 +258,7 @@ ENTROPY = {
 }
 
 # Internal settings
-PRETIX_EMAIL_NONE_VALUE = 'none@well-known.pretix.eu'
+PRETIX_EMAIL_NONE_VALUE = 'info@eventyay.com'
 
 STATIC_ROOT = os.path.join(os.path.dirname(__file__), 'static.dist')
 
