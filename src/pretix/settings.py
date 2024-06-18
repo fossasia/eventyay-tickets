@@ -449,13 +449,13 @@ ALL_LANGUAGES = [
     ('ru', _('Russian')),
     ('es', _('Spanish')),
     ('tr', _('Turkish')),
-    ('uk', _('Ukrainian')),
+    ('ua', _('Ukrainian')),
 ]
 LANGUAGES_OFFICIAL = {
     'en', 'de', 'de-informal'
 }
 LANGUAGES_INCUBATING = {
-    'pl', 'fi', 'pt-br','uk'
+    'pl', 'fi', 'pt-br','ua'
 } - set(config.get('languages', 'allow_incubating', fallback='').split(','))
 LANGUAGES_RTL = {
     'ar', 'hw'
