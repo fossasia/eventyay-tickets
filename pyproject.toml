@@ -35,7 +35,7 @@ dependencies = [
         'django-localflavor==4.0',
         'reportlab==4.0.*',
         'Pillow==9.5.*',
-        'PyPDF2==3.0.*',
+        'pypdf==4.2.*',
         'django-libsass==0.9',
         'libsass==0.22.*',
         'django-otp==1.2.*',

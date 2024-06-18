@@ -10,7 +10,7 @@ from django.db.models import Q
 from django.db.models.functions import Coalesce
 from django.utils.timezone import make_aware
 from django.utils.translation import gettext as _, gettext_lazy
-from PyPDF2 import PdfWriter
+from pypdf import PdfWriter
 
 from pretix.base.exporter import BaseExporter
 from pretix.base.i18n import language
