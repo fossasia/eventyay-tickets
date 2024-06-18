@@ -43,7 +43,7 @@ class GlobalSettingsForm(SettingsForm):
             )),
             ('opencagedata_apikey', SecretKeySettingsField(
                 required=False,
-                label=_("OpenCage API key for geocoding"),
+                label=_("OpenCage API key for geo   ding"),
             )),
             ('mapquest_apikey', SecretKeySettingsField(
                 required=False,
