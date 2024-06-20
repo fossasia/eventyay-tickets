@@ -995,7 +995,7 @@ msgstr "订单总计"
 #: pretix/control/views/waitinglist.py:214
 #: pretix/plugins/reports/exporters.py:422
 #: pretix/plugins/reports/exporters.py:763
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:61
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:61
 #: pretix/presale/templates/pretixpresale/organizers/index.html:67
 msgid "Status"
 msgstr "状态"
@@ -1349,7 +1349,7 @@ msgstr "数量"
 #: pretix/control/templates/pretixcontrol/order/index.html:616
 #: pretix/control/templates/pretixcontrol/order/index.html:711
 #: pretix/control/templates/pretixcontrol/order/refund_choose.html:84
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_confirm.html:19
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_confirm.html:19
 msgid "Payment method"
 msgstr "支付方式"
 
@@ -1531,7 +1531,7 @@ msgstr ""
 #: pretix/control/templates/pretixcontrol/organizers/giftcard.html:34
 #: pretix/plugins/banktransfer/refund_export.py:25
 #: pretix/plugins/paypal/templates/pretixplugins/paypal/control.html:15
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:57
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:57
 msgid "Currency"
 msgstr "货币"
 
@@ -11465,7 +11465,7 @@ msgstr ""
 #: pretix/control/templates/pretixcontrol/user/reauth.html:32
 #: pretix/control/templates/pretixcontrol/user/reauth.html:36
 #: pretix/plugins/banktransfer/templates/pretixplugins/banktransfer/import_assign.html:11
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/sca.html:36
+#: pretix/plugins/stripe/templates/plugins/stripe/sca.html:36
 #: pretix/presale/templates/pretixpresale/event/checkout_addons.html:342
 #: pretix/presale/templates/pretixpresale/event/checkout_payment.html:77
 #: pretix/presale/templates/pretixpresale/event/checkout_questions.html:157
@@ -11570,7 +11570,7 @@ msgstr "设置新密码"
 #: pretix/control/templates/pretixcontrol/vouchers/detail.html:98
 #: pretix/plugins/badges/templates/pretixplugins/badges/edit.html:35
 #: pretix/plugins/returnurl/templates/returnurl/settings.html:24
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/organizer_stripe.html:20
+#: pretix/plugins/stripe/templates/plugins/stripe/organizer_stripe.html:20
 #: pretix/plugins/ticketoutputpdf/templates/pretixplugins/ticketoutputpdf/edit.html:35
 msgid "Save"
 msgstr "保存"
@@ -11757,10 +11757,10 @@ msgstr "卡片输入方式"
 
 #: pretix/control/templates/pretixcontrol/boxoffice/payment.html:45
 #: pretix/control/templates/pretixcontrol/boxoffice/payment.html:65
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_confirm.html:10
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_form_cc.html:28
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:13
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:43
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_confirm.html:10
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_form_cc.html:28
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:13
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:43
 msgid "Card number"
 msgstr "卡号"
 
@@ -11934,7 +11934,7 @@ msgstr "这也将删除<strong>%(num)s</strong>签入的信息。"
 #: pretix/control/templates/pretixcontrol/vouchers/delete_bulk.html:33
 #: pretix/control/templates/pretixcontrol/waitinglist/delete.html:12
 #: pretix/plugins/badges/templates/pretixplugins/badges/delete.html:13
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/sca.html:29
+#: pretix/plugins/stripe/templates/plugins/stripe/sca.html:29
 #: pretix/plugins/ticketoutputpdf/templates/pretixplugins/ticketoutputpdf/delete.html:12
 #: pretix/presale/templates/pretixpresale/event/order_change.html:69
 #: pretix/presale/templates/pretixpresale/event/order_modify.html:79
@@ -19297,17 +19297,17 @@ msgstr "请输入您的银行帐户详细信息。"
 #: pretix/plugins/banktransfer/views.py:759
 #: pretix/plugins/stripe/payment.py:902 pretix/plugins/stripe/payment.py:1069
 #: pretix/plugins/stripe/payment.py:1221
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_confirm.html:22
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_confirm.html:25
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_confirm.html:22
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_confirm.html:25
 msgid "Account holder"
 msgstr "账户持有人"
 
 #: pretix/plugins/banktransfer/payment.py:214
 #: pretix/plugins/banktransfer/templates/pretixplugins/banktransfer/checkout_payment_form.html:14
 #: pretix/plugins/banktransfer/templates/pretixplugins/banktransfer/pending.html:24
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:21
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:27
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:33
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:21
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:27
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:33
 msgid "Bank"
 msgstr "银行"
 
@@ -20172,7 +20172,7 @@ msgid "Last update"
 msgstr "最后更新"
 
 #: pretix/plugins/paypal/templates/pretixplugins/paypal/control.html:13
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:53
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:53
 msgid "Total value"
 msgstr "总价值"
 
@@ -20189,17 +20189,17 @@ msgid ""
 msgstr "我们正在等待PayPal对您付款的回复。 如果这需要几个小时，请与我们联系。"
 
 #: pretix/plugins/paypal/templates/pretixplugins/paypal/redirect.html:17
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/redirect.html:17
+#: pretix/plugins/stripe/templates/plugins/stripe/redirect.html:17
 msgid "The payment process has started in a new window."
 msgstr "付款流程已在新窗口中启动。"
 
 #: pretix/plugins/paypal/templates/pretixplugins/paypal/redirect.html:20
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/redirect.html:20
+#: pretix/plugins/stripe/templates/plugins/stripe/redirect.html:20
 msgid "The window to enter your payment data was not opened or was closed?"
 msgstr "输入付款数据的窗口未打开或已关闭？"
 
 #: pretix/plugins/paypal/templates/pretixplugins/paypal/redirect.html:24
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/redirect.html:24
+#: pretix/plugins/stripe/templates/plugins/stripe/redirect.html:24
 msgid "Click here in order to open the window."
 msgstr "单击此处打开窗口。"
 
@@ -21065,14 +21065,14 @@ msgid "Stripe Connect: Publishable key (test)"
 msgstr "Stripe连接：可发布密钥（测试）"
 
 #: pretix/plugins/stripe/signals.py:170
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/organizer_stripe.html:6
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/organizer_stripe.html:9
+#: pretix/plugins/stripe/templates/plugins/stripe/organizer_stripe.html:6
+#: pretix/plugins/stripe/templates/plugins/stripe/organizer_stripe.html:9
 #, fuzzy
 #| msgid "Stripe Checkout"
 msgid "Stripe Connect"
 msgstr "Stripe结账"
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/action_double.html:5
+#: pretix/plugins/stripe/templates/plugins/stripe/action_double.html:5
 #, python-format
 msgid ""
 "The Stripe transaction <a %(stripe_href)s>%(charge)s</a> has succeeded, but "
@@ -21082,7 +21082,7 @@ msgstr ""
 "Stripe交易<a %(stripe_href)s>%(charge)s</a>已成功，但订单%(order)s已通过其他"
 "方式支付。请仔细检查并通过Stripe的界面退款。"
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/action_overpaid.html:5
+#: pretix/plugins/stripe/templates/plugins/stripe/action_overpaid.html:5
 #, python-format
 msgid ""
 "The Stripe transaction <a %(stripe_href)s>%(charge)s</a> has succeeded, but "
@@ -21093,7 +21093,7 @@ msgstr ""
 "Stripe交易<a %(stripe_href)s>%(charge)s</a>已成功，但订单%(order)s已过期，同"
 "时产品已售完。因此，付款无法接受。 请联系用户并通过Stripe的界面退款。"
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/action_refund.html:5
+#: pretix/plugins/stripe/templates/plugins/stripe/action_refund.html:5
 #, python-format
 msgid ""
 "Stripe reported that the transaction <a %(stripe_href)s>%(charge)s</a> has "
@@ -21103,20 +21103,20 @@ msgstr ""
 "Stripe报告交易<a %(stripe_href)s>%(charge)s</a>已退款。您是否要将匹配的订单"
 "（%(order)s）标记为已退款？"
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_confirm.html:4
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_confirm.html:4
 msgid "The total amount will be withdrawn from your credit card."
 msgstr "总金额将从您的信用卡中收取。"
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_confirm.html:8
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_form_cc.html:26
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:11
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:41
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_confirm.html:8
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_form_cc.html:26
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:11
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:41
 msgid "Card type"
 msgstr "卡片类型"
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_confirm.html:14
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_form_simple.html:4
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_form_simple_noform.html:2
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_confirm.html:14
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_form_simple.html:4
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_form_simple_noform.html:2
 msgid ""
 "After you submitted your order, we will redirect you to the payment service "
 "provider to complete your payment. You will then be redirected back here to "
@@ -21125,31 +21125,31 @@ msgstr ""
 "在您提交订单后，我们会将您重定向到付款服务提供商以完成付款。 然后，您将被重定"
 "向回到此处以获取您的门票。"
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_form_cc.html:6
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_form_cc.html:6
 msgid ""
 "This transaction will be marked as Mail Order/Telephone Order, exempting it "
 "from Strong Customer Authentication (SCA) whenever possible"
 msgstr ""
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_form_cc.html:16
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_form_cc.html:16
 msgid "For a credit card payment, please turn on JavaScript."
 msgstr "如需信用卡付款，请打开JavaScript。"
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_form_cc.html:22
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_form_cc.html:22
 msgid ""
 "You already entered a card number that we will use to charge the payment "
 "amount."
 msgstr "您已输入我们将用于收取付款金额的卡号。"
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_form_cc.html:33
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_form_cc.html:33
 msgid "Use a different card"
 msgstr "使用其他卡"
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_form_cc.html:50
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_form_cc.html:50
 msgid "OR"
 msgstr "OR"
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_form_cc.html:63
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_form_cc.html:63
 msgid ""
 "Your payment will be processed by Stripe, Inc. Your credit card data will be "
 "transmitted directly to Stripe and never touches our servers."
@@ -21157,73 +21157,73 @@ msgstr ""
 "您的付款将由Stripe，Inc.处理。您的信用卡数据将直接传输到Stripe，而不会接触我"
 "们的服务器。"
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:6
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:6
 msgid "Charge ID"
 msgstr "收取ID"
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:16
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:23
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:29
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:35
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:16
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:23
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:29
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:35
 msgid "Payer name"
 msgstr "付款人姓名"
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:47
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:47
 msgid "MOTO"
 msgstr ""
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:65
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:65
 msgid "Error message"
 msgstr "错误信息"
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/pending.html:4
+#: pretix/plugins/stripe/templates/plugins/stripe/pending.html:4
 msgid ""
 "We're waiting for an answer from the payment provider regarding your "
 "payment. Please contact us if this takes more than a few days."
 msgstr ""
 "我们正在等待付款提供商对您的付款作出答复。如果时间超过几天，请联系我们。"
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/pending.html:9
+#: pretix/plugins/stripe/templates/plugins/stripe/pending.html:9
 msgid ""
 "You need to confirm your payment. Please click the link below to do so or "
 "start a new payment."
 msgstr ""
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/pending.html:15
+#: pretix/plugins/stripe/templates/plugins/stripe/pending.html:15
 #, fuzzy
 #| msgid "Cancel payment"
 msgid "Confirm payment"
 msgstr "取消付款"
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/pending.html:21
+#: pretix/plugins/stripe/templates/plugins/stripe/pending.html:21
 msgid ""
 "Please scan the barcode below to complete your WeChat payment. Once you have "
 "completed your payment, you can refresh this page."
 msgstr ""
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/pending.html:29
+#: pretix/plugins/stripe/templates/plugins/stripe/pending.html:29
 msgid ""
 "The payment transaction could not be completed for the following reason:"
 msgstr "无法完成付款交易，原因如下："
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/pending.html:36
+#: pretix/plugins/stripe/templates/plugins/stripe/pending.html:36
 msgid "Unknown reason"
 msgstr "未知原因"
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/sca.html:5
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/sca_return.html:6
+#: pretix/plugins/stripe/templates/plugins/stripe/sca.html:5
+#: pretix/plugins/stripe/templates/plugins/stripe/sca_return.html:6
 #: pretix/presale/templates/pretixpresale/event/order_pay.html:4
 #: pretix/presale/templates/pretixpresale/event/order_pay_confirm.html:5
 msgid "Pay order"
 msgstr "支付订单"
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/sca.html:16
+#: pretix/plugins/stripe/templates/plugins/stripe/sca.html:16
 #, fuzzy, python-format
 #| msgid "Change payment method: %(code)s"
 msgid "Confirm payment: %(code)s"
 msgstr "更改付款方式：%(code)s"
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/sca_return.html:18
+#: pretix/plugins/stripe/templates/plugins/stripe/sca_return.html:18
 msgid "Confirming your payment…"
 msgstr ""
 

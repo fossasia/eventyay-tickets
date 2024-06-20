@@ -51,7 +51,6 @@ from pretix.control.permissions import EventPermissionRequiredMixin
 from pretix.control.views.user import RecentAuthenticationRequiredMixin
 from pretix.helpers.database import rolledback_transaction
 from pretix.multidomain.urlreverse import get_event_domain
-from pretix.plugins.stripe.payment import StripeSettingsHolder
 from pretix.presale.style import regenerate_css
 
 from ...base.i18n import language
@@ -1409,10 +1408,6 @@ class QuickSetupView(FormView):
         self.request.event.save()
         messages.success(self.request, _('Your changes have been saved. You can now go on with looking at the details '
                                          'or take your event live to start selling!'))
-
-        if form.cleaned_data.get('payment_stripe__enabled', False):
-            self.request.session['payment_stripe_oauth_enable'] = True
-            return redirect(StripeSettingsHolder(self.request.event).get_connect_url(self.request))
 
         return redirect(reverse('control:event.index', kwargs={
             'organizer': self.request.event.organizer.slug,

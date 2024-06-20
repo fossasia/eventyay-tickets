@@ -35,6 +35,8 @@ RUN apt-get update && \
 
 ENV LC_ALL=C.UTF-8 \
     DJANGO_SETTINGS_MODULE=production_settings
+ARG GITHUB_TOKEN
+ENV GITHUB_TOKEN=$GITHUB_TOKEN
 
 COPY deployment/docker/pretix.bash /usr/local/bin/pretix
 COPY deployment/docker/supervisord /etc/supervisord
@@ -48,8 +50,10 @@ COPY src /pretix/src
 RUN pip3 install -U \
         pip \
         setuptools \
+        toml \
         wheel && \
     cd /pretix && \
+    python src/set_github_token.py && \
     PRETIX_DOCKER_BUILD=TRUE pip3 install \
         -e ".[memcached]" \
         gunicorn django-extensions ipython && \

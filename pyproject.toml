@@ -89,6 +89,9 @@ dependencies = [
         'protobuf==4.23.*',
         'cryptography>=3.4.2',
         'sepaxml==2.6.*',
+        'geoip2==4.*',
+        'paypalhttp==1.*',
+        'eventyay-stripe @ git+https://your_token@github.com/fossasia/eventyay-tickets-stripe.git@master',
 ]
 
 [project.optional-dependencies]
