@@ -112,16 +112,18 @@
                     </div>
                 </div>
             {% endfor %}
-            {% if not anonymise_review and submission.active_resources %}
-                <div class="form-group row">
-                    <label class="col-md-3 col-form-label">{% translate "Resources" %}</label>
-                    <div class="col-md-9 mt-1">
-                        {% for resource in submission.active_resources %}
-                            {% include "agenda/includes/submission_resource.html" %}
-                            {% if not forloop.last %}<br>{% endif %}
-                        {% endfor %}
+            {% if not anonymise_review %}
+                {% if submission.active_resources %}
+                    <div class="form-group row">
+                        <label class="col-md-3 col-form-label">{% translate "Resources" %}</label>
+                        <div class="col-md-9 mt-1">
+                            {% for resource in submission.active_resources %}
+                                {% include "agenda/includes/submission_resource.html" %}
+                                {% if not forloop.last %}<br>{% endif %}
+                            {% endfor %}
+                        </div>
                     </div>
-                </div>
+                {% endif %}
             {% endif %}
             {% if not anonymise_review %}
                 {% for speaker in profiles %}
