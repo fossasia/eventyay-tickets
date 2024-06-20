@@ -43,20 +43,20 @@ msgstr "Ordens pagas"
 msgid "Total revenue"
 msgstr "Rendimento total"
 
-#: pretix/plugins/stripe/static/pretixplugins/stripe/pretix-stripe.js:12
+#: pretix/plugins/stripe/static/plugins/stripe/eventyay-stripe.js:12
 msgid "Contacting Stripe …"
 msgstr "Contatando Stripe…"
 
-#: pretix/plugins/stripe/static/pretixplugins/stripe/pretix-stripe.js:60
+#: pretix/plugins/stripe/static/plugins/stripe/eventyay-stripe.js:60
 msgid "Total"
 msgstr "Total"
 
-#: pretix/plugins/stripe/static/pretixplugins/stripe/pretix-stripe.js:152
-#: pretix/plugins/stripe/static/pretixplugins/stripe/pretix-stripe.js:183
+#: pretix/plugins/stripe/static/plugins/stripe/eventyay-stripe.js:152
+#: pretix/plugins/stripe/static/plugins/stripe/eventyay-stripe.js:183
 msgid "Confirming your payment …"
 msgstr ""
 
-#: pretix/plugins/stripe/static/pretixplugins/stripe/pretix-stripe.js:159
+#: pretix/plugins/stripe/static/plugins/stripe/eventyay-stripe.js:159
 #, fuzzy
 #| msgid "Contacting Stripe …"
 msgid "Contacting your bank …"
