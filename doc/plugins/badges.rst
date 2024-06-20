@@ -77,7 +77,7 @@ Endpoints
 
    .. sourcecode:: http
 
-      GET /api/v1/organizers/bigevents/events/democon/layoutsbadge/1/ HTTP/1.1
+      GET /api/v1/organizers/bigevents/events/democon/badgelayouts/1/ HTTP/1.1
       Host: pretix.eu
       Accept: application/json, text/javascript
 
