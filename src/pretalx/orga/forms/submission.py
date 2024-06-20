@@ -241,7 +241,7 @@ class AnonymiseForm(SubmissionForm):
         kwargs["anonymise"] = True
         super().__init__(*args, **kwargs)
         self._instance = instance
-        to_be_removed = []
+        to_be_removed = ["content_locale"]
         for key, field in self.fields.items():
             try:
                 field.plaintext = getattr(self._instance, key)
