@@ -47,7 +47,7 @@
             <div class="form-group row">
                 <label class="col-md-3 col-form-label">{% translate "Title" %}</label>
                 <div class="col-md-9 mt-1">
-                    {% if anonymise_review %}
+                    {% if not anonymise_review %}
                         {{ submission.title|default:'-' }}
                     {% else %}
                         {{ submission.anonymised.title|default:submission.title|default:'-' }}
