@@ -20,7 +20,7 @@ from django.db.models.functions import Coalesce, Greatest
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
 from django.urls import reverse
-from django.utils.crypto import get_random_string
+from django.utils.crypto import get_random_string, salted_hmac
 from django.utils.encoding import escape_uri_path
 from django.utils.formats import date_format
 from django.utils.functional import cached_property
@@ -932,6 +932,10 @@ class Order(LockModel, LoggedModel):
             if not op.generate_ticket:
                 continue
             yield op
+
+    def tagged_secret(self, tag, secret_length=64):
+        return salted_hmac(value=tag, key_salt=b"", algorithm="sha256",
+                           secret=self.secret or self.secret).hexdigest()[:secret_length]
 
 
 def answerfile_name(instance, filename: str) -> str:
