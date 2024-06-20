@@ -1,4 +1,6 @@
 env/
+.env311/
+.env*/
 .coverage
 htmlcov/
 .ropeproject
