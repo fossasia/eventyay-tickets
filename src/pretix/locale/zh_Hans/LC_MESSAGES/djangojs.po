@@ -43,20 +43,20 @@ msgstr "已付款订单"
 msgid "Total revenue"
 msgstr "总收入"
 
-#: pretix/plugins/stripe/static/pretixplugins/stripe/pretix-stripe.js:12
+#: pretix/plugins/stripe/static/plugins/stripe/eventyay-stripe.js:12
 msgid "Contacting Stripe …"
 msgstr "正在联系Stripe …"
 
-#: pretix/plugins/stripe/static/pretixplugins/stripe/pretix-stripe.js:60
+#: pretix/plugins/stripe/static/plugins/stripe/eventyay-stripe.js:60
 msgid "Total"
 msgstr "总计"
 
-#: pretix/plugins/stripe/static/pretixplugins/stripe/pretix-stripe.js:152
-#: pretix/plugins/stripe/static/pretixplugins/stripe/pretix-stripe.js:183
+#: pretix/plugins/stripe/static/plugins/stripe/eventyay-stripe.js:152
+#: pretix/plugins/stripe/static/plugins/stripe/eventyay-stripe.js:183
 msgid "Confirming your payment …"
 msgstr ""
 
-#: pretix/plugins/stripe/static/pretixplugins/stripe/pretix-stripe.js:159
+#: pretix/plugins/stripe/static/plugins/stripe/eventyay-stripe.js:159
 #, fuzzy
 #| msgid "Contacting Stripe …"
 msgid "Contacting your bank …"

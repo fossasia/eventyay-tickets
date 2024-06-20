@@ -43,20 +43,20 @@ msgstr "Πληρωμένες παραγγελίες"
 msgid "Total revenue"
 msgstr "Συνολικά κέρδη"
 
-#: pretix/plugins/stripe/static/pretixplugins/stripe/pretix-stripe.js:12
+#: pretix/plugins/stripe/static/plugins/stripe/eventyay-stripe.js:12
 msgid "Contacting Stripe …"
 msgstr "Επικοινωνία με το Stripe …"
 
-#: pretix/plugins/stripe/static/pretixplugins/stripe/pretix-stripe.js:60
+#: pretix/plugins/stripe/static/plugins/stripe/eventyay-stripe.js:60
 msgid "Total"
 msgstr "Σύνολο"
 
-#: pretix/plugins/stripe/static/pretixplugins/stripe/pretix-stripe.js:152
-#: pretix/plugins/stripe/static/pretixplugins/stripe/pretix-stripe.js:183
+#: pretix/plugins/stripe/static/plugins/stripe/eventyay-stripe.js:152
+#: pretix/plugins/stripe/static/plugins/stripe/eventyay-stripe.js:183
 msgid "Confirming your payment …"
 msgstr ""
 
-#: pretix/plugins/stripe/static/pretixplugins/stripe/pretix-stripe.js:159
+#: pretix/plugins/stripe/static/plugins/stripe/eventyay-stripe.js:159
 #, fuzzy
 #| msgid "Contacting Stripe …"
 msgid "Contacting your bank …"

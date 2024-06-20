@@ -34,7 +34,7 @@ dependencies = [
         'django-localflavor==4.0',
         'reportlab==4.0.*',
         'Pillow==9.5.*',
-        'PyPDF2==2.12.*',
+        'pypdf==4.2.*',
         'django-libsass==0.9',
         'libsass==0.22.*',
         'django-otp==1.2.*',
@@ -88,6 +88,8 @@ dependencies = [
         'protobuf==4.23.*',
         'cryptography>=3.4.2',
         'sepaxml==2.6.*',
+        'geoip2==4.*',
+        'paypalhttp==1.*',
 ]
 
 [project.optional-dependencies]
