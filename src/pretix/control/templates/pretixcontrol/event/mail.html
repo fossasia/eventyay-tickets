@@ -80,6 +80,8 @@
             </fieldset>
             <fieldset>
                 <legend>{% trans "SMTP settings" %}</legend>
+                {% bootstrap_field form.email_vendor layout="control" %}
+                {% bootstrap_field form.send_grid_api_key layout="control" %}      
                 {% bootstrap_field form.smtp_use_custom layout="control" %}
                 {% bootstrap_field form.smtp_host layout="control" %}
                 {% bootstrap_field form.smtp_port layout="control" %}
