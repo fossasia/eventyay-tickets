@@ -89,6 +89,7 @@ dependencies = [
         'protobuf==4.23.*',
         'cryptography>=3.4.2',
         'sepaxml==2.6.*',
+        'sendgrid==6.11.*',
 ]
 
 [project.optional-dependencies]
