@@ -142,7 +142,7 @@ $(document).ready(function () {
             var multiple = this.multiple;
             $(this.$el)
                 .select2(this.opts())
-                .val(this.value)
+                .val(this.value || "") //set value to empty string if this.value is not valid
                 .trigger("change")
                 // emit event on change.
                 .on("change", function (e) {
