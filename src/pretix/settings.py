@@ -769,3 +769,9 @@ DATA_UPLOAD_MAX_NUMBER_FIELDS = 25000
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10 MB
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+HAS_GEOIP = False
+if config.has_option('geoip', 'path'):
+    HAS_GEOIP = True
+    GEOIP_PATH = config.get('geoip', 'path')
+    GEOIP_COUNTRY = config.get('geoip', 'filename_country', fallback='GeoLite2-Country.mmdb')

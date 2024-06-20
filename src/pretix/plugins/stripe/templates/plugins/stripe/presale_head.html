@@ -3,10 +3,10 @@
 {% load i18n %}
 
 {% compress js %}
-    <script type="text/javascript" src="{% static "pretixplugins/stripe/pretix-stripe.js" %}"></script>
+    <script type="text/javascript" src="{% static "plugins/stripe/eventyay-stripe.js" %}"></script>
 {% endcompress %}
 {% compress css %}
-    <link type="text/css" rel="stylesheet" href="{% static "pretixplugins/stripe/pretix-stripe.css" %}">
+    <link type="text/css" rel="stylesheet" href="{% static "plugins/stripe/eventyay-stripe.css" %}">
 {% endcompress %}
 {% if testmode %}
     <script type="text/plain" id="stripe_pubkey">{{ settings.publishable_test_key }}</script>

@@ -1,5 +1,6 @@
 import copy
 import hashlib
+import hmac
 import json
 import logging
 import string
@@ -57,6 +58,43 @@ def generate_secret():
 
 def generate_position_secret():
     raise TypeError("Function no longer exists, use secret generators")
+
+
+class SecureOrderQuerySet(models.QuerySet):
+    def get_with_secret_check(self, code, received_secret, tag, secret_length=64):
+        """
+        Get an order by its code and check the secret against the received secret. If the secret is correct, the order
+        is returned. If the secret is incorrect, a ``Order.DoesNotExist`` exception is raised.
+        @param code: The code of the order to retrieve.
+        @param received_secret: The secret provided for verification.
+        @param tag: An optional tag used for generating a tagged secret.
+        @param secret_length: (default=64): The length of the secret to compare.
+        @return: An Order object if the code and secret are verified.
+        """
+        dummy_secret = "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"[:secret_length]
+
+        def hash_compare(secret, received):
+            """
+            Compare two hash digests securely.
+            """
+            return hmac.compare_digest(
+                secret[:secret_length].lower(),
+                received[:secret_length].lower()
+            )
+        try:
+            order = self.get(code=code)
+        except Order.DoesNotExist:
+            hash_compare(order.tagged_secret(tag, dummy_secret), received_secret)
+            raise
+
+        order_secret = order.tagged_secret(tag, secret_length) if tag else order.secret
+        valid_digest = hash_compare(order_secret, received_secret)
+        valid_sha1 = tag and hash_compare(hashlib.sha1(order.secret.encode()).hexdigest(), received_secret)
+
+        if not valid_digest and not valid_sha1:
+            raise Order.DoesNotExist
+
+        return order
 
 
 class Order(LockModel, LoggedModel):
@@ -202,7 +240,7 @@ class Order(LockModel, LoggedModel):
         verbose_name=_('E-mail address verified')
     )
 
-    objects = ScopedManager(organizer='event__organizer')
+    objects = ScopedManager(SecureOrderQuerySet.as_manager().__class__, organizer='event__organizer')
 
     class Meta:
         verbose_name = _("Order")
