@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-30 16:15+0000\n"
+"POT-Creation-Date: 2024-06-22 12:21+0000\n"
 "PO-Revision-Date: 2019-03-28 14:00+0000\n"
 "Last-Translator: yichengsd <sunzl@jxepub.com>\n"
 "Language-Team: Chinese (Simplified) <https://translate.pretix.eu/projects/"
@@ -43,20 +43,23 @@ msgstr "已付款订单"
 msgid "Total revenue"
 msgstr "总收入"
 
-#: pretix/plugins/stripe/static/plugins/stripe/eventyay-stripe.js:12
+#: pretix/plugins/stripe/static/plugins/stripe/eventyay-stripe.js:15
 msgid "Contacting Stripe …"
 msgstr "正在联系Stripe …"
 
-#: pretix/plugins/stripe/static/plugins/stripe/eventyay-stripe.js:60
+#: pretix/plugins/stripe/static/plugins/stripe/eventyay-stripe.js:72
 msgid "Total"
 msgstr "总计"
 
-#: pretix/plugins/stripe/static/plugins/stripe/eventyay-stripe.js:152
-#: pretix/plugins/stripe/static/plugins/stripe/eventyay-stripe.js:183
+#: pretix/plugins/stripe/static/plugins/stripe/eventyay-stripe.js:242
+#: pretix/plugins/stripe/static/plugins/stripe/eventyay-stripe.js:265
+#: pretix/plugins/stripe/static/plugins/stripe/eventyay-stripe.js:282
+#: pretix/plugins/stripe/static/plugins/stripe/eventyay-stripe.js:315
+#: pretix/plugins/stripe/static/plugins/stripe/eventyay-stripe.js:339
 msgid "Confirming your payment …"
 msgstr ""
 
-#: pretix/plugins/stripe/static/plugins/stripe/eventyay-stripe.js:159
+#: pretix/plugins/stripe/static/plugins/stripe/eventyay-stripe.js:289
 #, fuzzy
 #| msgid "Contacting Stripe …"
 msgid "Contacting your bank …"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-30 16:15+0000\n"
+"POT-Creation-Date: 2024-06-22 12:21+0000\n"
 "PO-Revision-Date: 2020-01-24 08:00+0000\n"
 "Last-Translator: Prokaj Miklós <mixolid0@gmail.com>\n"
 "Language-Team: Hungarian <https://translate.pretix.eu/projects/pretix/pretix-"
@@ -43,20 +43,23 @@ msgstr "Kifizetett megrendelések"
 msgid "Total revenue"
 msgstr "Teljes bevétel"
 
-#: pretix/plugins/stripe/static/plugins/stripe/eventyay-stripe.js:12
+#: pretix/plugins/stripe/static/plugins/stripe/eventyay-stripe.js:15
 msgid "Contacting Stripe …"
 msgstr "Kapcsolatfelvétel Stripe-pal…"
 
-#: pretix/plugins/stripe/static/plugins/stripe/eventyay-stripe.js:60
+#: pretix/plugins/stripe/static/plugins/stripe/eventyay-stripe.js:72
 msgid "Total"
 msgstr "Teljes"
 
-#: pretix/plugins/stripe/static/plugins/stripe/eventyay-stripe.js:152
-#: pretix/plugins/stripe/static/plugins/stripe/eventyay-stripe.js:183
+#: pretix/plugins/stripe/static/plugins/stripe/eventyay-stripe.js:242
+#: pretix/plugins/stripe/static/plugins/stripe/eventyay-stripe.js:265
+#: pretix/plugins/stripe/static/plugins/stripe/eventyay-stripe.js:282
+#: pretix/plugins/stripe/static/plugins/stripe/eventyay-stripe.js:315
+#: pretix/plugins/stripe/static/plugins/stripe/eventyay-stripe.js:339
 msgid "Confirming your payment …"
 msgstr "A fizetés megerősítése…"
 
-#: pretix/plugins/stripe/static/plugins/stripe/eventyay-stripe.js:159
+#: pretix/plugins/stripe/static/plugins/stripe/eventyay-stripe.js:289
 msgid "Contacting your bank …"
 msgstr "Kapcsolatfelvétel a bankjával…"
 
