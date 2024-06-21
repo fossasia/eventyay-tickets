@@ -16,7 +16,7 @@ classifiers = [
   "Environment :: Web Environment",
   "License :: OSI Approved :: Apache License, Version 2.0",
   "Programming Language :: Python :: 3.11",
-  "Framework :: Django :: 3.2",
+  "Framework :: Django :: 4.2",
 ]
 dependencies = [
         'Django==4.2.*',
