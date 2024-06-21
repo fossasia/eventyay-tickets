@@ -20,7 +20,6 @@ def get_client_ip(request):
             ip = x_forwarded_for.split(',')[0]
     return ip
 
-
 def redirect_to_url(to, permanent=False):
     redirect_class = HttpResponsePermanentRedirect if permanent else HttpResponseRedirect
     return redirect_class(to)
