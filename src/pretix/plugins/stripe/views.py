@@ -1,6 +1,6 @@
-import hashlib
 import json
 import logging
+import urllib.parse
 
 import requests
 import stripe
@@ -23,6 +23,8 @@ from django_scopes import scopes_disabled
 from pretix.base.models import Event, Order, OrderPayment, Organizer, Quota
 from pretix.base.payment import PaymentException
 from pretix.base.services.locking import LockTimeoutException
+from pretix.helpers import OF_SELF
+from pretix.multidomain.urlreverse import build_absolute_uri
 from pretix.base.settings import GlobalSettingsObject
 from pretix.control.permissions import (
     AdministratorPermissionRequiredMixin, event_permission_required,

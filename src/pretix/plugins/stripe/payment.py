@@ -4,7 +4,7 @@ import re
 import urllib.parse
 from collections import OrderedDict
 from decimal import Decimal
-from json import JSONDecodeError
+from urllib.parse import urlencode
 
 import stripe
 from django import forms
@@ -32,7 +32,7 @@ from pretix.base.models import (
     Event, InvoiceAddress, Order, OrderPayment, OrderRefund, Quota,
 )
 from pretix.base.payment import (
-    BasePaymentProvider, PaymentException, WalletQueries, WalletType
+    BasePaymentProvider, PaymentException, WalletType
 )
 from pretix.base.plugins import get_all_plugins
 from pretix.base.services.mail import SendMailException
