@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.http import StreamingHttpResponse
+from django.http import StreamingHttpResponse, HttpResponsePermanentRedirect, HttpResponseRedirect
 
 
 class ChunkBasedFileResponse(StreamingHttpResponse):
