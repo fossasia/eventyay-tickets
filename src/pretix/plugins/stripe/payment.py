@@ -534,7 +534,7 @@ class StripeMethod(BasePaymentProvider):
                 details = payment_info["source"]
         details.setdefault('owner', {})
 
-        template = get_template('pretixplugins/stripe/control.html')
+        template = get_template('plugins/stripe/control.html')
         context = {
             'request': request,
             'event': self.event,
