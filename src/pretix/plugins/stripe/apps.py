@@ -11,7 +11,7 @@ class StripeApp(AppConfig):
 
     class PretixPluginMeta:
         name = _("Stripe")
-        author = _("")
+        author = ""
         version = version
         category = 'PAYMENT'
         featured = True
