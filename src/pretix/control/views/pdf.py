@@ -17,7 +17,7 @@ from django.utils.crypto import get_random_string
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from django.views.generic import TemplateView
-from PyPDF2 import PdfReader, PdfWriter
+from pypdf import PdfReader, PdfWriter
 from reportlab.lib.units import mm
 
 from pretix.base.i18n import language
@@ -67,7 +67,7 @@ class BaseEditorView(EventPermissionRequiredMixin, TemplateView):
 
         from pretix.base.models import Order
         order = self.request.event.orders.create(status=Order.STATUS_PENDING, datetime=now(),
-                                                 email='sample@pretix.eu',
+                                                 email='sample@eventyay.com',
                                                  locale=self.request.event.settings.locale,
                                                  expires=now(), code="PREVIEW1234", total=119)
 
