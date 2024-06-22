@@ -3,7 +3,7 @@ name = "eventyay"
 dynamic = ["version"]
 description = "the open source event solution"
 readme = "README.rst"
-requires-python = ">=3.8"
+requires-python = ">=3.11"
 license = {file = "LICENSE"}
 keywords = ["tickets", "events", "web", "shop", "ecommerce"]
 authors = [ {name = "eventyay", email = "info@eventyay.com"}, ]
@@ -15,9 +15,8 @@ classifiers = [
   "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
   "Environment :: Web Environment",
   "License :: OSI Approved :: Apache License, Version 2.0",
-  "Programming Language :: Python :: 3.8",
-  "Programming Language :: Python :: 3.9",
-  "Framework :: Django :: 3.2",
+  "Programming Language :: Python :: 3.11",
+  "Framework :: Django :: 4.2",
 ]
 dependencies = [
         'Django==4.2.*',

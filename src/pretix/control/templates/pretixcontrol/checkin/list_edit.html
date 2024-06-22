@@ -79,8 +79,14 @@
             </button>
         </div>
     </form>
-    {% compress js %}
+    {% if DEBUG %}
+        <!-- load js file for debug purposes -->
         <script type="text/javascript" src="{% static "vuejs/vue.js" %}"></script>
+    {% else %}
+        <!-- load min file for prod env -->
+        <script type="text/javascript" src="{% static "vuejs/vue.min.js" %}"></script>
+    {% endif %}
+    {% compress js %}
         <script type="text/javascript" src="{% static "pretixcontrol/js/ui/checkinrules.js" %}"></script>
     {% endcompress %}
 {% endblock %}

@@ -4,7 +4,7 @@ import re
 import urllib.parse
 from collections import OrderedDict
 from decimal import Decimal
-from json import JSONDecodeError
+from urllib.parse import urlencode
 
 import stripe
 from django import forms
@@ -32,7 +32,7 @@ from pretix.base.models import (
     Event, InvoiceAddress, Order, OrderPayment, OrderRefund, Quota,
 )
 from pretix.base.payment import (
-    BasePaymentProvider, PaymentException, WalletQueries, WalletType
+    BasePaymentProvider, PaymentException, WalletType
 )
 from pretix.base.plugins import get_all_plugins
 from pretix.base.services.mail import SendMailException
@@ -534,7 +534,7 @@ class StripeMethod(BasePaymentProvider):
                 details = payment_info["source"]
         details.setdefault('owner', {})
 
-        template = get_template('pretixplugins/stripe/control.html')
+        template = get_template('plugins/stripe/control.html')
         context = {
             'request': request,
             'event': self.event,
