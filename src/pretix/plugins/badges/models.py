@@ -36,6 +36,12 @@ class BadgeLayout(LoggedModel):
                 '"fontfamily":"Open Sans","bold":true,"italic":false,"width":"121.83","content":"attendee_name",'
                 '"text":"Max Mustermann","align":"center"}]'
     )
+
+    size = models.TextField(
+            default='[{"width": 148, "height": 105, "orientation": "portrait"}]'
+    )
+    
+
     background = models.FileField(null=True, blank=True, upload_to=bg_name, max_length=255)
 
     class Meta:
