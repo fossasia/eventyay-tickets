@@ -113,7 +113,7 @@ var paypalObj = {
         ppscript.setAttribute('src', sdk_url);
         ppscript.setAttribute('data-csp-nonce', $.trim($("#csp_nonce").html()));
         ppscript.setAttribute('data-page-type', 'checkout');
-        ppscript.setAttribute('data-partner-attribution-id', 'ramiioGmbH_Cart_PPCP');
+        ppscript.setAttribute('data-partner-attribution-id', 'eventyay_Cart_PPCP');
         document.head.appendChild(ppscript);
 
         ppscript.onload = ppscript.onreadystatechange = function () {
