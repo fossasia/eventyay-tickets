@@ -26,10 +26,11 @@ from pretix.base.payment import PaymentException
 from pretix.base.services.cart import add_payment_to_cart, get_fees
 from pretix.base.settings import GlobalSettingsObject
 from pretix.control.permissions import event_permission_required
+from pretix.helpers.http import redirect_to_url
 from pretix.multidomain.urlreverse import eventreverse
 from pretix.plugins.paypal.models import ReferencedPayPalObject
 from pretix.plugins.paypal.payment import (
-    PaypalMethod, PaypalMethod as Paypal
+    PaypalMethod, PaypalMethod as Paypal, PaypalWallet
 )
 from pretix.presale.views import get_cart_total, get_cart
 from pretix.presale.views.cart import cart_session
@@ -136,79 +137,74 @@ class PartnersMerchantIntegrationsGetRequest:
 @scopes_disabled()
 @event_permission_required('can_change_event_settings')
 def isu_return(request, *args, **kwargs):
-    """
-    Handle the return from PayPal ISU integration.
-
-    This method checks required GET and session parameters, interacts with PayPal's API,
-    and updates event settings based on the response.
-    """
-    required_get_params = {'merchantId', 'merchantIdInPayPal', 'permissionsGranted', 'accountStatus', 'consentStatus',
-                           'productIntentID', 'isEmailConfirmed'}
-    required_session_params = {'payment_paypal_isu_event', 'payment_paypal_isu_tracking_id'}
-
-    missing_get_params = required_get_params - request.GET.keys()
-    missing_session_params = required_session_params - request.session.keys()
-
-    if missing_get_params or missing_session_params:
-        messages.error(request, _('Error returning from PayPal: Missing request parameters. Please try again.'))
-        logger.exception(
-            'PayPal - Missing parameters in GET: {} and/or Session: {}'.format(missing_get_params,
-                                                                               missing_session_params)
-        )
+    getparams = ['merchantId', 'merchantIdInPayPal', 'permissionsGranted', 'accountStatus',
+                 'consentStatus', 'productIntentId', 'isEmailConfirmed']
+    session_params = ['payment_paypal_isu_event', 'payment_paypal_isu_tracking_id']
+    if not any(k in request.GET for k in getparams) or not any(k in request.session for k in session_params):
+        messages.error(request, _('An error occurred returning from PayPal: request parameters missing. Please try '
+                                  'again.'))
+        missing_getparams = set(getparams) - set(request.GET)
+        missing_session_params = {p for p in session_params if p not in request.session}
+        logger.exception('PayPal - Missing params in GET {} and/or Session {}'
+                         .format(missing_getparams, missing_session_params))
         return redirect('control:index')
 
     event = get_object_or_404(Event, pk=request.session['payment_paypal_isu_event'])
-
     try:
         cache.incr('paypal_token_hash_cycle')
     except ValueError:
-        cache.set('paypal_token_hash_cycle', 1)
+        cache.set('paypal_token_hash_cycle', 1, None)
 
-    global_settings = GlobalSettingsObject()
-    paypal_provider = PaypalMethod(event)
-    paypal_provider.init_api()
+    gs = GlobalSettingsObject()
+    prov = Paypal(event)
+    prov.init_api()
 
     try:
         req = PartnersMerchantIntegrationsGetRequest(
-            global_settings.settings.get('payment_paypal_connect_partner_merchant_id'),
+            gs.settings.get('payment_paypal_connect_partner_merchant_id'),
             request.GET.get('merchantIdInPayPal')
         )
-        response = paypal_provider.client.execute(req)
+        response = prov.client.execute(req)
     except IOError as e:
-        messages.error(request, _('Error connecting with PayPal. Please try again.'))
+        messages.error(request, _('An error occurred during connecting with PayPal, please try again.'))
         logger.exception('PayPal - PartnersMerchantIntegrationsGetRequest: {}'.format(str(e)))
-        return redirect('control:index')
-
-    required_response_params = {'merchant_id', 'tracking_id', 'payments_receivable', 'primary_email_confirmed'}
-    missing_response_params = required_response_params - response.result.keys()
-
-    if missing_response_params:
-        error_message = response.result.get('message', _('Error returning from PayPal: Missing response parameters. '
-                                                         'Please try again.'))
-        messages.error(request, error_message)
-        logger.exception('PayPal - Missing parameters in response.result: {}'.format(missing_response_params))
-        return redirect('control:index')
-
-    if response.result.tracking_id != request.session['payment_paypal_isu_tracking_id']:
-        messages.error(request, _('Error returning from PayPal: Session parameter mismatch. Please try again.'))
-        logger.exception('PayPal - tracking_id does not match session.payment_paypal_isu_tracking_id')
-        return redirect('control:index')
-
-    if request.GET.get("isEmailConfirmed") == "false":
-        messages.error(request, _('Your PayPal account email is not confirmed. Please confirm your email before '
-                                  'accepting payments.'))
     else:
-        messages.success(request, _('Your PayPal account is now connected to Eventyay. You can configure the settings '
-                                    'below.'))
-        event.settings.payment_paypal_isu_merchant_id = response.result.merchant_id
+        params = ['merchant_id', 'tracking_id', 'payments_receivable', 'primary_email_confirmed']
+        if not any(k in response.result for k in params):
+            if 'message' in response.result:
+                messages.error(request, response.result.message)
+                logger.exception('PayPal - Error-message in response: {}'.format(response.result.message))
+            else:
+                messages.error(request, _('An error occurred returning from PayPal: '
+                                          'result parameters missing. Please try again.'))
+                missing_params = set(params) - set(response.result)
+                logger.exception('PayPal - Missing params {} in response.result'.format(missing_params))
+        else:
+            if response.result.tracking_id != request.session['payment_paypal_isu_tracking_id']:
+                messages.error(request, _('An error occurred returning from PayPal: '
+                                          'session parameter not matching. Please try again.'))
+                logger.exception('PayPal - tracking_id not matching session.payment_paypal_isu_tracking_id')
+            elif request.GET.get("isEmailConfirmed") == "false":
+                messages.error(
+                    request,
+                    _('The e-mail address on your PayPal account has not yet been confirmed. You will need to do '
+                      'this before you can start accepting payments.')
+                )
+            else:
+                messages.success(
+                    request,
+                    _('Your PayPal account is now connected to Eventyay. You can change the settings in detail below.')
+                )
 
-        for integration in response.result.oauth_integrations:
-            if integration.integration_type == 'OAUTH_THIRD_PARTY':
-                for third_party in integration.oauth_third_party:
-                    if third_party.partner_client_id == paypal_provider.client.environment.client_id:
-                        event.settings.payment_paypal_isu_scopes = third_party.scopes
+                event.settings.payment_paypal_isu_merchant_id = response.result.merchant_id
 
-    return redirect(reverse('control:event.settings.payment.provider', kwargs={
+                for integration in response.result.oauth_integrations:
+                    if integration.integration_type == 'OAUTH_THIRD_PARTY':
+                        for third_party in integration.oauth_third_party:
+                            if third_party.partner_client_id == prov.client.environment.client_id:
+                                event.settings.payment_paypal_isu_scopes = third_party.scopes
+
+    return redirect_to_url(reverse('control:event.settings.payment.provider', kwargs={
         'organizer': event.organizer.slug,
         'event': event.slug,
         'provider': 'paypal_settings'
@@ -221,9 +217,9 @@ def success(request, *args, **kwargs):
     request.session['payment_paypal_token'] = token
     request.session['payment_paypal_payer'] = payer
 
-    urlkwargs = {}
+    url_kwargs = {}
     if 'cart_namespace' in kwargs:
-        urlkwargs['cart_namespace'] = kwargs['cart_namespace']
+        url_kwargs['cart_namespace'] = kwargs['cart_namespace']
 
     if request.session.get('payment_paypal_payment'):
         payment = OrderPayment.objects.get(pk=request.session.get('payment_paypal_payment'))
@@ -237,15 +233,15 @@ def success(request, *args, **kwargs):
                 resp = prov.execute_payment(request, payment)
             except PaymentException as e:
                 messages.error(request, str(e))
-                urlkwargs['step'] = 'payment'
-                return redirect(eventreverse(request.event, 'presale:event.checkout', kwargs=urlkwargs))
+                url_kwargs['step'] = 'payment'
+                return redirect(eventreverse(request.event, 'presale:event.checkout', kwargs=url_kwargs))
             if resp:
                 return resp
     else:
         messages.error(request, _('Invalid response from PayPal received.'))
         logger.error('Session did not contain payment_paypal_oid')
-        urlkwargs['step'] = 'payment'
-        return redirect(eventreverse(request.event, 'presale:event.checkout', kwargs=urlkwargs))
+        url_kwargs['step'] = 'payment'
+        return redirect(eventreverse(request.event, 'presale:event.checkout', kwargs=url_kwargs))
 
     if payment:
         return redirect(eventreverse(request.event, 'presale:event.order', kwargs={
@@ -256,8 +252,8 @@ def success(request, *args, **kwargs):
         cs = cart_session(request)
         cs['payments'] = [p for p in cs.get('payments', []) if p.get('multi_use_supported')]
         add_payment_to_cart(request, PaypalWallet(request.event), None, None, None)
-        urlkwargs['step'] = 'confirm'
-        return redirect(eventreverse(request.event, 'presale:event.checkout', kwargs=urlkwargs))
+        url_kwargs['step'] = 'confirm'
+        return redirect(eventreverse(request.event, 'presale:event.checkout', kwargs=url_kwargs))
 
 
 def abort(request, *args, **kwargs):
@@ -364,7 +360,7 @@ def webhook(request, *args, **kwargs):
     })
 
     if payment.state == OrderPayment.PAYMENT_STATE_CONFIRMED and sale['status'] in (
-    'PARTIALLY_REFUNDED', 'REFUNDED', 'COMPLETED'):
+            'PARTIALLY_REFUNDED', 'REFUNDED', 'COMPLETED'):
         if event_json['resource_type'] == 'refund':
             try:
                 req = pp_payments.RefundsGetRequest(event_json['resource']['id'])

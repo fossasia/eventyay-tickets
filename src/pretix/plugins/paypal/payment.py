@@ -59,34 +59,9 @@ class PaypalSettingsHolder(BasePaymentProvider):
 
     @property
     def settings_form_fields(self):
-        """
-        Defines the form fields for configuring PayPal settings.
-
-        Returns:
-            OrderedDict: Ordered dictionary of form fields with labels, help texts, and dependencies.
-
-        """
-        fields = self._get_configuration_fields()
-        methods = self._get_payment_method_fields()
-        extra_fields = self._get_extra_fields()
-
-        # Merge fields into an ordered dictionary
-        form_fields = OrderedDict(fields + methods + extra_fields + list(super().settings_form_fields.items()))
-
-        # Move specific fields to the end or adjust as needed
-        form_fields.move_to_end('prefix')
-        form_fields.move_to_end('postfix')
-        form_fields.move_to_end('_enabled', False)
-
-        return form_fields
-
-    def _get_configuration_fields(self):
-        """
-        Define fields for configuring PayPal credentials and endpoint.
-        """
         if self.settings.connect_client_id and self.settings.connect_secret_key and not self.settings.secret:
             if self.settings.isu_merchant_id:
-                return [
+                fields = [
                     ('isu_merchant_id',
                      forms.CharField(
                          label=_('PayPal Merchant ID'),
@@ -94,9 +69,9 @@ class PaypalSettingsHolder(BasePaymentProvider):
                      )),
                 ]
             else:
-                return []
+                return {}
         else:
-            return [
+            fields = [
                 ('client_id',
                  forms.CharField(
                      label=_('Client ID'),
@@ -124,19 +99,15 @@ class PaypalSettingsHolder(BasePaymentProvider):
                  )),
             ]
 
-    def _get_payment_method_fields(self):
-        """
-        Define fields for configuring PayPal payment methods.
-        """
-        return [
+        methods = [
             ('method_wallet',
              forms.BooleanField(
                  label=_('PayPal'),
                  required=False,
                  help_text=_(
-                     'Customers can always revert to using their PayPal account for payment, '
-                     'even if they initially opt for an Alternative Payment Method. '
-                     'Therefore, this payment option remains consistently accessible.'
+                     'Even if a customer chooses an Alternative Payment Method, they will always have the option to '
+                     'revert back to paying with their PayPal account. For this reason, this payment method is always '
+                     'active.'
                  ),
                  disabled=True,
              )),
@@ -144,11 +115,11 @@ class PaypalSettingsHolder(BasePaymentProvider):
              forms.BooleanField(
                  label=_('Alternative Payment Methods'),
                  help_text=_(
-                     "Alongside payments through PayPal accounts, you have the flexibility to provide customers with "
-                     "alternatives like credit cards and local payment methods such as SOFORT, giropay, iDEAL, and "
-                     "others even if they don't have a PayPal account. "
-                     "The availability of these payment methods depends on the customer's location. "
-                     "For German merchants, this acts as a direct continuation of PayPal Plus."
+                     'In addition to payments through a PayPal account, you can also offer your customers the option '
+                     'to pay with credit cards and other, local payment methods such as SOFORT, giropay, iDEAL, and '
+                     'many more - even when they do not have a PayPal account. Eligible payment methods will be '
+                     'determined based on the shoppers location. For German merchants, this is the direct successor '
+                     'of PayPal Plus.'
                  ),
                  required=False,
                  widget=forms.CheckboxInput(
@@ -161,10 +132,10 @@ class PaypalSettingsHolder(BasePaymentProvider):
              forms.BooleanField(
                  label=_('Disable SEPA Direct Debit'),
                  help_text=_(
-                     "Unlike most payment methods that require customers to provide a specific reason to "
-                     "the merchant for a recall, SEPA Direct Debit can be recalled instantly with the click of a "
-                     "button. Depending on your event's nature, you may choose to disable SEPA Direct "
-                     "Debit payments to mitigate the risk of expensive chargebacks."
+                     'While most payment methods cannot be recalled by a customer without outlining their exact grief '
+                     'with the merchants, SEPA Direct Debit can be recalled with the press of a button. For that '
+                     'reason - and depending on the nature of your event - you might want to disabled the option of '
+                     'SEPA Direct Debit payments in order to reduce the risk of costly chargebacks.'
                  ),
                  required=False,
                  widget=forms.CheckboxInput(
@@ -177,9 +148,9 @@ class PaypalSettingsHolder(BasePaymentProvider):
              forms.BooleanField(
                  label=_('Enable Buy Now Pay Later'),
                  help_text=_(
-                     "Offer your customers the choice to purchase now (up to a specified limit) "
-                     "and pay in multiple installments or within 30 days. "
-                     "As the merchant, you'll receive your funds promptly."
+                     'Offer your customers the possibility to buy now (up to a certain limit) '
+                     'and pay in multiple installments '
+                     'or within 30 days. You, as the merchant, are getting your money right away.'
                  ),
                  required=False,
                  widget=forms.CheckboxInput(
@@ -188,25 +159,22 @@ class PaypalSettingsHolder(BasePaymentProvider):
                      }
                  )
              )),
+
         ]
 
-    def _get_extra_fields(self):
-        """
-        Define extra fields for additional settings.
-        """
         extra_fields = [
             ('prefix',
              forms.CharField(
                  label=_('Reference prefix'),
-                 help_text=_('Any value entered here will be prefixed to the regular '
-                             'booking reference that contains the order number.'),
+                 help_text=_('Any value entered here will be added in front of the regular booking reference '
+                             'containing the order number.'),
                  required=False,
              )),
             ('postfix',
              forms.CharField(
                  label=_('Reference postfix'),
-                 help_text=_('Any value entered here will be prefixed to the regular '
-                             'booking reference that contains the order number.'),
+                 help_text=_('Any value entered here will be added behind the regular booking reference '
+                             'containing the order number.'),
                  required=False,
              )),
         ]
@@ -215,7 +183,23 @@ class PaypalSettingsHolder(BasePaymentProvider):
             allcountries = list(countries)
             allcountries.insert(0, ('', _('-- Automatic --')))
 
-        return extra_fields
+            extra_fields.append(
+                ('debug_buyer_country',
+                 forms.ChoiceField(
+                     choices=allcountries,
+                     label=mark_safe('<span class="label label-primary">DEBUG</span> {}'.format(_('Buyer country'))),
+                     initial=guess_country(self.event),
+                 )),
+            )
+
+        d = OrderedDict(
+            fields + methods + extra_fields + list(super().settings_form_fields.items())
+        )
+
+        d.move_to_end('prefix')
+        d.move_to_end('postfix')
+        d.move_to_end('_enabled', False)
+        return d
 
     def settings_content_render(self, request):
         settings_content = ""
@@ -570,7 +554,6 @@ class PaypalMethod(BasePaymentProvider):
         if request.resolver_match and 'cart_namespace' in request.resolver_match.kwargs:
             kwargs['cart_namespace'] = request.resolver_match.kwargs['cart_namespace']
 
-        # Determine payee information based on settings
         if self.settings.connect_client_id and self.settings.connect_secret_key and not self.settings.secret:
             if request.event.settings.payment_paypal_isu_merchant_id:
                 payee = {
@@ -581,7 +564,6 @@ class PaypalMethod(BasePaymentProvider):
         else:
             payee = {}
 
-        # Determine value, currency, description, and custom_id based on payment or cart_total
         if payment and not cart_total:
             value = self.format_price(payment.amount)
             currency = payment.order.event.currency
@@ -611,11 +593,9 @@ class PaypalMethod(BasePaymentProvider):
             )
             request.session['payment_paypal_payment'] = None
         else:
-            # Handle scenario where neither payment nor cart_total is provided
             return None
 
         try:
-            # Construct PayPal OrdersCreateRequest and execute
             paymentreq = OrdersCreateRequest()
             paymentreq.request_body({
                 'intent': 'CAPTURE',
@@ -625,8 +605,8 @@ class PaypalMethod(BasePaymentProvider):
                         'value': value,
                     },
                     'payee': payee,
-                    'description': description[:127],  # Truncate description if too long
-                    'custom_id': custom_id[:127],  # Truncate custom_id if too long
+                    'description': description[:127],
+                    'custom_id': custom_id[:127],
                 }],
                 'application_context': {
                     'locale': request.LANGUAGE_CODE.split('-')[0],
@@ -638,7 +618,6 @@ class PaypalMethod(BasePaymentProvider):
             })
             response = self.client.execute(paymentreq)
 
-            # Save reference if payment object exists
             if payment:
                 ReferencedPayPalObject.objects.get_or_create(order=payment.order, payment=payment,
                                                              reference=response.result.id)
@@ -655,7 +634,6 @@ class PaypalMethod(BasePaymentProvider):
             return None
 
         else:
-            # Handle response status and set session with order ID
             if response.result.status not in ('CREATED', 'PAYER_ACTION_REQUIRED'):
                 messages.error(request, _('We had trouble communicating with PayPal'))
                 logger.error('Invalid payment state: ' + str(paymentreq))
@@ -1129,7 +1107,6 @@ class PaypalMethod(BasePaymentProvider):
             except json.JSONDecodeError:
                 pass
 
-        # Shred sensitive information in associated log entries
         for le in obj.order.all_logentries().filter(action_type="pretix.plugins.paypal.event").exclude(data=""):
             try:
                 d = json.loads(le.data)
