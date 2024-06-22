@@ -77,7 +77,7 @@ class OrderSearch(PaginationMixin, ListView):
                 look for something rare (such as an email address used once within hundreds of thousands of
                 orders, this ends up to be pathologically slow.
 
-                For some search queries on pretix.eu, we see search times of >30s, just due to the ORDER BY and
+                For some search queries, we see search times of >30s, just due to the ORDER BY and
                 LIMIT clause. Without them. the query runs in roughly 0.6s. This heuristical approach tries to
                 detect these cases and rewrite the query as a nested subquery that strongly suggests sorting
                 before filtering. However, since even that fails in some cases because PostgreSQL thinks it knows

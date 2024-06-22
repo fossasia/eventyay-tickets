@@ -262,8 +262,8 @@ class WidgetAPIProductList(EventListMixin, View):
         return grps, display_add_to_cart, len(items)
 
     def post_process(self, data):
-        data['poweredby'] = '<a href="https://pretix.eu" target="_blank" rel="noopener">{}</a>'.format(
-            pgettext('widget', 'event ticketing powered by pretix')
+        data['poweredby'] = '<a href="https://eventyay.com" target="_blank" rel="noopener">{}</a>'.format(
+            pgettext('widget', 'event ticketing powered by eventyay')
         )
 
     def response(self, data):

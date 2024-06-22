@@ -30,22 +30,26 @@ def get_stripe_account_key(prov):
 @app.task(base=EventTask, max_retries=5, default_retry_delay=1)
 def stripe_verify_domain(event, domain):
     from pretix.plugins.stripe.payment import StripeCC
+
     prov = StripeCC(event)
     account = get_stripe_account_key(prov)
+
+    api_kwargs = {
+        'api_key': prov.settings.connect_secret_key or prov.settings.connect_test_secret_key
+        if prov.settings.connect_client_id and prov.settings.connect_user_id
+        else prov.settings.secret_key
+    }
+
+    if prov.settings.connect_client_id and prov.settings.connect_user_id:
+        api_kwargs['stripe_account'] = prov.settings.connect_user_id
 
     if RegisteredApplePayDomain.objects.filter(account=account, domain=domain).exists():
         return
 
     try:
-        resp = stripe.ApplePayDomain.create(
-            domain_name=domain,
-            **prov.api_kwargs
-        )
+        resp = stripe.ApplePayDomain.create(domain_name=domain, **api_kwargs)
     except stripe.error.StripeError:
         logger.exception('Could not verify domain with Stripe')
     else:
         if resp.livemode:
-            RegisteredApplePayDomain.objects.create(
-                domain=domain,
-                account=account
-            )
+            RegisteredApplePayDomain.objects.create(domain=domain, account=account)
