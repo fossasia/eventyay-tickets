@@ -457,6 +457,7 @@ LANGUAGES_OFFICIAL = {
 LANGUAGES_INCUBATING = {
     'pl', 'fi', 'pt-br','uk',
 } - set(config.get('languages', 'allow_incubating', fallback='').split(','))
+LANGUAGES = ALL_LANGUAGES
 LANGUAGES_RTL = {
     'ar', 'hw'
 }
