@@ -997,7 +997,7 @@ class MailSettingsForm(SettingsForm):
 
     smtp_select = [
         
-        ('sendgrid', _("Send Grid")),
+        ('sendgrid', _("SendGrid")),
         ('smtp', _("SMTP"))]
 
 
