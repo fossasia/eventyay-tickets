@@ -76,3 +76,47 @@ To automatically check before commits, add a script like the following to ``.git
 	  git show ":$file" | isort -df --check-only - | grep ERROR && exit 1 || true
 	done
 
+
+Non-docker development setup
+----------------------------
+
+If you prefer to run the components independently, you can do so as well. Here is a brief overview of how to set up on Linux OS.
+
+- Create a Python environment, activate it, and install the dependencies:
+
+  .. code-block:: sh
+
+    # Activate Python virtual environemnt with your preferred method.
+    # Go to "server" directory.
+    cd server
+    pip install -r requirements.txt
+
+- Create a PostgreSQL user with the same username as your Linux user::
+
+    sudo -u postgres createuser -s $USER
+
+- Create a PostgreSQL database named ``eventyay-video``::
+
+    createdb eventyay-video
+
+- Create a config file named *venueless.cfg* in the *server* directory with the following content:
+
+  ..  code-block:: ini
+
+    [database]
+    backend = postgresql
+    name = eventyay-video
+
+- Run migrations::
+
+  ./manage.py migrate
+
+- Create your superuser::
+
+  ./manage.py createsuperuser
+
+- Run the development server::
+
+  ./manage.py runserver
+
+Then you can access the admin page at http://localhost:8000/control/.
