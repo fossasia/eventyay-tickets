@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-18 15:05+0000\n"
+"POT-Creation-Date: 2024-06-22 12:20+0000\n"
 "PO-Revision-Date: 2020-09-23 17:00+0000\n"
 "Last-Translator: Svyatoslav <slava@digitalarthouse.eu>\n"
 "Language-Team: Russian <https://translate.pretix.eu/projects/pretix/pretix/"
@@ -334,7 +334,7 @@ msgstr ""
 
 #: pretix/base/auth.py:113 pretix/base/forms/auth.py:207
 #: pretix/base/models/auth.py:90 pretix/base/models/notifications.py:25
-#: pretix/base/models/orders.py:146 pretix/control/navigation.py:60
+#: pretix/base/models/orders.py:184 pretix/control/navigation.py:60
 #: pretix/control/templates/pretixcontrol/event/settings.html:67
 #: pretix/plugins/checkinlists/exporters.py:417
 #: pretix/presale/checkoutflow.py:823 pretix/presale/forms/checkout.py:23
@@ -485,8 +485,8 @@ msgstr ""
 "внимание, что дата выставления счёта не всегда соответствует дате заказа или "
 "оплаты."
 
-#: pretix/base/exporters/invoices.py:52 pretix/base/models/orders.py:1354
-#: pretix/base/models/orders.py:1731 pretix/control/forms/filter.py:139
+#: pretix/base/exporters/invoices.py:52 pretix/base/models/orders.py:1395
+#: pretix/base/models/orders.py:1772 pretix/control/forms/filter.py:139
 #: pretix/control/forms/filter.py:1541
 #: pretix/control/templates/pretixcontrol/boxoffice/payment.html:9
 #: pretix/control/templates/pretixcontrol/boxoffice/payment.html:14
@@ -540,7 +540,7 @@ msgstr "Номер счёта"
 #: pretix/base/exporters/invoices.py:166 pretix/base/exporters/invoices.py:294
 #: pretix/base/exporters/orderlist.py:850
 #: pretix/base/exporters/waitinglist.py:84 pretix/base/models/items.py:1024
-#: pretix/base/models/orders.py:158 pretix/base/models/orders.py:2207
+#: pretix/base/models/orders.py:196 pretix/base/models/orders.py:2248
 #: pretix/control/templates/pretixcontrol/organizers/giftcard.html:63
 #: pretix/plugins/banktransfer/templates/pretixplugins/banktransfer/import_assign.html:17
 #: pretix/plugins/banktransfer/templates/pretixplugins/banktransfer/transaction_list.html:11
@@ -552,7 +552,7 @@ msgstr "Дата"
 #: pretix/base/exporters/invoices.py:167 pretix/base/exporters/invoices.py:295
 #: pretix/base/exporters/orderlist.py:234
 #: pretix/base/exporters/orderlist.py:398
-#: pretix/base/exporters/orderlist.py:500 pretix/base/models/orders.py:128
+#: pretix/base/exporters/orderlist.py:500 pretix/base/models/orders.py:166
 #: pretix/base/notifications.py:190 pretix/base/pdf.py:58
 #: pretix/control/templates/pretixcontrol/checkin/index.html:65
 #: pretix/control/templates/pretixcontrol/order/index.html:162
@@ -607,7 +607,7 @@ msgstr "Отправитель счёта:"
 #: pretix/base/exporters/invoices.py:172 pretix/base/exporters/invoices.py:180
 #: pretix/base/exporters/invoices.py:299 pretix/base/exporters/invoices.py:307
 #: pretix/base/exporters/orderlist.py:235
-#: pretix/base/exporters/waitinglist.py:85 pretix/base/forms/questions.py:811
+#: pretix/base/exporters/waitinglist.py:85 pretix/base/forms/questions.py:815
 #: pretix/base/models/devices.py:45 pretix/base/models/devices.py:105
 #: pretix/base/models/event.py:1123 pretix/base/models/event.py:1376
 #: pretix/base/models/items.py:1365 pretix/base/models/items.py:1523
@@ -644,8 +644,8 @@ msgstr "Имя"
 #: pretix/base/exporters/orderlist.py:242
 #: pretix/base/exporters/orderlist.py:418
 #: pretix/base/exporters/orderlist.py:528
-#: pretix/base/exporters/orderlist.py:566 pretix/base/forms/questions.py:412
-#: pretix/base/models/orders.py:1160 pretix/base/models/orders.py:2258
+#: pretix/base/exporters/orderlist.py:566 pretix/base/forms/questions.py:416
+#: pretix/base/models/orders.py:1201 pretix/base/models/orders.py:2299
 #: pretix/base/orderimport.py:274 pretix/base/orderimport.py:420
 #: pretix/control/forms/filter.py:525 pretix/control/forms/filter.py:556
 #: pretix/control/templates/pretixcontrol/order/index.html:823
@@ -661,8 +661,8 @@ msgstr "Адрес"
 #: pretix/base/exporters/orderlist.py:242
 #: pretix/base/exporters/orderlist.py:418
 #: pretix/base/exporters/orderlist.py:529
-#: pretix/base/exporters/orderlist.py:566 pretix/base/forms/questions.py:423
-#: pretix/base/models/orders.py:1161 pretix/base/models/orders.py:2259
+#: pretix/base/exporters/orderlist.py:566 pretix/base/forms/questions.py:427
+#: pretix/base/models/orders.py:1202 pretix/base/models/orders.py:2300
 #: pretix/base/orderimport.py:285 pretix/base/orderimport.py:431
 #: pretix/base/settings.py:701 pretix/control/forms/filter.py:529
 #: pretix/control/forms/filter.py:560 pretix/control/views/item.py:354
@@ -676,8 +676,8 @@ msgstr ""
 #: pretix/base/exporters/orderlist.py:242
 #: pretix/base/exporters/orderlist.py:418
 #: pretix/base/exporters/orderlist.py:530
-#: pretix/base/exporters/orderlist.py:566 pretix/base/forms/questions.py:431
-#: pretix/base/models/orders.py:1162 pretix/base/models/orders.py:2260
+#: pretix/base/exporters/orderlist.py:566 pretix/base/forms/questions.py:435
+#: pretix/base/models/orders.py:1203 pretix/base/models/orders.py:2301
 #: pretix/base/orderimport.py:296 pretix/base/orderimport.py:442
 #: pretix/base/settings.py:713 pretix/control/forms/filter.py:534
 #: pretix/control/forms/filter.py:565 pretix/control/views/item.py:364
@@ -691,9 +691,9 @@ msgstr ""
 #: pretix/base/exporters/orderlist.py:242
 #: pretix/base/exporters/orderlist.py:418
 #: pretix/base/exporters/orderlist.py:531
-#: pretix/base/exporters/orderlist.py:566 pretix/base/forms/questions.py:443
-#: pretix/base/models/orders.py:1163 pretix/base/models/orders.py:2261
-#: pretix/base/models/orders.py:2262 pretix/base/orderimport.py:312
+#: pretix/base/exporters/orderlist.py:566 pretix/base/forms/questions.py:447
+#: pretix/base/models/orders.py:1204 pretix/base/models/orders.py:2302
+#: pretix/base/models/orders.py:2303 pretix/base/orderimport.py:312
 #: pretix/base/orderimport.py:458 pretix/base/settings.py:722
 #: pretix/control/forms/filter.py:539 pretix/control/forms/filter.py:570
 #: pretix/control/templates/pretixcontrol/order/index.html:827
@@ -715,7 +715,7 @@ msgstr "Налоговый ID"
 #: pretix/base/exporters/invoices.py:305 pretix/base/exporters/invoices.py:313
 #: pretix/base/exporters/orderlist.py:243
 #: pretix/base/exporters/orderlist.py:418
-#: pretix/base/exporters/orderlist.py:566 pretix/base/models/orders.py:2265
+#: pretix/base/exporters/orderlist.py:566 pretix/base/models/orders.py:2306
 #: pretix/base/orderimport.py:356
 #: pretix/control/templates/pretixcontrol/order/index.html:834
 #: pretix/plugins/reports/exporters.py:721
@@ -742,7 +742,7 @@ msgstr "Получатель счёта:"
 #: pretix/base/exporters/orderlist.py:235
 #: pretix/base/exporters/orderlist.py:410
 #: pretix/base/exporters/orderlist.py:527
-#: pretix/base/exporters/orderlist.py:559 pretix/base/forms/questions.py:404
+#: pretix/base/exporters/orderlist.py:559 pretix/base/forms/questions.py:408
 #: pretix/base/orderimport.py:244 pretix/base/orderimport.py:409
 #: pretix/control/forms/filter.py:517 pretix/control/forms/filter.py:552
 #: pretix/control/templates/pretixcontrol/order/index.html:819
@@ -763,9 +763,9 @@ msgstr "Адрес с указанием улицы и номера дома"
 #: pretix/base/exporters/orderlist.py:242
 #: pretix/base/exporters/orderlist.py:418
 #: pretix/base/exporters/orderlist.py:532
-#: pretix/base/exporters/orderlist.py:566 pretix/base/forms/questions.py:467
-#: pretix/base/forms/questions.py:777 pretix/base/models/orders.py:1164
-#: pretix/base/models/orders.py:2264 pretix/base/orderimport.py:331
+#: pretix/base/exporters/orderlist.py:566 pretix/base/forms/questions.py:471
+#: pretix/base/forms/questions.py:781 pretix/base/models/orders.py:1205
+#: pretix/base/models/orders.py:2305 pretix/base/orderimport.py:331
 #: pretix/control/templates/pretixcontrol/order/index.html:830
 #: pretix/plugins/checkinlists/exporters.py:444
 #: pretix/plugins/reports/exporters.py:720
@@ -776,13 +776,13 @@ msgid "State"
 msgstr "Штат"
 
 #: pretix/base/exporters/invoices.py:187 pretix/base/exporters/invoices.py:314
-#: pretix/base/models/orders.py:2275
+#: pretix/base/models/orders.py:2316
 #: pretix/presale/templates/pretixpresale/event/checkout_confirm.html:114
 msgid "Beneficiary"
 msgstr "Получатель"
 
 #: pretix/base/exporters/invoices.py:188 pretix/base/exporters/invoices.py:315
-#: pretix/base/models/orders.py:2270 pretix/base/orderimport.py:367
+#: pretix/base/models/orders.py:2311 pretix/base/orderimport.py:367
 #: pretix/control/templates/pretixcontrol/order/index.html:854
 #: pretix/presale/templates/pretixpresale/event/checkout_confirm.html:121
 msgid "Internal reference"
@@ -835,7 +835,7 @@ msgstr "Счёт"
 
 #: pretix/base/exporters/invoices.py:271 pretix/base/exporters/orderlist.py:359
 #: pretix/base/exporters/orderlist.py:659
-#: pretix/base/exporters/orderlist.py:967 pretix/base/models/orders.py:1029
+#: pretix/base/exporters/orderlist.py:967 pretix/base/models/orders.py:1070
 #: pretix/control/forms/filter.py:106 pretix/control/forms/filter.py:426
 #: pretix/control/forms/item.py:425 pretix/control/forms/subevents.py:97
 #: pretix/control/views/item.py:565 pretix/control/views/vouchers.py:92
@@ -851,7 +851,7 @@ msgstr "Да"
 
 #: pretix/base/exporters/invoices.py:271 pretix/base/exporters/orderlist.py:359
 #: pretix/base/exporters/orderlist.py:659
-#: pretix/base/exporters/orderlist.py:967 pretix/base/models/orders.py:1031
+#: pretix/base/exporters/orderlist.py:967 pretix/base/models/orders.py:1072
 #: pretix/control/forms/filter.py:106 pretix/control/forms/filter.py:427
 #: pretix/control/forms/item.py:426 pretix/control/forms/subevents.py:98
 #: pretix/control/views/item.py:565 pretix/control/views/vouchers.py:92
@@ -884,14 +884,14 @@ msgid "Net price"
 msgstr "Цена нетто"
 
 #: pretix/base/exporters/invoices.py:289 pretix/base/exporters/orderlist.py:409
-#: pretix/base/exporters/orderlist.py:518 pretix/base/models/orders.py:1879
-#: pretix/base/models/orders.py:1979
+#: pretix/base/exporters/orderlist.py:518 pretix/base/models/orders.py:1920
+#: pretix/base/models/orders.py:2020
 msgid "Tax value"
 msgstr "Сумма налога"
 
 #: pretix/base/exporters/invoices.py:290 pretix/base/exporters/orderlist.py:407
-#: pretix/base/exporters/orderlist.py:516 pretix/base/models/orders.py:1870
-#: pretix/base/models/orders.py:1970 pretix/base/models/tax.py:114
+#: pretix/base/exporters/orderlist.py:516 pretix/base/models/orders.py:1911
+#: pretix/base/models/orders.py:2011 pretix/base/models/tax.py:114
 #: pretix/plugins/reports/exporters.py:670
 #: pretix/plugins/reports/exporters.py:715
 msgid "Tax rate"
@@ -918,7 +918,7 @@ msgstr ""
 msgid "Order data"
 msgstr "Данные заказа"
 
-#: pretix/base/exporters/orderlist.py:45 pretix/base/models/orders.py:209
+#: pretix/base/exporters/orderlist.py:45 pretix/base/models/orders.py:247
 #: pretix/control/navigation.py:224
 #: pretix/control/templates/pretixcontrol/orders/index.html:7
 #: pretix/control/templates/pretixcontrol/orders/index.html:9
@@ -926,7 +926,7 @@ msgstr "Данные заказа"
 msgid "Orders"
 msgstr ""
 
-#: pretix/base/exporters/orderlist.py:46 pretix/base/models/orders.py:1995
+#: pretix/base/exporters/orderlist.py:46 pretix/base/models/orders.py:2036
 #: pretix/base/notifications.py:196
 msgid "Order positions"
 msgstr "Позиции заказа"
@@ -998,7 +998,7 @@ msgstr ""
 #: pretix/base/exporters/orderlist.py:744
 #: pretix/base/exporters/orderlist.py:899
 #: pretix/base/exporters/waitinglist.py:97
-#: pretix/base/exporters/waitinglist.py:145 pretix/base/models/orders.py:134
+#: pretix/base/exporters/waitinglist.py:145 pretix/base/models/orders.py:172
 #: pretix/control/forms/filter.py:773 pretix/control/forms/filter.py:1000
 #: pretix/control/forms/filter.py:1269 pretix/control/forms/filter.py:1350
 #: pretix/control/templates/pretixcontrol/boxoffice/payment.html:39
@@ -1015,7 +1015,7 @@ msgstr ""
 #: pretix/control/views/waitinglist.py:214
 #: pretix/plugins/reports/exporters.py:422
 #: pretix/plugins/reports/exporters.py:763
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:61
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:79
 #: pretix/presale/templates/pretixpresale/organizers/index.html:67
 msgid "Status"
 msgstr "Статус"
@@ -1033,7 +1033,7 @@ msgstr ""
 #: pretix/base/exporters/orderlist.py:401
 #: pretix/base/exporters/orderlist.py:504
 #: pretix/base/exporters/waitinglist.py:87 pretix/base/models/items.py:1028
-#: pretix/base/models/orders.py:150 pretix/base/models/waitinglist.py:56
+#: pretix/base/models/orders.py:188 pretix/base/models/waitinglist.py:56
 #: pretix/base/pdf.py:252
 #: pretix/control/templates/pretixcontrol/order/index.html:210
 #: pretix/control/templates/pretixcontrol/waitinglist/index.html:140
@@ -1120,13 +1120,13 @@ msgid "Sales channel"
 msgstr ""
 
 #: pretix/base/exporters/orderlist.py:255 pretix/base/models/items.py:402
-#: pretix/base/models/orders.py:176
+#: pretix/base/models/orders.py:214
 #: pretix/plugins/checkinlists/exporters.py:432
 msgid "Requires special attention"
 msgstr ""
 
 #: pretix/base/exporters/orderlist.py:256
-#: pretix/base/exporters/orderlist.py:745 pretix/base/models/orders.py:171
+#: pretix/base/exporters/orderlist.py:745 pretix/base/models/orders.py:209
 #: pretix/base/models/vouchers.py:197 pretix/base/orderimport.py:623
 #: pretix/control/forms/filter.py:463
 #: pretix/control/templates/pretixcontrol/order/index.html:772
@@ -1153,7 +1153,7 @@ msgid "Fee type"
 msgstr "Тип сбора"
 
 #: pretix/base/exporters/orderlist.py:406
-#: pretix/base/exporters/orderlist.py:515 pretix/base/models/orders.py:1129
+#: pretix/base/exporters/orderlist.py:515 pretix/base/models/orders.py:1170
 #: pretix/base/orderimport.py:499 pretix/base/pdf.py:105
 #: pretix/control/templates/pretixcontrol/item/index.html:88
 #: pretix/control/templates/pretixcontrol/order/change.html:157
@@ -1185,7 +1185,7 @@ msgstr "ID позиции"
 
 #: pretix/base/exporters/orderlist.py:509
 #: pretix/base/exporters/orderlist.py:790 pretix/base/models/checkin.py:19
-#: pretix/base/models/items.py:1361 pretix/base/models/orders.py:1111
+#: pretix/base/models/items.py:1361 pretix/base/models/orders.py:1152
 #: pretix/base/models/vouchers.py:101 pretix/base/models/waitinglist.py:37
 #: pretix/control/forms/event.py:1222 pretix/control/forms/filter.py:331
 #: pretix/control/forms/filter.py:1387 pretix/control/forms/filter.py:1501
@@ -1230,13 +1230,13 @@ msgid "Product"
 msgstr "Продукт"
 
 #: pretix/base/exporters/orderlist.py:514
-#: pretix/base/exporters/waitinglist.py:89 pretix/base/models/orders.py:1121
+#: pretix/base/exporters/waitinglist.py:89 pretix/base/models/orders.py:1162
 msgid "Variation"
 msgstr "Вариант"
 
 #: pretix/base/exporters/orderlist.py:519
-#: pretix/base/exporters/orderlist.py:524 pretix/base/forms/questions.py:387
-#: pretix/base/models/orders.py:1133 pretix/base/orderimport.py:381
+#: pretix/base/exporters/orderlist.py:524 pretix/base/forms/questions.py:391
+#: pretix/base/models/orders.py:1174 pretix/base/orderimport.py:381
 #: pretix/base/pdf.py:119 pretix/control/forms/filter.py:544
 #: pretix/control/templates/pretixcontrol/order/index.html:394
 #: pretix/control/views/item.py:308 pretix/plugins/badges/exporters.py:258
@@ -1249,8 +1249,8 @@ msgstr "Вариант"
 msgid "Attendee name"
 msgstr "Имя посетителя"
 
-#: pretix/base/exporters/orderlist.py:526 pretix/base/forms/questions.py:393
-#: pretix/base/models/orders.py:1141 pretix/base/pdf.py:161
+#: pretix/base/exporters/orderlist.py:526 pretix/base/forms/questions.py:397
+#: pretix/base/models/orders.py:1182 pretix/base/pdf.py:161
 #: pretix/control/templates/pretixcontrol/order/index.html:399
 #: pretix/control/views/item.py:320
 #: pretix/presale/templates/pretixpresale/event/fragment_cart.html:60
@@ -1329,9 +1329,9 @@ msgid "Refund states"
 msgstr "Запрошен возврат"
 
 #: pretix/base/exporters/orderlist.py:744
-#: pretix/base/exporters/orderlist.py:850 pretix/base/models/orders.py:208
-#: pretix/base/models/orders.py:1341 pretix/base/models/orders.py:1712
-#: pretix/base/models/orders.py:1859 pretix/base/models/orders.py:1964
+#: pretix/base/exporters/orderlist.py:850 pretix/base/models/orders.py:246
+#: pretix/base/models/orders.py:1382 pretix/base/models/orders.py:1753
+#: pretix/base/models/orders.py:1900 pretix/base/models/orders.py:2005
 #: pretix/control/templates/pretixcontrol/organizers/giftcard.html:64
 #: pretix/plugins/banktransfer/templates/pretixplugins/banktransfer/transaction_list.html:15
 #: pretix/plugins/checkinlists/exporters.py:295
@@ -1361,8 +1361,8 @@ msgid "Status code"
 msgstr "Код статуса"
 
 #: pretix/base/exporters/orderlist.py:745
-#: pretix/base/exporters/orderlist.py:850 pretix/base/models/orders.py:1337
-#: pretix/base/models/orders.py:1708
+#: pretix/base/exporters/orderlist.py:850 pretix/base/models/orders.py:1378
+#: pretix/base/models/orders.py:1749
 #: pretix/control/templates/pretixcontrol/order/index.html:618
 #: pretix/control/templates/pretixcontrol/order/index.html:714
 #: pretix/control/templates/pretixcontrol/orders/refunds.html:67
@@ -1376,7 +1376,7 @@ msgstr "Сумма"
 #: pretix/control/templates/pretixcontrol/order/index.html:616
 #: pretix/control/templates/pretixcontrol/order/index.html:711
 #: pretix/control/templates/pretixcontrol/order/refund_choose.html:84
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_confirm.html:19
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_confirm.html:29
 msgid "Payment method"
 msgstr "Способ оплаты"
 
@@ -1552,7 +1552,7 @@ msgstr ""
 #: pretix/control/templates/pretixcontrol/organizers/giftcard.html:34
 #: pretix/plugins/banktransfer/refund_export.py:25
 #: pretix/plugins/paypal/templates/pretixplugins/paypal/control.html:15
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:57
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:75
 msgid "Currency"
 msgstr "Валюта"
 
@@ -1693,35 +1693,35 @@ msgstr "Адрес электронной почты"
 msgid "Repeat password"
 msgstr "Повторите пароль"
 
-#: pretix/base/forms/questions.py:205
+#: pretix/base/forms/questions.py:209
 #, fuzzy
 #| msgid "Please enter your name."
 msgid "Please enter a shorter name."
 msgstr "Пожалуйста, введите ваше имя."
 
-#: pretix/base/forms/questions.py:225
+#: pretix/base/forms/questions.py:229
 #, fuzzy
 #| msgid "Internal reference"
 msgctxt "phonenumber"
 msgid "International area code"
 msgstr "Внутренняя ссылка"
 
-#: pretix/base/forms/questions.py:249
+#: pretix/base/forms/questions.py:253
 msgctxt "phonenumber"
 msgid "Phone number (without international area code)"
 msgstr ""
 
-#: pretix/base/forms/questions.py:415 pretix/base/forms/questions.py:719
+#: pretix/base/forms/questions.py:419 pretix/base/forms/questions.py:723
 msgid "Street and Number"
 msgstr "Улица и номер дома"
 
-#: pretix/base/forms/questions.py:449 pretix/base/forms/questions.py:759
+#: pretix/base/forms/questions.py:453 pretix/base/forms/questions.py:763
 msgctxt "address"
 msgid "Select state"
 msgstr "Выбрать штат/страну"
 
-#: pretix/base/forms/questions.py:672 pretix/base/forms/questions.py:703
-#: pretix/base/forms/questions.py:850 pretix/base/payment.py:51
+#: pretix/base/forms/questions.py:676 pretix/base/forms/questions.py:707
+#: pretix/base/forms/questions.py:854 pretix/base/payment.py:63
 #: pretix/control/forms/event.py:637 pretix/control/forms/event.py:643
 #: pretix/control/forms/event.py:694 pretix/control/forms/event.py:1133
 #: pretix/plugins/banktransfer/payment.py:362
@@ -1729,23 +1729,23 @@ msgstr "Выбрать штат/страну"
 msgid "This field is required."
 msgstr ""
 
-#: pretix/base/forms/questions.py:841
+#: pretix/base/forms/questions.py:845
 msgid "You need to provide a company name."
 msgstr "Необходимо указать наименование компании."
 
-#: pretix/base/forms/questions.py:843
+#: pretix/base/forms/questions.py:847
 msgid "You need to provide your name."
 msgstr "Необходимо указать ваше имя."
 
-#: pretix/base/forms/questions.py:861 pretix/control/views/orders.py:1234
+#: pretix/base/forms/questions.py:865 pretix/control/views/orders.py:1234
 msgid "Your VAT ID does not match the selected country."
 msgstr ""
 
-#: pretix/base/forms/questions.py:873
+#: pretix/base/forms/questions.py:877
 msgid "This VAT ID is not valid. Please re-check your input."
 msgstr "Этот НДС ID недействителен. Пожалуйста, перепроверьте ваши данные."
 
-#: pretix/base/forms/questions.py:878
+#: pretix/base/forms/questions.py:882
 msgid ""
 "Your VAT ID could not be checked, as the VAT checking service of your "
 "country is currently not available. We will therefore need to charge VAT on "
@@ -1756,7 +1756,7 @@ msgstr ""
 "стране в настоящее время недоступна. Поэтому мы должны включить НДС в ваш "
 "счёт. Вы можете получить сумму налога обратно через процесс возврата НДС."
 
-#: pretix/base/forms/questions.py:886
+#: pretix/base/forms/questions.py:890
 msgid ""
 "Your VAT ID could not be checked, as the VAT checking service of your "
 "country returned an incorrect result. We will therefore need to charge VAT "
@@ -1837,7 +1837,7 @@ msgid "Invalid placeholder(s): %(value)s"
 msgstr "Неверный заполнитель(-и): %(value)s"
 
 #: pretix/base/forms/widgets.py:153 pretix/base/forms/widgets.py:158
-#: pretix/base/models/orders.py:2254
+#: pretix/base/models/orders.py:2295
 msgid "Business customer"
 msgstr "Корпоративный заказчик"
 
@@ -2066,7 +2066,7 @@ msgstr ""
 msgid "Modern Invoice Renderer"
 msgstr "Современное средство отображения счетов (pretix 2.7)"
 
-#: pretix/base/models/auth.py:92 pretix/base/models/orders.py:2256
+#: pretix/base/models/auth.py:92 pretix/base/models/orders.py:2297
 #: pretix/base/settings.py:2462 pretix/base/settings.py:2473
 #: pretix/control/templates/pretixcontrol/users/index.html:42
 msgid "Full name"
@@ -2366,7 +2366,7 @@ msgstr ""
 msgid "Event series"
 msgstr "Серия мероприятий"
 
-#: pretix/base/models/event.py:431 pretix/base/payment.py:312
+#: pretix/base/models/event.py:431 pretix/base/payment.py:324
 msgid "Restrict to specific sales channels"
 msgstr ""
 
@@ -2375,8 +2375,8 @@ msgid "Only sell tickets for this event on the following sales channels."
 msgstr ""
 
 #: pretix/base/models/event.py:438 pretix/base/models/items.py:256
-#: pretix/base/models/items.py:1354 pretix/base/models/orders.py:140
-#: pretix/base/models/orders.py:2199 pretix/base/models/vouchers.py:95
+#: pretix/base/models/items.py:1354 pretix/base/models/orders.py:178
+#: pretix/base/models/orders.py:2240 pretix/base/models/vouchers.py:95
 #: pretix/base/models/waitinglist.py:31 pretix/base/notifications.py:178
 #: pretix/control/templates/pretixcontrol/search/orders.html:44
 #: pretix/presale/templates/pretixpresale/event/waitinglist.html:18
@@ -2721,7 +2721,7 @@ msgstr "Доступно с"
 msgid "This product will not be sold before the given date."
 msgstr "Этот продукт не будет продаваться до указанной даты."
 
-#: pretix/base/models/items.py:341 pretix/base/payment.py:236
+#: pretix/base/models/items.py:341 pretix/base/payment.py:248
 msgid "Available until"
 msgstr "Доступно до"
 
@@ -3235,7 +3235,7 @@ msgstr ""
 msgid "Leave empty for an unlimited number of tickets."
 msgstr ""
 
-#: pretix/base/models/items.py:1374 pretix/base/models/orders.py:1115
+#: pretix/base/models/items.py:1374 pretix/base/models/orders.py:1156
 #: pretix/control/templates/pretixcontrol/checkin/index.html:67
 msgid "Item"
 msgstr ""
@@ -3346,37 +3346,37 @@ msgstr "Вопрос {val}"
 msgid "Tax rule {val}"
 msgstr "Налоговое правило {val}"
 
-#: pretix/base/models/orders.py:120
+#: pretix/base/models/orders.py:158
 msgid "pending"
 msgstr "не завершено"
 
-#: pretix/base/models/orders.py:121
+#: pretix/base/models/orders.py:159
 msgid "paid"
 msgstr "оплачено"
 
-#: pretix/base/models/orders.py:122
+#: pretix/base/models/orders.py:160
 msgid "expired"
 msgstr "истекло"
 
-#: pretix/base/models/orders.py:123
+#: pretix/base/models/orders.py:161
 msgid "canceled"
 msgstr "отменено"
 
-#: pretix/base/models/orders.py:154 pretix/control/forms/filter.py:467
+#: pretix/base/models/orders.py:192 pretix/control/forms/filter.py:467
 msgid "Locale"
 msgstr "Язык клиента"
 
-#: pretix/base/models/orders.py:164 pretix/base/models/orders.py:2211
+#: pretix/base/models/orders.py:202 pretix/base/models/orders.py:2252
 #: pretix/control/forms/orders.py:41
 msgid "Expiration date"
 msgstr "Дата окончания срока"
 
-#: pretix/base/models/orders.py:168 pretix/control/forms/filter.py:478
+#: pretix/base/models/orders.py:206 pretix/control/forms/filter.py:478
 #: pretix/plugins/banktransfer/templates/pretixplugins/banktransfer/refund_export.html:57
 msgid "Total amount"
 msgstr "Общая сумма"
 
-#: pretix/base/models/orders.py:172 pretix/base/models/vouchers.py:198
+#: pretix/base/models/orders.py:210 pretix/base/models/vouchers.py:198
 msgid ""
 "The text entered in this field will not be visible to the user and is "
 "available for your convenience."
@@ -3384,7 +3384,7 @@ msgstr ""
 "Текст, введённый в это поле, не будет виден пользователю и предназначен для "
 "вашего удобства."
 
-#: pretix/base/models/orders.py:178
+#: pretix/base/models/orders.py:216
 msgid ""
 "If you set this, the check-in app will show a visible warning that tickets "
 "of this order require special attention. This will not show any details or "
@@ -3397,15 +3397,15 @@ msgstr ""
 "сообщения, поэтому вам необходимо проинформировать сотрудников, занимающихся "
 "регистрацией, о том, как действовать в таких случаях."
 
-#: pretix/base/models/orders.py:190 pretix/base/models/orders.py:1152
+#: pretix/base/models/orders.py:228 pretix/base/models/orders.py:1193
 msgid "Meta information"
 msgstr "Метаинформация"
 
-#: pretix/base/models/orders.py:202 pretix/control/forms/filter.py:473
+#: pretix/base/models/orders.py:240 pretix/control/forms/filter.py:473
 msgid "E-mail address verified"
 msgstr "Адрес электронной почты подтверждён"
 
-#: pretix/base/models/orders.py:767
+#: pretix/base/models/orders.py:805
 msgid ""
 "The payment can not be accepted as the last date of payments configured in "
 "the payment settings is over."
@@ -3413,7 +3413,7 @@ msgstr ""
 "Платёж не может быть принят, так как последняя дата платежей, "
 "сконфигурированная в настройках платежа, истекла."
 
-#: pretix/base/models/orders.py:769
+#: pretix/base/models/orders.py:807
 msgid ""
 "The payment can not be accepted as the order is expired and you configured "
 "that no late payments should be accepted in the payment settings."
@@ -3422,26 +3422,26 @@ msgstr ""
 "вашей конфигурации в настройках платежей просроченные платежи не могут "
 "приниматься."
 
-#: pretix/base/models/orders.py:771
+#: pretix/base/models/orders.py:809
 msgid "This order is not yet approved by the event organizer."
 msgstr "Данный заказ ещё не утверждён организатором мероприятия."
 
-#: pretix/base/models/orders.py:791
+#: pretix/base/models/orders.py:829
 #, python-brace-format
 msgid "The ordered product \"{item}\" is no longer available."
 msgstr "Заказанный продукт \"{item}\" более не доступен."
 
-#: pretix/base/models/orders.py:792
+#: pretix/base/models/orders.py:830
 #, python-brace-format
 msgid "The seat \"{seat}\" is no longer available."
 msgstr "Место \"{seat}\"более не доступно."
 
-#: pretix/base/models/orders.py:793
+#: pretix/base/models/orders.py:831
 #, python-brace-format
 msgid "The voucher \"{voucher}\" no longer has sufficient budget."
 msgstr ""
 
-#: pretix/base/models/orders.py:794
+#: pretix/base/models/orders.py:832
 #, fuzzy, python-brace-format
 #| msgid ""
 #| "This voucher code has already been used the maximum number of times "
@@ -3450,195 +3450,195 @@ msgid "The voucher \"{voucher}\" has been used in the meantime."
 msgstr ""
 "Этот код ваучера уже был использован максимально допустимое количество раз."
 
-#: pretix/base/models/orders.py:922 pretix/base/services/orders.py:862
+#: pretix/base/models/orders.py:960 pretix/base/services/orders.py:862
 #: pretix/control/views/event.py:701
 #: pretix/presale/templates/pretixpresale/event/order.html:63
 #, python-format
 msgid "Your order: %(code)s"
 msgstr "Ваш заказ: %(code)s"
 
-#: pretix/base/models/orders.py:1033
+#: pretix/base/models/orders.py:1074
 msgid "<file>"
 msgstr "<file>"
 
-#: pretix/base/models/orders.py:1135 pretix/base/models/orders.py:1143
+#: pretix/base/models/orders.py:1176 pretix/base/models/orders.py:1184
 msgid "Empty, if this product is not an admission ticket"
 msgstr "Пусто, если данный продукт не является входным билетом"
 
-#: pretix/base/models/orders.py:1159 pretix/base/models/orders.py:2255
+#: pretix/base/models/orders.py:1200 pretix/base/models/orders.py:2296
 #: pretix/base/settings.py:689
 msgid "Company name"
 msgstr ""
 
-#: pretix/base/models/orders.py:1163 pretix/base/models/orders.py:2262
-#: pretix/base/settings.py:42 pretix/plugins/stripe/payment.py:150
+#: pretix/base/models/orders.py:1204 pretix/base/models/orders.py:2303
+#: pretix/base/settings.py:42 pretix/plugins/stripe/payment.py:168
 msgid "Select country"
 msgstr "Выбрать страну"
 
-#: pretix/base/models/orders.py:1324
+#: pretix/base/models/orders.py:1365
 msgctxt "payment_state"
 msgid "created"
 msgstr "создано"
 
-#: pretix/base/models/orders.py:1325
+#: pretix/base/models/orders.py:1366
 msgctxt "payment_state"
 msgid "pending"
 msgstr "не завершено"
 
-#: pretix/base/models/orders.py:1326
+#: pretix/base/models/orders.py:1367
 msgctxt "payment_state"
 msgid "confirmed"
 msgstr "подтверждено"
 
-#: pretix/base/models/orders.py:1327
+#: pretix/base/models/orders.py:1368
 msgctxt "payment_state"
 msgid "canceled"
 msgstr "отменено"
 
-#: pretix/base/models/orders.py:1328
+#: pretix/base/models/orders.py:1369
 msgctxt "payment_state"
 msgid "failed"
 msgstr "не удалось"
 
-#: pretix/base/models/orders.py:1329
+#: pretix/base/models/orders.py:1370
 msgctxt "payment_state"
 msgid "refunded"
 msgstr "возвращено"
 
-#: pretix/base/models/orders.py:1357 pretix/base/models/orders.py:1739
+#: pretix/base/models/orders.py:1398 pretix/base/models/orders.py:1780
 #: pretix/base/shredder.py:400
 msgid "Payment information"
 msgstr "Информация о платеже"
 
-#: pretix/base/models/orders.py:1552
+#: pretix/base/models/orders.py:1593
 #, python-format
 msgid "Event registration confirmed: %(code)s"
 msgstr "Регистрация мероприятия подтверждена: %(code)s"
 
-#: pretix/base/models/orders.py:1570
+#: pretix/base/models/orders.py:1611
 #, python-format
 msgid "Payment received for your order: %(code)s"
 msgstr "Получена оплата за ваш заказ: %(code)s"
 
-#: pretix/base/models/orders.py:1680
+#: pretix/base/models/orders.py:1721
 msgctxt "refund_state"
 msgid "started externally"
 msgstr "начато извне"
 
-#: pretix/base/models/orders.py:1681
+#: pretix/base/models/orders.py:1722
 msgctxt "refund_state"
 msgid "created"
 msgstr "создано"
 
-#: pretix/base/models/orders.py:1682
+#: pretix/base/models/orders.py:1723
 msgctxt "refund_state"
 msgid "in transit"
 msgstr "в пути"
 
-#: pretix/base/models/orders.py:1683
+#: pretix/base/models/orders.py:1724
 msgctxt "refund_state"
 msgid "done"
 msgstr "готово"
 
-#: pretix/base/models/orders.py:1684
+#: pretix/base/models/orders.py:1725
 msgctxt "refund_state"
 msgid "failed"
 msgstr "не удалось"
 
-#: pretix/base/models/orders.py:1686
+#: pretix/base/models/orders.py:1727
 msgctxt "refund_state"
 msgid "canceled"
 msgstr "отменено"
 
-#: pretix/base/models/orders.py:1694
+#: pretix/base/models/orders.py:1735
 msgctxt "refund_source"
 msgid "Organizer"
 msgstr "Организатор"
 
-#: pretix/base/models/orders.py:1695
+#: pretix/base/models/orders.py:1736
 msgctxt "refund_source"
 msgid "Customer"
 msgstr "Клиент"
 
-#: pretix/base/models/orders.py:1696
+#: pretix/base/models/orders.py:1737
 msgctxt "refund_source"
 msgid "External"
 msgstr "Внешний"
 
-#: pretix/base/models/orders.py:1734
+#: pretix/base/models/orders.py:1775
 #: pretix/control/templates/pretixcontrol/order/refund_choose.html:192
 #, fuzzy
 #| msgid "Pending amount"
 msgid "Refund reason"
 msgstr "Неуплаченная сумма"
 
-#: pretix/base/models/orders.py:1735
+#: pretix/base/models/orders.py:1776
 #: pretix/control/templates/pretixcontrol/order/refund_choose.html:193
 #: pretix/control/templates/pretixcontrol/order/refund_choose.html:195
 msgid ""
 "May be shown to the end user or used e.g. as part of a payment reference."
 msgstr ""
 
-#: pretix/base/models/orders.py:1845
+#: pretix/base/models/orders.py:1886
 msgid "Payment fee"
 msgstr "Платёжный сбор"
 
-#: pretix/base/models/orders.py:1846
+#: pretix/base/models/orders.py:1887
 msgid "Shipping fee"
 msgstr "Плата за доставку"
 
-#: pretix/base/models/orders.py:1847
+#: pretix/base/models/orders.py:1888
 msgid "Service fee"
 msgstr "Плата за обслуживание"
 
-#: pretix/base/models/orders.py:1848
+#: pretix/base/models/orders.py:1889
 #: pretix/control/templates/pretixcontrol/order/index.html:138
 msgid "Cancellation fee"
 msgstr "Плата за отмену"
 
-#: pretix/base/models/orders.py:1849
+#: pretix/base/models/orders.py:1890
 msgid "Other fees"
 msgstr "Другие сборы"
 
-#: pretix/base/models/orders.py:1850 pretix/base/payment.py:1076
+#: pretix/base/models/orders.py:1891 pretix/base/payment.py:1088
 #: pretix/control/templates/pretixcontrol/items/index.html:84
 #: pretix/control/templates/pretixcontrol/order/index.html:133
 msgid "Gift card"
 msgstr "Подарочный сертификат"
 
-#: pretix/base/models/orders.py:1855
+#: pretix/base/models/orders.py:1896
 #: pretix/control/templates/pretixcontrol/organizers/giftcard.html:65
 #: pretix/control/templates/pretixcontrol/organizers/giftcard.html:103
 #: pretix/control/views/vouchers.py:73
 msgid "Value"
 msgstr ""
 
-#: pretix/base/models/orders.py:1994
+#: pretix/base/models/orders.py:2035
 msgid "Order position"
 msgstr "Позиция заказа"
 
-#: pretix/base/models/orders.py:2175 pretix/base/services/orders.py:877
+#: pretix/base/models/orders.py:2216 pretix/base/services/orders.py:877
 #, python-format
 msgid "Your event registration: %(code)s"
 msgstr "Регистрация вашего мероприятия: %(code)s"
 
-#: pretix/base/models/orders.py:2204
+#: pretix/base/models/orders.py:2245
 msgid "Cart ID (e.g. session key)"
 msgstr "ID корзины (например, сеансовый ключ)"
 
-#: pretix/base/models/orders.py:2226
+#: pretix/base/models/orders.py:2267
 msgid "Cart position"
 msgstr "Позиция корзины"
 
-#: pretix/base/models/orders.py:2227
+#: pretix/base/models/orders.py:2268
 msgid "Cart positions"
 msgstr "Позиции корзины"
 
-#: pretix/base/models/orders.py:2266
+#: pretix/base/models/orders.py:2307
 msgid "Only for business customers within the EU."
 msgstr "Только для корпоративных клиентов в ЕС."
 
-#: pretix/base/models/orders.py:2271
+#: pretix/base/models/orders.py:2312
 msgid "This reference will be printed on your invoice for your convenience."
 msgstr "Данная ссылка будет напечатана на вашем счёте для вашего удобства."
 
@@ -3808,7 +3808,7 @@ msgstr ""
 "консультации с налоговым консультантом. Не предоставляется гарантия "
 "правильного расчёта налога. ИСПОЛЬЗУЙТЕ НА СВОЙ РИСК."
 
-#: pretix/base/models/tax.py:130 pretix/plugins/stripe/payment.py:174
+#: pretix/base/models/tax.py:130 pretix/plugins/stripe/payment.py:192
 msgid "Merchant country"
 msgstr "Страна коммерсанта"
 
@@ -4466,22 +4466,32 @@ msgstr "Вам необходимо выбрать конкретное мест
 msgid "Ambiguous option selected."
 msgstr "Выбрана неверная опция."
 
-#: pretix/base/payment.py:231
+#: pretix/base/payment.py:53
+msgctxt "payment"
+msgid "Apple Pay"
+msgstr ""
+
+#: pretix/base/payment.py:54
+msgctxt "payment"
+msgid "Google Pay"
+msgstr ""
+
+#: pretix/base/payment.py:243
 msgid "Enable payment method"
 msgstr "Активировать способ оплаты"
 
-#: pretix/base/payment.py:237
+#: pretix/base/payment.py:249
 msgid ""
 "Users will not be able to choose this payment provider after the given date."
 msgstr ""
 "Пользователи не смогут выбрать этого поставщика платёжных услуг после "
 "указанной даты."
 
-#: pretix/base/payment.py:242
+#: pretix/base/payment.py:254
 msgid "Text on invoices"
 msgstr "Текст в счетах"
 
-#: pretix/base/payment.py:243
+#: pretix/base/payment.py:255
 msgid ""
 "Will be printed just below the payment figures and above the closing text on "
 "invoices. This will only be used if the invoice is generated before the "
@@ -4493,11 +4503,11 @@ msgstr ""
 "оплаты заказа. Если счёт будет сгенерирован позже, на нём будет отображён "
 "текст, подтверждающий, что он уже оплачен."
 
-#: pretix/base/payment.py:252
+#: pretix/base/payment.py:264
 msgid "Minimum order total"
 msgstr "Минимальная общая сумма заказа"
 
-#: pretix/base/payment.py:253
+#: pretix/base/payment.py:265
 msgid ""
 "This payment will be available only if the order total is equal to or "
 "exceeds the given value. The order total for this purpose may be computed "
@@ -4507,11 +4517,11 @@ msgstr ""
 "превышает заданную величину. Общая сумма заказа для этой цели может быть "
 "рассчитана без учёта сборов, взимаемых данным способом оплаты."
 
-#: pretix/base/payment.py:263
+#: pretix/base/payment.py:275
 msgid "Maximum order total"
 msgstr "Максимальная общая сумма заказа"
 
-#: pretix/base/payment.py:264
+#: pretix/base/payment.py:276
 msgid ""
 "This payment will be available only if the order total is equal to or below "
 "the given value. The order total for this purpose may be computed without "
@@ -4521,23 +4531,23 @@ msgstr ""
 "равна или ниже заданной величины. Общая сумма заказа для этой цели может "
 "быть рассчитана без учёта сборов, взимаемых данным способом оплаты."
 
-#: pretix/base/payment.py:274 pretix/base/payment.py:283
+#: pretix/base/payment.py:286 pretix/base/payment.py:295
 msgid "Additional fee"
 msgstr "Дополнительный сбор"
 
-#: pretix/base/payment.py:275
+#: pretix/base/payment.py:287
 msgid "Absolute value"
 msgstr "Абсолютная величина"
 
-#: pretix/base/payment.py:284
+#: pretix/base/payment.py:296
 msgid "Percentage of the order total."
 msgstr "Процент от общей суммы заказа."
 
-#: pretix/base/payment.py:290
+#: pretix/base/payment.py:302
 msgid "Calculate the fee from the total value including the fee."
 msgstr "Рассчитать сбор из общей стоимости, включающей сбор."
 
-#: pretix/base/payment.py:291
+#: pretix/base/payment.py:303
 #, python-brace-format
 msgid ""
 "We recommend to enable this if you want your users to pay the payment fees "
@@ -4551,11 +4561,11 @@ msgstr ""
 "получить об этом подробную информацию. </a> Не забудьте установить выше "
 "правильные сборы!"
 
-#: pretix/base/payment.py:299
+#: pretix/base/payment.py:311
 msgid "Restrict to countries"
 msgstr "Ограничить следующими странами"
 
-#: pretix/base/payment.py:301
+#: pretix/base/payment.py:313
 msgid ""
 "Only allow choosing this payment provider for invoice addresses in the "
 "selected countries. If you don't select any country, all countries are "
@@ -4566,44 +4576,44 @@ msgstr ""
 "все страны будут разрешены. Этот параметр активируется только в том случае, "
 "если требуется адрес выставления счёта."
 
-#: pretix/base/payment.py:320
+#: pretix/base/payment.py:332
 msgid ""
 "Only allow the usage of this payment provider in the selected sales channels."
 msgstr ""
 
-#: pretix/base/payment.py:324
+#: pretix/base/payment.py:336
 #, fuzzy
 #| msgid "Enable payment method"
 msgid "Hide payment method"
 msgstr "Активировать способ оплаты"
 
-#: pretix/base/payment.py:327
+#: pretix/base/payment.py:339
 msgid ""
 "The payment method will not be shown by default but only to people who enter "
 "the shop through a special link."
 msgstr ""
 
-#: pretix/base/payment.py:333
+#: pretix/base/payment.py:345
 #, fuzzy
 #| msgid "Enable payment method"
 msgid "Link to enable payment method"
 msgstr "Активировать способ оплаты"
 
-#: pretix/base/payment.py:342
+#: pretix/base/payment.py:354
 msgid "Share this link with customers who should use this payment method."
 msgstr ""
 
-#: pretix/base/payment.py:375
+#: pretix/base/payment.py:387
 msgctxt "invoice"
 msgid "The payment for this invoice has already been received."
 msgstr "Оплата по этому счёту уже получена."
 
-#: pretix/base/payment.py:786
+#: pretix/base/payment.py:798
 msgid "Automatic refunds are not supported by this payment provider."
 msgstr ""
 "Автоматический возврат не поддерживается этим поставщиком платёжных услуг."
 
-#: pretix/base/payment.py:857
+#: pretix/base/payment.py:869
 msgid ""
 "No payment is required as this order only includes products which are free "
 "of charge."
@@ -4611,35 +4621,35 @@ msgstr ""
 "Оплата не требуется, так как этот заказ включает в себя только бесплатные "
 "продукты."
 
-#: pretix/base/payment.py:864
+#: pretix/base/payment.py:876
 msgid "Free of charge"
 msgstr "Бесплатно"
 
-#: pretix/base/payment.py:892
+#: pretix/base/payment.py:904
 msgid "Box office"
 msgstr "Касса"
 
-#: pretix/base/payment.py:935 pretix/base/payment.py:953
+#: pretix/base/payment.py:947 pretix/base/payment.py:965
 #: pretix/plugins/manualpayment/apps.py:9
 #: pretix/plugins/manualpayment/apps.py:12
 msgid "Manual payment"
 msgstr ""
 
-#: pretix/base/payment.py:939 pretix/plugins/banktransfer/payment.py:151
+#: pretix/base/payment.py:951 pretix/plugins/banktransfer/payment.py:151
 msgid ""
 "In test mode, you can just manually mark this order as paid in the backend "
 "after it has been created."
 msgstr ""
 
-#: pretix/base/payment.py:960 pretix/plugins/banktransfer/payment.py:110
+#: pretix/base/payment.py:972 pretix/plugins/banktransfer/payment.py:110
 msgid "Payment method name"
 msgstr ""
 
-#: pretix/base/payment.py:964
+#: pretix/base/payment.py:976
 msgid "Payment process description during checkout"
 msgstr "Описание процесса оплаты при оформлении заказа"
 
-#: pretix/base/payment.py:965
+#: pretix/base/payment.py:977
 msgid ""
 "This text will be shown during checkout when the user selects this payment "
 "method. It should give a short explanation on this payment method."
@@ -4648,13 +4658,13 @@ msgstr ""
 "выбирает этот способ оплаты. Следует предоставить краткое объяснение этого "
 "способа оплаты."
 
-#: pretix/base/payment.py:970
+#: pretix/base/payment.py:982
 msgid "Payment process description in order confirmation emails"
 msgstr ""
 "Описание процесса оплаты в письмах по электронной почте с подтверждением "
 "заказа"
 
-#: pretix/base/payment.py:971
+#: pretix/base/payment.py:983
 #, fuzzy, python-brace-format
 #| msgid ""
 #| "This text will be included for the {payment_info} placeholder in order "
@@ -4672,11 +4682,11 @@ msgstr ""
 "пользователя о том, как приступить к оплате. Вы можете использовать "
 "заполнители {order}, {total}, {currency} и {total_with_currency}"
 
-#: pretix/base/payment.py:978
+#: pretix/base/payment.py:990
 msgid "Payment process description for pending orders"
 msgstr "Описание процесса оплаты для незавершённых заказов"
 
-#: pretix/base/payment.py:979
+#: pretix/base/payment.py:991
 #, fuzzy, python-brace-format
 #| msgid ""
 #| "This text will be shown on the order confirmation page for pending "
@@ -4693,62 +4703,62 @@ msgstr ""
 "приступить к оплате. Вы можете использовать заполнители {order}, {total}, "
 "{currency} и {total_with_currency}"
 
-#: pretix/base/payment.py:1028
+#: pretix/base/payment.py:1040
 msgid "Offsetting"
 msgstr "Взаимозачёт"
 
-#: pretix/base/payment.py:1042 pretix/control/views/orders.py:860
+#: pretix/base/payment.py:1054 pretix/control/views/orders.py:860
 msgid "You entered an order that could not be found."
 msgstr ""
 
-#: pretix/base/payment.py:1071
+#: pretix/base/payment.py:1083
 #, python-format
 msgid "Balanced against orders: %s"
 msgstr "Сопоставлено с заказами: %s"
 
-#: pretix/base/payment.py:1092
+#: pretix/base/payment.py:1104
 msgid "In test mode, only test cards will work."
 msgstr "В тестовом режиме, будут работать только тестовые карты."
 
-#: pretix/base/payment.py:1157 pretix/base/payment.py:1220
-#: pretix/base/payment.py:1264 pretix/base/services/orders.py:773
+#: pretix/base/payment.py:1169 pretix/base/payment.py:1232
+#: pretix/base/payment.py:1276 pretix/base/services/orders.py:773
 msgid "You cannot pay with gift cards when buying a gift card."
 msgstr ""
 "Покупку подарочного сертификата нельзя оплатить подарочными сертификатами."
 
-#: pretix/base/payment.py:1166 pretix/base/payment.py:1228
-#: pretix/base/payment.py:1272 pretix/base/services/orders.py:764
+#: pretix/base/payment.py:1178 pretix/base/payment.py:1240
+#: pretix/base/payment.py:1284 pretix/base/services/orders.py:764
 msgid "This gift card does not support this currency."
 msgstr "Этот подарочный сертификат не поддерживает данную валюту."
 
-#: pretix/base/payment.py:1169 pretix/base/payment.py:1231
+#: pretix/base/payment.py:1181 pretix/base/payment.py:1243
 #: pretix/base/services/orders.py:766
 msgid "This gift card can only be used in test mode."
 msgstr ""
 "Этот подарочный сертификат можно использовать только в тестовом режиме."
 
-#: pretix/base/payment.py:1172 pretix/base/payment.py:1234
+#: pretix/base/payment.py:1184 pretix/base/payment.py:1246
 #: pretix/base/services/orders.py:768
 msgid "Only test gift cards can be used in test mode."
 msgstr ""
 "В тестовом режиме можно использовать только тестовые подарочные сертификаты."
 
-#: pretix/base/payment.py:1175 pretix/base/payment.py:1237
-#: pretix/base/payment.py:1278
+#: pretix/base/payment.py:1187 pretix/base/payment.py:1249
+#: pretix/base/payment.py:1290
 #, fuzzy
 #| msgid "This gift card is not known."
 msgid "This gift card is no longer valid."
 msgstr "Этот подарочный сертификат неизвестен."
 
-#: pretix/base/payment.py:1178 pretix/base/payment.py:1240
+#: pretix/base/payment.py:1190 pretix/base/payment.py:1252
 msgid "All credit on this gift card has been used."
 msgstr "По этому подарочному сертификату был использован весь кредит."
 
-#: pretix/base/payment.py:1183
+#: pretix/base/payment.py:1195
 msgid "This gift card is already used for your payment."
 msgstr "Этот подарочный сертификат уже используется для вашей оплаты."
 
-#: pretix/base/payment.py:1198
+#: pretix/base/payment.py:1210
 msgid ""
 "Your gift card has been applied, but {} still need to be paid. Please select "
 "a payment method."
@@ -4756,11 +4766,11 @@ msgstr ""
 "Ваш подарочный сертификат использован, но всё еще необходимо доплатить {}. "
 "Пожалуйста, выберите способ оплаты."
 
-#: pretix/base/payment.py:1202
+#: pretix/base/payment.py:1214
 msgid "Your gift card has been applied."
 msgstr "Ваш подарочный сертификат использован."
 
-#: pretix/base/payment.py:1210 pretix/base/payment.py:1252
+#: pretix/base/payment.py:1222 pretix/base/payment.py:1264
 msgid ""
 "You entered a voucher instead of a gift card. Vouchers can only be entered "
 "on the first page of the shop below the product selection."
@@ -4768,11 +4778,11 @@ msgstr ""
 "Вы ввели ваучер вместо подарочного сертификата. Ваучеры можно вводить только "
 "на первой странице магазина под ассортиментом продуктов."
 
-#: pretix/base/payment.py:1213 pretix/base/payment.py:1255
+#: pretix/base/payment.py:1225 pretix/base/payment.py:1267
 msgid "This gift card is not known."
 msgstr "Этот подарочный сертификат неизвестен."
 
-#: pretix/base/payment.py:1215 pretix/base/payment.py:1257
+#: pretix/base/payment.py:1227 pretix/base/payment.py:1269
 msgid ""
 "This gift card can not be redeemed since its code is not unique. Please "
 "contact the organizer of this event."
@@ -4780,11 +4790,11 @@ msgstr ""
 "Этот подарочный сертификат не может быть использован, поскольку его код не "
 "является уникальным. Пожалуйста, свяжитесь с организатором этого мероприятия."
 
-#: pretix/base/payment.py:1274 pretix/base/services/orders.py:770
+#: pretix/base/payment.py:1286 pretix/base/services/orders.py:770
 msgid "This gift card is not accepted by this event organizer."
 msgstr "Этот подарочный сертификат не принят организатором мероприятия."
 
-#: pretix/base/payment.py:1276
+#: pretix/base/payment.py:1288
 #, fuzzy
 #| msgid "This gift card was used in the meantime. Please try again"
 msgid "This gift card was used in the meantime. Please try again."
@@ -11087,7 +11097,7 @@ msgstr ""
 #: pretix/control/templates/pretixcontrol/user/reauth.html:32
 #: pretix/control/templates/pretixcontrol/user/reauth.html:36
 #: pretix/plugins/banktransfer/templates/pretixplugins/banktransfer/import_assign.html:11
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/sca.html:36
+#: pretix/plugins/stripe/templates/plugins/stripe/sca.html:45
 #: pretix/presale/templates/pretixpresale/event/checkout_addons.html:342
 #: pretix/presale/templates/pretixpresale/event/checkout_payment.html:77
 #: pretix/presale/templates/pretixpresale/event/checkout_questions.html:157
@@ -11181,7 +11191,7 @@ msgstr ""
 #: pretix/control/templates/pretixcontrol/vouchers/detail.html:98
 #: pretix/plugins/badges/templates/pretixplugins/badges/edit.html:35
 #: pretix/plugins/returnurl/templates/returnurl/settings.html:24
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/organizer_stripe.html:20
+#: pretix/plugins/stripe/templates/plugins/stripe/organizer_stripe.html:20
 #: pretix/plugins/ticketoutputpdf/templates/pretixplugins/ticketoutputpdf/edit.html:35
 msgid "Save"
 msgstr ""
@@ -11360,10 +11370,9 @@ msgstr ""
 
 #: pretix/control/templates/pretixcontrol/boxoffice/payment.html:45
 #: pretix/control/templates/pretixcontrol/boxoffice/payment.html:65
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_confirm.html:10
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_form_cc.html:28
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:13
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:43
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_confirm.html:10
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_form_card.html:24
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:14
 msgid "Card number"
 msgstr "Номер карты"
 
@@ -11527,7 +11536,7 @@ msgstr ""
 #: pretix/control/templates/pretixcontrol/vouchers/delete_bulk.html:33
 #: pretix/control/templates/pretixcontrol/waitinglist/delete.html:12
 #: pretix/plugins/badges/templates/pretixplugins/badges/delete.html:13
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/sca.html:29
+#: pretix/plugins/stripe/templates/plugins/stripe/sca.html:38
 #: pretix/plugins/ticketoutputpdf/templates/pretixplugins/ticketoutputpdf/delete.html:12
 #: pretix/presale/templates/pretixpresale/event/order_change.html:69
 #: pretix/presale/templates/pretixpresale/event/order_modify.html:79
@@ -12339,7 +12348,7 @@ msgstr ""
 #: pretix/control/views/organizer.py:1409 pretix/control/views/subevents.py:433
 #: pretix/control/views/subevents.py:1450 pretix/control/views/user.py:182
 #: pretix/control/views/users.py:66 pretix/control/views/vouchers.py:215
-#: pretix/plugins/badges/views.py:110 pretix/plugins/stripe/views.py:598
+#: pretix/plugins/badges/views.py:110 pretix/plugins/stripe/views.py:669
 #: pretix/plugins/ticketoutputpdf/views.py:146
 msgid "Your changes have been saved."
 msgstr "Ваши изменения сохранены."
@@ -16765,7 +16774,7 @@ msgstr ""
 #: pretix/control/views/organizer.py:193 pretix/control/views/subevents.py:412
 #: pretix/control/views/subevents.py:909 pretix/control/views/subevents.py:1356
 #: pretix/control/views/user.py:292 pretix/plugins/badges/views.py:70
-#: pretix/plugins/stripe/views.py:601
+#: pretix/plugins/stripe/views.py:672
 #: pretix/plugins/ticketoutputpdf/views.py:106
 msgid "We could not save your changes. See below for details."
 msgstr ""
@@ -17977,7 +17986,7 @@ msgstr ""
 #: pretix/plugins/manualpayment/apps.py:13 pretix/plugins/paypal/apps.py:14
 #: pretix/plugins/pretixdroid/apps.py:13 pretix/plugins/reports/apps.py:14
 #: pretix/plugins/returnurl/apps.py:13 pretix/plugins/sendmail/apps.py:13
-#: pretix/plugins/statistics/apps.py:13 pretix/plugins/stripe/apps.py:14
+#: pretix/plugins/statistics/apps.py:13
 #: pretix/plugins/ticketoutputpdf/apps.py:14
 #: pretix/plugins/webcheckin/apps.py:13
 msgid "the pretix team"
@@ -18291,19 +18300,20 @@ msgstr ""
 #: pretix/plugins/banktransfer/templates/pretixplugins/banktransfer/checkout_payment_form.html:11
 #: pretix/plugins/banktransfer/templates/pretixplugins/banktransfer/pending.html:21
 #: pretix/plugins/banktransfer/views.py:759
-#: pretix/plugins/stripe/payment.py:902 pretix/plugins/stripe/payment.py:1069
-#: pretix/plugins/stripe/payment.py:1221
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_confirm.html:22
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_confirm.html:25
+#: pretix/plugins/stripe/payment.py:1347
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_confirm.html:32
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_confirm.html:35
 msgid "Account holder"
 msgstr "Владелец счёта"
 
 #: pretix/plugins/banktransfer/payment.py:214
 #: pretix/plugins/banktransfer/templates/pretixplugins/banktransfer/checkout_payment_form.html:14
 #: pretix/plugins/banktransfer/templates/pretixplugins/banktransfer/pending.html:24
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:21
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:27
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:33
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:23
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:31
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:39
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:47
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:55
 msgid "Bank"
 msgstr "Банк"
 
@@ -18914,7 +18924,7 @@ msgid "This plugin adds a customizable payment method for manual processing."
 msgstr ""
 
 #: pretix/plugins/paypal/apps.py:10 pretix/plugins/paypal/apps.py:13
-#: pretix/plugins/paypal/payment.py:40
+#: pretix/plugins/paypal/payment.py:40 pretix/plugins/stripe/payment.py:1691
 msgid "PayPal"
 msgstr ""
 
@@ -18932,18 +18942,18 @@ msgstr ""
 msgid "PayPal account"
 msgstr ""
 
-#: pretix/plugins/paypal/payment.py:81 pretix/plugins/stripe/payment.py:156
+#: pretix/plugins/paypal/payment.py:81 pretix/plugins/stripe/payment.py:174
 #, python-brace-format
 msgid "<a target=\"_blank\" rel=\"noopener\" href=\"{docs_url}\">{text}</a>"
 msgstr "<a target=\"_blank\" rel=\"noopener\" href=\"{docs_url}\">{text}</a>"
 
-#: pretix/plugins/paypal/payment.py:82 pretix/plugins/stripe/payment.py:157
+#: pretix/plugins/paypal/payment.py:82 pretix/plugins/stripe/payment.py:175
 msgid "Click here for a tutorial on how to obtain the required keys"
 msgstr ""
 "Нажмите здесь, чтобы включить инструкцию о том, как получить необходимые "
 "ключи"
 
-#: pretix/plugins/paypal/payment.py:94 pretix/plugins/stripe/payment.py:136
+#: pretix/plugins/paypal/payment.py:94 pretix/plugins/stripe/payment.py:154
 msgid "Endpoint"
 msgstr "Конечная точка"
 
@@ -19019,8 +19029,8 @@ msgid ""
 "payment completed."
 msgstr ""
 
-#: pretix/plugins/paypal/payment.py:432 pretix/plugins/stripe/payment.py:449
-#: pretix/plugins/stripe/payment.py:801
+#: pretix/plugins/paypal/payment.py:432 pretix/plugins/stripe/payment.py:796
+#: pretix/plugins/stripe/payment.py:958
 msgid "There was an error sending the confirmation mail."
 msgstr "При отправке письма с подтверждением произошла ошибка."
 
@@ -19124,7 +19134,7 @@ msgid "Last update"
 msgstr ""
 
 #: pretix/plugins/paypal/templates/pretixplugins/paypal/control.html:13
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:53
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:71
 msgid "Total value"
 msgstr "Общая стоимость"
 
@@ -19141,18 +19151,18 @@ msgid ""
 msgstr ""
 
 #: pretix/plugins/paypal/templates/pretixplugins/paypal/redirect.html:17
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/redirect.html:17
+#: pretix/plugins/stripe/templates/plugins/stripe/redirect.html:18
 msgid "The payment process has started in a new window."
 msgstr "Процесс оплаты начался в новом окне."
 
 #: pretix/plugins/paypal/templates/pretixplugins/paypal/redirect.html:20
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/redirect.html:20
+#: pretix/plugins/stripe/templates/plugins/stripe/redirect.html:19
 msgid "The window to enter your payment data was not opened or was closed?"
 msgstr ""
 "Окно для ввода ваших платёжных данных не было открыто или было закрыто?"
 
 #: pretix/plugins/paypal/templates/pretixplugins/paypal/redirect.html:24
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/redirect.html:24
+#: pretix/plugins/stripe/templates/plugins/stripe/redirect.html:22
 msgid "Click here in order to open the window."
 msgstr "Нажмите здесь, чтобы открыть окно."
 
@@ -19569,12 +19579,14 @@ msgid ""
 msgstr ""
 
 #: pretix/plugins/stripe/apps.py:10 pretix/plugins/stripe/apps.py:13
-#: pretix/plugins/stripe/payment.py:46
+#: pretix/plugins/stripe/payment.py:59
 msgid "Stripe"
 msgstr "Stripe"
 
-#: pretix/plugins/stripe/apps.py:17
-msgid "This plugin allows you to receive credit card payments via Stripe"
+#: pretix/plugins/stripe/apps.py:19
+#, fuzzy
+#| msgid "This plugin allows you to receive credit card payments via Stripe"
+msgid "This plugin allows you to receive credit card payments via Stripe."
 msgstr ""
 "Этот плагин позволяет получать платежи по кредитным картам через Stripe"
 
@@ -19587,37 +19599,42 @@ msgstr ""
 "Предоставленный ключ \"%(value)s\" выглядит как недействительный. Он должен "
 "начинаться с \"%(prefix)s\"."
 
-#: pretix/plugins/stripe/forms.py:30 pretix/plugins/stripe/signals.py:132
+#: pretix/plugins/stripe/forms.py:30 pretix/plugins/stripe/signals.py:137
 msgid "Stripe Connect: App fee (percent)"
 msgstr "Stripe Connect: плата за приложение (в процентах)"
 
-#: pretix/plugins/stripe/forms.py:34 pretix/plugins/stripe/signals.py:136
+#: pretix/plugins/stripe/forms.py:34 pretix/plugins/stripe/signals.py:141
 msgid "Stripe Connect: App fee (max)"
 msgstr "Stripe Connect: плата за приложение (макс.)"
 
-#: pretix/plugins/stripe/forms.py:38 pretix/plugins/stripe/signals.py:140
+#: pretix/plugins/stripe/forms.py:38 pretix/plugins/stripe/signals.py:145
 msgid "Stripe Connect: App fee (min)"
 msgstr "Stripe Connect: плата за приложение (мин.)"
 
-#: pretix/plugins/stripe/payment.py:75
+#: pretix/plugins/stripe/payment.py:88
+#, fuzzy
+#| msgid ""
+#| "To accept payments via Stripe, you will need an account at Stripe. By "
+#| "clicking on the following button, you can either create a new Stripe "
+#| "account connect pretix to an existing one."
 msgid ""
 "To accept payments via Stripe, you will need an account at Stripe. By "
 "clicking on the following button, you can either create a new Stripe account "
-"connect pretix to an existing one."
+"connect eventyay to an existing one."
 msgstr ""
 "Для приёма платежей через Stripe вам понадобится аккаунт в Stripe. Нажав на "
 "следующую кнопку, вы можете либо создать новый аккаунт в Stripe, либо "
 "подключить pretix к имеющемуся аккаунту."
 
-#: pretix/plugins/stripe/payment.py:79
+#: pretix/plugins/stripe/payment.py:92
 msgid "Connect with Stripe"
 msgstr "Соединиться со Stripe"
 
-#: pretix/plugins/stripe/payment.py:89
+#: pretix/plugins/stripe/payment.py:102
 msgid "Disconnect from Stripe"
 msgstr "Отсоединиться от Stripe"
 
-#: pretix/plugins/stripe/payment.py:93
+#: pretix/plugins/stripe/payment.py:106
 msgid ""
 "Please configure a <a href=\"https://dashboard.stripe.com/account/"
 "webhooks\">Stripe Webhook</a> to the following endpoint in order to "
@@ -19629,22 +19646,22 @@ msgstr ""
 "при внешнем возврате платежей и обрабатывать асинхронные способы оплаты, "
 "такие как SOFORT."
 
-#: pretix/plugins/stripe/payment.py:105
+#: pretix/plugins/stripe/payment.py:118
 msgid "Enable MOTO payments for resellers"
 msgstr ""
 
-#: pretix/plugins/stripe/payment.py:107
+#: pretix/plugins/stripe/payment.py:120
 #, fuzzy
 #| msgid "Needs to be enabled in your Stripe account first."
 msgid ""
 "Gated feature (needs to be enabled for your account by Stripe support first)"
 msgstr "Сначала необходимо активировать в вашем аккаунте в Stripe."
 
-#: pretix/plugins/stripe/payment.py:115
+#: pretix/plugins/stripe/payment.py:128
 msgid "Stripe Integration security guide"
 msgstr ""
 
-#: pretix/plugins/stripe/payment.py:109
+#: pretix/plugins/stripe/payment.py:122
 #, python-format
 msgid ""
 "We can flag the credit card transaction you make through the reseller "
@@ -19655,21 +19672,21 @@ msgid ""
 "this subject."
 msgstr ""
 
-#: pretix/plugins/stripe/payment.py:131
+#: pretix/plugins/stripe/payment.py:144 pretix/plugins/stripe/payment.py:149
 msgid "Stripe account"
 msgstr "Аккаунт в Stripe"
 
-#: pretix/plugins/stripe/payment.py:139
+#: pretix/plugins/stripe/payment.py:157
 msgctxt "stripe"
 msgid "Live"
 msgstr "Действующий"
 
-#: pretix/plugins/stripe/payment.py:140
+#: pretix/plugins/stripe/payment.py:158
 msgctxt "stripe"
 msgid "Testing"
 msgstr "Тестирование"
 
-#: pretix/plugins/stripe/payment.py:142
+#: pretix/plugins/stripe/payment.py:160
 msgid ""
 "If your event is in test mode, we will always use Stripe's test API, "
 "regardless of this setting."
@@ -19677,15 +19694,15 @@ msgstr ""
 "Если ваше мероприятие находится в тестовом режиме, мы всегда будем "
 "использовать тестовый API Stripe, независимо от этого параметра."
 
-#: pretix/plugins/stripe/payment.py:155
+#: pretix/plugins/stripe/payment.py:173
 msgid "Publishable key"
 msgstr "Публикуемый ключ"
 
-#: pretix/plugins/stripe/payment.py:166
+#: pretix/plugins/stripe/payment.py:184
 msgid "Secret key"
 msgstr "Секретный ключ"
 
-#: pretix/plugins/stripe/payment.py:175
+#: pretix/plugins/stripe/payment.py:193
 msgid ""
 "The country in which your Stripe-account is registered in. Usually, this is "
 "your country of residence."
@@ -19693,39 +19710,96 @@ msgstr ""
 "Страна, в которой зарегистрирован ваш аккаунт в Stripe. Обычно это страна "
 "вашего проживания."
 
-#: pretix/plugins/stripe/payment.py:183
+#: pretix/plugins/stripe/payment.py:203
+msgid "Check for Apple Pay/Google Pay"
+msgstr ""
+
+#: pretix/plugins/stripe/payment.py:203
+msgid "experimental"
+msgstr ""
+
+#: pretix/plugins/stripe/payment.py:207
+msgid ""
+"Eventyay will check if the customer's browser supports wallet-based payment "
+"methods like Apple Pay or Google Pay."
+msgstr ""
+
+#: pretix/plugins/stripe/payment.py:214
+msgid "Statement descriptor postfix"
+msgstr ""
+
+#: pretix/plugins/stripe/payment.py:216
+msgid ""
+"The statement descriptor is the text that appears on the customer's credit "
+"card bill or bank account transaction."
+msgstr ""
+
+#: pretix/plugins/stripe/payment.py:226
 msgid "Credit card payments"
 msgstr "Платежи по кредитным картам"
 
-#: pretix/plugins/stripe/payment.py:188 pretix/plugins/stripe/payment.py:886
+#: pretix/plugins/stripe/payment.py:231 pretix/plugins/stripe/payment.py:1369
 msgid "giropay"
 msgstr "giropay"
 
-#: pretix/plugins/stripe/payment.py:190 pretix/plugins/stripe/payment.py:197
-#: pretix/plugins/stripe/payment.py:204 pretix/plugins/stripe/payment.py:211
-#: pretix/plugins/stripe/payment.py:219 pretix/plugins/stripe/payment.py:232
-#: pretix/plugins/stripe/payment.py:239 pretix/plugins/stripe/payment.py:246
-#: pretix/plugins/stripe/payment.py:253
+#: pretix/plugins/stripe/payment.py:233 pretix/plugins/stripe/payment.py:248
+#: pretix/plugins/stripe/payment.py:255 pretix/plugins/stripe/payment.py:290
+#: pretix/plugins/stripe/payment.py:303 pretix/plugins/stripe/payment.py:310
+#: pretix/plugins/stripe/payment.py:317 pretix/plugins/stripe/payment.py:324
 msgid "Needs to be enabled in your Stripe account first."
 msgstr "Сначала необходимо активировать в вашем аккаунте в Stripe."
 
-#: pretix/plugins/stripe/payment.py:195 pretix/plugins/stripe/payment.py:958
+#: pretix/plugins/stripe/payment.py:238 pretix/plugins/stripe/payment.py:1404
 msgid "iDEAL"
 msgstr "iDEAL"
 
-#: pretix/plugins/stripe/payment.py:202 pretix/plugins/stripe/payment.py:1010
+#: pretix/plugins/stripe/payment.py:240
+msgid ""
+"Some payment methods might need to be enabled in the settings of your Stripe "
+"account before they work properly."
+msgstr ""
+
+#: pretix/plugins/stripe/payment.py:246 pretix/plugins/stripe/payment.py:1429
 msgid "Alipay"
 msgstr "Alipay"
 
-#: pretix/plugins/stripe/payment.py:209 pretix/plugins/stripe/payment.py:1053
+#: pretix/plugins/stripe/payment.py:253 pretix/plugins/stripe/payment.py:1441
 msgid "Bancontact"
 msgstr "Bancontact"
 
-#: pretix/plugins/stripe/payment.py:216 pretix/plugins/stripe/payment.py:1125
+#: pretix/plugins/stripe/payment.py:260
+msgid "SEPA Direct Debit"
+msgstr ""
+
+#: pretix/plugins/stripe/payment.py:264
+msgid ""
+"Certain payment methods may require activation in your Stripe account "
+"settings before they function correctly."
+msgstr ""
+
+#: pretix/plugins/stripe/payment.py:265
+msgid ""
+"SEPA Direct Debit can take up to <strong>14 business days</strong> to "
+"receive notification on the success or failure of a payment after you "
+"initiate a debit from the customer’s account, though the average is 7 to 8 "
+"business days."
+msgstr ""
+
+#: pretix/plugins/stripe/payment.py:273
+msgid "SEPA Creditor Mandate Name"
+msgstr ""
+
+#: pretix/plugins/stripe/payment.py:275
+msgid ""
+"Provide the name for the SEPA Creditor Mandate, which will be shown to the "
+"user."
+msgstr ""
+
+#: pretix/plugins/stripe/payment.py:287
 msgid "SOFORT"
 msgstr "SOFORT"
 
-#: pretix/plugins/stripe/payment.py:221
+#: pretix/plugins/stripe/payment.py:292
 msgid ""
 "Despite the name, Sofort payments via Stripe are <strong>not</strong> "
 "processed instantly but might take up to <strong>14 days</strong> to be "
@@ -19737,23 +19811,64 @@ msgstr ""
 "<strong>14 дней</strong>. Пожалуйста, активируйте этот способ оплаты только "
 "в том случае, если ваш срок оплаты позволяет такое отставание."
 
-#: pretix/plugins/stripe/payment.py:230 pretix/plugins/stripe/payment.py:1205
+#: pretix/plugins/stripe/payment.py:301 pretix/plugins/stripe/payment.py:1544
 msgid "EPS"
 msgstr ""
 
-#: pretix/plugins/stripe/payment.py:237 pretix/plugins/stripe/payment.py:1277
+#: pretix/plugins/stripe/payment.py:308 pretix/plugins/stripe/payment.py:1576
 msgid "Multibanco"
 msgstr ""
 
-#: pretix/plugins/stripe/payment.py:244 pretix/plugins/stripe/payment.py:1324
+#: pretix/plugins/stripe/payment.py:315 pretix/plugins/stripe/payment.py:1625
 msgid "Przelewy24"
 msgstr ""
 
-#: pretix/plugins/stripe/payment.py:251 pretix/plugins/stripe/payment.py:1380
+#: pretix/plugins/stripe/payment.py:322 pretix/plugins/stripe/payment.py:1663
 msgid "WeChat Pay"
 msgstr ""
 
-#: pretix/plugins/stripe/payment.py:278
+#: pretix/plugins/stripe/payment.py:329 pretix/plugins/stripe/payment.py:1698
+msgid "Swish"
+msgstr ""
+
+#: pretix/plugins/stripe/payment.py:332 pretix/plugins/stripe/payment.py:341
+#: pretix/plugins/stripe/payment.py:354
+msgid ""
+"Certain payment methods may need to be enabled in your Stripe account "
+"settings before they function correctly."
+msgstr ""
+
+#: pretix/plugins/stripe/payment.py:337 pretix/plugins/stripe/payment.py:1225
+msgid "Affirm"
+msgstr ""
+
+#: pretix/plugins/stripe/payment.py:342
+msgid "Only available for payments between $50 and $30,000."
+msgstr ""
+
+#: pretix/plugins/stripe/payment.py:348 pretix/plugins/stripe/payment.py:1264
+msgid "Klarna"
+msgstr ""
+
+#: pretix/plugins/stripe/payment.py:356
+msgid ""
+"Klarna and Stripe will determine which Klarna payment methods are available "
+"to the user."
+msgstr ""
+
+#: pretix/plugins/stripe/payment.py:357
+msgid ""
+"Klarna's terms of service prohibit its use by charities or political "
+"organizations."
+msgstr ""
+
+#: pretix/plugins/stripe/payment.py:366
+#, fuzzy
+#| msgid "Description"
+msgid "Destination"
+msgstr "Описание"
+
+#: pretix/plugins/stripe/payment.py:394 pretix/plugins/stripe/payment.py:1322
 #, python-brace-format
 msgid ""
 "The Stripe plugin is operating in test mode. You can use one of <a {args}"
@@ -19764,40 +19879,15 @@ msgstr ""
 "можете использовать одну из <a {args}> множества тестовых карточек </a>. "
 "Фактически деньги не будут переведены."
 
-#: pretix/plugins/stripe/payment.py:407 pretix/plugins/stripe/payment.py:757
-#: pretix/plugins/stripe/payment.py:852
-#, python-format
-msgid "Stripe reported an error with your card: %s"
-msgstr "Stripe сообщил об ошибке с вашей картой: %s"
-
-#: pretix/plugins/stripe/payment.py:434 pretix/plugins/stripe/payment.py:567
-#: pretix/plugins/stripe/payment.py:770 pretix/plugins/stripe/payment.py:864
-#: pretix/plugins/stripe/payment.py:1436
-msgid ""
-"We had trouble communicating with Stripe. Please try again and get in touch "
-"with us if this problem persists."
-msgstr ""
-"У нас возникли проблемы с обращением к Stripe. Пожалуйста, попробуйте ещё "
-"раз и свяжитесь с нами, если проблема не устраняется."
-
-#: pretix/plugins/stripe/payment.py:452 pretix/plugins/stripe/payment.py:804
-msgid ""
-"Your payment is pending completion. We will inform you as soon as the "
-"payment completed."
-msgstr ""
-"Ваш платёж ещё не завершён. Мы сообщим вам, как только оплата будет "
-"завершена."
-
-#: pretix/plugins/stripe/payment.py:461 pretix/plugins/stripe/payment.py:818
-#, python-format
-msgid "Stripe reported an error: %s"
-msgstr "Stripe сообщил об ошибке: %s"
-
-#: pretix/plugins/stripe/payment.py:517
+#: pretix/plugins/stripe/payment.py:575
 msgid "No payment information found."
 msgstr "Информация об оплате не найдена."
 
-#: pretix/plugins/stripe/payment.py:538
+#: pretix/plugins/stripe/payment.py:591
+msgid "Stripe returned an error"
+msgstr "Stripe выдал ошибку"
+
+#: pretix/plugins/stripe/payment.py:616
 msgid ""
 "We had trouble communicating with Stripe. Please try again and contact "
 "support if the problem persists."
@@ -19805,234 +19895,361 @@ msgstr ""
 "У нас возникли проблемы с обращением к Stripe. Пожалуйста, попробуйте ещё "
 "раз и обратитесь в службу поддержки, если проблема не устраняется."
 
-#: pretix/plugins/stripe/payment.py:542
-msgid "Stripe returned an error"
-msgstr "Stripe выдал ошибку"
-
-#: pretix/plugins/stripe/payment.py:638
-msgid "Credit card via Stripe"
-msgstr "Кредитная / дебетная карта через Stripe"
-
-#: pretix/plugins/stripe/payment.py:639
-msgid "Credit card"
-msgstr "Кредитная / дебетная карта"
-
-#: pretix/plugins/stripe/payment.py:666
+#: pretix/plugins/stripe/payment.py:689
 msgid "You may need to enable JavaScript for Stripe payments."
 msgstr "Вам может потребоваться активировать JavaScript для платежей Stripe."
 
-#: pretix/plugins/stripe/payment.py:812
+#: pretix/plugins/stripe/payment.py:761 pretix/plugins/stripe/payment.py:863
+#: pretix/plugins/stripe/payment.py:922
+#, python-format
+msgid "Stripe reported an error with your card: %s"
+msgstr "Stripe сообщил об ошибке с вашей картой: %s"
+
+#: pretix/plugins/stripe/payment.py:769 pretix/plugins/stripe/payment.py:875
+#: pretix/plugins/stripe/payment.py:936 pretix/plugins/stripe/payment.py:1002
+msgid ""
+"We had trouble communicating with Stripe. Please try again and get in touch "
+"with us if this problem persists."
+msgstr ""
+"У нас возникли проблемы с обращением к Stripe. Пожалуйста, попробуйте ещё "
+"раз и свяжитесь с нами, если проблема не устраняется."
+
+#: pretix/plugins/stripe/payment.py:801
+msgid ""
+"Your payment is pending completion. We will inform you as soon as the "
+"payment completed."
+msgstr ""
+"Ваш платёж ещё не завершён. Мы сообщим вам, как только оплата будет "
+"завершена."
+
+#: pretix/plugins/stripe/payment.py:808
 msgid "Your payment failed. Please try again."
 msgstr "Ваш платёж не прошёл. Пожалуйста, попробуйте ещё раз."
 
-#: pretix/plugins/stripe/payment.py:885
+#: pretix/plugins/stripe/payment.py:814 pretix/plugins/stripe/payment.py:970
+#, python-format
+msgid "Stripe reported an error: %s"
+msgstr "Stripe сообщил об ошибке: %s"
+
+#: pretix/plugins/stripe/payment.py:963
+#, fuzzy
+#| msgid ""
+#| "Your payment is pending completion. We will inform you as soon as the "
+#| "payment completed."
+msgid ""
+"Your payment is pending completion. We will inform you as soon as the "
+"payment is completed."
+msgstr ""
+"Ваш платёж ещё не завершён. Мы сообщим вам, как только оплата будет "
+"завершена."
+
+#: pretix/plugins/stripe/payment.py:1035
+msgid "Credit card via Stripe"
+msgstr "Кредитная / дебетная карта через Stripe"
+
+#: pretix/plugins/stripe/payment.py:1036
+msgid "Credit card"
+msgstr "Кредитная / дебетная карта"
+
+#: pretix/plugins/stripe/payment.py:1116
+#, fuzzy
+#| msgid "iDEAL via Stripe"
+msgid "SEPA Debit via Stripe"
+msgstr "iDEAL через Stripe"
+
+#: pretix/plugins/stripe/payment.py:1117
+msgid "SEPA Debit"
+msgstr ""
+
+#: pretix/plugins/stripe/payment.py:1155
+#, fuzzy
+#| msgid "Account holder"
+msgid "Account Holder Name"
+msgstr "Владелец счёта"
+
+#: pretix/plugins/stripe/payment.py:1159
+#, fuzzy
+#| msgid "Account holder"
+msgid "Account Holder Street"
+msgstr "Владелец счёта"
+
+#: pretix/plugins/stripe/payment.py:1168
+#, fuzzy
+#| msgid "Account holder"
+msgid "Account Holder Postal Code"
+msgstr "Владелец счёта"
+
+#: pretix/plugins/stripe/payment.py:1177
+#, fuzzy
+#| msgid "Account holder"
+msgid "Account Holder City"
+msgstr "Владелец счёта"
+
+#: pretix/plugins/stripe/payment.py:1186
+#, fuzzy
+#| msgid "Account holder"
+msgid "Account Holder Country"
+msgstr "Владелец счёта"
+
+#: pretix/plugins/stripe/payment.py:1224
+#, fuzzy
+#| msgid "Alipay via Stripe"
+msgid "Affirm via Stripe"
+msgstr "Alipay через Stripe"
+
+#: pretix/plugins/stripe/payment.py:1263
+#, fuzzy
+#| msgid "Alipay via Stripe"
+msgid "Klarna via Stripe"
+msgstr "Alipay через Stripe"
+
+#: pretix/plugins/stripe/payment.py:1368
 msgid "giropay via Stripe"
 msgstr "giropay через Stripe"
 
-#: pretix/plugins/stripe/payment.py:917 pretix/plugins/stripe/payment.py:1084
-#: pretix/plugins/stripe/payment.py:1236
+#: pretix/plugins/stripe/payment.py:1372
+msgid ""
+"giropay is an online payment method available to all customers of most "
+"German banks, usually after one-time activation. Please keep your online "
+"banking account and login information available."
+msgstr ""
+
+#: pretix/plugins/stripe/payment.py:1383 pretix/plugins/stripe/payment.py:1451
+#: pretix/plugins/stripe/payment.py:1554
 msgid "unknown name"
 msgstr "неизвестное имя"
 
-#: pretix/plugins/stripe/payment.py:949 pretix/plugins/stripe/payment.py:1001
-#: pretix/plugins/stripe/payment.py:1116 pretix/plugins/stripe/payment.py:1268
-#: pretix/plugins/stripe/payment.py:1371
+#: pretix/plugins/stripe/payment.py:1395 pretix/plugins/stripe/payment.py:1415
+#: pretix/plugins/stripe/payment.py:1459 pretix/plugins/stripe/payment.py:1562
+#: pretix/plugins/stripe/payment.py:1654
 #, python-brace-format
 msgid "Bank account at {bank}"
 msgstr ""
 
-#: pretix/plugins/stripe/payment.py:957
+#: pretix/plugins/stripe/payment.py:1403
 msgid "iDEAL via Stripe"
 msgstr "iDEAL через Stripe"
 
-#: pretix/plugins/stripe/payment.py:1009
+#: pretix/plugins/stripe/payment.py:1407
+msgid ""
+"iDEAL is an online payment method available to customers of Dutch banks. "
+"Please keep your online banking account and login information available."
+msgstr ""
+
+#: pretix/plugins/stripe/payment.py:1428
 msgid "Alipay via Stripe"
 msgstr "Alipay через Stripe"
 
-#: pretix/plugins/stripe/payment.py:1052
+#: pretix/plugins/stripe/payment.py:1433
+msgid ""
+"This payment method is available to customers of the Chinese payment system "
+"Alipay. Please keep your login information available."
+msgstr ""
+
+#: pretix/plugins/stripe/payment.py:1440
 msgid "Bancontact via Stripe"
 msgstr "Bancontact через Stripe"
 
-#: pretix/plugins/stripe/payment.py:1124
+#: pretix/plugins/stripe/payment.py:1472
 msgid "SOFORT via Stripe"
 msgstr "SOFORT через Stripe"
 
-#: pretix/plugins/stripe/payment.py:1141
+#: pretix/plugins/stripe/payment.py:1473
+msgid "SOFORT (instant bank transfer)"
+msgstr ""
+
+#: pretix/plugins/stripe/payment.py:1491
 msgid "Country of your bank"
 msgstr "Страна вашего банка"
 
-#: pretix/plugins/stripe/payment.py:1142
+#: pretix/plugins/stripe/payment.py:1492
 msgid "Germany"
 msgstr "Германия"
 
-#: pretix/plugins/stripe/payment.py:1143
+#: pretix/plugins/stripe/payment.py:1493
 msgid "Austria"
 msgstr "Австрия"
 
-#: pretix/plugins/stripe/payment.py:1144
+#: pretix/plugins/stripe/payment.py:1494
 msgid "Belgium"
 msgstr "Бельгия"
 
-#: pretix/plugins/stripe/payment.py:1145
+#: pretix/plugins/stripe/payment.py:1495
 msgid "Netherlands"
 msgstr "Нидерланды"
 
-#: pretix/plugins/stripe/payment.py:1146
+#: pretix/plugins/stripe/payment.py:1496
 msgid "Spain"
 msgstr "Испания"
 
-#: pretix/plugins/stripe/payment.py:1193
+#: pretix/plugins/stripe/payment.py:1532
 #, python-brace-format
 msgid "Bank account {iban} at {bank}"
 msgstr ""
 
-#: pretix/plugins/stripe/payment.py:1204
+#: pretix/plugins/stripe/payment.py:1543
 #, fuzzy
 #| msgid "iDEAL via Stripe"
 msgid "EPS via Stripe"
 msgstr "iDEAL через Stripe"
 
-#: pretix/plugins/stripe/payment.py:1276
+#: pretix/plugins/stripe/payment.py:1575
 #, fuzzy
 #| msgid "Alipay via Stripe"
 msgid "Multibanco via Stripe"
 msgstr "Alipay через Stripe"
 
-#: pretix/plugins/stripe/payment.py:1323
+#: pretix/plugins/stripe/payment.py:1624
 #, fuzzy
 #| msgid "Alipay via Stripe"
 msgid "Przelewy24 via Stripe"
 msgstr "Alipay через Stripe"
 
-#: pretix/plugins/stripe/payment.py:1379
+#: pretix/plugins/stripe/payment.py:1628
+msgid ""
+"Przelewy24 is an online payment method available to customers of Polish "
+"banks. Please keep your online banking account and login information "
+"available."
+msgstr ""
+
+#: pretix/plugins/stripe/payment.py:1662
 #, fuzzy
 #| msgid "Credit card via Stripe"
 msgid "WeChat Pay via Stripe"
 msgstr "Кредитная / дебетная карта через Stripe"
 
-#: pretix/plugins/stripe/signals.py:65
+#: pretix/plugins/stripe/payment.py:1667
+msgid ""
+"This payment method is available to users of the Chinese app WeChat. Please "
+"keep your login information available."
+msgstr ""
+
+#: pretix/plugins/stripe/payment.py:1690
+#, fuzzy
+#| msgid "iDEAL via Stripe"
+msgid "PayPal via Stripe"
+msgstr "iDEAL через Stripe"
+
+#: pretix/plugins/stripe/payment.py:1697
+#, fuzzy
+#| msgid "iDEAL via Stripe"
+msgid "Swish via Stripe"
+msgstr "iDEAL через Stripe"
+
+#: pretix/plugins/stripe/payment.py:1702
+msgid ""
+"This payment method is available to users of the Swedish apps Swish and "
+"BankID. Please have your app ready."
+msgstr ""
+
+#: pretix/plugins/stripe/signals.py:70
 msgid "Charge succeeded."
 msgstr "Оплата удалась."
 
-#: pretix/plugins/stripe/signals.py:66
+#: pretix/plugins/stripe/signals.py:71
 msgid "Charge refunded."
 msgstr "Оплата возвращена."
 
-#: pretix/plugins/stripe/signals.py:67
+#: pretix/plugins/stripe/signals.py:72
 msgid "Charge updated."
 msgstr "Оплата обновлена."
 
-#: pretix/plugins/stripe/signals.py:68
+#: pretix/plugins/stripe/signals.py:73
 msgid "Charge pending"
 msgstr "Оплата не завершена."
 
-#: pretix/plugins/stripe/signals.py:69
+#: pretix/plugins/stripe/signals.py:74
 msgid "Payment authorized."
 msgstr "Платёж разрешён."
 
-#: pretix/plugins/stripe/signals.py:70
+#: pretix/plugins/stripe/signals.py:75
 msgid "Payment authorization canceled."
 msgstr "Авторизация платежа отменена."
 
-#: pretix/plugins/stripe/signals.py:71
+#: pretix/plugins/stripe/signals.py:76
 msgid "Payment authorization failed."
 msgstr "Авторизация платежа не удалась."
 
-#: pretix/plugins/stripe/signals.py:77
+#: pretix/plugins/stripe/signals.py:82
 msgid "Charge failed. Reason: {}"
 msgstr "Оплата не удалась. Причина: {}"
 
-#: pretix/plugins/stripe/signals.py:79
+#: pretix/plugins/stripe/signals.py:84
 msgid "Dispute created. Reason: {}"
 msgstr "Возник спор. Причина: {}"
 
-#: pretix/plugins/stripe/signals.py:81
+#: pretix/plugins/stripe/signals.py:86
 msgid "Dispute updated. Reason: {}"
 msgstr "Спор обновлён. Причина: {}"
 
-#: pretix/plugins/stripe/signals.py:83
+#: pretix/plugins/stripe/signals.py:88
 msgid "Dispute closed. Status: {}"
 msgstr "Спор закрыт. Статус: {}"
 
-#: pretix/plugins/stripe/signals.py:86
+#: pretix/plugins/stripe/signals.py:91
 msgid "Stripe reported an event: {}"
 msgstr "Stripe сообщил о мероприятии: {}"
 
-#: pretix/plugins/stripe/signals.py:97
+#: pretix/plugins/stripe/signals.py:102
 msgid "Stripe Connect: Client ID"
 msgstr "Stripe Connect: ID клиента"
 
-#: pretix/plugins/stripe/signals.py:104
+#: pretix/plugins/stripe/signals.py:109
 msgid "Stripe Connect: Secret key"
 msgstr "Stripe Connect: Секретный ключ"
 
-#: pretix/plugins/stripe/signals.py:111
+#: pretix/plugins/stripe/signals.py:116
 msgid "Stripe Connect: Publishable key"
 msgstr "Stripe Connect: Публикуемый ключ"
 
-#: pretix/plugins/stripe/signals.py:118
+#: pretix/plugins/stripe/signals.py:123
 msgid "Stripe Connect: Secret key (test)"
 msgstr "Stripe Connect: Секретный ключ (тест)"
 
-#: pretix/plugins/stripe/signals.py:125
+#: pretix/plugins/stripe/signals.py:130
 msgid "Stripe Connect: Publishable key (test)"
 msgstr "Stripe Connect: Публикуемый ключ (тест)"
 
-#: pretix/plugins/stripe/signals.py:170
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/organizer_stripe.html:6
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/organizer_stripe.html:9
+#: pretix/plugins/stripe/signals.py:156
+#: pretix/plugins/stripe/templates/plugins/stripe/oauth_disconnect.html:3
+#: pretix/plugins/stripe/templates/plugins/stripe/oauth_disconnect.html:6
+#: pretix/plugins/stripe/templates/plugins/stripe/organizer_stripe.html:6
+#: pretix/plugins/stripe/templates/plugins/stripe/organizer_stripe.html:9
 msgid "Stripe Connect"
 msgstr "Stripe Connect"
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/action_double.html:5
-#, python-format
-msgid ""
-"The Stripe transaction <a %(stripe_href)s>%(charge)s</a> has succeeded, but "
-"the order %(order)s has already been paid by other means. Please double-"
-"check and refund the money via Stripe's interface."
-msgstr ""
-"Транзакция Stripe <a %(stripe_href)s>%(charge)s</a> удалась, но заказ "
-"%(order)s уже был оплачен другими средствами. Пожалуйста, перепроверьте и "
-"верните деньги через интерфейс Stripe."
-
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/action_overpaid.html:5
-#, python-format
-msgid ""
-"The Stripe transaction <a %(stripe_href)s>%(charge)s</a> has succeeded, but "
-"the order %(order)s is expired and the product was sold out in the meantime. "
-"Therefore, the payment could not be accepted. Please contact the user and "
-"refund the money via Stripe's interface."
-msgstr ""
-"Транзакция Stripe <a %(stripe_href)s>%(charge)s</a> удалась, но заказ "
-"%(order)s уже истёк, и за это время продукт уже был продан. Поэтому платёж "
-"не может быть принят. Пожалуйста, свяжитесь с пользователем и верните деньги "
-"через интерфейс Stripe."
-
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/action_refund.html:5
-#, python-format
-msgid ""
-"Stripe reported that the transaction <a %(stripe_href)s>%(charge)s</a> has "
-"been refunded. Do you want to refund mark the matching order (%(order)s) as "
-"refunded?"
-msgstr ""
-"Stripe сообщил, что по транзакции <a %(stripe_href)s>%(charge)s</a> был "
-"осуществлён возврат. Вы хотите поставить пометку о возврате у "
-"соответствующего заказа (%(order)s)?"
-
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_confirm.html:4
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_confirm.html:4
 msgid "The total amount will be withdrawn from your credit card."
 msgstr "Общая сумма будет снята с вашей кредитной карты."
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_confirm.html:8
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_form_cc.html:26
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:11
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:41
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_confirm.html:8
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_form_card.html:22
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:12
 msgid "Card type"
 msgstr "Тип карты"
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_confirm.html:14
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_form_simple.html:4
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_form_simple_noform.html:2
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_confirm.html:14
+#, fuzzy
+#| msgid "The total amount will be withdrawn from your credit card."
+msgid "The total amount will be withdrawn from your bank account."
+msgstr "Общая сумма будет снята с вашей кредитной карты."
+
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_confirm.html:18
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_form_sepadirectdebit.html:23
+msgid "Banking Institution"
+msgstr ""
+
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_confirm.html:20
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_form_sepadirectdebit.html:25
+#, fuzzy
+#| msgid "Account holder"
+msgid "Account number"
+msgstr "Владелец счёта"
+
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_confirm.html:24
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_form_simple.html:4
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_form_simple_messaging_noform.html:10
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_form_simple_noform.html:2
 msgid ""
 "After you submitted your order, we will redirect you to the payment service "
 "provider to complete your payment. You will then be redirected back here to "
@@ -20042,17 +20259,17 @@ msgstr ""
 "платёжных услуг, чтобы завершить ваш платёж. Затем вы будете обратно "
 "перенаправлены сюда, чтобы получить билеты."
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_form_cc.html:6
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_form_card.html:6
 msgid ""
 "This transaction will be marked as Mail Order/Telephone Order, exempting it "
 "from Strong Customer Authentication (SCA) whenever possible"
 msgstr ""
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_form_cc.html:16
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_form_card.html:14
 msgid "For a credit card payment, please turn on JavaScript."
 msgstr "Для оплаты кредитной картой, пожалуйста, включите JavaScript."
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_form_cc.html:22
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_form_card.html:20
 msgid ""
 "You already entered a card number that we will use to charge the payment "
 "amount."
@@ -20060,15 +20277,15 @@ msgstr ""
 "Вы уже ввели номер карты, которую мы будем использовать для снятия суммы "
 "платежа."
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_form_cc.html:33
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_form_card.html:29
 msgid "Use a different card"
 msgstr "Используйте другую карту"
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_form_cc.html:50
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_form_card.html:46
 msgid "OR"
 msgstr "ИЛИ"
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/checkout_payment_form_cc.html:63
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_form_card.html:59
 msgid ""
 "Your payment will be processed by Stripe, Inc. Your credit card data will be "
 "transmitted directly to Stripe and never touches our servers."
@@ -20076,26 +20293,81 @@ msgstr ""
 "Ваш платёж будет обработан Stripe, Inc. Данные вашей карты будут переданы "
 "непосредственно в Stripe и никогда не поступят на наши серверы."
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:6
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_form_sepadirectdebit.html:12
+#, fuzzy
+#| msgid "For a credit card payment, please turn on JavaScript."
+msgid "For a SEPA Debit payment, please turn on JavaScript."
+msgstr "Для оплаты кредитной картой, пожалуйста, включите JavaScript."
+
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_form_sepadirectdebit.html:19
+#, fuzzy
+#| msgid ""
+#| "You already entered a card number that we will use to charge the payment "
+#| "amount."
+msgid ""
+"You already entered a bank account that we will use to charge the payment "
+"amount."
+msgstr ""
+"Вы уже ввели номер карты, которую мы будем использовать для снятия суммы "
+"платежа."
+
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_form_sepadirectdebit.html:30
+#, fuzzy
+#| msgid "Use a different card"
+msgid "Use a different account"
+msgstr "Используйте другую карту"
+
+#: pretix/plugins/stripe/templates/plugins/stripe/checkout_payment_form_sepadirectdebit.html:57
+#, python-format
+msgid ""
+"By providing your payment information and confirming this payment, you "
+"authorize (A) %(sepa_creditor_name)s and Stripe, our payment service "
+"provider and/or PPRO, its local service provider, to send instructions to "
+"your bank to debit your account and (B) your bank to debit your account in "
+"accordance with those instructions. As part of your rights, you are entitled "
+"to a refund from your bank under the terms and conditions of your agreement "
+"with your bank. A refund must be claimed within 8 weeks starting from the "
+"date on which your account was debited. Your rights are explained in a "
+"statement that you can obtain from your bank. You agree to receive "
+"notifications for future debits up to 2 days before they occur."
+msgstr ""
+
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:7
 msgid "Charge ID"
 msgstr "ID платы"
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:16
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:23
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:29
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:35
-msgid "Payer name"
-msgstr "Имя плательщика"
-
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:47
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:18
 msgid "MOTO"
 msgstr ""
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/control.html:65
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:26
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:34
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:42
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:50
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:58
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:64
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:67
+msgid "Payer name"
+msgstr "Имя плательщика"
+
+#: pretix/plugins/stripe/templates/plugins/stripe/control.html:83
 msgid "Error message"
 msgstr "Сообщение об ошибке"
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/pending.html:4
+#: pretix/plugins/stripe/templates/plugins/stripe/oauth_disconnect.html:12
+#, fuzzy
+#| msgid ""
+#| "Do you really want to cancel this order? You cannot revert this action."
+msgid "Do you really want to disconnect your Stripe account?"
+msgstr "Вы действительно хотите отменить этот заказ? Это действие необратимое."
+
+#: pretix/plugins/stripe/templates/plugins/stripe/oauth_disconnect.html:16
+#, fuzzy
+#| msgid "Disconnect from Stripe"
+msgid "Disconnect"
+msgstr "Отсоединиться от Stripe"
+
+#: pretix/plugins/stripe/templates/plugins/stripe/pending.html:4
 msgid ""
 "We're waiting for an answer from the payment provider regarding your "
 "payment. Please contact us if this takes more than a few days."
@@ -20103,7 +20375,7 @@ msgstr ""
 "Мы ждём ответа от поставщика платёжных услуг относительно вашего платежа. "
 "Пожалуйста, свяжитесь с нами, если это займёт более нескольких дней."
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/pending.html:9
+#: pretix/plugins/stripe/templates/plugins/stripe/pending.html:9
 msgid ""
 "You need to confirm your payment. Please click the link below to do so or "
 "start a new payment."
@@ -20111,65 +20383,69 @@ msgstr ""
 "Вам необходимо подтвердить свой платёж. Пожалуйста, нажмите на ссылку ниже, "
 "чтобы подтвердить платёж, или начните новый платёж."
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/pending.html:15
+#: pretix/plugins/stripe/templates/plugins/stripe/pending.html:15
 msgid "Confirm payment"
 msgstr "Подтвердить платёж"
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/pending.html:21
+#: pretix/plugins/stripe/templates/plugins/stripe/pending.html:21
 msgid ""
 "Please scan the barcode below to complete your WeChat payment. Once you have "
 "completed your payment, you can refresh this page."
 msgstr ""
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/pending.html:29
+#: pretix/plugins/stripe/templates/plugins/stripe/pending.html:29
 msgid ""
 "The payment transaction could not be completed for the following reason:"
 msgstr "Платёжная операция не может быть завершена по следующей причине:"
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/pending.html:36
+#: pretix/plugins/stripe/templates/plugins/stripe/pending.html:36
 msgid "Unknown reason"
 msgstr "Причина неизвестна"
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/sca.html:5
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/sca_return.html:6
+#: pretix/plugins/stripe/templates/plugins/stripe/sca.html:5
+#: pretix/plugins/stripe/templates/plugins/stripe/sca_return.html:6
 #: pretix/presale/templates/pretixpresale/event/order_pay.html:4
 #: pretix/presale/templates/pretixpresale/event/order_pay_confirm.html:5
 msgid "Pay order"
 msgstr "Оплатить заказ"
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/sca.html:16
+#: pretix/plugins/stripe/templates/plugins/stripe/sca.html:22
 #, python-format
 msgid "Confirm payment: %(code)s"
 msgstr "Подтвердить платёж: %(code)s"
 
-#: pretix/plugins/stripe/templates/pretixplugins/stripe/sca_return.html:18
+#: pretix/plugins/stripe/templates/plugins/stripe/sca_return.html:19
 msgid "Confirming your payment…"
 msgstr "Подтверждение вашего платежа …"
 
-#: pretix/plugins/stripe/views.py:61 pretix/plugins/stripe/views.py:67
-#: pretix/plugins/stripe/views.py:94 pretix/plugins/stripe/views.py:106
+#: pretix/plugins/stripe/views.py:71 pretix/plugins/stripe/views.py:77
+#: pretix/plugins/stripe/views.py:104 pretix/plugins/stripe/views.py:116
 msgid "An error occurred during connecting with Stripe, please try again."
 msgstr ""
 "Произошла ошибка при соединении со Stripe, пожалуйста, попробуйте ещё раз."
 
-#: pretix/plugins/stripe/views.py:114 pretix/plugins/stripe/views.py:116
+#: pretix/plugins/stripe/views.py:124 pretix/plugins/stripe/views.py:126
 msgid "Stripe returned an error: {}"
 msgstr "Stripe выдал ошибку: {}"
 
-#: pretix/plugins/stripe/views.py:119
+#: pretix/plugins/stripe/views.py:129
+#, fuzzy
+#| msgid ""
+#| "Your Stripe account is now connected to pretix. You can change the "
+#| "settings in detail below."
 msgid ""
-"Your Stripe account is now connected to pretix. You can change the settings "
-"in detail below."
+"Your Stripe account is now connected to eventyay. You can change the "
+"settings in detail below."
 msgstr ""
 "Ваш аккаунт в Stripe теперь подключён к pretix. Вы можете изменить настройки "
 "ниже."
 
-#: pretix/plugins/stripe/views.py:403
+#: pretix/plugins/stripe/views.py:443
 msgid "Your Stripe account has been disconnected."
 msgstr "Ваш аккаунт в Stripe был отключён."
 
-#: pretix/plugins/stripe/views.py:445 pretix/plugins/stripe/views.py:464
-#: pretix/plugins/stripe/views.py:469
+#: pretix/plugins/stripe/views.py:479 pretix/plugins/stripe/views.py:499
+#: pretix/plugins/stripe/views.py:504
 msgid ""
 "Sorry, there was an error in the payment process. Please check the link in "
 "your emails to continue."
@@ -20177,7 +20453,7 @@ msgstr ""
 "Извините, произошла ошибка в процессе оплаты. Пожалуйста, проверьте ссылку в "
 "ваших сообщениях по электронной почте, чтобы продолжить процесс оплаты."
 
-#: pretix/plugins/stripe/views.py:501
+#: pretix/plugins/stripe/views.py:536
 msgid ""
 "We had trouble authorizing your card payment. Please try again and get in "
 "touch with us if this problem persists."
@@ -20185,7 +20461,7 @@ msgstr ""
 "У нас возникли проблемы с авторизацией платежа с вашей карты. Пожалуйста, "
 "попробуйте ещё раз и свяжитесь с нами, если проблема не устраняется."
 
-#: pretix/plugins/stripe/views.py:528 pretix/plugins/stripe/views.py:531
+#: pretix/plugins/stripe/views.py:559
 msgid "Sorry, there was an error in the payment process."
 msgstr "Извините, произошла ошибка в процессе оплаты."
 
@@ -22285,6 +22561,38 @@ msgstr ""
 #: pretix/settings.py:765
 msgid "Kosovo"
 msgstr ""
+
+#, python-format
+#~ msgid ""
+#~ "The Stripe transaction <a %(stripe_href)s>%(charge)s</a> has succeeded, "
+#~ "but the order %(order)s has already been paid by other means. Please "
+#~ "double-check and refund the money via Stripe's interface."
+#~ msgstr ""
+#~ "Транзакция Stripe <a %(stripe_href)s>%(charge)s</a> удалась, но заказ "
+#~ "%(order)s уже был оплачен другими средствами. Пожалуйста, перепроверьте и "
+#~ "верните деньги через интерфейс Stripe."
+
+#, python-format
+#~ msgid ""
+#~ "The Stripe transaction <a %(stripe_href)s>%(charge)s</a> has succeeded, "
+#~ "but the order %(order)s is expired and the product was sold out in the "
+#~ "meantime. Therefore, the payment could not be accepted. Please contact "
+#~ "the user and refund the money via Stripe's interface."
+#~ msgstr ""
+#~ "Транзакция Stripe <a %(stripe_href)s>%(charge)s</a> удалась, но заказ "
+#~ "%(order)s уже истёк, и за это время продукт уже был продан. Поэтому "
+#~ "платёж не может быть принят. Пожалуйста, свяжитесь с пользователем и "
+#~ "верните деньги через интерфейс Stripe."
+
+#, python-format
+#~ msgid ""
+#~ "Stripe reported that the transaction <a %(stripe_href)s>%(charge)s</a> "
+#~ "has been refunded. Do you want to refund mark the matching order "
+#~ "(%(order)s) as refunded?"
+#~ msgstr ""
+#~ "Stripe сообщил, что по транзакции <a %(stripe_href)s>%(charge)s</a> был "
+#~ "осуществлён возврат. Вы хотите поставить пометку о возврате у "
+#~ "соответствующего заказа (%(order)s)?"
 
 #~ msgid "Default list"
 #~ msgstr "Список по умолчанию"
