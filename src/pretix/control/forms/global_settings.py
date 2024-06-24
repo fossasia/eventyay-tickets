@@ -18,6 +18,10 @@ class GlobalSettingsForm(SettingsForm):
         self.obj = GlobalSettingsObject()
         super().__init__(*args, obj=self.obj, **kwargs)
 
+        smtp_select = [
+            ('sendgrid', _("SendGrid")),
+            ('smtp', _("SMTP"))]
+
         self.fields = OrderedDict(list(self.fields.items()) + [
             ('footer_text', I18nFormField(
                 widget=I18nTextInput,
@@ -58,6 +62,51 @@ class GlobalSettingsForm(SettingsForm):
                 required=False,
                 label=_("Leaflet tiles attribution"),
                 help_text=_("e.g. {sample}").format(sample='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors')
+            )),
+            ('email_vendor', forms.ChoiceField(
+                label=_("System Email"),
+                required=True,
+                widget=forms.RadioSelect,
+                choices=smtp_select,
+
+            )),
+            ('send_grid_api_key', forms.CharField(
+                required=False,
+                label=_("Sendgrid Token"),
+                widget=forms.TextInput(attrs={'placeholder': 'SG.xxxxxxxx'})
+            )),
+            ('smtp_host', forms.CharField(
+                label=_("Hostname"),
+                required=False,
+                widget=forms.TextInput(attrs={'placeholder': 'mail.example.org'})
+            )),
+            ('smtp_port', forms.IntegerField(
+                label=_("Port"),
+                required=False,
+                widget=forms.TextInput(attrs={'placeholder': 'e.g. 587, 465, 25, ...'})
+            )),
+            ('smtp_username', forms.CharField(
+                label=_("Username"),
+                widget=forms.TextInput(attrs={'placeholder': 'myuser@example.org'}),
+                required=False
+            )),
+            ('smtp_password', forms.CharField(
+                label=_("Password"),
+                required=False,
+                widget=forms.PasswordInput(attrs={
+                    'autocomplete': 'new-password'  # see https://bugs.chromium.org/p/chromium/issues/detail?id=370363#c7
+                }),
+            )),
+            ('smtp_use_tls', forms.BooleanField(
+                label=_("Use STARTTLS"),
+                help_text=_("Commonly enabled on port 587."),
+                required=False
+                
+            )),
+            ('smtp_use_ssl', forms.BooleanField(
+                label=_("Use SSL"),
+                help_text=_("Commonly enabled on port 465."),
+                required=False
             )),
         ])
         responses = register_global_settings.send(self)

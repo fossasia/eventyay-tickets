@@ -28,6 +28,7 @@ from i18nfield.fields import I18nCharField, I18nTextField
 from pretix.base.models.base import LoggedModel
 from pretix.base.models.fields import MultiStringField
 from pretix.base.reldate import RelativeDateWrapper
+from pretix.base.settings import GlobalSettingsObject
 from pretix.base.validators import EventSlugBanlistValidator
 from pretix.helpers.database import GroupConcat
 from pretix.helpers.daterange import daterange
@@ -552,15 +553,28 @@ class Event(EventMixin, LoggedModel):
         """
         from pretix.base.email import CustomSMTPBackend, SendGridEmail
 
-        if self.settings.email_vendor == 'sendgrid':
-            return SendGridEmail(api_key=self.settings.send_grid_api_key)
+        gs = GlobalSettingsObject()
+
         if self.settings.smtp_use_custom or force_custom:
+            if self.settings.email_vendor == 'sendgrid':
+                return SendGridEmail(api_key=self.settings.send_grid_api_key)
             return CustomSMTPBackend(host=self.settings.smtp_host,
                                     port=self.settings.smtp_port,
                                     username=self.settings.smtp_username,
                                     password=self.settings.smtp_password,
                                     use_tls=self.settings.smtp_use_tls,
                                     use_ssl=self.settings.smtp_use_ssl,
+                                    fail_silently=False, timeout=timeout)
+        elif gs.settings.email_vendor is not None:
+            if gs.settings.email_vendor == 'sendgrid':
+                return SendGridEmail(api_key=gs.settings.send_grid_api_key)
+            else:
+                CustomSMTPBackend(host=gs.settings.smtp_host,
+                                    port=gs.settings.smtp_port,
+                                    username=gs.settings.smtp_username,
+                                    password=gs.settings.smtp_password,
+                                    use_tls=gs.settings.smtp_use_tls,
+                                    use_ssl=gs.settings.smtp_use_ssl,
                                     fail_silently=False, timeout=timeout)
         else:
             return get_connection(fail_silently=False)
