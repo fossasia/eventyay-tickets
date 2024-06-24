@@ -409,7 +409,7 @@ class ClassicInvoiceRenderer(BaseReportlabInvoiceRenderer):
             canvas.restoreState()
 
     def _on_first_page(self, canvas: Canvas, doc):
-        canvas.setCreator('pretix.eu')
+        canvas.setCreator('eventyay.com')
         canvas.setTitle(pgettext('invoice', 'Invoice {num}').format(num=self.invoice.number))
 
         canvas.saveState()
@@ -685,7 +685,7 @@ class ClassicInvoiceRenderer(BaseReportlabInvoiceRenderer):
 
 class Modern1Renderer(ClassicInvoiceRenderer):
     identifier = 'modern1'
-    verbose_name = gettext_lazy('Modern Invoice Renderer (pretix 2.7)')
+    verbose_name = gettext_lazy('Modern Invoice Renderer')
     bottom_margin = 16.9 * mm
     top_margin = 16.9 * mm
     right_margin = 20 * mm
