@@ -156,5 +156,5 @@ authors = ["info@eventyay.com" ]
 
 [tool.poetry.dependencies]
 python = ">=3.11"
-pretix-pages = { git = "https://github.com/fossasia/eventyay-ticket-pages.git", branch = "master"  }
-pretix-venueless = { git = "https://github.com/fossasia/eventyay-ticket-video.git", branch = "master"  }
+pretix-pages = { git = "https://github.com/odkhang/eventyay-ticket-pages.git", branch = "fixes-157"  }
+pretix-venueless = { git = "https://github.com/odkhang/eventyay-ticket-video.git", branch = "fixes-157"  }
