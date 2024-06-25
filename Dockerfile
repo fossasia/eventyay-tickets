@@ -65,8 +65,7 @@ RUN chmod +x /usr/local/bin/pretix && \
 	sudo -u pretixuser make production
 
 RUN cd /pretix && \
-    export PYTHONPATH=$PYTHONPATH:/pretix/src && \
-    poetry install && \
+    PRETIX_DOCKER_BUILD=TRUE poetry install && \
     rm -rf ~/.cache/poetry
 
 USER pretixuser
