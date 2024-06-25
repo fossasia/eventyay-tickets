@@ -29,6 +29,11 @@ from formtools.wizard.views import SessionWizardView
 from rest_framework.authtoken.models import Token
 
 from pretalx.common.forms import I18nEventFormSet, I18nFormSet
+from pretalx.common.models import ActivityLog
+from pretalx.common.tasks import regenerate_css
+from pretalx.common.templatetags.rich_text import render_markdown
+from pretalx.common.text.phrases import phrases
+from pretalx.common.views import OrderModelView, is_form_bound
 from pretalx.common.mixins.views import (
     ActionFromUrl,
     EventPermissionRequired,
@@ -78,7 +83,7 @@ class EventDetail(EventSettingsPermission, ActionFromUrl, UpdateView):
     permission_required = "orga.change_settings"
     template_name = "orga/settings/form.html"
 
-    def get_object(self):
+    def get_object(self, queryset=None):
         return self.object
 
     @cached_property
@@ -186,7 +191,7 @@ class EventLive(EventSettingsPermission, TemplateView):
                 if exceptions:
                     messages.error(
                         request,
-                        mark_safe("\n".join(rich_text(e) for e in exceptions)),
+                        mark_safe("\n".join(render_markdown(e) for e in exceptions)),
                     )
                 else:
                     event.is_public = True
@@ -352,7 +357,14 @@ class ScoreCategoryDelete(PermissionRequired, View):
             ReviewScoreCategory, event=self.request.event, pk=self.kwargs.get("pk")
         )
 
-    def dispatch(self, request, *args, **kwargs):
+    def action_object_name(self):
+        return _("Score category") + f": {self.get_object().name}"
+
+    @property
+    def action_back_url(self):
+        return self.request.event.orga_urls.review_settings
+
+    def post(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
         category = self.get_object()
         category.delete()
@@ -375,8 +387,14 @@ class PhaseDelete(PermissionRequired, View):
             ReviewPhase, event=self.request.event, pk=self.kwargs.get("pk")
         )
 
-    def dispatch(self, request, *args, **kwargs):
-        super().dispatch(request, *args, **kwargs)
+    def action_object_name(self):
+        return _("Review phase") + f": {self.get_object().name}"
+
+    @property
+    def action_back_url(self):
+        return self.request.event.orga_urls.review_settings
+
+    def post(self, request, *args, **kwargs):
         phase = self.get_object()
         phase.delete()
         return redirect(self.request.event.orga_urls.review_settings)
@@ -424,7 +442,6 @@ class EventMailSettings(EventSettingsPermission, ActionFromUrl, FormView):
                     _("An error occurred while contacting the SMTP server: %s")
                     % str(e),
                 )
-                return redirect(self.request.event.orga_urls.mail_settings)
             else:  # pragma: no cover
                 if form.cleaned_data.get("smtp_use_custom"):
                     messages.success(
@@ -568,7 +585,7 @@ class EventWizard(PermissionRequired, SensibleBackWizardMixin, SessionWizardView
     condition_dict = {"copy": condition_copy}
 
     def get_template_names(self):
-        return f"orga/event/wizard/{self.steps.current}.html"
+        return [f"orga/event/wizard/{self.steps.current}.html"]
 
     @context
     def has_organiser(self):
@@ -610,8 +627,8 @@ class EventWizard(PermissionRequired, SensibleBackWizardMixin, SessionWizardView
                     ).format(number=year),
                 )
         elif self.steps.current == "display":
-            fdata = self.get_cleaned_data_for_step("timeline")
-            if fdata and fdata.get("date_to") < now().date():
+            date_to = self.get_cleaned_data_for_step("timeline").get("date_to")
+            if date_to and date_to < now().date():
                 messages.warning(
                     self.request,
                     _("Did you really mean to make your event take place in the past?"),
@@ -710,8 +727,15 @@ class EventDelete(PermissionRequired, DeleteView):
     def get_object(self):
         return self.request.event
 
-    def form_valid(self, request, *args, **kwargs):
-        self.get_object().shred()
+    def action_object_name(self):
+        return ngettext_lazy("Event", "Events", 1) + f": {self.get_object().name}"
+
+    @property
+    def action_back_url(self):
+        return self.get_object().orga_urls.settings
+
+    def post(self, request, *args, **kwargs):
+        self.get_object().shred(person=self.request.user)
         return redirect("/orga/")
 
 

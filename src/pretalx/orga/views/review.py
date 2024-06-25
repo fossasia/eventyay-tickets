@@ -149,7 +149,7 @@ class ReviewDashboard(EventPermissionRequired, BaseSubmissionList):
 
         return self.sort_queryset(queryset)
 
-    def sort_queryset(self, queryset):
+    def sort_queryset(self, qs):
         order_prevalence = {
             "default": ("is_assigned", "state", "current_score", "code"),
             "score": ("current_score", "state", "code"),
@@ -174,7 +174,7 @@ class ReviewDashboard(EventPermissionRequired, BaseSubmissionList):
             return tuple(result)
 
         return sorted(
-            queryset,
+            qs,
             key=get_order_tuple,
             reverse=reverse,
         )
@@ -597,10 +597,10 @@ class ReviewSubmission(ReviewViewMixin, PermissionRequired, CreateOrUpdateView):
     def form_valid(self, form):
         if not self.qform.is_valid():
             messages.error(self.request, _("There have been errors with your input."))
-            return redirect(self.get_success_url())
+            return super().form_invalid(form)
         if self.tags_form and not self.tags_form.is_valid():
             messages.error(self.request, _("There have been errors with your input."))
-            return redirect(self.get_success_url())
+            return super().form_invalid(form)
         form.save()
         self.qform.review = form.instance
         self.qform.save()
@@ -659,6 +659,13 @@ class ReviewSubmissionDelete(EventPermissionRequired, ReviewViewMixin, TemplateV
     def get_permission_object(self):
         return self.object
 
+    def action_object_name(self):
+        return _("Your review")
+
+    @property
+    def action_back_url(self):
+        return self.submission.orga_urls.reviews
+
     def post(self, request, *args, **kwargs):
         self.object.delete()
         messages.success(request, _("The review has been deleted."))
@@ -683,6 +690,16 @@ class RegenerateDecisionMails(EventPermissionRequired, TemplateView):
     @cached_property
     def count(self):
         return sum(len(proposal.speakers.all()) for proposal in self.get_queryset())
+
+    def action_text(self):
+        return _(
+            "Do you really want to regenerate %(count)s acceptance and rejection emails? "
+            "They will be placed in the outbox and not sent out directly."
+        ) % {"count": self.count}
+
+    @property
+    def action_back_url(self):
+        return self.request.event.orga_urls.reviews
 
     def post(self, request, **kwargs):
         for submission in self.get_queryset():

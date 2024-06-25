@@ -40,7 +40,7 @@ class LoginView(GenericLoginView):
         return reverse("orga:auth.reset")
 
 
-def logout_view(request: HttpRequest) -> HttpResponseRedirect:
+def logout_view(request):
     logout(request)
     return redirect(
         GenericLoginView.get_next_url_or_fallback(request, reverse("orga:login"))
@@ -63,21 +63,28 @@ class RecoverView(FormView):
         self.user = None
         super().__init__(**kwargs)
 
+    def get_user(self):
+        return User.objects.get(
+            pw_reset_token=self.kwargs.get("token"),
+            pw_reset_time__gte=now() - dt.timedelta(days=1),
+        )
+
     def dispatch(self, request, *args, **kwargs):
         try:
-            self.user = User.objects.get(
-                pw_reset_token=kwargs.get("token"),
-                pw_reset_time__gte=now() - dt.timedelta(days=1),
-            )
+            self.get_user()
         except User.DoesNotExist:
             messages.error(self.request, phrases.cfp.auth_reset_fail)
             return redirect(reverse("orga:auth.reset"))
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
-        self.user.set_password(form.cleaned_data["password"])
-        self.user.pw_reset_token = None
-        self.user.pw_reset_time = None
-        self.user.save()
+        user = self.get_user()
+        user.set_password(form.cleaned_data["password"])
+        user.pw_reset_token = None
+        user.pw_reset_time = None
+        user.save()
         messages.success(self.request, phrases.cfp.auth_reset_success)
-        return redirect(reverse("orga:login"))
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse("orga:login")
