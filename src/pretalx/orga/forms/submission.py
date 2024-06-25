@@ -251,7 +251,7 @@ class AnonymiseForm(SubmissionForm):
             except AttributeError:
                 to_be_removed.append(key)
         for key in to_be_removed:
-            self.fields.pop(key)
+            self.fields.pop(key, None)
 
     def save(self):
         anonymised_data = {"_anonymised": True}
