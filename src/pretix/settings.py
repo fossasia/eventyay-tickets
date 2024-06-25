@@ -448,6 +448,7 @@ ALL_LANGUAGES = [
     ('ru', _('Russian')),
     ('es', _('Spanish')),
     ('tr', _('Turkish')),
+    ('uk-UA', _('Ukrainian')),
 ]
 LANGUAGES_OFFICIAL = {
     'en', 'de', 'de-informal'
