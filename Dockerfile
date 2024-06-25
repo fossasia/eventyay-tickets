@@ -64,9 +64,11 @@ RUN chmod +x /usr/local/bin/pretix && \
     chown -R pretixuser:pretixuser /pretix /data data && \
 	sudo -u pretixuser make production
 
+UNSET ENV DJANGO_SETTINGS_MODULE
 RUN cd /pretix && \
-    DJANGO_SETTINGS_MODULE=pretix.settings poetry install && \
-    rm -rf ~/.cache/poetry
+    poetry install && \
+    rm -rf ~/.cache/poetry \
+ENV DJANGO_SETTINGS_MODULE=production_settings
 
 USER pretixuser
 VOLUME ["/etc/pretix", "/data"]
