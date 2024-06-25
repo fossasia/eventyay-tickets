@@ -129,6 +129,7 @@ requires = [
   'setuptools-rust',
   'wheel',
   'importlib_metadata',
+  'poetry',
 ]
 
 [project.urls]
