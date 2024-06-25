@@ -65,7 +65,7 @@ RUN chmod +x /usr/local/bin/pretix && \
 	sudo -u pretixuser make production
 
 RUN cd /pretix && \
-    PRETIX_DOCKER_BUILD=TRUE poetry install && \
+    DJANGO_SETTINGS_MODULE=pretix.settings poetry install && \
     rm -rf ~/.cache/poetry
 
 USER pretixuser
