@@ -1042,7 +1042,9 @@ class Question(LoggedModel):
     )
     description =  I18nTextField(
         verbose_name=_("Description"),
-        default=""
+        default="",
+        null=True,
+        blank=True,
     )
     identifier = models.CharField(
         max_length=190,

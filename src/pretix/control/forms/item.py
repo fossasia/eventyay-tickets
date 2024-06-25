@@ -1,6 +1,4 @@
 from decimal import Decimal
-from secrets import choice
-from tkinter.messagebox import QUESTION
 from urllib.parse import urlencode
 
 from django import forms
