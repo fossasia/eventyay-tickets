@@ -65,7 +65,7 @@ RUN chmod +x /usr/local/bin/pretix && \
 	sudo -u pretixuser make production
 
 RUN cd /pretix && \
-    poetry config virtualenvs.create false && \
+    export PYTHONPATH=$PYTHONPATH:/pretix/src && \
     poetry install && \
     rm -rf ~/.cache/poetry
 
