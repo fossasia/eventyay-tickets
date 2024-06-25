@@ -235,8 +235,8 @@ class OrganizerSettingsForm(SettingsForm):
         'theme_color_danger',
         'theme_color_background',
         'theme_round_borders',
-        'primary_font',
-        'privacy_url'
+        'primary_font'
+
     ]
 
     organizer_logo_image = ExtFileField(
