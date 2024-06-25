@@ -54,7 +54,6 @@ RUN pip3 install -U \
     PRETIX_DOCKER_BUILD=TRUE pip3 install \
         -e ".[memcached]" \
         gunicorn django-extensions ipython && \
-    poetry install && \
     rm -rf ~/.cache/pip
 
 RUN chmod +x /usr/local/bin/pretix && \
@@ -64,6 +63,10 @@ RUN chmod +x /usr/local/bin/pretix && \
 	mkdir -p data && \
     chown -R pretixuser:pretixuser /pretix /data data && \
 	sudo -u pretixuser make production
+
+RUN cd /pretix && \
+    poetry install && \
+    rm -rf ~/.cache/poetry
 
 USER pretixuser
 VOLUME ["/etc/pretix", "/data"]
