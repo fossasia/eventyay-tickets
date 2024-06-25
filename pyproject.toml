@@ -153,9 +153,6 @@ name = "eventyay"
 version = "3.18.0.dev0"
 description = "the open source event solution"
 authors = ["info@eventyay.com" ]
-packages = [
-    { include = "pretix*", from = "src" },
-]
 
 [tool.poetry.dependencies]
 python = ">=3.11"
