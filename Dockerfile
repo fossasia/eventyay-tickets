@@ -54,8 +54,10 @@ RUN pip3 install -U \
     PRETIX_DOCKER_BUILD=TRUE pip3 install \
         -e ".[memcached]" \
         gunicorn django-extensions ipython && \
-    poetry install && \
     rm -rf ~/.cache/pip
+
+RUN cd /pretix && \
+    poetry install
 
 RUN chmod +x /usr/local/bin/pretix && \
     rm /etc/nginx/sites-enabled/default && \
