@@ -150,6 +150,9 @@
     {% if request.event.settings.contact_mail %}
         <a href="mailto:{{ request.event.settings.contact_mail }}">{% trans "Contact event organizer" %}</a> &middot;
     {% endif %}
+    {% if request.event.settings.privacy_url %}
+        <li><a href="{% safelink request.event.settings.privacy_url %}" target="_blank" rel="noopener">{% trans "Privacy policy" %}</a></li>
+    {% endif %}
     {% if request.event.settings.imprint_url %}
         <a href="{% safelink request.event.settings.imprint_url %}" target="_blank" rel="noopener">{% trans "Imprint" %}</a>
         &middot;
