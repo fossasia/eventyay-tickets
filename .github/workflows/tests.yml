@@ -48,7 +48,7 @@ jobs:
             python-version: '3.11'
     steps:
       - uses: actions/checkout@v4
-      - uses: getong/mariadb-action@v1.1
+      - uses: getong/mariadb-action@v1.11
         with:
           mariadb version: '10.7'
           mysql database: 'pretalx'
