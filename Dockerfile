@@ -67,7 +67,7 @@ RUN chmod +x /usr/local/bin/pretix && \
 ENV DJANGO_SETTINGS_MODULE=
 RUN cd /pretix && \
     poetry install && \
-    rm -rf ~/.cache/poetry \
+    rm -rf ~/.cache/poetry
 ENV DJANGO_SETTINGS_MODULE=production_settings
 
 USER pretixuser
