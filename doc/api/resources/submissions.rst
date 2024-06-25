@@ -130,6 +130,7 @@ Endpoints
    :query submission_type: Filter submissions by submission type
    :query state: Filter submission by state. Will filter by multiple states if you provide multiple state arguments.
    :query questions: Pass a comma separated list of question IDs to load, or the string "all" to return all answers.
+   :query is_featured: Filter by the ``is_featured`` field (``true`` or ``false``).
 
 .. http:get:: /api/events/(event)/submissions/{code}
 
