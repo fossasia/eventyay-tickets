@@ -107,6 +107,7 @@ class OutboxSend(EventPermissionRequired, ActionConfirmMixin, TemplateView):
     def action_text(self):
         return self.question()
 
+    @property
     def action_back_url(self):
         return self.request.event.orga_urls.outbox
 
@@ -140,9 +141,9 @@ class OutboxSend(EventPermissionRequired, ActionConfirmMixin, TemplateView):
         return qs
 
     def post(self, request, *args, **kwargs):
-        qs = self.queryset
-        count = qs.count()
-        for mail in qs:
+        mails = self.queryset
+        count = mails.count()
+        for mail in mails:
             mail.send(requestor=self.request.user)
         messages.success(
             request, _("{count} mails have been sent.").format(count=count)
@@ -171,6 +172,7 @@ class MailDelete(PermissionRequired, ActionConfirmMixin, TemplateView):
     def action_text(self):
         return self.question()
 
+    @property
     def action_back_url(self):
         return self.request.event.orga_urls.outbox
 
@@ -230,6 +232,7 @@ class OutboxPurge(PermissionRequired, ActionConfirmMixin, TemplateView):
     def action_text(self):
         return self.question()
 
+    @property
     def action_back_url(self):
         return self.request.event.orga_urls.outbox
 
@@ -255,7 +258,7 @@ class MailDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     write_permission_required = "orga.edit_mails"
     permission_required = "orga.view_mails"
 
-    def get_object(self) -> QueuedMail:
+    def get_object(self, queryset=None) -> QueuedMail:
         return self.request.event.queued_mails.filter(pk=self.kwargs.get("pk")).first()
 
     def get_success_url(self):
@@ -517,7 +520,7 @@ class TemplateDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     def object(self):
         return self.get_object()
 
-    @property
+    @cached_property
     def permission_object(self):
         return self.object or self.request.event
 

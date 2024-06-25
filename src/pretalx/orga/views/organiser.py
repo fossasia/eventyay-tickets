@@ -21,7 +21,7 @@ class TeamMixin:
                 self.request.organiser.teams.all(), pk=self.kwargs["pk"]
             )
 
-    def get_object(self):
+    def get_object(self, queryset=None):
         return self._get_team()
 
     @context
@@ -45,10 +45,10 @@ class TeamDetail(PermissionRequired, TeamMixin, CreateOrUpdateView):
         kwargs["organiser"] = self.request.organiser
         return kwargs
 
-    def get_object(self):
+    def get_object(self, queryset=None):
         if "pk" not in self.kwargs:
             return None
-        return super().get_object()
+        return super().get_object(queryset=queryset)
 
     def get_permission_object(self):
         if "pk" not in self.kwargs:
@@ -89,11 +89,14 @@ class TeamDetail(PermissionRequired, TeamMixin, CreateOrUpdateView):
         form.save()
         if created:
             messages.success(self.request, _("The team has been created."))
-            return redirect(self.request.organiser.orga_urls.base)
-        if form.has_changed():
+        elif form.has_changed():
             messages.success(self.request, _("The settings have been saved."))
-        success_url = self.request.GET.get("next", self.request.path)
-        return redirect(success_url)
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        if "pk" not in self.kwargs:
+            return self.request.organiser.orga_urls.base
+        return self.request.GET.get("next", self.request.path)
 
 
 class TeamDelete(PermissionRequired, TeamMixin, ActionConfirmMixin, DetailView):
@@ -102,7 +105,7 @@ class TeamDelete(PermissionRequired, TeamMixin, ActionConfirmMixin, DetailView):
     def get_permission_object(self):
         return self._get_team()
 
-    def get_object(self):
+    def get_object(self, queryset=None):
         team = super().get_object()
         if "user_pk" in self.kwargs:
             return team.members.filter(pk=self.kwargs.get("user_pk")).first()
@@ -113,6 +116,7 @@ class TeamDelete(PermissionRequired, TeamMixin, ActionConfirmMixin, DetailView):
             return _("Team member") + f": {self.get_object().name}"
         return _("Team") + f": {self.get_object().name}"
 
+    @property
     def action_back_url(self):
         return self._get_team().orga_urls.base
 
@@ -160,6 +164,7 @@ class TeamUninvite(InviteMixin, PermissionRequired, ActionConfirmMixin, DetailVi
     def action_object_name(self):
         return self.get_object().email
 
+    @property
     def action_back_url(self):
         return self.get_object().team.orga_urls.base
 
@@ -181,6 +186,7 @@ class TeamResend(InviteMixin, PermissionRequired, ActionConfirmMixin, DetailView
     def action_object_name(self):
         return self.get_object().email
 
+    @property
     def action_back_url(self):
         return self.get_object().team.orga_urls.base
 
@@ -203,6 +209,7 @@ class TeamResetPassword(PermissionRequired, ActionConfirmMixin, TemplateView):
     def action_object_name(self):
         return f"{self.user.get_display_name()} ({self.user.email})"
 
+    @property
     def action_back_url(self):
         return self.team.orga_urls.base
 
@@ -243,7 +250,7 @@ class OrganiserDetail(PermissionRequired, CreateOrUpdateView):
             return []
         return self.request.organiser.teams.all().order_by("-all_events", "-id")
 
-    def get_object(self):
+    def get_object(self, queryset=None):
         return getattr(self.request, "organiser", None)
 
     @cached_property
@@ -267,12 +274,13 @@ class OrganiserDelete(PermissionRequired, ActionConfirmMixin, DetailView):
         + phrases.base.delete_warning
     )
 
-    def get_object(self):
+    def get_object(self, queryset=None):
         return getattr(self.request, "organiser", None)
 
     def action_object_name(self):
         return _("Organiser") + f": {self.get_object().name}"
 
+    @property
     def action_back_url(self):
         return self.get_object().orga_urls.base
 

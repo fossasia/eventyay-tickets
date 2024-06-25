@@ -76,7 +76,7 @@ class CfPTextDetail(PermissionRequired, ActionFromUrl, UpdateView):
         if len(deadlines):
             return dict(deadlines)
 
-    def get_object(self):
+    def get_object(self, queryset=None):
         return self.request.event.cfp
 
     def get_success_url(self) -> str:
@@ -120,17 +120,17 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     def get_template_names(self):
         action = self.request.path.lstrip("/").rpartition("/")[2]
         if action in ("edit", "new"):
-            return "orga/cfp/question_form.html"
-        return "orga/cfp/question_detail.html"
+            return ["orga/cfp/question_form.html"]
+        return ["orga/cfp/question_detail.html"]
 
-    @property
+    @cached_property
     def permission_object(self):
         return self.object or self.request.event
 
     def get_permission_object(self):
         return self.permission_object
 
-    def get_object(self) -> Question:
+    def get_object(self, queryset=None) -> Question:
         return Question.all_objects.filter(
             event=self.request.event, pk=self.kwargs.get("pk")
         ).first()
@@ -302,7 +302,7 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
 class CfPQuestionDelete(PermissionRequired, ActionConfirmMixin, DetailView):
     permission_required = "orga.remove_question"
 
-    def get_object(self) -> Question:
+    def get_object(self, queryset=None) -> Question:
         return get_object_or_404(
             Question.all_objects, event=self.request.event, pk=self.kwargs.get("pk")
         )
@@ -310,6 +310,7 @@ class CfPQuestionDelete(PermissionRequired, ActionConfirmMixin, DetailView):
     def action_object_name(self):
         return _("Question") + f": {self.get_object().question}"
 
+    @property
     def action_back_url(self):
         return self.request.event.cfp.urls.questions
 
@@ -440,7 +441,7 @@ class SubmissionTypeDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView
     def get_success_url(self) -> str:
         return self.request.event.cfp.urls.types
 
-    def get_object(self):
+    def get_object(self, queryset=None):
         return self.request.event.submission_types.filter(
             pk=self.kwargs.get("pk")
         ).first()
@@ -488,7 +489,7 @@ class SubmissionTypeDefault(PermissionRequired, View):
 class SubmissionTypeDelete(PermissionRequired, ActionConfirmMixin, DetailView):
     permission_required = "orga.remove_submission_type"
 
-    def get_object(self):
+    def get_object(self, queryset=None):
         return get_object_or_404(
             self.request.event.submission_types, pk=self.kwargs.get("pk")
         )
@@ -496,6 +497,7 @@ class SubmissionTypeDelete(PermissionRequired, ActionConfirmMixin, DetailView):
     def action_object_name(self):
         return _("Session type") + f": {self.get_object().name}"
 
+    @property
     def action_back_url(self):
         return self.request.event.cfp.urls.types
 
@@ -554,7 +556,7 @@ class TrackDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     def get_success_url(self) -> str:
         return self.request.event.cfp.urls.tracks
 
-    def get_object(self):
+    def get_object(self, queryset=None):
         return self.request.event.tracks.filter(pk=self.kwargs.get("pk")).first()
 
     def get_permission_object(self):
@@ -578,12 +580,13 @@ class TrackDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
 class TrackDelete(PermissionRequired, ActionConfirmMixin, DetailView):
     permission_required = "orga.remove_track"
 
-    def get_object(self):
+    def get_object(self, queryset=None):
         return get_object_or_404(self.request.event.tracks, pk=self.kwargs.get("pk"))
 
     def action_object_name(self):
         return _("Track") + f": {self.get_object().name}"
 
+    @property
     def action_back_url(self):
         return self.request.event.cfp.urls.tracks
 
@@ -691,7 +694,7 @@ class AccessCodeSend(PermissionRequired, UpdateView):
 class AccessCodeDelete(PermissionRequired, ActionConfirmMixin, DetailView):
     permission_required = "orga.remove_access_code"
 
-    def get_object(self):
+    def get_object(self, queryset=None):
         return get_object_or_404(
             self.request.event.submitter_access_codes,
             code__iexact=self.kwargs.get("code"),
@@ -700,6 +703,7 @@ class AccessCodeDelete(PermissionRequired, ActionConfirmMixin, DetailView):
     def action_object_name(self):
         return _("Access code") + f": {self.get_object().code}"
 
+    @property
     def action_back_url(self):
         return self.request.event.cfp.urls.access_codes
 

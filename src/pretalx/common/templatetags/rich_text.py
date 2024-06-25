@@ -121,7 +121,7 @@ md = markdown.Markdown(
 )
 
 
-def render_markdown(text: str, cleaner=CLEANER):
+def render_markdown(text: str, cleaner=CLEANER) -> str:
     """Process markdown and cleans HTML in a text input."""
     if not text:
         return ""

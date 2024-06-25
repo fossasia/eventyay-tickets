@@ -66,7 +66,7 @@ class UpdateCheckView(PermissionRequired, FormView):
         return super().form_invalid(form)
 
     def get_context_data(self, **kwargs):
-        result = super().get_context_data()
+        result = super().get_context_data(**kwargs)
         result["gs"] = GlobalSettings()
         result["gs"].settings.set("update_check_ack", True)
         return result
@@ -163,6 +163,7 @@ class AdminUserDelete(ActionConfirmMixin, AdminUserDetail):
     def action_next_url(self):
         return self.get_success_url()
 
+    @property
     def action_back_url(self):
         return f"/orga/admin/users/{self.get_object().code}/"
 
