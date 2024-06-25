@@ -21,10 +21,11 @@ class NestedItemAssignmentSerializer(I18nAwareModelSerializer):
 class BadgeLayoutSerializer(I18nAwareModelSerializer):
     layout = CompatibleJSONField()
     item_assignments = NestedItemAssignmentSerializer(many=True)
+    size = CompatibleJSONField()
 
     class Meta:
         model = BadgeLayout
-        fields = ('id', 'name', 'default', 'layout', 'background', 'item_assignments')
+        fields = ('id', 'name', 'default', 'layout', 'size', 'background', 'item_assignments')
 
 
 class BadgeLayoutViewSet(viewsets.ReadOnlyModelViewSet):
