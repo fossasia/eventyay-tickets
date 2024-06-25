@@ -18,11 +18,11 @@ jobs:
     name: Tests
     strategy:
       matrix:
-        python-version: [3.8]
+        python-version: [3.11]
         database: [sqlite, postgres]
         exclude:
           - database: sqlite
-            python-version: 3.8
+            python-version: 3.11
     steps:
       - uses: actions/checkout@v2
       - uses: harmon758/postgresql-action@v1
