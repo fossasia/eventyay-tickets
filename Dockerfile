@@ -48,11 +48,13 @@ COPY src /pretix/src
 RUN pip3 install -U \
         pip \
         setuptools \
-        wheel && \
+        wheel  \
+        poetry && \
     cd /pretix && \
     PRETIX_DOCKER_BUILD=TRUE pip3 install \
         -e ".[memcached]" \
         gunicorn django-extensions ipython && \
+    poetry install && \
     rm -rf ~/.cache/pip
 
 RUN chmod +x /usr/local/bin/pretix && \
