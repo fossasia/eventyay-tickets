@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-30 16:15+0000\n"
+"POT-Creation-Date: 2024-06-22 12:21+0000\n"
 "PO-Revision-Date: 2020-08-09 00:00+0000\n"
 "Last-Translator: Maarten van den Berg <maartenberg1@gmail.com>\n"
 "Language-Team: Dutch (informal) <https://translate.pretix.eu/projects/pretix/"
@@ -43,20 +43,23 @@ msgstr "Betaalde bestellingen"
 msgid "Total revenue"
 msgstr "Totaalomzet"
 
-#: pretix/plugins/stripe/static/pretixplugins/stripe/pretix-stripe.js:12
+#: pretix/plugins/stripe/static/plugins/stripe/eventyay-stripe.js:15
 msgid "Contacting Stripe …"
 msgstr "Verbinding maken met Stripe …"
 
-#: pretix/plugins/stripe/static/pretixplugins/stripe/pretix-stripe.js:60
+#: pretix/plugins/stripe/static/plugins/stripe/eventyay-stripe.js:72
 msgid "Total"
 msgstr "Totaal"
 
-#: pretix/plugins/stripe/static/pretixplugins/stripe/pretix-stripe.js:152
-#: pretix/plugins/stripe/static/pretixplugins/stripe/pretix-stripe.js:183
+#: pretix/plugins/stripe/static/plugins/stripe/eventyay-stripe.js:242
+#: pretix/plugins/stripe/static/plugins/stripe/eventyay-stripe.js:265
+#: pretix/plugins/stripe/static/plugins/stripe/eventyay-stripe.js:282
+#: pretix/plugins/stripe/static/plugins/stripe/eventyay-stripe.js:315
+#: pretix/plugins/stripe/static/plugins/stripe/eventyay-stripe.js:339
 msgid "Confirming your payment …"
 msgstr "Betaling bevestigen …"
 
-#: pretix/plugins/stripe/static/pretixplugins/stripe/pretix-stripe.js:159
+#: pretix/plugins/stripe/static/plugins/stripe/eventyay-stripe.js:289
 msgid "Contacting your bank …"
 msgstr "Verbinding maken met je bank …"
 
@@ -821,5 +824,5 @@ msgstr "December"
 #~ "<a href=\"https://pretix.eu\" target=\"_blank\" rel=\"noopener\">event "
 #~ "ticketing powered by pretix</a>"
 #~ msgstr ""
-#~ "<a href=\"https://pretix.eu\" target=\"_blank\" rel=\"noopener"
-#~ "\">ticketsysteem mogelijk gemaakt door pretix</a>"
+#~ "<a href=\"https://pretix.eu\" target=\"_blank\" "
+#~ "rel=\"noopener\">ticketsysteem mogelijk gemaakt door pretix</a>"
