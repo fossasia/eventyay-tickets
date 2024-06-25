@@ -121,7 +121,7 @@ class OrderPositionJoin(EventViewMixin, OrderPositionDetailMixin, View):
 
         forbidden = (
                 (self.order.status != Order.STATUS_PAID and not (self.order.status == Order.STATUS_PENDING and
-                                                                 (self.order.valid_if_pending or request.event.settings.venueless_allow_pending)))
+                                                                 request.event.settings.venueless_allow_pending))
                 or self.position.canceled
                 or not self.position.item.admission
         )
