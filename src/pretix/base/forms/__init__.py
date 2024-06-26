@@ -2,10 +2,14 @@ import logging
 
 import i18nfield.forms
 from django import forms
+from django.core.validators import URLValidator
 from django.forms.models import ModelFormMetaclass
 from django.utils.crypto import get_random_string
+from django.utils.safestring import mark_safe
+from django.utils.translation import gettext_lazy as _
 from formtools.wizard.views import SessionWizardView
 from hierarkey.forms import HierarkeyForm
+from i18nfield.strings import LazyI18nString
 
 from pretix.base.reldate import RelativeDateField, RelativeDateTimeField
 
@@ -46,6 +50,43 @@ class I18nInlineFormSet(i18nfield.forms.I18nInlineFormSet):
         if event:
             kwargs['locales'] = event.settings.get('locales')
         super().__init__(*args, **kwargs)
+
+
+class MarkdownTextarea(forms.Textarea):
+
+    def _render(self, template_name, context, renderer=None):
+        return mark_safe(
+            '<div class="i18n-form-group">%s<div class="i18n-field-markdown-note">%s</div></div>' % (
+                super()._render(template_name, context, renderer=None),
+                _("You can use {markup_name} in this field.").format(
+                    markup_name='<a href="https://docs.pretix.eu/en/latest/user/markdown.html" target="_blank">Markdown</a>'
+                )
+            )
+        )
+    
+
+class I18nMarkdownTextarea(i18nfield.forms.I18nTextarea):
+    def format_output(self, rendered_widgets) -> str:
+        rendered_widgets = rendered_widgets + [
+            '<div class="i18n-field-markdown-note">%s</div>' % (
+                _("You can use {markup_name} in this field.").format(
+                    markup_name='<a href="https://docs.pretix.eu/en/latest/user/markdown.html" target="_blank">Markdown</a>'
+                )
+            )
+        ]
+        return super().format_output(rendered_widgets)
+    
+
+class I18nMarkdownTextInput(i18nfield.forms.I18nTextInput):
+    def format_output(self, rendered_widgets) -> str:
+        rendered_widgets = rendered_widgets + [
+            '<div class="i18n-field-markdown-note">%s</div>' % (
+                _("You can use {markup_name} in this field.").format(
+                    markup_name='<a href="https://docs.pretix.eu/en/latest/user/markdown.html" target="_blank">Markdown</a>'
+                )
+            )
+        ]
+        return super().format_output(rendered_widgets)
 
 
 SECRET_REDACTED = '*****'
@@ -151,3 +192,18 @@ class SecretKeySettingsField(forms.CharField):
         if value == SECRET_REDACTED:
             return
         return super().run_validators(value)
+    
+
+class I18nURLFormField(i18nfield.forms.I18nFormField):
+    def clean(self, value) -> LazyI18nString:
+        value = super().clean(value)
+        if not value:
+            return value
+        if isinstance(value.data, dict):
+            for v in value.data.values():
+                if v:
+                    URLValidator()(v)
+        else:
+            URLValidator()(value.data)
+        return value
+
