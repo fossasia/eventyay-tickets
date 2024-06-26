@@ -985,8 +985,8 @@ class MailSettingsForm(SettingsForm):
         widget=I18nTextarea,
     )
     smtp_use_custom = forms.BooleanField(
-        label=_("Use custom SMTP server"),
-        help_text=_("All mail related to your event will be sent over the smtp server specified by you."),
+        label=_("Use Custom Email"),
+        help_text=_("All mail related to your event will be sent over your specified email gateway."),
         required=False
     )
     send_grid_api_key = forms.CharField(

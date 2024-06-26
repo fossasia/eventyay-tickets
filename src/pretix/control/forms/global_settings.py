@@ -8,14 +8,39 @@ from pretix.base.forms import SecretKeySettingsField, SettingsForm
 from pretix.base.settings import GlobalSettingsObject
 from pretix.base.signals import register_global_settings
 
+from django.conf import settings
+
 
 class GlobalSettingsForm(SettingsForm):
     auto_fields = [
-        'region'
+        'region',
+        'mail_from'
     ]
+
+
+    def _setting_default(self):
+        """
+            Load default email setting form .cfg file if not set
+        """
+        global_settings = self.obj.settings
+        if global_settings.get('smtp_port') is None or global_settings.get('smtp_port') == "":
+            self.obj.settings.set('smtp_port', settings.EMAIL_PORT)
+        if global_settings.get('smtp_host') is None or global_settings.get('smtp_host') == "":
+            self.obj.settings.set('smtp_host', settings.EMAIL_HOST)
+        if global_settings.get('smtp_username') is None or global_settings.get('smtp_username') == "":
+            self.obj.settings.set('smtp_username', settings.EMAIL_HOST_USER)
+        if global_settings.get('smtp_password') is None or global_settings.get('smtp_password') == "":
+            self.obj.settings.set('smtp_password', settings.EMAIL_HOST_PASSWORD)
+        if global_settings.get('smtp_use_tls') is None or global_settings.get('smtp_use_tls') == "":
+            self.obj.settings.set('smtp_use_tls', settings.EMAIL_USE_TLS)
+        if global_settings.get('smtp_use_ssl') is None or global_settings.get('smtp_use_ssl') == "":
+            self.obj.settings.set('smtp_use_ssl', settings.EMAIL_USE_SSL)
+        if global_settings.get('email_vendor') is None or global_settings.get('email_vendor') == "":
+            self.obj.settings.set('email_vendor', 'smtp')
 
     def __init__(self, *args, **kwargs):
         self.obj = GlobalSettingsObject()
+        self._setting_default()        
         super().__init__(*args, obj=self.obj, **kwargs)
 
         smtp_select = [
