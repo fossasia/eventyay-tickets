@@ -636,6 +636,13 @@ class BaseQuestionsForm(forms.Form):
                         initial=initial,
                         widget=WrappedPhoneNumberPrefixWidget()
                     )
+            elif q.type == Question.TYPE_DESCRIPTION:
+                field = forms.CharField(
+                    label=label,
+                    widget=forms.Textarea(),
+                    initial=mark_safe(q.description)
+                )
+                field.widget.attrs['type'] = 'description'
             field.question = q
             if answers:
                 # Cache the answer object for later use

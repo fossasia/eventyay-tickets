@@ -47,8 +47,17 @@ class QuestionForm(I18nModelForm):
         widget=I18nTextarea
     )
 
+    def removeDesOption(self):
+        choices = self.fields['type'].choices
+        for value in choices:
+            if value[0] == Question.TYPE_DESCRIPTION:
+                choices.pop(choices.index(value))
+                self.fields['type'].choices = choices
+                break
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.removeDesOption()
         self.fields['items'].queryset = self.instance.event.items.all()
         self.fields['items'].required = True
         self.fields['dependency_question'].queryset = self.instance.event.questions.filter(
@@ -103,6 +112,7 @@ class QuestionForm(I18nModelForm):
         fields = [
             'question',
             'help_text',
+            'description',
             'type',
             'required',
             'ask_during_checkin',
@@ -136,6 +146,28 @@ class QuestionForm(I18nModelForm):
             'dependency_question': SafeModelChoiceField,
         }
 
+class DescriptionForm(QuestionForm):
+    question = I18nFormField(
+        label=_("Description Title"),
+        widget_kwargs={'attrs': {'rows': 2}},
+        widget=I18nTextarea,
+        
+    )
+    description = I18nFormField(
+        label=_("Description"),
+        widget_kwargs={'attrs': {'rows': 3}},
+        widget=I18nTextarea,
+        initial="hahaha",
+    )
+
+    def removeDesOption(self):
+        # just override parent 's function
+        pass
+    def __init__(self, *args, **kwargs):
+        kwargs['initial'] = {
+            "type": "DES",
+        }
+        super().__init__(*args, **kwargs)
 
 class QuestionOptionForm(I18nModelForm):
     class Meta:

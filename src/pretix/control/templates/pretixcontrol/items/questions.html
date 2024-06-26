@@ -13,6 +13,8 @@
     <p>
         <a href="{% url "control:event.items.questions.add" organizer=request.event.organizer.slug event=request.event.slug %}" class="btn btn-default"><i class="fa fa-plus"></i> {% trans "Create a new question" %}
         </a>
+        <a href="{% url "control:event.items.descriptions.add" organizer=request.event.organizer.slug event=request.event.slug %}" class="btn btn-default"><i class="fa fa-plus"></i> {% trans "Create a text field" %}
+        </a>
     </p>
     <div class="table-responsive">
         <table class="table table-hover table-quotas">
@@ -34,7 +36,11 @@
                     <td>
                         <strong>
                             {% if q.pk %}
-                                <a href="{% url "control:event.items.questions.show" organizer=request.event.organizer.slug event=request.event.slug question=q.id %}">
+                                {% if q.type == "DES" %}
+                                    <a href="{% url "control:event.items.descriptions.edit" organizer=request.event.organizer.slug event=request.event.slug question=q.id %}">
+                                {% else %}
+                                    <a href="{% url "control:event.items.questions.show" organizer=request.event.organizer.slug event=request.event.slug question=q.id %}">
+                                {% endif %}
                             {% endif %}
                             {{ q.question }}
                             {% if q.pk %}
@@ -83,9 +89,15 @@
                     </td>
                     <td class="text-right flip">
                         {% if q.pk %}
-                            <a href="{% url "control:event.items.questions.show" organizer=request.event.organizer.slug event=request.event.slug question=q.id %}" class="btn btn-default btn-sm"><i class="fa fa-bar-chart"></i></a>
-                            <a href="{% url "control:event.items.questions.edit" organizer=request.event.organizer.slug event=request.event.slug question=q.id %}" class="btn btn-default btn-sm"><i class="fa fa-edit"></i></a>
-                            <a href="{% url "control:event.items.questions.delete" organizer=request.event.organizer.slug event=request.event.slug question=q.id %}" class="btn btn-delete btn-danger btn-sm"><i class="fa fa-trash"></i></a>
+                            {% if q.type == "DES" %}
+                            
+                                <a href="{% url "control:event.items.descriptions.edit" organizer=request.event.organizer.slug event=request.event.slug question=q.id %}" class="btn btn-default btn-sm"><i class="fa fa-edit"></i></a>
+                                <a href="{% url "control:event.items.descriptions.delete" organizer=request.event.organizer.slug event=request.event.slug question=q.id %}" class="btn btn-delete btn-danger btn-sm"><i class="fa fa-trash"></i></a>
+                            {% else %}
+                                <a href="{% url "control:event.items.questions.show" organizer=request.event.organizer.slug event=request.event.slug question=q.id %}" class="btn btn-default btn-sm"><i class="fa fa-bar-chart"></i></a>
+                                <a href="{% url "control:event.items.questions.edit" organizer=request.event.organizer.slug event=request.event.slug question=q.id %}" class="btn btn-default btn-sm"><i class="fa fa-edit"></i></a>
+                                <a href="{% url "control:event.items.questions.delete" organizer=request.event.organizer.slug event=request.event.slug question=q.id %}" class="btn btn-delete btn-danger btn-sm"><i class="fa fa-trash"></i></a>
+                            {% endif %}
                         {% else %}
                             <a href="{% url "control:event.settings" organizer=request.event.organizer.slug event=request.event.slug %}#tab-0-2-open"
                                     class="btn btn-default btn-sm"><i class="fa fa-wrench"></i></a>
