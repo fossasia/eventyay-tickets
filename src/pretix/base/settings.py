@@ -2159,8 +2159,9 @@ Your {event} team"""))
         'default': '',
         'type': str
     },
+    # here is the default setting for the updates check 
     'update_check_perform': {
-        'default': 'True',
+        'default': 'False',
         'type': bool
     },
     'update_check_result': {

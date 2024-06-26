@@ -139,7 +139,7 @@ class TeamInviteSerializer(serializers.ModelSerializer):
         try:
             mail(
                 instance.email,
-                _('pretix account invitation'),
+                _('eventyay account invitation'),
                 'pretixcontrol/email/invitation.txt',
                 {
                     'user': self,
