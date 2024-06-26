@@ -137,7 +137,22 @@
                                     </legend>
                                 {% endif %}
                                 <div data-idx="{{ forloop.parentloop.counter0 }}" data-addonidx="{{ forloop.counter0 }}">
-                                    {% bootstrap_form form layout="checkout" %}
+                                    {% for field in form %}
+                                        {% if field.field.widget.attrs.type == "description" %}
+                                            <div class="form-group">
+                                                <label class="col-md-3 control-label">{{field.label}}</label>
+                                                <div class="col-md-9">
+                                                    <label class="form-control-text text-left">{{field.value}}</label>
+                                                </div>
+
+                                                <!-- <label  class="col-md-12">{{field.label}}.{{field.value}}</label> -->
+                                                
+                                            </div>
+                                        {% else %}
+                                            {% bootstrap_field field layout="checkout" %}
+                                        {% endif%}
+                                    {% endfor %}
+
                                 </div>
                             {% endfor %}
                         </div>
