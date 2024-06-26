@@ -1027,7 +1027,7 @@ class Question(LoggedModel):
         (TYPE_DATETIME, _("Date and time")),
         (TYPE_COUNTRYCODE, _("Country code (ISO 3166-1 alpha-2)")),
         (TYPE_PHONENUMBER, _("Phone number")),
-        (TYPE_DESCRIPTION, _("Question form description")),
+        (TYPE_DESCRIPTION, _("Text field")),
     )
     UNLOCALIZED_TYPES = [TYPE_DATE, TYPE_TIME, TYPE_DATETIME]
     ASK_DURING_CHECKIN_UNSUPPORTED = [TYPE_PHONENUMBER]
