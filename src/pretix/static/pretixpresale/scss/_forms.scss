@@ -43,6 +43,11 @@ a.btn, button.btn {
   }
 }
 
+.form-group label.description{
+  white-space: break-spaces;
+  padding-top: 7px;
+}
+
 .required-legend span {
   color: $brand-primary;
   font-weight: bold;
