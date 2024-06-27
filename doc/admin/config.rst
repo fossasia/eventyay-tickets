@@ -143,7 +143,7 @@ Example::
     port=3306
 
 ``backend``
-    One of ``sqlite3``, ``oracle`` and ``postgresql``.
+    One of ``sqlite3`` and ``postgresql``.
     Default: ``sqlite3``.
 
 ``name``
