@@ -640,7 +640,8 @@ class BaseQuestionsForm(forms.Form):
                 field = forms.CharField(
                     label=label,
                     widget=forms.Textarea(),
-                    initial=mark_safe(q.description)
+                    initial=mark_safe(q.description),
+                    required=False
                 )
                 field.widget.attrs['type'] = 'description'
             field.question = q
