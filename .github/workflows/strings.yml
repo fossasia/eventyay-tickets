@@ -2,12 +2,12 @@ name: Strings
 
 on:
   push:
-    branches: [ master ]
+    branches: [ development, master ]
     paths:
       - 'doc/**'
       - 'src/pretix/locale/**'
   pull_request:
-    branches: [ master ]
+    branches: [ development, master ]
     paths:
       - 'doc/**'
       - 'src/pretix/locale/**'

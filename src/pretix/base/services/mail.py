@@ -139,7 +139,7 @@ def mail(email: Union[str, Sequence[str]], subject: str, template: Union[str, La
             sender_name = event.settings.mail_from_name or sender_name
             sender = formataddr((sender_name, sender))
         else:
-            sender = formataddr((settings.PRETIX_INSTANCE_NAME, sender))
+            sender = formataddr((settings.INSTANCE_NAME, sender))
 
         subject = raw_subject = str(subject)
         signature = ""

@@ -9,7 +9,7 @@
 <html{% if rtl %} dir="rtl" class="rtl"{% endif %}>
 	<head>
 		<title>{% block title %}{% endblock %}{% if url_name != "index" %} :: {% endif %}
-            {{ settings.PRETIX_INSTANCE_NAME }}</title>
+            {{ settings.INSTANCE_NAME }}</title>
 		{% compress css %}
     		<link rel="stylesheet" type="text/x-scss" href="{% static "pretixcontrol/scss/main.scss" %}" />
             <link rel="stylesheet" type="text/x-scss" href="{% static "lightbox/css/lightbox.scss" %}" />
@@ -122,8 +122,8 @@
                         </a>
                     {% endif %}
                     <a class="navbar-brand" href="{% url "control:index" %}">
-                        <img src="{% static "pretixbase/img/pretix-icon.svg" %}" />
-                        {{ settings.PRETIX_INSTANCE_NAME }}
+                        <img src="{% static "pretixbase/img/eventyay-icon.svg" %}" />
+                        {{ settings.INSTANCE_NAME }}
                     </a>
                 </div>
                 <ul class="nav navbar-nav navbar-top-links navbar-left flip hidden-xs">
@@ -385,11 +385,7 @@
                         <div class="alert alert-info">
                             <a href="{% url "control:global.update" %}">
                                 {% blocktrans trimmed %}
-                                    Starting with version 1.2.0, pretix automatically checks for updates in the background.
-                                    During this check, anonymous data is transmitted to servers operated by pretix'
-                                    developers. Click on this message to find out more, disable this feature or enter your
-                                    email address to get notified via email if a new update arrives. This message will
-                                    disappear once you clicked it.
+                                The system automatically checks for updates in the background.
                                 {% endblocktrans %}
                             </a>
                         </div>
@@ -397,7 +393,7 @@
 
                     {% if debug_warning %}
                         <div class="alert alert-danger">
-                            {% trans "pretix is running in debug mode. For security reasons, please never run debug mode on a production instance." %}
+                            {% trans "system is running in debug mode. For security reasons, please never run debug mode on a production instance." %}
                         </div>
                     {% endif %}
 
@@ -410,9 +406,9 @@
                                 Times displayed in {{ tz }}
                             {% endblocktrans %} &middot;
                         {% endif %}
-                        {% with "href='http://pretix.eu'" as a_attr %}
+                        {% with "href='https://eventyay.com'" as a_attr %}
                             {% blocktrans trimmed %}
-                                powered by <a {{ a_attr }}>pretix</a>
+                                powered by <a {{ a_attr }}>eventyay</a>
                             {% endblocktrans %}
                         {% endwith %}
                         {% if development_warning %}

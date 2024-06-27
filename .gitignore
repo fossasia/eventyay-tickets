@@ -22,5 +22,5 @@ local/
 .project
 .pydevproject
 .DS_Store
-
+.python-version
 

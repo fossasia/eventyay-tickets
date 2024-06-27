@@ -116,7 +116,7 @@ STATIC_URL = config.get('urls', 'static', fallback='/static/')
 
 MEDIA_URL = config.get('urls', 'media', fallback='/media/')
 
-PRETIX_INSTANCE_NAME = config.get('pretix', 'instance_name', fallback='pretix.de')
+INSTANCE_NAME = config.get('pretix', 'instance_name', fallback='eventyay')
 PRETIX_REGISTRATION = config.getboolean('pretix', 'registration', fallback=True)
 PRETIX_PASSWORD_RESET = config.getboolean('pretix', 'password_reset', fallback=True)
 PRETIX_LONG_SESSIONS = config.getboolean('pretix', 'long_sessions', fallback=True)
@@ -258,7 +258,7 @@ ENTROPY = {
 }
 
 # Internal settings
-PRETIX_EMAIL_NONE_VALUE = 'none@well-known.pretix.eu'
+PRETIX_EMAIL_NONE_VALUE = 'info@eventyay.com'
 
 STATIC_ROOT = os.path.join(os.path.dirname(__file__), 'static.dist')
 
@@ -449,12 +449,13 @@ ALL_LANGUAGES = [
     ('ru', _('Russian')),
     ('es', _('Spanish')),
     ('tr', _('Turkish')),
+    ('uk', _('Ukrainian')),    
 ]
 LANGUAGES_OFFICIAL = {
     'en', 'de', 'de-informal'
 }
 LANGUAGES_INCUBATING = {
-    'pl', 'fi', 'pt-br'
+    'pl', 'fi', 'pt-br','uk'
 } - set(config.get('languages', 'allow_incubating', fallback='').split(','))
 LANGUAGES_RTL = {
     'ar', 'hw'
@@ -767,3 +768,11 @@ COUNTRIES_OVERRIDE = {
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 25000
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10 MB
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+HAS_GEOIP = False
+if config.has_option('geoip', 'path'):
+    HAS_GEOIP = True
+    GEOIP_PATH = config.get('geoip', 'path')
+    GEOIP_COUNTRY = config.get('geoip', 'filename_country', fallback='GeoLite2-Country.mmdb')
