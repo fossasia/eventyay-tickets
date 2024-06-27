@@ -11,11 +11,13 @@ class StripeApp(AppConfig):
 
     class PretixPluginMeta:
         name = _("Stripe")
-        author = _("the pretix team")
+        author = ""
         version = version
         category = 'PAYMENT'
+        featured = True
+        picture = 'plugins/stripe/stripe_logo.svg'
         description = _("This plugin allows you to receive credit card payments " +
-                        "via Stripe")
+                        "via Stripe.")
 
     def ready(self):
         from . import signals, tasks  # NOQA

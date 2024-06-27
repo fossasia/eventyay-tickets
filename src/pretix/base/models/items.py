@@ -1300,7 +1300,6 @@ class Quota(LoggedModel):
 
     Please read the documentation section on quotas carefully before doing
     anything with quotas. This might confuse you otherwise.
-    https://docs.pretix.eu/en/latest/development/concepts.html#quotas
 
     The AVAILABILITY_* constants represent various states of a quota allowing
     its items/variations to be up for sale.
