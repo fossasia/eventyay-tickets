@@ -8,6 +8,17 @@ from django.db.models import Expression, JSONField
 def postgres_compile_json_path(key_transforms):
     return "{" + ','.join(key_transforms) + "}"
 
+def sqlite_compile_json_path(key_transforms):
+    path = ['$']
+    for key_transform in key_transforms:
+        try:
+            num = int(key_transform)
+            path.append('[{}]'.format(num))
+        except ValueError:  # non-integer
+            path.append('.')
+            path.append(key_transform)
+    return ''.join(path)
+
 class JSONExtract(Expression):
     def __init__(self, expression, *path, output_field=JSONField(), **extra):
         super().__init__(output_field=output_field)
