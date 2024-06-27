@@ -435,6 +435,13 @@ def get_organizer_navigation(request):
                     'active': url.url_name.startswith('organizer.propert'),
                 },
                 {
+                    'label': _('E-mail'),
+                    'url': reverse('control:organizer.settings.mail', kwargs={
+                        'organizer': request.organizer.slug,
+                    }),
+                    'active': url.url_name == 'organizer.settings.mail',
+                },
+                {
                     'label': _('Webhooks'),
                     'url': reverse('control:organizer.webhooks', kwargs={
                         'organizer': request.organizer.slug
@@ -463,7 +470,27 @@ def get_organizer_navigation(request):
             'active': 'organizer.giftcard' in url.url_name,
             'icon': 'credit-card',
         })
-
+    if request.organizer.settings.customer_accounts:
+        children = []
+        if 'can_manage_customers' in request.orgapermset:
+            children.append(
+                {
+                    'label': _('Customers'),
+                    'url': reverse('control:organizer.customers', kwargs={
+                        'organizer': request.organizer.slug
+                    }),
+                    'active': 'organizer.customer' in url.url_name,
+                }
+            )
+        if children:
+            nav.append({
+                'label': _('Customer accounts'),
+                'url': reverse('control:organizer.customers', kwargs={
+                    'organizer': request.organizer.slug
+                }),
+                'icon': 'user',
+                'children': children,
+            })
     if 'can_change_organizer_settings' in request.orgapermset:
         nav.append({
             'label': _('Devices'),
