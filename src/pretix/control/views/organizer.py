@@ -48,7 +48,7 @@ from pretix.control.forms.filter import (
 from pretix.control.forms.orders import ExporterForm
 from pretix.control.forms.organizer import (
     DeviceForm, EventMetaPropertyForm, GateForm, GiftCardCreateForm,
-    GiftCardUpdateForm, OrganizerDeleteForm, OrganizerForm,
+    GiftCardUpdateForm, OrganizerDeleteForm, OrganizerFooterLinkFormset, OrganizerForm,
     OrganizerSettingsForm, OrganizerUpdateForm, TeamForm, WebHookForm,
 )
 from pretix.control.logdisplay import OVERVIEW_BANLIST
@@ -270,11 +270,13 @@ class OrganizerUpdate(OrganizerPermissionRequiredMixin, UpdateView):
     def get_context_data(self, *args, **kwargs) -> dict:
         context = super().get_context_data(*args, **kwargs)
         context['sform'] = self.sform
+        context['footer_links_formset'] = self.footer_links_formset
         return context
 
     @transaction.atomic
     def form_valid(self, form):
         self.sform.save()
+        self.save_footer_links_formset(self.object)
         change_css = False
         if self.sform.has_changed():
             self.request.organizer.log_action(
@@ -289,6 +291,10 @@ class OrganizerUpdate(OrganizerPermissionRequiredMixin, UpdateView):
             )
             if any(p in self.sform.changed_data for p in SETTINGS_AFFECTING_CSS):
                 change_css = True
+        if self.footer_links_formset.has_changed():
+            self.request.organizer.log_action('pretix.organizer.footerlinks.changed', user=self.request.user, data={
+                'data': self.footer_links_formset.cleaned_data
+            })
         if form.has_changed():
             self.request.organizer.log_action(
                 'pretix.organizer.changed',
@@ -320,10 +326,19 @@ class OrganizerUpdate(OrganizerPermissionRequiredMixin, UpdateView):
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         form = self.get_form()
-        if form.is_valid() and self.sform.is_valid():
+        if form.is_valid() and self.sform.is_valid() and self.footer_links_formset.is_valid():
             return self.form_valid(form)
         else:
             return self.form_invalid(form)
+    
+    @cached_property
+    def footer_links_formset(self):
+        return OrganizerFooterLinkFormset(self.request.POST if self.request.method == "POST" else None,
+                                          organizer=self.object,
+                                          prefix="footer-links", instance=self.object)
+
+    def save_footer_links_formset(self, obj):
+        self.footer_links_formset.save()
 
 
 class OrganizerCreate(CreateView):

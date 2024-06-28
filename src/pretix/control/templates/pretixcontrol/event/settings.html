@@ -240,6 +240,70 @@
                 {% if sform.event_list_available_only %}
                     {% bootstrap_field sform.event_list_available_only layout="control" %}
                 {% endif %}
+                <hr>
+                <div class="form-group">
+                    <label class="col-md-3 control-label">
+                        {% trans "Provide Footer Links to Ticket Shop" %}<br>
+                    </label>
+                    <div class="col-md-9">
+                        <p class="help-block">
+                            {% blocktrans trimmed %}
+                                You can provide further links to your social media profiles or other pages.This links will
+                                be displayed in the footer of your ticket shop.
+                            {% endblocktrans %}
+                        </p>
+                        <div class="formset" data-formset data-formset-prefix="{{ footer_links_formset.prefix }}">
+                            {{ footer_links_formset.management_form }}
+                            {% bootstrap_formset_errors footer_links_formset %}
+                            <div data-formset-body>
+                                {% for form in footer_links_formset %}
+                                    <div class="row formset-row" data-formset-form>
+                                        <div class="sr-only">
+                                            {{ form.id }}
+                                            {% bootstrap_field form.DELETE form_group_class="" layout="inline" %}
+                                        </div>
+                                        <div class="col-md-5">
+                                            {% bootstrap_form_errors form %}
+                                            {% bootstrap_field form.label layout='inline' form_group_class="" %}
+                                        </div>
+                                        <div class="col-md-5">
+                                            {% bootstrap_field form.url layout='inline' form_group_class="" %}
+                                        </div>
+                                        <div class="col-md-2 text-right flip">
+                                            <button type="button" class="btn btn-danger" data-formset-delete-button>
+                                                <i class="fa fa-trash"></i></button>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <script type="form-template" data-formset-empty-form>
+                                {% escapescript %}
+                                    <div class="row formset-row" data-formset-form>
+                                        <div class="sr-only">
+                                            {{ footer_links_formset.empty_form.id }}
+                                            {% bootstrap_field footer_links_formset.empty_form.DELETE form_group_class="" layout="inline" %}
+                                        </div>
+                                        <div class="col-md-5">
+                                            {% bootstrap_field footer_links_formset.empty_form.label layout='inline' form_group_class="" %}
+                                        </div>
+                                        <div class="col-md-5">
+                                            {% bootstrap_field footer_links_formset.empty_form.url layout='inline' form_group_class="" %}
+                                        </div>
+                                        <div class="col-md-2 text-right flip">
+
+                                            <button type="button" class="btn btn-danger" data-formset-delete-button>
+                                                <i class="fa fa-trash"></i></button>
+                                        </div>
+                                    </div>
+                                {% endescapescript %}
+                            </script>
+                            <p>
+                                <button type="button" class="btn btn-default" data-formset-add>
+                                    <i class="fa fa-plus"></i> {% trans "Add link" %}</button>
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </fieldset>
             <fieldset>
                 <legend>{% trans "Cart" %}</legend>
