@@ -70,14 +70,14 @@ class OrderSearch(PaginationMixin, ListView):
 
             if self.filter_form.cleaned_data.get('query'):
                 """
-                We need to work around a bug in PostgreSQL's (and likely MySQL's) query plan optimizer here.
+                We need to work around a bug in PostgreSQL's query plan optimizer here.
                 The database lacks statistical data to predict how common our search filter is and therefore
                 assumes that it is cheaper to first ORDER *all* orders in the system (since we got an index on
                 datetime), then filter out with a full scan until OFFSET/LIMIT condition is fulfilled. If we
                 look for something rare (such as an email address used once within hundreds of thousands of
                 orders, this ends up to be pathologically slow.
 
-                For some search queries on pretix.eu, we see search times of >30s, just due to the ORDER BY and
+                For some search queries, we see search times of >30s, just due to the ORDER BY and
                 LIMIT clause. Without them. the query runs in roughly 0.6s. This heuristical approach tries to
                 detect these cases and rewrite the query as a nested subquery that strongly suggests sorting
                 before filtering. However, since even that fails in some cases because PostgreSQL thinks it knows

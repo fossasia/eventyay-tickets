@@ -7,7 +7,7 @@ from pretix.base.settings import GlobalSettingsObject
 
 
 class Command(BaseCommand):
-    help = "Detect country for Stripe Connect accounts connected with pretix 2.0 (required for payment request buttons)"
+    help = "Detect country for Stripe Connect accounts connected with eventyay (required for payment request buttons)"
 
     @scopes_disabled()
     def handle(self, *args, **options):

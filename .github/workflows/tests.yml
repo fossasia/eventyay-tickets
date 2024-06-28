@@ -18,21 +18,13 @@ jobs:
     name: Tests
     strategy:
       matrix:
-        python-version: [3.8]
-        database: [sqlite, postgres, mysql]
+        python-version: [3.11]
+        database: [sqlite, postgres]
         exclude:
-          - database: mysql
-            python-version: 3.8
           - database: sqlite
-            python-version: 3.8
+            python-version: 3.11
     steps:
       - uses: actions/checkout@v2
-      - uses: getong/mariadb-action@v1.1
-        with:
-          mariadb version: '10.4'
-          mysql database: 'pretix'
-          mysql root password: ''
-        if: matrix.database == 'mysql'
       - uses: harmon758/postgresql-action@v1
         with:
           postgresql version: '11'
@@ -51,7 +43,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
       - name: Install system dependencies
-        run: sudo apt update && sudo apt install gettext mysql-client
+        run: sudo apt update && sudo apt install gettext 
       - name: Install Python dependencies
         run: pip3 install -e ".[dev]" psycopg2-binary
       - name: Run checks
@@ -71,4 +63,4 @@ jobs:
         with:
           file: src/coverage.xml
           fail_ci_if_error: true
-        if: matrix.database == 'postgres' && matrix.python-version == '3.8'
+        if: matrix.database == 'postgres' && matrix.python-version == '3.11'

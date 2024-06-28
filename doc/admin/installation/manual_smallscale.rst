@@ -23,7 +23,7 @@ installation guides):
 
 * A SMTP server to send out mails, e.g. `Postfix`_ on your machine or some third-party server you have credentials for
 * A HTTP reverse proxy, e.g. `nginx`_ or Apache to allow HTTPS connections
-* A `PostgreSQL`_ 9.5+, `MySQL`_ 5.7+, or MariaDB 10.2.7+ database server
+* A `PostgreSQL`_ 11+, `MySQL`_ 5.7+, or MariaDB 10.2.7+ database server
 * A `redis`_ server
 * A `nodejs_` installation
 
@@ -134,7 +134,7 @@ command if you're running MySQL::
 
     (venv)$ pip3 install "pretix[postgres]" gunicorn
 
-Note that you need Python 3.6 or newer. You can find out your Python version using ``python -V``.
+Note that you need Python 3.11 or newer. You can find out your Python version using ``python -V``.
 
 We also need to create a data directory::
 

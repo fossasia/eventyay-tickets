@@ -35,7 +35,16 @@
     <script type="text/javascript" src="{% static "moment/moment-timezone-with-data-1970-2030.js" %}"></script>
     <script type="text/javascript" src="{% static "jquery/js/jquery-2.1.1.min.js" %}"></script>
     <script type="text/javascript" src="{% static "datetimepicker/bootstrap-datetimepicker.js" %}"></script>
+{% endcompress %}
+
+{% if DEBUG %}
+    <!-- load js file for debug purposes -->
     <script type="text/javascript" src="{% static "vuejs/vue.js" %}"></script>
+{% else %}
+    <!-- load min file for prod env -->
+    <script type="text/javascript" src="{% static "vuejs/vue.min.js" %}"></script>
+{% endif %}
+{% compress js %}
     <script type="text/vue" src="{% static 'pretixplugins/webcheckin/components/checkinlist-item.vue' %}"></script>
     <script type="text/vue" src="{% static 'pretixplugins/webcheckin/components/checkinlist-select.vue' %}"></script>
     <script type="text/vue" src="{% static 'pretixplugins/webcheckin/components/searchresult-item.vue' %}"></script>

@@ -1,0 +1,38 @@
+{% extends "pretixcontrol/items/base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load formset_tags %}
+{% load escapejson %}
+{% block title %}
+    {% if question %}
+        {% blocktrans with name=question.question %}Description: {{ name }}{% endblocktrans %}
+    {% else %}
+        {% trans "Description" %}
+    {% endif %}
+{% endblock %}
+{% block inside %}
+    {% if question %}
+        <h1>{% blocktrans with name=question.question %}Description: {{ name }}{% endblocktrans %}</h1>
+    {% else %}
+        <h1>{% trans "Description" %}</h1>
+    {% endif %}
+    <form action="" method="post" class="form-horizontal">
+        {% csrf_token %}
+        {% bootstrap_form_errors form %}
+        <div class="">
+            <fieldset>
+                {% bootstrap_field form.question layout="control" %}
+                {% bootstrap_field form.description layout="control" %}
+                <div class="hidden">
+                    {% bootstrap_field form.type layout="control" %}
+                </div>
+                {% bootstrap_field form.items layout="control" %}
+            </fieldset>
+        </div>
+        <div class="form-group submit-group">
+            <button type="submit" class="btn btn-primary btn-save">
+                {% trans "Save" %}
+            </button>
+        </div>
+    </form>
+{% endblock %}

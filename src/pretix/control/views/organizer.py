@@ -523,7 +523,7 @@ class TeamMemberView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin,
         try:
             mail(
                 instance.email,
-                _('pretix account invitation'),
+                _('eventyay account invitation'),
                 'pretixcontrol/email/invitation.txt',
                 {
                     'user': self,

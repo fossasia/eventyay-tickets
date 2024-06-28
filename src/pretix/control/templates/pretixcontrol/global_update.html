@@ -25,13 +25,13 @@
             <div class="alert alert-danger">
                 {% trans "The last update check was not successful." %}
                 {% if gs.settings.update_check_result.error == "http_error" %}
-                    {% trans "The Eventyay server returned an error code." %}
+                    {% trans "The eventyay server returned an error code." %}
                 {% elif gs.settings.update_check_result.error == "unavailable" %}
-                    {% trans "The Eventyay server could not be reached." %}
+                    {% trans "The eventyay server could not be reached." %}
                 {% elif gs.settings.update_check_result.error == "development" %}
                     {% trans "This installation appears to be a development installation." %}
                 {% endif %}
-            </div>
+            </div> 
             <form action="" method="post">
                 {% csrf_token %}
                 <p>
