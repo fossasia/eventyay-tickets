@@ -92,6 +92,8 @@ dependencies = [
         'paypalhttp==1.*',
         'importlib_metadata==7.*',
         'qrcode==7.4.*',
+        'pretix-pages @ git+https://github.com/fossasia/eventyay-ticket-pages.git@master',
+        'pretix-venueless @ git+https://github.com/fossasia/eventyay-ticket-video.git@master'
 ]
 
 [project.optional-dependencies]
@@ -147,14 +149,3 @@ version = {attr = "pretix.__version__"}
 where = ["src"]
 include = ["pretix*"]
 namespaces = false
-
-[tool.poetry]
-name = "eventyay"
-version = "3.18.0.dev0"
-description = "the open source event solution"
-authors = ["Eventyay <info@eventyay.com>"]
-
-[tool.poetry.dependencies]
-python = ">=3.11"
-pretix-pages = { git = "https://github.com/fossasia/eventyay-ticket-pages.git", branch = "master"  }
-pretix-venueless = { git = "https://github.com/fossasia/eventyay-ticket-video.git", branch = "master"  }

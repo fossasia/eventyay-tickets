@@ -48,8 +48,7 @@ COPY src /pretix/src
 RUN pip3 install -U \
         pip \
         setuptools \
-        wheel  \
-        poetry && \
+        wheel && \
     cd /pretix && \
     PRETIX_DOCKER_BUILD=TRUE pip3 install \
         -e ".[memcached]" \
@@ -63,12 +62,6 @@ RUN chmod +x /usr/local/bin/pretix && \
 	mkdir -p data && \
     chown -R pretixuser:pretixuser /pretix /data data && \
 	sudo -u pretixuser make production
-
-ENV DJANGO_SETTINGS_MODULE=
-RUN cd /pretix && \
-    poetry install && \
-    rm -rf ~/.cache/poetry
-ENV DJANGO_SETTINGS_MODULE=production_settings
 
 USER pretixuser
 VOLUME ["/etc/pretix", "/data"]
