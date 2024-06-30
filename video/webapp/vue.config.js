@@ -10,7 +10,13 @@ const NODE_PATH = process.env.NODE_PATH
 module.exports = {
 	devServer: {
 		host: 'localhost',
-		port: 8880
+		port: 8880,
+		allowedHosts: [
+			'.localhost',
+			'.eventyay.com',
+			'video-dev.eventyay.com',
+			'video.eventyay.com'
+		  ],
 	},
 	pwa: {
 		name: 'venueless',
