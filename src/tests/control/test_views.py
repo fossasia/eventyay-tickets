@@ -95,6 +95,7 @@ def logged_in_client(client, event):
 
     ('/control/global/settings/', 200),
     ('/control/global/update/', 200),
+    ('/control/global/admininfo/',200)
 
     ('/control/organizers/', 200),
     ('/control/organizers/add', 200),

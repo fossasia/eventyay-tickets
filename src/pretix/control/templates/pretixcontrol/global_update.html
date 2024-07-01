@@ -87,4 +87,33 @@
             </button>
         </div>
     </form>
+    
+
+<!--from here the administrator information is started displaying imported from TALK  -->
+    <h1>{% translate "Administrator information" %}</h1>
+
+    {% if settings.DEBUG %}
+        <div class="alert alert-danger"><span></span><span>
+            {% blocktranslate trimmed %}
+                You are running {{site_name}} in development mode. Please <strong>STOP</strong>
+                and set the DEBUG variable to False if this page is in any way reachable
+                from the internet.
+            {% endblocktranslate %}
+        </span>
+        </div>
+    {% endif %}
+
+    
+
+   
+   
+
+  
+
+   
+    <!-- Reference for adding the administrator information that should be displayed on the global settings of the eventyay-tickets  -->
+
+
+
+
 {% endblock %}
