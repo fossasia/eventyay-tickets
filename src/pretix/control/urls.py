@@ -169,6 +169,7 @@ urlpatterns = [
     url(r'^event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/', include([
         url(r'^$', dashboards.event_index, name='event.index'),
         url(r'^widgets.json$', dashboards.event_index_widgets_lazy, name='event.index.widgets'),
+        url(r'^qrcode.(?P<filetype>(png|jpeg|gif|svg))$', event.EventQRCode.as_view(), name='event.qrcode'),
         url(r'^live/$', event.EventLive.as_view(), name='event.live'),
         url(r'^logs/$', event.EventLog.as_view(), name='event.log'),
         url(r'^delete/$', event.EventDelete.as_view(), name='event.delete'),
@@ -238,6 +239,9 @@ urlpatterns = [
         url(r'^questions/(?P<question>\d+)/change$', item.QuestionUpdate.as_view(),
             name='event.items.questions.edit'),
         url(r'^questions/add$', item.QuestionCreate.as_view(), name='event.items.questions.add'),
+        url(r'^descriptions/add$', item.DescriptionCreate.as_view(), name='event.items.descriptions.add'),
+        url(r'^descriptions/(?P<question>\d+)/change$', item.DescriptionUpdate.as_view(), name='event.items.descriptions.edit'),
+        url(r'^descriptions/(?P<question>\d+)/delete$', item.QuestionDelete.as_view(), name='event.items.descriptions.delete'),
         url(r'^quotas/$', item.QuotaList.as_view(), name='event.items.quotas'),
         url(r'^quotas/(?P<quota>\d+)/$', item.QuotaView.as_view(), name='event.items.quotas.show'),
         url(r'^quotas/select$', typeahead.quotas_select2, name='event.items.quotas.select2'),

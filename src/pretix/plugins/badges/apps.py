@@ -13,6 +13,7 @@ class BadgesApp(AppConfig):
         author = _("the pretix team")
         version = version
         category = "FEATURE"
+        featured = True
         description = _("This plugin allows you to generate badges or name tags for your attendees.")
 
     def ready(self):
