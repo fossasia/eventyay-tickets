@@ -30,7 +30,7 @@ Full configuration
 		"externalAuthUrl": "https://example.com/auth",
 		"theme": {
 			"logo": {
-				"url": "/venueless-logo-full-white.svg",
+				"url": "/eventyay-video-logo.svg",
 				"fitToWidth": false // optional
 			}
 			"colors": {

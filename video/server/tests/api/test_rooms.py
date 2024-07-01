@@ -26,7 +26,7 @@ def test_room_list(client, world):
                 "type": "page.landing",
                 "config": {
                     "header_background_color": "#673ab7",
-                    "header_image": "/venueless-logo-full-white.svg",
+                    "header_image": "/eventyay-video-logo.svg",
                     "content": "# Welcome to this example event!\n\nYou might notice that the dates for the current "
                     "sessions are not actually your current time and that time does not progress. That's "
                     "because we froze time – only in this demo of course – with the power of programming!"
@@ -58,7 +58,7 @@ def test_room_detail(client, world):
                 "type": "page.landing",
                 "config": {
                     "header_background_color": "#673ab7",
-                    "header_image": "/venueless-logo-full-white.svg",
+                    "header_image": "/eventyay-video-logo.svg",
                     "content": "# Welcome to this example event!\n\nYou might notice that the dates for the current "
                     "sessions are not actually your current time and that time does not progress. That's "
                     "because we froze time – only in this demo of course – with the power of programming!"

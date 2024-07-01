@@ -19,19 +19,19 @@ module.exports = {
 		  ],
 	},
 	pwa: {
-		name: 'venueless',
+		name: 'eventyay',
 		themeColor: '#180044',
 		manifestOptions: {
 			icons: [{
-				src: '/venueless-logo.192.png',
+				src: '/eventyay-logo.192.png',
 				type: 'image/png',
 				sizes: '192x192'
 			}, {
-				src: '/venueless-logo.512.png',
+				src: '/eventyay-logo.512.png',
 				type: 'image/png',
 				sizes: '512x512'
 			}, {
-				src: '/venueless-logo.svg',
+				src: '/eventyay-logo.svg',
 				sizes: '192x192 512x512'
 			}],
 		},
