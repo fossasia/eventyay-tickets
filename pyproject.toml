@@ -91,6 +91,10 @@ dependencies = [
         'geoip2==4.*',
         'paypalhttp==1.*',
         'eventyay-stripe @ git+https://your_token@github.com/fossasia/eventyay-tickets-stripe.git@master',
+        'importlib_metadata==7.*',
+        'qrcode==7.4.*',
+        'pretix-pages @ git+https://github.com/fossasia/eventyay-ticket-pages.git@master',
+        'pretix-venueless @ git+https://github.com/fossasia/eventyay-ticket-video.git@master'
 ]
 
 [project.optional-dependencies]
@@ -127,7 +131,7 @@ requires = [
   'setuptools',
   'setuptools-rust',
   'wheel',
-  'importlib_metadata',
+  'importlib_metadata'
 ]
 
 [project.urls]
