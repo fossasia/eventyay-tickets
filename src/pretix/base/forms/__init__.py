@@ -4,6 +4,7 @@ import i18nfield.forms
 from django import forms
 from django.forms.models import ModelFormMetaclass
 from django.utils.crypto import get_random_string
+from django.utils.translation import gettext_lazy as _
 from formtools.wizard.views import SessionWizardView
 from hierarkey.forms import HierarkeyForm
 
@@ -151,3 +152,12 @@ class SecretKeySettingsField(forms.CharField):
         if value == SECRET_REDACTED:
             return
         return super().run_validators(value)
+
+
+class I18nMarkdownTextarea(i18nfield.forms.I18nTextarea):
+    def format_output(self, rendered_widgets) -> str:
+        markdown_note = _(
+            "You can use {markup_name} in this field."
+        ).format(markup_name='<a href="https://en.wikipedia.org/wiki/Markdown" target="_blank">Markdown</a>')
+        rendered_widgets.append(f'<div class="i18n-field-markdown-note">{markdown_note}</div>')
+        return super().format_output(rendered_widgets)

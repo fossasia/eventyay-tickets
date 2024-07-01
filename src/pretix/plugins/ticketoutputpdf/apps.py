@@ -14,6 +14,7 @@ class TicketOutputPdfApp(AppConfig):
         author = _("the pretix team")
         version = version
         category = 'FORMAT'
+        featured = True
         description = _("This plugin allows you to print out tickets as PDF files")
 
     def ready(self):
