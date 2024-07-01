@@ -52,6 +52,19 @@ class CustomerSerializer(I18nAwareModelSerializer):
         fields = ('identifier', 'email', 'name', 'name_parts', 'is_active', 'is_verified', 'last_login', 'date_joined',
                   'locale', 'last_modified')
 
+    def update(self, instance, validated_data):
+        if instance and instance.provider_id:
+            validated_data['external_identifier'] = instance.external_identifier
+        return super().update(instance, validated_data)
+
+
+class CustomerCreateSerializer(CustomerSerializer):
+    send_email = serializers.BooleanField(default=False, required=False, allow_null=True)
+
+    class Meta:
+        model = Customer
+        fields = CustomerSerializer.Meta.fields + ('send_email',)
+
 
 class GiftCardSerializer(I18nAwareModelSerializer):
     value = serializers.DecimalField(max_digits=10, decimal_places=2, min_value=Decimal('0.00'))
@@ -227,6 +240,7 @@ class TeamMemberSerializer(serializers.ModelSerializer):
 class OrganizerSettingsSerializer(SettingsSerializer):
     default_fields = [
         'customer_accounts',
+        'customer_accounts_native',
         'contact_mail',
         'imprint_url',
         'organizer_info_text',

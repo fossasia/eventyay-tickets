@@ -16,10 +16,12 @@ from pretix.api.models import WebHook
 from pretix.api.webhooks import get_all_webhook_events
 from pretix.base.forms import I18nModelForm, PlaceholderValidator, SettingsForm
 from pretix.base.forms.questions import NamePartsFormField
+from pretix.base.customersso.oidc import oidc_validate_and_complete_config
 from pretix.base.forms.widgets import SplitDateTimePickerWidget
 from pretix.base.models import (
     Customer, Device, EventMetaProperty, Gate, GiftCard, Organizer, Team,
 )
+from pretix.base.models.customers import CustomerSSOClient, CustomerSSOProvider
 from pretix.base.settings import PERSON_NAME_SCHEMES, PERSON_NAME_TITLE_GROUPS
 from pretix.control.forms import ExtFileField, SplitDateTimeField
 from pretix.control.forms import (
@@ -245,6 +247,7 @@ class OrganizerSettingsForm(SettingsForm):
     )
     auto_fields = [
         'customer_accounts',
+        'customer_accounts_native',
         'contact_mail',
         'imprint_url',
         'organizer_info_text',
@@ -333,6 +336,11 @@ class MailSettingsForm(SMTPSettingsMixin, SettingsForm):
 
     mail_text_customer_registration = I18nFormField(
         label=_("Text"),
+        required=False,
+        widget=I18nTextarea,
+    )
+    mail_subject_customer_registration = I18nFormField(
+        label=_("Subject"),
         required=False,
         widget=I18nTextarea,
     )
@@ -497,6 +505,10 @@ class CustomerUpdateForm(forms.ModelForm):
             titles=self.instance.organizer.settings.name_scheme_titles,
             label=_('Name'),
         )
+        if self.instance.provider_id:
+            self.fields['email'].disabled = True
+            self.fields['is_verified'].disabled = True
+            self.fields['external_identifier'].disabled = True
 
     def clean(self):
         email = self.cleaned_data.get('email')
@@ -513,3 +525,120 @@ class CustomerUpdateForm(forms.ModelForm):
                 )
 
         return self.cleaned_data
+
+
+class SSOProviderForm(I18nModelForm):
+
+    config_oidc_base_url = forms.URLField(
+        label=pgettext_lazy('sso_oidc', 'Base URL'),
+        required=False,
+    )
+    config_oidc_client_id = forms.CharField(
+        label=pgettext_lazy('sso_oidc', 'Client ID'),
+        required=False,
+    )
+    config_oidc_client_secret = forms.CharField(
+        label=pgettext_lazy('sso_oidc', 'Client secret'),
+        required=False,
+    )
+    config_oidc_scope = forms.CharField(
+        label=pgettext_lazy('sso_oidc', 'Scope'),
+        help_text=pgettext_lazy('sso_oidc', 'Multiple scopes separated with spaces.'),
+        required=False,
+    )
+    config_oidc_uid_field = forms.CharField(
+        label=pgettext_lazy('sso_oidc', 'User ID field'),
+        help_text=pgettext_lazy('sso_oidc', 'We will assume that the contents of the user ID fields are unique and '
+                                            'can never change for a user.'),
+        required=True,
+        initial='sub',
+    )
+    config_oidc_email_field = forms.CharField(
+        label=pgettext_lazy('sso_oidc', 'Email field'),
+        help_text=pgettext_lazy('sso_oidc', 'We will assume that all email addresses received from the SSO provider '
+                                            'are verified to really belong the the user. If this can\'t be '
+                                            'guaranteed, security issues might arise.'),
+        required=True,
+        initial='email',
+    )
+    config_oidc_phone_field = forms.CharField(
+        label=pgettext_lazy('sso_oidc', 'Phone field'),
+        required=False,
+    )
+
+    class Meta:
+        model = CustomerSSOProvider
+        fields = ['is_active', 'name', 'button_label', 'method']
+        widgets = {
+            'method': forms.RadioSelect,
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        name_scheme = self.event.settings.name_scheme
+        scheme = PERSON_NAME_SCHEMES.get(name_scheme)
+        for fname, label, size in scheme['fields']:
+            self.fields[f'config_oidc_{fname}_field'] = forms.CharField(
+                label=pgettext_lazy('sso_oidc', f'{label} field').format(label=label),
+                required=False,
+            )
+
+        self.fields['method'].choices = [c for c in self.fields['method'].choices if c[0]]
+
+        for fname, f in self.fields.items():
+            if fname.startswith('config_'):
+                prefix, method, suffix = fname.split('_', 2)
+                f.widget.attrs['data-display-dependency'] = f'input[name=method][value={method}]'
+
+                if self.instance and self.instance.method == method:
+                    f.initial = self.instance.configuration.get(suffix)
+
+    def clean(self):
+        data = self.cleaned_data
+        if not data.get("method"):
+            return data
+
+        config = {}
+        for fname, f in self.fields.items():
+            if fname.startswith(f'config_{data["method"]}_'):
+                prefix, method, suffix = fname.split('_', 2)
+                config[suffix] = data.get(fname)
+
+        if data["method"] == "oidc":
+            oidc_validate_and_complete_config(config)
+
+        self.instance.configuration = config
+
+
+class SSOClientForm(I18nModelForm):
+    regenerate_client_secret = forms.BooleanField(
+        label=_('Invalidate old client secret and generate a new one'),
+        required=False,
+    )
+
+    class Meta:
+        model = CustomerSSOClient
+        fields = ['is_active', 'name', 'client_id', 'client_type', 'authorization_grant_type', 'redirect_uris',
+                  'allowed_scopes']
+        widgets = {
+            'authorization_grant_type': forms.RadioSelect,
+            'client_type': forms.RadioSelect,
+            'allowed_scopes': forms.CheckboxSelectMultiple,
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['allowed_scopes'] = forms.MultipleChoiceField(
+            label=self.fields['allowed_scopes'].label,
+            help_text=self.fields['allowed_scopes'].help_text,
+            required=self.fields['allowed_scopes'].required,
+            initial=self.fields['allowed_scopes'].initial,
+            choices=CustomerSSOClient.SCOPE_CHOICES,
+            widget=forms.CheckboxSelectMultiple
+        )
+        if self.instance and self.instance.pk:
+            self.fields['client_id'].disabled = True
+        else:
+            del self.fields['client_id']
+            del self.fields['regenerate_client_secret']

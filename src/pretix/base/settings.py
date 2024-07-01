@@ -83,6 +83,17 @@ DEFAULTS = {
                 "This will allow customers to sign up for an account on your ticket shop.")
         )
     },
+    'customer_accounts_native': {
+        'default': 'True',
+        'type': bool,
+        'form_class': forms.BooleanField,
+        'serializer_class': serializers.BooleanField,
+        'form_kwargs': dict(
+            label=_("Allow customers to log in with email address and password"),
+            help_text=_("If disabled, you will need to connect one or more single-sign-on providers."),
+            widget=forms.CheckboxInput(attrs={'data-display-dependency': '#id_settings-customer_accounts'}),
+        )
+    },
     'max_items_per_order': {
         'default': '10',
         'type': int,

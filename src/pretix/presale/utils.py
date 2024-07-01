@@ -1,9 +1,11 @@
 import warnings
+import time
 from importlib import import_module
 from urllib.parse import urljoin
 
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
+from django.db.models import Q
 from django.http import Http404
 from django.middleware.csrf import rotate_token
 from django.shortcuts import redirect
@@ -34,6 +36,7 @@ def get_customer(request):
         with scope(organizer=request.organizer):
             try:
                 customer = request.organizer.customers.get(
+                    Q(provider__isnull=True) | Q(provider__is_active=True),
                     is_active=True, is_verified=True,
                     pk=request.session[session_key]
                 )
@@ -65,9 +68,15 @@ def add_customer_to_request(request):
     request.customer = SimpleLazyObject(lambda: get_customer(request))
 
 
+def get_customer_auth_time(request):
+    auth_time_session_key = f'customer_auth_time:{request.organizer.pk}'
+    return request.session.get(auth_time_session_key) or 0
+
+
 def customer_login(request, customer):
     session_key = f'customer_auth_id:{request.organizer.pk}'
     hash_session_key = f'customer_auth_hash:{request.organizer.pk}'
+    auth_time_session_key = f'customer_auth_time:{request.organizer.pk}'
     session_auth_hash = customer.get_session_auth_hash()
 
     if session_key in request.session:
@@ -79,6 +88,7 @@ def customer_login(request, customer):
 
     request.session[session_key] = customer.pk
     request.session[hash_session_key] = session_auth_hash
+    request.session[auth_time_session_key] = int(time.time())
     request.customer = customer
 
     customer.last_login = now()
@@ -90,10 +100,12 @@ def customer_login(request, customer):
 def customer_logout(request):
     session_key = f'customer_auth_id:{request.organizer.pk}'
     hash_session_key = f'customer_auth_hash:{request.organizer.pk}'
+    auth_time_session_key = f'customer_auth_time:{request.organizer.pk}'
 
     # Remove user session
     customer_id = request.session.pop(session_key, None)
     request.session.pop(hash_session_key, None)
+    request.session.pop(auth_time_session_key, None)
 
     # Remove carts tied to this user
     carts = request.session.get('carts', {})

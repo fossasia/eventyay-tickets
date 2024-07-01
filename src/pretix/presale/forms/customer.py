@@ -7,6 +7,7 @@ from django.contrib.auth.hashers import check_password
 from django.contrib.auth.password_validation import (
     password_validators_help_texts, validate_password,
 )
+from django.utils.html import escape
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
@@ -57,7 +58,7 @@ class AuthenticationForm(forms.Form):
 
         if email is not None and password:
             try:
-                u = self.request.organizer.customers.get(email=email)
+                u = self.request.organizer.customers.get(email=email.lower(), provider__isnull=True)
             except Customer.DoesNotExist:
                 Customer().set_password(password)
             else:
@@ -183,19 +184,7 @@ class RegistrationForm(forms.Form):
         customer.set_unusable_password()
         customer.save()
         customer.log_action('pretix.customer.created', {})
-        ctx = customer.get_email_context()
-        token = TokenGenerator().make_token(customer)
-        ctx['url'] = build_absolute_uri(self.request.organizer,
-                                        'presale:organizer.customer.activate') + '?id=' + customer.identifier + '&token=' + token
-        mail(
-            customer.email,
-            _('Activate your account at {organizer}').format(organizer=self.request.organizer.name),
-            self.request.organizer.settings.mail_text_customer_registration,
-            ctx,
-            locale=customer.locale,
-            customer=customer,
-            organizer=customer.organizer,
-        )
+        customer.send_activation_mail()
         return customer
 
 
@@ -260,7 +249,8 @@ class ResetPasswordForm(forms.Form):
         if 'email' not in self.cleaned_data:
             return
         try:
-            self.customer = self.request.organizer.customers.get(email=self.cleaned_data['email'])
+            self.customer = self.request.organizer.customers.get(email=self.cleaned_data['email'].lower()
+                                                                 , provider__isnull=True)
             return self.customer.email
         except Customer.DoesNotExist:
             raise forms.ValidationError(self.error_messages['unknown'], code='unknown')
@@ -381,6 +371,13 @@ class ChangeInfoForm(forms.ModelForm):
             titles=request.organizer.settings.name_scheme_titles,
             label=_('Name'),
         )
+        if self.instance.provider_id is not None:
+            self.fields['email'].disabled = True
+            self.fields['email'].help_text = _(
+                'To change your email address, change it in your {provider} account and then log out and log in '
+                'again.'
+            ).format(provider=escape(self.instance.provider.name))
+            del self.fields['password_current']
 
     def clean_password_current(self):
         old_pw = self.cleaned_data.get('password_current')
@@ -410,13 +407,13 @@ class ChangeInfoForm(forms.ModelForm):
         email = self.cleaned_data.get('email')
         password_current = self.cleaned_data.get('password_current')
 
-        if email != self.instance.email and not password_current:
+        if email != self.instance.email and not password_current and self.instance.provider_id is None:
             raise forms.ValidationError(
                 self.error_messages['pw_current_wrong'],
                 code='pw_current_wrong',
             )
 
-        if email is not None:
+        if email is not None and self.instance.provider_id is not None:
             try:
                 self.request.organizer.customers.exclude(pk=self.instance.pk).get(email=email)
             except Customer.DoesNotExist:
