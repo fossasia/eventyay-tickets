@@ -25,7 +25,8 @@ from rest_framework import serializers
 from pretix.api.serializers.fields import (
     ListMultipleChoiceField, UploadedFileField,
 )
-from pretix.api.serializers.i18n import I18nField
+from pretix.api.serializers.i18n import I18nField, I18nURLField
+from pretix.base.forms import I18nMarkdownTextarea, I18nURLFormField
 from pretix.base.models.tax import TaxRule
 from pretix.base.reldate import (
     RelativeDateField, RelativeDateTimeField, RelativeDateWrapper,
@@ -1377,6 +1378,17 @@ DEFAULTS = {
         ),
         'serializer_class': serializers.URLField,
     },
+    'privacy_url': {
+        'default': None,
+        'type': LazyI18nString,
+        'form_class': I18nURLFormField,
+        'form_kwargs': dict(
+            label=_("Privacy Policy URL"),
+            help_text=_(""),
+            widget=I18nTextInput,
+        ),
+        'serializer_class': I18nURLField,
+    },
     'confirm_texts': {
         'default': LazyI18nStringList(),
         'type': LazyI18nStringList,
@@ -2259,6 +2271,77 @@ Your {event} team"""))
             label=_('Validity of gift card codes in years'),
             help_text=_('If you set a number here, gift cards will by default expire at the end of the year after this '
                         'many years. If you keep it empty, gift cards do not have an explicit expiry date.'),
+        )
+    },
+    'cookie_consent': {
+        'default': 'False',
+        'form_class': forms.BooleanField,
+        'serializer_class': serializers.BooleanField,
+        'form_kwargs': dict(
+            label=_("Enable cookie consent management features"),
+        ),
+        'type': bool,
+    },
+    'cookie_consent_dialog_text': {
+        'default': LazyI18nString.from_gettext(gettext_noop(
+            'By clicking "Accept all cookies", you agree to the storing of cookies and use of similar technologies on '
+            'your device.'
+        )),
+        'type': LazyI18nString,
+        'serializer_class': I18nField,
+        'form_class': I18nFormField,
+        'form_kwargs': dict(
+            label=_("Dialog text"),
+            widget=I18nMarkdownTextarea,
+            widget_kwargs={'attrs': {'rows': '3', 'data-display-dependency': '#id_settings-cookie_consent'}},
+        )
+    },
+    'cookie_consent_dialog_text_secondary': {
+        'default': LazyI18nString.from_gettext(gettext_noop(
+            'We use cookies and similar technologies to gather data that allows us to improve this website and our '
+            'offerings. If you do not agree, we will only use cookies if they are essential to providing the services '
+            'this website offers.'
+        )),
+        'type': LazyI18nString,
+        'serializer_class': I18nField,
+        'form_class': I18nFormField,
+        'form_kwargs': dict(
+            label=_("Secondary dialog text"),
+            widget=I18nMarkdownTextarea,
+            widget_kwargs={'attrs': {'rows': '3', 'data-display-dependency': '#id_settings-cookie_consent'}},
+        )
+    },
+    'cookie_consent_dialog_title': {
+        'default': LazyI18nString.from_gettext(gettext_noop('Privacy settings')),
+        'type': LazyI18nString,
+        'serializer_class': I18nField,
+        'form_class': I18nFormField,
+        'form_kwargs': dict(
+            label=_('Dialog title'),
+            widget=I18nTextInput,
+            widget_kwargs={'attrs': {'data-display-dependency': '#id_settings-cookie_consent'}},
+        )
+    },
+    'cookie_consent_dialog_button_yes': {
+        'default': LazyI18nString.from_gettext(gettext_noop('Accept all cookies')),
+        'type': LazyI18nString,
+        'serializer_class': I18nField,
+        'form_class': I18nFormField,
+        'form_kwargs': dict(
+            label=_('"Accept" button description'),
+            widget=I18nTextInput,
+            widget_kwargs={'attrs': {'data-display-dependency': '#id_settings-cookie_consent'}},
+        )
+    },
+    'cookie_consent_dialog_button_no': {
+        'default': LazyI18nString.from_gettext(gettext_noop('Required cookies only')),
+        'type': LazyI18nString,
+        'serializer_class': I18nField,
+        'form_class': I18nFormField,
+        'form_kwargs': dict(
+            label=_('"Reject" button description'),
+            widget=I18nTextInput,
+            widget_kwargs={'attrs': {'data-display-dependency': '#id_settings-cookie_consent'}},
         )
     },
     'seating_choice': {

@@ -72,6 +72,23 @@
                         {% bootstrap_field sform.giftcard_expiry_years layout="control" %}
                         {% bootstrap_field sform.giftcard_length layout="control" %}
                     </fieldset>
+                    <fieldset id="tab-organizer-privacy">
+                        <legend>{% trans "Privacy" %}</legend>
+                        {% bootstrap_field sform.privacy_url layout="control" %}
+                        <div class="alert alert-info">
+                            <p>
+                                {% blocktrans trimmed %}
+                                   <li> The above links that you are providing will be the part of your website which will explain about
+                                    how you use the data collected in your ticket shop.</li>
+                                    <li>As a Website Owner/Administrator we had to follow certain rules and regulations, with privacy policies there are required consents as well.
+                                    As work on the cookie consent for the website from user is in development and as soon as it 
+                                    will finalize,we will implement this feature.</li>
+                                    <li>Hence keeping in mind to regulate the rules and restrictions ,the 
+                                    Cookie feature is not implemented yet and will be initiated soon to the website.</li>
+                                {% endblocktrans %}
+                            </p>
+                        </div>
+                    </fieldset>
                 </div>
             </div>
             <div class="col-xs-12 col-lg-2">
