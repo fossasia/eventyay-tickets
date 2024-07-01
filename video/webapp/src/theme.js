@@ -53,7 +53,7 @@ const DEFAULT_COLORS = {
 }
 
 const DEFAULT_LOGO = {
-	url: '/venueless-logo-full-white.svg',
+	url: '/eventyay-video-logo.svg',
 	fitToWidth: false
 }
 
