@@ -80,7 +80,7 @@ DEFAULTS = {
         'form_kwargs': dict(
             label=_("Allow customers to create an account"),
             help_text=_(
-                "This will allow customers to sign up for an account on your ticket shop.")
+                "Allow customers to sign up for an account on your ticket shop.")
         )
     },
     'customer_accounts_native': {

@@ -463,6 +463,16 @@ class OrganizerSettingsView(views.APIView):
 
 
 with scopes_disabled():
+    """
+        Filter for Customer model based on the email field.
+
+        Attributes:
+            email (django_filters.CharFilter): A case-insensitive exact match filter for the email field.
+
+        Meta:
+            model (Customer): The model to filter.
+            fields (list): The fields to filter by.
+    """
     class CustomerFilter(FilterSet):
         email = django_filters.CharFilter(field_name='email', lookup_expr='iexact')
 
@@ -493,6 +503,12 @@ class CustomerViewSet(viewsets.ModelViewSet):
 
     @transaction.atomic()
     def perform_create(self, serializer, send_email=False):
+        """
+        Create a new customer.
+        @param serializer: serializer instance
+        @param send_email: allow to send mail or not
+        @return: created customer
+        """
         customer = serializer.save(organizer=self.request.organizer, password=make_password(None))
         serializer.instance.log_action(
             'pretix.customer.created',
@@ -513,6 +529,11 @@ class CustomerViewSet(viewsets.ModelViewSet):
 
     @transaction.atomic()
     def perform_update(self, serializer):
+        """
+        Update a customer.
+        @param serializer: serializer instance
+        @return: customer instance
+        """
         inst = serializer.save(organizer=self.request.organizer)
         serializer.instance.log_action(
             'pretix.customer.changed',
@@ -525,6 +546,12 @@ class CustomerViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["POST"])
     @transaction.atomic()
     def anonymize(self, request, **kwargs):
+        """
+        Anonymize a customer.
+        @param request: request instance
+        @param kwargs: arguments
+        @return: result response
+        """
         o = self.get_object()
         o.anonymize()
         o.log_action('pretix.customer.anonymized', user=self.request.user, auth=self.request.auth)

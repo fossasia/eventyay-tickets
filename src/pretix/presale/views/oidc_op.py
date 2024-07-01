@@ -7,7 +7,7 @@ from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
 
 from Crypto.PublicKey import RSA
 from django.db import transaction
-from django.http import Http404, HttpResponse, JsonResponse
+from django.http import Http404, HttpResponse, JsonResponse, HttpRequest
 from django.shortcuts import redirect, render
 from django.utils.crypto import get_random_string
 from django.utils.decorators import method_decorator
@@ -59,15 +59,35 @@ class AuthorizeView(View):
         )
 
     def _construct_redirect_uri(self, redirect_uri, response_mode, params):
+        """
+        Constructs a redirect URI by appending the given parameters in the specified response mode.
+
+        Args:
+            redirect_uri (str): The base redirect URI.
+            response_mode (str): The response mode to use ('query' or 'fragment').
+            params (dict): The parameters to append to the URI.
+
+        Returns:
+            str: The constructed redirect URI.
+        """
+        # Parse the redirect URI
         ru = urlparse(redirect_uri)
-        qs = parse_qs(ru.query)
-        fm = parse_qs(ru.fragment)
+
+        # Parse the query and fragment components of the URI
+        query_params = parse_qs(ru.query)
+        fragment_params = parse_qs(ru.fragment)
+
+        # Update the query or fragment parameters based on the response mode
         if response_mode == 'query':
-            qs.update(params)
+            query_params.update(params)
         elif response_mode == 'fragment':
-            fm.update(params)
-        query = urlencode(qs, doseq=True)
-        fragment = urlencode(fm, doseq=True)
+            fragment_params.update(params)
+
+        # Encode the updated parameters
+        query = urlencode(query_params, doseq=True)
+        fragment = urlencode(fragment_params, doseq=True)
+
+        # Construct and return the new URI with the updated parameters
         return urlunparse((ru.scheme, ru.netloc, ru.path, ru.params, query, fragment))
 
     def _redirect_error(self, error, error_description, redirect_uri, response_mode, state):
@@ -78,13 +98,35 @@ class AuthorizeView(View):
             self._construct_redirect_uri(redirect_uri, response_mode, qs)
         )
 
-    def _require_login(self, request, client, scope, redirect_uri, response_type, response_mode, state, nonce):
-        form = AuthenticationForm(data=request.POST if "login-email" in request.POST else None, request=request,
-                                  prefix="login")
+    def _require_login(self, request: HttpRequest, client, scope, redirect_uri, response_type, response_mode, state,
+                       nonce):
+        """
+        Handles the login requirement for a customer.
+
+        Args:
+            request (HttpRequest): The HTTP request object containing the customer's information.
+            client (object): The client object for the login request.
+            scope (str): The requested scope.
+            redirect_uri (str): The redirect URI after successful login.
+            response_type (str): The response type for the login request.
+            response_mode (str): The response mode for the login request.
+            state (str): The state parameter for maintaining state between request and callback.
+            nonce (str): A unique string to associate the token with the authentication request.
+
+        Returns:
+            HttpResponse: The response to the login requirement.
+        """
+        form = AuthenticationForm(
+            data=request.POST if "login-email" in request.POST else None,
+            request=request,
+            prefix="login"
+        )
+
         if "login-email" in request.POST and form.is_valid():
             customer_login(request, form.get_customer())
-            return self._success(client, scope, redirect_uri, response_type, response_mode, state, nonce,
-                                 form.get_customer())
+            return self._success(
+                client, scope, redirect_uri, response_type, response_mode, state, nonce, form.get_customer()
+            )
         else:
             return render(request, 'pretixpresale/organizers/customer_login.html', {
                 'providers': [],
@@ -92,11 +134,28 @@ class AuthorizeView(View):
             })
 
     def _success(self, client, scope, redirect_uri, response_type, response_mode, state, nonce, customer):
-        response_type = response_type.split(' ')
+        """
+        Handles the successful authentication response.
+
+        Args:
+            client (object): The client object for the authentication request.
+            scope (list): The requested scopes.
+            redirect_uri (str): The redirect URI after successful login.
+            response_type (str): The response type for the authentication request.
+            response_mode (str): The response mode for the authentication request.
+            state (str): The state parameter for maintaining state between request and callback.
+            nonce (str): A unique string to associate the token with the authentication request.
+            customer (object): The authenticated customer.
+
+        Returns:
+            HttpResponse: The redirect response with the appropriate query parameters.
+        """
+        response_types = response_type.split(' ')
         qs = {}
         id_token_kwargs = {}
 
-        if 'code' in response_type:
+        # Handle authorization code flow
+        if 'code' in response_types:
             grant = client.grants.create(
                 customer=customer,
                 scope=' '.join(scope),
@@ -109,9 +168,11 @@ class AuthorizeView(View):
             qs['code'] = grant.code
             id_token_kwargs['with_code'] = grant.code
 
+        # Set token expiration time
         expires = now() + timedelta(hours=24)
 
-        if 'token' in response_type:
+        # Handle implicit flow (access token)
+        if 'token' in response_types:
             token = client.access_tokens.create(
                 customer=customer,
                 token=get_random_string(128),
@@ -123,7 +184,8 @@ class AuthorizeView(View):
             qs['expires_in'] = int((token.expires - now()).total_seconds())
             id_token_kwargs['with_access_token'] = token.token
 
-        if 'id_token' in response_type:
+        # Handle ID token
+        if 'id_token' in response_types:
             qs['id_token'] = generate_id_token(
                 customer,
                 client,
@@ -131,19 +193,33 @@ class AuthorizeView(View):
                 nonce,
                 ' '.join(scope),
                 expires,
-                scope_claims='token' not in response_type and 'code' not in response_type,
+                scope_claims='token' not in response_types and 'code' not in response_types,
                 **id_token_kwargs,
             )
 
+        # Include state in the response if provided
         if state:
             qs['state'] = state
 
-        r = redirect(self._construct_redirect_uri(redirect_uri, response_mode, qs))
-        r['Cache-Control'] = 'no-store'
-        r['Pragma'] = 'no-cache'
-        return r
+        # Construct the redirect URI with the query parameters
+        redirect_uri = self._construct_redirect_uri(redirect_uri, response_mode, qs)
+        response = redirect(redirect_uri)
+        response['Cache-Control'] = 'no-store'
+        response['Pragma'] = 'no-cache'
+
+        return response
 
     def _process_auth_request(self, request, request_data):
+        """
+        Processes the authentication request based on the provided request data.
+
+        Args:
+            request (HttpRequest): The HTTP request object containing the customer's information.
+            request_data (dict): A dictionary containing the authentication request parameters.
+
+        Returns:
+            HttpResponse: The appropriate response based on the authentication request processing.
+        """
         response_mode = request_data.get("response_mode")
         client_id = request_data.get("client_id")
         state = request_data.get("state")
@@ -153,21 +229,26 @@ class AuthorizeView(View):
         response_type = request_data.get("response_type")
         scope = request_data.get("scope", "").split(" ")
 
+        # Check if client_id is provided
         if not client_id:
             return self._final_error("invalid_request", "client_id missing")
 
+        # Validate client_id
         try:
             client = self.request.organizer.sso_clients.get(is_active=True, client_id=client_id)
         except CustomerSSOClient.DoesNotExist:
             return self._final_error("unauthorized_client", "invalid client_id")
 
+        # Validate redirect_uri
         redirect_uri = request_data.get("redirect_uri")
         if not redirect_uri or not client.allow_redirect_uri(redirect_uri):
             return self._final_error("invalid_request_uri", "invalid redirect_uri")
 
+        # Validate response_type
         if response_type not in RESPONSE_TYPES_SUPPORTED:
             return self._final_error("unsupported_response_type", "response_type unsupported")
 
+        # Validate response_mode
         if response_type != "code" and response_mode == "query":
             return self._final_error("invalid_request",
                                      "response_mode query must not be used with implicit or hybrid flow")
@@ -176,22 +257,27 @@ class AuthorizeView(View):
         elif response_mode not in ("query", "fragment"):
             return self._final_error("invalid_request", "invalid response_mode")
 
+        # Check if request parameter is present
         if "request" in request_data:
             return self._redirect_error("request_not_supported", "request_not_supported", redirect_uri, response_mode,
                                         state)
 
+        # Validate nonce for implicit or hybrid flow
         if response_type not in ("code", "code token") and not nonce:
             return self._redirect_error("invalid_request", "nonce is required in implicit or hybrid flow", redirect_uri,
                                         response_mode, state)
 
+        # Ensure 'openid' scope is requested
         if "openid" not in scope:
             return self._redirect_error("invalid_scope", "scope 'openid' must be requested", redirect_uri,
                                         response_mode, state)
 
+        # Check if id_token_hint is provided
         if "id_token_hint" in request_data:
             self._redirect_error("invalid_request", "id_token_hint currently not supported by this server",
                                  redirect_uri, response_mode, state)
 
+        # Check for valid session
         has_valid_session = bool(request.customer)
         if has_valid_session and max_age:
             try:
@@ -205,6 +291,7 @@ class AuthorizeView(View):
         elif prompt in ("select_account", "login"):
             has_valid_session = False
 
+        # Process based on session validity
         if has_valid_session:
             return self._success(client, scope, redirect_uri, response_type, response_mode, state, nonce,
                                  request.customer)

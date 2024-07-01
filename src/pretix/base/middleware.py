@@ -85,10 +85,24 @@ class LocaleMiddleware(MiddlewareMixin):
 
 
 def get_language_from_customer_settings(request: HttpRequest) -> str:
-    if getattr(request, 'customer', None):
+    """
+    Retrieves the preferred language code from the customer's settings in the request.
+
+    Args:
+        request (HttpRequest): The HTTP request object containing the customer's information.
+
+    Returns:
+        str: The preferred language code if valid and supported, otherwise an empty string.
+    """
+    # Check if the request has a customer attribute and it is not None
+    if hasattr(request, 'customer') and request.customer:
         lang_code = request.customer.locale
-        if lang_code in _supported and lang_code is not None and check_for_language(lang_code):
+        # Validate the language code
+        if lang_code and lang_code in _supported and check_for_language(lang_code):
             return lang_code
+
+    return ''  # Return an empty string if no valid language code is found
+
 
 def get_language_from_user_settings(request: HttpRequest) -> str:
     if request.user.is_authenticated:

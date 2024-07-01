@@ -43,7 +43,16 @@ class RedirectBackMixin:
     redirect_field_name = 'next'
 
     def get_redirect_url(self, redirect_to=None):
-        """Return the user-originating redirect URL if it's safe."""
+        """
+        Returns the user-originating redirect URL if it's safe.
+
+        Args:
+            redirect_to (str, optional): The URL to redirect to. If not provided,
+                                         it checks POST and GET parameters.
+
+        Returns:
+            str: The safe redirect URL or an empty string if the URL is not safe.
+        """
         redirect_to = redirect_to or self.request.POST.get(
             self.redirect_field_name,
             self.request.GET.get(self.redirect_field_name, '')
@@ -107,15 +116,43 @@ class LoginView(RedirectBackMixin, FormView):
 
 
 class LogoutView(View):
+    """
+    A view that handles the logout process for a customer.
+
+    Attributes:
+        redirect_field_name (str): The name of the query parameter used for redirection after logout. Defaults to 'next'.
+    """
+
     redirect_field_name = 'next'
 
     @method_decorator(never_cache)
     def dispatch(self, request, *args, **kwargs):
+        """
+        Dispatches the request to the appropriate handler. This method logs out the customer and redirects them.
+
+        Args:
+            request (HttpRequest): The HTTP request object.
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+
+        Returns:
+            HttpResponseRedirect: Redirects to the next page after logout.
+        """
         customer_logout(request)
         next_page = self.get_next_page()
         return HttpResponseRedirect(next_page)
 
     def get_next_page(self):
+        """
+        Determines the next page to redirect to after logout.
+
+        This method checks for a redirect URL in the POST or GET parameters.
+        If a valid URL is found, it is used as the next page.
+        Otherwise, the user is redirected to the default page.
+
+        Returns:
+            str: The URL of the next page to redirect to.
+        """
         next_page = eventreverse(self.request.organizer, 'presale:organizer.index', kwargs={})
 
         if (self.redirect_field_name in self.request.POST or
@@ -129,8 +166,6 @@ class LogoutView(View):
                 allowed_hosts=None,
                 require_https=self.request.is_secure(),
             )
-            # Security check -- Ensure the user-originating redirection URL is
-            # safe.
             if not url_is_safe:
                 next_page = self.request.path
         return next_page
@@ -145,18 +180,43 @@ class RegistrationView(RedirectBackMixin, FormView):
     @method_decorator(csrf_protect)
     @method_decorator(never_cache)
     def dispatch(self, request, *args, **kwargs):
+        """
+        Dispatches the request to the appropriate handler with additional checks and protections.
+
+        Args:
+            request (HttpRequest): The HTTP request object.
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+
+        Returns:
+            HttpResponseRedirect or HttpResponse: Redirects authenticated users to the success URL or
+            proceeds with the normal dispatch process for other requests.
+
+        Raises:
+            Http404: If customer accounts or native customer accounts features are not enabled.
+            ValueError: If a redirection loop is detected for authenticated users.
+        """
+        # Check if customer accounts are enabled
         if not request.organizer.settings.customer_accounts:
             raise Http404('Feature not enabled')
+
+        # Check if native customer accounts are enabled
         if not request.organizer.settings.customer_accounts_native:
             raise Http404('Feature not enabled')
+
+        # Redirect authenticated users to the success URL
         if self.redirect_authenticated_user and self.request.customer:
             redirect_to = self.get_success_url()
+
+            # Prevent redirection loop
             if redirect_to == self.request.path:
                 raise ValueError(
                     "Redirection loop for authenticated user detected. Check that "
                     "your LOGIN_REDIRECT_URL doesn't point to a login page."
                 )
             return HttpResponseRedirect(redirect_to)
+
+        # Proceed with the normal dispatch process
         return super().dispatch(request, *args, **kwargs)
 
     def get_form_kwargs(self):
@@ -288,7 +348,6 @@ class ProfileView(CustomerRequiredMixin, ListView):
         qs = Order.objects.filter(
             Q(customer=self.request.customer)
             | Q(email__iexact=self.request.customer.email)
-            # This is safe because we only let customers with verified emails log in
         ).select_related('event').order_by('-datetime')
         return qs
 
@@ -486,7 +545,6 @@ class SSOLoginView(RedirectBackMixin, View):
                 not KnownDomain.objects.filter(domainname=popup_origin_parsed.hostname, organizer=self.request.organizer.pk).exists()
             )
             if untrusted:
-                # Do not accept faked origins
                 popup_origin = None
 
         nonce = get_random_string(32)

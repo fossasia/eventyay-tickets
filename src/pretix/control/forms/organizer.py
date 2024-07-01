@@ -235,7 +235,7 @@ class OrganizerSettingsForm(SettingsForm):
     )
     name_scheme = forms.ChoiceField(
         label=_("Name format"),
-        help_text=_("This defines how pretix will ask for human names. Changing this after you already received "
+        help_text=_("Changing this after you already received "
                     "orders might lead to unexpected behavior when sorting or changing names."),
         required=True,
     )
