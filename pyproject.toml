@@ -57,6 +57,8 @@ dependencies = [
         'sentry-sdk==1.15.*',
         'babel',
         'paypalrestsdk==1.13.*',
+        'paypal-checkout-serversdk==1.0.*',
+        'PyJWT==2.8.*',
         'pycparser==2.21',
         'django-redis==5.4.*',
         'redis==5.0.*',

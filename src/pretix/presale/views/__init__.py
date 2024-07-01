@@ -13,7 +13,7 @@ from django_scopes import scopes_disabled
 from pretix.base.i18n import language
 from pretix.base.models import (
     CartPosition, InvoiceAddress, ItemAddOn, OrderPosition, Question,
-    QuestionAnswer, QuestionOption,
+    QuestionAnswer, QuestionOption, TaxRule,
 )
 from pretix.base.services.cart import get_fees
 from pretix.helpers.cookies import set_cookie_without_samesite
@@ -61,7 +61,7 @@ class CartMixin:
     def invoice_address(self):
         return cached_invoice_address(self.request)
 
-    def get_cart(self, answers=False, queryset=None, order=None, downloads=False):
+    def get_cart(self, answers=False, queryset=None, order=None, downloads=False, payments=None):
         if queryset is not None:
             prefetch = []
             if answers:
@@ -169,10 +169,14 @@ class CartMixin:
         if order:
             fees = order.fees.all()
         elif positions:
-            fees = get_fees(
-                self.request.event, self.request, total, self.invoice_address, self.cart_session.get('payment'),
-                cartpos
-            )
+            try:
+                fees = get_fees(
+                    self.request.event, self.request, total, self.invoice_address,
+                    payments if payments is not None else self.cart_session.get('payments', []),
+                    cartpos
+                )
+            except TaxRule.SaleNotAllowed:
+                fees = []
         else:
             fees = []
 

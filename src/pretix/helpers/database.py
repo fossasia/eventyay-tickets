@@ -1,6 +1,6 @@
 import contextlib
 
-from django.db import connection, transaction
+from django.db import transaction, connection
 from django.db.models import Aggregate, Field, Lookup
 from django.db.models.expressions import OrderBy
 from django.utils.functional import lazy
@@ -107,7 +107,9 @@ class NotEqual(Lookup):
         params = lhs_params + rhs_params
         return '%s <> %s' % (lhs, rhs), params
 
+
 def _of_self():
     return ("self",) if connection.features.has_select_for_update_of else ()
+
 
 OF_SELF = lazy(_of_self, tuple)()

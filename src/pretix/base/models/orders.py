@@ -972,7 +972,8 @@ class Order(LockModel, LoggedModel):
             yield op
 
     def tagged_secret(self, tag, secret_length=64):
-        return salted_hmac(key_salt=b"", value=tag, secret=self.secret, algorithm="sha256").hexdigest()[:secret_length]
+        return salted_hmac(value=tag, key_salt=b"", algorithm="sha256",
+                           secret=self.secret or self.secret).hexdigest()[:secret_length]
 
 
 def answerfile_name(instance, filename: str) -> str:

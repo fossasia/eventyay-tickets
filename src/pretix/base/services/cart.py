@@ -1,3 +1,4 @@
+import uuid
 from collections import Counter, defaultdict, namedtuple
 from datetime import datetime, time, timedelta
 from decimal import Decimal
@@ -1075,48 +1076,86 @@ def update_tax_rates(event: Event, cart_id: str, invoice_address: InvoiceAddress
     return totaldiff
 
 
-def get_fees(event, request, total, invoice_address, provider, positions):
+def add_payment_to_cart(request, provider, min_value: Optional[Decimal] = None, max_value: Optional[Decimal] = None,
+                        info_data: Optional[dict] = None):
+    """
+    Add a payment instrument to the cart session.
+
+    :param request: The current HTTP request context.
+    :param provider: An instance of the payment provider.
+    :param min_value: The minimum value this payment instrument supports, or None for unlimited.
+    :param max_value: The maximum value this payment instrument supports, or None for unlimited.
+                      (Note: Highly discouraged for payment providers with fees.)
+    :param info_data: A dictionary of additional information for the payment.
+    :return: None
+    """
     from pretix.presale.views.cart import cart_session
 
-    fees = []
-    for recv, resp in fee_calculation_for_cart.send(sender=event, request=request, invoice_address=invoice_address,
-                                                    total=total, positions=positions):
-        if resp:
-            fees += resp
-
-    total = total + sum(f.value for f in fees)
-
     cs = cart_session(request)
-    if cs.get('gift_cards'):
-        gcs = cs['gift_cards']
-        gc_qs = event.organizer.accepted_gift_cards.filter(pk__in=cs.get('gift_cards'), currency=event.currency)
-        for gc in gc_qs:
-            if gc.testmode != event.testmode:
-                gcs.remove(gc.pk)
-                continue
-            fval = Decimal(gc.value)  # TODO: don't require an extra query
-            fval = min(fval, total)
-            if fval > 0:
-                total -= fval
-                fees.append(OrderFee(
-                    fee_type=OrderFee.FEE_TYPE_GIFTCARD,
-                    internal_type='giftcard',
-                    description=gc.secret,
-                    value=-1 * fval,
-                    tax_rate=Decimal('0.00'),
-                    tax_value=Decimal('0.00'),
-                    tax_rule=TaxRule.zero()
-                ))
-        cs['gift_cards'] = gcs
+    payments = cs.setdefault('payments', [])
 
-    if provider and total != 0:
-        provider = event.get_payment_providers().get(provider)
-        if provider:
-            payment_fee = provider.calculate_fee(total)
+    payments.append({
+        'id': str(uuid.uuid4()),
+        'provider': provider.identifier,
+        'multi_use_supported': provider.multi_use_supported,
+        'min_value': str(min_value) if min_value is not None else None,
+        'max_value': str(max_value) if max_value is not None else None,
+        'info_data': info_data or {},
+    })
+
+
+def get_fees(event, request, total, invoice_address, payments, positions):
+    """
+    Calculate fees associated with the cart.
+
+    :param event: The event object.
+    :param request: The current HTTP request context.
+    :param total: The total amount to be paid.
+    :param invoice_address: The invoice address associated with the order.
+    :param payments: List of payment requests with details.
+    :param positions: List of positions in the cart.
+    :return: List of fees associated with the cart.
+    """
+    if payments and not isinstance(payments, list):
+        raise TypeError("payments must be a list")
+
+    fees = []
+
+    # Calculate fees using fee calculation signals
+    for recv, resp in fee_calculation_for_cart.send(sender=event, request=request, invoice_address=invoice_address,
+                                                    total=total, positions=positions, payment_requests=payments):
+        if resp:
+            fees.extend(resp)
+
+    # Calculate fees for each payment method based on total and conditions
+    if total != 0 and payments:
+        total_remaining = total
+
+        for p in payments:
+            if p.get('min_value') and total_remaining < Decimal(p['min_value']):
+                continue
+
+            to_pay = total_remaining
+            if p.get('max_value') and to_pay > Decimal(p['max_value']):
+                to_pay = min(to_pay, Decimal(p['max_value']))
+
+            pprov = event.get_payment_providers(cached=True).get(p['provider'])
+            if not pprov:
+                continue
+
+            payment_fee = pprov.calculate_fee(to_pay)
+            total_remaining += payment_fee
+            to_pay += payment_fee
+
+            if p.get('max_value') and to_pay > Decimal(p['max_value']):
+                to_pay = min(to_pay, Decimal(p['max_value']))
+
+            total_remaining -= to_pay
 
             if payment_fee:
                 payment_fee_tax_rule = event.settings.tax_rate_default or TaxRule.zero()
-                payment_fee_tax = payment_fee_tax_rule.tax(payment_fee, base_price_is='gross', invoice_address=invoice_address)
+                payment_fee_tax = payment_fee_tax_rule.tax(payment_fee, base_price_is='gross',
+                                                           invoice_address=invoice_address)
                 fees.append(OrderFee(
                     fee_type=OrderFee.FEE_TYPE_PAYMENT,
                     value=payment_fee,
