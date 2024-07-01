@@ -1,4 +1,4 @@
-# replacement for jsonfallback functions copied from
+# replacement for jsonfallback functions copied from 
 # https://github.com/raphaelm/django-jsonfallback
 
 import copy
@@ -7,7 +7,6 @@ from django.db.models import Expression, JSONField
 
 def postgres_compile_json_path(key_transforms):
     return "{" + ','.join(key_transforms) + "}"
-
 
 def sqlite_compile_json_path(key_transforms):
     path = ['$']
@@ -27,7 +26,6 @@ class JSONExtract(Expression):
         self.path = path
         self.source_expression = self._parse_expressions(expression)[0]
         self.extra = extra
-
 
     def resolve_expression(self, query=None, allow_joins=True, reuse=None, summarize=False, for_save=False):
         c = self.copy()

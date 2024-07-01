@@ -41,7 +41,7 @@ from pretix.base.signals import register_ticket_outputs
 from pretix.base.templatetags.rich_text import markdown_compile_email
 from pretix.control.forms.event import (
     CancelSettingsForm, CommentForm, ConfirmTextFormset, EventDeleteForm,
-    EventMetaValueForm, EventSettingsForm, EventUpdateForm,
+    EventFooterLinkFormset, EventMetaValueForm, EventSettingsForm, EventUpdateForm,
     InvoiceSettingsForm, ItemMetaPropertyForm, MailSettingsForm,
     PaymentSettingsForm, ProviderForm, QuickSetupForm,
     QuickSetupProductFormSet, TaxRuleForm, TaxRuleLineFormSet,
@@ -151,6 +151,7 @@ class EventUpdate(DecoupleMixin, EventSettingsViewMixin, EventPermissionRequired
         context['meta_forms'] = self.meta_forms
         context['item_meta_property_formset'] = self.item_meta_property_formset
         context['confirm_texts_formset'] = self.confirm_texts_formset
+        context['footer_links_formset'] = self.footer_links_formset
         return context
 
     @transaction.atomic
@@ -160,6 +161,7 @@ class EventUpdate(DecoupleMixin, EventSettingsViewMixin, EventPermissionRequired
         self.save_meta()
         self.save_item_meta_property_formset(self.object)
         self.save_confirm_texts_formset(self.object)
+        self.save_footer_links_formset(self.object)
         change_css = False
 
         if self.sform.has_changed() or self.confirm_texts_formset.has_changed():
@@ -169,6 +171,10 @@ class EventUpdate(DecoupleMixin, EventSettingsViewMixin, EventPermissionRequired
             self.request.event.log_action('pretix.event.settings', user=self.request.user, data=data)
             if any(p in self.sform.changed_data for p in SETTINGS_AFFECTING_CSS):
                 change_css = True
+        if self.footer_links_formset.has_changed():
+            self.request.event.log_action('pretix.event.footerlinks.changed', user=self.request.user, data={
+                'data': self.footer_links_formset.cleaned_data
+            })
         if form.has_changed():
             self.request.event.log_action('pretix.event.changed', user=self.request.user, data={
                 k: (form.cleaned_data.get(k).name
@@ -203,7 +209,8 @@ class EventUpdate(DecoupleMixin, EventSettingsViewMixin, EventPermissionRequired
     def post(self, request, *args, **kwargs):
         form = self.get_form()
         if form.is_valid() and self.sform.is_valid() and all([f.is_valid() for f in self.meta_forms]) and \
-                self.item_meta_property_formset.is_valid() and self.confirm_texts_formset.is_valid():
+                self.item_meta_property_formset.is_valid() and self.confirm_texts_formset.is_valid() and \
+                self.footer_links_formset.is_valid():
             # reset timezone
             zone = timezone(self.sform.cleaned_data['timezone'])
             event = form.instance
@@ -246,6 +253,11 @@ class EventUpdate(DecoupleMixin, EventSettingsViewMixin, EventPermissionRequired
                 continue
             form.instance.event = obj
             form.save()
+            form.instance.log_action(
+                'pretix.event.item_meta_property.added',
+                user=self.request.user,
+                data=form.cleaned_data
+            )
 
     @cached_property
     def confirm_texts_formset(self):
@@ -260,6 +272,14 @@ class EventUpdate(DecoupleMixin, EventSettingsViewMixin, EventPermissionRequired
             for form_data in sorted(self.confirm_texts_formset.cleaned_data, key=operator.itemgetter("ORDER"))
             if not form_data.get("DELETE", False)
         )
+    
+    @cached_property
+    def footer_links_formset(self):
+        return EventFooterLinkFormset(self.request.POST if self.request.method == "POST" else None, event=self.object,
+                                      prefix="footer-links", instance=self.object)
+
+    def save_footer_links_formset(self, obj):
+        self.footer_links_formset.save()
 
 
 class EventPlugins(EventSettingsViewMixin, EventPermissionRequiredMixin, TemplateView, SingleObjectMixin):
