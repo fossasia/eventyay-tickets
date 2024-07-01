@@ -3,7 +3,7 @@ name = "eventyay"
 dynamic = ["version"]
 description = "the open source event solution"
 readme = "README.rst"
-requires-python = ">=3.11"
+requires-python = ">=3.8"
 license = {file = "LICENSE"}
 keywords = ["tickets", "events", "web", "shop", "ecommerce"]
 authors = [ {name = "eventyay", email = "info@eventyay.com"}, ]
@@ -15,8 +15,9 @@ classifiers = [
   "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
   "Environment :: Web Environment",
   "License :: OSI Approved :: Apache License, Version 2.0",
-  "Programming Language :: Python :: 3.11",
-  "Framework :: Django :: 4.2",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Framework :: Django :: 3.2",
 ]
 dependencies = [
         'Django==4.2.*',
@@ -34,7 +35,7 @@ dependencies = [
         'django-localflavor==4.0',
         'reportlab==4.0.*',
         'Pillow==9.5.*',
-        'pypdf==4.2.*',
+        'PyPDF2==2.12.*',
         'django-libsass==0.9',
         'libsass==0.22.*',
         'django-otp==1.2.*',
@@ -88,8 +89,6 @@ dependencies = [
         'protobuf==4.23.*',
         'cryptography>=3.4.2',
         'sepaxml==2.6.*',
-        'geoip2==4.*',
-        'paypalhttp==1.*',
 ]
 
 [project.optional-dependencies]
