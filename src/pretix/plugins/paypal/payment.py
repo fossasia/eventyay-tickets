@@ -288,7 +288,7 @@ class PaypalSettingsHolder(BasePaymentProvider):
                 ],
                 "partner_config_override": {
                     "partner_logo_url": urllib.parse.urljoin(settings.SITE_URL,
-                                                             static('pretixbase/img/pretix-logo.svg')),
+                                                             static('pretixbase/img/eventyay-logo.svg')),
                     "return_url": build_global_uri('plugins:paypal:isu.return', kwargs={
                         'organizer': self.event.organizer.slug,
                         'event': self.event.slug,
