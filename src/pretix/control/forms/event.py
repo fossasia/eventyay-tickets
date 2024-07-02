@@ -985,9 +985,27 @@ class MailSettingsForm(SettingsForm):
         widget=I18nTextarea,
     )
     smtp_use_custom = forms.BooleanField(
-        label=_("Use custom SMTP server"),
-        help_text=_("All mail related to your event will be sent over the smtp server specified by you."),
+        label=_("Use Custom Email"),
+        help_text=_("All mail related to your event will be sent over your specified email gateway."),
         required=False
+    )
+    send_grid_api_key = forms.CharField(
+        label=_("Sendgrid Token"),
+        required=True,
+        widget=forms.TextInput(attrs={'placeholder': 'SG.xxxxxxxx'})
+    )
+
+    smtp_select = [
+        
+        ('sendgrid', _("SendGrid")),
+        ('smtp', _("SMTP"))]
+
+
+    email_vendor = forms.ChoiceField(
+        label=_(""),
+        required=True,
+        widget=forms.RadioSelect,
+        choices=smtp_select
     )
     smtp_host = forms.CharField(
         label=_("Hostname"),

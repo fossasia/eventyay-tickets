@@ -23,8 +23,62 @@ from pretix.base.signals import (
     register_html_mail_renderers, register_mail_placeholders,
 )
 from pretix.base.templatetags.rich_text import markdown_compile_email
+import os
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail, Attachment, Bcc
 
 logger = logging.getLogger('pretix.base.email')
+
+
+class SendGridEmail():
+    api_key = ""
+    def __init__(self, api_key):
+        self.api_key = api_key
+
+    def test(self, from_addr):
+        message = Mail(
+            from_email=from_addr,
+            to_emails='testdummy@eventyay.com',
+            subject='Eventyay test email',
+            html_content='Eventyay test email')
+        sg = SendGridAPIClient(self.api_key)
+        sg.send(message)
+
+    def bytes_to_base64_string(self, value: bytes) -> str:
+        import base64
+        return base64.b64encode(value).decode('ASCII')
+    
+    def build_attachment(self, input):
+        
+        attachment = Attachment()
+        attachment.file_content = self.bytes_to_base64_string(input[1])
+        attachment.file_type = input[2]
+        attachment.file_name = input[0]
+        attachment.disposition = "attachment"
+        # attachment.content_id = "Balance Sheet"
+        return attachment
+
+
+    def send_messages(self, emails):
+        print("======================== send mess grid")
+        for email in emails:
+            message = Mail(
+                from_email=email.from_email,
+                to_emails=email.to,
+                subject=email.subject,
+                html_content=email.body)
+            sg = SendGridAPIClient(self.api_key)
+            bcc = []
+            for mail in email.bcc:
+                bcc.append(Bcc(mail))
+            message.bcc = bcc
+            attachments = []
+            for attachment in email.attachments:
+                
+                attachments.append(self.build_attachment(attachment))
+                
+            message.attachment = attachments
+            sg.send(message)
 
 
 class CustomSMTPBackend(EmailBackend):
