@@ -388,6 +388,11 @@ def get_global_navigation(request):
                     'url': reverse('control:global.update'),
                     'active': (url.url_name == 'global.update'),
                 },
+                {
+                    'label': _('Admin Information'),
+                    'url': reverse('control:global.information'),
+                    'active': (url.url_name == 'global.update'),
+                },
             ]
         })
 
