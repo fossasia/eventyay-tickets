@@ -493,7 +493,7 @@ class CustomerUpdateForm(forms.ModelForm):
 
     class Meta:
         model = Customer
-        fields = ['is_active', 'name_parts', 'email', 'is_verified', 'locale']
+        fields = ['is_active', 'name_parts', 'email', 'is_verified', 'locale', 'external_identifier']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -512,6 +512,7 @@ class CustomerUpdateForm(forms.ModelForm):
 
     def clean(self):
         email = self.cleaned_data.get('email')
+        identifier = self.cleaned_data.get('identifier')
 
         if email is not None:
             try:
@@ -522,6 +523,17 @@ class CustomerUpdateForm(forms.ModelForm):
                 raise forms.ValidationError(
                     self.error_messages['duplicate'],
                     code='duplicate',
+                )
+
+        if identifier is not None:
+            try:
+                self.instance.organizer.customers.exclude(pk=self.instance.pk).get(identifier=identifier)
+            except Customer.DoesNotExist:
+                pass
+            else:
+                raise forms.ValidationError(
+                    self.error_messages['duplicate_identifier'],
+                    code='duplicate_identifier',
                 )
 
         return self.cleaned_data
