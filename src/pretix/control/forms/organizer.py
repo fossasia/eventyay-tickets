@@ -16,10 +16,11 @@ from pretix.base.forms.widgets import SplitDateTimePickerWidget
 from pretix.base.models import (
     Device, EventMetaProperty, Gate, GiftCard, Organizer, Team,
 )
+from pretix.base.models.organizer import OrganizerFooterLinkModel
 from pretix.control.forms import ExtFileField, SplitDateTimeField
 from pretix.control.forms.event import SafeEventMultipleChoiceField
 from pretix.multidomain.models import KnownDomain
-
+from i18nfield.forms import I18nFormSetMixin
 
 class OrganizerForm(I18nModelForm):
     error_messages = {
@@ -339,3 +340,26 @@ class GiftCardUpdateForm(forms.ModelForm):
             'expires': SplitDateTimePickerWidget,
             'conditions': forms.Textarea(attrs={"rows": 2})
         }
+
+
+
+class OrganizerFooterLinkForm(I18nModelForm):
+    class Meta:
+        model = OrganizerFooterLinkModel
+        fields = ('label', 'url')
+
+
+class BaseOrganizerFooterLinkFormSet(I18nFormSetMixin, forms.BaseInlineFormSet):
+    def __init__(self, *args, **kwargs):
+        organizer = kwargs.pop('organizer', None)
+        if organizer:
+            kwargs['locales'] = organizer.settings.get('locales')
+        super().__init__(*args, **kwargs)
+
+
+OrganizerFooterLinkFormset = forms.inlineformset_factory(
+    Organizer, OrganizerFooterLinkModel,
+    OrganizerFooterLinkForm,
+    formset=BaseOrganizerFooterLinkFormSet,
+    can_order=False, can_delete=True, extra=0
+)
