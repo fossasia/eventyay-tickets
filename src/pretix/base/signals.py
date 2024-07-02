@@ -266,8 +266,7 @@ multiple events. Receivers should return a subclass of pretix.base.exporter.Base
 The ``sender`` keyword argument will contain an organizer.
 """
 
-validate_order = EventPluginSignal(
-)
+validate_order = EventPluginSignal()
 """
 Arguments: ``payment_provider``, ``positions``, ``email``, ``locale``, ``invoice_address``,
 ``meta_info``, ``customer``

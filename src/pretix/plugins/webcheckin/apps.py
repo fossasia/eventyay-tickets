@@ -13,6 +13,7 @@ class WebCheckinApp(AppConfig):
         author = _("the pretix team")
         version = version
         category = "FEATURE"
+        featured = True
         description = _("This plugin allows you to perform check-in actions in your browser.")
 
     def ready(self):

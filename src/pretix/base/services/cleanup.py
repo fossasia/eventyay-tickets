@@ -7,6 +7,7 @@ from django.utils.timezone import now
 from django_scopes import scopes_disabled
 
 from pretix.base.models import CachedCombinedTicket, CachedTicket
+from pretix.base.models.customers import CustomerSSOGrant
 
 from ..models import CachedFile, CartPosition, InvoiceAddress
 from ..signals import periodic_task
@@ -47,3 +48,9 @@ def clean_cached_tickets(sender, **kwargs):
 @scopes_disabled()
 def clearsessions(sender, **kwargs):
     call_command('clearsessions')
+
+
+@receiver(signal=periodic_task)
+@scopes_disabled()
+def clear_oidc_data(sender, **kwargs):
+    CustomerSSOGrant.objects.filter(expires__lt=now() - timedelta(days=14)).delete()

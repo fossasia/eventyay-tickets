@@ -14,19 +14,18 @@ from django import forms
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.gis.geoip2 import GeoIP2
-from geoip2.errors import AddressNotFoundError
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db.models import QuerySet
 from django.forms import Select
 from django.utils import translation
 from django.utils.formats import date_format
-from django.utils.html import escape
 from django.utils.safestring import mark_safe
 from django.utils.timezone import get_current_timezone
 from django.utils.translation import gettext_lazy as _, pgettext_lazy
 from django_countries import countries
 from django_countries.fields import Country, CountryField
+from geoip2.errors import AddressNotFoundError
 from phonenumber_field.formfields import PhoneNumberField
 from phonenumber_field.phonenumber import PhoneNumber
 from phonenumber_field.widgets import PhoneNumberPrefixWidget
@@ -199,8 +198,8 @@ class NamePartsFormField(forms.MultiValueField):
         if self.one_required and (not value or not any(v for v in value.values())):
             raise forms.ValidationError(self.error_messages['required'], code='required')
         if self.one_required:
-            for k, v in value.items():
-                if k in REQUIRED_NAME_PARTS and not v:
+            for k, label, size in self.scheme['fields']:
+                if k in REQUIRED_NAME_PARTS and not value.get(k):
                     raise forms.ValidationError(self.error_messages['required'], code='required')
         if self.require_all_fields and not all(v for v in value):
             raise forms.ValidationError(self.error_messages['incomplete'], code='required')

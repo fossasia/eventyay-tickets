@@ -33,7 +33,7 @@ footer nav {
 .js-only {
     display: none;
 }
-.locales {
+.locales, .loginstatus {
     display: inline;
     a {
         text-decoration: none;
@@ -47,6 +47,9 @@ footer nav {
     img {
         vertical-align: baseline;
     }
+}
+.loginstatus a {
+    margin-left: 10px;
 }
 .huge {
     font-size: 40px;
@@ -85,7 +88,7 @@ body.loading .container {
     font-size: 120px;
     color: $brand-primary;
 }
-#loadingmodal, #ajaxerr {
+#loadingmodal, #ajaxerr, #popupmodal {
     position: fixed;
     top: 0;
     left: 0;
@@ -100,6 +103,11 @@ body.loading .container {
     .big-icon {
         margin-top: 50px;
         font-size: 200px;
+        color: $brand-primary;
+    }
+    &#popupmodal .big-icon {
+        margin-top: 10px;
+        font-size: 100px;
         color: $brand-primary;
     }
 
@@ -129,7 +137,7 @@ body.loading .container {
     }
 }
 @media (max-width: 700px) {
-    #loadingmodal, #ajaxerr {
+    #loadingmodal, #ajaxerr, #popupmodal {
         .modal-card {
             .modal-card-icon {
                 float: none;
@@ -149,7 +157,7 @@ body.loading .container {
     background: rgba(236, 236, 236, .9);
 }
 
-.loading #loadingmodal, .ajaxerr #ajaxerr {
+.loading #loadingmodal, .ajaxerr #ajaxerr, .has-popup #popupmodal {
     opacity: 1;
     visibility: visible;
     transition: opacity .5s ease-in-out;
@@ -301,6 +309,29 @@ h2 .label {
         padding-top: 5px;
         padding-bottom: 5px;
     }
+}
+
+.quotabox {
+    display: inline-block;
+    vertical-align: top;
+    width: 50px;
+    .progress {
+        height: 7px;
+        margin-bottom: 2px;
+    }
+    .numbers {
+        font-size: 10px;
+        color: $text-muted;
+        display: block;
+        text-align: center;
+    }
+    &.availability .progress-bar-success {
+        background: lighten($brand-success, 20%);
+    }
+}
+
+@for $i from 0 through 100 {
+    .progress-bar-#{$i} { width: 1% * $i; }
 }
 
 @import "_iframe.scss";

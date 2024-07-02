@@ -45,6 +45,7 @@ COPY deployment/docker/production_settings.py /pretix/src/production_settings.py
 COPY pyproject.toml /pretix/pyproject.toml
 COPY src /pretix/src
 
+ENV DJANGO_SETTINGS_MODULE=
 RUN pip3 install -U \
         pip \
         setuptools \
@@ -54,6 +55,7 @@ RUN pip3 install -U \
         -e ".[memcached]" \
         gunicorn django-extensions ipython && \
     rm -rf ~/.cache/pip
+ENV DJANGO_SETTINGS_MODULE=production_settings
 
 RUN chmod +x /usr/local/bin/pretix && \
     rm /etc/nginx/sites-enabled/default && \

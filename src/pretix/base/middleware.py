@@ -63,6 +63,8 @@ class LocaleMiddleware(MiddlewareMixin):
         tzname = None
         if hasattr(request, 'event'):
             tzname = request.event.settings.timezone
+        elif hasattr(request, 'organizer') and 'timezone' in request.organizer.settings._cache():
+            tzname = request.organizer.settings.timezone
         elif request.user.is_authenticated:
             tzname = request.user.timezone
         if tzname:
@@ -80,6 +82,26 @@ class LocaleMiddleware(MiddlewareMixin):
         if 'Content-Language' not in response:
             response['Content-Language'] = language
         return response
+
+
+def get_language_from_customer_settings(request: HttpRequest) -> str:
+    """
+    Retrieves the preferred language code from the customer's settings in the request.
+
+    Args:
+        request (HttpRequest): The HTTP request object containing the customer's information.
+
+    Returns:
+        str: The preferred language code if valid and supported, otherwise an empty string.
+    """
+    # Check if the request has a customer attribute and it is not None
+    if hasattr(request, 'customer') and request.customer:
+        lang_code = request.customer.locale
+        # Validate the language code
+        if lang_code and lang_code in _supported and check_for_language(lang_code):
+            return lang_code
+
+    return ''  # Return an empty string if no valid language code is found
 
 
 def get_language_from_user_settings(request: HttpRequest) -> str:
@@ -142,6 +164,7 @@ def get_language_from_request(request: HttpRequest) -> str:
     if request.path.startswith(get_script_prefix() + 'control'):
         return (
             get_language_from_user_settings(request)
+            or get_language_from_customer_settings(request)
             or get_language_from_cookie(request)
             or get_language_from_browser(request)
             or get_language_from_event(request)
@@ -150,6 +173,7 @@ def get_language_from_request(request: HttpRequest) -> str:
     else:
         return (
             get_language_from_cookie(request)
+            or get_language_from_customer_settings(request)
             or get_language_from_user_settings(request)
             or get_language_from_browser(request)
             or get_language_from_event(request)
