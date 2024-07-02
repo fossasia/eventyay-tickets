@@ -31,7 +31,6 @@ RUN pip3 install -U pip setuptools wheel typing && \
     pip3 install pylibmc && \
     pip3 install gunicorn
 
-
 RUN python3 -m pretalx makemigrations
 RUN python3 -m pretalx migrate
 
