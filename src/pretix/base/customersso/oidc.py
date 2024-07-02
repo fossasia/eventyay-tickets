@@ -48,21 +48,16 @@ def oidc_validate_and_complete_config(config):
         ValidationError: If any required configuration option is missing or if the provider is incompatible.
     """
     required_keys = ["base_url", "client_id", "client_secret", "uid_field", "email_field", "scope"]
-    for k in required_keys:
-        if not config.get(k):
-            raise ValidationError(_('Configuration option "{name}" is missing.').format(name=k))
+    missing_keys = [k for k in required_keys if not config.get(k)]
+    if missing_keys:
+        raise ValidationError(_('Configuration option(s) "{name}" is missing.').format(name=", ".join(missing_keys)))
 
     conf_url = _urljoin(config["base_url"], ".well-known/openid-configuration")
     try:
-        resp = requests.get(conf_url, timeout=10)
-        resp.raise_for_status()
-        provider_config = resp.json()
-    except RequestException as e:
-        raise ValidationError(_('Unable to retrieve configuration from "{url}". Error message: "{error}".').format(
-            url=conf_url,
-            error=str(e)
-        ))
-    except ValueError as e:
+        provider_resp = requests.get(conf_url, timeout=10)
+        provider_resp.raise_for_status()
+        provider_config = provider_resp.json()
+    except (RequestException, ValueError) as e:
         raise ValidationError(_('Unable to retrieve configuration from "{url}". Error message: "{error}".').format(
             url=conf_url,
             error=str(e)
@@ -119,7 +114,7 @@ def oidc_authorize_url(provider, state, redirect_uri):
     Constructs the OIDC authorization URL.
 
     Args:
-        provider (object): The OIDC provider containing configuration details.
+        provider: The OIDC provider containing configuration details.
         state (str): A unique state string to prevent CSRF attacks.
         redirect_uri (str): The URI to which the response will be sent.
 
@@ -149,7 +144,7 @@ def oidc_validate_authorization(provider, code, redirect_uri):
     Validates the OIDC authorization code and retrieves user information.
 
     Args:
-        provider (object): The OIDC provider containing configuration details.
+        provider: The OIDC provider containing configuration details.
         code (str): The authorization code received from the OIDC provider.
         redirect_uri (str): The URI to which the response will be sent.
 
@@ -172,7 +167,10 @@ def oidc_validate_authorization(provider, code, redirect_uri):
             headers={
                 'Accept': 'application/json',
             },
-            auth=(provider.configuration['client_id'], provider.configuration['client_secret']),
+            auth=(
+                provider.configuration['client_id'],
+                provider.configuration['client_secret']
+            ),
         )
         resp.raise_for_status()
         data = resp.json()
@@ -209,26 +207,16 @@ def oidc_validate_authorization(provider, code, redirect_uri):
             )
         )
 
-    if 'email_verified' in userinfo and not userinfo['email_verified']:
+    if userinfo.get('email_verified') is False:
         raise ValidationError(_('The email address on this account is not yet verified. Please first confirm the '
                                 'email address in your customer account.'))
+    profile = {k[:-6]: userinfo.get(v) for k, v in provider.configuration.items() if k.endswith('_field')}
 
-    profile = {}
-    for k, v in provider.configuration.items():
-        if k.endswith('_field'):
-            profile[k[:-6]] = userinfo.get(v)
-
-    if not profile.get('uid'):
+    missing_fields = [field for field in ['uid', 'email'] if not profile.get(field)]
+    if missing_fields:
         raise ValidationError(
             _('Login was not successful. Error message: "{error}".').format(
-                error='could not fetch user id',
-            )
-        )
-
-    if not profile.get('email'):
-        raise ValidationError(
-            _('Login was not successful. Error message: "{error}".').format(
-                error='could not fetch user email',
+                error=f'could not fetch user {", ".join(missing_fields)}',
             )
         )
 

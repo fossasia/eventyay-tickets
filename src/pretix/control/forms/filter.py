@@ -1008,17 +1008,17 @@ class CustomerFilterForm(FilterForm):
         super().__init__(*args, **kwargs)
 
     def filter_qs(self, qs):
-        fdata = self.cleaned_data
+        form_data = self.cleaned_data
 
-        if fdata.get('query'):
-            query = fdata.get('query')
+        if form_data.get('query'):
+            query = form_data.get('query')
             qs = qs.filter(
                 Q(email__icontains=query)
                 | Q(name_cached__icontains=query)
                 | Q(identifier__istartswith=query)
             )
 
-            if fdata.get('ordering'):
+            if form_data.get('ordering'):
                 qs = qs.order_by(self.get_order_by())
             else:
                 qs = qs.order_by('-email')

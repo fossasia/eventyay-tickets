@@ -76,6 +76,10 @@ class Customer(LoggedModel):
         ordering = ('email',)
 
     def get_email_field_name(self):
+        """
+        Returns the name of the field that stores the email.
+        @return: string
+        """
         return 'email'
 
     def save(self, **kwargs):
@@ -84,7 +88,7 @@ class Customer(LoggedModel):
         if 'update_fields' in kwargs and 'last_modified' not in kwargs['update_fields']:
             kwargs['update_fields'] = {'last_modified'}.union(kwargs['update_fields'])
         if not self.identifier:
-            self.assign_identifier()
+            self.generate_identifier()
         if self.name_parts:
             self.name_cached = self.name
         else:
@@ -92,7 +96,10 @@ class Customer(LoggedModel):
             self.name_parts = {}
         super().save(**kwargs)
 
-    def anonymize(self):
+    def anonymize_customer(self):
+        """
+        Anonymize the customer, remove all personal data.
+        """
         self.is_active = False
         self.is_verified = False
         self.name_parts = {}
@@ -104,35 +111,70 @@ class Customer(LoggedModel):
         self.orders.all().update(customer=None)
 
     @scopes_disabled()
-    def assign_identifier(self):
-        charset = list('ABCDEFGHJKLMNPQRSTUVWXYZ23456789')
+    def generate_identifier(self):
+        """
+        Assigns a unique identifier to a customer.
+
+        This method generates a random identifier using a specified character set and ensures
+        that the generated identifier is not banned and does not already exist in the database.
+        If the identifier generation fails after multiple iterations, the length of the identifier
+        is increased to ensure uniqueness.
+
+        Raises:
+            ValueError: If a unique identifier could not be generated after multiple attempts.
+        """
+        charset = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
         iteration = 0
         length = settings.ENTROPY['customer_identifier']
+
         while True:
             code = get_random_string(length=length, allowed_chars=charset)
             iteration += 1
 
+            # Check if the code is banned
             if banned(code):
                 continue
 
+            # Check if the code is unique
             if not Customer.objects.filter(identifier=code).exists():
                 self.identifier = code
                 return
 
+            # Increase the length after 20 iterations
             if iteration > 20:
                 length += 1
                 iteration = 0
+                # throw error if the length exceeds the maximum length
+                if length > Customer.identifier.field.max_length:
+                    raise ValueError("Unable to generate a unique identifier.")
 
     @property
     def name(self):
+        """
+        Concatenates and returns the customer's name based on the name parts.
+
+        This property constructs the full name of a customer using the `name_parts` dictionary.
+        If `_legacy` is present in `name_parts`, it returns the legacy name.
+        If `_scheme` is present, it uses the corresponding scheme to concatenate the name parts.
+        If neither `_legacy` nor `_scheme` is present, it raises a TypeError.
+
+        Returns:
+            str: The concatenated name of the customer.
+
+        Raises:
+            TypeError: If `name_parts` is invalid or missing required keys.
+        """
         if not self.name_parts:
             return ""
+
         if '_legacy' in self.name_parts:
             return self.name_parts['_legacy']
+
         if '_scheme' in self.name_parts:
             scheme = PERSON_NAME_SCHEMES[self.name_parts['_scheme']]
         else:
             raise TypeError("Invalid name given.")
+
         return scheme['concatenation'](self.name_parts).strip()
 
     def __str__(self):
@@ -144,18 +186,43 @@ class Customer(LoggedModel):
         return s
 
     def set_password(self, raw_password):
+        """
+        Sets the password for the customer.
+        @param raw_password: input password
+        """
         self.password = make_password(raw_password)
 
     def check_password(self, raw_password):
+        """
+        Checks if the provided raw password matches the stored hashed password.
+
+        This method uses Django's `check_password` utility to verify the password. If the password needs
+        to be rehashed, it uses the provided setter to update the stored password.
+
+        Args:
+            raw_password (str): The raw password to check.
+
+        Returns:
+            bool: True if the password is correct, False otherwise.
+        """
+
         def setter(raw_password):
             self.set_password(raw_password)
             self.save(update_fields=["password"])
+
         return check_password(raw_password, self.password, setter)
 
     def set_unusable_password(self):
+        """
+        Sets the password to an unusable value.
+        """
         self.password = make_password(None)
 
     def has_usable_password(self):
+        """
+        Checks if the customer has a usable password.
+        @return:
+        """
         return is_password_usable(self.password)
 
     def get_session_auth_hash(self):
@@ -165,11 +232,26 @@ class Customer(LoggedModel):
         return salted_hmac(key_salt, payload).hexdigest()
 
     def get_email_context(self):
+        """
+        Generates the context for email templates related to the customer.
+
+        This method constructs a dictionary with key-value pairs representing the
+        customer's name and organizer's name. It also includes individual parts of
+        the customer's name based on the defined name scheme.
+
+        Returns:
+            dict: A dictionary containing the context for email templates.
+        """
+        # Initialize the context with the customer's name and organizer's name
         ctx = {
             'name': self.name,
             'organizer': self.organizer.name,
         }
+
+        # Retrieve the name scheme for the organizer
         name_scheme = PERSON_NAME_SCHEMES[self.organizer.settings.name_scheme]
+
+        # Add individual name parts to the context based on the name scheme
         for f, l, w in name_scheme['fields']:
             if f == 'full_name':
                 continue
@@ -177,6 +259,9 @@ class Customer(LoggedModel):
         return ctx
 
     def send_activation_mail(self):
+        """
+        Sends an activation email to the customer.
+        """
         from pretix.base.services.mail import mail
         from pretix.multidomain.urlreverse import build_absolute_uri
         from pretix.presale.forms.customer import TokenGenerator

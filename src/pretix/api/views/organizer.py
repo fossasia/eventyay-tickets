@@ -490,13 +490,20 @@ class CustomerViewSet(viewsets.ModelViewSet):
     filterset_class = CustomerFilter
 
     def get_queryset(self):
-        qs = self.request.organizer.customers.all()
-        return qs
+        """
+        Get the list of customers.
+        @return: customers
+        """
+        return self.request.organizer.customers.all()
 
     def get_serializer_context(self):
-        ctx = super().get_serializer_context()
-        ctx['organizer'] = self.request.organizer
-        return ctx
+        """
+        Get the serializer context.
+        @return:
+        """
+        context = super().get_serializer_context()
+        context['organizer'] = self.request.organizer
+        return context
 
     def perform_destroy(self, instance):
         raise MethodNotAllowed("Customers cannot be deleted.")
@@ -510,6 +517,7 @@ class CustomerViewSet(viewsets.ModelViewSet):
         @return: created customer
         """
         customer = serializer.save(organizer=self.request.organizer, password=make_password(None))
+        # Log the action
         serializer.instance.log_action(
             'pretix.customer.created',
             user=self.request.user,
@@ -517,31 +525,56 @@ class CustomerViewSet(viewsets.ModelViewSet):
             data=self.request.data,
         )
         if send_email:
+            # Send activation mail for customer to activate the account
             customer.send_activation_mail()
         return customer
 
     def create(self, request, *args, **kwargs):
+        """
+        Creates a new Customer instance based on the request data.
+
+        This method handles the creation of a new Customer by validating the incoming data
+        using the CustomerCreateSerializer, performing the creation, and sending a response
+        with the created customer's data.
+
+        Args:
+            request (HttpRequest): The HTTP request object containing the data for creating a new customer.
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+
+        Returns:
+            Response: A Response object containing the created customer's data and the HTTP status code.
+        """
+        # Initialize the serializer with the request data and context
         serializer = CustomerCreateSerializer(data=request.data, context=self.get_serializer_context())
+
+        # Validate the serializer data, raising an exception if invalid
         serializer.is_valid(raise_exception=True)
+
+        # Perform the creation of the customer, optionally sending an email if specified
         self.perform_create(serializer, send_email=serializer.validated_data.pop('send_email', False))
+
+        # Get the headers for the success response
         headers = self.get_success_headers(serializer.data)
+
+        # Return the response with the created customer's data and HTTP 201 status
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     @transaction.atomic()
     def perform_update(self, serializer):
         """
-        Update a customer.
+        Update a customer info.
         @param serializer: serializer instance
         @return: customer instance
         """
-        inst = serializer.save(organizer=self.request.organizer)
+        customer_inst = serializer.save(organizer=self.request.organizer)
         serializer.instance.log_action(
             'pretix.customer.changed',
             user=self.request.user,
             auth=self.request.auth,
             data=self.request.data,
         )
-        return inst
+        return customer_inst
 
     @action(detail=True, methods=["POST"])
     @transaction.atomic()
@@ -552,7 +585,11 @@ class CustomerViewSet(viewsets.ModelViewSet):
         @param kwargs: arguments
         @return: result response
         """
-        o = self.get_object()
-        o.anonymize()
-        o.log_action('pretix.customer.anonymized', user=self.request.user, auth=self.request.auth)
-        return Response(CustomerSerializer(o).data, status=status.HTTP_200_OK)
+        customer_obj = self.get_object()
+        customer_obj.anonymize_customer()
+        customer_obj.log_action(
+            'pretix.customer.anonymized',
+            user=self.request.user,
+            auth=self.request.auth
+        )
+        return Response(CustomerSerializer(customer_obj).data, status=status.HTTP_200_OK)

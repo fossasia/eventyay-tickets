@@ -348,7 +348,7 @@ class SMTPSettingsMixin(forms.Form):
     )
     smtp_username = forms.CharField(
         label=_("Username"),
-        widget=forms.TextInput(attrs={'placeholder': 'myuser@example.org'}),
+        widget=forms.TextInput(attrs={'placeholder': 'eventyay-tickets@eventyay.com'}),
         required=False
     )
     smtp_password = SecretKeySettingsField(
@@ -369,6 +369,6 @@ class SMTPSettingsMixin(forms.Form):
     def clean(self):
         data = super().clean()
         if data.get('smtp_use_tls') and data.get('smtp_use_ssl'):
-            raise ValidationError(_('You can activate either SSL or STARTTLS security, but not both at the same time.'))
+            raise ValidationError(_('SSL and STARTTLS can not be enabled at the same time.'))
         return data
 

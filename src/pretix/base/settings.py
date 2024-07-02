@@ -80,7 +80,7 @@ DEFAULTS = {
         'form_kwargs': dict(
             label=_("Allow customers to create an account"),
             help_text=_(
-                "Allow customers to sign up for an account on your ticket shop.")
+                "Allow your customers to sign up an account.")
         )
     },
     'customer_accounts_native': {
@@ -90,7 +90,7 @@ DEFAULTS = {
         'serializer_class': serializers.BooleanField,
         'form_kwargs': dict(
             label=_("Allow customers to log in with email address and password"),
-            help_text=_("If disabled, you will need to connect one or more single-sign-on providers."),
+            help_text=_("If disabled, SSO providers is required for customer to login."),
             widget=forms.CheckboxInput(attrs={'data-display-dependency': '#id_settings-customer_accounts'}),
         )
     },
@@ -1760,6 +1760,10 @@ If you did not do so already, you can download your ticket here:
 Best regards,
 Your {event} team"""))
     },
+    'mail_subject_customer_registration': {
+        'type': LazyI18nString,
+        'default': LazyI18nString.from_gettext(gettext_noop("Activate your account at {organizer}")),
+    },
     'mail_text_customer_registration': {
         'type': LazyI18nString,
         'default': LazyI18nString.from_gettext(gettext_noop("""Hello {name},
@@ -1777,6 +1781,14 @@ If you did not sign up yourself, please ignore this email.
 Best regards,
 
 Your {organizer} team"""))
+    },
+    'mail_subject_customer_email_change': {
+        'type': LazyI18nString,
+        'default': LazyI18nString.from_gettext(gettext_noop("Confirm email address for your account at {organizer}")),
+    },
+    'mail_subject_customer_reset': {
+        'type': LazyI18nString,
+        'default': LazyI18nString.from_gettext(gettext_noop("Set a new password for your account at {organizer}")),
     },
     'mail_text_customer_email_change': {
         'type': LazyI18nString,

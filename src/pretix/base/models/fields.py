@@ -55,15 +55,15 @@ class MultiStringField(TextField):
 
     def get_lookup(self, lookup_name):
         if lookup_name == 'contains':
-            return make_multistring_contains_lookup(self.delimiter)
+            return make_multi_string_contains_lookup(self.delimiter)
         elif lookup_name == 'icontains':
-            return make_multistring_icontains_lookup(self.delimiter)
+            return make_multi_string_icontains_lookup(self.delimiter)
         raise NotImplementedError(
             "Lookup '{}' doesn't work with MultiStringField".format(lookup_name),
         )
 
 
-def make_multistring_contains_lookup(delimiter):
+def make_multi_string_contains_lookup(delimiter):
     class Cls(builtin_lookups.Contains):
         def process_rhs(self, qn, connection):
             sql, params = super().process_rhs(qn, connection)
@@ -72,7 +72,7 @@ def make_multistring_contains_lookup(delimiter):
     return Cls
 
 
-def make_multistring_icontains_lookup(delimiter):
+def make_multi_string_icontains_lookup(delimiter):
     class Cls(builtin_lookups.IContains):
         def process_rhs(self, qn, connection):
             sql, params = super().process_rhs(qn, connection)

@@ -9,12 +9,12 @@ from django.utils.crypto import get_random_string
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _, pgettext_lazy
 from django_scopes.forms import SafeModelMultipleChoiceField
-from i18nfield.forms import I18nFormField, I18nTextarea
+from i18nfield.forms import I18nFormField, I18nTextarea, I18nTextInput
 from pytz import common_timezones
 
 from pretix.api.models import WebHook
 from pretix.api.webhooks import get_all_webhook_events
-from pretix.base.forms import I18nModelForm, PlaceholderValidator, SettingsForm
+from pretix.base.forms import I18nModelForm, PlaceholderValidator, SettingsForm, I18nMarkdownTextarea
 from pretix.base.forms.questions import NamePartsFormField
 from pretix.base.customersso.oidc import oidc_validate_and_complete_config
 from pretix.base.forms.widgets import SplitDateTimePickerWidget
@@ -315,7 +315,7 @@ class MailSettingsForm(SMTPSettingsMixin, SettingsForm):
 
     mail_bcc = forms.CharField(
         label=_("Bcc address"),
-        help_text=_("All emails will be sent to this address as a Bcc copy"),
+        help_text=_("All your emails will be sent to this address as a Bcc copy"),
         validators=[multimail_validate],
         required=False,
         max_length=255
@@ -324,7 +324,7 @@ class MailSettingsForm(SMTPSettingsMixin, SettingsForm):
         label=_("Signature"),
         required=False,
         widget=I18nTextarea,
-        help_text=_("This will be attached to every email."),
+        help_text=_("This signature will be send along with all your email."),
         validators=[PlaceholderValidator([])],
         widget_kwargs={'attrs': {
             'rows': '4',
@@ -337,28 +337,43 @@ class MailSettingsForm(SMTPSettingsMixin, SettingsForm):
     mail_text_customer_registration = I18nFormField(
         label=_("Text"),
         required=False,
-        widget=I18nTextarea,
+        widget=I18nMarkdownTextarea,
     )
     mail_subject_customer_registration = I18nFormField(
         label=_("Subject"),
         required=False,
-        widget=I18nTextarea,
+        widget=I18nTextInput,
     )
     mail_text_customer_email_change = I18nFormField(
         label=_("Text"),
         required=False,
-        widget=I18nTextarea,
+        widget=I18nTextInput,
     )
     mail_text_customer_reset = I18nFormField(
         label=_("Text"),
         required=False,
-        widget=I18nTextarea,
+        widget=I18nTextInput,
+    )
+
+    mail_subject_customer_email_change = I18nFormField(
+        label=_("Subject"),
+        required=False,
+        widget=I18nTextInput,
+    )
+
+    mail_subject_customer_reset = I18nFormField(
+        label=_("Subject"),
+        required=False,
+        widget=I18nTextInput,
     )
 
     base_context = {
         'mail_text_customer_registration': ['customer', 'url'],
+        'mail_subject_customer_registration': ['customer', 'url'],
         'mail_text_customer_email_change': ['customer', 'url'],
+        'mail_subject_customer_email_change': ['customer', 'url'],
         'mail_text_customer_reset': ['customer', 'url'],
+        'mail_subject_customer_reset': ['customer', 'url'],
     }
 
     def _get_sample_context(self, base_parameters):
@@ -488,12 +503,18 @@ class GiftCardUpdateForm(forms.ModelForm):
 
 class CustomerUpdateForm(forms.ModelForm):
     error_messages = {
-        'duplicate': _("An account with this email address is already registered."),
+        'duplicate': _("An account with this email address is already existed."),
     }
 
     class Meta:
         model = Customer
-        fields = ['is_active', 'name_parts', 'email', 'is_verified', 'locale', 'external_identifier']
+        fields = [
+            'is_active',
+            'name_parts',
+            'email',
+            'is_verified',
+            'locale',
+            'external_identifier']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -511,30 +532,30 @@ class CustomerUpdateForm(forms.ModelForm):
             self.fields['external_identifier'].disabled = True
 
     def clean(self):
+        """
+        Validates the email and identifier fields to ensure they are unique within the organizer's customers,
+        excluding the current instance. Raises a validation error if a duplicate is found.
+        """
         email = self.cleaned_data.get('email')
         identifier = self.cleaned_data.get('identifier')
 
-        if email is not None:
-            try:
-                self.instance.organizer.customers.exclude(pk=self.instance.pk).get(email=email)
-            except Customer.DoesNotExist:
-                pass
-            else:
-                raise forms.ValidationError(
-                    self.error_messages['duplicate'],
-                    code='duplicate',
-                )
+        def check_duplicate(field, error_message, code, field_value):
+            if field is not None:
+                try:
+                    self.instance.organizer.customers.exclude(pk=self.instance.pk).get(**{field: field_value})
+                except Customer.DoesNotExist:
+                    pass
+                else:
+                    raise forms.ValidationError(
+                        self.error_messages[error_message],
+                        code=code,
+                    )
 
-        if identifier is not None:
-            try:
-                self.instance.organizer.customers.exclude(pk=self.instance.pk).get(identifier=identifier)
-            except Customer.DoesNotExist:
-                pass
-            else:
-                raise forms.ValidationError(
-                    self.error_messages['duplicate_identifier'],
-                    code='duplicate_identifier',
-                )
+        # Check for duplicate email
+        check_duplicate('email', 'duplicate', 'duplicate', email)
+
+        # Check for duplicate identifier
+        check_duplicate('identifier', 'duplicate_identifier', 'duplicate_identifier', identifier)
 
         return self.cleaned_data
 
@@ -607,15 +628,23 @@ class SSOProviderForm(I18nModelForm):
                     f.initial = self.instance.configuration.get(suffix)
 
     def clean(self):
+        """
+        Cleans and validates the form data. If a method is specified, it collects and validates the
+        configuration settings for that method, and then sets the instance's configuration.
+
+        Returns:
+            dict: The cleaned data.
+        """
         data = self.cleaned_data
         if not data.get("method"):
             return data
 
-        config = {}
-        for fname, f in self.fields.items():
-            if fname.startswith(f'config_{data["method"]}_'):
-                prefix, method, suffix = fname.split('_', 2)
-                config[suffix] = data.get(fname)
+        # Collect configuration settings for the specified method
+        config = {
+            fname.split('_', 2)[2]: data.get(fname)
+            for fname in self.fields
+            if fname.startswith(f'config_{data["method"]}_')
+        }
 
         if data["method"] == "oidc":
             oidc_validate_and_complete_config(config)

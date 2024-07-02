@@ -214,9 +214,22 @@ class OrganizerMailSettings(OrganizerSettingsFormView):
 
     @transaction.atomic
     def post(self, request, *args, **kwargs):
+        """
+        Handles POST requests to process the form, save changes, log actions, and test SMTP settings if requested.
+
+        Args:
+            request (HttpRequest): The HTTP request object.
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+
+        Returns:
+            HttpResponse: Redirects to the success URL if the form is valid, otherwise re-renders the form with errors.
+        """
         form = self.get_form()
+
         if form.is_valid():
             form.save()
+
             if form.has_changed():
                 self.request.organizer.log_action(
                     'pretix.organizer.settings', user=self.request.user, data={
@@ -231,19 +244,19 @@ class OrganizerMailSettings(OrganizerSettingsFormView):
                 except Exception as e:
                     messages.warning(self.request, _('An error occurred while contacting the SMTP server: %s') % str(e))
                 else:
-                    if form.cleaned_data.get('smtp_use_custom'):
-                        messages.success(self.request, _('Your changes have been saved and the connection attempt to '
-                                                         'your SMTP server was successful.'))
-                    else:
-                        messages.success(self.request, _('We\'ve been able to contact the SMTP server you configured. '
-                                                         'Remember to check the "use custom SMTP server" checkbox, '
-                                                         'otherwise your SMTP server will not be used.'))
+                    success_message = _(
+                        'Your changes have been saved and the connection attempt to your SMTP server was successful.') \
+                        if form.cleaned_data.get('smtp_use_custom') else \
+                        _('We\'ve been able to contact the SMTP server you configured. Remember to check '
+                          'the "use custom SMTP server" checkbox, otherwise your SMTP server will not be used.')
+                    messages.success(self.request, success_message)
             else:
                 messages.success(self.request, _('Your changes have been saved.'))
+
             return redirect(self.get_success_url())
-        else:
-            messages.error(self.request, _('We could not save your changes. See below for details.'))
-            return self.get(request)
+
+        messages.error(self.request, _('We could not save your changes. See below for details.'))
+        return self.get(request)
 
 
 class MailSettingsPreview(OrganizerPermissionRequiredMixin, View):
@@ -253,7 +266,6 @@ class MailSettingsPreview(OrganizerPermissionRequiredMixin, View):
         def __missing__(self, key):
             return '{' + key + '}'
 
-    # create index-language mapping
     @cached_property
     def supported_locale(self):
         locales = {}
@@ -276,15 +288,28 @@ class MailSettingsPreview(OrganizerPermissionRequiredMixin, View):
         return self.SafeDict(ctx)
 
     def post(self, request, *args, **kwargs):
+        """
+        Handles the POST request to generate a preview of email messages in different locales.
+
+        Args:
+            request (HttpRequest): The HTTP request object.
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+
+        Returns:
+            JsonResponse: A JSON response containing the item and the compiled messages for each locale.
+            HttpResponseBadRequest: If the preview item is invalid.
+        """
         preview_item = request.POST.get('item', '')
         if preview_item not in MailSettingsForm.base_context:
-            return HttpResponseBadRequest(_('invalid item'))
+            return HttpResponseBadRequest(_('Invalid item'))
 
         regex = r"^" + re.escape(preview_item) + r"_(?P<idx>[\d+])$"
         msgs = {}
+
         for k, v in request.POST.items():
             matched = re.search(regex, k)
-            if matched is not None:
+            if matched:
                 idx = matched.group('idx')
                 if idx in self.supported_locale:
                     with language(self.supported_locale[idx], self.request.organizer.settings.region):
@@ -1811,12 +1836,29 @@ class CustomerListView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixi
     context_object_name = 'customers'
 
     def get_queryset(self):
+        """
+        Returns the filtered queryset of customers based on the organizer's settings and the validity of the filter form.
+
+        Returns:
+            QuerySet: The filtered queryset of customers.
+        """
         qs = self.request.organizer.customers.all()
+
         if self.filter_form.is_valid():
             qs = self.filter_form.filter_qs(qs)
+
         return qs
 
     def get_context_data(self, **kwargs):
+        """
+        Returns the context data for the view, including the filter form.
+
+        Args:
+            **kwargs: Arbitrary keyword arguments.
+
+        Returns:
+            dict: The context data including the filter form.
+        """
         ctx = super().get_context_data(**kwargs)
         ctx['filter_form'] = self.filter_form
         return ctx
@@ -1832,11 +1874,16 @@ class CustomerDetailView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMi
     context_object_name = 'orders'
 
     def get_queryset(self):
-        qs = Order.objects.filter(
-            Q(customer=self.customer)
-            | Q(email__iexact=self.customer.email)
+        """
+        Returns the queryset of orders for the specified customer, including orders that match the customer's email,
+        and orders are sorted by datetime in descending order.
+
+        Returns:
+            QuerySet: The queryset of orders.
+        """
+        return Order.objects.filter(
+            Q(customer=self.customer) | Q(email__iexact=self.customer.email)
         ).select_related('event').order_by('-datetime')
-        return qs
 
     @cached_property
     def customer(self):
@@ -1846,9 +1893,19 @@ class CustomerDetailView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMi
         )
 
     def get_context_data(self, **kwargs):
+        """
+        Returns the context data for the view, including customer details, locale, and annotated order information.
+
+        Args:
+            **kwargs: Arbitrary keyword arguments.
+
+        Returns:
+            dict: The context data including customer details and annotated orders.
+        """
         ctx = super().get_context_data(**kwargs)
         ctx['customer'] = self.customer
-        ctx['display_locale'] = dict(settings.LANGUAGES)[self.customer.locale or self.request.organizer.settings.locale]
+        ctx['display_locale'] = dict(settings.LANGUAGES).get(self.customer.locale,
+                                                             self.request.organizer.settings.locale)
 
         s = OrderPosition.objects.filter(
             order=OuterRef('pk')
@@ -1858,35 +1915,38 @@ class CustomerDetailView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMi
             is_cancellation=False,
             refered__isnull=True,
         ).order_by().values('order').annotate(k=Count('id')).values('k')
-        annotated = {
-            o['pk']: o
-            for o in
-            Order.annotate_overpayments(Order.objects, sums=True).filter(
-                pk__in=[o.pk for o in ctx['orders']]
-            ).annotate(
-                pcnt=Subquery(s, output_field=IntegerField()),
-                icnt=Subquery(i, output_field=IntegerField()),
-                has_cancellation_request=Exists(CancellationRequest.objects.filter(order=OuterRef('pk')))
-            ).values(
-                'pk', 'pcnt', 'is_overpaid', 'is_underpaid', 'is_pending_with_full_payment', 'has_external_refund',
-                'has_pending_refund', 'has_cancellation_request', 'computed_payment_refund_sum', 'icnt'
-            )
-        }
+        orders = ctx.get('orders', [])
+        order_pks = [o.pk for o in orders]
+
+        annotated_orders = Order.annotate_overpayments(Order.objects, sums=True).filter(
+            pk__in=order_pks
+        ).annotate(
+            pcnt=Subquery(s, output_field=IntegerField()),
+            icnt=Subquery(i, output_field=IntegerField()),
+            has_cancellation_request=Exists(CancellationRequest.objects.filter(order=OuterRef('pk')))
+        ).values(
+            'pk', 'pcnt', 'is_overpaid', 'is_underpaid', 'is_pending_with_full_payment', 'has_external_refund',
+            'has_pending_refund', 'has_cancellation_request', 'computed_payment_refund_sum', 'icnt'
+        )
+
+        annotated = {o['pk']: o for o in annotated_orders}
 
         scs = get_all_sales_channels()
-        for o in ctx['orders']:
-            if o.pk not in annotated:
+
+        for order in orders:
+            if order.pk not in annotated:
                 continue
-            o.pcnt = annotated.get(o.pk)['pcnt']
-            o.is_overpaid = annotated.get(o.pk)['is_overpaid']
-            o.is_underpaid = annotated.get(o.pk)['is_underpaid']
-            o.is_pending_with_full_payment = annotated.get(o.pk)['is_pending_with_full_payment']
-            o.has_external_refund = annotated.get(o.pk)['has_external_refund']
-            o.has_pending_refund = annotated.get(o.pk)['has_pending_refund']
-            o.has_cancellation_request = annotated.get(o.pk)['has_cancellation_request']
-            o.computed_payment_refund_sum = annotated.get(o.pk)['computed_payment_refund_sum']
-            o.icnt = annotated.get(o.pk)['icnt']
-            o.sales_channel_obj = scs[o.sales_channel]
+            annotation = annotated[order.pk]
+            order.pcnt = annotation['pcnt']
+            order.is_overpaid = annotation['is_overpaid']
+            order.is_underpaid = annotation['is_underpaid']
+            order.is_pending_with_full_payment = annotation['is_pending_with_full_payment']
+            order.has_external_refund = annotation['has_external_refund']
+            order.has_pending_refund = annotation['has_pending_refund']
+            order.has_cancellation_request = annotation['has_cancellation_request']
+            order.computed_payment_refund_sum = annotation['computed_payment_refund_sum']
+            order.icnt = annotation['icnt']
+            order.sales_channel_obj = scs[order.sales_channel]
 
         return ctx
 
@@ -1904,12 +1964,23 @@ class CustomerUpdateView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMi
         )
 
     def form_valid(self, form):
+        """
+        Handles the form validation and logging of changes. If the form has changed, logs the action with the changed data.
+
+        Args:
+            form (Form): The validated form.
+
+        Returns:
+            HttpResponse: The response generated by the superclass method.
+        """
         if form.has_changed():
-            self.object.log_action('pretix.customer.changed', user=self.request.user, data={
-                k: getattr(self.object, k)
-                for k in form.changed_data
-            })
-        messages.success(self.request, _('Your changes have been saved.'))
+            self.object.log_action(
+                'pretix.customer.changed',
+                user=self.request.user,
+                data={k: getattr(self.object, k) for k in form.changed_data}
+            )
+            messages.success(self.request, _('Your changes have been saved.'))
+
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -1931,11 +2002,26 @@ class CustomerAnonymizeView(OrganizerDetailViewMixin, OrganizerPermissionRequire
         )
 
     def post(self, request, *args, **kwargs):
+        """
+        Handles the POST request to anonymize a customer account. Anonymizes the customer,
+        logs the action, and redirects to the success URL.
+
+        Args:
+            request (HttpRequest): The HTTP request object.
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+
+        Returns:
+            HttpResponseRedirect: Redirects to the success URL.
+        """
         self.object = self.get_object()
+
         with transaction.atomic():
-            self.object.anonymize()
+            self.object.anonymize_customer()
             self.object.log_action('pretix.customer.anonymized', user=self.request.user)
+
         messages.success(self.request, _('The customer account has been anonymized.'))
+
         return redirect(self.get_success_url())
 
     def get_success_url(self):

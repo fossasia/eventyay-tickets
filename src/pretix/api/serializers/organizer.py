@@ -48,13 +48,30 @@ class CustomerSerializer(I18nAwareModelSerializer):
     last_modified = serializers.DateTimeField(read_only=True)
 
     class Meta:
+        """
+        Meta class for the Customer model serializer.
+        """
         model = Customer
-        fields = ('identifier', 'email', 'name', 'name_parts', 'is_active', 'is_verified', 'last_login', 'date_joined',
-                  'locale', 'last_modified')
+        fields = (
+            'identifier', 'email', 'name', 'name_parts', 'is_active', 'is_verified',
+            'last_login', 'date_joined', 'locale', 'last_modified'
+        )
 
     def update(self, instance, validated_data):
+        """
+        Updates an existing instance with the validated data.
+
+        If the instance has a provider ID, it retains its external identifier.
+
+        Args:
+            instance (Model): The instance to be updated.
+            validated_data (dict): The validated data to update the instance with.
+
+        Returns:
+            Model: The updated instance.
+        """
         if instance and instance.provider_id:
-            validated_data['external_identifier'] = instance.external_identifier
+            validated_data.setdefault('external_identifier', instance.external_identifier)
         return super().update(instance, validated_data)
 
 

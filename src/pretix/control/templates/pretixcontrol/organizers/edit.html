@@ -53,13 +53,6 @@
                         {% bootstrap_field sform.timezone layout="control" %}
                     </fieldset>
                     <fieldset>
-                        <legend>{% trans "Customer accounts" %}</legend>
-                        {% bootstrap_field sform.customer_accounts layout="control" %}
-                        {% bootstrap_field sform.customer_accounts_native layout="control" %}
-                        {% bootstrap_field sform.name_scheme layout="control" %}
-                        {% bootstrap_field sform.name_scheme_titles layout="control" %}
-                    </fieldset>
-                    <fieldset>
                         <legend>{% trans "Shop design" %}</legend>
                         <p class="help-block">
                             {% blocktrans trimmed %}
@@ -79,6 +72,13 @@
                         <legend>{% trans "Gift cards" %}</legend>
                         {% bootstrap_field sform.giftcard_expiry_years layout="control" %}
                         {% bootstrap_field sform.giftcard_length layout="control" %}
+                    </fieldset>
+                    <fieldset>
+                        <legend>{% trans "Customer accounts" %}</legend>
+                        {% bootstrap_field sform.customer_accounts layout="control" %}
+                        {% bootstrap_field sform.customer_accounts_native layout="control" %}
+                        {% bootstrap_field sform.name_scheme layout="control" %}
+                        {% bootstrap_field sform.name_scheme_titles layout="control" %}
                     </fieldset>
                 </div>
             </div>
