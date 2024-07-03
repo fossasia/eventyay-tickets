@@ -67,6 +67,5 @@ ENV VENUELESS_COMMIT_SHA=${COMMIT}
 USER venueless
 VOLUME ["/etc/venueless", "/data"]
 EXPOSE 80
-ENTRYPOINT ["venueless"]
 CMD ["all"]
 
