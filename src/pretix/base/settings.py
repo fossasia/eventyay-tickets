@@ -2268,8 +2268,8 @@ Your {event} team"""))
         'form_class': I18nURLFormField,
         'form_kwargs': dict(
             label=_("Privacy Policy URL"),
-            help_text=_("This should point e.g. to a part of your website that explains how you use data gathered in "
-                        "your ticket shop."),
+            help_text=_("This should link to a section of your website that explains "
+                        "how you use the data gathered in your ticket shop."),
             widget=I18nTextInput,
         ),
         'serializer_class': I18nURLField,
