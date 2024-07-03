@@ -1,8 +1,11 @@
 import string
+import json
 
 from django.db import models
 from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
+from pypdf import PdfReader
+from io import BytesIO
 
 from pretix.base.models import LoggedModel
 
@@ -38,7 +41,7 @@ class BadgeLayout(LoggedModel):
     )
 
     size = models.TextField(
-            default='[{"width": 148, "height": 105, "orientation": "portrait"}]'
+            default='[{"width": 148, "height": 105, "orientation": "landscape"}]'
     )
     
 
@@ -49,6 +52,20 @@ class BadgeLayout(LoggedModel):
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        if self.background:
+            buffer = BytesIO()
+            for chunk in self.background.chunks():
+                buffer.write(chunk)
+            buffer.seek(0)
+            reader = PdfReader(buffer)
+            page = reader.pages[0]
+            width = round(float(page.mediabox.width)*0.352777778, 2)
+            height = round(float(page.mediabox.height)*0.352777778, 2)
+            orientation = "portrait" if height > width else "landscape"
+            self.size = json.dumps([{"width": width, "height": height, "orientation": orientation}])
+        super().save(*args, **kwargs)
 
 
 class BadgeItem(models.Model):
