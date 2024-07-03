@@ -2,10 +2,13 @@ import logging
 
 import i18nfield.forms
 from django import forms
+from django.core.validators import URLValidator
 from django.forms.models import ModelFormMetaclass
 from django.utils.crypto import get_random_string
+from django.utils.translation import gettext_lazy as _
 from formtools.wizard.views import SessionWizardView
 from hierarkey.forms import HierarkeyForm
+from i18nfield.strings import LazyI18nString
 
 from pretix.base.reldate import RelativeDateField, RelativeDateTimeField
 
@@ -151,3 +154,54 @@ class SecretKeySettingsField(forms.CharField):
         if value == SECRET_REDACTED:
             return
         return super().run_validators(value)
+
+
+class I18nMarkdownTextarea(i18nfield.forms.I18nTextarea):
+    def format_output(self, rendered_widgets) -> str:
+        rendered_widgets = rendered_widgets + [
+            '<div class="i18n-field-markdown-note">%s</div>' % (
+                _("You can use {markup_name} in this field.").format(
+                    markup_name='<a href="https://en.wikipedia.org/wiki/Markdown" target="_blank">Markdown</a>'
+                )
+            )
+        ]
+        return super().format_output(rendered_widgets)
+
+
+class I18nURLFormField(i18nfield.forms.I18nFormField):
+    """
+    Custom form field to handle internationalized URL inputs. It extends the I18nFormField
+    and ensures that all provided URLs are valid.
+
+    Methods:
+        clean(value: LazyI18nString) -> LazyI18nString:
+            Validates the URL(s) in the provided internationalized input.
+    """
+
+    def clean(self, value) -> LazyI18nString:
+        """
+        Cleans and validates the internationalized URL input.
+
+        Args:
+            value (LazyI18nString): The input value to clean and validate.
+
+        Returns:
+            LazyI18nString: The cleaned and validated input value.
+
+        Raises:
+            ValidationError: If any of the URLs are invalid.
+        """
+        value = super().clean(value)
+        if not value:
+            return value
+
+        url_validator = URLValidator()
+
+        if isinstance(value.data, dict):
+            for val in value.data.values():
+                if val:
+                    url_validator(val)
+        else:
+            url_validator(value.data)
+
+        return value
