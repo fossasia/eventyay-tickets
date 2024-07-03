@@ -8,11 +8,14 @@ from django.db.models import Q
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _, pgettext_lazy
 from django_scopes.forms import SafeModelMultipleChoiceField
+from i18nfield.forms import I18nFormSetMixin 
+from django.forms import inlineformset_factory
 
 from pretix.api.models import WebHook
 from pretix.api.webhooks import get_all_webhook_events
 from pretix.base.forms import I18nModelForm, SettingsForm
 from pretix.base.forms.widgets import SplitDateTimePickerWidget
+from pretix.base.models.organizer import OrganizerFooterLink
 from pretix.base.models import (
     Device, EventMetaProperty, Gate, GiftCard, Organizer, Team,
 )
@@ -339,3 +342,25 @@ class GiftCardUpdateForm(forms.ModelForm):
             'expires': SplitDateTimePickerWidget,
             'conditions': forms.Textarea(attrs={"rows": 2})
         }
+
+
+class OrganizerFooterLinkForm(I18nModelForm):
+    class Meta:
+        model = OrganizerFooterLink
+        fields = ('label', 'url')
+
+
+class BaseOrganizerFooterLinkFormSet(I18nFormSetMixin, forms.BaseInlineFormSet):
+    def __init__(self, *args, **kwargs):
+        organizer = kwargs.pop('organizer', None)
+        if organizer:
+            kwargs['locales'] = organizer.settings.get('locales')
+        super().__init__(*args, **kwargs)
+
+
+OrganizerFooterLinkFormset = inlineformset_factory(
+    Organizer, OrganizerFooterLink,
+    OrganizerFooterLinkForm,
+    formset=BaseOrganizerFooterLinkFormSet,
+    can_order=False, can_delete=True, extra=0
+)
