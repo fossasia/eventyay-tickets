@@ -8,6 +8,8 @@ from django.core.management import call_command
 def test_no_outstanding_migrations():
     out = StringIO()
     try:
-        result = call_command("makemigrations", "--check", stdout=out, stderr=StringIO())
-    except SystemExit as e:
+        call_command(
+            "makemigrations", "--check", stdout=out, stderr=StringIO()
+        )
+    except SystemExit:
         raise AssertionError(f"Pending migrations:\n{out.getvalue()}") from None
