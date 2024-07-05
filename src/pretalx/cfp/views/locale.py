@@ -45,9 +45,11 @@ class LocaleSet(View):
             with override(locale):
                 messages.success(
                     request,
-                    _(
-                        "Your locale preferences have been saved. We like to think that we have excellent support "
-                        "for English in pretalx, but if you encounter issues or errors, please contact us!"
+                    str(
+                        _(
+                            "Your locale preferences have been saved. We like to think that we have excellent support "
+                            "for English in pretalx, but if you encounter issues or errors, please contact us!"
+                        )
                     ),
                 )
 
