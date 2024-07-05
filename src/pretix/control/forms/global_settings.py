@@ -108,3 +108,4 @@ class AdminInformationForm(SettingsForm):
     def __init__(self,*args,**kwargs):
         self.obj = GlobalSettingsObject()
         super().__init__(*args,obj=self.obj,**kwargs)
+
