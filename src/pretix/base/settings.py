@@ -25,7 +25,8 @@ from rest_framework import serializers
 from pretix.api.serializers.fields import (
     ListMultipleChoiceField, UploadedFileField,
 )
-from pretix.api.serializers.i18n import I18nField
+from pretix.api.serializers.i18n import I18nField, I18nURLField
+from pretix.base.forms import I18nURLFormField, I18nMarkdownTextarea
 from pretix.base.models.tax import TaxRule
 from pretix.base.reldate import (
     RelativeDateField, RelativeDateTimeField, RelativeDateWrapper,
@@ -2348,6 +2349,18 @@ Your {organizer} team"""))
             help_text=_('If you set a number here, gift cards will by default expire at the end of the year after this '
                         'many years. If you keep it empty, gift cards do not have an explicit expiry date.'),
         )
+    },
+    'privacy_policy': {
+        'default': None,
+        'type': LazyI18nString,
+        'form_class': I18nURLFormField,
+        'form_kwargs': dict(
+            label=_("Privacy Policy URL"),
+            help_text=_("This should link to a section of your website that explains "
+                        "how you use the data gathered in your ticket shop."),
+            widget=I18nTextInput,
+        ),
+        'serializer_class': I18nURLField,
     },
     'seating_choice': {
         'default': 'True',
