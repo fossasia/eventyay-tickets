@@ -9,8 +9,9 @@ const NODE_PATH = process.env.NODE_PATH
 
 module.exports = {
 	devServer: {
-		host: 'localhost',
+		host: '0.0.0.0',
 		port: 8880,
+		public: 'video-dev.eventyay.com',
 		allowedHosts: [
 			'.localhost',
 			'.eventyay.com',
