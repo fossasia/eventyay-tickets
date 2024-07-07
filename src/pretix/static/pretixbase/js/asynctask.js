@@ -196,7 +196,7 @@ $(function () {
         if ($(this).is("[data-asynctask-headline]")) {
             waitingDialog.show($(this).attr("data-asynctask-headline"));
         } else {
-            waitingDialog.show(gettext('We are processing your request …'));
+            waitingDialog.show(gettext('Processing Your Request'));
         }
         if ($(this).is("[data-asynctask-text]")) {
             $("#loadingmodal p.text").text($(this).attr("data-asynctask-text")).show();
@@ -204,9 +204,7 @@ $(function () {
             $("#loadingmodal p.text").hide();
         }
         $("#loadingmodal p.status").text(gettext(
-            'We are currently sending your request to the server. If this takes longer ' +
-            'than one minute, please check your internet connection and then reload ' +
-            'this page and try again.'
+            'Hang tight! If it takes more than a minute, please check your internet connection and refresh the page.'
         ));
 
         $.ajax(

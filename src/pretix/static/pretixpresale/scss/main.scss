@@ -82,26 +82,21 @@ body.loading .container {
 .big-rotating-icon {
     -webkit-animation: fa-spin 8s infinite linear;
     animation: fa-spin 8s infinite linear;
-    font-size: 120px;
-    color: $brand-primary;
+    font-size: 120px; 
+    color: $brand-primary; 
 }
+
 #loadingmodal, #ajaxerr {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(255, 255, 255, .7);
+    background: rgba(255, 255, 255, 0.7);
     opacity: 0;
     z-index: 900000;
     visibility: hidden;
     padding: 10px;
-
-    .big-icon {
-        margin-top: 50px;
-        font-size: 200px;
-        color: $brand-primary;
-    }
 
     .modal-card {
         margin: 50px auto 0;
@@ -110,24 +105,31 @@ body.loading .container {
         max-width: 600px;
         background: white;
         border-radius: $border-radius-large;
-        box-shadow: 0 7px 14px 0 rgba(78, 50, 92, 0.1),0 3px 6px 0 rgba(0,0,0,.07);
+        box-shadow: 0 7px 14px 0 rgba(78, 50, 92, 0.1), 0 3px 6px 0 rgba(0, 0, 0, 0.07);
         padding: 20px;
         min-height: 160px;
+    }
 
-        .modal-card-icon {
-            float: left;
-            width: 150px;
-            text-align: center;
+    .modal-card-icon {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 20px;
+
+        .fa-spinner {
+            font-size: 120px; 
+            color: $brand-primary; 
         }
-        .modal-card-content {
-            margin-left: 160px;
-            text-align: left;
-            h3 {
-                margin-top: 0;
-            }
+    }
+
+    .modal-card-content {
+        text-align: center;
+
+        h3 {
+            margin-top: 0;
         }
     }
 }
+
 @media (max-width: 700px) {
     #loadingmodal, #ajaxerr {
         .modal-card {
@@ -135,26 +137,20 @@ body.loading .container {
                 float: none;
                 width: 100%;
             }
-            .modal-card-content {
-                text-align: center;
-                margin-left: 0;
-                margin-right: 0;
-                margin-top: 10px;
-            }
         }
     }
 }
 
 #ajaxerr {
-    background: rgba(236, 236, 236, .9);
+    background: rgba(236, 236, 236, 0.9);
 }
 
 .loading #loadingmodal, .ajaxerr #ajaxerr {
     opacity: 1;
     visibility: visible;
-    transition: opacity .5s ease-in-out;
-    -moz-transition: opacity .5s ease-in-out;
-    -webkit-transition: opacity .5s ease-in-out;
+    transition: opacity 0.5s ease-in-out;
+    -moz-transition: opacity 0.5s ease-in-out;
+    -webkit-transition: opacity 0.5s ease-in-out;
 }
 
 .typo-alert span[data-typosuggest] {

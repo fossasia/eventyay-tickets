@@ -225,12 +225,6 @@ body.loading #wrapper {
     visibility: hidden;
     padding: 10px;
 
-    .big-icon {
-        margin-top: 50px;
-        font-size: 200px;
-        color: $brand-primary;
-    }
-
     .modal-card {
         margin: 50px auto 0;
         top: 50px;
@@ -238,29 +232,32 @@ body.loading #wrapper {
         max-width: 600px;
         background: white;
         border-radius: $border-radius-large;
-        box-shadow: 0 7px 14px 0 rgba(78, 50, 92, 0.1),0 3px 6px 0 rgba(0,0,0,.07);
+        box-shadow: 0 7px 14px 0 rgba(78, 50, 92, 0.1), 0 3px 6px 0 rgba(0, 0, 0, .07);
         padding: 20px;
         min-height: 160px;
+        display: flex; /* Added to use flexbox */
+        flex-direction: column; /* Align items in a column */
 
         .modal-card-icon {
-            float: left;
-            width: 150px;
             text-align: center;
-
-            .big-rotating-icon {
-                font-size: 120px;
-                margin: 0;
-            }
+            margin: 0 auto; /* Center the icon horizontally */
+            margin-top: -50px; /* Adjust to your desired position */
+            margin-bottom: 20px; /* Space between icon and text */
+            font-size: 120px;
+            color: $brand-primary;
         }
         .modal-card-content {
-            margin-left: 160px;
-            text-align: left;
+            text-align: center; /* Center the text */
             h3 {
                 margin-top: 0;
+            }
+            p {
+                margin-bottom: 10px; /* Adjust as needed */
             }
         }
     }
 }
+
 @media (max-width: 700px) {
     #loadingmodal, #ajaxerr {
         .modal-card {
@@ -297,6 +294,8 @@ body.loading #wrapper {
     font-size: 200px;
     color: $brand-primary;
 }
+
+
 
 .user-admin-icon {
     width: 16px;
