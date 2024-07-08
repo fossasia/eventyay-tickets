@@ -78,12 +78,11 @@ body.loading .container {
     -o-filter: blur(2px);
     filter: blur(2px);
 }
-
 .big-rotating-icon {
     -webkit-animation: fa-spin 8s infinite linear;
     animation: fa-spin 8s infinite linear;
-    font-size: 120px; 
-    color: $brand-primary; 
+    font-size: 120px;
+    color: $brand-primary;
 }
 
 #loadingmodal, #ajaxerr {
@@ -108,24 +107,25 @@ body.loading .container {
         box-shadow: 0 7px 14px 0 rgba(78, 50, 92, 0.1), 0 3px 6px 0 rgba(0, 0, 0, 0.07);
         padding: 20px;
         min-height: 160px;
-    }
+        display: flex; 
+        flex-direction: row; 
+        align-items: center; 
 
-    .modal-card-icon {
-        width: 100%;
-        text-align: center;
-        margin-bottom: 20px;
-
-        .fa-spinner {
-            font-size: 120px; 
-            color: $brand-primary; 
+        .modal-card-icon {
+            text-align: center;
+            margin-right: 20px; 
+            font-size: 120px;
+            color: $brand-primary;
         }
-    }
 
-    .modal-card-content {
-        text-align: center;
-
-        h3 {
-            margin-top: 0;
+        .modal-card-content {
+            text-align: left; 
+            h3 {
+                margin-top: 0;
+            }
+            p {
+                margin-bottom: 10px; 
+            }
         }
     }
 }
@@ -133,9 +133,18 @@ body.loading .container {
 @media (max-width: 700px) {
     #loadingmodal, #ajaxerr {
         .modal-card {
+            flex-direction: column;
             .modal-card-icon {
+                margin-right: 0; 
+                margin-bottom: 20px; 
                 float: none;
                 width: 100%;
+            }
+            .modal-card-content {
+                text-align: center;
+                margin-left: 0;
+                margin-right: 0;
+                margin-top: 10px;
             }
         }
     }
@@ -152,6 +161,7 @@ body.loading .container {
     -moz-transition: opacity 0.5s ease-in-out;
     -webkit-transition: opacity 0.5s ease-in-out;
 }
+
 
 .typo-alert span[data-typosuggest] {
     text-decoration: underline;

@@ -235,24 +235,24 @@ body.loading #wrapper {
         box-shadow: 0 7px 14px 0 rgba(78, 50, 92, 0.1), 0 3px 6px 0 rgba(0, 0, 0, .07);
         padding: 20px;
         min-height: 160px;
-        display: flex; /* Added to use flexbox */
-        flex-direction: column; /* Align items in a column */
+        display: flex; 
+        flex-direction: column;
 
         .modal-card-icon {
             text-align: center;
-            margin: 0 auto; /* Center the icon horizontally */
-            margin-top: -50px; /* Adjust to your desired position */
-            margin-bottom: 20px; /* Space between icon and text */
+            margin: 0 auto;
+            margin-top: -50px; ;
+            margin-bottom: 20px; 
             font-size: 120px;
             color: $brand-primary;
         }
         .modal-card-content {
-            text-align: center; /* Center the text */
+            text-align: center; 
             h3 {
                 margin-top: 0;
             }
             p {
-                margin-bottom: 10px; /* Adjust as needed */
+                margin-bottom: 10px; 
             }
         }
     }
