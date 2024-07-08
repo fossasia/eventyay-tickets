@@ -83,6 +83,22 @@ def _default_context(request):
                 _footer += response
             else:
                 _footer.append(response)
+    
+        # Append footer links to the _footer list
+        _footer += request.event.cache.get_or_set(
+            'footer_links',  # The cache key
+            # The function to generate footer links if they are not in the cache
+            lambda: [
+                # Create a dictionary for each footer link
+                {
+                    'url': fl.url,  # The URL of the footer link
+                    'label': fl.label  # The label of the footer link
+                }
+                # Do this for all footer links of the event
+                for fl in request.event.footer_links.all()
+            ],
+            timeout=300  # The cache timeout
+        )
 
         if request.event.settings.presale_css_file:
             ctx['css_file'] = default_storage.url(request.event.settings.presale_css_file)
@@ -111,6 +127,21 @@ def _default_context(request):
         ctx['organizer_logo'] = request.organizer.settings.get('organizer_logo_image', as_type=str, default='')[7:]
         ctx['organizer_homepage_text'] = request.organizer.settings.get('organizer_homepage_text', as_type=LazyI18nString)
         ctx['organizer'] = request.organizer
+        # Append footer links to the _footer list
+        _footer += request.organizer.cache.get_or_set(
+            'footer_links',  # The cache key
+            # The function to generate footer links if they are not in the cache
+            lambda: [
+                # Create a dictionary for each footer link
+                {
+                    'url': fl.url,  # The URL of the footer link
+                    'label': fl.label  # The label of the footer link
+                }
+                # Do this for all footer links of the event
+                for fl in request.organizer.footer_links.all()
+            ],
+            timeout=300  # The cache timeout
+        )
 
     ctx['html_head'] = "".join(h for h in _html_head if h)
     ctx['html_foot'] = "".join(h for h in _html_foot if h)
