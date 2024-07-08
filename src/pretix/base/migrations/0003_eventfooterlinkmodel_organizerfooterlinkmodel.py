@@ -8,7 +8,7 @@ import i18nfield.fields
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('pretixbase', '0001_initial'),
+        ('pretixbase', '0002_question_description'),
     ]
 
     operations = [
