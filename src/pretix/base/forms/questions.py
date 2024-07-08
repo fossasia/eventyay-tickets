@@ -250,7 +250,8 @@ class WrappedPhoneNumberPrefixWidget(PhoneNumberPrefixWidget):
 
     def __init__(self, attrs=None, initial=None):
         attrs = {
-            'aria-label': pgettext_lazy('phonenumber', 'Phone number (without international area code)')
+            'aria-label': pgettext_lazy('phonenumber', 'Phone number (without international area code)'),
+            'placeholder': ''
         }
         widgets = (WrappedPhonePrefixSelect(initial), forms.TextInput(attrs=attrs))
         super(PhoneNumberPrefixWidget, self).__init__(widgets, attrs)
@@ -513,18 +514,22 @@ class BaseQuestionsForm(forms.Form):
                     max_value=q.valid_number_max,
                     help_text=help_text,
                     initial=initial.answer if initial else None,
+                    widget=forms.NumberInput(attrs={'placeholder': ''}),
                 )
             elif q.type == Question.TYPE_STRING:
                 field = forms.CharField(
                     label=label, required=required,
                     help_text=help_text,
                     initial=initial.answer if initial else None,
+                    widget=forms.TextInput(attrs={'placeholder': ''}),
                 )
             elif q.type == Question.TYPE_TEXT:
                 field = forms.CharField(
                     label=label, required=required,
                     help_text=help_text,
-                    widget=forms.Textarea,
+                    widget=forms.Textarea(attrs={
+                        'placeholder': ''
+                    }),
                     initial=initial.answer if initial else None,
                 )
             elif q.type == Question.TYPE_COUNTRYCODE:
