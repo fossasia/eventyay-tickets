@@ -23,6 +23,7 @@ from pretix.base.models import (
 )
 from pretix.base.models.customers import CustomerSSOClient, CustomerSSOProvider
 from pretix.base.settings import PERSON_NAME_SCHEMES, PERSON_NAME_TITLE_GROUPS
+from pretix.base.models.organizer import OrganizerFooterLinkModel
 from pretix.control.forms import ExtFileField, SplitDateTimeField
 from pretix.control.forms import (
     SMTPSettingsMixin, )
@@ -33,6 +34,7 @@ from pretix.control.forms.event import (
 from pretix.multidomain.models import KnownDomain
 from pretix.multidomain.urlreverse import build_absolute_uri
 
+from i18nfield.forms import I18nFormSetMixin
 
 class OrganizerForm(I18nModelForm):
     error_messages = {
@@ -683,3 +685,24 @@ class SSOClientForm(I18nModelForm):
         else:
             del self.fields['client_id']
             del self.fields['regenerate_client_secret']
+
+class OrganizerFooterLinkForm(I18nModelForm):
+    class Meta:
+        model = OrganizerFooterLinkModel
+        fields = ('label', 'url')
+
+
+class BaseOrganizerFooterLinkFormSet(I18nFormSetMixin, forms.BaseInlineFormSet):
+    def __init__(self, *args, **kwargs):
+        organizer = kwargs.pop('organizer', None)
+        if organizer:
+            kwargs['locales'] = organizer.settings.get('locales')
+        super().__init__(*args, **kwargs)
+
+
+OrganizerFooterLinkFormset = forms.inlineformset_factory(
+    Organizer, OrganizerFooterLinkModel,
+    OrganizerFooterLinkForm,
+    formset=BaseOrganizerFooterLinkFormSet,
+    can_order=False, can_delete=True, extra=0
+)

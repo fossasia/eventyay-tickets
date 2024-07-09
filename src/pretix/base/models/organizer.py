@@ -14,7 +14,7 @@ from django.utils.translation import gettext_lazy as _
 
 from pretix.base.models.base import LoggedModel
 from pretix.base.validators import OrganizerSlugBanlistValidator
-
+from i18nfield.fields import I18nCharField
 from ..settings import settings_hierarkey
 from .auth import User
 
@@ -418,3 +418,28 @@ class TeamAPIToken(models.Model):
             return self.get_events_with_any_permission()
         else:
             return self.team.organizer.events.none()
+
+class OrganizerFooterLinkModel(models.Model):
+    """
+    FooterLink model - support show link for organizer's footer
+    """
+    organizer = models.ForeignKey('Organizer', 
+                                    on_delete=models.CASCADE, 
+                                    related_name='footer_links')
+
+    label = I18nCharField(
+        max_length=255,
+        verbose_name=_("Link's text"),
+    )
+    url = models.URLField(
+        verbose_name=_("Link's URL"),
+        # description=_("Organizer's footer link")
+    )
+
+    def delete(self, *args, **kwargs):
+        super().delete(*args, **kwargs)
+        self.organizer.cache.clear()
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.organizer.cache.clear()
