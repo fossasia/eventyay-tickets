@@ -1,0 +1,65 @@
+version: '3.4'
+
+services:
+  venueless:
+    image: eventyay/eventyay-video:development
+    container_name: venueless
+    ports:
+      - "8375:80"
+    environment:
+      - DJANGO_SETTINGS_MODULE=venueless.settings
+      - LC_ALL=C.UTF-8
+      - IPYTHONDIR=/data/.ipython
+      - VENUELESS_COMMIT_SHA=${COMMIT}
+      - VENUELESS_DB_TYPE=postgresql
+      - VENUELESS_DB_NAME=eventyay_db
+      - VENUELESS_DB_USER=postgres_db_user_changeme
+      - VENUELESS_DB_PASS=postgres_db_pwd_changeme
+      - VENUELESS_DB_HOST=venueless-db
+      - VENUELESS_REDIS_URLS=redis://venueless-redis:6379/0,redis://venueless-redis1:6379/0
+      - VENUELESS_DATA_DIR=/data
+      - VENUELESS_MEDIA_URL=http://localhost:8375/media/
+      - VENUELESS_REDIS_USE_PUBSUB=true
+    depends_on:
+      - venueless-db
+      - venueless-redis
+      - venueless-redis1
+    volumes:
+      - /etc/venueless:/etc/venueless
+      - /data:/data
+    entrypoint: ["/usr/local/bin/venueless"]
+    command: ["all"]
+
+  venueless-webapp:
+    image: eventyay/eventyay-video:development
+    container_name: venueless-webapp
+    ports:
+      - "8002:8880"
+    environment:
+      - NODE_OPTIONS=--openssl-legacy-provider
+    entrypoint: [""]
+    command: ["npm", "start", "--", "--host", "0.0.0.0"]
+    working_dir: /venueless/webapp
+
+  venueless-redis:
+    image: redis:latest
+    container_name: venueless-redis
+
+  venueless-redis1:
+    image: redis:latest
+    container_name: venueless-redis1
+
+  venueless-db:
+    image: postgres:15
+    container_name: venueless-db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_INITDB_ARGS=--auth-host=md5
+      - POSTGRES_HOST_AUTH_METHOD=md5
+      - POSTGRES_DB=eventyay_db
+      - POSTGRES_USER=postgres_db_user_changeme
+      - POSTGRES_PASSWORD=postgres_db_pwd_changeme
+
+volumes:
+  postgres_data:
