@@ -16,7 +16,7 @@ def set_can_manage_customers(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('pretixbase', '0002_question_description'),
+        ('pretixbase', '0003_eventfooterlinkmodel_organizerfooterlinkmodel'),
     ]
 
     operations = [
