@@ -8,10 +8,11 @@ from django.contrib.sessions.middleware import (
 )
 from django.core.exceptions import DisallowedHost
 from django.db.models import Q
+from django.http import Http404
 from django.http.request import split_domain_port
 from django.middleware.csrf import CSRF_SESSION_KEY
 from django.middleware.csrf import CsrfViewMiddleware as BaseCsrfMiddleware
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import redirect
 from django.urls import resolve
 from django.utils.cache import patch_vary_headers
 from django.utils.http import http_date
@@ -55,7 +56,12 @@ class MultiDomainMiddleware:
             return None
         event_slug = resolved.kwargs.get("event")
         if event_slug:
-            event = get_object_or_404(Event, slug__iexact=event_slug)
+            try:
+                event = Event.objects.get(slug__iexact=event_slug)
+            except (Event.DoesNotExist, ValueError):
+                # A ValueError can happen if the event slug contains malicious input
+                # like NUL bytes. We return a 404 here to avoid leaking information.
+                raise Http404()
             request.event = event
             if event.custom_domain:
                 custom_domain = urlparse(event.custom_domain)
