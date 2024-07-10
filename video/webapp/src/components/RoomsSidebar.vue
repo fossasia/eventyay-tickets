@@ -24,6 +24,10 @@ transition(name="sidebar")
 					template(v-else)
 						.room-icon(aria-hidden="true")
 						.name(v-html="$emojify(stage.room.name)")
+						.buffer
+						template(v-if="stage.room.users")
+							i.mdi.mdi-account-group.icon-viewer
+							.name(v-html="stage.room.users")
 			.group-title#chats-title(v-if="roomsByType.videoChat.length || roomsByType.textChat.length || hasPermission('world:rooms.create.chat') || hasPermission('world:rooms.create.bbb')")
 				span {{ $t('RoomsSidebar:channels-headline:text') }}
 				.buffer
@@ -293,7 +297,7 @@ export default {
 			&.router-link-exact-active, &.active
 				.room-icon::before
 					color: var(--clr-sidebar-text-secondary)
-			.room-icon
+			.room-icon, .icon-viewer
 				width: 22px
 				&::before
 					font-family: "Material Design Icons"
@@ -303,7 +307,9 @@ export default {
 					margin: 0 auto
 					display: block
 					width: 20px
-
+			.icon-viewer
+				&::before
+					line-height: 32px
 			&.starts-with-emoji
 				padding: 0 18px
 				// .room-icon

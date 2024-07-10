@@ -17,8 +17,7 @@ from venueless.core.models import AuditLog, Channel, Room, World
 from venueless.core.models.auth import ShortToken
 from venueless.core.models.room import (
     RoomConfigSerializer,
-    RoomView,
-    approximate_view_number,
+    RoomView
 )
 from venueless.core.permissions import Permission
 
@@ -168,7 +167,8 @@ def get_room_config(room, permissions):
     }
 
     if hasattr(room, "current_roomviews"):
-        room_config["users"] = approximate_view_number(room.current_roomviews)
+        # set actual viewer count instead of approximate text
+        room_config["users"] = room.current_roomviews
 
     for module in room.module_config:
         module_config = copy.deepcopy(module)
