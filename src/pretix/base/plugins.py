@@ -86,8 +86,8 @@ class PluginConfig(AppConfig):
                 installed_version = importlib.metadata.version(package_name)
                 if installed_version != required_version:
                     logger.error("Incompatible plugins found!")
-                    logger.error(f"Plugin {self.name} requires you to have {package_name}=={required_version}, "
-                          f"but you installed {package_name}=={installed_version}.")
+                    logger.error("Plugin %s requires you to have %s==%s, but you installed %s==%s",
+                    self.name, package_name, required_version, package_name, installed_version)
                     sys.exit(1)
         except importlib.metadata.PackageNotFoundError as e:
             logger.exception(f"Package not found: {e}")
