@@ -8,7 +8,7 @@ import django.conf.locale
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.crypto import get_random_string
 from kombu import Queue
-from pkg_resources import iter_entry_points
+import importlib_metadata
 from pycountry import currencies
 
 from . import __version__
@@ -321,11 +321,12 @@ except ImportError:
     pass
 
 PLUGINS = []
-for entry_point in iter_entry_points(group='pretix.plugin', name=None):
-    if entry_point.module_name in PRETIX_PLUGINS_EXCLUDE:
-        continue
-    PLUGINS.append(entry_point.module_name)
-    INSTALLED_APPS.append(entry_point.module_name)
+entry_points = importlib_metadata.entry_points()
+
+for entry_point in entry_points.select(group='pretix.plugin'):
+    if entry_point.module not in PRETIX_PLUGINS_EXCLUDE:
+        PLUGINS.append(entry_point.module)
+        INSTALLED_APPS.append(entry_point.module)
 
 HIJACK_AUTHORIZE_STAFF = True
 
