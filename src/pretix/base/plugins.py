@@ -1,13 +1,16 @@
 import os
 import sys
+import importlib.metadata
+import logging
+
 from enum import Enum
 from typing import List
 
 from django.apps import AppConfig, apps
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
-import importlib.metadata
 
+logger = logging.getLogger(__name__)
 
 class PluginType(Enum):
     """
@@ -82,10 +85,10 @@ class PluginConfig(AppConfig):
                 package_name, _, required_version = requirement.partition("==")
                 installed_version = importlib.metadata.version(package_name)
                 if installed_version != required_version:
-                    print("Incompatible plugins found!")
-                    print(f"Plugin {self.name} requires you to have {package_name}=={required_version}, "
+                    logger.error("Incompatible plugins found!")
+                    logger.error(f"Plugin {self.name} requires you to have {package_name}=={required_version}, "
                           f"but you installed {package_name}=={installed_version}.")
                     sys.exit(1)
         except importlib.metadata.PackageNotFoundError as e:
-            print(f"Package not found: {e}")
+            logger.exception(f"Package not found: {e}")
             sys.exit(1)

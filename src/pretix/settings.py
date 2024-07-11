@@ -2,13 +2,14 @@ import configparser
 import logging
 import os
 import sys
+import importlib_metadata
+
 from urllib.parse import urlparse
 from .settings_helpers import build_db_tls_config, build_redis_tls_config
 import django.conf.locale
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.crypto import get_random_string
 from kombu import Queue
-import importlib_metadata
 from pycountry import currencies
 
 from . import __version__
