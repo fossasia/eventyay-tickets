@@ -251,7 +251,7 @@ class WrappedPhoneNumberPrefixWidget(PhoneNumberPrefixWidget):
     def __init__(self, attrs=None, initial=None):
         attrs = {
             'aria-label': pgettext_lazy('phonenumber', 'Phone number (without international area code)'),
-            'placeholder': ''
+            'placeholder': 'Phone'
         }
         widgets = (WrappedPhonePrefixSelect(initial), forms.TextInput(attrs=attrs))
         super(PhoneNumberPrefixWidget, self).__init__(widgets, attrs)
@@ -514,21 +514,21 @@ class BaseQuestionsForm(forms.Form):
                     max_value=q.valid_number_max,
                     help_text=help_text,
                     initial=initial.answer if initial else None,
-                    widget=forms.NumberInput(attrs={'placeholder': ''}),
+                    widget=forms.NumberInput(attrs={'placeholder': 'Your answer'}),
                 )
             elif q.type == Question.TYPE_STRING:
                 field = forms.CharField(
                     label=label, required=required,
                     help_text=help_text,
                     initial=initial.answer if initial else None,
-                    widget=forms.TextInput(attrs={'placeholder': ''}),
+                    widget=forms.TextInput(attrs={'placeholder': 'Your answer'}),
                 )
             elif q.type == Question.TYPE_TEXT:
                 field = forms.CharField(
                     label=label, required=required,
                     help_text=help_text,
                     widget=forms.Textarea(attrs={
-                        'placeholder': ''
+                        'placeholder': 'Your answer'
                     }),
                     initial=initial.answer if initial else None,
                 )
@@ -606,7 +606,7 @@ class BaseQuestionsForm(forms.Form):
                     widget=SplitDateTimePickerWidget(
                         time_format=get_format_without_seconds('TIME_INPUT_FORMATS'),
                         min_date=q.valid_datetime_min,
-                        max_date=q.valid_datetime_max
+                        max_date=q.valid_datetime_max,
                     ),
                 )
                 if q.valid_datetime_min:
