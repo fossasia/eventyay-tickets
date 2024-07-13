@@ -250,7 +250,8 @@ class WrappedPhoneNumberPrefixWidget(PhoneNumberPrefixWidget):
 
     def __init__(self, attrs=None, initial=None):
         attrs = {
-            'aria-label': pgettext_lazy('phonenumber', 'Phone number (without international area code)')
+            'aria-label': pgettext_lazy('phonenumber', 'Phone number (without international area code)'),
+            'placeholder': 'Phone'
         }
         widgets = (WrappedPhonePrefixSelect(initial), forms.TextInput(attrs=attrs))
         super(PhoneNumberPrefixWidget, self).__init__(widgets, attrs)
@@ -488,26 +489,18 @@ class BaseQuestionsForm(forms.Form):
         for q in questions:
             # Do we already have an answer? Provide it as the initial value
             answers = [a for a in pos.answerlist if a.question_id == q.id]
-            if answers:
-                initial = answers[0]
-            else:
-                initial = None
+            initial = answers[0] if answers else None
             tz = pytz.timezone(event.settings.timezone)
             help_text = rich_text(q.help_text)
             label =  mark_safe(q.question)  # django-bootstrap3 calls mark_safe
             required = q.required and not self.all_optional
             if q.type == Question.TYPE_BOOLEAN:
                 if q.required:
-                    # For some reason, django-bootstrap3 does not set the required attribute
-                    # itself.
                     widget = forms.CheckboxInput(attrs={'required': 'required'})
                 else:
                     widget = forms.CheckboxInput()
 
-                if initial:
-                    initialbool = (initial.answer == "True")
-                else:
-                    initialbool = False
+                initialbool = (initial.answer == "True") if initial else False
 
                 field = forms.BooleanField(
                     label=label, required=required,
@@ -519,20 +512,24 @@ class BaseQuestionsForm(forms.Form):
                     label=label, required=required,
                     min_value=q.valid_number_min or Decimal('0.00'),
                     max_value=q.valid_number_max,
-                    help_text=q.help_text,
+                    help_text=help_text,
                     initial=initial.answer if initial else None,
+                    widget=forms.NumberInput(attrs={'placeholder': 'Your answer'}),
                 )
             elif q.type == Question.TYPE_STRING:
                 field = forms.CharField(
                     label=label, required=required,
                     help_text=help_text,
                     initial=initial.answer if initial else None,
+                    widget=forms.TextInput(attrs={'placeholder': 'Your answer'}),
                 )
             elif q.type == Question.TYPE_TEXT:
                 field = forms.CharField(
                     label=label, required=required,
                     help_text=help_text,
-                    widget=forms.Textarea,
+                    widget=forms.Textarea(attrs={
+                        'placeholder': 'Your answer'
+                    }),
                     initial=initial.answer if initial else None,
                 )
             elif q.type == Question.TYPE_COUNTRYCODE:
@@ -609,7 +606,7 @@ class BaseQuestionsForm(forms.Form):
                     widget=SplitDateTimePickerWidget(
                         time_format=get_format_without_seconds('TIME_INPUT_FORMATS'),
                         min_date=q.valid_datetime_min,
-                        max_date=q.valid_datetime_max
+                        max_date=q.valid_datetime_max,
                     ),
                 )
                 if q.valid_datetime_min:
@@ -630,9 +627,6 @@ class BaseQuestionsForm(forms.Form):
                     field = PhoneNumberField(
                         label=label, required=required,
                         help_text=help_text,
-                        # We now exploit an implementation detail in PhoneNumberPrefixWidget to allow us to pass just
-                        # a country code but no number as an initial value. It's a bit hacky, but should be stable for
-                        # the future.
                         initial=initial,
                         widget=WrappedPhoneNumberPrefixWidget()
                     )
@@ -640,12 +634,12 @@ class BaseQuestionsForm(forms.Form):
                 field = forms.CharField(
                     label=label,
                     widget=forms.Textarea(),
-                    initial=mark_safe(q.description)
+                    initial=mark_safe(q.description),
+                    required=False
                 )
                 field.widget.attrs['type'] = 'description'
             field.question = q
             if answers:
-                # Cache the answer object for later use
                 field.answer = answers[0]
 
             if q.dependency_question_id:
@@ -667,7 +661,6 @@ class BaseQuestionsForm(forms.Form):
         data = pos.meta_info_data
         for r, response in sorted(responses, key=lambda r: str(r[0])):
             for key, value in response.items():
-                # We need to be this explicit, since OrderedDict.update does not retain ordering
                 self.fields[key] = value
                 value.initial = data.get('question_form_data', {}).get(key)
 

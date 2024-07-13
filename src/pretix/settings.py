@@ -2,13 +2,14 @@ import configparser
 import logging
 import os
 import sys
+import importlib_metadata
+
 from urllib.parse import urlparse
 from .settings_helpers import build_db_tls_config, build_redis_tls_config
 import django.conf.locale
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.crypto import get_random_string
 from kombu import Queue
-from pkg_resources import iter_entry_points
 from pycountry import currencies
 
 from . import __version__
@@ -140,6 +141,7 @@ if config.get('pretix', 'trust_x_forwarded_proto', fallback=False):
 PRETIX_PLUGINS_DEFAULT = config.get('pretix', 'plugins_default',
                                     fallback='pretix.plugins.sendmail,pretix.plugins.statistics,pretix.plugins.checkinlists,pretix.plugins.autocheckin')
 PRETIX_PLUGINS_EXCLUDE = config.get('pretix', 'plugins_exclude', fallback='').split(',')
+PRETIX_PLUGINS_SHOW_META = config.getboolean('pretix', 'plugins_show_meta', fallback=True)
 
 FETCH_ECB_RATES = config.getboolean('pretix', 'ecb_rates', fallback=True)
 
@@ -320,11 +322,12 @@ except ImportError:
     pass
 
 PLUGINS = []
-for entry_point in iter_entry_points(group='pretix.plugin', name=None):
-    if entry_point.module_name in PRETIX_PLUGINS_EXCLUDE:
-        continue
-    PLUGINS.append(entry_point.module_name)
-    INSTALLED_APPS.append(entry_point.module_name)
+entry_points = importlib_metadata.entry_points()
+
+for entry_point in entry_points.select(group='pretix.plugin'):
+    if entry_point.module not in PRETIX_PLUGINS_EXCLUDE:
+        PLUGINS.append(entry_point.module)
+        INSTALLED_APPS.append(entry_point.module)
 
 HIJACK_AUTHORIZE_STAFF = True
 

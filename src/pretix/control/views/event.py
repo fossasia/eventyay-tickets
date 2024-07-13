@@ -3,13 +3,18 @@ import operator
 import re
 from collections import OrderedDict
 from decimal import Decimal
+from io import BytesIO
 from itertools import groupby
-from urllib.parse import urlsplit
+from urllib.parse import urlsplit, urlparse
 
+import qrcode
+import qrcode.image.svg
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import PermissionDenied
 from django.core.files import File
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.db import transaction
 from django.db.models import ProtectedError
 from django.forms import inlineformset_factory
@@ -40,7 +45,7 @@ from pretix.base.services.invoices import build_preview_invoice_pdf
 from pretix.base.signals import register_ticket_outputs
 from pretix.base.templatetags.rich_text import markdown_compile_email
 from pretix.control.forms.event import (
-    CancelSettingsForm, CommentForm, ConfirmTextFormset, EventDeleteForm,
+    CancelSettingsForm, CommentForm, ConfirmTextFormset, EventDeleteForm, EventFooterLinkFormset,
     EventMetaValueForm, EventSettingsForm, EventUpdateForm,
     InvoiceSettingsForm, ItemMetaPropertyForm, MailSettingsForm,
     PaymentSettingsForm, ProviderForm, QuickSetupForm,
@@ -50,7 +55,7 @@ from pretix.control.forms.event import (
 from pretix.control.permissions import EventPermissionRequiredMixin
 from pretix.control.views.user import RecentAuthenticationRequiredMixin
 from pretix.helpers.database import rolledback_transaction
-from pretix.multidomain.urlreverse import get_event_domain
+from pretix.multidomain.urlreverse import get_event_domain, build_absolute_uri
 from pretix.plugins.stripe.payment import StripeSettingsHolder
 from pretix.presale.style import regenerate_css
 
@@ -151,6 +156,7 @@ class EventUpdate(DecoupleMixin, EventSettingsViewMixin, EventPermissionRequired
         context['meta_forms'] = self.meta_forms
         context['item_meta_property_formset'] = self.item_meta_property_formset
         context['confirm_texts_formset'] = self.confirm_texts_formset
+        context['footer_links_formset'] = self.footer_links_formset
         return context
 
     @transaction.atomic
@@ -160,6 +166,7 @@ class EventUpdate(DecoupleMixin, EventSettingsViewMixin, EventPermissionRequired
         self.save_meta()
         self.save_item_meta_property_formset(self.object)
         self.save_confirm_texts_formset(self.object)
+        self.save_footer_links_formset(self.object)
         change_css = False
 
         if self.sform.has_changed() or self.confirm_texts_formset.has_changed():
@@ -169,6 +176,10 @@ class EventUpdate(DecoupleMixin, EventSettingsViewMixin, EventPermissionRequired
             self.request.event.log_action('pretix.event.settings', user=self.request.user, data=data)
             if any(p in self.sform.changed_data for p in SETTINGS_AFFECTING_CSS):
                 change_css = True
+        if self.footer_links_formset.has_changed():
+            self.request.event.log_action('eventyay.event.footerlinks.changed', user=self.request.user, data={
+                'data': self.footer_links_formset.cleaned_data
+            })
         if form.has_changed():
             self.request.event.log_action('pretix.event.changed', user=self.request.user, data={
                 k: (form.cleaned_data.get(k).name
@@ -203,7 +214,8 @@ class EventUpdate(DecoupleMixin, EventSettingsViewMixin, EventPermissionRequired
     def post(self, request, *args, **kwargs):
         form = self.get_form()
         if form.is_valid() and self.sform.is_valid() and all([f.is_valid() for f in self.meta_forms]) and \
-                self.item_meta_property_formset.is_valid() and self.confirm_texts_formset.is_valid():
+                self.item_meta_property_formset.is_valid() and self.confirm_texts_formset.is_valid() and \
+                self.footer_links_formset.is_valid():
             # reset timezone
             zone = timezone(self.sform.cleaned_data['timezone'])
             event = form.instance
@@ -257,9 +269,19 @@ class EventUpdate(DecoupleMixin, EventSettingsViewMixin, EventPermissionRequired
     def save_confirm_texts_formset(self, obj):
         obj.settings.confirm_texts = LazyI18nStringList(
             form_data['text'].data
-            for form_data in sorted(self.confirm_texts_formset.cleaned_data, key=operator.itemgetter("ORDER"))
-            if not form_data.get("DELETE", False)
+            for form_data in sorted((data for data in self.confirm_texts_formset.cleaned_data if data), key=operator.itemgetter("ORDER"))
+            if form_data and not form_data.get("DELETE", False)
         )
+
+    @cached_property
+    def footer_links_formset(self):
+        return EventFooterLinkFormset(self.request.POST if self.request.method == "POST" else None, 
+                                        event=self.object,
+                                        prefix="footer-links", 
+                                        instance=self.object)
+
+    def save_footer_links_formset(self, obj):
+        self.footer_links_formset.save()
 
 
 class EventPlugins(EventSettingsViewMixin, EventPermissionRequiredMixin, TemplateView, SingleObjectMixin):
@@ -293,15 +315,25 @@ class EventPlugins(EventSettingsViewMixin, EventPermissionRequiredMixin, Templat
             'FORMAT': _('Output and export formats'),
             'API': _('API features'),
         }
+        plugins_grouped = groupby(
+            sorted(
+                plugins,
+                key=lambda p: (
+                    str(getattr(p, 'category', _('Other'))),
+                    (0 if getattr(p, 'featured', False) else 1),
+                    str(p.name).lower().replace('pretix ', '')
+                ),
+            ),
+            lambda p: str(getattr(p, 'category', _('Other')))
+        )
+        plugins_grouped = [(c, list(plist)) for c, plist in plugins_grouped]
         context['plugins'] = sorted([
-            (c, labels.get(c, c), list(plist))
+            (c, labels.get(c, c), plist, any(getattr(p, 'picture', None) for p in plist))
             for c, plist
-            in groupby(
-                sorted(plugins, key=lambda p: str(getattr(p, 'category', _('Other')))),
-                lambda p: str(getattr(p, 'category', _('Other')))
-            )
+            in plugins_grouped
         ], key=lambda c: (order.index(c[0]), c[1]) if c[0] in order else (999, str(c[1])))
         context['plugins_active'] = self.object.get_plugins()
+        context['show_meta'] = settings.PRETIX_PLUGINS_SHOW_META
         return context
 
     def get(self, request, *args, **kwargs):
@@ -1437,3 +1469,85 @@ class QuickSetupView(FormView):
                 },
             ] if self.request.method != "POST" else []
         )
+
+
+class EventQRCode(EventPermissionRequiredMixin, View):
+    """
+    View to generate QR codes for event URLs. This class requires event-specific
+    permissions and can generate QR codes in various formats (SVG, JPEG, PNG, GIF).
+
+    Attributes:
+        permission (str): Required permissions for accessing this view.
+    """
+    permission = None
+
+    def get(self, request, *args, filetype, **kwargs):
+        """
+        Handle GET requests to generate a QR code.
+        """
+        # Build the base URL for the event
+        url = build_absolute_uri(request.event, 'presale:event.index')
+
+        # Check if a custom URL is provided and validate it
+        custom_url = request.GET.get("url")
+        if custom_url:
+            if url_has_allowed_host_and_scheme(custom_url, allowed_hosts=[urlparse(url).netloc]):
+                url = custom_url
+            else:
+                raise PermissionDenied("Untrusted URL")
+
+        # Create a QRCode object
+        qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_M,
+            box_size=10,
+            border=4,
+        )
+        qr.add_data(url)
+        qr.make(fit=True)
+
+        # Generate the QR code in the requested format
+        if filetype == 'svg':
+            return self._generate_svg_response(qr, request.event.slug, filetype)
+        elif filetype in ('jpeg', 'png', 'gif'):
+            return self._generate_image_response(qr, request.event.slug, filetype)
+        else:
+            raise ValueError(f"Unsupported file type: {filetype}")
+
+    def _generate_svg_response(self, qr, event_slug, filetype):
+        """
+        Generate an SVG response for the QR code.
+
+        Parameters:
+            qr (QRCode): The QRCode object.
+            event_slug (str): The event slug to be used in the filename.
+            filetype (str): The file type (should be 'svg').
+
+        Returns:
+            HttpResponse: An HTTP response containing the SVG QR code.
+        """
+        factory = qrcode.image.svg.SvgPathImage
+        img = qr.make_image(image_factory=factory)
+        response = HttpResponse(img.to_string(), content_type='image/svg+xml')
+        response['Content-Disposition'] = f'inline; filename="qrcode-{event_slug}.{filetype}"'
+        return response
+
+    def _generate_image_response(self, qr, event_slug, filetype):
+        """
+        Generate an image response (JPEG, PNG, GIF) for the QR code.
+
+        Parameters:
+            qr (QRCode): The QRCode object.
+            event_slug (str): The event slug to be used in the filename.
+            filetype (str): The file type (jpeg, png, gif).
+
+        Returns:
+            HttpResponse: An HTTP response containing the image QR code.
+        """
+        img = qr.make_image(fill_color="black", back_color="white")
+        byte_io = BytesIO()
+        img.save(byte_io, filetype.upper())
+        byte_io.seek(0)
+        response = HttpResponse(byte_io.read(), content_type=f'image/{filetype}')
+        response['Content-Disposition'] = f'inline; filename="qrcode-{event_slug}.{filetype}"'
+        return response
