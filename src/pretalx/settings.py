@@ -66,6 +66,7 @@ DJANGO_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.humanize",
+    'django.contrib.sites',
 ]
 EXTERNAL_APPS = [
     "compressor",
@@ -75,6 +76,9 @@ EXTERNAL_APPS = [
     "jquery",
     "rest_framework.authtoken",
     "rules",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
 ]
 LOCAL_APPS = [
     "pretalx.api",
@@ -87,6 +91,7 @@ LOCAL_APPS = [
     "pretalx.agenda",
     "pretalx.cfp",
     "pretalx.orga",
+    "pretalx.sso_provider",
 ]
 FALLBACK_APPS = [
     "bootstrap4",
@@ -503,6 +508,7 @@ AUTHENTICATION_BACKENDS = (
     "rules.permissions.ObjectPermissionBackend",
     "django.contrib.auth.backends.ModelBackend",
     "pretalx.common.auth.AuthenticationTokenBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
 )
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -528,6 +534,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",  # Uses sessions
     "django.middleware.clickjacking.XFrameOptionsMiddleware",  # Protects against clickjacking
     "csp.middleware.CSPMiddleware",  # Modifies/sets CSP headers
+    "allauth.account.middleware.AccountMiddleware",  # Adds account information to the request
 ]
 
 
@@ -546,6 +553,8 @@ TEMPLATES = [
         "DIRS": [
             DATA_DIR / "templates",
             BASE_DIR / "templates",
+            BASE_DIR / "pretalx" / "sso_provider" / "templates",
+
         ],
         "OPTIONS": {
             "context_processors": [
@@ -686,3 +695,23 @@ else:
         LOG_DIR=LOG_DIR,
         plugins=PLUGINS,
     )
+
+# Below is configuration for SSO using eventyay-ticket
+EVENTYAY_TICKET_BASE_PATH = os.getenv("EVENTYAY_TICKET_BASE_PATH",
+                                      "https://tickets-dev.eventyay.com")
+SITE_ID = 1
+# for now, customer must verified their email at eventyay-ticket, so this check not required
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+# will take name from eventyay-ticket as username
+ACCOUNT_USER_MODEL_USERNAME_FIELD = 'name'
+# redirect to home page after login with eventyay-ticket
+LOGIN_REDIRECT_URL = '/'
+# custom form for signup and adapter
+SOCIALACCOUNT_FORMS = {"signup": "pretalx.sso_provider.forms.CustomSignUpForm"}
+SOCIALACCOUNT_ADAPTER = 'pretalx.sso_provider.views.CustomSocialAccountAdapter'
+# disable confirm step when using eventyay-ticket to login
+SOCIALACCOUNT_LOGIN_ON_GET = True
+# eventyay-ticket provider configuration
+EVENTYAY_TICKET_SSO_WELL_KNOW_URL = "/".join([EVENTYAY_TICKET_BASE_PATH,
+                                              '{org}',
+                                              '.well-known/openid-configuration'])

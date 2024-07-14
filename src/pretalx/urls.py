@@ -3,7 +3,7 @@ from contextlib import suppress
 from django.apps import apps
 from django.conf import settings
 from django.conf.urls.static import static
-from django.urls import include, path
+from django.urls import include, path, re_path
 from django.utils.module_loading import import_string
 
 from pretalx.common.views import error_view
@@ -29,6 +29,7 @@ urlpatterns = [
     path("", include("pretalx.agenda.urls", namespace="agenda")),
     path("", include("pretalx.cfp.urls", namespace="cfp")),
     path("", include((plugin_patterns, "plugins"))),
+    re_path(r'^accounts/', include('allauth.urls')),
 ]
 
 handler500 = "pretalx.common.views.handle_500"

@@ -1,0 +1,39 @@
+{% extends "./base.html" %}
+{% load bootstrap4 %}
+{% load compress %}
+{% load i18n %}
+{% load static %}
+{% load allauth %}
+
+{% block content %}
+
+{% bootstrap_form_errors form %}
+    {% element h1 %}
+        {% trans "Sign Up" %}
+    {% endelement %}
+    {% element p %}
+        {% blocktrans with provider_name=account.get_provider.name site_name=site.name %}You are about to use your {{provider_name}} account to login.
+ But your info username/email from Eventyay-ticket already existed in our system, please choose other username/email:{% endblocktrans %}
+    {% endelement %}
+    {% url 'socialaccount_signup' as action_url %}
+    {% element form form=form method="post" action=action_url %}
+        {% slot body %}
+            {% csrf_token %}
+            {% for field in form %}
+            {% if field.name == 'email' %}
+                {% bootstrap_field field layout="inline" %}
+            {% else %}
+                {% bootstrap_field field layout="inline" %}
+            {% endif %}
+        {% endfor %}
+            {{ redirect_field }}
+        {% endslot %}
+        {% slot actions %}
+            <button type="submit" class="btn btn-lg btn-info btn-block">
+                {% translate "Register" %}
+            </button>
+        {% endslot %}
+    {% endelement %}
+
+{% endblock content %}
+

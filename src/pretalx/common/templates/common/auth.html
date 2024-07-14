@@ -2,6 +2,7 @@
 {% load compress %}
 {% load i18n %}
 {% load static %}
+{% load socialaccount %}
 
 {% bootstrap_form_errors form %}
 {% if no_form %}
@@ -25,6 +26,13 @@
             <button type="submit" class="btn btn-lg btn-success btn-block">
                 {% translate "Log in" %}
             </button>
+        {% endif %}
+        {% if not no_buttons %}
+        <div class="text-center">
+            <a class="btn btn-lg btn-primary btn-block mt-3" href="{% provider_login_url 'eventyay' %}">
+                {% translate "Login with Eventyay-ticket" %}
+            </a>
+        </div>
         {% endif %}
         {% if password_reset_link or request.event %}
             <a class="btn btn-block btn-link" href="{% if password_reset_link %}{{ password_reset_link }}{% else %}{{ request.event.urls.reset }}{% endif %}">
