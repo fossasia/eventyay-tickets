@@ -9,7 +9,7 @@ from oauth2_provider.generators import (
 )
 from oauth2_provider.models import (
     AbstractAccessToken, AbstractApplication, AbstractGrant, AbstractIDToken,
-    AbstractRefreshToken,
+    AbstractRefreshToken, ClientSecretField
 )
 from oauth2_provider.validators import URIValidator
 
@@ -21,11 +21,16 @@ class OAuthApplication(AbstractApplication):
         verbose_name=_("Redirection URIs"),
         help_text=_("Allowed URIs list, space separated")
     )
+    post_logout_redirect_uris = models.TextField(
+        blank=True, validators=[URIValidator],
+        help_text=_("Allowed Post Logout URIs list with space separated"),
+        default="",
+    )
     client_id = models.CharField(
         verbose_name=_("Client ID"),
         max_length=100, unique=True, default=generate_client_id, db_index=True
     )
-    client_secret = models.CharField(
+    client_secret = ClientSecretField(
         verbose_name=_("Client secret"),
         max_length=255, blank=False, default=generate_client_secret, db_index=True
     )
@@ -44,6 +49,7 @@ class OAuthGrant(AbstractGrant):
     )
     organizers = models.ManyToManyField('pretixbase.Organizer')
     redirect_uri = models.CharField(max_length=2500)  # Only 255 in AbstractGrant, which caused problems
+
 
 class OAuthIDToken(AbstractIDToken):
     application = models.ForeignKey(

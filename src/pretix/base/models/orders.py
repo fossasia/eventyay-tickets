@@ -38,7 +38,7 @@ from pretix.base.banlist import banned
 from pretix.base.decimal import round_decimal
 from pretix.base.email import get_email_context
 from pretix.base.i18n import language
-from pretix.base.models import User
+from pretix.base.models import User, Customer
 from pretix.base.reldate import RelativeDateWrapper
 from pretix.base.services.locking import NoLockManager
 from pretix.base.settings import PERSON_NAME_SCHEMES
@@ -178,6 +178,13 @@ class Order(LockModel, LoggedModel):
         verbose_name=_("Event"),
         related_name="orders",
         on_delete=models.CASCADE
+    )
+    customer = models.ForeignKey(
+        Customer,
+        verbose_name=_("Customer"),
+        related_name="orders",
+        null=True, blank=True,
+        on_delete=models.SET_NULL
     )
     email = models.EmailField(
         null=True, blank=True,
@@ -832,7 +839,7 @@ class Order(LockModel, LoggedModel):
             'voucher_usages': _('The voucher "{voucher}" has been used in the meantime.'),
         }
         now_dt = now_dt or now()
-        positions = self.positions.all().select_related('item', 'variation', 'seat', 'voucher')
+        positions = list(self.positions.all().select_related('item', 'variation', 'seat', 'voucher'))
         quota_cache = {}
         v_budget = {}
         v_usage = Counter()
