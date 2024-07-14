@@ -22,9 +22,9 @@ from pretix.base.channels import get_all_sales_channels
 from pretix.base.decimal import round_decimal
 from pretix.base.i18n import language
 from pretix.base.models import (
-    CachedFile, Checkin, Invoice, InvoiceAddress, InvoiceLine, Item,
+    CachedFile, Checkin, Invoice, Customer, InvoiceAddress, InvoiceLine, Item,
     ItemVariation, Order, OrderPosition, Question, QuestionAnswer, Seat,
-    SubEvent, TaxRule, Voucher,
+    SubEvent, TaxRule, Voucher
 )
 from pretix.base.models.orders import (
     CartPosition, OrderFee, OrderPayment, OrderRefund, RevokedTicketSecret,
@@ -583,6 +583,7 @@ class OrderSerializer(I18nAwareModelSerializer):
     payment_date = OrderPaymentDateField(source='*', read_only=True)
     payment_provider = OrderPaymentTypeField(source='*', read_only=True)
     url = OrderURLField(source='*', read_only=True)
+    customer = serializers.SlugRelatedField(slug_field='identifier', read_only=True)
 
     class Meta:
         model = Order
@@ -590,11 +591,11 @@ class OrderSerializer(I18nAwareModelSerializer):
             'code', 'status', 'testmode', 'secret', 'email', 'phone', 'locale', 'datetime', 'expires', 'payment_date',
             'payment_provider', 'fees', 'total', 'comment', 'invoice_address', 'positions', 'downloads',
             'checkin_attention', 'last_modified', 'payments', 'refunds', 'require_approval', 'sales_channel',
-            'url'
+            'url',  'customer'
         )
         read_only_fields = (
             'code', 'status', 'testmode', 'secret', 'datetime', 'expires', 'payment_date',
-            'payment_provider', 'fees', 'total', 'positions', 'downloads',
+            'payment_provider', 'fees', 'total', 'positions', 'downloads', 'customer',
             'last_modified', 'payments', 'refunds', 'require_approval', 'sales_channel'
         )
 
@@ -866,16 +867,20 @@ class OrderCreateSerializer(I18nAwareModelSerializer):
     payment_date = serializers.DateTimeField(required=False, allow_null=True)
     send_email = serializers.BooleanField(default=False, required=False)
     simulate = serializers.BooleanField(default=False, required=False)
+    customer = serializers.SlugRelatedField(slug_field='identifier',
+                                            queryset=Customer.objects.none(),
+                                            required=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['positions'].child.fields['voucher'].queryset = self.context['event'].vouchers.all()
+        self.fields['customer'].queryset = self.context['event'].organizer.customers.all()
 
     class Meta:
         model = Order
-        fields = ('code', 'status', 'testmode', 'email', 'phone', 'locale', 'payment_provider', 'fees', 'comment', 'sales_channel',
-                  'invoice_address', 'positions', 'checkin_attention', 'payment_info', 'payment_date', 'consume_carts',
-                  'force', 'send_email', 'simulate')
+        fields = ('code', 'status', 'testmode', 'email', 'phone', 'locale', 'payment_provider', 'fees', 'comment',
+                  'sales_channel', 'invoice_address', 'positions', 'checkin_attention', 'payment_info', 'payment_date',
+                  'consume_carts', 'force', 'send_email', 'simulate', 'customer')
 
     def validate_payment_provider(self, pp):
         if pp is None:

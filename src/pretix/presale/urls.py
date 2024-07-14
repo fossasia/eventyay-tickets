@@ -4,8 +4,10 @@ from django.views.decorators.csrf import csrf_exempt
 
 import pretix.presale.views.cart
 import pretix.presale.views.checkout
+import pretix.presale.views.customer
 import pretix.presale.views.event
 import pretix.presale.views.locale
+import pretix.presale.views.oidc_op
 import pretix.presale.views.order
 import pretix.presale.views.organizer
 import pretix.presale.views.robots
@@ -132,6 +134,38 @@ organizer_patterns = [
     url(r'^widget/product_list$', pretix.presale.views.widget.WidgetAPIProductList.as_view(),
         name='organizer.widget.productlist'),
     url(r'^widget/v1.css$', pretix.presale.views.widget.widget_css, name='organizer.widget.css'),
+    url(r'^account/login/(?P<provider>[0-9]+)/$', pretix.presale.views.customer.SSOLoginView.as_view(),
+            name='organizer.customer.login'),
+    url(r'^account/login/(?P<provider>[0-9]+)/return$', pretix.presale.views.customer.SSOLoginReturnView.as_view(),
+            name='organizer.customer.login.return'),
+    url(r'^account/login$', pretix.presale.views.customer.LoginView.as_view(), name='organizer.customer.login'),
+    url(r'^account/logout$', pretix.presale.views.customer.LogoutView.as_view(), name='organizer.customer.logout'),
+    url(r'^account/register$', pretix.presale.views.customer.RegistrationView.as_view(),
+        name='organizer.customer.register'),
+    url(r'^account/pwreset$', pretix.presale.views.customer.ResetPasswordView.as_view(),
+        name='organizer.customer.resetpw'),
+    url(r'^account/pwrecover$', pretix.presale.views.customer.SetPasswordView.as_view(),
+        name='organizer.customer.recoverpw'),
+    url(r'^account/activate$', pretix.presale.views.customer.SetPasswordView.as_view(),
+        name='organizer.customer.activate'),
+    url(r'^account/password$', pretix.presale.views.customer.ChangePasswordView.as_view(),
+        name='organizer.customer.password'),
+    url(r'^account/change$', pretix.presale.views.customer.ChangeInformationView.as_view(),
+        name='organizer.customer.change'),
+    url(r'^account/confirmchange$', pretix.presale.views.customer.ConfirmChangeView.as_view(),
+        name='organizer.customer.change.confirm'),
+    url(r'^account/$', pretix.presale.views.customer.ProfileView.as_view(), name='organizer.customer.profile'),
+    url(r'^account/order/$', pretix.presale.views.customer.OrderView.as_view(), name='organizer.customer.order'),
+    url(r'^oauth2/v1/authorize$', pretix.presale.views.oidc_op.AuthorizeView.as_view(),
+            name='organizer.oauth2.v1.authorize'),
+    url(r'^oauth2/v1/token$', pretix.presale.views.oidc_op.TokenView.as_view(),
+            name='organizer.oauth2.v1.token'),
+    url(r'^oauth2/v1/userinfo$', pretix.presale.views.oidc_op.UserInfoView.as_view(),
+            name='organizer.oauth2.v1.userinfo'),
+    url(r'^oauth2/v1/keys$', pretix.presale.views.oidc_op.KeysView.as_view(),
+            name='organizer.oauth2.v1.jwks'),
+    url(r'^.well-known/openid-configuration$', pretix.presale.views.oidc_op.ConfigurationView.as_view(),
+            name='organizer.oauth2.v1.configuration'),
 ]
 
 locale_patterns = [

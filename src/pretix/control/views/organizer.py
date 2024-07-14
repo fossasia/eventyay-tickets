@@ -1,4 +1,5 @@
 import json
+import re
 from datetime import timedelta
 from decimal import Decimal
 
@@ -9,11 +10,11 @@ from django.core.exceptions import PermissionDenied, ValidationError
 from django.core.files import File
 from django.db import transaction
 from django.db.models import (
-    Count, Max, Min, OuterRef, Prefetch, ProtectedError, Subquery, Sum,
+    Count, Max, Min, OuterRef, Prefetch, ProtectedError, Subquery, Sum, Q, IntegerField, Exists,
 )
 from django.db.models.functions import Coalesce, Greatest
 from django.forms import DecimalField
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.functional import cached_property
@@ -27,29 +28,35 @@ from django.views.generic import (
 
 from pretix.api.models import WebHook
 from pretix.base.auth import get_auth_backends
+from pretix.base.channels import get_all_sales_channels
+from pretix.base.i18n import language
 from pretix.base.models import (
     CachedFile, Device, Gate, GiftCard, LogEntry, OrderPayment, Organizer,
-    Team, TeamInvite, User,
+    Team, TeamInvite, User, Customer, Invoice,
 )
+from pretix.base.models.customers import CustomerSSOClient, CustomerSSOProvider
 from pretix.base.models.event import Event, EventMetaProperty, EventMetaValue
 from pretix.base.models.giftcards import (
     GiftCardTransaction, gen_giftcard_secret,
 )
+from pretix.base.models.orders import CancellationRequest, Order, OrderPosition
 from pretix.base.models.organizer import TeamAPIToken
 from pretix.base.payment import PaymentException
 from pretix.base.services.export import multiexport
 from pretix.base.services.mail import SendMailException, mail
 from pretix.base.settings import SETTINGS_AFFECTING_CSS
 from pretix.base.signals import register_multievent_data_exporters
+from pretix.base.templatetags.rich_text import markdown_compile_email
 from pretix.base.views.tasks import AsyncAction
 from pretix.control.forms.filter import (
-    EventFilterForm, GiftCardFilterForm, OrganizerFilterForm,
+    EventFilterForm, GiftCardFilterForm, OrganizerFilterForm, CustomerFilterForm,
 )
 from pretix.control.forms.orders import ExporterForm
 from pretix.control.forms.organizer import (
     DeviceForm, EventMetaPropertyForm, GateForm, GiftCardCreateForm,
-    GiftCardUpdateForm, OrganizerDeleteForm, OrganizerFooterLinkForm, OrganizerFooterLinkFormset, OrganizerForm,
-    OrganizerSettingsForm, OrganizerUpdateForm, TeamForm, WebHookForm,
+    GiftCardUpdateForm, OrganizerDeleteForm, OrganizerForm,
+    OrganizerSettingsForm, OrganizerUpdateForm, TeamForm, WebHookForm, MailSettingsForm, CustomerUpdateForm,
+    SSOProviderForm, SSOClientForm, OrganizerFooterLinkForm, OrganizerFooterLinkFormset
 )
 from pretix.control.logdisplay import OVERVIEW_BANLIST
 from pretix.control.permissions import (
@@ -58,7 +65,8 @@ from pretix.control.permissions import (
 from pretix.control.signals import nav_organizer
 from pretix.control.views import PaginationMixin
 from pretix.helpers.dicts import merge_dicts
-from pretix.helpers.urls import build_absolute_uri
+from pretix.multidomain.urlreverse import build_absolute_uri
+
 from pretix.presale.style import regenerate_organizer_css
 
 
@@ -192,6 +200,127 @@ class OrganizerSettingsFormView(OrganizerDetailViewMixin, OrganizerPermissionReq
         else:
             messages.error(self.request, _('We could not save your changes. See below for details.'))
             return self.get(request)
+
+
+class OrganizerMailSettings(OrganizerSettingsFormView):
+    form_class = MailSettingsForm
+    template_name = 'pretixcontrol/organizers/mail.html'
+    permission = 'can_change_organizer_settings'
+
+    def get_success_url(self):
+        return reverse('control:organizer.settings.mail', kwargs={
+            'organizer': self.request.organizer.slug,
+        })
+
+    @transaction.atomic
+    def post(self, request, *args, **kwargs):
+        """
+        Handles POST requests to process the form, save changes, log actions, and test SMTP settings if requested.
+
+        Args:
+            request (HttpRequest): The HTTP request object.
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+
+        Returns:
+            HttpResponse: Redirects to the success URL if the form is valid, otherwise re-renders the form with errors.
+        """
+        form = self.get_form()
+
+        if form.is_valid():
+            form.save()
+
+            if form.has_changed():
+                self.request.organizer.log_action(
+                    'pretix.organizer.settings', user=self.request.user, data={
+                        k: form.cleaned_data.get(k) for k in form.changed_data
+                    }
+                )
+
+            if request.POST.get('test', '0').strip() == '1':
+                backend = self.request.organizer.get_mail_backend(force_custom=True, timeout=10)
+                try:
+                    backend.test(self.request.organizer.settings.mail_from)
+                except Exception as e:
+                    messages.warning(self.request, _('An error occurred while contacting the SMTP server: %s') % str(e))
+                else:
+                    success_message = _(
+                        'Your changes have been saved and the connection attempt to your SMTP server was successful.') \
+                        if form.cleaned_data.get('smtp_use_custom') else \
+                        _('We\'ve been able to contact the SMTP server you configured. Remember to check '
+                          'the "use custom SMTP server" checkbox, otherwise your SMTP server will not be used.')
+                    messages.success(self.request, success_message)
+            else:
+                messages.success(self.request, _('Your changes have been saved.'))
+
+            return redirect(self.get_success_url())
+
+        messages.error(self.request, _('We could not save your changes. See below for details.'))
+        return self.get(request)
+
+
+class MailSettingsPreview(OrganizerPermissionRequiredMixin, View):
+    permission = 'can_change_organizer_settings'
+
+    class SafeDict(dict):
+        def __missing__(self, key):
+            return '{' + key + '}'
+
+    @cached_property
+    def supported_locale(self):
+        locales = {}
+        for idx, val in enumerate(settings.LANGUAGES):
+            if val[0] in self.request.organizer.settings.locales:
+                locales[str(idx)] = val[0]
+        return locales
+
+    def placeholders(self, item):
+        ctx = {}
+        for p, s in MailSettingsForm(obj=self.request.organizer)._get_sample_context(
+                MailSettingsForm.base_context[item]).items():
+            if s.strip().startswith('*'):
+                ctx[p] = s
+            else:
+                ctx[p] = '<span class="placeholder" title="{}">{}</span>'.format(
+                    _('This value will be replaced based on dynamic parameters.'),
+                    s
+                )
+        return self.SafeDict(ctx)
+
+    def post(self, request, *args, **kwargs):
+        """
+        Handles the POST request to generate a preview of email messages in different locales.
+
+        Args:
+            request (HttpRequest): The HTTP request object.
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+
+        Returns:
+            JsonResponse: A JSON response containing the item and the compiled messages for each locale.
+            HttpResponseBadRequest: If the preview item is invalid.
+        """
+        preview_item = request.POST.get('item', '')
+        if preview_item not in MailSettingsForm.base_context:
+            return HttpResponseBadRequest(_('Invalid item'))
+
+        regex = r"^" + re.escape(preview_item) + r"_(?P<idx>[\d+])$"
+        msgs = {}
+
+        for k, v in request.POST.items():
+            matched = re.search(regex, k)
+            if matched:
+                idx = matched.group('idx')
+                if idx in self.supported_locale:
+                    with language(self.supported_locale[idx], self.request.organizer.settings.region):
+                        msgs[self.supported_locale[idx]] = markdown_compile_email(
+                            v.format_map(self.placeholders(preview_item))
+                        )
+
+        return JsonResponse({
+            'item': preview_item,
+            'msgs': msgs
+        })
 
 
 class OrganizerDisplaySettings(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, View):
@@ -1473,3 +1602,463 @@ class LogView(OrganizerPermissionRequiredMixin, PaginationMixin, ListView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data()
         return ctx
+
+
+class SSOProvidersView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, ListView):
+    model = CustomerSSOProvider
+    template_name = 'pretixcontrol/organizers/ssoproviders.html'
+    permission = 'can_change_organizer_settings'
+    context_object_name = 'providers'
+
+    def get_queryset(self):
+        return self.request.organizer.sso_providers.all()
+
+
+class CreateProviderView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, CreateView):
+    model = CustomerSSOProvider
+    template_name = 'pretixcontrol/organizers/ssoprovider_edit.html'
+    permission = 'can_change_organizer_settings'
+    form_class = SSOProviderForm
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(CustomerSSOProvider, organizer=self.request.organizer, pk=self.kwargs.get('provider'))
+
+    def get_success_url(self):
+        return reverse('control:organizer.sso.providers', kwargs={
+            'organizer': self.request.organizer.slug,
+        })
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['event'] = self.request.organizer
+        return kwargs
+
+    def form_valid(self, form):
+        self.set_form_instance_organizer(form)
+        ret = super().form_valid(form)
+        self.log_form_action(form)
+        self.display_success_message()
+        return ret
+
+    def set_form_instance_organizer(self, form):
+        form.instance.organizer = self.request.organizer
+
+    def log_form_action(self, form):
+        form.instance.log_action(
+            'eventyay.ssoprovider.created',
+            user=self.request.user,
+            data=self.get_form_changes(form)
+        )
+
+    def get_form_changes(self, form):
+        return {
+            k: getattr(self.object, k, self.object.configuration.get(k))
+            for k in form.changed_data
+        }
+
+    def display_success_message(self):
+        messages.success(self.request, _('The provider has been created.'))
+
+    def form_invalid(self, form):
+        messages.error(self.request, _('Your changes could not be saved.'))
+        return super().form_invalid(form)
+
+
+class UpdateProviderView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, UpdateView):
+    model = CustomerSSOProvider
+    template_name = 'pretixcontrol/organizers/ssoprovider_edit.html'
+    permission = 'can_change_organizer_settings'
+    context_object_name = 'provider'
+    form_class = SSOProviderForm
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(CustomerSSOProvider, organizer=self.request.organizer, pk=self.kwargs.get('provider'))
+
+    def get_success_url(self):
+        return reverse('control:organizer.sso.providers', kwargs={
+            'organizer': self.request.organizer.slug,
+        })
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['redirect_uri'] = build_absolute_uri(self.request.organizer, 'presale:organizer.customer.login.return',
+                                                 kwargs={
+                                                     'provider': self.object.pk
+                                                 })
+        return ctx
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['event'] = self.request.organizer
+        return kwargs
+
+    def form_valid(self, form):
+        if form.has_changed():
+            self.object.log_action('eventyay.ssoprovider.changed', user=self.request.user, data={
+                k: getattr(self.object, k, self.object.configuration.get(k)) for k in form.changed_data
+            })
+        messages.success(self.request, _('Your changes have been saved.'))
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, _('Your changes could not be saved.'))
+        return super().form_invalid(form)
+
+
+class DeleteProviderView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, DeleteView):
+    model = CustomerSSOProvider
+    template_name = 'pretixcontrol/organizers/ssoprovider_delete.html'
+    permission = 'can_change_organizer_settings'
+    context_object_name = 'provider'
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(CustomerSSOProvider, organizer=self.request.organizer, pk=self.kwargs.get('provider'))
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['is_allowed'] = self.object.allow_delete()
+        return ctx
+
+    def get_success_url(self):
+        return reverse('control:organizer.sso.providers', kwargs={
+            'organizer': self.request.organizer.slug,
+        })
+
+    @transaction.atomic
+    def delete(self, request, *args, **kwargs):
+        success_url = self.get_success_url()
+        self.object = self.get_object()
+        if self.object.allow_delete():
+            self.object.log_action('eventyay.ssoprovider.deleted', user=self.request.user)
+            self.object.delete()
+            messages.success(request, _('The selected object has been deleted.'))
+        return redirect(success_url)
+
+
+class SSOClientsView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, ListView):
+    model = CustomerSSOClient
+    template_name = 'pretixcontrol/organizers/ssoclients.html'
+    permission = 'can_change_organizer_settings'
+    context_object_name = 'clients'
+
+    def get_queryset(self):
+        return self.request.organizer.sso_clients.all()
+
+
+class CreateClientView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, CreateView):
+    model = CustomerSSOClient
+    template_name = 'pretixcontrol/organizers/ssoclient_edit.html'
+    permission = 'can_change_organizer_settings'
+    form_class = SSOClientForm
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(CustomerSSOClient, organizer=self.request.organizer, pk=self.kwargs.get('client'))
+
+    def get_success_url(self):
+        return reverse('control:organizer.sso.client.edit', kwargs={
+            'organizer': self.request.organizer.slug,
+            'client': self.object.pk
+        })
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['event'] = self.request.organizer
+        return kwargs
+
+    def form_valid(self, form):
+        secret = form.instance.set_client_secret()
+        secret_message = _(
+            'The SSO client has been created. The client secret is {secret}. Please note it down as it will not be '
+            'displayed again.')
+        formatted_message = secret_message.format(secret=secret)
+        messages.success(self.request, formatted_message)
+        form.instance.organizer = self.request.organizer
+        ret = super().form_valid(form)
+        form.instance.log_action('eventyay.ssoclient.created', user=self.request.user, data={
+            k: getattr(self.object, k, form.cleaned_data.get(k)) for k in form.changed_data
+        })
+        return ret
+
+    def form_invalid(self, form):
+        messages.error(self.request, _('Your changes could not be saved.'))
+        return super().form_invalid(form)
+
+
+class UpdateClientView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, UpdateView):
+    model = CustomerSSOClient
+    template_name = 'pretixcontrol/organizers/ssoclient_edit.html'
+    permission = 'can_change_organizer_settings'
+    context_object_name = 'client'
+    form_class = SSOClientForm
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(CustomerSSOClient, organizer=self.request.organizer, pk=self.kwargs.get('client'))
+
+    def get_success_url(self):
+        return reverse('control:organizer.sso.client.edit', kwargs={
+            'organizer': self.request.organizer.slug,
+            'client': self.object.pk
+        })
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        return ctx
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['event'] = self.request.organizer
+        return kwargs
+
+    def form_valid(self, form):
+        if form.has_changed():
+            self.object.log_action('eventyay.ssoclient.changed', user=self.request.user, data={
+                k: getattr(self.object, k, form.cleaned_data.get(k)) for k in form.changed_data
+            })
+        if form.cleaned_data.get('regenerate_client_secret'):
+            secret = form.instance.set_client_secret()
+            secret_message = _(
+                'The client secret is {secret}. Please note it down as it will not be displayed again.')
+            formatted_message = secret_message.format(secret=secret)
+            messages.success(self.request, formatted_message)
+        else:
+            messages.success(
+                self.request,
+                _('Your changes have been saved.')
+            )
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, _('Your changes could not be saved.'))
+        return super().form_invalid(form)
+
+
+class DeleteClientView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, DeleteView):
+    model = CustomerSSOClient
+    template_name = 'pretixcontrol/organizers/ssoclient_delete.html'
+    permission = 'can_change_organizer_settings'
+    context_object_name = 'client'
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(CustomerSSOClient, organizer=self.request.organizer, pk=self.kwargs.get('client'))
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['is_allowed'] = self.object.allow_delete()
+        return ctx
+
+    def get_success_url(self):
+        return reverse('control:organizer.sso.clients', kwargs={
+            'organizer': self.request.organizer.slug,
+        })
+
+    @transaction.atomic
+    def delete(self, request, *args, **kwargs):
+        success_url = self.get_success_url()
+        self.object = self.get_object()
+        if self.object.allow_delete():
+            self.object.log_action('eventyay.ssoclient.deleted', user=self.request.user)
+            self.object.delete()
+            messages.success(request, _('Delete successfully.'))
+        return redirect(success_url)
+
+
+class CustomerListView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, PaginationMixin, ListView):
+    model = Customer
+    template_name = 'pretixcontrol/organizers/customers.html'
+    permission = 'can_manage_customers'
+    context_object_name = 'customers'
+
+    def get_queryset(self):
+        """
+        Returns the filtered queryset of customers based on the organizer's settings and the validity of the filter form.
+
+        Returns:
+            QuerySet: The filtered queryset of customers.
+        """
+        qs = self.request.organizer.customers.all()
+
+        if self.filter_form.is_valid():
+            qs = self.filter_form.filter_qs(qs)
+
+        return qs
+
+    def get_context_data(self, **kwargs):
+        """
+        Returns the context data for the view, including the filter form.
+
+        Args:
+            **kwargs: Arbitrary keyword arguments.
+
+        Returns:
+            dict: The context data including the filter form.
+        """
+        ctx = super().get_context_data(**kwargs)
+        ctx['filter_form'] = self.filter_form
+        return ctx
+
+    @cached_property
+    def filter_form(self):
+        return CustomerFilterForm(data=self.request.GET, request=self.request)
+
+
+class CustomerDetailView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, PaginationMixin, ListView):
+    template_name = 'pretixcontrol/organizers/customer.html'
+    permission = 'can_manage_customers'
+    context_object_name = 'orders'
+
+    def get_queryset(self):
+        """
+        Returns the queryset of orders for the specified customer, including orders that match the customer's email,
+        and orders are sorted by datetime in descending order.
+
+        Returns:
+            QuerySet: The queryset of orders.
+        """
+        return Order.objects.filter(
+            Q(customer=self.customer) | Q(email__iexact=self.customer.email)
+        ).select_related('event').order_by('-datetime')
+
+    @cached_property
+    def customer(self):
+        return get_object_or_404(
+            self.request.organizer.customers,
+            identifier=self.kwargs.get('customer')
+        )
+
+    def get_context_data(self, **kwargs):
+        """
+        Returns the context data for the view, including customer details, locale, and annotated order information.
+
+        Args:
+            **kwargs: Arbitrary keyword arguments.
+
+        Returns:
+            dict: The context data including customer details and annotated orders.
+        """
+        ctx = super().get_context_data(**kwargs)
+        ctx['customer'] = self.customer
+        ctx['display_locale'] = dict(settings.LANGUAGES).get(self.customer.locale,
+                                                             self.request.organizer.settings.locale)
+
+        s = OrderPosition.objects.filter(
+            order=OuterRef('pk')
+        ).order_by().values('order').annotate(k=Count('id')).values('k')
+        i = Invoice.objects.filter(
+            order=OuterRef('pk'),
+            is_cancellation=False,
+            refered__isnull=True,
+        ).order_by().values('order').annotate(k=Count('id')).values('k')
+        orders = ctx.get('orders', [])
+        order_pks = [o.pk for o in orders]
+
+        annotated_orders = Order.annotate_overpayments(Order.objects, sums=True).filter(
+            pk__in=order_pks
+        ).annotate(
+            pcnt=Subquery(s, output_field=IntegerField()),
+            icnt=Subquery(i, output_field=IntegerField()),
+            has_cancellation_request=Exists(CancellationRequest.objects.filter(order=OuterRef('pk')))
+        ).values(
+            'pk', 'pcnt', 'is_overpaid', 'is_underpaid', 'is_pending_with_full_payment', 'has_external_refund',
+            'has_pending_refund', 'has_cancellation_request', 'computed_payment_refund_sum', 'icnt'
+        )
+
+        annotated = {o['pk']: o for o in annotated_orders}
+
+        scs = get_all_sales_channels()
+
+        for order in orders:
+            if order.pk not in annotated:
+                continue
+            annotation = annotated[order.pk]
+            order.pcnt = annotation['pcnt']
+            order.is_overpaid = annotation['is_overpaid']
+            order.is_underpaid = annotation['is_underpaid']
+            order.is_pending_with_full_payment = annotation['is_pending_with_full_payment']
+            order.has_external_refund = annotation['has_external_refund']
+            order.has_pending_refund = annotation['has_pending_refund']
+            order.has_cancellation_request = annotation['has_cancellation_request']
+            order.computed_payment_refund_sum = annotation['computed_payment_refund_sum']
+            order.icnt = annotation['icnt']
+            order.sales_channel_obj = scs[order.sales_channel]
+
+        return ctx
+
+
+class CustomerUpdateView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, UpdateView):
+    template_name = 'pretixcontrol/organizers/customer_edit.html'
+    permission = 'can_manage_customers'
+    context_object_name = 'customer'
+    form_class = CustomerUpdateForm
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(
+            self.request.organizer.customers,
+            identifier=self.kwargs.get('customer')
+        )
+
+    def form_valid(self, form):
+        """
+        Handles the form validation and logging of changes. If the form has changed, logs the action with the changed data.
+
+        Args:
+            form (Form): The validated form.
+
+        Returns:
+            HttpResponse: The response generated by the superclass method.
+        """
+        if form.has_changed():
+            self.object.log_action(
+                'eventyay.customer.changed',
+                user=self.request.user,
+                data={k: getattr(self.object, k) for k in form.changed_data}
+            )
+            messages.success(self.request, _('Your changes have been saved.'))
+
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('control:organizer.customer', kwargs={
+            'organizer': self.request.organizer.slug,
+            'customer': self.object.identifier,
+        })
+
+
+class CustomerAnonymizeView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, DetailView):
+    template_name = 'pretixcontrol/organizers/customer_anonymize.html'
+    permission = 'can_manage_customers'
+    context_object_name = 'customer'
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(
+            self.request.organizer.customers,
+            identifier=self.kwargs.get('customer')
+        )
+
+    def post(self, request, *args, **kwargs):
+        """
+        Handles the POST request to anonymize a customer account. Anonymizes the customer,
+        logs the action, and redirects to the success URL.
+
+        Args:
+            request (HttpRequest): The HTTP request object.
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+
+        Returns:
+            HttpResponseRedirect: Redirects to the success URL.
+        """
+        self.object = self.get_object()
+
+        with transaction.atomic():
+            self.object.anonymize_customer()
+            self.object.log_action('eventyay.customer.anonymized', user=self.request.user)
+
+        messages.success(self.request, _('The customer account has been anonymized.'))
+
+        return redirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse('control:organizer.customer', kwargs={
+            'organizer': self.request.organizer.slug,
+            'customer': self.object.identifier,
+        })

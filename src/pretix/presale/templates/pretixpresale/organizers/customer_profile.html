@@ -1,0 +1,46 @@
+{% extends "pretixpresale/organizers/base.html" %}
+{% load i18n %}
+{% load eventurl %}
+{% load urlreplace %}
+{% load money %}
+{% load bootstrap3 %}
+{% block title %}{% trans "Your account" %}{% endblock %}
+{% block content %}
+    <h2>
+        {% trans "Your account" %}
+    </h2>
+    <div class="panel panel-primary items">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                {% trans "Account information" %}
+            </h3>
+        </div>
+        <div class="panel-body">
+            <dl class="dl-horizontal">
+                <dt>{% trans "Customer ID" %}</dt>
+                <dd>#{{ customer.identifier }}</dd>
+                {% if customer.provider %}
+                    <dt>{% trans "Login method" %}</dt>
+                    <dd>{{ customer.provider.name }}</dd>
+                {% endif %}
+                <dt>{% trans "E-mail" %}</dt>
+                <dd>{{ customer.email }}
+                </dd>
+                <dt>{% trans "Name" %}</dt>
+                <dd>{{ customer.name }}</dd>
+            </dl>
+            <div class="text-right">
+                <a href="{% eventurl request.organizer "presale:organizer.customer.change" %}"
+                        class="btn btn-default">
+                    {% trans "Change account information" %}
+                </a>
+                {% if not customer.provider %}
+                    <a href="{% eventurl request.organizer "presale:organizer.customer.password" %}"
+                            class="btn btn-default">
+                        {% trans "Change password" %}
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
