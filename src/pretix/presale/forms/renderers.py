@@ -99,7 +99,9 @@ class CheckoutFieldRenderer(FieldRenderer):
     def add_label(self, html):
         label = self.get_label()
 
-        if hasattr(self.field.field, '_required'):
+        if hasattr(self.field.field, '_show_required'):
+            required = self.field.field._show_required
+        elif hasattr(self.field.field, '_required'):
             # e.g. payment settings forms where a field is only required if the payment provider is active
             required = self.field.field._required
         else:

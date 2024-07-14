@@ -1,6 +1,32 @@
 {% load i18n %}
 <div id="ajaxerr">
 </div>
+<div id="popupmodal" hidden aria-live="polite">
+    <div class="modal-card">
+        <div class="modal-card-icon">
+            <i class="fa fa-window-restore big-icon" aria-hidden="true"></i>
+        </div>
+        <div class="modal-card-content">
+            <div>
+                <h3>
+                    {% trans "Being processed in a new window." %}
+                </h3>
+                <p class="text">
+                    {% trans "Re-launch new window." %}
+                </p>
+                <p>
+                    <a href="" data-open-in-popup-window class="btn btn-default">
+                        <span class="fa fa-external-link-square"></span>
+                        {% trans "Open window again" %}
+                    </a>
+                </p>
+                <p class="text">
+                    {% trans "After completing the process in the new window, you can proceed here." %}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
 <div id="loadingmodal">
     <div class="modal-card">
         <div class="modal-card-icon">
@@ -9,7 +35,7 @@
         <div class="modal-card-content">
             <h3></h3>
             <p class="text"></p>
-            <p class="status">{% trans "If this takes longer than a few minutes, please contact us." %}</p>
+            <p class="status">{% trans "If the process continues for an extended period, feel free to reach out to us." %}</p>
         </div>
     </div>
 </div>
