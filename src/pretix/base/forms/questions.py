@@ -14,19 +14,18 @@ from django import forms
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.gis.geoip2 import GeoIP2
-from geoip2.errors import AddressNotFoundError
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db.models import QuerySet
 from django.forms import Select
 from django.utils import translation
 from django.utils.formats import date_format
-from django.utils.html import escape
 from django.utils.safestring import mark_safe
 from django.utils.timezone import get_current_timezone
 from django.utils.translation import gettext_lazy as _, pgettext_lazy
 from django_countries import countries
 from django_countries.fields import Country, CountryField
+from geoip2.errors import AddressNotFoundError
 from phonenumber_field.formfields import PhoneNumberField
 from phonenumber_field.phonenumber import PhoneNumber
 from phonenumber_field.widgets import PhoneNumberPrefixWidget
@@ -199,8 +198,8 @@ class NamePartsFormField(forms.MultiValueField):
         if self.one_required and (not value or not any(v for v in value.values())):
             raise forms.ValidationError(self.error_messages['required'], code='required')
         if self.one_required:
-            for k, v in value.items():
-                if k in REQUIRED_NAME_PARTS and not v:
+            for k, label, size in self.scheme['fields']:
+                if k in REQUIRED_NAME_PARTS and not value.get(k):
                     raise forms.ValidationError(self.error_messages['required'], code='required')
         if self.require_all_fields and not all(v for v in value):
             raise forms.ValidationError(self.error_messages['incomplete'], code='required')
@@ -250,7 +249,8 @@ class WrappedPhoneNumberPrefixWidget(PhoneNumberPrefixWidget):
 
     def __init__(self, attrs=None, initial=None):
         attrs = {
-            'aria-label': pgettext_lazy('phonenumber', 'Phone number (without international area code)')
+            'aria-label': pgettext_lazy('phonenumber', 'Phone number (without international area code)'),
+            'placeholder': 'Phone'
         }
         widgets = (WrappedPhonePrefixSelect(initial), forms.TextInput(attrs=attrs))
         super(PhoneNumberPrefixWidget, self).__init__(widgets, attrs)
@@ -491,7 +491,7 @@ class BaseQuestionsForm(forms.Form):
             initial = answers[0] if answers else None
             tz = pytz.timezone(event.settings.timezone)
             help_text = rich_text(q.help_text)
-            label = escape(q.question)
+            label =  mark_safe(q.question)  # django-bootstrap3 calls mark_safe
             required = q.required and not self.all_optional
             if q.type == Question.TYPE_BOOLEAN:
                 if q.required:
@@ -513,18 +513,22 @@ class BaseQuestionsForm(forms.Form):
                     max_value=q.valid_number_max,
                     help_text=help_text,
                     initial=initial.answer if initial else None,
+                    widget=forms.NumberInput(attrs={'placeholder': 'Your answer'}),
                 )
             elif q.type == Question.TYPE_STRING:
                 field = forms.CharField(
                     label=label, required=required,
                     help_text=help_text,
                     initial=initial.answer if initial else None,
+                    widget=forms.TextInput(attrs={'placeholder': 'Your answer'}),
                 )
             elif q.type == Question.TYPE_TEXT:
                 field = forms.CharField(
                     label=label, required=required,
                     help_text=help_text,
-                    widget=forms.Textarea,
+                    widget=forms.Textarea(attrs={
+                        'placeholder': 'Your answer'
+                    }),
                     initial=initial.answer if initial else None,
                 )
             elif q.type == Question.TYPE_COUNTRYCODE:
@@ -601,7 +605,7 @@ class BaseQuestionsForm(forms.Form):
                     widget=SplitDateTimePickerWidget(
                         time_format=get_format_without_seconds('TIME_INPUT_FORMATS'),
                         min_date=q.valid_datetime_min,
-                        max_date=q.valid_datetime_max
+                        max_date=q.valid_datetime_max,
                     ),
                 )
                 if q.valid_datetime_min:

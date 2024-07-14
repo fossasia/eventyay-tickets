@@ -1,6 +1,7 @@
 from decimal import Decimal
 
 import django_filters
+from django.contrib.auth.hashers import make_password
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.utils.functional import cached_property
@@ -20,11 +21,11 @@ from pretix.api.serializers.organizer import (
     DeviceSerializer, GiftCardSerializer, GiftCardTransactionSerializer,
     OrganizerSerializer, OrganizerSettingsSerializer, SeatingPlanSerializer,
     TeamAPITokenSerializer, TeamInviteSerializer, TeamMemberSerializer,
-    TeamSerializer,
+    TeamSerializer, CustomerSerializer, CustomerCreateSerializer,
 )
 from pretix.base.models import (
     Device, GiftCard, GiftCardTransaction, Organizer, SeatingPlan, Team,
-    TeamAPIToken, TeamInvite, User,
+    TeamAPIToken, TeamInvite, User, Customer,
 )
 from pretix.base.settings import SETTINGS_AFFECTING_CSS
 from pretix.helpers.dicts import merge_dicts
@@ -459,3 +460,136 @@ class OrganizerSettingsView(views.APIView):
             'request': request
         })
         return Response(s.data)
+
+
+with scopes_disabled():
+    """
+        Filter for Customer model based on the email field.
+
+        Attributes:
+            email (django_filters.CharFilter): A case-insensitive exact match filter for the email field.
+
+        Meta:
+            model (Customer): The model to filter.
+            fields (list): The fields to filter by.
+    """
+    class CustomerFilter(FilterSet):
+        email = django_filters.CharFilter(field_name='email', lookup_expr='iexact')
+
+        class Meta:
+            model = Customer
+            fields = ['email']
+
+
+class CustomerViewSet(viewsets.ModelViewSet):
+    serializer_class = CustomerSerializer
+    queryset = Customer.objects.none()
+    permission = 'can_manage_customers'
+    lookup_field = 'identifier'
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = CustomerFilter
+
+    def get_queryset(self):
+        """
+        Get the list of customers.
+        @return: customers
+        """
+        return self.request.organizer.customers.all()
+
+    def get_serializer_context(self):
+        """
+        Get the serializer context.
+        @return:
+        """
+        context = super().get_serializer_context()
+        context['organizer'] = self.request.organizer
+        return context
+
+    def perform_destroy(self, instance):
+        raise MethodNotAllowed("Customers cannot be deleted.")
+
+    @transaction.atomic()
+    def perform_create(self, serializer, send_email=False):
+        """
+        Create a new customer.
+        @param serializer: serializer instance
+        @param send_email: allow to send mail or not
+        @return: created customer
+        """
+        customer = serializer.save(organizer=self.request.organizer, password=make_password(None))
+        # Log the action
+        serializer.instance.log_action(
+            'pretix.customer.created',
+            user=self.request.user,
+            auth=self.request.auth,
+            data=self.request.data,
+        )
+        if send_email:
+            # Send activation mail for customer to activate the account
+            customer.send_activation_mail()
+        return customer
+
+    def create(self, request, *args, **kwargs):
+        """
+        Creates a new Customer instance based on the request data.
+
+        This method handles the creation of a new Customer by validating the incoming data
+        using the CustomerCreateSerializer, performing the creation, and sending a response
+        with the created customer's data.
+
+        Args:
+            request (HttpRequest): The HTTP request object containing the data for creating a new customer.
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+
+        Returns:
+            Response: A Response object containing the created customer's data and the HTTP status code.
+        """
+        # Initialize the serializer with the request data and context
+        serializer = CustomerCreateSerializer(data=request.data, context=self.get_serializer_context())
+
+        # Validate the serializer data, raising an exception if invalid
+        serializer.is_valid(raise_exception=True)
+
+        # Perform the creation of the customer, optionally sending an email if specified
+        self.perform_create(serializer, send_email=serializer.validated_data.pop('send_email', False))
+
+        # Get the headers for the success response
+        headers = self.get_success_headers(serializer.data)
+
+        # Return the response with the created customer's data and HTTP 201 status
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    @transaction.atomic()
+    def perform_update(self, serializer):
+        """
+        Update a customer info.
+        @param serializer: serializer instance
+        @return: customer instance
+        """
+        customer_inst = serializer.save(organizer=self.request.organizer)
+        serializer.instance.log_action(
+            'pretix.customer.changed',
+            user=self.request.user,
+            auth=self.request.auth,
+            data=self.request.data,
+        )
+        return customer_inst
+
+    @action(detail=True, methods=["POST"])
+    @transaction.atomic()
+    def anonymize(self, request, **kwargs):
+        """
+        Anonymize a customer.
+        @param request: request instance
+        @param kwargs: arguments
+        @return: result response
+        """
+        customer_obj = self.get_object()
+        customer_obj.anonymize_customer()
+        customer_obj.log_action(
+            'pretix.customer.anonymized',
+            user=self.request.user,
+            auth=self.request.auth
+        )
+        return Response(CustomerSerializer(customer_obj).data, status=status.HTTP_200_OK)

@@ -1,6 +1,8 @@
 import string
 from datetime import date, datetime, time
 
+import pytz
+from django.core.mail import get_connection
 from django.core.validators import MinLengthValidator, RegexValidator
 from django.db import models
 from django.db.models import Exists, OuterRef, Q
@@ -12,7 +14,7 @@ from django.utils.translation import gettext_lazy as _
 
 from pretix.base.models.base import LoggedModel
 from pretix.base.validators import OrganizerSlugBanlistValidator
-
+from i18nfield.fields import I18nCharField
 from ..settings import settings_hierarkey
 from .auth import User
 
@@ -89,6 +91,10 @@ class Organizer(LoggedModel):
 
         return ObjectRelatedCache(self)
 
+    @property
+    def timezone(self):
+        return pytz.timezone(self.settings.timezone)
+
     @cached_property
     def all_logentries_link(self):
         return reverse(
@@ -138,6 +144,24 @@ class Organizer(LoggedModel):
             e.delete_sub_objects()
             e.delete()
         self.teams.all().delete()
+
+    def get_mail_backend(self, timeout=None, force_custom=False):
+        """
+        Returns an email server connection, either by using the system-wide connection
+        or by returning a custom one based on the organizer's settings.
+        """
+        from pretix.base.email import CustomSMTPBackend
+
+        if self.settings.smtp_use_custom or force_custom:
+            return CustomSMTPBackend(host=self.settings.smtp_host,
+                                     port=self.settings.smtp_port,
+                                     username=self.settings.smtp_username,
+                                     password=self.settings.smtp_password,
+                                     use_tls=self.settings.smtp_use_tls,
+                                     use_ssl=self.settings.smtp_use_ssl,
+                                     fail_silently=False, timeout=timeout)
+        else:
+            return get_connection(fail_silently=False)
 
 
 def generate_invite_token():
@@ -200,6 +224,10 @@ class Team(LoggedModel):
         verbose_name=_("Can change organizer settings"),
         help_text=_('Someone with this setting can get access to most data of all of your events, i.e. via privacy '
                     'reports, so be careful who you add to this team!')
+    )
+    can_manage_customers = models.BooleanField(
+        default=False,
+        verbose_name=_("Can manage customer accounts")
     )
     can_manage_gift_cards = models.BooleanField(
         default=False,
@@ -390,3 +418,28 @@ class TeamAPIToken(models.Model):
             return self.get_events_with_any_permission()
         else:
             return self.team.organizer.events.none()
+
+class OrganizerFooterLinkModel(models.Model):
+    """
+    FooterLink model - support show link for organizer's footer
+    """
+    organizer = models.ForeignKey('Organizer', 
+                                    on_delete=models.CASCADE, 
+                                    related_name='footer_links')
+
+    label = I18nCharField(
+        max_length=255,
+        verbose_name=_("Link's text"),
+    )
+    url = models.URLField(
+        verbose_name=_("Link's URL"),
+        # description=_("Organizer's footer link")
+    )
+
+    def delete(self, *args, **kwargs):
+        super().delete(*args, **kwargs)
+        self.organizer.cache.clear()
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.organizer.cache.clear()

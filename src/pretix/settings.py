@@ -2,13 +2,14 @@ import configparser
 import logging
 import os
 import sys
+import importlib_metadata
+
 from urllib.parse import urlparse
 from .settings_helpers import build_db_tls_config, build_redis_tls_config
 import django.conf.locale
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.crypto import get_random_string
 from kombu import Queue
-from pkg_resources import iter_entry_points
 from pycountry import currencies
 
 from . import __version__
@@ -253,6 +254,7 @@ CACHE_TICKETS_HOURS = config.getint('cache', 'tickets', fallback=24 * 3)
 
 ENTROPY = {
     'order_code': config.getint('entropy', 'order_code', fallback=5),
+    'customer_identifier': config.getint('entropy', 'customer_identifier', fallback=7),
     'ticket_secret': config.getint('entropy', 'ticket_secret', fallback=32),
     'voucher_code': config.getint('entropy', 'voucher_code', fallback=16),
     'giftcard_secret': config.getint('entropy', 'giftcard_secret', fallback=12),
@@ -321,11 +323,12 @@ except ImportError:
     pass
 
 PLUGINS = []
-for entry_point in iter_entry_points(group='pretix.plugin', name=None):
-    if entry_point.module_name in PRETIX_PLUGINS_EXCLUDE:
-        continue
-    PLUGINS.append(entry_point.module_name)
-    INSTALLED_APPS.append(entry_point.module_name)
+entry_points = importlib_metadata.entry_points()
+
+for entry_point in entry_points.select(group='pretix.plugin'):
+    if entry_point.module not in PRETIX_PLUGINS_EXCLUDE:
+        PLUGINS.append(entry_point.module)
+        INSTALLED_APPS.append(entry_point.module)
 
 HIJACK_AUTHORIZE_STAFF = True
 
