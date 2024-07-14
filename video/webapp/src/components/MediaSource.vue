@@ -38,7 +38,7 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['streamingRoom']),
+		...mapState(['streamingRoom', 'youtubeTransUrl']),
 		...mapGetters(['autoplay']),
 		module () {
 			if (!this.room) {
@@ -65,6 +65,14 @@ export default {
 				this.destroyIframe()
 				this.initializeIframe()
 			}
+		},
+		youtubeTransUrl(youtubeTransUrl) {
+			if (!this.room) {
+				return
+			}
+			this.destroyIframe()
+			this.module.config.ytid = youtubeTransUrl
+			this.initializeIframe()
 		}
 	},
 	async mounted () {
