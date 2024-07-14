@@ -692,7 +692,7 @@ class Event(EventMixin, LoggedModel):
             q.save(update_fields=['dependency_question'])
         
         # Copy event footer link
-        for footerLink in EventFooterLink.objects.filter(event=other):
+        for footerLink in EventFooterLinkModel.objects.filter(event=other):
             footerLink.pk = None
             footerLink.event = self
             footerLink.save(force_insert=True)
