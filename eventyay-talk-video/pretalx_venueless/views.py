@@ -119,9 +119,9 @@ class SpeakerJoin(View):
             "profile": profile,
             "traits": list(
                 {
-                    f"pretalx-event-{request.event.slug}",
+                    f"eventyay-video-event-{request.event.slug}",
                 }
-                | {f"pretalx-session-{submission.code}" for submission in talks}
+                | {f"eventyay-video-session-{submission.code}" for submission in talks}
             ),
         }
         token = jwt.encode(payload, venueless_settings.secret, algorithm="HS256")

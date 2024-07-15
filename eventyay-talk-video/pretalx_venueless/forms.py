@@ -8,14 +8,14 @@ from .models import VenuelessSettings
 class VenuelessSettingsForm(I18nModelForm):
     token = forms.CharField(
         help_text=_(
-            "Generate a token with the trait 'world:api' in the Config -> Token Generator menu in Venueless. Leave empty to leave unchanged."
+            "Generate a token with the trait 'world:api' in the Config -> Token Generator menu in Eventyay video. Leave empty to leave unchanged."
         ),
-        label=_("Venueless Token"),
+        label=_("Eventyay video Token"),
         required=True,
     )
     url = forms.URLField(
-        help_text=_("URL of your Venueless event"),
-        label=_("Venueless URL"),
+        help_text=_("URL of your Eventyay video event"),
+        label=_("Eventyay video URL"),
         required=True,
     )
     return_url = forms.CharField(widget=forms.HiddenInput(), required=False)

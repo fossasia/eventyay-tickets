@@ -6,13 +6,13 @@ from . import __version__
 
 class PluginApp(AppConfig):
     name = "pretalx_venueless"
-    verbose_name = "Venueless integration"
+    verbose_name = "Eventyay video integration"
 
     class PretalxPluginMeta:
-        name = gettext_lazy("Venueless integration")
-        author = "Tobias Kunze"
+        name = gettext_lazy("Eventyay video integration")
+        author = "Eventyay"
         description = gettext_lazy(
-            "Venueless integration in pretalx: Notify venueless about new schedule releases!"
+            "Eventyay video integration in pretalx: Notify eventyay about new schedule releases!"
         )
         visible = True
         version = __version__

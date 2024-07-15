@@ -32,7 +32,7 @@ def navbar_info(sender, request, **kwargs):
 
     return [
         {
-            "label": _("Venueless"),
+            "label": _("Eventyay video"),
             "url": reverse(
                 "plugins:pretalx_venueless:settings",
                 kwargs={
