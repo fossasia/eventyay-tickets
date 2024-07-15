@@ -984,6 +984,61 @@ class MailSettingsForm(SMTPSettingsMixin, SettingsForm):
         required=False,
         widget=I18nTextarea,
     )
+    smtp_use_custom = forms.BooleanField(
+        label=_("Use Custom Email"),
+        help_text=_("All mail related to your event will be sent over your specified email gateway."),
+        required=False
+    )
+    send_grid_api_key = forms.CharField(
+        label=_("Sendgrid Token"),
+        required=True,
+        widget=forms.TextInput(attrs={'placeholder': 'SG.xxxxxxxx'})
+    )
+
+    smtp_select = [
+        
+        ('sendgrid', _("SendGrid")),
+        ('smtp', _("SMTP"))]
+
+
+    email_vendor = forms.ChoiceField(
+        label=_(""),
+        required=True,
+        widget=forms.RadioSelect,
+        choices=smtp_select
+    )
+    smtp_host = forms.CharField(
+        label=_("Hostname"),
+        required=False,
+        widget=forms.TextInput(attrs={'placeholder': 'mail.example.org'})
+    )
+    smtp_port = forms.IntegerField(
+        label=_("Port"),
+        required=False,
+        widget=forms.TextInput(attrs={'placeholder': 'e.g. 587, 465, 25, ...'})
+    )
+    smtp_username = forms.CharField(
+        label=_("Username"),
+        widget=forms.TextInput(attrs={'placeholder': 'myuser@example.org'}),
+        required=False
+    )
+    smtp_password = forms.CharField(
+        label=_("Password"),
+        required=False,
+        widget=forms.PasswordInput(attrs={
+            'autocomplete': 'new-password'  # see https://bugs.chromium.org/p/chromium/issues/detail?id=370363#c7
+        }),
+    )
+    smtp_use_tls = forms.BooleanField(
+        label=_("Use STARTTLS"),
+        help_text=_("Commonly enabled on port 587."),
+        required=False
+    )
+    smtp_use_ssl = forms.BooleanField(
+        label=_("Use SSL"),
+        help_text=_("Commonly enabled on port 465."),
+        required=False
+    )
     base_context = {
         'mail_text_order_placed': ['event', 'order', 'payment'],
         'mail_text_order_placed_attendee': ['event', 'order', 'position'],
