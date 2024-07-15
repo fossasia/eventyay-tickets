@@ -92,6 +92,7 @@ dependencies = [
         'geoip2==4.*',
         'paypalhttp==1.*',
         'eventyay-stripe @ git+https://your_token@github.com/fossasia/eventyay-tickets-stripe.git@master',
+        'sendgrid==6.11.*',
         'importlib_metadata==7.*',
         'qrcode==7.4.*',
         'pretix-pages @ git+https://github.com/fossasia/eventyay-ticket-pages.git@master',
