@@ -26,19 +26,19 @@ from pretix.presale.views.order import OrderPositionDetailMixin
 
 class VenuelessSettingsForm(SettingsForm):
     venueless_url = forms.URLField(
-        label=_("Venueless URL"),
+        label=_("Eventyay Video URL"),
         required=False,
     )
     venueless_secret = SecretKeySettingsField(
-        label=_("Venueless secret"),
+        label=_("Eventyay Video secret"),
         required=False,
     )
     venueless_issuer = forms.CharField(
-        label=_("Venueless issuer"),
+        label=_("Eventyay Video issuer"),
         required=False,
     )
     venueless_audience = forms.CharField(
-        label=_("Venueless audience"),
+        label=_("Eventyay Video audience"),
         required=False,
     )
     venueless_start = RelativeDateTimeField(
@@ -153,19 +153,19 @@ class OrderPositionJoin(EventViewMixin, OrderPositionDetailMixin, View):
             "profile": profile,
             "traits": list(
                 {
-                    'pretix-event-{}'.format(request.event.slug),
-                    'pretix-subevent-{}'.format(self.position.subevent_id),
-                    'pretix-item-{}'.format(self.position.item_id),
-                    'pretix-variation-{}'.format(self.position.variation_id),
-                    'pretix-category-{}'.format(self.position.item.category_id),
+                    'eventyay-video-event-{}'.format(request.event.slug),
+                    'eventyay-video-subevent-{}'.format(self.position.subevent_id),
+                    'eventyay-video-item-{}'.format(self.position.item_id),
+                    'eventyay-video-variation-{}'.format(self.position.variation_id),
+                    'eventyay-video-category-{}'.format(self.position.item.category_id),
                 } | {
-                    'pretix-item-{}'.format(p.item_id)
+                    'eventyay-video-item-{}'.format(p.item_id)
                     for p in self.position.addons.all()
                 } | {
-                    'pretix-variation-{}'.format(p.variation_id)
+                    'eventyay-video-variation-{}'.format(p.variation_id)
                     for p in self.position.addons.all() if p.variation_id
                 } | {
-                    'pretix-category-{}'.format(p.item.category_id)
+                    'eventyay-video-category-{}'.format(p.item.category_id)
                     for p in self.position.addons.all() if p.item.category_id
                 }
             )
@@ -177,7 +177,7 @@ class OrderPositionJoin(EventViewMixin, OrderPositionDetailMixin, View):
         cl = CheckinList.objects.get_or_create(
             event=self.request.event,
             subevent=self.position.subevent,
-            name=gettext('Venueless'),
+            name=gettext('Eventyay Video'),
             defaults={
                 'all_products': True,
                 'include_pending': self.request.event.settings.venueless_allow_pending,

@@ -79,7 +79,7 @@ def navbar_info(sender, request, **kwargs):
                                              request=request):
         return []
     return [{
-        'label': 'Venueless',
+        'label': 'Eventyay video',
         'url': reverse('plugins:pretix_venueless:settings', kwargs={
             'event': request.event.slug,
             'organizer': request.organizer.slug,

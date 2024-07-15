@@ -11,14 +11,14 @@ except ImportError:
 class PluginApp(PluginConfig):
     default = True
     name = 'pretix_venueless'
-    verbose_name = 'Venueless'
+    verbose_name = 'Eventyay Video'
 
     class PretixPluginMeta:
-        name = gettext_lazy('Venueless')
-        author = 'Raphael Michel'
-        description = gettext_lazy('Grant access to your venueless event to your customers.')
+        name = gettext_lazy('Eventyay Video')
+        author = 'Eventyay'
+        description = gettext_lazy('Grant access to your eventyay video event to your customers.')
         visible = True
-        picture = "pretix_venueless/logo.svg"
+        picture = "pretix_venueless/eventyay-logo.192.png"
         featured = True
         version = __version__
         category = 'INTEGRATION'
