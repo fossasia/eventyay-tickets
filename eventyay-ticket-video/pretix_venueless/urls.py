@@ -8,7 +8,7 @@ urlpatterns = [
 ]
 event_patterns = [
     re_path(
-        r'^ticket/(?P<order>[^/]+)/(?P<position>\d+)/(?P<secret>[A-Za-z0-9]+)/venueless/$',
+        r'^ticket/(?P<order>[^/]+)/(?P<position>\d+)/(?P<secret>[A-Za-z0-9]+)/(?P<view_schedule>True|False)/venueless/$',
         OrderPositionJoin.as_view(),
         name='join'),
 ]

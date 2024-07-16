@@ -189,6 +189,8 @@ class OrderPositionJoin(EventViewMixin, OrderPositionDetailMixin, View):
             pass
 
         baseurl = self.request.event.settings.venueless_url
+        if kwargs.get("view_schedule") == 'True':
+            baseurl += '/schedule'
         if '{token}' in baseurl:
             # Hidden feature to support other kinds of installations
             return redirect(baseurl.format(token=token))
