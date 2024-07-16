@@ -715,3 +715,5 @@ SOCIALACCOUNT_LOGIN_ON_GET = True
 EVENTYAY_TICKET_SSO_WELL_KNOW_URL = "/".join([EVENTYAY_TICKET_BASE_PATH,
                                               '{org}',
                                               '.well-known/openid-configuration'])
+# redirect_url as https
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
