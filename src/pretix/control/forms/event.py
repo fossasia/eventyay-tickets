@@ -28,7 +28,7 @@ from pretix.base.settings import (
 )
 from pretix.control.forms import (
     MultipleLanguagesWidget, SlugWidget, SplitDateTimeField,
-    SplitDateTimePickerWidget,
+    SplitDateTimePickerWidget, SMTPSettingsMixin,
 )
 from pretix.control.forms.widgets import Select2
 from pretix.helpers.countries import CachedCountries
@@ -789,7 +789,7 @@ def contains_web_channel_validate(val):
         raise ValidationError(_("The online shop must be selected to receive these emails."))
 
 
-class MailSettingsForm(SettingsForm):
+class MailSettingsForm(SMTPSettingsMixin, SettingsForm):
     auto_fields = [
         'mail_prefix',
         'mail_from',
@@ -1091,17 +1091,6 @@ class MailSettingsForm(SettingsForm):
                 # If we don't ask for attendee emails, we can't send them anything and we don't need to clutter
                 # the user interface with it
                 del self.fields[k]
-
-    def clean(self):
-        data = self.cleaned_data
-        if not data.get('smtp_password') and data.get('smtp_username'):
-            # Leave password unchanged if the username is set and the password field is empty.
-            # This makes it impossible to set an empty password as long as a username is set, but
-            # Python's smtplib does not support password-less schemes anyway.
-            data['smtp_password'] = self.initial.get('smtp_password')
-
-        if data.get('smtp_use_tls') and data.get('smtp_use_ssl'):
-            raise ValidationError(_('You can activate either SSL or STARTTLS security, but not both at the same time.'))
 
 
 class TicketSettingsForm(SettingsForm):

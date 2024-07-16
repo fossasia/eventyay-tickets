@@ -5,21 +5,35 @@ from django import forms
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db.models import Q
+from django.utils.crypto import get_random_string
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _, pgettext_lazy
 from django_scopes.forms import SafeModelMultipleChoiceField
+from i18nfield.forms import I18nFormField, I18nTextarea, I18nTextInput
+from pytz import common_timezones
 
 from pretix.api.models import WebHook
 from pretix.api.webhooks import get_all_webhook_events
-from pretix.base.forms import I18nModelForm, SettingsForm
+from pretix.base.forms import I18nModelForm, PlaceholderValidator, SettingsForm, I18nMarkdownTextarea
+from pretix.base.forms.questions import NamePartsFormField
+from pretix.base.customersso.oidc import oidc_validate_and_complete_config
 from pretix.base.forms.widgets import SplitDateTimePickerWidget
 from pretix.base.models import (
-    Device, EventMetaProperty, Gate, GiftCard, Organizer, Team,
+    Customer, Device, EventMetaProperty, Gate, GiftCard, Organizer, Team,
 )
+from pretix.base.models.customers import CustomerSSOClient, CustomerSSOProvider
+from pretix.base.settings import PERSON_NAME_SCHEMES, PERSON_NAME_TITLE_GROUPS
 from pretix.base.models.organizer import OrganizerFooterLinkModel
 from pretix.control.forms import ExtFileField, SplitDateTimeField
+from pretix.control.forms import (
+    SMTPSettingsMixin, )
 from pretix.control.forms.event import SafeEventMultipleChoiceField
+from pretix.control.forms.event import (
+    multimail_validate,
+)
 from pretix.multidomain.models import KnownDomain
+from pretix.multidomain.urlreverse import build_absolute_uri
+
 from i18nfield.forms import I18nFormSetMixin
 
 class OrganizerForm(I18nModelForm):
@@ -148,7 +162,7 @@ class TeamForm(forms.ModelForm):
         model = Team
         fields = ['name', 'all_events', 'limit_events', 'can_create_events',
                   'can_change_teams', 'can_change_organizer_settings',
-                  'can_manage_gift_cards',
+                  'can_manage_gift_cards', 'can_manage_customers',
                   'can_change_event_settings', 'can_change_items',
                   'can_view_orders', 'can_change_orders', 'can_checkin_orders',
                   'can_view_vouchers', 'can_change_vouchers']
@@ -217,7 +231,25 @@ class DeviceForm(forms.ModelForm):
 
 
 class OrganizerSettingsForm(SettingsForm):
+    timezone = forms.ChoiceField(
+        choices=((a, a) for a in common_timezones),
+        label=_("Default timezone"),
+    )
+    name_scheme = forms.ChoiceField(
+        label=_("Name format"),
+        help_text=_("Changing this after you already received "
+                    "orders might lead to unexpected behavior when sorting or changing names."),
+        required=True,
+    )
+    name_scheme_titles = forms.ChoiceField(
+        label=_("Allowed titles"),
+        help_text=_("If the naming scheme you defined above allows users to input a title, you can use this to "
+                    "restrict the set of selectable titles."),
+        required=False,
+    )
     auto_fields = [
+        'customer_accounts',
+        'customer_accounts_native',
         'contact_mail',
         'imprint_url',
         'organizer_info_text',
@@ -258,6 +290,135 @@ class OrganizerSettingsForm(SettingsForm):
         help_text=_('If you provide a favicon, we will show it instead of the default pretix icon. '
                     'We recommend a size of at least 200x200px to accommodate most devices.')
     )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['name_scheme'].choices = (
+            (k, _('Ask for {fields}, display like {example}').format(
+                fields=' + '.join(str(vv[1]) for vv in v['fields']),
+                example=v['concatenation'](v['sample'])
+            ))
+            for k, v in PERSON_NAME_SCHEMES.items()
+        )
+        self.fields['name_scheme_titles'].choices = [('', _('Free text input'))] + [
+            (k, '{scheme}: {samples}'.format(
+                scheme=v[0],
+                samples=', '.join(v[1])
+            ))
+            for k, v in PERSON_NAME_TITLE_GROUPS.items()
+        ]
+
+
+class MailSettingsForm(SMTPSettingsMixin, SettingsForm):
+    auto_fields = [
+        'mail_from',
+        'mail_from_name',
+    ]
+
+    mail_bcc = forms.CharField(
+        label=_("Bcc address"),
+        help_text=_("All your emails will be sent to this address as a Bcc copy"),
+        validators=[multimail_validate],
+        required=False,
+        max_length=255
+    )
+    mail_text_signature = I18nFormField(
+        label=_("Signature"),
+        required=False,
+        widget=I18nTextarea,
+        help_text=_("This signature will be send along with all your email."),
+        validators=[PlaceholderValidator([])],
+        widget_kwargs={'attrs': {
+            'rows': '4',
+            'placeholder': _(
+                'e.g. your contact details'
+            )
+        }}
+    )
+
+    mail_text_customer_registration = I18nFormField(
+        label=_("Text"),
+        required=False,
+        widget=I18nMarkdownTextarea,
+    )
+    mail_subject_customer_registration = I18nFormField(
+        label=_("Subject"),
+        required=False,
+        widget=I18nTextInput,
+    )
+    mail_text_customer_email_change = I18nFormField(
+        label=_("Text"),
+        required=False,
+        widget=I18nTextInput,
+    )
+    mail_text_customer_reset = I18nFormField(
+        label=_("Text"),
+        required=False,
+        widget=I18nTextInput,
+    )
+
+    mail_subject_customer_email_change = I18nFormField(
+        label=_("Subject"),
+        required=False,
+        widget=I18nTextInput,
+    )
+
+    mail_subject_customer_reset = I18nFormField(
+        label=_("Subject"),
+        required=False,
+        widget=I18nTextInput,
+    )
+
+    base_context = {
+        'mail_text_customer_registration': ['customer', 'url'],
+        'mail_subject_customer_registration': ['customer', 'url'],
+        'mail_text_customer_email_change': ['customer', 'url'],
+        'mail_subject_customer_email_change': ['customer', 'url'],
+        'mail_text_customer_reset': ['customer', 'url'],
+        'mail_subject_customer_reset': ['customer', 'url'],
+    }
+
+    def _get_sample_context(self, base_parameters):
+        placeholders = {
+            'organizer': self.organizer.name
+        }
+
+        if 'url' in base_parameters:
+            placeholders['url'] = build_absolute_uri(
+                self.organizer,
+                'presale:organizer.customer.activate'
+            ) + '?token=' + get_random_string(30)
+
+        if 'customer' in base_parameters:
+            placeholders['name'] = pgettext_lazy('person_name_sample', 'John Doe')
+            name_scheme = PERSON_NAME_SCHEMES[self.organizer.settings.name_scheme]
+            for f, l, w in name_scheme['fields']:
+                if f == 'full_name':
+                    continue
+                placeholders['name_%s' % f] = name_scheme['sample'][f]
+        return placeholders
+
+    def _set_field_placeholders(self, fn, base_parameters):
+        phs = [
+            '{%s}' % p
+            for p in sorted(self._get_sample_context(base_parameters).keys())
+        ]
+        ht = _('Available placeholders: {list}').format(
+            list=', '.join(phs)
+        )
+        if self.fields[fn].help_text:
+            self.fields[fn].help_text += ' ' + str(ht)
+        else:
+            self.fields[fn].help_text = ht
+        self.fields[fn].validators.append(
+            PlaceholderValidator(phs)
+        )
+
+    def __init__(self, *args, **kwargs):
+        self.organizer = kwargs.get('obj')
+        super().__init__(*args, **kwargs)
+        for k, v in self.base_context.items():
+            self._set_field_placeholders(k, v)
 
 
 class WebHookForm(forms.ModelForm):
@@ -342,6 +503,188 @@ class GiftCardUpdateForm(forms.ModelForm):
         }
 
 
+class CustomerUpdateForm(forms.ModelForm):
+    error_messages = {
+        'duplicate': _("An account with this email address is already existed."),
+    }
+
+    class Meta:
+        model = Customer
+        fields = [
+            'is_active',
+            'name_parts',
+            'email',
+            'is_verified',
+            'locale',
+            'external_identifier']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['name_parts'] = NamePartsFormField(
+            max_length=255,
+            required=False,
+            scheme=self.instance.organizer.settings.name_scheme,
+            titles=self.instance.organizer.settings.name_scheme_titles,
+            label=_('Name'),
+        )
+        if self.instance.provider_id:
+            self.fields['email'].disabled = True
+            self.fields['is_verified'].disabled = True
+            self.fields['external_identifier'].disabled = True
+
+    def clean(self):
+        """
+        Validates the email and identifier fields to ensure they are unique within the organizer's customers,
+        excluding the current instance. Raises a validation error if a duplicate is found.
+        """
+        email = self.cleaned_data.get('email')
+        identifier = self.cleaned_data.get('identifier')
+
+        def check_duplicate(field, error_message, code, field_value):
+            if field is not None:
+                try:
+                    self.instance.organizer.customers.exclude(pk=self.instance.pk).get(**{field: field_value})
+                except Customer.DoesNotExist:
+                    pass
+                else:
+                    raise forms.ValidationError(
+                        self.error_messages[error_message],
+                        code=code,
+                    )
+
+        # Check for duplicate email
+        check_duplicate('email', 'duplicate', 'duplicate', email)
+
+        # Check for duplicate identifier
+        check_duplicate('identifier', 'duplicate_identifier', 'duplicate_identifier', identifier)
+
+        return self.cleaned_data
+
+
+class SSOProviderForm(I18nModelForm):
+
+    config_oidc_base_url = forms.URLField(
+        label=pgettext_lazy('sso_oidc', 'Base URL'),
+        required=False,
+    )
+    config_oidc_client_id = forms.CharField(
+        label=pgettext_lazy('sso_oidc', 'Client ID'),
+        required=False,
+    )
+    config_oidc_client_secret = forms.CharField(
+        label=pgettext_lazy('sso_oidc', 'Client secret'),
+        required=False,
+    )
+    config_oidc_scope = forms.CharField(
+        label=pgettext_lazy('sso_oidc', 'Scope'),
+        help_text=pgettext_lazy('sso_oidc', 'Multiple scopes separated with spaces.'),
+        required=False,
+    )
+    config_oidc_uid_field = forms.CharField(
+        label=pgettext_lazy('sso_oidc', 'User ID field'),
+        help_text=pgettext_lazy('sso_oidc', 'We will assume that the contents of the user ID fields are unique and '
+                                            'can never change for a user.'),
+        required=True,
+        initial='sub',
+    )
+    config_oidc_email_field = forms.CharField(
+        label=pgettext_lazy('sso_oidc', 'Email field'),
+        help_text=pgettext_lazy('sso_oidc', 'We will assume that all email addresses received from the SSO provider '
+                                            'are verified to really belong the the user. If this can\'t be '
+                                            'guaranteed, security issues might arise.'),
+        required=True,
+        initial='email',
+    )
+    config_oidc_phone_field = forms.CharField(
+        label=pgettext_lazy('sso_oidc', 'Phone field'),
+        required=False,
+    )
+
+    class Meta:
+        model = CustomerSSOProvider
+        fields = ['is_active', 'name', 'button_label', 'method']
+        widgets = {
+            'method': forms.RadioSelect,
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        name_scheme = self.event.settings.name_scheme
+        scheme = PERSON_NAME_SCHEMES.get(name_scheme)
+        for fname, label, size in scheme['fields']:
+            self.fields[f'config_oidc_{fname}_field'] = forms.CharField(
+                label=pgettext_lazy('sso_oidc', f'{label} field').format(label=label),
+                required=False,
+            )
+
+        self.fields['method'].choices = [c for c in self.fields['method'].choices if c[0]]
+
+        for fname, f in self.fields.items():
+            if fname.startswith('config_'):
+                prefix, method, suffix = fname.split('_', 2)
+                f.widget.attrs['data-display-dependency'] = f'input[name=method][value={method}]'
+
+                if self.instance and self.instance.method == method:
+                    f.initial = self.instance.configuration.get(suffix)
+
+    def clean(self):
+        """
+        Cleans and validates the form data. If a method is specified, it collects and validates the
+        configuration settings for that method, and then sets the instance's configuration.
+
+        Returns:
+            dict: The cleaned data.
+        """
+        data = self.cleaned_data
+        if not data.get("method"):
+            return data
+
+        # Collect configuration settings for the specified method
+        config = {
+            fname.split('_', 2)[2]: data.get(fname)
+            for fname in self.fields
+            if fname.startswith(f'config_{data["method"]}_')
+        }
+
+        if data["method"] == "oidc":
+            oidc_validate_and_complete_config(config)
+
+        self.instance.configuration = config
+
+
+class SSOClientForm(I18nModelForm):
+    regenerate_client_secret = forms.BooleanField(
+        label=_('Invalidate old client secret and generate a new one'),
+        required=False,
+    )
+
+    class Meta:
+        model = CustomerSSOClient
+        fields = ['is_active', 'name', 'client_id', 'client_type', 'authorization_grant_type', 'redirect_uris',
+                  'allowed_scopes']
+        widgets = {
+            'authorization_grant_type': forms.RadioSelect,
+            'client_type': forms.RadioSelect,
+            'allowed_scopes': forms.CheckboxSelectMultiple,
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['allowed_scopes'] = forms.MultipleChoiceField(
+            label=self.fields['allowed_scopes'].label,
+            help_text=self.fields['allowed_scopes'].help_text,
+            required=self.fields['allowed_scopes'].required,
+            initial=self.fields['allowed_scopes'].initial,
+            choices=CustomerSSOClient.SCOPE_CHOICES,
+            widget=forms.CheckboxSelectMultiple
+        )
+        if self.instance and self.instance.pk:
+            self.fields['client_id'].disabled = True
+        else:
+            del self.fields['client_id']
+            del self.fields['regenerate_client_secret']
 
 class OrganizerFooterLinkForm(I18nModelForm):
     class Meta:
