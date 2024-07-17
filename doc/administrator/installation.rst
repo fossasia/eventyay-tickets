@@ -24,7 +24,7 @@ Step 0: Prerequisites
 Please set up the following systems beforehand. We can’t go into their use
 and configuration here, but please have a look at the linked pages.
 
-* **Python 3.9 or newer**
+* **Python 3.11 or newer**
 * An SMTP server to send out mails
 * An HTTP reverse proxy like `nginx`_ to allow HTTPS connections
 * A database server: `MySQL`_ 8+, MariaDB 10.4+ or `PostgreSQL`_ 12+, or SQLite

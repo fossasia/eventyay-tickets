@@ -1,4 +1,4 @@
-FROM python:3.10-bookworm
+FROM python:3.11-bookworm
 
 RUN apt-get update && \
     apt-get install -y git gettext libmariadb-dev libpq-dev locales libmemcached-dev build-essential \
@@ -19,7 +19,6 @@ RUN apt-get update && \
     echo 'pretalxuser ALL=(ALL) NOPASSWD: /usr/bin/supervisord' >> /etc/sudoers
 
 ENV LC_ALL=C.UTF-8
-
 
 COPY pyproject.toml /pretalx
 COPY src /pretalx/src

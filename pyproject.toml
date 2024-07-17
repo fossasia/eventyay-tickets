@@ -3,7 +3,7 @@ name = "pretalx"
 dynamic = ["version"]
 description = "Conference organisation: CfPs, scheduling, much more"
 readme = "README.rst"
-requires-python = ">=3.9"
+requires-python = ">=3.11"
 keywords = ["conference", "event", "schedule", "talk", "cfp"]
 authors = [
   {name = "Tobias Kunze", email = "r@rixx.de"},
@@ -19,10 +19,7 @@ classifiers = [
   "Intended Audience :: Other Audience",
   "License :: OSI Approved :: Apache Software License",
   "License :: OSI Approved",
-  "Programming Language :: Python :: 3",
-  "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
-  "Programming Language :: Python :: 3.9",
   "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
 ]
 
