@@ -28,6 +28,7 @@ recursive-include src/pretalx/cfp/templates *
 recursive-include src/pretalx/mail/templates *
 recursive-include src/pretalx/orga/templates *
 recursive-include src/pretalx/schedule/templates *
+recursive-include src/pretalx/sso_provider/templates *
 recursive-exclude src/tests *
 recursive-include src *.py
 
