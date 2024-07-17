@@ -2,7 +2,7 @@ name: Docker PR Build
 
 on:
   pull_request:
-    branches: [development, main]
+    branches: [development, master]
 
 jobs:
   build_docker_image:
