@@ -60,7 +60,7 @@ dependencies = [
         'redis==5.0.*',
         'fakeredis==2.18.*',
         'stripe==5.4.*',
-        'chardet==5.1.*',
+        'chardet==5.2.*',
         'mt-940==4.30.*',
         'django-i18nfield==1.9.*,>=1.9.4',
         'psycopg2-binary==2.9.9',
