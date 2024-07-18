@@ -103,8 +103,8 @@ dependencies = [
 memcached = ["pylibmc"]
 dev = [
             'django-debug-toolbar==4.0.*',
-            'pycodestyle==2.10.*',
-            'pyflakes==3.0.*',
+            'pycodestyle==2.12.*',
+            'pyflakes==3.2.*',
             'flake8==7.1.*',
             'pep8-naming==0.14.*',
             'coveralls',
