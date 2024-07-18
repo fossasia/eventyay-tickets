@@ -2,6 +2,7 @@ FROM python:3.11-bookworm
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
+            curl \
             build-essential \
             gettext \
             git \
@@ -19,8 +20,9 @@ RUN apt-get update && \
             sudo \
             supervisor \
             zlib1g-dev \
-            npm \
-            nodejs && \
+            npm && \
+    curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash - && \
+    apt-get install -y nodejs && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
     dpkg-reconfigure locales && \
