@@ -46,7 +46,6 @@ dependencies = [
         'django-statici18n==2.3.*',
         'css-inline==0.8.*',
         'BeautifulSoup4==4.12.*',
-        'slimit',
         'lxml',
         'static3==0.7.*',
         'dj-static',
