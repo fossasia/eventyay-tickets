@@ -682,7 +682,7 @@ class BasePaymentProvider:
             except InvoiceAddress.DoesNotExist:
                 return True
             else:
-                if str(ia.country) not in restricted_countries:
+                if str(ia.country) != '' and str(ia.country) not in restricted_countries:
                     return False
 
         if order.sales_channel not in self.settings.get('_restrict_to_sales_channels', as_type=list, default=['web']):
