@@ -1,4 +1,5 @@
 import requests
+from urllib.parse import urlencode
 
 from allauth.socialaccount.providers.oauth2.provider import OAuth2Provider
 from allauth.socialaccount.providers.base import AuthAction, ProviderAccount
