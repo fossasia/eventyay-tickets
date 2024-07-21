@@ -37,8 +37,7 @@ export default new Vuex.Store({
 		autoplayUserSetting: !localStorage.disableAutoplay ? null : localStorage.disableAutoplay !== 'true',
 		stageStreamCollapsed: false,
 		now: moment(),
-		unblockedIframeDomains: new Set(JSON.parse(localStorage.unblockedIframeDomains || '[]')),
-		youtubeTransUrl: null
+		unblockedIframeDomains: new Set(JSON.parse(localStorage.unblockedIframeDomains || '[]'))
 	},
 	getters: {
 		hasPermission (state) {
@@ -84,9 +83,6 @@ export default new Vuex.Store({
 		},
 		updateNow (state) {
 			state.now = moment()
-		},
-		updateYoutubeTransAudio(state, youtubeTransUrl){
-			state.youtubeTransUrl = youtubeTransUrl
 		}
 	},
 	actions: {
@@ -106,6 +102,7 @@ export default new Vuex.Store({
 				state.permissions = serverState['world.config'].permissions
 				commit('chat/setJoinedChannels', serverState['chat.channels'])
 				commit('chat/setReadPointers', serverState['chat.read_pointers'])
+				commit('chat/setNotificationCounts', serverState['chat.notification_counts'])
 				commit('exhibition/setData', serverState.exhibition)
 				commit('announcement/setAnnouncements', serverState.announcements)
 				commit('updateRooms', serverState['world.config'].rooms)

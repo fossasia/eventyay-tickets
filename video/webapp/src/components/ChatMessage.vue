@@ -1,20 +1,19 @@
 <template lang="pug">
 .c-chat-message(:class="[mode, {selected, readonly, 'system-message': isSystemMessage, 'merge-with-previous-message': mergeWithPreviousMessage, 'merge-with-next-message': mergeWithNextMessage, 'sender-deleted': sender.deleted}]")
 	.avatar-column(v-if="message.event_type !== 'channel.poll'")
-		avatar(v-if="!mergeWithPreviousMessage", :user="sender", :size="avatarSize", @click.native="showAvatarCard", ref="avatar")
+		avatar(v-if="!mergeWithPreviousMessage", :user="sender", :size="avatarSize", @click.native="$emit('showUserCard', $event, sender, 'right-start')", ref="avatar")
 		.timestamp(v-if="mergeWithPreviousMessage") {{ shortTimestamp }}
 	template(v-if="message.event_type === 'channel.message'")
 		.content-wrapper
 			.message-header(v-if="!mergeWithPreviousMessage")
-				.display-name(@click="showAvatarCard")
+				.display-name(@click="$emit('showUserCard', $event, sender, 'right-start')")
 					| {{ senderDisplayName }}
 					.ui-badge(v-for="badge in sender.badges") {{ badge }}
 				.timestamp {{ timestamp }}
 			template(v-if="['text', 'files'].includes(message.content.type)")
 				chat-input(v-if="editing", :message="message", @send="editMessage")
-				.content(v-else-if="message.content.type === 'text'", v-html="content")
-				.content(v-else)
-					span(v-if="message.content.body", v-html="content")
+				.content
+					ChatContent(v-if="message.content.body", :content="message.content.body", @clickMention="handleMentionClick")
 					.files(v-for="file in message.content.files")
 						a(v-if="file.mimeType.startsWith('image/')", :href="file.url", target="_blank")
 							img.chat-image(:src="file.url")
@@ -59,7 +58,6 @@
 				.timestamp {{ timestamp }}
 				span {{ $t('ChatMessage:poll-message:header') }}
 			Poll(:poll="poll")
-	chat-user-card(v-if="showingAvatarCard", ref="avatarCard", :sender="sender", @close="showingAvatarCard = false")
 	prompt.delete-message-prompt(v-if="showDeletePrompt", @close="showDeletePrompt = false")
 		.prompt-content
 			h2 Delete this message?
@@ -74,11 +72,12 @@
 // - cancel editing
 // - handle editing error
 import moment from 'moment'
-import MarkdownIt from 'markdown-it'
 import { mapState, mapGetters } from 'vuex'
-import { markdownEmoji, nativeToStyle as nativeEmojiToStyle, getEmojiDataFromNative } from 'lib/emoji'
+import { nativeToStyle as nativeEmojiToStyle, getEmojiDataFromNative } from 'lib/emoji'
 import { createPopper } from '@popperjs/core'
+import { getUserName } from 'lib/profile'
 import Avatar from 'components/Avatar'
+import ChatContent from 'components/ChatContent'
 import ChatInput from 'components/ChatInput'
 import ChatUserCard from 'components/ChatUserCard'
 import EmojiPickerButton from 'components/EmojiPickerButton'
@@ -89,26 +88,9 @@ import Poll from 'components/Poll'
 const DATETIME_FORMAT = 'DD.MM. LT'
 const TIME_FORMAT = 'LT'
 
-const markdownIt = MarkdownIt('zero', {
-	linkify: true // TODO more tlds
-})
-markdownIt.enable('linkify')
-markdownIt.renderer.rules.link_open = function (tokens, idx, options, env, self) {
-	tokens[idx].attrPush(['target', '_blank'])
-	tokens[idx].attrPush(['rel', 'noopener noreferrer'])
-	return self.renderToken(tokens, idx, options)
-}
-
-markdownIt.use(markdownEmoji)
-
-const generateHTML = function (input) {
-	if (!input) return
-	return markdownIt.renderInline(input)
-}
-
 export default {
 	name: 'ChatMessage',
-	components: { Avatar, ChatInput, ChatUserCard, EmojiPickerButton, MenuDropdown, Prompt, Poll },
+	components: { Avatar, ChatContent, ChatInput, ChatUserCard, EmojiPickerButton, MenuDropdown, Prompt, Poll },
 	props: {
 		message: Object,
 		previousMessage: Object,
@@ -122,7 +104,6 @@ export default {
 	data () {
 		return {
 			selected: false,
-			showingAvatarCard: false,
 			editing: false,
 			showDeletePrompt: false,
 			reactionTooltip: null,
@@ -150,8 +131,7 @@ export default {
 			return this.usersLookup[this.message.sender] || {id: this.message.sender, badges: {}}
 		},
 		senderDisplayName () {
-			if (this.sender.deleted) return this.$t('User:label:deleted')
-			return this.sender.profile?.display_name ?? this.message.sender ?? '(unknown user)'
+			return getUserName(this.sender)
 		},
 		timestamp () {
 			const timestamp = moment(this.message.timestamp)
@@ -166,9 +146,6 @@ export default {
 			// We don't format to HH or hh to make sure the number is the same as in timestamp above
 			return moment(this.message.timestamp).format(TIME_FORMAT).split(' ')[0]
 		},
-		content () {
-			return generateHTML(this.message.content?.body)
-		},
 		mergeWithPreviousMessage () {
 			return this.previousMessage && !this.isSystemMessage && this.previousMessage.event_type === 'channel.message' && this.previousMessage.sender === this.message.sender && moment(this.message.timestamp).diff(this.previousMessage.timestamp, 'minutes') < 15
 		},
@@ -180,6 +157,7 @@ export default {
 		}
 	},
 	methods: {
+		getUserName,
 		addReaction (emoji) {
 			this.$store.dispatch('chat/addReaction', {message: this.message, reaction: emoji.native})
 		},
@@ -221,24 +199,8 @@ export default {
 			this.$store.dispatch('chat/deleteMessage', this.message)
 			this.showDeletePrompt = false
 		},
-		async showAvatarCard (event) {
-			this.showingAvatarCard = true
-			await this.$nextTick()
-			createPopper(this.$refs.avatar.$el, this.$refs.avatarCard.$refs.card, {
-				placement: 'right-start',
-				strategy: 'fixed',
-				modifiers: [{
-					name: 'flip',
-					options: {
-						flipVariations: false
-					}
-				}, {
-					name: 'preventOverflow',
-					options: {
-						padding: 8
-					}
-				}]
-			})
+		handleMentionClick (event, user, placement) {
+			this.$emit('showUserCard', event, user, placement)
 		}
 	}
 }

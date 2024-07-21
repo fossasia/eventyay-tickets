@@ -6,7 +6,11 @@
 				infinite-scroll(v-if="syncedScroll", :loading="fetchingMessages", @load="fetchMessages")
 					div
 				template(v-for="(message, index) of filteredTimeline")
-					chat-message(:message="message", :previousMessage="filteredTimeline[index - 1]", :nextMessage="filteredTimeline[index + 1]", :mode="mode", :key="message.event_id")
+					chat-message(:message="message", :previousMessage="filteredTimeline[index - 1]", :nextMessage="filteredTimeline[index + 1]", :mode="mode", :key="message.event_id", @showUserCard="showUserCard")
+			.warning(v-if="mergedWarning")
+				.content
+					ChatContent(:content="$t('Chat:warning:missed-users', {count: mergedWarning.missed_users.length, missedUsers: mergedWarning.missed_users})", @clickMention="showUserCard")
+				bunt-icon-button(@click="$store.dispatch('chat/dismissWarnings')") close
 			.chat-input
 				.no-permission(v-if="room && !room.permissions.includes('room:chat.join')") {{ $t('Chat:permission-block:room:chat.join') }}
 				bunt-button(v-else-if="!activeJoinedChannel", @click="join", :tooltip="$t('Chat:join-button:tooltip')") {{ $t('Chat:join-button:label') }}
@@ -23,17 +27,19 @@
 					span.display-name
 						| {{ user.profile.display_name }}
 						span.ui-badge(v-for="badge in user.badges") {{ badge }}
-		chat-user-card(v-if="selectedUser", ref="avatarCard", :sender="selectedUser", @close="selectedUser = null")
+		chat-user-card(v-if="userCardUser", ref="avatarCard", :sender="userCardUser", @close="userCardUser = false")
 	bunt-progress-circular(v-else, size="huge", :page="true")
 </template>
 <script>
 import { mapState, mapGetters } from 'vuex'
 import { createPopper } from '@popperjs/core'
-import ChatMessage from './ChatMessage'
-import InfiniteScroll from './InfiniteScroll'
+
+import ChatContent from 'components/ChatContent'
 import Avatar from 'components/Avatar'
 import ChatInput from 'components/ChatInput'
 import ChatUserCard from 'components/ChatUserCard'
+import ChatMessage from './ChatMessage'
+import InfiniteScroll from './InfiniteScroll'
 
 export default {
 	components: { ChatMessage, ChatUserCard, Avatar, InfiniteScroll, ChatInput },
@@ -54,14 +60,14 @@ export default {
 	},
 	data () {
 		return {
-			selectedUser: null,
+			userCardUser: null,
 			scrollPosition: 0,
 			syncedScroll: true
 		}
 	},
 	computed: {
 		...mapState(['connected']),
-		...mapState('chat', ['channel', 'members', 'usersLookup', 'timeline', 'fetchingMessages']),
+		...mapState('chat', ['channel', 'members', 'usersLookup', 'timeline', 'fetchingMessages', 'warnings']),
 		...mapGetters('chat', ['activeJoinedChannel']),
 		...mapState('poll', ['polls']),
 		filteredTimeline () {
@@ -85,6 +91,11 @@ export default {
 				}
 				return bBadges - aBadges
 			})
+		},
+		mergedWarning () {
+			if (this.warnings.length === 0) return null
+			// TODO dedupe users
+			return { missed_users: this.warnings.map(warning => warning.missed_users.map(user => '@' + user.id)).flat() }
 		}
 	},
 	watch: {
@@ -131,12 +142,13 @@ export default {
 		send (content) {
 			this.$store.dispatch('chat/sendMessage', {content})
 		},
-		async showUserCard (event, user) {
-			this.selectedUser = user
+		async showUserCard (event, user, placement = 'left-start') {
+			console.log(user.id)
+			this.userCardUser = user
 			await this.$nextTick()
-			const target = event.target.closest('.user')
+			const target = event.target.closest('.user') || event.target
 			createPopper(target, this.$refs.avatarCard.$refs.card, {
-				placement: 'left-start',
+				placement,
 				strategy: 'fixed',
 				modifiers: [{
 					name: 'flip',
@@ -174,6 +186,27 @@ export default {
 			padding-top: 8px
 		> :first-child
 			margin-top: auto
+	.warning
+		display: flex
+		align-items: center
+		justify-content: space-between
+		padding: 0 0 0 16px
+		background-color: $clr-orange-100
+		border-radius: 8px
+		margin: 8px 14px 0 14px
+		.bunt-icon-button
+			icon-button-style(style: clear)
+	.content .mention
+		display: inline-block
+		background-color: var(--clr-primary)
+		color: var(--clr-input-primary-fg)
+		font-weight: 500
+		border-radius: 4px
+		padding: 0 2px
+		cursor: pointer
+		&::before
+			content: '@'
+			font-family: monospace
 	.chat-input
 		flex: none
 		min-height: 56px

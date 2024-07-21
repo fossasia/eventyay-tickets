@@ -20,14 +20,13 @@ transition(name="sidebar")
 							.title {{ $localize(stage.session.title) }}
 							.subtitle
 								.speakers {{ stage.session.speakers ? stage.session.speakers.map(s => s.name).join(', ') : '' }}
-								.room {{ stage.room.name }}
+								.room-wrapper
+									.room {{ stage.room.name }}
+									.notifications(v-if="stage.notifications") {{ stage.notifications }}
 					template(v-else)
 						.room-icon(aria-hidden="true")
 						.name(v-html="$emojify(stage.room.name)")
-						.buffer
-						template(v-if="stage.room.users")
-							i.mdi.mdi-account-group.icon-viewer
-							.name(v-html="stage.room.users")
+						.notifications(v-if="stage.notifications") {{ stage.notifications }}
 			.group-title#chats-title(v-if="roomsByType.videoChat.length || roomsByType.textChat.length || hasPermission('world:rooms.create.chat') || hasPermission('world:rooms.create.bbb')")
 				span {{ $t('RoomsSidebar:channels-headline:text') }}
 				.buffer
@@ -38,10 +37,11 @@ transition(name="sidebar")
 					.room-icon(aria-hidden="true")
 					.name(v-html="$emojify(chat.name)")
 					i.bunt-icon.activity-icon.mdi(v-if="chat.users === 'many' || chat.users === 'few'", :class="{'mdi-account-group': (chat.users === 'many'), 'mdi-account-multiple': (chat.users === 'few')}", v-tooltip.bottom.fixed="{text: $t('RoomsSidebar:users-tooltip:' + chat.users)}", :aria-label="$t('RoomsSidebar:users-tooltip:' + chat.users)")
-				router-link.text-chat(v-for="chat of roomsByType.textChat", :to="chat === rooms[0] ? {name: 'home'} : {name: 'room', params: {roomId: chat.id}}", :class="{unread: hasUnreadMessages(chat.modules[0].channel_id), 'starts-with-emoji': startsWithEmoji(chat.name)}")
+				router-link.text-chat(v-for="chat of roomsByType.textChat", :to="chat.room === rooms[0] ? {name: 'home'} : {name: 'room', params: {roomId: chat.room.id}}", :class="{unread: hasUnreadMessages(chat.room.modules[0].channel_id), 'starts-with-emoji': startsWithEmoji(chat.room.name)}")
 					.room-icon(aria-hidden="true")
-					.name(v-html="$emojify(chat.name)")
-					bunt-icon-button(@click.prevent.stop="$store.dispatch('chat/leaveChannel', {channelId: chat.modules[0].channel_id})") close
+					.name(v-html="$emojify(chat.room.name)")
+					.notifications(v-if="chat.notifications") {{ chat.notifications }}
+					bunt-icon-button(@click.prevent.stop="$store.dispatch('chat/leaveChannel', {channelId: chat.room.modules[0].channel_id})") close
 				bunt-button#btn-browse-channels-trailing(v-if="worldHasTextChannels", @click="showChannelBrowser = true") {{ $t('RoomsSidebar:browse-channels-button:label') }}
 			.group-title#dm-title(v-if="directMessageChannels.length || hasPermission('world:chat.direct')")
 				span {{ $t('RoomsSidebar:direct-messages-headline:text') }}
@@ -50,6 +50,7 @@ transition(name="sidebar")
 				router-link.direct-message(v-for="channel of directMessageChannels", :to="{name: 'channel', params: {channelId: channel.id}}", :class="{unread: hasUnreadMessages(channel.id)}")
 					i.bunt-icon.mdi(v-if="call && call.channel === channel.id", aria-hidden="true").mdi-phone
 					.name {{ getDMChannelName(channel) }}
+					.notifications(v-if="channel.notifications") {{ channel.notifications }}
 					bunt-icon-button(tooltip="remove", :tooltip-fixed="true", @click.prevent.stop="$store.dispatch('chat/leaveChannel', {channelId: channel.id})") close
 			.buffer
 			template(v-if="worldHasExhibition && (staffedExhibitions.length > 0 || hasPermission('world:rooms.create.exhibition'))")
@@ -111,7 +112,7 @@ export default {
 		...mapState('chat', ['joinedChannels', 'call']),
 		...mapState('exhibition', ['staffedExhibitions']),
 		...mapGetters(['hasPermission']),
-		...mapGetters('chat', ['hasUnreadMessages']),
+		...mapGetters('chat', ['hasUnreadMessages', 'notificationCount']),
 		...mapGetters('schedule', ['sessions', 'currentSessionPerRoom']),
 		style () {
 			if (this.pointerMovementX === 0) return
@@ -129,7 +130,11 @@ export default {
 			for (const room of this.rooms) {
 				if (room.modules.length === 1 && room.modules[0].type === 'chat.native') {
 					if (!this.joinedChannels.some(channel => channel.id === room.modules[0].channel_id)) continue
-					rooms.textChat.push(room)
+					const notifications = this.notificationCount(room.modules[0].channel_id)
+					rooms.textChat.push({
+						room,
+						notifications: notifications > 99 ? '99+' : notifications
+					})
 				} else if (room.modules.some(module => ['call.bigbluebutton', 'call.janus', 'call.zoom'].includes(module.type))) {
 					rooms.videoChat.push(room)
 				} else if (room.modules.some(module => ['livestream.native', 'livestream.youtube', 'livestream.iframe'].includes(module.type))) {
@@ -137,11 +142,13 @@ export default {
 					if (this.$features.enabled('schedule-control')) {
 						session = this.currentSessionPerRoom?.[room.id]?.session
 					}
+					const notifications = this.notificationCount(room.modules.find(m => m.type === 'chat.native')?.channel_id)
 					// TODO handle session image and multiple speaker avatars
 					// const image = session?.speakers.length === 1 ? session.speakers[0].avatar : null
 					rooms.stage.push({
 						room,
 						session,
+						notifications: notifications > 99 ? '99+' : notifications
 						// image
 					})
 				} else {
@@ -153,10 +160,14 @@ export default {
 		directMessageChannels () {
 			return this.joinedChannels
 				?.filter(channel => channel.members)
-				.map(channel => ({
-					id: channel.id,
-					users: channel.members.filter(member => member.id !== this.user.id)
-				}))
+				.map(channel => {
+					const notifications = this.notificationCount(channel.id)
+					return {
+						id: channel.id,
+						users: channel.members.filter(member => member.id !== this.user.id),
+						notifications: notifications > 99 ? '99+' : notifications
+					}
+				})
 				.sort((a, b) => (this.hasUnreadMessages(b.id) - this.hasUnreadMessages(a.id)) || this.getDMChannelName(a).localeCompare(this.getDMChannelName(b)))
 		},
 		worldHasTextChannels () {
@@ -297,7 +308,7 @@ export default {
 			&.router-link-exact-active, &.active
 				.room-icon::before
 					color: var(--clr-sidebar-text-secondary)
-			.room-icon, .icon-viewer
+			.room-icon
 				width: 22px
 				&::before
 					font-family: "Material Design Icons"
@@ -307,9 +318,7 @@ export default {
 					margin: 0 auto
 					display: block
 					width: 20px
-			.icon-viewer
-				&::before
-					line-height: 32px
+
 			&.starts-with-emoji
 				padding: 0 18px
 				// .room-icon
@@ -348,7 +357,19 @@ export default {
 					border-radius: 50%
 			.name
 				ellipsis()
+		.stage, .direct-message, .text-chat
+			.notifications
+				margin-left: auto
+				margin-right: 4px
+				background: $clr-red
+				border-radius: 9px
+				line-height: 18px
+				align-self: center
+				padding: 0 8px
+				font-size: 12px
+				color: var(--clr-sidebar-text-primary)
 		.stage
+			padding-right: 8px
 			&.session
 				height: 48px
 				padding: 0 4px 0 8px
@@ -395,8 +416,12 @@ export default {
 					justify-content: space-between
 					line-height: 24px
 					color: var(--clr-sidebar-text-disabled)
-					.room
+					.room-wrapper
 						display: flex
+						flex: 1
+						min-width: 0
+						justify-content: flex-end
+					.room
 						line-height: 24px
 						margin-right: 4px
 						ellipsis()
@@ -409,6 +434,8 @@ export default {
 							line-height: 24px
 							color: var(--clr-sidebar-text-disabled)
 							margin-right: 4px
+					.notifications
+						margin-left: 4px
 				.speakers
 					ellipsis()
 					flex: 1
@@ -434,6 +461,8 @@ export default {
 			.bunt-icon-button
 				icon-button-style(color: var(--clr-sidebar-text-primary), style: clear)
 				margin-left: auto
+			&:hover .notifications
+				display: none
 			&:not(:hover) .bunt-icon-button
 				display: none
 		#btn-browse-channels-trailing
