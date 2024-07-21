@@ -341,7 +341,8 @@ def end_view(view: WorldView, delete=False):
 
 
 LoginResult = namedtuple(
-    "LoginResult", "user world_config chat_channels exhibition_data view"
+    "LoginResult",
+    "user world_config chat_channels chat_notification_counts exhibition_data view",
 )
 
 
@@ -393,6 +394,7 @@ def login(
         chat_channels=ChatService(world).get_channels_for_user(
             user.pk, is_volatile=False
         ),
+        chat_notification_counts=ChatService(world).get_notification_counts(user.pk),
         exhibition_data=ExhibitionService(world).get_exhibition_data_for_user(user.pk),
         view=view,
     )

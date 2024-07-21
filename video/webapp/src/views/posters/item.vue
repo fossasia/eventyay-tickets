@@ -54,7 +54,7 @@
 			//- h3 Discuss
 			//- chat(mode="compact", :module="{channel_id: poster.channel}")
 	bunt-progress-circular(v-else, size="huge", :page="true")
-	chat-user-card(v-if="selectedUser", ref="avatarCard", :sender="selectedUser", @close="selectedUser = null")
+	chat-user-card(v-if="selectedUser", ref="avatarCard", :user="selectedUser", @close="selectedUser = null")
 </template>
 <script>
 import * as pdfjs from 'pdfjs-dist/webpack'

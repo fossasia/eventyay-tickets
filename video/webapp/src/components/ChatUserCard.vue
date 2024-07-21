@@ -1,16 +1,16 @@
 <template lang="pug">
 .c-chat-user-card
 	.ui-background-blocker(v-if="!userAction", @click="$emit('close')")
-	.user-card(v-if="!userAction", :class="{deleted: sender.deleted}", ref="card", @mousedown="showMoreActions=false")
+	.user-card(v-if="!userAction", :class="{deleted: user.deleted}", ref="card", @mousedown="showMoreActions=false")
 		scrollbars(y)
-			avatar(:user="sender", :size="128")
+			avatar(:user="user", :size="128")
 			.name
-				.online-status(v-if="!sender.deleted", :class="onlineStatus ? 'online' : (onlineStatus === false ? 'offline' : 'unknown')", v-tooltip="onlineStatus ? $t('UserAction:state.online:tooltip') : (onlineStatus === false ? $t('UserAction:state.offline:tooltip') : '')")
-				| {{ sender.deleted ? $t('User:label:deleted') : (sender.profile ? sender.profile.display_name : (sender.id ? sender.id : '(unknown user)')) }}
-				.ui-badge(v-for="badge in sender.badges") {{ badge }}
-			ProfileFields(:user="sender")
+				.online-status(v-if="!user.deleted", :class="onlineStatus ? 'online' : (onlineStatus === false ? 'offline' : 'unknown')", v-tooltip="onlineStatus ? $t('UserAction:state.online:tooltip') : (onlineStatus === false ? $t('UserAction:state.offline:tooltip') : '')")
+				| {{ getUserName(user) }}
+				.ui-badge(v-for="badge in user.badges") {{ badge }}
+			ProfileFields(:user="user")
 			.state {{ userStates.join(', ') }}
-			.actions(v-if="sender.id !== user.id && sender.id && !sender.deleted")
+			.actions(v-if="user.id !== ownUser.id && user.id && !user.deleted")
 				bunt-button.btn-dm(v-if="hasPermission('world:chat.direct')", @click="openDM") {{ $t('UserAction:action.dm:label') }}
 				bunt-button.btn-call(v-if="hasPermission('world:chat.direct')", @click="startCall") {{ $t('UserAction:action.call:label') }}
 				menu-dropdown(v-model="showMoreActions", :blockBackground="false", @mousedown.native.stop="")
@@ -19,19 +19,20 @@
 					template(v-slot:menu)
 						.unblock(v-if="isBlocked", @click="userAction = 'unblock'") {{ $t('UserAction:action.unblock:label') }}
 						.block(v-else, @click="userAction = 'block'") {{ $t('UserAction:action.block:label') }}
-						template(v-if="hasPermission('room:chat.moderate') && sender.id !== user.id")
+						template(v-if="hasPermission('room:chat.moderate') && user.id !== ownUser.id")
 							.divider {{ $t('UserAction:moderator-actions:title') }}
-							.reactivate(v-if="sender.moderation_state", @click="userAction = 'reactivate'")
-								| {{ sender.moderation_state === 'banned' ? $t('UserAction:action.unban:label') : $t('UserAction:action.unsilence:label') }}
-							.ban(v-if="sender.moderation_state !== 'banned'", @click="userAction = 'ban'") {{ $t('UserAction:action.ban:label') }}
-							.silence(v-if="!sender.moderation_state", @click="userAction = 'silence'") {{ $t('UserAction:action.silence:label') }}
-	user-action-prompt(v-if="userAction", :action="userAction", :user="sender", @close="$emit('close')")
+							.reactivate(v-if="user.moderation_state", @click="userAction = 'reactivate'")
+								| {{ user.moderation_state === 'banned' ? $t('UserAction:action.unban:label') : $t('UserAction:action.unsilence:label') }}
+							.ban(v-if="user.moderation_state !== 'banned'", @click="userAction = 'ban'") {{ $t('UserAction:action.ban:label') }}
+							.silence(v-if="!user.moderation_state", @click="userAction = 'silence'") {{ $t('UserAction:action.silence:label') }}
+	user-action-prompt(v-if="userAction", :action="userAction", :user="user", @close="$emit('close')")
 </template>
 <script>
 // TODO
 // - i18n
 import { mapState, mapGetters } from 'vuex'
 import api from 'lib/api'
+import { getUserName } from 'lib/profile'
 import Avatar from 'components/Avatar'
 import MenuDropdown from 'components/MenuDropdown'
 import UserActionPrompt from 'components/UserActionPrompt'
@@ -40,7 +41,7 @@ import ProfileFields from 'components/profile/ProfileFields'
 export default {
 	components: { Avatar, MenuDropdown, UserActionPrompt, ProfileFields },
 	props: {
-		sender: Object,
+		user: Object,
 	},
 	data () {
 		return {
@@ -52,34 +53,38 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['user', 'world']),
+		...mapState({
+			ownUser: 'user',
+			world: 'world'
+		}),
 		...mapGetters(['hasPermission']),
 		isBlocked () {
 			if (!this.blockedUsers) return
-			return this.blockedUsers.some(user => user.id === this.sender.id)
+			return this.blockedUsers.some(user => user.id === this.user.id)
 		},
 		userStates () {
 			const states = []
 			if (this.isBlocked) {
 				states.push('blocked')
 			}
-			if (this.sender.moderation_state) {
-				states.push(this.sender.moderation_state)
+			if (this.user.moderation_state) {
+				states.push(this.user.moderation_state)
 			}
 			return states
 		}
 	},
 	async created () {
-		this.onlineStatus = (await api.call('user.online_status', {ids: [this.sender.id]}))[this.sender.id]
+		this.onlineStatus = (await api.call('user.online_status', {ids: [this.user.id]}))[this.user.id]
 		this.blockedUsers = (await api.call('user.list.blocked')).users
 	},
 	methods: {
+		getUserName,
 		async openDM () {
 			// TODO loading indicator
-			await this.$store.dispatch('chat/openDirectMessage', {users: [this.sender]})
+			await this.$store.dispatch('chat/openDirectMessage', {users: [this.user]})
 		},
 		async startCall () {
-			const channel = await this.$store.dispatch('chat/openDirectMessage', {users: [this.sender]})
+			const channel = await this.$store.dispatch('chat/openDirectMessage', {users: [this.user]})
 			await this.$store.dispatch('chat/startCall', {channel})
 		}
 	}

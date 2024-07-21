@@ -19,6 +19,14 @@ bunt-input-outline-container.c-chat-input
 						| {{ file.name }}
 					bunt-icon-button#btn-remove-attachment(@click="removeFile(file)") close-circle
 		bunt-progress-circular(size="small" v-if="uploading")
+	.ui-background-blocker(v-if="autocompleteCoordinates", @click="closeAutocomplete")
+		.autocomplete-dropdown(:style="autocompleteCoordinates")
+			template(v-if="autocomplete.options")
+				template(v-for="option, index of autocomplete.options")
+					.user(:class="{selected: index === autocomplete.selected}", :title="option.profile.display_name", @mouseover="selectMention(index)", @click.stop="handleMention")
+						avatar(:user="option", :size="24")
+						.name {{ option.profile.display_name }}
+			bunt-progress-circular(v-else, size="large", :page="true")
 </template>
 <script>
 /* global ENV_DEVELOPMENT */
@@ -28,87 +36,178 @@ bunt-input-outline-container.c-chat-input
 // - add scrollbar when overflowing parent
 import api from 'lib/api'
 import Quill from 'quill'
+import 'lib/quill/emoji'
+import 'lib/quill/mention'
+import Avatar from 'components/Avatar'
 import EmojiPickerButton from 'components/EmojiPickerButton'
 import UploadButton from 'components/UploadButton'
-import { nativeToStyle as nativeEmojiToStyle, nativeToOps, objectToCssString } from 'lib/emoji'
+import { nativeToOps } from 'lib/emoji'
 
 const Delta = Quill.import('delta')
-const Embed = Quill.import('blots/embed')
-class EmojiBlot extends Embed {
-	static create (value) {
-		const node = super.create()
-		node.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
-		node.style = objectToCssString(nativeEmojiToStyle(value))
-		node.dataset.emoji = value
-		return node
-	}
-
-	static value (node) {
-		return node.dataset.emoji
-	}
-}
-
-EmojiBlot.blotName = 'emoji'
-EmojiBlot.className = 'emoji'
-EmojiBlot.tagName = 'img'
-
-Quill.register(EmojiBlot)
 
 export default {
-	components: { EmojiPickerButton, UploadButton },
+	components: { Avatar, EmojiPickerButton, UploadButton },
 	props: {
 		message: Object // initialize with existing message to edit
 	},
 	data () {
 		return {
 			files: [],
-			uploading: false
+			uploading: false,
+			autocomplete: null
 		}
 	},
-	computed: {},
+	computed: {
+		autocompleteCoordinates () {
+			// TODO bound to right edge
+			if (!this.autocomplete?.range) return null
+			const bounds = this.quill.getBounds(this.autocomplete.range.index, this.autocomplete.range.length)
+			const editorRect = this.$refs.editor.getBoundingClientRect()
+			return {
+				left: editorRect.x + bounds.left - Math.max(0, 240 - (editorRect.width + 60 - bounds.left)) + 'px',
+				bottom: window.innerHeight - editorRect.y - bounds.top + 8 + 'px'
+			}
+		}
+	},
 	mounted () {
 		this.quill = new Quill(this.$refs.editor, {
 			debug: ENV_DEVELOPMENT ? 'info' : 'warn',
 			placeholder: this.$t('ChatInput:input:placeholder'),
-			formats: ['emoji'],
+			formats: ['emoji', 'mention'],
 			modules: {
 				keyboard: {
 					bindings: {
 						enter: {
 							key: 'Enter',
-							handler: this.send
-						}
+							handler: this.handleEnter
+						},
+						tab: {
+							key: 'Tab',
+							handler: this.handleTab
+						},
+						up: {
+							key: 38,
+							handler: this.handleArrayUp
+						},
+						down: {
+							key: 40,
+							handler: this.handleArrayDown
+						},
+						escape: {
+							key: 27,
+							handler: this.handleEscape
+						},
 					}
 				}
 			}
 		})
+		this.quill.on('text-change', this.onTextChange)
+		this.quill.on('selection-change', this.onSelectionChange)
+		// TODO paste
 		if (this.message) {
 			this.quill.setContents(nativeToOps(this.message.content?.body))
 			if (this.message.content?.files?.length > 0) {
 				this.files = this.message.content.files
 			}
 		}
-		document.addEventListener('selectionchange', this.onSelectionchange)
 	},
-	destroyed () {
-		document.removeEventListener('selectionchange', this.onSelectionchange)
+	watch: {
+		async 'autocomplete.search' (search) {
+			// TODO debounce?
+			if (!this.autocomplete) return
+			if (this.autocomplete.type === 'mention') {
+				const { results } = await api.call('user.list.search', {search_term: search, page: 1, include_banned: false})
+				this.autocomplete.options = results
+				// if (results.length === 1) {
+				// 	this.autocomplete.selected = 0
+				// 	this.handleMention()
+				// }
+			}
+		}
 	},
 	methods: {
-		onSelectionchange () {
-			const selection = window.getSelection()
-			const range = selection.getRangeAt(0)
-			const insideEditable = (range.startContainer.closest ? range.startContainer : range.startContainer.parentElement).closest('.contenteditable')
-			if (!insideEditable) return
-			this.selectedRange = range
+		onTextChange (delta, oldDelta, source) {
+			if (source !== 'user') return
+			const selection = this.quill.getSelection()
+			if (selection === null) return
+			const caretPos = selection.index
+			const lookbackLength = Math.min(32, caretPos)
+			const lookbackOffset = caretPos - lookbackLength
+			const lookback = this.quill.getText(lookbackOffset, lookbackLength)
+			// only trigger when there is a space before @, except at the beginning of the message
+			const startsWithMention = lookbackOffset === 0 && lookback.startsWith('@')
+			const autocompleteCharIndex =
+				startsWithMention
+					? 0
+					: lookback.lastIndexOf(' @') // TODO any whitespace
+			if (autocompleteCharIndex > -1) {
+				this.autocomplete = {
+					type: 'mention',
+					search: lookback.slice(autocompleteCharIndex + 1 + !startsWithMention),
+					selection,
+					range: {
+						index: autocompleteCharIndex + lookbackOffset + !startsWithMention,
+						length: lookback.length
+					},
+					options: null,
+					selected: 0
+				}
+			} else {
+				this.autocomplete = null
+			}
+		},
+		onSelectionChange (range, oldRange, source) {
+			// TODO check mentions
+		},
+		handleEnter () {
+			if (this.autocomplete) return this.handleMention()
+			return this.send()
+		},
+		handleTab () {
+			if (this.autocomplete) return this.handleMention()
+			return true
+		},
+		handleArrayUp () {
+			if (!this.autocomplete) return true
+			this.autocomplete.selected = Math.max(0, this.autocomplete.selected - 1)
+		},
+		handleArrayDown () {
+			if (!this.autocomplete) return true
+			this.autocomplete.selected = Math.min(this.autocomplete.options.length - 1, this.autocomplete.selected + 1)
+		},
+		handleEscape () {
+			if (!this.autocomplete) return true
+			this.closeAutocomplete()
+		},
+		closeAutocomplete () {
+			this.quill.setSelection(this.autocomplete.selection)
+			this.autocomplete = null
+		},
+		selectMention (index) {
+			this.autocomplete.selected = index
+		},
+		handleMention () {
+			if (!this.autocomplete) return
+			this.quill.deleteText(this.autocomplete.range.index, this.autocomplete.range.length)
+			const user = this.autocomplete.options[this.autocomplete.selected]
+			this.quill.insertEmbed(this.autocomplete.range.index, 'mention', {
+				id: user.id,
+				name: user.profile.display_name
+			})
+			this.quill.setSelection(this.autocomplete.range.index + 1, 0)
+			this.autocomplete = null
 		},
 		send () {
 			const contents = this.quill.getContents()
 			let text = ''
+			console.log(contents)
 			for (const op of contents.ops) {
 				if (typeof op.insert === 'string') {
 					text += op.insert
 				} else if (op.insert.emoji) {
 					text += op.insert.emoji
+				} else if (op.insert.mention) {
+					text += '@' + op.insert.mention.id
 				}
 			}
 			text = text.trim()
@@ -191,6 +290,14 @@ export default {
 			height: 20px
 			vertical-align: middle
 			display: inline-block
+		.mention span
+			display: inline-block
+			background-color: var(--clr-input-primary-bg)
+			color: var(--clr-input-primary-fg)
+			font-weight: 500
+			border-radius: 4px
+			padding: 0 2px
+			margin: 0 2px
 	.bunt-input
 		input-style(size: compact)
 		padding: 0
@@ -255,4 +362,26 @@ export default {
 			.chat-file-content
 				ellipsis()
 				line-height: 60px
+	.autocomplete-dropdown
+		card()
+		position: fixed
+		width: 240px
+		display: flex
+		flex-direction: column
+		.user
+			display: flex
+			height: 32px
+			align-items: center
+			gap: 8px
+			padding: 0 8px
+			cursor: pointer
+			&.selected
+				background-color: var(--clr-input-primary-bg)
+				color: var(--clr-input-primary-fg)
+			.c-avatar
+				background-color: $clr-white
+				border-radius: 50%
+				padding: 1px
+			.name
+				ellipsis()
 </style>

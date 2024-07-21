@@ -69,14 +69,14 @@ async def test_join_leave(chat_room):
         await c.send_json_to(["chat.join", 123, {"channel": str(chat_room.channel.id)}])
         response = await c.receive_json_from()
         response[2]["next_event_id"] = -1
-        response[2]["notification_pointer"] = -1
+        response[2]["unread_pointer"] = -1
         assert response == [
             "success",
             123,
             {
                 "state": None,
                 "next_event_id": -1,
-                "notification_pointer": -1,
+                "unread_pointer": -1,
                 "members": [],
             },
         ]
@@ -150,7 +150,7 @@ async def test_join_volatile_based_on_room_config(volatile_chat_room, chat_room,
             "chat.channels",
             {
                 "channels": [
-                    {"id": str(chat_room.channel.id), "notification_pointer": 0}
+                    {"id": str(chat_room.channel.id), "unread_pointer": 0}
                 ]
             },
         ]
@@ -243,7 +243,7 @@ async def test_subscribe_without_name(chat_room):
             {
                 "state": None,
                 "next_event_id": -1,
-                "notification_pointer": 0,
+                "unread_pointer": 0,
                 "members": [],
             },
         ]
@@ -275,7 +275,7 @@ async def test_subscribe_join_leave(chat_room):
         )
         response = await c.receive_json_from()
         response[2]["next_event_id"] = -1
-        response[2]["notification_pointer"] = -1
+        response[2]["unread_pointer"] = -1
         assert response == [
             "success",
             123,
@@ -283,13 +283,13 @@ async def test_subscribe_join_leave(chat_room):
                 "state": None,
                 "next_event_id": -1,
                 "members": [],
-                "notification_pointer": -1,
+                "unread_pointer": -1,
             },
         ]
         await c.send_json_to(["chat.join", 123, {"channel": str(chat_room.channel.id)}])
         response = await c.receive_json_from()
         response[2]["next_event_id"] = -1
-        response[2]["notification_pointer"] = -1
+        response[2]["unread_pointer"] = -1
         assert response == [
             "success",
             123,
@@ -297,7 +297,7 @@ async def test_subscribe_join_leave(chat_room):
                 "state": None,
                 "next_event_id": -1,
                 "members": [],
-                "notification_pointer": -1,
+                "unread_pointer": -1,
             },
         ]
         response = await c.receive_json_from()
@@ -340,7 +340,7 @@ async def test_bogus_command(chat_room):
         await c.send_json_to(["chat.join", 123, {"channel": str(chat_room.channel.id)}])
         response = await c.receive_json_from()
         response[2]["next_event_id"] = -1
-        response[2]["notification_pointer"] = -1
+        response[2]["unread_pointer"] = -1
         assert response == [
             "success",
             123,
@@ -348,7 +348,7 @@ async def test_bogus_command(chat_room):
                 "state": None,
                 "next_event_id": -1,
                 "members": [],
-                "notification_pointer": -1,
+                "unread_pointer": -1,
             },
         ]
         await c.receive_json_from()  # join notification
@@ -555,7 +555,7 @@ async def test_fetch_messages_after_join(chat_room):
         )
         response = await c1.receive_json_from()
         response[2]["next_event_id"] = -1
-        response[2]["notification_pointer"] = -1
+        response[2]["unread_pointer"] = -1
         assert response == [
             "success",
             123,
@@ -563,7 +563,7 @@ async def test_fetch_messages_after_join(chat_room):
                 "state": None,
                 "next_event_id": -1,
                 "members": [],
-                "notification_pointer": -1,
+                "unread_pointer": -1,
             },
         ]
         await c1.receive_json_from()  # join notification c1
@@ -670,14 +670,14 @@ async def test_send_message_to_other_client(chat_room):
         )
         response = await c1.receive_json_from()
         response[2]["next_event_id"] = -1
-        response[2]["notification_pointer"] = -1
+        response[2]["unread_pointer"] = -1
         assert response == [
             "success",
             123,
             {
                 "state": None,
                 "next_event_id": -1,
-                "notification_pointer": -1,
+                "unread_pointer": -1,
                 "members": [],
             },
         ]
@@ -765,14 +765,14 @@ async def test_no_messages_after_leave(chat_room):
         )
         response = await c1.receive_json_from()
         response[2]["next_event_id"] = -1
-        response[2]["notification_pointer"] = -1
+        response[2]["unread_pointer"] = -1
         assert response == [
             "success",
             123,
             {
                 "state": None,
                 "next_event_id": -1,
-                "notification_pointer": -1,
+                "unread_pointer": -1,
                 "members": [],
             },
         ]
@@ -855,7 +855,7 @@ async def test_no_message_after_unsubscribe(chat_room):
             {
                 "state": None,
                 "next_event_id": -1,
-                "notification_pointer": 0,
+                "unread_pointer": 0,
                 "members": [],
             },
         ]
@@ -916,7 +916,7 @@ async def test_no_message_after_unsubscribe(chat_room):
         ]
 
         response = await c2.receive_json_from()
-        assert response[0] == "chat.notification_pointers"
+        assert response[0] == "chat.unread_pointer"
 
         with pytest.raises(asyncio.TimeoutError):
             await c2.receive_json_from()
@@ -939,7 +939,7 @@ async def test_disconnect_is_no_leave(chat_room):
                     "state": None,
                     "members": [],
                     "next_event_id": 1,
-                    "notification_pointer": 0,
+                    "unread_pointer": 0,
                 },
             ]
             await c2.send_json_to(
@@ -982,7 +982,7 @@ async def test_last_disconnect_is_leave_in_volatile_channel(world, volatile_chat
                         "state": None,
                         "members": [],
                         "next_event_id": 1,
-                        "notification_pointer": 0,
+                        "unread_pointer": 0,
                     },
                 ]
 
@@ -1163,7 +1163,7 @@ async def test_unread_channels(world, chat_room):
 
         # c2 gets a notification pointer
         response = await c2.receive_json_from()  # receives notification pointer
-        assert response[0] == "chat.notification_pointers"
+        assert response[0] == "chat.unread_pointer"
         assert channel_id in response[1]
 
         # c1 sends a message
@@ -1214,7 +1214,7 @@ async def test_unread_channels(world, chat_room):
 
         # c2 gets a notification pointer
         response = await c2.receive_json_from()  # receives notification pointer
-        assert response[0] == "chat.notification_pointers"
+        assert response[0] == "chat.unread_pointer"
         assert response[1] == {channel_id: event_id + 1}
 
         with pytest.raises(asyncio.TimeoutError):
@@ -1280,7 +1280,7 @@ async def test_broadcast_read_channels(world, chat_room):
         assert c3.context["chat.channels"] == [
             {
                 "id": channel_id,
-                "notification_pointer": event_id,
+                "unread_pointer": event_id,
             }
         ]
         assert c3.context["chat.read_pointers"] == {channel_id: event_id}

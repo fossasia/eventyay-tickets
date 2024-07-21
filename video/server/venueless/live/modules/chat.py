@@ -5,8 +5,9 @@ from contextlib import suppress
 
 import asgiref
 import emoji
-from sentry_sdk import configure_scope
 
+from sentry_sdk import configure_scope
+from channels.db import database_sync_to_async
 from venueless.core.permissions import Permission
 from venueless.core.services.chat import ChatService, get_channel
 from venueless.core.services.user import get_public_users
@@ -21,6 +22,11 @@ from venueless.live.decorators import (
 from venueless.live.exceptions import ConsumerException
 from venueless.live.modules.base import BaseModule
 from venueless.storage.tasks import retrieve_preview_information
+from venueless.core.services.chat import (
+    ChatService,
+    extract_mentioned_user_ids,
+    get_channel,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -125,7 +131,7 @@ class ChatModule(BaseModule):
         return {
             "state": None,
             "next_event_id": (last_id) + 1,
-            "notification_pointer": await self.service.get_highest_nonmember_id_in_channel(
+            "unread_pointer": await self.service.get_highest_nonmember_id_in_channel(
                 self.channel_id
             ),
             "members": await self.service.get_channel_users(
@@ -311,6 +317,9 @@ class ChatModule(BaseModule):
             )
             tr.sadd(f"chat:unread.notify:{self.channel_id}", str(self.consumer.user.id))
             await tr.execute()
+        await self.service.remove_notifications(
+            self.consumer.user.id, self.channel_id, body.get("id")
+        )
         await self.consumer.send_success()
         await self.consumer.channel_layer.group_send(
             GROUP_USER.format(id=self.consumer.user.id),
@@ -329,10 +338,18 @@ class ChatModule(BaseModule):
                     k.decode(): int(v.decode()) for k, v in redis_read.items()
                 }
             await self.consumer.send_json(["chat.read_pointers", read_pointers])
+        notification_counts = await database_sync_to_async(
+            self.service.get_notification_counts
+        )(self.consumer.user.id)
+        await self.consumer.send_json(["chat.notification_counts", notification_counts])
 
-    @event("notification_pointers")
-    async def publish_notification_pointers(self, body):
-        await self.consumer.send_json(["chat.notification_pointers", body.get("data")])
+    @event("unread_pointers")
+    async def publish_unread_pointers(self, body):
+        await self.consumer.send_json(["chat.unread_pointers", body.get("data")])
+
+    @event("notification")
+    async def publish_notification(self, body):
+        await self.consumer.send_json(["chat.notification", body.get("data")])
 
     @command("send")
     @channel_action(
@@ -429,20 +446,84 @@ class ChatModule(BaseModule):
         # Unread notifications
         async with aredis() as redis:
 
-            async def _notify_users(users):
+            async def _publish_new_pointers(users):
                 for user in users:
-                    if user.decode() == str(self.consumer.user.id):
+                    if user == str(self.consumer.user.id):
                         continue
                     await self.consumer.channel_layer.group_send(
                         GROUP_USER.format(id=user.decode()),
                         {
-                            "type": "chat.notification_pointers",
+                            "type": "chat.unread_pointers",
                             "data": {self.channel_id: event["event_id"]},
                         },
+                    )
+            async def _notify_users(users):
+                users = [u for u in users if u != str(self.consumer.user.id)]
+                await self.service.store_notification(event["event_id"], users)
+                for user in users:
+                    await self.consumer.channel_layer.group_send(
+                        GROUP_USER.format(id=user),
+                        {
+                            "type": "chat.notification",
+                            "data": {
+                                "event": event,
+                                "sender": self.consumer.user.serialize_public(
+                                    trait_badges_map=self.consumer.world.config.get(
+                                        "trait_badges_map"
+                                    )
+                                ),
+                            },
+                        },
+                    )
+
+            mentioned_users = set()
+            if not body.get("replaces"):  # no notifications for edits:
+                # Handle mentioned users. We only handle them in rooms, because in DMs everyone is notified anyways.
+                if content.get("type") == "text":
+                    # Parse all @uuid mentions
+                    mentioned_users = extract_mentioned_user_ids(
+                        content.get("body", "")
                     )
 
             if self.channel.room:
                 # Normal rooms, possibly big crowds
+                if mentioned_users and len(mentioned_users) < 50:  # prevent abuse
+                    # Filter to people who joined this channel
+                    filtered_mentioned_users = await self.service.filter_mentions(
+                        self.channel,
+                        mentioned_users,
+                        include_all_permitted=self.module_config.get("volatile", False),
+                    )
+                    if mentioned_users - filtered_mentioned_users:
+                        await self.consumer.send_json(
+                            [
+                                "chat.mention_warning",
+                                {
+                                    "channel": self.channel_id,
+                                    "event_id": event["event_id"],
+                                    "missed_users": await get_public_users(
+                                        self.consumer.world.id,
+                                        ids=list(
+                                            mentioned_users - filtered_mentioned_users
+                                        ),
+                                        include_admin_info=await self.consumer.world.has_permission_async(
+                                            user=self.consumer.user,
+                                            permission=Permission.WORLD_USERS_MANAGE,
+                                        ),
+                                        trait_badges_map=self.consumer.world.config.get(
+                                            "trait_badges_map"
+                                        ),
+                                    ),
+                                },
+                            ]
+                        )
+
+                    mentioned_users = filtered_mentioned_users
+                    if mentioned_users:
+                        await _notify_users(mentioned_users)
+
+                # For regular unread notifications, we pop user IDs from the list of users to notify, because once
+                # they've been notified they don't need a notification again until they sent a new read pointer.
                 # We pop user IDs from the list of users to notify, because once they've been notified they don't need a
                 # notification again until they sent a new read pointer.
                 batch_size = 100
@@ -450,14 +531,44 @@ class ChatModule(BaseModule):
                     users = await redis.spop(
                         f"chat:unread.notify:{self.channel_id}", 100
                     )
-                    await _notify_users(users)
+                    await _publish_new_pointers(users)
 
                     if len(users) < batch_size:
                         break
             else:
                 # DMs
-                users = await redis.smembers(f"chat:unread.notify:{self.channel_id}")
-                await _notify_users(users)
+                # In DMs, notify everyone.
+                if not body.get("replaces"):  # no notifications for edits:
+                    users = {
+                        u.decode()
+                        for u in await redis.smembers(
+                            f"chat:unread.notify:{self.channel_id}"
+                        )
+                    }
+                    await _publish_new_pointers(users)
+                    await _notify_users(users)
+
+                    if mentioned_users - users:
+                        await self.consumer.send_json(
+                            [
+                                "chat.mention_warning",
+                                {
+                                    "channel": self.channel_id,
+                                    "event_id": event["event_id"],
+                                    "missed_users": await get_public_users(
+                                        self.consumer.world.id,
+                                        ids=list(mentioned_users - users),
+                                        include_admin_info=await self.consumer.world.has_permission_async(
+                                            user=self.consumer.user,
+                                            permission=Permission.WORLD_USERS_MANAGE,
+                                        ),
+                                        trait_badges_map=self.consumer.world.config.get(
+                                            "trait_badges_map"
+                                        ),
+                                    ),
+                                },
+                            ]
+                        )
 
         if content.get("type") == "text":
             match = re.search(r"(?P<url>https?://[^\s]+)", content.get("body"))
@@ -522,6 +633,12 @@ class ChatModule(BaseModule):
         user_profiles_required = {data["sender"]}
         for uids in data["reactions"].values():
             user_profiles_required |= set(uids)
+
+        if data["content"].get("type") == "text":
+            user_profiles_required |= extract_mentioned_user_ids(
+                data["content"].get("body", "")
+            )
+            
         user_profiles_required -= self.users_known_to_client
         data["users"] = {}
 

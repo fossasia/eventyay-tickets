@@ -12,18 +12,19 @@ from venueless.routing import application
 
 
 @asynccontextmanager
-async def world_communicator(client_id):
+async def world_communicator(client_id=None):
     communicator = LoggingCommunicator(application, "/ws/world/sample/")
     await communicator.connect()
-    await communicator.send_json_to(["authenticate", {"client_id": client_id}])
-    response = await communicator.receive_json_from()
-    assert response[0] == "authenticated", response
-    communicator.context = response[1]
-    assert "world.config" in response[1], response
-    await communicator.send_json_to(
-        ["user.update", 123, {"profile": {"display_name": client_id}}]
-    )
-    await communicator.receive_json_from()
+    if client_id:
+        await communicator.send_json_to(["authenticate", {"client_id": client_id}])
+        response = await communicator.receive_json_from()
+        assert response[0] == "authenticated", response
+        communicator.context = response[1]
+        assert "world.config" in response[1], response
+        await communicator.send_json_to(
+            ["user.update", 123, {"profile": {"display_name": client_id}}]
+        )
+        await communicator.receive_json_from()
     try:
         yield communicator
     finally:
@@ -85,7 +86,7 @@ async def test_start_direct_channel(world):
         response = await c1.receive_json_from()
         assert "success" == response[0]
         assert "id" in response[2]
-        assert "notification_pointer" in response[2]
+        assert "unread_pointer" in response[2]
         assert "state" in response[2]
         assert "a" in {a["profile"]["display_name"] for a in response[2]["members"]}
         assert "b" in {a["profile"]["display_name"] for a in response[2]["members"]}
@@ -506,7 +507,8 @@ async def test_send_if_blocked_by_user(world):
 
         await c1.receive_json_from()  # chat event
         await c2.receive_json_from()  # channel list
-        await c2.receive_json_from()  # new notification pointer
+        await c2.receive_json_from()  # new unread pointer
+        await c2.receive_json_from()  # new notificatoin counts
 
         await c2.send_json_to(
             [
@@ -702,9 +704,11 @@ async def test_hide_and_reappear(world):
         cl = await c2.receive_json_from()  # channel list
         assert channel in [c["id"] for c in cl[1]["channels"]]
         await c2.receive_json_from()  # notification pointer
+        await c2.receive_json_from()  # unread pointer
 
         await c2b.receive_json_from()  # channel list
-        await c2b.receive_json_from()  # notification pointer
+        await c2b.receive_json_from()  # notification counts
+        await c2b.receive_json_from()  # unread pointer
 
         await c2.send_json_to(
             [
@@ -787,3 +791,208 @@ async def test_send_if_silenced(world):
         response = await c1.receive_json_from()
         assert "error" == response[0]
         assert "chat.denied" == response[2]["code"]
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_notification_contains_content_and_persists(world):
+    world.trait_grants["participant"] = []
+    await database_sync_to_async(world.save)()
+    async with world_communicator(client_id="a") as c1, world_communicator(
+        client_id="b"
+    ) as c2:
+        channel = await _setup_dms(c1, c2)
+
+        # First message
+        await c1.send_json_to(
+            [
+                "chat.send",
+                123,
+                {
+                    "event_type": "channel.message",
+                    "content": {"type": "text", "body": "Hello world"},
+                    "channel": channel,
+                },
+            ]
+        )
+        response = await c1.receive_json_from()
+        assert "success" == response[0]
+
+        resp = await c1.receive_json_from()
+        assert "chat.event" == resp[0]
+
+        resp = await c2.receive_json_from()
+        assert "chat.channels" == resp[0]
+
+        resp = await c2.receive_json_from()
+        assert "chat.unread_pointers" == resp[0]
+
+        resp = await c2.receive_json_from()
+        assert "chat.notification" == resp[0]
+        assert "a" == resp[1]["sender"]["profile"]["display_name"]
+        assert channel == resp[1]["event"]["channel"]
+        assert "Hello world" == resp[1]["event"]["content"]["body"]
+
+        # Second message
+        await c1.send_json_to(
+            [
+                "chat.send",
+                123,
+                {
+                    "event_type": "channel.message",
+                    "content": {"type": "text", "body": "This is great"},
+                    "channel": channel,
+                },
+            ]
+        )
+        response = await c1.receive_json_from()
+        assert "success" == response[0]
+
+        resp = await c1.receive_json_from()
+        assert "chat.event" == resp[0]
+
+        resp = await c2.receive_json_from()
+        assert "chat.unread_pointers" == resp[0]
+
+        resp = await c2.receive_json_from()
+        assert "chat.notification" == resp[0]
+        assert "a" == resp[1]["sender"]["profile"]["display_name"]
+        assert channel == resp[1]["event"]["channel"]
+        assert "This is great" == resp[1]["event"]["content"]["body"]
+
+    async with world_communicator() as c2:
+        await c2.send_json_to(["authenticate", {"client_id": "b"}])
+        response = await c2.receive_json_from()
+        assert response[0] == "authenticated"
+        assert response[1]["chat.notification_counts"] == {channel: 2}
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_notification_sync_read_state_across_clients(world):
+    world.trait_grants["participant"] = []
+    await database_sync_to_async(world.save)()
+    async with world_communicator(client_id="a") as c1, world_communicator(
+        client_id="b"
+    ) as c2, world_communicator() as c2b:
+        channel = await _setup_dms(c1, c2)
+
+        await c2b.send_json_to(["authenticate", {"client_id": "b"}])
+        response = await c2b.receive_json_from()
+        assert response[0] == "authenticated"
+
+        # First message
+        await c1.send_json_to(
+            [
+                "chat.send",
+                123,
+                {
+                    "event_type": "channel.message",
+                    "content": {"type": "text", "body": "Hello world"},
+                    "channel": channel,
+                },
+            ]
+        )
+        response = await c1.receive_json_from()
+        assert "success" == response[0]
+
+        resp = await c1.receive_json_from()
+        assert "chat.event" == resp[0]
+
+        resp = await c2.receive_json_from()
+        assert "chat.channels" == resp[0]
+        resp = await c2b.receive_json_from()
+        assert "chat.channels" == resp[0]
+
+        resp = await c2.receive_json_from()
+        assert "chat.unread_pointers" == resp[0]
+        resp = await c2b.receive_json_from()
+        assert "chat.unread_pointers" == resp[0]
+
+        resp = await c2.receive_json_from()
+        assert "chat.notification" == resp[0]
+        resp = await c2b.receive_json_from()
+        assert "chat.notification" == resp[0]
+        event_id1 = resp[1]["event"]["event_id"]
+
+        # Second message
+        await c1.send_json_to(
+            [
+                "chat.send",
+                123,
+                {
+                    "event_type": "channel.message",
+                    "content": {"type": "text", "body": "This is great"},
+                    "channel": channel,
+                },
+            ]
+        )
+        response = await c1.receive_json_from()
+        assert "success" == response[0]
+
+        resp = await c1.receive_json_from()
+        assert "chat.event" == resp[0]
+
+        resp = await c2.receive_json_from()
+        assert "chat.unread_pointers" == resp[0]
+        resp = await c2b.receive_json_from()
+        assert "chat.unread_pointers" == resp[0]
+
+        resp = await c2.receive_json_from()
+        assert "chat.notification" == resp[0]
+        resp = await c2b.receive_json_from()
+        assert "chat.notification" == resp[0]
+        event_id2 = resp[1]["event"]["event_id"]
+
+        await c2.send_json_to(
+            [
+                "chat.mark_read",
+                123,
+                {
+                    "channel": channel,
+                    "id": event_id1,
+                },
+            ]
+        )
+        await c2.receive_json_from()  # success
+
+        response = await c2.receive_json_from()  # receives notification counter
+        assert response[0] == "chat.notification_counts"
+        assert response[1] == {channel: 1}
+
+        response = await c2b.receive_json_from()  # receives unread pointer
+        assert response[0] == "chat.read_pointers"
+        assert response[1] == {channel: event_id1}
+        response = await c2b.receive_json_from()  # receives notification counter
+        assert response[0] == "chat.notification_counts"
+        assert response[1] == {channel: 1}
+
+        await c2b.send_json_to(
+            [
+                "chat.mark_read",
+                123,
+                {
+                    "channel": channel,
+                    "id": event_id2,
+                },
+            ]
+        )
+        await c2b.receive_json_from()  # success
+
+        response = await c2b.receive_json_from()  # receives notification counter
+        assert response[0] == "chat.notification_counts"
+        assert response[1] == {}
+
+        response = await c2.receive_json_from()  # receives unread pointer
+        assert response[0] == "chat.read_pointers"
+        assert response[1] == {channel: event_id2}
+        response = await c2.receive_json_from()  # receives notification counter
+        assert response[0] == "chat.notification_counts"
+        assert response[1] == {}
+
+    async with world_communicator() as c2:
+        await c2.send_json_to(["authenticate", {"client_id": "b"}])
+        response = await c2.receive_json_from()
+        assert response[0] == "authenticated"
+        assert response[1]["chat.notification_counts"] == {}
+        
