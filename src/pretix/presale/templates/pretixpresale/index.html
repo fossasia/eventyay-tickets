@@ -2,24 +2,45 @@
 {% load bootstrap3 %}
 {% load i18n %}
 {% load static %}
+
 {% block content %}
-    <div class="form-signin" action="" method="post">
-        <h3>{% trans "Hello!" %}</h3>
+    <div class="form-signin">
+        <h2>{% trans "WELCOME TO EVENTYAY-TICKETS" %}</h2>
         <p>
-            {% blocktrans trimmed with a_attr="href='https://eventyay.com'" %}
-                This is a self-hosted installation of <a {{ a_attr }}>eventyay, your open source event solution.</a>.
-            {% endblocktrans %}
+            {% trans "This is a self-hosted installation of" %}
+            <a href="https://eventyay.com">{% trans "eventyay, your open source event solution." %}</a>
+            <p> {% trans "Eventyay-Tickets is the one of the EVENTYAY-FOSSASIA PLATFORM for event and meeting Management." %}
+            </p>
+           </p>
+        <p>
+            {% trans "If you're looking to buy a ticket, you need to follow a direct link to an event or organizer profile." %}
         </p>
         <p>
-            {% blocktrans trimmed %}
-                If you're looking to buy a ticket, you need to follow a direct link to an event or organizer profile.
-            {% endblocktrans %}
+            {% trans "If you're looking to configure this installation, please" %}
+            <a href="/control/">{% trans "head over here" %}</a>.
         </p>
-        <p>
-            {% blocktrans trimmed with a_attr="href='/control/'" %}
-                If you're looking to configure this installation, please <a {{ a_attr }}>head over here</a>.
-            {% endblocktrans %}
-        </p>
-        <p>{% trans "Enjoy!" %}</p>
+        <div class="additional-info">
+            <h3>{% trans "Dashboard Overview" %}</h3>
+            <p>
+                {% trans "Welcome to your event management dashboard. Here you can find an overview of your events, manage tickets, and configure settings." %}
+            </p>
+            <ul>
+                <li><a href="https://github.com/fossasia/eventyay-talk">{% trans "Manage Events" %}</a></li>
+                <li><a href="https://github.com/fossasia/eventyay-tickets">{% trans "Manage Tickets" %}</a></li>
+                <li><a href="https://github.com/fossasia/eventyay-video">{% trans "Manage Streaming" %}</a></li>
+                <li><a href="#settings">{% trans "Configure Settings" %}</a></li>
+                <li><a href="#support">{% trans "Support" %}</a></li>
+            </ul>
+        </div>
+
+        <div class="resources">
+            <h4>{% trans "Resources" %}</h4>
+            <p>
+                {% trans "For more detailed information and configuration options, please refer to the" %}
+                <a href="https://eventyay.com/docs/">{% trans "documentation" %}</a>
+                {% trans "or" %}
+                <a href="mailto:support@eventyay.com">{% trans "contact support" %}</a>.
+            </p>
+        </div>
     </div>
 {% endblock %}

@@ -30,6 +30,8 @@ from pretix.helpers.webauthn import generate_challenge
 
 logger = logging.getLogger(__name__)
 
+def user_dashboard(request):
+    return render(request,'pretixcontrol/auth/index.html')
 
 def process_login(request, user, keep_logged_in):
     """
@@ -439,3 +441,7 @@ class Login2FAView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
+    
+
+def ComponentsView(request):
+    return render(request, 'pretixcontrol/dashboard/components.html')

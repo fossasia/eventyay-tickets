@@ -1,0 +1,33 @@
+{% extends "pretixcontrol/auth/base.html" %}
+{% load bootstrap3 %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+    <div class="form-signin">
+        <h2>{% trans "WELCOME TO EVENTYAY-TICKETS" %}</h2>
+        <!-- Additional Content -->
+        <div class="additional-info">
+            <h1>{% trans "Eventyay-Components" %}</h1>
+            <p>
+                {% trans "Welcome to your event management dashboard. Here you can find an overview of your events, manage tickets, and configure settings." %}
+            </p>
+            <ul>
+                <li><a href="https://eventyay">{% trans "Manage Events" %}</a></li>
+                <li><a href="#tickets">{% trans "Manage Tickets" %}</a></li>
+                <li><a href="#settings">{% trans "Manage Streaming" %}</a></li>
+                <li><a href="#support">{% trans "Support" %}</a></li>
+            </ul>
+        </div>
+
+        <div class="resources">
+            <h4>{% trans "Resources" %}</h4>
+            <p>
+                {% trans "For more detailed information and configuration options, please refer to the" %}
+                <a href="https://eventyay.com/docs/">{% trans "documentation" %}</a>
+                {% trans "or" %}
+                <a href="mailto:support@eventyay.com">{% trans "contact support" %}</a>.
+            </p>
+        </div>
+    </div>
+{% endblock %}
