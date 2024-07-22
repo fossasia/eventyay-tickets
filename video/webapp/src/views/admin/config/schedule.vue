@@ -7,30 +7,30 @@
 		.ui-form-body(v-if="config")
 			bunt-select(name="source", label="Schedule source", v-model="source", :options="sourceOptions")
 			template(v-if="source === 'pretalx'")
-				p To use pretalx for your event, enter the domain of the pretalx server you use and the short form name of your event. We'll then pull in the schedule automatically and keep it updated. You must be using pretalx version 2 or later.
-				bunt-input(name="domain", label="pretalx domain", v-model="config.pretalx.domain", placeholder="e.g. https://pretalx.com/", hint="must have the format https://…/", :validation="$v.config.pretalx.domain")
-				bunt-input(name="event", label="pretalx event slug", v-model="config.pretalx.event", placeholder="e.g. democon")
-				h2 Pretalx Connection
+				p To use eventyay-talk for your event, enter the domain of the eventyay-talk server you use and the short form name of your event. We'll then pull in the schedule automatically and keep it updated.
+				bunt-input(name="domain", label="eventyay-talk domain", v-model="config.pretalx.domain", placeholder="e.g. https://wikimania-dev.eventyay.com/", hint="must have the format https://…/", :validation="$v.config.pretalx.domain")
+				bunt-input(name="event", label="eventyay-talk event slug", v-model="config.pretalx.event", placeholder="e.g. wikimania")
+				h2 Eventyay-talk Connection
 				template(v-if="config.pretalx.connected")
-					p Your pretalx instance has successfully connected to venueless.
-					p(v-if="lastPush") Last time pretalx pushed a new schedule version: {{ lastPush }}
+					p Your eventyay-talk instance has successfully connected to system.
+					p(v-if="lastPush") Last time eventyay-talk pushed a new schedule version: {{ lastPush }}
 				template(v-else)
-					p To enable automatic schedule update pushes from pretalx to venueless, activate the pretalx-venueless plugin and complete the connection procedure.
-					h3 Step 1: Install and activate the pretalx-venueless plugin
-					.pretalx-status(v-if="isPretalxPluginInstalled") pretalx-venueless plugin has been detected!
+					p To enable automatic schedule update pushes from eventyay-talk to system, activate the eventyay-talk-video plugin and complete the connection procedure.
+					h3 Step 1: Install and activate the eventyay-talk-video plugin
+					.pretalx-status(v-if="isPretalxPluginInstalled") eventyay-talk-video plugin has been detected!
 					.pretalx-status.plugin-not-installed(v-if="!isPretalxPluginInstalled")
-						| pretalx-venueless plugin not installed/activated or domain + event not a valid pretalx instance.
+						| eventyay-talk-video plugin not installed/activated or domain + event not a valid eventyay-talk instance.
 						br
-						| Please install and activate the plugin in #[a(:href="`${pretalxDomain}orga/event/${config.pretalx.event}/settings/plugins`", target="_blank") your pretalx event plugin settings].
-					h3 Step 2: Connect pretalx to venueless
-					.pretalx-status(v-if="config.pretalx.connected") Pretalx-venueless connection active!
-					.pretalx-status.not-connected(v-else) Pretalx is not connected to venueless.
-					bunt-button#btn-pretalx-connect(:disabled="!isPretalxPluginInstalled", :loading="connecting", @click="startPretalxConnect") {{ !config.pretalx.connected ? 'Connect to pretalx' : 'Reconnect to pretalx' }}
+						| Please install and activate the plugin in #[a(:href="`${pretalxDomain}orga/event/${config.pretalx.event}/settings/plugins`", target="_blank") your eventyay-talk event plugin settings].
+					h3 Step 2: Connect eventyay-talk to system
+					.pretalx-status(v-if="config.pretalx.connected") Eventyay-talk-video connection active!
+					.pretalx-status.not-connected(v-else) Eventyay-talk is not connected to system.
+					bunt-button#btn-pretalx-connect(:disabled="!isPretalxPluginInstalled", :loading="connecting", @click="startPretalxConnect") {{ !config.pretalx.connected ? 'Connect to eventyay-talk' : 'Reconnect to eventyay-talk' }}
 			template(v-else-if="source === 'url'")
-				p To automatically load the schedule from an external system, enter an URL here. Note that the URL must be a JSON file compliant with the pretalx schedule widget API version 2.
+				p To automatically load the schedule from an external system, enter an URL here. Note that the URL must be a JSON file compliant with the eventyay-talk schedule widget API version 2.
 				bunt-input(name="url", label="JSON URL", v-model="config.pretalx.url", placeholder="e.g. https://website.com/event.json", :validation="$v.config.pretalx.url")
 			template(v-else-if="source === 'file'")
-				p If you don't use pretalx, you can upload your schedule as a Microsoft Excel file (XLSX) with a specific setup.
+				p If you don't use eventyay-talk, you can upload your schedule as a Microsoft Excel file (XLSX) with a specific setup.
 				p
 					a(href="/schedule_ex_en.xlsx", target="_blank") Download English sample file
 					| {{ " / " }}
@@ -71,7 +71,7 @@ export default {
 		sourceOptions () {
 			const sourceOptions = [
 				{id: null, label: 'No Schedule'},
-				{id: 'pretalx', label: 'Pretalx'},
+				{id: 'pretalx', label: 'Eventyay-talk'},
 				{id: 'file', label: 'File Upload'},
 				{id: 'url', label: 'External URL'},
 			]

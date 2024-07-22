@@ -1,5 +1,6 @@
 import logging
 from io import BytesIO
+import re
 
 from asgiref.sync import async_to_sync
 from django.core.exceptions import PermissionDenied, ValidationError
@@ -33,7 +34,8 @@ class UploadMixin:
 
     @cached_property
     def world(self):
-        return get_object_or_404(World, domain=self.request.headers["Host"])
+        world_domain = re.sub(r":\d+$", "", self.request.get_host())
+        return get_object_or_404(World, domain=world_domain)
 
     @cached_property
     def user(self):

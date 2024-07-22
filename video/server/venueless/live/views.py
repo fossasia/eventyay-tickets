@@ -41,7 +41,8 @@ sh = SourceCache()
 
 class ManifestView(View):
     def get(self, request, *args, **kwargs):
-        world = get_object_or_404(World, domain=request.headers["Host"])
+        world_domain = re.sub(r":\d+$", "", request.get_host())
+        world = get_object_or_404(World, domain=world_domain)
         # TODO: Allow to parametrize colors and logos
         source = {
             "name": world.title,
@@ -83,7 +84,8 @@ class AppView(View):
     def get(self, request, *args, **kwargs):
         # Is this an anonymous invite to a room?
         short_host = self._has_separate_short_domain
-        if short_host and request.headers["Host"] == short_host:
+        world_domain = re.sub(r":\d+$", "", request.get_host())
+        if short_host and world_domain == short_host:
             # The sysadmin has set up a separate domain for short URLs
             if request.path == "/":
                 # This must be a 200, not a 302 or 404, so the domain is considered "active"
@@ -120,14 +122,13 @@ class AppView(View):
                 # We do not show a 404 since theoretically this could be a vlaid path recognized by
                 # the frontend router.
                 pass
-
         try:
-            world = get_object_or_404(World, domain=request.headers["Host"])
+            world = get_object_or_404(World, domain=world_domain)
         except OperationalError:
             # We use connection pooling, so if the database server went away since the last connection
             # terminated, Django won't know and we'll get an OperationalError. We just silently re-try
             # once, since Django will then use a new connection.
-            world = get_object_or_404(World, domain=request.headers["Host"])
+            world = get_object_or_404(World, domain=world_domain)
         source = sh.source
         source = re.sub(
             "<title>[^<]*</title>",
@@ -144,7 +145,7 @@ class AppView(View):
                             "base": reverse("api:root", kwargs={"world_id": world.id}),
                             "socket": "{}://{}/ws/world/{}/".format(
                                 settings.WEBSOCKET_PROTOCOL,
-                                request.headers["Host"],
+                                request.get_host(),
                                 world.pk,
                             ),
                             "upload": reverse("storage:upload"),
@@ -194,7 +195,8 @@ class HealthcheckView(View):
 @method_decorator(cache_page(1 if settings.DEBUG else 60), name="dispatch")
 class CustomCSSView(View):
     def get(self, request, *args, **kwargs):
-        world = get_object_or_404(World, domain=request.headers["Host"])
+        world_domain = re.sub(r":\d+$", "", request.get_host())
+        world = get_object_or_404(World, domain=world_domain)
         source = world.config.get("theme", {}).get("css", "")
         return HttpResponse(source, content_type="text/css")
 
@@ -206,13 +208,15 @@ class BBBCSSView(TemplateView):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data()
-        ctx["world"] = get_object_or_404(World, domain=self.request.headers["Host"])
+        world_domain = re.sub(r":\d+$", "", self.request.get_host())
+        ctx["world"] = get_object_or_404(World, domain=world_domain)
         return ctx
 
 
 class ShortTokenView(View):
     def get(self, request, token):
-        world = get_object_or_404(World, domain=self.request.headers["Host"])
+        world_domain = re.sub(r":\d+$", "", self.request.get_host())
+        world = get_object_or_404(World, domain=world_domain)
         try:
             st = ShortToken.objects.get(short_token=token, world=world)
             return redirect(f"/#token={st.long_token}")
@@ -229,7 +233,8 @@ class FeedbackView(View):
 
     @cached_property
     def world(self):
-        return get_object_or_404(World, domain=self.request.headers["Host"])
+        world_domain = re.sub(r":\d+$", "", self.request.get_host())
+        return get_object_or_404(World, domain=world_domain)
 
     def post(self, request, *args, **kwargs):
         data = json.loads(request.body)

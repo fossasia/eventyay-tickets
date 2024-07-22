@@ -1,9 +1,11 @@
+import logging
 from contextlib import suppress
 from urllib.parse import urlparse
 
 from asgiref.sync import async_to_sync
 from django.core import exceptions
 from django.db import transaction
+from django.shortcuts import get_object_or_404
 from django.utils.timezone import now
 from rest_framework import viewsets
 from rest_framework.decorators import api_view, permission_classes
@@ -20,7 +22,9 @@ from venueless.api.serializers import RoomSerializer, WorldSerializer
 from venueless.core.models import Channel, User
 from venueless.core.services.world import notify_schedule_change, notify_world_change
 
-from ..core.models import Room
+from ..core.models import Room, World
+
+logger = logging.getLogger(__name__)
 
 
 class RoomViewSet(viewsets.ModelViewSet):
@@ -80,6 +84,26 @@ class WorldView(APIView):
             lambda: async_to_sync(notify_world_change)(request.world.id)
         )
         return Response(serializer.data)
+
+
+class WorldThemeView(APIView):
+
+    permission_classes = []
+
+    def get(self, request, **kwargs):
+        """
+        Retrieve theme config of a world
+        @param request: request obj
+        @param kwargs: world_id
+        @return: theme data of a world
+        """
+        try:
+            world = get_object_or_404(World, id=kwargs["world_id"])
+            return Response(WorldSerializer(world).data['config']['theme'])
+        except KeyError:
+            logger.error("error happened when trying to get theme data of world: %s", kwargs["world_id"])
+            return Response("error happened when trying to get theme data of world: " + kwargs["world_id"], status=503)
+
 
 
 def get_domain(path):

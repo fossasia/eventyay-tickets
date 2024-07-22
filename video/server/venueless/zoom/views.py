@@ -1,5 +1,6 @@
 import datetime
 from calendar import timegm
+import re
 
 import jwt
 from django.conf import settings
@@ -53,7 +54,8 @@ def get_closest_zoom_lang(world):
 class ZoomViewMixin:
     @cached_property
     def world(self):
-        w = get_object_or_404(World, domain=self.request.headers["Host"])
+        world_domain = re.sub(r":\d+$", "", self.request.get_host())
+        w = get_object_or_404(World, domain=world_domain)
         if not settings.DEBUG and "zoom" not in w.feature_flags:
             raise PermissionDenied("Feature disabled")
         return w

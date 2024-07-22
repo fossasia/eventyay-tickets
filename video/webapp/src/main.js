@@ -24,6 +24,8 @@ import i18n, { init as i18nInit } from 'i18n'
 import { emojiPlugin } from 'lib/emoji'
 import features from 'features'
 import config from 'config'
+import {computeForegroundSidebarColor, getThemeConfig} from 'theme'
+import theme from 'theme'
 
 async function init ({token, inviteToken}) {
 	Vue.config.productionTip = false
@@ -36,14 +38,17 @@ async function init ({token, inviteToken}) {
 	Vue.use(emojiPlugin)
 	await i18nInit(Vue)
 	Vue.prototype.$features = features
-
+	try {
+		await setThemeConfig()
+	} catch (error) {
+		console.error("error happened when trying to load theme config: ", error)
+	}
 	const app = new Vue({
 		router,
 		store,
 		render: h => h('router-view')
 	}).$mount('#app')
 	window.vapp = app
-
 	store.commit('setUserLocale', i18n.resolvedLanguage)
 	store.dispatch('updateUserTimezone', localStorage.userTimezone || moment.tz.guess())
 
@@ -111,3 +116,12 @@ navigator.serviceWorker?.getRegistrations().then((registrations) => {
 		registration.unregister()
 	}
 })
+
+async function setThemeConfig(){
+	const themeData = await getThemeConfig()
+	theme.logo = themeData.logo
+	theme.identicons = themeData.identicons
+	theme.colors = themeData.colors
+	theme.streamOfflineImage = themeData.streamOfflineImage
+	computeForegroundSidebarColor(themeData.colors)
+}

@@ -11,4 +11,5 @@ urlpatterns = [
     re_path("worlds/(?P<world_id>[^/]+)/schedule_update/?$", views.schedule_update),
     re_path("worlds/(?P<world_id>[^/]+)/delete_user/?$", views.delete_user),
     path("worlds/<str:world_id>/", include(world_router.urls)),
+    path("worlds/<str:world_id>/theme", views.WorldThemeView.as_view()),
 ]

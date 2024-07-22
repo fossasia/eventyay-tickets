@@ -1,4 +1,5 @@
 import io
+import re
 import logging
 from collections import Counter, defaultdict
 from datetime import timedelta
@@ -50,7 +51,8 @@ class GraphView(View):
 
     @cached_property
     def world(self):
-        return get_object_or_404(World, domain=self.request.headers["Host"])
+        world_domain = re.sub(r":\d+$", "", self.request.get_host())
+        return get_object_or_404(World, domain=world_domain)
 
     @cached_property
     def fig(self):
