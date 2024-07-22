@@ -8,15 +8,44 @@ from pretix.base.forms import SecretKeySettingsField, SettingsForm
 from pretix.base.settings import GlobalSettingsObject
 from pretix.base.signals import register_global_settings
 
+from django.conf import settings
+
 
 class GlobalSettingsForm(SettingsForm):
     auto_fields = [
-        'region'
+        'region',
+        'mail_from'
     ]
+
+
+    def _setting_default(self):
+        """
+            Load default email setting form .cfg file if not set
+        """
+        global_settings = self.obj.settings
+        if global_settings.get('smtp_port') is None or global_settings.get('smtp_port') == "":
+            self.obj.settings.set('smtp_port', settings.EMAIL_PORT)
+        if global_settings.get('smtp_host') is None or global_settings.get('smtp_host') == "":
+            self.obj.settings.set('smtp_host', settings.EMAIL_HOST)
+        if global_settings.get('smtp_username') is None or global_settings.get('smtp_username') == "":
+            self.obj.settings.set('smtp_username', settings.EMAIL_HOST_USER)
+        if global_settings.get('smtp_password') is None or global_settings.get('smtp_password') == "":
+            self.obj.settings.set('smtp_password', settings.EMAIL_HOST_PASSWORD)
+        if global_settings.get('smtp_use_tls') is None or global_settings.get('smtp_use_tls') == "":
+            self.obj.settings.set('smtp_use_tls', settings.EMAIL_USE_TLS)
+        if global_settings.get('smtp_use_ssl') is None or global_settings.get('smtp_use_ssl') == "":
+            self.obj.settings.set('smtp_use_ssl', settings.EMAIL_USE_SSL)
+        if global_settings.get('email_vendor') is None or global_settings.get('email_vendor') == "":
+            self.obj.settings.set('email_vendor', 'smtp')
 
     def __init__(self, *args, **kwargs):
         self.obj = GlobalSettingsObject()
+        self._setting_default()        
         super().__init__(*args, obj=self.obj, **kwargs)
+
+        smtp_select = [
+            ('sendgrid', _("SendGrid")),
+            ('smtp', _("SMTP"))]
 
         self.fields = OrderedDict(list(self.fields.items()) + [
             ('footer_text', I18nFormField(
@@ -58,6 +87,51 @@ class GlobalSettingsForm(SettingsForm):
                 required=False,
                 label=_("Leaflet tiles attribution"),
                 help_text=_("e.g. {sample}").format(sample='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors')
+            )),
+            ('email_vendor', forms.ChoiceField(
+                label=_("System Email"),
+                required=True,
+                widget=forms.RadioSelect,
+                choices=smtp_select,
+
+            )),
+            ('send_grid_api_key', forms.CharField(
+                required=False,
+                label=_("Sendgrid Token"),
+                widget=forms.TextInput(attrs={'placeholder': 'SG.xxxxxxxx'})
+            )),
+            ('smtp_host', forms.CharField(
+                label=_("Hostname"),
+                required=False,
+                widget=forms.TextInput(attrs={'placeholder': 'mail.example.org'})
+            )),
+            ('smtp_port', forms.IntegerField(
+                label=_("Port"),
+                required=False,
+                widget=forms.TextInput(attrs={'placeholder': 'e.g. 587, 465, 25, ...'})
+            )),
+            ('smtp_username', forms.CharField(
+                label=_("Username"),
+                widget=forms.TextInput(attrs={'placeholder': 'myuser@example.org'}),
+                required=False
+            )),
+            ('smtp_password', forms.CharField(
+                label=_("Password"),
+                required=False,
+                widget=forms.PasswordInput(attrs={
+                    'autocomplete': 'new-password'  # see https://bugs.chromium.org/p/chromium/issues/detail?id=370363#c7
+                }),
+            )),
+            ('smtp_use_tls', forms.BooleanField(
+                label=_("Use STARTTLS"),
+                help_text=_("Commonly enabled on port 587."),
+                required=False
+                
+            )),
+            ('smtp_use_ssl', forms.BooleanField(
+                label=_("Use SSL"),
+                help_text=_("Commonly enabled on port 465."),
+                required=False
             )),
         ])
         responses = register_global_settings.send(self)
