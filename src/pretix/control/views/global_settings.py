@@ -85,7 +85,7 @@ class RefundDetailView(AdministratorPermissionRequiredMixin, View):
         return JsonResponse({'data': p.info_data})
 
 
-class AdminiInformationView(AdministratorPermissionRequiredMixin, FormView):
+class AdminInformationView(AdministratorPermissionRequiredMixin, FormView):
     template_name = 'pretixcontrol/global_info.html'
     form_class = AdminInformationForm
 
@@ -99,4 +99,4 @@ class AdminiInformationView(AdministratorPermissionRequiredMixin, FormView):
         return super().form_invalid(form)
 
     def get_success_url(self):
-        return reverse('control:admin.information')
+        return reverse('control:global.information')
