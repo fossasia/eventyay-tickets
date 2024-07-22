@@ -40,16 +40,16 @@ const firstReadable = function (colors, background = '#FFF', threshold = 4.5) {
 	return best
 }
 
-const CLR_PRIMARY_TEXT = {LIGHT: Color('rgba(0, 0, 0, .87)'), DARK: Color('rgba(255, 255, 255, 1)')}
+const CLR_PRIMARY_TEXT = {LIGHT: Color('rgba(33, 133, 208, 1)'), DARK: Color('rgba(255, 255, 255, 1)')}
 const CLR_SECONDARY_TEXT = {LIGHT: Color('rgba(0, 0, 0, .54)'), DARK: Color('rgba(255, 255, 255, .7)')}
 const CLR_SECONDARY_TEXT_FALLBACK = {LIGHT: Color('rgba(0, 0, 0, .74)'), DARK: Color('rgba(255, 255, 255, .9)')}
 const CLR_DISABLED_TEXT = {LIGHT: Color('rgba(0, 0, 0, .38)'), DARK: Color('rgba(255, 255, 255, .5)')}
 const CLR_DIVIDERS = {LIGHT: Color('rgba(255, 255, 255, .63)'), DARK: Color('rgba(255, 255, 255, .63)')}
 
 const DEFAULT_COLORS = {
-	primary: '#673ab7',
-	sidebar: '#180044',
-	bbb_background: '#333333',
+	primary: '#2185d0',
+	sidebar: '#2185d0',
+	bbb_background: '#ffffff',
 }
 
 const DEFAULT_LOGO = {
@@ -115,4 +115,46 @@ export { themeVariables, colors, DEFAULT_COLORS, DEFAULT_LOGO, DEFAULT_IDENTICON
 
 export function computeForegroundColor (bgColor) {
 	return firstReadable([CLR_PRIMARY_TEXT.LIGHT, CLR_PRIMARY_TEXT.DARK], bgColor)
+}
+
+export function computeForegroundSidebarColor(colors) {
+	const configColors = {
+		primary: colors.primary,
+		sidebar: colors.sidebar,
+		bbb_background: colors.bbb_background,
+	}
+	const sbColors = Object.keys(DEFAULT_COLORS).reduce((acc, key) => (acc[key] = Color((configColors ?? DEFAULT_COLORS)[key]), acc), {})
+	sbColors.primaryDarken15 = sbColors.primary.darken(0.15)
+	sbColors.primaryDarken20 = sbColors.primary.darken(0.20)
+	sbColors.primaryAlpha60 = sbColors.primary.alpha(0.6)
+	sbColors.primaryAlpha50 = sbColors.primary.alpha(0.5)
+	sbColors.primaryAlpha18 = sbColors.primary.alpha(0.18)
+	sbColors.inputPrimaryBg = sbColors.primary
+	sbColors.inputPrimaryFg = firstReadable([CLR_PRIMARY_TEXT.LIGHT, CLR_PRIMARY_TEXT.DARK], sbColors.primary)
+	sbColors.inputPrimaryBgDarken = sbColors.primary.darken(0.15)
+	sbColors.inputSecondaryFg = sbColors.primary
+	sbColors.inputSecondaryFgAlpha = sbColors.primary.alpha(0.08)
+	sbColors.sidebarTextPrimary = firstReadable([CLR_PRIMARY_TEXT.LIGHT, CLR_PRIMARY_TEXT.DARK], sbColors.sidebar)
+	sbColors.sidebarTextSecondary = firstReadable([CLR_SECONDARY_TEXT.LIGHT, CLR_SECONDARY_TEXT_FALLBACK.LIGHT, CLR_SECONDARY_TEXT.DARK, CLR_SECONDARY_TEXT_FALLBACK.DARK], sbColors.sidebar)
+	sbColors.sidebarTextDisabled = firstReadable([CLR_DISABLED_TEXT.LIGHT, CLR_DISABLED_TEXT.DARK], sbColors.sidebar)
+	sbColors.sidebarActiveBg = firstReadable(['rgba(0, 0, 0, 0.08)', 'rgba(255, 255, 255, 0.4)'], sbColors.sidebar)
+	sbColors.sidebarActiveFg = firstReadable([CLR_PRIMARY_TEXT.LIGHT, CLR_PRIMARY_TEXT.DARK], sbColors.sidebar)
+	sbColors.sidebarHoverBg = firstReadable(['rgba(0, 0, 0, 0.12)', 'rgba(255, 255, 255, 0.3)'], sbColors.sidebar)
+	sbColors.sidebarHoverFg = firstReadable([CLR_PRIMARY_TEXT.LIGHT, CLR_PRIMARY_TEXT.DARK], sbColors.sidebar)
+
+
+	for (const [key, value] of Object.entries(sbColors)) {
+		themeVariables[`--clr-${kebabCase(key)}`] = value.string()
+	}
+}
+
+export async function getThemeConfig() {
+	const themeUrl = config.api.base + 'theme'
+	const response = await (await fetch(themeUrl, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json'
+		}
+	})).json()
+	return response
 }
