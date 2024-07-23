@@ -12,6 +12,7 @@
 	janus-call(v-else-if="room && module.type === 'call.janus'", ref="janus", :room="room", :module="module", :background="background", :size="background ? 'tiny' : 'normal'", :key="`janus-${room.id}`")
 	janus-channel-call(v-else-if="call", ref="janus", :call="call", :background="background", :size="background ? 'tiny' : 'normal'", :key="`call-${call.id}`", @close="$emit('close')")
 	.iframe-error(v-if="iframeError") {{ $t('MediaSource:iframe-error:text') }}
+	iframe#video-player-translation(v-if="languageIframeUrl", :src="languageIframeUrl", style="position: absolute; width: 50%; height: 100%; z-index: -1", frameborder="0", gesture="media", allow="autoplay; encrypted-media", allowfullscreen="true")
 </template>
 <script>
 // TODO functional component?
@@ -34,7 +35,10 @@ export default {
 	},
 	data () {
 		return {
-			iframeError: null
+			iframeError: null,
+			iframe: null, // Track the iframe element
+			languageAudioUrl: null, // URL for the selected language audio
+			languageIframeUrl: null // URL for the language iframe // Added languageIframeUrl to data
 		}
 	},
 	computed: {
@@ -63,7 +67,7 @@ export default {
 			handler (value, oldValue) {
 				if (isEqual(value, oldValue)) return
 				this.destroyIframe()
-				this.initializeIframe()
+				this.initializeIframe(false)
 			}
 		},
 		youtubeTransUrl(youtubeTransUrl) {
@@ -72,23 +76,25 @@ export default {
 			}
 			this.destroyIframe()
 			this.module.config.ytid = youtubeTransUrl
-			this.initializeIframe()
+			this.initializeIframe(false)
 		}
 	},
 	async mounted () {
 		if (!this.room) {
 			return
 		}
-		this.initializeIframe()
+		this.initializeIframe(false)
+		this.$root.$on('languageChanged', this.handleLanguageChange);
 	},
 	beforeDestroy () {
 		this.iframe?.remove()
 		if (api.socketState !== 'open') return
 		// TODO move to store?
 		if (this.room) api.call('room.leave', {room: this.room.id})
+		this.$root.$off('languageChanged', this.handleLanguageChange);
 	},
 	methods: {
-		async initializeIframe () {
+		async initializeIframe (mute) {
 			try {
 				let iframeUrl
 				let hideIfBackground = false
@@ -108,7 +114,7 @@ export default {
 						break
 					}
 					case 'livestream.youtube': {
-						iframeUrl = `https://www.youtube-nocookie.com/embed/${this.module.config.ytid}?${this.autoplay ? 'autoplay=1&' : ''}rel=0&showinfo=0`
+						iframeUrl = this.getYoutubeUrl(this.module.config.ytid, this.autoplay, mute)
 						break
 					}
 				}
@@ -134,6 +140,7 @@ export default {
 		},
 		destroyIframe () {
 			this.iframe?.remove()
+			this.iframe = null
 		},
 		isPlaying () {
 			if (this.call) {
@@ -152,6 +159,28 @@ export default {
 				return !!this.iframe
 			}
 			return true
+		},
+		handleLanguageChange(languageUrl) {
+			this.languageAudioUrl = languageUrl; // Set the audio source to the selected language URL
+			const mute = !!languageUrl; // Mute if language URL is present, otherwise unmute
+			this.destroyIframe();
+			this.initializeIframe(mute); // Initialize iframe with the appropriate mute state
+			// Set the language iframe URL when language changes
+			this.languageIframeUrl = this.getLanguageIframeUrl(languageUrl);
+		},
+		getYoutubeUrl(ytid, autoplay, mute) {
+			// Construct the autoplay parameter based on the input
+			const autoplayParam = autoplay ? 'autoplay=1&' : '';
+			// Construct the mute parameter based on the input
+			const muteParam = mute ? 'mute=1' : 'mute=0';
+			// Return the complete YouTube URL with the provided video ID, autoplay, and mute parameters
+			return `https://www.youtube-nocookie.com/embed/${ytid}?${autoplayParam}rel=0&showinfo=0&${muteParam}`;
+		},
+		// Added method to get the language iframe URL
+		getLanguageIframeUrl(languageUrl) {
+			// Checks if the languageUrl is not provided the retun null
+			if (!languageUrl) return null;
+			return `https://www.youtube.com/embed/${languageUrl}?enablejsapi=1&autoplay=1&modestbranding=1&loop=1&controls=0&disablekb=1&languageUrl=${languageUrl}`;
 		}
 	}
 }

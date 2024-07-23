@@ -37,7 +37,8 @@ export default new Vuex.Store({
 		autoplayUserSetting: !localStorage.disableAutoplay ? null : localStorage.disableAutoplay !== 'true',
 		stageStreamCollapsed: false,
 		now: moment(),
-		unblockedIframeDomains: new Set(JSON.parse(localStorage.unblockedIframeDomains || '[]'))
+		unblockedIframeDomains: new Set(JSON.parse(localStorage.unblockedIframeDomains || '[]')),
+		youtubeTransUrl: null
 	},
 	getters: {
 		hasPermission (state) {
@@ -83,6 +84,9 @@ export default new Vuex.Store({
 		},
 		updateNow (state) {
 			state.now = moment()
+		},
+		updateYoutubeTransAudio(state, youtubeTransUrl){
+			state.youtubeTransUrl = youtubeTransUrl
 		}
 	},
 	actions: {
