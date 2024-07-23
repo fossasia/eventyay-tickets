@@ -12,6 +12,7 @@
 				a.download(v-for="{resource, description} of talk.resources", :href="getAbsoluteResourceUrl(resource)", target="_blank")
 					.mdi(:class="`mdi-${getIconByFileEnding(resource)}`")
 					.filename {{ description }}
+			bunt-link-button.btn-create.router-link.stage(v-if="getRoomIdByName(roomName)", :to="{name: 'room', params: {roomId: getRoomIdByName(roomName)}}") Join room
 		.speakers(v-if="talk.speakers.length > 0")
 			.header {{ $t('schedule/talks/item:speakers:header', {count: talk.speakers.length})}}
 			.speakers-list
@@ -24,7 +25,7 @@
 	bunt-progress-circular(v-else, size="huge", :page="true")
 </template>
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import moment from 'lib/timetravelMoment'
 import MarkdownContent from 'components/MarkdownContent'
 import { getIconByFileEnding } from 'lib/filetypes'
@@ -40,6 +41,7 @@ export default {
 		}
 	},
 	computed: {
+		...mapState(['rooms']),
 		...mapGetters('schedule', ['pretalxApiBaseUrl', 'sessions']),
 		datetime () {
 			return moment(this.talk.slot?.start || this.talk.start).format('L LT') + ' - ' + moment(this.talk.slot?.end || this.talk.end).format('LT')
@@ -73,6 +75,10 @@ export default {
 			if (!this.pretalxApiBaseUrl) return resource
 			const base = (new URL(this.pretalxApiBaseUrl)).origin
 			return new URL(resource, base)
+		},
+		getRoomIdByName(roomName) {
+			const room = this.rooms.find(r => r.name === roomName);
+			return room ? room.id : null;
 		}
 	}
 }
@@ -121,6 +127,8 @@ export default {
 			.mdi
 				font-size: 36px
 				margin: 0 4px
+	.btn-create
+		themed-button-primary()
 	.speakers
 		width: 280px
 		margin: 32px 16px
