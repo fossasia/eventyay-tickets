@@ -34,7 +34,7 @@
 import { mapState, mapGetters } from 'vuex'
 import { createPopper } from '@popperjs/core'
 
-import ChatContent from 'components/ChatContent'
+// import ChatContent from 'components/ChatContent'
 import Avatar from 'components/Avatar'
 import ChatInput from 'components/ChatInput'
 import ChatUserCard from 'components/ChatUserCard'

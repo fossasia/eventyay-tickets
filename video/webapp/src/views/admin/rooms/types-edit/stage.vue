@@ -16,12 +16,12 @@
 	bunt-input(v-else-if="modules['livestream.youtube']", name="ytid", v-model="modules['livestream.youtube'].config.ytid", label="YouTube Video ID", :validation="$v.modules['livestream.youtube'].config.ytid")
 	// Language and URL input for YouTube stream
 	.language-urls(v-if="modules['livestream.youtube']")
-		h4 Languages and YouTube URLs
+		h4 Languages and YouTube ID
 		.language-url-entry(v-for="(entry, index) in modules['livestream.youtube'].config.languageUrls" :key="index")
 			bunt-select(name="language", v-model="entry.language", :options="ISO_LANGUAGE_OPTIONS", label="Language")
-			bunt-input(name="url" v-model="entry.url" label="YouTube URL")
+			bunt-input(name="youtube_id" v-model="entry.youtube_id" label="YouTube Video ID")
 			bunt-icon-button(@click="deleteLanguageUrl(index)") delete-outline
-		bunt-button(@click="addLanguageUrl") + Add Language and URL
+		bunt-button(@click="addLanguageUrl") + Add Language and Youtube ID
 	bunt-input(v-else-if="modules['livestream.iframe']", name="iframe-player", v-model="modules['livestream.iframe'].config.url", label="Iframe player url", hint="iframe player should be autoplaying and support resizing to small sizes for background playing")
 	sidebar-addons(v-bind="$props")
 </template>
@@ -96,7 +96,7 @@ export default {
 			if (!this.modules['livestream.youtube'].config.languageUrls) {
         		this.$set(this.modules['livestream.youtube'].config, 'languageUrls', [])
       		}
-      		this.modules['livestream.youtube'].config.languageUrls.push({ language: '', url: '' })
+      		this.modules['livestream.youtube'].config.languageUrls.push({ language: '', youtube_id: '' })
 		},
 		deleteLanguageUrl (index) {
 			if (this.modules['livestream.youtube'].config.languageUrls) {

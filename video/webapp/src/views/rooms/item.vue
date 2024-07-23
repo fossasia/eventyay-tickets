@@ -76,7 +76,8 @@ export default {
 	watch: {
 		activeSidebarTab (tab) {
 			this.unreadTabs[tab] = false
-		}
+		},
+		room: 'initializeLanguages'
 	},
 	created () {
 		if (this.modules['chat.native']) {
@@ -86,20 +87,24 @@ export default {
 		} else if (this.modules.poll) {
 			this.activeSidebarTab = 'polls'
 		}
-		// Populate languages from the languages added by the admin
-		if (this.modules['livestream.youtube'] && this.modules['livestream.youtube'].config.languageUrls) {
-			this.languages = this.modules['livestream.youtube'].config.languageUrls;
-			this.languages.unshift({language: 'Default', url: `https://www.youtube.com/watch?v=${this.modules['livestream.youtube'].config.ytid}`})
-
-		}
+		this.initializeLanguages();
 	},
 	methods: {
 		changedTabContent (tab) {
 			if (tab === this.activeSidebarTab) return
 			this.unreadTabs[tab] = true
 		},
-		handleLanguageChange(selectedLanguage) {
-			this.$store.commit('updateYoutubeTransAudio', selectedLanguage)
+		handleLanguageChange(languageUrl) {
+			this.$root.$emit('languageChanged', languageUrl);
+		},
+		initializeLanguages(){
+			this.languages = [];
+			if (this.modules['livestream.youtube'] && this.modules['livestream.youtube'].config.languageUrls) {
+				this.languages = this.modules['livestream.youtube'].config.languageUrls;
+			}
+			if (!this.languages.find(lang => lang.language === 'Default')) {
+				this.languages.unshift({language: 'Default', url: ``});
+			}
 		}
 	}
 }
