@@ -494,6 +494,10 @@ class EventSettingsForm(SettingsForm):
         'logo_image_large',
         'logo_show_title',
         'og_image',
+        'schedule_link',
+        'session_link',
+        'speaker_link',
+        'video_link'
     ]
 
     def clean(self):
@@ -1322,6 +1326,26 @@ class QuickSetupForm(I18nForm):
         label=_("Imprint URL"),
         help_text=_("This should point e.g. to a part of your website that has your contact details and legal "
                     "information."),
+        required=False,
+    )
+    schedule_link = forms.URLField(
+        label=_("Schedule URL"),
+        help_text=_("This should point to your session schedule."),
+        required=False,
+    )
+    session_link = forms.URLField(
+        label=_("Session URL"),
+        help_text=_("This should point to your session list."),
+        required=False,
+    )
+    speaker_link = forms.URLField(
+        label=_("Speaker URL"),
+        help_text=_("This should point to your speakers."),
+        required=False,
+    )
+    video_link = forms.URLField(
+        label=_("Video URL"),
+        help_text=_("This should point to your Video URL."),
         required=False,
     )
     contact_mail = forms.EmailField(
