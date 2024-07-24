@@ -27,19 +27,19 @@
     <main aria-label="{% if show_cart %}{% trans "Your cart, general information, add products to your cart" %}{% else %}{% trans "General information, add products to your cart" %}{% endif %}">
         <nav id="schedule-nav"{% if with_margin %} class="p-3"{% endif %}>
             <div class="navigation">
-                <a href="{{ request.event.urls.schedule }}" class="header-nav btn btn-outline-success {% if "/schedule/" in request.path %} active{% endif %}">
+                <a href="{% setting_values TALK_URL %}/{{ev.slug}}/schedule" class="header-nav btn btn-outline-success">
                     <i class="fa fa-calendar"></i> {% translate "Schedule" %}
                 </a>
                 {% if request.event.display_settings.schedule_display != "list" %}
-                    <a href="{{ request.event.urls.talks }}" class="header-nav btn btn-outline-success {% if "/talk/" in request.path %} active{% endif %}">
+                    <a href="{% setting_values TALK_URL %}/{{ev.slug}}/talk" class="header-nav btn btn-outline-success">
                         <i class="fa fa-comments-o"></i> {% translate "Sessions" %}
                     </a>
                 {% endif %}
-                <a href="{{ request.event.urls.speakers }}" class="header-nav btn btn-outline-success {% if "/speaker/" in request.path %} active{% endif %}">
+                <a href="{% setting_values TALK_URL %}/{{ev.slug}}/speaker" class="header-nav btn btn-outline-success">
                     <i class="fa fa-group"></i> {% translate "Speakers" %}
                 </a>
-                <a href="{{ request.event.display_settings.ticket_link }}" target="_blank" class="header-nav btn btn-outline-success">
-                    <i class="fa fa-group"></i> {% translate "Tickets" %}
+                <a href="{% setting_values VIDEO_URL %}" class="header-nav btn btn-outline-success">
+                    <i class="fa fa-video-camera"></i> {% translate "Videos" %}
                 </a>
             </div>
         </nav>

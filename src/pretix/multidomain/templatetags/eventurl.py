@@ -5,6 +5,7 @@ from django.template.defaulttags import URLNode
 from django.urls import NoReverseMatch
 from django.utils.encoding import smart_str
 from django.utils.html import conditional_escape
+from django.conf import settings
 
 from pretix.multidomain.urlreverse import build_absolute_uri
 
@@ -85,3 +86,20 @@ def abseventurl(parser, token):
     Returns an absolute URL.
     """
     return eventurl(parser, token, absolute=True)
+
+@register.tag
+def setting_values(parser, token):
+    """
+    This will return the value of the setting in the template
+    """
+    bits = token.split_contents()
+    if len(bits) != 2:
+        raise TemplateSyntaxError("'%s' takes one argument, the name of a setting." % bits[0])
+    return SettingValueNode(bits[1])
+
+class SettingValueNode(template.Node):
+    def __init__(self, key):
+        self.key = key
+
+    def render(self, context):
+        return getattr(settings, self.key, '')
