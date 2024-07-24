@@ -82,17 +82,19 @@ def create_user_as_orga(email, submission=None, name=None):
             kwargs={"event": submission.event.slug, "token": user.pw_reset_token},
         )
         invitation_text = _(
-            """Hi!
+            """Hello,
 
-You have been set as the speaker of a proposal to the Call for Participation
-of {event}, titled “{title}”. An account has been created for you – please follow
-this link to set your account password.
+We are excited to inform you that you have been selected as a speaker for {event} with your proposal titled "{title}".
+To get started, an account has been created for you. Please follow the link below to set your account password:
 
 {invitation_link}
 
-Afterwards, you can edit your user profile and see the state of your proposal.
+Once you have set your password, you can log in to edit your user profile and track the status of your proposal.
 
-The {event} orga crew"""
+We look forward to your participation and contribution to {event}.
+
+Best regards,
+The {event} Organizing Team"""
         ).format(
             event=submission.event.name,
             title=submission.title,
@@ -102,7 +104,7 @@ The {event} orga crew"""
             event=submission.event,
             reply_to=submission.event.email,
             subject=str(
-                _("You have been added to a proposal for {event}").format(
+                _("Welcome as a Speaker at {event}!").format(
                     event=submission.event.name
                 )
             ),
