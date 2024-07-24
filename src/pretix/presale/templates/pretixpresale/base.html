@@ -4,6 +4,7 @@
 {% load safelink %}
 {% load statici18n %}
 {% load thumb %}
+{% load eventurl %}
 <!DOCTYPE html>
 <html{% if rtl %} dir="rtl" class="rtl"{% endif %} lang="{{ html_locale }}">
 <head>
@@ -15,6 +16,7 @@
             <link rel="stylesheet" type="text/x-scss" href="{% static "pretixpresale/scss/main.scss" %}"/>
         {% endcompress %}
     {% endif %}
+    <link rel="stylesheet" type="text/css" href="{% static "pretixpresale/scss/custom.css" %}"/>
 
     {% include "pretixpresale/fragment_js.html" %}
     <meta name="referrer" content="origin">
@@ -46,7 +48,12 @@
 </head>
 <body class="nojs" data-locale="{{ request.LANGUAGE_CODE }}" data-now="{% now "U.u" %}" data-datetimeformat="{{ js_datetime_format }}" data-timeformat="{{ js_time_format }}" data-dateformat="{{ js_date_format }}" data-datetimelocale="{{ js_locale }}" data-currency="{{ request.event.currency }}">
 {{ html_page_header|safe }}
-<header>
+    <div id="top-bg" class="header bg-primary" {% if event_logo %} {% endif %}>
+        {% if event_logo %}
+            <img id="header-image" src="{{ event_logo|thumb:'1170x5000' }}" alt="{{ event.name }}" class="event-logo" />
+        {% endif %}
+</div>
+<header {% if event_logo %} class="custom-header" {% endif %}>
 {% block above %}
 {% endblock %}
 </header>
