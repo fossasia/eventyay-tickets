@@ -30,3 +30,11 @@
         border-radius: 0;
     }
 }
+
+.page-header-links{
+    .header-part{
+        a {
+            color: #FFFFFF !important;
+        }
+    }
+}

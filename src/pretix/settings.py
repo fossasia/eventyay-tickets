@@ -780,3 +780,6 @@ if config.has_option('geoip', 'path'):
     HAS_GEOIP = True
     GEOIP_PATH = config.get('geoip', 'path')
     GEOIP_COUNTRY = config.get('geoip', 'filename_country', fallback='GeoLite2-Country.mmdb')
+
+TALK_URL = config.get('talk', 'url', fallback='https://wikimania.eventyay.com')
+VIDEO_URL = config.get('video', 'url', fallback='https://wikimania-live.eventyay.com')
