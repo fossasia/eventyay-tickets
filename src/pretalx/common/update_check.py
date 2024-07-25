@@ -35,7 +35,7 @@ def run_update_check(sender, **kwargs):
         update_check.apply_async()
 
 
-@app.task
+@app.task(name="pretalx.common.update_check")
 @scopes_disabled()
 def update_check():
     gs = GlobalSettings()

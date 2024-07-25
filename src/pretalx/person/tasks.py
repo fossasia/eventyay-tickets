@@ -12,7 +12,7 @@ from pretalx.person.models.user import User
 logger = logging.getLogger(__name__)
 
 
-@app.task()
+@app.task(name="pretalx.person.gravatar_cache")
 def gravatar_cache(person_id: int):
     user = User.objects.filter(pk=person_id, get_gravatar=True).first()
 
