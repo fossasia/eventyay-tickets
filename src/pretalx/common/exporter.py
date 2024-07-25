@@ -5,6 +5,7 @@ from urllib.parse import quote
 import qrcode
 import qrcode.image.svg
 from defusedcsv import csv
+from defusedxml import ElementTree
 from django.utils.functional import cached_property
 from django.utils.safestring import mark_safe
 
