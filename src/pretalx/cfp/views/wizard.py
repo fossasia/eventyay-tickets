@@ -92,7 +92,7 @@ class SubmitWizard(EventPageMixin, View):
         # We are done, or at least the data checks out. Time to save results.
         request.event.cfp_flow.steps_dict["user"].done(request)
         for step in valid_steps:
-            if not step.identifier == "user":
+            if step.identifier != "user":
                 step.done(request, draft=draft)
 
         if not draft:

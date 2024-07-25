@@ -455,7 +455,7 @@ class SubmissionInviteView(LoggedInEventPageMixin, SubmissionViewMixin, FormView
         kwargs = super().get_form_kwargs()
         kwargs["submission"] = self.submission
         kwargs["speaker"] = self.request.user
-        if "email" in self.request.GET and not self.request.method == "POST":
+        if "email" in self.request.GET and self.request.method != "POST":
             initial = kwargs.get("initial", {})
             initial["speaker"] = urllib.parse.unquote(self.request.GET["email"])
             kwargs["initial"] = initial
