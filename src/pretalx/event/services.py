@@ -10,7 +10,7 @@ from pretalx.common.signals import periodic_task
 from pretalx.event.models import Event
 
 
-@app.task()
+@app.task(name="pretalx.event.periodic_event_services")
 def task_periodic_event_services(event_slug):
     with scopes_disabled():
         event = (
@@ -68,7 +68,7 @@ def task_periodic_event_services(event_slug):
                     event.settings.sent_mail_event_over = True
 
 
-@app.task()
+@app.task(name="pretalx.event.periodic_schedule_export")
 def task_periodic_schedule_export(event_slug):
     from pretalx.agenda.management.commands.export_schedule_html import (
         get_export_zip_path,
