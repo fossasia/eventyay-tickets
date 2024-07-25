@@ -22,6 +22,7 @@ from pretalx.event.models import Event
 def fake_admin(event):
     with rolledback_transaction():
         event.is_public = True
+        event.custom_domain = None
         event.save()
         client = Client()
 
