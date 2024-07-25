@@ -150,27 +150,27 @@ def export_event(event, destination):
         override_timezone(event.timezone),
         fake_admin(event) as get,
     ):
-            logging.info("Collecting URLs for export")
-            urls = [*event_urls(event)]
-            assets = set()
+        logging.info("Collecting URLs for export")
+        urls = [*event_urls(event)]
+        assets = set()
 
-            logging.info(f"Exporting {len(urls)} pages")
-            for url in map(get_path, urls):
-                content = dump_content(destination, url, get)
-                assets |= set(map(get_path, find_assets(content)))
+        logging.info(f"Exporting {len(urls)} pages")
+        for url in map(get_path, urls):
+            content = dump_content(destination, url, get)
+            assets |= set(map(get_path, find_assets(content)))
 
-            css_assets = set()
+        css_assets = set()
 
-            logging.info(f"Exporting {len(assets)} static files from HTML links")
-            for url in assets:
-                content = dump_content(destination, url, get)
+        logging.info(f"Exporting {len(assets)} static files from HTML links")
+        for url in assets:
+            content = dump_content(destination, url, get)
 
-                if url.endswith(".css"):
-                    css_assets |= set(find_urls(content))
+            if url.endswith(".css"):
+                css_assets |= set(find_urls(content))
 
-            logging.info(f"Exporting {len(css_assets)} files from CSS links")
-            for url_path in (get_path(urllib.parse.unquote(url)) for url in css_assets):
-                dump_content(destination, url_path, get)
+        logging.info(f"Exporting {len(css_assets)} files from CSS links")
+        for url_path in (get_path(urllib.parse.unquote(url)) for url in css_assets):
+            dump_content(destination, url_path, get)
 
 
 def delete_directory(path):
