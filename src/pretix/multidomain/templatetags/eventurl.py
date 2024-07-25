@@ -87,6 +87,7 @@ def abseventurl(parser, token):
     """
     return eventurl(parser, token, absolute=True)
 
+
 @register.tag
 def setting_values(parser, token):
     """
@@ -96,6 +97,7 @@ def setting_values(parser, token):
     if len(bits) != 2:
         raise TemplateSyntaxError("'%s' takes one argument, the name of a setting." % bits[0])
     return SettingValueNode(bits[1])
+
 
 class SettingValueNode(template.Node):
     def __init__(self, key):
