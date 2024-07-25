@@ -162,7 +162,7 @@ class Filterable:
                     if "__isnull" in _key:
                         # We don't append to the list here, because that's not meaningful
                         # in a boolean lookup
-                        lookups[_key] = True if _value == "on" else False
+                        lookups[_key] = _value == "on"
                     else:
                         _key = f"{_key}__in"
                         lookups[_key].append(_value)

@@ -27,9 +27,8 @@ def get_all_plugins(event=None):
             meta.module = app.name
             meta.app = app
 
-            if event and hasattr(app, "is_available"):
-                if not app.is_available(event):
-                    continue
+            if event and hasattr(app, "is_available") and not app.is_available(event):
+                continue
 
             plugins.append(meta)
     return sorted(

@@ -96,9 +96,8 @@ class ExporterView(EventPermissionRequired, ScheduleMixin, TemplateView):
         responses = register_data_exporters.send(request.event)
         for __, response in responses:
             ex = response(request.event)
-            if ex.identifier == exporter:
-                if ex.public or request.is_orga:
-                    return ex
+            if ex.identifier == exporter and (ex.public or request.is_orga):
+                return ex
 
     def get(self, request, *args, **kwargs):
         exporter = self.get_exporter(request)
@@ -121,9 +120,8 @@ class ExporterView(EventPermissionRequired, ScheduleMixin, TemplateView):
                 f"Failed to use {exporter.identifier} for {self.request.event.slug}"
             )
             raise Http404()
-        if "If-None-Match" in request.headers:
-            if request.headers["If-None-Match"] == etag:
-                return HttpResponseNotModified()
+        if request.headers.get("If-None-Match") == etag:
+            return HttpResponseNotModified()
         headers = {"ETag": etag}
         if file_type not in ["application/json", "text/xml"]:
             headers["Content-Disposition"] = (

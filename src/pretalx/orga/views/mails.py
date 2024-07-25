@@ -352,7 +352,7 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
             # Only approximate, good enough. Doesn't run deduplication, so it doesn't have to
             # run rendering for all placeholders for all people, either.
             result = form.get_recipients()
-            if not len(result):
+            if not result:
                 messages.error(
                     self.request,
                     _("There are no recipients matching this selection."),

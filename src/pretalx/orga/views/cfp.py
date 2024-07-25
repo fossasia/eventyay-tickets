@@ -73,7 +73,7 @@ class CfPTextDetail(PermissionRequired, ActionFromUrl, UpdateView):
         ):
             deadlines[session_type.deadline].append(session_type)
         deadlines.pop(self.request.event.cfp.deadline, None)
-        if len(deadlines):
+        if deadlines:
             return dict(deadlines)
 
     def get_object(self, queryset=None):
