@@ -32,8 +32,7 @@ def fake_admin(event):
             except FileNotFoundError:
                 # … then fall back to asking the views.
                 response = client.get(url, is_html_export=True, HTTP_ACCEPT="text/html")
-                content = get_content(response)
-                return content
+                return get_content(response)
 
         yield get
 
@@ -149,8 +148,8 @@ def export_event(event, destination):
     with (
         override_settings(COMPRESS_ENABLED=True, COMPRESS_OFFLINE=True),
         override_timezone(event.timezone),
+        fake_admin(event) as get,
     ):
-        with fake_admin(event) as get:
             logging.info("Collecting URLs for export")
             urls = [*event_urls(event)]
             assets = set()

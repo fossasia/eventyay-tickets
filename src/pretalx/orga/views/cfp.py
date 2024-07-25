@@ -164,8 +164,7 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
                 url = f"{url}submission_type={submission_type}&"
         else:
             url = self.request.event.orga_urls.speakers + "?"
-        url = f"{url}&question={self.question.id}&"
-        return url
+        return f"{url}&question={self.question.id}&"
 
     @context
     @cached_property

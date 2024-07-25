@@ -975,8 +975,7 @@ def unreleased_slot(confirmed_submission, room):
             schedule=schedule,
             is_visible=True,
         )
-        slot = slot.first()
-        return slot
+        return slot.first()
 
 
 @pytest.fixture

@@ -216,8 +216,7 @@ class QuestionForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
             return [LazyI18nString(data=o) for o in options]
         except Exception:
             options = content.split("\n")
-            options = [o.strip() for o in options if o.strip()]
-            return options
+            return [o.strip() for o in options if o.strip()]
 
     def clean(self):
         deadline = self.cleaned_data["deadline"]

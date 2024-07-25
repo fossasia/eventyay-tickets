@@ -21,8 +21,7 @@ def test_admin_dashboard_only_for_admin_user(orga_user, orga_client, is_administ
 
 @pytest.fixture
 def user():
-    user = User.objects.create_user(email="dummy@dummy.dummy", password="dummy")
-    return user
+    return User.objects.create_user(email="dummy@dummy.dummy", password="dummy")
 
 
 def request_callback_updatable(request):
