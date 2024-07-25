@@ -56,8 +56,7 @@ class OutboxList(
             .order_by("-id")
         )
         qs = self.filter_queryset(qs)
-        qs = self.sort_queryset(qs)
-        return qs
+        return self.sort_queryset(qs)
 
 
 class SentMail(
@@ -84,8 +83,7 @@ class SentMail(
             .order_by("-sent")
         )
         qs = self.filter_queryset(qs)
-        qs = self.sort_queryset(qs)
-        return qs
+        return self.sort_queryset(qs)
 
 
 class OutboxSend(EventPermissionRequired, ActionConfirmMixin, TemplateView):
@@ -238,8 +236,7 @@ class OutboxPurge(PermissionRequired, ActionConfirmMixin, TemplateView):
 
     @cached_property
     def queryset(self):
-        qs = self.request.event.queued_mails.filter(sent__isnull=True)
-        return qs
+        return self.request.event.queued_mails.filter(sent__isnull=True)
 
     def post(self, request, *args, **kwargs):
         qs = self.queryset

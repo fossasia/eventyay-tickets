@@ -441,12 +441,11 @@ class ReviewViewMixin:
 
     @cached_property
     def object(self):
-        review = (
+        return (
             self.submission.reviews.exclude(user__in=self.submission.speakers.all())
             .filter(user=self.request.user)
             .first()
         )
-        return review
 
     def get_object(self):
         return self.object

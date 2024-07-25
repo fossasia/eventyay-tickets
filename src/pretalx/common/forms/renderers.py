@@ -59,7 +59,7 @@ class EventFieldRenderer(EventInlineFieldRenderer):
         else:
             required = getattr(self.field.field, "_required", self.field.field.required)
 
-        html = (
+        return (
             render_label(
                 label,
                 label_for=self.field.id_for_label,
@@ -68,4 +68,3 @@ class EventFieldRenderer(EventInlineFieldRenderer):
             )
             + html
         )
-        return html

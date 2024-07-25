@@ -55,11 +55,10 @@ class ExportForm(forms.Form):
 
     @cached_property
     def export_fields(self):
-        result = [
+        return [
             forms.BoundField(self, self.fields[field], field)
             for field in self.export_field_names + self.question_field_names
         ]
-        return result
 
     def _build_model_fields(self):
         for field in self.Meta.model_fields:

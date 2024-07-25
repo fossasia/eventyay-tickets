@@ -126,15 +126,14 @@ def check_result_table():
     if "error" in res:
         return res
 
-    table = []
-    table.append(
+    table = [
         (
             "pretalx",
             pretalx_version,
             res["version"]["latest"],
             res["version"]["updatable"],
         )
-    )
+    ]
     for p in get_all_plugins():
         if p.module in res["plugins"]:
             pdata = res["plugins"][p.module]

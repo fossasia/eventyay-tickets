@@ -172,8 +172,7 @@ class AvailabilitiesFormMixin(forms.Form):
         if not availabilities and required:
             raise forms.ValidationError(availability_required)
         # Remove overlaps by merging availabilities
-        availabilities = Availability.union(availabilities)
-        return availabilities
+        return Availability.union(availabilities)
 
     def _set_foreignkeys(self, instance, availabilities):
         """Set the reference to `instance` in each given availability.

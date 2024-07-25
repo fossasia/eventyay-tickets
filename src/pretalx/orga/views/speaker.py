@@ -132,8 +132,7 @@ class SpeakerList(
             )
             qs = qs.annotate(has_answer=Exists(answers)).filter(has_answer=False)
         qs = qs.order_by("id").distinct()
-        qs = self.sort_queryset(qs)
-        return qs
+        return self.sort_queryset(qs)
 
 
 class SpeakerViewMixin(PermissionRequired):

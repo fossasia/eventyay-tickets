@@ -973,12 +973,11 @@ class AllFeedbacksList(EventPermissionRequired, PaginationMixin, ListView):
     paginate_by = 25
 
     def get_queryset(self):
-        qs = (
+        return (
             Feedback.objects.order_by("-pk")
             .select_related("talk")
             .filter(talk__event=self.request.event)
         )
-        return qs
 
 
 class TagList(EventPermissionRequired, PaginationMixin, ListView):

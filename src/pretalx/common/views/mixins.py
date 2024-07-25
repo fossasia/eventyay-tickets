@@ -395,9 +395,7 @@ class ActionConfirmMixin:
     def action_back_url(self):
         url_param = self.request.GET.get("next") or self.request.GET.get("back")
         if url_param:
-            # decode
-            url_param = urllib.parse.unquote(url_param)
-            return url_param
+            return urllib.parse.unquote(url_param)
         # Fallback if we don't have a next parameter: go up one level
         return self.request.path.rsplit("/", 2)[0]
 
