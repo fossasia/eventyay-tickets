@@ -386,7 +386,7 @@ def test_schedule_export_schedule_html_task(mocker, event, slot):
         call_command,
     )
 
-    export_schedule_html.apply_async(kwargs={"event_id": event.id})
+    export_schedule_html.apply_async(kwargs={"event_id": event.id}, ignore_result=True)
 
     call_command.assert_called_with("export_schedule_html", event.slug, "--zip")
 
@@ -398,7 +398,9 @@ def test_schedule_export_schedule_html_task_nozip(mocker, event, slot):
         call_command,
     )
 
-    export_schedule_html.apply_async(kwargs={"event_id": event.id, "make_zip": False})
+    export_schedule_html.apply_async(
+        kwargs={"event_id": event.id, "make_zip": False}, ignore_result=True
+    )
     call_command.assert_called_with("export_schedule_html", event.slug)
 
 
@@ -439,7 +441,8 @@ def test_schedule_orga_trigger_export_with_celery(
         )
     assert response.status_code == 200
     export_schedule_html.apply_async.assert_called_once_with(
-        kwargs={"event_id": event.id}
+        kwargs={"event_id": event.id},
+        ignore_result=True,
     )
 
 

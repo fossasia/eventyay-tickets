@@ -118,7 +118,9 @@ class Schedule(PretalxModel):
 
         if self.event.feature_flags["export_html_on_release"]:
             if settings.HAS_CELERY:
-                export_schedule_html.apply_async(kwargs={"event_id": self.event.id})
+                export_schedule_html.apply_async(
+                    kwargs={"event_id": self.event.id}, ignore_result=True
+                )
             else:
                 self.event.cache.set("rebuild_schedule_export", True, None)
         return self, wip_schedule

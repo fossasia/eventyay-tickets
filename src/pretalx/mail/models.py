@@ -312,7 +312,8 @@ class QueuedMail(PretalxModel):
                 "cc": (self.cc or "").split(","),
                 "bcc": (self.bcc or "").split(","),
                 "attachments": self.attachments,
-            }
+            },
+            ignore_result=True,
         )
 
         self.sent = now()

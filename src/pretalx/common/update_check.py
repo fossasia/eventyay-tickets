@@ -32,7 +32,7 @@ def run_update_check(sender, **kwargs):
         not gs.settings.update_check_last
         or now() - gs.settings.update_check_last > dt.timedelta(hours=23)
     ):
-        update_check.apply_async()
+        update_check.apply_async(ignore_result=True)
 
 
 @app.task(name="pretalx.common.update_check")
@@ -113,7 +113,8 @@ def send_update_notification_email():
                 url=settings.SITE_URL + reverse("orga:admin.update"),
             ),
             "html": None,
-        }
+        },
+        ignore_result=True,
     )
 
 

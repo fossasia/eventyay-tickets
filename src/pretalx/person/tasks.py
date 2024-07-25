@@ -57,4 +57,4 @@ def refetch_gravatars(sender, **kwargs):
     users_with_gravatar = User.objects.filter(get_gravatar=True)
 
     for user in users_with_gravatar:
-        gravatar_cache.apply_async(args=(user.pk,))
+        gravatar_cache.apply_async(args=(user.pk,), ignore_result=True)

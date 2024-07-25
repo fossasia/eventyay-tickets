@@ -94,14 +94,20 @@ def task_periodic_schedule_export(event_slug):
         if should_rebuild_schedule:
             event.cache.delete("rebuild_schedule_export")
             event.cache.set("last_schedule_rebuild", _now, None)
-            export_schedule_html.apply_async(kwargs={"event_id": event.id})
+            export_schedule_html.apply_async(
+                kwargs={"event_id": event.id}, ignore_result=True
+            )
 
 
 @receiver(periodic_task)
 def periodic_event_services(sender, **kwargs):
     for event in Event.objects.all():
         with scope(event=event):
-            task_periodic_event_services.apply_async(args=(event.slug,))
+            task_periodic_event_services.apply_async(
+                args=(event.slug,), ignore_result=True
+            )
             if event.current_schedule and event.feature_flags["export_html_on_release"]:
-                task_periodic_schedule_export.apply_async(args=(event.slug,))
+                task_periodic_schedule_export.apply_async(
+                    args=(event.slug,), ignore_result=True
+                )
             event.update_review_phase()
