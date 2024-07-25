@@ -218,8 +218,6 @@ class Command(BaseCommand):
             finally:
                 delete_directory(tmp_dir)
 
-            logging.info(f"Exported to {export_dir}")
-
             if options.get("zip"):
                 make_archive(
                     root_dir=settings.HTMLEXPORT_ROOT,
@@ -227,5 +225,8 @@ class Command(BaseCommand):
                     base_name=zip_path.parent / zip_path.stem,
                     format="zip",
                 )
+                delete_directory(export_dir)
 
                 logging.info(f"Exported to {zip_path}")
+            else:
+                logging.info(f"Exported to {export_dir}")
