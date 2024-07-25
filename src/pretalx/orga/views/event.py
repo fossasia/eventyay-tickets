@@ -105,7 +105,7 @@ class EventDetail(EventSettingsPermission, ActionFromUrl, UpdateView):
             "pretalx.event.update", person=self.request.user, orga=True
         )
         messages.success(self.request, _("The event settings have been saved."))
-        regenerate_css.apply_async(args=(form.instance.pk,))
+        regenerate_css.apply_async(args=(form.instance.pk,), ignore_result=True)
         return result
 
 
@@ -255,7 +255,8 @@ class EventReviewSettings(EventSettingsPermission, ActionFromUrl, FormView):
         form.save()
         if self.scores_formset.has_changed():
             recalculate_all_review_scores.apply_async(
-                kwargs={"event_id": self.request.event.pk}
+                kwargs={"event_id": self.request.event.pk},
+                ignore_result=True,
             )
         return super().form_valid(form)
 
