@@ -547,7 +547,6 @@ class RoomList(EventPermissionRequired, TemplateView):
 
 
 class RoomDelete(EventPermissionRequired, View):
-    permission_required = "orga.edit_room"
     permission_required = "orga.change_settings"
 
     def get_object(self):
