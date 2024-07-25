@@ -61,7 +61,7 @@ const DEFAULT_IDENTICONS = {
 	style: 'identiheart'
 }
 
-const configColors = config.theme?.colors
+const configColors = config.theme?.colors || DEFAULT_COLORS
 
 const themeConfig = {
 	colors: configColors,
