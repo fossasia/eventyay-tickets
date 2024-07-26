@@ -398,9 +398,8 @@ def test_content_for_mail(submission, file_question, boolean_question):
 
 @pytest.mark.django_db
 def test_send_invite_requires_signature(submission):
-    with scope(event=submission.event):
-        with pytest.raises(Exception):  # noqa
-            submission.send_invite(None)
+    with scope(event=submission.event), pytest.raises(Exception):  # noqa
+        submission.send_invite(None)
 
 
 @pytest.mark.parametrize(
