@@ -32,7 +32,7 @@ def run_update_check(sender, **kwargs):
         not gs.settings.update_check_last
         or now() - gs.settings.update_check_last > dt.timedelta(hours=23)
     ):
-        update_check.apply_async(ignore_result=True)
+        update_check.apply_async()
 
 
 @app.task(name="pretalx.common.update_check")

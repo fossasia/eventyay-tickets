@@ -446,6 +446,7 @@ def test_schedule_orga_trigger_export_with_celery(
     )
 
 
+@pytest.mark.parametrize("zip", (True, False))
 @pytest.mark.django_db
 def test_html_export_full(
     event,
@@ -455,6 +456,7 @@ def test_html_export_full(
     canceled_talk,
     orga_client,
     django_assert_max_num_queries,
+    zip,
 ):
     from django.core.management import (  # Import here to avoid overriding mocks
         call_command,
@@ -472,7 +474,15 @@ def test_html_export_full(
         regenerate_css(other_event.pk)
         event = Event.objects.get(slug=event.slug)
         assert event.settings.agenda_css_file
-        call_command("export_schedule_html", event.slug, "--zip")
+        args = ["export_schedule_html", event.slug]
+        if zip:
+            args.append("--zip")
+        call_command(*args)
+
+    if zip:
+        full_path = settings.HTMLEXPORT_ROOT / "test.zip"
+        assert full_path.exists()
+        return
 
     paths = [
         "static/common/img/icons/favicon.ico",
@@ -499,9 +509,6 @@ def test_html_export_full(
         path = str(path)
         assert event.slug in path
         assert other_event.slug not in path
-
-    full_path = settings.HTMLEXPORT_ROOT / "test.zip"
-    assert full_path.exists()
 
     # views and templates are the same for export and online viewing, so a naive test is enough here
     talk_html = (
