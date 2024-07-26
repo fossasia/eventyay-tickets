@@ -94,7 +94,7 @@ class SubmissionSerializer(I18nAwareModelSerializer):
         if not self.questions:
             return []
         queryset = self.answers_queryset(obj)
-        if self.questions not in ["all", ["all"]]:
+        if self.questions not in ("all", ["all"]):
             queryset = queryset.filter(question__in=self.questions)
         return AnswerSerializer(queryset, many=True).data
 

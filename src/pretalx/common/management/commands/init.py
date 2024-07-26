@@ -56,7 +56,7 @@ class Command(BaseCommand):  # pragma: no cover
         )
 
         self.stdout.write(
-            """\nLet\'s get you a user with the right to create new events and access every event on this pretalx instance."""
+            "\nLet's get you a user with the right to create new events and access every event on this pretalx instance."
         )
 
         call_command("createsuperuser", interactive=options["interactive"])
@@ -64,7 +64,7 @@ class Command(BaseCommand):  # pragma: no cover
         user = User.objects.order_by("-id").filter(is_administrator=True).first()
 
         self.stdout.write(
-            """\nLet\'s also create a first organiser: This will allow you to invite further people and create events."""
+            "\nLet's also create a first organiser: This will allow you to invite further people and create events."
         )
         self.stdout.write("\n")
 

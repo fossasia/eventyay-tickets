@@ -114,7 +114,7 @@ def dump_content(destination, path, getter):
     logging.debug(path)
     content = getter(path)
     if path.endswith("/"):
-        path = path + "index.html"
+        path += "index.html"
 
     path = (Path(destination) / path.lstrip("/")).resolve()
     if not Path(destination) in path.parents:
@@ -216,11 +216,14 @@ class Command(BaseCommand):
                 export_event(event, tmp_dir)
                 delete_directory(export_dir)
                 tmp_dir.rename(export_dir)
+            except Exception as exc:
+                logging.error(f"Export failed: {exc}")
+                delete_directory(tmp_dir)
             finally:
                 delete_directory(tmp_dir)
 
             if options.get("zip"):
-                make_archive(
+                shutil.make_archive(
                     root_dir=settings.HTMLEXPORT_ROOT,
                     base_dir=event.slug,
                     base_name=zip_path.parent / zip_path.stem,

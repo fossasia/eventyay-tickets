@@ -414,7 +414,7 @@ class JsonSubfieldMixin:
                 self.fields[field].initial = defaults.get(field)
 
     def save(self, *args, **kwargs):
-        if hasattr(super(), "save"):
+        if getattr(super(), "save", None):
             instance = super().save(*args, **kwargs)
         else:
             instance = self.instance
@@ -456,7 +456,7 @@ class HierarkeyMixin:
                     try:
                         default_storage.delete(fname.name)
                     except OSError:  # pragma: no cover
-                        logger.error("Deleting file %s failed." % fname.name)
+                        logger.error("Deleting file %s failed.", fname.name)
 
                 # Create new file
                 newname = default_storage.save(self.get_new_filename(value.name), value)
@@ -472,7 +472,7 @@ class HierarkeyMixin:
                     try:
                         default_storage.delete(fname.name)
                     except OSError:  # pragma: no cover
-                        logger.error("Deleting file %s failed." % fname.name)
+                        logger.error("Deleting file %s failed.", fname.name)
                 del self._s[name]
             elif value is None:
                 del self._s[name]
